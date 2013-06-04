@@ -1,0 +1,25 @@
+<form class="print">
+  <div class="btn-group" data-toggle="buttons-radio">
+    <label class="btn btn-primary active">
+      <input type="radio" name="orientation" value="portrait">{{gettext('portrait')}}
+    </label>
+    <label class="btn btn-primary">
+      <input type="radio" name="orientation" value="landscape">{{gettext('landscape')}}
+    </label>
+  </div>
+  <div>
+    <label>{{gettext('scale')}}</label>
+    <select name="scale">
+      {{#scales}}
+      <option value="{{value}}">{{name}}</options>
+      {{/scales}}
+    </select>
+  </div>
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" value="legend">
+      {{gettext('legend')}}
+    </label>
+  </div>
+  <button type="submit" class="btn btn-primary">{{gettext('print')}}</button>
+</form>
