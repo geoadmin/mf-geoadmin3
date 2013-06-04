@@ -1,0 +1,2 @@
+new ga.Catalog({
+});

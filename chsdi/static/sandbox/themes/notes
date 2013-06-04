@@ -1,0 +1,18 @@
+{
+  themes: [{
+    id: 'bafu',
+    thumbnail: 'http://www.example.com/bafu.png',
+    label: 'BAFU'
+  }, {
+    id: 'swisstopo',
+    thumbnail: 'http://www.example.com/swisstopo.png',
+    label: 'swisstopo'
+  }, {
+    id: 'are',
+    thumbnail: 'http://www.example.com/are.png',
+    label: 'ARE'
+  }]
+}
+
+
+// highlight selected
