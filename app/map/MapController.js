@@ -1,32 +1,40 @@
 (function() {
   var mapModule = angular.module('app.map');
 
+  var projectionExtent = [485869.5728, 837076.5648, 76443.1884, 299941.7864];
+  var projection = ol.proj.configureProj4jsProjection({
+    code: 'EPSG:21781',
+    extent: projectionExtent
+  });
+
   mapModule.filter('coordXY', function() {
     return function(input, precision) {
       return ol.coordinate.toStringXY(input, precision);
     }
   });
 
-  mapModule.controller('MapController', ['$scope', function($scope) {
+  mapModule.controller('MapController',
+      ['$scope', '$http', function($scope, $http) {
 
     var map = new ol.Map({
-      layers: [
-        new ol.layer.TileLayer({
-          source: new ol.source.Stamen({
-            layer: 'watercolor'
-          })
-        }),
-        new ol.layer.TileLayer({
-          source: new ol.source.Stamen({
-            layer: 'terrain-labels'
-          })
-        })
-      ],
+      renderer: ol.RendererHint.CANVAS,
       view: new ol.View2D({
-        center: [0, 0],
+        projection: projection,
+        center: ol.extent.getCenter(projectionExtent),
         zoom: 2
       })
     });
+
+    $http.get('http://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml').success(
+        function(data, status, header, config) {
+          var parser = new ol.parser.ogc.WMTSCapabilities();
+          var capabilities = parser.read(data);
+          var wmtsSourceOptions = ol.source.WMTS.optionsFromCapabilities(
+              capabilities, 'ch.swisstopo.pixelkarte-farbe');
+          var wmtsSource = new ol.source.WMTS(wmtsSourceOptions);
+          var wmtsLayer = new ol.layer.TileLayer({source: wmtsSource});
+          map.addLayer(wmtsLayer);
+        });
 
     $scope.map = map;
 
