@@ -10,7 +10,7 @@
   mapModule.filter('coordXY', function() {
     return function(input, precision) {
       return ol.coordinate.toStringXY(input, precision);
-    }
+    };
   });
 
   mapModule.controller('MapController',
