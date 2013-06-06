@@ -10,13 +10,21 @@
 
     <div class="navbar navbar-fixed-top">
       <form class="navbar-form pull-right">
-        <select></select>
+        <select ng-model="">
+          <option value="ch.swisstopo.pixelkarte-farbe">Color map</option>
+          <option value="ch.swisstopo.swissimage">Aerial imagery</option>
+          <option value="ch.swisstopo.pixelkarte-grau">Grey map</option>
+        </select>
       </form>
     </div>
     <div class="map" id="map"></div>
     <div class="navbar navbar-fixed-bottom">
       <form class="navbar-form pull-left">
-        <select></select>
+        <select ng-model="">
+          <option value="21781">CH1903 / LV03</option>
+          <option value="2056">CH1903+ / LV95</option>
+          <option value="4326">WGS 84</option>
+        </select>
       </form>
       <p class="navbar-text">mouse position here</p>
 
