@@ -6,7 +6,7 @@
     <link href="lib/bootstrap.css" rel="stylesheet" media="screen">
     <link href="css/app.css" rel="stylesheet" media="screen">
   </head>
-  <body>
+  <body ng-controller="MapController">
 
     <div class="navbar navbar-fixed-top">
       <form class="navbar-form pull-right">
@@ -17,7 +17,7 @@
         </select>
       </form>
     </div>
-    <div class="map" id="map"></div>
+    <div class="map" id="map" app-map="map"></div>
     <div class="navbar navbar-fixed-bottom">
       <form class="navbar-form pull-left">
         <select>
