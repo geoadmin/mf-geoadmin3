@@ -1,5 +1,6 @@
 MANIFEST
 apache/apache.conf
+buildout/*
 
 *.py[cod]
 
