@@ -1,3 +1,6 @@
+MANIFEST
+apache/apache.conf
+
 *.py[cod]
 
 # C extensions

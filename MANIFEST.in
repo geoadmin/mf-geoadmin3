@@ -1,0 +1,2 @@
+include *.txt *.ini *.cfg
+recursive-include geoadmin *.ico *.png *.css *.gif *.pt *.mako *.js *.html
