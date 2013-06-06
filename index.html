@@ -27,7 +27,7 @@
           <option value="EPSG:4326">WGS 84</option>
         </select>
       </form>
-      <p class="navbar-text">{{mousePositionValue}}</p>
+      <p class="navbar-text">{{mousePositionValue | coordXY}} ({{mousePositionValue | coordXY:2}})</p>
 
     </div>
 

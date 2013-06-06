@@ -1,6 +1,12 @@
 (function() {
   var mapModule = angular.module('app.map');
 
+  mapModule.filter('coordXY', function() {
+    return function(input, precision) {
+      return ol.coordinate.toStringXY(input, precision);
+    }
+  });
+
   mapModule.controller('MapController', ['$scope', function($scope) {
 
     var map = new ol.Map({
@@ -34,8 +40,7 @@
     map.on('mousemove', function(event) {
       // see http://jimhoskins.com/2012/12/17/angularjs-and-apply.html
       $scope.$apply(function() {
-        var coord = transform(event.getCoordinate());
-        $scope.mousePositionValue = coord.toString();
+        $scope.mousePositionValue = transform(event.getCoordinate());
       });
     });
 
