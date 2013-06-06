@@ -21,13 +21,12 @@
     <div class="navbar navbar-fixed-bottom">
       <form class="navbar-form pull-left">
         <select ng-model="mousePositionProjection">
-          <!-- <option value="EPSG:21781">CH1903 / LV03</option> -->
-          <option value="EPSG:3857">Spherical Mercator</option>
+          <option value="EPSG:21781">CH1903 / LV03</option>
           <!-- <option value="EPSG:2056">CH1903+ / LV95</option> -->
           <option value="EPSG:4326">WGS 84</option>
         </select>
       </form>
-      <p class="navbar-text">{{mousePositionValue | coordXY}} ({{mousePositionValue | coordXY:2}})</p>
+      <p class="navbar-text">{{mousePositionValue | coordXY:2}}</p>
 
     </div>
 
