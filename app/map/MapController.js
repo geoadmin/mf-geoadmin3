@@ -1,10 +1,10 @@
 (function() {
   var mapModule = angular.module('app.map');
 
-  var projectionExtent = [485869.5728, 837076.5648, 76443.1884, 299941.7864];
-  var projection = ol.proj.configureProj4jsProjection({
+  var swissExtent = [485869.5728, 837076.5648, 76443.1884, 299941.7864];
+  var swissProjection = ol.proj.configureProj4jsProjection({
     code: 'EPSG:21781',
-    extent: projectionExtent
+    extent: swissExtent
   });
 
   mapModule.filter('coordXY', function() {
@@ -19,8 +19,8 @@
     var map = new ol.Map({
       renderer: ol.RendererHint.CANVAS,
       view: new ol.View2D({
-        projection: projection,
-        center: ol.extent.getCenter(projectionExtent),
+        projection: swissProjection,
+        center: ol.extent.getCenter(swissExtent),
         zoom: 2
       })
     });
@@ -38,11 +38,10 @@
 
     $scope.map = map;
 
-    // mouse position:
-    var mapProjection = map.getView().getProjection();
+    // mouse position
     var transform;
     $scope.$watch('mousePositionProjection', function(code) {
-      transform = ol.proj.getTransform(mapProjection, ol.proj.get(code))
+      transform = ol.proj.getTransform(swissProjection, ol.proj.get(code));
     });
 
     map.on('mousemove', function(event) {
@@ -52,6 +51,6 @@
       });
     });
 
-    $scope.mousePositionProjection = mapProjection.getCode();
+    $scope.mousePositionProjection = swissProjection.getCode();
   }]);
 })();
