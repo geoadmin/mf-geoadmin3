@@ -24,5 +24,21 @@
 
     $scope.map = map;
 
+    // mouse position:
+    var mapProjection = map.getView().getProjection();
+    var transform;
+    $scope.$watch('mousePositionProjection', function(code) {
+      transform = ol.proj.getTransform(mapProjection, ol.proj.get(code))
+    });
+
+    map.on('mousemove', function(event) {
+      // see http://jimhoskins.com/2012/12/17/angularjs-and-apply.html
+      $scope.$apply(function() {
+        var coord = transform(event.getCoordinate());
+        $scope.mousePositionValue = coord.toString();
+      });
+    });
+
+    $scope.mousePositionProjection = mapProjection.getCode();
   }]);
 })();

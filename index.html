@@ -20,13 +20,14 @@
     <div class="map" id="map" app-map="map"></div>
     <div class="navbar navbar-fixed-bottom">
       <form class="navbar-form pull-left">
-        <select>
-          <option value="21781">CH1903 / LV03</option>
-          <option value="2056">CH1903+ / LV95</option>
-          <option value="4326">WGS 84</option>
+        <select ng-model="mousePositionProjection">
+          <!-- <option value="EPSG:21781">CH1903 / LV03</option> -->
+          <option value="EPSG:3857">Spherical Mercator</option>
+          <!-- <option value="EPSG:2056">CH1903+ / LV95</option> -->
+          <option value="EPSG:4326">WGS 84</option>
         </select>
       </form>
-      <p class="navbar-text">mouse position here</p>
+      <p class="navbar-text">{{mousePositionValue}}</p>
 
     </div>
 
