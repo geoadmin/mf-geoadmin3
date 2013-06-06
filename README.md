@@ -13,11 +13,6 @@ or when you're using ssh key (see https://help.github.com/articles/generating-ss
 
     git clone git@github.com:geoadmin/mf-geoadmin3.git
 
-Make sure that all submodules are up to date:
-
-    cd mf-geoadmin3
-    git submodule update --init
-
 Bootstrap your build environment:
 
     python bootstrap.py --version 1.5.2 --distribute --download-base http://pypi.camptocamp.net/distribute-0.6.22_fix-issue-227/ --setup-source http://pypi.camptocamp.net/distribute-0.6.22_fix-issue-227/distribute_setup.py
