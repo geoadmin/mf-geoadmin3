@@ -13,8 +13,7 @@
     };
   });
 
-  mapModule.controller('MapController',
-      ['$scope', '$http', function($scope, $http) {
+  mapModule.controller('MapController', ['$scope', function($scope) {
 
     var map = new ol.Map({
       renderer: ol.RendererHint.CANVAS,
@@ -24,17 +23,6 @@
         zoom: 2
       })
     });
-
-    $http.get('http://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml').success(
-        function(data, status, header, config) {
-          var parser = new ol.parser.ogc.WMTSCapabilities();
-          var capabilities = parser.read(data);
-          var wmtsSourceOptions = ol.source.WMTS.optionsFromCapabilities(
-              capabilities, 'ch.swisstopo.pixelkarte-farbe');
-          var wmtsSource = new ol.source.WMTS(wmtsSourceOptions);
-          var wmtsLayer = new ol.layer.TileLayer({source: wmtsSource});
-          map.addLayer(wmtsLayer);
-        });
 
     $scope.map = map;
 
