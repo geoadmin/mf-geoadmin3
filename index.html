@@ -6,24 +6,35 @@
     <link href="css/app.css" rel="stylesheet" media="screen">
   </head>
   <body ng-controller="MapController">
-
-    <div class="navbar navbar-fixed-top">
-      <form class="navbar-form pull-right" ng-controller="BackgroundLayersController">
-        <select ng-model="currentBackgroundLayer" ng-options="l.value as l.label for l in backgroundLayers">
-        </select>
-      </form>
+    <div class="wrapper">
+      <div class="header navbar navbar-fixed-top">
+        <form class="navbar-form pull-right" ng-controller="BackgroundLayersController">
+          <select ng-model="currentBackgroundLayer" ng-options="l.value as l.label for l in backgroundLayers">
+          </select>
+        </form>
+      </div>
+      <div class="map" id="map" app-map="map"></div>
+      <div class=" footer navbar navbar-fixed-bottom">
+        <form class="navbar-form pull-left">
+          <select ng-model="mousePositionProjection">
+            <option value="EPSG:21781">CH1903 / LV03</option>
+            <!-- <option value="EPSG:2056">CH1903+ / LV95</option> -->
+            <option value="EPSG:4326">WGS 84</option>
+          </select>
+        </form>
+        <p class="navbar-text">{{mousePositionValue | coordXY:2}}</p>
+      </div>
     </div>
-    <div class="map" id="map" app-map="map"></div>
-    <div class="navbar navbar-fixed-bottom">
-      <form class="navbar-form pull-left">
-        <select ng-model="mousePositionProjection">
-          <option value="EPSG:21781">CH1903 / LV03</option>
-          <!-- <option value="EPSG:2056">CH1903+ / LV95</option> -->
-          <option value="EPSG:4326">WGS 84</option>
-        </select>
-      </form>
-      <p class="navbar-text">{{mousePositionValue | coordXY:2}}</p>
 
+    <div class="pulldown">
+      <div class="content collapse in">
+
+      </div>
+      <div class="text-center">
+        <button type="button" data-toggle="collapse" data-target=".pulldown .content" class="toggle btn btn-default">
+          <span class="pulldown-close">close</span>
+          <span class="pulldown-open">open</span>
+      </div>
     </div>
 
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
