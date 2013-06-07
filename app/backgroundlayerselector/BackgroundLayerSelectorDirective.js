@@ -1,7 +1,7 @@
 (function() {
-  var mapModule = angular.module('app.backgroundlayers');
+  var backgroundLayerSelectorModule = angular.module('app.backgroundlayerselector');
 
-  mapModule.directive('appBackgroundLayerSelector',
+  backgroundLayerSelectorModule.directive('appBackgroundLayerSelector',
       ['$parse', '$http', function($parse, $http) {
     return {
       restrict: 'A',
