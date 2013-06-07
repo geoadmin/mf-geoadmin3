@@ -18,6 +18,13 @@
 /lib
 /lib64
 
+# Apache
+apache/*.conf
+
+# Generated files
+*.ini
+MANIFEST
+
 # Installer logs
 pip-log.txt
 
