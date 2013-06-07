@@ -9,8 +9,10 @@
     <div class="wrapper">
       <div class="header navbar navbar-fixed-top">
         <form class="navbar-form pull-right" ng-controller="BackgroundLayersController">
-          <select ng-model="currentBackgroundLayer" ng-options="l.value as l.label for l in backgroundLayers">
-          </select>
+          <div x-app-background-layer-selector
+               x-app-background-layer-selector-map="map"
+               x-app-background-layer-selector-wmts-url="wmtsUrl"
+               x-app-background-layer-selector-wmts-layers="wmtsLayers"></div>
         </form>
       </div>
       <div class="map" id="map" app-map="map"></div>
@@ -46,6 +48,7 @@
     <script src="app/map/MapDirective.js"></script>
     <script src="app/map/MapController.js"></script>
     <script src="app/backgroundlayers/BackgroundLayersModule.js"></script>
+    <script src="app/backgroundlayers/BackgroundLayersDirective.js"></script>
     <script src="app/backgroundlayers/BackgroundLayersController.js"></script>
     <script src="app/print/PrintModule.js"></script>
     <script src="app/print/PrintController.js"></script>
