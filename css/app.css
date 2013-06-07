@@ -1,3 +1,5 @@
+@import url(bootstrap.css);
+
 .map {
     position: absolute;
     width: 100%;
