@@ -9,7 +9,11 @@
 
   mapModule.filter('coordXY', function() {
     return function(input, precision) {
-      return ol.coordinate.toStringXY(input, precision);
+      if (input) {
+        return ol.coordinate.toStringXY(input, precision);
+      } else {
+        return input;
+      }
     };
   });
 
@@ -32,10 +36,14 @@
       transform = ol.proj.getTransform(swissProjection, ol.proj.get(code));
     });
 
-    map.on('mousemove', function(event) {
+    map.on(['mousemove', 'mouseout'], function(event) {
       // see http://jimhoskins.com/2012/12/17/angularjs-and-apply.html
       $scope.$apply(function() {
-        $scope.mousePositionValue = transform(event.getCoordinate());
+        if (event.type === 'mouseout') {
+          $scope.mousePositionValue = undefined;
+        } else {
+          $scope.mousePositionValue = transform(event.getCoordinate());
+        }
       });
     });
 
