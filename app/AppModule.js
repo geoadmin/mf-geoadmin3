@@ -1,6 +1,7 @@
 (function() {
   var appModule = angular.module('app', [
     'app.map',
+    'app.mouseposition',
     'app.backgroundlayerselector',
     'app.print'
   ]);

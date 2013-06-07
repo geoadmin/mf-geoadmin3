@@ -17,12 +17,12 @@
         </form>
       </div>
       <div class="map" id="map" x-app-map="map"></div>
-      <div class=" footer navbar navbar-fixed-bottom">
-        <form class="navbar-form pull-left">
-          <select ng-model="mousePositionProjection">
-            <option value="EPSG:21781">CH1903 / LV03</option>
-            <!-- <option value="EPSG:2056">CH1903+ / LV95</option> -->
-            <option value="EPSG:4326">WGS 84</option>
+      <div class=" footer navbar navbar-fixed-bottom"
+           ng-controller="MousePositionController">
+           <form class="navbar-form pull-left">
+          <select
+            ng-model="mousePositionProjection"
+            ng-options="p.value as p.label for p in mousePositionProjections">
           </select>
         </form>
         <p class="navbar-text">{{mousePositionValue | coordXY:2}}</p>
@@ -48,6 +48,9 @@
     <script src="app/map/MapModule.js"></script>
     <script src="app/map/MapDirective.js"></script>
     <script src="app/map/MapController.js"></script>
+    <script src="app/mouseposition/MousePositionModule.js"></script>
+    <script src="app/mouseposition/MousePositionFilter.js"></script>
+    <script src="app/mouseposition/MousePositionController.js"></script>
     <script src="app/backgroundlayerselector/BackgroundLayerSelectorModule.js"></script>
     <script src="app/backgroundlayerselector/BackgroundLayerSelectorDirective.js"></script>
     <script src="app/backgroundlayerselector/BackgroundLayerSelectorController.js"></script>
