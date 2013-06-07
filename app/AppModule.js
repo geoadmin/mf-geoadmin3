@@ -1,5 +1,9 @@
 (function() {
-  var appModule = angular.module('app', ['app.map', 'app.backgroundlayers']);
+  var appModule = angular.module('app', [
+    'app.map',
+    'app.backgroundlayers',
+    'app.print'
+  ]);
 
   // Configure the $http service to remove the X-Requested-With
   // header. This is to be able to work with CORS. See
