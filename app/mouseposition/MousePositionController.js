@@ -23,6 +23,9 @@
     });
 
     $scope.map.on(['mousemove', 'mouseout'], function(event) {
+      // FIXME Here we call $apply on each mousemove, which does not sound
+      // good at all. We should either throttle the updates, or make an
+      // exception and directly update the DOM ourselves.
       $scope.$apply(function() {
         $scope.mousePositionValue = event.type === 'mouseout' ?
             undefined : transform(event.getCoordinate());
