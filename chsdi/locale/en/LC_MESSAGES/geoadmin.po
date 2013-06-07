@@ -1,0 +1,79 @@
+# English translations for chsdi.
+# Copyright (C) 2010 ORGANIZATION
+# This file is distributed under the same license as the chsdi project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: chsdi 0.1\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2010-08-03 12:20+0200\n"
+"PO-Revision-Date: 2010-09-02 10:50+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 0.9.5\n"
+
+msgid "Datenbezug"
+msgstr "Order data"
+
+msgid "Datenstand"
+msgstr "Data status"
+
+msgid "Gueltiger Massstabsbereich"
+msgstr "Valid scale range"
+
+msgid "Information"
+msgstr "Information"
+
+msgid "Legend"
+msgstr "Legend"
+
+msgid "Metadaten"
+msgstr "Metadata"
+
+msgid "Thematisches Geoportal"
+msgstr "Thematic geoportal"
+
+msgid "WMS Dienst"
+msgstr "WMS service"
+
+msgid "ch.bafu.bundesinventare-bln"
+msgstr "ILNM"
+
+msgid "ch.bafu.bundesinventare-jagdbanngebiete"
+msgstr "Swiss game reserves"
+
+msgid "flaeche_ha"
+msgstr "Area [ha]"
+
+msgid "geobasisdatensatz"
+msgstr "Basic geodata ID"
+
+msgid "gesamtflaeche_ha"
+msgstr "Total area [ha]"
+
+msgid "kategorie"
+msgstr "Category"
+
+msgid "layer_geocat_text"
+msgstr "Link to geocat.ch"
+
+msgid "layer_url_download_text"
+msgstr "Link for download"
+
+msgid "layer_url_portal_text"
+msgstr "Link to portal"
+
+msgid "objektname"
+msgstr "Object name"
+
+msgid "objektnr"
+msgstr "Object Nr."
+
+msgid "wms_resource_text"
+msgstr "Link to WMS"
+

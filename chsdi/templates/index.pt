@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+
+    <style type="text/css">
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+    <title>mf-chsdi3 RE 3</title>
+  </head>
+  <body>
+      <h1 id="title">Python translations</h1>
+          <a href="testi18n?lang=de">Default to de</a> <br>
+          <a href="testi18n?lang=en">En to en</a> <br>
+          <a href="testi18n?lang=toto">If not in available languages to de</a> <br>
+      <h1 id="title">Services</h1>
+      <h2 id="checkers">Checkers</h2>
+          <a href="checker_home">Checker for home</a> <br>
+          
+      <h2 id="mapservices">Map Services</h2> 
+          <h3>Topics</h3>
+          <a href="rest/services/bafu/MapServer">Topic (bafu)</a> <br>
+          <a href="rest/services/bafu/MapServer?searchText=bern">Topic with fulltext search on the column "volltextsuche"</a> <br>
+          <h3>Identify</h3>
+          <a href="rest/services/bafu/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=545000,145000,555000,155000&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bafu.bundesinventare-bln">Identify using an envelope (bbox)</a> <br>
+          <a href="rest/services/bafu/MapServer/identify?geometryType=esriGeometryPoint&geometry=653246,173129&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=5&layers=all:ch.bafu.bundesinventare-bln">Identify using a simple point and a tolerance of 5 pixels</a> <br>
+          <a href='/rest/services/bafu/MapServer/identify?geometryType=esriGeometryPoint&geometry={"x":653246,"y":173129,"spatialReference":{"wkid":21781}}&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=5&layers=all:ch.bafu.bundesinventare-bln'>Identify using a complexe point  {x:, y:, spatialReference: } </a> <br>
+          <a href='/rest/services/bafu/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=630000,245000,645000,265000&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=5&layers=all:ch.bafu.bundesinventare-bln'>Identify using an bbox= </a> <br>
+          
+          <a href='/rest/services/bafu/MapServer/identify?geometryType=esriGeometryPolygon&geometry={"rings"%20:%20[[%20[630000,%20245000],%20[645000,245000],%20[645000,265000],%20[630000,265000],%20[630000,%20245000]%20]],"spatialReference"%20:%20{"wkid"%20:%2021781}}&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bafu.bundesinventare-bln'>Identify using a polygon</a> <br>
+          <a href="rest/services/bafu/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=630000.5,200000,631000,201000.5&imageDisplay=500,600,96&layers=all:ch.bafu.bundesinventare-bln&mapExtent=548945.5,147956,549402,148103.5&tolerance=1">Identify (default to esri geojson)</a> <br>
+          <a href="rest/services/bafu/MapServer/identify?geometryFormat=geojson&geometryType=esriGeometryEnvelope&geometry=630000.5,200000,631000,201000.5&imageDisplay=500,600,96&layers=all:ch.bafu.bundesinventare-bln&mapExtent=548945.5,147956,549402,148103.5&tolerance=1">Identify (requesting geometryFormat=geojson)</a> <br>
+           <a href="/rest/services/bafu/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=630000,245000,645000,265000&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=5&layers=all:1000&eturnGeometry=false">Identify, using an esriId (integer)</a> <br>
+          <a href="rest/services/bafu/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all">Identify - get all the available models for a given map (topic)</a> <br>
+          <a href="rest/services/bafu/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bafu.bundesinventare-bln&searchText=pied">Identify with full text search on the column "displayField"</a> <br>
+          <a href="rest/services/bafu/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=546000,148000,548000,151000&imageDisplay=500,350,96&mapExtent=545132.87362333,147068.69380758,550132.87362333,150568.69380758&tolerance=1&layers=all&callback=cb">Identify - example with callback</a> <br>
+          <h3>Varia</h3>
+          <a href="rest/services/bafu/MapServer/ch.bafu.bundesinventare-bln/362">Get Feature with id 362</a> <br>
+          <a href="rest/services/bafu/MapServer/ch.bafu.bundesinventare-bln/362/htmlpopup">Get Html Popup Ex 1</a> <br>
+          <a href="rest/services/bafu/MapServer/ch.bafu.bundesinventare-jagdbanngebiete/145/htmlpopup?lang=fr&cb=cb">Get Html Popup Ex 2 with callback</a> <br>
+          <a href="rest/services/bafu/MapServer/ch.bafu.bundesinventare-bln/getlegend">Get Legend Ex 1</a> <br>
+          <a href="rest/services/bafu/MapServer/ch.bafu.bundesinventare-jagdbanngebiete/getlegend?lang=fr&cb=cb">Get Legend Ex 2 with callback</a> <br>
+          <a href="rest/services/height?easting=600000&northing=200000">Height example</a> <br>
+          <a href='rest/services/profile.json?geom={"type"%3A"LineString"%2C"coordinates"%3A[[550050%2C206550]%2C[556950%2C204150]%2C[561050%2C207950]]}&elevation_models=DTM25,DTM2'>Profile in json format</a> <br>
+          <a href='rest/services/profile.csv?geom={"type"%3A"LineString"%2C"coordinates"%3A[[550050%2C206550]%2C[556950%2C204150]%2C[561050%2C207950]]}&elevation_models=DTM25,DTM2'>Profile in csv format</a> <br>
+          <a href='rest/services/geoadmin/1.0.0/WMTSCapabilities.xml'>WMTS capabilities geoadmin</a> <br>
+          
+      <h2 id="search">Geocoding</h2>
+          <a href="rest/services/GeocodeServer/findaddresscandidates?lang=fr&all=maisonnex"><strong>Toponomy ('all' means all services)</strong>: rest/services/GeocodeServer/findaddresscandidates?lang=fr&all=maisonnex</a> <br />
+          <a href="rest/services/GeocodeServer/findaddresscandidates?all=1290"><strong>Postcode:</strong> rest/services/GeocodeServer/findaddresscandidates?all=1290</a> <br />
+          <a href="rest/services/GeocodeServer/findaddresscandidates?all=dorfstr"><strong>Addresses:</strong> rest/services/GeocodeServer/findaddresscandidates?all=dorfstr</a> <br />
+          <a href="rest/services/GeocodeServer/findaddresscandidates?egid=867194"><strong>Addresses with EGID:</strong> rest/services/GeocodeServer/findaddresscandidates?egid=867194</a> <br />
+          <a href="rest/services/GeocodeServer/findaddresscandidates?cities=5514&all=saug"><strong>Addresses with city number (no need for bfsnr parameter. if number, bfsnr is asusmed) :</strong> rest/services/GeocodeServer/findaddresscandidates?cities=5514&all=saug</a> <br />
+          <a href="rest/services/GeocodeServer/findaddresscandidates?swissnames=Beau"><strong>Search only swissnames:</strong> rest/services/GeocodeServer/findaddresscandidates?swissnames=Beau</a> <br />
+          <a href="rest/services/GeocodeServer/findaddresscandidates?address=Beaulieustr"><strong>Search for address:</strong> rest/services/GeocodeServer/findaddresscandidates?address=Beaulieustr</a> <br />
+         <h2>Ogcproxy</h2>
+         <a href="ogcproxy?url=http://wms.pcn.minambiente.it/ogc?map=/ms_ogc/WMS_v1.3/raster/IGM_100000.map&VERSION=1.3.0&SERVICE=WMS&REQUEST=GetCapabilities">Get
+         Capabilities using ogcproxy</a>
+          <h3 id="todo geocoding">TODO geocoding</h3>
+              - correct formate to return (see specs) <br />
+              - handle cb parameter <br />
+              - bsfnr (in cities parameters) in combination with all parameter <br />
+              - correct geometry to return (geojson and esrigeojson) <br />
+              - layer search (if needed...) <br />
+              - filter results if multiple addressfields are provided (mix of swissnames, cities, address, etc etc) <br />
+  </body>
+</html>

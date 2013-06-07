@@ -1,0 +1,79 @@
+# German translations for chsdi.
+# Copyright (C) 2010 ORGANIZATION
+# This file is distributed under the same license as the chsdi project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: chsdi 0.1\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2010-08-03 12:20+0200\n"
+"PO-Revision-Date: 2010-09-02 10:50+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: de <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 0.9.5\n"
+
+msgid "Datenbezug"
+msgstr "Datenbezug"
+
+msgid "Datenstand"
+msgstr "Datenstand"
+
+msgid "Gueltiger Massstabsbereich"
+msgstr "Gültiger Massstabsbereich"
+
+msgid "Information"
+msgstr "Informationen"
+
+msgid "Legend"
+msgstr "Legende"
+
+msgid "Metadaten"
+msgstr "Metadaten"
+
+msgid "Thematisches Geoportal"
+msgstr "Thematisches Geoportal"
+
+msgid "WMS Dienst"
+msgstr "WMS Dienst"
+
+msgid "ch.bafu.bundesinventare-bln"
+msgstr "BLN"
+
+msgid "ch.bafu.bundesinventare-jagdbanngebiete"
+msgstr "Jagdbanngebiete"
+
+msgid "flaeche_ha"
+msgstr "Fläche [ha]"
+
+msgid "geobasisdatensatz"
+msgstr "ID Geobasisdatensatz"
+
+msgid "gesamtflaeche_ha"
+msgstr "Gesamtfläche [ha]"
+
+msgid "kategorie"
+msgstr "Kategorie"
+
+msgid "layer_geocat_text"
+msgstr "Link zu geocat.ch"
+
+msgid "layer_url_download_text"
+msgstr "Link für Datenbezug"
+
+msgid "layer_url_portal_text"
+msgstr "Link zum Fachportal"
+
+msgid "objektname"
+msgstr "Objektname"
+
+msgid "objektnr"
+msgstr "Objektnr."
+
+msgid "wms_resource_text"
+msgstr "Link zum WMS"
+
