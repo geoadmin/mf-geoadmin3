@@ -1,5 +1,9 @@
 @import url(bootstrap.css);
 
+body {
+    overflow: hidden;
+}
+
 .wrapper {
     position: absolute;
     width: 100%;
@@ -32,6 +36,23 @@
     left: 0;
     top: 89px;
     width: 320px;
+}
+
+.pulldown .content .accordion-group {
+    margin: 0;
+    border: none;
+    border-radius: 0;
+}
+.pulldown .content .accordion-toggle {
+    background-color: #999;
+    color: #fff;
+}
+.pulldown .content .accordion-toggle:hover {
+    text-decoration: none;
+}
+
+.pulldown .content .accordion-inner {
+    background-color: #fff;
 }
 
 .pulldown .toggle {
