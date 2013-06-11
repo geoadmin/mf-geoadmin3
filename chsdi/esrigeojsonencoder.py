@@ -1,7 +1,7 @@
+# -*- coding: utf-8 -*-
 
-import datetime
 import decimal
-import sys
+import datetime
 import functools
 from operator import add
 
@@ -11,11 +11,6 @@ from geojson.codec import GeoJSONEncoder
 
 from papyrus.geo_interface import GeoInterface
 from geojson.crs import Named
-
-from sqlalchemy.ext.associationproxy import _AssociationList
-
-
-
 
 
 class EsriGeoJSONEncoder(GeoJSONEncoder):
@@ -84,9 +79,7 @@ class EsriGeoJSONEncoder(GeoJSONEncoder):
             
             if isinstance(obj, (geojson.Point)):
                ret = dict(obj)
-               
-               point = coordinates 
-               mapPointDict =  (lambda s, x, y: {'x': x, 'y': y})
+ 
                ret['x'], ret['y'] = coordinates
                ret['type'] = 'esriGeometryPoint'
                

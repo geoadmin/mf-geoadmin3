@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from sqlalchemy import Column
-from sqlalchemy import Unicode
-from sqlalchemy import Integer
-from sqlalchemy import Text 
+from sqlalchemy import Column, Text 
 
 from chsdi.models import bases
 

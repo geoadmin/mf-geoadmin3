@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+from sqlalchemy import Column, Text, Integer
+from geoalchemy import GeometryColumn, Geometry
+
 from chsdi.models import  *
 from chsdi.models.vector import Vector
 
@@ -12,9 +15,9 @@ class SwissSearch(Base, Vector):
 
     id = Column('gid', Integer, primary_key=True)
     rank = Column('rank', Integer)
-    the_geom = Column(Geometry)
-    geom_point = Column('the_geom_point', Geometry)
-    geom_poly = Column('the_geom_poly', Geometry)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    geom_point = GeometryColumn('the_geom_point', Geometry(dimension=2, srid=21781))
+    geom_poly = GeometryColumn('the_geom_poly', Geometry(dimension=2, srid=21781))
 
     def json(self, translate, rawjson=False, nogeom=False):
         o = {'service': '', 

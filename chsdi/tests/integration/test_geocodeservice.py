@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from chsdi.tests.integration import TestsBase
-from pyramid import testing
 
 class TestGeoCodeServiceView(TestsBase):
 
@@ -10,8 +9,8 @@ class TestGeoCodeServiceView(TestsBase):
         self.failUnless(resp.content_type == 'application/json')
 
     def test_find_address_wrong_and_missing_parameters(self):
-        resp = self.testapp.get('/rest/services/GeocodeServer/findaddresscandidates', status=400)
-        resp = self.testapp.get('/rest/services/GeocodeServer/findaddresscandidates?somestupid=hoho', status=400)
+        self.testapp.get('/rest/services/GeocodeServer/findaddresscandidates', status=400)
+        self.testapp.get('/rest/services/GeocodeServer/findaddresscandidates?somestupid=hoho', status=400)
 
     def test_find_all_parameters(self):
         resp = self.testapp.get('/rest/services/GeocodeServer/findaddresscandidates?all=maisonnex', status=200)

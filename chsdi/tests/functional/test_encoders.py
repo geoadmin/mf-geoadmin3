@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
+
 import unittest
 
-from pyramid import testing
 
 class Test_EsriGeoJSON(unittest.TestCase):
     def _callFUT(self, **kwargs):

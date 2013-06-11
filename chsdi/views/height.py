@@ -4,7 +4,6 @@ from chsdi.lib.validation import HeightValidation
 from chsdi.lib.raster.georaster import GeoRaster
 
 from pyramid.view import view_config
-import math
 import logging
 
 log = logging.getLogger(__name__)

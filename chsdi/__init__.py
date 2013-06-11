@@ -10,8 +10,6 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from chsdi.renderers import EsriJSON, CSVRenderer
 from chsdi.models import initialize_sql
 from papyrus.renderers import GeoJSON
-from chsdi.renderers import EsriJSON
-from chsdi.models import initialize_sql
 
 def db(request):
     maker = request.registry.dbmaker
