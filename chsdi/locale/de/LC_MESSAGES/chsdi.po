@@ -35,11 +35,41 @@ msgstr "Legende"
 msgid "Metadaten"
 msgstr "Metadaten"
 
+#. TODO
+msgid "PDF_Level_1_Name"
+msgstr "PDF_Level_1_Name"
+
+#. TODO
+msgid "PDF_Level_2_Nam"
+msgstr "PDF_Level_2_Nam"
+
+#. TODO
+msgid "PDF_Level_3_Name"
+msgstr "PDF_Level_3_Name"
+
 msgid "Thematisches Geoportal"
 msgstr "Thematisches Geoportal"
 
 msgid "WMS Dienst"
 msgstr "WMS Dienst"
+
+msgid "ch.astra.ivs-nat"
+msgstr "IVS National"
+
+msgid "ch.astra.ivs-nat"
+msgstr "IVS National"
+
+msgid "ch.astra.ivs-nat-verlaeufe"
+msgstr "IVS historischer Verlauf"
+
+msgid "ch.astra.ivs-nat-verlaeufe"
+msgstr "IVS historischer Verlauf"
+
+msgid "ch.astra.ivs-reg_loc"
+msgstr "IVS Regional und Lokal"
+
+msgid "ch.astra.ivs-reg_loc"
+msgstr "IVS Regional und Lokal"
 
 msgid "ch.bafu.bundesinventare-bln"
 msgstr "BLN"
@@ -50,11 +80,44 @@ msgstr "Jagdbanngebiete"
 msgid "flaeche_ha"
 msgstr "Fläche [ha]"
 
+msgid "gemkanton"
+msgstr "Kanton"
+
 msgid "geobasisdatensatz"
 msgstr "ID Geobasisdatensatz"
 
 msgid "gesamtflaeche_ha"
 msgstr "Gesamtfläche [ha]"
+
+msgid "ivs_documentation"
+msgstr "Streckenbeschrieb"
+
+msgid "ivs_nat_abschnitt"
+msgstr "Abschnitt"
+
+msgid "ivs_nat_historischen"
+msgstr "Geschichte"
+
+msgid "ivs_nat_linienfuehrung"
+msgstr "Linienführung"
+
+msgid "ivs_nat_morphologischen"
+msgstr "Gelände"
+
+msgid "ivs_nat_strecke"
+msgstr "Strecke"
+
+msgid "ivs_objekt"
+msgstr "IVS-Objekt"
+
+msgid "ivs_signatur"
+msgstr "Substanzgrad"
+
+msgid "ivs_slabedeutung"
+msgstr "Bedeutung nach NHG"
+
+msgid "ivs_slaname"
+msgstr "Strecke"
 
 msgid "kategorie"
 msgstr "Kategorie"

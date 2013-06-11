@@ -2,12 +2,11 @@
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import engine_from_config
-from sqlalchemy import Column, Text, Integer, Unicode
 
 from geoalchemy import Geometry
 from papyrus.geo_interface import GeoInterface
 
-dbs = ['bod','bafu','search','stopo']
+dbs = ['bod','bafu', 'uvek', 'search','stopo']
 
 engines = {}
 bases = {}

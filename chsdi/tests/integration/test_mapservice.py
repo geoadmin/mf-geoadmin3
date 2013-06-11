@@ -1,28 +1,23 @@
 # -*- coding: utf-8 -*-
 
 from chsdi.tests.integration import TestsBase
-from pyramid import testing
 
 class TestMapServiceView(TestsBase):
 
     def test_metadata_no_parameters(self):
-        resp = self.testapp.get('/rest/services/chsdi/MapServer', status=200)
+        resp = self.testapp.get('/rest/services/geoadmin/MapServer', status=200)
         self.failUnless(resp.content_type == 'application/json')
 
     def test_metadata_with_searchtext(self):
-        resp = self.testapp.get('/rest/services/chsdi/MapServer', params={'searchText':'wasser'}, status=200)
+        resp = self.testapp.get('/rest/services/geoadmin/MapServer', params={'searchText':'wasser'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
 
     def test_metadata_with_cb(self):
-        resp = self.testapp.get('/rest/services/chsdi/MapServer', params={'cb':'cb'}, status=200)
-        self.failUnless(resp.content_type == 'application/javascript')
-
-    def test_metadata_with_cb(self):
-        resp = self.testapp.get('/rest/services/chsdi/MapServer', params={'cb':'cb'}, status=200)
+        resp = self.testapp.get('/rest/services/geoadmin/MapServer', params={'cb':'cb'}, status=200)
         self.failUnless(resp.content_type == 'application/javascript')
 
     def test_identify_no_parameters(self):
-        resp = self.testapp.get('/rest/services/chsdi/MapServer/identify', status=400)
+        self.testapp.get('/rest/services/geoadmin/MapServer/identify', status=400)
 
     def test_identify_without_geometry(self):
         params = {'geometryType': 'esriGeometryEnvelope', 'imageDisplay': '500,600,96', 'mapExtent': '548945.5,147956,549402,148103.5', 'tolerance': '1', 'layers': 'all'}
@@ -76,6 +71,10 @@ class TestMapServiceView(TestsBase):
     def test_getfeature_wrong_idlayer(self):
         resp = self.testapp.get('/rest/services/bafu/MapServer/toto/362', status=400)
         resp.mustcontain('Please provide a valid layer Id')
+
+    def test_getfeature_wrong_idfeature(self):
+        resp = self.testapp.get('/rest/services/bafu/MapServer/ch.bafu.bundesinventare-bln/0', status=400)
+        resp.mustcontain('No feature with id')
 
     def test_getfeature_valid(self):
         resp = self.testapp.get('/rest/services/bafu/MapServer/ch.bafu.bundesinventare-bln/362', status=200)

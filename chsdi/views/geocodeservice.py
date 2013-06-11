@@ -2,9 +2,7 @@
 
 from pyramid.view import view_config
 
-from chsdi.models import models_from_name
 from chsdi.models.vector.swisssearch import SwissSearch
-from chsdi.models.bod import get_bod_model, computeHeader
 from chsdi.lib.helpers import locale_negotiator
 
 import pyramid.httpexceptions as exc

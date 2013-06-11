@@ -35,11 +35,41 @@ msgstr "Légende"
 msgid "Metadaten"
 msgstr "Métadonnées"
 
+#. TODO
+msgid "PDF_Level_1_Name"
+msgstr "PDF_Level_1_Name"
+
+#. TODO
+msgid "PDF_Level_2_Nam"
+msgstr "PDF_Level_2_Nam"
+
+#. TODO
+msgid "PDF_Level_3_Name"
+msgstr "PDF_Level_3_Name"
+
 msgid "Thematisches Geoportal"
 msgstr "Géoportail thématique"
 
 msgid "WMS Dienst"
 msgstr "Service WMS"
+
+msgid "ch.astra.ivs-nat"
+msgstr "IVS National"
+
+msgid "ch.astra.ivs-nat"
+msgstr "IVS National"
+
+msgid "ch.astra.ivs-nat-verlaeufe"
+msgstr "IVS Tracé sans substance"
+
+msgid "ch.astra.ivs-nat-verlaeufe"
+msgstr "IVS Tracé sans substance"
+
+msgid "ch.astra.ivs-reg_loc"
+msgstr "IVS régional et local"
+
+msgid "ch.astra.ivs-reg_loc"
+msgstr "IVS régional et local"
 
 msgid "ch.bafu.bundesinventare-bln"
 msgstr "IFP"
@@ -50,11 +80,44 @@ msgstr "Districts francs"
 msgid "flaeche_ha"
 msgstr "Surface [ha]"
 
+msgid "gemkanton"
+msgstr "Canton"
+
 msgid "geobasisdatensatz"
 msgstr "ID Géodonnées de base"
 
 msgid "gesamtflaeche_ha"
 msgstr "Surface totale [ha]"
+
+msgid "ivs_documentation"
+msgstr "Documentation"
+
+msgid "ivs_nat_abschnitt"
+msgstr "Segment"
+
+msgid "ivs_nat_historischen"
+msgstr "Histoire"
+
+msgid "ivs_nat_linienfuehrung"
+msgstr "Tronçon"
+
+msgid "ivs_nat_morphologischen"
+msgstr "Terrain"
+
+msgid "ivs_nat_strecke"
+msgstr "Itinéraire"
+
+msgid "ivs_objekt"
+msgstr "Objet IVS"
+
+msgid "ivs_signatur"
+msgstr "Substance"
+
+msgid "ivs_slabedeutung"
+msgstr "Importance (LPN)"
+
+msgid "ivs_slaname"
+msgstr "Tracé"
 
 msgid "kategorie"
 msgstr "Catégorie"

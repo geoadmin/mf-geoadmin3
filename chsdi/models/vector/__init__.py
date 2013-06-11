@@ -1,13 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from sys import maxint
-from shapely.geometry.point import Point
-from shapely.geometry.linestring import LineString
-from shapely.geometry.polygon import Polygon
 from shapely.geometry import asShape
 from geoalchemy import WKBSpatialElement, functions
 
-from geoalchemy import GeometryColumn, Geometry
 from papyrus.geo_interface import GeoInterface
 from geojson import Feature
 from chsdi.esrigeojsonencoder import loads
@@ -33,10 +29,6 @@ class Vector(GeoInterface):
     @property
     def srid(self):
         return self.geometry_column().type.srid
-
-    @property
-    def geometry22(self):
-        return loads(binascii.hexlify(session.scalar(s.geom.wkb)))
 
     @property
     def __geo_interface__(self):
@@ -79,6 +71,13 @@ class Vector(GeoInterface):
     @classmethod
     def display_field(cls):
         return cls.__table__.columns[cls.__displayFieldName__] if cls.__displayFieldName__ is not None else ''
+
+    @classmethod
+    def queryable_attributes(cls):
+        if hasattr(cls, '__queryable_attributes__'):
+            return [cls.__table__.columns[col] for col in cls.__queryable_attributes__]
+        else:
+            return [None]
 
     @classmethod
     def geometry_column(cls):

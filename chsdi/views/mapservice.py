@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from pyramid.view import view_config
+import pyramid.httpexceptions as exc
+from sqlalchemy import or_
 
 from chsdi.models import models_from_name
 from chsdi.models.bod import get_bod_model, computeHeader
@@ -20,6 +22,7 @@ class MapService(MapServiceValidation):
         self.cbName = request.params.get('cb')
         self.lang = locale_negotiator(request)
         self.searchText = request.params.get('searchText')
+        self.geodataStaging = request.registry.settings['geodata_staging']
         self.translate = request.translate
 
     @view_config(route_name='mapservice', renderer='jsonp')    
@@ -27,7 +30,8 @@ class MapService(MapServiceValidation):
         model = get_bod_model(self.lang)
         results = computeHeader(self.mapName)
         query = self.request.db.query(model).filter(model.maps.ilike('%%%s%%' % self.mapName))
-        query = self.fullTextSearch(query, model.fullTextSearch)
+        query = self.geodataStagingFilter(query, model.staging)
+        query = self.fullTextSearch(query, [model.fullTextSearch])
         layers = [layer.layerMetadata() for layer in query]
         results['layers'].append(layers)
         return results
@@ -102,15 +106,25 @@ class MapService(MapServiceValidation):
             feature = [f.__geo_interface__ for f in query]
         else:
             feature = [f.interface for f in query]
-        feature = {'feature': feature.pop()} if len(feature) > 0 else {'feature': []}
+        feature = {'feature': feature.pop()} if len(feature) > 0 else exc.HTTPBadRequest('No feature with id %s' % idfeature)
         template = model.__template__
         return feature, template
 
     def fullTextSearch(self, query, orm_column):
-        query = query.filter(
-            orm_column.ilike('%%%s%%' % self.searchText)
-        ) if self.searchText is not None else query
+        filters = []
+        for col in orm_column:
+            if col is not None:
+                filters.append(col.ilike('%%%s%%' % self.searchText))
+        query = query.filter(or_(*filters)) if self.searchText is not None else query
         return query
+
+    def geodataStagingFilter(self, query, orm_column):
+        if self.geodataStaging == 'test':
+            return query
+        elif self.geodataStaging == 'integration':
+            return query.filter(or_(orm_column == self.geodataStaging, orm_column == 'prod'))
+        elif self.geodataStaging == 'prod':
+            return query.filter(orm_column == self.geodataStaging)
 
     def getFeaturesFromQueries(self, queries):
        for query in queries:
@@ -128,7 +142,7 @@ class MapService(MapServiceValidation):
                     self.tolerance
                 )
                 query = self.request.db.query(model).filter(geom_filter)
-                query = self.fullTextSearch(query, model.display_field())
+                query = self.fullTextSearch(query, model.queryable_attributes())
                 yield query
 
     def getModelsFromLayerName(self, layers_param):

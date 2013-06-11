@@ -35,11 +35,41 @@ msgstr "Legend"
 msgid "Metadaten"
 msgstr "Metadata"
 
+#. TODO
+msgid "PDF_Level_1_Name"
+msgstr "PDF_Level_1_Name"
+
+#. TODO
+msgid "PDF_Level_2_Nam"
+msgstr "PDF_Level_2_Nam"
+
+#. TODO
+msgid "PDF_Level_3_Name"
+msgstr "PDF_Level_3_Name"
+
 msgid "Thematisches Geoportal"
 msgstr "Thematic geoportal"
 
 msgid "WMS Dienst"
 msgstr "WMS service"
+
+msgid "ch.astra.ivs-nat"
+msgstr "IHR national"
+
+msgid "ch.astra.ivs-nat"
+msgstr "IHR national"
+
+msgid "ch.astra.ivs-nat-verlaeufe"
+msgstr "IHR national without substance"
+
+msgid "ch.astra.ivs-nat-verlaeufe"
+msgstr "IHR national without substance"
+
+msgid "ch.astra.ivs-reg_loc"
+msgstr "IHR regional & local"
+
+msgid "ch.astra.ivs-reg_loc"
+msgstr "IHR regional & local"
 
 msgid "ch.bafu.bundesinventare-bln"
 msgstr "ILNM"
@@ -50,11 +80,44 @@ msgstr "Swiss game reserves"
 msgid "flaeche_ha"
 msgstr "Area [ha]"
 
+msgid "gemkanton"
+msgstr "Canton"
+
 msgid "geobasisdatensatz"
 msgstr "Basic geodata ID"
 
 msgid "gesamtflaeche_ha"
 msgstr "Total area [ha]"
+
+msgid "ivs_documentation"
+msgstr "Documentation"
+
+msgid "ivs_nat_abschnitt"
+msgstr "Segment"
+
+msgid "ivs_nat_historischen"
+msgstr "History"
+
+msgid "ivs_nat_linienfuehrung"
+msgstr "Sections"
+
+msgid "ivs_nat_morphologischen"
+msgstr "Terrain"
+
+msgid "ivs_nat_strecke"
+msgstr "Route"
+
+msgid "ivs_objekt"
+msgstr "IVS-Objekt"
+
+msgid "ivs_signatur"
+msgstr "Substance"
+
+msgid "ivs_slabedeutung"
+msgstr "Importance LPN"
+
+msgid "ivs_slaname"
+msgstr "Route"
 
 msgid "kategorie"
 msgstr "Category"

@@ -13,7 +13,7 @@
         height: 100%;
       }
     </style>
-    <title>mf-chsdi3 RE 3</title>
+    <title>CHSDI 3</title>
   </head>
   <body>
       <h1 id="title">Python translations</h1>
@@ -22,8 +22,7 @@
           <a href="testi18n?lang=toto">If not in available languages to de</a> <br>
       <h1 id="title">Services</h1>
       <h2 id="checkers">Checkers</h2>
-          <a href="checker_home">Checker for home</a> <br>
-          
+          <a href="checker_home">Checker for home</a> <br>     
       <h2 id="mapservices">Map Services</h2> 
           <h3>Topics</h3>
           <a href="rest/services/bafu/MapServer">Topic (bafu)</a> <br>
@@ -31,16 +30,16 @@
           <h3>Identify</h3>
           <a href="rest/services/bafu/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=545000,145000,555000,155000&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bafu.bundesinventare-bln">Identify using an envelope (bbox)</a> <br>
           <a href="rest/services/bafu/MapServer/identify?geometryType=esriGeometryPoint&geometry=653246,173129&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=5&layers=all:ch.bafu.bundesinventare-bln">Identify using a simple point and a tolerance of 5 pixels</a> <br>
-          <a href='/rest/services/bafu/MapServer/identify?geometryType=esriGeometryPoint&geometry={"x":653246,"y":173129,"spatialReference":{"wkid":21781}}&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=5&layers=all:ch.bafu.bundesinventare-bln'>Identify using a complexe point  {x:, y:, spatialReference: } </a> <br>
-          <a href='/rest/services/bafu/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=630000,245000,645000,265000&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=5&layers=all:ch.bafu.bundesinventare-bln'>Identify using an bbox= </a> <br>
+          <a href='rest/services/bafu/MapServer/identify?geometryType=esriGeometryPoint&geometry={"x":653246,"y":173129,"spatialReference":{"wkid":21781}}&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=5&layers=all:ch.bafu.bundesinventare-bln'>Identify using a complexe point  {x:, y:, spatialReference: } </a> <br>
+          <a href='rest/services/bafu/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=630000,245000,645000,265000&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=5&layers=all:ch.bafu.bundesinventare-bln'>Identify using an bbox= </a> <br>
           
-          <a href='/rest/services/bafu/MapServer/identify?geometryType=esriGeometryPolygon&geometry={"rings"%20:%20[[%20[630000,%20245000],%20[645000,245000],%20[645000,265000],%20[630000,265000],%20[630000,%20245000]%20]],"spatialReference"%20:%20{"wkid"%20:%2021781}}&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bafu.bundesinventare-bln'>Identify using a polygon</a> <br>
-          <a href="rest/services/bafu/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=630000.5,200000,631000,201000.5&imageDisplay=500,600,96&layers=all:ch.bafu.bundesinventare-bln&mapExtent=548945.5,147956,549402,148103.5&tolerance=1">Identify (default to esri geojson)</a> <br>
-          <a href="rest/services/bafu/MapServer/identify?geometryFormat=geojson&geometryType=esriGeometryEnvelope&geometry=630000.5,200000,631000,201000.5&imageDisplay=500,600,96&layers=all:ch.bafu.bundesinventare-bln&mapExtent=548945.5,147956,549402,148103.5&tolerance=1">Identify (requesting geometryFormat=geojson)</a> <br>
-           <a href="/rest/services/bafu/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=630000,245000,645000,265000&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=5&layers=all:1000&eturnGeometry=false">Identify, using an esriId (integer)</a> <br>
-          <a href="rest/services/bafu/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all">Identify - get all the available models for a given map (topic)</a> <br>
-          <a href="rest/services/bafu/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bafu.bundesinventare-bln&searchText=pied">Identify with full text search on the column "displayField"</a> <br>
-          <a href="rest/services/bafu/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=546000,148000,548000,151000&imageDisplay=500,350,96&mapExtent=545132.87362333,147068.69380758,550132.87362333,150568.69380758&tolerance=1&layers=all&callback=cb">Identify - example with callback</a> <br>
+          <a href='rest/services/bafu/MapServer/identify?geometryType=esriGeometryPolygon&geometry={"rings"%20:%20[[%20[630000,%20245000],%20[645000,245000],%20[645000,265000],%20[630000,265000],%20[630000,%20245000]%20]],"spatialReference"%20:%20{"wkid"%20:%2021781}}&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bafu.bundesinventare-bln'>Identify using a polygon</a> <br>
+          <a href="rest/services/bafu/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=630000,245000,645000,265000&imageDisplay=500,600,96&layers=all:ch.bafu.bundesinventare-bln&mapExtent=548945.5,147956,549402,148103.5&tolerance=1">Identify (default to esri geojson)</a> <br>
+          <a href="rest/services/bafu/MapServer/identify?geometryFormat=geojson&geometryType=esriGeometryEnvelope&geometry=630000,245000,645000,265000&imageDisplay=500,600,96&layers=all:ch.bafu.bundesinventare-bln&mapExtent=548945.5,147956,549402,148103.5&tolerance=1">Identify (requesting geometryFormat=geojson)</a> <br>
+           <a href="rest/services/bafu/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=630000,245000,645000,265000&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=5&layers=all:1000&eturnGeometry=false">Identify, using an esriId (integer)</a> <br>
+          <a href="rest/services/bafu/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=630000,245000,645000,265000&imageDisplay=500,600,96&mapExtent=545132.87362333,147068.69380758,550132.87362333,150568.69380758&tolerance=1&layers=all">Identify - get all the available models for a given map (topic)</a> <br>
+          <a href="rest/services/geoadmin/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=630000,245000,645000,265000&imageDisplay=500,350,96&mapExtent=545132.87362333,147068.69380758,550132.87362333,150568.69380758&tolerance=1&searchText=AG 19.0.3&layers=all:ch.astra.ivs-nat">Identify on mutiple queryable attributes</a> <br>
+          <a href="rest/services/bafu/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=630000,245000,645000,265000&imageDisplay=500,350,96&mapExtent=545132.87362333,147068.69380758,550132.87362333,150568.69380758&tolerance=1&layers=all&callback=cb">Identify - example with callback</a> <br>
           <h3>Varia</h3>
           <a href="rest/services/bafu/MapServer/ch.bafu.bundesinventare-bln/362">Get Feature with id 362</a> <br>
           <a href="rest/services/bafu/MapServer/ch.bafu.bundesinventare-bln/362/htmlpopup">Get Html Popup Ex 1</a> <br>
