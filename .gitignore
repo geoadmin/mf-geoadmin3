@@ -1,7 +1,6 @@
-*.py[cod]
-
-# C extensions
-*.so
+MANIFEST
+apache/apache.conf
+buildout/*
 
 # Packages
 *.egg
@@ -14,6 +13,7 @@
 /var
 /sdist
 /develop-eggs
+/node_modules
 .installed.cfg
 
 # Installer logs
