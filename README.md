@@ -23,7 +23,7 @@ Create a developer specific build configuration:
 
 Where xxx designates your specific buildout configuration. Don't forget to add this to git. To create the specific build:
 
-  buildout/bin/buildout -c buildout_xxx.cfg
+    buildout/bin/buildout -c buildout_xxx.cfg
 
 If you do this on mf1t, you need to make sure that a correct configuration exists under
     
