@@ -1,0 +1,16 @@
+<Proxy ajp://localhost:8009/print-chsdi-${instanceid}>
+    Order deny,allow
+    Allow from all
+</Proxy>
+
+
+ProxyPass        /${vars:instanceid}/wsgi/print/ ajp://localhost:8009/print-chsdi-${instanceid}/pdf/
+ProxyPassReverse /${vars:instanceid}/wsgi/print/ ajp://localhost:8009/print-chsdi-${instanceid}/pdf/
+
+# Try to force IE to open the PDF in a new window
+# overriding what set by the print server
+SetEnvIf Request_URI "\.pdf$" PDF=pdf
+SetEnvIf User-Agent .*MSIE.* IE=ie
+Header set Content-Disposition "inline" env=IE
+Header set Content-Type "application/octet-stream" env=PDF
+
