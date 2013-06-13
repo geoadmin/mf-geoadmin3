@@ -23,7 +23,7 @@
         scope.currentLayer = wmtsLayers[0].value;
 
         var wmtsLayerObjects = [];
-        var http = $http.get('http://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml');
+        var http = $http.get(wmtsUrl);
         http.success(function(data, status, header, config) {
           var parser = new ol.parser.ogc.WMTSCapabilities();
           var capabilities = parser.read(data);
