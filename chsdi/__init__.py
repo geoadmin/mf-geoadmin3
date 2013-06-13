@@ -72,6 +72,7 @@ def main(global_config, **settings):
     config.add_route('profile_json', '/rest/services/profile.json')
     config.add_route('profile_csv', '/rest/services/profile.csv')
     config.add_route('height', '/rest/services/height')
+    config.add_route('search','/rest/services/{map}/search')
 
     config.add_route('geocodeservice','/rest/services/GeocodeServer')
     config.add_route('findaddresscandidates','/rest/services/GeocodeServer/findaddresscandidates')
