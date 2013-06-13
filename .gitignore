@@ -18,13 +18,6 @@
 /lib
 /lib64
 
-# Apache
-apache/*.conf
-
-# Generated files
-*.ini
-MANIFEST
-
 # Installer logs
 pip-log.txt
 
@@ -44,3 +37,17 @@ nosetests.xml
 # Jetbrains
 .idea
 *.iml
+
+*.swp
+*.ini
+*.war
+apache/wsgi.conf
+apache/tomcat-print.conf
+buildout/bin/
+buildout/develop-eggs/
+buildout/eggs/
+buildout/parts/
+print/config.yaml
+MANIFEST
+.coverage
+chsdi.egg-info
