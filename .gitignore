@@ -3,6 +3,9 @@
 # C extensions
 *.so
 
+# temp
+*.swp
+
 # Packages
 *.egg
 *.egg-info
@@ -38,7 +41,6 @@ nosetests.xml
 .idea
 *.iml
 
-*.swp
 *.ini
 *.war
 apache/wsgi.conf
