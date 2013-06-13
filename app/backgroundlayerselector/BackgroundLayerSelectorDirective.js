@@ -2,7 +2,7 @@
   var backgroundLayerSelectorModule = angular.module('app.backgroundlayerselector');
 
   backgroundLayerSelectorModule.directive('appBackgroundLayerSelector',
-      ['$parse', '$http', function($parse, $http) {
+      ['$parse', '$http', '$location',  function($parse, $http, $location) {
     return {
       restrict: 'A',
       replace: true,
@@ -20,7 +20,9 @@
         var wmtsUrl = $parse(attrs.appBackgroundLayerSelectorWmtsUrl)(scope);
         var wmtsLayers = $parse(attrs.appBackgroundLayerSelectorWmtsLayers)(scope);
 
-        scope.currentLayer = wmtsLayers[0].value;
+        var queryParams = $location.search();
+        scope.currentLayer = (queryParams.bgLayer !== undefined) ?
+            queryParams.bgLayer : wmtsLayers[0].value;
 
         var wmtsLayerObjects = [];
         var http = $http.get('http://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml');
