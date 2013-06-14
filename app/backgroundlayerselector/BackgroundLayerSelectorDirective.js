@@ -1,7 +1,7 @@
 (function() {
-  var backgroundLayerSelectorModule = angular.module('ga-backgroundlayerselector');
+  var module = angular.module('ga-backgroundlayerselector-directive', []);
 
-  backgroundLayerSelectorModule.directive('gaBackgroundLayerSelector',
+  module.directive('gaBackgroundLayerSelector',
       ['$parse', '$http', '$location',  function($parse, $http, $location) {
     return {
       restrict: 'A',

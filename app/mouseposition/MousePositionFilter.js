@@ -1,7 +1,7 @@
 (function() {
-  var mousePositionModule = angular.module('ga-mouseposition');
+  var module = angular.module('ga-mouseposition-filter', []);
 
-  mousePositionModule.filter('coordXY', function() {
+  module.filter('coordXY', function() {
     return function(input, precision) {
       if (input) {
         return ol.coordinate.toStringXY(input, precision);

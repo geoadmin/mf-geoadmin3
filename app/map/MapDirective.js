@@ -1,7 +1,7 @@
 (function() {
-  var mapModule = angular.module('ga-map');
+  var module = angular.module('ga-map-directive', []);
 
-  mapModule.directive('gaMap',
+  module.directive('gaMap',
       ['$parse', '$location', function($parse, $location) {
     return {
       restrict: 'A',

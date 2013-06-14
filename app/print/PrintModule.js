@@ -1,3 +1,5 @@
 (function() {
-  angular.module('ga-print', []);
+  angular.module('ga-print', [
+    'ga-print-controller'
+  ]);
 })();

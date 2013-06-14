@@ -1,7 +1,8 @@
 (function() {
-  var printModule = angular.module('ga-print');
+  var module = angular.module('ga-print-controller', []);
 
-  printModule.controller('GaPrintController', ['$scope', '$http', function($scope, $http) {
+  module.controller('GaPrintController',
+     ['$scope', '$http', function($scope, $http) {
 
     var http = $http.get('info.json');
     http.success(function(data, status, header, config) {

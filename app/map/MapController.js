@@ -1,13 +1,13 @@
 (function() {
-  var mapModule = angular.module('ga-map');
+  var module = angular.module('ga-map-controller', []);
 
-  mapModule.controller('GaMapController', ['$scope', function($scope) {
+  module.controller('GaMapController', ['$scope', function($scope) {
 
-   var swissExtent = [485869.5728, 837076.5648, 76443.1884, 299941.7864];
-   var swissProjection = ol.proj.configureProj4jsProjection({
-     code: 'EPSG:21781',
-     extent: swissExtent
-   });
+    var swissExtent = [485869.5728, 837076.5648, 76443.1884, 299941.7864];
+    var swissProjection = ol.proj.configureProj4jsProjection({
+      code: 'EPSG:21781',
+      extent: swissExtent
+    });
 
     var map = new ol.Map({
       renderer: ol.RendererHint.CANVAS,
