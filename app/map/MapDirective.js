@@ -11,8 +11,8 @@
 
         // set view states based on URL query string
         var queryParams = $location.search();
-        if (queryParams.X !== undefined && queryParams.Y !== undefined) {
-          view.setCenter([+queryParams.X, +queryParams.Y]);
+        if (queryParams.Y !== undefined && queryParams.X !== undefined) {
+          view.setCenter([+queryParams.Y, +queryParams.X]);
         }
         if (queryParams.zoom !== undefined) {
           var projectionExtent = view.getProjection().getExtent();
