@@ -1,9 +1,10 @@
 (function() {
   goog.provide('ga');
+  goog.require('ga_backgroundlayerselector');
   goog.require('ga_map');
   goog.require('ga_mouseposition');
-  goog.require('ga_backgroundlayerselector');
   goog.require('ga_print');
+
 
   var module = angular.module('ga', [
     'ga_map',
@@ -19,8 +20,8 @@
     delete $httpProvider.defaults.headers.common['X-Requested-With'];
   }]);
 
-  // Configure the $location service to work in HTML5 mode. This is necessary for
-  // setting initial states based on the query string.
+  // Configure the $location service to work in HTML5 mode. This is necessary
+  // for setting initial states based on the query string.
   module.config(['$locationProvider', function($locationProvider) {
     $locationProvider.html5Mode(true);
   }]);
