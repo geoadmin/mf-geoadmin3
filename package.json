@@ -9,6 +9,7 @@
   "author": "Swisstopo",
   "readmeFileName": "README.md",
   "devDependencies": {
-    "less": "1.4.0"
+    "less": "1.4.0",
+    "karma": "0.8.5"
   }
 }
