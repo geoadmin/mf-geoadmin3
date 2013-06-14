@@ -1,4 +1,10 @@
 (function() {
+  goog.provide('ga');
+  goog.require('ga-map');
+  goog.require('ga-mouseposition');
+  goog.require('ga-backgroundlayerselector');
+  goog.require('ga-print');
+
   var module = angular.module('ga', [
     'ga-map',
     'ga-mouseposition',

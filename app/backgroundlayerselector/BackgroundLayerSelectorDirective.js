@@ -1,4 +1,6 @@
 (function() {
+  goog.provide('ga-backgroundlayerselector-directive');
+
   var module = angular.module('ga-backgroundlayerselector-directive', []);
 
   module.directive('gaBackgroundLayerSelector',

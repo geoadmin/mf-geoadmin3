@@ -1,4 +1,6 @@
 (function() {
+  goog.provide('ga-map-controller');
+
   var module = angular.module('ga-map-controller', []);
 
   module.controller('GaMapController', ['$scope', function($scope) {

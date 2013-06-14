@@ -1,4 +1,6 @@
 (function() {
+  goog.provide('ga-mouseposition-controller');
+
   var module = angular.module('ga-mouseposition-controller', []);
 
   module.controller('GaMousePositionController',

@@ -1,4 +1,6 @@
 (function() {
+  goog.provide('ga-map-directive');
+
   var module = angular.module('ga-map-directive', []);
 
   module.directive('gaMap',
