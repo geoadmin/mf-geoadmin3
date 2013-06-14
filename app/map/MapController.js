@@ -1,7 +1,7 @@
 (function() {
-  goog.provide('ga-map-controller');
+  goog.provide('ga_map_controller');
 
-  var module = angular.module('ga-map-controller', []);
+  var module = angular.module('ga_map_controller', []);
 
   module.controller('GaMapController', ['$scope', function($scope) {
 

@@ -1,10 +1,10 @@
 (function() {
-  goog.provide('ga-mouseposition');
-  goog.require('ga-mouseposition-filter');
-  goog.require('ga-mouseposition-controller');
+  goog.provide('ga_mouseposition');
+  goog.require('ga_mouseposition_filter');
+  goog.require('ga_mouseposition_controller');
 
-  angular.module('ga-mouseposition', [
-    'ga-mouseposition-filter',
-    'ga-mouseposition-controller'
+  angular.module('ga_mouseposition', [
+    'ga_mouseposition_filter',
+    'ga_mouseposition_controller'
   ]);
 })();

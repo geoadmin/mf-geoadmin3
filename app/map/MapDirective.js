@@ -1,7 +1,7 @@
 (function() {
-  goog.provide('ga-map-directive');
+  goog.provide('ga_map_directive');
 
-  var module = angular.module('ga-map-directive', []);
+  var module = angular.module('ga_map_directive', []);
 
   module.directive('gaMap',
       ['$parse', '$location', function($parse, $location) {

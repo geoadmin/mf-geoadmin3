@@ -1,7 +1,7 @@
 (function() {
-  goog.provide('ga-print-controller');
+  goog.provide('ga_print_controller');
 
-  var module = angular.module('ga-print-controller', []);
+  var module = angular.module('ga_print_controller', []);
 
   module.controller('GaPrintController',
      ['$scope', '$http', function($scope, $http) {

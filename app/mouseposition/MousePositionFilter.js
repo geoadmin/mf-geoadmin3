@@ -1,7 +1,7 @@
 (function() {
-  goog.provide('ga-mouseposition-filter');
+  goog.provide('ga_mouseposition_filter');
 
-  var module = angular.module('ga-mouseposition-filter', []);
+  var module = angular.module('ga_mouseposition_filter', []);
 
   module.filter('coordXY', function() {
     return function(input, precision) {

@@ -1,7 +1,7 @@
 (function() {
-  goog.provide('ga-backgroundlayerselector-directive');
+  goog.provide('ga_backgroundlayerselector_directive');
 
-  var module = angular.module('ga-backgroundlayerselector-directive', []);
+  var module = angular.module('ga_backgroundlayerselector_directive', []);
 
   module.directive('gaBackgroundLayerSelector',
       ['$parse', '$http', '$location',  function($parse, $http, $location) {

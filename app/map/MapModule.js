@@ -1,10 +1,10 @@
 (function() {
-  goog.provide('ga-map');
-  goog.require('ga-map-directive');
-  goog.require('ga-map-controller');
+  goog.provide('ga_map');
+  goog.require('ga_map_directive');
+  goog.require('ga_map_controller');
 
-  angular.module('ga-map', [
-    'ga-map-directive',
-    'ga-map-controller'
+  angular.module('ga_map', [
+    'ga_map_directive',
+    'ga_map_controller'
   ]);
 })();

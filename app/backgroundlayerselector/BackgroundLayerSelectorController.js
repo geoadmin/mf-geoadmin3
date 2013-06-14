@@ -1,7 +1,7 @@
 (function() {
-  goog.provide('ga-backgroundlayerselector-controller');
+  goog.provide('ga_backgroundlayerselector_controller');
 
-  var module = angular.module('ga-backgroundlayerselector-controller', []);
+  var module = angular.module('ga_backgroundlayerselector_controller', []);
 
   module.controller('GaBackgroundLayerSelectorController',
       ['$scope', function($scope) {

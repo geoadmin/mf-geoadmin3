@@ -1,15 +1,15 @@
 (function() {
   goog.provide('ga');
-  goog.require('ga-map');
-  goog.require('ga-mouseposition');
-  goog.require('ga-backgroundlayerselector');
-  goog.require('ga-print');
+  goog.require('ga_map');
+  goog.require('ga_mouseposition');
+  goog.require('ga_backgroundlayerselector');
+  goog.require('ga_print');
 
   var module = angular.module('ga', [
-    'ga-map',
-    'ga-mouseposition',
-    'ga-backgroundlayerselector',
-    'ga-print'
+    'ga_map',
+    'ga_mouseposition',
+    'ga_backgroundlayerselector',
+    'ga_print'
   ]);
 
   // Configure the $http service to remove the X-Requested-With

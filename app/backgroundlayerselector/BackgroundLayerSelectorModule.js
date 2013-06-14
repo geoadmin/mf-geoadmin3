@@ -1,10 +1,10 @@
 (function() {
-  goog.provide('ga-backgroundlayerselector');
-  goog.require('ga-backgroundlayerselector-directive');
-  goog.require('ga-backgroundlayerselector-controller');
+  goog.provide('ga_backgroundlayerselector');
+  goog.require('ga_backgroundlayerselector_directive');
+  goog.require('ga_backgroundlayerselector_controller');
 
-  angular.module('ga-backgroundlayerselector', [
-    'ga-backgroundlayerselector-directive',
-    'ga-backgroundlayerselector-controller'
+  angular.module('ga_backgroundlayerselector', [
+    'ga_backgroundlayerselector_directive',
+    'ga_backgroundlayerselector_controller'
   ]);
 })();
