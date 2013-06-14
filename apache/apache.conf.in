@@ -1,3 +1,0 @@
-#For personal environment
-Alias /${vars:instanceid} ${buildout:directory}/
-
