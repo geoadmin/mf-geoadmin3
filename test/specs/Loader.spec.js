@@ -1,3 +1,3 @@
 
-beforeEach(module('app'));
+beforeEach(module('ga'));
 

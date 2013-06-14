@@ -1,3 +1,3 @@
 (function() {
-  angular.module('app.backgroundlayerselector', []);
+  angular.module('ga-backgroundlayerselector', []);
 })();

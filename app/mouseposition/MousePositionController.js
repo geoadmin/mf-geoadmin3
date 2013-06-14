@@ -1,7 +1,7 @@
 (function() {
-  var mousePositionModule = angular.module('app.mouseposition');
+  var mousePositionModule = angular.module('ga-mouseposition');
 
-  mousePositionModule.controller('MousePositionController',
+  mousePositionModule.controller('GaMousePositionController',
       ['$scope', function($scope) {
 
     var mapProjection = $scope.map.getView().getProjection();

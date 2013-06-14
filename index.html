@@ -1,24 +1,24 @@
 <!DOCTYPE html>
-<html ng-app="app">
+<html ng-app="ga">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
     <link href="css/app.css" rel="stylesheet" media="screen">
   </head>
-  <body ng-controller="MapController">
+  <body ng-controller="GaMapController">
     <div class="wrapper">
       <div class="header navbar navbar-fixed-top">
         <form class="navbar-form pull-right"
-              ng-controller="BackgroundLayerSelectorController">
-          <div x-app-background-layer-selector
-               x-app-background-layer-selector-map="map"
-               x-app-background-layer-selector-wmts-url="wmtsUrl"
-               x-app-background-layer-selector-wmts-layers="wmtsLayers"></div>
+              ng-controller="GaBackgroundLayerSelectorController">
+          <div x-ga-background-layer-selector
+               x-ga-background-layer-selector-map="map"
+               x-ga-background-layer-selector-wmts-url="wmtsUrl"
+               x-ga-background-layer-selector-wmts-layers="wmtsLayers"></div>
         </form>
       </div>
-      <div class="map" x-app-map="map"></div>
+      <div class="map" x-ga-map="map"></div>
       <div class=" footer navbar navbar-fixed-bottom"
-           ng-controller="MousePositionController">
+           ng-controller="GaMousePositionController">
         <form class="navbar-form pull-left">
           <select
             ng-model="mousePositionProjection"
@@ -38,7 +38,7 @@
             </a>
             <div class="print collapse">
               <div class="accordion-inner">
-                <form ng-controller="PrintController">
+                <form ng-controller="GaPrintController">
                 </form>
               </div>
             </div>
@@ -58,7 +58,7 @@
     <script src="lib/jquery-2.0.2.min.js"></script>
     <script src="lib/bootstrap.js"></script>
     <script src="lib/ol.js"></script>
-    <script src="app/AppModule.js"></script>
+    <script src="app/GaModule.js"></script>
     <script src="app/map/MapModule.js"></script>
     <script src="app/map/MapDirective.js"></script>
     <script src="app/map/MapController.js"></script>

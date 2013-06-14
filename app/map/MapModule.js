@@ -1,3 +1,3 @@
 (function() {
-  angular.module('app.map', []);
+  angular.module('ga-map', []);
 })();

@@ -1,3 +1,3 @@
 (function() {
-  angular.module('app.mouseposition', []);
+  angular.module('ga-mouseposition', []);
 })();

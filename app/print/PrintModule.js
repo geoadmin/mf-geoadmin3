@@ -1,3 +1,3 @@
 (function() {
-  angular.module('app.print', []);
+  angular.module('ga-print', []);
 })();
