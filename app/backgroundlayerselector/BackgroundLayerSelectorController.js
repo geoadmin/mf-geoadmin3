@@ -1,7 +1,9 @@
 (function() {
-  var backgroundLayerSelectorModule = angular.module('app.backgroundlayerselector');
+  goog.provide('ga_backgroundlayerselector_controller');
 
-  backgroundLayerSelectorModule.controller('BackgroundLayerSelectorController',
+  var module = angular.module('ga_backgroundlayerselector_controller', []);
+
+  module.controller('GaBackgroundLayerSelectorController',
       ['$scope', function($scope) {
 
     $scope.wmtsUrl = 'http://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml';
