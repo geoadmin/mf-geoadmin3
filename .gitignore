@@ -20,6 +20,10 @@ buildout/*
 /build/deps.js
 /build/closure-compiler
 
+# Generated index.html
+/index.html
+/index-prod.html
+
 # Installer logs
 pip-log.txt
 
