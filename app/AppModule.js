@@ -13,4 +13,9 @@
     delete $httpProvider.defaults.headers.common['X-Requested-With'];
   }]);
 
+  // Configure the $location service to work in HTML5 mode. This is necessary for
+  // setting initial states based on the query string.
+  appModule.config(['$locationProvider', function($locationProvider) {
+    $locationProvider.html5Mode(true);
+  }]);
 })();
