@@ -15,7 +15,7 @@ files = [
   'http://cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/proj4js-compressed.js',
   //load libraries only specific to testing
   'test/angular/angular-mocks.js',
-  'test/expect-0.2.0-ol3/expect.js',
+  'test/expect-0.2.0/expect.js',
   //load all application specific code (note: will also load test specifications
   //that are inside of these. there is no 'exclude' mechanisms...
   'app/**/*Module.js',
