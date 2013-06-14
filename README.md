@@ -3,6 +3,8 @@ mf-geoadmin3
 
 next generation map.geo.admin.ch
 
+[![Build Status](https://travis-ci.org/geoadmin/mf-geoadmin3.png?branch=master)](https://travis-ci.org/geoadmin/mf-geoadmin3)
+
 # Getting started
 
 Checkout the source code:
