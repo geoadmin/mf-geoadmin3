@@ -18,9 +18,7 @@ buildout/*
 # Build artefacts
 /build/app.js
 /build/deps.js
-/build/compiler.jar
-/build/COPYING
-/build/README
+/build/closure-compiler
 
 # Installer logs
 pip-log.txt
