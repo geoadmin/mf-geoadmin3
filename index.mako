@@ -51,7 +51,7 @@
           <span class="pulldown-open">open</span>
       </div>
     </div>
-
+% if prod:
     <script src="lib/angular-1.1.5.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/proj4js-compressed.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/defs/EPSG21781.js"></script>
@@ -59,6 +59,24 @@
     <script src="lib/bootstrap.js"></script>
     <script src="lib/ol.js"></script>
     <script src="build/app.js"></script>
+% else:
+    <script src="lib/angular-1.1.5.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/proj4js-compressed.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/defs/EPSG21781.js"></script>
+    <script src="lib/jquery-2.0.2.min.js"></script>
+    <script src="lib/bootstrap.js"></script>
+    <script src="lib/ol.js"></script>
+
+    <!-- Use Closure's base.js script to load the application scripts -->
+    <script>
+      window.CLOSURE_NO_DEPS = true;
+    </script>
+    <script src="lib/closure/base.js"></script>
+    <script src="build/deps.js"></script>
+    <script>
+      goog.require('ga');
+    </script>
+%endif
 
   </body>
 </html>
