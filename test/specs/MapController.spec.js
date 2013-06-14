@@ -1,5 +1,5 @@
 
-describe('MapController', function () {
+describe('GaMapController', function () {
   'use strict';
   
   var scope = null;
@@ -7,7 +7,7 @@ describe('MapController', function () {
 
   beforeEach(inject(function($rootScope, $controller) {
     scope = $rootScope.$new();
-    mc = $controller('MapController', { $scope: scope });
+    mc = $controller('GaMapController', { $scope: scope });
   }));
 
   describe('creationg', function () {

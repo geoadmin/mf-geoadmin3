@@ -1,24 +1,26 @@
 (function() {
-  var backgroundLayerSelectorModule = angular.module('app.backgroundlayerselector');
+  goog.provide('ga_backgroundlayerselector_directive');
 
-  backgroundLayerSelectorModule.directive('appBackgroundLayerSelector',
+  var module = angular.module('ga_backgroundlayerselector_directive', []);
+
+  module.directive('gaBackgroundLayerSelector',
       ['$parse', '$http', '$location',  function($parse, $http, $location) {
     return {
       restrict: 'A',
       replace: true,
       scope: {
-        map: '=appBackgroundLayerSelectorMap',
-        wmtsUrl: '=appBackgroundLayerSelectorWmtsUrl',
-        wmtsLayers: '=appBackgroundLayerSelectorWmtsLayers'
+        map: '=gaBackgroundLayerSelectorMap',
+        wmtsUrl: '=gaBackgroundLayerSelectorWmtsUrl',
+        wmtsLayers: '=gaBackgroundLayerSelectorWmtsLayers'
       },
       template:
           '<select ng-model="currentLayer"' +
               'ng-options="l.value as l.label for l in wmtsLayers">' +
           '</select>',
       link: function(scope, element, attrs) {
-        var map = $parse(attrs.appBackgroundLayerSelectorMap)(scope);
-        var wmtsUrl = $parse(attrs.appBackgroundLayerSelectorWmtsUrl)(scope);
-        var wmtsLayers = $parse(attrs.appBackgroundLayerSelectorWmtsLayers)(scope);
+        var map = $parse(attrs.gaBackgroundLayerSelectorMap)(scope);
+        var wmtsUrl = $parse(attrs.gaBackgroundLayerSelectorWmtsUrl)(scope);
+        var wmtsLayers = $parse(attrs.gaBackgroundLayerSelectorWmtsLayers)(scope);
 
         var queryParams = $location.search();
         scope.currentLayer = (queryParams.bgLayer !== undefined) ?

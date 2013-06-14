@@ -1,12 +1,14 @@
 (function() {
-  var mapModule = angular.module('app.map');
+  goog.provide('ga_map_directive');
 
-  mapModule.directive('appMap',
+  var module = angular.module('ga_map_directive', []);
+
+  module.directive('gaMap',
       ['$parse', '$location', function($parse, $location) {
     return {
       restrict: 'A',
       link: function(scope, element, attrs) {
-        var map = $parse(attrs.appMap)(scope);
+        var map = $parse(attrs.gaMap)(scope);
         var view = map.getView();
 
         // set view states based on URL query string
