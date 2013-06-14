@@ -6,7 +6,6 @@ buildout/*
 *.egg
 *.egg-info
 /dist
-/build
 /eggs
 /parts
 /bin
@@ -15,6 +14,13 @@ buildout/*
 /develop-eggs
 /node_modules
 .installed.cfg
+
+# Build artefacts
+/build/app.js
+/build/deps.js
+/build/compiler.jar
+/build/COPYING
+/build/README
 
 # Installer logs
 pip-log.txt
