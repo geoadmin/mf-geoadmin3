@@ -51,7 +51,7 @@
           <span class="pulldown-open">open</span>
       </div>
     </div>
-% if prod:
+% if mode == "prod":
     <script src="lib/angular-1.1.5.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/proj4js-compressed.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/defs/EPSG21781.js"></script>

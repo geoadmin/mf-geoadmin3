@@ -1,39 +1,13 @@
-MANIFEST
-apache/apache.conf
-buildout/*
-
-# Packages
-*.egg
-*.egg-info
-/dist
-/eggs
-/parts
-/bin
-/var
-/sdist
-/develop-eggs
 /node_modules
-.installed.cfg
-
-# Build artefacts
 /build/app.js
 /build/deps.js
-/build/closure-compiler
-
-# Generated index.html
 /index.html
 /index-prod.html
+/.build-artefacts
 
-# Installer logs
-pip-log.txt
-
-# Unit test / coverage reports
-.coverage
-.tox
-nosetests.xml
-
-# Translations
-*.mo
+# FIXME
+# The following are developer-specific and should probably be in the
+# developers' .gitconfig file.
 
 # Mr Developer
 .mr.developer.cfg
@@ -46,4 +20,3 @@ nosetests.xml
 
 # Vim swap files
 *.swp
-
