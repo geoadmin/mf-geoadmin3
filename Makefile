@@ -35,8 +35,7 @@ deps: build/deps.js
 index: index.html index-prod.html
 
 .PHONY: lint
-lint: .build-artefacts/python-venv/bin/gjslint
-	.build-artefacts/python-venv/bin/gjslint -r app --jslint_error=all
+lint: .build-artefacts/lint.timestamp
 
 .PHONY: test
 test: build/app.js node_modules
@@ -62,6 +61,10 @@ index.html: index.mako .build-artefacts/python-venv/bin/mako-render
 
 index-prod.html: index.mako .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "mode=prod" $< > $@
+
+.build-artefacts/lint.timestamp: .build-artefacts/python-venv/bin/gjslint $(JS_FILES)
+	.build-artefacts/python-venv/bin/gjslint -r app --jslint_error=all
+	touch $@
 
 node_modules:
 	npm install
