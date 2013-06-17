@@ -76,6 +76,7 @@ node_modules:
 
 .build-artefacts/python-venv/bin/gjslint: .build-artefacts/python-venv
 	.build-artefacts/python-venv/bin/pip install "http://closure-linter.googlecode.com/files/closure_linter-latest.tar.gz"
+	touch $@
 
 .build-artefacts/python-venv:
 	mkdir -p .build-artefacts
