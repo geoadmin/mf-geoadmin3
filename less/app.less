@@ -48,14 +48,21 @@ body {
             border-radius: 0;
         }
         .accordion-toggle {
-            background-color: #999;
-            color: #fff;
+            background-color: #fff;
+            color: #000;
+            font-weight: bold;
             &:hover {
                 text-decoration: none;
+            }
+            &.collapsed {
+                background-color: #999;
+                color: #fff;
+                font-weight: normal;
             }
         }
         .accordion-inner {
             background-color: #fff;
+            border-top: 1px solid #c7c7c7;
         }
     }
     .toggle {
