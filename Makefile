@@ -20,7 +20,7 @@ help:
 	@echo
 
 .PHONY: all
-all: css js deps index test
+all: css js deps index lint test
 
 .PHONY: css
 css: css/app.min.css
