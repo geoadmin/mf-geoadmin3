@@ -38,7 +38,7 @@
             </a>
             <div class="print collapse">
               <div class="accordion-inner">
-                <%include file="app/print/form.mako"/>
+                <%include file="app/print/partials/form.mako"/>
               </div>
             </div>
           </div>
