@@ -8,7 +8,9 @@
     <select ng-model="scale" ng-options="s.name for s in capabilities.scales"></select>
   </div>
   <div class="checkbox">
-    <input ng-model="legend" type="checkbox">Legend
+    <label>
+      <input ng-model="legend" type="checkbox">Legend
+    </label>
   </div>
   <button type="submit" class="btn btn-primary">Print</button>
 </form>
