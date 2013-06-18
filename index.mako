@@ -25,7 +25,10 @@
             ng-options="p.value as p.label for p in mousePositionProjections">
           </select>
         </form>
-        <p class="navbar-text">{{mousePositionValue | coordXY:2}}</p>
+        <p class="navbar-text"
+           x-ga-mouse-position
+           x-ga-mouse-position-map="map"
+           x-ga-mouse-position-projection="mousePositionProjection"></p>
       </div>
     </div>
 
