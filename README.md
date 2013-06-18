@@ -9,30 +9,34 @@ next generation map.geo.admin.ch
 
 Checkout the source code:
 
-    git clone https://github.com/geoadmin/mf-geoadmin3.git
+    $ git clone https://github.com/geoadmin/mf-geoadmin3.git
 
 or when you're using ssh key (see https://help.github.com/articles/generating-ssh-keys):
 
-    git clone git@github.com:geoadmin/mf-geoadmin3.git
+    $ git clone git@github.com:geoadmin/mf-geoadmin3.git
 
-Bootstrap your build environment:
+Build:
 
-    python bootstrap.py --version 1.5.2 --distribute --download-base http://pypi.camptocamp.net/distribute-0.6.22_fix-issue-227/ --setup-source http://pypi.camptocamp.net/distribute-0.6.22_fix-issue-227/distribute_setup.py
+    $ make all
 
-Create a developer specific build configuration:
+Use `make` (or `make help`) to know about the possible `make` targets:
 
-    cp buildout_ltjeg.cfg buildout_xxx.cfg
+    $ make
+     Usage: make <target>
 
-Where xxx designates your specific buildout configuration. Don't forget to add this to git. To create the specific build:
+     Possible targets:
 
-    buildout/bin/buildout -c buildout_xxx.cfg
+     - css       Build CSS
+     - js        Build JavaScript
+     - deps      Build deps.js (for script autoload with Closure)
+     - index     Create index.html and index-prod.html
+     - lint      Run the linter
+     - test      Run the JavaScript tests
+     - all       All of the above
+     - clean     Remove generated files
+     - cleanall  Remove all the build artefacts
 
-If you do this on mf1t, you need to make sure that a correct configuration exists under
-    
-    /var/www/vhosts/mf-geoadmin3/conf
+On mf1t, create an Apache configuration file for your environment. Ex:
 
-that includes the apache directory of  your working directory. If all is well, you can reach your pages at:
-
-    http://mf-geoadmin30t.bgdi.admin.ch/xxx/
-
-
+    $ cat /var/www/vhosts/mf-geoadmin3/conf/00-elemoine.conf
+    Alias /elemoine /home/elemoine/mf-geoadmin3/

@@ -1,7 +1,8 @@
 (function() {
   goog.provide('ga_backgroundlayerselector');
-  goog.require('ga_backgroundlayerselector_directive');
   goog.require('ga_backgroundlayerselector_controller');
+  goog.require('ga_backgroundlayerselector_directive');
+
 
   angular.module('ga_backgroundlayerselector', [
     'ga_backgroundlayerselector_directive',
