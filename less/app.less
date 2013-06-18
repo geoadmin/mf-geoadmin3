@@ -1,5 +1,6 @@
 @import "bootstrap-3.0.0/bootstrap.less";
 @import "../app/map/less/map.less";
+@import "../app/print/less/form.less";
 
 @headerHeight: 89;
 
@@ -47,17 +48,25 @@ body {
             border-radius: 0;
         }
         .accordion-toggle {
-            background-color: #999;
-            color: #fff;
+            background-color: #fff;
+            color: #000;
+            font-weight: bold;
             &:hover {
                 text-decoration: none;
+            }
+            &.collapsed {
+                background-color: #999;
+                color: #fff;
+                font-weight: normal;
             }
         }
         .accordion-inner {
             background-color: #fff;
+            border-top: 1px solid #c7c7c7;
         }
     }
     .toggle {
+        font-weight: bold;
         .box-shadow(6px 6px 12px rgba(0, 0, 0, 0.175));
         width: 75%;
         border-top-left-radius: 0;
