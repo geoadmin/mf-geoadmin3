@@ -41,8 +41,8 @@ lint: .build-artefacts/lint.timestamp
 test: build/app.js node_modules
 	npm test
 
-css/app.min.css: css/app.css .build-artefacts/python-venv/bin/cssmin
-	.build-artefacts/python-venv/bin/cssmin < $< > $@
+css/app.min.css: css/app.css node_modules
+	node_modules/.bin/lessc --yui-compress $< $@
 
 css/app.css: less/app.less node_modules
 	node_modules/.bin/lessc $< $@
@@ -68,10 +68,6 @@ index-prod.html: index.mako .build-artefacts/python-venv/bin/mako-render
 
 node_modules:
 	npm install
-
-.build-artefacts/python-venv/bin/cssmin: .build-artefacts/python-venv
-	.build-artefacts/python-venv/bin/pip install cssmin
-	touch $@
 
 .build-artefacts/python-venv/bin/mako-render: .build-artefacts/python-venv
 	.build-artefacts/python-venv/bin/pip install "Mako==0.8.1"
