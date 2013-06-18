@@ -2,3 +2,47 @@
     background-color: #f9f9f9;
     background-image: data-uri('mapbg.png');
 }
+
+@zoomBarTop: 110;
+@zoomBarRight: 20;
+@zoomBarWidth: 18;
+@zoomBarHeight: 150;
+
+.ol-zoom {
+    position: absolute;
+    top: unit(@zoomBarTop, px);
+    right: unit(@zoomBarRight, px);
+    width: unit(@zoomBarWidth, px);
+    height: unit(@zoomBarHeight + 34, px);
+    a {
+        position: absolute;
+        width: 18px;
+        height: 18px;
+        &.ol-zoom-in {
+            background-image: data-uri('zoom-plus-mini.png');
+        }
+        &.ol-zoom-out {
+            background-image: data-uri('zoom-minus-mini.png');
+            bottom: 0;
+        }
+    }
+}
+
+.ol-zoomslider {
+    position: absolute;
+    top: unit(@zoomBarTop + 18, px);
+    right: unit(@zoomBarRight, px);
+    width: unit(@zoomBarWidth, px);
+    height: unit(@zoomBarHeight, px);
+    /* step height: 11px */
+    background-image: data-uri('zoombar.png');
+    .ol-zoomslider-thumb {
+        width: 20px;
+        height: 9px;
+        background-image: data-uri('slider.png');
+        margin-left: -1px;
+        display: block;
+        position: absolute;
+        padding: 0;
+    }
+}
