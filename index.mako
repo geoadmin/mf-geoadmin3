@@ -33,13 +33,12 @@
       <div class="content collapse in">
         <div class="accordion-group">
           <div class="accordion-heading">
-            <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent=".pulldown .content" href=".pulldown .content .print">
+            <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent=".pulldown .content" data-target=".pulldown .content .print" href="#">
               Print
             </a>
             <div class="print collapse">
               <div class="accordion-inner">
-                <form ng-controller="GaPrintController">
-                </form>
+                <%include file="app/print/partials/form.mako"/>
               </div>
             </div>
           </div>
