@@ -40,3 +40,4 @@ On mf1t, create an Apache configuration file for your environment. Ex:
 
     $ cat /var/www/vhosts/mf-geoadmin3/conf/00-elemoine.conf
     Alias /elemoine /home/elemoine/mf-geoadmin3/
+    Include /home/elemoine/mf-geoadmin3/apache/*.conf
