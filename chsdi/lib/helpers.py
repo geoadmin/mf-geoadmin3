@@ -2,6 +2,7 @@
 
 from pyramid.threadlocal import get_current_registry
 from pyramid.i18n import get_locale_name
+import unicodedata
 
 def versioned(path):
     version = get_current_registry().settings['app_version']
@@ -32,27 +33,4 @@ def round(val):
     return math.floor(val + 0.5)
 
 def remove_accents(input_str):
-    translations = (
-    ('ü', 'u'),
-    ('Ü', 'u'),
-    ('û', 'u'),
-    ('Û', 'u'),
-    ('ä', 'a'),
-    ('Ä', 'a'),
-    ('â', 'a'),
-    ('Â', 'a'),
-    ('ö', 'o'),
-    ('Ö', 'o'),
-    ('ô', 'o'),
-    ('Ô', 'o'),
-    ('é', 'e'),
-    ('è', 'e'),
-    ('ê', 'e'),
-    ('Ê', 'e'),
-    ('ï', 'i'),
-    ('î', 'i'),
-    ('Î', 'i')
-    )
-    for from_str, to_str in translations:
-        input_str = input_str.replace(from_str, to_str)
-    return input_str
+    return ''.join(c for c in unicodedata.normalize('NFD', input_str) if unicodedata.category(c) != 'Mn')
