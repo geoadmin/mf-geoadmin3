@@ -36,6 +36,24 @@ Use `make` (or `make help`) to know about the possible `make` targets:
      - clean     Remove generated files
      - cleanall  Remove all the build artefacts
 
+    Variables:
+    
+    - BASE_HREF href value for <base> in index.html (current value: /elemoine/)  
+    - BASE_PATH value for directory path of mf-geoadmin3 project
+
+    Variables can be set as make macros or envvars. For example: 
+
+    $ make BASE_HREF=/elemoine/ index 
+    $ BASE_HREF=/elemoine/ make 
+
+You can avoid setting variables/macros on the `make` command line by creating 
+an `rc` file that you source once. Ex: 
+    
+    $ cat rc 
+    export BASE_HREF=/elemoine/ 
+    $ source rc 
+    $ make 
+
 On mf1t, create an Apache configuration file for your environment. Ex:
 
     $ cat /var/www/vhosts/mf-geoadmin3/conf/00-elemoine.conf
