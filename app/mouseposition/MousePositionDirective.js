@@ -22,12 +22,9 @@
             });
             control.setMap(map);
 
-            scope.$watch(mousePositionProjectionFunction,
-                function(oldVal, newVal) {
-                  if (newVal != oldVal) {
-                    //control.setProjection(newVal);
-                  }
-                });
+            scope.$watch(mousePositionProjectionFunction, function(value) {
+              control.setProjection(value);
+            });
           }
         };
       }]);
