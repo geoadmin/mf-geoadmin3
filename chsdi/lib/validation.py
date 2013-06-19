@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import types
+import os
 import pyramid.httpexceptions as exc
 from chsdi.models import models_from_name
 from chsdi.lib.helpers import check_even
@@ -245,7 +246,7 @@ class SearchValidation(MapNameValidation):
     def __init__(self):
         super(SearchValidation, self).__init__()
         self._searchText = None
-        self._layerIndexes = None
+        self._featureIndexes = None
         self._bbox = None
 
     @property
@@ -253,18 +254,25 @@ class SearchValidation(MapNameValidation):
         return self._searchText
 
     @property
-    def layerIndexes(self):
-        return self._layerIndexes
+    def featureIndexes(self):
+        return self._featureIndexes
 
     @property
     def bbox(self):
         return self._bbox
 
-    @layerIndexes.setter
-    def layerIndexes(self, value):
+    @featureIndexes.setter
+    def featureIndexes(self, value):
         if value is not None:
             value.replace('.','_')
-            self._layerIndexes = value.split(',') 
+            self._featureIndexes = value.split(',')
+        # if not specified take all the available layers
+        else:
+            files = os.listdir('/var/sig/shp/sphinx/data/')
+            self._featureIndexes = []
+            for f in files:
+                if f not in self._featureIndexes and f.startswith('ch_'):
+                    self._featureIndexes.append(f.split('.')[0])
                 
     @searchText.setter
     def searchText(self, value):
@@ -275,10 +283,18 @@ class SearchValidation(MapNameValidation):
     @bbox.setter
     def bbox(self, value):
         if value is not None:
-            value = value.split(',')
-            if len(value) != 4:
+            values = value.split(',')
+            if len(values) != 4:
                 raise exc.HTTPBadRequest("Please provide 4 coordinates in a comma separated list")
-            self._bbox = value
+            try:
+                values = map(float, values)
+            except ValueError:
+                raise exc.HTTPBadRequest("Please provide numerical values for the parameter bbox")
+            if values[0] < values[1]:
+                raise exc.HTTPBadRequest("The first coordinate must be higher than the second")
+            elif values[2] < values[3]:
+                raise exc.HTTPBadRequest("The third coordinate must be higher than the fourth")
+            self._bbox = values
 
 
 def validateLayerId(idlayer):
