@@ -48,6 +48,7 @@
         <button type="button" data-toggle="collapse" data-target=".pulldown .content" class="toggle btn btn-default">
           <span class="pulldown-close">close</span>
           <span class="pulldown-open">open</span>
+        </button>
       </div>
     </div>
 % if mode == "prod":
