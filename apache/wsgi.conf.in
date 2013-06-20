@@ -12,6 +12,9 @@
 RewriteEngine on
 ExpiresActive on
 
+# Enabling CORS
+Header set Access-Control-Allow-Origin "*"
+
 AddOutputFilterByType DEFLATE text/css
 AddOutputFilterByType DEFLATE application/x-javascript application/javascript application/json
 AddOutputFilterByType DEFLATE text/html text/plain text/xml
