@@ -65,7 +65,7 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/defs/EPSG21781.js"></script>
     <script src="lib/jquery-2.0.2.min.js"></script>
     <script src="lib/bootstrap-3.0.0.js"></script>
-    <script src="lib/ol.js"></script>
+    <script src="lib/ol-whitespace.js"></script>
 
     <!-- Use Closure's base.js script to load the application scripts -->
     <script>
