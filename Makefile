@@ -1,6 +1,7 @@
 
 JS_FILES := $(shell find app/ -type f -name '*.js')
 JS_FILES_FOR_COMPILER = $(shell sed -e :a -e 'N;s/\n/ --js /;ba' .build-artefacts/js-files | sed 's/^.*base\.js //')
+VERSION := $(shell date '+%s')
 
 .PHONY: help
 help:
@@ -14,13 +15,14 @@ help:
 	@echo "- index     Create index.html and index-prod.html"
 	@echo "- lint      Run the linter"
 	@echo "- test      Run the JavaScript tests"
+	@echo "- apache    Configure Apache"
 	@echo "- all       All of the above"
 	@echo "- clean     Remove generated files"
 	@echo "- cleanall  Remove all the build artefacts"
 	@echo
 
 .PHONY: all
-all: css js deps index lint test
+all: css js deps index lint test apache
 
 .PHONY: css
 css: css/app.min.css
@@ -41,6 +43,9 @@ lint: .build-artefacts/lint.timestamp
 test: build/app.js node_modules
 	npm test
 
+.PHONY: apache
+apache: apache/app.conf
+
 css/app.min.css: css/app.css node_modules
 	node_modules/.bin/lessc --yui-compress $< $@
 
@@ -60,7 +65,11 @@ index.html: index.mako .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render $< > $@
 
 index-prod.html: index.mako .build-artefacts/python-venv/bin/mako-render
-	.build-artefacts/python-venv/bin/mako-render --var "mode=prod" $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "mode=prod" --var "version=$(VERSION)" $< > $@
+
+apache/app.conf: apache/app.mako .build-artefacts/python-venv/bin/mako-render
+	.build-artefacts/python-venv/bin/mako-render --var "version=$(VERSION)" --var "base_href=$(BASE_HREF)" --var "base_path=$(BASE_PATH)" $< > $@
+	touch $@
 
 .build-artefacts/lint.timestamp: .build-artefacts/python-venv/bin/gjslint $(JS_FILES)
 	.build-artefacts/python-venv/bin/gjslint -r app --jslint_error=all
@@ -107,3 +116,4 @@ clean:
 	rm -f css/app.min.css
 	rm -f index.html
 	rm -f index-prod.html
+	rm -f apache/app.conf
