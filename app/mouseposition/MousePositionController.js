@@ -21,7 +21,7 @@
           label: 'WGS 84',
           format: function(coordinates) {
             return ol.coordinate.toStringHDMS(coordinates) +
-              ' (' + ol.coordinate.toStringXY(coordinates, 5) + ')';
+                ' (' + ol.coordinate.toStringXY(coordinates, 5) + ')';
           }
         }
         ];

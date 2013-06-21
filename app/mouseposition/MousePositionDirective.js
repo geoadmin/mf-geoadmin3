@@ -11,8 +11,6 @@
             var map = $parse(attrs.gaMousePositionMap)(scope);
             var mousePositionProjectionFunction =
                 $parse(attrs.gaMousePositionProjection);
-            var mousePositionProjection =
-                mousePositionProjectionFunction(scope);
 
             var control = new ol.control.MousePosition({
               target: element[0],
