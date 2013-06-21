@@ -68,8 +68,7 @@ index-prod.html: index.mako .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "mode=prod" --var "version=$(VERSION)" $< > $@
 
 apache/app.conf: apache/app.mako .build-artefacts/python-venv/bin/mako-render
-	.build-artefacts/python-venv/bin/mako-render --var "version=$(VERSION)" --var "base_href=$(BASE_HREF)" --var "base_path=$(BASE_PATH)" $< > $@
-	touch $@
+	.build-artefacts/python-venv/bin/mako-render --var "version=$(VERSION)" --var "base_url=$(BASE_URL)" --var "base_dir=$(CURDIR)" $< > $@
 
 .build-artefacts/lint.timestamp: .build-artefacts/python-venv/bin/gjslint $(JS_FILES)
 	.build-artefacts/python-venv/bin/gjslint -r app --jslint_error=all

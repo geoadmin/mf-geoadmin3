@@ -38,20 +38,18 @@ Use `make` (or `make help`) to know about the possible `make` targets:
 
     Variables:
     
-    - BASE_HREF href value for <base> in index.html (current value: /elemoine/)  
-    - BASE_PATH value for directory path of mf-geoadmin3 project
+    - BASE_URL URL value for <base> in index.html (current value: /elemoine/)
 
     Variables can be set as make macros or envvars. For example: 
 
-    $ make BASE_HREF=/elemoine/ index 
-    $ BASE_HREF=/elemoine/ make 
+    $ make BASE_URL=/elemoine/ index
+    $ BASE_URL=/elemoine/ make
 
 You can avoid setting variables/macros on the `make` command line by creating 
 an `rc` file that you source once. Ex: 
     
     $ cat rc_elemoine
-    export BASE_HREF=/elemoine/
-    export BASE_PATH=/home/elemoine/
+    export BASE_URL=/elemoine/
     $ source rc_elemoine
     $ make 
 

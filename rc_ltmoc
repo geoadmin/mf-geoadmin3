@@ -1,2 +1,1 @@
-export BASE_HREF=/ltmoc/
-export BASE_PATH=/home/ltmoc/
+export BASE_URL=/ltmoc
