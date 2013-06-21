@@ -111,6 +111,7 @@ cleanall: clean
 .PHONY: clean
 clean:
 	rm -f build/app.js
+	rm -f build/deps.js
 	rm -f css/app.css
 	rm -f css/app.min.css
 	rm -f index.html
