@@ -20,13 +20,13 @@ help:
 	@echo
 
 .PHONY: all
-all: css js deps index lint test
+all: css js deps index test
 
 .PHONY: css
 css: css/app.min.css
 
 .PHONY: js
-js: build/app.js
+js: lint build/app.js
 
 .PHONY: deps
 deps: build/deps.js
