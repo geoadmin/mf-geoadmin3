@@ -16,14 +16,13 @@
 
             var control = new ol.control.MousePosition({
               coordinateFormat: ol.coordinate.createStringXY(2),
-              projection: mousePositionProjection,
               target: element[0],
               undefinedHTML: '&nbsp;'
             });
             control.setMap(map);
 
             scope.$watch(mousePositionProjectionFunction, function(value) {
-              control.setProjection(value);
+              control.setProjection(ol.proj.get(value));
             });
           }
         };
