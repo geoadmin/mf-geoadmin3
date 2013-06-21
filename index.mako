@@ -22,7 +22,7 @@
         <form class="navbar-form pull-left">
           <select
             ng-model="mousePositionProjection"
-            ng-options="p.value as p.label for p in mousePositionProjections">
+            ng-options="p.label for p in mousePositionProjections">
           </select>
         </form>
         <p class="navbar-text"
