@@ -49,9 +49,10 @@ Use `make` (or `make help`) to know about the possible `make` targets:
 You can avoid setting variables/macros on the `make` command line by creating 
 an `rc` file that you source once. Ex: 
     
-    $ cat rc 
-    export BASE_HREF=/elemoine/ 
-    $ source rc 
+    $ cat rc_elemoine
+    export BASE_HREF=/elemoine/
+    export BASE_PATH=/home/elemoine/
+    $ source rc_elemoine
     $ make 
 
 On mf1t, create an Apache configuration file for your environment. Ex:
