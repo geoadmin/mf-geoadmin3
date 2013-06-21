@@ -3,7 +3,12 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+% if mode == "prod":
+    <link href="${version}/css/app.min.css" rel="stylesheet" media="screen">
+% else:
     <link href="${version}/css/app.css" rel="stylesheet" media="screen">
+%endif
+
   </head>
   <body ng-controller="GaMapController">
     <div class="wrapper">
