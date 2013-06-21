@@ -51,23 +51,8 @@
           <a href='rest/services/profile.csv?geom={"type"%3A"LineString"%2C"coordinates"%3A[[550050%2C206550]%2C[556950%2C204150]%2C[561050%2C207950]]}&elevation_models=DTM25,DTM2'>Profile in csv format</a> <br>
           <a href='rest/services/geoadmin/1.0.0/WMTSCapabilities.xml'>WMTS capabilities geoadmin</a> <br>
           
-      <h2 id="search">Geocoding</h2>
-          <a href="rest/services/GeocodeServer/findaddresscandidates?lang=fr&all=maisonnex"><strong>Toponomy ('all' means all services)</strong>: rest/services/GeocodeServer/findaddresscandidates?lang=fr&all=maisonnex</a> <br />
-          <a href="rest/services/GeocodeServer/findaddresscandidates?all=1290"><strong>Postcode:</strong> rest/services/GeocodeServer/findaddresscandidates?all=1290</a> <br />
-          <a href="rest/services/GeocodeServer/findaddresscandidates?all=dorfstr"><strong>Addresses:</strong> rest/services/GeocodeServer/findaddresscandidates?all=dorfstr</a> <br />
-          <a href="rest/services/GeocodeServer/findaddresscandidates?egid=867194"><strong>Addresses with EGID:</strong> rest/services/GeocodeServer/findaddresscandidates?egid=867194</a> <br />
-          <a href="rest/services/GeocodeServer/findaddresscandidates?cities=5514&all=saug"><strong>Addresses with city number (no need for bfsnr parameter. if number, bfsnr is asusmed) :</strong> rest/services/GeocodeServer/findaddresscandidates?cities=5514&all=saug</a> <br />
-          <a href="rest/services/GeocodeServer/findaddresscandidates?swissnames=Beau"><strong>Search only swissnames:</strong> rest/services/GeocodeServer/findaddresscandidates?swissnames=Beau</a> <br />
-          <a href="rest/services/GeocodeServer/findaddresscandidates?address=Beaulieustr"><strong>Search for address:</strong> rest/services/GeocodeServer/findaddresscandidates?address=Beaulieustr</a> <br />
          <h2>Ogcproxy</h2>
          <a href="ogcproxy?url=http://wms.pcn.minambiente.it/ogc?map=/ms_ogc/WMS_v1.3/raster/IGM_100000.map&VERSION=1.3.0&SERVICE=WMS&REQUEST=GetCapabilities">Get
          Capabilities using ogcproxy</a>
-          <h3 id="todo geocoding">TODO geocoding</h3>
-              - correct formate to return (see specs) <br />
-              - handle cb parameter <br />
-              - bsfnr (in cities parameters) in combination with all parameter <br />
-              - correct geometry to return (geojson and esrigeojson) <br />
-              - layer search (if needed...) <br />
-              - filter results if multiple addressfields are provided (mix of swissnames, cities, address, etc etc) <br />
   </body>
 </html>
