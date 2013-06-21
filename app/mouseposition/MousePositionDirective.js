@@ -19,7 +19,7 @@
               target: element[0],
               undefinedHTML: '&nbsp;'
             });
-            control.setMap(map);
+            map.addControl(control);
 
             scope.$watch(mousePositionProjectionFunction, function(value) {
               control.setProjection(ol.proj.get(value));
