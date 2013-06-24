@@ -22,7 +22,7 @@ help:
 all: prod dev lint test
 
 .PHONY: prod
-prod: app-prod/src/app.js app-prod/css/app.css app-prod/index.html .build-artefacts/lib.timestamp
+prod: app-prod/src/app.js app-prod/css/app.css app-prod/index.html app-prod/info.json .build-artefacts/lib.timestamp
 
 .PHONY: dev
 dev: app/src/deps.js app/css/app.css app/index.html
@@ -37,6 +37,10 @@ test: app-prod/src/app.js node_modules
 app-prod/css/app.css: app/css/app.css node_modules
 	mkdir -p app-prod/css
 	node_modules/.bin/lessc --yui-compress $< $@
+
+# Temporary: the entire rule should go away eventually
+app-prod/info.json: app/info.json
+	cp $< $@
 
 app/css/app.css: app/css/app.less node_modules
 	node_modules/.bin/lessc $< $@
