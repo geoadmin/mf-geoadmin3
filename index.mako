@@ -72,14 +72,14 @@
     <!-- Use Closure to load the application scripts -->
     <script>
       window.CLOSURE_NO_DEPS = true;
-      window.CLOSURE_BASE_PATH = "lib/";
+      window.CLOSURE_BASE_PATH = "app/";
     </script>
 
     <!-- ol-whitespace.js includes Closure's base.js code, so we don't
          need to load base.js ourselves. We keep Closure's base.js file
          around in case we need to test with ol.js or ol-simple.js. -->
     <script src="lib/ol-whitespace.js"></script>
-    <!--<script src="lib/closure-base.js"></script>-->
+    <!--<script src="lib/closure/base.js"></script>-->
     <script src="build/deps.js"></script>
 
     <script>
