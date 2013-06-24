@@ -23,7 +23,7 @@ help:
 all: css js deps index test
 
 .PHONY: css
-css: app/css/app.min.css
+css: app-prod/css/app.css
 
 .PHONY: js
 js: lint app-prod/src/app.js
@@ -41,7 +41,8 @@ lint: .build-artefacts/lint.timestamp
 test: app-prod/src/app.js node_modules
 	npm test
 
-app/css/app.min.css: app/css/app.css node_modules
+app-prod/css/app.css: app/css/app.css node_modules
+	mkdir -p app-prod/css
 	node_modules/.bin/lessc --yui-compress $< $@
 
 app/css/app.css: app/css/app.less node_modules
@@ -109,7 +110,7 @@ clean:
 	rm -f .build-artefacts/lint.timestamp
 	rm -f app/src/deps.js
 	rm -f app/css/app.css
-	rm -f app/css/app.min.css
 	rm -f app/index.html
 	rm -f app-prod/src/app.js
+	rm -f app-prod/css/app.css
 	rm -f app-prod/index.html
