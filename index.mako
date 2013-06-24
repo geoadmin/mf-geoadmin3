@@ -22,10 +22,13 @@
         <form class="navbar-form pull-left">
           <select
             ng-model="mousePositionProjection"
-            ng-options="p.value as p.label for p in mousePositionProjections">
+            ng-options="p.label for p in mousePositionProjections">
           </select>
         </form>
-        <p class="navbar-text">{{mousePositionValue | coordXY:2}}</p>
+        <p class="navbar-text"
+           x-ga-mouse-position
+           x-ga-mouse-position-map="map"
+           x-ga-mouse-position-projection="mousePositionProjection"></p>
       </div>
     </div>
 
@@ -65,14 +68,20 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/defs/EPSG21781.js"></script>
     <script src="lib/jquery-2.0.2.min.js"></script>
     <script src="lib/bootstrap-3.0.0.js"></script>
-    <script src="lib/ol-whitespace.js"></script>
 
-    <!-- Use Closure's base.js script to load the application scripts -->
+    <!-- Use Closure to load the application scripts -->
     <script>
       window.CLOSURE_NO_DEPS = true;
+      window.CLOSURE_BASE_PATH = "lib/";
     </script>
-    <script src="lib/closure/base.js"></script>
+
+    <!-- ol-whitespace.js includes Closure's base.js code, so we don't
+         need to load base.js ourselves. We keep Closure's base.js file
+         around in case we need to test with ol.js or ol-simple.js. -->
+    <script src="lib/ol-whitespace.js"></script>
+    <!--<script src="lib/closure-base.js"></script>-->
     <script src="build/deps.js"></script>
+
     <script>
       goog.require('ga');
     </script>

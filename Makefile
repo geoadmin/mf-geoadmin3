@@ -54,7 +54,7 @@ build/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compil
 	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/closurebuilder.py --root=app --root=lib/closure --namespace="ga" --output_mode=list > $@
 
 build/deps.js: $(JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
-	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root_with_prefix="app ../../app" --output_file=$@
+	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root_with_prefix="app ../app" --output_file=$@
 
 index.html: index.mako .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render $< > $@
