@@ -51,10 +51,13 @@ build/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compil
 	java -jar .build-artefacts/closure-compiler/compiler.jar $(JS_FILES_FOR_COMPILER) --compilation_level SIMPLE_OPTIMIZATIONS --js_output_file $@
 
 .build-artefacts/js-files: $(JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
+	# closurebuilder.py complains if it cannot find a Closure base.js script,
+	# so we add lib/closure as a root. When compiling we remove base.js from
+	# the js files passed to the Closure compiler.
 	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/closurebuilder.py --root=app --root=lib/closure --namespace="ga" --output_mode=list > $@
 
 build/deps.js: $(JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
-	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root_with_prefix="app ../app" --output_file=$@
+	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root="app" --output_file=$@
 
 index.html: index.mako .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render $< > $@
@@ -101,6 +104,7 @@ cleanall: clean
 
 .PHONY: clean
 clean:
+	rm -f .build-artefacts/js-files
 	rm -f build/app.js
 	rm -f build/deps.js
 	rm -f css/app.css
