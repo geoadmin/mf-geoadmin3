@@ -58,6 +58,7 @@ app/index.html: app/index.mako .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render $< > $@
 
 app-prod/index.html: app/index.mako .build-artefacts/python-venv/bin/mako-render
+	mkdir -p app-prod
 	.build-artefacts/python-venv/bin/mako-render --var "mode=prod" $< > $@
 
 .build-artefacts/lib.timestamp: $(LIB_FILES)
@@ -109,4 +110,4 @@ clean:
 	rm -f app/src/deps.js
 	rm -f app/css/app.css
 	rm -f app/index.html
-	rm -rf app-prod/*
+	rm -rf app-prod

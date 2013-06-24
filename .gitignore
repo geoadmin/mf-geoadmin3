@@ -2,9 +2,7 @@
 /app/src/deps.js
 /app/css/app.css
 /app/index.html
-/app-prod/src/app.js
-/app-prod/css/app.css
-/app-prod/index.html
+/app-prod
 /.build-artefacts
 
 # FIXME
