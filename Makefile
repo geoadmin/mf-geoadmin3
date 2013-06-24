@@ -1,5 +1,6 @@
 
-JS_FILES := $(shell find app/ -type f -name '*.js')
+JS_FILES := $(filter-out app/src/deps.js, $(shell find app/src -type f -name '*.js'))
+LIB_FILES := $(shell find app/lib -type f -name '*.js')
 JS_FILES_FOR_COMPILER = $(shell sed -e :a -e 'N;s/\n/ --js /;ba' .build-artefacts/js-files | sed 's/^.*base\.js //')
 
 .PHONY: help
@@ -8,10 +9,8 @@ help:
 	@echo
 	@echo "Possible targets:"
 	@echo
-	@echo "- css       Build CSS"
-	@echo "- js        Build JavaScript"
-	@echo "- deps      Build deps.js (for script autoload with Closure)"
-	@echo "- index     Create app/index.html and app-prod/index.html"
+	@echo "- prod      Build app for prod (app-prod)"
+	@echo "- dev       Build app for dev (app)"
 	@echo "- lint      Run the linter"
 	@echo "- test      Run the JavaScript tests"
 	@echo "- all       All of the above"
@@ -20,19 +19,13 @@ help:
 	@echo
 
 .PHONY: all
-all: css js deps index test
+all: prod dev lint test
 
-.PHONY: css
-css: app-prod/css/app.css
+.PHONY: prod
+prod: app-prod/src/app.js app-prod/css/app.css app-prod/index.html .build-artefacts/lib.timestamp
 
-.PHONY: js
-js: lint app-prod/src/app.js
-
-.PHONY: deps
-deps: app/src/deps.js
-
-.PHONY: index
-index: app/index.html app-prod/index.html
+.PHONY: dev
+dev: app/src/deps.js app/css/app.css app/index.html
 
 .PHONY: lint
 lint: .build-artefacts/lint.timestamp
@@ -66,6 +59,10 @@ app/index.html: app/index.mako .build-artefacts/python-venv/bin/mako-render
 
 app-prod/index.html: app/index.mako .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "mode=prod" $< > $@
+
+.build-artefacts/lib.timestamp: $(LIB_FILES)
+	cp -r app/lib app-prod
+	touch $@
 
 .build-artefacts/lint.timestamp: .build-artefacts/python-venv/bin/gjslint $(JS_FILES)
 	.build-artefacts/python-venv/bin/gjslint -r app/src --jslint_error=all
@@ -108,9 +105,8 @@ cleanall: clean
 clean:
 	rm -f .build-artefacts/js-files
 	rm -f .build-artefacts/lint.timestamp
+	rm -f .build-artefacts/lib.timestamp
 	rm -f app/src/deps.js
 	rm -f app/css/app.css
 	rm -f app/index.html
-	rm -f app-prod/src/app.js
-	rm -f app-prod/css/app.css
-	rm -f app-prod/index.html
+	rm -rf app-prod/*
