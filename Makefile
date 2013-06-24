@@ -44,7 +44,7 @@ test: build/app.js node_modules
 app/css/app.min.css: app/css/app.css node_modules
 	node_modules/.bin/lessc --yui-compress $< $@
 
-app/css/app.css: app/less/app.less node_modules
+app/css/app.css: app/css/app.less node_modules
 	node_modules/.bin/lessc $< $@
 
 build/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar
