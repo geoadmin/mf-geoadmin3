@@ -11,7 +11,7 @@ help:
 	@echo "- css       Build CSS"
 	@echo "- js        Build JavaScript"
 	@echo "- deps      Build deps.js (for script autoload with Closure)"
-	@echo "- index     Create index.html and index-prod.html"
+	@echo "- index     Create app/index.html and app-prod/index.html"
 	@echo "- lint      Run the linter"
 	@echo "- test      Run the JavaScript tests"
 	@echo "- all       All of the above"
@@ -32,7 +32,7 @@ js: lint build/app.js
 deps: build/deps.js
 
 .PHONY: index
-index: index.html index-prod.html
+index: app/index.html app-prod/index.html
 
 .PHONY: lint
 lint: .build-artefacts/lint.timestamp
@@ -59,10 +59,10 @@ build/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compil
 build/deps.js: $(JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
 	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root="app" --output_file=$@
 
-index.html: index.mako .build-artefacts/python-venv/bin/mako-render
+app/index.html: app/index.mako .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render $< > $@
 
-index-prod.html: index.mako .build-artefacts/python-venv/bin/mako-render
+app-prod/index.html: app/index.mako .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "mode=prod" $< > $@
 
 .build-artefacts/lint.timestamp: .build-artefacts/python-venv/bin/gjslint $(JS_FILES)
@@ -109,5 +109,5 @@ clean:
 	rm -f build/deps.js
 	rm -f css/app.css
 	rm -f css/app.min.css
-	rm -f index.html
-	rm -f index-prod.html
+	rm -f app/index.html
+	rm -f app-prod/index.html

@@ -1,8 +1,8 @@
 /node_modules
 /build/app.js
 /build/deps.js
-/index.html
-/index-prod.html
+/app/index.html
+/app-prod/index.html
 /.build-artefacts
 
 # FIXME
