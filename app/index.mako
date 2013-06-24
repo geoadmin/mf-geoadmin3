@@ -41,7 +41,7 @@
             </a>
             <div class="print collapse">
               <div class="accordion-inner">
-                <%include file="print/partials/form.html"/>
+                <%include file="src/print/partials/form.html"/>
               </div>
             </div>
           </div>
