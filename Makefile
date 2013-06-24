@@ -50,10 +50,10 @@ app/css/app.css: app/css/app.less node_modules
 build/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar
 	java -jar .build-artefacts/closure-compiler/compiler.jar $(JS_FILES_FOR_COMPILER) --compilation_level SIMPLE_OPTIMIZATIONS --js_output_file $@
 
+# closurebuilder.py complains if it cannot find a Closure base.js script, so we
+# add lib/closure as a root. When compiling we remove base.js from the js files
+# passed to the Closure compiler.
 .build-artefacts/js-files: $(JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
-	# closurebuilder.py complains if it cannot find a Closure base.js script,
-	# so we add lib/closure as a root. When compiling we remove base.js from
-	# the js files passed to the Closure compiler.
 	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/closurebuilder.py --root=app/src --root=app/lib/closure --namespace="ga" --output_mode=list > $@
 
 app/src/deps.js: $(JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
