@@ -29,7 +29,7 @@ css: css/app.min.css
 js: lint build/app.js
 
 .PHONY: deps
-deps: build/deps.js
+deps: app/src/deps.js
 
 .PHONY: index
 index: app/index.html app-prod/index.html
@@ -56,8 +56,8 @@ build/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compil
 	# the js files passed to the Closure compiler.
 	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/closurebuilder.py --root=app/src --root=app/lib/closure --namespace="ga" --output_mode=list > $@
 
-build/deps.js: $(JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
-	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root="app" --output_file=$@
+app/src/deps.js: $(JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
+	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root="app/src" --output_file=$@
 
 app/index.html: app/index.mako .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render $< > $@
@@ -107,7 +107,7 @@ clean:
 	rm -f .build-artefacts/js-files
 	rm -f .build-artefacts/lint.timestamp
 	rm -f build/app.js
-	rm -f build/deps.js
+	rm -f app/src/deps.js
 	rm -f css/app.css
 	rm -f css/app.min.css
 	rm -f app/index.html

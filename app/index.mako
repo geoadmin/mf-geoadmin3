@@ -72,7 +72,7 @@
     <!-- Use Closure to load the application scripts -->
     <script>
       window.CLOSURE_NO_DEPS = true;
-      window.CLOSURE_BASE_PATH = "app/";
+      window.CLOSURE_BASE_PATH = "src/";
     </script>
 
     <!-- ol-whitespace.js includes Closure's base.js code, so we don't
@@ -80,7 +80,7 @@
          around in case we need to test with ol.js or ol-simple.js. -->
     <script src="lib/ol-whitespace.js"></script>
     <!--<script src="lib/closure/base.js"></script>-->
-    <script src="build/deps.js"></script>
+    <script src="src/deps.js"></script>
 
     <script>
       goog.require('ga');
