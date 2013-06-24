@@ -1,9 +1,9 @@
 /node_modules
-/build/app.js
 /app/src/deps.js
 /app/css/app.css
 /app/css/app.min.css
 /app/index.html
+/app-prod/src/app.js
 /app-prod/index.html
 /.build-artefacts
 

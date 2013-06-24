@@ -26,7 +26,7 @@ all: css js deps index test
 css: app/css/app.min.css
 
 .PHONY: js
-js: lint build/app.js
+js: lint app-prod/src/app.js
 
 .PHONY: deps
 deps: app/src/deps.js
@@ -38,7 +38,7 @@ index: app/index.html app-prod/index.html
 lint: .build-artefacts/lint.timestamp
 
 .PHONY: test
-test: build/app.js node_modules
+test: app-prod/src/app.js node_modules
 	npm test
 
 app/css/app.min.css: app/css/app.css node_modules
@@ -47,7 +47,8 @@ app/css/app.min.css: app/css/app.css node_modules
 app/css/app.css: app/css/app.less node_modules
 	node_modules/.bin/lessc $< $@
 
-build/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar
+app-prod/src/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar
+	mkdir -p app-prod/src
 	java -jar .build-artefacts/closure-compiler/compiler.jar $(JS_FILES_FOR_COMPILER) --compilation_level SIMPLE_OPTIMIZATIONS --js_output_file $@
 
 # closurebuilder.py complains if it cannot find a Closure base.js script, so we
@@ -106,9 +107,9 @@ cleanall: clean
 clean:
 	rm -f .build-artefacts/js-files
 	rm -f .build-artefacts/lint.timestamp
-	rm -f build/app.js
 	rm -f app/src/deps.js
 	rm -f app/css/app.css
 	rm -f app/css/app.min.css
 	rm -f app/index.html
+	rm -f app-prod/src/app.js
 	rm -f app-prod/index.html
