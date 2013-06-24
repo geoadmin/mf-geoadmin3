@@ -105,6 +105,7 @@ cleanall: clean
 .PHONY: clean
 clean:
 	rm -f .build-artefacts/js-files
+	rm -f .build-artefacts/lint.timestamp
 	rm -f build/app.js
 	rm -f build/deps.js
 	rm -f css/app.css
