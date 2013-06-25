@@ -10,7 +10,7 @@ describe('GaMapController', function () {
     mc = $controller('GaMapController', { $scope: scope });
   }));
 
-  describe('creationg', function () {
+  describe('creation', function () {
     it('contains map instance', function () {
       expect(scope).not.to.be(null);
       expect(scope.map).not.to.be(null);
