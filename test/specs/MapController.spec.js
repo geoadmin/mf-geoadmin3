@@ -17,5 +17,12 @@ describe('GaMapController', function () {
       expect(scope.map instanceof ol.Map).to.be(true);
     });
   });
+
+  describe('projection', function () {
+    it('is swiss projection', function () {
+      expect(scope.map.getView().getProjection().getCode()).to.be('EPSG:21781');
+    });
+  });
+
 });
 
