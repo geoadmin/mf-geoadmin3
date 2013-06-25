@@ -4,13 +4,14 @@
   goog.require('ga_map');
   goog.require('ga_mouseposition');
   goog.require('ga_print');
-
+  goog.require('ga_scaleline');
 
   var module = angular.module('ga', [
     'ga_map',
     'ga_mouseposition',
     'ga_backgroundlayerselector',
-    'ga_print'
+    'ga_print',
+    'ga_scaleline'
   ]);
 
   // Configure the $http service to remove the X-Requested-With

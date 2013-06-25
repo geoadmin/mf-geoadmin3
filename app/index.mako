@@ -19,6 +19,7 @@
       <div class="map" x-ga-map="map"></div>
       <div class=" footer navbar navbar-fixed-bottom"
            ng-controller="GaMousePositionController">
+        <div class="pull-left" x-ga-scale-line x-ga-scale-line-map="map"></div>
         <form class="navbar-form pull-left">
           <select
             ng-model="mousePositionProjection"
