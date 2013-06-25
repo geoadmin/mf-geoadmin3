@@ -30,8 +30,8 @@ class MapService(MapServiceValidation):
         model = get_bod_model(self.lang)
         results = computeHeader(self.mapName)
         query = self.request.db.query(model).filter(model.maps.ilike('%%%s%%' % self.mapName))
-        query = self.geodataStagingFilter(query, model.staging)
-        query = self.fullTextSearch(query, [model.fullTextSearch])
+        query = self._geodata_staging_filter(query, model.staging)
+        query = self._full_text_search(query, [model.fullTextSearch])
         layers = [layer.layerMetadata() for layer in query]
         results['layers'].append(layers)
         return results
@@ -54,13 +54,13 @@ class MapService(MapServiceValidation):
     # order matters, last route is the default!
     @view_config(route_name='identify', renderer='geojson', request_param='geometryFormat=geojson')
     def view_identify_geosjon(self):
-        return self.identify()
+        return self._identify()
 
     @view_config(route_name='identify', renderer='esrijson')
     def view_identify_esrijson(self):
-        return self.identify()
+        return self._identify()
 
-    def identify(self):
+    def _identify(self):
         self.geometry = self.request.params.get('geometry')
         self.geometryType = self.request.params.get('geometryType')
         self.imageDisplay = self.request.params.get('imageDisplay')
@@ -68,36 +68,36 @@ class MapService(MapServiceValidation):
         self.tolerance = self.request.params.get('tolerance')
         self.returnGeometry = self.request.params.get('returnGeometry', True)
         layers = self.request.params.get('layers','all')
-        models = self.getModelsFromLayerName(layers)
-        queries = list(self.buildQueries(models))
-        features = list(self.getFeaturesFromQueries(queries))
+        models = self._get_models_from_layername(layers)
+        queries = list(self._build_queries(models))
+        features = list(self._get_features_from_queries(queries))
         return {'results': features} 
 
     @view_config(route_name='getfeature', renderer='geojson', request_param='geometryFormat=geojson')
-    def view_getfeature_geojson(self):
-        return self.getfeature()
+    def view_get_feature_geojson(self):
+        return self._get_feature()
 
     @view_config(route_name='getfeature', renderer='esrijson')
-    def view_getfeature_esrijson(self):
-        return self.getfeature()
+    def view_get_feature_esrijson(self):
+        return self._get_feature()
 
-    def getfeature(self):
+    def _get_feature(self):
         self.returnGeometry = self.request.params.get('returnGeometry', True)
-        feature, template = self.getFeature()
+        feature, template = self._get_feature_resource()
         return feature
 
     @view_config(route_name='htmlpopup', renderer='jsonp')
     def htmlpopup(self):
         from pyramid.renderers import render_to_response
         self.returnGeometry = False
-        feature, template = self.getFeature()
+        feature, template = self._get_feature_resource()
         response = render_to_response('chsdi:' + template, feature, request = self.request)
         if self.cbName is None:
             return response
         else:
             return response.body
 
-    def getFeature(self):
+    def _get_feature_resource(self):
         idfeature = self.request.matchdict.get('idfeature')
         idlayer = self.request.matchdict.get('idlayer') 
         model = validateLayerId(idlayer)[0]
@@ -110,7 +110,7 @@ class MapService(MapServiceValidation):
         template = model.__template__
         return feature, template
 
-    def fullTextSearch(self, query, orm_column):
+    def _full_text_search(self, query, orm_column):
         filters = []
         for col in orm_column:
             if col is not None:
@@ -118,7 +118,7 @@ class MapService(MapServiceValidation):
         query = query.filter(or_(*filters)) if self.searchText is not None else query
         return query
 
-    def geodataStagingFilter(self, query, orm_column):
+    def _geodata_staging_filter(self, query, orm_column):
         if self.geodataStaging == 'test':
             return query
         elif self.geodataStaging == 'integration':
@@ -126,12 +126,12 @@ class MapService(MapServiceValidation):
         elif self.geodataStaging == 'prod':
             return query.filter(orm_column == self.geodataStaging)
 
-    def getFeaturesFromQueries(self, queries):
+    def _get_features_from_queries(self, queries):
        for query in queries:
             for feature in query:
                 yield feature.__geo_interface__
 
-    def buildQueries(self, models):
+    def _build_queries(self, models):
         for layer in models:
             for model in layer:
                 geom_filter = model.geom_filter(
@@ -142,11 +142,11 @@ class MapService(MapServiceValidation):
                     self.tolerance
                 )
                 query = self.request.db.query(model).filter(geom_filter)
-                query = self.fullTextSearch(query, model.queryable_attributes())
+                query = self._full_text_search(query, model.queryable_attributes())
                 yield query
 
-    def getModelsFromLayerName(self, layers_param):
-        layers = self.getLayerListFromMap() if layers_param == 'all' else layers_param.split(':')[1].split(',')
+    def _get_models_from_layername(self, layers_param):
+        layers = self._get_layer_list_from_map() if layers_param == 'all' else layers_param.split(':')[1].split(',')
         models = [
             validateLayerId(layer) for
             layer in layers
@@ -154,7 +154,7 @@ class MapService(MapServiceValidation):
         ]
         return models
 
-    def getLayerListFromMap(self):
+    def _get_layer_list_from_map(self):
         model = get_bod_model(self.lang)
         query = self.request.db.query(model).filter(
             model.maps.ilike('%%%s%%' % self.mapName)
