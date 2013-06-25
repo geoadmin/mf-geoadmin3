@@ -22,19 +22,17 @@ Build:
 Use `make` (or `make help`) to know about the possible `make` targets:
 
     $ make
-     Usage: make <target>
+    Usage: make <target>
 
-     Possible targets:
+    Possible targets:
 
-     - css       Build CSS
-     - js        Build JavaScript
-     - deps      Build deps.js (for script autoload with Closure)
-     - index     Create index.html and index-prod.html
-     - lint      Run the linter
-     - test      Run the JavaScript tests
-     - all       All of the above
-     - clean     Remove generated files
-     - cleanall  Remove all the build artefacts
+    - prod      Build app for prod (app-prod)
+    - dev       Build app for dev (app)
+    - lint      Run the linter
+    - test      Run the JavaScript tests
+    - all       All of the above
+    - clean     Remove generated files
+    - cleanall  Remove all the build artefacts
 
 On mf1t, create an Apache configuration file for your environment. Ex:
 

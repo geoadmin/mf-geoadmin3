@@ -1,5 +1,6 @@
 
-JS_FILES := $(shell find app/ -type f -name '*.js')
+JS_FILES := $(filter-out app/src/deps.js, $(shell find app/src -type f -name '*.js'))
+LIB_FILES := $(shell find app/lib -type f -name '*.js')
 JS_FILES_FOR_COMPILER = $(shell sed -e :a -e 'N;s/\n/ --js /;ba' .build-artefacts/js-files | sed 's/^.*base\.js //')
 
 .PHONY: help
@@ -8,10 +9,8 @@ help:
 	@echo
 	@echo "Possible targets:"
 	@echo
-	@echo "- css       Build CSS"
-	@echo "- js        Build JavaScript"
-	@echo "- deps      Build deps.js (for script autoload with Closure)"
-	@echo "- index     Create index.html and index-prod.html"
+	@echo "- prod      Build app for prod (app-prod)"
+	@echo "- dev       Build app for dev (app)"
 	@echo "- lint      Run the linter"
 	@echo "- test      Run the JavaScript tests"
 	@echo "- all       All of the above"
@@ -20,53 +19,58 @@ help:
 	@echo
 
 .PHONY: all
-all: css js deps index test
+all: prod dev lint test
 
-.PHONY: css
-css: css/app.min.css
+.PHONY: prod
+prod: app-prod/src/app.js app-prod/css/app.css app-prod/index.html app-prod/info.json .build-artefacts/lib.timestamp
 
-.PHONY: js
-js: lint build/app.js
-
-.PHONY: deps
-deps: build/deps.js
-
-.PHONY: index
-index: index.html index-prod.html
+.PHONY: dev
+dev: app/src/deps.js app/css/app.css app/index.html
 
 .PHONY: lint
 lint: .build-artefacts/lint.timestamp
 
 .PHONY: test
-test: build/app.js node_modules
+test: app-prod/src/app.js node_modules
 	npm test
 
-css/app.min.css: css/app.css node_modules
+app-prod/css/app.css: app/css/app.css node_modules
+	mkdir -p app-prod/css
 	node_modules/.bin/lessc --yui-compress $< $@
 
-css/app.css: less/app.less node_modules
+# Temporary: the entire rule should go away eventually
+app-prod/info.json: app/info.json
+	cp $< $@
+
+app/css/app.css: app/css/app.less node_modules
 	node_modules/.bin/lessc $< $@
 
-build/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar
+app-prod/src/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar
+	mkdir -p app-prod/src
 	java -jar .build-artefacts/closure-compiler/compiler.jar $(JS_FILES_FOR_COMPILER) --compilation_level SIMPLE_OPTIMIZATIONS --js_output_file $@
 
+# closurebuilder.py complains if it cannot find a Closure base.js script, so we
+# add lib/closure as a root. When compiling we remove base.js from the js files
+# passed to the Closure compiler.
 .build-artefacts/js-files: $(JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
-	# closurebuilder.py complains if it cannot find a Closure base.js script,
-	# so we add lib/closure as a root. When compiling we remove base.js from
-	# the js files passed to the Closure compiler.
-	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/closurebuilder.py --root=app --root=lib/closure --namespace="ga" --output_mode=list > $@
+	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/closurebuilder.py --root=app/src --root=app/lib/closure --namespace="ga" --output_mode=list > $@
 
-build/deps.js: $(JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
-	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root="app" --output_file=$@
+app/src/deps.js: $(JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
+	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root="app/src" --output_file=$@
 
-index.html: index.mako .build-artefacts/python-venv/bin/mako-render
+app/index.html: app/index.mako .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render $< > $@
 
-index-prod.html: index.mako .build-artefacts/python-venv/bin/mako-render
+app-prod/index.html: app/index.mako .build-artefacts/python-venv/bin/mako-render
+	mkdir -p app-prod
 	.build-artefacts/python-venv/bin/mako-render --var "mode=prod" $< > $@
 
+.build-artefacts/lib.timestamp: $(LIB_FILES)
+	cp -r app/lib app-prod
+	touch $@
+
 .build-artefacts/lint.timestamp: .build-artefacts/python-venv/bin/gjslint $(JS_FILES)
-	.build-artefacts/python-venv/bin/gjslint -r app --jslint_error=all
+	.build-artefacts/python-venv/bin/gjslint -r app/src --jslint_error=all
 	touch $@
 
 node_modules:
@@ -105,9 +109,9 @@ cleanall: clean
 .PHONY: clean
 clean:
 	rm -f .build-artefacts/js-files
-	rm -f build/app.js
-	rm -f build/deps.js
-	rm -f css/app.css
-	rm -f css/app.min.css
-	rm -f index.html
-	rm -f index-prod.html
+	rm -f .build-artefacts/lint.timestamp
+	rm -f .build-artefacts/lib.timestamp
+	rm -f app/src/deps.js
+	rm -f app/css/app.css
+	rm -f app/index.html
+	rm -rf app-prod
