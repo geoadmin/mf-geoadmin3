@@ -17,7 +17,7 @@
         </form>
       </div>
       <div class="map" x-ga-map="map"></div>
-      <div class=" footer navbar navbar-fixed-bottom">
+      <div class="footer navbar navbar-fixed-bottom">
         <div class="scaleline pull-left" x-ga-scale-line x-ga-scale-line-map="map"></div>
         <div class="attribution pull-left" x-ga-attribution x-ga-attribution-map="map"></div>
         <div class="mouseposition pull-left" ng-controller="GaMousePositionController">
