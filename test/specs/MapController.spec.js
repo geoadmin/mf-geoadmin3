@@ -24,5 +24,12 @@ describe('GaMapController', function () {
     });
   });
 
+  describe('resolution', function () {
+    it('has default resolution', function () {
+      expect(scope.map.getView().getResolution()).to.be(500);
+    });
+  });
+
+
 });
 
