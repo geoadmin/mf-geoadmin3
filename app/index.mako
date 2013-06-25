@@ -41,7 +41,7 @@
             </a>
             <div class="print collapse">
               <div class="accordion-inner">
-                <%include file="app/print/partials/form.html"/>
+                <%include file="src/print/partials/form.html"/>
               </div>
             </div>
           </div>
@@ -61,7 +61,7 @@
     <script src="lib/jquery-2.0.2.min.js"></script>
     <script src="lib/bootstrap-3.0.0.js"></script>
     <script src="lib/ol.js"></script>
-    <script src="build/app.js"></script>
+    <script src="src/app.js"></script>
 % else:
     <script src="lib/angular-1.1.5.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/proj4js-compressed.js"></script>
@@ -72,7 +72,7 @@
     <!-- Use Closure to load the application scripts -->
     <script>
       window.CLOSURE_NO_DEPS = true;
-      window.CLOSURE_BASE_PATH = "app/";
+      window.CLOSURE_BASE_PATH = "src/";
     </script>
 
     <!-- ol-whitespace.js includes Closure's base.js code, so we don't
@@ -80,7 +80,7 @@
          around in case we need to test with ol.js or ol-simple.js. -->
     <script src="lib/ol-whitespace.js"></script>
     <!--<script src="lib/closure/base.js"></script>-->
-    <script src="build/deps.js"></script>
+    <script src="src/deps.js"></script>
 
     <script>
       goog.require('ga');
