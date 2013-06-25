@@ -17,20 +17,19 @@
         </form>
       </div>
       <div class="map" x-ga-map="map"></div>
-      <div class=" footer navbar navbar-fixed-bottom"
-           ng-controller="GaMousePositionController">
-        <div class="pull-left" x-ga-scale-line x-ga-scale-line-map="map"></div>
-        <div class="pull-left" x-ga-attribution x-ga-attribution-map="map"></div>
-        <form class="navbar-form pull-left">
-          <select
+      <div class=" footer navbar navbar-fixed-bottom">
+        <div class="scaleline pull-left" x-ga-scale-line x-ga-scale-line-map="map"></div>
+        <div class="attribution pull-left" x-ga-attribution x-ga-attribution-map="map"></div>
+        <div class="mouseposition pull-left" ng-controller="GaMousePositionController">
+          <select class="mouseposition-select"
             ng-model="mousePositionProjection"
             ng-options="p.label for p in mousePositionProjections">
           </select>
-        </form>
-        <p class="navbar-text"
-           x-ga-mouse-position
-           x-ga-mouse-position-map="map"
-           x-ga-mouse-position-projection="mousePositionProjection"></p>
+          <div class="mouseposition-value"
+             x-ga-mouse-position
+             x-ga-mouse-position-map="map"
+             x-ga-mouse-position-projection="mousePositionProjection"></div>
+        </div>
       </div>
     </div>
 
