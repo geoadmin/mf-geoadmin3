@@ -37,6 +37,9 @@
               for (i = 0; i < ii; ++i) {
                 wmtsSourceOptions = ol.source.WMTS.optionsFromCapabilities(
                  capabilities, scope.wmtsLayers[i].value);
+                wmtsSourceOptions.attributions = [
+                  new ol.Attribution('&copy; Data: swisstopo')
+                ];
                 wmtsSource = new ol.source.WMTS(wmtsSourceOptions);
                 wmtsLayer = new ol.layer.TileLayer({source: wmtsSource});
                 wmtsLayerObjects.push(wmtsLayer);
@@ -63,5 +66,3 @@
         };
       }]);
 })();
-
-

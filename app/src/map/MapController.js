@@ -12,6 +12,9 @@
     });
 
     var map = new ol.Map({
+      controls: ol.control.defaults({
+        attribution: false
+      }),
       renderer: ol.RendererHint.CANVAS,
       view: new ol.View2D({
         projection: swissProjection,
