@@ -4,7 +4,7 @@ node_js:
 
 before_script:
     - sudo pip install virtualenv
-    - make build/app.js
+    - make all
 
 notifications:
     email:
