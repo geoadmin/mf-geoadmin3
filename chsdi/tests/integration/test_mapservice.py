@@ -68,6 +68,13 @@ class TestMapServiceView(TestsBase):
         self.failUnless(resp.json['results'][0].has_key('properties'))
         self.failUnless(resp.json['results'][0].has_key('geometry'))
 
+    def test_identify_no_geom(self):
+        params = {'geometry': '630000,245000,645000,265000', 'geometryType': 'esriGeometryEnvelope', 'imageDisplay': '500,600,96', 'mapExtent': '545132,147068,550132,150568', 'tolerance': '1', 'layers': 'all', 'returnGeometry': 'false'}
+        resp = self.testapp.get('/rest/services/bafu/MapServer/identify', params=params, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless(resp.json['results'][0].has_key('geometry') != True)
+        self.failUnless(resp.json['results'][0].has_key('geometryType') != True)
+
     def test_getfeature_wrong_idlayer(self):
         resp = self.testapp.get('/rest/services/bafu/MapServer/toto/362', status=400)
         resp.mustcontain('Please provide a valid layer Id')

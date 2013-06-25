@@ -8,8 +8,8 @@ Base = bases['bod']
 
 class Bod(object):
     __dbname__ = 'bod'
-    id = 0 # Temporary until a fixed integer is defined for each layer
     idBod = Column('bod_layer_id', Text, primary_key=True)
+    id = Column('bgdi_id', Text)
     idGeoCat = Column('geocat_uuid', Text)
     name = Column('kurzbezeichnung', Text)
     fullName = Column('bezeichnung', Text)
@@ -41,8 +41,8 @@ class Bod(object):
             'name': self.name,
             'fullName': self.fullName,
             'defaultVisibility': True,
-            'parentLayerId': None,
-            'subLayerId': None,
+            'parentLayerId': None, # Temporary until the view is updated
+            'subLayerId': None, # Temporary until the view is updated
             'attributes': {
                 'maps': self.maps,
                 'dataOwner': self.dataOwner,
@@ -50,11 +50,9 @@ class Bod(object):
                 'times': self.times,
                 'downloadUrl': self.downloadUrl,
                 'urlApplication': self.urlApplication,
-                'fullTextSearch': self.fullTextSearch,
                 'wmsContactAbbreviation': self.wmsContactAbbreviation,
                 'wmsContactName': self.wmsContactName,
                 'wmsUrlResource': self.wmsUrlResource,
-                'staging': self.staging,
                 'urlDetails': self.urlDetails,
                 'inspireUpperAbstract': self.inspireUpperAbstract,
                 'inspireUpperName': self.inspireUpperName,
@@ -114,20 +112,19 @@ class ServiceMetadataFr(Base):
     __table_args__ = ({'autoload': True})
     id = Column('wms_id', Text, primary_key=True)
 
-
 def computeHeader(mapName):
     return {
         'serviceDescription': 'Description here',
         'mapName': mapName,
         'description': 'Description of the topic here',
-        'copyrightText': 'The copyright of the different offices',
+        'copyrightText': 'Copyright text here',
         'layers': [],
         'spatialReference': {"wkid" : 21781},
         'tileInfo': {
             'rows': 236,
             'cols': 284,
             'dpi': 96,
-            'format': 'jpeg',
+            'format': 'png,jpeg',
             'compressionQuality': '',
             'origin': {"x" : 5.140242, "y" : 45.398181, "spatialReference" : {"wkid" : 4326}},
             'spatialReference': {"wkid" : 21781},
@@ -148,10 +145,16 @@ def computeHeader(mapName):
                 {'level': 13, 'resolution': 0.1, 'scale': 378}
             ]
         },
-        'initialExtent': '',
-        'fullExtent': '',
+        'initialExtent': {
+            'xmin': 458000, 'ymin': 76375, 'xmax': 862500, 'ymax': 289125,
+            'spatialReference': {'wkid': 21781}
+        },
+        'fullExtent': {
+            'xmin': 42000, 'ymin': 30000, 'xmax': 900000, 'ymax': 350000,
+            'spatialReference': {'wkid': 21781}
+        },
         'units': 'esriMeters',
-        'capabilities': 'identify,find'
+        'capabilities': 'identify'
     }
 
 def get_bod_model(lang):

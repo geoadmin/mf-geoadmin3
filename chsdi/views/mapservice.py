@@ -66,7 +66,7 @@ class MapService(MapServiceValidation):
         self.imageDisplay = self.request.params.get('imageDisplay')
         self.mapExtent = self.request.params.get('mapExtent')
         self.tolerance = self.request.params.get('tolerance')
-        self.returnGeometry = self.request.params.get('returnGeometry', True)
+        self.returnGeometry = self.request.params.get('returnGeometry')
         layers = self.request.params.get('layers','all')
         models = self._get_models_from_layername(layers)
         queries = list(self._build_queries(models))
@@ -82,7 +82,7 @@ class MapService(MapServiceValidation):
         return self._get_feature()
 
     def _get_feature(self):
-        self.returnGeometry = self.request.params.get('returnGeometry', True)
+        self.returnGeometry = self.request.params.get('returnGeometry')
         feature, template = self._get_feature_resource()
         return feature
 
@@ -105,7 +105,7 @@ class MapService(MapServiceValidation):
         if self.returnGeometry:
             feature = [f.__geo_interface__ for f in query]
         else:
-            feature = [f.interface for f in query]
+            feature = [f.__interface__ for f in query]
         feature = {'feature': feature.pop()} if len(feature) > 0 else exc.HTTPBadRequest('No feature with id %s' % idfeature)
         template = model.__template__
         return feature, template
@@ -129,7 +129,7 @@ class MapService(MapServiceValidation):
     def _get_features_from_queries(self, queries):
        for query in queries:
             for feature in query:
-                yield feature.__geo_interface__
+                yield feature.__geo_interface__ if self.returnGeometry else feature.__interface__
 
     def _build_queries(self, models):
         for layer in models:

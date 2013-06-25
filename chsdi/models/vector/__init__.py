@@ -56,7 +56,7 @@ class Vector(GeoInterface):
             )
 
     @property
-    def interface(self):
+    def __interface__(self):
         display_column = self.display_field().name
         return {
             "layerId" : self.__esriId__, 

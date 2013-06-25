@@ -31,6 +31,7 @@ class MapServiceValidation(MapNameValidation):
         super(MapServiceValidation, self).__init__()
         self._geometry = None
         self._geometryType = None
+        self._returnGeometry = None
         self._imageDisplay = None
         self._mapExtent = None
         self._tolerance = None
@@ -44,6 +45,10 @@ class MapServiceValidation(MapNameValidation):
     @property
     def geometryType(self):
         return self._geometryType
+
+    @property
+    def returnGeometry(self):
+        return self._returnGeometry
 
     @property
     def imageDisplay(self):
@@ -70,7 +75,6 @@ class MapServiceValidation(MapNameValidation):
                 self._geometry = loads(value)
             except ValueError:
                 raise exc.HTTPBadRequest('Please provide a valide geometry')
-       
 
     @geometryType.setter
     def geometryType(self, value):
@@ -79,6 +83,13 @@ class MapServiceValidation(MapNameValidation):
         if value not in self.esriGeometryTypes:
             raise exc.HTTPBadRequest('Please provide a valid geometry type')
         self._geometryType = value
+
+    @returnGeometry.setter
+    def returnGeometry(self, value):
+        if value is False or value == 'false':
+            self._returnGeometry = False
+        else:
+            self._returnGeometry = True
 
     @imageDisplay.setter
     def imageDisplay(self, value):

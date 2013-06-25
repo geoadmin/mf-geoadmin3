@@ -40,6 +40,7 @@
           <a href="rest/services/bafu/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=630000,245000,645000,265000&imageDisplay=500,600,96&mapExtent=545132.87362333,147068.69380758,550132.87362333,150568.69380758&tolerance=1&layers=all">Identify - get all the available models for a given map (topic)</a> <br>
           <a href="rest/services/geoadmin/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=630000,245000,645000,265000&imageDisplay=500,350,96&mapExtent=545132.87362333,147068.69380758,550132.87362333,150568.69380758&tolerance=1&searchText=AG 19.0.3&layers=all:ch.astra.ivs-nat">Identify on mutiple queryable attributes</a> <br>
           <a href="rest/services/bafu/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=630000,245000,645000,265000&imageDisplay=500,350,96&mapExtent=545132.87362333,147068.69380758,550132.87362333,150568.69380758&tolerance=1&layers=all&callback=cb">Identify - example with callback</a> <br>
+          <a href="/rest/services/bafu/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=630000,245000,645000,265000&imageDisplay=500,600,96&mapExtent=545132.87362333,147068.69380758,550132.87362333,150568.69380758&tolerance=1&layers=all&returnGeometry=false">Identify - without geometry</a> <br>
           <h3>Varia</h3>
           <a href="rest/services/bafu/MapServer/ch.bafu.bundesinventare-bln/362">Get Feature with id 362</a> <br>
           <a href="rest/services/bafu/MapServer/ch.bafu.bundesinventare-bln/362/htmlpopup">Get Html Popup Ex 1</a> <br>
