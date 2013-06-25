@@ -1,5 +1,6 @@
 (function() {
   goog.provide('ga');
+  goog.require('ga_attribution');
   goog.require('ga_backgroundlayerselector');
   goog.require('ga_map');
   goog.require('ga_mouseposition');
@@ -7,6 +8,7 @@
   goog.require('ga_scaleline');
 
   var module = angular.module('ga', [
+    'ga_attribution',
     'ga_map',
     'ga_mouseposition',
     'ga_backgroundlayerselector',
