@@ -19,6 +19,10 @@ help:
 	@echo "- clean     Remove generated files"
 	@echo "- cleanall  Remove all the build artefacts"
 	@echo
+	@echo "Variables:"
+	@echo
+	@echo "- BASE_URL Base URL path (current value: $(BASE_URL))"
+	@echo
 
 .PHONY: all
 all: prod dev lint test apache
