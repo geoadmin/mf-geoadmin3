@@ -9,6 +9,7 @@
           restrict: 'A',
           link: function(scope, element, attrs) {
             var map = $parse(attrs.gaMap)(scope);
+            var resolutions = $parse(attrs.gaMapResolutions)(scope);
             var view = map.getView();
 
             // set view states based on URL query string
@@ -17,11 +18,9 @@
               view.setCenter([+queryParams.Y, +queryParams.X]);
             }
             if (queryParams.zoom !== undefined) {
-              var projectionExtent = view.getProjection().getExtent();
-              var size = Math.max(
-               ol.extent.getHeight(projectionExtent),
-               ol.extent.getWidth(projectionExtent));
-              var resolution = size / (256 * Math.pow(2, queryParams.zoom));
+              var zoom = +queryParams.zoom;
+              zoom = Math.min(Math.max(zoom, 0), resolutions.length - 1);
+              var resolution = resolutions[zoom];
               view.setResolution(resolution);
             }
 
