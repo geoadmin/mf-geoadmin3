@@ -36,11 +36,11 @@ Use `make` (or `make help`) to know about the possible `make` targets:
 
     Variables:
 
-    - BASE_URL Base URL path value for <base> in index.html (current value: /elemoine) 
+    - BASE_URL Base URL path (current value: /elemoine)
 
     Variables can be set as make macros or envvars. For example: 
 
-    $ make BASE_URL=/elemoine index 
+    $ make BASE_URL=/elemoine apache 
     $ BASE_URL=/elemoine make 
 
 You can avoid setting variables/macros on the `make` command line by creating  
