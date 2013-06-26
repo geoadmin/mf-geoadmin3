@@ -39,7 +39,7 @@ class Search(SearchValidation):
         self.quadindex = None
         self.featureIndexes = request.params.get('features')
         self.request = request
-        self.results = {}
+        self.results = []
        
     @view_config(route_name='search', renderer='jsonp')
     def search(self):
@@ -69,18 +69,37 @@ class Search(SearchValidation):
                     searchText += ' & @geom_quadindex ' + self.quadindex + '*'
                 else:
                     searchText = self.searchText
-                self.results[idx] = self.sphinx.Query(searchText, index=idx)
-                limit -= len(self.results[idx]['matches'])
+                temp = self.sphinx.Query(searchText, index=idx)['matches']
+                if len(temp) != 0:
+                    self.results = temp + self.results
+                limit -= len(temp)
             else:
                 break
+
+        if self.quadindex is not None:
+            for idx in indexes:
+                # if the limit has not been reached yet, try to look outside the bbox
+                if limit > 0:
+                    self.sphinx.SetLimits(0, limit)
+                    searchText = '@detail ' + self.searchText
+                    searchText += ' & @geom_quadindex !' + self.quadindex + '*'
+                    temp = self.sphinx.Query(searchText, index=idx)['matches']
+                    if len(temp) != 0:
+                        self.results = temp + self.results
+                    limit -= len(temp)
+                else:
+                    break
+             
 
     def _layer_search(self):
         # 10 features per layer are returned at max
         self.sphinx.SetLimits(0, self.LAYER_LIMIT)
         index_name = 'layers_' + self.lang
         searchText = '@(detail,layer) ' + self.searchText + ' @topics ' + self.mapName
-        self.results['layers'] = self.sphinx.Query(searchText, index=index_name)
-        return len(self.results['layers']['matches'])
+        temp = self.sphinx.Query(searchText, index=index_name)['matches']
+        if len(temp) != 0:
+            self.results = temp + self.results
+        return len(temp)
 
     def _feature_search(self):
         # 5 features per layer are returned at max
@@ -92,12 +111,24 @@ class Search(SearchValidation):
             else:
                 searchText = self.searchText
             self.sphinx.AddQuery(searchText, index=index)
-        self.results['features'] = self.sphinx.RunQueries()
-        nb_layers = len(self.results['features'])
+        temp = self.sphinx.RunQueries()
+        nb_layers = len(temp)
         nb_results = 0
-        if nb_results > 1:
-            for i in range(0, nb_layers):
-                nb_results += len(self.results['features'][i]['matches'])
+        for i in range(0, nb_layers-1):
+            nb_results += len(temp[i]['matches'])
+            self.results = temp[i]['matches'] + self.results
+
+        #look outside the bbox if no match(using the quad index)
+        if self.quadindex is not None and nb_results == 0:
+            for index in self.featureIndexes:
+                searchText = '@detail ' + self.searchText
+                searchText += ' @geom_quadindex !' + self.quadindex + '*'
+                self.sphinx.AddQuery(searchText, index=index)
+                temp = self.sphinx.RunQueries()
+                nb_layers = len(temp)
+                for i in range(0, nb_layers-1):
+                    nb_results += len(temp[i]['matches'])
+                    self.results = temp[i]['matches'] + self.results
         return nb_results
 
     def _get_quad_index(self):

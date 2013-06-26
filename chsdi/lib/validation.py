@@ -282,8 +282,10 @@ class SearchValidation(MapNameValidation):
             files = os.listdir('/var/sig/shp/sphinx/data/')
             self._featureIndexes = []
             for f in files:
-                if f not in self._featureIndexes and f.startswith('ch_'):
-                    self._featureIndexes.append(f.split('.')[0])
+                if f.startswith('ch'):
+                    temp = f.split('.')[0]
+                    if temp not in self._featureIndexes:
+                        self._featureIndexes.append(temp)
                 
     @searchText.setter
     def searchText(self, value):
