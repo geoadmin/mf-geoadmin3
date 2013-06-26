@@ -30,6 +30,7 @@ Use `make` (or `make help`) to know about the possible `make` targets:
     - dev       Build app for dev (app)
     - lint      Run the linter
     - test      Run the JavaScript tests
+    - apache    Configure Apache (restart required)
     - all       All of the above
     - clean     Remove generated files
     - cleanall  Remove all the build artefacts
@@ -38,7 +39,7 @@ Use `make` (or `make help`) to know about the possible `make` targets:
 
     - BASE_URL Base URL path (current value: /elemoine)
 
-    Variables can be set as make macros or envvars. For example: 
+Variables can be set as make macros or envvars. For example:
 
     $ make BASE_URL=/elemoine apache 
     $ BASE_URL=/elemoine make 
