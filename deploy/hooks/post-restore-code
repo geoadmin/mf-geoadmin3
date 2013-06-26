@@ -11,7 +11,7 @@ CODE_DIR=$2
 cd $CODE_DIR
 
 
-if [ -f rc_$TARGET.cfg ]; then
+if [ -f rc_$TARGET ]; then
     source rc_$TARGET
     make all
 fi
