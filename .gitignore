@@ -1,6 +1,6 @@
 /node_modules
 /app/src/deps.js
-/app/css/app.css
+/app/style/app.css
 /app/index.html
 /app-prod
 /.build-artefacts
