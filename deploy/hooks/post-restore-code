@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # variables set here:
 #   $TARGET: name of the symbolic remote host key (see remote_hosts
@@ -13,6 +13,7 @@ cd $CODE_DIR
 
 if [ -f rc_$TARGET ]; then
     source rc_$TARGET
+    rm -f apache/app.conf
     make apache
 fi
 

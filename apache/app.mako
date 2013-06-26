@@ -5,6 +5,8 @@ AddOutputFilterByType DEFLATE text/css
 AddOutputFilterByType DEFLATE text/html
 AddOutputFilterByType DEFLATE application/javascript
 
+Alias ${base_url} ${base_dir}/
+
 #non cached url's
 RewriteRule ^${base_url}/app/(lib|src|style)(.*)$ ${base_dir}/app/$1/$2
 
