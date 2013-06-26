@@ -34,7 +34,25 @@ Use `make` (or `make help`) to know about the possible `make` targets:
     - clean     Remove generated files
     - cleanall  Remove all the build artefacts
 
+    Variables:
+
+    - BASE_URL Base URL path (current value: /elemoine)
+
+    Variables can be set as make macros or envvars. For example: 
+
+    $ make BASE_URL=/elemoine apache 
+    $ BASE_URL=/elemoine make 
+
+You can avoid setting variables/macros on the `make` command line by creating  
+an `rc` file that you source once. Ex:  
+
+    $ cat rc_elemoine 
+    export BASE_URL=/elemoine
+    $ source rc_elemoine 
+    $ make  
+
 On mf1t, create an Apache configuration file for your environment. Ex:
 
     $ cat /var/www/vhosts/mf-geoadmin3/conf/00-elemoine.conf
     Alias /elemoine /home/elemoine/mf-geoadmin3/
+    Include /home/elemoine/mf-geoadmin3/apache/*.conf 

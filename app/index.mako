@@ -3,7 +3,11 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+% if mode == "prod": 
+    <link href="${version}/style/app.css" rel="stylesheet" media="screen">
+% else: 
     <link href="style/app.css" rel="stylesheet" media="screen">
+%endif
   </head>
   <body ng-controller="GaMapController">
     <div class="wrapper">
@@ -56,13 +60,13 @@
       </div>
     </div>
 % if mode == "prod":
-    <script src="lib/angular-1.1.5.min.js"></script>
+    <script src="${version}/lib/angular-1.1.5.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/proj4js-compressed.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/defs/EPSG21781.js"></script>
-    <script src="lib/jquery-2.0.2.min.js"></script>
-    <script src="lib/bootstrap-3.0.0.min.js"></script>
-    <script src="lib/ol.js"></script>
-    <script src="src/app.js"></script>
+    <script src="${version}/lib/jquery-2.0.2.min.js"></script>
+    <script src="${version}/lib/bootstrap-3.0.0.min.js"></script>
+    <script src="${version}/lib/ol.js"></script>
+    <script src="${version}/src/app.js"></script>
 % else:
     <script src="lib/angular-1.1.5.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/proj4js-compressed.js"></script>
