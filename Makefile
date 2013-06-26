@@ -22,6 +22,7 @@ help:
 	@echo "Variables:"
 	@echo
 	@echo "- BASE_URL Base URL path (current value: $(BASE_URL))"
+	@echo "- SERVICE_URL Service URL path (current value: $(SERVICE_URL))"
 	@echo
 
 .PHONY: all
@@ -78,8 +79,8 @@ app-prod/index.html: app/index.mako.html app-prod/src/app.js app-prod/style/app.
 	mkdir -p app-prod
 	.build-artefacts/python-venv/bin/mako-render --var "mode=prod" --var "version=$(VERSION)" $< > $@
 
-apache/app.conf: apache/app.mako.conf app-prod/src/app.js app-prod/style/app.css .build-artefacts/lib.timestamp .build-artefacts/python-venv/bin/mako-render
-	.build-artefacts/python-venv/bin/mako-render --var "version=$(VERSION)" --var "base_url=$(BASE_URL)" --var "base_dir=$(CURDIR)" $< > $@ 
+apache/app.conf: apache/app.mako app-prod/src/app.js app-prod/style/app.css .build-artefacts/lib.timestamp .build-artefacts/python-venv/bin/mako-render
+	.build-artefacts/python-venv/bin/mako-render --var "version=$(VERSION)" --var "base_url=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" --var "base_dir=$(CURDIR)" $< > $@ 
 
 .build-artefacts/lib.timestamp: $(APP_LIB_FILES)
 	cp -r app/lib app-prod
