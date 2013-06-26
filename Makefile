@@ -1,7 +1,7 @@
 
-JS_FILES := $(filter-out app/src/deps.js, $(shell find app/src -type f -name '*.js'))
-LIB_FILES := $(shell find app/lib -type f -name '*.js')
-JS_FILES_FOR_COMPILER = $(shell sed -e :a -e 'N;s/\n/ --js /;ba' .build-artefacts/js-files | sed 's/^.*base\.js //')
+APP_JS_FILES := $(filter-out app/src/deps.js, $(shell find app/src -type f -name '*.js'))
+APP_LIB_FILES := $(shell find app/lib -type f -name '*.js')
+APP_JS_FILES_FOR_COMPILER = $(shell sed -e :a -e 'N;s/\n/ --js /;ba' .build-artefacts/js-files | sed 's/^.*base\.js //')
 VERSION := $(shell date '+%s')
 
 .PHONY: help
@@ -18,6 +18,10 @@ help:
 	@echo "- all       All of the above"
 	@echo "- clean     Remove generated files"
 	@echo "- cleanall  Remove all the build artefacts"
+	@echo
+	@echo "Variables:"
+	@echo
+	@echo "- BASE_URL Base URL path (current value: $(BASE_URL))"
 	@echo
 
 .PHONY: all
@@ -52,32 +56,32 @@ app/style/app.css: app/style/app.less node_modules
 
 app-prod/src/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar
 	mkdir -p app-prod/src
-	java -jar .build-artefacts/closure-compiler/compiler.jar $(JS_FILES_FOR_COMPILER) --compilation_level SIMPLE_OPTIMIZATIONS --js_output_file $@
+	java -jar .build-artefacts/closure-compiler/compiler.jar $(APP_JS_FILES_FOR_COMPILER) --compilation_level SIMPLE_OPTIMIZATIONS --js_output_file $@
 
 # closurebuilder.py complains if it cannot find a Closure base.js script, so we
 # add lib/closure as a root. When compiling we remove base.js from the js files
 # passed to the Closure compiler.
-.build-artefacts/js-files: $(JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
+.build-artefacts/js-files: $(APP_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
 	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/closurebuilder.py --root=app/src --root=app/lib/closure --namespace="ga" --output_mode=list > $@
 
-app/src/deps.js: $(JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
+app/src/deps.js: $(APP_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
 	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root="app/src" --output_file=$@
 
 app/index.html: app/index.mako .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render $< > $@
 
-app-prod/index.html: app/index.mako .build-artefacts/python-venv/bin/mako-render
+app-prod/index.html: app/index.mako app-prod/src/app.js app-prod/style/app.css .build-artefacts/lib.timestamp .build-artefacts/python-venv/bin/mako-render
 	mkdir -p app-prod
 	.build-artefacts/python-venv/bin/mako-render --var "mode=prod" --var "version=$(VERSION)" $< > $@
 
-apache/app.conf: apache/app.mako .build-artefacts/python-venv/bin/mako-render
+apache/app.conf: apache/app.mako app-prod/src/app.js app-prod/style/app.css .build-artefacts/lib.timestamp .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "version=$(VERSION)" --var "base_url=$(BASE_URL)" --var "base_dir=$(CURDIR)" $< > $@ 
 
-.build-artefacts/lib.timestamp: $(LIB_FILES)
+.build-artefacts/lib.timestamp: $(APP_LIB_FILES)
 	cp -r app/lib app-prod
 	touch $@
 
-.build-artefacts/lint.timestamp: .build-artefacts/python-venv/bin/gjslint $(JS_FILES)
+.build-artefacts/lint.timestamp: .build-artefacts/python-venv/bin/gjslint $(APP_JS_FILES)
 	.build-artefacts/python-venv/bin/gjslint -r app/src --jslint_error=all
 	touch $@
 
