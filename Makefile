@@ -66,11 +66,11 @@ app/src/deps.js: $(APP_JS_FILES) .build-artefacts/python-venv .build-artefacts/c
 app/index.html: app/index.mako .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render $< > $@
 
-app-prod/index.html: app/index.mako .build-artefacts/python-venv/bin/mako-render
+app-prod/index.html: app/index.mako app-prod/src/app.js app-prod/style/app.css .build-artefacts/lib.timestamp .build-artefacts/python-venv/bin/mako-render
 	mkdir -p app-prod
 	.build-artefacts/python-venv/bin/mako-render --var "mode=prod" --var "version=$(VERSION)" $< > $@
 
-apache/app.conf: apache/app.mako .build-artefacts/python-venv/bin/mako-render
+apache/app.conf: apache/app.mako app-prod/src/app.js app-prod/style/app.css .build-artefacts/lib.timestamp .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "version=$(VERSION)" --var "base_url=$(BASE_URL)" --var "base_dir=$(CURDIR)" $< > $@ 
 
 .build-artefacts/lib.timestamp: $(APP_LIB_FILES)
