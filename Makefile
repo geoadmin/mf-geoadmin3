@@ -22,7 +22,7 @@ help:
 all: prod dev lint test
 
 .PHONY: prod
-prod: app-prod/src/app.js app-prod/style/app.css app-prod/index.html app-prod/info.json .build-artefacts/lib.timestamp
+prod: app-prod/src/app.js app-prod/style/app.css app-prod/index.html app-prod/info.json app-prod/WMTSCapabilities.xml .build-artefacts/lib.timestamp
 
 .PHONY: dev
 dev: app/src/deps.js app/style/app.css app/index.html
@@ -40,6 +40,10 @@ app-prod/style/app.css: app/style/app.css node_modules
 
 # Temporary: the entire rule should go away eventually
 app-prod/info.json: app/info.json
+	cp $< $@
+
+# Temporary: the entire rule should go away eventually
+app-prod/WMTSCapabilities.xml: app/WMTSCapabilities.xml
 	cp $< $@
 
 app/style/app.css: app/style/app.less node_modules
