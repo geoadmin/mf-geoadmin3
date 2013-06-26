@@ -2,6 +2,7 @@
 JS_FILES := $(filter-out app/src/deps.js, $(shell find app/src -type f -name '*.js'))
 LIB_FILES := $(shell find app/lib -type f -name '*.js')
 JS_FILES_FOR_COMPILER = $(shell sed -e :a -e 'N;s/\n/ --js /;ba' .build-artefacts/js-files | sed 's/^.*base\.js //')
+VERSION := $(shell date '+%s')
 
 .PHONY: help
 help:
@@ -13,13 +14,14 @@ help:
 	@echo "- dev       Build app for dev (app)"
 	@echo "- lint      Run the linter"
 	@echo "- test      Run the JavaScript tests"
+	@echo "- apache    Configure Apache (restart required)" 
 	@echo "- all       All of the above"
 	@echo "- clean     Remove generated files"
 	@echo "- cleanall  Remove all the build artefacts"
 	@echo
 
 .PHONY: all
-all: prod dev lint test
+all: prod dev lint test apache
 
 .PHONY: prod
 prod: app-prod/src/app.js app-prod/style/app.css app-prod/index.html app-prod/info.json .build-artefacts/lib.timestamp
@@ -37,6 +39,9 @@ test: app-prod/src/app.js node_modules
 app-prod/style/app.css: app/style/app.css node_modules
 	mkdir -p app-prod/style
 	node_modules/.bin/lessc --yui-compress $< $@
+
+.PHONY: apache 
+apache: apache/app.conf
 
 # Temporary: the entire rule should go away eventually
 app-prod/info.json: app/info.json
@@ -59,11 +64,14 @@ app/src/deps.js: $(JS_FILES) .build-artefacts/python-venv .build-artefacts/closu
 	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root="app/src" --output_file=$@
 
 app/index.html: app/index.mako .build-artefacts/python-venv/bin/mako-render
-	.build-artefacts/python-venv/bin/mako-render $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "version=$(VERSION)" $< > $@
 
 app-prod/index.html: app/index.mako .build-artefacts/python-venv/bin/mako-render
 	mkdir -p app-prod
-	.build-artefacts/python-venv/bin/mako-render --var "mode=prod" $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "mode=prod" --var "version=$(VERSION)" $< > $@
+
+apache/app.conf: apache/app.mako .build-artefacts/python-venv/bin/mako-render
+	.build-artefacts/python-venv/bin/mako-render --var "version=$(VERSION)" --var "base_url=$(BASE_URL)" --var "base_dir=$(CURDIR)" $< > $@ 
 
 .build-artefacts/lib.timestamp: $(LIB_FILES)
 	cp -r app/lib app-prod
@@ -115,3 +123,4 @@ clean:
 	rm -f app/style/app.css
 	rm -f app/index.html
 	rm -rf app-prod
+	rm -f apache/app.conf 
