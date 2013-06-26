@@ -1,7 +1,7 @@
 
-JS_FILES := $(filter-out app/src/deps.js, $(shell find app/src -type f -name '*.js'))
+APP_JS_FILES := $(filter-out app/src/deps.js, $(shell find app/src -type f -name '*.js'))
 LIB_FILES := $(shell find app/lib -type f -name '*.js')
-JS_FILES_FOR_COMPILER = $(shell sed -e :a -e 'N;s/\n/ --js /;ba' .build-artefacts/js-files | sed 's/^.*base\.js //')
+APP_JS_FILES_FOR_COMPILER = $(shell sed -e :a -e 'N;s/\n/ --js /;ba' .build-artefacts/js-files | sed 's/^.*base\.js //')
 VERSION := $(shell date '+%s')
 
 .PHONY: help
@@ -52,15 +52,15 @@ app/style/app.css: app/style/app.less node_modules
 
 app-prod/src/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar
 	mkdir -p app-prod/src
-	java -jar .build-artefacts/closure-compiler/compiler.jar $(JS_FILES_FOR_COMPILER) --compilation_level SIMPLE_OPTIMIZATIONS --js_output_file $@
+	java -jar .build-artefacts/closure-compiler/compiler.jar $(APP_JS_FILES_FOR_COMPILER) --compilation_level SIMPLE_OPTIMIZATIONS --js_output_file $@
 
 # closurebuilder.py complains if it cannot find a Closure base.js script, so we
 # add lib/closure as a root. When compiling we remove base.js from the js files
 # passed to the Closure compiler.
-.build-artefacts/js-files: $(JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
+.build-artefacts/js-files: $(APP_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
 	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/closurebuilder.py --root=app/src --root=app/lib/closure --namespace="ga" --output_mode=list > $@
 
-app/src/deps.js: $(JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
+app/src/deps.js: $(APP_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
 	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root="app/src" --output_file=$@
 
 app/index.html: app/index.mako .build-artefacts/python-venv/bin/mako-render
@@ -77,7 +77,7 @@ apache/app.conf: apache/app.mako .build-artefacts/python-venv/bin/mako-render
 	cp -r app/lib app-prod
 	touch $@
 
-.build-artefacts/lint.timestamp: .build-artefacts/python-venv/bin/gjslint $(JS_FILES)
+.build-artefacts/lint.timestamp: .build-artefacts/python-venv/bin/gjslint $(APP_JS_FILES)
 	.build-artefacts/python-venv/bin/gjslint -r app/src --jslint_error=all
 	touch $@
 
