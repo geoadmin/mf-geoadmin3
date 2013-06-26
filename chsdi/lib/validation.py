@@ -275,7 +275,7 @@ class SearchValidation(MapNameValidation):
     @featureIndexes.setter
     def featureIndexes(self, value):
         if value is not None:
-            value.replace('.','_')
+            value = value.replace('.','_')
             self._featureIndexes = value.split(',')
         # if not specified take all the available layers
         else:
@@ -308,6 +308,7 @@ class SearchValidation(MapNameValidation):
             elif values[2] < values[3]:
                 raise exc.HTTPBadRequest("The third coordinate must be higher than the fourth")
             self._bbox = values
+
 
 def validateLayerId(idlayer):
     models = models_from_name(idlayer)

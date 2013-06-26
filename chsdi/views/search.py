@@ -110,11 +110,11 @@ class Search(SearchValidation):
                 searchText += ' @geom_quadindex ' + self.quadindex + '*'
             else:
                 searchText = self.searchText
-            self.sphinx.AddQuery(searchText, index=index)
+            self.sphinx.AddQuery(searchText, index=str(index))
         temp = self.sphinx.RunQueries()
         nb_layers = len(temp)
         nb_results = 0
-        for i in range(0, nb_layers-1):
+        for i in range(0, nb_layers-1 if nb_layers > 1 else nb_layers):
             nb_results += len(temp[i]['matches'])
             self.results['map_info'] += temp[i]['matches']
 
@@ -123,7 +123,7 @@ class Search(SearchValidation):
             for index in self.featureIndexes:
                 searchText = '@detail ' + self.searchText
                 searchText += ' @geom_quadindex !' + self.quadindex + '*'
-                self.sphinx.AddQuery(searchText, index=index)
+                self.sphinx.AddQuery(searchText, index=str(index))
                 temp = self.sphinx.RunQueries()
                 nb_layers = len(temp)
                 for i in range(0, nb_layers-1):
