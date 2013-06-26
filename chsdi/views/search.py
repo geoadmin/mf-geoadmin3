@@ -39,7 +39,7 @@ class Search(SearchValidation):
         self.quadindex = None
         self.featureIndexes = request.params.get('features')
         self.request = request
-        self.results = []
+        self.results = {'locations': [], 'map_info': []}
        
     @view_config(route_name='search', renderer='jsonp')
     def search(self):
@@ -71,7 +71,7 @@ class Search(SearchValidation):
                     searchText = self.searchText
                 temp = self.sphinx.Query(searchText, index=idx)['matches']
                 if len(temp) != 0:
-                    self.results = temp + self.results
+                    self.results['locations'] += temp
                 limit -= len(temp)
             else:
                 break
@@ -85,7 +85,7 @@ class Search(SearchValidation):
                     searchText += ' & @geom_quadindex !' + self.quadindex + '*'
                     temp = self.sphinx.Query(searchText, index=idx)['matches']
                     if len(temp) != 0:
-                        self.results = temp + self.results
+                        self.results['locations'] += temp
                     limit -= len(temp)
                 else:
                     break
@@ -98,7 +98,7 @@ class Search(SearchValidation):
         searchText = '@(detail,layer) ' + self.searchText + ' @topics ' + self.mapName
         temp = self.sphinx.Query(searchText, index=index_name)['matches']
         if len(temp) != 0:
-            self.results = temp + self.results
+            self.results['map_info'] += temp
         return len(temp)
 
     def _feature_search(self):
@@ -116,7 +116,7 @@ class Search(SearchValidation):
         nb_results = 0
         for i in range(0, nb_layers-1):
             nb_results += len(temp[i]['matches'])
-            self.results = temp[i]['matches'] + self.results
+            self.results['map_info'] += temp[i]['matches']
 
         #look outside the bbox if no match(using the quad index)
         if self.quadindex is not None and nb_results == 0:
@@ -128,7 +128,7 @@ class Search(SearchValidation):
                 nb_layers = len(temp)
                 for i in range(0, nb_layers-1):
                     nb_results += len(temp[i]['matches'])
-                    self.results = temp[i]['matches'] + self.results
+                    self.results['map_info'] += temp[i]['matches']
         return nb_results
 
     def _get_quad_index(self):
