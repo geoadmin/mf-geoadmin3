@@ -22,10 +22,10 @@ help:
 all: prod dev lint test
 
 .PHONY: prod
-prod: app-prod/src/app.js app-prod/css/app.css app-prod/index.html app-prod/info.json .build-artefacts/lib.timestamp
+prod: app-prod/src/app.js app-prod/style/app.css app-prod/index.html app-prod/info.json .build-artefacts/lib.timestamp
 
 .PHONY: dev
-dev: app/src/deps.js app/css/app.css app/index.html
+dev: app/src/deps.js app/style/app.css app/index.html
 
 .PHONY: lint
 lint: .build-artefacts/lint.timestamp
@@ -34,15 +34,15 @@ lint: .build-artefacts/lint.timestamp
 test: app-prod/src/app.js node_modules
 	npm test
 
-app-prod/css/app.css: app/css/app.css node_modules
-	mkdir -p app-prod/css
+app-prod/style/app.css: app/style/app.css node_modules
+	mkdir -p app-prod/style
 	node_modules/.bin/lessc --yui-compress $< $@
 
 # Temporary: the entire rule should go away eventually
 app-prod/info.json: app/info.json
 	cp $< $@
 
-app/css/app.css: app/css/app.less node_modules
+app/style/app.css: app/style/app.less node_modules
 	node_modules/.bin/lessc $< $@
 
 app-prod/src/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar
@@ -112,6 +112,6 @@ clean:
 	rm -f .build-artefacts/lint.timestamp
 	rm -f .build-artefacts/lib.timestamp
 	rm -f app/src/deps.js
-	rm -f app/css/app.css
+	rm -f app/style/app.css
 	rm -f app/index.html
 	rm -rf app-prod
