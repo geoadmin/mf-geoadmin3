@@ -11,6 +11,9 @@
       extent: swissExtent
     });
 
+    var resolutions = [650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0, 2.5,
+      2.0, 1.0, 0.5, 0.25, 0.1];
+
     var map = new ol.Map({
       controls: ol.control.defaults({
         attribution: false
@@ -19,11 +22,13 @@
       view: new ol.View2D({
         projection: swissProjection,
         center: ol.extent.getCenter(swissExtent),
-        zoom: 2
+        resolution: 500.0,
+        resolutions: resolutions
       })
     });
 
     $scope.map = map;
+    $scope.resolutions = resolutions;
 
   }]);
 
