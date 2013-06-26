@@ -64,7 +64,7 @@ app/src/deps.js: $(JS_FILES) .build-artefacts/python-venv .build-artefacts/closu
 	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root="app/src" --output_file=$@
 
 app/index.html: app/index.mako .build-artefacts/python-venv/bin/mako-render
-	.build-artefacts/python-venv/bin/mako-render --var "version=$(VERSION)" $< > $@
+	.build-artefacts/python-venv/bin/mako-render $< > $@
 
 app-prod/index.html: app/index.mako .build-artefacts/python-venv/bin/mako-render
 	mkdir -p app-prod
