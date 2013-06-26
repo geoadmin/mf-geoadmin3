@@ -1,0 +1,69 @@
+###
+# app configuration
+# http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/environment.html
+###
+
+[app:main]
+use = config:production.ini
+app_version = ${app_version}
+
+pyramid.reload_templates = true
+pyramid.debug_authorization = true
+pyramid.debug_notfound = true
+pyramid.debug_routematch = true
+pyramid.includes = 
+    pyramid_debugtoolbar
+mako.imports =
+    import logging
+
+# By default, the toolbar only appears for clients from IP addresses
+# '127.0.0.1' and '::1'.
+debugtoolbar.hosts = 0.0.0.0/0
+
+###
+# wsgi server configuration
+###
+[server:main]
+use = egg:waitress#main
+host = 0.0.0.0
+port = ${vars:server_port}
+
+###
+# logging configuration
+# http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/logging.html
+###
+
+[loggers]
+keys = root, chsdi, sqlalchemy
+
+[logger_sqlalchemy]
+level = INFO
+handlers =
+qualname = sqlalchemy.engine
+# "level = INFO" logs SQL queries.
+# "level = DEBUG" logs SQL queries and results.
+# "level = WARN" logs neither.  (Recommended for production systems.)
+
+[handlers]
+keys = console
+
+[formatters]
+keys = generic
+
+[logger_root]
+level = INFO
+handlers = console
+
+[logger_chsdi]
+level = DEBUG
+handlers =
+qualname = chsdi
+
+[handler_console]
+class = StreamHandler
+args = (sys.stderr,)
+level = NOTSET
+formatter = generic
+
+[formatter_generic]
+format = %(asctime)s %(levelname)-5.5s [%(name)s][%(threadName)s] %(message)s

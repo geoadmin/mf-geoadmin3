@@ -1,0 +1,88 @@
+###
+# app configuration
+# http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/environment.html
+###
+
+[app:main]
+use = egg:chsdi
+app_version = ${app_version}
+available_languages = de fr it en rm
+
+pyramid.reload_templates = false
+pyramid.debug_authorization = false
+pyramid.debug_notfound = false
+pyramid.debug_routematch = false
+pyramid.default_locale_name = de
+pyramid.includes = pyramid_tm
+
+# SQLAlchemy database URL
+sqlalchemy.are.url = postgresql://${vars:dbhost}:${vars:dbport}/are
+sqlalchemy.bafu.url = postgresql://${vars:dbhost}:${vars:dbport}/bafu
+sqlalchemy.bak.url = postgresql://${vars:dbhost}:${vars:dbport}/bak
+sqlalchemy.bod.url = postgresql://${vars:dbhost}:${vars:dbport}/bod
+sqlalchemy.dritte.url = postgresql://${vars:dbhost}:${vars:dbport}/dritte
+sqlalchemy.edi.url = postgresql://${vars:dbhost}:${vars:dbport}/edi
+sqlalchemy.evd.url = postgresql://${vars:dbhost}:${vars:dbport}/evd
+sqlalchemy.ivs2b.url = postgresql://${vars:dbhost}:${vars:dbport}/ivs2b
+sqlalchemy.kogis.url = postgresql://${vars:dbhost}:${vars:dbport}/kogis
+sqlalchemy.search.url = postgresql://${vars:dbhost}:${vars:dbport}/search
+sqlalchemy.stopo.url = postgresql://${vars:dbhost}:${vars:dbport}/stopo
+sqlalchemy.uvek.url = postgresql://${vars:dbhost}:${vars:dbport}/uvek
+sqlalchemy.vbs.url = postgresql://${vars:dbhost}:${vars:dbport}/vbs
+sqlalchemy.zeitreihen.url = postgresql://${vars:dbhost}:${vars:dbport}/zeitreihen
+
+# Mako specific
+mako.directories = chsdi:templates
+
+data_path = /var/local/cartoweb/
+geodata_staging = ${geodata_staging}
+address_search_referers = localhost,admin.ch,awk.ch,cadastre.ch,rspp.ch,rollstuhlparkplatz.ch,placehandicape.ch,parcheggiodisabili.chi,zh.ch
+
+###
+# wsgi server configuration
+###
+
+[server:main]
+use = egg:waitress#main
+host = 0.0.0.0
+port = 6543
+
+###
+# logging configuration
+# http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/logging.html
+###
+
+[loggers]
+keys = root, chsdi, sqlalchemy
+
+[logger_sqlalchemy]
+level = INFO
+handlers =
+qualname = sqlalchemy.engine
+# "level = INFO" logs SQL queries.
+# "level = DEBUG" logs SQL queries and results.
+# "level = WARN" logs neither.  (Recommended for production systems.)
+
+[handlers]
+keys = console
+
+[formatters]
+keys = generic
+
+[logger_root]
+level = WARN
+handlers = console
+
+[logger_chsdi]
+level = WARN
+handlers =
+qualname = chsdi
+
+[handler_console]
+class = StreamHandler
+args = (sys.stderr,)
+level = NOTSET
+formatter = generic
+
+[formatter_generic]
+format = %(asctime)s %(levelname)-5.5s [%(name)s][%(threadName)s] %(message)s

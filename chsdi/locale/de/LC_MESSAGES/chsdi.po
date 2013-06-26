@@ -1,0 +1,142 @@
+# German translations for chsdi.
+# Copyright (C) 2010 ORGANIZATION
+# This file is distributed under the same license as the chsdi project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: chsdi 0.1\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2010-08-03 12:20+0200\n"
+"PO-Revision-Date: 2010-09-02 10:50+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: de <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 0.9.5\n"
+
+msgid "Datenbezug"
+msgstr "Datenbezug"
+
+msgid "Datenstand"
+msgstr "Datenstand"
+
+msgid "Gueltiger Massstabsbereich"
+msgstr "Gültiger Massstabsbereich"
+
+msgid "Information"
+msgstr "Informationen"
+
+msgid "Legend"
+msgstr "Legende"
+
+msgid "Metadaten"
+msgstr "Metadaten"
+
+#. TODO
+msgid "PDF_Level_1_Name"
+msgstr "PDF_Level_1_Name"
+
+#. TODO
+msgid "PDF_Level_2_Nam"
+msgstr "PDF_Level_2_Nam"
+
+#. TODO
+msgid "PDF_Level_3_Name"
+msgstr "PDF_Level_3_Name"
+
+msgid "Thematisches Geoportal"
+msgstr "Thematisches Geoportal"
+
+msgid "WMS Dienst"
+msgstr "WMS Dienst"
+
+msgid "ch.astra.ivs-nat"
+msgstr "IVS National"
+
+msgid "ch.astra.ivs-nat"
+msgstr "IVS National"
+
+msgid "ch.astra.ivs-nat-verlaeufe"
+msgstr "IVS historischer Verlauf"
+
+msgid "ch.astra.ivs-nat-verlaeufe"
+msgstr "IVS historischer Verlauf"
+
+msgid "ch.astra.ivs-reg_loc"
+msgstr "IVS Regional und Lokal"
+
+msgid "ch.astra.ivs-reg_loc"
+msgstr "IVS Regional und Lokal"
+
+msgid "ch.bafu.bundesinventare-bln"
+msgstr "BLN"
+
+msgid "ch.bafu.bundesinventare-jagdbanngebiete"
+msgstr "Jagdbanngebiete"
+
+msgid "flaeche_ha"
+msgstr "Fläche [ha]"
+
+msgid "gemkanton"
+msgstr "Kanton"
+
+msgid "geobasisdatensatz"
+msgstr "ID Geobasisdatensatz"
+
+msgid "gesamtflaeche_ha"
+msgstr "Gesamtfläche [ha]"
+
+msgid "ivs_documentation"
+msgstr "Streckenbeschrieb"
+
+msgid "ivs_nat_abschnitt"
+msgstr "Abschnitt"
+
+msgid "ivs_nat_historischen"
+msgstr "Geschichte"
+
+msgid "ivs_nat_linienfuehrung"
+msgstr "Linienführung"
+
+msgid "ivs_nat_morphologischen"
+msgstr "Gelände"
+
+msgid "ivs_nat_strecke"
+msgstr "Strecke"
+
+msgid "ivs_objekt"
+msgstr "IVS-Objekt"
+
+msgid "ivs_signatur"
+msgstr "Substanzgrad"
+
+msgid "ivs_slabedeutung"
+msgstr "Bedeutung nach NHG"
+
+msgid "ivs_slaname"
+msgstr "Strecke"
+
+msgid "kategorie"
+msgstr "Kategorie"
+
+msgid "layer_geocat_text"
+msgstr "Link zu geocat.ch"
+
+msgid "layer_url_download_text"
+msgstr "Link für Datenbezug"
+
+msgid "layer_url_portal_text"
+msgstr "Link zum Fachportal"
+
+msgid "objektname"
+msgstr "Objektname"
+
+msgid "objektnr"
+msgstr "Objektnr."
+
+msgid "wms_resource_text"
+msgstr "Link zum WMS"
+

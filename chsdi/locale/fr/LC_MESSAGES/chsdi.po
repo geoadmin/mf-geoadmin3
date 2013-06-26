@@ -1,0 +1,142 @@
+# French translations for chsdi.
+# Copyright (C) 2010 ORGANIZATION
+# This file is distributed under the same license as the chsdi project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: chsdi 0.1\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2010-08-03 12:20+0200\n"
+"PO-Revision-Date: 2010-09-02 10:50+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: fr <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 0.9.5\n"
+
+msgid "Datenbezug"
+msgstr "Distribution des données"
+
+msgid "Datenstand"
+msgstr "État d'actualité"
+
+msgid "Gueltiger Massstabsbereich"
+msgstr "Plage de validité des données"
+
+msgid "Information"
+msgstr "Informations"
+
+msgid "Legend"
+msgstr "Légende"
+
+msgid "Metadaten"
+msgstr "Métadonnées"
+
+#. TODO
+msgid "PDF_Level_1_Name"
+msgstr "PDF_Level_1_Name"
+
+#. TODO
+msgid "PDF_Level_2_Nam"
+msgstr "PDF_Level_2_Nam"
+
+#. TODO
+msgid "PDF_Level_3_Name"
+msgstr "PDF_Level_3_Name"
+
+msgid "Thematisches Geoportal"
+msgstr "Géoportail thématique"
+
+msgid "WMS Dienst"
+msgstr "Service WMS"
+
+msgid "ch.astra.ivs-nat"
+msgstr "IVS National"
+
+msgid "ch.astra.ivs-nat"
+msgstr "IVS National"
+
+msgid "ch.astra.ivs-nat-verlaeufe"
+msgstr "IVS Tracé sans substance"
+
+msgid "ch.astra.ivs-nat-verlaeufe"
+msgstr "IVS Tracé sans substance"
+
+msgid "ch.astra.ivs-reg_loc"
+msgstr "IVS régional et local"
+
+msgid "ch.astra.ivs-reg_loc"
+msgstr "IVS régional et local"
+
+msgid "ch.bafu.bundesinventare-bln"
+msgstr "IFP"
+
+msgid "ch.bafu.bundesinventare-jagdbanngebiete"
+msgstr "Districts francs"
+
+msgid "flaeche_ha"
+msgstr "Surface [ha]"
+
+msgid "gemkanton"
+msgstr "Canton"
+
+msgid "geobasisdatensatz"
+msgstr "ID Géodonnées de base"
+
+msgid "gesamtflaeche_ha"
+msgstr "Surface totale [ha]"
+
+msgid "ivs_documentation"
+msgstr "Documentation"
+
+msgid "ivs_nat_abschnitt"
+msgstr "Segment"
+
+msgid "ivs_nat_historischen"
+msgstr "Histoire"
+
+msgid "ivs_nat_linienfuehrung"
+msgstr "Tronçon"
+
+msgid "ivs_nat_morphologischen"
+msgstr "Terrain"
+
+msgid "ivs_nat_strecke"
+msgstr "Itinéraire"
+
+msgid "ivs_objekt"
+msgstr "Objet IVS"
+
+msgid "ivs_signatur"
+msgstr "Substance"
+
+msgid "ivs_slabedeutung"
+msgstr "Importance (LPN)"
+
+msgid "ivs_slaname"
+msgstr "Tracé"
+
+msgid "kategorie"
+msgstr "Catégorie"
+
+msgid "layer_geocat_text"
+msgstr "Lien vers geocat.ch"
+
+msgid "layer_url_download_text"
+msgstr "Lien vers la distribution des données"
+
+msgid "layer_url_portal_text"
+msgstr "Lien vers le portail"
+
+msgid "objektname"
+msgstr "Nom de l'objet"
+
+msgid "objektnr"
+msgstr "Numéro de l'objet"
+
+msgid "wms_resource_text"
+msgstr "Lien vers le wms"
+
