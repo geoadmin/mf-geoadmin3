@@ -1,6 +1,6 @@
 
 APP_JS_FILES := $(filter-out app/src/deps.js, $(shell find app/src -type f -name '*.js'))
-LIB_FILES := $(shell find app/lib -type f -name '*.js')
+APP_LIB_FILES := $(shell find app/lib -type f -name '*.js')
 APP_JS_FILES_FOR_COMPILER = $(shell sed -e :a -e 'N;s/\n/ --js /;ba' .build-artefacts/js-files | sed 's/^.*base\.js //')
 VERSION := $(shell date '+%s')
 
@@ -73,7 +73,7 @@ app-prod/index.html: app/index.mako .build-artefacts/python-venv/bin/mako-render
 apache/app.conf: apache/app.mako .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "version=$(VERSION)" --var "base_url=$(BASE_URL)" --var "base_dir=$(CURDIR)" $< > $@ 
 
-.build-artefacts/lib.timestamp: $(LIB_FILES)
+.build-artefacts/lib.timestamp: $(APP_LIB_FILES)
 	cp -r app/lib app-prod
 	touch $@
 
