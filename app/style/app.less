@@ -47,9 +47,15 @@ body {
     .mouseposition-select, .mouseposition-value {
         display: inline-block;
     }
-    .scaleline, .attribution, .mouseposition-value {
+    .scaleline, .attribution, .mouseposition-value, .pipe {
         margin-top: 9px;
         margin-bottom: 9px;
+    }
+    .pipe {
+        float: left;
+        &:before {
+            content: "|";
+        }
     }
 }
 
