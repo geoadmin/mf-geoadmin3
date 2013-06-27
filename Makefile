@@ -79,7 +79,7 @@ app-prod/index.html: app/index.mako.html app-prod/src/app.js app-prod/style/app.
 	mkdir -p app-prod
 	.build-artefacts/python-venv/bin/mako-render --var "mode=prod" --var "version=$(VERSION)" $< > $@
 
-apache/app.conf: apache/app.mako app-prod/src/app.js app-prod/style/app.css .build-artefacts/lib.timestamp .build-artefacts/python-venv/bin/mako-render
+apache/app.conf: apache/app.mako.conf app-prod/src/app.js app-prod/style/app.css .build-artefacts/lib.timestamp .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "version=$(VERSION)" --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" --var "base_dir=$(CURDIR)" $< > $@ 
 
 .build-artefacts/lib.timestamp: $(APP_LIB_FILES)
