@@ -1,71 +1,66 @@
 (function() {
   goog.provide('ga_backgroundlayerselector_directive');
+
+  goog.require('ga_backgroundlayerselector_service');
   goog.require('ga_permalink');
 
   var module = angular.module('ga_backgroundlayerselector_directive', [
+    'ga_backgroundlayerselector_service',
     'ga_permalink'
   ]);
 
   module.directive('gaBackgroundLayerSelector',
-      ['$parse', '$http', 'gaPermalink', function($parse, $http, gaPermalink) {
-        return {
-          restrict: 'A',
-          replace: true,
-          scope: {
-            map: '=gaBackgroundLayerSelectorMap',
-            wmtsUrl: '=gaBackgroundLayerSelectorWmtsUrl',
-            wmtsLayers: '=gaBackgroundLayerSelectorWmtsLayers'
-          },
-          template:
-              '<select ng-model="currentLayer"' +
-                  'ng-options="l.value as l.label for l in wmtsLayers">' +
-              '</select>',
-          link: function(scope, element, attrs) {
-            var map = $parse(attrs.gaBackgroundLayerSelectorMap)(scope);
-            var wmtsUrl = $parse(attrs.gaBackgroundLayerSelectorWmtsUrl)(scope);
-            var wmtsLayers =
-                $parse(attrs.gaBackgroundLayerSelectorWmtsLayers)(scope);
+      ['gaPermalink', 'gaWmtsLoader',
+       function(gaPermalink, gaWmtsLoader) {
+         return {
+           restrict: 'A',
+           replace: true,
+           scope: {
+             map: '=gaBackgroundLayerSelectorMap',
+             wmtsUrl: '=gaBackgroundLayerSelectorWmtsUrl',
+             wmtsLayers: '=gaBackgroundLayerSelectorWmtsLayers'
+           },
+           template:
+               '<select ng-model="currentLayer" ' +
+                   'ng-options="l.value as l.label for l in wmtsLayers">' +
+               '</select>',
+           link: function(scope, element, attrs) {
+             var map = scope.map;
+             var wmtsUrl = scope.wmtsUrl;
+             var wmtsLayers = scope.wmtsLayers;
 
-            var queryParams = gaPermalink.getParams();
-            scope.currentLayer = (queryParams.bgLayer !== undefined) ?
-             queryParams.bgLayer : wmtsLayers[0].value;
+             var queryParams = gaPermalink.getParams();
+             scope.currentLayer = (queryParams.bgLayer !== undefined) ?
+                 queryParams.bgLayer : wmtsLayers[0].value;
 
-            var setCurrentLayer = function(layerName) {
-              var i, ii = scope.wmtsLayers.length;
-              for (i = 0; i < ii; ++i) {
-                if (scope.wmtsLayers[i].value === layerName) {
-                  break;
-                }
-              }
-              if (i < scope.wmtsLayers.length) {
-                map.getLayers().setAt(0, wmtsLayerObjects[i]);
-                gaPermalink.updateParams({bgLayer: layerName});
-              }
-            };
+             var wmtsLayerObjects = [];
+             var setCurrentLayer = function(layerName) {
+               var i, ii = scope.wmtsLayers.length;
+               for (i = 0; i < ii; ++i) {
+                 if (scope.wmtsLayers[i].value === layerName) {
+                   break;
+                 }
+               }
+               if (i < scope.wmtsLayers.length) {
+                 map.getLayers().setAt(0, wmtsLayerObjects[i]);
+                 gaPermalink.updateParams({bgLayer: layerName});
+               }
+             };
 
-            var wmtsLayerObjects = [];
-            var http = $http.get(wmtsUrl);
-            http.success(function(data, status, header, config) {
-              var parser = new ol.parser.ogc.WMTSCapabilities();
-              var capabilities = parser.read(data);
-              var i, ii = scope.wmtsLayers.length;
-              var wmtsSourceOptions, wmtsSource, wmtsLayer;
-              for (i = 0; i < ii; ++i) {
-                wmtsSourceOptions = ol.source.WMTS.optionsFromCapabilities(
-                 capabilities, scope.wmtsLayers[i].value);
-                wmtsSource = new ol.source.WMTS(wmtsSourceOptions);
-                wmtsLayer = new ol.layer.TileLayer({source: wmtsSource});
-                wmtsLayerObjects.push(wmtsLayer);
-              }
-              setCurrentLayer(scope.currentLayer);
-            });
+             gaWmtsLoader.load(wmtsUrl, wmtsLayers).then(
+                 function success(wmtsLayers) {
+                   wmtsLayerObjects = wmtsLayers;
+                   setCurrentLayer(scope.currentLayer);
+                 }, function error() {
+                   // FIXME decide what to know with abnormal situations.
+                 });
 
-            scope.$watch('currentLayer', function(newVal, oldVal) {
-              if (oldVal !== newVal) {
-                setCurrentLayer(newVal);
-              }
-            });
-          }
-        };
-      }]);
+             scope.$watch('currentLayer', function(newVal, oldVal) {
+               if (oldVal !== newVal) {
+                 setCurrentLayer(newVal);
+               }
+             });
+           }
+         };
+       }]);
 })();
