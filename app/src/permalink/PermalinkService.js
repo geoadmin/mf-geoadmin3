@@ -71,6 +71,19 @@
   }
 
   /**
+   * The gaHistory service.
+   *
+   * A reference to the browser's window.history object.
+   */
+  module.provider('gaHistory', function() {
+
+    this.$get = ['$window', function($window) {
+      return $window.history;
+    }];
+
+  });
+
+  /**
    * The gaPermalink service.
    *
    * The service provides three functions:
@@ -83,34 +96,35 @@
    * supports the history API the link in the address bar is updated.
    */
   module.provider('gaPermalink', function() {
-    this.$get = ['$rootScope', '$sniffer', function($rootScope, $sniffer) {
+    this.$get = ['$window', '$rootScope', '$sniffer', 'gaHistory',
+      function($window, $rootScope, $sniffer, gaHistory) {
 
-      var loc = window.location;
-      var port = loc.port;
-      var protocol = loc.protocol;
+        var loc = $window.location;
+        var port = loc.port;
+        var protocol = loc.protocol;
 
-      var base = protocol + '//' + loc.hostname +
-          (port !== '' ? ':' + port : '') +
-          loc.pathname;
+        var base = protocol + '//' + loc.hostname +
+            (port !== '' ? ':' + port : '') +
+            loc.pathname;
 
-      var permalink = new Permalink(
-          base, parseKeyValue(loc.search.substring(1)));
+        var permalink = new Permalink(
+            base, parseKeyValue(loc.search.substring(1)));
 
-      if ($sniffer.history) {
-        var lastHref = loc.href;
-        $rootScope.$watch(function() {
-          var newHref = permalink.getHref();
-          if (lastHref !== newHref) {
-            $rootScope.$evalAsync(function() {
-              lastHref = newHref;
-              window.history.replaceState(null, '', newHref);
-            });
-          }
-        });
-      }
+        if ($sniffer.history) {
+          var lastHref = loc.href;
+          $rootScope.$watch(function() {
+            var newHref = permalink.getHref();
+            if (lastHref !== newHref) {
+              $rootScope.$evalAsync(function() {
+                lastHref = newHref;
+                gaHistory.replaceState(null, '', newHref);
+              });
+            }
+          });
+        }
 
-      return permalink;
-    }];
+        return permalink;
+      }];
   });
 
 })();
