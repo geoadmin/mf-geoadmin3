@@ -3,16 +3,17 @@
 
   var module = angular.module('ga_contextmenu_directive', []);
 
-  module.directive('gaContextMenu', ['$parse', '$http', function($parse, $http) {
+  module.directive('gaContextMenu', ['$http', function($http) {
     var height = 'http://api.geo.admin.ch/height?cb=JSON_CALLBACK';
     var lv03tolv95 = 'http://tc-geodesy.bgdi.admin.ch/reframe/lv03tolv95?cb=JSON_CALLBACK';
 
     return {
       restrict: 'A',
+      scope: {
+        map: '=gaContextMenuMap'
+      },
       link: function(scope, element, attrs) {
-        var map = $parse(attrs.gaContextMenuMap)(scope);
-
-        map.on('contextmenu', function(event) {
+        scope.map.on('contextmenu', function(event) {
           scope.$apply(function() {
             event.preventDefault();
             var epsg21781 = event.getCoordinate();
@@ -43,7 +44,7 @@
             element.css('top', pixel[1] + 'px');
             element.css('display', 'block');
 
-            map.once('down', function() {
+            scope.map.once('down', function() {
               element.css('display', 'none');
             });
           });
