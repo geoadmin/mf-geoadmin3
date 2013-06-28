@@ -42,12 +42,13 @@
             scope.altitude = parseFloat(results[0].data.height);
             scope.epsg2056 =
                 ol.coordinate.toStringXY(results[1].data.coordinates, 2);
+
+            element.css('display', 'block');
           });
 
           var pixel = event.getPixel();
           element.css('left', pixel[0] + 'px');
           element.css('top', pixel[1] + 'px');
-          element.css('display', 'block');
 
           scope.map.once('down', function() {
             element.css('display', 'none');
