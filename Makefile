@@ -22,7 +22,7 @@ help:
 	@echo "Variables:"
 	@echo
 	@echo "- BASE_URL_PATH Base URL path (current value: $(BASE_URL_PATH))"
-	@echo "- SERVICE_URL Service URL path (current value: $(SERVICE_URL))"
+	@echo "- SERVICE_URL Service URL (current value: $(SERVICE_URL))"
 	@echo
 
 .PHONY: all
