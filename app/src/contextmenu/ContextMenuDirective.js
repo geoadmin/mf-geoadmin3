@@ -22,6 +22,7 @@
         map.on('contextmenu', function(event) {
           event.preventDefault();
 
+          var pixel = event.getPixel();
           var epsg21781 = event.getCoordinate();
           var epsg4326 = ol.proj.transform(epsg21781,
               'EPSG:21781', 'EPSG:4326');
@@ -51,13 +52,11 @@
               view.once('change:center', function() {
                 element.css('display', 'none');
               });
+              element.css('left', pixel[0] + 'px');
+              element.css('top', pixel[1] + 'px');
               element.css('display', 'block');
             });
           });
-
-          var pixel = event.getPixel();
-          element.css('left', pixel[0] + 'px');
-          element.css('top', pixel[1] + 'px');
 
         });
       }
