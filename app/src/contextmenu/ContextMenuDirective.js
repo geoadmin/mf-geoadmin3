@@ -27,6 +27,11 @@
           var epsg4326 = ol.proj.transform(epsg21781,
               'EPSG:21781', 'EPSG:4326');
 
+          // The $http service does not send requests immediately but
+          // wait for the "nextTick". Not sure this is bug in Angular.
+          // https://github.com/angular/angular.js/issues/2442 reports
+          // it a bug. As a workaround we call $http in an $apply
+          // callback.
           scope.$apply(function() {
             $q.all({
               height: $http.jsonp(heightURL, {
