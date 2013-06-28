@@ -33,7 +33,7 @@ class Search(SearchValidation):
 
         self.mapName = request.matchdict.get('map')
         self.searchText = remove_accents(request.params.get('searchText'))
-        self.lang = locale_negotiator(request) 
+        self.lang = str(locale_negotiator(request))
         self.cbName = request.params.get('cb')
         self.bbox =  request.params.get('bbox')
         self.quadindex = None
@@ -48,7 +48,7 @@ class Search(SearchValidation):
             self._get_quad_index()
         # first search in the field layer
         limit = self._layer_search()
-        # then look for features
+        # then look for features, on top of the list
         if self.featureIndexes is not None:
             limit = len(self.featureIndexes)*5 + 30 - limit
             features = self._feature_search()
@@ -95,41 +95,46 @@ class Search(SearchValidation):
         # 10 features per layer are returned at max
         self.sphinx.SetLimits(0, self.LAYER_LIMIT)
         index_name = 'layers_' + self.lang
-        searchText = '@(detail,layer) ' + self.searchText + ' @topics ' + self.mapName
-        temp = self.sphinx.Query(searchText, index=index_name)['matches']
-        if len(temp) != 0:
-            self.results['map_info'] += temp
+        searchText = '@(detail,layer) ' + self.searchText + ' & @topics ' + self.mapName
+        temp = self.sphinx.Query(searchText, index=index_name)
+        if len(temp['matches']) != 0:
+            self.results['map_info'] += temp['matches']
         return len(temp)
 
     def _feature_search(self):
         # 5 features per layer are returned at max
         self.sphinx.SetLimits(0, self.FEATURE_LIMIT)
-        for index in self.featureIndexes:
-            if self.quadindex is not None:
-                searchText = '@detail ' + self.searchText
-                searchText += ' @geom_quadindex ' + self.quadindex + '*'
-            else:
-                searchText = self.searchText
-            self.sphinx.AddQuery(searchText, index=str(index))
+        if self.quadindex is None:
+            self._add_feature_queries(self.searchText)
+        else:
+            searchText = '@detail ' + self.searchText
+            searchText += ' & @geom_quadindex ' + self.quadindex + '*'
+            self._add_feature_queries(searchText)
         temp = self.sphinx.RunQueries()
-        nb_layers = len(temp)
-        nb_results = 0
-        for i in range(0, nb_layers-1 if nb_layers > 1 else nb_layers):
-            nb_results += len(temp[i]['matches'])
-            self.results['map_info'] += temp[i]['matches']
+        nb_match = self._nb_of_match(temp)
 
-        #look outside the bbox if no match(using the quad index)
-        if self.quadindex is not None and nb_results == 0:
-            for index in self.featureIndexes:
-                searchText = '@detail ' + self.searchText
-                searchText += ' @geom_quadindex !' + self.quadindex + '*'
-                self.sphinx.AddQuery(searchText, index=str(index))
-                temp = self.sphinx.RunQueries()
-                nb_layers = len(temp)
-                for i in range(0, nb_layers-1):
-                    nb_results += len(temp[i]['matches'])
-                    self.results['map_info'] += temp[i]['matches']
-        return nb_results
+        #look outside the bbox if no match when the bbox is defined
+        if self.quadindex is not None and nb_match == 0:
+            searchText = '@detail ' + self.searchText
+            searchText += ' & @geom_quadindex !' + self.quadindex + '*'
+            self._add_feature_queries(searchText)
+            
+            temp = self.sphinx.RunQueries()
+            nb_match = self._nb_of_match(temp)
+
+        return nb_match
+
+    def _add_feature_queries(self, searchText):
+        for index in self.featureIndexes:
+            self.sphinx.AddQuery(searchText, index=str(index))
+
+    def _nb_of_match(self, results):
+        nb_match = 0 
+        for i in range(0, len(results)):
+            nb_match += len(results[i]['matches'])
+            # Add results to the list
+            self.results['locations'] += results[i]['matches']
+        return nb_match
 
     def _get_quad_index(self):
         try:

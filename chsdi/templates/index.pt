@@ -57,10 +57,10 @@
          Capabilities using ogcproxy</a>
 
       <h2>Search</h2>
-          <a href="rest/services/geoadmin/SearchServer?searchText=so 376">All available queryable layers are searched</a> <br>
-          <a href="rest/services/geoadmin/SearchServer?searchText=so 376&features=ch.astra.ivs-nat">Search for features only in ch.astra.ivs-nat (no results)</a> <br>
-          <a href="rest/services/geoadmin/SearchServer?searchText=so 376&features=ch.astra.ivs-nat">Search for features only in ch.astra.ivs-reg_loc (some results)</a> <br>
-          <a href="rest/services/geoadmin/SearchServer?searchText=so 376&bbox=609575,230756,609672,231121">All available queryable layers are searched using a bbox</a> <br>
+          <a href="rest/services/geoadmin/SearchServer?searchText=wand">Search in swisssearch (locations) and map info </a> <br>
+          <a href="rest/services/geoadmin/SearchServer?searchText=vd 446&features=ch.astra.ivs-reg_loc">Search for features in ch.astra.ivs-reg_loc (some results on top of "locations" list)</a> <br>
+          <a href="rest/services/geoadmin/SearchServer?searchText=vd 446&features=ch.astra.ivs-reg_loc&bbox=551306.5625,167918.328125,551754.125,168514.625">Search for features in ch.astra.ivs-reg_loc (only features within the bbox)</a> <br>
+          <a href="rest/services/geoadmin/SearchServer?searchText=bois&bbox=609575,230756,609672,231121&lang=fr">Search in swisssearch and map info (lang fr) using a bbox (Prio to swisssearch results falling inside the bbox)</a> <br>
           <a href="rest/services/geoadmin/SearchServer?searchText=wasser&bbox=733040.9375,183972.484375,738163.75,183972.484375">Search in the topic (or map) geoadmin</a> <br>
           <a href="rest/services/bafu/SearchServer?searchText=wasser&bbox=733040.9375,183972.484375,738163.75,183972.484375">Search in the topic (or map) bafu</a> <br>
   </body>
