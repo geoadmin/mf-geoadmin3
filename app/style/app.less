@@ -5,7 +5,7 @@
 @import "../src/attribution/style/attribution.less";
 @import "../src/contextmenu/style/menu.less";
 
-@headerHeight: 89;
+@header-height: 89;
 
 body {
     overflow: hidden;
@@ -25,7 +25,7 @@ body {
 }
 
 #header {
-    height: unit(@headerHeight, px);
+    height: unit(@header-height, px);
     padding-left: 0;
     background-color: rgba(255, 255, 255, 0.9);
     .box-shadow(6px 6px 12px rgba(0, 0, 0, 0.175));
@@ -70,7 +70,7 @@ body {
 #pulldown {
     position: absolute;
     left: 0;
-    top: unit(@headerHeight, px);
+    top: unit(@header-height, px);
     width: 320px;
     #pulldown-content {
         .box-shadow(6px 6px 12px rgba(0, 0, 0, 0.175));
