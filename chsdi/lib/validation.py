@@ -277,15 +277,6 @@ class SearchValidation(MapNameValidation):
         if value is not None:
             value = value.replace('.','_')
             self._featureIndexes = value.split(',')
-        # if not specified take all the available layers
-        else:
-            files = os.listdir('/var/sig/shp/sphinx/data/')
-            self._featureIndexes = []
-            for f in files:
-                if f.startswith('ch'):
-                    temp = f.split('.')[0]
-                    if temp not in self._featureIndexes:
-                        self._featureIndexes.append(temp)
                 
     @searchText.setter
     def searchText(self, value):
