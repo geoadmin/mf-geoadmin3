@@ -5,8 +5,10 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
 % if mode == "prod": 
     <link href="${version}/style/app.css" rel="stylesheet" media="screen">
+    <link rel="shortcut icon" type="image/x-icon" href="${version}/img/favicon.ico"/>
 % else: 
     <link href="style/app.css" rel="stylesheet" media="screen">
+    <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico"/>
 %endif
   </head>
   <body ng-controller="GaMapController">
