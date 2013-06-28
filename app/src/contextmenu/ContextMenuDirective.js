@@ -39,7 +39,7 @@
             scope.epsg21781 = ol.coordinate.toStringXY(epsg21781, 0);
             scope.epsg4326 = ol.coordinate.toStringXY(epsg4326, 5);
 
-            scope.altitude = results[0].data.height;
+            scope.altitude = parseFloat(results[0].data.height);
             scope.epsg2056 =
                 ol.coordinate.toStringXY(results[1].data.coordinates, 2);
           });
