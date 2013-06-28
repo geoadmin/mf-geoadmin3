@@ -9,8 +9,8 @@ Alias ${base_url_path}/app ${base_dir}/app
 Alias ${base_url_path}/app-prod ${base_dir}/app-prod
 
 # Cached resources
-RewriteRule ^${base_url_path}/app-prod/[0-9a-fA-F]*/(lib|src|style)(.*)$ ${base_dir}/app-prod/$1/$2
-<LocationMatch ${base_url_path}/app-prod/[0-9a-fA-F]*/(lib|src|style)>
+RewriteRule ^${base_url_path}/app-prod/[0-9]*/(.*)$ ${base_dir}/app-prod/$1
+<LocationMatch ${base_url_path}/app-prod/[0-9]*/>   
    ExpiresDefault "now plus 1 year"
    Header merge Cache-Control "public"
 </LocationMatch>
