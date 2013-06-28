@@ -20,7 +20,9 @@
                x-ga-background-layer-selector-wmts-layers="wmtsLayers"></div>
         </form>
       </div>
-      <div class="map" x-ga-map="map" x-ga-map-resolutions="resolutions"></div>
+      <div class="map" x-ga-map="map" x-ga-map-resolutions="resolutions">
+        <div ga-context-menu ga-context-menu-map="map" class="contextmenu popover"></div>
+      </div>
       <div class="footer navbar navbar-fixed-bottom">
         <div class="scaleline pull-left" x-ga-scale-line x-ga-scale-line-map="map"></div>
         <div class="pipe"></div>

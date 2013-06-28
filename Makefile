@@ -2,6 +2,8 @@
 APP_JS_FILES := $(filter-out app/src/deps.js, $(shell find app/src -type f -name '*.js'))
 APP_LIB_FILES := $(shell find app/lib -type f -name '*.js')
 APP_JS_FILES_FOR_COMPILER = $(shell sed -e :a -e 'N;s/\n/ --js /;ba' .build-artefacts/js-files | sed 's/^.*base\.js //')
+APP_TEMPLATES_SRC := app/src/contextmenu/partials/menu.html
+APP_TEMPLATES_DEST := $(subst app,app-prod, $(APP_TEMPLATES_SRC))
 VERSION := $(shell date '+%s')
 
 .PHONY: help
@@ -28,7 +30,7 @@ help:
 all: prod dev lint test apache
 
 .PHONY: prod
-prod: app-prod/src/app.js app-prod/style/app.css app-prod/index.html app-prod/info.json app-prod/WMTSCapabilities.xml .build-artefacts/lib.timestamp
+prod: app-prod/src/app.js app-prod/style/app.css app-prod/index.html app-prod/info.json app-prod/WMTSCapabilities.xml .build-artefacts/lib.timestamp $(APP_TEMPLATES_DEST)
 
 .PHONY: dev
 dev: app/src/deps.js app/style/app.css app/index.html
@@ -53,6 +55,10 @@ app-prod/info.json: app/info.json
 
 # Temporary: the entire rule should go away eventually
 app-prod/WMTSCapabilities.xml: app/WMTSCapabilities.xml
+	cp $< $@
+
+$(APP_TEMPLATES_DEST): $(APP_TEMPLATES_SRC)
+	mkdir -p $(basename $@)
 	cp $< $@
 
 app/style/app.css: app/style/app.less node_modules
