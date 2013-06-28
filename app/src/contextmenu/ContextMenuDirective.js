@@ -16,7 +16,10 @@
         map: '=gaContextMenuMap'
       },
       link: function(scope, element, attrs) {
-        scope.map.on('contextmenu', function(event) {
+        var map = scope.map;
+        var view = map.getView();
+
+        map.on('contextmenu', function(event) {
           event.preventDefault();
 
           var epsg21781 = event.getCoordinate();
@@ -53,7 +56,7 @@
           element.css('left', pixel[0] + 'px');
           element.css('top', pixel[1] + 'px');
 
-          scope.map.getView().once('change:center', function() {
+          view.once('change:center', function() {
             element.css('display', 'none');
           });
         });
