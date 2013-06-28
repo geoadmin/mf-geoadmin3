@@ -15,8 +15,8 @@
 %endif
   </head>
   <body ng-controller="GaMapController">
-    <div class="wrapper">
-      <div class="header navbar navbar-fixed-top">
+    <div id="wrapper">
+      <div id="header" class="navbar navbar-fixed-top">
 % if mode == "prod":
         <img src="${version}/img/logo.ch.jpeg"/>
 % else:
@@ -30,35 +30,35 @@
                x-ga-background-layer-selector-wmts-layers="wmtsLayers"></div>
         </form>
       </div>
-      <div class="map" x-ga-map="map" x-ga-map-resolutions="resolutions">
+      <div id="map" class="map" x-ga-map="map" x-ga-map-resolutions="resolutions">
         <div ga-context-menu ga-context-menu-map="map" class="contextmenu popover"></div>
       </div>
-      <div class="footer navbar navbar-fixed-bottom">
-        <div class="scaleline pull-left" x-ga-scale-line x-ga-scale-line-map="map"></div>
+      <div id="footer" class="navbar navbar-fixed-bottom">
+        <div id="scaleline" class="pull-left" x-ga-scale-line x-ga-scale-line-map="map"></div>
         <div class="pipe"></div>
-        <div class="mouseposition pull-left" ng-controller="GaMousePositionController">
-          <select class="mouseposition-select"
+        <div id="mouseposition" class="pull-left" ng-controller="GaMousePositionController">
+          <select id="mouseposition-select"
             ng-model="mousePositionProjection"
             ng-options="p.label for p in mousePositionProjections">
           </select>
-          <div class="mouseposition-value"
+          <div id="mouseposition-value"
              x-ga-mouse-position
              x-ga-mouse-position-map="map"
              x-ga-mouse-position-projection="mousePositionProjection"></div>
         </div>
         <div class="pipe"></div>
-        <div class="attribution pull-left" x-ga-attribution x-ga-attribution-map="map"></div>
+        <div id="attribution" class="pull-left" x-ga-attribution x-ga-attribution-map="map"></div>
       </div>
     </div>
 
-    <div class="pulldown">
-      <div class="content collapse in">
+    <div id="pulldown">
+      <div id="pulldown-content" class="content collapse in">
         <div class="accordion-group">
           <div class="accordion-heading">
-            <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent=".pulldown .content" data-target=".pulldown .content .print" href="#">
+            <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#print">
               Print
             </a>
-            <div class="print collapse">
+            <div id="print" class="collapse">
               <div class="accordion-inner">
                 <%include file="src/print/partials/form.mako.html"/>
               </div>
@@ -67,7 +67,7 @@
         </div>
       </div>
       <div class="text-center">
-        <button type="button" data-toggle="collapse" data-target=".pulldown .content" class="toggle btn btn-default">
+        <button type="button" data-toggle="collapse" data-target="#pulldown-content" class="toggle btn btn-default">
           <span class="pulldown-close">close</span>
           <span class="pulldown-open">open</span>
         </button>
