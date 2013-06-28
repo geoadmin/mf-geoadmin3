@@ -48,6 +48,9 @@
               scope.epsg2056 = ol.coordinate.toStringXY(epsg2056, 2);
               scope.altitude = parseFloat(results.height.data.height);
 
+              view.once('change:center', function() {
+                element.css('display', 'none');
+              });
               element.css('display', 'block');
             });
           });
@@ -56,9 +59,6 @@
           element.css('left', pixel[0] + 'px');
           element.css('top', pixel[1] + 'px');
 
-          view.once('change:center', function() {
-            element.css('display', 'none');
-          });
         });
       }
     };
