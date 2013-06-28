@@ -1,1 +1,3 @@
-export BASE_URL=/ltmoc 
+source rc_dev
+
+export BASE_URL_PATH=/ltmoc 
