@@ -47,7 +47,7 @@ app-prod/style/app.css: app/style/app.css node_modules
 	node_modules/.bin/lessc --yui-compress $< $@
 
 app-prod/img/: app/img/*
-	mkdir -p app-prod/img/
+	mkdir -p $@
 	cp $< $@
 
 .PHONY: apache 
