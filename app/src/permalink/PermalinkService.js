@@ -103,7 +103,7 @@
         var port = loc.port;
         var protocol = loc.protocol;
 
-        var base = protocol + '://' + loc.hostname +
+        var base = protocol + '//' + loc.hostname +
             (port !== '' ? ':' + port : '') +
             loc.pathname;
 

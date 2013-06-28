@@ -12,7 +12,7 @@ describe('ga_permalink_service', function() {
       $provide.value('$window', {
         location: {
           port: '443',
-          protocol: 'https',
+          protocol: 'https:',
           hostname: 'some-hostname',
           pathname: '/some/path',
           search: '?some=key&value=pairs'
