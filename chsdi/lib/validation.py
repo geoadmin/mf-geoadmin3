@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import types
-import os
 import pyramid.httpexceptions as exc
 from chsdi.models import models_from_name
 from chsdi.lib.helpers import check_even
