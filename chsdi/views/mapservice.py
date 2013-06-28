@@ -19,7 +19,7 @@ class MapService(MapServiceValidation):
         super(MapService, self).__init__()
         self.request = request
         self.mapName = request.matchdict.get('map') # The topic
-        self.cbName = request.params.get('cb')
+        self.cbName = request.params.get('callback')
         self.lang = locale_negotiator(request)
         self.searchText = request.params.get('searchText')
         self.geodataStaging = request.registry.settings['geodata_staging']

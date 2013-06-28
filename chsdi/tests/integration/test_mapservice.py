@@ -12,8 +12,8 @@ class TestMapServiceView(TestsBase):
         resp = self.testapp.get('/rest/services/geoadmin/MapServer', params={'searchText':'wasser'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
 
-    def test_metadata_with_cb(self):
-        resp = self.testapp.get('/rest/services/geoadmin/MapServer', params={'cb':'cb'}, status=200)
+    def test_metadata_with_callback(self):
+        resp = self.testapp.get('/rest/services/geoadmin/MapServer', params={'callback':'cb'}, status=200)
         self.failUnless(resp.content_type == 'application/javascript')
 
     def test_identify_no_parameters(self):
@@ -49,7 +49,7 @@ class TestMapServiceView(TestsBase):
         resp = self.testapp.get('/rest/services/bafu/MapServer/identify', params=params, status=200)
         self.failUnless(resp.content_type == 'application/json')
 
-    def test_identify_valid_with_cb(self):
+    def test_identify_valid_with_callback(self):
         params = {'geometry': '548945.5,147956,549402,148103.5', 'geometryType': 'esriGeometryEnvelope', 'imageDisplay': '500,600,96', 'mapExtent': '548945.5,147956,549402,148103.5', 'tolerance': '1', 'layers': 'all', 'callback': 'cb'}
         resp = self.testapp.get('/rest/services/bafu/MapServer/identify', params=params, status=200)
         self.failUnless(resp.content_type == 'text/javascript')
@@ -97,7 +97,7 @@ class TestMapServiceView(TestsBase):
         self.failUnless(resp.json['feature'].has_key('geometry'))
         self.failUnless(resp.json['feature']['id'] == 362)
 
-    def test_getfeature_with_cb(self):
+    def test_getfeature_with_callback(self):
         resp = self.testapp.get('/rest/services/bafu/MapServer/ch.bafu.bundesinventare-bln/362', params={'callback': 'cb'}, status=200)
         self.failUnless(resp.content_type == 'text/javascript')
         resp.mustcontain('cb({')
@@ -107,8 +107,8 @@ class TestMapServiceView(TestsBase):
         self.failUnless(resp.content_type == 'text/html')
         resp.mustcontain('<table')
 
-    def test_gethtmlpopup_valid_with_cb(self):
-        resp = self.testapp.get('/rest/services/bafu/MapServer/ch.bafu.bundesinventare-bln/362/htmlpopup', params={'cb': 'cb'}, status=200)
+    def test_gethtmlpopup_valid_with_callback(self):
+        resp = self.testapp.get('/rest/services/bafu/MapServer/ch.bafu.bundesinventare-bln/362/htmlpopup', params={'callback': 'cb'}, status=200)
         self.failUnless(resp.content_type == 'application/javascript')
 
     def test_getlegend_valid(self):
@@ -116,6 +116,6 @@ class TestMapServiceView(TestsBase):
         self.failUnless(resp.content_type == 'text/html')
         resp.mustcontain('<div class="legend_header">')
 
-    def test_getlegend_valid_with_cb(self):
-        resp = self.testapp.get('/rest/services/bafu/MapServer/ch.bafu.bundesinventare-bln/getlegend', params={'cb' : 'cb'}, status=200)
+    def test_getlegend_valid_with_callback(self):
+        resp = self.testapp.get('/rest/services/bafu/MapServer/ch.bafu.bundesinventare-bln/getlegend', params={'callback' : 'cb'}, status=200)
         self.failUnless(resp.content_type == 'application/javascript')

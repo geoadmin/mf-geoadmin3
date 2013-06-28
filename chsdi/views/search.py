@@ -34,7 +34,7 @@ class Search(SearchValidation):
         self.mapName = request.matchdict.get('map')
         self.searchText = remove_accents(request.params.get('searchText'))
         self.lang = str(locale_negotiator(request))
-        self.cbName = request.params.get('cb')
+        self.cbName = request.params.get('callback')
         self.bbox =  request.params.get('bbox')
         self.quadindex = None
         self.featureIndexes = request.params.get('features')

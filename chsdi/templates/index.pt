@@ -44,9 +44,9 @@
           <h3>Varia</h3>
           <a href="rest/services/bafu/MapServer/ch.bafu.bundesinventare-bln/362">Get Feature with id 362</a> <br>
           <a href="rest/services/bafu/MapServer/ch.bafu.bundesinventare-bln/362/htmlpopup">Get Html Popup Ex 1</a> <br>
-          <a href="rest/services/bafu/MapServer/ch.bafu.bundesinventare-jagdbanngebiete/145/htmlpopup?lang=fr&cb=cb">Get Html Popup Ex 2 with callback</a> <br>
+          <a href="rest/services/bafu/MapServer/ch.bafu.bundesinventare-jagdbanngebiete/145/htmlpopup?lang=fr&callback=cb">Get Html Popup Ex 2 with callback</a> <br>
           <a href="rest/services/bafu/MapServer/ch.bafu.bundesinventare-bln/getlegend">Get Legend Ex 1</a> <br>
-          <a href="rest/services/bafu/MapServer/ch.bafu.bundesinventare-jagdbanngebiete/getlegend?lang=fr&cb=cb">Get Legend Ex 2 with callback</a> <br>
+          <a href="rest/services/bafu/MapServer/ch.bafu.bundesinventare-jagdbanngebiete/getlegend?lang=fr&callback=cb">Get Legend Ex 2 with callback</a> <br>
           <a href="rest/services/height?easting=600000&northing=200000">Height example</a> <br>
           <a href='rest/services/profile.json?geom={"type"%3A"LineString"%2C"coordinates"%3A[[550050%2C206550]%2C[556950%2C204150]%2C[561050%2C207950]]}&elevation_models=DTM25,DTM2'>Profile in json format</a> <br>
           <a href='rest/services/profile.csv?geom={"type"%3A"LineString"%2C"coordinates"%3A[[550050%2C206550]%2C[556950%2C204150]%2C[561050%2C207950]]}&elevation_models=DTM25,DTM2'>Profile in csv format</a> <br>

@@ -36,8 +36,8 @@ class TestHeightView(TestsBase):
         resp = self.testapp.get('/rest/services/height', params={'lon': '600000', 'northing': 'toto'}, status=400)
         resp.mustcontain("Please provide numerical values")
 
-    def test_height_with_cb_valid(self):
-        resp = self.testapp.get('/rest/services/height', params={'easting': '600000', 'northing': '200000', 'cb': 'cb'}, status=200)
+    def test_height_with_callback_valid(self):
+        resp = self.testapp.get('/rest/services/height', params={'easting': '600000', 'northing': '200000', 'callback': 'cb'}, status=200)
         self.failUnless(resp.content_type == 'application/javascript')
         resp.mustcontain('cb({')
 

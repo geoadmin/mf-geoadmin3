@@ -22,8 +22,8 @@ class TestProfileView(TestsBase):
         self.failUnless(resp.json[0]['easting'] == 550050)
         self.failUnless(resp.json[0]['northing'] == 206550)
 
-    def test_profile_json_with_cb_valid(self):
-        params = {'geom': '{"type":"LineString","coordinates":[[550050,206550],[556950,204150],[561050,207950]]}', 'cb': 'cb'}
+    def test_profile_json_with_callback_valid(self):
+        params = {'geom': '{"type":"LineString","coordinates":[[550050,206550],[556950,204150],[561050,207950]]}', 'callback': 'cb'}
         resp = self.testapp.get('/rest/services/profile.json', params=params, status=200)
         self.failUnless(resp.content_type == 'application/javascript')
         resp.mustcontain('cb([')
