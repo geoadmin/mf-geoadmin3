@@ -50,7 +50,7 @@
           element.css('left', pixel[0] + 'px');
           element.css('top', pixel[1] + 'px');
 
-          scope.map.once('down', function() {
+          scope.map.getView().once('change:center', function() {
             element.css('display', 'none');
           });
 
