@@ -21,27 +21,26 @@
           var epsg4326 = ol.proj.transform(epsg21781,
               'EPSG:21781', 'EPSG:4326');
 
-          $q.all([
-            $http.jsonp(heightURL, {
+          $q.all({
+            height: $http.jsonp(heightURL, {
               params: {
                 easting: epsg21781[0],
                 northing: epsg21781[1],
                 elevation_model: 'COMB'
               }
             }),
-            $http.jsonp(lv03tolv95URL, {
+            lv03tolv95: $http.jsonp(lv03tolv95URL, {
               params: {
                 easting: epsg21781[0],
                 northing: epsg21781[1]
               }
             })
-          ]).then(function(results) {
+          }).then(function(results) {
+            var epsg2056 = results.lv03tolv95.data.coordinates;
             scope.epsg21781 = ol.coordinate.toStringXY(epsg21781, 0);
             scope.epsg4326 = ol.coordinate.toStringXY(epsg4326, 5);
-
-            scope.altitude = parseFloat(results[0].data.height);
-            scope.epsg2056 =
-                ol.coordinate.toStringXY(results[1].data.coordinates, 2);
+            scope.epsg2056 = ol.coordinate.toStringXY(epsg2056, 2);
+            scope.altitude = parseFloat(results.height.data.height);
 
             element.css('display', 'block');
           });
