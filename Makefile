@@ -1,6 +1,7 @@
 
 APP_JS_FILES := $(filter-out app/src/deps.js, $(shell find app/src -type f -name '*.js'))
 APP_LIB_FILES := $(shell find app/lib -type f -name '*.js')
+APP_IMG_FILES := $(shell find app/style/img -type f -name '*.*')
 APP_JS_FILES_FOR_COMPILER = $(shell sed -e :a -e 'N;s/\n/ --js /;ba' .build-artefacts/js-files | sed 's/^.*base\.js //')
 VERSION := $(shell date '+%s')
 
@@ -28,7 +29,7 @@ help:
 all: prod dev lint test apache
 
 .PHONY: prod
-prod: app-prod/src/app.js app-prod/style/app.css app-prod/index.html app-prod/info.json app-prod/WMTSCapabilities.xml .build-artefacts/lib.timestamp
+prod: app-prod/src/app.js app-prod/style/app.css app-prod/index.html app-prod/info.json app-prod/WMTSCapabilities.xml .build-artefacts/lib.timestamp .build-artefacts/img.timestamp
 
 .PHONY: dev
 dev: app/src/deps.js app/style/app.css app/index.html
@@ -74,15 +75,19 @@ app/src/deps.js: $(APP_JS_FILES) .build-artefacts/python-venv .build-artefacts/c
 app/index.html: app/index.mako.html .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render $< > $@
 
-app-prod/index.html: app/index.mako.html app-prod/src/app.js app-prod/style/app.css .build-artefacts/lib.timestamp .build-artefacts/python-venv/bin/mako-render
+app-prod/index.html: app/index.mako.html app-prod/src/app.js app-prod/style/app.css .build-artefacts/lib.timestamp .build-artefacts/img.timestamp .build-artefacts/python-venv/bin/mako-render
 	mkdir -p app-prod
 	.build-artefacts/python-venv/bin/mako-render --var "mode=prod" --var "version=$(VERSION)" $< > $@
 
-apache/app.conf: apache/app.mako.conf app-prod/src/app.js app-prod/style/app.css .build-artefacts/lib.timestamp .build-artefacts/python-venv/bin/mako-render
+apache/app.conf: apache/app.mako.conf app-prod/src/app.js app-prod/style/app.css .build-artefacts/lib.timestamp .build-artefacts/img.timestamp .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "version=$(VERSION)" --var "base_url=$(BASE_URL)" --var "base_dir=$(CURDIR)" $< > $@ 
 
 .build-artefacts/lib.timestamp: $(APP_LIB_FILES)
 	cp -r app/lib app-prod
+	touch $@
+
+.build-artefacts/img.timestamp: $(APP_IMG_FILES)
+	cp -r app/style/img app-prod/style
 	touch $@
 
 .build-artefacts/lint.timestamp: .build-artefacts/python-venv/bin/gjslint $(APP_JS_FILES)
@@ -127,6 +132,7 @@ clean:
 	rm -f .build-artefacts/js-files
 	rm -f .build-artefacts/lint.timestamp
 	rm -f .build-artefacts/lib.timestamp
+	rm -f .build-artefacts/img.timestamp
 	rm -f app/src/deps.js
 	rm -f app/style/app.css
 	rm -f app/index.html

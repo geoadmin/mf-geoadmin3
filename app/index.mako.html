@@ -3,15 +3,26 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
-% if mode == "prod": 
+    <meta name="description"
+        content="Maps of Switzerland : The official geoportal of the Swiss Confederation provides digital data which can be viewed, printed out, ordered and supplied by means of the map viewer tool. Geoinformation is made available by public-sector organisations and is accessible to the general public."/>
+    <meta name="keywords"
+        content="maps Switzerland, map viewer, Confederation, geodata, public platform, geographical information, geoportal, orthophotos, geolocation, geoinformation, Geodaten, Geoinformation, Bund, Plattform, Karte, Kartendienst, Kartenviewer"/>
+
+    <title>map.geo.admin.ch PREVIEW</title>
+% if mode == "prod":
+    <link rel="shortcut icon" type="image/x-icon" href="${version}/style/img/favicon.ico"/> 
     <link href="${version}/style/app.css" rel="stylesheet" media="screen">
-% else: 
+% else:
+    <link rel="shortcut icon" type="image/x-icon" href="style/img/favicon.ico"/> 
     <link href="style/app.css" rel="stylesheet" media="screen">
 %endif
   </head>
   <body ng-controller="GaMapController">
     <div class="wrapper">
       <div class="header navbar navbar-fixed-top">
+        <div class="logo pull-left">
+              <img src="style/img/logo.ch.jpeg"></img>
+        </div>
         <form class="navbar-form pull-right"
               ng-controller="GaBackgroundLayerSelectorController">
           <div x-ga-background-layer-selector
