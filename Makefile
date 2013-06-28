@@ -30,7 +30,7 @@ help:
 all: prod dev lint test apache
 
 .PHONY: prod
-prod: app-prod/src/app.js app-prod/style/app.css app-prod/index.html app-prod/info.json app-prod/WMTSCapabilities.xml .build-artefacts/lib.timestamp $(APP_TEMPLATES_DEST)
+prod: app-prod/src/app.js app-prod/style/app.css app-prod/index.html app-prod/info.json app-prod/WMTSCapabilities.xml .build-artefacts/lib.timestamp $(APP_TEMPLATES_DEST) app-prod/img/
 
 .PHONY: dev
 dev: app/src/deps.js app/style/app.css app/index.html
@@ -45,6 +45,10 @@ test: app-prod/src/app.js node_modules
 app-prod/style/app.css: app/style/app.css node_modules
 	mkdir -p app-prod/style
 	node_modules/.bin/lessc --yui-compress $< $@
+
+app-prod/img/: app/img/*
+	mkdir -p app-prod/img/
+	cp $< $@
 
 .PHONY: apache 
 apache: apache/app.conf

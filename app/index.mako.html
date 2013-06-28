@@ -12,6 +12,11 @@
   <body ng-controller="GaMapController">
     <div class="wrapper">
       <div class="header navbar navbar-fixed-top">
+% if mode == "prod":
+        <img src="${version}/img/logo.ch.jpeg"/>
+% else:
+        <img src="img/logo.ch.jpeg"/>
+%endif
         <form class="navbar-form pull-right"
               ng-controller="GaBackgroundLayerSelectorController">
           <div x-ga-background-layer-selector
