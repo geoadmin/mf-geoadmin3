@@ -49,7 +49,7 @@ app-prod/style/app.css: app/style/app.css node_modules
 
 app-prod/img/: app/img/*
 	mkdir -p $@
-	cp $< $@
+	cp $^ $@
 
 .PHONY: apache 
 apache: apache/app.conf
