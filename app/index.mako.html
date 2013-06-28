@@ -1,17 +1,27 @@
 <!DOCTYPE html>
 <html ng-app="ga">
   <head>
+    <title>map.geo.admin.ch PREVIEW</title>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <meta name="description" content="Maps of Switzerland : The official geoportal of the Swiss Confederation provides digital data which can be viewed, printed out, ordered and supplied by means of the map viewer tool. Geoinformation is made available by public-sector organisations and is accessible to the general public."/>
+    <meta name="keywords" content="maps Switzerland, map viewer, Confederation, geodata, public platform, geographical information, geoportal, orthophotos, geolocation, geoinformation, Geodaten, Geoinformation, Bund, Plattform, Karte, Kartendienst, Kartenviewer"/>
 % if mode == "prod": 
     <link href="${version}/style/app.css" rel="stylesheet" media="screen">
+    <link rel="shortcut icon" type="image/x-icon" href="${version}/img/favicon.ico"/>
 % else: 
     <link href="style/app.css" rel="stylesheet" media="screen">
+    <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico"/>
 %endif
   </head>
   <body ng-controller="GaMapController">
     <div class="wrapper">
       <div class="header navbar navbar-fixed-top">
+% if mode == "prod":
+        <img src="${version}/img/logo.ch.jpeg"/>
+% else:
+        <img src="img/logo.ch.jpeg"/>
+%endif
         <form class="navbar-form pull-right"
               ng-controller="GaBackgroundLayerSelectorController">
           <div x-ga-background-layer-selector
