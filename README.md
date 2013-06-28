@@ -37,18 +37,21 @@ Use `make` (or `make help`) to know about the possible `make` targets:
 
     Variables:
 
-    - BASE_URL Base URL path (current value: /elemoine)
+    - BASE_URL_PATH: Base URL path (current value: /elemoine)
+    - SERVICE_URL: Service URL (current value: http://mf-chsdi30t.bgdi.admin.ch)
+
 
 Variables can be set as make macros or envvars. For example:
 
-    $ make BASE_URL=/elemoine apache 
-    $ BASE_URL=/elemoine make 
+    $ make BASE_URL_PATH=/elemoine apache 
+    $ BASE_URL_PATH=/elemoine make 
 
 You can avoid setting variables/macros on the `make` command line by creating  
 an `rc` file that you source once. Ex:  
 
     $ cat rc_elemoine 
-    export BASE_URL=/elemoine
+    source rc_dev
+    export BASE_URL_PATH=/elemoine
     $ source rc_elemoine 
     $ make  
 
