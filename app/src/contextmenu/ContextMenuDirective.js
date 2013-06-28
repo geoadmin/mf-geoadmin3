@@ -11,6 +11,7 @@
 
     return {
       restrict: 'A',
+      templateUrl: 'src/contextmenu/partials/menu.html',
       scope: {
         map: '=gaContextMenuMap'
       },

@@ -21,7 +21,7 @@
         </form>
       </div>
       <div class="map" x-ga-map="map" x-ga-map-resolutions="resolutions">
-        <%include file="src/contextmenu/partials/menu.html"/>
+        <div ga-context-menu ga-context-menu-map="map" class="contextmenu popover"></div>
       </div>
       <div class="footer navbar navbar-fixed-bottom">
         <div class="scaleline pull-left" x-ga-scale-line x-ga-scale-line-map="map"></div>
