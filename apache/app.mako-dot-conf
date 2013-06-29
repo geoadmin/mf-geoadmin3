@@ -1,9 +1,14 @@
 RewriteEngine On
 ExpiresActive On
 
+AddType application/json .json
+
 AddOutputFilterByType DEFLATE text/css
 AddOutputFilterByType DEFLATE text/html
+AddOutputFilterByType DEFLATE text/plain
 AddOutputFilterByType DEFLATE application/javascript
+AddOutputFilterByType DEFLATE application/xml
+AddOutputFilterByType DEFLATE application/json
 
 Alias ${base_url_path}/app ${base_dir}/app
 Alias ${base_url_path}/app-prod ${base_dir}/app-prod
