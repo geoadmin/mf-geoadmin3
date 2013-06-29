@@ -5,72 +5,74 @@
 @import "../src/attribution/style/attribution.less";
 @import "../src/contextmenu/style/menu.less";
 
-@headerHeight: 89;
+@header-height: 89;
 
 body {
     overflow: hidden;
 }
 
-.wrapper {
+#wrapper {
     position: absolute;
     width: 100%;
     height: 100%;
     .transition(left 0.3s ease-in-out);
 }
 
-.map {
+#map {
     position: absolute;
     width: 100%;
     height: 100%;
 }
 
-.header {
-    height: unit(@headerHeight, px);
+#header {
+    height: unit(@header-height, px);
     padding-left: 0;
     background-color: rgba(255, 255, 255, 0.9);
     .box-shadow(6px 6px 12px rgba(0, 0, 0, 0.175));
 }
 
-.footer {
+#footer {
     font-size: 11px;
     background-color: rgba(214, 214, 214, 0.9);
     padding-left: 12px;
     padding-right: 0;
-    .mouseposition {
-        width: 360px;
-    }
-    .mouseposition-select {
-        height: auto;
-        min-height: inherit;
-        width: auto;
-        font-size: inherit;
-        padding: 5px;
-    }
-    .mouseposition-select, .mouseposition-value {
-        display: inline-block;
-    }
-    .scaleline, .attribution, .mouseposition-value, .pipe {
+    .pipe {
         margin-top: 9px;
         margin-bottom: 9px;
-    }
-    .pipe {
         float: left;
         &:before {
             content: "|";
         }
     }
 }
+#mouseposition {
+    width: 360px;
+}
+#mouseposition-select {
+    height: auto;
+    min-height: inherit;
+    width: auto;
+    font-size: inherit;
+    padding: 5px;
+}
+#mouseposition-select, #mouseposition-value {
+    display: inline-block;
+}
+#scaleline, #attribution, #mouseposition-value {
+    margin-top: 9px;
+    margin-bottom: 9px;
+}
 
-.header, .footer {
+#header, #footer {
     position: absolute;
 }
 
-.pulldown {
+#pulldown {
     position: absolute;
     left: 0;
-    top: unit(@headerHeight, px);
+    top: unit(@header-height, px);
     width: 320px;
-    .content {
+    #pulldown-content {
         .box-shadow(6px 6px 12px rgba(0, 0, 0, 0.175));
         .accordion-group {
             margin: 0;
