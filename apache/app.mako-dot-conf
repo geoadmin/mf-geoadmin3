@@ -1,6 +1,8 @@
 RewriteEngine On
 ExpiresActive On
 
+FileETag none
+
 AddType application/json .json
 
 AddOutputFilterByType DEFLATE text/css
