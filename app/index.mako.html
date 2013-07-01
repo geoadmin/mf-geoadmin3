@@ -23,6 +23,13 @@
         </div>
         <form class="navbar-form pull-right"
           ng-controller="GaBackgroundLayerSelectorController">
+          <select ga-translation ng-model="lang">
+            <option value="de">DE</option>
+            <option value="fr">FR</option>
+            <option value="it">IT</option>
+            <option value="rm">RM</option>
+            <option value="en">EN</option>
+          </select>
           <div ga-background-layer-selector
             ga-background-layer-selector-map="map"
             ga-background-layer-selector-options="options"></div>
@@ -88,7 +95,7 @@
 
         <div class="accordion-group">
           <div class="accordion-heading">
-            <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#print">
+            <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#print" translate>
               <i class="icon-print"></i>
               Print
             </a>
@@ -150,8 +157,8 @@
 
       <div class="text-center">
         <button type="button" data-toggle="collapse" data-target="#pulldown-content" class="toggle btn btn-default">
-          <span class="hidden-collapsed"><i class="icon-caret-up"></i> close</span>
-          <span class="visible-collapsed"><i class="icon-caret-down"></i> open</span>
+          <span class="hidden-collapsed" translate><i class="icon-caret-up"></i> Close menu</span>
+          <span class="visible-collapsed" translate><i class="icon-caret-down"></i> Open menu</span>
         </button>
       </div>
     </div>
@@ -160,6 +167,8 @@
 % else:
     <script src="lib/jquery-2.0.2.js"></script>
     <script src="lib/angular-1.1.5.js"></script>
+    <script src="lib/angular-translate-0.9.4.js"></script>
+    <script src="lib/angular-translate-loader-static-files-0.1.2.js"></script>
     <script src="lib/bootstrap-3.0.0.js"></script>
     <script src="lib/proj4js-compressed.js"></script>
     <script src="lib/EPSG21781.js"></script>
