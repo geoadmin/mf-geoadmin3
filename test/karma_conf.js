@@ -19,8 +19,15 @@ files = [
   '../test/expect-0.2.0/expect.js',
   '../test/sinon-1.7.3/sinon.js',
   '../test/specs/Loader.spec.js',
-  '../test/specs/**/*.js'
+  '../test/specs/**/*.js',
+  'src/**/*.html'
 ];
+
+
+// generate js files from templates
+preprocessors = {
+  'src/**/*.html': 'html2js'
+};
 
 
 // list of files to exclude
