@@ -13,20 +13,16 @@
   <body ng-controller="GaMapController">
     <div id="wrapper">
       <div id="header" class="navbar navbar-fixed-top">
-      <div style="position:absolute; top: 0px; left: 270px;">
-        <h3><font color="red">This application is a preview. Development is ongoing.</font></h3>
-        Please provide feedback: <a href="mailto:info@geo.admin.ch?subject=map.geo.admin.ch preview">info[at]geo.admin.ch</a> or 
-        <a href="https://twitter.com/intent/tweet?screen_name=swiss_geoportal&text=I%20like%20the%20preview%2C%20but%20you%20should" class="twitter-mention-button">Tweet to @swiss_geoportal</a>
-        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-        (print is not functional, for now...)
+        <div id="logo">
+          <img class="hidden-sm" src="${version}img/logo.ch.jpeg" width="246" height="89"/>
+          <img class="visible-sm" src="${version}img/geoadminmobile-logo.png" width="93" height="36"/>
         </div>
         <img src="${version}img/logo.ch.jpeg" style="height: 89px; width: 246px;"/>
         <form class="navbar-form pull-right"
-              ng-controller="GaBackgroundLayerSelectorController">
+          ng-controller="GaBackgroundLayerSelectorController">
           <div ga-background-layer-selector
-               ga-background-layer-selector-map="map"
-               ga-background-layer-selector-options="options">
-          </div>
+            ga-background-layer-selector-map="map"
+            ga-background-layer-selector-options="options"></div>
         </form>
       </div>
       <div id="map" class="map" ga-map ga-map-map="map" ga-map-options="options">
@@ -41,10 +37,9 @@
             ng-options="p.label for p in mousePositionProjections">
           </select>
           <div id="mouseposition-value"
-             ga-mouse-position
-             ga-mouse-position-map="map"
-             ga-mouse-position-options="options"></div>
-        </div>
+            ga-mouse-position
+            ga-mouse-position-map="map"
+            ga-mouse-position-options="options"></div>
 % endif
         <div id="attribution" class="pull-left" ga-attribution ga-attribution-map="map"></div>
         <div id="copyrights" class="pull-right"><a href="http://www.geo.admin.ch/internet/geoportal/en/home/geoadmin/contact.html#copyright">Copyright & data protection</a></div>
