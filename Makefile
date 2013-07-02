@@ -39,7 +39,7 @@ dev: app/src/deps.js app/style/app.css app/index.html
 lint: .build-artefacts/lint.timestamp
 
 .PHONY: test
-test: .build-artefacts/app.js node_modules
+test: .build-artefacts/app-whitespace.js node_modules
 	npm test
 
 .PHONY: apache
@@ -91,6 +91,9 @@ node_modules:
 .build-artefacts/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar
 	mkdir -p app-prod/src
 	java -jar .build-artefacts/closure-compiler/compiler.jar $(APP_JS_FILES_FOR_COMPILER) --compilation_level SIMPLE_OPTIMIZATIONS --js_output_file $@
+
+.build-artefacts/app-whitespace.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar
+	java -jar .build-artefacts/closure-compiler/compiler.jar  $(APP_JS_FILES_FOR_COMPILER) --compilation_level WHITESPACE_ONLY --formatting PRETTY_PRINT --js_output_file $@
 
 # closurebuilder.py complains if it cannot find a Closure base.js script, so we
 # add lib/closure as a root. When compiling we remove base.js from the js files
