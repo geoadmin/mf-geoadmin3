@@ -14,9 +14,10 @@ or when you're using ssh key (see https://help.github.com/articles/generating-ss
 
     git clone git@github.com:geoadmin/mf-chsdi3.git
 
-Make sure PGUSER is set in your .bashrc (in order to run nosetests)
+Make sure PGUSER and PGPASS is set in your .bashrc (for nosetests, potranslate and sphinx)
 
-    export PGUSER=${<username>} // replace <username> with your account name on mf1t.bgdi.admin.ch
+    export PGUSER=${username} // replace ${username} with your account name on mf1t.bgdi.admin.ch
+    export PGPASS=${pass}
 
 Bootstrap your build environment:
 
