@@ -1,25 +1,25 @@
 // Karma configuration
 
 // base path, that will be used to resolve files and exclude
-basePath = '../';
+basePath = '../app';
 
 // list of files / patterns to load in the browser
 files = [
   MOCHA,
   MOCHA_ADAPTER,
-  'app/lib/jquery-2.0.2.min.js',
-  'app/lib/angular-1.1.5.js',
-  'app/lib/bootstrap-3.0.0.js',
-  'app/lib/proj4js-compressed.js',
-  'app/lib/EPSG21781.js',
-  'test/closure-loader-globals.js',
-  'app/lib/ol-whitespace.js',
-  '.build-artefacts/app-whitespace.js',
-  'test/angular/angular-mocks.js',
-  'test/expect-0.2.0/expect.js',
-  'test/sinon-1.7.3/sinon.js',
-  'test/specs/Loader.spec.js',
-  'test/specs/**/*.js'
+  'lib/jquery-2.0.2.min.js',
+  'lib/angular-1.1.5.js',
+  'lib/bootstrap-3.0.0.js',
+  'lib/proj4js-compressed.js',
+  'lib/EPSG21781.js',
+  '../test/closure-loader-globals.js',
+  'lib/ol-whitespace.js',
+  '../.build-artefacts/app-whitespace.js',
+  '../test/angular/angular-mocks.js',
+  '../test/expect-0.2.0/expect.js',
+  '../test/sinon-1.7.3/sinon.js',
+  '../test/specs/Loader.spec.js',
+  '../test/specs/**/*.js'
 ];
 
 
