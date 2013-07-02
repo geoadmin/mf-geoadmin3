@@ -9,7 +9,12 @@ files = [
   MOCHA,
   MOCHA_ADAPTER,
   //loading all external libraries (explicit, because order is important)
-  'app/lib/lib.js',
+  'app/lib/jquery-2.0.2.min.js',
+  'app/lib/angular-1.1.5.js',
+  'app/lib/bootstrap-3.0.0.js',
+  'app/lib/ol-whitespace.js',
+  'app/lib/proj4js-compressed.js',
+  'app/lib/EPSG21781.js',
   //load libraries only specific to testing
   'test/angular/angular-mocks.js',
   'test/expect-0.2.0/expect.js',
