@@ -43,6 +43,9 @@ lint: .build-artefacts/lint.timestamp
 test: app-prod/src/app.js node_modules
 	npm test
 
+.PHONY: apache
+apache: apache/app.conf
+
 app-prod/style/app.css: app/style/app.css node_modules
 	mkdir -p app-prod/style
 	node_modules/.bin/lessc --yui-compress $< $@
@@ -50,9 +53,6 @@ app-prod/style/app.css: app/style/app.css node_modules
 app-prod/img/: app/img/*
 	mkdir -p $@
 	cp $^ $@
-
-.PHONY: apache 
-apache: apache/app.conf
 
 # Temporary: the entire rule should go away eventually
 app-prod/info.json: app/info.json
