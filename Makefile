@@ -31,7 +31,7 @@ help:
 all: prod dev lint test apache
 
 .PHONY: prod
-prod: app-prod/src/app.js app-prod/lib/build.js app-prod/style/app.css app-prod/index.html app-prod/info.json app-prod/WMTSCapabilities.xml .build-artefacts/lib.timestamp $(APP_TEMPLATES_DEST) app-prod/img/
+prod: app-prod/src/app.js app-prod/lib/build.js app-prod/style/app.css app-prod/index.html app-prod/info.json app-prod/WMTSCapabilities.xml $(APP_TEMPLATES_DEST) app-prod/img/
 
 .PHONY: dev
 dev: app/src/deps.js app/style/app.css app/index.html
@@ -89,16 +89,12 @@ app/src/deps.js: $(APP_JS_FILES) .build-artefacts/python-venv .build-artefacts/c
 app/index.html: app/index.mako.html .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render $< > $@
 
-app-prod/index.html: app/index.mako.html app-prod/src/app.js app-prod/style/app.css .build-artefacts/lib.timestamp .build-artefacts/python-venv/bin/mako-render
+app-prod/index.html: app/index.mako.html app-prod/src/app.js app-prod/style/app.css .build-artefacts/python-venv/bin/mako-render
 	mkdir -p app-prod
 	.build-artefacts/python-venv/bin/mako-render --var "mode=prod" --var "version=$(VERSION)" $< > $@
 
-apache/app.conf: apache/app.mako-dot-conf app-prod/src/app.js app-prod/style/app.css .build-artefacts/lib.timestamp .build-artefacts/python-venv/bin/mako-render
+apache/app.conf: apache/app.mako-dot-conf app-prod/src/app.js app-prod/style/app.css .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "version=$(VERSION)" --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" --var "base_dir=$(CURDIR)" $< > $@ 
-
-.build-artefacts/lib.timestamp: $(APP_LIB_FILES)
-	cp -r app/lib app-prod
-	touch $@
 
 .build-artefacts/lint.timestamp: .build-artefacts/python-venv/bin/gjslint $(APP_JS_FILES)
 	.build-artefacts/python-venv/bin/gjslint -r app/src --jslint_error=all
@@ -141,7 +137,6 @@ cleanall: clean
 clean:
 	rm -f .build-artefacts/js-files
 	rm -f .build-artefacts/lint.timestamp
-	rm -f .build-artefacts/lib.timestamp
 	rm -f app/src/deps.js
 	rm -f app/style/app.css
 	rm -f app/index.html
