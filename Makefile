@@ -30,7 +30,7 @@ help:
 all: prod dev lint test apache
 
 .PHONY: prod
-prod: app-prod/src/app.js app-prod/lib/build.js app-prod/style/app.css app-prod/index.html app-prod/info.json app-prod/WMTSCapabilities.xml $(APP_TEMPLATES_DEST) app-prod/img/
+prod: app-prod/lib/build.js app-prod/style/app.css app-prod/index.html app-prod/info.json app-prod/WMTSCapabilities.xml $(APP_TEMPLATES_DEST) app-prod/img/
 
 .PHONY: dev
 dev: app/src/deps.js app/style/app.css app/index.html
@@ -39,7 +39,7 @@ dev: app/src/deps.js app/style/app.css app/index.html
 lint: .build-artefacts/lint.timestamp
 
 .PHONY: test
-test: app-prod/src/app.js node_modules
+test: .build-artefacts/app.js node_modules
 	npm test
 
 .PHONY: apache
@@ -68,13 +68,13 @@ $(APP_TEMPLATES_DEST): $(APP_TEMPLATES_SRC)
 app/style/app.css: app/style/app.less node_modules
 	node_modules/.bin/lessc $< $@
 
-app-prod/src/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar
-	mkdir -p app-prod/src
-	java -jar .build-artefacts/closure-compiler/compiler.jar $(APP_JS_FILES_FOR_COMPILER) --compilation_level SIMPLE_OPTIMIZATIONS --js_output_file $@
-
-app-prod/lib/build.js: app/lib/jquery-2.0.2.min.js app/lib/bootstrap-3.0.0.min.js app/lib/angular-1.1.5.min.js app/lib/proj4js-compressed.js app/lib/EPSG21781.js app/lib/ol.js app-prod/src/app.js
+app-prod/lib/build.js: app/lib/jquery-2.0.2.min.js app/lib/bootstrap-3.0.0.min.js app/lib/angular-1.1.5.min.js app/lib/proj4js-compressed.js app/lib/EPSG21781.js app/lib/ol.js .build-artefacts/app.js
 	mkdir -p app-prod/lib
 	cat $^ > $@
+
+.build-artefacts/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar
+	mkdir -p app-prod/src
+	java -jar .build-artefacts/closure-compiler/compiler.jar $(APP_JS_FILES_FOR_COMPILER) --compilation_level SIMPLE_OPTIMIZATIONS --js_output_file $@
 
 # closurebuilder.py complains if it cannot find a Closure base.js script, so we
 # add lib/closure as a root. When compiling we remove base.js from the js files
@@ -88,11 +88,11 @@ app/src/deps.js: $(APP_JS_FILES) .build-artefacts/python-venv .build-artefacts/c
 app/index.html: app/index.mako.html .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render $< > $@
 
-app-prod/index.html: app/index.mako.html app-prod/src/app.js app-prod/style/app.css .build-artefacts/python-venv/bin/mako-render
+app-prod/index.html: app/index.mako.html app-prod/lib/build.js app-prod/style/app.css .build-artefacts/python-venv/bin/mako-render
 	mkdir -p app-prod
 	.build-artefacts/python-venv/bin/mako-render --var "mode=prod" --var "version=$(VERSION)" $< > $@
 
-apache/app.conf: apache/app.mako-dot-conf app-prod/src/app.js app-prod/style/app.css .build-artefacts/python-venv/bin/mako-render
+apache/app.conf: apache/app.mako-dot-conf app-prod/lib/build.js app-prod/style/app.css .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "version=$(VERSION)" --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" --var "base_dir=$(CURDIR)" $< > $@ 
 
 .build-artefacts/lint.timestamp: .build-artefacts/python-venv/bin/gjslint $(APP_JS_FILES)
@@ -134,6 +134,7 @@ cleanall: clean
 
 .PHONY: clean
 clean:
+	rm -f .build-artefacts/app.js
 	rm -f .build-artefacts/js-files
 	rm -f .build-artefacts/lint.timestamp
 	rm -f app/src/deps.js

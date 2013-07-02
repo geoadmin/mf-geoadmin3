@@ -19,7 +19,7 @@ files = [
   'test/angular/angular-mocks.js',
   'test/expect-0.2.0/expect.js',
   'test/sinon-1.7.3/sinon.js',
-  'app-prod/src/app.js',
+  '.build-artefacts/app.js',
   //load test specifications (loader first to make sure our app is loaded)
   'test/specs/Loader.spec.js',
   'test/specs/**/*.js'
