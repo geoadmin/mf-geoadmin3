@@ -16,7 +16,7 @@
   else:
       legend_url_pdf = False
   legend_url = host + '/static/images/legends/' + c['idBod'] + '_' + lang + '.png'
-  times = c['attributes']['times']
+  times = c['attributes']['dataStatus']
 %>
 
 <div class="legend_header">

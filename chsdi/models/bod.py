@@ -16,7 +16,7 @@ class Bod(object):
     maps = Column('projekte', Text) # The topics
     dataOwner = Column('datenherr', Text)
     abstract = Column('abstract', Text)
-    times = Column('datenstand', Text)
+    dataStatus = Column('datenstand', Text)
     downloadUrl = Column('url_download', Text)
     urlApplication = Column('url_portale', Text)
     fullTextSearch = Column('volltextsuche', Text)
@@ -47,7 +47,7 @@ class Bod(object):
                 'maps': self.maps,
                 'dataOwner': self.dataOwner,
                 'abstract': self.abstract,
-                'times': self.times,
+                'dataStatus': self.dataStatus,
                 'downloadUrl': self.downloadUrl,
                 'urlApplication': self.urlApplication,
                 'wmsContactAbbreviation': self.wmsContactAbbreviation,
@@ -112,37 +112,51 @@ class ServiceMetadataFr(Base):
     __table_args__ = ({'autoload': True})
     id = Column('wms_id', Text, primary_key=True)
 
+#TODO use GetCap model to fill that up instead
 def computeHeader(mapName):
     return {
-        'serviceDescription': 'Description here',
+        'serviceDescription': 'Description',
         'mapName': mapName,
-        'description': 'Description of the topic here',
-        'copyrightText': 'Copyright text here',
+        'description': 'Configuration for the map (topic) ' + mapName,
+        'copyrightText': 'Data ' + mapName,
         'layers': [],
         'spatialReference': {"wkid" : 21781},
         'tileInfo': {
-            'rows': 236,
-            'cols': 284,
+            'rows': 256, # tile width in pixel
+            'cols': 256,
             'dpi': 96,
-            'format': 'png,jpeg',
+            'format': 'PNG,JPEG',
             'compressionQuality': '',
-            'origin': {"x" : 5.140242, "y" : 45.398181, "spatialReference" : {"wkid" : 4326}},
+            'origin': {"x" : 420000, "y" : 350000, "spatialReference" : {"wkid" : 21781}},
             'spatialReference': {"wkid" : 21781},
             'lods': [
-                {'level': 0, 'resolution': 650, 'scale': 2456694},
-                {'level': 1, 'resolution': 500, 'scale': 1889765},
-                {'level': 2, 'resolution': 250, 'scale': 944882},
-                {'level': 3, 'resolution': 100, 'scale': 377953},
-                {'level': 4, 'resolution': 50, 'scale': 188976},
-                {'level': 5, 'resolution': 20, 'scale': 75591},
-                {'level': 6, 'resolution': 10, 'scale': 37795},
-                {'level': 7, 'resolution': 5, 'scale': 18898},
-                {'level': 8, 'resolution': 2.5, 'scale': 94449},
-                {'level': 9, 'resolution': 2, 'scale': 7559},
-                {'level': 10, 'resolution': 1, 'scale': 3780},
-                {'level': 11, 'resolution': 0.5, 'scale': 1890},
-                {'level': 12, 'resolution': 0.25, 'scale': 945},
-                {'level': 13, 'resolution': 0.1, 'scale': 378}
+                {'level': 0, 'resolution': 4000, 'scale': 14285750.5715, 'width': 1, 'height': 1},
+                {'level': 1, 'resolution': 3750, 'scale': 13392891.1608, 'width': 1, 'height': 1},
+                {'level': 2, 'resolution': 3500, 'scale': 12500031.7501, 'width': 1, 'height': 1},
+                {'level': 3, 'resolution': 3250, 'scale': 11607172.3393, 'width': 1, 'height': 1},
+                {'level': 4, 'resolution': 3000, 'scale': 10714312.9286, 'width': 1, 'height': 1},
+                {'level': 5, 'resolution': 2750, 'scale': 9821453.51791, 'width': 1, 'height': 1},
+                {'level': 6, 'resolution': 2500, 'scale': 8928594.10719, 'width': 1, 'height': 1},
+                {'level': 7, 'resolution': 2250, 'scale': 8035734.69647, 'width': 1, 'height': 1},
+                {'level': 8, 'resolution': 2000, 'scale': 7142875.28575, 'width': 1, 'height': 1},
+                {'level': 9, 'resolution': 1750, 'scale': 6250015.87503, 'width': 2, 'height': 1},
+                {'level': 10, 'resolution': 1500, 'scale': 5357156.46431, 'width': 2, 'height': 1},
+                {'level': 11, 'resolution': 1250, 'scale': 4464297.05359, 'width': 2, 'height': 1},
+                {'level': 12, 'resolution': 1000, 'scale': 3571437.64288, 'width': 2, 'height': 2},
+                {'level': 13, 'resolution': 750, 'scale': 2678578.23216, 'width': 3, 'height': 2},
+                {'level': 14, 'resolution': 650, 'scale': 2321434.46787, 'width': 3, 'height': 2},
+                {'level': 15, 'resolution': 500, 'scale': 1785718.82144, 'width': 4, 'height': 3},
+                {'level': 16, 'resolution': 250, 'scale': 892859.410719, 'width': 8, 'height': 5},
+                {'level': 17, 'resolution': 100, 'scale': 357143.764288, 'width': 19, 'height': 13},
+                {'level': 18, 'resolution': 50, 'scale': 178571.882144, 'width': 38, 'height': 25},
+                {'level': 19, 'resolution': 20, 'scale': 71428.7528575, 'width': 94, 'height': 63},
+                {'level': 20, 'resolution': 10, 'scale': 35714.3764288, 'width': 188, 'height': 125},
+                {'level': 21, 'resolution': 5, 'scale': 17857.1882144, 'width': 375, 'height': 250},
+                {'level': 22, 'resolution': 2.5, 'scale': 8928.59410719, 'width': 750, 'height': 500},
+                {'level': 23, 'resolution': 2, 'scale': 7142.87528575, 'width': 938, 'height': 625},
+                {'level': 24, 'resolution': 1.5, 'scale': 5357.15646431, 'width': 1250, 'height': 834},
+                {'level': 25, 'resolution': 1, 'scale': 3571.43764288, 'width': 1875, 'height': 1250},
+                {'level': 26, 'resolution': 0.5, 'scale': 1785.71882144, 'width': 3750, 'height': 2500}
             ]
         },
         'initialExtent': {
@@ -154,7 +168,7 @@ def computeHeader(mapName):
             'spatialReference': {'wkid': 21781}
         },
         'units': 'esriMeters',
-        'capabilities': 'identify'
+        'capabilities': 'Map'
     }
 
 def get_bod_model(lang):
