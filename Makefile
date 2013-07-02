@@ -45,9 +45,17 @@ test: .build-artefacts/app.js node_modules
 .PHONY: apache
 apache: apache/app.conf
 
+app-prod/lib/build.js: app/lib/jquery-2.0.2.min.js app/lib/bootstrap-3.0.0.min.js app/lib/angular-1.1.5.min.js app/lib/proj4js-compressed.js app/lib/EPSG21781.js app/lib/ol.js .build-artefacts/app.js
+	mkdir -p app-prod/lib
+	cat $^ > $@
+
 app-prod/style/app.css: app/style/app.css node_modules
 	mkdir -p app-prod/style
 	node_modules/.bin/lessc --yui-compress $< $@
+
+app-prod/index.html: app/index.mako.html app-prod/lib/build.js app-prod/style/app.css .build-artefacts/python-venv/bin/mako-render
+	mkdir -p app-prod
+	.build-artefacts/python-venv/bin/mako-render --var "mode=prod" --var "version=$(VERSION)" $< > $@
 
 app-prod/img/: app/img/*
 	mkdir -p $@
@@ -65,12 +73,20 @@ $(APP_TEMPLATES_DEST): $(APP_TEMPLATES_SRC)
 	mkdir -p $(basename $@)
 	cp $< $@
 
+app/src/deps.js: $(APP_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
+	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root="app/src" --output_file=$@
+
 app/style/app.css: app/style/app.less node_modules
 	node_modules/.bin/lessc $< $@
 
-app-prod/lib/build.js: app/lib/jquery-2.0.2.min.js app/lib/bootstrap-3.0.0.min.js app/lib/angular-1.1.5.min.js app/lib/proj4js-compressed.js app/lib/EPSG21781.js app/lib/ol.js .build-artefacts/app.js
-	mkdir -p app-prod/lib
-	cat $^ > $@
+app/index.html: app/index.mako.html .build-artefacts/python-venv/bin/mako-render
+	.build-artefacts/python-venv/bin/mako-render $< > $@
+
+apache/app.conf: apache/app.mako-dot-conf app-prod/lib/build.js app-prod/style/app.css .build-artefacts/python-venv/bin/mako-render
+	.build-artefacts/python-venv/bin/mako-render --var "version=$(VERSION)" --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" --var "base_dir=$(CURDIR)" $< > $@
+
+node_modules:
+	npm install
 
 .build-artefacts/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar
 	mkdir -p app-prod/src
@@ -82,25 +98,9 @@ app-prod/lib/build.js: app/lib/jquery-2.0.2.min.js app/lib/bootstrap-3.0.0.min.j
 .build-artefacts/js-files: $(APP_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
 	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/closurebuilder.py --root=app/src --root=app/lib/closure --namespace="ga" --output_mode=list > $@
 
-app/src/deps.js: $(APP_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
-	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root="app/src" --output_file=$@
-
-app/index.html: app/index.mako.html .build-artefacts/python-venv/bin/mako-render
-	.build-artefacts/python-venv/bin/mako-render $< > $@
-
-app-prod/index.html: app/index.mako.html app-prod/lib/build.js app-prod/style/app.css .build-artefacts/python-venv/bin/mako-render
-	mkdir -p app-prod
-	.build-artefacts/python-venv/bin/mako-render --var "mode=prod" --var "version=$(VERSION)" $< > $@
-
-apache/app.conf: apache/app.mako-dot-conf app-prod/lib/build.js app-prod/style/app.css .build-artefacts/python-venv/bin/mako-render
-	.build-artefacts/python-venv/bin/mako-render --var "version=$(VERSION)" --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" --var "base_dir=$(CURDIR)" $< > $@ 
-
 .build-artefacts/lint.timestamp: .build-artefacts/python-venv/bin/gjslint $(APP_JS_FILES)
 	.build-artefacts/python-venv/bin/gjslint -r app/src --jslint_error=all
 	touch $@
-
-node_modules:
-	npm install
 
 .build-artefacts/python-venv/bin/mako-render: .build-artefacts/python-venv
 	.build-artefacts/python-venv/bin/pip install "Mako==0.8.1"
