@@ -10,14 +10,16 @@ files = [
   MOCHA_ADAPTER,
   //loading all external libraries (explicit, because order is important)
   'app/lib/jquery-2.0.2.min.js',
-  'app/lib/*.js',
-  //taps network...probably not a good idea in unit tests
-  'http://cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/proj4js-compressed.js',
+  'app/lib/angular-1.1.5.js',
+  'app/lib/bootstrap-3.0.0.js',
+  'app/lib/ol-whitespace.js',
+  'app/lib/proj4js-compressed.js',
+  'app/lib/EPSG21781.js',
   //load libraries only specific to testing
   'test/angular/angular-mocks.js',
   'test/expect-0.2.0/expect.js',
   'test/sinon-1.7.3/sinon.js',
-  'app-prod/src/app.js',
+  '.build-artefacts/app.js',
   //load test specifications (loader first to make sure our app is loaded)
   'test/specs/Loader.spec.js',
   'test/specs/**/*.js'
