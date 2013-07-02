@@ -7,7 +7,7 @@ basePath = '../app';
 files = [
   MOCHA,
   MOCHA_ADAPTER,
-  'lib/jquery-2.0.2.min.js',
+  'lib/jquery-2.0.2.js',
   'lib/angular-1.1.5.js',
   'lib/bootstrap-3.0.0.js',
   'lib/proj4js-compressed.js',
