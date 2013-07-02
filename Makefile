@@ -75,7 +75,7 @@ app-prod/src/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler
 
 app-prod/lib/build.js: app/lib/jquery-2.0.2.min.js app/lib/bootstrap-3.0.0.min.js app/lib/angular-1.1.5.min.js app/lib/proj4js-compressed.js app/lib/EPSG21781.js app/lib/ol.js app-prod/src/app.js
 	mkdir -p app-prod/lib
-	cat app/lib/jquery-2.0.2.min.js app/lib/bootstrap-3.0.0.min.js app/lib/angular-1.1.5.min.js app/lib/proj4js-compressed.js app/lib/EPSG21781.js app/lib/ol.js app-prod/src/app.js > $@ 
+	cat $^ > $@
 
 # closurebuilder.py complains if it cannot find a Closure base.js script, so we
 # add lib/closure as a root. When compiling we remove base.js from the js files
