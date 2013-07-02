@@ -31,7 +31,7 @@ help:
 all: prod dev lint test apache
 
 .PHONY: prod
-prod: app-prod/src/app.js app-prod/lib/lib.js app-prod/style/app.css app-prod/index.html app-prod/info.json app-prod/WMTSCapabilities.xml .build-artefacts/lib.timestamp $(APP_TEMPLATES_DEST) app-prod/img/
+prod: app-prod/src/app.js app-prod/lib/build.js app-prod/style/app.css app-prod/index.html app-prod/info.json app-prod/WMTSCapabilities.xml .build-artefacts/lib.timestamp $(APP_TEMPLATES_DEST) app-prod/img/
 
 .PHONY: dev
 dev: app/src/deps.js app/style/app.css app/index.html
@@ -73,9 +73,9 @@ app-prod/src/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler
 	mkdir -p app-prod/src
 	java -jar .build-artefacts/closure-compiler/compiler.jar $(APP_JS_FILES_FOR_COMPILER) --compilation_level SIMPLE_OPTIMIZATIONS --js_output_file $@
 
-app-prod/lib/lib.js: app/lib/jquery-2.0.2.min.js app/lib/bootstrap-3.0.0.min.js app/lib/angular-1.1.5.min.js app/lib/proj4js-compressed.js app/lib/EPSG21781.js app/lib/ol.js
+app-prod/lib/build.js: app/lib/jquery-2.0.2.min.js app/lib/bootstrap-3.0.0.min.js app/lib/angular-1.1.5.min.js app/lib/proj4js-compressed.js app/lib/EPSG21781.js app/lib/ol.js app-prod/src/app.js
 	mkdir -p app-prod/lib
-	cat app/lib/jquery-2.0.2.min.js app/lib/bootstrap-3.0.0.min.js app/lib/angular-1.1.5.min.js app/lib/proj4js-compressed.js app/lib/EPSG21781.js app/lib/ol.js > $@ 
+	cat app/lib/jquery-2.0.2.min.js app/lib/bootstrap-3.0.0.min.js app/lib/angular-1.1.5.min.js app/lib/proj4js-compressed.js app/lib/EPSG21781.js app/lib/ol.js app-prod/src/app.js > $@ 
 
 # closurebuilder.py complains if it cannot find a Closure base.js script, so we
 # add lib/closure as a root. When compiling we remove base.js from the js files
