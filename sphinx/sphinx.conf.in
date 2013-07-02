@@ -94,7 +94,7 @@ source src_sn25
 source src_gg25
 {
     type = pgsql
-    sql_host = ec2-46-137-49-117.eu-west-1.compute.amazonaws.com
+    sql_host = $1
     sql_user = $PGUSER
     sql_pass = $PGPASS
     sql_db = search
@@ -124,7 +124,7 @@ source src_gg25
 source src_kantone
 {
     type = pgsql
-    sql_host = ec2-46-137-49-117.eu-west-1.compute.amazonaws.com
+    sql_host = $1
     sql_user = $PGUSER
     sql_pass = $PGPASS
     sql_db = search
@@ -154,7 +154,7 @@ source src_kantone
 source src_district
 {
     type = pgsql
-    sql_host = ec2-46-137-49-117.eu-west-1.compute.amazonaws.com
+    sql_host = $1
     sql_user = $PGUSER
     sql_pass = $PGPASS
     sql_db = search
@@ -184,7 +184,7 @@ source src_district
 source src_zipcode
 {
     type = pgsql
-    sql_host = ec2-46-137-49-117.eu-west-1.compute.amazonaws.com
+    sql_host = $1
     sql_user = $PGUSER
     sql_pass = $PGPASS
     sql_db = search
@@ -215,7 +215,7 @@ source src_zipcode
 source src_layers_de
 {
     type = pgsql
-    sql_host = ec2-46-137-49-117.eu-west-1.compute.amazonaws.com
+    sql_host = $1
     sql_user = $PGUSER
     sql_pass = $PGPASS
     sql_db = bod
@@ -244,7 +244,7 @@ source src_layers_de
 source src_layers_fr
 {
     type = pgsql
-    sql_host = ec2-46-137-49-117.eu-west-1.compute.amazonaws.com
+    sql_host = $1
     sql_user = $PGUSER
     sql_pass = $PGPASS
     sql_db = bod
@@ -273,7 +273,7 @@ source src_layers_fr
 source src_layers_en
 {
     type = pgsql
-    sql_host = ec2-46-137-49-117.eu-west-1.compute.amazonaws.com
+    sql_host = $1
     sql_user = $PGUSER
     sql_pass = $PGPASS
     sql_db = bod
@@ -302,7 +302,7 @@ source src_layers_en
 source src_layers_it
 {
     type = pgsql
-    sql_host = ec2-46-137-49-117.eu-west-1.compute.amazonaws.com
+    sql_host = $1
     sql_user = $PGUSER
     sql_pass = $PGPASS
     sql_db = bod
