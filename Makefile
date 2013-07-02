@@ -12,6 +12,7 @@ help:
 	@echo
 	@echo "Possible targets:"
 	@echo
+	 echo "- lib       Concatenate lib files"
 	@echo "- prod      Build app for prod (app-prod)"
 	@echo "- dev       Build app for dev (app)"
 	@echo "- lint      Run the linter"
@@ -28,7 +29,7 @@ help:
 	@echo
 
 .PHONY: all
-all: prod dev lint test apache
+all: lib prod dev lint test apache
 
 .PHONY: prod
 prod: app-prod/src/app.js app-prod/style/app.css app-prod/index.html app-prod/info.json app-prod/WMTSCapabilities.xml .build-artefacts/lib.timestamp $(APP_TEMPLATES_DEST) app-prod/img/
@@ -42,6 +43,9 @@ lint: .build-artefacts/lint.timestamp
 .PHONY: test
 test: app-prod/src/app.js node_modules
 	npm test
+
+.PHONY: lib
+lib: app/lib/lib.js
 
 app-prod/style/app.css: app/style/app.css node_modules
 	mkdir -p app-prod/style
@@ -72,6 +76,9 @@ app/style/app.css: app/style/app.less node_modules
 app-prod/src/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar
 	mkdir -p app-prod/src
 	java -jar .build-artefacts/closure-compiler/compiler.jar $(APP_JS_FILES_FOR_COMPILER) --compilation_level SIMPLE_OPTIMIZATIONS --js_output_file $@
+
+app/lib/lib.js: app/lib/jquery-2.0.2.min.js app/lib/bootstrap-3.0.0.min.js app/lib/angular-1.1.5.min.js app/lib/proj4js-compressed.js app/lib/EPSG21781.js app/lib/ol.js
+	cat app/lib/jquery-2.0.2.min.js app/lib/bootstrap-3.0.0.min.js app/lib/angular-1.1.5.min.js app/lib/proj4js-compressed.js app/lib/EPSG21781.js app/lib/ol.js > app/lib/lib.js 
 
 # closurebuilder.py complains if it cannot find a Closure base.js script, so we
 # add lib/closure as a root. When compiling we remove base.js from the js files
@@ -142,4 +149,5 @@ clean:
 	rm -f app/style/app.css
 	rm -f app/index.html
 	rm -rf app-prod
-	rm -f apache/app.conf 
+	rm -f apache/app.conf
+	rm -f app/lib/lib.js 

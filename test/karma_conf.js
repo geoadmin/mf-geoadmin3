@@ -9,10 +9,7 @@ files = [
   MOCHA,
   MOCHA_ADAPTER,
   //loading all external libraries (explicit, because order is important)
-  'app/lib/jquery-2.0.2.min.js',
-  'app/lib/*.js',
-  //taps network...probably not a good idea in unit tests
-  'http://cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/proj4js-compressed.js',
+  'app/lib/lib.js',
   //load libraries only specific to testing
   'test/angular/angular-mocks.js',
   'test/expect-0.2.0/expect.js',
