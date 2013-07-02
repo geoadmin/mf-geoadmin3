@@ -13,3 +13,4 @@ print/config.yaml
 MANIFEST
 .coverage
 chsdi.egg-info
+sphinx.conf
