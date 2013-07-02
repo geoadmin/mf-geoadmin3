@@ -46,15 +46,15 @@ test: .build-artefacts/app.js node_modules
 apache: apache/app.conf
 
 app-prod/lib/build.js: app/lib/jquery-2.0.2.min.js app/lib/bootstrap-3.0.0.min.js app/lib/angular-1.1.5.min.js app/lib/proj4js-compressed.js app/lib/EPSG21781.js app/lib/ol.js .build-artefacts/app.js
-	mkdir -p app-prod/lib
+	mkdir -p $(dir $@)
 	cat $^ > $@
 
 app-prod/style/app.css: app/style/app.css node_modules
-	mkdir -p app-prod/style
+	mkdir -p $(dir $@)
 	node_modules/.bin/lessc --yui-compress $< $@
 
 app-prod/index.html: app/index.mako.html app-prod/lib/build.js app-prod/style/app.css .build-artefacts/python-venv/bin/mako-render
-	mkdir -p app-prod
+	mkdir -p $(dir $@)
 	.build-artefacts/python-venv/bin/mako-render --var "mode=prod" --var "version=$(VERSION)" $< > $@
 
 app-prod/img/: app/img/*
@@ -89,7 +89,7 @@ node_modules:
 	npm install
 
 .build-artefacts/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar
-	mkdir -p app-prod/src
+	mkdir -p $(dir $@)
 	java -jar .build-artefacts/closure-compiler/compiler.jar $(APP_JS_FILES_FOR_COMPILER) --compilation_level SIMPLE_OPTIMIZATIONS --js_output_file $@
 
 # closurebuilder.py complains if it cannot find a Closure base.js script, so we
@@ -123,7 +123,7 @@ node_modules:
 	touch $@
 
 .build-artefacts/closure-compiler/compiler-latest.zip:
-	mkdir -p .build-artefacts/closure-compiler
+	mkdir -p $(dir $@)
 	wget -O $@ http://closure-compiler.googlecode.com/files/compiler-latest.zip
 	touch $@
 
