@@ -37,8 +37,8 @@ Use `make` (or `make help`) to know about the possible `make` targets:
 
     Variables:
 
-    - BASE_URL_PATH: Base URL path (current value: /elemoine)
-    - SERVICE_URL: Service URL (current value: http://mf-chsdi30t.bgdi.admin.ch)
+    - BASE_URL_PATH: Base URL path (default value: /your-user-id)
+    - SERVICE_URL: Service URL (default value: http://mf-chsdi30t.bgdi.admin.ch)
 
 
 Variables can be set as make macros or envvars. For example:
@@ -46,14 +46,17 @@ Variables can be set as make macros or envvars. For example:
     $ make BASE_URL_PATH=/elemoine apache 
     $ BASE_URL_PATH=/elemoine make 
 
-You can avoid setting variables/macros on the `make` command line by creating  
-an `rc` file that you source once. Ex:  
+Default values for those variables should be good for most developers. You can
+customize the build by creating an `rc` file that you source once. Ex:  
 
     $ cat rc_elemoine 
-    source rc_dev
-    export BASE_URL_PATH=/elemoine
+    export BASE_URL_PATH=/mypath
+    export SERVICE_URL=/http://mf-chsdi30t.bgdi.admin.ch
     $ source rc_elemoine 
     $ make  
+
+For builds on test (rc_dev), integration (rc_ab) and produciton (rc_prod), you
+should source the corresponding `rc` file.
 
 On mf1t, create an Apache configuration file for your environment. Ex:
 
