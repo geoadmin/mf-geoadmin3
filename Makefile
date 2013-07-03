@@ -3,6 +3,7 @@ APP_JS_FILES := $(filter-out app/src/deps.js, $(shell find app/src -type f -name
 APP_JS_FILES_FOR_COMPILER = $(shell sed -e :a -e 'N;s/\n/ --js /;ba' .build-artefacts/js-files | sed 's/^.*base\.js //')
 APP_TEMPLATES_SRC := app/src/contextmenu/partials/menu.html
 APP_TEMPLATES_DEST := $(subst app,app-prod, $(APP_TEMPLATES_SRC))
+BASE_URL_PATH ?= /$(shell id -un)
 VERSION := $(shell date '+%s')
 
 .PHONY: help
