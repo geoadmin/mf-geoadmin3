@@ -1,12 +1,19 @@
 // Karma configuration
 
 // base path, that will be used to resolve files and exclude
+% if mode == 'prod':
+basePath = '../app-prod';
+% else:
 basePath = '../app';
+% endif
 
 // list of files / patterns to load in the browser
 files = [
   MOCHA,
   MOCHA_ADAPTER,
+% if mode == 'prod':
+  'lib/build.js',
+% else:
   'lib/jquery-2.0.2.js',
   'lib/angular-1.1.5.js',
   'lib/bootstrap-3.0.0.js',
@@ -15,6 +22,7 @@ files = [
   '../test/closure-loader-globals.js',
   'lib/ol-whitespace.js',
   '../.build-artefacts/app-whitespace.js',
+% endif
   '../test/angular/angular-mocks.js',
   '../test/expect-0.2.0/expect.js',
   '../test/sinon-1.7.3/sinon.js',
@@ -79,4 +87,3 @@ captureTimeout = 5000;
 // Continuous Integration mode
 // if true, it capture browsers, run tests and exit
 singleRun = false;
-
