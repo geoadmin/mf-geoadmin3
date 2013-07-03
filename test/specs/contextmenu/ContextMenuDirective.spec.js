@@ -9,11 +9,15 @@ describe('ga_contextmenu_directive', function() {
     module('src/contextmenu/partials/menu.html');
 
     element = angular.element(
-      '<div ga-context-menu ga-context-menu-map="map"></div>');
+      '<div ga-map ga-map-map="map" ga-map-options="options">' +
+          '<div ga-context-menu></div>' +
+      '</div>');
 
     inject(function($rootScope, $compile) {
-      $rootScope.map = new ol.Map({});
-      $rootScope.map.on = function(eventType, handler) {
+      var map = new ol.Map({});
+      $rootScope.map = map;
+      $rootScope.options = {};
+      map.on = function(eventType, handler) {
         contextmenuHandler = handler;
       };
       $compile(element)($rootScope);

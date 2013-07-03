@@ -6,14 +6,33 @@
     'ga_permalink'
   ]);
 
+  module.controller('GaMapDirectiveController', function() {
+    this.setMap = function(map) {
+      this.map = map;
+    };
+
+    this.getMap = function() {
+      return this.map;
+    };
+  });
+
   module.directive('gaMap',
       ['$parse', '$timeout', 'gaPermalink',
         function($parse, $timeout, gaPermalink) {
           return {
             restrict: 'A',
-            link: function(scope, element, attrs) {
-              var map = $parse(attrs.gaMap)(scope);
-              var resolutions = $parse(attrs.gaMapResolutions)(scope);
+            scope: {
+              map: '=gaMapMap',
+              options: '=gaMapOptions'
+            },
+            controller: 'GaMapDirectiveController',
+            link: function(scope, element, attrs, controller) {
+              var map = scope.map;
+              controller.setMap(map);
+
+              var options = scope.options;
+              var resolutions = options.resolutions;
+
               var view = map.getView();
 
               // set view states based on URL query string

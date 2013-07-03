@@ -12,11 +12,10 @@
     return {
       restrict: 'A',
       templateUrl: 'src/contextmenu/partials/menu.html',
-      scope: {
-        map: '=gaContextMenuMap'
-      },
-      link: function(scope, element, attrs) {
-        var map = scope.map;
+      require: '^gaMap',
+      scope: {},
+      link: function(scope, element, attrs, gaMapDirectiveCtrl) {
+        var map = gaMapDirectiveCtrl.getMap();
         var view = map.getView();
 
         map.on('contextmenu', function(event) {

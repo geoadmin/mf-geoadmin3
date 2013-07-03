@@ -28,7 +28,9 @@
     });
 
     $scope.map = map;
-    $scope.resolutions = resolutions;
+    $scope.options = {
+      resolutions: resolutions
+    };
 
   }]);
 

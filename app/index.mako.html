@@ -33,25 +33,25 @@
               ng-controller="GaBackgroundLayerSelectorController">
           <div ga-background-layer-selector
                ga-background-layer-selector-map="map"
-               ga-background-layer-selector-wmts-url="wmtsUrl"
-               ga-background-layer-selector-wmts-layers="wmtsLayers"></div>
+               ga-background-layer-selector-options="options">
+          </div>
         </form>
       </div>
-      <div id="map" class="map" ga-map="map" ga-map-resolutions="resolutions">
-        <div ga-context-menu ga-context-menu-map="map" class="contextmenu popover"></div>
+      <div id="map" class="map" ga-map ga-map-map="map" ga-map-options="options">
+        <div ga-context-menu class="contextmenu popover"></div>
       </div>
       <div id="footer" class="navbar navbar-fixed-bottom">
         <div id="scaleline" class="pull-left" ga-scale-line ga-scale-line-map="map"></div>
         <div class="pipe"></div>
         <div id="mouseposition" class="pull-left" ng-controller="GaMousePositionController">
           <select id="mouseposition-select"
-            ng-model="mousePositionProjection"
+            ng-model="options.projection"
             ng-options="p.label for p in mousePositionProjections">
           </select>
           <div id="mouseposition-value"
              ga-mouse-position
              ga-mouse-position-map="map"
-             ga-mouse-position-projection="mousePositionProjection"></div>
+             ga-mouse-position-options="options"></div>
         </div>
         <div class="pipe"></div>
         <div id="attribution" class="pull-left" ga-attribution ga-attribution-map="map"></div>
