@@ -22,20 +22,21 @@ describe('ga_backgroundlayerselector_directive', function() {
 
     element = angular.element(
       '<div>' +
-          '<div x-ga-background-layer-selector ' +
-              'x-ga-background-layer-selector-map="map" ' +
-              'x-ga-background-layer-selector-wmts-url="url" ' +
-              'x-ga-background-layer-selector-wmts-layers="layers">' +
+          '<div ga-background-layer-selector ' +
+              'ga-background-layer-selector-map="map" ' +
+              'ga-background-layer-selector-options="options">' +
           '</div>' +
       '</div>');
 
     inject(function($rootScope, $compile) {
       $rootScope.map = map;
-      $rootScope.url = 'wmts.xml';
-      $rootScope.layers = [
-        {label: 'Foo', value: 'foo'},
-        {label: 'Bar', value: 'bar'}
-      ];
+      $rootScope.options = {
+        wmtsUrl: 'wmts.xml',
+        wmtsLayers: [
+          {label: 'Foo', value: 'foo'},
+          {label: 'Bar', value: 'bar'}
+        ]
+      };
       $compile(element)($rootScope);
     });
 
