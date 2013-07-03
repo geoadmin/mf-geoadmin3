@@ -19,35 +19,17 @@ Build:
 
     $ make all
 
-Use `make` (or `make help`) to know about the possible `make` targets:
+Use `make help` to know about the possible `make` targets and the currently set
+Environment variables:
 
-    $ make
-    Usage: make <target>
+    $ make help
 
-    Possible targets:
-
-    - prod      Build app for prod (app-prod)
-    - dev       Build app for dev (app)
-    - lint      Run the linter
-    - test      Run the JavaScript tests
-    - apache    Configure Apache (restart required)
-    - all       All of the above
-    - clean     Remove generated files
-    - cleanall  Remove all the build artefacts
-
-    Variables:
-
-    - BASE_URL_PATH: Base URL path (default value: /your-user-id)
-    - SERVICE_URL: Service URL (default value: http://mf-chsdi30t.bgdi.admin.ch)
-
-
-Variables can be set as make macros or envvars. For example:
+Environment variables have sensible default values for development. Anyhow, they can be set as make macros or envvars. For example:
 
     $ make BASE_URL_PATH=/elemoine apache 
     $ BASE_URL_PATH=/elemoine make 
 
-Default values for those variables should be good for most developers. You can
-customize the build by creating an `rc` file that you source once. Ex:  
+You can customize the build by creating an `rc` file that you source once. Ex:  
 
     $ cat rc_elemoine 
     export BASE_URL_PATH=/mypath
@@ -55,7 +37,7 @@ customize the build by creating an `rc` file that you source once. Ex:
     $ source rc_elemoine 
     $ make  
 
-For builds on test (rc_dev), integration (rc_ab) and produciton (rc_prod), you
+For builds on test (rc_dev), integration (rc_ab) and production (rc_prod), you
 should source the corresponding `rc` file.
 
 On mf1t, create an Apache configuration file for your environment. Ex:
