@@ -20,7 +20,7 @@ Build:
     $ make all
 
 Use `make help` to know about the possible `make` targets and the currently set
-Environment variables:
+environment variables:
 
     $ make help
 
