@@ -3,12 +3,16 @@ describe('ga_map_directive', function() {
   var map, element, scope;
 
   beforeEach(inject(function($rootScope, $compile) {
-    map = $rootScope.map = new ol.Map({
+    map = new ol.Map({
       layers: []
     });
+    $rootScope.map = map;
+    $rootScope.options = {
+      resolutions: [2, 1]
+    };
     element = angular.element(
-      '<div x-ga-map="map"' +
-          'x-ga-resolutions="resolutions"' +
+      '<div ga-map ga-map-map="map" ' +
+          'ga-map-options="options"' +
       '</div>');
     $compile(element)($rootScope);
   }));

@@ -3,17 +3,18 @@
 
   var module = angular.module('ga_scaleline_directive', []);
 
-  module.directive('gaScaleLine',
-      ['$parse', function($parse) {
-        return {
-          restrict: 'A',
-          link: function(scope, element, attrs) {
-            var map = $parse(attrs.gaScaleLineMap)(scope);
-            var control = new ol.control.ScaleLine({
-              target: element[0]
-            });
-            map.addControl(control);
-          }
-        };
-      }]);
+  module.directive('gaScaleLine', function() {
+    return {
+      restrict: 'A',
+      scope: {
+        map: '=gaScaleLineMap'
+      },
+      link: function(scope, element, attrs) {
+        var control = new ol.control.ScaleLine({
+          target: element[0]
+        });
+        scope.map.addControl(control);
+      }
+    };
+  });
 })();

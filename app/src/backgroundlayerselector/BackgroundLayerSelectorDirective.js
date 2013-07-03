@@ -17,17 +17,17 @@
            replace: true,
            scope: {
              map: '=gaBackgroundLayerSelectorMap',
-             wmtsUrl: '=gaBackgroundLayerSelectorWmtsUrl',
-             wmtsLayers: '=gaBackgroundLayerSelectorWmtsLayers'
+             options: '=gaBackgroundLayerSelectorOptions'
            },
            template:
                '<select ng-model="currentLayer" ' +
-                   'ng-options="l.value as l.label for l in wmtsLayers">' +
+                   'ng-options="l.value as l.label for l in ' +
+                       'options.wmtsLayers">' +
                '</select>',
            link: function(scope, element, attrs) {
              var map = scope.map;
-             var wmtsUrl = scope.wmtsUrl;
-             var wmtsLayers = scope.wmtsLayers;
+             var wmtsUrl = scope.options.wmtsUrl;
+             var wmtsLayers = scope.options.wmtsLayers;
 
              var queryParams = gaPermalink.getParams();
              scope.currentLayer = (queryParams.bgLayer !== undefined) ?
@@ -35,13 +35,13 @@
 
              var wmtsLayerObjects = [];
              var setCurrentLayer = function(layerName) {
-               var i, ii = scope.wmtsLayers.length;
+               var i, ii = wmtsLayers.length;
                for (i = 0; i < ii; ++i) {
-                 if (scope.wmtsLayers[i].value === layerName) {
+                 if (wmtsLayers[i].value === layerName) {
                    break;
                  }
                }
-               if (i < scope.wmtsLayers.length) {
+               if (i < wmtsLayers.length) {
                  map.getLayers().setAt(0, wmtsLayerObjects[i]);
                  gaPermalink.updateParams({bgLayer: layerName});
                }
