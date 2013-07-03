@@ -19,12 +19,11 @@ Build:
 
     $ make all
 
-Use `make help` to know about the possible `make` targets and the currently set
-environment variables:
+Use `make help` to know about the possible `make` targets and the currently set variables:
 
     $ make help
 
-Environment variables have sensible default values for development. Anyhow, they can be set as make macros or envvars. For example:
+Variables have sensible default values for development. Anyhow, they can be set as make macros or envvars. For example:
 
     $ make BASE_URL_PATH=/elemoine apache 
     $ BASE_URL_PATH=/elemoine make 
