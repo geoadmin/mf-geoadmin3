@@ -27,7 +27,7 @@
                 var pixel = event.getPixel();
                 var epsg21781 = event.getCoordinate();
                 var epsg4326 = ol.proj.transform(epsg21781,
-                                                 'EPSG:21781', 'EPSG:4326');
+                    'EPSG:21781', 'EPSG:4326');
 
                 // The $http service does not send requests immediately but
                 // wait for the "nextTick". Not sure this is bug in Angular.
@@ -51,19 +51,19 @@
                     })
                   }).then(function(results) {
                     var epsg2056 = results.lv03tolv95.data.coordinates;
-                    scope.epsg21781href = gaPermalink.updateHref({
+                    scope.epsg21781href = gaPermalink.getHref({
                       Y: Math.round(epsg21781[0], 1),
                       X: Math.round(epsg21781[1], 1)});
-                    scope.epsg21781hrefcrosshair = gaPermalink.updateHref({
+                    scope.epsg21781hrefcrosshair = gaPermalink.getHref({
                       Y: Math.round(epsg21781[0], 1),
                       X: Math.round(epsg21781[1], 1),
                       crosshair: 'bowl'});
-                    var qrcodeurl = escape(gaPermalink.updateHref({
+                    var qrcodeurl = escape(gaPermalink.getHref({
                       Y: Math.round(epsg21781[0], 1),
                       X: Math.round(epsg21781[1], 1)}));
                     scope.epsg21781qrcodeimage =
                        'http://api.geo.admin.ch/qrcodegenerator?url=' +
-                        qrcodeurl;
+                       qrcodeurl;
 
                     scope.epsg21781 = ol.coordinate.toStringXY(epsg21781, 1);
                     scope.epsg4326 = ol.coordinate.toStringXY(epsg4326, 5);
