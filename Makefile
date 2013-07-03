@@ -4,6 +4,7 @@ APP_JS_FILES_FOR_COMPILER = $(shell sed -e :a -e 'N;s/\n/ --js /;ba' .build-arte
 APP_TEMPLATES_SRC := app/src/contextmenu/partials/menu.html
 APP_TEMPLATES_DEST := $(subst app,app-prod, $(APP_TEMPLATES_SRC))
 BASE_URL_PATH ?= /$(shell id -un)
+SERVICE_URL ?= http://mf-chsdi30t.bgdi.admin.ch
 VERSION := $(shell date '+%s')
 
 .PHONY: help
@@ -20,6 +21,7 @@ help:
 	@echo "- all       All of the above"
 	@echo "- clean     Remove generated files"
 	@echo "- cleanall  Remove all the build artefacts"
+	@echo "- help      Display this help"
 	@echo
 	@echo "Variables:"
 	@echo
