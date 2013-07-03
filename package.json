@@ -13,7 +13,7 @@
     "karma": "0.8.5"
   },
   "scripts": {
-    "test": "./node_modules/.bin/karma start test/karma_conf.js --single-run"
+    "test": "./node_modules/.bin/karma start test/karma-conf-prod.js --single-run"
   }
 }
 

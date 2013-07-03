@@ -28,7 +28,7 @@ help:
 	@echo
 
 .PHONY: all
-all: prod dev lint test apache
+all: prod dev lint test apache test/karma-conf-prod.js
 
 .PHONY: prod
 prod: app-prod/lib/build.js app-prod/style/app.css app-prod/index.html app-prod/info.json app-prod/WMTSCapabilities.xml $(APP_TEMPLATES_DEST) app-prod/img/
@@ -40,8 +40,8 @@ dev: app/src/deps.js app/style/app.css app/index.html
 lint: .build-artefacts/lint.timestamp
 
 .PHONY: test
-test: .build-artefacts/app-whitespace.js node_modules
-	npm test
+test: .build-artefacts/app-whitespace.js test/karma-conf-dev.js node_modules
+	./node_modules/.bin/karma start test/karma-conf-dev.js --single-run
 
 .PHONY: apache
 apache: apache/app.conf
@@ -85,6 +85,12 @@ app/index.html: app/index.mako.html .build-artefacts/python-venv/bin/mako-render
 
 apache/app.conf: apache/app.mako-dot-conf app-prod/lib/build.js app-prod/style/app.css .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "version=$(VERSION)" --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" --var "base_dir=$(CURDIR)" $< > $@
+
+test/karma-conf-dev.js: test/karma-conf.mako.js .build-artefacts/python-venv/bin/mako-render
+	.build-artefacts/python-venv/bin/mako-render $< > $@
+
+test/karma-conf-prod.js: test/karma-conf.mako.js .build-artefacts/python-venv/bin/mako-render
+	.build-artefacts/python-venv/bin/mako-render --var "mode=prod" $< > $@
 
 node_modules:
 	npm install
