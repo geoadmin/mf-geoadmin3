@@ -53,22 +53,77 @@
     </div>
 
     <div id="pulldown">
-      <div id="pulldown-content" class="content collapse in">
+      <div id="pulldown-content" class="content in">
         <div class="accordion-group">
-% if device == 'desktop':
+          <div class="accordion-heading">
+            <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#share">
+              Share
+            </a>
+          </div>
+          <div id="share" class="collapse">
+            <div class="accordion-inner">
+              <p>under construction ...</p>
+            </div>
+          </div>
+        </div> <!-- .accordion-group -->
+
+        <div class="accordion-group">
           <div class="accordion-heading">
             <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#print">
               Print
             </a>
-            <div id="print" class="collapse">
-              <div class="accordion-inner">
-                <%include file="src/print/partials/form.mako.html"/>
-              </div>
+          </div>
+          <div id="print" class="collapse">
+            <div class="accordion-inner">
+              <%include file="src/print/partials/form.mako.html"/>
             </div>
           </div>
-% endif
-        </div>
-      </div>
+        </div>  <!-- .accordion-group -->
+        <div class="accordion-group">
+          <div class="accordion-heading">
+            <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#tools">
+              Map tools
+            </a>
+          </div>
+          <div id="tools" class="collapse">
+            <div class="accordion-inner">
+              <p>under construction ...</p>
+            </div>
+          </div>
+        </div> <!-- .accordion-group -->
+
+        <div class="accordion-group">
+          <div class="accordion-heading">
+            <div class="theme-toggle">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#">Choose theme</a>
+              <div class="dropdown-menu">
+                <p>under construction ...</p>
+              </div>
+            </div>
+            <a class="accordion-toggle light collapsed" data-toggle="collapse" href="#catalog">
+              Geo Catalog
+            </a>
+          </div>
+          <div id="catalog" class="collapse">
+            <div class="accordion-inner">
+              <p>under construction ...</p>
+            </div>
+          </div>
+        </div> <!-- .accordion-group -->
+        <div class="accordion-group">
+          <div class="accordion-heading">
+            <a class="accordion-toggle light collapsed" data-toggle="collapse" href="#selection">
+              Your selection
+            </a>
+          </div>
+          <div id="selection" class="collapse">
+            <div class="accordion-inner">
+              <p>under construction ...</p>
+            </div>
+          </div>
+        </div> <!-- .accordion-group -->
+      </div> <!-- #pulldown-content -->
+
       <div class="text-center">
         <button type="button" data-toggle="collapse" data-target="#pulldown-content" class="toggle btn btn-default">
           <span class="pulldown-close">close</span>
