@@ -21,7 +21,7 @@ help:
 	@echo "- all       All of the above"
 	@echo "- clean     Remove generated files"
 	@echo "- cleanall  Remove all the build artefacts"
-  @echo "- help			 Display this help"
+	@echo "- help      Display this help"
 	@echo
 	@echo "Variables:"
 	@echo
