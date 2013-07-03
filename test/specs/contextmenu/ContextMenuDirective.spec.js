@@ -9,7 +9,7 @@ describe('ga_contextmenu_directive', function() {
     module('src/contextmenu/partials/menu.html');
 
     element = angular.element(
-      '<div x-ga-context-menu x-ga-context-menu-map="map"></div>');
+      '<div ga-context-menu ga-context-menu-map="map"></div>');
 
     inject(function($rootScope, $compile) {
       $rootScope.map = new ol.Map({});

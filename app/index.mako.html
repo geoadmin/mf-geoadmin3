@@ -31,17 +31,17 @@
 %endif
         <form class="navbar-form pull-right"
               ng-controller="GaBackgroundLayerSelectorController">
-          <div x-ga-background-layer-selector
-               x-ga-background-layer-selector-map="map"
-               x-ga-background-layer-selector-wmts-url="wmtsUrl"
-               x-ga-background-layer-selector-wmts-layers="wmtsLayers"></div>
+          <div ga-background-layer-selector
+               ga-background-layer-selector-map="map"
+               ga-background-layer-selector-wmts-url="wmtsUrl"
+               ga-background-layer-selector-wmts-layers="wmtsLayers"></div>
         </form>
       </div>
-      <div id="map" class="map" x-ga-map="map" x-ga-map-resolutions="resolutions">
+      <div id="map" class="map" ga-map="map" ga-map-resolutions="resolutions">
         <div ga-context-menu ga-context-menu-map="map" class="contextmenu popover"></div>
       </div>
       <div id="footer" class="navbar navbar-fixed-bottom">
-        <div id="scaleline" class="pull-left" x-ga-scale-line x-ga-scale-line-map="map"></div>
+        <div id="scaleline" class="pull-left" ga-scale-line ga-scale-line-map="map"></div>
         <div class="pipe"></div>
         <div id="mouseposition" class="pull-left" ng-controller="GaMousePositionController">
           <select id="mouseposition-select"
@@ -49,12 +49,12 @@
             ng-options="p.label for p in mousePositionProjections">
           </select>
           <div id="mouseposition-value"
-             x-ga-mouse-position
-             x-ga-mouse-position-map="map"
-             x-ga-mouse-position-projection="mousePositionProjection"></div>
+             ga-mouse-position
+             ga-mouse-position-map="map"
+             ga-mouse-position-projection="mousePositionProjection"></div>
         </div>
         <div class="pipe"></div>
-        <div id="attribution" class="pull-left" x-ga-attribution x-ga-attribution-map="map"></div>
+        <div id="attribution" class="pull-left" ga-attribution ga-attribution-map="map"></div>
       </div>
     </div>
 
