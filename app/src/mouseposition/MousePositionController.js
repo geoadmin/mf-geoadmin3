@@ -25,7 +25,10 @@
           }
         }
         ];
-        $scope.mousePositionProjection = $scope.mousePositionProjections[0];
+
+        $scope.options = {
+          projection: $scope.mousePositionProjections[0]
+        };
 
       }]);
 
