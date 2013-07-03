@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Angular: Recursive tree -&gt; sortable - jsFiddle demo by procrastinatio</title>
+  
+  <script type='text/javascript' src='http://code.jquery.com/jquery-1.8.3.js'></script>
+  <link rel="stylesheet" type="text/css" href="/css/normalize.css">
+  <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+      <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"></script>
+      <script type='text/javascript' src="http://code.angularjs.org/1.0.2/angular.min.js"></script>
+    
+      <script type='text/javascript' src="https://raw.github.com/angular-ui/angular-ui/master/build/angular-ui.js"></script>
+    
+  
+  <style type='text/css'>
+    ul {
+    list-style: circle;
+}
+li {
+    margin-left: 20px;
+}
+
+  </style>
+  
+</head>
+<body ng-app="myApp">
+  <script type="text/ng-template"  id="tree_item_renderer.html">
+    {{data.name}}
+    <ul ui:sortable ng:model="data.nodes">
+        <li ng-repeat="data in data.nodes" ng-include="'tree_item_renderer.html'"></li>
+    </ul>
+</script>
+
+<ul ng-app="Application" ng-controller="TreeController" ui:sortable ng:model="tree">
+    <li ng-repeat="data in tree" ng-include="'tree_item_renderer.html'"></li>
+</ul>
+
+
+  
+
+
+<script type='text/javascript'>//<![CDATA[ 
+
+angular.module("myApp", ['ui']).
+controller("TreeController", ['$scope', function($scope) {
+    $scope.tree = [{name: "Node", nodes: []},
+    {name: "Node", nodes: [{name: "Node-X1", nodes: []}, {name: "Node-X2", nodes: []}]}, {name: "Node-X", nodes: [{name: "Node-X1", nodes: []}, {name: "Node-X2", nodes: []}]}];
+}]);
+
+
+//]]>  
+
+</script>
+
+
+</body>
+
+
+</html>
+

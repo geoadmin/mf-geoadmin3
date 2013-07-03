@@ -4,6 +4,7 @@
 
   goog.require('ga_attribution');
   goog.require('ga_backgroundlayerselector');
+  goog.require('ga_catalogtree');
   goog.require('ga_contextpopup');
   goog.require('ga_importkml');
   goog.require('ga_importwms');
@@ -35,6 +36,7 @@
   var module = angular.module('ga', [
     'ga_attribution',
     'ga_backgroundlayerselector',
+    'ga_catalogtree',
     'ga_contextpopup',
     'ga_importkml',
     'ga_importwms',

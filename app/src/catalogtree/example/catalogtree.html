@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html ng-app='ga_catalogtree_example'>
+  <head>
+    <title>Catalog Component Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <base href="../../../">
+    <link href="style/app.css" rel="stylesheet" media="screen">
+    <style>
+      .catalog {
+          margin: 20px;
+     }
+    </style>
+  </head>
+  <body ng-controller="CatalogTreeController">
+
+    <div class="catalog">
+       <div id="catalogtree" ga-catalogtree val="tree"></div>
+    </div>
+     
+    <script src="lib/jquery-2.0.2.js"></script>
+    <script src="lib/angular-1.1.5.js"></script>
+    <script src="lib/bootstrap-3.0.0.js"></script>
+    <script src="lib/proj4js-compressed.js"></script>
+    <script src="lib/EPSG21781.js"></script>
+    <script src="lib/angular-translate-0.9.4.js"></script>
+    <script>
+      window.CLOSURE_NO_DEPS = true;
+      window.CLOSURE_BASE_PATH = "src/";
+    </script>
+    <script src="lib/ol-whitespace.js"></script>
+    <script src="src/deps.js"></script>
+    <script>
+      goog.require('ga_catalogtree');
+    </script>
+    <script>
+      (function() {
+        var module = angular.module('ga_catalogtree_example', [
+          'ga_catalogtree'
+        ]);
+
+        module.controller('CatalogTreeController', ['$scope', '$http', function($scope, $http) {
+
+            var http = $http.jsonp('http://mf-chsdi30t.bgdi.admin.ch/ltmom/rest/services/blw/CatalogServer?callback=JSON_CALLBACK');   
+            http.success(function(data, status, header, config) {
+                $scope.tree = data.results;
+            });
+
+        }]);
+
+      })();
+    </script>
+  </body>
+</html>
