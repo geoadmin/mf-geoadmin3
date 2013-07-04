@@ -33,10 +33,10 @@ help:
 all: prod dev lint test apache test/karma-conf-prod.js
 
 .PHONY: prod
-prod: app-prod/lib/build.js app-prod/style/app.css app-prod/index.html app-prod/info.json app-prod/WMTSCapabilities.xml $(APP_TEMPLATES_DEST) app-prod/img/
+prod: app-prod/lib/build.js app-prod/style/app.css app-prod/index.html app-prod/mobile.html app-prod/info.json app-prod/WMTSCapabilities.xml $(APP_TEMPLATES_DEST) app-prod/img/
 
 .PHONY: dev
-dev: app/src/deps.js app/style/app.css app/index.html
+dev: app/src/deps.js app/style/app.css app/index.html app/mobile.html
 
 .PHONY: lint
 lint: .build-artefacts/lint.timestamp
@@ -58,7 +58,10 @@ app-prod/style/app.css: app/style/app.css node_modules
 
 app-prod/index.html: app/index.mako.html app-prod/lib/build.js app-prod/style/app.css .build-artefacts/python-venv/bin/mako-render
 	mkdir -p $(dir $@)
-	.build-artefacts/python-venv/bin/mako-render --var "mode=prod" --var "version=$(VERSION)" $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "mode=prod" --var "version=$(VERSION)" $< > $@
+
+app-prod/mobile.html: app/index.mako.html .build-artefacts/python-venv/bin/mako-render
+	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "mode=prod" --var "version=$(VERSION)" $< > $@
 
 app-prod/img/: app/img/*
 	mkdir -p $@
@@ -83,7 +86,10 @@ app/style/app.css: app/style/app.less node_modules
 	node_modules/.bin/lessc $< $@
 
 app/index.html: app/index.mako.html .build-artefacts/python-venv/bin/mako-render
-	.build-artefacts/python-venv/bin/mako-render $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" $< > $@
+
+app/mobile.html: app/index.mako.html .build-artefacts/python-venv/bin/mako-render
+	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" $< > $@
 
 apache/app.conf: apache/app.mako-dot-conf app-prod/lib/build.js app-prod/style/app.css .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "version=$(VERSION)" --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" --var "base_dir=$(CURDIR)" $< > $@
@@ -152,5 +158,6 @@ clean:
 	rm -f app/src/deps.js
 	rm -f app/style/app.css
 	rm -f app/index.html
+	rm -f app/mobile.html
 	rm -rf app-prod
 	rm -f apache/app.conf
