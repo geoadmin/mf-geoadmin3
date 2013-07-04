@@ -42,6 +42,7 @@
       </div>
       <div id="footer" class="navbar navbar-fixed-bottom">
         <div id="scaleline" class="pull-left" ga-scale-line ga-scale-line-map="map"></div>
+% if device == 'desktop':
         <div class="pipe"></div>
         <div id="mouseposition" class="pull-left" ng-controller="GaMousePositionController">
           <select id="mouseposition-select"
@@ -53,6 +54,7 @@
              ga-mouse-position-map="map"
              ga-mouse-position-options="options"></div>
         </div>
+% endif
         <div class="pipe"></div>
         <div id="attribution" class="pull-left" ga-attribution ga-attribution-map="map"></div>
       </div>
@@ -61,6 +63,7 @@
     <div id="pulldown">
       <div id="pulldown-content" class="content collapse in">
         <div class="accordion-group">
+% if device == 'desktop':
           <div class="accordion-heading">
             <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#print">
               Print
@@ -71,6 +74,7 @@
               </div>
             </div>
           </div>
+% endif
         </div>
       </div>
       <div class="text-center">
