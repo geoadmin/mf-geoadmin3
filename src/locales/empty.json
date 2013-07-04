@@ -211,5 +211,11 @@
   "white": "",
   "yellow": "",
   "page_title": "",
-  "page_description": ""
+  "page_description": "",
+  "wmsimport_tooltip": "",
+  "kmlimport_tooltip": "",
+  "swipe_tooltip": "",
+  "measure_tooltip": "",
+  "featuretree_tooltip": "",
+  "draw_tooltip": ""
 }

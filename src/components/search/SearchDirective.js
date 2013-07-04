@@ -24,8 +24,7 @@
           var currentTopic,
               footer = [
             '<div class="ga-search-footer clearfix">',
-            '<div class="ga-search-footer-left">',
-            '<b translate>search_help</b></div>',
+            '<div class="ga-search-footer-left"></div>',
             '<div class="ga-search-footer-right">',
             '<a class="ga-search-contact-icon" ',
             'title="{{\'contact_us\' | translate}}" ',
