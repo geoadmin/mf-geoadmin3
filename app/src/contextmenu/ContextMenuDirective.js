@@ -51,17 +51,17 @@
                     })
                   }).then(function(results) {
                     var epsg2056 = results.lv03tolv95.data.coordinates;
-                    scope.epsg21781href = gaPermalink.getHref({
+                    scope.contextPermalink = gaPermalink.getHref({
                       Y: Math.round(epsg21781[0], 1),
                       X: Math.round(epsg21781[1], 1)});
-                    scope.epsg21781hrefcrosshair = gaPermalink.getHref({
+                    scope.crosshairPermalink = gaPermalink.getHref({
                       Y: Math.round(epsg21781[0], 1),
                       X: Math.round(epsg21781[1], 1),
                       crosshair: 'bowl'});
                     var qrcodeurl = escape(gaPermalink.getHref({
                       Y: Math.round(epsg21781[0], 1),
                       X: Math.round(epsg21781[1], 1)}));
-                    scope.epsg21781qrcodeimage =
+                    scope.qrCodeUrl =
                        'http://api.geo.admin.ch/qrcodegenerator?url=' +
                        qrcodeurl;
 
@@ -75,7 +75,7 @@
                     };
 
                     view.once('change:center', function() {
-                      element.css('display', 'none');
+                      scope.popoverClose();
                     });
                     element.css('left', (pixel[0] - 150) + 'px');
                     element.css('top', pixel[1] + 'px');
