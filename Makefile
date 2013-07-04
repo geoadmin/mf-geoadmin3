@@ -5,7 +5,7 @@ APP_TEMPLATES_SRC := app/src/contextmenu/partials/menu.html
 APP_TEMPLATES_DEST := $(subst app,app-prod, $(APP_TEMPLATES_SRC))
 BASE_URL_PATH ?= /$(shell id -un)
 SERVICE_URL ?= http://mf-chsdi30t.bgdi.admin.ch
-VERSION := $(shell date '+%s')
+VERSION := $(shell date '+%s')/
 
 .PHONY: help
 help:
@@ -58,10 +58,10 @@ app-prod/style/app.css: app/style/app.css node_modules
 
 app-prod/index.html: app/index.mako.html app-prod/lib/build.js app-prod/style/app.css .build-artefacts/python-venv/bin/mako-render
 	mkdir -p $(dir $@)
-	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "mode=prod" --var "version=$(VERSION)/" $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "mode=prod" --var "version=$(VERSION)" $< > $@
 
 app-prod/mobile.html: app/index.mako.html .build-artefacts/python-venv/bin/mako-render
-	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "mode=prod" --var "version=$(VERSION)/" $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "mode=prod" --var "version=$(VERSION)" $< > $@
 
 app-prod/img/: app/img/*
 	mkdir -p $@
