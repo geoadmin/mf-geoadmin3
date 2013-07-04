@@ -79,7 +79,6 @@
                     element.css('display', 'block');
                   });
                 });
-
               });
             }
           };
