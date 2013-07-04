@@ -31,7 +31,7 @@ describe('ga_contextmenu_directive', function() {
     expect(tables.length).to.be(1);
 
     var tds = $(tables[0]).find('td');
-    expect(tds.length).to.be(8);
+    expect(tds.length).to.be(11);
   });
 
   describe('ga_contextmenu_directive handling of menucontext', function() {
@@ -71,7 +71,7 @@ describe('ga_contextmenu_directive', function() {
       var tables = element.find('div.popover-content table');
       var tds = $(tables[0]).find('td');
 
-      expect($(tds[1]).text()).to.be('661473, 188192');
+      expect($(tds[1]).text()).to.be('661473.0, 188192.0');
       expect($(tds[3]).text()).to.be('2725984.40, 1180787.40');
       expect($(tds[7]).text()).to.be('1233 [m]');
     });

@@ -57,8 +57,12 @@
     var base = b;
     var params = p;
 
-    this.getHref = function() {
-      return base + '?' + toKeyValue(params);
+    this.getHref = function(p) {
+      var newParams = angular.extend({}, params);
+      if (angular.isDefined(p)) {
+        angular.extend(newParams, p);
+      }
+      return base + '?' + toKeyValue(newParams);
     };
 
     this.getParams = function() {
