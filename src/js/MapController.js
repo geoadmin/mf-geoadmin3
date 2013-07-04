@@ -1,5 +1,6 @@
 (function() {
   goog.provide('ga_map_controller');
+  goog.require('ga_map_geolocation');
 
   var module = angular.module('ga_map_controller', []);
 
@@ -37,6 +38,7 @@
       })
     });
     map.addControl(new ol.control.ZoomToExtent());
+    map.addControl(new ga_map_geolocation());
 
     $scope.map = map;
 
