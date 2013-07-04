@@ -61,6 +61,11 @@
       return base + '?' + toKeyValue(params);
     };
 
+    this.updateHref = function(p) {
+      var oldParams = params;
+      return base + '?' + toKeyValue(angular.extend(oldParams, p));
+    };
+
     this.getParams = function() {
       return params;
     };
