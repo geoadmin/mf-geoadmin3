@@ -16,14 +16,22 @@
             require: '^gaMap',
             scope: {},
             link: function(scope, element, attrs, gaMapDirectiveCtrl) {
+
+              // The popup content is updated (a) on contextmenu events,
+              // and (b) when the permalink is updated.
+
               var map = gaMapDirectiveCtrl.getMap();
               var view = map.getView();
+
+              var coord21781;
+
+              // Listen to contextmenu events from the map.
               map.on('contextmenu', function(event) {
                 event.preventDefault();
 
                 var pixel = event.getPixel();
-                var epsg21781 = event.getCoordinate();
-                var epsg4326 = ol.proj.transform(epsg21781,
+                coord21781 = event.getCoordinate();
+                var coord4326 = ol.proj.transform(coord21781,
                     'EPSG:21781', 'EPSG:4326');
 
                 // The $http service does not send requests immediately but
@@ -35,51 +43,65 @@
                   $q.all({
                     height: $http.jsonp(heightURL, {
                       params: {
-                        easting: epsg21781[0],
-                        northing: epsg21781[1],
+                        easting: coord21781[0],
+                        northing: coord21781[1],
                         elevation_model: 'COMB'
                       }
                     }),
                     lv03tolv95: $http.jsonp(lv03tolv95URL, {
                       params: {
-                        easting: epsg21781[0],
-                        northing: epsg21781[1]
+                        easting: coord21781[0],
+                        northing: coord21781[1]
                       }
                     })
                   }).then(function(results) {
-                    var epsg2056 = results.lv03tolv95.data.coordinates;
-                    scope.contextPermalink = gaPermalink.getHref({
-                      Y: Math.round(epsg21781[0], 1),
-                      X: Math.round(epsg21781[1], 1)});
-                    scope.crosshairPermalink = gaPermalink.getHref({
-                      Y: Math.round(epsg21781[0], 1),
-                      X: Math.round(epsg21781[1], 1),
-                      crosshair: 'bowl'});
-                    var qrcodeurl = escape(gaPermalink.getHref({
-                      Y: Math.round(epsg21781[0], 1),
-                      X: Math.round(epsg21781[1], 1)}));
-                    scope.qrCodeUrl =
-                       'http://api.geo.admin.ch/qrcodegenerator?url=' +
-                       qrcodeurl;
+                    var coord2056 = results.lv03tolv95.data.coordinates;
 
-                    scope.epsg21781 = ol.coordinate.toStringXY(epsg21781, 1);
-                    scope.epsg4326 = ol.coordinate.toStringXY(epsg4326, 5);
-                    scope.epsg2056 = ol.coordinate.toStringXY(epsg2056, 2);
+                    scope.coord21781 = ol.coordinate.toStringXY(coord21781, 1);
+                    scope.coord4326 = ol.coordinate.toStringXY(coord4326, 5);
+                    scope.coord2056 = ol.coordinate.toStringXY(coord2056, 2);
                     scope.altitude = parseFloat(results.height.data.height);
 
-                    scope.popoverClose = function() {
-                      element.css('display', 'none');
-                    };
+                    updatePopupLinks();
 
                     view.once('change:center', function() {
                       scope.popoverClose();
                     });
+
                     element.css('left', (pixel[0] - 150) + 'px');
                     element.css('top', pixel[1] + 'px');
                     element.css('display', 'block');
                   });
                 });
               });
+
+              // Listen to permalink change events from the scope.
+              scope.$on('gaPermalinkChange', function(event) {
+                if (angular.isDefined(coord21781)) {
+                  updatePopupLinks();
+                }
+              });
+
+              scope.popoverClose = function() {
+                element.css('display', 'none');
+              };
+
+              function updatePopupLinks() {
+                var p = {
+                  X: Math.round(coord21781[1], 1),
+                  Y: Math.round(coord21781[0], 1)
+                };
+
+                var contextPermalink = gaPermalink.getHref(p);
+                scope.contextPermalink = contextPermalink;
+
+                scope.crosshairPermalink = gaPermalink.getHref(
+                    angular.extend({crosshair: 'bowl'}, p));
+
+                scope.qrCodeUrl =
+                   'http://api.geo.admin.ch/qrcodegenerator?url=' +
+                   escape(contextPermalink);
+              }
             }
           };
         }]);
