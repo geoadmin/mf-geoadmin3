@@ -87,15 +87,16 @@
               };
 
               function updatePopupLinks() {
-                var contextPermalink = gaPermalink.getHref({
-                  Y: Math.round(coord21781[0], 1),
-                  X: Math.round(coord21781[1], 1)});
+                var p = {
+                  X: Math.round(coord21781[1], 1),
+                  Y: Math.round(coord21781[0], 1)
+                };
+
+                var contextPermalink = gaPermalink.getHref(p);
                 scope.contextPermalink = contextPermalink;
 
-                scope.crosshairPermalink = gaPermalink.getHref({
-                  Y: Math.round(coord21781[0], 1),
-                  X: Math.round(coord21781[1], 1),
-                  crosshair: 'bowl'});
+                scope.crosshairPermalink = gaPermalink.getHref(
+                    angular.extend({crosshair: 'bowl'}, p));
 
                 scope.qrCodeUrl =
                    'http://api.geo.admin.ch/qrcodegenerator?url=' +
