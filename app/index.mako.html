@@ -6,13 +6,9 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
     <meta name="description" content="Maps of Switzerland : The official geoportal of the Swiss Confederation provides digital data which can be viewed, printed out, ordered and supplied by means of the map viewer tool. Geoinformation is made available by public-sector organisations and is accessible to the general public."/>
     <meta name="keywords" content="maps Switzerland, map viewer, Confederation, geodata, public platform, geographical information, geoportal, orthophotos, geolocation, geoinformation, Geodaten, Geoinformation, Bund, Plattform, Karte, Kartendienst, Kartenviewer"/>
-% if mode == "prod": 
-    <link href="${version}/style/app.css" rel="stylesheet" media="screen">
-    <link rel="shortcut icon" type="image/x-icon" href="${version}/img/favicon.ico"/>
-% else: 
-    <link href="style/app.css" rel="stylesheet" media="screen">
-    <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico"/>
-%endif
+
+    <link href="${version}style/app.css" rel="stylesheet" media="screen">
+    <link rel="shortcut icon" type="image/x-icon" href="${version}img/favicon.ico"/>
   </head>
   <body ng-controller="GaMapController">
     <div id="wrapper">
@@ -24,11 +20,7 @@
         <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
         (print is not functional, for now...)
         </div>
-% if mode == "prod":
-        <img src="${version}/img/logo.ch.jpeg" style="height: 89px; width: 246px;"/>
-% else:
-        <img src="img/logo.ch.jpeg" style="height: 89px; width: 246px;"/>
-%endif
+        <img src="${version}img/logo.ch.jpeg" style="height: 89px; width: 246px;"/>
         <form class="navbar-form pull-right"
               ng-controller="GaBackgroundLayerSelectorController">
           <div ga-background-layer-selector
@@ -42,6 +34,7 @@
       </div>
       <div id="footer" class="navbar navbar-fixed-bottom">
         <div id="scaleline" class="pull-left" ga-scale-line ga-scale-line-map="map"></div>
+% if device == 'desktop':
         <div class="pipe"></div>
         <div id="mouseposition" class="pull-left" ng-controller="GaMousePositionController">
           <select id="mouseposition-select"
@@ -53,6 +46,7 @@
              ga-mouse-position-map="map"
              ga-mouse-position-options="options"></div>
         </div>
+% endif
         <div class="pipe"></div>
         <div id="attribution" class="pull-left" ga-attribution ga-attribution-map="map"></div>
       </div>
@@ -61,6 +55,7 @@
     <div id="pulldown">
       <div id="pulldown-content" class="content collapse in">
         <div class="accordion-group">
+% if device == 'desktop':
           <div class="accordion-heading">
             <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#print">
               Print
@@ -71,6 +66,7 @@
               </div>
             </div>
           </div>
+% endif
         </div>
       </div>
       <div class="text-center">
@@ -81,7 +77,7 @@
       </div>
     </div>
 % if mode == "prod":
-    <script src="${version}/lib/build.js"></script>
+    <script src="${version}lib/build.js"></script>
 % else:
     <script src="lib/jquery-2.0.2.js"></script>
     <script src="lib/angular-1.1.5.js"></script>
