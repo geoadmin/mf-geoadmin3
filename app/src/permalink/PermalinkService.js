@@ -60,7 +60,7 @@
     this.getHref = function(p) {
       var newParams = angular.extend({}, params);
       if (angular.isDefined(p)) {
-        newParams = angular.extend(newParams, p);
+        angular.extend(newParams, p);
       }
       return base + '?' + toKeyValue(newParams);
     };
