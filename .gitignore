@@ -2,6 +2,7 @@
 /app/src/deps.js
 /app/style/app.css
 /app/index.html
+/app/mobile.html
 /app-prod
 /.build-artefacts
 /apache/app.conf
