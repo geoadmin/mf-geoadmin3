@@ -58,10 +58,10 @@ app-prod/style/app.css: app/style/app.css node_modules
 
 app-prod/index.html: app/index.mako.html app-prod/lib/build.js app-prod/style/app.css .build-artefacts/python-venv/bin/mako-render
 	mkdir -p $(dir $@)
-	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "mode=prod" --var "version=$(VERSION)" $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "mode=prod" --var "version=$(VERSION)/" $< > $@
 
 app-prod/mobile.html: app/index.mako.html .build-artefacts/python-venv/bin/mako-render
-	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "mode=prod" --var "version=$(VERSION)" $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "mode=prod" --var "version=$(VERSION)/" $< > $@
 
 app-prod/img/: app/img/*
 	mkdir -p $@
@@ -86,13 +86,13 @@ app/style/app.css: app/style/app.less node_modules
 	node_modules/.bin/lessc $< $@
 
 app/index.html: app/index.mako.html .build-artefacts/python-venv/bin/mako-render
-	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "version=" $< > $@
 
 app/mobile.html: app/index.mako.html .build-artefacts/python-venv/bin/mako-render
-	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "version=" $< > $@
 
 apache/app.conf: apache/app.mako-dot-conf app-prod/lib/build.js app-prod/style/app.css .build-artefacts/python-venv/bin/mako-render
-	.build-artefacts/python-venv/bin/mako-render --var "version=$(VERSION)" --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" --var "base_dir=$(CURDIR)" $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" --var "base_dir=$(CURDIR)" $< > $@
 
 test/karma-conf-dev.js: test/karma-conf.mako.js .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render $< > $@
