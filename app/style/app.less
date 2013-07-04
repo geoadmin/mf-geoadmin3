@@ -36,14 +36,6 @@ body {
     background-color: rgba(214, 214, 214, 0.9);
     padding-left: 12px;
     padding-right: 0;
-    .pipe {
-        margin-top: 9px;
-        margin-bottom: 9px;
-        float: left;
-        &:before {
-            content: "|";
-        }
-    }
 }
 #mouseposition {
     width: 360px;
@@ -58,11 +50,18 @@ body {
 #mouseposition-select, #mouseposition-value {
     display: inline-block;
 }
-#scaleline, #attribution, #mouseposition-value {
-    margin-top: 9px;
-    margin-bottom: 9px;
+#copyrights {
+    width: 150px;
 }
 
+#geoadminlink {
+    width: 80px;
+}
+
+#scaleline, #attribution, #mouseposition-value, #copyrights, #geoadminlink {
+    margin-top: 9px;
+        margin-bottom: 9px;
+}
 #header, #footer {
     position: absolute;
 }
