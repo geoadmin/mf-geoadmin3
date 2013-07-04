@@ -64,10 +64,6 @@
 
                     updatePopupLinks();
 
-                    scope.popoverClose = function() {
-                      element.css('display', 'none');
-                    };
-
                     view.once('change:center', function() {
                       scope.popoverClose();
                     });
@@ -85,6 +81,10 @@
                   updatePopupLinks();
                 }
               });
+
+              scope.popoverClose = function() {
+                element.css('display', 'none');
+              };
 
               function updatePopupLinks() {
                 var contextPermalink = gaPermalink.getHref({
