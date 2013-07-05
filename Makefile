@@ -1,8 +1,7 @@
 
 APP_JS_FILES := $(filter-out app/src/deps.js, $(shell find app/src -type f -name '*.js'))
 APP_JS_FILES_FOR_COMPILER = $(shell sed -e :a -e 'N;s/\n/ --js /;ba' .build-artefacts/js-files | sed 's/^.*base\.js //')
-APP_TEMPLATES_SRC := $(shell find app/src -type f -path '*/partials/*' -name '*.html')
-APP_TEMPLATES_DEST := $(subst app,app-prod, $(APP_TEMPLATES_SRC))
+APP_PROD_TEMPLATE_FILES := $(subst app,app-prod,$(shell find app/src -type f -path '*/partials/*' -name '*.html'))
 BASE_URL_PATH ?= /$(shell id -un)
 SERVICE_URL ?= http://mf-chsdi30t.bgdi.admin.ch
 VERSION := $(shell date '+%s')/
@@ -33,7 +32,7 @@ help:
 all: prod dev lint test apache test/karma-conf-prod.js
 
 .PHONY: prod
-prod: app-prod/lib/build.js app-prod/style/app.css app-prod/index.html app-prod/mobile.html app-prod/info.json app-prod/WMTSCapabilities.xml $(APP_TEMPLATES_DEST) app-prod/img/
+prod: app-prod/lib/build.js app-prod/style/app.css app-prod/index.html app-prod/mobile.html app-prod/info.json app-prod/WMTSCapabilities.xml $(APP_PROD_TEMPLATE_FILES) app-prod/img/
 
 .PHONY: dev
 dev: app/src/deps.js app/style/app.css app/index.html app/mobile.html
@@ -75,9 +74,9 @@ app-prod/info.json: app/info.json
 app-prod/WMTSCapabilities.xml: app/WMTSCapabilities.xml
 	cp $< $@
 
-$(APP_TEMPLATES_DEST): $(APP_TEMPLATES_SRC)
+$(APP_PROD_TEMPLATE_FILES): app-prod/%: app/%
 	mkdir -p $(dir $@)
-	cp $(subst app-prod, app, $@) $@
+	cp $< $@
 
 app/src/deps.js: $(APP_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
 	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root="app/src" --output_file=$@
