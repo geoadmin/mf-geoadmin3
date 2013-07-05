@@ -56,6 +56,9 @@
           <a href="ogcproxy?url=http://wms.pcn.minambiente.it/ogc?map=/ms_ogc/WMS_v1.3/raster/IGM_100000.map&VERSION=1.3.0&SERVICE=WMS&REQUEST=GetCapabilities">Get
          Capabilities using ogcproxy</a>
 
+      <h2>CatalogService (non ESRI)</h2>
+      <a href="rest/services/blw/Catalog?callback=callback">Catalog for topic 'blw'</a>
+
       <h2>Search</h2>
           <a href="rest/services/geoadmin/SearchServer?searchText=wand">Search in swisssearch (locations) and map info </a> <br>
           <a href="rest/services/geoadmin/SearchServer?searchText=vd 446&features=ch.astra.ivs-reg_loc">Search for features in ch.astra.ivs-reg_loc (some results on top of "locations" list)</a> <br>
