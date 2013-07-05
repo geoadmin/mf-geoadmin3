@@ -13,7 +13,7 @@
             scope: {
               map: '=gaPermalinkPanelMap'
             },
-            templateUrl: 'src/permalinkpanel/partials/panel.html',
+            templateUrl: 'src/permalinkpanel/partials/permalinkpanel.html',
             link: function(scope, element, attrs) {
               scope.permalinkvalue = gaPermalink.getHref();
               // Listen to permalink change events from the scope.
