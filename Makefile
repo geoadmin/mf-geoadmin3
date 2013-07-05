@@ -1,6 +1,7 @@
 
 APP_JS_FILES := $(filter-out app/src/deps.js, $(shell find app/src -type f -name '*.js'))
 APP_JS_FILES_FOR_COMPILER = $(shell sed -e :a -e 'N;s/\n/ --js /;ba' .build-artefacts/js-files | sed 's/^.*base\.js //')
+APP_LESS_FILES := $(shell find app/src -type f -name '*.less')
 APP_PROD_TEMPLATE_FILES := $(subst app,app-prod,$(shell find app/src -type f -path '*/partials/*' -name '*.html'))
 BASE_URL_PATH ?= /$(shell id -un)
 SERVICE_URL ?= http://mf-chsdi30t.bgdi.admin.ch
@@ -81,7 +82,7 @@ $(APP_PROD_TEMPLATE_FILES): app-prod/%: app/%
 app/src/deps.js: $(APP_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
 	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root="app/src" --output_file=$@
 
-app/style/app.css: app/style/app.less node_modules
+app/style/app.css: app/style/app.less $(APP_LESS_FILES) node_modules
 	node_modules/.bin/lessc $< $@
 
 app/index.html: app/index.mako.html .build-artefacts/python-venv/bin/mako-render
