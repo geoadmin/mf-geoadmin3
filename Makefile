@@ -75,9 +75,9 @@ app-prod/info.json: app/info.json
 app-prod/WMTSCapabilities.xml: app/WMTSCapabilities.xml
 	cp $< $@
 
-$(APP_TEMPLATES_DEST): $(APP_TEMPLATES_SRC)
+$(APP_TEMPLATES_DEST): app-prod/%: app/%
 	mkdir -p $(dir $@)
-	cp $(subst app-prod, app, $@) $@
+	cp $< $@
 
 app/src/deps.js: $(APP_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
 	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root="app/src" --output_file=$@
