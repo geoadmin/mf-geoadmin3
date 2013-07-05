@@ -4,8 +4,10 @@
   var module = angular.module('ga_permalinkpanel_directive', []);
 
   module.directive('gaPermalinkPanel',
-      ['gaPermalink',
-        function(gaPermalink) {
+      ['$http', 'gaPermalink',
+        function($http, gaPermalink) {
+          var shortenURL =
+              'http://api.geo.admin.ch/shorten.json?cb=JSON_CALLBACK';
           return {
             restrict: 'A',
             scope: {
@@ -13,7 +15,21 @@
             },
             templateUrl: 'src/permalinkpanel/partials/panel.html',
             link: function(scope, element, attrs) {
-              scope.permalinkvalue = 'test';
+              scope.permalinkvalue = gaPermalink.getHref();
+              // Listen to permalink change events from the scope.
+              scope.$on('gaPermalinkChange', function(event) {
+                scope.permalinkvalue = gaPermalink.getHref();
+              });
+
+              scope.shortenUrl = function() {
+                $http.jsonp(shortenURL, {
+                  params: {
+                    url: scope.permalinkvalue
+                  }
+                }).success(function(response) {
+                  scope.permalinkvalue = response.shorturl;
+                });
+              };
             }
           };
         }]);
