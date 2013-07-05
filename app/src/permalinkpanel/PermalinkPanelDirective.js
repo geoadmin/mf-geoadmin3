@@ -20,7 +20,6 @@
               scope.$on('gaPermalinkChange', function(event) {
                 scope.permalinkvalue = gaPermalink.getHref();
               });
-
               scope.shortenUrl = function() {
                 $http.jsonp(shortenURL, {
                   params: {
@@ -29,6 +28,9 @@
                 }).success(function(response) {
                   scope.permalinkvalue = response.shorturl;
                 });
+              };
+              scope.selectOnClick = function(e) {
+                e.toElement.select();
               };
             }
           };
