@@ -1,7 +1,7 @@
 
 APP_JS_FILES := $(filter-out app/src/deps.js, $(shell find app/src -type f -name '*.js'))
 APP_JS_FILES_FOR_COMPILER = $(shell sed -e :a -e 'N;s/\n/ --js /;ba' .build-artefacts/js-files | sed 's/^.*base\.js //')
-APP_TEMPLATES_SRC := app/src/contextmenu/partials/menu.html
+APP_TEMPLATES_SRC := $(shell find app/src -type f -path '*/partials/*' -name '*.html')
 APP_TEMPLATES_DEST := $(subst app,app-prod, $(APP_TEMPLATES_SRC))
 BASE_URL_PATH ?= /$(shell id -un)
 SERVICE_URL ?= http://mf-chsdi30t.bgdi.admin.ch
@@ -76,8 +76,8 @@ app-prod/WMTSCapabilities.xml: app/WMTSCapabilities.xml
 	cp $< $@
 
 $(APP_TEMPLATES_DEST): $(APP_TEMPLATES_SRC)
-	mkdir -p $(basename $@)
-	cp $< $@
+	mkdir -p $(dir $@)
+	cp $(subst app-prod, app, $@) $@
 
 app/src/deps.js: $(APP_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
 	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root="app/src" --output_file=$@
