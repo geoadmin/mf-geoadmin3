@@ -1,3 +1,16 @@
+<div class="pull-right">
+    <img src="img/qrcode.png" style="height: 16px; width: 16px;"
+         ng-click="share('qrcode')" class="imgHover"/>
+    <img src="img/twitter.png" style="height: 16px; width: 16px;"
+         ng-click="share('qrcode')" class="imgHover"/>
+    <img src="img/facebook.png" style="height: 16px; width: 16px;"
+         ng-click="share('facebook')" class="imgHover"/>
+    <img src="img/google_plus.png" style="height: 16px; width: 16px;"
+         ng-click="share('google_plus')" class="imgHover"/>
+    <img src="img/envelope.png" style="height: 12px; width: 16px;"
+         ng-click="share('envelope')" class="imgHover"/>
+</div>
+<br>
 <input class="permalinkInput" ng-model="permalinkvalue"
        ng-click="selectOnClick($event)">
 <a href="#" ng-click="shortenUrl()">Shorten URL</a>
