@@ -30,7 +30,7 @@
                 });
               };
               scope.selectOnClick = function(e) {
-                e.toElement.select();
+                e.target.select();
               };
             }
           };
