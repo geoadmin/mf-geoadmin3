@@ -4,10 +4,10 @@
   var module = angular.module('ga_permalinkpanel_directive', []);
 
   module.directive('gaPermalinkPanel',
-      ['$http', 'gaPermalink',
-        function($http, gaPermalink) {
+      ['$http', 'gaPermalink', 'globalOptions',
+        function($http, gaPermalink, globalOptions) {
           var shortenURL =
-              'http://api.geo.admin.ch/shorten.json?cb=JSON_CALLBACK';
+              globalOptions.service_url + '/shorten.json?cb=JSON_CALLBACK';
           return {
             restrict: 'A',
             scope: {
@@ -64,7 +64,8 @@
                      encodeURIComponent(gaPermalink.getHref());
                   window.open(url, '_blank');
                 } else if (target === 'qrcode') {
-                  var url = 'http://api.geo.admin.ch/qrcodegenerator?url=' +
+                  var url = globalOptions.service_url +
+                     '/qrcodegenerator?url=' +
                      encodeURIComponent(gaPermalink.getHref());
                   window.open(url, '_blank');
                 } else if (target === 'envelope') {

@@ -177,10 +177,15 @@
     <!--<script src="lib/closure/base.js"></script>-->
     <script src="src/deps.js"></script>
 
-    <script>
-      goog.require('ga');
-    </script>
 %endif
+    <script>
+      (function() {
+         var module = angular.module('ga');
+
+         module.constant('globalOptions',
+           {'service_url' : '${service_url}'});
+      })();
+    </script>
 
   </body>
 </html>
