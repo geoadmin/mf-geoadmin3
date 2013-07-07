@@ -4,15 +4,18 @@
   var module = angular.module('ga_permalinkpanel_directive', []);
 
   module.directive('gaPermalinkPanel',
-      ['$http', 'gaPermalink', 'gaGlobalOptions',
-        function($http, gaPermalink, gaGlobalOptions) {
-          var shortenUrl =
-              gaGlobalOptions.serviceUrl + '/shorten.json?cb=JSON_CALLBACK';
+      ['$http', 'gaPermalink',
+        function($http, gaPermalink) {
           return {
             restrict: 'A',
-            scope: {},
+            scope: {
+              options: '=gaPermalinkPanelOptions'
+            },
             templateUrl: 'src/permalinkpanel/partials/permalinkpanel.html',
             link: function(scope, element, attrs) {
+              var shortenURL =
+                  scope.options.serviceUrl + '/shorten.json?cb=JSON_CALLBACK';
+
               $('.permalinkTooltip').tooltip({
                 placement: 'right'
               });
