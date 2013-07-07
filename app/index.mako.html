@@ -152,6 +152,9 @@
     <script src="lib/ol-whitespace.js"></script>
     <!--<script src="lib/closure/base.js"></script>-->
     <script src="src/deps.js"></script>
+    <script>
+      goog.require('ga');
+    </script>
 
 %endif
     <script>
@@ -159,7 +162,7 @@
          var module = angular.module('ga');
 
          module.constant('gaGlobalOptions',
-           {'service_url' : '${service_url}'});
+           {serviceUrl : '${service_url}'});
       })();
     </script>
 
