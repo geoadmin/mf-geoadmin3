@@ -19,9 +19,20 @@
               // the input field
               scope.permalinkvalue = gaPermalink.getHref();
 
+              scope.createHtml = function() {
+                var myPermalink = gaPermalink.getHref();
+                var html = '<iframe width="800" height="600" frameborder="0" ' +
+                    'scrolling="no" marginheight="0" marginwidth="0" src="' +
+                    myPermalink + '"</iframe>';
+                return html;
+              };
+
+              scope.htmlvalue = scope.createHtml();
+
               // Listen to permalink change events from the scope.
               scope.$on('gaPermalinkChange', function(event) {
                 scope.permalinkvalue = gaPermalink.getHref();
+                scope.htmlvalue = scope.createHtml();
               });
 
               // Function to shorten url
