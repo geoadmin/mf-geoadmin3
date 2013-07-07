@@ -16,7 +16,7 @@
               $('.permalinkTooltip').tooltip({
                 placement: 'right'
               });
-              $('.shareTooltip').tooltip({
+              $('.share-tooltip').tooltip({
                 placement: 'bottom'
               });
               // Store in the scope the permalink value which is bound to
