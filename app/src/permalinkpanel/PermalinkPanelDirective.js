@@ -4,10 +4,10 @@
   var module = angular.module('ga_permalinkpanel_directive', []);
 
   module.directive('gaPermalinkPanel',
-      ['$http', 'gaPermalink', 'globalOptions',
-        function($http, gaPermalink, globalOptions) {
+      ['$http', 'gaPermalink', 'gaGlobalOptions',
+        function($http, gaPermalink, gaGlobalOptions) {
           var shortenURL =
-              globalOptions.service_url + '/shorten.json?cb=JSON_CALLBACK';
+              gaGlobalOptions.service_url + '/shorten.json?cb=JSON_CALLBACK';
           return {
             restrict: 'A',
             scope: {
@@ -70,7 +70,7 @@
                      encodeURIComponent(gaPermalink.getHref());
                   window.open(url, '_blank');
                 } else if (target === 'qrcode') {
-                  var url = globalOptions.service_url +
+                  var url = gaGlobalOptions.service_url +
                      '/qrcodegenerator?url=' +
                      encodeURIComponent(gaPermalink.getHref());
                   window.open(url, '_blank');
