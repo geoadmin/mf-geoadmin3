@@ -1,20 +1,36 @@
-<div class="pull-right">
-    <img src="img/qrcode.png" style="height: 16px; width: 16px;"
-         ng-click="share('qrcode')" class="imgHover"/>
-    <img src="img/twitter.png" style="height: 16px; width: 16px;"
-         ng-click="share('qrcode')" class="imgHover"/>
-    <img src="img/facebook.png" style="height: 16px; width: 16px;"
-         ng-click="share('facebook')" class="imgHover"/>
-    <img src="img/google_plus.png" style="height: 16px; width: 16px;"
-         ng-click="share('google_plus')" class="imgHover"/>
-    <img src="img/envelope.png" style="height: 12px; width: 16px;"
-         ng-click="share('envelope')" class="imgHover"/>
+<div class="pull-left">
+    <img class="permalinkTooltip" src="img/qrcode.png"
+         style="height: 16px; width: 16px;"
+         ng-click="share('qrcode')" class="imgHover" data-toggle="tooltip"
+         title="Create a QRCode and open this map on your mobile"/>
+    <img class="permalinkTooltip" src="img/twitter.png"
+         style="height: 16px; width: 16px;"
+         ng-click="share('qrcode')" class="imgHover" data-toggle="tooltip"
+         title="Tweet this map"/>
+    <img class="permalinkTooltip" src="img/facebook.png"
+         style="height: 16px; width: 16px;"
+         ng-click="share('facebook')" class="imgHover" data-toggle="tooltip"
+         title="Share this map with your friends"/>
+    <img class="permalinkTooltip" src="img/google_plus.png"
+         style="height: 16px; width: 16px;"
+         ng-click="share('google_plus')" class="imgHover" data-toggle="tooltip"
+         title="Share this map on Google Plus"/>
+    <img class="permalinkTooltip" src="img/envelope.png"
+         style="height: 12px; width: 16px;"
+         ng-click="share('envelope')" class="imgHover" data-toggle="tooltip"
+         title="Send a map-email to your friends"/>
 </div>
 <br>
-<div>Embed link below in e-mail</div>
+<div>Share this map</div>
 <input class="permalinkInput" ng-model="permalinkvalue"
        ng-click="selectOnClick($event)">
 <a href="#" ng-click="shortenUrl()">Shorten URL</a>
-<div>Embed HTML code below in website</div>
-<textarea class="htmlInput" rows="4" cols="40" ng-model="htmlvalue"
+<br>&nbsp
+<div>Embed&nbsp<img class="permalinkTooltip" src="img/warning.png"
+                    style="height: 16px; width: 16px;"
+                    data-toggle="tooltip" title="Though most layers are
+freely accesible, a swisstopo web access is required. For a list of all
+available layers and their accessibility, please refer to the FAQ."/>
+</div>
+<textarea class="htmlInput" rows="2" cols="40" ng-model="htmlvalue"
        ng-click="selectOnClick($event)"/>

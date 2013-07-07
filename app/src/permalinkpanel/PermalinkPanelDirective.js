@@ -15,6 +15,9 @@
             },
             templateUrl: 'src/permalinkpanel/partials/permalinkpanel.html',
             link: function(scope, element, attrs) {
+              $('.permalinkTooltip').tooltip({
+                placement: 'right'
+              });
               // Store in the scope the permalink value which is bound to
               // the input field
               scope.permalinkvalue = gaPermalink.getHref();
