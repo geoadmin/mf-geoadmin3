@@ -58,10 +58,10 @@ app-prod/style/app.css: app/style/app.css node_modules
 
 app-prod/index.html: app/index.mako.html app-prod/lib/build.js app-prod/style/app.css .build-artefacts/python-venv/bin/mako-render
 	mkdir -p $(dir $@)
-	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "mode=prod" --var "version=$(VERSION)" $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "mode=prod" --var "version=$(VERSION)" --var "service_url=$(SERVICE_URL)" $< > $@
 
 app-prod/mobile.html: app/index.mako.html .build-artefacts/python-venv/bin/mako-render
-	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "mode=prod" --var "version=$(VERSION)" $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "mode=prod" --var "version=$(VERSION)" --var "service_url=$(SERVICE_URL)" $< > $@
 
 app-prod/img/: app/img/*
 	mkdir -p $@
@@ -86,10 +86,10 @@ app/style/app.css: app/style/app.less $(APP_LESS_FILES) node_modules
 	node_modules/.bin/lessc $< $@
 
 app/index.html: app/index.mako.html .build-artefacts/python-venv/bin/mako-render
-	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "version=" $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "version=" --var "service_url=$(SERVICE_URL)" $< > $@
 
 app/mobile.html: app/index.mako.html .build-artefacts/python-venv/bin/mako-render
-	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "version=" $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "version=" --var "service_url=$(SERVICE_URL)" $< > $@
 
 apache/app.conf: apache/app.mako-dot-conf app-prod/lib/build.js app-prod/style/app.css .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" --var "base_dir=$(CURDIR)" $< > $@
