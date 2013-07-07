@@ -18,6 +18,9 @@
               $('.permalinkTooltip').tooltip({
                 placement: 'right'
               });
+              $('.shareTooltip').tooltip({
+                placement: 'bottom'
+              });
               // Store in the scope the permalink value which is bound to
               // the input field
               scope.permalinkvalue = gaPermalink.getHref();
