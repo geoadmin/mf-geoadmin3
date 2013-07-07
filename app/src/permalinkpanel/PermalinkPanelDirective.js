@@ -6,7 +6,7 @@
   module.directive('gaPermalinkPanel',
       ['$http', 'gaPermalink', 'gaGlobalOptions',
         function($http, gaPermalink, gaGlobalOptions) {
-          var shortenURL =
+          var shortenUrl =
               gaGlobalOptions.serviceUrl + '/shorten.json?cb=JSON_CALLBACK';
           return {
             restrict: 'A',
@@ -42,7 +42,7 @@
               // Function to shorten url
               // Make an asynchronous request to url shortener
               scope.shortenUrl = function() {
-                $http.jsonp(shortenURL, {
+                $http.jsonp(shortenUrl, {
                   params: {
                     url: scope.permalinkvalue
                   }
