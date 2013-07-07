@@ -7,12 +7,10 @@
       ['$http', 'gaPermalink', 'gaGlobalOptions',
         function($http, gaPermalink, gaGlobalOptions) {
           var shortenURL =
-              gaGlobalOptions.service_url + '/shorten.json?cb=JSON_CALLBACK';
+              gaGlobalOptions.serviceUrl + '/shorten.json?cb=JSON_CALLBACK';
           return {
             restrict: 'A',
-            scope: {
-              map: '=gaPermalinkPanelMap'
-            },
+            scope: {},
             templateUrl: 'src/permalinkpanel/partials/permalinkpanel.html',
             link: function(scope, element, attrs) {
               $('.permalinkTooltip').tooltip({
@@ -70,7 +68,7 @@
                      encodeURIComponent(gaPermalink.getHref());
                   window.open(url, '_blank');
                 } else if (target === 'qrcode') {
-                  var url = gaGlobalOptions.service_url +
+                  var url = gaGlobalOptions.serviceUrl +
                      '/qrcodegenerator?url=' +
                      encodeURIComponent(gaPermalink.getHref());
                   window.open(url, '_blank');
