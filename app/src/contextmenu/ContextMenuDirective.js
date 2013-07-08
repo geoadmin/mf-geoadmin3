@@ -24,6 +24,7 @@
               var view = map.getView();
 
               var coord21781;
+              var popoverShown = false;
 
               // Listen to contextmenu events from the map.
               map.on('contextmenu', function(event) {
@@ -65,26 +66,36 @@
                     updatePopupLinks();
 
                     view.once('change:center', function() {
-                      scope.popoverClose();
+                      hidePopover();
                     });
 
                     element.css('left', (pixel[0] - 150) + 'px');
                     element.css('top', pixel[1] + 'px');
-                    element.css('display', 'block');
+                    showPopover();
                   });
                 });
               });
 
               // Listen to permalink change events from the scope.
               scope.$on('gaPermalinkChange', function(event) {
-                if (angular.isDefined(coord21781)) {
+                if (angular.isDefined(coord21781) && popoverShown) {
                   updatePopupLinks();
                 }
               });
 
-              scope.popoverClose = function() {
-                element.css('display', 'none');
+              scope.hidePopover = function() {
+                hidePopover();
               };
+
+              function showPopover() {
+                element.css('display', 'block');
+                popoverShown = true;
+              }
+
+              function hidePopover() {
+                element.css('display', 'none');
+                popoverShown = false;
+              }
 
               function updatePopupLinks() {
                 var p = {
