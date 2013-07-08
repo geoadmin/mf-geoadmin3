@@ -273,7 +273,7 @@ class SearchValidation(MapNameValidation):
 
     @featureIndexes.setter
     def featureIndexes(self, value):
-        if value is not None:
+        if value is not None and value != '':
             value = value.replace('.','_')
             self._featureIndexes = value.split(',')
                 
@@ -285,7 +285,7 @@ class SearchValidation(MapNameValidation):
 
     @bbox.setter
     def bbox(self, value):
-        if value is not None:
+        if value is not None and value != '':
             values = value.split(',')
             if len(values) != 4:
                 raise exc.HTTPBadRequest("Please provide 4 coordinates in a comma separated list")
