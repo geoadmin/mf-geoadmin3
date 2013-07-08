@@ -18,18 +18,15 @@ describe('ga_backgroundlayerselector_directive', function() {
       deferred = $q.defer();
     });
 
-    map = new ol.Map({});
-
     element = angular.element(
       '<div>' +
           '<div ga-background-layer-selector ' +
-              'ga-background-layer-selector-map="map" ' +
               'ga-background-layer-selector-options="options">' +
           '</div>' +
       '</div>');
 
-    inject(function($rootScope, $compile) {
-      $rootScope.map = map;
+    inject(function($rootScope, $compile, gaMap) {
+      map = gaMap.map;
       $rootScope.options = {
         wmtsUrl: 'wmts.xml',
         wmtsLayers: [

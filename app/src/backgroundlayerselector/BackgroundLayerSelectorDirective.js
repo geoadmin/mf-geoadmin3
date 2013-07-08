@@ -2,21 +2,22 @@
   goog.provide('ga_backgroundlayerselector_directive');
 
   goog.require('ga_backgroundlayerselector_service');
+  goog.require('ga_map_service');
   goog.require('ga_permalink');
 
   var module = angular.module('ga_backgroundlayerselector_directive', [
     'ga_backgroundlayerselector_service',
+    'ga_map_service',
     'ga_permalink'
   ]);
 
   module.directive('gaBackgroundLayerSelector',
-      ['gaPermalink', 'gaWmtsLoader',
-       function(gaPermalink, gaWmtsLoader) {
+      ['gaMap', 'gaPermalink', 'gaWmtsLoader',
+       function(gaMap, gaPermalink, gaWmtsLoader) {
          return {
            restrict: 'A',
            replace: true,
            scope: {
-             map: '=gaBackgroundLayerSelectorMap',
              options: '=gaBackgroundLayerSelectorOptions'
            },
            template:
@@ -25,7 +26,7 @@
                        'options.wmtsLayers">' +
                '</select>',
            link: function(scope, element, attrs) {
-             var map = scope.map;
+             var map = gaMap.map;
              var wmtsUrl = scope.options.wmtsUrl;
              var wmtsLayers = scope.options.wmtsLayers;
 
