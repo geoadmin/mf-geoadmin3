@@ -1,9 +1,12 @@
 @import "bootstrap-3.0.0/bootstrap.less";
+@import "font-awesome-3.2.1/less/font-awesome.less";
 @import "../src/map/style/map.less";
 @import "../src/print/style/form.less";
 @import "../src/scaleline/style/scaleline.less";
 @import "../src/attribution/style/attribution.less";
 @import "../src/contextmenu/style/menu.less";
+
+@FontAwesomePath:    "font-awesome-3.2.1/font";
 
 @header-height: 89;
 @small-header-height: 50;
@@ -174,6 +177,22 @@
         width: 100%;
     }
 }
+
+.hidden-collapsed {
+    display: initial !important;
+}
+.visible-collapsed {
+    display: none !important;
+}
+.collapsed {
+    .hidden-collapsed {
+        display: none !important;
+    }
+    .visible-collapsed {
+        display: initial !important;
+    }
+}
+
 
 .theme-toggle {
     float: right;
