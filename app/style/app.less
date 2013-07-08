@@ -88,6 +88,20 @@
     top: unit(@small-header-height, px);
     width: 320px;
     z-index: 1100;
+    .hidden-collapsed {
+        display: initial;
+    }
+    .visible-collapsed {
+        display: none;
+    }
+    .collapsed {
+        .hidden-collapsed {
+            display: none;
+        }
+        .visible-collapsed {
+            display: initial;
+        }
+    }
     .accordion-group {
         margin: 0;
         border: none;
@@ -175,21 +189,6 @@
     }
     @media screen and (max-width: @screen-phone) {
         width: 100%;
-    }
-}
-
-.hidden-collapsed {
-    display: initial !important;
-}
-.visible-collapsed {
-    display: none !important;
-}
-.collapsed {
-    .hidden-collapsed {
-        display: none !important;
-    }
-    .visible-collapsed {
-        display: initial !important;
     }
 }
 
