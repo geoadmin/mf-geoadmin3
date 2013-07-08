@@ -1,5 +1,0 @@
-langs: [de,fr,en,it,rm]
-dsn: dbname='bod' user='www-data' password='www-data' port=5432 host='pgcluster0t.bgdi.admin.ch'
-sql: select * from translations order by msg_id
-emptyFilename: empty.js
-emptyPOFilename: empty_chsdi.po

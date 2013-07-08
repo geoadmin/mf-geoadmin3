@@ -5,7 +5,7 @@ This script is used to translate the {lang}/chsdi.po-files of CHSDI (more about 
 
 Author: Tobias Reber
 Version: 0.7
-Usage: /home/ltgal/mf-chsdi3/buildout/bin/python translation2po.py /home/ltret/mf-chsdi3/chsdi/i18n/
+Usage: /home/ltgal/mf-chsdi3/buildout/bin/python translation2po.py /home/ltgal/mf-chsdi3/chsdi/i18n/
 """
 
 import os, sys, codecs

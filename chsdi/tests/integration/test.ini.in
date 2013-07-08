@@ -1,2 +1,0 @@
-[test]
-sqlalchemy.url = postgresql://${vars:dbuser}@${vars:dbhost}:${vars:dbport}/${vars:db}

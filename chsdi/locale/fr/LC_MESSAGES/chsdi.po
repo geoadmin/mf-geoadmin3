@@ -66,10 +66,10 @@ msgid "ch.astra.ivs-nat-verlaeufe"
 msgstr "IVS Tracé sans substance"
 
 msgid "ch.astra.ivs-reg_loc"
-msgstr "IVS régional et local"
+msgstr "IVS Régional et local"
 
 msgid "ch.astra.ivs-reg_loc"
-msgstr "IVS régional et local"
+msgstr "IVS Régional et local"
 
 msgid "ch.bafu.bundesinventare-bln"
 msgstr "IFP"
