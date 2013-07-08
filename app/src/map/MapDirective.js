@@ -1,8 +1,10 @@
 (function() {
   goog.provide('ga_map_directive');
+  goog.require('ga_map_service');
   goog.require('ga_permalink');
 
   var module = angular.module('ga_map_directive', [
+    'ga_map_service',
     'ga_permalink'
   ]);
 
@@ -17,21 +19,17 @@
   });
 
   module.directive('gaMap',
-      ['$parse', '$timeout', 'gaPermalink',
-        function($parse, $timeout, gaPermalink) {
+      ['$parse', '$timeout', 'gaMap', 'gaPermalink',
+        function($parse, $timeout, gaMap, gaPermalink) {
           return {
             restrict: 'A',
-            scope: {
-              map: '=gaMapMap',
-              options: '=gaMapOptions'
-            },
+            scope: {},
             controller: 'GaMapDirectiveController',
             link: function(scope, element, attrs, controller) {
-              var map = scope.map;
+              var map = gaMap.map;
               controller.setMap(map);
 
-              var options = scope.options;
-              var resolutions = options.resolutions;
+              var resolutions = gaMap.resolutions;
 
               var view = map.getView();
 
