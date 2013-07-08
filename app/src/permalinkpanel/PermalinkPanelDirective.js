@@ -23,20 +23,17 @@
               // the input field
               scope.permalinkvalue = gaPermalink.getHref();
 
-              scope.createHtml = function() {
-                var myPermalink = gaPermalink.getHref();
-                var html = '<iframe width="800" height="600" frameborder="0" ' +
-                    'scrolling="no" marginheight="0" marginwidth="0" src="' +
-                    myPermalink + '"</iframe>';
-                return html;
-              };
-
-              scope.htmlvalue = scope.createHtml();
+              scope.serviceURL = gaGlobalOptions.serviceUrl;
+              scope.permalinkHref = gaPermalink.getHref();
+              scope.encodedPermalinkHref = encodeURIComponent(gaPermalink.getHref());
+              scope.encodedDocumentTitle = encodeURIComponent(document.title);
 
               // Listen to permalink change events from the scope.
               scope.$on('gaPermalinkChange', function(event) {
                 scope.permalinkvalue = gaPermalink.getHref();
-                scope.htmlvalue = scope.createHtml();
+                scope.permalinkHref = gaPermalink.getHref();
+                scope.encodedPermalinkHref = encodeURIComponent(gaPermalink.getHref());
+                // assuming document.title never change
               });
 
               // Function to shorten url
@@ -49,32 +46,6 @@
                 }).success(function(response) {
                   scope.permalinkvalue = response.shorturl;
                 });
-              };
-
-              // Function to share content
-              scope.share = function(target) {
-                if (target === 'facebook') {
-                  var url = 'http://www.facebook.com/sharer.php?u=' +
-                     encodeURIComponent(gaPermalink.getHref()) +
-                     '&t=' + encodeURIComponent(document.title);
-                  window.open(url, '_blank');
-                } else if (target === 'twitter') {
-                  var url = 'https://twitter.com/intent/tweet?url=' +
-                     encodeURIComponent(gaPermalink.getHref()) +
-                     '&text=' + encodeURIComponent(document.title);
-                  window.open(url, '_blank');
-                } else if (target === 'google_plus') {
-                  var url = 'https://plus.google.com/share?url=' +
-                     encodeURIComponent(gaPermalink.getHref());
-                  window.open(url, '_blank');
-                } else if (target === 'qrcode') {
-                  var url = gaGlobalOptions.serviceUrl +
-                     '/qrcodegenerator?url=' +
-                     encodeURIComponent(gaPermalink.getHref());
-                  window.open(url, '_blank');
-                } else if (target === 'envelope') {
-                  alert('TODO: how to implement that ???');
-                }
               };
 
               // Select the input field on click in order to allow copy/paste
