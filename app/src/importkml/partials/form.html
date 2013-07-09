@@ -1,0 +1,24 @@
+<form name="importkml" ng-controller="GaImportKmlController">
+
+    <!-- Upload from an URL -->
+    <!--input type="text"/><button>Display KML file</button>
+    -->
+    <!-- Upload from a basic upload -->
+    <input type="file" />
+    <!--onchange="angular.element(this).scope().setFile(this)" /-->
+    <!--ng-change="onChangeInputFile(this)"-->
+
+    <!-- Upload from a file or an URL or a HTML link dropped -->
+    <!--div class="droppable">DROP ME HERE !!!!</div>
+    -->
+    <!-- Display informations about the uploaded file and the upload process -->
+    <div class="upload-result">
+        {{upload.userMessage}}
+    </div>
+
+    <!-- Display the content of the file if upload succeed -->
+    <textarea class="file-uploaded" > 
+    {{fileName}}
+    </textarea>
+
+</form>
