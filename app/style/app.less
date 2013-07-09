@@ -145,6 +145,7 @@
         font-weight: bold;
         .box-shadow(6px 6px 12px rgba(0, 0, 0, 0.175));
         width: 75%;
+        .transition(width .35s ease);
         border-top-left-radius: 0;
         border-top-right-radius: 0;
         margin-left: 12.5%;
@@ -156,6 +157,9 @@
             .pulldown-open {
                 display: inherit;
             }
+            @media screen and (max-width: @screen-phone) {
+                width: 2.7em;
+            }
         }
         .pulldown-close {
             display: inherit;
@@ -164,11 +168,11 @@
             display: none;
         }
         @media screen and (max-width: @screen-phone) {
-            width: 2.5em;
+            width: 5em;
             margin-left: auto;
-            float: right;
-            border-bottom-right-radius: 0;
-            .pulldown-open, .pulldown-close {
+            float: left;
+            border-bottom-left-radius: 0;
+            .pulldown-open {
                 font-size: 0;
                 width: 0;
                 visibility: hidden;
@@ -178,9 +182,6 @@
                     font-weight: normal;
                     font-size: 16px;
                 }
-            }
-            .pulldown-close::after {
-                content: '×';
             }
         }
     }
