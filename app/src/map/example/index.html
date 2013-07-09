@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html ng-app='ga_map_example'>
+  <head>
+    <title>Map Component Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <base href="../../../">
+    <link href="style/app.css" rel="stylesheet" media="screen">
+    <style>
+      #map {
+        width: 600px;
+        height: 400px;
+      }
+    </style>
+  </head>
+  <body ng-controller="MapController">
+
+    <div id="map" ga-map ga-map-map="map" ga-map-options="options">
+
+    <script src="lib/jquery-2.0.2.js"></script>
+    <script src="lib/angular-1.1.5.js"></script>
+    <script src="lib/bootstrap-3.0.0.js"></script>
+    <script src="lib/proj4js-compressed.js"></script>
+    <script src="lib/EPSG21781.js"></script>
+    <script>
+      window.CLOSURE_NO_DEPS = true;
+      window.CLOSURE_BASE_PATH = "src/";
+    </script>
+    <script src="lib/ol-whitespace.js"></script>
+    <script src="src/deps.js"></script>
+    <script>
+      goog.require('ga_map');
+    </script>
+    <script>
+      (function() {
+        var module = angular.module('ga_map_example', [
+          'ga_map'
+        ]);
+
+        module.controller('MapController', ['$scope', function($scope) {
+
+          // FIXME no need to pass resolutions to the directive when
+          // ol.View2D has setZoom and getZoom
+          var resolutions = new Array(29);
+          var i;
+          for (i = 0; i < 29; ++i) {
+            resolutions[i] = 156543.03392804097 / Math.pow(2, i);
+          }
+
+          var map = new ol.Map({
+            layers: [
+              new ol.layer.TileLayer({
+                source: new ol.source.OSM()
+              })
+            ],
+            view: new ol.View2D({
+              resolutions: resolutions,
+              center: [0, 0],
+              zoom: 4
+            })
+          });
+
+          $scope.map = map;
+          $scope.options = {
+            resolutions: resolutions
+          };
+
+        }]);
+
+      })();
+    </script>
+  </body>
+</html>
