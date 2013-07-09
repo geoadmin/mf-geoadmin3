@@ -6,10 +6,7 @@
 @import "../src/contextmenu/style/menu.less";
 
 @header-height: 89;
-
-body {
-    overflow: hidden;
-}
+@small-header-height: 50;
 
 #wrapper {
     position: absolute;
@@ -25,11 +22,24 @@ body {
 }
 
 #header {
-    height: unit(@header-height, px);
+    height: unit(@small-header-height, px);
     padding-left: 0;
     background-color: rgba(255, 255, 255, 0.9);
     .box-shadow(6px 6px 12px rgba(0, 0, 0, 0.175));
+    vertical-align: top;
+    @media (min-width: @screen-tablet) {
+        height: unit(@header-height, px);
+    }
 }
+
+#logo {
+    display : inline-block;
+    .visible-sm {
+        margin-left: 0.5em;
+        margin-top: 0.4em;
+    }
+}
+
 
 #footer {
     font-size: 11px;
@@ -39,6 +49,9 @@ body {
 }
 #mouseposition {
     width: 360px;
+    @media screen and (max-width: @screen-tablet) {
+        display: none;
+    }
 }
 #mouseposition-select {
     height: auto;
@@ -69,8 +82,9 @@ body {
 #pulldown {
     position: absolute;
     left: 0;
-    top: unit(@header-height, px);
+    top: unit(@small-header-height, px);
     width: 320px;
+    z-index: 1100;
     .accordion-group {
         margin: 0;
         border: none;
@@ -93,18 +107,14 @@ body {
             background-color: #999;
             color: #fff;
             font-weight: normal;
-            border-bottom: 1px solid #afafaf;
-            &.light {
-                background-color: #e9e9e9;
-                color: #000;
-                font-weight: bold;
-                border-bottom: 1px solid #fff;
-            }
         }
     }
     .accordion-inner {
         background-color: #fff;
-        border-top: none;;
+        border-top: none;
+        @media screen and (max-width: @screen-phone) {
+            background-color: rgba(255,255,255,0.9);
+        }
     }
 
     .toggle {
@@ -113,6 +123,8 @@ body {
         width: 75%;
         border-top-left-radius: 0;
         border-top-right-radius: 0;
+        margin-left: 12.5%;
+        z-index: 1200;
         &.collapsed {
             .pulldown-close {
                 display: none;
@@ -127,6 +139,32 @@ body {
         .pulldown-open {
             display: none;
         }
+        @media screen and (max-width: @screen-phone) {
+            width: 2.5em;
+            margin-left: auto;
+            float: right;
+            border-bottom-right-radius: 0;
+            .pulldown-open, .pulldown-close {
+                font-size: 0;
+                width: 0;
+                visibility: hidden;
+                &::after {
+                    visibility: visible;
+                    content: '≡';
+                    font-weight: normal;
+                    font-size: 16px;
+                }
+            }
+            .pulldown-close::after {
+                content: '×';
+            }
+        }
+    }
+    @media screen and (min-width: @screen-tablet) {
+        top: unit(@header-height, px);
+    }
+    @media screen and (max-width: @screen-phone) {
+        width: 100%;
     }
 }
 
