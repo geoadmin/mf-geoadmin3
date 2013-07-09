@@ -8,10 +8,6 @@
 @header-height: 89;
 @small-header-height: 50;
 
-html {
-    -webkit-text-size-adjust: none !important;
-}
-
 #wrapper {
     position: absolute;
     width: 100%;
@@ -115,14 +111,10 @@ html {
     }
     .accordion-inner {
         background-color: #fff;
-        border-top: 1px solid #c7c7c7;
+        border-top: none;
         @media screen and (max-width: @screen-phone) {
             background-color: rgba(255,255,255,0.9);
         }
-    }
-    .accordion-inner {
-        background-color: #fff;
-        border-top: none;
     }
 
     .toggle {
