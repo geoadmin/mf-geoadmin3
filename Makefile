@@ -83,7 +83,7 @@ app/src/deps.js: $(APP_JS_FILES) .build-artefacts/python-venv .build-artefacts/c
 	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root="app/src" --output_file=$@
 
 app/style/app.css: app/style/app.less $(APP_LESS_FILES) node_modules
-	node_modules/.bin/lessc $< $@
+	node_modules/.bin/lessc -ru $< $@
 
 app/index.html: app/index.mako.html .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "version=" $< > $@
