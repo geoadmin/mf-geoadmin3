@@ -38,6 +38,9 @@
     });
 
     $scope.map = map;
+
+    // FIXME no need to pass resolutions to the directive when
+    // ol.View2D has setZoom and getZoom
     $scope.options = {
       resolutions: resolutions
     };
