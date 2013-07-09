@@ -82,7 +82,7 @@ class BodLayerEn(Base, Bod):
 
 class GetCapFr(Base):
     __tablename__ = 'view_bod_wmts_getcapabilities_fr'
-    __table_args__ = ({'autoload': True, })
+    __table_args__ = ({'autoload': True})
     id = Column('fk_dataset_id', Text, primary_key=True)
     arr_all_formats = Column('format', Text)
 
