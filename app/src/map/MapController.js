@@ -3,6 +3,16 @@
 
   var module = angular.module('ga_map_controller', []);
 
+  /**
+   * The map controller.
+   *
+   * The map controller creates the OpenLayers map object. The map object
+   * is central, as most directives/components need a reference to it. So
+   * because of that the map controller must operate on a "global enough"
+   * scope. A body-level scope makes sense for example:
+   *
+   *     <body ng-controller="GaMapController">
+   */
   module.controller('GaMapController', ['$scope', function($scope) {
 
     var swissExtent = [485869.5728, 837076.5648, 76443.1884, 299941.7864];
