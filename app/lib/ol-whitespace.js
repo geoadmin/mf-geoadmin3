@@ -22871,6 +22871,7 @@ ol.control.ZoomSlider = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
   this.currentResolution_ = undefined;
   this.direction_ = ol.control.ZoomSlider.direction.VERTICAL;
+  this.sliderInitialized_ = false;
   this.draggerListenerKeys_ = null;
   var className = goog.isDef(options.className) ? options.className : "ol-zoomslider";
   var sliderCssCls = className + " " + ol.css.CLASS_UNSELECTABLE;
@@ -22884,11 +22885,8 @@ goog.inherits(ol.control.ZoomSlider, ol.control.Control);
 ol.control.ZoomSlider.direction = {VERTICAL:0, HORIZONTAL:1};
 ol.control.ZoomSlider.prototype.setMap = function(map) {
   goog.base(this, "setMap", map);
-  this.initSlider_();
-  var resolution = map.getView().getView2D().getResolution();
-  if(goog.isDef(resolution)) {
-    this.currentResolution_ = resolution;
-    this.positionThumbForResolution_(resolution)
+  if(!goog.isNull(map)) {
+    map.render()
   }
 };
 ol.control.ZoomSlider.prototype.initSlider_ = function() {
@@ -22901,9 +22899,17 @@ ol.control.ZoomSlider.prototype.initSlider_ = function() {
     this.direction_ = ol.control.ZoomSlider.direction.VERTICAL;
     limits = new goog.math.Rect(0, 0, 0, h)
   }
-  this.dragger_.setLimits(limits)
+  this.dragger_.setLimits(limits);
+  this.sliderInitialized_ = true
 };
 ol.control.ZoomSlider.prototype.handleMapPostrender = function(mapEvent) {
+  if(goog.isNull(mapEvent.frameState)) {
+    return
+  }
+  goog.asserts.assert(goog.isDefAndNotNull(mapEvent.frameState.view2DState));
+  if(!this.sliderInitialized_) {
+    this.initSlider_()
+  }
   var res = mapEvent.frameState.view2DState.resolution;
   if(res !== this.currentResolution_) {
     this.currentResolution_ = res;
