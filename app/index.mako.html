@@ -17,10 +17,9 @@
   <body ng-controller="GaMapController">
     <div id="wrapper">
       <div id="header" class="navbar navbar-fixed-top">
-        <div id="logo">
-          <img class="hidden-sm" src="${version}img/logo.ch.jpeg" width="246" height="89"/>
-          <img class="visible-sm" src="${version}img/geoadminmobile-logo.png" width="93" height="36"/>
-        </div>
+        <img id="logo" src="${version}img/logo.ch.jpeg" width="246" height="89"/>
+        <input type="search" name="q" placeholder="search" id="search"/>
+% if device == 'desktop':
         <form class="navbar-form pull-right">
           <div ng-controller="GaTranslationController">
             <div ga-translation-selector
@@ -32,25 +31,7 @@
                  ga-background-layer-selector-options="options"></div>
           </div>
         </form>
-        <style>
-          @media screen and (max-width: 480px) {
-            .preview-sm-hide{ display: none !important;}
-          }
-          iframe {
-            vertical-align: middle;
-          }
-        </style>
-        <h3 class="preview-sm-hide"
-          style="display:inline-block;font-size:110%;margin:0;color:red;vertical-align:top;padding:
-          .4em .3em 0">
-            This application is a preview.
-          </h3>
-          <div class="visible-lg" style="position:absolute;top:40px;left:260px;">
-          Please provide feedback: <a href="mailto:info@geo.admin.ch?subject=map.geo.admin.ch preview">info[at]geo.admin.ch</a> or 
-          <a href="https://twitter.com/intent/tweet?screen_name=swiss_geoportal&text=I%20like%20the%20preview%2C%20but%20you%20should" class="twitter-mention-button">Tweet to @swiss_geoportal</a>
-          <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-          <br><em>print is not functional, for now...</em>
-        </div>
+% endif
       </div>
       <div id="map" class="map" ga-map ga-map-map="map">
         <div ga-context-menu></div>
@@ -68,10 +49,10 @@
             ga-mouse-position-map="map"
             ga-mouse-position-options="options"></div>
         </div>
-% endif
         <div id="attribution" class="pull-left" ga-attribution ga-attribution-map="map"></div>
         <div id="copyrights" class="pull-right"><a href="http://www.geo.admin.ch/internet/geoportal/en/home/geoadmin/contact.html#copyright">Copyright & data protection</a></div>
         <div id="geoadminlink" class="pull-right"><a href="http://www.geo.admin.ch/internet/geoportal/en/home.html">geo.admin.ch</a></div>
+% endif
       </div>
     </div>
 
@@ -151,14 +132,38 @@
             </div>
           </div>
         </div> <!-- .accordion-group -->
+% if device=='mobile':
+        <div class="accordion-group">
+          <div class="accordion-heading">
+            <a class="accordion-toggle light collapsed" data-toggle="collapse" href="#impressum">
+              Impressum
+            </a>
+          </div>
+          <div id="impressum" class="collapse">
+            <div class="accordion-inner">
+              <form ng-controller="GaBackgroundLayerSelectorController">
+                <div ga-background-layer-selector
+                  ga-background-layer-selector-map="map"
+                  ga-background-layer-selector-options="options"></div>
+              </form>
+
+            <hr>
+            <div ga-attribution ga-attribution-map="map"></div>
+            <p>
+              <a href="http://www.geo.admin.ch/internet/geoportal/en/home/geoadmin/contact.html#copyright">Copyright & data protection</a>
+              <br>
+              <a href="http://www.geo.admin.ch/internet/geoportal/en/home.html">geo.admin.ch</a>
+            </p>
+            </div>
+          </div>
+        </div> <!-- .accordion-group -->
+% endif
       </div> <!-- #pulldown-content -->
 
-      <div class="text-center">
-        <button type="button" data-toggle="collapse" data-target="#pulldown-content" class="toggle btn btn-default">
+      <button type="button" data-toggle="collapse" data-target="#pulldown-content" class="toggle btn btn-default">
           <span class="hidden-collapsed"><i class="icon-caret-up"></i> <span translate>Close menu</span></span>
           <span class="visible-collapsed"><i class="icon-caret-down"></i> <span translate>Open menu</span></span>
-        </button>
-      </div>
+      </button>
     </div>
 % if mode == "prod":
     <script src="${version}lib/build.js"></script>
@@ -197,6 +202,15 @@
       })();
     </script>
 
+    <link rel="stylesheet" href="http://simonwhitaker.github.io/github-fork-ribbon-css/gh-fork-ribbon.css" />
+    <!--[if IE]>
+    <link rel="stylesheet" href="http://simonwhitaker.github.io/github-fork-ribbon-css/gh-fork-ribbon.ie.css" />
+    <![endif]-->
+    <div class="github-fork-ribbon-wrapper right-bottom">
+      <div class="github-fork-ribbon">
+        <a href="mailto:info@geo.admin.ch">Application preview</a>
+      </div>
+    </div>
   </body>
 </html>
 
