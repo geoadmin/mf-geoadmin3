@@ -10,7 +10,7 @@
     };
   
     $scope.file = null;
-    $scope.fileName = "No content";
+    $scope.fileName = "File name";
     
     $scope.setFile= function(inputFile) {
         

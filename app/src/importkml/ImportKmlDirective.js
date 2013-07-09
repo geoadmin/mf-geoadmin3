@@ -17,13 +17,22 @@
                        var files = event.target.files;
                        var file = files[0];
 
-                       //scope.file = file;
-                       //scope.$apply();
+                        
+                        // Doesn't work
+                       /*scope.$apply(function() 
+                       {
+                            scope.file = file;
+                            scope.fileName = file.name;
+                       });*/
+
+                       // Work
                        var controllerScope =  angular.element(event.target).scope();
                        controllerScope.file = file;
                        controllerScope.fileName = file.name;
                        controllerScope.$apply();
 
+                       // example of kml in Swiss territory
+                       // http://60plus.csem.ch/v02/Balades/gpx_xml_kml/20091223_Vers_le_Lac_des_Tailleres.
                        $log.log(scope);
                        $log.log(file);
                    });
