@@ -16,15 +16,12 @@
               var shortenUrl =
                   scope.options.serviceUrl + '/shorten.json?cb=JSON_CALLBACK';
 
-              $('.permalinkTooltip').tooltip({
-                placement: 'right'
-              });
               $('.share-tooltip').tooltip({
                 placement: 'bottom'
               });
               // Store in the scope the permalink value which is bound to
               // the input field
-              scope.permalinkvalue = gaPermalink.getHref();
+              scope.permalinkValue = gaPermalink.getHref();
               scope.permalinkHref = gaPermalink.getHref();
               scope.encodedPermalinkHref =
                   encodeURIComponent(gaPermalink.getHref());
@@ -32,7 +29,7 @@
 
               // Listen to permalink change events from the scope.
               scope.$on('gaPermalinkChange', function(event) {
-                scope.permalinkvalue = gaPermalink.getHref();
+                scope.permalinkValue = gaPermalink.getHref();
                 scope.permalinkHref = gaPermalink.getHref();
                 scope.encodedPermalinkHref =
                     encodeURIComponent(gaPermalink.getHref());
@@ -44,10 +41,10 @@
               scope.shortenUrl = function() {
                 $http.jsonp(shortenUrl, {
                   params: {
-                    url: scope.permalinkvalue
+                    url: scope.permalinkValue
                   }
                 }).success(function(response) {
-                  scope.permalinkvalue = response.shorturl;
+                  scope.permalinkValue = response.shorturl;
                 });
               };
 
