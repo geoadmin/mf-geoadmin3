@@ -19,10 +19,10 @@
 
                        //scope.file = file;
                        //scope.$apply();
-                       
-                       angular.element(event.target).scope().file = file;
-                       angular.element(event.target).scope().fileName = file.name;
-                       angular.element(event.target).scope().$apply();
+                       var controllerScope =  angular.element(event.target).scope();
+                       controllerScope.file = file;
+                       controllerScope.fileName = file.name;
+                       controllerScope.$apply();
 
                        $log.log(scope);
                        $log.log(file);
