@@ -13,7 +13,7 @@
             },
             templateUrl: 'src/permalinkpanel/partials/permalinkpanel.html',
             link: function(scope, element, attrs) {
-              var shortenURL =
+              var shortenUrl =
                   scope.options.serviceUrl + '/shorten.json?cb=JSON_CALLBACK';
 
               $('.permalinkTooltip').tooltip({
@@ -25,8 +25,6 @@
               // Store in the scope the permalink value which is bound to
               // the input field
               scope.permalinkvalue = gaPermalink.getHref();
-
-              scope.serviceUrl = gaGlobalOptions.serviceUrl;
               scope.permalinkHref = gaPermalink.getHref();
               scope.encodedPermalinkHref =
                   encodeURIComponent(gaPermalink.getHref());

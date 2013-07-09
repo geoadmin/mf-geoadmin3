@@ -8,10 +8,13 @@ describe('ga_permalinkpanel_directive', function() {
     module('src/permalinkpanel/partials/permalinkpanel.html');
 
     element = angular.element(
-      '<div ga-permalink-panel></div>');
+      '<div ga-permalink-panel ga-permalink-panel-options="options"></div>');
 
 
     inject(function($rootScope, $compile) {
+      $rootScope.options = {
+        serviceUrl: 'http://api.geo.admin.ch'
+      };
       $compile(element)($rootScope);
       $rootScope.$digest();
     });
