@@ -78,6 +78,6 @@ def main(global_config, **settings):
     config.add_route('checker_home', '/checker_home')
     config.add_route('checker_api', '/checker_api')
 
-    config.scan(ignore=['chsdi.tests','chsdi.models']) # required to find code decorated by view_config
+    config.scan(ignore=['chsdi.tests','chsdi.models.bod']) # required to find code decorated by view_config
     config.add_static_view('static', 'chsdi:static', cache_max_age=3600)
     return config.make_wsgi_app()
