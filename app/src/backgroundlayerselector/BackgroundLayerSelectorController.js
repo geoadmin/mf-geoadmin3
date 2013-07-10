@@ -7,7 +7,6 @@
       ['$scope', function($scope) {
 
         $scope.options = {
-          wmtsUrl: 'WMTSCapabilities.xml',
           wmtsLayers: [
             {label: 'Color Map', value: 'ch.swisstopo.pixelkarte-farbe'},
             {label: 'Aerial Imagery', value: 'ch.swisstopo.swissimage'},

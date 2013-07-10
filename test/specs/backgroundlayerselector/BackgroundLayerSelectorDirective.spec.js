@@ -4,21 +4,30 @@ describe('ga_backgroundlayerselector_directive', function() {
 
   beforeEach(function() {
 
-    var deferred;
+    var deferred1, deferred2;
 
     module(function($provide) {
-      $provide.value('gaWmtsLoader', {
-        load: function(url) {
-          return deferred.promise;
+      $provide.value('gaLayers', {
+        getLayerById: function(id) {
+          var d = id == 'foo' ? deferred1 : deferred2;
+          return d.promise;
         }
       });
     });
 
     inject(function($q) {
-      deferred = $q.defer();
+      deferred1 = $q.defer();
+      deferred2 = $q.defer();
     });
 
     map = new ol.Map({});
+
+    layer1 = new ol.layer.TileLayer({
+      source: new ol.source.OSM()
+    });
+    layer2 = new ol.layer.TileLayer({
+      source: new ol.source.OSM()
+    });
 
     element = angular.element(
       '<div>' +
@@ -31,24 +40,19 @@ describe('ga_backgroundlayerselector_directive', function() {
     inject(function($rootScope, $compile) {
       $rootScope.map = map;
       $rootScope.options = {
-        wmtsUrl: 'wmts.xml',
         wmtsLayers: [
           {label: 'Foo', value: 'foo'},
           {label: 'Bar', value: 'bar'}
         ]
       };
       $compile(element)($rootScope);
+      $rootScope.$digest();
     });
 
     inject(function($rootScope) {
       $rootScope.$apply(function() {
-        layer1 = new ol.layer.TileLayer({
-          source: new ol.source.OSM()
-        });
-        layer2 = new ol.layer.TileLayer({
-          source: new ol.source.OSM()
-        });
-        deferred.resolve([layer1, layer2]);
+        deferred1.resolve(layer1);
+        deferred2.resolve(layer2);
       });
     });
 
