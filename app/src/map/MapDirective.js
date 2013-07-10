@@ -74,6 +74,7 @@
               view.on('change', updatePermalink);
               updatePermalink();
 
+              map.addControl(new ol.control.ZoomSlider());
               map.setTarget(element[0]);
             }
           };
