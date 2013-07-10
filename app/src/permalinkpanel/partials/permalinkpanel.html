@@ -31,9 +31,13 @@
     </a>
 </div>
 </div>
-<input class="permalink-input" ng-model="permalinkValue"
-       ng-click="selectOnClick($event)">
-<a href="#" ng-click="shortenUrl()">Shorten URL</a>
+
+<div class="input-group">
+  <input type="text" ng-model="permalinkValue" ng-click="selectOnClick($event)">
+  <span class="input-group-btn">
+    <button class="btn btn-default" ng-click="shortenUrl()">Shorten URL</button>
+  </span>
+</div>
 <br>&nbsp;
 <div class="padding-bottom-2px">Embed map
 </div>
