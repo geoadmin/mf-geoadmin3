@@ -40,7 +40,7 @@ RewriteRule ^${vars:apache-entry-point}$ /${vars:instanceid}/wsgi/ [PT]
 # Proxy pass pointing on api.geo.admin.ch project
 RewriteRule ^${vars:apache-entry-point}(qrcodegenerator|shorten|shorten.json)(.*)$ http://mf-chsdi0t.bgdi.admin.ch${vars:apache-entry-point}$1$2 [P]
 
-<Location /${vars:instanceid}/>
+<Location ${vars:apache-entry-point}>
     Order allow,deny
     Allow from all
 </Location>
