@@ -33,7 +33,7 @@ help:
 all: prod dev lint test apache test/karma-conf-prod.js
 
 .PHONY: prod
-prod: app-prod/lib/build.js app-prod/style/app.css app-prod/index.html app-prod/mobile.html app-prod/info.json app-prod/WMTSCapabilities.xml $(APP_PROD_TEMPLATE_FILES) app-prod/img/
+prod: app-prod/lib/build.js app-prod/style/app.css app-prod/index.html app-prod/mobile.html app-prod/info.json app-prod/WMTSCapabilities.xml $(APP_PROD_TEMPLATE_FILES) app-prod/img/ app-prod/style/font-awesome-3.2.1/font/
 
 .PHONY: dev
 dev: app/src/deps.js app/style/app.css app/index.html app/mobile.html
@@ -64,6 +64,10 @@ app-prod/mobile.html: app/index.mako.html .build-artefacts/python-venv/bin/mako-
 	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "mode=prod" --var "version=$(VERSION)" $< > $@
 
 app-prod/img/: app/img/*
+	mkdir -p $@
+	cp $^ $@
+
+app-prod/style/font-awesome-3.2.1/font/: app/style/font-awesome-3.2.1/font/*
 	mkdir -p $@
 	cp $^ $@
 
