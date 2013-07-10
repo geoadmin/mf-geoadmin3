@@ -50,22 +50,28 @@
         <div ga-context-menu class="contextmenu popover bottom"></div>
       </div>
       <div id="footer" class="navbar navbar-fixed-bottom">
-        <div id="scaleline" class="pull-left" ga-scale-line ga-scale-line-map="map"></div>
+        <div class="block-item pull-left" ga-scale-line ga-scale-line-map="map"></div>
 % if device == 'desktop':
         <div id="mouseposition" class="pull-left" ng-controller="GaMousePositionController">
-          <select id="mouseposition-select"
+          <select class="inline-block"
             ng-model="options.projection"
             ng-options="p.label for p in mousePositionProjections">
           </select>
-          <div id="mouseposition-value"
+          <div class="inline-block block-item"
             ga-mouse-position
             ga-mouse-position-map="map"
             ga-mouse-position-options="options"></div>
         </div>
 % endif
-        <div id="attribution" class="pull-left" ga-attribution ga-attribution-map="map"></div>
-        <div id="copyrights" class="pull-right"><a href="http://www.geo.admin.ch/internet/geoportal/en/home/geoadmin/contact.html#copyright">Copyright & data protection</a></div>
-        <div id="geoadminlink" class="pull-right"><a href="http://www.geo.admin.ch/internet/geoportal/en/home.html">geo.admin.ch</a></div>
+        <div class="block-item pull-left" ga-attribution ga-attribution-map="map"></div>
+	<ul class="nav navbar-nav pull-right">
+	  <li>
+	    <a href="http://www.geo.admin.ch/internet/geoportal/en/home.html">geo.admin.ch</a>
+	  </li>
+	  <li>
+	    <a href="http://www.geo.admin.ch/internet/geoportal/en/home/geoadmin/contact.html#copyright">Copyright & data protection</a>
+	  </li>
+	</ul>
       </div>
 
     <div id="pulldown">

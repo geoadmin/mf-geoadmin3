@@ -9,6 +9,10 @@
 @header-height: 89;
 @small-header-height: 50;
 
+.inline-block {
+    display: inline-block;
+}
+
 #map {
     position: absolute;
     width: 100%;
@@ -40,6 +44,17 @@
     background-color: rgba(214, 214, 214, 0.9);
     padding-left: 12px;
     padding-right: 0;
+    .block-item, .nav > li > a {
+        padding: 9px;
+        line-height: initial;
+    }
+    select {
+        height: auto;
+        min-height: inherit;
+        width: auto;
+        font-size: inherit;
+        padding: 5px;
+    }
 }
 #mouseposition {
     width: 360px;
@@ -47,28 +62,7 @@
         display: none;
     }
 }
-#mouseposition-select {
-    height: auto;
-    min-height: inherit;
-    width: auto;
-    font-size: inherit;
-    padding: 5px;
-}
-#mouseposition-select, #mouseposition-value {
-    display: inline-block;
-}
-#copyrights {
-    width: 150px;
-}
 
-#geoadminlink {
-    width: 80px;
-}
-
-#scaleline, #attribution, #mouseposition-value, #copyrights, #geoadminlink {
-    margin-top: 9px;
-    margin-bottom: 9px;
-}
 #header, #footer {
     position: absolute;
 }
