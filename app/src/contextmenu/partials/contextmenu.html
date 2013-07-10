@@ -1,0 +1,38 @@
+<div class="contextmenu popover bottom">
+  <div class="arrow"></div>
+  <div class="popover-inner">
+      <h4 class="popover-title">Position<button type="button" class="close" ng-click="hidePopover()">&times;</button></h4>
+      <div class="popover-content">
+          <table>
+              <tbody>
+              <tr>
+                  <td>CH1903 / LV03</td>
+                  <td><a href="{{contextPermalink}}"
+                         target="_blank">{{coord21781}}</a></td>
+              </tr>
+              <tr>
+                  <td>CH1903+ / LV95</td>
+                  <td>{{coord2056}}</td>
+              </tr>
+              <tr>
+                  <td>WGS 84 (long/lat)</td>
+                  <td>{{coord4326}}</td>
+              </tr>
+              <tr ng-hide="!altitude">
+                  <td>Altitude</td>
+                  <td>{{altitude}} [m]</td>
+              </tr>
+              <tr>
+                  <td></td>
+                  <td><a href="{{crosshairPermalink}}" target="_blank">Link with bowl crosshair</a></td>
+              </tr>
+              <tr>
+                <td align='center' colspan='2'>
+                  <img ng-src="{{qrCodeUrl}}" style="width: 128px; height: 128px;">
+                </td>
+              </tr>
+              </tbody>
+          </table>
+      </div>
+  </div>
+</div>
