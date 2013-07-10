@@ -4,8 +4,8 @@
   var module = angular.module('ga_contextmenu_directive', []);
 
   module.directive('gaContextMenu',
-      ['$http', '$q', 'gaPermalink',
-        function($http, $q, gaPermalink) {
+      ['$http', '$q', '$window', 'gaPermalink',
+        function($http, $q, $window, gaPermalink) {
           var heightUrl =
               'http://api.geo.admin.ch/height?cb=JSON_CALLBACK';
           var lv03tolv95Url =
@@ -27,8 +27,7 @@
               var coord21781;
               var popoverShown = false;
 
-              // Listen to contextmenu events from the map.
-              map.on('contextmenu', function(event) {
+              var handler = function(event) {
                 event.preventDefault();
 
                 var pixel = event.getPixel();
@@ -75,6 +74,35 @@
                     showPopover();
                   });
                 });
+              };
+
+              // Listen to contextmenu events from the map.
+              map.on('contextmenu', handler);
+
+              // On touch devices, display the context menu after a
+              // long press (750ms)
+              var startPixel, holdTimeout;
+              map.on('touchstart', function(event) {
+                $window.clearTimeout(holdTimeout);
+                startPixel = event.getPixel();
+                holdTimeout = $window.setTimeout(function() {
+                  handler(event);
+                }, 750);
+              });
+              map.on('touchend', function(event) {
+                $window.clearTimeout(holdTimeout);
+                startPixel = undefined;
+              });
+              map.on('touchmove', function(event) {
+                if (startPixel) {
+                  var pixel = event.getPixel();
+                  var deltaX = Math.abs(startPixel[0] - pixel[0]);
+                  var deltaY = Math.abs(startPixel[1] - pixel[1]);
+                  if (deltaX + deltaY > 2) {
+                    $window.clearTimeout(holdTimeout);
+                    startPixel = undefined;
+                  }
+                }
               });
 
               // Listen to permalink change events from the scope.

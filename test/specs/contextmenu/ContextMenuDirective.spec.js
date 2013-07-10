@@ -18,7 +18,9 @@ describe('ga_contextmenu_directive', function() {
       $rootScope.map = map;
       $rootScope.options = {};
       map.on = function(eventType, handler) {
-        contextmenuHandler = handler;
+        if (eventType === 'contextmenu') {
+          contextmenuHandler = handler;
+        }
       };
       $compile(element)($rootScope);
       $rootScope.$digest();
