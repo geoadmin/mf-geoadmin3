@@ -21,18 +21,16 @@
           <img class="hidden-sm" src="${version}img/logo.ch.jpeg" width="246" height="89"/>
           <img class="visible-sm" src="${version}img/geoadminmobile-logo.png" width="93" height="36"/>
         </div>
-        <form class="navbar-form pull-right"
-          ng-controller="GaBackgroundLayerSelectorController">
-          <select ga-translation ng-model="lang">
-            <option value="de">DE</option>
-            <option value="fr">FR</option>
-            <option value="it">IT</option>
-            <option value="rm">RM</option>
-            <option value="en">EN</option>
-          </select>
-          <div ga-background-layer-selector
-            ga-background-layer-selector-map="map"
-            ga-background-layer-selector-options="options"></div>
+        <form class="navbar-form pull-right">
+          <div ng-controller="GaTranslationController">
+            <div ga-translation-selector
+                 ga-translation-selector-options="options"></div>
+          </div>
+          <div ng-controller="GaBackgroundLayerSelectorController">
+            <div ga-background-layer-selector
+                 ga-background-layer-selector-map="map"
+                 ga-background-layer-selector-options="options"></div>
+          </div>
         </form>
         <style>
           @media screen and (max-width: 480px) {
@@ -83,7 +81,7 @@
           <div class="accordion-heading">
             <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#share">
               <i class="icon-share"></i>
-	      <span translate>Share</span>
+              <span translate>Share</span>
             </a>
           </div>
           <div id="share" class="collapse">
