@@ -40,7 +40,6 @@ class Bod(object):
             'idGeoCat': self.idGeoCat,
             'name': self.name,
             'fullName': self.fullName,
-            'defaultVisibility': True,
             'parentLayerId': None, # Temporary until the view is updated
             'subLayerId': None, # Temporary until the view is updated
             'attributes': {
@@ -82,7 +81,7 @@ class BodLayerEn(Base, Bod):
 
 class GetCapFr(Base):
     __tablename__ = 'view_bod_wmts_getcapabilities_fr'
-    __table_args__ = ({'autoload': True, })
+    __table_args__ = ({'autoload': True})
     id = Column('fk_dataset_id', Text, primary_key=True)
     arr_all_formats = Column('format', Text)
 
@@ -115,7 +114,6 @@ class ServiceMetadataFr(Base):
 #TODO use GetCap model to fill that up instead
 def computeHeader(mapName):
     return {
-        'serviceDescription': 'Description',
         'mapName': mapName,
         'description': 'Configuration for the map (topic) ' + mapName,
         'copyrightText': 'Data ' + mapName,
@@ -156,7 +154,8 @@ def computeHeader(mapName):
                 {'level': 23, 'resolution': 2, 'scale': 7142.87528575, 'width': 938, 'height': 625},
                 {'level': 24, 'resolution': 1.5, 'scale': 5357.15646431, 'width': 1250, 'height': 834},
                 {'level': 25, 'resolution': 1, 'scale': 3571.43764288, 'width': 1875, 'height': 1250},
-                {'level': 26, 'resolution': 0.5, 'scale': 1785.71882144, 'width': 3750, 'height': 2500}
+                {'level': 26, 'resolution': 0.5, 'scale': 1785.71882144, 'width': 3750, 'height': 2500},
+                {'level': 27, 'resolution': 0.25, 'scale':  892.857, 'width': 7500, 'height': 5000}
             ]
         },
         'initialExtent': {

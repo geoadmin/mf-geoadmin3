@@ -37,6 +37,14 @@ RewriteRule ^/${vars:instanceid}/wsgi/(static)/(.*)$  ${buildout:directory/chsdi
 
 RewriteRule ^${vars:apache-entry-point}$ /${vars:instanceid}/wsgi/ [PT]
 
+# Proxy pass pointing on api.geo.admin.ch project
+RewriteRule ^${vars:apache-entry-point}(qrcodegenerator|shorten|shorten.json)(.*)$ http://mf-chsdi0t.bgdi.admin.ch${vars:apache-entry-point}$1$2 [P]
+
+<Location /${vars:instanceid}/>
+    Order allow,deny
+    Allow from all
+</Location>
+ 
 # define a process group
 # WSGIDaemonProcess must be commented/removed when running the project on windows
 WSGIDaemonProcess mf-chsdi3:${vars:instanceid} display-name=%{GROUP} user=${vars:modwsgi_user}
