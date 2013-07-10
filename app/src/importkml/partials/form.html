@@ -1,8 +1,10 @@
-<form name="importkml" ng-controller="GaImportKmlController">
+<form name="importkml"> 
 
     <!-- Upload from an URL -->
-    <!--input type="text"/><button>Display KML file</button>
-    -->
+    <input type="url" placeholder="Paste an URL"
+    ng-model="fileUrl" ng-change=""/>
+    <button>Choose a local file</button>
+    
     <!-- Upload from a basic upload -->
     <input type="file" />
     <!--onchange="angular.element(this).scope().setFile(this)" /-->
@@ -13,12 +15,12 @@
     -->
     <!-- Display informations about the uploaded file and the upload process -->
     <div class="upload-result">
-        {{upload.userMessage}}
+        {{file.name}}
     </div>
 
     <!-- Display the content of the file if upload succeed -->
     <textarea class="file-uploaded" > 
-    {{fileName}}
-    </textarea>
+    {{fileContent}}
+    </textarea
 
 </form>

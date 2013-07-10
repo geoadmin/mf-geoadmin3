@@ -37,9 +37,11 @@
       <div id="map" class="map" ga-map ga-map-map="map">
         <div ga-context-menu ga-context-menu-map="map"></div>
       </div>
-      <div id="import-kml" class="import-kml"
+      <div id="import-kml" class="import-kml" ng-controller="GaImportKmlController"
       style="background-color:white;padding:10px;border:black;position:absolute;top:110px;right:50px;" 
-            ga-import-kml ></div>
+            ga-import-kml 
+            ga-import-kml-map="map"
+            ga-import-kml-options="options"></div>
       
       <div id="footer" class="navbar navbar-fixed-bottom">
         <div id="scaleline" class="pull-left" ga-scale-line ga-scale-line-map="map"></div>
