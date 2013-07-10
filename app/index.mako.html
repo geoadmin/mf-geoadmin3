@@ -80,8 +80,8 @@
             </a>
           </div>
           <div id="share" class="collapse">
-            <div class="accordion-inner">
-              <p>under construction ...</p>
+            <div class="accordion-inner" ng-controller="GaPermalinkPanelController">
+              <div ga-permalink-panel ga-permalink-panel-options="options"></div>
             </div>
           </div>
         </div> <!-- .accordion-group -->
@@ -176,11 +176,19 @@
     <script src="lib/ol-whitespace.js"></script>
     <!--<script src="lib/closure/base.js"></script>-->
     <script src="src/deps.js"></script>
-
     <script>
       goog.require('ga');
     </script>
+
 %endif
+    <script>
+      (function() {
+         var module = angular.module('ga');
+
+         module.constant('gaGlobalOptions',
+           {serviceUrl : '${service_url}'});
+      })();
+    </script>
 
   </body>
 </html>

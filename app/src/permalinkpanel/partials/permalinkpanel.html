@@ -1,0 +1,43 @@
+<div>Share map
+<div class="pull-right padding-bottom-2px">
+    <a class="share-tooltip"
+       title="Create a QRCode and open this map on your mobile"
+       ng-href="{{options.serviceUrl}}/qrcodegenerator?url={{encodedPermalinkHref}}">
+      <img src="img/qrcode.png" style="height: 24px; width: 24px;"/>
+    </a>
+
+    <a class="share-tooltip"
+       title="Tweet this map"
+       ng-href="https://twitter.com/intent/tweet?url={{encodedPermalinkHref}}&text={{encodedDocumentTitle}}">
+      <img src="img/twitter.png" style="height: 24px; width: 24px;"/>
+    </a>
+
+    <a class="share-tooltip"
+       title="Share this map with your friends"
+       ng-href="http://www.facebook.com/sharer.php?u={{encodedPermalinkHref}}&t={{encodedDocumentTitle}}">
+      <img src="img/facebook.png" style="height: 24px; width: 24px;"/>
+    </a>
+
+    <a class="share-tooltip"
+       title="Share this map on Google Plus"
+       ng-href="https://plus.google.com/share?url={{encodedPermalinkHref}}">
+      <img src="img/google_plus.png" style="height: 24px; width: 24px;"/>
+    </a>
+
+    <a class="share-tooltip"
+       title="Send a map-email to your friends"
+       ng-href="mailto:?subject={{encodedDocumentTitle}}&body={{encodedPermalinkHref}}">
+      <img src="img/envelope.png" style="height: 18px; width: 24px;"/>
+    </a>
+</div>
+</div>
+<input class="permalink-input" ng-model="permalinkValue"
+       ng-click="selectOnClick($event)">
+<a href="#" ng-click="shortenUrl()">Shorten URL</a>
+<br>&nbsp;
+<div class="padding-bottom-2px">Embed map
+</div>
+<textarea class="html-input" rows="8" cols="40" ng-click="selectOnClick($event)">
+<iframe width="800" height="600" frameborder="0" scrolling="no"
+        marginheight="0" marginwidth="0" src="{{permalinkHref}}"></iframe>
+</textarea>

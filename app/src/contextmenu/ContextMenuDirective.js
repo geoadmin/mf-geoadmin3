@@ -6,9 +6,9 @@
   module.directive('gaContextMenu',
       ['$http', '$q', 'gaPermalink',
         function($http, $q, gaPermalink) {
-          var heightURL =
+          var heightUrl =
               'http://api.geo.admin.ch/height?cb=JSON_CALLBACK';
-          var lv03tolv95URL =
+          var lv03tolv95Url =
               'http://tc-geodesy.bgdi.admin.ch/reframe/lv03tolv95?cb=JSON_CALLBACK';
           return {
             restrict: 'A',
@@ -43,14 +43,14 @@
                 // callback.
                 scope.$apply(function() {
                   $q.all({
-                    height: $http.jsonp(heightURL, {
+                    height: $http.jsonp(heightUrl, {
                       params: {
                         easting: coord21781[0],
                         northing: coord21781[1],
                         elevation_model: 'COMB'
                       }
                     }),
-                    lv03tolv95: $http.jsonp(lv03tolv95URL, {
+                    lv03tolv95: $http.jsonp(lv03tolv95Url, {
                       params: {
                         easting: coord21781[0],
                         northing: coord21781[1]
