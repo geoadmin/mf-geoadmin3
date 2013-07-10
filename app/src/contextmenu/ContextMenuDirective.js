@@ -12,7 +12,8 @@
               'http://tc-geodesy.bgdi.admin.ch/reframe/lv03tolv95?cb=JSON_CALLBACK';
           return {
             restrict: 'A',
-            templateUrl: 'src/contextmenu/partials/menu.html',
+            replace: true,
+            templateUrl: 'src/contextmenu/partials/contextmenu.html',
             require: '^gaMap',
             scope: {},
             link: function(scope, element, attrs, gaMapDirectiveCtrl) {
