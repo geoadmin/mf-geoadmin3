@@ -26,7 +26,7 @@
               scope.encodedPermalinkHref =
                   encodeURIComponent(gaPermalink.getHref());
               scope.encodedDocumentTitle = encodeURIComponent(document.title);
-              scope.urlShorted = false;
+              scope.urlShortened = false;
 
               // Listen to permalink change events from the scope.
               scope.$on('gaPermalinkChange', function(event) {
@@ -34,7 +34,7 @@
                 scope.permalinkHref = gaPermalink.getHref();
                 scope.encodedPermalinkHref =
                     encodeURIComponent(gaPermalink.getHref());
-                scope.urlShorted = false;
+                scope.urlShortened = false;
                 // assuming document.title never change
               });
 
@@ -47,7 +47,7 @@
                   }
                 }).success(function(response) {
                   scope.permalinkValue = response.shorturl;
-                  scope.urlShorted = true;
+                  scope.urlShortened = true;
                 });
               };
 
