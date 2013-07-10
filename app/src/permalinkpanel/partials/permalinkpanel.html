@@ -38,10 +38,10 @@
     <button class="btn btn-default" ng-disabled="urlShorted" ng-click="shortenUrl()">Shorten URL</button>
   </span>
 </div>
-<br>&nbsp;
-<div class="padding-bottom-2px">Embed map
-</div>
-<textarea rows="8" cols="40" ng-click="selectOnClick($event)">
-<iframe width="800" height="600" frameborder="0" scrolling="no"
-        marginheight="0" marginwidth="0" src="{{permalinkHref}}"></iframe>
-</textarea>
+
+<form>
+  <label>Embed map</label>
+  <textarea rows="8" cols="40" ng-click="selectOnClick($event)">
+<iframe width="800" height="600" frameborder="0" scrolling="no" src="{{permalinkHref}}"></iframe>
+  </textarea>
+</form>
