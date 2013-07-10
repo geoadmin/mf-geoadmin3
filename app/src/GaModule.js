@@ -9,7 +9,7 @@
   goog.require('ga_print');
   goog.require('ga_scaleline');
 
-  var module = angular.module('ga', [
+  angular.module('ga', [
     'ga_attribution',
     'ga_backgroundlayerselector',
     'ga_contextmenu',
@@ -19,12 +19,5 @@
     'ga_print',
     'ga_scaleline'
   ]);
-
-  // Configure the $http service to remove the X-Requested-With
-  // header. This is to be able to work with CORS. See
-  // <http://stackoverflow.com/questions/15411818/setting-up-cors-with-angular-js>
-  module.config(['$httpProvider', function($httpProvider) {
-    delete $httpProvider.defaults.headers.common['X-Requested-With'];
-  }]);
 
 })();
