@@ -132,26 +132,13 @@
         width: 75%;
         border-top-left-radius: 0;
         border-top-right-radius: 0;
-        margin-left: 12.5%;
         z-index: 1200;
         @media screen and (max-width: @screen-phone) {
-            width: 2.5em;
-            margin-left: auto;
+            width: auto;
             float: right;
             border-bottom-right-radius: 0;
-            .pulldown-open, .pulldown-close {
-                font-size: 0;
-                width: 0;
-                visibility: hidden;
-                &::after {
-                    visibility: visible;
-                    content: '≡';
-                    font-weight: normal;
-                    font-size: 16px;
-                }
-            }
-            .pulldown-close::after {
-                content: '×';
+            .toggle-text {
+		.hide-text();
             }
         }
     }
