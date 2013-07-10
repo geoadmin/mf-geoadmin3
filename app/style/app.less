@@ -171,9 +171,14 @@
                 width: 2.7em;
             }
         }
+        .icon-reorder {
+            display: none;
+        }
         @media screen and (max-width: @screen-phone) {
-            width: 5em;
+            width: 6em;
             margin-left: auto;
+            float: left;
+            border-bottom-left-radius: 0;
             &.collapsed {
                 margin-left: .4em;
                 box-shadow: none;
@@ -182,19 +187,11 @@
                 border: none;
                 color: #333;
             }
-            float: left;
-            border-bottom-left-radius: 0;
-            .pulldown-open {
-                font-size: 0;
-                width: 0;
-                visibility: hidden;
-                &::after {
-                    visibility: visible;
-                    content: '≡';
-                    font-weight: normal;
-                    font-size: 26px;
-                    line-height: 26px;
-                }
+            .visible-collapsed * {
+                display: none;
+            }
+            .icon-reorder {
+                display: inline-block;
             }
         }
     }
@@ -241,5 +238,8 @@
     @media screen and (min-width: @screen-tablet) {
         width: 25%;
         margin-left: 1.6em;
+    }
+    @media screen and (min-width: @screen-phone) {
+        margin-left: .4em;
     }
 }
