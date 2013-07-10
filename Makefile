@@ -6,6 +6,10 @@ APP_PROD_TEMPLATE_FILES := $(subst app,app-prod,$(shell find app/src -type f -pa
 BASE_URL_PATH ?= /$(shell id -un)
 SERVICE_URL ?= http://mf-chsdi30t.bgdi.admin.ch
 VERSION := $(shell date '+%s')/
+GIT_BRANCH := $(shell git rev-parse --symbolic-full-name --abbrev-ref HEAD)
+GIT_LAST_BRANCH := $(shell cat .build-artefacts/last-git-branch)
+DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branches
+
 
 .PHONY: help
 help:
@@ -13,15 +17,16 @@ help:
 	@echo
 	@echo "Possible targets:"
 	@echo
-	@echo "- prod      Build app for prod (app-prod)"
-	@echo "- dev       Build app for dev (app)"
-	@echo "- lint      Run the linter"
-	@echo "- test      Run the JavaScript tests"
-	@echo "- apache    Configure Apache (restart required)" 
-	@echo "- all       All of the above"
-	@echo "- clean     Remove generated files"
-	@echo "- cleanall  Remove all the build artefacts"
-	@echo "- help      Display this help"
+	@echo "- prod         Build app for prod (app-prod)"
+	@echo "- dev          Build app for dev (app)"
+	@echo "- lint         Run the linter"
+	@echo "- test         Run the JavaScript tests"
+	@echo "- apache       Configure Apache (restart required)" 
+	@echo "- all          All of the above"
+	@echo "- clean        Remove generated files"
+	@echo "- cleanall     Remove all the build artefacts"
+	@echo "- deploybranch Deploys current branch (note: takes code from github)"
+	@echo "- help         Display this help"
 	@echo
 	@echo "Variables:"
 	@echo
@@ -30,7 +35,7 @@ help:
 	@echo
 
 .PHONY: all
-all: prod dev lint test apache test/karma-conf-prod.js
+all: prod dev lint test apache test/karma-conf-prod.js deploy/deploy-branch.cfg
 
 .PHONY: prod
 prod: app-prod/lib/build.js app-prod/style/app.css app-prod/index.html app-prod/mobile.html app-prod/info.json app-prod/WMTSCapabilities.xml $(APP_PROD_TEMPLATE_FILES) app-prod/img/ app-prod/style/font-awesome-3.2.1/font/ app-prod/locales/
@@ -47,6 +52,14 @@ test: .build-artefacts/app-whitespace.js test/karma-conf-dev.js node_modules
 
 .PHONY: apache
 apache: apache/app.conf
+
+.PHONY: deploybranch
+deploybranch: deploy/deploy-branch.cfg $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/config
+	cd $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH); \
+	git checkout $(GIT_BRANCH); \
+	git pull; \
+	make all; \
+	sudo -u deploy deploy -r deploy/deploy-branch.cfg ab
 
 app-prod/lib/build.js: app/lib/jquery-2.0.2.min.js app/lib/bootstrap-3.0.0.min.js app/lib/angular-1.1.5.min.js app/lib/proj4js-compressed.js app/lib/EPSG21781.js app/lib/ol.js app/lib/angular-translate-0.9.4.min.js app/lib/angular-translate-loader-static-files-0.1.2.min.js .build-artefacts/app.js
 	mkdir -p $(dir $@)
@@ -153,6 +166,16 @@ node_modules:
 	wget -O $@ http://closure-compiler.googlecode.com/files/compiler-latest.zip
 	touch $@
 
+$(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/config:
+	rm -rf $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)
+	git clone https://github.com/geoadmin/mf-geoadmin3 $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)
+
+deploy/deploy-branch.cfg: deploy/deploy-branch.mako.cfg .build-artefacts/last-git-branch .build-artefacts/python-venv/bin/mako-render
+	.build-artefacts/python-venv/bin/mako-render --var "git_branch=$(GIT_BRANCH)" $< > $@
+
+.build-artefacts/last-git-branch::
+	test $(GIT_BRANCH) != $(GIT_LAST_BRANCH) && echo $(GIT_BRANCH) > .build-artefacts/last-git-branch || :
+
 .PHONY: cleanall
 cleanall: clean
 	rm -rf node_modules
@@ -163,9 +186,12 @@ clean:
 	rm -f .build-artefacts/app.js
 	rm -f .build-artefacts/js-files
 	rm -f .build-artefacts/lint.timestamp
+	rm -f .build-artefacts/last-git-branch
 	rm -f app/src/deps.js
 	rm -f app/style/app.css
 	rm -f app/index.html
 	rm -f app/mobile.html
 	rm -rf app-prod
 	rm -f apache/app.conf
+	rm -f deploy/deploy-branch.cfg
+
