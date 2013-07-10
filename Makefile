@@ -33,7 +33,7 @@ help:
 all: prod dev lint test apache test/karma-conf-prod.js
 
 .PHONY: prod
-prod: app-prod/lib/build.js app-prod/style/app.css app-prod/index.html app-prod/mobile.html app-prod/info.json $(APP_PROD_TEMPLATE_FILES) app-prod/img/
+prod: app-prod/lib/build.js app-prod/style/app.css app-prod/index.html app-prod/mobile.html app-prod/info.json app-prod/layers.json $(APP_PROD_TEMPLATE_FILES) app-prod/img/
 
 .PHONY: dev
 dev: app/src/deps.js app/style/app.css app/index.html app/mobile.html
@@ -69,6 +69,10 @@ app-prod/img/: app/img/*
 
 # Temporary: the entire rule should go away eventually
 app-prod/info.json: app/info.json
+	cp $< $@
+
+# Temporary: the entire rule should go away eventually
+app-prod/layers.json: app/layers.json
 	cp $< $@
 
 $(APP_PROD_TEMPLATE_FILES): app-prod/%: app/%
