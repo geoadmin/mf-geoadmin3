@@ -27,3 +27,4 @@ describe('ga_permalinkpanel_directive', function() {
   });
 
  });
+
