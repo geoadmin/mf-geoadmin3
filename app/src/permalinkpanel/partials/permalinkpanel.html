@@ -35,7 +35,7 @@
 <div class="input-group">
   <input type="text" ng-model="permalinkValue" ng-click="selectOnClick($event)">
   <span class="input-group-btn">
-    <button class="btn btn-default" ng-click="shortenUrl()">Shorten URL</button>
+    <button class="btn btn-default" ng-disabled="urlShorted" ng-click="shortenUrl()">Shorten URL</button>
   </span>
 </div>
 <br>&nbsp;
