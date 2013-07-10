@@ -109,6 +109,7 @@
     position: absolute;
     left: 0;
     top: unit(@small-header-height, px);
+    top: 0;
     width: 320px;
     z-index: 1100;
     .hidden-collapsed {
@@ -168,7 +169,7 @@
         font-weight: bold;
         .box-shadow(6px 6px 12px rgba(0, 0, 0, 0.175));
         width: 75%;
-        .transition(width .35s ease);
+        .transition(all .35s ease);
         border-top-left-radius: 0;
         border-top-right-radius: 0;
         margin-left: 12.5%;
@@ -193,6 +194,14 @@
         @media screen and (max-width: @screen-phone) {
             width: 5em;
             margin-left: auto;
+            &.collapsed {
+                margin-left: .4em;
+                box-shadow: none;
+                background: transparent;
+                height: 50px;
+                border: none;
+                color: #333;
+            }
             float: left;
             border-bottom-left-radius: 0;
             .pulldown-open {
@@ -203,7 +212,8 @@
                     visibility: visible;
                     content: '≡';
                     font-weight: normal;
-                    font-size: 16px;
+                    font-size: 26px;
+                    line-height: 26px;
                 }
             }
         }
@@ -213,6 +223,7 @@
     }
     @media screen and (max-width: @screen-phone) {
         width: 100%;
+        height: 0;
     }
 }
 
@@ -245,7 +256,7 @@
     display: inline-block;
     width: 55%;
     margin-top: .4em;
-    margin-left: 0;
+    margin-left: 3em;
     @media screen and (min-width: @screen-tablet) {
         width: 25%;
         margin-left: 1.6em;
