@@ -57,7 +57,7 @@
          Capabilities using ogcproxy</a>
 
       <h2>CatalogService (non ESRI)</h2>
-      <a href="rest/services/blw/Catalog?callback=callback">Catalog for topic 'blw'</a>
+      <a href="rest/services/blw/CatalogServer?callback=callback">Catalog for topic 'blw'</a>
 
       <h2>Search</h2>
           <a href="rest/services/geoadmin/SearchServer?searchText=wand">Search in swisssearch (locations) and map info </a> <br>

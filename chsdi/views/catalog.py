@@ -17,8 +17,8 @@ class CatalogService(object):
         from pyramid.renderers import render_to_response
 
         rows = self.request.db.query(Catalog)\
-            .filter(Catalog.topic.ilike('%%%s%%' % self.mapName)).order_by(Catalog.id).order_by(Catalog.order_key).all()
-
+            .filter(Catalog.topic.ilike('%%%s%%' % self.mapName))\
+            .order_by(Catalog.id).order_by(Catalog.order_key).all()
 
         return {'results': self.tree(rows)}
 
@@ -40,7 +40,6 @@ class CatalogService(object):
             nodes.setdefault(row.id, { 'children': [] })
             nodes[row.id].update(row.to_dict())
             nodes[pid]['children'].append(nodes[row.id])
-            
-    
+ 
         return nodes['root']['children']
 
