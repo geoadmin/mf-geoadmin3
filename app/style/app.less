@@ -122,107 +122,103 @@
 #pulldown {
     position: absolute;
     left: 0;
-    top: unit(@small-header-height, px);
     width: 320px;
     z-index: 1100;
-    .hidden-collapsed {
-        display: initial;
+    top: unit(@header-height, px);
+    @media (max-width: @screen-tablet) {
+        top: unit(@small-header-height, px);
     }
-    .visible-collapsed {
-        display: none;
-    }
-    .collapsed {
-        .hidden-collapsed {
-            display: none;
-        }
-        .visible-collapsed {
-            display: initial;
-        }
-    }
-    .accordion-group {
-        margin: 0;
-        border: none;
-        border-radius: 0;
-        &:last-child {
-            .accordion-toggle.collapsed {
-                border-bottom: none;
-            }
-        }
-    }
-    .accordion-toggle {
-        background-color: #fff;
-        color: #000;
-        font-weight: bold;
-        border-bottom: 1px solid #c7c7c7;
-        &:hover {
-            text-decoration: none;
-        }
-        &.collapsed {
-            background-color: #999;
-            color: #fff;
-            font-weight: normal;
-            border-bottom: 1px solid #afafaf;
-            &.light {
-                background-color: #e9e9e9;
-                color: #000;
-                font-weight: bold;
-                border-bottom: 1px solid #fff;
-            }
-        }
-    }
-    .accordion-inner {
-        background-color: #fff;
-        border-top: none;
-        @media screen and (max-width: @screen-phone) {
-            background-color: rgba(255,255,255,0.9);
-        }
-    }
-
-    .toggle {
-        font-weight: bold;
-        .box-shadow(6px 6px 12px rgba(0, 0, 0, 0.175));
-        width: 75%;
-        .transition(all .35s ease);
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
-        margin-left: 12.5%;
-        z-index: 1200;
-        &.collapsed {
-            @media screen and (max-width: @screen-phone) {
-                width: 2.7em;
-            }
-        }
-        .icon-reorder {
-            display: none;
-        }
-        @media screen and (max-width: @screen-phone) {
-            width: 6em;
-            margin-left: auto;
-            float: left;
-            border-bottom-left-radius: 0;
-            &.collapsed {
-                margin-left: .4em;
-                box-shadow: none;
-                background: transparent;
-                height: 50px;
-                border: none;
-                color: #333;
-            }
-            .visible-collapsed * {
-                display: none;
-            }
-            .icon-reorder {
-                display: inline-block;
-            }
-        }
-    }
-    @media screen and (min-width: @screen-tablet) {
-        top: unit(@header-height, px);
-    }
-    @media screen and (max-width: @screen-phone) {
+    @media (max-width: @screen-phone) {
         width: 100%;
         height: 0;
         top: 0;
+    }
+}
+.hidden-collapsed {
+    display: initial;
+}
+.visible-collapsed {
+    display: none;
+}
+.collapsed {
+    .hidden-collapsed {
+        display: none;
+    }
+    .visible-collapsed {
+        display: initial;
+    }
+}
+.accordion-group {
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    &:last-child {
+        .accordion-toggle.collapsed {
+            border-bottom: none;
+        }
+    }
+}
+.accordion-toggle {
+    background-color: #fff;
+    color: #000;
+    font-weight: bold;
+    border-bottom: 1px solid #c7c7c7;
+    &:hover {
+        text-decoration: none;
+    }
+    &.collapsed {
+        background-color: #999;
+        color: #fff;
+        font-weight: normal;
+        border-bottom: 1px solid #afafaf;
+        &.light {
+            background-color: #e9e9e9;
+            color: #000;
+            font-weight: bold;
+            border-bottom: 1px solid #fff;
+        }
+    }
+}
+.accordion-inner {
+    background-color: #fff;
+    border-top: none;
+    @media (max-width: @screen-phone) {
+        background-color: rgba(255,255,255,0.9);
+    }
+}
+
+.toggle {
+    font-weight: bold;
+    .box-shadow(6px 6px 12px rgba(0, 0, 0, 0.175));
+    width: 75%;
+    .transition(all .35s ease);
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    margin-left: 12.5%;
+    z-index: 1200;
+    .icon-reorder {
+        display: none;
+    }
+    @media (max-width: @screen-phone) {
+        width: 6em;
+        margin-left: auto;
+        float: left;
+        border-bottom-left-radius: 0;
+        &.collapsed {
+            width: 2.7em;
+            margin-left: .4em;
+            box-shadow: none;
+            background: transparent;
+            height: 50px;
+            border: none;
+            color: #333 !important;
+        }
+        .visible-collapsed * {
+            display: none;
+        }
+        .icon-reorder {
+            display: inline-block;
+        }
     }
 }
 
