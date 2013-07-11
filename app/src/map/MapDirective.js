@@ -50,10 +50,14 @@
                 }
                 timeoutPromise = $timeout(function() {
                   var center = view.getCenter();
-                  var x = center[1].toFixed(2);
-                  var y = center[0].toFixed(2);
                   var zoom = view.getZoom();
-                  gaPermalink.updateParams({X: x, Y: y, zoom: zoom});
+                  // when the directive is instantiated the view may not
+                  // be defined yet.
+                  if (center && zoom !== undefined) {
+                    var x = center[1].toFixed(2);
+                    var y = center[0].toFixed(2);
+                    gaPermalink.updateParams({X: x, Y: y, zoom: zoom});
+                  }
                   timeoutPromise = null;
                 }, 1000);
               };
