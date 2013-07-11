@@ -43,12 +43,13 @@
   </head>
 
   <body ng-controller="GaMainController" ng-class="bodyClass">
-
     <div id="header" class="navbar navbar-fixed-top">
-      <a href="?" id="logo">
+      <div href="?" id="logo" class="pull-left">
         <img src="${version}img/logo.ch.jpeg" style="width: 246px; height: 89px"/>
-      </a>
-      <input type="text" name="q" placeholder="under construction..." id="search" class="input-small"/>
+      </div>
+      <div class="pull-left" ng-controller="GaSearchController">
+        <div ga-search ga-search-map="map" ga-search-options="options"></div>
+      </div>
 % if device == 'desktop':
       <form class="navbar-form pull-right hidden-sm">
         <div ga-background-layer-selector
