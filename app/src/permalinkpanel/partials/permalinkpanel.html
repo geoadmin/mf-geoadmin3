@@ -1,38 +1,36 @@
-<div>Share map
-<div class="pull-right padding-bottom-2px">
-    <a class="share-tooltip"
+<div class="share-icons">
+    <a class="share-icon"
        title="Create a QRCode and open this map on your mobile"
        ng-href="{{options.serviceUrl}}/qrcodegenerator?url={{encodedPermalinkHref}}">
-      <img src="img/qrcode.png" style="height: 24px; width: 24px;"/>
+      <img src="img/qrcode.png"/>
     </a>
 
-    <a class="share-tooltip"
+    <a class="share-icon"
        title="Tweet this map"
        ng-href="https://twitter.com/intent/tweet?url={{encodedPermalinkHref}}&text={{encodedDocumentTitle}}">
-      <img src="img/twitter.png" style="height: 24px; width: 24px;"/>
+      <img src="img/twitter.png"/>
     </a>
 
-    <a class="share-tooltip"
+    <a class="share-icon"
        title="Share this map with your friends"
        ng-href="http://www.facebook.com/sharer.php?u={{encodedPermalinkHref}}&t={{encodedDocumentTitle}}">
-      <img src="img/facebook.png" style="height: 24px; width: 24px;"/>
+      <img src="img/facebook.png"/>
     </a>
 
-    <a class="share-tooltip"
+    <a class="share-icon"
        title="Share this map on Google Plus"
        ng-href="https://plus.google.com/share?url={{encodedPermalinkHref}}">
-      <img src="img/google_plus.png" style="height: 24px; width: 24px;"/>
+      <img src="img/google_plus.png"/>
     </a>
 
-    <a class="share-tooltip"
+    <a class="share-icon"
        title="Send a map-email to your friends"
        ng-href="mailto:?subject={{encodedDocumentTitle}}&body={{encodedPermalinkHref}}">
-      <img src="img/envelope.png" style="height: 18px; width: 24px;"/>
+      <img src="img/envelope.png"/>
     </a>
 </div>
-</div>
 
-<div class="input-group">
+<div class="share-permalink input-group">
   <input type="text" ng-model="permalinkValue" ng-click="selectOnClick($event)">
   <span class="input-group-btn">
     <button class="btn btn-default" ng-disabled="urlShortened" ng-click="shortenUrl()">Shorten URL</button>

@@ -16,7 +16,7 @@
               var shortenUrl =
                   scope.options.serviceUrl + '/shorten.json?cb=JSON_CALLBACK';
 
-              $('.share-tooltip').tooltip({
+              $('.share-icon').tooltip({
                 placement: 'bottom'
               });
               // Store in the scope the permalink value which is bound to
