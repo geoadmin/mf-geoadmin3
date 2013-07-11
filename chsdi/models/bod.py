@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from sqlalchemy import Column, Text 
+from sqlalchemy import Column, Text, Integer 
 
 from chsdi.models import bases
 
@@ -169,6 +169,21 @@ def computeHeader(mapName):
         'units': 'esriMeters',
         'capabilities': 'Map'
     }
+
+class Catalog(Base):
+    __tablename__ = 'catalog_adjacency_list_view'
+    __table_args__ = ({'schema': 're3', 'autoload': True})
+
+    id = Column('bgdi_id', Integer, primary_key=True)
+    parent_id = Column(Integer)
+    order_key = Column(Integer)
+    category = Column(Text)
+    #topic = Column(Text)
+
+
+    def to_dict(self):
+        return dict([(k, getattr(self, k)) for k in self.__dict__.keys() if not k.startswith("_")])
+
 
 def get_bod_model(lang):
     if lang == 'fr':
