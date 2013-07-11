@@ -29,18 +29,15 @@
     .box-shadow(6px 6px 12px rgba(0, 0, 0, 0.175));
     .pull-right {
         margin: 2em 1.6em 0 0;
+        & > div {
+            display: inline-block;
+        }
     }
     @media (max-width: @screen-tablet) {
         height: unit(@small-header-height, px);
         .pull-right {
             margin: .4em 0 0;
         }
-    }
-}
-
-@media (max-width: @screen-phone) {
-    .hidden-xs {
-        display: none;
     }
 }
 
@@ -200,7 +197,7 @@
         display: none;
     }
     @media (max-width: @screen-phone) {
-        width: 6em;
+        width: 11em;
         margin-left: auto;
         float: left;
         border-bottom-left-radius: 0;
