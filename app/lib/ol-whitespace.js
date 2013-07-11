@@ -13538,6 +13538,22 @@ ol.View2D.prototype.getView2DState = function() {
 };
 ol.View2D.prototype.getView3D = function() {
 };
+ol.View2D.prototype.getZoom = function() {
+  var zoom;
+  var resolution = this.getResolution();
+  if(goog.isDef(resolution)) {
+    var res, z = 0;
+    do {
+      res = this.constrainResolution(this.maxResolution_, z);
+      if(res == resolution) {
+        zoom = z;
+        break
+      }
+      ++z
+    }while(res > this.minResolution_)
+  }
+  return zoom
+};
 ol.View2D.prototype.fitExtent = function(extent, size) {
   this.setCenter(ol.extent.getCenter(extent));
   var resolution = this.getResolutionForExtent(extent, size);
@@ -13822,38 +13838,26 @@ ol.control.ZOOM_DURATION = 250;
 ol.control.Zoom = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
   var className = goog.isDef(options.className) ? options.className : "ol-zoom";
+  var delta = goog.isDef(options.delta) ? options.delta : 1;
   var inElement = goog.dom.createDom(goog.dom.TagName.A, {"href":"#zoomIn", "class":className + "-in"});
-  goog.events.listen(inElement, [goog.events.EventType.TOUCHEND, goog.events.EventType.CLICK], this.handleIn_, false, this);
+  goog.events.listen(inElement, [goog.events.EventType.TOUCHEND, goog.events.EventType.CLICK], goog.partial(ol.control.Zoom.prototype.zoomByDelta_, delta), false, this);
   var outElement = goog.dom.createDom(goog.dom.TagName.A, {"href":"#zoomOut", "class":className + "-out"});
-  goog.events.listen(outElement, [goog.events.EventType.TOUCHEND, goog.events.EventType.CLICK], this.handleOut_, false, this);
+  goog.events.listen(outElement, [goog.events.EventType.TOUCHEND, goog.events.EventType.CLICK], goog.partial(ol.control.Zoom.prototype.zoomByDelta_, -delta), false, this);
   var cssClasses = className + " " + ol.css.CLASS_UNSELECTABLE;
   var element = goog.dom.createDom(goog.dom.TagName.DIV, cssClasses, inElement, outElement);
-  goog.base(this, {element:element, map:options.map, target:options.target});
-  this.delta_ = goog.isDef(options.delta) ? options.delta : 1
+  goog.base(this, {element:element, map:options.map, target:options.target})
 };
 goog.inherits(ol.control.Zoom, ol.control.Control);
-ol.control.Zoom.prototype.handleIn_ = function(browserEvent) {
-  browserEvent.preventDefault();
-  var map = this.getMap();
-  map.requestRenderFrame();
-  var view = map.getView().getView2D();
-  var currentResolution = view.getResolution();
-  if(goog.isDef(currentResolution)) {
-    map.addPreRenderFunction(ol.animation.zoom({resolution:currentResolution, duration:ol.control.ZOOM_DURATION, easing:ol.easing.easeOut}))
-  }
-  var resolution = view.constrainResolution(currentResolution, this.delta_);
-  view.setResolution(resolution)
-};
-ol.control.Zoom.prototype.handleOut_ = function(browserEvent) {
+ol.control.Zoom.prototype.zoomByDelta_ = function(delta, browserEvent) {
   browserEvent.preventDefault();
   var map = this.getMap();
   var view = map.getView().getView2D();
   var currentResolution = view.getResolution();
   if(goog.isDef(currentResolution)) {
-    map.addPreRenderFunction(ol.animation.zoom({resolution:currentResolution, duration:ol.control.ZOOM_DURATION, easing:ol.easing.easeOut}))
+    map.addPreRenderFunction(ol.animation.zoom({resolution:currentResolution, duration:ol.control.ZOOM_DURATION, easing:ol.easing.easeOut}));
+    var newResolution = view.constrainResolution(currentResolution, delta);
+    view.setResolution(newResolution)
   }
-  var resolution = view.constrainResolution(currentResolution, -this.delta_);
-  view.setResolution(resolution)
 };
 goog.provide("ol.control.defaults");
 goog.require("ol.Collection");
