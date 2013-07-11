@@ -22,22 +22,12 @@
           return {
             restrict: 'A',
             scope: {
-              map: '=gaMapMap',
-              options: '=gaMapOptions'
+              map: '=gaMapMap'
             },
             controller: 'GaMapDirectiveController',
             link: function(scope, element, attrs, controller) {
               var map = scope.map;
               controller.setMap(map);
-
-              // FIXME The map directive needs to know about the view
-              // resolutions. This is to be able to convert zoom level
-              // values to/from resolution values. This won't be needed
-              // anymore when ol.View2D will have setZoom and getZoom
-              // methods.
-
-              var options = scope.options;
-              var resolutions = options.resolutions;
 
               var view = map.getView();
 
