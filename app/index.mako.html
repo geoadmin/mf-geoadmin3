@@ -21,7 +21,7 @@
         </div>
         <input type="text" name="q" placeholder="search" id="search"/>
 % if device == 'desktop':
-        <form class="navbar-form pull-right hidden-xs"
+        <form class="navbar-form pull-right hidden-xs">
           <div ng-controller="GaTranslationController">
             <div ga-translation-selector
                  ga-translation-selector-options="options"></div>
@@ -145,12 +145,17 @@
           </div>
           <div id="impressum" class="collapse">
             <div class="accordion-inner">
-              <form ng-controller="GaBackgroundLayerSelectorController">
-                <div ga-background-layer-selector
-                  ga-background-layer-selector-map="map"
-                  ga-background-layer-selector-options="options"></div>
+              <form>
+                <div ng-controller="GaTranslationController">
+                  <div ga-translation-selector
+                      ga-translation-selector-options="options"></div>
+                </div>
+                <div ng-controller="GaBackgroundLayerSelectorController">
+                  <div ga-background-layer-selector
+                      ga-background-layer-selector-map="map"
+                      ga-background-layer-selector-options="options"></div>
+                </div>
               </form>
-
             <hr>
             <div ga-attribution ga-attribution-map="map"></div>
             <p>
