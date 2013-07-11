@@ -39,14 +39,6 @@
 
         module.controller('MapController', ['$scope', function($scope) {
 
-          // FIXME no need to pass resolutions to the directive when
-          // ol.View2D has setZoom and getZoom
-          var resolutions = new Array(29);
-          var i;
-          for (i = 0; i < 29; ++i) {
-            resolutions[i] = 156543.03392804097 / Math.pow(2, i);
-          }
-
           var map = new ol.Map({
             layers: [
               new ol.layer.TileLayer({
@@ -54,17 +46,12 @@
               })
             ],
             view: new ol.View2D({
-              resolutions: resolutions,
               center: [0, 0],
               zoom: 4
             })
           });
 
           $scope.map = map;
-          $scope.options = {
-            resolutions: resolutions
-          };
-
         }]);
 
       })();

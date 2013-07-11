@@ -22,22 +22,12 @@
           return {
             restrict: 'A',
             scope: {
-              map: '=gaMapMap',
-              options: '=gaMapOptions'
+              map: '=gaMapMap'
             },
             controller: 'GaMapDirectiveController',
             link: function(scope, element, attrs, controller) {
               var map = scope.map;
               controller.setMap(map);
-
-              // FIXME The map directive needs to know about the view
-              // resolutions. This is to be able to convert zoom level
-              // values to/from resolution values. This won't be needed
-              // anymore when ol.View2D will have setZoom and getZoom
-              // methods.
-
-              var options = scope.options;
-              var resolutions = options.resolutions;
 
               var view = map.getView();
 
@@ -47,10 +37,7 @@
                 view.setCenter([+queryParams.Y, +queryParams.X]);
               }
               if (queryParams.zoom !== undefined) {
-                var zoom = +queryParams.zoom;
-                zoom = Math.min(Math.max(zoom, 0), resolutions.length - 1);
-                var resolution = resolutions[zoom];
-                view.setResolution(resolution);
+                view.setZoom(+queryParams.zoom);
               }
 
               // Update permalink based on view states. We use a timeout
@@ -65,8 +52,7 @@
                   var center = view.getCenter();
                   var x = center[1].toFixed(2);
                   var y = center[0].toFixed(2);
-                  var resolution = view.getResolution();
-                  var zoom = resolutions.indexOf(resolution);
+                  var zoom = view.getZoom();
                   gaPermalink.updateParams({X: x, Y: y, zoom: zoom});
                   timeoutPromise = null;
                 }, 1000);
