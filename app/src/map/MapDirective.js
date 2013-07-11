@@ -47,10 +47,7 @@
                 view.setCenter([+queryParams.Y, +queryParams.X]);
               }
               if (queryParams.zoom !== undefined) {
-                var zoom = +queryParams.zoom;
-                zoom = Math.min(Math.max(zoom, 0), resolutions.length - 1);
-                var resolution = resolutions[zoom];
-                view.setResolution(resolution);
+                view.setZoom(+queryParams.zoom);
               }
 
               // Update permalink based on view states. We use a timeout
@@ -65,8 +62,7 @@
                   var center = view.getCenter();
                   var x = center[1].toFixed(2);
                   var y = center[0].toFixed(2);
-                  var resolution = view.getResolution();
-                  var zoom = resolutions.indexOf(resolution);
+                  var zoom = view.getZoom();
                   gaPermalink.updateParams({X: x, Y: y, zoom: zoom});
                   timeoutPromise = null;
                 }, 1000);
