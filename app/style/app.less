@@ -57,7 +57,6 @@
     padding-right: 0;
 }
 #mouseposition {
-    width: 360px;
     @media screen and (max-width: @screen-tablet) {
         display: none;
     }
@@ -72,18 +71,18 @@
 #mouseposition-select, #mouseposition-value {
     display: inline-block;
 }
-#copyrights {
-    width: 150px;
+
+#footer > div {
+    height: 36px;
+    line-height: 36px;
+    margin-right: 1em;
+}
+#footer #scaleline {
+    line-height: 1.5em;
+    height: 1.5em;
+    margin-top: .8em;
 }
 
-#geoadminlink {
-    width: 80px;
-}
-
-#scaleline, #attribution, #mouseposition-value, #copyrights, #geoadminlink {
-    margin-top: 9px;
-    margin-bottom: 9px;
-}
 @media (max-width: @screen-tablet) {
     #footer {
         left: auto;
@@ -94,6 +93,7 @@
         }
         & #scaleline {
             display: block;
+            margin-bottom: 1em;
         }
     }
     .ol-scale-line-inner {
