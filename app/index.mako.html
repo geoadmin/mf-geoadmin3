@@ -21,11 +21,16 @@
           <img class="hidden-sm" src="${version}img/logo.ch.jpeg" width="246" height="89"/>
           <img class="visible-sm" src="${version}img/geoadminmobile-logo.png" width="93" height="36"/>
         </div>
-        <form class="navbar-form pull-right"
-          ng-controller="GaBackgroundLayerSelectorController">
-          <div ga-background-layer-selector
-            ga-background-layer-selector-map="map"
-            ga-background-layer-selector-options="options"></div>
+        <form class="navbar-form pull-right">
+          <div ng-controller="GaTranslationController">
+            <div ga-translation-selector
+                 ga-translation-selector-options="options"></div>
+          </div>
+          <div ng-controller="GaBackgroundLayerSelectorController">
+            <div ga-background-layer-selector
+                 ga-background-layer-selector-map="map"
+                 ga-background-layer-selector-options="options"></div>
+          </div>
         </form>
         <style>
           @media screen and (max-width: 480px) {
@@ -76,7 +81,7 @@
           <div class="accordion-heading">
             <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#share">
               <i class="icon-share"></i>
-              Share
+              <span translate>Share</span>
             </a>
           </div>
           <div id="share" class="collapse">
@@ -90,7 +95,7 @@
           <div class="accordion-heading">
             <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#print">
               <i class="icon-print"></i>
-              Print
+              <span translate>Print</span>
             </a>
           </div>
           <div id="print" class="collapse">
@@ -102,7 +107,7 @@
         <div class="accordion-group">
           <div class="accordion-heading">
             <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#tools">
-              Map tools
+              <span translate>Map tools</span>
             </a>
           </div>
           <div id="tools" class="collapse">
@@ -115,7 +120,7 @@
         <div class="accordion-group">
           <div class="accordion-heading">
             <div class="theme-toggle">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">Choose theme</a>
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#" translate>Choose theme</a>
               <div class="dropdown-menu">
                 <p>under construction ...</p>
               </div>
@@ -123,7 +128,7 @@
             <a class="accordion-toggle light collapsed" data-toggle="collapse" href="#catalog">
               <i class="visible-collapsed icon-caret-right"></i>
               <i class="hidden-collapsed icon-caret-down"></i>
-              Geo Catalog
+              <span translate>Geo Catalog</span>
             </a>
           </div>
           <div id="catalog" class="collapse">
@@ -137,7 +142,7 @@
             <a class="accordion-toggle light collapsed" data-toggle="collapse" href="#selection">
               <i class="visible-collapsed icon-caret-right"></i>
               <i class="hidden-collapsed icon-caret-down"></i>
-              Your selection
+              <span translate>Your selection</span>
             </a>
           </div>
           <div id="selection" class="collapse">
@@ -150,8 +155,8 @@
 
       <div class="text-center">
         <button type="button" data-toggle="collapse" data-target="#pulldown-content" class="toggle btn btn-default">
-          <span class="hidden-collapsed"><i class="icon-caret-up"></i> close</span>
-          <span class="visible-collapsed"><i class="icon-caret-down"></i> open</span>
+          <span class="hidden-collapsed"><i class="icon-caret-up"></i> <span translate>Close menu</span></span>
+          <span class="visible-collapsed"><i class="icon-caret-down"></i> <span translate>Open menu</span></span>
         </button>
       </div>
     </div>
@@ -160,6 +165,8 @@
 % else:
     <script src="lib/jquery-2.0.2.js"></script>
     <script src="lib/angular-1.1.5.js"></script>
+    <script src="lib/angular-translate-0.9.4.js"></script>
+    <script src="lib/angular-translate-loader-static-files-0.1.2.js"></script>
     <script src="lib/bootstrap-3.0.0.js"></script>
     <script src="lib/proj4js-compressed.js"></script>
     <script src="lib/EPSG21781.js"></script>
