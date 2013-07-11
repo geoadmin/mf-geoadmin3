@@ -84,15 +84,18 @@
         margin-top: .8em;
     }
     @media (max-width: @screen-tablet) {
-        left: auto;
-        right: auto;
         background: transparent;
         & > div {
             display: none;
         }
-        #scaleline {
+        #scaleline, #copyrights {
             display: block;
             margin-bottom: 1em;
+        }
+        #copyrights a {
+            background: rgba(255,255,255,.7);
+            border-radius: .2em;
+            padding: .2em .4em;
         }
         .ol-scale-line-inner {
             background: rgba(255,255,255,.7);
