@@ -11,11 +11,8 @@
 @small-header-height: 50;
 @tooltip-bg: #999;
 
-#wrapper {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    .transition(left 0.3s ease-in-out);
+.inline-block {
+    display: inline-block;
 }
 
 #map {
@@ -49,6 +46,17 @@
     background-color: rgba(214, 214, 214, 0.9);
     padding-left: 12px;
     padding-right: 0;
+    .block-item, .nav > li > a {
+        padding: 9px;
+        line-height: initial;
+    }
+    select {
+        height: auto;
+        min-height: inherit;
+        width: auto;
+        font-size: inherit;
+        padding: 5px;
+    }
 }
 #mouseposition {
     width: 360px;
@@ -56,28 +64,7 @@
         display: none;
     }
 }
-#mouseposition-select {
-    height: auto;
-    min-height: inherit;
-    width: auto;
-    font-size: inherit;
-    padding: 5px;
-}
-#mouseposition-select, #mouseposition-value {
-    display: inline-block;
-}
-#copyrights {
-    width: 150px;
-}
 
-#geoadminlink {
-    width: 80px;
-}
-
-#scaleline, #attribution, #mouseposition-value, #copyrights, #geoadminlink {
-    margin-top: 9px;
-    margin-bottom: 9px;
-}
 #header, #footer {
     position: absolute;
 }
@@ -147,40 +134,13 @@
         width: 75%;
         border-top-left-radius: 0;
         border-top-right-radius: 0;
-        margin-left: 12.5%;
         z-index: 1200;
-        &.collapsed {
-            .pulldown-close {
-                display: none;
-            }
-            .pulldown-open {
-                display: inherit;
-            }
-        }
-        .pulldown-close {
-            display: inherit;
-        }
-        .pulldown-open {
-            display: none;
-        }
         @media screen and (max-width: @screen-phone) {
-            width: 2.5em;
-            margin-left: auto;
+            width: auto;
             float: right;
             border-bottom-right-radius: 0;
-            .pulldown-open, .pulldown-close {
-                font-size: 0;
-                width: 0;
-                visibility: hidden;
-                &::after {
-                    visibility: visible;
-                    content: '≡';
-                    font-weight: normal;
-                    font-size: 16px;
-                }
-            }
-            .pulldown-close::after {
-                content: '×';
+            .toggle-text {
+		.hide-text();
             }
         }
     }
