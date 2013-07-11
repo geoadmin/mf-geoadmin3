@@ -4,8 +4,8 @@
   var module = angular.module('ga_contextmenu_directive', []);
 
   module.directive('gaContextMenu',
-      ['$http', '$q', '$window', 'gaPermalink',
-        function($http, $q, $window, gaPermalink) {
+      ['$http', '$q', '$timeout', 'gaPermalink',
+        function($http, $q, $timeout, gaPermalink) {
           var heightUrl =
               'http://api.geo.admin.ch/height?cb=JSON_CALLBACK';
           var lv03tolv95Url =
@@ -81,16 +81,16 @@
 
               // On touch devices, display the context menu after a
               // long press (750ms)
-              var startPixel, holdTimeout;
+              var startPixel, holdPromise;
               map.on('touchstart', function(event) {
-                $window.clearTimeout(holdTimeout);
+                $timeout.cancel(holdPromise);
                 startPixel = event.getPixel();
-                holdTimeout = $window.setTimeout(function() {
+                holdPromise = $timeout(function() {
                   handler(event);
-                }, 750);
+                }, 750, false);
               });
               map.on('touchend', function(event) {
-                $window.clearTimeout(holdTimeout);
+                $timeout.cancel(holdPromise);
                 startPixel = undefined;
               });
               map.on('touchmove', function(event) {
@@ -99,7 +99,7 @@
                   var deltaX = Math.abs(startPixel[0] - pixel[0]);
                   var deltaY = Math.abs(startPixel[1] - pixel[1]);
                   if (deltaX + deltaY > 2) {
-                    $window.clearTimeout(holdTimeout);
+                    $timeout.cancel(holdPromise);
                     startPixel = undefined;
                   }
                 }
