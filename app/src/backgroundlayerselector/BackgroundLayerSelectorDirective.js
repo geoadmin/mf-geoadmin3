@@ -21,7 +21,7 @@
            },
            template:
                '<select ng-model="currentLayer" ' +
-                   'ng-options="l.value as l.label for l in ' +
+                   'ng-options="l.value as l.label | translate for l in ' +
                        'options.wmtsLayers">' +
                '</select>',
            link: function(scope, element, attrs) {

@@ -33,7 +33,7 @@ help:
 all: prod dev lint test apache test/karma-conf-prod.js
 
 .PHONY: prod
-prod: app-prod/lib/build.js app-prod/style/app.css app-prod/index.html app-prod/mobile.html app-prod/info.json app-prod/WMTSCapabilities.xml $(APP_PROD_TEMPLATE_FILES) app-prod/img/ app-prod/style/font-awesome-3.2.1/font/
+prod: app-prod/lib/build.js app-prod/style/app.css app-prod/index.html app-prod/mobile.html app-prod/info.json app-prod/WMTSCapabilities.xml $(APP_PROD_TEMPLATE_FILES) app-prod/img/ app-prod/style/font-awesome-3.2.1/font/ app-prod/locales/
 
 .PHONY: dev
 dev: app/src/deps.js app/style/app.css app/index.html app/mobile.html
@@ -48,7 +48,7 @@ test: .build-artefacts/app-whitespace.js test/karma-conf-dev.js node_modules
 .PHONY: apache
 apache: apache/app.conf
 
-app-prod/lib/build.js: app/lib/jquery-2.0.2.min.js app/lib/bootstrap-3.0.0.min.js app/lib/angular-1.1.5.min.js app/lib/proj4js-compressed.js app/lib/EPSG21781.js app/lib/ol.js .build-artefacts/app.js
+app-prod/lib/build.js: app/lib/jquery-2.0.2.min.js app/lib/bootstrap-3.0.0.min.js app/lib/angular-1.1.5.min.js app/lib/proj4js-compressed.js app/lib/EPSG21781.js app/lib/ol.js app/lib/angular-translate-0.9.4.min.js app/lib/angular-translate-loader-static-files-0.1.2.min.js .build-artefacts/app.js
 	mkdir -p $(dir $@)
 	cat $^ > $@
 
@@ -68,6 +68,10 @@ app-prod/img/: app/img/*
 	cp $^ $@
 
 app-prod/style/font-awesome-3.2.1/font/: app/style/font-awesome-3.2.1/font/*
+	mkdir -p $@
+	cp $^ $@
+
+app-prod/locales/: app/locales/*.json
 	mkdir -p $@
 	cp $^ $@
 
