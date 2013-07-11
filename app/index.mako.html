@@ -57,7 +57,11 @@
       </div>
 
     <div id="pulldown">
+% if device=="desktop":
       <div id="pulldown-content" class="content in">
+% else:
+      <div id="pulldown-content" class="content collapse" data-toggle="collapse">
+% endif
         <div class="accordion-group">
           <div class="accordion-heading">
             <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#share">
@@ -160,7 +164,11 @@
 % endif
       </div> <!-- #pulldown-content -->
 
+% if device=="desktop":
       <button type="button" data-toggle="collapse" data-target="#pulldown-content" class="toggle btn btn-default">
+% else:
+      <button type="button" data-toggle="collapse" data-target="#pulldown-content" class="toggle btn btn-default collapsed">
+% endif
         <span class="hidden-collapsed">
           <i class="icon-caret-up"></i> <span translate>Close menu</span>
         </span>
