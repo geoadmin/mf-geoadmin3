@@ -69,58 +69,56 @@
 }
 
 
+// ***** FOOTER
 #footer {
+    height: 36px;
     font-size: 11px;
     background-color: rgba(214, 214, 214, 0.9);
     padding-left: 12px;
     padding-right: 0;
-}
-#mouseposition {
-    @media screen and (max-width: @screen-tablet) {
-        display: none;
+    & > div {
+        height: 36px;
+        line-height: 36px;
+        margin-right: 1em;
     }
-}
-#mouseposition-select {
-    height: auto;
-    min-height: inherit;
-    width: auto;
-    font-size: inherit;
-    padding: 5px;
-}
-#mouseposition-select, #mouseposition-value {
-    display: inline-block;
-}
-
-#footer > div {
-    height: 36px;
-    line-height: 36px;
-    margin-right: 1em;
-}
-#footer #scaleline {
-    line-height: 1.5em;
-    height: 1.5em;
-    margin-top: .8em;
-}
-
-@media (max-width: @screen-tablet) {
-    #footer {
+    #scaleline {
+        line-height: 1.5em;
+        height: 1.5em;
+        margin-top: .8em;
+    }
+    @media (max-width: @screen-tablet) {
         left: auto;
         right: auto;
         background: transparent;
         & > div {
             display: none;
         }
-        & #scaleline {
+        #scaleline {
             display: block;
             margin-bottom: 1em;
         }
+        .ol-scale-line-inner {
+            background: rgba(255,255,255,.7);
+            outline: 2px solid rgba(255,255,255,.7);
+        }
     }
-    .ol-scale-line-inner {
-        background: rgba(255,255,255,.7);
-        outline: 2px solid rgba(255,255,255,.7);
+}
+#mouseposition {
+    select {
+        height: auto;
+        min-height: inherit;
+        width: auto;
+        font-size: inherit;
+        padding: 5px;
+    }
+    select, .ga-mouse-position {
+        display: inline-block;
     }
 }
 
+
+
+// ****** PULLDOWN
 #pulldown {
     position: absolute;
     left: 0;
