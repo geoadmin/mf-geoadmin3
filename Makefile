@@ -26,6 +26,7 @@ help:
 	@echo "- clean        Remove generated files"
 	@echo "- cleanall     Remove all the build artefacts"
 	@echo "- deploybranch Deploys current branch (note: takes code from github)"
+	@echo "- updateol     Update ol.js, ol-simple.js and ol-whitespace.js"
 	@echo "- help         Display this help"
 	@echo
 	@echo "Variables:"
@@ -60,6 +61,12 @@ deploybranch: deploy/deploy-branch.cfg $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/con
 	git pull; \
 	make all; \
 	sudo -u deploy deploy -r deploy/deploy-branch.cfg ab
+
+.PHONY: updateol
+updateol: OL_JS = ol.js ol-simple.js ol-whitespace.js
+updateol: .build-artefacts/ol3
+	cd .build-artefacts/ol3; git fetch origin; git merge --ff origin/master; git show; ../python-venv/bin/python build.py $(addprefix build/,$(OL_JS))
+	cp $(addprefix .build-artefacts/ol3/build/,$(OL_JS)) app/lib/
 
 app-prod/lib/build.js: app/lib/jquery-2.0.2.min.js app/lib/bootstrap-3.0.0.min.js app/lib/angular-1.1.5.min.js app/lib/proj4js-compressed.js app/lib/EPSG21781.js app/lib/ol.js app/lib/angular-translate-0.9.4.min.js app/lib/angular-translate-loader-static-files-0.1.2.min.js .build-artefacts/app.js
 	mkdir -p $(dir $@)
@@ -175,6 +182,9 @@ deploy/deploy-branch.cfg: deploy/deploy-branch.mako.cfg .build-artefacts/last-gi
 
 .build-artefacts/last-git-branch::
 	test $(GIT_BRANCH) != $(GIT_LAST_BRANCH) && echo $(GIT_BRANCH) > .build-artefacts/last-git-branch || :
+
+.build-artefacts/ol3:
+	git clone --depth 1 git@github.com:openlayers/ol3.git $@
 
 .PHONY: cleanall
 cleanall: clean
