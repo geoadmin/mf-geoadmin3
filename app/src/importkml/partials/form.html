@@ -1,26 +1,27 @@
-<form name="importkml"> 
-
+<form name="importkml" href="#"> <!-- method="POST"
+enctype="multipart/form-data--> 
     <!-- Upload from an URL -->
-    <input type="url" placeholder="Paste an URL"
-    ng-model="fileUrl" ng-change=""/>
-    <button>Choose a local file</button>
+    <input type="url" placeholder="Paste an URL" ng-model="fileUrl"  ng-change="handleFileUrl()"/>
     
-    <!-- Upload from a basic upload -->
+    <!-- Upload from a basic upload (hidden by default)--> 
     <input type="file" />
-    <!--onchange="angular.element(this).scope().setFile(this)" /-->
-    <!--ng-change="onChangeInputFile(this)"-->
+    
+    <!-- Button use to open the file chooser of the input file -->
+    <button>Choose a local file</button>
 
-    <!-- Upload from a file or an URL or a HTML link dropped -->
-    <!--div class="droppable">DROP ME HERE !!!!</div>
+    <!-- 
+      TODO: Display informations about the uploaded file and the upload process 
     -->
-    <!-- Display informations about the uploaded file and the upload process -->
     <div class="upload-result">
-        {{file.name}}
+        {{userMessage}}
     </div>
 
-    <!-- Display the content of the file if upload succeed -->
-    <textarea class="file-uploaded" > 
+    <!--
+      Use for debug purpose 
+      Display the content of the file if upload succeed 
+    -->
+    <!--textarea class="file-uploaded" > 
     {{fileContent}}
-    </textarea
+    </textarea-->
 
 </form>
