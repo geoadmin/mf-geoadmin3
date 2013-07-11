@@ -16,10 +16,14 @@
 
   <body ng-controller="GaMapController">
       <div id="header" class="navbar navbar-fixed-top">
-        <div id="logo">
+        <div id="logo" class="pull-left">
           <img src="${version}img/logo.ch.jpeg" style="width: 246px; height: 89px"/>
         </div>
-        <input type="text" name="q" placeholder="under construction..." id="search" class="input-small"/>
+        <div class="pull-left" ng-controller="GaSearchController">
+          <div ga-search
+            ga-search-map="map"
+            ga-search-options="options"></div>
+        </div>
 % if device == 'desktop':
         <form class="navbar-form pull-right hidden-sm">
           <div ga-background-layer-selector
@@ -269,6 +273,7 @@
     <script src="lib/angular-translate-0.9.4.js"></script>
     <script src="lib/angular-translate-loader-static-files-0.1.2.js"></script>
     <script src="lib/bootstrap-3.0.0.js"></script>
+    <script src="lib/typeahead-0.9.3.js"></script>
     <script src="lib/proj4js-compressed.js"></script>
     <script src="lib/EPSG21781.js"></script>
     <script src="lib/EPSG2056.js"></script>

@@ -1,0 +1,61 @@
+@dropdownBackground: #FFFFFF;
+@dropdownBorder: #000000;
+@dropdownLinkColorHover: #FFFFFF;
+@dropdownLinkBackgroundHover: #FFFFFF;
+
+#search, .tt-dropdown-menu {
+    margin-top: 2em;
+    width: 250%;
+    margin-left: 1.6em;
+    @media screen and (max-width: @screen-tablet) {
+        width: 308px;
+        margin-left: .4em;
+    }
+    @media screen and (max-width: @screen-phone) {
+        width: 85%;
+        margin-left: 3.4em;
+    }
+}
+
+.tt-hint {
+    display: none !important;
+}
+
+.tt-dropdown-menu {
+  min-width: 160px;
+  margin-top: 2px;
+  padding: 5px 0;
+  background-color: @dropdownBackground;
+  border: 1px solid #ccc;
+  border: 1px solid @dropdownBorder;
+  *border-right-width: 2px;
+  *border-bottom-width: 2px;
+  .border-radius(6px);
+  .box-shadow(0 5px 10px rgba(0,0,0,.2));
+  -webkit-background-clip: padding-box;
+     -moz-background-clip: padding;
+          background-clip: padding-box;
+}
+
+.tt-suggestion {
+  display: block;
+  padding: 3px 20px;
+  font-size: 13px;
+}
+
+.tt-suggestion a {
+  color: #000000;
+}
+
+.tt-suggestion.tt-is-under-cursor {
+  color: @dropdownLinkColorHover;
+  #gradient > .vertical(@dropdownLinkBackgroundHover, darken(@dropdownLinkBackgroundHover, 5%));
+}
+
+.tt-suggestion.tt-is-under-cursor a {
+  color: @dropdownBackground;
+}
+
+.tt-suggestion p {
+  margin: 0;
+}

@@ -10,6 +10,7 @@
 @import "../components/feedback/style/feedback.less";
 @import "../components/topic/style/topic.less";
 @import "../components/importkml/style/importkml.less";
+@import "../components/search/style/search.less";
 
 @header-height: 89;
 @footer-height: 36;
@@ -28,7 +29,7 @@
 
 // ***** HEADER
 #header {
-    overflow: hidden; // ios bug fix
+    overflow: visible; // ios bug fix (need to show the dropdown)
     height: unit(@header-height, px);
     padding: 0 .4em 0 0;
     background-color: rgba(255, 255, 255, 0.9);
@@ -59,21 +60,6 @@
     }
 }
 
-#search {
-    display: inline-block;
-    margin-top: .2em;
-    width: 25%;
-    margin-left: 1.6em;
-    @media screen and (max-width: @screen-tablet) {
-        margin-top: .8em;
-        width: 308px;
-        margin-left: .4em;
-    }
-    @media screen and (max-width: @screen-phone) {
-        width: 85%;
-        margin-left: 3.4em;
-    }
-}
 #toptools {
     position: absolute;
     top: 0.4em;
@@ -91,7 +77,6 @@
         color: #333;
     }
 }
-
 
 // ***** FOOTER
 #footer {

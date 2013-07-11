@@ -10,6 +10,7 @@
   goog.require('ga_mouseposition');
   goog.require('ga_share');
   goog.require('ga_scaleline');
+  goog.require('ga_search');
   goog.require('ga_topic');
   goog.require('ga_translation');
   goog.require('ga_feedback');
@@ -38,6 +39,7 @@
     'ga_mouseposition',
     'ga_share',
     'ga_scaleline',
+    'ga_search',
     'ga_topic',
     'ga_translation',
     'ga_feedback',
