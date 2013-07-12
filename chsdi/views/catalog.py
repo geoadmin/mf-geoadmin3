@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 from pyramid.view import view_config
 
 from chsdi.models.bod import Catalog
@@ -17,15 +18,14 @@ class CatalogService(object):
         from pyramid.renderers import render_to_response
 
         rows = self.request.db.query(Catalog)\
-            .filter(Catalog.topic.ilike('%%%s%%' % self.mapName))\
-            .order_by(Catalog.id).order_by(Catalog.order_key).all()
+            .filter(Catalog.topic.ilike('%%%s%%' % self.mapName)).all()
 
         return {'results': self.tree(rows)}
 
-    def tree(self, rows=None):
-        nodes = None
+    def tree(self, rows=[]):
+        nodes = {}
 
-        if rows is None:
+        if len(rows) < 1:
             return nodes
     
         for row in rows:
@@ -36,10 +36,13 @@ class CatalogService(object):
                 nodes = { 'root' : root }
             else:
                 nodes.setdefault(pid, { 'children': [] })
-            nodes.setdefault(pid, { 'children': [] })
-            nodes.setdefault(row.id, { 'children': [] })
+            if row.bod_layer_id is not None:
+                nodes.setdefault(row.id, { })
+            else:
+                nodes.setdefault(row.id, { 'children': [] })
             nodes[row.id].update(row.to_dict())
             nodes[pid]['children'].append(nodes[row.id])
- 
-        return nodes['root']['children']
+            
+    
+        return nodes['root']['children'][0]
 

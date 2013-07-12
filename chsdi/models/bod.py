@@ -171,7 +171,7 @@ def computeHeader(mapName):
     }
 
 class Catalog(Base):
-    __tablename__ = 'catalog_adjacency_list_view'
+    __tablename__ = 'view_catalog'
     __table_args__ = ({'schema': 're3', 'autoload': True})
 
     id = Column('bgdi_id', Integer, primary_key=True)
@@ -182,6 +182,7 @@ class Catalog(Base):
 
 
     def to_dict(self):
+        self.label = self.bod_layer_id or self.path
         return dict([(k, getattr(self, k)) for k in self.__dict__.keys() if not k.startswith("_")])
 
 
