@@ -171,7 +171,7 @@ def computeHeader(mapName):
     }
 
 class Catalog(Base):
-    __tablename__ = 'catalog_adjacency_list_view'
+    __tablename__ = 'view_catalog'
     __table_args__ = ({'schema': 're3', 'autoload': True})
 
     id = Column('bgdi_id', Integer, primary_key=True)
