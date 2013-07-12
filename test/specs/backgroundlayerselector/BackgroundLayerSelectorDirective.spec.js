@@ -4,51 +4,58 @@ describe('ga_backgroundlayerselector_directive', function() {
 
   beforeEach(function() {
 
-    var deferred;
+    var deferreds = new Array(3);
 
     module(function($provide) {
-      $provide.value('gaWmtsLoader', {
-        load: function(url) {
-          return deferred.promise;
+      $provide.value('gaLayers', {
+        getOlLayerById: function(id) {
+          var idx = id == 'foo' ? 0 : 1;
+          return deferreds[idx].promise;
+        },
+        getBackgroundLayers: function() {
+          return deferreds[2].promise;
         }
       });
     });
 
     inject(function($q) {
-      deferred = $q.defer();
+      var i;
+      for (i = 0; i < deferreds.length; ++i) {
+        deferreds[i]= $q.defer();
+      }
     });
 
     map = new ol.Map({});
 
+    layer1 = new ol.layer.TileLayer({
+      source: new ol.source.OSM()
+    });
+    layer2 = new ol.layer.TileLayer({
+      source: new ol.source.OSM()
+    });
+
     element = angular.element(
       '<div>' +
           '<div ga-background-layer-selector ' +
-              'ga-background-layer-selector-map="map" ' +
-              'ga-background-layer-selector-options="options">' +
+              'ga-background-layer-selector-map="map">' +
           '</div>' +
       '</div>');
 
     inject(function($rootScope, $compile) {
       $rootScope.map = map;
-      $rootScope.options = {
-        wmtsUrl: 'wmts.xml',
-        wmtsLayers: [
-          {label: 'Foo', value: 'foo'},
-          {label: 'Bar', value: 'bar'}
-        ]
-      };
       $compile(element)($rootScope);
+      $rootScope.$digest();
     });
 
     inject(function($rootScope) {
       $rootScope.$apply(function() {
-        layer1 = new ol.layer.TileLayer({
-          source: new ol.source.OSM()
-        });
-        layer2 = new ol.layer.TileLayer({
-          source: new ol.source.OSM()
-        });
-        deferred.resolve([layer1, layer2]);
+        deferreds[0].resolve(layer1);
+        deferreds[1].resolve(layer2);
+        deferreds[2].resolve([{
+          id: 'foo', label: 'Foo'
+        }, {
+          id: 'bar', label: 'Bar'
+        }]);
       });
     });
 
