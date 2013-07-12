@@ -1,5 +1,5 @@
 /node_modules
-/app/components/deps.js
+/app/deps.js
 /app/style/app.css
 /app/index.html
 /app/mobile.html

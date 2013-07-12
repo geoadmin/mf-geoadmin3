@@ -1,5 +1,5 @@
 
-APP_JS_FILES := $(filter-out app/components/deps.js, $(shell find app/components -type f -name '*.js'))
+APP_JS_FILES := $(filter-out app/deps.js, $(shell find app/components -type f -name '*.js'))
 APP_JS_FILES_FOR_COMPILER = $(shell sed -e :a -e 'N;s/\n/ --js /;ba' .build-artefacts/js-files | sed 's/^.*base\.js //')
 APP_LESS_FILES := $(shell find app/components -type f -name '*.less')
 APP_PROD_TEMPLATE_FILES := $(subst app,app-prod,$(shell find app/components -type f -path '*/partials/*' -name '*.html'))
@@ -42,7 +42,7 @@ all: prod dev lint test apache test/karma-conf-prod.js deploy/deploy-branch.cfg
 prod: app-prod/lib/build.js app-prod/style/app.css app-prod/index.html app-prod/mobile.html app-prod/info.json app-prod/layers.json $(APP_PROD_TEMPLATE_FILES) app-prod/img/ app-prod/style/font-awesome-3.2.1/font/ app-prod/locales/
 
 .PHONY: dev
-dev: app/components/deps.js app/style/app.css app/index.html app/mobile.html
+dev: app/deps.js app/style/app.css app/index.html app/mobile.html
 
 .PHONY: lint
 lint: .build-artefacts/lint.timestamp
@@ -107,7 +107,7 @@ $(APP_PROD_TEMPLATE_FILES): app-prod/%: app/%
 	mkdir -p $(dir $@)
 	cp $< $@
 
-app/components/deps.js: $(APP_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
+app/deps.js: $(APP_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
 	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root_with_prefix="app/components components" --root_with_prefix="app/js js" --output_file=$@
 
 app/style/app.css: app/style/app.less $(APP_LESS_FILES) node_modules
@@ -197,7 +197,7 @@ clean:
 	rm -f .build-artefacts/js-files
 	rm -f .build-artefacts/lint.timestamp
 	rm -f .build-artefacts/last-git-branch
-	rm -f app/components/deps.js
+	rm -f app/deps.js
 	rm -f app/style/app.css
 	rm -f app/index.html
 	rm -f app/mobile.html
