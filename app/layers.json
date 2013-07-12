@@ -1,0 +1,170 @@
+{
+    "layers": {
+        "ch.swisstopo.pixelkarte-farbe": {
+            "opacity": 1,
+            "queryable": false,
+            "label": "Color Map",
+            "minScale": null,
+            "maxScale": null,
+            "matrixSet": 26,
+            "background": true,
+            "type": "wmts",
+            "format": "image/jpeg",
+            "timestamps": [
+                "20130213",
+                "20120809",
+                "20111206",
+                "20111027",
+                "20110401"
+            ],
+            "subLayerId": null,
+            "parentLayerId": null
+        },
+        "ch.swisstopo.pixelkarte-grau": {
+            "opacity": 1,
+            "queryable": false,
+            "label": "Grey Map",
+            "minScale": null,
+            "maxScale": null,
+            "matrixSet": 26,
+            "background": true,
+            "type": "wmts",
+            "format": "image/jpeg",
+            "timestamps": [
+                "20130213",
+                "20120809",
+                "20111206",
+                "20111027",
+                "20110401"
+            ],
+            "subLayerId": null,
+            "parentLayerId": null
+        },
+        "ch.swisstopo.swissalti3d-reliefschattierung": {
+            "opacity": 1,
+            "queryable": false,
+            "minScale": null,
+            "maxScale": null,
+            "matrixSet": 26,
+            "background": false,
+            "type": "wmts",
+            "format": "image/png",
+            "timestamps": [
+                "20130101"
+            ],
+            "subLayerId": null,
+            "parentLayerId": null
+        },
+        "ch.swisstopo.swissbuildings3d": {
+            "opacity": 1,
+            "queryable": false,
+            "minScale": null,
+            "maxScale": null,
+            "matrixSet": 26,
+            "background": false,
+            "type": "wmts",
+            "format": "image/png",
+            "timestamps": [
+                "19980101"
+            ],
+            "subLayerId": null,
+            "parentLayerId": null
+        },
+        "ch.swisstopo.swissimage": {
+            "opacity": 1,
+            "queryable": false,
+            "label": "Aerial Imagery",
+            "minScale": null,
+            "maxScale": null,
+            "matrixSet": 27,
+            "background": true,
+            "type": "wmts",
+            "format": "image/jpeg",
+            "timestamps": [
+                "20130422",
+                "20120809",
+                "20120225",
+                "20110914",
+                "20110228"
+            ],
+            "subLayerId": null,
+            "parentLayerId": null
+        },
+        "ch.swisstopo.swisstlm3d-karte": {
+            "opacity": 1,
+            "queryable": false,
+            "label": "lm3d",
+            "minScale": null,
+            "maxScale": null,
+            "matrixSet": 26,
+            "background": false,
+            "type": "wmts",
+            "format": "image/png",
+            "timestamps": [
+                "20120401"
+            ],
+            "subLayerId": null,
+            "parentLayerId": null
+        },
+        "ch.swisstopo.vec200-hydrography": {
+            "opacity": 1,
+            "queryable": true,
+            "minScale": null,
+            "maxScale": null,
+            "matrixSet": 26,
+            "background": false,
+            "type": "wmts",
+            "format": "image/png",
+            "timestamps": [
+                "20130101"
+            ],
+            "subLayerId": null,
+            "parentLayerId": null
+        },
+        "ch.bfs.gebaeude_wohnungs_register": {
+            "opacity": 1,
+            "queryable": true,
+            "minScale": null,
+            "maxScale": null,
+            "matrixSet": null,
+            "background": false,
+            "type": "aggregate",
+            "format": null,
+            "timestamps": null,
+            "subLayerId": [
+                "ch.bfs.gebaeude_wohnungs_register_wmts",
+                "ch.bfs.gebaeude_wohnungs_register_wms"
+            ],
+            "parentLayerId": null
+        },
+        "ch.bfs.gebaeude_wohnungs_register_wmts": {
+            "opacity": 1,
+            "queryable": false,
+            "minScale": null,
+            "maxScale": 25001,
+            "matrixSet": 21,
+            "background": false,
+            "type": "wmts",
+            "format": "image/png",
+            "timestamps": [
+                "20130212"
+            ],
+            "subLayerId": null,
+            "parentLayerId": "ch.bfs.gebaeude_wohnungs_register"
+        },
+        "ch.bfs.gebaeude_wohnungs_register_wms": {
+            "opacity": 1,
+            "queryable": false,
+            "minScale": 25001,
+            "maxScale": 1,
+            "matrixSet": null,
+            "background": false,
+            "type": "wms",
+            "format": "image/png",
+            "timestamps": null,
+            "subLayerId": null,
+            "id": 100008,
+            "parentLayerId": "ch.bfs.gebaeude_wohnungs_register"
+        }
+    }
+}
