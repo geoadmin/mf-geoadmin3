@@ -1,8 +1,8 @@
 
-APP_JS_FILES := $(filter-out src/deps.js, $(shell find src/components src/js -type f -name '*.js'))
-APP_JS_FILES_FOR_COMPILER = $(shell sed -e :a -e 'N;s/\n/ --js /;ba' .build-artefacts/js-files | sed 's/^.*base\.js //')
-APP_LESS_FILES := $(shell find src/components -type f -name '*.less')
-APP_PROD_TEMPLATE_FILES := $(subst src,prod,$(shell find src/components -type f -path '*/partials/*' -name '*.html'))
+SRC_JS_FILES := $(filter-out src/deps.js, $(shell find src/components src/js -type f -name '*.js'))
+SRC_JS_FILES_FOR_COMPILER = $(shell sed -e :a -e 'N;s/\n/ --js /;ba' .build-artefacts/js-files | sed 's/^.*base\.js //')
+SRC_COMPONENTS_LESS_FILES := $(shell find src/components -type f -name '*.less')
+PROD_TEMPLATE_FILES := $(subst src,prod,$(shell find src/components -type f -path '*/partials/*' -name '*.html'))
 BASE_URL_PATH ?= /$(shell id -un)
 SERVICE_URL ?= http://mf-chsdi30t.bgdi.admin.ch
 VERSION := $(shell date '+%s')/
@@ -39,7 +39,7 @@ help:
 all: prod dev lint test apache test/karma-conf-prod.js deploy/deploy-branch.cfg
 
 .PHONY: prod
-prod: prod/lib/build.js prod/style/app.css prod/index.html prod/mobile.html prod/info.json prod/layers.json $(APP_PROD_TEMPLATE_FILES) prod/img/ prod/style/font-awesome-3.2.1/font/ prod/locales/
+prod: prod/lib/build.js prod/style/app.css prod/index.html prod/mobile.html prod/info.json prod/layers.json $(PROD_TEMPLATE_FILES) prod/img/ prod/style/font-awesome-3.2.1/font/ prod/locales/
 
 .PHONY: dev
 dev: src/deps.js src/style/app.css src/index.html src/mobile.html
@@ -103,14 +103,14 @@ prod/info.json: src/info.json
 prod/layers.json: src/layers.json
 	cp $< $@
 
-$(APP_PROD_TEMPLATE_FILES): prod/%: src/%
+$(PROD_TEMPLATE_FILES): prod/%: src/%
 	mkdir -p $(dir $@)
 	cp $< $@
 
-src/deps.js: $(APP_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
+src/deps.js: $(SRC_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
 	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root_with_prefix="src/components components" --root_with_prefix="src/js js" --output_file=$@
 
-src/style/app.css: src/style/app.less $(APP_LESS_FILES) node_modules
+src/style/app.css: src/style/app.less $(SRC_COMPONENTS_LESS_FILES) node_modules
 	node_modules/.bin/lessc -ru $< $@
 
 src/index.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render
@@ -133,18 +133,18 @@ node_modules:
 
 .build-artefacts/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar
 	mkdir -p $(dir $@)
-	java -jar .build-artefacts/closure-compiler/compiler.jar $(APP_JS_FILES_FOR_COMPILER) --compilation_level SIMPLE_OPTIMIZATIONS --js_output_file $@
+	java -jar .build-artefacts/closure-compiler/compiler.jar $(SRC_JS_FILES_FOR_COMPILER) --compilation_level SIMPLE_OPTIMIZATIONS --js_output_file $@
 
 .build-artefacts/app-whitespace.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar
-	java -jar .build-artefacts/closure-compiler/compiler.jar  $(APP_JS_FILES_FOR_COMPILER) --compilation_level WHITESPACE_ONLY --formatting PRETTY_PRINT --js_output_file $@
+	java -jar .build-artefacts/closure-compiler/compiler.jar  $(SRC_JS_FILES_FOR_COMPILER) --compilation_level WHITESPACE_ONLY --formatting PRETTY_PRINT --js_output_file $@
 
 # closurebuilder.py complains if it cannot find a Closure base.js script, so we
 # add lib/closure as a root. When compiling we remove base.js from the js files
 # passed to the Closure compiler.
-.build-artefacts/js-files: $(APP_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
+.build-artefacts/js-files: $(SRC_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
 	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/closurebuilder.py --root=src/js --root=src/components --root=src/lib/closure --namespace="ga" --output_mode=list > $@
 
-.build-artefacts/lint.timestamp: .build-artefacts/python-venv/bin/gjslint $(APP_JS_FILES)
+.build-artefacts/lint.timestamp: .build-artefacts/python-venv/bin/gjslint $(SRC_JS_FILES)
 	.build-artefacts/python-venv/bin/gjslint -r src/components src/js --jslint_error=all
 	touch $@
 
