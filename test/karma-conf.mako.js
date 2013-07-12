@@ -4,7 +4,7 @@
 % if mode == 'prod':
 basePath = '../app-prod';
 % else:
-basePath = '../app';
+basePath = '../src';
 % endif
 
 // list of files / patterns to load in the browser

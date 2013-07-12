@@ -1,8 +1,8 @@
 /node_modules
-/app/deps.js
-/app/style/app.css
-/app/index.html
-/app/mobile.html
+/src/deps.js
+/src/style/app.css
+/src/index.html
+/src/mobile.html
 /app-prod
 /.build-artefacts
 /apache/app.conf

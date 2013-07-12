@@ -13,7 +13,7 @@ AddOutputFilterByType DEFLATE application/javascript
 AddOutputFilterByType DEFLATE application/xml
 AddOutputFilterByType DEFLATE application/json
 
-Alias ${base_url_path}/app ${base_dir}/app
+Alias ${base_url_path}/src ${base_dir}/src
 Alias ${base_url_path}/app-prod ${base_dir}/app-prod
 
 # Cached resources

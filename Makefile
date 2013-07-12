@@ -1,8 +1,8 @@
 
-APP_JS_FILES := $(filter-out app/deps.js, $(shell find app/components app/js -type f -name '*.js'))
+APP_JS_FILES := $(filter-out src/deps.js, $(shell find src/components src/js -type f -name '*.js'))
 APP_JS_FILES_FOR_COMPILER = $(shell sed -e :a -e 'N;s/\n/ --js /;ba' .build-artefacts/js-files | sed 's/^.*base\.js //')
-APP_LESS_FILES := $(shell find app/components -type f -name '*.less')
-APP_PROD_TEMPLATE_FILES := $(subst app,app-prod,$(shell find app/components -type f -path '*/partials/*' -name '*.html'))
+APP_LESS_FILES := $(shell find src/components -type f -name '*.less')
+APP_PROD_TEMPLATE_FILES := $(subst src,app-prod,$(shell find src/components -type f -path '*/partials/*' -name '*.html'))
 BASE_URL_PATH ?= /$(shell id -un)
 SERVICE_URL ?= http://mf-chsdi30t.bgdi.admin.ch
 VERSION := $(shell date '+%s')/
@@ -18,7 +18,7 @@ help:
 	@echo "Possible targets:"
 	@echo
 	@echo "- prod         Build app for prod (app-prod)"
-	@echo "- dev          Build app for dev (app)"
+	@echo "- dev          Build app for dev (src)"
 	@echo "- lint         Run the linter"
 	@echo "- test         Run the JavaScript tests"
 	@echo "- apache       Configure Apache (restart required)" 
@@ -42,7 +42,7 @@ all: prod dev lint test apache test/karma-conf-prod.js deploy/deploy-branch.cfg
 prod: app-prod/lib/build.js app-prod/style/app.css app-prod/index.html app-prod/mobile.html app-prod/info.json app-prod/layers.json $(APP_PROD_TEMPLATE_FILES) app-prod/img/ app-prod/style/font-awesome-3.2.1/font/ app-prod/locales/
 
 .PHONY: dev
-dev: app/deps.js app/style/app.css app/index.html app/mobile.html
+dev: src/deps.js src/style/app.css src/index.html src/mobile.html
 
 .PHONY: lint
 lint: .build-artefacts/lint.timestamp
@@ -66,57 +66,57 @@ deploybranch: deploy/deploy-branch.cfg $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/con
 updateol: OL_JS = ol.js ol-simple.js ol-whitespace.js
 updateol: .build-artefacts/ol3
 	cd .build-artefacts/ol3; git fetch origin; git merge --ff origin/master; git show; ../python-venv/bin/python build.py $(addprefix build/,$(OL_JS))
-	cp $(addprefix .build-artefacts/ol3/build/,$(OL_JS)) app/lib/
+	cp $(addprefix .build-artefacts/ol3/build/,$(OL_JS)) src/lib/
 
-app-prod/lib/build.js: app/lib/jquery-2.0.2.min.js app/lib/bootstrap-3.0.0.min.js app/lib/angular-1.1.5.min.js app/lib/proj4js-compressed.js app/lib/EPSG21781.js app/lib/ol.js app/lib/angular-translate-0.9.4.min.js app/lib/angular-translate-loader-static-files-0.1.2.min.js .build-artefacts/app.js
+app-prod/lib/build.js: src/lib/jquery-2.0.2.min.js src/lib/bootstrap-3.0.0.min.js src/lib/angular-1.1.5.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/ol.js src/lib/angular-translate-0.9.4.min.js src/lib/angular-translate-loader-static-files-0.1.2.min.js .build-artefacts/app.js
 	mkdir -p $(dir $@)
 	cat $^ > $@
 
-app-prod/style/app.css: app/style/app.css node_modules
+app-prod/style/app.css: src/style/app.css node_modules
 	mkdir -p $(dir $@)
 	node_modules/.bin/lessc --yui-compress $< $@
 
-app-prod/index.html: app/index.mako.html app-prod/lib/build.js app-prod/style/app.css .build-artefacts/python-venv/bin/mako-render
+app-prod/index.html: src/index.mako.html app-prod/lib/build.js app-prod/style/app.css .build-artefacts/python-venv/bin/mako-render
 	mkdir -p $(dir $@)
 	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "mode=prod" --var "version=$(VERSION)" --var "service_url=$(SERVICE_URL)" $< > $@
 
-app-prod/mobile.html: app/index.mako.html .build-artefacts/python-venv/bin/mako-render
+app-prod/mobile.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "mode=prod" --var "version=$(VERSION)" --var "service_url=$(SERVICE_URL)" $< > $@
 
-app-prod/img/: app/img/*
+app-prod/img/: src/img/*
 	mkdir -p $@
 	cp $^ $@
 
-app-prod/style/font-awesome-3.2.1/font/: app/style/font-awesome-3.2.1/font/*
+app-prod/style/font-awesome-3.2.1/font/: src/style/font-awesome-3.2.1/font/*
 	mkdir -p $@
 	cp $^ $@
 
-app-prod/locales/: app/locales/*.json
+app-prod/locales/: src/locales/*.json
 	mkdir -p $@
 	cp $^ $@
 
 # Temporary: the entire rule should go away eventually
-app-prod/info.json: app/info.json
+app-prod/info.json: src/info.json
 	cp $< $@
 
 # Temporary: the entire rule should go away eventually
-app-prod/layers.json: app/layers.json
+app-prod/layers.json: src/layers.json
 	cp $< $@
 
-$(APP_PROD_TEMPLATE_FILES): app-prod/%: app/%
+$(APP_PROD_TEMPLATE_FILES): app-prod/%: src/%
 	mkdir -p $(dir $@)
 	cp $< $@
 
-app/deps.js: $(APP_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
-	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root_with_prefix="app/components components" --root_with_prefix="app/js js" --output_file=$@
+src/deps.js: $(APP_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
+	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root_with_prefix="src/components components" --root_with_prefix="src/js js" --output_file=$@
 
-app/style/app.css: app/style/app.less $(APP_LESS_FILES) node_modules
+src/style/app.css: src/style/app.less $(APP_LESS_FILES) node_modules
 	node_modules/.bin/lessc -ru $< $@
 
-app/index.html: app/index.mako.html .build-artefacts/python-venv/bin/mako-render
+src/index.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "version=" --var "service_url=$(SERVICE_URL)" $< > $@
 
-app/mobile.html: app/index.mako.html .build-artefacts/python-venv/bin/mako-render
+src/mobile.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "version=" --var "service_url=$(SERVICE_URL)" $< > $@
 
 apache/app.conf: apache/app.mako-dot-conf app-prod/lib/build.js app-prod/style/app.css .build-artefacts/python-venv/bin/mako-render
@@ -142,10 +142,10 @@ node_modules:
 # add lib/closure as a root. When compiling we remove base.js from the js files
 # passed to the Closure compiler.
 .build-artefacts/js-files: $(APP_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
-	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/closurebuilder.py --root=app/js --root=app/components --root=app/lib/closure --namespace="ga" --output_mode=list > $@
+	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/closurebuilder.py --root=src/js --root=src/components --root=src/lib/closure --namespace="ga" --output_mode=list > $@
 
 .build-artefacts/lint.timestamp: .build-artefacts/python-venv/bin/gjslint $(APP_JS_FILES)
-	.build-artefacts/python-venv/bin/gjslint -r app/components app/js --jslint_error=all
+	.build-artefacts/python-venv/bin/gjslint -r src/components src/js --jslint_error=all
 	touch $@
 
 .build-artefacts/python-venv/bin/mako-render: .build-artefacts/python-venv
@@ -197,10 +197,10 @@ clean:
 	rm -f .build-artefacts/js-files
 	rm -f .build-artefacts/lint.timestamp
 	rm -f .build-artefacts/last-git-branch
-	rm -f app/deps.js
-	rm -f app/style/app.css
-	rm -f app/index.html
-	rm -f app/mobile.html
+	rm -f src/deps.js
+	rm -f src/style/app.css
+	rm -f src/index.html
+	rm -f src/mobile.html
 	rm -rf app-prod
 	rm -f apache/app.conf
 	rm -f deploy/deploy-branch.cfg
