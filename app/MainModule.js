@@ -1,5 +1,6 @@
 (function() {
   goog.provide('ga');
+
   goog.require('ga_attribution');
   goog.require('ga_backgroundlayerselector');
   goog.require('ga_contextmenu');
@@ -12,6 +13,7 @@
 
   goog.require('ga_map_controller');
   goog.require('ga_mouseposition_controller');
+  goog.require('ga_permalinkpanel_controller');
 
   var module = angular.module('ga', [
     'ga_attribution',
@@ -24,7 +26,8 @@
     'ga_scaleline',
     'ga_translation',
     'ga_map_controller',
-    'ga_mouseposition_controller'
+    'ga_mouseposition_controller',
+    'ga_permalinkpanel_controller'
   ]);
 
   module.config(['$translateProvider', function($translateProvider) {
