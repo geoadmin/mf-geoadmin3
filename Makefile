@@ -108,7 +108,7 @@ $(APP_PROD_TEMPLATE_FILES): app-prod/%: app/%
 	cp $< $@
 
 app/src/deps.js: $(APP_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
-	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root="app/src" --output_file=$@
+	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root_with_prefix="app/src src" --root_with_prefix="app/ctrl ctrl" --path_with_depspath="app/MainModule.js MainModule.js" --output_file=$@
 
 app/style/app.css: app/style/app.less $(APP_LESS_FILES) node_modules
 	node_modules/.bin/lessc -ru $< $@
@@ -142,7 +142,7 @@ node_modules:
 # add lib/closure as a root. When compiling we remove base.js from the js files
 # passed to the Closure compiler.
 .build-artefacts/js-files: $(APP_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
-	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/closurebuilder.py --root=app/src --root=app/lib/closure --namespace="ga" --output_mode=list > $@
+	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/closurebuilder.py --root=app/ctrl --root=app/src --root=app/lib/closure --namespace="ga" --output_mode=list app/MainModule.js > $@
 
 .build-artefacts/lint.timestamp: .build-artefacts/python-venv/bin/gjslint $(APP_JS_FILES)
 	.build-artefacts/python-venv/bin/gjslint -r app/src --jslint_error=all

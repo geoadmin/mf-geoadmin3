@@ -10,6 +10,8 @@
   goog.require('ga_scaleline');
   goog.require('ga_translation');
 
+  goog.require('ga_map_controller');
+
   var module = angular.module('ga', [
     'ga_attribution',
     'ga_backgroundlayerselector',
@@ -19,7 +21,8 @@
     'ga_permalinkpanel',
     'ga_print',
     'ga_scaleline',
-    'ga_translation'
+    'ga_translation',
+    'ga_map_controller'
   ]);
 
   module.config(['$translateProvider', function($translateProvider) {
