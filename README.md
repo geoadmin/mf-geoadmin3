@@ -46,7 +46,7 @@ On mf1t, create an Apache configuration file for your environment. Ex:
 
 # Deploying project and branches
 
-## Project *master*
+## Deploying the project (branch *master*)
 
 Update and build the project in the main directory of the vhost as
 describe above
@@ -62,7 +62,7 @@ Deploy to the integration server (ab = Abnahme = integration):
 
 And test on http://mf-geoadmin30i.bgdi.admin.ch/
 
-## Deploy a branch
+## Deploying a branch
 
 Use `make deploybranch` *in your working directory* to deploy your current 
 branch to test and integration. The code for deployment, however, does not 
