@@ -1,5 +1,5 @@
 
-APP_JS_FILES := $(filter-out app/deps.js, $(shell find app/components -type f -name '*.js'))
+APP_JS_FILES := $(filter-out app/deps.js, $(shell find app/components app/js -type f -name '*.js'))
 APP_JS_FILES_FOR_COMPILER = $(shell sed -e :a -e 'N;s/\n/ --js /;ba' .build-artefacts/js-files | sed 's/^.*base\.js //')
 APP_LESS_FILES := $(shell find app/components -type f -name '*.less')
 APP_PROD_TEMPLATE_FILES := $(subst app,app-prod,$(shell find app/components -type f -path '*/partials/*' -name '*.html'))
