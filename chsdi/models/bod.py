@@ -182,6 +182,7 @@ class Catalog(Base):
 
 
     def to_dict(self):
+        self.label = self.bod_layer_id or self.path
         return dict([(k, getattr(self, k)) for k in self.__dict__.keys() if not k.startswith("_")])
 
 
