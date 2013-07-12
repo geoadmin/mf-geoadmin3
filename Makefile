@@ -1,8 +1,8 @@
 
-APP_JS_FILES := $(filter-out app/src/deps.js, $(shell find app/src -type f -name '*.js'))
+APP_JS_FILES := $(filter-out app/components/deps.js, $(shell find app/components -type f -name '*.js'))
 APP_JS_FILES_FOR_COMPILER = $(shell sed -e :a -e 'N;s/\n/ --js /;ba' .build-artefacts/js-files | sed 's/^.*base\.js //')
-APP_LESS_FILES := $(shell find app/src -type f -name '*.less')
-APP_PROD_TEMPLATE_FILES := $(subst app,app-prod,$(shell find app/src -type f -path '*/partials/*' -name '*.html'))
+APP_LESS_FILES := $(shell find app/components -type f -name '*.less')
+APP_PROD_TEMPLATE_FILES := $(subst app,app-prod,$(shell find app/components -type f -path '*/partials/*' -name '*.html'))
 BASE_URL_PATH ?= /$(shell id -un)
 SERVICE_URL ?= http://mf-chsdi30t.bgdi.admin.ch
 VERSION := $(shell date '+%s')/
@@ -42,7 +42,7 @@ all: prod dev lint test apache test/karma-conf-prod.js deploy/deploy-branch.cfg
 prod: app-prod/lib/build.js app-prod/style/app.css app-prod/index.html app-prod/mobile.html app-prod/info.json app-prod/layers.json $(APP_PROD_TEMPLATE_FILES) app-prod/img/ app-prod/style/font-awesome-3.2.1/font/ app-prod/locales/
 
 .PHONY: dev
-dev: app/src/deps.js app/style/app.css app/index.html app/mobile.html
+dev: app/components/deps.js app/style/app.css app/index.html app/mobile.html
 
 .PHONY: lint
 lint: .build-artefacts/lint.timestamp
@@ -107,8 +107,8 @@ $(APP_PROD_TEMPLATE_FILES): app-prod/%: app/%
 	mkdir -p $(dir $@)
 	cp $< $@
 
-app/src/deps.js: $(APP_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
-	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root_with_prefix="app/src src" --root_with_prefix="app/ctrl ctrl" --path_with_depspath="app/MainModule.js MainModule.js" --output_file=$@
+app/components/deps.js: $(APP_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
+	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root_with_prefix="app/components components" --root_with_prefix="app/ctrl ctrl" --path_with_depspath="app/MainModule.js MainModule.js" --output_file=$@
 
 app/style/app.css: app/style/app.less $(APP_LESS_FILES) node_modules
 	node_modules/.bin/lessc -ru $< $@
@@ -142,10 +142,10 @@ node_modules:
 # add lib/closure as a root. When compiling we remove base.js from the js files
 # passed to the Closure compiler.
 .build-artefacts/js-files: $(APP_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
-	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/closurebuilder.py --root=app/ctrl --root=app/src --root=app/lib/closure --namespace="ga" --output_mode=list app/MainModule.js > $@
+	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/closurebuilder.py --root=app/ctrl --root=app/components --root=app/lib/closure --namespace="ga" --output_mode=list app/MainModule.js > $@
 
 .build-artefacts/lint.timestamp: .build-artefacts/python-venv/bin/gjslint $(APP_JS_FILES)
-	.build-artefacts/python-venv/bin/gjslint -r app/src --jslint_error=all
+	.build-artefacts/python-venv/bin/gjslint -r app/components --jslint_error=all
 	touch $@
 
 .build-artefacts/python-venv/bin/mako-render: .build-artefacts/python-venv
@@ -197,7 +197,7 @@ clean:
 	rm -f .build-artefacts/js-files
 	rm -f .build-artefacts/lint.timestamp
 	rm -f .build-artefacts/last-git-branch
-	rm -f app/src/deps.js
+	rm -f app/components/deps.js
 	rm -f app/style/app.css
 	rm -f app/index.html
 	rm -f app/mobile.html

@@ -30,13 +30,13 @@ files = [
   '../test/sinon-1.7.3/sinon.js',
   '../test/specs/Loader.spec.js',
   '../test/specs/**/*.js',
-  'src/**/*.html'
+  'components/**/*.html'
 ];
 
 
 // generate js files from templates
 preprocessors = {
-  'src/**/*.html': 'html2js'
+  'components/**/*.html': 'html2js'
 };
 
 
