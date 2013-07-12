@@ -11,6 +11,7 @@
   goog.require('ga_translation');
 
   goog.require('ga_map_controller');
+  goog.require('ga_mouseposition_controller');
 
   var module = angular.module('ga', [
     'ga_attribution',
@@ -22,7 +23,8 @@
     'ga_print',
     'ga_scaleline',
     'ga_translation',
-    'ga_map_controller'
+    'ga_map_controller',
+    'ga_mouseposition_controller'
   ]);
 
   module.config(['$translateProvider', function($translateProvider) {
