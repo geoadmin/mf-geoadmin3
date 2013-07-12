@@ -39,7 +39,7 @@ help:
 all: prod dev lint test apache test/karma-conf-prod.js deploy/deploy-branch.cfg
 
 .PHONY: prod
-prod: app-prod/lib/build.js app-prod/style/app.css app-prod/index.html app-prod/mobile.html app-prod/info.json app-prod/WMTSCapabilities.xml $(APP_PROD_TEMPLATE_FILES) app-prod/img/ app-prod/style/font-awesome-3.2.1/font/ app-prod/locales/
+prod: app-prod/lib/build.js app-prod/style/app.css app-prod/index.html app-prod/mobile.html app-prod/info.json app-prod/layers.json $(APP_PROD_TEMPLATE_FILES) app-prod/img/ app-prod/style/font-awesome-3.2.1/font/ app-prod/locales/
 
 .PHONY: dev
 dev: app/src/deps.js app/style/app.css app/index.html app/mobile.html
@@ -100,7 +100,7 @@ app-prod/info.json: app/info.json
 	cp $< $@
 
 # Temporary: the entire rule should go away eventually
-app-prod/WMTSCapabilities.xml: app/WMTSCapabilities.xml
+app-prod/layers.json: app/layers.json
 	cp $< $@
 
 $(APP_PROD_TEMPLATE_FILES): app-prod/%: app/%
