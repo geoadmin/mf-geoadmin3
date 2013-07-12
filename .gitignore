@@ -3,7 +3,7 @@
 /src/style/app.css
 /src/index.html
 /src/mobile.html
-/app-prod
+/prod
 /.build-artefacts
 /apache/app.conf
 /test/karma-conf-dev.js

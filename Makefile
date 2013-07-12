@@ -2,7 +2,7 @@
 APP_JS_FILES := $(filter-out src/deps.js, $(shell find src/components src/js -type f -name '*.js'))
 APP_JS_FILES_FOR_COMPILER = $(shell sed -e :a -e 'N;s/\n/ --js /;ba' .build-artefacts/js-files | sed 's/^.*base\.js //')
 APP_LESS_FILES := $(shell find src/components -type f -name '*.less')
-APP_PROD_TEMPLATE_FILES := $(subst src,app-prod,$(shell find src/components -type f -path '*/partials/*' -name '*.html'))
+APP_PROD_TEMPLATE_FILES := $(subst src,prod,$(shell find src/components -type f -path '*/partials/*' -name '*.html'))
 BASE_URL_PATH ?= /$(shell id -un)
 SERVICE_URL ?= http://mf-chsdi30t.bgdi.admin.ch
 VERSION := $(shell date '+%s')/
@@ -17,7 +17,7 @@ help:
 	@echo
 	@echo "Possible targets:"
 	@echo
-	@echo "- prod         Build app for prod (app-prod)"
+	@echo "- prod         Build app for prod (prod)"
 	@echo "- dev          Build app for dev (src)"
 	@echo "- lint         Run the linter"
 	@echo "- test         Run the JavaScript tests"
@@ -39,7 +39,7 @@ help:
 all: prod dev lint test apache test/karma-conf-prod.js deploy/deploy-branch.cfg
 
 .PHONY: prod
-prod: app-prod/lib/build.js app-prod/style/app.css app-prod/index.html app-prod/mobile.html app-prod/info.json app-prod/layers.json $(APP_PROD_TEMPLATE_FILES) app-prod/img/ app-prod/style/font-awesome-3.2.1/font/ app-prod/locales/
+prod: prod/lib/build.js prod/style/app.css prod/index.html prod/mobile.html prod/info.json prod/layers.json $(APP_PROD_TEMPLATE_FILES) prod/img/ prod/style/font-awesome-3.2.1/font/ prod/locales/
 
 .PHONY: dev
 dev: src/deps.js src/style/app.css src/index.html src/mobile.html
@@ -68,42 +68,42 @@ updateol: .build-artefacts/ol3
 	cd .build-artefacts/ol3; git fetch origin; git merge --ff origin/master; git show; ../python-venv/bin/python build.py $(addprefix build/,$(OL_JS))
 	cp $(addprefix .build-artefacts/ol3/build/,$(OL_JS)) src/lib/
 
-app-prod/lib/build.js: src/lib/jquery-2.0.2.min.js src/lib/bootstrap-3.0.0.min.js src/lib/angular-1.1.5.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/ol.js src/lib/angular-translate-0.9.4.min.js src/lib/angular-translate-loader-static-files-0.1.2.min.js .build-artefacts/app.js
+prod/lib/build.js: src/lib/jquery-2.0.2.min.js src/lib/bootstrap-3.0.0.min.js src/lib/angular-1.1.5.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/ol.js src/lib/angular-translate-0.9.4.min.js src/lib/angular-translate-loader-static-files-0.1.2.min.js .build-artefacts/app.js
 	mkdir -p $(dir $@)
 	cat $^ > $@
 
-app-prod/style/app.css: src/style/app.css node_modules
+prod/style/app.css: src/style/app.css node_modules
 	mkdir -p $(dir $@)
 	node_modules/.bin/lessc --yui-compress $< $@
 
-app-prod/index.html: src/index.mako.html app-prod/lib/build.js app-prod/style/app.css .build-artefacts/python-venv/bin/mako-render
+prod/index.html: src/index.mako.html prod/lib/build.js prod/style/app.css .build-artefacts/python-venv/bin/mako-render
 	mkdir -p $(dir $@)
 	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "mode=prod" --var "version=$(VERSION)" --var "service_url=$(SERVICE_URL)" $< > $@
 
-app-prod/mobile.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render
+prod/mobile.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "mode=prod" --var "version=$(VERSION)" --var "service_url=$(SERVICE_URL)" $< > $@
 
-app-prod/img/: src/img/*
+prod/img/: src/img/*
 	mkdir -p $@
 	cp $^ $@
 
-app-prod/style/font-awesome-3.2.1/font/: src/style/font-awesome-3.2.1/font/*
+prod/style/font-awesome-3.2.1/font/: src/style/font-awesome-3.2.1/font/*
 	mkdir -p $@
 	cp $^ $@
 
-app-prod/locales/: src/locales/*.json
+prod/locales/: src/locales/*.json
 	mkdir -p $@
 	cp $^ $@
 
 # Temporary: the entire rule should go away eventually
-app-prod/info.json: src/info.json
+prod/info.json: src/info.json
 	cp $< $@
 
 # Temporary: the entire rule should go away eventually
-app-prod/layers.json: src/layers.json
+prod/layers.json: src/layers.json
 	cp $< $@
 
-$(APP_PROD_TEMPLATE_FILES): app-prod/%: src/%
+$(APP_PROD_TEMPLATE_FILES): prod/%: src/%
 	mkdir -p $(dir $@)
 	cp $< $@
 
@@ -119,7 +119,7 @@ src/index.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render
 src/mobile.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "version=" --var "service_url=$(SERVICE_URL)" $< > $@
 
-apache/app.conf: apache/app.mako-dot-conf app-prod/lib/build.js app-prod/style/app.css .build-artefacts/python-venv/bin/mako-render
+apache/app.conf: apache/app.mako-dot-conf prod/lib/build.js prod/style/app.css .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" --var "base_dir=$(CURDIR)" $< > $@
 
 test/karma-conf-dev.js: test/karma-conf.mako.js .build-artefacts/python-venv/bin/mako-render
@@ -201,7 +201,7 @@ clean:
 	rm -f src/style/app.css
 	rm -f src/index.html
 	rm -f src/mobile.html
-	rm -rf app-prod
+	rm -rf prod
 	rm -f apache/app.conf
 	rm -f deploy/deploy-branch.cfg
 

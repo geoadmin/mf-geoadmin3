@@ -2,7 +2,7 @@
 
 // base path, that will be used to resolve files and exclude
 % if mode == 'prod':
-basePath = '../app-prod';
+basePath = '../prod';
 % else:
 basePath = '../src';
 % endif

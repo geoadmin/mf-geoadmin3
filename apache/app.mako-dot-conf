@@ -14,22 +14,21 @@ AddOutputFilterByType DEFLATE application/xml
 AddOutputFilterByType DEFLATE application/json
 
 Alias ${base_url_path}/src ${base_dir}/src
-Alias ${base_url_path}/app-prod ${base_dir}/app-prod
+Alias ${base_url_path}/prod ${base_dir}/prod
 
 # Cached resources
-RewriteRule ^${base_url_path}/app-prod/[0-9]*/(.*)$ ${base_dir}/app-prod/$1
-<LocationMatch ${base_url_path}/app-prod/[0-9]*/>   
+RewriteRule ^${base_url_path}/prod/[0-9]*/(.*)$ ${base_dir}/prod/$1
+<LocationMatch ${base_url_path}/prod/[0-9]*/>
    ExpiresDefault "now plus 1 year"
    Header merge Cache-Control "public"
 </LocationMatch>
 
 # proxy
-ProxyPassMatch ${base_url_path}/(print|ogcproxy)(.*)   ${service_url}/$1$2
-ProxyPassReverse ${base_url_path}   ${service_url}
+ProxyPassMatch ${base_url_path}/(print|ogcproxy)(.*) ${service_url}/$1$2
+ProxyPassReverse ${base_url_path} ${service_url}
 
 
 <LocationMatch ${base_url_path}/(print|ogcproxy)>
     Order allow,deny
     Allow from all
 </LocationMatch>
-
