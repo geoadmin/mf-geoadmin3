@@ -7,7 +7,7 @@ BASE_URL_PATH ?= /$(shell id -un)
 SERVICE_URL ?= http://mf-chsdi30t.bgdi.admin.ch
 VERSION := $(shell date '+%s')/
 GIT_BRANCH := $(shell git rev-parse --symbolic-full-name --abbrev-ref HEAD)
-GIT_LAST_BRANCH := $(shell cat .build-artefacts/last-git-branch)
+GIT_LAST_BRANCH := $(shell cat .build-artefacts/last-git-branch 2> /dev/null)
 DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branches
 
 
