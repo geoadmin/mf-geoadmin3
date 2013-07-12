@@ -16,7 +16,7 @@
               var shortenUrl =
                   scope.options.serviceUrl + '/shorten.json?cb=JSON_CALLBACK';
 
-              $('.share-tooltip').tooltip({
+              $('.share-icon').tooltip({
                 placement: 'bottom'
               });
               // Store in the scope the permalink value which is bound to
@@ -26,6 +26,7 @@
               scope.encodedPermalinkHref =
                   encodeURIComponent(gaPermalink.getHref());
               scope.encodedDocumentTitle = encodeURIComponent(document.title);
+              scope.urlShortened = false;
 
               // Listen to permalink change events from the scope.
               scope.$on('gaPermalinkChange', function(event) {
@@ -33,6 +34,7 @@
                 scope.permalinkHref = gaPermalink.getHref();
                 scope.encodedPermalinkHref =
                     encodeURIComponent(gaPermalink.getHref());
+                scope.urlShortened = false;
                 // assuming document.title never change
               });
 
@@ -45,6 +47,7 @@
                   }
                 }).success(function(response) {
                   scope.permalinkValue = response.shorturl;
+                  scope.urlShortened = true;
                 });
               };
 
