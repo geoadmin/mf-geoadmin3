@@ -145,7 +145,7 @@ node_modules:
 	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/closurebuilder.py --root=app/js --root=app/components --root=app/lib/closure --namespace="ga" --output_mode=list > $@
 
 .build-artefacts/lint.timestamp: .build-artefacts/python-venv/bin/gjslint $(APP_JS_FILES)
-	.build-artefacts/python-venv/bin/gjslint -r app/components --jslint_error=all
+	.build-artefacts/python-venv/bin/gjslint -r app/components app/js --jslint_error=all
 	touch $@
 
 .build-artefacts/python-venv/bin/mako-render: .build-artefacts/python-venv
