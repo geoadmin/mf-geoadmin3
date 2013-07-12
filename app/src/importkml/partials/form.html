@@ -1,27 +1,60 @@
-<form name="importkml" href="#"> <!-- method="POST"
-enctype="multipart/form-data--> 
-    <!-- Upload from an URL -->
-    <input type="url" placeholder="Paste an URL" ng-model="fileUrl"  ng-change="handleFileUrl()"/>
-    
-    <!-- Upload from a basic upload (hidden by default)--> 
-    <input type="file" />
-    
-    <!-- Button use to open the file chooser of the input file -->
-    <button>Choose a local file</button>
 
-    <!-- 
-      TODO: Display informations about the uploaded file and the upload process 
-    -->
-    <div class="upload-result">
-        {{userMessage}}
+<div class="tabbable"> <!-- Only required for left/right tabs -->
+  <ul class="nav nav-tabs">
+    <li class="active">
+      <a href="#import-kml-tab1" data-toggle="tab" ng-click="clearUserOutput()">Local</a>
+    </li>
+    <li>
+      <a href="#import-kml-tab2" data-toggle="tab" ng-click="clearUserOutput()">URL</a>
+    </li>
+  </ul>
+  <div class="tab-content">
+    <div class="tab-pane active" id="import-kml-tab1">
+  
+      <form name="import-kml-file" href="#" onsubmit="return false;">
+        
+        <!-- Upload from a basic upload (hidden by default)--> 
+        <input type="file" />
+    
+        <!-- Button use to open the file chooser of the input file -->
+        <button>Browse ...</button><input class="import-kml-fake-file" type="text"
+        readonly value="{{(file.name) ? file.name + ', size: ' + file.size/1000 +
+        ' ko' : ''}}"
+        placeholder="No file"/> 
+      </form>
+
     </div>
+    <div class="tab-pane" id="import-kml-tab2">  
 
-    <!--
-      Use for debug purpose 
-      Display the content of the file if upload succeed 
-    -->
-    <!--textarea class="file-uploaded" > 
+      <!-- Upload from an URL -->
+      <form name="import-kml-url" href="#" onsubmit="return false;">
+        <input type="url" placeholder="Paste an URL" ng-model="fileUrl"  ng-change="handleFileUrl()"/>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="tabbable-footer" >
+  <!-- 
+      TODO: Display informations about the uploaded file and the upload process 
+  -->
+  <div class="upload-result">
+    {{userMessage}}
+    <div class="progress progress-striped {{(progress < 100 ) ? 'active' : ''}}" ng-show="(progress > 0)"> <!-- style="display:{{(uploadProgress
+    > 0) ? 'block' : 'none'}};"-->
+      <div class="bar" style="width: {{progress}}%;"></div>
+    </div>
+  </div>
+
+  <!--button class="display-kml" ng-click="displayFileContent()">Ajouter
+      KML</button-->
+  
+  <!--
+    Use for debug purpose 
+    Display the content of the file if upload succeed 
+  -->
+  <!--textarea class="file-uploaded" > 
     {{fileContent}}
-    </textarea-->
+  </textarea-->
+ 
+</div>
 
-</form>
