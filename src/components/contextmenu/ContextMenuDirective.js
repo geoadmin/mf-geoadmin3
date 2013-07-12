@@ -13,7 +13,7 @@
           return {
             restrict: 'A',
             replace: true,
-            templateUrl: 'src/contextmenu/partials/contextmenu.html',
+            templateUrl: 'components/contextmenu/partials/contextmenu.html',
             require: '^gaMap',
             scope: {},
             link: function(scope, element, attrs, gaMapDirectiveCtrl) {

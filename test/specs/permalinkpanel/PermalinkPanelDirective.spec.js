@@ -5,7 +5,7 @@ describe('ga_permalinkpanel_directive', function() {
   beforeEach(function() {
 
     // load the template
-    module('src/permalinkpanel/partials/permalinkpanel.html');
+    module('components/permalinkpanel/partials/permalinkpanel.html');
 
     element = angular.element(
       '<div ga-permalink-panel ga-permalink-panel-options="options"></div>');

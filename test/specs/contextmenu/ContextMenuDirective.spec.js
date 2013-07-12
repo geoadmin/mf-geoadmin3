@@ -6,7 +6,7 @@ describe('ga_contextmenu_directive', function() {
   beforeEach(function() {
 
     // load the template
-    module('src/contextmenu/partials/contextmenu.html');
+    module('components/contextmenu/partials/contextmenu.html');
 
     element = angular.element(
       '<div ga-map ga-map-map="map" ga-map-options="options">' +
