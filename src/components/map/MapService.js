@@ -28,13 +28,17 @@
       var wmtsGetTileUrl = 'http://wmts.geo.admin.ch/1.0.0/{Layer}/default/' +
           '{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.jpeg';
 
-      var layers = {};
-      var promise = $http.get('layers.json').then(function(o) {
-        layers = o.data.layers;
-      });
+      var Layers = function() {
+        var layers = {};
 
-      return {
-        getOlLayerById: function(id) {
+        var promise = $http.get('layers.json').then(function(o) {
+          layers = o.data.layers;
+        });
+
+        /**
+         * Return an ol.layer.Layer object for a layer id.
+         */
+        this.getOlLayerById = function(id) {
           return promise.then(function() {
             var layer = layers[id];
             var olLayer = layer.olLayer;
@@ -62,9 +66,13 @@
             }
             return olLayer;
           });
-        },
+        };
 
-        getBackgroundLayers: function() {
+        /**
+         * Return the list of background layers. The returned
+         * objects are object literals.
+         */
+        this.getBackgroundLayers = function() {
           return promise.then(function() {
             var backgroundLayers = [];
             angular.forEach(layers, function(layer, id) {
@@ -77,8 +85,13 @@
             });
             return backgroundLayers;
           });
-        }
+        };
+
       };
+
+      var layers = new Layers();
+
+      return layers;
     }];
 
   });
