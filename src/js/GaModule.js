@@ -8,6 +8,7 @@
   goog.require('ga_mouseposition');
   goog.require('ga_permalinkpanel');
   goog.require('ga_scaleline');
+  goog.require('ga_topic');
   goog.require('ga_translation');
   goog.require('ga_feedback');
 
@@ -28,6 +29,7 @@
     'ga_mouseposition',
     'ga_permalinkpanel',
     'ga_scaleline',
+    'ga_topic',
     'ga_translation',
     'ga_feedback',
     'ga_modal_directive',
