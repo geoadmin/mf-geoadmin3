@@ -134,19 +134,19 @@
         height: 0;
         top: 0;
     }
-}
-.hidden-collapsed {
-    display: initial;
-}
-.visible-collapsed {
-    display: none;
-}
-.collapsed {
     .hidden-collapsed {
-        display: none;
+        display: initial;
     }
     .visible-collapsed {
-        display: initial;
+        display: none;
+    }
+    .collapsed {
+        .hidden-collapsed {
+            display: none;
+        }
+        .visible-collapsed {
+            display: initial;
+        }
     }
 }
 .accordion-group {
@@ -165,6 +165,7 @@
     font-weight: bold;
     border-bottom: 1px solid #c7c7c7;
     &:hover {
+        color: #000;
         text-decoration: none;
     }
     &.collapsed {
