@@ -11,7 +11,8 @@
             scope: {
               options: '=gaPermalinkPanelOptions'
             },
-            templateUrl: 'src/permalinkpanel/partials/permalinkpanel.html',
+            templateUrl: 'components/permalinkpanel/partials/' +
+                'permalinkpanel.html',
             link: function(scope, element, attrs) {
               var shortenUrl =
                   scope.options.serviceUrl + '/shorten.json?cb=JSON_CALLBACK';
