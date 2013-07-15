@@ -11,4 +11,5 @@ virtualenv env
 ./env/bin/easy_install pyyaml
 
 #Start the script (replace ltmoc by your environment)
+# !! You need to have a pgpass in your environment in order to access the DB
 ./env/bin/python translation2js.py /home/ltmoc/mf-geoadmin3/src/locales/
