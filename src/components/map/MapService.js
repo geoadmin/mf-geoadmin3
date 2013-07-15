@@ -29,11 +29,20 @@
           '{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.jpeg';
 
       var Layers = function() {
-        var layers = {};
+        var layers;
+        var promise;
 
-        var promise = $http.get('layers.json').then(function(o) {
-          layers = o.data.layers;
-        });
+        /**
+         * Load layers for a given topic.
+         */
+        this.loadForTopic = function(topicId) {
+          layers = {};
+          // FIXME the request path or params should depend on the
+          // the topic identifier
+          promise = $http.get('layers.json').then(function(o) {
+            layers = o.data.layers;
+          });
+        };
 
         /**
          * Return an ol.layer.Layer object for a layer id.
@@ -90,6 +99,11 @@
       };
 
       var layers = new Layers();
+
+      // FIXME For now the service itself calls loadForTopic. Eventually,
+      // the topic directive or the topic controller will be responsible
+      // for calling that function.
+      layers.loadForTopic();
 
       return layers;
     }];
