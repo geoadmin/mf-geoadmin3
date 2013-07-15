@@ -113,24 +113,27 @@ for lang in config["langs"]:
     file_langjs.write("{\n")
 
     int_counter = 1
-    isTodo = ''
+    isTodo = True
     var_arr.sort()
     for var_msgid in var_arr:
         try:
             myString = "\t\"" + var_msgid + "\" :\"" + \
                        translationDict[lang][unicode(var_msgid)].replace("'","\\\'") + "\""
             file_langjs.write(myString.encode('utf-8'))
-            isTodo = ''
+            isTodo = False
         except:
             file_langjs.write("\t\"" + var_msgid + "\" :\"" + var_msgid + "\"")
-            isTodo = ''
+            isTodo = True
 
         if int_counter < len(var_arr):
             nextLine = ','
         else:
             nextLine = ''
 
-        file_langjs.write(nextLine + isTodo + '\n')
+        if isTodo:
+            print var_msgid + " has not been translated in " + lang
+
+        file_langjs.write(nextLine + '\n')
         int_counter += 1
 
      # Writing footer
