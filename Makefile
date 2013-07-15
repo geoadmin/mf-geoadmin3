@@ -2,7 +2,8 @@
 SRC_JS_FILES := $(filter-out src/deps.js, $(shell find src/components src/js -type f -name '*.js'))
 SRC_JS_FILES_FOR_COMPILER = $(shell sed -e :a -e 'N;s/\n/ --js /;ba' .build-artefacts/js-files | sed 's/^.*base\.js //')
 SRC_COMPONENTS_LESS_FILES := $(shell find src/components -type f -name '*.less')
-PROD_TEMPLATE_FILES := $(subst src,prod,$(shell find src/components -type f -path '*/partials/*' -name '*.html'))
+SRC_COMPONENTS_PARTIALS_FILES = $(shell find src/components -type f -path '*/partials/*' -name '*.html')
+PROD_TEMPLATE_FILES := $(subst src,prod,$(SRC_COMPONENTS_PARTIALS_FILES))
 BASE_URL_PATH ?= /$(shell id -un)
 SERVICE_URL ?= http://mf-chsdi30t.bgdi.admin.ch
 VERSION := $(shell date '+%s')/
@@ -119,6 +120,9 @@ src/index.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render
 src/mobile.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "version=" --var "service_url=$(SERVICE_URL)" $< > $@
 
+src/TemplateCacheModule.js: src/TemplateCacheModule.mako.js $(SRC_COMPONENTS_PARTIALS_FILES) .build-artefacts/python-venv/bin/mako-render
+	.build-artefacts/python-venv/bin/mako-render --var "partials=$(subst src/,,$(SRC_COMPONENTS_PARTIALS_FILES))" --var "basedir=src" $< > $@
+
 apache/app.conf: apache/app.mako-dot-conf prod/lib/build.js prod/style/app.css .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" --var "base_dir=$(CURDIR)" $< > $@
 
@@ -141,8 +145,8 @@ node_modules:
 # closurebuilder.py complains if it cannot find a Closure base.js script, so we
 # add lib/closure as a root. When compiling we remove base.js from the js files
 # passed to the Closure compiler.
-.build-artefacts/js-files: $(SRC_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
-	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/closurebuilder.py --root=src/js --root=src/components --root=src/lib/closure --namespace="ga" --output_mode=list > $@
+.build-artefacts/js-files: $(SRC_JS_FILES) src/TemplateCacheModule.js .build-artefacts/python-venv .build-artefacts/closure-library
+	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/closurebuilder.py --root=src/js --root=src/components --root=src/lib/closure --namespace="ga" --namespace="__ga_template_cache__" --output_mode=list src/TemplateCacheModule.js > $@
 
 .build-artefacts/lint.timestamp: .build-artefacts/python-venv/bin/gjslint $(SRC_JS_FILES)
 	.build-artefacts/python-venv/bin/gjslint -r src/components src/js --jslint_error=all
@@ -201,6 +205,7 @@ clean:
 	rm -f src/style/app.css
 	rm -f src/index.html
 	rm -f src/mobile.html
+	rm -f src/TemplateCacheModule.js
 	rm -rf prod
 	rm -f apache/app.conf
 	rm -f deploy/deploy-branch.cfg
