@@ -21,9 +21,9 @@ describe('ga_permalinkpanel_directive', function() {
 
   });
 
-  it('creates 5 <img>', function() {
-      var img = element.find('img');
-      expect(img.length).to.be(5);
+  it('creates 1 <i>', function() {
+      var icon = element.find('i');
+      expect(icon.length).to.be(5);
   });
 
  });
