@@ -70,7 +70,6 @@
                     },
                     format: layer.format,
                     layer: id,
-                    matrixSet: '21781_' + layer.matrixSet,
                     projection: 'EPSG:21781',
                     requestEncoding: 'REST',
                     tileGrid: gaTileGrid.get(layer.resolutions),
