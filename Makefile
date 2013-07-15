@@ -3,7 +3,6 @@ SRC_JS_FILES := $(shell find src/components src/js -type f -name '*.js')
 SRC_JS_FILES_FOR_COMPILER = $(shell sed -e :a -e 'N;s/\n/ --js /;ba' .build-artefacts/js-files | sed 's/^.*base\.js //')
 SRC_COMPONENTS_LESS_FILES := $(shell find src/components -type f -name '*.less')
 SRC_COMPONENTS_PARTIALS_FILES = $(shell find src/components -type f -path '*/partials/*' -name '*.html')
-PROD_TEMPLATE_FILES := $(subst src,prod,$(SRC_COMPONENTS_PARTIALS_FILES))
 BASE_URL_PATH ?= /$(shell id -un)
 SERVICE_URL ?= http://mf-chsdi30t.bgdi.admin.ch
 VERSION := $(shell date '+%s')/
@@ -40,7 +39,7 @@ help:
 all: prod dev lint test apache test/karma-conf-prod.js deploy/deploy-branch.cfg
 
 .PHONY: prod
-prod: prod/lib/build.js prod/style/app.css prod/index.html prod/mobile.html prod/info.json prod/layers.json $(PROD_TEMPLATE_FILES) prod/img/ prod/style/font-awesome-3.2.1/font/ prod/locales/
+prod: prod/lib/build.js prod/style/app.css prod/index.html prod/mobile.html prod/info.json prod/layers.json prod/img/ prod/style/font-awesome-3.2.1/font/ prod/locales/
 
 .PHONY: dev
 dev: src/deps.js src/style/app.css src/index.html src/mobile.html
@@ -102,10 +101,6 @@ prod/info.json: src/info.json
 
 # Temporary: the entire rule should go away eventually
 prod/layers.json: src/layers.json
-	cp $< $@
-
-$(PROD_TEMPLATE_FILES): prod/%: src/%
-	mkdir -p $(dir $@)
 	cp $< $@
 
 src/deps.js: $(SRC_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
