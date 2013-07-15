@@ -1,15 +1,16 @@
 {
-  "Open menu": "Ouvrir le menu",
-  "Close menu": "Fermer le menu",
-
-  "Print": "Imprimer",
-  "Layout": "Orientation",
-  "Scale": "Échelle",
-  "Legend": "Légende",
-
-  "Color Map": "Cartes couleurs",
-  "Aerial Imagery": "Photo aérienne",
-  "Grey Map": "Cartes noir & blanc",
-
-  "Altitude": "Altitude"
+	"Catalog_default" :"Catalog_default",
+	"Choose theme" :"Choose theme",
+	"Close menu" :"Close menu",
+	"Elevation" :"Altitude",
+	"Layer Selection" :"Sélection de couches",
+	"Legend" :"Légende",
+	"Map tools" :"Map tools",
+	"Open menu" :"Open menu",
+	"Position" :"Position",
+	"Share" :"Partager",
+	"Shorten URL" :"URL abrégée",
+	"mf.print.layout" :"Orientation",
+	"mf.print.scale" :"Échelle",
+	"print action" :"Imprimer"
 }

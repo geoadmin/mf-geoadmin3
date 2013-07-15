@@ -1,11 +1,16 @@
 {
-  "Open menu": "Menü öffnen",
-  "Close menu": "Menü schliessen",
-  "Print": "Drucken",
-
-  "Color Map": "Karte fabrig",
-  "Aerial Imagery": "Luftbild",
-  "Grey Map": "Karte SW",
-
-  "Altitude": "Höhe"
+	"Catalog_default" :"Catalog_default",
+	"Choose theme" :"Choose theme",
+	"Close menu" :"Close menu",
+	"Elevation" :"Höhe",
+	"Layer Selection" :"Auswahl",
+	"Legend" :"Legende",
+	"Map tools" :"Map tools",
+	"Open menu" :"Open menu",
+	"Position" :"Position",
+	"Share" :"Share",
+	"Shorten URL" :"Kurze URL",
+	"mf.print.layout" :"Orientierung",
+	"mf.print.scale" :"Massstab",
+	"print action" :"Drucken"
 }

@@ -1,3 +1,16 @@
 {
-
+	"Catalog_default" :"Catalog_default",
+	"Choose theme" :"Choose theme",
+	"Close menu" :"Close menu",
+	"Elevation" :"Elevation",
+	"Layer Selection" :"Selection",
+	"Legend" :"Legend",
+	"Map tools" :"Map tools",
+	"Open menu" :"Open menu",
+	"Position" :"Position",
+	"Share" :"Share",
+	"Shorten URL" :"Short URL",
+	"mf.print.layout" :"Orientation",
+	"mf.print.scale" :"Scale",
+	"print action" :"Print"
 }
