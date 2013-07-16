@@ -4,12 +4,8 @@ describe('ga_permalinkpanel_directive', function() {
 
   beforeEach(function() {
 
-    // load the template
-    module('components/permalinkpanel/partials/permalinkpanel.html');
-
     element = angular.element(
       '<div ga-permalink-panel ga-permalink-panel-options="options"></div>');
-
 
     inject(function($rootScope, $compile) {
       $rootScope.options = {

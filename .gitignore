@@ -3,6 +3,7 @@
 /src/style/app.css
 /src/index.html
 /src/mobile.html
+/src/TemplateCacheModule.js
 /prod
 /.build-artefacts
 /apache/app.conf
