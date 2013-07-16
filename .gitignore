@@ -9,7 +9,6 @@
 /test/karma-conf-dev.js
 /test/karma-conf-prod.js
 /deploy/deploy-branch.cfg
-/translate/env
 
 # FIXME
 # The following are developer-specific and should probably be in the

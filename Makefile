@@ -27,6 +27,7 @@ help:
 	@echo "- cleanall     Remove all the build artefacts"
 	@echo "- deploybranch Deploys current branch (note: takes code from github)"
 	@echo "- updateol     Update ol.js, ol-simple.js and ol-whitespace.js"
+	@echo "- translate    Generate the translation files"
 	@echo "- help         Display this help"
 	@echo
 	@echo "Variables:"
@@ -67,6 +68,10 @@ updateol: OL_JS = ol.js ol-simple.js ol-whitespace.js
 updateol: .build-artefacts/ol3
 	cd .build-artefacts/ol3; git fetch origin; git merge --ff origin/master; git show; ../python-venv/bin/python build.py $(addprefix build/,$(OL_JS))
 	cp $(addprefix .build-artefacts/ol3/build/,$(OL_JS)) src/lib/
+
+.PHONY: translate
+translate: .build-artefacts/python-venv/bin/translate-json
+	.build-artefacts/python-venv/bin/python scripts/translation2js.py src/locales/ 
 
 prod/lib/build.js: src/lib/jquery-2.0.2.min.js src/lib/bootstrap-3.0.0.min.js src/lib/angular-1.1.5.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/ol.js src/lib/angular-translate-0.9.4.min.js src/lib/angular-translate-loader-static-files-0.1.2.min.js .build-artefacts/app.js
 	mkdir -p $(dir $@)
@@ -150,6 +155,11 @@ node_modules:
 
 .build-artefacts/python-venv/bin/mako-render: .build-artefacts/python-venv
 	.build-artefacts/python-venv/bin/pip install "Mako==0.8.1"
+	touch $@
+
+.build-artefacts/python-venv/bin/translate-json: .build-artefacts/python-venv
+	.build-artefacts/python-venv/bin/pip install "psycopg2"
+	.build-artefacts/python-venv/bin/pip install "PyYAML"
 	touch $@
 
 .build-artefacts/python-venv/bin/gjslint: .build-artefacts/python-venv
