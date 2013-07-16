@@ -70,7 +70,7 @@ updateol: .build-artefacts/ol3
 	cp $(addprefix .build-artefacts/ol3/build/,$(OL_JS)) src/lib/
 
 .PHONY: translate
-translate: .build-artefacts/python-venv/bin/translate-json
+translate: .build-artefacts/translate-requirements-installation.timestamp
 	.build-artefacts/python-venv/bin/python scripts/translation2js.py src/locales/ 
 
 prod/lib/build.js: src/lib/jquery-2.0.2.min.js src/lib/bootstrap-3.0.0.min.js src/lib/angular-1.1.5.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/ol.js src/lib/angular-translate-0.9.4.min.js src/lib/angular-translate-loader-static-files-0.1.2.min.js .build-artefacts/app.js
@@ -157,9 +157,9 @@ node_modules:
 	.build-artefacts/python-venv/bin/pip install "Mako==0.8.1"
 	touch $@
 
-.build-artefacts/python-venv/bin/translate-json: .build-artefacts/python-venv
-	.build-artefacts/python-venv/bin/pip install "psycopg2"
-	.build-artefacts/python-venv/bin/pip install "PyYAML"
+.build-artefacts/translate-requirements-installation.timestamp: .build-artefacts/python-venv
+	.build-artefacts/python-venv/bin/pip install "psycopg2==2.5.1"
+	.build-artefacts/python-venv/bin/pip install "PyYAML==3.10"
 	touch $@
 
 .build-artefacts/python-venv/bin/gjslint: .build-artefacts/python-venv
