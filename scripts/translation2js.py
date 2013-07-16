@@ -117,12 +117,12 @@ for lang in config["langs"]:
     var_arr.sort()
     for var_msgid in var_arr:
         try:
-            myString = "\t\"" + var_msgid + "\" :\"" + \
+            myString = "\t\"" + var_msgid + "\": \"" + \
                        translationDict[lang][unicode(var_msgid)].replace("'","\\\'") + "\""
             file_langjs.write(myString.encode('utf-8'))
             isTodo = False
         except:
-            file_langjs.write("\t\"" + var_msgid + "\" :\"" + var_msgid + "\"")
+            file_langjs.write("\t\"" + var_msgid + "\": \"" + var_msgid + "\"")
             isTodo = True
 
         if int_counter < len(var_arr):
