@@ -29,14 +29,16 @@ files = [
   '../test/expect-0.2.0/expect.js',
   '../test/sinon-1.7.3/sinon.js',
   '../test/specs/Loader.spec.js',
-  '../test/specs/**/*.js',
-  'components/**/*.html'
+  '../test/specs/**/*.js'
 ];
 
 
-// generate js files from templates
 preprocessors = {
-  'components/**/*.html': 'html2js'
+  // In both prod mode (build.js) and dev mode (app-whitespace.js) the
+  // partials are pre-cached in Angular's $templateCache. So we don't
+  // need to use Karma's html2js preprocessor, and cache partials in
+  // tests using ngMock's "module" function.
+  //'components/**/*.html': 'html2js'
 };
 
 
