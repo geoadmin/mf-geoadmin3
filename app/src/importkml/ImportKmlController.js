@@ -4,8 +4,8 @@
   var module = angular.module('ga_importkml_controller', []);
 
   module.controller('GaImportKmlController', 
-    ['$scope', '$http', '$log', 'gaGlobalOptions', function($scope, $http, $log, gaGlobalOptions) {
-    
+    ['$scope', '$http', '$log', '$window', '$document',  '$browser', 'gaGlobalOptions', function($scope, $http, $log, $window, $document, $browser, gaGlobalOptions) {
+      //$scope.msie = msie;   
       $scope.file = null;  
       $scope.fileUrl = null;  
       $scope.fileContent = null; 
@@ -13,9 +13,10 @@
       $scope.progress = 0;
       $scope.options = {
         serviceUrl: gaGlobalOptions.serviceUrl,
-        proxyUrl: "ogcproxy?url="
+        proxyUrl: "ogcproxy?url=",
+        validationServiceUrl:  "http://www.kmlvalidator.org/validate.htm"
       };
-
+      
       // Handle fileURL
       $scope.handleFileUrl = function() {       
         var url = $scope.fileUrl;
@@ -25,7 +26,9 @@
           var proxyUrl =  $scope.options.proxyUrl + encodeURIComponent(url);
           $scope.userMessage = "Uploading file ...";
           $scope.progress = 0.1;
+          
 
+          // Angularjs doesn't handle onprogress event
           $http.get(proxyUrl)
             .success(function(data, status, headers, config) {
               $scope.userMessage = "Upload succeed !!!";
@@ -114,9 +117,19 @@
         
         try {
           vector.parseFeatures($scope.fileContent, kml, swissProjection);  
-          $scope.userMessage = "File parsed. Your datas are now display on the map.";
+          $scope.userMessage = "File parsed. Your data are now display on the map.";
           $scope.progress += 20;
-
+          $scope.map.on(['click'], function(evt) {
+            $scope.map.getFeatures({
+              pixel: evt.getPixel(),
+              layers: [vector],
+              success: function(features) {
+                if (features) {
+                  $log.log(features[0][0].values_); 
+                }                
+              }
+            });
+          });
         } catch(e) {
           $scope.userMessage = "Parsing failed for the following reason: " + e.message;
           $scope.progress = 0;
@@ -125,6 +138,7 @@
 
       };
 
+      
       $scope.clearUserOutput = function() {
         $scope.userMessage = "";
         $scope.progress = 0;

@@ -12,28 +12,43 @@
         scope: {
             map: "=gaImportKmlMap"
         },
-        link: function(scope, element, attrs, controller) {
+/*        compile: function(element, attr) {
+            //alert(msie);
+            $log.log(msie);
+            return;
+        },*/
+        link: function(scope, elt, attrs, controller) {
+         
+          // Deactivate user form submission with Enter key
+          elt.find('input').keypress(function(evt) {
+            var charCode = evt.charCode || evt.keyCode;
+            if (charCode  == 13) { //Enter key's keycode
+              return false;
+            }
+          }); 
+
+          // Submit the current form displayed for validation
+          elt.find('.validate-kml-file').click(function() {
+            var form =  $(elt).find('.tab-pane.active form');
+            form.submit();
+          });
             
           // Trigger the hidden input[type=file] onclick event
-          element.find('button').click(function() {
-            element.find('input[type="file"]').click();
+          elt.find('button').click(function() {
+            elt.find('input[type="file"]').click();
           });
                      
           // Register input[type=file] onchange event 
-          element.find("input[type=file]").bind('change', function(evt) {
+          elt.find("input[type=file]").bind('change', function(evt) {
                                   
             if (evt.target.files && evt.target.files.length > 0) {               
               // Use HTML5 fileAPI
               scope.$apply(function() {
                 scope.handleFileList(evt.target.files);
               });
-
+ 
             } else {
-              // No FileAPI
-              // Submit the form with an iframe hack
-              // var form = $(element).parent('form');
-              // form.submit();
-              // log.log(evt.target.value);               
+              // No FileAPI available               
            }
           });
           
@@ -74,7 +89,7 @@
 
             if (files && files.length > 0) {
                scope.$apply(function() {
-                scope.handleFileList(evt.files);
+                scope.handleFileList(files);
               });             
             
             } else if (evt.originalEvent.dataTransfer.types) {
@@ -87,14 +102,9 @@
               });
               
             } else {
-              // No FileAPI
-              // Use old behavior, download file using proxy
+              // No FileAPI available
             }                 
           });       
-        },
-
-        addDropZonElt: function(parentElt) {
-            
         }
       }; 
     }]

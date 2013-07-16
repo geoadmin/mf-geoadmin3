@@ -1,35 +1,54 @@
 
 <div class="tabbable"> <!-- Only required for left/right tabs -->
   <ul class="nav nav-tabs">
-    <li class="active">
+    
+    <li  class="active">
       <a href="#import-kml-tab1" data-toggle="tab" ng-click="clearUserOutput()">Local</a>
     </li>
+
     <li>
-      <a href="#import-kml-tab2" data-toggle="tab" ng-click="clearUserOutput()">URL</a>
+      <a href="#import-kml-tab2" data-toggle="tab"  ng-click="clearUserOutput()">URL</a>
     </li>
   </ul>
+
+  <a href="" class="validate-kml-file" ng-show="(file != null || fileUrl != null)"
+      ng-click="validateKMLFile(this)"> Is your KML valid ?</a>
+  
   <div class="tab-content">
+    
     <div class="tab-pane active" id="import-kml-tab1">
   
-      <form name="import-kml-file" href="#" onsubmit="return false;">
-        
-        <!-- Upload from a basic upload (hidden by default)--> 
-        <input type="file" />
+      <!-- Upload from a basic upload (the input file is hidden by default)-->
+      <form name="import-kml-file" id="imp" method="POST" target="_BLANK"
+          action="{{options.validationServiceUrl}}" 
+          enctype="multipart/form-data" >
+         
+        <input type="file" name="file"/>
     
         <!-- Button use to open the file chooser of the input file -->
-        <button>Browse ...</button><input class="import-kml-fake-file" type="text"
+        <button type="button">Browse ...</button><input class="import-kml-fake-file" type="text"n
         readonly value="{{(file.name) ? file.name + ', size: ' + file.size/1000 +
         ' ko' : ''}}"
-        placeholder="No file"/> 
+        placeholder="No file"/>
+
+        <!-- Use for validation --> 
+        <input type="hidden" name="type" value="direct-input"/> 
       </form>
 
     </div>
+
     <div class="tab-pane" id="import-kml-tab2">  
 
       <!-- Upload from an URL -->
-      <form name="import-kml-url" href="#" onsubmit="return false;">
-        <input type="url" placeholder="Paste an URL" ng-model="fileUrl"  ng-change="handleFileUrl()"/>
+      <form name="import-kml-url" method="POST" target="_BLANK" 
+          action="{{options.validationServiceUrl}}">
+        
+        <input type="url" name="url" placeholder="Paste an URL" ng-model="fileUrl"  ng-change="handleFileUrl()"/>
+        
+        <!-- Use for validation -->
+        <input type="hidden" name="type" value="uri"/> 
       </form>
+
     </div>
   </div>
 </div>

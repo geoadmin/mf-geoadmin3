@@ -37,12 +37,7 @@
       <div id="map" class="map" ga-map ga-map-map="map">
         <div ga-context-menu ga-context-menu-map="map"></div>
       </div>
-      <div id="import-kml" class="import-kml" ng-controller="GaImportKmlController"
-      style="background-color:white;padding:10px;border:black;position:absolute;top:110px;right:50px;" 
-            ga-import-kml 
-            ga-import-kml-map="map"
-            ga-import-kml-options="options"></div>
-      
+     
       <div id="footer" class="navbar navbar-fixed-bottom">
         <div id="scaleline" class="pull-left" ga-scale-line ga-scale-line-map="map"></div>
 % if device == 'desktop':
@@ -105,7 +100,23 @@
           </div>
           <div id="tools" class="collapse">
             <div class="accordion-inner">
-              <p>under construction ...</p>              
+              <div class="accordion-group level-2">
+               <div class="accordion-heading">
+                 <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#tools" href="#import">
+                   <span translate>Import</span>
+                 </a>
+               </div>
+               <div id="import" class="collapse">
+                  <div class="accordion-inner">
+                    <ul>
+                      <li>WMS (under construction ...)</li>
+                      <li>                        
+                        <a role="button" data-toggle="modal" href="#import-kml-modal" translate>KML</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div> <!-- .accordion-group -->
@@ -243,6 +254,24 @@
 	</div>
       </div>
     </div>
+
+    <!-- Modal: Import KML --> 
+    <div id="import-kml-modal" class="modal fade" tabindex="-1" role="dialog"
+        aria-labelledby="import-kml-label" aria-hidden="true">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"
+            aria-hidden="true">x</button>
+        <h3 id="import-kml-label" translate>Import KML</h3>
+      </div>
+      <div class="modal-body">
+        <div id="import-kml" class="import-kml" 
+            ng-controller="GaImportKmlController"
+            ga-import-kml 
+            ga-import-kml-map="map"
+        >
+        </div>
+      </div>
+    </div> 
 
 % if mode == "prod":
     <script src="${version}lib/build.js"></script>
