@@ -189,8 +189,12 @@
             </a>
           </div>
           <div id="catalog" class="collapse">
-            <div class="accordion-inner">
-              <p>under construction ...</p>
+            <div class="accordion-inner" ng-controller="GaCatalogtreeController">
+              <!-- FIXME: button only needed for testing -->
+              <button ng-click="switchCatalog()">Click me to change tree (temporary only)</button>
+              <div class="catalog">
+                <div id="catalogtree" ga-catalogtree val="tree"></div>
+              </div>
             </div>
           </div>
         </div> <!-- .accordion-group -->
