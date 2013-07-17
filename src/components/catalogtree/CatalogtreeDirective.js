@@ -17,6 +17,8 @@
         return {
           restrict: 'A',
           link: function(scope, element, attrs) {
+            //FIXME: It's recommended not to write to scope in
+            //directives...can we do without that?
             scope.$watch('val', function(val, oldVal) {
               if (val) {
                 scope.node_type = (val.children !== undefined) ?
@@ -28,11 +30,11 @@
                 $compile(newElement)(scope);
                 element.replaceWith(newElement);
               }
-            },
-            function getLegend(bodid) {
-              alert(bodid);
             }
             );
+            //FIXME: don't write to scope in directive.
+            //Need to find another solution for the ng-click binding
+            scope.getLegend = getLegend;
           },
           scope: {
             val: '=',
@@ -41,4 +43,8 @@
         };
       }]
   );
+
+  function getLegend(bodid) {
+    alert(bodid);
+  }
 })();

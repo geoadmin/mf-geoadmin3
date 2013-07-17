@@ -13,6 +13,7 @@
     </style>
   </head>
   <body ng-controller="CatalogTreeController">
+    <button ng-click="switchCatalog()">Click me to change tree</button>
 
     <div class="catalog">
        <div id="catalogtree" ga-catalogtree val="tree"></div>
@@ -39,11 +40,22 @@
         ]);
 
         module.controller('CatalogTreeController', ['$scope', '$http', function($scope, $http) {
+            var templates = [
+              'components/catalogtree/example/tree.json',
+              'components/catalogtree/example/bigtree.json'
+            ];
+            var curTemplate = 0;
 
-            var http = $http.get('components/catalogtree/example/bigtree.json');
-            http.success(function(data, status, header, config) {
-                $scope.tree = data.results;
-            });
+            $scope.switchCatalog = switchCatalog;
+            $scope.switchCatalog();
+
+            function switchCatalog() {
+              var http = $http.get(templates[curTemplate]);
+              http.success(function(data, status, header, config) {
+                  $scope.tree = data.results;
+              });
+              curTemplate = curTemplate === 0 ? 1 : 0;
+           };
 
         }]);
 
