@@ -1,0 +1,4 @@
+langs: [de,fr,en,it,rm]
+dsn: dbname='bod' user='www-data' host='pgcluster0t.bgdi.admin.ch'
+sql: select * from translations order by msg_id
+emptyFilename: empty.json
