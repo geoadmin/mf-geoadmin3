@@ -2,11 +2,11 @@
 <div class="tabbable"> <!-- Only required for left/right tabs -->
   <ul class="nav nav-tabs">
     
-    <li  class="active">
+    <li ng-if="!isIE9" class="active">
       <a href="#import-kml-tab1" data-toggle="tab" ng-click="clearUserOutput()">Local</a>
     </li>
 
-    <li>
+    <li class="{{(isIE9) ? 'active' : ''}}">
       <a href="#import-kml-tab2" data-toggle="tab"  ng-click="clearUserOutput()">URL</a>
     </li>
   </ul>
@@ -15,8 +15,11 @@
       ng-click="validateKMLFile(this)"> Is your KML valid ?</a>
   
   <div class="tab-content">
-    
-    <div class="tab-pane active" id="import-kml-tab1">
+
+    <!-- TO FIX: can't use ng-if here because the HTML content is added after the
+         execution of the "link" function of the directive and so the dynamic
+         js events are not added -->     
+    <div ng-show="!isIE9" class="tab-pane active" id="import-kml-tab1">
   
       <!-- Upload from a basic upload (the input file is hidden by default)-->
       <form name="import-kml-file" id="imp" method="POST" target="_BLANK"
@@ -26,8 +29,8 @@
         <input type="file" name="file"/>
     
         <!-- Button use to open the file chooser of the input file -->
-        <button type="button">Browse ...</button><input class="import-kml-fake-file" type="text"n
-        readonly value="{{(file.name) ? file.name + ', size: ' + file.size/1000 +
+        <button type="button">Browse ...</button><input class="import-kml-fake-file" type="text"
+            readonly value="{{(file.name) ? file.name + ', size: ' + file.size/1000 +
         ' ko' : ''}}"
         placeholder="No file"/>
 
@@ -37,7 +40,7 @@
 
     </div>
 
-    <div class="tab-pane" id="import-kml-tab2">  
+    <div class="tab-pane {{(isIE9) ? 'active' : ''}}" id="import-kml-tab2">  
 
       <!-- Upload from an URL -->
       <form name="import-kml-url" method="POST" target="_BLANK" 
@@ -58,8 +61,8 @@
   -->
   <div class="upload-result">
     {{userMessage}}
-    <div class="progress progress-striped {{(progress < 100 ) ? 'active' : ''}}" ng-show="(progress > 0)"> <!-- style="display:{{(uploadProgress
-    > 0) ? 'block' : 'none'}};"-->
+    <div class="progress progress-striped {{(progress < 100 ) ? 'active' : ''}}"
+    ng-show="(progress > 0 && progress < 100)">
       <div class="bar" style="width: {{progress}}%;"></div>
     </div>
   </div>
