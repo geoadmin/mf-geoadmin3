@@ -3,9 +3,12 @@
 
   var module = angular.module('ga_catalogtree_directive', []);
 
-  var partials = {
-    node: 'components/catalogtree/partials/node.html',
-    leaf: 'components/catalogtree/partials/leaf.html'
+  //FIXME: even these snippets should be in partials
+  var includes = {
+    node: '<div ng-include src="\'components/catalogtree/' +
+          'partials/node.html\'"></div>',
+    leaf: '<div ng-include src="\'components/catalogtree/' +
+          'partials/leaf.html\'"></div>'
   };
 
   module.directive('gaCatalogtree',
@@ -16,45 +19,12 @@
           link: function(scope, element, attrs) {
             scope.$watch('val', function(val, oldVal) {
               if (val) {
-                val.node_type = (scope.val.children !== 'undefined') ?
+                scope.node_type = (val.children !== undefined) ?
                          'node' : 'leaf';
-                val.selected_open = (val.selected_open != undefined) ?
+                scope.selected_open = (val.selected_open != undefined) ?
                          val.selected_open : true;
 
-                //var templateTemp = $templateCache.get(
-                //    partials[val.node_type]);
-
-                //FIXME: temporary only
-                //does not work:
-                var templateTemp = $templateCache.get(
-                    'components/permalinkpanel/partials/permalinkpanel.html');
-                console.log(templateTemp);
-                //does work:
-                $templateCache.put('test.html', '<div>Test</div>');
-                templateTemp = $templateCache.get('test.html');
-                console.log(templateTemp);
-                //end of fix
-                //
-                if (val.node_type == 'node') {
-                   var template =
-                   '<div class="ga-catalogtree-{{val.node_type}}"' +
-                   'ng-click="val.selected_open = !val.selected_open">' +
-                   '{{val.label}}</span></div>' +
-                   '<ul ng-show="val.selected_open">' +
-                   '  <li class="ga-catalogtree-node" ' +
-                   'ng-repeat="item in val.children">' +
-                   '     <span ga-catalogtree val="item" ' +
-                   'parent-data="val.children"></span>' +
-                   '  </li>' +
-                   '</ul>';
-                } else {
-                  var template = '<div ' +
-                   'class="ga-catalogtree-{{val.node_type}}">' +
-                   '{{val.label}}' +
-                   '<i class="icon-info-sign" ' +
-                   'ng-click="getLegend(val.bod_layer_id)"></i></div>';
-                }
-                var newElement = angular.element(template);
+                var newElement = angular.element(includes[scope.node_type]);
                 $compile(newElement)(scope);
                 element.replaceWith(newElement);
               }
