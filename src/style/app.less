@@ -320,7 +320,11 @@
 }
 
 .modal-backdrop {
- z-index: 1200;
+  z-index: 1200;
+}
+
+.modal.fade.ga-draggable {
+  transition: none; /* Hack to improve drag on firefox */
 }
 
 #import-kml-modal {

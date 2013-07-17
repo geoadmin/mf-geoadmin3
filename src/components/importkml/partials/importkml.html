@@ -61,9 +61,11 @@
   -->
   <div class="upload-result">
     {{userMessage}}
-    <div class="progress progress-striped {{(progress < 100 ) ? 'active' : ''}}"
+    <div ng-if="!isIE" class="progress progress-striped {{(progress < 100 ) ? 'active' : ''}}"
     ng-show="(progress > 0)">
-      <div class="bar" style="width: {{progress}}%;"></div>
+     <!-- TO FIX: issue ie9-10:  https://github.com/angular/angular.js/issues/2186
+          -->
+      <div class="bar" style="width:{{progress}}%;"></div>
     </div>
   </div>
   
