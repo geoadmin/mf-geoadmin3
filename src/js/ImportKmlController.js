@@ -7,7 +7,7 @@
       ['$scope', '$http', '$log', 'gaGlobalOptions', 'gaBrowserSniffer',
        function($scope, $http, $log, gaGlobalOptions, gaBrowserSniffer) {
          $scope.isIE9 = (gaBrowserSniffer.msie == 9);
-         $scope.isIE = (gaBrowserSniffer.msie);
+         $scope.isIE = !isNaN(gaBrowserSniffer.msie);
          $scope.file = null;
          $scope.fileUrl = null;
          $scope.fileContent = null;
