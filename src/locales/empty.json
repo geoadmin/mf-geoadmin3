@@ -14,5 +14,10 @@
   "print_scale": "",
   "legend": "",
   "print_action": "",
-  "embed_map": ""
+  "embed_map": "",
+  "qrcode_tooltip": "",
+  "twitter_tooltip": "",
+  "facebook_tooltip": "",
+  "google_plus_tooltip": "",
+  "mail_tooltip": ""
 }
