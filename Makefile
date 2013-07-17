@@ -27,7 +27,7 @@ help:
 	@echo "- cleanall     Remove all the build artefacts"
 	@echo "- deploybranch Deploys current branch (note: takes code from github)"
 	@echo "- updateol     Update ol.js, ol-simple.js and ol-whitespace.js"
-	@echo "- translate    Generate the translation files"
+	@echo "- translate    Generate the translation files (requires db user pwd in ~/.pgpass: dbServer:dbPort:*:dbUser:dbUserPwd)"
 	@echo "- help         Display this help"
 	@echo
 	@echo "Variables:"
