@@ -6,9 +6,9 @@
   module.directive('gaDraggable', function($document) {
     return function(scope, element, attr) {
       var startX = 0, startY = 0, x = null, y = null;
-      
+
       // Firefoy doesn't like transition during drag
-      element.addClass("ga-draggable");
+      element.addClass('ga-draggable');
 
 
       element.bind('mousedown', function(evt) {
