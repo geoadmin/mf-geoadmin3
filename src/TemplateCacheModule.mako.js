@@ -15,6 +15,7 @@
       content = re.sub(r'>\s*<' , '><', content)
       content = re.sub(r'\s\s+', ' ', content)
       content = re.sub(r'\n', '', content)
+      content = re.sub(r"'", "\\'", content)
       _partials[p] = content
 %>\
 // Generated code. Do not edit.
