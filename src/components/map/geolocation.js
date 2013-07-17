@@ -12,7 +12,7 @@ ga_map_geolocation = function(opt_options) {
   var element;
   var self = this;
 
-  if ('geolocation' in navigator) {
+  if (ol.Geolocation.SUPPORTED) {
     element = goog.dom.createDom(goog.dom.TagName.A, {
       'class': 'geolocation',
       'href': '#geolocation'
