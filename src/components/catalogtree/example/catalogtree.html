@@ -26,10 +26,9 @@
     <script src="lib/angular-translate-0.9.4.js"></script>
     <script>
       window.CLOSURE_NO_DEPS = true;
-      window.CLOSURE_BASE_PATH = "src/";
     </script>
     <script src="lib/ol-whitespace.js"></script>
-    <script src="src/deps.js"></script>
+    <script src="deps.js"></script>
     <script>
       goog.require('ga_catalogtree');
     </script>
@@ -41,7 +40,7 @@
 
         module.controller('CatalogTreeController', ['$scope', '$http', function($scope, $http) {
 
-            var http = $http.get('src/catalogtree/example/tree.json');   
+            var http = $http.get('components/catalogtree/example/tree.json');   
             http.success(function(data, status, header, config) {
                 $scope.tree = data.results;
             });
