@@ -60,30 +60,27 @@
                dragEnterZone.bind('dragenter', function(evt) {
                  evt.stopPropagation();
                  evt.preventDefault();
-                 //$log.log("dragenter");
+                 //$log.log('dragenter');
                  dropZone.css('display', 'table');
-                 evt.originalEvent.dataTransfer.effectAllowed = "all";
-
-                 evt.originalEvent.dataTransfer.dropEffect = "copy";
                });
 
                dropZone.bind('dragleave', function(evt) {
                  evt.stopPropagation();
                  evt.preventDefault();
-                 //$log.log("dragleave");
+                 //$log.log('dragleave');
                  this.style.display = 'none';
                });
 
                dropZone.bind('dragover', function(evt) {
                  evt.stopPropagation();
                  evt.preventDefault();
-                 //$log.log("dragover");
+                 //$log.log('dragover');
                });
 
                dropZone.bind('drop', function(evt) {
                  evt.stopPropagation();
                  evt.preventDefault();
-                 //$log.log("drop");
+                 //$log.log('drop');
                  this.style.display = 'none';
 
                  // A file, an <a> html tag or a plain text url can be dropped
@@ -97,8 +94,9 @@
                  } else if (evt.originalEvent.dataTransfer.types) {
                    // No files so may be it's HTML link or a URL which has been
                    // dropped
-                   var text = evt.originalEvent.dataTransfer.getData('text/plain');
-                       
+                   var text = evt.originalEvent.dataTransfer
+                       .getData('text/plain');
+
                    scope.$apply(function() {
                      scope.fileUrl = text;
                      scope.handleFileUrl();
