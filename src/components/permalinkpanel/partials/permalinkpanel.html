@@ -34,12 +34,12 @@
   <input type="text" ng-model="permalinkValue" ng-click="selectOnClick($event)">
   <span class="input-group-btn">
     <button class="btn btn-default" ng-disabled="urlShortened"
-            ng-click="shortenUrl()" translate>Shorten URL</button>
+            ng-click="shortenUrl()" translate>shorten_url</button>
   </span>
 </div>
 
 <form>
-  <label>Embed map</label>
+  <label translate>embed_map</label>
   <textarea rows="8" cols="40" ng-click="selectOnClick($event)">
 <iframe width="800" height="600" frameborder="0" scrolling="no" src="{{permalinkHref}}"></iframe>
   </textarea>
