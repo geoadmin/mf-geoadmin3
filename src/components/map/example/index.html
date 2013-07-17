@@ -64,9 +64,9 @@
 
                 $scope.map = map;
 
-                map.addLayer(
-                        gaLayers.getOlLayerById('ch.swistopo.swissimage');
-                )
+                var layer = gaLayers.getOlLayerById('ch.swisstopo.swissimage');
+                console.log(layer);
+                $scope.map.addLayer(layer);
             }]);
 
         })();
