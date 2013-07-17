@@ -371,6 +371,7 @@ source src_ch_astra_ivs-nat
         SELECT \
             nat_id::bigint as id \
             , ivs_slaname as label \
+            , 'feature' as origin \
             , remove_accents(ivs_slaname)||' '||remove_accents(ivs_nummer)||' '||remove_accents(ivs_signatur) as detail \
             , 'ch.astra.ivs-nat' as layer \
             , quadindex(the_geom) as geom_quadindex \
@@ -378,6 +379,7 @@ source src_ch_astra_ivs-nat
             , nat_id::bigint as id \
         from astra.ivs_nat
     sql_attr_bigint = id
+    sql_attr_string = origin
     sql_attr_string = layer
     sql_attr_string = geom_st_box2d
     sql_field_string = geom_quadindex
@@ -396,6 +398,7 @@ source src_ch_astra_ivs-reg_loc
     sql_query = \
         SELECT reg_loc_id::bigint as id \
             , ivs_slaname as label \
+            , 'feature' as origin \
             , remove_accents(ivs_slaname)||' '||remove_accents(ivs_nummer)||' '||remove_accents(ivs_signatur) as detail \
             , 'ch.astra.ivs-reg_loc' as layer \
             , quadindex(the_geom) as geom_quadindex \
@@ -403,6 +406,7 @@ source src_ch_astra_ivs-reg_loc
             , reg_loc_id::bigint as id \
         from astra.ivs_reg_loc
     sql_attr_bigint = id
+    sql_attr_string = origin
     sql_attr_string = layer
     sql_attr_string = geom_st_box2d
     sql_field_string = geom_quadindex
