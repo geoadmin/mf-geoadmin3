@@ -281,7 +281,7 @@ class SearchValidation(MapNameValidation):
     def searchText(self, value):
         if value is None:
             raise exc.HTTPBadRequest("Please provide a search text")
-        self._searchText = value
+        self._searchText = value.split(' ')
 
     @bbox.setter
     def bbox(self, value):

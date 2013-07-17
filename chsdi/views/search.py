@@ -65,10 +65,10 @@ class Search(SearchValidation):
             if limit > 0:
                 self.sphinx.SetLimits(0, limit)
                 if self.quadindex is not None:
-                    searchText = '@detail ' + self.searchText
+                    searchText = self._query_detail('@detail')
                     searchText += ' & @geom_quadindex ' + self.quadindex + '*'
                 else:
-                    searchText = self.searchText
+                    searchText = self._query_detail('@detail')
                 temp = self.sphinx.Query(searchText, index=idx)['matches']
                 if len(temp) != 0:
                     self.results['locations'] += temp
@@ -81,7 +81,7 @@ class Search(SearchValidation):
                 # if the limit has not been reached yet, try to look outside the bbox
                 if limit > 0:
                     self.sphinx.SetLimits(0, limit)
-                    searchText = '@detail ' + self.searchText
+                    searchText = self._query_detail('@detail')
                     searchText += ' & @geom_quadindex !' + self.quadindex + '*'
                     temp = self.sphinx.Query(searchText, index=idx)['matches']
                     if len(temp) != 0:
@@ -95,7 +95,8 @@ class Search(SearchValidation):
         # 10 features per layer are returned at max
         self.sphinx.SetLimits(0, self.LAYER_LIMIT)
         index_name = 'layers_' + self.lang
-        searchText = '@(detail,layer) ' + self.searchText + ' & @topics ' + self.mapName
+        searchText = self._query_detail('@(detail,layer)')
+        searchText += ' & @topics ' + self.mapName
         temp = self.sphinx.Query(searchText, index=index_name)
         if len(temp['matches']) != 0:
             self.results['map_info'] += temp['matches']
@@ -105,9 +106,10 @@ class Search(SearchValidation):
         # 5 features per layer are returned at max
         self.sphinx.SetLimits(0, self.FEATURE_LIMIT)
         if self.quadindex is None:
-            self._add_feature_queries(self.searchText)
+            searchText = self._query_detail('@detail')
+            self._add_feature_queries(searchText)
         else:
-            searchText = '@detail ' + self.searchText
+            searchText = self._query_detail('@detail')
             searchText += ' & @geom_quadindex ' + self.quadindex + '*'
             self._add_feature_queries(searchText)
         temp = self.sphinx.RunQueries()
@@ -115,7 +117,7 @@ class Search(SearchValidation):
 
         #look outside the bbox if no match when the bbox is defined
         if self.quadindex is not None and nb_match == 0:
-            searchText = '@detail ' + self.searchText
+            searchText = self._query_detail('@detail')
             searchText += ' & @geom_quadindex !' + self.quadindex + '*'
             self._add_feature_queries(searchText)
             
@@ -123,6 +125,17 @@ class Search(SearchValidation):
             nb_match = self._nb_of_match(temp)
 
         return nb_match
+
+    def _query_detail(self, fields):
+        searchText = ''
+        counter = 1
+        for text in self.searchText:
+            if counter != len(self.searchText):
+                searchText += fields + ' ' + text + '* & '
+            else:
+                searchText += fields + ' ' + text + '*'
+            counter += 1
+        return searchText
 
     def _add_feature_queries(self, searchText):
         for index in self.featureIndexes:
