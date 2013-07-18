@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from sqlalchemy import Column, Text, Integer, Boolean, Float
+from sqlalchemy import Column, Text, Integer, Boolean
 from sqlalchemy.dialects import postgresql
 
 from chsdi.models import bases
@@ -73,6 +73,8 @@ class LayersConfig(Base):
     format = Column('image_format', Text)
     type = Column('layertype', Text)
     opacity = Column('opacity', Text)
+    minResolution = Column('minresolution', Text)
+    maxResolution = Column('maxresolution', Text)
     parentLayerId = Column('parentlayerid', Text)
     queryable = Column('queryable', Boolean)
     searchable = Column('searchable', Boolean)
@@ -81,13 +83,14 @@ class LayersConfig(Base):
     matrixSet = Column('tilematrixsetid', Text)
     timeEnabled = Column('timeenabled', Boolean)
     timestamps = Column('timestamps', postgresql.ARRAY(Text))
+    maps = Column('topics', Text)
     wmsLayers = Column('wms_layers', Text)
     wmsUrl = Column('wms_url', Text)
 
     def getLayerConfig(self, translate):
         config = {}
         for k in self.__dict__.keys():
-            if not k.startswith("_") and self.__dict__[k] is not None:
+            if not k.startswith("_") and self.__dict__[k] is not None and k != 'topics':
                 if k == 'idBod':
                     config['label'] = translate(self.__dict__[k])
                 elif k == 'attribution':
