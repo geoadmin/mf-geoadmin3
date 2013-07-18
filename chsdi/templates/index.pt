@@ -51,6 +51,9 @@
           <a href='rest/services/profile.json?geom={"type"%3A"LineString"%2C"coordinates"%3A[[550050%2C206550]%2C[556950%2C204150]%2C[561050%2C207950]]}&elevation_models=DTM25,DTM2'>Profile in json format</a> <br>
           <a href='rest/services/profile.csv?geom={"type"%3A"LineString"%2C"coordinates"%3A[[550050%2C206550]%2C[556950%2C204150]%2C[561050%2C207950]]}&elevation_models=DTM25,DTM2'>Profile in csv format</a> <br>
           <a href='rest/services/geoadmin/1.0.0/WMTSCapabilities.xml'>WMTS capabilities geoadmin</a> <br>
+
+      <h2>Layers Configuration</h2>
+          <a href='rest/services/bafu/MapServer/layersconfig'>Get the layers configuration for topic bafu</a> <br>
           
       <h2>Ogcproxy</h2>
           <a href="ogcproxy?url=http://wms.pcn.minambiente.it/ogc?map=/ms_ogc/WMS_v1.3/raster/IGM_100000.map&VERSION=1.3.0&SERVICE=WMS&REQUEST=GetCapabilities">Get

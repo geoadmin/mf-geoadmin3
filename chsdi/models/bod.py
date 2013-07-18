@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from sqlalchemy import Column, Text, Integer 
+from sqlalchemy import Column, Text, Integer, Boolean
+from sqlalchemy.dialects import postgresql
 
 from chsdi.models import bases
 
@@ -40,8 +41,6 @@ class Bod(object):
             'idGeoCat': self.idGeoCat,
             'name': self.name,
             'fullName': self.fullName,
-            'parentLayerId': None, # Temporary until the view is updated
-            'subLayerId': None, # Temporary until the view is updated
             'attributes': {
                 'maps': self.maps,
                 'dataOwner': self.dataOwner,
@@ -62,6 +61,54 @@ class Bod(object):
                 'scaleLimit': self.scaleLimit
             }
         }
+
+class LayersConfig(Base):
+    __tablename__ = 'view_layers_js'
+    __table_args__ = ({'schema': 're3', 'autoload': False})
+
+    idBod = Column('layer_id', Text, primary_key=True)
+    attribution = Column('attribution', Text)
+    background = Column('backgroundlayer', Boolean)
+    haslegend = Column('haslegend', Boolean)
+    format = Column('image_format', Text)
+    type = Column('layertype', Text)
+    opacity = Column('opacity', Text)
+    minResolution = Column('minresolution', Text)
+    maxResolution = Column('maxresolution', Text)
+    parentLayerId = Column('parentlayerid', Text)
+    queryable = Column('queryable', Boolean)
+    searchable = Column('searchable', Boolean)
+    singleTile = Column('singletile', Boolean)
+    subLayerIds = Column('sublayerids', Text)
+    matrixSet = Column('tilematrixsetid', Text)
+    timeEnabled = Column('timeenabled', Boolean)
+    timestamps = Column('timestamps', postgresql.ARRAY(Text))
+    maps = Column('topics', Text)
+    wmsLayers = Column('wms_layers', Text)
+    wmsUrl = Column('wms_url', Text)
+
+    def getLayerConfig(self, translate):
+        config = {}
+        for k in self.__dict__.keys():
+            if not k.startswith("_") and self.__dict__[k] is not None and k != 'topics':
+                if k == 'idBod':
+                    config['label'] = translate(self.__dict__[k])
+                elif k == 'attribution':
+                    config[k] = translate(self.__dict__[k])
+                elif k == 'matrixSet':
+                    if self.__dict__[k] != '21781_26':
+                        config['resolutions'] = self._getResolutionsFromMatrixSet(
+                            self.__dict__[k]
+                        )
+                else:
+                    config[k] = self.__dict__[k]
+        return {self.idBod: config}
+
+    def _getResolutionsFromMatrixSet(self, matrixSet):
+        resolutions = [4000, 3750, 3500, 3250, 3000, 2750, 2500, 2250, 2000, 1750, 1500, 1250,
+            1000, 750, 650, 500, 250, 100, 50, 20, 10, 5, 2.5, 2, 1.5, 1, 0.5,  0.25, 0.1]
+        matrixSet = int(matrixSet.split('_')[1])
+        return resolutions[0:matrixSet+1]
 
 class BodLayerDe(Base, Bod):
     __tablename__ = 'view_bod_layer_info_de'
@@ -178,7 +225,11 @@ class Catalog(Base):
 
     def to_dict(self):
         self.label = self.bod_layer_id or self.path
-        return dict([(k, getattr(self, k)) for k in self.__dict__.keys() if not k.startswith("_")])
+        return dict([
+            (k, getattr(self, k)) for
+            k in self.__dict__.keys() 
+            if not k.startswith("_")
+        ])
 
 
 def get_bod_model(lang):
