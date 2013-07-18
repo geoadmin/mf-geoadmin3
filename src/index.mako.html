@@ -235,27 +235,33 @@
 
     <!-- feedback dialog partial -->
     <div id="feedback" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="feedbackLabel" aria-hidden="true">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-        <h3 id="feedbackLabel" translate>problem_announcement</h3>
-      </div>
-      <div class="modal-body">
-        <form ng-controller="GaFeedbackController" ng-submit="submit()">
-          <label translate>feedback_mail</label>
-          <input type="email" name="email" ng-model="email" required>
-          <label translate>feedback_description</label>
-          <textarea rows=3 name="feedback" ng-model="feedback"></textarea>
-          <label translate>feedback_permalink</label>&nbsp;<a href="{{ permalinkValue }}" target="_blank" translate>permalink</a>
-          <br>
-          <label translate>feedback_revision</label>
-          <br>
-          <div class="form-actions pull-right">
-            <button type="button" class="btn" data-dismiss="modal" translate>cancel</button>
-            <button type="submit" class="btn btn-primary" translate>send</button>
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+            <h4 class="modal-title" translate>problem_announcement</h4>
           </div>
-        </form>
+          <div class="modal-body">
+            <form ng-controller="GaFeedbackController" ng-submit="submit()">
+              <label translate>feedback_mail</label>
+              <input type="email" name="email" ng-model="email" required>
+              <label translate>feedback_description</label>
+              <textarea rows=3 name="feedback" ng-model="feedback"></textarea>
+              <label translate>feedback_permalink</label>&nbsp;<a href="{{ permalinkValue }}" target="_blank" translate>permalink</a>
+              <br>
+              <label translate>feedback_revision</label>
+              <br>
+              <div class="modal-footer">
+                <button type="button" class="btn" data-dismiss="modal" translate>cancel</button>
+                <button type="submit" class="btn btn-primary" translate>send</button>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
-    </div>  
+    </div>
+
+
   </body>
 </html>
 
