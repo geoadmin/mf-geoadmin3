@@ -175,11 +175,6 @@ class Catalog(Base):
     __table_args__ = ({'schema': 're3', 'autoload': True})
 
     id = Column('bgdi_id', Integer, primary_key=True)
-    parent_id = Column(Integer)
-    order_key = Column(Integer)
-    category = Column(Text)
-    #topic = Column(Text)
-
 
     def to_dict(self):
         self.label = self.bod_layer_id or self.path
