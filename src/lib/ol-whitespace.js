@@ -4191,10 +4191,10 @@ ol.Object.prototype.set = function(key, value) {
     this.notifyInternal_(key)
   }
 };
-ol.Object.prototype.setOptions = function(options) {
+ol.Object.prototype.setValues = function(values) {
   var key, value, setterName;
-  for(key in options) {
-    value = options[key];
+  for(key in values) {
+    value = values[key];
     setterName = ol.Object.getSetterName(key);
     if(this[setterName]) {
       this[setterName](value)
@@ -4203,7 +4203,6 @@ ol.Object.prototype.setOptions = function(options) {
     }
   }
 };
-ol.Object.prototype.setValues = ol.Object.prototype.setOptions;
 ol.Object.prototype.unbind = function(key) {
   var listeners = ol.Object.getListeners(this);
   var listener = listeners[key];
@@ -14698,7 +14697,7 @@ goog.require("ol.interaction.TouchZoom");
 ol.interaction.defaults = function(opt_options, opt_interactions) {
   var options = goog.isDef(opt_options) ? opt_options : {};
   var interactions = new ol.Collection;
-  var kinetic = new ol.Kinetic(-0.005, 0.05, 100);
+  var kinetic = new ol.Kinetic(-0.0050, 0.05, 100);
   var altShiftDragRotate = goog.isDef(options.altShiftDragRotate) ? options.altShiftDragRotate : true;
   if(altShiftDragRotate) {
     interactions.push(new ol.interaction.DragRotate)
