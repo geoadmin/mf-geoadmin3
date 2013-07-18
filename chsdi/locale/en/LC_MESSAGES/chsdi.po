@@ -53,8 +53,63 @@ msgstr "Thematic geoportal"
 msgid "WMS Dienst"
 msgstr "WMS service"
 
-msgid "ch.astra.ivs-nat"
-msgstr "IHR national"
+#. TODO
+msgid "bafu.silvaprotect-uebersarung"
+msgstr "bafu.silvaprotect-uebersarung"
+
+msgid "ch.are"
+msgstr "ARE"
+
+msgid "ch.are.agglomerationen_isolierte_staedte-2000"
+msgstr "Agglomeration and isolated cities"
+
+msgid "ch.are.alpenkonvention"
+msgstr "Alpine Convention"
+
+msgid "ch.are.bauzonen"
+msgstr "Building zones Switzerland (harm.)"
+
+msgid "ch.are.belastung-gueterverkehr-bahn-2008"
+msgstr "Freight traffic 2008"
+
+msgid "ch.are.belastung-gueterverkehr-strasse-2008"
+msgstr "Schwerer Güterverkehr 2008"
+
+msgid "ch.are.belastung-personenverkehr-bahn-2008"
+msgstr "Passenger traffic 2008"
+
+msgid "ch.are.belastung-personenverkehr-strasse-2008"
+msgstr "Jährliche Belastung des schweizerischen Strassennetzes 2008 (Personenverkehr)"
+
+msgid "ch.are.beschaeftigtendichte-bz08"
+msgstr "Beschäftigtendichte 2008"
+
+msgid "ch.are.bevoelkerungsdichte-vz00"
+msgstr "Bevölkerungsdichte 2000"
+
+msgid "ch.are.gemeindetypen"
+msgstr "Typology of municipalities ARE"
+
+msgid "ch.are.gueteklassen_oev"
+msgstr "ÖV-Güteklassen ARE"
+
+msgid "ch.are.landschaftstypen"
+msgstr "Landschaftstypologie Schweiz"
+
+msgid "ch.are.reisezeit_miv-2005"
+msgstr "Reisezeit zu Zentren mit dem MIV 2005"
+
+msgid "ch.are.reisezeit_oev-2005"
+msgstr "Reisezeit zu Zentren ÖV 2005"
+
+msgid "ch.astra"
+msgstr "FEDRO"
+
+msgid "ch.astra.ausnahmetransportrouten"
+msgstr "Cant. routes for exceptional loads"
+
+msgid "ch.astra.ivs-gelaendekarte"
+msgstr "Inventory historical routes terrain map"
 
 msgid "ch.astra.ivs-nat"
 msgstr "IHR national"
@@ -62,20 +117,899 @@ msgstr "IHR national"
 msgid "ch.astra.ivs-nat-verlaeufe"
 msgstr "IHR national without substance"
 
-msgid "ch.astra.ivs-nat-verlaeufe"
-msgstr "IHR national without substance"
+msgid "ch.astra.ivs-nat_abgrenzungen"
+msgstr "IHR Boundaries"
+
+msgid "ch.astra.ivs-nat_wegbegleiter"
+msgstr "IHR Elements of landscape"
 
 msgid "ch.astra.ivs-reg_loc"
 msgstr "IHR regional & local"
 
-msgid "ch.astra.ivs-reg_loc"
-msgstr "IHR regional & local"
+msgid "ch.astra.strassenverkehrszaehlung_messstellen-regional_lokal"
+msgstr "Traffic counting locations local"
+
+msgid "ch.astra.strassenverkehrszaehlung_messstellen-uebergeordnet"
+msgstr "Traffic counting locations principal"
+
+msgid "ch.babs"
+msgstr "UFPP"
+
+msgid "ch.babs.kulturgueter"
+msgstr "Protection of cultural property inventory"
+
+msgid "ch.bafu"
+msgstr "FOEN"
+
+msgid "ch.bafu.aquaprotect_050"
+msgstr "Areas of flooding Aquaprotect 50"
+
+msgid "ch.bafu.aquaprotect_100"
+msgstr "Areas of flooding Aquaprotect 100"
+
+msgid "ch.bafu.aquaprotect_250"
+msgstr "Areas of flooding Aquaprotect 250"
+
+msgid "ch.bafu.aquaprotect_500"
+msgstr "Areas of flooding Aquaprotect 500"
+
+msgid "ch.bafu.biogeographische_regionen"
+msgstr "Biogeographical regions"
+
+msgid "ch.bafu.bundesinventare-amphibien"
+msgstr "Amphibians stationary objects"
+
+msgid "ch.bafu.bundesinventare-amphibien_anhang4"
+msgstr "Amphibians appendix 4"
+
+msgid "ch.bafu.bundesinventare-amphibien_wanderobjekte"
+msgstr "Amphibians shifting sites"
+
+msgid "ch.bafu.bundesinventare-auen"
+msgstr "Floodplains"
 
 msgid "ch.bafu.bundesinventare-bln"
 msgstr "ILNM"
 
+msgid "ch.bafu.bundesinventare-flachmoore"
+msgstr "Fens"
+
+msgid "ch.bafu.bundesinventare-flachmoore_regional"
+msgstr "Regional fens"
+
+msgid "ch.bafu.bundesinventare-hochmoore"
+msgstr "Raised bogs"
+
 msgid "ch.bafu.bundesinventare-jagdbanngebiete"
 msgstr "Swiss game reserves"
+
+msgid "ch.bafu.bundesinventare-moorlandschaften"
+msgstr "Mire landscapes"
+
+msgid "ch.bafu.bundesinventare-trockenwiesen_trockenweiden"
+msgstr "Dry grasslands (DGS)"
+
+msgid "ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhang2"
+msgstr "Dry grasslands appendix 2"
+
+msgid "ch.bafu.bundesinventare-vogelreservate"
+msgstr "Water & migrant bird reserves"
+
+msgid "ch.bafu.fauna-steinbockkolonien"
+msgstr "Ibex colonies"
+
+msgid "ch.bafu.fauna-vernetzungsachsen_national"
+msgstr "Wildlife network system"
+
+msgid "ch.bafu.fauna-wildtierkorridor_national"
+msgstr "Interregional wildlife corridor"
+
+msgid "ch.bafu.fischerei-aeschen_kernzonen"
+msgstr "Graylings: core areas"
+
+msgid "ch.bafu.fischerei-aeschen_laichplaetze"
+msgstr "Graylings: spawning grounds"
+
+msgid "ch.bafu.fischerei-aeschen_larvenhabitate"
+msgstr "Graylings: larva habitats"
+
+msgid "ch.bafu.fischerei-aeschen_verbreitungsgebiet"
+msgstr "Grayling: distribution area"
+
+msgid "ch.bafu.fischerei-krebspest"
+msgstr "Crayfish plague"
+
+msgid "ch.bafu.fischerei-nasenlaichplaetze"
+msgstr "Nase spawning grounds"
+
+msgid "ch.bafu.fischerei-proliferative_nierenkrankheit"
+msgstr "PKD (proliferative kidney disease)"
+
+msgid "ch.bafu.flora-schwingrasen"
+msgstr "Quaking bogs"
+
+msgid "ch.bafu.flora-verbreitungskarten"
+msgstr "Raster distribution maps"
+
+msgid "ch.bafu.flora-weltensutter_atlas"
+msgstr "Welten&Sutter atlas"
+
+msgid "ch.bafu.gefahren-baugrundklassen"
+msgstr "Subsoil classes"
+
+msgid "ch.bafu.gefahren-gefaehrdungszonen"
+msgstr "Seismic risk zones"
+
+msgid "ch.bafu.gefahren-historische_erdbeben"
+msgstr "Past earthquakes"
+
+msgid "ch.bafu.gefahren-mikrozonierung"
+msgstr "Micro-zoning"
+
+msgid "ch.bafu.gefahren-spektral"
+msgstr "Spectral micro-zoning"
+
+msgid "ch.bafu.holznutzung"
+msgstr "Wood harvesting and mortality (NFI)"
+
+msgid "ch.bafu.holzvorrat"
+msgstr "Standing volume (NFI)"
+
+msgid "ch.bafu.holzzuwachs"
+msgstr "Wood increment (NFI)"
+
+msgid "ch.bafu.hydrologie-gewaesserzustandsmessstationen"
+msgstr "Water status monitoring stations"
+
+msgid "ch.bafu.hydrologie-hydromessstationen"
+msgstr "Hydrological gauging stations"
+
+msgid "ch.bafu.hydrologie-wassertemperaturmessstationen"
+msgstr "Temperature monitoring stations"
+
+msgid "ch.bafu.laerm-bahnlaerm_nacht"
+msgstr "Railway noise (Lr_night)"
+
+msgid "ch.bafu.laerm-bahnlaerm_tag"
+msgstr "Railway noise (Lr_day)"
+
+msgid "ch.bafu.laerm-strassenlaerm_nacht"
+msgstr "Road traffic noise (Lr_night)"
+
+msgid "ch.bafu.laerm-strassenlaerm_tag"
+msgstr "Road traffic noise (Lr_day)"
+
+msgid "ch.bafu.landesforstinventar-baumarten"
+msgstr "Tree species (NFI)"
+
+msgid "ch.bafu.landesforstinventar-totholz"
+msgstr "Dead wood (NFI)"
+
+msgid "ch.bafu.landesforstinventar-waldanteil"
+msgstr "Percentage of forest area (NFI)"
+
+msgid "ch.bafu.moose"
+msgstr "Red list bryophytes"
+
+msgid "ch.bafu.nabelstationen"
+msgstr "Air pollution: NABEL Stations"
+
+msgid "ch.bafu.naqua-grundwasser_nitrat"
+msgstr "Nitrates"
+
+msgid "ch.bafu.naqua-grundwasser_psm"
+msgstr "Plant protection products"
+
+msgid "ch.bafu.naqua-grundwasser_voc"
+msgstr "Volatile Organic Compounds"
+
+msgid "ch.bafu.permafrost"
+msgstr "Potential permafrost distribution"
+
+msgid "ch.bafu.ren-extensive_landwirtschaftsgebiete"
+msgstr "REN extensive agricultural area"
+
+msgid "ch.bafu.ren-feuchtgebiete"
+msgstr "REN wetland site"
+
+msgid "ch.bafu.ren-fliessgewaesser_seen"
+msgstr "REN watercourses / lakes"
+
+msgid "ch.bafu.ren-trockenstandorte"
+msgstr "REN dry habitat"
+
+msgid "ch.bafu.ren-wald"
+msgstr "REN forest"
+
+msgid "ch.bafu.schutzgebiete-biosphaerenreservate"
+msgstr "Biosphere reserves"
+
+msgid "ch.bafu.schutzgebiete-luftfahrt"
+msgstr "Protected sites"
+
+msgid "ch.bafu.schutzgebiete-paerke_nationaler_bedeutung"
+msgstr "Parks"
+
+msgid "ch.bafu.schutzgebiete-ramsar"
+msgstr "Ramsar"
+
+msgid "ch.bafu.schutzgebiete-schweizerischer_nationalpark"
+msgstr "Swiss National Park"
+
+msgid "ch.bafu.schutzgebiete-smaragd"
+msgstr "Emerald sites"
+
+msgid "ch.bafu.showme-gemeinden_hochwasser"
+msgstr "ShowMe communes: floods"
+
+msgid "ch.bafu.showme-gemeinden_lawinen"
+msgstr "ShowMe communes: avalanches"
+
+msgid "ch.bafu.showme-gemeinden_rutschungen"
+msgstr "ShowMe communes: landslides"
+
+msgid "ch.bafu.showme-gemeinden_sturzprozesse"
+msgstr "ShowMe communes: rockfall"
+
+msgid "ch.bafu.showme-kantone_hochwasser"
+msgstr "ShowMe cantons: floods"
+
+msgid "ch.bafu.showme-kantone_lawinen"
+msgstr "ShowMe cantons: avalanches"
+
+msgid "ch.bafu.showme-kantone_rutschungen"
+msgstr "ShowMe cantons: landslides"
+
+msgid "ch.bafu.showme-kantone_sturzprozesse"
+msgstr "ShowMe cantons: rockfall"
+
+msgid "ch.bafu.silvaprotect-hangmuren"
+msgstr "Landslide"
+
+msgid "ch.bafu.silvaprotect-lawinen"
+msgstr "Snow avalanches"
+
+msgid "ch.bafu.silvaprotect-murgang"
+msgstr "Debris flow"
+
+msgid "ch.bafu.silvaprotect-sturz"
+msgstr "Rockfall"
+
+msgid "ch.bafu.swissprtr"
+msgstr "Pollutant releases (SwissPRTR)"
+
+msgid "ch.bafu.unesco-weltnaturerbe"
+msgstr "UNESCO World natural heritage"
+
+msgid "ch.bafu.waldschadenflaechen-lothar"
+msgstr "Lothar storm damage"
+
+msgid "ch.bafu.waldschadenflaechen-vivian"
+msgstr "Vivian storm damage"
+
+msgid "ch.bafu.wasser-entnahme"
+msgstr "Catchment"
+
+msgid "ch.bafu.wasser-leitungen"
+msgstr "Supply"
+
+msgid "ch.bafu.wasser-rueckgabe"
+msgstr "Return flows"
+
+msgid "ch.bafu.wasser-teileinzugsgebiete_40"
+msgstr "40km2 catchment areas"
+
+msgid "ch.bafu.wege-wildruhezonen-jagdbanngebiete"
+msgstr "Wildlife sanctuary zones - tracks"
+
+msgid "ch.bafu.wrz-jagdbanngebiete_select"
+msgstr "Wildlife sanctuary zones - no hunting areas"
+
+msgid "ch.bafu.wrz-wildruhezonen-jagdbanngebiete-wege-routen"
+msgstr "Wildlife sanctuary zones Portal - tracks"
+
+msgid "ch.bafu.wrz-wildruhezonen_portal"
+msgstr "Wildlife sanctuary zones - portal"
+
+msgid "ch.bag"
+msgstr "FOPH"
+
+msgid "ch.bag.zecken-fsme-faelle"
+msgstr "TBE: cluster"
+
+msgid "ch.bag.zecken-fsme-impfung"
+msgstr "TBE: recommendation of vaccination"
+
+msgid "ch.bag.zecken-lyme"
+msgstr "Borreliosis regions at risk"
+
+msgid "ch.bak"
+msgstr "BAK"
+
+msgid "ch.bak.bundesinventar-schuetzenswerte-ortsbilder"
+msgstr "Federal Inventory ISOS"
+
+msgid "ch.bak.schutzgebiete-unesco_weltkulturerbe"
+msgstr "UNESCO World cultural heritage"
+
+msgid "ch.bakom"
+msgstr "OFCOM"
+
+msgid "ch.bakom.anbieter-eigenes_festnetz"
+msgstr "Number of connection providers"
+
+msgid "ch.bakom.anschlussart-glasfaser"
+msgstr "Optical fibre"
+
+msgid "ch.bakom.anschlussart-koaxialkabel"
+msgstr "Coaxial cable"
+
+msgid "ch.bakom.anschlussart-kupferdraht"
+msgstr "Copper wire"
+
+msgid "ch.bakom.downlink1"
+msgstr "Download ≥ 1 Mbit/s"
+
+msgid "ch.bakom.downlink10"
+msgstr "Download ≥ 10 Mbit/s"
+
+msgid "ch.bakom.downlink100"
+msgstr "Download ≥ 100 Mbit/s"
+
+msgid "ch.bakom.downlink2"
+msgstr "Download ≥ 2 Mbit/s"
+
+msgid "ch.bakom.downlink20"
+msgstr "Download ≥ 20 Mbit/s"
+
+msgid "ch.bakom.downlink50"
+msgstr "Download ≥ 50 Mbit/s"
+
+msgid "ch.bakom.mobil-antennenstandorte-gsm"
+msgstr "GSM antenna locations"
+
+msgid "ch.bakom.mobil-antennenstandorte-lte"
+msgstr "4G antenna locations (LTE)"
+
+msgid "ch.bakom.mobil-antennenstandorte-umts"
+msgstr "3G antenna locations (UMTS)"
+
+msgid "ch.bakom.radio-fernsehsender"
+msgstr "Radio and TV broadcasters"
+
+msgid "ch.bakom.uplink1"
+msgstr "Upload ≥ 1 Mbit/s"
+
+msgid "ch.bakom.uplink10"
+msgstr "Upload ≥ 10 Mbit/s"
+
+msgid "ch.bakom.uplink100"
+msgstr "Upload ≥ 100 Mbit/s"
+
+msgid "ch.bakom.uplink2"
+msgstr "Upload ≥ 2 Mbit/s"
+
+msgid "ch.bakom.uplink20"
+msgstr "Uploqe ≥ 20 Mbit/s"
+
+msgid "ch.bakom.uplink50"
+msgstr "Upload ≥ 50 Mbit/s"
+
+msgid "ch.bakom.verfuegbarkeit-hdtv"
+msgstr "Availability HDTV fixed netw."
+
+msgid "ch.bakom.verfuegbarkeit-tv"
+msgstr "Availability TV fixed network"
+
+msgid "ch.bakom.versorgungsgebiet-tv"
+msgstr "TV coverage areas"
+
+msgid "ch.bav"
+msgstr "FOT"
+
+msgid "ch.bav.kataster-belasteter-standorte-oev"
+msgstr "Polluted sites - pub. transp."
+
+msgid "ch.bav.laerm-emissionplan_eisenbahn_2015"
+msgstr "Emissions Plan 2015"
+
+msgid "ch.bazl"
+msgstr "FOCA"
+
+msgid "ch.bazl.heliports-gebirgslandeplaetze"
+msgstr "Heliports/mountain landing sites"
+
+msgid "ch.bazl.landschaftsruhezonen"
+msgstr "Quiet area for aviation"
+
+msgid "ch.bazl.luftfahrthindernis"
+msgstr "Air navigation obstacles"
+
+msgid "ch.bazl.luftfahrtkarten-icao"
+msgstr "Aeronautical Chart ICAO"
+
+msgid "ch.bazl.points-of-interest"
+msgstr "Points of interest"
+
+msgid "ch.bazl.projektierungszonen-flughafenanlagen"
+msgstr "Reserved zones: Airports"
+
+msgid "ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung"
+msgstr "SPAI in consultation"
+
+msgid "ch.bazl.sachplan-infrastruktur-luftfahrt_kraft"
+msgstr "SP aeronautical infrastructure"
+
+msgid "ch.bazl.segelflugkarte"
+msgstr "Glider Chart"
+
+msgid "ch.bfe"
+msgstr "SFOE"
+
+msgid "ch.bfe.abgeltung-wasserkraftnutzung"
+msgstr "Abandonment of hydropower"
+
+msgid "ch.bfe.energieforschung"
+msgstr "Energy research"
+
+msgid "ch.bfe.kernkraftwerke"
+msgstr "Nuclear Power Plants"
+
+msgid "ch.bfe.kleinwasserkraftpotentiale"
+msgstr "Water power potential"
+
+msgid "ch.bfe.sachplan-geologie-tiefenlager"
+msgstr "SP Deep Geol. Repositories"
+
+msgid "ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung"
+msgstr "SP Deep Geol.Repositories: T.p."
+
+msgid "ch.bfe.statistik-wasserkraftanlagen"
+msgstr "Hydropower statistics"
+
+msgid "ch.bfe.stauanlagen-bundesaufsicht"
+msgstr "Dam"
+
+msgid "ch.bfs"
+msgstr "FSO"
+
+msgid "ch.bfs.arealstatistik-1985"
+msgstr "Area statistics 1979/1985"
+
+msgid "ch.bfs.arealstatistik-1997"
+msgstr "Area statistics 1992/1997"
+
+msgid "ch.bfs.arealstatistik-hintergrund"
+msgstr "Simplified land occupancy"
+
+msgid "ch.bfs.arealstatistik-waldmischungsgrad"
+msgstr "Mixture of forests 1990/1992"
+
+msgid "ch.bfs.gebaeude_wohnungs_register"
+msgstr "Register of Buildings and Dwellings"
+
+msgid "ch.blw"
+msgstr "FOAG"
+
+msgid "ch.blw.alpprodukte"
+msgstr "Alpine products"
+
+msgid "ch.blw.bergprodukte"
+msgstr "Mountain products"
+
+msgid "ch.blw.bewaesserungsbeduerftigkeit"
+msgstr "Demand for irrigation"
+
+msgid "ch.blw.bodeneignung-gruendigkeit"
+msgstr "Gründigkeit"
+
+msgid "ch.blw.bodeneignung-kulturland"
+msgstr "Aptitude: Cropland"
+
+msgid "ch.blw.bodeneignung-kulturtyp"
+msgstr "Aptitude: Crop types"
+
+msgid "ch.blw.bodeneignung-naehrstoffspeichervermoegen"
+msgstr "Nährstoffspeichervermögen"
+
+msgid "ch.blw.bodeneignung-skelettgehalt"
+msgstr "Skelettgehalt"
+
+msgid "ch.blw.bodeneignung-vernaessung"
+msgstr "Vernässung"
+
+msgid "ch.blw.bodeneignung-wasserdurchlaessigkeit"
+msgstr "Wasserdurchlässigkeit"
+
+msgid "ch.blw.bodeneignung-wasserspeichervermoegen"
+msgstr "Wasserspeichervermögen"
+
+msgid "ch.blw.erosion"
+msgstr "Erosion risk 1"
+
+msgid "ch.blw.erosion-mit_bergzonen"
+msgstr "Erosion risk 2"
+
+msgid "ch.blw.hang_steillagen"
+msgstr "Hillside and steep slopes situation"
+
+msgid "ch.blw.klimaeignung-futterbau"
+msgstr "Climate - forage crop"
+
+msgid "ch.blw.klimaeignung-getreidebau"
+msgstr "Climate - cereal crop"
+
+msgid "ch.blw.klimaeignung-kartoffeln"
+msgstr "Climate - potatoes"
+
+msgid "ch.blw.klimaeignung-koernermais"
+msgstr "Climate - corn grain"
+
+msgid "ch.blw.klimaeignung-kulturland"
+msgstr "Climate - cultivated land"
+
+msgid "ch.blw.klimaeignung-spezialkulturen"
+msgstr "Climate - special crops"
+
+msgid "ch.blw.klimaeignung-typ"
+msgstr "Climate - overview"
+
+msgid "ch.blw.klimaeignung-zwischenfruchtbau"
+msgstr "Climate - catch crop"
+
+msgid "ch.blw.landwirtschaftliche-zonengrenzen"
+msgstr "Agricultural zones boundaries"
+
+msgid "ch.blw.niederschlagshaushalt"
+msgstr "Rainfall"
+
+msgid "ch.blw.steil_terrassenlagen_rebbau"
+msgstr "Viticulture in steep areas"
+
+msgid "ch.blw.ursprungsbezeichnungen-fleisch"
+msgstr "PGI meat products"
+
+msgid "ch.blw.ursprungsbezeichnungen-kaese"
+msgstr "PDO cheese"
+
+msgid "ch.blw.ursprungsbezeichnungen-pflanzen"
+msgstr "PDO plant products"
+
+msgid "ch.blw.ursprungsbezeichnungen-spirituosen"
+msgstr "PDO spirits"
+
+msgid "ch.ensi"
+msgstr "ENSI"
+
+msgid "ch.ensi.zonenplan-notfallschutz-kernanlagen"
+msgstr "Plans for Emergency protection"
+
+msgid "ch.kanton.av"
+msgstr "Cadastral Surveying Switzerland / FL"
+
+msgid "ch.kantone.cadastralwebmap-farbe"
+msgstr "CadastralWebMap"
+
+msgid "ch.kantone.hintergrund-farbe"
+msgstr "CadastralWebMap"
+
+msgid "ch.kt.bafu"
+msgstr "ct. [FOEN]"
+
+msgid "ch.swisstopo"
+msgstr "swisstopo"
+
+msgid "ch.swisstopo-vd"
+msgstr "Cadastral Surveying Switzerland"
+
+msgid "ch.swisstopo-vd.geometa-gemeinde"
+msgstr "Information about Municipality"
+
+msgid "ch.swisstopo-vd.geometa-grundbuch"
+msgstr "Land registry information"
+
+msgid "ch.swisstopo-vd.geometa-los"
+msgstr "Cadastral surveying lots."
+
+#. TODO
+msgid "ch.swisstopo-vd.geometa-los_wmstile"
+msgstr "ch.swisstopo-vd.geometa-los_wmstile"
+
+msgid "ch.swisstopo-vd.geometa-nfgeom"
+msgstr "Cadastral surveyor"
+
+msgid "ch.swisstopo-vd.geometa-standav"
+msgstr "Status of cadastral surveying"
+
+msgid "ch.swisstopo-vd.ortschaftenverzeichnis_plz"
+msgstr "ZIP and locations"
+
+msgid "ch.swisstopo-vd.spannungsarme-gebiete"
+msgstr "Low distortion area"
+
+msgid "ch.swisstopo.dreiecksvermaschung"
+msgstr "LV95 Triangular network"
+
+msgid "ch.swisstopo.fixpunkte-agnes"
+msgstr "AGNES"
+
+msgid "ch.swisstopo.fixpunkte-hfp1"
+msgstr "Height control points HFP1"
+
+msgid "ch.swisstopo.fixpunkte-hfp2"
+msgstr "Height control points HFP2"
+
+msgid "ch.swisstopo.fixpunkte-lfp1"
+msgstr "Planimetric control points LFP1"
+
+msgid "ch.swisstopo.fixpunkte-lfp2"
+msgstr "Planimetric control points LFP2"
+
+msgid "ch.swisstopo.geoidmodell-ch1903"
+msgstr "Geoid in CH1903"
+
+msgid "ch.swisstopo.geoidmodell-etrs89"
+msgstr "Geoid in ETRS89"
+
+msgid "ch.swisstopo.geologie-eiszeit-lgm-raster"
+msgstr "Last glacial maximum"
+
+msgid "ch.swisstopo.geologie-geodaesie-bouguer_anomalien"
+msgstr "Bouguer-Anomalies"
+
+msgid "ch.swisstopo.geologie-geodaesie-isostatische_anomalien"
+msgstr "Isostatic anomalies"
+
+msgid "ch.swisstopo.geologie-geolkarten500.metadata"
+msgstr "Division GeoMaps 500"
+
+msgid "ch.swisstopo.geologie-geologische_karte"
+msgstr "Geology 1:500 000"
+
+msgid "ch.swisstopo.geologie-geologischer_atlas"
+msgstr "Geological Atlas 1:25 000"
+
+msgid "ch.swisstopo.geologie-geophysik-aeromagnetische_karte_jura"
+msgstr "Aeromagnetic Plateau/Jura"
+
+msgid "ch.swisstopo.geologie-geophysik-aeromagnetische_karte_schweiz"
+msgstr "Aeromagnetic"
+
+msgid "ch.swisstopo.geologie-geophysik-deklination"
+msgstr "Declination"
+
+msgid "ch.swisstopo.geologie-geophysik-geothermie"
+msgstr "Geothermal energy"
+
+msgid "ch.swisstopo.geologie-geophysik-inklination"
+msgstr "Inclination"
+
+msgid "ch.swisstopo.geologie-geophysik-totalintensitaet"
+msgstr "Magnetic field strength"
+
+msgid "ch.swisstopo.geologie-geotechnik-gk200"
+msgstr "Geotechnical and rocks"
+
+msgid "ch.swisstopo.geologie-geotechnik-gk500-genese"
+msgstr "Rocks origin"
+
+msgid "ch.swisstopo.geologie-geotechnik-gk500-gesteinsklassierung"
+msgstr "Classification of rocks"
+
+msgid "ch.swisstopo.geologie-geotechnik-gk500-lithologie_hauptgruppen"
+msgstr "Main lithological groups"
+
+msgid "ch.swisstopo.geologie-geotechnik-mineralische_rohstoffe200"
+msgstr "Mineral first resources"
+
+msgid "ch.swisstopo.geologie-geotechnik-steinbrueche_1915"
+msgstr "Quarries 1915"
+
+msgid "ch.swisstopo.geologie-geotechnik-steinbrueche_1965"
+msgstr "Quarries 1965"
+
+msgid "ch.swisstopo.geologie-geotechnik-steinbrueche_1980"
+msgstr "Quarries 1980"
+
+msgid "ch.swisstopo.geologie-geotechnik-steinbrueche_1995"
+msgstr "Quarries 1995"
+
+msgid "ch.swisstopo.geologie-geotechnik-ziegeleien_1907"
+msgstr "Brick manufactures 1907"
+
+msgid "ch.swisstopo.geologie-geotechnik-ziegeleien_1965"
+msgstr "Brick manufactures 1965"
+
+msgid "ch.swisstopo.geologie-geotechnik-ziegeleien_1995"
+msgstr "Brick manufactures 1995"
+
+msgid "ch.swisstopo.geologie-geotope"
+msgstr "Swiss Geotopes"
+
+msgid "ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen"
+msgstr "Groundwater resources"
+
+msgid "ch.swisstopo.geologie-hydrogeologische_karte-grundwasservulnerabilitaet"
+msgstr "Groundwater vulnerability"
+
+msgid "ch.swisstopo.geologie-rohstoffe-industrieminerale"
+msgstr "Industrial minerals"
+
+msgid "ch.swisstopo.geologie-rohstoffe-kohlen_bitumen_erdgas"
+msgstr "Energetic raw materials"
+
+msgid "ch.swisstopo.geologie-rohstoffe-vererzungen"
+msgstr "Mineralizations"
+
+msgid "ch.swisstopo.geologie-tektonische_karte"
+msgstr "Tectonic 1:500 000"
+
+msgid "ch.swisstopo.hiks-dufour"
+msgstr "Dufour Map First edition"
+
+msgid "ch.swisstopo.hiks-siegfried"
+msgstr "Siegfried Map First edition"
+
+#. TODO
+msgid "ch.swisstopo.hiks-siegfried-ta25"
+msgstr "ch.swisstopo.hiks-siegfried-ta25"
+
+#. TODO
+msgid "ch.swisstopo.hiks-siegfried-ta50"
+msgstr "ch.swisstopo.hiks-siegfried-ta50"
+
+msgid "ch.swisstopo.images-swissimage.metadata"
+msgstr "Tiling SWISSIMAGE"
+
+msgid "ch.swisstopo.koordinatenaenderung"
+msgstr "LV95 Coordinate changes"
+
+msgid "ch.swisstopo.kt"
+msgstr "swisstopo, ct."
+
+msgid "ch.swisstopo.pixelkarte-farbe"
+msgstr "Color map"
+
+msgid "ch.swisstopo.pixelkarte-farbe-pk100.noscale"
+msgstr "National Map 1:100'000"
+
+msgid "ch.swisstopo.pixelkarte-farbe-pk1000.noscale"
+msgstr "National Map 1:1 million"
+
+msgid "ch.swisstopo.pixelkarte-farbe-pk200.noscale"
+msgstr "National Map 1:200'000"
+
+msgid "ch.swisstopo.pixelkarte-farbe-pk25.noscale"
+msgstr "National Map 1:25'000"
+
+msgid "ch.swisstopo.pixelkarte-farbe-pk50.noscale"
+msgstr "National Map 1:50'000"
+
+msgid "ch.swisstopo.pixelkarte-grau"
+msgstr "Grey map"
+
+msgid "ch.swisstopo.pixelkarte-pk100.metadata"
+msgstr "Division National Map 1:100'000"
+
+msgid "ch.swisstopo.pixelkarte-pk200.metadata"
+msgstr "Division National Map 1:200'000"
+
+msgid "ch.swisstopo.pixelkarte-pk25.metadata"
+msgstr "Division National Map 1:25'000"
+
+msgid "ch.swisstopo.pixelkarte-pk50.metadata"
+msgstr "Division National Map 1:50'000"
+
+msgid "ch.swisstopo.pixelkarte-pk500.metadata"
+msgstr "Division National Map 1:500'000"
+
+msgid "ch.swisstopo.swissalti3d-reliefschattierung"
+msgstr "swissALTI3D Hillshade"
+
+msgid "ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill"
+msgstr "District boundaries"
+
+msgid "ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill"
+msgstr "Municipal boundaries"
+
+msgid "ch.swisstopo.swissboundaries3d-kanton-flaeche.fill"
+msgstr "Cantonal boundaries"
+
+msgid "ch.swisstopo.swissboundaries3d-land-flaeche.fill"
+msgstr "National boundaries"
+
+msgid "ch.swisstopo.swissbuildings3d"
+msgstr "Simplified 3D buildings"
+
+msgid "ch.swisstopo.swissimage"
+msgstr "SWISSIMAGE"
+
+msgid "ch.swisstopo.swisstlm3d-karte"
+msgstr "Topographical landscape model"
+
+msgid "ch.swisstopo.swisstlm3d-wanderwege"
+msgstr "hiking trails"
+
+msgid "ch.swisstopo.tml3d-hintergrund-karte"
+msgstr "swissTLM-Map"
+
+msgid "ch.swisstopo.transformationsgenauigkeit"
+msgstr "LV95 Transformation accuracy"
+
+msgid "ch.swisstopo.treasurehunt"
+msgstr "Treasurehunt"
+
+msgid "ch.swisstopo.vec200-adminboundaries-protectedarea"
+msgstr "Protected Areas VECTOR200"
+
+msgid "ch.swisstopo.vec200-building"
+msgstr "Building generalized VECTOR200"
+
+msgid "ch.swisstopo.vec200-hydrography"
+msgstr "Hydrology VECTOR200"
+
+msgid "ch.swisstopo.vec200-landcover"
+msgstr "Land cover VECTOR200"
+
+msgid "ch.swisstopo.vec200-landcover-wald"
+msgstr "Forested areas"
+
+msgid "ch.swisstopo.vec200-miscellaneous"
+msgstr "Single objects  VECTOR200"
+
+msgid "ch.swisstopo.vec200-miscellaneous-geodpoint"
+msgstr "Elevations VECTOR200"
+
+msgid "ch.swisstopo.vec200-names-namedlocation"
+msgstr "Names VECTOR200"
+
+msgid "ch.swisstopo.vec200-transportation-oeffentliche-verkehr"
+msgstr "Public transportation VECTOR200"
+
+msgid "ch.swisstopo.vec200-transportation-strassennetz"
+msgstr "Road system VECTOR200"
+
+msgid "ch.swisstopo.vec25-anlagen"
+msgstr "Functional surfaces VECTOR25"
+
+msgid "ch.swisstopo.vec25-einzelobjekte"
+msgstr "Single objects VECTOR25"
+
+msgid "ch.swisstopo.vec25-eisenbahnnetz"
+msgstr "Railway network VECTOR25"
+
+msgid "ch.swisstopo.vec25-gebaeude"
+msgstr "Buildings VECTOR25"
+
+msgid "ch.swisstopo.vec25-gewaessernetz"
+msgstr "Hydrological network VECTOR25"
+
+msgid "ch.swisstopo.vec25-heckenbaeume"
+msgstr "Hedges and trees  VECTOR25"
+
+msgid "ch.swisstopo.vec25-primaerflaechen"
+msgstr "Primary surfaces VECTOR25"
+
+msgid "ch.swisstopo.vec25-strassennetz"
+msgstr "Road network  VECTOR25"
+
+msgid "ch.swisstopo.vec25-uebrigerverkehr"
+msgstr "Other traffic  VECTOR25"
+
+msgid "ch.swisstopo.verschiebungsvektoren-tsp1"
+msgstr "LV95 Displacement vectors TSP1"
+
+msgid "ch.swisstopo.verschiebungsvektoren-tsp2"
+msgstr "LV95 Displacement vectors TSP2"
+
+msgid "ch.swisstopo.zeitreihen"
+msgstr "Maps - Journay through time"
+
+msgid "ch.vbs"
+msgstr "DDPS"
+
+msgid "ch.vbs.territorialregionen"
+msgstr "Territorial regions"
 
 msgid "flaeche_ha"
 msgstr "Area [ha]"
@@ -136,6 +1070,12 @@ msgstr "Object name"
 
 msgid "objektnr"
 msgstr "Object Nr."
+
+msgid "org.epsg.grid_21781"
+msgstr "Coordinate grid CH1903/LV03"
+
+msgid "org.epsg.grid_4326"
+msgstr "Coordinate grid WGS84"
 
 msgid "wms_resource_text"
 msgstr "Link to WMS"

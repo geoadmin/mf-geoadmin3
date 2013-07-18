@@ -1,4 +1,964 @@
 
+msgid "ch.bafu.laerm-bahnlaerm_nacht"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-geotechnik-gk500-genese"
+msgstr ""
+
+msgid "ch.swisstopo.verschiebungsvektoren-tsp2"
+msgstr ""
+
+msgid "ch.swisstopo.verschiebungsvektoren-tsp1"
+msgstr ""
+
+msgid "ch.swisstopo.pixelkarte-farbe-pk100.noscale"
+msgstr ""
+
+msgid "ch.bakom.verfuegbarkeit-hdtv"
+msgstr ""
+
+msgid "ch.bafu.schutzgebiete-luftfahrt"
+msgstr ""
+
+msgid "ch.swisstopo.vec200-transportation-oeffentliche-verkehr"
+msgstr ""
+
+msgid "ch.swisstopo.pixelkarte-pk100.metadata"
+msgstr ""
+
+msgid "ch.bafu.bundesinventare-jagdbanngebiete"
+msgstr ""
+
+msgid "ch.bafu.ren-trockenstandorte"
+msgstr ""
+
+msgid "ch.astra.ausnahmetransportrouten"
+msgstr ""
+
+msgid "ch.bafu.gefahren-gefaehrdungszonen"
+msgstr ""
+
+msgid "ch.swisstopo.vec25-heckenbaeume"
+msgstr ""
+
+msgid "ch.swisstopo.swissboundaries3d-land-flaeche.fill"
+msgstr ""
+
+msgid "ch.bafu.naqua-grundwasser_psm"
+msgstr ""
+
+msgid "ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhang2"
+msgstr ""
+
+msgid "ch.swisstopo.swissboundaries3d-kanton-flaeche.fill"
+msgstr ""
+
+msgid "ch.blw.bodeneignung-kulturtyp"
+msgstr ""
+
+msgid "ch.blw.bodeneignung-gruendigkeit"
+msgstr ""
+
+msgid "ch.bafu.bundesinventare-vogelreservate"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-geotechnik-steinbrueche_1965"
+msgstr ""
+
+msgid "ch.astra.strassenverkehrszaehlung_messstellen-uebergeordnet"
+msgstr ""
+
+msgid "ch.bafu.fauna-steinbockkolonien"
+msgstr ""
+
+msgid "ch.bakom.downlink20"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-eiszeit-lgm-raster"
+msgstr ""
+
+msgid "ch.blw.klimaeignung-koernermais"
+msgstr ""
+
+msgid "ch.swisstopo.swissalti3d-reliefschattierung"
+msgstr ""
+
+msgid "ch.swisstopo-vd.spannungsarme-gebiete"
+msgstr ""
+
+msgid "ch.bafu.showme-gemeinden_rutschungen"
+msgstr ""
+
+msgid "ch.bafu.laerm-strassenlaerm_tag"
+msgstr ""
+
+msgid "ch.bafu.wasser-teileinzugsgebiete_40"
+msgstr ""
+
+msgid "ch.are.belastung-personenverkehr-bahn-2008"
+msgstr ""
+
+msgid "ch.bafu.showme-kantone_hochwasser"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-geotechnik-ziegeleien_1995"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-geotechnik-gk500-lithologie_hauptgruppen"
+msgstr ""
+
+msgid "ch.blw.klimaeignung-spezialkulturen"
+msgstr ""
+
+msgid "ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-geotechnik-ziegeleien_1965"
+msgstr ""
+
+msgid "ch.bag.zecken-lyme"
+msgstr ""
+
+msgid "ch.blw.ursprungsbezeichnungen-spirituosen"
+msgstr ""
+
+msgid "ch.bazl.luftfahrthindernis"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-geologische_karte"
+msgstr ""
+
+msgid "ch.bfe.sachplan-geologie-tiefenlager"
+msgstr ""
+
+msgid "ch.are.gemeindetypen"
+msgstr ""
+
+msgid "ch.blw.klimaeignung-typ"
+msgstr ""
+
+msgid "ch.blw.alpprodukte"
+msgstr ""
+
+msgid "ch.are.agglomerationen_isolierte_staedte-2000"
+msgstr ""
+
+msgid "ch.bafu.wasser-rueckgabe"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-wassertemperaturmessstationen"
+msgstr ""
+
+msgid "ch.bafu.holznutzung"
+msgstr ""
+
+msgid "ch.bafu.showme-kantone_sturzprozesse"
+msgstr ""
+
+msgid "ch.bfe.abgeltung-wasserkraftnutzung"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-tektonische_karte"
+msgstr ""
+
+msgid "ch.swisstopo.vec200-building"
+msgstr ""
+
+msgid "ch.swisstopo.geoidmodell-ch1903"
+msgstr ""
+
+msgid "ch.bfe.stauanlagen-bundesaufsicht"
+msgstr ""
+
+msgid "ch.are.belastung-gueterverkehr-strasse-2008"
+msgstr ""
+
+msgid "ch.bakom.downlink10"
+msgstr ""
+
+msgid "ch.bafu.wege-wildruhezonen-jagdbanngebiete"
+msgstr ""
+
+msgid "ch.swisstopo.pixelkarte-pk25.metadata"
+msgstr ""
+
+msgid "ch.blw.niederschlagshaushalt"
+msgstr ""
+
+msgid "ch.bafu.ren-feuchtgebiete"
+msgstr ""
+
+msgid "ch.bafu.schutzgebiete-biosphaerenreservate"
+msgstr ""
+
+msgid "ch.bafu.gefahren-mikrozonierung"
+msgstr ""
+
+msgid "ch.swisstopo.vec200-landcover"
+msgstr ""
+
+msgid "ch.bfe.energieforschung"
+msgstr ""
+
+msgid "ch.swisstopo.dreiecksvermaschung"
+msgstr ""
+
+msgid "ch.bfs.arealstatistik-waldmischungsgrad"
+msgstr ""
+
+msgid "ch.bafu.wasser-entnahme"
+msgstr ""
+
+msgid "ch.bakom.anschlussart-kupferdraht"
+msgstr ""
+
+msgid "ch.swisstopo-vd.geometa-los"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-geotechnik-steinbrueche_1995"
+msgstr ""
+
+msgid "ch.bav.laerm-emissionplan_eisenbahn_2015"
+msgstr ""
+
+msgid "ch.bafu.waldschadenflaechen-vivian"
+msgstr ""
+
+msgid "ch.bazl.points-of-interest"
+msgstr ""
+
+msgid "ch.are.reisezeit_miv-2005"
+msgstr ""
+
+msgid "ch.bafu.wasser-leitungen"
+msgstr ""
+
+msgid "ch.astra.strassenverkehrszaehlung_messstellen-regional_lokal"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-geotechnik-steinbrueche_1980"
+msgstr ""
+
+msgid "ch.swisstopo-vd.geometa-los_wmstile"
+msgstr ""
+
+msgid "ch.bafu.bundesinventare-hochmoore"
+msgstr ""
+
+msgid "ch.blw.klimaeignung-kartoffeln"
+msgstr ""
+
+msgid "ch.swisstopo.pixelkarte-farbe"
+msgstr ""
+
+msgid "ch.swisstopo.pixelkarte-grau"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-hydrogeologische_karte-grundwasservulnerabilitaet"
+msgstr ""
+
+msgid "ch.swisstopo.pixelkarte-farbe-pk50.noscale"
+msgstr ""
+
+msgid "ch.bakom.mobil-antennenstandorte-umts"
+msgstr ""
+
+msgid "ch.babs.kulturgueter"
+msgstr ""
+
+msgid "bafu.silvaprotect-uebersarung"
+msgstr ""
+
+msgid "ch.swisstopo.zeitreihen"
+msgstr ""
+
+msgid "org.epsg.grid_21781"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-geotechnik-gk500-gesteinsklassierung"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-geolkarten500.metadata"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-geodaesie-bouguer_anomalien"
+msgstr ""
+
+msgid "ch.are.gueteklassen_oev"
+msgstr ""
+
+msgid "ch.bafu.bundesinventare-flachmoore"
+msgstr ""
+
+msgid "ch.blw.bodeneignung-naehrstoffspeichervermoegen"
+msgstr ""
+
+msgid "ch.bfs.arealstatistik-1985"
+msgstr ""
+
+msgid "ch.bafu.nabelstationen"
+msgstr ""
+
+msgid "ch.swisstopo.vec25-gebaeude"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-hydromessstationen"
+msgstr ""
+
+msgid "ch.bafu.wrz-wildruhezonen_portal"
+msgstr ""
+
+msgid "ch.bakom.mobil-antennenstandorte-gsm"
+msgstr ""
+
+msgid "ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung"
+msgstr ""
+
+msgid "ch.bafu.permafrost"
+msgstr ""
+
+msgid "ch.bakom.downlink100"
+msgstr ""
+
+msgid "ch.bafu.wrz-jagdbanngebiete_select"
+msgstr ""
+
+msgid "ch.bafu.gefahren-baugrundklassen"
+msgstr ""
+
+msgid "ch.bafu.aquaprotect_500"
+msgstr ""
+
+msgid "ch.swisstopo.vec200-miscellaneous-geodpoint"
+msgstr ""
+
+msgid "ch.blw.bodeneignung-wasserspeichervermoegen"
+msgstr ""
+
+msgid "ch.bakom.uplink50"
+msgstr ""
+
+msgid "ch.swisstopo-vd.geometa-nfgeom"
+msgstr ""
+
+msgid "ch.swisstopo.pixelkarte-pk500.metadata"
+msgstr ""
+
+msgid "ch.bafu.fischerei-aeschen_verbreitungsgebiet"
+msgstr ""
+
+msgid "ch.bakom.versorgungsgebiet-tv"
+msgstr ""
+
+msgid "ch.bafu.silvaprotect-murgang"
+msgstr ""
+
+msgid "ch.bfs.arealstatistik-1997"
+msgstr ""
+
+msgid "ch.swisstopo.geoidmodell-etrs89"
+msgstr ""
+
+msgid "ch.bafu.fischerei-aeschen_larvenhabitate"
+msgstr ""
+
+msgid "ch.bafu.bundesinventare-flachmoore_regional"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-geophysik-inklination"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-gewaesserzustandsmessstationen"
+msgstr ""
+
+msgid "ch.bafu.naqua-grundwasser_nitrat"
+msgstr ""
+
+msgid "ch.bakom.anschlussart-koaxialkabel"
+msgstr ""
+
+msgid "ch.swisstopo-vd.geometa-standav"
+msgstr ""
+
+msgid "ch.swisstopo.vec25-einzelobjekte"
+msgstr ""
+
+msgid "ch.blw.bodeneignung-skelettgehalt"
+msgstr ""
+
+msgid "ch.blw.landwirtschaftliche-zonengrenzen"
+msgstr ""
+
+msgid "ch.astra.ivs-nat"
+msgstr ""
+
+msgid "ch.bafu.gefahren-spektral"
+msgstr ""
+
+msgid "ch.swisstopo.vec25-primaerflaechen"
+msgstr ""
+
+msgid "ch.bakom.mobil-antennenstandorte-lte"
+msgstr ""
+
+msgid "ch.swisstopo.swisstlm3d-karte"
+msgstr ""
+
+msgid "ch.bafu.ren-wald"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-geotechnik-steinbrueche_1915"
+msgstr ""
+
+msgid "ch.bafu.schutzgebiete-ramsar"
+msgstr ""
+
+msgid "ch.bafu.aquaprotect_250"
+msgstr ""
+
+msgid "ch.swisstopo.swissimage"
+msgstr ""
+
+msgid "ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill"
+msgstr ""
+
+msgid "ch.bakom.downlink50"
+msgstr ""
+
+msgid "ch.bafu.showme-gemeinden_hochwasser"
+msgstr ""
+
+msgid "ch.bafu.bundesinventare-bln"
+msgstr ""
+
+msgid "ch.swisstopo.vec25-strassennetz"
+msgstr ""
+
+msgid "ch.bafu.silvaprotect-lawinen"
+msgstr ""
+
+msgid "ch.bafu.naqua-grundwasser_voc"
+msgstr ""
+
+msgid "ch.bakom.downlink1"
+msgstr ""
+
+msgid "ch.kantone.cadastralwebmap-farbe"
+msgstr ""
+
+msgid "ch.blw.steil_terrassenlagen_rebbau"
+msgstr ""
+
+msgid "ch.bafu.laerm-strassenlaerm_nacht"
+msgstr ""
+
+msgid "ch.bafu.bundesinventare-auen"
+msgstr ""
+
+msgid "ch.swisstopo.hiks-siegfried-ta50"
+msgstr ""
+
+msgid "ch.bazl.landschaftsruhezonen"
+msgstr ""
+
+msgid "ch.bafu.aquaprotect_100"
+msgstr ""
+
+msgid "ch.swisstopo.pixelkarte-farbe-pk200.noscale"
+msgstr ""
+
+msgid "ch.bag.zecken-fsme-impfung"
+msgstr ""
+
+msgid "ch.bafu.showme-gemeinden_sturzprozesse"
+msgstr ""
+
+msgid "ch.swisstopo.vec200-hydrography"
+msgstr ""
+
+msgid "ch.bakom.anschlussart-glasfaser"
+msgstr ""
+
+msgid "ch.bazl.segelflugkarte"
+msgstr ""
+
+msgid "ch.swisstopo-vd.geometa-gemeinde"
+msgstr ""
+
+msgid "ch.bfs.gebaeude_wohnungs_register"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen"
+msgstr ""
+
+msgid "ch.bfs.arealstatistik-hintergrund"
+msgstr ""
+
+msgid "ch.bafu.fauna-wildtierkorridor_national"
+msgstr ""
+
+msgid "ch.blw.klimaeignung-getreidebau"
+msgstr ""
+
+msgid "ch.bav.kataster-belasteter-standorte-oev"
+msgstr ""
+
+msgid "ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill"
+msgstr ""
+
+msgid "ch.blw.erosion-mit_bergzonen"
+msgstr ""
+
+msgid "ch.bafu.showme-kantone_rutschungen"
+msgstr ""
+
+msgid "ch.swisstopo.fixpunkte-lfp1"
+msgstr ""
+
+msgid "ch.swisstopo.fixpunkte-lfp2"
+msgstr ""
+
+msgid "ch.bafu.showme-gemeinden_lawinen"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-geophysik-deklination"
+msgstr ""
+
+msgid "ch.bafu.fischerei-proliferative_nierenkrankheit"
+msgstr ""
+
+msgid "ch.bafu.bundesinventare-amphibien_anhang4"
+msgstr ""
+
+msgid "ch.bafu.landesforstinventar-baumarten"
+msgstr ""
+
+msgid "ch.swisstopo.fixpunkte-agnes"
+msgstr ""
+
+msgid "ch.swisstopo.koordinatenaenderung"
+msgstr ""
+
+msgid "ch.bafu.silvaprotect-sturz"
+msgstr ""
+
+msgid "ch.bakom.uplink20"
+msgstr ""
+
+msgid "ch.blw.bewaesserungsbeduerftigkeit"
+msgstr ""
+
+msgid "ch.swisstopo.vec25-gewaessernetz"
+msgstr ""
+
+msgid "ch.astra.ivs-gelaendekarte"
+msgstr ""
+
+msgid "ch.swisstopo.vec200-names-namedlocation"
+msgstr ""
+
+msgid "ch.astra.ivs-nat_abgrenzungen"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-geodaesie-isostatische_anomalien"
+msgstr ""
+
+msgid "ch.swisstopo.tml3d-hintergrund-karte"
+msgstr ""
+
+msgid "ch.bafu.fischerei-krebspest"
+msgstr ""
+
+msgid "ch.bazl.projektierungszonen-flughafenanlagen"
+msgstr ""
+
+msgid "ch.swisstopo.hiks-siegfried-ta25"
+msgstr ""
+
+msgid "ch.blw.bodeneignung-kulturland"
+msgstr ""
+
+msgid "ch.bafu.flora-schwingrasen"
+msgstr ""
+
+msgid "ch.bakom.verfuegbarkeit-tv"
+msgstr ""
+
+msgid "ch.bafu.bundesinventare-amphibien_wanderobjekte"
+msgstr ""
+
+msgid "ch.are.alpenkonvention"
+msgstr ""
+
+msgid "ch.bag.zecken-fsme-faelle"
+msgstr ""
+
+msgid "ch.bafu.moose"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-geotechnik-ziegeleien_1907"
+msgstr ""
+
+msgid "ch.are.bauzonen"
+msgstr ""
+
+msgid "ch.blw.klimaeignung-futterbau"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-geophysik-aeromagnetische_karte_schweiz"
+msgstr ""
+
+msgid "org.epsg.grid_4326"
+msgstr ""
+
+msgid "ch.swisstopo.pixelkarte-farbe-pk25.noscale"
+msgstr ""
+
+msgid "ch.are.reisezeit_oev-2005"
+msgstr ""
+
+msgid "ch.bafu.flora-weltensutter_atlas"
+msgstr ""
+
+msgid "ch.swisstopo.vec200-adminboundaries-protectedarea"
+msgstr ""
+
+msgid "ch.bafu.swissprtr"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-rohstoffe-vererzungen"
+msgstr ""
+
+msgid "ch.swisstopo-vd.ortschaftenverzeichnis_plz"
+msgstr ""
+
+msgid "ch.vbs.territorialregionen"
+msgstr ""
+
+msgid "ch.swisstopo.swisstlm3d-wanderwege"
+msgstr ""
+
+msgid "ch.ensi.zonenplan-notfallschutz-kernanlagen"
+msgstr ""
+
+msgid "ch.swisstopo.pixelkarte-pk50.metadata"
+msgstr ""
+
+msgid "ch.bafu.fischerei-aeschen_laichplaetze"
+msgstr ""
+
+msgid "ch.astra.ivs-reg_loc"
+msgstr ""
+
+msgid "ch.bafu.fischerei-nasenlaichplaetze"
+msgstr ""
+
+msgid "ch.swisstopo.treasurehunt"
+msgstr ""
+
+msgid "ch.blw.ursprungsbezeichnungen-fleisch"
+msgstr ""
+
+msgid "ch.swisstopo.images-swissimage.metadata"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-geotechnik-mineralische_rohstoffe200"
+msgstr ""
+
+msgid "ch.bakom.anbieter-eigenes_festnetz"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-geophysik-geothermie"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-rohstoffe-kohlen_bitumen_erdgas"
+msgstr ""
+
+msgid "ch.swisstopo.vec200-landcover-wald"
+msgstr ""
+
+msgid "ch.astra.ivs-nat-verlaeufe"
+msgstr ""
+
+msgid "ch.bafu.ren-fliessgewaesser_seen"
+msgstr ""
+
+msgid "ch.bfe.kernkraftwerke"
+msgstr ""
+
+msgid "ch.bafu.schutzgebiete-smaragd"
+msgstr ""
+
+msgid "ch.blw.ursprungsbezeichnungen-pflanzen"
+msgstr ""
+
+msgid "ch.are.belastung-gueterverkehr-bahn-2008"
+msgstr ""
+
+msgid "ch.bafu.schutzgebiete-schweizerischer_nationalpark"
+msgstr ""
+
+msgid "ch.blw.erosion"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-rohstoffe-industrieminerale"
+msgstr ""
+
+msgid "ch.swisstopo.vec200-transportation-strassennetz"
+msgstr ""
+
+msgid "ch.swisstopo.vec25-anlagen"
+msgstr ""
+
+msgid "ch.bafu.fischerei-aeschen_kernzonen"
+msgstr ""
+
+msgid "ch.bakom.uplink2"
+msgstr ""
+
+msgid "ch.bafu.fauna-vernetzungsachsen_national"
+msgstr ""
+
+msgid "ch.bakom.uplink1"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-geotechnik-gk200"
+msgstr ""
+
+msgid "ch.swisstopo.transformationsgenauigkeit"
+msgstr ""
+
+msgid "ch.bafu.gefahren-historische_erdbeben"
+msgstr ""
+
+msgid "ch.blw.bodeneignung-vernaessung"
+msgstr ""
+
+msgid "ch.blw.klimaeignung-zwischenfruchtbau"
+msgstr ""
+
+msgid "ch.bak.bundesinventar-schuetzenswerte-ortsbilder"
+msgstr ""
+
+msgid "ch.bafu.wrz-wildruhezonen-jagdbanngebiete-wege-routen"
+msgstr ""
+
+msgid "ch.bafu.bundesinventare-trockenwiesen_trockenweiden"
+msgstr ""
+
+msgid "ch.are.landschaftstypen"
+msgstr ""
+
+msgid "ch.swisstopo.hiks-dufour"
+msgstr ""
+
+msgid "ch.bafu.holzzuwachs"
+msgstr ""
+
+msgid "ch.bazl.luftfahrtkarten-icao"
+msgstr ""
+
+msgid "ch.swisstopo-vd.geometa-grundbuch"
+msgstr ""
+
+msgid "ch.blw.bergprodukte"
+msgstr ""
+
+msgid "ch.bafu.laerm-bahnlaerm_tag"
+msgstr ""
+
+msgid "ch.swisstopo.swissbuildings3d"
+msgstr ""
+
+msgid "ch.bazl.sachplan-infrastruktur-luftfahrt_kraft"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-geotope"
+msgstr ""
+
+msgid "ch.kantone.hintergrund-farbe"
+msgstr ""
+
+msgid "ch.bak.schutzgebiete-unesco_weltkulturerbe"
+msgstr ""
+
+msgid "ch.swisstopo.hiks-siegfried"
+msgstr ""
+
+msgid "ch.bafu.unesco-weltnaturerbe"
+msgstr ""
+
+msgid "ch.bafu.schutzgebiete-paerke_nationaler_bedeutung"
+msgstr ""
+
+msgid "ch.are.beschaeftigtendichte-bz08"
+msgstr ""
+
+msgid "ch.bafu.ren-extensive_landwirtschaftsgebiete"
+msgstr ""
+
+msgid "ch.are.belastung-personenverkehr-strasse-2008"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-geophysik-totalintensitaet"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-geologischer_atlas"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-geophysik-aeromagnetische_karte_jura"
+msgstr ""
+
+msgid "ch.bakom.uplink100"
+msgstr ""
+
+msgid "ch.are.bevoelkerungsdichte-vz00"
+msgstr ""
+
+msgid "ch.bfe.statistik-wasserkraftanlagen"
+msgstr ""
+
+msgid "ch.swisstopo.pixelkarte-pk200.metadata"
+msgstr ""
+
+msgid "ch.swisstopo.vec200-miscellaneous"
+msgstr ""
+
+msgid "ch.blw.klimaeignung-kulturland"
+msgstr ""
+
+msgid "ch.bazl.heliports-gebirgslandeplaetze"
+msgstr ""
+
+msgid "ch.swisstopo.pixelkarte-farbe-pk1000.noscale"
+msgstr ""
+
+msgid "ch.swisstopo.vec25-uebrigerverkehr"
+msgstr ""
+
+msgid "ch.astra.ivs-nat_wegbegleiter"
+msgstr ""
+
+msgid "ch.bafu.bundesinventare-amphibien"
+msgstr ""
+
+msgid "ch.bafu.silvaprotect-hangmuren"
+msgstr ""
+
+msgid "ch.blw.hang_steillagen"
+msgstr ""
+
+msgid "ch.blw.bodeneignung-wasserdurchlaessigkeit"
+msgstr ""
+
+msgid "ch.bafu.landesforstinventar-waldanteil"
+msgstr ""
+
+msgid "ch.bafu.landesforstinventar-totholz"
+msgstr ""
+
+msgid "ch.bafu.holzvorrat"
+msgstr ""
+
+msgid "ch.bfe.kleinwasserkraftpotentiale"
+msgstr ""
+
+msgid "ch.swisstopo.vec25-eisenbahnnetz"
+msgstr ""
+
+msgid "ch.bafu.aquaprotect_050"
+msgstr ""
+
+msgid "ch.bafu.biogeographische_regionen"
+msgstr ""
+
+msgid "ch.blw.ursprungsbezeichnungen-kaese"
+msgstr ""
+
+msgid "ch.bafu.showme-kantone_lawinen"
+msgstr ""
+
+msgid "ch.bakom.radio-fernsehsender"
+msgstr ""
+
+msgid "ch.bakom.uplink10"
+msgstr ""
+
+msgid "ch.swisstopo.fixpunkte-hfp1"
+msgstr ""
+
+msgid "ch.swisstopo.fixpunkte-hfp2"
+msgstr ""
+
+msgid "ch.bakom.downlink2"
+msgstr ""
+
+msgid "ch.bafu.waldschadenflaechen-lothar"
+msgstr ""
+
+msgid "ch.bafu.flora-verbreitungskarten"
+msgstr ""
+
+msgid "ch.bafu.bundesinventare-moorlandschaften"
+msgstr ""
+
+msgid "ch.swisstopo"
+msgstr ""
+
+msgid "ch.kanton.av"
+msgstr ""
+
+msgid "ch.babs"
+msgstr ""
+
+msgid "ch.bfs"
+msgstr ""
+
+msgid "ch.bfe"
+msgstr ""
+
+msgid "ch.bazl"
+msgstr ""
+
+msgid "ch.swisstopo.kt"
+msgstr ""
+
+msgid "ch.bafu"
+msgstr ""
+
+msgid "ch.kt.bafu"
+msgstr ""
+
+msgid "ch.bav"
+msgstr ""
+
+msgid "ch.are"
+msgstr ""
+
+msgid "ch.bakom"
+msgstr ""
+
+msgid "ch.astra"
+msgstr ""
+
+msgid "ch.blw"
+msgstr ""
+
+msgid "ch.ensi"
+msgstr ""
+
+msgid "ch.vbs"
+msgstr ""
+
+msgid "ch.swisstopo-vd"
+msgstr ""
+
+msgid "ch.bak"
+msgstr ""
+
+msgid "ch.bag"
+msgstr ""
+
 msgid "ivs_nat_linienfuehrung"
 msgstr ""
 
@@ -15,15 +975,6 @@ msgid "PDF_Level_2_Nam"
 msgstr ""
 
 msgid "PDF_Level_1_Name"
-msgstr ""
-
-msgid "ch.astra.ivs-nat"
-msgstr ""
-
-msgid "ch.astra.ivs-reg_loc"
-msgstr ""
-
-msgid "ch.astra.ivs-nat-verlaeufe"
 msgstr ""
 
 msgid "ivs_objekt"
@@ -48,21 +999,6 @@ msgid "ivs_slaname"
 msgstr ""
 
 msgid "ivs_documentation"
-msgstr ""
-
-msgid "ch.astra.ivs-nat"
-msgstr ""
-
-msgid "ch.astra.ivs-nat-verlaeufe"
-msgstr ""
-
-msgid "ch.astra.ivs-reg_loc"
-msgstr ""
-
-msgid "ch.bafu.bundesinventare-bln"
-msgstr ""
-
-msgid "ch.bafu.bundesinventare-jagdbanngebiete"
 msgstr ""
 
 msgid "objektname"
