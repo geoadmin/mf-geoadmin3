@@ -45,13 +45,10 @@ class MapService(MapServiceValidation):
         from chsdi.models.bod import LayersConfig
         layers = {}
         model = LayersConfig
-        try:
-            query = self.request.db.query(model) 
-            for q in query:
-                layer = q.getLayerConfig(self.translate)
-                layers = dict(layers.items() + layer.items())
-        except NoResultFound:
-            raise exc.HTTPNotFound("No layer found in the %s topic" % self.mapName)
+        query = self.request.db.query(model) 
+        for q in query:
+           layer = q.getLayerConfig(self.translate)
+           layers = dict(layers.items() + layer.items())
         return {'layers': layers}
 
     @view_config(route_name='getlegend', renderer='jsonp')
