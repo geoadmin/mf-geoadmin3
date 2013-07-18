@@ -1,59 +1,74 @@
 <!DOCTYPE html>
 <html ng-app='ga_map_example'>
-  <head>
-    <title>Map Component Example</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
-    <base href="../../../">
-    <link href="style/app.css" rel="stylesheet" media="screen">
-    <style>
-      #map {
-        width: 600px;
-        height: 400px;
-      }
-    </style>
-  </head>
-  <body ng-controller="MapController">
+<head>
+  <title>Map Component Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="initial-scale=1.0, user-scalable=no, width=device-width">
+  <base href="../../../">
+  <link href="style/app.css" rel="stylesheet" media="screen">
+  <style>
+    #map {
+      width: 600px;
+      height: 400px;
+    }
+  </style>
+</head>
+<body ng-controller="MapController">
 
-    <div id="map" ga-map ga-map-map="map" ga-map-options="options">
+<div id="map" ga-map ga-map-map="map"></div>
 
-    <script src="lib/jquery-2.0.2.js"></script>
-    <script src="lib/angular-1.1.5.js"></script>
-    <script src="lib/bootstrap-3.0.0.js"></script>
-    <script src="lib/proj4js-compressed.js"></script>
-    <script src="lib/EPSG21781.js"></script>
-    <script>
-      window.CLOSURE_NO_DEPS = true;
-    </script>
-    <script src="lib/ol-whitespace.js"></script>
-    <script src="deps.js"></script>
-    <script>
-      goog.require('ga_map');
-    </script>
-    <script>
-      (function() {
-        var module = angular.module('ga_map_example', [
-          'ga_map'
-        ]);
+  <script src="lib/jquery-2.0.2.js"></script>
+  <script src="lib/angular-1.1.5.js"></script>
+  <script src="lib/proj4js-compressed.js"></script>
+  <script src="lib/EPSG21781.js"></script>
+  <script>
+    window.CLOSURE_NO_DEPS = true;
+  </script>
+  <script src="lib/ol-whitespace.js"></script>
+  <script src="deps.js"></script>
+  <script>
+    goog.require('ga_map');
+  </script>
+  <script>
+    (function() {
+      var module = angular.module('ga_map_example', [
+        'ga_map'
+      ]);
 
-        module.controller('MapController', ['$scope', function($scope) {
+      module.controller('MapController', ['$scope',
+        'gaLayers', function($scope, gaLayers) {
+
+          var swissExtent = [485869.5728, 837076.5648, 76443.1884, 299941.7864];
+          var swissProjection = ol.proj.configureProj4jsProjection({
+            code: 'EPSG:21781',
+            extent: swissExtent
+          });
+
+          var resolutions = [650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0, 2.5,
+            2.0, 1.0, 0.5, 0.25, 0.1];
 
           var map = new ol.Map({
-            layers: [
-              new ol.layer.TileLayer({
-                source: new ol.source.OSM()
-              })
-            ],
+            controls: ol.control.defaults({
+              attribution: false
+            }),
+            renderer: ol.RendererHint.CANVAS,
             view: new ol.View2D({
-              center: [0, 0],
-              zoom: 4
+              projection: swissProjection,
+              center: ol.extent.getCenter(swissExtent),
+              resolution: 500.0,
+              resolutions: resolutions
             })
           });
 
           $scope.map = map;
+
+          gaLayers.getOlLayerById('ch.swisstopo.swissimage').then(function(layer) {
+            map.addLayer(layer);
+          });
         }]);
 
-      })();
-    </script>
-  </body>
+    })();
+  </script>
+</body>
 </html>
