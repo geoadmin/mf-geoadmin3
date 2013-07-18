@@ -27,16 +27,6 @@ RewriteRule ^${base_url_path}/prod/[0-9]*/(.*)$ ${base_dir}/prod/$1
 ProxyPassMatch ${base_url_path}/(print|ogcproxy|feedback)(.*) ${service_url}/$1$2
 ProxyPassReverse ${base_url_path} ${service_url}
 
-<LocationMatch  ${base_url_path}/(print|ogcproxy)>
-    Order allow,deny
-    Allow from all
-</LocationMatch>
-
-<LocationMatch  ${base_url_path}/src/(print|ogcproxy)>
-    Order allow,deny
-    Allow from all
-</LocationMatch>
-
 <LocationMatch ${base_url_path}/(print|ogcproxy|feedback)>
     Order allow,deny
     Allow from all
