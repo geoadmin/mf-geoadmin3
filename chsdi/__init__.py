@@ -64,6 +64,7 @@ def main(global_config, **settings):
 
     # Application specific
     config.add_route('mapservice', '/rest/services/{map}/MapServer')
+    config.add_route('layersconfig', '/rest/services/{map}/MapServer/layersconfig')
     config.add_route('catalog', '/rest/services/{map}/CatalogServer')
     config.add_route('identify', '/rest/services/{map}/MapServer/identify')
     config.add_route('getlegend', '/rest/services/{map}/MapServer/{idlayer}/getlegend')

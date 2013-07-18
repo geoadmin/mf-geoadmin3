@@ -2,7 +2,9 @@
 
 from pyramid.view import view_config
 import pyramid.httpexceptions as exc
+
 from sqlalchemy import or_
+from sqlalchemy.orm.exc import NoResultFound
 
 from chsdi.models import models_from_name
 from chsdi.models.bod import get_bod_model, computeHeader
@@ -26,26 +28,46 @@ class MapService(MapServiceValidation):
         self.translate = request.translate
 
     @view_config(route_name='mapservice', renderer='jsonp')    
-    def metadata(self):
+    def mapservice(self):
         model = get_bod_model(self.lang)
         results = computeHeader(self.mapName)
-        query = self.request.db.query(model).filter(model.maps.ilike('%%%s%%' % self.mapName))
+        query = self.request.db.query(model).filter(
+            model.maps.ilike('%%%s%%' % self.mapName)
+        )
         query = self._geodata_staging_filter(query, model.staging)
         query = self._full_text_search(query, [model.fullTextSearch])
         layers = [layer.layerMetadata() for layer in query]
         results['layers'] = layers
         return results
 
+    @view_config(route_name='layersconfig', renderer='jsonp')
+    def layersconfig(self):
+        from chsdi.models.bod import LayersConfig
+        layers = {}
+        model = LayersConfig
+        try:
+            query = self.request.db.query(model) 
+            for q in query:
+                layer = q.getLayerConfig(self.translate)
+                layers = dict(layers.items() + layer.items())
+        except NoResultFound:
+            raise exc.HTTPNotFound("No layer found in the %s topic" % self.mapName)
+        return {'layers': layers}
+
     @view_config(route_name='getlegend', renderer='jsonp')
     def getlegend(self):
         from pyramid.renderers import render_to_response
         idlayer = self.request.matchdict.get('idlayer')
         model = get_bod_model(self.lang)
-        query = self.request.db.query(model).filter(model.maps.ilike('%%%s%%' % self.mapName))
+        query = self.request.db.query(model).filter(
+            model.maps.ilike('%%%s%%' % self.mapName)
+        )
         query = query.filter(model.idBod==idlayer)
         for layer in query:
             legend = {'layer': layer.layerMetadata()}
-        response = render_to_response('chsdi:templates/legend.mako', legend, request = self.request)
+        response = render_to_response(
+            'chsdi:templates/legend.mako', legend, request = self.request
+        )
         if self.cbName is None:
             return response 
         else:
