@@ -218,7 +218,8 @@
          var module = angular.module('ga');
 
          module.constant('gaGlobalOptions',
-           {serviceUrl : '${service_url}'});
+           {serviceUrl : '${service_url}',
+            baseUrlPath: '${base_url_path}'});
       })();
     </script>
 
@@ -241,9 +242,9 @@
       <div class="modal-body">
         <form ng-controller="GaFeedbackController" ng-submit="submit()">
           <label translate>feedback_mail</label>
-          <input type="email" required>
+          <input type="email" name="email" ng-model="email" required>
           <label translate>feedback_description</label>
-          <textarea rows=3></textarea>
+          <textarea rows=3 name="feedback" ng-model="feedback"></textarea>
           <label translate>feedback_permalink</label>&nbsp;<a href="{{ permalinkValue }}" target="_blank" translate>permalink</a>
           <br>
           <label translate>feedback_revision</label>
