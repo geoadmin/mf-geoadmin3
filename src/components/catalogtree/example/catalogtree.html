@@ -16,7 +16,7 @@
     <button ng-click="switchCatalog()">Click me to change tree</button>
 
     <div class="catalog">
-       <div id="catalogtree" ga-catalogtree val="tree"></div>
+       <div id="catalogtree" ga-catalogtree val="tree" watched="True"></div>
     </div>
      
     <script src="lib/jquery-2.0.2.js"></script>
@@ -41,8 +41,8 @@
 
         module.controller('CatalogTreeController', ['$scope', '$http', function($scope, $http) {
             var templates = [
-              'components/catalogtree/example/tree.json',
-              'components/catalogtree/example/bigtree.json'
+              'components/catalogtree/example/s1.json',
+              'components/catalogtree/example/s2.json'
             ];
             var curTemplate = 0;
 

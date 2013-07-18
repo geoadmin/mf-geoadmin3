@@ -1,7 +1,7 @@
-<div class="ga-catalogtree-{{node_type}}" ng-click="selected_open = !selected_open">{{val.label}}</span></div>
+<div class="ga-catalogtree-{{node_type}}" ng-click="selected_open = !selected_open">{{val.label}}
 <ul ng-show="selected_open">
   <li class="ga-catalogtree-node" ng-repeat="item in val.children">
-    <span ga-catalogtree val="item" parent-data="val.children"></span>
+    <div ga-catalogtree val="item" parent-data="val.children"></div>
   </li>
 </ul>
- 
+</div>
