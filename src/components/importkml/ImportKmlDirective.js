@@ -4,14 +4,11 @@
   var module = angular.module('ga_importkml_directive', []);
 
   module.directive('gaImportKml',
-      ['$http', '$log',
+      ['$http', '$log', 'gaBrowserSniffer',
        function($http, $log, gaBrowserSniffer) {
          return {
            retsrict: 'A',
            templateUrl: 'components/importkml/partials/importkml.html',
-           scope: {
-             map: '=gaImportKmlMap'
-           },
            link: function(scope, elt, attrs, controller) {
 
              // Deactivate user form submission with Enter key
@@ -28,7 +25,7 @@
                form.submit();
              });
 
-             if (!scope.isIE9) {
+             if (!gaBrowserSniffer.isIE9) {
                // Trigger the hidden input[type=file] onclick event
                elt.find('button').click(function() {
                  elt.find('input[type="file"]').click();

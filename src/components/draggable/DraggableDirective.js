@@ -10,7 +10,6 @@
       // Firefoy doesn't like transition during drag
       element.addClass('ga-draggable');
 
-
       element.bind('mousedown', function(evt) {
         var elt = $(evt.target);
 
@@ -23,8 +22,9 @@
         }
 
         // preventDefault block user interaction with input field
-        if (evt.target.nodeName !== 'INPUT')
+        if (evt.target.nodeName !== 'INPUT') {
           evt.preventDefault();
+        }
 
         startX = evt.screenX - x;// elt.offset().left;
         startY = evt.screenY - y;// elt.offset().top;
