@@ -16753,6 +16753,41 @@ ol.style.Text.prototype.createLiteral = function(opt_feature) {
   goog.asserts.assertNumber(opacity, "opacity must be a number");
   return new ol.style.TextLiteral({color:color, fontFamily:fontFamily, fontSize:fontSize, text:text, opacity:opacity})
 };
+ol.style.Text.prototype.getColor = function() {
+  return this.color_
+};
+ol.style.Text.prototype.getFontFamily = function() {
+  return this.fontFamily_
+};
+ol.style.Text.prototype.getFontSize = function() {
+  return this.fontSize_
+};
+ol.style.Text.prototype.getOpacity = function() {
+  return this.opacity_
+};
+ol.style.Text.prototype.getText = function() {
+  return this.text_
+};
+ol.style.Text.prototype.setColor = function(color) {
+  goog.asserts.assertInstanceof(color, ol.expr.Expression);
+  this.color_ = color
+};
+ol.style.Text.prototype.setFontFamily = function(fontFamily) {
+  goog.asserts.assertInstanceof(fontFamily, ol.expr.Expression);
+  this.fontFamily_ = fontFamily
+};
+ol.style.Text.prototype.setFontSize = function(fontSize) {
+  goog.asserts.assertInstanceof(fontSize, ol.expr.Expression);
+  this.fontSize_ = fontSize
+};
+ol.style.Text.prototype.setOpacity = function(opacity) {
+  goog.asserts.assertInstanceof(opacity, ol.expr.Expression);
+  this.opacity_ = opacity
+};
+ol.style.Text.prototype.setText = function(text) {
+  goog.asserts.assertInstanceof(text, ol.expr.Expression);
+  this.text_ = text
+};
 ol.style.TextDefaults = new ol.style.TextLiteral({color:"#000", fontFamily:"sans-serif", fontSize:10, text:"", opacity:1});
 goog.provide("ol.layer.Vector");
 goog.require("goog.array");
@@ -17865,7 +17900,7 @@ ol.style.IconLiteral = function(options) {
 };
 goog.inherits(ol.style.IconLiteral, ol.style.PointLiteral);
 ol.style.IconLiteral.prototype.equals = function(iconLiteral) {
-  return this.url == iconLiteral.type && this.width == iconLiteral.width && this.height == iconLiteral.height && this.opacity == iconLiteral.opacity && this.rotation == iconLiteral.rotation
+  return this.url == iconLiteral.url && this.width == iconLiteral.width && this.height == iconLiteral.height && this.opacity == iconLiteral.opacity && this.rotation == iconLiteral.rotation
 };
 ol.style.Icon = function(options) {
   goog.asserts.assert(options.url, "url must be set");
@@ -17894,6 +17929,41 @@ ol.style.Icon.prototype.createLiteral = function(opt_feature) {
   var rotation = ol.expr.evaluateFeature(this.rotation_, opt_feature);
   goog.asserts.assertNumber(rotation, "rotation must be a number");
   return new ol.style.IconLiteral({url:url, width:width, height:height, opacity:opacity, rotation:rotation})
+};
+ol.style.Icon.prototype.getHeight = function() {
+  return this.height_
+};
+ol.style.Icon.prototype.getOpacity = function() {
+  return this.opacity_
+};
+ol.style.Icon.prototype.getRotation = function() {
+  return this.rotation_
+};
+ol.style.Icon.prototype.getUrl = function() {
+  return this.url_
+};
+ol.style.Icon.prototype.getWidth = function() {
+  return this.width_
+};
+ol.style.Icon.prototype.setHeight = function(height) {
+  goog.asserts.assertInstanceof(height, ol.expr.Expression);
+  this.height_ = height
+};
+ol.style.Icon.prototype.setOpacity = function(opacity) {
+  goog.asserts.assertInstanceof(opacity, ol.expr.Expression);
+  this.opacity_ = opacity
+};
+ol.style.Icon.prototype.setRotation = function(rotation) {
+  goog.asserts.assertInstanceof(rotation, ol.expr.Expression);
+  this.rotation_ = rotation
+};
+ol.style.Icon.prototype.setUrl = function(url) {
+  goog.asserts.assertInstanceof(url, ol.expr.Expression);
+  this.url_ = url
+};
+ol.style.Icon.prototype.setWidth = function(width) {
+  goog.asserts.assertInstanceof(width, ol.expr.Expression);
+  this.width_ = width
 };
 ol.style.IconDefaults = new ol.style.IconLiteral({url:"#", opacity:1, rotation:0});
 goog.provide("ol.style.Line");
@@ -17933,6 +18003,27 @@ ol.style.Line.prototype.createLiteral = function(opt_feature) {
   var opacity = ol.expr.evaluateFeature(this.opacity_, opt_feature);
   goog.asserts.assertNumber(opacity, "opacity must be a number");
   return new ol.style.LineLiteral({strokeColor:strokeColor, strokeWidth:strokeWidth, opacity:opacity})
+};
+ol.style.Line.prototype.getStrokeColor = function() {
+  return this.strokeColor_
+};
+ol.style.Line.prototype.getStrokeWidth = function() {
+  return this.strokeWidth_
+};
+ol.style.Line.prototype.getOpacity = function() {
+  return this.opacity_
+};
+ol.style.Line.prototype.setStrokeColor = function(strokeColor) {
+  goog.asserts.assertInstanceof(strokeColor, ol.expr.Expression);
+  this.strokeColor_ = strokeColor
+};
+ol.style.Line.prototype.setStrokeWidth = function(strokeWidth) {
+  goog.asserts.assertInstanceof(strokeWidth, ol.expr.Expression);
+  this.strokeWidth_ = strokeWidth
+};
+ol.style.Line.prototype.setOpacity = function(opacity) {
+  goog.asserts.assertInstanceof(opacity, ol.expr.Expression);
+  this.opacity_ = opacity
 };
 ol.style.LineDefaults = new ol.style.LineLiteral({strokeColor:"#696969", strokeWidth:1.5, opacity:0.75});
 goog.provide("ol.style.Polygon");
@@ -18008,6 +18099,34 @@ ol.style.Polygon.prototype.createLiteral = function(opt_feature) {
   var opacity = ol.expr.evaluateFeature(this.opacity_, opt_feature);
   goog.asserts.assertNumber(opacity, "opacity must be a number");
   return new ol.style.PolygonLiteral({fillColor:fillColor, strokeColor:strokeColor, strokeWidth:strokeWidth, opacity:opacity})
+};
+ol.style.Polygon.prototype.getFillColor = function() {
+  return this.fillColor_
+};
+ol.style.Polygon.prototype.getOpacity = function() {
+  return this.opacity_
+};
+ol.style.Polygon.prototype.getStrokeColor = function() {
+  return this.strokeColor_
+};
+ol.style.Polygon.prototype.getStrokeWidth = function() {
+  return this.strokeWidth_
+};
+ol.style.Polygon.prototype.setFillColor = function(fillColor) {
+  goog.asserts.assertInstanceof(fillColor, ol.expr.Expression);
+  this.fillColor_ = fillColor
+};
+ol.style.Polygon.prototype.setOpacity = function(opacity) {
+  goog.asserts.assertInstanceof(opacity, ol.expr.Expression);
+  this.opacity_ = opacity
+};
+ol.style.Polygon.prototype.setStrokeColor = function(strokeColor) {
+  goog.asserts.assertInstanceof(strokeColor, ol.expr.Expression);
+  this.strokeColor_ = strokeColor
+};
+ol.style.Polygon.prototype.setStrokeWidth = function(strokeWidth) {
+  goog.asserts.assertInstanceof(strokeWidth, ol.expr.Expression);
+  this.strokeWidth_ = strokeWidth
 };
 ol.style.PolygonDefaults = new ol.style.PolygonLiteral({fillColor:"#ffffff", strokeColor:"#696969", strokeWidth:1.5, opacity:0.75});
 goog.provide("ol.style.Shape");
@@ -18090,6 +18209,47 @@ ol.style.Shape.prototype.createLiteral = function(opt_feature) {
   var opacity = ol.expr.evaluateFeature(this.opacity_, opt_feature);
   goog.asserts.assertNumber(opacity, "opacity must be a number");
   return new ol.style.ShapeLiteral({type:this.type_, size:size, fillColor:fillColor, strokeColor:strokeColor, strokeWidth:strokeWidth, opacity:opacity})
+};
+ol.style.Shape.prototype.getFillColor = function() {
+  return this.fillColor_
+};
+ol.style.Shape.prototype.getOpacity = function() {
+  return this.opacity_
+};
+ol.style.Shape.prototype.getSize = function() {
+  return this.size_
+};
+ol.style.Shape.prototype.getStrokeColor = function() {
+  return this.strokeColor_
+};
+ol.style.Shape.prototype.getStrokeWidth = function() {
+  return this.strokeWidth_
+};
+ol.style.Shape.prototype.getType = function() {
+  return this.type_
+};
+ol.style.Shape.prototype.setFillColor = function(fillColor) {
+  goog.asserts.assertInstanceof(fillColor, ol.expr.Expression);
+  this.fillColor_ = fillColor
+};
+ol.style.Shape.prototype.setOpacity = function(opacity) {
+  goog.asserts.assertInstanceof(opacity, ol.expr.Expression);
+  this.opacity_ = opacity
+};
+ol.style.Shape.prototype.setSize = function(size) {
+  goog.asserts.assertInstanceof(size, ol.expr.Expression);
+  this.size_ = size
+};
+ol.style.Shape.prototype.setStrokeColor = function(strokeColor) {
+  goog.asserts.assertInstanceof(strokeColor, ol.expr.Expression);
+  this.strokeColor_ = strokeColor
+};
+ol.style.Shape.prototype.setStrokeWidth = function(strokeWidth) {
+  goog.asserts.assertInstanceof(strokeWidth, ol.expr.Expression);
+  this.strokeWidth_ = strokeWidth
+};
+ol.style.Shape.prototype.setType = function(type) {
+  this.type_ = type
 };
 ol.style.ShapeDefaults = new ol.style.ShapeLiteral({type:ol.style.ShapeType.CIRCLE, size:5, fillColor:"#ffffff", strokeColor:"#696969", strokeWidth:1.5, opacity:0.75});
 goog.provide("ol.renderer.canvas.VectorRenderer");
@@ -29586,7 +29746,7 @@ ol.tilegrid.XYZ.prototype.createTileCoordTransform = function(opt_options) {
   if(goog.isDef(options.extent)) {
     tileRangeByZ = new Array(maxZ + 1);
     var z;
-    for(z = 0;z < maxZ;++z) {
+    for(z = 0;z <= maxZ;++z) {
       if(z < minZ) {
         tileRangeByZ[z] = null
       }else {
