@@ -15,6 +15,7 @@
   goog.require('ga_permalinkpanel_controller');
   goog.require('ga_print_controller');
   goog.require('ga_translation_controller');
+  goog.require('ga_feedback_controller');
 
   var module = angular.module('ga', [
     'ga_attribution',
@@ -29,7 +30,8 @@
     'ga_mouseposition_controller',
     'ga_permalinkpanel_controller',
     'ga_print_controller',
-    'ga_translation_controller'
+    'ga_translation_controller',
+    'ga_feedback_controller'
   ]);
 
   module.config(['$translateProvider', function($translateProvider) {
