@@ -9,6 +9,7 @@
   goog.require('ga_permalinkpanel');
   goog.require('ga_scaleline');
   goog.require('ga_translation');
+  goog.require('ga_feedback');
 
   goog.require('ga_map_controller');
   goog.require('ga_mouseposition_controller');
@@ -26,6 +27,7 @@
     'ga_permalinkpanel',
     'ga_scaleline',
     'ga_translation',
+    'ga_feedback',
     'ga_map_controller',
     'ga_mouseposition_controller',
     'ga_permalinkpanel_controller',
