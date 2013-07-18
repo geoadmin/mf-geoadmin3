@@ -33,14 +33,12 @@ describe('ga_map_service', function() {
       $httpBackend.expectGET('layers.json');
       layers.getOlLayerById('foo').then(function(layer) {
         expect(layer instanceof ol.layer.TileLayer).to.be.ok();
-        // FIXME The following does not work with ol.js because of
-        // missing exports. See https://github.com/openlayers/ol3/pull/860.
-        //var source = layer.getSource();
-        //expect(source instanceof ol.source.WMTS).to.be.ok();
-        //var tileGrid = source.getTileGrid();
-        //expect(tileGrid instanceof ol.tilegrid.WMTS).to.be.ok();
-        //var resolutions = tileGrid.getResolutions();
-        //expect(resolutions.length).to.eql(28);
+        var source = layer.getSource();
+        expect(source instanceof ol.source.WMTS).to.be.ok();
+        var tileGrid = source.getTileGrid();
+        expect(tileGrid instanceof ol.tilegrid.WMTS).to.be.ok();
+        var resolutions = tileGrid.getResolutions();
+        expect(resolutions.length).to.eql(27);
       });
       $httpBackend.flush();
     });
