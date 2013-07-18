@@ -11,7 +11,8 @@
     </li>
   </ul>
 
-  <a href="" class="validate-kml-file" ng-show="(file != null || fileUrl != null)"> Is your KML valid ?</a>
+  <a href="" class="validate-kml-file" ng-show="(file != null || fileUrl !=
+  null)">{{'link_validate_kml' | translate}}</a>
   
   <div class="tab-content">
 
@@ -28,10 +29,10 @@
         <input type="file" name="file"/>
     
         <!-- Button use to open the file chooser of the input file -->
-        <button type="button">Browse ...</button><input class="import-kml-fake-file" type="text"
+        <button type="button">{{'browse' | translate}}</button><input class="import-kml-fake-file" type="text"
             readonly value="{{(file.name) ? file.name + ', size: ' + file.size/1000 +
         ' ko' : ''}}"
-        placeholder="No file"/>
+        placeholder="{{'no_file' | translate}}"/>
 
         <!-- Use for validation --> 
         <input type="hidden" name="type" value="direct-input"/> 
@@ -45,7 +46,7 @@
       <form name="import-kml-url" method="POST" target="_BLANK" 
           action="{{options.validationServiceUrl}}">
         
-        <input type="url" name="url" placeholder="Paste an URL" ng-model="fileUrl"  ng-change="handleFileUrl()"/>
+        <input type="url" name="url" placeholder="{{'paste_url' | translate}}" ng-model="fileUrl"  ng-change="handleFileUrl()"/>
         
         <!-- Use for validation -->
         <input type="hidden" name="type" value="uri"/> 

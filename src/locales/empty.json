@@ -33,4 +33,23 @@
   "close": "",
   "error": "",
   "feedback_error_message": ""
+  "import_kml": "",
+  "drop_me_here": "",
+  "uploading_file": "",
+  "upload_succeed": "",
+  "upload_failed": "",
+  "drop_invalid_url": "",
+  "file_is_not_kml": "",
+  "file_too_large": "",
+  "reading_file": "",
+  "read_succeed": "",
+  "read_failed": "",
+  "parsing_file": "",
+  "parse_succeed": "",
+  "parse_failed": "",    
+  "operation_canceled": "",
+  "link_validate_kml": "",
+  "no_file": "",
+  "browse": "",
+  "paste_url": ""
 }

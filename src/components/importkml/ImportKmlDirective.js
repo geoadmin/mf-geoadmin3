@@ -3,11 +3,14 @@
 
   goog.require('ga_browsersniffer_service');
 
-  var module = angular.module('ga_importkml_directive', []);
+  var module = angular.module('ga_importkml_directive', [
+    'ga_browsersniffer_service',
+    'pascalprecht.translate'
+  ]);
 
   module.directive('gaImportKml',
-      ['$http', '$log', 'gaBrowserSniffer',
-       function($http, $log, gaBrowserSniffer) {
+      ['$http', '$log', '$translate', 'gaBrowserSniffer',
+       function($http, $log, $translate, gaBrowserSniffer) {
          return {
            retsrict: 'A',
            templateUrl: 'components/importkml/partials/importkml.html',
@@ -27,7 +30,10 @@
                form.submit();
              });
 
-             if (gaBrowserSniffer.msie <= 9) {
+             // Use a local KML file features only available on browser
+             // more recent than ie9
+             if (!gaBrowserSniffer.msie || gaBrowserSniffer.msie > 9) {
+
                // Trigger the hidden input[type=file] onclick event
                elt.find('button').click(function() {
                  elt.find('input[type="file"]').click();
@@ -51,7 +57,7 @@
                // Register drag'n'drop events on <body>
                var dropZone = angular.element(
                    '<div class="import-kml-drop-zone">' +
-                   '  <div>DROP ME HERE</div>' +
+                   '  <div>' + $translate('drop_me_here') + '</div>' +
                    '</div>');
 
                var dragEnterZone = angular.element(document.body);
