@@ -3,14 +3,21 @@
 
   var module = angular.module('ga_feedback_directive', []);
 
+  /**
+   * This directive displays a form for displaying and submitting feedback.
+   *
+   * When the response is received from the feedback service it sets the
+   * "response" scope property to "success" or "error".
+   */
   module.directive('gaFeedback',
-      ['$http', '$rootScope', 'gaPermalink',
-        function($http, $rootScope, gaPermalink) {
+      ['$http', 'gaPermalink',
+        function($http, gaPermalink) {
           return {
             restrict: 'A',
             replace: true,
             scope: {
-              options: '=gaFeedbackOptions'
+              options: '=gaFeedbackOptions',
+              response: '=gaFeedbackResponse'
             },
             templateUrl: 'components/feedback/partials/feedback.html',
             link: function(scope, element, attrs) {
@@ -33,9 +40,9 @@
                   url: url,
                   data: formData
                 }).success(function(response) {
-                  $rootScope.$broadcast('gaFeedbackSuccess', response);
+                  scope.response = 'success';
                 }).error(function(response) {
-                  $rootScope.$broadcast('gaFeedbackError', response);
+                  scope.response = 'error';
                 });
 
               };

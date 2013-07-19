@@ -241,8 +241,10 @@
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
             <h4 class="modal-title" translate>problem_announcement</h4>
           </div>
-          <div class="modal-body" ng-controller="GaFeedbackController">
-            <div ga-feedback ga-feedback-options="options"></div>
+          <div class="modal-body">
+            <div ga-feedback
+                 ga-feedback-options="options"
+                 ga-feedback-response="response"></div>
           </div>
         </div>
       </div>
