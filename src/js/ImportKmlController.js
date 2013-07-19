@@ -5,7 +5,7 @@
 
   module.controller('GaImportKmlController',
       ['$scope', 
-       function($scope, $http, $log, $translate, gaGlobalOptions, gaBrowserSniffer) {
+       function($scope) {
          $scope.options = {
            proxyUrl: 'ogcproxy?url=',
            validationServiceUrl: 'http://www.kmlvalidator.org/validate.htm'

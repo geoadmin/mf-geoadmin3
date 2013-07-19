@@ -9,8 +9,8 @@
   ]);
 
   module.controller('GaImportKmlDirectiveController',
-      ['$scope', '$http', '$log', '$translate', 'gaGlobalOptions', 'gaBrowserSniffer',
-       function($scope, $http, $log, $translate, gaGlobalOptions, gaBrowserSniffer) {
+      ['$scope', '$http', '$log', '$translate', 'gaBrowserSniffer',
+       function($scope, $http, $log, $translate,  gaBrowserSniffer) {
          $scope.isIE9 = (gaBrowserSniffer.msie == 9);
          $scope.isIE = !isNaN(gaBrowserSniffer.msie);
          $scope.file = null;
@@ -49,7 +49,7 @@
              });
 
            } else {
-             alert($translate('drop_invalid_url') + url); 
+             alert($translate('drop_invalid_url') + url);
            }
          };
 
@@ -80,7 +80,7 @@
            reader.onprogress = $scope.handleReaderProgress;
            reader.onload = $scope.handleReaderLoadEnd;
            reader.onerror = $scope.handleReaderError;
-           //reader.onabort = $scope.handleReaderAbort; 
+           //reader.onabort = $scope.handleReaderAbort;
            reader.readAsText(file);
          };
 
@@ -101,7 +101,7 @@
              $scope.displayFileContent();
            });
          };
-        
+
          // Callback when FileReader has failed
          $scope.handleReaderError = function(evt) {
            $scope.$apply(function() {
@@ -191,7 +191,7 @@
          return {
            retsrict: 'A',
            templateUrl: 'components/importkml/partials/importkml.html',
-           controller:'GaImportKmlDirectiveController',
+           controller: 'GaImportKmlDirectiveController',
            link: function(scope, elt, attrs, controller) {
 
              // Deactivate user form submission with Enter key
