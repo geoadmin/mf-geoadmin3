@@ -14,7 +14,7 @@
 
          // from Angular
          // https://github.com/angular/angular.js/blob/master/src/ng/directive/input.js#L3
-         var URL_REGEXP =
+         var URL_REGEXP = 
          /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/;
 
          $scope.isIE9 = (gaBrowserSniffer.msie == 9);
@@ -143,13 +143,13 @@
              vector.parseFeatures($scope.fileContent, kml, swissProjection);
              $scope.userMessage = $translate('parse_succeeded');
              $scope.progress += 20;
-             $scope.map.on(['click'], function(evt) {
+             $scope.map.on('click', function(evt) {
                $scope.map.getFeatures({
                  pixel: evt.getPixel(),
                  layers: [vector],
                  success: function(features) {
                    if (features) {
-                     $log.log(features[0][0].values_);
+                     // TODO:  Display popup
                    }
                  }
                });
