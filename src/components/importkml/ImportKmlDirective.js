@@ -14,7 +14,7 @@
 
          // from Angular
          // https://github.com/angular/angular.js/blob/master/src/ng/directive/input.js#L3
-         var URL_REGEXP = 
+         var URL_REGEXP =
          /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/;
 
          $scope.isIE9 = (gaBrowserSniffer.msie == 9);
@@ -148,9 +148,9 @@
                  pixel: evt.getPixel(),
                  layers: [vector],
                  success: function(features) {
-                   if (features) {
+                   //if (features) {
                      // TODO:  Display popup
-                   }
+                   //}
                  }
                });
              });
