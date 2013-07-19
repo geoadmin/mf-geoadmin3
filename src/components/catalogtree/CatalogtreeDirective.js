@@ -4,8 +4,7 @@
   var module = angular.module('ga_catalogtree_directive', []);
 
   module.directive('gaCatalogtree',
-      ['$compile', '$log', '$templateCache', '$timeout',
-          function($compile, $log, $templateCache, $timeout) {
+      ['$compile', function($compile) {
         return {
           restrict: 'A',
           templateUrl: 'components/catalogtree/partials/catalogtree.html',
