@@ -4,18 +4,18 @@
   var module = angular.module('ga_feedback_directive', []);
 
   module.directive('gaFeedback',
-      ['$http', '$rootScope', 'gaPermalink', 'gaGlobalOptions',
-        function($http, $rootScope, gaPermalink, gaGlobalOptions) {
+      ['$http', '$rootScope', 'gaPermalink',
+        function($http, $rootScope, gaPermalink) {
           return {
             restrict: 'A',
             replace: true,
             scope: {
-              map: '=gaFeedbackOptions'
+              options: '=gaFeedbackOptions'
             },
             templateUrl: 'components/feedback/partials/feedback.html',
             link: function(scope, element, attrs) {
               var method = 'POST';
-              var url = gaGlobalOptions.baseUrlPath + '/feedback';
+              var url = scope.options.baseUrlPath + '/feedback';
 
               scope.permalinkValue = gaPermalink.getHref();
 

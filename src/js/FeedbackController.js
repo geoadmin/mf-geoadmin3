@@ -4,7 +4,10 @@
   var module = angular.module('ga_feedback_controller', []);
 
   module.controller('GaFeedbackController',
-      ['$scope', function($scope) {
+      ['$scope', 'gaGlobalOptions', function($scope, gaGlobalOptions) {
+        $scope.options = {
+          baseUrlPath: gaGlobalOptions.baseUrlPath
+        };
         $scope.$on('gaFeedbackSuccess', function(event, response) {
           angular.element(
               document.getElementById('feedback')).modal('hide');
