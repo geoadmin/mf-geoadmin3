@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app='ga'>
+<html ng-app='ga_draggable_example'>
   <head>
     <title>Draggable Directive Example</title>
     <meta charset="utf-8">
@@ -22,24 +22,26 @@
       }
    </style>
   </head>
-  <body ng-controller="GaMapController">
+  <body>
     <div id="elt-draggable" ga-draggable> DRAG ME </div>
     
     <script src="lib/jquery-2.0.2.js"></script>
     <script src="lib/angular-1.1.5.js"></script>
-    <script src="lib/angular-translate-0.9.4.js"></script>
-    <script src="lib/angular-translate-loader-static-files-0.1.2.js"></script>
     <script src="lib/bootstrap-3.0.0.js"></script>
-    <script src="lib/proj4js-compressed.js"></script>
-    <script src="lib/EPSG21781.js"></script>
     <script>
       window.CLOSURE_NO_DEPS = true;
     </script>
-    <script src="lib/ol-whitespace.js"></script>
+    <script src="lib/ol-whitespace.js"></script>    
     <script src="deps.js"></script>
     <script>
-      goog.require('ga');
+      goog.require('ga_draggable');
     </script>
-
+    <script>
+      (function() {
+        var module = angular.module('ga_draggable_example', [
+          'ga_draggable'
+        ]);
+      })();
+    </script>
   </body>
 </html>

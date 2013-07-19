@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app='ga'>
+<html ng-app='ga_importkml_example'>
   <head>
     <title>Import KML Component Example</title>
     <meta charset="utf-8">
@@ -29,9 +29,8 @@
     <div id="import-kml" 
         class="import-kml" 
         ng-controller="GaImportKmlController"
-        ga-import-kml 
-        ga-import-kml-map="map"
-    ></div>
+        ga-import-kml >
+    </div>
     <div id="map" class="map" ga-map ga-map-map="map"></div>
     <div id="bg-layer-selector"
         ga-background-layer-selector
@@ -46,20 +45,27 @@
     <script src="lib/EPSG21781.js"></script>
     <script>
       window.CLOSURE_NO_DEPS = true;
-      window.CLOSURE_BASE_PATH = "../src/";
     </script>
     <script src="lib/ol-whitespace.js"></script>
     <script src="deps.js"></script>
     <script>
-      goog.require('ga');
+      goog.require('ga_backgroundlayerselector');
+      goog.require('ga_importkml');
+      goog.require('ga_importkml_controller');  
+      goog.require('ga_map');
+      goog.require('ga_map_controller');
     </script>
-    <script>
+        <script>
       (function() {
-         var module = angular.module('ga');
-
-         module.constant('gaGlobalOptions',
-           {serviceUrl : 'http://mf-chsdi30t.bgdi.admin.ch'});
+        var module = angular.module('ga_importkml_example', [
+          'ga_backgroundlayerselector',
+          'ga_importkml',
+          'ga_importkml_controller',
+          'ga_map',
+          'ga_map_controller'
+        ]);
       })();
     </script>
+ 
   </body>
 </html>
