@@ -23,6 +23,14 @@
   "problem_announcement": "",
   "send": "",
   "feedback_mail": "",
+  "feedback_description": "",
+  "feedback_permalink": "",
   "cancel": "",
-  "permalink": ""
+  "permalink": "",
+  "feedback_revision": "",
+  "success": "",
+  "feedback_success_message": "",
+  "close": "",
+  "error": "",
+  "feedback_error_message": ""
 }
