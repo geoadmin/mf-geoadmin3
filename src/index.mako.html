@@ -234,6 +234,7 @@
     </div>
 
     <!-- feedback dialog -->
+    <div ng-controller="GaFeedbackController">
     <div id="feedback" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="feedbackLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -249,7 +250,7 @@
         </div>
       </div>
     </div>
-    <div id="feedback-success" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="feedbackSuccessLabel" aria-hidden="true">
+    <div id="feedback-success" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="feedbackSuccessLabel" aria-hidden="true" ga-modal-show="feedbackSuccessModalShown">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -265,7 +266,7 @@
         </div>
       </div>
     </div>
-    <div id="feedback-error" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="feedbackErrorLabel" aria-hidden="true">
+    <div id="feedback-error" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="feedbackErrorLabel" aria-hidden="true" ga-modal-show="feedbackErrorModalShown">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -281,6 +282,7 @@
         </div>
       </div>
     </div>
+  </div>
 
   </body>
 </html>

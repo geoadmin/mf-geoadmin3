@@ -8,18 +8,32 @@
         $scope.options = {
           baseUrlPath: gaGlobalOptions.baseUrlPath
         };
-        $scope.$on('gaFeedbackSuccess', function(event, response) {
-          angular.element(
-              document.getElementById('feedback')).modal('hide');
-          angular.element(
-              document.getElementById('feedback-success')).modal('show');
+
+        // Feedback success and error modals are hidden by default.
+        $scope.feedbackSuccessModalShown = false;
+        $scope.feedbackErrorModalShown = false;
+
+        // Hide/show success and error modals when feedback response received.
+        $scope.$watch('response', function(newVal, oldVal) {
+          if (newVal != oldVal) {
+            var success = $scope.response == 'success';
+            $scope.feedbackSuccessModalShown = success;
+            $scope.feedbackErrorModalShown = !success;
+          }
         });
 
-        $scope.$on('gaFeedbackError', function(event, response) {
-          angular.element(
-              document.getElementById('feedback')).modal('hide');
-          angular.element(
-              document.getElementById('feedback-error')).modal('show');
+        // We need to reset "response" to undefined when the modals are closed
+        // by the user. This is to be notified again when the "response" state
+        // changes again.
+        $scope.$watch('feedbackSuccessModalShown', function(newVal, oldVal) {
+          if (newVal != oldVal) {
+            $scope.response = undefined;
+          }
+        });
+        $scope.$watch('feedbackErrorModalShown', function(newVal, oldVal) {
+          if (newVal != oldVal) {
+            $scope.response = undefined;
+          }
         });
 
       }]);
