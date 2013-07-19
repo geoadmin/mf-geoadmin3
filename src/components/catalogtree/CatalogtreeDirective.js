@@ -3,6 +3,10 @@
 
   var module = angular.module('ga_catalogtree_directive', []);
 
+  /**
+   * See examples on how it can be used
+   */
+
   module.directive('gaCatalogtree',
       ['$compile', function($compile) {
         return {

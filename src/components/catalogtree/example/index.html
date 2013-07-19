@@ -8,16 +8,33 @@
     <link href="style/app.css" rel="stylesheet" media="screen">
     <style>
       .catalog {
-          margin: 20px;
-     }
+        margin: 20px;
+      }
+      #catalog1 {
+       float: left;
+      }
+      #catalog2 {
+        float: right;
+      }
     </style>
   </head>
   <body ng-controller="CatalogTreeController">
     <button ng-click="switchCatalog()">Click me to change tree</button>
 
-    <div class="catalog">
-       <div id="catalogtree" ga-catalogtree val="tree"></div>
-    </div>
+    <div>
+      <div class="catalog" id="catalog1">
+         <!-- This shows the tree including the root node -->
+         <div ga-catalogtree val="tree"></div>
+      </div>
+      <div class="catalog" id="catalog2">
+        <!-- This will show the tree without the root node -->
+        <ul>
+          <li class="ga-catalogtree-node" ng-repeat="item in tree.children">
+            <div ga-catalogtree val="item"></div>
+          </li>
+        </ul>
+      </div>
+    <div>
      
     <script src="lib/jquery-2.0.2.js"></script>
     <script src="lib/angular-1.1.5.js"></script>
@@ -39,8 +56,9 @@
           'ga_catalogtree'
         ]);
 
-        module.controller('CatalogTreeController', ['$scope', '$http', function($scope, $http) {
-          /*
+        module.controller('CatalogTreeController', ['$scope',
+        '$http', function($scope, $http) {
+            /*
             var templates = [
               'components/catalogtree/example/s1.json',
               'components/catalogtree/example/s2.json'
