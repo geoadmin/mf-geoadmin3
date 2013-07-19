@@ -16,7 +16,7 @@
     <button ng-click="switchCatalog()">Click me to change tree</button>
 
     <div class="catalog">
-       <div id="catalogtree" ga-catalogtree val="tree" watched="True"></div>
+       <div id="catalogtree" ga-catalogtree val="tree"></div>
     </div>
      
     <script src="lib/jquery-2.0.2.js"></script>
@@ -51,7 +51,6 @@
               'components/catalogtree/example/bigtree.json'
             ];
             var curTemplate = 0;
-
             $scope.switchCatalog = switchCatalog;
             $scope.switchCatalog();
 

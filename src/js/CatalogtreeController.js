@@ -4,16 +4,16 @@
   var module = angular.module('ga_catalogtree_controller', []);
 
   //FIXME: only temporary...
-  /*
   var templates = {
     def: 'components/catalogtree/example/tree.json',
     big: 'components/catalogtree/example/bigtree.json'
   };
-  */
+  /*
   var templates = {
     def: 'components/catalogtree/example/s1.json',
     big: 'components/catalogtree/example/s2.json'
   };
+  */
    
 
   module.controller('GaCatalogtreeController',

@@ -1,0 +1,15 @@
+<div>
+<div ng-if="val && !val.children" class="ga-catalogtree-leaf">{{val.label}}
+  <i class="icon-info-sign" ng-click="getLegend($event, val.bod_layer_id)"></i>
+</div>
+
+
+<div ng-if="val && val.children" class="ga-catalogtree-node"
+ng-click="toggle($event)">{{val.label}}
+  <ul ng-show="val.selected_open">
+    <li class="ga-catalogtree-node" ng-repeat="item in val.children">
+       <div ga-catalogtree val="item"></div>
+    </li>
+  </ul>
+</div>
+</div>
