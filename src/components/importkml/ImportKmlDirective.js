@@ -11,6 +11,12 @@
   module.controller('GaImportKmlDirectiveController',
       ['$scope', '$http', '$log', '$translate', 'gaBrowserSniffer',
        function($scope, $http, $log, $translate,  gaBrowserSniffer) {
+
+         // from Angular
+         // https://github.com/angular/angular.js/blob/master/src/ng/directive/input.js#L3
+         var URL_REGEXP =
+         /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/;
+
          $scope.isIE9 = (gaBrowserSniffer.msie == 9);
          $scope.isIE = !isNaN(gaBrowserSniffer.msie);
          $scope.file = null;
@@ -18,17 +24,15 @@
          $scope.fileContent = null;
          $scope.userMessage = '';
          $scope.progress = 0;
-         /*$scope.options = {
-           proxyUrl: 'ogcproxy?url=',
-           validationServiceUrl: 'http://www.kmlvalidator.org/validate.htm'
-         };*/
+
 
          // Handle fileURL
          $scope.handleFileUrl = function() {
            var url = $scope.fileUrl;
 
-           if (url && url.length > 0 && /^http/i.test(url)) {
-             // info: Angular test the validation of the input too
+           if (url && url.length > 0 && URL_REGEXP.test(url)) {
+             // info: Angular test the validation of the input too, we test for
+             // the DnD of an URL
 
              var proxyUrl = $scope.options.proxyUrl + encodeURIComponent(url);
              $scope.userMessage = $translate('uploading_file');
@@ -38,7 +42,7 @@
              // Angularjs doesn't handle onprogress event
              $http.get(proxyUrl)
             .success(function(data, status, headers, config) {
-               $scope.userMessage = $translate('upload_succeed');
+               $scope.userMessage = $translate('upload_succeeded');
                $scope.fileContent = data;
                $scope.displayFileContent();
              })
@@ -66,7 +70,7 @@
              return;
            }
 
-           if (file.size > 20000000) {
+           if (file.size > $scope.options.maxFileSize) {
              alert($translate('file_too_large'));
              return;
            }
@@ -96,7 +100,7 @@
          // Callback when FileReader has finished
          $scope.handleReaderLoadEnd = function(evt) {
            $scope.$apply(function() {
-             $scope.userMessage = $translate('read_succeed');
+             $scope.userMessage = $translate('read_succeeded');
              $scope.fileContent = evt.target.result;
              $scope.displayFileContent();
            });
@@ -137,7 +141,7 @@
 
            try {
              vector.parseFeatures($scope.fileContent, kml, swissProjection);
-             $scope.userMessage = $translate('parse_succeed');
+             $scope.userMessage = $translate('parse_succeeded');
              $scope.progress += 20;
              $scope.map.on(['click'], function(evt) {
                $scope.map.getFeatures({
@@ -191,8 +195,14 @@
          return {
            retsrict: 'A',
            templateUrl: 'components/importkml/partials/importkml.html',
+           scope: {
+             map: '=gaImportKmlMap',
+             options: '=gaImportKmlOptions'
+           },
            controller: 'GaImportKmlDirectiveController',
            link: function(scope, elt, attrs, controller) {
+
+             //controller.setMap(scope.map);
 
              // Deactivate user form submission with Enter key
              elt.find('input').keypress(function(evt) {

@@ -7,18 +7,18 @@
     return function(scope, element, attr) {
       var startX = 0, startY = 0, x = null, y = null;
 
-      // Firefoy doesn't like transition during drag
+      // Firefox doesn't like transition during drag
       element.addClass('ga-draggable');
 
       element.bind('mousedown', function(evt) {
         var elt = $(evt.target);
 
-        if (!x) {
-          x = elt.offset().left;// + elt.width() / 2;
+        if (x === null) {
+          x = elt.offset().left;
         }
 
-        if (!y) {
-          y = elt.offset().top;// + elt.height() / 2;
+        if (y === null) {
+          y = elt.offset().top;
         }
 
         // preventDefault block user interaction with input field
@@ -26,8 +26,8 @@
           evt.preventDefault();
         }
 
-        startX = evt.screenX - x;// elt.offset().left;
-        startY = evt.screenY - y;// elt.offset().top;
+        startX = evt.screenX - x;
+        startY = evt.screenY - y;
         $document.bind('mousemove', mousemove);
         $document.bind('mouseup', mouseup);
       });

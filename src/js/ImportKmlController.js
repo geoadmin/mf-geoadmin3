@@ -4,13 +4,12 @@
   var module = angular.module('ga_importkml_controller', []);
 
   module.controller('GaImportKmlController',
-      ['$scope', 
-       function($scope) {
+      ['$scope', 'gaGlobalOptions',
+       function($scope, gaGlobalOptions) {
          $scope.options = {
-           proxyUrl: 'ogcproxy?url=',
+           maxFileSize: 20000000, //20mo
+           proxyUrl: gaGlobalOptions.baseUrlPath + '/ogcproxy?url=',
            validationServiceUrl: 'http://www.kmlvalidator.org/validate.htm'
          };
   }]);
-
-
 })();

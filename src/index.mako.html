@@ -245,17 +245,18 @@
     </div>
 
     <!-- Modal: Import KML --> 
-    <div id="import-kml-modal" class="modal fade" tabindex="-1" role="dialog"
+    <div id="import-kml-modal" class="modal" tabindex="-1" role="dialog"
         data-backdrop="" ga-draggable>
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal"
             aria-hidden="true">x</button>
         <h3 id="import-kml-label" translate>import_kml</h3>
       </div>
-      <div class="modal-body">
+      <div class="modal-body" ng-controller="GaImportKmlController">
         <div id="import-kml" class="import-kml" 
-            ng-controller="GaImportKmlController"
-            ga-import-kml >
+            ga-import-kml 
+            ga-import-kml-map="map"
+            ga-import-kml-options="options">
         </div>
       </div>
     </div> 

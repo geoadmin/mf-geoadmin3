@@ -13,28 +13,21 @@
         top: 150px; 
       }
 
-      #bg-layer-selector {
-        width: 200px;
-        top:150px;
-        position: absolute;
-        margin: 10px;
-      }
-
       #import-kml {
         position: relative;
       }
     </style>
   </head>
-  <body ng-controller="GaMapController">
-    <div id="import-kml" 
-        class="import-kml" 
-        ng-controller="GaImportKmlController"
-        ga-import-kml >
+  <body ng-controller="MapController">
+    <div ng-controller="ImportKmlController">
+      <div id="import-kml" 
+          class="import-kml" 
+          ga-import-kml
+          ga-import-kml-map="map"
+          ga-import-kml-options="options" >
+      </div>
     </div>
     <div id="map" class="map" ga-map ga-map-map="map"></div>
-    <div id="bg-layer-selector"
-        ga-background-layer-selector
-        ga-background-layer-selector-map="map"></div>      
     
     <script src="lib/jquery-2.0.2.js"></script>
     <script src="lib/angular-1.1.5.js"></script>
@@ -49,21 +42,62 @@
     <script src="lib/ol-whitespace.js"></script>
     <script src="deps.js"></script>
     <script>
-      goog.require('ga_backgroundlayerselector');
       goog.require('ga_importkml');
-      goog.require('ga_importkml_controller');  
       goog.require('ga_map');
-      goog.require('ga_map_controller');
     </script>
-        <script>
+    <script>
       (function() {
         var module = angular.module('ga_importkml_example', [
-          'ga_backgroundlayerselector',
           'ga_importkml',
-          'ga_importkml_controller',
-          'ga_map',
-          'ga_map_controller'
+          'ga_map'
         ]);
+
+        module.constant('gaGlobalOptions',
+          {serviceUrl : 'http://mf-chsdi30t.bgdi.admin.ch'});
+
+        module.controller('MapController', 
+          ['$scope', 'gaLayers', 
+          function($scope, gaLayers) {
+
+            var swissExtent = [485869.5728, 837076.5648, 76443.1884, 299941.7864];
+            var swissProjection = ol.proj.configureProj4jsProjection({
+              code: 'EPSG:21781',
+              extent: swissExtent
+            });
+
+            var resolutions = [650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0, 2.5,
+              2.0, 1.0, 0.5, 0.25, 0.1];
+
+            var map = new ol.Map({
+              controls: ol.control.defaults({
+                attribution: false
+              }),
+              renderer: ol.RendererHint.CANVAS,
+              view: new ol.View2D({
+                projection: swissProjection,
+                center: ol.extent.getCenter(swissExtent),
+                resolution: 500.0,
+                resolutions: resolutions
+              })
+            });
+
+            $scope.map = map;
+
+            gaLayers.getOlLayerById('ch.swisstopo.swissimage').then(function(layer) {
+              map.addLayer(layer);
+            });
+        }]);
+      
+        
+        module.controller('ImportKmlController',
+          ['$scope', 'gaGlobalOptions',
+          function($scope, gaGlobalOptions) {
+            $scope.options = {
+              maxFileSize: 20000000, //20mo
+              proxyUrl: gaGlobalOptions.baseUrlPath + '/ogcproxy?url=',
+              validationServiceUrl: 'http://www.kmlvalidator.org/validate.htm'
+            };
+        }]);        
       })();
     </script>
  
