@@ -26,6 +26,11 @@
 
               scope.permalinkValue = gaPermalink.getHref();
 
+               // Listen to permalink change events from the scope.
+              scope.$on('gaPermalinkChange', function(event) {
+                scope.permalinkValue = gaPermalink.getHref();
+              });
+
               scope.submit = function() {
                 var formData = {
                   'email': scope.email,

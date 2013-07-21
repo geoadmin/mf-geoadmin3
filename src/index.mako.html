@@ -235,11 +235,11 @@
 
     <!-- feedback dialog -->
     <div ng-controller="GaFeedbackController">
-    <div id="feedback" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="feedbackLabel" aria-hidden="true">
+    <div id="feedback" class="modal fade" tabindex="-1" role="dialog" ga-modal-show="feedbackModalShown">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+            <button type="button" class="close" data-dismiss="modal">x</button>
             <h4 class="modal-title" translate>problem_announcement</h4>
           </div>
           <div class="modal-body">
@@ -250,11 +250,11 @@
         </div>
       </div>
     </div>
-    <div id="feedback-success" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="feedbackSuccessLabel" aria-hidden="true" ga-modal-show="feedbackSuccessModalShown">
+    <div id="feedback-success" class="modal fade" tabindex="-1" role="dialog" ga-modal-show="feedbackSuccessModalShown">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+            <button type="button" class="close" data-dismiss="modal">x</button>
             <h4 class="modal-title" translate>success</h4>
           </div>
           <div class="modal-body" translate>
@@ -266,11 +266,11 @@
         </div>
       </div>
     </div>
-    <div id="feedback-error" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="feedbackErrorLabel" aria-hidden="true" ga-modal-show="feedbackErrorModalShown">
+    <div id="feedback-error" class="modal fade" tabindex="-1" role="dialog" ga-modal-show="feedbackErrorModalShown">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+            <button type="button" class="close" data-dismiss="modal">x</button>
             <h4 class="modal-title" translate>error</h4>
           </div>
           <div class="modal-body" translate>
@@ -283,7 +283,6 @@
       </div>
     </div>
   </div>
-
   </body>
 </html>
 

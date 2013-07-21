@@ -19,6 +19,7 @@
             var success = $scope.response == 'success';
             $scope.feedbackSuccessModalShown = success;
             $scope.feedbackErrorModalShown = !success;
+            $scope.feedbackModalShown = false;
           }
         });
 
