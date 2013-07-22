@@ -6,6 +6,7 @@
 @import "../components/attribution/style/attribution.less";
 @import "../components/contextmenu/style/contextmenu.less";
 @import "../components/permalinkpanel/style/permalinkpanel.less";
+@import "../components/feedback/style/feedback.less";
 
 @header-height: 89;
 @small-header-height: 50;
@@ -125,7 +126,7 @@
     position: absolute;
     left: 0;
     width: 320px;
-    z-index: 1100;
+    z-index: 1000;
     top: unit(@header-height, px);
     @media (max-width: @screen-tablet) {
         top: unit(@small-header-height, px);
@@ -248,4 +249,12 @@
 
 .tooltip-inner {
     text-align: left;
+}
+
+#feedback-success .modal-header {
+    background-color: #dff0d8;
+}
+
+#feedback-error .modal-header {
+    background-color: #f2dede;
 }
