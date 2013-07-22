@@ -19,5 +19,18 @@
   "twitter_tooltip": "",
   "facebook_tooltip": "",
   "google_plus_tooltip": "",
-  "mail_tooltip": ""
+  "mail_tooltip": "",
+  "problem_announcement": "",
+  "send": "",
+  "feedback_mail": "",
+  "feedback_description": "",
+  "feedback_permalink": "",
+  "cancel": "",
+  "permalink": "",
+  "feedback_revision": "",
+  "success": "",
+  "feedback_success_message": "",
+  "close": "",
+  "error": "",
+  "feedback_error_message": ""
 }

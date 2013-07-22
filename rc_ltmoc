@@ -1,1 +1,1 @@
-export SERVICE_URL=http://mf-chsdi30t.bgdi.admin.ch
+export SERVICE_URL=http://mf-geoadmin20t.bgdi.admin.ch/ltmoc

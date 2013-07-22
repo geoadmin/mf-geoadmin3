@@ -83,10 +83,10 @@ prod/style/app.css: src/style/app.css node_modules
 
 prod/index.html: src/index.mako.html prod/lib/build.js prod/style/app.css .build-artefacts/python-venv/bin/mako-render
 	mkdir -p $(dir $@)
-	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "mode=prod" --var "version=$(VERSION)" --var "service_url=$(SERVICE_URL)" $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "mode=prod" --var "version=$(VERSION)" --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" $< > $@
 
 prod/mobile.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render
-	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "mode=prod" --var "version=$(VERSION)" --var "service_url=$(SERVICE_URL)" $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "mode=prod" --var "version=$(VERSION)" --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" $< > $@
 
 prod/img/: src/img/*
 	mkdir -p $@
@@ -115,10 +115,10 @@ src/style/app.css: src/style/app.less $(SRC_COMPONENTS_LESS_FILES) node_modules
 	node_modules/.bin/lessc -ru $< $@
 
 src/index.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render
-	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "version=" --var "service_url=$(SERVICE_URL)" $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "version=" --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" $< > $@
 
 src/mobile.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render
-	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "version=" --var "service_url=$(SERVICE_URL)" $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "version=" --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" $< > $@
 
 src/TemplateCacheModule.js: src/TemplateCacheModule.mako.js $(SRC_COMPONENTS_PARTIALS_FILES) .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "partials=$(subst src/,,$(SRC_COMPONENTS_PARTIALS_FILES))" --var "basedir=src" $< > $@
