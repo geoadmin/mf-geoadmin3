@@ -3,9 +3,10 @@
 
   var module = angular.module('ga_topic_controller', []);
 
-  module.controller('GaTopicController', ['$scope', function($scope) {
-    // FIXME
-    $scope.topicsUrl = undefined;
-
-  }]);
+  module.controller('GaTopicController',
+      ['$scope', 'gaGlobalOptions', function($scope, gaGlobalOptions) {
+        $scope.options = {
+          url: gaGlobalOptions.serviceUrl + '/FIXME'
+        };
+      }]);
 })();
