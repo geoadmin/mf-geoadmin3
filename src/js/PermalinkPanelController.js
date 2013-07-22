@@ -6,7 +6,8 @@
   module.controller('GaPermalinkPanelController',
       ['$scope', 'gaGlobalOptions', function($scope, gaGlobalOptions) {
         $scope.options = {
-          serviceUrl: gaGlobalOptions.serviceUrl
+          shortenUrl: gaGlobalOptions.serviceUrl
+              + '/shorten.json?cb=JSON_CALLBACK'
         };
       }]);
 
