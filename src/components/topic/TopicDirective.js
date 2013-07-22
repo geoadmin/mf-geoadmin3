@@ -19,8 +19,8 @@
               label: 'BAFU',
               thumbnail: 'http://placehold.it/110x60'
             }, {
-              id: 'swisstopo',
-              label: 'swisstopo',
+              id: 'geoadmin',
+              label: 'geoadmin',
               thumbnail: 'http://placehold.it/110x60'
             }, {
               id: 'are',
@@ -60,8 +60,8 @@
             var queryParams = gaPermalink.getParams();
             var found = scope.setActiveTopic(queryParams.topic);
             if (!found) {
-              // topic not set, fallback to 'swisstopo'
-              scope.setActiveTopic('swisstopo');
+              // topic not set, fallback to 'geoadmin'
+              scope.setActiveTopic('geoadmin');
             }
           }
         };
