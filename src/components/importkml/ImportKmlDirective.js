@@ -9,12 +9,12 @@
   ]);
 
   module.controller('GaImportKmlDirectiveController',
-      ['$scope', '$http', '$log', '$translate', 'gaBrowserSniffer',
-       function($scope, $http, $log, $translate,  gaBrowserSniffer) {
+      ['$scope', '$http', '$q', '$log', '$translate', 'gaBrowserSniffer',
+       function($scope, $http, $q, $log, $translate,  gaBrowserSniffer) {
 
          // from Angular
          // https://github.com/angular/angular.js/blob/master/src/ng/directive/input.js#L3
-         var URL_REGEXP =
+         var URL_REGEXP = 
          /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/;
 
          $scope.isIE9 = (gaBrowserSniffer.msie == 9);
@@ -30,17 +30,20 @@
          $scope.handleFileUrl = function() {
            var url = $scope.fileUrl;
 
-           if (url && url.length > 0 && URL_REGEXP.test(url)) {
-             // info: Angular test the validation of the input too, we test for
-             // the DnD of an URL
+           if ($scope.isValidUrl(url)) {
+             // info: Angular test the validation of the input but the content is
+             // send by the onchange event
+             
+             // Kill the current uploading
+             $scope.cancel();
 
              var proxyUrl = $scope.options.proxyUrl + encodeURIComponent(url);
              $scope.userMessage = $translate('uploading_file');
              $scope.progress = 0.1;
-
-
+             $scope.canceler = $q.defer();
+             
              // Angularjs doesn't handle onprogress event
-             $http.get(proxyUrl)
+             $http.get(proxyUrl, {timeout:$scope.canceler.promise})
             .success(function(data, status, headers, config) {
                $scope.userMessage = $translate('upload_succeeded');
                $scope.fileContent = data;
@@ -51,9 +54,6 @@
                $scope.progress = 0;
                //$log.error('Display KML failed');
              });
-
-           } else {
-             alert($translate('drop_invalid_url') + url);
            }
          };
 
@@ -75,17 +75,19 @@
              return;
            }
 
+           // Kill the current uploading
+           $scope.cancel();
+
            $scope.file = file;
            $scope.userMessage = $translate('reading_file');
            $scope.progress = 0.1;
 
            // Read the file
-           var reader = new FileReader();
-           reader.onprogress = $scope.handleReaderProgress;
-           reader.onload = $scope.handleReaderLoadEnd;
-           reader.onerror = $scope.handleReaderError;
-           //reader.onabort = $scope.handleReaderAbort;
-           reader.readAsText(file);
+           $scope.fileReader = new FileReader();
+           $scope.fileReader.onprogress = $scope.handleReaderProgress;
+           $scope.fileReader.onload = $scope.handleReaderLoadEnd;
+           $scope.fileReader.onerror = $scope.handleReaderError;
+           $scope.fileReader.readAsText(file);
          };
 
           // Callback when FileReader is processing
@@ -171,13 +173,16 @@
          $scope.cancel = function() {
            $scope.userMessage = $translate('operation_canceled');
            $scope.progress = 0;
-
+ 
+           // Abort file reader process
            if ($scope.fileReader) {
              $scope.fileReader.abort();
            }
-
-           // Cancel $http, how?
-           // $http.cancel();
+           
+           // Kill $http request
+           if ($scope.canceler) {
+             $scope.canceler.resolve();
+           }
          };
 
          $scope.reset = function() {
@@ -187,6 +192,12 @@
            $scope.fileUrl = null;
            $scope.fileContent = null;
          };
+
+         // Test validity of a user input
+         $scope.isValidUrl = function(url) {
+           return (url && url.length > 0 && URL_REGEXP.test(url));
+         };
+
   }]);
 
   module.directive('gaImportKml',
@@ -201,8 +212,6 @@
            },
            controller: 'GaImportKmlDirectiveController',
            link: function(scope, elt, attrs, controller) {
-
-             //controller.setMap(scope.map);
 
              // Deactivate user form submission with Enter key
              elt.find('input').keypress(function(evt) {
@@ -273,7 +282,6 @@
                dropZone.bind('drop', function(evt) {
                  evt.stopPropagation();
                  evt.preventDefault();
-                 //$log.log('drop');
                  this.style.display = 'none';
 
                  // A file, an <a> html tag or a plain text url can be dropped
@@ -289,11 +297,16 @@
                    // dropped
                    var text = evt.originalEvent.dataTransfer
                        .getData('text/plain');
-
-                   scope.$apply(function() {
-                     scope.fileUrl = text;
-                     scope.handleFileUrl();
-                   });
+                   
+                   if (scope.isValidUrl(text)) {
+                     scope.$apply(function() {
+                       scope.fileUrl = text;
+                       scope.handleFileUrl();
+                     });
+                  
+                   } else {
+                     alert("drop_invalid_url");
+                   }
 
                  } else {
                    // No FileAPI available
