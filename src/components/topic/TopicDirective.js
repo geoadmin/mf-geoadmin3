@@ -10,7 +10,7 @@
         return {
           restrict: 'A',
           replace: true,
-          templateUrl: 'components/topic/partials/topicchooser.html',
+          templateUrl: 'components/topic/partials/topic.html',
           link: function(scope, element, attrs) {
 
             // FIXME: tests data, use remote service
