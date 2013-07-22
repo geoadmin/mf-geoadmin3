@@ -36,7 +36,7 @@
                   'email': scope.email,
                   'feedback': scope.feedback,
                   'ua': navigator.userAgent,
-                  'permalink': escape(scope.permalinkValue),
+                  'permalink': scope.permalinkValue,
                   'typeOfRequest': 'feedback'
                 };
 

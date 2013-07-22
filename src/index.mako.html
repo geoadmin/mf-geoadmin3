@@ -186,53 +186,6 @@
         </span>
       </button>
     </div>
-% if mode == "prod":
-    <script src="${version}lib/build.js"></script>
-% else:
-    <script src="lib/jquery-2.0.2.js"></script>
-    <script src="lib/angular-1.1.5.js"></script>
-    <script src="lib/angular-translate-0.9.4.js"></script>
-    <script src="lib/angular-translate-loader-static-files-0.1.2.js"></script>
-    <script src="lib/bootstrap-3.0.0.js"></script>
-    <script src="lib/proj4js-compressed.js"></script>
-    <script src="lib/EPSG21781.js"></script>
-
-    <!-- Use Closure to load the application scripts -->
-    <script>
-      window.CLOSURE_NO_DEPS = true;
-    </script>
-
-    <!-- ol-whitespace.js includes Closure's base.js code, so we don't
-         need to load base.js ourselves. We keep Closure's base.js file
-         around in case we need to test with ol.js or ol-simple.js. -->
-    <script src="lib/ol-whitespace.js"></script>
-    <!--<script src="lib/closure/base.js"></script>-->
-    <script src="deps.js"></script>
-    <script>
-      goog.require('ga');
-    </script>
-
-%endif
-    <script>
-      (function() {
-         var module = angular.module('ga');
-
-         module.constant('gaGlobalOptions',
-           {serviceUrl : '${service_url}',
-            baseUrlPath: '${base_url_path}'});
-      })();
-    </script>
-
-    <link rel="stylesheet" href="http://simonwhitaker.github.io/github-fork-ribbon-css/gh-fork-ribbon.css" />
-    <!--[if IE]>
-    <link rel="stylesheet" href="http://simonwhitaker.github.io/github-fork-ribbon-css/gh-fork-ribbon.ie.css" />
-    <![endif]-->
-    <div class="github-fork-ribbon-wrapper right-bottom" style="z-index:2000">
-      <div class="github-fork-ribbon">
-        <a href="mailto:info@geo.admin.ch">Application preview</a>
-      </div>
-    </div>
-
     <!-- feedback dialog -->
     <div ng-controller="GaFeedbackController">
     <div id="feedback" class="modal fade" tabindex="-1" role="dialog" ga-modal-show="feedbackModalShown">
@@ -282,7 +235,54 @@
         </div>
       </div>
     </div>
-  </div>
+    </div>
+
+% if mode == "prod":
+    <script src="${version}lib/build.js"></script>
+% else:
+    <script src="lib/jquery-2.0.2.js"></script>
+    <script src="lib/angular-1.1.5.js"></script>
+    <script src="lib/angular-translate-0.9.4.js"></script>
+    <script src="lib/angular-translate-loader-static-files-0.1.2.js"></script>
+    <script src="lib/bootstrap-3.0.0.js"></script>
+    <script src="lib/proj4js-compressed.js"></script>
+    <script src="lib/EPSG21781.js"></script>
+
+    <!-- Use Closure to load the application scripts -->
+    <script>
+      window.CLOSURE_NO_DEPS = true;
+    </script>
+
+    <!-- ol-whitespace.js includes Closure's base.js code, so we don't
+         need to load base.js ourselves. We keep Closure's base.js file
+         around in case we need to test with ol.js or ol-simple.js. -->
+    <script src="lib/ol-whitespace.js"></script>
+    <!--<script src="lib/closure/base.js"></script>-->
+    <script src="deps.js"></script>
+    <script>
+      goog.require('ga');
+    </script>
+
+%endif
+    <script>
+      (function() {
+         var module = angular.module('ga');
+
+         module.constant('gaGlobalOptions',
+           {serviceUrl : '${service_url}',
+            baseUrlPath: '${base_url_path}'});
+      })();
+    </script>
+
+    <link rel="stylesheet" href="http://simonwhitaker.github.io/github-fork-ribbon-css/gh-fork-ribbon.css" />
+    <!--[if IE]>
+    <link rel="stylesheet" href="http://simonwhitaker.github.io/github-fork-ribbon-css/gh-fork-ribbon.ie.css" />
+    <![endif]-->
+    <div class="github-fork-ribbon-wrapper right-bottom" style="z-index:2000">
+      <div class="github-fork-ribbon">
+        <a href="mailto:info@geo.admin.ch">Application preview</a>
+      </div>
+    </div>
   </body>
 </html>
 
