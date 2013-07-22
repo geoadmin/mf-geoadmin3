@@ -175,7 +175,7 @@
            $scope.progress = 0;
  
            // Abort file reader process
-           if ($scope.fileReader) {
+           if ($scope.fileReader && $scope.fileReader.readyState == 1) {
              $scope.fileReader.abort();
            }
            
@@ -305,7 +305,7 @@
                      });
                   
                    } else {
-                     alert("drop_invalid_url");
+                     alert($translate("drop_invalid_url") + text);
                    }
 
                  } else {
