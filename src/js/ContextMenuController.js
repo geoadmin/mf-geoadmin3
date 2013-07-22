@@ -6,7 +6,7 @@
   module.controller('GaContextMenuController',
       ['$scope', 'gaGlobalOptions', function($scope, gaGlobalOptions) {
         $scope.options = {
-          heightUrl: gaGlobalOptions.baseUrlPath + "height?cb=JSON_CALLBACK"
+          heightUrl: gaGlobalOptions.baseUrlPath + "/height?cb=JSON_CALLBACK"
         };
 
       }]);
