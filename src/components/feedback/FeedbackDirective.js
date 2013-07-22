@@ -22,7 +22,7 @@
             templateUrl: 'components/feedback/partials/feedback.html',
             link: function(scope, element, attrs) {
               var method = 'POST';
-              var url = scope.options.baseUrlPath + '/feedback';
+              var feedbackUrl = scope.options.feedbackUrl;
 
               scope.permalinkValue = gaPermalink.getHref();
 
@@ -36,14 +36,18 @@
                   'email': scope.email,
                   'feedback': scope.feedback,
                   'ua': navigator.userAgent,
-                  'permalink': scope.permalinkValue,
+                  'permalink': escape(scope.permalinkValue),
                   'typeOfRequest': 'feedback'
                 };
 
                 $http({
                   method: method,
-                  url: url,
-                  data: formData
+                  url: feedbackUrl,
+                  // Work with params in order to serialize the json object
+                  params: formData,
+                  headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                  }
                 }).success(function(response) {
                   scope.response = 'success';
                 }).error(function(response) {

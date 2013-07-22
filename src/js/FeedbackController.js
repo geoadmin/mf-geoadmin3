@@ -6,7 +6,7 @@
   module.controller('GaFeedbackController',
       ['$scope', 'gaGlobalOptions', function($scope, gaGlobalOptions) {
         $scope.options = {
-          baseUrlPath: gaGlobalOptions.baseUrlPath
+          feedbackUrl: gaGlobalOptions.baseUrlPath + '/feedback'
         };
 
         // Feedback success and error modals are hidden by default.
@@ -15,7 +15,7 @@
 
         // Hide/show success and error modals when feedback response received.
         $scope.$watch('response', function(newVal, oldVal) {
-          if (newVal != oldVal) {
+          if (newVal) {
             var success = $scope.response == 'success';
             $scope.feedbackSuccessModalShown = success;
             $scope.feedbackErrorModalShown = !success;
@@ -27,14 +27,10 @@
         // by the user. This is to be notified again when the "response" state
         // changes again.
         $scope.$watch('feedbackSuccessModalShown', function(newVal, oldVal) {
-          if (newVal != oldVal) {
-            $scope.response = undefined;
-          }
+          $scope.response = undefined;
         });
         $scope.$watch('feedbackErrorModalShown', function(newVal, oldVal) {
-          if (newVal != oldVal) {
-            $scope.response = undefined;
-          }
+          $scope.response = undefined;
         });
 
       }]);
