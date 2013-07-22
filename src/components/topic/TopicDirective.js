@@ -5,12 +5,15 @@
     'ga_permalink'
   ]);
 
-  module.directive('gaTopicSelector',
+  module.directive('gaTopic',
       ['$rootScope', 'gaPermalink', function($rootScope, gaPermalink) {
         return {
           restrict: 'A',
           replace: true,
           templateUrl: 'components/topic/partials/topic.html',
+          scope: {
+            options: '=gaTopicOptions'
+          },
           link: function(scope, element, attrs) {
 
             // FIXME: tests data, use remote service
