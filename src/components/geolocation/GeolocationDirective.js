@@ -1,7 +1,7 @@
 (function() {
   goog.provide('ga_geolocation_directive');
 
-  var module = angular.module('ga_geolocation_module', [
+  var module = angular.module('ga_geolocation_directive', [
   ]);
 
   module.directive('gaGeolocation', ['$parse', function($parse) {
@@ -10,6 +10,7 @@
             scope: {},
             template: '<a href="#geolocation" class="geolocation">',
             replace: true,
+            require: '^gaMap',
             link: function(scope, element, attrs, gaMapDirectiveCtrl) {
               var map = gaMapDirectiveCtrl.getMap();
               var geolocation = new ol.Geolocation({
