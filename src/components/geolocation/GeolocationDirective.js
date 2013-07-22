@@ -1,22 +1,22 @@
-(function() 
-{
-  'use strict';
-  goog.provide('ga_map_geolocation');
+(function() {
+  goog.provide('ga_geolocation_directive');
 
-  var module = angular.module('ga_map_geolocation', [
+  var module = angular.module('ga_geolocation_module', [
   ]);
 
-  module.directive('gaMapGeoLocation', function($parse) {
-//  module.directive('demoBad', function($parse) {
+  module.directive('gaGeolocation', ['$parse', function($parse) {
           return {
-            restrict: 'AC',
-            link: function linkFn(scope, lElement, attrs) {
-              var map = scope.map;
+            restrict: 'A',
+            scope: {},
+            template: '<a href="#geolocation" class="geolocation">',
+            replace: true,
+            link: function(scope, element, attrs, gaMapDirectiveCtrl) {
+              var map = gaMapDirectiveCtrl.getMap();
               var geolocation = new ol.Geolocation({
                 tracking: true
               });
               geolocation.bindTo('projection', map.getView());
-              lElement.bind('click', function(e) {
+              element.bind('click', function(e) {
                 e.preventDefault();
                 var view = map.getView().getView2D();
                 var dest = geolocation.getPosition();
@@ -42,7 +42,7 @@
               }
             )}
           };
-        });
+        }]);
 })();
 
 
