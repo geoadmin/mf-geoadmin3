@@ -7,6 +7,7 @@ describe('ga_contextmenu_directive', function() {
     element = angular.element(
       '<div>' +
       '<div ga-context-menu ga-context-menu-map="map"></div>' +
+          '<div ga-context-menu ga-context-menu-options="options"></div>' +
       '</div>');
     inject(function($rootScope, $compile) {
       var map = new ol.Map({});

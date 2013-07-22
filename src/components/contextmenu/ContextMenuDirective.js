@@ -6,8 +6,6 @@
   module.directive('gaContextMenu',
       ['$http', '$q', '$timeout', 'gaPermalink',
         function($http, $q, $timeout, gaPermalink) {
-          var heightUrl =
-              'http://api.geo.admin.ch/height?cb=JSON_CALLBACK';
           var lv03tolv95Url =
               'http://tc-geodesy.bgdi.admin.ch/reframe/lv03tolv95?cb=JSON_CALLBACK';
           return {
@@ -15,7 +13,8 @@
             replace: true,
             templateUrl: 'components/contextmenu/partials/contextmenu.html',
             scope: {
-              map: '=gaContextMenuMap'
+              map: '=gaContextMenuMap',
+              options: '=gaContextMenuOptions'
             },
             link: function(scope, element, attrs) {
 
