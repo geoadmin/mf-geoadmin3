@@ -1,5 +1,6 @@
 (function() {
   goog.provide('ga_topic_directive');
+  goog.require('ga_permalink');
 
   var module = angular.module('ga_topic_directive', [
     'ga_permalink'
