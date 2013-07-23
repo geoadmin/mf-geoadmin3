@@ -5,8 +5,8 @@ describe('ga_contextmenu_directive', function() {
 
   beforeEach(function() {
     element = angular.element(
-      '<div ga-map ga-map-map="map" ga-map-options="options">' +
-          '<div ga-context-menu ga-context-menu-map="map"></div>' +
+      '<div>' +
+      '<div ga-context-menu ga-context-menu-map="map"></div>' +
       '</div>');
     inject(function($rootScope, $compile) {
       var map = new ol.Map({});
@@ -106,7 +106,7 @@ describe('ga_contextmenu_directive', function() {
         handlers.touchstart(contextmenuEvent);
         handlers.touchend();
 
-        $timeout.flush();
+        $timeout.verifyNoPendingTasks();
 
         var popover = element.find('.popover');
         expect(popover.css('display')).to.be('');
@@ -121,7 +121,7 @@ describe('ga_contextmenu_directive', function() {
           }
         });
 
-        $timeout.flush();
+        $timeout.verifyNoPendingTasks();
 
         var popover = element.find('.popover');
         expect(popover.css('display')).to.be('');
