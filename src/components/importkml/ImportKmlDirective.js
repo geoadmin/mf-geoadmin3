@@ -14,7 +14,7 @@
 
          // from Angular
          // https://github.com/angular/angular.js/blob/master/src/ng/directive/input.js#L3
-         var URL_REGEXP = 
+         var URL_REGEXP =
          /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/;
 
          $scope.isIE9 = (gaBrowserSniffer.msie == 9);
@@ -31,9 +31,9 @@
            var url = $scope.fileUrl;
 
            if ($scope.isValidUrl(url)) {
-             // info: Angular test the validation of the input but the content is
-             // send by the onchange event
-             
+             // info: Angular test the validation of the input but the
+             // content is sent by the onchange event
+
              // Kill the current uploading
              $scope.cancel();
 
@@ -41,9 +41,9 @@
              $scope.userMessage = $translate('uploading_file');
              $scope.progress = 0.1;
              $scope.canceler = $q.defer();
-             
+
              // Angularjs doesn't handle onprogress event
-             $http.get(proxyUrl, {timeout:$scope.canceler.promise})
+             $http.get(proxyUrl, {timeout: $scope.canceler.promise})
             .success(function(data, status, headers, config) {
                $scope.userMessage = $translate('upload_succeeded');
                $scope.fileContent = data;
@@ -173,12 +173,12 @@
          $scope.cancel = function() {
            $scope.userMessage = $translate('operation_canceled');
            $scope.progress = 0;
- 
+
            // Abort file reader process
            if ($scope.fileReader && $scope.fileReader.readyState == 1) {
              $scope.fileReader.abort();
            }
-           
+
            // Kill $http request
            if ($scope.canceler) {
              $scope.canceler.resolve();
@@ -297,15 +297,15 @@
                    // dropped
                    var text = evt.originalEvent.dataTransfer
                        .getData('text/plain');
-                   
+
                    if (scope.isValidUrl(text)) {
                      scope.$apply(function() {
                        scope.fileUrl = text;
                        scope.handleFileUrl();
                      });
-                  
+
                    } else {
-                     alert($translate("drop_invalid_url") + text);
+                     alert($translate('drop_invalid_url') + text);
                    }
 
                  } else {
