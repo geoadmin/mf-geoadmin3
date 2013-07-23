@@ -83,7 +83,8 @@ class LayersConfig(Base):
     matrixSet = Column('tilematrixsetid', Text)
     timeEnabled = Column('timeenabled', Boolean)
     timestamps = Column('timestamps', postgresql.ARRAY(Text))
-    maps = Column('topics', Text)
+    maps = Column('projects', Text)
+    staging = Column('staging', Text)
     wmsLayers = Column('wms_layers', Text)
     wmsUrl = Column('wms_url', Text)
 
