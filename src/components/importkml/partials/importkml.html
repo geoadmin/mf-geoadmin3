@@ -19,7 +19,7 @@
     <!-- TO FIX: can't use ng-if here because the HTML content is added after the
          execution of the "link" function of the directive and so the dynamic
          js events are not added -->     
-    <div ng-show="!isIE9" class="tab-pane active" id="import-kml-tab1">
+    <div ng-show="!isIE9" class="tab-pane {{(isIE9) ? '' : 'active'}}" id="import-kml-tab1">
   
       <!-- Upload from a basic upload (the input file is hidden by default)-->
       <form name="import-kml-file" id="imp" method="POST" target="_BLANK"
