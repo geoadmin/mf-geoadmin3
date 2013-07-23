@@ -14,7 +14,7 @@ files = [
 % if mode == 'prod':
   'lib/build.js',
 % else:
-  'lib/jquery-2.0.2.js',
+  'lib/jquery-2.0.3.js',
   'lib/angular-1.1.5.js',
   'lib/angular-translate-0.9.4.js',
   'lib/angular-translate-loader-static-files-0.1.2.js',
