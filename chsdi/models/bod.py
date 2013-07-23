@@ -72,9 +72,9 @@ class LayersConfig(Base):
     haslegend = Column('haslegend', Boolean)
     format = Column('image_format', Text)
     type = Column('layertype', Text)
-    opacity = Column('opacity', Text)
-    minResolution = Column('minresolution', Text)
-    maxResolution = Column('maxresolution', Text)
+    opacity = Column('opacity', postgresql.DOUBLE_PRECISION)
+    minResolution = Column('minresolution', postgresql.DOUBLE_PRECISION)
+    maxResolution = Column('maxresolution', postgresql.DOUBLE_PRECISION)
     parentLayerId = Column('parentlayerid', Text)
     queryable = Column('queryable', Boolean)
     searchable = Column('searchable', Boolean)
@@ -91,7 +91,7 @@ class LayersConfig(Base):
     def getLayerConfig(self, translate):
         config = {}
         for k in self.__dict__.keys():
-            if not k.startswith("_") and self.__dict__[k] is not None and k != 'topics':
+            if not k.startswith("_") and self.__dict__[k] is not None and k != 'maps':
                 if k == 'idBod':
                     config['label'] = translate(self.__dict__[k])
                 elif k == 'attribution':
@@ -219,7 +219,7 @@ def computeHeader(mapName):
     }
 
 class Catalog(Base):
-    __tablename__ = 'view_catalog'
+    __tablename__ = 'view_catalog_de'
     __table_args__ = ({'schema': 're3', 'autoload': True})
 
     id = Column('bgdi_id', Integer, primary_key=True)
