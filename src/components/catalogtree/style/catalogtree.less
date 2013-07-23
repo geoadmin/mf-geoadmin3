@@ -1,8 +1,13 @@
-.ga-catalogtree-node, .icon-info-sign {
-  cursor: pointer;
-  padding-left: 10px;
+.ga-catalogtree-node {
+    list-style-type: none;
+    > ul.closed {
+	height: 0;
+	overflow: hidden;
+    }
+    cursor: pointer;
 }
-
 .ga-catalogtree-leaf {
-  padding-left: 10px;
+    .icon-info-sign {
+        float: right;
+    }
 }
