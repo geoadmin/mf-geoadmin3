@@ -45,7 +45,10 @@ class MapService(MapServiceValidation):
         from chsdi.models.bod import LayersConfig
         layers = {}
         model = LayersConfig
-        query = self.request.db.query(model) 
+        query = self.request.db.query(model).filter(
+            model.maps.ilike('%%%s%%' % self.mapName)
+        )
+        query = self._geodata_staging_filter(query, model.staging)
         for q in query:
            layer = q.getLayerConfig(self.translate)
            layers = dict(layers.items() + layer.items())
