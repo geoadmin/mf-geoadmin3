@@ -8,6 +8,7 @@
   goog.require('ga_mouseposition');
   goog.require('ga_permalinkpanel');
   goog.require('ga_scaleline');
+  goog.require('ga_topic');
   goog.require('ga_translation');
   goog.require('ga_feedback');
 
@@ -18,6 +19,7 @@
   goog.require('ga_permalinkpanel_controller');
   goog.require('ga_print_controller');
   goog.require('ga_translation_controller');
+  goog.require('ga_topic_controller');
   goog.require('ga_feedback_controller');
 
   var module = angular.module('ga', [
@@ -28,6 +30,7 @@
     'ga_mouseposition',
     'ga_permalinkpanel',
     'ga_scaleline',
+    'ga_topic',
     'ga_translation',
     'ga_feedback',
     'ga_modal_directive',
@@ -36,6 +39,7 @@
     'ga_permalinkpanel_controller',
     'ga_print_controller',
     'ga_translation_controller',
+    'ga_topic_controller',
     'ga_feedback_controller'
   ]);
 
