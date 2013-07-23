@@ -17,12 +17,7 @@
               options: '=gaContextMenuOptions'
             },
             link: function(scope, element, attrs) {
-              var heightUrl = 'http://api.geo.admin.ch/height' +
-                '?cb=JSON_CALLBACK';
-              // TODO it should be
-              // var heightUrl = scope.options.heightUrl;
-              // but this doesn't work in the unit tests
-
+              var heightUrl = scope.options.heightUrl;
 
               // The popup content is updated (a) on contextmenu events,
               // and (b) when the permalink is updated.

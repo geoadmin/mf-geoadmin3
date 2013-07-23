@@ -6,13 +6,20 @@ describe('ga_contextmenu_directive', function() {
   beforeEach(function() {
     element = angular.element(
       '<div>' +
-      '<div ga-context-menu ga-context-menu-map="map"></div>' +
-          '<div ga-context-menu ga-context-menu-options="options"></div>' +
+        '<div ng-controller="ContextMenuTestController">' +
+          '<div ga-context-menu ga-context-menu-map="map" ga-context-menu-options="options"></div>' +
+        '</div>' +
       '</div>');
+    angular.module('ga').controller('ContextMenuTestController',
+        ['$scope', function($scope) {
+          $scope.options = {
+            heightUrl: "http://api.geo.admin.ch/height?cb=JSON_CALLBACK"
+          };
+    }]);
+
     inject(function($rootScope, $compile) {
       var map = new ol.Map({});
       $rootScope.map = map;
-      $rootScope.options = {};
       map.on = function(eventType, handler) {
         handlers[eventType] = handler;
       };
