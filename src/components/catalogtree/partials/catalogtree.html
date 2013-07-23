@@ -9,7 +9,10 @@
       </ul>
     </div>
 
-    <div ng-switch-when="leaf" class="ga-catalogtree-leaf">{{val.label}}
+    <div ng-switch-when="leaf" class="ga-catalogtree-leaf checkbox">
+      <label>
+        <input type="checkbox">{{val.label}}
+      </label>
       <i class="icon-info-sign" ng-click="getLegend($event, val.bod_layer_id)"></i>
     </div>
 
