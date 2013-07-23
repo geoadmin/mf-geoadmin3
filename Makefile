@@ -73,7 +73,7 @@ updateol: .build-artefacts/ol3
 translate: .build-artefacts/translate-requirements-installation.timestamp
 	.build-artefacts/python-venv/bin/python scripts/translation2js.py src/locales/ 
 
-prod/lib/build.js: src/lib/jquery-2.0.2.min.js src/lib/bootstrap-3.0.0.min.js src/lib/angular-1.1.5.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/ol.js src/lib/angular-translate-0.9.4.min.js src/lib/angular-translate-loader-static-files-0.1.2.min.js .build-artefacts/app.js
+prod/lib/build.js: src/lib/jquery-2.0.3.min.js src/lib/bootstrap-3.0.0.min.js src/lib/angular-1.1.5.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/ol.js src/lib/angular-translate-0.9.4.min.js src/lib/angular-translate-loader-static-files-0.1.2.min.js .build-artefacts/app.js
 	mkdir -p $(dir $@)
 	cat $^ > $@
 
