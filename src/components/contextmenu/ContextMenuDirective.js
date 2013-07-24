@@ -6,8 +6,6 @@
   module.directive('gaContextMenu',
       ['$http', '$q', '$timeout', 'gaPermalink',
         function($http, $q, $timeout, gaPermalink) {
-          var heightUrl =
-              'http://api.geo.admin.ch/height?cb=JSON_CALLBACK';
           var lv03tolv95Url =
               'http://tc-geodesy.bgdi.admin.ch/reframe/lv03tolv95?cb=JSON_CALLBACK';
           return {
@@ -15,9 +13,12 @@
             replace: true,
             templateUrl: 'components/contextmenu/partials/contextmenu.html',
             scope: {
-              map: '=gaContextMenuMap'
+              map: '=gaContextMenuMap',
+              options: '=gaContextMenuOptions'
             },
             link: function(scope, element, attrs) {
+              var heightUrl = scope.options.heightUrl;
+              var qrcodeUrl = scope.options.qrcodeUrl;
 
               // The popup content is updated (a) on contextmenu events,
               // and (b) when the permalink is updated.
@@ -43,7 +44,7 @@
                 // callback.
                 scope.$apply(function() {
                   $q.all({
-                    height: $http.jsonp(heightUrl, {
+                    height: $http.jsonp(heightUrl + '?cb=JSON_CALLBACK', {
                       params: {
                         easting: coord21781[0],
                         northing: coord21781[1],
@@ -139,8 +140,8 @@
                 scope.crosshairPermalink = gaPermalink.getHref(
                     angular.extend({crosshair: 'bowl'}, p));
 
-                scope.qrCodeUrl =
-                   'http://api.geo.admin.ch/qrcodegenerator?url=' +
+                scope.qrcodeUrl = qrcodeUrl +
+                   '?url=' +
                    escape(contextPermalink);
               }
             }
