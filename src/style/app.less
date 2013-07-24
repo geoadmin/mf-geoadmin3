@@ -256,14 +256,27 @@
 .modal {
     overflow: auto;
     textarea {
-	resize: vertical;
+        resize: vertical;
+    }
+    .modal-header {
+        .border-top-radius(6px);
+    }
+}
+
+.modal-body {
+    .modal-footer {
+        padding-bottom: 0;
+	margin-right: -20px;
+	margin-left: -20px;
     }
 }
 
 #feedback-success .modal-header {
-    background-color: #dff0d8;
+    color: #468847;
+    background-color: #d6e9c6;
 }
 
 #feedback-error .modal-header {
+    color: #b94a48;
     background-color: #f2dede;
 }

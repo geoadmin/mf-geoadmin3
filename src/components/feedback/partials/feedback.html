@@ -1,12 +1,17 @@
 <form ng-submit="submit()">
   <label translate>feedback_mail</label>
-  <input type="email" name="email" ng-model="email" required>
+  <input type="email" name="email" ng-model="email">
   <label translate>feedback_description</label>
-  <textarea rows=3 name="feedback" ng-model="feedback"></textarea>
-  <label translate>feedback_permalink</label>&nbsp;<a
-    href="{{permalinkValue}}" target="_blank" translate>permalink</a>
-  <br>
-  <label translate>feedback_revision</label>
-  <br>
-  <button type="submit" class="btn btn-primary" translate>send</button>
+  <textarea rows=3 name="feedback" ng-model="feedback" required></textarea>
+  <p class="help-block">
+    <span translate>feedback_permalink</span>
+    <a href="{{permalinkValue}}" target="_blank" translate>permalink</a>
+  </p>
+  <p class="help-block">
+    <span translate>feedback_revision</span>
+  </p>
+
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary" translate>send</button>
+  </div>
 </form>
