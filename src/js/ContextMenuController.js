@@ -6,7 +6,8 @@
   module.controller('GaContextMenuController',
       ['$scope', 'gaGlobalOptions', function($scope, gaGlobalOptions) {
         $scope.options = {
-          heightUrl: gaGlobalOptions.serviceUrl + "/height?cb=JSON_CALLBACK"
+          heightUrl: gaGlobalOptions.serviceUrl + "/height",
+          qrcodeUrl: gaGlobalOptions.serviceUrl + "/qrcodegenerator"
         };
 
       }]);

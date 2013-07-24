@@ -11,7 +11,7 @@
     <meta name="keywords" content="maps Switzerland, map viewer, Confederation, geodata, public platform, geographical information, geoportal, orthophotos, geolocation, geoinformation, Geodaten, Geoinformation, Bund, Plattform, Karte, Kartendienst, Kartenviewer"/>
 
     <link href="${version}style/app.css" rel="stylesheet" media="screen">
-    link rel="shortcut icon" type="image/x-icon" href="${version}img/favicon.ico"/>
+    <link rel="shortcut icon" type="image/x-icon" href="${version}img/favicon.ico"/>
   </head>
 
   <body ng-controller="GaMapController">
@@ -72,8 +72,8 @@
               <i class="icon-share"></i>
               <span translate>share</span>
             </a>
-          </div>
-          <div id="share" class="collapse">
+            </div>
+            <div id="share" class="collapse">
             <div class="accordion-inner" ng-controller="GaPermalinkPanelController">
               <div ga-permalink-panel ga-permalink-panel-options="options"></div>
             </div>
@@ -290,3 +290,7 @@
   </body>
 </html>
 
+<!DOCTYPE html>
+<html ng-app="ga">
+
+  <head>

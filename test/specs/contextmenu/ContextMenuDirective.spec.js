@@ -13,7 +13,8 @@ describe('ga_contextmenu_directive', function() {
     angular.module('ga').controller('ContextMenuTestController',
         ['$scope', function($scope) {
           $scope.options = {
-            heightUrl: "http://api.geo.admin.ch/height?cb=JSON_CALLBACK"
+            heightUrl: "http://api.geo.admin.ch/height",
+            qrcodeUrl: "http://api.geo.admin.ch/qrcodegenerator"
           };
     }]);
 
