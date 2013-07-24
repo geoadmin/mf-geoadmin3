@@ -10,14 +10,65 @@
     position: relative;
   }
 
-  input[type=text], .tt-dropdown-menu {
-     width: 640px;
+  input[type=url], .tt-dropdown-menu {
+    width: 640px;
+  }
+ 
+  table {
+    width: 320px;  
+    margin: 0px;
+    table-layout: fixed;
+
+    thead, tbody, tr {
+      width: 100%;
+    }
+    thead, th, td, tr {
+      height: 35px;
+    }
+
+    th.add, td.add {
+      width: 45px; 
+    }
+
+    th.title, td.title {
+      width: 257px;
+    }
+    
+    tr.row-first td {
+      border-top: none;
+    }
+
+    th, td {
+      border-left: 1px solid #dddddd;
+    }
+
+    td.col-first, th.col-first {
+      border-left: none;
+    }
   }
 
+  .tables-container {
+    width: 320px;
+    margin: 40px 0px 0px 0px;
+    border: 1px solid #dddddd;
+    border-collapse: separate;
+    border-radius: 4px;
+  }
+
+  .table-content-container {
+    width: 100%;
+    height: 240px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-top: 1px solid #dddddd;
+  }
+
+
+   
   .bt-connect {
     position:absolute;
     left: 645px;
-    top: 7px;
+    top: 0px;
   }
 
   .open-wms-list {
@@ -32,6 +83,8 @@
     height: 280px;
     overflow-y: auto;
     border: 1px solid black;
+    background-color: white;
+
 
     p {
       margin: 5px 10px; 

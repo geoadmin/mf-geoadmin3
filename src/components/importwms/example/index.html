@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no,
     width=device-width">
-    <base href="../../../">
+    <base href="http://mf-geoadmin30t.bgdi.admin.ch/ltteo/src/">
     <link href="style/app.css" rel="stylesheet" media="screen">
     <style>
       #map {
@@ -55,7 +55,8 @@
         ]);
 
         module.constant('gaGlobalOptions',
-                 {serviceUrl : 'http://mf-chsdi30t.bgdi.admin.ch'});
+                 {serviceUrl: 'http://mf-chsdi30t.bgdi.admin.ch',
+                  baseUrlPath: 'http://mf-geoadmin30t.bgdi.admin.ch/ltteo' });
         
         module.controller('MapController', ['$scope',
             'gaLayers', function($scope, gaLayers) {

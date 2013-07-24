@@ -1,6 +1,29 @@
 <div>
-  <input type="text" name="wms-url" placeholder="Choisissez ou
-  saisissez une URL"  size="24"/>
-  <div class="open-wms-list icon-collapse"></div>
-  <button type="button" class="bt-connect" >Connect</button>
+  <form>
+    <input type="url" name="url" autocomplete="off" placeholder="{{'choose_wms_url' | translate}}" ng-model="fileUrl" />
+    <div class="open-wms-list icon-collapse"></div>
+    <button type="button" class="btn btn-primary bt-connect" ng-click="handleFileUrl()">{{'connect' | translate}}</button>
+  </form>
+  <div class="tables-container">
+    <table class="table-header table table-condensed">
+     <thead>
+        <tr>
+          <th class="add col-first">{{'add' | translate}}</th>
+          <th class="title">{{'title' | translate}}</th>
+        </tr>
+      </thead>
+    </table> 
+    <div class="table-content-container"> 
+      <table class="table-content table table-striped table-hover table-condensed">
+       <tbody>
+          <tr ng-repeat="layer in layers | orderBy:'title'" class="{{($first) ? 'row-first' :
+          '' }}" >
+            
+            <td class="add col-first">{{layer.add}}</td>
+            <td class="title">{{layer.title}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
