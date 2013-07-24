@@ -91,7 +91,9 @@ class LayersConfig(Base):
     def getLayerConfig(self, translate):
         config = {}
         for k in self.__dict__.keys():
-            if not k.startswith("_") and self.__dict__[k] is not None and k != 'maps':
+            if not k.startswith("_") and \
+               self.__dict__[k] is not None and \
+               k != 'maps':
                 if k == 'idBod':
                     config['label'] = translate(self.__dict__[k])
                 elif k == 'attribution':
@@ -218,30 +220,145 @@ def computeHeader(mapName):
         'capabilities': 'Map'
     }
 
-class Catalog(Base):
-    __tablename__ = 'view_catalog_de'
-    __table_args__ = ({'schema': 're3', 'autoload': True})
-
+class Catalog(object):
+    __dbname__ = 'bod'
     id = Column('bgdi_id', Integer, primary_key=True)
+    parentId = Column('parent_id', Integer)
+    topic = Column('topic', Text)
+    category = Column('category', Text)
+    idBod = Column('bod_layer_id', Text)
+    nameDe = Column('name_de', Text)
+    nameFr = Column('name_fr', Text)
+    nameIt = Column('name_it', Text)
+    nameRm = Column('name_rm', Text)
+    nameEn = Column('name_en', Text)
+    orderKey = Column('order_key', Integer)
+    selectedOpen = Column('selected_open', Boolean)
+    path = Column('path', Text)
+    depth = Column('depth', Integer)
 
-    def to_dict(self):
-        self.label = self.bod_layer_id or self.path
+    def to_dict(self, lang):
+        
+        self.label = self._get_label_from_lang(lang) 
+
         return dict([
             (k, getattr(self, k)) for
             k in self.__dict__.keys() 
-            if not k.startswith("_")
+            if not k.startswith("_") and \
+               self.__dict__[k] is not None and \
+               k not in ('nameDe','nameFr','nameIt','nameRm','nameEn')
         ])
 
+    def _get_label_from_lang(self, lang):
+        return {
+          'de': self.nameDe,
+          'fr': self.nameFr,
+          'it': self.nameIt,
+          'rm': self.nameRm,
+          'en': self.nameEn
+        }[lang] 
+
+
+class CatalogDe(Base, Catalog):
+    __tablename__ = 'view_catalog_de'
+    __table_args__ = ({'schema': 're3'})
+
+class CatalogFr(Base, Catalog):
+    __tablename__ = 'view_catalog_fr'
+    __table_args__ = ({'schema': 're3'})
+
+class CatalogIt(Base, Catalog):
+    __tablename__ = 'view_catalog_it'
+    __table_args__ = ({'schema': 're3'})
+
+class CatalogRm(Base, Catalog):
+    __tablename__ = 'view_catalog_rm'
+    __table_args__ = ({'schema': 're3'})
+
+class CatalogEn(Base, Catalog):
+    __tablename__ = 'view_catalog_en'
+    __table_args__ = ({'schema': 're3'})
+
+class CatalogInspireDe(Base, Catalog):
+    __tablename__ = 'view_catalog_inspire_de'
+    __table_args__ = ({'schema': 're3'})
+
+class CatalogInspireFr(Base, Catalog):
+    __tablename__ = 'view_catalog_inspire_fr'
+    __table_args__ = ({'schema': 're3'})
+
+class CatalogInspireIt(Base, Catalog):
+    __tablename__ = 'view_catalog_inspire_it'
+    __table_args__ = ({'schema': 're3'})
+
+class CatalogInpireRm(Base, Catalog):
+    __tablename__ = 'view_catalog_inspire_rm'
+    __table_args__ = ({'schema': 're3'})
+
+class CatalogInspireEn(Base, Catalog):
+    __tablename__ = 'view_catalog_inspire_en'
+    __table_args__ = ({'schema': 're3'})
+
+class CatalogEchDe(Base, Catalog):
+    __tablename__ = 'view_catalog_ech_de'
+    __table_args__ = ({'schema': 're3'})
+
+class CatalogEchFr(Base, Catalog):
+    __tablename__ = 'view_catalog_ech_fr'
+    __table_args__ = ({'schema': 're3'})
+
+class CatalogEchIt(Base, Catalog):
+    __tablename__ = 'view_catalog_ech_it'
+    __table_args__ = ({'schema': 're3'})
+
+class CatalogEchEn(Base, Catalog):
+    __tablename__ = 'view_catalog_ech_en'
+    __table_args__ = ({'schema': 're3'})
 
 def get_bod_model(lang):
     if lang == 'fr':
         return BodLayerFr
     elif lang == 'it':
         return BodLayerIt
+    elif lang == 'rm':
+        return BodLayerRm
     elif lang == 'en':
         return BodLayerEn
     else:
         return BodLayerDe
+
+def get_catalog_model(lang, topic):
+    if lang == 'fr':
+        if topic == 'inspire':
+            return CatalogInspireFr
+        elif topic == 'ech':
+            return CatalogEchFr
+        return CatalogFr
+    elif lang == 'it':
+        if topic == 'inspire':
+            return CatalogInspireIt
+        elif topic == 'ech':
+            return CatalogEchIt
+        return CatalogIt   
+    elif lang == 'rm':
+        if topic == 'inspire':
+            return CatalogInspireRm
+        elif topic == 'ech':
+            return CatalogEchRm
+        return CatalogRm
+    elif lang == 'en':
+        if topic == 'inspire':
+            return CatalogInspireEn
+        elif topic == 'ech':
+            return CatalogEchEn
+        return CatalogEn
+    else:
+        if topic == 'inspire':
+            return CatalogInspireDe
+        elif topic == 'ech':
+            return CatalogEchDe
+        return CatalogDe
+    
 
 def get_wmts_models(lang):
     if lang in ('fr', 'it'):
