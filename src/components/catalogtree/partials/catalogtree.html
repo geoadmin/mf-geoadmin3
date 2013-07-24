@@ -3,7 +3,7 @@
 
     <div ng-switch-when="node" class="ga-catalogtree-node">
       <div ng-click="toggle($event)">{{val.label}}</div>
-      <ul ng-class="{closed: !val.selected_open}">
+      <ul ng-class="{closed: !val.selectedOpen}">
         <li ng-repeat="item in val.children">
           <div ga-catalogtree val="item"></div>
         </li>
@@ -14,7 +14,7 @@
       <label>
         <input type="checkbox">{{val.label}}
       </label>
-      <i class="icon-info-sign" ng-click="getLegend($event, val.bod_layer_id)"></i>
+      <i class="icon-info-sign" ng-click="getLegend($event, val.idBod)"></i>
     </div>
 
     <div ng-switch-default=""></div>

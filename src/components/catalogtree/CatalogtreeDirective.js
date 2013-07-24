@@ -34,7 +34,7 @@
   );
 
   function toggle(ev) {
-    this.val.selected_open = !this.val.selected_open;
+    this.val.selectedOpen = !this.val.selectedOpen;
     ev.preventDefault();
     ev.stopPropagation();
   };
