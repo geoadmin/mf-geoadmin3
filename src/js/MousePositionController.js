@@ -10,13 +10,11 @@
           value: 'EPSG:21781',
           label: 'CH1903 / LV03',
           format: ol.coordinate.createStringXY(0)
-        },
-        // {
-        //   value: 'EPSG:2056',
-        //   label: 'CH1903+ / LV95',
-        //   format: ol.coordinate.createStringXY(0)
-        // },
-        {
+        }, {
+          value: 'EPSG:2056',
+          label: 'CH1903+ / LV95',
+          format: ol.coordinate.createStringXY(0)
+        }, {
           value: 'EPSG:4326',
           label: 'WGS 84',
           format: function(coordinates) {
