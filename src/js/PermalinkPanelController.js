@@ -7,7 +7,7 @@
       ['$scope', 'gaGlobalOptions', function($scope, gaGlobalOptions) {
         $scope.options = {
           shortenUrl: gaGlobalOptions.serviceUrl
-              + '/shorten.json?cb=JSON_CALLBACK'
+              + '/shorten.json'
         };
       }]);
 
