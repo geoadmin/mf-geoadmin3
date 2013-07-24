@@ -1,6 +1,6 @@
 <div class="topic-selector">
   <div class="topic" ng-class="{active: topic.id == activeTopic.id}" ng-repeat="topic in topics" ng-click="setActiveTopic(topic.id)">
-    <div class="">{{topic.label}}</div>
+    <div>{{topic.label}}</div>
     <img ng-src="{{topic.thumbnail}}" alt="">
   </div>
 </div>
