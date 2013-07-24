@@ -118,7 +118,7 @@ for lang in config["langs"]:
     for var_msgid in var_arr:
         try:
             myString = "\t\"" + var_msgid + "\": \"" + \
-                       translationDict[lang][unicode(var_msgid)].replace("'","\\\'") + "\""
+                       translationDict[lang][unicode(var_msgid)] + "\""
             file_langjs.write(myString.encode('utf-8'))
             isTodo = False
         except:
