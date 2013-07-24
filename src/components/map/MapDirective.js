@@ -6,16 +6,6 @@
     'ga_permalink'
   ]);
 
-  module.controller('GaMapDirectiveController', function() {
-    this.setMap = function(map) {
-      this.map = map;
-    };
-
-    this.getMap = function() {
-      return this.map;
-    };
-  });
-
   module.directive('gaMap',
       ['$parse', '$timeout', 'gaPermalink',
         function($parse, $timeout, gaPermalink) {
@@ -24,10 +14,8 @@
             scope: {
               map: '=gaMapMap'
             },
-            controller: 'GaMapDirectiveController',
-            link: function(scope, element, attrs, controller) {
+            link: function(scope, element, attrs) {
               var map = scope.map;
-              controller.setMap(map);
 
               var view = map.getView();
 
