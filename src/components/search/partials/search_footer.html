@@ -1,0 +1,33 @@
+<div>
+    <a class="share-icon"
+       title="Tweet this map"
+       ng-click="options.getHref()"
+       ng-mouseover="options.getHref()"
+       ng-href="https://twitter.com/intent/tweet?url={{options.encodedPermalinkHref}}&text={{options.encodedDocumentTitle}}">
+      <i class="icon-twitter"></i>
+    </a>
+
+    <a class="share-icon"
+       title="Share this map with your friends"
+       ng-click="options.getHref()"
+       ng-mouseover="options.getHref()"
+       ng-href="http://www.facebook.com/sharer.php?u={{options.encodedPermalinkHref}}&t={{options.encodedDocumentTitle}}">
+      <i class="icon-facebook"></i>
+    </a>
+
+    <a class="share-icon"
+       title="Share this map on Google Plus"
+       ng-click="options.getHref()"
+       ng-mouseover="options.getHref()"
+       ng-href="https://plus.google.com/share?url={{options.encodedPermalinkHref}}">
+      <i class="icon-google-plus"></i>
+    </a>
+
+    <a class="share-icon"
+       title="Send a map-email to your friends"
+       ng-click="options.getHref()"
+       ng-mouseover="options.getHref()"
+       ng-href="mailto:?subject={{options.encodedDocumentTitle}}&body={{options.encodedPermalinkHref}}">
+      <i class="icon-envelope-alt"></i>
+    </a>
+</div>
