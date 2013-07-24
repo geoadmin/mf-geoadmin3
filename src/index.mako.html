@@ -37,7 +37,7 @@
       <div id="map" class="map" ga-map ga-map-map="map">
         <div ga-context-menu ga-context-menu-map="map"></div>
       </div>
-     
+
       <div id="footer" class="navbar navbar-fixed-bottom">
         <div id="scaleline" class="pull-left" ga-scale-line ga-scale-line-map="map"></div>
 % if device == 'desktop':
@@ -102,7 +102,7 @@
             <div class="accordion-inner">
               <ul>
                 <li>WMS (under construction ...)</li>
-                <li>                        
+                <li>
                   <a role="button" data-toggle="modal" href="#import-kml-modal" translate>KML</a>
                 </li>
               </ul>
@@ -244,22 +244,24 @@
       </div>
     </div>
 
-    <!-- Modal: Import KML --> 
-    <div id="import-kml-modal" class="modal" tabindex="-1" role="dialog"
-        data-backdrop="" ga-draggable>
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"
-            aria-hidden="true">x</button>
-        <h3 id="import-kml-label" translate>import_kml</h3>
+    <!-- Modal: Import KML -->
+    <div id="import-kml-modal" class="non-modal" tabindex="-1" role="dialog" data-backdrop="" >
+      <div class="modal-dialog">
+        <div class="modal-content" ga-draggable>
+	  <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">x</button>
+            <h4 class="modal-title" translate>import_kml</h4>
+	  </div>
+	  <div class="modal-body" ng-controller="GaImportKmlController">
+            <div id="import-kml" class="import-kml"
+		 ga-import-kml
+		 ga-import-kml-map="map"
+		 ga-import-kml-options="options">
+            </div>
+	  </div>
+	</div>
       </div>
-      <div class="modal-body" ng-controller="GaImportKmlController">
-        <div id="import-kml" class="import-kml" 
-            ga-import-kml 
-            ga-import-kml-map="map"
-            ga-import-kml-options="options">
-        </div>
-      </div>
-    </div> 
+    </div> <!-- #import-kml-modal -->
 
 % if mode == "prod":
     <script src="${version}lib/build.js"></script>
@@ -310,4 +312,3 @@
     </div>
   </body>
 </html>
-

@@ -9,16 +9,17 @@
 
       // Firefox doesn't like transition during drag
       element.addClass('ga-draggable');
+      element.css({position: 'absolute'});
 
       element.bind('mousedown', function(evt) {
         var elt = $(evt.target);
 
         if (x === null) {
-          x = elt.offset().left;
+          x = element.prop('offsetLeft');
         }
 
         if (y === null) {
-          y = elt.offset().top;
+          y = element.prop('offsetTop');
         }
 
         // preventDefault block user interaction with input field
@@ -26,15 +27,15 @@
           evt.preventDefault();
         }
 
-        startX = evt.screenX - x;
-        startY = evt.screenY - y;
+        startX = evt.clientX - x;
+        startY = evt.clientY - y;
         $document.bind('mousemove', mousemove);
         $document.bind('mouseup', mouseup);
       });
 
       function mousemove(evt) {
-        y = evt.screenY - startY;
-        x = evt.screenX - startX;
+        y = evt.clientY - startY;
+        x = evt.clientX - startX;
         element.css({
           margin: 0,
           top: y + 'px',
