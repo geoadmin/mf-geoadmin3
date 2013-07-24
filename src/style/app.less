@@ -10,6 +10,7 @@
 @import "../components/topic/style/topic.less";
 
 @header-height: 89;
+@footer-height: 36;
 @small-header-height: 50;
 @tooltip-bg: #999;
 
@@ -71,14 +72,14 @@
 
 // ***** FOOTER
 #footer {
-    height: 36px;
+    min-height: initial;
     font-size: 11px;
     background-color: rgba(214, 214, 214, 0.9);
     padding-left: 12px;
     padding-right: 0;
     & > div {
-        height: 36px;
-        line-height: 36px;
+        height: unit(@footer-height, px);
+        line-height: unit(@footer-height, px);
         margin-right: 1em;
     }
     #scaleline {
