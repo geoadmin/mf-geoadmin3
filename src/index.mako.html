@@ -185,56 +185,57 @@
           <span translate>open_menu</span>
         </span>
       </button>
-    </div>
+    </div> <!-- #pulldown -->
+
     <!-- feedback dialog -->
     <div ng-controller="GaFeedbackController">
-    <div id="feedback" class="modal fade" tabindex="-1" role="dialog" ga-modal-show="feedbackModalShown">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">x</button>
-            <h4 class="modal-title" translate>problem_announcement</h4>
+      <div id="feedback" class="modal fade" tabindex="-1" role="dialog" ga-modal-show="feedbackModalShown">
+	<div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">x</button>
+              <h4 class="modal-title" translate>problem_announcement</h4>
+            </div>
+            <div class="modal-body">
+              <div ga-feedback
+                   ga-feedback-options="options"
+                   ga-feedback-response="response"></div>
+            </div>
           </div>
-          <div class="modal-body">
-            <div ga-feedback
-                 ga-feedback-options="options"
-                 ga-feedback-response="response"></div>
-          </div>
-        </div>
+	</div>
       </div>
-    </div>
-    <div id="feedback-success" class="modal fade" tabindex="-1" role="dialog" ga-modal-show="feedbackSuccessModalShown">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">x</button>
-            <h4 class="modal-title" translate>success</h4>
+      <div id="feedback-success" class="modal fade" tabindex="-1" role="dialog" ga-modal-show="feedbackSuccessModalShown">
+	<div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">x</button>
+              <h4 class="modal-title" translate>success</h4>
+            </div>
+            <div class="modal-body" translate>
+              feedback_success_message
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal" translate>close</button>
+            </div>
           </div>
-          <div class="modal-body" translate>
-            feedback_success_message
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal" translate>close</button>
-          </div>
-        </div>
+	</div>
       </div>
-    </div>
-    <div id="feedback-error" class="modal fade" tabindex="-1" role="dialog" ga-modal-show="feedbackErrorModalShown">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">x</button>
-            <h4 class="modal-title" translate>error</h4>
+      <div id="feedback-error" class="modal fade" tabindex="-1" role="dialog" ga-modal-show="feedbackErrorModalShown">
+	<div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">x</button>
+              <h4 class="modal-title" translate>error</h4>
+            </div>
+            <div class="modal-body" translate>
+              feedback_error_message
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal" translate>close</button>
+            </div>
           </div>
-          <div class="modal-body" translate>
-            feedback_error_message
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal" translate>close</button>
-          </div>
-        </div>
+	</div>
       </div>
-    </div>
     </div>
 
 % if mode == "prod":
