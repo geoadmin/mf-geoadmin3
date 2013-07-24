@@ -60,24 +60,25 @@
          $scope.displayFileContent = function() {
            $scope.userMessage = $translate('parsing_file');
            $scope.progress = 80;
-           $scope.layers= [];
+           $scope.layers = [];
 
            var parser = new ol.parser.ogc.WMSCapabilities();
-        
+
            try {
              var result = parser.read($scope.fileContent);
              $log.log(result);
 
-             for (var i=0, len=result.capability.layers.length; i<len; i++) {
+             for (var i = 0, len = result.capability.layers.length;
+                 i < len; i++) {
                var layer = result.capability.layers[i];
-               
-               if(layer.name) { 
-               var olSource =  new ol.source.SingleImageWMS({
+
+               if (layer.name) {
+               var olSource = new ol.source.SingleImageWMS({
                  params: {'LAYERS': layer.name},
                  url: $scope.fileUrl,
-                 name:  layer.name,
+                 name: layer.name,
                  title: layer.title,
-                 abstract: layer.abstract,
+                 'abstract': layer['abstract'],
                  minScale: layer.minScaleDenominator,
                  maxScale: layer.maxScaleDenominator
                });
@@ -85,7 +86,7 @@
 
                /* var olLayer =  new ol.layer.ImageLayer({
                  source: olSource
-               });*/               
+               });*/
                $scope.layers.push(layer);
                }
              }
@@ -144,8 +145,8 @@
                limit: 500
 
              }).on('typeahead:initialized typeahead:selected', function(evt) {
-                
-               if (evt.type === "typeahead:selected") {
+
+               if (evt.type === 'typeahead:selected') {
                  scope.fileUrl = this.value;
                }
 
