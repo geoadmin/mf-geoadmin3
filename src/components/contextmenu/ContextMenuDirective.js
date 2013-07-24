@@ -14,14 +14,15 @@
             restrict: 'A',
             replace: true,
             templateUrl: 'components/contextmenu/partials/contextmenu.html',
-            require: '^gaMap',
-            scope: {},
-            link: function(scope, element, attrs, gaMapDirectiveCtrl) {
+            scope: {
+              map: '=gaContextMenuMap'
+            },
+            link: function(scope, element, attrs) {
 
               // The popup content is updated (a) on contextmenu events,
               // and (b) when the permalink is updated.
 
-              var map = gaMapDirectiveCtrl.getMap();
+              var map = scope.map;
               var view = map.getView();
 
               var coord21781;
