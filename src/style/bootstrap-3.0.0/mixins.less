@@ -332,12 +332,11 @@
 // Horizontal dividers
 // -------------------------
 // Dividers (basically an hr) within dropdowns and nav lists
-.nav-divider(@top: #e5e5e5, @bottom: #fff) {
-  height: 2px; // 1px for background, one for border
+.nav-divider(@color: #e5e5e5) {
+  height: 1px;
   margin: ((@line-height-computed / 2) - 1) 0;
   overflow: hidden;
-  background-color: @top;
-  border-bottom: 1px solid @bottom;
+  background-color: @color;
 }
 
 // Alerts
@@ -442,8 +441,6 @@
   .clearfix();
 }
 
-// Make a grid
-
 // Creates a wrapper for a series of columns
 .make-row() {
   // Then clear the floated columns
@@ -460,6 +457,7 @@
     margin-right: (@grid-gutter-width / -2);
   }
 }
+
 // Generate the columns
 .make-column(@columns) {
   position: relative;
@@ -475,6 +473,7 @@
     width: percentage((@columns / @grid-columns));
   }
 }
+
 // Generate the column offsets
 .make-column-offset(@columns) {
   @media (min-width: @grid-float-breakpoint) {
@@ -492,7 +491,22 @@
   }
 }
 
+// Generate the small columns
+.make-small-column(@columns) {
+  position: relative;
+  float: left;
+  // Prevent columns from collapsing when empty
+  min-height: 1px;
+  // Inner gutter via padding
+  padding-left:  (@grid-gutter-width / 2);
+  padding-right: (@grid-gutter-width / 2);
+  @max-width: (@grid-float-breakpoint - 1);
 
+  // Calculate width based on number of columns available
+  @media (max-width: @max-width) {
+    width: percentage((@columns / @grid-columns));
+  }
+}
 
 // Framework mixins
 // --------------------------------------------------
