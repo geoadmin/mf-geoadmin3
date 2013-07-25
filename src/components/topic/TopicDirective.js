@@ -7,7 +7,8 @@
   ]);
 
   module.directive('gaTopic',
-      ['$rootScope', 'gaPermalink', function($rootScope, gaPermalink) {
+      ['$rootScope', 'gaLayers', 'gaPermalink',
+        function($rootScope, gaLayers, gaPermalink) {
         return {
           restrict: 'A',
           replace: true,
@@ -16,35 +17,20 @@
             options: '=gaTopicOptions'
           },
           link: function(scope, element, attrs) {
+            var options = scope.options;
 
             // FIXME: tests data, use remote service
             scope.topics = [{
-              id: 'bafu',
-              label: 'BAFU',
+              id: 'blw',
+              label: 'BLW',
               thumbnail: 'http://placehold.it/110x60'
             }, {
-              id: 'geoadmin',
-              label: 'geoadmin',
+              id: 'inspire',
+              label: 'Inspire',
               thumbnail: 'http://placehold.it/110x60'
             }, {
-              id: 'are',
-              label: 'ARE',
-              thumbnail: 'http://placehold.it/110x60'
-            }, {
-              id: 'bazl',
-              label: 'BAZL',
-              thumbnail: 'http://placehold.it/110x60'
-            }, {
-              id: 'wandern',
-              label: 'Wandern',
-              thumbnail: 'http://placehold.it/110x60'
-            }, {
-              id: 'verkehr',
-              label: 'Verkehr',
-              thumbnail: 'http://placehold.it/110x60'
-            }, {
-              id: 'larm',
-              label: 'Lärm',
+              id: 'ech',
+              label: 'ECH',
               thumbnail: 'http://placehold.it/110x60'
             }];
 
@@ -52,8 +38,9 @@
               for (var i = 0, len = scope.topics.length; i < len; i++) {
                 var topic = scope.topics[i];
                 if (topic.id == topicId) {
-                  scope.activeTopic = topic;
+                  options.setActiveTopicId(topicId);
                   gaPermalink.updateParams({topic: topic.id});
+                  gaLayers.loadForTopic(options.url);
                   $rootScope.$broadcast('gaTopicChange', topic);
                   return true;
                 }
@@ -65,7 +52,7 @@
             var found = scope.setActiveTopic(queryParams.topic);
             if (!found) {
               // topic not set, fallback to 'geoadmin'
-              scope.setActiveTopic('geoadmin');
+              scope.setActiveTopic(options.defaultTopicId);
             }
           }
         };
