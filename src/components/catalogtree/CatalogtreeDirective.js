@@ -61,14 +61,7 @@
         });
       } else {
         map.getLayers().forEach(function(l) {
-          //FIXME: tileSource.layer.id does not exist anymore (ol does not
-          //preserve custom elements), so we have to hack to get the
-          //right layer. this approach is not bullet-proof and does not work
-          //in prod!
-          var tileSource = l.getTileSource();
-          var tileUrl = tileSource.tileUrlFunction(new ol.TileCoord(16, 1, -5),
-              tileSource.projection_);
-          if (tileUrl.indexOf(id) !== -1) {
+          if (l.get('layerId') == id) {
             map.removeLayer(l);
           }
         });
