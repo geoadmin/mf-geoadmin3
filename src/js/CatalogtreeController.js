@@ -4,8 +4,8 @@
   var module = angular.module('ga_catalogtree_controller', []);
 
   module.controller('GaCatalogtreeController',
-      ['$scope', '$http', 'gaGlobalOptions', '$rootScope', 
-            function($scope, $http, gaGlobalOptions, $rootScope) {
+      ['$scope', '$http', 'gaGlobalOptions', 
+            function($scope, $http, gaGlobalOptions) {
         
         var topicUrlBase = gaGlobalOptions.serviceUrl + '/rest/services/';
         
