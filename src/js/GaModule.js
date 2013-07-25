@@ -13,6 +13,7 @@
   goog.require('ga_topic');
   goog.require('ga_translation');
   goog.require('ga_feedback');
+  goog.require('ga_geolocation');
 
   goog.require('ga_modal_directive');
   goog.require('ga_draggable_directive');
@@ -42,6 +43,7 @@
     'ga_modal_directive',
     'ga_draggable_directive',
     'ga_importkml_controller',
+    'ga_geolocation',
     'ga_map_controller',
     'ga_mouseposition_controller',
     'ga_permalinkpanel_controller',
