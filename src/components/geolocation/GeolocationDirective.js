@@ -7,12 +7,13 @@
   module.directive('gaGeolocation', ['$parse', function($parse) {
     return {
       restrict: 'A',
-      scope: {},
+      scope: {
+        map: '=gaGeolocationMap'
+      },
       template: '<a href="#geolocation" class="geolocation">',
       replace: true,
-      require: '^gaMap',
-      link: function(scope, element, attrs, gaMapDirectiveCtrl) {
-        var map = gaMapDirectiveCtrl.getMap();
+      link: function(scope, element, attrs) {
+        var map = scope.map;
         var view = map.getView().getView2D();
         var geolocation = new ol.Geolocation({
           tracking: true
