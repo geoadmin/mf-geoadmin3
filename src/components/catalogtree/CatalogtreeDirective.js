@@ -29,6 +29,16 @@
               scope.gaLayers = gaLayers;
               scope.toggle = toggle;
               scope.switchLayer = switchLayer;
+
+              //FIXME jeg: this is the get the map. This should be passed
+              //into the directive directly. But I was not able to because of
+              //scope issues...therefore, I cheat for the moment.
+              var par = scope.$parent;
+              while (par && !scope.map) {
+                scope.map = par.map;
+                par = par.$parent;
+              }
+
               compiledContent(scope, function(clone, scope) {
                 iEl.append(clone);
               });
@@ -39,16 +49,8 @@
   );
 
   function switchLayer() {
-    //FIXME jeg: this is the get the map. This should be passed
-    //into the directive directly. But I was not able to because of
-    //scope issues...therefore, I cheat for the moment.
-    var par = this.$parent,
-        id = this.val.idBod,
-        map;
-    while (par && !map) {
-      map = par.map;
-      par = par.$parent;
-    }
+    var id = this.val.idBod,
+        map = this.map;
     if (map) {
       if (this.val.selectedOpen) {
         this.gaLayers.getOlLayerById(id).then(function(layer) {
