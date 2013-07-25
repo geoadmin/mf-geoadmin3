@@ -6,6 +6,38 @@
   module.directive('gaSearch',
       ['$compile',
        function($compile) {
+         var footer = [
+          '<div style="float: left; padding-top: 10px; padding-left: 20px;">',
+          '<b>Please help me</b></div>',
+          '<div style="float: right; padding-right: 20px;">',
+          '<div>',
+          '<a class="share-icon" ',
+          'title="Tweet this map" ',
+          'ng-click="options.getHref()" ',
+          'ng-mouseover="options.getHref()" ',
+          'ng-href="https://twitter.com/intent/tweet?',
+          'url={{options.encodedPermalinkHref}}&text={{options.encodedDocumentTitle}}">',
+          '<i class="icon-twitter"></i>',
+          '</a>',
+          '<a class="share-icon"',
+          'title="Share this map with your friends" ',
+          'ng-click="options.getHref()" ',
+          'ng-mouseover="options.getHref()" ',
+          'ng-href="http://www.facebook.com/sharer.php?',
+          'u={{options.encodedPermalinkHref}}&t={{opitons.encodedDocumentTitle}}">',
+          '<i class="icon-facebook"></i>',
+          '</a>',
+          '<a class="share-icon" ',
+          'title="Send a map-email to your friends" ',
+          'ng-click="options.getHref()" ',
+          'ng-mouseover="options.getHref()" ',
+          'ng-href="mailto:?',
+          'subject={{options.encodedDocumentTitle}}&body={{options.encodedPermalinkHref}}">',
+          '<i class="icon-envelope-alt"></i> ',
+          '</a>',
+          '</div>',
+          '</div>'].join('');
+
          return {
            restrict: 'A',
            replace: true,
@@ -20,8 +52,6 @@
              var map = scope.map;
              var options = scope.options;
              var config = options.config;
-             var footer = '<div ng-include src="\'components/search/' +
-             'partials/search_footer.html\'"></div>';
 
              var footer_template = angular.element(footer);
              $compile(footer_template)(scope);
