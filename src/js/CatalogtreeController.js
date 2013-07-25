@@ -20,11 +20,9 @@
               //FIXME: language should come from context!
               'lang': 'en'
             }
-          });
-          http.success(function(data, status, header, config) {
+          }).success(function(data, status, header, config) {
             $scope.tree = data.results.root;
-          });
-          http.error(function(data, status, headers, config) {
+          }).error(function(data, status, headers, config) {
             $scope.tree = undefined;
           });
         });
