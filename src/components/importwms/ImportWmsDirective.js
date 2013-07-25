@@ -32,6 +32,13 @@
 
            if ($scope.isValidUrl(url)) {
 
+             // TODO:May be we should do something stronger
+             var idx = url.indexOf('?');
+
+             if (idx === -1) {
+               url += '?';
+             }
+
              url += 'SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0';
 
              // Kill the current uploading
@@ -56,11 +63,17 @@
            }
          };
 
-         // Display the list of layers available in the GetCapabilties
+         // Display the list of layers available from the GetCapabilties in the
+         // table
          $scope.displayFileContent = function() {
            $scope.userMessage = $translate('parsing_file');
            $scope.progress = 80;
+
+           // The layerXXXX properties use layer objects from the parsing of 
+           // a  GetCapabilities file, not ol layer object
            $scope.layers = [];
+           $scope.layerSelected = null; // the layer selected on user click
+           $scope.layerHovered = null; // the layer selected when mouse is over it
 
            var parser = new ol.parser.ogc.WMSCapabilities();
 
@@ -72,22 +85,9 @@
                  i < len; i++) {
                var layer = result.capability.layers[i];
 
+               // WMS layer with no name can't be added to the map
                if (layer.name) {
-               var olSource = new ol.source.SingleImageWMS({
-                 params: {'LAYERS': layer.name},
-                 url: $scope.fileUrl,
-                 name: layer.name,
-                 title: layer.title,
-                 'abstract': layer['abstract'],
-                 minScale: layer.minScaleDenominator,
-                 maxScale: layer.maxScaleDenominator
-               });
-
-
-               /* var olLayer =  new ol.layer.ImageLayer({
-                 source: olSource
-               });*/
-               $scope.layers.push(layer);
+                 $scope.layers.push(layer);
                }
              }
 
@@ -117,6 +117,74 @@
            return (url && url.length > 0 && URL_REGEXP.test(url));
          };
 
+         // Add the selected layer to the map
+         $scope.addLayerSelected = function(getCapLayer) {
+
+           if (getCapLayer) {
+             $scope.layerSelected = getCapLayer;
+           }
+  
+           $scope.addLayer($scope.layerSelected);
+         }
+         
+         // Add the hovered layer to the map
+         $scope.addLayerHovered = function(getCapLayer) {
+           $scope.layerHovered = getCapLayer;
+           $scope.olLayerHovered = $scope.addLayer($scope.layerHovered);
+         }
+ 
+         // Remove layer hovered
+         $scope.removeLayerHovered = function() {
+           if ($scope.olLayerHovered) {
+             $scope.map.removeLayer($scope.olLayerHovered);
+             $scope.layerHovered = null;
+             $scope.olLayerHovered = null;
+           }
+         }
+        
+         // Add a layer from GetCapabilities object to the map
+         $scope.addLayer = function(getCapLayer) {
+
+           if (getCapLayer) {
+             
+             try {
+               var extent = null;
+               var layer = getCapLayer;
+               var srsCode = $scope.map.getView().getProjection().code_;
+
+               if (layer.bbox) {
+                
+                 if (srsCode.toUpperCase() in layer.bbox) {
+                   extent = layer.bbox[srsCode.toUpperCase()].bbox;
+                   // ol extent is [minx, maxx, miny, maxy]
+                   extent = [extent[0], extent[2], extent[1], extent[3]];
+                 }
+               }
+               
+               var olSource = new ol.source.SingleImageWMS({
+                   params: {
+                     'LAYERS': layer.name 
+                   },
+                   url: $scope.fileUrl,
+                   extent: extent                   
+               });
+
+               var olLayer =  new ol.layer.ImageLayer({
+                   source: olSource
+               });
+               
+               $scope.map.addLayer(olLayer);
+               $scope.map.getView().getView2D().fitExtent(extent, $scope.map.getSize());
+        
+               return olLayer;
+                                         
+             } catch (e) {
+               $scope.userMessage = $translate('add_wms_layer_failed') + 
+                   e.message;
+               return null;
+             }
+           }
+         };
   }]);
 
   module.directive('gaImportWms',
@@ -148,21 +216,31 @@
 
                if (evt.type === 'typeahead:selected') {
                  scope.fileUrl = this.value;
+                 scope.$apply(function() {
+                   scope.handleFileUrl();
+                 });
                }
-
-               // Fill the list  of suggestions with all the data
-               var taView = $(this).data('ttView');
-               var dataset = taView.datasets[0];
-               dataset.getSuggestions('http', function(suggestions) {
-                 taView.dropdownView.renderSuggestions(dataset, suggestions);
-               });
-             });
-
+               
+               // Fill the list of suggestions
+               initSuggestions();
+            });
+             
 
              // Toggle list of suggestions
              elt.find('.open-wms-list').on('click', function(evt) {
                elt.find('.tt-dropdown-menu').toggle();
+               initSuggestions();
              });
+
+
+             // Initalize the list of suggestions with all the data
+             function initSuggestions() {
+               var taView = $(taElt).data('ttView');
+               var dataset = taView.datasets[0];
+               dataset.getSuggestions('http', function(suggestions) {
+                 taView.dropdownView.renderSuggestions(dataset, suggestions);
+               }); 
+             }
            }
          };
        }]

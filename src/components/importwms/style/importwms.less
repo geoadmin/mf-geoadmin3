@@ -3,7 +3,7 @@
   position: relative;
   background-color: white;
   padding: 10px;
-  width: 780px;
+  width: 740px;
   height: 282px;
 
   > div {
@@ -22,16 +22,17 @@
     thead, tbody, tr {
       width: 100%;
     }
+
     thead, th, td, tr {
       height: 35px;
     }
 
     th.add, td.add {
-      width: 45px; 
+      width: 50px; 
     }
 
     th.title, td.title {
-      width: 257px;
+      width: 262px;
     }
     
     tr.row-first td {
@@ -45,11 +46,18 @@
     td.col-first, th.col-first {
       border-left: none;
     }
+
+    tr {
+      cursor: pointer;
+    }
+
+    tr.selected {
+      cursor: normal;
+    }
   }
 
   .tables-container {
-    width: 320px;
-    margin: 40px 0px 0px 0px;
+    width: 330px;
     border: 1px solid #dddddd;
     border-collapse: separate;
     border-radius: 4px;
@@ -58,12 +66,29 @@
   .table-content-container {
     width: 100%;
     height: 240px;
+    position: relative;
     overflow-y: auto;
     overflow-x: hidden;
     border-top: 1px solid #dddddd;
   }
+  
+  .tables-container, .description-container {
+    display: inline-block;
+    position: relative;
+    margin: 20px 0px 0px 0px;
+  }
+  
+  .description-container {
+    vertical-align: top;
+    margin-left: 20px;
+  }
 
-
+  textarea {
+    resize: none;
+    width: 364px;
+    height: 206px; 
+     
+  }
    
   .bt-connect {
     position:absolute;
@@ -97,5 +122,23 @@
 
   .tt-hint {
     color: #999
+  }
+
+  .modal-backdrop {
+    position: absolute;
+   
+    .progress {
+      position: absolute;
+      top: 50%;
+      margin-top: -20px;
+      left: 50%;
+      margin-left: -100px; 
+      width: 200px;
+    }
+  }
+
+  .bt-addlayer {
+    width: 100%;
+    margin-top: 10px;
   }
 }
