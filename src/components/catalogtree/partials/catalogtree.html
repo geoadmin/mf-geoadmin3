@@ -1,7 +1,14 @@
 <div>
-  <div ng-switch="val && val.children ? 'node' : 'leaf'">
+  <div ng-switch="val.children">
 
-    <div ng-switch-when="node" class="ga-catalogtree-node">
+    <div ng-switch-when="undefined" class="ga-catalogtree-leaf checkbox">
+      <label>
+        <input type="checkbox">{{val.label}}
+      </label>
+      <i class="icon-info-sign" ng-click="getLegend($event, val.idBod)"></i>
+    </div>
+
+    <div ng-switch-default="" class="ga-catalogtree-node">
       <div ng-click="toggle($event)">{{val.label}}</div>
       <ul ng-class="{closed: !val.selectedOpen}">
         <li ng-repeat="item in val.children">
@@ -9,15 +16,6 @@
         </li>
       </ul>
     </div>
-
-    <div ng-switch-when="leaf" class="ga-catalogtree-leaf checkbox">
-      <label>
-        <input type="checkbox">{{val.label}}
-      </label>
-      <i class="icon-info-sign" ng-click="getLegend($event, val.idBod)"></i>
-    </div>
-
-    <div ng-switch-default=""></div>
 
   </div>
 </div>
