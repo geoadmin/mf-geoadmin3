@@ -30,46 +30,48 @@
 
   module.provider('gaLayers', function() {
 
-    this.$get = ['$http', 'gaTileGrid', function($http, gaTileGrid) {
+    this.$get = ['$q', '$http', 'gaTileGrid', function($q, $http, gaTileGrid) {
 
       var wmtsGetTileUrl = 'http://wmts.geo.admin.ch/1.0.0/{Layer}/default/' +
-          '{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.jpeg';
+          '{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
 
       var Layers = function() {
-        var layers;
         var promise;
 
         /**
          * Load layers for a given topic.
          */
-        this.loadForTopic = function(topicId) {
-          layers = {};
-          // FIXME the request path or params should depend on the
-          // the topic identifier
-          promise = $http.get('layers.json').then(function(o) {
-            layers = o.data.layers;
+        this.loadForTopic = function(url) {
+          var deferred = $q.defer();
+          $http.jsonp(url).success(function(data, status) {
+            deferred.resolve(data);
+          }).error(function(data, status) {
+            deferred.reject();
           });
+          promise = deferred.promise;
         };
 
         /**
          * Return an ol.layer.Layer object for a layer id.
          */
         this.getOlLayerById = function(id) {
-          return promise.then(function() {
+          return promise.then(function(data) {
+            var layers = data.layers;
             var layer = layers[id];
             var olLayer = layer.olLayer;
+            var attribution = '&copy; Data: ' + layer.attribution;
             if (!angular.isDefined(olLayer)) {
               if (layer.type == 'wmts') {
                 olLayer = new ol.layer.TileLayer({
                   source: new ol.source.WMTS({
                     attributions: [
-                      new ol.Attribution('&copy; Data: swisstopo')
+                      new ol.Attribution(attribution)
                     ],
                     dimensions: {
-                      'Time': layer.timestamps[0]
+                      'Time': layer.timestamps[0],
+                      'Format': layer.format,
+                      'Layer': id
                     },
-                    format: layer.format,
-                    layer: id,
                     projection: 'EPSG:21781',
                     requestEncoding: 'REST',
                     tileGrid: gaTileGrid.get(layer.resolutions),
@@ -88,8 +90,9 @@
          * objects are object literals.
          */
         this.getBackgroundLayers = function() {
-          return promise.then(function() {
+          return promise.then(function(data) {
             var backgroundLayers = [];
+            var layers = data.layers;
             angular.forEach(layers, function(layer, id) {
               if (layer.background === true) {
                 var backgroundLayer = angular.extend({
@@ -105,11 +108,6 @@
       };
 
       var layers = new Layers();
-
-      // FIXME For now the service itself calls loadForTopic. Eventually,
-      // the topic directive or the topic controller will be responsible
-      // for calling that function.
-      layers.loadForTopic();
 
       return layers;
     }];

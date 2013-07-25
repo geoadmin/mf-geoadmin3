@@ -26,21 +26,24 @@
            link: function(scope, element, attrs) {
              var map = scope.map;
 
-             gaLayers.getBackgroundLayers().then(function(backgroundLayers) {
-               scope.backgroundLayers = backgroundLayers;
-
-               var queryParams = gaPermalink.getParams();
-               scope.currentLayer = (queryParams.bgLayer !== undefined) ?
-                   queryParams.bgLayer : backgroundLayers[0].id;
-               setCurrentLayer(scope.currentLayer);
-             });
-
              function setCurrentLayer(layerId) {
-               gaLayers.getOlLayerById(layerId).then(function(layer) {
-                 map.getLayers().setAt(0, layer);
-                 gaPermalink.updateParams({bgLayer: layerId});
-               });
+              gaLayers.getOlLayerById(layerId).then(function(layer) {
+                map.getLayers().setAt(0, layer);
+                gaPermalink.updateParams({bgLayer: layerId});
+              });
              }
+
+             scope.$on('gaTopicChange', function() {
+              gaLayers.getBackgroundLayers().then(function(backgroundLayers) {
+                scope.backgroundLayers = backgroundLayers;
+
+                var queryParams = gaPermalink.getParams();
+                scope.currentLayer = (queryParams.bgLayer !== undefined) ?
+                   queryParams.bgLayer : backgroundLayers[0].id;
+                setCurrentLayer(scope.currentLayer);
+               });
+
+             });
 
              scope.$watch('currentLayer', function(newVal, oldVal) {
                if (oldVal !== newVal) {
