@@ -36,6 +36,7 @@
         resolutions: resolutions
       })
     });
+    map.addControl(new ol.control.ZoomToExtent());
 
     $scope.map = map;
 
