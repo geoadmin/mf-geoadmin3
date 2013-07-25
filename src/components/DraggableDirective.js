@@ -3,7 +3,7 @@
 
   var module = angular.module('ga_draggable_directive', []);
 
-  module.directive('gaDraggable', function($document) {
+  module.directive('gaDraggable', ['$document', function($document) {
     return function(scope, element, attr) {
       var startX = 0, startY = 0, x = null, y = null;
 
@@ -48,5 +48,5 @@
         $document.unbind('mouseup', mousemove);
       }
     }
-  });
+  }]);
 })();
