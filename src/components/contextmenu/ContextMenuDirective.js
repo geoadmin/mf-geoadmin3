@@ -44,7 +44,7 @@
                 // callback.
                 scope.$apply(function() {
                   $q.all({
-                    height: $http.jsonp(heightUrl + '?cb=JSON_CALLBACK', {
+                    height: $http.jsonp(heightUrl + '?callback=JSON_CALLBACK', {
                       params: {
                         easting: coord21781[0],
                         northing: coord21781[1],
