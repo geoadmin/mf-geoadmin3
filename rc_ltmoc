@@ -1,1 +1,1 @@
-export SERVICE_URL=http://mf-geoadmin20t.bgdi.admin.ch/ltmoc
+export SERVICE_URL=http://api.geo.admin.ch

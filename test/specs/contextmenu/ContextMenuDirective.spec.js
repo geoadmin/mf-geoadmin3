@@ -6,12 +6,16 @@ describe('ga_contextmenu_directive', function() {
   beforeEach(function() {
     element = angular.element(
       '<div>' +
-      '<div ga-context-menu ga-context-menu-map="map"></div>' +
+        '<div ga-context-menu ga-context-menu-map="map" ga-context-menu-options="options"></div>' +
       '</div>');
+
     inject(function($rootScope, $compile) {
       var map = new ol.Map({});
       $rootScope.map = map;
-      $rootScope.options = {};
+      $rootScope.options = {
+        heightUrl: "http://api.geo.admin.ch/height",
+        qrcodeUrl: "http://api.geo.admin.ch/qrcodegenerator"
+      };
       map.on = function(eventType, handler) {
         handlers[eventType] = handler;
       };

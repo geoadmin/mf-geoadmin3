@@ -2,7 +2,7 @@
 <html ng-app="ga">
 
   <head>
-    <title>map.geo.admin.ch PREVIEW</title>
+        <title>map.geo.admin.ch PREVIEW</title>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -35,13 +35,15 @@
 % endif
       </div>
       <div id="map" class="map" ga-map ga-map-map="map">
-        <div ga-context-menu ga-context-menu-map="map"></div>
+        <div  ng-controller="GaContextMenuController">
+          <div ga-context-menu ga-context-menu-map="map" ga-context-menu-options="options"></div>
+        </div>
       </div>
       <div id="footer" class="navbar navbar-fixed-bottom">
         <div id="scaleline" class="pull-left" ga-scale-line ga-scale-line-map="map"></div>
 % if device == 'desktop':
         <div class="pull-left" ga-attribution ga-attribution-map="map"></div>
-        <div id="mouseposition" class="pull-left visible-lg" ng-controller="GaMousePositionController">
+            <div id="mouseposition" class="pull-left visible-lg" ng-controller="GaMousePositionController">
           <select
             ng-model="options.projection"
             ng-options="p.label for p in mousePositionProjections">
@@ -70,8 +72,8 @@
               <i class="icon-share"></i>
               <span translate>share</span>
             </a>
-          </div>
-          <div id="share" class="collapse">
+            </div>
+            <div id="share" class="collapse">
             <div class="accordion-inner" ng-controller="GaPermalinkPanelController">
               <div ga-permalink-panel ga-permalink-panel-options="options"></div>
             </div>
@@ -287,4 +289,3 @@
     </div>
   </body>
 </html>
-

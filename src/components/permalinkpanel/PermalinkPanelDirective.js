@@ -14,8 +14,7 @@
             templateUrl: 'components/permalinkpanel/partials/' +
                 'permalinkpanel.html',
             link: function(scope, element, attrs) {
-              var shortenUrl =
-                  scope.options.serviceUrl + '/shorten.json?cb=JSON_CALLBACK';
+              var shortenUrl = scope.options.shortenUrl + '?cb=JSON_CALLBACK';
 
               $('.share-icon').tooltip({
                 placement: 'bottom'
