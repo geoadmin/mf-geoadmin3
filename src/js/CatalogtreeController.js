@@ -13,7 +13,7 @@
           //FIXME: we shouldn't use this topicToUse...sync topics with service
           var topicToUse = topic.id;
           if (topicToUse == 'geoadmin') {
-            topicToUse = 'inspire';
+            topicToUse = 'ech';
           }
           var http = $http.jsonp(topicUrlBase + topicToUse + '/CatalogServer?callback=JSON_CALLBACK', {
             params: {

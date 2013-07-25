@@ -3,7 +3,7 @@
 
     <div ng-switch-when="undefined" class="ga-catalogtree-leaf checkbox">
       <label>
-        <input type="checkbox">{{val.label}}
+        <input type="checkbox" ng-model="val.selectedOpen" ng-change="switchLayer()">{{val.label}}
       </label>
       <i class="icon-info-sign" ng-click="getLegend($event, val.idBod)"></i>
     </div>
