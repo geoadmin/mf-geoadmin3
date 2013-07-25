@@ -1,0 +1,97 @@
+/* General */
+.import-kml {
+  width: 420px;
+  padding: 10px;
+  
+  input[type=file] {
+    display: none;
+    width: 100%; 
+  }
+
+  .tab-content, 
+  .tabbable-footer {
+    margin: 5px 0px;
+  }   
+ 
+  .validate-kml-file {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+  }
+
+  .upload-abort {
+    cursor: pointer;
+  }
+}
+
+.import-kml-fake-file {
+  float: left;
+  width: 80%; 
+}
+
+/* Drop zone */
+.import-kml-drop-zone {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  display: none;
+  background-color: black;
+  opacity: 0.7;
+  border: 5px dashed #ccc;   
+  z-index: 99999; 
+  
+  div {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    font-weight: bold;
+    font-size: 32px;
+    color: white;
+  }
+}
+
+/* Form validity css (to move on app.css?) */
+form {
+
+  input.ng-invalid.ng-dirty {
+    background-color: #FA787E;
+  }
+
+  input.ng-valid.ng-dirty {
+    background-color: white;
+  }
+}
+
+/* OVERRIDE BOOTSTRAP CSS */
+.import-kml {
+  
+  input, .nav, button  {
+    height: 24px; 
+    min-height: 24px;
+    padding: 0px 0px 0px 8px; 
+  }
+
+  .nav > li > a {
+    padding: 0px 10px;
+    color: white;
+    background-color: black;
+  }
+  
+  .nav-tabs {
+    border: none;
+  }
+
+  .nav-tabs > li.active > a, 
+  .nav-tabs > li.active > a:hover, 
+  .nav-tabs > li.active > a:focus {
+    color: white;
+    background-color: red;
+    border: 1px solid transparent;     
+  }
+
+  .progress {
+    height: 10px;
+  }
+}

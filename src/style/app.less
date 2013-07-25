@@ -8,6 +8,7 @@
 @import "../components/permalinkpanel/style/permalinkpanel.less";
 @import "../components/feedback/style/feedback.less";
 @import "../components/topic/style/topic.less";
+@import "../components/importkml/style/importkml.less";
 
 @header-height: 89;
 @footer-height: 36;
@@ -255,12 +256,20 @@
 
 .modal {
     overflow: auto;
+    outline: none;
     textarea {
         resize: vertical;
     }
     .modal-header {
         .border-top-radius(6px);
     }
+}
+.non-modal {
+    display: none;
+}
+
+.modal-dialog {
+    padding-top: 150px;
 }
 
 .modal-body {
