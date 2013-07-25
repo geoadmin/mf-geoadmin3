@@ -7,8 +7,8 @@
   ]);
 
   module.directive('gaTopic',
-      ['$rootScope', 'gaLayers', 'gaPermalink',
-        function($rootScope, gaLayers, gaPermalink) {
+      ['$rootScope', 'gaPermalink',
+        function($rootScope, gaPermalink) {
         return {
           restrict: 'A',
           replace: true,
@@ -38,9 +38,7 @@
               for (var i = 0, len = scope.topics.length; i < len; i++) {
                 var topic = scope.topics[i];
                 if (topic.id == topicId) {
-                  options.setActiveTopicId(topicId);
                   gaPermalink.updateParams({topic: topic.id});
-                  gaLayers.loadForTopic(options.url);
                   $rootScope.$broadcast('gaTopicChange', topic);
                   return true;
                 }

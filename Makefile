@@ -104,10 +104,6 @@ prod/locales/: src/locales/*.json
 prod/info.json: src/info.json
 	cp $< $@
 
-# Temporary: the entire rule should go away eventually
-prod/layers.json: src/layers.json
-	cp $< $@
-
 src/deps.js: $(SRC_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
 	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root_with_prefix="src/components components" --root_with_prefix="src/js js" --output_file=$@
 

@@ -4,7 +4,7 @@ describe('ga_backgroundlayerselector_directive', function() {
 
   beforeEach(function() {
 
-    var deferreds = new Array(3);
+    var deferreds = new Array(4);
 
     module(function($provide) {
       $provide.value('gaLayers', {
@@ -14,6 +14,9 @@ describe('ga_backgroundlayerselector_directive', function() {
         },
         getBackgroundLayers: function() {
           return deferreds[2].promise;
+        },
+        loadForTopic: function() {
+          return deferreds[3].promise;
         }
       });
     });
@@ -45,7 +48,7 @@ describe('ga_backgroundlayerselector_directive', function() {
       $rootScope.map = map;
       $compile(element)($rootScope);
       $rootScope.$digest();
-      $rootScope.$broadcast('gaTopicChange', 'foo');
+      $rootScope.$broadcast('gaTopicChange', '');
     });
 
     inject(function($rootScope) {

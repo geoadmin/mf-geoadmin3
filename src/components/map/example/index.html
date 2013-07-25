@@ -18,8 +18,10 @@
 
 <div id="map" ga-map ga-map-map="map"></div>
 
-  <script src="lib/jquery-2.0.2.js"></script>
+  <script src="lib/jquery-2.0.3.js"></script>
   <script src="lib/angular-1.1.5.js"></script>
+  <script src="lib/angular-translate-0.9.4.js"></script>
+  <script src="lib/angular-translate-loader-static-files-0.1.2.js"></script>
   <script src="lib/proj4js-compressed.js"></script>
   <script src="lib/EPSG21781.js"></script>
   <script>
@@ -29,11 +31,12 @@
   <script src="deps.js"></script>
   <script>
     goog.require('ga_map');
+    goog.require('ga_translation');
   </script>
   <script>
     (function() {
       var module = angular.module('ga_map_example', [
-        'ga_map'
+        'ga_map', 'ga_translation'
       ]);
 
       module.controller('MapController', ['$scope',
@@ -62,7 +65,7 @@
           });
 
           $scope.map = map;
-
+          gaLayers.loadForTopic('inspire');
           gaLayers.getOlLayerById('ch.swisstopo.swissimage').then(function(layer) {
             map.addLayer(layer);
           });
