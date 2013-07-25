@@ -48,6 +48,7 @@
               var bounce = ol.animation.bounce({
                 duration: duration,
                 resolution: Math.max(view.getResolution(), dist / 1000,
+                    // needed to don't have up an down and up again in zoom
                     resolution * 1.2),
                 start: start
               });
