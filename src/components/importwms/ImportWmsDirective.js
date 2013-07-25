@@ -69,11 +69,11 @@
            $scope.userMessage = $translate('parsing_file');
            $scope.progress = 80;
 
-           // The layerXXXX properties use layer objects from the parsing of 
+           // The layerXXXX properties use layer objects from the parsing of
            // a  GetCapabilities file, not ol layer object
            $scope.layers = [];
            $scope.layerSelected = null; // the layer selected on user click
-           $scope.layerHovered = null; // the layer selected when mouse is over it
+           $scope.layerHovered = null; // the layer when mouse is over it
 
            var parser = new ol.parser.ogc.WMSCapabilities();
 
@@ -123,16 +123,16 @@
            if (getCapLayer) {
              $scope.layerSelected = getCapLayer;
            }
-  
+
            $scope.addLayer($scope.layerSelected);
-         }
-         
+         };
+
          // Add the hovered layer to the map
          $scope.addLayerHovered = function(getCapLayer) {
            $scope.layerHovered = getCapLayer;
            $scope.olLayerHovered = $scope.addLayer($scope.layerHovered);
-         }
- 
+         };
+
          // Remove layer hovered
          $scope.removeLayerHovered = function() {
            if ($scope.olLayerHovered) {
@@ -140,46 +140,47 @@
              $scope.layerHovered = null;
              $scope.olLayerHovered = null;
            }
-         }
-        
+         };
+
          // Add a layer from GetCapabilities object to the map
          $scope.addLayer = function(getCapLayer) {
 
            if (getCapLayer) {
-             
+
              try {
                var extent = null;
                var layer = getCapLayer;
                var srsCode = $scope.map.getView().getProjection().code_;
 
                if (layer.bbox) {
-                
+
                  if (srsCode.toUpperCase() in layer.bbox) {
                    extent = layer.bbox[srsCode.toUpperCase()].bbox;
                    // ol extent is [minx, maxx, miny, maxy]
                    extent = [extent[0], extent[2], extent[1], extent[3]];
                  }
                }
-               
+
                var olSource = new ol.source.SingleImageWMS({
                    params: {
-                     'LAYERS': layer.name 
+                     'LAYERS': layer.name
                    },
                    url: $scope.fileUrl,
-                   extent: extent                   
+                   extent: extent
                });
 
-               var olLayer =  new ol.layer.ImageLayer({
+               var olLayer = new ol.layer.ImageLayer({
                    source: olSource
                });
-               
+
                $scope.map.addLayer(olLayer);
-               $scope.map.getView().getView2D().fitExtent(extent, $scope.map.getSize());
-        
+               $scope.map.getView().getView2D()
+                   .fitExtent(extent, $scope.map.getSize());
+
                return olLayer;
-                                         
+
              } catch (e) {
-               $scope.userMessage = $translate('add_wms_layer_failed') + 
+               $scope.userMessage = $translate('add_wms_layer_failed') +
                    e.message;
                return null;
              }
@@ -220,11 +221,11 @@
                    scope.handleFileUrl();
                  });
                }
-               
+
                // Fill the list of suggestions
                initSuggestions();
             });
-             
+
 
              // Toggle list of suggestions
              elt.find('.open-wms-list').on('click', function(evt) {
@@ -239,7 +240,7 @@
                var dataset = taView.datasets[0];
                dataset.getSuggestions('http', function(suggestions) {
                  taView.dropdownView.renderSuggestions(dataset, suggestions);
-               }); 
+               });
              }
            }
          };
