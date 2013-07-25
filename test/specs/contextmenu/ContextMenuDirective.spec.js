@@ -39,7 +39,7 @@ describe('ga_contextmenu_directive', function() {
     var $timeout;
 
     var expectedHeightUrl = 'http://api.geo.admin.ch/height' +
-        '?cb=JSON_CALLBACK&easting=661473&elevation_model=COMB' +
+        '?callback=JSON_CALLBACK&easting=661473&elevation_model=COMB' +
         '&northing=188192';
     var expectedReframeUrl = 'http://tc-geodesy.bgdi.admin.ch/reframe/' +
         'lv03tolv95?cb=JSON_CALLBACK&easting=661473&northing=188192';
