@@ -40,7 +40,7 @@ help:
 all: prod dev lint test apache test/karma-conf-prod.js deploy/deploy-branch.cfg
 
 .PHONY: prod
-prod: prod/lib/build.js prod/style/app.css prod/index.html prod/mobile.html prod/info.json prod/layers.json prod/img/ prod/style/font-awesome-3.2.1/font/ prod/locales/
+prod: prod/lib/build.js prod/style/app.css prod/index.html prod/mobile.html prod/info.json prod/img/ prod/style/font-awesome-3.2.1/font/ prod/locales/
 
 .PHONY: dev
 dev: src/deps.js src/style/app.css src/index.html src/mobile.html

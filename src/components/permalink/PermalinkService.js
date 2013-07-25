@@ -72,6 +72,10 @@
     this.updateParams = function(p) {
       angular.extend(params, p);
     };
+
+    this.getLang = function() {
+      return params.lang;
+    };
   }
 
   /**
