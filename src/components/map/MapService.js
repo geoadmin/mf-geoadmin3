@@ -36,6 +36,12 @@
       var wmtsGetTileUrl = 'http://wmts.geo.admin.ch/1.0.0/{Layer}/default/' +
           '{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
 
+      var getTopicUrl = function(topicId, lang) {
+        return 'http://mf-chsdi30t.bgdi.admin.ch/rest/services/' +
+               topicId + '/MapServer/layersconfig?lang=' +
+               lang + '&callback=JSON_CALLBACK';
+      };
+
       var Layers = function() {
         var promise;
         var lastTopicId;
@@ -45,17 +51,17 @@
          */
         this.loadForTopic = function(topicId) {
           if (lastTopicId != topicId) {
-            lastTopicId = topicId;
             var deferred = $q.defer();
-            var url = 'http://mf-chsdi30t.bgdi.admin.ch/rest/services/' +
-              topicId + '/MapServer/layersconfig?lang=' + $translate.uses() +
-              '&callback=JSON_CALLBACK';
+            var url = getTopicUrl(topicId, $translate.uses());
+
             $http.jsonp(url).success(function(data, status) {
               deferred.resolve(data);
             }).error(function(data, status) {
               deferred.reject();
             });
+
             promise = deferred.promise;
+            lastTopicId = topicId;
           }
         };
 
@@ -70,20 +76,22 @@
             var attribution = '&copy; Data: ' + layer.attribution;
             if (!angular.isDefined(olLayer)) {
               if (layer.type == 'wmts') {
+                var wmtsUrl = wmtsGetTileUrl.replace('{Layer}', id).
+                              replace('{Format}', layer.format);
+
                 olLayer = new ol.layer.TileLayer({
                   source: new ol.source.WMTS({
                     attributions: [
                       new ol.Attribution(attribution)
                     ],
                     dimensions: {
-                      'Time': layer.timestamps[0],
-                      'Format': layer.format
+                      'Time': layer.timestamps[0]
                     },
                     layer: id,
                     projection: 'EPSG:21781',
                     requestEncoding: 'REST',
                     tileGrid: gaTileGrid.get(layer.resolutions),
-                    url: wmtsGetTileUrl.replace('{Layer}', id)
+                    url: wmtsUrl
                   })
                 });
                 layer.olLayer = olLayer;
