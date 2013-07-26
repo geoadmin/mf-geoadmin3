@@ -10,8 +10,16 @@
       // Firefox doesn't like transition during drag
       element.addClass('ga-draggable');
       element.css({position: 'absolute'});
+     
+      var dragZone = (attr['gaDraggable'] != '') ?
+          element.find(attr['gaDraggable']) :
+          element;
+      
+      if (!dragZone || dragZone.length == 0) {
+        dragZone = element;
+      }
 
-      element.bind('mousedown', function(evt) {
+      dragZone.bind('mousedown', function(evt) {
         var elt = $(evt.target);
 
         if (x === null) {
