@@ -47,6 +47,7 @@
     'ga_draggable_directive',
     'ga_importkml_controller',
     'ga_geolocation',
+    'ga_importwms_controller',
     'ga_map_controller',
     'ga_mouseposition_controller',
     'ga_share_controller',

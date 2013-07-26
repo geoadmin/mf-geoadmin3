@@ -104,7 +104,9 @@
           <div id="tools" class="collapse">
             <div class="accordion-inner">
               <ul>
-                <li>WMS (under construction ...)</li>
+                <li> 
+                 <a role="button" data-toggle="modal" href="#import-wms-modal" translate>WMS</a>
+                </li>
                 <li>
                   <a role="button" data-toggle="modal" href="#import-kml-modal" translate>KML</a>
                 </li>
@@ -261,6 +263,28 @@
       </div>
     </div> <!-- #import-kml-modal -->
 
+
+    <!-- Modal: Import WMS -->
+    <div id="import-wms-modal" class="non-modal" tabindex="-1" role="dialog" data-backdrop="" >
+      <div class="modal-dialog">
+        <div class="modal-content" ga-draggable >
+	        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">x</button>
+            <h4 class="modal-title" translate>import_wms</h4>
+	        </div>
+	        <div class="modal-body" ng-controller="GaImportWmsController">
+            <div id="import-wms" class="import-wms"
+		            ga-import-wms
+		            ga-import-wms-map="map"
+		            ga-import-wms-options="options">
+            </div>
+	        </div>
+	      </div>
+      </div>
+    </div> <!-- #import-wms-modal -->
+
+
+
 % if mode == "prod":
     <script src="${version}lib/build.js"></script>
 % else:
@@ -269,6 +293,7 @@
     <script src="lib/angular-translate-0.9.4.js"></script>
     <script src="lib/angular-translate-loader-static-files-0.1.2.js"></script>
     <script src="lib/bootstrap-3.0.0.js"></script>
+    <script src="lib/typeahead-0.9.3.js"></script>
     <script src="lib/proj4js-compressed.js"></script>
     <script src="lib/EPSG21781.js"></script>
     <script src="lib/EPSG2056.js"></script>
