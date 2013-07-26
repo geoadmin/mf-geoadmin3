@@ -33,9 +33,8 @@
               });
              }
 
-             scope.$on('gaTopicChange', function(event, topic) {
-              gaLayers.loadForTopic(topic.id);
-              gaLayers.getBackgroundLayers().then(function(backgroundLayers) {
+             function onTriggeredChange() {
+               gaLayers.getBackgroundLayers().then(function(backgroundLayers) {
                 scope.backgroundLayers = backgroundLayers;
 
                 var queryParams = gaPermalink.getParams();
@@ -43,7 +42,16 @@
                    queryParams.bgLayer : backgroundLayers[0].id;
                 setCurrentLayer(scope.currentLayer);
                });
+            }
 
+             scope.$on('gaTopicChange', function(event, topic) {
+              gaLayers.loadForTopic(topic.id);
+              onTriggeredChange();
+             });
+
+             scope.$on('gaLanguageChange', function() {
+               gaLayers.reloadTopic();
+               onTriggeredChange();
              });
 
              scope.$watch('currentLayer', function(newVal, oldVal) {

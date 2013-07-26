@@ -70,6 +70,15 @@
         };
 
         /**
+         * Reload topics (e.g. for a language change)
+         */
+        this.reloadTopic = function() {
+          var loadedTopic = lastTopicId;
+          lastTopicId = '';
+          this.loadForTopic(loadedTopic);
+        };
+
+        /**
          * Return an ol.layer.Layer object for a layer id.
          */
         this.getOlLayerById = function(id) {
