@@ -1,287 +1,71 @@
 {
     "results": {
-        "category": "root", 
-        "selected_open": true, 
-        "staging": "PROD", 
-        "bod_layer_id": null, 
-        "order_key": 0, 
-        "label": "root", 
-        "topic": "blw", 
-        "parent_id": null, 
-        "depth": 0, 
-        "id": 1, 
-        "path": "root", 
-        "children": [
-            {
-                "category": "cat00", 
-                "selected_open": true, 
-                "staging": "PROD", 
-                "bod_layer_id": null, 
-                "order_key": 0, 
-                "label": "root/cat00", 
-                "topic": "blw", 
-                "parent_id": 1, 
-                "depth": 1, 
-                "id": 2, 
-                "path": "root/cat00", 
-                "children": [
-                    {
-                        "category": "layer", 
-                        "selected_open": true, 
-                        "staging": "PROD", 
-                        "bod_layer_id": "ch.blw.landwirtschaftliche-zonengrenzen", 
-                        "order_key": 0, 
-                        "label": "ch.blw.landwirtschaftliche-zonengrenzen", 
-                        "topic": "blw", 
-                        "parent_id": 2, 
-                        "depth": 2, 
-                        "path": "root/cat00/layer", 
-                        "id": 4
-                    }, 
-                    {
-                        "category": "layer", 
-                        "selected_open": true, 
-                        "staging": "PROD", 
-                        "bod_layer_id": "ch.blw.hang_steillagen", 
-                        "order_key": 1, 
-                        "label": "ch.blw.hang_steillagen", 
-                        "topic": "blw", 
-                        "parent_id": 2, 
-                        "depth": 2, 
-                        "path": "root/cat00/layer", 
-                        "id": 5
-                    }, 
-                    {
-                        "category": "layer", 
-                        "selected_open": true, 
-                        "staging": "PROD", 
-                        "bod_layer_id": "ch.blw.steil_terrassenlagen_rebbau", 
-                        "order_key": 2, 
-                        "label": "ch.blw.steil_terrassenlagen_rebbau", 
-                        "topic": "blw", 
-                        "parent_id": 2, 
-                        "depth": 2, 
-                        "path": "root/cat00/layer", 
-                        "id": 6
-                    }
-                ]
-            }, 
-            {
-                "category": "cat01", 
-                "selected_open": false, 
-                "staging": "PROD", 
-                "bod_layer_id": null, 
-                "order_key": 1, 
-                "label": "root/cat01", 
-                "topic": "blw", 
-                "parent_id": 1, 
-                "depth": 1, 
-                "id": 3, 
-                "path": "root/cat01", 
-                "children": [
-                    {
-                        "category": "layer", 
-                        "selected_open": false, 
-                        "staging": "PROD", 
-                        "bod_layer_id": "ch.blw.klimaeignung-typ", 
-                        "order_key": 0, 
-                        "label": "ch.blw.klimaeignung-typ", 
-                        "topic": "blw", 
-                        "parent_id": 3, 
-                        "depth": 2, 
-                        "path": "root/cat01/layer", 
-                        "id": 7
-                    }, 
-                    {
-                        "category": "layer", 
-                        "selected_open": false, 
-                        "staging": "PROD", 
-                        "bod_layer_id": "ch.blw.klimaeignung-spezialkulturen", 
-                        "order_key": 1, 
-                        "label": "ch.blw.klimaeignung-spezialkulturen", 
-                        "topic": "blw", 
-                        "parent_id": 3, 
-                        "depth": 2, 
-                        "path": "root/cat01/layer", 
-                        "id": 8
-                    }, 
-                    {
-                        "category": "layer", 
-                        "selected_open": false, 
-                        "staging": "PROD", 
-                        "bod_layer_id": "ch.blw.klimaeignung-zwischenfruchtbau", 
-                        "order_key": 2, 
-                        "label": "ch.blw.klimaeignung-zwischenfruchtbau", 
-                        "topic": "blw", 
-                        "parent_id": 3, 
-                        "depth": 2, 
-                        "path": "root/cat01/layer", 
-                        "id": 9
-                    }, 
-                    {
-                        "category": "layer", 
-                        "selected_open": false, 
-                        "staging": "PROD", 
-                        "bod_layer_id": "ch.blw.klimaeignung-koernermais", 
-                        "order_key": 3, 
-                        "label": "ch.blw.klimaeignung-koernermais", 
-                        "topic": "blw", 
-                        "parent_id": 3, 
-                        "depth": 2, 
-                        "path": "root/cat01/layer", 
-                        "id": 10
-                    }, 
-                    {
-                        "category": "layer", 
-                        "selected_open": false, 
-                        "staging": "PROD", 
-                        "bod_layer_id": "ch.blw.klimaeignung-kartoffeln", 
-                        "order_key": 4, 
-                        "label": "ch.blw.klimaeignung-kartoffeln", 
-                        "topic": "blw", 
-                        "parent_id": 3, 
-                        "depth": 2, 
-                        "path": "root/cat01/layer", 
-                        "id": 11
-                    }, 
-                    {
-                        "category": "layer", 
-                        "selected_open": false, 
-                        "staging": "PROD", 
-                        "bod_layer_id": "ch.blw.klimaeignung-futterbau", 
-                        "order_key": 5, 
-                        "label": "ch.blw.klimaeignung-futterbau", 
-                        "topic": "blw", 
-                        "parent_id": 3, 
-                        "depth": 2, 
-                        "path": "root/cat01/layer", 
-                        "id": 12
-                    }, 
-                    {
-                        "category": "layer", 
-                        "selected_open": false, 
-                        "staging": "PROD", 
-                        "bod_layer_id": "ch.blw.niederschlagshaushalt", 
-                        "order_key": 6, 
-                        "label": "ch.blw.niederschlagshaushalt", 
-                        "topic": "blw", 
-                        "parent_id": 3, 
-                        "depth": 2, 
-                        "path": "root/cat01/layer", 
-                        "id": 13
-                    }, 
-                    {
-                        "category": "layer", 
-                        "selected_open": false, 
-                        "staging": "PROD", 
-                        "bod_layer_id": "ch.blw.klimaeignung-kulturland", 
-                        "order_key": 7, 
-                        "label": "ch.blw.klimaeignung-kulturland", 
-                        "topic": "blw", 
-                        "parent_id": 3, 
-                        "depth": 2, 
-                        "path": "root/cat01/layer", 
-                        "id": 14
-                    }
-                ]
-            }, 
-            {
-                "category": "cat02", 
-                "selected_open": true, 
-                "staging": "PROD", 
-                "bod_layer_id": null, 
-                "order_key": 2, 
-                "label": "root/cat02", 
-                "topic": "blw", 
-                "parent_id": 1, 
-                "depth": 1, 
-                "id": 15, 
-                "path": "root/cat02", 
-                "children": [
-                    {
-                        "category": "layer", 
-                        "selected_open": true, 
-                        "staging": "PROD", 
-                        "bod_layer_id": "ch.blw.bodeneignung-kulturtyp", 
-                        "order_key": 0, 
-                        "label": "ch.blw.bodeneignung-kulturtyp", 
-                        "topic": "blw", 
-                        "parent_id": 15, 
-                        "depth": 2, 
-                        "path": "root/cat02/layer", 
-                        "id": 16
-                    }, 
-                    {
-                        "category": "layer", 
-                        "selected_open": false, 
-                        "staging": "PROD", 
-                        "bod_layer_id": "ch.blw.bodeneignung-kulturland", 
-                        "order_key": 1, 
-                        "label": "ch.blw.bodeneignung-kulturland", 
-                        "topic": "blw", 
-                        "parent_id": 15, 
-                        "depth": 2, 
-                        "path": "root/cat02/layer", 
-                        "id": 17
-                    }, 
-                    {
-                        "category": "layer", 
-                        "selected_open": false, 
-                        "staging": "PROD", 
-                        "bod_layer_id": "ch.blw.bodeneignung-gruendigkeit", 
-                        "order_key": 2, 
-                        "label": "ch.blw.bodeneignung-gruendigkeit", 
-                        "topic": "blw", 
-                        "parent_id": 15, 
-                        "depth": 2, 
-                        "path": "root/cat02/layer", 
-                        "id": 18
-                    }
-                ]
-            }, 
-            {
-                "category": "cat03", 
-                "selected_open": true, 
-                "staging": "PROD", 
-                "bod_layer_id": null, 
-                "order_key": 3, 
-                "label": "root/cat03", 
-                "topic": "blw", 
-                "parent_id": 1, 
-                "depth": 1, 
-                "id": 19, 
-                "path": "root/cat03", 
-                "children": [
-                    {
-                        "category": "cat04", 
-                        "selected_open": false, 
-                        "staging": "PROD", 
-                        "bod_layer_id": null, 
-                        "order_key": 0, 
-                        "label": "root/cat03/cat04", 
-                        "topic": "blw", 
-                        "parent_id": 19, 
-                        "depth": 2, 
-                        "id": 20, 
-                        "path": "root/cat03/cat04", 
-                        "children": [
-                            {
-                                "category": "layer", 
-                                "selected_open": true, 
-                                "staging": "PROD", 
-                                "bod_layer_id": "ch.blw.bergprodukte", 
-                                "order_key": 0, 
-                                "label": "ch.blw.bergprodukte", 
-                                "topic": "blw", 
-                                "parent_id": 20, 
-                                "depth": 3, 
-                                "path": "root/cat03/cat04/layer", 
-                                "id": 21
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
+        "root": {
+            "category": "root", 
+            "selectedOpen": true, 
+            "children": [
+                {
+                    "category": "category_100", 
+                    "selectedOpen": true, 
+                    "children": [
+                        {
+                            "category": "category_130", 
+                            "selectedOpen": true, 
+                            "children": [
+                                {
+                                    "category": "layer", 
+                                    "selectedOpen": false, 
+                                    "label": "swissALTI3D Hillshade", 
+                                    "topic": "ech", 
+                                    "depth": 3, 
+                                    "idBod": "ch.swisstopo.swissalti3d-reliefschattierung", 
+                                    "parentId": 130, 
+                                    "path": "root/category_100/category_130/layer", 
+                                    "id": 762003126
+                                }
+                            ], 
+                            "label": "Elevation", 
+                            "topic": "ech", 
+                            "depth": 2, 
+                            "parentId": 100, 
+                            "path": "root/category_100/category_130", 
+                            "id": 130
+                        }, 
+                        {
+                            "category": "category_140", 
+                            "selectedOpen": true, 
+                            "children": [
+                                {
+                                    "category": "layer", 
+                                    "selectedOpen": false, 
+                                    "label": "Cantonal boundaries", 
+                                    "topic": "ech", 
+                                    "depth": 3, 
+                                    "idBod": "ch.swisstopo.swissboundaries3d-kanton-flaeche.fill", 
+                                    "parentId": 140, 
+                                    "path": "root/category_100/category_140/layer", 
+                                    "id": 762003605
+                                }], 
+                            "label": "Geosciences, Hazards", 
+                            "topic": "ech", 
+                            "depth": 2, 
+                            "parentId": 200, 
+                            "path": "root/category_200/category_210", 
+                            "id": 210
+                        }
+                    ], 
+                    "label": "Nature and Environment", 
+                    "topic": "ech", 
+                    "depth": 1, 
+                    "parentId": 0, 
+                    "path": "root/category_200", 
+                    "id": 200
+                }
+            ], 
+            "topic": "ech", 
+            "depth": 0, 
+            "path": "root", 
+            "id": 0
+        }
     }
 }

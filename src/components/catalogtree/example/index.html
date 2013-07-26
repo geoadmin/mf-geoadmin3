@@ -7,6 +7,17 @@
     <base href="../../../">
     <link href="style/app.css" rel="stylesheet" media="screen">
     <style>
+      #container {
+      }
+      #map {
+        height: 400px;
+        width: 400px;
+        float: left;
+      }
+      #catalogs {
+        margin-left: 400px;
+      }
+
       .catalog {
         margin: 20px;
       }
@@ -18,30 +29,39 @@
       }
     </style>
   </head>
-  <body ng-controller="CatalogTreeController">
-    <button ng-click="switchCatalog()">Click me to change tree</button>
+  <body ng-controller="MapController">
+    <div id="container">
 
-    <div>
-      <div class="catalog" id="catalog1">
-         <!-- This shows the tree including the root node -->
-         <div ga-catalogtree val="tree"></div>
+      <div id="map" class="map" ga-map ga-map-map="map"></div>
+
+      <div id="catalogs" ng-controller="CatalogTreeController">
+        <button ng-click="switchCatalog()">Click me to change tree</button>
+
+        <div>
+          <div class="catalog" id="catalog1">
+             <!-- This shows the tree including the root node -->
+             <div ga-catalogtree ga-catalogtree-item="tree" ga-catalogtree-map="map"></div>
+          </div>
+          <div class="catalog" id="catalog2">
+            <!-- This will show the tree without the root node -->
+            <ul>
+              <li class="ga-catalogtree-node" ng-repeat="child in tree.children">
+                <div ga-catalogtree ga-catalogtree-item="child" ga-catalogree-map="map"></div>
+              </li>
+            </ul>
+          </div>
+        <div>
       </div>
-      <div class="catalog" id="catalog2">
-        <!-- This will show the tree without the root node -->
-        <ul>
-          <li class="ga-catalogtree-node" ng-repeat="item in tree.children">
-            <div ga-catalogtree val="item"></div>
-          </li>
-        </ul>
-      </div>
-    <div>
-     
-    <script src="lib/jquery-2.0.2.js"></script>
+    </div>
+    
+       
+    <script src="lib/jquery-2.0.3.js"></script>
     <script src="lib/angular-1.1.5.js"></script>
+    <script src="lib/angular-translate-0.9.4.js"></script>
+    <script src="lib/angular-translate-loader-static-files-0.1.2.js"></script>
     <script src="lib/bootstrap-3.0.0.js"></script>
     <script src="lib/proj4js-compressed.js"></script>
     <script src="lib/EPSG21781.js"></script>
-    <script src="lib/angular-translate-0.9.4.js"></script>
     <script>
       window.CLOSURE_NO_DEPS = true;
     </script>
@@ -49,33 +69,63 @@
     <script src="deps.js"></script>
     <script>
       goog.require('ga_catalogtree');
+      goog.require('ga_map');
     </script>
     <script>
       (function() {
         var module = angular.module('ga_catalogtree_example', [
-          'ga_catalogtree'
+          'ga_catalogtree',
+          'ga_map'
         ]);
 
+        module.controller('MapController', 
+          ['$scope', 'gaLayers', 
+          function($scope, gaLayers) {
+
+            var swissExtent = [485869.5728, 837076.5648, 76443.1884, 299941.7864];
+            var swissProjection = ol.proj.configureProj4jsProjection({
+              code: 'EPSG:21781',
+              extent: swissExtent
+            });
+
+            var resolutions = [650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0, 2.5,
+              2.0, 1.0, 0.5, 0.25, 0.1];
+
+            var map = new ol.Map({
+              controls: ol.control.defaults({
+                attribution: false
+              }),
+              renderer: ol.RendererHint.CANVAS,
+              view: new ol.View2D({
+                projection: swissProjection,
+                center: ol.extent.getCenter(swissExtent),
+                resolution: 500.0,
+                resolutions: resolutions
+              })
+            });
+
+            $scope.map = map;
+
+            gaLayers.loadForTopic('inspire');
+            gaLayers.getOlLayerById('ch.swisstopo.swissimage').then(function(layer) {
+              map.addLayer(layer);
+            });
+        }]);
+     
         module.controller('CatalogTreeController', ['$scope',
         '$http', function($scope, $http) {
-          /*
-            var templates = [
-              'components/catalogtree/example/s1.json',
-              'components/catalogtree/example/s2.json'
-            ];
-            */
             var templates = [
               'components/catalogtree/example/tree.json',
               'components/catalogtree/example/bigtree.json'
             ];
-            var curTemplate = 0;
+            var curTemplate = 1;
             $scope.switchCatalog = switchCatalog;
             $scope.switchCatalog();
 
             function switchCatalog() {
               var http = $http.get(templates[curTemplate]);
               http.success(function(data, status, header, config) {
-                  $scope.tree = data.results;
+                $scope.tree = data.results.root;
               });
               curTemplate = curTemplate === 0 ? 1 : 0;
            };
