@@ -8,7 +8,7 @@
   goog.require('ga_importkml');
   goog.require('ga_map');
   goog.require('ga_mouseposition');
-  goog.require('ga_permalinkpanel');
+  goog.require('ga_share');
   goog.require('ga_scaleline');
   goog.require('ga_topic');
   goog.require('ga_translation');
@@ -21,7 +21,7 @@
   goog.require('ga_importkml_controller');
   goog.require('ga_map_controller');
   goog.require('ga_mouseposition_controller');
-  goog.require('ga_permalinkpanel_controller');
+  goog.require('ga_share_controller');
   goog.require('ga_print_controller');
   goog.require('ga_translation_controller');
   goog.require('ga_topic_controller');
@@ -35,7 +35,7 @@
     'ga_importkml',
     'ga_map',
     'ga_mouseposition',
-    'ga_permalinkpanel',
+    'ga_share',
     'ga_scaleline',
     'ga_topic',
     'ga_translation',
@@ -46,7 +46,7 @@
     'ga_geolocation',
     'ga_map_controller',
     'ga_mouseposition_controller',
-    'ga_permalinkpanel_controller',
+    'ga_share_controller',
     'ga_print_controller',
     'ga_translation_controller',
     'ga_topic_controller',

@@ -1,18 +1,17 @@
 (function() {
-  goog.provide('ga_permalinkpanel_directive');
+  goog.provide('ga_share_directive');
 
-  var module = angular.module('ga_permalinkpanel_directive', []);
+  var module = angular.module('ga_share_directive', []);
 
-  module.directive('gaPermalinkPanel',
+  module.directive('gaShare',
       ['$http', 'gaPermalink',
         function($http, gaPermalink) {
           return {
             restrict: 'A',
             scope: {
-              options: '=gaPermalinkPanelOptions'
+              options: '=gaShareOptions'
             },
-            templateUrl: 'components/permalinkpanel/partials/' +
-                'permalinkpanel.html',
+            templateUrl: 'components/share/partials/share.html',
             link: function(scope, element, attrs) {
               var shortenUrl = scope.options.shortenUrl +
                   '?cb=JSON_CALLBACK';
