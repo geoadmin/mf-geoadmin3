@@ -6,7 +6,7 @@ describe('ga_map_service', function() {
 
     inject(function($injector) {
       $httpBackend = $injector.get('$httpBackend');
-      $httpBackend.whenJSONP('layers.json').respond({
+      $httpBackend.whenJSONP('').respond({
         layers: {
           foo: {
             type: 'wmts',
@@ -25,7 +25,7 @@ describe('ga_map_service', function() {
 
     inject(function($injector) {
       layers = $injector.get('gaLayers');
-      layers.loadForTopic('layers.json');
+      layers.loadForTopic('');
     });
   });
 
@@ -37,7 +37,7 @@ describe('ga_map_service', function() {
 
   describe('getOlLayerById', function() {
     it('returns layers with correct settings', function() {
-      $httpBackend.expectJSONP('layers.json');
+      $httpBackend.expectJSONP('');
       layers.getOlLayerById('foo').then(function(layer) {
         expect(layer instanceof ol.layer.TileLayer).to.be.ok();
         var source = layer.getSource();
@@ -53,7 +53,7 @@ describe('ga_map_service', function() {
 
   describe('getBackgroundLayers', function() {
     it('returns correct background layers information', function() {
-      $httpBackend.expectJSONP('layers.json');
+      $httpBackend.expectJSONP('');
       layers.getBackgroundLayers().then(function(backgroundLayers) {
         expect(backgroundLayers.length).to.be(1);
         expect(backgroundLayers[0].id).to.be('bar');

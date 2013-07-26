@@ -1,7 +1,11 @@
 (function() {
   goog.provide('ga_map_service');
 
-  var module = angular.module('ga_map_service', []);
+  goog.require('ga_translation');
+
+  var module = angular.module('ga_map_service', [
+    'ga_translation'
+  ]);
 
   module.provider('gaTileGrid', function() {
 
@@ -30,25 +34,39 @@
 
   module.provider('gaLayers', function() {
 
-    this.$get = ['$q', '$http', 'gaTileGrid', function($q, $http, gaTileGrid) {
+    this.$get = ['$q', '$http', '$translate', 'gaTileGrid',
+     function($q, $http, $translate, gaTileGrid) {
 
       var wmtsGetTileUrl = 'http://wmts.geo.admin.ch/1.0.0/{Layer}/default/' +
           '{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
 
+      var getTopicUrl = function(topicId, lang) {
+        return 'http://mf-chsdi30t.bgdi.admin.ch/rest/services/' +
+               topicId + '/MapServer/layersconfig?lang=' +
+               lang + '&callback=JSON_CALLBACK';
+      };
+
       var Layers = function() {
         var promise;
+        var lastTopicId;
 
         /**
          * Load layers for a given topic.
          */
-        this.loadForTopic = function(url) {
-          var deferred = $q.defer();
-          $http.jsonp(url).success(function(data, status) {
-            deferred.resolve(data);
-          }).error(function(data, status) {
-            deferred.reject();
-          });
-          promise = deferred.promise;
+        this.loadForTopic = function(topicId) {
+          if (lastTopicId != topicId) {
+            var deferred = $q.defer();
+            var url = getTopicUrl(topicId, $translate.uses());
+
+            $http.jsonp(url).success(function(data, status) {
+              deferred.resolve(data);
+            }).error(function(data, status) {
+              deferred.reject();
+            });
+
+            promise = deferred.promise;
+            lastTopicId = topicId;
+          }
         };
 
         /**
@@ -62,20 +80,21 @@
             var attribution = '&copy; Data: ' + layer.attribution;
             if (!angular.isDefined(olLayer)) {
               if (layer.type == 'wmts') {
+                var wmtsUrl = wmtsGetTileUrl.replace('{Layer}', id).
+                              replace('{Format}', layer.format);
+
                 olLayer = new ol.layer.TileLayer({
                   source: new ol.source.WMTS({
                     attributions: [
                       new ol.Attribution(attribution)
                     ],
                     dimensions: {
-                      'Time': layer.timestamps[0],
-                      'Format': layer.format,
-                      'Layer': id
+                      'Time': layer.timestamps[0]
                     },
                     projection: 'EPSG:21781',
                     requestEncoding: 'REST',
                     tileGrid: gaTileGrid.get(layer.resolutions),
-                    url: wmtsGetTileUrl.replace('{Layer}', id)
+                    url: wmtsUrl
                   })
                 });
                 layer.olLayer = olLayer;

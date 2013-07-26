@@ -33,7 +33,8 @@
               });
              }
 
-             scope.$on('gaTopicChange', function() {
+             scope.$on('gaTopicChange', function(event, topic) {
+              gaLayers.loadForTopic(topic.id);
               gaLayers.getBackgroundLayers().then(function(backgroundLayers) {
                 scope.backgroundLayers = backgroundLayers;
 
