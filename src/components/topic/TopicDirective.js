@@ -49,7 +49,7 @@
             var queryParams = gaPermalink.getParams();
             var found = scope.setActiveTopic(queryParams.topic);
             if (!found) {
-              // topic not set, fallback to 'geoadmin'
+              // topic not set, fallback to default
               scope.setActiveTopic(options.defaultTopicId);
             }
           }
