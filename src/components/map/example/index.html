@@ -31,12 +31,11 @@
   <script src="deps.js"></script>
   <script>
     goog.require('ga_map');
-    goog.require('ga_translation');
   </script>
   <script>
     (function() {
       var module = angular.module('ga_map_example', [
-        'ga_map', 'ga_translation'
+        'ga_map'
       ]);
 
       module.controller('MapController', ['$scope',

@@ -1,7 +1,11 @@
 (function() {
   goog.provide('ga_map_service');
 
-  var module = angular.module('ga_map_service', []);
+  goog.require('ga_translation');
+
+  var module = angular.module('ga_map_service', [
+    'ga_translation'
+  ]);
 
   module.provider('gaTileGrid', function() {
 
