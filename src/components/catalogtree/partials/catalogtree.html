@@ -12,7 +12,7 @@
       <div ng-click="toggle($event)">{{val.label}}</div>
       <ul ng-class="{closed: !val.selectedOpen}">
         <li ng-repeat="item in val.children">
-          <div ga-catalogtree val="item"></div>
+          <div ga-catalogtree val="item" ga-catalogtree-map="map"></div>
         </li>
       </ul>
     </div>

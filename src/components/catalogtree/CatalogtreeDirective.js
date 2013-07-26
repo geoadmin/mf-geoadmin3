@@ -17,7 +17,8 @@
           restrict: 'A',
           templateUrl: 'components/catalogtree/partials/catalogtree.html',
           scope: {
-            val: '='
+            val: '=',
+            map: '=gaCatalogtreeMap'
           },
           compile: function(tEl, tAttr) {
             var contents = tEl.contents().remove();
@@ -27,17 +28,9 @@
                 compiledContent = $compile(contents);
               }
               scope.gaLayers = gaLayers;
+              scope.getLegend = getLegend;
               scope.toggle = toggle;
               scope.switchLayer = switchLayer;
-
-              //FIXME jeg: this is the get the map. This should be passed
-              //into the directive directly. But I was not able to because of
-              //scope issues...therefore, I cheat for the moment.
-              var par = scope.$parent;
-              while (par && !scope.map) {
-                scope.map = par.map;
-                par = par.$parent;
-              }
 
               compiledContent(scope, function(clone, scope) {
                 iEl.append(clone);
