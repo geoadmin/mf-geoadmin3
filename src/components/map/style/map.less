@@ -3,6 +3,7 @@
     background-image: data-uri('mapbg.png');
 }
 
+@tabletTop: 60;
 @zoomBarTop: 153;
 @zoomBarRight: 20;
 @zoomBarWidth: 18;
@@ -12,6 +13,8 @@
     position: absolute;
     right: unit(@zoomBarRight, px);
     width: unit(@zoomBarWidth, px);
+}
+.ol-zoomslider {
     @media screen and (max-width: @screen-tablet) {
         display: none;
     }
@@ -35,6 +38,26 @@
 .ol-zoom-out {
     background-image: data-uri('zoom-minus-mini.png');
     bottom: 0;
+}
+@media screen and (max-width: @screen-tablet) {
+    .ol-zoom {
+        top: unit(@tabletTop + 50, px);
+        right: unit(@zoomBarRight - 13, px);
+        height: 94px;
+        width: 44px;
+    }
+    .ol-zoom-in, .ol-zoom-out {
+        width: 44px;
+        height: 44px;
+    }
+    .ol-zoom-in {
+        background-image: data-uri('zoomIn.png');
+    }
+
+    .ol-zoom-out {
+        background-image: data-uri('zoomOut.png');
+        bottom: 0;
+    }
 }
 
 .ol-zoomslider {
@@ -60,9 +83,9 @@
     background-image: data-uri('zoomToFullExtent.png');
     position: absolute;
     top: unit(@zoomBarTop + @zoomBarHeight + 43, px);
-    right: unit(@zoomBarRight - 14, px);
+    right: unit(@zoomBarRight - 13, px);
     @media screen and (max-width: @screen-tablet) {
-        top: 110px;
+        top: unit(@tabletTop + 150, px);
     }
 }
 .ol-zoom-extent a {
