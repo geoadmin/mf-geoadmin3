@@ -7,8 +7,8 @@
   ]);
 
   module.directive('gaMap',
-      ['$parse', '$timeout', 'gaPermalink', 'gaLayers',
-        function($parse, $timeout, gaPermalink, gaLayers) {
+      ['$parse', '$timeout', 'gaPermalink',
+        function($parse, $timeout, gaPermalink) {
           return {
             restrict: 'A',
             scope: {
@@ -54,10 +54,6 @@
 
               map.addControl(new ol.control.ZoomSlider());
               map.setTarget(element[0]);
-
-              scope.$on('gaTopicChange', function(event, topic) {
-                gaLayers.loadForTopic(topic.id);
-              });
             }
           };
         }]);
