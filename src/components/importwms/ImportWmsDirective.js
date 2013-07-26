@@ -79,7 +79,6 @@
 
            try {
              var result = parser.read($scope.fileContent);
-             $log.log(result);
 
              for (var i = 0, len = result.capability.layers.length;
                  i < len; i++) {
@@ -87,6 +86,13 @@
 
                // WMS layer with no name can't be added to the map
                if (layer.name) {
+                 var srsCode = $scope.map.getView().getProjection().getCode();
+
+                 // Set srsCompatible property
+                 layer.srsCompatible = (layer.srs &&
+                     (layer.srs[srsCode.toUpperCase()] ||
+                     layer.srs[srsCode.toLowerCase()]));
+
                  $scope.layers.push(layer);
                }
              }
@@ -120,7 +126,7 @@
          // Add the selected layer to the map
          $scope.addLayerSelected = function(getCapLayer) {
 
-           if (getCapLayer) {
+           if (getCapLayer && getCapLayer.srsCompatible) {
              $scope.layerSelected = getCapLayer;
            }
 
@@ -129,8 +135,11 @@
 
          // Add the hovered layer to the map
          $scope.addLayerHovered = function(getCapLayer) {
-           $scope.layerHovered = getCapLayer;
-           $scope.olLayerHovered = $scope.addLayer($scope.layerHovered);
+
+           if (getCapLayer && getCapLayer.srsCompatible) {
+             $scope.layerHovered = getCapLayer;
+             $scope.olLayerHovered = $scope.addLayer($scope.layerHovered);
+           }
          };
 
          // Remove layer hovered
@@ -150,7 +159,7 @@
              try {
                var extent = null;
                var layer = getCapLayer;
-               var srsCode = $scope.map.getView().getProjection().code_;
+               var srsCode = $scope.map.getView().getProjection().getCode();
 
                if (layer.bbox) {
 
@@ -161,22 +170,67 @@
                  }
                }
 
+               var olAttributions = [];
+
+               if (layer.attribution) {
+                 olAttributions.push(new ol.Attribution(
+                   '<a href="' + layer.attribution.href + '">' +
+                     ((layer.attribution.logo) ?
+                       '<img src="' + layer.attribution.logo.href +
+                          '" title="' + layer.attribution.title +
+                          '" alt="' + layer.attribution.title + '" />"' :
+                       layer.attribution.title) +
+                   '</a>'
+                 ));
+               }
+
                var olSource = new ol.source.SingleImageWMS({
                    params: {
                      'LAYERS': layer.name
                    },
                    url: $scope.fileUrl,
-                   extent: extent
+                   extent: extent,
+                   attributions: olAttributions
                });
-
                var olLayer = new ol.layer.ImageLayer({
                    source: olSource
                });
+//olLayer.source_.image_.on('change', function(evt){alert('imageLodaded');});
+
 
                $scope.map.addLayer(olLayer);
-               $scope.map.getView().getView2D()
-                   .fitExtent(extent, $scope.map.getSize());
 
+               var view2D = $scope.map.getView().getView2D();
+               var mapSize = $scope.map.getSize();
+               // If a minScale is defined
+               if (layer.minScale) {
+
+                 // We test if the layer extent specifies in the
+                 // getCapabilities fit the minScale value.
+                 var layerExtentScale =
+                   view2D.getResolutionForExtent(extent, mapSize) * 39.37 * 72;
+
+                 if (layerExtentScale > layer.minScale) {
+                   var layerExtentCenter = ol.extent.getCenter(extent);
+                   var factor = layerExtentScale / layer.minScale;
+                   var width = ol.extent.getWidth(extent) / factor;
+                   var height = ol.extent.getHeight(extent) / factor;
+                   extent = [
+                     layerExtentCenter[0] - width / 2,
+                     layerExtentCenter[0] + width / 2,
+                     layerExtentCenter[1] - height / 2,
+                     layerExtentCenter[1] + height / 2
+                   ];
+
+                   var res = view2D.constrainResolution(
+                       view2D.getResolutionForExtent(extent, mapSize), 0, -1);
+                   view2D.setCenter(layerExtentCenter);
+                   view2D.setResolution(res);
+                   return olLayer;
+                 }
+               }
+
+               view2D.fitExtent(extent, mapSize);
                return olLayer;
 
              } catch (e) {

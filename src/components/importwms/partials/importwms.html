@@ -9,7 +9,7 @@
     <table class="table-header table table-condensed">
      <thead>
         <tr>
-          <th class="add col-first">{{'add' | translate}}</th>
+          <th class="add col-first"></th>
           <th class="title">{{'title' | translate}}</th>
         </tr>
       </thead>
@@ -26,8 +26,14 @@
               {{($first) ? 'row-first ' : ''}}
               {{($parent.layerSelected.name == layer.name) ? 'success ' : ''}}  
               {{($parent.layerHovered.name == layer.name) ? 'pending ' : ''}}">   
-            <td class="add col-first">{{layer.add}}</td>
-            <td class="title">{{layer.title}}</td>
+            <td class="add col-first">
+              <div class="{{layer.srsCompatible ? 'icon-thumbs-up' :
+                  'icon-thumbs-down'}}">
+              </div>
+            </td>
+            <td class="title">
+              {{layer.title}}
+            </td>
           </tr>
         </tbody>
       </table>    
