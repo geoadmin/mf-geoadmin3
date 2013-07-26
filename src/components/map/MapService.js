@@ -87,7 +87,6 @@
                     dimensions: {
                       'Time': layer.timestamps[0]
                     },
-                    layer: id,
                     projection: 'EPSG:21781',
                     requestEncoding: 'REST',
                     tileGrid: gaTileGrid.get(layer.resolutions),
