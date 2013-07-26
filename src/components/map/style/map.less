@@ -61,6 +61,9 @@
     position: absolute;
     top: unit(@zoomBarTop + @zoomBarHeight + 43, px);
     right: unit(@zoomBarRight - 14, px);
+    @media screen and (max-width: @screen-tablet) {
+        top: 110px;
+    }
 }
 .ol-zoom-extent a {
     width: 44px;
