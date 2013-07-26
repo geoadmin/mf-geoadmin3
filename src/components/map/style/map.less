@@ -3,7 +3,7 @@
     background-image: data-uri('mapbg.png');
 }
 
-@zoomBarTop: 125;
+@zoomBarTop: 153;
 @zoomBarRight: 20;
 @zoomBarWidth: 18;
 @zoomBarHeight: 150;
@@ -57,13 +57,13 @@
 }
 
 .ol-zoom-extent {
-    background-image: data-uri('zoom-world-mini.png');
+    background-image: data-uri('zoomToFullExtent.png');
     position: absolute;
-    top: unit(@zoomBarTop + @zoomBarHeight + 45, px);
-    right: unit(@zoomBarRight, px);
+    top: unit(@zoomBarTop + @zoomBarHeight + 43, px);
+    right: unit(@zoomBarRight - 14, px);
 }
 .ol-zoom-extent a {
-    width: 18px;
-    height: 18px;
+    width: 44px;
+    height: 44px;
     display: block;
 }
