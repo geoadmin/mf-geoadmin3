@@ -192,11 +192,10 @@
             <div class="accordion-inner" ng-controller="GaCatalogtreeController">
               <div class="catalog ga-catalogtree-node">
                 <ul>
-                  <li class="ga-catalogtree-node" ng-repeat="item in tree.children">
-                    <div ga-catalogtree val="item" ga-catalogtree-map="map"</div>
+                  <li ng-repeat="child in tree.children">
+                    <div ga-catalogtree ga-catalogtree-item="child" ga-catalogtree-map="map"</div>
                   </li>
                 </ul>
-                <!-- <div id="catalogtree" ga-catalogtree val="tree"></div> -->
               </div>
             </div>
           </div>

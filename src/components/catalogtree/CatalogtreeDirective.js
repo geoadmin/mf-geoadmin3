@@ -17,7 +17,7 @@
           restrict: 'A',
           templateUrl: 'components/catalogtree/partials/catalogtree.html',
           scope: {
-            val: '=',
+            item: '=gaCatalogtreeItem',
             map: '=gaCatalogtreeMap'
           },
           compile: function(tEl, tAttr) {
@@ -42,11 +42,11 @@
   );
 
   function switchLayer() {
-    var id = this.val.idBod,
+    var item = this.item,
         map = this.map;
     if (map) {
-      if (this.val.selectedOpen) {
-        this.gaLayers.getOlLayerById(id).then(function(layer) {
+      if (item.selectedOpen) {
+        this.gaLayers.getOlLayerById(item.idBod).then(function(layer) {
           if (layer) {
             map.getLayers().push(layer);
           } else {
@@ -56,7 +56,7 @@
         });
       } else {
         map.getLayers().forEach(function(l) {
-          if (l.get('layerId') == id) {
+          if (l.get('layerId') == item.idBod) {
             map.removeLayer(l);
           }
         });
@@ -65,7 +65,7 @@
   }
 
   function toggle(ev) {
-    this.val.selectedOpen = !this.val.selectedOpen;
+    this.item.selectedOpen = !this.item.selectedOpen;
     ev.preventDefault();
     ev.stopPropagation();
   };
