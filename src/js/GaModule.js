@@ -4,7 +4,7 @@
 
   goog.require('ga_attribution');
   goog.require('ga_backgroundlayerselector');
-  goog.require('ga_contextmenu');
+  goog.require('ga_contextpopup');
   goog.require('ga_importkml');
   goog.require('ga_map');
   goog.require('ga_mouseposition');
@@ -26,12 +26,12 @@
   goog.require('ga_translation_controller');
   goog.require('ga_topic_controller');
   goog.require('ga_feedback_controller');
-  goog.require('ga_contextmenu_controller');
+  goog.require('ga_contextpopup_controller');
 
   var module = angular.module('ga', [
     'ga_attribution',
     'ga_backgroundlayerselector',
-    'ga_contextmenu',
+    'ga_contextpopup',
     'ga_importkml',
     'ga_map',
     'ga_mouseposition',
@@ -51,7 +51,7 @@
     'ga_translation_controller',
     'ga_topic_controller',
     'ga_feedback_controller',
-    'ga_contextmenu_controller'
+    'ga_contextpopup_controller'
   ]);
 
   module.config(['$translateProvider', function($translateProvider) {

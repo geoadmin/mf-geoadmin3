@@ -1,4 +1,4 @@
-describe('ga_contextmenu_directive', function() {
+describe('ga_contextpopup_directive', function() {
 
   var element;
   var handlers = {};
@@ -6,7 +6,7 @@ describe('ga_contextmenu_directive', function() {
   beforeEach(function() {
     element = angular.element(
       '<div>' +
-        '<div ga-context-menu ga-context-menu-map="map" ga-context-menu-options="options"></div>' +
+        '<div ga-context-popup ga-context-popup-map="map" ga-context-popup-options="options"></div>' +
       '</div>');
 
     inject(function($rootScope, $compile) {
@@ -33,7 +33,7 @@ describe('ga_contextmenu_directive', function() {
     expect(tds.length).to.be(11);
   });
 
-  describe('ga_contextmenu_directive handling of menucontext', function() {
+  describe('ga_contextpopup_directive handling of popupcontext', function() {
     var contextmenuEvent;
     var $httpBackend;
     var $timeout;

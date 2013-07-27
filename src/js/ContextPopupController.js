@@ -1,9 +1,9 @@
 (function() {
-  goog.provide('ga_contextmenu_controller');
+  goog.provide('ga_contextpopup_controller');
 
-  var module = angular.module('ga_contextmenu_controller', []);
+  var module = angular.module('ga_contextpopup_controller', []);
 
-  module.controller('GaContextMenuController',
+  module.controller('GaContextPopupController',
       ['$scope', 'gaGlobalOptions', function($scope, gaGlobalOptions) {
         $scope.options = {
           heightUrl: gaGlobalOptions.serviceUrl + "/rest/services/height",
