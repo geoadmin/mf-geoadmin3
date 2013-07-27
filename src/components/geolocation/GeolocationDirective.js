@@ -1,10 +1,13 @@
 (function() {
   goog.provide('ga_geolocation_directive');
 
+  goog.require('ga_permalink');
+
   var module = angular.module('ga_geolocation_directive', [
   ]);
 
-  module.directive('gaGeolocation', ['$parse', function($parse) {
+  module.directive('gaGeolocation', ['$parse', 'gaPermalink',
+        function($parse, gaPermalink) {
     return {
       restrict: 'A',
       scope: {
@@ -15,11 +18,14 @@
       link: function(scope, element, attrs) {
         var map = scope.map;
         var view = map.getView().getView2D();
+        var tracking = gaPermalink.getParams().geolocation == 'true';
+        if (tracking) {
+            element.addClass('tracking');
+        }
         var geolocation = new ol.Geolocation({
           tracking: true
         });
         geolocation.bindTo('projection', map.getView());
-        var tracking = false;
         var first = true;
         var locate = function(dest) {
           if (dest) {
@@ -91,6 +97,7 @@
             locate(geolocation.getPosition());
             tracking = true;
           }
+          gaPermalink.updateParams({geolocation: tracking ? 'true' : 'false'});
         }
         )}
     };
