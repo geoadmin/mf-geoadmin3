@@ -1,11 +1,11 @@
-describe('ga_permalinkpanel_directive', function() {
+describe('ga_share_directive', function() {
 
   var element;
 
   beforeEach(function() {
 
     element = angular.element(
-      '<div ga-permalink-panel ga-permalink-panel-options="options"></div>');
+      '<div ga-share ga-share-options="options"></div>');
 
     inject(function($rootScope, $compile) {
       $rootScope.options = {
