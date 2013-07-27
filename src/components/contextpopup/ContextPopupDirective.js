@@ -1,9 +1,9 @@
 (function() {
-  goog.provide('ga_contextmenu_directive');
+  goog.provide('ga_contextpopup_directive');
 
-  var module = angular.module('ga_contextmenu_directive', []);
+  var module = angular.module('ga_contextpopup_directive', []);
 
-  module.directive('gaContextMenu',
+  module.directive('gaContextPopup',
       ['$http', '$q', '$timeout', 'gaPermalink',
         function($http, $q, $timeout, gaPermalink) {
           var lv03tolv95Url =
@@ -11,10 +11,10 @@
           return {
             restrict: 'A',
             replace: true,
-            templateUrl: 'components/contextmenu/partials/contextmenu.html',
+            templateUrl: 'components/contextpopup/partials/contextpopup.html',
             scope: {
-              map: '=gaContextMenuMap',
-              options: '=gaContextMenuOptions'
+              map: '=gaContextPopupMap',
+              options: '=gaContextPopupOptions'
             },
             link: function(scope, element, attrs) {
               var heightUrl = scope.options.heightUrl;
@@ -81,7 +81,7 @@
               // Listen to contextmenu events from the map.
               map.on('contextmenu', handler);
 
-              // On touch devices, display the context menu after a
+              // On touch devices, display the context popup after a
               // long press (750ms)
               var startPixel, holdPromise;
               map.on('touchstart', function(event) {
