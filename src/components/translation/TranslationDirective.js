@@ -7,7 +7,8 @@
   ]);
 
   module.directive('gaTranslationSelector',
-      ['$translate', 'gaPermalink', function($translate, gaPermalink) {
+      ['$rootScope', '$translate', 'gaPermalink',
+        function($rootScope, $translate, gaPermalink) {
         return {
           restrict: 'A',
           replace: true,
@@ -26,6 +27,7 @@
                 scope.lang = scope.options.fallbackCode;
               });
               gaPermalink.updateParams({lang: value});
+              $rootScope.$broadcast('gaLanguageChange', value);
             });
 
             var params = gaPermalink.getParams();
