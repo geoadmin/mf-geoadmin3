@@ -121,9 +121,9 @@
            $scope.userMessage = $translate('parsing_file');
            $scope.progress = 80;
 
-          
+
            try {
-             
+
              // Create the Parser the KML file
              var kmlParser = new ol.parser.KML({
                maxDepth: 1,
