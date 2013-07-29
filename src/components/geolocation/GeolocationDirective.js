@@ -97,7 +97,10 @@
             locate(geolocation.getPosition());
             tracking = true;
           }
-          gaPermalink.updateParams({geolocation: tracking ? 'true' : 'false'});
+          scope.$apply(function() {
+            gaPermalink.updateParams(
+              {geolocation: tracking ? 'true' : 'false'});
+          });
         }
         )}
     };
