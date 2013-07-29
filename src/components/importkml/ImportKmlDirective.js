@@ -202,8 +202,8 @@
   }]);
 
   module.directive('gaImportKml',
-      ['$http', '$log', '$translate', 'gaBrowserSniffer',
-       function($http, $log, $translate, gaBrowserSniffer) {
+      ['$http', '$log', '$compile', '$translate', 'gaBrowserSniffer',
+       function($http, $log, $compile, $translate, gaBrowserSniffer) {
          return {
            retsrict: 'A',
            templateUrl: 'components/importkml/partials/importkml.html',
@@ -255,8 +255,12 @@
                // Register drag'n'drop events on <body>
                var dropZone = angular.element(
                    '<div class="import-kml-drop-zone">' +
-                   '  <div>' + $translate('drop_me_here') + '</div>' +
+                   '  <div>{{"drop_me_here" | translate}}</div>' +
                    '</div>');
+
+               // We use $compile only for the translation,
+               // $translate("drop_me_here") didn't work in prod mode
+               $compile(dropZone)(scope);
 
                var dragEnterZone = angular.element(document.body);
                dragEnterZone.append(dropZone);
