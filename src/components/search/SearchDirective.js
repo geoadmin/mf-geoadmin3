@@ -65,7 +65,7 @@
                });
              };
 
-             $(element).find('input').typeahead({
+            var taElt = $(element).find('input').typeahead({
                //header: '<div>This is a header</div>',
                name: config.name,
                cache: true,
@@ -116,6 +116,12 @@
                   }
                 }
              });
+
+            var test = $(taElt).data('ttView').dropdownView;
+            test.on('suggestionsRendered', function(evt) {
+                $compile(angular.element('.tt-suggestions'))(scope);
+            });
+
            }
          };
        }]);
