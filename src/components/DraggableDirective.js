@@ -4,18 +4,18 @@
   var module = angular.module('ga_draggable_directive', []);
 
   /**
-   * Directive to make an HTML element draggable. 
+   * Directive to make an HTML element draggable.
    *
    * Usage:
    *   <div ga-draggable=".header">
    *     <div class="header"></div>
-   *     <div class="content"></div> 
+   *     <div class="content"></div>
    *   </div>
-   * 
-   * You can put a CSS selector in the value of the directive to specify 
+   *
+   * You can put a CSS selector in the value of the directive to specify
    * a draggable zone, otherwise the entire element is the draggable zone.
    *
-   */ 
+   */
   module.directive('gaDraggable', ['$document', function($document) {
     return function(scope, element, attr) {
       var startX = 0, startY = 0, x = null, y = null;
@@ -23,11 +23,11 @@
       // Firefox doesn't like transition during drag
       element.addClass('ga-draggable');
       element.css({position: 'absolute'});
-     
+
       var dragZone = (attr['gaDraggable'] != '') ?
           element.find(attr['gaDraggable']) :
           element;
-      
+
       if (!dragZone || dragZone.length == 0) {
         dragZone = element;
       }
