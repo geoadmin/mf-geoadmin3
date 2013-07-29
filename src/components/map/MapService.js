@@ -49,23 +49,21 @@
       var Layers = function() {
         var promise;
         var me = this;
-        var currentTopic;
-        var currentLang;
+        var currentTopicId;
 
         /**
          * Load layers for a given topic and a specific language.
          */
-        this.loadForTopic = function(topic, lang) {
-          if (typeof ẗopic === 'undefined') {
-            topic = 'inspire';
+        this.loadForTopic = function(topicId, lang) {
+          if (!angular.isDefined(topicId)) {
+            topicId = 'inspire';
           }
-          if (typeof lang === 'undefined') {
-            lang = $translate.preferredLanguage();
+          if (!angular.isDefined(lang)) {
+            lang = $translate.uses();
           }
-          this.currentTopic = topic;
-          this.currentLang = lang;
+          this.currentTopicId = topicId;
           var deferred = $q.defer();
-          var url = getTopicUrl(topic, lang);
+          var url = getTopicUrl(topicId, lang);
 
           $http.jsonp(url).success(function(data, status) {
             deferred.resolve(data);
@@ -78,11 +76,11 @@
         };
 
         $rootScope.$on('gaTopicChange', function(event, topic) {
-          me.loadForTopic(topic, me.currentLang);
+          me.loadForTopic(topic.id);
         });
 
         $rootScope.$on('gaLanguageChange', function(event, lang) {
-          me.loadForTopic(me.currentTopic, lang);
+          me.loadForTopic(me.currentTopicId, lang);
         });
 
         /**
