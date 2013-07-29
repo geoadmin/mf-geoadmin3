@@ -121,27 +121,29 @@
            $scope.userMessage = $translate('parsing_file');
            $scope.progress = 80;
 
-           // Create the Parser the KML file
-           var kmlParser = new ol.parser.KML({
-             maxDepth: 1,
-             dimension: 2,
-             extractStyles: true,
-             extractAttributes: true
-           });
-
-
-           // Create vector layer
-           var vector = new ol.layer.Vector({
-             source: new ol.source.Vector({
-               parser: kmlParser,
-               data: $scope.fileContent
-             })
-           });
-
-           // Add the layer
-           $scope.map.addLayer(vector);
-
+          
            try {
+             
+             // Create the Parser the KML file
+             var kmlParser = new ol.parser.KML({
+               maxDepth: 1,
+               dimension: 2,
+               extractStyles: true,
+               extractAttributes: true
+             });
+
+
+             // Create vector layer
+             var vector = new ol.layer.Vector({
+               source: new ol.source.Vector({
+                 parser: kmlParser,
+                 data: $scope.fileContent
+               })
+             });
+
+             // Add the layer
+             $scope.map.addLayer(vector);
+
              $scope.userMessage = $translate('parse_succeeded');
              $scope.progress += 20;
              $scope.map.on('click', function(evt) {
