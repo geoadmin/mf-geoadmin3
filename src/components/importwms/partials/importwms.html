@@ -4,6 +4,7 @@
     placeholder="{{'choose_wms_url' | translate}}" ng-model="fileUrl" required />
     <div class="open-wms-list icon-collapse"></div>
     <button type="button" class="btn btn-primary bt-connect" ng-click="handleFileUrl()">{{'connect' | translate}}</button>
+    <div>{{wmsConstraintsMessage}}</div>
   </form>
   <div class="tables-container">
     <table class="table-header table table-condensed">

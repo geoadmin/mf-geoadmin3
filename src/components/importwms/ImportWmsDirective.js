@@ -1,10 +1,7 @@
 (function() {
   goog.provide('ga_importwms_directive');
 
-//  goog.require('ga_browsersniffer_service');
-
   var module = angular.module('ga_importwms_directive', [
-  //  'ga_browsersniffer_service',
     'pascalprecht.translate'
   ]);
 
@@ -37,9 +34,12 @@
 
              if (idx === -1) {
                url += '?';
+             } else if (!/\?$/.test(url) && !/&$/.test(url)) {
+               url += '&';
              }
 
-             url += 'SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0';
+             url += $scope.options.defaultGetCapParams;
+
 
              // Kill the current uploading
              $scope.cancel();
@@ -68,7 +68,7 @@
          $scope.displayFileContent = function() {
            $scope.userMessage = $translate('parsing_file');
            $scope.progress = 80;
-
+           
            // The layerXXXX properties use layer objects from the parsing of
            // a  GetCapabilities file, not ol layer object
            $scope.layers = [];
@@ -79,6 +79,10 @@
 
            try {
              var result = parser.read($scope.fileContent);
+             $scope.wmsConstraintsMessage = (result.service.maxWidth) ? 
+                 $translate('wms_max_size_allowed') + ' ' + result.service.maxWidth +
+                 ' * ' + result.service.maxHeight :
+                 ''; 
 
              for (var i = 0, len = result.capability.layers.length;
                  i < len; i++) {
@@ -101,8 +105,9 @@
              $scope.progress += 20;
 
            } catch (e) {
-             $scope.userMessage = $translate('parse_failed') + e.message;
-             $scope.progress = 0;
+               $scope.userMessage = $translate('parse_failed') + e.message;
+               $scope.progress = 0;
+               $log.log($scope.userMessage);
            }
          };
 
@@ -133,10 +138,11 @@
            $scope.addLayer($scope.layerSelected);
          };
 
-         // Add the hovered layer to the map
+         // Add the hovered layer to the map, only if the uesr hasn't selected a
+         // layer yet
          $scope.addLayerHovered = function(getCapLayer) {
 
-           if (getCapLayer && getCapLayer.srsCompatible) {
+           if (!$scope.layerSelected && getCapLayer && getCapLayer.srsCompatible) {
              $scope.layerHovered = getCapLayer;
              $scope.olLayerHovered = $scope.addLayer($scope.layerHovered);
            }
@@ -144,7 +150,7 @@
 
          // Remove layer hovered
          $scope.removeLayerHovered = function() {
-           if ($scope.olLayerHovered) {
+           if (!$scope.layerSelected && $scope.olLayerHovered) {
              $scope.map.removeLayer($scope.olLayerHovered);
              $scope.layerHovered = null;
              $scope.olLayerHovered = null;
@@ -170,10 +176,10 @@
                  }
                }
 
-               var olAttributions = [];
+               var olAttributions = null;
 
                if (layer.attribution) {
-                 olAttributions.push(new ol.Attribution(
+                 olAttributions = [new ol.Attribution(
                    '<a href="' + layer.attribution.href + '">' +
                      ((layer.attribution.logo) ?
                        '<img src="' + layer.attribution.logo.href +
@@ -181,7 +187,7 @@
                           '" alt="' + layer.attribution.title + '" />"' :
                        layer.attribution.title) +
                    '</a>'
-                 ));
+                 )];
                }
 
                var olSource = new ol.source.SingleImageWMS({
@@ -202,10 +208,11 @@
 
                var view2D = $scope.map.getView().getView2D();
                var mapSize = $scope.map.getSize();
+              
                // If a minScale is defined
                if (layer.minScale) {
 
-                 // We test if the layer extent specifies in the
+                 // We test if the layer extent specified in the
                  // getCapabilities fit the minScale value.
                  var layerExtentScale =
                    view2D.getResolutionForExtent(extent, mapSize) * 39.37 * 72;
@@ -236,6 +243,7 @@
              } catch (e) {
                $scope.userMessage = $translate('add_wms_layer_failed') +
                    e.message;
+               $log.log($scope.userMessage);
                return null;
              }
            }
