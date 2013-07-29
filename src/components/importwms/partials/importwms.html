@@ -21,8 +21,7 @@
           <tr ng-repeat="layer in layers | orderBy:'title'" 
               ng-mouseover="addLayerHovered(layer)" 
               ng-mouseleave="removeLayerHovered()"
-              ng-click="$parent.layerSelected = (($parent.layerSelected.name ==
-              layer.name) ? null : layer)"
+              ng-click="toggleLayerSelected(layer)"
               class="
               {{($first) ? 'row-first ' : ''}}
               {{($parent.layerSelected.name == layer.name) ? 'success ' : ''}}  

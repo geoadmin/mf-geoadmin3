@@ -68,7 +68,7 @@
          $scope.displayFileContent = function() {
            $scope.userMessage = $translate('parsing_file');
            $scope.progress = 80;
-           
+
            // The layerXXXX properties use layer objects from the parsing of
            // a  GetCapabilities file, not ol layer object
            $scope.layers = [];
@@ -79,10 +79,11 @@
 
            try {
              var result = parser.read($scope.fileContent);
-             $scope.wmsConstraintsMessage = (result.service.maxWidth) ? 
-                 $translate('wms_max_size_allowed') + ' ' + result.service.maxWidth +
-                 ' * ' + result.service.maxHeight :
-                 ''; 
+             $scope.wmsConstraintsMessage = (result.service.maxWidth) ?
+                 $translate('wms_max_size_allowed') + ' ' +
+                   result.service.maxWidth +
+                   ' * ' + result.service.maxHeight :
+                 '';
 
              for (var i = 0, len = result.capability.layers.length;
                  i < len; i++) {
@@ -133,16 +134,16 @@
 
            if (getCapLayer && getCapLayer.srsCompatible) {
              $scope.layerSelected = getCapLayer;
+             $scope.addLayer($scope.layerSelected);
            }
-
-           $scope.addLayer($scope.layerSelected);
          };
 
          // Add the hovered layer to the map, only if the uesr hasn't selected a
          // layer yet
          $scope.addLayerHovered = function(getCapLayer) {
 
-           if (!$scope.layerSelected && getCapLayer && getCapLayer.srsCompatible) {
+           if (!$scope.layerSelected && getCapLayer &&
+               getCapLayer.srsCompatible) {
              $scope.layerHovered = getCapLayer;
              $scope.olLayerHovered = $scope.addLayer($scope.layerHovered);
            }
@@ -156,6 +157,25 @@
              $scope.olLayerHovered = null;
            }
          };
+         
+         $scope.toggleLayerSelected = function(getCapLayer) {
+           if (!$scope.layerSelected) {
+             // $scope.removeLayerHovered();
+             
+             //$scope.addLayerSelected(getCapLayer;
+             $scope.layerSelected = getCapLayer;
+
+           } else if ($scope.layerSelected.name == getCapLayer.name) {
+             $scope.layerSelected = null;
+           
+           } else { // Another layer has been selected
+             $scope.layerSelected = null;
+             $scope.removeLayerHovered();
+             $scope.addLayerHovered(getCapLayer);
+             $scope.layerSelected = getCapLayer;
+           }
+           
+         }
 
          // Add a layer from GetCapabilities object to the map
          $scope.addLayer = function(getCapLayer) {
@@ -195,8 +215,8 @@
                      'LAYERS': layer.name
                    },
                    url: $scope.fileUrl,
-                   extent: extent,
-                   attributions: olAttributions
+                   extent: extent
+                   //attributions: olAttributions
                });
                var olLayer = new ol.layer.ImageLayer({
                    source: olSource
@@ -208,9 +228,9 @@
 
                var view2D = $scope.map.getView().getView2D();
                var mapSize = $scope.map.getSize();
-              
+
                // If a minScale is defined
-               if (layer.minScale) {
+               if (layer.minScale && extent) {
 
                  // We test if the layer extent specified in the
                  // getCapabilities fit the minScale value.
@@ -235,9 +255,11 @@
                    view2D.setResolution(res);
                    return olLayer;
                  }
+               } 
+ 
+               if (extent) {
+                 view2D.fitExtent(extent, mapSize);
                }
-
-               view2D.fitExtent(extent, mapSize);
                return olLayer;
 
              } catch (e) {
