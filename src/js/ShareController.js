@@ -7,7 +7,9 @@
       ['$scope', 'gaGlobalOptions', function($scope, gaGlobalOptions) {
         $scope.options = {
           shortenUrl: gaGlobalOptions.serviceUrl
-              + '/shorten.json'
+              + '/shorten.json',
+          qrcodegeneratorPath: gaGlobalOptions.baseUrlPath
+              + '/qrcodegenerator'
         };
       }]);
 

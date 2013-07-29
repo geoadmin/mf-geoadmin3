@@ -15,6 +15,7 @@
             link: function(scope, element, attrs) {
               var shortenUrl = scope.options.shortenUrl +
                   '?cb=JSON_CALLBACK';
+              scope.qrcodegeneratorPath = scope.options.qrcodegeneratorPath;
 
               $('.share-icon').tooltip({
                 placement: 'bottom'
