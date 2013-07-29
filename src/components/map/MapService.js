@@ -34,8 +34,8 @@
 
   module.provider('gaLayers', function() {
 
-    this.$get = ['$q', '$http', '$translate', 'gaTileGrid',
-     function($q, $http, $translate, gaTileGrid) {
+    this.$get = ['$q', '$http', '$translate', '$rootScope', 'gaTileGrid',
+     function($q, $http, $translate, $rootScope, gaTileGrid) {
 
       var wmtsGetTileUrl = 'http://wmts.geo.admin.ch/1.0.0/{Layer}/default/' +
           '{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
@@ -48,35 +48,42 @@
 
       var Layers = function() {
         var promise;
-        var lastTopicId;
+        var me = this;
+        var currentTopic;
+        var currentLang;
 
         /**
-         * Load layers for a given topic.
+         * Load layers for a given topic and a specific language.
          */
-        this.loadForTopic = function(topicId) {
-          if (lastTopicId != topicId) {
-            var deferred = $q.defer();
-            var url = getTopicUrl(topicId, $translate.uses());
-
-            $http.jsonp(url).success(function(data, status) {
-              deferred.resolve(data);
-            }).error(function(data, status) {
-              deferred.reject();
-            });
-
-            promise = deferred.promise;
-            lastTopicId = topicId;
+        this.loadForTopic = function(topic, lang) {
+          if (typeof ẗopic === 'undefined') {
+            topic = 'inspire';
           }
+          if (typeof lang === 'undefined') {
+            lang = $translate.preferredLanguage();
+          }
+          this.currentTopic = topic;
+          this.currentLang = lang;
+          var deferred = $q.defer();
+          var url = getTopicUrl(topic, lang);
+
+          $http.jsonp(url).success(function(data, status) {
+            deferred.resolve(data);
+            $rootScope.$broadcast('gaLayersChange', data);
+          }).error(function(data, status) {
+            deferred.reject();
+          });
+
+          promise = deferred.promise;
         };
 
-        /**
-         * Reload topics (e.g. for a language change)
-         */
-        this.reloadTopic = function() {
-          var loadedTopic = lastTopicId;
-          lastTopicId = '';
-          this.loadForTopic(loadedTopic);
-        };
+        $rootScope.$on('gaTopicChange', function(event, topic) {
+          me.loadForTopic(topic, me.currentLang);
+        });
+
+        $rootScope.$on('gaLanguageChange', function(event, lang) {
+          me.loadForTopic(me.currentTopic, lang);
+        });
 
         /**
          * Return an ol.layer.Layer object for a layer id.

@@ -32,26 +32,14 @@
                 gaPermalink.updateParams({bgLayer: layerId});
               });
              }
-
-             function onTriggeredChange() {
+             scope.$on('gaLayersChange', function(event, data) {
                gaLayers.getBackgroundLayers().then(function(backgroundLayers) {
-                scope.backgroundLayers = backgroundLayers;
-
-                var queryParams = gaPermalink.getParams();
-                scope.currentLayer = (queryParams.bgLayer !== undefined) ?
-                   queryParams.bgLayer : backgroundLayers[0].id;
+                 scope.backgroundLayers = backgroundLayers;
+                 var queryParams = gaPermalink.getParams();
+                 scope.currentLayer = (queryParams.bgLayer !== undefined) ?
+                  queryParams.bgLayer : backgroundLayers[0].id;
                 setCurrentLayer(scope.currentLayer);
                });
-            }
-
-             scope.$on('gaTopicChange', function(event, topic) {
-              gaLayers.loadForTopic(topic.id);
-              onTriggeredChange();
-             });
-
-             scope.$on('gaLanguageChange', function() {
-               gaLayers.reloadTopic();
-               onTriggeredChange();
              });
 
              scope.$watch('currentLayer', function(newVal, oldVal) {
