@@ -51,7 +51,7 @@
             map.getLayers().push(layer);
           } else {
             //FIXME: better error handling
-            alert('Layer is not defined by the servie');
+            alert('The chosen Layer is not defined by the gaLayers service.');
           }
         });
       } else {
@@ -67,12 +67,12 @@
   function toggle(ev) {
     this.item.selectedOpen = !this.item.selectedOpen;
     ev.preventDefault();
-    ev.stopPropagation();
+//    ev.stopPropagation();
   };
 
   function getLegend(ev, bodid) {
     alert(bodid);
     ev.preventDefault();
-    ev.stopPropagation();
+//    ev.stopPropagation();
   };
 })();
