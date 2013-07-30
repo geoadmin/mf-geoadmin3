@@ -25,12 +25,10 @@
           <a href="#feedback" data-toggle="modal" translate>problem_announcement</a>
           <div ng-controller="GaTranslationController">
             <div ga-translation-selector
-                 ga-translation-selector-options="options"></div>
+              ga-translation-selector-options="options"></div>
           </div>
-          <div>
-            <div ga-background-layer-selector
-                 ga-background-layer-selector-map="map"></div>
-          </div>
+          <div ga-background-layer-selector
+            ga-background-layer-selector-map="map"></div>
         </form>
 % endif
       </div>
@@ -156,17 +154,12 @@
           </div>
           <div id="impressum" class="collapse">
             <div class="accordion-inner">
-              <form>
-                <div ng-controller="GaTranslationController">
-                  <div ga-translation-selector
-                      ga-translation-selector-options="options"></div>
-                </div>
-                <div ng-controller="GaBackgroundLayerSelectorController">
-                  <div ga-background-layer-selector
-                      ga-background-layer-selector-map="map"
-                      ga-background-layer-selector-options="options"></div>
-                </div>
-              </form>
+              <div ng-controller="GaTranslationController">
+                <div ga-translation-selector
+                  ga-translation-selector-options="options"></div>
+              </div>
+              <div ga-background-layer-selector
+                ga-background-layer-selector-map="map"></div>
             <hr>
             <div ga-attribution ga-attribution-map="map"></div>
             <p>
@@ -205,11 +198,9 @@
               <button type="button" class="close" data-dismiss="modal">x</button>
               <h4 class="modal-title" translate>problem_announcement</h4>
             </div>
-            <div class="modal-body">
-              <div ga-feedback
-                ga-feedback-options="options"
-                ga-feedback-response="response"></div>
-            </div>
+            <div ga-feedback
+              ga-feedback-options="options"
+              ga-feedback-response="response"></div>
           </div>
         </div>
       </div>

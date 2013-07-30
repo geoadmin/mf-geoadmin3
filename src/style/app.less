@@ -45,6 +45,9 @@
             margin: .4em 0 0;
         }
     }
+    select {
+        width: auto;
+    }
 }
 
 #logo {
@@ -231,7 +234,6 @@
     }
 }
 
-
 .theme-toggle {
     float: right;
     position: relative;
@@ -256,30 +258,21 @@
     text-align: left;
 }
 
+// ****** MODAL
 .modal {
     overflow: auto;
     outline: none;
     textarea {
         resize: vertical;
     }
-    .modal-header {
-        .border-top-radius(6px);
-    }
 }
+
 .non-modal {
     display: none;
 }
 
 .modal-dialog {
     padding-top: 150px;
-}
-
-.modal-body {
-    .modal-footer {
-        padding-bottom: 0;
-	margin-right: -20px;
-	margin-left: -20px;
-    }
 }
 
 #feedback-success .modal-header {
