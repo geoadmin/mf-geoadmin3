@@ -96,8 +96,8 @@
           map.getLayers().push(olLayer);
         } else if (doAlert) {
           //FIXME: better error handling
-          var msg = 'The desired Layer is not defined by the gaLayers service ('
-                    + id + ').';
+          var msg = 'The desired Layer is not defined ' +
+                    'by the gaLayers service (' + id + ').';
           alert(msg);
         }
       });
@@ -111,5 +111,4 @@
     }
   };
 
- 
 })();
