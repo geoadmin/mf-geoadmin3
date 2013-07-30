@@ -11,11 +11,7 @@
         
         $scope.$on('gaTopicChange', function(event, topic) {
           //FIXME: we shouldn't use this topicToUse...sync topics with service
-          var topicToUse = topic.id;
-          if (topicToUse == 'geoadmin') {
-            topicToUse = 'ech';
-          }
-          var http = $http.jsonp(topicUrlBase + topicToUse + '/CatalogServer?callback=JSON_CALLBACK', {
+          var http = $http.jsonp(topicUrlBase + topic.id + '/CatalogServer?callback=JSON_CALLBACK', {
             params: {
               //FIXME: language should come from context!
               'lang': 'en'
