@@ -25,12 +25,10 @@
           <a href="#feedback" data-toggle="modal" translate>problem_announcement</a>
           <div ng-controller="GaTranslationController">
             <div ga-translation-selector
-                 ga-translation-selector-options="options"></div>
+              ga-translation-selector-options="options"></div>
           </div>
-          <div>
-            <div ga-background-layer-selector
-                 ga-background-layer-selector-map="map"></div>
-          </div>
+          <div ga-background-layer-selector
+            ga-background-layer-selector-map="map"></div>
         </form>
 % endif
       </div>
@@ -156,17 +154,12 @@
           </div>
           <div id="impressum" class="collapse">
             <div class="accordion-inner">
-              <form>
-                <div ng-controller="GaTranslationController">
-                  <div ga-translation-selector
-                      ga-translation-selector-options="options"></div>
-                </div>
-                <div ng-controller="GaBackgroundLayerSelectorController">
-                  <div ga-background-layer-selector
-                      ga-background-layer-selector-map="map"
-                      ga-background-layer-selector-options="options"></div>
-                </div>
-              </form>
+              <div ng-controller="GaTranslationController">
+                <div ga-translation-selector
+                  ga-translation-selector-options="options"></div>
+              </div>
+              <div ga-background-layer-selector
+                ga-background-layer-selector-map="map"></div>
             <hr>
             <div ga-attribution ga-attribution-map="map"></div>
             <p>
@@ -199,22 +192,20 @@
     <!-- feedback dialog -->
     <div ng-controller="GaFeedbackController">
       <div id="feedback" class="modal fade" tabindex="-1" role="dialog" ga-modal-show="feedbackModalShown">
-	<div class="modal-dialog">
+        <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal">x</button>
               <h4 class="modal-title" translate>problem_announcement</h4>
             </div>
-            <div class="modal-body">
-              <div ga-feedback
-                   ga-feedback-options="options"
-                   ga-feedback-response="response"></div>
-            </div>
+            <div ga-feedback
+              ga-feedback-options="options"
+              ga-feedback-response="response"></div>
           </div>
-	</div>
+        </div>
       </div>
       <div id="feedback-success" class="modal fade" tabindex="-1" role="dialog" ga-modal-show="feedbackSuccessModalShown">
-	<div class="modal-dialog">
+        <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal">x</button>
@@ -227,10 +218,10 @@
               <button type="button" class="btn btn-default" data-dismiss="modal" translate>close</button>
             </div>
           </div>
-	</div>
+        </div>
       </div>
       <div id="feedback-error" class="modal fade" tabindex="-1" role="dialog" ga-modal-show="feedbackErrorModalShown">
-	<div class="modal-dialog">
+        <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal">x</button>
@@ -243,7 +234,7 @@
               <button type="button" class="btn btn-default" data-dismiss="modal" translate>close</button>
             </div>
           </div>
-	</div>
+        </div>
       </div>
     </div>
 
@@ -251,18 +242,18 @@
     <div id="import-kml-modal" class="non-modal" tabindex="-1" role="dialog" data-backdrop="" >
       <div class="modal-dialog">
         <div class="modal-content" ga-draggable=".modal-header" >
-	  <div class="modal-header">
+          <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">x</button>
             <h4 class="modal-title" translate>import_kml</h4>
-	  </div>
-	  <div class="modal-body" ng-controller="GaImportKmlController">
+          </div>
+          <div class="modal-body" ng-controller="GaImportKmlController">
             <div id="import-kml" class="import-kml"
-		 ga-import-kml
-		 ga-import-kml-map="map"
-		 ga-import-kml-options="options">
+              ga-import-kml
+              ga-import-kml-map="map"
+              ga-import-kml-options="options">
             </div>
-	  </div>
-	</div>
+          </div>
+        </div>
       </div>
     </div> <!-- #import-kml-modal -->
 
