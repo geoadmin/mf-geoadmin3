@@ -63,11 +63,11 @@
       <a href="rest/services/blw/CatalogServer?callback=callback">Catalog for topic 'blw'</a>
 
       <h2>Search</h2>
-          <a href="rest/services/geoadmin/SearchServer?searchText=wand">Search in swisssearch (locations) and map info </a> <br>
-          <a href="rest/services/geoadmin/SearchServer?searchText=vd 446&features=ch.astra.ivs-reg_loc">Search for features in ch.astra.ivs-reg_loc (some results on top of "locations" list)</a> <br>
-          <a href="rest/services/geoadmin/SearchServer?searchText=vd 446&features=ch.astra.ivs-reg_loc&bbox=551306.5625,167918.328125,551754.125,168514.625">Search for features in ch.astra.ivs-reg_loc (only features within the bbox)</a> <br>
-          <a href="rest/services/geoadmin/SearchServer?searchText=bois&bbox=609575,230756,609672,231121&lang=fr">Search in swisssearch and map info (lang fr) using a bbox (Prio to swisssearch results falling inside the bbox)</a> <br>
-          <a href="rest/services/geoadmin/SearchServer?searchText=wasser&bbox=733040.9375,183972.484375,738163.75,183972.484375">Search in the topic (or map) geoadmin</a> <br>
-          <a href="rest/services/bafu/SearchServer?searchText=wasser&bbox=733040.9375,183972.484375,738163.75,183972.484375">Search in the topic (or map) bafu</a> <br>
+          <a href="rest/services/geoadmin/SearchServer?searchText=wand&type=layers">Search for layers only</a> <br>
+          <a href="rest/services/geoadmin/SearchServer?searchText=vd 446&features=ch.astra.ivs-reg_loc&type=locations">Search for features in ch.astra.ivs-reg_loc (type locations)</a> <br>
+          <a href="rest/services/geoadmin/SearchServer?searchText=vd 446&features=ch.astra.ivs-reg_loc&type=locations&bbox=551306.5625,167918.328125,551754.125,168514.625">Search for features in ch.astra.ivs-reg_loc (only features within the bbox)</a> <br>
+          <a href="rest/services/geoadmin/SearchServer?searchText=bois&type=layers&lang=fr">Search for layers only (lang fr)</a> <br>
+          <a href="rest/services/geoadmin/SearchServer?searchText=wasser&bbox=733040.9375,183972.484375,738163.75,183972.484375&type=locations">Search in the topic (or map) geoadmin for locations</a> <br>
+          <a href="rest/services/blw/SearchServer?searchText=wasser&bbox=733040.9375,183972.484375,738163.75,183972.484375&type=locations">Search in the topic (or map) blw for locations</a> <br>
   </body>
 </html>

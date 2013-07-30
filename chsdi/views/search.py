@@ -20,8 +20,8 @@ class Search(SearchValidation):
         queried for features. 
     '''
 
-    LIMIT = 35
-    LAYER_LIMIT = 10
+    LIMIT = 30
+    LAYER_LIMIT = 20
     FEATURE_LIMIT = 5
 
     def __init__(self, request):
@@ -38,24 +38,24 @@ class Search(SearchValidation):
         self.bbox =  request.params.get('bbox')
         self.quadindex = None
         self.featureIndexes = request.params.get('features')
-        self.request = request
-        self.results = {'locations': [], 'map_info': []}
+        self.typeInfo = request.params.get('type')
+        self.results = {'results': []}
        
     @view_config(route_name='search', renderer='jsonp')
     def search(self):
         # create a quadindex if the bbox is defined
-        if self.bbox is not None:
+        if self.bbox is not None and self.typeInfo != 'layers':
             self._get_quad_index()
-        # first search in the field layer
-        limit = self._layer_search()
-        # then look for features, on top of the list
-        if self.featureIndexes is not None:
-            limit = len(self.featureIndexes)*5 + 30 - limit
+        if self.typeInfo == 'layers':
+            self._layer_search()
+        if self.featureIndexes is not None and self.typeInfo == 'locations':
+            limit = len(self.featureIndexes)*self.FEATURE_LIMIT + self.LIMIT
             features = self._feature_search()
             limit -= features
         else:
-            limit = self.LIMIT - limit
-        swissearch = self._swiss_search(limit)
+            limit = self.LIMIT
+        if self.typeInfo == 'locations':
+            self._swiss_search(limit)
         return self.results
 
     def _swiss_search(self, limit):
@@ -71,7 +71,7 @@ class Search(SearchValidation):
                     searchText = self._query_detail('@detail')
                 temp = self.sphinx.Query(searchText, index=idx)['matches']
                 if len(temp) != 0:
-                    self.results['locations'] += temp
+                    self.results['results'] += temp
                 limit -= len(temp)
             else:
                 break
@@ -85,7 +85,7 @@ class Search(SearchValidation):
                     searchText += ' & @geom_quadindex !' + self.quadindex + '*'
                     temp = self.sphinx.Query(searchText, index=idx)['matches']
                     if len(temp) != 0:
-                        self.results['locations'] += temp
+                        self.results['results'] += temp
                     limit -= len(temp)
                 else:
                     break
@@ -99,7 +99,7 @@ class Search(SearchValidation):
         searchText += ' & @topics ' + self.mapName
         temp = self.sphinx.Query(searchText, index=index_name)
         if len(temp['matches']) != 0:
-            self.results['map_info'] += temp['matches']
+            self.results['results'] += temp['matches']
         return len(temp)
 
     def _feature_search(self):
@@ -146,7 +146,7 @@ class Search(SearchValidation):
         for i in range(0, len(results)):
             nb_match += len(results[i]['matches'])
             # Add results to the list
-            self.results['locations'] += results[i]['matches']
+            self.results['results'] += results[i]['matches']
         return nb_match
 
     def _get_quad_index(self):
