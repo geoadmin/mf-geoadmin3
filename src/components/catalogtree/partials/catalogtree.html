@@ -2,9 +2,10 @@
   <div ng-switch="item.children">
 
     <div ng-switch-when="undefined" class="ga-catalogtree-leaf ga-catalogtree-entry checkbox">
-      <label>
-        <input type="checkbox" ng-model="item.selectedOpen"
-        ng-change="switchLayer()">{{item.label}}
+      <label ng-mouseover="previewLayer()" ng-mouseleave="removePreviewLayer()">
+        <input type="checkbox"
+               ng-model="item.selectedOpen"
+               ng-change="switchLayer(true)">{{item.label}}
       </label>
       <i class="icon-info-sign" ng-click="getLegend($event, item.idBod)"></i>
     </div>

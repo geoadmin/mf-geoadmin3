@@ -31,6 +31,8 @@
               scope.getLegend = getLegend;
               scope.toggle = toggle;
               scope.switchLayer = switchLayer;
+              scope.previewLayer = previewLayer;
+              scope.removePreviewLayer = removePreviewLayer;
 
               compiledContent(scope, function(clone, scope) {
                 iEl.append(clone);
@@ -41,30 +43,29 @@
       }]
   );
 
-  function switchLayer() {
-    var item = this.item,
-        map = this.map;
-    if (map) {
-      if (item.selectedOpen) {
-        this.gaLayers.getOlLayerById(item.idBod).then(function(layer) {
-          if (layer) {
-            map.getLayers().push(layer);
-          } else {
-            //FIXME: better error handling
-            var msg = 'The chosen Layer is not defined by the gaLayers service ('
-                      + item.idBod + ').';
-            alert(msg);
-          }
-        });
+  function previewLayer() {
+    if (this.map) {
+      if (this.item.selectedOpen) {
+        removeLayerFromMap(this.map, this.item.idBod);
       } else {
-        map.getLayers().forEach(function(l) {
-          if (l.get('layerId') == item.idBod) {
-            map.removeLayer(l);
-          }
-        });
+        addLayerToMap(this.gaLayers, this.map, this.item.idBod, false);
       }
     }
-  }
+  };
+
+  function removePreviewLayer() {
+    this.switchLayer(false);
+  };
+
+ function switchLayer(doAlert) {
+    if (this.map) {
+      if (this.item.selectedOpen) {
+        addLayerToMap(this.gaLayers, this.map, this.item.idBod, doAlert);
+     } else {
+        removeLayerFromMap(this.map, this.item.idBod);
+      }
+    }
+  };
 
   function toggle(ev) {
     this.item.selectedOpen = !this.item.selectedOpen;
@@ -75,4 +76,40 @@
     alert(bodid);
     ev.preventDefault();
   };
+
+  //static functions
+  function getMapLayer(map, id) {
+    var layer;
+    map.getLayers().forEach(function(l) {
+      if (l.get('layerId') == id) {
+        layer = l;
+      }
+    });
+    return layer;
+  };
+
+  function addLayerToMap(gaLayers, map, id, doAlert) {
+    var layer = getMapLayer(map, id);
+    if (!angular.isDefined(layer)) {
+      gaLayers.getOlLayerById(id).then(function(olLayer) {
+        if (olLayer) {
+          map.getLayers().push(olLayer);
+        } else if (doAlert) {
+          //FIXME: better error handling
+          var msg = 'The desired Layer is not defined by the gaLayers service ('
+                    + id + ').';
+          alert(msg);
+        }
+      });
+    }
+ };
+
+  function removeLayerFromMap(map, id) {
+    var layer = getMapLayer(map, id);
+    if (angular.isDefined(layer)) {
+      map.removeLayer(layer);
+    }
+  };
+
+ 
 })();
