@@ -67,12 +67,10 @@
   function toggle(ev) {
     this.item.selectedOpen = !this.item.selectedOpen;
     ev.preventDefault();
-//    ev.stopPropagation();
   };
 
   function getLegend(ev, bodid) {
     alert(bodid);
     ev.preventDefault();
-//    ev.stopPropagation();
   };
 })();
