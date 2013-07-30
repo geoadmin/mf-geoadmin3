@@ -130,20 +130,15 @@
          };
 
          // Add the selected layer to the map
-         $scope.addLayerSelected = function(getCapLayer) {
-
-           if (getCapLayer && getCapLayer.srsCompatible) {
-             $scope.layerSelected = getCapLayer;
+         $scope.addLayerSelected = function() {
+           if ($scope.layerSelected && $scope.layerSelected.srsCompatible) {
              $scope.addLayer($scope.layerSelected);
            }
          };
 
-         // Add the hovered layer to the map, only if the uesr hasn't selected a
-         // layer yet
+         // Add the hovered layer to the map
          $scope.addLayerHovered = function(getCapLayer) {
-
-           if (!$scope.layerSelected && getCapLayer &&
-               getCapLayer.srsCompatible) {
+           if (getCapLayer && getCapLayer.srsCompatible) {
              $scope.layerHovered = getCapLayer;
              $scope.olLayerHovered = $scope.addLayer($scope.layerHovered);
            }
@@ -151,31 +146,23 @@
 
          // Remove layer hovered
          $scope.removeLayerHovered = function() {
-           if (!$scope.layerSelected && $scope.olLayerHovered) {
+           if ($scope.olLayerHovered) {
              $scope.map.removeLayer($scope.olLayerHovered);
              $scope.layerHovered = null;
              $scope.olLayerHovered = null;
            }
          };
-         
-         $scope.toggleLayerSelected = function(getCapLayer) {
-           if (!$scope.layerSelected) {
-             // $scope.removeLayerHovered();
-             
-             //$scope.addLayerSelected(getCapLayer;
-             $scope.layerSelected = getCapLayer;
 
-           } else if ($scope.layerSelected.name == getCapLayer.name) {
+         // Select the layer clicked
+         $scope.toggleLayerSelected = function(getCapLayer) {
+           if ($scope.layerSelected &&
+               $scope.layerSelected.name == getCapLayer.name) {
              $scope.layerSelected = null;
-           
-           } else { // Another layer has been selected
-             $scope.layerSelected = null;
-             $scope.removeLayerHovered();
-             $scope.addLayerHovered(getCapLayer);
+
+           } else {
              $scope.layerSelected = getCapLayer;
            }
-           
-         }
+         };
 
          // Add a layer from GetCapabilities object to the map
          $scope.addLayer = function(getCapLayer) {
@@ -215,14 +202,13 @@
                      'LAYERS': layer.name
                    },
                    url: $scope.fileUrl,
-                   extent: extent
-                   //attributions: olAttributions
+                   extent: extent,
+                   attributions: olAttributions
                });
+
                var olLayer = new ol.layer.ImageLayer({
                    source: olSource
                });
-//olLayer.source_.image_.on('change', function(evt){alert('imageLodaded');});
-
 
                $scope.map.addLayer(olLayer);
 
@@ -255,8 +241,8 @@
                    view2D.setResolution(res);
                    return olLayer;
                  }
-               } 
- 
+               }
+
                if (extent) {
                  view2D.fitExtent(extent, mapSize);
                }
@@ -285,20 +271,15 @@
            controller: 'GaImportWmsDirectiveController',
            link: function(scope, elt, attrs, controller) {
 
-             var taElt = elt.find('input[type=url]').keydown(function(evt) {
-               // Block keyboard pan events when the focus is in the input
-               // text
-               if (evt.keyCode >= 37 && evt.keyCode <= 40) {
-                 evt.preventDefault();
-                 evt.stopPropagation();
-               }
-
-             }).typeahead({
+             // Create the typeAhead input for the list of WMSs available
+             var taElt = elt.find('input[type=url]').typeahead({
                local: scope.options.defaultWMSList,
                limit: 500
 
              }).on('typeahead:initialized typeahead:selected', function(evt) {
 
+               // When a WMS is selected in the list, start downloading the
+               // GetCapabilities
                if (evt.type === 'typeahead:selected') {
                  scope.fileUrl = this.value;
                  scope.$apply(function() {
@@ -306,7 +287,7 @@
                  });
                }
 
-               // Fill the list of suggestions
+               // Re-initialize the list of suggestions
                initSuggestions();
             });
 
@@ -314,11 +295,12 @@
              // Toggle list of suggestions
              elt.find('.open-wms-list').on('click', function(evt) {
                elt.find('.tt-dropdown-menu').toggle();
+               // Re-initialize the list of suggestions
                initSuggestions();
              });
 
 
-             // Initalize the list of suggestions with all the data
+             // Fill the list of suggestions with all the data
              function initSuggestions() {
                var taView = $(taElt).data('ttView');
                var dataset = taView.datasets[0];

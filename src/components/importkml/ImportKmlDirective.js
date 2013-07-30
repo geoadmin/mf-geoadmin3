@@ -257,7 +257,8 @@
                    '<div class="import-kml-drop-zone">' +
                    '  <div>{{"drop_me_here" | translate}}</div>' +
                    '</div>');
-
+               var test = $translate('map_tools');
+               $log.log(test);
                // We use $compile only for the translation,
                // $translate("drop_me_here") didn't work in prod mode
                $compile(dropZone)(scope);

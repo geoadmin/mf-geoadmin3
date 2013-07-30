@@ -85,7 +85,7 @@
           });
 
           $scope.map = map;
-
+          gaLayers.loadForTopic('inspire');
           gaLayers.getOlLayerById('ch.swisstopo.swissimage').then(function(layer) {
             map.addLayer(layer);
           });
@@ -96,6 +96,7 @@
            function($scope, gaGlobalOptions) {
              $scope.options = {  
                proxyUrl: gaGlobalOptions.baseUrlPath + '/ogcproxy?url=',
+               defaultGetCapParams: 'SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0',
                defaultWMSList: [
                  'http://wms.geo.admin.ch/',
                  'http://ogc.heig-vd.ch/mapserver/wms?',
