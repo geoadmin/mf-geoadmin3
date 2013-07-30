@@ -1,7 +1,7 @@
 <div>
   <div ng-switch="item.children">
 
-    <div ng-switch-when="undefined" class="ga-catalogtree-leaf checkbox">
+    <div ng-switch-when="undefined" class="ga-catalogtree-leaf ga-catalogtree-entry checkbox">
       <label>
         <input type="checkbox" ng-model="item.selectedOpen"
         ng-change="switchLayer()">{{item.label}}
@@ -10,7 +10,10 @@
     </div>
 
     <div ng-switch-default="" class="ga-catalogtree-node">
-      <div ng-click="toggle($event)">{{item.label}}</div>
+      <div ng-click="toggle($event)">
+        <i ng-class="{'icon-collapse-alt': item.selectedOpen, 'icon-expand-alt': !item.selectedOpen}"></i>
+        <div class="ga-catalogtree-entry">{{item.label}}</div>
+      </div>
       <ul ng-class="{closed: !item.selectedOpen}">
         <li ng-repeat="child in item.children">
           <div ga-catalogtree ga-catalogtree-item="child" ga-catalogtree-map="map"></div>
