@@ -51,7 +51,9 @@
             map.getLayers().push(layer);
           } else {
             //FIXME: better error handling
-            alert('The chosen Layer is not defined by the gaLayers service.');
+            var msg = 'The chosen Layer is not defined by the gaLayers service ('
+                      + item.idBod + ').';
+            alert(msg);
           }
         });
       } else {
