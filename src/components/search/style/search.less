@@ -1,7 +1,7 @@
 @dropdownBackground: #FFFFFF;
 @dropdownBorder: #000000;
 @dropdownLinkColorHover: #FFFFFF;
-@dropdownLinkBackgroundHover: #FFFFFF;
+@dropdownLinkBackgroundHover: #666666;
 
 #search, .tt-dropdown-menu {
     margin-top: 2em;
@@ -22,6 +22,7 @@
 }
 
 .tt-dropdown-menu {
+  font-size: 12px;
   min-width: 160px;
   margin-top: 2px;
   padding: 5px 0;
@@ -30,7 +31,6 @@
   border: 1px solid @dropdownBorder;
   *border-right-width: 2px;
   *border-bottom-width: 2px;
-  .border-radius(6px);
   .box-shadow(0 5px 10px rgba(0,0,0,.2));
   -webkit-background-clip: padding-box;
      -moz-background-clip: padding;
@@ -40,7 +40,18 @@
 .tt-suggestion {
   display: block;
   padding: 3px 20px;
-  font-size: 13px;
+  background-color: #E6E6E6;
+}
+
+.tt-dataset-locations .tt-suggestions, .tt-dataset-layers .tt-suggestions {
+  max-height: 250px;
+  overflow-y: scroll;
+}
+
+.tt-header-locations, .tt-header-mapinfos {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 20px;
 }
 
 .tt-suggestion a {
@@ -49,11 +60,17 @@
 
 .tt-suggestion.tt-is-under-cursor {
   color: @dropdownLinkColorHover;
-  #gradient > .vertical(@dropdownLinkBackgroundHover, darken(@dropdownLinkBackgroundHover, 5%));
+  background-color: @dropdownLinkBackgroundHover;
+  border-top: 1px;
 }
 
 .tt-suggestion.tt-is-under-cursor a {
-  color: @dropdownBackground;
+  color: @dropdownLinkColorHover;
+}
+
+.tt-suggestion .icon-info-sign {
+  float: right;
+  padding-top: 2px;
 }
 
 .tt-suggestion p {
