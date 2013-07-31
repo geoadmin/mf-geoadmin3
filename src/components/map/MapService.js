@@ -80,7 +80,6 @@
         });
 
         $rootScope.$on('translationChangeSuccess', function(event, lang) {
-          console.log('triggered');
           me.loadForTopic(me.currentTopicId, lang);
         });
 
