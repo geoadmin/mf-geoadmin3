@@ -48,19 +48,25 @@
       if (this.item.selectedOpen) {
         removeLayerFromMap(this.map, this.item.idBod);
       } else {
-        addLayerToMap(this.gaLayers, this.map, this.item.idBod, false);
+        addLayerToMap(this, false);
       }
+      this.item.preview = true;
     }
   };
 
   function removePreviewLayer() {
     this.switchLayer(false);
+    this.item.preview = false;
   };
 
  function switchLayer(doAlert) {
-    if (this.map) {
+   if (this.item.errorLoading) {
+     this.item.selectedOpen = false;
+     return;
+   }
+   if (this.map) {
       if (this.item.selectedOpen) {
-        addLayerToMap(this.gaLayers, this.map, this.item.idBod, doAlert);
+        addLayerToMap(this, doAlert);
      } else {
         removeLayerFromMap(this.map, this.item.idBod);
       }
@@ -88,17 +94,21 @@
     return layer;
   };
 
-  function addLayerToMap(gaLayers, map, id, doAlert) {
-    var layer = getMapLayer(map, id);
+  function addLayerToMap(scope, doAlert) {
+    var layer = getMapLayer(scope.map, scope.item.idBod);
     if (!angular.isDefined(layer)) {
-      gaLayers.getOlLayerById(id).then(function(olLayer) {
+      scope.gaLayers.getOlLayerById(scope.item.idBod).then(function(olLayer) {
         if (olLayer) {
-          map.getLayers().push(olLayer);
-        } else if (doAlert) {
-          //FIXME: better error handling
-          var msg = 'The desired Layer is not defined ' +
-                    'by the gaLayers service (' + id + ').';
-          alert(msg);
+          scope.item.errorLoading = false;
+          scope.map.getLayers().push(olLayer);
+        } else {
+          if (doAlert) {
+            //FIXME: better error handling
+            var msg = 'The desired Layer is not defined ' +
+                      'by the gaLayers service (' + scope.item.idBod + ').';
+            alert(msg);
+          }
+          scope.item.errorLoading = true;
         }
       });
     }
