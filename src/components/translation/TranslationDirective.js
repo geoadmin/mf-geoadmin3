@@ -27,7 +27,6 @@
                 scope.lang = scope.options.fallbackCode;
               });
               gaPermalink.updateParams({lang: value});
-              $rootScope.$broadcast('gaLanguageChange', value);
             });
 
             var params = gaPermalink.getParams();
