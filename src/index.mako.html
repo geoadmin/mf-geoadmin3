@@ -19,16 +19,18 @@
         <div id="logo">
           <img src="${version}img/logo.ch.jpeg" style="width: 246px; height: 89px"/>
         </div>
-        <input type="text" name="q" value="under construction..." id="search"/>
+        <input type="text" name="q" value="under construction..." id="search" class="input-small"/>
 % if device == 'desktop':
         <form class="navbar-form pull-right hidden-sm">
-          <a href="#feedback" data-toggle="modal" translate>problem_announcement</a>
-          <div ng-controller="GaTranslationController">
-            <div ga-translation-selector
-              ga-translation-selector-options="options"></div>
-          </div>
           <div ga-background-layer-selector
             ga-background-layer-selector-map="map"></div>
+          <div id="tools">
+            <a href="#feedback" data-toggle="modal" translate>problem_announcement</a>
+            <div ng-controller="GaTranslationController">
+              <div ga-translation-selector
+                ga-translation-selector-options="options"></div>
+            </div>
+          </div>
         </form>
 % endif
       </div>
@@ -166,6 +168,8 @@
               <a href="http://www.geo.admin.ch/internet/geoportal/en/home/geoadmin/contact.html#copyright">Copyright & data protection</a>
               <br>
               <a href="http://www.geo.admin.ch/internet/geoportal/en/home.html">geo.admin.ch</a>
+              <br>
+              <a href="#feedback" data-toggle="modal" translate>problem_announcement</a>
             </p>
             </div>
           </div>
@@ -190,7 +194,7 @@
     </div> <!-- #pulldown -->
 
     <!-- feedback dialog -->
-    <div ng-controller="GaFeedbackController">
+    <div ng-controller="GaFeedbackController" class="modal-container">
       <div id="feedback" class="modal fade" tabindex="-1" role="dialog" ga-modal-show="feedbackModalShown">
         <div class="modal-dialog">
           <div class="modal-content">

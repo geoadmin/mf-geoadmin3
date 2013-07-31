@@ -21,7 +21,7 @@
            template:
                '<select ng-model="currentLayer" ' +
                    'ng-options="l.id as l.label | translate for l in ' +
-                       'backgroundLayers">' +
+                       'backgroundLayers" class="input-small">' +
                '</select>',
            link: function(scope, element, attrs) {
              var map = scope.map;
