@@ -34,7 +34,7 @@
     background-color: rgba(255, 255, 255, 0.9);
     .box-shadow(6px 6px 12px rgba(0, 0, 0, 0.175));
     .pull-right {
-        margin: 2em 1.6em 0 0;
+        margin: 2.2em 1.6em 0 0;
         & > div {
             display: inline-block;
         }
@@ -61,16 +61,34 @@
 
 #search {
     display: inline-block;
-    margin-top: .4em;
+    margin-top: .2em;
     width: 25%;
     margin-left: 1.6em;
     @media screen and (max-width: @screen-tablet) {
+        margin-top: .8em;
         width: 308px;
         margin-left: .4em;
     }
     @media screen and (max-width: @screen-phone) {
         width: 85%;
         margin-left: 3.4em;
+    }
+}
+#tools {
+    position: absolute;
+    top: 0.4em;
+    right: 2em;
+    & > div {
+        display: inline-block;
+    }
+    select {
+        height: 20px;
+        line-height: 20px;
+        padding: 0 .3em;
+    }
+    a {
+        font-size: 80%;
+        color: #333;
     }
 }
 
@@ -274,7 +292,23 @@
 }
 
 .modal-dialog {
-    padding-top: 150px;
+    padding-top: 10%;
+    @media (max-width: @screen-phone) {
+        padding-top: .5em;
+    }
+}
+.modal-backdrop {
+    z-index: 1240;
+}
+.modal-container {
+    z-index: 1250;
+    position: absolute;
+}
+.modal-header {
+    .border-top-radius(6px);
+}
+.modal-body {
+    padding: 20px 20px 5px;
 }
 
 #feedback-success .modal-header {
