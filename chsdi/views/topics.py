@@ -8,5 +8,5 @@ from chsdi.models.bod import Topics
 def topics(request):
     model = Topics 
     query = request.db.query(model).order_by(model.orderKey)
-    results = [q.id for q in query]
+    results = [{'id': q.id, 'langs': q.availableLangs} for q in query]
     return { 'topics': results }
