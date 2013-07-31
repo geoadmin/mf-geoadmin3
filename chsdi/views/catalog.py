@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from pyramid.view import view_config
-from collections import defaultdict
 
 from chsdi.models.bod import get_catalog_model
 from chsdi.lib.helpers import locale_negotiator
