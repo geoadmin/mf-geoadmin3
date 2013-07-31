@@ -18,7 +18,7 @@
            template:
                '<select ng-model="lang" ' +
                    'ng-options="l.value as l.label for l in ' +
-                       'options.langs">' +
+                       'options.langs" class="input-small">' +
                '</select>',
           link: function(scope, element, attrs) {
             scope.$watch('lang', function(value) {
