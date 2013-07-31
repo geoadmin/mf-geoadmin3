@@ -52,6 +52,9 @@
           <a href='rest/services/profile.csv?geom={"type"%3A"LineString"%2C"coordinates"%3A[[550050%2C206550]%2C[556950%2C204150]%2C[561050%2C207950]]}&elevation_models=DTM25,DTM2'>Profile in csv format</a> <br>
           <a href='rest/services/geoadmin/1.0.0/WMTSCapabilities.xml'>WMTS capabilities geoadmin</a> <br>
 
+      <h2>Topic Listing</h2>
+          <a href='rest/services'>List all the available topics</a> <br>
+
       <h2>Layers Configuration</h2>
           <a href='rest/services/bafu/MapServer/layersconfig'>Get the layers configuration for topic bafu</a> <br>
           

@@ -220,6 +220,12 @@ def computeHeader(mapName):
         'capabilities': 'Map'
     }
 
+class Topics(Base):
+    __tablename__ = 'topics'
+    __table_args__ = ({'schema': 're3', 'autoload': False})
+    id = Column('topic', Text, primary_key=True)
+    orderKey = Column('order_key', Integer)
+
 class Catalog(object):
     __dbname__ = 'bod'
     id = Column('bgdi_id', Integer, primary_key=True)

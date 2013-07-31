@@ -63,6 +63,7 @@ def main(global_config, **settings):
     config.add_view(route_name='api', renderer='chsdi:templates/loader.js', http_cache=0)
 
     # Application specific
+    config.add_route('topics', 'rest/services')
     config.add_route('mapservice', '/rest/services/{map}/MapServer')
     config.add_route('layersconfig', '/rest/services/{map}/MapServer/layersconfig')
     config.add_route('catalog', '/rest/services/{map}/CatalogServer')
