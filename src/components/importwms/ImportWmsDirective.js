@@ -9,17 +9,11 @@
       ['$scope', '$http', '$q', '$log', '$translate',
        function($scope, $http, $q, $log, $translate) {
 
+         // List of layers available in the GetCapabilities
          $scope.layers = [];
-
-         // from Angular
-         // https://github.com/angular/angular.js/blob/master/src/ng/directive/input.js#L3
-         var URL_REGEXP =
-         /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/;
-
 
          // copy from ImportKml
          $scope.fileUrl = null;
-         $scope.fileContent = null;
          $scope.userMessage = '';
          $scope.progress = 0;
 
@@ -27,7 +21,7 @@
          $scope.handleFileUrl = function() {
            var url = $scope.fileUrl;
 
-           if ($scope.isValidUrl(url)) {
+           if (isValidUrl(url)) {
 
              // TODO:May be we should do something stronger
              var idx = url.indexOf('?');
@@ -40,7 +34,6 @@
 
              url += $scope.options.defaultGetCapParams;
 
-
              // Kill the current uploading
              $scope.cancel();
 
@@ -51,12 +44,11 @@
 
              // Angularjs doesn't handle onprogress event
              $http.get(proxyUrl, {timeout: $scope.canceler.promise})
-            .success(function(data, status, headers, config) {
+             .success(function(data, status, headers, config) {
                $scope.userMessage = $translate('upload_succeeded');
-               $scope.fileContent = data;
-               $scope.displayFileContent();
+               $scope.displayFileContent(data);
              })
-            .error(function(data, status, headers, config) {
+             .error(function(data, status, headers, config) {
                $scope.userMessage = $translate('upload_failed');
                $scope.progress = 0;
              });
@@ -65,7 +57,7 @@
 
          // Display the list of layers available from the GetCapabilties in the
          // table
-         $scope.displayFileContent = function() {
+         $scope.displayFileContent = function(data) {
            $scope.userMessage = $translate('parsing_file');
            $scope.progress = 80;
 
@@ -75,10 +67,11 @@
            $scope.layerSelected = null; // the layer selected on user click
            $scope.layerHovered = null; // the layer when mouse is over it
 
-           var parser = new ol.parser.ogc.WMSCapabilities();
-
            try {
-             var result = parser.read($scope.fileContent);
+             var srsCode = $scope.map.getView().getProjection().getCode();
+             var parser = new ol.parser.ogc.WMSCapabilities();
+             var result = parser.read(data);
+
              $scope.wmsConstraintsMessage = (result.service.maxWidth) ?
                  $translate('wms_max_size_allowed') + ' ' +
                    result.service.maxWidth +
@@ -91,7 +84,6 @@
 
                // WMS layer with no name can't be added to the map
                if (layer.name) {
-                 var srsCode = $scope.map.getView().getProjection().getCode();
 
                  // Set srsCompatible property
                  layer.srsCompatible = (layer.srs &&
@@ -108,7 +100,7 @@
            } catch (e) {
                $scope.userMessage = $translate('parse_failed') + e.message;
                $scope.progress = 0;
-               $log.log($scope.userMessage);
+               //$log.log($scope.userMessage);
            }
          };
 
@@ -123,16 +115,16 @@
            }
          };
 
-         // copy from ImportKml
-         // Test validity of a user input
-         $scope.isValidUrl = function(url) {
-           return (url && url.length > 0 && URL_REGEXP.test(url));
-         };
-
          // Add the selected layer to the map
          $scope.addLayerSelected = function() {
            if ($scope.layerSelected && $scope.layerSelected.srsCompatible) {
-             $scope.addLayer($scope.layerSelected);
+             var layerAdded = $scope.addLayer($scope.layerSelected);
+
+             if (layerAdded) {
+               $scope.userMessage = $translate('add_wms_layer_succeeded');
+             }
+
+             alert($scope.userMessage);
            }
          };
 
@@ -155,13 +147,10 @@
 
          // Select the layer clicked
          $scope.toggleLayerSelected = function(getCapLayer) {
-           if ($scope.layerSelected &&
-               $scope.layerSelected.name == getCapLayer.name) {
-             $scope.layerSelected = null;
-
-           } else {
-             $scope.layerSelected = getCapLayer;
-           }
+           $scope.layerSelected = ($scope.layerSelected &&
+               $scope.layerSelected.name == getCapLayer.name) ?
+               null :
+               getCapLayer;
          };
 
          // Add a layer from GetCapabilities object to the map
@@ -220,8 +209,7 @@
 
                  // We test if the layer extent specified in the
                  // getCapabilities fit the minScale value.
-                 var layerExtentScale =
-                   view2D.getResolutionForExtent(extent, mapSize) * 39.37 * 72;
+                 var layerExtentScale = getScaleFromExtent(extent, mapSize);
 
                  if (layerExtentScale > layer.minScale) {
                    var layerExtentCenter = ol.extent.getCenter(extent);
@@ -236,7 +224,7 @@
                    ];
 
                    var res = view2D.constrainResolution(
-                       view2D.getResolutionForExtent(extent, mapSize), 0, -1);
+                       getResolutionFromExtent(extent, mapSize), 0, -1);
                    view2D.setCenter(layerExtentCenter);
                    view2D.setResolution(res);
                    return olLayer;
@@ -246,23 +234,62 @@
                if (extent) {
                  view2D.fitExtent(extent, mapSize);
                }
+
                return olLayer;
 
              } catch (e) {
                $scope.userMessage = $translate('add_wms_layer_failed') +
                    e.message;
-               $log.log($scope.userMessage);
+               //$log.log($scope.userMessage);
+
                return null;
              }
            }
          };
+
+
+
+         /**** UTILS functions ****/
+
+         // from Angular
+         // https://github.com/angular/angular.js/blob/master/src/ng/directive/input.js#L3
+         var URL_REGEXP =
+         /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/;
+
+
+         // from ImportKml
+         // Test validity of a user input
+         function isValidUrl(url) {
+           return URL_REGEXP.test(url);
+         };
+
+
+         // from OL3
+         //TO FIX: copy from OpenLayers 3, should be elsewhere?
+         function getResolutionFromExtent(extent, size) {
+           var xResolution = (extent[1] - extent[0]) / size[0];
+           var yResolution = (extent[3] - extent[2]) / size[1];
+           return Math.max(xResolution, yResolution);
+         }
+
+         // from OL2
+         //TO FIX: utils function to get scale from an extent, should be
+         //elsewhere?
+         function getScaleFromExtent(extent, mapSize) {
+           // Constants get from OpenLayers 2, see:
+           // https://github.com/openlayers/openlayers/blob/master/lib/OpenLayers/Util.js
+           //
+           // 39.37 INCHES_PER_UNIT
+           // 72 DOTS_PER_INCH
+           return getResolutionFromExtent(extent, mapSize) * 39.37 * 72;
+         }
   }]);
 
   module.directive('gaImportWms',
       ['$http', '$log', '$translate',
        function($http, $log, $translate) {
          return {
-           retsrict: 'A',
+           restrict: 'A',
            templateUrl: 'components/importwms/partials/importwms.html',
            scope: {
              map: '=gaImportWmsMap',
@@ -276,20 +303,22 @@
                local: scope.options.defaultWMSList,
                limit: 500
 
-             }).on('typeahead:initialized typeahead:selected', function(evt) {
+             }).on('typeahead:initialized', function(evt) {
+               // Re-initialize the list of suggestions
+               initSuggestions();
+
+             }).on('typeahead:selected', function(evt, datum) {
 
                // When a WMS is selected in the list, start downloading the
                // GetCapabilities
-               if (evt.type === 'typeahead:selected') {
-                 scope.fileUrl = this.value;
-                 scope.$apply(function() {
-                   scope.handleFileUrl();
-                 });
-               }
+               scope.fileUrl = this.value;
+               scope.$apply(function() {
+                 scope.handleFileUrl();
+               });
 
                // Re-initialize the list of suggestions
                initSuggestions();
-            });
+             });
 
 
              // Toggle list of suggestions

@@ -19,19 +19,19 @@
       <table class="table-content table table-striped table-hover table-condensed">
        <tbody>
           <tr ng-repeat="layer in layers | orderBy:'title'" 
-              ng-mouseover="addLayerHovered(layer)" 
-              ng-mouseleave="removeLayerHovered()"
-              ng-click="toggleLayerSelected(layer)"
-              class="
+             class="
               {{($first) ? 'row-first ' : ''}}
-              {{($parent.layerSelected.name == layer.name) ? 'success ' : ''}}  
-              {{($parent.layerHovered.name == layer.name) ? 'pending ' : ''}}">   
+              {{(layerSelected.name == layer.name) ? 'success ' : ''}}  
+              {{(layerHovered.name == layer.name) ? 'pending ' : ''}}">   
             <td class="add col-first">
               <div class="{{layer.srsCompatible ? 'icon-thumbs-up' :
                   'icon-thumbs-down'}}">
               </div>
             </td>
-            <td class="title">
+            <td class="title" 
+              ng-mouseover="addLayerHovered(layer)" 
+              ng-mouseleave="removeLayerHovered()"
+              ng-click="toggleLayerSelected(layer)" >
               {{layer.title}}
             </td>
           </tr>

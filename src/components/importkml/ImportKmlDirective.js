@@ -205,7 +205,7 @@
       ['$http', '$log', '$compile', '$translate', 'gaBrowserSniffer',
        function($http, $log, $compile, $translate, gaBrowserSniffer) {
          return {
-           retsrict: 'A',
+           restrict: 'A',
            templateUrl: 'components/importkml/partials/importkml.html',
            scope: {
              map: '=gaImportKmlMap',
