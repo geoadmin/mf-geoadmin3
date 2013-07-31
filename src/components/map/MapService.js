@@ -79,7 +79,8 @@
           me.loadForTopic(topic.id);
         });
 
-        $rootScope.$on('gaLanguageChange', function(event, lang) {
+        $rootScope.$on('translationChangeSuccess', function(event, lang) {
+          console.log('triggered');
           me.loadForTopic(me.currentTopicId, lang);
         });
 
