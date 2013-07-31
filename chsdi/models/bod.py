@@ -115,50 +115,55 @@ class LayersConfig(Base):
 
 class BodLayerDe(Base, Bod):
     __tablename__ = 'view_bod_layer_info_de'
+    __table_args__ = ({'schema': 're3'})
 
 class BodLayerFr(Base, Bod):
     __tablename__ = 'view_bod_layer_info_fr'
+    __table_args__ = ({'schema': 're3'})
 
 class BodLayerIt(Base, Bod):
     __tablename__ = 'view_bod_layer_info_it'
+    __table_args__ = ({'schema': 're3'})
 
 class BodLayerRm(Base, Bod):
     __tablename__ = 'view_bod_layer_info_rm'
+    __table_args__ = ({'schema': 're3'})
 
 class BodLayerEn(Base, Bod):
     __tablename__ = 'view_bod_layer_info_en'
+    __table_args__ = ({'schema': 're3'})
 
 
 class GetCapFr(Base):
     __tablename__ = 'view_bod_wmts_getcapabilities_fr'
-    __table_args__ = ({'autoload': True})
+    __table_args__ = ({'schema': 're3', 'autoload': True})
     id = Column('fk_dataset_id', Text, primary_key=True)
     arr_all_formats = Column('format', Text)
 
 class GetCapDe(Base):
     __tablename__ = 'view_bod_wmts_getcapabilities_de'
-    __table_args__ = ({'autoload': True})
+    __table_args__ = ({'schema': 're3', 'autoload': True})
     id = Column('fk_dataset_id', Text, primary_key=True)
     arr_all_formats = Column('format', Text)
 
 class GetCapThemesFr(Base):
     __tablename__ = 'view_bod_wmts_getcapabilities_themes_fr'
-    __table_args__ = ({'autoload': True})
+    __table_args__ = ({'schema': 're3', 'autoload': True})
     id = Column('inspire_id', Text, primary_key=True)
 
 class GetCapThemesDe(Base):
     __tablename__ = 'view_bod_wmts_getcapabilities_themes_de'
-    __table_args__ = ({'autoload': True})
+    __table_args__ = ({'schema': 're3', 'autoload': True})
     id = Column('inspire_id', Text, primary_key=True)
 
 class ServiceMetadataDe(Base):
     __tablename__ = 'view_wms_service_metadata_de'
-    __table_args__ = ({'autoload': True})
+    __table_args__ = ({'schema': 're3', 'autoload': True})
     id = Column('wms_id', Text, primary_key=True)
 
 class ServiceMetadataFr(Base):
     __tablename__ = 'view_wms_service_metadata_fr'
-    __table_args__ = ({'autoload': True})
+    __table_args__ = ({'schema': 're3', 'autoload': True})
     id = Column('wms_id', Text, primary_key=True)
 
 #TODO use GetCap model to fill that up instead
