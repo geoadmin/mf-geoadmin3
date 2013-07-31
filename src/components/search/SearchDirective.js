@@ -4,8 +4,8 @@
   var module = angular.module('ga_search_directive', []);
 
   module.directive('gaSearch',
-      ['$compile',
-       function($compile) {
+      ['$compile', '$translate', 'gaPermalink',
+       function($compile, $translate, gaPermalink) {
          var footer = [
           '<div style="float: left; padding-top: 10px; padding-left: 20px;">',
           '<b>Please help me</b></div>',
@@ -13,30 +13,61 @@
           '<div>',
           '<a class="share-icon" ',
           'title="Tweet this map" ',
-          'ng-click="options.getHref()" ',
-          'ng-mouseover="options.getHref()" ',
+          'ng-click="getHref()" ',
+          'ng-mouseover="getHref()" ',
           'ng-href="https://twitter.com/intent/tweet?',
           'url={{options.encodedPermalinkHref}}&text={{options.encodedDocumentTitle}}">',
           '<i class="icon-twitter"></i>',
           '</a>',
           '<a class="share-icon"',
           'title="Share this map with your friends" ',
-          'ng-click="options.getHref()" ',
-          'ng-mouseover="options.getHref()" ',
+          'ng-click="getHref()" ',
+          'ng-mouseover="getHref()" ',
           'ng-href="http://www.facebook.com/sharer.php?',
           'u={{options.encodedPermalinkHref}}&t={{opitons.encodedDocumentTitle}}">',
           '<i class="icon-facebook"></i>',
           '</a>',
           '<a class="share-icon" ',
           'title="Send a map-email to your friends" ',
-          'ng-click="options.getHref()" ',
-          'ng-mouseover="options.getHref()" ',
+          'ng-click="getHref()" ',
+          'ng-mouseover="getHref()" ',
           'ng-href="mailto:?',
           'subject={{options.encodedDocumentTitle}}&body={{options.encodedPermalinkHref}}">',
           '<i class="icon-envelope-alt"></i> ',
           '</a>',
           '</div>',
           '</div>'].join('');
+
+         function parseExtent(stringBox2D) {
+           return stringBox2D.replace('BOX(', '')
+             .replace(')', '').replace(',', ' ').split(' ')
+             .map(function(val) {
+              return parseFloat(val);
+            });
+         };
+
+         function getBBoxParameters(map) {
+           var size = map.getSize();
+           var view = map.getView();
+           var bounds = view.calculateExtent(size);
+           return bounds[0] + ',' + bounds[2] + ',' +
+            bounds[1] + ',' + bounds[3];
+         };
+
+         function zoomToExtent(map, extent) {
+           var size = map.getSize();
+           var view = map.getView();
+
+           //minX maxX minY maxY
+           view.fitExtent([extent[0], extent[2], extent[1], extent[3]], size);
+         };
+
+         function moveTo(map, zoom, center) {
+           var view = map.getView();
+
+           view.setZoom(zoom);
+           view.setCenter(center);
+         };
 
          return {
            restrict: 'A',
@@ -51,52 +82,94 @@
            link: function(scope, element, attrs) {
              var map = scope.map;
              var options = scope.options;
-             var config = options.config;
 
              var footer_template = angular.element(footer);
              $compile(footer_template)(scope);
 
-             // private function for parsing box string
-             function parseExtent(stringBox2D) {
-               return stringBox2D.replace('BOX(', '')
-                .replace(')', '').replace(',', ' ').split(' ')
-                .map(function(val) {
-                 return parseFloat(val);
-               });
-             };
+             scope.getHref = function() {
+              // set those values in options only on mouseover or click
+              scope.encodedPermalinkHref =
+              encodeURIComponent(gaPermalink.getHref());
+              scope.encodedDocumentTitle =
+              encodeURIComponent(document.title);
+            };
 
-            var taElt = $(element).find('input').typeahead({
-               //header: '<div>This is a header</div>',
-               name: config.name,
-               cache: true,
-               footer: footer_template,
-               dataType: config.dataType,
-               timeout: config.timeout,
-               limit: config.limit,
-               valueKey: config.valueKey,
-               template: function(context) {
-                  var html = options.setResponseTemplate(context);
-                  return html;
-               },
-               remote: {
-                 url: options.serviceUrl,
-                 beforeSend: function(jqXhr, settings) {
-                   var bbox = '&bbox=' + options.getBBoxParameters(map);
-                   var lang = '&lang=fr';
-                   var features = '&features=';
-                   settings.url += bbox + lang + features;
-                 },
-                 filter: function(response) {
-                   var addresses = response.locations;
-                   var layers = response.map_info;
-                   return $.map(addresses.concat(layers), function(val) {
-                     val.inputVal = val.attrs.label
+            scope.showLegend = function() {
+              alert('Legend window should be defined once and for all!');
+            };
+
+            var taElt = $(element).find('input').typeahead([
+              {
+                header: '<div class="tt-header-locations">Locations:</div>',
+                name: 'locations',
+                cache: false,
+                dataType: 'jsonp',
+                timeout: 20,
+                valueKey: 'inputVal',
+                limit: 30,
+                template: function(context) {
+                  var template = '<a class="tt-search" ';
+                  var origin = context.attrs.origin;
+                  var label = context.attrs.label;
+                  template += '>' + label + '</a>';
+                  return template;
+                },
+                remote: {
+                  url: options.serviceUrl,
+                  beforeSend: function(jqXhr, settings) {
+                    var bbox = '&bbox=' + getBBoxParameters(map);
+                    var lang = '&lang=' + $translate.uses();
+                    var type = '&type=locations';
+                    // FIXME check if queryable layer is in the map
+                    var features = '&features=';
+                    settings.url += bbox + lang + type + features;
+                  },
+                  filter: function(response) {
+                    var results = response.results;
+                    return $.map(results, function(val) {
+                      val.inputVal = val.attrs.label
+                        .replace('<b>', '').replace('</b>', '');
+                      return val;
+                    });
+                  }
+                }
+              },
+              {
+                header: '<div class="tt-header-mapinfos">Map Infos:</div>',
+                footer: footer_template,
+                name: 'layers',
+                cache: false,
+                dataType: 'jsonp',
+                timeout: 20,
+                valueKey: 'inputVal',
+                limit: 20,
+                template: function(context) {
+                  var template = '<a class="tt-search" ';
+                  var origin = context.attrs.origin;
+                  var label = context.attrs.label;
+                  template += '>' + label + '<i id="legend-open" ' +
+                  'href="#legend" ng-click="showLegend()"' +
+                  'class="icon-info-sign"> </i></a>';
+                  return template;
+                },
+                remote: {
+                  url: options.serviceUrl + '&',
+                  beforeSend: function(jqXhr, settings) {
+                    var lang = 'lang=' + $translate.uses();
+                    var type = '&type=layers';
+                    settings.url += lang + type;
+                  },
+                  filter: function(response) {
+                    var results = response.results;
+                    return $.map(results, function(val) {
+                      val.inputVal = val.attrs.label
                       .replace('<b>', '').replace('</b>', '');
-                     return val;
-                   });
-                 }
-               }
-             }).on('typeahead:selected', function(event, datum) {
+                      return val;
+                    });
+                  }
+                }
+              }
+             ]).on('typeahead:selected', function(event, datum) {
                 if (typeof datum.attrs.geom_st_box2d != 'undefined') {
                   var extent = parseExtent(datum.attrs.geom_st_box2d);
                   var origin = datum.attrs.origin;
@@ -110,16 +183,17 @@
                   if (origin_zoom.hasOwnProperty(origin)) {
                     var zoom = origin_zoom[origin];
                     var center = [extent[0], extent[1]];
-                    options.moveTo(map, zoom, center);
+                    moveTo(map, zoom, center);
                   } else {
-                    options.zoomToExtent(map, extent);
+                    zoomToExtent(map, extent);
                   }
                 }
              });
 
-            var test = $(taElt).data('ttView').dropdownView;
-            test.on('suggestionsRendered', function(evt) {
-                $compile(angular.element('.tt-suggestions'))(scope);
+            var viewDropDown = $(taElt).data('ttView').dropdownView;
+            viewDropDown.on('suggestionsRendered', function(event) {
+                var elements = angular.element('.tt-search');
+                $compile(elements)(scope);
             });
 
            }
