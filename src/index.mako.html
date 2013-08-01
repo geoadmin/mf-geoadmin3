@@ -29,52 +29,53 @@
   </head>
 
   <body ng-controller="GaMainController" ng-class="bodyClass">
-      <div id="header" class="navbar navbar-fixed-top">
-        <a href="?" id="logo">
-          <img src="${version}img/logo.ch.jpeg" style="width: 246px; height: 89px"/>
-        </a>
-        <input type="text" name="q" placeholder="under construction..." id="search" class="input-small"/>
-% if device == 'desktop':
-        <form class="navbar-form pull-right hidden-sm">
-          <div ga-background-layer-selector
-            ga-background-layer-selector-map="map"></div>
-          <div id="toptools">
-            <a href="#feedback" data-toggle="modal" translate>problem_announcement</a>
-            <div ng-controller="GaTranslationController">
-              <div ga-translation-selector
-                ga-translation-selector-options="options"></div>
-            </div>
-          </div>
-        </form>
-% endif
-      </div>
-      <div id="map" class="map" ga-map ga-map-map="map">
-        </div>
-        <div ga-geolocation ga-geolocation-map="map"></div>
-      </div>
 
-      <div id="footer" class="navbar navbar-fixed-bottom">
-        <div id="scaleline" class="pull-left" ga-scale-line ga-scale-line-map="map"></div>
+    <div id="header" class="navbar navbar-fixed-top">
+      <a href="?" id="logo">
+        <img src="${version}img/logo.ch.jpeg" style="width: 246px; height: 89px"/>
+      </a>
+      <input type="text" name="q" placeholder="under construction..." id="search" class="input-small"/>
 % if device == 'desktop':
-        <div id="copyrightstext" class="pull-left">
-          <span >&copy;&nbsp;</span>
-          <span translate>data</span>
+      <form class="navbar-form pull-right hidden-sm">
+        <div ga-background-layer-selector
+          ga-background-layer-selector-map="map"></div>
+        <div id="tools">
+          <a href="#feedback" data-toggle="modal" translate>problem_announcement</a>
+          <div ng-controller="GaTranslationController">
+            <div ga-translation-selector
+              ga-translation-selector-options="options"></div>
+          </div>
         </div>
-        <div class="pull-left" ga-attribution ga-attribution-map="map"></div>
-            <div id="mouseposition" class="pull-left visible-lg" ng-controller="GaMousePositionController">
-          <select
-            ng-model="options.projection"
-            ng-options="p.label for p in mousePositionProjections">
-          </select>
-          <div class="ga-mouse-position"
-            ga-mouse-position
-            ga-mouse-position-map="map"
-            ga-mouse-position-options="options"></div>
-        </div>
+      </form>
 % endif
-        <div id="copyrights" class="pull-right"><a href="http://www.geo.admin.ch/internet/geoportal/en/home/geoadmin/contact.html#copyright">Copyright & data protection</a></div>
+    </div> <!-- #header -->
+
+    <div id="map" class="map" ga-map ga-map-map="map">
+      <div ga-geolocation ga-geolocation-map="map"></div>
+    </div> <!-- #map -->
+
+    <div id="footer" class="navbar navbar-fixed-bottom">
+      <div id="scaleline" class="pull-left" ga-scale-line ga-scale-line-map="map"></div>
 % if device == 'desktop':
-        <div id="geoadminlink" class="pull-right"><a href="http://www.geo.admin.ch/internet/geoportal/en/home.html">geo.admin.ch</a></div>
+      <div id="copyrightstext" class="pull-left">
+        <span >&copy;&nbsp;</span>
+        <span translate>data</span>
+      </div>
+      <div class="pull-left" ga-attribution ga-attribution-map="map"></div>
+      <div id="mouseposition" class="pull-left visible-lg" ng-controller="GaMousePositionController">
+        <select
+          ng-model="options.projection"
+          ng-options="p.label for p in mousePositionProjections">
+        </select>
+        <div class="ga-mouse-position"
+          ga-mouse-position
+          ga-mouse-position-map="map"
+          ga-mouse-position-options="options"></div>
+      </div>
+% endif
+      <div id="copyrights" class="pull-right"><a href="http://www.geo.admin.ch/internet/geoportal/en/home/geoadmin/contact.html#copyright">Copyright & data protection</a></div>
+% if device == 'desktop':
+      <div id="geoadminlink" class="pull-right"><a href="http://www.geo.admin.ch/internet/geoportal/en/home.html">geo.admin.ch</a></div>
 % endif
     </div><!-- #footer -->
 
@@ -124,7 +125,7 @@
           </div>
           <div id="tools" class="collapse">
             <div class="accordion-inner">
-            
+
               <!-- Tools accordion -->
               <div class="accordion" id="tools-accordion">
                 
