@@ -9,8 +9,8 @@
   ]);
 
   module.directive('gaContextPopup',
-      ['$http', '$q', '$timeout', 'gaPermalink', 'gaUrlUtils',
-        function($http, $q, $timeout, gaPermalink, gaUrlUtils) {
+      ['$http', '$q', '$timeout', 'gaPermalink', 'gaUrlUtils', 'gaMobile',
+        function($http, $q, $timeout, gaPermalink, gaUrlUtils, gaMobile) {
           var lv03tolv95Url =
               'http://tc-geodesy.bgdi.admin.ch/reframe/lv03tolv95?cb=JSON_CALLBACK';
           return {
@@ -42,6 +42,16 @@
                 coord21781 = event.getCoordinate();
                 var coord4326 = ol.proj.transform(coord21781,
                     'EPSG:21781', 'EPSG:4326');
+
+                // recenter on mobile devices
+                if (gaMobile) {
+                  var pan = ol.animation.pan({
+                    duration: 200,
+                    source: view.getCenter()
+                  });
+                  map.addPreRenderFunction(pan);
+                  view.setCenter(coord21781);
+                }
 
                 // The $http service does not send requests immediately but
                 // wait for the "nextTick". Not sure this is bug in Angular.
@@ -77,9 +87,13 @@
                       hidePopover();
                     });
 
-                    element.css('left', (pixel[0] - 150) + 'px');
-                    element.css('top', pixel[1] + 'px');
-                    showPopover();
+                    $timeout(function(){
+                      var pixel = map.getPixelFromCoordinate(coord21781);
+                      element.css('left', (pixel[0] - 150) + 'px');
+                      element.css('top', pixel[1] + 'px');
+                      showPopover();
+                    }, 200);
+
                   });
                 });
               };
@@ -146,9 +160,11 @@
                 scope.crosshairPermalink = gaPermalink.getHref(
                     angular.extend({crosshair: 'bowl'}, p));
 
-                scope.qrcodeUrl = qrcodeUrl +
-                   '?url=' +
-                   escape(contextPermalink);
+                if (!gaMobile) {
+                  scope.qrcodeUrl = qrcodeUrl +
+                    '?url=' +
+                    escape(contextPermalink);
+                }
               }
             }
           };

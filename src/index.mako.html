@@ -49,8 +49,6 @@
 % endif
       </div>
       <div id="map" class="map" ga-map ga-map-map="map">
-        <div  ng-controller="GaContextPopupController">
-          <div ga-context-popup ga-context-popup-map="map" ga-context-popup-options="options"></div>
         </div>
         <div ga-geolocation ga-geolocation-map="map"></div>
       </div>
@@ -78,7 +76,12 @@
 % if device == 'desktop':
         <div id="geoadminlink" class="pull-right"><a href="http://www.geo.admin.ch/internet/geoportal/en/home.html">geo.admin.ch</a></div>
 % endif
-      </div>
+    </div><!-- #footer -->
+
+    <div  ng-controller="GaContextPopupController" class="ga-context-popup">
+      <div ga-context-popup ga-context-popup-map="map" ga-context-popup-options="options"></div>
+    </div>
+
 
     <div id="pulldown">
 % if device=="desktop":

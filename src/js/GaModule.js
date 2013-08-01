@@ -20,6 +20,8 @@
   goog.require('ga_modal_directive');
   goog.require('ga_draggable_directive');
   goog.require('ga_placeholder_directive');
+  goog.require('ga_mobile_service');
+
   goog.require('ga_importkml_controller');
   goog.require('ga_importwms_controller');
   goog.require('ga_main_controller');
@@ -50,6 +52,7 @@
     'ga_modal_directive',
     'ga_draggable_directive',
     'ga_placeholder_directive',
+    'ga_mobile_service',
     'ga_importkml_controller',
     'ga_geolocation',
     'ga_importwms_controller',
