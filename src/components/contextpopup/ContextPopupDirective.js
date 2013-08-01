@@ -92,7 +92,7 @@
                       element.css('left', (pixel[0] - 150) + 'px');
                       element.css('top', pixel[1] + 'px');
                       showPopover();
-                    }, 200);
+                    }, (gaMobile) ? 200 : 0);
 
                   });
                 });
