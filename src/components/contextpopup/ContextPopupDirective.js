@@ -87,7 +87,7 @@
                       hidePopover();
                     });
 
-                    $timeout(function(){
+                    $timeout(function() {
                       var pixel = map.getPixelFromCoordinate(coord21781);
                       element.css('left', (pixel[0] - 150) + 'px');
                       element.css('top', pixel[1] + 'px');
