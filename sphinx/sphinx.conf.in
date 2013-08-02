@@ -231,7 +231,7 @@ source src_layers_de
             , 'de' as lang \
             , projekte as topics \
             , bgdi_id::bigint as id \
-        from view_bod_layer_info_de
+        from re3.view_bod_layer_info_de
     sql_attr_bigint = id
     sql_attr_string = lang
     sql_attr_string = origin
@@ -260,7 +260,7 @@ source src_layers_fr
             , 'fr' as lang \
             , projekte as topics \
             , bgdi_id::bigint as id \
-        from view_bod_layer_info_fr
+        from re3.view_bod_layer_info_fr
     sql_attr_bigint = id
     sql_attr_string = lang
     sql_attr_string = origin
@@ -289,7 +289,7 @@ source src_layers_en
             , 'en' as lang \
             , projekte as topics \
             , bgdi_id::bigint as id \
-        from view_bod_layer_info_en
+        from re3.view_bod_layer_info_en
     sql_attr_bigint = id
     sql_attr_string = lang
     sql_attr_string = origin
@@ -318,7 +318,7 @@ source src_layers_it
             , 'it' as lang \
             , projekte as topics \
             , bgdi_id::bigint as id \
-        from view_bod_layer_info_it
+        from re3.view_bod_layer_info_it
     sql_attr_bigint = id
     sql_attr_string = lang
     sql_attr_string = origin
@@ -347,7 +347,7 @@ source src_layers_rm
             , 'rm' as lang \
             , projekte as topics \
             , bgdi_id::bigint as id \
-        from view_bod_layer_info_rm
+        from re3.view_bod_layer_info_rm
     sql_attr_bigint = id
     sql_attr_string = lang
     sql_attr_string = origin
