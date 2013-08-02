@@ -160,7 +160,9 @@
            } catch (e) {
              $scope.userMessage = $translate('parse_failed') + e.message;
              $scope.progress = 0;
-             $scope.map.removeLayer(kml);
+
+             if (vector)
+               $scope.map.removeLayer(vector);
            }
 
          };
