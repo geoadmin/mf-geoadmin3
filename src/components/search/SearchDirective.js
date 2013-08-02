@@ -4,8 +4,8 @@
   var module = angular.module('ga_search_directive', []);
 
   module.directive('gaSearch',
-      ['$compile', '$translate', 'gaPermalink',
-       function($compile, $translate, gaPermalink) {
+      ['$compile', '$translate', 'gaLayers', 'gaPermalink',
+       function($compile, $translate, gaLayers, gaPermalink) {
          var footer = [
           '<div style="float: left; padding-top: 10px; padding-left: 20px;">',
           '<b>Please help me</b></div>',
@@ -98,6 +98,20 @@
               alert('Legend window should be defined once and for all!');
             };
 
+            scope.addLayer = function(id) {
+              gaLayers.getOlLayerById(id).then(function(layer) {
+                map.addLayer(layer);
+              });
+            }; 
+
+            scope.removeLayer = function(id) {
+              gaLayers.getOlLayerById(id).then(function(layer) {
+                map.removeLayer(layer);
+              })
+            };
+
+            scope.counter = 0;
+
             var taElt = $(element).find('input').typeahead([
               {
                 header: '<div class="tt-header-locations">Locations:</div>',
@@ -144,12 +158,17 @@
                 valueKey: 'inputVal',
                 limit: 20,
                 template: function(context) {
-                  var template = '<a class="tt-search" ';
+                  var attrName = 'attr_' + scope.counter.toString();
+                  var template = '<a class="tt-search" ng-init="' +
+                  attrName + '=\'' + context.attrs.layer + '\';" ' +
+                  'ng-mouseover="addLayer(' + attrName +')" ' +
+                  'ng-mouseout="removeLayer(' + attrName + ')"';
                   var origin = context.attrs.origin;
                   var label = context.attrs.label;
                   template += '>' + label + '<i id="legend-open" ' +
                   'href="#legend" ng-click="showLegend()"' +
                   'class="icon-info-sign"> </i></a>';
+                  scope.counter += 1;
                   return template;
                 },
                 remote: {
@@ -194,6 +213,7 @@
             viewDropDown.on('suggestionsRendered', function(event) {
                 var elements = angular.element('.tt-search');
                 $compile(elements)(scope);
+                scope.counter = 0;
             });
 
            }
