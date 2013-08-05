@@ -313,7 +313,7 @@
 
                // When a WMS is selected in the list, start downloading the
                // GetCapabilities
-               scope.fileUrl = this.value;
+               scope.fileUrl = datum.value;
                scope.$apply(function() {
                  scope.handleFileUrl();
                });
