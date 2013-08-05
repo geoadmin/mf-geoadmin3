@@ -25,27 +25,31 @@
       };
 
       Popup.prototype.open = function(template, scope) {
-        scope.popupTitle = 'TEstTitle';
-        scope.popupContent = template;
-        var popup = this.popupElt;
-        scope.closePopup = function() {popup.remove()};
 
-        if (this.popupElt.parent().length == 0) {
-          $(document.body).append(this.popupElt);
-          $compile(this.popupElt)(scope);
+        if (this.popupElt.parent().length != 0) {
+          this.close();
         }
 
-        scope.$apply();
+
+        this.scope = scope.$new();
+        this.scope.popupTitle = 'TEstTitle';
+        this.scope.popupContent = template;
+        var me = this;
+        this.scope.closePopup = function() { me.close();};
+
+        $(document.body).append(this.popupElt);
+        $compile(this.popupElt)(this.scope);
+        this.scope.$apply();
         this.popupElt.css({
           'display': 'block',
-          left: (scope.popupPositionX - (this.popupElt.width() / 2)) + 'px',
-          top: (scope.popupPositionY + (11 / 2)) + 'px'
+          left: (this.scope.popupPositionX - (this.popupElt.width() / 2)) + 'px',
+          top: (this.scope.popupPositionY + (11 / 2)) + 'px'
         });
       };
 
       Popup.prototype.close = function() {
         this.popupElt.remove();
-
+        this.scope.$destroy();
       };
 
 
