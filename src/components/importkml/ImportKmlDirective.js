@@ -2,15 +2,19 @@
   goog.provide('ga_importkml_directive');
 
   goog.require('ga_browsersniffer_service');
+  goog.require('ga_popup_service');
 
   var module = angular.module('ga_importkml_directive', [
     'ga_browsersniffer_service',
+    'ga_popup_service',
     'pascalprecht.translate'
   ]);
 
   module.controller('GaImportKmlDirectiveController',
-      ['$scope', '$http', '$q', '$log', '$translate', 'gaBrowserSniffer',
-       function($scope, $http, $q, $log, $translate,  gaBrowserSniffer) {
+      ['$scope', '$http', '$q', '$log', '$translate',
+       'gaBrowserSniffer', 'gaPopup',
+       function($scope, $http, $q, $log, $translate, gaBrowserSniffer,
+       gaPopup) {
 
          // from Angular
          // https://github.com/angular/angular.js/blob/master/src/ng/directive/input.js#L3
@@ -151,9 +155,12 @@
                  pixel: evt.getPixel(),
                  layers: [vector],
                  success: function(features) {
-                   //if (features) {
-                     // TODO:  Display popup
-                   //}
+                   if (features[0] && features[0][0]) {
+                     var pixel = evt.getPixel();
+                     $scope.popupPositionX = pixel[0];
+                     $scope.popupPositionY = pixel[1];
+                     gaPopup.open(features[0][0].values_.description, $scope);
+                   }
                  }
                });
              });
