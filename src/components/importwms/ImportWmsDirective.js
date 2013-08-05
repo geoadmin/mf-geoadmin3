@@ -51,6 +51,8 @@
              .error(function(data, status, headers, config) {
                $scope.userMessage = $translate('upload_failed');
                $scope.progress = 0;
+               $scope.layers = [];
+               $scope.wmsConstraintsMessage = "";
              });
            }
          };
