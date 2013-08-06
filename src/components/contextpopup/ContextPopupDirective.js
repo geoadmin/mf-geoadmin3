@@ -9,8 +9,8 @@
   ]);
 
   module.directive('gaContextPopup',
-      ['$http', '$q', '$timeout', 'gaPermalink', 'gaUrlUtils', 'gaMobile',
-        function($http, $q, $timeout, gaPermalink, gaUrlUtils, gaMobile) {
+      ['$http', '$q', '$timeout', 'gaPermalink', 'gaUrlUtils', 'gaBrowserSniffer',
+        function($http, $q, $timeout, gaPermalink, gaUrlUtils, gaBrowserSniffer) {
           var lv03tolv95Url =
               'http://tc-geodesy.bgdi.admin.ch/reframe/lv03tolv95?cb=JSON_CALLBACK';
           return {
@@ -35,6 +35,11 @@
               var coord21781;
               var popoverShown = false;
 
+              var overlay = new ol.Overlay({
+                'map': map,
+                'element': element[0]
+              });
+
               var handler = function(event) {
                 event.preventDefault();
 
@@ -44,7 +49,7 @@
                     'EPSG:21781', 'EPSG:4326');
 
                 // recenter on mobile devices
-                if (gaMobile) {
+                if (gaBrowserSniffer.mobile) {
                   var pan = ol.animation.pan({
                     duration: 200,
                     source: view.getCenter()
@@ -87,12 +92,8 @@
                       hidePopover();
                     });
 
-                    $timeout(function() {
-                      var pixel = map.getPixelFromCoordinate(coord21781);
-                      element.css('left', (pixel[0] - 150) + 'px');
-                      element.css('top', pixel[1] + 'px');
-                      showPopover();
-                    }, (gaMobile) ? 200 : 0);
+                    overlay.setPosition(coord21781);
+                    showPopover();
 
                   });
                 });
@@ -160,7 +161,7 @@
                 scope.crosshairPermalink = gaPermalink.getHref(
                     angular.extend({crosshair: 'bowl'}, p));
 
-                if (!gaMobile) {
+                if (!gaBrowserSniffer.mobile) {
                   scope.qrcodeUrl = qrcodeUrl +
                     '?url=' +
                     escape(contextPermalink);
