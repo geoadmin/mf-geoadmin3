@@ -7,8 +7,9 @@
       ['$scope', 'gaGlobalOptions',
         function($scope, gaGlobalOptions) {
           $scope.options = {
-            defaultTopicId: 'inspire',
-            url: gaGlobalOptions.serviceUrl + '/FIXME'
+            defaultTopicId: 'ech',
+            url: gaGlobalOptions.serviceUrl + '/rest/services' +
+             '?callback=JSON_CALLBACK'
           };
       }]);
 })();
