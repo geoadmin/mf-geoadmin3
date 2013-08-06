@@ -115,7 +115,7 @@
             scope.hasLayer = function(id) {
               var layers = map.getLayers().getArray();
               angular.forEach(layers, function(layer) {
-                if (typeof layer.values_.id !== 'undefined') {
+                if (angular.isDefined(layer.values_.id)) {
                   if (id === layer.values_.id) {
                     return true;
                   }
@@ -125,7 +125,7 @@
             };
 
             scope.replaceTopicInUrl = function(url) {
-               if (typeof options.previousTopicId !== 'undefined' &&
+               if (angular.isDefined(options.previousTopicId) &&
                 options.previousTopicId !== options.currentTopicId) {
                   return url.replace(options.previousTopicId,
                     options.currentTopicId);
@@ -220,7 +220,7 @@
               }
              ]).on('typeahead:selected', function(event, datum) {
                 var origin = datum.attrs.origin;
-                if (typeof datum.attrs.geom_st_box2d != 'undefined') {
+                if (angular.isDefined(datum.attrs.geom_st_box2d)) {
                   var extent = parseExtent(datum.attrs.geom_st_box2d);
 
                   var origin_zoom = {
