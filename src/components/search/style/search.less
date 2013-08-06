@@ -5,7 +5,7 @@
 
 #search, .tt-dropdown-menu {
     margin-top: 2em;
-    width: 200%;
+    width: 250%;
     margin-left: 1.6em;
     @media screen and (max-width: @screen-tablet) {
         margin-top: .8em;
@@ -42,11 +42,16 @@
   display: block;
   padding: 3px 20px;
   background-color: #E6E6E6;
+  margin-top: 1px;
 }
 
 .tt-dataset-locations .tt-suggestions, .tt-dataset-layers .tt-suggestions {
   max-height: 250px;
   overflow-y: scroll;
+}
+
+.tt-dataset-layers {
+  display: block !important;
 }
 
 .tt-header-locations, .tt-header-mapinfos {
@@ -55,18 +60,10 @@
   padding-left: 20px;
 }
 
-.tt-suggestion a {
-  color: #000000;
-}
-
 .tt-suggestion.tt-is-under-cursor {
   color: @dropdownLinkColorHover;
   background-color: @dropdownLinkBackgroundHover;
   border-top: 1px;
-}
-
-.tt-suggestion.tt-is-under-cursor a {
-  color: @dropdownLinkColorHover;
 }
 
 .tt-suggestion .icon-info-sign {
