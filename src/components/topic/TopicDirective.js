@@ -7,8 +7,8 @@
   ]);
 
   module.directive('gaTopic',
-      ['$rootScope', 'gaPermalink',
-        function($rootScope, gaPermalink) {
+      ['$rootScope', '$http', 'gaPermalink',
+        function($rootScope, $http, gaPermalink) {
         return {
           restrict: 'A',
           replace: true,
@@ -19,20 +19,23 @@
           link: function(scope, element, attrs) {
             var options = scope.options;
 
-            // FIXME: tests data, use remote service
-            scope.topics = [{
-              id: 'blw',
-              label: 'BLW',
-              thumbnail: 'http://placehold.it/110x60'
-            }, {
-              id: 'inspire',
-              label: 'Inspire',
-              thumbnail: 'http://placehold.it/110x60'
-            }, {
-              id: 'ech',
-              label: 'ECH',
-              thumbnail: 'http://placehold.it/110x60'
-            }];
+            function initTopics() {
+              var queryParams = gaPermalink.getParams();
+              var found = scope.setActiveTopic(queryParams.topic);
+              if (!found) {
+                // topic not set, fallback to default
+                scope.setActiveTopic(options.defaultTopicId);
+              }
+            };
+
+            $http.jsonp(options.url).then(function(result) {
+              scope.topics = result.data.topics;
+              angular.forEach(scope.topics, function(value) {
+                value.label = value.id;
+                value.thumbnail = 'http://placehold.it/110x60';
+              });
+              initTopics();
+            });
 
             scope.setActiveTopic = function(topicId) {
               for (var i = 0, len = scope.topics.length; i < len; i++) {
@@ -46,13 +49,7 @@
               return false;
             };
 
-            var queryParams = gaPermalink.getParams();
-            var found = scope.setActiveTopic(queryParams.topic);
-            if (!found) {
-              // topic not set, fallback to default
-              scope.setActiveTopic(options.defaultTopicId);
-            }
-          }
-        };
+         }
+       };
       }]);
 })();
