@@ -7,34 +7,34 @@
       ['$compile', '$translate', 'gaLayers', 'gaPermalink',
        function($compile, $translate, gaLayers, gaPermalink) {
          var footer = [
-          '<div style="float: left; padding-top: 10px; padding-left: 20px;">',
+          '<div id="search-footer">',
+          '<div style="float: left; ',
+          'padding-top: 10px; padding-left: 20px;">',
           '<b>Please help me</b></div>',
           '<div style="float: right; padding-right: 20px;">',
           '<div>',
           '<a class="share-icon" ',
-          'title="Tweet this map" ',
+          'title="Give us a call" ',
           'ng-click="getHref()" ',
           'ng-mouseover="getHref()" ',
-          'ng-href="https://twitter.com/intent/tweet?',
-          'url={{options.encodedPermalinkHref}}&text={{options.encodedDocumentTitle}}">',
+          'ng-href="mailto:webgis@swisstopo.ch?',
+          'body={{encodedPermalinkHref}}">',
+          '<i class="icon-phone"></i> ',
+          '</a>',
+          '<a class="share-icon" ',
+          'title="Follow us on Twitter" ',
+          'ng-href="https://twitter.com/swiss_geoportal">',
           '<i class="icon-twitter"></i>',
           '</a>',
           '<a class="share-icon"',
-          'title="Share this map with your friends" ',
+          'title="Send us an e-mail" ',
           'ng-click="getHref()" ',
           'ng-mouseover="getHref()" ',
-          'ng-href="http://www.facebook.com/sharer.php?',
-          'u={{options.encodedPermalinkHref}}&t={{opitons.encodedDocumentTitle}}">',
-          '<i class="icon-facebook"></i>',
+          'ng-href="mailto:webgis@swisstopo.ch?',
+          'body={{encodedPermalinkHref}}">',
+          '<i class="icon-envelope-alt"></i>',
           '</a>',
-          '<a class="share-icon" ',
-          'title="Send a map-email to your friends" ',
-          'ng-click="getHref()" ',
-          'ng-mouseover="getHref()" ',
-          'ng-href="mailto:?',
-          'subject={{options.encodedDocumentTitle}}&body={{options.encodedPermalinkHref}}">',
-          '<i class="icon-envelope-alt"></i> ',
-          '</a>',
+          '</div>',
           '</div>',
           '</div>'].join('');
 
@@ -100,14 +100,37 @@
 
             scope.addLayer = function(id) {
               gaLayers.getOlLayerById(id).then(function(layer) {
-                map.addLayer(layer);
+                if (!scope.hasLayer(id)) {
+                  map.addLayer(layer);
+                }
               });
-            }; 
+            };
 
             scope.removeLayer = function(id) {
               gaLayers.getOlLayerById(id).then(function(layer) {
                 map.removeLayer(layer);
-              })
+              });
+            };
+
+            scope.hasLayer = function(id) {
+              var layers = map.getLayers().getArray();
+              angular.forEach(layers, function(layer) {
+                if (typeof layer.values_.id !== 'undefined') {
+                  if (id === layer.values_.id) {
+                    return true;
+                  }
+                }
+              });
+              return false;
+            };
+
+            scope.replaceTopicInUrl = function(url) {
+               if (typeof options.previousTopicId !== 'undefined' &&
+                options.previousTopicId !== options.currentTopicId) {
+                  return url.replace(options.previousTopicId,
+                    options.currentTopicId);
+               }
+               return url;
             };
 
             scope.counter = 0;
@@ -122,10 +145,10 @@
                 valueKey: 'inputVal',
                 limit: 30,
                 template: function(context) {
-                  var template = '<a class="tt-search" ';
+                  var template = '<div class="tt-search" ';
                   var origin = context.attrs.origin;
                   var label = context.attrs.label;
-                  template += '>' + label + '</a>';
+                  template += '>' + label + '</div>';
                   return template;
                 },
                 remote: {
@@ -136,6 +159,7 @@
                     var type = '&type=locations';
                     // FIXME check if queryable layer is in the map
                     var features = '&features=';
+                    settings.url = scope.replaceTopicInUrl(settings.url);
                     settings.url += bbox + lang + type + features;
                   },
                   filter: function(response) {
@@ -159,15 +183,15 @@
                 limit: 20,
                 template: function(context) {
                   var attrName = 'attr_' + scope.counter.toString();
-                  var template = '<a class="tt-search" ng-init="' +
+                  var template = '<div class="tt-search" ng-init="' +
                   attrName + '=\'' + context.attrs.layer + '\';" ' +
-                  'ng-mouseover="addLayer(' + attrName +')" ' +
+                  'ng-mouseover="addLayer(' + attrName + ')" ' +
                   'ng-mouseout="removeLayer(' + attrName + ')"';
                   var origin = context.attrs.origin;
                   var label = context.attrs.label;
                   template += '>' + label + '<i id="legend-open" ' +
                   'href="#legend" ng-click="showLegend()"' +
-                  'class="icon-info-sign"> </i></a>';
+                  'class="icon-info-sign"> </i></div>';
                   scope.counter += 1;
                   return template;
                 },
@@ -176,10 +200,16 @@
                   beforeSend: function(jqXhr, settings) {
                     var lang = 'lang=' + $translate.uses();
                     var type = '&type=layers';
-                    settings.url += lang + type;
+                    settings.url = scope.replaceTopicInUrl(settings.url);
+                    settings.url += '&' + lang + type;
                   },
                   filter: function(response) {
                     var results = response.results;
+                    if (results.length === 0) {
+                      scope.hasLayerResults = false;
+                    } else {
+                      scope.hasLayerResults = true;
+                    }
                     return $.map(results, function(val) {
                       val.inputVal = val.attrs.label
                       .replace('<b>', '').replace('</b>', '');
@@ -189,9 +219,9 @@
                 }
               }
              ]).on('typeahead:selected', function(event, datum) {
+                var origin = datum.attrs.origin;
                 if (typeof datum.attrs.geom_st_box2d != 'undefined') {
                   var extent = parseExtent(datum.attrs.geom_st_box2d);
-                  var origin = datum.attrs.origin;
 
                   var origin_zoom = {
                     'address': 10,
@@ -207,13 +237,32 @@
                     zoomToExtent(map, extent);
                   }
                 }
+                if (origin === 'layer') {
+                  scope.addLayer(datum.attrs.layer);
+                }
              });
 
             var viewDropDown = $(taElt).data('ttView').dropdownView;
             viewDropDown.on('suggestionsRendered', function(event) {
-                var elements = angular.element('.tt-search');
+                var elements = angular.element('.tt-dataset-layers');
                 $compile(elements)(scope);
                 scope.counter = 0;
+
+                // Display footer but hide suggestions and header
+                var children = elements.children();
+                if (children.length !== 0) {
+                  if (!scope.hasLayerResults) {
+                    children[0].style.display = 'none';
+                    children[1].style.display = 'none';
+                  } else {
+                    children[0].style.display = 'block';
+                    children[1].style.display = 'block';
+                  }
+                }
+            });
+
+            scope.$on('gaTopicChange', function(event, topic) {
+              options.setCurrentTopic(topic.id);
             });
 
            }

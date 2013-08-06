@@ -6,10 +6,15 @@
   module.controller('GaSearchController',
       ['$scope', 'gaGlobalOptions',
         function($scope, gaGlobalOptions) {
-
+         
          $scope.options = {
-           serviceUrl: gaGlobalOptions.serviceUrl + '/rest/services/' +
-           'geoadmin/SearchServer?searchText=%QUERY' //FIXME topic
+           currentTopicId: 'ech',
+           serviceUrl: gaGlobalOptions.serviceUrl +  '/rest/services/' + 
+              'ech/SearchServer?searchText=%QUERY',
+           setCurrentTopic: function(topicId) {
+            this.previousTopicId = this.currentTopicId;
+            this.currentTopicId = topicId;
+           }
          };
 
        }]);
