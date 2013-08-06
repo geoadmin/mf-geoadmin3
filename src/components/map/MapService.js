@@ -49,30 +49,28 @@
       var Layers = function() {
         var promise;
         var me = this;
-        var currentTopicId;
+        var currentTopicId, currentLang;
 
         /**
          * Load layers for a given topic and a specific language.
          */
         this.loadForTopic = function(topicId, lang) {
-          if (!angular.isDefined(topicId)) {
-            topicId = 'inspire';
-          }
-          if (!angular.isDefined(lang)) {
-            lang = $translate.uses();
-          }
-          this.currentTopicId = topicId;
-          var deferred = $q.defer();
-          var url = getTopicUrl(topicId, lang);
+          if (currentTopicId !== topicId || currentLang !== lang) {
+            currentTopicId = angular.isDefined(topicId) ?
+                topicId : currentTopicId;
+            currentLang = angular.isDefined(lang) ? lang : $translate.uses();
+            var deferred = $q.defer();
+            var url = getTopicUrl(currentTopicId, currentLang);
 
-          $http.jsonp(url).success(function(data, status) {
-            deferred.resolve(data);
-            $rootScope.$broadcast('gaLayersChange', data);
-          }).error(function(data, status) {
-            deferred.reject();
-          });
+            $http.jsonp(url).success(function(data, status) {
+              deferred.resolve(data);
+              $rootScope.$broadcast('gaLayersChange', data);
+            }).error(function(data, status) {
+              deferred.reject();
+            });
 
-          promise = deferred.promise;
+            promise = deferred.promise;
+          }
         };
 
         $rootScope.$on('gaTopicChange', function(event, topic) {
