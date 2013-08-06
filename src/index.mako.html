@@ -11,15 +11,34 @@
 
     <script>
       (function(){
-        var w = window, l = w.location, pathname;
-        if ( (('ontouchstart' in w) || ('onmsgesturechange' in w)) && (screen.width<=768) ) {
-          if (l.pathname.indexOf('mobile')!=-1) { return }
+        var w = window, l = w.location, pathname, p = '${device}',
+          m = l.search.match(/(?:mobile=(true|false))/);
+
+        // avoid loops
+        m = (m) ? m[1] : m;
+        if ((p=='desktop' && m=='false') || (p=='mobile' && m=='true')) { return; }
+
+        var redirectToMobile = function() {
           pathname = (l.pathname.indexOf('index')==-1) ?
             l.pathname + 'mobile.html' : l.pathname.replace(/index/, 'mobile');
           l.href = l.origin + pathname + l.search;
-        } else {
-          if (l.pathname.indexOf('mobile')==-1) { return; }
+        }
+        var redirectToDesktop = function() {
           l.href = l.origin + l.pathname.replace(/mobile/, 'index') + l.search;
+        }
+
+        if ( (('ontouchstart' in w) || ('onmsgesturechange' in w)) && (screen.width<=768) ) {
+          if (p=='mobile') {
+            if (m=='false') { redirectToDesktop(); }
+            return;
+          }
+          redirectToMobile();
+        } else {
+          if (p=='desktop') {
+            if (m=='true') { redirectToMobile(); }
+            return;
+          }
+          redirectToDesktop();
         }
       })();
     </script>
