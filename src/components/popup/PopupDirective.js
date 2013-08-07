@@ -25,7 +25,16 @@
                 scope.popup.title = attrs.gaPopupTitle;
               }
 
-              var elt = angular.element('<div class="popover ga-popup" ga-draggable=".ga-popup-title"><h4 class="popover-title ga-popup-title"><span translate>{{popup.title | translate}}</span> <button type="button" class="close" ng-click="close()">x</button></h4><div class="popover-content ga-popup-content"></div></div></div>');
+              var elt = angular.element(
+                '<div class="popover ga-popup" ' +
+                    'ga-draggable=".ga-popup-title">' +
+                  '<h4 class="popover-title ga-popup-title">' +
+                    '<span translate>{{popup.title | translate}}</span>' +
+                    '<button type="button" class="close" ng-click="close()">' +
+                    'x</button>' +
+                  '</h4>' +
+                  '<div class="popover-content ga-popup-content"></div>' +
+                '</div>');
 
 
               // Wrap the element with the popup
@@ -36,11 +45,11 @@
 
               // Move the popup to the correct position
               elt.css({
-                
+
                 left: ((scope.popup.x) ?
                   scope.popup.x :
                   parent.width() / 2 - elt.width() / 2),
-                
+
                 top: ((scope.popup.y) ?
                   scope.popup.y :
                    150)
