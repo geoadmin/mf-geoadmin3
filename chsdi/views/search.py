@@ -15,7 +15,7 @@ class Search(SearchValidation):
         To update all the indexes: /var/sig/shp/sphinx/local/bin/indexer --config /var/sig/shp/sphinx/local/etc/sphinx.conf --rotate
         To stop the deamon: /var/sig/shp/sphinx/local/bin/searchd --config /var/sig/shp/sphinx/local/etc/sphinx.conf --stop
         To start the deamon: /var/sig/shp/sphinx/local/bin/searchd --config /var/sig/shp/sphinx/local/etc/sphinx.conf
-        This service always returns a maximum ranging between 35 and 35 + x*5 results, where x is the number of layers on which we look for features.
+        This service always returns a maximum ranging between 30 and 30 + x*5 results, where x is the number of queryable layers.
         More results can be retruned if serveral layers are 
         queried for features. 
     '''
@@ -39,6 +39,7 @@ class Search(SearchValidation):
         self.quadindex = None
         self.featureIndexes = request.params.get('features')
         self.typeInfo = request.params.get('type')
+        self.geodataStaging = request.registry.settings['geodata_staging']
         self.results = {'results': []}
        
     @view_config(route_name='search', renderer='jsonp')
@@ -95,8 +96,10 @@ class Search(SearchValidation):
         # 10 features per layer are returned at max
         self.sphinx.SetLimits(0, self.LAYER_LIMIT)
         index_name = 'layers_' + self.lang
-        searchText = self._query_detail('@(detail,layer)')
+        searchText = self._query_layers_detail('@(detail,layer)')
         searchText += ' & @topics ' + self.mapName
+        # We only take the layers in prod for now
+        searchText += ' & @staging prod'
         temp = self.sphinx.Query(searchText, index=index_name)
         if len(temp['matches']) != 0:
             self.results['results'] += temp['matches']
@@ -115,7 +118,7 @@ class Search(SearchValidation):
         temp = self.sphinx.RunQueries()
         nb_match = self._nb_of_match(temp)
 
-        #look outside the bbox if no match when the bbox is defined
+        # look outside the bbox if no match when the bbox is defined
         if self.quadindex is not None and nb_match == 0:
             searchText = self._query_detail('@detail')
             searchText += ' & @geom_quadindex !' + self.quadindex + '*'
@@ -131,9 +134,20 @@ class Search(SearchValidation):
         counter = 1
         for text in self.searchText:
             if counter != len(self.searchText):
-                searchText += fields + ' ' + text + '* & '
+                searchText += fields + ' *' + text + '* & '
             else:
-                searchText += fields + ' ' + text + '*'
+                searchText += fields + ' *' + text + '*'
+            counter += 1
+        return searchText
+
+    def _query_layers_detail(self, fields):
+        searchText = ''
+        counter = 1
+        for text in self.searchText:
+            if counter != len(self.searchText):
+                searchText += fields + ' ' + text + ' & '
+            else:
+                searchText += fields + ' ' + text
             counter += 1
         return searchText
 

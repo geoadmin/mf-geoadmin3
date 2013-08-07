@@ -230,12 +230,14 @@ source src_layers_de
             , bod_layer_id as layer \
             , 'de' as lang \
             , projekte as topics \
+            , staging as staging \
             , bgdi_id::bigint as id \
         from re3.view_bod_layer_info_de
     sql_attr_bigint = id
     sql_attr_string = lang
     sql_attr_string = origin
     sql_attr_string = label
+    sql_field_string = staging
     sql_field_string = topics
     sql_field_string = layer
     sql_field_string = detail
@@ -259,12 +261,14 @@ source src_layers_fr
             , bod_layer_id as layer \
             , 'fr' as lang \
             , projekte as topics \
+            , staging as staging \
             , bgdi_id::bigint as id \
         from re3.view_bod_layer_info_fr
     sql_attr_bigint = id
     sql_attr_string = lang
     sql_attr_string = origin
     sql_attr_string = label
+    sql_field_string = staging
     sql_field_string = topics
     sql_field_string = layer
     sql_field_string = detail
@@ -288,12 +292,14 @@ source src_layers_en
             , bod_layer_id as layer \
             , 'en' as lang \
             , projekte as topics \
+            , staging as staging \
             , bgdi_id::bigint as id \
         from re3.view_bod_layer_info_en
     sql_attr_bigint = id
     sql_attr_string = lang
     sql_attr_string = origin
     sql_attr_string = label
+    sql_field_string = staging
     sql_field_string = topics
     sql_field_string = layer
     sql_field_string = detail
@@ -317,12 +323,14 @@ source src_layers_it
             , bod_layer_id as layer \
             , 'it' as lang \
             , projekte as topics \
+            , staging as staging \
             , bgdi_id::bigint as id \
         from re3.view_bod_layer_info_it
     sql_attr_bigint = id
     sql_attr_string = lang
     sql_attr_string = origin
     sql_attr_string = label
+    sql_field_string = staging
     sql_field_string = topics
     sql_field_string = layer
     sql_field_string = detail
@@ -346,12 +354,14 @@ source src_layers_rm
             , bod_layer_id as layer \
             , 'rm' as lang \
             , projekte as topics \
+            , staging as staging \
             , bgdi_id::bigint as id \
         from re3.view_bod_layer_info_rm
     sql_attr_bigint = id
     sql_attr_string = lang
     sql_attr_string = origin
     sql_attr_string = label
+    sql_field_string = staging
     sql_field_string = topics
     sql_field_string = layer
     sql_field_string = detail
@@ -420,7 +430,7 @@ index zipcode
     path = /var/sig/shp/sphinx/data/zipcode
     docinfo = extern
     charset_type = utf-8
-    min_infix_len = 2
+    min_infix_len = 1
     infix_fields = detail, geom_quadindex
     enable_star = 1
 }
@@ -432,7 +442,7 @@ index district
     path = /var/sig/shp/sphinx/data/district
     docinfo = extern
     charset_type = utf-8
-    min_infix_len = 2
+    min_infix_len = 1
     infix_fields = detail, geom_quadindex
     enable_star = 1
 }
@@ -444,7 +454,7 @@ index kantone
     path = /var/sig/shp/sphinx/data/kantone
     docinfo = extern
     charset_type = utf-8
-    min_infix_len = 2
+    min_infix_len = 1
     infix_fields = detail, geom_quadindex
     enable_star = 1
 }
@@ -456,7 +466,7 @@ index gg25
     path = /var/sig/shp/sphinx/data/gg25
     docinfo = extern
     charset_type = utf-8
-    min_infix_len = 2
+    min_infix_len = 1
     infix_fields = detail, geom_quadindex
     enable_star = 1
 }
@@ -468,7 +478,7 @@ index sn25
     path = /var/sig/shp/sphinx/data/sn25
     docinfo = extern
     charset_type = utf-8
-    min_infix_len = 2
+    min_infix_len = 1
     infix_fields = detail, geom_quadindex
     enable_star = 1
 }
@@ -480,7 +490,7 @@ index parcel
     path = /var/sig/shp/sphinx/data/parcel
     docinfo = extern
     charset_type = utf-8
-    min_infix_len = 2
+    min_infix_len = 1
     infix_fields = detail, geom_quadindex
     enable_star = 1
 }
@@ -492,7 +502,7 @@ index address
     path = /var/sig/shp/sphinx/data/address
     docinfo = extern
     charset_type = utf-8
-    min_infix_len = 2
+    min_infix_len = 1
     infix_fields = detail, geom_quadindex
     enable_star = 1
 }
@@ -505,7 +515,7 @@ index layers_de
     docinfo = extern
     charset_type = utf-8
     min_infix_len = 3
-    infix_fields = detail, layer, topics
+    infix_fields = detail, layer, topics, staging
 }
 
 index layers_fr
@@ -516,7 +526,7 @@ index layers_fr
     docinfo = extern
     charset_type = utf-8
     min_infix_len = 3
-    infix_fields = detail, layer, topics
+    infix_fields = detail, layer, topics, staging
 }
 
 index layers_en
@@ -527,7 +537,7 @@ index layers_en
     docinfo = extern
     charset_type = utf-8
     min_infix_len = 3
-    infix_fields = detail, layer, topics
+    infix_fields = detail, layer, topics, staging
 }
 
 index layers_it
@@ -538,7 +548,7 @@ index layers_it
     docinfo = extern
     charset_type = utf-8
     min_infix_len = 3
-    infix_fields = detail, layer, topics
+    infix_fields = detail, layer, topics, staging
 }
 
 index layers_rm
@@ -549,7 +559,7 @@ index layers_rm
     docinfo = extern
     charset_type = utf-8
     min_infix_len = 3
-    infix_fields = detail, layer, topics
+    infix_fields = detail, layer, topics, staging
 }
 
 index ch_astra_ivs-nat
