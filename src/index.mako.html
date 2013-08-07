@@ -16,7 +16,9 @@
 
         // avoid loops
         m = (m) ? m[1] : m;
-        if ((p=='desktop' && m=='false') || (p=='mobile' && m=='true')) { return; }
+        if ((p=='desktop' && m=='false') || (p=='mobile' && m=='true')) {
+          return;
+        }
 
         var redirectToMobile = function() {
           pathname = (l.pathname.indexOf('index')==-1) ?
@@ -27,18 +29,11 @@
           l.href = l.origin + l.pathname.replace(/mobile/, 'index') + l.search;
         }
 
-        if ( (('ontouchstart' in w) || ('onmsgesturechange' in w)) && (screen.width<=768) ) {
-          if (p=='mobile') {
-            if (m=='false') { redirectToDesktop(); }
-            return;
-          }
-          redirectToMobile();
-        } else {
-          if (p=='desktop') {
-            if (m=='true') { redirectToMobile(); }
-            return;
-          }
+        var onMobile = ( (('ontouchstart' in w) || ('onmsgesturechange' in w)) && (screen.width<=768) );
+        if (m=='false' || (!onMobile && p=='mobile') ) {
           redirectToDesktop();
+        } else if (m=='true' || (onMobile && p=='desktop') ) {
+          redirectToMobile();
         }
       })();
     </script>

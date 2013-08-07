@@ -96,17 +96,15 @@ describe('ga_contextpopup_directive', function() {
         $timeout.flush();
         $httpBackend.flush();
 
-        $timeout(function() {
-            var popover = element.find('.popover');
-            expect(popover.css('display')).to.be('block');
+          var popover = element.find('.popover');
+          expect(popover.css('display')).to.be('block');
 
-            var tables = element.find('div.popover-content table');
-            var tds = $(tables[0]).find('td');
+          var tables = element.find('div.popover-content table');
+          var tds = $(tables[0]).find('td');
 
-            expect($(tds[1]).text()).to.be('661473.0, 188192.0');
-            expect($(tds[3]).text()).to.be('2725984.40, 1180787.40');
-            expect($(tds[7]).text()).to.be('1233 [m]');
-        }, 250);
+          expect($(tds[1]).text()).to.be('661473.0, 188192.0');
+          expect($(tds[3]).text()).to.be('2725984.40, 1180787.40');
+          expect($(tds[7]).text()).to.be('1233 [m]');
       });
 
       it('touchend prevents handler from being called', function() {
