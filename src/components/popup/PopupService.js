@@ -11,23 +11,23 @@
            };
 
       Popup.prototype.open = function(options) {
-      
+
         // Destroy the popup if it exists
         this.close();
-       
+
         if (!options || !options.scope || !options.content) {
           return;
         }
-       
-       
-        // Add the popup element to the HTML page  
-        var popupElt = angular.element(  
+
+
+        // Add the popup element to the HTML page
+        var popupElt = angular.element(
           '<div ga-popup></div>'
         );
         $(document.body).append(popupElt);
 
 
-        //Build the popup        
+        //Build the popup
         popupElt.html(options.content);
 
         var me = this;
@@ -36,9 +36,9 @@
         scope.popup.close = function() {me.close();};
         $compile(popupElt)(scope);
         scope.$apply();
-        
+
         // Save the created scope and element
-        this.popupElt = popupElt.closest(".ga-popup");
+        this.popupElt = popupElt.closest('.ga-popup');
         this.popupScope = scope.$$childTail;
       };
 
@@ -55,8 +55,8 @@
 
 
       return new Popup();
-        
-      
+
+
     }];
 
   });
