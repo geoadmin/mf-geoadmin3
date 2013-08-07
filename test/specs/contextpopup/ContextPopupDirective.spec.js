@@ -7,6 +7,7 @@ describe('ga_contextpopup_directive', function() {
     element = angular.element(
       '<div>' +
         '<div ga-context-popup ga-context-popup-map="map" ga-context-popup-options="options"></div>' +
+        '<div id="map"></div>' +
       '</div>');
 
     inject(function($rootScope, $compile) {
@@ -20,6 +21,7 @@ describe('ga_contextpopup_directive', function() {
         handlers[eventType] = handler;
       };
       $compile(element)($rootScope);
+      map.setTarget(element.find('#map')[0]);
       $rootScope.$digest();
     });
 
