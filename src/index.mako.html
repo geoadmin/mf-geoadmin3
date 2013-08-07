@@ -43,13 +43,15 @@
   </head>
 
   <body ng-controller="GaMainController" ng-class="bodyClass">
-    <div id="header" class="navbar navbar-fixed-top">
-      <div href="?" id="logo" class="pull-left">
-        <img src="${version}img/logo.ch.jpeg" style="width: 246px; height: 89px"/>
-      </div>
-      <div class="pull-left" ng-controller="GaSearchController">
-        <div ga-search ga-search-map="map" ga-search-options="options"></div>
-      </div>
+      <div id="header" class="navbar navbar-fixed-top">
+        <div href="?" id="logo" class="pull-left">
+          <img src="${version}img/logo.ch.jpeg" style="width: 246px; height: 89px"/>
+        </div>
+        <div id="search-controller" class="pull-left" ng-controller="GaSearchController">
+          <div ga-search
+            ga-search-map="map"
+            ga-search-options="options"></div>
+        </div>
 % if device == 'desktop':
       <form class="navbar-form pull-right hidden-sm">
         <div ga-background-layer-selector
