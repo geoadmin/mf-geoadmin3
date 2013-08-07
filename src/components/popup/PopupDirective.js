@@ -57,6 +57,11 @@
 
               if (angular.isDefined(attrs.gaPopup)) {
                 scope.$watch(attrs.gaPopup, function(newVal, oldVal) {
+
+                  if (!angular.isDefined(newVal)) {
+                    elt.hide();
+                  }
+
                   if (newVal != oldVal) {
                     elt.toggle();
                   }

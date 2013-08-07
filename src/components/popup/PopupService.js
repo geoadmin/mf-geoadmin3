@@ -40,6 +40,7 @@
         // Save the created scope and element
         this.popupElt = popupElt.closest('.ga-popup');
         this.popupScope = scope.$$childTail;
+        this.popupElt.show();
       };
 
       Popup.prototype.close = function() {
