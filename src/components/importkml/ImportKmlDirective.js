@@ -157,9 +157,13 @@
                  success: function(features) {
                    if (features[0] && features[0][0]) {
                      var pixel = evt.getPixel();
-                     $scope.popupPositionX = pixel[0];
-                     $scope.popupPositionY = pixel[1];
-                     gaPopup.open(features[0][0].values_.description, $scope);
+                     gaPopup.open({
+                       title: features[0][0].values_.name, 
+                       content: features[0][0].values_.description, 
+                       scope: $scope, 
+                       x: pixel[0], 
+                       y: pixel[1]
+                    });
                    }
                  }
                });
