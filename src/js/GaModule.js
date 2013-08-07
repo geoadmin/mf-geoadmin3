@@ -6,6 +6,7 @@
   goog.require('ga_backgroundlayerselector');
   goog.require('ga_contextpopup');
   goog.require('ga_importkml');
+  goog.require('ga_importwms');
   goog.require('ga_map');
   goog.require('ga_mouseposition');
   goog.require('ga_share');
@@ -20,6 +21,7 @@
   goog.require('ga_placeholder_directive');
   
   goog.require('ga_importkml_controller');
+  goog.require('ga_importwms_controller');
   goog.require('ga_map_controller');
   goog.require('ga_mouseposition_controller');
   goog.require('ga_share_controller');
@@ -34,6 +36,7 @@
     'ga_backgroundlayerselector',
     'ga_contextpopup',
     'ga_importkml',
+    'ga_importwms',
     'ga_map',
     'ga_mouseposition',
     'ga_share',
@@ -46,6 +49,7 @@
     'ga_placeholder_directive',
     'ga_importkml_controller',
     'ga_geolocation',
+    'ga_importwms_controller',
     'ga_map_controller',
     'ga_mouseposition_controller',
     'ga_share_controller',
