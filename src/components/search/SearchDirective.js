@@ -141,8 +141,6 @@
                {
                  header: '<div class="tt-header-locations">Locations:</div>',
                  name: 'locations',
-                 cache: false,
-                 dataType: 'jsonp',
                  timeout: 20,
                  valueKey: 'inputVal',
                  limit: 30,
@@ -155,6 +153,8 @@
                  },
                  remote: {
                    url: options.serviceUrl,
+                   dataType: 'jsonp',
+                   cache: false,
                    beforeSend: function(jqXhr, settings) {
                      var bbox = '&bbox=' + getBBoxParameters(map);
                      var lang = '&lang=' + $translate.uses();
@@ -178,8 +178,6 @@
                  header: '<div class="tt-header-mapinfos">Map Infos:</div>',
                  footer: footer_template,
                  name: 'layers',
-                 cache: false,
-                 dataType: 'jsonp',
                  timeout: 20,
                  valueKey: 'inputVal',
                  limit: 20,
@@ -199,6 +197,8 @@
                  },
                  remote: {
                    url: options.serviceUrl + '&',
+                   dataType: 'jsonp',
+                   cache: false,
                    beforeSend: function(jqXhr, settings) {
                      var lang = 'lang=' + $translate.uses();
                      var type = '&type=layers';
