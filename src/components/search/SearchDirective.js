@@ -27,7 +27,7 @@
           '<i class="icon-twitter"></i>',
           '</a>',
           '<a class="share-icon"',
-          'title="Send us an e-mail" ',
+          'title="Send us an email" ',
           'ng-click="getHref()" ',
           'ng-mouseover="getHref()" ',
           'ng-href="mailto:webgis@swisstopo.ch?',
@@ -78,7 +78,7 @@
            },
            template:
            '<div><input id="search" type="text" placeholder=' +
-           '"Search for a location of a map information..."></div>',
+           '"Search for a location or a map information..."></div>',
            link: function(scope, element, attrs) {
              var map = scope.map;
              var options = scope.options;
