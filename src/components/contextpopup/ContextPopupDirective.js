@@ -40,6 +40,8 @@
                 'element': element[0]
               });
 
+              scope.showQR = !gaBrowserSniffer.mobile;
+
               var handler = function(event) {
                 event.preventDefault();
 
