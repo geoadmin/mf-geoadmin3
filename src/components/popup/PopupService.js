@@ -24,7 +24,7 @@
         this.element = angular.element(
           '<div ga-popup ' +
                'ga-popup-options="options" ' +
-               'ga-draggable>' +
+               'ga-draggable=".ga-popup-title">' +
              options.content +
           '</div>'
         );
