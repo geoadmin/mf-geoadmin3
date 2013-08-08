@@ -3,7 +3,10 @@
 
     <div ng-switch-when="undefined" class="ga-catalogtree-leaf ga-catalogtree-entry checkbox"
         ng-class="{'preview': item.preview, 'selected': item.selectedOpen}">
-      <label ng-mouseover="previewLayer()" ng-mouseleave="removePreviewLayer()">
+      <i class="icon-circle-blank" ng-show="!item.selectedOpen"></i>
+      <i class="icon-ok-circle" ng-show="item.selectedOpen"></i>
+      <label ng-mouseover="previewLayer()"
+             ng-mouseleave="removePreviewLayer()">
         <input type="checkbox"
                ng-model="item.selectedOpen"
                ng-change="switchLayer(true)">{{item.label}}
