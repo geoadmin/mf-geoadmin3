@@ -102,15 +102,20 @@
 
              scope.addLayer = function(id) {
                gaLayers.getOlLayerById(id).then(function(layer) {
-                 if (!scope.hasLayer(id)) {
+                 if (!scope.hasLayer(id) && angular.isDefined(layer)) {
                    map.addLayer(layer);
+                 }
+                 if (!angular.isDefined(layer)) {
+                   alert('A configuration does not exist for this layer yet!');
                  }
                });
              };
 
              scope.removeLayer = function(id) {
                gaLayers.getOlLayerById(id).then(function(layer) {
-                 map.removeLayer(layer);
+                 if (angular.isDefined(layer)) {
+                   map.removeLayer(layer);
+                 }
                });
              };
 
