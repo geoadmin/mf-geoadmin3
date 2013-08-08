@@ -78,9 +78,9 @@
              map: '=gaSearchMap'
            },
            template:
-           '<div><input id="search" type="text" placeholder=' +
-           '"Search for a location or a map information..."><div class=' +
-           '"deleteicon" ng-click="clearInput()" >' +
+           '<div><input id="search" class="input-small" type="text" ' +
+           'placeholder="Search for a location or a map information...">' +
+           '<div class="deleteicon" ng-click="clearInput()" >' +
            '<i class="icon-remove-sign"></i></div></div>',
            link: function(scope, element, attrs) {
              var map = scope.map;
