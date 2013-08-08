@@ -369,13 +369,18 @@
     background-color: #f2dede;
 }
 
-.ga-popup, .ga-popup .popover-inner {
-    max-width: 500px;
-    max-height: 300px;  
-}
-
 .popover-content {
     overflow: auto;
-    max-width: 500px;
-    max-height: 300px;
+    max-width: inherit;
+    max-height: 350px;
+}
+
+
+#import-wms-popup {
+    max-width: none;
+    max-height: none;
+
+    .ga-popup-content {
+        max-height: inherit;
+    }
 }

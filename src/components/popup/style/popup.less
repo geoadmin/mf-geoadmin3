@@ -1,9 +1,15 @@
+@ga-popup-max-height: 400px; 
+
 .ga-popup {
     display: none;
     z-index: 89999;/*Only hided by the dropzone*/ 
+    min-width: 200px;
+    max-width: 600px;
+    min-height: 100px;
+    max-height: @ga-popup-max-height;   
 
     .ga-popup-content {
         max-width: inherit;
-        max-height: 250px;
+        max-height: (@ga-popup-max-height - 60);
     }
 }
