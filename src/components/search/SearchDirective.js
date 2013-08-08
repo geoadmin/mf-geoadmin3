@@ -6,7 +6,8 @@
   module.directive('gaSearch',
       ['$compile', '$translate', 'gaLayers', 'gaPermalink',
        function($compile, $translate, gaLayers, gaPermalink) {
-         var footer = [
+         var currentTopic,
+             footer = [
           '<div id="search-footer">',
           '<div style="float: left; ',
           'padding-top: 10px; padding-left: 20px;">',
@@ -132,12 +133,7 @@
              };
 
              scope.replaceTopicInUrl = function(url) {
-               if (angular.isDefined(options.previousTopicId) &&
-                 options.previousTopicId !== options.currentTopicId) {
-                   return url.replace(options.previousTopicId,
-                     options.currentTopicId);
-               }
-               return url;
+               return url.replace(options.topicPlaceHolder, currentTopic);
              };
 
              scope.counter = 0;
@@ -274,7 +270,7 @@
              };
 
              scope.$on('gaTopicChange', function(event, topic) {
-               options.setCurrentTopic(topic.id);
+               currentTopic = topic.id;
              });
 
             }

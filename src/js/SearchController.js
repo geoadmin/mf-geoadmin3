@@ -6,17 +6,13 @@
   module.controller('GaSearchController',
       ['$scope', 'gaGlobalOptions',
         function($scope, gaGlobalOptions) {
+          var topicPlaceHolder = 'DUMMYTOPIC';
          
-         $scope.options = {
-           currentTopicId: 'ech',
-           serviceUrl: gaGlobalOptions.serviceUrl +  '/rest/services/' + 
-              'ech/SearchServer?searchText=%QUERY',
-           setCurrentTopic: function(topicId) {
-            this.previousTopicId = this.currentTopicId;
-            this.currentTopicId = topicId;
-           }
-         };
-
-       }]);
+          $scope.options = {
+            topicPlaceHolder: topicPlaceHolder,
+            serviceUrl: gaGlobalOptions.serviceUrl +  '/rest/services/' + 
+                        topicPlaceHolder + '/SearchServer?searchText=%QUERY'
+            };
+        }]);
 
 })();
