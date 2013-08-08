@@ -114,22 +114,22 @@
 
              scope.removeLayer = function(id) {
                gaLayers.getOlLayerById(id).then(function(layer) {
-                 if (angular.isDefined(layer)) {
+                 if (scope.hasLayer(id) && angular.isDefined(layer)) {
                    map.removeLayer(layer);
                  }
                });
              };
 
              scope.hasLayer = function(id) {
-               var layers = map.getLayers().getArray();
-               angular.forEach(layers, function(layer) {
-                 if (angular.isDefined(layer.values_.id)) {
-                   if (id === layer.values_.id) {
-                     return true;
+               var res = false;
+               map.getLayers().forEach(function(layer) {
+                 if (angular.isDefined(layer.get('id'))) {
+                   if (id === layer.get('id')) {
+                     res = true;
                    }
                  }
                });
-               return false;
+               return res;
              };
 
              scope.replaceTopicInUrl = function(url) {
@@ -161,9 +161,9 @@
                      var lang = '&lang=' + $translate.uses();
                      var type = '&type=locations';
                      // FIXME check if queryable layer is in the map
-                     var features = '&features=';
+                     // var features = '&features=';
                      settings.url = scope.replaceTopicInUrl(settings.url);
-                     settings.url += bbox + lang + type + features;
+                     settings.url += bbox + lang + type;
                    },
                    filter: function(response) {
                      var results = response.results;
@@ -208,6 +208,8 @@
                    },
                    filter: function(response) {
                      var results = response.results;
+                     // hasLayerResults is used to control
+                     // the display of the footer
                      if (results.length === 0) {
                        scope.hasLayerResults = false;
                      } else {
