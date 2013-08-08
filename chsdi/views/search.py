@@ -10,19 +10,17 @@ from chsdi.lib import mortonspacekey as msk
 
 class Search(SearchValidation):
     ''' 
-        The config file is stored at /var/sig/shp/sphinx/local/etc/sphinx.conf
         The indexes are stored in /var/sig/shp/sphinx/data 
-        To update all the indexes: /var/sig/shp/sphinx/local/bin/indexer --config /var/sig/shp/sphinx/local/etc/sphinx.conf --rotate
-        To stop the deamon: /var/sig/shp/sphinx/local/bin/searchd --config /var/sig/shp/sphinx/local/etc/sphinx.conf --stop
-        To start the deamon: /var/sig/shp/sphinx/local/bin/searchd --config /var/sig/shp/sphinx/local/etc/sphinx.conf
-        This service always returns a maximum ranging between 30 and 30 + x*5 results, where x is the number of queryable layers.
-        More results can be retruned if serveral layers are 
-        queried for features. 
+        At the root of your chsdi3 folder:
+        To update all the indexes: /var/sig/shp/sphinx/local/bin/indexer --config sphinx/sphinx.conf --rotate
+        To stop the deamon: /var/sig/shp/sphinx/local/bin/searchd --config sphinx/sphinx.conf --stop
+        To start the deamon: /var/sig/shp/sphinx/local/bin/searchd --config sphinx/sphinx.conf
+        More results can be retruned if serveral layers are queried for features. 
     '''
 
     LIMIT = 30
     LAYER_LIMIT = 20
-    FEATURE_LIMIT = 5
+    FEATURE_LIMIT = 10
 
     def __init__(self, request):
         super(Search, self).__init__()
@@ -50,47 +48,34 @@ class Search(SearchValidation):
         if self.typeInfo == 'layers':
             self._layer_search()
         if self.featureIndexes is not None and self.typeInfo == 'locations':
-            limit = len(self.featureIndexes)*self.FEATURE_LIMIT + self.LIMIT
-            features = self._feature_search()
-            limit -= features
-        else:
-            limit = self.LIMIT
+            featuresCount = self._feature_search()
         if self.typeInfo == 'locations':
-            self._swiss_search(limit)
+            self._swiss_search(self.LIMIT)
         return self.results
 
     def _swiss_search(self, limit):
         # 20 addresses in general, priority according to list order
-        indexes = ('zipcode', 'district', 'kantone', 'gg25', 'sn25', 'parcel', 'address')
-        for idx in indexes:
-            if limit > 0:
-                self.sphinx.SetLimits(0, limit)
-                if self.quadindex is not None:
-                    searchText = self._query_detail('@detail')
-                    searchText += ' & @geom_quadindex ' + self.quadindex + '*'
-                else:
-                    searchText = self._query_detail('@detail')
-                temp = self.sphinx.Query(searchText, index=idx)['matches']
-                if len(temp) != 0:
-                    self.results['results'] += temp
-                limit -= len(temp)
-            else:
-                break
-
+        self.sphinx.SetLimits(0, limit)
+        self.sphinx.SetSortMode(sphinxapi.SPH_SORT_ATTR_ASC, 'rank')
         if self.quadindex is not None:
-            for idx in indexes:
-                # if the limit has not been reached yet, try to look outside the bbox
-                if limit > 0:
-                    self.sphinx.SetLimits(0, limit)
-                    searchText = self._query_detail('@detail')
-                    searchText += ' & @geom_quadindex !' + self.quadindex + '*'
-                    temp = self.sphinx.Query(searchText, index=idx)['matches']
-                    if len(temp) != 0:
-                        self.results['results'] += temp
-                    limit -= len(temp)
-                else:
-                    break
-             
+            searchText = self._query_detail('@detail')
+            searchText += ' & @geom_quadindex ' + self.quadindex + '*'
+        else:
+            searchText = self._query_detail('@detail')
+        temp = self.sphinx.Query(searchText, index='swisssearch')['matches']
+        # addresses within the bounding box come on top of the list
+        if len(temp) != 0:
+            self.results['results'] += temp
+        limit -= len(temp)
+
+        if self.quadindex is not None and limit > 0:
+            # if the limit has not been reached yet, try to look outside the bbox
+            self.sphinx.SetLimits(0, limit)
+            searchText = self._query_detail('@detail')
+            searchText += ' & @geom_quadindex !' + self.quadindex + '*'
+            temp = self.sphinx.Query(searchText, index='swisssearch')['matches']
+            if len(temp) != 0:
+               self.results['results'] += temp
 
     def _layer_search(self):
         # 10 features per layer are returned at max
