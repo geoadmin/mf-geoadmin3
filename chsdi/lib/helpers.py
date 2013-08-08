@@ -33,4 +33,8 @@ def round(val):
     return math.floor(val + 0.5)
 
 def remove_accents(input_str):
+    # TODO find a better way to treat those characters
+    input_str = input_str.replace('/', '')
+    input_str = input_str.replace('(', '')
+    input_str = input_str.replace(')', '')
     return ''.join(c for c in unicodedata.normalize('NFD', input_str) if unicodedata.category(c) != 'Mn')
