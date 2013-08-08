@@ -7,7 +7,7 @@
       ['$scope', 'gaGlobalOptions',
         function($scope, gaGlobalOptions) {
           $scope.options = {
-            defaultTopicId: 'ech',
+            defaultTopicId: 'inspire',
             url: gaGlobalOptions.serviceUrl + '/rest/services' +
              '?callback=JSON_CALLBACK'
           };
