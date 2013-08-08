@@ -1,0 +1,54 @@
+<div>
+  <form>
+    <input type="url" name="url" autocomplete="off"
+    placeholder="{{'choose_wms_url' | translate}}" ng-model="fileUrl" required />
+    <div class="open-wms-list icon-collapse"></div>
+    <button type="button" class="btn btn-primary bt-connect" ng-click="handleFileUrl()">{{'connect' | translate}}</button>
+    <div>{{wmsConstraintsMessage ? wmsConstraintsMessage : userMessage}}</div>
+  </form>
+  <div class="tables-container">
+    <table class="table-header table table-condensed">
+     <thead>
+        <tr>
+          <th class="add col-first"></th>
+          <th class="title">{{'title' | translate}}</th>
+        </tr>
+      </thead>
+    </table> 
+    <div class="table-content-container"> 
+      <table class="table-content table table-striped table-hover table-condensed">
+       <tbody>
+          <tr ng-repeat="layer in layers | orderBy:'title'" 
+             class="
+              {{($first) ? 'row-first ' : ''}}
+              {{(layerSelected.name == layer.name) ? 'success ' : ''}}  
+              {{(layerHovered.name == layer.name) ? 'pending ' : ''}}">   
+            <td class="add col-first">
+              <div class="{{layer.srsCompatible ? 'icon-thumbs-up' :
+                  'icon-thumbs-down'}}">
+              </div>
+            </td>
+            <td class="title" 
+              ng-mouseover="addLayerHovered(layer)" 
+              ng-mouseleave="removeLayerHovered()"
+              ng-click="toggleLayerSelected(layer)" >
+              {{layer.title}}
+            </td>
+          </tr>
+        </tbody>
+      </table>    
+    </div>
+    <div class="modal-backdrop fade in" ng-show="progress > 0 && progress < 100">
+      <div class="progress progress-striped active">
+        <div class="progress-bar" style="width: 100%;"></div>
+      </div>
+    </div> 
+  </div>
+  <div class="description-container">
+    <label>{{'description' | translate}}</label>
+    <textarea  placeholder="{{'description_instructions' |
+        translate}}" >{{(layerSelected) ? layerSelected.abstract : layerHovered.abstract}}</textarea>
+    <button type="button" class="btn btn-primary bt-addlayer"
+        ng-click="addLayerSelected()">{{'add_layer' | translate}}</button>
+  </div>
+</div>
