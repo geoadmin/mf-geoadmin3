@@ -2,6 +2,7 @@
 @dropdownBorder: #000000;
 @dropdownLinkColorHover: #FFFFFF;
 @dropdownLinkBackgroundHover: #666666;
+@suggestionsMaxHeight: 240px;
 
 #search, .tt-dropdown-menu {
     margin-top: 2em;
@@ -23,7 +24,7 @@
 }
 
 .tt-dropdown-menu {
-  font-size: 12px;
+  font-size: 11px;
   min-width: 160px;
   margin-top: 2px;
   padding: 5px 0;
@@ -46,8 +47,8 @@
 }
 
 .tt-dataset-locations .tt-suggestions, .tt-dataset-layers .tt-suggestions {
-  max-height: 250px;
-  overflow-y: scroll;
+  max-height: 180px;
+  overflow-y: auto;
 }
 
 .tt-dataset-layers {
