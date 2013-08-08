@@ -7,55 +7,52 @@
 
     this.$get = ['$compile', function($compile) {
 
-      var Popup = function() {
-           };
+      var Popup = function() {};
 
-      Popup.prototype.open = function(options) {
+      Popup.prototype.open = function(scope, options) {
 
-        // Destroy the popup if it exists
-        this.close();
-
-        if (!options || !options.scope || !options.content) {
+        if (!scope || !options || !options.content) {
           return;
         }
+        
+        // We create a new scope for easily destroy it
+        // then we attch it the popup options
+        this.scope = scope.$new();        
+        this.scope.options = options;
 
-
-        // Add the popup element to the HTML page
-        var popupElt = angular.element(
-          '<div ga-popup></div>'
+        // Add the popup element with its content to the HTML page
+        this.element = angular.element(
+          '<div ga-popup ga-popup-options="options" ga-draggable>' + options.content + '</div>'
         );
-        $(document.body).append(popupElt);
+        $(document.body).append(this.element);
+        
+        // Build the popup directive
+        var me = this;        
+        this.scope.options.close = function(){me.close();}; 
+        $compile(this.element)(this.scope);
+        this.scope.$apply();
 
-
-        //Build the popup
-        popupElt.html(options.content);
-
-        var me = this;
-        var scope = options.scope;
-        scope.popup = options;
-        scope.popup.close = function() {me.close();};
-        $compile(popupElt)(scope);
-        scope.$apply();
-
-        // Save the created scope and element
-        this.popupElt = popupElt.closest('.ga-popup');
-        this.popupScope = scope.$$childTail;
-        this.popupElt.show();
+        // Show the popup
+        this.element.show();
       };
 
       Popup.prototype.close = function() {
         // Destroy the created scope and element
-        if (this.popupElt) {
-          this.popupElt.remove();
+        if (this.element) {
+          this.element.remove();
         }
 
-        if (this.popupScope) {
-          this.popupScope.$destroy();
+        if (this.scope) {
+          this.scope.$destroy();
         }
       };
 
 
-      return new Popup();
+      return {
+        create : function() {
+          return  new Popup();
+        }
+      }
 
 
     }];

@@ -157,10 +157,9 @@
                  success: function(features) {
                    if (features[0] && features[0][0]) {
                      var pixel = evt.getPixel();
-                     gaPopup.open({
+                     gaPopup.create().open($scope, {
                        title: features[0][0].values_.name,
                        content: features[0][0].values_.description,
-                       scope: $scope,
                        x: pixel[0],
                        y: pixel[1]
                     });

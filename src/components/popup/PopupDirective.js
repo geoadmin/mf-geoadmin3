@@ -11,72 +11,59 @@
         function($compile) {
           return {
             restrict: 'A',
-            link: function(scope, element, attrs) {
-
-
-              if (!scope.popup) {
-                scope.popup = {
-                  title: 'No title',
-                  content: '<span>{{no_content | translate}}</span>'
-                };
-              }
-
-              if (attrs.gaPopupTitle) {
-                scope.popup.title = attrs.gaPopupTitle;
-              }
-
-              var elt = angular.element(
-                '<div class="popover ga-popup" ' +
-                    'ga-draggable=".ga-popup-title">' +
+            transclude: true,
+            scope: {
+              optionsFunc:"&gaPopupOptions", // Options from directive
+            },
+            template:
                   '<h4 class="popover-title ga-popup-title">' +
-                    '<span translate>{{popup.title | translate}}</span>' +
+                    '<span translate>{{options.title | translate}}</span>' +
                     '<button type="button" class="close" ng-click="close()">' +
                     'x</button>' +
                   '</h4>' +
-                  '<div class="popover-content ga-popup-content"></div>' +
-                '</div>');
-
-
-              // Wrap the element with the popup
-              var parent = element.parent();
-              parent.append(elt);
-              $compile(elt)(scope);
-              elt.find('.ga-popup-content').append(element);
-
-              // Move the popup to the correct position
-              elt.css({
-
-                left: ((scope.popup.x) ?
-                  scope.popup.x :
-                  parent.width() / 2 - elt.width() / 2),
-
-                top: ((scope.popup.y) ?
-                  scope.popup.y :
-                   150)
-              });
-
-              if (angular.isDefined(attrs.gaPopup)) {
-                scope.$watch(attrs.gaPopup, function(newVal, oldVal) {
-
-                  if (!angular.isDefined(newVal)) {
-                    elt.hide();
-                  }
-
-                  if (newVal != oldVal) {
-                    elt.toggle();
-                  }
-                });
-              }
-
-              if (scope.popup && scope.popup.close) {
-                scope.close = scope.popup.close;
-
-              } else {
-                scope.close = function() {
-                  elt.toggle();
+                  '<div class="popover-content ga-popup-content" ng-transclude></div>', 
+            
+            link: function(scope, element, attrs) {
+             
+              // Get the popup options
+              scope.options = scope.optionsFunc();
+              
+              if (!scope.options) {
+                scope.options = {
+                  title: '',
+                  content: ''
                 };
               }
 
+              // Add close popup function
+              scope.close = (scope.options.close) ?
+                  scope.options.close :
+                  function(){element.toggle();};
+
+              // Move the popup to the correct position
+              element.addClass('popover ga-popup');
+              element.css({
+
+                left: ((scope.options.x) ?
+                  scope.options.x :
+                  $(document.body).width() / 2 - element.width() / 2),
+
+                top: ((scope.options.y) ?
+                  scope.options.y :
+                   150)
+              });
+              
+              // Watch the shown property
+              if (angular.isDefined(attrs.gaPopup)) {
+                scope.$parent.$watch(
+                    attrs.gaPopup,
+                    function(newVal, oldVal) {
+                      if (newVal != oldVal) {
+                        element.toggle();
+                      }
+                    }
+                );
+              }
             }
           };
         }]);
