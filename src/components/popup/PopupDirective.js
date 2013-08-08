@@ -66,6 +66,14 @@
                     }
                 );
               }
+               
+              // Avoid keyboard event to be passed to the map
+              element.keydown(function(evt) {
+                evt.stopPropagation();
+              }).keyup(function(evt){
+                evt.stopPropagation(); 
+              }); 
+
             }
           };
         }]);
