@@ -323,6 +323,10 @@ class CatalogEchIt(Base, Catalog):
     __tablename__ = 'view_catalog_ech_it'
     __table_args__ = ({'schema': 're3'})
 
+class CatalogEchRm(Base, Catalog):
+    __tablename__ = 'view_catalog_ech_rm'
+    __table_args__ = ({'schema': 're3'})
+
 class CatalogEchEn(Base, Catalog):
     __tablename__ = 'view_catalog_ech_en'
     __table_args__ = ({'schema': 're3'})
