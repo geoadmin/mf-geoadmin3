@@ -79,7 +79,16 @@
   };
 
   function getLegend(ev, bodid) {
-    alert(bodid);
+    this.gaLayers.getMetaDataOfLayer(bodid)
+    .success(function(data) {
+      //FIXME: use popover or similar
+      alert(data);
+    })
+    .error(function() {
+      //FIXME: better error handling
+      var msg = 'Could not retrieve information for ' + bodid;
+      alert(msg);
+    });
     ev.preventDefault();
   };
 

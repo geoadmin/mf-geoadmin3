@@ -58,6 +58,13 @@
         }
       };
 
+      var getMetaDataUrl = function(topicId, lang, layerId) {
+        return 'http://mf-chsdi30t.bgdi.admin.ch/rest/services/' +
+               topicId + '/MapServer/' +
+               layerId + '/getlegend?lang=' +
+               lang + '&callback=JSON_CALLBACK';
+      };
+
       var Layers = function() {
         var currentTopicId;
         var layers;
@@ -141,6 +148,15 @@
           }
         });
 
+        /**
+         * Get Metadata of given layer id
+         * Uses current topic and language
+         * Returns a promise. Use accordingly
+        */
+        this.getMetaDataOfLayer = function(id) {
+          var url = getMetaDataUrl(currentTopicId, $translate.uses(), id);
+          return $http.jsonp(url);
+        };
       };
 
       return new Layers();
