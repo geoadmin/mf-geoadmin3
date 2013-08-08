@@ -507,6 +507,24 @@ index address
     enable_star = 1
 }
 
+index swisssearch
+{
+    type = plain
+    source = src_zipcode
+    source = src_district
+    source = src_kantone
+    source = src_gg25
+    source = src_sn25
+    source = src_parcel
+    source = src_address
+    path = /var/sig/shp/sphinx/data/swisssearch
+    docinfo = extern
+    charset_type = utf-8
+    min_infix_len = 1
+    infix_fields = detail, geom_quadindex
+    enable_star = 1
+}
+
 index layers_de
 {
     type = plain
@@ -514,7 +532,7 @@ index layers_de
     path = /var/sig/shp/sphinx/data/layers_de
     docinfo = extern
     charset_type = utf-8
-    min_infix_len = 3
+    min_infix_len = 1
     infix_fields = detail, layer, topics, staging
 }
 
@@ -525,7 +543,7 @@ index layers_fr
     path = /var/sig/shp/sphinx/data/layers_fr
     docinfo = extern
     charset_type = utf-8
-    min_infix_len = 3
+    min_infix_len = 1
     infix_fields = detail, layer, topics, staging
 }
 
@@ -536,7 +554,7 @@ index layers_en
     path = /var/sig/shp/sphinx/data/layers_en
     docinfo = extern
     charset_type = utf-8
-    min_infix_len = 3
+    min_infix_len = 1
     infix_fields = detail, layer, topics, staging
 }
 
@@ -547,7 +565,7 @@ index layers_it
     path = /var/sig/shp/sphinx/data/layers_it
     docinfo = extern
     charset_type = utf-8
-    min_infix_len = 3
+    min_infix_len = 1
     infix_fields = detail, layer, topics, staging
 }
 
@@ -558,7 +576,7 @@ index layers_rm
     path = /var/sig/shp/sphinx/data/layers_rm
     docinfo = extern
     charset_type = utf-8
-    min_infix_len = 3
+    min_infix_len = 1
     infix_fields = detail, layer, topics, staging
 }
 

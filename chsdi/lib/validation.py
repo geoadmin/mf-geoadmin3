@@ -13,7 +13,7 @@ class MapNameValidation(object):
     def __init__(self):
         self._mapName = None
         #FIXME Get dynamic list using the catalogs
-        self.availableMaps = ('api-free', 'api-notfree', 'are', 'bafu', 'bazl', 'blw', 'chsdi', 'cw-ga', 'ech', 'fuksender', 'geoadmin', 'geol', 'inspire', 'ivs', 'kgs', 'sachplan', 'swissmaponline', 'wms-bgdi', 'wms-swisstopowms')
+        self.availableMaps = ('api-free', 'api-notfree', 'are', 'bafu', 'bazl', 'blw', 'chsdi', 'cw-ga', 'ech', 'funksender', 'geoadmin', 'geol', 'inspire', 'ivs', 'kgs', 'nga', 'sachplan', 'swissmaponline', 'wms-bgdi', 'wms-swisstopowms')
 
     @property
     def mapName(self):
