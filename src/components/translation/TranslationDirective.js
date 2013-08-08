@@ -29,6 +29,20 @@
                 gaPermalink.updateParams({lang: value});
               });
 
+              scope.$on('gaTopicChange', function(event, topic) {
+                var hasLang = false;
+                angular.forEach(topic.langs, function(lang) {
+                  if (lang.value === $translate.uses()) {
+                    hasLang = true;
+                  }
+                });
+                if (!hasLang) {
+                  // lang not in topic, fallback to default code
+                  scope.lang = scope.options.fallbackCode;
+                }
+                scope.options.langs = topic.langs;
+              });
+
               scope.lang = gaPermalink.getParams().lang ||
                   ($window.navigator.userLanguage ||
                    $window.navigator.language).split('-')[0];
