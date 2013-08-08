@@ -14,21 +14,25 @@
         if (!scope || !options || !options.content) {
           return;
         }
-        
+
         // We create a new scope for easily destroy it
         // then we attch it the popup options
-        this.scope = scope.$new();        
+        this.scope = scope.$new();
         this.scope.options = options;
 
         // Add the popup element with its content to the HTML page
         this.element = angular.element(
-          '<div ga-popup ga-popup-options="options" ga-draggable>' + options.content + '</div>'
+          '<div ga-popup ' +
+               'ga-popup-options="options" ' +
+               'ga-draggable>' +
+             options.content +
+          '</div>'
         );
         $(document.body).append(this.element);
-        
+
         // Build the popup directive
-        var me = this;        
-        this.scope.options.close = function(){me.close();}; 
+        var me = this;
+        this.scope.options.close = function() {me.close();};
         $compile(this.element)(this.scope);
         this.scope.$apply();
 
@@ -49,10 +53,10 @@
 
 
       return {
-        create : function() {
-          return  new Popup();
+        create: function() {
+          return new Popup();
         }
-      }
+      };
 
 
     }];

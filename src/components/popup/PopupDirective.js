@@ -13,7 +13,7 @@
             restrict: 'A',
             transclude: true,
             scope: {
-              optionsFunc:"&gaPopupOptions", // Options from directive
+              optionsFunc: '&gaPopupOptions' // Options from directive
             },
             template:
                   '<h4 class="popover-title ga-popup-title">' +
@@ -21,13 +21,15 @@
                     '<button type="button" class="close" ng-click="close()">' +
                     'x</button>' +
                   '</h4>' +
-                  '<div class="popover-content ga-popup-content" ng-transclude></div>', 
-            
+                  '<div class="popover-content ga-popup-content" ' +
+                       'ng-transclude>' +
+                  '</div>',
+
             link: function(scope, element, attrs) {
-             
+
               // Get the popup options
               scope.options = scope.optionsFunc();
-              
+
               if (!scope.options) {
                 scope.options = {
                   title: '',
@@ -38,7 +40,7 @@
               // Add close popup function
               scope.close = (scope.options.close) ?
                   scope.options.close :
-                  function(){element.toggle();};
+                  function() {element.toggle();};
 
               // Move the popup to the correct position
               element.addClass('popover ga-popup');
@@ -52,7 +54,7 @@
                   scope.options.y :
                    150)
               });
-              
+
               // Watch the shown property
               if (angular.isDefined(attrs.gaPopup)) {
                 scope.$parent.$watch(
