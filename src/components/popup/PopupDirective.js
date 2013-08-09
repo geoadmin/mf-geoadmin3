@@ -39,7 +39,8 @@
               }
 
               // Add close popup function
-              scope.close = scope.options.close || (function() {element.toggle();});
+              scope.close = scope.options.close ||
+                            (function() {element.toggle();});
 
               // Move the popup to the correct position
               element.addClass('popover ga-popup');
