@@ -103,14 +103,70 @@
           </div>
           <div id="tools" class="collapse">
             <div class="accordion-inner">
-              <ul>
-                <li> 
-                 <a role="button" data-toggle="modal" href="#import-wms-modal" translate>WMS</a>
-                </li>
-                <li>
-                  <a role="button" data-toggle="modal" href="#import-kml-modal" translate>KML</a>
-                </li>
-              </ul>
+            
+              <!-- Tools accordion -->
+              <div class="accordion" id="tools-accordion">
+                
+                <!-- Import -->
+                <div class="accordion-group">
+                  <div class="accordion-heading">
+                    <a class="accordion-toggle collapsed" data-toggle="collapse"
+                       data-parent="#tools-accordion" href="#import">
+                      <i class="icon-collapse-alt"></i><span translate>import</span>
+                    </a>
+                  </div>
+                  <div id="import" class="accordion-body collapse">
+                    <div class="accordion-inner">
+                      <ul>
+                        <li>
+                          <i class="icon-external-link"></i>  
+                          <div  role="button" data-toggle="modal"
+                                href="#import-wms-modal" translate>WMS</div>
+                        </li>
+                        <li> 
+                          <i class="icon-file"></i>  
+                          <div role="button" data-toggle="modal"
+                               href="#import-kml-modal" translate>KML</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+
+                <!-- Measure -->
+                <div class="accordion-group">
+                  <div class="accordion-heading">
+                    <a class="accordion-toggle collapsed" data-toggle="collapse"
+                       data-parent="#tools-accordion" href="#measure" >
+                      <i class="icon-collapse-alt"></i><span translate>measure</span>
+                    </a>
+                  </div>
+                  <div id="measure" class="accordion-body collapse">
+                    <div class="accordion-inner">
+                      Under construction ...
+                    </div>
+                  </div>
+                </div>
+
+
+                <!-- Drawing -->
+                <div class="accordion-group">
+                  <div class="accordion-heading">
+                    <a class="accordion-toggle collapsed" data-toggle="collapse"
+                       data-parent="#tools-accordion" href="#drawing" >
+                      <i class="icon-collapse-alt"></i><span translate>drawing</span>
+                    </a>
+                  </div>
+                  <div id="drawing" class="accordion-body collapse">
+                    <div class="accordion-inner">
+                      Under construction ...
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- end tools accordion -->
+                        
             </div>
           </div>
         </div> <!-- .accordion-group -->

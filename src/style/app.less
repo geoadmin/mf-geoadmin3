@@ -279,6 +279,51 @@
     text-align: left;
 }
 
+#tools-accordion {
+  
+    .accordion-toggle {
+         padding-left: 0px;
+         padding-right: 0px;
+        
+         &.collapsed {
+              background-color: transparent;
+              color: #000;
+              font-weight: bold;
+              border-bottom: none;
+
+              & i.icon-collapse-alt::before {
+                  content: "\f116";
+              }
+         }
+  
+         span {
+             margin-left: 10px;
+         }
+    }
+
+    ul {
+        list-style: none;
+        padding: 0px;
+
+        li {
+            cursor: pointer;
+            height: 25px;
+            
+            i {
+                width: 15px;
+                display: inline-block;
+            }
+              
+            div {
+                display: inline-block;
+                margin: 2px 10px;
+                padding: 0px 10px;
+                border-left: 2px solid lightgray; 
+            }
+        }
+    }
+}
+
 // ****** MODAL
 .modal {
     overflow: auto;
