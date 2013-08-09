@@ -1,31 +1,36 @@
 <div class="share-icons">
     <a class="share-icon"
+       target="_blank"
        data-original-title="{{'qrcode_tooltip' | translate}}"
        ng-href="{{qrcodegeneratorPath}}?url={{encodedPermalinkHref}}">
       <i class="icon-qrcode"></i>
     </a>
 
     <a class="share-icon"
+       target="_blank"
        data-original-title="{{'twitter_tooltip' | translate}}"
        ng-href="https://twitter.com/intent/tweet?url={{encodedPermalinkHref}}&text={{encodedDocumentTitle}}">
       <i class="icon-twitter"></i>
     </a>
 
     <a class="share-icon"
+       target="_blank"
        data-original-title="{{'facebook_tooltip' | translate}}"
        ng-href="http://www.facebook.com/sharer.php?u={{encodedPermalinkHref}}&t={{encodedDocumentTitle}}">
       <i class="icon-facebook"></i>
     </a>
 
     <a class="share-icon"
+       target="_blank"
        data-original-title="{{'google_plus_tooltip' | translate}}"
        ng-href="https://plus.google.com/share?url={{encodedPermalinkHref}}">
       <i class="icon-google-plus"></i>
     </a>
 
     <a class="share-icon"
+       target="_blank"
        data-original-title="{{'mail_tooltip' | translate}}"
-       ng-href="mailto:?subject={{encodedDocumentTitle}}&body={{encodedPermalinkHref}}">
+       ng-href="mailto:?body={{encodedPermalinkHref}}">
       <i class="icon-envelope-alt"></i>
     </a>
 </div>
