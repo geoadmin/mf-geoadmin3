@@ -13,8 +13,8 @@
             restrict: 'A',
             transclude: true,
             scope: {
-              optionsFunc: '&gaPopupOptions', // Options from directive
-              toggle: '=gaPopup'
+              toggle: '=gaPopup',
+              optionsFunc: '&gaPopupOptions' // Options from directive
             },
             template:
                   '<h4 class="popover-title ga-popup-title">' +
@@ -45,26 +45,23 @@
               // Move the popup to the correct position
               element.addClass('popover ga-popup');
               element.css({
+                left: scope.options.x ||
+                      $(document.body).width() / 2 - element.width() / 2,
 
-                left: ((scope.options.x) ?
-                  scope.options.x :
-                  $(document.body).width() / 2 - element.width() / 2),
-
-                top: ((scope.options.y) ?
-                  scope.options.y :
-                   150)
+                top: scope.options.y || 150
               });
 
               // Watch the shown property
-                scope.$watch('toggle',
-                    function(newVal, oldVal) {
-                      if (newVal != oldVal) {
-                        element.toggle();
-                      }
+              scope.$watch(
+                  'toggle',
+                  function(newVal, oldVal) {
+                    if (newVal != oldVal) {
+                      element.toggle();
                     }
-                );
+                  }
+              );
 
-              // Avoid keyboard events to be passed to the map
+              // Avoid keyboard events to be passed outside the popup
               element.keydown(function(evt) {
                 evt.stopPropagation();
               }).keyup(function(evt) {

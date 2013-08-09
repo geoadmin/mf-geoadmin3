@@ -7,18 +7,11 @@
 
     this.$get = ['$compile', function($compile) {
 
-      var Popup = function() {};
+      var Popup = function(options) {
 
-      Popup.prototype.open = function(scope, options) {
-
-        if (!scope || !options || !options.content) {
+        if (!options || !options.content) {
           return;
         }
-
-        // We create a new scope for easily destroy it
-        // then we attch it the popup options
-        this.scope = scope.$new();
-        this.scope.options = options;
 
         // Add the popup element with its content to the HTML page
         this.element = angular.element(
@@ -28,13 +21,29 @@
              options.content +
           '</div>'
         );
-        $(document.body).append(this.element);
+
+        this.options = options;
+      };
+
+      Popup.prototype.open = function(scope) {
+
+        if (!scope || !this.options || !this.options.content) {
+          return;
+        }
+
+        // We create a new scope for easily destroy it
+        // then we attach it the popup options
+        this.scope = scope.$new();
+        this.scope.options = this.options;
 
         // Build the popup directive
         var me = this;
         this.scope.options.close = function() {me.close();};
         $compile(this.element)(this.scope);
         this.scope.$apply();
+
+        // Attach the element to the body
+        $(document.body).append(this.element);
 
         // Show the popup
         this.element.show();
@@ -53,8 +62,8 @@
 
 
       return {
-        create: function() {
-          return new Popup();
+        create: function(options) {
+          return new Popup(options);
         }
       };
 
