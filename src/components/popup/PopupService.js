@@ -22,28 +22,24 @@
           '</div>'
         );
 
+        var popup = this;
         this.options = options;
+        this.options.close = function() {popup.close();};
       };
 
       Popup.prototype.open = function(scope) {
 
-        if (!scope || !this.options || !this.options.content) {
-          return;
+        // We create a new scope then compile the element
+        if (!this.scope) {
+          this.scope = scope.$new();
+          this.scope.options = this.options;
+          $compile(this.element)(this.scope);
         }
 
-        // We create a new scope for easily destroy it
-        // then we attach it the popup options
-        this.scope = scope.$new();
-        this.scope.options = this.options;
-
-        // Build the popup directive
-        var me = this;
-        this.scope.options.close = function() {me.close();};
-        $compile(this.element)(this.scope);
-        this.scope.$apply();
-
-        // Attach the element to the body
-        $(document.body).append(this.element);
+        // Attach the element to the body if needed
+        if (this.element.parent().length == 0) {
+          $(document.body).append(this.element);
+        }
 
         // Show the popup
         this.element.show();
@@ -57,6 +53,7 @@
 
         if (this.scope) {
           this.scope.$destroy();
+          this.scope = null;
         }
       };
 
@@ -66,9 +63,6 @@
           return new Popup(options);
         }
       };
-
-
     }];
-
   });
 })();

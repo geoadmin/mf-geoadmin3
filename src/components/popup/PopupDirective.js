@@ -18,7 +18,7 @@
             },
             template:
                   '<h4 class="popover-title ga-popup-title">' +
-                    '<span translate>{{options.title | translate}}</span>' +
+                    '<span translate>{{options.title}}</span>' +
                     '<button type="button" class="close" ng-click="close()">' +
                     'x</button>' +
                   '</h4>' +
@@ -33,8 +33,7 @@
 
               if (!scope.options) {
                 scope.options = {
-                  title: '',
-                  content: ''
+                  title: ''
                 };
               }
 

@@ -155,14 +155,18 @@
                  pixel: evt.getPixel(),
                  layers: [vector],
                  success: function(features) {
-                   if (features[0] && features[0][0]) {
+                   if (features[0] && features[0][0] &&
+                       features[0][0].get('description')) {
+                     var feature = features[0][0];
                      var pixel = evt.getPixel();
-                     gaPopup.create({
-                       title: features[0][0].get('name'),
-                       content: features[0][0].get('description'),
-                       x: pixel[0],
-                       y: pixel[1]
-                    }).open($scope);
+                     $scope.$apply(function() {
+                       gaPopup.create({
+                         title: feature.get('name'),
+                         content: feature.get('description'),
+                         x: pixel[0],
+                         y: pixel[1]
+                       }).open($scope);
+                     });
                    }
                  }
                });
