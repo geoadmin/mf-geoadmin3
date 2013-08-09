@@ -132,10 +132,6 @@
                return res;
              };
 
-             scope.replaceTopicInUrl = function(url) {
-               return url.replace(options.topicPlaceHolder, currentTopic);
-             };
-
              scope.counter = 0;
 
              var taElt = $(element).find('input').typeahead([
@@ -162,7 +158,8 @@
                      var type = '&type=locations';
                      // FIXME check if queryable layer is in the map
                      // var features = '&features=';
-                     settings.url = scope.replaceTopicInUrl(settings.url);
+                     settings.url = options.applyTopicToUrl(settings.url,
+                                                            currentTopic);
                      settings.url += bbox + lang + type;
                    },
                    filter: function(response) {
@@ -203,7 +200,8 @@
                    beforeSend: function(jqXhr, settings) {
                      var lang = 'lang=' + $translate.uses();
                      var type = '&type=layers';
-                     settings.url = scope.replaceTopicInUrl(settings.url);
+                     settings.url = options.applyTopicToUrl(settings.url,
+                                                            currentTopic);
                      settings.url += '&' + lang + type;
                    },
                    filter: function(response) {

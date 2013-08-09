@@ -6,12 +6,14 @@
   module.controller('GaSearchController',
       ['$scope', 'gaGlobalOptions',
         function($scope, gaGlobalOptions) {
-          var topicPlaceHolder = 'DUMMYTOPIC';
+          var topicPlaceHolder = '--DUMMYTOPIC--';
          
           $scope.options = {
-            topicPlaceHolder: topicPlaceHolder,
             serviceUrl: gaGlobalOptions.serviceUrl +  '/rest/services/' + 
-                        topicPlaceHolder + '/SearchServer?searchText=%QUERY'
+                        topicPlaceHolder + '/SearchServer?searchText=%QUERY',
+            applyTopicToUrl: function (url, topic) {
+              return url.replace(topicPlaceHolder, topic);
+            }
             };
         }]);
 
