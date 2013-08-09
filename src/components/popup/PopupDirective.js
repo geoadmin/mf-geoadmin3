@@ -13,7 +13,8 @@
             restrict: 'A',
             transclude: true,
             scope: {
-              optionsFunc: '&gaPopupOptions' // Options from directive
+              optionsFunc: '&gaPopupOptions', // Options from directive
+              toggle: '=gaPopup'
             },
             template:
                   '<h4 class="popover-title ga-popup-title">' +
@@ -38,9 +39,7 @@
               }
 
               // Add close popup function
-              scope.close = (scope.options.close) ?
-                  scope.options.close :
-                  function() {element.toggle();};
+              scope.close = scope.options.close || (function() {element.toggle();});
 
               // Move the popup to the correct position
               element.addClass('popover ga-popup');
@@ -56,16 +55,13 @@
               });
 
               // Watch the shown property
-              if (angular.isDefined(attrs.gaPopup)) {
-                scope.$parent.$watch(
-                    attrs.gaPopup,
+                scope.$watch('toggle',
                     function(newVal, oldVal) {
                       if (newVal != oldVal) {
                         element.toggle();
                       }
                     }
                 );
-              }
 
               // Avoid keyboard events to be passed to the map
               element.keydown(function(evt) {
