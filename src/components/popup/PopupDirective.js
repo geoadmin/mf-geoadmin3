@@ -59,14 +59,6 @@
                     }
                   }
               );
-
-              // Avoid keyboard events to be passed outside the popup
-              element.keydown(function(evt) {
-                evt.stopPropagation();
-              }).keyup(function(evt) {
-                evt.stopPropagation();
-              });
-
             }
           };
         }]);

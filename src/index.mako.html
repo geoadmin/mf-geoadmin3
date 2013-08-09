@@ -117,15 +117,15 @@
                   <div id="import" class="accordion-body collapse">
                     <div class="accordion-inner">
                       <ul>
+                        <!-- We can't use translate directive for these links, see:
+                        https://github.com/PascalPrecht/angular-translate/issues/129 -->  
                         <li>
                           <i class="icon-external-link"></i>  
-                          <a ng-click="importWmsPopupShown = (importWmsPopupShown) ?
-                            false:true">{{'wms' | translate}}</a>
+                          <a href="" ng-click="importWmsPopupShown = !importWmsPopupShown">{{'wms' | translate}}</a>
                         </li>
                         <li> 
                           <i class="icon-file"></i>  
-                          <a ng-click="importKmlPopupShown = (importKmlPopupShown) ?
-                            false:true">>{{'kml' | translate}}</a>
+                          <a href=""  ng-click="importKmlPopupShown = !importKmlPopupShown">{{'kml' | translate}}</a>
                         </li>
                       </ul>
                     </div>
