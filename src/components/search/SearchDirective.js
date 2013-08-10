@@ -144,17 +144,19 @@
                    return template;
                  },
                  remote: {
-                   url: options.serviceUrl + '&type=locations',
+                   url: options.serviceUrl + 'type=locations',
                    dataType: 'jsonp',
                    cache: false,
-                   beforeSend: function(jqXhr, settings) {
+                   replace: function(url, searchText) {
+                     var queryText = '&searchText=' + searchText;
                      var bbox = '&bbox=' + getBBoxParameters(map);
                      var lang = '&lang=' + $translate.uses();
                      // FIXME check if queryable layer is in the map
                      // var features = '&features=';
-                     settings.url = options.applyTopicToUrl(settings.url,
-                                                            currentTopic);
-                     settings.url += bbox + lang;
+                     url = options.applyTopicToUrl(url,
+                                                  currentTopic);
+                     url += queryText + bbox + lang;
+                     return url;
                    },
                    filter: function(response) {
                      var results = response.results;
@@ -188,14 +190,16 @@
                    return template;
                  },
                  remote: {
-                   url: options.serviceUrl + '&type=layers',
+                   url: options.serviceUrl + 'type=layers',
                    dataType: 'jsonp',
                    cache: false,
-                   beforeSend: function(jqXhr, settings) {
+                   replace: function(url, searchText) {
+                     var queryText = '&searchText=' + searchText;
                      var lang = '&lang=' + $translate.uses();
-                     settings.url = options.applyTopicToUrl(settings.url,
-                                                            currentTopic);
-                     settings.url += lang;
+                     url = options.applyTopicToUrl(url,
+                                                  currentTopic);
+                     url += queryText + lang;
+                     return url;
                    },
                    filter: function(response) {
                      var results = response.results;
@@ -240,6 +244,7 @@
 
              var viewDropDown = $(taElt).data('ttView').dropdownView;
              viewDropDown.on('suggestionsRendered', function(event) {
+                 // Only for layer search at the moment
                  var elements = angular.element('.tt-dataset-layers');
                  $compile(elements)(scope);
                  counter = 0;

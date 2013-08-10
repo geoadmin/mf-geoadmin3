@@ -10,7 +10,7 @@
          
           $scope.options = {
             serviceUrl: gaGlobalOptions.serviceUrl +  '/rest/services/' + 
-                        topicPlaceHolder + '/SearchServer?searchText=%QUERY',
+                        topicPlaceHolder + '/SearchServer?',
             applyTopicToUrl: function (url, topic) {
               return url.replace(topicPlaceHolder, topic);
             }
