@@ -77,11 +77,7 @@
              options: '=gaSearchOptions',
              map: '=gaSearchMap'
            },
-           template:
-           '<div><input id="search" class="input-small" type="text" ' +
-           'placeholder="Search for a location or a map information...">' +
-           '<div class="deleteicon" ng-click="clearInput()" >' +
-           '<i class="icon-remove-sign"></i></div></div>',
+           templateUrl: 'components/search/partials/search.html',
            link: function(scope, element, attrs) {
              var map = scope.map;
              var options = scope.options;
