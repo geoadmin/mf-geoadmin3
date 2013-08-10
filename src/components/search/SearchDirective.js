@@ -9,11 +9,9 @@
          var currentTopic,
              footer = [
           '<div id="search-footer">',
-          '<div style="float: left; ',
-          'padding-top: 10px; padding-left: 20px;">',
+          '<div class="footer-left">',
           '<b>Please help me</b></div>',
-          '<div style="float: right; padding-right: 20px;">',
-          '<div>',
+          '<div class="footer-right"><div>',
           '<a class="share-icon" ',
           'title="Give us a call" ',
           'ng-click="getHref()" ',
