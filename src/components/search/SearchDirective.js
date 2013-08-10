@@ -82,15 +82,15 @@
              var map = scope.map;
              var options = scope.options;
 
-             var footer_template = angular.element(footer);
-             $compile(footer_template)(scope);
+             var footerTemplate = angular.element(footer);
+             $compile(footerTemplate)(scope);
 
              scope.getHref = function() {
-              // set those values in options only on mouseover or click
-              scope.encodedPermalinkHref =
-              encodeURIComponent(gaPermalink.getHref());
-              scope.encodedDocumentTitle =
-              encodeURIComponent(document.title);
+               // set those values in options only on mouseover or click
+               scope.encodedPermalinkHref =
+               encodeURIComponent(gaPermalink.getHref());
+               scope.encodedDocumentTitle =
+               encodeURIComponent(document.title);
              };
 
              scope.showLegend = function() {
@@ -99,7 +99,7 @@
 
              scope.addLayer = function(id) {
                gaLayers.getOlLayerById(id).then(function(layer) {
-                 if (!scope.hasLayer(id) && angular.isDefined(layer)) {
+                 if (!hasLayer(id) && angular.isDefined(layer)) {
                    map.addLayer(layer);
                  }
                  if (!angular.isDefined(layer)) {
@@ -110,13 +110,13 @@
 
              scope.removeLayer = function(id) {
                gaLayers.getOlLayerById(id).then(function(layer) {
-                 if (scope.hasLayer(id) && angular.isDefined(layer)) {
+                 if (hasLayer(id) && angular.isDefined(layer)) {
                    map.removeLayer(layer);
                  }
                });
              };
 
-             scope.hasLayer = function(id) {
+             var hasLayer = function(id) {
                var res = false;
                map.getLayers().forEach(function(layer) {
                  if (angular.isDefined(layer.get('id'))) {
@@ -128,7 +128,8 @@
                return res;
              };
 
-             scope.counter = 0;
+             var hasLayerResults;
+             var counter = 0;
 
              var taElt = $(element).find('input').typeahead([
                {
@@ -169,13 +170,13 @@
                },
                {
                  header: '<div class="tt-header-mapinfos">Map Infos:</div>',
-                 footer: footer_template,
+                 footer: footerTemplate,
                  name: 'layers',
                  timeout: 20,
                  valueKey: 'inputVal',
                  limit: 20,
                  template: function(context) {
-                   var attrName = 'attr_' + scope.counter.toString();
+                   var attrName = 'attr_' + counter.toString();
                    var template = '<div class="tt-search" ng-init="' +
                    attrName + '=\'' + context.attrs.layer + '\';" ' +
                    'ng-mouseover="addLayer(' + attrName + ')" ' +
@@ -185,7 +186,7 @@
                    template += '>' + label + '<i id="legend-open" ' +
                    'href="#legend" ng-click="showLegend()"' +
                    'class="icon-info-sign"> </i></div>';
-                   scope.counter += 1;
+                   counter += 1;
                    return template;
                  },
                  remote: {
@@ -203,9 +204,9 @@
                      // hasLayerResults is used to control
                      // the display of the footer
                      if (results.length === 0) {
-                       scope.hasLayerResults = false;
+                       hasLayerResults = false;
                      } else {
-                       scope.hasLayerResults = true;
+                       hasLayerResults = true;
                      }
                      return $.map(results, function(val) {
                        val.inputVal = val.attrs.label
@@ -243,12 +244,12 @@
              viewDropDown.on('suggestionsRendered', function(event) {
                  var elements = angular.element('.tt-dataset-layers');
                  $compile(elements)(scope);
-                 scope.counter = 0;
+                 counter = 0;
 
                  // Display footer but hide suggestions and header
                  var children = elements.children();
                  if (children.length !== 0) {
-                   if (!scope.hasLayerResults) {
+                   if (!hasLayerResults) {
                      children[0].style.display = 'none';
                      children[1].style.display = 'none';
                    } else {
