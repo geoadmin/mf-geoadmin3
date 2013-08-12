@@ -47,27 +47,76 @@
       };
 
       var Layers = function() {
-        var promise;
         var currentTopicId;
+        var layers;
 
         /**
-         * Load layers for a given topic and language.
+         * Load layers for a given topic and language. Return a promise.
          */
         var loadForTopic = this.loadForTopic = function(topicId, lang) {
           currentTopicId = topicId;
 
-          var deferred = $q.defer();
           var url = getTopicUrl(topicId, lang);
 
-          $http.jsonp(url).success(function(data, status) {
-            deferred.resolve(data);
-            $rootScope.$broadcast('gaLayersChange', data);
-          }).error(function(data, status) {
+          var promise = $http.jsonp(url);
+          promise.success(function(data, status) {
+            layers = data.layers;
+            $rootScope.$broadcast('gaLayersChange');
+          }).error(function(data, satus) {
+            layers = undefined;
             currentTopicId = undefined;
-            deferred.reject();
           });
 
-          promise = deferred.promise;
+          return promise;
+        };
+
+        /**
+         * Return an ol.layer.Layer object for a layer id.
+         */
+        this.getOlLayerById = function(id) {
+          var layer = layers[id];
+          var olLayer = layer.olLayer;
+          var attribution = '&copy; Data: ' + layer.attribution;
+          if (!angular.isDefined(olLayer)) {
+            if (layer.type == 'wmts') {
+              var wmtsUrl = wmtsGetTileUrl.replace('{Layer}', id).
+                            replace('{Format}', layer.format);
+
+              olLayer = new ol.layer.TileLayer({
+                source: new ol.source.WMTS({
+                  attributions: [
+                    new ol.Attribution(attribution)
+                  ],
+                  dimensions: {
+                    'Time': layer.timestamps[0]
+                  },
+                  projection: 'EPSG:21781',
+                  requestEncoding: 'REST',
+                  tileGrid: gaTileGrid.get(layer.resolutions),
+                  url: wmtsUrl
+                })
+              });
+              layer.olLayer = olLayer;
+            }
+          }
+          return olLayer;
+        };
+
+        /**
+         * Return the list of background layers. The returned
+         * objects are object literals.
+         */
+        this.getBackgroundLayers = function() {
+          var backgroundLayers = [];
+          angular.forEach(layers, function(layer, id) {
+            if (layer.background === true) {
+              var backgroundLayer = angular.extend({
+                id: id
+              }, layer);
+              backgroundLayers.push(backgroundLayer);
+            }
+          });
+          return backgroundLayers;
         };
 
         $rootScope.$on('gaTopicChange', function(event, topic) {
@@ -81,66 +130,9 @@
           }
         });
 
-        /**
-         * Return an ol.layer.Layer object for a layer id.
-         */
-        this.getOlLayerById = function(id) {
-          return promise.then(function(data) {
-            var layers = data.layers;
-            var layer = layers[id];
-            var olLayer = layer.olLayer;
-            var attribution = '&copy; Data: ' + layer.attribution;
-            if (!angular.isDefined(olLayer)) {
-              if (layer.type == 'wmts') {
-                var wmtsUrl = wmtsGetTileUrl.replace('{Layer}', id).
-                              replace('{Format}', layer.format);
-
-                olLayer = new ol.layer.TileLayer({
-                  source: new ol.source.WMTS({
-                    attributions: [
-                      new ol.Attribution(attribution)
-                    ],
-                    dimensions: {
-                      'Time': layer.timestamps[0]
-                    },
-                    projection: 'EPSG:21781',
-                    requestEncoding: 'REST',
-                    tileGrid: gaTileGrid.get(layer.resolutions),
-                    url: wmtsUrl
-                  })
-                });
-                layer.olLayer = olLayer;
-              }
-            }
-            return olLayer;
-          });
-        };
-
-        /**
-         * Return the list of background layers. The returned
-         * objects are object literals.
-         */
-        this.getBackgroundLayers = function() {
-          return promise.then(function(data) {
-            var backgroundLayers = [];
-            var layers = data.layers;
-            angular.forEach(layers, function(layer, id) {
-              if (layer.background === true) {
-                var backgroundLayer = angular.extend({
-                  id: id
-                }, layer);
-                backgroundLayers.push(backgroundLayer);
-              }
-            });
-            return backgroundLayers;
-          });
-        };
-
       };
 
-      var layers = new Layers();
-
-      return layers;
+      return new Layers();
     }];
 
   });
