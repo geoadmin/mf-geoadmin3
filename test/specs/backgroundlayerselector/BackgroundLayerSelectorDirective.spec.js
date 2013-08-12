@@ -54,7 +54,7 @@ describe('ga_backgroundlayerselector_directive', function() {
     expect(select).not.to.be(undefined);
 
     var options = $(select).find('option');
-    expect(options.length).to.equal(2);
+    expect(options.length).to.equal(3);
 
     expect($(options[0]).text()).to.equal('Foo');
     expect($(options[1]).text()).to.equal('Bar');
