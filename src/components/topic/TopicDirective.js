@@ -37,7 +37,8 @@
             });
 
             scope.setActiveTopic = function(topicId) {
-              for (var i = 0, len = scope.topics.length; i < len; i++) {
+              var i, len = scope.topics.length;
+              for (i = 0; i < len; i++) {
                 var topic = scope.topics[i];
                 if (topic.id == topicId) {
                   gaPermalink.updateParams({topic: topic.id});
