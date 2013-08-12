@@ -41,7 +41,7 @@
               for (i = 0; i < len; i++) {
                 var topic = scope.topics[i];
                 if (topic.id == topicId) {
-                  gaPermalink.updateParams({topic: topic.id});
+                  gaPermalink.updateParams({topic: topicId});
                   $rootScope.$broadcast('gaTopicChange', topic);
                   return true;
                 }
