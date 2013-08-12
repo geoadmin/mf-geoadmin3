@@ -85,7 +85,7 @@
           });
 
           $scope.map = map;
-          gaLayers.loadForTopic('inspire');
+          gaLayers.loadForTopic('inspire', 'en');
           gaLayers.getOlLayerById('ch.swisstopo.swissimage').then(function(layer) {
             map.addLayer(layer);
           });

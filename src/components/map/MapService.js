@@ -48,37 +48,37 @@
 
       var Layers = function() {
         var promise;
-        var me = this;
-        var currentTopicId, currentLang;
+        var currentTopicId;
 
         /**
-         * Load layers for a given topic and a specific language.
+         * Load layers for a given topic and language.
          */
-        this.loadForTopic = function(topicId, lang) {
-          if (currentTopicId !== topicId || currentLang !== lang) {
-            currentTopicId = angular.isDefined(topicId) ?
-                topicId : currentTopicId;
-            currentLang = angular.isDefined(lang) ? lang : $translate.uses();
-            var deferred = $q.defer();
-            var url = getTopicUrl(currentTopicId, currentLang);
+        var loadForTopic = this.loadForTopic = function(topicId, lang) {
+          currentTopicId = topicId;
 
-            $http.jsonp(url).success(function(data, status) {
-              deferred.resolve(data);
-              $rootScope.$broadcast('gaLayersChange', data);
-            }).error(function(data, status) {
-              deferred.reject();
-            });
+          var deferred = $q.defer();
+          var url = getTopicUrl(topicId, lang);
 
-            promise = deferred.promise;
-          }
+          $http.jsonp(url).success(function(data, status) {
+            deferred.resolve(data);
+            $rootScope.$broadcast('gaLayersChange', data);
+          }).error(function(data, status) {
+            currentTopicId = undefined;
+            deferred.reject();
+          });
+
+          promise = deferred.promise;
         };
 
         $rootScope.$on('gaTopicChange', function(event, topic) {
-          me.loadForTopic(topic.id);
+          loadForTopic(topic.id, $translate.uses());
         });
 
-        $rootScope.$on('translationChangeSuccess', function(event, lang) {
-          me.loadForTopic(me.currentTopicId, lang);
+        $rootScope.$on('translationChangeSuccess', function(event) {
+          // do nothing if there's no topic set
+          if (angular.isDefined(currentTopicId)) {
+            loadForTopic(currentTopicId, $translate.uses());
+          }
         });
 
         /**
