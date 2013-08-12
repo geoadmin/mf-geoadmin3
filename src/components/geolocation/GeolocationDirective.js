@@ -40,6 +40,7 @@
               source: source,
               start: start
             });
+            var bounce;
             if (first) {
               var accuracy = geolocation.getAccuracy();
               var extent = [
@@ -53,7 +54,7 @@
                 (extent[1] - extent[0]) / size[0],
                 (extent[3] - extent[2]) / size[1]);
               resolution = view.constrainResolution(resolution, 0, 0);
-              var bounce = ol.animation.bounce({
+              bounce = ol.animation.bounce({
                 duration: duration,
                 resolution: Math.max(view.getResolution(), dist / 1000,
                     // needed to don't have up an down and up again in zoom
@@ -70,7 +71,7 @@
               view.setResolution(resolution);
             }
             else {
-              var bounce = ol.animation.bounce({
+              bounce = ol.animation.bounce({
                 duration: duration,
                 resolution: Math.max(view.getResolution(), dist / 1000),
                 start: start
