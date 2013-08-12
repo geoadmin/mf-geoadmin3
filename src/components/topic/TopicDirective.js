@@ -26,7 +26,7 @@
                 // topic not set, fallback to default
                 scope.setActiveTopic(options.defaultTopicId);
               }
-            };
+            }
 
             $http.jsonp(options.url).then(function(result) {
               scope.topics = result.data.topics;
