@@ -7,8 +7,7 @@
   ]);
 
   module.directive('gaTranslationSelector',
-      ['$rootScope', '$translate', 'gaPermalink',
-        function($rootScope, $translate, gaPermalink) {
+      ['$translate', 'gaPermalink', function($translate, gaPermalink) {
         return {
           restrict: 'A',
           replace: true,
