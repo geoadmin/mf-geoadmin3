@@ -31,15 +31,15 @@
           if (dest) {
             var source = view.getCenter();
             var dist = Math.sqrt(Math.pow(source[0] - dest[0], 2),
-                         Math.pow(source[1] - dest[1], 2));
-            var duration = Math.sqrt(500 + dist / view.getResolution() *
-                1000);
+                Math.pow(source[1] - dest[1], 2));
+            var duration = Math.sqrt(500 + dist / view.getResolution() * 1000);
             var start = +new Date();
             var pan = ol.animation.pan({
               duration: duration,
               source: source,
               start: start
             });
+            var bounce;
             if (first) {
               var accuracy = geolocation.getAccuracy();
               var extent = [
@@ -53,7 +53,7 @@
                 (extent[1] - extent[0]) / size[0],
                 (extent[3] - extent[2]) / size[1]);
               resolution = view.constrainResolution(resolution, 0, 0);
-              var bounce = ol.animation.bounce({
+              bounce = ol.animation.bounce({
                 duration: duration,
                 resolution: Math.max(view.getResolution(), dist / 1000,
                     // needed to don't have up an down and up again in zoom
@@ -68,9 +68,8 @@
               map.addPreRenderFunctions([pan, zoom, bounce]);
               view.setCenter(dest);
               view.setResolution(resolution);
-            }
-            else {
-              var bounce = ol.animation.bounce({
+            } else {
+              bounce = ol.animation.bounce({
                 duration: duration,
                 resolution: Math.max(view.getResolution(), dist / 1000),
                 start: start
@@ -90,8 +89,7 @@
           if (tracking) {
             tracking = false;
             element.removeClass('tracking');
-          }
-          else {
+          } else {
             element.addClass('tracking');
             first = true;
             locate(geolocation.getPosition());
@@ -101,8 +99,8 @@
             gaPermalink.updateParams(
               {geolocation: tracking ? 'true' : 'false'});
           });
-        }
-        )}
+        });
+      }
     };
   }]);
 })();
