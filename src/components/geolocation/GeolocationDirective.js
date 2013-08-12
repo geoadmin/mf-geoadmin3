@@ -31,9 +31,8 @@
           if (dest) {
             var source = view.getCenter();
             var dist = Math.sqrt(Math.pow(source[0] - dest[0], 2),
-                         Math.pow(source[1] - dest[1], 2));
-            var duration = Math.sqrt(500 + dist / view.getResolution() *
-                1000);
+                Math.pow(source[1] - dest[1], 2));
+            var duration = Math.sqrt(500 + dist / view.getResolution() * 1000);
             var start = +new Date();
             var pan = ol.animation.pan({
               duration: duration,
@@ -69,8 +68,7 @@
               map.addPreRenderFunctions([pan, zoom, bounce]);
               view.setCenter(dest);
               view.setResolution(resolution);
-            }
-            else {
+            } else {
               bounce = ol.animation.bounce({
                 duration: duration,
                 resolution: Math.max(view.getResolution(), dist / 1000),
@@ -91,8 +89,7 @@
           if (tracking) {
             tracking = false;
             element.removeClass('tracking');
-          }
-          else {
+          } else {
             element.addClass('tracking');
             first = true;
             locate(geolocation.getPosition());
@@ -102,8 +99,8 @@
             gaPermalink.updateParams(
               {geolocation: tracking ? 'true' : 'false'});
           });
-        }
-        )}
+        });
+      }
     };
   }]);
 })();
