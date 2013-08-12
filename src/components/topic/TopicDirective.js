@@ -20,10 +20,9 @@
             var options = scope.options;
 
             function initTopics() {
-              var queryParams = gaPermalink.getParams();
-              var found = scope.setActiveTopic(queryParams.topic);
-              if (!found) {
-                // topic not set, fallback to default
+              var topicParam = gaPermalink.getParams().topic;
+              if (!topicParam || !scope.setActiveTopic(topicParam)) {
+                // use default topic
                 scope.setActiveTopic(options.defaultTopicId);
               }
             }
