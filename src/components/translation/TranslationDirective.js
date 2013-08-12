@@ -7,7 +7,8 @@
   ]);
 
   module.directive('gaTranslationSelector',
-      ['$translate', 'gaPermalink', function($translate, gaPermalink) {
+      ['$translate', '$window', 'gaPermalink',
+        function($translate, $window, gaPermalink) {
         return {
           restrict: 'A',
           replace: true,
@@ -28,9 +29,9 @@
               gaPermalink.updateParams({lang: value});
             });
 
-            var params = gaPermalink.getParams();
-            scope.lang = params.lang ?
-                params.lang : $translate.preferredLanguage();
+            scope.lang = gaPermalink.getParams().lang ||
+                ($window.navigator.userLanguage ||
+                 $window.navigator.language).split('-')[0];
           }
         };
       }]);
