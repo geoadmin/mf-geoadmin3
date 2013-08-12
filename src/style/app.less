@@ -291,7 +291,7 @@
               font-weight: bold;
               border-bottom: none;
 
-              & i.icon-collapse-alt::before {
+              i.icon-collapse-alt::before {
                   content: "\f116";
               }
          }
@@ -304,19 +304,20 @@
     ul {
         list-style: none;
         padding: 0px;
+        margin: 0px;
 
         li {
             cursor: pointer;
-            height: 25px;
+            height: 32px;
+            padding: 6px 0px;  
             
             i {
-                width: 31px;
                 display: inline-block;
+                width: 31px;
                 text-align: center;
             }
               
-            div {
-                display: inline-block;
+            span {
                 margin: 2px 0px;
                 padding: 0px 7px;
                 border-left: 1px solid lightgray; 
