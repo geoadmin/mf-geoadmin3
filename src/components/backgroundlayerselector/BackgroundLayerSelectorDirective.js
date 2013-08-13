@@ -15,14 +15,11 @@
          return {
            restrict: 'A',
            replace: true,
+           templateUrl: 'components/backgroundlayerselector/partials/' +
+               'backgroundlayerselector.html',
            scope: {
              map: '=gaBackgroundLayerSelectorMap'
            },
-           template:
-               '<select ng-model="currentLayer" ' +
-                   'ng-options="l.id as l.label | translate for l in ' +
-                       'backgroundLayers" class="input-small">' +
-               '</select>',
            link: function(scope, element, attrs) {
              var map = scope.map;
 

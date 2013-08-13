@@ -38,7 +38,10 @@ describe('ga_backgroundlayerselector_directive', function() {
 
     inject(function($rootScope, $compile) {
       $rootScope.map = map;
+
       $compile(element)($rootScope);
+      $rootScope.$digest();
+
       $rootScope.$broadcast('gaLayersChange');
       $rootScope.$digest();
     });
