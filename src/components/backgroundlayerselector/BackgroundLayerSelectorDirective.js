@@ -47,7 +47,6 @@
                   label: $translate('void_layer')
                 });
                 scope.backgroundLayers = backgroundLayers;
-                //console.log(backgroundLayers);
                 var queryParams = gaPermalink.getParams();
                 scope.currentLayer = (queryParams.bgLayer !== undefined) ?
                   queryParams.bgLayer : backgroundLayers[0].id;
