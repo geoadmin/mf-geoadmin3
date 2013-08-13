@@ -1,14 +1,16 @@
 (function() {
   goog.provide('ga_contextpopup_directive');
   goog.require('ga_permalink');
+  goog.require('ga_urlutils_service');
 
   var module = angular.module('ga_contextpopup_directive', [
-    'ga_permalink'
+    'ga_permalink',
+    'ga_urlutils_service'
   ]);
 
   module.directive('gaContextPopup',
-      ['$http', '$q', '$timeout', 'gaPermalink',
-        function($http, $q, $timeout, gaPermalink) {
+      ['$http', '$q', '$timeout', 'gaPermalink', 'gaUrlUtils',
+        function($http, $q, $timeout, gaPermalink, gaUrlUtils) {
           var lv03tolv95Url =
               'http://tc-geodesy.bgdi.admin.ch/reframe/lv03tolv95?cb=JSON_CALLBACK';
           return {
@@ -20,7 +22,8 @@
               options: '=gaContextPopupOptions'
             },
             link: function(scope, element, attrs) {
-              var heightUrl = scope.options.heightUrl;
+              var heightUrl = gaUrlUtils.append(scope.options.heightUrl,
+                  'callback=JSON_CALLBACK');
               var qrcodeUrl = scope.options.qrcodeUrl;
 
               // The popup content is updated (a) on contextmenu events,
@@ -47,7 +50,7 @@
                 // callback.
                 scope.$apply(function() {
                   $q.all({
-                    height: $http.jsonp(heightUrl + '?callback=JSON_CALLBACK', {
+                    height: $http.jsonp(heightUrl, {
                       params: {
                         easting: coord21781[0],
                         northing: coord21781[1],
