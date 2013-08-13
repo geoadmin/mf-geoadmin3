@@ -58,11 +58,10 @@
 
           var url = getTopicUrl(topicId, lang);
 
-          var promise = $http.jsonp(url);
-          promise.success(function(data, status) {
-            layers = data.layers;
+          var promise = $http.jsonp(url).then(function(response) {
+            layers = response.data.layers;
             $rootScope.$broadcast('gaLayersChange');
-          }).error(function(data, satus) {
+          }, function(response) {
             layers = undefined;
             currentTopicId = undefined;
           });
