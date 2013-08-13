@@ -1,7 +1,10 @@
 (function() {
   goog.provide('ga_feedback_directive');
+  goog.require('ga_permalink');
 
-  var module = angular.module('ga_feedback_directive', []);
+  var module = angular.module('ga_feedback_directive', [
+    'ga_permalink'
+  ]);
 
   /**
    * This directive displays a form for displaying and submitting feedback.
