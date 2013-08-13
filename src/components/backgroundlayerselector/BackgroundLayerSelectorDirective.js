@@ -44,7 +44,7 @@
                 gaLayers.getBackgroundLayers().then(function(backgroundLayers) {
                   backgroundLayers.push({
                     id: 'voidLayer',
-                    label: $translate('void_layer')
+                    label: 'void_layer'
                   });
                   scope.backgroundLayers = backgroundLayers;
                   var queryParams = gaPermalink.getParams();
