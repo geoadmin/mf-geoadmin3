@@ -1,7 +1,11 @@
 (function() {
   goog.provide('ga_search_directive');
+  goog.require('ga_map_service');
+  goog.require('ga_permalink');
 
-  var module = angular.module('ga_search_directive', []);
+  var module = angular.module('ga_search_directive', [
+    'ga_map_service', 'ga_permalink'
+  ]);
 
   module.directive('gaSearch',
       ['$compile', '$translate', 'gaLayers', 'gaPermalink',
