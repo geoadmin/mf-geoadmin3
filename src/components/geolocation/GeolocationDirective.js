@@ -4,6 +4,7 @@
   goog.require('ga_permalink');
 
   var module = angular.module('ga_geolocation_directive', [
+    'ga_permalink'
   ]);
 
   module.directive('gaGeolocation', ['$parse', 'gaPermalink',
