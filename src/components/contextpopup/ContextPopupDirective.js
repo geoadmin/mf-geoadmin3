@@ -1,7 +1,10 @@
 (function() {
   goog.provide('ga_contextpopup_directive');
+  goog.require('ga_permalink');
 
-  var module = angular.module('ga_contextpopup_directive', []);
+  var module = angular.module('ga_contextpopup_directive', [
+    'ga_permalink'
+  ]);
 
   module.directive('gaContextPopup',
       ['$http', '$q', '$timeout', 'gaPermalink',
