@@ -43,6 +43,7 @@
                 if (topic.id == topicId) {
                   gaPermalink.updateParams({topic: topic.id});
                   $rootScope.$broadcast('gaTopicChange', topic);
+                  $rootScope.activeTopicId = topicId;
                   return true;
                 }
               }
