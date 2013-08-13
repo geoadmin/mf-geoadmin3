@@ -87,6 +87,11 @@
               var footerTemplate = angular.element(footer);
               $compile(footerTemplate)(scope);
 
+              var layerHeaderTemplate = angular.element(
+                 '<div class="tt-header-mapinfos" ' +
+                 'ng-show="hasLayerResults">Map Infos:</div>');
+              $compile(layerHeaderTemplate)(scope);
+
               scope.getHref = function() {
                 // set those values in options only on mouseover or click
                 scope.encodedPermalinkHref =
@@ -169,7 +174,7 @@
                   }
                 },
                 {
-                  header: '<div class="tt-header-mapinfos">Map Infos:</div>',
+                  header: layerHeaderTemplate,
                   footer: footerTemplate,
                   name: 'layers',
                   timeout: 20,
