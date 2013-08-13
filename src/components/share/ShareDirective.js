@@ -1,7 +1,10 @@
 (function() {
   goog.provide('ga_share_directive');
+  goog.require('ga_permalink');
 
-  var module = angular.module('ga_share_directive', []);
+  var module = angular.module('ga_share_directive', [
+    'ga_permalink'
+  ]);
 
   module.directive('gaShare',
       ['$http', 'gaPermalink',
