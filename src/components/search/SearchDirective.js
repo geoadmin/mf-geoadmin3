@@ -264,7 +264,7 @@
 
              scope.clearInput = function() {
                $(taElt).val('');
-               $(taElt).data('ttView')._clearSuggestions();
+               $(taElt).data('ttView').dropdownView.clearSuggestions();
              };
 
              scope.$on('gaTopicChange', function(event, topic) {
