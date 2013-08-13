@@ -59,5 +59,6 @@
 	"twitter_tooltip": "Tweet this map",
 	"upload_failed": "Upload error !",
 	"upload_succeeded": "Upload OK !",
-	"uploading_file": "Uploading file..."
+	"uploading_file": "Uploading file...",
+	"void_layer": "kein Hintergrund"
 }
