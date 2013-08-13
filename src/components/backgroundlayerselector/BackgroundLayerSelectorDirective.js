@@ -32,8 +32,8 @@
              scope.$on('gaLayersChange', function(event) {
                scope.backgroundLayers = gaLayers.getBackgroundLayers();
                var queryParams = gaPermalink.getParams();
-               scope.currentLayer = (queryParams.bgLayer !== undefined) ?
-                   queryParams.bgLayer : scope.backgroundLayers[0].id;
+               scope.currentLayer = queryParams.bgLayer ||
+                   scope.backgroundLayers[0].id;
                setCurrentLayer(scope.currentLayer);
              });
 
