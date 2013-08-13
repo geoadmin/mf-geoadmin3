@@ -7,7 +7,7 @@
   function getMapLayer(map, id) {
     var layer;
     map.getLayers().forEach(function(l) {
-      if (l.get('layerId') == id) {
+      if (l.get('id') == id) {
         layer = l;
       }
     });
@@ -15,23 +15,23 @@
   };
 
   function addLayerToMap(scope, doAlert) {
-    var layer = getMapLayer(scope.map, scope.item.idBod);
+    var layer = getMapLayer(scope.map, scope.item.idBod),
+        olLayer;
     if (!angular.isDefined(layer)) {
-      scope.gaLayers.getOlLayerById(scope.item.idBod).then(function(olLayer) {
-        if (olLayer) {
-          scope.item.errorLoading = false;
-          scope.map.getLayers().push(olLayer);
-        } else {
-          if (doAlert) {
-            //FIXME: better error handling
-            var msg = 'The desired Layer is not defined ' +
-                      'by the gaLayers service (' + scope.item.idBod + ').';
-            alert(msg);
-          }
-          scope.item.errorLoading = true;
-          scope.item.selectedOpen = false;
+      olLayer = scope.gaLayers.getOlLayerById(scope.item.idBod);
+      if (olLayer) {
+        scope.item.errorLoading = false;
+        scope.map.getLayers().push(olLayer);
+      } else {
+        if (doAlert) {
+          //FIXME: better error handling
+          var msg = 'The desired Layer is not defined ' +
+                    'by the gaLayers service (' + scope.item.idBod + ').';
+          alert(msg);
         }
-      });
+        scope.item.errorLoading = true;
+        scope.item.selectedOpen = false;
+      }
     }
  };
 
