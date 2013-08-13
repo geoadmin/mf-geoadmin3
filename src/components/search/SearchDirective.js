@@ -126,9 +126,6 @@
                 return res;
               };
 
-              var hasLayerResults;
-              var counter = 0;
-
               var taElt = $(element).find('input').typeahead([
                 {
                   header: '<div class="tt-header-locations">Locations:</div>',
@@ -175,16 +172,16 @@
                   valueKey: 'inputVal',
                   limit: 20,
                   template: function(context) {
-                    var attrName = 'attr_' + counter.toString();
-                    var label = context.attrs.label;
-                    var template = '<div class="tt-search" ng-init="' +
-                        attrName + '=\'' + context.attrs.layer + '\';" ' +
-                        'ng-mouseover="addLayer(' + attrName + ')" ' +
-                        'ng-mouseout="removeLayer(' + attrName + ')"' +
-                        '>' + label + '<i id="legend-open" ' +
+                    var template = '<div ng-show="hasLayerResults" ' +
+                        'class="tt-search"' +
+                        'ng-mouseover="addLayer(\'' +
+                        context.attrs.layer + '\')" ' +
+                        'ng-mouseout="removeLayer(\'' +
+                        context.attrs.layer + '\')"' +
+                        '>' + context.attrs.label +
+                        '<i id="legend-open" ' +
                         'href="#legend" ng-click="showLegend()"' +
                         'class="icon-info-sign"> </i></div>';
-                    counter += 1;
                     return template;
                   },
                   remote: {
@@ -201,13 +198,11 @@
                     },
                     filter: function(response) {
                       var results = response.results;
-                      // hasLayerResults is used to control
+                      // hasLaerResults is used to control
                       // the display of the footer
-                      if (results.length === 0) {
-                        hasLayerResults = false;
-                      } else {
-                        hasLayerResults = true;
-                      }
+                      scope.$apply(function() {
+                        scope.hasLayerResults = (results.length !== 0);
+                      });
                       return $.map(results, function(val) {
                         val.inputVal = val.attrs.label
                             .replace('<b>', '').replace('</b>', '');
@@ -244,19 +239,6 @@
                 // Only for layer search at the moment
                 var elements = angular.element('.tt-dataset-layers');
                 $compile(elements)(scope);
-                counter = 0;
-
-                // Display footer but hide suggestions and header
-                var children = elements.children();
-                if (children.length !== 0) {
-                  if (!hasLayerResults) {
-                    children[0].style.display = 'none';
-                    children[1].style.display = 'none';
-                  } else {
-                    children[0].style.display = 'block';
-                    children[1].style.display = 'block';
-                  }
-                }
               });
 
               scope.clearInput = function() {
