@@ -5,7 +5,6 @@ beforeEach(function() {
   // requests to translation files are performed.
   module(function ($translateProvider) {
     $translateProvider.translations('en', {});
-    $translateProvider.preferredLanguage('en');
     $translateProvider.useLoader(undefined);
   });
 });

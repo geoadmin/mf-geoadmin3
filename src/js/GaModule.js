@@ -65,9 +65,6 @@
       prefix: 'locales/',
       suffix: '.json'
     });
-
-    var language = (navigator.userLanguage || navigator.language).split('-');
-    $translateProvider.preferredLanguage(language[0]);
   }]);
 
 })();
