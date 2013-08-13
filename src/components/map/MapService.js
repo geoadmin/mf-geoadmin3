@@ -83,6 +83,7 @@
                             replace('{Format}', layer.format);
 
               olLayer = new ol.layer.TileLayer({
+                id: id,
                 source: new ol.source.WMTS({
                   attributions: [
                     new ol.Attribution(attribution)
