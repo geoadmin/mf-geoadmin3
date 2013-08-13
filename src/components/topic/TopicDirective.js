@@ -20,13 +20,12 @@
             var options = scope.options;
 
             function initTopics() {
-              var queryParams = gaPermalink.getParams();
-              var found = scope.setActiveTopic(queryParams.topic);
-              if (!found) {
-                // topic not set, fallback to default
+              var topicParam = gaPermalink.getParams().topic;
+              if (!topicParam || !scope.setActiveTopic(topicParam)) {
+                // use default topic
                 scope.setActiveTopic(options.defaultTopicId);
               }
-            };
+            }
 
             $http.jsonp(options.url).then(function(result) {
               scope.topics = result.data.topics;
@@ -38,10 +37,11 @@
             });
 
             scope.setActiveTopic = function(topicId) {
-              for (var i = 0, len = scope.topics.length; i < len; i++) {
+              var i, len = scope.topics.length;
+              for (i = 0; i < len; i++) {
                 var topic = scope.topics[i];
                 if (topic.id == topicId) {
-                  gaPermalink.updateParams({topic: topic.id});
+                  gaPermalink.updateParams({topic: topicId});
                   $rootScope.$broadcast('gaTopicChange', topic);
                   return true;
                 }

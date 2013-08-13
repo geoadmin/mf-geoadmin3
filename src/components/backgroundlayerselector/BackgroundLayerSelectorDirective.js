@@ -15,31 +15,26 @@
          return {
            restrict: 'A',
            replace: true,
+           templateUrl: 'components/backgroundlayerselector/partials/' +
+               'backgroundlayerselector.html',
            scope: {
              map: '=gaBackgroundLayerSelectorMap'
            },
-           template:
-               '<select ng-model="currentLayer" ' +
-                   'ng-options="l.id as l.label | translate for l in ' +
-                       'backgroundLayers" class="input-small">' +
-               '</select>',
            link: function(scope, element, attrs) {
              var map = scope.map;
 
              function setCurrentLayer(layerId) {
-              gaLayers.getOlLayerById(layerId).then(function(layer) {
-                map.getLayers().setAt(0, layer);
-                gaPermalink.updateParams({bgLayer: layerId});
-              });
+               var layer = gaLayers.getOlLayerById(layerId);
+               map.getLayers().setAt(0, layer);
+               gaPermalink.updateParams({bgLayer: layerId});
              }
-             scope.$on('gaLayersChange', function(event, data) {
-               gaLayers.getBackgroundLayers().then(function(backgroundLayers) {
-                 scope.backgroundLayers = backgroundLayers;
-                 var queryParams = gaPermalink.getParams();
-                 scope.currentLayer = (queryParams.bgLayer !== undefined) ?
-                  queryParams.bgLayer : backgroundLayers[0].id;
-                setCurrentLayer(scope.currentLayer);
-               });
+
+             scope.$on('gaLayersChange', function(event) {
+               scope.backgroundLayers = gaLayers.getBackgroundLayers();
+               var queryParams = gaPermalink.getParams();
+               scope.currentLayer = queryParams.bgLayer ||
+                   scope.backgroundLayers[0].id;
+               setCurrentLayer(scope.currentLayer);
              });
 
              scope.$watch('currentLayer', function(newVal, oldVal) {

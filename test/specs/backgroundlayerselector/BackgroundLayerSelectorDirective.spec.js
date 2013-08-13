@@ -4,37 +4,29 @@ describe('ga_backgroundlayerselector_directive', function() {
 
   beforeEach(function() {
 
-    var deferreds = new Array(4);
-
-    module(function($provide) {
-      $provide.value('gaLayers', {
-        getOlLayerById: function(id) {
-          var idx = id == 'foo' ? 0 : 1;
-          return deferreds[idx].promise;
-        },
-        getBackgroundLayers: function() {
-          return deferreds[2].promise;
-        },
-        loadForTopic: function() {
-          return deferreds[3].promise;
-        }
-      });
-    });
-
-    inject(function($q) {
-      var i;
-      for (i = 0; i < deferreds.length; ++i) {
-        deferreds[i]= $q.defer();
-      }
-    });
-
     map = new ol.Map({});
 
     layer1 = new ol.layer.TileLayer({
       source: new ol.source.OSM()
     });
+
     layer2 = new ol.layer.TileLayer({
       source: new ol.source.OSM()
+    });
+
+    module(function($provide) {
+      $provide.value('gaLayers', {
+        getOlLayerById: function(id) {
+          return id == 'foo' ? layer1 : layer2;
+        },
+        getBackgroundLayers: function() {
+          return [{
+            id: 'foo', label: 'Foo'
+          }, {
+            id: 'bar', label: 'Bar'
+          }];
+        }
+      });
     });
 
     element = angular.element(
@@ -46,21 +38,12 @@ describe('ga_backgroundlayerselector_directive', function() {
 
     inject(function($rootScope, $compile) {
       $rootScope.map = map;
+
       $compile(element)($rootScope);
       $rootScope.$digest();
-      $rootScope.$broadcast('gaLayersChange', '');
-    });
 
-    inject(function($rootScope) {
-      $rootScope.$apply(function() {
-        deferreds[0].resolve(layer1);
-        deferreds[1].resolve(layer2);
-        deferreds[2].resolve([{
-          id: 'foo', label: 'Foo'
-        }, {
-          id: 'bar', label: 'Bar'
-        }]);
-      });
+      $rootScope.$broadcast('gaLayersChange');
+      $rootScope.$digest();
     });
 
   });

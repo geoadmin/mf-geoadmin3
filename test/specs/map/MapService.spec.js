@@ -2,11 +2,15 @@ describe('ga_map_service', function() {
 
   var layers, $httpBackend;
 
+  var expectedUrl = 'http://mf-chsdi30t.bgdi.admin.ch/' +
+      'rest/services/sometopic/MapServer/layersconfig?' +
+      'lang=somelang&callback=JSON_CALLBACK';
+
   beforeEach(function() {
 
     inject(function($injector) {
       $httpBackend = $injector.get('$httpBackend');
-      $httpBackend.whenJSONP('').respond({
+      $httpBackend.whenJSONP(expectedUrl).respond({
         layers: {
           foo: {
             type: 'wmts',
@@ -25,7 +29,7 @@ describe('ga_map_service', function() {
 
     inject(function($injector) {
       layers = $injector.get('gaLayers');
-      layers.loadForTopic('');
+      layers.loadForTopic('sometopic', 'somelang');
     });
   });
 
@@ -37,28 +41,26 @@ describe('ga_map_service', function() {
 
   describe('getOlLayerById', function() {
     it('returns layers with correct settings', function() {
-      $httpBackend.expectJSONP('');
-      layers.getOlLayerById('foo').then(function(layer) {
-        expect(layer instanceof ol.layer.TileLayer).to.be.ok();
-        var source = layer.getSource();
-        expect(source instanceof ol.source.WMTS).to.be.ok();
-        var tileGrid = source.getTileGrid();
-        expect(tileGrid instanceof ol.tilegrid.WMTS).to.be.ok();
-        var resolutions = tileGrid.getResolutions();
-        expect(resolutions.length).to.eql(27);
-      });
+      $httpBackend.expectJSONP(expectedUrl);
       $httpBackend.flush();
+      var layer = layers.getOlLayerById('foo');
+      expect(layer instanceof ol.layer.TileLayer).to.be.ok();
+      var source = layer.getSource();
+      expect(source instanceof ol.source.WMTS).to.be.ok();
+      var tileGrid = source.getTileGrid();
+      expect(tileGrid instanceof ol.tilegrid.WMTS).to.be.ok();
+      var resolutions = tileGrid.getResolutions();
+      expect(resolutions.length).to.eql(27);
     });
   });
 
   describe('getBackgroundLayers', function() {
     it('returns correct background layers information', function() {
-      $httpBackend.expectJSONP('');
-      layers.getBackgroundLayers().then(function(backgroundLayers) {
-        expect(backgroundLayers.length).to.be(1);
-        expect(backgroundLayers[0].id).to.be('bar');
-      });
+      $httpBackend.expectJSONP(expectedUrl);
       $httpBackend.flush();
+      var backgroundLayers = layers.getBackgroundLayers();
+      expect(backgroundLayers.length).to.be(1);
+      expect(backgroundLayers[0].id).to.be('bar');
     });
   });
 
