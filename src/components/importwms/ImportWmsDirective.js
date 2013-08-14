@@ -28,7 +28,7 @@
              url = gaUrlUtils.append(url, $scope.options.defaultGetCapParams);
 
              // Use lang param only for admin.ch servers
-             if (url.indexOf('admin.ch') !== -1) {
+             if (url.indexOf('admin.ch') > 0) {
                url = gaUrlUtils.append(url, 'lang=' + $translate.uses());
              }
 
