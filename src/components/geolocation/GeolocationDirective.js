@@ -21,6 +21,8 @@
         var view = map.getView().getView2D();
         var geolocation = new ol.Geolocation();
         geolocation.bindTo('projection', map.getView());
+        // used to having a zoom animation when we click on the button,
+        // but not when we are tracking the position.
         var first = true;
         var locate = function(dest) {
           if (dest) {
@@ -36,6 +38,7 @@
             });
             var bounce;
             if (first) {
+              first = false;
               var accuracy = geolocation.getAccuracy();
               var extent = [
                 dest[0] - accuracy,
