@@ -1,15 +1,26 @@
 #!/bin/bash
 
 echo "
-source src_address
+source src_swisssearch
 {
     type = pgsql
-    sql_host = $1 
+    sql_host = $1
     sql_user = $PGUSER
     sql_pass = $PGPASS
     sql_db = search
     sql_port = 5432
     sql_query_pre = SET NAMES 'UTF8'
+    sql_attr_bigint = id
+    sql_attr_uint = rank
+    sql_attr_string = label
+    sql_attr_string = origin
+    sql_attr_string = geom_st_box2d
+    sql_field_string = geom_quadindex
+    sql_field_string = detail
+}
+
+source src_address : src_swisssearch
+{
     sql_query = \
         SELECT \
         gid as id \
@@ -22,24 +33,10 @@ source src_address
         , gid as id \
         from swiss_search \
         where origin = 'address'
-    sql_attr_bigint = id
-    sql_attr_uint = rank
-    sql_attr_string = label
-    sql_attr_string = origin
-    sql_attr_string = geom_st_box2d
-    sql_field_string = geom_quadindex
-    sql_field_string = detail
 }
 
-source src_parcel
+source src_parcel : src_swisssearch
 {
-    type = pgsql
-    sql_host = $1
-    sql_user = $PGUSER
-    sql_pass = $PGPASS
-    sql_db = search
-    sql_port = 5432
-    sql_query_pre = SET NAMES 'UTF8'
     sql_query = \
         SELECT \
         gid as id \
@@ -52,24 +49,10 @@ source src_parcel
         , gid as id \
         from swiss_search \
         where origin = 'parcel'
-    sql_attr_bigint = id
-    sql_attr_uint = rank
-    sql_attr_string = label
-    sql_attr_string = origin
-    sql_attr_string = geom_st_box2d
-    sql_field_string = geom_quadindex
-    sql_field_string = detail
 }
 
-source src_sn25
+source src_sn25 : src_swisssearch
 {
-    type = pgsql
-    sql_host = $1
-    sql_user = $PGUSER
-    sql_pass = $PGPASS
-    sql_db = search
-    sql_port = 5432
-    sql_query_pre = SET NAMES 'UTF8'
     sql_query = \
         SELECT \
         gid as id \
@@ -82,24 +65,10 @@ source src_sn25
         , gid as id \
         from swiss_search \
         where origin = 'sn25'
-    sql_attr_bigint = id
-    sql_attr_uint = rank
-    sql_attr_string = label
-    sql_attr_string = origin
-    sql_attr_string = geom_st_box2d
-    sql_field_string = geom_quadindex
-    sql_field_string = detail
 }
 
-source src_gg25
+source src_gg25 : src_swisssearch
 {
-    type = pgsql
-    sql_host = $1
-    sql_user = $PGUSER
-    sql_pass = $PGPASS
-    sql_db = search
-    sql_port = 5432
-    sql_query_pre = SET NAMES 'UTF8'
     sql_query = \
         SELECT \
         gid as id \
@@ -112,24 +81,10 @@ source src_gg25
         , gid as id \
         from swiss_search \
         where origin = 'gg25'
-    sql_attr_bigint = id
-    sql_attr_uint = rank
-    sql_attr_string = label
-    sql_attr_string = origin
-    sql_attr_string = geom_st_box2d
-    sql_field_string = geom_quadindex
-    sql_field_string = detail
 }
 
-source src_kantone
+source src_kantone : src_swisssearch
 {
-    type = pgsql
-    sql_host = $1
-    sql_user = $PGUSER
-    sql_pass = $PGPASS
-    sql_db = search
-    sql_port = 5432
-    sql_query_pre = SET NAMES 'UTF8'
     sql_query = \
         SELECT \
         gid as id \
@@ -142,24 +97,10 @@ source src_kantone
         , gid as id \
         from swiss_search \
         where origin = 'kantone'
-    sql_attr_bigint = id
-    sql_attr_uint = rank
-    sql_attr_string = label
-    sql_attr_string = origin
-    sql_attr_string = geom_st_box2d
-    sql_field_string = geom_quadindex
-    sql_field_string = detail
 }
 
-source src_district
+source src_district : src_swisssearch
 {
-    type = pgsql
-    sql_host = $1
-    sql_user = $PGUSER
-    sql_pass = $PGPASS
-    sql_db = search
-    sql_port = 5432
-    sql_query_pre = SET NAMES 'UTF8'
     sql_query = \
         SELECT \
         gid as id \
@@ -172,24 +113,10 @@ source src_district
         , gid as id \
         from swiss_search \
         where origin = 'district'
-    sql_attr_bigint = id
-    sql_attr_uint = rank
-    sql_attr_string = label
-    sql_attr_string = origin
-    sql_attr_string = geom_st_box2d
-    sql_field_string = geom_quadindex
-    sql_field_string = detail
 }
 
-source src_zipcode
+source src_zipcode : src_swisssearch
 {
-    type = pgsql
-    sql_host = $1
-    sql_user = $PGUSER
-    sql_pass = $PGPASS
-    sql_db = search
-    sql_port = 5432
-    sql_query_pre = SET NAMES 'UTF8'
     sql_query = \
         SELECT \
         gid as id \
@@ -202,17 +129,9 @@ source src_zipcode
         , gid as id \
         from swiss_search \
         where origin = 'zipcode'
-    sql_attr_bigint = id
-    sql_attr_uint = rank
-    sql_attr_string = label
-    sql_attr_string = origin
-    sql_attr_string = geom_st_box2d
-    sql_field_string = geom_quadindex
-    sql_field_string = detail
 }
 
-
-source src_layers_de
+source layers
 {
     type = pgsql
     sql_host = $1
@@ -221,6 +140,18 @@ source src_layers_de
     sql_db = bod
     sql_port = 5432
     sql_query_pre = SET NAMES 'UTF8'
+    sql_attr_bigint = id
+    sql_attr_string = lang
+    sql_attr_string = origin
+    sql_attr_string = label
+    sql_field_string = staging
+    sql_field_string = topics
+    sql_field_string = layer
+    sql_field_string = detail
+}
+
+source src_layers_de : layers
+{
     sql_query = \
         SELECT \
             bgdi_id::bigint as id \
@@ -233,25 +164,10 @@ source src_layers_de
             , staging as staging \
             , bgdi_id::bigint as id \
         from re3.view_bod_layer_info_de
-    sql_attr_bigint = id
-    sql_attr_string = lang
-    sql_attr_string = origin
-    sql_attr_string = label
-    sql_field_string = staging
-    sql_field_string = topics
-    sql_field_string = layer
-    sql_field_string = detail
 }
 
-source src_layers_fr
+source src_layers_fr : layers
 {
-    type = pgsql
-    sql_host = $1
-    sql_user = $PGUSER
-    sql_pass = $PGPASS
-    sql_db = bod
-    sql_port = 5432
-    sql_query_pre = SET NAMES 'UTF8'
     sql_query = \
         SELECT \
             bgdi_id::bigint as id \
@@ -264,25 +180,10 @@ source src_layers_fr
             , staging as staging \
             , bgdi_id::bigint as id \
         from re3.view_bod_layer_info_fr
-    sql_attr_bigint = id
-    sql_attr_string = lang
-    sql_attr_string = origin
-    sql_attr_string = label
-    sql_field_string = staging
-    sql_field_string = topics
-    sql_field_string = layer
-    sql_field_string = detail
 }
 
-source src_layers_en
+source src_layers_en : layers
 {
-    type = pgsql
-    sql_host = $1
-    sql_user = $PGUSER
-    sql_pass = $PGPASS
-    sql_db = bod
-    sql_port = 5432
-    sql_query_pre = SET NAMES 'UTF8'
     sql_query = \
         SELECT \
             bgdi_id::bigint as id \
@@ -295,25 +196,10 @@ source src_layers_en
             , staging as staging \
             , bgdi_id::bigint as id \
         from re3.view_bod_layer_info_en
-    sql_attr_bigint = id
-    sql_attr_string = lang
-    sql_attr_string = origin
-    sql_attr_string = label
-    sql_field_string = staging
-    sql_field_string = topics
-    sql_field_string = layer
-    sql_field_string = detail
 }
 
-source src_layers_it
+source src_layers_it : layers
 {
-    type = pgsql
-    sql_host = $1
-    sql_user = $PGUSER
-    sql_pass = $PGPASS
-    sql_db = bod
-    sql_port = 5432
-    sql_query_pre = SET NAMES 'UTF8'
     sql_query = \
         SELECT \
             bgdi_id::bigint as id \
@@ -326,25 +212,10 @@ source src_layers_it
             , staging as staging \
             , bgdi_id::bigint as id \
         from re3.view_bod_layer_info_it
-    sql_attr_bigint = id
-    sql_attr_string = lang
-    sql_attr_string = origin
-    sql_attr_string = label
-    sql_field_string = staging
-    sql_field_string = topics
-    sql_field_string = layer
-    sql_field_string = detail
 }
 
-source src_layers_rm
+source src_layers_rm : layers
 {
-    type = pgsql
-    sql_host = $1
-    sql_user = $PGUSER
-    sql_pass = $PGPASS
-    sql_db = bod
-    sql_port = 5432
-    sql_query_pre = SET NAMES 'UTF8'
     sql_query = \
         SELECT \
             bgdi_id::bigint as id \
@@ -357,14 +228,6 @@ source src_layers_rm
             , staging as staging \
             , bgdi_id::bigint as id \
         from re3.view_bod_layer_info_rm
-    sql_attr_bigint = id
-    sql_attr_string = lang
-    sql_attr_string = origin
-    sql_attr_string = label
-    sql_field_string = staging
-    sql_field_string = topics
-    sql_field_string = layer
-    sql_field_string = detail
 }
 
 source src_ch_astra_ivs-nat
@@ -423,22 +286,64 @@ source src_ch_astra_ivs-reg_loc
     sql_field_string = detail
 }
 
-index swisssearch
+index zipcode
 {
-    type = plain
     source = src_zipcode
-    source = src_district
-    source = src_kantone
-    source = src_gg25
-    source = src_sn25
-    source = src_parcel
-    source = src_address
-    path = /var/sig/shp/sphinx/data/swisssearch
+    path = /var/sig/shp/sphinx/data/zipcode
+    type = plain
     docinfo = extern
     charset_type = utf-8
     min_infix_len = 1
     infix_fields = detail, geom_quadindex
     enable_star = 1
+}
+
+index district : zipcode
+{
+    source = src_district
+    path = /var/sig/shp/sphinx/data/district
+}
+
+index kantone : zipcode
+{
+    source = src_kantone
+    path = /var/sig/shp/sphinx/data/kantone
+}
+
+index gg25 : zipcode
+{
+    source = src_gg25
+    path = /var/sig/shp/sphinx/data/gg25
+}
+
+index sn25 : zipcode
+{
+    source = src_sn25
+    path = /var/sig/shp/sphinx/data/sn25
+}
+
+index parcel : zipcode
+{
+    source = src_parcel
+    path = /var/sig/shp/sphinx/data/parcel
+}
+
+index address : zipcode
+{
+    source = src_address
+    path = /var/sig/shp/sphinx/data/address
+}
+
+index swisssearch
+{
+    type = distributed
+    local = zipcode
+    local = district
+    local = kantone
+    local = gg25
+    local = sn25
+    local = parcel
+    local = address
 }
 
 index layers_de
@@ -520,7 +425,7 @@ index ch_astra_ivs-reg_loc
 
 indexer
 {
-    mem_limit = 254M
+    mem_limit = 512M
     max_iosize = 1048576
 }
 
@@ -529,9 +434,10 @@ searchd
     port = 3312
     log = /var/sig/shp/sphinx/log/searchd.log
     query_log = /var/sig/shp/sphinx/log/query.log
-    read_timeout = 5
-    max_children = 30
     pid_file = /var/sig/shp/sphinx/log/searchd.pid
+    dist_threads = 3
+    read_timeout = 5
+    max_children = 90
     max_matches = 10000
 }
 "
