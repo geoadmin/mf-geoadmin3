@@ -20,13 +20,15 @@
             'title="Give us a call" ',
             'ng-click="getHref()" ',
             'ng-mouseover="getHref()" ',
-            'ng-href="mailto:webgis@swisstopo.ch?',
-            'body={{encodedPermalinkHref}}">',
+            'ng-href="http://www.geo.admin.ch/',
+            'internet/geoportal/{{lang}}/tools/contact.html" ',
+            'target="_blank">',
             '<i class="icon-phone"></i> ',
             '</a>',
             '<a class="share-icon" ',
             'title="Follow us on Twitter" ',
-            'ng-href="https://twitter.com/swiss_geoportal">',
+            'ng-href="https://twitter.com/swiss_geoportal"',
+            'target="_blank">',
             '<i class="icon-twitter"></i>',
             '</a>',
             '<a class="share-icon"',
@@ -93,11 +95,10 @@
               $compile(layerHeaderTemplate)(scope);
 
               scope.getHref = function() {
-                // set those values in options only on mouseover or click
+                // set those values only on mouseover or click
                 scope.encodedPermalinkHref =
                 encodeURIComponent(gaPermalink.getHref());
-                scope.encodedDocumentTitle =
-                encodeURIComponent(document.title);
+                scope.lang = $translate.uses();
               };
 
               scope.showLegend = function() {
