@@ -66,7 +66,8 @@ deploybranch: deploy/deploy-branch.cfg $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/con
 .PHONY: updateol
 updateol: OL_JS = ol.js ol-simple.js ol-whitespace.js
 updateol: .build-artefacts/ol3
-	cd .build-artefacts/ol3; git fetch origin; git merge --ff origin/master; git show; ../python-venv/bin/python build.py $(addprefix build/,$(OL_JS))
+	rm -f .build-artefacts/ol3/src/ol/ga-ol3.exports
+	cd .build-artefacts/ol3; git fetch origin; git merge --ff origin/master; git show; cp ../../scripts/ga-ol3.exports src/ol/ga-ol3.exports; ../python-venv/bin/python build.py $(addprefix build/,$(OL_JS))
 	cp $(addprefix .build-artefacts/ol3/build/,$(OL_JS)) src/lib/
 
 .PHONY: translate
