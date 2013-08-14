@@ -29,7 +29,9 @@
             var source = view.getCenter();
             var dist = Math.sqrt(Math.pow(source[0] - dest[0], 2),
                 Math.pow(source[1] - dest[1], 2));
-            var duration = Math.sqrt(500 + dist / view.getResolution() * 1000);
+            var duration = Math.min(
+                Math.sqrt(300 + dist / view.getResolution() * 1000), 3000
+            );
             var start = +new Date();
             var pan = ol.animation.pan({
               duration: duration,
