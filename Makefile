@@ -108,7 +108,7 @@ prod/info.json: src/info.json
 src/deps.js: $(SRC_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
 	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root_with_prefix="src/components components" --root_with_prefix="src/js js" --output_file=$@
 
-src/style/app.css: src/style/app.less $(SRC_COMPONENTS_LESS_FILES) node_modules .build-artefacts/bootstrap
+src/style/app.css: src/style/app.less src/style/ga_bootstrap.less src/style/ga_variables.less $(SRC_COMPONENTS_LESS_FILES) node_modules .build-artefacts/bootstrap
 	node_modules/.bin/lessc -ru $< $@
 
 src/index.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render
