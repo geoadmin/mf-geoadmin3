@@ -150,9 +150,12 @@ class Search(SearchValidation):
 
     def _get_quad_index(self):
         try:
-            self.quadindex = self.quadtree.bbox_to_morton(msk.BBox(self.bbox[0],
-                                                                   self.bbox[1],
-                                                                   self.bbox[2],
-                                                                   self.bbox[3])) 
+            quadindex = self.quadtree\
+                                 .bbox_to_morton(\
+                                     msk.BBox(self.bbox[0],
+                                              self.bbox[1],
+                                              self.bbox[2],
+                                              self.bbox[3]))
+            self.quadindex = quadindex if quadindex != '' else None
         except ValueError:
             self.quadindex = None 
