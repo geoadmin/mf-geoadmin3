@@ -1,14 +1,16 @@
 (function() {
   goog.provide('ga_topic_directive');
   goog.require('ga_permalink');
+  goog.require('ga_urlutils_service');
 
   var module = angular.module('ga_topic_directive', [
-    'ga_permalink'
+    'ga_permalink',
+    'ga_urlutils_service'
   ]);
 
   module.directive('gaTopic',
-      ['$rootScope', '$http', 'gaPermalink',
-        function($rootScope, $http, gaPermalink) {
+      ['$rootScope', '$http', 'gaPermalink', 'gaUrlUtils',
+        function($rootScope, $http, gaPermalink, gaUrlUtils) {
         return {
           restrict: 'A',
           replace: true,
@@ -27,7 +29,8 @@
               }
             }
 
-            $http.jsonp(options.url).then(function(result) {
+            var url = gaUrlUtils.append(options.url, 'callback=JSON_CALLBACK');
+            $http.jsonp(url).then(function(result) {
               scope.topics = result.data.topics;
               angular.forEach(scope.topics, function(value) {
                 value.label = value.id;

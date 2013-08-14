@@ -1,14 +1,16 @@
 (function() {
   goog.provide('ga_share_directive');
   goog.require('ga_permalink');
+  goog.require('ga_urlutils_service');
 
   var module = angular.module('ga_share_directive', [
-    'ga_permalink'
+    'ga_permalink',
+    'ga_urlutils_service'
   ]);
 
   module.directive('gaShare',
-      ['$http', 'gaPermalink',
-        function($http, gaPermalink) {
+      ['$http', 'gaPermalink', 'gaUrlUtils',
+        function($http, gaPermalink, gaUrlUtils) {
           return {
             restrict: 'A',
             scope: {
@@ -16,8 +18,8 @@
             },
             templateUrl: 'components/share/partials/share.html',
             link: function(scope, element, attrs) {
-              var shortenUrl = scope.options.shortenUrl +
-                  '?cb=JSON_CALLBACK';
+              var shortenUrl = gaUrlUtils.append(scope.options.shortenUrl,
+                  'cb=JSON_CALLBACK');
               scope.qrcodegeneratorPath = scope.options.qrcodegeneratorPath;
 
               $('.share-icon').tooltip({
