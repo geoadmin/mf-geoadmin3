@@ -142,12 +142,12 @@
 
               <!-- Tools accordion -->
               <div class="accordion" id="tools-accordion">
-                
+
                 <!-- Import -->
                 <div class="accordion-group">
                   <div class="accordion-heading">
                     <a class="accordion-toggle collapsed" data-toggle="collapse"
-                       data-parent="#tools-accordion" href="#import">
+                      data-parent="#tools-accordion" href="#import">
                       <i class="icon-collapse-alt"></i><span translate>import</span>
                     </a>
                   </div>
@@ -155,26 +155,25 @@
                     <div class="accordion-inner">
                       <ul>
                         <!-- We can't use translate directive for these links, see:
-                        https://github.com/PascalPrecht/angular-translate/issues/129 -->  
+                        https://github.com/PascalPrecht/angular-translate/issues/129 -->
                         <li>
-                          <i class="icon-external-link"></i>  
-                          <a href="" ng-click="importWmsPopupShown = !importWmsPopupShown">{{'wms' | translate}}</a>
+                        <i class="icon-external-link"></i>
+                        <a href="" ng-click="importWmsPopupShown = !importWmsPopupShown">{{'wms' | translate}}</a>
                         </li>
-                        <li> 
-                          <i class="icon-file"></i>  
-                          <a href=""  ng-click="importKmlPopupShown = !importKmlPopupShown">{{'kml' | translate}}</a>
+                        <li>
+                        <i class="icon-file"></i>
+                        <a href=""  ng-click="importKmlPopupShown = !importKmlPopupShown">{{'kml' | translate}}</a>
                         </li>
                       </ul>
                     </div>
                   </div>
                 </div>
 
-
                 <!-- Measure -->
                 <div class="accordion-group">
                   <div class="accordion-heading">
                     <a class="accordion-toggle collapsed" data-toggle="collapse"
-                       data-parent="#tools-accordion" href="#measure" >
+                      data-parent="#tools-accordion" href="#measure" >
                       <i class="icon-collapse-alt"></i><span translate>measure</span>
                     </a>
                   </div>
@@ -185,12 +184,11 @@
                   </div>
                 </div>
 
-
                 <!-- Drawing -->
                 <div class="accordion-group">
                   <div class="accordion-heading">
                     <a class="accordion-toggle collapsed" data-toggle="collapse"
-                       data-parent="#tools-accordion" href="#drawing" >
+                      data-parent="#tools-accordion" href="#drawing" >
                       <i class="icon-collapse-alt"></i><span translate>drawing</span>
                     </a>
                   </div>
@@ -202,7 +200,7 @@
                 </div>
               </div>
               <!--  end tools accordion -->
-            </div> 
+            </div>
           </div>
         </div> <!-- .accordion-group -->
 
@@ -341,30 +339,30 @@
 
     <!-- Popup: Import WMS -->
     <div ga-popup="importWmsPopupShown"
-         ga-popup-options="{title:'import_wms'}"
-         ga-draggable=".ga-popup-title"
-         id="import-wms-popup" >
-	    <div ng-controller="GaImportWmsController">
+      ga-popup-options="{title:'import_wms'}"
+      ga-draggable=".ga-popup-title"
+      id="import-wms-popup" >
+      <div ng-controller="GaImportWmsController">
         <div ga-import-wms
-		         ga-import-wms-map="map"
-		         ga-import-wms-options="options"
-             id="import-wms"
-             class="import-wms">
+          ga-import-wms-map="map"
+          ga-import-wms-options="options"
+          id="import-wms"
+          class="import-wms">
         </div>
-	    </div>
+      </div>
     </div> <!-- end Import WMS -->
-    
+
     <!-- Popup: Import KML -->
     <div ga-popup="importKmlPopupShown"
-         ga-popup-options="{title:'import_kml'}"
-         ga-draggable=".ga-popup-title"
-         id="import-kml-popup" >
+      ga-popup-options="{title:'import_kml'}"
+      ga-draggable=".ga-popup-title"
+      id="import-kml-popup" >
       <div ng-controller="GaImportKmlController">
-        <div ga-import-kml 
-             ga-import-kml-map="map"
-             ga-import-kml-options="options"
-             id="import-kml"
-             class="import-kml">
+        <div ga-import-kml
+          ga-import-kml-map="map"
+          ga-import-kml-options="options"
+          id="import-kml"
+          class="import-kml">
         </div>
       </div>
     </div><!-- end Import KML -->

@@ -9,8 +9,10 @@
   ]);
 
   module.directive('gaContextPopup',
-      ['$http', '$q', '$timeout', 'gaPermalink', 'gaUrlUtils', 'gaBrowserSniffer',
-        function($http, $q, $timeout, gaPermalink, gaUrlUtils, gaBrowserSniffer) {
+      ['$http', '$q', '$timeout', 'gaPermalink',
+          'gaUrlUtils', 'gaBrowserSniffer',
+          function($http, $q, $timeout, gaPermalink,
+              gaUrlUtils, gaBrowserSniffer) {
           var lv03tolv95Url =
               'http://tc-geodesy.bgdi.admin.ch/reframe/lv03tolv95?cb=JSON_CALLBACK';
           return {
@@ -36,8 +38,8 @@
               var popoverShown = false;
 
               var overlay = new ol.Overlay({
-                'map': map,
-                'element': element[0]
+                map: map,
+                element: element[0]
               });
 
               scope.showQR = !gaBrowserSniffer.mobile;
