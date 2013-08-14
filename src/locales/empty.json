@@ -69,7 +69,11 @@
   "import_wms": "",
   "connect": "",
   "add_layer": "",
+  "add_wms_layer_succeeded": "",
+  "add_wms_layer_failed": "",
+  "choose_wms_url": "",
   "wms_max_size_allowed": "",
   "description": "",
-  "description_instructions": ""
+  "description_instructions": "",
+  "title": ""
 }
