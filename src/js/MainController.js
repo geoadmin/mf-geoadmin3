@@ -35,14 +35,16 @@
   /**
    * The application's main controller.
    */
-  module.controller('GaMainController', ['$scope', function($scope) {
+  module.controller('GaMainController', ['$scope', '$rootScope',
+    function($scope, $rootScope) {
 
-    // The main controller creates the OpenLayers map object. The map object
-    // is central, as most directives/components need a reference to it. So
-    $scope.map = createMap();
+      // The main controller creates the OpenLayers map object. The map object
+      // is central, as most directives/components need a reference to it. So
+      $scope.map = createMap();
 
-    // A global model used to share global states accross the application.
-    $scope.globalModel = {};
+      $rootScope.$on('gaTopicChange', function(event, topic) {
+        $scope.bodyClass = topic.id;
+      });
 
   }]);
 
