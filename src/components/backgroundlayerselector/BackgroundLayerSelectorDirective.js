@@ -18,11 +18,8 @@
             scope: {
               map: '=gaBackgroundLayerSelectorMap'
             },
-            template:
-                '<select ng-model="currentLayer" ' +
-                    'ng-options="l.id as l.label | translate for l in ' +
-                    'backgroundLayers" class="input-small">' +
-                    '</select>',
+            templateUrl: 'components/backgroundlayerselector/partials/' +
+                'backgroundlayerselector.html',
             link: function(scope, element, attrs) {
               var map = scope.map;
 
