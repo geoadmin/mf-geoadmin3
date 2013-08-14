@@ -231,6 +231,7 @@ class Topics(Base):
     id = Column('topic', Text, primary_key=True)
     orderKey = Column('order_key', Integer)
     availableLangs = Column('lang', Text)
+    defaultBackgroundLayer = Column('default_background', Text)
 
 class Catalog(object):
     __dbname__ = 'bod'
