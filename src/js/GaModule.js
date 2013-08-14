@@ -22,7 +22,7 @@
   
   goog.require('ga_importkml_controller');
   goog.require('ga_importwms_controller');
-  goog.require('ga_map_controller');
+  goog.require('ga_main_controller');
   goog.require('ga_mouseposition_controller');
   goog.require('ga_share_controller');
   goog.require('ga_print_controller');
@@ -50,7 +50,7 @@
     'ga_importkml_controller',
     'ga_geolocation',
     'ga_importwms_controller',
-    'ga_map_controller',
+    'ga_main_controller',
     'ga_mouseposition_controller',
     'ga_share_controller',
     'ga_print_controller',
