@@ -189,7 +189,7 @@ deploy/deploy-branch.cfg: deploy/deploy-branch.mako.cfg .build-artefacts/last-gi
 	test $(GIT_BRANCH) != $(GIT_LAST_BRANCH) && echo $(GIT_BRANCH) > .build-artefacts/last-git-branch || :
 
 .build-artefacts/ol3:
-	git clone --depth 1 git@github.com:openlayers/ol3.git $@
+	git clone --depth 1 https://github.com/openlayers/ol3.git $@
 
 .PHONY: cleanall
 cleanall: clean
