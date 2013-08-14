@@ -21,7 +21,6 @@
         var view = map.getView().getView2D();
         var geolocation = new ol.Geolocation();
         geolocation.bindTo('projection', map.getView());
-        var first = true;
         var locate = function(dest) {
           if (dest) {
             var source = view.getCenter();
@@ -34,44 +33,33 @@
               source: source,
               start: start
             });
-            var bounce;
-            if (first) {
-              var accuracy = geolocation.getAccuracy();
-              var extent = [
-                dest[0] - accuracy,
-                dest[0] + accuracy,
-                dest[1] - accuracy,
-                dest[1] + accuracy
-              ];
-              var size = map.getSize();
-              var resolution = Math.max(
-                (extent[1] - extent[0]) / size[0],
-                (extent[3] - extent[2]) / size[1]);
-              resolution = view.constrainResolution(resolution, 0, 0);
-              bounce = ol.animation.bounce({
-                duration: duration,
-                resolution: Math.max(view.getResolution(), dist / 1000,
-                    // needed to don't have up an down and up again in zoom
-                    resolution * 1.2),
-                start: start
-              });
-              var zoom = ol.animation.zoom({
-                resolution: view.getResolution(),
-                duration: duration,
-                start: start
-              });
-              map.addPreRenderFunctions([pan, zoom, bounce]);
-              view.setCenter(dest);
-              view.setResolution(resolution);
-            } else {
-              bounce = ol.animation.bounce({
-                duration: duration,
-                resolution: Math.max(view.getResolution(), dist / 1000),
-                start: start
-              });
-              map.addPreRenderFunctions([pan, bounce]);
-              view.setCenter(dest);
-            }
+            var accuracy = geolocation.getAccuracy();
+            var extent = [
+              dest[0] - accuracy,
+              dest[0] + accuracy,
+              dest[1] - accuracy,
+              dest[1] + accuracy
+            ];
+            var size = map.getSize();
+            var resolution = Math.max(
+              (extent[1] - extent[0]) / size[0],
+              (extent[3] - extent[2]) / size[1]);
+            resolution = view.constrainResolution(resolution, 0, 0);
+            var bounce = ol.animation.bounce({
+              duration: duration,
+              resolution: Math.max(view.getResolution(), dist / 1000,
+                  // needed to don't have up an down and up again in zoom
+                  resolution * 1.2),
+              start: start
+            });
+            var zoom = ol.animation.zoom({
+              resolution: view.getResolution(),
+              duration: duration,
+              start: start
+            });
+            map.addPreRenderFunctions([pan, zoom, bounce]);
+            view.setCenter(dest);
+            view.setResolution(resolution);
           }
         };
         geolocation.on('change:position', function(evt) {
@@ -81,7 +69,6 @@
           var tracking = geolocation.getTracking();
           if (tracking) {
             element.addClass('tracking');
-            first = true;
           } else {
             // stop tracking
             element.removeClass('tracking');
