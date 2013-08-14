@@ -16,7 +16,8 @@
           replace: true,
           templateUrl: 'components/topic/partials/topic.html',
           scope: {
-            options: '=gaTopicOptions'
+            options: '=gaTopicOptions',
+            activeTopic: '=?gaActiveTopic'
           },
           link: function(scope, element, attrs) {
             var options = scope.options;
@@ -57,8 +58,8 @@
                 var topic = scope.topics[i];
                 if (topic.id == topicId) {
                   gaPermalink.updateParams({topic: topicId});
+                  scope.activeTopic = topicId;
                   $rootScope.$broadcast('gaTopicChange', topic);
-                  $rootScope.activeTopicId = topicId;
                   return true;
                 }
               }
