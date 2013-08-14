@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html ng-app="ga">
-
   <head>
-        <title>map.geo.admin.ch PREVIEW</title>
+    <title>map.geo.admin.ch PREVIEW</title>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -14,7 +13,7 @@
     <link rel="shortcut icon" type="image/x-icon" href="${version}img/favicon.ico"/>
   </head>
 
-  <body ng-controller="GaMapController">
+  <body ng-controller="GaMapController" ng-class="activeTopicId">
       <div id="header" class="navbar navbar-fixed-top">
         <a href="?" id="logo">
           <img src="${version}img/logo.ch.jpeg" style="width: 246px; height: 89px"/>
