@@ -1,14 +1,10 @@
 (function() {
   goog.provide('ga_popup_directive');
 
-  var module = angular.module('ga_popup_directive', [
-    'pascalprecht.translate'
-  ]);
-
+  var module = angular.module('ga_popup_directive', []);
 
   module.directive('gaPopup',
-      ['$compile',
-        function($compile) {
+      [function() {
           return {
             restrict: 'A',
             transclude: true,
