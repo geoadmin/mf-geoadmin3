@@ -16,8 +16,7 @@
           replace: true,
           templateUrl: 'components/topic/partials/topic.html',
           scope: {
-            options: '=gaTopicOptions',
-            activeTopic: '=?gaActiveTopic'
+            options: '=gaTopicOptions'
           },
           link: function(scope, element, attrs) {
             var options = scope.options;
