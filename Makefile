@@ -108,7 +108,7 @@ prod/info.json: src/info.json
 src/deps.js: $(SRC_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
 	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root_with_prefix="src/components components" --root_with_prefix="src/js js" --output_file=$@
 
-src/style/app.css: src/style/app.less $(SRC_COMPONENTS_LESS_FILES) node_modules
+src/style/app.css: src/style/app.less $(SRC_COMPONENTS_LESS_FILES) node_modules .build-artefacts/bootstrap
 	node_modules/.bin/lessc -ru $< $@
 
 src/index.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render
@@ -192,6 +192,9 @@ deploy/deploy-branch.cfg: deploy/deploy-branch.mako.cfg .build-artefacts/last-gi
 
 .build-artefacts/ol3:
 	git clone --depth 1 https://github.com/openlayers/ol3.git $@
+
+.build-artefacts/bootstrap:
+	git clone --depth 1 https://github.com/twbs/bootstrap.git $@ && cd .build-artefacts/bootstrap && git checkout v3.0.0-rc.2
 
 .PHONY: cleanall
 cleanall: clean
