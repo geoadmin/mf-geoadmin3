@@ -103,70 +103,64 @@
 
     <div id="pulldown">
 % if device=="desktop":
-      <div id="pulldown-content" class="content in">
+      <div id="pulldown-content" class="panel-group content in">
 % else:
-      <div id="pulldown-content" class="content collapse" data-toggle="collapse">
+      <div id="pulldown-content" class="panel-group content collapse" data-toggle="collapse">
 % endif
-        <div class="accordion-group">
-          <div class="accordion-heading">
-            <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#share">
-              <i class="icon-share"></i>
-              <span translate>share</span>
-            </a>
-            </div>
-            <div id="share" class="collapse">
-            <div class="accordion-inner" ng-controller="GaShareController">
+        <div class="panel">
+          <a class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#share">
+            <i class="icon-share"></i>
+            <span translate>share</span>
+          </a>
+          <div id="share" class="panel-collapse collapse">
+            <div class="panel-body" ng-controller="GaShareController">
               <div ga-share ga-share-options="options"></div>
             </div>
           </div>
-        </div> <!-- .accordion-group -->
+        </div> <!-- .panel -->
 
-        <div class="accordion-group">
-          <div class="accordion-heading">
-            <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#print">
-              <i class="icon-print"></i>
-              <span translate>print</span>
-            </a>
-          </div>
-          <div id="print" class="collapse">
-            <div class="accordion-inner">
+        <div class="panel">
+          <a class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#print">
+            <i class="icon-print"></i>
+            <span translate>print</span>
+          </a>
+          <div id="print" class="panel-collapse collapse">
+            <div class="panel-body">
               <%include file="components/print/partials/form.mako.html"/>
             </div>
           </div>
-        </div>  <!-- .accordion-group -->
-        <div class="accordion-group">
-          <div class="accordion-heading">
-            <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#tools">
-              <span translate>map_tools</span>
-            </a>
-          </div>
+        </div>  <!-- .panel -->
+
+        <div class="panel">
+          <a class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#tools">
+            <i class="icon-location-arrow"></i>
+            <span translate>map_tools</span>
+          </a>
           <div id="tools" class="collapse">
-            <div class="accordion-inner">
+            <div class="panel-body">
 
               <!-- Tools accordion -->
-              <div class="accordion" id="tools-accordion">
+              <div class="panel-group" id="tools-accordion">
 
                 <!-- Import -->
-                <div class="accordion-group">
-                  <div class="accordion-heading">
-                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#tools-accordion" href="#import">
-                      <i class="visible-collapsed icon-expand-alt"></i>
-                      <i class="hidden-collapsed icon-collapse-alt"></i>
-                      <span translate>import</span>
-                    </a>
-                  </div>
-                  <div id="import" class="accordion-body collapse">
-                    <div class="accordion-inner">
+                <div class="panel">
+                  <a class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#tools-accordion" href="#import">
+                    <i class="visible-collapsed icon-expand-alt"></i>
+                    <i class="hidden-collapsed icon-collapse-alt"></i>
+                    <span translate>import</span>
+                  </a>
+                  <div id="import" class="collapse">
+                    <div class="panel-body">
                       <ul>
                         <!-- We can't use translate directive for these links, see:
                         https://github.com/PascalPrecht/angular-translate/issues/129 -->
                         <li>
-                        <i class="icon-external-link"></i>
-                        <a href="" ng-click="importWmsPopupShown = !importWmsPopupShown">{{'wms' | translate}}</a>
+                          <i class="icon-external-link"></i>
+                          <a href="" ng-click="importWmsPopupShown = !importWmsPopupShown">{{'wms' | translate}}</a>
                         </li>
                         <li>
-                        <i class="icon-file"></i>
-                        <a href=""  ng-click="importKmlPopupShown = !importKmlPopupShown">{{'kml' | translate}}</a>
+                          <i class="icon-file"></i>
+                          <a href=""  ng-click="importKmlPopupShown = !importKmlPopupShown">{{'kml' | translate}}</a>
                         </li>
                       </ul>
                     </div>
@@ -174,7 +168,7 @@
                 </div>
 
                 <!-- Measure -->
-                <div class="accordion-group">
+                <div class="panel">
                   <div class="accordion-heading">
                     <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#tools-accordion" href="#measure" >
                       <i class="visible-collapsed icon-expand-alt"></i>
@@ -182,24 +176,22 @@
                       <span translate>measure</span>
                     </a>
                   </div>
-                  <div id="measure" class="accordion-body collapse">
-                    <div class="accordion-inner">
+                  <div id="measure" class="collapse">
+                    <div class="panel-body">
                       Under construction ...
                     </div>
                   </div>
                 </div>
 
                 <!-- Drawing -->
-                <div class="accordion-group">
-                  <div class="accordion-heading">
-                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#tools-accordion" href="#drawing" >
-                      <i class="visible-collapsed icon-expand-alt"></i>
-                      <i class="hidden-collapsed icon-collapse-alt"></i>
-                      <span translate>drawing</span>
-                    </a>
-                  </div>
-                  <div id="drawing" class="accordion-body collapse">
-                    <div class="accordion-inner">
+                <div class="panel">
+                  <a class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#tools-accordion" href="#drawing" >
+                    <i class="visible-collapsed icon-expand-alt"></i>
+                    <i class="hidden-collapsed icon-collapse-alt"></i>
+                    <span translate>drawing</span>
+                  </a>
+                  <div id="drawing" class="collapse">
+                    <div class="panel-body">
                       Under construction ...
                     </div>
                   </div>
@@ -207,45 +199,43 @@
               </div>
               <!--  end tools accordion -->
             </div>
-          </div>
-        </div> <!-- .accordion-group -->
+        </div>
+        </div> <!-- .panel -->
 
-        <div class="accordion-group">
-          <div class="accordion-heading">
-            <div class="theme-toggle">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#" translate>choose_theme</a>
-              <div class="dropdown-menu" ng-controller="GaTopicController">
-                <div ga-topic ga-topic-options="options"></div>
-              </div>
+        <div class="panel">
+          <div class="theme-toggle">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#" translate>choose_theme</a>
+            <div class="dropdown-menu" ng-controller="GaTopicController">
+              <div ga-topic ga-topic-options="options"></div>
             </div>
-            <a class="accordion-toggle light collapsed" data-toggle="collapse" href="#catalog">
-              <i class="visible-collapsed icon-caret-right"></i>
-              <i class="hidden-collapsed icon-caret-down"></i>
-              <span translate>catalog</span>
-            </a>
           </div>
+          <a class="panel-heading accordion-toggle light collapsed" data-toggle="collapse" href="#catalog">
+            <i class="visible-collapsed icon-caret-right"></i>
+            <i class="hidden-collapsed icon-caret-down"></i>
+            <span translate>catalog</span>
+          </a>
           <div id="catalog" class="collapse">
-            <div class="accordion-inner accordion-inner-catalog" ng-controller="GaCatalogtreeController">
+            <div class="panel-body accordion-inner-catalog" ng-controller="GaCatalogtreeController">
               <div ga-catalogtree ga-catalogtree-map="map" ga-catalogtree-options="options"></div>
             </div>
           </div>
-        </div> <!-- .accordion-group -->
-        <div class="accordion-group">
-          <div class="accordion-heading">
-            <a class="accordion-toggle light collapsed" data-toggle="collapse" href="#selection">
-              <i class="visible-collapsed icon-caret-right"></i>
-              <i class="hidden-collapsed icon-caret-down"></i>
-              <span translate>layer_selection</span>
-            </a>
-          </div>
+        </div> <!-- .panel -->
+
+        <div class="panel">
+          <a class="panel-heading accordion-toggle light collapsed" data-toggle="collapse" href="#selection">
+            <i class="visible-collapsed icon-caret-right"></i>
+            <i class="hidden-collapsed icon-caret-down"></i>
+            <span translate>layer_selection</span>
+          </a>
           <div id="selection" class="collapse">
-            <div class="accordion-inner">
+            <div class="panel-body">
               <p>under construction ...</p>
             </div>
           </div>
-        </div> <!-- .accordion-group -->
+        </div> <!-- .panel -->
+
 % if device=='mobile':
-        <div class="accordion-group">
+        <div class="panel">
           <div class="accordion-heading">
             <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#impressum">
               Impressum
@@ -274,7 +264,7 @@
             </p>
             </div>
           </div>
-        </div> <!-- .accordion-group -->
+        </div> <!-- .panel -->
 % endif
       </div> <!-- #pulldown-content -->
 
