@@ -12,14 +12,10 @@
           return {
             restrict: 'A',
             replace: true,
-             scope: {
-               options: '=gaTranslationSelectorOptions'
-             },
-             template:
-                 '<select ng-model="lang" ' +
-                     'ng-options="l.value as l.label for l in ' +
-                         'options.langs" class="input-small">' +
-                 '</select>',
+            scope: {
+              options: '=gaTranslationSelectorOptions'
+            },
+            templateUrl: 'components/translation/partials/translation.html',
             link: function(scope, element, attrs) {
               scope.$watch('lang', function(value) {
                 $translate.uses(value).then(angular.noop, function(lang) {
