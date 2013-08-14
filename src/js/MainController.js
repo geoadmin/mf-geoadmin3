@@ -41,6 +41,9 @@
     // is central, as most directives/components need a reference to it. So
     $scope.map = createMap();
 
+    // A global model used to share global states accross the application.
+    $scope.globalModel = {};
+
   }]);
 
 })();

@@ -13,7 +13,7 @@
     <link rel="shortcut icon" type="image/x-icon" href="${version}img/favicon.ico"/>
   </head>
 
-  <body ng-controller="GaMainController" ng-class="activeTopicId">
+  <body ng-controller="GaMainController" ng-class="globalModel.bodyClass">
       <div id="header" class="navbar navbar-fixed-top">
         <a href="?" id="logo">
           <img src="${version}img/logo.ch.jpeg" style="width: 246px; height: 89px"/>
@@ -175,7 +175,7 @@
             <div class="theme-toggle">
               <a class="dropdown-toggle" data-toggle="dropdown" href="#" translate>choose_theme</a>
               <div class="dropdown-menu" ng-controller="GaTopicController">
-                <div ga-topic ga-topic-options="options"></div>
+                <div ga-topic ga-topic-options="options" ga-active-topic="globalModel.bodyClass"></div>1
               </div>
             </div>
             <a class="accordion-toggle light collapsed" data-toggle="collapse" href="#catalog">
