@@ -4,6 +4,7 @@
   goog.require('ga_permalink');
 
   var module = angular.module('ga_geolocation_directive', [
+    'ga_permalink'
   ]);
 
   module.directive('gaGeolocation', ['$parse', 'gaPermalink',
@@ -18,13 +19,7 @@
       link: function(scope, element, attrs) {
         var map = scope.map;
         var view = map.getView().getView2D();
-        var tracking = gaPermalink.getParams().geolocation == 'true';
-        if (tracking) {
-            element.addClass('tracking');
-        }
-        var geolocation = new ol.Geolocation({
-          tracking: true
-        });
+        var geolocation = new ol.Geolocation();
         geolocation.bindTo('projection', map.getView());
         var first = true;
         var locate = function(dest) {
@@ -80,29 +75,33 @@
           }
         };
         geolocation.on('change:position', function(evt) {
+          locate(geolocation.getPosition());
+        });
+        geolocation.on('change:tracking', function(evt) {
+          var tracking = geolocation.getTracking();
           if (tracking) {
-            locate(geolocation.getPosition());
+            element.addClass('tracking');
+            first = true;
+          } else {
+            // stop tracking
+            element.removeClass('tracking');
           }
+
         });
         element.bind('click', function(e) {
           e.preventDefault();
-          if (tracking) {
-            tracking = false;
-            element.removeClass('tracking');
-          } else {
-            element.addClass('tracking');
-            first = true;
-            locate(geolocation.getPosition());
-            tracking = true;
-          }
+          var tracking = !geolocation.getTracking();
+          geolocation.setTracking(tracking);
+
           scope.$apply(function() {
-            gaPermalink.updateParams(
-              {geolocation: tracking ? 'true' : 'false'});
+            gaPermalink.updateParams({
+              geolocation: tracking ? 'true' : 'false'
+            });
           });
         });
+
+        geolocation.setTracking(gaPermalink.getParams().geolocation == 'true');
       }
     };
   }]);
 })();
-
-
