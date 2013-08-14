@@ -66,7 +66,8 @@ deploybranch: deploy/deploy-branch.cfg $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/con
 .PHONY: updateol
 updateol: OL_JS = ol.js ol-simple.js ol-whitespace.js
 updateol: .build-artefacts/ol3
-	cd .build-artefacts/ol3; git fetch origin; git merge --ff origin/master; git show; ../python-venv/bin/python build.py $(addprefix build/,$(OL_JS))
+	rm -f .build-artefacts/ol3/src/ol/ga-ol3.exports
+	cd .build-artefacts/ol3; git fetch origin; git merge --ff origin/master; git show; cp ../../scripts/ga-ol3.exports src/ol/ga-ol3.exports; ../python-venv/bin/python build.py $(addprefix build/,$(OL_JS))
 	cp $(addprefix .build-artefacts/ol3/build/,$(OL_JS)) src/lib/
 
 .PHONY: translate
@@ -155,6 +156,7 @@ node_modules:
 .build-artefacts/translate-requirements-installation.timestamp: .build-artefacts/python-venv
 	.build-artefacts/python-venv/bin/pip install "psycopg2==2.5.1"
 	.build-artefacts/python-venv/bin/pip install "PyYAML==3.10"
+	.build-artefacts/python-venv/bin/pip install "regex" 
 	touch $@
 
 .build-artefacts/python-venv/bin/gjslint: .build-artefacts/python-venv
@@ -189,7 +191,7 @@ deploy/deploy-branch.cfg: deploy/deploy-branch.mako.cfg .build-artefacts/last-gi
 	test $(GIT_BRANCH) != $(GIT_LAST_BRANCH) && echo $(GIT_BRANCH) > .build-artefacts/last-git-branch || :
 
 .build-artefacts/ol3:
-	git clone --depth 1 git@github.com:openlayers/ol3.git $@
+	git clone --depth 1 https://github.com/openlayers/ol3.git $@
 
 .PHONY: cleanall
 cleanall: clean
