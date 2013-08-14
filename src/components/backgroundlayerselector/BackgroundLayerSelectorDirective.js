@@ -10,8 +10,8 @@
   ]);
 
   module.directive('gaBackgroundLayerSelector',
-      ['gaPermalink', 'gaLayers', '$translate',
-        function(gaPermalink, gaLayers, $translate) {
+      ['gaPermalink', 'gaLayers',
+        function(gaPermalink, gaLayers) {
           return {
             restrict: 'A',
             replace: true,
@@ -31,27 +31,22 @@
                   map.getLayers().removeAt(0);
                   gaPermalink.updateParams({bgLayer: layerId});
                 } else {
-                  gaLayers.getOlLayerById(layerId).then(function(layer) {
-                    map.getLayers().setAt(0, layer);
-                    gaPermalink.updateParams({bgLayer: layerId});
-                  });
-
+                  var layer = gaLayers.getOlLayerById(layerId);
+                  map.getLayers().setAt(0, layer);
+                  gaPermalink.updateParams({bgLayer: layerId});
                 }
-
               }
 
               scope.$on('gaLayersChange', function(event, data) {
-                gaLayers.getBackgroundLayers().then(function(backgroundLayers) {
-                  backgroundLayers.push({
-                    id: 'voidLayer',
-                    label: 'void_layer'
-                  });
-                  scope.backgroundLayers = backgroundLayers;
-                  var queryParams = gaPermalink.getParams();
-                  scope.currentLayer = (queryParams.bgLayer !== undefined) ?
-                      queryParams.bgLayer : backgroundLayers[0].id;
-                  setCurrentLayer(scope.currentLayer);
+                scope.backgroundLayers = gaLayers.getBackgroundLayers();
+                scope.backgroundLayers.push({
+                  id: 'voidLayer',
+                  label: 'void_layer'
                 });
+                var queryParams = gaPermalink.getParams();
+                scope.currentLayer = (queryParams.bgLayer !== undefined) ?
+                  queryParams.bgLayer : scope.backgroundLayers[0].id;
+                setCurrentLayer(scope.currentLayer);
               });
 
               scope.$watch('currentLayer', function(newVal, oldVal) {
