@@ -212,7 +212,7 @@
             return (url && url.length > 0 && URL_REGEXP.test(url));
           };
         }
-      ]  
+      ]
   );
 
   module.directive('gaImportKml',
