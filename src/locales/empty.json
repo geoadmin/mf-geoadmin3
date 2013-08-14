@@ -65,5 +65,11 @@
   "kml": "",
   "measure": "",
   "drawing": "",
-  "void_layer": ""
+  "void_layer": "",
+  "import_wms": "",
+  "connect": "",
+  "add_layer": "",
+  "wms_max_size_allowed": "",
+  "description": "",
+  "description_instructions": ""
 }

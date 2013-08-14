@@ -2,12 +2,13 @@
   goog.provide('ga_importwms_directive');
 
   var module = angular.module('ga_importwms_directive', [
+    'ga_urlutils_service',
     'pascalprecht.translate'
   ]);
 
   module.controller('GaImportWmsDirectiveController',
-      ['$scope', '$http', '$q', '$log', '$translate',
-       function($scope, $http, $q, $log, $translate) {
+      ['$scope', '$http', '$q', '$log', '$translate', 'gaUrlUtils',
+       function($scope, $http, $q, $log, $translate, gaUrlUtils) {
 
          // List of layers available in the GetCapabilities
          $scope.layers = [];
@@ -23,16 +24,13 @@
 
            if (isValidUrl(url)) {
 
-             // TODO:May be we should do something stronger
-             var idx = url.indexOf('?');
+             // Append GetCapabilities default parameters
+             url = gaUrlUtils.append(url, $scope.options.defaultGetCapParams);
 
-             if (idx === -1) {
-               url += '?';
-             } else if (!/\?$/.test(url) && !/&$/.test(url)) {
-               url += '&';
+             // Use lang param only for admin.ch servers
+             if (url.indexOf('admin.ch') !== -1) {
+               url = gaUrlUtils.append(url, 'lang=' + $translate.uses());
              }
-
-             url += $scope.options.defaultGetCapParams;
 
              // Kill the current uploading
              $scope.cancel();
