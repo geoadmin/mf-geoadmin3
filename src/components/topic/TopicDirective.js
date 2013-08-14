@@ -29,12 +29,24 @@
               }
             }
 
+            function extendLangs(langs) {
+              var res = [];
+              angular.forEach(langs.split(','), function(lang) {
+                res.push({
+                  label: angular.uppercase(lang),
+                  value: lang
+                });
+              });
+              return res;
+            };
+
             var url = gaUrlUtils.append(options.url, 'callback=JSON_CALLBACK');
             $http.jsonp(url).then(function(result) {
               scope.topics = result.data.topics;
               angular.forEach(scope.topics, function(value) {
                 value.label = value.id;
                 value.thumbnail = 'http://placehold.it/110x60';
+                value.langs = extendLangs(value.langs);
               });
               initTopics();
             });
