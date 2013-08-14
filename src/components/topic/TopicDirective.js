@@ -39,7 +39,7 @@
                 });
               });
               return res;
-            };
+            }
 
             var url = gaUrlUtils.append(options.url, 'callback=JSON_CALLBACK');
             $http.jsonp(url).then(function(result) {
