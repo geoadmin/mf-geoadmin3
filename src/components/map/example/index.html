@@ -14,7 +14,7 @@
     }
   </style>
 </head>
-<body ng-controller="MapController">
+<body ng-controller="MainController">
 
 <div id="map" ga-map ga-map-map="map"></div>
 
@@ -38,7 +38,7 @@
         'ga_map'
       ]);
 
-      module.controller('MapController', ['$scope',
+      module.controller('MainController', ['$scope',
         'gaLayers', function($scope, gaLayers) {
 
           var swissExtent = [485869.5728, 837076.5648, 76443.1884, 299941.7864];
