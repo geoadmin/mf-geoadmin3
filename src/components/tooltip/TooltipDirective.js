@@ -1,8 +1,8 @@
 (function() {
   goog.provide('ga_tooltip_directive');
 
-  goog.require('ga_urlutils_service');
   goog.require('ga_popup_service');
+  goog.require('ga_urlutils_service');
 
   var module = angular.module('ga_tooltip_directive', [
     'ga_urlutils_service',
@@ -24,7 +24,7 @@
 
               $scope.map.on('click', function(evt) {
                 $scope.$apply(function() {
-                  handleMapClick($scope, evt.getPixel());
+                  handleMapClick($scope, evt.getPixel(), evt.getCoordinate());
                 });
               });
 
@@ -34,7 +34,7 @@
             }
           };
 
-          function handleMapClick(scope, pixel) {
+          function handleMapClick(scope, pixel, coordinate) {
             var identifyUrl = scope.options.getIdentifyUrl(currentTopic);
 
             //look for all features under clicked pixel
@@ -42,7 +42,7 @@
               //FIXME: parameters, especially layers
               params: {
                 'geometryType': 'esriGeometryPoint',
-                'geometry': '653246,173129',
+                'geometry': coordinate[0] + ',' + coordinate[1],
                 'imageDisplay': '500,600,96',
                 'mapExtent': '548945.5,147956,549402,148103.5',
                 'tolerance': '5',
