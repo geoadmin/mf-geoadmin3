@@ -22,16 +22,16 @@
                 'backgroundlayerselector.html',
             link: function(scope, element, attrs) {
               var map = scope.map;
+              var topicLayerId;
 
-              function setCurrentLayer(layerId) {
-                if (layerId == 'voidLayer') {
+              function setCurrentLayer() {
+                if (scope.currentLayer == 'voidLayer') {
                   map.getLayers().removeAt(0);
-                  gaPermalink.updateParams({bgLayer: layerId});
                 } else {
-                  var layer = gaLayers.getOlLayerById(layerId);
+                  var layer = gaLayers.getOlLayerById(scope.currentLayer);
                   map.getLayers().setAt(0, layer);
-                  gaPermalink.updateParams({bgLayer: layerId});
                 }
+                gaPermalink.updateParams({bgLayer: scope.currentLayer});
               }
 
               scope.$on('gaLayersChange', function(event, data) {
@@ -41,14 +41,17 @@
                   label: 'void_layer'
                 });
                 var queryParams = gaPermalink.getParams();
-                scope.currentLayer = (queryParams.bgLayer !== undefined) ?
-                  queryParams.bgLayer : scope.backgroundLayers[0].id;
-                setCurrentLayer(scope.currentLayer);
+                scope.currentLayer = topicLayerId || queryParams.bgLayer ||
+                    scope.backgroundLayers[0].id;
+              });
+
+              scope.$on('gaTopicChange', function(event, topic) {
+                topicLayerId = topic.bgLayer;
               });
 
               scope.$watch('currentLayer', function(newVal, oldVal) {
                 if (oldVal !== newVal) {
-                  setCurrentLayer(newVal);
+                  setCurrentLayer();
                 }
               });
             }
