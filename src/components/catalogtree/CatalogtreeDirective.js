@@ -94,10 +94,13 @@
           this.item.preview = false;
         };
 
-        function switchLayer(doAlert) {
+        function switchLayer(fromClick) {
+          if (fromClick) {
+            this.item.selectedOpen = !this.item.selectedOpen;
+          }
           if (this.map) {
              if (this.item.selectedOpen) {
-               addLayerToMap(this, doAlert);
+               addLayerToMap(this, fromClick);
             } else {
                removeLayerFromMap(this.map, this.item.idBod);
              }
@@ -120,7 +123,7 @@
             var msg = 'Could not retrieve information for ' + bodid;
             alert(msg);
           });
-          ev.preventDefault();
+          ev.stopPropagation();
         };
       }]
   );

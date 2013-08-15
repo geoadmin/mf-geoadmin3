@@ -1,31 +1,27 @@
-<div class="ga-catalogtree-template">
-  <div ng-switch="item.children">
+<div class="ga-catalogtree-template" ng-switch="item.children">
 
-    <div ng-switch-when="undefined" class="ga-catalogtree-leaf ga-catalogtree-entry checkbox"
-        ng-class="{'preview': item.preview, 'selected': item.selectedOpen}">
-      <i class="icon-circle-blank" ng-show="!item.selectedOpen"></i>
-      <i class="icon-ok-circle" ng-show="item.selectedOpen"></i>
-      <label ng-mouseover="previewLayer()"
-             ng-mouseleave="removePreviewLayer()">
-        <input type="checkbox"
-               ng-model="item.selectedOpen"
-               ng-change="switchLayer(true)">{{item.label}}
-      </label>
-      <i class="icon-warning-sign" ng-show="item.errorLoading"></i>
-      <i class="icon-info-sign" ng-click="getLegend($event, item.idBod)"></i>
-    </div>
-
-    <div ng-switch-default="" class="ga-catalogtree-node">
-      <div ng-click="toggle($event)">
-        <i ng-class="{'icon-collapse-alt': item.selectedOpen, 'icon-expand-alt': !item.selectedOpen}"></i>
-        <div class="ga-catalogtree-entry">{{item.label}}</div>
-      </div>
-      <ul ng-class="{closed: !item.selectedOpen}">
-        <li ng-repeat="child in item.children">
-          <div ga-catalogtree ga-catalogtree-item="child" ga-catalogtree-map="map"></div>
-        </li>
-      </ul>
-    </div>
-
+  <div ng-switch-when="undefined" class="ga-catalogtree-leaf ga-catalogtree-entry"
+      ng-class="{'preview': item.preview, 'selected': item.selectedOpen}"
+      ng-mouseover="previewLayer()"
+      ng-mouseleave="removePreviewLayer()"
+      ng-click="switchLayer(true)">
+    <i class="icon-circle-blank" ng-show="!item.selectedOpen"></i>
+    <i class="icon-ok-circle" ng-show="item.selectedOpen"></i>
+    {{item.label}}
+    <i class="icon-warning-sign" ng-show="item.errorLoading"></i>
+    <i class="icon-info-sign" ng-click="getLegend($event, item.idBod)"></i>
   </div>
+
+  <div ng-switch-default="" class="ga-catalogtree-node">
+    <div ng-click="toggle($event)" class="ga-catalogtree-entry">
+      <i ng-class="{'icon-collapse-alt': item.selectedOpen, 'icon-expand-alt': !item.selectedOpen}"></i>
+      {{item.label}}
+    </div>
+    <ul ng-class="{closed: !item.selectedOpen}">
+      <li ng-repeat="child in item.children">
+        <div ga-catalogtree ga-catalogtree-item="child" ga-catalogtree-map="map"></div>
+      </li>
+    </ul>
+  </div>
+
 </div>
