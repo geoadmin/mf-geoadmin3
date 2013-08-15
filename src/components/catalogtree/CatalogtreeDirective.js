@@ -2,6 +2,7 @@
   goog.provide('ga_catalogtree_directive');
 
   goog.require('ga_map_service');
+  goog.require('ga_popup_service');
 
   //static functions
   function getMapLayer(map, id) {
@@ -43,14 +44,16 @@
   };
 
   var module = angular.module('ga_catalogtree_directive', [
-    'ga_map_service'
+    'ga_map_service',
+    'ga_popup_service'
   ]);
 
   /**
    * See examples on how it can be used
    */
   module.directive('gaCatalogtree',
-      ['$compile', 'gaLayers', function($compile, gaLayers) {
+      ['$compile', 'gaLayers', 'gaPopup',
+      function($compile, gaLayers, gaPopup) {
         return {
           restrict: 'A',
           templateUrl: 'components/catalogtree/partials/catalogtree.html',
@@ -113,10 +116,15 @@
         };
 
         function getLegend(ev, bodid) {
-          this.gaLayers.getMetaDataOfLayer(bodid)
+          var scope = this;
+          scope.gaLayers.getMetaDataOfLayer(bodid)
           .success(function(data) {
-            //FIXME: use popover or similar
-            alert(data);
+            gaPopup.create({
+              title: 'metadata_window_title',
+              content: data,
+              x: 400,
+              y: 200
+            }).open(scope);
           })
           .error(function() {
             //FIXME: better error handling
