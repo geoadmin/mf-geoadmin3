@@ -1,20 +1,10 @@
 (function() {
-  goog.provide('ga_map_controller');
+  goog.provide('ga_main_controller');
 
-  var module = angular.module('ga_map_controller', []);
+  var module = angular.module('ga_main_controller', []);
 
-  /**
-   * The map controller.
-   *
-   * The map controller creates the OpenLayers map object. The map object
-   * is central, as most directives/components need a reference to it. So
-   * because of that the map controller must operate on a "global enough"
-   * scope. A body-level scope makes sense for example:
-   *
-   *     <body ng-controller="GaMapController">
-   */
-  module.controller('GaMapController', ['$scope', function($scope) {
 
+  function createMap() {
     var swissExtent = [420000, 900000, 30000, 350000];
     var swissProjection = ol.proj.configureProj4jsProjection({
       code: 'EPSG:21781',
@@ -36,9 +26,25 @@
         resolutions: resolutions
       })
     });
+
     map.addControl(new ol.control.ZoomToExtent());
 
-    $scope.map = map;
+    return map;
+  }
+
+  /**
+   * The application's main controller.
+   */
+  module.controller('GaMainController', ['$scope', '$rootScope',
+    function($scope, $rootScope) {
+
+      // The main controller creates the OpenLayers map object. The map object
+      // is central, as most directives/components need a reference to it. So
+      $scope.map = createMap();
+
+      $rootScope.$on('gaTopicChange', function(event, topic) {
+        $scope.bodyClass = topic.id;
+      });
 
   }]);
 

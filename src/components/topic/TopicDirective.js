@@ -38,7 +38,7 @@
                 });
               });
               return res;
-            };
+            }
 
             var url = gaUrlUtils.append(options.url, 'callback=JSON_CALLBACK');
             $http.jsonp(url).then(function(result) {
@@ -57,8 +57,8 @@
                 var topic = scope.topics[i];
                 if (topic.id == topicId) {
                   gaPermalink.updateParams({topic: topicId});
+                  scope.activeTopic = topicId;
                   $rootScope.$broadcast('gaTopicChange', topic);
-                  $rootScope.activeTopicId = topicId;
                   return true;
                 }
               }
