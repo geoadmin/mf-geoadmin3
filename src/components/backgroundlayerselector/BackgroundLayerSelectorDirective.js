@@ -24,14 +24,14 @@
               var map = scope.map;
               var topicLayerId;
 
-              function setCurrentLayer(layerId) {
-                if (layerId == 'voidLayer') {
+              function setCurrentLayer() {
+                if (scope.currentLayer == 'voidLayer') {
                   map.getLayers().removeAt(0);
                 } else {
-                  var layer = gaLayers.getOlLayerById(layerId);
+                  var layer = gaLayers.getOlLayerById(scope.currentLayer);
                   map.getLayers().setAt(0, layer);
                 }
-                gaPermalink.updateParams({bgLayer: layerId});
+                gaPermalink.updateParams({bgLayer: scope.currentLayer});
               }
 
               scope.$on('gaLayersChange', function(event, data) {
@@ -51,7 +51,7 @@
 
               scope.$watch('currentLayer', function(newVal, oldVal) {
                 if (oldVal !== newVal) {
-                  setCurrentLayer(newVal);
+                  setCurrentLayer();
                 }
               });
             }
