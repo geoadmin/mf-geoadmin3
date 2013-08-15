@@ -18,7 +18,7 @@
       }
     </style>
   </head>
-  <body ng-controller="MapController">
+  <body ng-controller="MainController">
     <div ng-controller="ImportKmlController">
       <div id="import-kml" 
           class="import-kml" 
@@ -29,7 +29,7 @@
     </div>
     <div id="map" class="map" ga-map ga-map-map="map"></div>
     
-    <script src="lib/jquery-2.0.2.js"></script>
+    <script src="lib/jquery-2.0.3.js"></script>
     <script src="lib/angular-1.1.5.js"></script>
     <script src="lib/angular-translate-0.9.4.js"></script>
     <script src="lib/angular-translate-loader-static-files-0.1.2.js"></script>
@@ -57,7 +57,7 @@
            baseUrlPath: 'http://mf-geoadmin30t.bgdi.admin.ch/main'});
 
 
-        module.controller('MapController', 
+        module.controller('MainController', 
           ['$scope', 'gaLayers', 
           function($scope, gaLayers) {
 
