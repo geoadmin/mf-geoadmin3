@@ -18,6 +18,7 @@
   goog.require('ga_translation');
   goog.require('ga_feedback');
   goog.require('ga_geolocation');
+  goog.require('ga_tooltip');
   goog.require('ga_modal_directive');
   goog.require('ga_draggable_directive');
   goog.require('ga_placeholder_directive');
@@ -34,6 +35,7 @@
   goog.require('ga_feedback_controller');
   goog.require('ga_contextpopup_controller');
   goog.require('ga_search_controller');
+  goog.require('ga_tooltip_controller');
 
   var module = angular.module('ga', [
     'ga_attribution',
@@ -51,6 +53,7 @@
     'ga_topic',
     'ga_translation',
     'ga_feedback',
+    'ga_tooltip',
     'ga_modal_directive',
     'ga_draggable_directive',
     'ga_placeholder_directive',
@@ -66,7 +69,8 @@
     'ga_topic_controller',
     'ga_feedback_controller',
     'ga_contextpopup_controller',
-    'ga_search_controller'
+    'ga_search_controller',
+    'ga_tooltip_controller'
   ]);
 
   module.config(['$translateProvider', function($translateProvider) {

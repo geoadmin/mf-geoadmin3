@@ -69,6 +69,9 @@
 
     <div id="map" class="map" ga-map ga-map-map="map">
       <div ga-geolocation ga-geolocation-map="map"></div>
+      <div ng-controller="GaTooltipController">
+        <div ga-tooltip ga-tooltip-map="map" ga-tooltip-options="options"></div>
+      </div>
     </div> <!-- #map -->
 
     <div id="footer" class="navbar navbar-fixed-bottom">
