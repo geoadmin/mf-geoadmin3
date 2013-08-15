@@ -49,7 +49,7 @@
                 .map(function(val) {
                   return parseFloat(val);
                 });
-          };
+          }
 
           function getBBoxParameters(map) {
             var size = map.getSize();
@@ -57,7 +57,7 @@
             var bounds = view.calculateExtent(size);
             return bounds[0] + ',' + bounds[2] + ',' +
                 bounds[1] + ',' + bounds[3];
-          };
+          }
 
           function zoomToExtent(map, extent) {
             var size = map.getSize();
@@ -65,14 +65,14 @@
 
             //minX maxX minY maxY
             view.fitExtent([extent[0], extent[2], extent[1], extent[3]], size);
-          };
+          }
 
           function moveTo(map, zoom, center) {
             var view = map.getView();
 
             view.setZoom(zoom);
             view.setCenter(center);
-          };
+          }
 
           return {
             restrict: 'A',
@@ -224,14 +224,14 @@
                   if (angular.isDefined(datum.attrs.geom_st_box2d)) {
                     var extent = parseExtent(datum.attrs.geom_st_box2d);
 
-                    var origin_zoom = {
-                      'address': 10,
-                      'parcel': 9,
-                      'sn25': 8
+                    var originZoom = {
+                      address: 10,
+                      parcel: 9,
+                      sn25: 8
                     };
 
-                    if (origin_zoom.hasOwnProperty(origin)) {
-                      var zoom = origin_zoom[origin];
+                    if (originZoom.hasOwnProperty(origin)) {
+                      var zoom = originZoom[origin];
                       var center = [extent[0], extent[1]];
                       moveTo(map, zoom, center);
                     } else {
@@ -252,6 +252,7 @@
 
               scope.clearInput = function() {
                 $(taElt).val('');
+                $(taElt).data('ttView').inputView.setQuery('');
                 $(taElt).data('ttView').dropdownView.clearSuggestions();
               };
 
