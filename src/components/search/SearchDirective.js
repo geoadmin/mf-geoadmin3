@@ -16,8 +16,8 @@
             '<div class="footer-left">',
             '<b>Please help me</b></div>',
             '<div class="footer-right"><div>',
-            '<a class="share-icon" ',
-            'title="Give us a call" ',
+            '<a class="contact-icon" ',
+            'title="{{\'contact_us\' | translate}}" ',
             'ng-click="getHref()" ',
             'ng-mouseover="getHref()" ',
             'ng-href="http://www.geo.admin.ch/',
@@ -25,14 +25,14 @@
             'target="_blank">',
             '<i class="icon-phone"></i> ',
             '</a>',
-            '<a class="share-icon" ',
-            'title="Follow us on Twitter" ',
+            '<a class="contact-icon" ',
+            'title="{{\'follow_us\' | translate}}" ',
             'ng-href="https://twitter.com/swiss_geoportal"',
             'target="_blank">',
             '<i class="icon-twitter"></i>',
             '</a>',
-            '<a class="share-icon"',
-            'title="Send us an email" ',
+            '<a class="contact-icon"',
+            'title="{{\'email_us\' | translate}}" ',
             'ng-click="getHref()" ',
             'ng-mouseover="getHref()" ',
             'ng-href="mailto:webgis@swisstopo.ch?',
@@ -89,9 +89,14 @@
               var footerTemplate = angular.element(footer);
               $compile(footerTemplate)(scope);
 
+              var locationsHeaderTemplate = angular.element(
+                  '<div class="tt-header-locations" ' +
+                  'translate>locations</div>');
+              $compile(locationsHeaderTemplate)(scope);
+
               var layerHeaderTemplate = angular.element(
-                 '<div class="tt-header-mapinfos" ' +
-                 'ng-show="hasLayerResults">Map Infos:</div>');
+                  '<div class="tt-header-mapinfos" ' +
+                  'ng-show="hasLayerResults" translate>map_info</div>');
               $compile(layerHeaderTemplate)(scope);
 
               scope.getHref = function() {
@@ -137,7 +142,7 @@
 
               var taElt = $(element).find('input').typeahead([
                 {
-                  header: '<div class="tt-header-locations">Locations:</div>',
+                  header: locationsHeaderTemplate,
                   name: 'locations',
                   timeout: 20,
                   valueKey: 'inputVal',
@@ -259,7 +264,6 @@
               scope.$on('gaTopicChange', function(event, topic) {
                 currentTopic = topic.id;
               });
-
             }
           };
         }]);
