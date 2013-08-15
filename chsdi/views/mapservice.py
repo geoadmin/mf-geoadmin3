@@ -19,13 +19,14 @@ class MapService(MapServiceValidation):
 
     def __init__(self, request):
         super(MapService, self).__init__()
-        self.request = request
         self.mapName = request.matchdict.get('map') # The topic
+        self.hasMap(request.db, self.mapName)
         self.cbName = request.params.get('callback')
         self.lang = locale_negotiator(request)
         self.searchText = request.params.get('searchText')
         self.geodataStaging = request.registry.settings['geodata_staging']
         self.translate = request.translate
+        self.request = request
 
     @view_config(route_name='mapservice', renderer='jsonp')    
     def mapservice(self):

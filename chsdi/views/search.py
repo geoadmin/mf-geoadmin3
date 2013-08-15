@@ -30,6 +30,7 @@ class Search(SearchValidation):
         self.sphinx.SetMatchMode(sphinxapi.SPH_MATCH_EXTENDED)
 
         self.mapName = request.matchdict.get('map')
+        self.hasMap(request.db, self.mapName)
         self.searchText = remove_accents(request.params.get('searchText'))
         self.lang = str(locale_negotiator(request))
         self.cbName = request.params.get('callback')

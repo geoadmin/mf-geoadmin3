@@ -11,6 +11,7 @@ class WMTSCapabilites(MapNameValidation):
     def __init__(self, request):
         super(WMTSCapabilites, self).__init__()
         self.mapName = request.matchdict.get('map')
+        self.hasMap(request.db, self.mapName)
         self.lang = locale_negotiator(request)
         self.models = get_wmts_models(self.lang)
         self.request = request

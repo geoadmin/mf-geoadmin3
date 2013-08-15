@@ -10,21 +10,13 @@ from shapely.geometry import asShape
 
 
 class MapNameValidation(object):
-    def __init__(self):
-        self._mapName = None
-        #FIXME Get dynamic list using the catalogs
-        self.availableMaps = ('api-free', 'api-notfree', 'are', 'bafu', 'bazl', 'blw', 'chsdi', 'cw-ga', 'ech', 'funksender', 'geoadmin', 'geol', 'inspire', 'ivs', 'kgs', 'nga', 'sachplan', 'swissmaponline', 'wms-bgdi', 'wms-swisstopowms')
 
-    @property
-    def mapName(self):
-        return self._mapName
+    def hasMap(self, db, mapName):
+        from chsdi.models.bod import Topics
+        availableMaps = [q[0] for q in db.query(Topics.id)]
+        if mapName not in availableMaps:
+            raise exc.HTTPBadRequest('The map you provided does not exist') 
 
-    @mapName.setter
-    def mapName(self, value):
-        if value not in self.availableMaps:
-            raise exc.HTTPBadRequest('The map you provided does not exist')
-        self._mapName = value
- 
 
 class MapServiceValidation(MapNameValidation):
     def __init__(self):
