@@ -77,12 +77,13 @@
           var olLayer = layer.olLayer;
           var attribution = '&copy; Data: ' + layer.attribution;
           if (!angular.isDefined(olLayer)) {
+            layer.id = id;
             if (layer.type == 'wmts') {
               var wmtsUrl = wmtsGetTileUrl.replace('{Layer}', id).
                             replace('{Format}', layer.format);
 
               olLayer = new ol.layer.TileLayer({
-                id: id,
+                gaLayer: layer,
                 source: new ol.source.WMTS({
                   attributions: [
                     new ol.Attribution(attribution)
