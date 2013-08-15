@@ -117,15 +117,15 @@
                   <div id="import" class="accordion-body collapse">
                     <div class="accordion-inner">
                       <ul>
+                        <!-- We can't use translate directive for these links, see:
+                        https://github.com/PascalPrecht/angular-translate/issues/129 -->  
                         <li>
                           <i class="icon-external-link"></i>  
-                          <a role="button" data-toggle="modal"
-                             href="#import-wms-modal" translate>wms</a>
+                          <a href="" ng-click="importWmsPopupShown = !importWmsPopupShown">{{'wms' | translate}}</a>
                         </li>
                         <li> 
                           <i class="icon-file"></i>  
-                          <a role="button" data-toggle="modal"
-                             href="#import-kml-modal" translate>kml</a>
+                          <a href=""  ng-click="importKmlPopupShown = !importKmlPopupShown">{{'kml' | translate}}</a>
                         </li>
                       </ul>
                     </div>
@@ -164,9 +164,8 @@
                   </div>
                 </div>
               </div>
-              <!-- end tools accordion -->
-                        
-            </div>
+              <!--  end tools accordion -->
+         
           </div>
         </div> <!-- .accordion-group -->
 
@@ -299,46 +298,35 @@
       </div>
     </div>
 
-    <!-- Modal: Import KML -->
-    <div id="import-kml-modal" class="non-modal" tabindex="-1" role="dialog" data-backdrop="" >
-      <div class="modal-dialog">
-        <div class="modal-content" ga-draggable=".modal-header" >
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">x</button>
-            <h4 class="modal-title" translate>import_kml</h4>
-          </div>
-          <div class="modal-body" ng-controller="GaImportKmlController">
-            <div id="import-kml" class="import-kml"
-              ga-import-kml
-              ga-import-kml-map="map"
-              ga-import-kml-options="options">
-            </div>
-          </div>
+    <!-- Popup: Import WMS -->
+    <div ga-popup="importWmsPopupShown"
+         ga-popup-options="{title:'import_wms'}"
+         ga-draggable=".ga-popup-title"
+         id="import-wms-popup" >
+	    <div ng-controller="GaImportWmsController">
+        <div ga-import-wms
+		         ga-import-wms-map="map"
+		         ga-import-wms-options="options"
+             id="import-wms"
+             class="import-wms">
+        </div>
+	    </div>
+    </div> <!-- end Import WMS -->
+    
+    <!-- Popup: Import KML -->
+    <div ga-popup="importKmlPopupShown"
+         ga-popup-options="{title:'import_kml'}"
+         ga-draggable=".ga-popup-title"
+         id="import-kml-popup" >
+      <div ng-controller="GaImportKmlController">
+        <div ga-import-kml 
+             ga-import-kml-map="map"
+             ga-import-kml-options="options"
+             id="import-kml"
+             class="import-kml">
         </div>
       </div>
-    </div> <!-- #import-kml-modal -->
-
-
-    <!-- Modal: Import WMS -->
-    <div id="import-wms-modal" class="non-modal" tabindex="-1" role="dialog" data-backdrop="" >
-      <div class="modal-dialog">
-        <div class="modal-content" ga-draggable=".modal-header" >
-	        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">x</button>
-            <h4 class="modal-title" translate>import_wms</h4>
-	        </div>
-	        <div class="modal-body" ng-controller="GaImportWmsController">
-            <div id="import-wms" class="import-wms"
-		            ga-import-wms
-		            ga-import-wms-map="map"
-		            ga-import-wms-options="options">
-            </div>
-	        </div>
-	      </div>
-      </div>
-    </div> <!-- #import-wms-modal -->
-
-
+    </div><!-- end Import KML -->
 
 % if mode == "prod":
     <script src="${version}lib/build.js"></script>
