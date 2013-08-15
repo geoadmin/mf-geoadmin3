@@ -11,6 +11,7 @@
 @import "../components/topic/style/topic.less";
 @import "../components/importkml/style/importkml.less";
 @import "../components/importwms/style/importwms.less";
+@import "../components/popup/style/popup.less";
 
 @header-height: 89;
 @footer-height: 36;
@@ -366,4 +367,13 @@
 #feedback-error .modal-header {
     color: #b94a48;
     background-color: #f2dede;
+}
+
+#import-wms-popup {
+    max-width: none;
+    max-height: none;
+
+    .ga-popup-content {
+        max-height: inherit;
+    }
 }

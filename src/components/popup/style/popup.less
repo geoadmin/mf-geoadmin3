@@ -1,0 +1,21 @@
+@ga-popup-max-height: 400px; 
+
+.ga-popup {
+    display: none;
+    min-width: 200px;
+    max-width: 600px;
+    min-height: 100px;
+    max-height: @ga-popup-max-height;   
+    z-index: 2000;  
+    
+    @media (max-width: @screen-tablet) { 
+      z-index: 1500;
+    } 
+}
+
+.ga-popup-content {
+    overflow: auto;
+    max-width: inherit;
+    max-height: (@ga-popup-max-height - 60);
+}
+

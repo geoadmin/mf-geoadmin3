@@ -9,6 +9,7 @@
   goog.require('ga_importwms');
   goog.require('ga_map');
   goog.require('ga_mouseposition');
+  goog.require('ga_popup');
   goog.require('ga_share');
   goog.require('ga_scaleline');
   goog.require('ga_topic');
@@ -39,6 +40,7 @@
     'ga_importwms',
     'ga_map',
     'ga_mouseposition',
+    'ga_popup',
     'ga_share',
     'ga_scaleline',
     'ga_topic',
