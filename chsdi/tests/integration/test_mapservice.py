@@ -119,3 +119,19 @@ class TestMapServiceView(TestsBase):
     def test_getlegend_valid_with_callback(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/getlegend', params={'callback' : 'cb'}, status=200)
         self.failUnless(resp.content_type == 'application/javascript')
+
+    def test_layersconfig_valid(self):
+        resp = self.testapp.get('/rest/services/ech/MapServer/layersconfig', status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless(resp.json['layers'].has_key('ch.swisstopo.pixelkarte-farbe'))
+        self.failUnless(resp.json['layers']['ch.swisstopo.pixelkarte-farbe'].has_key('attribution'))
+        self.failUnless(resp.json['layers']['ch.swisstopo.pixelkarte-farbe'].has_key('label'))
+        self.failUnless(resp.json['layers']['ch.swisstopo.pixelkarte-farbe'].has_key('timestamps'))
+        self.failUnless(resp.json['layers']['ch.swisstopo.pixelkarte-farbe'].has_key('background'))
+
+    def test_layersconfig_with_callback(self):
+        resp = self.testapp.get('/rest/services/ech/MapServer/layersconfig', params={'callback':'cb'}, status=200)
+        self.failUnless(resp.content_type == 'application/javascript')
+
+    def test_layersconfig_wrong_map(self):
+        resp = self.testapp.get('/rest/services/foo/MapServer/layersconfig', status=400)
