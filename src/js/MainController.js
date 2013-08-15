@@ -1,8 +1,9 @@
 (function() {
   goog.provide('ga_main_controller');
 
-  var module = angular.module('ga_main_controller', []);
-
+  var module = angular.module('ga_main_controller', [
+    'ga_translation'
+  ]);
 
   function createMap() {
     var swissExtent = [420000, 900000, 30000, 350000];
@@ -35,8 +36,8 @@
   /**
    * The application's main controller.
    */
-  module.controller('GaMainController', ['$scope', '$rootScope',
-    function($scope, $rootScope) {
+  module.controller('GaMainController', ['$scope', '$rootScope', '$translate',
+    function($scope, $rootScope, $translate) {
 
       // The main controller creates the OpenLayers map object. The map object
       // is central, as most directives/components need a reference to it. So
@@ -44,6 +45,10 @@
 
       $rootScope.$on('gaTopicChange', function(event, topic) {
         $scope.bodyClass = topic.id;
+      });
+
+      $rootScope.$on('translationChangeSuccess', function(event) {
+        $scope.langCode = $translate.uses();
       });
 
   }]);
