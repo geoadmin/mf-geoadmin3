@@ -83,6 +83,7 @@
 
               olLayer = new ol.layer.TileLayer({
                 id: id,
+                preload: Infinity,
                 source: new ol.source.WMTS({
                   attributions: [
                     new ol.Attribution(attribution)
