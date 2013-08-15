@@ -38,8 +38,8 @@
     </span>
 </div>
 
-<form>
-  <label translate>embed_map</label>
+<a class="embed-map" ng-click="toggle()" translate>embed_map</a>
+<form ng-show="showForm">
   <textarea rows="8" cols="40" ng-click="selectOnClick($event)" class="form-control" readonly>
 <iframe width="800" height="600" frameborder="0" scrolling="no" src="{{permalinkHref}}"></iframe>
   </textarea>
