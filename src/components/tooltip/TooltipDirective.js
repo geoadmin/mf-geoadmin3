@@ -23,13 +23,14 @@
             link: function($scope, element, attrs) {
 
               $scope.map.on('click', function(evt) {
-                var extent = $scope.map.getView().calculateExtent(
-                    $scope.map.getSize());
+                var size = $scope.map.getSize();
+                var extent = $scope.map.getView().calculateExtent(size);
 
                 $scope.$apply(function() {
                   handleMapClick($scope,
                                  evt.getPixel(),
                                  evt.getCoordinate(),
+                                 size,
                                  extent);
                 });
               });
@@ -40,19 +41,19 @@
             }
           };
 
-          function handleMapClick(scope, pixel, coordinate, extent) {
+          function handleMapClick(scope, pixel, coordinate, size, extent) {
             var identifyUrl = scope.options.getIdentifyUrl(currentTopic);
-
             //look for all features under clicked pixel
             $http.jsonp(identifyUrl, {
-              //FIXME: parameters, especially layers
               params: {
                 'geometryType': 'esriGeometryPoint',
                 'geometry': coordinate[0] + ',' + coordinate[1],
-                'imageDisplay': '500,600,96',
+                //FIXME: make sure we are passing the right dpi here. Can we?
+                'imageDisplay': size[0] + ',' + size[1] + ',96',
                 'mapExtent': extent[0] + ',' + extent[2] +
                              ',' + extent[1] + ',' + extent[3],
                 'tolerance': scope.options.tolerance,
+                //FIXME: layers should come from the map
                 'layers': 'all',
                 'callback': 'JSON_CALLBACK'
               }
