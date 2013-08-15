@@ -15,6 +15,7 @@
         };
 
         $scope.options = {
+          tolerance: 5,
           getIdentifyUrl: function(topic) {
             return baseUrl(topic) + 'identify?';
           },

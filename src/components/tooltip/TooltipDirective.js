@@ -23,8 +23,14 @@
             link: function($scope, element, attrs) {
 
               $scope.map.on('click', function(evt) {
+                var extent = $scope.map.getView().calculateExtent(
+                    $scope.map.getSize());
+
                 $scope.$apply(function() {
-                  handleMapClick($scope, evt.getPixel(), evt.getCoordinate());
+                  handleMapClick($scope,
+                                 evt.getPixel(),
+                                 evt.getCoordinate(),
+                                 extent);
                 });
               });
 
@@ -34,7 +40,7 @@
             }
           };
 
-          function handleMapClick(scope, pixel, coordinate) {
+          function handleMapClick(scope, pixel, coordinate, extent) {
             var identifyUrl = scope.options.getIdentifyUrl(currentTopic);
 
             //look for all features under clicked pixel
@@ -44,8 +50,9 @@
                 'geometryType': 'esriGeometryPoint',
                 'geometry': coordinate[0] + ',' + coordinate[1],
                 'imageDisplay': '500,600,96',
-                'mapExtent': '548945.5,147956,549402,148103.5',
-                'tolerance': '5',
+                'mapExtent': extent[0] + ',' + extent[2] +
+                             ',' + extent[1] + ',' + extent[3],
+                'tolerance': scope.options.tolerance,
                 'layers': 'all',
                 'callback': 'JSON_CALLBACK'
               }
