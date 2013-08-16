@@ -53,6 +53,8 @@
               updatePermalink();
 
               map.addControl(new ol.control.ZoomSlider());
+              map.addControl(new ol.control.ZoomToExtent());
+
               map.setTarget(element[0]);
             }
           };
