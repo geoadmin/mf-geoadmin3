@@ -46,10 +46,9 @@
                lang + '&callback=JSON_CALLBACK';
       };
 
-      var attributions;
+      var attributions = {};
       var getAttribution = function(text) {
         var key = text;
-        attributions = {};
         if (key in attributions) {
           return attributions[key];
         } else {
