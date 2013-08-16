@@ -29,7 +29,7 @@
       }
     </style>
   </head>
-  <body ng-controller="MapController">
+  <body ng-controller="MainController">
     <div id="container">
 
       <div id="map" class="map" ga-map ga-map-map="map"></div>
@@ -78,7 +78,7 @@
           'ga_map'
         ]);
 
-        module.controller('MapController', 
+        module.controller('MainController', 
           ['$scope', 'gaLayers', 
           function($scope, gaLayers) {
 
@@ -129,7 +129,7 @@
                 $scope.tree = data.results.root;
               });
               curTemplate = curTemplate === 0 ? 1 : 0;
-           };
+            }
 
         }]);
 
