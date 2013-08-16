@@ -83,9 +83,7 @@
         };
         function previewLayer() {
           if (this.map) {
-            if (this.item.selectedOpen) {
-              removeLayerFromMap(this.map, this.item.idBod);
-            } else {
+            if (!this.item.selectedOpen) {
               addLayerToMap(this, false);
             }
             this.item.preview = true;
@@ -93,7 +91,9 @@
         };
 
         function removePreviewLayer() {
-          this.switchLayer(false);
+          if (!this.item.selectedOpen) {
+            this.switchLayer(false);
+          }
           this.item.preview = false;
         };
 
