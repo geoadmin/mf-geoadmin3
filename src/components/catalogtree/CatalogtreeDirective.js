@@ -19,8 +19,8 @@
             map: '=gaCatalogtreeMap'
           },
           link: function(scope, element, attrs) {
-            var currentTopic;
-            scope.updateCatalogTree = function() {
+            var currentTopic,
+                updateCatalogTree = function() {
               if (angular.isDefined(currentTopic)) {
                 $http.jsonp(scope.options.getUrlForTopic(currentTopic), {
                   params: {
@@ -36,12 +36,12 @@
             };
 
             scope.$on('translationChangeSuccess', function() {
-              scope.updateCatalogTree();
+              updateCatalogTree();
             });
 
             scope.$on('gaTopicChange', function(event, topic) {
               currentTopic = topic.id;
-              scope.updateCatalogTree();
+              updateCatalogTree();
            });
 
 
