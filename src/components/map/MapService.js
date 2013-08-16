@@ -49,11 +49,7 @@
       var attributions;
       var getAttribution = function(text) {
         var key = text;
-        if (!attributions) {
-          attributions = {};
-          //first ever attribution gets the copyright
-          text = '&copy; ' + $translate('data') + ': ' + key;
-        }
+        attributions = {};
         if (key in attributions) {
           return attributions[key];
         } else {
