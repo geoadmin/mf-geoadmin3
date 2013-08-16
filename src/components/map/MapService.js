@@ -58,14 +58,7 @@
         }
       };
 
-      var getMetaDataUrl = function(topicId, lang, layerId) {
-        return 'http://mf-chsdi30t.bgdi.admin.ch/rest/services/' +
-               topicId + '/MapServer/' +
-               layerId + '/getlegend?lang=' +
-               lang + '&callback=JSON_CALLBACK';
-      };
-
-      var Layers = function(layersConfigUrlTemplate) {
+      var Layers = function(layersConfigUrlTemplate, legendUrlTemplate) {
         var currentTopicId;
         var layers;
 
@@ -78,6 +71,14 @@
         var getLayersConfigUrl = function(topic, lang) {
           var url = layersConfigUrlTemplate
               .replace('{Topic}', topic)
+              .replace('{Lang}', lang);
+          return gaUrlUtils.append(url, 'callback=JSON_CALLBACK');
+        };
+
+        var getMetaDataUrl = function(topic, layer, lang) {
+          var url = legendUrlTemplate
+              .replace('{Topic}', topic)
+              .replace('{Layer}', layer)
               .replace('{Lang}', lang);
           return gaUrlUtils.append(url, 'callback=JSON_CALLBACK');
         };
@@ -162,14 +163,14 @@
          * Get Metadata of given layer id
          * Uses current topic and language
          * Returns a promise. Use accordingly
-        */
+         */
         this.getMetaDataOfLayer = function(id) {
-          var url = getMetaDataUrl(currentTopicId, $translate.uses(), id);
+          var url = getMetaDataUrl(currentTopicId, id, $translate.uses());
           return $http.jsonp(url);
         };
       };
 
-      return new Layers(this.layersConfigUrlTemplate);
+      return new Layers(this.layersConfigUrlTemplate, this.legendUrlTemplate);
     }];
 
   });

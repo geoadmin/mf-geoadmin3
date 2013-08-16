@@ -378,6 +378,9 @@
             gaLayersProvider.layersConfigUrlTemplate =
                 '${service_url}/rest/services/{Topic}/MapServer/layersconfig' +
                 '?lang={Lang}';
+            gaLayersProvider.legendUrlTemplate =
+                '${service_url}/rest/services/{Topic}/MapServer/{Layer}/getlegend' +
+                '?lang={Lang}';
           }]);
       })();
     </script>
