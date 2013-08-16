@@ -219,7 +219,8 @@
                   },
                   url: $scope.fileUrl,
                   extent: getLayerExtentFromGetCap(layer),
-                  attributions: olAttributions
+                  attributions: olAttributions,
+                  ratio: 1
                 });
 
                 var olLayer = new ol.layer.ImageLayer({
