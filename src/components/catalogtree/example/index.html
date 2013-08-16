@@ -40,13 +40,13 @@
         <div>
           <div class="catalog" id="catalog1">
              <!-- This shows the tree including the root node -->
-             <div ga-catalogtree ga-catalogtree-item="tree" ga-catalogtree-map="map"></div>
+             <div ga-catalogitem ga-catalogitem-item="tree" ga-catalogitem-map="map"></div>
           </div>
           <div class="catalog" id="catalog2">
             <!-- This will show the tree without the root node -->
             <ul>
               <li class="ga-catalogtree-node" ng-repeat="child in tree.children">
-                <div ga-catalogtree ga-catalogtree-item="child" ga-catalogree-map="map"></div>
+                <div ga-catalogitem ga-catalogitem-item="child" ga-catalogitem-map="map"></div>
               </li>
             </ul>
           </div>
@@ -106,8 +106,9 @@
 
             $scope.map = map;
 
-            gaLayers.loadForTopic('inspire');
-            gaLayers.getOlLayerById('ch.swisstopo.swissimage').then(function(layer) {
+            gaLayers.loadForTopic('ech');
+            $scope.$on('gaLayersChange', function() {
+              var layer = gaLayers.getOlLayerById('ch.swisstopo.swissimage');
               map.addLayer(layer);
             });
         }]);
