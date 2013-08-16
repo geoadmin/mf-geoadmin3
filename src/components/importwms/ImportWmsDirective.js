@@ -1,12 +1,11 @@
 (function() {
   goog.provide('ga_importwms_directive');
 
-  goog.require('ga_translation');
   goog.require('ga_urlutils_service');
 
   var module = angular.module('ga_importwms_directive', [
-    'ga_translation',
-    'ga_urlutils_service'
+    'ga_urlutils_service',
+    'pascalprecht.translate'
   ]);
 
   module.controller('GaImportWmsDirectiveController',
