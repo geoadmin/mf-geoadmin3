@@ -12,6 +12,7 @@
 @import "../components/importkml/style/importkml.less";
 @import "../components/importwms/style/importwms.less";
 @import "../components/popup/style/popup.less";
+@import "../components/catalogtree/style/catalogtree.less";
 
 @header-height: 89;
 @footer-height: 36;
@@ -214,6 +215,8 @@
     }
 }
 .accordion-inner {
+    max-height: 480px;
+    overflow: auto;
     background-color: #fff;
     border-top: none;
     padding: 8px 11px;
@@ -377,3 +380,66 @@
         max-height: inherit;
     }
 }
+
+// ****** CATALOG TREE
+.catalog > ul {
+    padding-left: 3px;
+}
+
+.accordion-inner-catalog {
+    padding: 4px 4px;
+}
+
+.ga-catalogitem-entry {
+    padding-top: 7px;
+    font-size: 12px;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: #e9e9e9;
+    height: 32px;
+}
+
+.ga-catalogitem-leaf {
+    border-bottom-style: dashed;
+    border-bottom-color: #c7c7c7;
+}
+
+.ga-catalogitem-template {
+
+    .selected {
+        color: #ff0000;
+        background-color: #ffffff;
+    }
+
+    .preview {
+        color: #666666;
+        background-color: #ffffff;
+    }
+}
+
+
+// ****** METADATA / LEGEND Information
+.legend_header, .bodsearch_header {
+    background-color: #eee;
+    margin: 1px;
+    padding: 4px;
+}
+
+.bod_title {
+    color: red;
+}
+
+.office_provider {
+    color: red;
+    font-style: italic;
+    margin-bottom: 5px;
+    margin-top: 1px;
+}
+
+.legend_footer .bod_footer {
+    background-color: white;
+    margin: 1px;
+    padding: 4px;
+}
+
+
