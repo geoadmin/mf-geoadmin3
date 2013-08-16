@@ -18,7 +18,7 @@
       }
     </style>
   </head>
-  <body ng-controller="MapController">
+  <body ng-controller="MainController">
     <div ng-controller="SearchController">
       <div id="search-input"
            ga-search
@@ -56,7 +56,7 @@
                  {serviceUrl: 'http://mf-chsdi30t.bgdi.admin.ch',
                   baseUrlPath: 'http://mf-geoadmin30t.bgdi.admin.ch/main' });
         
-        module.controller('MapController', ['$scope',
+        module.controller('MainController', ['$scope',
             'gaLayers', function($scope, gaLayers) {
 
           var swissExtent = [485869.5728, 837076.5648, 76443.1884, 299941.7864];
@@ -82,9 +82,8 @@
           });
 
           $scope.map = map;
-          gaLayers.loadForTopic('inspire');
-          gaLayers.getOlLayerById('ch.swisstopo.swissimage').then(function(layer) {
-            map.addLayer(layer);
+          gaLayers.loadForTopic('inspire', 'en').then(function() {
+            map.addLayer(gaLayers.getOlLayerById('ch.swisstopo.swissimage'));
           });
         }]);
        
