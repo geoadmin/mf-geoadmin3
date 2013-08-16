@@ -299,8 +299,9 @@
     </div>
 
     <!-- Popup: Import WMS -->
-    <div ga-popup="importWmsPopupShown"
-         ga-popup-options="{title:'import_wms'}"
+    <div ng-init="options = {title: 'import_wms'}"
+         ga-popup="importWmsPopupShown"
+         ga-popup-options="options"
          ga-draggable=".ga-popup-title"
          id="import-wms-popup" >
 	    <div ng-controller="GaImportWmsController">
@@ -314,8 +315,9 @@
     </div> <!-- end Import WMS -->
     
     <!-- Popup: Import KML -->
-    <div ga-popup="importKmlPopupShown"
-         ga-popup-options="{title:'import_kml'}"
+    <div ng-init="options = {title: 'import_kml'}"
+         ga-popup="importKmlPopupShown"
+         ga-popup-options="options"
          ga-draggable=".ga-popup-title"
          id="import-kml-popup" >
       <div ng-controller="GaImportKmlController">
