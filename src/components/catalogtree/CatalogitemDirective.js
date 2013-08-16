@@ -13,7 +13,7 @@
       }
     });
     return layer;
-  };
+  }
 
   function addLayerToMap(scope, doAlert) {
     var layer = getMapLayer(scope.map, scope.item.idBod),
@@ -34,14 +34,14 @@
         scope.item.selectedOpen = false;
       }
     }
- };
+ }
 
   function removeLayerFromMap(map, id) {
     var layer = getMapLayer(map, id);
     if (angular.isDefined(layer)) {
       map.removeLayer(layer);
     }
-  };
+  }
 
   var module = angular.module('ga_catalogitem_directive', [
     'ga_map_service',
@@ -88,14 +88,14 @@
             }
             this.item.preview = true;
           }
-        };
+        }
 
         function removePreviewLayer() {
           if (!this.item.selectedOpen) {
             this.switchLayer(false);
           }
           this.item.preview = false;
-        };
+        }
 
         function switchLayer(fromClick) {
           if (fromClick) {
@@ -108,12 +108,12 @@
                removeLayerFromMap(this.map, this.item.idBod);
              }
            }
-         };
+         }
 
         function toggle(ev) {
           this.item.selectedOpen = !this.item.selectedOpen;
           ev.preventDefault();
-        };
+        }
 
         function getLegend(ev, bodid) {
           var scope = this;
@@ -132,8 +132,7 @@
             alert(msg);
           });
           ev.stopPropagation();
-        };
+        }
       }]
   );
 })();
-
