@@ -85,14 +85,12 @@
                   i < len; i++) {
                 var layer = result.capability.layers[i];
 
-                // WMS layer with no name can't be added to the map
-                if (layer.name) {
-
-                  // Set srsCompatible property
-                  layer.srsCompatible = (layer.srs &&
-                      (layer.srs[srsCode.toUpperCase()] ||
-                      layer.srs[srsCode.toLowerCase()]));
-
+                // If the  WMS layer has no name or if it can't be
+                // displayed in the current SRS, we don't add it
+                // to the list
+                if (layer.name && (layer.srs &&
+                    (layer.srs[srsCode.toUpperCase()] ||
+                    layer.srs[srsCode.toLowerCase()]))) {
                   $scope.layers.push(layer);
                 }
               }
@@ -120,7 +118,7 @@
 
           // Add the selected layer to the map
           $scope.addLayerSelected = function() {
-            if ($scope.layerSelected && $scope.layerSelected.srsCompatible) {
+            if ($scope.layerSelected) {
               var layerAdded = $scope.addLayer($scope.layerSelected);
 
               if (layerAdded) {
@@ -133,7 +131,7 @@
 
           // Add the hovered layer to the map
           $scope.addLayerHovered = function(getCapLayer) {
-            if (getCapLayer && getCapLayer.srsCompatible) {
+            if (getCapLayer) {
               $scope.layerHovered = getCapLayer;
               $scope.olLayerHovered = $scope.addLayer($scope.layerHovered);
             }
