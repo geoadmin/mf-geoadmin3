@@ -46,6 +46,18 @@
                lang + '&callback=JSON_CALLBACK';
       };
 
+      var attributions = {};
+      var getAttribution = function(text) {
+        var key = text;
+        if (key in attributions) {
+          return attributions[key];
+        } else {
+          var a = new ol.Attribution(text);
+          attributions[key] = a;
+          return a;
+        }
+      };
+
       var Layers = function() {
         var currentTopicId;
         var layers;
@@ -75,7 +87,6 @@
         this.getOlLayerById = function(id) {
           var layer = layers[id];
           var olLayer = layer.olLayer;
-          var attribution = '&copy; Data: ' + layer.attribution;
           if (!angular.isDefined(olLayer)) {
             if (layer.type == 'wmts') {
               var wmtsUrl = wmtsGetTileUrl.replace('{Layer}', id).
@@ -85,7 +96,7 @@
                 id: id,
                 source: new ol.source.WMTS({
                   attributions: [
-                    new ol.Attribution(attribution)
+                    getAttribution(layer.attribution)
                   ],
                   dimensions: {
                     'Time': layer.timestamps[0]
