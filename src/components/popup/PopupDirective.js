@@ -10,7 +10,7 @@
            transclude: true,
            scope: {
              toggle: '=gaPopup',
-             optionsFunc: '&gaPopupOptions' // Options from directive
+             options: '=gaPopupOptions'
            },
            template:
              '<h4 class="popover-title ga-popup-title">' +
@@ -23,9 +23,6 @@
              '</div>',
 
            link: function(scope, element, attrs) {
-
-             // Get the popup options
-             scope.options = scope.optionsFunc();
 
              if (!scope.options) {
                scope.options = {
