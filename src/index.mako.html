@@ -373,6 +373,12 @@
          module.constant('gaGlobalOptions',
            {serviceUrl : '${service_url}',
             baseUrlPath: '${base_url_path}'});
+
+          module.config(['gaLayersProvider', function(gaLayersProvider) {
+            gaLayersProvider.layersConfigUrlTemplate =
+                '${service_url}/rest/services/{Topic}/MapServer/layersconfig' +
+                '?lang={Lang}';
+          }]);
       })();
     </script>
 

@@ -7,4 +7,9 @@ beforeEach(function() {
     $translateProvider.translations('en', {});
     $translateProvider.useLoader(undefined);
   });
+
+  module(function(gaLayersProvider) {
+    gaLayersProvider.layersConfigUrlTemplate =
+        'http://example.com/{Topic}?lang={Lang}';
+  });
 });
