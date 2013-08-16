@@ -4,7 +4,9 @@
   goog.require('ga_permalink');
 
   var module = angular.module('ga_search_directive', [
-    'ga_map_service', 'ga_permalink'
+    'ga_map_service',
+    'ga_permalink',
+    'pascalprecht.translate'
   ]);
 
   module.directive('gaSearch',
