@@ -1,5 +1,5 @@
 (function() {
-  goog.provide('ga_catalogtree_directive');
+  goog.provide('ga_catalogitem_directive');
 
   goog.require('ga_map_service');
   goog.require('ga_popup_service');
@@ -43,7 +43,7 @@
     }
   };
 
-  var module = angular.module('ga_catalogtree_directive', [
+  var module = angular.module('ga_catalogitem_directive', [
     'ga_map_service',
     'ga_popup_service'
   ]);
@@ -51,15 +51,15 @@
   /**
    * See examples on how it can be used
    */
-  module.directive('gaCatalogtree',
+  module.directive('gaCatalogitem',
       ['$compile', 'gaLayers', 'gaPopup',
       function($compile, gaLayers, gaPopup) {
         return {
           restrict: 'A',
-          templateUrl: 'components/catalogtree/partials/catalogtree.html',
+          templateUrl: 'components/catalogtree/partials/catalogitem.html',
           scope: {
-            item: '=gaCatalogtreeItem',
-            map: '=gaCatalogtreeMap'
+            item: '=gaCatalogitemItem',
+            map: '=gaCatalogitemMap'
           },
           compile: function(tEl, tAttr) {
             var contents = tEl.contents().remove();

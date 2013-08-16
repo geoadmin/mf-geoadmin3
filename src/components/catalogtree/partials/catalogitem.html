@@ -1,6 +1,6 @@
-<div class="ga-catalogtree-template" ng-switch="item.children">
+<div class="ga-catalogitem-template" ng-switch="item.children">
 
-  <div ng-switch-when="undefined" class="ga-catalogtree-leaf ga-catalogtree-entry"
+  <div ng-switch-when="undefined" class="ga-catalogitem-leaf ga-catalogitem-entry"
       ng-class="{'preview': item.preview, 'selected': item.selectedOpen}"
       ng-mouseover="previewLayer()"
       ng-mouseleave="removePreviewLayer()"
@@ -12,14 +12,14 @@
     <i class="icon-info-sign" ng-click="getLegend($event, item.idBod)"></i>
   </div>
 
-  <div ng-switch-default="" class="ga-catalogtree-node">
-    <div ng-click="toggle($event)" class="ga-catalogtree-entry">
+  <div ng-switch-default="" class="ga-catalogitem-node">
+    <div ng-click="toggle($event)" class="ga-catalogitem-entry">
       <i ng-class="{'icon-collapse-alt': item.selectedOpen, 'icon-expand-alt': !item.selectedOpen}"></i>
       {{item.label}}
     </div>
     <ul ng-class="{closed: !item.selectedOpen}">
       <li ng-repeat="child in item.children">
-        <div ga-catalogtree ga-catalogtree-item="child" ga-catalogtree-map="map"></div>
+        <div ga-catalogitem ga-catalogitem-item="child" ga-catalogitem-map="map"></div>
       </li>
     </ul>
   </div>
