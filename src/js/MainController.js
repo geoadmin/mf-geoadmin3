@@ -27,8 +27,6 @@
       })
     });
 
-    map.addControl(new ol.control.ZoomToExtent());
-
     return map;
   }
 
