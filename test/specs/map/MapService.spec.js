@@ -2,8 +2,7 @@ describe('ga_map_service', function() {
 
   var layers, $httpBackend;
 
-  var expectedUrl = 'http://mf-chsdi30t.bgdi.admin.ch/' +
-      'rest/services/sometopic/MapServer/layersconfig?' +
+  var expectedUrl = 'http://example.com/sometopic?' +
       'lang=somelang&callback=JSON_CALLBACK';
 
   beforeEach(function() {

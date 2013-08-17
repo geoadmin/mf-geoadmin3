@@ -2,9 +2,11 @@
   goog.provide('ga_map_service');
 
   goog.require('ga_translation');
+  goog.require('ga_urlutils_service');
 
   var module = angular.module('ga_map_service', [
-    'ga_translation'
+    'ga_translation',
+    'ga_urlutils_service'
   ]);
 
   module.provider('gaTileGrid', function() {
@@ -34,17 +36,15 @@
 
   module.provider('gaLayers', function() {
 
-    this.$get = ['$q', '$http', '$translate', '$rootScope', 'gaTileGrid',
-     function($q, $http, $translate, $rootScope, gaTileGrid) {
+    this.$get = ['$q', '$http', '$translate', '$rootScope', 'gaUrlUtils',
+        'gaTileGrid',
+        function($q, $http, $translate, $rootScope, gaUrlUtils, gaTileGrid) {
 
-      var wmtsGetTileUrl = 'http://wmts.geo.admin.ch/1.0.0/{Layer}/default/' +
+      // not configurable at the moment, but could be, in the same way
+      // as layersConfigUrlTemplate
+      var wmtsGetTileUrlTemplate =
+          'http://wmts.geo.admin.ch/1.0.0/{Layer}/default/' +
           '{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
-
-      var getTopicUrl = function(topicId, lang) {
-        return 'http://mf-chsdi30t.bgdi.admin.ch/rest/services/' +
-               topicId + '/MapServer/layersconfig?lang=' +
-               lang + '&callback=JSON_CALLBACK';
-      };
 
       var attributions = {};
       var getAttribution = function(text) {
@@ -58,16 +58,30 @@
         }
       };
 
-      var getMetaDataUrl = function(topicId, lang, layerId) {
-        return 'http://mf-chsdi30t.bgdi.admin.ch/rest/services/' +
-               topicId + '/MapServer/' +
-               layerId + '/getlegend?lang=' +
-               lang + '&callback=JSON_CALLBACK';
-      };
-
-      var Layers = function() {
+      var Layers = function(layersConfigUrlTemplate, legendUrlTemplate) {
         var currentTopicId;
         var layers;
+
+        var getWmtsGetTileUrl = function(layer, format) {
+          return wmtsGetTileUrlTemplate
+              .replace('{Layer}', layer)
+              .replace('{Format}', format);
+        };
+
+        var getLayersConfigUrl = function(topic, lang) {
+          var url = layersConfigUrlTemplate
+              .replace('{Topic}', topic)
+              .replace('{Lang}', lang);
+          return gaUrlUtils.append(url, 'callback=JSON_CALLBACK');
+        };
+
+        var getMetaDataUrl = function(topic, layer, lang) {
+          var url = legendUrlTemplate
+              .replace('{Topic}', topic)
+              .replace('{Layer}', layer)
+              .replace('{Lang}', lang);
+          return gaUrlUtils.append(url, 'callback=JSON_CALLBACK');
+        };
 
         /**
          * Load layers for a given topic and language. Return a promise.
@@ -75,7 +89,7 @@
         var loadForTopic = this.loadForTopic = function(topicId, lang) {
           currentTopicId = topicId;
 
-          var url = getTopicUrl(topicId, lang);
+          var url = getLayersConfigUrl(topicId, lang);
 
           var promise = $http.jsonp(url).then(function(response) {
             layers = response.data.layers;
@@ -96,9 +110,6 @@
           var olLayer = layer.olLayer;
           if (!angular.isDefined(olLayer)) {
             if (layer.type == 'wmts') {
-              var wmtsUrl = wmtsGetTileUrl.replace('{Layer}', id).
-                            replace('{Format}', layer.format);
-
               olLayer = new ol.layer.TileLayer({
                 id: id,
                 source: new ol.source.WMTS({
@@ -111,7 +122,7 @@
                   projection: 'EPSG:21781',
                   requestEncoding: 'REST',
                   tileGrid: gaTileGrid.get(layer.resolutions),
-                  url: wmtsUrl
+                  url: getWmtsGetTileUrl(id, layer.format)
                 })
               });
               layer.olLayer = olLayer;
@@ -152,14 +163,14 @@
          * Get Metadata of given layer id
          * Uses current topic and language
          * Returns a promise. Use accordingly
-        */
+         */
         this.getMetaDataOfLayer = function(id) {
-          var url = getMetaDataUrl(currentTopicId, $translate.uses(), id);
+          var url = getMetaDataUrl(currentTopicId, id, $translate.uses());
           return $http.jsonp(url);
         };
       };
 
-      return new Layers();
+      return new Layers(this.layersConfigUrlTemplate, this.legendUrlTemplate);
     }];
 
   });
