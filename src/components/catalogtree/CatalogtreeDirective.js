@@ -25,7 +25,9 @@
             var currentTopic,
                 updateCatalogTree = function() {
               if (angular.isDefined(currentTopic)) {
-                $http.jsonp(scope.options.getUrlForTopic(currentTopic), {
+                var url = scope.options.catalogUrlTemplate
+                    .replace('{Topic}', currentTopic);
+                $http.jsonp(url, {
                   params: {
                     'lang': $translate.uses(),
                     'callback': 'JSON_CALLBACK'

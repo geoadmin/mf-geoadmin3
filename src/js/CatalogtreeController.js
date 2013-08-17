@@ -7,10 +7,9 @@
       ['$scope', 'gaGlobalOptions', 
             function($scope, gaGlobalOptions) {
         
-        var urlBase = gaGlobalOptions.serviceUrl + '/rest/services/';
-        $scope.options = {};
-        $scope.options.getUrlForTopic = function (topic) {
-          return urlBase + topic + '/CatalogServer?';
+        $scope.options = {
+          catalogUrlTemplate: gaGlobalOptions.serviceUrl +
+              '/rest/services/{Topic}/CatalogServer'
         };
 
       }]);
