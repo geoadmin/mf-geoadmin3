@@ -301,11 +301,10 @@
                       }
                     }
 
-                    if (!droppable) {
-                      return;
+                    if (droppable) {
+                      dropZone.css('display', 'table');
                     }
                   
-                    dropZone.css('display', 'table');
                   }
                 });
 
