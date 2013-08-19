@@ -9,8 +9,10 @@
   ]);
 
   module.directive('gaContextPopup',
-      ['$http', '$q', '$timeout', 'gaPermalink', 'gaUrlUtils',
-        function($http, $q, $timeout, gaPermalink, gaUrlUtils) {
+      ['$http', '$q', '$timeout', 'gaPermalink',
+          'gaUrlUtils', 'gaBrowserSniffer',
+          function($http, $q, $timeout, gaPermalink,
+              gaUrlUtils, gaBrowserSniffer) {
           var lv03tolv95Url =
               'http://tc-geodesy.bgdi.admin.ch/reframe/lv03tolv95?cb=JSON_CALLBACK';
           return {
@@ -35,6 +37,13 @@
               var coord21781;
               var popoverShown = false;
 
+              var overlay = new ol.Overlay({
+                map: map,
+                element: element[0]
+              });
+
+              scope.showQR = !gaBrowserSniffer.mobile;
+
               var handler = function(event) {
                 event.preventDefault();
 
@@ -42,6 +51,16 @@
                 coord21781 = event.getCoordinate();
                 var coord4326 = ol.proj.transform(coord21781,
                     'EPSG:21781', 'EPSG:4326');
+
+                // recenter on mobile devices
+                if (gaBrowserSniffer.mobile) {
+                  var pan = ol.animation.pan({
+                    duration: 200,
+                    source: view.getCenter()
+                  });
+                  map.addPreRenderFunction(pan);
+                  view.setCenter(coord21781);
+                }
 
                 // The $http service does not send requests immediately but
                 // wait for the "nextTick". Not sure this is bug in Angular.
@@ -77,9 +96,9 @@
                       hidePopover();
                     });
 
-                    element.css('left', (pixel[0] - 150) + 'px');
-                    element.css('top', pixel[1] + 'px');
+                    overlay.setPosition(coord21781);
                     showPopover();
+
                   });
                 });
               };
@@ -146,9 +165,11 @@
                 scope.crosshairPermalink = gaPermalink.getHref(
                     angular.extend({crosshair: 'bowl'}, p));
 
-                scope.qrcodeUrl = qrcodeUrl +
-                   '?url=' +
-                   escape(contextPermalink);
+                if (!gaBrowserSniffer.mobile) {
+                  scope.qrcodeUrl = qrcodeUrl +
+                    '?url=' +
+                    escape(contextPermalink);
+                }
               }
             }
           };

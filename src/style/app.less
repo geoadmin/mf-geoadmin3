@@ -116,22 +116,33 @@
     }
     @media (max-width: @screen-tablet) {
         background: transparent;
+        padding-left: 2px;
         & > div {
             display: none;
         }
         #scaleline, #copyrights {
-            display: block;
-            margin-bottom: 1em;
+            display: inline-block;
+            position: absolute;
+            bottom: 0;
             width: auto;
+            height: auto;
+            line-height: 1.4em;
+            margin: 0;
         }
-        #copyrights a {
-            background: rgba(255,255,255,.7);
-            border-radius: .2em;
-            padding: .2em .4em;
+        #copyrights {
+            right: 0;
+            a {
+                background: rgba(255,255,255,.7);
+                border-radius: .2em 0 0 0;
+                padding: .2em .4em;
+            }
         }
         .ol-scale-line-inner {
             background: rgba(255,255,255,.7);
             outline: 2px solid rgba(255,255,255,.7);
+            font-weight: normal;
+            height: 14px;
+            line-height: 1em;
         }
     }
 }
@@ -442,4 +453,8 @@
     padding: 4px;
 }
 
-
+// ***** CONTEXTPOPUP
+.contextpopup {
+    z-index: 1090;
+    left: unit(-@contextpopup-width/2, px);
+}

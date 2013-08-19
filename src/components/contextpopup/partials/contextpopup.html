@@ -26,9 +26,9 @@
                   <td></td>
                   <td><a href="{{crosshairPermalink}}" target="_blank">Link with bowl crosshair</a></td>
               </tr>
-              <tr>
+              <tr ng-show="showQR">
                 <td align="center" colspan="2">
-                  <img ng-src="{{qrcodeUrl}}" style="width: 128px; height: 128px;">
+                  <img ng-src="{{qrcodeUrl}}" style="width: 128px; height: 128px;" class="qrcode">
                 </td>
               </tr>
               </tbody>
