@@ -9,62 +9,94 @@
     <meta name="description" content="Maps of Switzerland : The official geoportal of the Swiss Confederation provides digital data which can be viewed, printed out, ordered and supplied by means of the map viewer tool. Geoinformation is made available by public-sector organisations and is accessible to the general public."/>
     <meta name="keywords" content="maps Switzerland, map viewer, Confederation, geodata, public platform, geographical information, geoportal, orthophotos, geolocation, geoinformation, Geodaten, Geoinformation, Bund, Plattform, Karte, Kartendienst, Kartenviewer"/>
 
+    <script>
+      (function(){
+        var w = window, l = w.location, pathname, p = '${device}',
+          m = l.search.match(/(?:mobile=(true|false))/);
+
+        // avoid loops
+        m = (m) ? m[1] : m;
+        if ((p=='desktop' && m=='false') || (p=='mobile' && m=='true')) {
+          return;
+        }
+
+        var redirectToMobile = function() {
+          pathname = (l.pathname.indexOf('index')==-1) ?
+            l.pathname + 'mobile.html' : l.pathname.replace(/index/, 'mobile');
+          l.href = l.origin + pathname + l.search;
+        }
+        var redirectToDesktop = function() {
+          l.href = l.origin + l.pathname.replace(/mobile/, 'index') + l.search;
+        }
+
+        var onMobile = ( (('ontouchstart' in w) || ('onmsgesturechange' in w)) && (screen.width<=768) );
+        if (m=='false' || (!onMobile && p=='mobile') ) {
+          redirectToDesktop();
+        } else if (m=='true' || (onMobile && p=='desktop') ) {
+          redirectToMobile();
+        }
+      })();
+    </script>
 
     <link href="${version}style/app.css" rel="stylesheet" media="screen">
     <link rel="shortcut icon" type="image/x-icon" href="${version}img/favicon.ico"/>
   </head>
 
   <body ng-controller="GaMainController" ng-class="bodyClass">
-      <div id="header" class="navbar navbar-fixed-top">
-        <a href="?" id="logo">
-          <img src="${version}img/logo.ch.jpeg" style="width: 246px; height: 89px"/>
-        </a>
-        <input type="text" name="q" placeholder="under construction..." id="search" class="input-small"/>
-% if device == 'desktop':
-        <form class="navbar-form pull-right hidden-sm">
-          <div ga-background-layer-selector
-            ga-background-layer-selector-map="map"></div>
-          <div id="toptools">
-            <a href="#feedback" data-toggle="modal" translate>problem_announcement</a>
-            <div ng-controller="GaTranslationController">
-              <div ga-translation-selector
-                ga-translation-selector-options="options"></div>
-            </div>
-          </div>
-        </form>
-% endif
-      </div>
-      <div id="map" class="map" ga-map ga-map-map="map">
-        <div  ng-controller="GaContextPopupController">
-          <div ga-context-popup ga-context-popup-map="map" ga-context-popup-options="options"></div>
-        </div>
-        <div ga-geolocation ga-geolocation-map="map"></div>
-      </div>
 
-      <div id="footer" class="navbar navbar-fixed-bottom">
-        <div id="scaleline" class="pull-left" ga-scale-line ga-scale-line-map="map"></div>
+    <div id="header" class="navbar navbar-fixed-top">
+      <a href="?" id="logo">
+        <img src="${version}img/logo.ch.jpeg" style="width: 246px; height: 89px"/>
+      </a>
+      <input type="text" name="q" placeholder="under construction..." id="search" class="input-small"/>
 % if device == 'desktop':
-        <div id="copyrightstext" class="pull-left">
-          <span >&copy;&nbsp;</span>
-          <span translate>data</span>
+      <form class="navbar-form pull-right hidden-sm">
+        <div ga-background-layer-selector
+          ga-background-layer-selector-map="map"></div>
+        <div id="toptools">
+          <a href="#feedback" data-toggle="modal" translate>problem_announcement</a>
+          <div ng-controller="GaTranslationController">
+            <div ga-translation-selector
+              ga-translation-selector-options="options"></div>
+          </div>
         </div>
-        <div class="pull-left" ga-attribution ga-attribution-map="map"></div>
-            <div id="mouseposition" class="pull-left visible-lg" ng-controller="GaMousePositionController">
-          <select
-            ng-model="options.projection"
-            ng-options="p.label for p in mousePositionProjections">
-          </select>
-          <div class="ga-mouse-position"
-            ga-mouse-position
-            ga-mouse-position-map="map"
-            ga-mouse-position-options="options"></div>
-        </div>
+      </form>
 % endif
-        <div id="copyrights" class="pull-right"><a href="http://www.geo.admin.ch/internet/geoportal/en/home/geoadmin/contact.html#copyright">Copyright & data protection</a></div>
+    </div> <!-- #header -->
+
+    <div id="map" class="map" ga-map ga-map-map="map">
+      <div ga-geolocation ga-geolocation-map="map"></div>
+    </div> <!-- #map -->
+
+    <div id="footer" class="navbar navbar-fixed-bottom">
+      <div id="scaleline" class="pull-left" ga-scale-line ga-scale-line-map="map"></div>
 % if device == 'desktop':
-        <div id="geoadminlink" class="pull-right"><a href="http://www.geo.admin.ch/internet/geoportal/en/home.html">geo.admin.ch</a></div>
-% endif
+      <div id="copyrightstext" class="pull-left">
+        <span >&copy;&nbsp;</span>
+        <span translate>data</span>
       </div>
+      <div class="pull-left" ga-attribution ga-attribution-map="map"></div>
+      <div id="mouseposition" class="pull-left visible-lg" ng-controller="GaMousePositionController">
+        <select
+          ng-model="options.projection"
+          ng-options="p.label for p in mousePositionProjections">
+        </select>
+        <div class="ga-mouse-position"
+          ga-mouse-position
+          ga-mouse-position-map="map"
+          ga-mouse-position-options="options"></div>
+      </div>
+% endif
+      <div id="copyrights" class="pull-right"><a href="http://www.geo.admin.ch/internet/geoportal/en/home/geoadmin/contact.html#copyright">Copyright & data protection</a></div>
+% if device == 'desktop':
+      <div id="geoadminlink" class="pull-right"><a href="http://www.geo.admin.ch/internet/geoportal/en/home.html">geo.admin.ch</a></div>
+% endif
+    </div><!-- #footer -->
+
+    <div  ng-controller="GaContextPopupController" class="ga-context-popup">
+      <div ga-context-popup ga-context-popup-map="map" ga-context-popup-options="options"></div>
+    </div>
+
 
     <div id="pulldown">
 % if device=="desktop":
@@ -107,15 +139,15 @@
           </div>
           <div id="tools" class="collapse">
             <div class="accordion-inner">
-            
+
               <!-- Tools accordion -->
               <div class="accordion" id="tools-accordion">
-                
+
                 <!-- Import -->
                 <div class="accordion-group">
                   <div class="accordion-heading">
                     <a class="accordion-toggle collapsed" data-toggle="collapse"
-                       data-parent="#tools-accordion" href="#import">
+                      data-parent="#tools-accordion" href="#import">
                       <i class="icon-collapse-alt"></i><span translate>import</span>
                     </a>
                   </div>
@@ -123,26 +155,25 @@
                     <div class="accordion-inner">
                       <ul>
                         <!-- We can't use translate directive for these links, see:
-                        https://github.com/PascalPrecht/angular-translate/issues/129 -->  
+                        https://github.com/PascalPrecht/angular-translate/issues/129 -->
                         <li>
-                          <i class="icon-external-link"></i>  
-                          <a href="" ng-click="importWmsPopupShown = !importWmsPopupShown">{{'wms' | translate}}</a>
+                        <i class="icon-external-link"></i>
+                        <a href="" ng-click="importWmsPopupShown = !importWmsPopupShown">{{'wms' | translate}}</a>
                         </li>
-                        <li> 
-                          <i class="icon-file"></i>  
-                          <a href=""  ng-click="importKmlPopupShown = !importKmlPopupShown">{{'kml' | translate}}</a>
+                        <li>
+                        <i class="icon-file"></i>
+                        <a href=""  ng-click="importKmlPopupShown = !importKmlPopupShown">{{'kml' | translate}}</a>
                         </li>
                       </ul>
                     </div>
                   </div>
                 </div>
 
-
                 <!-- Measure -->
                 <div class="accordion-group">
                   <div class="accordion-heading">
                     <a class="accordion-toggle collapsed" data-toggle="collapse"
-                       data-parent="#tools-accordion" href="#measure" >
+                      data-parent="#tools-accordion" href="#measure" >
                       <i class="icon-collapse-alt"></i><span translate>measure</span>
                     </a>
                   </div>
@@ -153,12 +184,11 @@
                   </div>
                 </div>
 
-
                 <!-- Drawing -->
                 <div class="accordion-group">
                   <div class="accordion-heading">
                     <a class="accordion-toggle collapsed" data-toggle="collapse"
-                       data-parent="#tools-accordion" href="#drawing" >
+                      data-parent="#tools-accordion" href="#drawing" >
                       <i class="icon-collapse-alt"></i><span translate>drawing</span>
                     </a>
                   </div>
@@ -170,7 +200,7 @@
                 </div>
               </div>
               <!--  end tools accordion -->
-            </div> 
+            </div>
           </div>
         </div> <!-- .accordion-group -->
 
@@ -309,30 +339,30 @@
 
     <!-- Popup: Import WMS -->
     <div ga-popup="importWmsPopupShown"
-         ga-popup-options="{title:'import_wms'}"
-         ga-draggable=".ga-popup-title"
-         id="import-wms-popup" >
-	    <div ng-controller="GaImportWmsController">
+      ga-popup-options="{title:'import_wms'}"
+      ga-draggable=".ga-popup-title"
+      id="import-wms-popup" >
+      <div ng-controller="GaImportWmsController">
         <div ga-import-wms
-		         ga-import-wms-map="map"
-		         ga-import-wms-options="options"
-             id="import-wms"
-             class="import-wms">
+          ga-import-wms-map="map"
+          ga-import-wms-options="options"
+          id="import-wms"
+          class="import-wms">
         </div>
-	    </div>
+      </div>
     </div> <!-- end Import WMS -->
-    
+
     <!-- Popup: Import KML -->
     <div ga-popup="importKmlPopupShown"
-         ga-popup-options="{title:'import_kml'}"
-         ga-draggable=".ga-popup-title"
-         id="import-kml-popup" >
+      ga-popup-options="{title:'import_kml'}"
+      ga-draggable=".ga-popup-title"
+      id="import-kml-popup" >
       <div ng-controller="GaImportKmlController">
-        <div ga-import-kml 
-             ga-import-kml-map="map"
-             ga-import-kml-options="options"
-             id="import-kml"
-             class="import-kml">
+        <div ga-import-kml
+          ga-import-kml-map="map"
+          ga-import-kml-options="options"
+          id="import-kml"
+          class="import-kml">
         </div>
       </div>
     </div><!-- end Import KML -->

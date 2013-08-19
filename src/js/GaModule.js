@@ -20,6 +20,7 @@
   goog.require('ga_modal_directive');
   goog.require('ga_draggable_directive');
   goog.require('ga_placeholder_directive');
+
   goog.require('ga_importkml_controller');
   goog.require('ga_importwms_controller');
   goog.require('ga_main_controller');
