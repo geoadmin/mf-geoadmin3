@@ -42,16 +42,14 @@
     <link rel="shortcut icon" type="image/x-icon" href="${version}img/favicon.ico"/>
   </head>
 
-  <body ng-controller="GaMainController" ng-class="bodyClass">
-      <div id="header" class="navbar navbar-fixed-top">
-        <a href="?" id="logo" class="pull-left">
-          <img src="${version}img/logo.ch.jpeg" style="width: 270px; height: 89px"/>
-        </a>
-        <div ng-controller="GaSearchController">
-          <div ga-search
-            ga-search-map="map"
-            ga-search-options="options"></div>
-        </div>
+  <body ng-controller="GaMainController" ng-class="topicId">
+    <div id="header" class="navbar navbar-fixed-top">
+      <a ng-href="?topic={{topicId}}" id="logo">
+        <img src="${version}img/logo.ch.jpeg" style="width: 270px; height: 89px"/>
+      </a>
+      <div ng-controller="GaSearchController">
+        <div ga-search ga-search-map="map" ga-search-options="options"></div>
+      </div>
 % if device == 'desktop':
       <form class="navbar-form pull-right visible-lg visible-md">
         <div ga-background-layer-selector

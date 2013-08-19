@@ -41,7 +41,7 @@
       $scope.map = createMap();
 
       $rootScope.$on('gaTopicChange', function(event, topic) {
-        $scope.bodyClass = topic.id;
+        $scope.topicId = topic.id;
       });
 
   }]);
