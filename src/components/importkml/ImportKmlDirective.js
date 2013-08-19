@@ -281,8 +281,12 @@
                 dragEnterZone.bind('dragenter', function(evt) {
                   evt.stopPropagation();
                   evt.preventDefault();
-                  //$log.log('dragenter');
-                  dropZone.css('display', 'table');
+
+                  if (!evt.originalEvent.dataTransfer.types) {
+                    return;
+                  } else { 
+                    dropZone.css('display', 'table');
+                  }
                 });
 
                 dropZone.bind('dragleave', function(evt) {
