@@ -276,14 +276,14 @@
                 // $translate("drop_me_here") didn't work in prod mode
                 $compile(dropZone)(scope);
 
-                var allowedFormats = ["files", "text/plain"];
+                var allowedFormats = ['files', 'text/plain'];
                 var dragEnterZone = angular.element(document.body);
                 dragEnterZone.append(dropZone);
                 dragEnterZone.bind('dragenter', function(evt) {
                   evt.stopPropagation();
                   evt.preventDefault();
                   var types = evt.originalEvent.dataTransfer.types;
-                   
+
                   if (types) {
                     var droppable = false;
 
@@ -304,7 +304,7 @@
                     if (droppable) {
                       dropZone.css('display', 'table');
                     }
-                  
+
                   }
                 });
 
