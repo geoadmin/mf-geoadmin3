@@ -287,13 +287,15 @@
                   if (types) {
                     var droppable = false;
 
-                    for (var i = 0, length = allowedFormats.length; i < length; i++) {
+                    for (var i = 0, length = allowedFormats.length; i < length;
+                        i++) {
 
                       if (droppable) {
                          break;
                       }
 
-                      for (var j = 0, length2 = types.length; j < length2; j++) {
+                      for (var j = 0, length2 = types.length; j < length2;
+                          j++) {
                         if (types[j].toLowerCase() === allowedFormats[i]) {
                           droppable = true;
                           break;
