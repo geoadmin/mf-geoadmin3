@@ -284,7 +284,7 @@
 
                   if (!evt.originalEvent.dataTransfer.types) {
                     return;
-                  } else { 
+                  } else {
                     dropZone.css('display', 'table');
                   }
                 });
