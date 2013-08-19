@@ -87,5 +87,21 @@
   "tooltip": "",
   "object_information": "",
   "settings": "",
-  "transparency": ""
+  "transparency": "",
+  "blw_service_link_label": "",
+  "blw_service_link_href": "",
+  "nga_service_link_label": "",
+  "nga_service_link_href": "",
+  "ivs_service_link_label": "",
+  "ivs_service_link_href": "",
+  "kgs_service_link_label": "",
+  "kgs_service_link_href": "",
+  "funksender_service_link_label": "",
+  "funksender_service_link_href": "",
+  "sachplan_service_link_label": "",
+  "sachplan_service_link_href": "",
+  "inspire_service_link_label": "",
+  "inspire_service_link_href": "",
+  "ech_service_link_label": "",
+  "ech_service_link_href": ""
 }
