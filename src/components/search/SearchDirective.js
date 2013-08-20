@@ -1,17 +1,20 @@
 (function() {
   goog.provide('ga_search_directive');
+
   goog.require('ga_map_service');
   goog.require('ga_permalink');
+  goog.require('ga_urlutils_service');
 
   var module = angular.module('ga_search_directive', [
     'ga_map_service',
     'ga_permalink',
-    'pascalprecht.translate'
+    'pascalprecht.translate',
+    'ga_urlutils_service'
   ]);
 
   module.directive('gaSearch',
-      ['$compile', '$translate', 'gaLayers', 'gaPermalink',
-        function($compile, $translate, gaLayers, gaPermalink) {
+      ['$compile', '$translate', 'gaLayers', 'gaPermalink', 'gaUrlUtils',
+        function($compile, $translate, gaLayers, gaPermalink, gaUrlUtils) {
           var currentTopic,
               footer = [
             '<div id="search-footer">',
@@ -153,7 +156,7 @@
                     return template;
                   },
                   remote: {
-                    url: options.serviceUrl + 'type=locations',
+                    url: gaUrlUtils.append(options.serviceUrl, 'type=locations'),
                     dataType: 'jsonp',
                     cache: false,
                     replace: function(url, searchText) {
