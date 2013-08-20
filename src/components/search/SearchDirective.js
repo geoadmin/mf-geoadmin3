@@ -156,7 +156,8 @@
                     return template;
                   },
                   remote: {
-                    url: gaUrlUtils.append(options.serviceUrl, 'type=locations'),
+                    url: gaUrlUtils.append(options.serviceUrl,
+                        'type=locations'),
                     dataType: 'jsonp',
                     cache: false,
                     replace: function(url, searchText) {
