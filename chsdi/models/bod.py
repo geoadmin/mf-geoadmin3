@@ -232,6 +232,7 @@ class Topics(Base):
     orderKey = Column('order_key', Integer)
     availableLangs = Column('lang', Text)
     defaultBackgroundLayer = Column('default_background', Text)
+    selectedLayers = Column('selected_layers', postgresql.ARRAY(Text))
 
 class Catalog(object):
     __dbname__ = 'bod'
