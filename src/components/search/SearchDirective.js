@@ -29,7 +29,7 @@
             '</a>',
             '<a class="contact-icon" ',
             'title="{{\'follow_us\' | translate}}" ',
-            'ng-href="https://twitter.com/swiss_geoportal"',
+            'href="https://twitter.com/swiss_geoportal"',
             'target="_blank">',
             '<i class="icon-twitter"></i>',
             '</a>',
