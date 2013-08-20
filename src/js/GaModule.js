@@ -13,6 +13,7 @@
   goog.require('ga_popup');
   goog.require('ga_share');
   goog.require('ga_scaleline');
+  goog.require('ga_search');
   goog.require('ga_topic');
   goog.require('ga_translation');
   goog.require('ga_feedback');
@@ -32,6 +33,7 @@
   goog.require('ga_topic_controller');
   goog.require('ga_feedback_controller');
   goog.require('ga_contextpopup_controller');
+  goog.require('ga_search_controller');
 
   var module = angular.module('ga', [
     'ga_attribution',
@@ -45,6 +47,7 @@
     'ga_popup',
     'ga_share',
     'ga_scaleline',
+    'ga_search',
     'ga_topic',
     'ga_translation',
     'ga_feedback',
@@ -62,7 +65,8 @@
     'ga_translation_controller',
     'ga_topic_controller',
     'ga_feedback_controller',
-    'ga_contextpopup_controller'
+    'ga_contextpopup_controller',
+    'ga_search_controller'
   ]);
 
   module.config(['$translateProvider', function($translateProvider) {

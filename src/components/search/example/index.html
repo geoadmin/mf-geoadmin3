@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html ng-app='ga_search_example'>
+  <head>
+    <title>Search Component Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <base href="../../../">
+    <link href="style/app.css" rel="stylesheet" media="screen">
+    <style>
+      #map {
+        width: 720px;
+        height: 400px;
+        top: 360px;
+        margin: 10px;
+      }
+      .twitter-typeahead {
+        width: 720px;
+      }
+    </style>
+  </head>
+  <body ng-controller="MainController">
+    <div ng-controller="SearchController">
+      <div id="search-input"
+           ga-search
+           ga-search-map="map"
+           ga-search-options="options">
+      </div>
+    </div>
+    <div id="map" class="map" ga-map ga-map-map="map"></div>
+
+    <script src="lib/jquery-2.0.3.js"></script>
+    <script src="lib/angular-1.1.5.js"></script>
+    <script src="lib/angular-translate-0.9.4.js"></script>
+    <script src="lib/angular-translate-loader-static-files-0.1.2.js"></script>
+    <script src="lib/bootstrap-3.0.0.js"></script>
+    <script src="lib/typeahead-0.9.3.js"></script>
+    <script src="lib/proj4js-compressed.js"></script>
+    <script src="lib/EPSG21781.js"></script>
+    <script>
+      window.CLOSURE_NO_DEPS = true;
+    </script>
+    <script src="lib/ol-whitespace.js"></script>
+    <script src="deps.js"></script>
+    <script>
+      goog.require('ga_search');
+      goog.require('ga_map');
+    </script>
+    <script>
+      (function() {
+        var module = angular.module('ga_search_example', [
+          'ga_search',
+          'ga_map'
+        ]);
+
+        module.constant('gaGlobalOptions',
+                 {serviceUrl: 'http://mf-chsdi30t.bgdi.admin.ch',
+                  baseUrlPath: 'http://mf-geoadmin30t.bgdi.admin.ch/main' });
+        
+        module.controller('MainController', ['$scope',
+            'gaLayers', function($scope, gaLayers) {
+
+          var swissExtent = [485869.5728, 837076.5648, 76443.1884, 299941.7864];
+          var swissProjection = ol.proj.configureProj4jsProjection({
+            code: 'EPSG:21781',
+            extent: swissExtent
+          });
+
+          var resolutions = [650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0, 2.5,
+            2.0, 1.0, 0.5, 0.25, 0.1];
+
+          var map = new ol.Map({
+            controls: ol.control.defaults({
+              attribution: false
+            }),
+            renderer: ol.RendererHint.CANVAS,
+            view: new ol.View2D({
+              projection: swissProjection,
+              center: ol.extent.getCenter(swissExtent),
+              resolution: 500.0,
+              resolutions: resolutions
+            })
+          });
+
+          $scope.map = map;
+          gaLayers.loadForTopic('inspire', 'en').then(function() {
+            map.addLayer(gaLayers.getOlLayerById('ch.swisstopo.swissimage'));
+          });
+        }]);
+       
+        module.controller('SearchController',
+            ['$scope', 'gaGlobalOptions',
+              function($scope, gaGlobalOptions) {
+                $scope.options = {
+                  serviceUrl: gaGlobalOptions.serviceUrl +  '/rest/services/' +
+                      'inspire/SearchServer?',
+                  applyTopicToUrl: function (url, topic) {
+                    return url; 
+                  }
+                };
+        }]);
+     })();
+    </script>
+  </body>
+</html>
