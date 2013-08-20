@@ -236,13 +236,11 @@
 
 % if device=='mobile':
         <div class="panel">
-          <div class="accordion-heading">
-            <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#impressum">
-              Impressum
-            </a>
-          </div>
+          <a class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#impressum">
+            Impressum
+          </a>
           <div id="impressum" class="collapse">
-            <div class="accordion-inner">
+            <div class="panel-body">
               <div ng-controller="GaTranslationController">
                 <div ga-translation-selector
                   ga-translation-selector-options="options"></div>
