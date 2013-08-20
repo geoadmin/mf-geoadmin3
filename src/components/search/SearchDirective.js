@@ -20,7 +20,6 @@
             '<div class="footer-right"><div>',
             '<a class="contact-icon" ',
             'title="{{\'contact_us\' | translate}}" ',
-            'ng-click="getHref()" ',
             'ng-mouseover="getHref()" ',
             'ng-href="http://www.geo.admin.ch/',
             'internet/geoportal/{{lang}}/tools/contact.html" ',
@@ -35,7 +34,6 @@
             '</a>',
             '<a class="contact-icon"',
             'title="{{\'email_us\' | translate}}" ',
-            'ng-click="getHref()" ',
             'ng-mouseover="getHref()" ',
             'ng-href="mailto:webgis@swisstopo.ch?',
             'body={{encodedPermalinkHref}}">',
@@ -102,7 +100,7 @@
               $compile(layerHeaderTemplate)(scope);
 
               scope.getHref = function() {
-                // set those values only on mouseover or click
+                // set those values only on mouseover
                 scope.encodedPermalinkHref =
                 encodeURIComponent(gaPermalink.getHref());
                 scope.lang = $translate.uses();
