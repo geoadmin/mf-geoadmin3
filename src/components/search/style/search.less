@@ -1,7 +1,6 @@
-@dropdownBackground: #FFFFFF;
-@dropdownBorder: #000000;
-@dropdownLinkColorHover: #FFFFFF;
-@dropdownLinkBackgroundHover: #666666;
+@dropdown-background-color: #fff;
+@dropdown-link-color-hover-color: #fff;
+@dropdown-link-background-hover-color: #666;
 @suggestionsMaxHeight: 240px;
 
 #search, .tt-dropdown-menu {
@@ -28,9 +27,8 @@
     min-width: 160px;
     margin-top: 2px;
     padding: 5px 0;
-    background-color: @dropdownBackground;
+    background-color: @dropdown-background-color;
     border: 1px solid #ccc;
-    border: 1px solid @dropdownBorder;
     *border-right-width: 2px;
     *border-bottom-width: 2px;
     .box-shadow(0 5px 10px rgba(0,0,0,.2));
@@ -62,8 +60,8 @@
 }
 
 .tt-suggestion.tt-is-under-cursor {
-    color: @dropdownLinkColorHover;
-    background-color: @dropdownLinkBackgroundHover;
+    color: @dropdown-link-color-hover-color;
+    background-color: @dropdown-link-background-hover-color;
     border-top: 1px;
 }
 
