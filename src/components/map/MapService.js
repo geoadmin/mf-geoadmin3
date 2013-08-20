@@ -112,6 +112,7 @@
             if (layer.type == 'wmts') {
               olLayer = new ol.layer.TileLayer({
                 id: id,
+                preload: Infinity,
                 source: new ol.source.WMTS({
                   attributions: [
                     getAttribution(layer.attribution)
