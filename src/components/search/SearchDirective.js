@@ -44,11 +44,10 @@
             '</div>'].join('');
 
           function parseExtent(stringBox2D) {
-            return stringBox2D.replace('BOX(', '')
-                .replace(')', '').replace(',', ' ').split(' ')
-                .map(function(val) {
-                  return parseFloat(val);
-                });
+            var extent = stringBox2D.replace('BOX(', '')
+              .replace(')', '').replace(',', ' ')
+              .split(' ');
+            return $.map(extent, parseFloat);
           }
 
           function getBBoxParameters(map) {
