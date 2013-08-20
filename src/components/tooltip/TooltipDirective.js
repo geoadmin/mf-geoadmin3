@@ -58,7 +58,7 @@
                 'callback': 'JSON_CALLBACK'
               }
             }).success(function(features) {
-              getInformation(scope, pixel, features.results);
+              showInformation(scope, pixel, features.results);
             });
 
             if (popup) {
@@ -66,48 +66,41 @@
             }
           }
 
-          function getInformation(scope, pixel, foundFeatures) {
+          function showInformation(scope, pixel, foundFeatures) {
+            var content, htmls;
             if (foundFeatures && foundFeatures.length > 0) {
-              var promises = [];
+              htmls = [];
+              content = '<div ng-repeat="htmlsnippet in options.htmls">' +
+                          '<div ng-bind-html-unsafe="htmlsnippet"></div>' +
+                        '</div>';
+              if (popup) {
+                popup.close();
+              }
+
+              popup = gaPopup.create({
+                title: 'object_information',
+                content: content,
+                htmls: htmls,
+                x: pixel[0],
+                y: pixel[1]
+              });
+              popup.open(scope);
+  
               angular.forEach(foundFeatures, function(value) {
                 var htmlUrl = scope.options.getHtmlUrl(currentTopic) +
                               value.layerBodId + '/' +
                               value.featureId + '/htmlpopup?';
-                promises.push($http.jsonp(htmlUrl, {
+                $http.jsonp(htmlUrl, {
                   params: {
                     'lang': $translate.uses(),
                     'callback': 'JSON_CALLBACK'
 
                   }
-                }));
-              });
-              //FIXME: this is not robust, as a single failure
-              //to get a feature will not display anything, even
-              //those who could get retrieved...but it's good
-              //for now
-              $q.all(promises).then(function(htmlSnippets) {
-                showInformation(scope, pixel, htmlSnippets);
+                }).success(function(html) {
+                  htmls.push(html);
+                });
               });
             }
-          }
-
-          function showInformation(scope, pixel, htmlSnippets) {
-            var content = '<div class="tooltip-container">';
-            angular.forEach(htmlSnippets, function(snippet) {
-              content = content + '<div class="tooltip-element">' +
-                        snippet.data + '</div>';
-            });
-            content = content + '</div>';
-            if (popup) {
-              popup.close();
-            }
-            popup = gaPopup.create({
-              title: 'object_information',
-              content: content,
-              x: pixel[0],
-              y: pixel[1]
-            });
-            popup.open(scope);
           }
 
         }]);
