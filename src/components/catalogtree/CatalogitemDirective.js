@@ -1,8 +1,8 @@
 (function() {
   goog.provide('ga_catalogitem_directive');
 
+  goog.require('ga_layer_metadata_popup_service');
   goog.require('ga_map_service');
-  goog.require('ga_popup_service');
 
   //static functions
   function getMapLayer(map, id) {
@@ -44,16 +44,16 @@
   }
 
   var module = angular.module('ga_catalogitem_directive', [
-    'ga_map_service',
-    'ga_popup_service'
+    'ga_layer_metadata_popup_service',
+    'ga_map_service'
   ]);
 
   /**
    * See examples on how it can be used
    */
   module.directive('gaCatalogitem',
-      ['$compile', 'gaLayers', 'gaPopup',
-      function($compile, gaLayers, gaPopup) {
+      ['$compile', 'gaLayers', 'gaLayerMetadataPopup',
+      function($compile, gaLayers, gaLayerMetadataPopup) {
         return {
           restrict: 'A',
           templateUrl: 'components/catalogtree/partials/catalogitem.html',
@@ -116,21 +116,7 @@
         }
 
         function getLegend(ev, bodid) {
-          var scope = this;
-          scope.gaLayers.getMetaDataOfLayer(bodid)
-          .success(function(data) {
-            gaPopup.create({
-              title: 'metadata_window_title',
-              content: data,
-              x: 400,
-              y: 200
-            }).open(scope);
-          })
-          .error(function() {
-            //FIXME: better error handling
-            var msg = 'Could not retrieve information for ' + bodid;
-            alert(msg);
-          });
+          gaLayerMetadataPopup(bodid);
           ev.stopPropagation();
         }
       }]
