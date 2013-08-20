@@ -1,11 +1,10 @@
 (function() {
   goog.provide('ga_map_service');
 
-  goog.require('ga_translation');
   goog.require('ga_urlutils_service');
 
   var module = angular.module('ga_map_service', [
-    'ga_translation',
+    'pascalprecht.translate',
     'ga_urlutils_service'
   ]);
 
