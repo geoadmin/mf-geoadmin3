@@ -116,6 +116,30 @@
               });
               layer.olLayer = olLayer;
             }
+            if (angular.isDefined(olLayer)) {
+              // ngModel requires the expression to be "assignable", and there
+              // is currently no way to pass getter and setter functions to
+              // ngModel. So to be able to control the states of layers through
+              // ngModel we define accessor descriptors on the layer objects.
+              Object.defineProperties(olLayer, {
+                visible: {
+                  get: function() {
+                    return this.getVisible();
+                  },
+                  set: function(val) {
+                    this.setVisible(val);
+                  }
+                },
+                opacity: {
+                  get: function() {
+                    return this.getOpacity();
+                  },
+                  set: function(val) {
+                    this.setOpacity(val);
+                  }
+                }
+              });
+            }
           }
           return olLayer;
         };
