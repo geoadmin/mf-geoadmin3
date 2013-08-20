@@ -194,7 +194,7 @@ deploy/deploy-branch.cfg: deploy/deploy-branch.mako.cfg .build-artefacts/last-gi
 	git clone --depth 1 https://github.com/openlayers/ol3.git $@
 
 .build-artefacts/bootstrap:
-	git clone --depth 1 https://github.com/twbs/bootstrap.git $@ && cd .build-artefacts/bootstrap && git checkout v3.0.0-rc.2
+	git clone --depth 1 https://github.com/twbs/bootstrap.git $@ && cd .build-artefacts/bootstrap && git checkout v3.0.0
 
 .PHONY: cleanall
 cleanall: clean
