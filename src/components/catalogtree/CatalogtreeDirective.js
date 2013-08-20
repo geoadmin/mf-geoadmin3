@@ -1,10 +1,8 @@
 (function() {
   goog.provide('ga_catalogtree_directive');
 
-  goog.require('ga_translation');
-
   var module = angular.module('ga_catalogtree_directive', [
-    'ga_translation'
+    'pascalprecht.translate'
   ]);
 
   /**
@@ -48,7 +46,6 @@
               currentTopic = topic.id;
               updateCatalogTree();
            });
-
 
           }
         };
