@@ -6,7 +6,6 @@
   <meta name="viewport"
         content="initial-scale=1.0, user-scalable=no, width=device-width">
   <base href="../../../">
-  <link href="style/app.css" rel="stylesheet" media="screen">
   <style>
     #map {
       width: 600px;
@@ -16,7 +15,16 @@
 </head>
 <body ng-controller="MainController">
 
-<div id="map" ga-map ga-map-map="map"></div>
+  <div id="map" ga-map ga-map-map="map"></div>
+
+  <div>
+    <label for="visible">Layer visibility</label>
+    <input id="visible" type="checkbox" ng-model="layer.visible" />
+  </div>
+  <div>
+    <label for="opacity">Layer opacity</label>
+    <input id="opacity" type="range" min="0" max="1" step="0.01" ng-model="layer.opacity" />
+  </div>
 
   <script src="lib/jquery-2.0.3.js"></script>
   <script src="lib/angular-1.1.5.js"></script>
@@ -65,7 +73,8 @@
 
           $scope.map = map;
           gaLayers.loadForTopic('inspire', 'en').then(function() {
-            map.addLayer(gaLayers.getOlLayerById('ch.swisstopo.swissimage'));
+            $scope.layer = gaLayers.getOlLayerById('ch.swisstopo.swissimage');
+            map.addLayer($scope.layer);
           });
         }]);
 

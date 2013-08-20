@@ -53,6 +53,38 @@ describe('ga_map_service', function() {
     });
   });
 
+  describe('set layer visibility through accessor', function() {
+    it('sets the visibility as expected', function() {
+      $httpBackend.expectJSONP(expectedUrl);
+      $httpBackend.flush();
+      var layer = layers.getOlLayerById('foo');
+      expect(layer.getVisible()).to.be.ok();
+      expect(layer.visible).to.be.ok();
+      layer.visible = false;
+      expect(layer.getVisible()).not.to.be.ok();
+      expect(layer.visible).not.to.be.ok();
+      layer.visible = true;
+      expect(layer.getVisible()).to.be.ok();
+      expect(layer.visible).to.be.ok();
+    });
+  });
+
+  describe('set layer opacity through accessor', function() {
+    it('sets the visibility as expected', function() {
+      $httpBackend.expectJSONP(expectedUrl);
+      $httpBackend.flush();
+      var layer = layers.getOlLayerById('foo');
+      expect(layer.getOpacity()).to.be(1);
+      expect(layer.opacity).to.be(1);
+      layer.opacity = 0.5;
+      expect(layer.getOpacity()).to.be(0.5);
+      expect(layer.opacity).to.be(0.5);
+      layer.opacity = 1;
+      expect(layer.getOpacity()).to.be(1);
+      expect(layer.opacity).to.be(1);
+    });
+  });
+
   describe('getBackgroundLayers', function() {
     it('returns correct background layers information', function() {
       $httpBackend.expectJSONP(expectedUrl);
