@@ -204,9 +204,10 @@ select, input[type=text] {
         display: block;
         background-color: #fff;
         border-bottom: 1px solid #c7c7c7;
+        color: #000;
         font-weight: bold;
+        .transition(background-color .35s ease);
         &, &:hover, &:focus {
-            color: #000;
             text-decoration: none;
         }
         &.collapsed {
@@ -219,6 +220,27 @@ select, input[type=text] {
             background-color: #e9e9e9;
             color: #000;
             border-bottom: 1px solid #fff;
+        }
+        .spacer {
+            visibility: hidden;
+        }
+        &.panel-heading .icon-caret-right {
+            padding: 0 1px 0 2px;
+        }
+        &.panel-heading:not(.light) i:not(.icon-collapse-alt):last-of-type:after {
+            content: '';
+            border-right: 1px solid #d6d6d6;
+            margin: 0 0.2em 0 0.6em;
+        }
+        .icon-caret-right, .icon-caret-down {
+            margin-right: .5em;
+        }
+        &:hover {
+            color: #666;
+            background: #fff;
+            .spacer {
+                visibility: visible;
+            }
         }
     }
 }
