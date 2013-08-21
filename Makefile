@@ -78,9 +78,9 @@ prod/lib/build.js: src/lib/jquery-2.0.3.min.js src/lib/bootstrap-3.0.0.min.js sr
 	mkdir -p $(dir $@)
 	cat $^ > $@
 
-prod/style/app.css: src/style/app.css node_modules
+prod/style/app.css: src/style/app.less src/style/ga_bootstrap.less src/style/ga_variables.less $(SRC_COMPONENTS_LESS_FILES) node_modules .build-artefacts/bootstrap
 	mkdir -p $(dir $@)
-	node_modules/.bin/lessc --yui-compress $< $@
+	node_modules/.bin/lessc -ru --yui-compress $< $@
 
 prod/index.html: src/index.mako.html prod/lib/build.js prod/style/app.css .build-artefacts/python-venv/bin/mako-render
 	mkdir -p $(dir $@)
@@ -108,8 +108,8 @@ prod/info.json: src/info.json
 src/deps.js: $(SRC_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
 	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root_with_prefix="src/components components" --root_with_prefix="src/js js" --output_file=$@
 
-src/style/app.css: src/style/app.less $(SRC_COMPONENTS_LESS_FILES) node_modules
-	node_modules/.bin/lessc -ru $< $@
+src/style/app.css: src/style/app.less src/style/ga_bootstrap.less src/style/ga_variables.less $(SRC_COMPONENTS_LESS_FILES) node_modules .build-artefacts/bootstrap
+	node_modules/.bin/lessc --line-numbers=mediaquery -ru $< $@
 
 src/index.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "version=" --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" $< > $@
@@ -192,6 +192,9 @@ deploy/deploy-branch.cfg: deploy/deploy-branch.mako.cfg .build-artefacts/last-gi
 
 .build-artefacts/ol3:
 	git clone --depth 1 https://github.com/openlayers/ol3.git $@
+
+.build-artefacts/bootstrap:
+	git clone https://github.com/twbs/bootstrap.git $@ && cd .build-artefacts/bootstrap && git checkout v3.0.0
 
 .PHONY: cleanall
 cleanall: clean
