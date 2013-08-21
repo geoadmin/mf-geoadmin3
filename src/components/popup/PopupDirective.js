@@ -16,7 +16,7 @@
              '<h4 class="popover-title ga-popup-title">' +
                '<span translate>{{options.title}}</span>' +
                '<button type="button" class="close" ng-click="close()">' +
-               'x</button>' +
+               '&times;</button>' +
              '</h4>' +
              '<div class="popover-content ga-popup-content" ' +
                  'ng-transclude>' +
