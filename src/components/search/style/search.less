@@ -3,126 +3,127 @@
 @dropdown-link-background-hover-color: #666;
 @suggestionsMaxHeight: 240px;
 
-#search, .tt-dropdown-menu {
-    margin-top: 2.5em;
-    width: 100%;
-    margin-left: 1.6em;
-    @media screen and (max-width: @screen-tablet) {
-        margin-top: .8em;
-        width: 308px;
-        margin-left: .4em;
-    }
-    @media screen and (max-width: @screen-phone) {
-        width: 85%;
-        margin-left: 3.4em;
-    }
+#search, #header .tt-dropdown-menu {
+  background: #fff;
+  margin-top: 2.5em;
+  width: 100%;
+  margin-left: 1.6em;
+  @media screen and (max-width: @screen-tablet) {
+    margin-top: .8em;
+    width: 308px;
+    margin-left: .4em;
+  }
+  @media screen and (max-width: @screen-phone) {
+    width: 85%;
+    margin-left: 3.4em;
+  }
 }
 
 .tt-hint {
-    display: none !important;
+  display: none !important;
 }
 
 .tt-dropdown-menu {
-    font-size: 11px;
-    min-width: 160px;
-    margin-top: 2px;
-    padding: 5px 0;
-    background-color: @dropdown-background-color;
-    border: 1px solid #ccc;
-    *border-right-width: 2px;
-    *border-bottom-width: 2px;
-    .box-shadow(0 5px 10px rgba(0,0,0,.2));
-    -webkit-background-clip: padding-box;
-    -moz-background-clip: padding;
-    background-clip: padding-box;
+  font-size: 11px;
+  min-width: 160px;
+  margin-top: 2px;
+  padding: 5px 0;
+  background-color: @dropdown-background-color;
+  border: 1px solid #ccc;
+  *border-right-width: 2px;
+  *border-bottom-width: 2px;
+  .box-shadow(0 5px 10px rgba(0,0,0,.2));
+  -webkit-background-clip: padding-box;
+  -moz-background-clip: padding;
+  background-clip: padding-box;
 }
 
 .tt-suggestion {
-    display: block;
-    padding: 3px 20px;
-    background-color: #E6E6E6;
-    margin-top: 1px;
+  display: block;
+  padding: 3px 20px;
+  background-color: #E6E6E6;
+  margin-top: 1px;
 }
 
 .tt-dataset-locations .tt-suggestions, .tt-dataset-layers .tt-suggestions {
-    max-height: 180px;
-    overflow-y: auto;
+  max-height: 180px;
+  overflow-y: auto;
 }
 
 .tt-dataset-layers {
-    display: block !important;
+  display: block !important;
 }
 
 .tt-header-locations, .tt-header-mapinfos {
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 20px;
 }
 
 .tt-suggestion.tt-is-under-cursor {
-    color: @dropdown-link-color-hover-color;
-    background-color: @dropdown-link-background-hover-color;
-    border-top: 1px;
+  color: @dropdown-link-color-hover-color;
+  background-color: @dropdown-link-background-hover-color;
+  border-top: 1px;
 }
 
 .tt-suggestion .icon-info-sign {
-    float: right;
-    padding-top: 2px;
+  float: right;
+  padding-top: 2px;
 }
 
 .tt-suggestion p {
-    margin: 0;
+  margin: 0;
 }
 
 .deleteicon {
-    background-image: url("../img/clear_left.png");
-    float: right;
-    margin-right: -0.9em;
-    margin-top: -2.15em;
-    cursor: pointer;
-    @media (max-width: @screen-phone) {
-        margin-right: -1.5em;
-    }
-    @media screen and (-webkit-min-device-pixel-ratio:0) {
-        margin-top: -1.8em;
-    }
+  background-image: url("../img/clear_left.png");
+  float: right;
+  margin-right: -0.9em;
+  margin-top: -2.15em;
+  cursor: pointer;
+  @media (max-width: @screen-phone) {
+    margin-right: -1.5em;
+  }
+  @media screen and (-webkit-min-device-pixel-ratio:0) {
+    margin-top: -1.8em;
+  }
 }
 
 .deleteicon .clear-left {
-    width: 22px;
-    height: 22px;
-    display: block;
-    position: relative;
+  width: 22px;
+  height: 22px;
+  display: block;
+  position: relative;
 }
 
 #search-footer .footer-right {
-    float: right; 
-    padding-right: 12px;
+  float: right; 
+  padding-right: 12px;
 }
 
 #search-footer .footer-left {
-    float: left;
-    padding-top: 10px;
-    padding-left: 20px;
+  float: left;
+  padding-top: 10px;
+  padding-left: 20px;
 }
 
 #search-wrapper {
-    width: 25%;
-    .twitter-typeahead {
-        width: 100%;
-    }
-    @media (max-width: @screen-tablet) {
-        width: 295px;
-    }
+  width: 25%;
+  .twitter-typeahead {
+    width: 100%;
+  }
+  @media (max-width: @screen-tablet) {
+    width: 295px;
+  }
 }
 
 .contact-icon {
-    display: inline-block;
-    padding: 0 6px;
-    color: #474949;
-    font-size: 24px;
-    &:hover, &:focus {
-        color: #3a3c3c;
-        text-decoration: none;
-    }
+  display: inline-block;
+  padding: 0 6px;
+  color: #474949;
+  font-size: 24px;
+  &:hover, &:focus {
+    color: #3a3c3c;
+    text-decoration: none;
+  }
 }
