@@ -1,51 +1,44 @@
 <div class="share-icons">
-    <a class="share-icon"
-       target="_blank"
-       data-original-title="{{'qrcode_tooltip' | translate}}"
-       ng-href="{{qrcodegeneratorPath}}?url={{encodedPermalinkHref}}">
-      <i class="icon-qrcode"></i>
-    </a>
+  <a class="share-icon" target="_blank"
+    data-original-title="{{'qrcode_tooltip' | translate}}"
+    ng-href="{{qrcodegeneratorPath}}?url={{encodedPermalinkHref}}">
+    <i class="icon-qrcode"></i>
+  </a>
 
-    <a class="share-icon"
-       target="_blank"
-       data-original-title="{{'twitter_tooltip' | translate}}"
-       ng-href="https://twitter.com/intent/tweet?url={{encodedPermalinkHref}}&text={{encodedDocumentTitle}}">
-      <i class="icon-twitter"></i>
-    </a>
+  <a class="share-icon" target="_blank"
+    data-original-title="{{'twitter_tooltip' | translate}}"
+    ng-href="https://twitter.com/intent/tweet?url={{encodedPermalinkHref}}&text={{encodedDocumentTitle}}">
+    <i class="icon-twitter"></i>
+  </a>
 
-    <a class="share-icon"
-       target="_blank"
-       data-original-title="{{'facebook_tooltip' | translate}}"
-       ng-href="http://www.facebook.com/sharer.php?u={{encodedPermalinkHref}}&t={{encodedDocumentTitle}}">
-      <i class="icon-facebook"></i>
-    </a>
+  <a class="share-icon" target="_blank"
+    data-original-title="{{'facebook_tooltip' | translate}}"
+    ng-href="http://www.facebook.com/sharer.php?u={{encodedPermalinkHref}}&t={{encodedDocumentTitle}}">
+    <i class="icon-facebook"></i>
+  </a>
 
-    <a class="share-icon"
-       target="_blank"
-       data-original-title="{{'google_plus_tooltip' | translate}}"
-       ng-href="https://plus.google.com/share?url={{encodedPermalinkHref}}">
-      <i class="icon-google-plus"></i>
-    </a>
+  <a class="share-icon" target="_blank"
+    data-original-title="{{'google_plus_tooltip' | translate}}"
+    ng-href="https://plus.google.com/share?url={{encodedPermalinkHref}}">
+    <i class="icon-google-plus"></i>
+  </a>
 
-    <a class="share-icon"
-       target="_blank"
-       data-original-title="{{'mail_tooltip' | translate}}"
-       ng-href="mailto:?body={{encodedPermalinkHref}}">
-      <i class="icon-envelope-alt"></i>
-    </a>
+  <a class="share-icon" target="_blank"
+    data-original-title="{{'mail_tooltip' | translate}}"
+    ng-href="mailto:?body={{encodedPermalinkHref}}">
+    <i class="icon-envelope-alt"></i>
+  </a>
 </div>
 
 <div class="share-permalink input-group">
-  <input type="text" ng-model="permalinkValue" ng-click="selectOnClick($event)">
-  <span class="input-group-btn">
-    <button class="btn btn-default" ng-disabled="urlShortened"
-            ng-click="shortenUrl()" translate>shorten_url</button>
-  </span>
+  <input type="text" ng-model="permalinkValue" ng-click="selectOnClick($event)" class="form-control">
+  <button class="input-group-addon btn btn-default" ng-disabled="urlShortened"
+    ng-click="shortenUrl()" translate>shorten_url</button>
 </div>
 
 <form>
   <label translate>embed_map</label>
-  <textarea rows="8" cols="40" ng-click="selectOnClick($event)">
+  <textarea rows="8" cols="40" ng-click="selectOnClick($event)" class="form-control">
 <iframe width="800" height="600" frameborder="0" scrolling="no" src="{{permalinkHref}}"></iframe>
   </textarea>
 </form>
