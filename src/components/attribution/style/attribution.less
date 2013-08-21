@@ -1,18 +1,18 @@
 .ol-attribution {
-    ul {
-        margin: 0;
-        padding: 0;
+  ul {
+    margin: 0;
+    padding: 0;
+  }
+  li {
+    list-style-type: none;
+    display: inline;
+    &:last-child {
+      &:after {
+        content: '';
+      }
     }
-    li {
-        list-style-type: none;
-        display: inline;
-        &:last-child {
-            &:after {
-                content: '';
-            }
-        }
-        &:after {
-            content: ', ';
-        }
+    &:after {
+      content: ', ';
     }
+  }
 }
