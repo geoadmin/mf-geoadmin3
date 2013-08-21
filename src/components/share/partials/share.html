@@ -30,10 +30,12 @@
   </a>
 </div>
 
-<div class="share-permalink input-group">
+<div class="input-group input-group-sm share-permalink">
   <input type="text" ng-model="permalinkValue" ng-click="selectOnClick($event)" class="form-control">
-  <button class="input-group-addon btn btn-default" ng-disabled="urlShortened"
-    ng-click="shortenUrl()" translate>shorten_url</button>
+  <span class="input-group-btn">
+    <button class="btn btn-default" ng-disabled="urlShortened"
+            ng-click="shortenUrl()" translate>shorten_url</button>
+    </span>
 </div>
 
 <form>
