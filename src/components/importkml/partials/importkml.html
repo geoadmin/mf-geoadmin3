@@ -23,7 +23,7 @@
       <!-- Upload from a basic upload (the input file is hidden by default)-->
       <form name="import-kml-file" id="imp" method="POST" target="_BLANK"
         action="{{options.validationServiceUrl}}" enctype="multipart/form-data"
-        class="input-group">
+        class="input-group-sm">
 
         <input type="file" name="file"/>
 
@@ -34,7 +34,9 @@
         <input class="import-kml-fake-file form-control" type="text" readonly
           value="{{(file.name) ? file.name + ', size: ' + file.size/1000 + ' ko' : ''}}"
           placeholder="{{'no_file' | translate}}"/>
-        <button type="button" class="input-group-addon">{{'browse' | translate}}</button>
+        <span class="input-group-btn">
+          <button type="button" class="btn btn-default">{{'browse' | translate}}</button>
+        </span>
       </form>
 
     </div>
