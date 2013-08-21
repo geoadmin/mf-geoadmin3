@@ -196,8 +196,16 @@ select, input[type=text], input[type=email] {
   .panel-body {
     background-color: #fff;
     border-top: none;
+    max-height: 430px;
+    overflow-y: auto;
     @media (max-width: @screen-phone) {
       background-color: rgba(255,255,255,0.9);
+    }
+    @media (max-height: 800px) {
+      max-height: 300px;
+    }
+    @media (max-height: 680px) {
+      max-height: 200px;
     }
   }
   .accordion-toggle{
