@@ -6,8 +6,20 @@
 .search-wrapper {
   width: 25%;
   float: left;
-  @media screen and (max-width: @screen-phone) {  
-    width: 38%;
+  top: 2.2em;
+  left: 1.6em;
+  position: relative;
+  @media screen and (max-width: @screen-tablet) {
+    width: 310px;
+    top: .6em;
+    left: .4em;
+  }
+  @media screen and (max-width: @screen-phone) {
+    width: 80%;
+    left: 3.4em;
+  }
+  .twitter-typeahead {
+    width: 100%;
   }
   .tt-dropdown-menu {
     width: 100%;
@@ -56,14 +68,12 @@
     padding-top: 2px;
   }
   .deleteicon {
-    position: relative;
+    position: absolute;
+    right: 0.3em;
+    top: 0.3em;
     background-image: url("../img/clear_left.png");
     float: right;
     cursor: pointer;
-    left: 1em;
-    @media screen and (max-width: @screen-tablet) {
-      display: none;
-    }
     @media screen and (-webkit-min-device-pixel-ratio:0) {
       top: .4em;
     }
@@ -93,20 +103,6 @@
     &:hover, &:focus {
       color: #3a3c3c;
       text-decoration: none;
-    }
-  }
-  .twitter-typeahead{
-    width: 100%;
-    top: 2.2em;
-    left: 1.6em;
-    @media screen and (max-width: @screen-tablet) {
-      width: 310px;
-      top: .6em;
-      left: .4em;
-    }
-    @media screen and (max-width: @screen-phone) {
-      width: 200%;
-      left: 3.4em;
     }
   }
 }
