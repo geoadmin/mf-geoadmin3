@@ -201,8 +201,7 @@
                         'ng-mouseout="removeLayer(\'' +
                         context.attrs.layer + '\')"' +
                         '>' + context.attrs.label +
-                        '<i id="legend-open" ' +
-                        'ng-click="getLegend($event, \'' +
+                        '<i ng-click="getLegend($event, \'' +
                         context.attrs.layer + '\')" ' +
                         'class="icon-info-sign"> </i></div>';
                     return template;
