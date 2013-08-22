@@ -31,7 +31,6 @@ def register(name, klass):
             esrimap[klass.__esriId__] = name
 
 def models_from_bodid(bodid):
-       
     if bodid in bodmap:
         return bodmap[bodid]
     else:

@@ -4,7 +4,7 @@ from pyramid.view import view_config
 import pyramid.httpexceptions as exc
 
 from sqlalchemy import or_
-from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
 from chsdi.models import models_from_name
 from chsdi.models.bod import get_bod_model, computeHeader
@@ -64,8 +64,13 @@ class MapService(MapServiceValidation):
             model.maps.ilike('%%%s%%' % self.mapName)
         )
         query = query.filter(model.idBod==idlayer)
-        for layer in query:
-            legend = {'layer': layer.layerMetadata()}
+        try:
+            layer = query.one()
+        except NoResultFound:
+            raise exc.HTTPNotFound('No layer with id %s' % idlayer)
+        except MultipleResultsFound:
+            raise exc.HTTPInternalServerError()
+        legend = {'layer': layer.layerMetadata()}
         response = render_to_response(
             'chsdi:templates/legend.mako', legend, request = self.request
         )
@@ -182,7 +187,7 @@ class MapService(MapServiceValidation):
         query = self.request.db.query(model).filter(
             model.maps.ilike('%%%s%%' % self.mapName)
         )
-        # only return layers which have a model
+        # only return layers which have geometries
         layerList = [
             q.idBod for
             q in query
