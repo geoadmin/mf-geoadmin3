@@ -108,9 +108,8 @@ describe('ga_contextpopup_directive', function() {
 
       it('touchend prevents handler from being called', function() {
 
-        //Make sure there aren't any timouts left (this might
-        //compenstate for a bug in angular.mock or angular in
-        //general)
+        // Make sure there aren't any timouts left (this might
+        // compenstate for a bug in angular.mock or angular in general)
         $timeout.flush();
 
         handlers.touchstart(contextmenuEvent);
@@ -124,9 +123,8 @@ describe('ga_contextpopup_directive', function() {
 
       it('touchmove prevents handler from being called', function() {
 
-        //Make sure there aren't any timouts left (this might
-        //compenstate for a bug in angular.mock or angular in
-        //general)
+        // Make sure there aren't any timouts left (this might
+        // compenstate for a bug in angular.mock or angular in general)
         $timeout.flush();
 
         handlers.touchstart(contextmenuEvent);
