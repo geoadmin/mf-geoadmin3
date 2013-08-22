@@ -21,7 +21,7 @@
         gaPermalink, gaUrlUtils) {
           var currentTopic,
               footer = [
-            '<div id="search-footer">',
+            '<div class="search-footer">',
             '<div class="footer-left">',
             '<b>Please help me</b></div>',
             '<div class="footer-right"><div>',
