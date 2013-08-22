@@ -63,7 +63,7 @@
          Capabilities using ogcproxy</a>
 
       <h2>CatalogService (non ESRI)</h2>
-      <a href="rest/services/blw/CatalogServer?callback=callback">Catalog for topic 'blw'</a>
+          <a href="rest/services/blw/CatalogServer?callback=callback">Catalog for topic 'blw'</a>
 
       <h2>Search</h2>
           <a href="rest/services/inspire/SearchServer?searchText=wand&type=layers">Search for layers only</a> <br>
@@ -72,5 +72,8 @@
           <a href="rest/services/inspire/SearchServer?searchText=bois&type=layers&lang=fr">Search for layers only (lang fr)</a> <br>
           <a href="rest/services/inspire/SearchServer?searchText=wasser&bbox=733040.9375,183972.484375,738163.75,183972.484375&type=locations">Search in the topic (or map) inspire for locations</a> <br>
           <a href="rest/services/blw/SearchServer?searchText=wasser&bbox=733040.9375,183972.484375,738163.75,183972.484375&type=locations">Search in the topic (or map) blw for locations</a> <br>
+
+      <h2>Feedback</h2>
+          <a href="rest/services/feedback?email=chsdi3preview@admin.com&feedback=TestFromChsdi3&permalink=http:%2F%2Fmf-geoadmin3.bgdi.admin.ch&ua=IE">Feedback example</a> <br>
   </body>
 </html>
