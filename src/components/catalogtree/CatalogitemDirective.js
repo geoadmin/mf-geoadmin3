@@ -98,9 +98,6 @@
         }
 
         function switchLayer(fromClick) {
-          if (fromClick) {
-            this.item.selectedOpen = !this.item.selectedOpen;
-          }
           if (this.map) {
              if (this.item.selectedOpen) {
                addLayerToMap(this, fromClick);
