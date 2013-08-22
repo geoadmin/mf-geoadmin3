@@ -430,18 +430,11 @@ select, input[type=text], input[type=email] {
   border-bottom-style: dashed;
   border-bottom-color: #c7c7c7;
 
-  input[type="checkbox"] {
-    margin-top: 2px;
-  }
-
   label {
     font-weight: normal;
-    vertical-align: top;
+    width: 100%;
   }
 
-  .icon-info-sign {
-    margin-top: 2px;
-  }
 }
 
 .ga-catalogitem-template {
@@ -486,4 +479,14 @@ select, input[type=text], input[type=email] {
 .contextpopup {
   z-index: 1090;
   left: unit(-@contextpopup-width/2, px);
+}
+
+// ***** ICONS
+.icon-plus, .icon-minus {
+  padding: 1px 2px;
+  border: 1px solid #afafaf;
+  border-radius: 2em;
+  box-shadow: 0 0 2px #c7c7c7;
+  font-size: 8px;
+  margin: .5em;
 }
