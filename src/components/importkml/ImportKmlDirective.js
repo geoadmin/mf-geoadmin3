@@ -164,7 +164,7 @@
                           content: feature.get('description'),
                           x: pixel[0],
                           y: pixel[1]
-                        }).open($scope);
+                        }, $scope).open();
                       });
                     }
                   }
