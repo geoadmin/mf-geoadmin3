@@ -11,8 +11,8 @@
   ]);
 
   module.directive('gaTooltip',
-      ['$http', '$q', '$translate', 'gaPopup', 'gaLayers',
-        function($http, $q, $translate, gaPopup, gaLayers) {
+      ['$http', '$q', '$translate', '$sce', 'gaPopup', 'gaLayers',
+        function($http, $q, $translate, $sce, gaPopup, gaLayers) {
           var currentTopic, canceler, popup = null;
           return {
             restrict: 'A',
@@ -81,7 +81,7 @@
             if (foundFeatures && foundFeatures.length > 0) {
               htmls = [];
               content = '<div ng-repeat="htmlsnippet in options.htmls">' +
-                          '<div ng-bind-html-unsafe="htmlsnippet"></div>' +
+                          '<div ng-bind-html="htmlsnippet"></div>' +
                           '<div class="tooltip-separator" ' +
                             'ng-show="!$last"></div>' +
                         '</div>';
@@ -111,7 +111,7 @@
                     popup.open(scope);
                   }
                   //add result to array. ng-repeat will take care of the rest
-                  htmls.push(html);
+                  htmls.push($sce.trustAsHtml(html));
                 });
               });
             }
