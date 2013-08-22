@@ -409,12 +409,12 @@ select, input[type=text], input[type=email] {
 }
 
 // ****** CATALOG TREE
-.catalog > ul {
-  padding-left: 3px;
-}
-
 .accordion-inner-catalog {
   padding: 4px 4px;
+}
+
+.catalog > ul {
+  padding-left: 3px;
 }
 
 .ga-catalogitem-entry {
@@ -429,6 +429,19 @@ select, input[type=text], input[type=email] {
 .ga-catalogitem-leaf {
   border-bottom-style: dashed;
   border-bottom-color: #c7c7c7;
+
+  input[type="checkbox"] {
+    margin-top: 2px;
+  }
+
+  label {
+    font-weight: normal;
+    vertical-align: top;
+  }
+
+  .icon-info-sign {
+    margin-top: 2px;
+  }
 }
 
 .ga-catalogitem-template {
