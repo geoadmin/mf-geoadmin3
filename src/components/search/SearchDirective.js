@@ -1,11 +1,13 @@
 (function() {
   goog.provide('ga_search_directive');
 
+  goog.require('ga_layer_metadata_popup_service');
   goog.require('ga_map_service');
   goog.require('ga_permalink');
   goog.require('ga_urlutils_service');
 
   var module = angular.module('ga_search_directive', [
+    'ga_layer_metadata_popup_service',
     'ga_map_service',
     'ga_permalink',
     'pascalprecht.translate',
@@ -13,8 +15,10 @@
   ]);
 
   module.directive('gaSearch',
-      ['$compile', '$translate', 'gaLayers', 'gaPermalink', 'gaUrlUtils',
-        function($compile, $translate, gaLayers, gaPermalink, gaUrlUtils) {
+      ['$compile', '$translate', 'gaLayers', 'gaLayerMetadataPopup',
+        'gaPermalink', 'gaUrlUtils',
+        function($compile, $translate, gaLayers, gaLayerMetadataPopup,
+        gaPermalink, gaUrlUtils) {
           var currentTopic,
               footer = [
             '<div id="search-footer">',
@@ -108,8 +112,9 @@
                 scope.lang = $translate.uses();
               };
 
-              scope.showLegend = function() {
-                alert('Legend window should be defined once and for all!');
+              scope.getLegend = function(ev, id) {
+                gaLayerMetadataPopup(id);
+                ev.stopPropagation();
               };
 
               scope.addLayer = function(id) {
@@ -197,7 +202,8 @@
                         context.attrs.layer + '\')"' +
                         '>' + context.attrs.label +
                         '<i id="legend-open" ' +
-                        'href="#legend" ng-click="showLegend()"' +
+                        'ng-click="getLegend($event, \'' +
+                        context.attrs.layer + '\')" ' +
                         'class="icon-info-sign"> </i></div>';
                     return template;
                   },
@@ -251,17 +257,28 @@
                   }
                 });
 
+              // FIXME Find a better way to handle suggestions compilation
+              var finalRenderForRequest = false;
               var viewDropDown = $(taElt).data('ttView').dropdownView;
               viewDropDown.on('suggestionsRendered', function(event) {
-                // Only for layer search at the moment
-                var elements = angular.element('.tt-dataset-layers');
-                $compile(elements)(scope);
+                // Only compile when the suggestions are finally visible
+                if (viewDropDown.isVisible()) {
+                  // Make sure the final html content is compiled once only
+                  if (finalRenderForRequest) {
+                    // Only for layer search at the moment
+                    var elements = element.find('.tt-dataset-layers');
+                    $compile(elements)(scope);
+                    finalRenderForRequest = false;
+                  } else {
+                    finalRenderForRequest = true;
+                  }
+                }
               });
 
               scope.clearInput = function() {
                 $(taElt).val('');
                 $(taElt).data('ttView').inputView.setQuery('');
-                $(taElt).data('ttView').dropdownView.clearSuggestions();
+                viewDropDown.clearSuggestions();
               };
 
               scope.$on('gaTopicChange', function(event, topic) {
