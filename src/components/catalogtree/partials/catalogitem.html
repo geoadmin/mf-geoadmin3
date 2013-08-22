@@ -5,9 +5,10 @@
       ng-mouseover="previewLayer()"
       ng-mouseleave="removePreviewLayer()"
       ng-click="switchLayer(true)">
-    <i class="icon-circle-blank" ng-show="!item.selectedOpen"></i>
-    <i class="icon-ok-circle" ng-show="item.selectedOpen"></i>
-    {{item.label}}
+    <input type="checkbox"
+           ng-model="item.selectedOpen"
+           ng-change="switchLayer(true)">
+    <label>{{item.label}}</label>
     <i class="icon-warning-sign" ng-show="item.errorLoading"></i>
     <i class="icon-info-sign" ng-click="getLegend($event, item.idBod)"></i>
   </div>
