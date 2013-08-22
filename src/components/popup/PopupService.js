@@ -5,7 +5,7 @@
 
   module.provider('gaPopup', function() {
 
-    this.$get = ['$compile', function($compile) {
+    this.$get = ['$compile', '$rootScope', function($compile, $rootScope) {
 
       var Popup = function(options) {
 
@@ -31,7 +31,7 @@
 
         // We create a new scope then compile the element
         if (!this.scope) {
-          this.scope = scope.$new();
+          this.scope = (scope || $rootScope).$new();
           this.scope.options = this.options;
           $compile(this.element)(this.scope);
         }
