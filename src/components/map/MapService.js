@@ -155,6 +155,12 @@
         };
 
         /**
+         */
+        this.getLayerProperty = function(id, prop) {
+          return layers[id] && layers[id][prop];
+        };
+
+        /**
          * Return the list of background layers. The returned
          * objects are object literals.
          */
