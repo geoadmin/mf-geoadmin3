@@ -25,7 +25,7 @@
               $scope.map.on('click', function(evt) {
                 var size = $scope.map.getSize();
                 var extent = $scope.map.getView().calculateExtent(size);
-                $scope.layers = $scope.map.getLayers().getArray();
+                $scope.layers = $scope.map.getLayers();
 
                 $scope.$apply(function() {
                   handleMapClick($scope,
@@ -43,7 +43,8 @@
           };
 
           function handleMapClick(scope, pixel, coordinate, size, extent) {
-            var identifyUrl = scope.options.getIdentifyUrl(currentTopic),
+            var identifyUrl = scope.options.identifyUrlTemplate
+                              .replace('{topic}', currentTopic),
                 layersToQuery = getLayersToQuery(scope.layers);
             //cancel all pending requests
             if (canceler) {
@@ -86,9 +87,10 @@
                         '</div>';
 
               angular.forEach(foundFeatures, function(value) {
-                var htmlUrl = scope.options.getHtmlUrl(currentTopic) +
-                              value.layerBodId + '/' +
-                              value.featureId + '/htmlpopup?';
+                var htmlUrl = scope.options.htmlUrlTemplate
+                              .replace('{topic}', currentTopic)
+                              .replace('{layer}', value.layerBodId)
+                              .replace('{feature}', value.featureId);
                 $http.jsonp(htmlUrl, {
                   timeout: canceler.promise,
                   params: {
