@@ -14,13 +14,13 @@
   </div>
 
   <div ng-switch-default="" class="ga-catalogitem-node">
-    <div ng-click="toggle($event)" class="ga-catalogitem-entry">
-      <i ng-class="{'icon-collapse-alt': item.selectedOpen, 'icon-expand-alt': !item.selectedOpen}"></i>
+    <a href="#" ng-click="toggle($event)" class="ga-catalogitem-entry">
+      <i ng-class="{'icon-minus': item.selectedOpen, 'icon-plus': !item.selectedOpen}"></i>
       {{item.label}}
-    </div>
+    </a>
     <ul ng-class="{closed: !item.selectedOpen}">
       <li ng-repeat="child in item.children">
-        <div ga-catalogitem ga-catalogitem-item="child" ga-catalogitem-map="map"></div>
+      <div ga-catalogitem ga-catalogitem-item="child" ga-catalogitem-map="map"></div>
       </li>
     </ul>
   </div>

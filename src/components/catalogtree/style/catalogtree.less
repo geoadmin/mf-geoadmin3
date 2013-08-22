@@ -1,13 +1,22 @@
 .ga-catalogitem-node {
+  a {
+    color: black;
+    display: block;
+    text-decoration: none;
+    &:hover, &:focus {
+      color: #f00;
+    }
+  }
   ul {
     list-style-type: none;
-    padding-left: 15px;
+    padding-left: 1.6em;
+    ul ul {
+      padding-left: 2em;
+    }
   }
   ul.closed {
-    height: 0;
-    overflow: hidden;
+    display: none;
   }
-  cursor: pointer;
 
   .icon-collapse-alt, .icon-expand-alt {
     float: left;
@@ -17,8 +26,14 @@
 }
 
 .ga-catalogitem-leaf {
-  .icon-info-sign {
-    float: right;
+  position: relative;
+  i {
+    position: absolute;
+    right: 0;
+    top: .8em;
+  }
+  .icon-warning-sign {
+    right: 1em;
   }
 }
 
