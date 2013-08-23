@@ -266,9 +266,9 @@
               var viewDropDown = $(taElt).data('ttView').dropdownView;
               viewDropDown.on('suggestionsRendered', function(event) {
                 if (viewDropDown.isVisible()) {
-                  suggestionsRendered = suggestionsRendered + 1;
+                  suggestionsRendered += 1;
                   // Make sure the final html content is compiled once only
-                  if (typeAheadDatasets.length == suggestionsRendered) {
+                  if (typeAheadDatasets.length === suggestionsRendered) {
                     // Only for layer search at the moment
                     var elements = element.find('.tt-dataset-layers');
                     $compile(elements)(scope);
