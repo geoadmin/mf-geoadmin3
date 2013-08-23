@@ -122,7 +122,8 @@
             var layerstring = '';
             layers.forEach(function(l) {
                 var id = l.get('id');
-                if (gaLayers.getLayerProperty(id, 'queryable')) {
+                if (gaLayer.getLayer(id) &&
+                    gaLayers.getLayerProperty(id, 'queryable')) {
                   if (layerstring.length) {
                     layerstring = layerstring + ',';
                   }
