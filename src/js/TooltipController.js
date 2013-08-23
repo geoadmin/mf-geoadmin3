@@ -7,15 +7,12 @@
       ['$scope', 'gaGlobalOptions',
       function($scope, gaGlobalOptions) {
 
-        var baseUrl = function() {
-            return gaGlobalOptions.serviceUrl + '/rest/services';
-
-        };
+        var baseUrl = gaGlobalOptions.serviceUrl + '/rest/services';
 
         $scope.options = {
           tolerance: 5,
-          identifyUrlTemplate: baseUrl() + '/{Topic}/MapServer/identify',
-          htmlUrlTemplate: baseUrl() + '/{Topic}/MapServer/{Layer}/{Feature}/htmlpopup'
+          identifyUrlTemplate: baseUrl + '/{Topic}/MapServer/identify',
+          htmlUrlTemplate: baseUrl + '/{Topic}/MapServer/{Layer}/{Feature}/htmlpopup'
         };
       }
   ]);
