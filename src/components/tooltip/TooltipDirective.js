@@ -53,25 +53,25 @@
             var identifyUrl = scope.options.identifyUrlTemplate
                               .replace('{topic}', currentTopic),
                 layersToQuery = getLayersToQuery(scope.layers);
-            //cancel all pending requests
+            // Cancel all pending requests
             if (canceler) {
               canceler.resolve();
             }
-            //create new cancel object
+            // Create new cancel object
             canceler = $q.defer();
             if (layersToQuery.length) {
-              //look for all features under clicked pixel
+              // Look for all features under clicked pixel
               $http.jsonp(identifyUrl, {
                 timeout: canceler.promise,
                 params: {
                   'geometryType': 'esriGeometryPoint',
                   'geometry': coordinate[0] + ',' + coordinate[1],
-                  //FIXME: make sure we are passing the right dpi here. Can we?
+                  // FIXME: make sure we are passing the right dpi here. Can we?
                   'imageDisplay': size[0] + ',' + size[1] + ',96',
                   'mapExtent': extent[0] + ',' + extent[2] +
                                ',' + extent[1] + ',' + extent[3],
                   'tolerance': scope.options.tolerance,
-                  //FIXME: layers should come from the map
+                  // FIXME: layers should come from the map
                   'layers': 'all:' + layersToQuery,
                   'callback': 'JSON_CALLBACK'
                 }
@@ -100,7 +100,7 @@
 
                   }
                 }).success(function(html) {
-                  //first result, show popup
+                  // Show popup on first result
                   if (htmls.length === 0) {
                     popup = gaPopup.create({
                       title: 'object_information',
@@ -111,7 +111,7 @@
                     });
                     popup.open(scope);
                   }
-                  //add result to array. ng-repeat will take care of the rest
+                  // Add result to array. ng-repeat will take care of the rest
                   htmls.push($sce.trustAsHtml(html));
                 });
               });
