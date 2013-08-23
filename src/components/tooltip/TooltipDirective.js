@@ -63,15 +63,15 @@
               $http.jsonp(identifyUrl, {
                 timeout: canceler.promise,
                 params: {
-                  'geometryType': 'esriGeometryPoint',
-                  'geometry': coordinate[0] + ',' + coordinate[1],
+                  geometryType: 'esriGeometryPoint',
+                  geometry: coordinate[0] + ',' + coordinate[1],
                   // FIXME: make sure we are passing the right dpi here. Can we?
-                  'imageDisplay': size[0] + ',' + size[1] + ',96',
-                  'mapExtent': extent[0] + ',' + extent[2] +
+                  imageDisplay: size[0] + ',' + size[1] + ',96',
+                  mapExtent: extent[0] + ',' + extent[2] +
                                ',' + extent[1] + ',' + extent[3],
-                  'tolerance': scope.options.tolerance,
-                  'layers': 'all:' + layersToQuery,
-                  'callback': 'JSON_CALLBACK'
+                  tolerance: scope.options.tolerance,
+                  layers: 'all:' + layersToQuery,
+                  callback: 'JSON_CALLBACK'
                 }
               }).success(function(features) {
                 showFeatures(scope, pixel, features.results);
@@ -93,9 +93,8 @@
                 $http.jsonp(htmlUrl, {
                   timeout: canceler.promise,
                   params: {
-                    'lang': $translate.uses(),
-                    'callback': 'JSON_CALLBACK'
-
+                    lang: $translate.uses(),
+                    callback: 'JSON_CALLBACK'
                   }
                 }).success(function(html) {
                   // Show popup on first result
