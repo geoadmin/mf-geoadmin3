@@ -32,7 +32,6 @@
               $scope.map.on('click', function(evt) {
                 var size = $scope.map.getSize();
                 var extent = $scope.map.getView().calculateExtent(size);
-                $scope.layers = $scope.map.getLayers();
 
                 $scope.$apply(function() {
                   findFeatures($scope,
@@ -52,7 +51,7 @@
           function findFeatures(scope, pixel, coordinate, size, extent) {
             var identifyUrl = scope.options.identifyUrlTemplate
                               .replace('{Topic}', currentTopic),
-                layersToQuery = getLayersToQuery(scope.layers);
+                layersToQuery = getLayersToQuery(scope.map.getLayers());
             // Cancel all pending requests
             if (canceler) {
               canceler.resolve();
@@ -71,7 +70,6 @@
                   'mapExtent': extent[0] + ',' + extent[2] +
                                ',' + extent[1] + ',' + extent[3],
                   'tolerance': scope.options.tolerance,
-                  // FIXME: layers should come from the map
                   'layers': 'all:' + layersToQuery,
                   'callback': 'JSON_CALLBACK'
                 }
