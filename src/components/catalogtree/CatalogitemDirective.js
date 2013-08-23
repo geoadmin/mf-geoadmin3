@@ -56,6 +56,7 @@
       function($compile, gaLayers, gaLayerMetadataPopup) {
         return {
           restrict: 'A',
+          replace: true,
           templateUrl: 'components/catalogtree/partials/catalogitem.html',
           scope: {
             item: '=gaCatalogitemItem',
