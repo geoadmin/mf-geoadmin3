@@ -281,8 +281,17 @@
                 dragEnterZone.bind('dragenter', function(evt) {
                   evt.stopPropagation();
                   evt.preventDefault();
-                  //$log.log('dragenter');
-                  dropZone.css('display', 'table');
+                  var types = evt.originalEvent.dataTransfer.types;
+                  if (types) {
+                    var i, len = types.length;
+                    for (i = 0; i < len; ++i) {
+                      if (['files', 'text/plain']
+                          .indexOf(types[i].toLowerCase()) > -1) {
+                        dropZone.css('display', 'table');
+                        break;
+                      }
+                    }
+                  }
                 });
 
                 dropZone.bind('dragleave', function(evt) {
