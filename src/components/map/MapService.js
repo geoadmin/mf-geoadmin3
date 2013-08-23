@@ -155,6 +155,23 @@
         };
 
         /**
+         * Returns layers definition for given id. Returns
+         * undefined if id does not exist
+         */
+        this.getLayer = function(id) {
+          return layers[id];
+        };
+
+        /**
+         * Returns a property of the layer with the given id.
+         * Note: this throws an exception if the id does not
+         * exist in currently loaded topic/layers
+         */
+        this.getLayerProperty = function(id, prop) {
+          return layers[id][prop];
+        };
+
+        /**
          * Return the list of background layers. The returned
          * objects are object literals.
          */

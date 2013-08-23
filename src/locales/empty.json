@@ -83,5 +83,7 @@
   "email_us": "",
   "locations": "",
   "map_info": "",
-  "search_placeholder": ""
+  "search_placeholder": "",
+  "tooltip": "",
+  "object_information": ""
 }
