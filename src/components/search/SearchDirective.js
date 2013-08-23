@@ -147,7 +147,7 @@
                 return res;
               };
 
-              var taElt = $(element).find('input').typeahead([
+              var typeAheadDatasets = [
                 {
                   header: locationsHeaderTemplate,
                   name: 'locations',
@@ -233,7 +233,11 @@
                       });
                     }
                   }
-                }]).on('typeahead:selected', function(event, datum) {
+                }
+              ];
+
+              var taElt = $(element).find('input').typeahead(typeAheadDatasets)
+                .on('typeahead:selected', function(event, datum) {
                   var origin = datum.attrs.origin;
                   if (angular.isDefined(datum.attrs.geom_st_box2d)) {
                     var extent = parseExtent(datum.attrs.geom_st_box2d);
@@ -258,19 +262,17 @@
                 });
 
               // FIXME Find a better way to handle suggestions compilation
-              var finalRenderForRequest = false;
+              var suggestionsRendered = 0;
               var viewDropDown = $(taElt).data('ttView').dropdownView;
               viewDropDown.on('suggestionsRendered', function(event) {
-                // Only compile when the suggestions are finally visible
                 if (viewDropDown.isVisible()) {
+                  suggestionsRendered += 1;
                   // Make sure the final html content is compiled once only
-                  if (finalRenderForRequest) {
+                  if (typeAheadDatasets.length === suggestionsRendered) {
                     // Only for layer search at the moment
                     var elements = element.find('.tt-dataset-layers');
                     $compile(elements)(scope);
-                    finalRenderForRequest = false;
-                  } else {
-                    finalRenderForRequest = true;
+                    suggestionsRendered = 0;
                   }
                 }
               });
