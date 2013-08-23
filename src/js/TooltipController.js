@@ -14,8 +14,8 @@
 
         $scope.options = {
           tolerance: 5,
-          identifyUrlTemplate: baseUrl() + '/{topic}/MapServer/identify',
-          htmlUrlTemplate: baseUrl() + '/{topic}/MapServer/{layer}/{feature}/htmlpopup'
+          identifyUrlTemplate: baseUrl() + '/{Topic}/MapServer/identify',
+          htmlUrlTemplate: baseUrl() + '/{Topic}/MapServer/{Layer}/{Feature}/htmlpopup'
         };
       }
   ]);

@@ -51,7 +51,7 @@
 
           function findFeatures(scope, pixel, coordinate, size, extent) {
             var identifyUrl = scope.options.identifyUrlTemplate
-                              .replace('{topic}', currentTopic),
+                              .replace('{Topic}', currentTopic),
                 layersToQuery = getLayersToQuery(scope.layers);
             // Cancel all pending requests
             if (canceler) {
@@ -89,9 +89,9 @@
               htmls = [];
               angular.forEach(foundFeatures, function(value) {
                 var htmlUrl = scope.options.htmlUrlTemplate
-                              .replace('{topic}', currentTopic)
-                              .replace('{layer}', value.layerBodId)
-                              .replace('{feature}', value.featureId);
+                              .replace('{Topic}', currentTopic)
+                              .replace('{Layer}', value.layerBodId)
+                              .replace('{Feature}', value.featureId);
                 $http.jsonp(htmlUrl, {
                   timeout: canceler.promise,
                   params: {
