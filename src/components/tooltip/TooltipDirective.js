@@ -105,8 +105,8 @@
                       htmls: htmls,
                       x: pixel[0],
                       y: pixel[1]
-                    });
-                    popup.open(scope);
+                    }, scope);
+                    popup.open();
                   }
                   // Add result to array. ng-repeat will take care of the rest
                   htmls.push($sce.trustAsHtml(html));
