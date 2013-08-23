@@ -21,7 +21,7 @@
         gaPermalink, gaUrlUtils) {
           var currentTopic,
               footer = [
-            '<div id="search-footer">',
+            '<div class="search-footer">',
             '<div class="footer-left">',
             '<b>Please help me</b></div>',
             '<div class="footer-right"><div>',
@@ -201,8 +201,7 @@
                         'ng-mouseout="removeLayer(\'' +
                         context.attrs.layer + '\')"' +
                         '>' + context.attrs.label +
-                        '<i id="legend-open" ' +
-                        'ng-click="getLegend($event, \'' +
+                        '<i ng-click="getLegend($event, \'' +
                         context.attrs.layer + '\')" ' +
                         'class="icon-info-sign"> </i></div>';
                     return template;
