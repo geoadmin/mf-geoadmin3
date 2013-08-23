@@ -13,7 +13,14 @@
   module.directive('gaTooltip',
       ['$http', '$q', '$translate', '$sce', 'gaPopup', 'gaLayers',
         function($http, $q, $translate, $sce, gaPopup, gaLayers) {
-          var currentTopic, canceler, popup = null;
+          var currentTopic,
+              canceler,
+              popup,
+              popupContent = '<div ng-repeat="htmlsnippet in options.htmls">' +
+                               '<div ng-bind-html="htmlsnippet"></div>' +
+                               '<div class="tooltip-separator" ' +
+                                 'ng-show="!$last"></div>' +
+                             '</div>';
           return {
             restrict: 'A',
             scope: {
@@ -28,11 +35,11 @@
                 $scope.layers = $scope.map.getLayers();
 
                 $scope.$apply(function() {
-                  handleMapClick($scope,
-                                 evt.getPixel(),
-                                 evt.getCoordinate(),
-                                 size,
-                                 extent);
+                  findFeatures($scope,
+                               evt.getPixel(),
+                               evt.getCoordinate(),
+                               size,
+                               extent);
                 });
               });
 
@@ -42,7 +49,7 @@
             }
           };
 
-          function handleMapClick(scope, pixel, coordinate, size, extent) {
+          function findFeatures(scope, pixel, coordinate, size, extent) {
             var identifyUrl = scope.options.identifyUrlTemplate
                               .replace('{topic}', currentTopic),
                 layersToQuery = getLayersToQuery(scope.layers);
@@ -69,23 +76,17 @@
                   'callback': 'JSON_CALLBACK'
                 }
               }).success(function(features) {
-                showInformation(scope, pixel, features.results);
+                showFeatures(scope, pixel, features.results);
               });
             }
 
             removePopup();
           }
 
-          function showInformation(scope, pixel, foundFeatures) {
+          function showFeatures(scope, pixel, foundFeatures) {
             var content, htmls;
             if (foundFeatures && foundFeatures.length > 0) {
               htmls = [];
-              content = '<div ng-repeat="htmlsnippet in options.htmls">' +
-                          '<div ng-bind-html="htmlsnippet"></div>' +
-                          '<div class="tooltip-separator" ' +
-                            'ng-show="!$last"></div>' +
-                        '</div>';
-
               angular.forEach(foundFeatures, function(value) {
                 var htmlUrl = scope.options.htmlUrlTemplate
                               .replace('{topic}', currentTopic)
@@ -103,7 +104,7 @@
                   if (htmls.length === 0) {
                     popup = gaPopup.create({
                       title: 'object_information',
-                      content: content,
+                      content: popupContent,
                       htmls: htmls,
                       x: pixel[0],
                       y: pixel[1]
