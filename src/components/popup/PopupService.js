@@ -7,45 +7,47 @@
 
     this.$get = ['$compile', '$rootScope', function($compile, $rootScope) {
 
-      var Popup = function(options) {
+      var Popup = function(options, scope) {
 
-        if (!options || !options.content) {
-          return;
-        }
-
-        // Add the popup element with its content to the HTML page
-        this.element = angular.element(
+        // Create the popup element with its content to the HTML page
+        var element = angular.element(
           '<div ga-popup ' +
                'ga-popup-options="options" ' +
                'ga-draggable=".ga-popup-title">' +
-             options.content +
+               options.content +
           '</div>'
         );
 
+        // Pass some popup functions for clients to be used in content
         var popup = this;
-        this.options = options;
-        this.options.close = function() {popup.close();};
+        options.open = function() {popup.open();};
+        options.close = function() {popup.close();};
+        options.destroy = function() {popup.destroy();};
+
+        // Create scope, compile and link
+        this.scope = (scope || $rootScope).$new();
+        this.scope.options = options;
+        this.element = $compile(element)(this.scope);
+
+        // Attach popup to body element
+        $(document.body).append(this.element);
       };
 
       Popup.prototype.open = function(scope) {
-
-        // We create a new scope then compile the element
-        if (!this.scope) {
-          this.scope = (scope || $rootScope).$new();
-          this.scope.options = this.options;
-          $compile(this.element)(this.scope);
-        }
-
-        // Attach the element to the body if needed
-        if (this.element.parent().length == 0) {
-          $(document.body).append(this.element);
-        }
-
         // Show the popup
         this.element.show();
       };
 
       Popup.prototype.close = function() {
+        this.element.hide();
+
+        var destroyOnClose = this.scope.options.destroyOnClose;
+        if (destroyOnClose !== false) {
+          this.destroy();
+        }
+      };
+
+      Popup.prototype.destroy = function() {
         // Destroy the created scope and element
         if (this.element) {
           this.element.remove();
@@ -56,7 +58,6 @@
           this.scope = null;
         }
       };
-
 
       return {
         create: function(options) {
