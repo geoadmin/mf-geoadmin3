@@ -18,15 +18,9 @@
           '<div ga-popup ' +
                'ga-popup-options="options" ' +
                'ga-draggable=".ga-popup-title">' +
-             options.content +
+               options.content +
           '</div>'
         );
-
-        //should we destroy the dialog on close? (default: yes)
-        this.destroyOnClose = options.destroyOnClose;
-        if (!angular.isDefined(this.destroyOnClose)) {
-          this.destroyOnClose = true;
-        }
 
         //pass some popup functions for clients to be used in content
         var popup = this;
@@ -51,7 +45,8 @@
       Popup.prototype.close = function() {
         this.element.hide();
 
-        if (this.destroyOnClose) {
+        var destroyOnClose = this.scope.options.destroyOnClose;
+        if (destroyOnClose !== false) {
           this.destroy();
         }
       };
