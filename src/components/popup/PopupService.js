@@ -9,12 +9,8 @@
 
       var Popup = function(options, scope) {
 
-        if (!options || !options.content) {
-          return;
-        }
-
         //Create the popup element with its content to the HTML page
-        this.element = angular.element(
+        var element = angular.element(
           '<div ga-popup ' +
                'ga-popup-options="options" ' +
                'ga-draggable=".ga-popup-title">' +
@@ -31,7 +27,7 @@
         //ceate scope, compile and link
         this.scope = (scope || $rootScope).$new();
         this.scope.options = options;
-        $compile(this.element)(this.scope);
+        this.element = $compile(element)(this.scope);
 
         //atach popup to body element
         $(document.body).append(this.element);
