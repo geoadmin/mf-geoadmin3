@@ -15,11 +15,8 @@
           restrict: 'A',
           replace: true,
           templateUrl: function(element, attrs) {
-            if (attrs.gaTopicUi === 'select') {
-              return 'components/topic/partials/topic.select.html';
-            } else {
-              return 'components/topic/partials/topic.html';
-            }
+            return 'components/topic/partials/topic.' +
+              ((attrs.gaTopicUi == 'select') ? 'select.html' : 'html');
           },
           scope: {
             options: '=gaTopicOptions'
