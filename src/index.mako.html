@@ -146,14 +146,12 @@
             <span translate>map_tools</span>
           </a>
           <div id="tools" class="collapse">
-            <div class="panel-body">
+            <div class="panel-body panel-body-wide">
 
-              <!-- Tools accordion -->
-              <div class="panel-group" id="tools-accordion">
+              <ul>
 
-                <!-- Import -->
-                <div class="panel">
-                  <a class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#tools-accordion" href="#import">
+                <li><!-- Import -->
+                  <a class="accordion-toggle collapsed" data-toggle="collapse" href="#import">
                     <i class="visible-collapsed icon-plus"></i>
                     <i class="hidden-collapsed icon-minus"></i>
                     <span translate>import</span>
@@ -164,21 +162,22 @@
                         <!-- We can't use translate directive for these links, see:
                         https://github.com/PascalPrecht/angular-translate/issues/129 -->
                         <li>
-                          <i class="icon-external-link"></i>
-                          <a href="" ng-click="importWmsPopupShown = !importWmsPopupShown">{{'wms' | translate}}</a>
+                          <a href="" ng-click="importWmsPopupShown = !importWmsPopupShown">
+                            <i class="icon-external-link ga-icon-separator"></i> {{'wms' | translate}}
+                          </a>
                         </li>
                         <li>
-                          <i class="icon-file"></i>
-                          <a href=""  ng-click="importKmlPopupShown = !importKmlPopupShown">{{'kml' | translate}}</a>
+                          <a href=""  ng-click="importKmlPopupShown = !importKmlPopupShown">
+                            <i class="icon-file ga-icon-separator"></i> {{'kml' | translate}}
+                          </a>
                         </li>
                       </ul>
                     </div>
                   </div>
-                </div>
+                </li>
 
-                <!-- Measure -->
-                <div class="panel">
-                  <a class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#tools-accordion" href="#measure" >
+                <li><!-- Measure -->
+                  <a class="accordion-toggle collapsed" data-toggle="collapse" href="#measure" >
                     <i class="visible-collapsed icon-plus"></i>
                     <i class="hidden-collapsed icon-minus"></i>
                     <span translate>measure</span>
@@ -188,11 +187,10 @@
                       Under construction ...
                     </div>
                   </div>
-                </div>
+                </li>
 
-                <!-- Drawing -->
-                <div class="panel">
-                  <a class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#tools-accordion" href="#drawing" >
+                <li><!-- Drawing -->
+                  <a class="accordion-toggle collapsed" data-toggle="collapse" href="#drawing" >
                     <i class="visible-collapsed icon-plus"></i>
                     <i class="hidden-collapsed icon-minus"></i>
                     <span translate>drawing</span>
@@ -202,11 +200,10 @@
                       Under construction ...
                     </div>
                   </div>
-                </div>
-              </div>
-              <!--  end tools accordion -->
+                </li>
+              </ul>
             </div>
-        </div>
+          </div>
         </div> <!-- .panel -->
 
         <div class="panel">
@@ -221,9 +218,9 @@
             <i class="hidden-collapsed icon-caret-down"></i>
             <span translate>catalog</span>
           </a>
-          <div id="catalog" class="collapse">
-            <div class="panel-body accordion-inner-catalog" ng-controller="GaCatalogtreeController">
-              <div ga-catalogtree ga-catalogtree-map="map" ga-catalogtree-options="options"></div>
+          <div id="catalog" class="collapse" ng-controller="GaCatalogtreeController">
+            <div class="panel-body panel-body-wide accordion-inner-catalog"
+              ga-catalogtree ga-catalogtree-map="map" ga-catalogtree-options="options">
             </div>
           </div>
         </div> <!-- .panel -->
