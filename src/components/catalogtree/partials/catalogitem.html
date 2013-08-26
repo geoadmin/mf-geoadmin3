@@ -2,10 +2,10 @@
 
   <div ng-switch-when="undefined" class="ga-catalogitem-leaf ga-catalogitem-entry"
     ng-class="{'preview': item.preview, 'selected': item.selectedOpen}"
-    ng-mouseover="previewLayer()"
+    ng-mouseover="addPreviewLayer()"
     ng-mouseleave="removePreviewLayer()">
     <label>
-      <input type="checkbox" ng-model="item.selectedOpen" ng-change="switchLayer(true)">
+      <input type="checkbox" ng-model="item.selectedOpen" ng-change="toggleLayer()">
       {{item.label}}
     </label>
     <i class="icon-warning-sign" ng-show="item.errorLoading"></i>

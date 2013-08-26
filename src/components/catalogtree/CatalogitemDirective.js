@@ -4,7 +4,7 @@
   goog.require('ga_layer_metadata_popup_service');
   goog.require('ga_map_service');
 
-  //static functions
+  // Utility function that look up a layer by its id from the map.
   function getMapLayer(map, id) {
     var layer;
     map.getLayers().forEach(function(l) {
@@ -13,34 +13,6 @@
       }
     });
     return layer;
-  }
-
-  function addLayerToMap(scope, doAlert) {
-    var layer = getMapLayer(scope.map, scope.item.idBod),
-        olLayer;
-    if (!angular.isDefined(layer)) {
-      olLayer = scope.gaLayers.getOlLayerById(scope.item.idBod);
-      if (olLayer) {
-        scope.item.errorLoading = false;
-        scope.map.getLayers().push(olLayer);
-      } else {
-        if (doAlert) {
-          //FIXME: better error handling
-          var msg = 'The desired Layer is not defined ' +
-                    'by the gaLayers service (' + scope.item.idBod + ').';
-          alert(msg);
-        }
-        scope.item.errorLoading = true;
-        scope.item.selectedOpen = false;
-      }
-    }
- }
-
-  function removeLayerFromMap(map, id) {
-    var layer = getMapLayer(map, id);
-    if (angular.isDefined(layer)) {
-      map.removeLayer(layer);
-    }
   }
 
   var module = angular.module('ga_catalogitem_directive', [
@@ -54,6 +26,7 @@
   module.directive('gaCatalogitem',
       ['$compile', 'gaLayers', 'gaLayerMetadataPopup',
       function($compile, gaLayers, gaLayerMetadataPopup) {
+
         return {
           restrict: 'A',
           replace: true,
@@ -72,8 +45,8 @@
               scope.gaLayers = gaLayers;
               scope.getLegend = getLegend;
               scope.toggle = toggle;
-              scope.switchLayer = switchLayer;
-              scope.previewLayer = previewLayer;
+              scope.toggleLayer = toggleLayer;
+              scope.addPreviewLayer = addPreviewLayer;
               scope.removePreviewLayer = removePreviewLayer;
 
               compiledContent(scope, function(clone, scope) {
@@ -82,31 +55,58 @@
             };
           }
         };
-        function previewLayer() {
-          if (this.map) {
-            if (!this.item.selectedOpen) {
-              addLayerToMap(this, false);
+
+        function addPreviewLayer() {
+          // "this" is the scope
+          var item = this.item;
+          var map = this.map;
+          var layer = getMapLayer(map, item.idBod);
+          if (!angular.isDefined(layer)) {
+            layer = gaLayers.getOlLayerById(item.idBod);
+            if (angular.isDefined(layer)) {
+              layer.preview = true;
+              map.addLayer(layer);
             }
-            this.item.preview = true;
           }
+          item.preview = true;
         }
 
         function removePreviewLayer() {
-          if (!this.item.selectedOpen) {
-            this.switchLayer(false);
+          // "this" is the scope
+          var item = this.item;
+          var map = this.map;
+          var layer = getMapLayer(map, item.idBod);
+          if (angular.isDefined(layer) && layer.preview) {
+            layer.preview = false;
+            map.removeLayer(layer);
           }
-          this.item.preview = false;
+          item.preview = false;
         }
 
-        function switchLayer(fromClick) {
-          if (this.map) {
-             if (this.item.selectedOpen) {
-               addLayerToMap(this, fromClick);
+        function toggleLayer() {
+          // "this" is the scope
+          var item = this.item;
+          var map = this.map;
+          var layer = getMapLayer(map, item.idBod);
+          if (!angular.isDefined(layer)) {
+            layer = gaLayers.getOlLayerById(item.idBod);
+            // FIXME: the following if/else should not be necessary, as the
+            // gaLayers service should always return a layer object for an
+            // idBod.
+            if (!angular.isDefined(layer)) {
+              alert('Layer no defined by gaLayers (' + item.idBod + ').');
+              item.errorLoading = true;
             } else {
-               removeLayerFromMap(this.map, this.item.idBod);
-             }
-           }
-         }
+              map.addLayer(layer);
+            }
+          } else {
+            if (!layer.preview) {
+              map.removeLayer(layer);
+            } else {
+              layer.preview = false;
+            }
+          }
+        }
 
         function toggle(ev) {
           this.item.selectedOpen = !this.item.selectedOpen;
