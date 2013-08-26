@@ -66,6 +66,10 @@
               initTopics();
             });
 
+            // Because ng-repeat creates a new scope for each item in the
+            // collection we can't use ng-click="activeTopic = topic" in
+            // the template. Hence this intermediate function.
+            // see: https://groups.google.com/forum/#!topic/angular/nS80gSdZBsE
             scope.setActiveTopic = function(topicId) {
               scope.activeTopic = topicId;
             };
