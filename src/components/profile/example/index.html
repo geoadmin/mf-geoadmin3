@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html ng-app="ga_profile_example">
+  <head>
+    <title>Profile example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <base href="../../../">
+    <link href="style/app.css" rel="stylesheet" media="screen">
+  </head>
+  <body ng-controller="MainController">
+    <div ga-profile
+         ga-profile-options="options">
+    </div>
+
+    <script src="lib/jquery-2.0.3.js"></script>
+    <script src="lib/angular-1.2.0rc1.js"></script>
+    <script src="lib/angular-translate-0.9.4.js"></script>
+    <script src="lib/angular-translate-loader-static-files-0.1.2.js"></script>
+    <script src="lib/bootstrap-3.0.0.js"></script>
+    <script src="lib/typeahead-0.9.3.js"></script>
+    <script src="lib/d3-3.3.1.js"></script>
+    <script src="lib/proj4js-compressed.js"></script>
+    <script src="lib/EPSG21781.js"></script>
+    <script>
+      window.CLOSURE_NO_DEPS = true;
+    </script>
+    <script src="lib/ol-whitespace.js"></script>
+    <script src="deps.js"></script>
+    <script>
+      goog.require('ga_profile');
+    </script>
+    <script>
+      (function() {
+        var module = angular.module('ga_profile_example', [
+          'ga_profile'
+        ]);
+
+        module.controller('MainController', ['$scope', '$http', '$rootScope',
+          function($scope, $http, $rootScope) {
+            $scope.options = {
+              margin: {
+                top: 60,
+                right: 40,
+                bottom: 60,
+                left: 40
+              },
+              width: 600,
+              height: 400
+            };
+            var template = 'components/profile/example/profile.json';
+            $scope.getData = getData;
+            getData();
+
+            function getData() {
+              var http = $http.get(template);
+              http.success(function(data, status) {
+                $rootScope.$broadcast('gaProfileDataLoaded', data);
+              });
+            }
+          }
+        ]);
+      })();
+    </script>
+  </body>
+</html>
