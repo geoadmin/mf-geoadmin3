@@ -104,6 +104,7 @@
                   '<div class="tt-header-mapinfos" ' +
                   'ng-show="hasLayerResults" translate>map_info</div>');
               $compile(layerHeaderTemplate)(scope);
+              scope.query = '';
 
               scope.getHref = function() {
                 // set those values only on mouseover
@@ -279,6 +280,7 @@
               scope.clearInput = function() {
                 $(taElt).val('');
                 $(taElt).data('ttView').inputView.setQuery('');
+                scope.query = '';
                 viewDropDown.clearSuggestions();
               };
 

@@ -1,6 +1,5 @@
 <div class="search-wrapper" class="pull-left">
-  <input class="search" class="input-small" type="text" placeholder="{{'search_placeholder' | translate}}">
-  <div class="deleteicon" ng-click="clearInput()" >
-    <span class="clear-left"></span>
-  </div>
+  <input class="search" class="input-small" type="text" placeholder="{{'search_placeholder' | translate}}" ng-model="query" autocapitalize="none" autocomplete="off">
+  <i class="icon-remove-sign deleteicon ng-hide" ng-click="clearInput()" ng-hide="query==''">
+  </i>
 </div>
