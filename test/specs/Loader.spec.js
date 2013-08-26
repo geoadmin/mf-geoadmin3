@@ -9,6 +9,9 @@ beforeEach(function() {
   });
 
   module(function(gaLayersProvider) {
+    gaLayersProvider.wmtsGetTileUrlTemplate =
+        'http://wmts.com/foo/{Layer}/default/{Time}/21781/' +
+        '{TileMatrix}/{TileRow}/{TileCol}.{Format}';
     gaLayersProvider.layersConfigUrlTemplate =
         'http://example.com/{Topic}?lang={Lang}';
   });
