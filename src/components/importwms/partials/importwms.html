@@ -3,7 +3,7 @@
     <input type="url" name="url" autocomplete="off" placeholder="{{'choose_wms_url' | translate}}"
       ng-model="fileUrl" required class="form-control"/>
     <div class="open-wms-list icon-collapse"></div>
-    <button type="button" class="btn btn-primary bt-connect"
+    <button type="button" class="btn btn-default bt-connect"
             ng-click="handleFileUrl()" translate>connect</button>
     <div>{{wmsConstraintsMessage ? wmsConstraintsMessage : userMessage}}</div>
   </form>
@@ -48,6 +48,6 @@
     <textarea  placeholder="{{'description_instructions' | translate}}" class="form-control">
 {{(layerSelected) ? layerSelected.abstract : layerHovered.abstract}}
     </textarea>
-    <button type="button" class="btn btn-primary bt-addlayer" ng-click="addLayerSelected()" translate>add_layer</button>
+    <button type="button" class="btn btn-default bt-addlayer" ng-click="addLayerSelected()" translate>add_layer</button>
   </div>
 </div>
