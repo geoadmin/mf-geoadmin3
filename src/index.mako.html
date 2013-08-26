@@ -207,10 +207,10 @@
         </div> <!-- .panel -->
 
         <div class="panel">
-          <div class="theme-toggle">
+          <div class="theme-toggle visible-lg visible-md">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#" translate>choose_theme</a>
             <div class="dropdown-menu" ng-controller="GaTopicController">
-              <div ga-topic ga-topic-options="options"></div>
+              <div ga-topic ga-topic-ui="list" ga-topic-options="options"></div>
             </div>
           </div>
           <a class="panel-heading accordion-toggle light collapsed" data-toggle="collapse" href="#catalog">
@@ -219,6 +219,9 @@
             <span translate>catalog</span>
           </a>
           <div id="catalog" class="collapse" ng-controller="GaCatalogtreeController">
+            <div class="hidden-lg hidden-md" ng-controller="GaTopicController">
+              <div ga-topic ga-topic-ui="select" ga-topic-options="options"></div>
+            </div>
             <div class="panel-body panel-body-wide accordion-inner-catalog"
               ga-catalogtree ga-catalogtree-map="map" ga-catalogtree-options="options">
             </div>

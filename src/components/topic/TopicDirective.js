@@ -14,18 +14,35 @@
         return {
           restrict: 'A',
           replace: true,
-          templateUrl: 'components/topic/partials/topic.html',
+          templateUrl: function(element, attrs) {
+            if (attrs.gaTopicUi === 'select') {
+              return 'components/topic/partials/topic.select.html';
+            } else {
+              return 'components/topic/partials/topic.html';
+            }
+          },
           scope: {
             options: '=gaTopicOptions'
           },
           link: function(scope, element, attrs) {
             var options = scope.options;
 
+            function isValidTopicId(id) {
+              var i, len = scope.topics.length;
+              for (i = 0; i < len; i++) {
+                if (scope.topics[i].id == id) {
+                  return true;
+                }
+              }
+              return false;
+            }
+
             function initTopics() {
-              var topicParam = gaPermalink.getParams().topic;
-              if (!topicParam || !scope.setActiveTopic(topicParam)) {
-                // use default topic
-                scope.setActiveTopic(options.defaultTopicId);
+              var topicId = gaPermalink.getParams().topic;
+              if (isValidTopicId(topicId)) {
+                scope.activeTopic = topicId;
+              } else {
+                scope.activeTopic = options.defaultTopicId;
               }
             }
 
@@ -53,18 +70,22 @@
             });
 
             scope.setActiveTopic = function(topicId) {
-              var i, len = scope.topics.length;
-              for (i = 0; i < len; i++) {
-                var topic = scope.topics[i];
-                if (topic.id == topicId) {
-                  gaPermalink.updateParams({topic: topicId});
-                  scope.activeTopic = topicId;
-                  $rootScope.$broadcast('gaTopicChange', topic);
-                  return true;
+              scope.activeTopic = topicId;
+            };
+
+            scope.$watch('activeTopic', function(newVal) {
+              if (newVal && scope.topics) {
+                var i, len = scope.topics.length;
+                for (i = 0; i < len; i++) {
+                  var topic = scope.topics[i];
+                  if (topic.id == newVal) {
+                    gaPermalink.updateParams({topic: newVal});
+                    $rootScope.$broadcast('gaTopicChange', topic);
+                    break;
+                  }
                 }
               }
-              return false;
-            };
+            });
 
          }
        };
