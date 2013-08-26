@@ -15,6 +15,7 @@
   goog.require('ga_scaleline');
   goog.require('ga_search');
   goog.require('ga_topic');
+  goog.require('ga_timeselector');
   goog.require('ga_translation');
   goog.require('ga_feedback');
   goog.require('ga_geolocation');
@@ -53,6 +54,7 @@
     'ga_scaleline',
     'ga_search',
     'ga_topic',
+    'ga_timeselector',
     'ga_translation',
     'ga_feedback',
     'ga_layermanager',
