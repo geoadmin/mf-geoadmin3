@@ -42,7 +42,6 @@
               if (!compiledContent) {
                 compiledContent = $compile(contents);
               }
-              scope.gaLayers = gaLayers;
               scope.getLegend = getLegend;
               scope.toggle = toggle;
               scope.toggleLayer = toggleLayer;
