@@ -1,9 +1,11 @@
 (function() {
   goog.provide('ga_topic_directive');
+
   goog.require('ga_permalink');
   goog.require('ga_urlutils_service');
 
   var module = angular.module('ga_topic_directive', [
+    'pascalprecht.translate',
     'ga_permalink',
     'ga_urlutils_service'
   ]);
@@ -14,18 +16,32 @@
         return {
           restrict: 'A',
           replace: true,
-          templateUrl: 'components/topic/partials/topic.html',
+          templateUrl: function(element, attrs) {
+            return 'components/topic/partials/topic.' +
+              ((attrs.gaTopicUi == 'select') ? 'select.html' : 'html');
+          },
           scope: {
             options: '=gaTopicOptions'
           },
           link: function(scope, element, attrs) {
             var options = scope.options;
 
+            function isValidTopicId(id) {
+              var i, len = scope.topics.length;
+              for (i = 0; i < len; i++) {
+                if (scope.topics[i].id == id) {
+                  return true;
+                }
+              }
+              return false;
+            }
+
             function initTopics() {
-              var topicParam = gaPermalink.getParams().topic;
-              if (!topicParam || !scope.setActiveTopic(topicParam)) {
-                // use default topic
-                scope.setActiveTopic(options.defaultTopicId);
+              var topicId = gaPermalink.getParams().topic;
+              if (isValidTopicId(topicId)) {
+                scope.activeTopic = topicId;
+              } else {
+                scope.activeTopic = options.defaultTopicId;
               }
             }
 
@@ -52,19 +68,27 @@
               initTopics();
             });
 
+            // Because ng-repeat creates a new scope for each item in the
+            // collection we can't use ng-click="activeTopic = topic" in
+            // the template. Hence this intermediate function.
+            // see: https://groups.google.com/forum/#!topic/angular/nS80gSdZBsE
             scope.setActiveTopic = function(topicId) {
-              var i, len = scope.topics.length;
-              for (i = 0; i < len; i++) {
-                var topic = scope.topics[i];
-                if (topic.id == topicId) {
-                  gaPermalink.updateParams({topic: topicId});
-                  scope.activeTopic = topicId;
-                  $rootScope.$broadcast('gaTopicChange', topic);
-                  return true;
+              scope.activeTopic = topicId;
+            };
+
+            scope.$watch('activeTopic', function(newVal) {
+              if (newVal && scope.topics) {
+                var i, len = scope.topics.length;
+                for (i = 0; i < len; i++) {
+                  var topic = scope.topics[i];
+                  if (topic.id == newVal) {
+                    gaPermalink.updateParams({topic: newVal});
+                    $rootScope.$broadcast('gaTopicChange', topic);
+                    break;
+                  }
                 }
               }
-              return false;
-            };
+            });
 
          }
        };
