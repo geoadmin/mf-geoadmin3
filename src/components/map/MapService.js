@@ -38,13 +38,6 @@
     this.$get = ['$q', '$http', '$translate', '$rootScope', 'gaUrlUtils',
         'gaTileGrid',
         function($q, $http, $translate, $rootScope, gaUrlUtils, gaTileGrid) {
-
-      // not configurable at the moment, but could be, in the same way
-      // as layersConfigUrlTemplate
-      var wmtsGetTileUrlTemplate =
-          'http://wmts.geo.admin.ch/1.0.0/{Layer}/default/' +
-          '{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
-
       var attributions = {};
       var getAttribution = function(text) {
         var key = text;
@@ -57,7 +50,8 @@
         }
       };
 
-      var Layers = function(layersConfigUrlTemplate, legendUrlTemplate) {
+      var Layers = function(wmtsGetTileUrlTemplate,
+          layersConfigUrlTemplate, legendUrlTemplate) {
         var currentTopicId;
         var layers;
 
@@ -210,7 +204,8 @@
         };
       };
 
-      return new Layers(this.layersConfigUrlTemplate, this.legendUrlTemplate);
+      return new Layers(this.wmtsGetTileUrlTemplate,
+          this.layersConfigUrlTemplate, this.legendUrlTemplate);
     }];
 
   });
