@@ -1,11 +1,15 @@
 (function() {
   goog.provide('ga_profile_directive');
 
-  var module = angular.module('ga_profile_directive', []);
+  goog.require('ga_profile_service');
+
+  var module = angular.module('ga_profile_directive', [
+    'ga_profile_service'
+  ]);
 
   module.directive('gaProfile',
-      [
-        function() {
+      ['gaProfileService',
+        function(gaProfileService) {
           return {
             restrict: 'A',
             templateUrl: 'components/profile/partials/profile.html',
@@ -15,12 +19,10 @@
             link: function(scope, element, attrs) {
               var options = scope.options;
 
-              function updateProfile(data) {
-                console.log(data);
-              }
+              scope.updateProfile = gaProfileService;
 
               scope.$on('gaProfileDataLoaded', function(ev, data) {
-                updateProfile(data);
+                scope.updateProfile(data, options);
               });
             }
           };
