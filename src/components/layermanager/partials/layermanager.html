@@ -1,0 +1,7 @@
+<ol>
+  <li ng-repeat="layer in layers | filter:layerFilter">
+    <button type="button" ng-click="removeLayerFromMap(layer)">x</button>
+    <input type="checkbox" ng-model="layer.visible" />
+    {{getLayerLabel(layer)}}
+  </li>
+</ol>
