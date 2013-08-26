@@ -105,7 +105,7 @@
 
 
     <div id="pulldown">
-% if device=="desktop":
+% if device == 'desktop':
       <div id="pulldown-content" class="panel-group content in">
 % else:
       <div id="pulldown-content" class="panel-group content collapse" data-toggle="collapse">
@@ -207,18 +207,25 @@
         </div> <!-- .panel -->
 
         <div class="panel">
-          <div class="theme-toggle">
+% if device == 'desktop':
+          <div class="theme-toggle visible-lg visible-md">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#" translate>choose_theme</a>
             <div class="dropdown-menu" ng-controller="GaTopicController">
-              <div ga-topic ga-topic-options="options"></div>
+              <div ga-topic ga-topic-ui="list" ga-topic-options="options"></div>
             </div>
           </div>
+% endif
           <a class="panel-heading accordion-toggle light collapsed" data-toggle="collapse" href="#catalog">
             <i class="visible-collapsed icon-caret-right"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
             <span translate>catalog</span>
           </a>
           <div id="catalog" class="collapse" ng-controller="GaCatalogtreeController">
+% if device == 'mobile':
+            <div ng-controller="GaTopicController">
+              <div ga-topic ga-topic-ui="select" ga-topic-options="options"></div>
+            </div>
+% endif
             <div class="panel-body panel-body-wide accordion-inner-catalog"
               ga-catalogtree ga-catalogtree-map="map" ga-catalogtree-options="options">
             </div>
@@ -238,7 +245,7 @@
           </div>
         </div> <!-- .panel -->
 
-% if device=='mobile':
+% if device == 'mobile':
         <div class="panel">
           <a class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#impressum">
             <i class="visible-collapsed icon-caret-right spacer"></i>
@@ -273,7 +280,7 @@
 % endif
       </div> <!-- #pulldown-content -->
 
-% if device=="desktop":
+% if device == 'desktop':
       <button type="button" data-toggle="collapse" data-target="#pulldown-content" class="toggle btn btn-default">
 % else:
       <button type="button" data-toggle="collapse" data-target="#pulldown-content" class="toggle btn btn-default collapsed">
