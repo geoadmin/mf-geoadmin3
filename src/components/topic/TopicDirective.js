@@ -1,9 +1,11 @@
 (function() {
   goog.provide('ga_topic_directive');
+
   goog.require('ga_permalink');
   goog.require('ga_urlutils_service');
 
   var module = angular.module('ga_topic_directive', [
+    'pascalprecht.translate',
     'ga_permalink',
     'ga_urlutils_service'
   ]);
