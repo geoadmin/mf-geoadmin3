@@ -31,7 +31,7 @@
 </div>
 
 <div class="input-group input-group-sm share-permalink">
-  <input type="text" ng-model="permalinkValue" ng-click="selectOnClick($event)" class="form-control">
+  <input type="text" ng-model="permalinkValue" ng-click="selectOnClick($event)" class="form-control" readonly>
   <span class="input-group-btn">
     <button class="btn btn-default" ng-disabled="urlShortened"
             ng-click="shortenUrl()" translate>shorten_url</button>
@@ -40,7 +40,7 @@
 
 <form>
   <label translate>embed_map</label>
-  <textarea rows="8" cols="40" ng-click="selectOnClick($event)" class="form-control">
+  <textarea rows="8" cols="40" ng-click="selectOnClick($event)" class="form-control" readonly>
 <iframe width="800" height="600" frameborder="0" scrolling="no" src="{{permalinkHref}}"></iframe>
   </textarea>
 </form>
