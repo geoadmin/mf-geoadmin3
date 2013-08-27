@@ -2,11 +2,11 @@
   goog.provide('ga_layer_metadata_popup_service');
 
   goog.require('ga_map_service');
-  goog.require('ga_popup_service');
+  goog.require('ga_popup');
 
   var module = angular.module('ga_layer_metadata_popup_service', [
     'ga_map_service',
-    'ga_popup_service',
+    'ga_popup',
     'pascalprecht.translate'
   ]);
 
