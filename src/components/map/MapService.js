@@ -141,6 +141,10 @@
                   set: function(val) {
                     this.setOpacity(val);
                   }
+                },
+                preview: {
+                  writable: true,
+                  value: false
                 }
               });
             }

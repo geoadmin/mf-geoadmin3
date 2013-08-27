@@ -4,7 +4,7 @@
   goog.require('ga_layer_metadata_popup_service');
   goog.require('ga_map_service');
 
-  //static functions
+  // Utility function that look up a layer by its id from the map.
   function getMapLayer(map, id) {
     var layer;
     map.getLayers().forEach(function(l) {
@@ -13,34 +13,6 @@
       }
     });
     return layer;
-  }
-
-  function addLayerToMap(scope, doAlert) {
-    var layer = getMapLayer(scope.map, scope.item.idBod),
-        olLayer;
-    if (!angular.isDefined(layer)) {
-      olLayer = scope.gaLayers.getOlLayerById(scope.item.idBod);
-      if (olLayer) {
-        scope.item.errorLoading = false;
-        scope.map.getLayers().push(olLayer);
-      } else {
-        if (doAlert) {
-          //FIXME: better error handling
-          var msg = 'The desired Layer is not defined ' +
-                    'by the gaLayers service (' + scope.item.idBod + ').';
-          alert(msg);
-        }
-        scope.item.errorLoading = true;
-        scope.item.selectedOpen = false;
-      }
-    }
- }
-
-  function removeLayerFromMap(map, id) {
-    var layer = getMapLayer(map, id);
-    if (angular.isDefined(layer)) {
-      map.removeLayer(layer);
-    }
   }
 
   var module = angular.module('ga_catalogitem_directive', [
@@ -54,6 +26,7 @@
   module.directive('gaCatalogitem',
       ['$compile', 'gaLayers', 'gaLayerMetadataPopup',
       function($compile, gaLayers, gaLayerMetadataPopup) {
+
         return {
           restrict: 'A',
           replace: true,
@@ -69,12 +42,12 @@
               if (!compiledContent) {
                 compiledContent = $compile(contents);
               }
-              scope.gaLayers = gaLayers;
               scope.getLegend = getLegend;
               scope.toggle = toggle;
-              scope.switchLayer = switchLayer;
-              scope.previewLayer = previewLayer;
+              scope.toggleLayer = toggleLayer;
+              scope.addPreviewLayer = addPreviewLayer;
               scope.removePreviewLayer = removePreviewLayer;
+              scope.inPreviewMode = inPreviewMode;
 
               compiledContent(scope, function(clone, scope) {
                 iEl.append(clone);
@@ -82,31 +55,79 @@
             };
           }
         };
-        function previewLayer() {
-          if (this.map) {
-            if (!this.item.selectedOpen) {
-              addLayerToMap(this, false);
+
+        function addPreviewLayer() {
+          // "this" is the scope
+          var item = this.item;
+          var map = this.map;
+          var layer = getMapLayer(map, item.idBod);
+          if (!angular.isDefined(layer)) {
+            // FIXME: we are super cautious here and display error messages
+            // when either the layer identified by item.idBod doesn't exist
+            // in the gaLayers service, or gaLayers cannot construct an ol
+            // layer object for that layer.
+            var error = true;
+            if (angular.isDefined(gaLayers.getLayer(item.idBod))) {
+              layer = gaLayers.getOlLayerById(item.idBod);
+              if (angular.isDefined(layer)) {
+                error = false;
+                layer.preview = true;
+                map.addLayer(layer);
+              }
             }
-            this.item.preview = true;
+            item.errorLoading = error;
           }
         }
 
         function removePreviewLayer() {
-          if (!this.item.selectedOpen) {
-            this.switchLayer(false);
+          // "this" is the scope
+          var item = this.item;
+          var map = this.map;
+          var layer = getMapLayer(map, item.idBod);
+          if (angular.isDefined(layer) && layer.preview) {
+            layer.preview = false;
+            map.removeLayer(layer);
           }
-          this.item.preview = false;
         }
 
-        function switchLayer(fromClick) {
-          if (this.map) {
-             if (this.item.selectedOpen) {
-               addLayerToMap(this, fromClick);
+        function inPreviewMode() {
+          // "this" is the scope
+          var item = this.item;
+          var map = this.map;
+          var layer = getMapLayer(map, item.idBod);
+          return angular.isDefined(layer) && layer.preview;
+        }
+
+        function toggleLayer() {
+          // "this" is the scope
+          var item = this.item;
+          var map = this.map;
+          var layer = getMapLayer(map, item.idBod);
+          if (!angular.isDefined(layer)) {
+            // FIXME: we are super cautious here and display error messages
+            // when either the layer identified by item.idBod doesn't exist
+            // in the gaLayers service, or gaLayers cannot construct an ol
+            // layer object for that layer.
+            var error = true;
+            if (angular.isDefined(gaLayers.getLayer(item.idBod))) {
+              layer = gaLayers.getOlLayerById(item.idBod);
+              if (angular.isDefined(layer)) {
+                error = false;
+                map.addLayer(layer);
+              }
+            }
+            if (error) {
+              alert('Layer not supported by gaLayers (' + item.idBod + ').');
+              item.errorLoading = true;
+            }
+          } else {
+            if (!layer.preview) {
+              map.removeLayer(layer);
             } else {
-               removeLayerFromMap(this.map, this.item.idBod);
-             }
-           }
-         }
+              layer.preview = false;
+            }
+          }
+        }
 
         function toggle(ev) {
           this.item.selectedOpen = !this.item.selectedOpen;
