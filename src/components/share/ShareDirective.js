@@ -57,11 +57,6 @@
                 });
               };
 
-              scope.showForm = false;
-              scope.toggle = function() {
-                scope.showForm = !scope.showForm;
-              };
-
               // Select the input field on click in order to allow copy/paste
               scope.selectOnClick = function(e) {
                 e.target.select();
