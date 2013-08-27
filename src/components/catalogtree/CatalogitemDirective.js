@@ -47,6 +47,7 @@
               scope.toggleLayer = toggleLayer;
               scope.addPreviewLayer = addPreviewLayer;
               scope.removePreviewLayer = removePreviewLayer;
+              scope.inPreviewMode = inPreviewMode;
 
               compiledContent(scope, function(clone, scope) {
                 iEl.append(clone);
@@ -67,7 +68,6 @@
               map.addLayer(layer);
             }
           }
-          item.preview = true;
         }
 
         function removePreviewLayer() {
@@ -79,7 +79,14 @@
             layer.preview = false;
             map.removeLayer(layer);
           }
-          item.preview = false;
+        }
+
+        function inPreviewMode() {
+          // "this" is the scope
+          var item = this.item;
+          var map = this.map;
+          var layer = getMapLayer(map, item.idBod);
+          return angular.isDefined(layer) && layer.preview;
         }
 
         function toggleLayer() {

@@ -1,7 +1,7 @@
 <div class="ga-catalogitem-template" ng-switch="item.children">
 
   <div ng-switch-when="undefined" class="ga-catalogitem-leaf ga-catalogitem-entry"
-    ng-class="{'preview': item.preview, 'selected': item.selectedOpen}"
+    ng-class="{'preview': inPreviewMode() , 'selected': item.selectedOpen}"
     ng-mouseover="addPreviewLayer()"
     ng-mouseleave="removePreviewLayer()">
     <label>
