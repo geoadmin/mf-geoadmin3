@@ -18,6 +18,7 @@
   goog.require('ga_translation');
   goog.require('ga_feedback');
   goog.require('ga_geolocation');
+  goog.require('ga_layermanager');
   goog.require('ga_tooltip');
   goog.require('ga_modal_directive');
   goog.require('ga_draggable_directive');
@@ -53,6 +54,7 @@
     'ga_topic',
     'ga_translation',
     'ga_feedback',
+    'ga_layermanager',
     'ga_tooltip',
     'ga_modal_directive',
     'ga_draggable_directive',
