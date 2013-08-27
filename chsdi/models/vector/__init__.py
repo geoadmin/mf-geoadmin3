@@ -10,14 +10,17 @@ from chsdi.esrigeojsonencoder import loads
 from shapely.geometry import asShape
 
 def getScale(imageDisplay, mapExtent):
-    inches_per_meter = 1.0/0.0254
-    dots_per_inch = imageDisplay[2]
-    pixel_width = imageDisplay[0]
+    inchesPerMeter = 1.0/0.0254
+    imgPixelPerInch = imageDisplay[2]
+    imgPixelWidth = imageDisplay[0]
     bounds = mapExtent.bounds
-    meter_width = abs(bounds[0] - bounds[2])
-    inches_per_pixel = (meter_width*inches_per_meter)/pixel_width
-    resolution = meter_width/(pixel_width*dots_per_inch*inches_per_pixel)
-    scale = resolution*inches_per_meter*dots_per_inch
+
+    mapMeterWidth = abs(bounds[0] - bounds[2])
+    imgMeterWidth = (imgPixelWidth/imgPixelPerInch)*inchesPerMeter
+
+    resolution = imgMeterWidth/mapMeterWidth
+    scale = 1/resolution
+
     return scale
     
 
