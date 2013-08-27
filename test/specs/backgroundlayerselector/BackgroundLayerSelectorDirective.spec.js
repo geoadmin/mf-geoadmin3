@@ -48,33 +48,75 @@ describe('ga_backgroundlayerselector_directive', function() {
 
   });
 
-  it('creates <select> with <option>\'s', function() {
-    var select = element.find('select');
-    select = select[0];
-    expect(select).not.to.be(undefined);
+  describe('initialization', function() {
+    it('creates <select> with <option>\'s', function() {
+      var select = element.find('select');
+      select = select[0];
+      expect(select).not.to.be(undefined);
 
-    var options = $(select).find('option');
-    expect(options.length).to.equal(3);
+      var options = $(select).find('option');
+      expect(options.length).to.equal(3);
 
-    expect($(options[0]).text()).to.equal('Foo');
-    expect($(options[1]).text()).to.equal('Bar');
+      expect($(options[0]).text()).to.equal('Foo');
+      expect($(options[1]).text()).to.equal('Bar');
+      expect($(options[2]).text()).to.equal('void_layer');
+    });
+
+    it('adds a layer to the map', function() {
+      var layers = map.getLayers();
+      var numLayers = layers.getLength();
+      expect(numLayers).to.equal(1);
+      expect(layers.getAt(0)).to.be(layer1);
+    });
   });
 
-  it('adds a layer to the map', function() {
-    var layers = map.getLayers();
-    var numLayers = layers.getLength();
-    expect(numLayers).to.equal(1);
-    expect(layers.getAt(0)).to.be(layer1);
+  describe('select a bg layer', function() {
+    it('changes the bg layer', function() {
+      var select = element.find('select');
+      $(select).val('1');
+      $(select).trigger('change');
+      var layers = map.getLayers();
+      var numLayers = layers.getLength();
+      expect(numLayers).to.equal(1);
+      expect(layers.getAt(0)).to.be(layer2);
+    });
   });
 
-  it('changes the base layer on select', function() {
-    var select = element.find('select');
-    $(select).val('1');
-    $(select).trigger('change');
-    var layers = map.getLayers();
-    var numLayers = layers.getLength();
-    expect(numLayers).to.equal(1);
-    expect(layers.getAt(0)).to.be(layer2);
+  describe('select the void layer', function() {
+    it('removes the layer from the map', function() {
+      var select = element.find('select');
+      $(select).val('2');
+      $(select).trigger('change');
+      var layers = map.getLayers();
+      var numLayers = layers.getLength();
+      expect(numLayers).to.equal(0);
+    });
+  });
+
+  describe('select a bg layer when void layer is selected', function() {
+    it('does not remove layers in the map', function() {
+      var select = element.find('select');
+      var layers = map.getLayers();
+      var numLayers;
+
+      // add the void layer
+      $(select).val('2');
+      $(select).trigger('change');
+      numLayers = layers.getLength();
+      expect(numLayers).to.equal(0);
+
+      // add an overlay
+      layers.push(
+          new ol.layer.TileLayer({source: new ol.source.OSM()}));
+      numLayers = layers.getLength();
+      expect(numLayers).to.equal(1);
+
+      // select a bg layer
+      $(select).val('1');
+      $(select).trigger('change');
+      numLayers = layers.getLength();
+      expect(numLayers).to.equal(2);
+    });
   });
 
 });
