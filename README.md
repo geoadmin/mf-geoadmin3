@@ -14,9 +14,19 @@ or when you're using ssh key (see https://help.github.com/articles/generating-ss
 
     git clone git@github.com:geoadmin/mf-chsdi3.git
 
+Add .pgpass to your environment
+
+    cd
+    touch .pgpass
+    chmod 600 .pgpass
+
+Open .pgpass and Add
+
+    pgcluster0t.bgdi.admin.ch:5432:*:${username}:${pass}
+
 Make sure PGUSER and PGPASS is set in your .bashrc (for nosetests, potranslate and sphinx)
 
-    export PGUSER=${username} // replace ${username} with your account name on mf1t.bgdi.admin.ch
+    export PGUSER=${username} // postgres user (won't be relevant soon)
     export PGPASS=${pass}
 
 Bootstrap your build environment:
@@ -25,9 +35,11 @@ Bootstrap your build environment:
 
 Create a developer specific build configuration:
 
-    cp buildout_ltmoc.cfg buildout_<username>.cfg
+    cp buildout_ltgal.cfg buildout_<username>.cfg
 
-Where <username> is your specific buildout configuration. Don't forget to add this to git. To create the specific build:
+Change the port number in the newly created buildout configuration file (In dev mode)
+
+Where "username" is your specific buildout configuration. Don't forget to add this to git. To create the specific build:
 
     buildout/bin/buildout -c buildout_<username>.cfg
 
