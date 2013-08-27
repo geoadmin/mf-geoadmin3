@@ -1,7 +1,11 @@
 (function() {
   goog.provide('ga_popup_service');
 
-  var module = angular.module('ga_popup_service', []);
+  goog.require('ga_draggable_directive');
+
+  var module = angular.module('ga_popup_service', [
+    'ga_draggable_directive'
+  ]);
 
   module.provider('gaPopup', function() {
 
