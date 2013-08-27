@@ -127,6 +127,7 @@
           </div>
         </div> <!-- .panel -->
 
+% if device == 'desktop':
         <div class="panel">
           <a class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#print">
             <i class="visible-collapsed icon-caret-right spacer"></i>
@@ -140,6 +141,7 @@
             </div>
           </div>
         </div>  <!-- .panel -->
+% endif
 
         <div class="panel">
           <a class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#tools">
@@ -153,6 +155,7 @@
 
               <ul>
 
+% if device == 'desktop':
                 <li><!-- Import -->
                   <a class="accordion-toggle collapsed" data-toggle="collapse" href="#import">
                     <i class="visible-collapsed icon-plus"></i>
@@ -180,6 +183,7 @@
                     </div>
                   </div>
                 </li>
+% endif
 
                 <li><!-- Measure -->
                   <a class="accordion-toggle collapsed" data-toggle="collapse" href="#measure" >
@@ -259,24 +263,25 @@
           </a>
           <div id="settings" class="collapse">
             <div class="panel-body">
+              <p>
+                <a ng-href="{{desktopHref}}">desktop_redirect</a>
+              </p>
               <div ng-controller="GaTranslationController">
-                <div ga-translation-selector
-                  ga-translation-selector-options="options"></div>
+                <div ga-translation-selector ga-translation-selector-options="options"></div>
               </div>
-              <div ga-background-layer-selector
-                ga-background-layer-selector-map="map"></div>
-            <hr>
-            <div id="copyrightstext" class="pull-left">
-              <span>&copy;&nbsp;</span> <span translate>data</span>
-            </div>
-            <div ga-attribution ga-attribution-map="map"></div>
-            <p>
-              <a target="_blank" ng-href="http://www.geo.admin.ch/internet/geoportal/{{langId}}/home/geoadmin/contact.html#copyright" translate>copyright_label</a>
-              <br>
-              <a target="_blank" ng-href="{{topicId + '_service_link_href' | translate}}" ng-cloak translate>{{topicId + '_service_link_label'}}</a>
-              <br>
-              <a href="#feedback" data-toggle="modal" translate>problem_announcement</a>
-            </p>
+              <div ga-background-layer-selector ga-background-layer-selector-map="map"></div>
+              <hr>
+              <div id="copyrightstext" class="pull-left">
+                <span>&copy;&nbsp;</span> <span translate>data</span>
+              </div>
+              <div ga-attribution ga-attribution-map="map"></div>
+              <p>
+                <a target="_blank" ng-href="http://www.geo.admin.ch/internet/geoportal/{{langId}}/home/geoadmin/contact.html#copyright" translate>copyright_label</a>
+                <br>
+                <a target="_blank" ng-href="{{topicId + '_service_link_href' | translate}}" ng-cloak translate>{{topicId + '_service_link_label'}}</a>
+                <br>
+                <a href="#feedback" data-toggle="modal" translate>problem_announcement</a>
+              </p>
             </div>
           </div>
         </div> <!-- .panel -->
