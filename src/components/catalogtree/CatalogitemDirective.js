@@ -62,11 +62,20 @@
           var map = this.map;
           var layer = getMapLayer(map, item.idBod);
           if (!angular.isDefined(layer)) {
-            layer = gaLayers.getOlLayerById(item.idBod);
-            if (angular.isDefined(layer)) {
-              layer.preview = true;
-              map.addLayer(layer);
+            // FIXME: we are super cautious here and display error messages
+            // when either the layer identified by item.idBod doesn't exist
+            // in the gaLayers service, or gaLayers cannot construct an ol
+            // layer object for that layer.
+            var error = true;
+            if (angular.isDefined(gaLayers.getLayer(item.idBod))) {
+              layer = gaLayers.getOlLayerById(item.idBod);
+              if (angular.isDefined(layer)) {
+                error = false;
+                layer.preview = true;
+                map.addLayer(layer);
+              }
             }
+            item.errorLoading = error;
           }
         }
 
@@ -95,15 +104,21 @@
           var map = this.map;
           var layer = getMapLayer(map, item.idBod);
           if (!angular.isDefined(layer)) {
-            layer = gaLayers.getOlLayerById(item.idBod);
-            // FIXME: the following if/else should not be necessary, as the
-            // gaLayers service should always return a layer object for an
-            // idBod.
-            if (!angular.isDefined(layer)) {
-              alert('Layer no defined by gaLayers (' + item.idBod + ').');
+            // FIXME: we are super cautious here and display error messages
+            // when either the layer identified by item.idBod doesn't exist
+            // in the gaLayers service, or gaLayers cannot construct an ol
+            // layer object for that layer.
+            var error = true;
+            if (angular.isDefined(gaLayers.getLayer(item.idBod))) {
+              layer = gaLayers.getOlLayerById(item.idBod);
+              if (angular.isDefined(layer)) {
+                error = false;
+                map.addLayer(layer);
+              }
+            }
+            if (error) {
+              alert('Layer not supported by gaLayers (' + item.idBod + ').');
               item.errorLoading = true;
-            } else {
-              map.addLayer(layer);
             }
           } else {
             if (!layer.preview) {
