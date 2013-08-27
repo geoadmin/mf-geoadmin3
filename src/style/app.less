@@ -229,12 +229,7 @@ a .ga-icon-separator {
     }
   }
 }
-#pulldown-content {
-  .accordion-toggle, .panel-body-wide a {
-    display: block;
-    background-color: #fff;
-    color: #000;
-    text-decoration: none;
+.pulldown-hover() {
     &:hover, &:focus {
       text-decoration: none;
       color: #666;
@@ -243,6 +238,14 @@ a .ga-icon-separator {
         visibility: visible;
       }
     }
+}
+#pulldown-content {
+  .accordion-toggle, .panel-body-wide a {
+    display: block;
+    background-color: #fff;
+    color: #000;
+    text-decoration: none;
+    .pulldown-hover;
   }
   .panel > .accordion-toggle {
     border-bottom: 1px solid #c7c7c7;
@@ -271,6 +274,7 @@ a .ga-icon-separator {
     .icon-caret-right, .icon-caret-down {
       margin-right: .5em;
     }
+    .pulldown-hover;
   }
 }
 
