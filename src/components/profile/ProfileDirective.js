@@ -16,6 +16,8 @@
             scope: {
               options: '=gaProfileOptions'
             },
+            replace: true,
+            transclude: true,
             link: function(scope, element, attrs) {
               var options = scope.options;
 

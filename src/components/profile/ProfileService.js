@@ -1,15 +1,18 @@
 (function() {
   goog.provide('ga_profile_service');
 
-  goog.require('ga_popup_service');
+  goog.require('ga_draggable_directive');
+  goog.require('ga_popup');
 
   var module = angular.module('ga_profile_service', [
-    'ga_popup_service'
+    'ga_draggable_directive',
+    'ga_popup',
+    'pascalprecht.translate'
   ]);
 
   module.provider('gaProfileService', function() {
 
-    function createGraph(data, options) {
+    function createGraph(element, data, options) {
       var marginHoriz = options.margin.left + options.margin.right;
       var marginVert = options.margin.top + options.margin.bottom;
 
@@ -31,7 +34,7 @@
           .y0(height)
           .y1(function(d) { return y(d.alts.DTM25); });
 
-      var svg = d3.select('.profile').append('svg')
+      var svg = d3.select(element).append('svg')
           .attr('width', width + marginHoriz)
           .attr('height', height + marginVert)
         .append('g')
@@ -39,7 +42,7 @@
               ' ,' + options.margin.top + ')');
 
       x.domain(d3.extent(data, function(d) { return d.dist; }));
-      y.domain([0, d3.max(data, function(d) { return d.alts.DTM25})]);
+      y.domain([0, d3.max(data, function(d) { return d.alts.DTM25}; )]);
 
       svg.append('path')
           .datum(data)
@@ -47,12 +50,12 @@
           .attr('d', area);
 
       svg.append('g')
-          .attr('class', 'x-axis')
+          .attr('class', 'x axis')
           .attr('transform', 'translate(0, ' + height + ')')
           .call(xAxis);
 
       svg.append('g')
-          .attr('class', 'y-axis')
+          .attr('class', 'y axis')
           .call(yAxis)
         .append('text')
           .attr('transform', 'rotate(-90)')
@@ -60,12 +63,24 @@
           .attr('dy', '.71em')
           .style('text-anchor', 'end')
           .text('Elevation');
+
+      return element;
     }
 
-    this.$get = ['gaPopup',
-      function(gaPopup) {
+    this.$get = ['$translate', 'gaPopup',
+      function($translate, gaPopup) {
         return function(data, options) {
-          createGraph(data, options);
+          var element = document.createElement('DIV');
+          element.className = 'profile-inner';
+          var template = createGraph(element, data, options);
+          template = angular.element(template).context.outerHTML;
+          var popup = gaPopup.create({
+            title: $translate('profile_title'),
+            content: template,
+            x: 10,
+            y: 10
+          });
+          popup.open();
         };
       }
     ];
