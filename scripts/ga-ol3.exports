@@ -1,2 +1,3 @@
 @exportProperty ol.Collection.prototype.getArray
 @exportProperty ol.View2D.prototype.getResolutionForExtent
+@exportProperty ol.Map.prototype.getViewport

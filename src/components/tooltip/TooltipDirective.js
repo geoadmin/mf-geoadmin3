@@ -16,6 +16,7 @@
           var currentTopic,
               canceler,
               popup,
+              waitclass = 'ga-tooltip-wait',
               htmls = [],
               popupContent = '<div ng-repeat="htmlsnippet in options.htmls">' +
                                '<div ng-bind-html="htmlsnippet"></div>' +
@@ -45,6 +46,7 @@
               $scope.$on('gaTopicChange', function(event, topic) {
                 currentTopic = topic.id;
               });
+
             }
           };
 
@@ -59,6 +61,9 @@
             // Create new cancel object
             canceler = $q.defer();
             if (layersToQuery.length) {
+              // Show wait cursor
+              angular.element(scope.map.getViewport()).addClass(waitclass);
+
               // Look for all features under clicked pixel
               $http.jsonp(identifyUrl, {
                 timeout: canceler.promise,
@@ -74,7 +79,10 @@
                   callback: 'JSON_CALLBACK'
                 }
               }).success(function(features) {
+                angular.element(scope.map.getViewport()).removeClass(waitclass);
                 showFeatures(scope, size, features.results);
+              }).error(function() {
+                angular.element(scope.map.getViewport()).removeClass(waitclass);
               });
             }
 
