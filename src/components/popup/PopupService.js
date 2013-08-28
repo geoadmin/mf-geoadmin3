@@ -13,19 +13,18 @@
 
       var Popup = function(options, scope) {
 
-        var classString = '';
-        if (options.popupClass) {
-          classString = 'class="' + options.popupClass + '" ';
-        }
         // Create the popup element with its content to the HTML page
         var element = angular.element(
           '<div ga-popup ' +
                'ga-popup-options="options" ' +
-               classString +
                'ga-draggable=".ga-popup-title">' +
                options.content +
           '</div>'
         );
+
+        if (options.className) {
+          element.addClass(options.className);
+        }
 
         // Pass some popup functions for clients to be used in content
         var popup = this;
