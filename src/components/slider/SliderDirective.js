@@ -183,11 +183,16 @@
               pointerHalfWidth = halfWidth(minPtr);
               barWidth = width(fullBar);
               minOffset = 0 - pointerHalfWidth; //old: 0
-              maxOffset = barWidth - pointerHalfWidth;//old: barWidth - width(minPtr);
+
+              //old: barWidth - width(minPtr);
+              maxOffset = barWidth - pointerHalfWidth;
+
               minValue = parseFloat(attributes.floor);
               maxValue = parseFloat(attributes.ceiling);
               valueRange = maxValue - minValue + 1;
-              return offsetRange = barWidth;//old: offsetRange = maxOffset - minOffset;
+
+              //old: offsetRange = maxOffset - minOffset;
+              return offsetRange = barWidth;
             };
             updateDOM = function() {
               var adjustBubbles, bindToInputEvents, fitToBar, percentOffset,
@@ -204,7 +209,7 @@
               percentToOffsetInt = function(percent) {
                  return percent * offsetRange / 100;
 
-              }
+              };
               percentToOffset = function(percent) {
                 return pixelize(percentToOffsetInt(percent));
               };
@@ -217,12 +222,19 @@
 
                 offset(ceilBub, pixelize(barWidth - width(ceilBub)));
                 newLowValue = percentValue(scope[refLow]);
-                offset(minPtr, pixelize(percentToOffsetInt(newLowValue) - halfWidth(minPtr)));//old: offset(minPtr, percentToOffset(newLowValue) 
+
+                //old: offset(minPtr, percentToOffset(newLowValue)
+                offset(minPtr, pixelize(
+                     percentToOffsetInt(newLowValue) - halfWidth(minPtr)));
+
                 offset(lowBub, pixelize(offsetLeft(minPtr) -
                     (halfWidth(lowBub)) + pointerHalfWidth));
                 if (range) {
                   newHighValue = percentValue(scope[refHigh]);
-                  offset(minPtr, pixelize(percentToOffsetInt(newHighValue) - halfWidth(maxPtr)));//old: offset(maxPtr, percentToOffset(newHighValue) 
+
+                  //old: offset(maxPtr, percentToOffset(newHighValue)
+                  offset(minPtr, pixelize(
+                      percentToOffsetInt(newHighValue) - halfWidth(maxPtr)));
 
                   offset(highBub, pixelize(offsetLeft(maxPtr) -
                       (halfWidth(highBub)) + pointerHalfWidth));
