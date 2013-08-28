@@ -32,6 +32,7 @@
         this.scope = (scope || $rootScope).$new();
         this.scope.options = options;
         this.element = $compile(element)(this.scope);
+        this.destroyed = false;
 
         // Attach popup to body element
         $(document.body).append(this.element);
@@ -52,16 +53,12 @@
       };
 
       Popup.prototype.destroy = function() {
-        // Destroy the created scope and element
-        if (this.element) {
-          this.element.remove();
-        }
-
-        if (this.scope) {
-          this.scope.$destroy();
-          this.scope = null;
-        }
-      };
+        this.scope.$destroy();
+        this.scope = null;
+        this.element.remove();
+        this.element = null;
+        this.destroyed = true;
+     };
 
       return {
         create: function(options) {
