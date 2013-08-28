@@ -427,6 +427,9 @@ a .ga-icon-separator {
     border-bottom-width: 1px;
   }
 }
+ul.panel-body-wide {
+  margin-bottom: 0;
+}
 
 // ****** CATALOG TREE
 .ga-catalogitem-leaf {
@@ -477,6 +480,50 @@ a .ga-icon-separator {
   background-color: white;
   margin: 1px;
   padding: 4px;
+}
+
+// ***** LAYER SELECTION
+#selection {
+  .btn-xs {
+    line-height: 1;
+    padding: 1px 3px 0;
+    margin: 0 .6em;
+  }
+  li {
+    .panel-subtitle;
+    height: auto;
+    line-height: 1.2em;
+    position: relative;
+    padding: .2em 0;
+  }
+  li:last-of-type {
+    border-bottom-width: 0;
+  }
+  li > a, .ordering {
+    position: absolute;
+    top: .6em;
+    right: 0;
+  }
+  .ordering {
+    bottom: .6em;
+    top: auto;
+  }
+  label {
+    font-weight: normal;
+    &:last-of-type {
+      padding-left: 3em;
+      display: block;
+      font-size: 90%;
+      input {
+        vertical-align: middle;
+      }
+    }
+  }
+  .panel-body-wide a {
+    line-height: 12px;
+    display: inline;
+    border: none;
+  }
 }
 
 // ***** CONTEXTPOPUP
