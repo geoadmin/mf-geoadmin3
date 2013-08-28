@@ -62,7 +62,7 @@
             canceler = $q.defer();
             if (layersToQuery.length) {
               // Show wait cursor
-              angular.element(scope.map.getViewport()).addClass(waitclass);
+              angular.element(scope.map.getTarget()).addClass(waitclass);
 
               // Look for all features under clicked pixel
               $http.jsonp(identifyUrl, {
@@ -79,10 +79,10 @@
                   callback: 'JSON_CALLBACK'
                 }
               }).success(function(features) {
-                angular.element(scope.map.getViewport()).removeClass(waitclass);
+                angular.element(scope.map.getTarget()).removeClass(waitclass);
                 showFeatures(scope, size, features.results);
               }).error(function() {
-                angular.element(scope.map.getViewport()).removeClass(waitclass);
+                angular.element(scope.map.getTarget()).removeClass(waitclass);
               });
             }
 
