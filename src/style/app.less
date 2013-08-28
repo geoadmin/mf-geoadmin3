@@ -89,6 +89,22 @@ select, input[type=text], input[type=email] {
   }
 }
 
+#search-container {
+  width: 25%;
+  float: left;
+  left: 1.6em;
+  position: relative;
+  @media screen and (max-width: @screen-tablet) {
+    width: 300px;
+    top: .7em;
+    left: .7em;
+  }
+  @media screen and (max-width: @screen-phone) {
+    width: 80%;
+    left: 3.4em;
+  }
+}
+
 #logo {
   width: 320px;
   display: inline-block;
