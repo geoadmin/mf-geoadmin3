@@ -496,8 +496,16 @@ ul.panel-body-wide {
     position: relative;
     padding: .2em 0;
   }
+  li:first-of-type {
+    .icon-arrow-up {
+      visibility: hidden;
+    }
+  }
   li:last-of-type {
     border-bottom-width: 0;
+    .icon-arrow-down {
+      visibility: hidden;
+    }
   }
   li > a, .ordering {
     position: absolute;
