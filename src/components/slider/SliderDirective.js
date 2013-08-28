@@ -89,7 +89,7 @@
 
   module.directive('gaSlider', ['$timeout', '$sce', function($timeout, $sce) {
     return {
-      restrict: 'EA',
+      restrict: 'A',
       scope: {
         floor: '@',
         ceiling: '@',
@@ -99,21 +99,9 @@
         ngModelLow: '=?',
         ngModelHigh: '=?',
         translate2: '&',
-        availableData: '=availableData'
+        dataList: '=gaSliderData'
       },
-      template: '<span class="bar">'+
-      
-      '<span ng-repeat="data in availableData"></span>' +
-      '</span><span class="bar selection"></span>' +
-      '<span class="pointer"></span><span class="pointer"></span>' +
-      '<span class="bubble selection"></span>' +
-      '<span ng-bind-html="translate2({value: floor})" ' +
-      'class="bubble limit"></span>' +
-      '<span ng-bind-html="translate2({value: ceiling})" ' +
-      'class="bubble limit"></span>' +
-      '<span class="bubble value1"></span><span class="bubble value2"></span>' +
-      '<span class="bubble value3"></span>',
-
+      templateUrl: 'components/slider/partials/slider.html',
       compile: function(element, attributes) {
         var ceilBub, cmbBub, e, flrBub, fullBar, highBub, lowBub, maxPtr,
          minPtr, range, refHigh, refLow, selBar, selBub, watchables, _i, _len,
@@ -128,7 +116,7 @@
         _ref = (function() {
           var _i, _len, _ref, _results;
 
-          _ref = element.children();
+          _ref = element.find('.ga-slider').children();
           _results = [];
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             e = _ref[_i];
@@ -158,9 +146,8 @@
           watchables.push(refHigh);
         }
 
-            return {  
-              
-                    post: function(scope, element, attributes) {
+        return {
+          post: function(scope, element, attributes) {
             var barWidth, boundToInputs, dimensions, maxOffset, maxValue,
             minOffset, minValue, ngDocument, offsetRange, pointerHalfWidth,
             updateDOM, valueRange, w, _j, _len1;
@@ -169,7 +156,7 @@
             ngDocument = angularize(document);
             if (!attributes.translate2) {
               scope.translate2 = function(value) {
-                return $sce.trustAsHtml('' + value.value + '');
+                return $sce.trustAsHtml('' + value.value);
               };
             }
             pointerHalfWidth = barWidth = minOffset = maxOffset = minValue =
@@ -189,18 +176,18 @@
                  parseInt(scope.precision), parseFloat(scope.step),
                  parseFloat(scope.floor));
               }
-               
+
               scope.diff = roundStep(scope[refHigh] - scope[refLow],
                   parseInt(scope.precision), parseFloat(scope.step),
                   parseFloat(scope.floor));
               pointerHalfWidth = halfWidth(minPtr);
               barWidth = width(fullBar);
-              minOffset = 0;
-              maxOffset = barWidth - width(minPtr);
+              minOffset = 0 - pointerHalfWidth; //old: 0
+              maxOffset = barWidth - pointerHalfWidth;//old: barWidth - width(minPtr);
               minValue = parseFloat(attributes.floor);
               maxValue = parseFloat(attributes.ceiling);
-              valueRange = maxValue - minValue;
-              return offsetRange = maxOffset - minOffset;
+              valueRange = maxValue - minValue + 1;
+              return offsetRange = barWidth;//old: offsetRange = maxOffset - minOffset;
             };
             updateDOM = function() {
               var adjustBubbles, bindToInputEvents, fitToBar, percentOffset,
@@ -213,8 +200,13 @@
               percentValue = function(value) {
                 return ((value - minValue) / valueRange) * 100;
               };
+              //RE3 add
+              percentToOffsetInt = function(percent) {
+                 return percent * offsetRange / 100;
+
+              }
               percentToOffset = function(percent) {
-                return pixelize(percent * offsetRange / 100);
+                return pixelize(percentToOffsetInt(percent));
               };
               fitToBar = function(element) {
                 return offset(element, pixelize(Math.min(Math.max(0,
@@ -225,12 +217,13 @@
 
                 offset(ceilBub, pixelize(barWidth - width(ceilBub)));
                 newLowValue = percentValue(scope[refLow]);
-                offset(minPtr, percentToOffset(newLowValue));
+                offset(minPtr, pixelize(percentToOffsetInt(newLowValue) - halfWidth(minPtr)));//old: offset(minPtr, percentToOffset(newLowValue) 
                 offset(lowBub, pixelize(offsetLeft(minPtr) -
                     (halfWidth(lowBub)) + pointerHalfWidth));
                 if (range) {
                   newHighValue = percentValue(scope[refHigh]);
-                  offset(maxPtr, percentToOffset(newHighValue));
+                  offset(minPtr, pixelize(percentToOffsetInt(newHighValue) - halfWidth(maxPtr)));//old: offset(maxPtr, percentToOffset(newHighValue) 
+
                   offset(highBub, pixelize(offsetLeft(maxPtr) -
                       (halfWidth(highBub)) + pointerHalfWidth));
                   offset(selBar, pixelize(offsetLeft(minPtr) +
@@ -295,7 +288,6 @@
               };
               bindToInputEvents = function(pointer, ref, events) {
                 var onEnd, onMove, onStart;
-
                 onEnd = function() {
                   pointer.removeClass('active');
                   ngDocument.unbind(events.move);
@@ -369,19 +361,6 @@
               w = watchables[_j];
               scope.$watch(w, updateDOM);
             }
-
-     // Add internal bar div
-        var nb = (parseInt(scope.ceiling) - parseInt(scope.floor));
-        var bar = element.find('.bar');
-        if (bar.has('span').length === 0) {
-        bar.empty();
-        var width2 = 3;
-        for (var i = 0; i < nb; i++) {
-          
-          bar.append('<span id="' + i + '" style="border-left:1px solid black;background-color:red;width:' + width2  + 'px;height:100%;left:' + i*width2 + 'px"></span> ');
-        }
-        }
-
 
             return window.addEventListener('resize', updateDOM);
           }

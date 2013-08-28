@@ -1,0 +1,23 @@
+<div class="ga-slider">
+  <span class="bar">
+    <!--span ng-repeat="data in dataList | orderBy:'value':false" 
+        id="{{data.value}}"
+        class="bar-division  {{((data.value%10)  === 0 ) ? 'minor' : ''}} {{((data.value%50)  === 0 ) ? 'major' : ''}}"
+        style="width:{{(100/(ceiling-floor+1))}}%;left:{{$index
+        *(100/(ceiling-floor+1))}}%;" >
+        <span class="bubble">{{data.value}}</span>
+        <span class="available" ng-show="data.available" ></span>
+    </span-->    
+  </span>
+  <span class="bar selection"></span>
+  <span class="pointer"></span>
+  <span class="pointer"></span>
+  <span class="bubble selection"></span>
+  <span ng-bind-html="translate2({value: floor})" class="bubble limit"></span>
+  <span ng-bind-html="translate2({value: ceiling})" class="bubble limit"></span>
+  <span class="bubble value1"></span>
+  <span class="bubble value2"></span>
+  <span class="bubble value3"></span>
+</div>
+
+

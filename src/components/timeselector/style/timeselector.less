@@ -24,35 +24,90 @@
     display: none;
   }
 }
+
 .time-selector-slider {
-  width: 600px;
-  height: 75px;
+  height: 45px;
+  width: 507px; 
+  display: inline-block;
   position: relative;
+  margin: 25px 0px;
+  vertical-align: bottom;
+  
+  .ga-slider {
 
-  .handle {
-    position: absolute;
-    left: 0px;
-  }
+    span.pointer {
+      top: 28px;
+      width: 19px;
+      height: 19px;
+      margin-left: 0px;
+      background: transparent url(handle-slider.png) no-repeat  2px 0px; 
+      border: none;
+      border-radius: 0px;
+    }
+  
+    span.value1 {
+      top: 47px;
+      font-size: 21px;
+      font-weight: bold;
+     color: red; 
+    }
 
-  .year {
-    width: 3px;
-    height: 25px;
-    background-color: darkgray;
-    display:inline-block;
+    span.limit {
+      display: none;
+    }
+  
+    span.bar {
+      margin-top: 30px;
+      height: 15px;
+      background: none;
+      box-shadow: none;
+      border-radius: 0px; 
+      background-color: lightgray;
 
-    &.available {
-      background-color:red;
+      span {
+        height: 100%;
+        width: 3px;
+        background-color: lightgray;
+        
+        &.bubble{
+          display: none;
+        }
+
+        &.minor {
+          height: 20px;
+          top: -5px;
+          
+        }
+
+        &.major {
+          height: 30px;
+          top: -15px;
+
+          .bubble {
+            top: -15px;
+            left: -15px;
+            display: inline-block;
+            background: none;
+          }
+        }
+
+        &.available {
+          background-color: red;
+          bottom: 5px;
+          height: 5px;
+          width: 1px;
+          left: 1px; 
+        }
+      }
     }
   }
 }
 
-.slider {
+.ga-slider {
   display: inline-block;
   position: relative;
-  height: 7px;
+  height: 100%;
   width: 100%;
-  margin: 25px 5px 25px 5px;
-  vertical-align: middle;
 
   span {
     white-space: nowrap;
@@ -64,81 +119,91 @@
       height: 100%;
       padding: 0;
     }
+     
+    &.bar {
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      -webkit-border-radius: 1em/1em;
+      border-radius: 1em/1em;
+      background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #c0c0c0), color-stop(1, #8d8d8d));
+      background: -webkit-linear-gradient(top, #c0c0c0 0, #8d8d8d 100%);
+      background: -moz-linear-gradient(top, #c0c0c0 0, #8d8d8d 100%);
+      background: -o-linear-gradient(top, #c0c0c0 0, #8d8d8d 100%);
+      background: -ms-linear-gradient(top, #c0c0c0 0, #8d8d8d 100%);
+      background: linear-gradient(top, #c0c0c0 0, #8d8d8d 100%);
+      -webkit-box-shadow: inset 2px 2px 5px;
+      box-shadow: inset 2px 2px 5px;
+
+      .bar-division {
+        /*border-left: 1px solid black;
+        background-color: red;
+        height: 100%;*/
+      }
+      
+      &.selection {
+        width: 0%;
+        z-index: 1;
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #13b6ff), color-stop(1, #00a8f3));
+        background: -webkit-linear-gradient(top, #13b6ff 0, #00a8f3 100%);
+        background: -moz-linear-gradient(top, #13b6ff 0, #00a8f3 100%);
+        background: -o-linear-gradient(top, #13b6ff 0, #00a8f3 100%);
+        background: -ms-linear-gradient(top, #13b6ff 0, #00a8f3 100%);
+        background: linear-gradient(top, #13b6ff 0, #00a8f3 100%);
+        -webkit-box-shadow: none;
+        box-shadow: none;
+      }
+    }
+
+    &.pointer {
+      cursor: pointer;
+      width: 4px;
+      height: 20px;
+      top: -8px;
+      background-color: #fff;
+      border: 1px solid #000;
+      z-index: 2;
+      -webkit-border-radius: 1em/1em;
+      border-radius: 1em/1em;
+      
+      /*&:after {
+        content: '';
+        background-color: #808080;
+        width: 8px;
+        height: 8px;
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        -webkit-border-radius: 1em/1em;
+        border-radius: 1em/1em;
+      }*/
+      
+      &:hover:after {
+        background-color: #000;
+      }
+
+      &.active:after {
+        background-color: #f00;
+      }
+    }
+
+    &.bubble {
+      cursor: default;
+      top: -22px;
+      padding: 1px 3px 1px 3px;
+      font-size: 0.7em;
+      font-family: sans-serif;
+    }
+
+    &.bubble.selection {
+      top: 15px;
+    }
+
+    &.bubble.limit {
+      color: #808080;
+    }
   }
 }
-.slider span.bar {
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  -webkit-border-radius: 1em/1em;
-  border-radius: 1em/1em;
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #c0c0c0), color-stop(1, #8d8d8d));
-  background: -webkit-linear-gradient(top, #c0c0c0 0, #8d8d8d 100%);
-  background: -moz-linear-gradient(top, #c0c0c0 0, #8d8d8d 100%);
-  background: -o-linear-gradient(top, #c0c0c0 0, #8d8d8d 100%);
-  background: -ms-linear-gradient(top, #c0c0c0 0, #8d8d8d 100%);
-  background: linear-gradient(top, #c0c0c0 0, #8d8d8d 100%);
-  -webkit-box-shadow: inset 2px 2px 5px;
-  box-shadow: inset 2px 2px 5px;
-}
-.slider span.bar.selection {
-  width: 0%;
-  z-index: 1;
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #13b6ff), color-stop(1, #00a8f3));
-  background: -webkit-linear-gradient(top, #13b6ff 0, #00a8f3 100%);
-  background: -moz-linear-gradient(top, #13b6ff 0, #00a8f3 100%);
-  background: -o-linear-gradient(top, #13b6ff 0, #00a8f3 100%);
-  background: -ms-linear-gradient(top, #13b6ff 0, #00a8f3 100%);
-  background: linear-gradient(top, #13b6ff 0, #00a8f3 100%);
-  -webkit-box-shadow: none;
-  box-shadow: none;
-}
-.slider span.pointer {
-  cursor: pointer;
-  width: 20px;
-  height: 20px;
-  top: -8px;
-  background-color: #fff;
-  border: 1px solid #000;
-  z-index: 2;
-  -webkit-border-radius: 1em/1em;
-  border-radius: 1em/1em;
-}
-.slider span.pointer:after {
-  content: '';
-  background-color: #808080;
-  width: 8px;
-  height: 8px;
-  position: absolute;
-  top: 6px;
-  left: 6px;
-  -webkit-border-radius: 1em/1em;
-  border-radius: 1em/1em;
-}
-.slider span.pointer:hover:after {
-  background-color: #000;
-}
-.slider span.pointer.active:after {
-  background-color: #f00;
-}
-.slider span.bubble {
-  cursor: default;
-  top: -22px;
-  padding: 1px 3px 1px 3px;
-  font-size: 0.7em;
-  font-family: sans-serif;
-
-  &.value1 {
-    top: 18px;
-  }
-}
-.slider span.bubble.selection {
-  top: 15px;
-}
-.slider span.bubble.limit {
-  color: #808080;
-}
-
 
 
 
