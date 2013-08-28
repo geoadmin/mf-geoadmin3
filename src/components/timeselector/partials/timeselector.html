@@ -1,10 +1,21 @@
 <div class="time-selector-container">
   <div>
     <select ng-model="currentYear" ng-options="year.value for year in availableYears" ng-change="onChangeYear()">
-      <option value="" selected ng-disabled="!year.selected">-- last-available-year --</option>
+      <option value="" selected>-- last-available-year --</option>
     </select>
+    <!--div class="time-selector-slider">      
+      <div ng-repeat="year in years | orderBy:'value'" id="{{year.value}}" class="year {{(year.available) ? 'available' : ''}}"></div>
+      <div class="handle" ga-draggable>X<div>
+    </div-->
     <div class="time-selector-mask" ng-class="stateClass" ng-click="toggle()"></div>
   </div>
+  <div ga-slider class="slider" 
+    floor="{{minYear}}" 
+    ceiling="{{maxYear}}"
+    ng-model="currentYear2"
+    availableData="availableYears"
+></div>
+<div >{{currentYear2}}</div>
   <button translate ng-click="toggle()" ng-class="stateClass">activate_time_selector</button>
 </div>
 

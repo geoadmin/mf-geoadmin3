@@ -13,35 +13,35 @@
         function($scope, $log, $translate, gaBrowserSniffer,
             gaPopup) {
           $scope.minYear = 1845;
-          $scope.years = [];
-          $scope.availableYears = [];
+          $scope.maxYear = (new Date()).getFullYear();
+          $scope.currentYear2 = 2001;
+          $scope.years = []; //List of all possible years 1845 -> current year
+          $scope.availableYears = []; // List of available years
+          $scope.currentYear = $scope.maxYear; // User selected year
 
-          for (var i = (new Date()).getFullYear(); i >= $scope.minYear; i--) {
+          for (var i = $scope.maxYear; i >= $scope.minYear; i--) {
             var year = {
               value: i,
-              selected: false
+              available: false
             };
             $scope.years.push(year);
           }
 
-          $scope.stateClass = 'activate';
+          $scope.stateClass = 'inactive';
           $scope.isActive = false;
           $scope.toggle = function() {
             $scope.isActive = !$scope.isActive;
           };
 
           $scope.onChangeYear = function() {
-            $scope.updateTime(($scope.currentYear) ? $scope.currentYear.value :
+            updateLayers(($scope.currentYear) ?
+                $scope.currentYear.value :
                 null);
-          };
-
-          $scope.updateTime = function(time) {
-             updateLayers(time);
           };
 
           $scope.$watch('isActive', function(active) {
             $scope.stateClass = (active) ? 'inactive' : '';
-            $scope.updateTime((active) ? $scope.currentYear : undefined);
+            updateLayers((active) ? $scope.currentYear : undefined);
           });
 
 
@@ -52,17 +52,17 @@
             $scope.availableYears = [];
             for (var i = 0, length = $scope.years.length; i < length; i++) {
               var year = $scope.years[i];
-              year.selected = false;
+              year.available = false;
 
               $scope.map.getLayers().forEach(function(olLayer, opt) {
-                if (year.selected) {
+                if (year.available) {
                   return;
                 }
                 var timestamps = olLayer.get('timestamps');
                 if (timestamps) {
                   for (var i = 0, length = timestamps.length; i < length; i++) {
                     if (year.value === _yearFromString(timestamps[i])) {
-                      year.selected = true;
+                      year.available = true;
                       $scope.availableYears.push(year);
                       break;
                     }
@@ -79,13 +79,13 @@
            */
           var updateLayers = function(timeStr) {
             // If time is:
-            // undefined : Remove the use a parameter time for all layers
-            // null      : Set the last available date for each layers
-            // a string  : The year selected
-            
+            // undefined : Remove the use a parameter time
+            // null      : Apply the last available year
+            // a string  : Apply the year selected
+
             $scope.map.getLayers().forEach(function(olLayer, opt) {
               var timestamps = olLayer.get('timestamps');
-              if  {timestamps) {
+              if (timestamps) {
                 //var closest = _getClosestTimestamp(parseInt(timeStr),
                 //    olLayer.get('timestamps'));
 
@@ -93,7 +93,7 @@
                  ' layer (' + olLayer.get('id') + ') with time = ' + timeStr);
                /* if (layer.type === 'wmts') {
                   if (!anguler.isDefined(timeStr) && timeStr === null) {
-                    timeStr = timestamps[0]; 
+                    timeStr = timestamps[0];
                   }
                   olLayer.getSource().updateParams({'Time' : timeStr});
 
@@ -103,7 +103,7 @@
                   } else if (timeStr === null) {
                     timeStr = timestamps[0]
                   }
-                  //olLayer.getSource().updateParams({'TIME' : timeStr});
+                  olLayer.getSource().updateParams({'TIME' : timeStr});
                 }*/
               }
             });
@@ -113,7 +113,6 @@
           /** Utils **/
           var _yearFromString = function(timestamp) {
             return parseInt(timestamp.substr(0, 4));
-
           };
         }
       ]
@@ -131,19 +130,18 @@
             },
             controller: 'GaTimeSelectorDirectiveController',
             link: function(scope, elt, attrs, controller) {
-              
-              // Update list of available years and display/hide the HTML
-              // element if the list is empty or not
-              var refreshElt = function(obj) {               
-                scope.updateDatesAvailable();
 
+              // Update list of available years and hide/show the HTML
+              // element if the list is empty or not
+              var refreshElt = function(obj) {
+                scope.updateDatesAvailable();
                 if (scope.availableYears.length == 0) {
                   elt.hide();
                 } else {
                   elt.show();
                 }
-              }
-                
+              };
+
               scope.map.getLayers().on('add', refreshElt);
               scope.map.getLayers().on('remove', refreshElt);
 
