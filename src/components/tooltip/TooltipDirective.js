@@ -16,6 +16,7 @@
           var currentTopic,
               canceler,
               popup,
+              htmls = [],
               popupContent = '<div ng-repeat="htmlsnippet in options.htmls">' +
                                '<div ng-bind-html="htmlsnippet"></div>' +
                                '<div class="tooltip-separator" ' +
@@ -78,13 +79,16 @@
               });
             }
 
-            destroyPopup();
+            // htmls = [] would break the reference in the popup
+            htmls.splice(0, htmls.length);;
+
+            if (popup) {
+              popup.close();
+            }
           }
 
           function showFeatures(scope, pixel, foundFeatures) {
-            var content, htmls;
             if (foundFeatures && foundFeatures.length > 0) {
-              htmls = [];
               angular.forEach(foundFeatures, function(value) {
                 var htmlUrl = scope.options.htmlUrlTemplate
                               .replace('{Topic}', currentTopic)
@@ -99,13 +103,16 @@
                 }).success(function(html) {
                   // Show popup on first result
                   if (htmls.length === 0) {
-                    popup = gaPopup.create({
-                      title: 'object_information',
-                      content: popupContent,
-                      htmls: htmls,
-                      x: pixel[0],
-                      y: pixel[1]
-                    }, scope);
+                    if (!popup) {
+                      popup = gaPopup.create({
+                        destroyOnClose: false,
+                        title: 'object_information',
+                        content: popupContent,
+                        htmls: htmls,
+                        x: pixel[0],
+                        y: pixel[1]
+                      }, scope);
+                    }
                     popup.open();
                   }
                   // Add result to array. ng-repeat will take care of the rest
@@ -129,13 +136,5 @@
             });
             return layerstring;
           }
-
-          function destroyPopup() {
-            if (popup && !popup.destroyed) {
-              popup.destroy();
-              popup = null;
-            }
-          }
-
         }]);
 })();
