@@ -74,6 +74,6 @@
           <a href="rest/services/blw/SearchServer?searchText=wasser&bbox=733040.9375,183972.484375,738163.75,183972.484375&type=locations">Search in the topic (or map) blw for locations</a> <br>
 
       <h2>Feedback</h2>
-          <a href="rest/services/feedback?email=chsdi3preview@admin.com&feedback=TestFromChsdi3&permalink=http:%2F%2Fmf-geoadmin3.bgdi.admin.ch&ua=IE">Feedback example</a> <br>
+          <a href="feedback?email=chsdi3preview@admin.com&feedback=TestFromChsdi3&permalink=http:%2F%2Fmf-geoadmin3.bgdi.admin.ch&ua=IE">Feedback example</a> <br>
   </body>
 </html>
