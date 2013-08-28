@@ -132,9 +132,9 @@ test/karma-conf-prod.js: test/karma-conf.mako.js .build-artefacts/python-venv/bi
 node_modules:
 	npm install
 
-.build-artefacts/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar
+.build-artefacts/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar .build-artefacts/externs/angular.js .build-artefacts/externs/jquery.js
 	mkdir -p $(dir $@)
-	java -jar .build-artefacts/closure-compiler/compiler.jar $(SRC_JS_FILES_FOR_COMPILER) --compilation_level SIMPLE_OPTIMIZATIONS --js_output_file $@
+	java -jar .build-artefacts/closure-compiler/compiler.jar $(SRC_JS_FILES_FOR_COMPILER) --compilation_level SIMPLE_OPTIMIZATIONS --jscomp_error checkVars --externs externs/ol.js --externs .build-artefacts/externs/angular.js --externs .build-artefacts/externs/jquery.js --js_output_file $@
 
 .build-artefacts/app-whitespace.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar
 	java -jar .build-artefacts/closure-compiler/compiler.jar  $(SRC_JS_FILES_FOR_COMPILER) --compilation_level WHITESPACE_ONLY --formatting PRETTY_PRINT --js_output_file $@
@@ -198,6 +198,18 @@ deploy/deploy-branch.cfg: deploy/deploy-branch.mako.cfg .build-artefacts/last-gi
 
 .build-artefacts/bootstrap:
 	git clone https://github.com/twbs/bootstrap.git $@ && cd .build-artefacts/bootstrap && git checkout v3.0.0
+
+.build-artefacts/externs/angular.js:
+	mkdir -p $(dir $@)
+	wget -O $@ http://closure-compiler.googlecode.com/git/contrib/externs/angular.js
+	touch $@
+
+# Closure's contrib dir doesn't include externs for jQuery 2, but the jQuery
+# 1.9 externs are sufficient for our usage.
+.build-artefacts/externs/jquery.js:
+	mkdir -p $(dir $@)
+	wget -O $(subst -1.9,,$@) http://closure-compiler.googlecode.com/git/contrib/externs/jquery-1.9.js
+	touch $@
 
 .PHONY: cleanall
 cleanall: clean
