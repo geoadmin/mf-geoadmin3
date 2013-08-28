@@ -38,30 +38,33 @@
       };
 
       Popup.prototype.open = function(scope) {
-        // Show the popup
-        this.element.show();
+        if (this.element) {
+          // Show the popup
+          this.element.show();
+        }
       };
 
       Popup.prototype.close = function() {
-        this.element.hide();
+        if (this.element) {
+          this.element.hide();
 
-        var destroyOnClose = this.scope.options.destroyOnClose;
-        if (destroyOnClose !== false) {
-          this.destroy();
+          var destroyOnClose = this.scope.options.destroyOnClose;
+          if (destroyOnClose !== false) {
+            this.destroy();
+          }
         }
       };
 
       Popup.prototype.destroy = function() {
-        // Destroy the created scope and element
-        if (this.element) {
-          this.element.remove();
-        }
-
         if (this.scope) {
           this.scope.$destroy();
           this.scope = null;
         }
-      };
+        if (this.element) {
+          this.element.remove();
+          this.element = null;
+        }
+     };
 
       return {
         create: function(options) {
