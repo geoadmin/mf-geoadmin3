@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html ng-app="ga">
+<html ng-app="ga" ng-controller="GaMainController">
   <head>
-    <title>map.geo.admin.ch PREVIEW</title>
+    <title translate="{{topicId + '_page_title'}}">map.geo.admin.ch</title>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -42,7 +42,7 @@
     <link rel="shortcut icon" type="image/x-icon" href="${version}img/favicon.ico"/>
   </head>
 
-  <body ng-controller="GaMainController" ng-class="topicId">
+  <body ng-class="topicId">
     <div id="header" class="navbar navbar-fixed-top">
       <a ng-href="?topic={{topicId}}&lang={{langId}}" id="logo" class="pull-left">
         <img src="${version}img/logo.ch.jpeg" style="width: 270px; height: 89px"/>
