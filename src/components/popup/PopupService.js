@@ -32,38 +32,32 @@
         this.scope = (scope || $rootScope).$new();
         this.scope.options = options;
         this.element = $compile(element)(this.scope);
+        this.destroyed = false;
 
         // Attach popup to body element
         $(document.body).append(this.element);
       };
 
       Popup.prototype.open = function(scope) {
-        if (this.element) {
-          // Show the popup
-          this.element.show();
-        }
+        // Show the popup
+        this.element.show();
       };
 
       Popup.prototype.close = function() {
-        if (this.element) {
-          this.element.hide();
+        this.element.hide();
 
-          var destroyOnClose = this.scope.options.destroyOnClose;
-          if (destroyOnClose !== false) {
-            this.destroy();
-          }
+        var destroyOnClose = this.scope.options.destroyOnClose;
+        if (destroyOnClose !== false) {
+          this.destroy();
         }
       };
 
       Popup.prototype.destroy = function() {
-        if (this.scope) {
-          this.scope.$destroy();
-          this.scope = null;
-        }
-        if (this.element) {
-          this.element.remove();
-          this.element = null;
-        }
+        this.scope.$destroy();
+        this.scope = null;
+        this.element.remove();
+        this.element = null;
+        this.destroyed = true;
      };
 
       return {
