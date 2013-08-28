@@ -78,7 +78,7 @@
               });
             }
 
-            removePopup();
+            destroyPopup();
           }
 
           function showFeatures(scope, pixel, foundFeatures) {
@@ -130,9 +130,9 @@
             return layerstring;
           }
 
-          function removePopup() {
-            if (popup) {
-              popup.close();
+          function destroyPopup() {
+            if (popup && !popup.destroyed) {
+              popup.destroy();
               popup = null;
             }
           }
