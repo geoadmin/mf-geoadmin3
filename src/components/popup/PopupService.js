@@ -22,6 +22,10 @@
           '</div>'
         );
 
+        if (options.className) {
+          element.addClass(options.className);
+        }
+
         // Pass some popup functions for clients to be used in content
         var popup = this;
         options.open = function() {popup.open();};
