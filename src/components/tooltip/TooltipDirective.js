@@ -131,8 +131,8 @@
           }
 
           function removePopup() {
-            if (popup) {
-              popup.close();
+            if (popup && !popup.destroyed) {
+              popup.destroy();
               popup = null;
             }
           }
