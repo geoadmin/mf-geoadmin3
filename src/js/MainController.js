@@ -30,16 +30,35 @@
 
     return map;
   }
+ 
+  function deviceHrefSwitcher(href, device) { 
+    var mobileFlag = 'false';
+    var desktopFlag = 'true';
+    if (device === 'desktop') {
+      mobileFlag = 'true';
+      desktopFlag = 'false';
+    }
+    if (href.indexOf('mobile='+desktopFlag) > 0) {
+      return href.replace('mobile='+desktopFlag,'mobile='+mobileFlag);
+    } else {
+      return href + '&mobile='+mobileFlag;
+    }
+  }
 
   /**
    * The application's main controller.
    */
   module.controller('GaMainController', ['$scope', '$rootScope', '$translate',
-    function($scope, $rootScope, $translate) {
+    'gaGlobalOptions',
+    function($scope, $rootScope, $translate, gaGlobalOptions) {
 
       // The main controller creates the OpenLayers map object. The map object
       // is central, as most directives/components need a reference to it. So
       $scope.map = createMap();
+
+      $scope.device = gaGlobalOptions.device;
+      $scope.deviceSwitchHref = deviceHrefSwitcher(window.location.href,
+        $scope.device);
 
       $rootScope.$on('gaTopicChange', function(event, topic) {
         $scope.topicId = topic.id;
@@ -47,6 +66,10 @@
 
       $rootScope.$on('translationChangeSuccess', function() {
         $scope.langId = $translate.uses();
+      });
+
+      $rootScope.$on('gaPermalinkChange', function(event, permalink) {
+        $scope.deviceSwitchHref = deviceHrefSwitcher(permalink, $scope.device);
       });
 
   }]);
