@@ -6,11 +6,11 @@ from chsdi.esrigeojsonencoder import dumps as esri_dumps
 
 
 class EsriJSON(GeoJSON):
+
     def __init__(self, jsonp_param_name='callback'):
         GeoJSON.__init__(self)
         self.jsonp_param_name = jsonp_param_name
-        
-        
+
     def __call__(self, info):
         def _render(value, system):
             if isinstance(value, (list, tuple)):
@@ -31,7 +31,9 @@ class EsriJSON(GeoJSON):
             return ret
         return _render
 
+
 class CSVRenderer(object):
+
     def __init__(self, info):
         pass
 
@@ -40,7 +42,7 @@ class CSVRenderer(object):
         import StringIO
         fout = StringIO.StringIO()
         writer = csv.writer(fout, delimiter=';', quoting=csv.QUOTE_ALL)
-        
+
         writer.writerow(value['headers'])
         writer.writerows(value['rows'])
 
