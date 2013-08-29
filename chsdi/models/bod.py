@@ -7,6 +7,7 @@ from chsdi.models import bases
 
 Base = bases['bod']
 
+
 class Bod(object):
     __dbname__ = 'bod'
     idBod = Column('bod_layer_id', Text, primary_key=True)
@@ -14,7 +15,7 @@ class Bod(object):
     idGeoCat = Column('geocat_uuid', Text)
     name = Column('kurzbezeichnung', Text)
     fullName = Column('bezeichnung', Text)
-    maps = Column('projekte', Text) # The topics
+    maps = Column('projekte', Text)  # The topics
     dataOwner = Column('datenherr', Text)
     abstract = Column('abstract', Text)
     dataStatus = Column('datenstand', Text)
@@ -61,6 +62,7 @@ class Bod(object):
                 'scaleLimit': self.scaleLimit
             }
         }
+
 
 class LayersConfig(Base):
     __tablename__ = 'view_layers_js'
@@ -109,25 +111,30 @@ class LayersConfig(Base):
 
     def _getResolutionsFromMatrixSet(self, matrixSet):
         resolutions = [4000, 3750, 3500, 3250, 3000, 2750, 2500, 2250, 2000, 1750, 1500, 1250,
-            1000, 750, 650, 500, 250, 100, 50, 20, 10, 5, 2.5, 2, 1.5, 1, 0.5,  0.25, 0.1]
+                       1000, 750, 650, 500, 250, 100, 50, 20, 10, 5, 2.5, 2, 1.5, 1, 0.5, 0.25, 0.1]
         matrixSet = int(matrixSet.split('_')[1])
-        return resolutions[0:matrixSet+1]
+        return resolutions[0:matrixSet + 1]
+
 
 class BodLayerDe(Base, Bod):
     __tablename__ = 'view_bod_layer_info_de'
     __table_args__ = ({'schema': 're3'})
 
+
 class BodLayerFr(Base, Bod):
     __tablename__ = 'view_bod_layer_info_fr'
     __table_args__ = ({'schema': 're3'})
+
 
 class BodLayerIt(Base, Bod):
     __tablename__ = 'view_bod_layer_info_it'
     __table_args__ = ({'schema': 're3'})
 
+
 class BodLayerRm(Base, Bod):
     __tablename__ = 'view_bod_layer_info_rm'
     __table_args__ = ({'schema': 're3'})
+
 
 class BodLayerEn(Base, Bod):
     __tablename__ = 'view_bod_layer_info_en'
@@ -140,48 +147,55 @@ class GetCapFr(Base):
     id = Column('fk_dataset_id', Text, primary_key=True)
     arr_all_formats = Column('format', Text)
 
+
 class GetCapDe(Base):
     __tablename__ = 'view_bod_wmts_getcapabilities_de'
     __table_args__ = ({'schema': 're3', 'autoload': True})
     id = Column('fk_dataset_id', Text, primary_key=True)
     arr_all_formats = Column('format', Text)
 
+
 class GetCapThemesFr(Base):
     __tablename__ = 'view_bod_wmts_getcapabilities_themes_fr'
     __table_args__ = ({'schema': 're3', 'autoload': True})
     id = Column('inspire_id', Text, primary_key=True)
+
 
 class GetCapThemesDe(Base):
     __tablename__ = 'view_bod_wmts_getcapabilities_themes_de'
     __table_args__ = ({'schema': 're3', 'autoload': True})
     id = Column('inspire_id', Text, primary_key=True)
 
+
 class ServiceMetadataDe(Base):
     __tablename__ = 'view_wms_service_metadata_de'
     __table_args__ = ({'schema': 're3', 'autoload': True})
     id = Column('wms_id', Text, primary_key=True)
+
 
 class ServiceMetadataFr(Base):
     __tablename__ = 'view_wms_service_metadata_fr'
     __table_args__ = ({'schema': 're3', 'autoload': True})
     id = Column('wms_id', Text, primary_key=True)
 
-#TODO use GetCap model to fill that up instead
+# TODO use GetCap model to fill that up instead
+
+
 def computeHeader(mapName):
     return {
         'mapName': mapName,
         'description': 'Configuration for the map (topic) ' + mapName,
         'copyrightText': 'Data ' + mapName,
         'layers': [],
-        'spatialReference': {"wkid" : 21781},
+        'spatialReference': {"wkid": 21781},
         'tileInfo': {
-            'rows': 256, # tile width in pixel
+            'rows': 256,  # tile width in pixel
             'cols': 256,
             'dpi': 96,
             'format': 'PNG,JPEG',
             'compressionQuality': '',
-            'origin': {"x" : 420000, "y" : 350000, "spatialReference" : {"wkid" : 21781}},
-            'spatialReference': {"wkid" : 21781},
+            'origin': {"x": 420000, "y": 350000, "spatialReference": {"wkid": 21781}},
+            'spatialReference': {"wkid": 21781},
             'lods': [
                 {'level': 0, 'resolution': 4000, 'scale': 14285750.5715, 'width': 1, 'height': 1},
                 {'level': 1, 'resolution': 3750, 'scale': 13392891.1608, 'width': 1, 'height': 1},
@@ -210,7 +224,7 @@ def computeHeader(mapName):
                 {'level': 24, 'resolution': 1.5, 'scale': 5357.15646431, 'width': 1250, 'height': 834},
                 {'level': 25, 'resolution': 1, 'scale': 3571.43764288, 'width': 1875, 'height': 1250},
                 {'level': 26, 'resolution': 0.5, 'scale': 1785.71882144, 'width': 3750, 'height': 2500},
-                {'level': 27, 'resolution': 0.25, 'scale':  892.857, 'width': 7500, 'height': 5000}
+                {'level': 27, 'resolution': 0.25, 'scale': 892.857, 'width': 7500, 'height': 5000}
             ]
         },
         'initialExtent': {
@@ -225,6 +239,7 @@ def computeHeader(mapName):
         'capabilities': 'Map'
     }
 
+
 class Topics(Base):
     __tablename__ = 'topics'
     __table_args__ = ({'schema': 're3', 'autoload': False})
@@ -233,6 +248,7 @@ class Topics(Base):
     availableLangs = Column('lang', Text)
     defaultBackgroundLayer = Column('default_background', Text)
     selectedLayers = Column('selected_layers', postgresql.ARRAY(Text))
+
 
 class Catalog(object):
     __dbname__ = 'bod'
@@ -252,86 +268,101 @@ class Catalog(object):
     depth = Column('depth', Integer)
 
     def to_dict(self, lang):
-        
-        self.label = self._get_label_from_lang(lang) 
+
+        self.label = self._get_label_from_lang(lang)
 
         return dict([
             (k, getattr(self, k)) for
-            k in self.__dict__.keys() 
-            if not k.startswith("_") and \
-               self.__dict__[k] is not None and \
-               k not in ('nameDe','nameFr','nameIt','nameRm','nameEn')
+            k in self.__dict__.keys()
+            if not k.startswith("_") and
+            self.__dict__[k] is not None and
+            k not in ('nameDe', 'nameFr', 'nameIt', 'nameRm', 'nameEn')
         ])
 
     def _get_label_from_lang(self, lang):
         return {
-          'de': self.nameDe,
-          'fr': self.nameFr,
-          'it': self.nameIt,
-          'rm': self.nameRm,
-          'en': self.nameEn
-        }[lang] 
+            'de': self.nameDe,
+            'fr': self.nameFr,
+            'it': self.nameIt,
+            'rm': self.nameRm,
+            'en': self.nameEn
+        }[lang]
 
 
 class CatalogDe(Base, Catalog):
     __tablename__ = 'view_catalog_de'
     __table_args__ = ({'schema': 're3'})
 
+
 class CatalogFr(Base, Catalog):
     __tablename__ = 'view_catalog_fr'
     __table_args__ = ({'schema': 're3'})
+
 
 class CatalogIt(Base, Catalog):
     __tablename__ = 'view_catalog_it'
     __table_args__ = ({'schema': 're3'})
 
+
 class CatalogRm(Base, Catalog):
     __tablename__ = 'view_catalog_rm'
     __table_args__ = ({'schema': 're3'})
+
 
 class CatalogEn(Base, Catalog):
     __tablename__ = 'view_catalog_en'
     __table_args__ = ({'schema': 're3'})
 
+
 class CatalogInspireDe(Base, Catalog):
     __tablename__ = 'view_catalog_inspire_de'
     __table_args__ = ({'schema': 're3'})
+
 
 class CatalogInspireFr(Base, Catalog):
     __tablename__ = 'view_catalog_inspire_fr'
     __table_args__ = ({'schema': 're3'})
 
+
 class CatalogInspireIt(Base, Catalog):
     __tablename__ = 'view_catalog_inspire_it'
     __table_args__ = ({'schema': 're3'})
+
 
 class CatalogInpireRm(Base, Catalog):
     __tablename__ = 'view_catalog_inspire_rm'
     __table_args__ = ({'schema': 're3'})
 
+
 class CatalogInspireEn(Base, Catalog):
     __tablename__ = 'view_catalog_inspire_en'
     __table_args__ = ({'schema': 're3'})
+
 
 class CatalogEchDe(Base, Catalog):
     __tablename__ = 'view_catalog_ech_de'
     __table_args__ = ({'schema': 're3'})
 
+
 class CatalogEchFr(Base, Catalog):
     __tablename__ = 'view_catalog_ech_fr'
     __table_args__ = ({'schema': 're3'})
+
 
 class CatalogEchIt(Base, Catalog):
     __tablename__ = 'view_catalog_ech_it'
     __table_args__ = ({'schema': 're3'})
 
+
 class CatalogEchRm(Base, Catalog):
     __tablename__ = 'view_catalog_ech_rm'
     __table_args__ = ({'schema': 're3'})
 
+
 class CatalogEchEn(Base, Catalog):
     __tablename__ = 'view_catalog_ech_en'
     __table_args__ = ({'schema': 're3'})
+
 
 def get_bod_model(lang):
     if lang == 'fr':
@@ -345,6 +376,7 @@ def get_bod_model(lang):
     else:
         return BodLayerDe
 
+
 def get_catalog_model(lang, topic):
     if lang == 'fr':
         if topic == 'inspire':
@@ -357,7 +389,7 @@ def get_catalog_model(lang, topic):
             return CatalogInspireIt
         elif topic == 'ech':
             return CatalogEchIt
-        return CatalogIt   
+        return CatalogIt
     elif lang == 'rm':
         if topic == 'inspire':
             return CatalogInspireRm
@@ -376,7 +408,7 @@ def get_catalog_model(lang, topic):
         elif topic == 'ech':
             return CatalogEchDe
         return CatalogDe
-    
+
 
 def get_wmts_models(lang):
     if lang in ('fr', 'it'):
