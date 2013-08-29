@@ -51,6 +51,7 @@
                 var queryParams = gaPermalink.getParams();
                 scope.currentLayer = topicLayerId || queryParams.bgLayer ||
                     scope.backgroundLayers[0].id;
+                topicLayerId = undefined;
               });
 
               scope.$on('gaTopicChange', function(event, topic) {
