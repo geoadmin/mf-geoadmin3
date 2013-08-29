@@ -48,7 +48,7 @@
         <img src="${version}img/logo.ch.jpeg" style="width: 270px; height: 89px"/>
       </a>
       <div id="search-container" ng-controller="GaSearchController">
-        <h4 class="visible-lg visible-md visible-sm" ng-cloak>{{topicId + '_page_header' | translate}}</h4>
+        <h4 class="visible-lg visible-md visible-sm" ng-cloak translate>{{topicId + '_page_header'}}</h4>
         <div ga-search ga-search-map="map" ga-search-options="options"></div>
       </div>
 % if device == 'desktop':
@@ -101,7 +101,7 @@
       </div>
 % if device == 'desktop':
       <div id="geoadminlink" class="pull-right">
-        <a target="_blank" ng-href="{{topicId + '_service_link_href' | translate}}" ng-cloak>{{topicId + '_service_link_label' | translate}}</a>
+        <a target="_blank" ng-href="{{topicId + '_service_link_href' | translate}}" ng-cloak translate>{{topicId + '_service_link_label'}}</a>
       </div>
 % endif
     </div><!-- #footer -->
@@ -170,12 +170,14 @@
                         https://github.com/PascalPrecht/angular-translate/issues/129 -->
                         <li>
                           <a href="" ng-click="importWmsPopupShown = !importWmsPopupShown">
-                            <i class="icon-external-link ga-icon-separator"></i> {{'wms' | translate}}
+                            <i class="icon-external-link ga-icon-separator"></i>
+                            <span translate>wms</span>
                           </a>
                         </li>
                         <li>
                           <a href=""  ng-click="importKmlPopupShown = !importKmlPopupShown">
-                            <i class="icon-file ga-icon-separator"></i> {{'kml' | translate}}
+                            <i class="icon-file ga-icon-separator"></i>
+                            <span translate>kml</span>
                           </a>
                         </li>
                       </ul>
@@ -275,7 +277,7 @@
             <p>
               <a target="_blank" ng-href="http://www.geo.admin.ch/internet/geoportal/{{langId}}/home/geoadmin/contact.html#copyright" translate>copyright_label</a>
               <br>
-              <a target="_blank" ng-href="{{topicId + '_service_link_href' | translate}}" ng-cloak>{{topicId + '_service_link_label' | translate}}</a>
+              <a target="_blank" ng-href="{{topicId + '_service_link_href' | translate}}" ng-cloak translate>{{topicId + '_service_link_label'}}</a>
               <br>
               <a href="#feedback" data-toggle="modal" translate>problem_announcement</a>
             </p>
