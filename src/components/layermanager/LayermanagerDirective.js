@@ -20,6 +20,16 @@
           link: function(scope, element, attrs) {
             var map = scope.map;
 
+            var removeAllLayers = function() {
+              for (var i = 0; i < scope.layers.length; i++) {
+                var layer = scope.layers[i];
+                if (scope.layerFilter(layer)) {
+                  scope.removeLayerFromMap(layer);
+                  i -= 1;
+                }
+              }
+            };
+
             // The ngRepeat collection is the map's array of layers. ngRepeat
             // uses $watchCollection internally. $watchCollection watches the
             // array, but does not shallow watch the array items! The array
@@ -48,6 +58,10 @@
             scope.removeLayerFromMap = function(layer) {
               map.removeLayer(layer);
             };
+
+            scope.$on('gaTopicChange', function() {
+              removeAllLayers();
+            });
 
           }
         };
