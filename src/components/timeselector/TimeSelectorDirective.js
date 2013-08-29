@@ -21,9 +21,9 @@
           $scope.currentYear = $scope.maxYear; // User selected year
           $scope.years = []; //List of all possible years 1845 -> current year
           $scope.availableYears = []; // List of available years
-          
+
           // Fill the years table. This array will be used to configure the
-          // display of the slider (minor and major divisions, years selectable ...)
+          // display of the slider (minor and major divisions ...)
           for (var i = $scope.maxYear; i >= $scope.minYear; i--) {
             var year = {
               value: i,
@@ -60,7 +60,7 @@
           // Watchers
           $scope.$watch('isActive', function(active) {
             $scope.stateClass = (active) ? '' : 'inactive';
-            updateLayers((active) ? 
+            updateLayers((active) ?
                 transformYearToTimeStr($scope.currentYear) :
                 undefined);
           });
@@ -70,7 +70,7 @@
               updateLayers(transformYearToTimeStr(year));
             }
           });
-          
+
           /**
            * Update the list of years available
            */
@@ -109,8 +109,8 @@
             if (year && parseInt(year) > $scope.maxYear) {
               year = null;
             }
-            return year; 
-          }
+            return year;
+          };
 
           /**
            * Update the layers with the new time parameter
