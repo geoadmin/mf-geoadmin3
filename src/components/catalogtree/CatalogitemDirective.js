@@ -51,12 +51,16 @@
               scope.inPreviewMode = inPreviewMode;
 
               // Load any selected layer if not already on the map
-              if (scope.item.children === undefined && 
+              if (scope.item.children === undefined &&
                   scope.item.selectedOpen) {
                 // Do this call here because we don't want it for nodes
                 layer = getMapLayer(scope.map, scope.item.idBod);
-                if (!angular.isDefined(layer)) {
-                  scope.toggleLayer();
+                if (!angular.isDefined(layer) &&
+                    angular.isDefined(gaLayers.getLayer(scope.item.idBod))) {
+                  layer = gaLayers.getOlLayerById(scope.item.idBod);
+                  if (angular.isDefined(layer)) {
+                    scope.map.addLayer(layer);
+                  }
                 }
               }
 
