@@ -13,16 +13,17 @@ _rasters = {}
 
 log = logging.getLogger(__name__)
 
+
 class Profile(ProfileValidation):
 
     def __init__(self, request):
         super(Profile, self).__init__()
         self.linestring = request.params.get('geom')
-        if request.params.has_key('layers'):
+        if 'layers' in request.params:
             self.layers = request.params.get('layers')
         else:
             self.layers = request.params.get('elevation_models')
-        if request.params.has_key('nbPoints'):
+        if 'nbPoints' in request.params:
             self.nb_points = request.params.get('nbPoints')
         else:
             self.nb_points = request.params.get('nb_points')
@@ -65,7 +66,7 @@ class Profile(ProfileValidation):
                 if zvalues[self.layers[i]][j] is None:
                     zvalues2[self.layers[i]].append(None)
                     continue
-                for k in xrange(-self.ma_offset, self.ma_offset+1):
+                for k in xrange(-self.ma_offset, self.ma_offset + 1):
                     p = j + k
                     if p < 0 or p >= len(zvalues[self.layers[i]]):
                         continue
@@ -73,7 +74,7 @@ class Profile(ProfileValidation):
                         continue
                     s += zvalues[self.layers[i]][p] * factor(k)
                     d += factor(k)
-                zvalues2[self.layers[i]].append(s/d)                    
+                zvalues2[self.layers[i]].append(s / d)
 
         dist = 0
         prev_coord = None
@@ -93,8 +94,9 @@ class Profile(ProfileValidation):
             alts = {}
             for i in xrange(0, len(self.layers)):
                 if zvalues2[self.layers[i]][j] is not None:
-                    alts[self.layers[i]] = self._filter_alt(zvalues2[self.layers[i]][j])
-            if len(alts)>0:
+                    alts[self.layers[i]] = self._filter_alt(
+                        zvalues2[self.layers[i]][j])
+            if len(alts) > 0:
                 rounded_dist = self._filter_dist(dist)
                 if self.json:
                     profile.append({
@@ -127,7 +129,10 @@ class Profile(ProfileValidation):
                          math.pow(coord1[1] - coord2[1], 2.0))
 
     def _create_points(self, coords, nbPoints):
-        """Add some points in order to reach roughly the asked number of points"""
+        """
+            Add some points in order to reach roughly the asked
+            number of points.
+        """
         totalLength = 0
         prev_coord = None
         for coord in coords:
@@ -149,18 +154,25 @@ class Profile(ProfileValidation):
                 dx = (coord[0] - prev_coord[0]) / float(cur_nb_points)
                 dy = (coord[1] - prev_coord[1]) / float(cur_nb_points)
                 for i in xrange(1, cur_nb_points + 1):
-                    result.append([prev_coord[0] + dx*i, prev_coord[1] + dy*i])
+                    result.append(
+                        [prev_coord[0] + dx * i,
+                         prev_coord[1] + dy * i])
             else:
                 result.append([coord[0], coord[1]])
-            prev_coord =coord
+            prev_coord = coord
         return result
 
     def _get_raster_files(self):
         """Returns the raster filename in function of its layer name"""
+        base_path = 'bund/swisstopo/'
         return {
-            'DTM25': self.request.registry.settings['data_path'] + 'bund/swisstopo/dhm25_25_matrix/mm0001.shp',
-            'DTM2': self.request.registry.settings['data_path'] + 'bund/swisstopo/swissalti3d/2m/index.shp',
-            'COMB': self.request.registry.settings['data_path'] + 'bund/swisstopo/swissalti3d/kombo_2m_dhm25/index.shp'
+            'DTM25': self.request.registry.settings[
+                'data_path'] + base_path + 'dhm25_25_matrix/mm0001.shp',
+            'DTM2': self.request.registry.settings[
+                'data_path'] + base_path + 'swissalti3d/2m/index.shp',
+            'COMB': self.request.registry.settings[
+                'data_path'] + base_path +
+            'swissalti3d/kombo_2m_dhm25/index.shp'
         }
 
     def _filter_alt(self, alt):
@@ -177,4 +189,3 @@ class Profile(ProfileValidation):
     def _filter_coordinate(self, coords):
         # 1mm accuracy is enough for distances
         return round(coords * 1000.0) / 1000.0
-
