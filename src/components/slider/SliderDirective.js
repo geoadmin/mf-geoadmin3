@@ -149,17 +149,16 @@
             var barWidth, boundToInputs, dimensions, maxOffset, maxValue,
             minOffset, minValue, ngDocument, offsetRange, pointerHalfWidth,
             updateDOM, valueRange, w, _j, _len1;
-
+            
             // RE3
+            var divisionWidth = 100 / (scope.ceiling - scope.floor);
             scope.assignDivisionStyle = function(index) {
-              var divisionWidth = 100 / (scope.ceiling - scope.floor + 1);
               var style = {
                 width: divisionWidth + '%',
-                left: (index * divisionWidth) + '%'
+                left: ((index * divisionWidth) - (divisionWidth / 2)) + '%'
               };
               return style;
             };
-
 
             boundToInputs = false;
             ngDocument = angularize(document);
@@ -191,14 +190,16 @@
                   parseFloat(scope.floor));
               pointerHalfWidth = halfWidth(minPtr);
               barWidth = width(fullBar);
-              minOffset = 0 - pointerHalfWidth; //old: 0
 
-              // Before RE3: barWidth - width(minPtr);
+              // Before RE3: minOffset = 0 
+              minOffset = 0 - pointerHalfWidth;
+
+              // Before RE3: maxOffset = barWidth - width(minPtr);
               maxOffset = barWidth - pointerHalfWidth;
 
               minValue = parseFloat(attributes.floor);
               maxValue = parseFloat(attributes.ceiling);
-              valueRange = maxValue - minValue + 1;
+              valueRange = maxValue - minValue; // + 1;
 
               // Before RE3: offsetRange = maxOffset - minOffset;
               return offsetRange = barWidth;

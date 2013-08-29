@@ -1,9 +1,10 @@
 .ga-slider {
   display: inline-block;
   position: relative;
-  height: 100%;
   width: 100%;
-
+  height: 7px;
+  margin: 25px 5px 25px 5px;
+ 
   span {
     white-space: nowrap;
     position: absolute;
@@ -30,12 +31,6 @@
       -webkit-box-shadow: inset 2px 2px 5px;
       box-shadow: inset 2px 2px 5px;
 
-      .bar-division {
-        /*border-left: 1px solid black;
-        background-color: red;
-        height: 100%;*/
-      }
-      
       &.selection {
         width: 0%;
         z-index: 1;
@@ -52,8 +47,8 @@
 
     &.pointer {
       cursor: pointer;
-      width: 4px;
-      height: 20px;
+      width: 22px;
+      height: 22px;
       top: -8px;
       background-color: #fff;
       border: 1px solid #000;
@@ -61,7 +56,7 @@
       -webkit-border-radius: 1em/1em;
       border-radius: 1em/1em;
       
-      /*&:after {
+      &:after {
         content: '';
         background-color: #808080;
         width: 8px;
@@ -71,7 +66,7 @@
         left: 6px;
         -webkit-border-radius: 1em/1em;
         border-radius: 1em/1em;
-      }*/
+      }
       
       &:hover:after {
         background-color: #000;
