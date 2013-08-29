@@ -84,9 +84,6 @@
     }
   };
 
-
-
-
   module.directive('gaSlider', ['$timeout', '$sce', function($timeout, $sce) {
     return {
       restrict: 'A',
@@ -104,15 +101,16 @@
       templateUrl: 'components/slider/partials/slider.html',
       compile: function(element, attributes) {
         var ceilBub, cmbBub, e, flrBub, fullBar, highBub, lowBub, maxPtr,
-         minPtr, range, refHigh, refLow, selBar, selBub, watchables, _i, _len,
-          _ref, _ref1;
+            minPtr, range, refHigh, refLow, selBar, selBub, watchables, _i, _len,
+            _ref, _ref1;
 
         if (attributes.translate2) {
           attributes.$set('translate2', '' + attributes.translate2 + '(value)');
         }
+
         range = (attributes.ngModel == null) &&
-         ((attributes.ngModelLow != null) &&
-         (attributes.ngModelHigh != null));
+            ((attributes.ngModelLow != null) &&
+            (attributes.ngModelHigh != null));
         _ref = (function() {
           var _i, _len, _ref, _results;
 
@@ -124,9 +122,9 @@
           }
           return _results;
         })(), fullBar = _ref[0], selBar = _ref[1], minPtr = _ref[2],
-         maxPtr = _ref[3], selBub = _ref[4], flrBub = _ref[5],
-         ceilBub = _ref[6], lowBub = _ref[7], highBub = _ref[8],
-         cmbBub = _ref[9];
+            maxPtr = _ref[3], selBub = _ref[4], flrBub = _ref[5],
+            ceilBub = _ref[6], lowBub = _ref[7], highBub = _ref[8],
+            cmbBub = _ref[9];
         refLow = range ? 'ngModelLow' : 'ngModel';
         refHigh = 'ngModelHigh';
         bindHtml(selBub, "'Range: ' + translate2({value: diff})");
@@ -151,6 +149,17 @@
             var barWidth, boundToInputs, dimensions, maxOffset, maxValue,
             minOffset, minValue, ngDocument, offsetRange, pointerHalfWidth,
             updateDOM, valueRange, w, _j, _len1;
+            
+            // RE3
+            scope.assignDivisionStyle = function(index) {
+              var divisionWidth = 100 / (scope.ceiling - scope.floor + 1);
+              var style = {
+                width: divisionWidth + '%',
+                left: (index * divisionWidth) + '%'
+              };
+              return style;
+            };
+
 
             boundToInputs = false;
             ngDocument = angularize(document);
@@ -184,14 +193,14 @@
               barWidth = width(fullBar);
               minOffset = 0 - pointerHalfWidth; //old: 0
 
-              //old: barWidth - width(minPtr);
+              // Before RE3: barWidth - width(minPtr);
               maxOffset = barWidth - pointerHalfWidth;
 
               minValue = parseFloat(attributes.floor);
               maxValue = parseFloat(attributes.ceiling);
               valueRange = maxValue - minValue + 1;
 
-              //old: offsetRange = maxOffset - minOffset;
+              // Before RE3: offsetRange = maxOffset - minOffset;
               return offsetRange = barWidth;
             };
             updateDOM = function() {
@@ -205,11 +214,12 @@
               percentValue = function(value) {
                 return ((value - minValue) / valueRange) * 100;
               };
-              //RE3 add
+
+              // RE3 add
               percentToOffsetInt = function(percent) {
                  return percent * offsetRange / 100;
-
               };
+
               percentToOffset = function(percent) {
                 return pixelize(percentToOffsetInt(percent));
               };
@@ -223,16 +233,17 @@
                 offset(ceilBub, pixelize(barWidth - width(ceilBub)));
                 newLowValue = percentValue(scope[refLow]);
 
-                //old: offset(minPtr, percentToOffset(newLowValue)
+                // Before RE3: offset(minPtr, percentToOffset(newLowValue)
                 offset(minPtr, pixelize(
                      percentToOffsetInt(newLowValue) - halfWidth(minPtr)));
 
                 offset(lowBub, pixelize(offsetLeft(minPtr) -
                     (halfWidth(lowBub)) + pointerHalfWidth));
+                
                 if (range) {
                   newHighValue = percentValue(scope[refHigh]);
 
-                  //old: offset(maxPtr, percentToOffset(newHighValue)
+                  // Before RE3: offset(maxPtr, percentToOffset(newHighValue)
                   offset(minPtr, pixelize(
                       percentToOffsetInt(newHighValue) - halfWidth(maxPtr)));
 
@@ -362,8 +373,10 @@
                 }
                 return _results;
               };
+              
               setPointers();
               adjustBubbles();
+              
               if (!boundToInputs) {
                 return setBindings();
               }

@@ -1,0 +1,8 @@
+<div class="time-selector-container" ng-class="stateClass">
+  <select ng-model="currentYear" ng-options="year.value for year in availableYears">
+    <option value="" selected translate>last_available_year</option>
+  </select>
+  <a href="#" class="icon-time icon-2x" ng-click="toggle()"></a>
+  <div class="time-selector-mask" ng-click="toggle()"></div>
+</div>
+

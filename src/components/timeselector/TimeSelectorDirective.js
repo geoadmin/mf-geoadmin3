@@ -9,41 +9,72 @@
   ]);
 
   module.controller('GaTimeSelectorDirectiveController',
-      ['$scope', '$log', '$translate', 'gaBrowserSniffer',
-        function($scope, $log, $translate, gaBrowserSniffer,
+      ['$scope', '$log', '$translate', '$sce', 'gaBrowserSniffer',
+        function($scope, $log, $translate, $sce, gaBrowserSniffer,
             gaPopup) {
+
+          // Initialize variables
+          $scope.isActive = false;
+          $scope.stateClass = 'inactive';
           $scope.minYear = 1845;
           $scope.maxYear = (new Date()).getFullYear();
-          $scope.currentYear2 = 2001;
+          $scope.currentYear = $scope.maxYear; // User selected year
           $scope.years = []; //List of all possible years 1845 -> current year
           $scope.availableYears = []; // List of available years
-          $scope.currentYear = $scope.maxYear; // User selected year
 
           for (var i = $scope.maxYear; i >= $scope.minYear; i--) {
             var year = {
               value: i,
-              available: false
+              available: false,
+              minor: false,
+              major: false
             };
+
+            // Defines if the current year should be displayed as a major
+            // or a minor subdivison
+            if ((i % 50) === 0) {
+              year.major = true;
+
+            } else if ((i % 10) === 0) {
+              year.minor = true;
+            }
+
             $scope.years.push(year);
           }
 
-          $scope.stateClass = 'inactive';
-          $scope.isActive = false;
+          // Toggle the state of the component
           $scope.toggle = function() {
             $scope.isActive = !$scope.isActive;
           };
 
-          $scope.onChangeYear = function() {
-            updateLayers(($scope.currentYear) ?
-                $scope.currentYear.value :
-                null);
+          // Format the text of the current year (only slider)
+          $scope.formatCurrentYear = function(value) {
+            if (parseInt(value) > $scope.maxYear) {
+              value = $translate('last_available_year');
+            }
+            return $sce.trustAsHtml('' + value);
           };
 
+          // Watchers
           $scope.$watch('isActive', function(active) {
-            $scope.stateClass = (active) ? 'inactive' : '';
+            $scope.stateClass = (active) ? '' : 'inactive';
             updateLayers((active) ? $scope.currentYear : undefined);
           });
 
+          $scope.$watch('currentYear', function(year) {
+              // currentYear was modified by the <select>
+              if (year && typeof year === 'object') {
+                year = '' + year.value;
+              }
+
+              if (year && parseInt(year) > $scope.maxYear) {
+                year = null;
+              }
+
+              if ($scope.isActive) {
+                updateLayers(year);
+              }
+          });
 
           /**
            * Update the list of years available
@@ -53,7 +84,6 @@
             for (var i = 0, length = $scope.years.length; i < length; i++) {
               var year = $scope.years[i];
               year.available = false;
-
               $scope.map.getLayers().forEach(function(olLayer, opt) {
                 if (year.available) {
                   return;
@@ -86,9 +116,6 @@
             $scope.map.getLayers().forEach(function(olLayer, opt) {
               var timestamps = olLayer.get('timestamps');
               if (timestamps) {
-                //var closest = _getClosestTimestamp(parseInt(timeStr),
-                //    olLayer.get('timestamps'));
-
                 $log.log('Update ' + olLayer.getSource() +
                  ' layer (' + olLayer.get('id') + ') with time = ' + timeStr);
                /* if (layer.type === 'wmts') {
@@ -109,7 +136,6 @@
             });
           };
 
-
           /** Utils **/
           var _yearFromString = function(timestamp) {
             return parseInt(timestamp.substr(0, 4));
@@ -123,28 +149,39 @@
         function($log, $translate, gaBrowserSniffer) {
           return {
             restrict: 'A',
-            templateUrl: 'components/timeselector/partials/timeselector.html',
+            templateUrl: function(element, attrs) {
+              return 'components/timeselector/partials/timeselector.' +
+                ((gaBrowserSniffer.mobile) ? 'select.html' : 'html');
+            },
             scope: {
               map: '=gaTimeSelectorMap',
               options: '=gaTimeSelectorOptions'
             },
             controller: 'GaTimeSelectorDirectiveController',
             link: function(scope, elt, attrs, controller) {
+              
+              // Add css mobile class
+              if (gaBrowserSniffer.mobile) {
+                elt.addClass('mobile');
+              }
+               
+              elt.find('.pointer').addClass("icon-pause icon-large"); 
 
               // Update list of available years and hide/show the HTML
               // element if the list is empty or not
-              var refreshElt = function(obj) {
+              var refreshComp = function(obj) {
                 scope.updateDatesAvailable();
                 if (scope.availableYears.length == 0) {
                   elt.hide();
                 } else {
                   elt.show();
+                  // force the redraw of the slider
                 }
               };
 
-              scope.map.getLayers().on('add', refreshElt);
-              scope.map.getLayers().on('remove', refreshElt);
-
+              scope.map.getLayers().on('add', refreshComp);
+              scope.map.getLayers().on('remove', refreshComp);
+                  scope.currentYear = 1968; 
             }
           };
         }
