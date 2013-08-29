@@ -39,6 +39,7 @@
             var contents = tEl.contents().remove();
             var compiledContent;
             return function(scope, iEl, iAttr) {
+              var layer;
               if (!compiledContent) {
                 compiledContent = $compile(contents);
               }
@@ -48,6 +49,16 @@
               scope.addPreviewLayer = addPreviewLayer;
               scope.removePreviewLayer = removePreviewLayer;
               scope.inPreviewMode = inPreviewMode;
+
+              // Load any selected layer if not already on the map
+              if (scope.item.children === undefined && 
+                  scope.item.selectedOpen) {
+                // Do this call here because we don't want it for nodes
+                layer = getMapLayer(scope.map, scope.item.idBod);
+                if (!angular.isDefined(layer)) {
+                  scope.toggleLayer();
+                }
+              }
 
               compiledContent(scope, function(clone, scope) {
                 iEl.append(clone);
