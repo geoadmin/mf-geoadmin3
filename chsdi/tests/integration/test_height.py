@@ -2,6 +2,7 @@
 
 from chsdi.tests.integration import TestsBase
 
+
 class TestHeightView(TestsBase):
 
     def test_height_valid(self):
