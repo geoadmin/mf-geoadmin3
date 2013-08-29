@@ -26,6 +26,7 @@ requires = [
     'PyYAML',
     'papyrus_ogcproxy>0.1',
     'pep8',
+    'autopep8',
     ]
 
 setup(name='chsdi',
