@@ -22,16 +22,13 @@
           link: function(scope, element, attrs) {
             var currentTopic;
 
-            // This assumes that the tree contains the same
+            // This assumes that both trees contain the same
             // elements, but with different values
             var retainTreeState = function(oldTree, newTree) {
-              var i, oldChild, newChild;
               newTree.selectedOpen = oldTree.selectedOpen;
               if (newTree.children) {
                 for (var i = 0; i < newTree.children.length; i++) {
-                  oldChild = oldTree.children[i];
-                  newChild = newTree.children[i];
-                  retainTreeState(oldChild, newChild);
+                  retainTreeState(oldTree.children[i], newTree.children[i]);
                 }
               }
             };
