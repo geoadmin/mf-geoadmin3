@@ -15,10 +15,11 @@ class MapNameValidation(object):
         from chsdi.models.bod import Topics
         availableMaps = [q[0] for q in db.query(Topics.id)]
         if mapName not in availableMaps:
-            raise exc.HTTPBadRequest('The map you provided does not exist') 
+            raise exc.HTTPBadRequest('The map you provided does not exist')
 
 
 class MapServiceValidation(MapNameValidation):
+
     def __init__(self):
         super(MapServiceValidation, self).__init__()
         self._geometry = None
@@ -105,7 +106,6 @@ class MapServiceValidation(MapNameValidation):
                 self._mapExtent = asShape(feat)
             except ValueError:
                 raise exc.HTTPBadRequest('Please provide numerical values for the parameter mapExtent')
-            
 
     @tolerance.setter
     def tolerance(self, value):
@@ -124,6 +124,7 @@ class MapServiceValidation(MapNameValidation):
 
 
 class HeightValidation(object):
+
     def __init__(self):
         self._lon = None
         self._lat = None
@@ -161,7 +162,7 @@ class HeightValidation(object):
 
     @layers.setter
     def layers(self, value):
-        if not isinstance(value, types.ListType):
+        if not isinstance(value, list):
             value = value.split(',')
             for i in value:
                 if i not in ('DTM25', 'DTM2', 'COMB'):
@@ -170,6 +171,7 @@ class HeightValidation(object):
 
 
 class ProfileValidation(object):
+
     def __init__(self):
         self._linestring = None
         self._layers = None
@@ -220,7 +222,7 @@ class ProfileValidation(object):
             value = value.split(',')
             for i in value:
                 if i not in ('DTM25', 'DTM2', 'COMB'):
-                     raise exc.HTTPBadRequest("Please provide a valid name for the elevation model DTM25, DTM2 or COMB")    
+                    raise exc.HTTPBadRequest("Please provide a valid name for the elevation model DTM25, DTM2 or COMB")
             value.sort()
             self._layers = value
 
@@ -246,6 +248,7 @@ class ProfileValidation(object):
 
 
 class SearchValidation(MapNameValidation):
+
     def __init__(self):
         super(SearchValidation, self).__init__()
         self._searchText = None
@@ -267,9 +270,9 @@ class SearchValidation(MapNameValidation):
     @featureIndexes.setter
     def featureIndexes(self, value):
         if value is not None and value != '':
-            value = value.replace('.','_')
+            value = value.replace('.', '_')
             self._featureIndexes = value.split(',')
-                
+
     @searchText.setter
     def searchText(self, value):
         if value is None:
@@ -296,5 +299,5 @@ class SearchValidation(MapNameValidation):
 def validateLayerId(idlayer):
     models = models_from_name(idlayer)
     if models is None:
-        raise exc.HTTPBadRequest('Please provide a valid layer Id (what you provided: %s)' %idlayer)
+        raise exc.HTTPBadRequest('Please provide a valid layer Id (what you provided: %s)' % idlayer)
     return models
