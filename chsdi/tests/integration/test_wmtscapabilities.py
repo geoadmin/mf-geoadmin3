@@ -2,6 +2,7 @@
 
 from chsdi.tests.integration import TestsBase
 
+
 class TestWmtsCapabilitiesView(TestsBase):
 
     def test_valid_wmtscapabilities(self):
@@ -20,15 +21,15 @@ class TestWmtsCapabilitiesView(TestsBase):
         import os
         if socket.gethostname() == 'bgdimf01t':
             self.fail("Cannot run this test on 'bgdimf0t'. Sorry.")
-        schema_url = os.path.join(os.path.dirname(__file__),"wmts/1.0/wmtsGetCapabilities_response.xsd")
-        os.environ['XML_CATALOG_FILES'] = os.path.join(os.path.dirname(__file__),"xml/catalog")
+        schema_url = os.path.join(os.path.dirname(__file__), "wmts/1.0/wmtsGetCapabilities_response.xsd")
+        os.environ['XML_CATALOG_FILES'] = os.path.join(os.path.dirname(__file__), "xml/catalog")
 
-        for lang in ['de','fr']:
-            f = tempfile.NamedTemporaryFile(mode='w+t', prefix='WMTSCapabilities-',suffix= '-' + lang)
+        for lang in ['de', 'fr']:
+            f = tempfile.NamedTemporaryFile(mode='w+t', prefix='WMTSCapabilities-', suffix='-' + lang)
             resp = self.testapp.get('/rest/services/inspire/1.0.0/WMTSCapabilities.xml', params={'lang': lang}, status=200)
             f.write(resp.body)
             f.seek(0)
-            retcode = subprocess.call(["xmllint", "--noout", "--nocatalogs","--schema", schema_url, f.name ])
+            retcode = subprocess.call(["xmllint", "--noout", "--nocatalogs", "--schema", schema_url, f.name])
             f.close()
             self.failUnless(retcode == 0)
 
