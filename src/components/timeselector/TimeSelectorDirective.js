@@ -21,7 +21,9 @@
           $scope.currentYear = $scope.maxYear; // User selected year
           $scope.years = []; //List of all possible years 1845 -> current year
           $scope.availableYears = []; // List of available years
-
+          
+          // Fill the years table. This array will be used to configure the
+          // display of the slider (minor and major divisions, years selectable ...)
           for (var i = $scope.maxYear; i >= $scope.minYear; i--) {
             var year = {
               value: i,
@@ -47,7 +49,7 @@
             $scope.isActive = !$scope.isActive;
           };
 
-          // Format the text of the current year (only slider)
+          // Format the text of the current year (only used by slider)
           $scope.formatCurrentYear = function(value) {
             if (parseInt(value) > $scope.maxYear) {
               value = $translate('last_available_year');
@@ -58,24 +60,17 @@
           // Watchers
           $scope.$watch('isActive', function(active) {
             $scope.stateClass = (active) ? '' : 'inactive';
-            updateLayers((active) ? $scope.currentYear : undefined);
+            updateLayers((active) ? 
+                transformYearToTimeStr($scope.currentYear) :
+                undefined);
           });
 
           $scope.$watch('currentYear', function(year) {
-              // currentYear was modified by the <select>
-              if (year && typeof year === 'object') {
-                year = '' + year.value;
-              }
-
-              if (year && parseInt(year) > $scope.maxYear) {
-                year = null;
-              }
-
-              if ($scope.isActive) {
-                updateLayers(year);
-              }
+            if ($scope.isActive) {
+              updateLayers(transformYearToTimeStr(year));
+            }
           });
-
+          
           /**
            * Update the list of years available
            */
@@ -102,6 +97,20 @@
             }
           };
 
+          /**
+           * Tranform a year given by the select box or the slider component
+           * into a time parameter usable by layers
+           */
+          var transformYearToTimeStr = function(year) {
+            // The select box returns an object
+            if (year && typeof year === 'object') {
+              year = '' + year.value;
+            }
+            if (year && parseInt(year) > $scope.maxYear) {
+              year = null;
+            }
+            return year; 
+          }
 
           /**
            * Update the layers with the new time parameter
@@ -151,7 +160,7 @@
             restrict: 'A',
             templateUrl: function(element, attrs) {
               return 'components/timeselector/partials/timeselector.' +
-                ((gaBrowserSniffer.mobile) ? 'select.html' : 'html');
+                  ((gaBrowserSniffer.mobile) ? 'select.html' : 'html');
             },
             scope: {
               map: '=gaTimeSelectorMap',
@@ -159,29 +168,28 @@
             },
             controller: 'GaTimeSelectorDirectiveController',
             link: function(scope, elt, attrs, controller) {
-              
+
               // Add css mobile class
               if (gaBrowserSniffer.mobile) {
                 elt.addClass('mobile');
               }
-               
-              elt.find('.pointer').addClass("icon-pause icon-large"); 
 
               // Update list of available years and hide/show the HTML
               // element if the list is empty or not
               var refreshComp = function(obj) {
                 scope.updateDatesAvailable();
                 if (scope.availableYears.length == 0) {
+                  scope.isActive = false;
                   elt.hide();
                 } else {
                   elt.show();
                   // force the redraw of the slider
+                  scope.currentYear = 2014;
                 }
               };
 
               scope.map.getLayers().on('add', refreshComp);
               scope.map.getLayers().on('remove', refreshComp);
-                  scope.currentYear = 1968; 
             }
           };
         }

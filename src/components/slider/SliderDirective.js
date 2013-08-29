@@ -101,8 +101,8 @@
       templateUrl: 'components/slider/partials/slider.html',
       compile: function(element, attributes) {
         var ceilBub, cmbBub, e, flrBub, fullBar, highBub, lowBub, maxPtr,
-            minPtr, range, refHigh, refLow, selBar, selBub, watchables, _i, _len,
-            _ref, _ref1;
+            minPtr, range, refHigh, refLow, selBar, selBub, watchables,
+            _i, _leno, _ref, _ref1;
 
         if (attributes.translate2) {
           attributes.$set('translate2', '' + attributes.translate2 + '(value)');
@@ -149,7 +149,7 @@
             var barWidth, boundToInputs, dimensions, maxOffset, maxValue,
             minOffset, minValue, ngDocument, offsetRange, pointerHalfWidth,
             updateDOM, valueRange, w, _j, _len1;
-            
+
             // RE3
             scope.assignDivisionStyle = function(index) {
               var divisionWidth = 100 / (scope.ceiling - scope.floor + 1);
@@ -239,7 +239,7 @@
 
                 offset(lowBub, pixelize(offsetLeft(minPtr) -
                     (halfWidth(lowBub)) + pointerHalfWidth));
-                
+
                 if (range) {
                   newHighValue = percentValue(scope[refHigh]);
 
@@ -373,10 +373,10 @@
                 }
                 return _results;
               };
-              
+
               setPointers();
               adjustBubbles();
-              
+
               if (!boundToInputs) {
                 return setBindings();
               }
