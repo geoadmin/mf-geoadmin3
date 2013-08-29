@@ -1,10 +1,8 @@
 (function() {
   goog.provide('ga_main_controller');
 
-  goog.require('ga_translation');
-
   var module = angular.module('ga_main_controller', [
-    'ga_translation'
+    'pascalprecht.translate'
   ]);
 
   function createMap() {
