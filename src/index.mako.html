@@ -48,7 +48,7 @@
         <img src="${version}img/logo.ch.jpeg" style="width: 270px; height: 89px"/>
       </a>
       <div id="search-container" ng-controller="GaSearchController">
-        <h4 class="visible-lg visible-md visible-sm" ng-cloak translate>{{topicId + '_page_header'}}</h4>
+        <h4 ng-cloak translate>{{topicId + '_page_header'}}</h4>
         <div ga-search ga-search-map="map" ga-search-options="options"></div>
       </div>
 % if device == 'desktop':
