@@ -11,14 +11,15 @@ from chsdi.renderers import EsriJSON, CSVRenderer
 from chsdi.models import initialize_sql
 from papyrus.renderers import GeoJSON
 
+
 def db(request):
     maker = request.registry.dbmaker
     session = maker()
-    
+
     def cleanup(request):
         session.close()
     request.add_finished_callback(cleanup)
-    
+
     return session
 
 
@@ -71,7 +72,7 @@ def main(global_config, **settings):
     config.add_route('getlegend', '/rest/services/{map}/MapServer/{idlayer}/getlegend')
     config.add_route('getfeature', '/rest/services/{map}/MapServer/{idlayer}/{idfeature}')
     config.add_route('htmlpopup', '/rest/services/{map}/MapServer/{idlayer}/{idfeature}/htmlpopup')
-    config.add_route('search','/rest/services/{map}/SearchServer')
+    config.add_route('search', '/rest/services/{map}/SearchServer')
     config.add_route('wmtscapabilities', '/rest/services/{map}/1.0.0/WMTSCapabilities.xml')
     config.add_route('profile_json', '/rest/services/profile.json')
     config.add_route('profile_csv', '/rest/services/profile.csv')
@@ -82,6 +83,6 @@ def main(global_config, **settings):
     config.add_route('checker_home', '/checker_home')
     config.add_route('checker_api', '/checker_api')
 
-    config.scan(ignore=['chsdi.tests','chsdi.models.bod']) # required to find code decorated by view_config
+    config.scan(ignore=['chsdi.tests', 'chsdi.models.bod'])  # required to find code decorated by view_config
     config.add_static_view('static', 'chsdi:static', cache_max_age=3600)
     return config.make_wsgi_app()
