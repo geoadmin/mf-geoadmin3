@@ -9,14 +9,6 @@ from chsdi.lib import mortonspacekey as msk
 
 
 class Search(SearchValidation):
-    ''' 
-        The indexes are stored in /var/sig/shp/sphinx/data 
-        At the root of your chsdi3 folder:
-        To update all the indexes: /var/sig/shp/sphinx/local/bin/indexer --config sphinx/sphinx.conf --rotate
-        To stop the deamon: /var/sig/shp/sphinx/local/bin/searchd --config sphinx/sphinx.conf --stop
-        To start the deamon: /var/sig/shp/sphinx/local/bin/searchd --config sphinx/sphinx.conf
-        More results can be retruned if serveral layers are queried for features. 
-    '''
 
     LIMIT = 30
     LAYER_LIMIT = 20
@@ -24,7 +16,8 @@ class Search(SearchValidation):
 
     def __init__(self, request):
         super(Search, self).__init__()
-        self.quadtree = msk.QuadTree(msk.BBox(420000,30000,900000,510000),20)
+        self.quadtree = msk.QuadTree(
+            msk.BBox(420000, 30000, 900000, 510000), 20)
         self.sphinx = sphinxapi.SphinxClient()
         self.sphinx.SetServer("localhost", 3312)
         self.sphinx.SetMatchMode(sphinxapi.SPH_MATCH_EXTENDED)
@@ -34,13 +27,13 @@ class Search(SearchValidation):
         self.searchText = remove_accents(request.params.get('searchText'))
         self.lang = str(locale_negotiator(request))
         self.cbName = request.params.get('callback')
-        self.bbox =  request.params.get('bbox')
+        self.bbox = request.params.get('bbox')
         self.quadindex = None
         self.featureIndexes = request.params.get('features')
         self.typeInfo = request.params.get('type')
         self.geodataStaging = request.registry.settings['geodata_staging']
         self.results = {'results': []}
-       
+
     @view_config(route_name='search', renderer='jsonp')
     def search(self):
         # create a quadindex if the bbox is defined
@@ -70,13 +63,16 @@ class Search(SearchValidation):
         limit -= len(temp)
 
         if self.quadindex is not None and limit > 0:
-            # if the limit has not been reached yet, try to look outside the bbox
+            # if the limit has not been reached yet, try to look outside the
+            # bbox
             self.sphinx.SetLimits(0, limit)
             searchText = self._query_detail('@detail')
             searchText += ' & @geom_quadindex !' + self.quadindex + '*'
-            temp = self.sphinx.Query(searchText, index='swisssearch')['matches']
+            temp = self.sphinx.Query(
+                searchText,
+                index='swisssearch')['matches']
             if len(temp) != 0:
-               self.results['results'] += temp
+                self.results['results'] += temp
 
     def _layer_search(self):
         # 10 features per layer are returned at max
@@ -109,7 +105,7 @@ class Search(SearchValidation):
             searchText = self._query_detail('@detail')
             searchText += ' & @geom_quadindex !' + self.quadindex + '*'
             self._add_feature_queries(searchText)
-            
+
             temp = self.sphinx.RunQueries()
             nb_match = self._nb_of_match(temp)
 
@@ -142,7 +138,7 @@ class Search(SearchValidation):
             self.sphinx.AddQuery(searchText, index=str(index))
 
     def _nb_of_match(self, results):
-        nb_match = 0 
+        nb_match = 0
         for i in range(0, len(results)):
             nb_match += len(results[i]['matches'])
             # Add results to the list
@@ -152,11 +148,11 @@ class Search(SearchValidation):
     def _get_quad_index(self):
         try:
             quadindex = self.quadtree\
-                                 .bbox_to_morton(\
-                                     msk.BBox(self.bbox[0],
-                                              self.bbox[1],
-                                              self.bbox[2],
-                                              self.bbox[3]))
+                .bbox_to_morton(
+                    msk.BBox(self.bbox[0],
+                             self.bbox[1],
+                             self.bbox[2],
+                             self.bbox[3]))
             self.quadindex = quadindex if quadindex != '' else None
         except ValueError:
-            self.quadindex = None 
+            self.quadindex = None
