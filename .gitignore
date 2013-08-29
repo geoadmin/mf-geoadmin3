@@ -4,6 +4,7 @@
 *.mo
 *.iml
 *.swp
+*~
 .installed.cfg
 apache/wsgi.conf
 apache/tomcat-print.conf
