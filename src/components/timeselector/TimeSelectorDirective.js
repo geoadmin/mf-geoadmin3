@@ -22,7 +22,7 @@
           $scope.years = []; //List of all possible years 1845 -> current year
           $scope.availableYears = []; // List of available years
 
-          // Fill the years table. This array will be used to configure the
+          // Fill the years array. This array will be used to configure the
           // display of the slider (minor and major divisions ...)
           for (var i = $scope.maxYear; i >= $scope.minYear; i--) {
             var year = {
@@ -51,7 +51,7 @@
 
           // Format the text of the current year (only used by slider)
           $scope.formatCurrentYear = function(value) {
-            if (parseInt(value) > $scope.maxYear) {
+            if (parseInt(value) >= $scope.maxYear) {
               value = $translate('last_available_year');
             }
             return $sce.trustAsHtml('' + value);
@@ -106,7 +106,7 @@
             if (year && typeof year === 'object') {
               year = '' + year.value;
             }
-            if (year && parseInt(year) > $scope.maxYear) {
+            if (year && parseInt(year) >= $scope.maxYear) {
               year = null;
             }
             return year;
