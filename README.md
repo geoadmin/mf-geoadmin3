@@ -50,3 +50,15 @@ If you do this on mf1t, you need to make sure that a correct configuration exist
 that points to your working directory. If all is well, you can reach your pages at:
 
     http://mf-chsdi30t.bgdi.admin.ch/<username>/
+
+# Python Code Styling
+
+We are currently using the PEP 8 convention for Python code.
+You can find more information about our code styling here:
+
+    http://www.python.org/dev/peps/pep-0008/
+    http://pep8.readthedocs.org/en/latest/index.html
+
+You can find additional information about autopep8 here:
+
+    https://pypi.python.org/pypi/autopep8/
