@@ -4,11 +4,12 @@ from sqlalchemy import Column, Text, Integer
 from sqlalchemy.types import Numeric
 from geoalchemy import GeometryColumn, Geometry
 
-from chsdi.models import  *
+from chsdi.models import *
 from chsdi.models.vector import Vector
 
 
 Base = bases['bafu']
+
 
 class BLN(Base, Vector):
     # view in a schema
@@ -27,6 +28,7 @@ class BLN(Base, Vector):
 
 register('ch.bafu.bundesinventare-bln', BLN)
 
+
 class JB(Base, Vector):
     # view in a schema
     __tablename__ = 'jb'
@@ -43,5 +45,5 @@ class JB(Base, Vector):
     jb_kat = Column('jb_kat', Text)
     jb_fl = Column('jb_fl', Numeric)
     jb_gf = Column('jb_gf', Numeric)
- 
+
 register('ch.bafu.bundesinventare-jagdbanngebiete', JB)

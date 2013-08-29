@@ -2,6 +2,7 @@
 
 from chsdi.tests.integration import TestsBase
 
+
 class TestProfileView(TestsBase):
 
     def test_profile_json_valid(self):

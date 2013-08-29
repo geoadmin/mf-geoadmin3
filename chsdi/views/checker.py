@@ -5,6 +5,7 @@ from pyramid.response import Response
 
 from httplib2 import Http
 
+
 class Checker(object):
 
     status_int = 200

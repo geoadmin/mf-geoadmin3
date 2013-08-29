@@ -10,6 +10,7 @@ from pyramid.response import Response
 
 BASE_URL = "http://api.geo.admin.ch/main/wsgi/print/"
 
+
 @view_config(route_name='printproxy')
 def printproxy(request):
     url = request.params.get("url")
@@ -35,32 +36,39 @@ def printproxy(request):
     h.pop("Host", h)
     try:
         if url:
-            resp, content = http.request(BASE_URL + str(printpath) + "?url=" + url, method=method, body=body, headers=h)
+            resp, content = http.request(
+                BASE_URL + str(printpath) + "?url=" + url,
+                method=method,
+                body=body,
+                headers=h)
         else:
-            resp, content = http.request(BASE_URL, method=request.method, 
-                                     body=request.body, headers=h)
+            resp, content = http.request(
+                BASE_URL,
+                method=request.method,
+                body=request.body,
+                headers=h)
     except:
         return HTTPBadGateway()
 
     headers = {}
-    if resp.has_key("content-type"):
-             headers["Content-Type"] = resp["content-type"]
-    if resp.has_key("set-cookie"):
-             c = Cookie.SimpleCookie()
-             c.load(resp["set-cookie"])
-             morsel = c.get('SRV')
-             if morsel is not None:
-                 #morsel['max-age'] = 60 * 15 # seconds
-                 morsel['path'] = request.path
-                 headers["Set-Cookie"] = "SRV=%s; path=%s" % ( morsel.value, morsel['path'])
- 
-    if resp.has_key("Cookie"):
-             headers["Cookie"] = resp["Cookie"]
-    if resp.has_key("Content-Disposition"):
-             headers["Content-Disposition"] = resp["Content-Disposition"]
-    if resp.has_key("content-disposition"):
-             headers["Content-Disposition"] = resp["content-disposition"]
+    if "content-type" in resp:
+        headers["Content-Type"] = resp["content-type"]
+    if "set-cookie" in resp:
+        c = Cookie.SimpleCookie()
+        c.load(resp["set-cookie"])
+        morsel = c.get('SRV')
+        if morsel is not None:
+            # morsel['max-age'] = 60 * 15 # seconds
+            morsel['path'] = request.path
+            headers["Set-Cookie"] = "SRV=%s; path=%s" % (
+                morsel.value, morsel['path'])
 
+    if "Cookie" in resp:
+        headers["Cookie"] = resp["Cookie"]
+    if "Content-Disposition" in resp:
+        headers["Content-Disposition"] = resp["Content-Disposition"]
+    if "content-disposition" in resp:
+        headers["Content-Disposition"] = resp["content-disposition"]
 
     response = Response(content, status=resp.status,
                         headers=headers)

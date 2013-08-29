@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from sys import maxint
+from sys import maxsize
 from shapely.geometry import asShape
 from geoalchemy import WKBSpatialElement, functions
 
@@ -9,24 +9,25 @@ from geojson import Feature
 from chsdi.esrigeojsonencoder import loads
 from shapely.geometry import asShape
 
+
 def getScale(imageDisplay, mapExtent):
-    inchesPerMeter = 1.0/0.0254
+    inchesPerMeter = 1.0 / 0.0254
     imgPixelPerInch = imageDisplay[2]
     imgPixelWidth = imageDisplay[0]
     bounds = mapExtent.bounds
 
     mapMeterWidth = abs(bounds[0] - bounds[2])
-    imgMeterWidth = (imgPixelWidth/imgPixelPerInch)*inchesPerMeter
+    imgMeterWidth = (imgPixelWidth / imgPixelPerInch) * inchesPerMeter
 
-    resolution = imgMeterWidth/mapMeterWidth
-    scale = 1/resolution
+    resolution = imgMeterWidth / mapMeterWidth
+    scale = 1 / resolution
 
     return scale
-    
+
 
 class Vector(GeoInterface):
     __minscale__ = 0
-    __maxscale__ = maxint
+    __maxscale__ = maxsize
     attributes = {}
 
     @property
@@ -39,37 +40,37 @@ class Vector(GeoInterface):
         display_column = self.display_field().name
         layername = ''
         shape = None
-        try: 
-           shape = asShape(feature.geometry)
+        try:
+            shape = asShape(feature.geometry)
         except:
             pass
         return Feature(
-            id = self.id, 
-            geometry = feature.geometry,
-            bbox = shape.bounds if shape else None,
-            properties = feature.properties,
+            id=self.id,
+            geometry=feature.geometry,
+            bbox=shape.bounds if shape else None,
+            properties=feature.properties,
             # For ESRI
-            layerId = self.__esriId__,
-            layerBodId = self.__bodId__,
-            layerName =  layername,
-            featureId = self.id,
-            value = getattr(self, display_column) if display_column != '' else '',
-            displayFieldName = display_column,
-            geometryType = feature.type
-            )
+            layerId=self.__esriId__,
+            layerBodId=self.__bodId__,
+            layerName=layername,
+            featureId=self.id,
+            value=getattr(self, display_column) if display_column != '' else '',
+            displayFieldName=display_column,
+            geometryType=feature.type
+        )
 
     @property
     def __interface__(self):
         display_column = self.display_field().name
         return {
-            "layerId" : self.__esriId__, 
+            "layerId": self.__esriId__,
             "layerBodId": self.__bodId__,
-            "layerName" : "",
+            "layerName": "",
             "featureId": self.id,
             "value": getattr(self, display_column) if display_column != '' else '',
-            "displayFieldName" : display_column,
+            "displayFieldName": display_column,
             "attributes": self.getAttributes(display_column)
-            }
+        }
 
     @classmethod
     def display_field(cls):
@@ -88,14 +89,14 @@ class Vector(GeoInterface):
 
     @classmethod
     def primary_key_column(cls):
-        return cls.__table__.primary_key 
-    
+        return cls.__table__.primary_key
+
     @classmethod
     def geom_filter(cls, geometry, geometryType, imageDisplay, mapExtent, tolerance):
         myFilter = None
-        tolerance = tolerance*0.0254
+        tolerance = tolerance * 0.0254
         scale = getScale(imageDisplay, mapExtent)
-        if scale is None or (scale >= cls.__minscale__ and scale <= cls.__maxscale__): 
+        if scale is None or (scale >= cls.__minscale__ and scale <= cls.__maxscale__):
             geom = esriRest2Shapely(geometry, geometryType)
             wkb_geometry = WKBSpatialElement(buffer(geom.wkb), 21781)
             geom_column = cls.geometry_column()
@@ -115,13 +116,13 @@ class Vector(GeoInterface):
                 elif attribute.__class__.__name__ == 'datetime':
                     attributes[columnName] = attribute.strftime("%d.%m.%Y")
                 else:
-                    attributes[columnName] = attribute 
+                    attributes[columnName] = attribute
         return attributes
 
+
 def esriRest2Shapely(geometry, geometryType):
-    
+
     try:
-        return  asShape(geometry)
+        return asShape(geometry)
     except ValueError:
         return geometry
-

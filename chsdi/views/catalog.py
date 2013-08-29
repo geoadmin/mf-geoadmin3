@@ -6,11 +6,12 @@ from chsdi.models.bod import get_catalog_model
 from chsdi.lib.helpers import locale_negotiator
 from chsdi.lib.validation import MapNameValidation
 
+
 class CatalogService(MapNameValidation):
 
     def __init__(self, request):
         self.lang = locale_negotiator(request)
-        self.mapName = request.matchdict.get('map') # The topic
+        self.mapName = request.matchdict.get('map')  # The topic
         self.hasMap(request.db, self.mapName)
         self.request = request
 
@@ -27,7 +28,7 @@ class CatalogService(MapNameValidation):
         return {'results': self.tree(rows)}
 
     def tree(self, rows=[]):
-        nodes_all = [] # index equal depth
+        nodes_all = []  # index equal depth
         nodes_depth = []
         current_depth = 0
 
@@ -42,7 +43,7 @@ class CatalogService(MapNameValidation):
             return nodes
 
         nodes_final = {}
- 
+
         for row in rows:
             pid = row.parentId or 'root'
             depth = row.depth
@@ -56,7 +57,7 @@ class CatalogService(MapNameValidation):
                 nodes_all.append(nodes_depth)
 
                 nodes_depth = []
-                current_depth = depth # e.g. +1
+                current_depth = depth  # e.g. +1
 
                 node = row.to_dict(self.lang)
                 if node['category'] != 'layer':
@@ -86,4 +87,4 @@ class CatalogService(MapNameValidation):
                     index_3 = getListIndexFromPath(nodes_final[path[0]]['children'][index_1]['children'][index_2]['children'], path[3])
                     nodes_final[path[0]]['children'][index_1]['children'][index_2]['children'][index_3]['children'].append(node)
 
-        return nodes_final 
+        return nodes_final

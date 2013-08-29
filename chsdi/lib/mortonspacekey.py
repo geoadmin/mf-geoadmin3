@@ -4,13 +4,18 @@ import unittest
 import math
 import random
 import time
+from functools import reduce
+
 
 class Point:
+
     def __init__(self, x, y):
         self.x = float(x)
         self.y = float(y)
 
+
 class BBox:
+
     def __init__(self, minx, miny, maxx, maxy):
         self.minx = float(minx)
         self.miny = float(miny)
@@ -18,13 +23,13 @@ class BBox:
         self.maxy = float(maxy)
 
     def __repr__(self):
-        return 'BBox(%s,%s,%s,%s)' % (self.minx,self.miny,self.maxx,self.maxy)
+        return 'BBox(%s,%s,%s,%s)' % (self.minx, self.miny, self.maxx, self.maxy)
 
     def __eq__(self, other):
         if (self.minx == other.minx and
-            self.miny == other.miny and
-            self.maxx == other.maxx and
-            self.maxy == other.maxy):
+                self.miny == other.miny and
+                self.maxx == other.maxx and
+                self.maxy == other.maxy):
             return True
         return False
 
@@ -43,42 +48,42 @@ class BBox:
             return Point(self.minx, self.miny)
         return Point(self.minx, self.maxy)
 
-
     def contains(self, x, y):
         if (self.minx <= x and self.maxx >= x and
-            self.miny <= y and self.maxy >=y):
+                self.miny <= y and self.maxy >= y):
             return True
         return False
 
     def create_quads(self):
-        newWidth = self.width()/2
-        newHeight = self.height()/2
+        newWidth = self.width() / 2
+        newHeight = self.height() / 2
         quad0 = BBox(self.minx, self.miny + newHeight,
                      self.minx + newWidth, self.maxy)
         quad1 = BBox(self.minx + newWidth, self.maxy - newHeight,
-                     self.minx + (2*newWidth), self.maxy)
-        quad2 = BBox(self.minx, self.maxy - (2*newHeight),
+                     self.minx + (2 * newWidth), self.maxy)
+        quad2 = BBox(self.minx, self.maxy - (2 * newHeight),
                      self.minx + newWidth, self.maxy - newHeight)
-        quad3 = BBox(self.minx + newWidth, self.maxy - (2*newHeight),
-                     self.minx + (2*newWidth), self.maxy - newHeight)
+        quad3 = BBox(self.minx + newWidth, self.maxy - (2 * newHeight),
+                     self.minx + (2 * newWidth), self.maxy - newHeight)
         return [quad0, quad1, quad2, quad3]
 
-          
 
 class QuadTree:
-    def __init__(self,bbox,levels):
+
+    def __init__(self, bbox, levels):
         self.bbox = bbox
         self.levels = int(levels)
 
     def __repr__(self):
-        return 'QuadTree(%s,%s)' % (self.bbox,self.levels)
+        return 'QuadTree(%s,%s)' % (self.bbox, self.levels)
 
     '''
     returns resolution of QuadTree.
     Represents the extend of smallest square
     '''
+
     def resolution(self):
-        #assuming quadtree contains box which is a square
+        # assuming quadtree contains box which is a square
         return self.bbox.width() / math.pow(2, self.levels)
 
     '''
@@ -86,10 +91,11 @@ class QuadTree:
     returns empty string if point is not inside outer limits
     Note: returned key always has level length
     '''
+
     def xy_to_morton(self, x, y):
         res = '0'
         if not self.bbox.contains(x, y):
-           return ''
+            return ''
         curQuads = self.bbox.create_quads()
         for i in range(self.levels):
             for j in range(4):
@@ -104,6 +110,7 @@ class QuadTree:
     which contains _all_ points
     Note: returned key can have any length up to level
     '''
+
     def points_to_morton(self, points):
         def contains_all_points(bbox, points):
             return reduce(lambda res, p: (res and bbox.contains(p.x, p.y)),
@@ -133,7 +140,7 @@ class QuadTree:
     '''
     next 6 functions should deliver the same result
       -> the morton space key of the the quad that fully contains the bbox
-    functions written to 
+    functions written to
      a) verify different strategies (3 for each base algorithm)
      b) compare performance
     '''
@@ -142,6 +149,7 @@ class QuadTree:
     get key for each corner point of bounding box
     return key which is common to all results (from the start)
     '''
+
     def _getCommonKey(self, keys):
         res = ''
         for i in range(self.levels + 1):
@@ -154,18 +162,15 @@ class QuadTree:
                 return res
         return res
 
-       
-
     def _single_points_all(self, bbox):
         return self._getCommonKey(map(lambda i: self.xy_to_morton(bbox.pointAt(i).x, bbox.pointAt(i).y),
                                       range(4)))
-    
+
     def _single_points_dia1(self, bbox):
         return self._getCommonKey([self.xy_to_morton(bbox.pointAt(0).x,
                                                      bbox.pointAt(0).y),
                                    self.xy_to_morton(bbox.pointAt(2).x,
                                                      bbox.pointAt(2).y)])
-    
 
     def _single_points_dia2(self, bbox):
         return self._getCommonKey([self.xy_to_morton(bbox.pointAt(1).x,
@@ -178,9 +183,6 @@ class QuadTree:
 
     def _multi_points_dia1(self, bbox):
         return self.points_to_morton([bbox.pointAt(0), bbox.pointAt(2)])
-        
+
     def _multi_points_dia2(self, bbox):
         return self.points_to_morton([bbox.pointAt(1), bbox.pointAt(3)])
-        
-
-

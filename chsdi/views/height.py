@@ -11,21 +11,22 @@ log = logging.getLogger(__name__)
 # cache of GeoRaster instances in function of the layer name
 _rasters = {}
 
+
 class Height(HeightValidation):
 
     def __init__(self, request):
         super(Height, self).__init__()
-        if request.params.has_key('easting'):
+        if 'easting' in request.params:
             self.lon = request.params.get('easting')
         else:
             self.lon = request.params.get('lon')
-        if request.params.has_key('northing'):
+        if 'northing' in request.params:
             self.lat = request.params.get('northing')
         else:
             self.lat = request.params.get('lat')
-        if request.params.has_key('layers'):
+        if 'layers' in request.params:
             self.layers = request.params.get('layers')
-        elif request.params.has_key('elevation_model'):
+        elif 'elevation_model' in request.params:
             self.layers = request.params.get('elevation_model')
         else:
             self.layers = ['DTM25']
@@ -39,19 +40,23 @@ class Height(HeightValidation):
         return {'height': str(alt)}
 
     def _get_raster(self, layer):
-       result = _rasters.get(layer, None)
-       if not result:
+        result = _rasters.get(layer, None)
+        if not result:
             result = GeoRaster(self._get_raster_files()[layer])
             _rasters[layer] = result
-       return result
-
+        return result
 
     def _get_raster_files(self):
         """Returns the raster filename in function of its layer name"""
+        base_path = 'bund/swisstopo/'
         return {
-            'DTM25': self.request.registry.settings['data_path'] + 'bund/swisstopo/dhm25_25_matrix/mm0001.shp',
-            'DTM2': self.request.registry.settings['data_path'] + 'bund/swisstopo/swissalti3d/2m/index.shp',
-            'COMB': self.request.registry.settings['data_path'] + 'bund/swisstopo/swissalti3d/kombo_2m_dhm25/index.shp'
+            'DTM25': self.request.registry.settings[
+                'data_path'] + base_path + 'dhm25_25_matrix/mm0001.shp',
+            'DTM2': self.request.registry.settings[
+                'data_path'] + base_path + 'swissalti3d/2m/index.shp',
+            'COMB': self.request.registry.settings[
+                'data_path'] + base_path +
+            'swissalti3d/kombo_2m_dhm25/index.shp'
         }
 
     def _filter_alt(self, alt):
