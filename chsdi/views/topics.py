@@ -14,5 +14,5 @@ def topics(request):
         'langs': q.availableLangs,
         'defaultBackgroundLayer': q.defaultBackgroundLayer,
         'selectedLayers': q.selectedLayers
-        } for q in query]
+    } for q in query]
     return {'topics': results}
