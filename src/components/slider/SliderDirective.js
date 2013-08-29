@@ -149,7 +149,7 @@
             var barWidth, boundToInputs, dimensions, maxOffset, maxValue,
             minOffset, minValue, ngDocument, offsetRange, pointerHalfWidth,
             updateDOM, valueRange, w, _j, _len1;
-            
+
             // RE3
             var divisionWidth = 100 / (scope.ceiling - scope.floor);
             scope.assignDivisionStyle = function(index) {
@@ -191,7 +191,7 @@
               pointerHalfWidth = halfWidth(minPtr);
               barWidth = width(fullBar);
 
-              // Before RE3: minOffset = 0 
+              // Before RE3: minOffset = 0
               minOffset = 0 - pointerHalfWidth;
 
               // Before RE3: maxOffset = barWidth - width(minPtr);

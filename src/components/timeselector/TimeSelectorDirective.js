@@ -17,7 +17,7 @@
           $scope.isActive = false;
           $scope.stateClass = 'inactive';
           $scope.minYear = 1845;
-          $scope.maxYear = (new Date()).getFullYear() + 1 ;
+          $scope.maxYear = (new Date()).getFullYear() + 1;
           $scope.currentYear = $scope.maxYear; // User selected year
           $scope.years = []; //List of all possible years 1845 -> current year
           $scope.availableYears = []; // List of available years
