@@ -32,6 +32,24 @@
     background-color: rgba(255, 255, 255, 0.5);
   }
 }
+#copyrightsdata {
+  font-size: 11px;
+  position: absolute;
+  right: 0px;
+  bottom: 40px;
+  z-index: 1000;
+  background: rgba(255,255,255,.7);
+  border-radius: .2em 0 0 0;
+  padding: .2em .4em;
+  & > div {
+    display: inline-block;
+  }
+}
+@media (max-width: @screen-tablet) {
+  #copyrightsdata {
+    bottom: 20px;
+  }
+}
 
 .navbar {
   position: absolute;

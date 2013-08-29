@@ -72,16 +72,19 @@
       <div ng-controller="GaTooltipController">
         <div ga-tooltip ga-tooltip-map="map" ga-tooltip-options="options"></div>
       </div>
+      <div id="copyrightsdata">
+        <div>
+          <span >&copy;&nbsp;</span>
+          <span translate>data</span>
+        </div>
+        <div ga-attribution ga-attribution-map="map"></div>
+      </div>
     </div> <!-- #map -->
+
 
     <div id="footer" class="navbar navbar-fixed-bottom">
       <div id="scaleline" class="pull-left" ga-scale-line ga-scale-line-map="map"></div>
 % if device == 'desktop':
-      <div id="copyrightstext" class="pull-left">
-        <span >&copy;&nbsp;</span>
-        <span translate>data</span>
-      </div>
-      <div class="pull-left" ga-attribution ga-attribution-map="map"></div>
       <div id="mouseposition" class="pull-left visible-lg" ng-controller="GaMousePositionController">
         <select
           ng-model="options.projection"
@@ -261,11 +264,6 @@
               <div ga-background-layer-selector
                 ga-background-layer-selector-map="map"></div>
             <hr>
-            <div id="copyrightstext" class="pull-left">
-              <span >&copy;&nbsp;</span>
-              <span translate>data</span>
-            </div>
-            <div ga-attribution ga-attribution-map="map"></div>
             <p>
               <a href="http://www.geo.admin.ch/internet/geoportal/en/home/geoadmin/contact.html#copyright">Copyright & data protection</a>
               <br>
