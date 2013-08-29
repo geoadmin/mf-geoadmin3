@@ -102,7 +102,7 @@
       compile: function(element, attributes) {
         var ceilBub, cmbBub, e, flrBub, fullBar, highBub, lowBub, maxPtr,
             minPtr, range, refHigh, refLow, selBar, selBub, watchables,
-            _i, _leno, _ref, _ref1;
+            _i, _len, _ref, _ref1;
 
         if (attributes.translate2) {
           attributes.$set('translate2', '' + attributes.translate2 + '(value)');
@@ -205,7 +205,8 @@
             };
             updateDOM = function() {
               var adjustBubbles, bindToInputEvents, fitToBar, percentOffset,
-               percentToOffset, percentValue, setBindings, setPointers;
+               percentToOffset, percentToOffsetInt, percentValue, setBindings,
+               setPointers;
 
               dimensions();
               percentOffset = function(offset) {
