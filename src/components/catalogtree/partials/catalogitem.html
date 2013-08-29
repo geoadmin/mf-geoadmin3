@@ -17,9 +17,9 @@
       <i ng-class="{'icon-minus': item.selectedOpen, 'icon-plus': !item.selectedOpen}"></i>
       {{item.label}}
     </a>
-    <ul ng-class="{closed: !item.selectedOpen}">
+    <ul ng-if="item.selectedOpen">
       <li ng-repeat="child in item.children">
-      <div ga-catalogitem ga-catalogitem-item="child" ga-catalogitem-map="map"></div>
+        <div ga-catalogitem ga-catalogitem-item="child" ga-catalogitem-map="map"></div>
       </li>
     </ul>
   </div>
