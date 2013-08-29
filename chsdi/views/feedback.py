@@ -6,6 +6,7 @@ from pyramid.httpexceptions import HTTPInternalServerError
 from smtplib import SMTPException
 
 
+# http://kutuma.blogspot.com/2007/08/sending-emails-via-gmail-with-python.html
 @view_config(route_name='feedback', renderer='json')
 def feedback(self, request):
     defaultRecipient = 'webgis@swisstopo.ch'
@@ -14,7 +15,7 @@ def feedback(self, request):
     def getParam(param, defaultValue):
         val = request.params.get(param, defaultValue)
         val = val if val != '' else defaultValue
-        return val 
+        return val
 
     def mail(to, subject, text):
         from email.MIMEMultipart import MIMEMultipart
@@ -24,12 +25,14 @@ def feedback(self, request):
         import unicodedata
         import smtplib
 
-        # http://kutuma.blogspot.com/2007/08/sending-emails-via-gmail-with-python.html
         msg = MIMEMultipart()
 
         msg['To'] = to
         msg['Subject'] = subject
-        msg.attach(MIMEText(unicodedata.normalize('NFKD',unicode(text)).encode('ascii','ignore')))
+        msg.attach(
+            MIMEText(unicodedata.normalize('NFKD',
+                                           unicode(text)).encode('ascii',
+                                                                 'ignore')))
 
         mailServer = smtplib.SMTP('127.0.0.1', 25)
         mailServer.ehlo()
@@ -39,16 +42,17 @@ def feedback(self, request):
         mailServer.sendmail(to, to, msg.as_string())
         mailServer.close()
 
-    ua = getParam('ua','no user-agent found')
+    ua = getParam('ua', 'no user-agent found')
     permalink = getParam('permalink', 'No permalink provided')
     feedback = getParam('feedback', 'No feedback provided')
     email = getParam('email', 'Anonymous')
+    text = '%s just sent a feedback:\n %s. \nPermalink: %s. \n\nUser-Agent: %s'
 
     try:
         mail(
-          defaultRecipient,
-          defaultSubject,
-          '%s just sent a feedback:\n %s. \nPermalink: %s. \n\nUser-Agent: %s' %(email, feedback, permalink, ua)
+            defaultRecipient,
+            defaultSubject,
+            text % (email, feedback, permalink, ua)
         )
     except SMTPException:
         raise HTTPInternalServerError()
