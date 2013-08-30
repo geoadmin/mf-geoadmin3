@@ -5,7 +5,7 @@
     ng-mouseover="addPreviewLayer()"
     ng-mouseleave="removePreviewLayer()">
     <label>
-      <input type="checkbox" ng-model="item.selectedOpen">
+      <input type="checkbox" ng-model="item.selectedOpen" ng-change="toggleLayer()">
       {{item.label}}
     </label>
     <i class="icon-warning-sign" ng-show="item.errorLoading"></i>

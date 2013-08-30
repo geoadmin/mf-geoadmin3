@@ -34,14 +34,6 @@
     }
   }
 
-  function removeLayer(map, layer) {
-    if (!layer.preview) {
-      map.removeLayer(layer);
-    } else {
-      layer.preview = false;
-    }
-  }
-
   var module = angular.module('ga_catalogitem_directive', [
     'ga_layer_metadata_popup_service',
     'ga_map_service'
@@ -76,11 +68,10 @@
               scope.removePreviewLayer = removePreviewLayer;
               scope.inPreviewMode = inPreviewMode;
 
-              // Only watch for leaves (layers)
-              if (scope.item.children === undefined) {
-                scope.$watch('item.selectedOpen', function() {
-                  scope.toggleLayer();
-                });
+              // Add active layer initially
+              if (scope.item.children === undefined &&
+                  scope.item.selectedOpen) {
+                addLayer(scope.map, scope.item, gaLayers);
               }
 
               compiledContent(scope, function(clone, scope) {
@@ -138,12 +129,12 @@
           var map = this.map;
           var layer = getMapLayer(map, item.idBod);
           if (!angular.isDefined(layer)) {
-            if (item.selectedOpen === true) {
-              addLayer(map, item, gaLayers);
-            }
+            addLayer(map, item, gaLayers);
           } else {
-            if (item.selectedOpen === false) {
-              removeLayer(map, layer);
+            if (!layer.preview) {
+              map.removeLayer(layer);
+            } else {
+              layer.preview = false;
             }
           }
         }
