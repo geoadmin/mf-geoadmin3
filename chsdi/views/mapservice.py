@@ -20,7 +20,8 @@ class MapService(MapServiceValidation):
 
     def __init__(self, request):
         super(MapService, self).__init__()
-        self.mapName = request.matchdict.get('map')  # The topic
+        # Map and topic represents the same resource in chsdi
+        self.mapName = request.matchdict.get('map')
         self.hasMap(request.db, self.mapName)
         self.cbName = request.params.get('callback')
         self.lang = locale_negotiator(request)
@@ -79,8 +80,7 @@ class MapService(MapServiceValidation):
         )
         if self.cbName is None:
             return response
-        else:
-            return response.body
+        return response.body
 
     # order matters, last route is the default!
     @view_config(route_name='identify', renderer='geojson',
@@ -130,8 +130,7 @@ class MapService(MapServiceValidation):
             request=self.request)
         if self.cbName is None:
             return response
-        else:
-            return response.body
+        return response.body
 
     def _get_feature_resource(self):
         idfeature = self.request.matchdict.get('idfeature')
