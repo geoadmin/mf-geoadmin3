@@ -108,6 +108,7 @@ prod/info.json: src/info.json
 src/deps.js: $(SRC_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
 	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root_with_prefix="src/components components" --root_with_prefix="src/js js" --output_file=$@
 
+# WARNING: --line-numbers=mediaquery doesn't work on IE9, remove this option if you want debug RE3 in dev mode
 src/style/app.css: src/style/app.less src/style/ga_bootstrap.less src/style/ga_variables.less $(SRC_COMPONENTS_LESS_FILES) node_modules .build-artefacts/bootstrap
 	node_modules/.bin/lessc --line-numbers=mediaquery -ru $< $@
 
