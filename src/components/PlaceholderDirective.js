@@ -27,7 +27,7 @@
         }
         var elm = $(element);
         var isPlaceHolderDisplayed;
-         
+
         var displayPlaceholder = function(elt) {
             elt.val(elt.attr('placeholder'));
             elt.css('color', 'darkgray');
@@ -39,8 +39,8 @@
             elt.css('color', 'inherit');
             isPlaceHolderDisplayed = false;
         };
-        
-        $timeout(function(){
+
+        $timeout(function() {
           displayPlaceholder(elm);
           elm.focus(function(evt) {
             var elt = $(evt.target);
@@ -54,11 +54,11 @@
             }
           });
         });
-          
+
         scope.$on('translationChangeSuccess', function(obj) {
-          $timeout(function(){
+          $timeout(function() {
             if (isPlaceHolderDisplayed) {
-              displayPlaceholder(elm);  
+              displayPlaceholder(elm);
             }
           });
         });
