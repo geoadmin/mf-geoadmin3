@@ -25,7 +25,7 @@
         if (attrs.type === 'password') {
           return;
         }
-//        var elm = $(element);
+        
         var isPlaceHolderDisplayed;
 
         var displayPlaceholder = function(elt) {
