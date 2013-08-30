@@ -134,18 +134,25 @@ class MapService(MapServiceValidation):
     def _get_feature_resource(self):
         idfeature = self.request.matchdict.get('idfeature')
         idlayer = self.request.matchdict.get('idlayer')
+
+        layerName = self.translate(idlayer)
         model = validateLayerId(idlayer)[0]
         query = self.request.db.query(model).filter(model.id == idfeature)
+
         if self.returnGeometry:
             feature = [f.__geo_interface__ for f in query]
         else:
             feature = [f.__interface__ for f in query]
+
+        if hasattr(feature, 'extra'):
+            feature.extra['layerName'] = layerName
         feature = {
             'feature': feature.pop(
             )} if len(
             feature) > 0 else exc.HTTPBadRequest(
             'No feature with id %s' %
             idfeature)
+
         template = model.__template__
         return feature, template
 
@@ -174,9 +181,13 @@ class MapService(MapServiceValidation):
         for query in queries:
             for feature in query:
                 if self.returnGeometry:
-                    yield feature.__geo_interface__
+                    f = feature.__geo_interface__
                 else:
-                    yield feature.__interface__
+                    f = feature.__interface__
+                if hasattr(f, 'extra'):
+                    layerBodId = f.extra['layerBodId']
+                    f.extra['layerName'] = self.translate(layerBodId)
+                yield f
 
     def _build_queries(self, models):
         for layer in models:

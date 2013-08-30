@@ -38,7 +38,6 @@ class Vector(GeoInterface):
     def __geo_interface__(self):
         feature = self.__read__()
         display_column = self.display_field().name
-        layername = ''
         shape = None
         try:
             shape = asShape(feature.geometry)
@@ -52,7 +51,7 @@ class Vector(GeoInterface):
             # For ESRI
             layerId=self.__esriId__,
             layerBodId=self.__bodId__,
-            layerName=layername,
+            layerName='',
             featureId=self.id,
             value=getattr(self, display_column) if display_column != '' else '',
             displayFieldName=display_column,
@@ -65,7 +64,7 @@ class Vector(GeoInterface):
         return {
             "layerId": self.__esriId__,
             "layerBodId": self.__bodId__,
-            "layerName": "",
+            "layerName": '',
             "featureId": self.id,
             "value": getattr(self, display_column) if display_column != '' else '',
             "displayFieldName": display_column,

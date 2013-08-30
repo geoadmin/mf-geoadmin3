@@ -297,6 +297,7 @@ class SearchValidation(MapNameValidation):
 
 
 def validateLayerId(idlayer):
+    # Returns a list of models of a given layer
     models = models_from_name(idlayer)
     if models is None:
         raise exc.HTTPBadRequest('Please provide a valid layer Id (what you provided: %s)' % idlayer)
