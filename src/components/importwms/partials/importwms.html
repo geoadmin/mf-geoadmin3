@@ -45,7 +45,7 @@
   </div>
   <div class="description-container">
     <label translate>description</label>
-    <textarea  placeholder="{{'description_instructions' | translate}}" class="form-control">
+    <textarea  placeholder="{{'description_instructions' | translate}}" class="form-control" readonly>
 {{(layerSelected) ? layerSelected.abstract : layerHovered.abstract}}
     </textarea>
     <button type="button" class="btn btn-default bt-addlayer" ng-click="addLayerSelected()" translate>add_layer</button>
