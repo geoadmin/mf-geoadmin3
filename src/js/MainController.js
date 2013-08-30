@@ -18,6 +18,10 @@
       controls: ol.control.defaults({
         attribution: false
       }),
+      interactions: ol.interaction.defaults({
+        altShiftDragRotate: false,
+        touchRotate: false
+      }),
       renderer: ol.RendererHint.CANVAS,
       view: new ol.View2D({
         projection: swissProjection,
