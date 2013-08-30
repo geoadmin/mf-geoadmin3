@@ -21,20 +21,44 @@
     }
 
     return {
-      link: function(scope, elm, attrs) {
+      link: function(scope, element, attrs) {
         if (attrs.type === 'password') {
           return;
         }
-        $timeout(function() {
-          $(elm).val(attrs.placeholder).focus(function(evt) {
+        var elm = $(element);
+        var isPlaceHolderDisplayed;
+         
+        var displayPlaceholder = function(elt) {
+            elt.val(elt.attr('placeholder'));
+            elt.css('color', 'darkgray');
+            isPlaceHolderDisplayed = true;
+        };
+
+        var hidePlaceholder = function(elt) {
+            elt.val('');
+            elt.css('color', 'inherit');
+            isPlaceHolderDisplayed = false;
+        };
+        
+        $timeout(function(){
+          displayPlaceholder(elm);
+          elm.focus(function(evt) {
             var elt = $(evt.target);
-            if (elt.val() == elt.attr('placeholder')) {
-              elt.val('');
+            if (isPlaceHolderDisplayed) {
+              hidePlaceholder(elt);
             }
           }).blur(function(evt) {
             var elt = $(evt.target);
             if (elt.val() == '') {
-              elt.val(elt.attr('placeholder'));
+              displayPlaceholder(elt);
+            }
+          });
+        });
+          
+        scope.$on('translationChangeSuccess', function(obj) {
+          $timeout(function(){
+            if (isPlaceHolderDisplayed) {
+              displayPlaceholder(elm);  
             }
           });
         });
