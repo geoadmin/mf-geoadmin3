@@ -15,16 +15,6 @@
       ['$http', '$translate', 'gaLayers',
       function($http, $translate, gaLayers) {
 
-        // FIXME: same filter as in LayerManagerDirective. Best would
-        // be to centralize this filter
-        var layerFilter = function(layer) {
-          var id = layer.get('id');
-          var isBackground = !!gaLayers.getLayer(id) &&
-              gaLayers.getLayerProperty(id, 'background');
-          var isPreview = layer.preview;
-          return !isBackground && !isPreview;
-        };
-
         var deselectInTree = function(node, id) {
           if (angular.isDefined(node.idBod) &&
               node.idBod === id) {
@@ -48,6 +38,7 @@
           },
           link: function(scope, element, attrs) {
             var currentTopic,
+                layerFilter = gaLayers.getLayerFilterFunction(),
                 updateCatalogTree = function() {
               if (angular.isDefined(currentTopic)) {
                 var url = scope.options.catalogUrlTemplate
