@@ -12,14 +12,18 @@
       <thead>
         <tr>
           <th class="add col-first"></th>
-          <th class="title" translate>title</th>
+          <th class="title {{(reverse)? 'desc' : 'asc'}}" ng-click="reverse = !reverse">
+            <span class="pull-left" translate>title</span>
+            <i class="pull-right icon-sort-by-alphabet"></i>
+            <i class="pull-right icon-sort-by-alphabet-alt"></i>
+          </th>
         </tr>
       </thead>
     </table>
     <div class="table-content-container">
       <table class="table-content table table-striped table-hover table-condensed">
         <tbody>
-          <tr ng-repeat="layer in layers | orderBy:'title'"
+          <tr ng-repeat="layer in layers | orderBy:'title':reverse"
             class="
             {{($first) ? 'row-first ' : ''}}
             {{(layerSelected.name == layer.name) ? 'success ' : ''}}
