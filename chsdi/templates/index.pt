@@ -24,7 +24,7 @@
       <h2 id="checkers">Checkers</h2>
           <a href="checker_home">Checker for home</a> <br>     
       <h2 id="mapservices">Map Services</h2> 
-          <h3>Topics</h3>
+          <h3>Mapservice (Layer metadata)</h3>
           <a href="rest/services/ech/MapServer">Topic (ech)</a> <br>
           <a href="rest/services/ech/MapServer?searchText=bern">Topic with fulltext search on the column "volltextsuche"</a> <br>
           <h3>Identify</h3>
