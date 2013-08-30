@@ -15,29 +15,6 @@
       ['$http', '$translate', 'gaLayers',
       function($http, $translate, gaLayers) {
 
-        // FIXME: same filter as in LayerManagerDirective. Best would
-        // be to centralize this filter
-        var layerFilter = function(layer) {
-          var id = layer.get('id');
-          var isBackground = !!gaLayers.getLayer(id) &&
-              gaLayers.getLayerProperty(id, 'background');
-          var isPreview = layer.preview;
-          return !isBackground && !isPreview;
-        };
-
-        var deselectInTree = function(node, id) {
-          if (angular.isDefined(node.idBod) &&
-              node.idBod === id) {
-            node.selectedOpen = false;
-          }
-          if (node.children) {
-            for (var i = 0; i < node.children.length; i++) {
-              deselectInTree(node.children[i], id);
-            }
-          }
-        };
-
-
         return {
           restrict: 'A',
           replace: true,
@@ -95,9 +72,27 @@
                 deselectInTree(scope.root, layer.get('id'));
               }
             });
-
           }
         };
+
+        function layerFilter(layer) {
+          var id = layer.get('id');
+          var isBackground = !!gaLayers.getLayer(id) &&
+              gaLayers.getLayerProperty(id, 'background');
+          var isPreview = layer.preview;
+          return !isBackground && !isPreview;
+        }
+
+        function deselectInTree(node, id) {
+          if (node.idBod == id) {
+            node.selectedOpen = false;
+          } else if (node.children) {
+            for (var i = 0; i < node.children.length; i++) {
+              deselectInTree(node.children[i], id);
+            }
+          }
+        }
+
       }]
   );
 })();
