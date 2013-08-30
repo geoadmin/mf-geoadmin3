@@ -54,8 +54,7 @@
             }
           });
         });
-
-        scope.$on('translationChangeSuccess', function(obj) {
+        attrs.$observe('placeholder', function() {
           $timeout(function() {
             if (isPlaceHolderDisplayed) {
               displayPlaceholder(elm);
