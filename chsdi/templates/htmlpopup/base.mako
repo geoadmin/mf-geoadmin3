@@ -3,12 +3,12 @@
 <% 
   c = pageargs['feature']
   lang = request.lang
-  layerBodId = c.get('layerBodId')
-  layerName = request.translate(layerBodId)
+  attribution = pageargs.get('attribution')
+  fullName = pageargs.get('fullName')
 %>
 
 <div class="htmlpopup_header">
-  <span style="font-weight:bold;">${layerName}</span>
+  <span style="font-weight:bold;">${fullName}</span> (${attribution})
 </div>
 <div class="htmlpopup_footer">
   <span style="font-weight:bold;">${_('Information')}</span>
