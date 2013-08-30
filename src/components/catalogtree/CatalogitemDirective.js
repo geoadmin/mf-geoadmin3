@@ -85,8 +85,8 @@
           var map = this.map;
           var layer = getMapLayer(map, item.idBod);
           if (angular.isDefined(layer) && layer.preview) {
-            layer.preview = false;
             map.removeLayer(layer);
+            layer.preview = false;
           }
         }
 
