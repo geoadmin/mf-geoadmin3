@@ -128,5 +128,7 @@
   "ech_service_link_href": "",
   "ech_help_link_href": "",
   "ech_page_title": "",
-  "ech_page_header": ""
+  "ech_page_header": "",
+  "mobile_redirect": "",
+  "desktop_redirect": ""
 }

@@ -58,6 +58,7 @@
         <div id="toptools">
           <a href="#feedback" data-toggle="modal" translate>problem_announcement</a>&nbsp;&nbsp;
           <a target="_blank" ng-href="{{topicId + '_help_link_href' | translate}}" translate>help</a>&nbsp;&nbsp;
+          <a ng-href="{{deviceSwitcherHref}}" translate>mobile_redirect</a>&nbsp;&nbsp;
           <div ng-controller="GaTranslationController">
             <div ga-translation-selector
               ga-translation-selector-options="options"></div>
@@ -264,7 +265,7 @@
           <div id="settings" class="collapse">
             <div class="panel-body">
               <p>
-                <a ng-href="{{desktopHref}}">desktop_redirect</a>
+                <a ng-href="{{deviceSwitcherHref}}">desktop_redirect</a>
               </p>
               <div ng-controller="GaTranslationController">
                 <div ga-translation-selector ga-translation-selector-options="options"></div>

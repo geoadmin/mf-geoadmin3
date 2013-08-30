@@ -39,8 +39,10 @@
    * The application's main controller.
    */
 module.controller('GaMainController',
-    ['$scope', '$rootScope', '$translate', 'gaPermalink',
-    function($scope, $rootScope, $translate, gaPermalink) {
+    ['$scope', '$rootScope', '$translate', 'gaPermalink', 'gaBrowserSniffer',
+    function($scope, $rootScope, $translate, gaPermalink, gaBrowserSniffer) {
+
+      var mobile = (gaBrowserSniffer.mobile) ? 'false' : 'true';
 
       // The main controller creates the OpenLayers map object. The map object
       // is central, as most directives/components need a reference to it. So
@@ -54,9 +56,9 @@ module.controller('GaMainController',
         $scope.langId = $translate.uses();
       });
 
-      $scope.desktopHref = gaPermalink.getHref({ mobile: 'false' });
+      $scope.deviceSwitcherHref = gaPermalink.getHref({ mobile: mobile });
       $rootScope.$on('gaPermalinkChange', function() {
-        $scope.desktopHref = gaPermalink.getHref({ mobile: 'false' });
+        $scope.deviceSwitcherHref = gaPermalink.getHref({ mobile: mobile });
       });
 
   }]);
