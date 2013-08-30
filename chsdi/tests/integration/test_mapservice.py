@@ -81,7 +81,7 @@ class TestMapServiceView(TestsBase):
         resp.mustcontain('Please provide a valid layer Id')
 
     def test_getfeature_wrong_idfeature(self):
-        resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/0', status=400)
+        resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/0', status=404)
         resp.mustcontain('No feature with id')
 
     def test_getfeature_valid(self):

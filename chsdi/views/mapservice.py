@@ -65,12 +65,14 @@ class MapService(MapServiceValidation):
             model.maps.ilike('%%%s%%' % self.mapName)
         )
         query = query.filter(model.idBod == idlayer)
+
         try:
             layer = query.one()
         except NoResultFound:
             raise exc.HTTPNotFound('No layer with id %s' % idlayer)
         except MultipleResultsFound:
             raise exc.HTTPInternalServerError()
+
         legend = {'layer': layer.layerMetadata()}
         response = render_to_response(
             'chsdi:templates/legend.mako', legend, request=self.request
@@ -139,19 +141,21 @@ class MapService(MapServiceValidation):
         model = validateLayerId(idlayer)[0]
         query = self.request.db.query(model).filter(model.id == idfeature)
 
+        try:
+            feature = query.one()
+        except NoResultFound:
+            raise exc.HTTPNotFound('No feature with id %s' % idfeature)
+        except MultipleResultsFound:
+            raise exc.HTTPInternalServerError()
+
         if self.returnGeometry:
-            feature = [f.__geo_interface__ for f in query]
+            feature = feature.__geo_interface__
         else:
-            feature = [f.__interface__ for f in query]
+            feature = feature.__interface__
 
         if hasattr(feature, 'extra'):
             feature.extra['layerName'] = layerName
-        feature = {
-            'feature': feature.pop(
-            )} if len(
-            feature) > 0 else exc.HTTPBadRequest(
-            'No feature with id %s' %
-            idfeature)
+        feature = {'feature': feature}
 
         template = model.__template__
         return feature, template
