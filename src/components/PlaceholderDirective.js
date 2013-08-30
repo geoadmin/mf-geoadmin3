@@ -54,12 +54,11 @@
             }
           });
         });
+
         attrs.$observe('placeholder', function() {
-          $timeout(function() {
-            if (isPlaceHolderDisplayed) {
-              displayPlaceholder(elm);
-            }
-          });
+          if (isPlaceHolderDisplayed) {
+            displayPlaceholder(elm);
+          }
         });
       }
     };
