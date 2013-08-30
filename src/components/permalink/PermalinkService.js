@@ -122,7 +122,7 @@
               $rootScope.$evalAsync(function() {
                 lastHref = newHref;
                 gaHistory.replaceState(null, '', newHref);
-                $rootScope.$broadcast('gaPermalinkChange', newHref);
+                $rootScope.$broadcast('gaPermalinkChange');
               });
             }
           });

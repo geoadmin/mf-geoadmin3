@@ -58,7 +58,6 @@
         <div id="toptools">
           <a target="_blank" ng-href="{{topicId + '_help_link_href' | translate}}" translate>help</a>
           <a href="#feedback" data-toggle="modal" translate>problem_announcement</a>
-          <a ng-href="{{deviceSwitchHref}}" translate>mobile</a>
           <div ng-controller="GaTranslationController">
             <div ga-translation-selector
               ga-translation-selector-options="options"></div>
@@ -427,13 +426,7 @@
 
          module.constant('gaGlobalOptions',
            {serviceUrl : '${service_url}',
-            baseUrlPath: '${base_url_path}',
-% if device == 'desktop':
-            device: 'desktop'
-% else:
-            device: 'mobile'
-% endif
-            });
+            baseUrlPath: '${base_url_path}'});
 
           module.config(['gaLayersProvider', function(gaLayersProvider) {
             gaLayersProvider.wmtsGetTileUrlTemplate =
