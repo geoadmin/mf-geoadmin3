@@ -90,7 +90,7 @@
            });
 
             scope.map.getLayers().on('remove', function(evt) {
-              var layer = evt.elem;
+              var layer = evt.getElement();
               if (layerFilter(layer)) {
                 deselectInTree(scope.root, layer.get('id'));
               }
