@@ -22,5 +22,11 @@ describe('ga_share_directive', function() {
       expect(icon.length).to.be(5);
   });
 
+  it('checks the permalink value', function() {
+      var input = element.find('input');
+      expect(input.length).to.be(1);
+      expect(input[0].value).to.contain('http://');
+  });
+
  });
 
