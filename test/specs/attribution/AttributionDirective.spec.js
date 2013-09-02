@@ -14,6 +14,7 @@ describe('ga_attribution_directive', function() {
     });
 
     element = angular.element(
+      '<div id="map"></div>' +
       '<div ga-attribution ga-attribution-map="map"></div>');
 
     inject(function($rootScope, $compile) {
@@ -21,6 +22,7 @@ describe('ga_attribution_directive', function() {
       $rootScope.map = map;
 
       $compile(element)($rootScope);
+      map.setTarget(element.find('#map')[0]);
       $rootScope.$digest();
     });
 
@@ -36,11 +38,7 @@ describe('ga_attribution_directive', function() {
 
   describe('add layer', function() {
     it('fills the attribution', function() {
-      inject(function($rootScope) {
-        $rootScope.$apply(function() {
-          map.addLayer(layer1);
-        });
-      });
+      map.addLayer(layer1);
       var ul = element.find('ul');
       expect(ul[0].innerHTML).to.contain('OpenStreetMap');
     });
