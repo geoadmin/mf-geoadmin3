@@ -30,13 +30,7 @@
 
             // layerFilter is the ngRepeat filter. We filter out background
             // layers and preview layers.
-            scope.layerFilter = function(layer) {
-              var id = layer.get('id');
-              var isBackground = !!gaLayers.getLayer(id) &&
-                  gaLayers.getLayerProperty(id, 'background');
-              var isPreview = layer.preview;
-              return !isBackground && !isPreview;
-            };
+            scope.layerFilter = gaLayers.getLayerFilterFunction();
 
             scope.getLayerLabel = function(layer) {
               var id = layer.get('id');

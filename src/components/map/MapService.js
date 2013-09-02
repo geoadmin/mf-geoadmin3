@@ -206,6 +206,22 @@
           var url = getMetaDataUrl(currentTopicId, id, $translate.uses());
           return $http.jsonp(url);
         };
+
+        /**
+         * Gets a filter function to filter out layers which
+         * are 'managable'. Could be extended to return
+         * different kinds of filters, or a combination of filters.
+         */
+        this.getLayerFilterFunction = function() {
+          var self = this;
+          return function(layer) {
+            var id = layer.get('id');
+            var isBackground = !!self.getLayer(id) &&
+                self.getLayerProperty(id, 'background');
+            var isPreview = layer.preview;
+            return !isBackground && !isPreview;
+          }
+        };
       };
 
       return new Layers(this.wmtsGetTileUrlTemplate,

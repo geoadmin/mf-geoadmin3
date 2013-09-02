@@ -1,7 +1,10 @@
 (function() {
   goog.provide('ga_catalogtree_directive');
 
+  goog.require('ga_map_service');
+
   var module = angular.module('ga_catalogtree_directive', [
+    'ga_map_service',
     'pascalprecht.translate'
   ]);
 
@@ -9,8 +12,22 @@
    * See examples on how it can be used
    */
   module.directive('gaCatalogtree',
-      ['$http', '$translate',
-      function($http, $translate) {
+      ['$http', '$translate', 'gaLayers',
+      function($http, $translate, gaLayers) {
+
+        var deselectInTree = function(node, id) {
+          if (angular.isDefined(node.idBod) &&
+              node.idBod === id) {
+            node.selectedOpen = false;
+          }
+          if (node.children) {
+            for (var i = 0; i < node.children.length; i++) {
+              deselectInTree(node.children[i], id);
+            }
+          }
+        };
+
+
         return {
           restrict: 'A',
           replace: true,
@@ -21,6 +38,7 @@
           },
           link: function(scope, element, attrs) {
             var currentTopic,
+                layerFilter = gaLayers.getLayerFilterFunction(),
                 updateCatalogTree = function() {
               if (angular.isDefined(currentTopic)) {
                 var url = scope.options.catalogUrlTemplate
@@ -46,6 +64,13 @@
               currentTopic = topic.id;
               updateCatalogTree();
            });
+
+            scope.map.getLayers().on('remove', function(evt) {
+              var layer = evt.elem;
+              if (layerFilter(layer)) {
+                deselectInTree(scope.root, layer.get('id'));
+              }
+            });
 
           }
         };
