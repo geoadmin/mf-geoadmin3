@@ -49,6 +49,13 @@
               map.removeLayer(layer);
             };
 
+            scope.moveLayer = function(layer, delta) {
+              var index = scope.layers.indexOf(layer);
+              var layersCollection = scope.map.getLayers();
+              layersCollection.removeAt(index);
+              layersCollection.insertAt(index + delta, layer);
+            };
+
           }
         };
       }]
