@@ -4,6 +4,15 @@ describe('ga_contextpopup_directive', function() {
   var handlers = {};
 
   beforeEach(function() {
+
+    module(function($provide) {
+      $provide.value('gaBrowserSniffer', {
+        msie: false,
+        mobile: false,
+        phone: false
+      });
+    });
+
     element = angular.element(
       '<div>' +
         '<div ga-context-popup ga-context-popup-map="map" ga-context-popup-options="options"></div>' +

@@ -52,8 +52,8 @@
                 var coord4326 = ol.proj.transform(coord21781,
                     'EPSG:21781', 'EPSG:4326');
 
-                // recenter on mobile devices
-                if (gaBrowserSniffer.mobile) {
+                // recenter on phones
+                if (gaBrowserSniffer.phone) {
                   var pan = ol.animation.pan({
                     duration: 200,
                     source: view.getCenter()
