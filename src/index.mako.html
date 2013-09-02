@@ -112,11 +112,7 @@
 
 
     <div id="pulldown">
-% if device == 'desktop':
-      <div id="pulldown-content" class="panel-group content in">
-% else:
-      <div id="pulldown-content" class="panel-group content collapse" data-toggle="collapse">
-% endif
+      <div id="pulldown-content" class="panel-group content ${"in" if device == "desktop" else "collapse"}">
         <div class="panel">
           <a class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#share">
             <i class="visible-collapsed icon-caret-right spacer"></i>
