@@ -10,8 +10,10 @@
       <span translate>transparency</span>&nbsp; <input type="range" />
     </label>
     <div class="ordering">
-      <a href="#" class="icon-arrow-up"></a>
-      <a href="#" class="icon-arrow-down"></a>
+      <a href="#" class="icon-arrow-up" ng-if="!$first" ng-click="moveLayer(layer, -1)"></a>
+      <i class="icon-arrow-up" ng-if="$first"></i>
+      <a href="#" class="icon-arrow-down" ng-if="!$last" ng-click="moveLayer(layer, 1)"></a>
+      <i class="icon-arrow-down" ng-if="$last"></i>
     </div>
   </li>
 </ul>
