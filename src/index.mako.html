@@ -70,9 +70,6 @@
 
     <div id="map" class="map" ga-map ga-map-map="map">
       <div ga-geolocation ga-geolocation-map="map"></div>
-      <div ng-controller="GaTooltipController">
-        <div ga-tooltip ga-tooltip-map="map" ga-tooltip-options="options"></div>
-      </div>
       <div id="copyrightsdata">
         <div>
           <span >&copy;&nbsp;</span>
@@ -111,6 +108,9 @@
       <div ga-context-popup ga-context-popup-map="map" ga-context-popup-options="options"></div>
     </div>
 
+    <div ng-controller="GaTooltipController">
+      <div ga-tooltip ga-tooltip-map="map" ga-tooltip-options="options"></div>
+    </div>
 
     <div id="pulldown">
       <div id="pulldown-content" class="panel-group content ${"in" if device == "desktop" else "collapse"}">

@@ -1,8 +1,27 @@
-.tooltip-separator {
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
-  margin-top: 4px;
-  margin-bottom: 4px;
-  border-bottom-color: #c7c7c7;
+@tooltip-width: 450;
+@tooltip-height: 600;
+
+.ga-tooltip {
+  width: unit(@tooltip-width, px);
+  max-width: unit(@tooltip-width, px);
+  max-height: unit(@tooltip-height, px);
+
+  .popover-content {
+    padding-right: 0px;
+  }
+
+  td {
+    padding-right: 14px;
+  }
+
+
+  .tooltip-separator {
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    border-bottom-color: #c7c7c7;
+  }
 }
+
 
