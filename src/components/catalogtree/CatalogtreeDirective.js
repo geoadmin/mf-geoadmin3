@@ -1,7 +1,10 @@
 (function() {
   goog.provide('ga_catalogtree_directive');
 
+  goog.require('ga_map_service');
+
   var module = angular.module('ga_catalogtree_directive', [
+    'ga_map_service',
     'pascalprecht.translate'
   ]);
 
@@ -9,8 +12,9 @@
    * See examples on how it can be used
    */
   module.directive('gaCatalogtree',
-      ['$http', '$translate',
-      function($http, $translate) {
+      ['$http', '$translate', 'gaLayers',
+      function($http, $translate, gaLayers) {
+
         return {
           restrict: 'A',
           replace: true,
@@ -62,8 +66,36 @@
               updateCatalogTree(false);
            });
 
+            scope.map.getLayers().on('remove', function(evt) {
+              var layer = evt.getElement();
+              if (layerFilter(layer)) {
+                deselectInTree(scope.root, layer.get('id'));
+              }
+            });
           }
         };
+
+        function layerFilter(layer) {
+          // Note: This filter likely will be changed once
+          // we address #342 as this will impact how we
+          // determine backgound layers
+          var id = layer.get('id');
+          var isBackground = !!gaLayers.getLayer(id) &&
+              gaLayers.getLayerProperty(id, 'background');
+          var isPreview = layer.preview;
+          return !isBackground && !isPreview;
+        }
+
+        function deselectInTree(node, id) {
+          if (node.idBod == id) {
+            node.selectedOpen = false;
+          } else if (node.children) {
+            for (var i = 0; i < node.children.length; i++) {
+              deselectInTree(node.children[i], id);
+            }
+          }
+        }
+
       }]
   );
 })();
