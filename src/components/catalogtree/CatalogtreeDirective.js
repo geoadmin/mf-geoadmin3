@@ -29,41 +29,42 @@
             // This assumes that both trees contain the same
             // elements, but with different values
             var retainTreeState = function(oldTree, newTree) {
+              var i;
               newTree.selectedOpen = oldTree.selectedOpen;
               if (newTree.children) {
-                for (var i = 0; i < newTree.children.length; i++) {
+                for (i = 0; i < newTree.children.length; i++) {
                   retainTreeState(oldTree.children[i], newTree.children[i]);
                 }
               }
             };
 
-            var updateCatalogTree = function(retainState) {
-              if (angular.isDefined(currentTopic)) {
-                var url = scope.options.catalogUrlTemplate
-                    .replace('{Topic}', currentTopic);
-                $http.jsonp(url, {
-                  params: {
-                    'lang': $translate.uses(),
-                    'callback': 'JSON_CALLBACK'
-                  }
-                }).success(function(data, status, header, config) {
-                  if (retainState) {
-                    retainTreeState(scope.root, data.results.root);
-                  }
-                  scope.root = data.results.root;
-                }).error(function(data, status, headers, config) {
-                  scope.root = undefined;
-                });
-              }
+            var updateCatalogTree = function() {
+              var url = scope.options.catalogUrlTemplate
+                  .replace('{Topic}', currentTopic);
+              return $http.jsonp(url, {
+                params: {
+                  'lang': $translate.uses(),
+                  'callback': 'JSON_CALLBACK'
+                }
+              }).then(function success(response) {
+                var newTree = response.data.results.root;
+                var oldTree = scope.root;
+                scope.root = newTree;
+                return {oldTree: oldTree, newTree: newTree};
+              }, function error(response) {
+                scope.root = undefined;
+              });
             };
 
             scope.$on('translationChangeSuccess', function() {
-              updateCatalogTree(true);
+              updateCatalogTree().then(function(o) {
+                retainTreeState(o.oldTree, o.newTree);
+              });
             });
 
             scope.$on('gaTopicChange', function(event, topic) {
               currentTopic = topic.id;
-              updateCatalogTree(false);
+              updateCatalogTree();
            });
 
             scope.map.getLayers().on('remove', function(evt) {
