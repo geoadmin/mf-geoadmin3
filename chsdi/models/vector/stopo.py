@@ -41,19 +41,22 @@ class SwissboundariesGemeinde(Base, Vector):
 
 register('ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill', SwissboundariesGemeinde)
 
-# class SwissboundariesKanton(Base, Vector):
-#     # view in a schema
-#     __tablename__ = 'swissboundaries_kantone'
-#     __table_args__ = ({'schema': 'tlm', 'autoload': False})
-#     __template__ = 'templates/htmlpopup/swissboundaries_kanton.mako'
-#     __esriId__ = 1000
-#     __bodId__ = 'ch.swisstopo.swissboundaries3d-kanton-flaeche.fill'
-#     __displayFieldName__ = ''
-#     id = Column('kantonsnr', Integer, primary_key=True)
-#     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo.swissboundaries3d-kanton-flaeche.fill', SwissboundariesKanton)
-# 
+class SwissboundariesKanton(Base, Vector):
+    # view in a schema
+    __tablename__ = 'swissboundaries_kantone'
+    __table_args__ = ({'schema': 'tlm', 'autoload': False})
+    __template__ = 'templates/htmlpopup/swissboundaries_kanton.mako'
+    __esriId__ = 1000
+    __bodId__ = 'ch.swisstopo.swissboundaries3d-kanton-flaeche.fill'
+    __displayFieldName__ = 'name'
+    id = Column('kantonsnr', Integer, primary_key=True)
+    ak = Column('ak',Text)
+    name = Column('name',Text)
+    flaeche = Column('flaeche',Numeric)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.swissboundaries3d-kanton-flaeche.fill', SwissboundariesKanton)
+
 # # These two layers do not have a table on their own
 # class CadastralWebMap(Base, Vector):
 #     __tablename__ = 'kantone25plus'
