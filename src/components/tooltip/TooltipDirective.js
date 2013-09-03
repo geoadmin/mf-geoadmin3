@@ -1,6 +1,7 @@
 (function() {
   goog.provide('ga_tooltip_directive');
 
+  goog.require('ga_browsersniffer_service');
   goog.require('ga_map_service');
   goog.require('ga_popup_service');
 
@@ -11,8 +12,10 @@
   ]);
 
   module.directive('gaTooltip',
-      ['$http', '$q', '$translate', '$sce', 'gaPopup', 'gaLayers',
-        function($http, $q, $translate, $sce, gaPopup, gaLayers) {
+    ['$http', '$q', '$translate', '$sce', 'gaPopup', 'gaLayers',
+      'gaBrowserSniffer',
+      function($http, $q, $translate, $sce, gaPopup, gaLayers, gaBrowserSniffer)
+      {
           var waitclass = 'ga-tooltip-wait',
               popupContent = '<div ng-repeat="htmlsnippet in options.htmls">' +
                                '<div ng-bind-html="htmlsnippet"></div>' +
@@ -113,6 +116,7 @@
                           popup = gaPopup.create({
                             className: 'ga-tooltip',
                             destroyOnClose: false,
+                            className: 'tooltip-popup',
                             title: 'object_information',
                             content: popupContent,
                             htmls: htmls
@@ -120,11 +124,13 @@
                         }
                         popup.open();
                         //always reposition element when newly opened
-                        popup.element.css({
-                          top: 89,
-                          left: ((size[0] / 2) -
-                              (parseFloat(popup.element.css('max-width')) / 2))
-                        });
+                        if (!gaBrowserSniffer.mobile) {
+                          popup.element.css({
+                            top: 89,
+                            left: ((size[0] / 2) -
+                                (parseFloat(popup.element.css('max-width')) / 2))
+                          });
+                        }
                       }
                       // Add result to array. ng-repeat will take
                       // care of the rest
