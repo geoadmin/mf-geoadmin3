@@ -40,7 +40,10 @@
               // Add active layer initially
               if (scope.item.children === undefined &&
                   scope.item.selectedOpen) {
-                addLayer(scope.map, scope.item);
+                var layer = getMapLayer(scope.map, scope.item.idBod);
+                if (!angular.isDefined(layer)) {
+                  addLayer(scope.map, scope.item);
+                }
               }
 
               compiledContent(scope, function(clone, scope) {
