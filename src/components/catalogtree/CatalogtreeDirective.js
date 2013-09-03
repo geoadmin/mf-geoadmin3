@@ -28,12 +28,17 @@
 
             // This assumes that both trees contain the same
             // elements, but with different values
-            var retainTreeState = function(oldTree, newTree) {
+            var retainTreeState = function(oldAndNewTrees) {
+              var oldTree = oldAndNewTrees.oldTree;
+              var newTree = oldAndNewTrees.newTree;
               var i;
               newTree.selectedOpen = oldTree.selectedOpen;
               if (newTree.children) {
                 for (i = 0; i < newTree.children.length; i++) {
-                  retainTreeState(oldTree.children[i], newTree.children[i]);
+                  retainTreeState({
+                    oldTree: oldTree.children[i],
+                    newTree: newTree.children[i]
+                  });
                 }
               }
             };
@@ -57,9 +62,9 @@
             };
 
             scope.$on('translationChangeSuccess', function() {
-              updateCatalogTree().then(function(o) {
-                retainTreeState(o.oldTree, o.newTree);
-              });
+              if (angular.isDefined(currentTopic)) {
+                updateCatalogTree().then(retainTreeState);
+              }
             });
 
             scope.$on('gaTopicChange', function(event, topic) {
