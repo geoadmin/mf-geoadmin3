@@ -10,20 +10,20 @@ from chsdi.models.vector import Vector
 
 Base = bases['stopo']
 
-#class SwissboundariesBezirk(Base, Vector):
-#    # view in a schema
-#    __tablename__ = 'swissboundaries_bezirke'
-#    __table_args__ = ({'schema': 'tlm', 'autoload': False})
-#    __template__ = 'templates/htmlpopup/swissboundaries_bezirk.mako'
-#    __esriId__ = 1000
-#    __bodId__ = 'ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill'
-#    __displayFieldName__ = 'name'
-#    id = Column('id', Integer, primary_key=True)
-#    name = Column('name',Text)
-#    flaeche = Column('flaeche',Numeric)
-#    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-#
-#register('ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill', SwissboundariesBezirk)
+class SwissboundariesBezirk(Base, Vector):
+    # view in a schema
+    __tablename__ = 'swissboundaries_bezirke'
+    __table_args__ = ({'schema': 'tlm', 'autoload': False})
+    __template__ = 'templates/htmlpopup/swissboundaries_bezirk.mako'
+    __esriId__ = 1000
+    __bodId__ = 'ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill'
+    __displayFieldName__ = 'name'
+    id = Column('id', Integer, primary_key=True)
+    name = Column('name',Text)
+    flaeche = Column('flaeche',Numeric)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill', SwissboundariesBezirk)
 
 #class SwissboundariesGemeinde(Base, Vector):
 #    # view in a schema
