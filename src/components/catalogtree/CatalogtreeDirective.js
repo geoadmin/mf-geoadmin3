@@ -33,7 +33,7 @@
               }
             };
 
-            var updateCatalogTree = function(opt) {
+            var updateCatalogTree = function(retainState) {
               if (angular.isDefined(currentTopic)) {
                 var url = scope.options.catalogUrlTemplate
                     .replace('{Topic}', currentTopic);
@@ -43,7 +43,7 @@
                     'callback': 'JSON_CALLBACK'
                   }
                 }).success(function(data, status, header, config) {
-                  if (opt.retainTreeState) {
+                  if (retainState) {
                     retainTreeState(scope.root, data.results.root);
                   }
                   scope.root = data.results.root;
@@ -54,12 +54,12 @@
             };
 
             scope.$on('translationChangeSuccess', function() {
-              updateCatalogTree({retainTreeState: true});
+              updateCatalogTree(true);
             });
 
             scope.$on('gaTopicChange', function(event, topic) {
               currentTopic = topic.id;
-              updateCatalogTree({retainTreeState: false});
+              updateCatalogTree(false);
            });
 
           }
