@@ -8,6 +8,17 @@
     'ga_map_service'
   ]);
 
+  /**
+   * Filter for the gaLayermanager directive's ngRepeat. The filter
+   * reverses the array of layers so layers in the layer manager UI
+   * have the same order as in the map.
+   */
+  module.filter('gaReverse', function() {
+    return function(items) {
+      return items.slice().reverse();
+    };
+  });
+
   module.directive('gaLayermanager',
       ['gaLayers', function(gaLayers) {
         return {
