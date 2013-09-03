@@ -10,32 +10,37 @@ from chsdi.models.vector import Vector
 
 Base = bases['stopo']
 
-# class SwissboundariesBezirk(Base, Vector):
-#     # view in a schema
-#     __tablename__ = 'swissboundaries_bezirke'
-#     __table_args__ = ({'schema': 'tlm', 'autoload': False})
-#     __template__ = 'templates/htmlpopup/swissboundaries_bezirk.mako'
-#     __esriId__ = 1000
-#     __bodId__ = 'ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill'
-#     __displayFieldName__ = 'name'
-#     id = Column('id', Integer, primary_key=True)
-#     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill', SwissboundariesBezirk)
-# 
-# class SwissboundariesGemeinde(Base, Vector):
-#     # view in a schema
-#     __tablename__ = 'swissboundaries_gemeinden'
-#     __table_args__ = ({'schema': 'tlm', 'autoload': False})
-#     __template__ = 'templates/htmlpopup/swissboundaries_gemeinde.mako'
-#     __esriId__ = 1000
-#     __bodId__ = 'ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill'
-#     __displayFieldName__ = ''
-#     id = Column('id', Integer, primary_key=True)
-#     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill', SwissboundariesGemeinde)
-# 
+#class SwissboundariesBezirk(Base, Vector):
+#    # view in a schema
+#    __tablename__ = 'swissboundaries_bezirke'
+#    __table_args__ = ({'schema': 'tlm', 'autoload': False})
+#    __template__ = 'templates/htmlpopup/swissboundaries_bezirk.mako'
+#    __esriId__ = 1000
+#    __bodId__ = 'ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill'
+#    __displayFieldName__ = 'name'
+#    id = Column('id', Integer, primary_key=True)
+#    name = Column('name',Text)
+#    flaeche = Column('flaeche',Numeric)
+#    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+#
+#register('ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill', SwissboundariesBezirk)
+
+#class SwissboundariesGemeinde(Base, Vector):
+#    # view in a schema
+#    __tablename__ = 'swissboundaries_gemeinden'
+#    __table_args__ = ({'schema': 'tlm', 'autoload': False})
+#    __template__ = 'templates/htmlpopup/swissboundaries_gemeinde.mako'
+#    __esriId__ = 1000
+#    __bodId__ = 'ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill'
+#    __displayFieldName__ = 'gemname'
+#    id = Column('id', Integer, primary_key=True)
+#    gemname = Column('gemname',Text)
+#    gemflaeche = Column('gemflaeche',Numeric)
+#    perimeter = Column('perimeter',Numeric)
+#    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+#
+#register('ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill', SwissboundariesGemeinde)
+
 # class SwissboundariesKanton(Base, Vector):
 #     # view in a schema
 #     __tablename__ = 'swissboundaries_kantone'
@@ -400,19 +405,22 @@ Base = bases['stopo']
 # 
 # register('ch.swisstopo.vec25-heckenbaeume', Vec25Heckenbaeume)
 # 
-# class Dreiecksvermaschung(Base, Vector):
-#         # view in a schema
-#         __tablename__ = 'dreiecksvermaschung'
-#         __table_args__ = ({'schema': 'geodaesie', 'autoload': False})
-#         __template__ = 'templates/htmlpopup/dreiecksvermaschung.mako'
-#         __esriId__ = 1000
-#         __bodId__ = 'ch.swisstopo.dreiecksvermaschung'
-#         __displayFieldName__ = ''
-#         id = Column('bgdi_id', Integer, primary_key=True)
-#         the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo.dreiecksvermaschung',Dreiecksvermaschung)
-# 
+class Dreiecksvermaschung(Base, Vector):
+        # view in a schema
+        __tablename__ = 'dreiecksvermaschung'
+        __table_args__ = ({'schema': 'geodaesie', 'autoload': False})
+        __template__ = 'templates/htmlpopup/dreiecksvermaschung.mako'
+        __esriId__ = 1000
+        __bodId__ = 'ch.swisstopo.dreiecksvermaschung'
+        __displayFieldName__ = 'nom'
+        id = Column('bgdi_id', Integer, primary_key=True)
+        nom = Column('nom',Text)
+        num = Column('num',Text)
+        type = Column('type',Text)        
+        the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.dreiecksvermaschung',Dreiecksvermaschung)
+
 # class DufourErst(Base, Vector):
 #  	# view in a schema
 #  	__tablename__ = 'view_gridstand_datenhaltung_dufour_erst'
