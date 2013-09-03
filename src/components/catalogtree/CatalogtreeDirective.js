@@ -76,6 +76,9 @@
         };
 
         function layerFilter(layer) {
+          // Note: This filter likely will be changed once
+          // we address #342 as this will impact how we
+          // determine backgound layers
           var id = layer.get('id');
           var isBackground = !!gaLayers.getLayer(id) &&
               gaLayers.getLayerProperty(id, 'background');
