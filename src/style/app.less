@@ -90,6 +90,9 @@ select, input[type=text], input[type=email] {
   select {
     width: auto;
   }
+  @media (max-width: @screen-phone) {
+    background: #fff;
+  }
 }
 
 #search-container {
@@ -97,14 +100,18 @@ select, input[type=text], input[type=email] {
   float: left;
   left: 1.6em;
   position: relative;
-  @media screen and (max-width: @screen-tablet) {
-    width: 300px;
+  @media (max-width: @screen-tablet) and (min-width: (@screen-phone + 1)) {
+    width: 260px;
     top: .7em;
-    left: .7em;
+    left: 44px;
+    position: absolute;
   }
-  @media screen and (max-width: @screen-phone) {
-    width: 80%;
-    left: 3.4em;
+  @media (max-width: @screen-phone) {
+    left: 44px;
+    right: 50px;
+    width: auto;
+    position: absolute;
+    top: .7em;
   }
 }
 
@@ -112,8 +119,21 @@ select, input[type=text], input[type=email] {
   width: 320px;
   display: inline-block;
   background: white;
-  @media (max-width: @screen-tablet) {
+  img:last-of-type {
     display: none;
+  }
+  @media (max-width: @screen-tablet) {
+    padding: 13px 0 0 13px;
+    height: 50px;
+    img:last-of-type {
+      display: inline;
+    }
+    img:first-of-type {
+      display: none;
+    }
+  }
+  @media (max-width: @screen-phone) {
+    width: 44px;
   }
 }
 
@@ -334,18 +354,24 @@ a .ga-icon-separator {
   .icon-reorder {
     display: none;
   }
+  .phone-toggle {
+    display: none;
+  }
   &:hover, &:focus {
     background-color: #3A3C3C;
     border-color: #2E2F2F;
     color: #fff;
   }
   @media (max-width: @screen-phone) {
-    width: 11em;
+    width: 58px;
     margin-left: auto;
-    float: left;
-    border-bottom-left-radius: 0;
+    position: absolute;
+    position: fixed;
+    right: 0;
+    top: 0;
+    height: 40px;
+    border-bottom-right-radius: 0;
     &.collapsed {
-      width: 2.7em;
       margin-left: .4em;
       box-shadow: none;
       background: transparent;
@@ -353,10 +379,10 @@ a .ga-icon-separator {
       border: none;
       color: #333 !important;
     }
-    .visible-collapsed * {
+    .visible-collapsed *, .icon-caret-up, span[translate] {
       display: none;
     }
-    .icon-reorder {
+    .icon-reorder, .phone-toggle {
       display: inline-block;
     }
   }
