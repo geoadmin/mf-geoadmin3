@@ -50,10 +50,16 @@
             };
 
             scope.getLayerLabel = function(layer) {
+              var label;
               var id = layer.get('id');
-              // FIXME labels for non-bod layers?
-              return gaLayers.getLayer(id) ?
-                  gaLayers.getLayerProperty(id, 'label') : '';
+              if (gaLayers.getLayer(id)) {
+                // BOD layer
+                label = gaLayers.getLayerProperty(id, 'label');
+              } else {
+                // Non-BOD layer
+                label = layer.get('label');
+              }
+              return label;
             };
 
             scope.removeLayerFromMap = function(layer) {

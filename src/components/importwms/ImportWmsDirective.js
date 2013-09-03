@@ -224,6 +224,7 @@
                 });
 
                 var olLayer = new ol.layer.ImageLayer({
+                  label: layer.title,
                   source: olSource
                 });
 
