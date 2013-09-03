@@ -27,17 +27,17 @@
             },
             link: function($scope, element, attrs) {
               var htmls = [],
+                  map = $scope.map,
                   popup,
                   canceler,
                   currentTopic;
 
-              $scope.map.on('click', function(evt) {
-                var size = $scope.map.getSize();
-                var extent = $scope.map.getView().calculateExtent(size);
+              map.on('click', function(evt) {
+                var size = map.getSize();
+                var extent = map.getView().calculateExtent(size);
 
                 $scope.$apply(function() {
-                  findFeatures($scope,
-                               evt.getCoordinate(),
+                  findFeatures(evt.getCoordinate(),
                                size,
                                extent);
                 });
@@ -47,10 +47,10 @@
                 currentTopic = topic.id;
               });
 
-              function findFeatures(scope, coordinate, size, extent) {
-                var identifyUrl = scope.options.identifyUrlTemplate
+              function findFeatures(coordinate, size, extent) {
+                var identifyUrl = $scope.options.identifyUrlTemplate
                                   .replace('{Topic}', currentTopic),
-                    layersToQuery = getLayersToQuery(scope.map.getLayers());
+                    layersToQuery = getLayersToQuery();
                 // Cancel all pending requests
                 if (canceler) {
                   canceler.resolve();
@@ -59,7 +59,7 @@
                 canceler = $q.defer();
                 if (layersToQuery.length) {
                   // Show wait cursor
-                  angular.element(scope.map.getTarget()).addClass(waitclass);
+                  angular.element(map.getTarget()).addClass(waitclass);
 
                   // Look for all features under clicked pixel
                   $http.jsonp(identifyUrl, {
@@ -71,16 +71,16 @@
                       imageDisplay: size[0] + ',' + size[1] + ',96',
                       mapExtent: extent[0] + ',' + extent[2] +
                                    ',' + extent[1] + ',' + extent[3],
-                      tolerance: scope.options.tolerance,
+                      tolerance: $scope.options.tolerance,
                       layers: 'all:' + layersToQuery,
                       callback: 'JSON_CALLBACK'
                     }
                   }).success(function(features) {
-                    angular.element(scope.map.getTarget())
+                    angular.element(map.getTarget())
                         .removeClass(waitclass);
-                    showFeatures(scope, size, features.results);
+                    showFeatures(size, features.results);
                   }).error(function() {
-                    angular.element(scope.map.getTarget())
+                    angular.element(map.getTarget())
                         .removeClass(waitclass);
                   });
                 }
@@ -93,10 +93,10 @@
                 }
               }
 
-              function showFeatures(scope, size, foundFeatures) {
+              function showFeatures(size, foundFeatures) {
                 if (foundFeatures && foundFeatures.length > 0) {
                   angular.forEach(foundFeatures, function(value) {
-                    var htmlUrl = scope.options.htmlUrlTemplate
+                    var htmlUrl = $scope.options.htmlUrlTemplate
                                   .replace('{Topic}', currentTopic)
                                   .replace('{Layer}', value.layerBodId)
                                   .replace('{Feature}', value.featureId);
@@ -116,7 +116,7 @@
                             title: 'object_information',
                             content: popupContent,
                             htmls: htmls
-                          }, scope);
+                          }, $scope);
                         }
                         popup.open();
                         //always reposition element when newly opened
@@ -136,7 +136,7 @@
 
               function getLayersToQuery(layers) {
                 var layerstring = '';
-                layers.forEach(function(l) {
+                map.getLayers().forEach(function(l) {
                     var id = l.get('id');
                     if (gaLayers.getLayer(id) &&
                         gaLayers.getLayerProperty(id, 'queryable')) {
