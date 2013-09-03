@@ -20,8 +20,20 @@
             map: '=gaCatalogtreeMap'
           },
           link: function(scope, element, attrs) {
-            var currentTopic,
-                updateCatalogTree = function() {
+            var currentTopic;
+
+            // This assumes that both trees contain the same
+            // elements, but with different values
+            var retainTreeState = function(oldTree, newTree) {
+              newTree.selectedOpen = oldTree.selectedOpen;
+              if (newTree.children) {
+                for (var i = 0; i < newTree.children.length; i++) {
+                  retainTreeState(oldTree.children[i], newTree.children[i]);
+                }
+              }
+            };
+
+            var updateCatalogTree = function(retainState) {
               if (angular.isDefined(currentTopic)) {
                 var url = scope.options.catalogUrlTemplate
                     .replace('{Topic}', currentTopic);
@@ -31,6 +43,9 @@
                     'callback': 'JSON_CALLBACK'
                   }
                 }).success(function(data, status, header, config) {
+                  if (retainState) {
+                    retainTreeState(scope.root, data.results.root);
+                  }
                   scope.root = data.results.root;
                 }).error(function(data, status, headers, config) {
                   scope.root = undefined;
@@ -39,12 +54,12 @@
             };
 
             scope.$on('translationChangeSuccess', function() {
-              updateCatalogTree();
+              updateCatalogTree(true);
             });
 
             scope.$on('gaTopicChange', function(event, topic) {
               currentTopic = topic.id;
-              updateCatalogTree();
+              updateCatalogTree(false);
            });
 
           }
