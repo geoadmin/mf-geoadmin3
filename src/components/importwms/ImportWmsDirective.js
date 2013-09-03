@@ -118,7 +118,8 @@
           // Add the selected layer to the map
           $scope.addLayerSelected = function() {
             if ($scope.layerSelected) {
-              var layerAdded = $scope.addLayer($scope.layerSelected);
+              var layerAdded = $scope.addLayer(
+                  $scope.layerSelected, /* isPreview */ false);
 
               if (layerAdded) {
                 $scope.userMessage = $translate('add_wms_layer_succeeded');
@@ -132,7 +133,8 @@
           $scope.addLayerHovered = function(getCapLayer) {
             if (getCapLayer) {
               $scope.layerHovered = getCapLayer;
-              $scope.olLayerHovered = $scope.addLayer($scope.layerHovered);
+              $scope.olLayerHovered = $scope.addLayer(
+                  $scope.layerHovered, /* isPreview */ true);
             }
           };
 
@@ -193,7 +195,7 @@
          };
 
           // Add a layer from GetCapabilities object to the map
-          $scope.addLayer = function(getCapLayer) {
+          $scope.addLayer = function(getCapLayer, isPreview) {
 
             if (getCapLayer) {
 
@@ -226,6 +228,31 @@
                 var olLayer = new ol.layer.ImageLayer({
                   label: layer.title,
                   source: olSource
+                });
+
+                // FIXME we do the same in the gaLayers service. It may make
+                // sense to add a more general layers service in the future.
+                Object.defineProperties(olLayer, {
+                  visible: {
+                    get: function() {
+                      return this.getVisible();
+                    },
+                    set: function(val) {
+                      this.setVisible(val);
+                    }
+                  },
+                  opacity: {
+                    get: function() {
+                      return this.getOpacity();
+                    },
+                    set: function(val) {
+                      this.setOpacity(val);
+                    }
+                  },
+                  preview: {
+                    writable: false,
+                    value: isPreview
+                  }
                 });
 
                 $scope.map.addLayer(olLayer);
