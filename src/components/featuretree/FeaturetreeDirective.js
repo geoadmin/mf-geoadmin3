@@ -94,7 +94,6 @@
                   }
                   scope.tree = tree;
                 }).error(function() {
-                  //FIXME What to do on errors? Review.
                   scope.tree = {};
                 });
               }
