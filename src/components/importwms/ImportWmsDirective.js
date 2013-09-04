@@ -1,16 +1,20 @@
 (function() {
   goog.provide('ga_importwms_directive');
 
+  goog.require('ga_map_service');
   goog.require('ga_urlutils_service');
 
   var module = angular.module('ga_importwms_directive', [
+    'ga_map_service',
     'ga_urlutils_service',
     'pascalprecht.translate'
   ]);
 
   module.controller('GaImportWmsDirectiveController',
       ['$scope', '$http', '$q', '$log', '$translate', 'gaUrlUtils',
-        function($scope, $http, $q, $log, $translate, gaUrlUtils) {
+      'gaDefinePropertiesForLayer',
+        function($scope, $http, $q, $log, $translate, gaUrlUtils,
+          gaDefinePropertiesForLayer) {
 
           // List of layers available in the GetCapabilities
           $scope.layers = [];
@@ -230,30 +234,8 @@
                   source: olSource
                 });
 
-                // FIXME we do the same in the gaLayers service. It may make
-                // sense to add a more general layers service in the future.
-                Object.defineProperties(olLayer, {
-                  visible: {
-                    get: function() {
-                      return this.getVisible();
-                    },
-                    set: function(val) {
-                      this.setVisible(val);
-                    }
-                  },
-                  opacity: {
-                    get: function() {
-                      return this.getOpacity();
-                    },
-                    set: function(val) {
-                      this.setOpacity(val);
-                    }
-                  },
-                  preview: {
-                    writable: false,
-                    value: isPreview
-                  }
-                });
+                gaDefinePropertiesForLayer(olLayer);
+                olLayer.preview = isPreview;
 
                 $scope.map.addLayer(olLayer);
                 return olLayer;
