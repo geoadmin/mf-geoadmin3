@@ -1,18 +1,20 @@
 (function() {
   goog.provide('ga_topic_directive');
 
+  goog.require('ga_map_service');
   goog.require('ga_permalink');
   goog.require('ga_urlutils_service');
 
   var module = angular.module('ga_topic_directive', [
     'pascalprecht.translate',
+    'ga_map_service',
     'ga_permalink',
     'ga_urlutils_service'
   ]);
 
   module.directive('gaTopic',
-      ['$rootScope', '$http', 'gaPermalink', 'gaUrlUtils',
-        function($rootScope, $http, gaPermalink, gaUrlUtils) {
+      ['$rootScope', '$http', 'gaPermalink', 'gaUrlUtils', 'gaLayers',
+        function($rootScope, $http, gaPermalink, gaUrlUtils, gaLayers) {
         return {
           restrict: 'A',
           replace: true,
@@ -21,7 +23,8 @@
               ((attrs.gaTopicUi == 'select') ? 'select.html' : 'html');
           },
           scope: {
-            options: '=gaTopicOptions'
+            options: '=gaTopicOptions',
+            map: '=gaTopicMap'
           },
           link: function(scope, element, attrs) {
             var options = scope.options;
@@ -56,6 +59,25 @@
               return res;
             }
 
+            function layerFilter(layer) {
+              var id = layer.get('id');
+              var isBackground = !!gaLayers.getLayer(id) &&
+                  gaLayers.getLayerProperty(id, 'background');
+              var isPreview = layer.preview;
+              return !isBackground && !isPreview;
+            }
+
+            function removeAllLayers(map) {
+              var layers = map.getLayers().getArray();
+              for (var i = 0; i < layers.length; i++) {
+                var layer = layers[i];
+                if (layerFilter(layer)) {
+                  map.removeLayer(layer);
+                  i -= 1;
+                }
+              }
+            }
+
             var url = gaUrlUtils.append(options.url, 'callback=JSON_CALLBACK');
             $http.jsonp(url).then(function(result) {
               scope.topics = result.data.topics;
@@ -82,6 +104,7 @@
                 for (i = 0; i < len; i++) {
                   var topic = scope.topics[i];
                   if (topic.id == newVal) {
+                    removeAllLayers(scope.map);
                     gaPermalink.updateParams({topic: newVal});
                     $rootScope.$broadcast('gaTopicChange', topic);
                     break;

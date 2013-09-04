@@ -222,7 +222,7 @@
           <div class="theme-toggle visible-lg visible-md">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#" translate>choose_theme</a>
             <div class="dropdown-menu" ng-controller="GaTopicController">
-              <div ga-topic ga-topic-ui="list" ga-topic-options="options"></div>
+              <div ga-topic ga-topic-ui="list" ga-topic-options="options" ga-topic-map="map"></div>
             </div>
           </div>
 % endif
@@ -234,7 +234,7 @@
           <div id="catalog" class="collapse" ng-controller="GaCatalogtreeController">
 % if device == 'mobile':
             <div ng-controller="GaTopicController">
-              <div ga-topic ga-topic-ui="select" ga-topic-options="options"></div>
+              <div ga-topic ga-topic-ui="select" ga-topic-options="options" ga-topic-map="map"></div>
             </div>
 % endif
             <div class="panel-body panel-body-wide accordion-inner-catalog"
