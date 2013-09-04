@@ -1,16 +1,20 @@
 (function() {
   goog.provide('ga_importwms_directive');
 
+  goog.require('ga_map_service');
   goog.require('ga_urlutils_service');
 
   var module = angular.module('ga_importwms_directive', [
+    'ga_map_service',
     'ga_urlutils_service',
     'pascalprecht.translate'
   ]);
 
   module.controller('GaImportWmsDirectiveController',
       ['$scope', '$http', '$q', '$log', '$translate', 'gaUrlUtils',
-        function($scope, $http, $q, $log, $translate, gaUrlUtils) {
+      'gaDefinePropertiesForLayer',
+        function($scope, $http, $q, $log, $translate, gaUrlUtils,
+          gaDefinePropertiesForLayer) {
 
           // List of layers available in the GetCapabilities
           $scope.layers = [];
@@ -118,7 +122,8 @@
           // Add the selected layer to the map
           $scope.addLayerSelected = function() {
             if ($scope.layerSelected) {
-              var layerAdded = $scope.addLayer($scope.layerSelected);
+              var layerAdded = $scope.addLayer(
+                  $scope.layerSelected, /* isPreview */ false);
 
               if (layerAdded) {
                 $scope.userMessage = $translate('add_wms_layer_succeeded');
@@ -132,7 +137,8 @@
           $scope.addLayerHovered = function(getCapLayer) {
             if (getCapLayer) {
               $scope.layerHovered = getCapLayer;
-              $scope.olLayerHovered = $scope.addLayer($scope.layerHovered);
+              $scope.olLayerHovered = $scope.addLayer(
+                  $scope.layerHovered, /* isPreview */ true);
             }
           };
 
@@ -193,7 +199,7 @@
          };
 
           // Add a layer from GetCapabilities object to the map
-          $scope.addLayer = function(getCapLayer) {
+          $scope.addLayer = function(getCapLayer, isPreview) {
 
             if (getCapLayer) {
 
@@ -224,8 +230,12 @@
                 });
 
                 var olLayer = new ol.layer.ImageLayer({
+                  label: layer.title,
                   source: olSource
                 });
+
+                gaDefinePropertiesForLayer(olLayer);
+                olLayer.preview = isPreview;
 
                 $scope.map.addLayer(olLayer);
                 return olLayer;
