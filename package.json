@@ -11,9 +11,6 @@
   "devDependencies": {
     "less": "1.4.0",
     "karma": "0.8.5"
-  },
-  "scripts": {
-    "test": "./node_modules/.bin/karma start test/karma-conf-prod.js --single-run"
   }
 }
 
