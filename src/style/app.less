@@ -557,6 +557,18 @@ ul.panel-body-wide {
     line-height: 1;
     padding: 1px 3px 0;
     margin: 0 .6em;
+    position: absolute;
+    left: 0;
+    height: 15px;
+    top: 5px;
+    @media (max-width: @screen-tablet) {
+      top: 8px;
+      height: 20px;
+      font-size: 20px;
+      margin: 0 0 0 5px;
+      padding: 0 3px 0px;
+      line-height: 20px;
+    }
   }
   li {
     .panel-subtitle;
@@ -578,10 +590,15 @@ ul.panel-body-wide {
       cursor: default;
     }
   }
-  li > a, .ordering {
+  .layerinfo, .ordering, .icon-gear {
     position: absolute;
     top: .6em;
     right: 0;
+  }
+  .icon-gear {
+    top: 5px;
+    font-size: 26px;
+    display: none;
   }
   .ordering {
     bottom: .6em;
@@ -589,7 +606,10 @@ ul.panel-body-wide {
   }
   label {
     font-weight: normal;
-    &:last-of-type {
+    &:first-of-type {
+      padding-left: 2.7em;
+    }
+    &.transparency {
       padding-left: 3em;
       display: block;
       font-size: 90%;
@@ -598,10 +618,57 @@ ul.panel-body-wide {
       }
     }
   }
+  input[type=checkbox] {
+    vertical-align: -10%;
+  }
   .panel-body-wide a {
     line-height: 12px;
     display: inline;
     border: none;
+  }
+  @media (max-width: @screen-tablet) {
+    .icon-gear {
+      display: inline;
+    }
+    li {
+      height: 3em;
+      line-height: 3em;
+      padding: 0;
+      overflow-x:hidden;
+    }
+    input[type=range] {
+      width: 8em;
+    }
+    label.transparency {
+      padding-left: 1em;
+    }
+    .layertools {
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      top: 0;
+      left: 0;
+      background: rgba(255,255,255,0.9);
+      border-left: 3px solid #666;
+      .transition(margin-left .35s ease);
+      a, i {
+        font-size: 26px;
+        background-color: inherit;
+        line-height: normal;
+      }
+      .ordering {
+        right: 65px;
+        bottom: auto;
+        top: 6px;
+      }
+      .layerinfo {
+        right: 40px;
+        top: 4px;
+      }
+      &.folded {
+        margin-left:100%;
+      }
+    }
   }
 }
 
