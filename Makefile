@@ -21,9 +21,10 @@ help:
 	@echo "- prod         Build app for prod (prod)"
 	@echo "- dev          Build app for dev (src)"
 	@echo "- lint         Run the linter"
-	@echo "- test         Run the JavaScript tests"
+	@echo "- testdev      Run the JavaScript tests in dev mode"
+	@echo "- testprod     Run the JavaScript tests in prod mode"
 	@echo "- apache       Configure Apache (restart required)" 
-	@echo "- all          All of the above"
+	@echo "- all          All of the above (target to run prior to creating a PR)"
 	@echo "- clean        Remove generated files"
 	@echo "- cleanall     Remove all the build artefacts"
 	@echo "- deploybranch Deploys current branch (note: takes code from github)"
@@ -38,7 +39,7 @@ help:
 	@echo
 
 .PHONY: all
-all: prod dev lint test apache test/karma-conf-prod.js deploy/deploy-branch.cfg
+all: prod dev lint testdev testprod apache deploy/deploy-branch.cfg
 
 .PHONY: prod
 prod: prod/lib/build.js prod/style/app.css prod/index.html prod/mobile.html prod/info.json prod/img/ prod/style/font-awesome-3.2.1/font/ prod/locales/
@@ -49,9 +50,13 @@ dev: src/deps.js src/style/app.css src/index.html src/mobile.html
 .PHONY: lint
 lint: .build-artefacts/lint.timestamp
 
-.PHONY: test
-test: .build-artefacts/app-whitespace.js test/karma-conf-dev.js node_modules
+.PHONY: testdev
+testdev: .build-artefacts/app-whitespace.js test/karma-conf-dev.js node_modules
 	./node_modules/.bin/karma start test/karma-conf-dev.js --single-run
+
+.PHONY: testprod
+testprod: prod/lib/build.js test/karma-conf-prod.js node_modules
+	./node_modules/.bin/karma start test/karma-conf-prod.js --single-run
 
 .PHONY: apache
 apache: apache/app.conf
