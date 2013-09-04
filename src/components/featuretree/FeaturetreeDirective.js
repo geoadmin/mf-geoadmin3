@@ -1,12 +1,15 @@
 (function() {
   goog.provide('ga_featuretree_directive');
 
+  goog.require('ga_map_service');
+
   var module = angular.module('ga_featuretree_directive', [
+    'ga_map_service'
   ]);
 
   module.directive('gaFeaturetree',
-      ['$timeout',
-      function($timeout) {
+      ['$timeout', '$http', '$q', 'gaLayers',
+      function($timeout, $http, $q, gaLayers) {
 
         return {
           restrict: 'A',
@@ -17,13 +20,84 @@
             map: '=gaFeaturetreeMap'
           },
           link: function(scope, element, attrs) {
+            var canceler, currentTopic;
             var map = scope.map;
             var view = map.getView();
-            scope.tree = {};
+            var featureTolerance = 1;
+
+            var getLayersToQuery = function(layers) {
+              var layerstring = '';
+              map.getLayers().forEach(function(l) {
+                  var id = l.get('id');
+                  if (gaLayers.getLayer(id) &&
+                      gaLayers.getLayerProperty(id, 'queryable')) {
+                    if (layerstring.length) {
+                      layerstring = layerstring + ',';
+                    }
+                    layerstring = layerstring + id;
+                  }
+              });
+              return layerstring;
+            };
 
             var updateTree = function() {
-              var extent = view.calculateExtent(map.getSize());
+              var size = map.getSize();
+              var extent = view.calculateExtent(size);
+              var identifyUrl = scope.options.identifyUrlTemplate
+                                .replace('{Topic}', currentTopic),
+                  layersToQuery = getLayersToQuery();
+              // Cancel all pending requests
+              if (canceler) {
+                canceler.resolve();
+              }
+              // Create new cancel object
+              canceler = $q.defer();
+              if (layersToQuery.length) {
 
+                // Look for all features in current bounding box
+                $http.jsonp(identifyUrl, {
+                  timeout: canceler.promise,
+                  params: {
+                    geometryType: 'esriGeometryEnvelope',
+                    geometry: extent[0] + ',' + extent[2] +
+                                  ',' + extent[1] + ',' + extent[3],
+                    // FIXME: make sure we are passing the right dpi here.
+                    imageDisplay: size[0] + ',' + size[1] + ',96',
+                    mapExtent: extent[0] + ',' + extent[2] +
+                                  ',' + extent[1] + ',' + extent[3],
+                    tolerance: featureTolerance,
+                    layers: 'all:' + layersToQuery,
+                    callback: 'JSON_CALLBACK'
+                  }
+                }).success(function(features) {
+                  var tree = {};
+
+                  if (features.results &&
+                      features.results.length > 0) {
+
+                    angular.forEach(features.results, function(result) {
+
+                      if (!angular.isDefined(tree[result.layerBodId])) {
+                        tree[result.layerBodId] = {
+                          label: gaLayers.getLayer(result.layerBodId).label,
+                          features: []
+                        };
+                      }
+
+                      var node = tree[result.layerBodId];
+                      node.features.push({
+                        id: result.featureId,
+                        label: result.value
+                      });
+
+                    });
+                  }
+                  scope.tree = tree;
+                }).error(function() {
+                  //FIXME What to do on errors? Review.
+                  scope.tree = {};
+                });
+              }
             };
 
             // Update the tree based on map changes. We use a timeout in
@@ -41,7 +115,15 @@
               }, 500);
             };
 
+            scope.tree = {};
+
             view.on('change', triggerChange);
+
+            scope.$on('gaTopicChange', function(event, topic) {
+              currentTopic = topic.id;
+            });
+
+
           }
         };
 
