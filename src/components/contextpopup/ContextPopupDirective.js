@@ -38,9 +38,9 @@
               var popoverShown = false;
 
               var overlay = new ol.Overlay({
-                map: map,
                 element: element[0]
               });
+              map.addOverlay(overlay);
 
               scope.showQR = !gaBrowserSniffer.mobile;
 
