@@ -2,19 +2,21 @@
   goog.provide('ga_importkml_directive');
 
   goog.require('ga_browsersniffer_service');
+  goog.require('ga_map_service');
   goog.require('ga_popup_service');
 
   var module = angular.module('ga_importkml_directive', [
     'ga_browsersniffer_service',
+    'ga_map_service',
     'ga_popup_service',
     'pascalprecht.translate'
   ]);
 
   module.controller('GaImportKmlDirectiveController',
       ['$scope', '$http', '$q', '$log', '$translate',
-        'gaBrowserSniffer', 'gaPopup',
+        'gaBrowserSniffer', 'gaPopup', 'gaDefinePropertiesForLayer',
         function($scope, $http, $q, $log, $translate, gaBrowserSniffer,
-            gaPopup) {
+            gaPopup, gaDefinePropertiesForLayer) {
 
           // from Angular
           // https://github.com/angular/angular.js/blob/master/src/ng/directive/input.js#L3
@@ -137,12 +139,17 @@
 
 
               // Create vector layer
+              // FIXME currently ol3 doesn't allow to get the name of the KML
+              // document, making it impossible to use a proper label for the
+              // layer.
               var vector = new ol.layer.Vector({
+                label: 'KML',
                 source: new ol.source.Vector({
                   parser: kmlParser,
                   data: $scope.fileContent
                 })
               });
+              gaDefinePropertiesForLayer(vector);
 
               // Add the layer
               $scope.map.addLayer(vector);
