@@ -33,6 +33,45 @@
     };
   });
 
+  /**
+   * This service is a function that define properties (data and accessor
+   * descriptors) for the OpenLayers layer passed as an argument.
+   *
+   * Adding descriptors to layers makes it possible to control the states
+   * of layers (visibility, opacity, etc.) through ngModel. (ngModel indeed
+   * requires the expression to be "assignable", and there's currently no
+   * way pass to pass getter and setter functions to ngModel.)
+   */
+  module.provider('gaDefinePropertiesForLayer', function() {
+
+    this.$get = function() {
+      return function defineProperties(olLayer) {
+        Object.defineProperties(olLayer, {
+          visible: {
+            get: function() {
+              return this.getVisible();
+            },
+            set: function(val) {
+              this.setVisible(val);
+            }
+          },
+          opacity: {
+            get: function() {
+              return this.getOpacity();
+            },
+            set: function(val) {
+              this.setOpacity(val);
+            }
+          },
+          preview: {
+            writable: true,
+            value: false
+          }
+        });
+      };
+    };
+  });
+
   module.provider('gaLayers', function() {
 
     this.$get = ['$q', '$http', '$translate', '$rootScope', 'gaUrlUtils',
