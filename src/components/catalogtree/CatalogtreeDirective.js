@@ -27,19 +27,35 @@
             var currentTopic;
 
             // This assumes that both trees contain the same
-            // elements, but with different values
+            // elements, categories are in the same order and
+            // contain the same layers, but layers can have
+            // a different order (sorted by language)
+            // FIXME being aware that layers can have different
+            // order can change in the back-end (remove relevant code)
             var retainTreeState = function(oldAndNewTrees) {
               var oldTree = oldAndNewTrees.oldTree;
               var newTree = oldAndNewTrees.newTree;
-              var i;
+              var i, oldChild, newChild, oldMap = {}, newMap = {};
               newTree.selectedOpen = oldTree.selectedOpen;
               if (newTree.children) {
                 for (i = 0; i < newTree.children.length; i++) {
-                  retainTreeState({
-                    oldTree: oldTree.children[i],
-                    newTree: newTree.children[i]
-                  });
+                  oldChild = oldTree.children[i];
+                  newChild = newTree.children[i];
+                  // If no idBod, then it's a node (category)
+                  if (!angular.isDefined(oldChild.idBod)) {
+                    retainTreeState({
+                      oldTree: oldChild,
+                      newTree: newChild
+                    });
+                  } else {
+                    oldMap[oldChild.idBod] = oldChild;
+                    newMap[newChild.idBod] = newChild;
+                  }
                 }
+                angular.forEach(oldMap, function(value, key) {
+                  newMap[key].selectedOpen = value.selectedOpen;
+                  newMap[key].errorLoading = value.errorLoading;
+                });
               }
             };
 
