@@ -48,3 +48,20 @@ class Arealstatistik1997(Base, Vector):
     id_arealstatistik = Column('id_arealstatistik', Integer) 
 
 register('ch.bfs.arealstatistik-1997', Arealstatistik1997)
+
+class fsme_faelle(Base, Vector):
+    # view in a schema
+    __tablename__ = 'fsme_faelle'
+    __table_args__ = ({'schema': 'bag', 'autoload': False})
+    __template__ = 'templates/htmlpopup/fsme.mako'
+    __esriId__ = 3003
+    __bodId__ = 'ch.bag.zecken-fsme-faelle'
+    __displayFieldName__ = 'gemname'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    gemname = Column('gemname', Integer) 
+    bfsnr = Column('bfsnr', Integer) 
+    bezirksnr = Column('bezirksnr', Integer) 
+    kantonsnr = Column('kantonsnr', Integer) 
+
+register('ch.bag.zecken-fsme-faelle', fsme_faelle)
