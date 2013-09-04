@@ -44,7 +44,7 @@
         if (key in attributions) {
           return attributions[key];
         } else {
-          var a = new ol.Attribution(text);
+          var a = new ol.Attribution({html: text});
           attributions[key] = a;
           return a;
         }
