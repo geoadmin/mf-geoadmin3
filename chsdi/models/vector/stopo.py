@@ -71,16 +71,17 @@ register('ch.swisstopo.swissboundaries3d-kanton-flaeche.fill', SwissboundariesKa
 # register('ch.kantone.cadastralwebmap-farbe', CadastralWebMap)
 # 
 # 
-# class Vec200Terminal(Base, Vector):
-#     __tablename__ = 'vec200_terminal_tiles'
-#     __table_args__ = ({'autoload': False})
-#     __template__ = 'templates/htmlpopup/vec200_terminal.mako'
-#     __esriId__ = 1000
-#     __bodId__ = 'ch.swisstopo.vec200-transportation-oeffentliche-verkehr'
-#     __displayFieldName__ = ''
-#     id = Column('gtdboid', Text, primary_key=True)
-#     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
+class Vec200Terminal(Base, Vector):
+    __tablename__ = 'vec200_terminal_tiles'
+    __table_args__ = ({'autoload': False})
+    __template__ = 'templates/htmlpopup/vec200_terminal.mako'
+    __esriId__ = 1000
+    __bodId__ = 'ch.swisstopo.vec200-transportation-oeffentliche-verkehr'
+    __displayFieldName__ = 'objval'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    objval = Column('objval',Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
 # class Vec200ShipKursschiff(Base, Vector):
 #     __tablename__ = 'v200_ship_kursschiff_linie_tooltip'
 #     __table_args__ = ({'autoload': False})
@@ -123,7 +124,7 @@ register('ch.swisstopo.swissboundaries3d-kanton-flaeche.fill', SwissboundariesKa
 # #    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 # #no register...
 # 
-# register('ch.swisstopo.vec200-transportation-oeffentliche-verkehr', Vec200Terminal)
+register('ch.swisstopo.vec200-transportation-oeffentliche-verkehr', Vec200Terminal)
 # register('ch.swisstopo.vec200-transportation-oeffentliche-verkehr', Vec200ShipKursschiff)
 # register('ch.swisstopo.vec200-transportation-oeffentliche-verkehr', Vec200Railway)
 # 
