@@ -255,6 +255,7 @@ a .ga-icon-separator {
     border-top: none;
     max-height: 430px;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     font-size: 12px;
     @media (max-width: @screen-phone) {
       background-color: rgba(255,255,255,0.9);
@@ -597,14 +598,6 @@ ul.panel-body-wide {
 // ***** TWITTER TYPEAHEAD
 .tt-hint {
   display: none !important;
-}
-
-.ga-tooltip {
-  @media (max-height: @screen-phone) {
-    width: 300px;
-    max-height: 450px;
-    max-width: 300px;
-  }
 }
 
 .tooltip-inner {
