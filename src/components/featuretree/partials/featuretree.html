@@ -1,8 +1,11 @@
 <div class="ga-featuretree">
   <ul>
     <li ng-repeat="(key, value) in tree">
-      {{value.label}}
-      <ul>
+      <a href="#" ng-click="value.open = !value.open">
+        <i ng-class="{'icon-minus': value.open, 'icon-plus': !value.open}"></i>
+        {{value.label}}
+      </a>
+      <ul ng-if="value.open">
         <li ng-repeat="feature in value.features">
           {{feature.label}}
         </li>
