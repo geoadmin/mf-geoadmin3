@@ -1,4 +1,13 @@
 <div class="ga-featuretree">
-I'm doing something. Be patient
+  <ul>
+    <li ng-repeat="(key, value) in tree">
+      {{value.label}}
+      <ul>
+        <li ng-repeat="feature in value.features">
+          {{feature.label}}
+        </li>
+      </ul>
+    </li>
+  </ul>
 </div>
 
