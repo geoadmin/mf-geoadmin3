@@ -65,3 +65,21 @@ class fsme_faelle(Base, Vector):
     kantonsnr = Column('kantonsnr', Integer) 
 
 register('ch.bag.zecken-fsme-faelle', fsme_faelle)
+
+class fsme_impfung(Base, Vector):
+    # view in a schema
+    __tablename__ = 'fsme_impfung'
+    __table_args__ = ({'schema': 'bag', 'autoload': False})
+    __template__ = 'templates/htmlpopup/fsme.mako'
+    __esriId__ = 3004
+    __bodId__ = 'ch.bag.zecken-fsme-impfung'
+    __displayFieldName__ = 'gemname'
+
+    id = Column('bgdi_id', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    gemname = Column('gemname', Integer) 
+    bfsnr = Column('bfsnr', Integer) 
+    bezirksnr = Column('bezirksnr', Integer) 
+    kantonsnr = Column('kantonsnr', Integer) 
+
+register('ch.bag.zecken-fsme-impfung', fsme_impfung)
