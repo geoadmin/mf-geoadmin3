@@ -38,7 +38,7 @@
                   element: crosshair.get(0),
                   position: view.getCenter()
                 });
-                gaPermalink.deleteParam('crosshair');
+                gaPermalink.deleteKey('crosshair');
               }
 
               // Update permalink based on view states. We use a timeout

@@ -73,7 +73,7 @@
       angular.extend(params, p);
     };
 
-    this.deleteParam = function(id) {
+    this.deleteKey = function(id) {
        delete params[id];
     };
   }
