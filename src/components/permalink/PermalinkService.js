@@ -73,8 +73,8 @@
       angular.extend(params, p);
     };
 
-    this.deleteKey = function(id) {
-       delete params[id];
+    this.deleteParam = function(key) {
+       delete params[key];
     };
   }
 
@@ -99,9 +99,11 @@
    * - getHref Get full permalink.
    * - getParams Get the search params.
    * - updateParams Update the search params.
+   * - deleteParam Delete a search param.
    *
-   * updateParams should be called during a digest cycle. If the browser
-   * supports the history API the link in the address bar is updated.
+   * updateParams and deleteParam should be called during a digest cycle.
+   * If the browser supports the history API the link in the address bar
+   * is updated.
    */
   module.provider('gaPermalink', function() {
     this.$get = ['$window', '$rootScope', '$sniffer', 'gaHistory',
