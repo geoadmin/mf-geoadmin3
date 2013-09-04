@@ -4,9 +4,9 @@
 
 <%def name="table_body(c,lang)">
 <% c[stable_id] = True %>
-    <tr><td width="320">${_('gmde')}</td>                   <td>${c['value']}</td></tr>
-    <tr><td width="320">${_('fj85')}</td>                   <td>${c['attributes']['fj85']}</td></tr>
-    <tr><td width="320">${_('id_arealstatistik_85')}</td>   <td>${c['attributes']['id_arealstatistik']}</td></tr>
-    <tr><td width="320">${_('fj97')}</td>                   <td>${c['attributes']['fj97']}</td></tr>
-    <tr><td width="320">${_('id_arealstatistik_97')}</td>   <td>${c['attributes']['id_arealstatistik_97']}</td></tr>
+    <tr><td width="320">${_('gmde')}</td>                   <td>${c['value'] or '-'}</td></tr>
+    <tr><td width="320">${_('fj85')}</td>                   <td>${c['attributes']['fj85'] or '-'}</td></tr>
+    <tr><td width="320">${_('id_arealstatistik_85')}</td>   <td>${c['attributes']['id_arealstatistik'] or '-'}</td></tr>
+    <tr><td width="320">${_('fj97')}</td>                   <td>${c['attributes']['fj97'] or '-'}</td></tr>
+    <tr><td width="320">${_('id_arealstatistik_97')}</td>   <td>${c['attributes']['id_arealstatistik_97'] or '-'}</td></tr>
 </%def>
