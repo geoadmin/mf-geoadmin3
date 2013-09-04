@@ -18,7 +18,6 @@
     padding-right: 14px;
   }
 
-
   .tooltip-separator {
     border-bottom-style: solid;
     border-bottom-width: 1px;
@@ -28,4 +27,20 @@
   }
 }
 
-
+.ga-popup.tooltip-popup {
+  @media (max-width: @screen-tablet) {
+    left: 20%;
+    right: 20%;
+    top: 89px;
+    bottom: auto;
+    max-height: 50%;
+    max-width: none;
+  }
+  @media (max-width: @screen-phone) {
+    top: 50%;
+    right: 2%;
+    left: 2%;
+    bottom: 2%;
+    max-height: none;
+  }
+}

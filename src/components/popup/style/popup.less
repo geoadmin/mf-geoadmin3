@@ -10,6 +10,14 @@
 
   @media (max-width: @screen-tablet) {
     z-index: 1500;
+    left: 2%;
+    right: 2%;
+    top: 2%;
+    bottom: 2%;
+    max-height: none;
+    max-width: none;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 }
 
@@ -17,5 +25,8 @@
   overflow: auto;
   max-width: inherit;
   max-height: (@ga-popup-max-height - 60);
+  @media (max-width: @screen-tablet) {
+    max-height: none;
+  }
 }
 
