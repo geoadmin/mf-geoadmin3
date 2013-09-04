@@ -139,7 +139,11 @@
 
 
               // Create vector layer
+              // FIXME currently ol3 doesn't allow to get the name of the KML
+              // document, making it impossible to use a proper label for the
+              // layer.
               var vector = new ol.layer.Vector({
+                label: 'KML',
                 source: new ol.source.Vector({
                   parser: kmlParser,
                   data: $scope.fileContent
