@@ -32,12 +32,10 @@
                 var crosshair = $('<div></div>')
                   .addClass('crosshair')
                   .addClass(queryParams.crosshair);
-
-                var overlay = new ol.Overlay({
-                  map: map,
+                map.addOverlay(new ol.Overlay({
                   element: crosshair.get(0),
                   position: view.getCenter()
-                });
+                }));
                 gaPermalink.deleteParam('crosshair');
               }
 

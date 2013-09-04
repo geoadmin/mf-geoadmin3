@@ -65,7 +65,7 @@
                 duration: duration,
                 start: start
               });
-              map.addPreRenderFunctions([pan, zoom, bounce]);
+              map.beforeRender(pan, zoom, bounce);
               view.setCenter(dest);
               view.setResolution(resolution);
             } else {
@@ -74,7 +74,7 @@
                 resolution: Math.max(view.getResolution(), dist / 1000),
                 start: start
               });
-              map.addPreRenderFunctions([pan, bounce]);
+              map.beforeRender(pan, bounce);
               view.setCenter(dest);
             }
           }
