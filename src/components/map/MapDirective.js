@@ -28,6 +28,18 @@
                 view.setZoom(+queryParams.zoom);
               }
 
+              if (queryParams.crosshair !== undefined) {
+                var crosshair = $('<div></div>')
+                  .addClass('crosshair')
+                  .addClass(queryParams.crosshair);
+
+                var overlay = new ol.Overlay({
+                  map: map,
+                  element: crosshair.get(0),
+                  position: view.getCenter()
+                });
+              }
+
               // Update permalink based on view states. We use a timeout
               // not to incur an Angular dirty-check cycle on each view
               // change event.
