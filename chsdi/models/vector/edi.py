@@ -20,7 +20,6 @@ class Arealstatistik1985(Base, Vector):
     # __minscale__ = 5001
     __maxscale__ = 25000
     id = Column('reli', Integer, primary_key=True)
-    #id = Column('bgdi_id', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     gmde = Column('gmde', Integer) 
     fj85 = Column('fj85', Integer) 
@@ -29,3 +28,23 @@ class Arealstatistik1985(Base, Vector):
     id_arealstatistik_97 = Column('id_arealstatistik_97', Integer) 
 
 register('ch.bfs.arealstatistik-1985', Arealstatistik1985)
+
+class Arealstatistik1997(Base, Vector):
+    # view in a schema
+    __tablename__ = 'arealstatistik_1997'
+    __table_args__ = ({'schema': 'bfs', 'autoload': False})
+    __template__ = 'templates/htmlpopup/arealstatistik1997.mako'
+    __esriId__ = 3002
+    __bodId__ = 'ch.bfs.arealstatistik-1997'
+    __displayFieldName__ = 'gmde'
+    #__minscale__ = 5001
+    __maxscale__ = 25000
+    id = Column('reli', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    gmde = Column('gmde', Integer) 
+    fj85 = Column('fj85', Integer) 
+    id_arealstatistik_85 = Column('id_arealstatistik_85', Integer) 
+    fj97 = Column('fj97', Integer) 
+    id_arealstatistik = Column('id_arealstatistik', Integer) 
+
+register('ch.bfs.arealstatistik-1997', Arealstatistik1997)
