@@ -58,7 +58,7 @@
                     duration: 200,
                     source: view.getCenter()
                   });
-                  map.addPreRenderFunction(pan);
+                  map.beforeRender(pan);
                   view.setCenter(coord21781);
                 }
 
