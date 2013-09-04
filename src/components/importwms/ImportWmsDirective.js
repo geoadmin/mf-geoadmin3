@@ -202,15 +202,15 @@
                 var olAttributions = null;
 
                 if (layer.attribution) {
-                  olAttributions = [new ol.Attribution(
-                    '<a href="' + layer.attribution.href + '">' +
-                      ((layer.attribution.logo) ?
-                        '<img src="' + layer.attribution.logo.href +
-                           '" title="' + layer.attribution.title +
-                           '" alt="' + layer.attribution.title + '" />"' :
-                        layer.attribution.title) +
-                    '</a>'
-                  )];
+                  olAttributions = [new ol.Attribution({
+                    html: '<a href="' + layer.attribution.href + '">' +
+                        ((layer.attribution.logo) ?
+                          '<img src="' + layer.attribution.logo.href +
+                             '" title="' + layer.attribution.title +
+                             '" alt="' + layer.attribution.title + '" />"' :
+                          layer.attribution.title) +
+                      '</a>'
+                  })];
                 }
 
                 var olSource = new ol.source.SingleImageWMS({

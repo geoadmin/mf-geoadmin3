@@ -38,9 +38,9 @@
               var popoverShown = false;
 
               var overlay = new ol.Overlay({
-                map: map,
                 element: element[0]
               });
+              map.addOverlay(overlay);
 
               scope.showQR = !gaBrowserSniffer.mobile;
 
@@ -58,7 +58,7 @@
                     duration: 200,
                     source: view.getCenter()
                   });
-                  map.addPreRenderFunction(pan);
+                  map.beforeRender(pan);
                   view.setCenter(coord21781);
                 }
 
