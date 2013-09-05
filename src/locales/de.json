@@ -52,6 +52,7 @@
 	"funksender_service_link_href": "http://map.geo.admin.ch",
 	"funksender_service_link_label": "http://map.geo.admin.ch",
 	"google_plus_tooltip": "Share this map on Google Plus",
+	"help_label": "Hilfe",
 	"import": "Importieren",
 	"import_kml": "KML Import",
 	"import_wms": "WMS Import",
