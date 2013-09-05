@@ -147,9 +147,10 @@
             <span translate>print</span>
           </a>
           <div id="print" class="panel-collapse collapse">
-            <div class="panel-body">
-              <%include file="components/print/partials/form.mako.html"/>
+            <div class="panel-body" ng-controller="GaPrintController">
+              <div ga-print></div>
             </div>
+
           </div>
         </div>  <!-- .panel -->
 % endif
