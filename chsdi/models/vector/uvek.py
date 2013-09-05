@@ -2,6 +2,7 @@
 
 from sqlalchemy import Column, Text, Integer
 from geoalchemy import GeometryColumn, Geometry
+from sqlalchemy.types import Numeric
 
 from chsdi.models import *
 from chsdi.models.vector import Vector
@@ -99,22 +100,22 @@ class AUSNAHMETRANSPORTROUTEN(Base, Vector):
 
 register('ch.astra.ausnahmetransportrouten', AUSNAHMETRANSPORTROUTEN)
 
-#class ZAEHLSTELLENREGLOC(Base, Vector):
-#    __tablename__ = 'verkehr_reg_loc'
-#    __table_args__ = ({'schema': 'astra', 'autoload': False})
-#    __template__ = 'templates/htmlpopup/verkehrszaehlstellen.mako'
-#    __esriId__ = 4002
-#    __bodId__ = 'ch.astra.strassenverkehrszaehlung_messstellen-regional_lokal'
-#    __displayFieldName__ = 'zaehlstellen_bezeichnung'
-#    __queryable_attributes__ = ['nr','zaehlstellen_bezeichnung']
-#    id = Column('nr', Integer, primary_key=True)
-#    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-#    zaehlstellen_bezeichnung = Column('zaehlstellen_bezeichnung', Text)
-#    zst_physisch_virtuell = Column('zst_physisch_virtuell', Text)
-#    messstellentyp = Column('messstellentyp', Text)
-#
-#register('ch.astra.strassenverkehrszaehlung_messstellen-regional_lokal', ZAEHLSTELLENREGLOC)
-#
+class ZAEHLSTELLENREGLOC(Base, Vector):
+    __tablename__ = 'verkehr_reg_loc'
+    __table_args__ = ({'schema': 'astra', 'autoload': False})
+    __template__ = 'templates/htmlpopup/verkehrszaehlstellen.mako'
+    __esriId__ = 4002
+    __bodId__ = 'ch.astra.strassenverkehrszaehlung_messstellen-regional_lokal'
+    __displayFieldName__ = 'zaehlstellen_bezeichnung'
+    __queryable_attributes__ = ['nr','zaehlstellen_bezeichnung']
+    id = Column('nr', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    zaehlstellen_bezeichnung = Column('zaehlstellen_bezeichnung', Text)
+    zst_physisch_virtuell = Column('zst_physisch_virtuell', Text)
+    messstellentyp = Column('messstellentyp', Text)
+
+register('ch.astra.strassenverkehrszaehlung_messstellen-regional_lokal', ZAEHLSTELLENREGLOC)
+
 #class ZAEHLSTELLENUEBER(Base, Vector):
 #    __tablename__ = 'verkehr_ueber'
 #    __table_args__ = ({'schema': 'astra', 'autoload': False})
@@ -149,3 +150,33 @@ class KATASTERBELASTETERSTANDORTE(Base, Vector):
     untersuchungsstand_bez = Column('untersuchungsstand_bez', Text)
 
 register('ch.bav.kataster-belasteter-standorte-oev', KATASTERBELASTETERSTANDORTE)
+
+class ABGELTUNGWASSERKRAFTNUTZUNG(Base, Vector):
+    __tablename__ = 'abgeltung_wasserkraftnutzung'
+    __table_args__ = ({'schema': 'bfe', 'autoload': False})
+    __template__ = 'templates/htmlpopup/abgeltungwasserkraftnutzung.mako'
+    __esriId__ = 4004
+    __bodId__ = 'ch.bfe.abgeltung-wasserkraftnutzung'
+    __displayFieldName__ = 'name'
+    id = Column('objectnumber', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    area = Column('area', Numeric)
+    name = Column('name', Text)
+    perimeter = Column('perimeter', Numeric)
+    startprotectioncommitment = Column('startprotectioncommitment', Text)
+    endprotectioncommitment = Column('endprotectioncommitment', Text)
+
+register('ch.bfe.abgeltung-wasserkraftnutzung', ABGELTUNGWASSERKRAFTNUTZUNG)
+
+#class ENERGIEFORSCHUNG(Base, Vector):
+#    __tablename__ = 'energieforschung' 
+#    __table_args__ = ({'schema': 'bfe', 'autoload': False})
+#    __template__ = 'templates/htmlpopup/energieforschung.mako'
+#    __esriId__ = 4004
+#    __bodId__ = 'ch.bfe.energieforschung'
+#    __displayFieldName__ = 'name'
+#    __extended_info__ = True
+#    id = Column('tid', Integer, primary_key=True)
+#    the_geom = Column(Geometry(21781))
+#
+#register('ch.bfe.energieforschung', ENERGIEFORSCHUNG)
