@@ -135,30 +135,28 @@ register('ch.swisstopo.vec200-transportation-oeffentliche-verkehr', Vec200Termin
 #register('ch.swisstopo.vec200-transportation-oeffentliche-verkehr', Vec200ShipKursschiff)
 #register('ch.swisstopo.vec200-transportation-oeffentliche-verkehr', Vec200Railway)
 
-#Problème avec l'attribut "displayFielName": 
-#Il y a un "if" dans la mako, l'attribut change en fontion de la langue...
-#class treasurehunt(Base, Vector):
-#    __tablename__ = 'treasurehunt'
-#    __table_args__ = ({'schema': 'public', 'autoload': False})
-#    __template__ = 'templates/htmlpopup/treasurehunt.mako'
-#    __maxscale__ = 2505
-#    __esriId__ = 1000
-#    __bodId__ = 'ch.swisstopo.treasurehunt'
-#    __displayFieldName__ = ''
-#    id = Column('bgdi_id', Integer, primary_key=True)
-#    title_de = Column('title_de', Text)
-#    title_fr = Column('title_fr', Text)
-#    title_it = Column('title_it', Text)
-#    info_de = Column('info_de', Text)
-#    info_fr = Column('info_fr', Text)
-#    info_it = Column('info_it', Text)
-#    link_de = Column('link_de', Text)
-#    link_fr = Column('link_fr', Text)
-#    link_it = Column('link_it', Text)
-#    type_coord = Column('type_coord', Text)
-#    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+class treasurehunt(Base, Vector):
+    __tablename__ = 'treasurehunt'
+    __table_args__ = ({'schema': 'public', 'autoload': False})
+    __template__ = 'templates/htmlpopup/treasurehunt.mako'
+    __maxscale__ = 2505
+    __esriId__ = 1000
+    __bodId__ = 'ch.swisstopo.treasurehunt'
+    __displayFieldName__ = 'title_de'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    title_de = Column('title_de', Text)
+    title_fr = Column('title_fr', Text)
+    title_it = Column('title_it', Text)
+    info_de = Column('info_de', Text)
+    info_fr = Column('info_fr', Text)
+    info_it = Column('info_it', Text)
+    link_de = Column('link_de', Text)
+    link_fr = Column('link_fr', Text)
+    link_it = Column('link_it', Text)
+    type_coord = Column('type_coord', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-#register('ch.swisstopo.treasurehunt', treasurehunt)
+register('ch.swisstopo.treasurehunt', treasurehunt)
  
 class Vec200Trafficinfo(Base, Vector):
     __tablename__ = 'vec200_trafficinfo_tiles'
@@ -253,15 +251,18 @@ class Vec200Protectedarea(Base, Vector):
 
 register('ch.swisstopo.vec200-adminboundaries-protectedarea', Vec200Protectedarea)
 
-# class Vec200Flowingwater(Base, Vector):
-#     __tablename__ = 'vec200_flowingwater'
-#     __table_args__ = ({'autoload': False})
-#     __template__ = 'templates/htmlpopup/vec200_flowingwater.mako'
-#     __esriId__ = 1000
-#     __bodId__ = 'ch.swisstopo.vec200-hydrography'
-#     __displayFieldName__ = ''
-#     id = Column('gtdboid', Text, primary_key=True)
-#     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+#class Vec200Flowingwater(Base, Vector):
+#    __tablename__ = 'vec200_flowingwater'
+#    __table_args__ = ({'autoload': False})
+#    __template__ = 'templates/htmlpopup/vec200_flowingwater.mako'
+#    __esriId__ = 1000
+#    __bodId__ = 'ch.swisstopo.vec200-hydrography'
+#    __displayFieldName__ = 'name'
+#    id = Column('gtdboid', Text, primary_key=True)
+#    name = Column('name', Text)
+#    exs = Column('exs', Text)
+#    hoc = Column('hoc', Text)
+#    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 # 
 # class Vec200Stagnantwater(Base, Vector):
 #     __tablename__ = 'vec200_stagnantwater'
@@ -273,7 +274,7 @@ register('ch.swisstopo.vec200-adminboundaries-protectedarea', Vec200Protectedare
 #     id = Column('gtdboid', Text, primary_key=True)
 #     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 # 
-# register('ch.swisstopo.vec200-hydrography', Vec200Flowingwater)
+#register('ch.swisstopo.vec200-hydrography', Vec200Flowingwater)
 # register('ch.swisstopo.vec200-hydrography', Vec200Stagnantwater)
 # 
 # class Vec200Landcover(Base, Vector):
