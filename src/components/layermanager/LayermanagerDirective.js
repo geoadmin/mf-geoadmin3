@@ -73,6 +73,22 @@
               layersCollection.insertAt(index + delta, layer);
             };
 
+            // prevent li’s horizontal scrolling for mobiles
+            element.on('touchmove', 'li', function(e) {
+              e.preventDefault();
+            });
+
+            // Toggle layer tools for mobiles
+            element.on('click', '.icon-gear', function() {
+              var li = $(this).closest('li');
+              li.toggleClass('folded');
+              $(this).closest('ul').find('li').each(function(i, el) {
+                if (el != li[0]) {
+                  $(el).addClass('folded');
+                }
+              });
+            });
+
           }
         };
       }]
