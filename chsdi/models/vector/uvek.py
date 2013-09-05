@@ -116,21 +116,21 @@ class ZAEHLSTELLENREGLOC(Base, Vector):
 
 register('ch.astra.strassenverkehrszaehlung_messstellen-regional_lokal', ZAEHLSTELLENREGLOC)
 
-#class ZAEHLSTELLENUEBER(Base, Vector):
-#    __tablename__ = 'verkehr_ueber'
-#    __table_args__ = ({'schema': 'astra', 'autoload': False})
-#    __template__ = 'templates/htmlpopup/verkehrszaehlstellen.mako'
-#    __esriId__ = 4003
-#    __bodId__ = 'ch.astra.strassenverkehrszaehlung_messstellen-uebergeordnet'
-#    __displayFieldName__ = 'zaehlstellen_bezeichnung'
-#    __queryable_attributes__ = ['nr','zaehlstellen_bezeichnung']
-#    id = Column('nr', Integer, primary_key=True)
-#    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-#    zaehlstellen_bezeichnung = Column('zaehlstellen_bezeichnung', Text)
-#    zst_physisch_virtuell = Column('zst_physisch_virtuell', Text)
-#    messstellentyp = Column('messstellentyp', Text)
-#
-#register('ch.astra.strassenverkehrszaehlung_messstellen-uebergeordnet', ZAEHLSTELLENUEBER)
+class ZAEHLSTELLENUEBER(Base, Vector):
+    __tablename__ = 'verkehr_ueber'
+    __table_args__ = ({'schema': 'astra', 'autoload': False})
+    __template__ = 'templates/htmlpopup/verkehrszaehlstellen.mako'
+    __esriId__ = 4003
+    __bodId__ = 'ch.astra.strassenverkehrszaehlung_messstellen-uebergeordnet'
+    __displayFieldName__ = 'zaehlstellen_bezeichnung'
+    __queryable_attributes__ = ['nr','zaehlstellen_bezeichnung']
+    id = Column('nr', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    zaehlstellen_bezeichnung = Column('zaehlstellen_bezeichnung', Text)
+    zst_physisch_virtuell = Column('zst_physisch_virtuell', Text)
+    messstellentyp = Column('messstellentyp', Text)
+
+register('ch.astra.strassenverkehrszaehlung_messstellen-uebergeordnet', ZAEHLSTELLENUEBER)
 
 class KATASTERBELASTETERSTANDORTE(Base, Vector):
     __tablename__ = 'kataster_belasteter_standorte_oev'
