@@ -14,20 +14,17 @@
           active: false
         };
 
-        $('#featuretree').on('show', function() {
-          //console.log('This is never called!');
-          $scope.options.active = true;
+        $('#featuretree').on('show.bs.collapse', function() {
+          $scope.$apply(function() {
+            $scope.options.active = true;
+          });
         });
 
-        $('#featuretree').on('hide', function() {
-          //console.log('This is never called!');
-          $scope.options.active = true;
+        $('#featuretree').on('hide.bs.collapse', function() {
+          $scope.$apply(function() {
+            $scope.options.active = false;
+          });
         });
-        /*
-        $('#featuretree-link').on('click', function() {
-          //console.log('This is called');
-        });
-        */
       }
   ]);
 })();
