@@ -1,19 +1,22 @@
 <ul>
-  <li ng-repeat="layer in layers | gaReverse | filter:layerFilter">
+  <li ng-repeat="layer in layers | gaReverse | filter:layerFilter" class="folded">
     <button type="button" ng-click="removeLayerFromMap(layer)" class="btn btn-primary btn-xs">&times;</button>
     <label>
       <input type="checkbox" ng-model="layer.visible" />
       {{getLayerLabel(layer)}}
     </label>
-    <a href="#"><i class="icon-info-sign"></i> </a>
-    <label>
-      <span translate>transparency</span>&nbsp; <input type="range" />
-    </label>
-    <div class="ordering">
-      <a href="#" class="icon-arrow-up" ng-if="!$first" ng-click="moveLayer(layer, 1)"></a>
-      <i class="icon-arrow-up" ng-if="$first"></i>
-      <a href="#" class="icon-arrow-down" ng-if="!$last" ng-click="moveLayer(layer, -1)"></a>
-      <i class="icon-arrow-down" ng-if="$last"></i>
-    </div>
+    <span class="layertools">
+      <label class="transparency">
+        <span translate>transparency</span>&nbsp; <input type="range" />
+      </label>
+      <a href="#" class="layerinfo"><i class="icon-info-sign"></i> </a>
+      <div class="ordering">
+        <a href="#" class="icon-arrow-up" ng-if="!$first" ng-click="moveLayer(layer, 1)"></a>
+        <i class="icon-arrow-up" ng-if="$first"></i>
+        <a href="#" class="icon-arrow-down" ng-if="!$last" ng-click="moveLayer(layer, -1)"></a>
+        <i class="icon-arrow-down" ng-if="$last"></i>
+      </div>
+    </span>
+    <i class="icon-gear"></i>
   </li>
 </ul>
