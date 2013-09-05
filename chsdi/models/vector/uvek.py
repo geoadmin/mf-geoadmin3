@@ -58,3 +58,26 @@ class IVS_REG_LOC(Base, Vector):
     ivs_sortsla = Column('ivs_sortsla', Text)
 
 register('ch.astra.ivs-reg_loc', IVS_REG_LOC)
+
+class KANTONE_REG_LOC(Base, Vector):
+    __tablename__ = 'kanton_reg_loc'
+    __table_args__ = ({'schema': 'astra', 'autoload': False})
+    __template__ = 'templates/htmlpopup/kantone.ivs-reg_loc.mako'
+    __esriId__ = 4001
+    __bodId__ = 'ch.kantone.ivs-reg_loc'
+    __displayFieldName__ = 'ivs_slaname'
+    __queryable_attributes__ = ['ivs_slaname','ivs_nummer','ivs_signatur']
+    id = Column('reg_loc_id', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    ivs_slaname = Column('ivs_slaname', Text)
+    ivs_nummer = Column('ivs_nummer', Text)
+    ivs_signatur_fr = Column('ivs_signatur_fr', Text)
+    ivs_signatur_it = Column('ivs_signatur_it', Text)
+    ivs_signatur_de = Column('ivs_signatur_de', Text)
+    ivs_kanton = Column('ivs_kanton', Text)
+    ivs_sladatehist = Column('ivs_sladatehist', Integer)
+    ivs_sladatemorph = Column('ivs_sladatemorph', Integer)
+    ivs_slabedeutung = Column('ivs_slabedeutung', Integer)
+    ivs_sortsla = Column('ivs_sortsla', Text)
+    
+register('ch.kantone.ivs-reg_loc', KANTONE_REG_LOC)
