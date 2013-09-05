@@ -1,4 +1,5 @@
 <div class="ga-featuretree">
+  <div ng-if="loading">Please wait, data is loading...</div>
   <ul>
     <li ng-repeat="(key, value) in tree">
       <a href="#" ng-click="value.open = !value.open">
@@ -7,7 +8,10 @@
       </a>
       <ul ng-if="value.open">
         <li ng-repeat="feature in value.features">
-          <div>{{feature.label}}</div>
+          <div ng-mouseover="showFeatureInfo(feature)"
+          ng-mouseleave="feature.showInfo = false">{{feature.label}}</div>
+          <div ng-if="feature.loading">Loading feature info...</div>
+          <div ng-if="feature.showInfo" ng-bind-html="feature.info"></div>
         </li>
       </ul>
     </li>
