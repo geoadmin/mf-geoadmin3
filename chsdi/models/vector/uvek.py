@@ -106,7 +106,7 @@ register('ch.astra.ausnahmetransportrouten', AUSNAHMETRANSPORTROUTEN)
 #    __esriId__ = 4002
 #    __bodId__ = 'ch.astra.strassenverkehrszaehlung_messstellen-regional_lokal'
 #    __displayFieldName__ = 'zaehlstellen_bezeichnung'
-#    __queryable_attributes__ = ['zaehlstellen_bezeichnung']
+#    __queryable_attributes__ = ['nr','zaehlstellen_bezeichnung']
 #    id = Column('nr', Integer, primary_key=True)
 #    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 #    zaehlstellen_bezeichnung = Column('zaehlstellen_bezeichnung', Text)
@@ -115,4 +115,37 @@ register('ch.astra.ausnahmetransportrouten', AUSNAHMETRANSPORTROUTEN)
 #
 #register('ch.astra.strassenverkehrszaehlung_messstellen-regional_lokal', ZAEHLSTELLENREGLOC)
 #
+#class ZAEHLSTELLENUEBER(Base, Vector):
+#    __tablename__ = 'verkehr_ueber'
+#    __table_args__ = ({'schema': 'astra', 'autoload': False})
+#    __template__ = 'templates/htmlpopup/verkehrszaehlstellen.mako'
+#    __esriId__ = 4003
+#    __bodId__ = 'ch.astra.strassenverkehrszaehlung_messstellen-uebergeordnet'
+#    __displayFieldName__ = 'zaehlstellen_bezeichnung'
+#    __queryable_attributes__ = ['nr','zaehlstellen_bezeichnung']
+#    id = Column('nr', Integer, primary_key=True)
+#    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+#    zaehlstellen_bezeichnung = Column('zaehlstellen_bezeichnung', Text)
+#    zst_physisch_virtuell = Column('zst_physisch_virtuell', Text)
+#    messstellentyp = Column('messstellentyp', Text)
+#
+#register('ch.astra.strassenverkehrszaehlung_messstellen-uebergeordnet', ZAEHLSTELLENUEBER)
 
+class KATASTERBELASTETERSTANDORTE(Base, Vector):
+    __tablename__ = 'kataster_belasteter_standorte_oev'
+    __table_args__ = ({'schema': 'bav', 'autoload': False})
+    __template__ = 'templates/htmlpopup/kataster_belasteter_standorte_oev.mako'
+    __esriId__ = 4002
+    __bodId__ = 'ch.bav.kataster-belasteter-standorte-oev'
+    __displayFieldName__ = 'bezeichnung'
+    id = Column('vflz_id', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+#    not_used = Column('the_geom_gen50', Geometry(21781))
+    nummer = Column('nummer', Text)
+    typ_bez = Column('typ_bez', Text)
+    url = Column('url', Text)
+    bezeichnung = Column('bezeichnung', Text)
+    bewertung_bez = Column('bewertung_bez', Text)
+    untersuchungsstand_bez = Column('untersuchungsstand_bez', Text)
+
+register('ch.bav.kataster-belasteter-standorte-oev', KATASTERBELASTETERSTANDORTE)
