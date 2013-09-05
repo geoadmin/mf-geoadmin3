@@ -337,19 +337,22 @@ class Vec200Builtupp(Base, Vector):
 register('ch.swisstopo.vec200-miscellaneous', Vec200Builtupp)
 #register('ch.swisstopo.vec200-miscellaneous', Vec200Poi)
 #register('ch.swisstopo.vec200-miscellaneous', Vec200Supply)
-# 
-# class Vec200Namedlocation(Base, Vector):
-#     __tablename__ = 'vec200_namedlocation'
-#     __table_args__ = ({'autoload': False})
-#     __template__ = 'templates/htmlpopup/vec200_namedlocation.mako'
-#     __esriId__ = 1000
-#     __bodId__ = 'ch.swisstopo.vec200-names-namedlocation'
-#     __displayFieldName__ = ''
-#     id = Column('gtdboid', Text, primary_key=True)
-#     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo.vec200-names-namedlocation', Vec200Namedlocation)
-# 
+
+class Vec200Namedlocation(Base, Vector):
+    __tablename__ = 'vec200_namedlocation'
+    __table_args__ = ({'autoload': False})
+    __template__ = 'templates/htmlpopup/vec200_namedlocation.mako'
+    __esriId__ = 1000
+    __bodId__ = 'ch.swisstopo.vec200-names-namedlocation'
+    __displayFieldName__ = 'objname1'
+    id = Column('gtdboid', Text, primary_key=True)
+    objname1 = Column('objname1', Text)
+    objname2 = Column('objname2', Text)
+    altitude = Column('altitude', Integer)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.vec200-names-namedlocation', Vec200Namedlocation)
+
 # class Vec25Strassennetz(Base, Vector):
 #  	__tablename__ = 'v25_str_25_l_tooltip'
 #  	__table_args__ = ({'autoload': False})
