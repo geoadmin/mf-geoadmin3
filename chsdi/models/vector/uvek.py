@@ -81,3 +81,38 @@ class KANTONE_REG_LOC(Base, Vector):
     ivs_sortsla = Column('ivs_sortsla', Text)
     
 register('ch.kantone.ivs-reg_loc', KANTONE_REG_LOC)
+
+class AUSNAHMETRANSPORTROUTEN(Base, Vector):
+    __tablename__ = 'ausnahmetransportrouten'
+    __table_args__ = ({'schema': 'astra', 'autoload': False})
+    __template__ = 'templates/htmlpopup/ausnahmetransportrouten.mako'
+    __esriId__ = 4002
+    __bodId__ = 'ch.astra.ausnahmetransportrouten'
+    __displayFieldName__ = 'bgdi_id'
+    id = Column('id', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    bgdi_id = Column('bgdi_id', Integer)
+    ri_getrenn = Column('ri_getrenn', Text)
+    anz_spuren = Column('anz_spuren', Integer)
+    strassen_typ = Column('strassen_typ', Text)
+    routentyp_id = Column('routentyp_id', Integer)
+
+register('ch.astra.ausnahmetransportrouten', AUSNAHMETRANSPORTROUTEN)
+
+#class ZAEHLSTELLENREGLOC(Base, Vector):
+#    __tablename__ = 'verkehr_reg_loc'
+#    __table_args__ = ({'schema': 'astra', 'autoload': False})
+#    __template__ = 'templates/htmlpopup/verkehrszaehlstellen.mako'
+#    __esriId__ = 4002
+#    __bodId__ = 'ch.astra.strassenverkehrszaehlung_messstellen-regional_lokal'
+#    __displayFieldName__ = 'zaehlstellen_bezeichnung'
+#    __queryable_attributes__ = ['zaehlstellen_bezeichnung']
+#    id = Column('nr', Integer, primary_key=True)
+#    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+#    zaehlstellen_bezeichnung = Column('zaehlstellen_bezeichnung', Text)
+#    zst_physisch_virtuell = Column('zst_physisch_virtuell', Text)
+#    messstellentyp = Column('messstellentyp', Text)
+#
+#register('ch.astra.strassenverkehrszaehlung_messstellen-regional_lokal', ZAEHLSTELLENREGLOC)
+#
+
