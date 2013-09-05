@@ -599,6 +599,7 @@ ul.panel-body-wide {
     top: 5px;
     font-size: 26px;
     display: none;
+    -webkit-transform: rotate(0deg);
   }
   .ordering {
     bottom: .6em;
@@ -629,6 +630,7 @@ ul.panel-body-wide {
   @media (max-width: @screen-tablet) {
     .icon-gear {
       display: inline;
+      .transition(-webkit-transform .35s ease);
     }
     li {
       height: 3em;
@@ -648,7 +650,7 @@ ul.panel-body-wide {
       width: 100%;
       top: 0;
       left: 0;
-      background: rgba(255,255,255,0.9);
+      background: #fff;
       border-left: 3px solid #666;
       .transition(margin-left .35s ease);
       a, i {
@@ -665,8 +667,13 @@ ul.panel-body-wide {
         right: 40px;
         top: 4px;
       }
-      &.folded {
+    }
+    .folded {
+      .layertools {
         margin-left:100%;
+      }
+      .icon-gear {
+        -webkit-transform: rotate(360deg);
       }
     }
   }

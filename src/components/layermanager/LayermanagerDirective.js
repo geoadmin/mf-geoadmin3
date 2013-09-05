@@ -1,12 +1,10 @@
 (function() {
   goog.provide('ga_layermanager_directive');
 
-  goog.require('ga_browsersniffer_service');
   goog.require('ga_map_service');
 
   var module = angular.module('ga_layermanager_directive', [
     'pascalprecht.translate',
-    'ga_browsersniffer_service',
     'ga_map_service'
   ]);
 
@@ -22,7 +20,7 @@
   });
 
   module.directive('gaLayermanager',
-      ['gaLayers', 'gaBrowserSniffer', function(gaLayers, gaBrowserSniffer) {
+      ['gaLayers', function(gaLayers) {
         return {
           restrict: 'A',
           replace: true,
@@ -32,8 +30,6 @@
           },
           link: function(scope, element, attrs) {
             var map = scope.map;
-
-            scope.mobile = gaBrowserSniffer.mobile;
 
             // The ngRepeat collection is the map's array of layers. ngRepeat
             // uses $watchCollection internally. $watchCollection watches the
@@ -84,10 +80,10 @@
 
             // Toggle layer tools for mobiles
             element.on('click', '.icon-gear', function() {
-              var layertools = $(this).closest('li').find('.layertools');
-              layertools.toggleClass('folded');
-              $(this).closest('ul').find('.layertools').each(function(i, el) {
-                if (el != layertools[0]) {
+              var li = $(this).closest('li');
+              li.toggleClass('folded');
+              $(this).closest('ul').find('li').each(function(i, el) {
+                if (el != li[0]) {
                   $(el).addClass('folded');
                 }
               });

@@ -1,11 +1,11 @@
 <ul>
-  <li ng-repeat="layer in layers | gaReverse | filter:layerFilter">
+  <li ng-repeat="layer in layers | gaReverse | filter:layerFilter" class="folded">
     <button type="button" ng-click="removeLayerFromMap(layer)" class="btn btn-primary btn-xs">&times;</button>
     <label>
       <input type="checkbox" ng-model="layer.visible" />
       {{getLayerLabel(layer)}}
     </label>
-    <span class="folded layertools">
+    <span class="layertools">
       <label class="transparency">
         <span translate>transparency</span>&nbsp; <input type="range" />
       </label>
@@ -17,6 +17,6 @@
         <i class="icon-arrow-down" ng-if="$last"></i>
       </div>
     </span>
-    <i class="icon-gear" ng-show="mobile"></i>
+    <i class="icon-gear"></i>
   </li>
 </ul>
