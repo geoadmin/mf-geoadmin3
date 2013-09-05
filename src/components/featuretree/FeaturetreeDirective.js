@@ -20,7 +20,9 @@
             map: '=gaFeaturetreeMap'
           },
           link: function(scope, element, attrs) {
-            var canceler, currentTopic;
+            var currentTopic;
+            var timeoutPromise = null;
+            var canceler = null;
             var map = scope.map;
             var view = map.getView();
             var featureTolerance = 1;
@@ -40,18 +42,22 @@
               return layerstring;
             };
 
+            var cancel = function() {
+              if (timeoutPromise !== null) {
+                $timeout.cancel(timeoutPromise);
+              }
+              if (canceler !== null) {
+                canceler.resolve();
+              }
+              canceler = $q.defer();
+            };
+
             var updateTree = function() {
               var size = map.getSize();
               var extent = view.calculateExtent(size);
               var identifyUrl = scope.options.identifyUrlTemplate
                                 .replace('{Topic}', currentTopic),
                   layersToQuery = getLayersToQuery();
-              // Cancel all pending requests
-              if (canceler) {
-                canceler.resolve();
-              }
-              // Create new cancel object
-              canceler = $q.defer();
               if (layersToQuery.length) {
 
                 // Look for all features in current bounding box
@@ -103,15 +109,14 @@
             // order to not trigger angular digest cycles and too many
             // updates. We don't use the permalink here because we want
             // to separate these concerns.
-            var timeoutPromise = null;
             var triggerChange = function() {
-              if (timeoutPromise !== null) {
-                $timeout.cancel(timeoutPromise);
+              if (scope.options.active) {
+                cancel();
+                timeoutPromise = $timeout(function() {
+                  updateTree();
+                  timeoutPromise = null;
+                }, 1000);
               }
-              timeoutPromise = $timeout(function() {
-                updateTree();
-                timeoutPromise = null;
-              }, 500);
             };
 
             scope.tree = {};
@@ -123,7 +128,10 @@
             });
 
             scope.$watch('options.active', function(newVal, oldVal) {
-              //console.log('toggle is', newVal, 'was', oldVal);
+              cancel();
+              if (newVal === true) {
+                updateTree();
+              }
             });
 
 
