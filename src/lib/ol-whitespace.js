@@ -23516,7 +23516,7 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
   if(goog.isNull(this.frameState_)) {
     return
   }
-  if(mapBrowserEvent.type == goog.events.EventType.MOUSEOUT) {
+  if(mapBrowserEvent.type == goog.events.EventType.MOUSEOUT || mapBrowserEvent.type == goog.events.EventType.TOUCHEND) {
     this.focus_ = null
   }else {
     this.focus_ = mapBrowserEvent.getCoordinate()
@@ -23568,11 +23568,11 @@ ol.Map.prototype.handleSizeChanged_ = function() {
 };
 ol.Map.prototype.handleTargetChanged_ = function() {
   var target = this.getTarget();
-  if(!goog.dom.isElement(target)) {
+  var targetElement = goog.isDef(target) ? goog.dom.getElement(target) : null;
+  if(goog.isNull(targetElement)) {
     goog.dom.removeNode(this.viewport_)
   }else {
-    goog.asserts.assert(goog.isDefAndNotNull(target));
-    goog.dom.appendChild(target, this.viewport_)
+    goog.dom.appendChild(targetElement, this.viewport_)
   }
   this.updateSize()
 };
@@ -23711,9 +23711,6 @@ ol.Map.prototype.setSize = function(size) {
 };
 goog.exportProperty(ol.Map.prototype, "setSize", ol.Map.prototype.setSize);
 ol.Map.prototype.setTarget = function(target) {
-  if(goog.isDef(target)) {
-    target = goog.dom.getElement(target)
-  }
   this.set(ol.MapProperty.TARGET, target)
 };
 goog.exportProperty(ol.Map.prototype, "setTarget", ol.Map.prototype.setTarget);
@@ -23729,11 +23726,12 @@ ol.Map.prototype.unfreezeRendering = function() {
 };
 ol.Map.prototype.updateSize = function() {
   var target = this.getTarget();
-  if(goog.isDef(target)) {
-    var size = goog.style.getSize(target);
-    this.setSize([size.width, size.height])
-  }else {
+  var targetElement = goog.isDef(target) ? goog.dom.getElement(target) : null;
+  if(goog.isNull(targetElement)) {
     this.setSize(undefined)
+  }else {
+    var size = goog.style.getSize(targetElement);
+    this.setSize([size.width, size.height])
   }
 };
 ol.Map.prototype.withFrozenRendering = function(f, opt_obj) {
@@ -24201,7 +24199,9 @@ ol.control.FullScreen.prototype.handleClick_ = function(browserEvent) {
   if(goog.dom.fullscreen.isFullScreen()) {
     goog.dom.fullscreen.exitFullScreen()
   }else {
-    var element = map.getTarget();
+    var target = map.getTarget();
+    goog.asserts.assert(goog.isDefAndNotNull(target));
+    var element = goog.dom.getElement(target);
     goog.asserts.assert(goog.isDefAndNotNull(element));
     if(this.keys_) {
       goog.dom.fullscreen.requestFullScreenWithKeys(element)
