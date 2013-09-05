@@ -11,6 +11,7 @@
 
         $scope.options = {
           identifyUrlTemplate: baseUrl + '/{Topic}/MapServer/identify',
+          htmlUrlTemplate: baseUrl + '/{Topic}/MapServer/{Layer}/{Feature}/htmlpopup',
           active: false
         };
 
