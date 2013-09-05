@@ -4,12 +4,13 @@
   goog.require('ga_map_service');
 
   var module = angular.module('ga_featuretree_directive', [
-    'ga_map_service'
+    'ga_map_service',
+    'pascalprecht.translate'
   ]);
 
   module.directive('gaFeaturetree',
-      ['$timeout', '$http', '$q', 'gaLayers',
-      function($timeout, $http, $q, gaLayers) {
+      ['$timeout', '$http', '$q', '$translate', '$sce', 'gaLayers',
+      function($timeout, $http, $q, $translate, $sce, gaLayers) {
 
         return {
           restrict: 'A',
@@ -49,16 +50,50 @@
               if (canceler !== null) {
                 canceler.resolve();
               }
+              scope.loading = false;
               canceler = $q.defer();
             };
 
-            var updateTree = function() {
+            var updateTree = function(features) {
+              var tree = {};
+              var oldTree = scope.tree;
+              if (features.results &&
+                  features.results.length > 0) {
+
+                angular.forEach(features.results, function(result) {
+                  var layerId = result.layerBodId;
+
+                  if (!angular.isDefined(tree[layerId])) {
+                    tree[layerId] = {
+                      label: gaLayers.getLayer(layerId).label,
+                      features: [],
+                      // We want to keep the state
+                      open: oldTree[layerId] ? oldTree[layerId].open : false
+                    };
+                  }
+
+                  var node = tree[layerId];
+                  node.features.push({
+                    loading: false,
+                    showInfo: false,
+                    info: '',
+                    id: result.featureId,
+                    layer: layerId,
+                    label: result.value
+                  });
+                });
+              }
+              scope.tree = tree;
+            };
+
+            var requestFeatures = function() {
               var size = map.getSize();
               var extent = view.calculateExtent(size);
               var identifyUrl = scope.options.identifyUrlTemplate
                                 .replace('{Topic}', currentTopic),
                   layersToQuery = getLayersToQuery();
               if (layersToQuery.length) {
+                scope.loading = true;
 
                 // Look for all features in current bounding box
                 $http.jsonp(identifyUrl, {
@@ -76,31 +111,11 @@
                     callback: 'JSON_CALLBACK'
                   }
                 }).success(function(features) {
-                  var tree = {};
-
-                  if (features.results &&
-                      features.results.length > 0) {
-
-                    angular.forEach(features.results, function(result) {
-
-                      if (!angular.isDefined(tree[result.layerBodId])) {
-                        tree[result.layerBodId] = {
-                          label: gaLayers.getLayer(result.layerBodId).label,
-                          features: []
-                        };
-                      }
-
-                      var node = tree[result.layerBodId];
-                      node.features.push({
-                        id: result.featureId,
-                        label: result.value
-                      });
-
-                    });
-                  }
-                  scope.tree = tree;
-                }).error(function() {
+                  updateTree(features);
+                  scope.loading = false;
+                }).error(function(reason) {
                   scope.tree = {};
+                  scope.loading = false;
                 });
               }
             };
@@ -113,13 +128,45 @@
               if (scope.options.active) {
                 cancel();
                 timeoutPromise = $timeout(function() {
-                  updateTree();
+                  requestFeatures();
                   timeoutPromise = null;
                 }, 1000);
               }
             };
 
+            scope.loading = false;
             scope.tree = {};
+
+            scope.showFeatureInfo = function(feature) {
+              var htmlUrl;
+              //Load information if not already there
+              if (feature.info == '') {
+                feature.loading = true;
+                htmlUrl = scope.options.htmlUrlTemplate
+                          .replace('{Topic}', currentTopic)
+                          .replace('{Layer}', feature.layer)
+                          .replace('{Feature}', feature.id);
+                $http.jsonp(htmlUrl, {
+                  timeout: canceler.promise,
+                  params: {
+                    lang: $translate.uses(),
+                    callback: 'JSON_CALLBACK'
+                  }
+                }).success(function(html) {
+                  feature.showInfo = true;
+                  feature.info = $sce.trustAsHtml(html);
+                  feature.loading = false;
+                }).error(function() {
+                  feature.showInfo = false;
+                  feature.info = '';
+                  feature.loading = false;
+                });
+                //html popup here...
+                feature.info = 'Here is my information, yes';
+              } else {
+                feature.showInfo = true;
+              }
+            };
 
             view.on('change', triggerChange);
 
@@ -130,7 +177,7 @@
             scope.$watch('options.active', function(newVal, oldVal) {
               cancel();
               if (newVal === true) {
-                updateTree();
+                requestFeatures();
               }
             });
 
