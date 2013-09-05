@@ -294,40 +294,49 @@ class Vec200Landcover(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.vec200-landcover', Vec200Landcover)
-# 
-# class Vec200Builtupp(Base, Vector):
-#     __tablename__ = 'vec200_builtupp'
-#     __table_args__ = ({'autoload': False})
-#     __template__ = 'templates/htmlpopup/vec200_builtupp.mako'
-#     __esriId__ = 1000
-#     __bodId__ = 'ch.swisstopo.vec200-miscellaneous'
-#     __displayFieldName__ = ''
-#     id = Column('gtdboid', Text, primary_key=True)
-#     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# class Vec200Poi(Base, Vector):
-#     __tablename__ = 'v200_poi_tooltip'
-#     __table_args__ = ({'autoload': False})
-#     __template__ = 'templates/htmlpopup/vec200_poi.mako'
-#     __esriId__ = 1000
-#     __bodId__ = 'ch.swisstopo.vec200-miscellaneous'
-#     __displayFieldName__ = ''
-#     id = Column('gtdboid', Text, primary_key=True)
-#     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# class Vec200Supply(Base, Vector):
-#     __tablename__ = 'vec200_supply'
-#     __table_args__ = ({'autoload': False})
-#     __template__ = 'templates/htmlpopup/vec200_supply.mako'
-#     __esriId__ = 1000
-#     __bodId__ = 'ch.swisstopo.vec200-miscellaneous'
-#     __displayFieldName__ = ''
-#     id = Column('gtdboid', Text, primary_key=True)
-#     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo.vec200-miscellaneous', Vec200Builtupp)
-# register('ch.swisstopo.vec200-miscellaneous', Vec200Poi)
-# register('ch.swisstopo.vec200-miscellaneous', Vec200Supply)
+
+class Vec200Builtupp(Base, Vector):
+    __tablename__ = 'vec200_builtupp'
+    __table_args__ = ({'autoload': False})
+    __template__ = 'templates/htmlpopup/vec200_builtupp.mako'
+    __esriId__ = 1000
+    __bodId__ = 'ch.swisstopo.vec200-miscellaneous'
+    __displayFieldName__ = 'objname'
+    id = Column('gtdboid', Text, primary_key=True)
+    objname = Column('objname', Text)
+    ppi = Column('ppi', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+#class Vec200Poi(Base, Vector):
+#    __tablename__ = 'v200_poi_tooltip'
+#    __table_args__ = ({'autoload': False})
+#    __template__ = 'templates/htmlpopup/vec200_poi.mako'
+#    __esriId__ = 1000
+#    __bodId__ = 'ch.swisstopo.vec200-miscellaneous'
+#    __displayFieldName__ = 'objname'
+#    id = Column('gtdboid', Text, primary_key=True)
+#    objname = Column('objname', Text)
+#    objval = Column('objval', Text)
+#    ppc = Column('ppc', Text)
+#    pro = Column('pro', Text)
+#    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+#class Vec200Supply(Base, Vector):
+#    __tablename__ = 'vec200_supply'
+#    __table_args__ = ({'autoload': False})
+#    __template__ = 'templates/htmlpopup/vec200_supply.mako'
+#    __esriId__ = 1000
+#    __bodId__ = 'ch.swisstopo.vec200-miscellaneous'
+#    __displayFieldName__ = 'fco'
+#    id = Column('gtdboid', Text, primary_key=True)
+#    fco = Column('fco', Text)
+#    loc = Column('loc', Text)
+#    pro = Column('pro', Text)
+#    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.vec200-miscellaneous', Vec200Builtupp)
+#register('ch.swisstopo.vec200-miscellaneous', Vec200Poi)
+#register('ch.swisstopo.vec200-miscellaneous', Vec200Supply)
 # 
 # class Vec200Namedlocation(Base, Vector):
 #     __tablename__ = 'vec200_namedlocation'
