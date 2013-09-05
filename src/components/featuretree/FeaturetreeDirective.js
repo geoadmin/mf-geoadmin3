@@ -122,6 +122,10 @@
               currentTopic = topic.id;
             });
 
+            scope.$watch('options.active', function(newVal, oldVal) {
+              //console.log('toggle is', newVal, 'was', oldVal);
+            });
+
 
           }
         };
