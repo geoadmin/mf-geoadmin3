@@ -707,5 +707,32 @@ ul.panel-body-wide {
 // ***** Metadata popup
 .metadata-popup-wait {
   cursor: wait;
+  &:after {
+    @media (max-width: @screen-tablet) {
+      .icon-spin;
+      content: "\f021";
+      font-family: FontAwesome;
+      position: absolute;
+      top: 3px;
+      left: 0;
+      font-size: 26px;
+      color: red;
+      width: 44px;
+      height: 44px;
+      line-height: 44px;
+      background: white;
+      z-index: 5000;
+      text-align: center;
+      border-radius: 44px;
+    }
+    @media (max-width: @screen-phone) {
+      width: 32px;
+      height: 32px;
+      line-height: 32px;
+      font-size: 20px;
+      left: 1px;
+      background: transparent;
+    }
+  }
 }
 
