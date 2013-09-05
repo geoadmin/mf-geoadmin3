@@ -240,18 +240,19 @@ register('ch.swisstopo.vec200-transportation-strassennetz', Vec200Trafficinfo)
 #register('ch.swisstopo.vec200-transportation-strassennetz', Vec200Ramp)
 #register('ch.swisstopo.vec200-transportation-strassennetz', Vec200Customsoffice)
 
-# class Vec200Protectedarea(Base, Vector):
-#     __tablename__ = 'vec200_protectedarea'
-#     __table_args__ = ({'autoload': False})
-#     __template__ = 'templates/htmlpopup/vec200_protectedarea.mako'
-#     __esriId__ = 1000
-#     __bodId__ = 'ch.swisstopo.vec200-adminboundaries-protectedarea'
-#     __displayFieldName__ = ''
-#     id = Column('gtdboid', Text, primary_key=True)
-#     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo.vec200-adminboundaries-protectedarea', Vec200Protectedarea)
-# 
+class Vec200Protectedarea(Base, Vector):
+    __tablename__ = 'vec200_protectedarea'
+    __table_args__ = ({'autoload': False})
+    __template__ = 'templates/htmlpopup/vec200_protectedarea.mako'
+    __esriId__ = 1000
+    __bodId__ = 'ch.swisstopo.vec200-adminboundaries-protectedarea'
+    __displayFieldName__ = 'name'
+    id = Column('gtdboid', Text, primary_key=True)
+    name = Column('name', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.vec200-adminboundaries-protectedarea', Vec200Protectedarea)
+
 # class Vec200Flowingwater(Base, Vector):
 #     __tablename__ = 'vec200_flowingwater'
 #     __table_args__ = ({'autoload': False})
