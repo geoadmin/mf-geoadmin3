@@ -279,17 +279,21 @@ class Vec200Flowingwater(Base, Vector):
 register('ch.swisstopo.vec200-hydrography', Vec200Flowingwater)
 #register('ch.swisstopo.vec200-hydrography', Vec200Stagnantwater)
 
-# class Vec200Landcover(Base, Vector):
-#     __tablename__ = 'vec200_landcover'
-#     __table_args__ = ({'autoload': False})
-#     __template__ = 'templates/htmlpopup/vec200_landcover.mako'
-#     __esriId__ = 1000
-#     __bodId__ = 'ch.swisstopo.vec200-landcover'
-#     __displayFieldName__ = ''
-#     id = Column('gtdboid', Text, primary_key=True)
-#     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo.vec200-landcover', Vec200Landcover)
+class Vec200Landcover(Base, Vector):
+    __tablename__ = 'vec200_landcover'
+    __table_args__ = ({'autoload': False})
+    __template__ = 'templates/htmlpopup/vec200_landcover.mako'
+    __esriId__ = 1000
+    __bodId__ = 'ch.swisstopo.vec200-landcover'
+    __displayFieldName__ = 'objname1'
+    id = Column('gtdboid', Text, primary_key=True)
+    objname1 = Column('objname1', Text)
+    objval = Column('objval', Text)
+    ppi = Column('ppi', Text)
+    ppl = Column('ppl', Numeric)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.vec200-landcover', Vec200Landcover)
 # 
 # class Vec200Builtupp(Base, Vector):
 #     __tablename__ = 'vec200_builtupp'
