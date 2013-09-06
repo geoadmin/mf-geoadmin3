@@ -63,9 +63,13 @@
               var i;
               if (tree.idBod == 'ch.bafu.bundesinventare-jagdbanngebiete' ||
                   tree.idBod == 'ch.bafu.bundesinventare-bln' ||
+                  tree.idBod == 'ch.astra.ivs-reg_loc' ||
+                  tree.idBod == 'ch.astra.ivs-nat' ||
                   tree.category == 'category_200' ||
                   tree.category == 'category_260' ||
                   tree.category == 'category_262' ||
+                  tree.category == 'category_300' ||
+                  tree.category == 'category_340' ||
                   tree.category == 'root') {
                 tree.selectedOpen = true;
                 if (tree.children) {
