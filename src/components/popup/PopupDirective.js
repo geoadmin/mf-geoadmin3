@@ -7,7 +7,7 @@
   ]);
 
   module.directive('gaPopup',
-    ['gaBrowserSniffer', function(gaBrowserSniffer) {
+    function(gaBrowserSniffer) {
       return {
         restrict: 'A',
         transclude: true,
@@ -62,6 +62,5 @@
         }
       };
     }
-    ]
   );
 })();

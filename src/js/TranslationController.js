@@ -4,7 +4,7 @@
   var module = angular.module('ga_translation_controller', []);
 
   module.controller('GaTranslationController',
-      ['$scope', function($scope) {
+      function($scope) {
 
         $scope.options = {
           langs: [
@@ -17,6 +17,6 @@
           fallbackCode: 'de'
         };
 
-      }]);
+      });
 
 })();

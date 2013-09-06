@@ -13,7 +13,6 @@
    * See examples on how it can be used
    */
   module.directive('gaCatalogitem',
-      ['$compile', 'gaLayers', 'gaLayerMetadataPopup',
       function($compile, gaLayers, gaLayerMetadataPopup) {
         return {
           restrict: 'A',
@@ -150,6 +149,6 @@
           gaLayerMetadataPopup(bodid);
           ev.stopPropagation();
         }
-      }]
+      }
   );
 })();

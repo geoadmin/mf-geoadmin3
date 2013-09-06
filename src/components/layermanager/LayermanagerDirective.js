@@ -20,7 +20,7 @@
   });
 
   module.directive('gaLayermanager',
-      ['gaLayers', function(gaLayers) {
+      function(gaLayers) {
         return {
           restrict: 'A',
           replace: true,
@@ -91,7 +91,7 @@
 
           }
         };
-      }]
+      }
   );
 })();
 

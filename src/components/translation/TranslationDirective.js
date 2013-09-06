@@ -7,8 +7,7 @@
   ]);
 
   module.directive('gaTranslationSelector',
-      ['$translate', '$window', 'gaPermalink',
-        function($translate, $window, gaPermalink) {
+      function($translate, $window, gaPermalink) {
           return {
             restrict: 'A',
             replace: true,
@@ -47,5 +46,5 @@
                    $window.navigator.language).split('-')[0];
             }
           };
-      }]);
+      });
 })();
