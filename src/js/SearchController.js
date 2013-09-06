@@ -4,8 +4,7 @@
   var module = angular.module('ga_search_controller', []);
 
   module.controller('GaSearchController',
-      ['$scope', 'gaGlobalOptions',
-        function($scope, gaGlobalOptions) {
+      function($scope, gaGlobalOptions) {
           var topicPlaceHolder = '--DUMMYTOPIC--';
          
           $scope.options = {
@@ -15,6 +14,6 @@
               return url.replace(topicPlaceHolder, topic);
             }
             };
-        }]);
+        });
 
 })();

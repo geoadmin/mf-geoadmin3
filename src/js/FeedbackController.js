@@ -4,7 +4,7 @@
   var module = angular.module('ga_feedback_controller', []);
 
   module.controller('GaFeedbackController',
-      ['$scope', 'gaGlobalOptions', function($scope, gaGlobalOptions) {
+      function($scope, gaGlobalOptions) {
         $scope.options = {
           feedbackUrl: gaGlobalOptions.baseUrlPath + '/feedback'
         };
@@ -33,6 +33,6 @@
           $scope.response = undefined;
         });
 
-      }]);
+      });
 
 })();

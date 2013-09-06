@@ -75,11 +75,11 @@
     'ga_tooltip_controller'
   ]);
 
-  module.config(['$translateProvider', function($translateProvider) {
+  module.config(function($translateProvider) {
     $translateProvider.useStaticFilesLoader({
       prefix: 'locales/',
       suffix: '.json'
     });
-  }]);
+  });
 
 })();

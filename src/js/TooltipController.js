@@ -4,7 +4,6 @@
   var module = angular.module('ga_tooltip_controller', []);
 
   module.controller('GaTooltipController',
-      ['$scope', 'gaGlobalOptions',
       function($scope, gaGlobalOptions) {
 
         var baseUrl = gaGlobalOptions.serviceUrl + '/rest/services';
@@ -14,6 +13,5 @@
           identifyUrlTemplate: baseUrl + '/{Topic}/MapServer/identify',
           htmlUrlTemplate: baseUrl + '/{Topic}/MapServer/{Layer}/{Feature}/htmlpopup'
         };
-      }
-  ]);
+      });
 })();

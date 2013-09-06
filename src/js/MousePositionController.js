@@ -4,7 +4,7 @@
   var module = angular.module('ga_mouseposition_controller', []);
 
   module.controller('GaMousePositionController',
-      ['$scope', function($scope) {
+      function($scope) {
 
         $scope.mousePositionProjections = [{
           value: 'EPSG:21781',
@@ -28,6 +28,6 @@
           projection: $scope.mousePositionProjections[0]
         };
 
-      }]);
+      });
 
 })();
