@@ -381,18 +381,21 @@ class Vec25Uebrige(Base, Vector):
 
 register('ch.swisstopo.vec25-uebrigerverkehr', Vec25Uebrige)
 
-# class Vec25Anlagen(Base, Vector):
-#  	__tablename__ = 'v25_anl_25_a'
-#  	__table_args__ = ({'autoload': False})
-#  	__template__ = 'templates/htmlpopup/vec25_anlagen.mako'
-#     __esriId__ = 1000
-#     __bodId__ = 'ch.swisstopo.vec25-anlagen'
-#     __displayFieldName__ = ''
-#  	id = Column('objectid', Integer, primary_key=True)
-#  	the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo.vec25-anlagen', Vec25Anlagen)
-# 
+class Vec25Anlagen(Base, Vector):
+    __tablename__ = 'v25_anl_25_a'
+    __table_args__ = ({'autoload': False})
+    __template__ = 'templates/htmlpopup/vec25_anlagen.mako'
+    __esriId__ = 1000
+    __bodId__ = 'ch.swisstopo.vec25-anlagen'
+    __displayFieldName__ = 'objectval'
+    id = Column('objectid', Integer, primary_key=True)
+    objectval = Column('objectval', Text)
+    area = Column('area', Numeric)
+    perimeter = Column('perimeter', Numeric)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.vec25-anlagen', Vec25Anlagen)
+
 # class Vec25Eisenbahnnetz(Base, Vector):
 #  	__tablename__ = 'v25_eis_25_l'
 #  	__table_args__ = ({'autoload': False})
