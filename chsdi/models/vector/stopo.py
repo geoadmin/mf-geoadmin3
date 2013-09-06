@@ -425,18 +425,22 @@ class Vec25Gebaeude(Base, Vector):
 
 register('ch.swisstopo.vec25-gebaeude', Vec25Gebaeude)
 
-# class Vec25Gewaessernetz(Base, Vector):
-#  	__tablename__ = 'v25_gwn_25_l'
-#  	__table_args__ = ({'autoload': False})
-#  	__template__ = 'templates/htmlpopup/vec25_gewaessernetz.mako'
-#     __esriId__ = 1000
-#     __bodId__ = 'ch.swisstopo.vec25-gewaessernetz'
-#     __displayFieldName__ = ''
-#  	id = Column('objectid', Integer, primary_key=True)
-#  	the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo.vec25-gewaessernetz', Vec25Gewaessernetz)
-# 
+class Vec25Gewaessernetz(Base, Vector):
+    __tablename__ = 'v25_gwn_25_l'
+    __table_args__ = ({'autoload': False})
+    __template__ = 'templates/htmlpopup/vec25_gewaessernetz.mako'
+    __esriId__ = 1000
+    __bodId__ = 'ch.swisstopo.vec25-gewaessernetz'
+    __displayFieldName__ = 'objectval'
+    id = Column('objectid', Integer, primary_key=True)
+    objectval = Column('objectval', Text)
+    gewissnr = Column('gewissnr', Numeric)
+    name = Column('name', Text)
+    length = Column('length', Numeric)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.vec25-gewaessernetz', Vec25Gewaessernetz)
+
 # class Vec25Primaerflaechen(Base, Vector):
 #  	__tablename__ = 'v25_pri25_a'
 #  	__table_args__ = ({'autoload': False})
