@@ -353,17 +353,19 @@ class Vec200Namedlocation(Base, Vector):
 
 register('ch.swisstopo.vec200-names-namedlocation', Vec200Namedlocation)
 
-# class Vec25Strassennetz(Base, Vector):
-#  	__tablename__ = 'v25_str_25_l_tooltip'
-#  	__table_args__ = ({'autoload': False})
-#  	__template__ = 'templates/htmlpopup/vec25_strassennetz.mako'
-#     __esriId__ = 1000
-#     __bodId__ = 'ch.swisstopo.vec25-strassennetz'
-#     __displayFieldName__ = ''
-#  	id = Column('objectid', Integer, primary_key=True)
-#  	the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo.vec25-strassennetz', Vec25Strassennetz)
+class Vec25Strassennetz(Base, Vector):
+    __tablename__ = 'v25_str_25_l_tooltip'
+    __table_args__ = ({'autoload': False})
+    __template__ = 'templates/htmlpopup/vec25_strassennetz.mako'
+    __esriId__ = 1000
+    __bodId__ = 'ch.swisstopo.vec25-strassennetz'
+    __displayFieldName__ = 'objectorig'
+    id = Column('objectid', Integer, primary_key=True)
+    objectorig = Column('objectorig', Text)
+    length = Column('length', Numeric)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.vec25-strassennetz', Vec25Strassennetz)
 # 
 # class Vec25Uebrige(Base, Vector):
 #  	__tablename__ = 'v25_uvk_25_l'
