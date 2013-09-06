@@ -120,19 +120,19 @@
         var permalink = new Permalink(
             base, parseKeyValue(loc.search.substring(1)));
 
-        if ($sniffer.history) {
-          var lastHref = loc.href;
-          $rootScope.$watch(function() {
-            var newHref = permalink.getHref();
-            if (lastHref !== newHref) {
-              $rootScope.$evalAsync(function() {
-                lastHref = newHref;
+        var lastHref = loc.href;
+        $rootScope.$watch(function() {
+          var newHref = permalink.getHref();
+          if (lastHref !== newHref) {
+            $rootScope.$evalAsync(function() {
+              lastHref = newHref;
+              if ($sniffer.history) {
                 gaHistory.replaceState(null, '', newHref);
-                $rootScope.$broadcast('gaPermalinkChange');
-              });
-            }
-          });
-        }
+              }
+              $rootScope.$broadcast('gaPermalinkChange');
+            });
+          }
+        });
 
         return permalink;
       }];
