@@ -12,9 +12,7 @@
   ]);
 
   module.directive('gaTooltip',
-    ['$http', '$q', '$translate', '$sce', 'gaPopup', 'gaLayers',
-      'gaBrowserSniffer',
-      function($http, $q, $translate, $sce, gaPopup, gaLayers, gaBrowserSniffer)
+    function($http, $q, $translate, $sce, gaPopup, gaLayers, gaBrowserSniffer)
       {
         var waitclass = 'ga-tooltip-wait',
             popupContent = '<div ng-repeat="htmlsnippet in options.htmls">' +
@@ -156,5 +154,5 @@
             }
           }
         };
-      }]);
+      });
 })();

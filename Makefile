@@ -135,12 +135,16 @@ test/karma-conf-dev.js: test/karma-conf.mako.js .build-artefacts/python-venv/bin
 test/karma-conf-prod.js: test/karma-conf.mako.js .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "mode=prod" $< > $@
 
-node_modules:
+node_modules: package.json
 	npm install
 
 .build-artefacts/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar .build-artefacts/externs/angular.js .build-artefacts/externs/jquery.js
 	mkdir -p $(dir $@)
 	java -jar .build-artefacts/closure-compiler/compiler.jar $(SRC_JS_FILES_FOR_COMPILER) --compilation_level SIMPLE_OPTIMIZATIONS --jscomp_error checkVars --externs externs/ol.js --externs .build-artefacts/externs/angular.js --externs .build-artefacts/externs/jquery.js --js_output_file $@
+
+$(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule.js): .build-artefacts/annotated/%.js: %.js node_modules
+	mkdir -p $(dir $@)
+	./node_modules/ng-annotate/ng-annotate -a $< > $@
 
 .build-artefacts/app-whitespace.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar
 	java -jar .build-artefacts/closure-compiler/compiler.jar  $(SRC_JS_FILES_FOR_COMPILER) --compilation_level WHITESPACE_ONLY --formatting PRETTY_PRINT --js_output_file $@
@@ -148,8 +152,8 @@ node_modules:
 # closurebuilder.py complains if it cannot find a Closure base.js script, so we
 # add lib/closure as a root. When compiling we remove base.js from the js files
 # passed to the Closure compiler.
-.build-artefacts/js-files: $(SRC_JS_FILES) src/TemplateCacheModule.js .build-artefacts/python-venv .build-artefacts/closure-library
-	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/closurebuilder.py --root=src/js --root=src/components --root=src/lib/closure --namespace="ga" --namespace="__ga_template_cache__" --output_mode=list src/TemplateCacheModule.js > $@
+.build-artefacts/js-files: $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule.js) .build-artefacts/python-venv .build-artefacts/closure-library
+	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/closurebuilder.py --root=.build-artefacts/annotated --root=src/lib/closure --namespace="ga" --namespace="__ga_template_cache__" --output_mode=list > $@
 
 .build-artefacts/lint.timestamp: .build-artefacts/python-venv/bin/gjslint $(SRC_JS_FILES)
 	.build-artefacts/python-venv/bin/gjslint -r src/components src/js --jslint_error=all
@@ -228,6 +232,7 @@ clean:
 	rm -f .build-artefacts/js-files
 	rm -f .build-artefacts/lint.timestamp
 	rm -f .build-artefacts/last-git-branch
+	rm -rf .build-artefacts/annotated
 	rm -f src/deps.js
 	rm -f src/style/app.css
 	rm -f src/index.html

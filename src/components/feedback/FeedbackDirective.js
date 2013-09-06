@@ -13,8 +13,7 @@
    * "response" scope property to "success" or "error".
    */
   module.directive('gaFeedback',
-      ['$http', 'gaPermalink',
-        function($http, gaPermalink) {
+      function($http, gaPermalink) {
           return {
             restrict: 'A',
             replace: true,
@@ -60,6 +59,6 @@
               };
             }
           };
-        }]);
+        });
 
 })();

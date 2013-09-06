@@ -4,8 +4,7 @@
   var module = angular.module('ga_importwms_controller', []);
 
   module.controller('GaImportWmsController',
-    ['$scope', 'gaGlobalOptions',
-     function($scope, gaGlobalOptions) {
+    function($scope, gaGlobalOptions) {
        $scope.options = {  
          proxyUrl: gaGlobalOptions.baseUrlPath + '/ogcproxy?url=',
          defaultGetCapParams: 'SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0',
@@ -66,5 +65,5 @@
            'http://wms.pcn.minambiente.it/ogc?map=/ms_ogc/WMS_v1.3/raster/ortofoto_colore_06.map'                  
          ]
        };
-     }]);
+     });
 })();

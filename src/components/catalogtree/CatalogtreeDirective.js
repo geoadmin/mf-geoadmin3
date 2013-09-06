@@ -12,7 +12,6 @@
    * See examples on how it can be used
    */
   module.directive('gaCatalogtree',
-      ['$http', '$translate', 'gaLayers',
       function($http, $translate, gaLayers) {
 
         return {
@@ -118,7 +117,7 @@
           }
         }
 
-      }]
+      }
   );
 })();
 

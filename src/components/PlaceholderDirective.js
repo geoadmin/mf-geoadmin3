@@ -13,7 +13,7 @@
    *  otherwise the poly-fill is used
    */
   module.directive('placeholder',
-    ['$timeout', function($timeout) {
+    function($timeout) {
 
     if ('placeholder' in document.createElement('input') &&
         'placeholder' in document.createElement('textarea')) {
@@ -62,5 +62,5 @@
         });
       }
     };
-  }]);
+  });
 })();

@@ -9,9 +9,7 @@
   ]);
 
   module.directive('gaContextPopup',
-      ['$http', '$q', '$timeout', 'gaPermalink',
-          'gaUrlUtils', 'gaBrowserSniffer',
-          function($http, $q, $timeout, gaPermalink,
+      function($http, $q, $timeout, gaPermalink,
               gaUrlUtils, gaBrowserSniffer) {
           var lv03tolv95Url =
               'http://tc-geodesy.bgdi.admin.ch/reframe/lv03tolv95?cb=JSON_CALLBACK';
@@ -173,6 +171,6 @@
               }
             }
           };
-        }]);
+        });
 
 })();

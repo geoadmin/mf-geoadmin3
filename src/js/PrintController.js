@@ -4,7 +4,7 @@
   var module = angular.module('ga_print_controller', []);
 
   module.controller('GaPrintController',
-      ['$scope', '$http', function($scope, $http) {
+      function($scope, $http) {
 
         var http = $http.get('info.json');  // FIXME
         http.success(function(data, status, header, config) {
@@ -38,6 +38,6 @@
           // });
         };
 
-      }]);
+      });
 
 })();

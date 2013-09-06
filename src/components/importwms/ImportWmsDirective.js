@@ -11,9 +11,7 @@
   ]);
 
   module.controller('GaImportWmsDirectiveController',
-      ['$scope', '$http', '$q', '$log', '$translate', 'gaUrlUtils',
-      'gaDefinePropertiesForLayer',
-        function($scope, $http, $q, $log, $translate, gaUrlUtils,
+      function($scope, $http, $q, $log, $translate, gaUrlUtils,
           gaDefinePropertiesForLayer) {
 
           // List of layers available in the GetCapabilities
@@ -303,11 +301,10 @@
 
             return extent;
           }
-  }]);
+  });
 
   module.directive('gaImportWms',
-      ['$http', '$log', '$translate',
-        function($http, $log, $translate) {
+      function($http, $log, $translate) {
           return {
             restrict: 'A',
             templateUrl: 'components/importwms/partials/importwms.html',
@@ -360,7 +357,6 @@
             }
           };
         }
-      ]
   );
 })();
 
