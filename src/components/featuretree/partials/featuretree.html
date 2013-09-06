@@ -1,17 +1,18 @@
-<div class="ga-featuretree">
+<div>
   <div ng-if="loading">Please wait, data is loading...</div>
   <ul>
-    <li ng-repeat="(key, value) in tree">
-      <a href="#" ng-click="value.open = !value.open">
-        <i ng-class="{'icon-minus': value.open, 'icon-plus': !value.open}"></i>
-        {{value.label}}
+    <li ng-repeat="(key, layer) in tree">
+      <a href="#" ng-click="layer.open = !layer.open">
+        <i ng-class="{'icon-minus': layer.open, 'icon-plus': !layer.open}"></i>
+        {{layer.label}}
       </a>
-      <ul ng-if="value.open">
-        <li ng-repeat="feature in value.features">
-          <div ng-mouseover="showFeatureInfo(feature)"
-          ng-mouseleave="feature.showInfo = false">{{feature.label}}</div>
-          <div ng-if="feature.loading">Loading feature info...</div>
-          <div ng-if="feature.showInfo" ng-bind-html="feature.info"></div>
+      <ul ng-if="layer.open">
+        <li ng-repeat="feature in layer.features">
+          <a href="#" ng-mouseover="showFeatureInfo(feature)"
+          ng-mouseleave="feature.showInfo = false">{{feature.label}}</a>
+          <div ng-if="feature.loading" class="featuerinfo">Loading feature info...</div>
+          <div ng-if="feature.showInfo" ng-bind-html="feature.info"
+          class="featureinfo"></div>
         </li>
       </ul>
     </li>
