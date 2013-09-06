@@ -41,7 +41,8 @@ class Search(SearchValidation):
             self._get_quad_index()
         if self.typeInfo == 'layers':
             self._layer_search()
-        if self.featureIndexes is not None and self.typeInfo == 'locations':
+        if self.featureIndexes is not None and (self.typeInfo == 'locations' or
+                                                self.typeInfo == 'features'):
             featuresCount = self._feature_search()
         if self.typeInfo == 'locations':
             self._swiss_search(self.LIMIT)
