@@ -53,9 +53,10 @@
     }
   }
 
-  function Permalink(b, p) {
+  function Permalink(b, p, r) {
     var base = b;
     var params = p;
+    var rootScope = r;
 
     this.getHref = function(p) {
       var newParams = angular.extend({}, params);
@@ -71,10 +72,12 @@
 
     this.updateParams = function(p) {
       angular.extend(params, p);
+      rootScope.$broadcast('gaPermalinkChange');
     };
 
     this.deleteParam = function(key) {
        delete params[key];
+       rootScope.$broadcast('gaPermalinkChange');
     };
   }
 
@@ -118,7 +121,9 @@
             loc.pathname;
 
         var permalink = new Permalink(
-            base, parseKeyValue(loc.search.substring(1)));
+            base,
+            parseKeyValue(loc.search.substring(1)),
+            $rootScope);
 
         if ($sniffer.history) {
           var lastHref = loc.href;
@@ -128,7 +133,6 @@
               $rootScope.$evalAsync(function() {
                 lastHref = newHref;
                 gaHistory.replaceState(null, '', newHref);
-                $rootScope.$broadcast('gaPermalinkChange');
               });
             }
           });
