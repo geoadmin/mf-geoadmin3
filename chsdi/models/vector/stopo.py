@@ -615,20 +615,22 @@ class GridstandPk500(Base, Vector):
 register('ch.swisstopo.pixelkarte-pk500.metadata',GridstandPk500)
 register('ch.swisstopo.pixelkarte-farbe-pk500.noscale',GridstandPk500)
 
-# class GridstandSwissimage(Base, Vector):
-#  	# view in a schema
-#  	__tablename__ = 'view_gridstand_datenhaltung_swissimage_tilecache'
-#  	__table_args__ = ({'schema': 'datenstand', 'autoload': False})
-#  	__template__ = 'templates/htmlpopup/images_metadata.mako'
-#     __esriId__ = 1000
-#     __bodId__ = 'ch.swisstopo.images-swissimage.metadata'
-#     __displayFieldName__ = ''
-#  	id = Column('tilenumber', Text, primary_key=True)
-#  	the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo.images-swissimage.metadata',GridstandSwissimage)
-# 
-# class GeolKarten500Metadata(Base, Vector):
+class GridstandSwissimage(Base, Vector):
+# view in a schema
+    __tablename__ = 'view_gridstand_datenhaltung_swissimage_tilecache'
+    __table_args__ = ({'schema': 'datenstand', 'autoload': False})
+    __template__ = 'templates/htmlpopup/images_metadata.mako'
+    __esriId__ = 1000
+    __bodId__ = 'ch.swisstopo.images-swissimage.metadata'
+    __displayFieldName__ = 'lk25_name'
+    id = Column('tilenumber', Text, primary_key=True)
+    lk25_name = Column('lk25_name', Text)
+    datenstand = Column('datenstand', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.images-swissimage.metadata',GridstandSwissimage)
+
+#class GeolKarten500Metadata(Base, Vector):
 #     # view in a schema
 #     __tablename__ = 'gk500'
 #     __table_args__ = ({'schema': 'public', 'autoload': False})
