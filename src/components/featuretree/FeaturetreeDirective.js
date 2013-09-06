@@ -30,16 +30,22 @@
 
             var getLayersToQuery = function(layers) {
               var layerstring = '';
-              map.getLayers().forEach(function(l) {
-                  var id = l.get('id');
-                  if (gaLayers.getLayer(id) &&
-                      gaLayers.getLayerProperty(id, 'queryable')) {
-                    if (layerstring.length) {
-                      layerstring = layerstring + ',';
+              if (scope.options.featureSearch == 'sphinx') {
+                layerstring = 'ch.bfs.gebaeude_wohnungs_register,' +
+                              'ch.astra.ivs-reg_loc,' +
+                              'ch.astra.ivs-nat';
+              } else {
+                map.getLayers().forEach(function(l) {
+                    var id = l.get('id');
+                    if (gaLayers.getLayer(id) &&
+                        gaLayers.getLayerProperty(id, 'queryable')) {
+                      if (layerstring.length) {
+                        layerstring = layerstring + ',';
+                      }
+                      layerstring = layerstring + id;
                     }
-                    layerstring = layerstring + id;
-                  }
-              });
+                });
+              }
               return layerstring;
             };
 
@@ -62,6 +68,11 @@
 
                 angular.forEach(features.results, function(result) {
                   var layerId = result.layerBodId;
+                  //= result.attrs.layer (ch.bfs.gebaeude_wohnungs_register...
+                  if (scope.options.featureSearch === 'sphinx') {
+                    layerId = result.attrs.layer ||
+                              'ch.bfs.gebaeude_wohnungs_register';
+                  }
 
                   if (!angular.isDefined(tree[layerId])) {
                     tree[layerId] = {
@@ -71,46 +82,79 @@
                       open: oldTree[layerId] ? oldTree[layerId].open : false
                     };
                   }
+                  var featureId = result.featureId; //= result.attrs.id
+                  var label = result.value;
+                  //= result.attrs.label (not for src_ch_astra_ivs-nat)
+                  if (scope.options.featureSearch === 'sphinx') {
+                    featureId = result.attrs.id;
+                    label = result.attrs.label || 'ch.astra.ivs-nat';
+                  }
 
                   var node = tree[layerId];
                   node.features.push({
                     loading: false,
                     showInfo: false,
                     info: '',
-                    id: result.featureId,
+                    id: featureId,
                     layer: layerId,
-                    label: result.value
+                    label: label
                   });
                 });
               }
               scope.tree = tree;
             };
 
+            var getUrlAndParameters = function(layersToQuery) {
+              var size = map.getSize(),
+                  extent = view.calculateExtent(size),
+                  url = scope.options.identifyUrlTemplate,
+                  params = {};
+
+              if (scope.options.featureSearch == 'sphinx') {
+                url = scope.options.searchUrlTemplate;
+                params = {
+                  bbox: extent[0] + ',' + extent[2] +
+                        ',' + extent[1] + ',' + extent[3],
+                  searchText: '',
+                  type: 'features',
+                  features: layersToQuery,
+                  callback: 'JSON_CALLBACK'
+                };
+              } else {
+                params = {
+                  geometryType: 'esriGeometryEnvelope',
+                  geometry: extent[0] + ',' + extent[2] +
+                                ',' + extent[1] + ',' + extent[3],
+                  // FIXME: make sure we are passing the right dpi here.
+                  imageDisplay: size[0] + ',' + size[1] + ',96',
+                  mapExtent: extent[0] + ',' + extent[2] +
+                                ',' + extent[1] + ',' + extent[3],
+                  tolerance: featureTolerance,
+                  layers: 'all:' + layersToQuery,
+                  callback: 'JSON_CALLBACK'
+                };
+              }
+              url = url.replace('{Topic}', currentTopic);
+              return {
+                url: url,
+                params: params
+              };
+            };
+
             var requestFeatures = function() {
-              var size = map.getSize();
-              var extent = view.calculateExtent(size);
-              var identifyUrl = scope.options.identifyUrlTemplate
-                                .replace('{Topic}', currentTopic),
-                  layersToQuery = getLayersToQuery();
+              var layersToQuery = getLayersToQuery(),
+                  req;
               if (layersToQuery.length) {
+                req = getUrlAndParameters(layersToQuery);
+
                 scope.loading = true;
 
                 // Look for all features in current bounding box
-                $http.jsonp(identifyUrl, {
+                $http.jsonp(req.url, {
                   timeout: canceler.promise,
-                  params: {
-                    geometryType: 'esriGeometryEnvelope',
-                    geometry: extent[0] + ',' + extent[2] +
-                                  ',' + extent[1] + ',' + extent[3],
-                    // FIXME: make sure we are passing the right dpi here.
-                    imageDisplay: size[0] + ',' + size[1] + ',96',
-                    mapExtent: extent[0] + ',' + extent[2] +
-                                  ',' + extent[1] + ',' + extent[3],
-                    tolerance: featureTolerance,
-                    layers: 'all:' + layersToQuery,
-                    callback: 'JSON_CALLBACK'
-                  }
+                  params: req.params
                 }).success(function(features) {
+                  //console.log(features);
                   updateTree(features);
                   scope.loading = false;
                 }).error(function(reason) {
