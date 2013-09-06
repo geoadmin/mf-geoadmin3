@@ -500,34 +500,35 @@ class Dreiecksvermaschung(Base, Vector):
 
 register('ch.swisstopo.dreiecksvermaschung',Dreiecksvermaschung)
 
-# class DufourErst(Base, Vector):
-#  	# view in a schema
-#  	__tablename__ = 'view_gridstand_datenhaltung_dufour_erst'
-#  	__table_args__ = ({'schema': 'datenstand', 'autoload': False})
-#  	__template__ = 'templates/htmlpopup/dufour_erst.mako'
-#     __esriId__ = 1000
-#     __bodId__ = 'ch.swisstopo.hiks-dufour'
-#     __displayFieldName__ = ''
-#  	id = Column('tilenumber', Text, primary_key=True)
-#  	tilenumber = column_property(id)
-#  	the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo.hiks-dufour',DufourErst)
-# 
-# class SiegfriedErst(Base, Vector):
-#  	# view in a schema
-#  	__tablename__ = 'view_gridstand_datenhaltung_siegfried_erst'
-#  	__table_args__ = ({'schema': 'datenstand', 'autoload': False})
-#  	__template__ = 'templates/htmlpopup/siegfried_erst.mako'
-#     __esriId__ = 1000
-#     __bodId__ = 'ch.swisstopo.hiks-siegfried'
-#     __displayFieldName__ = ''
-#  	id = Column('tilenumber', Text, primary_key=True)
-#  	tilenumber = column_property(id)
-#  	the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo.hiks-siegfried',SiegfriedErst)
-# 
+class DufourErst(Base, Vector):
+# view in a schema
+    __tablename__ = 'view_gridstand_datenhaltung_dufour_erst'
+    __table_args__ = ({'schema': 'datenstand', 'autoload': False})
+    __template__ = 'templates/htmlpopup/dufour_erst.mako'
+    __esriId__ = 1000
+    __bodId__ = 'ch.swisstopo.hiks-dufour'
+    __displayFieldName__ = 'kbbez'
+    id = Column('tilenumber', Text, primary_key=True)
+    kbbez = Column('kbbez', Text)
+    datenstand = Column('datenstand', Numeric)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.hiks-dufour',DufourErst)
+
+#class SiegfriedErst(Base, Vector):
+## view in a schema
+#    __tablename__ = 'view_gridstand_datenhaltung_siegfried_erst'
+#    __table_args__ = ({'schema': 'datenstand', 'autoload': False})
+#    __template__ = 'templates/htmlpopup/siegfried_erst.mako'
+#    __esriId__ = 1000
+#    __bodId__ = 'ch.swisstopo.hiks-siegfried'
+#    __displayFieldName__ = ''
+#    id = Column('tilenumber', Text, primary_key=True)
+##    tilenumber = column_property(id)
+#    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+#
+#register('ch.swisstopo.hiks-siegfried',SiegfriedErst)
+
 # #two registers...
 # class GridstandPk25(Base, Vector):
 #  	# view in a schema
