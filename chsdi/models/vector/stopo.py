@@ -547,22 +547,24 @@ class GridstandPk25(Base, Vector):
 register('ch.swisstopo.pixelkarte-pk25.metadata',GridstandPk25)
 register('ch.swisstopo.pixelkarte-farbe-pk25.noscale',GridstandPk25)
 
-# #two registers...
-# class GridstandPk50(Base, Vector):
-#  	# view in a schema
-#  	__tablename__ = 'view_gridstand_datenhaltung_pk50_tilecache'
-#  	__table_args__ = ({'schema': 'datenstand', 'autoload': False})
-#  	__template__ = 'templates/htmlpopup/pk50_metadata.mako'
-#     __esriId__ = 1000
-#     __bodId__ = ''
-#     __displayFieldName__ = ''
-#  	id = Column('kbnum', Text, primary_key=True)
-#  	the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo.pixelkarte-pk50.metadata',GridstandPk50)
-# register('ch.swisstopo.pixelkarte-farbe-pk50.noscale',GridstandPk50)
-# 
-# #two registers...
+#two registers...
+class GridstandPk50(Base, Vector):
+# view in a schema
+    __tablename__ = 'view_gridstand_datenhaltung_pk50_tilecache'
+    __table_args__ = ({'schema': 'datenstand', 'autoload': False})
+    __template__ = 'templates/htmlpopup/pk50_metadata.mako'
+    __esriId__ = 1000
+    __bodId__ = ''
+    __displayFieldName__ = 'lk_name'
+    id = Column('kbnum', Text, primary_key=True)
+    lk_name = Column('lk_name', Text)
+    release = Column('release', Integer)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.pixelkarte-pk50.metadata',GridstandPk50)
+register('ch.swisstopo.pixelkarte-farbe-pk50.noscale',GridstandPk50)
+
+#two registers...
 # class GridstandPk100(Base, Vector):
 #  	# view in a schema
 #  	__tablename__ = 'view_gridstand_datenhaltung_pk100_tilecache'
