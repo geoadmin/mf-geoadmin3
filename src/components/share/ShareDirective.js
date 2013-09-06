@@ -9,8 +9,7 @@
   ]);
 
   module.directive('gaShare',
-      ['$http', 'gaPermalink', 'gaUrlUtils',
-        function($http, gaPermalink, gaUrlUtils) {
+      function($http, gaPermalink, gaUrlUtils) {
           return {
             restrict: 'A',
             scope: {
@@ -63,5 +62,5 @@
               };
             }
           };
-        }]);
+        });
 })();

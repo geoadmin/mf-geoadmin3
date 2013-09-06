@@ -7,8 +7,7 @@
   ]);
 
   module.directive('gaMap',
-      ['$parse', '$timeout', 'gaPermalink',
-        function($parse, $timeout, gaPermalink) {
+      function($parse, $timeout, gaPermalink) {
           return {
             restrict: 'A',
             scope: {
@@ -69,7 +68,7 @@
               map.setTarget(element[0]);
             }
           };
-        }]);
+        });
 })();
 
 

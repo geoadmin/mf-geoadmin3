@@ -10,8 +10,7 @@
   ]);
 
   module.directive('gaBackgroundLayerSelector',
-      ['gaPermalink', 'gaLayers',
-        function(gaPermalink, gaLayers) {
+      function(gaPermalink, gaLayers) {
           return {
             restrict: 'A',
             replace: true,
@@ -65,5 +64,5 @@
               });
             }
           };
-        }]);
+        });
 })();

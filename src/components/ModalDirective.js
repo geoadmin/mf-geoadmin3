@@ -29,7 +29,7 @@
    * This directive doesn't have its own isolated scope, and it effectively
    * writes to its parent's scope when the modal is shown or hidden.
    */
-  module.directive('gaModalShow', ['$parse', function($parse) {
+  module.directive('gaModalShow', function($parse) {
     return {
       restrict: 'A',
       link: function(scope, element, attrs) {
@@ -47,6 +47,6 @@
         }
       }
     };
-  }]);
+  });
 
 })();

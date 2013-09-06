@@ -13,8 +13,7 @@
   ]);
 
   module.directive('gaTopic',
-      ['$rootScope', '$http', 'gaPermalink', 'gaUrlUtils', 'gaLayers',
-        function($rootScope, $http, gaPermalink, gaUrlUtils, gaLayers) {
+      function($rootScope, $http, gaPermalink, gaUrlUtils, gaLayers) {
         return {
           restrict: 'A',
           replace: true,
@@ -115,5 +114,5 @@
 
          }
        };
-      }]);
+      });
 })();

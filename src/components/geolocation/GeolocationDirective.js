@@ -7,8 +7,7 @@
     'ga_permalink'
   ]);
 
-  module.directive('gaGeolocation', ['$parse', 'gaPermalink',
-        function($parse, gaPermalink) {
+  module.directive('gaGeolocation', function($parse, gaPermalink) {
     return {
       restrict: 'A',
       scope: {
@@ -108,5 +107,5 @@
         geolocation.setTracking(gaPermalink.getParams().geolocation == 'true');
       }
     };
-  }]);
+  });
 })();

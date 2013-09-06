@@ -15,9 +15,7 @@
   ]);
 
   module.directive('gaSearch',
-      ['$compile', '$translate', 'gaLayers', 'gaLayerMetadataPopup',
-        'gaPermalink', 'gaUrlUtils',
-        function($compile, $translate, gaLayers, gaLayerMetadataPopup,
+      function($compile, $translate, gaLayers, gaLayerMetadataPopup,
         gaPermalink, gaUrlUtils) {
           var currentTopic,
               footer = [
@@ -289,5 +287,5 @@
               });
             }
           };
-        }]);
+        });
 })();

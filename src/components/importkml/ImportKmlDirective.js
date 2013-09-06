@@ -13,9 +13,7 @@
   ]);
 
   module.controller('GaImportKmlDirectiveController',
-      ['$scope', '$http', '$q', '$log', '$translate',
-        'gaBrowserSniffer', 'gaPopup', 'gaDefinePropertiesForLayer',
-        function($scope, $http, $q, $log, $translate, gaBrowserSniffer,
+      function($scope, $http, $q, $log, $translate, gaBrowserSniffer,
             gaPopup, gaDefinePropertiesForLayer) {
 
           // from Angular
@@ -219,12 +217,10 @@
             return (url && url.length > 0 && URL_REGEXP.test(url));
           };
         }
-      ]
   );
 
   module.directive('gaImportKml',
-      ['$http', '$log', '$compile', '$translate', 'gaBrowserSniffer',
-        function($http, $log, $compile, $translate, gaBrowserSniffer) {
+      function($http, $log, $compile, $translate, gaBrowserSniffer) {
           return {
             restrict: 'A',
             templateUrl: 'components/importkml/partials/importkml.html',
@@ -351,6 +347,5 @@
             }
           };
         }
-      ]
   );
 })();
