@@ -19,7 +19,7 @@
       (testSize(768));
 
     // holds major version number for IE or NaN for real browsers
-    this.$get = ['gaPermalink', function(gaPermalink) {
+    this.$get = function(gaPermalink) {
 
       var p = gaPermalink.getParams();
 
@@ -30,7 +30,7 @@
       };
 
       return new Sniffer();
-    }];
+    };
 
   });
 
