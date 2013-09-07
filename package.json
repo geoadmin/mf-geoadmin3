@@ -11,7 +11,7 @@
   "devDependencies": {
     "less": "1.4.0",
     "karma": "0.8.5",
-    "ng-annotate": "0.1.2"
+    "ng-annotate": "0.2.0"
   }
 }
 
