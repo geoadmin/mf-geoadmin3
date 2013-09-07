@@ -11,8 +11,7 @@
   ]);
 
   module.provider('gaLayerMetadataPopup', function() {
-    this.$get = ['$document', '$translate', 'gaPopup', 'gaLayers',
-        function($document, $translate, gaPopup, gaLayers) {
+    this.$get = function($document, $translate, gaPopup, gaLayers) {
           return function(bodid) {
             var waitClass = 'metadata-popup-wait';
             var bodyEl = angular.element($document[0].body);
@@ -34,6 +33,6 @@
               alert(msg);
             });
           };
-    }];
+    };
   });
 })();
