@@ -74,9 +74,7 @@
 
   module.provider('gaLayers', function() {
 
-    this.$get = ['$q', '$http', '$translate', '$rootScope',
-        'gaUrlUtils', 'gaTileGrid', 'gaDefinePropertiesForLayer',
-        function($q, $http, $translate, $rootScope,
+    this.$get = function($q, $http, $translate, $rootScope,
           gaUrlUtils, gaTileGrid, gaDefinePropertiesForLayer) {
       var attributions = {};
       var getAttribution = function(text) {
@@ -225,7 +223,7 @@
 
       return new Layers(this.wmtsGetTileUrlTemplate,
           this.layersConfigUrlTemplate, this.legendUrlTemplate);
-    }];
+    };
 
   });
 

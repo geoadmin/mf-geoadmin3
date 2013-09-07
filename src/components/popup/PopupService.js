@@ -9,7 +9,7 @@
 
   module.provider('gaPopup', function() {
 
-    this.$get = ['$compile', '$rootScope', function($compile, $rootScope) {
+    this.$get = function($compile, $rootScope) {
 
       var Popup = function(options, scope) {
 
@@ -69,6 +69,6 @@
           return new Popup(options);
         }
       };
-    }];
+    };
   });
 })();

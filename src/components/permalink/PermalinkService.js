@@ -85,9 +85,9 @@
    */
   module.provider('gaHistory', function() {
 
-    this.$get = ['$window', function($window) {
+    this.$get = function($window) {
       return $window.history;
-    }];
+    };
 
   });
 
@@ -106,8 +106,7 @@
    * is updated.
    */
   module.provider('gaPermalink', function() {
-    this.$get = ['$window', '$rootScope', '$sniffer', 'gaHistory',
-      function($window, $rootScope, $sniffer, gaHistory) {
+    this.$get = function($window, $rootScope, $sniffer, gaHistory) {
 
         var loc = $window.location;
         var port = loc.port;
@@ -135,7 +134,7 @@
         });
 
         return permalink;
-      }];
+      };
   });
 
 })();
