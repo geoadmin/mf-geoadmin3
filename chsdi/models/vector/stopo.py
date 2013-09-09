@@ -720,19 +720,25 @@ class GeologieGeotechnikGk200(Base, Vector):
 
 register('ch.swisstopo.geologie-geotechnik-gk200',GeologieGeotechnikGk200)
 
-# class Gk500_Gensese (Base, Vector):
-#         # view in a schema
-#         __tablename__ = 'gk500_genese' 
-#         __table_args__ = ({'schema': 'geol', 'autoload': False})
-#         __template__ = 'templates/htmlpopup/gk500-genese.mako'
-#         __esriId__ = 1000
-#         __bodId__ = 'ch.swisstopo.geologie-geotechnik-gk500-genese'
-#         __displayFieldName__ = ''
-#         id = Column('bgdi_id', Integer, primary_key=True)
-#         the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo.geologie-geotechnik-gk500-genese',Gk500_Gensese)
-# 
+class Gk500_Gensese (Base, Vector):
+# view in a schema
+        __tablename__ = 'gk500_genese' 
+        __table_args__ = ({'schema': 'geol', 'autoload': False})
+        __template__ = 'templates/htmlpopup/gk500-genese.mako'
+        __esriId__ = 1000
+        __bodId__ = 'ch.swisstopo.geologie-geotechnik-gk500-genese'
+        __displayFieldName__ = 'genese_de'
+        id = Column('bgdi_id', Integer, primary_key=True)
+        genese_de = Column('genese_de', Text)
+        genese_fr = Column('genese_fr', Text)
+        genese_en = Column('genese_en', Text)
+        genese_it = Column('genese_it', Text)
+        genese_rm = Column('genese_rm', Text)
+        bgdi_tooltip_color = Column('bgdi_tooltip_color', Text)
+        the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-geotechnik-gk500-genese',Gk500_Gensese)
+
 # class Gk500_Gesteinsklassierung (Base, Vector):
 #         # view in a schema
 #         __tablename__ = 'gk500_gesteinsklassierung' 
