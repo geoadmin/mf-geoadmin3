@@ -758,19 +758,25 @@ class Gk500_Gesteinsklassierung (Base, Vector):
 
 register('ch.swisstopo.geologie-geotechnik-gk500-gesteinsklassierung',Gk500_Gesteinsklassierung)
 
-# class Gk500_lithologie_hauptgruppen(Base, Vector):
-#         # view in a schema
-#         __tablename__ = 'gk500_lithologie_hauptgruppen'
-#         __table_args__ = ({'schema': 'geol', 'autoload': False})
-#         __template__ = 'templates/htmlpopup/lithologie_hauptgruppen.mako'
-#         __esriId__ = 1000
-#         __bodId__ = 'ch.swisstopo.geologie-geotechnik-gk500-lithologie_hauptgruppen'
-#         __displayFieldName__ = ''
-#         id = Column('bgdi_id', Integer, primary_key=True)
-#         the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo.geologie-geotechnik-gk500-lithologie_hauptgruppen',Gk500_lithologie_hauptgruppen)
-# 
+class Gk500_lithologie_hauptgruppen(Base, Vector):
+# view in a schema
+        __tablename__ = 'gk500_lithologie_hauptgruppen'
+        __table_args__ = ({'schema': 'geol', 'autoload': False})
+        __template__ = 'templates/htmlpopup/lithologie_hauptgruppen.mako'
+        __esriId__ = 1000
+        __bodId__ = 'ch.swisstopo.geologie-geotechnik-gk500-lithologie_hauptgruppen'
+        __displayFieldName__ = 'bgdi_tooltip_de'
+        id = Column('bgdi_id', Integer, primary_key=True)
+        bgdi_tooltip_de = Column('bgdi_tooltip_de', Text)
+        bgdi_tooltip_fr= Column('bgdi_tooltip_fr', Text)
+        bgdi_tooltip_en = Column('bgdi_tooltip_en', Text)
+        bgdi_tooltip_it = Column('bgdi_tooltip_it', Text)
+        bgdi_tooltip_rm = Column('bgdi_tooltip_rm', Text)
+        bgdi_tooltip_color = Column('bgdi_tooltip_color', Text)
+        the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-geotechnik-gk500-lithologie_hauptgruppen',Gk500_lithologie_hauptgruppen)
+
 # class GeologieGeotechnikSteinbrueche1980(Base, Vector):
 #         # view in a schema
 #         __tablename__ = 'geotechnik_steinbrueche_1980'
