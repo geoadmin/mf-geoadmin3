@@ -1,10 +1,10 @@
 <%inherit file="base.mako"/>
 
-<%def name="preview()">${c['attributes']['file_name'] or '-'}</%def>
+<%def name="preview()">${c['value'] or '-'}</%def>
 
 <%def name="table_body(c,lang)">
 <%
-    PDF_Link = 'https://dav0.bgdi.admin.ch/kogis_web/downloads/geologie/geotechnik/' + c['attributes']['file_name'] + '_' + lang + '.pdf'
+    PDF_Link = 'https://dav0.bgdi.admin.ch/kogis_web/downloads/geologie/geotechnik/' + c['value'] + '_' + lang + '.pdf'
 %>
     <tr><td colspan="3">&nbsp;</tr>
     <tr>
