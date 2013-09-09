@@ -295,3 +295,17 @@ class bakomumts(Base, Vector):
     powercode = Column('powercode', Text)
 
 register('ch.bakom.mobil-antennenstandorte-umts', bakomumts)
+
+class bakomlte(Base, Vector):
+    __tablename__ = 'nisdb_lte'
+    __table_args__ = ({'schema': 'bakom', 'autoload': False})
+    __template__ = 'templates/htmlpopup/bakomlte.mako'
+    __esriId__ = 4010
+    __bodId__ = 'ch.bakom.mobil-antennenstandorte-lte'
+    __displayFieldName__ = 'id'
+    id = Column('id', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    powercode = Column('powercode', Text)
+
+register('ch.bakom.mobil-antennenstandorte-lte', bakomlte)
+
