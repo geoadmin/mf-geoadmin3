@@ -739,19 +739,25 @@ class Gk500_Gensese (Base, Vector):
 
 register('ch.swisstopo.geologie-geotechnik-gk500-genese',Gk500_Gensese)
 
-# class Gk500_Gesteinsklassierung (Base, Vector):
-#         # view in a schema
-#         __tablename__ = 'gk500_gesteinsklassierung' 
-#         __table_args__ = ({'schema': 'geol', 'autoload': False})
-#         __template__ = 'templates/htmlpopup/gk500-gesteinsklassierung.mako'
-#         __esriId__ = 1000
-#         __bodId__ = 'ch.swisstopo.geologie-geotechnik-gk500-gesteinsklassierung'
-#         __displayFieldName__ = ''
-#         id = Column('bgdi_id', Integer, primary_key=True)
-#         the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo.geologie-geotechnik-gk500-gesteinsklassierung',Gk500_Gesteinsklassierung)
-# 
+class Gk500_Gesteinsklassierung (Base, Vector):
+# view in a schema
+        __tablename__ = 'gk500_gesteinsklassierung' 
+        __table_args__ = ({'schema': 'geol', 'autoload': False})
+        __template__ = 'templates/htmlpopup/gk500-gesteinsklassierung.mako'
+        __esriId__ = 1000
+        __bodId__ = 'ch.swisstopo.geologie-geotechnik-gk500-gesteinsklassierung'
+        __displayFieldName__ = 'gestkl_de'
+        id = Column('bgdi_id', Integer, primary_key=True)
+        gestkl_de = Column('gestkl_de', Text)
+        gestkl_fr = Column('gestkl_fr', Text)
+        gestkl_en = Column('gestkl_en', Text)
+        gestkl_it = Column('gestkl_it', Text)
+        gestkl_rm = Column('gestkl_rm', Text)
+        bgdi_tooltip_color = Column('bgdi_tooltip_color', Text)
+        the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-geotechnik-gk500-gesteinsklassierung',Gk500_Gesteinsklassierung)
+
 # class Gk500_lithologie_hauptgruppen(Base, Vector):
 #         # view in a schema
 #         __tablename__ = 'gk500_lithologie_hauptgruppen'
