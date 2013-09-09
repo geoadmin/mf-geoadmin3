@@ -821,19 +821,20 @@ class GeologieGeotechnikZementindustrie1965(Base, Vector):
 
 register('ch.swisstopo.geologie-geotechnik-zementindustrie_1965',GeologieGeotechnikZementindustrie1965)
 
-# class GeologieGeotechnikZementindustrie1995(Base, Vector):
-#         # view in a schema
-#         __tablename__ = 'geotechnik_zementindustrie'
-#         __table_args__ = ({'schema': 'geol', 'autoload': False, 'extend_existing': True})
-#         __template__ = 'templates/htmlpopup/zementindustrie_1995.mako'
-#         __esriId__ = 1000
-#         __bodId__ = 'ch.swisstopo.geologie-geotechnik-zementindustrie_1995'
-#         __displayFieldName__ = ''
-#         id = Column('id', Integer, primary_key=True)
-#         the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo.geologie-geotechnik-zementindustrie_1995',GeologieGeotechnikZementindustrie1995)
-# 
+class GeologieGeotechnikZementindustrie1995(Base, Vector):
+# view in a schema
+        __tablename__ = 'geotechnik_zementindustrie'
+        __table_args__ = ({'schema': 'geol', 'autoload': False, 'extend_existing': True})
+        __template__ = 'templates/htmlpopup/zementindustrie_1995.mako'
+        __esriId__ = 1000
+        __bodId__ = 'ch.swisstopo.geologie-geotechnik-zementindustrie_1995'
+        __displayFieldName__ = 'id'
+        id = Column('id', Integer, primary_key=True)
+        stoff = Column('stoff', Text)
+        the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-geotechnik-zementindustrie_1995',GeologieGeotechnikZementindustrie1995)
+
 # class GeologieGeotechnikZiegeleien1907(Base, Vector):
 #         # view in a schema
 #         __tablename__ = 'geotechnik_ziegeleien_1907'
