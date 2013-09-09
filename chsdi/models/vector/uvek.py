@@ -345,7 +345,7 @@ class ProjFlughafenanlagen(Base, Vector):
     __bodId__ = 'ch.bazl.projektierungszonen-flughafenanlagen'
     __displayFieldName__ = 'bgdi_id'
     id = Column('xtf_id', Integer, primary_key=True)
-    the_geom = Column(Geometry(21781))
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     kind = Column('kind', Text)
     name = Column('name', Text)
     applicant = Column('applicant', Text)
@@ -356,3 +356,48 @@ class ProjFlughafenanlagen(Base, Vector):
     bgdi_id = Column('bgdi_id', Integer)
 
 register('ch.bazl.projektierungszonen-flughafenanlagen', ProjFlughafenanlagen)
+
+#class Luftfahrthindernis(Base, Vector):
+#    __tablename__ = 'luftfahrthindernis'
+#    __table_args__ = ({'schema': 'bazl', 'autoload': False})
+#    __template__ = 'templates/htmlpopup/luftfahrthindernisse.mako'
+#    __esriId__ = 4013
+#    __bodId__ = 'ch.bazl.luftfahrthindernis'
+#    __displayFieldName__ = 'registrationnumber'
+#    __extended_info__ = True
+#    id = Column('bgdi_id', Integer, primary_key=True)
+#    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+#    registrationnumber = Column('registrationnumber', Text)
+#
+#register('ch.bazl.luftfahrthindernis', Luftfahrthindernis)
+
+class sgt_facilities(Base, Vector):
+    __tablename__ = 'geologische_tiefenlager_fac'
+    __table_args__ = ({'schema': 'bfe', 'autoload': False})
+    __template__ = 'templates/htmlpopup/sgt_facilities.mako'
+    __esriId__ = 4014
+    __bodId__ = 'ch.bfe.sachplan-geologie-tiefenlager'
+    __displayFieldName__ = 'facname_de'
+    id = Column('stabil_id', Integer, primary_key=True)
+#    id = Column('bgdi_id', Integer, primary_key=True) #OK : http://localhost:9007/rest/services/ech/MapServer/ch.bfe.sachplan-geologie-tiefenlager/13/htmlpopup
+    facname_de = Column('facname_de', Text)
+    facname_fr = Column('facname_fr', Text)
+    facname_it = Column('facname_it', Text)
+    fackind_text_de = Column('fackind_text_de', Text)
+    fackind_text_fr = Column('fackind_text_fr', Text)
+    fackind_text_it = Column('fackind_text_it', Text)
+    facstatus_text_de = Column('facstatus_text_de', Text)
+    facstatus_text_fr = Column('facstatus_text_fr', Text)
+    facstatus_text_it = Column('facstatus_text_it', Text)
+    validfrom = Column('validfrom', Text)
+    description = Column('description', Text)
+    web = Column('web', Text)
+    objname_text_de = Column('objname_text_de', Text)
+    objname_text_fr = Column('objname_text_fr', Text)
+    objname_text_it = Column('objname_text_it', Text)
+    bgdi_created = Column('bgdi_created', Text)
+    __minscale__ = 200005
+    __maxscale__ = 100000005
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bfe.sachplan-geologie-tiefenlager', sgt_facilities)
