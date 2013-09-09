@@ -180,3 +180,26 @@ register('ch.bfe.abgeltung-wasserkraftnutzung', ABGELTUNGWASSERKRAFTNUTZUNG)
 #    the_geom = Column(Geometry(21781))
 #
 #register('ch.bfe.energieforschung', ENERGIEFORSCHUNG)
+
+class STATISTIKWASSERKRAFTANLAGEN(Base, Vector):
+    __tablename__ = 'statistik_wasserkraftanlagen_powerplant'
+    __table_args__ = ({'schema': 'bfe', 'autoload': False})
+    __template__ = 'templates/htmlpopup/statistikwasserkraftanlagen.mako'
+    __esriId__ = 4005
+    __bodId__ = 'ch.bfe.statistik-wasserkraftanlagen'
+    __displayFieldName__ = 'name'
+    id = Column('wastanumber', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    name = Column('name', Text)
+    location = Column('location', Text)
+    canton = Column('canton', Text)
+    hydropowerplantoperationalstatus_it = Column('hydropowerplantoperationalstatus_it', Text)
+    hydropowerplanttype_it = Column('hydropowerplanttype_it', Text)
+    hydropowerplantoperationalstatus_fr = Column('hydropowerplantoperationalstatus_fr', Text)
+    hydropowerplanttype_fr = Column('hydropowerplanttype_fr', Text)
+    hydropowerplantoperationalstatus_de = Column('hydropowerplantoperationalstatus_de', Text)
+    hydropowerplanttype_de =Column('hydropowerplanttype_de', Text)
+    beginningofoperation = Column('beginningofoperation', Integer)
+    endofoperation =Column('endofoperation', Integer)
+
+register('ch.bfe.statistik-wasserkraftanlagen', STATISTIKWASSERKRAFTANLAGEN)
