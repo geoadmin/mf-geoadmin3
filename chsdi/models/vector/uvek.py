@@ -249,3 +249,36 @@ class kleinwasserkraftpotentiale(Base, Vector):
     gwlnr = Column('gwlnr', Text)
     
 register('ch.bfe.kleinwasserkraftpotentiale', kleinwasserkraftpotentiale)
+
+#class bakomfernsehsender(Base, Vector):
+#    __tablename__ = 'nisdb_bro_tooltip'
+#    __table_args__ = ({'schema': 'bakom', 'autoload': False})
+#    __template__ = 'templates/htmlpopup/bakomfernsehsender.mako'
+#    __esriId__ = 4007
+#    __bodId__ = 'ch.bakom.radio-fernsehsender'
+#    __displayFieldName__ = 'name'
+#    __extended_info__ = True
+#    __queryable_attributes__ = ['name','code']
+#    id = Column('id', Integer, primary_key=True)
+#    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+#    name = Column('name', Text) 
+#    code = Column('code', Text) 
+#    power = Column('power', Text) 
+#    service = Column('service', Text) 
+#    program = Column('program', Text) 
+#    freqchan = Column('freqchan', Text) 
+#
+#register('ch.bakom.radio-fernsehsender', bakomfernsehsender)
+
+class bakomgsm(Base, Vector):
+    __tablename__ = 'nisdb_gsm'
+    __table_args__ = ({'schema': 'bakom', 'autoload': False})
+    __template__ = 'templates/htmlpopup/bakomgsm.mako'
+    __esriId__ = 4008
+    __bodId__ = 'ch.bakom.mobil-antennenstandorte-gsm'
+    __displayFieldName__ = 'id'
+    id = Column('id', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    powercode = Column('powercode', Text)
+
+register('ch.bakom.mobil-antennenstandorte-gsm', bakomgsm)
