@@ -792,19 +792,21 @@ class GeologieGeotechnikSteinbrueche1980(Base, Vector):
 
 register('ch.swisstopo.geologie-geotechnik-steinbrueche_1980',GeologieGeotechnikSteinbrueche1980)
 
-# class GeologieGeotechnikSteinbrueche1995(Base, Vector):
-#         # view in a schema
-#         __tablename__ = 'geotechnik_steinbrueche_1995'
-#         __table_args__ = ({'schema': 'geol', 'autoload': False})
-#         __template__ = 'templates/htmlpopup/steinbrueche_1995.mako'
-#         __esriId__ = 1000
-#         __bodId__ = 'ch.swisstopo.geologie-geotechnik-steinbrueche_1995'
-#         __displayFieldName__ = ''
-#         id = Column('id', Integer, primary_key=True)
-#         the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo.geologie-geotechnik-steinbrueche_1995',GeologieGeotechnikSteinbrueche1995)
-# 
+class GeologieGeotechnikSteinbrueche1995(Base, Vector):
+# view in a schema
+        __tablename__ = 'geotechnik_steinbrueche_1995'
+        __table_args__ = ({'schema': 'geol', 'autoload': False})
+        __template__ = 'templates/htmlpopup/steinbrueche_1995.mako'
+        __esriId__ = 1000
+        __bodId__ = 'ch.swisstopo.geologie-geotechnik-steinbrueche_1995'
+        __displayFieldName__ = 'id'
+        id = Column('id', Integer, primary_key=True)
+        gesteinsgr = Column('gesteinsgr', Text)
+        gestein = Column('gestein', Text)
+        the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-geotechnik-steinbrueche_1995',GeologieGeotechnikSteinbrueche1995)
+
 # class GeologieGeotechnikZementindustrie1965(Base, Vector):
 #         # view in a schema
 #         __tablename__ = 'geotechnik_zementindustrie'
