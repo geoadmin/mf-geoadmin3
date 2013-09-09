@@ -630,18 +630,19 @@ class GridstandSwissimage(Base, Vector):
 
 register('ch.swisstopo.images-swissimage.metadata',GridstandSwissimage)
 
-#class GeolKarten500Metadata(Base, Vector):
-## view in a schema
-#    __tablename__ = 'gk500'
-#    __table_args__ = ({'schema': 'public', 'autoload': False})
-#    __template__ = 'templates/htmlpopup/geolkarten500_metadata.mako'
-#    __esriId__ = 1000
-#    __bodId__ = 'ch.swisstopo.geologie-geolkarten500.metadata'
-#    __displayFieldName__ = 'id'
-#    id = Column('prod_id', Text, primary_key=True)
-#    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-#
-#register('ch.swisstopo.geologie-geolkarten500.metadata',GeolKarten500Metadata)
+class GeolKarten500Metadata(Base, Vector):
+# view in a schema
+    __tablename__ = 'gk500'
+    __table_args__ = ({'schema': 'public', 'autoload': False})
+    __template__ = 'templates/htmlpopup/geolkarten500_metadata.mako'
+    __esriId__ = 1000
+    __bodId__ = 'ch.swisstopo.geologie-geolkarten500.metadata'
+    __displayFieldName__ = 'prod_id'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    prod_id = Column('prod_id', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-geolkarten500.metadata',GeolKarten500Metadata)
  
 class GeologischerAtlasPK(Base, Vector):
 # view in a schema
