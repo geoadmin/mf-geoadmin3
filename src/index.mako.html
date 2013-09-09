@@ -464,5 +464,15 @@
       </div>
     </div>
 % endif
+    <script>
+        (function(){
+            window.addEventListener("orientationchange", function(){
+                document.documentElement.style.display = 'none';
+                setTimeout(function(){
+                    document.documentElement.style.display = 'block';
+                }, 0);
+            });
+        })();
+    </script>
   </body>
 </html>
