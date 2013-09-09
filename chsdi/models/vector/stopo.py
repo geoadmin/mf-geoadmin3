@@ -690,19 +690,22 @@ class GeologischeKarteLine(Base, Vector):
 register('ch.swisstopo.geologie-geologische_karte',GeologischeKarteLine)
 #register('ch.swisstopo.geologie-geologische_karte',GeologischeKartePlg)
 
-# class GeologieMineralischeRohstoffe200(Base, Vector):
-#         # view in a schema
-#         __tablename__ = 'geotechnik_mineralische_rohstoffe200'
-#         __table_args__ = ({'schema': 'geol', 'autoload': False})
-#         __template__ = 'templates/htmlpopup/geotechnik_mineralische_rohstoffe200.mako'
-#         __esriId__ = 1000
-#         __bodId__ = 'ch.swisstopo.geologie-geotechnik-mineralische_rohstoffe200'
-#         __displayFieldName__ = ''
-#         id = Column('bgdi_id', Integer, primary_key=True)
-#         the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo.geologie-geotechnik-mineralische_rohstoffe200',GeologieMineralischeRohstoffe200)
-# 
+class GeologieMineralischeRohstoffe200(Base, Vector):
+# view in a schema
+        __tablename__ = 'geotechnik_mineralische_rohstoffe200'
+        __table_args__ = ({'schema': 'geol', 'autoload': False})
+        __template__ = 'templates/htmlpopup/geotechnik_mineralische_rohstoffe200.mako'
+        __esriId__ = 1000
+        __bodId__ = 'ch.swisstopo.geologie-geotechnik-mineralische_rohstoffe200'
+        __displayFieldName__ = 'file_name'
+        id = Column('bgdi_id', Integer, primary_key=True)
+        file_name = Column('file_name', Text)
+        legend = Column('legend', Text)
+        area_name = Column('area_name', Text)
+        the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-geotechnik-mineralische_rohstoffe200',GeologieMineralischeRohstoffe200)
+
 # class GeologieGeotechnikGk200(Base, Vector):
 #         # view in a schema
 #         __tablename__ = 'geotechnik_gk200_lgd'
