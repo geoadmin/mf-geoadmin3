@@ -322,3 +322,17 @@ class bakomtv(Base, Vector):
     prog = Column('prog', Text)
 
 register('ch.bakom.versorgungsgebiet-tv', bakomtv)
+
+class bakomukw(Base, Vector):
+    __tablename__ = 'ukw_gebiet'
+    __table_args__ = ({'schema': 'bakom', 'autoload': False})
+    __template__ = 'templates/htmlpopup/bakomukw.mako'
+    __esriId__ = 4012
+    __bodId__ = 'ch.bakom.versorgungsgebiet-ukw'
+    __displayFieldName__ = 'prog'
+    __queryable_attributes__ = ['prog']
+    id = Column('gid', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    prog = Column('prog', Text)
+
+register('ch.bakom.versorgungsgebiet-ukw', bakomukw)
