@@ -336,3 +336,23 @@ class bakomukw(Base, Vector):
     prog = Column('prog', Text)
 
 register('ch.bakom.versorgungsgebiet-ukw', bakomukw)
+
+class ProjFlughafenanlagen(Base, Vector):
+    __tablename__ = 'flughafenanlagen'
+    __table_args__ = ({'schema': 'bazl', 'autoload': False})
+    __template__ = 'templates/htmlpopup/projflughafenanlagen.mako'
+    __esriId__ = 4012
+    __bodId__ = 'ch.bazl.projektierungszonen-flughafenanlagen'
+    __displayFieldName__ = 'bgdi_id'
+    id = Column('xtf_id', Integer, primary_key=True)
+    the_geom = Column(Geometry(21781))
+    kind = Column('kind', Text)
+    name = Column('name', Text)
+    applicant = Column('applicant', Text)
+    modif_validfrom = Column('modif_validfrom', Text)
+    durationofeffect = Column('durationofeffect', Text)
+    description = Column('description', Text)
+    legalregulationlink = Column('legalregulationlink', Text)
+    bgdi_id = Column('bgdi_id', Integer)
+
+register('ch.bazl.projektierungszonen-flughafenanlagen', ProjFlughafenanlagen)
