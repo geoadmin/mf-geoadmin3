@@ -913,20 +913,21 @@ class GeologieHydroKarteGrundwasservulneabilitaet(Base, Vector):
 
 register('ch.swisstopo.geologie-hydrogeologische_karte-grundwasservulnerabilitaet',GeologieHydroKarteGrundwasservulneabilitaet)
 
-# class GeologieGeothermie(Base, Vector):
-#         # view in a schema
-#         __tablename__ = 'geophysik_geothermie'
-#         __table_args__ = ({'schema': 'geol', 'autoload': False})
-#         __template__ = 'templates/htmlpopup/geothermie.mako'
-#         __esriId__ = 1000
-#         __bodId__ = 'ch.swisstopo.geologie-geophysik-geothermie'
-#         __displayFieldName__ = ''
-#         id = Column('gid', Integer, primary_key=True)
-#         fid = Column ('id', Integer)
-#         the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo.geologie-geophysik-geothermie',GeologieGeothermie)
-# 
+class GeologieGeothermie(Base, Vector):
+# view in a schema
+        __tablename__ = 'geophysik_geothermie'
+        __table_args__ = ({'schema': 'geol', 'autoload': False})
+        __template__ = 'templates/htmlpopup/geothermie.mako'
+        __esriId__ = 1000
+        __bodId__ = 'ch.swisstopo.geologie-geophysik-geothermie'
+        __displayFieldName__ = 'id'
+        id = Column('gid', Integer, primary_key=True)
+        fid = Column ('id', Integer)
+        contour = Column('contour', Numeric)
+        the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-geophysik-geothermie',GeologieGeothermie)
+
 # class Geologischer_Deklination(Base, Vector):
 #         # view in a schema
 #         __tablename__ = 'geophysik_deklination'
