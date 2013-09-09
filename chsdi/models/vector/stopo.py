@@ -865,20 +865,22 @@ class GeologieGeotechnikZiegeleien1965(Base, Vector):
 
 register('ch.swisstopo.geologie-geotechnik-ziegeleien_1965',GeologieGeotechnikZiegeleien1965)
 
-# class GeologieGeotechnikZiegeleien1995(Base, Vector):
-#         # view in a schema
-#         __tablename__ = 'geotechnik_ziegeleien_1995'
-#         __table_args__ = ({'schema': 'geol', 'autoload': False})
-#         __template__ = 'templates/htmlpopup/ziegeleien_1995.mako'
-#         __queryable_attributes__ = ['ziegeleien']
-#         __esriId__ = 1000
-#         __bodId__ = 'ch.swisstopo.geologie-geotechnik-ziegeleien_1995'
-#         __displayFieldName__ = ''
-#         id = Column('id', Integer, primary_key=True)
-#         the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo.geologie-geotechnik-ziegeleien_1995',GeologieGeotechnikZiegeleien1995)
-# 
+class GeologieGeotechnikZiegeleien1995(Base, Vector):
+# view in a schema
+        __tablename__ = 'geotechnik_ziegeleien_1995'
+        __table_args__ = ({'schema': 'geol', 'autoload': False})
+        __template__ = 'templates/htmlpopup/ziegeleien_1995.mako'
+        __queryable_attributes__ = ['ziegeleien']
+        __esriId__ = 1000
+        __bodId__ = 'ch.swisstopo.geologie-geotechnik-ziegeleien_1995'
+        __displayFieldName__ = 'id'
+        id = Column('id', Integer, primary_key=True)
+        ziegeleien = Column('ziegeleien', Text)
+        produkt = Column('produkt', Text)
+        the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-geotechnik-ziegeleien_1995',GeologieGeotechnikZiegeleien1995)
+
 # class GeologieHydroKarteGrundwasservorkommen(Base, Vector):
 #         # view in a schema
 #         __tablename__ = 'grundwasservorkommen'
