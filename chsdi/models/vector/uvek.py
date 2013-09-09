@@ -309,3 +309,16 @@ class bakomlte(Base, Vector):
 
 register('ch.bakom.mobil-antennenstandorte-lte', bakomlte)
 
+class bakomtv(Base, Vector):
+    __tablename__ = 'tv_gebiet'
+    __table_args__ = ({'schema': 'bakom', 'autoload': False})
+    __template__ = 'templates/htmlpopup/bakomtv.mako'
+    __esriId__ = 4011
+    __bodId__ = 'ch.bakom.versorgungsgebiet-tv'
+    __displayFieldName__ = 'prog'
+    __queryable_attributes__ = ['prog']
+    id = Column('gid', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    prog = Column('prog', Text)
+
+register('ch.bakom.versorgungsgebiet-tv', bakomtv)
