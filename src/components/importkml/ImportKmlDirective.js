@@ -249,10 +249,14 @@
               // more recent than ie9
               if (!gaBrowserSniffer.msie || gaBrowserSniffer.msie > 9) {
 
-                // Trigger the hidden input[type=file] onclick event
-                elt.find('button').click(function() {
+                var triggerInputFileClick = function() {
                   elt.find('input[type="file"]').click();
-                });
+                };
+
+                // Trigger the hidden input[type=file] onclick event
+                elt.find('button').click(triggerInputFileClick);
+                elt.find('input[type=text][readonly]').
+                    click(triggerInputFileClick);
 
                 // Register input[type=file] onchange event
                 elt.find('input[type=file]').bind('change', function(evt) {

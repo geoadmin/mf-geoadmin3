@@ -32,7 +32,7 @@
 
         <!-- Button use to open the file chooser of the input file -->
         <input class="import-kml-fake-file form-control" type="text" readonly
-          value="{{(file.name) ? file.name + ', size: ' + file.size/1000 + ' ko' : ''}}"
+          value="{{(file.name) ? file.name + ', ' + file.size/1000 + ' ko' : ''}}"
           placeholder="{{'no_file' | translate}}"/>
         <span class="input-group-btn">
           <button type="button" class="btn btn-default">{{'browse' | translate}}</button>
