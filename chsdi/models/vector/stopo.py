@@ -631,30 +631,33 @@ class GridstandSwissimage(Base, Vector):
 register('ch.swisstopo.images-swissimage.metadata',GridstandSwissimage)
 
 #class GeolKarten500Metadata(Base, Vector):
-#     # view in a schema
-#     __tablename__ = 'gk500'
-#     __table_args__ = ({'schema': 'public', 'autoload': False})
-#     __template__ = 'templates/htmlpopup/geolkarten500_metadata.mako'
-#     __esriId__ = 1000
-#     __bodId__ = 'ch.swisstopo.geologie-geolkarten500.metadata'
-#     __displayFieldName__ = ''
-#     id = Column('prod_id', Text, primary_key=True)
-#     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo.geologie-geolkarten500.metadata',GeolKarten500Metadata)
-# 
-# class GeologischerAtlasPK(Base, Vector):
-#  	# view in a schema
-#  	__tablename__ = 'kv_ga25_pk'
-#  	__table_args__ = ({'schema': 'geol', 'autoload': False})
-#  	__template__ = 'templates/htmlpopup/geol_ga_pk.mako'
-#     __esriId__ = 1000
-#     __bodId__ = 'ch.swisstopo.geologie-geologischer_atlas'
-#     __displayFieldName__ = ''
-#  	id = Column('nr', Text, primary_key=True)
-#  	the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo.geologie-geologischer_atlas',GeologischerAtlasPK)
+## view in a schema
+#    __tablename__ = 'gk500'
+#    __table_args__ = ({'schema': 'public', 'autoload': False})
+#    __template__ = 'templates/htmlpopup/geolkarten500_metadata.mako'
+#    __esriId__ = 1000
+#    __bodId__ = 'ch.swisstopo.geologie-geolkarten500.metadata'
+#    __displayFieldName__ = 'id'
+#    id = Column('prod_id', Text, primary_key=True)
+#    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+#
+#register('ch.swisstopo.geologie-geolkarten500.metadata',GeolKarten500Metadata)
+ 
+class GeologischerAtlasPK(Base, Vector):
+# view in a schema
+    __tablename__ = 'kv_ga25_pk'
+    __table_args__ = ({'schema': 'geol', 'autoload': False})
+    __template__ = 'templates/htmlpopup/geol_ga_pk.mako'
+    __esriId__ = 1000
+    __bodId__ = 'ch.swisstopo.geologie-geologischer_atlas'
+    __displayFieldName__ = 'titel'
+    id = Column('nr', Text, primary_key=True)
+    titel = Column('titel', Text)
+    grat25 = Column('grat25', Text)
+    jahr = Column('jahr', Numeric)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-geologischer_atlas',GeologischerAtlasPK)
 # 
 # class GeologischeKarteLine(Base, Vector):
 #     # view in a schema
