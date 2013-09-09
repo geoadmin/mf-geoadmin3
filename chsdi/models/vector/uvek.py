@@ -198,8 +198,54 @@ class STATISTIKWASSERKRAFTANLAGEN(Base, Vector):
     hydropowerplantoperationalstatus_fr = Column('hydropowerplantoperationalstatus_fr', Text)
     hydropowerplanttype_fr = Column('hydropowerplanttype_fr', Text)
     hydropowerplantoperationalstatus_de = Column('hydropowerplantoperationalstatus_de', Text)
-    hydropowerplanttype_de =Column('hydropowerplanttype_de', Text)
+    hydropowerplanttype_de = Column('hydropowerplanttype_de', Text)
     beginningofoperation = Column('beginningofoperation', Integer)
-    endofoperation =Column('endofoperation', Integer)
+    endofoperation = Column('endofoperation', Integer)
 
 register('ch.bfe.statistik-wasserkraftanlagen', STATISTIKWASSERKRAFTANLAGEN)
+
+#class STAUANLAGENBUNDESAUFSICHT(Base, Vector):
+#    __tablename__ = 'stauanlagen_bundesaufsicht'
+#    __table_args__ = ({'schema': 'bfe', 'autoload': False})
+#    __template__ = 'templates/htmlpopup/stauanlagenbundesaufsicht.mako'
+#    __esriId__ = 4006
+#    __bodId__ = 'ch.bfe.stauanlagen-bundesaufsicht'
+#    __displayFieldName__ = 'damname'
+#    id = Column('dam_stabil_id', Integer, primary_key=True)
+#    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+#    damname = Column('damname', Text)
+#    damtype_fr = Column('damtype_fr', Text)
+#    damtype_en = Column('damtype_en', Text)
+#    damtype_de = Column('damtype_de', Text)
+#    damheight = Column('damheight', Integer)
+#    crestlevel = Column('crestlevel', Integer)
+#    crestlength = Column('crestlength', Integer)
+#    facilityname = Column('facilityname', Text)
+#    beginningofoperation = Column('beginningofoperation', Text)
+#    facaim_fr = Column('facaim_fr', Text)
+#    startsupervision = Column('startsupervision', Text)
+#    reservoirname = Column('reservoirname', Text)
+#    impoundmentvolume = Column('impoundmentvolume', Text)
+#    impoundmentlevel = Column('impoundmentlevel', Integer)
+#    storagelevel = Column('storagelevel', Integer)
+#    facaim_en = Column('facaim_en', Text)
+#    facaim_de = Column('facaim_de', Text)
+#    has_picture = Column('has_picture', Integer)
+#    facility_stabil_id = Column('facility_stabil_id', Integer)
+#        
+#register('ch.bfe.stauanlagen-bundesaufsicht', STAUANLAGENBUNDESAUFSICHT)
+#
+class kleinwasserkraftpotentiale(Base, Vector):
+    __tablename__ = 'kleinwasserkraftpotentiale'
+    __table_args__ = ({'schema': 'bfe', 'autoload': False})
+    __template__ = 'templates/htmlpopup/kleinwasserkraftpotentiale.mako'
+    __esriId__ = 4006
+    __bodId__ = 'ch.bfe.kleinwasserkraftpotentiale'
+    __displayFieldName__ = 'gwlnr'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    kwprometer = Column('kwprometer', Numeric)
+    laenge = Column('laenge', Numeric)
+    gwlnr = Column('gwlnr', Text)
+    
+register('ch.bfe.kleinwasserkraftpotentiale', kleinwasserkraftpotentiale)
