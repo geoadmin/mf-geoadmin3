@@ -897,19 +897,22 @@ class GeologieHydroKarteGrundwasservorkommen(Base, Vector):
 
 register('ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen',GeologieHydroKarteGrundwasservorkommen)
 
-# class GeologieHydroKarteGrundwasservulneabilitaet(Base, Vector):
-#         # view in a schema
-#         __tablename__ = 'grundwasservorkommen_plg'
-#         __table_args__ = ({'schema': 'geol', 'autoload': False})
-#         __template__ = 'templates/htmlpopup/grundwasservulnerabilitaet.mako'
-#         __esriId__ = 1000
-#         __bodId__ = 'ch.swisstopo.geologie-hydrogeologische_karte-grundwasservulnerabilitaet'
-#         __displayFieldName__ = ''
-#         id = Column('bgdi_id', Integer, primary_key=True)
-#         the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo.geologie-hydrogeologische_karte-grundwasservulnerabilitaet',GeologieHydroKarteGrundwasservulneabilitaet)
-# 
+class GeologieHydroKarteGrundwasservulneabilitaet(Base, Vector):
+# view in a schema
+        __tablename__ = 'grundwasservorkommen_plg'
+        __table_args__ = ({'schema': 'geol', 'autoload': False})
+        __template__ = 'templates/htmlpopup/grundwasservulnerabilitaet.mako'
+        __esriId__ = 1000
+        __bodId__ = 'ch.swisstopo.geologie-hydrogeologische_karte-grundwasservulnerabilitaet'
+        __displayFieldName__ = 'id_type'
+        id = Column('bgdi_id', Integer, primary_key=True)
+        id_type = Column('id_type', Integer)
+        type_de = Column('type_de', Text)
+        type_fr = Column('type_fr', Text)
+        the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-hydrogeologische_karte-grundwasservulnerabilitaet',GeologieHydroKarteGrundwasservulneabilitaet)
+
 # class GeologieGeothermie(Base, Vector):
 #         # view in a schema
 #         __tablename__ = 'geophysik_geothermie'
