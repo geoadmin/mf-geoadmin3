@@ -82,7 +82,8 @@
                     ' * ' + result.service.maxHeight :
                   '';
 
-              for (var i = 0, len = result.capability.layers.length;
+              // We don't add the root layer node in the list
+              for (var i = 0, len = result.capability.layers.length - 1;
                   i < len; i++) {
                 var layer = result.capability.layers[i];
 
