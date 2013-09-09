@@ -159,8 +159,39 @@
                   url: getWmtsGetTileUrl(id, layer.format)
                 })
               });
-              layer.olLayer = olLayer;
             }
+            else if (layer.type == 'wms') {
+              //TODO: add support for layer.timeEnabled, non-singleTile layers?
+              if (layer.singleTile === true) {
+                olLayer = new ol.layer.Image({
+                  id: id,
+                  source: new ol.source.ImageWMS({
+                    //FIXME: wmsUrl should not be wmsCap url
+                    url: layer.wmsUrl.replace(/\?.*/, ''),
+                    params: {
+                      LAYERS: layer.wmsLayers,
+                      FORMAT: 'image/' + layer.format
+                    },
+                    attributions: [
+                      getAttribution(layer.attribution)
+                    ]
+                  })
+                });
+              }
+            }
+            else if (layer.type == 'aggregate') {
+              var subLayerIds = layer.subLayerIds.split(',');
+              var i, len = subLayerIds.length;
+              var subLayers = new Array(len);
+              for (i = 0; i < len; i++) {
+                subLayers[i] = this.getOlLayerById(subLayerIds[i]);
+              }
+              olLayer = new ol.layer.Group({
+                id: id,
+                layers: subLayers
+              });
+            }
+            layer.olLayer = olLayer;
             if (angular.isDefined(olLayer)) {
               gaDefinePropertiesForLayer(olLayer);
             }
