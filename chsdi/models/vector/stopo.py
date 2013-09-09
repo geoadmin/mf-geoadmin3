@@ -659,33 +659,37 @@ class GeologischerAtlasPK(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geologischer_atlas',GeologischerAtlasPK)
-# 
-# class GeologischeKarteLine(Base, Vector):
-#     # view in a schema
-#     __tablename__ = 'geologische_karte_line'
-#     __table_args__ = ({'schema': 'geol', 'autoload': False})
-#     __template__ = 'templates/htmlpopup/geologische_karte_line.mako'
-#     __esriId__ = 1000
-#     __bodId__ = 'ch.swisstopo.geologie-geologische_karte'
-#     __displayFieldName__ = ''
-#     id = Column('fid', Text, primary_key=True)
-#     gid = Column ('id', Integer)
-#     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# class GeologischeKartePlg(Base, Vector):
-#     # view in a schema
+
+class GeologischeKarteLine(Base, Vector):
+# view in a schema
+    __tablename__ = 'geologische_karte_line'
+    __table_args__ = ({'schema': 'geol', 'autoload': False})
+    __template__ = 'templates/htmlpopup/geologische_karte_line.mako'
+    __esriId__ = 1000
+    __bodId__ = 'ch.swisstopo.geologie-geologische_karte'
+    __displayFieldName__ = 'id'
+    id = Column('fid', Text, primary_key=True)
+    gid = Column ('id', Integer)
+    type_de = Column('type_de',Text)
+    type_fr = Column('type_fr',Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+#class GeologischeKartePlg(Base, Vector):
+## view in a schema
 #     __tablename__ = 'geologische_karte_plg'
 #     __table_args__ = ({'schema': 'geol', 'autoload': False})
 #     __template__ = 'templates/htmlpopup/geologische_karte_plg.mako'
 #     __esriId__ = 1000
 #     __bodId__ = 'ch.swisstopo.geologie-geologische_karte'
-#     __displayFieldName__ = ''
+#     __displayFieldName__ = 'id'
 #     id = Column('id', Text, primary_key=True)
+#     leg_geol_d = Column('leg_geol_d', Text)
+#     leg_geol_f = Column('leg_geol_f', Text)
 #     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo.geologie-geologische_karte',GeologischeKarteLine)
-# register('ch.swisstopo.geologie-geologische_karte',GeologischeKartePlg)
-# 
+
+register('ch.swisstopo.geologie-geologische_karte',GeologischeKarteLine)
+#register('ch.swisstopo.geologie-geologische_karte',GeologischeKartePlg)
+
 # class GeologieMineralischeRohstoffe200(Base, Vector):
 #         # view in a schema
 #         __tablename__ = 'geotechnik_mineralische_rohstoffe200'
