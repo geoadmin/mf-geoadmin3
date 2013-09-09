@@ -706,19 +706,20 @@ class GeologieMineralischeRohstoffe200(Base, Vector):
 
 register('ch.swisstopo.geologie-geotechnik-mineralische_rohstoffe200',GeologieMineralischeRohstoffe200)
 
-# class GeologieGeotechnikGk200(Base, Vector):
-#         # view in a schema
-#         __tablename__ = 'geotechnik_gk200_lgd'
-#         __table_args__ = ({'schema': 'geol', 'autoload': False})
-#         __template__ = 'templates/htmlpopup/geotechnik_gk200.mako'
-#         __esriId__ = 1000
-#         __bodId__ = 'ch.swisstopo.geologie-geotechnik-gk200'
-#         __displayFieldName__ = ''
-#         id = Column('bgdi_id', Integer, primary_key=True)
-#         the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo.geologie-geotechnik-gk200',GeologieGeotechnikGk200)
-# 
+class GeologieGeotechnikGk200(Base, Vector):
+# view in a schema
+        __tablename__ = 'geotechnik_gk200_lgd'
+        __table_args__ = ({'schema': 'geol', 'autoload': False})
+        __template__ = 'templates/htmlpopup/geotechnik_gk200.mako'
+        __esriId__ = 1000
+        __bodId__ = 'ch.swisstopo.geologie-geotechnik-gk200'
+        __displayFieldName__ = 'file_name'
+        id = Column('bgdi_id', Integer, primary_key=True)
+        file_name = Column('file_name', Text)
+        the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-geotechnik-gk200',GeologieGeotechnikGk200)
+
 # class Gk500_Gensese (Base, Vector):
 #         # view in a schema
 #         __tablename__ = 'gk500_genese' 
