@@ -2,16 +2,17 @@
   goog.provide('ga_timeselector_directive');
 
   goog.require('ga_browsersniffer_service');
-
+  goog.require('ga_map_service');
   var module = angular.module('ga_timeselector_directive', [
     'ga_browsersniffer_service',
+    'ga_map_service',
     'pascalprecht.translate'
   ]);
 
   module.controller('GaTimeSelectorDirectiveController',
-      ['$scope', '$log', '$translate', '$sce', 'gaBrowserSniffer',
+      ['$scope', '$log', '$translate', '$sce', 'gaBrowserSniffer', 'gaLayers',
         function($scope, $log, $translate, $sce, gaBrowserSniffer,
-            gaPopup) {
+            gaLayers) {
 
           // Initialize variables
           $scope.isActive = false;
@@ -124,23 +125,29 @@
 
             $scope.map.getLayers().forEach(function(olLayer, opt) {
               var timestamps = olLayer.get('timestamps');
+
               if (timestamps) {
                 $log.log('Update ' + olLayer.getSource() +
                  ' layer (' + olLayer.get('id') + ') with time = ' + timeStr);
-               /* if (layer.type === 'wmts') {
-                  if (!anguler.isDefined(timeStr) && timeStr === null) {
-                    timeStr = timestamps[0];
+                var layerTimeStr = timeStr;
+                var src = olLayer.getSource();
+                if (src instanceof ol.source.WMTS) {
+                  if (!angular.isDefined(timeStr) || timeStr === null) {
+                    layerTimeStr = timestamps[0];
+                  } else {
+                    layerTimeStr = timeStr + '1231';
                   }
-                  olLayer.getSource().updateParams({'Time' : timeStr});
+                  src.updateDimensions({'Time' : layerTimeStr});
 
-                } else if (layer.type === 'wms' || layer.type === 'wmst') {
+                } else if (src instanceof ol.source.SingleImageWMS ||
+                    src instanceof ol.source.TiledWMS) {
                   if (!angular.isDefined(timeStr)) {
-                    timeStr = "";
+                    layerTimeStr = '';
                   } else if (timeStr === null) {
-                    timeStr = timestamps[0]
+                    layerTimeStr = timestamps[0];
                   }
-                  olLayer.getSource().updateParams({'TIME' : timeStr});
-                }*/
+                  src.updateParams({'TIME' : layerTimeStr});
+                }
               }
             });
           };

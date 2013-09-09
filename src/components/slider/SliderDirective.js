@@ -81,6 +81,11 @@
       start: 'touchstart',
       move: 'touchmove',
       end: 'touchend'
+    },
+    touchIE: {
+      start: 'MSPointerDown',
+      move: 'MSPointerMove',
+      end: 'MSPointerUp'
     }
   };
 
@@ -96,7 +101,7 @@
         ngModelLow: '=?',
         ngModelHigh: '=?',
         translate2: '&',
-        dataList: '=gaSliderData'
+        dataList: '=gaSliderData' //RE3: contains all the possible values
       },
       templateUrl: 'components/slider/partials/slider.html',
       compile: function(element, attributes) {
@@ -150,7 +155,7 @@
             minOffset, minValue, ngDocument, offsetRange, pointerHalfWidth,
             updateDOM, valueRange, w, _j, _len1;
 
-            // RE3
+            // RE3: Defines the position of each division (use step = 1)
             var divisionWidth = 100 / (scope.ceiling - scope.floor);
             scope.assignDivisionStyle = function(index) {
               var style = {
@@ -321,6 +326,11 @@
                 onMove = function(event) {
                   var eventX, newOffset, newPercent, newValue;
 
+                  // RE3: is a Jquery event
+                  if (event.originalEvent) {
+                    event = event.originalEvent;
+                  }
+
                   eventX = event.clientX || event.touches[0].clientX;
                   newOffset = eventX - element[0].getBoundingClientRect().left -
                       pointerHalfWidth;
@@ -367,7 +377,7 @@
                   return bindToInputEvents(maxPtr, refHigh,
                    inputEvents[method]);
                 };
-                _ref2 = ['touch', 'mouse'];
+                _ref2 = ['touchIE', 'touch', 'mouse'];
                 _results = [];
                 for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
                   inputMethod = _ref2[_j];
@@ -378,6 +388,20 @@
 
               setPointers();
               adjustBubbles();
+
+              // RE3: add CSS class to the bubble which displays the
+              // current data selected when the data is available
+              if (!range && scope.dataList) {
+                var arr = $.grep(scope.dataList, function(e) {
+                  return (e.value == scope[refLow] && e.available);
+                });
+
+                if (arr.length === 1) {
+                  lowBub.addClass('available');
+                } else {
+                  lowBub.removeClass('available');
+                }
+              }
 
               if (!boundToInputs) {
                 return setBindings();

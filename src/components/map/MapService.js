@@ -177,16 +177,22 @@
               source: olSource
             });
           } else if (layer.type == 'wms') {
-            //TODO: add support for layer.timeEnabled?
+            var wmsUrl = gaUrlUtils.remove(
+                layer.wmsUrl, ['request', 'service', 'version'], true);
+           
+            var wmsParams = {
+              LAYERS: layer.serverLayerName,
+              FORMAT: 'image/' + layer.format
+            };
+
+            if (layer.timeEnabled) {
+              wmsParams['TIME'] = '';
+            }
             if (layer.singleTile === true) {
               if (!olSource) {
                 olSource = layer.olSource = new ol.source.ImageWMS({
-                  url: gaUrlUtils.remove(
-                      layer.wmsUrl, ['request', 'service', 'version'], true),
-                  params: {
-                    LAYERS: layer.serverLayerName,
-                    FORMAT: 'image/' + layer.format
-                  },
+                  url: wmsUrl,
+                  params: wmsParams,
                   attributions: [
                     getAttribution(layer.attribution)
                   ],
