@@ -37,6 +37,14 @@
               var size = map.getSize();
               var extent = map.getView().calculateExtent(size);
 
+              // A digest cycle is necessary for $http requests to be
+              // actually sent out. Angular-1.2.0rc2 changed the $evalSync
+              // function of the $rootScope service for exactly this. See
+              // Angular commit 6b91aa0a18098100e5f50ea911ee135b50680d67.
+              // We use a conservative approach and call $apply ourselves
+              // here, but we instead could also let $evalSync trigger a
+              // digest cycle for us.
+
               $scope.$apply(function() {
                 findFeatures(evt.getCoordinate(),
                               size,
