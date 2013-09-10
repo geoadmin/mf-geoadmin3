@@ -573,7 +573,7 @@ register('ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung', sgt_pla
 #    __template__ = 'templates/htmlpopup/sil_facilities.mako'
 #    __esriId__ = 4020
 #    __bodId__ = 'ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung'
-#    __displayFieldName__ = 'facname_fr' 
+#    __displayFieldName__ = 'facname_de' 
 #    id = Column('stabil_id', Integer, primary_key=True)
 #    facname_de = Column('facname_de', Text)
 #    facname_fr = Column('facname_fr', Text)
@@ -589,9 +589,9 @@ register('ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung', sgt_pla
 #    description_text_fr = Column('description_text_fr', Text)
 #    description_text_it = Column('description_text_it', Text)
 #    document_web = Column('document_web', Text)
-#    objectname_text_de = Column('objectname_de', Text)
-#    objectname_text_fr = Column('objectname_fr', Text)
-#    objectname_text_it = Column('objectname_it', Text)
+#    objectname_de = Column('objectname_de', Text)
+#    objectname_fr = Column('objectname_fr', Text)
+#    objectname_it = Column('objectname_it', Text)
 #    bgdi_created = Column('bgdi_created', Text)
 #    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 #
