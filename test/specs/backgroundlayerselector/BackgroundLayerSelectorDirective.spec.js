@@ -6,11 +6,11 @@ describe('ga_backgroundlayerselector_directive', function() {
 
     map = new ol.Map({});
 
-    layer1 = new ol.layer.TileLayer({
+    layer1 = new ol.layer.Tile({
       source: new ol.source.OSM()
     });
 
-    layer2 = new ol.layer.TileLayer({
+    layer2 = new ol.layer.Tile({
       source: new ol.source.OSM()
     });
 
@@ -107,7 +107,7 @@ describe('ga_backgroundlayerselector_directive', function() {
 
       // add an overlay
       layers.push(
-          new ol.layer.TileLayer({source: new ol.source.OSM()}));
+          new ol.layer.Tile({source: new ol.source.OSM()}));
       numLayers = layers.getLength();
       expect(numLayers).to.equal(1);
 
