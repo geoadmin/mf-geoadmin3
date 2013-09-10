@@ -141,7 +141,7 @@
           var olLayer = layer.olLayer;
           if (!angular.isDefined(olLayer)) {
             if (layer.type == 'wmts') {
-              olLayer = new ol.layer.TileLayer({
+              olLayer = new ol.layer.Tile({
                 id: id,
                 source: new ol.source.WMTS({
                   attributions: [
