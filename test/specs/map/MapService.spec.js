@@ -43,7 +43,7 @@ describe('ga_map_service', function() {
       $httpBackend.expectJSONP(expectedUrl);
       $httpBackend.flush();
       var layer = layers.getOlLayerById('foo');
-      expect(layer instanceof ol.layer.TileLayer).to.be.ok();
+      expect(layer instanceof ol.layer.Tile).to.be.ok();
       var source = layer.getSource();
       expect(source instanceof ol.source.WMTS).to.be.ok();
       var tileGrid = source.getTileGrid();
