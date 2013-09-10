@@ -1037,33 +1037,39 @@ class GeologieRohstoffeVererzungen(Base, Vector):
 
 register('ch.swisstopo.geologie-rohstoffe-vererzungen',GeologieRohstoffeVererzungen)
 
-# class GeologieTektonischeKarteLine(Base, Vector):
-#         # view in a schema
-#         __tablename__ = 'tektonische_karte_line'
-#         __table_args__ = ({'schema': 'geol', 'autoload': False})
-#         __template__ = 'templates/htmlpopup/tektonische_karte_line.mako'
-#         __esriId__ = 1000
-#         __bodId__ = 'ch.swisstopo.geologie-tektonische_karte'
-#         __displayFieldName__ = ''
-#         id = Column('fid', Text, primary_key=True)
-#         gid = Column ('id', Integer)
-#         the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# class GeologieTektonischeKartePoly(Base, Vector):
-#         # view in a schema
-#         __tablename__ = 'tektonische_karte_flaechen'
-#         __table_args__ = ({'schema': 'geol', 'autoload': False})
-#         __template__ = 'templates/htmlpopup/tektonische_karte_poly.mako'
-#         __esriId__ = 1000
-#         __bodId__ = 'ch.swisstopo.geologie-tektonische_karte'
-#         __displayFieldName__ = ''
-#         id = Column('fid', Integer, primary_key=True)
-#         gid = Column ('id', Integer)
-#         the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo.geologie-tektonische_karte',GeologieTektonischeKarteLine)
-# register('ch.swisstopo.geologie-tektonische_karte',GeologieTektonischeKartePoly)
-# 
+class GeologieTektonischeKarteLine(Base, Vector):
+# view in a schema
+        __tablename__ = 'tektonische_karte_line'
+        __table_args__ = ({'schema': 'geol', 'autoload': False})
+        __template__ = 'templates/htmlpopup/tektonische_karte_line.mako'
+        __esriId__ = 1000
+        __bodId__ = 'ch.swisstopo.geologie-tektonische_karte'
+        __displayFieldName__ = 'bgdi_id'
+        id = Column('fid', Text, primary_key=True)
+        bgdi_id = Column ('bgdi_id', Integer)
+        line_id = Column('line_id', Integer)
+        type_de = Column('type_de', Text)
+        type_fr = Column('type_fr', Text)
+        the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+#class GeologieTektonischeKartePoly(Base, Vector):
+## view in a schema
+#        __tablename__ = 'tektonische_karte_flaechen'
+#        __table_args__ = ({'schema': 'geol', 'autoload': False})
+#        __template__ = 'templates/htmlpopup/tektonische_karte_poly.mako'
+#        __esriId__ = 1000
+#        __bodId__ = 'ch.swisstopo.geologie-tektonische_karte'
+#        __displayFieldName__ = 'bgdi_id'
+#        id = Column('fid', Integer, primary_key=True)
+#        bgdi_id = Column ('bgdi_id', Integer)
+#        t2_id = Column('t2_id', Integer)
+#        type_de = Column('type_de', Text)
+#        type_fr = Column('type_fr', Text)
+#        the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-tektonische_karte',GeologieTektonischeKarteLine)
+#register('ch.swisstopo.geologie-tektonische_karte',GeologieTektonischeKartePoly)
+
 # class Swisstlm3dWanderwege(Base, Vector):
 #     # view in a schema
 #     __tablename__ = 'wanderwege_swissmap'
