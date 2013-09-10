@@ -60,11 +60,14 @@
                   view.setCenter(coord21781);
                 }
 
-                // The $http service does not send requests immediately but
-                // wait for the "nextTick". Not sure this is bug in Angular.
-                // https://github.com/angular/angular.js/issues/2442 reports
-                // it a bug. As a workaround we call $http in an $apply
-                // callback.
+                // A digest cycle is necessary for $http requests to be
+                // actually sent out. Angular-1.2.0rc2 changed the $evalSync
+                // function of the $rootScope service for exactly this. See
+                // Angular commit 6b91aa0a18098100e5f50ea911ee135b50680d67.
+                // We use a conservative approach and call $apply ourselves
+                // here, but we instead could also let $evalSync trigger a
+                // digest cycle for us.
+
                 scope.$apply(function() {
                   $q.all({
                     height: $http.jsonp(heightUrl, {
