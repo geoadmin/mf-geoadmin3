@@ -1150,22 +1150,22 @@ class SwissmapOnlineWanderwege(Base, Vector):
 
 register('ch.swisstopo-karto.wanderwege',SwissmapOnlineWanderwege)
 
-# class PLZOrtschaften(Base, Vector):
-#        # view in a schema
-#        __tablename__ = 'gabmo_plz'
-#        __table_args__ = ({'schema': 'vd', 'autoload': False})
-#        __template__ = 'templates/htmlpopup/gabmo_plz.mako'
-#        __esriId__ = 1000
-#        __bodId__ = 'ch.swisstopo-vd.ortschaftenverzeichnis_plz'
-#        __displayFieldName__ = ''
-#        id = Column('os_uuid', Text, primary_key=True)
-#        plz = Column('plz', Integer)
-#        zusziff = Column('zusziff', Text)
-#        langtext = Column('langtext', Text)
-#        the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo-vd.ortschaftenverzeichnis_plz',PLZOrtschaften)
-# 
+class PLZOrtschaften(Base, Vector):
+# view in a schema
+       __tablename__ = 'gabmo_plz'
+       __table_args__ = ({'schema': 'vd', 'autoload': False})
+       __template__ = 'templates/htmlpopup/gabmo_plz.mako'
+       __esriId__ = 1000
+       __bodId__ = 'ch.swisstopo-vd.ortschaftenverzeichnis_plz'
+       __displayFieldName__ = 'langtext'
+       id = Column('os_uuid', Text, primary_key=True)
+       plz = Column('plz', Integer)
+       zusziff = Column('zusziff', Text)
+       langtext = Column('langtext', Text)
+       the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo-vd.ortschaftenverzeichnis_plz',PLZOrtschaften)
+
 # class geometaStandAV(Base, Vector): 	 
 #        # view in a schema 	 
 #        __tablename__ = 'amogr_standav' 	 
