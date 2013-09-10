@@ -1184,21 +1184,30 @@ class geometaStandAV(Base, Vector):
 	  	 
 register('ch.swisstopo-vd.geometa-standav',geometaStandAV)
 
-# class geometaLos(Base, Vector):
-#        # view in a schema
-#        __tablename__ = 'amogr_los'
-#        __table_args__ = ({'schema': 'vd', 'autoload': False})
-#        __template__ = 'templates/htmlpopup/los.mako'
-#        __esriId__ = 1000
-#        __bodId__ = 'ch.swisstopo-vd.geometa-los'
-#        __displayFieldName__ = ''
-#        id = Column('gid', Integer, primary_key=True)
-#        fid = Column ('id', Integer)
-#        the_geom = Column('the_geom_gen50',Geometry(21781))
-#        not_used = Column('the_geom',Geometry(21781))
-# 
-# register('ch.swisstopo-vd.geometa-los',geometaLos)
-# 
+class geometaLos(Base, Vector):
+# view in a schema
+       __tablename__ = 'amogr_los'
+       __table_args__ = ({'schema': 'vd', 'autoload': False})
+       __template__ = 'templates/htmlpopup/los.mako'
+       __esriId__ = 1000
+       __bodId__ = 'ch.swisstopo-vd.geometa-los'
+       __displayFieldName__ = 'neu_id'
+       id = Column('gid', Integer, primary_key=True)
+       fid = Column ('id', Integer)
+       neu_id = Column('neu_id', Text)
+       operatsname = Column('operatsname', Text)
+       losnr = Column('losnr', Text)
+       taetigkeit_d = Column('taetigkeit_d', Text)
+       taetigkeit_f = Column('taetigkeit_f', Text)
+       taetigkeit_i = Column('taetigkeit_i', Text)
+       quality = Column('quality', Text)
+       flaeche_vertrag = Column('flaeche_vertrag', Text)
+       frame = Column('frame', Text)
+       the_geom = Column('the_geom_gen50',Geometry(21781))
+       not_used = Column('the_geom',Geometry(21781))
+
+register('ch.swisstopo-vd.geometa-los',geometaLos)
+
 # class geometaGemeinde(Base, Vector):
 #        # view in a schema
 #        __tablename__ = 'amogr_gemeinde'
