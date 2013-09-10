@@ -82,7 +82,9 @@
         if (key in attributions) {
           return attributions[key];
         } else {
-          var a = new ol.Attribution({html: text});
+          var a = new ol.Attribution(
+            {html: '<a href="' + $translate(text + '.url') +
+              '" target="_blank">' + $translate(text) + '</a>'});
           attributions[key] = a;
           return a;
         }
