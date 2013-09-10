@@ -475,7 +475,7 @@ class sgt_facilities_td(Base, Vector):
     __template__ = 'templates/htmlpopup/sgt_facilities.mako'
     __esriId__ = 4017
     __bodId__ = 'ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung'
-    __displayFieldName__ = 'facname_fr' 
+    __displayFieldName__ = 'facname_de' 
     id = Column('stabil_id', Integer, primary_key=True)
     facname_de = Column('facname_de', Text)
     facname_fr = Column('facname_fr', Text)
@@ -505,7 +505,7 @@ class sgt_planning_td(Base, Vector):
     __template__ = 'templates/htmlpopup/sgt_planning.mako'
     __esriId__ = 4018
     __bodId__ = 'ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung'
-    __displayFieldName__ = 'facname_fr' 
+    __displayFieldName__ = 'facname_de' 
     id = Column('stabil_id', Integer, primary_key=True)
     facname_de = Column('facname_de', Text)
     facname_fr = Column('facname_fr', Text)
@@ -539,7 +539,7 @@ class sgt_planning_raster_td(Base, Vector):
     __template__ = 'templates/htmlpopup/sgt_planning.mako'
     __esriId__ = 4019
     __bodId__ = 'ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung'
-    __displayFieldName__ = 'facname_fr' 
+    __displayFieldName__ = 'facname_de' 
     id = Column('stabil_id', Integer, primary_key=True)
     facname_de = Column('facname_de', Text)
     facname_fr = Column('facname_fr', Text)
@@ -632,3 +632,105 @@ class sil_planning_a(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung', sil_planning_a)
+
+class sil_planning_raster_a(Base, Vector):
+    __tablename__ = 'sachplan_inf_luft_plmeasures_r_anhorung'
+    __table_args__ = ({'schema': 'bazl', 'autoload': False})
+    __template__ = 'templates/htmlpopup/sil_planning.mako'
+    __esriId__ = 4022
+    __bodId__ = 'ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung'
+    __displayFieldName__ = 'facname_de' 
+    id = Column('stabil_id', Integer, primary_key=True)
+    facname_de = Column('facname_de', Text)
+    facname_fr = Column('facname_fr', Text)
+    facname_it = Column('facname_it', Text)
+    plname_de = Column('plname_de', Text)
+    plname_fr = Column('plname_fr', Text)
+    plname_it = Column('plname_it', Text)
+    measuretype_text_de = Column('measuretype_text_de', Text)
+    measuretype_text_fr = Column('measuretype_text_fr', Text)
+    measuretype_text_it = Column('measuretype_text_it', Text)
+    coordinationlevel_text_de = Column('coordinationlevel_text_de', Text)
+    coordinationlevel_text_fr = Column('coordinationlevel_text_fr', Text)
+    coordinationlevel_text_it = Column('coordinationlevel_text_it', Text)
+    planningstatus_text_de = Column('planningstatus_text_de', Text)
+    planningstatus_text_fr = Column('planningstatus_text_fr', Text)
+    planningstatus_text_it = Column('planningstatus_text_it', Text)
+    validfrom = Column('validfrom', Text)
+    validuntil = Column('validuntil', Text)
+    description_text_de = Column('description_text_de', Text)
+    description_text_fr = Column('description_text_fr', Text)
+    description_text_it = Column('description_text_it', Text)
+    document_web = Column('document_web', Text)
+    bgdi_created = Column('bgdi_created', Text)
+    __maxscale__ = 50005
+    __minscale__ = 1
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung', sil_planning_raster_a)
+
+class sil_facilities_k(Base, Vector):
+    __tablename__ = 'sachplan_inf_luft_facilities_kraft'
+    __table_args__ = ({'schema': 'bazl', 'autoload': False})
+    __template__ = 'templates/htmlpopup/sil_facilities.mako'
+    __esriId__ = 4023
+    __bodId__ = 'ch.bazl.sachplan-infrastruktur-luftfahrt_kraft'
+    __displayFieldName__ = 'facname_de'
+    id = Column('stabil_id', Integer, primary_key=True)
+    facname_de = Column('facname_de', Text)
+    facname_fr = Column('facname_fr', Text)
+    facname_it = Column('facname_it', Text)
+    fackind_text_de = Column('fackind_text_de', Text)
+    fackind_text_fr = Column('fackind_text_fr', Text)
+    fackind_text_it = Column('fackind_text_it', Text)
+    facstatus_text_de = Column('facstatus_text_de', Text)
+    facstatus_text_fr = Column('facstatus_text_fr', Text)
+    facstatus_text_it = Column('facstatus_text_it', Text)
+    validfrom = Column('validfrom', Text)
+    description_text_de = Column('description_text_de', Text)
+    description_text_fr = Column('description_text_fr', Text)
+    description_text_it = Column('description_text_it', Text)
+    document_web = Column('document_web', Text)
+    objectname_de = Column('objectname_de', Text)
+    objectname_fr = Column('objectname_fr', Text)
+    objectname_it = Column('objectname_it', Text)
+    bgdi_created = Column('bgdi_created', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bazl.sachplan-infrastruktur-luftfahrt_kraft', sil_facilities_k)
+
+class sil_planning_raster_k(Base, Vector):
+    __tablename__ = 'sachplan_inf_luft_plmeasures_r_kraft'
+    __table_args__ = ({'schema': 'bazl', 'autoload': False})
+    __template__ = 'templates/htmlpopup/sil_planning.mako'
+    __esriId__ = 4023
+    __bodId__ = 'ch.bazl.sachplan-infrastruktur-luftfahrt_kraft'
+    __displayFieldName__ = 'facname_de'
+    id = Column('stabil_id', Integer, primary_key=True)
+    facname_de = Column('facname_de', Text)
+    facname_fr = Column('facname_fr', Text)
+    facname_it = Column('facname_it', Text)
+    plname_de = Column('plname_de', Text)
+    plname_fr = Column('plname_fr', Text)
+    plname_it = Column('plname_it', Text)
+    measuretype_text_de = Column('measuretype_text_de', Text)
+    measuretype_text_fr = Column('measuretype_text_fr', Text)
+    measuretype_text_it = Column('measuretype_text_it', Text)
+    coordinationlevel_text_de = Column('coordinationlevel_text_de', Text)
+    coordinationlevel_text_fr = Column('coordinationlevel_text_fr', Text)
+    coordinationlevel_text_it = Column('coordinationlevel_text_it', Text)
+    planningstatus_text_de = Column('planningstatus_text_de', Text)
+    planningstatus_text_fr = Column('planningstatus_text_fr', Text)
+    planningstatus_text_it = Column('planningstatus_text_it', Text)
+    validfrom = Column('validfrom', Text)
+    validuntil = Column('validuntil', Text)
+    description_text_de = Column('description_text_de', Text)
+    description_text_fr = Column('description_text_fr', Text)
+    description_text_it = Column('description_text_it', Text)
+    document_web = Column('document_web', Text)
+    bgdi_created = Column('bgdi_created', Text)
+    __maxscale__ = 50005
+    __minscale__ = 1
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bazl.sachplan-infrastruktur-luftfahrt_kraft', sil_planning_raster_k)

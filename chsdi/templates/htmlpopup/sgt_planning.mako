@@ -52,7 +52,7 @@
     </tr>
         <tr><td width="150">${_('tt_sachplan_planning_ueberanlage')}</td>
       % if lang == 'de' or lang == 'rm' or lang == 'en':
-          <td>${c['attributes']['facname_de'] or '-'}</td>
+          <td>${c['value']}</td>
       % elif lang == 'fr':
           <td>${c['attributes']['facname_fr'] or '-'}</td>
       % elif lang == 'it':

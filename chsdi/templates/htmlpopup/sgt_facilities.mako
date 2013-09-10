@@ -2,7 +2,7 @@
 
 #<%def name="preview()">
 #	% if lang == 'de' or lang == 'rm' or lang == 'en':
-#	${c['attributes']['facname_de'] or '-'}
+#   ${c['value']}	
 #	% elif lang == 'fr':
 #	${c['attributes']['facname_fr'] or '-'}
 #	% elif lang == 'it':
