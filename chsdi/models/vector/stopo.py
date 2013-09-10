@@ -1005,20 +1005,22 @@ class GeologieRohstoffeIndustrieminerale(Base, Vector):
 
 register('ch.swisstopo.geologie-rohstoffe-industrieminerale',GeologieRohstoffeIndustrieminerale)
 
-# class GeologieRohstoffeKohlenBitumenErdgas(Base, Vector):
-#         # view in a schema
-#         __tablename__ = 'rohstoffe_kohlen_bitumen_erdgas'
-#         __table_args__ = ({'schema': 'geol', 'autoload': False})
-#         __template__ = 'templates/htmlpopup/rohstoffe_kohlen_bitumen_erdgas.mako'
-#         __queryable_attributes__ = ['name_ads']
-#         __esriId__ = 1000
-#         __bodId__ = 'ch.swisstopo.geologie-rohstoffe-kohlen_bitumen_erdgas'
-#         __displayFieldName__ = ''
-#         id = Column('id', Integer, primary_key=True)
-#         the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo.geologie-rohstoffe-kohlen_bitumen_erdgas',GeologieRohstoffeKohlenBitumenErdgas)
-# 
+class GeologieRohstoffeKohlenBitumenErdgas(Base, Vector):
+# view in a schema
+        __tablename__ = 'rohstoffe_kohlen_bitumen_erdgas'
+        __table_args__ = ({'schema': 'geol', 'autoload': False})
+        __template__ = 'templates/htmlpopup/rohstoffe_kohlen_bitumen_erdgas.mako'
+        __queryable_attributes__ = ['name_ads']
+        __esriId__ = 1000
+        __bodId__ = 'ch.swisstopo.geologie-rohstoffe-kohlen_bitumen_erdgas'
+        __displayFieldName__ = 'id'
+        id = Column('id', Integer, primary_key=True)
+        rohstoff = Column('rohstoff', Text)
+        name_ads = Column('name_ads', Text)
+        the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-rohstoffe-kohlen_bitumen_erdgas',GeologieRohstoffeKohlenBitumenErdgas)
+
 # class GeologieRohstoffeVererzungen(Base, Vector):
 #         # view in a schema
 #         __tablename__ = 'rohstoffe_vererzungen'
