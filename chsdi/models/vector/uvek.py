@@ -468,3 +468,132 @@ class sgt_planning_raster(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bfe.sachplan-geologie-tiefenlager', sgt_planning_raster)
+
+class sgt_facilities_td(Base, Vector):
+    __tablename__ = 'geologische_tiefenlager_fac'
+    __table_args__ = ({'schema': 'bfe', 'autoload': False, 'extend_existing': True})
+    __template__ = 'templates/htmlpopup/sgt_facilities.mako'
+    __esriId__ = 4017
+    __bodId__ = 'ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung'
+    __displayFieldName__ = 'facname_fr' 
+    id = Column('stabil_id', Integer, primary_key=True)
+    facname_de = Column('facname_de', Text)
+    facname_fr = Column('facname_fr', Text)
+    facname_it = Column('facname_it', Text)
+    fackind_text_de = Column('fackind_text_de', Text)
+    fackind_text_fr = Column('fackind_text_fr', Text)
+    fackind_text_it = Column('fackind_text_it', Text)
+    facstatus_text_de = Column('facstatus_text_de', Text)
+    facstatus_text_fr = Column('facstatus_text_fr', Text)
+    facstatus_text_it = Column('facstatus_text_it', Text)
+    validfrom = Column('validfrom', Text)
+    description = Column('description', Text)
+    web = Column('web', Text)
+    objname_text_de = Column('objname_text_de', Text)
+    objname_text_fr = Column('objname_text_fr', Text)
+    objname_text_it = Column('objname_text_it', Text)
+    bgdi_created = Column('bgdi_created', Text)
+    __minscale__ = 200005
+    __maxscale__ = 100000005
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung', sgt_facilities_td)
+
+class sgt_planning_td(Base, Vector):
+    __tablename__ = 'geologische_tiefenlager'
+    __table_args__ = ({'schema': 'bfe', 'autoload': False, 'extend_existing': True})
+    __template__ = 'templates/htmlpopup/sgt_planning.mako'
+    __esriId__ = 4018
+    __bodId__ = 'ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung'
+    __displayFieldName__ = 'facname_fr' 
+    id = Column('stabil_id', Integer, primary_key=True)
+    facname_de = Column('facname_de', Text)
+    facname_fr = Column('facname_fr', Text)
+    facname_it = Column('facname_it', Text)
+    measurename_de = Column('measurename_de', Text)
+    measurename_fr = Column('measurename_fr', Text)
+    measurename_it = Column('measurename_it', Text)
+    measuretype_text_de = Column('measuretype_text_de', Text)
+    measuretype_text_fr = Column('measuretype_text_fr', Text)
+    measuretype_text_it = Column('measuretype_text_it', Text)
+    coordinationlevel_text_de = Column('coordinationlevel_text_de', Text)
+    coordinationlevel_text_fr = Column('coordinationlevel_text_fr', Text)
+    coordinationlevel_text_it = Column('coordinationlevel_text_it', Text)
+    planningstatus_text_de = Column('planningstatus_text_de', Text)
+    planningstatus_text_fr = Column('planningstatus_text_fr', Text)
+    planningstatus_text_it = Column('planningstatus_text_it', Text)
+    validfrom = Column('validfrom', Text)
+    validuntil = Column('validuntil', Text)
+    description = Column('description', Text)
+    web = Column('web', Text)
+    bgdi_created = Column('bgdi_created', Text)
+    __minscale__ = 50005
+    __maxscale__ = 1000005
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung', sgt_planning_td)
+
+class sgt_planning_raster_td(Base, Vector):
+    __tablename__ = 'geologische_tiefenlager_raster'
+    __table_args__ = ({'schema': 'bfe', 'autoload': False, 'extend_existing': True})
+    __template__ = 'templates/htmlpopup/sgt_planning.mako'
+    __esriId__ = 4019
+    __bodId__ = 'ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung'
+    __displayFieldName__ = 'facname_fr' 
+    id = Column('stabil_id', Integer, primary_key=True)
+    facname_de = Column('facname_de', Text)
+    facname_fr = Column('facname_fr', Text)
+    facname_it = Column('facname_it', Text)
+    measurename_de = Column('measurename_de', Text)
+    measurename_fr = Column('measurename_fr', Text)
+    measurename_it = Column('measurename_it', Text)
+    measuretype_text_de = Column('measuretype_text_de', Text)
+    measuretype_text_fr = Column('measuretype_text_fr', Text)
+    measuretype_text_it = Column('measuretype_text_it', Text)
+    coordinationlevel_text_de = Column('coordinationlevel_text_de', Text)
+    coordinationlevel_text_fr = Column('coordinationlevel_text_fr', Text)
+    coordinationlevel_text_it = Column('coordinationlevel_text_it', Text)
+    planningstatus_text_de = Column('planningstatus_text_de', Text)
+    planningstatus_text_fr = Column('planningstatus_text_fr', Text)
+    planningstatus_text_it = Column('planningstatus_text_it', Text)
+    validfrom = Column('validfrom', Text)
+    validuntil = Column('validuntil', Text)
+    description = Column('description', Text)
+    web = Column('web', Text)
+    bgdi_created = Column('bgdi_created', Text)
+    __maxscale__ = 50005
+    __minscale__ = 1
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung', sgt_planning_raster_td)
+
+#class sil_facilities_a(Base, Vector):
+#    __tablename__ = 'sachplan_inf_luft_facilities_anhorung'
+#    __table_args__ = ({'schema': 'bazl', 'autoload': False})
+#    __template__ = 'templates/htmlpopup/sil_facilities.mako'
+#    __esriId__ = 4020
+#    __bodId__ = 'ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung'
+#    __displayFieldName__ = 'facname_fr' 
+#    id = Column('stabil_id', Integer, primary_key=True)
+#    facname_de = Column('facname_de', Text)
+#    facname_fr = Column('facname_fr', Text)
+#    facname_it = Column('facname_it', Text)
+#    fackind_text_de = Column('fackind_text_de', Text)
+#    fackind_text_fr = Column('fackind_text_fr', Text)
+#    fackind_text_it = Column('fackind_text_it', Text)
+#    facstatus_text_de = Column('facstatus_text_de', Text)
+#    facstatus_text_fr = Column('facstatus_text_fr', Text)
+#    facstatus_text_it = Column('facstatus_text_it', Text)
+#    validfrom = Column('validfrom', Text)
+#    description_text_de = Column('description_text_de', Text)
+#    description_text_fr = Column('description_text_fr', Text)
+#    description_text_it = Column('description_text_it', Text)
+#    document_web = Column('document_web', Text)
+#    objectname_text_de = Column('objectname_de', Text)
+#    objectname_text_fr = Column('objectname_fr', Text)
+#    objectname_text_it = Column('objectname_it', Text)
+#    bgdi_created = Column('bgdi_created', Text)
+#    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+#
+#register('ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung', sil_facilities_a)
+
