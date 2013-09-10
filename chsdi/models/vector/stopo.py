@@ -1133,19 +1133,23 @@ class VerschiebungsvektorenTsp2(Base, Vector):
 
 register('ch.swisstopo.verschiebungsvektoren-tsp2',VerschiebungsvektorenTsp2)
 
-# class SwissmapOnlineWanderwege(Base, Vector):
-#  	# view in a schema
-#  	__tablename__ = 'wanderwege_swissmap'
-#  	__table_args__ = ({'schema': 'karto', 'autoload': False, 'extend_existing': True})
-#  	__template__ = 'templates/htmlpopup/swissmap_online_wanderwege.mako'
-#     __esriId__ = 1000
-#     __bodId__ = 'ch.swisstopo-karto.wanderwege'
-#     __displayFieldName__ = ''
-#  	id = Column('nr', Integer, primary_key=True)
-#  	the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo-karto.wanderwege',SwissmapOnlineWanderwege)
-# 
+class SwissmapOnlineWanderwege(Base, Vector):
+# view in a schema
+    __tablename__ = 'wanderwege_swissmap'
+    __table_args__ = ({'schema': 'karto', 'autoload': False, 'extend_existing': True})
+    __template__ = 'templates/htmlpopup/swissmap_online_wanderwege.mako'
+    __esriId__ = 1000
+    __bodId__ = 'ch.swisstopo-karto.wanderwege'
+    __displayFieldName__ = 'bgdi_id'
+    id = Column('nr', Integer, primary_key=True)
+    bgdi_id = Column('bgdi_id', Integer)
+    hikingtype = Column('hikingtype', Text)
+    bridgetype = Column('bridgetype', Text)
+    tunneltype = Column('tunneltype', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo-karto.wanderwege',SwissmapOnlineWanderwege)
+
 # class PLZOrtschaften(Base, Vector):
 #        # view in a schema
 #        __tablename__ = 'gabmo_plz'
