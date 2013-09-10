@@ -379,7 +379,6 @@ class sgt_facilities(Base, Vector):
     __bodId__ = 'ch.bfe.sachplan-geologie-tiefenlager'
     __displayFieldName__ = 'facname_de'
     id = Column('stabil_id', Integer, primary_key=True)
-#    id = Column('bgdi_id', Integer, primary_key=True) #OK : http://localhost:9007/rest/services/ech/MapServer/ch.bfe.sachplan-geologie-tiefenlager/13/htmlpopup
     facname_de = Column('facname_de', Text)
     facname_fr = Column('facname_fr', Text)
     facname_it = Column('facname_it', Text)
@@ -401,3 +400,37 @@ class sgt_facilities(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bfe.sachplan-geologie-tiefenlager', sgt_facilities)
+
+class sgt_planning(Base, Vector):
+    __tablename__ = 'geologische_tiefenlager'
+    __table_args__ = ({'schema': 'bfe', 'autoload': False})
+    __template__ = 'templates/htmlpopup/sgt_planning.mako'
+    __esriId__ = 4015
+    __bodId__ = 'ch.bfe.sachplan-geologie-tiefenlager'
+    __displayFieldName__ = 'facname_fr' # if use facname_de -> error message ??
+    id = Column('stabil_id', Text, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    facname_fr = Column('facname_fr', Text)
+    facname_it = Column('facname_it', Text)
+    facname_de = Column('facname_de', Text)
+    measurename_de = Column('measurename_de', Text)
+    measurename_fr = Column('measurename_fr', Text)
+    measurename_it = Column('measurename_it', Text)
+    measuretype_text_de = Column('measuretype_text_de', Text)
+    measuretype_text_fr = Column('measuretype_text_fr', Text)
+    measuretype_text_it = Column('measuretype_text_it', Text)
+    coordinationlevel_text_de = Column('coordinationlevel_text_de', Text)
+    coordinationlevel_text_fr = Column('coordinationlevel_text_fr', Text)
+    coordinationlevel_text_it = Column('coordinationlevel_text_it', Text)
+    planningstatus_text_de = Column('planningstatus_text_de', Text)
+    planningstatus_text_fr = Column('planningstatus_text_fr', Text)
+    planningstatus_text_it = Column('planningstatus_text_it', Text)
+    validfrom = Column('validfrom', Text)
+    validuntil = Column('validuntil', Text)
+    description = Column('description', Text)
+    web = Column('web', Text)
+    bgdi_created = Column('bgdi_created', Text)
+    __minscale__ = 50005
+    __maxscale__ = 1000005
+
+register('ch.bfe.sachplan-geologie-tiefenlager', sgt_planning)
