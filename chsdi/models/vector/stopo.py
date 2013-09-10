@@ -1166,21 +1166,24 @@ class PLZOrtschaften(Base, Vector):
 
 register('ch.swisstopo-vd.ortschaftenverzeichnis_plz',PLZOrtschaften)
 
-# class geometaStandAV(Base, Vector): 	 
-#        # view in a schema 	 
-#        __tablename__ = 'amogr_standav' 	 
-#        __table_args__ = ({'schema': 'vd', 'autoload': False}) 	 
-#        __template__ = 'templates/htmlpopup/standav.mako' 	 
-#        __esriId__ = 1000
-#        __bodId__ = 'ch.swisstopo-vd.geometa-standav'
-#        __displayFieldName__ = ''
-#        id = Column('gid', Integer, primary_key=True) 	 
-#        fid = Column ('id', Integer) 	 
-#        the_geom = Column('the_geom_gen50',Geometry(21781)) 	 
-#        not_used = Column('the_geom',Geometry(21781)) 	 
-# 	  	 
-# register('ch.swisstopo-vd.geometa-standav',geometaStandAV)
-# 
+class geometaStandAV(Base, Vector): 	 
+# view in a schema 	 
+       __tablename__ = 'amogr_standav' 	 
+       __table_args__ = ({'schema': 'vd', 'autoload': False}) 	 
+       __template__ = 'templates/htmlpopup/standav.mako' 	 
+       __esriId__ = 1000
+       __bodId__ = 'ch.swisstopo-vd.geometa-standav'
+       __displayFieldName__ = 'bgdi_id'
+       id = Column('gid', Integer, primary_key=True) 	 
+       fid = Column ('id', Integer)
+       bgdi_id = Column('bgdi_id', Integer)
+       quality = Column('quality', Text)
+       frame = Column('frame', Text)
+       the_geom = Column('the_geom_gen50',Geometry(21781)) 	 
+       not_used = Column('the_geom',Geometry(21781)) 	 
+	  	 
+register('ch.swisstopo-vd.geometa-standav',geometaStandAV)
+
 # class geometaLos(Base, Vector):
 #        # view in a schema
 #        __tablename__ = 'amogr_los'
