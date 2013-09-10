@@ -734,3 +734,18 @@ class sil_planning_raster_k(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bazl.sachplan-infrastruktur-luftfahrt_kraft', sil_planning_raster_k)
+
+class nga_anbieter (Base, Vector):
+    __tablename__ = 'nga_anbieter'
+    __table_args__ = ({'schema': 'bakom', 'autoload': False})
+    __template__ = 'templates/htmlpopup/ngamapping.mako'
+    __esriId__ = 4024
+    __bodId__ = 'ch.bakom.anbieter-eigenes_festnetz'
+    __displayFieldName__ = 'nbofprovider'
+    id = Column('cellid', Integer, primary_key=True)
+    alias = Column('alias', Text)
+    fdaurl = Column('fdaurl', Text)
+    nbofprovider = Column('nbofprovider', Integer)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bakom.anbieter-eigenes_festnetz', nga_anbieter)
