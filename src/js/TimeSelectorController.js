@@ -3,7 +3,5 @@
 
   var module = angular.module('ga_timeselector_controller', []);
 
-  module.controller('GaTimeSelectorController',
-      function($scope) {
-      });
+  module.controller('GaTimeSelectorController', function($scope) {});
 })();
