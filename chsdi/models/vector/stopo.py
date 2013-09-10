@@ -1110,20 +1110,29 @@ class VerschiebungsvektorenTsp1(Base, Vector):
 
 register('ch.swisstopo.verschiebungsvektoren-tsp1',VerschiebungsvektorenTsp1)
 
-# class VerschiebungsvektorenTsp2(Base, Vector):
-#         # view in a schema
-#         __tablename__ = 'verschiebungsvektoren_tsp2'
-#         __table_args__ = ({'schema': 'geodaesie', 'autoload': False})
-#         __template__ = 'templates/htmlpopup/verschiebungsvektoren_tps2.mako'
-#         __queryable_attributes__ = ['name']
-#         __esriId__ = 1000
-#         __bodId__ = 'ch.swisstopo.verschiebungsvektoren-tsp2'
-#         __displayFieldName__ = ''
-#         id = Column('id', Integer, primary_key=True)
-#         the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo.verschiebungsvektoren-tsp2',VerschiebungsvektorenTsp2)
-# 
+class VerschiebungsvektorenTsp2(Base, Vector):
+# view in a schema
+        __tablename__ = 'verschiebungsvektoren_tsp2'
+        __table_args__ = ({'schema': 'geodaesie', 'autoload': False})
+        __template__ = 'templates/htmlpopup/verschiebungsvektoren_tps2.mako'
+        __queryable_attributes__ = ['name']
+        __esriId__ = 1000
+        __bodId__ = 'ch.swisstopo.verschiebungsvektoren-tsp2'
+        __displayFieldName__ = 'id'
+        id = Column('id', Integer, primary_key=True)
+        name = Column('name', Text)
+        type = Column('type', Text)
+        e_lv03 = Column('e_lv03', Numeric)
+        e_lv95 = Column('e_lv95', Numeric)
+        n_lv03 = Column('n_lv03', Numeric)
+        n_lv95 = Column('n_lv95', Numeric)
+        de = Column('de', Numeric)
+        dn = Column('dn', Numeric)
+        fs = Column('fs', Numeric)
+        the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.verschiebungsvektoren-tsp2',VerschiebungsvektorenTsp2)
+
 # class SwissmapOnlineWanderwege(Base, Vector):
 #  	# view in a schema
 #  	__tablename__ = 'wanderwege_swissmap'
