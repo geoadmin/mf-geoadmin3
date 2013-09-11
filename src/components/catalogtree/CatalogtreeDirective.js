@@ -124,28 +124,6 @@
               }
             };
 
-            // FIXME temporary only for testing! Not to land in master
-            var assureTestLayersLoaded = function(tree) {
-              var i;
-              if (tree.idBod == 'ch.bafu.bundesinventare-jagdbanngebiete' ||
-                  tree.idBod == 'ch.bafu.bundesinventare-bln' ||
-                  tree.idBod == 'ch.astra.ivs-reg_loc' ||
-                  tree.idBod == 'ch.astra.ivs-nat' ||
-                  tree.category == 'category_200' ||
-                  tree.category == 'category_260' ||
-                  tree.category == 'category_262' ||
-                  tree.category == 'category_300' ||
-                  tree.category == 'category_340' ||
-                  tree.category == 'root') {
-                tree.selectedOpen = true;
-                if (tree.children) {
-                  for (i = 0; i < tree.children.length; i++) {
-                    assureTestLayersLoaded(tree.children[i]);
-                  }
-                }
-              }
-           };
-
             var updateCatalogTree = function() {
               var url = scope.options.catalogUrlTemplate
                   .replace('{Topic}', currentTopicId);
@@ -156,9 +134,6 @@
               }).then(function success(response) {
                 var newTree = response.data.results.root;
                 var oldTree = scope.root;
-                // FIXME temporary only for testing. not to land in master!
-                assureTestLayersLoaded(newTree);
-                // End of temporary fix
                 scope.root = newTree;
                 return {oldTree: oldTree, newTree: newTree};
               }, function error(response) {
