@@ -1272,20 +1272,22 @@ class geometaNfgeom(Base, Vector):
 
 register('ch.swisstopo-vd.geometa-nfgeom',geometaNfgeom)
 
-# #two registers...
-# class spannungsarmeGebiete(Base, Vector):
-#        __tablename__ = 'spannungsarme_gebiete'
-#        __table_args__ = ({'schema': 'vd', 'autoload': False})
-#        __template__ = 'templates/htmlpopup/spannungsarme_gebiete.mako'
-#        __esriId__ = 1000
-#        __bodId__ = ''
-#        __displayFieldName__ = ''
-#        id = Column('identifier', Text, primary_key=True)
-#        the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.swisstopo-vd.spannungsarme-gebiete',spannungsarmeGebiete)
-# register('ch.swisstopo.transformationsgenauigkeit',spannungsarmeGebiete)
-# 
+#two registers...
+class spannungsarmeGebiete(Base, Vector):
+       __tablename__ = 'spannungsarme_gebiete'
+       __table_args__ = ({'schema': 'vd', 'autoload': False})
+       __template__ = 'templates/htmlpopup/spannungsarme_gebiete.mako'
+       __esriId__ = 1000
+       __bodId__ = ''
+       __displayFieldName__ = 'sg_name'
+       id = Column('identifier', Text, primary_key=True)
+       sg_name = Column('sg_name', Text)
+       vali_date = Column('vali_date', Text)
+       the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo-vd.spannungsarme-gebiete',spannungsarmeGebiete)
+register('ch.swisstopo.transformationsgenauigkeit',spannungsarmeGebiete)
+
 # class geologieGeotopePunkte(Base, Vector):
 #      __tablename__ = 'geotope_pkt'
 #      __table_args__ = ({'schema': 'geol', 'autoload': False})
