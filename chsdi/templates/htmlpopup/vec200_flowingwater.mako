@@ -1,7 +1,7 @@
 <%inherit file="base.mako"/>
 
 <%def name="preview()">
-    % if ['attributes']['name'].strip()== 'N_P':
+    % if c['attributes']['name'].strip()== 'N_P':
         -
     % else:
         ${c['attributes']['name'] or '-'}
