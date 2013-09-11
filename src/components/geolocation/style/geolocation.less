@@ -6,6 +6,10 @@
   width: 44px;
   height: 44px;
   background-image: data-uri('geolocation.png');
+  &.error {
+    background-image: data-uri('geolocation_disabled.png');
+    cursor: default;
+  }
   &.tracking {
     background-image: data-uri('geolocation_on.png');
   }
