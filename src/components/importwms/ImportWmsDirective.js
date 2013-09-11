@@ -228,7 +228,7 @@
                   ratio: 1
                 });
 
-                var olLayer = new ol.layer.ImageLayer({
+                var olLayer = new ol.layer.Image({
                   label: layer.title,
                   source: olSource
                 });
