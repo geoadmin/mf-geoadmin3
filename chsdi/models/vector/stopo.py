@@ -1288,25 +1288,31 @@ class spannungsarmeGebiete(Base, Vector):
 register('ch.swisstopo-vd.spannungsarme-gebiete',spannungsarmeGebiete)
 register('ch.swisstopo.transformationsgenauigkeit',spannungsarmeGebiete)
 
-# class geologieGeotopePunkte(Base, Vector):
-#      __tablename__ = 'geotope_pkt'
-#      __table_args__ = ({'schema': 'geol', 'autoload': False})
-#      __template__ = 'templates/htmlpopup/geotope.mako'
-#      __esriId__ = 1000
-#      __bodId__ = 'ch.swisstopo.geologie-geotope'
-#      __displayFieldName__ = ''
-#      id = Column('objectid', Integer, primary_key=True)
-#      the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# class geologieGeotopeFlaechen(Base, Vector):
-#      __tablename__ = 'geotope_plg'
-#      __table_args__ = ({'schema': 'geol', 'autoload': False})
-#      __template__ = 'templates/htmlpopup/geotope.mako'
-#      __esriId__ = 1000
-#      __bodId__ = 'ch.swisstopo.geologie-geotope'
-#      __displayFieldName__ = ''
-#      id = Column('objectid', Integer, primary_key=True)
-#      the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-#      
-# register('ch.swisstopo.geologie-geotope',geologieGeotopePunkte)
-# register('ch.swisstopo.geologie-geotope',geologieGeotopeFlaechen)
+class geologieGeotopePunkte(Base, Vector):
+     __tablename__ = 'geotope_pkt'
+     __table_args__ = ({'schema': 'geol', 'autoload': False})
+     __template__ = 'templates/htmlpopup/geotope.mako'
+     __esriId__ = 1000
+     __bodId__ = 'ch.swisstopo.geologie-geotope'
+     __displayFieldName__ = 'nom'
+     id = Column('objectid', Integer, primary_key=True)
+     nom = Column('nom', Text)
+     fix_id = Column('fix_id', Text)
+     nummer = Column('nummer', Integer)
+     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+#class geologieGeotopeFlaechen(Base, Vector):
+#     __tablename__ = 'geotope_plg'
+#     __table_args__ = ({'schema': 'geol', 'autoload': False})
+#     __template__ = 'templates/htmlpopup/geotope.mako'
+#     __esriId__ = 1000
+#     __bodId__ = 'ch.swisstopo.geologie-geotope'
+#     __displayFieldName__ = 'nom'
+#     id = Column('objectid', Integer, primary_key=True)
+#     nom = Column('nom', Text)
+#     fix_id = Column('fix_id', Text)
+#     nummer = Column('nummer', Integer)
+#     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+     
+register('ch.swisstopo.geologie-geotope',geologieGeotopePunkte)
+#register('ch.swisstopo.geologie-geotope',geologieGeotopeFlaechen)
