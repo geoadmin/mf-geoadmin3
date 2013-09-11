@@ -92,3 +92,18 @@ class Bevoelkerungsdichte(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
 
 register('ch.are.bevoelkerungsdichte-vz00', Bevoelkerungsdichte)
+
+class Beschaeftigtendichte(Base, Vector):
+    # view in a schema
+    __tablename__ = 'beschaeftigtendichte_bz08'
+    __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': False})
+    __template__ = 'templates/htmlpopup/beschaeftigtendichte.mako'
+    __esriId__ = 3005
+    __bodId__ = 'ch.are.beschaeftigtendichte-bz9'
+    __displayFieldName__ = 'empt_ha'
+    id = Column('row_id', Integer, primary_key=True)
+    empt_ha = Column('empt_ha', Numeric)
+    stand = Column('stand', Numeric)
+    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+
+register('ch.are.beschaeftigtendichte-bz9', Beschaeftigtendichte)
