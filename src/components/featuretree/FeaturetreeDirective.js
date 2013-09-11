@@ -26,26 +26,25 @@
             var canceler = null;
             var map = scope.map;
             var view = map.getView();
-            var featureTolerance = 1;
 
             var getLayersToQuery = function(layers) {
               var layerstring = '';
-              if (scope.options.featureSearch == 'sphinx') {
-                layerstring = 'ch.bfs.gebaeude_wohnungs_register,' +
-                              'ch.astra.ivs-reg_loc,' +
-                              'ch.astra.ivs-nat';
-              } else {
-                map.getLayers().forEach(function(l) {
-                    var id = l.get('id');
-                    if (gaLayers.getLayer(id) &&
-                        gaLayers.getLayerProperty(id, 'queryable')) {
-                      if (layerstring.length) {
-                        layerstring = layerstring + ',';
-                      }
-                      layerstring = layerstring + id;
+              map.getLayers().forEach(function(l) {
+                  var id = l.get('id');
+                  if (gaLayers.getLayer(id) &&
+                      gaLayers.getLayerProperty(id, 'queryable')) {
+                    if (layerstring.length) {
+                      layerstring = layerstring + ',';
                     }
-                });
+                    layerstring = layerstring + id;
+                  }
+              });
+              //FIXME: removet this once aggregate layers are supported
+              if (layerstring != '') {
+                layerstring += ',';
               }
+              layerstring += 'ch.bfs.gebaeude_wohnungs_register';
+              //end of FIXME
               return layerstring;
             };
 
@@ -67,12 +66,9 @@
                   features.results.length > 0) {
 
                 angular.forEach(features.results, function(result) {
-                  var layerId = result.layerBodId;
-                  //= result.attrs.layer (ch.bfs.gebaeude_wohnungs_register...
-                  if (scope.options.featureSearch === 'sphinx') {
-                    layerId = result.attrs.layer ||
-                              'ch.bfs.gebaeude_wohnungs_register';
-                  }
+                  //FIXME once service is updated, change remove or
+                  var layerId = result.attrs.layer ||
+                            'ch.bfs.gebaeude_wohnungs_register';
 
                   if (!angular.isDefined(tree[layerId])) {
                     tree[layerId] = {
@@ -82,13 +78,9 @@
                       open: oldTree[layerId] ? oldTree[layerId].open : false
                     };
                   }
-                  var featureId = result.featureId; //= result.attrs.id
-                  var label = result.value;
-                  //= result.attrs.label (not for src_ch_astra_ivs-nat)
-                  if (scope.options.featureSearch === 'sphinx') {
-                    featureId = result.attrs.id;
-                    label = result.attrs.label || 'ch.astra.ivs-nat';
-                  }
+                  var featureId = result.attrs.id;
+                  //FIXME once service is updated, change remove or
+                  var label = result.attrs.label || 'ch.astra.ivs-nat';
 
                   var node = tree[layerId];
                   node.features.push({
@@ -107,33 +99,15 @@
             var getUrlAndParameters = function(layersToQuery) {
               var size = map.getSize(),
                   extent = view.calculateExtent(size),
-                  url = scope.options.identifyUrlTemplate,
-                  params = {};
-
-              if (scope.options.featureSearch == 'sphinx') {
-                url = scope.options.searchUrlTemplate;
-                params = {
-                  bbox: extent[0] + ',' + extent[2] +
+                  url = scope.options.searchUrlTemplate,
+                  params = {
+                    bbox: extent[0] + ',' + extent[2] +
                         ',' + extent[1] + ',' + extent[3],
-                  searchText: '',
-                  type: 'features',
-                  features: layersToQuery,
-                  callback: 'JSON_CALLBACK'
-                };
-              } else {
-                params = {
-                  geometryType: 'esriGeometryEnvelope',
-                  geometry: extent[0] + ',' + extent[2] +
-                                ',' + extent[1] + ',' + extent[3],
-                  // FIXME: make sure we are passing the right dpi here.
-                  imageDisplay: size[0] + ',' + size[1] + ',96',
-                  mapExtent: extent[0] + ',' + extent[2] +
-                                ',' + extent[1] + ',' + extent[3],
-                  tolerance: featureTolerance,
-                  layers: 'all:' + layersToQuery,
-                  callback: 'JSON_CALLBACK'
-                };
-              }
+                    searchText: '',
+                    type: 'features',
+                    features: layersToQuery,
+                    callback: 'JSON_CALLBACK'
+                  };
               url = url.replace('{Topic}', currentTopic);
               return {
                 url: url,
@@ -224,7 +198,6 @@
                 requestFeatures();
               }
             });
-
 
           }
         };
