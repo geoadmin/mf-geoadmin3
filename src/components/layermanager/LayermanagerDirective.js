@@ -1,10 +1,12 @@
 (function() {
   goog.provide('ga_layermanager_directive');
 
+  goog.require('ga_layer_metadata_popup_service');
   goog.require('ga_map_service');
 
   var module = angular.module('ga_layermanager_directive', [
     'pascalprecht.translate',
+    'ga_layer_metadata_popup_service',
     'ga_map_service'
   ]);
 
@@ -20,7 +22,7 @@
   });
 
   module.directive('gaLayermanager',
-      function(gaLayers) {
+      function(gaLayers, gaLayerMetadataPopup) {
         return {
           restrict: 'A',
           replace: true,
@@ -71,6 +73,14 @@
               var layersCollection = scope.map.getLayers();
               layersCollection.removeAt(index);
               layersCollection.insertAt(index + delta, layer);
+            };
+
+            scope.displayLayerMetadata = function(e, layer) {
+              var id = layer.get('id');
+              if (gaLayers.getLayer(id)) {
+                gaLayerMetadataPopup(id);
+              }
+              e.preventDefault();
             };
 
             // prevent li’s horizontal scrolling for mobiles
