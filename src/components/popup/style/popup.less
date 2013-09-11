@@ -19,6 +19,9 @@
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
+  @media (max-width: @screen-phone) {
+    overflow: hidden;
+  }
 }
 
 .ga-popup-content {
@@ -27,6 +30,22 @@
   max-height: (@ga-popup-max-height - 60);
   @media (max-width: @screen-tablet) {
     max-height: none;
+  }
+  @media (max-width: @screen-phone) {
+    width: 100%;
+    height: auto;
+    max-height: none;
+    position: absolute;
+    top: 36px;
+    bottom: 10px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    table {
+      width: 100% !important;
+      td {
+        vertical-align: top;
+      }
+    }
   }
 }
 
