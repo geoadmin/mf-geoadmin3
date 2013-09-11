@@ -1,6 +1,6 @@
 <%inherit file="base.mako"/>
 
-#<%def name="preview()">${c['attributes']['name'] or '-'}</%def>
+#<%def name="preview()">${c['value'] or '-'}</%def>
 
 <%def name="table_body(c, lang)">
 <% c[stable_id] = True %>
