@@ -107,3 +107,21 @@ class Beschaeftigtendichte(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
 
 register('ch.are.beschaeftigtendichte-bz9', Beschaeftigtendichte)
+
+class Bauzonen(Base, Vector):
+    # view in a schema
+    __tablename__ = 'bauzonen_2007'
+    __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': True})
+    __template__ = 'templates/htmlpopup/bauzonen.mako'
+    __esriId__ = 3006
+    __bodId__ = 'ch.are.bauzonen-2007'
+    __displayFieldName__ = 'name'
+    id = Column('row_id', Integer, primary_key=True)
+    name = Column('name', Text)
+    nutz_de = Column('nutz_de', Text)
+    nutz_fr = Column('nutz_fr', Text)
+    kt_kz = Column('kt_kz', Text)
+    flaeche_qm = Column('flaeche_qm', Numeric)
+    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+
+register('ch.are.bauzonen-2007', Bauzonen)
