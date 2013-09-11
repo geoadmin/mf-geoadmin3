@@ -10,14 +10,16 @@ from chsdi.models.vector import Vector
 
 Base = bases['are']
 
-class Landschaftstypen(Base, Queryable):
+class Landschaftstypen(Base, Vector):
     # view in a schema
     __tablename__ = 'landschaftstypen'
     __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': False})
-    __template__ = 'tooltips/htmlpopup/landschaftstypen.mako'
+    __template__ = 'templates/htmlpopup/landschaftstypen.mako'
+    __esriId__ = 3000
     __bodId__ = 'ch.are.landschaftstypen'
-    typ_nr = Column('typ_nr', Numeric)
+    __displayFieldName__ = 'typ_nr'
     id = Column('object', Text, primary_key=True)
+    typ_nr = Column('typ_nr', Numeric)
     typname_de = Column('typname_de', Text)
     typname_fr = Column('typname_fr', Text)
     regname_de = Column('regname_de', Text)
