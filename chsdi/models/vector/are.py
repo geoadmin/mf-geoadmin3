@@ -111,7 +111,7 @@ register('ch.are.beschaeftigtendichte-bz9', Beschaeftigtendichte)
 class Bauzonen(Base, Vector):
     # view in a schema
     __tablename__ = 'bauzonen_2007'
-    __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': True})
+    __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': False})
     __template__ = 'templates/htmlpopup/bauzonen.mako'
     __esriId__ = 3006
     __bodId__ = 'ch.are.bauzonen-2007'
@@ -129,7 +129,7 @@ register('ch.are.bauzonen-2007', Bauzonen)
 class Bauzonen_2012(Base, Vector):
     # view in a schema
     __tablename__ = 'bauzonen_2012'
-    __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': True})
+    __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': False})
     __template__ = 'templates/htmlpopup/bauzonen_2012.mako'
     __esriId__ = 3007
     __bodId__ = 'ch.are.bauzonen'
@@ -163,7 +163,7 @@ register('ch.are.bauzonen', Bauzonen_2012)
 class Gemeindetyp(Base, Vector):
     # view in a schema
     __tablename__ = 'gemeindetyp_1990_9klassen'
-    __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': True})
+    __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': False})
     __template__ = 'templates/htmlpopup/gemeindetyp.mako'
     __esriId__ = 3009
     __bodId__ = 'ch.are.gemeindetyp-1990-9klassen'
@@ -174,3 +174,24 @@ class Gemeindetyp(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
 
 register('ch.are.gemeindetyp-1990-9klassen', Gemeindetyp)
+
+class Gemeindetypen_2012(Base, Vector):
+    # view in a schema
+    __tablename__ = 'gemeindetypologie_2012'
+    __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': False})
+    __template__ = 'templates/htmlpopup/gemeindetypen_2012.mako'
+    __esriId__ = 3010
+    __bodId__ = 'ch.are.gemeindetypen'
+    __displayFieldName__ = 'name_'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    name_ = Column('name_', Text)
+    typ_code = Column('typ_code', Text)
+    typ_bez_d = Column('typ_bez_d', Text)
+    typ_bez_f = Column('typ_bez_f', Text)
+    bfs_no = Column('bfs_no', Text)
+    kt_no = Column('kt_no', Text)
+    kt_kz = Column('kt_kz', Text)
+    flaeche_ha = Column('flaeche_ha', Numeric)
+    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+
+register('ch.are.gemeindetypen', Gemeindetypen_2012)

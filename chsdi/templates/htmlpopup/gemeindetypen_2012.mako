@@ -1,0 +1,19 @@
+<%inherit file="base.mako"/>
+
+<%def name="preview()">${c['value'] or '-'}</%def>
+
+<%def name="table_body(c, lang)">
+    <tr><td width="150">${_('tt_gemeindetypen_TYP_CODE')}</td>    <td>${c['attributes']['typ_code'] or '-'}</td></tr>
+    <tr><td width="150">${_('tt_gemeindetypen_TYP_BEZ_D')}</td>
+      % if lang == 'de':
+           <td>${c['attributes']['typ_bez_d'] or '-'}</td>
+      % elif lang == 'fr':
+           <td>${c['attributes']['typ_bez_f'] or '-'}</td>
+      % endif
+    </tr>
+	<tr><td width="150">${_('tt_bauzonen_gemeindetypen_BFS_NO')}</td>    <td>${c['attributes']['bfs_no'] or '-'}</td></tr>
+    <tr><td width="150">${_('tt_bauzonen_gemeindetypen_NAME')}</td>    <td>${c['value']}</td></tr>
+    <tr><td width="150">${_('tt_bauzonen_gemeindetypen_KT_NO')}</td>    <td>${c['attributes']['kt_no'] or '-'}</td></tr>
+	<tr><td width="150">${_('tt_bauzonen_gemeindetypen_KT_KZ')}</td>    <td>${c['attributes']['kt_kz'] or '-'}</td></tr>
+    <tr><td width="150">${_('tt_gemeindetypen_FLAECHE_HA')}</td>    <td>${int(round(c['attributes']['flaeche_ha'])) or '-'}</td></tr>
+</%def>
