@@ -51,7 +51,7 @@
 }
 @media (max-width: @screen-tablet) {
   #copyrightsdata {
-    bottom: 20px;
+    bottom: 0;
   }
 }
 
@@ -179,7 +179,7 @@ select, input[type=text], input[type=email] {
     & > div {
       display: none;
     }
-    #scaleline, #copyrights {
+    #scaleline {
       display: inline-block;
       position: absolute;
       bottom: 0;
@@ -187,14 +187,6 @@ select, input[type=text], input[type=email] {
       height: auto;
       line-height: 1.4em;
       margin: 0;
-    }
-    #copyrights {
-      right: 0;
-      a {
-        background: rgba(255,255,255,.7);
-        border-radius: .2em 0 0 0;
-        padding: .2em .4em;
-      }
     }
     .ol-scale-line-inner {
       background: rgba(255,255,255,.7);
