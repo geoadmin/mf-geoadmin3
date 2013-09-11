@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 <!DOCTYPE html>
 <html ng-app="ga" ng-controller="GaMainController">
   <head>
@@ -465,6 +466,10 @@
     </div>
 % endif
     <script>
+## Workaround for iOS 6.x bug: content shifted after orientation change
+## As we can’t use css fix ( see http://stackoverflow.com/a/12518946/29655 )
+## we force a redraw on orientation change
+## ( see http://stackoverflow.com/a/13235711/29655 )
         (function(){
             window.addEventListener("orientationchange", function(){
                 document.documentElement.style.display = 'none';
