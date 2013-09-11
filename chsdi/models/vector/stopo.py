@@ -1208,65 +1208,70 @@ class geometaLos(Base, Vector):
 
 register('ch.swisstopo-vd.geometa-los',geometaLos)
 
-# class geometaGemeinde(Base, Vector):
-#        # view in a schema
-#        __tablename__ = 'amogr_gemeinde'
-#        __table_args__ = ({'schema': 'vd', 'autoload': False})
-#        __template__ = 'templates/htmlpopup/gemeinde.mako'
-#        __esriId__ = 1000
-#        __bodId__ = 'ch.swisstopo-vd.geometa-gemeinde'
-#        __displayFieldName__ = ''
-#        id = Column('gid', Integer, primary_key=True)
-#        fid = Column ('id', Integer)
-# #       gembfs = Column ('bfs_nr', Integer)
-# #       gemkanton = Column ('kanton', Text)
-# #       gemgemeinde = Column ('gemeindename', Text)
-# #       gemdarstellung = Column ('abgabestelle', Text)
-# #       gemflaeche = Column ('flaeche_ha', Text)
-# #       geompdf_liste = Column ('pdf_liste', Text)
-#        the_geom = Column('the_geom_gen50',Geometry(21781))
-#        not_used = Column('the_geom',Geometry(21781))
-# 
-# register('ch.swisstopo-vd.geometa-gemeinde',geometaGemeinde)
-# 
-# class geometaGrundbuch(Base, Vector):
-#        # view in a schema
-#        __tablename__ = 'amogr_grundbuch'
-#        __table_args__ = ({'schema': 'vd', 'autoload': False})
-#        __template__ = 'templates/htmlpopup/grundbuch.mako'
-#        __esriId__ = 1000
-#        __bodId__ = 'ch.swisstopo-vd.geometa-grundbuch'
-#        __displayFieldName__ = ''
-#        id = Column('gid', Integer, primary_key=True)
-#        fid = Column ('id', Integer)
-# #       grundgemeinde = Column ('ortsteil_grundbuch', Text)
-# #       grundfuehrung = Column ('grundbuchfuehrung_d', Text)
-# #       grundkreis = Column ('grundbuchkreis', Text)
-# #       grundadresse = Column ('adresse', Text)
-# #       grundtel = Column ('telefon', Text)
-# #       grundurl = Column ('email', Text)
-#        the_geom = Column('the_geom_gen50',Geometry(21781))
-#        not_used = Column('the_geom',Geometry(21781))
-# 
-# register('ch.swisstopo-vd.geometa-grundbuch',geometaGrundbuch)
-# 
-# class geometaNfgeom(Base, Vector):
-#        # view in a schema
-#        __tablename__ = 'amogr_nfgeom'
-#        __table_args__ = ({'schema': 'vd', 'autoload': False})
-#        __template__ = 'templates/htmlpopup/nfgeom.mako'
-#        __esriId__ = 1000
-#        __bodId__ = 'ch.swisstopo-vd.geometa-nfgeom'
-#        __displayFieldName__ = ''
-#        id = Column('gid', Integer, primary_key=True)
-# #       nfname = Column ('name', Text)
-# #       nffirmenname = Column ('firmenname', Text)
-# #       nfadresse = Column ('adresse', Text)
-#        the_geom = Column('the_geom_gen50',Geometry(21781))
-#        not_used = Column('the_geom',Geometry(21781))
-# 
-# register('ch.swisstopo-vd.geometa-nfgeom',geometaNfgeom)
-# 
+class geometaGemeinde(Base, Vector):
+# view in a schema
+       __tablename__ = 'amogr_gemeinde'
+       __table_args__ = ({'schema': 'vd', 'autoload': False})
+       __template__ = 'templates/htmlpopup/gemeinde.mako'
+       __esriId__ = 1000
+       __bodId__ = 'ch.swisstopo-vd.geometa-gemeinde'
+       __displayFieldName__ = 'gemeindename'
+       id = Column('gid', Integer, primary_key=True)
+       fid = Column ('id', Integer)
+       gemeindename = Column ('gemeindename', Text)
+       kanton = Column ('kanton', Text)
+       flaeche_ha = Column ('flaeche_ha', Text)
+       bfs_nr = Column('bfs_nr', Integer)
+       pdf_liste = Column ('pdf_liste', Text)
+       abgabestelle = Column('abgabestelle', Text)
+       the_geom = Column('the_geom_gen50',Geometry(21781))
+       not_used = Column('the_geom',Geometry(21781))
+
+register('ch.swisstopo-vd.geometa-gemeinde',geometaGemeinde)
+
+class geometaGrundbuch(Base, Vector):
+# view in a schema
+       __tablename__ = 'amogr_grundbuch'
+       __table_args__ = ({'schema': 'vd', 'autoload': False})
+       __template__ = 'templates/htmlpopup/grundbuch.mako'
+       __esriId__ = 1000
+       __bodId__ = 'ch.swisstopo-vd.geometa-grundbuch'
+       __displayFieldName__ = 'ortsteil_grundbuch'
+       id = Column('gid', Integer, primary_key=True)
+       fid = Column ('id', Integer)
+       ortsteil_grundbuch = Column ('ortsteil_grundbuch', Text)
+       grundbuchfuehrung_d = Column ('grundbuchfuehrung_d', Text)
+       grundbuchfuehrung_f = Column ('grundbuchfuehrung_f', Text)
+       grundbuchfuehrung_i = Column ('grundbuchfuehrung_i', Text)
+       grundbuchkreis = Column ('grundbuchkreis', Text)
+       adresse = Column ('adresse', Text)
+       telefon = Column ('telefon', Text)
+       email = Column ('email', Text)
+       the_geom = Column('the_geom_gen50',Geometry(21781))
+       not_used = Column('the_geom',Geometry(21781))
+
+register('ch.swisstopo-vd.geometa-grundbuch',geometaGrundbuch)
+
+class geometaNfgeom(Base, Vector):
+       # view in a schema
+       __tablename__ = 'amogr_nfgeom'
+       __table_args__ = ({'schema': 'vd', 'autoload': False})
+       __template__ = 'templates/htmlpopup/nfgeom.mako'
+       __esriId__ = 1000
+       __bodId__ = 'ch.swisstopo-vd.geometa-nfgeom'
+       __displayFieldName__ = 'bgdi_id'
+       id = Column('gid', Integer, primary_key=True)
+       bgdi_id = Column('bgdi_id', Integer)
+       name = Column('name', Text)
+       firmenname = Column('firmenname', Text)
+       adresse = Column('adresse', Text)
+       telefon = Column('telefon', Text)
+       email = Column('email', Text)
+       the_geom = Column('the_geom_gen50',Geometry(21781))
+       not_used = Column('the_geom',Geometry(21781))
+
+register('ch.swisstopo-vd.geometa-nfgeom',geometaNfgeom)
+
 # #two registers...
 # class spannungsarmeGebiete(Base, Vector):
 #        __tablename__ = 'spannungsarme_gebiete'
