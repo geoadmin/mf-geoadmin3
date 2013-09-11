@@ -125,3 +125,24 @@ class Bauzonen(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
 
 register('ch.are.bauzonen-2007', Bauzonen)
+
+class Bauzonen_2012(Base, Vector):
+    # view in a schema
+    __tablename__ = 'bauzonen_2012'
+    __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': True})
+    __template__ = 'templates/htmlpopup/bauzonen_2012.mako'
+    __esriId__ = 3007
+    __bodId__ = 'ch.are.bauzonen'
+    __displayFieldName__ = 'name_'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    name_ = Column('name_', Text)
+    ch_code_hn = Column('ch_code_hn', Text)
+    kt_kz = Column('kt_kz', Text)
+    bfs_no = Column('bfs_no', Text)
+    kt_no = Column('kt_no', Text)
+    flaeche = Column('flaeche', Numeric)
+    ch_bez_f = Column('ch_bez_f', Text)
+    ch_bez_d = Column('ch_bez_d', Text)
+    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+
+register('ch.are.bauzonen', Bauzonen_2012)
