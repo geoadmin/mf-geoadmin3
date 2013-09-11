@@ -39,7 +39,7 @@
                     layerstring = layerstring + id;
                   }
               });
-              //FIXME: removet this once aggregate layers are supported
+              //FIXME: remove this once services are ready
               if (layerstring != '') {
                 layerstring += ',';
               }
@@ -66,7 +66,7 @@
                   features.results.length > 0) {
 
                 angular.forEach(features.results, function(result) {
-                  //FIXME once service is updated, change remove or
+                  //FIXME once service is updated, remove the string
                   var layerId = result.attrs.layer ||
                             'ch.bfs.gebaeude_wohnungs_register';
 
@@ -78,18 +78,16 @@
                       open: oldTree[layerId] ? oldTree[layerId].open : false
                     };
                   }
-                  var featureId = result.attrs.id;
-                  //FIXME once service is updated, change remove or
-                  var label = result.attrs.label || 'ch.astra.ivs-nat';
 
                   var node = tree[layerId];
                   node.features.push({
                     loading: false,
                     showInfo: false,
                     info: '',
-                    id: featureId,
+                    id: result.attrs.id,
                     layer: layerId,
-                    label: label
+                    //FIXME once service is updated, remove the string
+                    label: result.attrs.label || 'ch.astra.ivs-nat'
                   });
                 });
               }
@@ -128,7 +126,6 @@
                   timeout: canceler.promise,
                   params: req.params
                 }).success(function(features) {
-                  //console.log(features);
                   updateTree(features);
                   scope.loading = false;
                 }).error(function(reason) {
@@ -179,8 +176,6 @@
                   feature.info = '';
                   feature.loading = false;
                 });
-                //html popup here...
-                feature.info = 'Here is my information, yes';
               } else {
                 feature.showInfo = true;
               }
