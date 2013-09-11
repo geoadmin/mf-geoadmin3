@@ -16,9 +16,17 @@
       template: '<a href="#geolocation" class="geolocation">',
       replace: true,
       link: function(scope, element, attrs) {
+        if (!ol.Geolocation.SUPPORTED) {
+          element.addClass('error');
+          return;
+        }
         var map = scope.map;
         var view = map.getView().getView2D();
         var geolocation = new ol.Geolocation();
+        geolocation.on('error', function() {
+          element.removeClass('tracking');
+          element.addClass('error');
+        });
         geolocation.bindTo('projection', map.getView());
         // used to having a zoom animation when we click on the button,
         // but not when we are tracking the position.
@@ -79,12 +87,13 @@
           }
         };
         geolocation.on('change:position', function(evt) {
+          element.removeClass('error');
+          element.addClass('tracking');
           locate(geolocation.getPosition());
         });
         geolocation.on('change:tracking', function(evt) {
           var tracking = geolocation.getTracking();
           if (tracking) {
-            element.addClass('tracking');
             first = true;
           } else {
             // stop tracking
