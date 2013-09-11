@@ -51,7 +51,7 @@ module.controller('GaMainController',
         $scope.topicId = topic.id;
       });
 
-      $rootScope.$on('translationChangeSuccess', function() {
+      $rootScope.$on('$translateChangeEnd', function() {
         $scope.langId = $translate.uses();
       });
 

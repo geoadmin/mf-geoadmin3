@@ -203,7 +203,7 @@
           loadForTopic(topic.id, $translate.uses());
         });
 
-        $rootScope.$on('translationChangeSuccess', function(event) {
+        $rootScope.$on('$translateChangeEnd', function(event) {
           // do nothing if there's no topic set
           if (angular.isDefined(currentTopicId)) {
             loadForTopic(currentTopicId, $translate.uses());

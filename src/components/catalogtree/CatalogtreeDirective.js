@@ -76,7 +76,7 @@
               });
             };
 
-            scope.$on('translationChangeSuccess', function() {
+            scope.$on('$translateChangeEnd', function() {
               if (angular.isDefined(currentTopic)) {
                 updateCatalogTree().then(retainTreeState);
               }
