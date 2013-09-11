@@ -14,8 +14,6 @@
     padding: 5px 0;
     background-color: @dropdown-background-color;
     border: 1px solid #ccc;
-    *border-right-width: 2px;
-    *border-bottom-width: 2px;
     .box-shadow(0 5px 10px rgba(0,0,0,.2));
     -webkit-background-clip: padding-box;
     -moz-background-clip: padding;
@@ -25,6 +23,7 @@
     .tt-suggestions {
       max-height: @suggestions-max-height;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
       .tt-suggestion {
         display: block;
         padding: 3px 20px;
@@ -58,6 +57,11 @@
     right: 0.6em;
     top: 0.6em;
     cursor: pointer;
+    @media (max-width: @screen-tablet) {
+      right: 0.2em;
+      font-size: 24px;
+      top: 3px;
+    }
   }
   .search-footer {
     .footer-right {
@@ -78,6 +82,42 @@
     &:hover, &:focus {
       color: #3a3c3c;
       text-decoration: none;
+    }
+  }
+}
+.search-focused {
+  @media (max-width: @screen-phone) {
+    .search-wrapper {
+      .tt-dropdown-menu {
+        top: 37px !important;
+        border-width: 1px 0;
+        padding: 0;
+      }
+    }
+  }
+}
+@media (max-width: @screen-tablet) {
+  .search-wrapper {
+    .tt-dropdown-menu, input {
+      font-size: 13px;
+    }
+    .tt-header-locations, .tt-header-mapinfos {
+      padding: 5px 10px;
+    }
+    .tt-dataset-locations, .tt-dataset-layers {
+      .tt-suggestions {
+        .tt-suggestion {
+          padding: 4px 20px;
+          position: relative;
+        }
+        i {
+          font-size: 24px;
+          padding-top: 0;
+          position: absolute;
+          top: 0;
+          right: 2px;
+        }
+      }
     }
   }
 }

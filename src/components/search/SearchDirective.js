@@ -22,7 +22,7 @@
             '<div class="search-footer">',
             '<div class="footer-left">',
             '<b>Please help me</b></div>',
-            '<div class="footer-right"><div>',
+            '<div class="footer-right">',
             '<a class="contact-icon" ',
             'title="{{\'contact_us\' | translate}}" ',
             'ng-mouseover="getHref()" ',
@@ -44,8 +44,6 @@
             'body={{encodedPermalinkHref}}">',
             '<i class="icon-envelope-alt"></i>',
             '</a>',
-            '</div>',
-            '</div>',
             '</div>'].join('');
 
           function parseExtent(stringBox2D) {
@@ -83,7 +81,8 @@
             replace: true,
             scope: {
               options: '=gaSearchOptions',
-              map: '=gaSearchMap'
+              map: '=gaSearchMap',
+              searchFocused: '=gaSearchFocused'
             },
             templateUrl: 'components/search/partials/search.html',
             link: function(scope, element, attrs) {
@@ -234,9 +233,23 @@
                 }
               ];
 
-              var taElt = $(element).find('input').typeahead(typeAheadDatasets)
+              var taElt = $(element).find('input');
+              taElt.blur(function(e, nonStop) {
+                if (!nonStop) {
+                  e.stopImmediatePropagation();
+                  if ($(this).val() != '') {
+                    return;
+                  }
+                  scope.$apply(function() {
+                    scope.searchFocused = false;
+                  });
+                }
+              });
+              taElt.typeahead(typeAheadDatasets)
                 .on('typeahead:selected', function(event, datum) {
                   var origin = datum.attrs.origin;
+                  scope.searchFocused = false;
+                  taElt.trigger('blur', [true]);
                   if (angular.isDefined(datum.attrs.geom_st_box2d)) {
                     var extent = parseExtent(datum.attrs.geom_st_box2d);
 
@@ -280,10 +293,18 @@
                 $(taElt).data('ttView').inputView.setQuery('');
                 scope.query = '';
                 viewDropDown.clearSuggestions();
+                scope.searchFocused = false;
               };
 
               scope.$on('gaTopicChange', function(event, topic) {
                 currentTopic = topic.id;
+              });
+
+              taElt.focus(function() {
+                scope.$apply(function() {
+                  scope.searchFocused = true;
+                  window.scrollTo(0, 1);
+                });
               });
             }
           };
