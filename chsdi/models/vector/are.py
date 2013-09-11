@@ -45,3 +45,21 @@ class Alpenkonvention(Base, Vector):
     stand = Column('stand', Numeric)
 
 register('ch.are.alpenkonvention', Alpenkonvention)
+
+class AggloIsoStaedte(Base, Vector):
+    # view in a schema
+    __tablename__ = 'agglomerationen_isolierte_staedte_2000'
+    __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': False})
+    __template__ = 'templates/htmlpopup/aggloisostaedte.mako'
+    __esriId__ = 3002
+    __bodId__ = 'ch.are.agglomerationen_isolierte_staedte-2000'
+    __displayFieldName__ = 'name'
+    id = Column('row_id', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+    name = Column('name', Text)
+    klasse_de = Column('klasse_de', Text)
+    klasse_fr = Column('klasse_fr', Text)
+    flaeche_ha= Column('flaeche_ha', Numeric)
+
+register('ch.are.agglomerationen_isolierte_staedte-2000', AggloIsoStaedte)
+
