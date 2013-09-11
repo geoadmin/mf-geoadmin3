@@ -78,3 +78,17 @@ class GueteklasseOev(Base, Vector):
 
 register('ch.are.gueteklassen_oev', GueteklasseOev)
 
+class Bevoelkerungsdichte(Base, Vector):
+    # view in a schema
+    __tablename__ = 'bevoelkerungsdichte_vz00'
+    __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': False})
+    __template__ = 'templates/htmlpopup/bevoelkerungsdichte.mako'
+    __esriId__ = 3004
+    __bodId__ = 'ch.are.bevoelkerungsdichte-vz00'
+    __displayFieldName__ = 'popt_ha'
+    id = Column('row_id', Integer, primary_key=True)
+    popt_ha = Column('popt_ha', Numeric)
+    stand = Column('stand', Numeric)
+    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+
+register('ch.are.bevoelkerungsdichte-vz00', Bevoelkerungsdichte)
