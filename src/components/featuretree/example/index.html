@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html ng-app='ga_featuretree_example'>
+  <head>
+    <title>Feature Tree Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <base href="../../../">
+    <link href="style/app.css" rel="stylesheet" media="screen">
+    <style>
+      #container {
+      }
+      #map {
+        height: 400px;
+        width: 400px;
+        float: left;
+      }
+
+      #featurecontainer {
+        margin-left: 430px;
+      }
+
+      #featurecontainer .hidden-collapsed {
+        display: inline;
+      }
+       #featurecontainer .visible-collapsed {
+        display: none;
+      }
+      #featurecontainer .collapsed .hidden-collapsed {
+          display: none;
+      }
+      #featurecontainer .collapsed .visible-collapsed {
+          display: inline;
+      }
+
+      .featuretree {
+        margin: 20px;
+      }
+
+ 
+    </style>
+  </head>
+  <body ng-controller="MainController">
+    <div id="container">
+
+      <div id="map" class="map" ga-map ga-map-map="map">
+      </div>
+
+      <div id="featurecontainer">
+
+        <a id="featuretree-link" class="accordion-toggle collapsed" data-toggle="collapse" href="#featuretree">
+          <i class="visible-collapsed icon-plus"></i>
+          <i class="hidden-collapsed icon-minus"></i>
+          <span>Object Information (Click to (de)activate feature tree)</span>
+        </a>
+ 
+        <div id="featuretree" ng-controller="FeatureTreeController" class="collapse">
+          <div ga-featuretree ga-featuretree-options="options" ga-featuretree-map="map">
+          </div>
+        <div>
+      </div>
+    </div>
+    
+       
+    <script src="lib/jquery-2.0.3.js"></script>
+    <script src="lib/angular-1.2.0rc2.js"></script>
+    <script src="lib/angular-translate-1.1.0.js"></script>
+    <script src="lib/angular-translate-loader-static-files-0.1.5.js"></script>
+    <script src="lib/bootstrap-3.0.0.js"></script>
+    <script src="lib/proj4js-compressed.js"></script>
+    <script src="lib/EPSG21781.js"></script>
+    <script>
+      window.CLOSURE_NO_DEPS = true;
+    </script>
+    <script src="lib/ol-whitespace.js"></script>
+    <script src="deps.js"></script>
+    <script>
+      goog.require('ga_featuretree');
+      goog.require('ga_map');
+    </script>
+    <script>
+      (function() {
+        var module = angular.module('ga_featuretree_example', [
+          'ga_featuretree',
+          'ga_map'
+        ]);
+        
+        module.constant('gaGlobalOptions',
+          {serviceUrl : 'http://mf-chsdi30t.bgdi.admin.ch',
+           baseUrlPath: ''});
+
+         module.config(['gaLayersProvider', function(gaLayersProvider) {
+           gaLayersProvider.wmtsGetTileUrlTemplate =
+               'http://wmts{0-4}.geo.admin.ch/1.0.0/{Layer}/default/' +
+               '{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
+
+           gaLayersProvider.layersConfigUrlTemplate =
+               'http://mf-chsdi30t.bgdi.admin.ch/rest/services/{Topic}/MapServer/layersconfig' +
+               '?lang={Lang}';
+           gaLayersProvider.legendUrlTemplate =
+               'http://mf-chsdi30t.bgdi.admin.ch/rest/services/{Topic}/MapServer/{Layer}/getlegend' +
+               '?lang={Lang}';
+        }]);
+ 
+
+
+        module.controller('MainController', 
+          ['$timeout', '$rootScope', '$scope', 'gaLayers', 
+          function($timeout, $rootScope, $scope, gaLayers) {
+
+            var swissExtent = [485869.5728, 837076.5648, 76443.1884, 299941.7864];
+            var swissProjection = ol.proj.configureProj4jsProjection({
+              code: 'EPSG:21781',
+              extent: swissExtent
+            });
+
+            var resolutions = [650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0, 2.5,
+              2.0, 1.0, 0.5, 0.25, 0.1];
+
+            var map = new ol.Map({
+              controls: ol.control.defaults({
+                attribution: false
+              }),
+              renderer: ol.RendererHint.CANVAS,
+              view: new ol.View2D({
+                projection: swissProjection,
+                center: ol.extent.getCenter(swissExtent),
+                resolution: 500.0,
+                resolutions: resolutions
+              })
+            });
+
+            $scope.map = map;
+            //FIXME there should be a better way to boostrap our components
+            $timeout(function() {
+              $rootScope.$broadcast('gaTopicChange', {id: 'ech'});
+            }, 333);
+
+            $scope.$on('gaLayersChange', function() {
+              var layer = gaLayers.getOlLayerById('ch.swisstopo.swissimage');
+              map.addLayer(layer);
+              layer = gaLayers.getOlLayerById('ch.astra.ivs-nat');
+              map.addLayer(layer);
+              layer = gaLayers.getOlLayerById('ch.astra.ivs-reg_loc');
+              map.addLayer(layer);
+              //FIXME you can add the following once we support aggregate layers
+              /*
+              layer = gaLayers.getOlLayerById('ch.bfs.gebaeude_wohnungs_register');
+              map.addLayer(layer);
+              */
+            });
+
+        }]);
+     
+        module.controller('FeatureTreeController', ['$scope',
+          function($scope) {
+
+            var baseUrl = 'http://mf-chsdi30t.bgdi.admin.ch/ltjeg/rest/services';
+
+            $scope.options = {
+              searchUrlTemplate: baseUrl + '/{Topic}/SearchServer',
+              htmlUrlTemplate: baseUrl + '/{Topic}/MapServer/{Layer}/{Feature}/htmlpopup',
+              active: false
+            };
+
+            $('#featuretree').on('show.bs.collapse', function() {
+              $scope.$apply(function() {
+                $scope.options.active = true;
+              });
+            });
+
+            $('#featuretree').on('hide.bs.collapse', function() {
+              $scope.$apply(function() {
+                $scope.options.active = false;
+              });
+            });
+        }]);
+
+      })();
+    </script>
+  </body>
+</html>
