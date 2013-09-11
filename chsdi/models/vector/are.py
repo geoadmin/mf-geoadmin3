@@ -146,3 +146,31 @@ class Bauzonen_2012(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
 
 register('ch.are.bauzonen', Bauzonen_2012)
+
+#class Reisezeit_Miv(Base, Vector):
+#    # view in a schema
+#    __tablename__ = 'reisezeit_miv_2005'
+#    __table_args__ = ({'schema': 'strassen', 'autoload': True})
+#    __template__ = 'templates/htmlpopup/reisezeit_miv.mako'
+#    __esriId__ = 3008
+#    __bodId__ = ''
+#    __displayFieldName__ = ''
+#
+#    id = Column('gem_no', Integer, primary_key=True)
+#    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+#
+
+class Gemeindetyp(Base, Vector):
+    # view in a schema
+    __tablename__ = 'gemeindetyp_1990_9klassen'
+    __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': True})
+    __template__ = 'templates/htmlpopup/gemeindetyp.mako'
+    __esriId__ = 3009
+    __bodId__ = 'ch.are.gemeindetyp-1990-9klassen'
+    __displayFieldName__ = 'name'
+    id = Column('gde_no', Integer, primary_key=True)
+    name = Column('name', Text)
+    nom = Column('nom', Text)
+    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+
+register('ch.are.gemeindetyp-1990-9klassen', Gemeindetyp)
