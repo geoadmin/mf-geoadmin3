@@ -63,3 +63,18 @@ class AggloIsoStaedte(Base, Vector):
 
 register('ch.are.agglomerationen_isolierte_staedte-2000', AggloIsoStaedte)
 
+class GueteklasseOev(Base, Vector):
+    # view in a schema
+    __tablename__ = 'gueteklassen'
+    __table_args__ = ({'schema': 'oeffentlicher_verkehr', 'autoload': False})
+    __template__ = 'templates/htmlpopup/gueteklasseoev.mako'
+    __esriId__ = 3003
+    __bodId__ = 'ch.are.gueteklassen_oev'
+    __displayFieldName__ = 'klasse_de'
+    id = Column('id', Integer, primary_key=True)
+    klasse_de = Column('klasse_de', Text)
+    klasse_fr = Column('klasse_fr', Text)
+    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+
+register('ch.are.gueteklassen_oev', GueteklasseOev)
+
