@@ -2,13 +2,13 @@
   <div ng-if="loading">Please wait, data is loading...</div>
   <ul>
     <li ng-repeat="(key, layer) in tree">
-      <a href="#" ng-click="layer.open = !layer.open">
+      <a ng-click="layer.open = !layer.open">
         <i ng-class="{'icon-minus': layer.open, 'icon-plus': !layer.open}"></i>
         {{layer.label}}
       </a>
       <ul ng-if="layer.open">
         <li ng-repeat="feature in layer.features">
-          <a href="#" ng-mouseover="showFeatureInfo(feature)"
+          <a ng-mouseover="showFeatureInfo(feature)"
           ng-mouseleave="feature.showInfo = false">{{feature.label}}</a>
           <div ng-if="feature.loading" class="featuerinfo">Loading feature info...</div>
           <div ng-if="feature.showInfo" ng-bind-html="feature.info"
