@@ -75,6 +75,10 @@
               layersCollection.insertAt(index + delta, layer);
             };
 
+            scope.isBodLayer = function(layer) {
+              return !!gaLayers.getLayer(layer.get('id'));
+            };
+
             scope.displayLayerMetadata = function(e, layer) {
               var id = layer.get('id');
               if (gaLayers.getLayer(id)) {
