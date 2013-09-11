@@ -148,7 +148,7 @@
                 timeoutPromise = $timeout(function() {
                   requestFeatures();
                   timeoutPromise = null;
-                }, 1000);
+                }, 300);
               }
             };
 
