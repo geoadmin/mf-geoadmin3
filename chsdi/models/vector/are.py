@@ -30,3 +30,18 @@ class Landschaftstypen(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
 
 register('ch.are.landschaftstypen', Landschaftstypen)
+
+class Alpenkonvention(Base, Vector):
+    # view in a schema
+    __tablename__ = 'alpenkonvention'
+    __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': False})
+    __template__ = 'templates/htmlpopup/alpenkonvention.mako'
+    __esriId__ = 3001
+    __bodId__ = 'ch.are.alpenkonvention'
+    __displayFieldName__ = 'stand'
+    id = Column('row_id', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+    flaeche_ha = Column('flaeche_ha', Numeric)
+    stand = Column('stand', Numeric)
+
+register('ch.are.alpenkonvention', Alpenkonvention)
