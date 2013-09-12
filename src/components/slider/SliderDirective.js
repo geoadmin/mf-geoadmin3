@@ -270,8 +270,8 @@
               adjustBubbles = function() {
                 var bubToAdjust;
 
-                // RE3: the current value must be always centered on the handle of
-                // the slider
+                // RE3: the current value must be always centered on the handle
+                // of the slider
                 //fitToBar(lowBub);
                 bubToAdjust = highBub;
                 if (range) {
@@ -318,8 +318,8 @@
                 }
               };
               bindToInputEvents = function(pointer, ref, events) {
-                var onEnd, onMove, onStart, getX;
-                var lastOffset, lastPointerOffsetLeft, moveX, endX;
+                var onEnd, onMove, onStart, getMouseEventX, getMouseOffsetLeft,
+                    lastMouseOffsetLeft, lastPointerOffsetLeft;
 
                 getMouseEventX = function(event) {
                   // RE3: if event is a Jquery event
@@ -328,11 +328,11 @@
                   }
 
                   return event.clientX || event.touches[0].clientX;
-                }
+                };
 
                 getMouseOffsetLeft = function(eventX) {
-                  return eventX - element[0].getBoundingClientRect().left; 
-                }
+                  return eventX - element[0].getBoundingClientRect().left;
+                };
 
                 onEnd = function() {
                   pointer.removeClass('active');
@@ -345,16 +345,18 @@
 
                   // Get the current mouse cursor offset and calculate the diff
                   // with the cursor offset of the last mouse move event
-                  var currentMouseOffsetLeft = getMouseOffsetLeft(getMouseEventX(event)); 
-                  var diff = currentMouseOffsetLeft - lastMouseOffsetLeft;                 
-                  
-                  // Get the new pointer offset 
+                  var currentMouseOffsetLeft = getMouseOffsetLeft(
+                      getMouseEventX(event));
+                  var diff = currentMouseOffsetLeft - lastMouseOffsetLeft;
+
+                  // Get the new pointer offset
                   newOffset = lastPointerOffsetLeft + diff;
-                  newOffset = Math.max(Math.min(newOffset, maxOffset), minOffset);
-                  
+                  newOffset = Math.max(Math.min(newOffset, maxOffset),
+                      minOffset);
+
                   // Set offset values for next mouse event
                   lastMouseOffsetLeft = currentMouseOffsetLeft;
-                  lastPointerOffsetLeft = newOffset;       
+                  lastPointerOffsetLeft = newOffset;
 
                   // Get the current slider values with the new pointer offset
                   newPercent = percentOffset(newOffset);
@@ -381,7 +383,8 @@
                   return scope.$apply();
                 };
                 onStart = function(event) {
-                  lastMouseOffsetLeft = getMouseOffsetLeft(getMouseEventX(event)); 
+                  lastMouseOffsetLeft = getMouseOffsetLeft(
+                      getMouseEventX(event));
                   lastPointerOffsetLeft = offsetLeft(pointer);
                   pointer.addClass('active');
                   dimensions();
