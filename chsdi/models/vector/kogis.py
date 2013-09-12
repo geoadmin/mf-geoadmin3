@@ -97,3 +97,28 @@ class FIXPUNKTE_LFP2(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.fixpunkte-lfp2', FIXPUNKTE_LFP2)
+
+class FIXPUNKTE_HFP1(Base, Vector):
+    # view in a schema
+    __tablename__ = 'punkt_hoehe_hfp1'
+    __table_args__ = ({'schema': 'fpds', 'autoload': True})
+    __template__ = 'templates/htmlpopup/fixpunkte.mako'
+    __queryable_attributes__ = ['pointid','nummer','bgdi_label']
+    __esriId__ = 3000
+    __bodId__ = 'ch.swisstopo.fixpunkte-hfp1'
+    __displayFieldName__ = 'nbident'
+    id = Column('pointid', Text, primary_key=True)
+    nbident = Column('nbident', Text)
+    punktname = Column('punktname', Text)
+    status = Column('status', Text)
+    nummer = Column('nummer', Text)
+    x03 = Column('x03', Numeric)
+    y03 = Column('y03', Numeric)
+    n95 = Column('n95', Numeric)
+    e95 = Column('e95', Numeric)
+    h02 = Column('h02', Numeric)
+    zugang = Column('zugang', Text)
+    url = Column('url', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.fixpunkte-hfp1', FIXPUNKTE_HFP1)
