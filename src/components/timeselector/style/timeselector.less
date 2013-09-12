@@ -22,7 +22,7 @@
  
   a {
     color: red;
-    line-height: 77px;
+    line-height: 45px;
 
     &:hover, &:focus {
       text-decoration: none;
@@ -71,7 +71,7 @@
   width: 507px; 
   display: inline-block;
   position: relative;
-  margin: 0px 20px 32px 0px;
+  margin: 0px 40px 0px 40px;
   vertical-align: bottom;
   
   .ga-slider {
@@ -79,17 +79,35 @@
     margin: 0px;
 
     span.pointer {
-      top: 28px;
-      margin-left: 0px;
+      top: 0px;
+      width: 81px;
+      height: 30px;
+      border: none;
+      border-radius: 0px; 
+      margin-left: 1px;
       cursor: move;
       z-index: 0;
+      background:
+      url(http://map.swisstopo.admin.ch/main/wsgi/lib/GeoAdmin.ux/TimeSeries/img/slider-middle.png)
+      no-repeat center top;
+
+      &::after {
+        content: none;
+      }
     }
   
-    span.value1 {
-      top: 47px;
-      font-size: 21px;
+    .value1 {
+      font-size: 18px;
       font-weight: bold;
       color: darkgray;
+      top: 0px;
+      font-size: 18px;
+      width: 44px;
+      height: 23px;
+      line-height: 23px;
+      overflow: hidden;
+      padding: 0px;
+      text-align: center;
             
       &.available {
         color: red; 
@@ -102,7 +120,7 @@
   
     span.bar {
       margin-top: 30px;
-      height: 15px;
+      height: 10px;
       background: none;
       box-shadow: none;
       border-radius: 0px; 
@@ -111,25 +129,34 @@
       span {
         height: 100%;
         width: 3px;
-        background-color: lightgray;
+        bottom: 0px;
         
         &.bubble{
           display: none;
         }
+        
+        &.last {
+          width: 1px;
+        }
 
-        &.minor {
-          height: 20px;
-          top: -5px;
-          
+        &.minor, &.major {
+          width: 3px;
+          border-left: 1px solid black;
+
+          .available {
+            left: -1px;
+          }
         }
 
         &.major {
-          height: 30px;
-          top: -15px;
+          height: 15px;
+          bottom: 0px;
 
           .bubble {
-            top: -15px;
-            left: -15px;
+            top: -18px;
+            left: -13px;
+            padding: 0px;
+            width: 30px;
             display: inline-block;
             font-size: 12px; 
             background: none;
@@ -138,10 +165,9 @@
 
         &.available {
           background-color: red;
-          bottom: 5px;
-          height: 5px;
+          bottom: 2px;
+          height: 6px;
           width: 1px;
-          left: 1px; 
         }
       }
     }

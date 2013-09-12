@@ -1,15 +1,19 @@
 <div class="ga-slider">
   <span class="bar">
     <span ng-repeat="data in dataList | orderBy:'value':false" 
+        ng-style="assignDivisionStyle($index)"
         id="{{data.value}}"
-        class="bar-division  {{(data.minor) ? 'minor' : ''}} {{(data.major) ? 'major' : ''}}"
-        ng-style="assignDivisionStyle($index)" >
-        <span class="bubble">{{data.value}}</span>
-        <span class="available" ng-show="data.available" ></span>
+        class="bar-division 
+          {{($first) ? 'first ' : ''}}
+          {{($last) ? 'last ' : ''}}
+          {{(data.minor) ? 'minor' : ''}} 
+          {{(data.major) ? 'major' : ''}}">
+      <span class="bubble">{{data.value}}</span>
+      <span class="available" ng-show="data.available" ></span>
     </span>    
   </span>
   <span class="bar selection"></span>
-  <span class="pointer"></span>
+  <span class="pointer" style="-ms-touch-action: none;"></span>
   <span class="pointer"></span>
   <span class="bubble selection"></span>
   <span ng-bind-html="translate2({value: floor})" class="bubble limit"></span>

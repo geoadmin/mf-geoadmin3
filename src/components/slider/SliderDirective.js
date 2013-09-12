@@ -132,11 +132,11 @@
             cmbBub = _ref[9];
         refLow = range ? 'ngModelLow' : 'ngModel';
         refHigh = 'ngModelHigh';
-        bindHtml(selBub, "'Range: ' + translate2({value: diff})");
+        bindHtml(selBub, 'translate2({value: "Range: " + diff})');
         bindHtml(lowBub, 'translate2({value: ' + refLow + '})');
         bindHtml(highBub, 'translate2({value: ' + refHigh + '})');
         bindHtml(cmbBub, 'translate2({value: ' + refLow +
-         "}) + ' - ' + translate2({value: " + refHigh + '})');
+         ' + " - " + ' + refHigh + '})');
         if (!range) {
           _ref1 = [selBar, maxPtr, selBub, highBub, cmbBub];
           for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
@@ -159,8 +159,7 @@
             var divisionWidth = 100 / (scope.ceiling - scope.floor);
             scope.assignDivisionStyle = function(index) {
               var style = {
-                width: divisionWidth + '%',
-                left: ((index * divisionWidth) - (divisionWidth / 2)) + '%'
+                left: (index * divisionWidth) + '%'
               };
               return style;
             };
@@ -186,8 +185,8 @@
               for (_j = 0, _len1 = watchables.length; _j < _len1; _j++) {
                 value = watchables[_j];
                 scope[value] = roundStep(parseFloat(scope[value]),
-                 parseInt(scope.precision), parseFloat(scope.step),
-                 parseFloat(scope.floor));
+                    parseInt(scope.precision), parseFloat(scope.step),
+                    parseFloat(scope.floor));
               }
 
               scope.diff = roundStep(scope[refHigh] - scope[refLow],
@@ -204,15 +203,15 @@
 
               minValue = parseFloat(attributes.floor);
               maxValue = parseFloat(attributes.ceiling);
-              valueRange = maxValue - minValue; // + 1;
+              valueRange = maxValue - minValue;
 
               // Before RE3: offsetRange = maxOffset - minOffset;
               return offsetRange = barWidth;
             };
             updateDOM = function() {
               var adjustBubbles, bindToInputEvents, fitToBar, percentOffset,
-               percentToOffset, percentToOffsetInt, percentValue, setBindings,
-               setPointers;
+                  percentToOffset, percentToOffsetInt, percentValue,
+                  setBindings, setPointers;
 
               dimensions();
               percentOffset = function(offset) {
@@ -251,7 +250,7 @@
                   newHighValue = percentValue(scope[refHigh]);
 
                   // Before RE3: offset(maxPtr, percentToOffset(newHighValue)
-                  offset(minPtr, pixelize(
+                  offset(maxPtr, pixelize(
                       percentToOffsetInt(newHighValue) - halfWidth(maxPtr)));
 
                   offset(highBub, pixelize(offsetLeft(maxPtr) -
@@ -271,7 +270,9 @@
               adjustBubbles = function() {
                 var bubToAdjust;
 
-                fitToBar(lowBub);
+                // RE3: the current value must be always centered on the handle of
+                // the slider
+                //fitToBar(lowBub);
                 bubToAdjust = highBub;
                 if (range) {
                   fitToBar(highBub);
@@ -317,27 +318,48 @@
                 }
               };
               bindToInputEvents = function(pointer, ref, events) {
-                var onEnd, onMove, onStart;
+                var onEnd, onMove, onStart, getX;
+                var lastOffset, lastPointerOffsetLeft, moveX, endX;
+
+                getMouseEventX = function(event) {
+                  // RE3: if event is a Jquery event
+                  if (event.originalEvent) {
+                    event = event.originalEvent;
+                  }
+
+                  return event.clientX || event.touches[0].clientX;
+                }
+
+                getMouseOffsetLeft = function(eventX) {
+                  return eventX - element[0].getBoundingClientRect().left; 
+                }
+
                 onEnd = function() {
                   pointer.removeClass('active');
                   ngDocument.unbind(events.move);
                   return ngDocument.unbind(events.end);
                 };
+
                 onMove = function(event) {
-                  var eventX, newOffset, newPercent, newValue;
+                  var newOffset, newPercent, newValue;
 
-                  // RE3: is a Jquery event
-                  if (event.originalEvent) {
-                    event = event.originalEvent;
-                  }
+                  // Get the current mouse cursor offset and calculate the diff
+                  // with the cursor offset of the last mouse move event
+                  var currentMouseOffsetLeft = getMouseOffsetLeft(getMouseEventX(event)); 
+                  var diff = currentMouseOffsetLeft - lastMouseOffsetLeft;                 
+                  
+                  // Get the new pointer offset 
+                  newOffset = lastPointerOffsetLeft + diff;
+                  newOffset = Math.max(Math.min(newOffset, maxOffset), minOffset);
+                  
+                  // Set offset values for next mouse event
+                  lastMouseOffsetLeft = currentMouseOffsetLeft;
+                  lastPointerOffsetLeft = newOffset;       
 
-                  eventX = event.clientX || event.touches[0].clientX;
-                  newOffset = eventX - element[0].getBoundingClientRect().left -
-                      pointerHalfWidth;
-                  newOffset = Math.max(Math.min(newOffset, maxOffset),
-                      minOffset);
+                  // Get the current slider values with the new pointer offset
                   newPercent = percentOffset(newOffset);
                   newValue = minValue + (valueRange * newPercent / 100.0);
+
                   if (range) {
                     if (ref === refLow) {
                       if (newValue > scope[refHigh]) {
@@ -359,6 +381,8 @@
                   return scope.$apply();
                 };
                 onStart = function(event) {
+                  lastMouseOffsetLeft = getMouseOffsetLeft(getMouseEventX(event)); 
+                  lastPointerOffsetLeft = offsetLeft(pointer);
                   pointer.addClass('active');
                   dimensions();
                   event.stopPropagation();
