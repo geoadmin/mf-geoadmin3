@@ -28,3 +28,19 @@ class FEUERSTELLEN(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.tamedia.schweizerfamilie-feuerstellen', FEUERSTELLEN)
+
+class NOTFALLSCHUTZ(Base, Vector):
+    # view in a schema
+    __tablename__ = 'zonenplan_kernanlagen'
+    __table_args__ = ({'schema': 'ensi', 'autoload': False})
+    __template__ = 'templates/htmlpopup/zonenplan_kernanlagen.mako'
+    __esriId__ = 3000
+    __bodId__ = 'ch.ensi.zonenplan-notfallschutz-kernanlagen'
+    __displayFieldName__ = 'name'
+    id = Column('nr', Integer, primary_key=True)
+    name = Column('name', Text)
+    zone = Column('zone', Text)
+    sektor = Column('sektor', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.ensi.zonenplan-notfallschutz-kernanlagen', NOTFALLSCHUTZ)
