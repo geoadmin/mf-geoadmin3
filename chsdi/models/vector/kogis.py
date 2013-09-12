@@ -32,3 +32,17 @@ class Gebaeuderegister(Base, Vector):
 
 register('ch.bfs.gebaeude_wohnungs_register', Gebaeuderegister)
 
+class AGNES(Base, Vector):
+    # view in a schema
+    __tablename__ = 'agnes'
+    __table_args__ = ({'schema': 'fpds', 'autoload': False})
+    __template__ = 'templates/htmlpopup/agnes.mako'
+    __esriId__ = 3000
+    __bodId__ = 'ch.swisstopo.fixpunkte-agnes'
+    __displayFieldName__ = 'bgdi_id'
+    id = Column('no', Text, primary_key=True)
+    url = Column('url', Text)
+    bgdi_id = Column('bgdi_id', Integer)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.fixpunkte-agnes', AGNES)
