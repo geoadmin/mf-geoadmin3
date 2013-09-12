@@ -59,7 +59,10 @@
   position: absolute;
 }
 
-select, input[type=text], input[type=email] {
+input[type=search]{
+  -webkit-appearance: none;
+}
+select, input[type=text], input[type=email], input[type=search] {
   .form-control;
   .input-sm;
 }
@@ -114,7 +117,21 @@ select, input[type=text], input[type=email] {
     top: .7em;
   }
 }
-
+.search-focused #search-container {
+  @media (max-width: @screen-phone) {
+    width: 100%;
+    padding: 0;
+    left: 0;
+    background: #fff;
+    input {
+      width: 96%;
+      margin-left: 2%;
+    }
+    .deleteicon {
+      right: 0.5em;
+    }
+  }
+}
 #logo {
   width: 320px;
   display: inline-block;
@@ -378,6 +395,11 @@ a .ga-icon-separator {
     .icon-reorder, .phone-toggle {
       display: inline-block;
     }
+  }
+}
+.search-focused .toggle {
+  @media (max-width: @screen-phone) {
+    display: none;
   }
 }
 
