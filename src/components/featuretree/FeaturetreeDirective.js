@@ -11,21 +11,41 @@
   module.directive('gaFeaturetree',
       ['$timeout', '$http', '$q', '$translate', '$sce', 'gaLayers',
       function($timeout, $http, $q, $translate, $sce, gaLayers) {
+        var index = 0;
 
         return {
           restrict: 'A',
-          replace: true,
           templateUrl: 'components/featuretree/partials/featuretree.html',
           scope: {
             options: '=gaFeaturetreeOptions',
             map: '=gaFeaturetreeMap'
           },
           link: function(scope, element, attrs) {
+            index++;
+            scope.index = index;
+
             var currentTopic;
             var timeoutPromise = null;
             var canceler = null;
             var map = scope.map;
             var view = map.getView();
+            var featureTolerance = 1;
+            var target = element.find('.target');
+
+            target.on('show.bs.collapse', function() {
+              scope.$apply(function() {
+                cancel();
+                scope.active = true;
+                requestFeatures();
+              });
+            });
+
+            target.on('hide.bs.collapse', function() {
+              scope.$apply(function() {
+                cancel();
+                scope.active = false;
+              });
+            });
 
             var getLayersToQuery = function(layers) {
               var layerstring = '';
@@ -140,7 +160,7 @@
             // updates. We don't use the permalink here because we want
             // to separate these concerns.
             var triggerChange = function() {
-              if (scope.options.active) {
+              if (scope.active) {
                 cancel();
                 timeoutPromise = $timeout(function() {
                   requestFeatures();
@@ -185,13 +205,6 @@
 
             scope.$on('gaTopicChange', function(event, topic) {
               currentTopic = topic.id;
-            });
-
-            scope.$watch('options.active', function(newVal, oldVal) {
-              cancel();
-              if (newVal === true) {
-                requestFeatures();
-              }
             });
 
           }

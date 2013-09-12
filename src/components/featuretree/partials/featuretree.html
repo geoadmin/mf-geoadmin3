@@ -1,21 +1,27 @@
-<div>
-  <div ng-if="loading">Please wait, data is loading...</div>
-  <ul>
-    <li ng-repeat="(key, layer) in tree">
-      <a ng-click="layer.open = !layer.open">
-        <i ng-class="{'icon-minus': layer.open, 'icon-plus': !layer.open}"></i>
-        {{layer.label}}
-      </a>
-      <ul ng-if="layer.open">
-        <li ng-repeat="feature in layer.features">
-          <a ng-mouseover="showFeatureInfo(feature)"
-          ng-mouseleave="feature.showInfo = false">{{feature.label}}</a>
-          <div ng-if="feature.loading" class="featuerinfo">Loading feature info...</div>
-          <div ng-if="feature.showInfo" ng-bind-html="feature.info"
-          class="featureinfo"></div>
-        </li>
-      </ul>
-    </li>
-  </ul>
+<a class="accordion-toggle collapsed" data-toggle="collapse" href=".featuretree-panel{{index}}">
+  <i class="visible-collapsed icon-plus"></i>
+  <i class="hidden-collapsed icon-minus"></i>
+  <span translate>object_information</span>
+  <i ng-if="loading" class="icon-refresh icon-spin"></i>
+</a>
+<div class="target featuretree-panel{{index}} collapse">
+  <div class="panel-body">
+    <ul>
+      <li ng-repeat="(key, layer) in tree">
+        <a href="#" ng-click="layer.open = !layer.open">
+          <i ng-class="{'icon-minus': layer.open, 'icon-plus': !layer.open}"></i>
+          {{layer.label}}
+        </a>
+        <ul ng-if="layer.open">
+          <li ng-repeat="feature in layer.features">
+            <a href="#" ng-mouseover="showFeatureInfo(feature)"
+            ng-mouseleave="feature.showInfo = false">{{feature.label}}</a>
+            <i ng-if="feature.loading" class="icon-refresh icon-spin"></i>
+            <div ng-if="feature.showInfo" ng-bind-html="feature.info"
+            class="well"></div>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
 </div>
-

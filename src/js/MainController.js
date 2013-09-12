@@ -66,6 +66,13 @@ module.controller('GaMainController',
         importKmlPopupShown: false
       };
 
+      var baseUrl = gaGlobalOptions.serviceUrl + '/rest/services';
+
+      $scope.featureTreeOptions = {
+        identifyUrlTemplate: baseUrl + '/{Topic}/MapServer/identify',
+        htmlUrlTemplate: baseUrl + '/{Topic}/MapServer/{Layer}/{Feature}/htmlpopup'
+      };
+
   });
 
 })();
