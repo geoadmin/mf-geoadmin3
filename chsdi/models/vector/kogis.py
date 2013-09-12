@@ -2,6 +2,7 @@
 
 from sqlalchemy import Column, Text, Integer
 from geoalchemy import GeometryColumn, Geometry
+from sqlalchemy.types import Numeric
 
 from chsdi.models import *
 from chsdi.models.vector import Vector
@@ -46,3 +47,27 @@ class AGNES(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.fixpunkte-agnes', AGNES)
+
+class FIXPUNKTE_LFP1(Base, Vector):
+    # view in a schema
+    __tablename__ = 'punkt_lage_lfp1'
+    __table_args__ = ({'schema': 'fpds', 'autoload': False})
+    __template__ = 'templates/htmlpopup/fixpunkte.mako'
+    __queryable_attributes__ = ['pointid','nummer']
+    __esriId__ = 3000
+    __bodId__ = 'ch.swisstopo.fixpunkte-lfp1'
+    __displayFieldName__ = 'nbident'
+    id = Column('pointid', Text, primary_key=True)
+    punktname = Column('punktname', Text)
+    status = Column('status', Text)
+    nbident = Column('nbident', Text)
+    x03 = Column('x03', Numeric)
+    y03 = Column('y03', Numeric)
+    n95 = Column('n95', Numeric)
+    e95 = Column('e95', Numeric)
+    h02 = Column('h02', Numeric)
+    zugang = Column('zugang', Text)
+    url = Column('url', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.fixpunkte-lfp1', FIXPUNKTE_LFP1)
