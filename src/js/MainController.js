@@ -69,7 +69,7 @@ module.controller('GaMainController',
       var baseUrl = gaGlobalOptions.serviceUrl + '/rest/services';
 
       $scope.featureTreeOptions = {
-        identifyUrlTemplate: baseUrl + '/{Topic}/MapServer/identify',
+        searchUrlTemplate: baseUrl + '/{Topic}/SearchServer',
         htmlUrlTemplate: baseUrl + '/{Topic}/MapServer/{Layer}/{Feature}/htmlpopup'
       };
 
