@@ -13,7 +13,7 @@ cd $CODE_DIR
 
 if [ -f rc_$TARGET ]; then
     source rc_$TARGET
-    make cleanall apache dev prod
+    make clean apache dev prod
 fi
 
 exit $?
