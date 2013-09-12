@@ -306,6 +306,9 @@
                   window.scrollTo(0, 1);
                 });
               });
+              taElt.on('search', function(e) {
+                taElt.trigger('blur');
+              });
             }
           };
         });
