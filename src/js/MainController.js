@@ -60,6 +60,10 @@ module.controller('GaMainController',
         $scope.deviceSwitcherHref = gaPermalink.getHref({ mobile: mobile });
       });
 
+      $scope.globals = {
+        searchFocused: false
+      };
+
   });
 
 })();

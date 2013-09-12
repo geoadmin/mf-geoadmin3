@@ -43,7 +43,7 @@
     <link rel="shortcut icon" type="image/x-icon" href="${version}img/favicon.ico"/>
   </head>
 
-  <body ng-class="topicId">
+  <body ng-class="[topicId, globals.searchFocused ? 'search-focused' : '']">
     <div id="header" class="navbar navbar-fixed-top">
       <a ng-href="?topic={{topicId}}&lang={{langId}}" id="logo" class="pull-left">
         <img src="${version}img/logo.ch.jpeg" style="width: 270px; height: 89px"/>
@@ -51,7 +51,7 @@
       </a>
       <div id="search-container" ng-controller="GaSearchController">
         <h4 ng-cloak translate="{{topicId + '_page_header'}}"></h4>
-        <div ga-search ga-search-map="map" ga-search-options="options"></div>
+        <div ga-search ga-search-map="map" ga-search-options="options" ga-search-focused="globals.searchFocused"></div>
       </div>
 % if device == 'desktop':
       <form class="navbar-form pull-right visible-lg visible-md">
