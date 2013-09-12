@@ -171,13 +171,13 @@
                         <!-- We can't use translate directive for these links, see:
                         https://github.com/PascalPrecht/angular-translate/issues/129 -->
                         <li>
-                          <a href="" ng-click="importWmsPopupShown = !importWmsPopupShown">
+                          <a href="" ng-click="globals.importWmsPopupShown = !globals.importWmsPopupShown">
                             <i class="icon-external-link ga-icon-separator"></i>
                             <span translate>wms</span>
                           </a>
                         </li>
                         <li>
-                          <a href=""  ng-click="importKmlPopupShown = !importKmlPopupShown">
+                          <a href=""  ng-click="globals.importKmlPopupShown = !globals.importKmlPopupShown">
                             <i class="icon-file ga-icon-separator"></i>
                             <span translate>kml</span>
                           </a>
@@ -373,7 +373,7 @@
     </div>
 
     <!-- Popup: Import WMS -->
-    <div ga-popup="importWmsPopupShown"
+    <div ga-popup="globals.importWmsPopupShown"
       ga-popup-options="{title:'import_wms'}"
       ga-draggable=".ga-popup-title"
       id="import-wms-popup" >
@@ -388,7 +388,7 @@
     </div> <!-- end Import WMS -->
 
     <!-- Popup: Import KML -->
-    <div ga-popup="importKmlPopupShown"
+    <div ga-popup="globals.importKmlPopupShown"
       ga-popup-options="{title:'import_kml'}"
       ga-draggable=".ga-popup-title"
       id="import-kml-popup" >

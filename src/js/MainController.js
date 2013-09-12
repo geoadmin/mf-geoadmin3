@@ -39,7 +39,8 @@
    * The application's main controller.
    */
 module.controller('GaMainController',
-    function($scope, $rootScope, $translate, gaPermalink, gaBrowserSniffer) {
+    function($scope, $rootScope, $translate, gaPermalink, gaBrowserSniffer,
+        gaGlobalOptions) {
 
       var mobile = (gaBrowserSniffer.mobile) ? 'false' : 'true';
 
@@ -59,6 +60,11 @@ module.controller('GaMainController',
       $rootScope.$on('gaPermalinkChange', function() {
         $scope.deviceSwitcherHref = gaPermalink.getHref({ mobile: mobile });
       });
+
+      $scope.globals = {
+        importWmsPopupShown: false,
+        importKmlPopupShown: false
+      };
 
   });
 
