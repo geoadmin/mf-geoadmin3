@@ -188,7 +188,7 @@
               elt.hide();
             } else {
               elt.show();
-              // Set default value on the first display 
+              // Set default value on the first display
               if (scope.currentYear === -1) {
                 scope.currentYear = scope.maxYear;
               }

@@ -114,7 +114,7 @@
         if (attributes.translate2) {
           attributes.$set('translate2', '' + attributes.translate2 + '(value)');
         }
-        
+
         // Defines HTML elements
         angular.forEach(element.find('.ga-slider').children(), function(elt) {
           _ref.push(angularize(elt));
@@ -124,10 +124,10 @@
             maxPtr = _ref[3], selBub = _ref[4], flrBub = _ref[5],
             ceilBub = _ref[6], lowBub = _ref[7], highBub = _ref[8],
             cmbBub = _ref[9];
-        
+
         // Defines elements attributes depending on the type of the slider
         // (basic or not)
-        scope.range = range = (attributes.ngModel == null) &&
+        range = (attributes.ngModel == null) &&
             ((attributes.ngModelLow != null) &&
             (attributes.ngModelHigh != null));
 
@@ -136,15 +136,17 @@
           refHigh = 'ngModelHigh';
           bindHtml(selBub, 'translate2({value:"Range: " + diff})');
           bindHtml(highBub, 'translate2({value:' + refHigh + '})');
-          bindHtml(cmbBub, 'translate2({value:' + refLow + ' + " - " + ' + refHigh +
-               '})');
+          bindHtml(cmbBub, 'translate2({value:' + refLow + ' + " - " + ' +
+              refHigh + '})');
 
         } else {
           refLow = 'ngModel';
           // Remove useless elements
-          angular.forEach([selBar, maxPtr, selBub, highBub, cmbBub], function(elt) {
-            elt.remove();
-          });
+          angular.forEach([selBar, maxPtr, selBub, highBub, cmbBub],
+              function(elt) {
+                elt.remove();
+              }
+          );
         }
 
         bindHtml(lowBub, 'translate2({value:' + refLow + '})');
@@ -170,7 +172,7 @@
               return style;
             };
 
-            boundToInputs = false;            
+            boundToInputs = false;
             if (!attributes.translate2) {
               scope.translate2 = function(value) {
                 return $sce.trustAsHtml('' + (value ? value.value : ''));
