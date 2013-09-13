@@ -3,10 +3,11 @@
 from sqlalchemy import Column, Text, Integer
 from geoalchemy import GeometryColumn, Geometry
 from sqlalchemy.types import Numeric
-from chsdi.models import  *
+from chsdi.models import *
 from chsdi.models.vector import Vector
 
 Base = bases['evd']
+
 
 class BODENEIGNUNG(Base, Vector):
     # view in a schema

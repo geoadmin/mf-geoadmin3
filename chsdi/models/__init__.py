@@ -6,7 +6,7 @@ from sqlalchemy import engine_from_config
 from geoalchemy import Geometry
 from papyrus.geo_interface import GeoInterface
 
-dbs = ['bod','bafu', 'uvek', 'search','stopo', 'evd', 'edi']
+dbs = ['bod', 'bafu', 'uvek', 'search', 'stopo', 'evd', 'edi']
 
 engines = {}
 bases = {}
