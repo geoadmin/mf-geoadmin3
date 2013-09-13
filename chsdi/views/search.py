@@ -19,12 +19,14 @@ class Search(SearchValidation):
         self.quadtree = msk.QuadTree(
             msk.BBox(420000, 30000, 900000, 510000), 20)
         self.sphinx = sphinxapi.SphinxClient()
-        self.sphinx.SetServer("localhost", 3312)
+        self.sphinx.SetServer("10.239.126.185", 9312)
         self.sphinx.SetMatchMode(sphinxapi.SPH_MATCH_EXTENDED)
 
         self.mapName = request.matchdict.get('map')
         self.hasMap(request.db, self.mapName)
-        self.searchText = remove_accents(request.params.get('searchText'))
+        self.searchText = ' '
+        if request.params.get('searchText') is not None:
+            self.searchText = remove_accents(request.params.get('searchText'))
         self.lang = str(locale_negotiator(request))
         self.cbName = request.params.get('callback')
         self.bbox = request.params.get('bbox')
@@ -53,13 +55,11 @@ class Search(SearchValidation):
         return self.results
 
     def _swiss_search(self, limit):
-        if self.searchText is None \
-           len(self.searchText) < 2:
+        searchText = self._query_detail('@detail')
+        if len(self.searchText) < 1:
             return 0
-
         self.sphinx.SetLimits(0, limit)
         self.sphinx.SetSortMode(sphinxapi.SPH_SORT_ATTR_ASC, 'rank')
-        searchText = self._query_detail('@detail')
         temp = self.sphinx.Query(searchText, index='swisssearch')['matches']
         if len(temp) != 0:
             self.results['results'] += temp
@@ -92,14 +92,13 @@ class Search(SearchValidation):
         return self._parse_feature_results(temp)
 
     def _feature_location_search(self):
+        searchText = self._query_detail('@detail')
         if self.quadindex is None or \
            self.featureIndexes is None or \
-           self.searchText is None \
-           len(self.searchText) < 2:
+           len(searchText) < 1:
             return 0
 
         self.sphinx.SetLimits(0, self.FEATURE_LIMIT)
-        searchText = self._query_detail('@detail')
         searchText += '@geom_quadindex ' + self.quadindex + '*'
         self._add_feature_queries(searchText)
         temp = self.sphinx.RunQueries()
