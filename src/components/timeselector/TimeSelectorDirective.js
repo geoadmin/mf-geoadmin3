@@ -19,7 +19,7 @@
       $scope.stateClass = 'inactive';
       $scope.minYear = 1845;
       $scope.maxYear = (new Date()).getFullYear() + 1;
-      $scope.currentYear = $scope.maxYear; // User selected year
+      $scope.currentYear = -1; // User selected year
       $scope.years = []; //List of all possible years 1845 -> current year
       $scope.availableYears = []; // List of available years
 
@@ -51,7 +51,7 @@
       };
 
       // Format the text of the current year (only used by slider)
-      $scope.formatCurrentYear = function(value) {
+      $scope.formatYear = function(value) {
         if (parseInt(value) >= $scope.maxYear) {
           value = $translate('last_available_year');
         }
@@ -160,45 +160,45 @@
   );
 
   module.directive('gaTimeSelector',
-      ['$log', '$translate', 'gaBrowserSniffer',
-        function($log, $translate, gaBrowserSniffer) {
-          return {
-            restrict: 'A',
-            templateUrl: function(element, attrs) {
-              return 'components/timeselector/partials/timeselector.' +
-                  ((gaBrowserSniffer.mobile) ? 'select.html' : 'html');
-            },
-            scope: {
-              map: '=gaTimeSelectorMap',
-              options: '=gaTimeSelectorOptions'
-            },
-            controller: 'GaTimeSelectorDirectiveController',
-            link: function(scope, elt, attrs, controller) {
+    function($log, $translate, gaBrowserSniffer) {
+      return {
+        restrict: 'A',
+        templateUrl: function(element, attrs) {
+          return 'components/timeselector/partials/timeselector.' +
+              ((gaBrowserSniffer.mobile) ? 'select.html' : 'html');
+        },
+        scope: {
+          map: '=gaTimeSelectorMap',
+          options: '=gaTimeSelectorOptions'
+        },
+        controller: 'GaTimeSelectorDirectiveController',
+        link: function(scope, elt, attrs, controller) {
 
-              // Add css mobile class
-              if (gaBrowserSniffer.mobile) {
-                elt.addClass('mobile');
+          // Add css mobile class
+          if (gaBrowserSniffer.mobile) {
+            elt.addClass('mobile');
+          }
+
+          // Update list of available years and hide/show the HTML
+          // element if the list is empty or not
+          var refreshComp = function(obj) {
+            scope.updateDatesAvailable();
+            if (scope.availableYears.length == 0) {
+              scope.isActive = false;
+              elt.hide();
+            } else {
+              elt.show();
+              // Set default value on the first display 
+              if (scope.currentYear === -1) {
+                scope.currentYear = scope.maxYear;
               }
-
-              // Update list of available years and hide/show the HTML
-              // element if the list is empty or not
-              var refreshComp = function(obj) {
-                scope.updateDatesAvailable();
-                if (scope.availableYears.length == 0) {
-                  scope.isActive = false;
-                  elt.hide();
-                } else {
-                  elt.show();
-                  // force the redraw of the slider
-                  scope.currentYear = 2014;
-                }
-              };
-
-              scope.map.getLayers().on('add', refreshComp);
-              scope.map.getLayers().on('remove', refreshComp);
             }
           };
+
+          scope.map.getLayers().on('add', refreshComp);
+          scope.map.getLayers().on('remove', refreshComp);
         }
-      ]
+      };
+    }
   );
 })();

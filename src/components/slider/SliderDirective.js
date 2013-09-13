@@ -5,8 +5,8 @@
 
   var MODULE_NAME, SLIDER_TAG, angularize, bindHtml, gap,
   halfWidth, hide, inputEvents, module, offset, offsetLeft,
-   pixelize, qualifiedDirectiveDefinition, roundStep, show,
-    sliderDirective, width;
+  pixelize, qualifiedDirectiveDefinition, roundStep, show,
+  sliderDirective, width;
 
   angularize = function(element) {
     return angular.element(element);
@@ -51,7 +51,7 @@
   };
 
   bindHtml = function(element, html) {
-    return element.attr('ng-bind-html', html);
+    return element.attr('ng-bind-template', '{{' + html + '}}');
   };
 
   roundStep = function(value, precision, step, floor) {
@@ -68,7 +68,7 @@
         value - remainder;
     decimals = Math.pow(10, precision);
     roundedValue = steppedValue * decimals / decimals;
-    return roundedValue.toFixed(precision);
+    return parseFloat(roundedValue.toFixed(precision));
   };
 
   inputEvents = {
@@ -89,7 +89,7 @@
     }
   };
 
-  module.directive('gaSlider', ['$timeout', '$sce', function($timeout, $sce) {
+  module.directive('gaSlider', function($timeout, $sce, $document) {
     return {
       restrict: 'A',
       scope: {
@@ -101,49 +101,55 @@
         ngModelLow: '=?',
         ngModelHigh: '=?',
         translate2: '&',
-        dataList: '=gaSliderData' //RE3: contains all the possible values
+        dataList: '=gaData', //RE3: contains all the possible values
+        keyboardEvents: '=gaKeyboardEvents' // RE3: defines if we add keyboard
+        //events
       },
       templateUrl: 'components/slider/partials/slider.html',
       compile: function(element, attributes) {
         var ceilBub, cmbBub, e, flrBub, fullBar, highBub, lowBub, maxPtr,
             minPtr, range, refHigh, refLow, selBar, selBub, watchables,
-            _i, _len, _ref, _ref1;
+            _i, _len, _ref = [];
 
         if (attributes.translate2) {
           attributes.$set('translate2', '' + attributes.translate2 + '(value)');
         }
+        
+        // Defines HTML elements
+        angular.forEach(element.find('.ga-slider').children(), function(elt) {
+          _ref.push(angularize(elt));
+        });
 
-        range = (attributes.ngModel == null) &&
-            ((attributes.ngModelLow != null) &&
-            (attributes.ngModelHigh != null));
-        _ref = (function() {
-          var _i, _len, _ref, _results;
-
-          _ref = element.find('.ga-slider').children();
-          _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            e = _ref[_i];
-            _results.push(angularize(e));
-          }
-          return _results;
-        })(), fullBar = _ref[0], selBar = _ref[1], minPtr = _ref[2],
+        fullBar = _ref[0], selBar = _ref[1], minPtr = _ref[2],
             maxPtr = _ref[3], selBub = _ref[4], flrBub = _ref[5],
             ceilBub = _ref[6], lowBub = _ref[7], highBub = _ref[8],
             cmbBub = _ref[9];
-        refLow = range ? 'ngModelLow' : 'ngModel';
-        refHigh = 'ngModelHigh';
-        bindHtml(selBub, 'translate2({value: "Range: " + diff})');
-        bindHtml(lowBub, 'translate2({value: ' + refLow + '})');
-        bindHtml(highBub, 'translate2({value: ' + refHigh + '})');
-        bindHtml(cmbBub, 'translate2({value: ' + refLow +
-         ' + " - " + ' + refHigh + '})');
-        if (!range) {
-          _ref1 = [selBar, maxPtr, selBub, highBub, cmbBub];
-          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-            element = _ref1[_i];
-            element.remove();
-          }
+        
+        // Defines elements attributes depending on the type of the slider
+        // (basic or not)
+        scope.range = range = (attributes.ngModel == null) &&
+            ((attributes.ngModelLow != null) &&
+            (attributes.ngModelHigh != null));
+
+        if (range) {
+          refLow = 'ngModelLow';
+          refHigh = 'ngModelHigh';
+          bindHtml(selBub, 'translate2({value:"Range: " + diff})');
+          bindHtml(highBub, 'translate2({value:' + refHigh + '})');
+          bindHtml(cmbBub, 'translate2({value:' + refLow + ' + " - " + ' + refHigh +
+               '})');
+
+        } else {
+          refLow = 'ngModel';
+          // Remove useless elements
+          angular.forEach([selBar, maxPtr, selBub, highBub, cmbBub], function(elt) {
+            elt.remove();
+          });
         }
+
+        bindHtml(lowBub, 'translate2({value:' + refLow + '})');
+
+        // Defines watchables properties
         watchables = [refLow, 'floor', 'ceiling'];
         if (range) {
           watchables.push(refHigh);
@@ -152,7 +158,7 @@
         return {
           post: function(scope, element, attributes) {
             var barWidth, boundToInputs, dimensions, maxOffset, maxValue,
-            minOffset, minValue, ngDocument, offsetRange, pointerHalfWidth,
+            minOffset, minValue, offsetRange, pointerHalfWidth,
             updateDOM, valueRange, w, _j, _len1;
 
             // RE3: Defines the position of each division (use step = 1)
@@ -164,13 +170,13 @@
               return style;
             };
 
-            boundToInputs = false;
-            ngDocument = angularize(document);
+            boundToInputs = false;            
             if (!attributes.translate2) {
               scope.translate2 = function(value) {
-                return $sce.trustAsHtml('' + value.value);
+                return $sce.trustAsHtml('' + (value ? value.value : ''));
               };
             }
+
             pointerHalfWidth = barWidth = minOffset = maxOffset = minValue =
                 maxValue = valueRange = offsetRange = void 0;
             dimensions = function() {
@@ -209,7 +215,8 @@
               return offsetRange = barWidth;
             };
             updateDOM = function() {
-              var adjustBubbles, bindToInputEvents, fitToBar, percentOffset,
+              var adjustBubbles, bindToInputEvents,
+                  fitToBar, percentOffset,
                   percentToOffset, percentToOffsetInt, percentValue,
                   setBindings, setPointers;
 
@@ -336,8 +343,8 @@
 
                 onEnd = function() {
                   pointer.removeClass('active');
-                  ngDocument.unbind(events.move);
-                  return ngDocument.unbind(events.end);
+                  $document.unbind(events.move);
+                  return $document.unbind(events.end);
                 };
 
                 onMove = function(event) {
@@ -390,11 +397,12 @@
                   dimensions();
                   event.stopPropagation();
                   event.preventDefault();
-                  ngDocument.bind(events.move, onMove);
-                  return ngDocument.bind(events.end, onEnd);
+                  $document.bind(events.move, onMove);
+                  return $document.bind(events.end, onEnd);
                 };
                 return pointer.bind(events.start, onStart);
               };
+
               setBindings = function() {
                 var bind, inputMethod, _j, _len1, _ref2, _results;
 
@@ -402,7 +410,7 @@
                 bind = function(method) {
                   bindToInputEvents(minPtr, refLow, inputEvents[method]);
                   return bindToInputEvents(maxPtr, refHigh,
-                   inputEvents[method]);
+                      inputEvents[method]);
                 };
                 _ref2 = ['touchIE', 'touch', 'mouse'];
                 _results = [];
@@ -440,11 +448,34 @@
               scope.$watch(w, updateDOM);
             }
 
+            // RE3: Add left and right arrows events management
+            scope.$watch('keyboardEvents', function(active) {
+              if (!range && active) {
+                $document.bind('keydown', onKeyboardEvent);
+              } else {
+                $document.unbind('keydown', onKeyboardEvent);
+              }
+            });
+
+            // RE3: Handle arrows left and right key
+            var onKeyboardEvent = function(event) {
+              event.stopPropagation();
+              event.preventDefault();
+              scope.$apply(function() {
+                var value = scope.ngModel;
+                if (event.which == 37) {
+                  scope.ngModel = Math.max(--value, scope.floor);
+                } else if (event.which == 39) {
+                  scope.ngModel = Math.min(++value, scope.ceiling);
+                }
+              });
+            };
+
             return window.addEventListener('resize', updateDOM);
           }
         };
       }
     };
-  }]);
+  });
 })();
 

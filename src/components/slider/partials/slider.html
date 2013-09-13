@@ -7,17 +7,18 @@
           {{($first) ? 'first ' : ''}}
           {{($last) ? 'last ' : ''}}
           {{(data.minor) ? 'minor' : ''}} 
-          {{(data.major) ? 'major' : ''}}">
-      <span class="bubble">{{data.value}}</span>
-      <span class="available" ng-show="data.available" ></span>
+          {{(data.major) ? 'major' : ''}}"
+        title="{{data.value}}"> 
+      <span class="bubble" >{{data.value}}</span>
+      <span class="available" ng-show="data.available"></span>
     </span>    
   </span>
   <span class="bar selection"></span>
-  <span class="pointer" style="-ms-touch-action: none;"></span>
+  <span class="pointer"></span>
   <span class="pointer"></span>
   <span class="bubble selection"></span>
-  <span ng-bind-html="translate2({value: floor})" class="bubble limit"></span>
-  <span ng-bind-html="translate2({value: ceiling})" class="bubble limit"></span>
+  <span ng-bind-template="{{translate2({value:floor})}}" class="bubble limit"></span>
+  <span ng-bind-template="{{translate2({value:ceiling})}}" class="bubble limit"></span>
   <span class="bubble value1"></span>
   <span class="bubble value2"></span>
   <span class="bubble value3"></span>

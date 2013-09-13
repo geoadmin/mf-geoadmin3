@@ -3,8 +3,9 @@
       floor="{{minYear}}" 
       ceiling="{{maxYear}}"
       ng-model="currentYear"
-      translate2="formatCurrentYear"
-      ga-slider-data="years">
+      translate2="formatYear"
+      ga-data="years"
+      ga-keyboard-events="isActive">
   </div>
   <a href="#" class="icon-time icon-2x" ng-click="toggle()"></a>
   <div class="time-selector-mask" ng-click="toggle()"></div>
