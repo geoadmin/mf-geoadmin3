@@ -218,7 +218,7 @@
                   })];
                 }
 
-                var olSource = new ol.source.SingleImageWMS({
+                var olSource = new ol.source.ImageWMS({
                   params: {
                     'LAYERS': layer.name
                   },
