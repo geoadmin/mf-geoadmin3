@@ -270,9 +270,12 @@
                 <a ng-href="{{deviceSwitcherHref}}">desktop_redirect</a>
               </p>
               <div ng-controller="GaTranslationController">
-                <div ga-translation-selector ga-translation-selector-options="options"></div>
+                <label for="lang_chooser" translate>lang_chooser_label</label>
+                <div id="lang_chooser" ga-translation-selector ga-translation-selector-options="options"></div>
               </div>
-              <div ga-background-layer-selector ga-background-layer-selector-map="map"></div>
+              <br>
+              <label for="bg_chooser" translate>bg_chooser_label</label>
+              <div id="bg_chooser" ga-background-layer-selector ga-background-layer-selector-map="map"></div>
               <hr>
               <div id="copyrightstext" class="pull-left">
                 <span>&copy;&nbsp;</span> <span translate>data</span>
