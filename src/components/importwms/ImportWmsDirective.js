@@ -179,8 +179,8 @@
                 var height = ol.extent.getHeight(extent) / factor;
                 extent = [
                   layerExtentCenter[0] - width / 2,
-                  layerExtentCenter[0] + width / 2,
                   layerExtentCenter[1] - height / 2,
+                  layerExtentCenter[0] + width / 2,
                   layerExtentCenter[1] + height / 2
                 ];
 
@@ -269,8 +269,8 @@
           // from OL3
           //TO FIX: copy from OpenLayers 3, should be elsewhere?
           function getResolutionFromExtent(extent, size) {
-            var xResolution = (extent[1] - extent[0]) / size[0];
-            var yResolution = (extent[3] - extent[2]) / size[1];
+            var xResolution = (extent[2] - extent[0]) / size[0];
+            var yResolution = (extent[3] - extent[1]) / size[1];
             return Math.max(xResolution, yResolution);
           }
 
@@ -295,8 +295,6 @@
             if (layer.bbox) {
               if (srsCode.toUpperCase() in layer.bbox) {
                 extent = layer.bbox[srsCode.toUpperCase()].bbox;
-                // ol extent is [minx, maxx, miny, maxy]
-                extent = [extent[0], extent[2], extent[1], extent[3]];
               }
             }
 
