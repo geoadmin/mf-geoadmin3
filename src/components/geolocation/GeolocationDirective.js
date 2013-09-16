@@ -51,14 +51,14 @@
               var accuracy = geolocation.getAccuracy();
               var extent = [
                 dest[0] - accuracy,
-                dest[0] + accuracy,
                 dest[1] - accuracy,
+                dest[0] + accuracy,
                 dest[1] + accuracy
               ];
               var size = map.getSize();
               var resolution = Math.max(
-                (extent[1] - extent[0]) / size[0],
-                (extent[3] - extent[2]) / size[1]);
+                (extent[2] - extent[0]) / size[0],
+                (extent[3] - extent[1]) / size[1]);
               resolution = view.constrainResolution(resolution, 0, 0);
               bounce = ol.animation.bounce({
                 duration: duration,
