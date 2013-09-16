@@ -78,8 +78,7 @@
                     geometry: coordinate[0] + ',' + coordinate[1],
                     // FIXME: make sure we are passing the right dpi here.
                     imageDisplay: size[0] + ',' + size[1] + ',96',
-                    mapExtent: extent[0] + ',' + extent[2] +
-                                  ',' + extent[1] + ',' + extent[3],
+                    mapExtent: extent.join(','),
                     tolerance: $scope.options.tolerance,
                     layers: 'all:' + layersToQuery,
                     callback: 'JSON_CALLBACK'
