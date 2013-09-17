@@ -234,7 +234,7 @@
           </a>
           <div id="catalog" class="collapse" ng-controller="GaCatalogtreeController">
 % if device == 'mobile':
-            <div class="ga-topic-controller" ng-controller="GaTopicController">
+            <div class="topic-container" ng-controller="GaTopicController">
               <div ga-topic ga-topic-ui="select" ga-topic-options="options" ga-topic-map="map"></div>
             </div>
 % endif
@@ -270,12 +270,12 @@
                 <a ng-href="{{deviceSwitcherHref}}">desktop_redirect</a>
               </p>
               <div ng-controller="GaTranslationController">
-                <label for="lang_chooser" translate>lang_chooser_label</label>
-                <div id="lang_chooser" ga-translation-selector ga-translation-selector-options="options"></div>
+                <label for="lang-chooser" translate>lang_chooser_label</label>
+                <div id="lang-chooser" ga-translation-selector ga-translation-selector-options="options"></div>
               </div>
               <br>
-              <label for="bg_chooser" translate>bg_chooser_label</label>
-              <div id="bg_chooser" ga-background-layer-selector ga-background-layer-selector-map="map"></div>
+              <label for="bg-chooser" translate>bg_chooser_label</label>
+              <div id="bg-chooser" ga-background-layer-selector ga-background-layer-selector-map="map"></div>
               <hr>
               <p>
                 <a target="_blank" ng-href="{{topicId + '_service_link_href' | translate}}" ng-cloak translate="{{topicId + '_service_link_label'}}"></a>
