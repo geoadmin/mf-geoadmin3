@@ -3,10 +3,12 @@
 
   goog.require('ga_browsersniffer_service');
   goog.require('ga_map_service');
+  goog.require('ga_slider_directive');
 
   var module = angular.module('ga_timeselector_directive', [
     'ga_browsersniffer_service',
     'ga_map_service',
+    'ga_slider_directive',
     'pascalprecht.translate'
   ]);
 
@@ -67,7 +69,8 @@
       });
 
       $scope.$watch('currentYear', function(year) {
-        if ($scope.isActive) {
+        if ($scope.isActive && $scope.minYear <= year &&
+            year <= $scope.maxYear) {
           updateLayers(transformYearToTimeStr(year));
         }
       });
@@ -87,7 +90,8 @@
             var timestamps = olLayer.get('timestamps');
             if (timestamps) {
               for (var i = 0, length = timestamps.length; i < length; i++) {
-                if (year.value === _yearFromString(timestamps[i])) {
+                if (year.value === $scope.maxYear ||
+                    year.value === yearFromString(timestamps[i])) {
                   year.available = true;
                   $scope.availableYears.push(year);
                   break;
@@ -153,7 +157,7 @@
       };
 
       /** Utils **/
-      var _yearFromString = function(timestamp) {
+      var yearFromString = function(timestamp) {
         return parseInt(timestamp.substr(0, 4));
       };
     }
