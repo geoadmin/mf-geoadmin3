@@ -57,16 +57,14 @@
             var size = map.getSize();
             var view = map.getView();
             var bounds = view.calculateExtent(size);
-            return bounds[0] + ',' + bounds[2] + ',' +
-                bounds[1] + ',' + bounds[3];
+            return bounds.join(',');
           }
 
           function zoomToExtent(map, extent) {
             var size = map.getSize();
             var view = map.getView();
 
-            //minX maxX minY maxY
-            view.fitExtent([extent[0], extent[2], extent[1], extent[3]], size);
+            view.fitExtent(extent, size);
           }
 
           function moveTo(map, zoom, center) {

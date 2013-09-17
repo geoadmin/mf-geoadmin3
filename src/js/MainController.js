@@ -6,7 +6,7 @@
   ]);
 
   function createMap() {
-    var swissExtent = [420000, 900000, 30000, 350000];
+    var swissExtent = [420000, 30000, 900000, 350000];
     var swissProjection = ol.proj.configureProj4jsProjection({
       code: 'EPSG:21781',
       extent: swissExtent
