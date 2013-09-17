@@ -11,10 +11,6 @@ from chsdi.models.bod import get_bod_model, computeHeader
 from chsdi.lib.helpers import locale_negotiator
 from chsdi.lib.validation import MapServiceValidation, validateLayerId
 
-import logging
-logging.basicConfig()
-logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
-
 
 class MapService(MapServiceValidation):
 
