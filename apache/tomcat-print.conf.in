@@ -1,11 +1,11 @@
-<Proxy ajp://localhost:8009/print-chsdi-${instanceid}>
+<Proxy ajp://localhost:8009/print-chsdi3-${instanceid}>
     Order deny,allow
     Allow from all
 </Proxy>
 
 
-ProxyPass        /${vars:instanceid}/wsgi/print/ ajp://localhost:8009/print-chsdi-${instanceid}/pdf/
-ProxyPassReverse /${vars:instanceid}/wsgi/print/ ajp://localhost:8009/print-chsdi-${instanceid}/pdf/
+ProxyPass        /${vars:instanceid}/wsgi/print/ ajp://localhost:8009/print-chsdi3-${instanceid}/pdf/
+ProxyPassReverse /${vars:instanceid}/wsgi/print/ ajp://localhost:8009/print-chsdi3-${instanceid}/pdf/
 
 # Try to force IE to open the PDF in a new window
 # overriding what set by the print server
