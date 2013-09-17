@@ -52,9 +52,20 @@
           'ga_map'
         ]);
 
-        module.constant('gaGlobalOptions',
-          {serviceUrl : 'http://mf-chsdi30t.bgdi.admin.ch',
-           baseUrlPath: 'http://mf-geoadmin30t.bgdi.admin.ch/main'});
+        module.constant('gaGlobalOptions', {
+          serviceUrl : 'http://mf-chsdi30t.bgdi.admin.ch',
+          baseUrlPath: 'http://mf-geoadmin30t.bgdi.admin.ch/main'
+        });
+
+        module.config(['gaLayersProvider', function(gaLayersProvider) {
+          gaLayersProvider.wmtsGetTileUrlTemplate =
+              'http://wmts{0-4}.geo.admin.ch/1.0.0/{Layer}/default/' +
+              '{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
+
+          gaLayersProvider.layersConfigUrlTemplate =
+              'http://mf-chsdi30t.bgdi.admin.ch/rest/services/{Topic}/MapServer/layersconfig' +
+              '?lang={Lang}';
+        }]);
 
 
         module.controller('MainController', 
@@ -84,9 +95,8 @@
             });
 
             $scope.map = map;
-
-            gaLayers.getOlLayerById('ch.swisstopo.swissimage').then(function(layer) {
-              map.addLayer(layer);
+            gaLayers.loadForTopic('inspire', 'en').then(function() {
+              map.addLayer(gaLayers.getOlLayerById('ch.swisstopo.swissimage'));
             });
         }]);
       
