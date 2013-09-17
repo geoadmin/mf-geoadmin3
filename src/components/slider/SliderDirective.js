@@ -71,6 +71,70 @@
     return parseFloat(roundedValue.toFixed(precision));
   };
 
+  // RE3: Get the X coordinate of a mouse event
+  var getMouseEventX = function(event) {
+    if (event.originalEvent) {
+      event = event.originalEvent;
+    }
+    return event.clientX || event.touches[0].clientX;
+  };
+
+  // RE3: Get the offset left of an mouse event from a
+  // specific HTML element
+  var getMouseOffsetLeft = function(event, element) {
+    return getMouseEventX(event) - element[0].getBoundingClientRect().left;
+  };
+
+  var nextValue = function(value, list) {
+    if (list && list.length > 0) {
+      for (var i = list.length - 1; i >= 0; i--) {
+        var elt = list[i];
+        if (elt.value === value) {
+          value = magnetize(value, list.slice(0, i));
+          break;
+        }
+      }
+    }
+    return value;
+  };
+
+  var previousValue = function(value, list) {
+    if (list && list.length > 0) {
+      for (var i = 0, len = list.length; i < len; i++) {
+        var elt = list[i];
+        if (elt.value === value) {
+          value = magnetize(value, list.slice(i + 1));
+          break;
+        }
+      }
+    }
+    return value;
+  };
+
+
+  // RE3: Get the closest value from a data list
+  var magnetize = function(value, list) {
+    if (list && list.length > 0) {
+      var minGap = null;
+      for (var i = 0, len = list.length; i < len; i++) {
+        var elt = list[i];
+        if (elt.available) {
+          var gap = elt.value - value;
+          minGap = (!minGap || (Math.abs(gap) < Math.abs(minGap))) ?
+              gap : minGap;
+          if (elt.value === value) {
+            break;
+          }
+        }
+      }
+
+      if (minGap)
+        value += minGap;
+    }
+    return value;
+  };
+
+
   inputEvents = {
     mouse: {
       start: 'mousedown',
@@ -101,9 +165,12 @@
         ngModelLow: '=?',
         ngModelHigh: '=?',
         translate2: '&',
-        dataList: '=gaData', //RE3: contains all the possible values
-        keyboardEvents: '=gaKeyboardEvents' // RE3: defines if we add keyboard
-        //events
+        dataList: '=?gaData', //RE3: Contains all the possible values
+        useKeyboardEvents: '=?gaKeyboardEvents', // RE3: Add keyboard events
+        useMagnetize: '=?gaMagnetize', // RE3: Allow only available values
+        useInputText: '=?gaInputText', // RE3: Add input text
+        unfitToBar: '=?gaUnfitToBar' // RE3: The value is defined by the
+        // center of the pointer
       },
       templateUrl: 'components/slider/partials/slider.html',
       compile: function(element, attributes) {
@@ -134,6 +201,7 @@
         if (range) {
           refLow = 'ngModelLow';
           refHigh = 'ngModelHigh';
+          bindHtml(lowBub, 'translate2({value:' + refLow + '})');
           bindHtml(selBub, 'translate2({value:"Range: " + diff})');
           bindHtml(highBub, 'translate2({value:' + refHigh + '})');
           bindHtml(cmbBub, 'translate2({value:' + refLow + ' + " - " + ' +
@@ -141,6 +209,14 @@
 
         } else {
           refLow = 'ngModel';
+
+          // RE3: Remove the input text
+          if (attributes.gaInputText !== 'true') {
+            bindHtml(lowBub, 'translate2({value:' + refLow + '})');
+            lowBub.find('input').remove();
+          }
+
+
           // Remove useless elements
           angular.forEach([selBar, maxPtr, selBub, highBub, cmbBub],
               function(elt) {
@@ -149,7 +225,6 @@
           );
         }
 
-        bindHtml(lowBub, 'translate2({value:' + refLow + '})');
 
         // Defines watchables properties
         watchables = [refLow, 'floor', 'ceiling'];
@@ -158,10 +233,26 @@
         }
 
         return {
-          post: function(scope, element, attributes) {
+          post: function(scope, element, attributes, ngModel) {
             var barWidth, boundToInputs, dimensions, maxOffset, maxValue,
             minOffset, minValue, offsetRange, pointerHalfWidth,
             updateDOM, valueRange, w, _j, _len1;
+
+            // RE3: Defines useMagnetize property
+            scope.useMagnetize = (scope.dataList) ? scope.useMagnetize : false;
+
+            // RE3: Add a function to valid a value
+            scope.isValid = function(value) {
+               return (value && value <= scope.ceiling && value >= scope.floor);
+            };
+
+            // RE3: Trigger when input value changes
+            scope.onInputChange = function() {
+              var value = parseFloat(scope[refLow]);
+              if (scope.useMagnetize && scope.isValid(value)) {
+                 scope[refLow] = magnetize(value, scope.dataList);
+              }
+            };
 
             // RE3: Defines the position of each division (use step = 1)
             var divisionWidth = 100 / (scope.ceiling - scope.floor);
@@ -204,17 +295,19 @@
               barWidth = width(fullBar);
 
               // Before RE3: minOffset = 0
-              minOffset = 0 - pointerHalfWidth;
+              minOffset = (scope.unfitToBar) ? 0 - pointerHalfWidth : 0;
 
               // Before RE3: maxOffset = barWidth - width(minPtr);
-              maxOffset = barWidth - pointerHalfWidth;
+              maxOffset = (scope.unfitToBar) ? barWidth - pointerHalfWidth :
+                  barWidth - width(minPtr);
 
               minValue = parseFloat(attributes.floor);
               maxValue = parseFloat(attributes.ceiling);
               valueRange = maxValue - minValue;
 
               // Before RE3: offsetRange = maxOffset - minOffset;
-              return offsetRange = barWidth;
+              return offsetRange = (scope.unfitToBar) ? barWidth :
+                  maxOffset - minOffset;
             };
             updateDOM = function() {
               var adjustBubbles, bindToInputEvents,
@@ -223,6 +316,22 @@
                   setBindings, setPointers;
 
               dimensions();
+
+
+              // RE3 add: Get the slider value from an offsetLeft
+              var getValueFromOffset = function(offsetLeft) {
+                var newPercent = percentOffset(offsetLeft);
+                var newValue = minValue + (valueRange * newPercent / 100.0);
+                newValue = roundStep(newValue, parseInt(scope.precision),
+                    parseFloat(scope.step), parseFloat(scope.floor));
+
+                // RE3: we magnetize the pointer to the available data
+                if (scope.useMagnetize) {
+                  newValue = magnetize(newValue, scope.dataList);
+                }
+                return newValue;
+              };
+
               percentOffset = function(offset) {
                 return ((offset - minOffset) / offsetRange) * 100;
               };
@@ -249,8 +358,9 @@
                 newLowValue = percentValue(scope[refLow]);
 
                 // Before RE3: offset(minPtr, percentToOffset(newLowValue)
-                offset(minPtr, pixelize(
-                     percentToOffsetInt(newLowValue) - halfWidth(minPtr)));
+                offset(minPtr, (scope.unfitToBar) ? pixelize(
+                     percentToOffsetInt(newLowValue) - halfWidth(minPtr)) :
+                     percentToOffset(newLowValue));
 
                 offset(lowBub, pixelize(offsetLeft(minPtr) -
                     (halfWidth(lowBub)) + pointerHalfWidth));
@@ -259,8 +369,9 @@
                   newHighValue = percentValue(scope[refHigh]);
 
                   // Before RE3: offset(maxPtr, percentToOffset(newHighValue)
-                  offset(maxPtr, pixelize(
-                      percentToOffsetInt(newHighValue) - halfWidth(maxPtr)));
+                  offset(maxPtr, (scope.unfitToBar) ? pixelize(
+                      percentToOffsetInt(newHighValue) - halfWidth(maxPtr)) :
+                      percentToOffset(newHighValue));
 
                   offset(highBub, pixelize(offsetLeft(maxPtr) -
                       (halfWidth(highBub)) + pointerHalfWidth));
@@ -281,11 +392,15 @@
 
                 // RE3: the current value must be always centered on the handle
                 // of the slider
-                //fitToBar(lowBub);
+                if (!scope.unfitToBar) {
+                  fitToBar(lowBub);
+                }
                 bubToAdjust = highBub;
                 if (range) {
-                  fitToBar(highBub);
-                  fitToBar(selBub);
+                  if (!scope.unfitToBar) {
+                    fitToBar(highBub);
+                    fitToBar(selBub);
+                  }
                   if (gap(lowBub, highBub) < 10) {
                     hide(lowBub);
                     hide(highBub);
@@ -327,21 +442,8 @@
                 }
               };
               bindToInputEvents = function(pointer, ref, events) {
-                var onEnd, onMove, onStart, getMouseEventX, getMouseOffsetLeft,
-                    lastMouseOffsetLeft, lastPointerOffsetLeft;
-
-                getMouseEventX = function(event) {
-                  // RE3: if event is a Jquery event
-                  if (event.originalEvent) {
-                    event = event.originalEvent;
-                  }
-
-                  return event.clientX || event.touches[0].clientX;
-                };
-
-                getMouseOffsetLeft = function(eventX) {
-                  return eventX - element[0].getBoundingClientRect().left;
-                };
+                var onEnd, onMove, onStart, lastMouseOffsetLeft,
+                    lastPointerOffsetLeft;
 
                 onEnd = function() {
                   pointer.removeClass('active');
@@ -350,16 +452,16 @@
                 };
 
                 onMove = function(event) {
-                  var newOffset, newPercent, newValue;
+                  // Get the current mouse cursor offset
+                  var currentMouseOffsetLeft = getMouseOffsetLeft(event,
+                      element);
 
-                  // Get the current mouse cursor offset and calculate the diff
-                  // with the cursor offset of the last mouse move event
-                  var currentMouseOffsetLeft = getMouseOffsetLeft(
-                      getMouseEventX(event));
+                  // Calculate the diff with the cursor offset of the last
+                  // mouse move event
                   var diff = currentMouseOffsetLeft - lastMouseOffsetLeft;
 
                   // Get the new pointer offset
-                  newOffset = lastPointerOffsetLeft + diff;
+                  var newOffset = lastPointerOffsetLeft + diff;
                   newOffset = Math.max(Math.min(newOffset, maxOffset),
                       minOffset);
 
@@ -367,9 +469,8 @@
                   lastMouseOffsetLeft = currentMouseOffsetLeft;
                   lastPointerOffsetLeft = newOffset;
 
-                  // Get the current slider values with the new pointer offset
-                  newPercent = percentOffset(newOffset);
-                  newValue = minValue + (valueRange * newPercent / 100.0);
+                  // Get the new slider value from the new pointer offset
+                  var newValue = getValueFromOffset(newOffset);
 
                   if (range) {
                     if (ref === refLow) {
@@ -386,14 +487,11 @@
                       }
                     }
                   }
-                  newValue = roundStep(newValue, parseInt(scope.precision),
-                      parseFloat(scope.step), parseFloat(scope.floor));
                   scope[ref] = newValue;
                   return scope.$apply();
                 };
                 onStart = function(event) {
-                  lastMouseOffsetLeft = getMouseOffsetLeft(
-                      getMouseEventX(event));
+                  lastMouseOffsetLeft = getMouseOffsetLeft(event, element);
                   lastPointerOffsetLeft = offsetLeft(pointer);
                   pointer.addClass('active');
                   dimensions();
@@ -406,19 +504,47 @@
               };
 
               setBindings = function() {
-                var bind, inputMethod, _j, _len1, _ref2, _results;
+                var bind, _results = [];
+                boundToInputs = true; // Verify the events are not added twice
 
-                boundToInputs = true;
+                // Add pseudo-drag events to the pointer
                 bind = function(method) {
                   bindToInputEvents(minPtr, refLow, inputEvents[method]);
                   return bindToInputEvents(maxPtr, refHigh,
                       inputEvents[method]);
                 };
-                _ref2 = ['touchIE', 'touch', 'mouse'];
-                _results = [];
-                for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
-                  inputMethod = _ref2[_j];
-                  _results.push(bind(inputMethod));
+                angular.forEach(['touchIE', 'touch', 'mouse'],
+                    function(elt) {
+                      _results.push(bind(elt));
+                    }
+                );
+
+                if (!range) {
+                  // RE3: Add click event on the bar
+                  _results.push(fullBar.bind('click', function(event) {
+                    var offsetLeft = getMouseOffsetLeft(event, element) -
+                         halfWidth(minPtr);
+                    scope[refLow] = getValueFromOffset(offsetLeft);
+                    return scope.$apply();
+                  }));
+
+                  var input = element.find('.value1 input');
+                  _results.push(input.bind('keydown', function(event) {
+                    // RE3: Stop propagation of arrows key event
+                    if (event.which == 37 || event.which == 39) {
+                      event.stopPropagation();
+                    }
+                  }));
+                  _results.push(input.bind('blur', function(event) {
+                    // RE3: if the user leave the input without having set
+                    // a good value, we set the last good value saved.
+                    if (scope.lastGoodValue) {
+                      scope.$apply(function() {
+                        scope[refLow] = scope.lastGoodValue;
+                      });
+                    }
+                  }));
+
                 }
                 return _results;
               };
@@ -447,11 +573,22 @@
             $timeout(updateDOM);
             for (_j = 0, _len1 = watchables.length; _j < _len1; _j++) {
               w = watchables[_j];
-              scope.$watch(w, updateDOM);
+              scope.$watch(w, function(newValue, oldValue, scope) {
+                 // RE3: Add test of validty of the value watched
+                 if (scope.isValid(newValue)) {
+                   scope.lastGoodValue = undefined;
+                   newValue = parseFloat(newValue);
+
+                   updateDOM();
+
+                 } else if (!scope.lastGoodValue) {
+                   scope.lastGoodValue = oldValue;
+                 }
+              });
             }
 
             // RE3: Add left and right arrows events management
-            scope.$watch('keyboardEvents', function(active) {
+            scope.$watch('useKeyboardEvents', function(active) {
               if (!range && active) {
                 $document.bind('keydown', onKeyboardEvent);
               } else {
@@ -461,14 +598,14 @@
 
             // RE3: Handle arrows left and right key
             var onKeyboardEvent = function(event) {
-              event.stopPropagation();
-              event.preventDefault();
               scope.$apply(function() {
                 var value = scope.ngModel;
                 if (event.which == 37) {
-                  scope.ngModel = Math.max(--value, scope.floor);
+                  scope.ngModel = Math.max(previousValue(value,
+                      scope.dataList), scope.floor);
                 } else if (event.which == 39) {
-                  scope.ngModel = Math.min(++value, scope.ceiling);
+                  scope.ngModel = Math.min(nextValue(value, scope.dataList),
+                      scope.ceiling);
                 }
               });
             };
@@ -480,4 +617,3 @@
     };
   });
 })();
-
