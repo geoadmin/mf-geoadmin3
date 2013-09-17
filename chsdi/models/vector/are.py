@@ -4,11 +4,12 @@ from sqlalchemy import Column, Text, Integer
 from sqlalchemy.types import Numeric
 from geoalchemy import GeometryColumn, Geometry
 
-from chsdi.models import  *
+from chsdi.models import *
 from chsdi.models.vector import Vector
 
 
 Base = bases['are']
+
 
 class Landschaftstypen(Base, Vector):
     __tablename__ = 'landschaftstypen'
@@ -23,12 +24,13 @@ class Landschaftstypen(Base, Vector):
     typname_fr = Column('typname_fr', Text)
     regname_de = Column('regname_de', Text)
     regname_fr = Column('regname_fr', Text)
-    object_are = Column ('object_are', Numeric)
-    typ_area = Column ('typ_area', Numeric)
-    stand = Column ('stand', Text)
+    object_are = Column('object_are', Numeric)
+    typ_area = Column('typ_area', Numeric)
+    stand = Column('stand', Text)
     the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
 
 register('ch.are.landschaftstypen', Landschaftstypen)
+
 
 class Alpenkonvention(Base, Vector):
     __tablename__ = 'alpenkonvention'
@@ -44,6 +46,7 @@ class Alpenkonvention(Base, Vector):
 
 register('ch.are.alpenkonvention', Alpenkonvention)
 
+
 class AggloIsoStaedte(Base, Vector):
     __tablename__ = 'agglomerationen_isolierte_staedte_2000'
     __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': False})
@@ -56,9 +59,10 @@ class AggloIsoStaedte(Base, Vector):
     name = Column('name', Text)
     klasse_de = Column('klasse_de', Text)
     klasse_fr = Column('klasse_fr', Text)
-    flaeche_ha= Column('flaeche_ha', Numeric)
+    flaeche_ha = Column('flaeche_ha', Numeric)
 
 register('ch.are.agglomerationen_isolierte_staedte-2000', AggloIsoStaedte)
+
 
 class GueteklasseOev(Base, Vector):
     __tablename__ = 'gueteklassen'
@@ -74,6 +78,7 @@ class GueteklasseOev(Base, Vector):
 
 register('ch.are.gueteklassen_oev', GueteklasseOev)
 
+
 class Bevoelkerungsdichte(Base, Vector):
     __tablename__ = 'bevoelkerungsdichte_vz00'
     __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': False})
@@ -88,6 +93,7 @@ class Bevoelkerungsdichte(Base, Vector):
 
 register('ch.are.bevoelkerungsdichte-vz00', Bevoelkerungsdichte)
 
+
 class Beschaeftigtendichte(Base, Vector):
     __tablename__ = 'beschaeftigtendichte_bz08'
     __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': False})
@@ -101,6 +107,7 @@ class Beschaeftigtendichte(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
 
 register('ch.are.beschaeftigtendichte-bz9', Beschaeftigtendichte)
+
 
 class Bauzonen(Base, Vector):
     __tablename__ = 'bauzonen_2007'
@@ -118,6 +125,7 @@ class Bauzonen(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
 
 register('ch.are.bauzonen-2007', Bauzonen)
+
 
 class Bauzonen_2012(Base, Vector):
     __tablename__ = 'bauzonen_2012'
@@ -139,6 +147,7 @@ class Bauzonen_2012(Base, Vector):
 
 register('ch.are.bauzonen', Bauzonen_2012)
 
+
 class Gemeindetyp(Base, Vector):
     __tablename__ = 'gemeindetyp_1990_9klassen'
     __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': False})
@@ -152,6 +161,7 @@ class Gemeindetyp(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
 
 register('ch.are.gemeindetyp-1990-9klassen', Gemeindetyp)
+
 
 class Gemeindetypen_2012(Base, Vector):
     __tablename__ = 'gemeindetypologie_2012'
