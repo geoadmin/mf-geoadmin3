@@ -172,6 +172,10 @@
                     escape(contextPermalink);
                 }
               }
+
+              element.on('contextmenu', 'a', function(e) {
+                e.stopPropagation();
+              });
             }
           };
         });
