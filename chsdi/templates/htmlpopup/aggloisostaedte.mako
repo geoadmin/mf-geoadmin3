@@ -3,9 +3,9 @@
 <%def name="table_body(c, lang)">
     <tr><td width="150">${_('name')}</td><td>${c['value']}</td></tr>
     <tr><td width="150">${_('klasse')}</td>
-      % if lang == 'de':
+      % if lang in ('de', 'rm', 'en'):
            <td>${c['attributes']['klasse_de'] or '-'}</td>
-      % elif lang == 'fr':
+      % else:
            <td>${c['attributes']['klasse_fr'] or '-'}</td>
       % endif
     </tr>
