@@ -7,10 +7,10 @@
   fullName = pageargs.get('fullName')
 %>
 
-<div class="htmlpopup_header">
+<div class="htmlpopup-content">
   <span style="font-weight:bold;">${fullName}</span> (${attribution})
 </div>
-<div class="htmlpopup_footer">
+<div class="htmlpopup-content">
   <span style="font-weight:bold;">${_('Information')}</span>
   <br>
   <table border="0" cellspacing="0" cellpadding="1" width="400px" style="font-size: 100%;" padding="1 1 1 1">
