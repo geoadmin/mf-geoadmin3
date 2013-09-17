@@ -1,0 +1,1088 @@
+# allowed DPIs
+dpis: [150]
+
+#
+# the list of allowed hosts
+#
+hosts:
+  - !localMatch
+    dummy: true
+
+  - !ipMatch
+    ip: 0.0.0.0
+    mask: 0.0.0.0
+
+#
+# allowed scales
+#
+scales: [2500000, 1000000, 500000, 200000, 100000, 50000, 25000, 20000, 10000, 5000, 2500]
+
+globalParallelFetches: 25
+perHostParallelFetches: 25
+#--------------------------------------
+# A4 landscape:
+#--------------------------------------
+layouts:
+  1 A4 landscape:
+    mainPage:
+      rotation: true
+      pageSize: A4
+      landscape: true
+#---------------------------------------
+# header
+#---------------------------------------
+
+      header:
+        height: 42
+        items:
+          - !columns
+            widths: [35, 65]
+            items:
+              - !image
+                condition: customLogo
+                align: left
+                #maxWidth: 251
+                #maxHeight: 34
+                url: "$${mapLogo}"
+              - !image
+                condition: "!customLogo"
+                align: left
+                maxWidth: 251
+                maxHeight: 34
+                url: "${buildout:directory}/print/print_logo.png"
+              - !text
+                fontSize: 14
+                fontColor: #333333
+                text: |
+                  $${mapTitle}
+
+#---------------------------------------
+# Map & overviewmap
+#---------------------------------------
+      items:
+        - !map
+          width: 762
+          height: 486
+
+#---------------------------------------
+# Scales
+#---------------------------------------
+        - !columns
+          absoluteY: 550
+          absoluteX: 652
+          width: 150
+          items:
+            - !text
+              condition: langde
+              fontSize: 9
+              align: right
+              text: |
+                Massstab 1: $${format %,d scale}
+            - !text
+              condition: langfr
+              fontSize: 9
+              align: right
+              text: |
+                Echelle 1: $${format %,d scale}
+            - !text
+              condition: langen
+              fontSize: 9
+              align: right
+              text: |
+                Scale 1: $${format %,d scale}
+            - !text
+              condition: langfi
+              fontSize: 9
+              align: right
+              text: |
+                Scala 1: $${format %,d scale}
+            - !text
+              condition: langit
+              fontSize: 9
+              align: right
+              text: |
+                Scala 1: $${format %,d scale}
+
+#---------------------------------------
+# C part
+#---------------------------------------
+        - !columns
+          absoluteY: 555
+          absoluteX: 307
+          width: 300
+          items:
+            - !text
+              condition: langde
+              fontSize: 8
+              align: left
+              text: |
+                Breitbandatlas 
+            - !text
+              condition: langfr
+              fontSize: 8
+              align: left
+              text: |
+                 Atlas large bande 
+            - !text
+              condition: langen
+              fontSize: 8
+              align: left
+              text: |
+                geo.admin.ch, the swiss geoportal
+            - !text
+              condition: langfi
+              fontSize: 8
+              align: left
+              text: |
+                geo.admin.ch, il geoportal da la confederaziun
+            - !text
+              condition: langit
+              fontSize: 8
+              align: left
+              text: |
+                geo.admin.ch, il geoportale della Confederazione
+
+#---------------------------------------
+# E part: copyright
+#---------------------------------------
+        - !columns
+          absoluteY: 60
+          absoluteX: 45
+          width: 300
+          items:
+            - !text
+              condition: langde
+              fontSize: 7
+              align: left
+              text: |
+                $${dataOwner}
+            - !text
+              condition: langfr
+              fontSize: 7
+              align: left
+              text: |
+                $${dataOwner}
+            - !text
+              condition: langen
+              fontSize: 7
+              align: left
+              text: |
+                $${dataOwner}
+            - !text
+              condition: langfi
+              fontSize: 7
+              align: left
+              text: |
+                $${dataOwner}
+            - !text
+              condition: langit
+              fontSize: 7
+              align: left
+              text: |
+                $${dataOwner}
+
+#---------------------------------------
+# G part
+#---------------------------------------
+        - !columns
+          absoluteY: 45
+          absoluteX: 40
+          width: 550
+          items:
+            - !text
+              fontSize: 7
+              align: left
+              text: |
+                $${mapFooter}
+
+#---------------------------------------
+# H part: disclaimer
+#---------------------------------------
+        - !columns
+          absoluteY: 30
+          absoluteX: 40
+          width: 762
+          items:
+            - !text
+              condition: langde
+              fontSize: 7
+              align: left
+              text: |
+                Haftung: Obwohl die Bundesbehörden mit aller Sorgfalt auf die Richtigkeit der veröffentlichten Informationen achten, kann hinsichtlich der inhaltlichen Richtigkeit, Genauigkeit, Aktualität, Zuverlässigkeit und Vollständigkeit dieser Informationen keine Gewährleistung übernommen werden.Copyright, Bundesbehörden der Schweizerischen Eidgenossenschaft, 2007. http://www.disclaimer.admin.ch
+            - !text
+              condition: langfr
+              fontSize: 7
+              align: left
+              text: |
+                Responsabilité: Malgré la grande attention qu’elles portent à la justesse des informations diffusées sur ce site, les autorités fédérales ne peuvent endosser aucune responsabilité quant à la fidélité, à l’exactitude, à l’actualité, à la fiabilité et à l’intégralité de ces informations. Droits d'auteur: autorités de la Confédération suisse, 2007. http://www.disclaimer.admin.ch/conditions_dutilisation.html
+            - !text
+              condition: langen
+              fontSize: 7
+              align: left
+              text: |
+                Limitation of liability. Although every care has been taken by the Federal Authorities to ensure the accuracy of the information published, no warranty can be given in respect of the accuracy, reliability, up-to-dateness or completeness of this information. Copyright, Swiss federal authorities, 2007. http://www.disclaimer.admin.ch/terms_and_conditions.html
+            - !text
+              condition: langfi
+              fontSize: 7
+              align: left
+              text: |
+                Responsabladad: Malgrà che las autoritads dattan bain adatg che las infurmaziuns publitgadas sin questa pagina d'internet sajan correctas, na pon ellas surpigliar nagina responsabladad per la correctadad dal cuntegn, per l'exactezza, per l'actualitad, per l'autenticitad e per la cumplettezza da talas infurmaziuns. Copyright: autoritads da la confederaziun svizra, 2007. http://www.disclaimer.admin.ch
+            - !text
+              condition: langit
+              fontSize: 7
+              align: left
+              text: |
+                Responsabilità: Nonostante si presti grande attenzione all’esattezza delle informazioni pubblicate su questo sito, le autorità federali declinano ogni responsabilità per la fedeltà, l’esattezza, l’attualità, l’affidabilità e la completezza di tali informazioni. Diritti d’autore: autorità della Confederazione Svizzera, anno 2007. http://www.disclaimer.admin.ch/basi_legali.html
+                  
+
+
+#-------------------------------------
+# Scalesbar
+#-------------------------------------
+        - !columns
+          absoluteY: 75
+          absoluteX: 648
+          width: 150
+          config:
+            borderWidth: 0.5
+          items:
+              - !text
+                fontSize: 29
+                text: ' '
+                backgroundColor: white
+        - !columns
+          absoluteY: 70
+          absoluteX: 650
+          width: 146
+          nbColumns: 1
+          items:
+              - !scalebar
+                type: line
+                units: m
+                color: black
+                align: center
+                fontSize: 8
+                maxSize: 150
+
+    lastPage:
+      pageSize: A4
+      landscape: true
+      condition: "enhableLegends"
+      items:
+#---------------------------------------
+# Legend
+#---------------------------------------
+        - !columns
+          absoluteX: 45
+          absoluteY: 500
+          width: 250
+          items:
+            - !legends
+              inline: false
+              defaultScale: 0.3
+              maxHeight: 400
+              maxWidth: 250
+              maxIconHeight: 0
+              maxIconWidth: 0
+              columnMargin: 10
+              classIndentation: 3
+              classSpace: 5
+              backgroundColor: white
+              layerFontSize: 9
+
+#---------------------------------------
+# A4 portrait:
+#---------------------------------------
+  2 A4 portrait:
+    mainPage:
+      pageSize: A4
+      rotation: true
+#---------------------------------------
+# header
+#---------------------------------------
+      header:
+        height: 42
+        items:
+          - !columns
+            widths: [50, 50]
+            items:
+              - !image
+                condition: customLogo
+                align: left
+                #maxWidth: 251
+                #maxHeight: 34
+                url: "$${mapLogo}"
+              - !image
+                condition: "!customLogo"
+                align: left
+                maxWidth: 251
+                maxHeight: 34
+                url: "${buildout:directory}/print/print_logo.png"
+              - !text
+                fontSize: 14
+                fontColor: #333333
+                text: |
+                  $${mapTitle}
+      items:
+#---------------------------------------
+# Map & overviewmap
+#---------------------------------------
+        - !map
+          width: 510
+          height: 720
+
+#---------------------------------------
+# Scales
+#---------------------------------------
+        - !columns
+          absoluteY: 795
+          absoluteX: 403
+          width: 150
+          items:
+            - !text
+              condition: langde
+              fontSize: 9
+              align: right
+              text: |
+                Massstab 1: $${format %,d scale}
+            - !text
+              condition: langfr
+              fontSize: 9
+              align: right
+              text: |
+                Echelle 1: $${format %,d scale}
+            - !text
+              condition: langen
+              fontSize: 9
+              align: right
+              text: |
+                Scale 1: $${format %,d scale}
+            - !text
+              condition: langfi
+              fontSize: 9
+              align: right
+              text: |
+                Scala 1: $${format %,d scale}
+            - !text
+              condition: langit
+              fontSize: 9
+              align: right
+              text: |
+                Scala 1: $${format %,d scale}
+
+#---------------------------------------
+# C part
+#---------------------------------------
+        - !columns
+          absoluteY: 805
+          absoluteX: 297
+          width: 300
+          items:
+            - !text
+              condition: langde
+              fontSize: 8
+              align: left
+              text: |
+                geo.admin.ch, das Geoportal des Bundes
+            - !text
+              condition: langfr
+              fontSize: 8
+              align: left
+              text: |
+                geo.admin.ch, le géoportail fédéral
+            - !text
+              condition: langen
+              fontSize: 8
+              align: left
+              text: |
+                geo.admin.ch, the swiss geoportal
+            - !text
+              condition: langfi
+              fontSize: 8
+              align: left
+              text: |
+                geo.admin.ch, il geoportal da la confederaziun
+            - !text
+              condition: langit
+              fontSize: 8
+              align: left
+              text: |
+                geo.admin.ch, il geoportale della Confederazione
+
+#---------------------------------------
+# E part: copyright
+#---------------------------------------
+        - !columns
+          absoluteY: 70
+          absoluteX: 45
+          width: 300
+          items:
+            - !text
+              condition: langde
+              fontSize: 7
+              align: left
+              text: |
+                $${dataOwner}
+            - !text
+              condition: langfr
+              fontSize: 7
+              align: left
+              text: |
+                $${dataOwner}
+            - !text
+              condition: langen
+              fontSize: 7
+              align: left
+              text: |
+                $${dataOwner}
+            - !text
+              condition: langfi
+              fontSize: 7
+              align: left
+              text: |
+                $${dataOwner}
+            - !text
+              condition: langit
+              fontSize: 7
+              align: left
+              text: |
+                $${dataOwner}
+
+#---------------------------------------
+# G part
+#---------------------------------------
+        - !columns
+          absoluteY: 58
+          absoluteX: 42
+          width: 510
+          items:
+            - !text
+              fontSize: 7
+              align: left
+              text: |
+                $${mapFooter}
+
+#---------------------------------------
+# H part: disclaimer
+#---------------------------------------
+        - !columns
+          absoluteY: 43
+          absoluteX: 42
+          width: 510
+          items:
+            - !text
+              condition: langde
+              fontSize: 6
+              align: left
+              text: |
+                Haftung: Obwohl die Bundesbehörden mit aller Sorgfalt auf die Richtigkeit der veröffentlichten Informationen achten, kann hinsichtlich der inhaltlichen Richtigkeit, Genauigkeit, Aktualität, Zuverlässigkeit und Vollständigkeit dieser Informationen keine Gewährleistung übernommen werden.Copyright, Bundesbehörden der Schweizerischen Eidgenossenschaft, 2007. http://www.disclaimer.admin.ch
+            - !text
+              condition: langfr
+              fontSize: 7
+              align: left
+              text: |
+                Responsabilité: Malgré la grande attention quâelles portent à la justesse des informations diffusées sur ce site, les autorités fédérales ne peuvent endosser aucune responsabilité quant à la fidélité, à lâexactitude, à lâactualité, à la fiabilité et à lâintégralité de ces informations. Droits d'auteur: autorités de la Confédération suisse, 2007. http://www.disclaimer.admin.ch/conditions_dutilisation.html
+            - !text
+              condition: langen
+              fontSize: 7
+              align: left
+              text: |
+                Limitation of liability. Although every care has been taken by the Federal Authorities to ensure the accuracy of the information published, no warranty can be given in respect of the accuracy, reliability, up-to-dateness or completeness of this information. Copyright, Swiss federal authorities, 2007. http://www.disclaimer.admin.ch/terms_and_conditions.html
+            - !text
+              condition: langfi
+              fontSize: 7
+              align: left
+              text: |
+                Responsabladad: Malgrà che las autoritads dattan bain adatg che las infurmaziuns publitgadas sin questa pagina d'internet sajan correctas, na pon ellas surpigliar nagina responsabladad per la correctadad dal cuntegn, per l'exactezza, per l'actualitad, per l'autenticitad e per la cumplettezza da talas infurmaziuns. Copyright: autoritads da la confederaziun svizra, 2007. http://www.disclaimer.admin.ch
+            - !text
+              condition: langit
+              fontSize: 7
+              align: left
+              text: |
+                Responsabilità: Nonostante si presti grande attenzione allâesattezza delle informazioni pubblicate su questo sito, le autorità federali declinano ogni responsabilità per la fedeltà, lâesattezza, lâattualità, lâaffidabilità e la completezza di tali informazioni. Diritti dâautore: autorità della Confederazione Svizzera, anno 2007. http://www.disclaimer.admin.ch/basi_legali.html
+
+#-------------------------------------
+# Scalesbar
+#-------------------------------------
+        - !columns
+          absoluteY: 87
+          absoluteX: 400
+          width: 150
+          config:
+            borderWidth: 0.5
+          items:
+              - !text
+                fontSize: 29
+                text: ' '
+                backgroundColor: white
+        - !columns
+          absoluteY: 82
+          absoluteX: 400
+          width: 146
+          nbColumns: 1
+          items:
+              - !scalebar
+                type: line
+                units: m
+                color: black
+                align: center
+                fontSize: 8
+                maxSize: 150
+    lastPage:
+      pageSize: A4
+      landscape: false
+      condition: "enhableLegends"
+      items:
+#---------------------------------------
+# Legend
+#---------------------------------------
+        - !columns
+          absoluteX: 45
+          absoluteY: 795
+          width: 250
+          items:
+            - !legends
+              inline: false
+              defaultScale: 0.3
+              maxHeight: 400
+              maxWidth: 250
+              maxIconHeight: 0
+              maxIconWidth: 0
+              columnMargin: 10
+              classIndentation: 3
+              classSpace: 5
+              backgroundColor: white
+              layerFontSize: 9
+#---------------------------------------
+# A3 landscape:
+#---------------------------------------
+  3 A3 landscape:
+    mainPage:
+      rotation: true
+      pageSize: A3
+      landscape: true
+#---------------------------------------
+# header
+#---------------------------------------
+
+      header:
+        height: 42
+        items:
+          - !columns
+            widths: [35, 65]
+            items:
+              - !image
+                condition: customLogo
+                align: left
+                #maxWidth: 251
+                #maxHeight: 34
+                url: "$${mapLogo}"
+              - !image
+                condition: "!customLogo"
+                align: left
+                maxWidth: 251
+                maxHeight: 34
+                url: "${buildout:directory}/print/print_logo.png"
+              - !text
+                fontSize: 14
+                fontColor: #333333
+                text: |
+                  $${mapTitle}
+
+
+#---------------------------------------
+# Map & overviewmap
+#---------------------------------------
+      items:
+        - !map
+          width: 1110
+          height: 700
+
+#---------------------------------------
+# Scales
+#---------------------------------------
+        - !columns
+          absoluteY: 800
+          absoluteX: 922
+          width: 150
+          items:
+            - !text
+              condition: langde
+              fontSize: 9
+              align: right
+              text: |
+                Massstab 1: $${format %,d scale}
+            - !text
+              condition: langfr
+              fontSize: 9
+              align: right
+              text: |
+                Echelle 1: $${format %,d scale}
+            - !text
+              condition: langen
+              fontSize: 9
+              align: right
+              text: |
+                Scale 1: $${format %,d scale}
+            - !text
+              condition: langrm
+              fontSize: 9
+              align: right
+              text: |
+                Scala 1: $${format %,d scale}
+            - !text
+              condition: langit
+              fontSize: 9
+              align: right
+              text: |
+                Scala 1: $${format %,d scale}
+
+#---------------------------------------
+# C part
+#---------------------------------------
+        - !columns
+          absoluteY: 800
+          absoluteX: 428
+          width: 300
+          items:
+            - !text
+              condition: langde
+              fontSize: 8
+              align: left
+              text: |
+                geo.admin.ch, das Geoportal des Bundes
+            - !text
+              condition: langfr
+              fontSize: 8
+              align: left
+              text: |
+                geo.admin.ch, le géoportail fédéral
+            - !text
+              condition: langen
+              fontSize: 8
+              align: left
+              text: |
+                geo.admin.ch, the swiss geoportal
+            - !text
+              condition: langrm
+              fontSize: 8
+              align: left
+              text: |
+                geo.admin.ch, il geoportal da la confederaziun
+            - !text
+              condition: langit
+              fontSize: 8
+              align: left
+              text: |
+                geo.admin.ch, il geoportale della Confederazione
+
+#---------------------------------------
+# E part: copyright
+#---------------------------------------
+        - !columns
+          absoluteY: 60
+          absoluteX: 40
+          width: 300
+          items:
+            - !text
+              condition: langde
+              fontSize: 7
+              align: left
+              text: |
+                $${dataOwner}
+            - !text
+              condition: langfr
+              fontSize: 7
+              align: left
+              text: |
+                $${dataOwner}
+            - !text
+              condition: langen
+              fontSize: 7
+              align: left
+              text: |
+                $${dataOwner}
+            - !text
+              condition: langrm
+              fontSize: 7
+              align: left
+              text: |
+                $${dataOwner}
+            - !text
+              condition: langit
+              fontSize: 7
+              align: left
+              text: |
+                $${dataOwner}
+
+#---------------------------------------
+# G part
+#---------------------------------------
+        - !columns
+          absoluteY: 45
+          absoluteX: 40
+          width: 1077
+          items:
+            - !text
+              fontSize: 7
+              align: left
+              text: |
+                $${mapFooter}
+
+#---------------------------------------
+# H part: disclaimer
+#---------------------------------------
+        - !columns
+          absoluteY: 30
+          absoluteX: 40
+          width: 1077
+          items:
+            - !text
+              condition: langde
+              fontSize: 7
+              align: left
+              text: |
+                Haftung: Obwohl die Bundesbehörden mit aller Sorgfalt auf die Richtigkeit der veröffentlichten Informationen achten, kann hinsichtlich der inhaltlichen Richtigkeit, Genauigkeit, Aktualität, Zuverlässigkeit und Vollständigkeit dieser Informationen keine Gewährleistung übernommen werden.Copyright, Bundesbehörden der Schweizerischen Eidgenossenschaft, 2007. http://www.disclaimer.admin.ch
+            - !text
+              condition: langfr
+              fontSize: 7
+              align: left
+              text: |
+                Responsabilité: Malgré la grande attention qu'elles portent à la justesse des informations diffusées sur ce site, les autorités fédérales ne peuvent endosser aucune responsabilité quant à la fidélité, à l'exactitude, à l'actualité, à la fiabilité et à l'intégralité de ces informations. Droits d'auteur: autorités de la Confédération suisse, 2007. http://www.disclaimer.admin.ch/conditions_dutilisation.html
+            - !text
+              condition: langen
+              fontSize: 7
+              align: left
+              text: |
+                Limitation of liability. Although every care has been taken by the Federal Authorities to ensure the accuracy of the information published, no warranty can be given in respect of the accuracy, reliability, up-to-dateness or completeness of this information. Copyright, Swiss federal authorities, 2007. http://www.disclaimer.admin.ch/terms_and_conditions.html
+            - !text
+              condition: langrm
+              fontSize: 7
+              align: left
+              text: |
+                Responsabladad: Malgrà che las autoritads dattan bain adatg che las infurmaziuns publitgadas sin questa pagina d'internet sajan correctas, na pon ellas surpigliar nagina responsabladad per la correctadad dal cuntegn, per l'exactezza, per l'actualitad, per l'autenticitad e per la cumplettezza da talas infurmaziuns. Copyright: autoritads da la confederaziun svizra, 2007. http://www.disclaimer.admin.ch
+            - !text
+              condition: langit
+              fontSize: 7
+              align: left
+              text: |
+                Responsabilità: Nonostante si presti grande attenzione all?esattezza delle informazioni pubblicate su questo sito, le autorità federali declinano ogni responsabilità per la fedeltà, l?esattezza, l?attualità, l?affidabilità e la completezza di tali informazioni. Diritti d?autore: autorità della Confederazione Svizzera, anno 2007. http://www.disclaimer.admin.ch/basi_legali.html
+
+
+
+#-------------------------------------
+# Scalesbar
+#-------------------------------------
+        - !columns
+          absoluteY: 115
+          absoluteX: 950
+          width: 150
+          config:
+            borderWidth: 0.5
+          items:
+              - !text
+                fontSize: 25
+                text: ' '
+                backgroundColor: white
+        - !columns
+          absoluteY: 110
+          absoluteX: 952
+          width: 146
+          nbColumns: 1
+          items:
+              - !scalebar
+                type: line
+                units: m
+                color: black
+                align: center
+                fontSize: 8
+                maxSize: 150
+    lastPage:
+      pageSize: A3
+      landscape: true
+      condition: "enhableLegends"
+      items:
+#---------------------------------------
+# Legend
+#---------------------------------------
+        - !columns
+          absoluteX: 90
+          absoluteY: 800
+          width: 250
+          items:
+            - !legends
+              inline: false
+              defaultScale: 0.3
+              maxHeight: 400
+              maxWidth: 250
+              maxIconHeight: 0
+              maxIconWidth: 0
+              columnMargin: 10
+              classIndentation: 3
+              classSpace: 5
+              backgroundColor: white
+              layerFontSize: 9
+#---------------------------------------
+# A3 portait:
+#---------------------------------------
+  4 A3 portrait:
+    mainPage:
+      pageSize: A3
+      rotation: true
+#---------------------------------------
+# header
+#---------------------------------------
+      header:
+        height: 42
+        items:
+          - !columns
+            widths: [50, 50]
+            items:
+              - !image
+                condition: customLogo
+                align: left
+                #maxWidth: 251
+                #maxHeight: 34
+                url: "$${mapLogo}"
+              - !image
+                condition: "!customLogo"
+                align: left
+                maxWidth: 251
+                maxHeight: 34
+                url: "${buildout:directory}/print/print_logo.png"
+              - !text
+                fontSize: 14
+                fontColor: #333333
+                text: |
+                  $${mapTitle}
+      items:
+#---------------------------------------
+# Map & overviewmap
+#---------------------------------------
+        - !map
+          width: 760
+          height: 1050
+
+#---------------------------------------
+# Scales
+#---------------------------------------
+        - !columns
+          absoluteY: 1150
+          absoluteX: 570
+          width: 150
+          items:
+            - !text
+              condition: langde
+              fontSize: 9
+              align: right
+              text: |
+                Massstab 1: $${format %,d scale}
+            - !text
+              condition: langfr
+              fontSize: 9
+              align: right
+              text: |
+                Echelle 1: $${format %,d scale}
+            - !text
+              condition: langen
+              fontSize: 9
+              align: right
+              text: |
+                Scale 1: $${format %,d scale}
+            - !text
+              condition: langrm
+              fontSize: 9
+              align: right
+              text: |
+                Scala 1: $${format %,d scale}
+            - !text
+              condition: langit
+              fontSize: 9
+              align: right
+              text: |
+                Scala 1: $${format %,d scale}
+
+#---------------------------------------
+# C part
+#---------------------------------------
+        - !columns
+          absoluteY: 1150
+          absoluteX: 420
+          width: 300
+          items:
+            - !text
+              condition: langde
+              fontSize: 8
+              align: left
+              text: |
+                geo.admin.ch, das Geoportal des Bundes
+            - !text
+              condition: langfr
+              fontSize: 8
+              align: left
+              text: |
+                geo.admin.ch, le géoportail fédéral
+            - !text
+              condition: langen
+              fontSize: 8
+              align: left
+              text: |
+                geo.admin.ch, the swiss geoportal
+            - !text
+              condition: langrm
+              fontSize: 8
+              align: left
+              text: |
+                geo.admin.ch, il geoportal da la confederaziun
+            - !text
+              condition: langit
+              fontSize: 8
+              align: left
+              text: |
+                geo.admin.ch, il geoportale della Confederazione
+
+#---------------------------------------
+# E part: copyright
+#---------------------------------------
+        - !columns
+          absoluteY: 70
+          absoluteX: 40
+          width: 300
+          items:
+            - !text
+              condition: langde
+              fontSize: 7
+              align: left
+              text: |
+                $${dataOwner}
+            - !text
+              condition: langfr
+              fontSize: 7
+              align: left
+              text: |
+                $${dataOwner}
+            - !text
+              condition: langen
+              fontSize: 7
+              align: left
+              text: |
+                $${dataOwner}
+            - !text
+              condition: langrm
+              fontSize: 7
+              align: left
+              text: |
+                $${dataOwner}
+            - !text
+              condition: langit
+              fontSize: 7
+              align: left
+              text: |
+                $${dataOwner}
+#---------------------------------------
+# G part
+#---------------------------------------
+        - !columns
+          absoluteY: 58
+          absoluteX: 40
+          width: 760
+          items:
+            - !text
+              fontSize: 7
+              align: left
+              text: |
+                $${mapFooter}
+
+#---------------------------------------
+# H part: disclaimer
+#---------------------------------------
+        - !columns
+          absoluteY: 43
+          absoluteX: 40
+          width: 760
+          items:
+            - !text
+              condition: langde
+              fontSize: 6
+              align: left
+              text: |
+                Haftung: Obwohl die Bundesbehörden mit aller Sorgfalt auf die Richtigkeit der veröffentlichten Informationen achten, kann hinsichtlich der inhaltlichen Richtigkeit, Genauigkeit, Aktualität, Zuverlässigkeit und Vollständigkeit dieser Informationen keine Gewährleistung übernommen werden.Copyright, Bundesbehörden der Schweizerischen Eidgenossenschaft, 2007. http://www.disclaimer.admin.ch
+            - !text
+              condition: langfr
+              fontSize: 7
+              align: left
+              text: |
+                Responsabilité: Malgré la grande attention qu'elles portent à la justesse des informations diffusées sur ce site, les autorités fédérales ne peuvent endosser aucune responsabilité quant à la fidélité, à l'exactitude, à l'actualité, à la fiabilité et à l'intégralité de ces informations. Droits d'auteur: autorités de la Confédération suisse, 2007. http://www.disclaimer.admin.ch/conditions_dutilisation.html
+            - !text
+              condition: langen
+              fontSize: 7
+              align: left
+              text: |
+                Limitation of liability. Although every care has been taken by the Federal Authorities to ensure the accuracy of the information published, no warranty can be given in respect of the accuracy, reliability, up-to-dateness or completeness of this information. Copyright, Swiss federal authorities, 2007. http://www.disclaimer.admin.ch/terms_and_conditions.html
+            - !text
+              condition: langrm
+              fontSize: 7
+              align: left
+              text: |
+                Responsabladad: Malgrà che las autoritads dattan bain adatg che las infurmaziuns publitgadas sin questa pagina d'internet sajan correctas, na pon ellas surpigliar nagina responsabladad per la correctadad dal cuntegn, per l'exactezza, per l'actualitad, per l'autenticitad e per la cumplettezza da talas infurmaziuns. Copyright: autoritads da la confederaziun svizra, 2007. http://www.disclaimer.admin.ch
+            - !text
+              condition: langit
+              fontSize: 7
+              align: left
+              text: |
+                Responsabilità: Nonostante si presti grande attenzione allâesattezza delle informazioni pubblicate su questo sito, le autorità federali declinano ogni responsabilità per la fedeltà, lâesattezza, lâattualità, lâaffidabilità e la completezza di tali informazioni. Diritti dâautore: autorità della Confederazione Svizzera, anno 2007. http://www.disclaimer.admin.ch/basi_legali.html
+
+#-------------------------------------
+# Scalesbar
+#-------------------------------------
+        - !columns
+          absoluteY: 120
+          absoluteX: 630
+          width: 150
+          config:
+            borderWidth: 0.5
+          items:
+              - !text
+                fontSize: 25
+                text: ' '
+                backgroundColor: white
+        - !columns
+          absoluteY: 115
+          absoluteX: 632
+          width: 146
+          nbColumns: 1
+          items:
+              - !scalebar
+                type: line
+                units: m
+                color: black
+                align: center
+                fontSize: 8
+                maxSize: 150
+    lastPage:
+      pageSize: A3
+      landscape: false
+      condition: "enhableLegends"
+      items:
+#---------------------------------------
+# Legend
+#---------------------------------------
+        - !columns
+          absoluteX: 90
+          absoluteY: 1150
+          width: 250
+          items:
+            - !legends
+              inline: false
+              defaultScale: 0.3
+              maxHeight: 400
+              maxWidth: 250
+              maxIconHeight: 0
+              maxIconWidth: 0
+              columnMargin: 10
+              classIndentation: 3
+              classSpace: 5
+              backgroundColor: white
+              layerFontSize: 9
+
+
