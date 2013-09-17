@@ -153,6 +153,21 @@
     }
   };
 
+  module.directive('gaFormatInputValue', function() {
+    return {
+      restrict: 'A',
+      require: '?ngModel',
+      link: function(scope, element, attrs, ngModel) {
+        if (!ngModel) return;
+
+        // Specify how UI should be updated
+        ngModel.$render = function() {
+          element[0].value = scope.translate2({value: ngModel.$viewValue});
+        };
+      }
+    };
+  });
+
   module.directive('gaSlider', function($timeout, $sce, $document) {
     return {
       restrict: 'A',

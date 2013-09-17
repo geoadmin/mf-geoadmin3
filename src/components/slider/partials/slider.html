@@ -19,7 +19,9 @@
   <span class="bubble selection"></span>
   <span ng-bind-template="{{translate2({value:floor})}}" class="bubble limit"></span>
   <span ng-bind-template="{{translate2({value:ceiling})}}" class="bubble limit"></span>
-  <span class="bubble value1"><input type="text" ng-model="ngModel" ng-change="onInputChange()"/></span>
+  <span class="bubble value1">
+    <input type="text" ng-model="ngModel" ng-change="onInputChange()" ga-format-input-value />
+  </span>
   <span class="bubble value2"></span>
   <span class="bubble value3"></span>
 </div>
