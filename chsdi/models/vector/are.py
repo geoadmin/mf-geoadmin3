@@ -11,7 +11,6 @@ from chsdi.models.vector import Vector
 Base = bases['are']
 
 class Landschaftstypen(Base, Vector):
-    # view in a schema
     __tablename__ = 'landschaftstypen'
     __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': False})
     __template__ = 'templates/htmlpopup/landschaftstypen.mako'
@@ -32,7 +31,6 @@ class Landschaftstypen(Base, Vector):
 register('ch.are.landschaftstypen', Landschaftstypen)
 
 class Alpenkonvention(Base, Vector):
-    # view in a schema
     __tablename__ = 'alpenkonvention'
     __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': False})
     __template__ = 'templates/htmlpopup/alpenkonvention.mako'
@@ -47,7 +45,6 @@ class Alpenkonvention(Base, Vector):
 register('ch.are.alpenkonvention', Alpenkonvention)
 
 class AggloIsoStaedte(Base, Vector):
-    # view in a schema
     __tablename__ = 'agglomerationen_isolierte_staedte_2000'
     __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': False})
     __template__ = 'templates/htmlpopup/aggloisostaedte.mako'
@@ -64,7 +61,6 @@ class AggloIsoStaedte(Base, Vector):
 register('ch.are.agglomerationen_isolierte_staedte-2000', AggloIsoStaedte)
 
 class GueteklasseOev(Base, Vector):
-    # view in a schema
     __tablename__ = 'gueteklassen'
     __table_args__ = ({'schema': 'oeffentlicher_verkehr', 'autoload': False})
     __template__ = 'templates/htmlpopup/gueteklasseoev.mako'
@@ -79,7 +75,6 @@ class GueteklasseOev(Base, Vector):
 register('ch.are.gueteklassen_oev', GueteklasseOev)
 
 class Bevoelkerungsdichte(Base, Vector):
-    # view in a schema
     __tablename__ = 'bevoelkerungsdichte_vz00'
     __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': False})
     __template__ = 'templates/htmlpopup/bevoelkerungsdichte.mako'
@@ -94,7 +89,6 @@ class Bevoelkerungsdichte(Base, Vector):
 register('ch.are.bevoelkerungsdichte-vz00', Bevoelkerungsdichte)
 
 class Beschaeftigtendichte(Base, Vector):
-    # view in a schema
     __tablename__ = 'beschaeftigtendichte_bz08'
     __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': False})
     __template__ = 'templates/htmlpopup/beschaeftigtendichte.mako'
@@ -109,7 +103,6 @@ class Beschaeftigtendichte(Base, Vector):
 register('ch.are.beschaeftigtendichte-bz9', Beschaeftigtendichte)
 
 class Bauzonen(Base, Vector):
-    # view in a schema
     __tablename__ = 'bauzonen_2007'
     __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': False})
     __template__ = 'templates/htmlpopup/bauzonen.mako'
@@ -127,7 +120,6 @@ class Bauzonen(Base, Vector):
 register('ch.are.bauzonen-2007', Bauzonen)
 
 class Bauzonen_2012(Base, Vector):
-    # view in a schema
     __tablename__ = 'bauzonen_2012'
     __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': False})
     __template__ = 'templates/htmlpopup/bauzonen_2012.mako'
@@ -147,21 +139,7 @@ class Bauzonen_2012(Base, Vector):
 
 register('ch.are.bauzonen', Bauzonen_2012)
 
-#class Reisezeit_Miv(Base, Vector):
-#    # view in a schema
-#    __tablename__ = 'reisezeit_miv_2005'
-#    __table_args__ = ({'schema': 'strassen', 'autoload': True})
-#    __template__ = 'templates/htmlpopup/reisezeit_miv.mako'
-#    __esriId__ = 3008
-#    __bodId__ = ''
-#    __displayFieldName__ = ''
-#
-#    id = Column('gem_no', Integer, primary_key=True)
-#    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
-#
-
 class Gemeindetyp(Base, Vector):
-    # view in a schema
     __tablename__ = 'gemeindetyp_1990_9klassen'
     __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': False})
     __template__ = 'templates/htmlpopup/gemeindetyp.mako'
@@ -176,7 +154,6 @@ class Gemeindetyp(Base, Vector):
 register('ch.are.gemeindetyp-1990-9klassen', Gemeindetyp)
 
 class Gemeindetypen_2012(Base, Vector):
-    # view in a schema
     __tablename__ = 'gemeindetypologie_2012'
     __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': False})
     __template__ = 'templates/htmlpopup/gemeindetypen_2012.mako'
