@@ -5,16 +5,16 @@
     <tr><td width="150">${_('nummer')}</td>    <td>${c['value']}</td></tr>
     <tr><td width="150">${_('typnummer')}</td>    <td>${c['value']}</td></tr>
     <tr><td width="150">${_('typ')}</td>
-      % if lang == 'de':
+      % if lang in ('de', 'rm', 'en'):
            <td>${c['attributes']['typname_de'] or '-'}</td>
-      % elif lang == 'fr':
+      % else:
            <td>${c['attributes']['typname_fr'] or '-'}</td>
       % endif
     </tr>
     <tr><td width="150">${_('regname')}</td>
-      % if lang == 'de':
+      % if lang in ('de', 'rm', 'en'):
            <td>${c['attributes']['regname_de'] or '-'}</td>
-      % elif lang == 'fr':
+      % else:
            <td>${c['attributes']['regname_fr'] or '-'}</td>
       % endif
     </tr>

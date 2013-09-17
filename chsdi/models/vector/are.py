@@ -18,7 +18,7 @@ class Landschaftstypen(Base, Vector):
     __bodId__ = 'ch.are.landschaftstypen'
     __displayFieldName__ = 'typ_nr'
     id = Column('object', Text, primary_key=True)
-    typ_nr = Column('typ_nr', Numeric)
+    typ_nr = Column('typ_nr', Integer)
     typname_de = Column('typname_de', Text)
     typname_fr = Column('typname_fr', Text)
     regname_de = Column('regname_de', Text)
