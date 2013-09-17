@@ -1,7 +1,5 @@
 <%inherit file="base.mako"/>
 
-<%def name="preview()">${c['value'] or '-'}</%def>
-
 <%def name="table_body(c, lang)">
 <% c[stable_id] = True %>
     <tr><td width="150">${_('nummer')}</td>    <td>${c['value']}</td></tr>
