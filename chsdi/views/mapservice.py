@@ -20,7 +20,8 @@ class MapService(MapServiceValidation):
 
     def __init__(self, request):
         super(MapService, self).__init__()
-        self.mapName = request.matchdict.get('map')  # The topic
+        # Map and topic represents the same resource in chsdi
+        self.mapName = request.matchdict.get('map')
         self.hasMap(request.db, self.mapName)
         self.cbName = request.params.get('callback')
         self.lang = locale_negotiator(request)
@@ -60,25 +61,15 @@ class MapService(MapServiceValidation):
     def getlegend(self):
         from pyramid.renderers import render_to_response
         idlayer = self.request.matchdict.get('idlayer')
-        model = get_bod_model(self.lang)
-        query = self.request.db.query(model).filter(
-            model.maps.ilike('%%%s%%' % self.mapName)
-        )
-        query = query.filter(model.idBod == idlayer)
-        try:
-            layer = query.one()
-        except NoResultFound:
-            raise exc.HTTPNotFound('No layer with id %s' % idlayer)
-        except MultipleResultsFound:
-            raise exc.HTTPInternalServerError()
-        legend = {'layer': layer.layerMetadata()}
+        layer = self._get_layer_resource(idlayer)
+
+        legend = {'layer': layer}
         response = render_to_response(
             'chsdi:templates/legend.mako', legend, request=self.request
         )
         if self.cbName is None:
             return response
-        else:
-            return response.body
+        return response.body
 
     # order matters, last route is the default!
     @view_config(route_name='identify', renderer='geojson',
@@ -114,40 +105,76 @@ class MapService(MapServiceValidation):
 
     def _get_feature(self):
         self.returnGeometry = self.request.params.get('returnGeometry')
-        feature, template = self._get_feature_resource()
+        idlayer = self.request.matchdict.get('idlayer')
+        idfeature = self.request.matchdict.get('idfeature')
+        model = validateLayerId(idlayer)[0]
+
+        feature = self._get_feature_resource(idlayer, idfeature, model)
         return feature
 
     @view_config(route_name='htmlpopup', renderer='jsonp')
     def htmlpopup(self):
         from pyramid.renderers import render_to_response
         self.returnGeometry = False
-        feature, template = self._get_feature_resource()
+        idlayer = self.request.matchdict.get('idlayer')
+        idfeature = self.request.matchdict.get('idfeature')
+        model = validateLayerId(idlayer)[0]
+
+        layer = self._get_layer_resource(idlayer)
+        feature = self._get_feature_resource(idlayer, idfeature, model)
+
+        template = 'chsdi:%s' % model.__template__
+        feature.update({'attribution': layer.get('attributes')['dataOwner']})
+        feature.update({'fullName': layer.get('fullName')})
         response = render_to_response(
-            'chsdi:' + template,
+            template,
             feature,
             request=self.request)
+
         if self.cbName is None:
             return response
-        else:
-            return response.body
+        return response.body
 
-    def _get_feature_resource(self):
-        idfeature = self.request.matchdict.get('idfeature')
-        idlayer = self.request.matchdict.get('idlayer')
-        model = validateLayerId(idlayer)[0]
-        query = self.request.db.query(model).filter(model.id == idfeature)
+    def _get_layer_resource(self, idlayer):
+        model = get_bod_model(self.lang)
+        query = self.request.db.query(model).filter(
+            model.maps.ilike('%%%s%%' % self.mapName)
+        )
+        query = query.filter(model.idBod == idlayer)
+
+        try:
+            layer = query.one()
+        except NoResultFound:
+            raise exc.HTTPNotFound('No layer with id %s' % idlayer)
+        except MultipleResultsFound:
+            raise exc.HTTPInternalServerError()
+
+        layer = layer.layerMetadata()
+
+        return layer
+
+    def _get_feature_resource(self, idlayer, idfeature, model):
+        layerName = self.translate(idlayer)
+        query = self.request.db.query(model)
+        query = query.filter(model.id == idfeature)
+
+        try:
+            feature = query.one()
+        except NoResultFound:
+            raise exc.HTTPNotFound('No feature with id %s' % idfeature)
+        except MultipleResultsFound:
+            raise exc.HTTPInternalServerError()
+
         if self.returnGeometry:
-            feature = [f.__geo_interface__ for f in query]
+            feature = feature.__geo_interface__
         else:
-            feature = [f.__interface__ for f in query]
-        feature = {
-            'feature': feature.pop(
-            )} if len(
-            feature) > 0 else exc.HTTPBadRequest(
-            'No feature with id %s' %
-            idfeature)
-        template = model.__template__
-        return feature, template
+            feature = feature.__interface__
+
+        if hasattr(feature, 'extra'):
+            feature.extra['layerName'] = layerName
+        feature = {'feature': feature}
+
+        return feature
 
     def _full_text_search(self, query, orm_column):
         filters = []
@@ -174,9 +201,13 @@ class MapService(MapServiceValidation):
         for query in queries:
             for feature in query:
                 if self.returnGeometry:
-                    yield feature.__geo_interface__
+                    f = feature.__geo_interface__
                 else:
-                    yield feature.__interface__
+                    f = feature.__interface__
+                if hasattr(f, 'extra'):
+                    layerBodId = f.extra['layerBodId']
+                    f.extra['layerName'] = self.translate(layerBodId)
+                yield f
 
     def _build_queries(self, models):
         for layer in models:
