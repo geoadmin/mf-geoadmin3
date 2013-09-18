@@ -6,8 +6,8 @@
   module.controller('GaContextPopupController',
       function($scope, gaGlobalOptions) {
         $scope.options = {
-          heightUrl: gaGlobalOptions.serviceUrl + "/rest/services/height",
-          qrcodeUrl: gaGlobalOptions.serviceUrl + "/qrcodegenerator"
+          heightUrl: gaGlobalOptions.serviceUrl + '/rest/services/height',
+          qrcodeUrl: gaGlobalOptions.serviceUrl + '/qrcodegenerator'
         };
 
       });
