@@ -314,56 +314,6 @@ class CatalogEn(Base, Catalog):
     __table_args__ = ({'schema': 're3'})
 
 
-class CatalogInspireDe(Base, Catalog):
-    __tablename__ = 'view_catalog_inspire_de'
-    __table_args__ = ({'schema': 're3'})
-
-
-class CatalogInspireFr(Base, Catalog):
-    __tablename__ = 'view_catalog_inspire_fr'
-    __table_args__ = ({'schema': 're3'})
-
-
-class CatalogInspireIt(Base, Catalog):
-    __tablename__ = 'view_catalog_inspire_it'
-    __table_args__ = ({'schema': 're3'})
-
-
-class CatalogInpireRm(Base, Catalog):
-    __tablename__ = 'view_catalog_inspire_rm'
-    __table_args__ = ({'schema': 're3'})
-
-
-class CatalogInspireEn(Base, Catalog):
-    __tablename__ = 'view_catalog_inspire_en'
-    __table_args__ = ({'schema': 're3'})
-
-
-class CatalogEchDe(Base, Catalog):
-    __tablename__ = 'view_catalog_ech_de'
-    __table_args__ = ({'schema': 're3'})
-
-
-class CatalogEchFr(Base, Catalog):
-    __tablename__ = 'view_catalog_ech_fr'
-    __table_args__ = ({'schema': 're3'})
-
-
-class CatalogEchIt(Base, Catalog):
-    __tablename__ = 'view_catalog_ech_it'
-    __table_args__ = ({'schema': 're3'})
-
-
-class CatalogEchRm(Base, Catalog):
-    __tablename__ = 'view_catalog_ech_rm'
-    __table_args__ = ({'schema': 're3'})
-
-
-class CatalogEchEn(Base, Catalog):
-    __tablename__ = 'view_catalog_ech_en'
-    __table_args__ = ({'schema': 're3'})
-
-
 def get_bod_model(lang):
     if lang == 'fr':
         return BodLayerFr
@@ -379,34 +329,14 @@ def get_bod_model(lang):
 
 def get_catalog_model(lang, topic):
     if lang == 'fr':
-        if topic == 'inspire':
-            return CatalogInspireFr
-        elif topic == 'ech':
-            return CatalogEchFr
         return CatalogFr
     elif lang == 'it':
-        if topic == 'inspire':
-            return CatalogInspireIt
-        elif topic == 'ech':
-            return CatalogEchIt
         return CatalogIt
     elif lang == 'rm':
-        if topic == 'inspire':
-            return CatalogInspireRm
-        elif topic == 'ech':
-            return CatalogEchRm
         return CatalogRm
     elif lang == 'en':
-        if topic == 'inspire':
-            return CatalogInspireEn
-        elif topic == 'ech':
-            return CatalogEchEn
         return CatalogEn
     else:
-        if topic == 'inspire':
-            return CatalogInspireDe
-        elif topic == 'ech':
-            return CatalogEchDe
         return CatalogDe
 
 
