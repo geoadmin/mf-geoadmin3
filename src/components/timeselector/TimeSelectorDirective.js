@@ -60,20 +60,6 @@
         return $sce.trustAsHtml('' + value);
       };
 
-      // Watchers
-      $scope.$watch('isActive', function(active) {
-        $scope.stateClass = (active) ? '' : 'inactive';
-        updateLayers((active) ?
-            transformYearToTimeStr($scope.currentYear) :
-            undefined);
-      });
-
-      $scope.$watch('currentYear', function(year) {
-        if ($scope.isActive && $scope.minYear <= year &&
-            year <= $scope.maxYear) {
-          updateLayers(transformYearToTimeStr(year));
-        }
-      });
 
       /**
        * Update the list of years available
@@ -103,25 +89,10 @@
       };
 
       /**
-       * Tranform a year given by the select box or the slider component
-       * into a time parameter usable by layers
-       */
-      var transformYearToTimeStr = function(year) {
-        // The select box returns an object
-        if (year && typeof year === 'object') {
-          year = '' + year.value;
-        }
-        if (year && parseInt(year) >= $scope.maxYear) {
-          year = null;
-        }
-        return year;
-      };
-
-      /**
        * Update the layers with the new time parameter
        * @param {String} timeStr A year in string format.
        */
-      var updateLayers = function(timeStr) {
+      $scope.updateLayers = function(timeStr) {
         // If time is:
         // undefined : Remove the use a parameter time
         // null      : Apply the last available year
@@ -143,8 +114,8 @@
               }
               src.updateDimensions({'Time' : layerTimeStr});
 
-            } else if (src instanceof ol.source.SingleImageWMS ||
-                src instanceof ol.source.TiledWMS) {
+            } else if (src instanceof ol.source.ImageWMS ||
+                src instanceof ol.source.TileWMS) {
               if (!angular.isDefined(timeStr)) {
                 layerTimeStr = '';
               } else if (timeStr === null) {
@@ -163,8 +134,42 @@
     }
   );
 
+  module.directive('gaTimeSelectorBt', function($rootScope) {
+    return {
+      restrict: 'A',
+      template: '<a href="#" class="icon-time icon-3x" ng-click="toggle()"' +
+        'ng-class="stateClass"></a>',
+      link: function(scope, elt, attrs) {
+        scope.isActive = false;
+        scope.isDisable = true;
+
+        $rootScope.$on('gaTimeSelectorEnabled', function() {
+          if (scope.isDisabled) {
+            scope.stateClass = 'enabled';
+            scope.isDisable = false;
+          }
+        });
+
+        $rootScope.$on('gaTimeSelectorDisabled', function() {
+          scope.stateClass = '';
+          scope.isDisable = true;
+          scope.isActive = false;
+        });
+
+        // Toggle the state of the component
+        scope.toggle = function() {
+          if (!scope.isDisable) {
+            scope.isActive = !scope.isActive;
+            scope.stateClass = scope.isActive ? 'active' : 'enabled';
+            $rootScope.$broadcast('gaTimeSelectorActivation', scope.isActive);
+          }
+        };
+      }
+    };
+  });
+
   module.directive('gaTimeSelector',
-    function($log, $translate, gaBrowserSniffer) {
+    function($log, $translate, $rootScope, gaBrowserSniffer) {
       return {
         restrict: 'A',
         templateUrl: function(element, attrs) {
@@ -183,24 +188,62 @@
             elt.addClass('mobile');
           }
 
-          // Update list of available years and hide/show the HTML
-          // element if the list is empty or not
+          /**
+           * Update list of available years then hide/show the HTML
+           * element if the list is empty or not
+           */
           var refreshComp = function(obj) {
             scope.updateDatesAvailable();
             if (scope.availableYears.length == 0) {
               scope.isActive = false;
-              elt.hide();
+              $rootScope.$broadcast('gaTimeSelectorDisabled');
             } else {
-              elt.show();
-              // Set default value on the first display
-              if (scope.currentYear === -1) {
-                scope.currentYear = scope.maxYear;
-              }
+             $rootScope.$broadcast('gaTimeSelectorEnabled');
             }
           };
-
           scope.map.getLayers().on('add', refreshComp);
           scope.map.getLayers().on('remove', refreshComp);
+
+          // Active/deactive manually the time selector
+          $rootScope.$on('gaTimeSelectorActivation', function(event, active) {
+            scope.isActive = active;
+          });
+
+          // Watchers
+          scope.$watch('isActive', function(active) {
+
+            // Set default value on the first display
+            if (active && scope.currentYear === -1) {
+              scope.currentYear = scope.maxYear;
+            }
+            scope.stateClass = (active) ? 'active' : '';
+            scope.updateLayers((active) ?
+                transformYearToTimeStr(scope.currentYear) :
+                undefined);
+          });
+
+          scope.$watch('currentYear', function(year) {
+            if (scope.isActive && scope.minYear <= year &&
+                year <= scope.maxYear) {
+              scope.updateLayers(transformYearToTimeStr(year));
+            }
+          });
+
+          /** Utils **/
+          /**
+           * Tranform a year given by the select box or the slider component
+           * into a time parameter usable by layers
+           */
+          var transformYearToTimeStr = function(year) {
+            // The select box returns an object
+            if (year && typeof year === 'object') {
+              year = '' + year.value;
+            }
+            if (year && parseInt(year) >= scope.maxYear) {
+              year = null;
+            }
+            return year;
+          };
         }
       };
     }

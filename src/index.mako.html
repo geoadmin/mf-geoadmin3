@@ -87,6 +87,7 @@
         </div>
         <div ga-attribution ga-attribution-map="map"></div>
       </div>
+      <div ga-time-selector-bt id="time-selector-bt" class="time-selector-bt"></div>
     </div> <!-- #map -->
 
 
@@ -122,8 +123,8 @@
       <div ga-tooltip ga-tooltip-map="map" ga-tooltip-options="options"></div>
     </div>
 
-    <div ng-controller="GaTimeSelectorController">
-      <div ga-time-selector ga-time-selector-map="map" ga-time-selector-options="options" id="time-selector" class="time-selector"></div>
+    <div ng-controller="GaTimeSelectorController"> 
+      <div ga-time-selector ga-time-selector-map="map" ga-time-selector-options="options" ng-show="isActive" id="time-selector" class="time-selector ng-hide"></div>
     </div>
 
     <div id="pulldown">
