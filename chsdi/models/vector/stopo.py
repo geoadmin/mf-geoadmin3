@@ -1044,9 +1044,8 @@ class GeologieTektonischeKarteLine(Base, Vector):
         __template__ = 'templates/htmlpopup/tektonische_karte_line.mako'
         __esriId__ = 1000
         __bodId__ = 'ch.swisstopo.geologie-tektonische_karte'
-        __displayFieldName__ = 'bgdi_id'
-        id = Column('fid', Text, primary_key=True)
-        bgdi_id = Column ('bgdi_id', Integer)
+        __displayFieldName__ = 'line_id'
+        id = Column('fid', Integer, primary_key=True)
         line_id = Column('line_id', Integer)
         type_de = Column('type_de', Text)
         type_fr = Column('type_fr', Text)
@@ -1059,9 +1058,8 @@ class GeologieTektonischeKarteLine(Base, Vector):
 #        __template__ = 'templates/htmlpopup/tektonische_karte_poly.mako'
 #        __esriId__ = 1000
 #        __bodId__ = 'ch.swisstopo.geologie-tektonische_karte'
-#        __displayFieldName__ = 'bgdi_id'
+#        __displayFieldName__ = 't2_id'
 #        id = Column('fid', Integer, primary_key=True)
-#        bgdi_id = Column ('bgdi_id', Integer)
 #        t2_id = Column('t2_id', Integer)
 #        type_de = Column('type_de', Text)
 #        type_fr = Column('type_fr', Text)
