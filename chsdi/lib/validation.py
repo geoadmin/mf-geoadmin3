@@ -29,7 +29,12 @@ class MapServiceValidation(MapNameValidation):
         self._mapExtent = None
         self._tolerance = None
         self._models = None
-        self.esriGeometryTypes = ('esriGeometryPoint', 'esriGeometryPolyline', 'esriGeometryPolygon', 'esriGeometryEnvelope')
+        self.esriGeometryTypes = (
+            'esriGeometryPoint',
+            'esriGeometryPolyline',
+            'esriGeometryPolygon',
+            'esriGeometryEnvelope'
+        )
 
     @property
     def geometry(self):
