@@ -1,4 +1,4 @@
-# -*- coding: UTF-8 -*-
+# -*- coding: utf-8 -*-
 <!DOCTYPE html>
 <html ng-app="ga" ng-controller="GaMainController">
   <head>
@@ -426,24 +426,23 @@
 
     <script>
       (function() {
-         var module = angular.module('ga');
+        var module = angular.module('ga');
 
-         module.constant('gaGlobalOptions',
-           {serviceUrl : '${service_url}',
-            baseUrlPath: '${base_url_path}'});
+        module.constant('gaGlobalOptions', {
+          serviceUrl : '${service_url}',
+          baseUrlPath: '${base_url_path}'
+        });
 
-          module.config(['gaLayersProvider', function(gaLayersProvider) {
-            gaLayersProvider.wmtsGetTileUrlTemplate =
-                'http://wmts{0-4}.geo.admin.ch/1.0.0/{Layer}/default/' +
-                '{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
+        module.config(['gaLayersProvider', function(gaLayersProvider) {
+          gaLayersProvider.wmtsGetTileUrlTemplate =
+              'http://wmts{0-4}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
 
-            gaLayersProvider.layersConfigUrlTemplate =
-                '${service_url}/rest/services/{Topic}/MapServer/layersconfig' +
-                '?lang={Lang}';
-            gaLayersProvider.legendUrlTemplate =
-                '${service_url}/rest/services/{Topic}/MapServer/{Layer}/getlegend' +
-                '?lang={Lang}';
-          }]);
+          gaLayersProvider.layersConfigUrlTemplate =
+              '${service_url}/rest/services/{Topic}/MapServer/layersconfig?lang={Lang}';
+
+          gaLayersProvider.legendUrlTemplate =
+            '${service_url}/rest/services/{Topic}/MapServer/{Layer}/getlegend?lang={Lang}';
+        }]);
       })();
     </script>
 
