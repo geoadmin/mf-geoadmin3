@@ -1,4 +1,12 @@
-.time-selector-bt { 
+.time-selector-bt {
+  position: absolute;
+  top: 400px;
+  right: 7px;
+  width: 44px;
+  height: 44px;
+  text-align: center;
+  z-index: 1000;
+  
   a {
     cursor: default;
     text-decoration: none;
@@ -14,6 +22,10 @@
       color: rgba(255, 0, 0, 1);
     }
   }
+
+  @media screen and (max-width: @screen-tablet) {
+    top: 260px;
+  } 
 }
 
 

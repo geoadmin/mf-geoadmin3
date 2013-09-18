@@ -25,10 +25,19 @@
       $scope.years = []; //List of all possible years 1845 -> current year
       $scope.availableYears = []; // List of available years
 
+      // Format the text of the current year (only used by slider)
+      $scope.formatYear = function(value) {
+        if (parseInt(value) >= $scope.maxYear) {
+          value = $translate('last_available_year');
+        }
+        return $sce.trustAsHtml('' + value);
+      };
+
       // Fill the years array. This array will be used to configure the
       // display of the slider (minor and major divisions ...)
       for (var i = $scope.maxYear; i >= $scope.minYear; i--) {
         var year = {
+          label: $scope.formatYear(i),
           value: i,
           available: false,
           minor: false,
@@ -51,15 +60,6 @@
       $scope.toggle = function() {
         $scope.isActive = !$scope.isActive;
       };
-
-      // Format the text of the current year (only used by slider)
-      $scope.formatYear = function(value) {
-        if (parseInt(value) >= $scope.maxYear) {
-          value = $translate('last_available_year');
-        }
-        return $sce.trustAsHtml('' + value);
-      };
-
 
       /**
        * Update the list of years available
@@ -138,13 +138,13 @@
     return {
       restrict: 'A',
       template: '<a href="#" class="icon-time icon-3x" ng-click="toggle()"' +
-        'ng-class="stateClass"></a>',
+        ' ng-class="stateClass"></a>',
       link: function(scope, elt, attrs) {
         scope.isActive = false;
         scope.isDisable = true;
 
         $rootScope.$on('gaTimeSelectorEnabled', function() {
-          if (scope.isDisabled) {
+          if (scope.isDisable) {
             scope.stateClass = 'enabled';
             scope.isDisable = false;
           }
@@ -223,9 +223,12 @@
           });
 
           scope.$watch('currentYear', function(year) {
-            if (scope.isActive && scope.minYear <= year &&
-                year <= scope.maxYear) {
-              scope.updateLayers(transformYearToTimeStr(year));
+            var newYear = transformYearToTimeStr(year);
+            // Only valid values are allowed: undefined, null or
+            // minYear <= newYear <= maxYear
+            if (scope.isActive && (!newYear ||
+               (scope.minYear <= newYear && newYear <= scope.maxYear))) {
+              scope.updateLayers(newYear);
             }
           });
 
