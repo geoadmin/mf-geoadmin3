@@ -5,7 +5,7 @@
 <%def name="table_body(c, lang)">
 
 <%
-  Key_To_Translate = 'blw_farbe_' + str(c['value'])
+  Key_To_Translate = 'blw_farbe_' + str(c['attributes']['farbe'])
 %>
   <tr>
     <td colspan="3">&nbsp;</td>

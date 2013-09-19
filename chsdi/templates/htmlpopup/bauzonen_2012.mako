@@ -10,7 +10,7 @@
     % endif
   </tr>
 	<tr><td width="150">${_('tt_bauzonen_gemeindetypen_BFS_NO')}</td>    <td>${c['attributes']['bfs_no'] or '-'}</td></tr>
-  <tr><td width="150">${_('tt_bauzonen_gemeindetypen_NAME')}</td>    <td>${c['value']}</td></tr>
+  <tr><td width="150">${_('tt_bauzonen_gemeindetypen_NAME')}</td>    <td>${c['attributes']['name_']}</td></tr>
   <tr><td width="150">${_('tt_bauzonen_gemeindetypen_KT_NO')}</td>    <td>${c['attributes']['kt_no'] or '-'}</td></tr>
 	<tr><td width="150">${_('tt_bauzonen_gemeindetypen_KT_KZ')}</td>    <td>${c['attributes']['kt_kz'] or '-'}</td></tr>
   <tr><td width="150">${_('tt_bauzonen_FLAECHE')}</td>    <td>${int(round(c['attributes']['flaeche'])) or '-'}</td></tr>

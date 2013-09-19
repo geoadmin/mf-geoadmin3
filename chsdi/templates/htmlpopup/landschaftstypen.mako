@@ -2,8 +2,8 @@
 
 <%def name="table_body(c, lang)">
 <% c[stable_id] = True %>
-    <tr><td width="150">${_('nummer')}</td>    <td>${c['value']}</td></tr>
-    <tr><td width="150">${_('typnummer')}</td>    <td>${c['value']}</td></tr>
+    <tr><td width="150">${_('nummer')}</td>    <td>${c['attributes']['typ_nr']}</td></tr>
+    <tr><td width="150">${_('typnummer')}</td>    <td>${c['attributes']['typ_nr']}</td></tr>
     <tr><td width="150">${_('typ')}</td>
       % if lang in ('de', 'rm', 'en'):
            <td>${c['attributes']['typname_de'] or '-'}</td>

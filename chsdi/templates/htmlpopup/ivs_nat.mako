@@ -22,7 +22,7 @@
 % elif c['attributes']['ivs_slabedeutung'] =='1':
     <tr><td width="150">${_('ivs_slabedeutung')}</td><td>${_('lokal')}</td></tr>
 % endif
-    <tr><td width="150">${_('ivs_slaname')}</td><td>${c['value']}</td></tr> 
+    <tr><td width="150">${_('ivs_slaname')}</td><td>${c['attributes']['ivs_slaname']}</td></tr> 
     <tr><td width="150" valign="top">${_('ivs_documentation')}</td>
 <%
     from urllib2 import urlopen
