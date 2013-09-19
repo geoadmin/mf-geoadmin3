@@ -17,7 +17,6 @@ class BLN(Base, Vector):
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
     __esriId__ = 1000
     __bodId__ = 'ch.bafu.bundesinventare-bln'
-    __displayFieldName__ = 'bln_name'
     #__queryable_attributes__ = ['bln_name']
     __template__ = 'templates/htmlpopup/bln.mako'
     id = Column('gid', Integer, primary_key=True)
@@ -35,7 +34,6 @@ class JB(Base, Vector):
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
     __esriId__ = 2000
     __bodId__ = 'ch.bafu.bundesinventare-jagdbanngebiete'
-    __displayFieldName__ = 'jb_name'
     #__queryable_attributes__ = ['jb_name']
     __template__ = 'templates/htmlpopup/jb.mako'
     id = Column('gid', Integer, primary_key=True)

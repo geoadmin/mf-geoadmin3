@@ -37,7 +37,6 @@ class Vector(GeoInterface):
     @property
     def __geo_interface__(self):
         feature = self.__read__()
-        display_column = self.display_field().name
         shape = None
         try:
             shape = asShape(feature.geometry)
@@ -53,27 +52,18 @@ class Vector(GeoInterface):
             layerBodId=self.__bodId__,
             layerName='',
             featureId=self.id,
-            value=getattr(self, display_column) if display_column != '' else '',
-            displayFieldName=display_column,
             geometryType=feature.type
         )
 
     @property
     def __interface__(self):
-        display_column = self.display_field().name
         return {
             "layerId": self.__esriId__,
             "layerBodId": self.__bodId__,
             "layerName": '',
             "featureId": self.id,
-            "value": getattr(self, display_column) if display_column != '' else '',
-            "displayFieldName": display_column,
-            "attributes": self.getAttributes(display_column)
+            "attributes": self.getAttributes()
         }
-
-    @classmethod
-    def display_field(cls):
-        return cls.__table__.columns[cls.__displayFieldName__] if cls.__displayFieldName__ is not None else ''
 
     @classmethod
     def queryable_attributes(cls):
@@ -102,13 +92,13 @@ class Vector(GeoInterface):
             myFilter = functions.within_distance(geom_column, wkb_geometry, tolerance)
         return myFilter
 
-    def getAttributes(self, display_column):
+    def getAttributes(self):
         attributes = dict()
         fid_column = self.primary_key_column().name
         geom_column = self.geometry_column().name
         for column in self.__table__.columns:
             columnName = str(column.key)
-            if columnName not in (fid_column, geom_column, display_column) and hasattr(self, columnName):
+            if columnName not in (fid_column, geom_column) and hasattr(self, columnName):
                 attribute = getattr(self, columnName)
                 if attribute.__class__.__name__ == 'Decimal':
                     attributes[columnName] = attribute.__float__()
