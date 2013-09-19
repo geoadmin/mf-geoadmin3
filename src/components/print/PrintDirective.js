@@ -5,19 +5,30 @@
         ['pascalprecht.translate']);
 
     module.controller('GaPrintDirectiveController',
-        ['$scope', '$http', '$translate', 'gaLayers',
-        function($scope, $http, $translate, gaLayers) {
-        var printPath = $scope.options.printPath;
-        var http = $http.get(printPath +
-            '/info.json?url=' + encodeURIComponent(printPath));
-        http.success(function(data, status, header, config) {
-            $scope.capabilities = data;
+      ['$scope', '$http', '$translate', 'gaLayers',
+      function($scope, $http, $translate, gaLayers) {
 
-            // default values:
-            $scope.layout = data.layouts[0];
-            $scope.dpi = data.dpis[0];
+      $scope.updatePrintConfig = function() {
+          var printPath = $scope.options.printPath;
+          var http = $http.get(printPath +
+              '/info.json?url=' + encodeURIComponent(printPath) +
+              '&app=' + $scope.topicId);
 
-            $scope.scales = data.scales; // FIXME
+          http.success(function(data, status, header, config) {
+              $scope.capabilities = data;
+
+              // default values:
+              $scope.layout = data.layouts[0];
+              $scope.dpi = data.dpis[0];
+              $scope.scales = data.scales; // FIXME
+              //$scope.options = {};
+              $scope.options.legend = false;
+            });
+        };
+
+        $scope.$on('gaTopicChange', function(event, topic) {
+            $scope.topicId = topic.id;
+            $scope.updatePrintConfig();
         });
 
 
@@ -25,23 +36,63 @@
             var src = layer.getSource();
             var ext = proj.getExtent();
 
-            var encLayer;
+            var encLayer, encLegend;
+            var layerConfig = gaLayers.getLayer(layer.get('id'));
 
-            // FIXME add other source type
-            if (src.constructor == ol.source.WMTS) {
-                encLayer = $scope.encoders.layers['WMTS'].call(this, layer);
+            if (src.constructor === ol.source.WMTS) {
+                encLayer = $scope.encoders.layers['WMTS'].call(this,
+                                                  layer, layerConfig);
+            } else if (src.constructor === ol.source.ImageWMS) {
+                encLayer = $scope.encoders.layers['WMS'].call(this,
+                                                  layer, layerConfig);
             }
-            return encLayer;
+
+            if ($scope.options.legend && layerConfig.haslegend) {
+                encLegend = $scope.encoders.legends['ga_urllegend'].call(this,
+                                                  layer, layerConfig);
+            }
+
+            return {layer: encLayer, legend: encLegend};
 
         };
 
         $scope.encoders = {
             'layers': {
-                'WMTS': function(layer) {
-                      var enc = {
-                          type: 'WMTS',
+                'Layer': function(layer) {
+                    var enc = {
                           layer: layer.get('id'),
-                          opacity: 1,
+                          opacity: layer.getOpacity()
+                    };
+
+                    return enc;
+                },
+                'WMS': function(layer, config) {
+                      var enc = $scope.encoders.
+                          layers['Layer'].call(this, layer);
+                      var layers = config.wmsLayers.split(',') || [];
+                      var styles = new Array(layers.length + 1).
+                                      join(',').split(',');
+                      angular.extend(enc, {
+                          type: 'WMS',
+                          baseURL: config.wmsUrl,
+                          layers: layers,
+                          styles: styles,
+                          format: 'image/' + config.format,
+                          customParams: {
+                              'EXCEPTIONS': 'XML',
+                              'TRANSPARENT': 'true',
+                              'CRS': 'EPSG:21781'
+                          },
+                          singleTile: config.singleTile || false
+                      });
+                      return enc;
+
+                },
+                'WMTS': function(layer, config) {
+                      var enc = $scope.encoders.layers['Layer'].
+                            call(this, layer);
+                      angular.extend(enc, {
+                          type: 'WMTS',
                           baseURL: 'http://wmts.geo.admin.ch',
                           maxExtent: [420000, 30000, 900000, 350000],
                           tileOrigin: [420000, 350000],
@@ -77,13 +128,35 @@
                           zoomOffset: 0,
                           version: '1.0.0',
                           requestEncoding: 'REST',
-                          formatSuffix: 'jpeg',
+                          formatSuffix: config.format || 'jpeg',
                           style: 'default',
                           dimensions: ['TIME'],
-                          params: {'TIME': '20130213'},
+                          params: {'TIME':
+                                layer.getSource().getDimensions().Time},
                           matrixSet: '21781'
-                    };
+                    });
+
                     return enc;
+                }
+            },
+            'legends' : {
+                'ga_urllegend': function(layer, config) {
+                    var enc = this.encoders.legends.base.call(this, config);
+                    enc.classes.push({
+                        name: '',
+                        icon: $scope.options.serviceUrl +
+                              $scope.options.baseUrlPath +
+                              '/wsgi/static/images/legends/' +
+                              layer.get('id') + '_' + $translate.uses() +
+                              '.png'
+                    });
+                    return enc;
+                },
+                'base': function(config) {
+                    return {
+                        name: config.label,
+                        classes: []
+                    };
                 }
             }
         };
@@ -107,7 +180,6 @@
 
         $scope.submit = function() {
             // http://mapfish.org/doc/print/protocol.html#print-pdf
-            //debugger;
             var view = this.map.getView();
             var proj = view.getProjection();
             var lang = $translate.uses();
@@ -116,11 +188,13 @@
             defaultPage['lang' + lang] = true;
 
             var encLayers = [];
+            var encLegends = [];
 
             var layers = this.map.getLayers();
             angular.forEach(layers, function(layer) {
                 var enc = $scope.encodeLayer(layer, proj);
-                encLayers.push(enc);
+                encLayers.push(enc.layer);
+                encLegends.push(enc.legend);
             });
             // scale = resolution * inches per map unit (m) * dpi
             var scale = parseInt(view.getResolution() * 39.37 * 254);
@@ -132,15 +206,16 @@
                 srs: proj.getCode(),
                 units: proj.getUnits(),
                 rotation: view.getRotation(),
-                app: 'config',
-                //topic name
+                app: $scope.topicId, //topic name
                 lang: $translate.uses(),
                 dpi: this.dpi.value,
                 layers: encLayers,
+                legends: encLegends,
+                enhableLegends: true,
                 pages: [
                 angular.extend({
                     center: view.getCenter(),
-                    // scale has to one of the advertise by the print server
+                    // scale has to be one of the advertise by the print server
                     scale: $scope.getNearestScale(scale, scales),
                     mapTitle: '',
                     mapFooter: '',

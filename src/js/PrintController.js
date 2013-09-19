@@ -7,7 +7,9 @@
       ['$scope', 'gaGlobalOptions',
        function($scope, gaGlobalOptions) {
          $scope.options = {
-           printPath: gaGlobalOptions.baseUrlPath + '/print'
+           printPath:  gaGlobalOptions.baseUrlPath + '/print',
+           baseUrlPath:  gaGlobalOptions.baseUrlPath,
+           serviceUrl: gaGlobalOptions.serviceUrl
          };
   }]);
 })();
