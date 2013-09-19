@@ -128,8 +128,9 @@
         }
       }
 
-      if (minGap)
+      if (minGap) {
         value += minGap;
+      }
     }
     return value;
   };
@@ -181,6 +182,7 @@
         ngModelHigh: '=?',
         translate2: '&',
         dataList: '=?gaData', //RE3: Contains all the possible values
+        redraw: '=?gaRedraw', // RE3: Force the redraw of the slider
         useKeyboardEvents: '=?gaKeyboardEvents', // RE3: Add keyboard events
         useMagnetize: '=?gaMagnetize', // RE3: Allow only available values
         useInputText: '=?gaInputText', // RE3: Add input text
@@ -231,7 +233,6 @@
             lowBub.find('input').remove();
           }
 
-
           // Remove useless elements
           angular.forEach([selBar, maxPtr, selBub, highBub, cmbBub],
               function(elt) {
@@ -239,7 +240,6 @@
               }
           );
         }
-
 
         // Defines watchables properties
         watchables = [refLow, 'floor', 'ceiling'];
@@ -287,6 +287,7 @@
 
             pointerHalfWidth = barWidth = minOffset = maxOffset = minValue =
                 maxValue = valueRange = offsetRange = void 0;
+
             dimensions = function() {
               var value, _j, _len1, _ref2, _ref3;
 
@@ -331,7 +332,6 @@
                   setBindings, setPointers;
 
               dimensions();
-
 
               // RE3 add: Get the slider value from an offsetLeft
               var getValueFromOffset = function(offsetLeft) {
@@ -593,14 +593,22 @@
                  if (scope.isValid(newValue)) {
                    scope.lastGoodValue = undefined;
                    newValue = parseFloat(newValue);
-
                    updateDOM();
-
                  } else if (!scope.lastGoodValue) {
                    scope.lastGoodValue = oldValue;
                  }
               });
             }
+
+            // RE3: Force the redraw of the slider, useful if the slider is
+            // hidden then the value is changed then the slider is displayed.
+            // Changing the value when the slider is hidden makes bad
+            // calculation of the pointer position
+            scope.$watch('redraw', function(needsRedraw) {
+              if (needsRedraw) {
+                updateDOM();
+              }
+            });
 
             // RE3: Add left and right arrows events management
             scope.$watch('useKeyboardEvents', function(active) {

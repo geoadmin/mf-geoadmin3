@@ -13,8 +13,7 @@
   ]);
 
   module.controller('GaTimeSelectorDirectiveController',
-    function($scope, $log, $translate, $sce, gaBrowserSniffer,
-        gaLayers) {
+    function($scope, $translate, $sce, gaLayers) {
 
       // Initialize variables
       $scope.isActive = false;
@@ -28,7 +27,8 @@
       // Format the text of the current year (only used by slider)
       $scope.formatYear = function(value) {
         if (parseInt(value) >= $scope.maxYear) {
-          value = $translate('last_available_year');
+          value = ($scope.availableYears.length > 1) ?
+              $scope.availableYears[1].value : '';
         }
         return $sce.trustAsHtml('' + value);
       };
@@ -65,6 +65,7 @@
        * Update the list of years available
        */
       $scope.updateDatesAvailable = function() {
+        var magnetizeCurrentYear = true;
         $scope.availableYears = [];
         for (var i = 0, length = $scope.years.length; i < length; i++) {
           var year = $scope.years[i];
@@ -73,18 +74,38 @@
             if (year.available) {
               return;
             }
-            var timestamps = olLayer.get('timestamps');
+            var timestamps = getLayerTimestamps(olLayer);
             if (timestamps) {
               for (var i = 0, length = timestamps.length; i < length; i++) {
                 if (year.value === $scope.maxYear ||
                     year.value === yearFromString(timestamps[i])) {
                   year.available = true;
                   $scope.availableYears.push(year);
+                  if (year.value === $scope.currentYear) {
+                    magnetizeCurrentYear = false;
+                  }
                   break;
                 }
               }
             }
           });
+        }
+
+        // If the currentYear value is not available anymore we set the closest
+        // value
+        if (magnetizeCurrentYear) {
+          var minGap = null;
+          for (var i = 0, length = $scope.availableYears.length; i < length;
+              i++) {
+            var elt = $scope.availableYears[i];
+            var gap = elt.value - $scope.currentYear;
+            minGap = (!minGap || (Math.abs(gap) < Math.abs(minGap))) ?
+                gap : minGap;
+          }
+
+          if (minGap) {
+            $scope.currentYear += minGap;
+          }
         }
       };
 
@@ -99,11 +120,8 @@
         // a string  : Apply the year selected
 
         $scope.map.getLayers().forEach(function(olLayer, opt) {
-          var timestamps = olLayer.get('timestamps');
-
+          var timestamps = getLayerTimestamps(olLayer);
           if (timestamps) {
-            $log.log('Update ' + olLayer.getSource() +
-             ' layer (' + olLayer.get('id') + ') with time = ' + timeStr);
             var layerTimeStr = timeStr;
             var src = olLayer.getSource();
             if (src instanceof ol.source.WMTS) {
@@ -130,6 +148,16 @@
       /** Utils **/
       var yearFromString = function(timestamp) {
         return parseInt(timestamp.substr(0, 4));
+      };
+
+      var getLayerTimestamps = function(olLayer) {
+        var id = olLayer.get('id');
+        var timestamps;
+        if (id && gaLayers.getLayer(id) &&
+            gaLayers.getLayerProperty(id, 'timeEnabled')) {
+          timestamps = gaLayers.getLayerProperty(id, 'timestamps');
+        }
+        return timestamps;
       };
     }
   );
@@ -169,7 +197,7 @@
   });
 
   module.directive('gaTimeSelector',
-    function($log, $translate, $rootScope, gaBrowserSniffer) {
+    function($rootScope, gaBrowserSniffer, gaPermalink, gaLayers) {
       return {
         restrict: 'A',
         templateUrl: function(element, attrs) {
@@ -192,14 +220,34 @@
            * Update list of available years then hide/show the HTML
            * element if the list is empty or not
            */
-          var refreshComp = function(obj) {
-            scope.updateDatesAvailable();
-            if (scope.availableYears.length == 0) {
+          var refreshComp = function(collectionEvent) {
+            var olLayers = collectionEvent.target;
+            // If there is only timeEnabled layers on the map we enable the
+            // TimeSelector button else we disabled it
+            var enabled = false;
+            for (var i = 0, length = olLayers.getLength(); i < length; i++) {
+              var id = olLayers.getAt(i).get('id');
+              if (!id) {
+                enabled = false;
+                break;
+              }
+              enabled = gaLayers.getLayerProperty(id, 'timeEnabled');
+              if (!gaLayers.getLayerProperty(id, 'background') && !enabled) {
+                break;
+              }
+            }
+
+            if (scope.isActive) {
+              scope.updateDatesAvailable();
+            }
+
+            if (!enabled) {
               scope.isActive = false;
               $rootScope.$broadcast('gaTimeSelectorDisabled');
             } else {
-             $rootScope.$broadcast('gaTimeSelectorEnabled');
+              $rootScope.$broadcast('gaTimeSelectorEnabled');
             }
+
           };
           scope.map.getLayers().on('add', refreshComp);
           scope.map.getLayers().on('remove', refreshComp);
@@ -211,28 +259,48 @@
 
           // Watchers
           scope.$watch('isActive', function(active) {
-
+            scope.stateClass = (active) ? 'active' : '';
+            if (active) {
+              scope.updateDatesAvailable();
+            }
             // Set default value on the first display
             if (active && scope.currentYear === -1) {
-              scope.currentYear = scope.maxYear;
+              scope.currentYear = gaPermalink.getParams().time || scope.maxYear;
+            } else {
+              // Here we don't set currentYear as undefined to keep the last
+              // value selected by the user.
+              applyNewYear((active ? scope.currentYear : undefined));
             }
-            scope.stateClass = (active) ? 'active' : '';
-            scope.updateLayers((active) ?
-                transformYearToTimeStr(scope.currentYear) :
-                undefined);
           });
 
           scope.$watch('currentYear', function(year) {
-            var newYear = transformYearToTimeStr(year);
-            // Only valid values are allowed: undefined, null or
-            // minYear <= newYear <= maxYear
-            if (scope.isActive && (!newYear ||
-               (scope.minYear <= newYear && newYear <= scope.maxYear))) {
-              scope.updateLayers(newYear);
+            if (scope.isActive) {
+              applyNewYear(year);
             }
           });
 
           /** Utils **/
+
+          /**
+           * Apply the year selected
+           */
+          var applyNewYear = function(year) {
+            var newYear = transformYearToTimeStr(year);
+
+            // Only valid values are allowed: undefined, null or
+            // minYear <= newYear <= maxYear
+            if ((!newYear ||
+               (scope.minYear <= newYear && newYear <= scope.maxYear))) {
+              scope.updateLayers(newYear);
+              if (newYear === undefined) {
+                gaPermalink.deleteParam('time');
+              } else {
+                gaPermalink.updateParams({time: newYear});
+              }
+              $rootScope.$broadcast('gaTimeSelectorChange', newYear);
+            }
+          };
+
           /**
            * Tranform a year given by the select box or the slider component
            * into a time parameter usable by layers

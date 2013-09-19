@@ -160,7 +160,7 @@
                     layer.attribution + '</a>')
                 ],
                 dimensions: {
-                  'Time': layer.timestamps[0]
+                  'Time': currentTime || layer.timestamps[0]
                 },
                 projection: 'EPSG:21781',
                 requestEncoding: 'REST',
@@ -209,12 +209,8 @@
             } else {
               if (!olSource) {
                 olSource = layer.olSource = new ol.source.TileWMS({
-                  url: gaUrlUtils.remove(
-                      layer.wmsUrl, ['request', 'service', 'version'], true),
-                  params: {
-                    LAYERS: layer.serverLayerName,
-                    FORMAT: 'image/' + layer.format
-                  },
+                  url: wmsUrl,
+                  params: wmsParams,
                   attributions: [
                     getAttribution(layer.attribution)
                   ]
