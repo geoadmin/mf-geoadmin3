@@ -9,7 +9,7 @@ from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from chsdi.models import models_from_name
 from chsdi.models.bod import get_bod_model, computeHeader
 from chsdi.lib.helpers import locale_negotiator
-from chsdi.lib.validation import MapServiceValidation, validateLayerId
+from chsdi.lib.validation import MapServiceValidation
 
 
 class MapService(MapServiceValidation):
@@ -84,10 +84,32 @@ class MapService(MapServiceValidation):
         self.mapExtent = self.request.params.get('mapExtent')
         self.tolerance = self.request.params.get('tolerance')
         self.returnGeometry = self.request.params.get('returnGeometry')
+
         layers = self.request.params.get('layers', 'all')
         models = self._get_models_from_layername(layers)
-        queries = list(self._build_queries(models))
-        features = list(self._get_features_from_queries(queries))
+
+        if models is None:
+            raise exc.HTTPBadRequest('No GeoTable was found for %s' % layers)
+
+        maxFeatures = 100
+        queries = list(self._build_queries(models, maxFeatures))
+
+        features = []
+        for query in queries:
+            for feature in query:
+                if self.returnGeometry:
+                    f = feature.__geo_interface__
+                else:
+                    f = feature.__interface__
+                if hasattr(f, 'extra'):
+                    layerBodId = f.extra['layerBodId']
+                    f.extra['layerName'] = self.translate(layerBodId)
+                features.append(f)
+                if len(features) > maxFeatures:
+                    break
+            if len(features) > maxFeatures:
+                break
+
         return {'results': features}
 
     @view_config(route_name='getfeature', renderer='geojson',
@@ -103,7 +125,20 @@ class MapService(MapServiceValidation):
         self.returnGeometry = self.request.params.get('returnGeometry')
         idlayer = self.request.matchdict.get('idlayer')
         idfeature = self.request.matchdict.get('idfeature')
-        model = validateLayerId(idlayer)[0]
+        models = models_from_name(idlayer)
+
+        if models is None:
+            raise exc.HTTPBadRequest('No GeoTable was found for %s' % idlayer)
+
+        # One layer can have several models
+        for model in models:
+            feature = self._get_feature_resource(idlayer, idfeature, model)
+            if feature != 'No Result Found':
+                # One layer can have several templates
+                break
+
+        if feature == 'No Result Found':
+            raise exc.HTTPNotFound('No feature with id %s' % idfeature)
 
         feature = self._get_feature_resource(idlayer, idfeature, model)
         return feature
@@ -114,12 +149,25 @@ class MapService(MapServiceValidation):
         self.returnGeometry = False
         idlayer = self.request.matchdict.get('idlayer')
         idfeature = self.request.matchdict.get('idfeature')
-        model = validateLayerId(idlayer)[0]
+        models = models_from_name(idlayer)
+
+        if models is None:
+            raise exc.HTTPBadRequest('No GeoTable was found for %s' % idlayer)
 
         layer = self._get_layer_resource(idlayer)
-        feature = self._get_feature_resource(idlayer, idfeature, model)
+        # One layer can have several models
+        for model in models:
+            feature = self._get_feature_resource(idlayer, idfeature, model)
+            if feature != 'No Result Found':
+                # One layer can have several templates
+                model_containing_feature_id = model
+                # Exit the loop when a feature is found
+                break
 
-        template = 'chsdi:%s' % model.__template__
+        if feature == 'No Result Found':
+            raise exc.HTTPNotFound('No feature with id %s' % idfeature)
+
+        template = 'chsdi:%s' % model_containing_feature_id.__template__
         feature.update({'attribution': layer.get('attributes')['dataOwner']})
         feature.update({'fullName': layer.get('fullName')})
         response = render_to_response(
@@ -157,7 +205,7 @@ class MapService(MapServiceValidation):
         try:
             feature = query.one()
         except NoResultFound:
-            raise exc.HTTPNotFound('No feature with id %s' % idfeature)
+            return 'No Result Found'
         except MultipleResultsFound:
             raise exc.HTTPInternalServerError()
 
@@ -193,19 +241,7 @@ class MapService(MapServiceValidation):
         elif self.geodataStaging == 'prod':
             return query.filter(orm_column == self.geodataStaging)
 
-    def _get_features_from_queries(self, queries):
-        for query in queries:
-            for feature in query:
-                if self.returnGeometry:
-                    f = feature.__geo_interface__
-                else:
-                    f = feature.__interface__
-                if hasattr(f, 'extra'):
-                    layerBodId = f.extra['layerBodId']
-                    f.extra['layerName'] = self.translate(layerBodId)
-                yield f
-
-    def _build_queries(self, models):
+    def _build_queries(self, models, maxFeatures):
         for layer in models:
             for model in layer:
                 geom_filter = model.geom_filter(
@@ -216,6 +252,8 @@ class MapService(MapServiceValidation):
                     self.tolerance
                 )
                 query = self.request.db.query(model).filter(geom_filter)
+                # A maximum of 100 features are return
+                quey = query.limit(maxFeatures)
                 query = self._full_text_search(
                     query,
                     model.queryable_attributes())
@@ -225,9 +263,9 @@ class MapService(MapServiceValidation):
         layers = self._get_layer_list_from_map(
         ) if layers_param == 'all' else layers_param.split(':')[1].split(',')
         models = [
-            validateLayerId(layer) for
+            models_from_name(layer) for
             layer in layers
-            if validateLayerId(layer) is not None
+            if models_from_name(layer) is not None
         ]
         return models
 

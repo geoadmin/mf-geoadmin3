@@ -299,11 +299,3 @@ class SearchValidation(MapNameValidation):
             elif values[2] < values[3]:
                 raise exc.HTTPBadRequest("The third coordinate must be higher than the fourth")
             self._bbox = values
-
-
-def validateLayerId(idlayer):
-    # Returns a list of models of a given layer
-    models = models_from_name(idlayer)
-    if models is None:
-        raise exc.HTTPBadRequest('Please provide a valid layer Id (what you provided: %s)' % idlayer)
-    return models

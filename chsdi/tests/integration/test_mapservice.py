@@ -78,7 +78,7 @@ class TestMapServiceView(TestsBase):
 
     def test_getfeature_wrong_idlayer(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/toto/362', status=400)
-        resp.mustcontain('Please provide a valid layer Id')
+        resp.mustcontain('No GeoTable was found for')
 
     def test_getfeature_wrong_idfeature(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/0', status=404)
