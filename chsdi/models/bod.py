@@ -107,6 +107,8 @@ class LayersConfig(Base):
                         )
                 else:
                     config[k] = self.__dict__[k]
+        if config['type'] == 'wmts':
+            del config['singleTile']
         return {self.idBod: config}
 
     def _getResolutionsFromMatrixSet(self, matrixSet):
