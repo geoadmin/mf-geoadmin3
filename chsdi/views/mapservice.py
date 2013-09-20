@@ -30,9 +30,8 @@ class MapService(MapServiceValidation):
     def mapservice(self):
         model = get_bod_model(self.lang)
         results = computeHeader(self.mapName)
-        query = self.request.db.query(model).filter(
-            model.maps.ilike('%%%s%%' % self.mapName)
-        )
+        query = self.request.db.query(model)
+        query = self._map_name_filter(query, model.maps)
         query = self._geodata_staging_filter(query, model.staging)
         query = self._full_text_search(query, [model.fullTextSearch])
         layers = [layer.layerMetadata() for layer in query]
@@ -44,9 +43,8 @@ class MapService(MapServiceValidation):
         from chsdi.models.bod import LayersConfig
         layers = {}
         model = LayersConfig
-        query = self.request.db.query(model).filter(
-            model.maps.ilike('%%%s%%' % self.mapName)
-        )
+        query = self.request.db.query(model)
+        query = self._map_name_filter(query, model.maps)
         query = self._geodata_staging_filter(query, model.staging)
         for q in query:
             layer = q.getLayerConfig(self.translate)
@@ -181,9 +179,8 @@ class MapService(MapServiceValidation):
 
     def _get_layer_resource(self, idlayer):
         model = get_bod_model(self.lang)
-        query = self.request.db.query(model).filter(
-            model.maps.ilike('%%%s%%' % self.mapName)
-        )
+        query = self.request.db.query(model)
+        query = self._map_name_filter(query, model.maps)
         query = query.filter(model.idBod == idlayer)
 
         try:
@@ -229,6 +226,14 @@ class MapService(MapServiceValidation):
             or_(*filters)) if self.searchText is not None else query
         return query
 
+    def _map_name_filter(self, query, orm_column):
+        if self.mapName != 'all':
+            query = query.filter(
+                orm_column.ilike('%%%s%%' % self.mapName)
+            )
+            return query
+        return query
+
     def _geodata_staging_filter(self, query, orm_column):
         if self.geodataStaging == 'test':
             return query
@@ -271,9 +276,8 @@ class MapService(MapServiceValidation):
 
     def _get_layer_list_from_map(self):
         model = get_bod_model(self.lang)
-        query = self.request.db.query(model).filter(
-            model.maps.ilike('%%%s%%' % self.mapName)
-        )
+        query = self.request.db.query(model)
+        query = self._map_name_filter(query, model.maps)
         # only return layers which have geometries
         layerList = [
             q.idBod for
