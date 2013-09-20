@@ -51,7 +51,7 @@ class SwissboundariesKanton(Base, Vector):
 
 register('ch.swisstopo.swissboundaries3d-kanton-flaeche.fill', SwissboundariesKanton)
 
-## These two layers do not have a table on their own
+## c.bbox not supported in the mako...
 #class CadastralWebMap(Base, Vector):
 #    __tablename__ = 'kantone25plus'
 #    __table_args__ = ({'autoload': False})
@@ -99,28 +99,6 @@ class Vec200Railway(Base, Vector):
     objval = Column('objval',Text)
     construct = Column('construct',Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-
-#no register...
-#class Vec200Runway(Base, Vector):
-#    __tablename__ = 'vec200_runway'
-#    __table_args__ = ({'autoload': False})
-#    __template__ = 'templates/htmlpopup/vec200_runway.mako'
-#    __esriId__ = 1000
-#    __bodId__ = 'ch.swisstopo.vec200-transportation-oeffentliche-verkehr'
-##    __displayFieldName__ = ''
-#    id = Column('gtdboid', Text, primary_key=True)
-#    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-
-#no register...
-#class Vec200Airport(Base, Vector):
-#    __tablename__ = 'vec200_airport'
-#    __table_args__ = ({'autoload': False})
-#    __template__ = 'templates/htmlpopup/vec200_airport.mako'
-#    __esriId__ = 1000
-#    __bodId__ = 'ch.swisstopo.vec200-transportation-oeffentliche-verkehr'
-##    __displayFieldName__ = ''
-#    id = Column('gtdboid', Text, primary_key=True)
-#    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.vec200-transportation-oeffentliche-verkehr', Vec200Terminal)
 register('ch.swisstopo.vec200-transportation-oeffentliche-verkehr', Vec200ShipKursschiff)
@@ -217,7 +195,6 @@ class Vec200Protectedarea(Base, Vector):
     __template__ = 'templates/htmlpopup/vec200_protectedarea.mako'
     __esriId__ = 1000
     __bodId__ = 'ch.swisstopo.vec200-adminboundaries-protectedarea'
-    __displayFieldName__ = 'name'
     id = Column('gtdboid', Text, primary_key=True)
     name = Column('name', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
