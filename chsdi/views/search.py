@@ -24,9 +24,6 @@ class Search(SearchValidation):
 
         self.mapName = request.matchdict.get('map')
         self.hasMap(request.db, self.mapName)
-        self.searchText = ''
-        if request.params.get('searchText') is not None:
-            self.searchText = remove_accents(request.params.get('searchText'))
         self.lang = str(locale_negotiator(request))
         self.cbName = request.params.get('callback')
         self.bbox = request.params.get('bbox')
@@ -43,12 +40,15 @@ class Search(SearchValidation):
             self._get_quad_index()
         if self.typeInfo == 'layers':
             # search all layers
+            self.searchText = remove_accents(request.params.get('searchText'))
             self._layer_search()
         if self.typeInfo == 'features':
             #search all features within bounding box
+            self.searchText = ''
             self._feature_search()
         if self.typeInfo == 'locations':
             #search all features with text and bounding box
+            self.searchText = remove_accents(request.params.get('searchText'))
             self._feature_location_search()
             #swiss search
             self._swiss_search(self.LIMIT)
