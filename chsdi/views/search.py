@@ -32,6 +32,7 @@ class Search(SearchValidation):
         self.typeInfo = request.params.get('type')
         self.geodataStaging = request.registry.settings['geodata_staging']
         self.results = {'results': []}
+        self.request = request
 
     @view_config(route_name='search', renderer='jsonp')
     def search(self):
@@ -40,7 +41,9 @@ class Search(SearchValidation):
             self._get_quad_index()
         if self.typeInfo == 'layers':
             # search all layers
-            self.searchText = remove_accents(request.params.get('searchText'))
+            self.searchText = remove_accents(
+                self.request.params.get('searchText')
+            )
             self._layer_search()
         if self.typeInfo == 'features':
             #search all features within bounding box
@@ -48,7 +51,9 @@ class Search(SearchValidation):
             self._feature_search()
         if self.typeInfo == 'locations':
             #search all features with text and bounding box
-            self.searchText = remove_accents(request.params.get('searchText'))
+            self.searchText = remove_accents(
+                self.request.params.get('searchText')
+            )
             self._feature_location_search()
             #swiss search
             self._swiss_search(self.LIMIT)
