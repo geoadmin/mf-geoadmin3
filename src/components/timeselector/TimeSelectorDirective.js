@@ -3,21 +3,22 @@
 
   goog.require('ga_browsersniffer_service');
   goog.require('ga_map_service');
+  goog.require('ga_permalink_service');
   goog.require('ga_slider_directive');
 
   var module = angular.module('ga_timeselector_directive', [
     'ga_browsersniffer_service',
     'ga_map_service',
+    'ga_permalink_service',
     'ga_slider_directive',
     'pascalprecht.translate'
   ]);
 
   module.controller('GaTimeSelectorDirectiveController',
-    function($scope, $translate, $sce, gaLayers) {
+    function($scope, $translate, $sce, gaLayers, gaPermalink) {
 
       // Initialize variables
-      $scope.isActive = false;
-      $scope.stateClass = 'inactive';
+      $scope.stateClass = $scope.isActive ? '' : 'inactive';
       $scope.minYear = 1845;
       $scope.maxYear = (new Date()).getFullYear() + 1;
       $scope.currentYear = -1; // User selected year
@@ -162,19 +163,26 @@
     }
   );
 
-  module.directive('gaTimeSelectorBt', function($rootScope) {
+  module.directive('gaTimeSelectorBt', function($rootScope, gaPermalink) {
     return {
       restrict: 'A',
       template: '<a href="#" class="icon-time icon-3x" ng-click="toggle()"' +
         ' ng-class="stateClass"></a>',
       link: function(scope, elt, attrs) {
-        scope.isActive = false;
         scope.isDisable = true;
 
         $rootScope.$on('gaTimeSelectorEnabled', function() {
           if (scope.isDisable) {
             scope.stateClass = 'enabled';
             scope.isDisable = false;
+
+            // When isActive is undefined that means it's the first time
+            // the button is enabled.
+            // Force activation of the TimeSelector if a time parameter is
+            // defined in the permalink
+            if (!angular.isDefined(scope.isActive) &&
+               angular.isDefined(gaPermalink.getParams().time)) {
+              scope.toggle(); }
           }
         });
 
@@ -259,17 +267,21 @@
 
           // Watchers
           scope.$watch('isActive', function(active) {
-            scope.stateClass = (active) ? 'active' : '';
-            if (active) {
-              scope.updateDatesAvailable();
-            }
-            // Set default value on the first display
-            if (active && scope.currentYear === -1) {
-              scope.currentYear = gaPermalink.getParams().time || scope.maxYear;
-            } else {
-              // Here we don't set currentYear as undefined to keep the last
-              // value selected by the user.
-              applyNewYear((active ? scope.currentYear : undefined));
+            if (angular.isDefined(active)) {
+              scope.stateClass = (active) ? 'active' : '';
+              if (active) {
+                // Set default value on the first display
+                if (scope.currentYear === -1) {
+                  var permalinkValue = parseFloat(gaPermalink.getParams().time);
+                  scope.currentYear = !isNaN(permalinkValue) ?
+                      permalinkValue : scope.maxYear;
+                }
+                scope.updateDatesAvailable();
+              } else {
+                // Here we don't set currentYear as undefined to keep the last
+                // value selected by the user.
+                applyNewYear((active ? scope.currentYear : undefined));
+              }
             }
           });
 

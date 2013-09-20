@@ -185,8 +185,8 @@
               FORMAT: 'image/' + layer.format
             };
 
-            if (layer.timeEnabled) {
-              wmsParams['TIME'] = '';
+            if (currentTime) {
+              wmsParams['TIME'] = currentTime;
             }
             if (layer.singleTile === true) {
               if (!olSource) {
