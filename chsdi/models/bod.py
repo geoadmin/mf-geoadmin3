@@ -110,10 +110,11 @@ class LayersConfig(Base):
         if config['type'] == 'wmts':
             del config['singleTile']
         if config['type'] == 'wms':
-            if config['staging'] == 'test':
-                config['wmsUrl'] = config['wmsUrl'].replace('wms.geo.admin.ch', 'wms-bgdi0t.bgdi.admin.ch')
-            if config['staging'] == 'integration':
-                config['wmsUrl'] = config['wmsUrl'].replace('wms.geo.admin.ch', 'wms-bgdi0i.bgdi.admin.ch')
+            if 'staging' in config:
+                if config['staging'] == 'test':
+                    config['wmsUrl'] = config['wmsUrl'].replace('wms.geo.admin.ch', 'wms-bgdi0t.bgdi.admin.ch')
+                if config['staging'] == 'integration':
+                    config['wmsUrl'] = config['wmsUrl'].replace('wms.geo.admin.ch', 'wms-bgdi0i.bgdi.admin.ch')
 
         return {self.idBod: config}
 
