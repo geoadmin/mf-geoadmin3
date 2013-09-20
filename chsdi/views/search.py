@@ -24,7 +24,7 @@ class Search(SearchValidation):
 
         self.mapName = request.matchdict.get('map')
         self.hasMap(request.db, self.mapName)
-        self.searchText = ' '
+        self.searchText = ''
         if request.params.get('searchText') is not None:
             self.searchText = remove_accents(request.params.get('searchText'))
         self.lang = str(locale_negotiator(request))
@@ -86,7 +86,8 @@ class Search(SearchValidation):
             return 0
 
         self.sphinx.SetLimits(0, self.FEATURE_LIMIT)
-        searchText = '@geom_quadindex ' + self.quadindex + '*'
+        searchText = self._query_detail('@detail')
+        searchText += ' & @geom_quadindex ' + self.quadindex + '*'
         self._add_feature_queries(searchText)
         temp = self.sphinx.RunQueries()
         return self._parse_feature_results(temp)
