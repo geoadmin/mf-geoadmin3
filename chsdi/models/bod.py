@@ -94,8 +94,8 @@ class LayersConfig(Base):
         config = {}
         for k in self.__dict__.keys():
             if not k.startswith("_") and \
-               self.__dict__[k] is not None and \
-               k != 'maps':
+                self.__dict__[k] is not None and \
+                k != 'maps':
                 if k == 'idBod':
                     config['label'] = translate(self.__dict__[k])
                 elif k == 'attribution':
