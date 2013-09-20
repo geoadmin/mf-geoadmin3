@@ -17,7 +17,7 @@ class SwissboundariesBezirk(Base, Vector):
     __template__ = 'templates/htmlpopup/swissboundaries_bezirk.mako'
     __esriId__ = 1000
     __bodId__ = 'ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill'
-    __displayFieldName__ = 'name'
+#    __displayFieldName__ = 'name'
     id = Column('id', Integer, primary_key=True)
     name = Column('name',Text)
     flaeche = Column('flaeche',Numeric)
@@ -32,7 +32,7 @@ class SwissboundariesGemeinde(Base, Vector):
     __template__ = 'templates/htmlpopup/swissboundaries_gemeinde.mako'
     __esriId__ = 1000
     __bodId__ = 'ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill'
-    __displayFieldName__ = 'gemname'
+#    __displayFieldName__ = 'gemname'
     id = Column('id', Integer, primary_key=True)
     gemname = Column('gemname',Text)
     gemflaeche = Column('gemflaeche',Numeric)
@@ -48,7 +48,7 @@ class SwissboundariesKanton(Base, Vector):
     __template__ = 'templates/htmlpopup/swissboundaries_kanton.mako'
     __esriId__ = 1000
     __bodId__ = 'ch.swisstopo.swissboundaries3d-kanton-flaeche.fill'
-    __displayFieldName__ = 'name'
+#    __displayFieldName__ = 'name'
     id = Column('kantonsnr', Integer, primary_key=True)
     ak = Column('ak',Text)
     name = Column('name',Text)
@@ -57,18 +57,20 @@ class SwissboundariesKanton(Base, Vector):
 
 register('ch.swisstopo.swissboundaries3d-kanton-flaeche.fill', SwissboundariesKanton)
 
-# # These two layers do not have a table on their own
-# class CadastralWebMap(Base, Vector):
-#     __tablename__ = 'kantone25plus'
-#     __table_args__ = ({'autoload': False})
-#     __template__ = 'templates/htmlpopup/cadastralwebmap.mako'
-#     __esriId__ = 1000
-#     __bodId__ = 'ch.kantone.cadastralwebmap-farbe'
-#     __displayFieldName__ = ''
-#     id = Column('gid', Integer, primary_key=True)
-#     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
-# register('ch.kantone.cadastralwebmap-farbe', CadastralWebMap)
+## These two layers do not have a table on their own
+#class CadastralWebMap(Base, Vector):
+#    __tablename__ = 'kantone25plus'
+#    __table_args__ = ({'autoload': False})
+#    __template__ = 'templates/htmlpopup/cadastralwebmap.mako'
+#    __esriId__ = 1000
+#    __bodId__ = 'ch.kantone.cadastralwebmap-farbe'
+##    __displayFieldName__ = 'kantonsnr'
+#    id = Column('gid', Integer, primary_key=True)
+#    kantonsnr = Column('kantonsnr', Integer)
+#    ak = Column('ak', Text)
+#    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+#
+#register('ch.kantone.cadastralwebmap-farbe', CadastralWebMap)
  
 class Vec200Terminal(Base, Vector):
     __tablename__ = 'vec200_terminal_tiles'
@@ -76,38 +78,36 @@ class Vec200Terminal(Base, Vector):
     __template__ = 'templates/htmlpopup/vec200_terminal.mako'
     __esriId__ = 1000
     __bodId__ = 'ch.swisstopo.vec200-transportation-oeffentliche-verkehr'
-    __displayFieldName__ = 'objval'
+#    __displayFieldName__ = 'objval'
     id = Column('gtdboid', Text, primary_key=True)
     objval = Column('objval',Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-#Ne fonctionne qu'avec une seule classe par couche...
-#class Vec200ShipKursschiff(Base, Vector):
-#    __tablename__ = 'v200_ship_kursschiff_linie_tooltip'
-#    __table_args__ = ({'autoload': False})
-#    __template__ = 'templates/htmlpopup/vec200_ship_kursschiff_linie.mako'
-#    __esriId__ = 1000
-#    __bodId__ = 'ch.swisstopo.vec200-transportation-oeffentliche-verkehr'
+class Vec200ShipKursschiff(Base, Vector):
+    __tablename__ = 'v200_ship_kursschiff_linie_tooltip'
+    __table_args__ = ({'autoload': False})
+    __template__ = 'templates/htmlpopup/vec200_ship_kursschiff_linie.mako'
+    __esriId__ = 1000
+    __bodId__ = 'ch.swisstopo.vec200-transportation-oeffentliche-verkehr'
 #    __displayFieldName__ = 'objval'
-#    id = Column('gtdboid', Text, primary_key=True)
+    id = Column('gtdboid', Text, primary_key=True)
 #    objval = Column('objval',Text)
-#    detn = Column('detn',Text)
-#    rsu = Column('rsu',Text)
-#    use = Column('use',Text)
-#    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-#
-#Ne fonctionne qu'avec une seule classe par couche...
-#class Vec200Railway(Base, Vector):
-#    __tablename__ = 'vec200_railway_tiles'
-#    __table_args__ = ({'autoload': False})
-#    __template__ = 'templates/htmlpopup/vec200_railway.mako'
-#    __esriId__ = 1000
-#    __bodId__ = 'ch.swisstopo.vec200-transportation-oeffentliche-verkehr'
-#    __displayFieldName__ = 'objval'
-#    id = Column('gtdboid', Text, primary_key=True)
-#    objval = Column('objval',Text)
-#    construct = Column('construct',Text)
-#    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    detn = Column('detn',Text)
+    rsu = Column('rsu',Text)
+    use = Column('use',Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+class Vec200Railway(Base, Vector):
+    __tablename__ = 'vec200_railway_tiles'
+    __table_args__ = ({'autoload': False})
+    __template__ = 'templates/htmlpopup/vec200_railway.mako'
+    __esriId__ = 1000
+    __bodId__ = 'ch.swisstopo.vec200-transportation-oeffentliche-verkehr'
+ #   __displayFieldName__ = 'objval'
+    id = Column('gtdboid', Text, primary_key=True)
+    objval = Column('objval',Text)
+    construct = Column('construct',Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 #no register...
 #class Vec200Runway(Base, Vector):
@@ -116,7 +116,7 @@ class Vec200Terminal(Base, Vector):
 #    __template__ = 'templates/htmlpopup/vec200_runway.mako'
 #    __esriId__ = 1000
 #    __bodId__ = 'ch.swisstopo.vec200-transportation-oeffentliche-verkehr'
-#    __displayFieldName__ = ''
+##    __displayFieldName__ = ''
 #    id = Column('gtdboid', Text, primary_key=True)
 #    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
@@ -127,13 +127,13 @@ class Vec200Terminal(Base, Vector):
 #    __template__ = 'templates/htmlpopup/vec200_airport.mako'
 #    __esriId__ = 1000
 #    __bodId__ = 'ch.swisstopo.vec200-transportation-oeffentliche-verkehr'
-#    __displayFieldName__ = ''
+##    __displayFieldName__ = ''
 #    id = Column('gtdboid', Text, primary_key=True)
 #    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.vec200-transportation-oeffentliche-verkehr', Vec200Terminal)
-#register('ch.swisstopo.vec200-transportation-oeffentliche-verkehr', Vec200ShipKursschiff)
-#register('ch.swisstopo.vec200-transportation-oeffentliche-verkehr', Vec200Railway)
+register('ch.swisstopo.vec200-transportation-oeffentliche-verkehr', Vec200ShipKursschiff)
+register('ch.swisstopo.vec200-transportation-oeffentliche-verkehr', Vec200Railway)
 
 class treasurehunt(Base, Vector):
     __tablename__ = 'treasurehunt'
@@ -142,7 +142,12 @@ class treasurehunt(Base, Vector):
     __maxscale__ = 2505
     __esriId__ = 1000
     __bodId__ = 'ch.swisstopo.treasurehunt'
-    __displayFieldName__ = 'title_de'
+#    __displayFieldName__ = 'title_de'
+#    __displayFieldNameDe__ = 'title_de'
+#    __displayFieldNameFr__ = 'title_fr'
+#    __displayFieldNameIt__ = 'title_it'
+#    __displayFieldNameEn__ = 'title_de'
+#    __displayFieldNameRm__ = 'title_de'
     id = Column('bgdi_id', Integer, primary_key=True)
     title_de = Column('title_de', Text)
     title_fr = Column('title_fr', Text)
@@ -164,79 +169,68 @@ class Vec200Trafficinfo(Base, Vector):
     __template__ = 'templates/htmlpopup/vec200_trafficinfo.mako'
     __esriId__ = 1000
     __bodId__ = 'ch.swisstopo.vec200-transportation-strassennetz'
-    __displayFieldName__ = 'objname'
+#    __displayFieldName__ = 'objname'
     id = Column('gtdboid', Text, primary_key=True)
     objname = Column('objname',Text)
     objval = Column('objval',Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-#class Vec200ShipAutofaehre(Base, Vector):
-#     __tablename__ = 'v200_ship_autofaehre_tooltip'
-#     __table_args__ = ({'autoload': False})
-#     __template__ = 'templates/htmlpopup/vec200_ship_autofaehre.mako'
-#     __esriId__ = 1000
-#     __bodId__ = 'ch.swisstopo.vec200-transportation-strassennetz'
+class Vec200ShipAutofaehre(Base, Vector):
+     __tablename__ = 'v200_ship_autofaehre_tooltip'
+     __table_args__ = ({'autoload': False})
+     __template__ = 'templates/htmlpopup/vec200_ship_autofaehre.mako'
+     __esriId__ = 1000
+     __bodId__ = 'ch.swisstopo.vec200-transportation-strassennetz'
 #     __displayFieldName__ = 'objval'
-#     id = Column('gtdboid', Text, primary_key=True)
+     id = Column('gtdboid', Text, primary_key=True)
 #     objval = Column('objval',Text)
-#     use = Column('use',Text)
-#     rsu = Column('rsu',Text)
-#     detn = Column('detn',Text)
-#     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+     use = Column('use',Text)
+     rsu = Column('rsu',Text)
+     detn = Column('detn',Text)
+     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
  
-#class Vec200Road(Base, Vector):
-#    __tablename__ = 'vec200_road_tiles'
-#    __table_args__ = ({'autoload': False})
-#    __template__ = 'templates/htmlpopup/vec200_road.mako'
-#    __esriId__ = 1000
-#    __bodId__ = 'ch.swisstopo.vec200-transportation-strassennetz'
+class Vec200Road(Base, Vector):
+    __tablename__ = 'vec200_road_tiles'
+    __table_args__ = ({'autoload': False})
+    __template__ = 'templates/htmlpopup/vec200_road.mako'
+    __esriId__ = 1000
+    __bodId__ = 'ch.swisstopo.vec200-transportation-strassennetz'
 #    __displayFieldName__ = 'objval'
-#    id = Column('gtdboid', Text, primary_key=True)
-#    construct = Column('construct',Text)
-#    objval = Column('objval',Text)
-#    toll = Column('toll',Text)
-#    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    id = Column('gtdboid', Text, primary_key=True)
+    construct = Column('construct',Text)
+    objval = Column('objval',Text)
+    toll = Column('toll',Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-#class Vec200Ramp(Base, Vector):
-#    __tablename__ = 'vec200_ramp_tiles'
-#    __table_args__ = ({'autoload': False})
-#    __template__ = 'templates/htmlpopup/vec200_ramp.mako'
-#    __esriId__ = 1000
-#    __bodId__ = 'ch.swisstopo.vec200-transportation-strassennetz'
-#    __displayFieldName__ = 'objval'
-#    id = Column('gtdboid', Text, primary_key=True)
-#    construct = Column('construct',Text)
-#    objval = Column('objval',Text)
-#    toll = Column('toll',Text)
-#    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+class Vec200Ramp(Base, Vector):
+    __tablename__ = 'vec200_ramp_tiles'
+    __table_args__ = ({'autoload': False})
+    __template__ = 'templates/htmlpopup/vec200_ramp.mako'
+    __esriId__ = 1000
+    __bodId__ = 'ch.swisstopo.vec200-transportation-strassennetz'
+ #   __displayFieldName__ = 'objval'
+    id = Column('gtdboid', Text, primary_key=True)
+    construct = Column('construct',Text)
+    objval = Column('objval',Text)
+    toll = Column('toll',Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-#class Vec200Customsoffice(Base, Vector):
-#    __tablename__ = 'vec200_customsoffice_tiles'
-#    __table_args__ = ({'autoload': False})
-#    __template__ = 'templates/htmlpopup/vec200_customsoffice.mako'
-#    __esriId__ = 1000
-#    __bodId__ = 'ch.swisstopo.vec200-transportation-strassennetz'
+class Vec200Customsoffice(Base, Vector):
+    __tablename__ = 'vec200_customsoffice_tiles'
+    __table_args__ = ({'autoload': False})
+    __template__ = 'templates/htmlpopup/vec200_customsoffice.mako'
+    __esriId__ = 1000
+    __bodId__ = 'ch.swisstopo.vec200-transportation-strassennetz'
 #    __displayFieldName__ = 'objname'
-#    id = Column('gtdboid', Text, primary_key=True)
-#    objname = Column('objname', Text)
-#    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    id = Column('gtdboid', Text, primary_key=True)
+    objname = Column('objname', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-# no register...
-#class Vec200Interchange(Base, Vector):
-#    __tablename__ = 'vec200_interchange'
-#    __table_args__ = ({'autoload': False})
-#    __template__ = 'templates/htmlpopup/vec200_interchange.mako'
-#    __esriId__ = 1000
-#    __bodId__ = 'ch.swisstopo.vec200-transportation-strassennetz'
-#    __displayFieldName__ = ''
-#    id = Column('gtdboid', Text, primary_key=True)
-#    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-# 
 register('ch.swisstopo.vec200-transportation-strassennetz', Vec200Trafficinfo)
-#register('ch.swisstopo.vec200-transportation-strassennetz', Vec200ShipAutofaehre)
-#register('ch.swisstopo.vec200-transportation-strassennetz', Vec200Road)
-#register('ch.swisstopo.vec200-transportation-strassennetz', Vec200Ramp)
-#register('ch.swisstopo.vec200-transportation-strassennetz', Vec200Customsoffice)
+register('ch.swisstopo.vec200-transportation-strassennetz', Vec200ShipAutofaehre)
+register('ch.swisstopo.vec200-transportation-strassennetz', Vec200Road)
+register('ch.swisstopo.vec200-transportation-strassennetz', Vec200Ramp)
+register('ch.swisstopo.vec200-transportation-strassennetz', Vec200Customsoffice)
 
 class Vec200Protectedarea(Base, Vector):
     __tablename__ = 'vec200_protectedarea'

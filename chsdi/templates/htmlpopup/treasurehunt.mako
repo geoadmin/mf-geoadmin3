@@ -1,18 +1,14 @@
 <%inherit file="base.mako"/>
 
-<%def name="preview()">
-    % if lang == 'fr':
-        ${c['attributes']['title_fr'] or '-'}
-    % elif lang == 'it':
-        ${c['attributes']['title_it'] or '-'}
-    % else:
-        ${c['attributes']['title_de'] or '-'}
-    % endif
-</%def>
-
 <%def name="table_body(c,lang)">
 
-<tr><td width="150">${_('title')}</td><td>${c['value']}</td></tr>
+% if lang =='fr':
+    <tr><td width="150">${_('title')}</td><td>${c['attributes']['title_fr']}</td></tr>
+% elif lang =='it':
+    <tr><td width="150">${_('title')}</td><td>${c['attributes']['title_it']}</td></tr>
+% else:
+    <tr><td width="150">${_('title')}</td><td>${c['attributes']['title_de']}</td></tr>
+% endif
 % if c['attributes']['type_coord'] =='info':
 	% if lang =='fr':
 	<tr><td width="150" style="vertical-align: top;">${_('information')}</td><td>${c['attributes']['info_fr'] or '-'}</td></tr>
