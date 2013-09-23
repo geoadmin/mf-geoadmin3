@@ -12,9 +12,11 @@
   ]);
 
   module.directive('gaTooltip',
-    function($http, $q, $translate, $sce, gaPopup, gaLayers, gaBrowserSniffer)
+    function($document, $http, $q, $translate, $sce, gaPopup, gaLayers,
+      gaBrowserSniffer)
       {
         var waitclass = 'ga-tooltip-wait',
+            bodyEl = angular.element($document[0].body),
             popupContent = '<div ng-repeat="htmlsnippet in options.htmls">' +
                               '<div ng-bind-html="htmlsnippet"></div>' +
                               '<div class="tooltip-separator" ' +
@@ -62,13 +64,15 @@
                   layersToQuery = getLayersToQuery();
               // Cancel all pending requests
               if (canceler) {
-                canceler.resolve();
+                // FIXME: are JSONP request cancelable? seems not. In the
+                // meanwhile, commenting this to avoid mobile issues
+                // canceler.resolve();
               }
               // Create new cancel object
               canceler = $q.defer();
               if (layersToQuery.length) {
                 // Show wait cursor
-                angular.element(map.getTarget()).addClass(waitclass);
+                bodyEl.addClass(waitclass);
 
                 // Look for all features under clicked pixel
                 $http.jsonp(identifyUrl, {
@@ -84,12 +88,10 @@
                     callback: 'JSON_CALLBACK'
                   }
                 }).success(function(features) {
-                  angular.element(map.getTarget())
-                      .removeClass(waitclass);
+                  bodyEl.removeClass(waitclass);
                   showFeatures(size, features.results);
                 }).error(function() {
-                  angular.element(map.getTarget())
-                      .removeClass(waitclass);
+                  bodyEl.removeClass(waitclass);
                 });
               }
 
