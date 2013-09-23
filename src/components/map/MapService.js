@@ -138,6 +138,8 @@
          */
         this.getOlLayerById = function(id) {
           var layer = layers[id];
+          // temporary workaround for the 204 no content issue
+          id = layer.parentLayerId || id;
           var olLayer = layer.olLayer;
           if (!angular.isDefined(olLayer)) {
             if (layer.type == 'wmts') {
