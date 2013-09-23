@@ -19,7 +19,12 @@
     -
     % endif
     </td></tr>
-    
-    <tr><td width="150">${_('name')}</td><td>${c['attributes']['name'].strip()}<itd></tr>
+    <tr><td width="150">${_('name')}</td>
+    % if c['attributes']['name'].strip()== 'N_P':
+      <td>-</td>
+    % else:
+      <td>${c['attributes']['name'].strip()}</td>
+    % endif
+    </tr>
 </%def>
 
