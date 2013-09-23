@@ -145,6 +145,8 @@
             if (layer.type == 'wmts') {
               olLayer = new ol.layer.Tile({
                 id: id,
+                minResolution: layer.maxResolution,
+                maxResolution: layer.minResolution,
                 source: new ol.source.WMTS({
                   attributions: [
                     getAttribution('<a href="' +
@@ -167,6 +169,8 @@
               if (layer.singleTile === true) {
                 olLayer = new ol.layer.Image({
                   id: id,
+                  minResolution: layer.maxResolution,
+                  maxResolution: layer.minResolution,
                   source: new ol.source.ImageWMS({
                     //FIXME: wmsUrl should not be wmsCap url
                     url: layer.wmsUrl.replace(/\?.*/, ''),
@@ -190,6 +194,8 @@
               }
               olLayer = new ol.layer.Group({
                 id: id,
+                minResolution: layer.maxResolution,
+                maxResolution: layer.minResolution,
                 layers: subLayers
               });
             }
