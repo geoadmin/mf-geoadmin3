@@ -1,7 +1,5 @@
 <%inherit file="base.mako"/>
 
-<%def name="preview()">${_('feature')}</%def>
-
 <%def name="table_body(c,lang)">
     <tr><td width="150" valign="top">${_('nffirmenname')}</td>    <td>${c['attributes']['firmenname'] or '-'}</td></tr>
     <tr><td width="150">${_('nfname')}</td>    <td>${c['attributes']['name'] or '-'}</td></tr>

@@ -11,5 +11,5 @@
       <tr><td width="150" valign="top">${_('type_dreieck')}</td><td>${c['attributes']['type'] or '-'}</td></tr>
    % endif
    <tr><td width="150">${_('num_dreieck')}</td><td>${c['attributes']['num'] or '-'}</td></tr>
-   <tr><td width="150">${_('nom_dreieck')}</td><td>${c['value'] or '-'}</td></tr>
+   <tr><td width="150">${_('nom_dreieck')}</td><td>${c['attributes']['nom'] or '-'}</td></tr>
 </%def>

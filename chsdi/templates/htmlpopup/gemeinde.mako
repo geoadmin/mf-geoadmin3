@@ -1,10 +1,8 @@
 <%inherit file="base.mako"/>
 
-<%def name="preview()">${c['value'] or '-'}</%def>
-
 <%def name="table_body(c,lang)">
     <tr><td width="150" valign="top">${_('gemkanton')}</td><td>${c['attributes']['kanton'] or '-'}</td></tr>
-    <tr><td width="150">${_('gemgemeinde')}</td><td>${c['value'] or '-'}</td></tr>
+    <tr><td width="150">${_('gemgemeinde')}</td><td>${c['attributes']['gemeindename'] or '-'}</td></tr>
     <tr><td width="150">${_('gemflaeche')}</td><td>${c['attributes']['flaeche_ha'] or '-'}</td></tr>
     <tr><td width="150">${_('gembfs')}</td>    <td>${c['attributes']['bfs_nr'] or '-'}</td></tr>
     <tr><td width="150">${_('gemdarstellung')}</td>

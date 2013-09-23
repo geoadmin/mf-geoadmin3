@@ -1,7 +1,5 @@
 <%inherit file="base.mako"/>
 
-<%def name="preview()">${c['value'] or '-'}</%def>
-
 <%def name="table_body(c,lang)">
      <tr><td width="150" valign="top">${_('grundfuehrung')}</td>
      % if lang == 'de' or lang == 'rm' or lang == 'en':
@@ -12,7 +10,7 @@
           <td>${c['attributes']['grundbuchfuehrung_i'] or '-'}</td>
      % endif
     </tr>
-    <tr><td width="150">${_('grundgemeinde')}</td>    <td>${c['value'] or '-'}</td></tr>
+    <tr><td width="150">${_('grundgemeinde')}</td>    <td>${c['attributes']['ortsteil_grundbuch'] or '-'}</td></tr>
     <tr><td width="150">${_('grundkreis')}</td>    <td>${c['attributes']['grundbuchkreis'] or '-'}</td></tr>
     <tr><td width="150">${_('grundadresse')}</td>
     % if c['attributes']['adresse'].strip() == "#":

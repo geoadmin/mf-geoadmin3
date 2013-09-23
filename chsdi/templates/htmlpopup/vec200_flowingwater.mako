@@ -1,15 +1,6 @@
 <%inherit file="base.mako"/>
 
-<%def name="preview()">
-    % if c['attributes']['name'].strip()== 'N_P':
-        -
-    % else:
-        ${c['attributes']['name'] or '-'}
-    % endif
-</%def>
-
 <%def name="table_body(c,lang)">
-
     <% c[stable_id] = True %>
     <tr><td width="150">${_('schiffbarkeit')}</td><td>
     % if c['attributes']['exs'] == 'Not applicable':
@@ -29,6 +20,6 @@
     % endif
     </td></tr>
     
-    <tr><td width="150">${_('name')}</td><td>${c['value']}</td></tr>
+    <tr><td width="150">${_('name')}</td><td>${c['attributes']['name'].strip()}<itd></tr>
 </%def>
 

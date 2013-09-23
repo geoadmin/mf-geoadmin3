@@ -1,7 +1,5 @@
 <%inherit file="base.mako"/>
 
-<%def name="preview()">${_('losidentifikator')}: ${c['attributes']['neu_id'] or '-'}</%def>
-
 <%def name="table_body(c,lang)">
     % if c['attributes']['operatsname'] and c['attributes'] :
     <tr><td width="150" valign="top">${_('losentreprise')}</td>    <td>${c['attributes']['operatsname'] or '-'}</td></tr>
@@ -29,7 +27,7 @@
     % if c['attributes']['frame']:
         <tr><td width="150">${_('losbezungsramen')}</td>    <td>${c['attributes']['frame'] or '-'}</td></tr>
     % endif
-    % if c['value']:
-    <tr><td width="150">${_('losidentifikator')}</td>    <td>${c['value'] or '-'}</td></tr>
+    % if c['attributes']['neu_id']:
+    <tr><td width="150">${_('losidentifikator')}</td>    <td>${c['attributes']['neu_id'] or '-'}</td></tr>
     % endif
 </%def>

@@ -1,5 +1,4 @@
 <%inherit file="base.mako"/>
-<%def name="preview()">${c['value'] or '-'}</%def>
 
 <%def name="table_body(c,lang)">
  % if lang == 'de' or lang == 'rm' or lang == 'en':
