@@ -514,20 +514,20 @@ goog.base = function(me, opt_methodName, var_args) {
 goog.scope = function(fn) {
   fn.call(goog.global)
 };
-goog.addDependency("../build/src/internal/src/requireall.js", [], ["ol", "ol.Attribution", "ol.BrowserFeature", "ol.Collection", "ol.CollectionEvent", "ol.CollectionEventType", "ol.Color", "ol.Constraints", "ol.Coordinate", "ol.CoordinateArray", "ol.CoordinateFormatType", "ol.DeviceOrientation", "ol.DeviceOrientation.SUPPORTED", "ol.DeviceOrientationProperty", "ol.Ellipsoid", "ol.Extent", "ol.Feature", "ol.FrameState", "ol.Geolocation", "ol.Geolocation.SUPPORTED", "ol.GeolocationProperty", "ol.IView", 
-"ol.IView2D", "ol.IView3D", "ol.Image", "ol.ImageState", "ol.ImageTile", "ol.ImageUrlFunction", "ol.ImageUrlFunctionType", "ol.Kinetic", "ol.Map", "ol.MapBrowserEvent", "ol.MapBrowserEvent.EventType", "ol.MapBrowserEventHandler", "ol.MapEvent", "ol.MapEventType", "ol.MapProperty", "ol.Object", "ol.ObjectEventType", "ol.Overlay", "ol.OverlayPositioning", "ol.OverlayProperty", "ol.Pixel", "ol.PostRenderFunction", "ol.PreRenderFunction", "ol.Projection", "ol.ProjectionLike", "ol.ProjectionUnits", "ol.RendererHint", 
-"ol.RendererHints", "ol.ResolutionConstraint", "ol.ResolutionConstraintType", "ol.RotationConstraint", "ol.RotationConstraintType", "ol.Size", "ol.Sphere", "ol.Tile", "ol.TileCache", "ol.TileCoord", "ol.TilePriorityFunction", "ol.TileQueue", "ol.TileRange", "ol.TileState", "ol.TileUrlFunction", "ol.TileUrlFunctionType", "ol.TransformFunction", "ol.View", "ol.View2D", "ol.View2DProperty", "ol.View2DState", "ol.ViewHint", "ol.animation", "ol.array", "ol.canvas", "ol.canvas.SUPPORTED", "ol.control", 
-"ol.control.Attribution", "ol.control.Control", "ol.control.DragBox", "ol.control.FullScreen", "ol.control.Logo", "ol.control.MousePosition", "ol.control.ScaleLine", "ol.control.ScaleLineProperty", "ol.control.ScaleLineUnits", "ol.control.Zoom", "ol.control.ZoomSlider", "ol.control.ZoomToExtent", "ol.coordinate", "ol.css", "ol.dom", "ol.dom.BrowserFeature", "ol.dom.Input", "ol.dom.InputProperty", "ol.easing", "ol.ellipsoid.BESSEL1841", "ol.ellipsoid.WGS84", "ol.expr", "ol.expr.Call", "ol.expr.Char", 
-"ol.expr.Comparison", "ol.expr.ComparisonOp", "ol.expr.Expression", "ol.expr.Identifier", "ol.expr.Lexer", "ol.expr.Literal", "ol.expr.Logical", "ol.expr.LogicalOp", "ol.expr.Math", "ol.expr.MathOp", "ol.expr.Member", "ol.expr.Not", "ol.expr.Parser", "ol.expr.Token", "ol.expr.TokenType", "ol.expr.UnexpectedToken", "ol.expr.functions", "ol.extent", "ol.geom", "ol.geom.AbstractCollection", "ol.geom.Geometry", "ol.geom.GeometryCollection", "ol.geom.GeometryType", "ol.geom.LineString", "ol.geom.LinearRing", 
-"ol.geom.MultiLineString", "ol.geom.MultiPoint", "ol.geom.MultiPolygon", "ol.geom.Point", "ol.geom.Polygon", "ol.geom.SharedVertices", "ol.geom2", "ol.geom2.LineString", "ol.geom2.LineStringCollection", "ol.geom2.Point", "ol.geom2.PointCollection", "ol.interaction", "ol.interaction.ConditionType", "ol.interaction.DoubleClickZoom", "ol.interaction.Drag", "ol.interaction.DragPan", "ol.interaction.DragRotate", "ol.interaction.DragRotateAndZoom", "ol.interaction.DragZoom", "ol.interaction.Interaction", 
-"ol.interaction.KeyboardPan", "ol.interaction.KeyboardZoom", "ol.interaction.MouseWheelZoom", "ol.interaction.Select", "ol.interaction.Touch", "ol.interaction.TouchPan", "ol.interaction.TouchRotate", "ol.interaction.TouchZoom", "ol.interaction.condition", "ol.layer.Base", "ol.layer.Group", "ol.layer.Image", "ol.layer.Layer", "ol.layer.LayerProperty", "ol.layer.LayerState", "ol.layer.Tile", "ol.layer.Vector", "ol.layer.Vector2", "ol.layer.VectorLayerEventType", "ol.layer.VectorLayerRenderIntent", 
-"ol.math", "ol.parser.AsyncObjectFeatureParser", "ol.parser.AsyncStringFeatureParser", "ol.parser.DomFeatureParser", "ol.parser.GPX", "ol.parser.GeoJSON", "ol.parser.KML", "ol.parser.ObjectFeatureParser", "ol.parser.Parser", "ol.parser.ReadFeaturesOptions", "ol.parser.ReadFeaturesResult", "ol.parser.StringFeatureParser", "ol.parser.TopoJSON", "ol.parser.WKT", "ol.parser.XML", "ol.parser.ogc.ExceptionReport", "ol.parser.ogc.Filter", "ol.parser.ogc.Filter_v1", "ol.parser.ogc.Filter_v1_0_0", "ol.parser.ogc.Filter_v1_1_0", 
-"ol.parser.ogc.GML", "ol.parser.ogc.GML_v2", "ol.parser.ogc.GML_v3", "ol.parser.ogc.OWSCommon_v1", "ol.parser.ogc.OWSCommon_v1_1_0", "ol.parser.ogc.Versioned", "ol.parser.ogc.WMSCapabilities", "ol.parser.ogc.WMSCapabilities_v1", "ol.parser.ogc.WMSCapabilities_v1_0_0", "ol.parser.ogc.WMSCapabilities_v1_1", "ol.parser.ogc.WMSCapabilities_v1_1_0", "ol.parser.ogc.WMSCapabilities_v1_1_1", "ol.parser.ogc.WMSCapabilities_v1_1_1_WMSC", "ol.parser.ogc.WMSCapabilities_v1_3_0", "ol.parser.ogc.WMTSCapabilities", 
-"ol.parser.ogc.WMTSCapabilities_v1_0_0", "ol.parser.polyline", "ol.proj", "ol.proj.CH", "ol.proj.EPSG2056", "ol.proj.EPSG21781", "ol.proj.EPSG3857", "ol.proj.EPSG4326", "ol.proj.common", "ol.renderer.Layer", "ol.renderer.Map", "ol.renderer.canvas.ImageLayer", "ol.renderer.canvas.Layer", "ol.renderer.canvas.Map", "ol.renderer.canvas.SUPPORTED", "ol.renderer.canvas.TileLayer", "ol.renderer.canvas.VectorLayer", "ol.renderer.canvas.VectorRenderer", "ol.renderer.dom.ImageLayer", "ol.renderer.dom.Layer", 
-"ol.renderer.dom.Map", "ol.renderer.dom.SUPPORTED", "ol.renderer.dom.TileLayer", "ol.renderer.webgl.ImageLayer", "ol.renderer.webgl.Layer", "ol.renderer.webgl.Map", "ol.renderer.webgl.SUPPORTED", "ol.renderer.webgl.TileLayer", "ol.renderer.webgl.VectorLayer2", "ol.renderer.webgl.map.shader.Color", "ol.renderer.webgl.map.shader.Default", "ol.renderer.webgl.tilelayer.shader", "ol.renderer.webgl.vectorlayer2.shader.LineStringCollection", "ol.renderer.webgl.vectorlayer2.shader.PointCollection", "ol.size", 
-"ol.source.BingMaps", "ol.source.FeatureInfoSource", "ol.source.Image", "ol.source.ImageStatic", "ol.source.ImageWMS", "ol.source.MapQuestOSM", "ol.source.MapQuestOpenAerial", "ol.source.OSM", "ol.source.Source", "ol.source.Stamen", "ol.source.Tile", "ol.source.TileDebug", "ol.source.TileImage", "ol.source.TileJSON", "ol.source.TileOptions", "ol.source.TileWMS", "ol.source.Vector", "ol.source.Vector2", "ol.source.WMSGetFeatureInfoMethod", "ol.source.WMTS", "ol.source.WMTSRequestEncoding", "ol.source.XYZ", 
-"ol.source.wms", "ol.sphere.NORMAL", "ol.sphere.WGS84", "ol.structs.Buffer", "ol.structs.IntegerSet", "ol.structs.LRUCache", "ol.structs.PriorityQueue", "ol.structs.RTree", "ol.style", "ol.style.Fill", "ol.style.Icon", "ol.style.IconLiteral", "ol.style.LineLiteral", "ol.style.Literal", "ol.style.Point", "ol.style.PointLiteral", "ol.style.PolygonLiteral", "ol.style.Rule", "ol.style.Shape", "ol.style.ShapeLiteral", "ol.style.ShapeType", "ol.style.Stroke", "ol.style.StrokeDefaults", "ol.style.Style", 
-"ol.style.Symbolizer", "ol.style.Text", "ol.style.TextLiteral", "ol.tilegrid.TileGrid", "ol.tilegrid.WMTS", "ol.tilegrid.XYZ", "ol.tilejson", "ol.vec.Mat4", "ol.webgl", "ol.webgl.SUPPORTED", "ol.webgl.WebGLContextEventType", "ol.webgl.shader"]);
+goog.addDependency("../build/src/internal/src/requireall.js", [], ["ol", "ol.Attribution", "ol.BrowserFeature", "ol.Collection", "ol.CollectionEvent", "ol.CollectionEventType", "ol.Color", "ol.Constraints", "ol.Coordinate", "ol.CoordinateArray", "ol.CoordinateFormatType", "ol.DeviceOrientation", "ol.DeviceOrientationProperty", "ol.Ellipsoid", "ol.Extent", "ol.Feature", "ol.FrameState", "ol.Geolocation", "ol.GeolocationProperty", "ol.IView", "ol.IView2D", "ol.IView3D", "ol.Image", "ol.ImageState", 
+"ol.ImageTile", "ol.ImageUrlFunction", "ol.ImageUrlFunctionType", "ol.Kinetic", "ol.Map", "ol.MapBrowserEvent", "ol.MapBrowserEvent.EventType", "ol.MapBrowserEventHandler", "ol.MapEvent", "ol.MapEventType", "ol.MapProperty", "ol.Object", "ol.ObjectEventType", "ol.Overlay", "ol.OverlayPositioning", "ol.OverlayProperty", "ol.Pixel", "ol.PostRenderFunction", "ol.PreRenderFunction", "ol.RendererHint", "ol.RendererHints", "ol.ResolutionConstraint", "ol.ResolutionConstraintType", "ol.RotationConstraint", 
+"ol.RotationConstraintType", "ol.Size", "ol.Sphere", "ol.Tile", "ol.TileCache", "ol.TileCoord", "ol.TileLoadFunctionType", "ol.TilePriorityFunction", "ol.TileQueue", "ol.TileRange", "ol.TileState", "ol.TileUrlFunction", "ol.TileUrlFunctionType", "ol.TransformFunction", "ol.View", "ol.View2D", "ol.View2DProperty", "ol.View2DState", "ol.ViewHint", "ol.animation", "ol.array", "ol.canvas", "ol.control", "ol.control.Attribution", "ol.control.Control", "ol.control.DragBox", "ol.control.FullScreen", "ol.control.Logo", 
+"ol.control.MousePosition", "ol.control.ScaleLine", "ol.control.ScaleLineProperty", "ol.control.ScaleLineUnits", "ol.control.Zoom", "ol.control.ZoomSlider", "ol.control.ZoomToExtent", "ol.coordinate", "ol.css", "ol.dom", "ol.dom.BrowserFeature", "ol.dom.Input", "ol.dom.InputProperty", "ol.easing", "ol.ellipsoid.BESSEL1841", "ol.ellipsoid.WGS84", "ol.expr", "ol.expr.Call", "ol.expr.Char", "ol.expr.Comparison", "ol.expr.ComparisonOp", "ol.expr.Expression", "ol.expr.Identifier", "ol.expr.Lexer", "ol.expr.Literal", 
+"ol.expr.Logical", "ol.expr.LogicalOp", "ol.expr.Math", "ol.expr.MathOp", "ol.expr.Member", "ol.expr.Not", "ol.expr.Parser", "ol.expr.Token", "ol.expr.TokenType", "ol.expr.UnexpectedToken", "ol.expr.functions", "ol.extent", "ol.geom", "ol.geom.AbstractCollection", "ol.geom.Geometry", "ol.geom.GeometryCollection", "ol.geom.GeometryType", "ol.geom.LineString", "ol.geom.LinearRing", "ol.geom.MultiLineString", "ol.geom.MultiPoint", "ol.geom.MultiPolygon", "ol.geom.Point", "ol.geom.Polygon", "ol.geom.SharedVertices", 
+"ol.geom2", "ol.geom2.LineString", "ol.geom2.LineStringCollection", "ol.geom2.Point", "ol.geom2.PointCollection", "ol.interaction", "ol.interaction.ConditionType", "ol.interaction.DoubleClickZoom", "ol.interaction.Drag", "ol.interaction.DragPan", "ol.interaction.DragRotate", "ol.interaction.DragRotateAndZoom", "ol.interaction.DragZoom", "ol.interaction.Interaction", "ol.interaction.KeyboardPan", "ol.interaction.KeyboardZoom", "ol.interaction.MouseWheelZoom", "ol.interaction.Select", "ol.interaction.Touch", 
+"ol.interaction.TouchPan", "ol.interaction.TouchRotate", "ol.interaction.TouchZoom", "ol.interaction.condition", "ol.layer.Base", "ol.layer.Group", "ol.layer.Image", "ol.layer.Layer", "ol.layer.LayerProperty", "ol.layer.LayerState", "ol.layer.Tile", "ol.layer.Vector", "ol.layer.Vector2", "ol.layer.VectorLayerEventType", "ol.layer.VectorLayerRenderIntent", "ol.math", "ol.parser.AsyncObjectFeatureParser", "ol.parser.AsyncStringFeatureParser", "ol.parser.DomFeatureParser", "ol.parser.GPX", "ol.parser.GeoJSON", 
+"ol.parser.KML", "ol.parser.ObjectFeatureParser", "ol.parser.Parser", "ol.parser.ReadFeaturesOptions", "ol.parser.ReadFeaturesResult", "ol.parser.StringFeatureParser", "ol.parser.TopoJSON", "ol.parser.WKT", "ol.parser.XML", "ol.parser.ogc.ExceptionReport", "ol.parser.ogc.Filter", "ol.parser.ogc.Filter_v1", "ol.parser.ogc.Filter_v1_0_0", "ol.parser.ogc.Filter_v1_1_0", "ol.parser.ogc.GML", "ol.parser.ogc.GML_v2", "ol.parser.ogc.GML_v3", "ol.parser.ogc.OWSCommon_v1", "ol.parser.ogc.OWSCommon_v1_1_0", 
+"ol.parser.ogc.Versioned", "ol.parser.ogc.WMSCapabilities", "ol.parser.ogc.WMSCapabilities_v1", "ol.parser.ogc.WMSCapabilities_v1_0_0", "ol.parser.ogc.WMSCapabilities_v1_1", "ol.parser.ogc.WMSCapabilities_v1_1_0", "ol.parser.ogc.WMSCapabilities_v1_1_1", "ol.parser.ogc.WMSCapabilities_v1_1_1_WMSC", "ol.parser.ogc.WMSCapabilities_v1_3_0", "ol.parser.ogc.WMTSCapabilities", "ol.parser.ogc.WMTSCapabilities_v1_0_0", "ol.parser.polyline", "ol.proj", "ol.proj.CH", "ol.proj.EPSG2056", "ol.proj.EPSG21781", 
+"ol.proj.EPSG3857", "ol.proj.EPSG4326", "ol.proj.Projection", "ol.proj.ProjectionLike", "ol.proj.Units", "ol.proj.common", "ol.renderer.Layer", "ol.renderer.Map", "ol.renderer.canvas", "ol.renderer.canvas.ImageLayer", "ol.renderer.canvas.Layer", "ol.renderer.canvas.Map", "ol.renderer.canvas.TileLayer", "ol.renderer.canvas.VectorLayer", "ol.renderer.canvas.VectorRenderer", "ol.renderer.dom", "ol.renderer.dom.ImageLayer", "ol.renderer.dom.Layer", "ol.renderer.dom.Map", "ol.renderer.dom.TileLayer", 
+"ol.renderer.webgl", "ol.renderer.webgl.ImageLayer", "ol.renderer.webgl.Layer", "ol.renderer.webgl.Map", "ol.renderer.webgl.TileLayer", "ol.renderer.webgl.VectorLayer2", "ol.renderer.webgl.map.shader.Color", "ol.renderer.webgl.map.shader.Default", "ol.renderer.webgl.tilelayer.shader", "ol.renderer.webgl.vectorlayer2.shader.LineStringCollection", "ol.renderer.webgl.vectorlayer2.shader.PointCollection", "ol.size", "ol.source.BingMaps", "ol.source.FeatureInfoSource", "ol.source.Image", "ol.source.ImageStatic", 
+"ol.source.ImageWMS", "ol.source.MapQuestOSM", "ol.source.MapQuestOpenAerial", "ol.source.OSM", "ol.source.Source", "ol.source.Stamen", "ol.source.Tile", "ol.source.TileDebug", "ol.source.TileImage", "ol.source.TileJSON", "ol.source.TileOptions", "ol.source.TileWMS", "ol.source.Vector", "ol.source.Vector2", "ol.source.WMSGetFeatureInfoMethod", "ol.source.WMTS", "ol.source.WMTSRequestEncoding", "ol.source.XYZ", "ol.source.wms", "ol.sphere.NORMAL", "ol.sphere.WGS84", "ol.structs.Buffer", "ol.structs.IntegerSet", 
+"ol.structs.LRUCache", "ol.structs.PriorityQueue", "ol.structs.RTree", "ol.style", "ol.style.Fill", "ol.style.Icon", "ol.style.IconLiteral", "ol.style.LineLiteral", "ol.style.Literal", "ol.style.Point", "ol.style.PointLiteral", "ol.style.PolygonLiteral", "ol.style.Rule", "ol.style.Shape", "ol.style.ShapeLiteral", "ol.style.ShapeType", "ol.style.Stroke", "ol.style.StrokeDefaults", "ol.style.Style", "ol.style.Symbolizer", "ol.style.Text", "ol.style.TextLiteral", "ol.tilegrid.TileGrid", "ol.tilegrid.WMTS", 
+"ol.tilegrid.XYZ", "ol.tilejson", "ol.vec.Mat4", "ol.webgl", "ol.webgl.WebGLContextEventType", "ol.webgl.shader"]);
 goog.addDependency("../build/src/internal/src/types.js", ["ol.AttributionOptions", "ol.DeviceOrientationOptions", "ol.GeolocationOptions", "ol.GetFeatureInfoOptions", "ol.GetFeaturesOptions", "ol.MapOptions", "ol.OverlayOptions", "ol.Proj4jsProjectionOptions", "ol.ProjectionOptions", "ol.View2DOptions", "ol.animation.BounceOptions", "ol.animation.PanOptions", "ol.animation.RotateOptions", "ol.animation.ZoomOptions", "ol.control.AttributionOptions", "ol.control.ControlOptions", "ol.control.DefaultsOptions", 
 "ol.control.FullScreenOptions", "ol.control.LogoOptions", "ol.control.MousePositionOptions", "ol.control.ScaleLineOptions", "ol.control.ZoomOptions", "ol.control.ZoomSliderOptions", "ol.control.ZoomToExtentOptions", "ol.interaction.DefaultsOptions", "ol.interaction.DoubleClickZoomOptions", "ol.interaction.DragPanOptions", "ol.interaction.DragRotateAndZoomOptions", "ol.interaction.DragRotateOptions", "ol.interaction.DragZoomOptions", "ol.interaction.KeyboardPanOptions", "ol.interaction.KeyboardZoomOptions", 
 "ol.interaction.SelectOptions", "ol.interaction.TouchPanOptions", "ol.interaction.TouchRotateOptions", "ol.layer.BaseOptions", "ol.layer.GroupOptions", "ol.layer.LayerOptions", "ol.layer.TileOptions", "ol.layer.VectorLayerOptions", "ol.parser.GMLOptions", "ol.parser.GMLReadOptions", "ol.parser.GMLWriteOptions", "ol.parser.GPXOptions", "ol.parser.GPXWriteOptions", "ol.parser.KMLOptions", "ol.source.BingMapsOptions", "ol.source.ImageStaticOptions", "ol.source.ImageWMSOptions", "ol.source.OSMOptions", 
@@ -537,7 +537,7 @@ goog.addDependency("../src/ol/animation.js", ["ol.animation"], ["ol.PreRenderFun
 goog.addDependency("../src/ol/array.js", ["ol.array"], ["goog.array", "goog.asserts"]);
 goog.addDependency("../src/ol/attribution.js", ["ol.Attribution"], ["ol.TileRange"]);
 goog.addDependency("../src/ol/browserfeature.js", ["ol.BrowserFeature"], []);
-goog.addDependency("../src/ol/canvas/canvas.js", ["ol.canvas", "ol.canvas.SUPPORTED"], ["goog.dom", "goog.dom.TagName"]);
+goog.addDependency("../src/ol/canvas/canvas.js", ["ol.canvas"], ["goog.dom", "goog.dom.TagName"]);
 goog.addDependency("../src/ol/collection.js", ["ol.Collection", "ol.CollectionEvent", "ol.CollectionEventType"], ["goog.array", "goog.events.Event", "ol.Object"]);
 goog.addDependency("../src/ol/color.js", ["ol.Color"], ["goog.color", "goog.math"]);
 goog.addDependency("../src/ol/constraints.js", ["ol.Constraints"], ["ol.ResolutionConstraintType", "ol.RotationConstraintType"]);
@@ -547,14 +547,14 @@ goog.addDependency("../src/ol/control/controldefaults.js", ["ol.control"], ["ol.
 goog.addDependency("../src/ol/control/dragboxcontrol.js", ["ol.control.DragBox"], ["goog.asserts", "goog.dom", "goog.dom.TagName", "goog.events", "goog.math.Size", "goog.style", "ol.Coordinate", "ol.MapBrowserEvent", "ol.MapBrowserEvent.EventType", "ol.Pixel", "ol.control.Control"]);
 goog.addDependency("../src/ol/control/fullscreencontrol.js", ["ol.control.FullScreen"], ["goog.asserts", "goog.dom", "goog.dom.TagName", "goog.dom.classes", "goog.dom.fullscreen", "goog.dom.fullscreen.EventType", "goog.events", "goog.events.EventType", "ol.control.Control", "ol.css"]);
 goog.addDependency("../src/ol/control/logocontrol.js", ["ol.control.Logo"], ["goog.dom", "goog.dom.TagName", "goog.object", "goog.style", "ol.FrameState", "ol.control.Control", "ol.css"]);
-goog.addDependency("../src/ol/control/mousepositioncontrol.js", ["ol.control.MousePosition"], ["goog.array", "goog.dom", "goog.dom.TagName", "goog.events", "goog.events.EventType", "goog.style", "ol.CoordinateFormatType", "ol.Object", "ol.Pixel", "ol.Projection", "ol.TransformFunction", "ol.control.Control", "ol.proj"]);
-goog.addDependency("../src/ol/control/scalelinecontrol.js", ["ol.control.ScaleLine", "ol.control.ScaleLineProperty", "ol.control.ScaleLineUnits"], ["goog.array", "goog.asserts", "goog.dom", "goog.dom.TagName", "goog.events", "goog.math", "goog.style", "ol.Object", "ol.ProjectionUnits", "ol.TransformFunction", "ol.View2DState", "ol.control.Control", "ol.css", "ol.proj", "ol.sphere.NORMAL"]);
+goog.addDependency("../src/ol/control/mousepositioncontrol.js", ["ol.control.MousePosition"], ["goog.array", "goog.dom", "goog.dom.TagName", "goog.events", "goog.events.EventType", "goog.style", "ol.CoordinateFormatType", "ol.Object", "ol.Pixel", "ol.TransformFunction", "ol.control.Control", "ol.proj", "ol.proj.Projection"]);
+goog.addDependency("../src/ol/control/scalelinecontrol.js", ["ol.control.ScaleLine", "ol.control.ScaleLineProperty", "ol.control.ScaleLineUnits"], ["goog.array", "goog.asserts", "goog.dom", "goog.dom.TagName", "goog.events", "goog.math", "goog.style", "ol.Object", "ol.TransformFunction", "ol.View2DState", "ol.control.Control", "ol.css", "ol.proj", "ol.proj.Units", "ol.sphere.NORMAL"]);
 goog.addDependency("../src/ol/control/zoomcontrol.js", ["ol.control.Zoom"], ["goog.dom", "goog.dom.TagName", "goog.events", "goog.events.EventType", "ol.animation", "ol.control.Control", "ol.css", "ol.easing"]);
 goog.addDependency("../src/ol/control/zoomslidercontrol.js", ["ol.control.ZoomSlider"], ["goog.array", "goog.asserts", "goog.dom", "goog.dom.TagName", "goog.events", "goog.events.EventType", "goog.fx.Dragger", "goog.fx.Dragger.EventType", "goog.math", "goog.math.Rect", "goog.style", "ol.animation", "ol.control.Control", "ol.css", "ol.easing"]);
 goog.addDependency("../src/ol/control/zoomtoextentcontrol.js", ["ol.control.ZoomToExtent"], ["goog.dom", "goog.dom.TagName", "goog.events", "goog.events.EventType", "ol.control.Control", "ol.css"]);
 goog.addDependency("../src/ol/coordinate.js", ["ol.Coordinate", "ol.CoordinateArray", "ol.CoordinateFormatType", "ol.coordinate"], ["goog.math"]);
 goog.addDependency("../src/ol/css.js", ["ol.css"], []);
-goog.addDependency("../src/ol/deviceorientation.js", ["ol.DeviceOrientation", "ol.DeviceOrientation.SUPPORTED", "ol.DeviceOrientationProperty"], ["goog.events", "goog.math", "ol.Object"]);
+goog.addDependency("../src/ol/deviceorientation.js", ["ol.DeviceOrientation", "ol.DeviceOrientationProperty"], ["goog.events", "goog.math", "ol.Object"]);
 goog.addDependency("../src/ol/dom/dom.js", ["ol.dom", "ol.dom.BrowserFeature"], ["goog.asserts", "goog.vec.Mat4"]);
 goog.addDependency("../src/ol/dom/input.js", ["ol.dom.Input", "ol.dom.InputProperty"], ["goog.events", "goog.events.EventType", "ol.Object"]);
 goog.addDependency("../src/ol/easing.js", ["ol.easing"], ["goog.fx.easing"]);
@@ -568,7 +568,7 @@ goog.addDependency("../src/ol/expr/parser.js", ["ol.expr.Parser"], ["goog.assert
 goog.addDependency("../src/ol/extent.js", ["ol.Extent", "ol.extent"], ["goog.asserts", "ol.Coordinate", "ol.Size", "ol.TransformFunction"]);
 goog.addDependency("../src/ol/feature.js", ["ol.Feature"], ["ol.Object", "ol.geom.Geometry", "ol.layer.VectorLayerRenderIntent"]);
 goog.addDependency("../src/ol/framestate.js", ["ol.FrameState", "ol.PostRenderFunction", "ol.PreRenderFunction"], ["goog.vec.Mat4", "ol.Attribution", "ol.Extent", "ol.Size", "ol.TileQueue", "ol.TileRange", "ol.View2DState", "ol.layer.Layer", "ol.layer.LayerState"]);
-goog.addDependency("../src/ol/geolocation.js", ["ol.Geolocation", "ol.Geolocation.SUPPORTED", "ol.GeolocationProperty"], ["goog.events", "goog.events.EventType", "goog.math", "ol.Coordinate", "ol.Object", "ol.Projection", "ol.proj"]);
+goog.addDependency("../src/ol/geolocation.js", ["ol.Geolocation", "ol.GeolocationProperty"], ["goog.events", "goog.events.EventType", "goog.math", "ol.Coordinate", "ol.Object", "ol.proj"]);
 goog.addDependency("../src/ol/geom/abstractcollection.js", ["ol.geom.AbstractCollection"], ["ol.extent", "ol.geom.Geometry"]);
 goog.addDependency("../src/ol/geom/base.js", ["ol.geom"], ["ol.coordinate"]);
 goog.addDependency("../src/ol/geom/geometry.js", ["ol.geom.Geometry", "ol.geom.GeometryType"], ["ol.Extent", "ol.geom.SharedVertices"]);
@@ -585,7 +585,7 @@ goog.addDependency("../src/ol/geom2/geom2.js", ["ol.geom2"], ["goog.asserts", "o
 goog.addDependency("../src/ol/geom2/linestringcollection.js", ["ol.geom2.LineString", "ol.geom2.LineStringCollection"], ["goog.array", "goog.asserts", "goog.object", "ol.geom2", "ol.structs.Buffer"]);
 goog.addDependency("../src/ol/geom2/pointcollection.js", ["ol.geom2.Point", "ol.geom2.PointCollection"], ["goog.asserts", "ol.Extent", "ol.geom2", "ol.structs.Buffer"]);
 goog.addDependency("../src/ol/image.js", ["ol.Image", "ol.ImageState"], ["goog.array", "goog.asserts", "goog.events", "goog.events.EventTarget", "goog.events.EventType", "goog.object", "ol.Attribution", "ol.Extent"]);
-goog.addDependency("../src/ol/imagetile.js", ["ol.ImageTile"], ["goog.array", "goog.asserts", "goog.events", "goog.events.EventType", "goog.object", "ol.Tile", "ol.TileCoord", "ol.TileState"]);
+goog.addDependency("../src/ol/imagetile.js", ["ol.ImageTile"], ["goog.array", "goog.asserts", "goog.events", "goog.events.EventType", "goog.object", "ol.Tile", "ol.TileCoord", "ol.TileLoadFunctionType", "ol.TileState"]);
 goog.addDependency("../src/ol/imageurlfunction.js", ["ol.ImageUrlFunction", "ol.ImageUrlFunctionType"], ["ol.Size"]);
 goog.addDependency("../src/ol/interaction/condition.js", ["ol.interaction.ConditionType", "ol.interaction.condition"], ["goog.dom.TagName", "goog.events.EventType", "goog.functions"]);
 goog.addDependency("../src/ol/interaction/doubleclickzoominteraction.js", ["ol.interaction.DoubleClickZoom"], ["goog.asserts", "ol.MapBrowserEvent", "ol.MapBrowserEvent.EventType", "ol.interaction.Interaction"]);
@@ -597,7 +597,7 @@ goog.addDependency("../src/ol/interaction/dragzoominteraction.js", ["ol.interact
 goog.addDependency("../src/ol/interaction/interaction.js", ["ol.interaction.Interaction"], ["ol.MapBrowserEvent", "ol.animation", "ol.easing"]);
 goog.addDependency("../src/ol/interaction/interactiondefaults.js", ["ol.interaction"], ["ol.Collection", "ol.Kinetic", "ol.interaction.DoubleClickZoom", "ol.interaction.DragPan", "ol.interaction.DragRotate", "ol.interaction.DragZoom", "ol.interaction.KeyboardPan", "ol.interaction.KeyboardZoom", "ol.interaction.MouseWheelZoom", "ol.interaction.TouchPan", "ol.interaction.TouchRotate", "ol.interaction.TouchZoom"]);
 goog.addDependency("../src/ol/interaction/keyboardpaninteraction.js", ["ol.interaction.KeyboardPan"], ["goog.asserts", "goog.events.KeyCodes", "goog.events.KeyHandler.EventType", "goog.functions", "ol.View2D", "ol.coordinate", "ol.interaction.ConditionType", "ol.interaction.Interaction", "ol.interaction.condition"]);
-goog.addDependency("../src/ol/interaction/keyboardzoominteraction.js", ["ol.interaction.KeyboardZoom"], ["goog.asserts", "goog.events.KeyHandler.EventType", "goog.functions", "ol.interaction.ConditionType", "ol.interaction.Interaction", "ol.interaction.condition"]);
+goog.addDependency("../src/ol/interaction/keyboardzoominteraction.js", ["ol.interaction.KeyboardZoom"], ["goog.asserts", "goog.events.KeyHandler.EventType", "ol.interaction.ConditionType", "ol.interaction.Interaction", "ol.interaction.condition"]);
 goog.addDependency("../src/ol/interaction/mousewheelzoominteraction.js", ["ol.interaction.MouseWheelZoom"], ["goog.asserts", "goog.events.MouseWheelEvent", "goog.events.MouseWheelHandler.EventType", "goog.math", "ol.Coordinate", "ol.interaction.Interaction"]);
 goog.addDependency("../src/ol/interaction/selectinteraction.js", ["ol.interaction.Select"], ["goog.array", "goog.object", "ol.Feature", "ol.interaction.ConditionType", "ol.interaction.Interaction", "ol.interaction.condition", "ol.layer.Vector", "ol.layer.VectorLayerRenderIntent", "ol.source.Vector"]);
 goog.addDependency("../src/ol/interaction/touchinteraction.js", ["ol.interaction.Touch"], ["goog.asserts", "goog.functions", "goog.object", "ol.MapBrowserEvent", "ol.MapBrowserEvent.EventType", "ol.Pixel", "ol.ViewHint", "ol.interaction.Interaction"]);
@@ -605,7 +605,7 @@ goog.addDependency("../src/ol/interaction/touchpaninteraction.js", ["ol.interact
 goog.addDependency("../src/ol/interaction/touchrotateinteraction.js", ["ol.interaction.TouchRotate"], ["goog.asserts", "goog.style", "ol.Coordinate", "ol.interaction.Interaction", "ol.interaction.Touch"]);
 goog.addDependency("../src/ol/interaction/touchzoominteraction.js", ["ol.interaction.TouchZoom"], ["goog.asserts", "goog.style", "ol.Coordinate", "ol.interaction.Interaction", "ol.interaction.Touch"]);
 goog.addDependency("../src/ol/iview.js", ["ol.IView"], ["ol.IView2D", "ol.IView3D"]);
-goog.addDependency("../src/ol/iview2d.js", ["ol.IView2D", "ol.View2DState"], ["ol.Coordinate", "ol.Projection"]);
+goog.addDependency("../src/ol/iview2d.js", ["ol.IView2D", "ol.View2DState"], ["ol.Coordinate"]);
 goog.addDependency("../src/ol/iview3d.js", ["ol.IView3D"], []);
 goog.addDependency("../src/ol/kinetic.js", ["ol.Kinetic"], ["ol.Coordinate", "ol.PreRenderFunction", "ol.animation"]);
 goog.addDependency("../src/ol/layer/imagelayer.js", ["ol.layer.Image"], ["ol.layer.Layer", "ol.source.Image"]);
@@ -618,7 +618,7 @@ goog.addDependency("../src/ol/layer/vectorlayer2.js", ["ol.layer.Vector2"], ["ol
 goog.addDependency("../src/ol/layer/vectorlayerrenderintent.js", ["ol.layer.VectorLayerRenderIntent"], []);
 goog.addDependency("../src/ol/map.js", ["ol.Map", "ol.MapProperty", "ol.RendererHint", "ol.RendererHints"], ["goog.Uri.QueryData", "goog.array", "goog.asserts", "goog.async.AnimationDelay", "goog.async.Delay", "goog.debug.Console", "goog.dispose", "goog.dom", "goog.dom.TagName", "goog.dom.ViewportSizeMonitor", "goog.events", "goog.events.BrowserEvent", "goog.events.Event", "goog.events.EventType", "goog.events.KeyHandler", "goog.events.KeyHandler.EventType", "goog.events.MouseWheelHandler", "goog.events.MouseWheelHandler.EventType", 
 "goog.log", "goog.log.Level", "goog.object", "goog.style", "goog.vec.Mat4", "ol.BrowserFeature", "ol.Collection", "ol.FrameState", "ol.IView", "ol.MapBrowserEvent", "ol.MapBrowserEvent.EventType", "ol.MapBrowserEventHandler", "ol.MapEvent", "ol.MapEventType", "ol.Object", "ol.ObjectEventType", "ol.Pixel", "ol.PostRenderFunction", "ol.PreRenderFunction", "ol.Size", "ol.Tile", "ol.TileQueue", "ol.View", "ol.View2D", "ol.ViewHint", "ol.control", "ol.extent", "ol.interaction", "ol.layer.Base", "ol.layer.Group", 
-"ol.proj", "ol.proj.common", "ol.renderer.Map", "ol.renderer.canvas.Map", "ol.renderer.canvas.SUPPORTED", "ol.renderer.dom.Map", "ol.renderer.dom.SUPPORTED", "ol.renderer.webgl.Map", "ol.renderer.webgl.SUPPORTED", "ol.structs.PriorityQueue", "ol.vec.Mat4"]);
+"ol.proj", "ol.proj.common", "ol.renderer.Map", "ol.renderer.canvas", "ol.renderer.canvas.Map", "ol.renderer.dom", "ol.renderer.dom.Map", "ol.renderer.webgl", "ol.renderer.webgl.Map", "ol.structs.PriorityQueue", "ol.vec.Mat4"]);
 goog.addDependency("../src/ol/mapbrowserevent.js", ["ol.MapBrowserEvent", "ol.MapBrowserEvent.EventType", "ol.MapBrowserEventHandler"], ["goog.array", "goog.events", "goog.events.BrowserEvent", "goog.events.EventTarget", "goog.events.EventType", "goog.style", "ol.BrowserFeature", "ol.Coordinate", "ol.FrameState", "ol.MapEvent", "ol.Pixel"]);
 goog.addDependency("../src/ol/mapevent.js", ["ol.MapEvent", "ol.MapEventType"], ["goog.events.Event", "ol.FrameState"]);
 goog.addDependency("../src/ol/math.js", ["ol.math"], ["goog.asserts"]);
@@ -657,15 +657,15 @@ goog.addDependency("../src/ol/parser/topojsonparser.js", ["ol.parser.TopoJSON"],
 goog.addDependency("../src/ol/parser/wktparser.js", ["ol.parser.WKT"], ["goog.array", "goog.string", "ol.geom.Geometry", "ol.geom.GeometryCollection", "ol.geom.LineString", "ol.geom.MultiLineString", "ol.geom.MultiPoint", "ol.geom.MultiPolygon", "ol.geom.Point", "ol.geom.Polygon", "ol.parser.Parser"]);
 goog.addDependency("../src/ol/parser/xmlparser.js", ["ol.parser.XML"], ["goog.dom.xml", "ol.parser.Parser"]);
 goog.addDependency("../src/ol/pixel.js", ["ol.Pixel"], []);
-goog.addDependency("../src/ol/proj/chprojection.js", ["ol.proj.CH", "ol.proj.EPSG2056", "ol.proj.EPSG21781"], ["goog.asserts", "goog.math", "ol.Projection", "ol.ProjectionUnits", "ol.ellipsoid.BESSEL1841", "ol.proj", "ol.proj.EPSG4326"]);
+goog.addDependency("../src/ol/proj/chprojection.js", ["ol.proj.CH", "ol.proj.EPSG2056", "ol.proj.EPSG21781"], ["goog.asserts", "goog.math", "ol.ellipsoid.BESSEL1841", "ol.proj", "ol.proj.EPSG4326", "ol.proj.Projection", "ol.proj.Units"]);
 goog.addDependency("../src/ol/proj/common.js", ["ol.proj.common"], ["ol.proj", "ol.proj.EPSG3857", "ol.proj.EPSG4326"]);
-goog.addDependency("../src/ol/proj/epsg3857projection.js", ["ol.proj.EPSG3857"], ["goog.array", "goog.asserts", "ol.Projection", "ol.ProjectionUnits", "ol.math", "ol.proj"]);
-goog.addDependency("../src/ol/proj/epsg4326projection.js", ["ol.proj.EPSG4326"], ["ol.Projection", "ol.ProjectionUnits", "ol.proj"]);
-goog.addDependency("../src/ol/proj/proj.js", ["ol.Projection", "ol.ProjectionLike", "ol.ProjectionUnits", "ol.proj"], ["goog.array", "goog.asserts", "goog.object", "ol.Extent", "ol.TransformFunction", "ol.sphere.NORMAL"]);
+goog.addDependency("../src/ol/proj/epsg3857projection.js", ["ol.proj.EPSG3857"], ["goog.array", "goog.asserts", "ol.math", "ol.proj", "ol.proj.Projection", "ol.proj.Units"]);
+goog.addDependency("../src/ol/proj/epsg4326projection.js", ["ol.proj.EPSG4326"], ["ol.proj", "ol.proj.Projection", "ol.proj.Units"]);
+goog.addDependency("../src/ol/proj/proj.js", ["ol.proj", "ol.proj.Projection", "ol.proj.ProjectionLike", "ol.proj.Units"], ["goog.array", "goog.asserts", "goog.object", "ol.Extent", "ol.TransformFunction", "ol.sphere.NORMAL"]);
 goog.addDependency("../src/ol/renderer/canvas/canvasimagelayerrenderer.js", ["ol.renderer.canvas.ImageLayer"], ["goog.events", "goog.events.EventType", "goog.vec.Mat4", "ol.Image", "ol.ImageState", "ol.ViewHint", "ol.layer.Image", "ol.renderer.Map", "ol.renderer.canvas.Layer"]);
 goog.addDependency("../src/ol/renderer/canvas/canvaslayerrenderer.js", ["ol.renderer.canvas.Layer"], ["ol.layer.Layer", "ol.renderer.Layer"]);
 goog.addDependency("../src/ol/renderer/canvas/canvasmaprenderer.js", ["ol.renderer.canvas.Map"], ["goog.asserts", "goog.dom", "goog.dom.TagName", "goog.style", "goog.vec.Mat4", "ol.Size", "ol.css", "ol.layer.Image", "ol.layer.Tile", "ol.layer.Vector", "ol.renderer.Map", "ol.renderer.canvas.ImageLayer", "ol.renderer.canvas.TileLayer", "ol.renderer.canvas.VectorLayer", "ol.size"]);
-goog.addDependency("../src/ol/renderer/canvas/canvasrenderer.js", ["ol.renderer.canvas.SUPPORTED"], ["ol.canvas.SUPPORTED"]);
+goog.addDependency("../src/ol/renderer/canvas/canvasrenderer.js", ["ol.renderer.canvas"], ["ol.canvas"]);
 goog.addDependency("../src/ol/renderer/canvas/canvastilelayerrenderer.js", ["ol.renderer.canvas.TileLayer"], ["goog.array", "goog.asserts", "goog.dom", "goog.dom.TagName", "goog.object", "goog.vec.Mat4", "ol.Size", "ol.Tile", "ol.TileCoord", "ol.TileRange", "ol.TileState", "ol.extent", "ol.layer.Tile", "ol.renderer.Map", "ol.renderer.canvas.Layer"]);
 goog.addDependency("../src/ol/renderer/canvas/canvasvectorlayerrenderer.js", ["ol.renderer.canvas.VectorLayer"], ["goog.dom", "goog.dom.TagName", "goog.events", "goog.object", "goog.vec.Mat4", "ol.Pixel", "ol.TileCache", "ol.TileCoord", "ol.TileRange", "ol.ViewHint", "ol.extent", "ol.geom.GeometryType", "ol.layer.Vector", "ol.layer.VectorLayerEventType", "ol.renderer.canvas.Layer", "ol.renderer.canvas.VectorRenderer", "ol.tilegrid.TileGrid"]);
 goog.addDependency("../src/ol/renderer/canvas/canvasvectorrenderer.js", ["ol.renderer.canvas.VectorRenderer"], ["goog.asserts", "goog.dom", "goog.dom.TagName", "goog.events", "goog.events.EventType", "goog.vec.Mat4", "ol.Feature", "ol.geom.AbstractCollection", "ol.geom.Geometry", "ol.geom.GeometryType", "ol.geom.LineString", "ol.geom.MultiLineString", "ol.geom.MultiPoint", "ol.geom.MultiPolygon", "ol.geom.Point", "ol.geom.Polygon", "ol.layer.VectorLayerRenderIntent", "ol.style.IconLiteral", "ol.style.LineLiteral", 
@@ -673,7 +673,7 @@ goog.addDependency("../src/ol/renderer/canvas/canvasvectorrenderer.js", ["ol.ren
 goog.addDependency("../src/ol/renderer/dom/domimagelayerrenderer.js", ["ol.renderer.dom.ImageLayer"], ["goog.dom", "goog.dom.TagName", "goog.events", "goog.events.EventType", "goog.vec.Mat4", "ol.Image", "ol.ImageState", "ol.ViewHint", "ol.dom", "ol.layer.Image", "ol.renderer.dom.Layer"]);
 goog.addDependency("../src/ol/renderer/dom/domlayerrenderer.js", ["ol.renderer.dom.Layer"], ["goog.dom", "ol.layer.Layer", "ol.renderer.Layer"]);
 goog.addDependency("../src/ol/renderer/dom/dommaprenderer.js", ["ol.renderer.dom.Map"], ["goog.asserts", "goog.dom", "goog.dom.TagName", "goog.style", "ol.css", "ol.layer.Image", "ol.layer.Tile", "ol.renderer.Map", "ol.renderer.dom.ImageLayer", "ol.renderer.dom.TileLayer"]);
-goog.addDependency("../src/ol/renderer/dom/domrenderer.js", ["ol.renderer.dom.SUPPORTED"], []);
+goog.addDependency("../src/ol/renderer/dom/domrenderer.js", ["ol.renderer.dom"], []);
 goog.addDependency("../src/ol/renderer/dom/domtilelayerrenderer.js", ["ol.renderer.dom.TileLayer"], ["goog.array", "goog.asserts", "goog.dom", "goog.dom.TagName", "goog.object", "goog.style", "goog.vec.Mat4", "ol.Coordinate", "ol.Tile", "ol.TileCoord", "ol.TileRange", "ol.TileState", "ol.ViewHint", "ol.dom", "ol.extent", "ol.layer.Tile", "ol.renderer.dom.Layer", "ol.tilegrid.TileGrid"]);
 goog.addDependency("../src/ol/renderer/layerrenderer.js", ["ol.renderer.Layer"], ["goog.Disposable", "ol.FrameState", "ol.Image", "ol.ImageState", "ol.Tile", "ol.TileRange", "ol.TileState", "ol.layer.Layer", "ol.layer.LayerState", "ol.source.Source", "ol.source.Tile"]);
 goog.addDependency("../src/ol/renderer/maprenderer.js", ["ol.renderer.Map"], ["goog.Disposable", "goog.array", "goog.asserts", "goog.dispose", "goog.functions", "goog.object", "goog.vec.Mat4", "ol.FrameState", "ol.layer.Layer", "ol.renderer.Layer"]);
@@ -683,7 +683,7 @@ goog.addDependency("../src/ol/renderer/webgl/webglmapcolorshader.js", ["ol.rende
 goog.addDependency("../src/ol/renderer/webgl/webglmapdefaultshader.js", ["ol.renderer.webgl.map.shader.Default"], ["ol.webgl.shader"]);
 goog.addDependency("../src/ol/renderer/webgl/webglmaprenderer.js", ["ol.renderer.webgl.Map"], ["goog.array", "goog.asserts", "goog.dom", "goog.dom.TagName", "goog.events", "goog.events.Event", "goog.log", "goog.log.Logger", "goog.object", "goog.style", "goog.webgl", "ol.FrameState", "ol.Size", "ol.Tile", "ol.css", "ol.layer.Image", "ol.layer.Tile", "ol.layer.Vector2", "ol.renderer.Map", "ol.renderer.webgl.ImageLayer", "ol.renderer.webgl.TileLayer", "ol.renderer.webgl.VectorLayer2", "ol.renderer.webgl.map.shader.Color", 
 "ol.renderer.webgl.map.shader.Default", "ol.size", "ol.structs.Buffer", "ol.structs.IntegerSet", "ol.structs.LRUCache", "ol.structs.PriorityQueue", "ol.webgl", "ol.webgl.WebGLContextEventType", "ol.webgl.shader"]);
-goog.addDependency("../src/ol/renderer/webgl/webglrenderer.js", ["ol.renderer.webgl.SUPPORTED"], ["ol.webgl.SUPPORTED"]);
+goog.addDependency("../src/ol/renderer/webgl/webglrenderer.js", ["ol.renderer.webgl"], ["ol.webgl"]);
 goog.addDependency("../src/ol/renderer/webgl/webgltilelayerrenderer.js", ["ol.renderer.webgl.TileLayer"], ["goog.array", "goog.object", "goog.vec.Mat4", "goog.vec.Vec4", "goog.webgl", "ol.Tile", "ol.TileRange", "ol.TileState", "ol.extent", "ol.layer.Tile", "ol.math", "ol.renderer.webgl.Layer", "ol.renderer.webgl.tilelayer.shader", "ol.structs.Buffer"]);
 goog.addDependency("../src/ol/renderer/webgl/webgltilelayershader.js", ["ol.renderer.webgl.tilelayer.shader"], ["ol.webgl.shader"]);
 goog.addDependency("../src/ol/renderer/webgl/webglvectorlayer2linestringcollectionshader.js", ["ol.renderer.webgl.vectorlayer2.shader.LineStringCollection"], ["ol.webgl.shader"]);
@@ -695,14 +695,14 @@ goog.addDependency("../src/ol/size.js", ["ol.Size", "ol.size"], []);
 goog.addDependency("../src/ol/source/bingmapssource.js", ["ol.source.BingMaps"], ["goog.Uri", "goog.array", "goog.asserts", "goog.net.Jsonp", "ol.Attribution", "ol.TileRange", "ol.TileUrlFunction", "ol.extent", "ol.proj", "ol.source.TileImage", "ol.tilegrid.XYZ"]);
 goog.addDependency("../src/ol/source/debugtilesource.js", ["ol.source.TileDebug"], ["goog.dom", "goog.dom.TagName", "ol.Size", "ol.Tile", "ol.TileCache", "ol.TileCoord", "ol.TileState", "ol.source.Tile", "ol.tilegrid.TileGrid"]);
 goog.addDependency("../src/ol/source/featureinfosource.js", ["ol.source.FeatureInfoSource"], []);
-goog.addDependency("../src/ol/source/imagesource.js", ["ol.source.Image"], ["goog.array", "goog.asserts", "ol.Attribution", "ol.Extent", "ol.Image", "ol.ImageUrlFunction", "ol.ImageUrlFunctionType", "ol.Projection", "ol.Size", "ol.array", "ol.source.Source"]);
+goog.addDependency("../src/ol/source/imagesource.js", ["ol.source.Image"], ["goog.array", "goog.asserts", "ol.Attribution", "ol.Extent", "ol.Image", "ol.ImageUrlFunction", "ol.ImageUrlFunctionType", "ol.Size", "ol.array", "ol.source.Source"]);
 goog.addDependency("../src/ol/source/imagestaticsource.js", ["ol.source.ImageStatic"], ["ol.Image", "ol.ImageUrlFunctionType", "ol.extent", "ol.proj", "ol.source.Image"]);
 goog.addDependency("../src/ol/source/imagewmssource.js", ["ol.source.ImageWMS"], ["goog.asserts", "goog.object", "ol.Image", "ol.ImageUrlFunction", "ol.extent", "ol.source.FeatureInfoSource", "ol.source.Image", "ol.source.wms"]);
 goog.addDependency("../src/ol/source/mapquestsource.js", ["ol.source.MapQuestOSM", "ol.source.MapQuestOpenAerial"], ["ol.Attribution", "ol.source.OSM", "ol.source.XYZ"]);
 goog.addDependency("../src/ol/source/osmsource.js", ["ol.source.OSM"], ["ol.Attribution", "ol.source.XYZ"]);
 goog.addDependency("../src/ol/source/source.js", ["ol.source.Source"], ["goog.events.EventTarget", "goog.events.EventType", "goog.functions", "ol.Attribution", "ol.Extent", "ol.proj"]);
 goog.addDependency("../src/ol/source/stamensource.js", ["ol.source.Stamen"], ["goog.asserts", "ol.Attribution", "ol.source.OSM", "ol.source.XYZ"]);
-goog.addDependency("../src/ol/source/tileimagesource.js", ["ol.source.TileImage"], ["goog.asserts", "ol.Attribution", "ol.Extent", "ol.ImageTile", "ol.Projection", "ol.Tile", "ol.TileCache", "ol.TileCoord", "ol.TileState", "ol.TileUrlFunction", "ol.TileUrlFunctionType", "ol.source.Tile", "ol.tilegrid.TileGrid"]);
+goog.addDependency("../src/ol/source/tileimagesource.js", ["ol.source.TileImage"], ["goog.asserts", "ol.Attribution", "ol.Extent", "ol.ImageTile", "ol.Tile", "ol.TileCache", "ol.TileCoord", "ol.TileLoadFunctionType", "ol.TileState", "ol.TileUrlFunction", "ol.TileUrlFunctionType", "ol.source.Tile", "ol.tilegrid.TileGrid"]);
 goog.addDependency("../src/ol/source/tilejsonsource.js", ["ol.source.TileJSON", "ol.tilejson"], ["goog.asserts", "goog.net.jsloader", "ol.Attribution", "ol.TileRange", "ol.TileUrlFunction", "ol.extent", "ol.proj", "ol.source.TileImage", "ol.tilegrid.XYZ"]);
 goog.addDependency("../src/ol/source/tilesource.js", ["ol.source.Tile", "ol.source.TileOptions"], ["goog.functions", "ol.Attribution", "ol.Extent", "ol.Tile", "ol.TileCoord", "ol.TileRange", "ol.source.Source", "ol.tilegrid.TileGrid"]);
 goog.addDependency("../src/ol/source/tilewmssource.js", ["ol.source.TileWMS"], ["goog.array", "goog.asserts", "goog.math", "goog.object", "ol.TileCoord", "ol.TileUrlFunction", "ol.extent", "ol.source.FeatureInfoSource", "ol.source.TileImage", "ol.source.wms"]);
@@ -737,19 +737,20 @@ goog.addDependency("../src/ol/style/textliteral.js", ["ol.style.TextLiteral"], [
 goog.addDependency("../src/ol/style/textsymbolizer.js", ["ol.style.Text"], ["goog.asserts", "ol.Feature", "ol.expr", "ol.expr.Expression", "ol.expr.Literal", "ol.style.Symbolizer", "ol.style.TextLiteral"]);
 goog.addDependency("../src/ol/tile.js", ["ol.Tile", "ol.TileState"], ["goog.events", "goog.events.EventTarget", "goog.events.EventType", "ol.TileCoord"]);
 goog.addDependency("../src/ol/tilecache.js", ["ol.TileCache"], ["goog.asserts", "ol.Tile", "ol.TileCoord", "ol.TileRange", "ol.structs.LRUCache"]);
-goog.addDependency("../src/ol/tilecoord.js", ["ol.TileCoord"], ["goog.array"]);
-goog.addDependency("../src/ol/tilegrid/tilegrid.js", ["ol.tilegrid.TileGrid"], ["goog.array", "goog.asserts", "ol.Coordinate", "ol.Projection", "ol.ProjectionUnits", "ol.Size", "ol.TileCoord", "ol.TileRange", "ol.array", "ol.extent"]);
+goog.addDependency("../src/ol/tilecoord.js", ["ol.TileCoord"], ["goog.array", "goog.asserts"]);
+goog.addDependency("../src/ol/tilegrid/tilegrid.js", ["ol.tilegrid.TileGrid"], ["goog.array", "goog.asserts", "ol.Coordinate", "ol.Size", "ol.TileCoord", "ol.TileRange", "ol.array", "ol.extent", "ol.proj.Projection", "ol.proj.Units"]);
 goog.addDependency("../src/ol/tilegrid/wmtstilegrid.js", ["ol.tilegrid.WMTS"], ["goog.array", "goog.asserts", "ol.proj", "ol.tilegrid.TileGrid"]);
 goog.addDependency("../src/ol/tilegrid/xyztilegrid.js", ["ol.tilegrid.XYZ"], ["goog.math", "ol.TileCoord", "ol.TileRange", "ol.proj", "ol.proj.EPSG3857", "ol.tilegrid.TileGrid"]);
+goog.addDependency("../src/ol/tileloadfunction.js", ["ol.TileLoadFunctionType"], []);
 goog.addDependency("../src/ol/tilequeue.js", ["ol.TilePriorityFunction", "ol.TileQueue"], ["goog.events", "goog.events.EventType", "ol.Coordinate", "ol.Tile", "ol.structs.PriorityQueue"]);
 goog.addDependency("../src/ol/tilerange.js", ["ol.TileRange"], ["goog.asserts", "ol.Size", "ol.TileCoord"]);
 goog.addDependency("../src/ol/tileurlfunction.js", ["ol.TileUrlFunction", "ol.TileUrlFunctionType"], ["goog.array", "goog.math", "ol.TileCoord", "ol.extent"]);
 goog.addDependency("../src/ol/transformfunction.js", ["ol.TransformFunction"], []);
 goog.addDependency("../src/ol/vec/mat4.js", ["ol.vec.Mat4"], ["goog.vec.Mat4"]);
 goog.addDependency("../src/ol/view.js", ["ol.View", "ol.ViewHint"], ["goog.array", "goog.asserts", "ol.IView", "ol.Object"]);
-goog.addDependency("../src/ol/view2d.js", ["ol.View2D", "ol.View2DProperty"], ["goog.asserts", "ol.Constraints", "ol.IView2D", "ol.IView3D", "ol.Projection", "ol.ProjectionUnits", "ol.ResolutionConstraint", "ol.RotationConstraint", "ol.RotationConstraintType", "ol.Size", "ol.View", "ol.coordinate", "ol.extent", "ol.proj"]);
+goog.addDependency("../src/ol/view2d.js", ["ol.View2D", "ol.View2DProperty"], ["goog.asserts", "ol.Constraints", "ol.IView2D", "ol.IView3D", "ol.ResolutionConstraint", "ol.RotationConstraint", "ol.RotationConstraintType", "ol.Size", "ol.View", "ol.coordinate", "ol.extent", "ol.proj", "ol.proj.Projection", "ol.proj.Units"]);
 goog.addDependency("../src/ol/webgl/shader.js", ["ol.webgl.shader"], ["goog.functions", "goog.webgl", "ol.webgl"]);
-goog.addDependency("../src/ol/webgl/webgl.js", ["ol.webgl", "ol.webgl.SUPPORTED", "ol.webgl.WebGLContextEventType"], ["goog.dom", "goog.dom.TagName"]);
+goog.addDependency("../src/ol/webgl/webgl.js", ["ol.webgl", "ol.webgl.WebGLContextEventType"], ["goog.dom", "goog.dom.TagName"]);
 goog.addDependency("/closure/goog/a11y/aria/announcer.js", ["goog.a11y.aria.Announcer"], ["goog.Disposable", "goog.a11y.aria", "goog.a11y.aria.LivePriority", "goog.a11y.aria.State", "goog.dom", "goog.object"]);
 goog.addDependency("/closure/goog/a11y/aria/aria.js", ["goog.a11y.aria"], ["goog.a11y.aria.Role", "goog.a11y.aria.State", "goog.a11y.aria.datatables", "goog.array", "goog.asserts", "goog.dom", "goog.dom.TagName", "goog.object", "goog.string"]);
 goog.addDependency("/closure/goog/a11y/aria/attributes.js", ["goog.a11y.aria.AutoCompleteValues", "goog.a11y.aria.CheckedValues", "goog.a11y.aria.DropEffectValues", "goog.a11y.aria.ExpandedValues", "goog.a11y.aria.GrabbedValues", "goog.a11y.aria.InvalidValues", "goog.a11y.aria.LivePriority", "goog.a11y.aria.OrientationValues", "goog.a11y.aria.PressedValues", "goog.a11y.aria.RelevantValues", "goog.a11y.aria.SelectedValues", "goog.a11y.aria.SortValues", "goog.a11y.aria.State"], []);
@@ -2963,6 +2964,7 @@ goog.array.shuffle = function(arr, opt_randFn) {
 };
 goog.provide("ol.TileCoord");
 goog.require("goog.array");
+goog.require("goog.asserts");
 ol.QuadKeyCharCode = {ZERO:"0".charCodeAt(0), ONE:"1".charCodeAt(0), TWO:"2".charCodeAt(0), THREE:"3".charCodeAt(0)};
 ol.TileCoord = function(z, x, y) {
   this.z = z;
@@ -3008,7 +3010,18 @@ ol.TileCoord.createOrUpdate = function(z, x, y, tileCoord) {
   }
 };
 ol.TileCoord.getKeyZXY = function(z, x, y) {
-  return[z, x, y].join("/")
+  return z + "/" + x + "/" + y
+};
+ol.TileCoord.prototype.getZXY = function(opt_result) {
+  if(goog.isDef(opt_result)) {
+    goog.asserts.assert(opt_result.length == 3);
+    opt_result[0] = this.z;
+    opt_result[1] = this.x;
+    opt_result[2] = this.y;
+    return opt_result
+  }else {
+    return[this.z, this.x, this.y]
+  }
 };
 ol.TileCoord.prototype.hash = function() {
   return(this.x << this.z) + this.y
@@ -5518,7 +5531,6 @@ ol.coordinate.fromProjectedArray = function(array, axis) {
   }
 };
 goog.provide("ol.DeviceOrientation");
-goog.provide("ol.DeviceOrientation.SUPPORTED");
 goog.provide("ol.DeviceOrientationProperty");
 goog.require("goog.events");
 goog.require("goog.math");
@@ -5536,7 +5548,8 @@ ol.DeviceOrientation.prototype.disposeInternal = function() {
   this.setTracking(false);
   goog.base(this, "disposeInternal")
 };
-ol.DeviceOrientation.SUPPORTED = "DeviceOrientationEvent" in window;
+ol.DeviceOrientation.SUPPORTED = "DeviceOrientationEvent" in goog.global;
+goog.exportProperty(ol.DeviceOrientation, "SUPPORTED", ol.DeviceOrientation.SUPPORTED);
 ol.DeviceOrientation.prototype.orientationChange_ = function(browserEvent) {
   var event = (browserEvent.getBrowserEvent());
   if(goog.isDefAndNotNull(event.alpha)) {
@@ -5582,7 +5595,7 @@ ol.DeviceOrientation.prototype.handleTrackingChanged_ = function() {
   if(ol.DeviceOrientation.SUPPORTED) {
     var tracking = this.getTracking();
     if(tracking && goog.isNull(this.listenerKey_)) {
-      this.listenerKey_ = goog.events.listen(window, "deviceorientation", this.orientationChange_, false, this)
+      this.listenerKey_ = goog.events.listen(goog.global, "deviceorientation", this.orientationChange_, false, this)
     }else {
       if(!tracking && !goog.isNull(this.listenerKey_)) {
         goog.events.unlistenByKey(this.listenerKey_);
@@ -5818,8 +5831,9 @@ ol.extent.scaleFromCenter = function(extent, value) {
   extent[1] -= deltaY;
   extent[3] += deltaY
 };
-ol.extent.toString = function(extent) {
-  return"(" + [extent[0], extent[2], extent[1], extent[3]].join(", ") + ")"
+ol.extent.touches = function(extent1, extent2) {
+  var intersects = ol.extent.intersects(extent1, extent2);
+  return intersects && (extent1[0] == extent2[2] || extent1[2] == extent2[0] || extent1[1] == extent2[3] || extent1[3] == extent2[1])
 };
 ol.extent.transform = function(extent, transformFn, opt_extent) {
   var coordinates = [extent[0], extent[1], extent[0], extent[3], extent[2], extent[1], extent[2], extent[3]];
@@ -5933,7 +5947,7 @@ ol.Feature.prototype.getAttributes = function() {
   }
   return attributes
 };
-ol.Feature.prototype.getFeatureId = function() {
+ol.Feature.prototype.getId = function() {
   return this.featureId_
 };
 ol.Feature.prototype.getGeometry = function() {
@@ -5948,7 +5962,7 @@ ol.Feature.prototype.set = function(key, value) {
   }
   goog.base(this, "set", key, value)
 };
-ol.Feature.prototype.setFeatureId = function(featureId) {
+ol.Feature.prototype.setId = function(featureId) {
   this.featureId_ = featureId
 };
 ol.Feature.prototype.setGeometry = function(geometry) {
@@ -7041,6 +7055,9 @@ ol.Tile.prototype.getImage = goog.abstractMethod;
 ol.Tile.prototype.getKey = function() {
   return goog.getUid(this).toString()
 };
+ol.Tile.prototype.getTileCoord = function() {
+  return this.tileCoord
+};
 ol.Tile.prototype.getState = function() {
   return this.state
 };
@@ -7221,6 +7238,235 @@ ol.TileQueue.prototype.loadMoreTiles = function(maxTotalLoading, maxNewLoads) {
   }
   this.tilesLoading_ += newLoads
 };
+goog.provide("ol.IView2D");
+goog.provide("ol.View2DState");
+goog.require("ol.Coordinate");
+ol.View2DState;
+ol.IView2D = function() {
+};
+ol.IView2D.prototype.getCenter = function() {
+};
+ol.IView2D.prototype.getProjection = function() {
+};
+ol.IView2D.prototype.getResolution = function() {
+};
+ol.IView2D.prototype.getRotation = function() {
+};
+ol.IView2D.prototype.getView2DState = function() {
+};
+goog.provide("ol.layer.Base");
+goog.provide("ol.layer.LayerProperty");
+goog.provide("ol.layer.LayerState");
+goog.require("goog.events");
+goog.require("goog.events.EventType");
+goog.require("goog.math");
+goog.require("goog.object");
+goog.require("ol.Object");
+ol.layer.LayerProperty = {BRIGHTNESS:"brightness", CONTRAST:"contrast", HUE:"hue", OPACITY:"opacity", SATURATION:"saturation", VISIBLE:"visible", MAX_RESOLUTION:"maxResolution", MIN_RESOLUTION:"minResolution"};
+ol.layer.LayerState;
+ol.layer.Base = function(options) {
+  goog.base(this);
+  var values = goog.object.clone(options);
+  values.brightness = goog.isDef(values.brightness) ? values.brightness : 0;
+  values.contrast = goog.isDef(values.contrast) ? values.contrast : 1;
+  values.hue = goog.isDef(values.hue) ? values.hue : 0;
+  values.opacity = goog.isDef(values.opacity) ? values.opacity : 1;
+  values.saturation = goog.isDef(values.saturation) ? values.saturation : 1;
+  values.visible = goog.isDef(values.visible) ? values.visible : true;
+  values.maxResolution = goog.isDef(values.maxResolution) ? values.maxResolution : Infinity;
+  values.minResolution = goog.isDef(values.minResolution) ? values.minResolution : 0;
+  this.setValues(values);
+  goog.events.listen(this, [ol.Object.getChangeEventType(ol.layer.LayerProperty.BRIGHTNESS), ol.Object.getChangeEventType(ol.layer.LayerProperty.CONTRAST), ol.Object.getChangeEventType(ol.layer.LayerProperty.HUE), ol.Object.getChangeEventType(ol.layer.LayerProperty.OPACITY), ol.Object.getChangeEventType(ol.layer.LayerProperty.SATURATION), ol.Object.getChangeEventType(ol.layer.LayerProperty.MAX_RESOLUTION), ol.Object.getChangeEventType(ol.layer.LayerProperty.MIN_RESOLUTION), goog.events.EventType.LOAD], 
+  this.handleLayerChange, false, this);
+  goog.events.listen(this, ol.Object.getChangeEventType(ol.layer.LayerProperty.VISIBLE), this.handleLayerVisibleChange, false, this)
+};
+goog.inherits(ol.layer.Base, ol.Object);
+ol.layer.Base.prototype.dispatchChangeEvent = function() {
+  this.dispatchEvent(goog.events.EventType.CHANGE)
+};
+ol.layer.Base.prototype.getBrightness = function() {
+  return(this.get(ol.layer.LayerProperty.BRIGHTNESS))
+};
+goog.exportProperty(ol.layer.Base.prototype, "getBrightness", ol.layer.Base.prototype.getBrightness);
+ol.layer.Base.prototype.getContrast = function() {
+  return(this.get(ol.layer.LayerProperty.CONTRAST))
+};
+goog.exportProperty(ol.layer.Base.prototype, "getContrast", ol.layer.Base.prototype.getContrast);
+ol.layer.Base.prototype.getHue = function() {
+  return(this.get(ol.layer.LayerProperty.HUE))
+};
+goog.exportProperty(ol.layer.Base.prototype, "getHue", ol.layer.Base.prototype.getHue);
+ol.layer.Base.prototype.getLayerState = function() {
+  var brightness = this.getBrightness();
+  var contrast = this.getContrast();
+  var hue = this.getHue();
+  var opacity = this.getOpacity();
+  var ready = this.isReady();
+  var saturation = this.getSaturation();
+  var visible = this.getVisible();
+  var maxResolution = this.getMaxResolution();
+  var minResolution = this.getMinResolution();
+  return{brightness:goog.isDef(brightness) ? goog.math.clamp(brightness, -1, 1) : 0, contrast:goog.isDef(contrast) ? Math.max(contrast, 0) : 1, hue:goog.isDef(hue) ? hue : 0, opacity:goog.isDef(opacity) ? goog.math.clamp(opacity, 0, 1) : 1, ready:ready, saturation:goog.isDef(saturation) ? Math.max(saturation, 0) : 1, visible:goog.isDef(visible) ? !!visible : true, maxResolution:goog.isDef(maxResolution) ? maxResolution : Infinity, minResolution:goog.isDef(minResolution) ? Math.max(minResolution, 
+  0) : 0}
+};
+ol.layer.Base.prototype.getLayersArray = goog.abstractMethod;
+ol.layer.Base.prototype.getLayerStatesArray = goog.abstractMethod;
+ol.layer.Base.prototype.getMaxResolution = function() {
+  return(this.get(ol.layer.LayerProperty.MAX_RESOLUTION))
+};
+goog.exportProperty(ol.layer.Base.prototype, "getMaxResolution", ol.layer.Base.prototype.getMaxResolution);
+ol.layer.Base.prototype.getMinResolution = function() {
+  return(this.get(ol.layer.LayerProperty.MIN_RESOLUTION))
+};
+goog.exportProperty(ol.layer.Base.prototype, "getMinResolution", ol.layer.Base.prototype.getMinResolution);
+ol.layer.Base.prototype.getOpacity = function() {
+  return(this.get(ol.layer.LayerProperty.OPACITY))
+};
+goog.exportProperty(ol.layer.Base.prototype, "getOpacity", ol.layer.Base.prototype.getOpacity);
+ol.layer.Base.prototype.getSaturation = function() {
+  return(this.get(ol.layer.LayerProperty.SATURATION))
+};
+goog.exportProperty(ol.layer.Base.prototype, "getSaturation", ol.layer.Base.prototype.getSaturation);
+ol.layer.Base.prototype.getVisible = function() {
+  return(this.get(ol.layer.LayerProperty.VISIBLE))
+};
+goog.exportProperty(ol.layer.Base.prototype, "getVisible", ol.layer.Base.prototype.getVisible);
+ol.layer.Base.prototype.handleLayerChange = function() {
+  if(this.getVisible() && this.isReady()) {
+    this.dispatchChangeEvent()
+  }
+};
+ol.layer.Base.prototype.handleLayerVisibleChange = function() {
+  if(this.isReady()) {
+    this.dispatchChangeEvent()
+  }
+};
+ol.layer.Base.prototype.isReady = goog.abstractMethod;
+ol.layer.Base.prototype.setBrightness = function(brightness) {
+  this.set(ol.layer.LayerProperty.BRIGHTNESS, brightness)
+};
+goog.exportProperty(ol.layer.Base.prototype, "setBrightness", ol.layer.Base.prototype.setBrightness);
+ol.layer.Base.prototype.setContrast = function(contrast) {
+  this.set(ol.layer.LayerProperty.CONTRAST, contrast)
+};
+goog.exportProperty(ol.layer.Base.prototype, "setContrast", ol.layer.Base.prototype.setContrast);
+ol.layer.Base.prototype.setHue = function(hue) {
+  this.set(ol.layer.LayerProperty.HUE, hue)
+};
+goog.exportProperty(ol.layer.Base.prototype, "setHue", ol.layer.Base.prototype.setHue);
+ol.layer.Base.prototype.setMaxResolution = function(maxResolution) {
+  this.set(ol.layer.LayerProperty.MAX_RESOLUTION, maxResolution)
+};
+goog.exportProperty(ol.layer.Base.prototype, "setMaxResolution", ol.layer.Base.prototype.setMaxResolution);
+ol.layer.Base.prototype.setMinResolution = function(minResolution) {
+  this.set(ol.layer.LayerProperty.MIN_RESOLUTION, minResolution)
+};
+goog.exportProperty(ol.layer.Base.prototype, "setMinResolution", ol.layer.Base.prototype.setMinResolution);
+ol.layer.Base.prototype.setOpacity = function(opacity) {
+  this.set(ol.layer.LayerProperty.OPACITY, opacity)
+};
+goog.exportProperty(ol.layer.Base.prototype, "setOpacity", ol.layer.Base.prototype.setOpacity);
+ol.layer.Base.prototype.setSaturation = function(saturation) {
+  this.set(ol.layer.LayerProperty.SATURATION, saturation)
+};
+goog.exportProperty(ol.layer.Base.prototype, "setSaturation", ol.layer.Base.prototype.setSaturation);
+ol.layer.Base.prototype.setVisible = function(visible) {
+  this.set(ol.layer.LayerProperty.VISIBLE, visible)
+};
+goog.exportProperty(ol.layer.Base.prototype, "setVisible", ol.layer.Base.prototype.setVisible);
+goog.provide("goog.functions");
+goog.functions.constant = function(retValue) {
+  return function() {
+    return retValue
+  }
+};
+goog.functions.FALSE = goog.functions.constant(false);
+goog.functions.TRUE = goog.functions.constant(true);
+goog.functions.NULL = goog.functions.constant(null);
+goog.functions.identity = function(opt_returnValue, var_args) {
+  return opt_returnValue
+};
+goog.functions.error = function(message) {
+  return function() {
+    throw Error(message);
+  }
+};
+goog.functions.fail = function(err) {
+  return function() {
+    throw err;
+  }
+};
+goog.functions.lock = function(f, opt_numArgs) {
+  opt_numArgs = opt_numArgs || 0;
+  return function() {
+    return f.apply(this, Array.prototype.slice.call(arguments, 0, opt_numArgs))
+  }
+};
+goog.functions.withReturnValue = function(f, retValue) {
+  return goog.functions.sequence(f, goog.functions.constant(retValue))
+};
+goog.functions.compose = function(fn, var_args) {
+  var functions = arguments;
+  var length = functions.length;
+  return function() {
+    var result;
+    if(length) {
+      result = functions[length - 1].apply(this, arguments)
+    }
+    for(var i = length - 2;i >= 0;i--) {
+      result = functions[i].call(this, result)
+    }
+    return result
+  }
+};
+goog.functions.sequence = function(var_args) {
+  var functions = arguments;
+  var length = functions.length;
+  return function() {
+    var result;
+    for(var i = 0;i < length;i++) {
+      result = functions[i].apply(this, arguments)
+    }
+    return result
+  }
+};
+goog.functions.and = function(var_args) {
+  var functions = arguments;
+  var length = functions.length;
+  return function() {
+    for(var i = 0;i < length;i++) {
+      if(!functions[i].apply(this, arguments)) {
+        return false
+      }
+    }
+    return true
+  }
+};
+goog.functions.or = function(var_args) {
+  var functions = arguments;
+  var length = functions.length;
+  return function() {
+    for(var i = 0;i < length;i++) {
+      if(functions[i].apply(this, arguments)) {
+        return true
+      }
+    }
+    return false
+  }
+};
+goog.functions.not = function(f) {
+  return function() {
+    return!f.apply(this, arguments)
+  }
+};
+goog.functions.create = function(constructor, var_args) {
+  var temp = function() {
+  };
+  temp.prototype = constructor.prototype;
+  var obj = new temp;
+  constructor.apply(obj, Array.prototype.slice.call(arguments, 1));
+  return obj
+};
 /*
 
  Latitude/longitude spherical geodesy formulae taken from
@@ -7297,10 +7543,10 @@ ol.Sphere.prototype.offset = function(c1, distance, bearing) {
 goog.provide("ol.sphere.NORMAL");
 goog.require("ol.Sphere");
 ol.sphere.NORMAL = new ol.Sphere(6370997);
-goog.provide("ol.Projection");
-goog.provide("ol.ProjectionLike");
-goog.provide("ol.ProjectionUnits");
 goog.provide("ol.proj");
+goog.provide("ol.proj.Projection");
+goog.provide("ol.proj.ProjectionLike");
+goog.provide("ol.proj.Units");
 goog.require("goog.array");
 goog.require("goog.asserts");
 goog.require("goog.object");
@@ -7309,13 +7555,13 @@ goog.require("ol.TransformFunction");
 goog.require("ol.sphere.NORMAL");
 ol.ENABLE_PROJ4JS = true;
 ol.HAVE_PROJ4JS = ol.ENABLE_PROJ4JS && typeof Proj4js == "object";
-ol.ProjectionLike;
-ol.ProjectionUnits = {DEGREES:"degrees", FEET:"ft", METERS:"m"};
+ol.proj.ProjectionLike;
+ol.proj.Units = {DEGREES:"degrees", FEET:"ft", METERS:"m"};
 ol.METERS_PER_UNIT = {};
-ol.METERS_PER_UNIT[ol.ProjectionUnits.DEGREES] = 2 * Math.PI * ol.sphere.NORMAL.radius / 360;
-ol.METERS_PER_UNIT[ol.ProjectionUnits.FEET] = 0.3048;
-ol.METERS_PER_UNIT[ol.ProjectionUnits.METERS] = 1;
-ol.Projection = function(options) {
+ol.METERS_PER_UNIT[ol.proj.Units.DEGREES] = 2 * Math.PI * ol.sphere.NORMAL.radius / 360;
+ol.METERS_PER_UNIT[ol.proj.Units.FEET] = 0.3048;
+ol.METERS_PER_UNIT[ol.proj.Units.METERS] = 1;
+ol.proj.Projection = function(options) {
   this.code_ = options.code;
   this.units_ = options.units;
   this.extent_ = goog.isDef(options.extent) ? options.extent : null;
@@ -7323,29 +7569,29 @@ ol.Projection = function(options) {
   this.global_ = goog.isDef(options.global) ? options.global : false;
   this.defaultTileGrid_ = null
 };
-ol.Projection.prototype.getCode = function() {
+ol.proj.Projection.prototype.getCode = function() {
   return this.code_
 };
-ol.Projection.prototype.getExtent = function() {
+ol.proj.Projection.prototype.getExtent = function() {
   return this.extent_
 };
-ol.Projection.prototype.getPointResolution = goog.abstractMethod;
-ol.Projection.prototype.getUnits = function() {
+ol.proj.Projection.prototype.getPointResolution = goog.abstractMethod;
+ol.proj.Projection.prototype.getUnits = function() {
   return this.units_
 };
-ol.Projection.prototype.getMetersPerUnit = function() {
+ol.proj.Projection.prototype.getMetersPerUnit = function() {
   return ol.METERS_PER_UNIT[this.units_]
 };
-ol.Projection.prototype.getAxisOrientation = function() {
+ol.proj.Projection.prototype.getAxisOrientation = function() {
   return this.axisOrientation_
 };
-ol.Projection.prototype.isGlobal = function() {
+ol.proj.Projection.prototype.isGlobal = function() {
   return this.global_
 };
-ol.Projection.prototype.getDefaultTileGrid = function() {
+ol.proj.Projection.prototype.getDefaultTileGrid = function() {
   return this.defaultTileGrid_
 };
-ol.Projection.prototype.setDefaultTileGrid = function(tileGrid) {
+ol.proj.Projection.prototype.setDefaultTileGrid = function(tileGrid) {
   this.defaultTileGrid_ = tileGrid
 };
 ol.Proj4jsProjection_ = function(proj4jsProj, options) {
@@ -7356,7 +7602,7 @@ ol.Proj4jsProjection_ = function(proj4jsProj, options) {
   this.proj4jsProj_ = proj4jsProj;
   this.toEPSG4326_ = null
 };
-goog.inherits(ol.Proj4jsProjection_, ol.Projection);
+goog.inherits(ol.Proj4jsProjection_, ol.proj.Projection);
 ol.Proj4jsProjection_.prototype.getMetersPerUnit = function() {
   var metersPerUnit = this.proj4jsProj_.to_meter;
   if(!goog.isDef(metersPerUnit)) {
@@ -7365,7 +7611,7 @@ ol.Proj4jsProjection_.prototype.getMetersPerUnit = function() {
   return metersPerUnit
 };
 ol.Proj4jsProjection_.prototype.getPointResolution = function(resolution, point) {
-  if(this.getUnits() == ol.ProjectionUnits.DEGREES) {
+  if(this.getUnits() == ol.proj.Units.DEGREES) {
     return resolution
   }else {
     if(goog.isNull(this.toEPSG4326_)) {
@@ -7376,7 +7622,7 @@ ol.Proj4jsProjection_.prototype.getPointResolution = function(resolution, point)
     var width = ol.sphere.NORMAL.haversineDistance(vertices.slice(0, 2), vertices.slice(2, 4));
     var height = ol.sphere.NORMAL.haversineDistance(vertices.slice(4, 6), vertices.slice(6, 8));
     var pointResolution = (width + height) / 2;
-    if(this.getUnits() == ol.ProjectionUnits.FEET) {
+    if(this.getUnits() == ol.proj.Units.FEET) {
       pointResolution /= 0.3048
     }
     return pointResolution
@@ -7437,7 +7683,7 @@ ol.proj.createProjection = function(projection, defaultCode) {
     if(goog.isString(projection)) {
       return ol.proj.get(projection)
     }else {
-      goog.asserts.assertInstanceof(projection, ol.Projection);
+      goog.asserts.assertInstanceof(projection, ol.proj.Projection);
       return projection
     }
   }
@@ -7467,7 +7713,7 @@ ol.proj.removeTransform = function(source, destination) {
 };
 ol.proj.get = function(projectionLike) {
   var projection;
-  if(projectionLike instanceof ol.Projection) {
+  if(projectionLike instanceof ol.proj.Projection) {
     projection = projectionLike
   }else {
     if(goog.isString(projectionLike)) {
@@ -7605,214 +7851,6 @@ ol.proj.configureProj4jsProjection = function(options) {
   goog.asserts.assert(!goog.object.containsKey(ol.proj.proj4jsProjections_, options.code));
   return ol.proj.getProj4jsProjectionFromCode_(options)
 };
-goog.provide("ol.IView2D");
-goog.provide("ol.View2DState");
-goog.require("ol.Coordinate");
-goog.require("ol.Projection");
-ol.View2DState;
-ol.IView2D = function() {
-};
-ol.IView2D.prototype.getCenter = function() {
-};
-ol.IView2D.prototype.getProjection = function() {
-};
-ol.IView2D.prototype.getResolution = function() {
-};
-ol.IView2D.prototype.getRotation = function() {
-};
-ol.IView2D.prototype.getView2DState = function() {
-};
-goog.provide("ol.layer.Base");
-goog.provide("ol.layer.LayerProperty");
-goog.provide("ol.layer.LayerState");
-goog.require("goog.events");
-goog.require("goog.events.EventType");
-goog.require("goog.math");
-goog.require("goog.object");
-goog.require("ol.Object");
-ol.layer.LayerProperty = {BRIGHTNESS:"brightness", CONTRAST:"contrast", HUE:"hue", OPACITY:"opacity", SATURATION:"saturation", VISIBLE:"visible"};
-ol.layer.LayerState;
-ol.layer.Base = function(options) {
-  goog.base(this);
-  var values = goog.object.clone(options);
-  values.brightness = goog.isDef(values.brightness) ? values.brightness : 0;
-  values.contrast = goog.isDef(values.contrast) ? values.contrast : 1;
-  values.hue = goog.isDef(values.hue) ? values.hue : 0;
-  values.opacity = goog.isDef(values.opacity) ? values.opacity : 1;
-  values.saturation = goog.isDef(values.saturation) ? values.saturation : 1;
-  values.visible = goog.isDef(values.visible) ? values.visible : true;
-  this.setValues(values);
-  goog.events.listen(this, [ol.Object.getChangeEventType(ol.layer.LayerProperty.BRIGHTNESS), ol.Object.getChangeEventType(ol.layer.LayerProperty.CONTRAST), ol.Object.getChangeEventType(ol.layer.LayerProperty.HUE), ol.Object.getChangeEventType(ol.layer.LayerProperty.OPACITY), ol.Object.getChangeEventType(ol.layer.LayerProperty.SATURATION), goog.events.EventType.LOAD], this.handleLayerChange, false, this);
-  goog.events.listen(this, ol.Object.getChangeEventType(ol.layer.LayerProperty.VISIBLE), this.handleLayerVisibleChange, false, this)
-};
-goog.inherits(ol.layer.Base, ol.Object);
-ol.layer.Base.prototype.dispatchChangeEvent = function() {
-  this.dispatchEvent(goog.events.EventType.CHANGE)
-};
-ol.layer.Base.prototype.getBrightness = function() {
-  return(this.get(ol.layer.LayerProperty.BRIGHTNESS))
-};
-goog.exportProperty(ol.layer.Base.prototype, "getBrightness", ol.layer.Base.prototype.getBrightness);
-ol.layer.Base.prototype.getContrast = function() {
-  return(this.get(ol.layer.LayerProperty.CONTRAST))
-};
-goog.exportProperty(ol.layer.Base.prototype, "getContrast", ol.layer.Base.prototype.getContrast);
-ol.layer.Base.prototype.getHue = function() {
-  return(this.get(ol.layer.LayerProperty.HUE))
-};
-goog.exportProperty(ol.layer.Base.prototype, "getHue", ol.layer.Base.prototype.getHue);
-ol.layer.Base.prototype.getLayerState = function() {
-  var brightness = this.getBrightness();
-  var contrast = this.getContrast();
-  var hue = this.getHue();
-  var opacity = this.getOpacity();
-  var ready = this.isReady();
-  var saturation = this.getSaturation();
-  var visible = this.getVisible();
-  return{brightness:goog.isDef(brightness) ? goog.math.clamp(brightness, -1, 1) : 0, contrast:goog.isDef(contrast) ? Math.max(contrast, 0) : 1, hue:goog.isDef(hue) ? hue : 0, opacity:goog.isDef(opacity) ? goog.math.clamp(opacity, 0, 1) : 1, ready:ready, saturation:goog.isDef(saturation) ? Math.max(saturation, 0) : 1, visible:goog.isDef(visible) ? !!visible : true}
-};
-ol.layer.Base.prototype.getLayersArray = goog.abstractMethod;
-ol.layer.Base.prototype.getLayerStatesArray = goog.abstractMethod;
-ol.layer.Base.prototype.getOpacity = function() {
-  return(this.get(ol.layer.LayerProperty.OPACITY))
-};
-goog.exportProperty(ol.layer.Base.prototype, "getOpacity", ol.layer.Base.prototype.getOpacity);
-ol.layer.Base.prototype.getSaturation = function() {
-  return(this.get(ol.layer.LayerProperty.SATURATION))
-};
-goog.exportProperty(ol.layer.Base.prototype, "getSaturation", ol.layer.Base.prototype.getSaturation);
-ol.layer.Base.prototype.getVisible = function() {
-  return(this.get(ol.layer.LayerProperty.VISIBLE))
-};
-goog.exportProperty(ol.layer.Base.prototype, "getVisible", ol.layer.Base.prototype.getVisible);
-ol.layer.Base.prototype.handleLayerChange = function() {
-  if(this.getVisible() && this.isReady()) {
-    this.dispatchChangeEvent()
-  }
-};
-ol.layer.Base.prototype.handleLayerVisibleChange = function() {
-  if(this.isReady()) {
-    this.dispatchChangeEvent()
-  }
-};
-ol.layer.Base.prototype.isReady = goog.abstractMethod;
-ol.layer.Base.prototype.setBrightness = function(brightness) {
-  this.set(ol.layer.LayerProperty.BRIGHTNESS, brightness)
-};
-goog.exportProperty(ol.layer.Base.prototype, "setBrightness", ol.layer.Base.prototype.setBrightness);
-ol.layer.Base.prototype.setContrast = function(contrast) {
-  this.set(ol.layer.LayerProperty.CONTRAST, contrast)
-};
-goog.exportProperty(ol.layer.Base.prototype, "setContrast", ol.layer.Base.prototype.setContrast);
-ol.layer.Base.prototype.setHue = function(hue) {
-  this.set(ol.layer.LayerProperty.HUE, hue)
-};
-goog.exportProperty(ol.layer.Base.prototype, "setHue", ol.layer.Base.prototype.setHue);
-ol.layer.Base.prototype.setOpacity = function(opacity) {
-  this.set(ol.layer.LayerProperty.OPACITY, opacity)
-};
-goog.exportProperty(ol.layer.Base.prototype, "setOpacity", ol.layer.Base.prototype.setOpacity);
-ol.layer.Base.prototype.setSaturation = function(saturation) {
-  this.set(ol.layer.LayerProperty.SATURATION, saturation)
-};
-goog.exportProperty(ol.layer.Base.prototype, "setSaturation", ol.layer.Base.prototype.setSaturation);
-ol.layer.Base.prototype.setVisible = function(visible) {
-  this.set(ol.layer.LayerProperty.VISIBLE, visible)
-};
-goog.exportProperty(ol.layer.Base.prototype, "setVisible", ol.layer.Base.prototype.setVisible);
-goog.provide("goog.functions");
-goog.functions.constant = function(retValue) {
-  return function() {
-    return retValue
-  }
-};
-goog.functions.FALSE = goog.functions.constant(false);
-goog.functions.TRUE = goog.functions.constant(true);
-goog.functions.NULL = goog.functions.constant(null);
-goog.functions.identity = function(opt_returnValue, var_args) {
-  return opt_returnValue
-};
-goog.functions.error = function(message) {
-  return function() {
-    throw Error(message);
-  }
-};
-goog.functions.fail = function(err) {
-  return function() {
-    throw err;
-  }
-};
-goog.functions.lock = function(f, opt_numArgs) {
-  opt_numArgs = opt_numArgs || 0;
-  return function() {
-    return f.apply(this, Array.prototype.slice.call(arguments, 0, opt_numArgs))
-  }
-};
-goog.functions.withReturnValue = function(f, retValue) {
-  return goog.functions.sequence(f, goog.functions.constant(retValue))
-};
-goog.functions.compose = function(fn, var_args) {
-  var functions = arguments;
-  var length = functions.length;
-  return function() {
-    var result;
-    if(length) {
-      result = functions[length - 1].apply(this, arguments)
-    }
-    for(var i = length - 2;i >= 0;i--) {
-      result = functions[i].call(this, result)
-    }
-    return result
-  }
-};
-goog.functions.sequence = function(var_args) {
-  var functions = arguments;
-  var length = functions.length;
-  return function() {
-    var result;
-    for(var i = 0;i < length;i++) {
-      result = functions[i].apply(this, arguments)
-    }
-    return result
-  }
-};
-goog.functions.and = function(var_args) {
-  var functions = arguments;
-  var length = functions.length;
-  return function() {
-    for(var i = 0;i < length;i++) {
-      if(!functions[i].apply(this, arguments)) {
-        return false
-      }
-    }
-    return true
-  }
-};
-goog.functions.or = function(var_args) {
-  var functions = arguments;
-  var length = functions.length;
-  return function() {
-    for(var i = 0;i < length;i++) {
-      if(functions[i].apply(this, arguments)) {
-        return true
-      }
-    }
-    return false
-  }
-};
-goog.functions.not = function(f) {
-  return function() {
-    return!f.apply(this, arguments)
-  }
-};
-goog.functions.create = function(constructor, var_args) {
-  var temp = function() {
-  };
-  temp.prototype = constructor.prototype;
-  var obj = new temp;
-  constructor.apply(obj, Array.prototype.slice.call(arguments, 1));
-  return obj
-};
 goog.provide("ol.source.Source");
 goog.require("goog.events.EventTarget");
 goog.require("goog.events.EventType");
@@ -7927,14 +7965,12 @@ ol.FrameState;
 ol.PostRenderFunction;
 ol.PreRenderFunction;
 goog.provide("ol.Geolocation");
-goog.provide("ol.Geolocation.SUPPORTED");
 goog.provide("ol.GeolocationProperty");
 goog.require("goog.events");
 goog.require("goog.events.EventType");
 goog.require("goog.math");
 goog.require("ol.Coordinate");
 goog.require("ol.Object");
-goog.require("ol.Projection");
 goog.require("ol.proj");
 ol.GeolocationProperty = {ACCURACY:"accuracy", ALTITUDE:"altitude", ALTITUDE_ACCURACY:"altitudeAccuracy", HEADING:"heading", POSITION:"position", PROJECTION:"projection", SPEED:"speed", TRACKING:"tracking", TRACKING_OPTIONS:"trackingOptions"};
 ol.Geolocation = function(opt_options) {
@@ -7981,6 +8017,7 @@ ol.Geolocation.prototype.handleTrackingChanged_ = function() {
   }
 };
 ol.Geolocation.SUPPORTED = "geolocation" in goog.global.navigator;
+goog.exportProperty(ol.Geolocation, "SUPPORTED", ol.Geolocation.SUPPORTED);
 ol.Geolocation.prototype.positionChange_ = function(position) {
   var coords = position.coords;
   this.set(ol.GeolocationProperty.ACCURACY, coords.accuracy);
@@ -8143,6 +8180,8 @@ ol.Image.prototype.unlistenImage_ = function() {
   goog.array.forEach(this.imageListenerKeys_, goog.events.unlistenByKey);
   this.imageListenerKeys_ = null
 };
+goog.provide("ol.TileLoadFunctionType");
+ol.TileLoadFunctionType;
 goog.provide("ol.ImageTile");
 goog.require("goog.array");
 goog.require("goog.asserts");
@@ -8151,8 +8190,9 @@ goog.require("goog.events.EventType");
 goog.require("goog.object");
 goog.require("ol.Tile");
 goog.require("ol.TileCoord");
+goog.require("ol.TileLoadFunctionType");
 goog.require("ol.TileState");
-ol.ImageTile = function(tileCoord, state, src, crossOrigin) {
+ol.ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction) {
   goog.base(this, tileCoord, state);
   this.src_ = src;
   this.image_ = new Image;
@@ -8160,7 +8200,8 @@ ol.ImageTile = function(tileCoord, state, src, crossOrigin) {
     this.image_.crossOrigin = crossOrigin
   }
   this.imageByContext_ = {};
-  this.imageListenerKeys_ = null
+  this.imageListenerKeys_ = null;
+  this.tileLoadFunction_ = tileLoadFunction
 };
 goog.inherits(ol.ImageTile, ol.Tile);
 ol.ImageTile.prototype.getImage = function(opt_context) {
@@ -8204,7 +8245,7 @@ ol.ImageTile.prototype.load = function() {
     this.state = ol.TileState.LOADING;
     goog.asserts.assert(goog.isNull(this.imageListenerKeys_));
     this.imageListenerKeys_ = [goog.events.listenOnce(this.image_, goog.events.EventType.ERROR, this.handleImageError_, false, this), goog.events.listenOnce(this.image_, goog.events.EventType.LOAD, this.handleImageLoad_, false, this)];
-    this.image_.src = this.src_
+    this.tileLoadFunction_(this, this.src_)
   }
 };
 ol.ImageTile.prototype.unlistenImage_ = function() {
@@ -14333,8 +14374,6 @@ goog.require("goog.asserts");
 goog.require("ol.Constraints");
 goog.require("ol.IView2D");
 goog.require("ol.IView3D");
-goog.require("ol.Projection");
-goog.require("ol.ProjectionUnits");
 goog.require("ol.ResolutionConstraint");
 goog.require("ol.RotationConstraint");
 goog.require("ol.RotationConstraintType");
@@ -14343,6 +14382,8 @@ goog.require("ol.View");
 goog.require("ol.coordinate");
 goog.require("ol.extent");
 goog.require("ol.proj");
+goog.require("ol.proj.Projection");
+goog.require("ol.proj.Units");
 ol.View2DProperty = {CENTER:"center", PROJECTION:"projection", RESOLUTION:"resolution", ROTATION:"rotation"};
 ol.View2D = function(opt_options) {
   goog.base(this);
@@ -14522,7 +14563,7 @@ ol.View2D.createResolutionConstraint_ = function(options) {
     if(!goog.isDef(maxResolution)) {
       var projection = options.projection;
       var projectionExtent = ol.proj.createProjection(projection, "EPSG:3857").getExtent();
-      var size = goog.isNull(projectionExtent) ? 360 * ol.METERS_PER_UNIT[ol.ProjectionUnits.DEGREES] / ol.METERS_PER_UNIT[projection.getUnits()] : Math.max(projectionExtent[2] - projectionExtent[0], projectionExtent[3] - projectionExtent[1]);
+      var size = goog.isNull(projectionExtent) ? 360 * ol.METERS_PER_UNIT[ol.proj.Units.DEGREES] / ol.METERS_PER_UNIT[projection.getUnits()] : Math.max(projectionExtent[2] - projectionExtent[0], projectionExtent[3] - projectionExtent[1]);
       maxResolution = size / ol.DEFAULT_TILE_SIZE
     }
     var maxZoom = options.maxZoom;
@@ -15263,7 +15304,6 @@ ol.interaction.KeyboardPan.prototype.handleMapBrowserEvent = function(mapBrowser
 goog.provide("ol.interaction.KeyboardZoom");
 goog.require("goog.asserts");
 goog.require("goog.events.KeyHandler.EventType");
-goog.require("goog.functions");
 goog.require("ol.interaction.ConditionType");
 goog.require("ol.interaction.Interaction");
 goog.require("ol.interaction.condition");
@@ -15271,7 +15311,7 @@ ol.interaction.KEYBOARD_ZOOM_DURATION = 100;
 ol.interaction.KeyboardZoom = function(opt_options) {
   goog.base(this);
   var options = goog.isDef(opt_options) ? opt_options : {};
-  this.condition_ = goog.isDef(options.condition) ? options.condition : goog.functions.and(ol.interaction.condition.noModifierKeys, ol.interaction.condition.targetNotEditable);
+  this.condition_ = goog.isDef(options.condition) ? options.condition : ol.interaction.condition.targetNotEditable;
   this.delta_ = goog.isDef(options.delta) ? options.delta : 1
 };
 goog.inherits(ol.interaction.KeyboardZoom, ol.interaction.Interaction);
@@ -15787,7 +15827,9 @@ ol.layer.Group.prototype.getLayerStatesArray = function(opt_obj) {
     layerState.hue += ownLayerState.hue;
     layerState.opacity *= ownLayerState.opacity;
     layerState.saturation *= ownLayerState.saturation;
-    layerState.visible = layerState.visible && ownLayerState.visible
+    layerState.visible = layerState.visible && ownLayerState.visible;
+    layerState.maxResolution = Math.min(layerState.maxResolution, ownLayerState.maxResolution);
+    layerState.minResolution = Math.max(layerState.minResolution, ownLayerState.minResolution)
   }
   return obj
 };
@@ -15825,14 +15867,14 @@ ol.math.tanh = function(x) {
 goog.provide("ol.proj.EPSG3857");
 goog.require("goog.array");
 goog.require("goog.asserts");
-goog.require("ol.Projection");
-goog.require("ol.ProjectionUnits");
 goog.require("ol.math");
 goog.require("ol.proj");
+goog.require("ol.proj.Projection");
+goog.require("ol.proj.Units");
 ol.proj.EPSG3857 = function(code) {
-  goog.base(this, {code:code, units:ol.ProjectionUnits.METERS, extent:ol.proj.EPSG3857.EXTENT, global:true})
+  goog.base(this, {code:code, units:ol.proj.Units.METERS, extent:ol.proj.EPSG3857.EXTENT, global:true})
 };
-goog.inherits(ol.proj.EPSG3857, ol.Projection);
+goog.inherits(ol.proj.EPSG3857, ol.proj.Projection);
 ol.proj.EPSG3857.RADIUS = 6378137;
 ol.proj.EPSG3857.HALF_SIZE = Math.PI * ol.proj.EPSG3857.RADIUS;
 ol.proj.EPSG3857.EXTENT = [-ol.proj.EPSG3857.HALF_SIZE, -ol.proj.EPSG3857.HALF_SIZE, ol.proj.EPSG3857.HALF_SIZE, ol.proj.EPSG3857.HALF_SIZE];
@@ -15876,13 +15918,13 @@ ol.proj.EPSG3857.prototype.getPointResolution = function(resolution, point) {
   return resolution / ol.math.cosh(point[1] / ol.proj.EPSG3857.RADIUS)
 };
 goog.provide("ol.proj.EPSG4326");
-goog.require("ol.Projection");
-goog.require("ol.ProjectionUnits");
 goog.require("ol.proj");
+goog.require("ol.proj.Projection");
+goog.require("ol.proj.Units");
 ol.proj.EPSG4326 = function(code, opt_axisOrientation) {
-  goog.base(this, {code:code, units:ol.ProjectionUnits.DEGREES, extent:ol.proj.EPSG4326.EXTENT, axisOrientation:opt_axisOrientation, global:true})
+  goog.base(this, {code:code, units:ol.proj.Units.DEGREES, extent:ol.proj.EPSG4326.EXTENT, axisOrientation:opt_axisOrientation, global:true})
 };
-goog.inherits(ol.proj.EPSG4326, ol.Projection);
+goog.inherits(ol.proj.EPSG4326, ol.proj.Projection);
 ol.proj.EPSG4326.EXTENT = [-180, -90, 180, 90];
 ol.proj.EPSG4326.PROJECTIONS = [new ol.proj.EPSG4326("CRS:84"), new ol.proj.EPSG4326("EPSG:4326", "neu"), new ol.proj.EPSG4326("urn:ogc:def:crs:EPSG:6.6:4326", "neu"), new ol.proj.EPSG4326("urn:ogc:def:crs:OGC:1.3:CRS84"), new ol.proj.EPSG4326("urn:ogc:def:crs:OGC:2:84"), new ol.proj.EPSG4326("http://www.opengis.net/gml/srs/epsg.xml#4326", "neu"), new ol.proj.EPSG4326("urn:x-ogc:def:crs:EPSG:4326", "neu")];
 ol.proj.EPSG4326.prototype.getPointResolution = function(resolution, point) {
@@ -15901,13 +15943,13 @@ goog.provide("ol.tilegrid.TileGrid");
 goog.require("goog.array");
 goog.require("goog.asserts");
 goog.require("ol.Coordinate");
-goog.require("ol.Projection");
-goog.require("ol.ProjectionUnits");
 goog.require("ol.Size");
 goog.require("ol.TileCoord");
 goog.require("ol.TileRange");
 goog.require("ol.array");
 goog.require("ol.extent");
+goog.require("ol.proj.Projection");
+goog.require("ol.proj.Units");
 ol.DEFAULT_TILE_SIZE = 256;
 ol.DEFAULT_MAX_ZOOM = 42;
 ol.tilegrid.TileGrid = function(options) {
@@ -16062,7 +16104,7 @@ ol.tilegrid.getForProjection = function(projection) {
 };
 ol.tilegrid.createForProjection = function(projection, opt_maxZoom, opt_tileSize) {
   var projectionExtent = projection.getExtent();
-  var size = goog.isNull(projectionExtent) ? 360 * ol.METERS_PER_UNIT[ol.ProjectionUnits.DEGREES] / projection.getMetersPerUnit() : Math.max(projectionExtent[2] - projectionExtent[0], projectionExtent[3] - projectionExtent[1]);
+  var size = goog.isNull(projectionExtent) ? 360 * ol.METERS_PER_UNIT[ol.proj.Units.DEGREES] / projection.getMetersPerUnit() : Math.max(projectionExtent[2] - projectionExtent[0], projectionExtent[3] - projectionExtent[1]);
   var maxZoom = goog.isDef(opt_maxZoom) ? opt_maxZoom : ol.DEFAULT_MAX_ZOOM;
   var tileSize = goog.isDef(opt_tileSize) ? opt_tileSize : [ol.DEFAULT_TILE_SIZE, ol.DEFAULT_TILE_SIZE];
   var resolutions = new Array(maxZoom + 1);
@@ -16113,9 +16155,7 @@ ol.source.Tile.prototype.findLoadedTiles = function(loadedTilesByZ, getTileIfLoa
   }
   return fullyCovered
 };
-ol.source.Tile.prototype.getKeyZXY = function(z, x, y) {
-  return ol.TileCoord.getKeyZXY(z, x, y)
-};
+ol.source.Tile.prototype.getKeyZXY = ol.TileCoord.getKeyZXY;
 ol.source.Tile.prototype.getOpaque = function() {
   return this.opaque_
 };
@@ -16379,6 +16419,23 @@ ol.renderer.Map.prototype.scheduleRemoveUnusedLayerRenderers = function(frameSta
     }
   }
 };
+goog.provide("ol.canvas");
+goog.require("goog.dom");
+goog.require("goog.dom.TagName");
+ol.canvas.SUPPORTED = function() {
+  if(!("HTMLCanvasElement" in goog.global)) {
+    return false
+  }
+  try {
+    var canvas = (goog.dom.createElement(goog.dom.TagName.CANVAS));
+    return!goog.isNull(canvas.getContext("2d"))
+  }catch(e) {
+    return false
+  }
+}();
+goog.provide("ol.renderer.canvas");
+goog.require("ol.canvas");
+ol.renderer.canvas.SUPPORTED = ol.canvas.SUPPORTED;
 goog.provide("ol.source.Image");
 goog.require("goog.array");
 goog.require("goog.asserts");
@@ -16387,7 +16444,6 @@ goog.require("ol.Extent");
 goog.require("ol.Image");
 goog.require("ol.ImageUrlFunction");
 goog.require("ol.ImageUrlFunctionType");
-goog.require("ol.Projection");
 goog.require("ol.Size");
 goog.require("ol.array");
 goog.require("ol.source.Source");
@@ -17309,7 +17365,7 @@ ol.expr.lib[ol.expr.functions.EXTENT] = function(minX, minY, maxX, maxY, opt_pro
 };
 ol.expr.lib[ol.expr.functions.FID] = function(var_args) {
   var matches = false;
-  var id = this.getFeatureId();
+  var id = this.getId();
   if(goog.isDef(id)) {
     for(var i = 0, ii = arguments.length;i < ii;++i) {
       if(arguments[i] === id) {
@@ -20824,17 +20880,17 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
     this.canvasSize_ = size
   }
   var context = this.context_;
-  context.setTransform(1, 0, 0, 1, 0, 0);
   context.clearRect(0, 0, size[0], size[1]);
   this.calculateMatrices2D(frameState);
   var layerStates = frameState.layerStates;
   var layersArray = frameState.layersArray;
+  var viewResolution = frameState.view2DState.resolution;
   var i, ii, image, layer, layerRenderer, layerState, transform;
   for(i = 0, ii = layersArray.length;i < ii;++i) {
     layer = layersArray[i];
     layerRenderer = this.getLayerRenderer(layer);
     layerState = layerStates[goog.getUid(layer)];
-    if(!layerState.visible || !layerState.ready) {
+    if(!layerState.visible || !layerState.ready || viewResolution >= layerState.maxResolution || viewResolution < layerState.minResolution) {
       continue
     }
     layerRenderer.renderFrame(frameState, layerState);
@@ -20850,7 +20906,8 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
         context.drawImage(image, 0, 0, image.width, image.height, dx, dy, dw, dh)
       }else {
         context.setTransform(goog.vec.Mat4.getElement(transform, 0, 0), goog.vec.Mat4.getElement(transform, 1, 0), goog.vec.Mat4.getElement(transform, 0, 1), goog.vec.Mat4.getElement(transform, 1, 1), goog.vec.Mat4.getElement(transform, 0, 3), goog.vec.Mat4.getElement(transform, 1, 3));
-        context.drawImage(image, 0, 0)
+        context.drawImage(image, 0, 0);
+        context.setTransform(1, 0, 0, 1, 0, 0)
       }
     }
   }
@@ -20860,24 +20917,8 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
   }
   this.scheduleRemoveUnusedLayerRenderers(frameState)
 };
-goog.provide("ol.canvas");
-goog.provide("ol.canvas.SUPPORTED");
-goog.require("goog.dom");
-goog.require("goog.dom.TagName");
-ol.canvas.SUPPORTED = function() {
-  if(!("HTMLCanvasElement" in goog.global)) {
-    return false
-  }
-  try {
-    var canvas = (goog.dom.createElement(goog.dom.TagName.CANVAS));
-    return!goog.isNull(canvas.getContext("2d"))
-  }catch(e) {
-    return false
-  }
-}();
-goog.provide("ol.renderer.canvas.SUPPORTED");
-goog.require("ol.canvas.SUPPORTED");
-ol.renderer.canvas.SUPPORTED = ol.canvas.SUPPORTED;
+goog.provide("ol.renderer.dom");
+ol.renderer.dom.SUPPORTED = true;
 goog.provide("ol.dom");
 goog.provide("ol.dom.BrowserFeature");
 goog.require("goog.asserts");
@@ -21316,8 +21357,40 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
   this.calculateMatrices2D(frameState);
   this.scheduleRemoveUnusedLayerRenderers(frameState)
 };
-goog.provide("ol.renderer.dom.SUPPORTED");
-ol.renderer.dom.SUPPORTED = true;
+goog.provide("ol.webgl");
+goog.provide("ol.webgl.WebGLContextEventType");
+goog.require("goog.dom");
+goog.require("goog.dom.TagName");
+ol.webgl.CONTEXT_IDS_ = ["webgl", "webgl-experimental", "webkit-3d", "moz-webgl"];
+ol.webgl.WebGLContextEventType = {LOST:"webglcontextlost", RESTORED:"webglcontextrestored"};
+ol.webgl.getContext = function(canvas, opt_attributes) {
+  var context, i, ii = ol.webgl.CONTEXT_IDS_.length;
+  for(i = 0;i < ii;++i) {
+    try {
+      context = canvas.getContext(ol.webgl.CONTEXT_IDS_[i], opt_attributes);
+      if(!goog.isNull(context)) {
+        return context
+      }
+    }catch(e) {
+    }
+  }
+  return null
+};
+ol.webgl.SUPPORTED = function() {
+  if(!("WebGLRenderingContext" in goog.global)) {
+    return false
+  }
+  try {
+    var canvas = goog.dom.createElement(goog.dom.TagName.CANVAS);
+    return!goog.isNull(ol.webgl.getContext(canvas))
+  }catch(e) {
+    return false
+  }
+}();
+goog.exportSymbol("ol.webgl.SUPPORTED", ol.webgl.SUPPORTED);
+goog.provide("ol.renderer.webgl");
+goog.require("ol.webgl");
+ol.renderer.webgl.SUPPORTED = ol.webgl.SUPPORTED;
 goog.provide("goog.webgl");
 goog.webgl.DEPTH_BUFFER_BIT = 256;
 goog.webgl.STENCIL_BUFFER_BIT = 1024;
@@ -22464,37 +22537,6 @@ ol.renderer.webgl.ImageLayer.prototype.updateProjectionMatrix_ = function(canvas
   goog.vec.Mat4.scale(projectionMatrix, (imageExtent[2] - imageExtent[0]) / 2, (imageExtent[3] - imageExtent[1]) / 2, 1);
   goog.vec.Mat4.translate(projectionMatrix, 1, 1, 0)
 };
-goog.provide("ol.webgl");
-goog.provide("ol.webgl.SUPPORTED");
-goog.provide("ol.webgl.WebGLContextEventType");
-goog.require("goog.dom");
-goog.require("goog.dom.TagName");
-ol.webgl.CONTEXT_IDS_ = ["webgl", "webgl-experimental", "webkit-3d", "moz-webgl"];
-ol.webgl.WebGLContextEventType = {LOST:"webglcontextlost", RESTORED:"webglcontextrestored"};
-ol.webgl.getContext = function(canvas, opt_attributes) {
-  var context, i, ii = ol.webgl.CONTEXT_IDS_.length;
-  for(i = 0;i < ii;++i) {
-    try {
-      context = canvas.getContext(ol.webgl.CONTEXT_IDS_[i], opt_attributes);
-      if(!goog.isNull(context)) {
-        return context
-      }
-    }catch(e) {
-    }
-  }
-  return null
-};
-ol.webgl.SUPPORTED = function() {
-  if(!("WebGLRenderingContext" in goog.global)) {
-    return false
-  }
-  try {
-    var canvas = goog.dom.createElement(goog.dom.TagName.CANVAS);
-    return!goog.isNull(ol.webgl.getContext(canvas))
-  }catch(e) {
-    return false
-  }
-}();
 goog.provide("ol.webgl.shader");
 goog.require("goog.functions");
 goog.require("goog.webgl");
@@ -23206,12 +23248,13 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   this.textureCache_.set((-frameState.index).toString(), null);
   ++this.textureCacheFrameMarkerCount_;
   var layersArray = frameState.layersArray;
+  var viewResolution = frameState.view2DState.resolution;
   var i, ii, layer, layerRenderer, layerState;
   for(i = 0, ii = layersArray.length;i < ii;++i) {
     layer = layersArray[i];
     layerRenderer = this.getLayerRenderer(layer);
     layerState = frameState.layerStates[goog.getUid(layer)];
-    if(layerState.visible && layerState.ready) {
+    if(layerState.visible && layerState.ready && viewResolution < layerState.maxResolution && viewResolution >= layerState.minResolution) {
       layerRenderer.renderFrame(frameState, layerState)
     }
   }
@@ -23232,7 +23275,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   for(i = 0, ii = layersArray.length;i < ii;++i) {
     layer = layersArray[i];
     layerState = frameState.layerStates[goog.getUid(layer)];
-    if(!layerState.visible || !layerState.ready) {
+    if(!layerState.visible || !layerState.ready || viewResolution >= layerState.maxResolution || viewResolution < layerState.minResolution) {
       continue
     }
     var useColor = layerState.brightness || layerState.contrast != 1 || layerState.hue || layerState.saturation != 1;
@@ -23293,9 +23336,6 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   }
   this.scheduleRemoveUnusedLayerRenderers(frameState)
 };
-goog.provide("ol.renderer.webgl.SUPPORTED");
-goog.require("ol.webgl.SUPPORTED");
-ol.renderer.webgl.SUPPORTED = ol.webgl.SUPPORTED;
 goog.provide("ol.Map");
 goog.provide("ol.MapProperty");
 goog.provide("ol.RendererHint");
@@ -23351,12 +23391,12 @@ goog.require("ol.layer.Group");
 goog.require("ol.proj");
 goog.require("ol.proj.common");
 goog.require("ol.renderer.Map");
+goog.require("ol.renderer.canvas");
 goog.require("ol.renderer.canvas.Map");
-goog.require("ol.renderer.canvas.SUPPORTED");
+goog.require("ol.renderer.dom");
 goog.require("ol.renderer.dom.Map");
-goog.require("ol.renderer.dom.SUPPORTED");
+goog.require("ol.renderer.webgl");
 goog.require("ol.renderer.webgl.Map");
-goog.require("ol.renderer.webgl.SUPPORTED");
 goog.require("ol.structs.PriorityQueue");
 goog.require("ol.vec.Mat4");
 ol.ENABLE_CANVAS = true;
@@ -23393,9 +23433,9 @@ ol.Map = function(options) {
   var mapBrowserEventHandler = new ol.MapBrowserEventHandler(this);
   goog.events.listen(mapBrowserEventHandler, goog.object.getValues(ol.MapBrowserEvent.EventType), this.handleMapBrowserEvent, false, this);
   this.registerDisposable(mapBrowserEventHandler);
-  var keyHandler = new goog.events.KeyHandler(goog.global.document);
-  goog.events.listen(keyHandler, goog.events.KeyHandler.EventType.KEY, this.handleBrowserEvent, false, this);
-  this.registerDisposable(keyHandler);
+  this.keyHandler_ = new goog.events.KeyHandler;
+  goog.events.listen(this.keyHandler_, goog.events.KeyHandler.EventType.KEY, this.handleBrowserEvent, false, this);
+  this.registerDisposable(this.keyHandler_);
   var mouseWheelHandler = new goog.events.MouseWheelHandler(this.viewport_);
   goog.events.listen(mouseWheelHandler, goog.events.MouseWheelHandler.EventType.MOUSEWHEEL, this.handleBrowserEvent, false, this);
   this.registerDisposable(mouseWheelHandler);
@@ -23594,10 +23634,12 @@ ol.Map.prototype.handleSizeChanged_ = function() {
 ol.Map.prototype.handleTargetChanged_ = function() {
   var target = this.getTarget();
   var targetElement = goog.isDef(target) ? goog.dom.getElement(target) : null;
+  this.keyHandler_.detach();
   if(goog.isNull(targetElement)) {
     goog.dom.removeNode(this.viewport_)
   }else {
-    goog.dom.appendChild(targetElement, this.viewport_)
+    goog.dom.appendChild(targetElement, this.viewport_);
+    this.keyHandler_.attach(targetElement)
   }
   this.updateSize()
 };
@@ -24260,10 +24302,10 @@ goog.require("goog.style");
 goog.require("ol.CoordinateFormatType");
 goog.require("ol.Object");
 goog.require("ol.Pixel");
-goog.require("ol.Projection");
 goog.require("ol.TransformFunction");
 goog.require("ol.control.Control");
 goog.require("ol.proj");
+goog.require("ol.proj.Projection");
 ol.control.MousePositionProperty = {PROJECTION:"projection", COORDINATE_FORMAT:"coordinateFormat"};
 ol.control.MousePosition = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
@@ -24371,12 +24413,12 @@ goog.require("goog.events");
 goog.require("goog.math");
 goog.require("goog.style");
 goog.require("ol.Object");
-goog.require("ol.ProjectionUnits");
 goog.require("ol.TransformFunction");
 goog.require("ol.View2DState");
 goog.require("ol.control.Control");
 goog.require("ol.css");
 goog.require("ol.proj");
+goog.require("ol.proj.Units");
 goog.require("ol.sphere.NORMAL");
 ol.control.ScaleLineProperty = {UNITS:"units"};
 ol.control.ScaleLineUnits = {DEGREES:"degrees", IMPERIAL:"imperial", NAUTICAL:"nautical", METRIC:"metric", US:"us"};
@@ -24432,28 +24474,28 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
   var projectionUnits = projection.getUnits();
   var cosLatitude;
   var units = this.getUnits();
-  if(projectionUnits == ol.ProjectionUnits.DEGREES && (units == ol.control.ScaleLineUnits.METRIC || units == ol.control.ScaleLineUnits.IMPERIAL)) {
+  if(projectionUnits == ol.proj.Units.DEGREES && (units == ol.control.ScaleLineUnits.METRIC || units == ol.control.ScaleLineUnits.IMPERIAL)) {
     this.toEPSG4326_ = null;
     cosLatitude = Math.cos(goog.math.toRadians(center[1]));
     pointResolution *= Math.PI * cosLatitude * ol.sphere.NORMAL.radius / 180;
-    projectionUnits = ol.ProjectionUnits.METERS
+    projectionUnits = ol.proj.Units.METERS
   }else {
-    if((projectionUnits == ol.ProjectionUnits.FEET || projectionUnits == ol.ProjectionUnits.METERS) && units == ol.control.ScaleLineUnits.DEGREES) {
+    if((projectionUnits == ol.proj.Units.FEET || projectionUnits == ol.proj.Units.METERS) && units == ol.control.ScaleLineUnits.DEGREES) {
       if(goog.isNull(this.toEPSG4326_)) {
         this.toEPSG4326_ = ol.proj.getTransformFromProjections(projection, ol.proj.get("EPSG:4326"))
       }
       cosLatitude = Math.cos(goog.math.toRadians(this.toEPSG4326_(center)[1]));
       var radius = ol.sphere.NORMAL.radius;
-      if(projectionUnits == ol.ProjectionUnits.FEET) {
+      if(projectionUnits == ol.proj.Units.FEET) {
         radius /= 0.3048
       }
       pointResolution *= 180 / (Math.PI * cosLatitude * radius);
-      projectionUnits = ol.ProjectionUnits.DEGREES
+      projectionUnits = ol.proj.Units.DEGREES
     }else {
       this.toEPSG4326_ = null
     }
   }
-  goog.asserts.assert((units == ol.control.ScaleLineUnits.METRIC || units == ol.control.ScaleLineUnits.IMPERIAL) && projectionUnits == ol.ProjectionUnits.METERS || units == ol.control.ScaleLineUnits.DEGREES && projectionUnits == ol.ProjectionUnits.DEGREES);
+  goog.asserts.assert((units == ol.control.ScaleLineUnits.METRIC || units == ol.control.ScaleLineUnits.IMPERIAL) && projectionUnits == ol.proj.Units.METERS || units == ol.control.ScaleLineUnits.DEGREES && projectionUnits == ol.proj.Units.DEGREES);
   var nominalCount = this.minWidth_ * pointResolution;
   var suffix = "";
   if(units == ol.control.ScaleLineUnits.DEGREES) {
@@ -25421,7 +25463,7 @@ ol.interaction.Select.prototype.select = function(map, featuresByLayer, layers, 
         if(!(featureId in oldFeatureMap)) {
           clone = new ol.Feature(feature.getAttributes());
           clone.setGeometry(feature.getGeometry().clone());
-          clone.setFeatureId(feature.getFeatureId());
+          clone.setId(feature.getId());
           clone.setSymbolizers(feature.getSymbolizers());
           clone.renderIntent = ol.layer.VectorLayerRenderIntent.SELECTED;
           featureMap[featureId] = clone;
@@ -26056,7 +26098,7 @@ ol.parser.GeoJSON.prototype.parseFeature_ = function(json, opt_options) {
   var geomJson = json.geometry, geometry = null, options = opt_options || {};
   var feature = new ol.Feature(json.properties);
   if(goog.isDef(json.id)) {
-    feature.setFeatureId(json.id)
+    feature.setId(json.id)
   }
   if(geomJson) {
     var type = geomJson.type;
@@ -28139,7 +28181,7 @@ ol.parser.KML = function(opt_options) {
         }
         var feature = new ol.Feature(container.properties);
         if(!goog.isNull(id)) {
-          feature.setFeatureId(id)
+          feature.setId(id)
         }
         var geom = track.points[i];
         if(geom) {
@@ -28167,7 +28209,7 @@ ol.parser.KML = function(opt_options) {
         }
         feature = new ol.Feature(container.properties);
         if(!goog.isNull(id)) {
-          feature.setFeatureId(id)
+          feature.setId(id)
         }
         if(container.geometry) {
           sharedVertices = undefined;
@@ -28599,7 +28641,7 @@ ol.parser.KML = function(opt_options) {
     return node
   }, "_feature":function(feature) {
     var node = this.createElementNS("Placemark");
-    var fid = feature.getFeatureId();
+    var fid = feature.getId();
     if(goog.isDef(fid)) {
       node.setAttribute("id", fid)
     }
@@ -28946,7 +28988,7 @@ ol.parser.TopoJSON.prototype.readFeatureFromGeometry_ = function(object, arcs, s
   var feature = new ol.Feature;
   feature.setGeometry(geometry);
   if(goog.isDef(object.id)) {
-    feature.setFeatureId(String(object.id))
+    feature.setId(String(object.id))
   }
   return feature
 };
@@ -29974,7 +30016,7 @@ ol.parser.ogc.GML = function(opt_options) {
     }
     var fid = node.getAttribute("fid") || this.getAttributeNS(node, this.defaultNamespaceURI, "id");
     if(!goog.isNull(fid)) {
-      feature.setFeatureId(fid)
+      feature.setId(fid)
     }
     obj.features.push(feature)
   }, "_geometry":function(node, obj) {
@@ -30044,7 +30086,7 @@ ol.parser.ogc.GML = function(opt_options) {
   }}};
   this.featureNSWiters_ = {"_typeName":function(feature) {
     var node = this.createElementNS("feature:" + this.featureType, this.featureNS);
-    var fid = feature.getFeatureId();
+    var fid = feature.getId();
     if(goog.isDef(fid)) {
       this.setAttributeNS(node, this.defaultNamespaceURI, "fid", fid)
     }
@@ -32000,15 +32042,15 @@ goog.provide("ol.proj.EPSG2056");
 goog.provide("ol.proj.EPSG21781");
 goog.require("goog.asserts");
 goog.require("goog.math");
-goog.require("ol.Projection");
-goog.require("ol.ProjectionUnits");
 goog.require("ol.ellipsoid.BESSEL1841");
 goog.require("ol.proj");
 goog.require("ol.proj.EPSG4326");
+goog.require("ol.proj.Projection");
+goog.require("ol.proj.Units");
 ol.proj.CH = function(options) {
-  goog.base(this, {code:options.code, extent:options.extent, global:false, units:ol.ProjectionUnits.METERS})
+  goog.base(this, {code:options.code, extent:options.extent, global:false, units:ol.proj.Units.METERS})
 };
-goog.inherits(ol.proj.CH, ol.Projection);
+goog.inherits(ol.proj.CH, ol.proj.Projection);
 ol.proj.CH.PHI0 = goog.math.toRadians((3600 * 46 + 60 * 57 + 8.66) / 3600);
 ol.proj.CH.LAMBDA0 = goog.math.toRadians((3600 * 7 + 60 * 26 + 22.5) / 3600);
 ol.proj.CH.ELLIPSOID = ol.ellipsoid.BESSEL1841;
@@ -32404,10 +32446,10 @@ goog.require("goog.asserts");
 goog.require("ol.Attribution");
 goog.require("ol.Extent");
 goog.require("ol.ImageTile");
-goog.require("ol.Projection");
 goog.require("ol.Tile");
 goog.require("ol.TileCache");
 goog.require("ol.TileCoord");
+goog.require("ol.TileLoadFunctionType");
 goog.require("ol.TileState");
 goog.require("ol.TileUrlFunction");
 goog.require("ol.TileUrlFunctionType");
@@ -32418,9 +32460,13 @@ ol.source.TileImage = function(options) {
   goog.base(this, {attributions:options.attributions, extent:options.extent, logo:options.logo, opaque:options.opaque, projection:options.projection, tileGrid:options.tileGrid});
   this.tileUrlFunction = goog.isDef(options.tileUrlFunction) ? options.tileUrlFunction : ol.TileUrlFunction.nullTileUrlFunction;
   this.crossOrigin_ = goog.isDef(options.crossOrigin) ? options.crossOrigin : null;
-  this.tileCache_ = new ol.TileCache
+  this.tileCache_ = new ol.TileCache;
+  this.tileLoadFunction_ = goog.isDef(options.tileLoadFunction) ? options.tileLoadFunction : ol.source.TileImage.defaultTileLoadFunction
 };
 goog.inherits(ol.source.TileImage, ol.source.Tile);
+ol.source.TileImage.defaultTileLoadFunction = function(imageTile, src) {
+  imageTile.getImage().src = src
+};
 ol.source.TileImage.prototype.canExpireCache = function() {
   return this.tileCache_.canExpireCache()
 };
@@ -32435,7 +32481,7 @@ ol.source.TileImage.prototype.getTile = function(z, x, y, projection) {
     goog.asserts.assert(projection);
     var tileCoord = new ol.TileCoord(z, x, y);
     var tileUrl = this.tileUrlFunction(tileCoord, projection);
-    var tile = new ol.ImageTile(tileCoord, goog.isDef(tileUrl) ? ol.TileState.IDLE : ol.TileState.EMPTY, goog.isDef(tileUrl) ? tileUrl : "", this.crossOrigin_);
+    var tile = new ol.ImageTile(tileCoord, goog.isDef(tileUrl) ? ol.TileState.IDLE : ol.TileState.EMPTY, goog.isDef(tileUrl) ? tileUrl : "", this.crossOrigin_, this.tileLoadFunction_);
     this.tileCache_.set(tileCoordKey, tile);
     return tile
   }
@@ -32735,7 +32781,7 @@ ol.source.ImageWMS.prototype.getImage = function(extent, resolution, projection)
 };
 ol.source.ImageWMS.prototype.getFeatureInfoForPixel = function(pixel, map, success, opt_error) {
   var view2D = map.getView().getView2D(), projection = view2D.getProjection(), size = map.getSize(), bottomLeft = map.getCoordinateFromPixel([0, size[1]]), topRight = map.getCoordinateFromPixel([size[0], 0]), extent = [bottomLeft[0], topRight[0], bottomLeft[1], topRight[1]], url = this.imageUrlFunction(extent, size, projection);
-  goog.asserts.assert(goog.isDef(url), "ol.source.ImageWMS#imageUrlFunction does not return a url");
+  goog.asserts.assert(goog.isDef(url), "ol.source.ImageWMS#imageUrlFunction does not return a URL");
   ol.source.wms.getFeatureInfo(url, pixel, this.getFeatureInfoOptions_, success, opt_error)
 };
 ol.source.ImageWMS.prototype.updateParams = function(params) {
@@ -32754,7 +32800,7 @@ ol.source.XYZ = function(options) {
   var projection = options.projection || ol.proj.get("EPSG:3857");
   var maxZoom = goog.isDef(options.maxZoom) ? options.maxZoom : 18;
   var tileGrid = new ol.tilegrid.XYZ({maxZoom:maxZoom});
-  goog.base(this, {attributions:options.attributions, crossOrigin:options.crossOrigin, extent:options.extent, logo:options.logo, projection:projection, tileGrid:tileGrid, tileUrlFunction:ol.TileUrlFunction.nullTileUrlFunction});
+  goog.base(this, {attributions:options.attributions, crossOrigin:options.crossOrigin, extent:options.extent, logo:options.logo, projection:projection, tileGrid:tileGrid, tileLoadFunction:options.tileLoadFunction, tileUrlFunction:ol.TileUrlFunction.nullTileUrlFunction});
   this.tileCoordTransform_ = tileGrid.createTileCoordTransform({extent:options.extent});
   if(goog.isDef(options.tileUrlFunction)) {
     this.setTileUrlFunction(options.tileUrlFunction)
@@ -32922,9 +32968,8 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function() {
   var epsg4326Projection = ol.proj.get("EPSG:4326");
   var extent;
   if(goog.isDef(tileJSON.bounds)) {
-    var epsg4326Extent = [tileJSON.bounds.slice(0, 2), tileJSON.bounds.slice(2)];
     var transform = ol.proj.getTransformFromProjections(epsg4326Projection, this.getProjection());
-    extent = ol.extent.transform(epsg4326Extent, transform);
+    extent = ol.extent.transform(tileJSON.bounds, transform);
     this.setExtent(extent)
   }
   if(goog.isDef(tileJSON.scheme)) {
@@ -33000,7 +33045,7 @@ ol.source.TileWMS = function(options) {
       x = goog.math.modulo(x, numCols);
       tileExtent = tileGrid.getTileCoordExtent(new ol.TileCoord(tileCoord.z, x, tileCoord.y))
     }
-    if(!goog.isNull(extent) && !ol.extent.intersects(tileExtent, extent)) {
+    if(!goog.isNull(extent) && (!ol.extent.intersects(tileExtent, extent) || ol.extent.touches(tileExtent, extent))) {
       return null
     }
     return new ol.TileCoord(tileCoord.z, x, tileCoord.y)
@@ -33017,7 +33062,7 @@ ol.source.TileWMS.prototype.getParams = function() {
 };
 ol.source.TileWMS.prototype.getFeatureInfoForPixel = function(pixel, map, success, opt_error) {
   var coord = map.getCoordinateFromPixel(pixel), view2D = map.getView().getView2D(), projection = view2D.getProjection(), tileGrid = goog.isNull(this.tileGrid) ? ol.tilegrid.getForProjection(projection) : this.tileGrid, tileCoord = tileGrid.getTileCoordForCoordAndResolution(coord, view2D.getResolution()), tileExtent = tileGrid.getTileCoordExtent(tileCoord), offset = map.getPixelFromCoordinate(ol.extent.getTopLeft(tileExtent)), url = this.tileUrlFunction(tileCoord, projection);
-  goog.asserts.assert(goog.isDef(url), "ol.source.TileWMS#tileUrlFunction does not return a url");
+  goog.asserts.assert(goog.isDef(url), "ol.source.TileWMS#tileUrlFunction does not return a URL");
   ol.source.wms.getFeatureInfo(url, [pixel[0] - offset[0], pixel[1] - offset[1]], this.getFeatureInfoOptions_, success, opt_error)
 };
 ol.source.TileWMS.prototype.resetCoordKeyPrefix_ = function() {
@@ -33154,7 +33199,7 @@ ol.source.WMTS = function(options) {
       tmpTileCoord.y = tileCoord.y;
       tileExtent = tileGrid.getTileCoordExtent(tmpTileCoord, tmpExtent)
     }
-    if(!ol.extent.intersects(tileExtent, extent)) {
+    if(!ol.extent.intersects(tileExtent, extent) || ol.extent.touches(tileExtent, extent)) {
       return null
     }
     return new ol.TileCoord(tileCoord.z, x, y)
@@ -33331,14 +33376,12 @@ goog.require("ol.Coordinate");
 goog.require("ol.CoordinateArray");
 goog.require("ol.CoordinateFormatType");
 goog.require("ol.DeviceOrientation");
-goog.require("ol.DeviceOrientation.SUPPORTED");
 goog.require("ol.DeviceOrientationProperty");
 goog.require("ol.Ellipsoid");
 goog.require("ol.Extent");
 goog.require("ol.Feature");
 goog.require("ol.FrameState");
 goog.require("ol.Geolocation");
-goog.require("ol.Geolocation.SUPPORTED");
 goog.require("ol.GeolocationProperty");
 goog.require("ol.IView");
 goog.require("ol.IView2D");
@@ -33364,9 +33407,6 @@ goog.require("ol.OverlayProperty");
 goog.require("ol.Pixel");
 goog.require("ol.PostRenderFunction");
 goog.require("ol.PreRenderFunction");
-goog.require("ol.Projection");
-goog.require("ol.ProjectionLike");
-goog.require("ol.ProjectionUnits");
 goog.require("ol.RendererHint");
 goog.require("ol.RendererHints");
 goog.require("ol.ResolutionConstraint");
@@ -33378,6 +33418,7 @@ goog.require("ol.Sphere");
 goog.require("ol.Tile");
 goog.require("ol.TileCache");
 goog.require("ol.TileCoord");
+goog.require("ol.TileLoadFunctionType");
 goog.require("ol.TilePriorityFunction");
 goog.require("ol.TileQueue");
 goog.require("ol.TileRange");
@@ -33393,7 +33434,6 @@ goog.require("ol.ViewHint");
 goog.require("ol.animation");
 goog.require("ol.array");
 goog.require("ol.canvas");
-goog.require("ol.canvas.SUPPORTED");
 goog.require("ol.control");
 goog.require("ol.control.Attribution");
 goog.require("ol.control.Control");
@@ -33527,25 +33567,28 @@ goog.require("ol.proj.EPSG2056");
 goog.require("ol.proj.EPSG21781");
 goog.require("ol.proj.EPSG3857");
 goog.require("ol.proj.EPSG4326");
+goog.require("ol.proj.Projection");
+goog.require("ol.proj.ProjectionLike");
+goog.require("ol.proj.Units");
 goog.require("ol.proj.common");
 goog.require("ol.renderer.Layer");
 goog.require("ol.renderer.Map");
+goog.require("ol.renderer.canvas");
 goog.require("ol.renderer.canvas.ImageLayer");
 goog.require("ol.renderer.canvas.Layer");
 goog.require("ol.renderer.canvas.Map");
-goog.require("ol.renderer.canvas.SUPPORTED");
 goog.require("ol.renderer.canvas.TileLayer");
 goog.require("ol.renderer.canvas.VectorLayer");
 goog.require("ol.renderer.canvas.VectorRenderer");
+goog.require("ol.renderer.dom");
 goog.require("ol.renderer.dom.ImageLayer");
 goog.require("ol.renderer.dom.Layer");
 goog.require("ol.renderer.dom.Map");
-goog.require("ol.renderer.dom.SUPPORTED");
 goog.require("ol.renderer.dom.TileLayer");
+goog.require("ol.renderer.webgl");
 goog.require("ol.renderer.webgl.ImageLayer");
 goog.require("ol.renderer.webgl.Layer");
 goog.require("ol.renderer.webgl.Map");
-goog.require("ol.renderer.webgl.SUPPORTED");
 goog.require("ol.renderer.webgl.TileLayer");
 goog.require("ol.renderer.webgl.VectorLayer2");
 goog.require("ol.renderer.webgl.map.shader.Color");
@@ -33609,7 +33652,6 @@ goog.require("ol.tilegrid.XYZ");
 goog.require("ol.tilejson");
 goog.require("ol.vec.Mat4");
 goog.require("ol.webgl");
-goog.require("ol.webgl.SUPPORTED");
 goog.require("ol.webgl.WebGLContextEventType");
 goog.require("ol.webgl.shader");
 goog.provide("ol.AttributionOptions");
