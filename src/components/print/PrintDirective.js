@@ -251,7 +251,7 @@
                 var enc = $scope.encodeLayer(layer, proj);
                 encLayers.push(enc.layer);
                 if (enc.legend) {
-                    encLegens = encLegends || [];
+                    encLegends = encLegends || [];
                     encLegends.push(enc.legend);
                 }
             });
