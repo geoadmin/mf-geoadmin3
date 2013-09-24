@@ -14,7 +14,9 @@ class MapNameValidation(object):
     def hasMap(self, db, mapName):
         from chsdi.models.bod import Topics
         availableMaps = [q[0] for q in db.query(Topics.id)]
+        # FIXME add this info in DB
         availableMaps.append('all')
+        availableMaps.append('api')
         if mapName not in availableMaps:
             raise exc.HTTPBadRequest('The map you provided does not exist')
 
