@@ -124,7 +124,7 @@ module.controller('GaMainController',
       });
 
       $rootScope.$on('gaTimeSelectorChange', function(event, year) {
-        $rootScope.time = year;
+        $scope.time = year;
       });
 
       $scope.deviceSwitcherHref = gaPermalink.getHref({ mobile: mobile });
