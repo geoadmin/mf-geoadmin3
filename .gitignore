@@ -12,7 +12,6 @@ buildout/bin/
 buildout/develop-eggs/
 buildout/eggs/
 buildout/parts/
-print/*.yaml
 MANIFEST
 .coverage
 chsdi.egg-info
