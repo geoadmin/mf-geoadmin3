@@ -5,8 +5,8 @@
         ['pascalprecht.translate']);
 
     module.controller('GaPrintDirectiveController',
-      ['$scope', '$http', '$translate', 'gaLayers',
-      function($scope, $http, $translate, gaLayers) {
+      ['$scope', '$http', '$translate', 'gaLayers', 'gaPermalink',
+      function($scope, $http, $translate, gaLayers, gaPermalink) {
 
       $scope.updatePrintConfig = function() {
           var printPath = $scope.options.printPath;
@@ -186,15 +186,23 @@
             var configLang = 'lang' + lang;
             var defaultPage = {};
             defaultPage['lang' + lang] = true;
+            var encodedPermalinkHref =
+                        encodeURIComponent(gaPermalink.getHref());
+
+            var qrcodeurl = $scope.options.serviceUrl +
+                       '/qrcodegenerator?url='+ encodedPermalinkHref;
 
             var encLayers = [];
-            var encLegends = [];
+            var encLegends;
 
             var layers = this.map.getLayers();
             angular.forEach(layers, function(layer) {
                 var enc = $scope.encodeLayer(layer, proj);
                 encLayers.push(enc.layer);
-                encLegends.push(enc.legend);
+                if (enc.legend) {
+                    encLegens = encLegends || [];
+                    encLegends.push(enc.legend);
+                }
             });
             // scale = resolution * inches per map unit (m) * dpi
             var scale = parseInt(view.getResolution() * 39.37 * 254);
@@ -212,6 +220,7 @@
                 layers: encLayers,
                 legends: encLegends,
                 enhableLegends: true,
+                qrcodeurl: qrcodeurl,
                 pages: [
                 angular.extend({
                     center: view.getCenter(),
