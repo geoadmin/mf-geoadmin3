@@ -171,13 +171,13 @@
                         <!-- We can't use translate directive for these links, see:
                         https://github.com/PascalPrecht/angular-translate/issues/129 -->
                         <li>
-                          <a href="" ng-click="importWmsPopupShown = !importWmsPopupShown">
+                          <a href="" ng-click="globals.importWmsPopupShown = !globals.importWmsPopupShown">
                             <i class="icon-external-link ga-icon-separator"></i>
                             <span translate>wms</span>
                           </a>
                         </li>
                         <li>
-                          <a href=""  ng-click="importKmlPopupShown = !importKmlPopupShown">
+                          <a href=""  ng-click="globals.importKmlPopupShown = !globals.importKmlPopupShown">
                             <i class="icon-file ga-icon-separator"></i>
                             <span translate>kml</span>
                           </a>
@@ -215,18 +215,7 @@
                 </li>
 
 % if device == 'desktop':
-                <li><!-- Feature Tree / Object information -->
-                  <a id="featuretree-link" class="accordion-toggle collapsed" data-toggle="collapse" href="#featuretree">
-                    <i class="visible-collapsed icon-plus"></i>
-                    <i class="hidden-collapsed icon-minus"></i>
-                    <span translate>object_information</span>
-                  </a>
-                  <div id="featuretree" class="collapse">
-                    <div class="panel-body" ng-controller="GaFeaturetreeController">
-                      <div ga-featuretree ga-featuretree-options="options" ga-featuretree-map="map"></div>
-                    </div>
-                  </div>
-                </li>
+                <li ga-featuretree ga-featuretree-options="featureTreeOptions" ga-featuretree-map="map"></li>
 % endif
               </ul>
             </div>
@@ -373,7 +362,7 @@
     </div>
 
     <!-- Popup: Import WMS -->
-    <div ga-popup="importWmsPopupShown"
+    <div ga-popup="globals.importWmsPopupShown"
       ga-popup-options="{title:'import_wms'}"
       ga-draggable=".ga-popup-title"
       id="import-wms-popup" >
@@ -388,7 +377,7 @@
     </div> <!-- end Import WMS -->
 
     <!-- Popup: Import KML -->
-    <div ga-popup="importKmlPopupShown"
+    <div ga-popup="globals.importKmlPopupShown"
       ga-popup-options="{title:'import_kml'}"
       ga-draggable=".ga-popup-title"
       id="import-kml-popup" >
