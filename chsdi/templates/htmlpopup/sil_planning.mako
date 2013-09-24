@@ -1,18 +1,8 @@
 <%inherit file="base.mako"/>
 
-#<%def name="preview()">
-#   % if lang == 'de' or lang == 'rm' or lang == 'en':
-#   ${c['attributes']['plname_de'] or '-'}
-#   % elif lang == 'fr':
-#   ${c['attributes']['plname_fr'] or '-'}
-#   % elif lang == 'it':
-#   ${c['attributes']['plname_it'] or '-'}
-#   % endif
-#</%def>
-
 <%def name="table_body(c, lang)">
 <% c[stable_id] = True %>
-    <tr><td width="150">${_('tt_sachplan_planning_name')}</td>    <td>${c['value']}</td></tr>
+    <tr><td width="150">${_('tt_sachplan_planning_name')}</td>    <td>${c['attributes']['facname_de']}</td></tr>
     <tr><td width="150">${_('tt_sachplan_planning_typ')}</td>
       % if lang == 'de' or lang == 'rm' or lang == 'en':
            <td>${c['attributes']['measuretype_text_de'] or '-'}</td>
@@ -60,7 +50,7 @@
     </tr>
     <tr><td width="150">${_('tt_sachplan_planning_ueberanlage')}</td>
       % if lang == 'de' or lang == 'rm' or lang == 'en':
-           <td>${c['value']}</td>
+           <td>${c['attributes']['facname_de']}</td>
       % elif lang == 'fr':
            <td>${c['attributes']['facname_fr'] or '-'}</td>
           % elif lang == 'it':
