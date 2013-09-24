@@ -905,58 +905,115 @@ msgstr ""
 msgid "ch.swisstopo"
 msgstr ""
 
+msgid "ch.swisstopo.url"
+msgstr ""
+
 msgid "ch.kanton.av"
+msgstr ""
+
+msgid "ch.kanton.av.url"
 msgstr ""
 
 msgid "ch.babs"
 msgstr ""
 
+msgid "ch.babs.url"
+msgstr ""
+
 msgid "ch.bfs"
+msgstr ""
+
+msgid "ch.bfs.url"
 msgstr ""
 
 msgid "ch.bfe"
 msgstr ""
 
+msgid "ch.bfe.url"
+msgstr ""
+
 msgid "ch.bazl"
+msgstr ""
+
+msgid "ch.bazl.url"
 msgstr ""
 
 msgid "ch.swisstopo.kt"
 msgstr ""
 
+msgid "ch.swisstopo.kt.url"
+msgstr ""
+
 msgid "ch.bafu"
+msgstr ""
+
+msgid "ch.bafu.url"
 msgstr ""
 
 msgid "ch.kt.bafu"
 msgstr ""
 
+msgid "ch.kt.bafu.url"
+msgstr ""
+
 msgid "ch.bav"
+msgstr ""
+
+msgid "ch.bav.url"
 msgstr ""
 
 msgid "ch.are"
 msgstr ""
 
+msgid "ch.are.url"
+msgstr ""
+
 msgid "ch.bakom"
+msgstr ""
+
+msgid "ch.bakom.url"
 msgstr ""
 
 msgid "ch.astra"
 msgstr ""
 
+msgid "ch.astra.url"
+msgstr ""
+
 msgid "ch.blw"
+msgstr ""
+
+msgid "ch.blw.url"
 msgstr ""
 
 msgid "ch.ensi"
 msgstr ""
 
+msgid "ch.ensi.url"
+msgstr ""
+
 msgid "ch.vbs"
+msgstr ""
+
+msgid "ch.vbs.url"
 msgstr ""
 
 msgid "ch.swisstopo-vd"
 msgstr ""
 
+msgid "ch.swisstopo-vd.url"
+msgstr ""
+
 msgid "ch.bak"
 msgstr ""
 
+msgid "ch.bak.url"
+msgstr ""
+
 msgid "ch.bag"
+msgstr ""
+
+msgid "ch.bag.url"
 msgstr ""
 
 msgid "ivs_nat_linienfuehrung"
