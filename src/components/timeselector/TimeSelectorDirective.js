@@ -91,22 +91,22 @@
             }
           });
         }
+        return magnetizeCurrentYear;
+      };
 
-        // If the currentYear value is not available anymore we set the closest
-        // value
-        if (magnetizeCurrentYear) {
-          var minGap = null;
-          for (var i = 0, length = $scope.availableYears.length; i < length;
-              i++) {
-            var elt = $scope.availableYears[i];
-            var gap = elt.value - $scope.currentYear;
-            minGap = (!minGap || (Math.abs(gap) < Math.abs(minGap))) ?
-                gap : minGap;
-          }
+      // Set the currentYear to the closest available year
+      $scope.magnetize = function() {
+        var minGap = null;
+        for (var i = 0, length = $scope.availableYears.length; i < length;
+            i++) {
+          var elt = $scope.availableYears[i];
+          var gap = elt.value - $scope.currentYear;
+          minGap = (!minGap || (Math.abs(gap) < Math.abs(minGap))) ?
+              gap : minGap;
+        }
 
-          if (minGap) {
-            $scope.currentYear += minGap;
-          }
+        if (minGap) {
+          $scope.currentYear += minGap;
         }
       };
 
@@ -246,7 +246,9 @@
             }
 
             if (scope.isActive) {
-              scope.updateDatesAvailable();
+              if (scope.updateDatesAvailable()) {
+                scope.magnetize();
+              }
             }
 
             if (!enabled) {
@@ -276,7 +278,15 @@
                   scope.currentYear = !isNaN(permalinkValue) ?
                       permalinkValue : scope.maxYear;
                 }
-                scope.updateDatesAvailable();
+
+                // If the currentYear has not changed we force the refresh of
+                // layers
+                if (scope.updateDatesAvailable()) {
+                  scope.magnetize();
+                } else {
+                  applyNewYear(scope.currentYear);
+                }
+
               } else {
                 // Here we don't set currentYear as undefined to keep the last
                 // value selected by the user.
