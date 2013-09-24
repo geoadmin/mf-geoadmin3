@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from pyramid.view import view_config
+from pyramid.httpexceptions import HTTPNotFound
 
 from chsdi.models.bod import get_catalog_model
 from chsdi.lib.helpers import locale_negotiator
@@ -24,6 +25,8 @@ class CatalogService(MapNameValidation):
             .filter(model.topic.ilike('%%%s%%' % self.mapName))\
             .order_by(model.depth)\
             .order_by(model.orderKey).all()
+        if len(rows) == 0:
+            raise HTTPNotFound('No catalog with id %s is available' % self.mapName)
 
         return {'results': self.tree(rows)}
 
