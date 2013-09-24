@@ -40,11 +40,18 @@
             var layerConfig = gaLayers.getLayer(layer.get('id'));
 
             if (src.constructor === ol.source.WMTS) {
-                encLayer = $scope.encoders.layers['WMTS'].call(this,
-                                                  layer, layerConfig);
+               encLayer = $scope.encoders.layers['WMTS'].call(this,
+                   layer, layerConfig);
             } else if (src.constructor === ol.source.ImageWMS) {
-                encLayer = $scope.encoders.layers['WMS'].call(this,
-                                                  layer, layerConfig);
+               encLayer = $scope.encoders.layers['WMS'].call(this,
+                   layer, layerConfig);
+            } else if (layer.constructor === ol.layer.Vector) {
+               var features = layer.getFeaturesObjectForExtent(ext, proj);
+
+               if (features) {
+                   encLayer = $scope.encoders.layers['Vector'].call(this,
+                       layer, features);
+               }
             }
 
             if ($scope.options.legend && layerConfig.haslegend) {
@@ -64,6 +71,50 @@
                           opacity: layer.getOpacity()
                     };
 
+                    return enc;
+                },
+                'Vector': function(layer, features) {
+                    var enc = $scope.encoders.
+                        layers['Layer'].call(this, layer);
+                    var format = new ol.parser.GeoJSON();
+                    var encStyles = {};
+                    var encFeatures = [];
+                    var stylesDict = {};
+                    var styleId = 1;
+
+                    angular.forEach(features, function(feature) {
+                        var encJSON = JSON.parse(format.write(feature));
+                        encJSON.properties._gx_style = styleId;
+                        encFeatures.push(encJSON);
+                        //FIXME very naive way to add styles
+                        var symbolizer = feature.getSymbolizers();
+                        if (symbolizer.length == 3) {
+                            var shpSymb = symbolizer[0];
+                            var fillSymb = symbolizer[1];
+                            var strokeSymb = symbolizer[2];
+                            var encStyle = {
+                              'strokeColor': shpSymb.getColor().getValue(),
+                              'strokeOpacity': shpSymb.getOpacity().getValue(),
+                              'strokeWidth': shpSymb.getWidth().getValue(),
+                              'fillOpacity': fillSymb.getOpacity().getValue(),
+                              'fillColor': fillSymb.getColor().getValue(),
+                              'id': styleId
+                            };
+                            encStyles[styleId] = encStyle;
+                            styleId++;
+                        }
+                    });
+                    angular.extend(enc, {
+                        type: 'Vector',
+                        styles: encStyles,
+                        styleProperty: '_gx_style',
+                        geoJson: {
+                            type: 'FeatureCollection',
+                            features: encFeatures
+                        },
+                        name: layer.get('id'),
+                        opacity: (layer.opacity != null) ? layer.opacity : 1.0
+                    });
                     return enc;
                 },
                 'WMS': function(layer, config) {
@@ -190,7 +241,7 @@
                         encodeURIComponent(gaPermalink.getHref());
 
             var qrcodeurl = $scope.options.serviceUrl +
-                       '/qrcodegenerator?url='+ encodedPermalinkHref;
+                       '/qrcodegenerator?url=' + encodedPermalinkHref;
 
             var encLayers = [];
             var encLegends;
