@@ -102,6 +102,9 @@ msgstr "Reisezeit zu Zentren MIV 2005"
 msgid "ch.are.reisezeit_oev-2005"
 msgstr "Reisezeit zu Zentren ÖV 2005"
 
+msgid "ch.are.url"
+msgstr "http://www.are.admin.ch/index.html?lang=de"
+
 msgid "ch.astra"
 msgstr "ASTRA"
 
@@ -132,11 +135,17 @@ msgstr "Verkehrszählung (Regional)"
 msgid "ch.astra.strassenverkehrszaehlung_messstellen-uebergeordnet"
 msgstr "Verkehrszählung (Übergeordnet)"
 
+msgid "ch.astra.url"
+msgstr "http://www.astra.admin.ch/index.html?lang=de"
+
 msgid "ch.babs"
 msgstr "BABS"
 
 msgid "ch.babs.kulturgueter"
 msgstr "Kulturgüterschutz Inventar"
+
+msgid "ch.babs.url"
+msgstr "http://www.bevoelkerungsschutz.admin.ch/internet/bs/de/home/das_babs.html"
 
 msgid "ch.bafu"
 msgstr "BAFU"
@@ -381,6 +390,9 @@ msgstr "Schadstoff-Freisetzungen (SwissPRTR)"
 msgid "ch.bafu.unesco-weltnaturerbe"
 msgstr "UNESCO-Welterbe Naturstätten"
 
+msgid "ch.bafu.url"
+msgstr "http://www.bafu.admin.ch/index.html?lang=de"
+
 msgid "ch.bafu.waldschadenflaechen-lothar"
 msgstr "Sturmschaden Lothar"
 
@@ -414,6 +426,9 @@ msgstr "Wildruhezonen - Portal"
 msgid "ch.bag"
 msgstr "BAG"
 
+msgid "ch.bag.url"
+msgstr "http://www.bag.admin.ch/index.html?lang=de"
+
 msgid "ch.bag.zecken-fsme-faelle"
 msgstr "FSME - Lokale Häufungen"
 
@@ -431,6 +446,9 @@ msgstr "Bundesinventar ISOS"
 
 msgid "ch.bak.schutzgebiete-unesco_weltkulturerbe"
 msgstr "UNESCO-Welterbe Kulturstätten"
+
+msgid "ch.bak.url"
+msgstr "http://www.bak.admin.ch/index.html?lang=de"
 
 msgid "ch.bakom"
 msgstr "BAKOM"
@@ -495,6 +513,9 @@ msgstr "Upload ≥ 20 Mbit/s"
 msgid "ch.bakom.uplink50"
 msgstr "Upload ≥ 50 Mbit/s"
 
+msgid "ch.bakom.url"
+msgstr "http://www.bakom.admin.ch/index.html"
+
 msgid "ch.bakom.verfuegbarkeit-hdtv"
 msgstr "HDTV-Verfügbarkeit Festnetz"
 
@@ -512,6 +533,9 @@ msgstr "Altlasten/belastete Standorte öV"
 
 msgid "ch.bav.laerm-emissionplan_eisenbahn_2015"
 msgstr "Emissionsplan Eisenbahn  2015"
+
+msgid "ch.bav.url"
+msgstr "http://www.bav.admin.ch/?lang=de"
 
 msgid "ch.bazl"
 msgstr "BAZL"
@@ -543,6 +567,9 @@ msgstr "SP Infrastruktur Luftfahrt"
 msgid "ch.bazl.segelflugkarte"
 msgstr "Segelflugkarte"
 
+msgid "ch.bazl.url"
+msgstr "http://www.bazl.admin.ch/index.html?lang=de"
+
 msgid "ch.bfe"
 msgstr "BFE"
 
@@ -570,6 +597,9 @@ msgstr "Statistik Wasserkraft"
 msgid "ch.bfe.stauanlagen-bundesaufsicht"
 msgstr "Stauanlagen"
 
+msgid "ch.bfe.url"
+msgstr "http://www.bfe.admin.ch/index.html?lang=de"
+
 msgid "ch.bfs"
 msgstr "BFS"
 
@@ -587,6 +617,9 @@ msgstr "Waldmischungsgrad 1990/1992"
 
 msgid "ch.bfs.gebaeude_wohnungs_register"
 msgstr "Gebäude- und Wohnungsregister"
+
+msgid "ch.bfs.url"
+msgstr "http://www.bfs.admin.ch/bfs/portal/de/index.html"
 
 msgid "ch.blw"
 msgstr "BLW"
@@ -631,7 +664,7 @@ msgid "ch.blw.erosion-mit_bergzonen"
 msgstr "Erosionsrisiko qualitativ 2"
 
 msgid "ch.blw.hang_steillagen"
-msgstr "Hang- und Steillagen"
+msgstr "Hanglagen"
 
 msgid "ch.blw.klimaeignung-futterbau"
 msgstr "Klimaeignung Futterbau"
@@ -666,6 +699,9 @@ msgstr "Niederschlagshaushalt"
 msgid "ch.blw.steil_terrassenlagen_rebbau"
 msgstr "Rebflächen in Hanglagen"
 
+msgid "ch.blw.url"
+msgstr "http://www.blw.admin.ch/index.html?lang=de"
+
 msgid "ch.blw.ursprungsbezeichnungen-fleisch"
 msgstr "GGA Fleischware"
 
@@ -681,11 +717,18 @@ msgstr "GUB Spirituosen"
 msgid "ch.ensi"
 msgstr "ENSI"
 
+#. TODO
+msgid "ch.ensi.url"
+msgstr "ch.ensi.url"
+
 msgid "ch.ensi.zonenplan-notfallschutz-kernanlagen"
 msgstr "Zonenpläne für den Notfallschutz"
 
 msgid "ch.kanton.av"
 msgstr "Amtliche Vermessung Schweiz / FL"
+
+msgid "ch.kanton.av.url"
+msgstr "http://www.cadastre.ch/internet/cadastre/de/home/products/webmap/cwm.html"
 
 msgid "ch.kantone.cadastralwebmap-farbe"
 msgstr "CadastralWebMap"
@@ -695,6 +738,9 @@ msgstr "CadastralWebMap"
 
 msgid "ch.kt.bafu"
 msgstr "Kt. [BAFU]"
+
+msgid "ch.kt.bafu.url"
+msgstr "http://www.bafu.admin.ch/index.html?lang=de"
 
 msgid "ch.swisstopo"
 msgstr "swisstopo"
@@ -726,6 +772,9 @@ msgstr "PLZ und Ortschaften"
 
 msgid "ch.swisstopo-vd.spannungsarme-gebiete"
 msgstr "Spannungsarme Gebiete"
+
+msgid "ch.swisstopo-vd.url"
+msgstr "http://www.cadastre.ch"
 
 msgid "ch.swisstopo.dreiecksvermaschung"
 msgstr "LV95 Dreiecksvermaschung"
@@ -867,6 +916,9 @@ msgstr "LV95 Koordinatenänderung"
 msgid "ch.swisstopo.kt"
 msgstr "swisstopo, Kt."
 
+msgid "ch.swisstopo.kt.url"
+msgstr "http://www.swisstopo.admin.ch/internet/swisstopo/de/home/swisstopo/org/cartography.html"
+
 msgid "ch.swisstopo.pixelkarte-farbe"
 msgstr "Karte farbig"
 
@@ -939,6 +991,9 @@ msgstr "LV95 Transformationsgenauigkeit"
 msgid "ch.swisstopo.treasurehunt"
 msgstr "Schatzkarte"
 
+msgid "ch.swisstopo.url"
+msgstr "http://www.swisstopo.admin.ch/internet/swisstopo/de/home.html"
+
 msgid "ch.swisstopo.vec200-adminboundaries-protectedarea"
 msgstr "Schutzgebiete VECTOR200"
 
@@ -1010,6 +1065,9 @@ msgstr "VBS"
 
 msgid "ch.vbs.territorialregionen"
 msgstr "Territorialregionen"
+
+msgid "ch.vbs.url"
+msgstr "http://www.vbs.admin.ch/internet/vbs/de/home.html"
 
 msgid "flaeche_ha"
 msgstr "Fläche [ha]"

@@ -73,7 +73,7 @@ msgid "ch.are.belastung-gueterverkehr-bahn-2008"
 msgstr "Freight traffic 2008"
 
 msgid "ch.are.belastung-gueterverkehr-strasse-2008"
-msgstr "Schwerer Güterverkehr 2008"
+msgstr "Heavy goods traffic 2008"
 
 msgid "ch.are.belastung-personenverkehr-bahn-2008"
 msgstr "Passenger traffic 2008"
@@ -101,6 +101,9 @@ msgstr "Reisezeit zu Zentren mit dem MIV 2005"
 
 msgid "ch.are.reisezeit_oev-2005"
 msgstr "Reisezeit zu Zentren ÖV 2005"
+
+msgid "ch.are.url"
+msgstr "http://www.are.admin.ch/index.html?lang=en"
 
 msgid "ch.astra"
 msgstr "FEDRO"
@@ -132,11 +135,17 @@ msgstr "Traffic counting locations local"
 msgid "ch.astra.strassenverkehrszaehlung_messstellen-uebergeordnet"
 msgstr "Traffic counting locations principal"
 
+msgid "ch.astra.url"
+msgstr "http://www.astra.admin.ch/index.html?lang=en"
+
 msgid "ch.babs"
 msgstr "UFPP"
 
 msgid "ch.babs.kulturgueter"
 msgstr "Protection of cultural property inventory"
+
+msgid "ch.babs.url"
+msgstr "http://www.bevoelkerungsschutz.admin.ch/internet/bs/en/home/das_babs.html"
 
 msgid "ch.bafu"
 msgstr "FOEN"
@@ -381,6 +390,9 @@ msgstr "Pollutant releases (SwissPRTR)"
 msgid "ch.bafu.unesco-weltnaturerbe"
 msgstr "UNESCO World natural heritage"
 
+msgid "ch.bafu.url"
+msgstr "http://www.bafu.admin.ch/index.html?lang=en"
+
 msgid "ch.bafu.waldschadenflaechen-lothar"
 msgstr "Lothar storm damage"
 
@@ -414,6 +426,9 @@ msgstr "Wildlife sanctuary zones - portal"
 msgid "ch.bag"
 msgstr "FOPH"
 
+msgid "ch.bag.url"
+msgstr "http://www.bag.admin.ch/index.html?lang=en"
+
 msgid "ch.bag.zecken-fsme-faelle"
 msgstr "TBE: cluster"
 
@@ -431,6 +446,9 @@ msgstr "Federal Inventory ISOS"
 
 msgid "ch.bak.schutzgebiete-unesco_weltkulturerbe"
 msgstr "UNESCO World cultural heritage"
+
+msgid "ch.bak.url"
+msgstr "http://www.bak.admin.ch/index.html?lang=en"
 
 msgid "ch.bakom"
 msgstr "OFCOM"
@@ -495,6 +513,9 @@ msgstr "Uploqe ≥ 20 Mbit/s"
 msgid "ch.bakom.uplink50"
 msgstr "Upload ≥ 50 Mbit/s"
 
+msgid "ch.bakom.url"
+msgstr "http://www.bakom.admin.ch/index.html"
+
 msgid "ch.bakom.verfuegbarkeit-hdtv"
 msgstr "Availability HDTV fixed netw."
 
@@ -512,6 +533,9 @@ msgstr "Polluted sites - pub. transp."
 
 msgid "ch.bav.laerm-emissionplan_eisenbahn_2015"
 msgstr "Emissions Plan 2015"
+
+msgid "ch.bav.url"
+msgstr "http://www.bav.admin.ch/?lang=en"
 
 msgid "ch.bazl"
 msgstr "FOCA"
@@ -543,6 +567,9 @@ msgstr "SP aeronautical infrastructure"
 msgid "ch.bazl.segelflugkarte"
 msgstr "Glider Chart"
 
+msgid "ch.bazl.url"
+msgstr "http://www.bazl.admin.ch/index.html?lang=en"
+
 msgid "ch.bfe"
 msgstr "SFOE"
 
@@ -570,6 +597,9 @@ msgstr "Hydropower statistics"
 msgid "ch.bfe.stauanlagen-bundesaufsicht"
 msgstr "Dam"
 
+msgid "ch.bfe.url"
+msgstr "http://www.bfe.admin.ch/index.html?lang=en"
+
 msgid "ch.bfs"
 msgstr "FSO"
 
@@ -587,6 +617,9 @@ msgstr "Mixture of forests 1990/1992"
 
 msgid "ch.bfs.gebaeude_wohnungs_register"
 msgstr "Register of Buildings and Dwellings"
+
+msgid "ch.bfs.url"
+msgstr "http://www.bfs.admin.ch/bfs/portal/en/index.html"
 
 msgid "ch.blw"
 msgstr "FOAG"
@@ -666,6 +699,9 @@ msgstr "Rainfall"
 msgid "ch.blw.steil_terrassenlagen_rebbau"
 msgstr "Viticulture in steep areas"
 
+msgid "ch.blw.url"
+msgstr "http://www.blw.admin.ch/index.html?lang=en"
+
 msgid "ch.blw.ursprungsbezeichnungen-fleisch"
 msgstr "PGI meat products"
 
@@ -681,11 +717,18 @@ msgstr "PDO spirits"
 msgid "ch.ensi"
 msgstr "ENSI"
 
+#. TODO
+msgid "ch.ensi.url"
+msgstr "ch.ensi.url"
+
 msgid "ch.ensi.zonenplan-notfallschutz-kernanlagen"
 msgstr "Plans for Emergency protection"
 
 msgid "ch.kanton.av"
 msgstr "Cadastral Surveying Switzerland / FL"
+
+msgid "ch.kanton.av.url"
+msgstr "http://www.cadastre.ch/internet/cadastre/de/home/products/webmap/cwm.html"
 
 msgid "ch.kantone.cadastralwebmap-farbe"
 msgstr "CadastralWebMap"
@@ -695,6 +738,9 @@ msgstr "CadastralWebMap"
 
 msgid "ch.kt.bafu"
 msgstr "ct. [FOEN]"
+
+msgid "ch.kt.bafu.url"
+msgstr "http://www.bafu.admin.ch/index.html?lang=en"
 
 msgid "ch.swisstopo"
 msgstr "swisstopo"
@@ -726,6 +772,9 @@ msgstr "ZIP and locations"
 
 msgid "ch.swisstopo-vd.spannungsarme-gebiete"
 msgstr "Low distortion area"
+
+msgid "ch.swisstopo-vd.url"
+msgstr "http://www.cadastre.ch"
 
 msgid "ch.swisstopo.dreiecksvermaschung"
 msgstr "LV95 Triangular network"
@@ -867,6 +916,9 @@ msgstr "LV95 Coordinate changes"
 msgid "ch.swisstopo.kt"
 msgstr "swisstopo, ct."
 
+msgid "ch.swisstopo.kt.url"
+msgstr "http://www.swisstopo.admin.ch/internet/swisstopo/en/home/swisstopo/org/cartography.html"
+
 msgid "ch.swisstopo.pixelkarte-farbe"
 msgstr "Color map"
 
@@ -939,6 +991,9 @@ msgstr "LV95 Transformation accuracy"
 msgid "ch.swisstopo.treasurehunt"
 msgstr "Treasurehunt"
 
+msgid "ch.swisstopo.url"
+msgstr "http://www.swisstopo.admin.ch/internet/swisstopo/en/home.html"
+
 msgid "ch.swisstopo.vec200-adminboundaries-protectedarea"
 msgstr "Protected Areas VECTOR200"
 
@@ -1010,6 +1065,9 @@ msgstr "DDPS"
 
 msgid "ch.vbs.territorialregionen"
 msgstr "Territorial regions"
+
+msgid "ch.vbs.url"
+msgstr "http://www.vbs.admin.ch/internet/vbs/en/home.html"
 
 msgid "flaeche_ha"
 msgstr "Area [ha]"
