@@ -9,6 +9,10 @@ class TestMapServiceView(TestsBase):
         resp = self.testapp.get('/rest/services/blw/MapServer', status=200)
         self.failUnless(resp.content_type == 'application/json')
 
+    def test_metadata_no_parameters_topic_all(self):
+        resp = self.testapp.get('/rest/services/all/MapServer', status=200)
+        self.failUnless(resp.content_type == 'application/json')
+
     def test_metadata_with_searchtext(self):
         resp = self.testapp.get('/rest/services/blw/MapServer', params={'searchText': 'wasser'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
@@ -50,9 +54,14 @@ class TestMapServiceView(TestsBase):
         resp = self.testapp.get('/rest/services/ech/MapServer/identify', params=params, status=200)
         self.failUnless(resp.content_type == 'application/json')
 
+    def test_identify_valid_topic_all(self):
+        params = {'geometry': '548945.5,147956,549402,148103.5', 'geometryType': 'esriGeometryEnvelope', 'imageDisplay': '500,600,96', 'mapExtent': '548945.5,147956,549402,148103.5', 'tolerance': '1', 'layers': 'all'}
+        resp = self.testapp.get('/rest/services/ech/MapServer/identify', params=params, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+
     def test_identify_valid_with_callback(self):
         params = {'geometry': '548945.5,147956,549402,148103.5', 'geometryType': 'esriGeometryEnvelope', 'imageDisplay': '500,600,96', 'mapExtent': '548945.5,147956,549402,148103.5', 'tolerance': '1', 'layers': 'all', 'callback': 'cb'}
-        resp = self.testapp.get('/rest/services/ech/MapServer/identify', params=params, status=200)
+        resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=200)
         self.failUnless(resp.content_type == 'text/javascript')
         resp.mustcontain('cb({')
 
@@ -91,6 +100,13 @@ class TestMapServiceView(TestsBase):
         self.failUnless('geometry' in resp.json['feature'])
         self.failUnless(resp.json['feature']['id'] == 362)
 
+    def test_getfeature_valid_topic_all(self):
+        resp = self.testapp.get('/rest/services/all/MapServer/ch.bafu.bundesinventare-bln/362', status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless('attributes' in resp.json['feature'])
+        self.failUnless('geometry' in resp.json['feature'])
+        self.failUnless(resp.json['feature']['id'] == 362)
+
     def test_getfeature_geojson(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362', params={'geometryFormat': 'geojson'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
@@ -108,12 +124,22 @@ class TestMapServiceView(TestsBase):
         self.failUnless(resp.content_type == 'text/html')
         resp.mustcontain('<table')
 
+    def test_gethtmlpopup_valid_topic_all(self):
+        resp = self.testapp.get('/rest/services/all/MapServer/ch.bafu.bundesinventare-bln/362/htmlpopup', status=200)
+        self.failUnless(resp.content_type == 'text/html')
+        resp.mustcontain('<table')
+
     def test_gethtmlpopup_valid_with_callback(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362/htmlpopup', params={'callback': 'cb'}, status=200)
         self.failUnless(resp.content_type == 'application/javascript')
 
     def test_getlegend_valid(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/getlegend', status=200)
+        self.failUnless(resp.content_type == 'text/html')
+        resp.mustcontain('<div class="legend_header">')
+
+    def test_getlegend_valid_all(self):
+        resp = self.testapp.get('/rest/services/all/MapServer/ch.bafu.bundesinventare-bln/getlegend', status=200)
         self.failUnless(resp.content_type == 'text/html')
         resp.mustcontain('<div class="legend_header">')
 
@@ -126,6 +152,15 @@ class TestMapServiceView(TestsBase):
 
     def test_layersconfig_valid(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/layersconfig', status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless('ch.swisstopo.pixelkarte-farbe' in resp.json['layers'])
+        self.failUnless('attribution' in resp.json['layers']['ch.swisstopo.pixelkarte-farbe'])
+        self.failUnless('label' in resp.json['layers']['ch.swisstopo.pixelkarte-farbe'])
+        self.failUnless('timestamps' in resp.json['layers']['ch.swisstopo.pixelkarte-farbe'])
+        self.failUnless('background' in resp.json['layers']['ch.swisstopo.pixelkarte-farbe'])
+
+    def test_layersconfig_valid_topic_all(self):
+        resp = self.testapp.get('/rest/services/all/MapServer/layersconfig', status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless('ch.swisstopo.pixelkarte-farbe' in resp.json['layers'])
         self.failUnless('attribution' in resp.json['layers']['ch.swisstopo.pixelkarte-farbe'])
