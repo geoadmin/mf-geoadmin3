@@ -26,11 +26,9 @@ def initialize_sql(settings):
 
 def register(name, klass):
     name = unicode(name)
-    if name not in bodmap:
-        bodmap[name] = []
-        bodmap[name].append(klass)
-        if hasattr(klass, '__esriId__'):
-            esrimap[klass.__esriId__] = name
+    bodmap.setdefault(name, []).append(klass)
+    if hasattr(klass, '__esriId__'):
+        esrimap[klass.__esriId__] = name
 
 
 def models_from_bodid(bodid):
