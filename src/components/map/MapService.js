@@ -180,7 +180,8 @@
                     },
                     attributions: [
                       getAttribution(layer.attribution)
-                    ]
+                    ],
+                    ratio: 1
                   })
                 });
               }
