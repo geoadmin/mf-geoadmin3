@@ -8,7 +8,7 @@
           {{($last) ? 'last ' : ''}}
           {{(data.minor) ? 'minor' : ''}} 
           {{(data.major) ? 'major' : ''}}"
-        title="{{($last) ? '' : data.value}}"> 
+        title="{{($last) ? translate2({value:'slider_last_title'}) : data.value}}"> 
       <span class="bubble" >{{data.value}}</span>
       <span class="available" ng-show="data.available"></span>
     </span>    

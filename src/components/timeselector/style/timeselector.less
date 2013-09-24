@@ -42,13 +42,22 @@
   box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.175);   
   padding: 5px;
   overflow: hidden; 
-  
+   
+  .last-title {
+    position: absolute;
+    right: 2px;
+    bottom: 2px; 
+  }
+
   &.mobile {
-    height: 50px; 
     margin-left: -104px; 
   
     a {
       line-height: 8px;
+    }
+
+    .last-title {
+      display: none;
     }
   }
  
@@ -73,6 +82,7 @@
   @media (max-width: @screen-phone) {
     top: 70px;
   }
+
 }
 
 .time-selector-slider {
@@ -80,9 +90,9 @@
   width: 507px; 
   display: inline-block;
   position: relative;
-  margin: 0px 40px 0px 40px;
+  margin: 0px 40px 15px 40px;
   vertical-align: bottom;
-  
+ 
   .ga-slider {
     height: 100%;
     margin: 0px;
@@ -96,8 +106,8 @@
       margin-left: 1px;
       cursor: move;
       z-index: 0;
-      background:
-      url(http://map.swisstopo.admin.ch/main/wsgi/lib/GeoAdmin.ux/TimeSeries/img/slider-middle.png)
+      /*TODO: use font-awesome icon*/
+      background: url(http://map.swisstopo.admin.ch/main/wsgi/lib/GeoAdmin.ux/TimeSeries/img/slider-middle.png)
       no-repeat center top;
 
       &::after {
@@ -145,7 +155,16 @@
         }
         
         &.last {
-          width: 1px;
+          width: 30px;
+          background-color: black;
+
+          .available {
+            background-color: inherit;
+            width: 100%;
+            height: inherit;
+            bottom: 0px;
+          }
+
         }
 
         &.minor, &.major {

@@ -15,7 +15,8 @@
   ]);
 
   module.controller('GaTimeSelectorDirectiveController',
-    function($scope, $translate, $sce, gaLayers, gaPermalink) {
+    function($scope, $translate, $sce, gaLayers, gaPermalink,
+        gaBrowserSniffer) {
 
       // Initialize variables
       $scope.stateClass = $scope.isActive ? '' : 'inactive';
@@ -28,8 +29,10 @@
       // Format the text of the current year (only used by slider)
       $scope.formatYear = function(value) {
         if (parseInt(value) >= $scope.maxYear) {
-          value = ($scope.availableYears.length > 1) ?
-              $scope.availableYears[1].value : '';
+          value = (gaBrowserSniffer.mobile) ? 'last_available_year' : '';
+        }
+        if (value === 'slider_last_title') {
+          value = $translate('last_available_year');
         }
         return $sce.trustAsHtml('' + value);
       };
