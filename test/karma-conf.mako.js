@@ -22,6 +22,7 @@ files = [
   'lib/typeahead-0.9.3.js',
   'lib/proj4js-compressed.js',
   'lib/EPSG21781.js',
+  'lib/EPSG2056.js',
   '../test/closure-loader-globals.js',
   'lib/ol-whitespace.js',
   '../.build-artefacts/app-whitespace.js',
