@@ -4,6 +4,7 @@
   goog.require('ga_layer_metadata_popup_service');
   goog.require('ga_map_service');
   goog.require('ga_permalink');
+  goog.require('ga_search_service');
   goog.require('ga_urlutils_service');
 
   var module = angular.module('ga_search_directive', [
@@ -11,12 +12,13 @@
     'ga_map_service',
     'ga_permalink',
     'pascalprecht.translate',
-    'ga_urlutils_service'
+    'ga_urlutils_service',
+    'ga_search_service'
   ]);
 
   module.directive('gaSearch',
       function($compile, $translate, gaLayers, gaLayerMetadataPopup,
-        gaPermalink, gaUrlUtils) {
+        gaPermalink, gaUrlUtils, gaGetCoordinate) {
           var currentTopic,
               footer = [
             '<div class="search-footer">',
@@ -161,6 +163,17 @@
                         'type=locations'),
                     dataType: 'jsonp',
                     cache: false,
+                    beforeSend: function(jqXhr, settings) {
+                       var position =
+                         gaGetCoordinate(
+                           map.getView().getProjection().getExtent(),
+                           scope.query);
+                       if (position) {
+                         moveTo(map, 8, position);
+                       }
+                       // TODO: add crosshair
+                       return !position;
+                    },
                     replace: function(url, searchText) {
                       var queryText = '&searchText=' + searchText;
                       var bbox = '&bbox=' + getBBoxParameters(map);
@@ -206,6 +219,11 @@
                     url: options.serviceUrl + 'type=layers',
                     dataType: 'jsonp',
                     cache: false,
+                    beforeSend: function(jqXhr, settings) {
+                      return !gaGetCoordinate(
+                        map.getView().getProjection().getExtent(),
+                        scope.query);
+                    },
                     replace: function(url, searchText) {
                       var queryText = '&searchText=' + searchText;
                       var lang = '&lang=' + $translate.uses();
