@@ -4,6 +4,7 @@
 @suggestions-max-height: 200px;
 
 .search-wrapper {
+  position: relative;
   .twitter-typeahead {
     width: 100%;
   }
@@ -55,12 +56,13 @@
   .deleteicon {
     position: absolute;
     right: 0.6em;
-    bottom: 0.6em;
+    top: 0;
     cursor: pointer;
+    height: 30px;
+    line-height: 30px;
     @media (max-width: @screen-tablet) {
       right: 0.2em;
       font-size: 24px;
-      top: 3px;
     }
   }
   .search-footer {
