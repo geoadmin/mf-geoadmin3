@@ -37,14 +37,3 @@
             ng-click="shortenUrl()" translate>shorten_url</button>
     </span>
 </div>
-
-<a class="embed-map collapsed" href=".embed-map-content" data-toggle="collapse">
-  <i class="visible-collapsed icon-caret-right"></i>
-  <i class="hidden-collapsed icon-caret-down"></i>
-  <span translate>embed_map</span>
-</a>
-<form class="embed-map-content collapse">
-  <textarea rows="8" cols="40" ng-click="selectOnClick($event)" class="form-control" readonly>
-<iframe width="800" height="600" frameborder="0" scrolling="no" src="{{permalinkHref}}"></iframe>
-  </textarea>
-</form>

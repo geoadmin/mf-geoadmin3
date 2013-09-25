@@ -27,7 +27,6 @@
               // Store in the scope the permalink value which is bound to
               // the input field
               scope.permalinkValue = gaPermalink.getHref();
-              scope.permalinkHref = gaPermalink.getHref();
               scope.encodedPermalinkHref =
                   encodeURIComponent(gaPermalink.getHref());
               scope.encodedDocumentTitle = encodeURIComponent(document.title);
@@ -36,7 +35,6 @@
               // Listen to permalink change events from the scope.
               scope.$on('gaPermalinkChange', function(event) {
                 scope.permalinkValue = gaPermalink.getHref();
-                scope.permalinkHref = gaPermalink.getHref();
                 scope.encodedPermalinkHref =
                     encodeURIComponent(gaPermalink.getHref());
                 scope.urlShortened = false;
