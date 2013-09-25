@@ -35,7 +35,12 @@ RewriteRule ^/${vars:instanceid}/wsgi/(static)/(.*)$  ${buildout:directory/chsdi
     Header unset Etag
 </LocationMatch>
 
-RewriteRule ^${vars:apache-entry-point}$ /${vars:instanceid}/wsgi/ [PT]
+# Main entry point
+RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+RewriteRule ^${vars:apache-entry-point}$ http://%{SERVER_NAME}/${vars:instanceid}/wsgi/static/doc/build/ [R=302,env=nocache:1,L]
+RewriteCond %{HTTP:X-Forwarded-Proto} =https
+RewriteRule ^${vars:apache-entry-point}$ https://%{SERVER_NAME}/${vars:instanceid}/wsgi/static/doc/build/ [R=302,env=nocache:1,L]
+Header always set Cache-Control "no-store, no-cache, must-revalidate" env=nocache
 
 # Proxy pass pointing on api.geo.admin.ch project
 RewriteRule ^${vars:apache-entry-point}(qrcodegenerator|shorten|shorten.json)(.*)$ http://mf-chsdi0t.bgdi.admin.ch${vars:apache-entry-point}$1$2 [P]

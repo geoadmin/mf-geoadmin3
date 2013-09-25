@@ -1,0 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+            <title>My very fist GeoAdmin API Map</title>
+            <script type="text/javascript">
+                function init() {
+                    var geo = new GeoAdmin.API();
+                    geo.createMap({
+                        div: "mymap1",
+                        easting: 720000,
+                        northing: 90000,
+                        zoom: 5
+                    });
+                }
+            </script>
+        </head>
+        <body onload="init();">
+            <div id="mymap1" style="width:500px;height:340px;border:1px solid grey;padding: 0 0 0 0;margin:10px !important;"></div>
+            <script type="text/javascript" src="https://api.geo.admin.ch/loader.js"></script></body>
+        </body>
+    </html>
