@@ -4,21 +4,21 @@
   var module = angular.module('ga_search_service', [
   ]);
 
-  var DMS_Degree = '[0-9]{1,2}[°|º]\\s*';
-  var DMS_Minute = '[0-9]{1,2}[\'|′]';
-  var DMS_Second = '(?:\\b[0-9]+(?:\\.[0-9]*)?|\\.' +
+  var DMSDegree = '[0-9]{1,2}[°|º]\\s*';
+  var DMSMinute = '[0-9]{1,2}[\'|′]';
+  var DMSSecond = '(?:\\b[0-9]+(?:\\.[0-9]*)?|\\.' +
     '[0-9]+\\b)("|\'\'|′′|″)';
-  var DMS_North = '[N]';
-  var DMS_East = '[E]';
-  var regexpDMS_N = new RegExp(DMS_Degree +
-    '(' + DMS_Minute + ')?\\s*' +
-    '(' + DMS_Second + ')?\\s*' +
-    DMS_North, 'g');
-  var regexpDMS_E = new RegExp(DMS_Degree +
-    '(' + DMS_Minute + ')?\\s*' +
-    '(' + DMS_Second + ')?\\s*' +
-    DMS_East, 'g');
-  var regexpDMS_Degree = new RegExp(DMS_Degree, 'g');
+  var DMSNorth = '[N]';
+  var DMSEast = '[E]';
+  var regexpDMSN = new RegExp(DMSDegree +
+    '(' + DMSMinute + ')?\\s*' +
+    '(' + DMSSecond + ')?\\s*' +
+    DMSNorth, 'g');
+  var regexpDMSE = new RegExp(DMSDegree +
+    '(' + DMSMinute + ')?\\s*' +
+    '(' + DMSSecond + ')?\\s*' +
+    DMSEast, 'g');
+  var regexpDMSDegree = new RegExp(DMSDegree, 'g');
   var regexpCoordinate = new RegExp(
     '([\\d\\.\']+)[\\s,]+([\\d\\.\']+)');
 
@@ -28,34 +28,34 @@
         var position;
         var valid = false;
 
-        var matchDMS_N = query.match(regexpDMS_N);
-        var matchDMS_E = query.match(regexpDMS_E);
-        if (matchDMS_N && matchDMS_N.length == 1 &&
-            matchDMS_E && matchDMS_E.length == 1) {
-          var northing = parseFloat(matchDMS_N[0].
-            match(regexpDMS_Degree)[0].
+        var matchDMSN = query.match(regexpDMSN);
+        var matchDMSE = query.match(regexpDMSE);
+        if (matchDMSN && matchDMSN.length == 1 &&
+            matchDMSE && matchDMSE.length == 1) {
+          var northing = parseFloat(matchDMSN[0].
+            match(regexpDMSDegree)[0].
             replace('°' , '').replace('º' , ''));
-          var easting = parseFloat(matchDMS_E[0].
-            match(regexpDMS_Degree)[0].
+          var easting = parseFloat(matchDMSE[0].
+            match(regexpDMSDegree)[0].
             replace('°' , '').replace('º' , ''));
-          var minuteN = matchDMS_N[0].match(DMS_Minute) ?
-            matchDMS_N[0].match(DMS_Minute)[0] : '0';
+          var minuteN = matchDMSN[0].match(DMSMinute) ?
+            matchDMSN[0].match(DMSMinute)[0] : '0';
           northing = northing +
             parseFloat(minuteN.replace('\'' , '').
               replace('′' , '')) / 60;
-          var minuteE = matchDMS_E[0].match(DMS_Minute) ?
-            matchDMS_E[0].match(DMS_Minute)[0] : '0';
+          var minuteE = matchDMSE[0].match(DMSMinute) ?
+            matchDMSE[0].match(DMSMinute)[0] : '0';
           easting = easting +
             parseFloat(minuteE.replace('\'' , '').
               replace('′' , '')) / 60;
           var secondN =
-            matchDMS_N[0].match(DMS_Second) ?
-            matchDMS_N[0].match(DMS_Second)[0] : '0';
+            matchDMSN[0].match(DMSSecond) ?
+            matchDMSN[0].match(DMSSecond)[0] : '0';
           northing = northing + parseFloat(secondN.replace('"' , '')
             .replace('\'\'' , '').replace('′′' , '')
             .replace('″' , '')) / 3600;
-          var secondE = matchDMS_E[0].match(DMS_Second) ?
-            matchDMS_E[0].match(DMS_Second)[0] : '0';
+          var secondE = matchDMSE[0].match(DMSSecond) ?
+            matchDMSE[0].match(DMSSecond)[0] : '0';
           easting = easting + parseFloat(secondE.replace('"' , '')
             .replace('\'\'' , '').replace('′′' , '')
             .replace('″' , '')) / 3600;
