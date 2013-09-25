@@ -15,6 +15,8 @@
         var w = window, l = w.location, pathname, p = '${device}',
           m = l.search.match(/(?:mobile=(true|false))/);
 
+        if (!l.origin) { l.origin = l.protocol + "//" + l.hostname } // IE fix
+
         // avoid loops
         m = (m) ? m[1] : m;
         if ((p=='desktop' && m=='false') || (p=='mobile' && m=='true')) {
