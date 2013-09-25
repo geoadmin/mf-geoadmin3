@@ -279,7 +279,8 @@
                   // Make sure the final html content is compiled once only
                   if (typeAheadDatasets.length === suggestionsRendered) {
                     // Only for layer search at the moment
-                    var elements = element.find('.tt-dataset-layers');
+                    var elements = element.find('.tt-dataset-layers')
+                      .find('.tt-suggestions');
                     $compile(elements)(scope);
                     suggestionsRendered = 0;
                   }
