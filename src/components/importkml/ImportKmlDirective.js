@@ -142,6 +142,27 @@
                 source: new ol.source.Vector({
                   parser: kmlParser,
                   data: $scope.fileContent
+                }),
+                style: new ol.style.Style({
+                  symbolizers: [
+                    new ol.style.Fill({
+                      color: '#ff0000'
+                    }),
+                    new ol.style.Stroke({
+                      color: '#ff0000',
+                      width: 2
+                    }),
+                    new ol.style.Shape({
+                      size: 10,
+                      fill: new ol.style.Fill({
+                        color: '#ff0000'
+                      }),
+                      stroke: new ol.style.Stroke({
+                        color: '#ff0000',
+                        width: 2
+                      })
+                    })
+                  ]
                 })
               });
               gaDefinePropertiesForLayer(vector);
