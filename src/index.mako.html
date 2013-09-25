@@ -241,9 +241,10 @@
           </a>
           <div id="catalog" class="collapse" ng-controller="GaCatalogtreeController">
 % if device == 'mobile':
-            <div class="topic-container" ng-controller="GaTopicController">
+            <label class="topic-container" ng-controller="GaTopicController">
+              <span translate>change_topic</span>
               <div ga-topic ga-topic-ui="select" ga-topic-options="options" ga-topic-map="map"></div>
-            </div>
+            </label>
 % endif
             <div class="panel-body panel-body-wide accordion-inner-catalog"
               ga-catalogtree ga-catalogtree-map="map" ga-catalogtree-options="options">
