@@ -57,9 +57,11 @@ def main(global_config, **settings):
 
     # Static config
     config.add_route('home', '/')
+    config.add_route('dev', '/dev')
     config.add_route('testi18n', '/testi18n')
     config.add_route('api', '/loader.js')
-    config.add_view(route_name='home', renderer='chsdi:templates/index.pt', http_cache=0)
+    config.add_view(route_name='home', renderer='chsdi:static/index.html', http_cache=0)
+    config.add_view(route_name='dev', renderer='chsdi:templates/index.pt', http_cache=0)
     config.add_view(route_name='testi18n', renderer='chsdi:templates/testi18n.mako', http_cache=0)
     config.add_view(route_name='api', renderer='chsdi:templates/loader.js', http_cache=0)
 
