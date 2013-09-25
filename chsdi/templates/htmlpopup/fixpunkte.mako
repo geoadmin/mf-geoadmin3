@@ -1,7 +1,5 @@
 <%inherit file="base.mako"/>
 
-<%def name="preview()">${c['featureId'] or '-'}</%def>
-
 <%def name="table_body(c, lang)">
     <% c[stable_id] = True %>
 	<tr><td width="150">${_('nummer')}</td>         <td>${c['featureId']}</td></tr>
@@ -13,7 +11,7 @@
 	<tr><td width="150">${_('fp_E95_N95')}</td>     <td>${c['attributes']['e95'] or '-'} / ${c['attributes']['n95'] or '-'}</td></tr>
 	<tr><td width="150">${_('fp_H02')}</td>         <td>${c['attributes']['h02'] or '-'}</td></tr>
 <!--	
-    <tr><td width="150">${_('zugang')}</td>          <td>${c['attributes']['zugang'] or '-'}</td></tr> 
+    <tr><td width="150">${_('zugang')}</td>         <td>${c['attributes']['zugang'] or '-'}</td></tr> 
 -->
-	<tr><td width="150">${_('protokoll')}</td>       <td><a href="${c['attributes']['url'] or '-'}" target="_blank">${_('protokoll')}</a></td></tr>
+	<tr><td width="150">${_('protokoll')}</td>      <td><a href="${c['attributes']['url'] or '-'}" target="_blank">${_('protokoll')}</a></td></tr>
 </%def>
