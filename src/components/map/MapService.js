@@ -145,7 +145,10 @@
                 id: id,
                 source: new ol.source.WMTS({
                   attributions: [
-                    getAttribution(layer.attribution)
+                    getAttribution('<a href="' +
+                      layer.attributionUrl +
+                      '" target="new">' +
+                      layer.attribution + '</a>')
                   ],
                   dimensions: {
                     'Time': layer.timestamps[0]
