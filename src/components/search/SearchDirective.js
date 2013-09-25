@@ -21,7 +21,7 @@
               footer = [
             '<div class="search-footer">',
             '<div class="footer-left">',
-            '<b>Please help me</b></div>',
+            '<b translate>search_help</b></div>',
             '<div class="footer-right">',
             '<a class="contact-icon" ',
             'title="{{\'contact_us\' | translate}}" ',
