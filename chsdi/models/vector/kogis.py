@@ -17,7 +17,6 @@ class Gebaeuderegister(Base, Vector):
     __template__ = 'templates/htmlpopup/gebaeuderegister.mako'
     __esriId__ = 3000
     __bodId__ = 'ch.bfs.gebaeude_wohnungs_register'
-    __displayFieldName__ = 'strname1'
     # __minscale__ = 5001
     # due to https://redmine.bgdi.admin.ch/issues/3146 ltmoc  __maxscale__ = 25000
     id = Column('egid_edid', Text, primary_key=True)
@@ -40,7 +39,6 @@ class AGNES(Base, Vector):
     __template__ = 'templates/htmlpopup/agnes.mako'
     __esriId__ = 3000
     __bodId__ = 'ch.swisstopo.fixpunkte-agnes'
-    __displayFieldName__ = 'bgdi_id'
     id = Column('no', Text, primary_key=True)
     url = Column('url', Text)
     bgdi_id = Column('bgdi_id', Integer)
@@ -56,7 +54,6 @@ class FIXPUNKTE_LFP1(Base, Vector):
     __queryable_attributes__ = ['pointid','nummer']
     __esriId__ = 3000
     __bodId__ = 'ch.swisstopo.fixpunkte-lfp1'
-    __displayFieldName__ = 'nbident'
     id = Column('pointid', Text, primary_key=True)
     punktname = Column('punktname', Text)
     nummer = Column('nummer', Text)
@@ -81,7 +78,6 @@ class FIXPUNKTE_LFP2(Base, Vector):
     __queryable_attributes__ = ['pointid','nummer']
     __esriId__ = 3000
     __bodId__ = 'ch.swisstopo.fixpunkte-lfp2'
-    __displayFieldName__ = 'nbident'
     id = Column('pointid', Text, primary_key=True)
     nbident = Column('nbident', Text)
     punktname = Column('punktname', Text)
@@ -106,7 +102,6 @@ class FIXPUNKTE_HFP1(Base, Vector):
     __queryable_attributes__ = ['pointid','nummer','bgdi_label']
     __esriId__ = 3000
     __bodId__ = 'ch.swisstopo.fixpunkte-hfp1'
-    __displayFieldName__ = 'nbident'
     id = Column('pointid', Text, primary_key=True)
     nbident = Column('nbident', Text)
     punktname = Column('punktname', Text)
@@ -131,7 +126,6 @@ class FIXPUNKTE_HFP2(Base, Vector):
     __queryable_attributes__ = ['pointid','nummer']
     __esriId__ = 3000
     __bodId__ = 'ch.swisstopo.fixpunkte-hfp1'
-    __displayFieldName__ = 'nbident'
     id = Column('pointid', Text, primary_key=True)
     nbident = Column('nbident', Text)
     punktname = Column('punktname', Text)
