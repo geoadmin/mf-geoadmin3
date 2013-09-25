@@ -17,7 +17,6 @@ class FEUERSTELLEN(Base, Vector):
     __template__ = 'templates/htmlpopup/swissmap_online_feuerstellen.mako'
     __esriId__ = 3000
     __bodId__ = 'ch.tamedia.schweizerfamilie-feuerstellen'
-    __displayFieldName__ = 'gemeinde'
     id = Column('nr', Integer, primary_key=True)
     gemeinde = Column('gemeinde', Text)
     ort = Column('ort', Text)
@@ -36,7 +35,6 @@ class NOTFALLSCHUTZ(Base, Vector):
     __template__ = 'templates/htmlpopup/zonenplan_kernanlagen.mako'
     __esriId__ = 3000
     __bodId__ = 'ch.ensi.zonenplan-notfallschutz-kernanlagen'
-    __displayFieldName__ = 'name'
     id = Column('nr', Integer, primary_key=True)
     name = Column('name', Text)
     zone = Column('zone', Text)
