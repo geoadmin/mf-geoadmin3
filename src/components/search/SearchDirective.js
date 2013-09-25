@@ -299,6 +299,16 @@
                 currentTopic = topic.id;
               });
 
+              scope.$on('$translateChangeEnd', function() {
+                // Only layers dataset needs to be updated
+                var dataset_layers = $(taElt).data('ttView').datasets[1];
+                if (angular.isDefined(currentTopic)) {
+                  dataset_layers.getSuggestions('http', function(suggestions) {
+                    viewDropDown.renderSuggestions(dataset_layers, suggestions);
+                  });
+                }
+              });
+
               taElt.focus(function() {
                 scope.$apply(function() {
                   scope.searchFocused = true;
