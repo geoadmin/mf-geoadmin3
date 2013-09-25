@@ -447,26 +447,7 @@
             '${service_url}/rest/services/{Topic}/MapServer/{Layer}/getlegend?lang={Lang}';
         }]);
       })();
-    </script>
 
-    <link rel="stylesheet" href="http://simonwhitaker.github.io/github-fork-ribbon-css/gh-fork-ribbon.css" />
-    <!--[if IE]>
-    <link rel="stylesheet" href="http://simonwhitaker.github.io/github-fork-ribbon-css/gh-fork-ribbon.ie.css" />
-    <![endif]-->
-% if device == 'mobile':
-    <div class="github-fork-ribbon-wrapper left-bottom" style="z-index:2000;width:75px;height:75px;">
-      <div class="github-fork-ribbon" style="top:34px;left:-37px;">
-        <a href="mailto:info@geo.admin.ch" style="width:130px;">Preview</a>
-      </div>
-    </div>
-% else:
-    <div class="github-fork-ribbon-wrapper right-bottom" style="z-index:2000">
-      <div class="github-fork-ribbon">
-        <a href="mailto:info@geo.admin.ch">Application preview</a>
-      </div>
-    </div>
-% endif
-    <script>
 ## Workaround for iOS 6.x bug: content shifted after orientation change
 ## As we can’t use css fix ( see http://stackoverflow.com/a/12518946/29655 )
 ## we force a redraw on orientation change
