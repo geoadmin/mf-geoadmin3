@@ -82,6 +82,10 @@
               }
             });
 
+            scope.$on('gaLayersChange', function() {
+              updateCatalogTree();
+            });
+
             scope.$on('gaTopicChange', function(event, topic) {
               currentTopic = topic.id;
               updateCatalogTree();
