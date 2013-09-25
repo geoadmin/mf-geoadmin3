@@ -172,8 +172,8 @@
                   minResolution: layer.maxResolution,
                   maxResolution: layer.minResolution,
                   source: new ol.source.ImageWMS({
-                    //FIXME: wmsUrl should not be wmsCap url
-                    url: layer.wmsUrl.replace(/\?.*/, ''),
+                    url: gaUrlUtils.remove(
+                        layer.wmsUrl, ['request', 'service', 'version'], true),
                     params: {
                       LAYERS: layer.wmsLayers,
                       FORMAT: 'image/' + layer.format
