@@ -2,6 +2,7 @@
 
 <%
   c = pageargs['layer']
+  hasLegend = pageargs['hasLegend']
   host = request.host_url + request.uscript_name
   lang = request.lang
   pdf_legends = ('ch.swisstopo.geologie-eiszeit-lgm-raster', 'ch.swisstopo.geologie-geologische_karte',
@@ -25,6 +26,7 @@
   <p class='legend_abstract'>${c['attributes']['abstract'] or ''}</p>
 </div>
 <div class="legend_footer">
+% if hasLegend:
   <span style="font-weight:bold;">${_('Legend')}</span><br>
 % if legend_url_pdf:
   <a href="${legend_url_pdf}" target="_blank"><img src="${legend_url}"></img></a><br> 
@@ -73,6 +75,7 @@
       <td>-</td>
 % endif
     </tr>
+% endif
     <tr>
       <td>${_('Datenstand')}</td>
 % if times:
