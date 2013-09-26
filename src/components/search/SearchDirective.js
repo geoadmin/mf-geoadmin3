@@ -23,7 +23,7 @@
               footer = [
             '<div class="search-footer">',
             '<div class="footer-left">',
-            '<b>Please help me</b></div>',
+            '<b translate>search_help</b></div>',
             '<div class="footer-right">',
             '<a class="contact-icon" ',
             'title="{{\'contact_us\' | translate}}" ',
@@ -297,7 +297,8 @@
                   // Make sure the final html content is compiled once only
                   if (typeAheadDatasets.length === suggestionsRendered) {
                     // Only for layer search at the moment
-                    var elements = element.find('.tt-dataset-layers');
+                    var elements = element.find('.tt-dataset-layers')
+                      .find('.tt-suggestions');
                     $compile(elements)(scope);
                     suggestionsRendered = 0;
                   }
@@ -314,6 +315,16 @@
 
               scope.$on('gaTopicChange', function(event, topic) {
                 currentTopic = topic.id;
+              });
+
+              scope.$on('$translateChangeEnd', function() {
+                // Only layers dataset needs to be updated
+                var datasetLayers = $(taElt).data('ttView').datasets[1];
+                if (angular.isDefined(currentTopic)) {
+                  datasetLayers.getSuggestions('http', function(suggestions) {
+                    viewDropDown.renderSuggestions(datasetLayers, suggestions);
+                  });
+                }
               });
 
               taElt.focus(function() {
