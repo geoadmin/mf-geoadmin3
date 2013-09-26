@@ -10,6 +10,7 @@ from chsdi.models.vector import Vector
 
 Base = bases['dritte']
 
+
 class FEUERSTELLEN(Base, Vector):
     # view in a schema
     __tablename__ = 'feuerstellen'
@@ -27,6 +28,7 @@ class FEUERSTELLEN(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.tamedia.schweizerfamilie-feuerstellen', FEUERSTELLEN)
+
 
 class NOTFALLSCHUTZ(Base, Vector):
     # view in a schema
