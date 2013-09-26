@@ -39,9 +39,11 @@
    * The application's main controller.
    */
 module.controller('GaMainController',
-    function($scope, $rootScope, $translate, gaPermalink, gaBrowserSniffer) {
+  function($scope, $rootScope, $translate, $timeout, $window,  gaPermalink,
+    gaBrowserSniffer) {
 
-      var mobile = (gaBrowserSniffer.mobile) ? 'false' : 'true';
+      var mobile = (gaBrowserSniffer.mobile) ? 'false' : 'true',
+        dismiss = 'none';
 
       // The main controller creates the OpenLayers map object. The map object
       // is central, as most directives/components need a reference to it. So
@@ -61,8 +63,23 @@ module.controller('GaMainController',
       });
 
       $scope.globals = {
-        searchFocused: false
+        searchFocused: false,
+        homescreen: false,
+        tablet: gaBrowserSniffer.mobile && !gaBrowserSniffer.phone
       };
+
+      $timeout(function() {
+        $scope.globals.homescreen = gaBrowserSniffer.ios &&
+          !($window.localStorage.getItem('homescreen') == dismiss) &&
+          !$window.navigator.standalone;
+        $scope.$watch('globals.homescreen', function(newVal) {
+          if (newVal == true) {
+            return;
+          }
+          $window.localStorage.setItem('homescreen', dismiss);
+        });
+      }, 2000);
+
 
   });
 

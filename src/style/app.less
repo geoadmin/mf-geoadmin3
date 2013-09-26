@@ -782,3 +782,30 @@ ul.panel-body-wide {
   }
 }
 
+.homescreen {
+  bottom:10px;
+  left: 50%;
+  top: auto;
+  width: 200px;
+  margin-left: -100px;
+  .transition(opacity 1s ease);
+  &.bottom {
+    bottom: auto;
+    top: 0;
+    left: 45px;
+    margin-left: 0;
+  }
+  &.visible {
+    display: block;
+    z-index: 3000;
+  }
+  &.ng-enter,
+  &.ng-leave.ng-leave-active {
+    opacity:0;
+  }
+
+  &.ng-enter.ng-enter-active,
+  &.ng-leave {
+    opacity:1;
+  }
+}

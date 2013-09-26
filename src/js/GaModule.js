@@ -72,7 +72,8 @@
     'ga_feedback_controller',
     'ga_contextpopup_controller',
     'ga_search_controller',
-    'ga_tooltip_controller'
+    'ga_tooltip_controller',
+    'ngAnimate'
   ]);
 
   module.config(function($translateProvider) {
