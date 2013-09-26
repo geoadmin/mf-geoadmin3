@@ -1,7 +1,5 @@
 <%inherit file="base.mako"/>
 
-<%def name="preview()">${c['value'] or '-'}</%def>
-
 <%def name="table_body(c,lang)">
     % if c['attributes']['produkt'] == "tk100":
       <tr><td width="150">${_('kartenwerk')}</td>          <td>${_('kartenwerk_tk100')}</td></tr>
