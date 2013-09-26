@@ -64,11 +64,11 @@
   <!-- TODO: Display information about the uploaded file and the upload process -->
   <div class="upload-result">
     <div class="upload-abort icon-remove-sign" ng-click="cancel()"
-      ng-hide="(progress <= 0 || progress >= 100)" ></div>{{userMessage}}
-    <div ng-if="!isIE" class="progress progress-striped {{(progress < 100 ) ? 'active' : ''}}"
-      ng-show="(progress > 0)">
+      ng-show="(0 < progress && progress < 100)" ></div>{{userMessage}}
+    <div ng-if="!isIE" class="progress progress-striped active"
+      ng-show="(0 < progress && progress < 100)">
       <!-- TO FIX: issue ie9-10:  https://github.com/angular/angular.js/issues/2186 -->
-      <div class="progress-bar" style="width:{{progress}}%;"></div>
+      <div class="progress-bar" style="width:100%;"></div>
     </div>
   </div>
 
