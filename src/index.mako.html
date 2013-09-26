@@ -387,6 +387,20 @@
       </div>
     </div><!-- end Import KML -->
 
+    <div class="popover top homescreen" ng-if="globals.ios" ng-class="globals.ios?'visible':''">
+      <div class="arrow"></div>
+      <h3 class="popover-title">
+        <span translate>homescreen_title</span>
+        <button type="button" class="close" data-dismiss="popover">&times;</button>
+      </h3>
+      <div class="popover-content">
+        <p>
+          <i class=icon-share></i>&nbsp;
+          <span translate>homescreen_content</span>
+        </p>
+      </div>
+    </div>
+
     ## css animation doesnt work on pseudo element, let use this instead
     <i id="loader" class="icon-spin icon-refresh"></i>
 
@@ -397,6 +411,7 @@
     <script src="lib/angular-1.2.0rc2.js"></script>
     <script src="lib/angular-translate-1.1.0.js"></script>
     <script src="lib/angular-translate-loader-static-files-0.1.5.js"></script>
+    <script src="lib/angular-animate.js"></script>
     <script src="lib/bootstrap-3.0.0.js"></script>
     <script src="lib/typeahead-0.9.3.js"></script>
     <script src="lib/proj4js-compressed.js"></script>

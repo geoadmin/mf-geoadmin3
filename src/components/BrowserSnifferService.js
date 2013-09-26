@@ -10,6 +10,7 @@
   module.provider('gaBrowserSniffer', function() {
     var msie =
       +((/msie (\d+)/.exec(navigator.userAgent.toLowerCase()) || [])[1]);
+    var ios = /(iPhone|iPad)/.test(navigator.userAgent);
     var testSize = function(size) {
       var m = window.matchMedia;
       return m && m('(max-width: ' + size + 'px)').matches;
@@ -21,15 +22,15 @@
     // holds major version number for IE or NaN for real browsers
     this.$get = function(gaPermalink) {
 
-      var p = gaPermalink.getParams();
+      var p = gaPermalink.getParams(),
+          mobile = (mobile && p.mobile != 'false') || p.mobile == 'true';
 
-      var Sniffer = function() {
-        this.msie = msie;
-        this.mobile = (mobile && p.mobile != 'false') || p.mobile == 'true';
-        this.phone = this.mobile && testSize(480);
+      return {
+        msie: msie,
+        ios: ios || true, // FIXME
+        mobile: mobile,
+        phone: mobile && testSize(480)
       };
-
-      return new Sniffer();
     };
 
   });

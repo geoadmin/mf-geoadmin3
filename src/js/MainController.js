@@ -39,7 +39,8 @@
    * The application's main controller.
    */
 module.controller('GaMainController',
-    function($scope, $rootScope, $translate, gaPermalink, gaBrowserSniffer) {
+  function($scope, $rootScope, $translate, $timeout, gaPermalink,
+    gaBrowserSniffer) {
 
       var mobile = (gaBrowserSniffer.mobile) ? 'false' : 'true';
 
@@ -61,8 +62,13 @@ module.controller('GaMainController',
       });
 
       $scope.globals = {
-        searchFocused: false
+        searchFocused: false,
+        ios: false
       };
+
+      $timeout(function(){
+        $scope.globals.ios = gaBrowserSniffer.ios;
+      }, 2000);
 
   });
 
