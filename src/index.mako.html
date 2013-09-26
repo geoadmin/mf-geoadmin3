@@ -387,11 +387,11 @@
       </div>
     </div><!-- end Import KML -->
 
-    <div class="popover top homescreen" ng-if="globals.ios" ng-class="globals.ios?'visible':''">
+    <div class="popover top homescreen" ng-if="globals.homescreen" ng-class="globals.homescreen?'visible':''">
       <div class="arrow"></div>
       <h3 class="popover-title">
         <span translate>homescreen_title</span>
-        <button type="button" class="close" data-dismiss="popover">&times;</button>
+        <button type="button" class="close" ng-click="globals.homescreen=false">&times;</button>
       </h3>
       <div class="popover-content">
         <p>

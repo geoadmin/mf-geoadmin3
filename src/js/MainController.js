@@ -63,12 +63,21 @@ module.controller('GaMainController',
 
       $scope.globals = {
         searchFocused: false,
-        ios: false
+        homescreen: false
       };
 
       $timeout(function(){
-        $scope.globals.ios = gaBrowserSniffer.ios;
+        $scope.globals.homescreen = gaBrowserSniffer.ios &&
+          !(localStorage.getItem('homescreen') == 'dismiss') &&
+          !navigator.standalone;
+        $scope.$watch('globals.homescreen', function(newVal){
+          if (newVal == true) {
+            return;
+          }
+          localStorage.setItem('homescreen', 'dismiss');
+        });
       }, 2000);
+
 
   });
 

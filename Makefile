@@ -22,7 +22,7 @@ help:
 	@echo "- lint         Run the linter"
 	@echo "- testdev      Run the JavaScript tests in dev mode"
 	@echo "- testprod     Run the JavaScript tests in prod mode"
-	@echo "- apache       Configure Apache (restart required)" 
+	@echo "- apache       Configure Apache (restart required)"
 	@echo "- all          All of the above (target to run prior to creating a PR)"
 	@echo "- clean        Remove generated files"
 	@echo "- cleanall     Remove all the build artefacts"
@@ -77,7 +77,7 @@ updateol: .build-artefacts/ol3 .build-artefacts/ol-requirements-installation.tim
 
 .PHONY: translate
 translate: .build-artefacts/translate-requirements-installation.timestamp
-	.build-artefacts/python-venv/bin/python scripts/translation2js.py src/locales/ 
+	.build-artefacts/python-venv/bin/python scripts/translation2js.py src/locales/
 
 prod/lib/build.js: src/lib/jquery-2.0.3.min.js src/lib/bootstrap-3.0.0.min.js src/lib/typeahead-0.9.3.min.js src/lib/angular-1.2.0rc2.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/EPSG2056.js src/lib/ol.js src/lib/angular-animate.js src/lib/angular-translate-1.1.0.min.js src/lib/angular-translate-loader-static-files-0.1.5.min.js src/lib/fastclick.js .build-artefacts/app.js
 	mkdir -p $(dir $@)
@@ -168,7 +168,7 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 	touch $@
 
 .build-artefacts/ol-requirements-installation.timestamp: .build-artefacts/python-venv
-	.build-artefacts/python-venv/bin/pip install "regex" 
+	.build-artefacts/python-venv/bin/pip install "regex"
 	touch $@
 
 .build-artefacts/python-venv/bin/gjslint: .build-artefacts/python-venv
