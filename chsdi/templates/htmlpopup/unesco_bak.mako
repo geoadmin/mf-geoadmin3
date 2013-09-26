@@ -2,8 +2,6 @@
 
 <%inherit file="base.mako"/>
 
-<%def name="preview()">${c['attributes']['bgdi_name'] or '-'}</%def>
-
 <%def name="table_body(c, lang)">
 <%
     surface_ha = int(float(c['attributes']['bgdi_surface']) / 10000) 

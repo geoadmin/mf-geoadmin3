@@ -6,8 +6,6 @@
 ##   from chsdi.lib.helpers import quoting
 %>
 
-<%def name="preview()">${c['attributes']['ortsbildname'] or '-'}</%def>
-
 <%def name="table_body(c, lang)">
     <tr><td width="150">${_('kanton')}</td>                     <td>${c['attributes']['kanton'] or '-'}</td></tr>
     <tr><td width="150">${_('ortsbildname')}</td>               <td>${c['attributes']['ortsbildname']}</td></tr>
