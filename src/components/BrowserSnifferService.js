@@ -27,7 +27,7 @@
 
       return {
         msie: msie,
-        ios: ios || true, // FIXME
+        ios: ios,
         mobile: mobile,
         phone: mobile && testSize(480)
       };
