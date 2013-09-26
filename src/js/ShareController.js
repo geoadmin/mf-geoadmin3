@@ -8,7 +8,7 @@
         $scope.options = {
           shortenUrl: gaGlobalOptions.serviceUrl
               + '/shorten.json',
-          qrcodegeneratorPath: gaGlobalOptions.baseUrlPath
+          qrcodegeneratorPath: gaGlobalOptions.serviceUrl
               + '/qrcodegenerator'
         };
       });
