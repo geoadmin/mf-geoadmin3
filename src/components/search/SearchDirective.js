@@ -301,10 +301,10 @@
 
               scope.$on('$translateChangeEnd', function() {
                 // Only layers dataset needs to be updated
-                var dataset_layers = $(taElt).data('ttView').datasets[1];
+                var datasetLayers = $(taElt).data('ttView').datasets[1];
                 if (angular.isDefined(currentTopic)) {
-                  dataset_layers.getSuggestions('http', function(suggestions) {
-                    viewDropDown.renderSuggestions(dataset_layers, suggestions);
+                  datasetLayers.getSuggestions('http', function(suggestions) {
+                    viewDropDown.renderSuggestions(datasetLayers, suggestions);
                   });
                 }
               });
