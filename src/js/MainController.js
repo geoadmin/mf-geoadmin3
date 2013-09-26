@@ -70,13 +70,13 @@ module.controller('GaMainController',
 
       $timeout(function(){
         $scope.globals.homescreen = gaBrowserSniffer.ios &&
-          !(localStorage.getItem('homescreen') == dismiss) &&
+          !(window.localStorage.getItem('homescreen') == dismiss) &&
           !navigator.standalone;
         $scope.$watch('globals.homescreen', function(newVal){
           if (newVal == true) {
             return;
           }
-          localStorage.setItem('homescreen', dismiss);
+          window.localStorage.setItem('homescreen', dismiss);
         });
       }, 2000);
 
