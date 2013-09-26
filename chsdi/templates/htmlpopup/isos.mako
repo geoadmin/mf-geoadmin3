@@ -6,11 +6,11 @@
 ##   from chsdi.lib.helpers import quoting
 %>
 
-<%def name="preview()">${c['value'] or '-'}</%def>
+<%def name="preview()">${c['attributes']['ortsbildname'] or '-'}</%def>
 
 <%def name="table_body(c, lang)">
     <tr><td width="150">${_('kanton')}</td>                     <td>${c['attributes']['kanton'] or '-'}</td></tr>
-    <tr><td width="150">${_('ortsbildname')}</td>               <td>${c['value']}</td></tr>
+    <tr><td width="150">${_('ortsbildname')}</td>               <td>${c['attributes']['ortsbildname']}</td></tr>
     <tr><td width="150">${_('kategorie')}</td>                  <td>${c['attributes']['vergleichsrastereinheit'] or '-'}</td></tr>
     <tr><td width="150">${_('lagequalitaeten')}</td>            <td>${c['attributes']['lagequalitaeten'] or '-'}</td></tr>
     <tr><td width="150">${_('raeumliche_qualitaeten')}</td>     <td>${c['attributes']['raeumliche_qualitaeten'] or '-'}</td></tr>
