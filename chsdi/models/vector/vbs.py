@@ -15,7 +15,6 @@ class TERRITORIALREGIONEN(Base, Vector):
     __template__ = 'templates/htmlpopup/territorialregionen.mako'
     __esriId__ = 3003
     __bodId__ = 'ch.bfs.arealstatistik-1985'
-    __displayFieldName__ = 'name'
     id = Column('terreg_nr', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     name = Column('name', Text)
