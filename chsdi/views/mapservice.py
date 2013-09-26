@@ -7,7 +7,7 @@ from sqlalchemy import or_
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
 from chsdi.models import models_from_name
-from chsdi.models.bod import get_bod_model, computeHeader
+from chsdi.models.bod import LayersConfig, get_bod_model, computeHeader
 from chsdi.lib.helpers import locale_negotiator
 from chsdi.lib.validation import MapServiceValidation
 
@@ -40,7 +40,6 @@ class MapService(MapServiceValidation):
 
     @view_config(route_name='layersconfig', renderer='jsonp')
     def layersconfig(self):
-        from chsdi.models.bod import LayersConfig
         layers = {}
         model = LayersConfig
         query = self.request.db.query(model)
@@ -57,7 +56,17 @@ class MapService(MapServiceValidation):
         idlayer = self.request.matchdict.get('idlayer')
         layer = self._get_layer_resource(idlayer)
 
-        legend = {'layer': layer}
+        # only stored layers_config table at the moment
+        query = self.request.db.query(LayersConfig)
+        query = query.filter(LayersConfig.idBod == idlayer)
+        query = query.one()
+        config = query.getLayerConfig(self.translate)
+        hasLegend = config[idlayer]['hasLegend']
+
+        legend = {
+            'layer': layer,
+            'hasLegend': hasLegend
+        }
         response = render_to_response(
             'chsdi:templates/legend.mako', legend, request=self.request
         )
@@ -166,6 +175,7 @@ class MapService(MapServiceValidation):
             raise exc.HTTPNotFound('No feature with id %s' % idfeature)
 
         template = 'chsdi:%s' % model_containing_feature_id.__template__
+
         feature.update({'attribution': layer.get('attributes')['dataOwner']})
         feature.update({'fullName': layer.get('fullName')})
         response = render_to_response(

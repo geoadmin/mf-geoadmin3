@@ -71,7 +71,7 @@ class LayersConfig(Base):
     idBod = Column('layer_id', Text, primary_key=True)
     attribution = Column('attribution', Text)
     background = Column('backgroundlayer', Boolean)
-    haslegend = Column('haslegend', Boolean)
+    hasLegend = Column('haslegend', Boolean)
     format = Column('image_format', Text)
     type = Column('layertype', Text)
     opacity = Column('opacity', postgresql.DOUBLE_PRECISION)
