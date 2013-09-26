@@ -8,28 +8,27 @@
   ]);
 
   module.provider('gaBrowserSniffer', function() {
-    var msie =
-      +((/msie (\d+)/.exec(navigator.userAgent.toLowerCase()) || [])[1]);
-    var testSize = function(size) {
-      var m = window.matchMedia;
-      return m && m('(max-width: ' + size + 'px)').matches;
-    };
-    var mobile =
-      (('ontouchstart' in window) || ('onmsgesturechange' in window)) &&
-      (testSize(768));
-
     // holds major version number for IE or NaN for real browsers
-    this.$get = function(gaPermalink) {
-
-      var p = gaPermalink.getParams();
-
-      var Sniffer = function() {
-        this.msie = msie;
-        this.mobile = (mobile && p.mobile != 'false') || p.mobile == 'true';
-        this.phone = this.mobile && testSize(480);
+    this.$get = function($window, gaPermalink) {
+      var ua = $window.navigator.userAgent;
+      var msie = +((/msie (\d+)/.exec(ua.toLowerCase()) || [])[1]);
+      var ios = /(iPhone|iPad)/.test(ua);
+      var testSize = function(size) {
+        var m = $window.matchMedia;
+        return m && m('(max-width: ' + size + 'px)').matches;
       };
+      var mobile =
+        (('ontouchstart' in $window) || ('onmsgesturechange' in $window)) &&
+        (testSize(768));
+      var p = gaPermalink.getParams(),
+          mobile = (mobile && p.mobile != 'false') || p.mobile == 'true';
 
-      return new Sniffer();
+      return {
+        msie: msie,
+        ios: ios,
+        mobile: mobile,
+        phone: mobile && testSize(480)
+      };
     };
 
   });
