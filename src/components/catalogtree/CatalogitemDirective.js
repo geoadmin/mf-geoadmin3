@@ -36,15 +36,6 @@
               scope.removePreviewLayer = removePreviewLayer;
               scope.inPreviewMode = inPreviewMode;
 
-              // Add active layer initially
-              if (scope.item.children === undefined &&
-                  scope.item.selectedOpen) {
-                var layer = getMapLayer(scope.map, scope.item.idBod);
-                if (!angular.isDefined(layer)) {
-                  addLayer(scope.map, scope.item);
-                }
-              }
-
               compiledContent(scope, function(clone, scope) {
                 iEl.append(clone);
               });
