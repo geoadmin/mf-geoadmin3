@@ -1,9 +1,11 @@
 (function() {
   goog.provide('ga_catalogtree_directive');
 
+  goog.require('ga_catalogtree_service');
   goog.require('ga_map_service');
 
   var module = angular.module('ga_catalogtree_directive', [
+    'ga_catalogtree_service',
     'ga_map_service',
     'pascalprecht.translate'
   ]);
@@ -12,7 +14,7 @@
    * See examples on how it can be used
    */
   module.directive('gaCatalogtree',
-      function($http, $translate, gaLayers) {
+      function($http, $translate, gaCatalogtreeMapUtils, gaLayers) {
 
         return {
           restrict: 'A',
@@ -83,7 +85,17 @@
             });
 
             scope.$on('gaLayersChange', function() {
-              updateCatalogTree();
+              updateCatalogTree().then(function(oldAndNewTrees) {
+                visitTreeLeaves(oldAndNewTrees.newTree, function(leaf) {
+                  var map = scope.map;
+                  var idBod = leaf.idBod;
+                  var selected = leaf.selectedOpen;
+                  if (selected && !angular.isDefined(
+                      gaCatalogtreeMapUtils.getMapLayer(map, idBod))) {
+                    gaCatalogtreeMapUtils.addLayer(map, leaf);
+                  }
+                });
+              });
             });
 
             scope.$on('gaTopicChange', function(event, topic) {
@@ -116,6 +128,19 @@
           } else if (node.children) {
             for (var i = 0; i < node.children.length; i++) {
               deselectInTree(node.children[i], id);
+            }
+          }
+        }
+
+        function visitTreeLeaves(node, fn) {
+          if (!angular.isDefined(node.children)) {
+            // "node" is a leaf
+            fn(node);
+          } else {
+            var i;
+            var len = node.children.length;
+            for (i = 0; i < len; ++i) {
+              visitTreeLeaves(node.children[i], fn);
             }
           }
         }
