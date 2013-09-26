@@ -82,10 +82,13 @@
               }
             });
 
+            scope.$on('gaLayersChange', function() {
+              updateCatalogTree();
+            });
+
             scope.$on('gaTopicChange', function(event, topic) {
               currentTopic = topic.id;
-              updateCatalogTree();
-           });
+            });
 
             scope.map.getLayers().on('remove', function(evt) {
               var layer = evt.getElement();
