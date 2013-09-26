@@ -8,20 +8,18 @@
   ]);
 
   module.provider('gaBrowserSniffer', function() {
-    var msie =
-      +((/msie (\d+)/.exec(navigator.userAgent.toLowerCase()) || [])[1]);
-    var ios = /(iPhone|iPad)/.test(navigator.userAgent);
-    var testSize = function(size) {
-      var m = window.matchMedia;
-      return m && m('(max-width: ' + size + 'px)').matches;
-    };
-    var mobile =
-      (('ontouchstart' in window) || ('onmsgesturechange' in window)) &&
-      (testSize(768));
-
     // holds major version number for IE or NaN for real browsers
-    this.$get = function(gaPermalink) {
-
+    this.$get = function($window, gaPermalink) {
+      var ua = $window.navigator.userAgent;
+      var msie = +((/msie (\d+)/.exec(ua.toLowerCase()) || [])[1]);
+      var ios = /(iPhone|iPad)/.test(ua);
+      var testSize = function(size) {
+        var m = $window.matchMedia;
+        return m && m('(max-width: ' + size + 'px)').matches;
+      };
+      var mobile =
+        (('ontouchstart' in $window) || ('onmsgesturechange' in $window)) &&
+        (testSize(768));
       var p = gaPermalink.getParams(),
           mobile = (mobile && p.mobile != 'false') || p.mobile == 'true';
 

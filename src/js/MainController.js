@@ -39,7 +39,7 @@
    * The application's main controller.
    */
 module.controller('GaMainController',
-  function($scope, $rootScope, $translate, $timeout, gaPermalink,
+  function($scope, $rootScope, $translate, $timeout, $window,  gaPermalink,
     gaBrowserSniffer) {
 
       var mobile = (gaBrowserSniffer.mobile) ? 'false' : 'true',
@@ -65,18 +65,18 @@ module.controller('GaMainController',
       $scope.globals = {
         searchFocused: false,
         homescreen: false,
-        tablet: gaBrowserSniffer.mobile && ! gaBrowserSniffer.phone
+        tablet: gaBrowserSniffer.mobile && !gaBrowserSniffer.phone
       };
 
-      $timeout(function(){
+      $timeout(function() {
         $scope.globals.homescreen = gaBrowserSniffer.ios &&
-          !(window.localStorage.getItem('homescreen') == dismiss) &&
-          !navigator.standalone;
-        $scope.$watch('globals.homescreen', function(newVal){
+          !($window.localStorage.getItem('homescreen') == dismiss) &&
+          !$window.navigator.standalone;
+        $scope.$watch('globals.homescreen', function(newVal) {
           if (newVal == true) {
             return;
           }
-          window.localStorage.setItem('homescreen', dismiss);
+          $window.localStorage.setItem('homescreen', dismiss);
         });
       }, 2000);
 
