@@ -387,7 +387,7 @@
       </div>
     </div><!-- end Import KML -->
 
-    <div class="popover top homescreen" ng-if="globals.homescreen" ng-class="globals.homescreen?'visible':''">
+    <div class="popover homescreen" ng-if="globals.homescreen" ng-class="[globals.homescreen?'visible':'', globals.tablet?'bottom':'top']">
       <div class="arrow"></div>
       <h3 class="popover-title">
         <span translate>homescreen_title</span>
