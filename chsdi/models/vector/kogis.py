@@ -10,6 +10,7 @@ from chsdi.models.vector import Vector
 
 Base = bases['kogis']
 
+
 class Gebaeuderegister(Base, Vector):
     # view in a schema
     __tablename__ = 'adr'
@@ -32,6 +33,7 @@ class Gebaeuderegister(Base, Vector):
 
 register('ch.bfs.gebaeude_wohnungs_register', Gebaeuderegister)
 
+
 class AGNES(Base, Vector):
     # view in a schema
     __tablename__ = 'agnes'
@@ -46,12 +48,13 @@ class AGNES(Base, Vector):
 
 register('ch.swisstopo.fixpunkte-agnes', AGNES)
 
+
 class FIXPUNKTE_LFP1(Base, Vector):
     # view in a schema
     __tablename__ = 'punkt_lage_lfp1'
     __table_args__ = ({'schema': 'fpds', 'autoload': False})
     __template__ = 'templates/htmlpopup/fixpunkte.mako'
-    __queryable_attributes__ = ['pointid','nummer']
+    __queryable_attributes__ = ['pointid', 'nummer']
     __esriId__ = 3000
     __bodId__ = 'ch.swisstopo.fixpunkte-lfp1'
     id = Column('pointid', Text, primary_key=True)
@@ -70,12 +73,13 @@ class FIXPUNKTE_LFP1(Base, Vector):
 
 register('ch.swisstopo.fixpunkte-lfp1', FIXPUNKTE_LFP1)
 
+
 class FIXPUNKTE_LFP2(Base, Vector):
     # view in a schema
     __tablename__ = 'punkt_lage_lfp2'
     __table_args__ = ({'schema': 'fpds', 'autoload': False})
     __template__ = 'templates/htmlpopup/fixpunkte.mako'
-    __queryable_attributes__ = ['pointid','nummer']
+    __queryable_attributes__ = ['pointid', 'nummer']
     __esriId__ = 3000
     __bodId__ = 'ch.swisstopo.fixpunkte-lfp2'
     id = Column('pointid', Text, primary_key=True)
@@ -94,12 +98,13 @@ class FIXPUNKTE_LFP2(Base, Vector):
 
 register('ch.swisstopo.fixpunkte-lfp2', FIXPUNKTE_LFP2)
 
+
 class FIXPUNKTE_HFP1(Base, Vector):
     # view in a schema
     __tablename__ = 'punkt_hoehe_hfp1'
     __table_args__ = ({'schema': 'fpds', 'autoload': True})
     __template__ = 'templates/htmlpopup/fixpunkte.mako'
-    __queryable_attributes__ = ['pointid','nummer','bgdi_label']
+    __queryable_attributes__ = ['pointid', 'nummer', 'bgdi_label']
     __esriId__ = 3000
     __bodId__ = 'ch.swisstopo.fixpunkte-hfp1'
     id = Column('pointid', Text, primary_key=True)
@@ -118,12 +123,13 @@ class FIXPUNKTE_HFP1(Base, Vector):
 
 register('ch.swisstopo.fixpunkte-hfp1', FIXPUNKTE_HFP1)
 
+
 class FIXPUNKTE_HFP2(Base, Vector):
     # view in a schema
     __tablename__ = 'punkt_hoehe_hfp2'
     __table_args__ = ({'schema': 'fpds', 'autoload': True})
     __template__ = 'templates/htmlpopup/fixpunkte.mako'
-    __queryable_attributes__ = ['pointid','nummer']
+    __queryable_attributes__ = ['pointid', 'nummer']
     __esriId__ = 3000
     __bodId__ = 'ch.swisstopo.fixpunkte-hfp1'
     id = Column('pointid', Text, primary_key=True)
