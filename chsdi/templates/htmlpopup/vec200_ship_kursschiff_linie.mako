@@ -1,7 +1,7 @@
 <%inherit file="base.mako"/>
 
 <%def name="table_body(c,lang)">
-    <% c[stable_id] = True %>
+    <% c['stable_id'] = True %>
     <tr><td width="150">${_('zielhafen')}</td><td>
         % if c['attributes']['detn'].strip() in ['N_A','N_P']:
         -

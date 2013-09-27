@@ -1,7 +1,7 @@
 <%inherit file="base.mako"/>
 
 <%def name="table_body(c,lang)">
-    <% c[stable_id] = True %>
+    <% c['stable_id'] = True %>
     <tr><td width="150">${_('plz')}</td>    <td>${c['attributes']['plz'] or '-'}</td></tr>
     <tr><td width="150">${_('zusziff')}</td>
         % if len(str(c['attributes']['zusziff'])) == 1:

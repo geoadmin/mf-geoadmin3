@@ -1,7 +1,6 @@
 <%inherit file="base.mako"/>
 
 <%def name="table_body(c,lang)">
-    <% c[stable_id] = False %>
     % if c['attributes']['ak'] in ['D','I','F','AUT']:
         <tr><td width="150">${_('No info outside CH and FL')}</td><td></td></tr>
     % elif c['attributes']['ak'] == 'AG':

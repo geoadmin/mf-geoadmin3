@@ -1,7 +1,7 @@
 <%inherit file="base.mako"/>
 
 <%def name="table_body(c,lang)">
-    <% c[stable_id] = True %>
+    <% c['stable_id'] = True %>
     % if c['attributes']['objval'].strip() in ['Gletscher', 'Stadtzentr', 'Sumpf', 'See', 'Siedl', 'Stausee']:
         <tr><th colspan=2>${_(c['attributes']['objval'])}:</th></tr>
         <tr><td width="150">${_('name_lang1')}</td><td>
