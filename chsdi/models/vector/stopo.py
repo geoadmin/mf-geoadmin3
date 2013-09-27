@@ -4,11 +4,12 @@ from sqlalchemy import Column, Text, Integer
 from sqlalchemy.types import Numeric
 from geoalchemy import GeometryColumn, Geometry
 
-from chsdi.models import  *
+from chsdi.models import *
 from chsdi.models.vector import Vector
 
 
 Base = bases['stopo']
+
 
 class SwissboundariesBezirk(Base, Vector):
     __tablename__ = 'swissboundaries_bezirke'
@@ -17,11 +18,12 @@ class SwissboundariesBezirk(Base, Vector):
     __esriId__ = 1000
     __bodId__ = 'ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill'
     id = Column('id', Integer, primary_key=True)
-    name = Column('name',Text)
-    flaeche = Column('flaeche',Numeric)
+    name = Column('name', Text)
+    flaeche = Column('flaeche', Numeric)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill', SwissboundariesBezirk)
+
 
 class SwissboundariesGemeinde(Base, Vector):
     __tablename__ = 'swissboundaries_gemeinden'
@@ -30,12 +32,13 @@ class SwissboundariesGemeinde(Base, Vector):
     __esriId__ = 1000
     __bodId__ = 'ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill'
     id = Column('id', Integer, primary_key=True)
-    gemname = Column('gemname',Text)
-    gemflaeche = Column('gemflaeche',Numeric)
-    perimeter = Column('perimeter',Numeric)
+    gemname = Column('gemname', Text)
+    gemflaeche = Column('gemflaeche', Numeric)
+    perimeter = Column('perimeter', Numeric)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill', SwissboundariesGemeinde)
+
 
 class SwissboundariesKanton(Base, Vector):
     __tablename__ = 'swissboundaries_kantone'
@@ -44,15 +47,15 @@ class SwissboundariesKanton(Base, Vector):
     __esriId__ = 1000
     __bodId__ = 'ch.swisstopo.swissboundaries3d-kanton-flaeche.fill'
     id = Column('kantonsnr', Integer, primary_key=True)
-    ak = Column('ak',Text)
-    name = Column('name',Text)
-    flaeche = Column('flaeche',Numeric)
+    ak = Column('ak', Text)
+    name = Column('name', Text)
+    flaeche = Column('flaeche', Numeric)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.swissboundaries3d-kanton-flaeche.fill', SwissboundariesKanton)
 
-## c.bbox not supported in the mako...
-#class CadastralWebMap(Base, Vector):
+# c.bbox not supported in the mako...
+# class CadastralWebMap(Base, Vector):
 #    __tablename__ = 'kantone25plus'
 #    __table_args__ = ({'autoload': False})
 #    __template__ = 'templates/htmlpopup/cadastralwebmap.mako'
@@ -65,7 +68,8 @@ register('ch.swisstopo.swissboundaries3d-kanton-flaeche.fill', SwissboundariesKa
 #    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 #
 #register('ch.kantone.cadastralwebmap-farbe', CadastralWebMap)
- 
+
+
 class Vec200Terminal(Base, Vector):
     __tablename__ = 'vec200_terminal_tiles'
     __table_args__ = ({'autoload': False})
@@ -73,8 +77,9 @@ class Vec200Terminal(Base, Vector):
     __esriId__ = 1000
     __bodId__ = 'ch.swisstopo.vec200-transportation-oeffentliche-verkehr'
     id = Column('gtdboid', Text, primary_key=True)
-    objval = Column('objval',Text)
+    objval = Column('objval', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
 
 class Vec200ShipKursschiff(Base, Vector):
     __tablename__ = 'v200_ship_kursschiff_linie_tooltip'
@@ -83,10 +88,11 @@ class Vec200ShipKursschiff(Base, Vector):
     __esriId__ = 1000
     __bodId__ = 'ch.swisstopo.vec200-transportation-oeffentliche-verkehr'
     id = Column('gtdboid', Text, primary_key=True)
-    detn = Column('detn',Text)
-    rsu = Column('rsu',Text)
-    use = Column('use',Text)
+    detn = Column('detn', Text)
+    rsu = Column('rsu', Text)
+    use = Column('use', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
 
 class Vec200Railway(Base, Vector):
     __tablename__ = 'vec200_railway_tiles'
@@ -95,13 +101,14 @@ class Vec200Railway(Base, Vector):
     __esriId__ = 1000
     __bodId__ = 'ch.swisstopo.vec200-transportation-oeffentliche-verkehr'
     id = Column('gtdboid', Text, primary_key=True)
-    objval = Column('objval',Text)
-    construct = Column('construct',Text)
+    objval = Column('objval', Text)
+    construct = Column('construct', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.vec200-transportation-oeffentliche-verkehr', Vec200Terminal)
 register('ch.swisstopo.vec200-transportation-oeffentliche-verkehr', Vec200ShipKursschiff)
 register('ch.swisstopo.vec200-transportation-oeffentliche-verkehr', Vec200Railway)
+
 
 class treasurehunt(Base, Vector):
     __tablename__ = 'treasurehunt'
@@ -124,7 +131,8 @@ class treasurehunt(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.treasurehunt', treasurehunt)
- 
+
+
 class Vec200Trafficinfo(Base, Vector):
     __tablename__ = 'vec200_trafficinfo_tiles'
     __table_args__ = ({'autoload': False})
@@ -132,22 +140,24 @@ class Vec200Trafficinfo(Base, Vector):
     __esriId__ = 1000
     __bodId__ = 'ch.swisstopo.vec200-transportation-strassennetz'
     id = Column('gtdboid', Text, primary_key=True)
-    objname = Column('objname',Text)
-    objval = Column('objval',Text)
+    objname = Column('objname', Text)
+    objval = Column('objval', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
+
 class Vec200ShipAutofaehre(Base, Vector):
-     __tablename__ = 'v200_ship_autofaehre_tooltip'
-     __table_args__ = ({'autoload': False})
-     __template__ = 'templates/htmlpopup/vec200_ship_autofaehre.mako'
-     __esriId__ = 1000
-     __bodId__ = 'ch.swisstopo.vec200-transportation-strassennetz'
-     id = Column('gtdboid', Text, primary_key=True)
-     use = Column('use',Text)
-     rsu = Column('rsu',Text)
-     detn = Column('detn',Text)
-     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
- 
+    __tablename__ = 'v200_ship_autofaehre_tooltip'
+    __table_args__ = ({'autoload': False})
+    __template__ = 'templates/htmlpopup/vec200_ship_autofaehre.mako'
+    __esriId__ = 1000
+    __bodId__ = 'ch.swisstopo.vec200-transportation-strassennetz'
+    id = Column('gtdboid', Text, primary_key=True)
+    use = Column('use', Text)
+    rsu = Column('rsu', Text)
+    detn = Column('detn', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+
 class Vec200Road(Base, Vector):
     __tablename__ = 'vec200_road_tiles'
     __table_args__ = ({'autoload': False})
@@ -155,10 +165,11 @@ class Vec200Road(Base, Vector):
     __esriId__ = 1000
     __bodId__ = 'ch.swisstopo.vec200-transportation-strassennetz'
     id = Column('gtdboid', Text, primary_key=True)
-    construct = Column('construct',Text)
-    objval = Column('objval',Text)
-    toll = Column('toll',Text)
+    construct = Column('construct', Text)
+    objval = Column('objval', Text)
+    toll = Column('toll', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
 
 class Vec200Ramp(Base, Vector):
     __tablename__ = 'vec200_ramp_tiles'
@@ -167,10 +178,11 @@ class Vec200Ramp(Base, Vector):
     __esriId__ = 1000
     __bodId__ = 'ch.swisstopo.vec200-transportation-strassennetz'
     id = Column('gtdboid', Text, primary_key=True)
-    construct = Column('construct',Text)
-    objval = Column('objval',Text)
-    toll = Column('toll',Text)
+    construct = Column('construct', Text)
+    objval = Column('objval', Text)
+    toll = Column('toll', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
 
 class Vec200Customsoffice(Base, Vector):
     __tablename__ = 'vec200_customsoffice_tiles'
@@ -188,6 +200,7 @@ register('ch.swisstopo.vec200-transportation-strassennetz', Vec200Road)
 register('ch.swisstopo.vec200-transportation-strassennetz', Vec200Ramp)
 register('ch.swisstopo.vec200-transportation-strassennetz', Vec200Customsoffice)
 
+
 class Vec200Protectedarea(Base, Vector):
     __tablename__ = 'vec200_protectedarea'
     __table_args__ = ({'autoload': False})
@@ -200,6 +213,7 @@ class Vec200Protectedarea(Base, Vector):
 
 register('ch.swisstopo.vec200-adminboundaries-protectedarea', Vec200Protectedarea)
 
+
 class Vec200Flowingwater(Base, Vector):
     __tablename__ = 'vec200_flowingwater'
     __table_args__ = ({'autoload': False})
@@ -211,7 +225,8 @@ class Vec200Flowingwater(Base, Vector):
     exs = Column('exs', Text)
     hoc = Column('hoc', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
- 
+
+
 class Vec200Stagnantwater(Base, Vector):
     __tablename__ = 'vec200_stagnantwater'
     __table_args__ = ({'autoload': False})
@@ -225,6 +240,7 @@ class Vec200Stagnantwater(Base, Vector):
 
 register('ch.swisstopo.vec200-hydrography', Vec200Flowingwater)
 register('ch.swisstopo.vec200-hydrography', Vec200Stagnantwater)
+
 
 class Vec200Landcover(Base, Vector):
     __tablename__ = 'vec200_landcover'
@@ -241,6 +257,7 @@ class Vec200Landcover(Base, Vector):
 
 register('ch.swisstopo.vec200-landcover', Vec200Landcover)
 
+
 class Vec200Builtupp(Base, Vector):
     __tablename__ = 'vec200_builtupp'
     __table_args__ = ({'autoload': False})
@@ -251,6 +268,7 @@ class Vec200Builtupp(Base, Vector):
     objname = Column('objname', Text)
     ppi = Column('ppi', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
 
 class Vec200Poi(Base, Vector):
     __tablename__ = 'v200_poi_tooltip'
@@ -264,6 +282,7 @@ class Vec200Poi(Base, Vector):
     ppc = Column('ppc', Text)
     pro = Column('pro', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
 
 class Vec200Supply(Base, Vector):
     __tablename__ = 'vec200_supply'
@@ -281,6 +300,7 @@ register('ch.swisstopo.vec200-miscellaneous', Vec200Builtupp)
 register('ch.swisstopo.vec200-miscellaneous', Vec200Poi)
 register('ch.swisstopo.vec200-miscellaneous', Vec200Supply)
 
+
 class Vec200Namedlocation(Base, Vector):
     __tablename__ = 'vec200_namedlocation'
     __table_args__ = ({'autoload': False})
@@ -295,6 +315,7 @@ class Vec200Namedlocation(Base, Vector):
 
 register('ch.swisstopo.vec200-names-namedlocation', Vec200Namedlocation)
 
+
 class Vec25Strassennetz(Base, Vector):
     __tablename__ = 'v25_str_25_l_tooltip'
     __table_args__ = ({'autoload': False})
@@ -307,6 +328,7 @@ class Vec25Strassennetz(Base, Vector):
 
 register('ch.swisstopo.vec25-strassennetz', Vec25Strassennetz)
 
+
 class Vec25Uebrige(Base, Vector):
     __tablename__ = 'v25_uvk_25_l'
     __table_args__ = ({'autoload': False})
@@ -318,6 +340,7 @@ class Vec25Uebrige(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.vec25-uebrigerverkehr', Vec25Uebrige)
+
 
 class Vec25Anlagen(Base, Vector):
     __tablename__ = 'v25_anl_25_a'
@@ -332,6 +355,7 @@ class Vec25Anlagen(Base, Vector):
 
 register('ch.swisstopo.vec25-anlagen', Vec25Anlagen)
 
+
 class Vec25Eisenbahnnetz(Base, Vector):
     __tablename__ = 'v25_eis_25_l'
     __table_args__ = ({'autoload': False})
@@ -343,6 +367,7 @@ class Vec25Eisenbahnnetz(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.vec25-eisenbahnnetz', Vec25Eisenbahnnetz)
+
 
 class Vec25Gebaeude(Base, Vector):
     __tablename__ = 'v25_geb_25_a'
@@ -356,6 +381,7 @@ class Vec25Gebaeude(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.vec25-gebaeude', Vec25Gebaeude)
+
 
 class Vec25Gewaessernetz(Base, Vector):
     __tablename__ = 'v25_gwn_25_l'
@@ -372,6 +398,7 @@ class Vec25Gewaessernetz(Base, Vector):
 
 register('ch.swisstopo.vec25-gewaessernetz', Vec25Gewaessernetz)
 
+
 class Vec25Primaerflaechen(Base, Vector):
     __tablename__ = 'v25_pri25_a'
     __table_args__ = ({'autoload': False})
@@ -382,8 +409,9 @@ class Vec25Primaerflaechen(Base, Vector):
     area = Column('area', Numeric)
     perimeter = Column('perimeter', Numeric)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
- 
+
 register('ch.swisstopo.vec25-primaerflaechen', Vec25Primaerflaechen)
+
 
 class Vec25Einzelobjekte(Base, Vector):
     __tablename__ = 'v25_eob_25_l'
@@ -397,6 +425,7 @@ class Vec25Einzelobjekte(Base, Vector):
 
 register('ch.swisstopo.vec25-einzelobjekte', Vec25Einzelobjekte)
 
+
 class Vec25Heckenbaeume(Base, Vector):
     __tablename__ = 'v25_heb_25_l'
     __table_args__ = ({'autoload': False})
@@ -409,6 +438,7 @@ class Vec25Heckenbaeume(Base, Vector):
 
 register('ch.swisstopo.vec25-heckenbaeume', Vec25Heckenbaeume)
 
+
 class Dreiecksvermaschung(Base, Vector):
     __tablename__ = 'dreiecksvermaschung'
     __table_args__ = ({'schema': 'geodaesie', 'autoload': False})
@@ -416,12 +446,13 @@ class Dreiecksvermaschung(Base, Vector):
     __esriId__ = 1000
     __bodId__ = 'ch.swisstopo.dreiecksvermaschung'
     id = Column('bgdi_id', Integer, primary_key=True)
-    nom = Column('nom',Text)
-    num = Column('num',Text)
-    type = Column('type',Text)        
+    nom = Column('nom', Text)
+    num = Column('num', Text)
+    type = Column('type', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.dreiecksvermaschung',Dreiecksvermaschung)
+register('ch.swisstopo.dreiecksvermaschung', Dreiecksvermaschung)
+
 
 class DufourErst(Base, Vector):
     __tablename__ = 'view_gridstand_datenhaltung_dufour_erst'
@@ -434,7 +465,8 @@ class DufourErst(Base, Vector):
     datenstand = Column('datenstand', Numeric)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.hiks-dufour',DufourErst)
+register('ch.swisstopo.hiks-dufour', DufourErst)
+
 
 class SiegfriedErst(Base, Vector):
     __tablename__ = 'view_gridstand_datenhaltung_siegfried_erst'
@@ -447,9 +479,11 @@ class SiegfriedErst(Base, Vector):
     datenstand = Column('datenstand', Numeric)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.hiks-siegfried',SiegfriedErst)
+register('ch.swisstopo.hiks-siegfried', SiegfriedErst)
 
-#two registers...
+# two registers...
+
+
 class GridstandPk25(Base, Vector):
     __tablename__ = 'view_gridstand_datenhaltung_pk25_tilecache'
     __table_args__ = ({'schema': 'datenstand', 'autoload': False})
@@ -461,10 +495,12 @@ class GridstandPk25(Base, Vector):
     release = Column('release', Integer)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.pixelkarte-pk25.metadata',GridstandPk25)
-register('ch.swisstopo.pixelkarte-farbe-pk25.noscale',GridstandPk25)
+register('ch.swisstopo.pixelkarte-pk25.metadata', GridstandPk25)
+register('ch.swisstopo.pixelkarte-farbe-pk25.noscale', GridstandPk25)
 
-#two registers...
+# two registers...
+
+
 class GridstandPk50(Base, Vector):
     __tablename__ = 'view_gridstand_datenhaltung_pk50_tilecache'
     __table_args__ = ({'schema': 'datenstand', 'autoload': False})
@@ -476,10 +512,12 @@ class GridstandPk50(Base, Vector):
     release = Column('release', Integer)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.pixelkarte-pk50.metadata',GridstandPk50)
-register('ch.swisstopo.pixelkarte-farbe-pk50.noscale',GridstandPk50)
+register('ch.swisstopo.pixelkarte-pk50.metadata', GridstandPk50)
+register('ch.swisstopo.pixelkarte-farbe-pk50.noscale', GridstandPk50)
 
-#two registers...
+# two registers...
+
+
 class GridstandPk100(Base, Vector):
     __tablename__ = 'view_gridstand_datenhaltung_pk100_tilecache'
     __table_args__ = ({'schema': 'datenstand', 'autoload': False})
@@ -491,10 +529,12 @@ class GridstandPk100(Base, Vector):
     release = Column('release', Integer)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.pixelkarte-pk100.metadata',GridstandPk100)
-register('ch.swisstopo.pixelkarte-farbe-pk100.noscale',GridstandPk100)
+register('ch.swisstopo.pixelkarte-pk100.metadata', GridstandPk100)
+register('ch.swisstopo.pixelkarte-farbe-pk100.noscale', GridstandPk100)
 
-#two registers...
+# two registers...
+
+
 class GridstandPk200(Base, Vector):
     __tablename__ = 'view_gridstand_datenhaltung_pk200_tilecache'
     __table_args__ = ({'schema': 'datenstand', 'autoload': False})
@@ -506,10 +546,12 @@ class GridstandPk200(Base, Vector):
     release = Column('release', Integer)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.pixelkarte-pk200.metadata',GridstandPk200)
-register('ch.swisstopo.pixelkarte-farbe-pk200.noscale',GridstandPk200)
+register('ch.swisstopo.pixelkarte-pk200.metadata', GridstandPk200)
+register('ch.swisstopo.pixelkarte-farbe-pk200.noscale', GridstandPk200)
 
-#two registers...
+# two registers...
+
+
 class GridstandPk500(Base, Vector):
     __tablename__ = 'view_gridstand_datenhaltung_pk500_tilecache'
     __table_args__ = ({'schema': 'datenstand', 'autoload': False})
@@ -521,8 +563,9 @@ class GridstandPk500(Base, Vector):
     release = Column('release', Integer)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.pixelkarte-pk500.metadata',GridstandPk500)
-register('ch.swisstopo.pixelkarte-farbe-pk500.noscale',GridstandPk500)
+register('ch.swisstopo.pixelkarte-pk500.metadata', GridstandPk500)
+register('ch.swisstopo.pixelkarte-farbe-pk500.noscale', GridstandPk500)
+
 
 class GridstandSwissimage(Base, Vector):
     __tablename__ = 'view_gridstand_datenhaltung_swissimage_tilecache'
@@ -535,7 +578,8 @@ class GridstandSwissimage(Base, Vector):
     datenstand = Column('datenstand', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.images-swissimage.metadata',GridstandSwissimage)
+register('ch.swisstopo.images-swissimage.metadata', GridstandSwissimage)
+
 
 class GeolKarten500Metadata(Base, Vector):
     __tablename__ = 'gk500'
@@ -546,8 +590,9 @@ class GeolKarten500Metadata(Base, Vector):
     id = Column('bgdi_id', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.geologie-geolkarten500.metadata',GeolKarten500Metadata)
- 
+register('ch.swisstopo.geologie-geolkarten500.metadata', GeolKarten500Metadata)
+
+
 class GeologischerAtlasPK(Base, Vector):
     __tablename__ = 'kv_ga25_pk'
     __table_args__ = ({'schema': 'geol', 'autoload': False})
@@ -560,7 +605,8 @@ class GeologischerAtlasPK(Base, Vector):
     jahr = Column('jahr', Numeric)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.geologie-geologischer_atlas',GeologischerAtlasPK)
+register('ch.swisstopo.geologie-geologischer_atlas', GeologischerAtlasPK)
+
 
 class GeologischeKarteLine(Base, Vector):
     __tablename__ = 'geologische_karte_line'
@@ -569,10 +615,11 @@ class GeologischeKarteLine(Base, Vector):
     __esriId__ = 1000
     __bodId__ = 'ch.swisstopo.geologie-geologische_karte'
     id = Column('fid', Text, primary_key=True)
-    gid = Column ('id', Integer)
-    type_de = Column('type_de',Text)
-    type_fr = Column('type_fr',Text)
+    gid = Column('id', Integer)
+    type_de = Column('type_de', Text)
+    type_fr = Column('type_fr', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
 
 class GeologischeKartePlg(Base, Vector):
     __tablename__ = 'geologische_karte_plg'
@@ -585,8 +632,9 @@ class GeologischeKartePlg(Base, Vector):
     leg_geol_f = Column('leg_geol_f', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.geologie-geologische_karte',GeologischeKarteLine)
-register('ch.swisstopo.geologie-geologische_karte',GeologischeKartePlg)
+register('ch.swisstopo.geologie-geologische_karte', GeologischeKarteLine)
+register('ch.swisstopo.geologie-geologische_karte', GeologischeKartePlg)
+
 
 class GeologieMineralischeRohstoffe200(Base, Vector):
     __tablename__ = 'geotechnik_mineralische_rohstoffe200'
@@ -599,7 +647,8 @@ class GeologieMineralischeRohstoffe200(Base, Vector):
     area_name = Column('area_name', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.geologie-geotechnik-mineralische_rohstoffe200',GeologieMineralischeRohstoffe200)
+register('ch.swisstopo.geologie-geotechnik-mineralische_rohstoffe200', GeologieMineralischeRohstoffe200)
+
 
 class GeologieGeotechnikGk200(Base, Vector):
     __tablename__ = 'geotechnik_gk200_lgd'
@@ -611,10 +660,11 @@ class GeologieGeotechnikGk200(Base, Vector):
     file_name = Column('file_name', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.geologie-geotechnik-gk200',GeologieGeotechnikGk200)
+register('ch.swisstopo.geologie-geotechnik-gk200', GeologieGeotechnikGk200)
+
 
 class Gk500_Gensese (Base, Vector):
-    __tablename__ = 'gk500_genese' 
+    __tablename__ = 'gk500_genese'
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/gk500-genese.mako'
     __esriId__ = 1000
@@ -628,10 +678,11 @@ class Gk500_Gensese (Base, Vector):
     bgdi_tooltip_color = Column('bgdi_tooltip_color', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.geologie-geotechnik-gk500-genese',Gk500_Gensese)
+register('ch.swisstopo.geologie-geotechnik-gk500-genese', Gk500_Gensese)
+
 
 class Gk500_Gesteinsklassierung (Base, Vector):
-    __tablename__ = 'gk500_gesteinsklassierung' 
+    __tablename__ = 'gk500_gesteinsklassierung'
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/gk500-gesteinsklassierung.mako'
     __esriId__ = 1000
@@ -645,7 +696,8 @@ class Gk500_Gesteinsklassierung (Base, Vector):
     bgdi_tooltip_color = Column('bgdi_tooltip_color', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.geologie-geotechnik-gk500-gesteinsklassierung',Gk500_Gesteinsklassierung)
+register('ch.swisstopo.geologie-geotechnik-gk500-gesteinsklassierung', Gk500_Gesteinsklassierung)
+
 
 class Gk500_lithologie_hauptgruppen(Base, Vector):
     __tablename__ = 'gk500_lithologie_hauptgruppen'
@@ -655,14 +707,15 @@ class Gk500_lithologie_hauptgruppen(Base, Vector):
     __bodId__ = 'ch.swisstopo.geologie-geotechnik-gk500-lithologie_hauptgruppen'
     id = Column('bgdi_id', Integer, primary_key=True)
     bgdi_tooltip_de = Column('bgdi_tooltip_de', Text)
-    bgdi_tooltip_fr= Column('bgdi_tooltip_fr', Text)
+    bgdi_tooltip_fr = Column('bgdi_tooltip_fr', Text)
     bgdi_tooltip_en = Column('bgdi_tooltip_en', Text)
     bgdi_tooltip_it = Column('bgdi_tooltip_it', Text)
     bgdi_tooltip_rm = Column('bgdi_tooltip_rm', Text)
     bgdi_tooltip_color = Column('bgdi_tooltip_color', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.geologie-geotechnik-gk500-lithologie_hauptgruppen',Gk500_lithologie_hauptgruppen)
+register('ch.swisstopo.geologie-geotechnik-gk500-lithologie_hauptgruppen', Gk500_lithologie_hauptgruppen)
+
 
 class GeologieGeotechnikSteinbrueche1980(Base, Vector):
     __tablename__ = 'geotechnik_steinbrueche_1980'
@@ -675,7 +728,8 @@ class GeologieGeotechnikSteinbrueche1980(Base, Vector):
     gestein = Column('gestein', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.geologie-geotechnik-steinbrueche_1980',GeologieGeotechnikSteinbrueche1980)
+register('ch.swisstopo.geologie-geotechnik-steinbrueche_1980', GeologieGeotechnikSteinbrueche1980)
+
 
 class GeologieGeotechnikSteinbrueche1995(Base, Vector):
     __tablename__ = 'geotechnik_steinbrueche_1995'
@@ -688,7 +742,8 @@ class GeologieGeotechnikSteinbrueche1995(Base, Vector):
     gestein = Column('gestein', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.geologie-geotechnik-steinbrueche_1995',GeologieGeotechnikSteinbrueche1995)
+register('ch.swisstopo.geologie-geotechnik-steinbrueche_1995', GeologieGeotechnikSteinbrueche1995)
+
 
 class GeologieGeotechnikZementindustrie1965(Base, Vector):
     __tablename__ = 'geotechnik_zementindustrie'
@@ -700,7 +755,8 @@ class GeologieGeotechnikZementindustrie1965(Base, Vector):
     stoff = Column('stoff', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.geologie-geotechnik-zementindustrie_1965',GeologieGeotechnikZementindustrie1965)
+register('ch.swisstopo.geologie-geotechnik-zementindustrie_1965', GeologieGeotechnikZementindustrie1965)
+
 
 class GeologieGeotechnikZementindustrie1995(Base, Vector):
     __tablename__ = 'geotechnik_zementindustrie'
@@ -712,7 +768,8 @@ class GeologieGeotechnikZementindustrie1995(Base, Vector):
     stoff = Column('stoff', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.geologie-geotechnik-zementindustrie_1995',GeologieGeotechnikZementindustrie1995)
+register('ch.swisstopo.geologie-geotechnik-zementindustrie_1995', GeologieGeotechnikZementindustrie1995)
+
 
 class GeologieGeotechnikZiegeleien1907(Base, Vector):
     __tablename__ = 'geotechnik_ziegeleien_1907'
@@ -725,7 +782,8 @@ class GeologieGeotechnikZiegeleien1907(Base, Vector):
     ziegelei_2 = Column('ziegelei_2', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.geologie-geotechnik-ziegeleien_1907',GeologieGeotechnikZiegeleien1907)
+register('ch.swisstopo.geologie-geotechnik-ziegeleien_1907', GeologieGeotechnikZiegeleien1907)
+
 
 class GeologieGeotechnikZiegeleien1965(Base, Vector):
     __tablename__ = 'geotechnik_ziegeleien_1965'
@@ -738,7 +796,8 @@ class GeologieGeotechnikZiegeleien1965(Base, Vector):
     ziegelei = Column('ziegelei', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.geologie-geotechnik-ziegeleien_1965',GeologieGeotechnikZiegeleien1965)
+register('ch.swisstopo.geologie-geotechnik-ziegeleien_1965', GeologieGeotechnikZiegeleien1965)
+
 
 class GeologieGeotechnikZiegeleien1995(Base, Vector):
     __tablename__ = 'geotechnik_ziegeleien_1995'
@@ -752,7 +811,8 @@ class GeologieGeotechnikZiegeleien1995(Base, Vector):
     produkt = Column('produkt', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.geologie-geotechnik-ziegeleien_1995',GeologieGeotechnikZiegeleien1995)
+register('ch.swisstopo.geologie-geotechnik-ziegeleien_1995', GeologieGeotechnikZiegeleien1995)
+
 
 class GeologieHydroKarteGrundwasservorkommen(Base, Vector):
     __tablename__ = 'grundwasservorkommen'
@@ -765,7 +825,8 @@ class GeologieHydroKarteGrundwasservorkommen(Base, Vector):
     type_fr = Column('type_fr', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen',GeologieHydroKarteGrundwasservorkommen)
+register('ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen', GeologieHydroKarteGrundwasservorkommen)
+
 
 class GeologieHydroKarteGrundwasservulneabilitaet(Base, Vector):
     __tablename__ = 'grundwasservorkommen_plg'
@@ -778,7 +839,8 @@ class GeologieHydroKarteGrundwasservulneabilitaet(Base, Vector):
     type_fr = Column('type_fr', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.geologie-hydrogeologische_karte-grundwasservulnerabilitaet',GeologieHydroKarteGrundwasservulneabilitaet)
+register('ch.swisstopo.geologie-hydrogeologische_karte-grundwasservulnerabilitaet', GeologieHydroKarteGrundwasservulneabilitaet)
+
 
 class GeologieGeothermie(Base, Vector):
     __tablename__ = 'geophysik_geothermie'
@@ -787,11 +849,12 @@ class GeologieGeothermie(Base, Vector):
     __esriId__ = 1000
     __bodId__ = 'ch.swisstopo.geologie-geophysik-geothermie'
     id = Column('gid', Integer, primary_key=True)
-    fid = Column ('id', Integer)
+    fid = Column('id', Integer)
     contour = Column('contour', Numeric)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.geologie-geophysik-geothermie',GeologieGeothermie)
+register('ch.swisstopo.geologie-geophysik-geothermie', GeologieGeothermie)
+
 
 class Geologischer_Deklination(Base, Vector):
     __tablename__ = 'geophysik_deklination'
@@ -803,7 +866,8 @@ class Geologischer_Deklination(Base, Vector):
     magne = Column('magne', Numeric)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.geologie-geophysik-deklination',Geologischer_Deklination)
+register('ch.swisstopo.geologie-geophysik-deklination', Geologischer_Deklination)
+
 
 class Geologischer_Inklination(Base, Vector):
     __tablename__ = 'geophysik_inklination'
@@ -815,7 +879,8 @@ class Geologischer_Inklination(Base, Vector):
     contour = Column('contour', Numeric)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.geologie-geophysik-inklination',Geologischer_Inklination)
+register('ch.swisstopo.geologie-geophysik-inklination', Geologischer_Inklination)
+
 
 class Geologischer_Aeromagnetik_Jura(Base, Vector):
     __tablename__ = 'gravimetrie_aeromagnetik_jura'
@@ -824,11 +889,12 @@ class Geologischer_Aeromagnetik_Jura(Base, Vector):
     __esriId__ = 1000
     __bodId__ = 'ch.swisstopo.geologie-geophysik-aeromagnetische_karte_jura'
     id = Column('gid', Integer, primary_key=True)
-    fid = Column ('id', Integer)
+    fid = Column('id', Integer)
     et_fromatt = Column('et_fromatt', Numeric)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.geologie-geophysik-aeromagnetische_karte_jura',Geologischer_Aeromagnetik_Jura)
+register('ch.swisstopo.geologie-geophysik-aeromagnetische_karte_jura', Geologischer_Aeromagnetik_Jura)
+
 
 class GeologieGeophysikTotalintensitaet(Base, Vector):
     __tablename__ = 'geophysik_totalintensitaet'
@@ -837,11 +903,12 @@ class GeologieGeophysikTotalintensitaet(Base, Vector):
     __esriId__ = 1000
     __bodId__ = 'ch.swisstopo.geologie-geophysik-totalintensitaet'
     id = Column('gid', Integer, primary_key=True)
-    fid = Column ('id', Integer)
+    fid = Column('id', Integer)
     contour = Column('contour', Numeric)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.geologie-geophysik-totalintensitaet',GeologieGeophysikTotalintensitaet)
+register('ch.swisstopo.geologie-geophysik-totalintensitaet', GeologieGeophysikTotalintensitaet)
+
 
 class GeologieRohstoffeIndustrieminerale(Base, Vector):
     __tablename__ = 'rohstoffe_industrieminerale'
@@ -855,7 +922,8 @@ class GeologieRohstoffeIndustrieminerale(Base, Vector):
     name_ads = Column('name_ads', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.geologie-rohstoffe-industrieminerale',GeologieRohstoffeIndustrieminerale)
+register('ch.swisstopo.geologie-rohstoffe-industrieminerale', GeologieRohstoffeIndustrieminerale)
+
 
 class GeologieRohstoffeKohlenBitumenErdgas(Base, Vector):
     __tablename__ = 'rohstoffe_kohlen_bitumen_erdgas'
@@ -869,7 +937,8 @@ class GeologieRohstoffeKohlenBitumenErdgas(Base, Vector):
     name_ads = Column('name_ads', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.geologie-rohstoffe-kohlen_bitumen_erdgas',GeologieRohstoffeKohlenBitumenErdgas)
+register('ch.swisstopo.geologie-rohstoffe-kohlen_bitumen_erdgas', GeologieRohstoffeKohlenBitumenErdgas)
+
 
 class GeologieRohstoffeVererzungen(Base, Vector):
     __tablename__ = 'rohstoffe_vererzungen'
@@ -883,7 +952,8 @@ class GeologieRohstoffeVererzungen(Base, Vector):
     name_ads = Column('name_ads', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.geologie-rohstoffe-vererzungen',GeologieRohstoffeVererzungen)
+register('ch.swisstopo.geologie-rohstoffe-vererzungen', GeologieRohstoffeVererzungen)
+
 
 class GeologieTektonischeKarteLine(Base, Vector):
     __tablename__ = 'tektonische_karte_line'
@@ -897,6 +967,7 @@ class GeologieTektonischeKarteLine(Base, Vector):
     type_fr = Column('type_fr', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
+
 class GeologieTektonischeKartePoly(Base, Vector):
     __tablename__ = 'tektonische_karte_flaechen'
     __table_args__ = ({'schema': 'geol', 'autoload': False})
@@ -909,8 +980,9 @@ class GeologieTektonischeKartePoly(Base, Vector):
     type_fr = Column('type_fr', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.geologie-tektonische_karte',GeologieTektonischeKarteLine)
-register('ch.swisstopo.geologie-tektonische_karte',GeologieTektonischeKartePoly)
+register('ch.swisstopo.geologie-tektonische_karte', GeologieTektonischeKarteLine)
+register('ch.swisstopo.geologie-tektonische_karte', GeologieTektonischeKartePoly)
+
 
 class Swisstlm3dWanderwege(Base, Vector):
     __tablename__ = 'wanderwege_swissmap'
@@ -924,7 +996,8 @@ class Swisstlm3dWanderwege(Base, Vector):
     tunneltype = Column('tunneltype', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.swisstlm3d-wanderwege',Swisstlm3dWanderwege)
+register('ch.swisstopo.swisstlm3d-wanderwege', Swisstlm3dWanderwege)
+
 
 class VerschiebungsvektorenTsp1(Base, Vector):
     __tablename__ = 'verschiebungsvektoren_tsp1'
@@ -945,7 +1018,8 @@ class VerschiebungsvektorenTsp1(Base, Vector):
     fs = Column('fs', Numeric)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.verschiebungsvektoren-tsp1',VerschiebungsvektorenTsp1)
+register('ch.swisstopo.verschiebungsvektoren-tsp1', VerschiebungsvektorenTsp1)
+
 
 class VerschiebungsvektorenTsp2(Base, Vector):
     __tablename__ = 'verschiebungsvektoren_tsp2'
@@ -966,7 +1040,8 @@ class VerschiebungsvektorenTsp2(Base, Vector):
     fs = Column('fs', Numeric)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.verschiebungsvektoren-tsp2',VerschiebungsvektorenTsp2)
+register('ch.swisstopo.verschiebungsvektoren-tsp2', VerschiebungsvektorenTsp2)
+
 
 class SwissmapOnlineWanderwege(Base, Vector):
     __tablename__ = 'wanderwege_swissmap'
@@ -980,7 +1055,8 @@ class SwissmapOnlineWanderwege(Base, Vector):
     tunneltype = Column('tunneltype', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo-karto.wanderwege',SwissmapOnlineWanderwege)
+register('ch.swisstopo-karto.wanderwege', SwissmapOnlineWanderwege)
+
 
 class PLZOrtschaften(Base, Vector):
     __tablename__ = 'gabmo_plz'
@@ -994,22 +1070,24 @@ class PLZOrtschaften(Base, Vector):
     langtext = Column('langtext', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo-vd.ortschaftenverzeichnis_plz',PLZOrtschaften)
+register('ch.swisstopo-vd.ortschaftenverzeichnis_plz', PLZOrtschaften)
 
-class geometaStandAV(Base, Vector): 	 
-    __tablename__ = 'amogr_standav' 	 
-    __table_args__ = ({'schema': 'vd', 'autoload': False}) 	 
-    __template__ = 'templates/htmlpopup/standav.mako' 	 
+
+class geometaStandAV(Base, Vector):
+    __tablename__ = 'amogr_standav'
+    __table_args__ = ({'schema': 'vd', 'autoload': False})
+    __template__ = 'templates/htmlpopup/standav.mako'
     __esriId__ = 1000
     __bodId__ = 'ch.swisstopo-vd.geometa-standav'
-    id = Column('gid', Integer, primary_key=True) 	 
-    fid = Column ('id', Integer)
+    id = Column('gid', Integer, primary_key=True)
+    fid = Column('id', Integer)
     quality = Column('quality', Text)
     frame = Column('frame', Text)
-    the_geom = Column('the_geom_gen50',Geometry(21781)) 	 
-    not_used = Column('the_geom',Geometry(21781)) 	 
-	  	 
-register('ch.swisstopo-vd.geometa-standav',geometaStandAV)
+    the_geom = Column('the_geom_gen50', Geometry(21781))
+    not_used = Column('the_geom', Geometry(21781))
+
+register('ch.swisstopo-vd.geometa-standav', geometaStandAV)
+
 
 class geometaLos(Base, Vector):
     __tablename__ = 'amogr_los'
@@ -1018,7 +1096,7 @@ class geometaLos(Base, Vector):
     __esriId__ = 1000
     __bodId__ = 'ch.swisstopo-vd.geometa-los'
     id = Column('gid', Integer, primary_key=True)
-    fid = Column ('id', Integer)
+    fid = Column('id', Integer)
     neu_id = Column('neu_id', Text)
     operatsname = Column('operatsname', Text)
     losnr = Column('losnr', Text)
@@ -1028,12 +1106,14 @@ class geometaLos(Base, Vector):
     quality = Column('quality', Text)
     flaeche_vertrag = Column('flaeche_vertrag', Text)
     frame = Column('frame', Text)
-    the_geom = Column('the_geom_gen50',Geometry(21781))
-    not_used = Column('the_geom',Geometry(21781))
+    the_geom = Column('the_geom_gen50', Geometry(21781))
+    not_used = Column('the_geom', Geometry(21781))
 
-register('ch.swisstopo-vd.geometa-los',geometaLos)
+register('ch.swisstopo-vd.geometa-los', geometaLos)
 
 # link sur le pdf ne fontionne pas...
+
+
 class geometaGemeinde(Base, Vector):
     __tablename__ = 'amogr_gemeinde'
     __table_args__ = ({'schema': 'vd', 'autoload': False})
@@ -1041,17 +1121,18 @@ class geometaGemeinde(Base, Vector):
     __esriId__ = 1000
     __bodId__ = 'ch.swisstopo-vd.geometa-gemeinde'
     id = Column('gid', Integer, primary_key=True)
-    fid = Column ('id', Integer)
-    gemeindename = Column ('gemeindename', Text)
-    kanton = Column ('kanton', Text)
-    flaeche_ha = Column ('flaeche_ha', Text)
+    fid = Column('id', Integer)
+    gemeindename = Column('gemeindename', Text)
+    kanton = Column('kanton', Text)
+    flaeche_ha = Column('flaeche_ha', Text)
     bfs_nr = Column('bfs_nr', Integer)
-    pdf_liste = Column ('pdf_liste', Text)
+    pdf_liste = Column('pdf_liste', Text)
     abgabestelle = Column('abgabestelle', Text)
-    the_geom = Column('the_geom_gen50',Geometry(21781))
-    not_used = Column('the_geom',Geometry(21781))
+    the_geom = Column('the_geom_gen50', Geometry(21781))
+    not_used = Column('the_geom', Geometry(21781))
 
-register('ch.swisstopo-vd.geometa-gemeinde',geometaGemeinde)
+register('ch.swisstopo-vd.geometa-gemeinde', geometaGemeinde)
+
 
 class geometaGrundbuch(Base, Vector):
     __tablename__ = 'amogr_grundbuch'
@@ -1060,19 +1141,20 @@ class geometaGrundbuch(Base, Vector):
     __esriId__ = 1000
     __bodId__ = 'ch.swisstopo-vd.geometa-grundbuch'
     id = Column('gid', Integer, primary_key=True)
-    fid = Column ('id', Integer)
-    ortsteil_grundbuch = Column ('ortsteil_grundbuch', Text)
-    grundbuchfuehrung_d = Column ('grundbuchfuehrung_d', Text)
-    grundbuchfuehrung_f = Column ('grundbuchfuehrung_f', Text)
-    grundbuchfuehrung_i = Column ('grundbuchfuehrung_i', Text)
-    grundbuchkreis = Column ('grundbuchkreis', Text)
-    adresse = Column ('adresse', Text)
-    telefon = Column ('telefon', Text)
-    email = Column ('email', Text)
-    the_geom = Column('the_geom_gen50',Geometry(21781))
-    not_used = Column('the_geom',Geometry(21781))
+    fid = Column('id', Integer)
+    ortsteil_grundbuch = Column('ortsteil_grundbuch', Text)
+    grundbuchfuehrung_d = Column('grundbuchfuehrung_d', Text)
+    grundbuchfuehrung_f = Column('grundbuchfuehrung_f', Text)
+    grundbuchfuehrung_i = Column('grundbuchfuehrung_i', Text)
+    grundbuchkreis = Column('grundbuchkreis', Text)
+    adresse = Column('adresse', Text)
+    telefon = Column('telefon', Text)
+    email = Column('email', Text)
+    the_geom = Column('the_geom_gen50', Geometry(21781))
+    not_used = Column('the_geom', Geometry(21781))
 
-register('ch.swisstopo-vd.geometa-grundbuch',geometaGrundbuch)
+register('ch.swisstopo-vd.geometa-grundbuch', geometaGrundbuch)
+
 
 class geometaNfgeom(Base, Vector):
     __tablename__ = 'amogr_nfgeom'
@@ -1086,12 +1168,14 @@ class geometaNfgeom(Base, Vector):
     adresse = Column('adresse', Text)
     telefon = Column('telefon', Text)
     email = Column('email', Text)
-    the_geom = Column('the_geom_gen50',Geometry(21781))
-    not_used = Column('the_geom',Geometry(21781))
+    the_geom = Column('the_geom_gen50', Geometry(21781))
+    not_used = Column('the_geom', Geometry(21781))
 
-register('ch.swisstopo-vd.geometa-nfgeom',geometaNfgeom)
+register('ch.swisstopo-vd.geometa-nfgeom', geometaNfgeom)
 
-#two registers...
+# two registers...
+
+
 class spannungsarmeGebiete(Base, Vector):
     __tablename__ = 'spannungsarme_gebiete'
     __table_args__ = ({'schema': 'vd', 'autoload': False})
@@ -1103,8 +1187,9 @@ class spannungsarmeGebiete(Base, Vector):
     vali_date = Column('vali_date', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo-vd.spannungsarme-gebiete',spannungsarmeGebiete)
-register('ch.swisstopo.transformationsgenauigkeit',spannungsarmeGebiete)
+register('ch.swisstopo-vd.spannungsarme-gebiete', spannungsarmeGebiete)
+register('ch.swisstopo.transformationsgenauigkeit', spannungsarmeGebiete)
+
 
 class geologieGeotopePunkte(Base, Vector):
     __tablename__ = 'geotope_pkt'
@@ -1118,6 +1203,7 @@ class geologieGeotopePunkte(Base, Vector):
     nummer = Column('nummer', Integer)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
+
 class geologieGeotopeFlaechen(Base, Vector):
     __tablename__ = 'geotope_plg'
     __table_args__ = ({'schema': 'geol', 'autoload': False})
@@ -1129,6 +1215,6 @@ class geologieGeotopeFlaechen(Base, Vector):
     fix_id = Column('fix_id', Text)
     nummer = Column('nummer', Integer)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-     
-register('ch.swisstopo.geologie-geotope',geologieGeotopePunkte)
-register('ch.swisstopo.geologie-geotope',geologieGeotopeFlaechen)
+
+register('ch.swisstopo.geologie-geotope', geologieGeotopePunkte)
+register('ch.swisstopo.geologie-geotope', geologieGeotopeFlaechen)
