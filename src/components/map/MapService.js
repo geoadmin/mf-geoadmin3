@@ -230,4 +230,60 @@
 
   });
 
+  /**
+   * Service that manages the "layers" permalink parameter. The manager
+   * works with a (or multiple) "layers" array. The manager watches the
+   * array (using $watchCollection) and updates the "layers" parameter
+   * in the permalink when the array changes. And, at application init
+   * time, it adds to the map the layers specified in the permalink.
+   */
+  module.provider('gaLayersPermalinkManager', function() {
+
+    this.$get = function($rootScope, gaLayers, gaPermalink) {
+
+      var layersParamValue = gaPermalink.getParams().layers;
+      var layerSpecs = layersParamValue ? layersParamValue.split(',') : [];
+
+      return function(map) {
+        var scope = $rootScope.$new();
+
+        scope.layers = map.getLayers().getArray();
+
+        scope.layerFilter = function(layer) {
+          var id = layer.get('id');
+          var isBackground = !!gaLayers.getLayer(id) &&
+              gaLayers.getLayerProperty(id, 'background');
+          var isPreview = layer.preview;
+          return !isBackground && !isPreview;
+        };
+
+        scope.$watchCollection('layers | filter:layerFilter',
+            function(layers) {
+          var bodIds = $.map(layers, function(layer) {
+            return layer.get('id');
+          });
+          if (bodIds.length > 0) {
+            gaPermalink.updateParams({layers: bodIds.join(',')});
+          } else {
+            gaPermalink.deleteParam('layers');
+          }
+        });
+
+        var deregister = scope.$on('gaLayersChange', function() {
+          angular.forEach(layerSpecs, function(layerSpec, index) {
+            var layer;
+            if (gaLayers.getLayer(layerSpec)) {
+              // BOD layer
+              layer = gaLayers.getOlLayerById(layerSpec);
+            }
+            if (angular.isDefined(layer)) {
+              map.addLayer(layer);
+            }
+          });
+          deregister();
+        });
+      };
+    };
+  });
+
 })();
