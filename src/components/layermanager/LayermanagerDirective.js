@@ -87,11 +87,6 @@
               e.preventDefault();
             };
 
-            // prevent li’s horizontal scrolling for mobiles
-            element.on('touchmove', 'li', function(e) {
-              e.preventDefault();
-            });
-
             // Toggle layer tools for mobiles
             element.on('click', '.icon-gear', function() {
               var li = $(this).closest('li');

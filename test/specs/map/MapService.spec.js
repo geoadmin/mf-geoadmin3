@@ -75,13 +75,13 @@ describe('ga_map_service', function() {
       $httpBackend.flush();
       var layer = layers.getOlLayerById('foo');
       expect(layer.getOpacity()).to.be(1);
-      expect(layer.opacity).to.be(1);
+      expect(layer.opacity).to.be("1");
       layer.opacity = 0.5;
       expect(layer.getOpacity()).to.be(0.5);
-      expect(layer.opacity).to.be(0.5);
+      expect(layer.opacity).to.be("0.5");
       layer.opacity = 1;
       expect(layer.getOpacity()).to.be(1);
-      expect(layer.opacity).to.be(1);
+      expect(layer.opacity).to.be("1");
     });
   });
 
