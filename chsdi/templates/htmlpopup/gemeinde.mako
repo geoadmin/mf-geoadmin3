@@ -1,10 +1,18 @@
 <%inherit file="base.mako"/>
 
-<%def name="table_body(c,lang)">
-    <tr><td width="150" valign="top">${_('gemkanton')}</td><td>${c['attributes']['kanton'] or '-'}</td></tr>
-    <tr><td width="150">${_('gemgemeinde')}</td><td>${c['attributes']['gemeindename'] or '-'}</td></tr>
-    <tr><td width="150">${_('gemflaeche')}</td><td>${c['attributes']['flaeche_ha'] or '-'}</td></tr>
-    <tr><td width="150">${_('gembfs')}</td>    <td>${c['attributes']['bfs_nr'] or '-'}</td></tr>
+<%def name="table_body(c, lang)">
+    % if 'kanton' in c['attributes']:
+    <tr><td width="150" valign="top">${_('gemkanton')}</td><td>${c['attributes']['kanton']}</td></tr>
+    % endif
+    % if 'gemeindename' in c['attributes']:
+    <tr><td width="150">${_('gemgemeinde')}</td><td>${c['attributes']['gemeindename']}</td></tr>
+    % endif
+    % if 'flaeche_ha' in c['attributes']:
+    <tr><td width="150">${_('gemflaeche')}</td><td>${c['attributes']['flaeche_ha']}</td></tr>
+    %endif
+    % if 'bfs_nr' in c['attributes']:
+    <tr><td width="150">${_('gembfs')}</td><td>${c['attributes']['bfs_nr']}</td></tr>
+    % endif
     <tr><td width="150">${_('gemdarstellung')}</td>
        % if c['attributes']['abgabestelle'] == None:
          <td>-</td>
@@ -13,30 +21,22 @@
       % endif 
     </tr>
     <tr><td width="150">${_('geompdf_liste')}</td>
-      % if lang == 'de' or lang == 'rm' or lang == 'en':
-    <%
-        myarr=c['attributes']['pdf_liste'].split(';')
-        liste_de = filter(lambda x: "_de.pdf" in x,myarr)
-        link = ''
-        for t in liste_de:
-         link += "<a href=\"" + t + "\" target=\"_blank\">" + t[34:].replace(".pdf","") + "</a><br />"
+      % if lang in ('de', 'rm', 'en'):
+    <%  lang_pdf = '_de.pdf'
     %>
-      % elif lang == 'fr':
+      % else:
     <%
-        myarr=c['attributes']['pdf_liste'].split(';')
-        liste_fr = filter(lambda x: "_fr.pdf" in x,myarr)
-        link = ''
-        for t in liste_fr: 
-         link += "<a href=\"" + t + "\" target=\"_blank\">" + t[34:].replace(".pdf","") + "<br />"
-    %>
-      % elif lang == 'it':
-    <%
-        myarr=c['attributes']['pdf_liste'].split(';')
-        liste_it = filter(lambda x: "_it.pdf" in x, myarr)
-        link = ''
-        for t in liste_it:
-         link += "<a href=\"" + t + "\" target=\"_blank\">" + t[34:].replace(".pdf","") + "</a><br />"
+        lang_pdf = '_' + lang + '.pdf'
     %>
       % endif
-    <td>${link or '-'} </td></tr>
+    <%
+        myarr=c['attributes']['pdf_liste'].split(';')
+        list_pdf = filter(lambda x: lang_pdf in x,myarr)
+    %>
+    <td>
+      % for t in list_pdf:
+          <% pdf_name = t[34:].replace(".pdf","") %>
+          <a href="${t}" target="_blank">${pdf_name}</a><br />
+      % endfor
+    </td></tr>
 </%def>
