@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import logging
 import math
 from pyramid.view import view_config
 
@@ -10,8 +9,6 @@ from chsdi.lib.raster.georaster import GeoRaster
 
 # cache of GeoRaster instances in function of the layer name
 _rasters = {}
-
-log = logging.getLogger(__name__)
 
 
 class Profile(ProfileValidation):

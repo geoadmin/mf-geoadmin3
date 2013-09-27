@@ -8,7 +8,6 @@ from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
 from chsdi.models import models_from_name
 from chsdi.models.bod import LayersConfig, get_bod_model, computeHeader
-from chsdi.lib.helpers import locale_negotiator
 from chsdi.lib.validation import MapServiceValidation
 
 
@@ -20,7 +19,7 @@ class MapService(MapServiceValidation):
         self.mapName = request.matchdict.get('map')
         self.hasMap(request.db, self.mapName)
         self.cbName = request.params.get('callback')
-        self.lang = locale_negotiator(request)
+        self.lang = request.lang
         self.searchText = request.params.get('searchText')
         self.geodataStaging = request.registry.settings['geodata_staging']
         self.translate = request.translate

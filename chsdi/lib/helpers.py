@@ -20,7 +20,9 @@ def locale_negotiator(request):
     lang = request.params.get('lang')
     settings = get_current_registry().settings
     languages = settings['available_languages'].split()
-    if lang is None or lang not in languages:
+    if lang == 'rm':
+        return 'fi'
+    elif lang is None or lang not in languages:
         # the default_locale_name configuration variable
         return get_locale_name(request)
     return lang

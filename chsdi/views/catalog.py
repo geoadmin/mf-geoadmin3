@@ -4,14 +4,13 @@ from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPNotFound
 
 from chsdi.models.bod import get_catalog_model
-from chsdi.lib.helpers import locale_negotiator
 from chsdi.lib.validation import MapNameValidation
 
 
 class CatalogService(MapNameValidation):
 
     def __init__(self, request):
-        self.lang = locale_negotiator(request)
+        self.lang = request.lang
         self.mapName = request.matchdict.get('map')  # The topic
         self.hasMap(request.db, self.mapName)
         self.request = request
