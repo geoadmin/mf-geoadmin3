@@ -3,10 +3,11 @@
 from sqlalchemy import Column, Text, Integer
 from geoalchemy import GeometryColumn, Geometry
 from sqlalchemy.types import Numeric
-from chsdi.models import  *
+from chsdi.models import *
 from chsdi.models.vector import Vector
 
 Base = bases['vbs']
+
 
 class Kulturgueter(Base, Vector):
     __tablename__ = 'kgs'
@@ -24,7 +25,7 @@ class Kulturgueter(Base, Vector):
     kt_kz = Column('kt_kz', Text)
 
 register('ch.babs.kulturgueter', Kulturgueter)
-    
+
 
 class TERRITORIALREGIONEN(Base, Vector):
     __tablename__ = 'territorialregionen'
