@@ -16,7 +16,7 @@ class CatalogService(MapNameValidation):
         self.hasMap(request.db, self.mapName)
         self.request = request
 
-    @view_config(route_name='catalog', http_cache=0, renderer='jsonp')
+    @view_config(route_name='catalog', renderer='jsonp')
     def catalog(self):
         from pyramid.renderers import render_to_response
 
