@@ -49,7 +49,7 @@ module.controller('GaMainController',
         dismiss = 'none';
 
       // The main controller creates the OpenLayers map object. The map object
-      // is central, as most directives/components need a reference to it. So
+      // is central, as most directives/components need a reference to it.
       $scope.map = createMap();
 
       // Activate the "layers" parameter permalink manager for the map.
