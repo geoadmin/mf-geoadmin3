@@ -83,26 +83,50 @@
                     var styleId = 1;
 
                     angular.forEach(features, function(feature) {
+                        var encStyle = {};
+                        var geometry = feature.getGeometry();
+                        var type = geometry ? geometry.getType() : null;
                         var encJSON = JSON.parse(format.write(feature));
                         encJSON.properties._gx_style = styleId;
                         encFeatures.push(encJSON);
-                        //FIXME very naive way to add styles
-                        var symbolizer = feature.getSymbolizers();
-                        if (symbolizer.length == 3) {
-                            var shpSymb = symbolizer[0];
-                            var fillSymb = symbolizer[1];
-                            var strokeSymb = symbolizer[2];
-                            var encStyle = {
-                              'strokeColor': shpSymb.getColor().getValue(),
-                              'strokeOpacity': shpSymb.getOpacity().getValue(),
-                              'strokeWidth': shpSymb.getWidth().getValue(),
-                              'fillOpacity': fillSymb.getOpacity().getValue(),
-                              'fillColor': fillSymb.getColor().getValue(),
-                              'id': styleId
-                            };
-                            encStyles[styleId] = encStyle;
-                            styleId++;
+                        var symbolizers = feature.getSymbolizers();
+
+                        if (symbolizers) {
+                            var i = symbolizers.length;
+                            while (i--) {
+                                var sym = symbolizers[i];
+                                var literal = sym.createLiteral(feature);
+                                if (literal) {
+                                    if (type === ol.geom.GeometryType.
+                                                            LINESTRING ||
+                                            type === ol.geom.GeometryType.
+                                                          MULTILINESTRING) {
+                                        literal.strokeWidth = literal.width;
+                                        literal.strokeColor = literal.color;
+                                        literal.strokeOpacity = literal.opacity;
+                                    }
+
+                                    $.extend(encStyle, literal);
+                                }
+                            }
+                        } else {
+                            var style = ol.style.getDefault();
+                            var literals = style.createLiterals(feature);
+                            var literal = literals[0];
+                            if (type === ol.geom.GeometryType.LINESTRING ||
+                                    type === ol.geom.GeometryType.
+                                                         MULTILINESTRING) {
+                                literal.strokeWidth = literal.width;
+                                literal.strokeColor = literal.color;
+                                literal.strokeOpacity = literal.opacity;
+                            }
+                            encStyle = literal;
                         }
+
+                        encStyle.id = styleId;
+                        encStyles[styleId] = encStyle;
+
+                        styleId++;
                     });
                     angular.extend(enc, {
                         type: 'Vector',
@@ -263,7 +287,7 @@
             var spec = {
                 layout: this.layout.name,
                 srs: proj.getCode(),
-                units: proj.getUnits(),
+                units: proj.getUnits,
                 rotation: view.getRotation(),
                 app: $scope.topicId, //topic name
                 lang: $translate.uses(),
