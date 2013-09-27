@@ -24,6 +24,7 @@ def getScale(imageDisplay, mapExtent):
 
     return scale
 
+
 def getToleranceMeters(imageDisplay, mapExtent, tolerance):
     bounds = mapExtent.bounds
     mapMeterWidth = abs(bounds[0] - bounds[2])
