@@ -13,6 +13,7 @@ def topics(request):
         'id': q.id,
         'langs': q.availableLangs,
         'defaultBackgroundLayer': q.defaultBackgroundLayer,
+        'backgroundLayers': q.backgroundLayers,
         'selectedLayers': q.selectedLayers
     } for q in query]
     return {'topics': results}
