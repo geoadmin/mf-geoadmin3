@@ -57,10 +57,10 @@
           },
           opacity: {
             get: function() {
-              return this.getOpacity();
+              return this.getOpacity() + '';
             },
             set: function(val) {
-              this.setOpacity(val);
+              this.setOpacity(+val);
             }
           },
           preview: {
