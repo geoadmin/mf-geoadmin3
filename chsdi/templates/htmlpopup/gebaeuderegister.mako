@@ -3,7 +3,7 @@
 <%inherit file="base.mako"/>
 
 <%def name="table_body(c, lang)">
-    <% c[stable_id] = True %>
+    <% c['stable_id'] = True %>
     <tr><td width="150">${_('egid')}</td>       <td>${c['attributes']['egid'] or '-'}</td></tr>
     % if c['attributes']['strname1'] <> '':
     <tr><td width="150">${_('strasse')}</td>    <td>${c['attributes']['strname1']}</td></tr>
