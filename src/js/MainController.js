@@ -1,8 +1,11 @@
 (function() {
   goog.provide('ga_main_controller');
 
+  goog.require('ga_map');
+
   var module = angular.module('ga_main_controller', [
-    'pascalprecht.translate'
+    'pascalprecht.translate',
+    'ga_map'
   ]);
 
   function createMap() {
@@ -40,7 +43,7 @@
    */
 module.controller('GaMainController',
   function($scope, $rootScope, $translate, $timeout, $window,  gaPermalink,
-    gaBrowserSniffer) {
+    gaBrowserSniffer, gaLayersPermalinkManager) {
 
       var mobile = (gaBrowserSniffer.mobile) ? 'false' : 'true',
         dismiss = 'none';
@@ -48,6 +51,9 @@ module.controller('GaMainController',
       // The main controller creates the OpenLayers map object. The map object
       // is central, as most directives/components need a reference to it. So
       $scope.map = createMap();
+
+      // Activate the "layers" parameter permalink manager for the map.
+      gaLayersPermalinkManager($scope.map);
 
       $rootScope.$on('gaTopicChange', function(event, topic) {
         $scope.topicId = topic.id;
