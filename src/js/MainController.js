@@ -40,9 +40,7 @@
     ol.style.setDefault(new ol.style.Style({
       rules: [
         new ol.style.Rule({
-          filter: new ol.expr.Call(
-              new ol.expr.Identifier(ol.expr.functions.RENDER_INTENT),
-              [new ol.expr.Literal('selected')]),
+          filter: 'renderintent("selected")',
           symbolizers: [
             new ol.style.Fill({
               color: '#ff0000',
