@@ -80,6 +80,7 @@ class LayersConfig(Base):
     parentLayerId = Column('parentlayerid', Text)
     queryable = Column('queryable', Boolean)
     searchable = Column('searchable', Boolean)
+    serverLayerName = Column('server_layername', Text)
     singleTile = Column('singletile', Boolean)
     subLayerIds = Column('sublayerids', Text)
     matrixSet = Column('tilematrixsetid', Text)
