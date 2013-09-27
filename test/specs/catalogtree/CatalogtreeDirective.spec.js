@@ -15,6 +15,8 @@ describe('ga_catalogtree_directive', function() {
         getLayer: function() {
           return {};
         },
+        getLayerProperty: function(key) {
+        },
         getOlLayerById: function(id) {
           return new ol.layer.Tile({
             id: id,
@@ -82,6 +84,23 @@ describe('ga_catalogtree_directive', function() {
     var numLayers = layers.getLength();
     expect(numLayers).to.equal(1);
     expect(layers.getAt(0).get('id')).to.equal('bar');
+  });
+
+  describe('layers already in the map', function() {
+
+    beforeEach(inject(function(gaLayers) {
+      var layer = gaLayers.getOlLayerById('foo');
+      map.addLayer(layer);
+    }));
+
+    it('adds layers specified in permalink', function() {
+      $httpBackend.expectJSONP(expectedUrl);
+      $httpBackend.flush();
+      var layers = map.getLayers();
+      var numLayers = layers.getLength();
+      expect(numLayers).to.equal(1);
+      expect(layers.getAt(0).get('id')).to.equal('foo');
+    });
   });
 
 });

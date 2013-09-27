@@ -85,16 +85,47 @@
             });
 
             scope.$on('gaLayersChange', function() {
-              updateCatalogTree().then(function(oldAndNewTrees) {
-                visitTreeLeaves(oldAndNewTrees.newTree, function(leaf) {
-                  var map = scope.map;
-                  var idBod = leaf.idBod;
-                  var selected = leaf.selectedOpen;
-                  if (selected && !angular.isDefined(
-                      gaCatalogtreeMapUtils.getMapLayer(map, idBod))) {
-                    gaCatalogtreeMapUtils.addLayer(map, leaf);
+              updateCatalogTree().then(function(trees) {
+                var i;
+                var id;
+                var map = scope.map;
+                var layers = map.getLayers().getArray();
+                var leaves;
+                var oldTree = trees.oldTree;
+                var newTree = trees.newTree;
+
+                var addDefaultLayersToMap = true;
+                if (!angular.isDefined(oldTree)) {
+                  for (i = 0; i < layers.length; ++i) {
+                    id = layers[i].get('id');
+                    if (!gaLayers.getLayer(id) ||
+                        !gaLayers.getLayerProperty(id, 'background')) {
+                      addDefaultLayersToMap = false;
+                      break;
+                    }
                   }
-                });
+                }
+
+                if (addDefaultLayersToMap) {
+                  visitTreeLeaves(newTree, function(leaf) {
+                    if (leaf.selectedOpen && !angular.isDefined(
+                        gaCatalogtreeMapUtils.getMapLayer(map, leaf.idBod))) {
+                      gaCatalogtreeMapUtils.addLayer(map, leaf);
+                    }
+                  });
+                } else {
+                  leaves = {};
+                  visitTreeLeaves(newTree, function(leaf) {
+                    leaf.selectedOpen = false;
+                    leaves[leaf.idBod] = leaf;
+                  });
+                  for (i = 0; i < layers.length; ++i) {
+                    id = layers[i].get('id');
+                    if (leaves.hasOwnProperty(id)) {
+                      leaves[id].selectedOpen = true;
+                    }
+                  }
+                }
               });
             });
 
