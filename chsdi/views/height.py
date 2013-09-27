@@ -4,9 +4,6 @@ from chsdi.lib.validation import HeightValidation
 from chsdi.lib.raster.georaster import GeoRaster
 
 from pyramid.view import view_config
-import logging
-
-log = logging.getLogger(__name__)
 
 # cache of GeoRaster instances in function of the layer name
 _rasters = {}

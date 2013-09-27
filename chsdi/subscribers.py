@@ -18,7 +18,7 @@ def add_localizer(event):
     request = event.request
     request._LOCALE_ = helpers.locale_negotiator(request)
     localizer = get_localizer(request)
-    request.lang = localizer.locale_name
+    request.lang = 'rm' if localizer.locale_name == 'fi' else localizer.locale_name
 
     def auto_translate(string):
         return localizer.translate(tsf(string))

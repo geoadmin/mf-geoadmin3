@@ -3,7 +3,7 @@
 from pyramid.view import view_config
 
 from chsdi.lib.validation import SearchValidation
-from chsdi.lib.helpers import locale_negotiator, remove_accents
+from chsdi.lib.helpers import remove_accents
 from chsdi.lib.sphinxapi import sphinxapi
 from chsdi.lib import mortonspacekey as msk
 
@@ -25,7 +25,7 @@ class Search(SearchValidation):
 
         self.mapName = request.matchdict.get('map')
         self.hasMap(request.db, self.mapName)
-        self.lang = str(locale_negotiator(request))
+        self.lang = request.lang
         self.cbName = request.params.get('callback')
         self.bbox = request.params.get('bbox')
         self.quadindex = None
