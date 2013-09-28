@@ -31,7 +31,7 @@
                   }
                 } else {
                   var layer = gaLayers.getOlLayerById(newVal);
-                  if (oldVal == 'voidLayer') {
+                  if (!oldVal || oldVal == 'voidLayer') {
                     // we may have a non background layer at index 0
                     layers.insertAt(0, layer);
                   } else {
