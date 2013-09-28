@@ -78,7 +78,11 @@
 
             scope.$on('$translateChangeEnd', function() {
               if (angular.isDefined(currentTopic)) {
-                updateCatalogTree().then(retainTreeState);
+                updateCatalogTree().then(function(oldAndNewTrees) {
+                  if (angular.isDefined(oldAndNewTrees.oldTree)) {
+                    retainTreeState(oldAndNewTrees);
+                  }
+                });
               }
             });
 
