@@ -143,6 +143,8 @@
             if (layer.type == 'wmts') {
               olLayer = new ol.layer.Tile({
                 id: id,
+                minResolution: layer.minResolution,
+                maxResolution: layer.maxResolution,
                 source: new ol.source.WMTS({
                   attributions: [
                     getAttribution('<a href="' +
@@ -156,11 +158,65 @@
                   projection: 'EPSG:21781',
                   requestEncoding: 'REST',
                   tileGrid: gaTileGrid.get(layer.resolutions),
-                  url: getWmtsGetTileUrl(id, layer.format)
+                  url: getWmtsGetTileUrl(layer.serverLayerName,
+                    layer.format)
                 })
               });
-              layer.olLayer = olLayer;
             }
+            else if (layer.type == 'wms') {
+              //TODO: add support for layer.timeEnabled?
+              if (layer.singleTile === true) {
+                olLayer = new ol.layer.Image({
+                  id: id,
+                  minResolution: layer.minResolution,
+                  maxResolution: layer.maxResolution,
+                  source: new ol.source.ImageWMS({
+                    url: gaUrlUtils.remove(
+                        layer.wmsUrl, ['request', 'service', 'version'], true),
+                    params: {
+                      LAYERS: layer.serverLayerName,
+                      FORMAT: 'image/' + layer.format
+                    },
+                    attributions: [
+                      getAttribution(layer.attribution)
+                    ],
+                    ratio: 1
+                  })
+                });
+              } else {
+                olLayer = new ol.layer.Tile({
+                  id: id,
+                  minResolution: layer.minResolution,
+                  maxResolution: layer.maxResolution,
+                  source: new ol.source.TileWMS({
+                    url: gaUrlUtils.remove(
+                        layer.wmsUrl, ['request', 'service', 'version'], true),
+                    params: {
+                      LAYERS: layer.serverLayerName,
+                      FORMAT: 'image/' + layer.format
+                    },
+                    attributions: [
+                      getAttribution(layer.attribution)
+                    ]
+                  })
+                });
+              }
+            }
+            else if (layer.type == 'aggregate') {
+              var subLayerIds = layer.subLayerIds.split(',');
+              var i, len = subLayerIds.length;
+              var subLayers = new Array(len);
+              for (i = 0; i < len; i++) {
+                subLayers[i] = this.getOlLayerById(subLayerIds[i]);
+              }
+              olLayer = new ol.layer.Group({
+                id: id,
+                minResolution: layer.minResolution,
+                maxResolution: layer.maxResolution,
+                layers: subLayers
+              });
+            }
+            layer.olLayer = olLayer;
             if (angular.isDefined(olLayer)) {
               gaDefinePropertiesForLayer(olLayer);
             }
