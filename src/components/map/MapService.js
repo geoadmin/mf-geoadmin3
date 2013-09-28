@@ -164,7 +164,7 @@
               });
             }
             else if (layer.type == 'wms') {
-              //TODO: add support for layer.timeEnabled, non-singleTile layers?
+              //TODO: add support for layer.timeEnabled?
               if (layer.singleTile === true) {
                 olLayer = new ol.layer.Image({
                   id: id,
