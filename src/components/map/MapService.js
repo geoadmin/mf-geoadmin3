@@ -145,8 +145,8 @@
             if (layer.type == 'wmts') {
               olLayer = new ol.layer.Tile({
                 id: id,
-                minResolution: layer.maxResolution,
-                maxResolution: layer.minResolution,
+                minResolution: layer.minResolution,
+                maxResolution: layer.maxResolution,
                 source: new ol.source.WMTS({
                   attributions: [
                     getAttribution('<a href="' +
@@ -169,8 +169,8 @@
               if (layer.singleTile === true) {
                 olLayer = new ol.layer.Image({
                   id: id,
-                  minResolution: layer.maxResolution,
-                  maxResolution: layer.minResolution,
+                  minResolution: layer.minResolution,
+                  maxResolution: layer.maxResolution,
                   source: new ol.source.ImageWMS({
                     url: gaUrlUtils.remove(
                         layer.wmsUrl, ['request', 'service', 'version'], true),
@@ -195,8 +195,8 @@
               }
               olLayer = new ol.layer.Group({
                 id: id,
-                minResolution: layer.maxResolution,
-                maxResolution: layer.minResolution,
+                minResolution: layer.minResolution,
+                maxResolution: layer.maxResolution,
                 layers: subLayers
               });
             }
