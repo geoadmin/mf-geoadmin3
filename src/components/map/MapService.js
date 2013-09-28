@@ -138,8 +138,6 @@
          */
         this.getOlLayerById = function(id) {
           var layer = layers[id];
-          // temporary workaround for the 204 no content issue
-          id = layer.parentLayerId || id;
           var olLayer = layer.olLayer;
           if (!angular.isDefined(olLayer)) {
             if (layer.type == 'wmts') {
@@ -160,7 +158,8 @@
                   projection: 'EPSG:21781',
                   requestEncoding: 'REST',
                   tileGrid: gaTileGrid.get(layer.resolutions),
-                  url: getWmtsGetTileUrl(id, layer.format)
+                  url: getWmtsGetTileUrl(layer.serverLayerName,
+                    layer.format)
                 })
               });
             }
@@ -175,13 +174,30 @@
                     url: gaUrlUtils.remove(
                         layer.wmsUrl, ['request', 'service', 'version'], true),
                     params: {
-                      LAYERS: layer.wmsLayers,
+                      LAYERS: layer.serverLayerName,
                       FORMAT: 'image/' + layer.format
                     },
                     attributions: [
                       getAttribution(layer.attribution)
                     ],
                     ratio: 1
+                  })
+                });
+              } else {
+                olLayer = new ol.layer.Tile({
+                  id: id,
+                  minResolution: layer.minResolution,
+                  maxResolution: layer.maxResolution,
+                  source: new ol.source.TileWMS({
+                    url: gaUrlUtils.remove(
+                        layer.wmsUrl, ['request', 'service', 'version'], true),
+                    params: {
+                      LAYERS: layer.serverLayerName,
+                      FORMAT: 'image/' + layer.format
+                    },
+                    attributions: [
+                      getAttribution(layer.attribution)
+                    ]
                   })
                 });
               }
