@@ -16,7 +16,7 @@
       template: '<a href="#geolocation" class="geolocation">',
       replace: true,
       link: function(scope, element, attrs) {
-        if (!ol.Geolocation.SUPPORTED) {
+        if (!('geolocation' in window.navigator)) {
           element.addClass('error');
           return;
         }
