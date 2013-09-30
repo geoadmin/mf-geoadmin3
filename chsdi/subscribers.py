@@ -19,7 +19,7 @@ def add_localizer(event):
     request._LOCALE_ = helpers.locale_negotiator(request)
     localizer = get_localizer(request)
     request.lang = 'rm' if localizer.locale_name == 'fi' else localizer.locale_name
-    request.lang = request.lang.encode('ascii','ignore')
+    request.lang = request.lang.encode('ascii', 'ignore')
 
     def auto_translate(string):
         return localizer.translate(tsf(string))

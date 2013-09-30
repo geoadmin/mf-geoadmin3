@@ -17,45 +17,458 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.5\n"
 
+msgid "All year"
+msgstr "Toute l'année"
+
+msgid "Antenne"
+msgstr "Antenne"
+
+msgid "Autofaehre"
+msgstr "Bacs pour voitures"
+
+msgid "Bauernhof"
+msgstr "Ferme"
+
+msgid "Berghuette"
+msgstr "Cabane de montagne"
+
+msgid "Bounding Box - Coordinates"
+msgstr "Bounding Box - Coordonnées"
+
+msgid "Campingplatz"
+msgstr "Camping"
+
+msgid "Canton has provided no link to portal"
+msgstr "Pas de lien disponible vers le géoportail cantonal"
+
+msgid "Chemical"
+msgstr "Chimique"
+
+msgid "Coordinates"
+msgstr "Coordonnées"
+
+msgid "DE"
+msgstr "Déplacement Ouest-Est [m]"
+
+msgid "DN"
+msgstr "Déplacement sud-nord [m]"
+
 msgid "Datenbezug"
 msgstr "Distribution des données"
 
 msgid "Datenstand"
 msgstr "État d'actualité"
 
+msgid "Denkmal"
+msgstr "Monument"
+
+msgid "Detailbeschreibung"
+msgstr "Description détaillée"
+
+msgid "Detaildaten"
+msgstr "Détails"
+
+msgid "Double"
+msgstr "Double"
+
+msgid "FL"
+msgstr "Principauté du Liechstenstein"
+
+msgid "FS"
+msgstr "Norme du vecteur de déplacement [m]"
+
+msgid "Feature tooltip"
+msgstr "Information sur l'objet"
+
+msgid "Fels"
+msgstr "Falaise"
+
+msgid "Friedhof"
+msgstr "Cimetière"
+
+msgid "Gas"
+msgstr "Gaz"
+
+msgid "Geroell"
+msgstr "Eboulis"
+
+msgid "Gletscher"
+msgstr "Glacier"
+
 msgid "Gueltiger Massstabsbereich"
 msgstr "Plage de validité des données"
+
+msgid "Hoehle"
+msgstr "Grotte"
+
+msgid "Hydro-electric"
+msgstr "Hydro-électrique"
 
 msgid "Information"
 msgstr "Informations"
 
+msgid "International"
+msgstr "International"
+
+msgid "Kirche"
+msgstr "Eglise ou chapelle"
+
+msgid "Kloster"
+msgstr "Couvent"
+
+msgid "Kraftwerk"
+msgstr "Centrale électrique"
+
+msgid "Kursschiff_Linie"
+msgstr "Bateau de transport passagers"
+
 msgid "Legend"
 msgstr "Légende"
+
+msgid "Link to object"
+msgstr "Lien vers l'objet"
+
+msgid "Lower left corner"
+msgstr "Coin en bas à gauche"
+
+msgid "Lower right corner"
+msgstr "Coin en bas à droite"
+
+msgid "Man-made"
+msgstr "Artificielle"
 
 msgid "Metadaten"
 msgstr "Métadonnées"
 
-#. TODO
-msgid "PDF_Level_1_Name"
-msgstr "PDF_Level_1_Name"
+msgid "Multiple"
+msgstr "Multiple"
 
-#. TODO
-msgid "PDF_Level_2_Nam"
-msgstr "PDF_Level_2_Nam"
+msgid "Museum"
+msgstr "Musée"
 
-#. TODO
-msgid "PDF_Level_3_Name"
-msgstr "PDF_Level_3_Name"
+msgid "National"
+msgstr "National"
+
+msgid "Natural"
+msgstr "Naturelle"
+
+msgid "No"
+msgstr "Non"
+
+msgid "No additional information for this object type"
+msgstr "Pas d'information complémentaire pour ce type d'objet"
+
+msgid "No info outside CH and FL"
+msgstr "Pas d'information en dehors de CH et FL"
+
+msgid "Not applicable"
+msgstr "Non applicable"
+
+msgid "Nuclear"
+msgstr "Nucléaire"
+
+msgid "Observatorium"
+msgstr "Observatoire"
+
+msgid "Obstanlage"
+msgstr "Vergers"
+
+msgid "Produkt"
+msgstr "Produit"
+
+msgid "Pumpwerk"
+msgstr "Pompe"
+
+msgid "Reben"
+msgstr "Vignes"
+
+msgid "Refuse"
+msgstr "Déchets"
+
+msgid "Rennbahn"
+msgstr "Circuit automobile"
+
+msgid "Ruine"
+msgstr "Ruine historique"
+
+msgid "Schloss"
+msgstr "Château"
+
+msgid "Schule"
+msgstr "Ecole"
+
+msgid "Seasonal"
+msgstr "Saisonnier"
+
+msgid "See"
+msgstr "Lac"
+
+msgid "Sewage"
+msgstr "Eaux sales"
+
+msgid "Siedl"
+msgstr "Agglomération"
+
+msgid "Single"
+msgstr "Unique"
+
+msgid "Solar"
+msgstr "Solaire"
+
+msgid "Spital"
+msgstr "Hôpital"
+
+msgid "Stadion"
+msgstr "Stade"
+
+msgid "Stadtzentr"
+msgstr "Centre de grande ville"
+
+msgid "Stausee"
+msgstr "Lac de barrage"
+
+msgid "Sumpf"
+msgstr "Marais"
+
+msgid "Suspended or elevate"
+msgstr "Suspendu"
 
 msgid "Thematisches Geoportal"
 msgstr "Géoportail thématique"
 
+msgid "Thermal"
+msgstr "Thermique"
+
+msgid "Thermalbad"
+msgstr "Station thermale"
+
+msgid "Toposhop"
+msgstr "Toposhop"
+
+msgid "Underground"
+msgstr "Souterrain"
+
+msgid "Unknown"
+msgstr "Inconnu"
+
+msgid "Upper left corner"
+msgstr "Coin en haut à gauche"
+
+msgid "Upper right corner"
+msgstr "Coin en haut à droite"
+
+msgid "Verarbeitungsanlage"
+msgstr "Usine de traitement"
+
+msgid "Vergnuegungspark"
+msgstr "Parc d’attraction"
+
 msgid "WMS Dienst"
 msgstr "Service WMS"
 
-#. TODO
-msgid "bafu.silvaprotect-uebersarung"
-msgstr "bafu.silvaprotect-uebersarung"
+msgid "Wald"
+msgstr "Forêt"
+
+msgid "Water"
+msgstr "Eau"
+
+msgid "Wind"
+msgstr "Vent"
+
+msgid "Yes"
+msgstr "Oui"
+
+msgid "abfluss"
+msgstr "Débit m3/s"
+
+msgid "abfrage"
+msgstr "Requête de données"
+
+msgid "abgintens"
+msgstr "Intensité estimée"
+
+msgid "abgmagn"
+msgstr "Magnitude estimée"
+
+msgid "abk_meter_ueber_meer"
+msgstr "m s.m."
+
+msgid "abkuerzung"
+msgstr "Abréviation"
+
+msgid "aktuelle_daten"
+msgstr "Données actuelles et historiques"
+
+msgid "alexandria"
+msgstr "Informations bibliographiques"
+
+msgid "anzahlspuren"
+msgstr "Nombre de voies"
+
+msgid "app title"
+msgstr "map.geo.admin.ch"
+
+msgid "applicant"
+msgstr "Requérant"
+
+msgid "arch__hist__qualitaeten"
+msgstr "Qualités hist.-arch."
+
+msgid "atlassheetnumber"
+msgstr "Numéro du atlas géologique"
+
+msgid "ausgabejahr"
+msgstr "Année de publication"
+
+msgid "bafu_NHVText"
+msgstr "Statut OPN"
+
+msgid "bafu_RLtext"
+msgstr "Statut liste rouge"
+
+msgid "bafu_jahr"
+msgstr "Année de l'observation"
+
+msgid "bafu_population"
+msgstr "Numéro de la population"
+
+msgid "bafu_standort"
+msgstr "Habitat"
+
+msgid "bak_unesco_weltkulturerbe_flaeche"
+msgstr "Surface [ha]"
+
+msgid "bak_unesco_weltkulturerbe_name"
+msgstr "Nom"
+
+msgid "band_1_2"
+msgstr "Volume 1 | 2"
+
+msgid "bazlrechtstatus"
+msgstr "État legal"
+
+msgid "bearbeitungsjahr"
+msgstr "Année de mise à jour"
+
+msgid "belastung_personen"
+msgstr "Charge [Pers./an]"
+
+msgid "belastung_tonnen"
+msgstr "Charge [t/an]"
+
+msgid "bereich"
+msgstr "Site"
+
+msgid "beschaeftigte_ha"
+msgstr "Emplois par ha"
+
+msgid "beschlussjahr"
+msgstr "Année de la décision"
+
+msgid "beschreibung"
+msgstr "Description"
+
+msgid "bestimmung"
+msgstr "Dispositions"
+
+msgid "betrgemeinde"
+msgstr "Communes touchés"
+
+msgid "betrieb"
+msgstr "Établissement"
+
+msgid "bfsnr"
+msgstr "Numéro OFS"
+
+msgid "bioregname"
+msgstr "Nom de la région"
+
+msgid "bioregnummer"
+msgstr "Numéro de la région"
+
+msgid "bioresname"
+msgstr "Nom de l’objet"
+
+msgid "bioresnummer"
+msgstr "Numéro de l’objet"
+
+msgid "biorestotflaeche"
+msgstr "Surface totale de l’objet, ha"
+
+msgid "biorresflaeche"
+msgstr "Surface du polygone actuel, ha"
+
+msgid "biounterregname"
+msgstr "Numéro de la subdivision"
+
+msgid "biounterregnummer"
+msgstr "Numéro de la subdivision"
+
+msgid "blattbezeichnung"
+msgstr "Informations bibliographiques"
+
+msgid "blind warning"
+msgstr "Cette page est une application cartographique et n'est donc pas optimisée pour les aveugles."
+
+msgid "blw_farbe_0"
+msgstr "Hors classement"
+
+msgid "blw_farbe_1"
+msgstr "Cultures céréalières, Cultures fourragères:++ ; Cultures sarclées: +/++"
+
+msgid "blw_farbe_10"
+msgstr "Cultures fourragères naturelles: + ; Cultures fourragères artificielles: +/-"
+
+msgid "blw_farbe_11"
+msgstr "Pâturages à menu bétail: + ; Cultures fourragères, Pâturages à jeune bétail: +/-"
+
+msgid "blw_farbe_12"
+msgstr "Pâturages à gros bétail: +; Cultures fourragères: +/-"
+
+msgid "blw_farbe_13"
+msgstr "Pâturages à jeune bétail: + ; Pâturages à gros bétail, Cultures fourragères naturelles: +/-"
+
+msgid "blw_farbe_14"
+msgstr "Pâturages à jeune bétail: ++; Cultures fourragères naturelles: + ; Pâturages à gros bétail: +/-"
+
+msgid "blw_farbe_15"
+msgstr "Pâturages à menu bétail: ++ ; Pâturages à jeune bétail: +; Pâturages à gros bétail: +/- "
+
+msgid "blw_farbe_16"
+msgstr "Pâturages à menu bétail: + ; Pâturages à jeune bétail: +/- ; Pâturages à gros bétail: -"
+
+msgid "blw_farbe_17"
+msgstr "Pâturages à menu bétail: + ; Pâturages à jeune bétail: +/- "
+
+msgid "blw_farbe_18"
+msgstr "Pâturages à menu bétail: +/-"
+
+msgid "blw_farbe_19"
+msgstr "Hors classement"
+
+msgid "blw_farbe_2"
+msgstr "Cultures fourragères: +/++ ; Grandes cultures: +"
+
+msgid "blw_farbe_3"
+msgstr "Grandes cultures, Cultures fourragères naturelles: + ; Cultures fourragères artificielles: +/-"
+
+msgid "blw_farbe_4"
+msgstr "Cultures céréalières: + ; Cultures fourragères: ++ ; Cultures sarclées: +/-"
+
+msgid "blw_farbe_5"
+msgstr "Cultures céréalières, Cultures fourragères naturelles, Pâturages à gros bétail: +/-"
+
+msgid "blw_farbe_6"
+msgstr "Cultures fourragères: +; Cultures céréalières: +/-; Pâturages à gros bétail: ++"
+
+msgid "blw_farbe_7"
+msgstr "Cultures fourragères, Pâturages à gros bétail: + ; Cultures céréalières: +/"
+
+msgid "blw_farbe_8"
+msgstr "Cultures fourragères naturelles: +; Cultures fourragères artificielles, Cultures céréalières: +/-"
+
+msgid "blw_farbe_9"
+msgstr "Cultures fourragères naturelles:+; Cultures fourragères artificielles, Cultures céréalières: +/-, Pâturages à gros bétail: -"
 
 msgid "ch.are"
 msgstr "ARE"
@@ -69,9 +482,6 @@ msgstr "Convention des Alpes"
 msgid "ch.are.bauzonen"
 msgstr "Zones à bâtir Suisse (harmonisées)"
 
-msgid "ch.are.belastung-gueterverkehr-bahn-2008"
-msgstr "Trafic marchandises 2008"
-
 msgid "ch.are.belastung-gueterverkehr-strasse-2008"
 msgstr "Trafic marchandises poids lourds 2008"
 
@@ -79,22 +489,19 @@ msgid "ch.are.belastung-personenverkehr-bahn-2008"
 msgstr "Trafic voyageurs 2008"
 
 msgid "ch.are.belastung-personenverkehr-strasse-2008"
-msgstr "Charge annuelle du réseau routier suisse 2008 (trafic voyageurs)"
+msgstr "Trafic voyageurs 2008"
 
 msgid "ch.are.beschaeftigtendichte-bz08"
 msgstr "Densité de l`emploi 2008"
 
-msgid "ch.are.bevoelkerungsdichte-vz00"
-msgstr "Densité de population 2000"
+msgid "ch.are.gemeindetyp-1990-9klassen"
+msgstr "Typologie des communes ARE"
 
 msgid "ch.are.gemeindetypen"
 msgstr "Typologie des communes ARE"
 
 msgid "ch.are.gueteklassen_oev"
 msgstr "Qualité de desserte par TP ARE"
-
-msgid "ch.are.landschaftstypen"
-msgstr "Typologie des paysages suisses"
 
 msgid "ch.are.reisezeit_miv-2005"
 msgstr "Temps de parcours en TIM 2005"
@@ -116,15 +523,6 @@ msgstr "IVS Carte de terrain"
 
 msgid "ch.astra.ivs-nat"
 msgstr "IVS National"
-
-msgid "ch.astra.ivs-nat-verlaeufe"
-msgstr "IVS Tracé sans substance"
-
-msgid "ch.astra.ivs-nat_abgrenzungen"
-msgstr "IVS Délimitations"
-
-msgid "ch.astra.ivs-nat_wegbegleiter"
-msgstr "IVS Eléments du paysage routier"
 
 msgid "ch.astra.ivs-reg_loc"
 msgstr "IVS Régional et local"
@@ -162,17 +560,8 @@ msgstr "Inondation Aquaprotect 250"
 msgid "ch.bafu.aquaprotect_500"
 msgstr "Inondation Aquaprotect 500"
 
-msgid "ch.bafu.biogeographische_regionen"
-msgstr "Régions biogéographiques"
-
 msgid "ch.bafu.bundesinventare-amphibien"
 msgstr "Batraciens objets fixes"
-
-msgid "ch.bafu.bundesinventare-amphibien_anhang4"
-msgstr "Batraciens sites de l’annexe 4"
-
-msgid "ch.bafu.bundesinventare-amphibien_wanderobjekte"
-msgstr "Batraciens objets itinérants"
 
 msgid "ch.bafu.bundesinventare-auen"
 msgstr "Zones alluviales"
@@ -182,9 +571,6 @@ msgstr "IFP"
 
 msgid "ch.bafu.bundesinventare-flachmoore"
 msgstr "Bas-marais"
-
-msgid "ch.bafu.bundesinventare-flachmoore_regional"
-msgstr "Bas-marais régionaux"
 
 msgid "ch.bafu.bundesinventare-hochmoore"
 msgstr "Hauts-marais"
@@ -213,23 +599,8 @@ msgstr "Système de mise en réseau faune"
 msgid "ch.bafu.fauna-wildtierkorridor_national"
 msgstr "Corridors faunistiques suprarégional"
 
-msgid "ch.bafu.fischerei-aeschen_kernzonen"
-msgstr "Ombre: zones principales"
-
-msgid "ch.bafu.fischerei-aeschen_laichplaetze"
-msgstr "Ombre: frayères"
-
-msgid "ch.bafu.fischerei-aeschen_larvenhabitate"
-msgstr "Ombre: habitats larvaires"
-
-msgid "ch.bafu.fischerei-aeschen_verbreitungsgebiet"
-msgstr "Ombre: Carte de distribution"
-
 msgid "ch.bafu.fischerei-krebspest"
 msgstr "Peste de l'écrevisse"
-
-msgid "ch.bafu.fischerei-nasenlaichplaetze"
-msgstr "Nase: sites de frai"
 
 msgid "ch.bafu.fischerei-proliferative_nierenkrankheit"
 msgstr "MRP (Maladie rénale proliférative)"
@@ -267,14 +638,8 @@ msgstr "Volume de bois (IFN)"
 msgid "ch.bafu.holzzuwachs"
 msgstr "Accroissement annuel de bois (IFN)"
 
-msgid "ch.bafu.hydrologie-gewaesserzustandsmessstationen"
-msgstr "Stations de mesure Etat des eaux"
-
 msgid "ch.bafu.hydrologie-hydromessstationen"
 msgstr "Stations hydrométriques"
-
-msgid "ch.bafu.hydrologie-wassertemperaturmessstationen"
-msgstr "Stations de mesure Température eau"
 
 msgid "ch.bafu.laerm-bahnlaerm_nacht"
 msgstr "Bruit ferroviaire (Lr_nuit)"
@@ -297,20 +662,8 @@ msgstr "Bois mort (IFN)"
 msgid "ch.bafu.landesforstinventar-waldanteil"
 msgstr "Taux de boisement (IFN)"
 
-msgid "ch.bafu.moose"
-msgstr "Liste rouge mousses"
-
 msgid "ch.bafu.nabelstationen"
 msgstr "Qualité de l'air: Stations NABEL"
-
-msgid "ch.bafu.naqua-grundwasser_nitrat"
-msgstr "Nitrates"
-
-msgid "ch.bafu.naqua-grundwasser_psm"
-msgstr "Produits phytosanitaires"
-
-msgid "ch.bafu.naqua-grundwasser_voc"
-msgstr "Composés organiques volatils"
 
 msgid "ch.bafu.permafrost"
 msgstr "Carte indicative du Pergélisol"
@@ -330,11 +683,17 @@ msgstr "REN  Zones de prairies sèches"
 msgid "ch.bafu.ren-wald"
 msgstr "REN Zones forêts"
 
+msgid "ch.bafu.ren-wald_ueber_1000_meter"
+msgstr "REN  Zones forestières>1000m"
+
+msgid "ch.bafu.ren-wald_unter_1000_meter"
+msgstr "REN  Zones forestières<1000m"
+
 msgid "ch.bafu.schutzgebiete-biosphaerenreservate"
 msgstr "Réserves de biosphère"
 
-msgid "ch.bafu.schutzgebiete-luftfahrt"
-msgstr "Sites protégés"
+msgid "ch.bafu.schutzgebiete-biosphaerenreservate"
+msgstr "Réserves de biosphère"
 
 msgid "ch.bafu.schutzgebiete-paerke_nationaler_bedeutung"
 msgstr "Parcs"
@@ -347,6 +706,9 @@ msgstr "Parc national"
 
 msgid "ch.bafu.schutzgebiete-smaragd"
 msgstr "Emeraude"
+
+msgid "ch.bafu.schutzgebiete-wildruhezonen"
+msgstr "Zones de tranquillité"
 
 msgid "ch.bafu.showme-gemeinden_hochwasser"
 msgstr "ShowMe communes: crues"
@@ -372,18 +734,6 @@ msgstr "ShowMe cantons: glissements"
 msgid "ch.bafu.showme-kantone_sturzprozesse"
 msgstr "ShowMe cantons: chutes"
 
-msgid "ch.bafu.silvaprotect-hangmuren"
-msgstr "Coulées de boue"
-
-msgid "ch.bafu.silvaprotect-lawinen"
-msgstr "Avalanches"
-
-msgid "ch.bafu.silvaprotect-murgang"
-msgstr "Laves torrentielles"
-
-msgid "ch.bafu.silvaprotect-sturz"
-msgstr "Chutes de pierre"
-
 msgid "ch.bafu.swissprtr"
 msgstr "Rejets de polluants (SwissPRTR)"
 
@@ -408,19 +758,10 @@ msgstr "Dérivation"
 msgid "ch.bafu.wasser-rueckgabe"
 msgstr "Restitution"
 
-msgid "ch.bafu.wasser-teileinzugsgebiete_40"
-msgstr "Bassins versants Suisse 40km2"
-
 msgid "ch.bafu.wege-wildruhezonen-jagdbanngebiete"
-msgstr "Zones de tranquillité - routes"
-
-msgid "ch.bafu.wrz-jagdbanngebiete_select"
-msgstr "Districts francs - select"
-
-msgid "ch.bafu.wrz-wildruhezonen-jagdbanngebiete-wege-routen"
 msgstr "Zones tranquillité portal - routes"
 
-msgid "ch.bafu.wrz-wildruhezonen_portal"
+msgid "ch.bafu.wildruhezonen-jagdbanngebiete"
 msgstr "Zones de tranquillité - portail"
 
 msgid "ch.bag"
@@ -429,20 +770,17 @@ msgstr "OFSP"
 msgid "ch.bag.url"
 msgstr "http://www.bag.admin.ch/index.html?lang=fr"
 
-msgid "ch.bag.zecken-fsme-faelle"
-msgstr "MEVE - zones à fréquence accrue"
-
-msgid "ch.bag.zecken-fsme-impfung"
-msgstr "MEVE - vaccination recommandée"
-
-msgid "ch.bag.zecken-lyme"
-msgstr "Zones à risque de Borréliose"
-
 msgid "ch.bak"
 msgstr "OFC"
 
 msgid "ch.bak.bundesinventar-schuetzenswerte-ortsbilder"
 msgstr "Inventaire fédéral ISOS"
+
+msgid "ch.bak.isos.warning"
+msgstr "Ce site est mis à jour deux fois par année. Merci de vous adresser à l’office compétent (isos@bak.admin.ch) si vous envisagez d’utiliser un relevé ISOS dans un cadre légal. © Données: OFC, Berne"
+
+msgid "ch.bak.isos.warning"
+msgstr "Ce site est mis à jour deux fois par année. Merci de vous adresser à l’office compétent (isos@bak.admin.ch) si vous envisagez d’utiliser un relevé ISOS dans un cadre légal. © Données: OFC, Berne"
 
 msgid "ch.bak.schutzgebiete-unesco_weltkulturerbe"
 msgstr "UNESCO sites culturels"
@@ -453,41 +791,8 @@ msgstr "http://www.bak.admin.ch/index.html?lang=fr"
 msgid "ch.bakom"
 msgstr "OFCOM"
 
-msgid "ch.bakom.anbieter-eigenes_festnetz"
-msgstr "Nombre d'opérateurs de raccord"
-
-msgid "ch.bakom.anschlussart-glasfaser"
-msgstr "Fibre optique"
-
-msgid "ch.bakom.anschlussart-koaxialkabel"
-msgstr "Câble coaxial"
-
-msgid "ch.bakom.anschlussart-kupferdraht"
-msgstr "Fil de cuivre"
-
-msgid "ch.bakom.downlink1"
-msgstr "Liaison ≥ 1 Mbit/s descendante"
-
-msgid "ch.bakom.downlink10"
-msgstr "Liaison ≥10 Mbit/s descend."
-
-msgid "ch.bakom.downlink100"
-msgstr "Liaison ≥ 100 Mbit/s descend."
-
-msgid "ch.bakom.downlink2"
-msgstr "Liaison ≥ 2 Mbit/s descendante"
-
-msgid "ch.bakom.downlink20"
-msgstr "Liaison ≥ 20 Mbit/s descend."
-
-msgid "ch.bakom.downlink50"
-msgstr "Liaison ≥ 50 Mbit/s descend."
-
 msgid "ch.bakom.mobil-antennenstandorte-gsm"
 msgstr "Emplacement des antennes GSM"
-
-msgid "ch.bakom.mobil-antennenstandorte-lte"
-msgstr "Position des antennes 4G (LTE)"
 
 msgid "ch.bakom.mobil-antennenstandorte-umts"
 msgstr "Position des antennes 3G (UMTS)"
@@ -495,44 +800,17 @@ msgstr "Position des antennes 3G (UMTS)"
 msgid "ch.bakom.radio-fernsehsender"
 msgstr "Emetteurs radio et télévision"
 
-msgid "ch.bakom.uplink1"
-msgstr "Liaison ≥ 1 Mbit/s ascendante"
-
-msgid "ch.bakom.uplink10"
-msgstr "Liaison ≥ 10 Mbit/s ascendante"
-
-msgid "ch.bakom.uplink100"
-msgstr "Liaison ≥100 Mbit/s ascendante"
-
-msgid "ch.bakom.uplink2"
-msgstr "Liaison ≥ 2 Mbit/s ascendante"
-
-msgid "ch.bakom.uplink20"
-msgstr "Liaison ≥ 20 Mbit/s ascendante"
-
-msgid "ch.bakom.uplink50"
-msgstr "Liaison ≥ 50 Mbit/s ascendante"
-
 msgid "ch.bakom.url"
 msgstr "http://www.bakom.admin.ch/index.html"
-
-msgid "ch.bakom.verfuegbarkeit-hdtv"
-msgstr "Disponibilité HDTV réseau fixe"
-
-msgid "ch.bakom.verfuegbarkeit-tv"
-msgstr "Disponibilité TV réseau fixe"
 
 msgid "ch.bakom.versorgungsgebiet-tv"
 msgstr "Zones de diffusion TV"
 
+msgid "ch.bakom.versorgungsgebiet-ukw"
+msgstr "Zones de diffusion radio"
+
 msgid "ch.bav"
 msgstr "OFT"
-
-msgid "ch.bav.kataster-belasteter-standorte-oev"
-msgstr "Sites pollués transports publics"
-
-msgid "ch.bav.laerm-emissionplan_eisenbahn_2015"
-msgstr "Plan des émissions en 2015"
 
 msgid "ch.bav.url"
 msgstr "http://www.bav.admin.ch/?lang=fr"
@@ -540,29 +818,11 @@ msgstr "http://www.bav.admin.ch/?lang=fr"
 msgid "ch.bazl"
 msgstr "OFAC"
 
-msgid "ch.bazl.heliports-gebirgslandeplaetze"
-msgstr "Héliports/places d'atterr. en mtgne"
-
-msgid "ch.bazl.landschaftsruhezonen"
-msgstr "Zones de calme pour l'aviation"
-
-msgid "ch.bazl.luftfahrthindernis"
-msgstr "Obstacles à la navigation aérienne"
-
 msgid "ch.bazl.luftfahrtkarten-icao"
 msgstr "Carte aéronautique OACI"
 
-msgid "ch.bazl.points-of-interest"
-msgstr "Points d'intérêt"
-
 msgid "ch.bazl.projektierungszonen-flughafenanlagen"
 msgstr "Zones réservées: Aéroports"
-
-msgid "ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung"
-msgstr "PSIA Consultation"
-
-msgid "ch.bazl.sachplan-infrastruktur-luftfahrt_kraft"
-msgstr "PS infrastructure aéronautique"
 
 msgid "ch.bazl.segelflugkarte"
 msgstr "Carte vol à voile"
@@ -578,18 +838,6 @@ msgstr "Renonciation force hydraulique"
 
 msgid "ch.bfe.energieforschung"
 msgstr "Recherche énergétique"
-
-msgid "ch.bfe.kernkraftwerke"
-msgstr "Centrales nucléaires"
-
-msgid "ch.bfe.kleinwasserkraftpotentiale"
-msgstr "Potentiel petite hydraulique"
-
-msgid "ch.bfe.sachplan-geologie-tiefenlager"
-msgstr "PS dépôts couches géol. profondes"
-
-msgid "ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung"
-msgstr "PS dépôts couches géol.prof.: p.t."
 
 msgid "ch.bfe.statistik-wasserkraftanlagen"
 msgstr "Statistique hydroélectricité"
@@ -624,77 +872,14 @@ msgstr "http://www.bfs.admin.ch/bfs/portal/fr/index.html"
 msgid "ch.blw"
 msgstr "OFAG"
 
-msgid "ch.blw.alpprodukte"
-msgstr "Produits d'alpage"
-
-msgid "ch.blw.bergprodukte"
-msgstr "Produits montagne et alpage"
-
-msgid "ch.blw.bewaesserungsbeduerftigkeit"
-msgstr "Besoins en irrigation"
-
-msgid "ch.blw.bodeneignung-gruendigkeit"
-msgstr "Profondeur"
-
-msgid "ch.blw.bodeneignung-kulturland"
-msgstr "Sols: Terres cultivées"
-
-msgid "ch.blw.bodeneignung-kulturtyp"
-msgstr "Sols: Typologies des cultures"
-
-msgid "ch.blw.bodeneignung-naehrstoffspeichervermoegen"
-msgstr "Rétention substances nutritives"
-
-msgid "ch.blw.bodeneignung-skelettgehalt"
-msgstr "Pierrosité"
-
-msgid "ch.blw.bodeneignung-vernaessung"
-msgstr "Mouillure"
-
-msgid "ch.blw.bodeneignung-wasserdurchlaessigkeit"
-msgstr "Perméabilité"
-
-msgid "ch.blw.bodeneignung-wasserspeichervermoegen"
-msgstr "Capacité de rétention hydrique"
-
 msgid "ch.blw.erosion"
 msgstr "Risque d’érosion qualitatif 1"
-
-msgid "ch.blw.erosion-mit_bergzonen"
-msgstr "Risque d’érosion qualitatif 2"
 
 msgid "ch.blw.hang_steillagen"
 msgstr "Surfaces en pente"
 
-msgid "ch.blw.klimaeignung-futterbau"
-msgstr "Climat - culture fourragère"
-
-msgid "ch.blw.klimaeignung-getreidebau"
-msgstr "Climat - cultures céréalières"
-
-msgid "ch.blw.klimaeignung-kartoffeln"
-msgstr "Climat - pommes de terre"
-
-msgid "ch.blw.klimaeignung-koernermais"
-msgstr "Climat - maïs grain"
-
-msgid "ch.blw.klimaeignung-kulturland"
-msgstr "Climat - terres cultivées"
-
-msgid "ch.blw.klimaeignung-spezialkulturen"
-msgstr "Climat - cultures spéciales"
-
-msgid "ch.blw.klimaeignung-typ"
-msgstr "Climat - vue d'ensemble"
-
-msgid "ch.blw.klimaeignung-zwischenfruchtbau"
-msgstr "Climat - cultures dérobées"
-
 msgid "ch.blw.landwirtschaftliche-zonengrenzen"
 msgstr "Limites des zones agricoles"
-
-msgid "ch.blw.niederschlagshaushalt"
-msgstr "Régime pluviométrique"
 
 msgid "ch.blw.steil_terrassenlagen_rebbau"
 msgstr "Vignobles en pente"
@@ -730,12 +915,6 @@ msgstr "Mensuration officielle suisse / FL"
 msgid "ch.kanton.av.url"
 msgstr "http://www.cadastre.ch/internet/cadastre/fr/home/products/webmap/cwm.html"
 
-msgid "ch.kantone.cadastralwebmap-farbe"
-msgstr "CadastralWebMap"
-
-msgid "ch.kantone.hintergrund-farbe"
-msgstr "CadastralWebMap"
-
 msgid "ch.kt.bafu"
 msgstr "ct. [OFEV]"
 
@@ -748,21 +927,8 @@ msgstr "swisstopo"
 msgid "ch.swisstopo-vd"
 msgstr "Mensuration Officielle Suisse"
 
-msgid "ch.swisstopo-vd.geometa-gemeinde"
-msgstr "Informations sur la commune"
-
-msgid "ch.swisstopo-vd.geometa-grundbuch"
-msgstr "Information sur le registre foncier"
-
 msgid "ch.swisstopo-vd.geometa-los"
 msgstr "Secteurs en travaux"
-
-#. TODO
-msgid "ch.swisstopo-vd.geometa-los_wmstile"
-msgstr "ch.swisstopo-vd.geometa-los_wmstile"
-
-msgid "ch.swisstopo-vd.geometa-nfgeom"
-msgstr "Géomètre-conservateur"
 
 msgid "ch.swisstopo-vd.geometa-standav"
 msgstr "Etat de la mensuration officielle"
@@ -788,29 +954,29 @@ msgstr "Points fixes altimétriques PFA1"
 msgid "ch.swisstopo.fixpunkte-hfp2"
 msgstr "Points fixes altimétriques PFA2"
 
+msgid "ch.swisstopo.fixpunkte-hoehe"
+msgstr "Points fixes en altimétrie"
+
+msgid "ch.swisstopo.fixpunkte-hoehe"
+msgstr "Points fixes en altimétrie"
+
+msgid "ch.swisstopo.fixpunkte-lage"
+msgstr "Points fixes en planimétrie"
+
 msgid "ch.swisstopo.fixpunkte-lfp1"
 msgstr "Points fixes planimétriques PFP1"
 
 msgid "ch.swisstopo.fixpunkte-lfp2"
 msgstr "Points fixes planimétriques PFP2"
 
-msgid "ch.swisstopo.geoidmodell-ch1903"
-msgstr "Géoïde en CH1903"
-
-msgid "ch.swisstopo.geoidmodell-etrs89"
-msgstr "Géoïde en ETRS89"
-
 msgid "ch.swisstopo.geologie-eiszeit-lgm-raster"
-msgstr "Dernier maximum glaciaire"
+msgstr "Maximum glaciaire"
 
 msgid "ch.swisstopo.geologie-geodaesie-bouguer_anomalien"
 msgstr "Anomalies de Bouguer"
 
 msgid "ch.swisstopo.geologie-geodaesie-isostatische_anomalien"
 msgstr "Anomalies isostatiques"
-
-msgid "ch.swisstopo.geologie-geolkarten500.metadata"
-msgstr "Découpage GéoCartes 500"
 
 msgid "ch.swisstopo.geologie-geologische_karte"
 msgstr "Géologie 1:500000"
@@ -836,9 +1002,6 @@ msgstr "Inclinaison"
 msgid "ch.swisstopo.geologie-geophysik-totalintensitaet"
 msgstr "Intensité champ magnétique"
 
-msgid "ch.swisstopo.geologie-geotechnik-gk200"
-msgstr "Géotechnique et roches"
-
 msgid "ch.swisstopo.geologie-geotechnik-gk500-genese"
 msgstr "Origine des roches"
 
@@ -847,9 +1010,6 @@ msgstr "Classification des roches"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk500-lithologie_hauptgruppen"
 msgstr "Groupes lithologiques"
-
-msgid "ch.swisstopo.geologie-geotechnik-mineralische_rohstoffe200"
-msgstr "Matières premières minérales"
 
 msgid "ch.swisstopo.geologie-geotechnik-steinbrueche_1915"
 msgstr "Carrières 1915"
@@ -863,6 +1023,12 @@ msgstr "Carrières 1980"
 msgid "ch.swisstopo.geologie-geotechnik-steinbrueche_1995"
 msgstr "Carrières 1995"
 
+msgid "ch.swisstopo.geologie-geotechnik-zementindustrie_1965"
+msgstr "Industrie des ciments 1965"
+
+msgid "ch.swisstopo.geologie-geotechnik-zementindustrie_1995"
+msgstr "Industrie des ciments 1995"
+
 msgid "ch.swisstopo.geologie-geotechnik-ziegeleien_1907"
 msgstr "Briqueteries 1907"
 
@@ -871,9 +1037,6 @@ msgstr "Briqueteries 1965"
 
 msgid "ch.swisstopo.geologie-geotechnik-ziegeleien_1995"
 msgstr "Briqueteries 1995"
-
-msgid "ch.swisstopo.geologie-geotope"
-msgstr "Géotopes suisses"
 
 msgid "ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen"
 msgstr "Réservoirs aquifères"
@@ -893,31 +1056,38 @@ msgstr "Minéralisations"
 msgid "ch.swisstopo.geologie-tektonische_karte"
 msgstr "Tectonique 1:500000"
 
+msgid "ch.swisstopo.gg25-bezirk-flaeche.fill"
+msgstr "Limites de districts GG25"
+
+msgid "ch.swisstopo.gg25-gemeinde-flaeche.fill"
+msgstr "Limites de communes GG25"
+
+msgid "ch.swisstopo.gg25-kanton-flaeche.fill"
+msgstr "Limites cantonales GG25"
+
+msgid "ch.swisstopo.gg25-land-flaeche.fill"
+msgstr "Frontières nationales GG25"
+
 msgid "ch.swisstopo.hiks-dufour"
 msgstr "Carte Dufour Première édition"
 
 msgid "ch.swisstopo.hiks-siegfried"
 msgstr "Carte Siegfried Première édition"
 
-#. TODO
-msgid "ch.swisstopo.hiks-siegfried-ta25"
-msgstr "ch.swisstopo.hiks-siegfried-ta25"
-
-#. TODO
-msgid "ch.swisstopo.hiks-siegfried-ta50"
-msgstr "ch.swisstopo.hiks-siegfried-ta50"
+msgid "ch.swisstopo.images-swissimage"
+msgstr "SWISSIMAGE"
 
 msgid "ch.swisstopo.images-swissimage.metadata"
 msgstr "Découpage en tuile SWISSIMAGE"
-
-msgid "ch.swisstopo.koordinatenaenderung"
-msgstr "MN95 Changements de coordonnées"
 
 msgid "ch.swisstopo.kt"
 msgstr "swisstopo, ct."
 
 msgid "ch.swisstopo.kt.url"
 msgstr "http://www.swisstopo.admin.ch/internet/swisstopo/fr/home/swisstopo/org/cartography.html"
+
+msgid "ch.swisstopo.lubis-luftbilder"
+msgstr "Photographies aériennes swisstopo"
 
 msgid "ch.swisstopo.pixelkarte-farbe"
 msgstr "Cartes couleurs"
@@ -937,11 +1107,17 @@ msgstr "Carte nationale 1:25'000"
 msgid "ch.swisstopo.pixelkarte-farbe-pk50.noscale"
 msgstr "Carte nationale 1:50'000"
 
+msgid "ch.swisstopo.pixelkarte-farbe-pk500.noscale"
+msgstr "Carte nationale 1:500'000"
+
 msgid "ch.swisstopo.pixelkarte-grau"
 msgstr "Cartes noir & blanc"
 
 msgid "ch.swisstopo.pixelkarte-pk100.metadata"
 msgstr "Découpage carte nationale 1:100’000"
+
+msgid "ch.swisstopo.pixelkarte-pk1000.metadata"
+msgstr "Découpage carte nationale 1:1 million"
 
 msgid "ch.swisstopo.pixelkarte-pk200.metadata"
 msgstr "Découpage carte nationale 1:200’000"
@@ -958,38 +1134,8 @@ msgstr "Découpage carte nationale 1:500’000"
 msgid "ch.swisstopo.swissalti3d-reliefschattierung"
 msgstr "swissALTI3D estompage du relief"
 
-msgid "ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill"
-msgstr "Limites de district"
-
-msgid "ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill"
-msgstr "Limites de commune"
-
-msgid "ch.swisstopo.swissboundaries3d-kanton-flaeche.fill"
-msgstr "Limites cantonales"
-
-msgid "ch.swisstopo.swissboundaries3d-land-flaeche.fill"
-msgstr "Frontières nationales"
-
-msgid "ch.swisstopo.swissbuildings3d"
-msgstr "Les bâtiments en 3D simplifiés"
-
 msgid "ch.swisstopo.swissimage"
 msgstr "SWISSIMAGE"
-
-msgid "ch.swisstopo.swisstlm3d-karte"
-msgstr "Modèle topographique du paysage"
-
-msgid "ch.swisstopo.swisstlm3d-wanderwege"
-msgstr "chemins de randonnée pédestre"
-
-msgid "ch.swisstopo.tml3d-hintergrund-karte"
-msgstr "swissTLM-Map"
-
-msgid "ch.swisstopo.transformationsgenauigkeit"
-msgstr "MN95 Précision de transformation"
-
-msgid "ch.swisstopo.treasurehunt"
-msgstr "Carte-tresor"
 
 msgid "ch.swisstopo.url"
 msgstr "http://www.swisstopo.admin.ch/internet/swisstopo/fr/home.html"
@@ -1011,12 +1157,6 @@ msgstr "Surfaces boisées"
 
 msgid "ch.swisstopo.vec200-miscellaneous"
 msgstr "Objets marquants VECTOR200"
-
-msgid "ch.swisstopo.vec200-miscellaneous-geodpoint"
-msgstr "Cotes d'altitude VECTOR200"
-
-msgid "ch.swisstopo.vec200-names-namedlocation"
-msgstr "Noms VECTOR200"
 
 msgid "ch.swisstopo.vec200-transportation-oeffentliche-verkehr"
 msgstr "Transports publics VECTOR200"
@@ -1051,6 +1191,9 @@ msgstr "Réseau routier VECTOR25"
 msgid "ch.swisstopo.vec25-uebrigerverkehr"
 msgstr "Autres transports VECTOR25"
 
+msgid "ch.swisstopo.vec25-wander"
+msgstr "Chemins de randonnée VECTOR25"
+
 msgid "ch.swisstopo.verschiebungsvektoren-tsp1"
 msgstr "MN95 Vecteurs de déformation PAT1"
 
@@ -1069,8 +1212,140 @@ msgstr "Régions territoriales"
 msgid "ch.vbs.url"
 msgstr "http://www.vbs.admin.ch/internet/vbs/fr/home.html"
 
+msgid "city_name"
+msgstr "Nom de la localité"
+
+msgid "construct"
+msgstr "Ouvrage d'art"
+
+msgid "contact title"
+msgstr "Contact"
+
+msgid "contact url"
+msgstr "http://www.geo.admin.ch/internet/geoportal/fr/tools/contact.html"
+
+msgid "contour"
+msgstr "Inclinaison [°]"
+
+msgid "contour_totalintensitaet"
+msgstr "Intensité totale [nT]"
+
+msgid "ct"
+msgstr "Ct."
+
+msgid "date"
+msgstr "Date"
+
+msgid "date_time"
+msgstr "Date/Heure"
+
+msgid "datumactu"
+msgstr "Date de la dernière mise à jour"
+
+msgid "datumzeit"
+msgstr "Date et heure"
+
+msgid "deklination"
+msgstr "Déclinaison [°]"
+
+msgid "descriptionText"
+msgstr "Description"
+
+msgid "disclaimer title"
+msgstr "Conditions d'utilisation"
+
+msgid "disclaimer url"
+msgstr "http://www.geo.admin.ch/internet/geoportal/fr/home/geoadmin/contact.html#copyright"
+
+msgid "district"
+msgstr "district"
+
+msgid "durationofeffect"
+msgstr "Durée de l'effet"
+
+msgid "egid"
+msgstr "EGID"
+
+msgid "einschraenkungen"
+msgstr "Restrictions"
+
+msgid "einwohner_ha"
+msgstr "Population par ha"
+
+msgid "einwohnerzahl"
+msgstr "Nombre d’habitants"
+
+msgid "einwohnerzahl_b"
+msgstr "Nombre d’habitants (fourchette, seulement pour Siedl)"
+
+msgid "einwohnerzahl_s"
+msgstr "Nombre d’habitants (seulement pour Siedl.)"
+
+msgid "ent_gew"
+msgstr "Cours d'eau"
+
+msgid "epizentralzone"
+msgstr "Zone épicentrale"
+
+msgid "est"
+msgstr "Est"
+
+msgid "et_fromatt"
+msgstr "Anomalies aéromagnet. Plateau/Jura [nT]"
+
+msgid "fassung"
+msgstr "Version"
+
+msgid "feature"
+msgstr "Objet"
+
+msgid "federal administration"
+msgstr "Administration fédérale admin.ch"
+
+msgid "fj85"
+msgstr "Vue aérienne pour la statistique de la superficie 1979/85 prise en"
+
+msgid "fj97"
+msgstr "Vue aérienne pour la statistique de la superficie 1992/97 prise en"
+
 msgid "flaeche_ha"
 msgstr "Surface [ha]"
+
+msgid "flaeche_km2"
+msgstr "Surface [km2]"
+
+msgid "flaeche_m2"
+msgstr "Surface [m2]"
+
+msgid "fliessgewaesser"
+msgstr "Cours d'eau"
+
+msgid "fp_E95_N95"
+msgstr "Coordonnées MN95 (E / N)"
+
+msgid "fp_H02"
+msgstr "Altitude (H)"
+
+msgid "fp_Y03_X03"
+msgstr "Coordonnées MN03 (Y / X)"
+
+msgid "frame"
+msgstr "Cadre de référence"
+
+msgid "gembfs"
+msgstr "N° OFS"
+
+msgid "gemdarstellung"
+msgstr "Géoportail cantonal"
+
+msgid "gemeinde"
+msgstr "Commune"
+
+msgid "gemflaeche"
+msgstr "Surface de la commune (ha)"
+
+msgid "gemgemeinde"
+msgstr "Nom de la commune"
 
 msgid "gemkanton"
 msgstr "Canton"
@@ -1078,11 +1353,137 @@ msgstr "Canton"
 msgid "geobasisdatensatz"
 msgstr "ID Géodonnées de base"
 
+msgid "geol_f"
+msgstr "Unité"
+
+msgid "geometalink"
+msgstr "Géomètre-conservateur, registre foncier, autres métadonnées"
+
+msgid "geompdf_liste"
+msgstr "Informations détaillées"
+
+msgid "geothermie"
+msgstr "Densité de flux thermique [mW/m2]"
+
 msgid "gesamtflaeche_ha"
 msgstr "Surface totale [ha]"
 
+msgid "gestein"
+msgstr "Roche"
+
+msgid "gesteinsgr"
+msgstr "Groupe de roche"
+
+msgid "gewaesser"
+msgstr "Nom du cours d’eau"
+
+msgid "gewaessername"
+msgstr "Nom du plan d’eau"
+
+msgid "gewissnr"
+msgstr "Numéro GEWISS"
+
+msgid "gin_nummer"
+msgstr "Numéro GIN attribué"
+
+msgid "gmde"
+msgstr "Numéro de commune OFS (état 2006)"
+
+msgid "grundadresse"
+msgstr "Adresse"
+
+msgid "grundfuehrung"
+msgstr "Etat du registre foncier"
+
+msgid "grundgemeinde"
+msgstr "Nom de la commune"
+
+msgid "grundkreis"
+msgstr "Arrondissement du registre foncier"
+
+msgid "grundlage"
+msgstr "Base de décision"
+
+msgid "grundtel"
+msgstr "N° de téléphone"
+
+msgid "grundurl"
+msgstr "Courriel / Internet"
+
+msgid "help title"
+msgstr "Aide"
+
+msgid "help url"
+msgstr "http://www.geo.admin.ch/internet/geoportal/fr/commons/help/viewer_help.html"
+
+msgid "hide column"
+msgstr "Faire disparaître le gestionnaire de couches"
+
+msgid "hier"
+msgstr "Ici"
+
+msgid "hoehe_see"
+msgstr "Altitude du plan d'eau [m]"
+
+msgid "hoehe_ueber_meer"
+msgstr "Altitude au-dessus du niveau de la mer [m]"
+
+msgid "holz_region"
+msgstr "Région"
+
+msgid "holznuztung"
+msgstr "Exploitations [m3/ha/an]"
+
+msgid "holzvorrat"
+msgstr "Volume [m3/ha]"
+
+msgid "holzzuwachs"
+msgstr "Accroissement [m3/ha/an]"
+
+msgid "home title"
+msgstr "Accueil"
+
+msgid "home url"
+msgstr "http://map.geo.admin.ch/?lang=fr"
+
+msgid "hydrografische_herkunft"
+msgstr "Origine hydrographique"
+
+msgid "hydromessstationen_graph"
+msgstr "3 jours Niveau d'eau/Débit"
+
+msgid "id_arealstatistik_85"
+msgstr "Catégorie de base de la statistique de la superficie 1979/85"
+
+msgid "id_arealstatistik_97"
+msgstr "Catégorie de base de la statistique de la superficie 1992/97"
+
+msgid "id_objekt"
+msgstr "Objet"
+
+msgid "identificator"
+msgstr "Identifiant"
+
+msgid "information"
+msgstr "Information"
+
+msgid "intern"
+msgstr "Interne"
+
+msgid "ivs_bedeutung"
+msgstr "Importance (LPN)"
+
+msgid "ivs_bedeutung_short"
+msgstr "Importance"
+
 msgid "ivs_documentation"
 msgstr "Documentation"
+
+msgid "ivs_gis"
+msgstr "(Object dans IVS-SIG)"
+
+msgid "ivs_name_objektes"
+msgstr "Nom de l'objet IVS"
 
 msgid "ivs_nat_abschnitt"
 msgstr "Segment"
@@ -1111,8 +1512,98 @@ msgstr "Importance (LPN)"
 msgid "ivs_slaname"
 msgstr "Tracé"
 
+msgid "jahrezeitenrythmus"
+msgstr "Rythme saisonnier"
+
+msgid "jb_name"
+msgstr "District franc"
+
+msgid "jb_obj"
+msgstr "No"
+
+msgid "kanton"
+msgstr "Canton"
+
+msgid "kantoncode"
+msgstr "Code cantonal"
+
+msgid "kartenblattname"
+msgstr "Nom de feuille"
+
+msgid "kartenblattnummer"
+msgstr "Numéro de feuille"
+
+msgid "kartenwerk"
+msgstr "Carte"
+
+msgid "kartenwerk_lk100"
+msgstr "Cartes nationales de la Suisse 1:100’000 (CN100)"
+
+msgid "kartenwerk_lk25"
+msgstr "Cartes nationales de la Suisse 1:25’000 (CN25)"
+
+msgid "kartenwerk_lk50"
+msgstr "Cartes nationales de la Suisse 1:50’000 (CN50)"
+
+msgid "kartenwerk_ta25"
+msgstr "Atlas topographique de la Suisse 1:25’000 (carte Siegfried)"
+
+msgid "kartenwerk_ta50"
+msgstr "Atlas topographique de la Suisse 1:50’000 (carte Siegfried)"
+
+msgid "kartenwerk_tk100"
+msgstr "Carte topographique de la Suisse 1:100’000 (carte Dufour)"
+
+msgid "kartiereinheit"
+msgstr "Unité de cartographie"
+
 msgid "kategorie"
 msgstr "Catégorie"
+
+msgid "kbbez"
+msgstr "Nom de feuille"
+
+msgid "kbnum"
+msgstr "Numéro de feuille"
+
+msgid "kindofzone"
+msgstr "Genre de zone réservée"
+
+msgid "kkw"
+msgstr "Centrale nucléaire"
+
+msgid "klasse"
+msgstr "Classe"
+
+msgid "klwkp_gwlnr"
+msgstr "Numéro de cours d’eau"
+
+msgid "klwkp_kwprometer"
+msgstr "Potentiel théorique hydro-électrique [kW/m]"
+
+msgid "konf_objekt"
+msgstr "Configuration des objets"
+
+msgid "krebsart"
+msgstr "Nom latin de l’espèce d’écrevisse"
+
+msgid "laenge_m"
+msgstr "Longueur [m]"
+
+msgid "laenge_strecke_m"
+msgstr "Longueur du tronçon [m]"
+
+msgid "lage_objekt"
+msgstr "Situation de l’objet par rapport au sol"
+
+msgid "lagequalitaeten"
+msgstr "Qualités de situation"
+
+msgid "langtext"
+msgstr "Localité"
+
+msgid "laubholzanteil"
+msgstr "Proportion de feuillus [%]"
 
 msgid "layer_geocat_text"
 msgstr "Lien vers geocat.ch"
@@ -1123,18 +1614,1177 @@ msgstr "Lien vers la distribution des données"
 msgid "layer_url_portal_text"
 msgstr "Lien vers le portail"
 
+msgid "layer_url_text"
+msgstr "Lien vers la description détaillée des données"
+
+msgid "legalregulationlink"
+msgstr "Autres informations"
+
+msgid "length_km"
+msgstr "Longueur [km]"
+
+msgid "link"
+msgstr "Lien"
+
+msgid "link to canton geoportal"
+msgstr "Lien sur le géoportail cantonal"
+
+msgid "link to geoportal"
+msgstr "Lien vers le géoportail"
+
+msgid "link2dok"
+msgstr "Lien vers le document"
+
+msgid "linkzurbeschreibung"
+msgstr "Description détaillée"
+
+msgid "linkzurlegende"
+msgstr "Lien vers la légende"
+
+msgid "lokal"
+msgstr "Locale"
+
+msgid "losactivite"
+msgstr "Type de travaux en cours"
+
+msgid "losarea"
+msgstr "Surface (ha)"
+
+msgid "losbezungsramen"
+msgstr "Cadre de référence"
+
+msgid "losentreprise"
+msgstr "Nom de l’entreprise"
+
+msgid "losidentifikator"
+msgstr "Identifiant"
+
+msgid "losnummer"
+msgstr "Numéro du lot"
+
+msgid "losquality"
+msgstr "Norme de qualité"
+
+msgid "mehrinformationen"
+msgstr "Dimensions du gabarit d'espace libre"
+
+msgid "messstandort_name"
+msgstr "Nom du site d’essai"
+
+msgid "messstellentyp"
+msgstr "Type"
+
+msgid "modif_validfrom"
+msgstr "Date de l'arrêt"
+
+msgid "nabeltyp"
+msgstr "Emplacement"
+
+msgid "nachweisjahr"
+msgstr "Année du prélèvement"
+
+msgid "nachweisnummer"
+msgstr "No du lieu de prélèvement"
+
+msgid "nachweisort"
+msgstr "Lieu de prélèvement"
+
+msgid "nadelholzanteil"
+msgstr "Proportion de résineux [%]"
+
+msgid "name"
+msgstr "Nom"
+
+msgid "name_ads"
+msgstr "Localité"
+
+msgid "name_bazl"
+msgstr "Désignation"
+
+msgid "name_lang1"
+msgstr "Nom dans la 1ère langue"
+
+msgid "name_lang2"
+msgstr "Nom dans la 2ème langue"
+
+msgid "name_terreg"
+msgstr "Nom de la région territoriale"
+
+msgid "national"
+msgstr "Nationale"
+
+msgid "nffirmenname"
+msgstr "Entreprise / office"
+
+msgid "nfname"
+msgstr "Nom"
+
+msgid "nom_dreieck"
+msgstr "PAT associés"
+
+msgid "nord"
+msgstr "Nord"
+
+msgid "nr"
+msgstr "N°"
+
+msgid "num_dreieck"
+msgstr "Numéro du triangle"
+
+msgid "nummer"
+msgstr "Numéro"
+
+msgid "nummer_terreg"
+msgstr "Numéro de la région territoriale"
+
+msgid "nutzung"
+msgstr "Type"
+
+msgid "nutzungsart_verbindung"
+msgstr "Usage de la connexion"
+
 msgid "objektname"
 msgstr "Nom de l'objet"
 
 msgid "objektnr"
 msgstr "Numéro de l'objet"
 
-msgid "org.epsg.grid_21781"
-msgstr "Coordonnées CH1903/MN03"
+msgid "oeffentlich"
+msgstr "Public"
 
-msgid "org.epsg.grid_4326"
-msgstr "Réseau de coordonnées WGS84"
+msgid "official object webpage"
+msgstr "Page officielle de l'objet"
+
+msgid "offizielpktnummer"
+msgstr "Numéro officiel du point"
+
+msgid "optionaler_name"
+msgstr "Nom optionel"
+
+msgid "ort"
+msgstr "Localité"
+
+msgid "ortsbildname"
+msgstr "Site"
+
+msgid "page is loading. please wait..."
+msgstr "map.geo.admin.ch en cours de chargement."
+
+msgid "parcel"
+msgstr "Parcelle"
+
+msgid "pdf"
+msgstr "PDF"
+
+msgid "pdf_dokument_1_2"
+msgstr "PDF 1 | 2"
+
+msgid "perimeter_m"
+msgstr "Perimètre [m]"
+
+msgid "physischvirtuell"
+msgstr "Physique-virtuel"
+
+msgid "plz"
+msgstr "NPA"
+
+msgid "print"
+msgstr "Impression"
+
+msgid "produkt"
+msgstr "Produit"
+
+msgid "protokoll"
+msgstr "Protocole"
+
+msgid "publikationsjahr_1_2"
+msgstr "Année de publication 1 | 2"
+
+msgid "punktname"
+msgstr "Nom du point"
+
+msgid "quality"
+msgstr "Standard de qualité"
+
+msgid "raeumliche_qualitaeten"
+msgstr "Qualités spatiales"
+
+msgid "regional"
+msgstr "Régionale"
+
+msgid "regname"
+msgstr "Région"
+
+msgid "reisezeit_min"
+msgstr "Temps de parcours [min]"
+
+msgid "release_year"
+msgstr "État d'actualité"
+
+msgid "report problem"
+msgstr "Annoncer un problème"
+
+msgid "richtungsgetrennt"
+msgstr "Directions séparées"
+
+msgid "rohstoff"
+msgstr "Matières premières"
+
+msgid "routentypid"
+msgstr "Genre d'itinéraires pour convois exceptionnels"
+
+msgid "rss title"
+msgstr "RSS"
+
+msgid "rss url"
+msgstr "http://www.geo.admin.ch/internet/geoportal/fr/home/current.enhRSS.html"
+
+msgid "rwknr"
+msgstr "Débit résiduel N°"
+
+msgid "schiffbarkeit"
+msgstr "Naviguabilité du cours d’eau"
+
+msgid "schonzeit"
+msgstr "Période de fermeture de la chasse"
+
+msgid "sektor"
+msgstr "Secteur"
+
+msgid "sheetname"
+msgstr "Nom de feuille"
+
+msgid "sia_261_norm"
+msgstr "Classe de sol de fondation selon SIA 261"
+
+msgid "spectralinfolink"
+msgstr "Lien vers les informations disponibles"
+
+msgid "spectralzone"
+msgstr "Zone de microzonage sismique spectral"
+
+msgid "stand"
+msgstr "Etat"
+
+msgid "stationsname"
+msgstr "Nom de la station"
+
+msgid "stationsnr"
+msgstr "Numéro de la station"
+
+msgid "status"
+msgstr "Statut"
+
+msgid "status_fp"
+msgstr "Nom officiel (si existant)"
+
+msgid "stoff"
+msgstr "Production"
+
+msgid "strasse"
+msgstr "Rue"
+
+msgid "strassentyp"
+msgstr "Genre d'itinéraire"
+
+msgid "strecke"
+msgstr "Itinéraire"
+
+msgid "sub"
+msgstr "Substance"
+
+msgid "substanzgrad"
+msgstr "Substance"
+
+msgid "teilezgfla"
+msgstr "Superficie du bassin versant partiel [km2]"
+
+msgid "teilobjektnr"
+msgstr "Numéro du sous-objet"
+
+msgid "tezgnr40"
+msgstr "N° du bassin versant partiel"
+
+msgid "tilenumber"
+msgstr "Numéro de feuille"
+
+msgid "title"
+msgstr "Titre"
+
+msgid "toll"
+msgstr "Péage"
+
+msgid "totholz"
+msgstr "Volume total de bois mort [m3/ha]"
+
+msgid "tt_anteil_ch"
+msgstr "Pourcentage du b.v. en Suisse"
+
+msgid "tt_bakom_middle"
+msgstr "Moyenne"
+
+msgid "tt_bakom_strong"
+msgstr "Forte"
+
+msgid "tt_bakom_veryweak"
+msgstr "Trés faible"
+
+msgid "tt_bakom_weak"
+msgstr "Faible"
+
+msgid "tt_bauzonen_CH_BEZ_D"
+msgstr "Affectation principale"
+
+msgid "tt_bauzonen_CH_BEZ_F"
+msgstr "Affectation principale"
+
+msgid "tt_bauzonen_CH_Code_HN"
+msgstr "Code affectation principale"
+
+msgid "tt_bauzonen_FLAECHE"
+msgstr "Surface (m2)"
+
+msgid "tt_bauzonen_gemeindetypen_BFS_NO"
+msgstr "Numéro OFS"
+
+msgid "tt_bauzonen_gemeindetypen_KT_KZ"
+msgstr "Canton"
+
+msgid "tt_bauzonen_gemeindetypen_KT_NO"
+msgstr "Numéro du canton"
+
+msgid "tt_bauzonen_gemeindetypen_NAME"
+msgstr "Commune"
+
+msgid "tt_bazl_abortion"
+msgstr "Démontage effectué"
+
+msgid "tt_bebautefl"
+msgstr "Surfaces bâties"
+
+msgid "tt_bildstreifen_Aufloesung"
+msgstr "Résolution"
+
+msgid "tt_bildstreifen_Flugdatum"
+msgstr "Date du vol"
+
+msgid "tt_bildstreifen_Link "
+msgstr "Bestellen"
+
+#. TODO
+msgid "tt_bildstreifen_Quickview "
+msgstr "tt_bildstreifen_Quickview "
+
+msgid "tt_bildstreifen_ebkey"
+msgstr "No de la bande"
+
+msgid "tt_bildstreifen_line_id"
+msgstr "Ligne aérienne"
+
+msgid "tt_ch.bafu.fauna-wildtierkorridor_national_nr"
+msgstr "Numéro du couloir"
+
+msgid "tt_ch.bafu.fauna-wildtierkorridor_national_zustand"
+msgstr "État"
+
+msgid "tt_ch.bakom.leistung"
+msgstr "Puissance rayonnée (ERP)"
+
+msgid "tt_ch.bakom.radio-fernsehsender_code"
+msgstr "Code"
+
+msgid "tt_ch.bakom.radio-fernsehsender_name"
+msgstr "Nom"
+
+msgid "tt_ch.bakom.versorgungsgebiet_prog"
+msgstr "Programmes"
+
+msgid "tt_ch.bazl.abortionaccomplished"
+msgstr "Durée d'installation"
+
+msgid "tt_ch.bazl.elevation"
+msgstr "Altitude maximale AMSL [m]"
+
+msgid "tt_ch.bazl.geometriedaten"
+msgstr "Données géométriques"
+
+msgid "tt_ch.bazl.hindernisart"
+msgstr "Genre d'obstacle"
+
+msgid "tt_ch.bazl.kartnummer"
+msgstr "Numéro de la carte [CN100]"
+
+msgid "tt_ch.bazl.markierung"
+msgstr "Marquage / balisage lum."
+
+msgid "tt_ch.bazl.maxheight"
+msgstr "Hauteur maximale AGL [m]"
+
+msgid "tt_ch.bazl.registrationnummer"
+msgstr "Numéro du registre"
+
+msgid "tt_ch.bazl.startofconstruction"
+msgstr "Début des travaux"
+
+msgid "tt_ch.bazl.totallength"
+msgstr "Longueur totale [m]"
+
+msgid "tt_ch.bazl_longtext"
+msgstr "Les données d'obstacles peuvent présenter des divergences au niveau de l'intégralité, de l'actualisation et de la situation géographique."
+
+msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_area"
+msgstr "Surface [ha]"
+
+msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_area"
+msgstr "Surface [ha]"
+
+msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_endprotectioncommitment"
+msgstr "Fin de l'obligation de protection"
+
+msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_endprotectioncommitment"
+msgstr "Fin de l'obligation de protection"
+
+msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_name"
+msgstr "Nom"
+
+msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_name"
+msgstr "Nom"
+
+msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_objectnumber"
+msgstr "Numéro d'objet"
+
+msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_objectnumber"
+msgstr "Numéro d'objet"
+
+msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_perimeter"
+msgstr "Circonférence [m]"
+
+msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_perimeter"
+msgstr "Circonférence [m]"
+
+msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_startprotectioncommitment"
+msgstr "Début de l'obligation de protection"
+
+msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_startprotectioncommitment"
+msgstr "Début de l'obligation de protection"
+
+msgid "tt_ch.bfe.energieforschung_beauftragter"
+msgstr "Chargé"
+
+msgid "tt_ch.bfe.energieforschung_beschreibung"
+msgstr "Description"
+
+msgid "tt_ch.bfe.energieforschung_beschreibung"
+msgstr "Description"
+
+msgid "tt_ch.bfe.energieforschung_ch_hauptbereich"
+msgstr "Branche principale CH"
+
+msgid "tt_ch.bfe.energieforschung_ch_unterbereich"
+msgstr "Sous-domaine CH"
+
+msgid "tt_ch.bfe.energieforschung_iea_hauptbereich"
+msgstr "Branche principale IEA"
+
+msgid "tt_ch.bfe.energieforschung_iea_unterbereich"
+msgstr "Sous-domaine IEA"
+
+msgid "tt_ch.bfe.energieforschung_installationsort"
+msgstr "Localité de l'installation"
+
+msgid "tt_ch.bfe.energieforschung_kontaktperson"
+msgstr "Contact OFEN"
+
+msgid "tt_ch.bfe.energieforschung_kontaktperson"
+msgstr "Contact OFEN"
+
+msgid "tt_ch.bfe.energieforschung_land"
+msgstr "Pays"
+
+msgid "tt_ch.bfe.energieforschung_projekt_nr"
+msgstr "Projet no"
+
+msgid "tt_ch.bfe.energieforschung_projekt_nr"
+msgstr "Projet no"
+
+msgid "tt_ch.bfe.energieforschung_projektanfang"
+msgstr "Début du projet"
+
+msgid "tt_ch.bfe.energieforschung_projektende"
+msgstr "Fin du projet"
+
+msgid "tt_ch.bfe.energieforschung_projektstatus"
+msgstr "État du projet"
+
+msgid "tt_ch.bfe.energieforschung_projektstatus"
+msgstr "État du projet"
+
+msgid "tt_ch.bfe.energieforschung_projekttitel"
+msgstr "Titre du projet"
+
+msgid "tt_ch.bfe.energieforschung_projekttitel"
+msgstr "Titre du projet"
+
+msgid "tt_ch.bfe.energieforschung_schluesselwoerter"
+msgstr "Mots-clé"
+
+msgid "tt_ch.bfe.energieforschung_schlussbericht"
+msgstr "Rapport final"
+
+msgid "tt_ch.bfe.energieforschung_schlussbericht"
+msgstr "Rapport final"
+
+msgid "tt_ch.bfe.energieforschung_sprachregion"
+msgstr "Zone linguistique"
+
+msgid "tt_ch.bfe.statistik-wasserkraftanlagen_beginningofoperation"
+msgstr "Mise en service"
+
+msgid "tt_ch.bfe.statistik-wasserkraftanlagen_beginningofoperation"
+msgstr "Mise en service"
+
+msgid "tt_ch.bfe.statistik-wasserkraftanlagen_canton"
+msgstr "Canton"
+
+msgid "tt_ch.bfe.statistik-wasserkraftanlagen_canton"
+msgstr "Canton"
+
+msgid "tt_ch.bfe.statistik-wasserkraftanlagen_endofoperation"
+msgstr "Mise hors service"
+
+msgid "tt_ch.bfe.statistik-wasserkraftanlagen_endofoperation"
+msgstr "Mise hors service"
+
+msgid "tt_ch.bfe.statistik-wasserkraftanlagen_hydropowerplantoperationalstatus_de"
+msgstr "Statut opérationnel"
+
+msgid "tt_ch.bfe.statistik-wasserkraftanlagen_hydropowerplantoperationalstatus_de"
+msgstr "Statut opérationnel"
+
+msgid "tt_ch.bfe.statistik-wasserkraftanlagen_hydropowerplanttype"
+msgstr "Type d'aménagement hydroélectrique"
+
+msgid "tt_ch.bfe.statistik-wasserkraftanlagen_hydropowerplanttype"
+msgstr "Type d'aménagement hydroélectrique"
+
+msgid "tt_ch.bfe.statistik-wasserkraftanlagen_location"
+msgstr "Site"
+
+msgid "tt_ch.bfe.statistik-wasserkraftanlagen_location"
+msgstr "Site"
+
+msgid "tt_ch.bfe.statistik-wasserkraftanlagen_name"
+msgstr "Nom"
+
+msgid "tt_ch.bfe.statistik-wasserkraftanlagen_name"
+msgstr "Nom"
+
+msgid "tt_ch.bfe.statistik-wasserkraftanlagen_wastanumber"
+msgstr "Numéro SAHE"
+
+msgid "tt_ch.bfe.statistik-wasserkraftanlagen_wastanumber"
+msgstr "Numéro SAHE"
+
+msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_aufsichtstart"
+msgstr "Début de la période de surveillance"
+
+msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_crestlength"
+msgstr "Longueur du couronnement"
+
+msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_crestlength"
+msgstr "Longueur du couronnement"
+
+msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_crestlevel"
+msgstr "Niveau du couronnement"
+
+msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_crestlevel"
+msgstr "Niveau du couronnement"
+
+msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_damheight"
+msgstr "Hauteur du barrage"
+
+msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_damheight"
+msgstr "Hauteur du barrage"
+
+msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_damname"
+msgstr "Nom"
+
+msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_damname"
+msgstr "Nom"
+
+msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_damtype"
+msgstr "Type de barrage"
+
+#. TODO
+msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_damtype_de"
+msgstr "tt_ch.bfe.stauanlagen-bundesaufsicht_damtype_de"
+
+msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_inbetriebabnahme"
+msgstr "Mise en service de l'ouvrage"
+
+msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_sperre"
+msgstr "Ouvrage de retenue"
+
+msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_stauanlage"
+msgstr "Ouvrage d'accumulation"
+
+msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_stauhoehe"
+msgstr "Hauteur de retenue"
+
+msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_stauraum"
+msgstr "Bassin de retenue"
+
+msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_stauraumvolume"
+msgstr "Volume de retenue"
+
+msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_stauzielskote"
+msgstr "Niveau normal de retenue"
+
+msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_zweck"
+msgstr "But de l'ouvrage d'accumulation"
+
+msgid "tt_ch_bav_kataster_belasteter_standorte_oev_beschreibung"
+msgstr "Description détaillée"
+
+msgid "tt_ch_bav_kataster_belasteter_standorte_oev_beurteilung"
+msgstr "Evaluation de l'OFT"
+
+msgid "tt_ch_bav_kataster_belasteter_standorte_oev_katasterauszug"
+msgstr "Extrait du cadastre
+"
+
+msgid "tt_ch_bav_kataster_belasteter_standorte_oev_standortname"
+msgstr "Nom du site"
+
+msgid "tt_ch_bav_kataster_belasteter_standorte_oev_standortnummer"
+msgstr "No de site OFT"
+
+msgid "tt_ch_bav_kataster_belasteter_standorte_oev_standorttyp"
+msgstr "Type de site"
+
+msgid "tt_ch_bav_kataster_belasteter_standorte_oev_untersuchungsstand"
+msgstr "Phase d'investigation selon OSites"
+
+msgid "tt_emission_bis_abkz"
+msgstr "à (abrév.)"
+
+msgid "tt_emission_bis_bpk_bp"
+msgstr "à"
+
+msgid "tt_emission_bis_m"
+msgstr "Fin tronçon (m)"
+
+msgid "tt_emission_datum"
+msgstr "Année"
+
+msgid "tt_emission_fb1"
+msgstr "F1"
+
+msgid "tt_emission_fb2"
+msgstr "F2"
+
+msgid "tt_emission_grund1"
+msgstr "Motif (voie)"
+
+msgid "tt_emission_grund2"
+msgstr "Motif (pont)"
+
+msgid "tt_emission_k1_n"
+msgstr "K1 (n)"
+
+msgid "tt_emission_k1_t"
+msgstr "K1 (t)"
+
+msgid "tt_emission_kursbuchfe"
+msgstr "Num. indicateur officiel"
+
+msgid "tt_emission_lin_nr_dfa"
+msgstr "Num. ligne BD installations fixes"
+
+msgid "tt_emission_linienbeze"
+msgstr "Désignation"
+
+msgid "tt_emission_lre_n"
+msgstr "Lr,e (n)"
+
+msgid "tt_emission_lre_t"
+msgstr "Lr,e (t)"
+
+msgid "tt_emission_typ_aender"
+msgstr "Remarque"
+
+msgid "tt_emission_von_abkz"
+msgstr "de (abrév.)"
+
+msgid "tt_emission_von_bpk_bp"
+msgstr "de"
+
+msgid "tt_emission_von_m"
+msgstr "Début tronçon (m)"
+
+msgid "tt_endmeasure"
+msgstr "Adresse d’arrivée (kilométrage d’eau)"
+
+msgid "tt_ezgflaeche"
+msgstr "Superficie du bassin versant complet [km2]"
+
+msgid "tt_ezgnr"
+msgstr "N° du bassin versant complet"
+
+msgid "tt_feuchtflae"
+msgstr "Zones humides"
+
+msgid "tt_firmen_Filmart"
+msgstr "Emulsion"
+
+msgid "tt_firmen_Firma"
+msgstr "Société"
+
+msgid "tt_firmen_Flugdatum"
+msgstr "Date du vol"
+
+msgid "tt_firmen_Link "
+msgstr "Commander"
+
+msgid "tt_firmen_Quickview "
+msgstr "Quickview"
+
+msgid "tt_firmen_ebkey"
+msgstr "No de l'image"
+
+msgid "tt_firmen_line_id"
+msgstr "Ligne aérienne"
+
+msgid "tt_flussgb"
+msgstr "Nom du bassin fluvial (HADES)"
+
+msgid "tt_freqchan"
+msgstr "Fréquence / Canal TV"
+
+msgid "tt_fsme_bezirknr"
+msgstr "Numéro de district selon OFS"
+
+msgid "tt_fsme_gemname"
+msgstr "Commune"
+
+msgid "tt_fsme_gemnr"
+msgstr "Numéro de commune selon OFS"
+
+msgid "tt_fsme_kantonsnr"
+msgstr "Numéro de canton selon OFS"
+
+msgid "tt_gemeindetypen_FLAECHE_HA"
+msgstr "Surface (ha)"
+
+msgid "tt_gemeindetypen_TYP_BEZ_D"
+msgstr "Type de commune ARE"
+
+msgid "tt_gemeindetypen_TYP_BEZ_F"
+msgstr "Type de commune ARE"
+
+msgid "tt_gemeindetypen_TYP_BEZ_F"
+msgstr "Type de commune ARE"
+
+msgid "tt_gemeindetypen_TYP_CODE"
+msgstr "Code Type de commune"
+
+msgid "tt_geotechnik_gk200"
+msgstr "Lien vers la légende"
+
+msgid "tt_gk500-genese"
+msgstr "La genèse des roches"
+
+msgid "tt_gk500-gesteinsklassierung"
+msgstr "Classification des roches"
+
+msgid "tt_gk_500_LithoHaupt"
+msgstr "Caractérisation lithologique pétrographique"
+
+msgid "tt_kanal"
+msgstr "Type de cours d’eau"
+
+msgid "tt_kantone_Filmart"
+msgstr "Emulsion"
+
+#. TODO
+msgid "tt_kantone_Firma"
+msgstr "tt_kantone_Firma"
+
+msgid "tt_kantone_Flugdatum"
+msgstr "Date du vol"
+
+msgid "tt_kantone_Link "
+msgstr "Commander"
+
+msgid "tt_kantone_Quickview "
+msgstr "Quickview"
+
+msgid "tt_kantone_ebkey"
+msgstr "No de l'image"
+
+msgid "tt_kantone_line_id"
+msgstr "Ligne aérienne"
+
+msgid "tt_kbs_gemeinde"
+msgstr "Municipalité"
+
+msgid "tt_kbs_gemeinde_ehemalige"
+msgstr "Ancienne municipalité"
+
+msgid "tt_kbs_nbr"
+msgstr "PCP ref. no"
+
+msgid "tt_kbs_objektart"
+msgstr "Type d'objet"
+
+msgid "tt_kbs_statistik"
+msgstr "Statistiques"
+
+msgid "tt_kkw_canton"
+msgstr "Canton"
+
+msgid "tt_kkw_commissioning"
+msgstr "Mise en service"
+
+msgid "tt_kkw_contruction"
+msgstr "Construction"
+
+msgid "tt_kkw_cooling_type"
+msgstr "Type de réfroidissement"
+
+msgid "tt_kkw_decontamination"
+msgstr "Phase de décontamination"
+
+msgid "tt_kkw_dismantling"
+msgstr "Phase de démantelement"
+
+msgid "tt_kkw_enforcement_1"
+msgstr "Organe législateur 1"
+
+msgid "tt_kkw_enforcement_2"
+msgstr "Organe législateur 2"
+
+msgid "tt_kkw_enforcement_3"
+msgstr "Organe législateur 3"
+
+msgid "tt_kkw_gemeinde"
+msgstr "Commune"
+
+msgid "tt_kkw_grosseloutput"
+msgstr "Puissance éléctrique brute"
+
+msgid "tt_kkw_license"
+msgstr "Licence d'éxercice"
+
+msgid "tt_kkw_life_phase"
+msgstr "Phase de vie"
+
+msgid "tt_kkw_name"
+msgstr "Nom"
+
+msgid "tt_kkw_neteloutput"
+msgstr "Puissance éléctrique nette"
+
+msgid "tt_kkw_nominalthermaloutput"
+msgstr "Puissance thermique nominale"
+
+msgid "tt_kkw_operation"
+msgstr "Période d'exploitation"
+
+msgid "tt_kkw_operator"
+msgstr "Opérateur"
+
+msgid "tt_kkw_owner"
+msgstr "Proprietaire"
+
+msgid "tt_kkw_reactor_name"
+msgstr "Réacteur"
+
+msgid "tt_kkw_reactor_type"
+msgstr "Type de réacteur"
+
+msgid "tt_kkw_regulatory"
+msgstr "Organe régulateur"
+
+msgid "tt_landwirtsc"
+msgstr "Surfaces agricoles"
+
+msgid "tt_luftbilder_Filmart"
+msgstr "Emulsion"
+
+msgid "tt_luftbilder_Flugdatum"
+msgstr "Date du vol"
+
+msgid "tt_luftbilder_Link"
+msgstr "Commander"
+
+msgid "tt_luftbilder_Quickview"
+msgstr "Quickview"
+
+msgid "tt_luftbilder_ebkey"
+msgstr "No de l'image"
+
+msgid "tt_luftbilder_line_id"
+msgstr "Ligne aérienne"
+
+msgid "tt_maxalt"
+msgstr "Altitude maximale"
+
+msgid "tt_meanalt"
+msgstr "Altitude moyenne"
+
+msgid "tt_measure"
+msgstr "Adresse de départ (kilométrage d’eau)"
+
+msgid "tt_measure_2"
+msgstr "Adresse (’kilométrage d’eau’)"
+
+msgid "tt_mq_jahr"
+msgstr "Débit moyen modelisé annuel [m3/s]"
+
+msgid "tt_ngamapping_provider"
+msgstr "Provider"
+
+msgid "tt_program"
+msgstr "Programme"
+
+msgid "tt_regimenr"
+msgstr "N° de régime d’écoulement"
+
+msgid "tt_regimetyp"
+msgstr "Type de régime d’écoulement"
+
+msgid "tt_sachplan_beschreibung"
+msgstr "Description"
+
+msgid "tt_sachplan_facility_anlageart"
+msgstr "Type d`installation"
+
+msgid "tt_sachplan_facility_anlagestatus"
+msgstr "Statut de l`installation"
+
+msgid "tt_sachplan_facility_beschlussdatum"
+msgstr "Date de l`arrêt"
+
+msgid "tt_sachplan_facility_name"
+msgstr "Nom de l`installation"
+
+msgid "tt_sachplan_facility_uberobjekt"
+msgstr "Objet d`appartenance"
+
+msgid "tt_sachplan_objektblatt"
+msgstr "Fiche par installation"
+
+msgid "tt_sachplan_planning_bis"
+msgstr "au"
+
+msgid "tt_sachplan_planning_coordstand"
+msgstr "Etat de coordination"
+
+msgid "tt_sachplan_planning_name"
+msgstr "Nom de la mesure"
+
+msgid "tt_sachplan_planning_planungstand"
+msgstr "Etat de la planification"
+
+msgid "tt_sachplan_planning_typ"
+msgstr "Type de mesure"
+
+msgid "tt_sachplan_planning_ueberanlage"
+msgstr "Installation d`appartenance"
+
+msgid "tt_sachplan_planning_von"
+msgstr "du"
+
+msgid "tt_sachplan_weitereinfo"
+msgstr "Autres informations"
+
+msgid "tt_service"
+msgstr "Service radio"
+
+msgid "tt_swissprtr_detaildaten"
+msgstr "Détails de l’établissement"
+
+msgid "tt_swissprtr_ort"
+msgstr "Lieu"
+
+msgid "tt_wald_natur"
+msgstr "Forêts et autres surfaces naturelles"
+
+msgid "tt_wasserflae"
+msgstr "Surfaces en eau"
+
+msgid "tt_wrz_portal_beschluss"
+msgstr "Année de décision"
+
+msgid "tt_wrz_portal_best"
+msgstr "Dispositions"
+
+msgid "tt_wrz_portal_grundlage"
+msgstr "Bases de décision"
+
+msgid "tt_wrz_portal_kanton"
+msgstr "Canton"
+
+msgid "tt_wrz_portal_name"
+msgstr "Zone de tranquillité"
+
+msgid "tt_wrz_portal_obj"
+msgstr "Numéro de l’objet"
+
+msgid "tt_wrz_portal_schutz"
+msgstr "Statut de protection"
+
+msgid "tt_wrz_portal_schutzzeit"
+msgstr "Période de protection"
+
+msgid "tt_wrz_portal_zusatz"
+msgstr "Informations supplémentaires"
+
+msgid "tt_wrz_select_best"
+msgstr "Dispositions"
+
+msgid "tt_wrz_select_grundlage"
+msgstr "Bases de décision"
+
+msgid "tt_wrz_select_kanton"
+msgstr "Canton"
+
+msgid "tt_wrz_select_name"
+msgstr "District franc"
+
+msgid "tt_wrz_select_obj"
+msgstr "Numéro de l’objet"
+
+msgid "tt_wrz_select_schutz"
+msgstr "Statut de protection"
+
+msgid "tt_wrz_select_schutzzeit"
+msgstr "Période de protection"
+
+msgid "tt_wrz_select_zusatz"
+msgstr "Informations supplémentaires"
+
+msgid "twitter title"
+msgstr "Twitter"
+
+msgid "twitter url"
+msgstr "http://www.twitter.com/swiss_geoportal"
+
+msgid "typ"
+msgstr "Type"
+
+msgid "typ_kraftwerk"
+msgstr "Type de d’usine électrique"
+
+msgid "typ_produkt"
+msgstr "Type de produit fabriqué"
+
+msgid "typ_transpo_produkt"
+msgstr "Type de produit transporté par le pipeline"
+
+msgid "type_dreieck"
+msgstr "Type de maillage triangulaire"
+
+msgid "typnummer"
+msgstr "N° du type"
+
+msgid "url"
+msgstr "URL"
+
+msgid "validierungsdatum"
+msgstr "Date de validation"
+
+msgid "viel_sub"
+msgstr "Beaucoup de substance"
+
+msgid "waldanteil"
+msgstr "Taux de boisement [%]"
+
+msgid "wasserstand"
+msgstr "Niveau d'eau m s. m"
+
+msgid "wassertemp_3tagtemp"
+msgstr "3 jours Température de l’eau"
+
+msgid "wassertemp_datum"
+msgstr "Date/Heure"
+
+msgid "wassertemp_name"
+msgstr "Nom de la station"
+
+msgid "wassertemp_nr"
+msgstr "Numéro de la station"
+
+msgid "wassertemp_temp"
+msgstr "Température de l’eau"
+
+msgid "wassertemp_url"
+msgstr "Donnée actuelles et historiques"
+
+msgid "wassertemperatur"
+msgstr "Température de l'eau °C"
+
+msgid "wenig_sub"
+msgstr "Tracé historique"
+
+msgid "werte"
+msgstr "Valeurs disponibles"
+
+msgid "wj_bearbeitungsjahr"
+msgstr "Année du traitement"
 
 msgid "wms_resource_text"
 msgstr "Lien vers le wms"
+
+msgid "wrz_fl"
+msgstr "Surface"
+
+msgid "wrz_name"
+msgstr "Zone de tranquillité"
+
+msgid "wrz_obj"
+msgstr "No"
+
+msgid "wrz_status"
+msgstr "Statut de protection"
+
+msgid "wsname"
+msgstr "Nom du secteur"
+
+msgid "wsnummer"
+msgstr "Numéro du secteur"
+
+msgid "wstyp"
+msgstr "Type du secteur"
+
+msgid "x"
+msgstr "X-Coordonnée"
+
+msgid "y"
+msgstr "Y-Coordonnée"
+
+msgid "zaehlstelle"
+msgstr "Poste de comptage"
+
+msgid "zeitraum"
+msgstr "Période de protection"
+
+msgid "ziegeleien"
+msgstr "Nom de la Briqueterie"
+
+msgid "zielhafen"
+msgstr "Destination"
+
+msgid "zone"
+msgstr "Zone"
+
+msgid "zugang"
+msgstr "Accessible"
+
+msgid "zusatzinfo"
+msgstr "Information suppl."
+
+msgid "zusziff"
+msgstr "NPA6"
 
