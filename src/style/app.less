@@ -294,18 +294,25 @@ a .ga-icon-separator {
   .panel-body {
     background-color: #fff;
     border-top: none;
-    max-height: 430px;
+    max-height: 400px;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     font-size: 12px;
-    @media (max-width: @screen-phone) {
-      background-color: rgba(255,255,255,0.9);
-    }
     @media (max-height: 800px) {
       max-height: 300px;
     }
     @media (max-height: 680px) {
       max-height: 200px;
+    }
+    @media (max-height: 550px) {
+      max-height: 150px;
+    }
+    @media (max-height: 480px) {
+      max-height: 100px;
+    }
+    @media (max-width: @screen-phone) {
+      background-color: rgba(255,255,255,0.9);
+      max-height: 300px;
     }
     .panel-body {
       padding: 0;
