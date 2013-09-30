@@ -1,82 +1,11 @@
 (function() {
   goog.provide('ga_permalink_service');
 
-  var module = angular.module('ga_permalink_service', []);
+  goog.require('ga_urlutils_service');
 
-
-  // stolen from Angular
-  // https://github.com/angular/angular.js/blob/master/src/Angular.js
-  function encodeUriQuery(val, pctEncodeSpaces) {
-    return encodeURIComponent(val).
-        replace(/%40/gi, '@').
-        replace(/%3A/gi, ':').
-        replace(/%24/g, '$').
-        replace(/%2C/gi, ',').
-        replace(/%20/g, (pctEncodeSpaces ? '%20' : '+'));
-  }
-
-  // stolen from Angular
-  // https://github.com/angular/angular.js/blob/master/src/Angular.js
-  function parseKeyValue(keyValue) {
-    var obj = {}, kv, key;
-    angular.forEach((keyValue || '').split('&'), function(keyValue) {
-      if (keyValue) {
-        kv = keyValue.split('=');
-        key = tryDecodeURIComponent(kv[0]);
-        if (angular.isDefined(key)) {
-          obj[key] = angular.isDefined(kv[1]) ?
-              tryDecodeURIComponent(kv[1]) : true;
-        }
-      }
-    });
-    return obj;
-  }
-
-  // stolen from Angular
-  // https://github.com/angular/angular.js/blob/master/src/Angular.js
-  function toKeyValue(obj) {
-    var parts = [];
-    angular.forEach(obj, function(value, key) {
-      parts.push(encodeUriQuery(key, true) +
-          (value === true ? '' : '=' + encodeUriQuery(value, true)));
-    });
-    return parts.length ? parts.join('&') : '';
-  }
-
-  // stolen from Angular
-  // https://github.com/angular/angular.js/blob/master/src/Angular.js
-  function tryDecodeURIComponent(value) {
-    try {
-      return decodeURIComponent(value);
-    } catch (e) {
-      // Ignore any invalid uri component
-    }
-  }
-
-  function Permalink(b, p) {
-    var base = b;
-    var params = p;
-
-    this.getHref = function(p) {
-      var newParams = angular.extend({}, params);
-      if (angular.isDefined(p)) {
-        angular.extend(newParams, p);
-      }
-      return base + '?' + toKeyValue(newParams);
-    };
-
-    this.getParams = function() {
-      return params;
-    };
-
-    this.updateParams = function(p) {
-      angular.extend(params, p);
-    };
-
-    this.deleteParam = function(key) {
-       delete params[key];
-    };
-  }
+  var module = angular.module('ga_permalink_service', [
+    'ga_urlutils_service'
+  ]);
 
   /**
    * The gaHistory service.
@@ -106,7 +35,32 @@
    * is updated.
    */
   module.provider('gaPermalink', function() {
-    this.$get = function($window, $rootScope, $sniffer, gaHistory) {
+    this.$get = function($window, $rootScope, $sniffer, gaHistory, gaUrlUtils) {
+
+        function Permalink(b, p) {
+          var base = b;
+          var params = p;
+
+          this.getHref = function(p) {
+            var newParams = angular.extend({}, params);
+            if (angular.isDefined(p)) {
+              angular.extend(newParams, p);
+            }
+            return base + '?' + gaUrlUtils.toKeyValue(newParams);
+          };
+
+          this.getParams = function() {
+            return params;
+          };
+
+          this.updateParams = function(p) {
+            angular.extend(params, p);
+          };
+
+          this.deleteParam = function(key) {
+             delete params[key];
+          };
+        };
 
         var loc = $window.location;
         var port = loc.port;
@@ -117,7 +71,7 @@
             loc.pathname;
 
         var permalink = new Permalink(
-            base, parseKeyValue(loc.search.substring(1)));
+            base, gaUrlUtils.parseKeyValue(loc.search.substring(1)));
 
         var lastHref = loc.href;
         $rootScope.$watch(function() {
