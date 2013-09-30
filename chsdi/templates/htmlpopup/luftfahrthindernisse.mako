@@ -1,6 +1,6 @@
 <%inherit file="base.mako"/>
 
-<%def name="table_body()">
+<%def name="table_body(c,lang)">
 
 % if c['attributes']['sanctiontext'] == 'VOID':
     <% sanctiontext = '-' %>

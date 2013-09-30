@@ -4,7 +4,6 @@
 <tr><td width="150" valign="top">${_('tt_ch.bakom.radio-fernsehsender_name')}</td>      <td>${c['attributes']['name']}</td></tr>
 <tr><td width="150" valign="top">${_('tt_ch.bakom.radio-fernsehsender_code')}</td>      <td>${c['attributes']['code'] or '-'}</td></tr>
 <tr><td width="150" valign="top">${_('tt_ch.bakom.leistung')}</td>                      <td>${c['attributes']['power'] or '-'}</td></tr>
-<tr><td width="150" valign="top">&nbsp;</td>                                            <td><a href="${c.path_url}/../${c['featureId']}.html?layer=${c['attributes']['layer_id']}&lang=${lang}" target="_blank">${_('zusatzinfo')}<img src="http://www.swisstopo.admin.ch/images/ico_extern.gif" /></a></td></tr>
 </%def>
 
 ##<%def name="body(c, lang)">

@@ -372,7 +372,7 @@ class ProjFlughafenanlagen(Base, Vector):
 register('ch.bazl.projektierungszonen-flughafenanlagen', ProjFlughafenanlagen)
 
 
-class Luftfahrthindernis(Base, Vector):
+class Luftfahrthindernis(Base, Vector): 
     __tablename__ = 'luftfahrthindernis'
     __table_args__ = ({'schema': 'bazl', 'autoload': False})
     __template__ = 'templates/htmlpopup/luftfahrthindernisse.mako'
@@ -380,6 +380,16 @@ class Luftfahrthindernis(Base, Vector):
     __bodId__ = 'ch.bazl.luftfahrthindernis'
     __extended_info__ = True
     id = Column('bgdi_id', Integer, primary_key=True)
+    sanctiontext = Column('sanctiontext', Text)
+    registrationnumber = Column('registrationnumber', Text)
+    lk100 = Column('lk100', Text)
+    obstacletype = Column('obstacletype', Text)
+    state = Column('state', Text)
+    maxheightagl = Column('maxheightagl', Integer)
+    topelevationamsl = Column('topelevationamsl', Integer)
+    totallength = Column('totallength', Integer)
+    startofconstruction = Column('startofconstruction', Text)
+    duration = Column('duration', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     registrationnumber = Column('registrationnumber', Text)
 
@@ -773,6 +783,7 @@ class kernkraftwerke (Base, Vector):
     __bodId__ = 'ch.bfe.kernkraftwerke'
     __extended_info__ = True
     id = Column('plant_id', Text, primary_key=True)
+    name = Column('name', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bfe.kernkraftwerke', kernkraftwerke)
