@@ -7,12 +7,12 @@
     <tr><td width="150" valign="top">${_('tt_ch.bfe.energieforschung_beschreibung')}</td>   <td>${c['attributes']['beschreibung_fr'] or '-'}</td></tr>
     <tr><td width="150" valign="top">${_('tt_ch.bfe.energieforschung_projektstatus')}</td>  <td>${c['attributes']['projektstatus_fr'] or '-'}</td></tr>
 
-% elif c.lang == 'it':
+% elif lang == 'it':
     <tr><td width="150" valign="top">${_('tt_ch.bfe.energieforschung_projekttitel')}</td>   <td>${c['attributes']['titel_it'] or '-'}</td></tr>
     <tr><td width="150" valign="top">${_('tt_ch.bfe.energieforschung_beschreibung')}</td>   <td>${c['attributes']['beschreibung_it'] or '-'}</td></tr>
     <tr><td width="150" valign="top">${_('tt_ch.bfe.energieforschung_projektstatus')}</td>  <td>${c['attributes']['projektstatus_it'] or '-'}</td></tr>
 
-% elif c.lang =='en':
+% elif lang =='en':
     <tr><td width="150" valign="top">${_('tt_ch.bfe.energieforschung_projekttitel')}</td>   <td>${c['attributes']['titel_en'] or '-'}</td></tr>
     <tr><td width="150" valign="top">${_('tt_ch.bfe.energieforschung_beschreibung')}</td>   <td>${c['attributes']['beschreibung_en'] or '-'}</td></tr>
     <tr><td width="150" valign="top">${_('tt_ch.bfe.energieforschung_projektstatus')}</td>  <td>${c['attributes']['projektstatus_en'] or '-'}</td></tr>
@@ -28,6 +28,4 @@
 % endif
 
 <tr><td width="150" valign="top">${_('tt_ch.bfe.energieforschung_kontaktperson')}</td>      <td>${c['attributes']['kontaktperson_bfe'] or '-'}</td></tr>
-<tr><td width="150" valign="top">&nbsp;</td>                                                <td><a href="${path_url}/../${c['attributes']['id']}.html?layer=${c['attributes']['layer_id']}&lang=${lang}&baseUrl=${baseUrl}" target="_blank">${_('zusatzinfo')}<img src="http://www.swisstopo.admin.ch/images/ico_extern.gif" /></a></td></tr>
-
 </%def>

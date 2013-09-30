@@ -177,6 +177,20 @@ class ENERGIEFORSCHUNG(Base, Vector):
     __bodId__ = 'ch.bfe.energieforschung'
     __extended_info__ = True
     id = Column('tid', Integer, primary_key=True)
+    titel_fr = Column('titel_fr', Text)
+    titel_it = Column('titel_it', Text)
+    titel_de = Column('titel_de', Text)
+    titel_en = Column('titel_en', Text)
+    beschreibung_fr = Column('beschreibung_fr', Text)
+    beschreibung_en = Column('beschreibung_en', Text)
+    beschreibung_de = Column('beschreibung_de', Text)
+    beschreibung_it = Column('beschreibung_it', Text)
+    projektstatus_fr = Column('projektstatus_fr', Text)
+    projektstatus_de = Column('projektstatus_de', Text)
+    projektstatus_it = Column('projektstatus_it', Text)
+    projektstatus_en = Column('projektstatus_en', Text)
+    schlussbericht = Column('schlussbericht', Text)
+    kontaktperson_bfe = Column('kontaktperson_bfe', Text)
     the_geom = Column(Geometry(21781))
 
 register('ch.bfe.energieforschung', ENERGIEFORSCHUNG)
