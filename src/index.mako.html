@@ -434,7 +434,8 @@
 
         module.constant('gaGlobalOptions', {
           serviceUrl : '${service_url}',
-          baseUrlPath: '${base_url_path}'
+          baseUrlPath: '${base_url_path}',
+          version: '${version}'
         });
 
         module.config(['gaLayersProvider', function(gaLayersProvider) {
@@ -442,10 +443,10 @@
               'http://wmts{0-4}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
 
           gaLayersProvider.layersConfigUrlTemplate =
-              '${base_url_path}/rest/services/{Topic}/MapServer/layersconfig?lang={Lang}';
+              '${base_url_path}/${version}rest/services/{Topic}/MapServer/layersconfig?lang={Lang}';
 
           gaLayersProvider.legendUrlTemplate =
-              '${base_url_path}/rest/services/{Topic}/MapServer/{Layer}/getlegend?lang={Lang}';
+              '${base_url_path}/${version}rest/services/{Topic}/MapServer/{Layer}/getlegend?lang={Lang}';
         }]);
       })();
 

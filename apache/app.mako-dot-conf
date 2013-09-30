@@ -17,17 +17,23 @@ Alias ${base_url_path}/src ${base_dir}/src
 Alias ${base_url_path}/prod ${base_dir}/prod
 
 # Cached resources
-RewriteRule ^${base_url_path}/prod/[0-9]*/(.*)$ ${base_dir}/prod/$1
-<LocationMatch ${base_url_path}/prod/[0-9]*/>
+RewriteRule ^${base_url_path}/prod/[0-9]+/(.*)$ ${base_dir}/prod/$1
+<LocationMatch ${base_url_path}/prod/[0-9]+/>
+   ExpiresDefault "now plus 1 year"
+   Header merge Cache-Control "public"
+</LocationMatch>
+
+# FIXME: merge with above
+<LocationMatch ${base_url_path}/[0-9]+/>
    ExpiresDefault "now plus 1 year"
    Header merge Cache-Control "public"
 </LocationMatch>
 
 # proxy
-ProxyPassMatch ${base_url_path}/(print|ogcproxy|feedback|rest)(.*) ${service_url}/$1$2
+ProxyPassMatch ${base_url_path}/[0-9/]*(print|ogcproxy|feedback|rest)(.*) ${service_url}/$1$2
 ProxyPassReverse ${base_url_path} ${service_url}
 
-<LocationMatch ${base_url_path}/(print|ogcproxy|feedback|rest)>
+<LocationMatch ${base_url_path}/[0-9/]*(print|ogcproxy|feedback|rest)>
     Order allow,deny
     Allow from all
 </LocationMatch>
