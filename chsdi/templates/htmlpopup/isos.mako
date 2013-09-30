@@ -3,7 +3,7 @@
 <%inherit file="base.mako"/>
 
 <%!
-##   from chsdi.lib.helpers import quoting
+   from chsdi.lib.helpers import quoting
 %>
 
 <%def name="table_body(c, lang)">
