@@ -37,7 +37,7 @@
   module.provider('gaPermalink', function() {
     this.$get = function($window, $rootScope, $sniffer, gaHistory, gaUrlUtils) {
 
-        function Permalink(b, p) {
+        var Permalink = function(b, p) {
           var base = b;
           var params = p;
 
