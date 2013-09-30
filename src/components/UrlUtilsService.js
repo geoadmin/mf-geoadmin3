@@ -8,6 +8,17 @@
     this.$get = function() {
 
       var UrlUtils = function() {
+
+        // from Angular
+        // https://github.com/angular/angular.js/blob/master/src/ng/directive/input.js#L3
+        this.URL_REGEXP =
+          /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/;
+
+        // Test validity of a URL
+        this.isValid = function(url) {
+            return (url && url.length > 0 && this.URL_REGEXP.test(url));
+        };
+
         this.append = function(url, paramString) {
           if (paramString) {
             var parts = (url + ' ').split(/[?&]/);

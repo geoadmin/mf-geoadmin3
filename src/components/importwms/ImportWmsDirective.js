@@ -26,7 +26,7 @@
           $scope.handleFileUrl = function() {
             var url = $scope.fileUrl;
 
-            if (isValidUrl(url)) {
+            if (gaUrlUtils.isValid(url)) {
 
               // Append GetCapabilities default parameters
               url = gaUrlUtils.append(url, $scope.options.defaultGetCapParams);
@@ -252,19 +252,6 @@
 
 
           /**** UTILS functions ****/
-
-          // from Angular
-          // https://github.com/angular/angular.js/blob/master/src/ng/directive/input.js#L3
-          var URL_REGEXP =
-          /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/;
-
-
-          // from ImportKml
-          // Test validity of a user input
-          function isValidUrl(url) {
-            return URL_REGEXP.test(url);
-          };
-
 
           // from OL3
           //TO FIX: copy from OpenLayers 3, should be elsewhere?
