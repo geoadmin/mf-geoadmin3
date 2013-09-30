@@ -68,9 +68,6 @@ layers                         Layer to display, see :ref:`available_layers`    
 layers_opacity                 Layers opaciy, should match number of layers (0-1.0)          http://map.geo.admin.ch?layers=ch.swisstopo.hiks-dufour&layers_opacity=0.5
 layers_visibility              Toggle the visibility of layers present in the tree           `http://map.geo.admin.ch?layers=ch.swisstopo.hiks-dufour&l
                                                                                              ayers_visibility=False <http://map.geo.admin.ch?layers=ch.swisstopo.hiks-dufour&layers_visibility=False>`_
-layers_timestamp               Layers timestamps.                                            http://map.geo.admin.ch/?layers=ch.kantone.cadastralwebmap-farbe&layers_timestamp=20120501
-                               Only for WMS and WMTS services.
-                               This parameter is only read and is never set.
 selectedNode                   Selected node in INSPIRE Catalog tree                         http://map.geo.admin.ch/?selectedNode=LT2_3
 <layer bod id>                 Layer bod id (:ref:`available_layers`) from which             http://map.geo.admin.ch/?ch.bafu.bundesinventare-moorlandschaften=212,213
                                to highlight feature(s) with id                               
