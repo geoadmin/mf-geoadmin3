@@ -43,7 +43,7 @@ RewriteRule ^${vars:apache-entry-point}$ https://%{SERVER_NAME}/${vars:instancei
 Header always set Cache-Control "no-store, no-cache, must-revalidate" env=nocache
 
 # Proxy pass pointing on api.geo.admin.ch project
-RewriteRule ^${vars:apache-entry-point}(qrcodegenerator|shorten|shorten.json)(.*)$ http://mf-chsdi0t.bgdi.admin.ch${vars:apache-entry-point}$1$2 [P]
+RewriteRule ^${vars:apache-entry-point}(qrcodegenerator|shorten|shorten.json)(.*)$ http://api.geo.admin.ch${vars:apache-entry-point}$1$2 [P]
 
 <Location ${vars:apache-entry-point}>
     Order allow,deny
