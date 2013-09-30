@@ -67,12 +67,16 @@ html, body {
   position: absolute;
 }
 
-input[type=search]{
+input[type=search] {
   -webkit-appearance: none;
 }
 select, input[type=text], input[type=email], input[type=search] {
   .form-control;
   .input-sm;
+}
+
+input[type=text][readonly] {
+  cursor: default;
 }
 
 // ***** HEADER
