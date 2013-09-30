@@ -7,7 +7,7 @@
       function($scope, gaGlobalOptions) {
           $scope.options = {
             defaultTopicId: 'ech',
-            url: gaGlobalOptions.serviceUrl + '/rest/services'
+            url: gaGlobalOptions.baseUrlPath + '/rest/services'
           };
       });
 })();

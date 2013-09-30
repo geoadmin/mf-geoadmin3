@@ -7,7 +7,7 @@
       function($scope, gaGlobalOptions) {
         
         $scope.options = {
-          catalogUrlTemplate: gaGlobalOptions.serviceUrl +
+          catalogUrlTemplate: gaGlobalOptions.baseUrlPath +
               '/rest/services/{Topic}/CatalogServer'
         };
 
