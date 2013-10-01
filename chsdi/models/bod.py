@@ -262,6 +262,7 @@ class Topics(Base):
     selectedLayers = Column('selected_layers', postgresql.ARRAY(Text))
     defaultBackgroundLayer = Column('default_background', Text)
     backgroundLayers = Column('background_layers', postgresql.ARRAY(Text))
+    staging = Column('staging', Text)
 
 
 class Catalog(object):
