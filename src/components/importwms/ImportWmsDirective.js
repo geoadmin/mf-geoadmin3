@@ -26,7 +26,7 @@
           $scope.handleFileUrl = function() {
             var url = $scope.fileUrl;
 
-            if (isValidUrl(url)) {
+            if (gaUrlUtils.isValid(url)) {
 
               // Append GetCapabilities default parameters
               url = gaUrlUtils.append(url, $scope.options.defaultGetCapParams);
@@ -185,7 +185,7 @@
                 ];
 
                 var res = view2D.constrainResolution(
-                    getResolutionFromExtent(extent, mapSize), 0, -1);
+                    view2D.getResolutionForExtent(extent, mapSize), 0, -1);
                 view2D.setCenter(layerExtentCenter);
                 view2D.setResolution(res);
                 return;
@@ -252,28 +252,6 @@
 
 
           /**** UTILS functions ****/
-
-          // from Angular
-          // https://github.com/angular/angular.js/blob/master/src/ng/directive/input.js#L3
-          var URL_REGEXP =
-          /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/;
-
-
-          // from ImportKml
-          // Test validity of a user input
-          function isValidUrl(url) {
-            return URL_REGEXP.test(url);
-          };
-
-
-          // from OL3
-          //TO FIX: copy from OpenLayers 3, should be elsewhere?
-          function getResolutionFromExtent(extent, size) {
-            var xResolution = (extent[2] - extent[0]) / size[0];
-            var yResolution = (extent[3] - extent[1]) / size[1];
-            return Math.max(xResolution, yResolution);
-          }
-
           // from OL2
           //TO FIX: utils function to get scale from an extent, should be
           //elsewhere?
@@ -283,7 +261,8 @@
             //
             // 39.37 INCHES_PER_UNIT
             // 72 DOTS_PER_INCH
-            return getResolutionFromExtent(extent, mapSize) * 39.37 * 72;
+            return $scope.map.getView().getView2D().
+                getResolutionFromExtent(extent, mapSize) * 39.37 * 72;
           }
 
           // Get the layer extent defines in the GetCapabilities
