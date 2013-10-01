@@ -79,6 +79,58 @@ class MapService(MapServiceValidation):
     def view_identify_geosjon(self):
         return self._identify()
 
+    @view_config(route_name='identify', request_param='geometryFormat=interlis')
+    def view_identify_oereb(self):
+        from chsdi.models import oereb_models_from_bodid
+        from chsdi.models.bod import OerebMetadata
+        from pyramid.response import Response
+        self.geometry = self.request.params.get('geometry')
+        self.geometryType = self.request.params.get('geometryType')
+        self.imageDisplay = self.request.params.get('imageDisplay')
+        self.mapExtent = self.request.params.get('mapExtent')
+        self.tolerance = self.request.params.get('tolerance')
+        # FIXME not supported at the moment
+        self.returnGeometry = self.request.params.get('returnGeometry')
+        self.layers = self.request.params.get('layers', 'all')
+
+        # At the moment only one layer at a time and no support of all
+        if self.layers == 'all' or len(self.layers) > 1:
+            raise exc.HTTPBadRequest('Please specify the id of the layer you want to query')
+        idBod = self.layers[0]
+        model = OerebMetadata
+        query = self.request.db.query(model)
+        query = query.filter(model.idBod == idBod)
+        try:
+            layer_metadata = query.one()
+        except NoResultFound:
+            raise exc.HTTPNotFound('No layer with id %s' % idBod)
+        except MultipleResultsFound:
+            raise exc.HTTPInternalServerError()
+        header = layer_metadata.header
+        footer = layer_metadata.footer
+
+        # Only relation 1 to 1 at the moment
+        model = oereb_models_from_bodid(idBod)[0]
+        geom_filter = model.geom_filter(
+            self.geometry,
+            self.geometryType,
+            self.imageDisplay,
+            self.mapExtent,
+            self.tolerance
+        )
+        query = self.request.db.query(model).filter(geom_filter)
+        features = []
+        for q in query:
+            temp = q.xmlData.split('##')
+            for fragment in temp:
+                if fragment not in features:
+                    features.append(fragment)
+
+        results = header + ''.join(features) + footer
+        response = Response(results)
+        response.content_type = 'text/xml'
+        return response
+
     @view_config(route_name='identify', renderer='esrijson')
     def view_identify_esrijson(self):
         return self._identify()
@@ -90,10 +142,9 @@ class MapService(MapServiceValidation):
         self.mapExtent = self.request.params.get('mapExtent')
         self.tolerance = self.request.params.get('tolerance')
         self.returnGeometry = self.request.params.get('returnGeometry')
+        self.layers = self.request.params.get('layers', 'all')
 
-        layers = self.request.params.get('layers', 'all')
-        models = self._get_models_from_layername(layers)
-
+        models = self._get_models_from_layername()
         if models is None:
             raise exc.HTTPBadRequest('No GeoTable was found for %s' % layers)
 
@@ -273,9 +324,11 @@ class MapService(MapServiceValidation):
                     model.queryable_attributes())
                 yield query
 
-    def _get_models_from_layername(self, layers_param):
-        layers = self._get_layer_list_from_map(
-        ) if layers_param == 'all' else layers_param.split(':')[1].split(',')
+    def _get_models_from_layername(self):
+        if self.layers == 'all':
+            layers = self._get_layer_list_from_map()
+        else:
+            layers = self.layers
         models = [
             models_from_name(layer) for
             layer in layers

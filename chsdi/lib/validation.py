@@ -32,6 +32,7 @@ class MapServiceValidation(MapNameValidation):
         self._mapExtent = None
         self._tolerance = None
         self._models = None
+        self._layers = None
         self.esriGeometryTypes = (
             'esriGeometryPoint',
             'esriGeometryPolyline',
@@ -66,6 +67,10 @@ class MapServiceValidation(MapNameValidation):
     @property
     def models(self):
         return self._models
+
+    @property
+    def layers(self):
+        return self._layers
 
     @geometry.setter
     def geometry(self, value):
@@ -123,6 +128,19 @@ class MapServiceValidation(MapNameValidation):
             self._tolerance = float(value)
         except ValueError:
             raise exc.HTTPBadRequest('Please provide an integer value for the pixel tolerance')
+
+    @layers.setter
+    def layers(self, value):
+        if value is None:
+            raise exc.HTTPBadRequest('Please provide a parameter layers')
+        if value == 'all':
+            self._layers = value
+        else:
+            try:
+                layers = value.split(':')[1]
+                self._layers = layers.split(',')
+            except:
+                exc.HTTPBadRequest('There is an error in the parameter layers')
 
     @models.setter
     def models(self, value):
