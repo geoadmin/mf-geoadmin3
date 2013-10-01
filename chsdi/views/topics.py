@@ -20,6 +20,7 @@ def topics(request):
     } for q in query]
     return {'topics': results}
 
+
 def _geodata_staging_filter(query, orm_column, geodataStaging):
     if geodataStaging == 'test':
         return query
