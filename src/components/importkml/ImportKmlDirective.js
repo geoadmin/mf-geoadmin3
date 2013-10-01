@@ -260,7 +260,8 @@
   );
 
   module.directive('gaImportKml',
-      function($http, $log, $compile, $translate, gaBrowserSniffer, gaUrlUtils) {
+      function($http, $log, $compile, $translate, gaBrowserSniffer,
+          gaUrlUtils) {
         return {
           restrict: 'A',
           templateUrl: 'components/importkml/partials/importkml.html',
