@@ -1,31 +1,29 @@
+@control-btn-small-size: 18;
+@zoomslider-right: 20;
+@zoomslider-height: 150;
+@zoombar-height: @zoomslider-height + 2 * (@control-btn-small-size - 1);
+@touch-zoombar-height: @control-btn-size + @control-btn-next;
+
 .map {
   background-color: #f9f9f9;
   background-image: data-uri('mapbg.png');
 }
 
-@tabletTop: 60;
-@zoomBarTop: 153;
-@zoomBarRight: 20;
-@zoomBarWidth: 18;
-@zoomBarHeight: 150;
-@miniZoomBarRight: @zoomBarRight - 13;
-@miniZoomBarHeight: 94;
-
 .ol-zoom, .ol-zoomslider {
   position: absolute;
-  right: unit(@zoomBarRight, px);
-  width: unit(@zoomBarWidth, px);
+  right: unit(@zoomslider-right, px);
+  width: unit(@control-btn-small-size, px);
 }
 
 .ol-zoom {
-  top: unit(@zoomBarTop, px);
-  height: unit(@zoomBarHeight + 34, px);
+  top: unit(@header-height + @control-btns-top + @control-btn-next, px);
+  height: unit(@zoombar-height, px);
 }
 
 .ol-zoom-in, .ol-zoom-out {
   position: absolute;
-  width: 18px;
-  height: 18px;
+  width: unit(@control-btn-small-size, px);
+  height: unit(@control-btn-small-size, px);
 }
 
 .ol-zoom-in {
@@ -39,14 +37,14 @@
 
 .ol-zoomslider {
   position: absolute;
-  top: unit(@zoomBarTop + 18, px);
-  height: unit(@zoomBarHeight, px);
+  top: unit(@header-height + @control-btns-top + @control-btn-next + @control-btn-small-size - 1, px);
+  height: unit(@zoomslider-height, px);
   /* step height: 11px */
   background-image: data-uri('zoombar.png');
 }
 
 .ol-zoomslider-thumb {
-  width: 20px;
+  width: unit(@control-btn-small-size + 2, px);
   height: 9px;
   background-image: data-uri('slider.png');
   margin-left: -1px;
@@ -59,24 +57,24 @@
 .ol-zoom-extent {
   background-image: data-uri('zoomToFullExtent.png');
   position: absolute;
-  top: unit(@zoomBarTop + @zoomBarHeight + 43, px);
-  right: unit(@miniZoomBarRight, px);
+  right: unit(@control-btns-right, px);
+  top: unit(@header-height + @control-btns-top + @control-btn-next + @zoombar-height + @control-btn-space, px);
 }
 .ol-zoom-extent a {
-  width: 44px;
-  height: 44px;
+  width: unit(@control-btn-size, px);
+  height: unit(@control-btn-size, px);
   display: block;
 }
 
-.touch {
+.mini-zoombar-mixin() {
   .ol-zoom {
-    right: unit(@miniZoomBarRight, px);
-    height: unit(@miniZoomBarHeight, px);
-    width: 44px;
+    right: unit(@control-btns-right, px);
+    height: unit(@touch-zoombar-height, px);
+    width: unit(@control-btn-size, px);
   }
   .ol-zoom-in, .ol-zoom-out {
-    width: 44px;
-    height: 44px;
+    width: unit(@control-btn-size, px);
+    height: unit(@control-btn-size, px);
   }
   .ol-zoom-in {
     background-image: data-uri('zoomIn.png');
@@ -85,17 +83,28 @@
     background-image: data-uri('zoomOut.png');
     bottom: 0;
   }
+}
+.mini-zoombar-mixin(@top) {
+  .ol-zoom {
+    top: unit(@top + @control-btns-top + @control-btn-next, px);
+  }
   .ol-zoom-extent {
-    top: unit(@zoomBarTop + @miniZoomBarHeight + 9, px);
+    top: unit(@top + @control-btns-top + 3 * @control-btn-next, px);
   }
 }
 
 @media screen and (max-width: @screen-tablet) {
-  .ol-zoom, .touch .ol-zoom {
-    top: unit(@tabletTop + 50, px);
+  .mini-zoombar-mixin;
+  .mini-zoombar-mixin(@small-header-height);
+  .ol-zoomslider {
+    display: none;
   }
-  .ol-zoom-extent, .touch .ol-zoom-extent {
-    top: unit(@tabletTop + 150, px);
+}
+.touch {
+  .mini-zoombar-mixin;
+  .mini-zoombar-mixin(@header-height);
+  @media screen and (max-width: @screen-tablet) {
+    .mini-zoombar-mixin(@small-header-height);
   }
 }
 
