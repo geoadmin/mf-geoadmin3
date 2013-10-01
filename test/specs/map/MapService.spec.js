@@ -97,4 +97,132 @@ describe('ga_map_service', function() {
     });
   });
 
+  describe('gaLayersPermalinkManager', function() {
+    var map, manager, permalink;
+
+    var addLayerToMap = function(id) {
+      var layer = new ol.layer.Tile({
+        id: id,
+        source: new ol.source.OSM()
+      });
+      map.addLayer(layer);
+      return layer;
+    };
+
+    beforeEach(function() {
+      map = new ol.Map({});
+
+      module(function($provide) {
+        $provide.value('gaLayers', {
+          getLayer: function(id) {
+            return {};
+          },
+          getLayerProperty: function(key) {
+            if (key == 'background') {
+              return false;
+            }
+          }
+        });
+      });
+
+      inject(function($injector) {
+        manager = $injector.get('gaLayersPermalinkManager');
+        permalink = $injector.get('gaPermalink');
+      });
+
+      manager(map);
+    });
+
+    describe('add/remove layers', function() {
+      it('changes permalink', inject(function($rootScope) {
+        var fooLayer, barLayer;
+
+        expect(permalink.getParams().layers).to.be(undefined);
+
+        fooLayer = addLayerToMap('foo');
+        $rootScope.$digest();
+        expect(permalink.getParams().layers).to.eql('foo');
+
+        barLayer = addLayerToMap('bar');
+        $rootScope.$digest();
+        expect(permalink.getParams().layers).to.eql('foo,bar');
+
+        map.removeLayer(fooLayer);
+        $rootScope.$digest();
+        expect(permalink.getParams().layers).to.eql('bar');
+
+        map.removeLayer(barLayer);
+        $rootScope.$digest();
+        expect(permalink.getParams().layers).to.be(undefined);
+
+      }));
+    });
+
+    describe('change layer opacity', function() {
+      it('changes permalink',
+          inject(function($rootScope, gaDefinePropertiesForLayer) {
+        var fooLayer, barLayer;
+
+        fooLayer = addLayerToMap('foo');
+        gaDefinePropertiesForLayer(fooLayer);
+        $rootScope.$digest();
+        expect(permalink.getParams().layers_opacity).to.be(undefined);
+
+        fooLayer.opacity = '0.5';
+        $rootScope.$digest();
+        expect(permalink.getParams().layers_opacity).to.eql('0.5');
+
+        barLayer = addLayerToMap('bar');
+        gaDefinePropertiesForLayer(barLayer);
+        $rootScope.$digest();
+        expect(permalink.getParams().layers_opacity).to.eql('0.5,1');
+
+        barLayer.opacity = '0.2';
+        $rootScope.$digest();
+        expect(permalink.getParams().layers_opacity).to.eql('0.5,0.2');
+
+        fooLayer.opacity = '1';
+        $rootScope.$digest();
+        expect(permalink.getParams().layers_opacity).to.eql('1,0.2');
+
+        barLayer.opacity = '1';
+        $rootScope.$digest();
+        expect(permalink.getParams().layers_opacity).to.be(undefined);
+      }));
+    });
+
+    describe('change layer visibility', function() {
+      it('changes permalink',
+          inject(function($rootScope, gaDefinePropertiesForLayer) {
+        var fooLayer, barLayer;
+
+        fooLayer = addLayerToMap('foo');
+        gaDefinePropertiesForLayer(fooLayer);
+        $rootScope.$digest();
+        expect(permalink.getParams().layers_visibility).to.be(undefined);
+
+        fooLayer.visible = false;
+        $rootScope.$digest();
+        expect(permalink.getParams().layers_visibility).to.eql('false');
+
+        barLayer = addLayerToMap('bar');
+        gaDefinePropertiesForLayer(barLayer);
+        $rootScope.$digest();
+        expect(permalink.getParams().layers_visibility).to.eql('false,true');
+
+        barLayer.visible = false;
+        $rootScope.$digest();
+        expect(permalink.getParams().layers_visibility).to.eql('false,false');
+
+        fooLayer.visible = true;
+        $rootScope.$digest();
+        expect(permalink.getParams().layers_visibility).to.eql('true,false');
+
+        barLayer.visible = true;
+        $rootScope.$digest();
+        expect(permalink.getParams().layers_visibility).to.be(undefined);
+      }));
+    });
+  });
+
 });
