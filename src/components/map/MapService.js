@@ -123,7 +123,6 @@
 
           var promise = $http.jsonp(url).then(function(response) {
             layers = response.data.layers;
-            $rootScope.$broadcast('gaLayersChange');
           }, function(response) {
             layers = undefined;
           });
@@ -258,13 +257,17 @@
 
         $rootScope.$on('gaTopicChange', function(event, topic) {
           currentTopic = topic;
-          loadForTopic(topic.id, $translate.uses());
+          loadForTopic(topic.id, $translate.uses()).then(function() {
+            $rootScope.$broadcast('gaLayersChange', {labelsOnly: false});
+          });
         });
 
         $rootScope.$on('$translateChangeEnd', function(event) {
           // do nothing if there's no topic set
-          if (angular.isDefined(currentTopicId)) {
-            loadForTopic(currentTopicId, $translate.uses());
+          if (angular.isDefined(currentTopic)) {
+            loadForTopic(currentTopic.id, $translate.uses()).then(function() {
+              $rootScope.$broadcast('gaLayersChange', {labelsOnly: true});
+            });
           }
         });
 
