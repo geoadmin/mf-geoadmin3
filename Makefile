@@ -65,7 +65,7 @@ deploybranch: deploy/deploy-branch.cfg $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/con
 	cd $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH); \
 	git checkout $(GIT_BRANCH); \
 	git pull; \
-	make all; \
+	make apache dev; \
 	sudo -u deploy deploy -r deploy/deploy-branch.cfg ab
 
 .PHONY: updateol
