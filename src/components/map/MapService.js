@@ -135,6 +135,17 @@
         };
 
         /**
+         * Return an array of ol.layer.Layer objects for the background
+         * layers.
+         */
+        this.getBackgroundLayers = function() {
+          var self = this;
+          return $.map(currentTopic.backgroundLayers, function(bodId) {
+            return {id: bodId, label: self.getLayerProperty(bodId, 'label')};
+          });
+        };
+
+        /**
          * Return an ol.layer.Layer object for a layer id.
          */
         this.getOlLayerById = function(id) {
@@ -243,20 +254,13 @@
         };
 
         /**
-         * Return the list of background layers. The returned
-         * objects are object literals.
+         * Get Metadata of given layer id
+         * Uses current topic and language
+         * Returns a promise. Use accordingly
          */
-        this.getBackgroundLayers = function() {
-          var backgroundLayers = [];
-          angular.forEach(layers, function(layer, id) {
-            if (layer.background === true) {
-              var backgroundLayer = angular.extend({
-                id: id
-              }, layer);
-              backgroundLayers.push(backgroundLayer);
-            }
-          });
-          return backgroundLayers;
+        this.getMetaDataOfLayer = function(id) {
+          var url = getMetaDataUrl(currentTopic.id, id, $translate.uses());
+          return $http.jsonp(url);
         };
 
         $rootScope.$on('gaTopicChange', function(event, topic) {
@@ -275,15 +279,6 @@
           }
         });
 
-        /**
-         * Get Metadata of given layer id
-         * Uses current topic and language
-         * Returns a promise. Use accordingly
-         */
-        this.getMetaDataOfLayer = function(id) {
-          var url = getMetaDataUrl(currentTopicId, id, $translate.uses());
-          return $http.jsonp(url);
-        };
       };
 
       return new Layers(this.wmtsGetTileUrlTemplate,
