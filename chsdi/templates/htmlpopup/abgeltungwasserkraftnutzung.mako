@@ -1,7 +1,7 @@
 <%inherit file="base.mako"/>
 
 <%def name="table_body(c, lang)">
-<% c[stable_id] = True %>
+<% c['stable_id'] = True %>
     <tr><td width="150">${_('tt_ch.bfe.abgeltung-wasserkraftnutzung_name')}</td>                        <td>${c['attributes']['name']}</td></tr>
     <tr><td width="150">${_('tt_ch.bfe.abgeltung-wasserkraftnutzung_objectnumber')}</td>                <td>${c['featureId'] or '-'}</td></tr>
     <tr><td width="150">${_('tt_ch.bfe.abgeltung-wasserkraftnutzung_area')}</td>                        <td>${c['attributes']['area'] or '-'}</td></tr>
