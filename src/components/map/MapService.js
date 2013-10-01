@@ -63,6 +63,10 @@
               this.setOpacity(+val);
             }
           },
+          background: {
+            writable: true,
+            value: false
+          },
           preview: {
             writable: true,
             value: false
@@ -90,7 +94,8 @@
 
       var Layers = function(wmtsGetTileUrlTemplate,
           layersConfigUrlTemplate, legendUrlTemplate) {
-        var currentTopicId;
+
+        var currentTopic;
         var layers;
 
         var getWmtsGetTileUrl = function(layer, format) {
@@ -118,19 +123,26 @@
          * Load layers for a given topic and language. Return a promise.
          */
         var loadForTopic = this.loadForTopic = function(topicId, lang) {
-          currentTopicId = topicId;
-
           var url = getLayersConfigUrl(topicId, lang);
 
           var promise = $http.jsonp(url).then(function(response) {
             layers = response.data.layers;
-            $rootScope.$broadcast('gaLayersChange');
           }, function(response) {
             layers = undefined;
-            currentTopicId = undefined;
           });
 
           return promise;
+        };
+
+        /**
+         * Return an array of ol.layer.Layer objects for the background
+         * layers.
+         */
+        this.getBackgroundLayers = function() {
+          var self = this;
+          return $.map(currentTopic.backgroundLayers, function(bodId) {
+            return {id: bodId, label: self.getLayerProperty(bodId, 'label')};
+          });
         };
 
         /**
@@ -242,42 +254,31 @@
         };
 
         /**
-         * Return the list of background layers. The returned
-         * objects are object literals.
-         */
-        this.getBackgroundLayers = function() {
-          var backgroundLayers = [];
-          angular.forEach(layers, function(layer, id) {
-            if (layer.background === true) {
-              var backgroundLayer = angular.extend({
-                id: id
-              }, layer);
-              backgroundLayers.push(backgroundLayer);
-            }
-          });
-          return backgroundLayers;
-        };
-
-        $rootScope.$on('gaTopicChange', function(event, topic) {
-          loadForTopic(topic.id, $translate.uses());
-        });
-
-        $rootScope.$on('$translateChangeEnd', function(event) {
-          // do nothing if there's no topic set
-          if (angular.isDefined(currentTopicId)) {
-            loadForTopic(currentTopicId, $translate.uses());
-          }
-        });
-
-        /**
          * Get Metadata of given layer id
          * Uses current topic and language
          * Returns a promise. Use accordingly
          */
         this.getMetaDataOfLayer = function(id) {
-          var url = getMetaDataUrl(currentTopicId, id, $translate.uses());
+          var url = getMetaDataUrl(currentTopic.id, id, $translate.uses());
           return $http.jsonp(url);
         };
+
+        $rootScope.$on('gaTopicChange', function(event, topic) {
+          currentTopic = topic;
+          loadForTopic(topic.id, $translate.uses()).then(function() {
+            $rootScope.$broadcast('gaLayersChange', {labelsOnly: false});
+          });
+        });
+
+        $rootScope.$on('$translateChangeEnd', function(event) {
+          // do nothing if there's no topic set
+          if (angular.isDefined(currentTopic)) {
+            loadForTopic(currentTopic.id, $translate.uses()).then(function() {
+              $rootScope.$broadcast('gaLayersChange', {labelsOnly: true});
+            });
+          }
+        });
+
       };
 
       return new Layers(this.wmtsGetTileUrlTemplate,
@@ -362,11 +363,7 @@
         scope.layers = map.getLayers().getArray();
 
         scope.layerFilter = function(layer) {
-          var id = layer.get('id');
-          var isBackground = !!gaLayers.getLayer(id) &&
-              gaLayers.getLayerProperty(id, 'background');
-          var isPreview = layer.preview;
-          return !isBackground && !isPreview;
+          return !layer.background && !layer.preview;
         };
 
         scope.$watchCollection('layers | filter:layerFilter',

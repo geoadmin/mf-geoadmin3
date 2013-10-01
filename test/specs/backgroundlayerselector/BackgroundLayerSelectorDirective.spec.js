@@ -42,7 +42,7 @@ describe('ga_backgroundlayerselector_directive', function() {
       $compile(element)($rootScope);
       $rootScope.$digest();
 
-      $rootScope.$broadcast('gaLayersChange');
+      $rootScope.$broadcast('gaLayersChange', {labelsOnly: false});
       $rootScope.$digest();
     });
 

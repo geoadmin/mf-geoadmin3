@@ -18,7 +18,6 @@ describe('ga_map_service', function() {
               timestamps: ['t1', 't2']
             },
             bar: {
-              background: true,
               type: 'wmts',
               matrixSet: 'set2',
               timestamps: ['t3', 't4']
@@ -27,10 +26,16 @@ describe('ga_map_service', function() {
         });
       });
 
-      inject(function($injector) {
+      inject(function($injector, $translate, $rootScope) {
         layers = $injector.get('gaLayers');
-        layers.loadForTopic('sometopic', 'somelang');
+
+        $httpBackend.expectJSONP(expectedUrl);
+        $translate.uses('somelang');
+        $rootScope.$broadcast('gaTopicChange',
+          {id: 'sometopic', backgroundLayers: ['bar']});
+        $rootScope.$digest();
       });
+
     });
 
     afterEach(function () {
@@ -41,7 +46,6 @@ describe('ga_map_service', function() {
 
     describe('getOlLayerById', function() {
       it('returns layers with correct settings', function() {
-        $httpBackend.expectJSONP(expectedUrl);
         $httpBackend.flush();
         var layer = layers.getOlLayerById('foo');
         expect(layer instanceof ol.layer.Tile).to.be.ok();
@@ -56,7 +60,6 @@ describe('ga_map_service', function() {
 
     describe('set layer visibility through accessor', function() {
       it('sets the visibility as expected', function() {
-        $httpBackend.expectJSONP(expectedUrl);
         $httpBackend.flush();
         var layer = layers.getOlLayerById('foo');
         expect(layer.getVisible()).to.be.ok();
@@ -72,7 +75,6 @@ describe('ga_map_service', function() {
 
     describe('set layer opacity through accessor', function() {
       it('sets the visibility as expected', function() {
-        $httpBackend.expectJSONP(expectedUrl);
         $httpBackend.flush();
         var layer = layers.getOlLayerById('foo');
         expect(layer.getOpacity()).to.be(1);
@@ -88,13 +90,13 @@ describe('ga_map_service', function() {
 
     describe('getBackgroundLayers', function() {
       it('returns correct background layers information', function() {
-        $httpBackend.expectJSONP(expectedUrl);
         $httpBackend.flush();
         var backgroundLayers = layers.getBackgroundLayers();
         expect(backgroundLayers.length).to.be(1);
         expect(backgroundLayers[0].id).to.be('bar');
       });
     });
+
   });
 
   describe('gaLayersPermalinkManager', function() {
@@ -223,6 +225,7 @@ describe('ga_map_service', function() {
         expect(permalink.getParams().layers_visibility).to.be(undefined);
       }));
     });
+
   });
 
 });
