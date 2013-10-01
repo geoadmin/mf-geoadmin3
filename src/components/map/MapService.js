@@ -90,7 +90,8 @@
 
       var Layers = function(wmtsGetTileUrlTemplate,
           layersConfigUrlTemplate, legendUrlTemplate) {
-        var currentTopicId;
+
+        var currentTopic;
         var layers;
 
         var getWmtsGetTileUrl = function(layer, format) {
@@ -118,8 +119,6 @@
          * Load layers for a given topic and language. Return a promise.
          */
         var loadForTopic = this.loadForTopic = function(topicId, lang) {
-          currentTopicId = topicId;
-
           var url = getLayersConfigUrl(topicId, lang);
 
           var promise = $http.jsonp(url).then(function(response) {
@@ -127,7 +126,6 @@
             $rootScope.$broadcast('gaLayersChange');
           }, function(response) {
             layers = undefined;
-            currentTopicId = undefined;
           });
 
           return promise;
@@ -259,6 +257,7 @@
         };
 
         $rootScope.$on('gaTopicChange', function(event, topic) {
+          currentTopic = topic;
           loadForTopic(topic.id, $translate.uses());
         });
 
