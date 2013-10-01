@@ -353,20 +353,26 @@ register('ch.bakom.versorgungsgebiet-ukw', bakomukw)
 
 
 class ProjFlughafenanlagen(Base, Vector):
-    __tablename__ = 'flughafenanlagen'
+    __tablename__ = 'projektierungszonen'
     __table_args__ = ({'schema': 'bazl', 'autoload': False})
     __template__ = 'templates/htmlpopup/projflughafenanlagen.mako'
     __esriId__ = 4012
     __bodId__ = 'ch.bazl.projektierungszonen-flughafenanlagen'
-    id = Column('xtf_id', Integer, primary_key=True)
+    id = Column('stabil_id', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-    kind = Column('kind', Text)
-    name = Column('name', Text)
+    zonekind_text_de = Column('zonekind_text_de', Text)
+    zonekind_text_fr = Column('zonekind_text_fr', Text)
+    zonekind_text_it = Column('zonekind_text_it', Text)
+    canton = Column('canton', Text)
+    municipality = Column('municipality', Text)
+    legalstatus_text_de = Column('legalstatus_text_de', Text)
+    legalstatus_text_fr = Column('legalstatus_text_fr', Text)
+    legalstatus_text_it = Column('legalstatus_text_it', Text)
     applicant = Column('applicant', Text)
-    modif_validfrom = Column('modif_validfrom', Text)
+    validfrom = Column('validfrom', Text)
     durationofeffect = Column('durationofeffect', Text)
     description = Column('description', Text)
-    legalregulationlink = Column('legalregulationlink', Text)
+    weblink_ref = Column('weblink_ref', Text)
     bgdi_id = Column('bgdi_id', Integer)
 
 register('ch.bazl.projektierungszonen-flughafenanlagen', ProjFlughafenanlagen)
