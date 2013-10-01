@@ -185,7 +185,8 @@
             // defined in the permalink
             if (!angular.isDefined(scope.isActive) &&
                angular.isDefined(gaPermalink.getParams().time)) {
-              scope.toggle(); }
+              scope.toggle();
+            }
           }
         });
 
@@ -200,7 +201,7 @@
           if (!scope.isDisable) {
             scope.isActive = !scope.isActive;
             scope.stateClass = scope.isActive ? 'active' : 'enabled';
-            $rootScope.$broadcast('gaTimeSelectorActivation', scope.isActive);
+            $rootScope.$broadcast('gaTimeSelectorToggle', scope.isActive);
           }
         };
       }
@@ -248,10 +249,9 @@
               }
             }
 
-            if (scope.isActive) {
-              if (scope.updateDatesAvailable()) {
-                scope.magnetize();
-              }
+            if (scope.isActive && scope.currentYear !== -1 &&
+                scope.updateDatesAvailable()) {
+              scope.magnetize();
             }
 
             if (!enabled) {
@@ -266,7 +266,7 @@
           scope.map.getLayers().on('remove', refreshComp);
 
           // Active/deactive manually the time selector
-          $rootScope.$on('gaTimeSelectorActivation', function(event, active) {
+          $rootScope.$on('gaTimeSelectorToggle', function(event, active) {
             scope.isActive = active;
           });
 
