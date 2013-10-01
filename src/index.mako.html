@@ -153,6 +153,7 @@
         </div>  <!-- .panel -->
 % endif
 
+% if device == 'desktop':
         <div class="panel">
           <a class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#tools">
             <i class="visible-collapsed icon-caret-right spacer"></i>
@@ -165,7 +166,6 @@
 
               <ul>
 
-% if device == 'desktop':
                 <li><!-- Import -->
                   <a class="accordion-toggle collapsed" data-toggle="collapse" href="#import">
                     <i class="visible-collapsed icon-plus"></i>
@@ -193,37 +193,11 @@
                     </div>
                   </div>
                 </li>
-% endif
-
-                <li><!-- Measure -->
-                  <a class="accordion-toggle collapsed" data-toggle="collapse" href="#measure" >
-                    <i class="visible-collapsed icon-plus"></i>
-                    <i class="hidden-collapsed icon-minus"></i>
-                    <span translate>measure</span>
-                  </a>
-                  <div id="measure" class="collapse">
-                    <div class="panel-body">
-                      Under construction ...
-                    </div>
-                  </div>
-                </li>
-
-                <li><!-- Drawing -->
-                  <a class="accordion-toggle collapsed" data-toggle="collapse" href="#drawing" >
-                    <i class="visible-collapsed icon-plus"></i>
-                    <i class="hidden-collapsed icon-minus"></i>
-                    <span translate>drawing</span>
-                  </a>
-                  <div id="drawing" class="collapse">
-                    <div class="panel-body">
-                      Under construction ...
-                    </div>
-                  </div>
-                </li>
               </ul>
             </div>
           </div>
         </div> <!-- .panel -->
+% endif
 
         <div class="panel">
 % if device == 'desktop':
