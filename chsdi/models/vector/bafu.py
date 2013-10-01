@@ -10,6 +10,20 @@ from chsdi.models.vector import Vector
 
 Base = bases['bafu']
 
+class AM_G(Base, Vector):
+    # view in a schema
+    __tablename__ = 'am_g'
+    __table_args__ = ({'schema': 'bundinv', 'autoload': False})
+    __esriId__ = 2000
+    __bodId__ = 'ch.bafu.bundesinventare-amphibien_wanderobjekte'
+    __template__ = 'templates/htmlpopup/am_g.mako'
+    id = Column('am_g_obj', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    am_g_name = Column('am_g_name', Text)
+    the_geom = Column(Geometry)
+
+register('ch.bafu.bundesinventare-amphibien_wanderobjekte', AM_G)
+
 
 class BLN(Base, Vector):
     # view in a schema
