@@ -59,11 +59,7 @@
             }
 
             function layerFilter(layer) {
-              var id = layer.get('id');
-              var isBackground = !!gaLayers.getLayer(id) &&
-                  gaLayers.getLayerProperty(id, 'background');
-              var isPreview = layer.preview;
-              return !isBackground && !isPreview;
+              return !layer.background && !layer.preview;
             }
 
             function removeAllLayers(map) {
