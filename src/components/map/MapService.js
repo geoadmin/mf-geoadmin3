@@ -287,21 +287,77 @@
   });
 
   /**
-   * Service that manages the "layers" permalink parameter. The manager
-   * works with a (or multiple) "layers" array. The manager watches the
-   * array (using $watchCollection) and updates the "layers" parameter
-   * in the permalink when the array changes. And, at application init
-   * time, it adds to the map the layers specified in the permalink.
+   * Service that manages the "layers", "layers_opacity", and
+   * "layers_visibility" permalink parameter.
+   *
+   * The manager works with a "layers" array. It watches the array (using
+   * $watchCollection) and updates the "layers" parameter in the permalink
+   * when the array changes. It also watches "opacity" and "visibility" on
+   * each layer and updates the "layers_opacity" and "layers_visibility"
+   * parameters as appropriate.
+   *
+   * And, at application init time, it adds to the map the layers specified
+   * in the permalink, and the opacity and visibility of layers.
    */
   module.provider('gaLayersPermalinkManager', function() {
 
     this.$get = function($rootScope, gaLayers, gaPermalink) {
 
       var layersParamValue = gaPermalink.getParams().layers;
+      var layersOpacityParamValue = gaPermalink.getParams().layers_opacity;
+      var layersVisibilityParamValue =
+          gaPermalink.getParams().layers_visibility;
+
       var layerSpecs = layersParamValue ? layersParamValue.split(',') : [];
+      var layerOpacities = layersOpacityParamValue ?
+          layersOpacityParamValue.split(',') : [];
+      var layerVisibilities = layersVisibilityParamValue ?
+          layersVisibilityParamValue.split(',') : [];
+
+      function updateLayersParam(layers) {
+        var bodIds = $.map(layers, function(layer) {
+          return layer.get('id');
+        });
+        if (bodIds.length > 0) {
+          gaPermalink.updateParams({layers: bodIds.join(',')});
+        } else {
+          gaPermalink.deleteParam('layers');
+        }
+      }
+
+      function updateLayersOpacityParam(layers) {
+        var opacityTotal = 0;
+        var opacityValues = $.map(layers, function(layer) {
+          var opacity = layer.opacity;
+          opacityTotal += +opacity;
+          return opacity;
+        });
+        if (opacityTotal === layers.length) {
+          gaPermalink.deleteParam('layers_opacity');
+        } else {
+          gaPermalink.updateParams({
+            layers_opacity: opacityValues.join(',')});
+        }
+      }
+
+      function updateLayersVisibilityParam(layers) {
+        var visibilityTotal = true;
+        var visibilityValues = $.map(layers, function(layer) {
+          var visibility = layer.visible;
+          visibilityTotal = visibilityTotal && visibility;
+          return visibility;
+        });
+        if (visibilityTotal === true) {
+          gaPermalink.deleteParam('layers_visibility');
+        } else {
+          gaPermalink.updateParams({
+            layers_visibility: visibilityValues.join(',')});
+        }
+      }
 
       return function(map) {
         var scope = $rootScope.$new();
+        var deregFns = [];
 
         scope.layers = map.getLayers().getArray();
 
@@ -315,15 +371,29 @@
 
         scope.$watchCollection('layers | filter:layerFilter',
             function(layers) {
-          var bodIds = $.map(layers, function(layer) {
-            return layer.get('id');
+
+          updateLayersParam(layers);
+
+          // deregister the listeners we have on each layer and register
+          // new ones for the new set of layers.
+          angular.forEach(deregFns, function(deregFn) { deregFn(); });
+          deregFns.length = 0;
+
+          angular.forEach(layers, function(layer) {
+            deregFns.push(scope.$watch(function() {
+              return layer.opacity;
+            }, function() {
+              updateLayersOpacityParam(layers);
+            }));
+
+            deregFns.push(scope.$watch(function() {
+              return layer.visible;
+            }, function() {
+              updateLayersVisibilityParam(layers);
+            }));
           });
-          if (bodIds.length > 0) {
-            gaPermalink.updateParams({layers: bodIds.join(',')});
-          } else {
-            gaPermalink.deleteParam('layers');
-          }
         });
+
 
         var deregister = scope.$on('gaLayersChange', function() {
           angular.forEach(layerSpecs, function(layerSpec, index) {
@@ -333,6 +403,13 @@
               layer = gaLayers.getOlLayerById(layerSpec);
             }
             if (angular.isDefined(layer)) {
+              if (index < layerOpacities.length) {
+                layer.opacity = layerOpacities[index];
+              }
+              if (index < layerVisibilities.length) {
+                layer.visible = layerVisibilities[index] == 'false' ?
+                    false : true;
+              }
               map.addLayer(layer);
             }
           });
