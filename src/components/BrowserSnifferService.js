@@ -13,6 +13,7 @@
       var ua = $window.navigator.userAgent;
       var msie = +((/msie (\d+)/.exec(ua.toLowerCase()) || [])[1]);
       var ios = /(iPhone|iPad)/.test(ua);
+      var ios_chrome = /CriOS/.test(ua);
       var testSize = function(size) {
         var m = $window.matchMedia;
         return m && m('(max-width: ' + size + 'px)').matches;
@@ -26,6 +27,7 @@
       return {
         msie: msie,
         ios: ios,
+        ios_chrome: ios_chrome,
         mobile: mobile,
         phone: mobile && testSize(480)
       };
