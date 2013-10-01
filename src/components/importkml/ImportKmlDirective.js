@@ -4,22 +4,19 @@
   goog.require('ga_browsersniffer_service');
   goog.require('ga_map_service');
   goog.require('ga_popup_service');
+  goog.require('ga_urlutils_service');
 
   var module = angular.module('ga_importkml_directive', [
     'ga_browsersniffer_service',
     'ga_map_service',
     'ga_popup_service',
+    'ga_urlutils_service',
     'pascalprecht.translate'
   ]);
 
   module.controller('GaImportKmlDirectiveController',
       function($scope, $http, $q, $log, $translate, gaBrowserSniffer,
-            gaPopup, gaDefinePropertiesForLayer) {
-
-          // from Angular
-          // https://github.com/angular/angular.js/blob/master/src/ng/directive/input.js#L3
-          var URL_REGEXP =
-          /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/;
+            gaPopup, gaDefinePropertiesForLayer, gaUrlUtils) {
 
           $scope.isIE9 = (gaBrowserSniffer.msie == 9);
           $scope.isIE = !isNaN(gaBrowserSniffer.msie);
@@ -34,7 +31,7 @@
           $scope.handleFileUrl = function() {
             var url = $scope.fileUrl;
 
-            if ($scope.isValidUrl(url)) {
+            if (gaUrlUtils.isValid(url)) {
               // info: Angular test the validation of the input but the
               // content is sent by the onchange event
 
@@ -211,16 +208,12 @@
             $scope.fileUrl = null;
             $scope.fileContent = null;
           };
-
-          // Test validity of a user input
-          $scope.isValidUrl = function(url) {
-            return (url && url.length > 0 && URL_REGEXP.test(url));
-          };
         }
   );
 
   module.directive('gaImportKml',
-      function($http, $log, $compile, $translate, gaBrowserSniffer) {
+      function($http, $log, $compile, $translate, gaBrowserSniffer,
+          gaUrlUtils) {
           return {
             restrict: 'A',
             templateUrl: 'components/importkml/partials/importkml.html',
@@ -333,7 +326,7 @@
                     var text = evt.originalEvent.dataTransfer
                         .getData('text/plain');
 
-                    if (scope.isValidUrl(text)) {
+                    if (gaUrlUtils.isValid(text)) {
                       scope.$apply(function() {
                         scope.fileUrl = text;
                         scope.handleFileUrl();
