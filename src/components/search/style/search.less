@@ -7,6 +7,21 @@
   position: relative;
   .twitter-typeahead {
     width: 100%;
+    position: relative;
+    &::after {
+      content: '\f002';
+      font-family: FontAwesome;
+      position: absolute;
+      top: 0;
+      left: .5em;
+      height: 30px;
+      line-height: 30px;
+      color: #c6c6c6;
+    }
+  }
+  .tt-query {
+    background: white !important;
+    padding-left: 2em;
   }
   .tt-dropdown-menu {
     width: 100%;
@@ -89,6 +104,10 @@
 }
 .search-focused {
   @media (max-width: @screen-phone) {
+    .twitter-typeahead:after {
+      left: 1.2em;
+      color: #666;
+    }
     .search-wrapper {
       .tt-dropdown-menu {
         top: 37px !important;
