@@ -146,7 +146,6 @@
         /**
          * Return an ol.layer.Layer object for a layer id.
          */
-<<<<<<< HEAD
         this.getOlLayerById = function(bodId) {
           var layer = layers[bodId];
           var olLayer;
@@ -188,9 +187,9 @@
               LAYERS: layer.serverLayerName,
               FORMAT: 'image/' + layer.format
             };
-
-            if (currentTime) {
-              wmsParams['TIME'] = currentTime;
+      
+            if (angular.isDefined(time)) {
+              wmsParams['TIME'] = time || layer.timestamps[0];
             }
             if (layer.singleTile === true) {
               if (!olSource) {
