@@ -1,7 +1,7 @@
 <%inherit file="base.mako"/>
 
 <%def name="table_body(c, lang)">
-<% c[stable_id] = True %>
+<% c['stable_id'] = True %>
     <tr><td width="200">${_('tt_ch_bav_kataster_belasteter_standorte_oev_standortnummer')}</td>                     <td>${c['attributes']['nummer'] or '-'}</td></tr>
     <tr><td width="200" valign="top">${_('tt_ch_bav_kataster_belasteter_standorte_oev_standortname')}</td>          <td>${c['attributes']['bezeichnung']}</td></tr>
     <tr><td width="200" valign="top">${_('tt_ch_bav_kataster_belasteter_standorte_oev_standorttyp')}</td>           <td>${c['attributes']['typ_bez'] or '-'}</td></tr>
