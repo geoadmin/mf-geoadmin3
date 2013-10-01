@@ -104,6 +104,8 @@ input[type=text][readonly] {
   }
   select {
     width: auto;
+    padding-left: .3em;
+    padding-right: .3em;
   }
   @media (max-width: @screen-phone) {
     background: #fff;
@@ -115,18 +117,17 @@ input[type=text][readonly] {
   float: left;
   left: 1.6em;
   position: relative;
-  @media (max-width: @screen-tablet) and (min-width: (@screen-phone + 1)) {
+  margin-top: 29px;
+  @media (max-width: @screen-tablet) {
+    margin-top: 0;
     width: 260px;
     top: .7em;
     left: 44px;
     position: absolute;
   }
   @media (max-width: @screen-phone) {
-    left: 44px;
     right: 50px;
     width: auto;
-    position: absolute;
-    top: .7em;
   }
 }
 .search-focused #search-container {
@@ -168,7 +169,7 @@ input[type=text][readonly] {
 
 #toptools {
   position: absolute;
-  top: 0.4em;
+  top: 0.2em;
   right: 2em;
   & > div {
     display: inline-block;
@@ -176,7 +177,7 @@ input[type=text][readonly] {
   select {
     height: 20px;
     line-height: 20px;
-    padding: 0 .3em;
+    padding: 1px .3em;
   }
   a {
     font-size: 80%;
