@@ -7,7 +7,7 @@
   ]);
 
   module.directive('gaMap',
-      function($parse, $timeout, gaPermalink) {
+      function($parse, $timeout, gaPermalink, gaBrowserSniffer) {
           return {
             restrict: 'A',
             scope: {
@@ -62,7 +62,9 @@
               view.on('change', updatePermalink);
               updatePermalink();
 
-              map.addControl(new ol.control.ZoomSlider());
+              if (gaBrowserSniffer.touch === false) {
+                map.addControl(new ol.control.ZoomSlider());
+              }
               map.addControl(new ol.control.ZoomToExtent());
 
               map.setTarget(element[0]);
