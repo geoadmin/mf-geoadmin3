@@ -63,6 +63,10 @@
               this.setOpacity(+val);
             }
           },
+          background: {
+            writable: true,
+            value: false
+          },
           preview: {
             writable: true,
             value: false
