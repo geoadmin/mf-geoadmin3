@@ -24,6 +24,21 @@ class AM_G(Base, Vector):
 
 register('ch.bafu.bundesinventare-amphibien_wanderobjekte', AM_G)
 
+class AM_L(Base, Vector):
+    # view in a schema
+    __tablename__ = 'am_l'
+    __table_args__ = ({'schema': 'bundinv', 'autoload': False})
+    __esriId__ = 2001
+    __bodId__ = 'ch.bafu.bundesinventare-amphibien'
+    __template__ = 'templates/htmlpopup/am_l.mako'
+    id = Column('am_l_obj', Text, primary_key=True)
+    am_l_name = Column('am_l_name', Text)
+    am_l_fl = Column('am_l_fl', Text)
+    am_l_berei = Column('am_l_berei', Text)
+    am_l_gf = Column('am_l_gf', Text)
+    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+
+register('ch.bafu.bundesinventare-amphibien', AM_L)
 
 class BLN(Base, Vector):
     # view in a schema
