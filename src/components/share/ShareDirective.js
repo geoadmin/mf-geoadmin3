@@ -24,6 +24,19 @@
               $('.share-icon').tooltip({
                 placement: 'bottom'
               });
+              $('.share-permalink input').on({
+                focus: function() {
+                  this.setSelectionRange(0, 9999);
+                },
+                mouseup: function(e) {
+                  // prevent unselection on blur
+                  e.preventDefault();
+                },
+                touchend: function(e) {
+                  // prevent unselection on blur
+                  e.preventDefault();
+                }
+              });
               // Store in the scope the permalink value which is bound to
               // the input field
               scope.permalinkValue = gaPermalink.getHref();
