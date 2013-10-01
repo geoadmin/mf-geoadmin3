@@ -11,6 +11,7 @@ dbs = ['bod', 'bafu', 'uvek', 'search', 'stopo', 'evd', 'edi', 'are', 'dritte', 
 engines = {}
 bases = {}
 bodmap = {}
+oerebmap = {}
 esrimap = {}
 
 for db in dbs:
@@ -37,9 +38,21 @@ def register(name, klass):
         esrimap[klass.__esriId__] = name
 
 
-def models_from_bodid(bodid):
-    if bodid in bodmap:
-        return bodmap[bodid]
+def register_oereb(name, klass):
+    name = unicode(name)
+    oerebmap.setdefault(name, []).append(klass)
+
+
+def models_from_bodid(bodId):
+    if bodId in bodmap:
+        return bodmap[bodId]
+    else:
+        return None
+
+
+def oereb_models_from_bodid(bodId):
+    if bodId in oerebmap:
+        return oerebmap[bodId]
     else:
         return None
 
