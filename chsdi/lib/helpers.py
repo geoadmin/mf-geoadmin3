@@ -3,7 +3,7 @@
 from pyramid.threadlocal import get_current_registry
 from pyramid.i18n import get_locale_name
 import unicodedata
-
+from urllib import quote
 
 def versioned(path):
     version = get_current_registry().settings['app_version']
@@ -45,3 +45,6 @@ def remove_accents(input_str):
     input_str = input_str.replace('(', '')
     input_str = input_str.replace(')', '')
     return ''.join(c for c in unicodedata.normalize('NFD', input_str) if unicodedata.category(c) != 'Mn')
+
+def quoting(text):
+    return quote(text.encode('utf-8'))
