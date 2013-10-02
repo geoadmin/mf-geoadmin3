@@ -1,24 +1,22 @@
 <div class="tabbable"> <!-- Only required for left/right tabs -->
 
   <ul class="nav nav-tabs">
-    <li ng-if="!isIE9" class="active">
-      <a href="#import-kml-tab1" data-toggle="tab" ng-click="clearUserOutput()">Local</a>
+    <li ng-if="!isIE9" ng-class="getTabClass(1)">
+      <a ng-click="activeTab(1)">Local</a>
     </li>
-    <li class="{{(isIE9) ? 'active' : ''}}">
-      <a href="#import-kml-tab2" data-toggle="tab"  ng-click="clearUserOutput()">URL</a>
+    <li ng-class="getTabClass(2)">
+      <a ng-click="activeTab(2)">URL</a>
     </li>
   </ul>
 
-  <a href="" class="validate-kml-file" ng-show="(file != null || fileUrl != null)">
-    {{'link_validate_kml' | translate}}
-  </a>
+  <a href="" class="validate-kml-file" ng-show="(file != null || fileUrl != null)" translate>link_validate_kml</a>
 
   <div class="tab-content">
 
     <!-- TO FIX: can't use ng-if here because the HTML content is added after the
     execution of the "link" function of the directive and so the dynamic
     js events are not added -->
-    <div ng-show="!isIE9" class="tab-pane {{(isIE9) ? '' : 'active'}}" id="import-kml-tab1">
+    <div ng-hide="isIE9" class="tab-pane"  ng-class="getTabClass(1)">
 
       <!-- Upload from a basic upload (the input file is hidden by default)-->
       <form name="import-kml-file" id="imp" method="POST" target="_BLANK"
@@ -35,20 +33,20 @@
           value="{{(file.name) ? file.name + ', ' + file.size/1000 + ' ko' : ''}}"
           placeholder="{{'no_file' | translate}}"/>
         <span class="input-group-btn">
-          <button type="button" class="btn btn-default">{{'browse' | translate}}</button>
+          <button type="button" class="btn btn-default browse" translate>browse</button>
         </span>
       </form>
 
     </div>
 
-    <div class="tab-pane {{(isIE9) ? 'active' : ''}}" id="import-kml-tab2">
+    <div class="tab-pane" ng-class="getTabClass(2)">
 
       <!-- Upload from an URL -->
       <form name="import-kml-url" method="POST" target="_BLANK"
         action="{{options.validationServiceUrl}}">
 
         <input type="url" name="url" placeholder="{{'paste_url' | translate}}"
-          ng-model="fileUrl"  ng-change="handleFileUrl()" class="form-control input-sm"/>
+          ng-model="fileUrl" class="form-control input-sm"/>
 
         <!-- Use for validation -->
         <input type="hidden" name="type" value="uri"/>
@@ -60,18 +58,17 @@
 </div>
 
 <div class="tabbable-footer" >
-
+  <button type="button" class="btn btn-default load" ng-click="loadKML()" translate>load_kml</button>
   <!-- TODO: Display information about the uploaded file and the upload process -->
   <div class="upload-result">
     <div class="upload-abort icon-remove-sign" ng-click="cancel()"
-      ng-hide="(progress <= 0 || progress >= 100)" ></div>{{userMessage}}
-    <div ng-if="!isIE" class="progress progress-striped {{(progress < 100 ) ? 'active' : ''}}"
-      ng-show="(progress > 0)">
+      ng-show="(0 < progress && progress < 100)" ></div>{{userMessage}}
+    <div ng-if="!isIE" class="progress progress-striped active"
+      ng-show="(0 < progress && progress < 100)">
       <!-- TO FIX: issue ie9-10:  https://github.com/angular/angular.js/issues/2186 -->
-      <div class="progress-bar" style="width:{{progress}}%;"></div>
+      <div class="progress-bar" style="width:100%;"></div>
     </div>
   </div>
-
   <!-- Use for debug purpose / Display the content of the file if upload succeed -->
   <!--textarea class="file-uploaded" > {{fileContent}} </textarea-->
 
