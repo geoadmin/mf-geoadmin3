@@ -17,8 +17,8 @@
   ]);
 
   module.directive('gaSearch',
-      function($compile, $translate, gaLayers, gaLayerMetadataPopup,
-        gaPermalink, gaUrlUtils, gaGetCoordinate) {
+      function($compile, $translate, $timeout, gaLayers, gaLayerMetadataPopup,
+        gaPermalink, gaUrlUtils, gaGetCoordinate, gaBrowserSniffer) {
           var currentTopic,
               footer = [
             '<div class="search-footer">',
@@ -332,6 +332,12 @@
               taElt.on('search', function(e) {
                 taElt.trigger('blur');
               });
+
+              if (!gaBrowserSniffer.mobile) {
+                $timeout(function() {
+                  taElt.focus();
+                });
+              }
             }
           };
         });
