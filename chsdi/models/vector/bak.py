@@ -45,7 +45,7 @@ class UNESCO(Base, Vector):
     id = Column('bgdi_id', Integer, primary_key=True)
     bgdi_name = Column('bgdi_name', Text)
     bgdi_surface = Column('bgdi_surface', Text)
-    the_geom = Column(Geometry)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bak.schutzgebiete-unesco_weltkulturerbe', UNESCO)
 
