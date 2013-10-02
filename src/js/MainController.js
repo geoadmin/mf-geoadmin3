@@ -132,7 +132,7 @@ module.controller('GaMainController',
 
       $timeout(function() {
         $scope.globals.homescreen = gaBrowserSniffer.ios &&
-          !gaBrowserSniffer.ios_chrome &&
+          !gaBrowserSniffer.iosChrome &&
           !($window.localStorage.getItem('homescreen') == dismiss) &&
           !$window.navigator.standalone;
         $scope.$watch('globals.homescreen', function(newVal) {
