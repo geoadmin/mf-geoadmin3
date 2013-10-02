@@ -40,14 +40,14 @@
         },
 
         /**
-         * Search for a layer identified by layerId in the map and
+         * Search for an overlay identified by bodId in the map and
          * return it. undefined is returned if the map does not have
-         * this layer.
+         * such a layer.
          */
-        getMapLayer: function(map, layerId) {
+        getMapOverlayForBodId: function(map, bodId) {
           var layer;
           map.getLayers().forEach(function(l) {
-            if (l.get('id') == layerId) {
+            if (l.get('id') == bodId && !l.background) {
               layer = l;
             }
           });
