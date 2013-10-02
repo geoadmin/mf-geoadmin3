@@ -431,6 +431,16 @@ a .ga-icon-separator {
     height: 40px;
     line-height: 40px;
   }
+  a i {
+    .transition(all .20s ease);
+    display: inline-block;
+    text-decoration: none;
+  }
+  &.open {
+    .icon-chevron-sign-right {
+      .rotate(180deg);
+    }
+  }
 }
 .dropdown-menu {
   top: 0;
