@@ -29,7 +29,8 @@
       // Format the text of the current year (only used by slider)
       $scope.formatYear = function(value) {
         if (parseInt(value) >= $scope.maxYear) {
-          value = (gaBrowserSniffer.mobile) ? 'last_available_year' : '';
+          value = (gaBrowserSniffer.mobile) ?
+              $translate('last_available_year') : '';
         }
         if (value === 'slider_last_title') {
           value = $translate('last_available_year');
