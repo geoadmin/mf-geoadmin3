@@ -149,13 +149,10 @@
         this.getOlLayerById = function(id) {
           var layer = layers[id];
           var olLayer;
+          var olSource = layer.olSource;
           if (layer.type == 'wmts') {
-            olLayer = new ol.layer.Tile({
-              id: id,
-              minResolution: layer.minResolution,
-              maxResolution: layer.maxResolution,
-              opacity: layer.opacity,
-              source: new ol.source.WMTS({
+            if (!olSource) {
+              olSource = layer.olSource = new ol.source.WMTS({
                 attributions: [
                   getAttribution('<a href="' +
                     layer.attributionUrl +
@@ -170,17 +167,20 @@
                 tileGrid: gaTileGrid.get(layer.resolutions),
                 url: getWmtsGetTileUrl(layer.serverLayerName,
                   layer.format)
-              })
+              });
+            }
+            olLayer = new ol.layer.Tile({
+              id: id,
+              minResolution: layer.minResolution,
+              maxResolution: layer.maxResolution,
+              opacity: layer.opacity,
+              source: olSource
             });
           } else if (layer.type == 'wms') {
             //TODO: add support for layer.timeEnabled?
             if (layer.singleTile === true) {
-              olLayer = new ol.layer.Image({
-                id: id,
-                minResolution: layer.minResolution,
-                maxResolution: layer.maxResolution,
-                opacity: layer.opacity,
-                source: new ol.source.ImageWMS({
+              if (!olSource) {
+                olSource = layer.olSource = new ol.source.ImageWMS({
                   url: gaUrlUtils.remove(
                       layer.wmsUrl, ['request', 'service', 'version'], true),
                   params: {
@@ -191,15 +191,18 @@
                     getAttribution(layer.attribution)
                   ],
                   ratio: 1
-                })
-              });
-            } else {
-              olLayer = new ol.layer.Tile({
+                });
+              }
+              olLayer = new ol.layer.Image({
                 id: id,
                 minResolution: layer.minResolution,
                 maxResolution: layer.maxResolution,
                 opacity: layer.opacity,
-                source: new ol.source.TileWMS({
+                source: olSource
+              });
+            } else {
+              if (!olSource) {
+                olSource = layer.olSource = new ol.source.TileWMS({
                   url: gaUrlUtils.remove(
                       layer.wmsUrl, ['request', 'service', 'version'], true),
                   params: {
@@ -209,7 +212,14 @@
                   attributions: [
                     getAttribution(layer.attribution)
                   ]
-                })
+                });
+              }
+              olLayer = new ol.layer.Tile({
+                id: id,
+                minResolution: layer.minResolution,
+                maxResolution: layer.maxResolution,
+                opacity: layer.opacity,
+                source: olSource
               });
             }
           } else if (layer.type == 'aggregate') {
