@@ -59,7 +59,7 @@
             }
 
             function layerFilter(layer) {
-              return !layer.background && !layer.preview;
+              return !layer.background;
             }
 
             function removeAllLayers(map) {
