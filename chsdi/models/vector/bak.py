@@ -10,6 +10,7 @@ from chsdi.models.vector import Vector
 
 Base = bases['bak']
 
+
 class ISOS(Base, Vector):
     # view in a schema
     __tablename__ = 'isos'
@@ -35,6 +36,7 @@ class ISOS(Base, Vector):
 
 register('ch.bak.bundesinventar-schuetzenswerte-ortsbilder', ISOS)
 
+
 class UNESCO(Base, Vector):
     # view in a schema
     __tablename__ = 'unesco'
@@ -45,7 +47,6 @@ class UNESCO(Base, Vector):
     id = Column('bgdi_id', Integer, primary_key=True)
     bgdi_name = Column('bgdi_name', Text)
     bgdi_surface = Column('bgdi_surface', Text)
-    the_geom = Column(Geometry)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bak.schutzgebiete-unesco_weltkulturerbe', UNESCO)
-

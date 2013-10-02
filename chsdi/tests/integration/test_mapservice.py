@@ -156,7 +156,6 @@ class TestMapServiceView(TestsBase):
         self.failUnless('ch.swisstopo.pixelkarte-farbe' in resp.json['layers'])
         self.failUnless('attribution' in resp.json['layers']['ch.swisstopo.pixelkarte-farbe'])
         self.failUnless('label' in resp.json['layers']['ch.swisstopo.pixelkarte-farbe'])
-        self.failUnless('timestamps' in resp.json['layers']['ch.swisstopo.pixelkarte-farbe'])
         self.failUnless('background' in resp.json['layers']['ch.swisstopo.pixelkarte-farbe'])
 
     def test_layersconfig_valid_topic_all(self):
@@ -165,7 +164,6 @@ class TestMapServiceView(TestsBase):
         self.failUnless('ch.swisstopo.pixelkarte-farbe' in resp.json['layers'])
         self.failUnless('attribution' in resp.json['layers']['ch.swisstopo.pixelkarte-farbe'])
         self.failUnless('label' in resp.json['layers']['ch.swisstopo.pixelkarte-farbe'])
-        self.failUnless('timestamps' in resp.json['layers']['ch.swisstopo.pixelkarte-farbe'])
         self.failUnless('background' in resp.json['layers']['ch.swisstopo.pixelkarte-farbe'])
 
     def test_layersconfig_with_callback(self):

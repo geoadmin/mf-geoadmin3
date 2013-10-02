@@ -11,7 +11,6 @@ Base = bases['zeitreihen']
 
 
 class Zeitreihen_15(Base, Vector):
-# view in a schema
     __tablename__ = 'tooltip_15'
     __table_args__ = ({'schema': 'public', 'autoload': False})
     __template__ = 'tooltips/zeitreihen.mako'
@@ -23,7 +22,7 @@ class Zeitreihen_15(Base, Vector):
     kbnum = Column('kbnum', Text)
     release_year = Column('release_year', Text)
     bv_nummer = Column('bv_nummer', Text)
-    the_geom = Column('the_geom', Geometry)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     the_time = 'years'
     the_time_operator = '=='
     the_time_timestamp_format = '%Y%m%d'
@@ -33,7 +32,6 @@ class Zeitreihen_15(Base, Vector):
 
 
 class Zeitreihen_20(Base, Vector):
-# view in a schema
     __tablename__ = 'tooltip_20'
     __table_args__ = ({'schema': 'public', 'autoload': False})
     __template__ = 'tooltips/zeitreihen.mako'
@@ -45,7 +43,7 @@ class Zeitreihen_20(Base, Vector):
     kbnum = Column('kbnum', Text)
     release_year = Column('release_year', Text)
     bv_nummer = Column('bv_nummer', Text)
-    the_geom = Column('the_geom', Geometry)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     the_time = 'years'
     the_time_operator = '=='
     the_time_timestamp_format = '%Y%m%d'
@@ -55,7 +53,6 @@ class Zeitreihen_20(Base, Vector):
 
 
 class Zeitreihen_21(Base, Vector):
-# view in a schema
     __tablename__ = 'tooltip_21'
     __table_args__ = ({'schema': 'public', 'autoload': False})
     __template__ = 'tooltips/zeitreihen.mako'
@@ -67,7 +64,7 @@ class Zeitreihen_21(Base, Vector):
     kbnum = Column('kbnum', Text)
     release_year = Column('release_year', Text)
     bv_nummer = Column('bv_nummer', Text)
-    the_geom = Column('the_geom', Geometry)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     the_time = 'years'
     the_time_operator = '=='
     the_time_timestamp_format = '%Y%m%d'
@@ -77,7 +74,6 @@ class Zeitreihen_21(Base, Vector):
 
 
 class Zeitreihen_22(Base, Vector):
-# view in a schema
     __tablename__ = 'tooltip_22'
     __table_args__ = ({'schema': 'public', 'autoload': False})
     __template__ = 'tooltips/zeitreihen.mako'
@@ -89,7 +85,7 @@ class Zeitreihen_22(Base, Vector):
     kbnum = Column('kbnum', Text)
     release_year = Column('release_year', Text)
     bv_nummer = Column('bv_nummer', Text)
-    the_geom = Column('the_geom', Geometry)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     the_time = 'years'
     the_time_operator = '=='
     the_time_timestamp_format = '%Y%m%d'
@@ -104,12 +100,11 @@ register('ch.swisstopo.zeitreihen', Zeitreihen_22)
 
 
 class Zeitreihen_Metadata_15(Base, Vector):
-# view in a schema
     __tablename__ = 'meta_15'
     __table_args__ = ({'schema': 'public', 'autoload': True})
     __esriId__ = 1000
     id = Column('gid', Integer, primary_key=True)
-    the_geom = Column('the_geom', Geometry)
+    GeometryColumn(Geometry(dimension=2, srid=21781))
 
     @classmethod
     def within_filter(cls, lon, lat, column, tolerance=0):
@@ -120,12 +115,11 @@ class Zeitreihen_Metadata_15(Base, Vector):
 
 
 class Zeitreihen_Metadata_20(Base, Vector):
-    # view in a schema
     __tablename__ = 'meta_20'
     __table_args__ = ({'schema': 'public', 'autoload': True})
 
     id = Column('gid', Integer, primary_key=True)
-    the_geom = Column('the_geom', Geometry)
+    GeometryColumn(Geometry(dimension=2, srid=21781))
 
     @classmethod
     def within_filter(cls, lon, lat, column, tolerance=0):
@@ -136,12 +130,11 @@ class Zeitreihen_Metadata_20(Base, Vector):
 
 
 class Zeitreihen_Metadata_21(Base, Vector):
-    # view in a schema
     __tablename__ = 'meta_21'
     __table_args__ = ({'schema': 'public', 'autoload': True})
 
     id = Column('gid', Integer, primary_key=True)
-    the_geom = Column('the_geom', Geometry)
+    GeometryColumn(Geometry(dimension=2, srid=21781))
 
     @classmethod
     def within_filter(cls, lon, lat, column, tolerance=0):
@@ -157,7 +150,7 @@ class Zeitreihen_Metadata_22(Base, Vector):
     __table_args__ = ({'schema': 'public', 'autoload': True})
 
     id = Column('gid', Integer, primary_key=True)
-    the_geom = Column('the_geom', Geometry)
+    GeometryColumn(Geometry(dimension=2, srid=21781))
 
     @classmethod
     def within_filter(cls, lon, lat, column, tolerance=0):

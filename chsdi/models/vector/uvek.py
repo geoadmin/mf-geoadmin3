@@ -72,6 +72,7 @@ class KANTONE_REG_LOC(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     ivs_slaname = Column('ivs_slaname', Text)
     ivs_nummer = Column('ivs_nummer', Text)
+    ivs_signatur = Column('ivs_signatur', Text)
     ivs_signatur_fr = Column('ivs_signatur_fr', Text)
     ivs_signatur_it = Column('ivs_signatur_it', Text)
     ivs_signatur_de = Column('ivs_signatur_de', Text)
@@ -191,7 +192,7 @@ class ENERGIEFORSCHUNG(Base, Vector):
     projektstatus_en = Column('projektstatus_en', Text)
     schlussbericht = Column('schlussbericht', Text)
     kontaktperson_bfe = Column('kontaktperson_bfe', Text)
-    the_geom = Column(Geometry(21781))
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bfe.energieforschung', ENERGIEFORSCHUNG)
 
@@ -378,7 +379,7 @@ class ProjFlughafenanlagen(Base, Vector):
 register('ch.bazl.projektierungszonen-flughafenanlagen', ProjFlughafenanlagen)
 
 
-class Luftfahrthindernis(Base, Vector): 
+class Luftfahrthindernis(Base, Vector):
     __tablename__ = 'luftfahrthindernis'
     __table_args__ = ({'schema': 'bazl', 'autoload': False})
     __template__ = 'templates/htmlpopup/luftfahrthindernisse.mako'
