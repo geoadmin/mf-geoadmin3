@@ -9,8 +9,18 @@
     width: 100%;
   }
 
-  .tabbable-footer {
-    margin: 5px 0px;
+  .browse {
+    width: 100%;
+  } 
+  
+  .load {
+    height: 30px;
+    width: 100%;
+    font-size: 12px;
+  }
+  
+  .tab-content, .upload-result, .tabbable-footer, .progress {
+    margin: 5px 0px 0px 0px;
   }
 
   .validate-kml-file {
@@ -19,8 +29,23 @@
     top: 10px;
   }
 
-  .upload-abort {
+  .upload-abort, .nav-tabs li {
     cursor: pointer;
+  }
+  
+  .nav-tabs {
+    
+    .active {
+      cursor: default;
+    }
+
+    a {
+      text-decoration: none;
+    }
+  }
+  
+  .upload-abort {
+    margin-right: 5px;
   }
 
   .import-kml-fake-file {
