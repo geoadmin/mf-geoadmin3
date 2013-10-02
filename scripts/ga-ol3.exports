@@ -3,3 +3,4 @@
 @exportProperty ol.proj.Projection.prototype.getUnits
 @exportSymbol ol.style.getDefault
 @exportSymbol ol.style.setDefault
+@exportSymbol ol.extent.createEmpty
