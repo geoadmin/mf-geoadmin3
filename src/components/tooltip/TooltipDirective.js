@@ -152,7 +152,8 @@
               map.getLayers().forEach(function(l) {
                   var id = l.get('id');
                   if (gaLayers.getLayer(id) &&
-                      gaLayers.getLayerProperty(id, 'queryable')) {
+                      gaLayers.getLayerProperty(id, 'queryable') &&
+                      l.visible) {
                     if (layerstring.length) {
                       layerstring = layerstring + ',';
                     }
