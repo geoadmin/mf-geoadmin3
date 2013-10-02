@@ -31,27 +31,29 @@
             $scope.updatePrintConfig();
         });
 
-
         $scope.encodeLayer = function(layer, proj) {
-            var src = layer.getSource();
-            var ext = proj.getExtent();
 
             var encLayer, encLegend;
-            var layerConfig = gaLayers.getLayer(layer.get('id'));
+            var ext = proj.getExtent();
 
-            if (src.constructor === ol.source.WMTS) {
-               encLayer = $scope.encoders.layers['WMTS'].call(this,
-                   layer, layerConfig);
-            } else if (src.constructor === ol.source.ImageWMS) {
-               encLayer = $scope.encoders.layers['WMS'].call(this,
-                   layer, layerConfig);
-            } else if (layer.constructor === ol.layer.Vector) {
-               var features = layer.getFeaturesObjectForExtent(ext, proj);
+            if (layer.constructor != ol.layer.Group) {
+                var src = layer.getSource();
+                var layerConfig = gaLayers.getLayer(layer.get('id'));
 
-               if (features) {
-                   encLayer = $scope.encoders.layers['Vector'].call(this,
-                       layer, features);
-               }
+                if (src.constructor === ol.source.WMTS) {
+                   encLayer = $scope.encoders.layers['WMTS'].call(this,
+                       layer, layerConfig);
+                } else if (src.constructor === ol.source.ImageWMS) {
+                   encLayer = $scope.encoders.layers['WMS'].call(this,
+                       layer, layerConfig);
+                } else if (layer.constructor === ol.layer.Vector) {
+                   var features = layer.getFeaturesObjectForExtent(ext, proj);
+
+                   if (features) {
+                       encLayer = $scope.encoders.layers['Vector'].call(this,
+                           layer, features);
+                   }
+                }
             }
 
             if ($scope.options.legend && layerConfig.haslegend) {
@@ -72,6 +74,15 @@
                     };
 
                     return enc;
+                },
+                'Group': function(layer, proj) {
+                    var encs = [];
+                    var subLayers = layer.getLayers();
+                    subLayers.forEach(function(subLayer, idx, arr) {
+                         enc = $scope.encodeLayer(subLayer, proj);
+                         encs.push(enc.layer);
+                    });
+                    return encs;
                 },
                 'Vector': function(layer, features) {
                     var enc = $scope.encoders.
@@ -169,6 +180,7 @@
                       angular.extend(enc, {
                           type: 'WMTS',
                           baseURL: 'http://wmts.geo.admin.ch',
+                          layer: config.serverLayerName,
                           maxExtent: [420000, 30000, 900000, 350000],
                           tileOrigin: [420000, 350000],
                           tileSize: [256, 256],
@@ -272,11 +284,20 @@
 
             var layers = this.map.getLayers();
             angular.forEach(layers, function(layer) {
-                var enc = $scope.encodeLayer(layer, proj);
-                encLayers.push(enc.layer);
-                if (enc.legend) {
-                    encLegends = encLegends || [];
-                    encLegends.push(enc.legend);
+
+                if (layer.constructor === ol.layer.Group) {
+                    var encs = $scope.encoders.layers['Group'].call(this,
+                       layer, proj);
+                    $.extend(encLayers, encs);
+                } else {
+                    var enc = $scope.encodeLayer(layer, proj);
+                    if (enc) {
+                        encLayers.push(enc.layer);
+                        if (enc.legend) {
+                            encLegends = encLegends || [];
+                            encLegends.push(enc.legend);
+                        }
+                    }
                 }
             });
             // scale = resolution * inches per map unit (m) * dpi
@@ -287,7 +308,7 @@
             var spec = {
                 layout: this.layout.name,
                 srs: proj.getCode(),
-                units: proj.getUnits,
+                units: proj.getUnits() || 'm',
                 rotation: view.getRotation(),
                 app: $scope.topicId, //topic name
                 lang: $translate.uses(),
