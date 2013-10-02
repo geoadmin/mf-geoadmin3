@@ -43,6 +43,7 @@
                 for (var key in queryParams) {
                   if (gaLayers.getLayer(key)) {
                     var ids = queryParams[key].split(',');
+                    map.addLayer(gaLayers.getOlLayerById(key));
                     gaHighlightFeature.recenter(map, key, ids);
                     return;
                   }
