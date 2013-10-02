@@ -105,18 +105,16 @@
         };
 
         var getLayersConfigUrl = function(topic, lang) {
-          var url = layersConfigUrlTemplate
+          return layersConfigUrlTemplate
               .replace('{Topic}', topic)
               .replace('{Lang}', lang);
-          return gaUrlUtils.append(url, 'callback=JSON_CALLBACK');
         };
 
         var getMetaDataUrl = function(topic, layer, lang) {
-          var url = legendUrlTemplate
+          return legendUrlTemplate
               .replace('{Topic}', topic)
               .replace('{Layer}', layer)
               .replace('{Lang}', lang);
-          return gaUrlUtils.append(url, 'callback=JSON_CALLBACK');
         };
 
         /**
@@ -125,7 +123,7 @@
         var loadForTopic = this.loadForTopic = function(topicId, lang) {
           var url = getLayersConfigUrl(topicId, lang);
 
-          var promise = $http.jsonp(url).then(function(response) {
+          var promise = $http.get(url).then(function(response) {
             layers = response.data.layers;
           }, function(response) {
             layers = undefined;
@@ -260,7 +258,7 @@
          */
         this.getMetaDataOfLayer = function(id) {
           var url = getMetaDataUrl(currentTopic.id, id, $translate.uses());
-          return $http.jsonp(url);
+          return $http.get(url);
         };
 
         $rootScope.$on('gaTopicChange', function(event, topic) {
@@ -278,7 +276,6 @@
             });
           }
         });
-
       };
 
       return new Layers(this.wmtsGetTileUrlTemplate,

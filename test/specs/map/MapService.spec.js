@@ -3,14 +3,13 @@ describe('ga_map_service', function() {
   describe('gaLayers', function() {
     var layers, $httpBackend;
 
-    var expectedUrl = 'http://example.com/sometopic?' +
-        'lang=somelang&callback=JSON_CALLBACK';
+    var expectedUrl = 'http://example.com/sometopic?lang=somelang';
 
     beforeEach(function() {
 
       inject(function($injector) {
         $httpBackend = $injector.get('$httpBackend');
-        $httpBackend.whenJSONP(expectedUrl).respond({
+        $httpBackend.whenGET(expectedUrl).respond({
           layers: {
             foo: {
               type: 'wmts',
@@ -29,7 +28,7 @@ describe('ga_map_service', function() {
       inject(function($injector, $translate, $rootScope) {
         layers = $injector.get('gaLayers');
 
-        $httpBackend.expectJSONP(expectedUrl);
+        $httpBackend.expectGET(expectedUrl);
         $translate.uses('somelang');
         $rootScope.$broadcast('gaTopicChange',
           {id: 'sometopic', backgroundLayers: ['bar']});
