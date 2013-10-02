@@ -788,12 +788,12 @@ ul.panel-body-wide {
 #loader {
   display: none;
   @media (max-width: @screen-tablet) {
-    .transition(top .20s ease);
+    .transition(opacity .20s ease);
     display: block;
     content: "\f021";
     font-family: FontAwesome;
     position: absolute;
-    top: -44px;
+    top: 2px;
     left: 0;
     font-size: 26px;
     color: red;
@@ -804,6 +804,7 @@ ul.panel-body-wide {
     z-index: 5000;
     text-align: center;
     border-radius: 44px;
+    opacity: 0;
   }
   @media (max-width: @screen-phone) {
     width: 32px;
@@ -811,16 +812,14 @@ ul.panel-body-wide {
     line-height: 32px;
     font-size: 20px;
     left: 6px;
+    top: 8px;
   }
 }
 
 .ga-tooltip-wait, .metadata-popup-wait {
   #loader {
     @media (max-width: @screen-tablet) {
-      top: 2px;
-    }
-    @media (max-width: @screen-phone) {
-      top: 8px;
+      opacity: 1;
     }
   }
 }
