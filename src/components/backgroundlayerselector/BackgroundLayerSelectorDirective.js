@@ -71,7 +71,7 @@
                 if (!currentLayer && !data.labelsOnly) {
                   currentLayer = backgroundLayers[0].id;
                 }
-                if (angular.isDefined(currentLayer)) {
+                if (currentLayer) {
                   scope.currentLayer = currentLayer;
                 }
               });
