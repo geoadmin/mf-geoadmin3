@@ -148,19 +148,17 @@
             }
 
             function getLayersToQuery(layers) {
-              var layerstring = '';
+              var layersToQuery = [];
               map.getLayers().forEach(function(l) {
-                  var id = l.get('id');
-                  if (gaLayers.getLayer(id) &&
-                      gaLayers.getLayerProperty(id, 'queryable') &&
-                      l.visible) {
-                    if (layerstring.length) {
-                      layerstring = layerstring + ',';
-                    }
-                    layerstring = layerstring + id;
-                  }
+                var id = l.get('id');
+                if (gaLayers.getLayer(id) &&
+                    gaLayers.getLayerProperty(id, 'queryable') &&
+                    l.visible &&
+                    layersToQuery.indexOf(id) < 0) {
+                  layersToQuery.push(id);
+                }
               });
-              return layerstring;
+              return layersToQuery.join(',');
             }
           }
         };
