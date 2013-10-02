@@ -3,7 +3,7 @@
 <%inherit file="base.mako"/>
 
 <%def name="table_body(c, lang)">
-<% c[stable_id] = True %>
+<% c['stable_id'] = True %>
     <tr><td width="150">${_('nummer')}</td>             <td>${c['featureId']}</td></tr>
 	<tr><td width="150">${_('zaehlstelle')}</td>        <td>${c['attributes']['zaehlstellen_bezeichnung']}</td></tr>
     <tr><td width="150">${_('physischvirtuell')}</td>   <td>${c['attributes']['zst_physisch_virtuell'] or '-'}</td></tr>
