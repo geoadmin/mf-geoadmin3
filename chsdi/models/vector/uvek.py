@@ -192,7 +192,7 @@ class ENERGIEFORSCHUNG(Base, Vector):
     projektstatus_en = Column('projektstatus_en', Text)
     schlussbericht = Column('schlussbericht', Text)
     kontaktperson_bfe = Column('kontaktperson_bfe', Text)
-    the_geom = Column(Geometry(21781))
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bfe.energieforschung', ENERGIEFORSCHUNG)
 
