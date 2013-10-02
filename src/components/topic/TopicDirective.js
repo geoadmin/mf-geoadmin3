@@ -58,17 +58,14 @@
               return res;
             }
 
-            function layerFilter(layer) {
-              return !layer.background;
-            }
-
-            function removeAllLayers(map) {
+            function removeOverlays() {
+              var i, layer;
+              var map = scope.map;
               var layers = map.getLayers().getArray();
-              for (var i = 0; i < layers.length; i++) {
-                var layer = layers[i];
-                if (layerFilter(layer)) {
+              for (i = layers.length - 1; i >= 0; --i) {
+                layer = layers[i];
+                if (!layer.background) {
                   map.removeLayer(layer);
-                  i -= 1;
                 }
               }
             }
@@ -99,7 +96,11 @@
                 for (i = 0; i < len; i++) {
                   var topic = scope.topics[i];
                   if (topic.id == newVal) {
-                    removeAllLayers(scope.map);
+                    // We remove the overlays only as the new topic's default
+                    // background layer may be the same as the current
+                    // background layer.
+                    removeOverlays();
+
                     gaPermalink.updateParams({topic: newVal});
                     $rootScope.$broadcast('gaTopicChange', topic);
                     break;
