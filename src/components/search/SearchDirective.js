@@ -136,10 +136,8 @@
               var hasLayer = function(id) {
                 var res = false;
                 map.getLayers().forEach(function(layer) {
-                  if (angular.isDefined(layer.get('id'))) {
-                    if (id === layer.get('id')) {
-                      res = true;
-                    }
+                  if (!layer.background && layer.get('id') == id) {
+                    res = true;
                   }
                 });
                 return res;
