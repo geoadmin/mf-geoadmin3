@@ -2,8 +2,7 @@ describe('ga_catalogtree_directive', function() {
 
   var element, map, $httpBackend;
 
-  var expectedUrl = 'http://catalogservice.com/catalog/sometopic?' +
-      'callback=JSON_CALLBACK&lang=en';
+  var expectedUrl = 'http://catalogservice.com/catalog/sometopic?lang=en';
 
   beforeEach(function() {
     map = new ol.Map({});
@@ -28,7 +27,7 @@ describe('ga_catalogtree_directive', function() {
 
     inject(function($injector) {
       $httpBackend = $injector.get('$httpBackend');
-      $httpBackend.whenJSONP(expectedUrl).respond({
+      $httpBackend.whenGET(expectedUrl).respond({
         results: {
           root: {
             children: [{
@@ -73,12 +72,12 @@ describe('ga_catalogtree_directive', function() {
   });
 
   it('sends the catalog request', function() {
-    $httpBackend.expectJSONP(expectedUrl);
+    $httpBackend.expectGET(expectedUrl);
     $httpBackend.flush();
   });
 
   it('adds preselected layers', function() {
-    $httpBackend.expectJSONP(expectedUrl);
+    $httpBackend.expectGET(expectedUrl);
     $httpBackend.flush();
     var layers = map.getLayers();
     var numLayers = layers.getLength();
@@ -94,7 +93,7 @@ describe('ga_catalogtree_directive', function() {
     }));
 
     it('adds layers specified in permalink', function() {
-      $httpBackend.expectJSONP(expectedUrl);
+      $httpBackend.expectGET(expectedUrl);
       $httpBackend.flush();
       var layers = map.getLayers();
       var numLayers = layers.getLength();

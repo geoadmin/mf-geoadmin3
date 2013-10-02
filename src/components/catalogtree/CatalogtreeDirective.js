@@ -63,10 +63,9 @@
             var updateCatalogTree = function() {
               var url = scope.options.catalogUrlTemplate
                   .replace('{Topic}', currentTopic);
-              return $http.jsonp(url, {
+              return $http.get(url, {
                 params: {
-                  'lang': $translate.uses(),
-                  'callback': 'JSON_CALLBACK'
+                  'lang': $translate.uses()
                 }
               }).then(function success(response) {
                 var newTree = response.data.results.root;

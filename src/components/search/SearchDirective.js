@@ -161,8 +161,6 @@
                   remote: {
                     url: gaUrlUtils.append(options.serviceUrl,
                         'type=locations'),
-                    dataType: 'jsonp',
-                    cache: false,
                     beforeSend: function(jqXhr, settings) {
                        var position =
                          gaGetCoordinate(
@@ -217,8 +215,6 @@
                   },
                   remote: {
                     url: options.serviceUrl + 'type=layers',
-                    dataType: 'jsonp',
-                    cache: false,
                     beforeSend: function(jqXhr, settings) {
                       return !gaGetCoordinate(
                         map.getView().getProjection().getExtent(),
