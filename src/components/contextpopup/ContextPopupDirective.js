@@ -108,14 +108,14 @@
               map.on('contextmenu', handler);
 
               // On touch devices, display the context popup after a
-              // long press (750ms)
+              // long press (300ms)
               var startPixel, holdPromise;
               map.on('touchstart', function(event) {
                 $timeout.cancel(holdPromise);
                 startPixel = event.getPixel();
                 holdPromise = $timeout(function() {
                   handler(event);
-                }, 750, false);
+                }, 300, false);
               });
               map.on('touchend', function(event) {
                 $timeout.cancel(holdPromise);
@@ -126,7 +126,7 @@
                   var pixel = event.getPixel();
                   var deltaX = Math.abs(startPixel[0] - pixel[0]);
                   var deltaY = Math.abs(startPixel[1] - pixel[1]);
-                  if (deltaX + deltaY > 2) {
+                  if (deltaX + deltaY > 6) {
                     $timeout.cancel(holdPromise);
                     startPixel = undefined;
                   }
