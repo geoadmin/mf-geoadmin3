@@ -379,7 +379,7 @@ class ProjFlughafenanlagen(Base, Vector):
 register('ch.bazl.projektierungszonen-flughafenanlagen', ProjFlughafenanlagen)
 
 
-class Luftfahrthindernis(Base, Vector): 
+class Luftfahrthindernis(Base, Vector):
     __tablename__ = 'luftfahrthindernis'
     __table_args__ = ({'schema': 'bazl', 'autoload': False})
     __template__ = 'templates/htmlpopup/luftfahrthindernisse.mako'
