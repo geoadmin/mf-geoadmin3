@@ -5,6 +5,7 @@ from pyramid.view import view_config
 from chsdi.models.bod import Topics
 from sqlalchemy import or_
 
+
 @view_config(route_name='topics', renderer='jsonp')
 def topics(request):
     model = Topics
