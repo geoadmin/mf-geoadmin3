@@ -133,7 +133,13 @@
               if (!angular.isDefined(timeStr) || timeStr === null) {
                 layerTimeStr = timestamps[0];
               } else {
-                layerTimeStr = timeStr + '1231';
+                for (var i = 0, ii = timestamps.length; i < ii; i++) {
+                  var timestamp = yearFromString(timestamps[i]);
+                  if (timestamp === parseInt(timeStr)) {
+                    layerTimeStr = timestamps[i];
+                    break;
+                  }
+                }
               }
               src.updateDimensions({'Time' : layerTimeStr});
 
