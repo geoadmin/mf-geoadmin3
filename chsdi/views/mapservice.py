@@ -41,12 +41,13 @@ class MapService(MapServiceValidation):
     def layersconfig(self):
         layers = {}
         model = LayersConfig
+        _bool = True
         query = self.request.db.query(model)
         if self.mapName != 'all':
             # per default we want the include background layers
             query = query.filter(or_(
                 model.maps.ilike('%%%s%%' % self.mapName),
-                model.background is True
+                model.background == _bool
             ))
         query = self._geodata_staging_filter(query, model.staging)
         for q in query:
