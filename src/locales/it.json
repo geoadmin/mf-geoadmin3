@@ -34,7 +34,6 @@
 	"description": "Descrizione",
 	"description_instructions": "Descrizione dei layer WMS",
 	"desktop_redirect": "Link per versione desktop",
-	"desktop_redirect": "Link per versione desktop",
 	"drop_invalid_url": "URL non valido",
 	"drop_me_here": "Spostare file KML qui",
 	"ech": "Geocatalogo",

@@ -34,7 +34,6 @@
 	"description": "Description",
 	"description_instructions": "Description des couches WMS",
 	"desktop_redirect": "Lien vers version PC",
-	"desktop_redirect": "Lien vers version PC",
 	"drop_invalid_url": "URL non valide.",
 	"drop_me_here": "Déplacer le fichier KML ici",
 	"ech": "Géocatalogue",
