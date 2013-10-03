@@ -79,7 +79,10 @@
                     var encs = [];
                     var subLayers = layer.getLayers();
                     subLayers.forEach(function(subLayer, idx, arr) {
-                         var enc = $scope.encodeLayer(subLayer, proj);
+                         var enc = $scope.encoders.
+                            layers['Layer'].call(this, layer);
+                         var layerEnc = $scope.encodeLayer(subLayer, proj);
+                         $.extend(enc, layerEnc);
                          encs.push(enc.layer);
                     });
                     return encs;
