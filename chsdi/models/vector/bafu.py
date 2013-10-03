@@ -16,7 +16,7 @@ class AM_G(Base, Vector):
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
     __esriId__ = 2000
     __bodId__ = 'ch.bafu.bundesinventare-amphibien_wanderobjekte'
-    __template__ = 'templates/htmlpopup/am_g.mako'
+    __template__ = 'templates/htmlpopup/bundinv_amphibien_w.mako'
     id = Column('am_g_obj', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     am_g_name = Column('am_g_name', Text)
@@ -30,7 +30,7 @@ class AM_L(Base, Vector):
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
     __esriId__ = 2001
     __bodId__ = 'ch.bafu.bundesinventare-amphibien'
-    __template__ = 'templates/htmlpopup/am_l.mako'
+    __template__ = 'templates/htmlpopup/bundinv_amphibien.mako'
     id = Column('am_l_obj', Text, primary_key=True)
     am_l_name = Column('am_l_name', Text)
     am_l_fl = Column('am_l_fl', Text)
@@ -39,6 +39,20 @@ class AM_L(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
 
 register('ch.bafu.bundesinventare-amphibien', AM_L)
+
+class LHG(Base, Vector):
+    # view in a schema
+    __tablename__ = 'lhg'
+    __table_args__ = ({'schema': 'hydrologie', 'autoload': False})
+    __esriId__ = 2003
+    __bodId__ = 'ch.bafu.hydrologie-hydromessstationen'
+    __template__ = 'templates/htmlpopup/hydromessstationen.mako'
+    id = Column('edv_nr4', Text, primary_key=True)
+    lhg_name = Column('lhg_name', Text)
+    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+
+register('ch.bafu.hydrologie-hydromessstationen', LHG)
+
 
 class BLN(Base, Vector):
     # view in a schema
