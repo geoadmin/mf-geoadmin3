@@ -63,11 +63,11 @@
                                 .replace('{Topic}', currentTopic),
                   layersToQuery = getLayersToQuery();
               // Cancel all pending requests
-              if (canceler) {
-                // FIXME: are JSONP request cancelable? seems not. In the
-                // meanwhile, commenting this to avoid mobile issues
+              // FIXME: are JSONP request cancelable? seems not. In the
+              // meanwhile, commenting this to avoid mobile issues
+              //if (canceler) {
                 // canceler.resolve();
-              }
+              //}
               // Create new cancel object
               canceler = $q.defer();
               if (layersToQuery.length) {
