@@ -187,8 +187,8 @@
               LAYERS: layer.serverLayerName,
               FORMAT: 'image/' + layer.format
             };
-      
-            if (angular.isDefined(time)) {
+ 
+            if (layer.timeEnabled && angular.isDefined(time)) {
               wmsParams['TIME'] = time || layer.timestamps[0];
             }
             if (layer.singleTile === true) {
