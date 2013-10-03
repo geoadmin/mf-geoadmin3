@@ -51,11 +51,13 @@
                        encLayer = $scope.encoders.layers['WMS'].call(this,
                            layer, layerConfig);
                     } else if (layer.constructor === ol.layer.Vector) {
-                       var features = layer.getFeaturesObjectForExtent(ext, proj);
+                       var features =
+                           layer.getFeaturesObjectForExtent(ext, proj);
 
                        if (features) {
-                           encLayer = $scope.encoders.layers['Vector'].call(this,
-                               layer, features);
+                           encLayer =
+                               $scope.encoders.layers['Vector'].call(this,
+                                                     layer, features);
                        }
                     }
                 }
