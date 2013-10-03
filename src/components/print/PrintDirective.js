@@ -34,24 +34,30 @@
 
             var encLayer, encLegend;
             var ext = proj.getExtent();
+            var resolution = $scope.map.getView().getResolution();
 
             if (layer.constructor != ol.layer.Group) {
                 var src = layer.getSource();
-                var layerConfig = gaLayers.getLayer(layer.get('id'));
+                var layerConfig = gaLayers.getLayer(layer.get('id')) || {};
+                var minResolution = layerConfig.minResolution || 0;
+                var maxResolution = layerConfig.maxResolution || 1e6;
 
-                if (src.constructor === ol.source.WMTS) {
-                   encLayer = $scope.encoders.layers['WMTS'].call(this,
-                       layer, layerConfig);
-                } else if (src.constructor === ol.source.ImageWMS) {
-                   encLayer = $scope.encoders.layers['WMS'].call(this,
-                       layer, layerConfig);
-                } else if (layer.constructor === ol.layer.Vector) {
-                   var features = layer.getFeaturesObjectForExtent(ext, proj);
+                if (resolution <= maxResolution &&
+                            resolution >= minResolution) {
+                    if (src.constructor === ol.source.WMTS) {
+                       encLayer = $scope.encoders.layers['WMTS'].call(this,
+                           layer, layerConfig);
+                    } else if (src.constructor === ol.source.ImageWMS) {
+                       encLayer = $scope.encoders.layers['WMS'].call(this,
+                           layer, layerConfig);
+                    } else if (layer.constructor === ol.layer.Vector) {
+                       var features = layer.getFeaturesObjectForExtent(ext, proj);
 
-                   if (features) {
-                       encLayer = $scope.encoders.layers['Vector'].call(this,
-                           layer, features);
-                   }
+                       if (features) {
+                           encLayer = $scope.encoders.layers['Vector'].call(this,
+                               layer, features);
+                       }
+                    }
                 }
             }
 
@@ -81,8 +87,10 @@
                          var enc = $scope.encoders.
                             layers['Layer'].call(this, layer);
                          var layerEnc = $scope.encodeLayer(subLayer, proj);
-                         $.extend(enc, layerEnc);
-                         encs.push(enc.layer);
+                         if (layerEnc.layer !== undefined) {
+                             $.extend(enc, layerEnc);
+                             encs.push(enc.layer);
+                        }
                     });
                     return encs;
                 },
