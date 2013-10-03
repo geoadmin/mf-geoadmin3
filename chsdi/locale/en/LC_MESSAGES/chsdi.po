@@ -1135,7 +1135,7 @@ msgid "ch.swisstopo.swissalti3d-reliefschattierung"
 msgstr "swissALTI3D Hillshade"
 
 msgid "ch.swisstopo.swissimage"
-msgstr "SWISSIMAGE"
+msgstr "Aerial imagery"
 
 msgid "ch.swisstopo.url"
 msgstr "http://www.swisstopo.admin.ch/internet/swisstopo/en/home.html"
