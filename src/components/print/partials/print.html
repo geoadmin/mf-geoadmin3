@@ -1,10 +1,7 @@
 <form>
   <div>
     <label translate>print_layout</label>
-    <label data-ng-repeat="l in capabilities.layouts">
-        <input 
-           type="radio" name="page orientation" value="{{l.name}}">{{l.name}}<br />
-     </label>
+    <select ng-model="layout" ng-options="l.name for l in capabilities.layouts"></select>
   </div>
   <div class="checkbox">
     <label>
