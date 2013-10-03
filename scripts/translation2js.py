@@ -105,6 +105,7 @@ for lang in config["langs"]:
     print "Writing: " + lang + ".json"
     try:
         file_langjs = open(Path2emptyjs + lang + '.json','w')
+        file_langcsv = open(Path2emptyjs + lang + '.csv','w')
     except:
         print "is the path to the directory i18n correct?"
         sys.exit()
@@ -119,10 +120,14 @@ for lang in config["langs"]:
         try:
             myString = "\t\"" + var_msgid + "\": \"" + \
                        translationDict[lang][unicode(var_msgid)] + "\""
+            myStringCsv = var_msgid + "," + \
+                       translationDict[lang][unicode(var_msgid)]
             file_langjs.write(myString.encode('utf-8'))
+            file_langcsv.write(myStringCsv.encode('utf-8'))
             isTodo = False
         except:
             file_langjs.write("\t\"" + var_msgid + "\": \"" + var_msgid + "\"")
+            file_langcsv.write(var_msgid + "," + var_msgid)
             isTodo = True
 
         if int_counter < len(var_arr):
@@ -134,12 +139,14 @@ for lang in config["langs"]:
             print var_msgid + " has not been translated in " + lang
 
         file_langjs.write(nextLine + '\n')
+        file_langcsv.write('\n')
         int_counter += 1
 
      # Writing footer
     file_langjs.write("}\n")
 
     file_langjs.close()
+    file_langcsv.close()
 
 # Finishing
 print "Translation accomplished. Verify the generated {lang}.json.files in " + Path2emptyjs 
