@@ -40,7 +40,6 @@ def ogcproxy(request):
     # forward request to target (without Host Header)
     http = Http(disable_ssl_certificate_validation=True)
     h = dict(request.headers)
-    sdsdrf
     h.pop("Host", h)
     try:
         resp, content = http.request(url, method=request.method,
