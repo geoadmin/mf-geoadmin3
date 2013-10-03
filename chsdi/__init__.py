@@ -31,8 +31,7 @@ def main(global_config, **settings):
     config = Configurator(settings=settings)
 
     # ogcproxy
-    import papyrus_ogcproxy
-    config.include(papyrus_ogcproxy)
+    config.add_route('ogcproxy', '/ogcproxy')
 
     # printproxy
     config.add_route('printproxy', '/printproxy')
