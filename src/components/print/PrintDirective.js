@@ -5,8 +5,8 @@
         ['pascalprecht.translate']);
 
     module.controller('GaPrintDirectiveController',
-      ['$scope', '$http', '$translate', 'gaLayers', 'gaPermalink',
-      function($scope, $http, $translate, gaLayers, gaPermalink) {
+      ['$scope', '$http', '$window', '$translate', 'gaLayers', 'gaPermalink',
+      function($scope, $http, $window, $translate, gaLayers, gaPermalink) {
 
       $scope.updatePrintConfig = function() {
           var printPath = $scope.options.printPath;
@@ -14,14 +14,13 @@
               '/info.json?url=' + encodeURIComponent(printPath) +
               '&app=' + $scope.topicId);
 
-          http.success(function(data, status, header, config) {
+          http.success(function(data) {
               $scope.capabilities = data;
 
               // default values:
               $scope.layout = data.layouts[0];
               $scope.dpi = data.dpis[0];
-              $scope.scales = data.scales; // FIXME
-              //$scope.options = {};
+              $scope.scales = data.scales;
               $scope.options.legend = false;
             });
         };
@@ -265,17 +264,17 @@
         };
 
         $scope.downloadUrl = function(url) {
-            window.location.href = url;
+            $window.location.href = url;
         };
 
         $scope.submit = function() {
             // http://mapfish.org/doc/print/protocol.html#print-pdf
-            var view = this.map.getView();
+            var view = $scope.map.getView();
             var proj = view.getProjection();
             var lang = $translate.uses();
             var configLang = 'lang' + lang;
             var defaultPage = {};
-            defaultPage['lang' + lang] = true;
+            defaultPage[configLang] = true;
             var encodedPermalinkHref =
                         encodeURIComponent(gaPermalink.getHref());
 
