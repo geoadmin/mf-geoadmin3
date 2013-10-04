@@ -25,7 +25,7 @@
             map: '=gaCatalogtreeMap'
           },
           link: function(scope, element, attrs) {
-            var currentTopic;
+            var currentTopicId;
 
             // This assumes that both trees contain the same
             // elements, categories are in the same order and
@@ -62,7 +62,7 @@
 
             var updateCatalogTree = function() {
               var url = scope.options.catalogUrlTemplate
-                  .replace('{Topic}', currentTopic);
+                  .replace('{Topic}', currentTopicId);
               return $http.get(url, {
                 params: {
                   'lang': $translate.uses()
@@ -78,7 +78,7 @@
             };
 
             scope.$on('$translateChangeEnd', function() {
-              if (angular.isDefined(currentTopic)) {
+              if (angular.isDefined(currentTopicId)) {
                 updateCatalogTree().then(function(oldAndNewTrees) {
                   if (angular.isDefined(oldAndNewTrees.oldTree)) {
                     retainTreeState(oldAndNewTrees);
@@ -87,7 +87,8 @@
               }
             });
 
-            scope.$on('gaLayersChange', function() {
+            scope.$on('gaLayersChange', function(event, data) {
+              currentTopicId = data.topicId;
               updateCatalogTree().then(function(trees) {
                 var i;
                 var id;
@@ -130,10 +131,6 @@
                   }
                 }
               });
-            });
-
-            scope.$on('gaTopicChange', function(event, topic) {
-              currentTopic = topic.id;
             });
 
             scope.map.getLayers().on('remove', function(evt) {
