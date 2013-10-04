@@ -66,10 +66,12 @@ class Search(SearchValidation):
             return 0
         self.sphinx.SetLimits(0, limit)
         self.sphinx.SetSortMode(sphinxapi.SPH_SORT_ATTR_ASC, 'rank')
-        temp = self.sphinx.Query(searchText, index='swisssearch')['matches']
-        if len(temp) != 0:
+        temp = self.sphinx.Query(searchText, index='swisssearch')
+        temp = temp['matches'] if temp is not None else temp
+        if temp is not None and len(temp) != 0:
             self.results['results'] += temp
-        return len(temp)
+            return  len(temp)
+        return 0
 
     def _layer_search(self):
         # 10 features per layer are returned at max
@@ -79,10 +81,12 @@ class Search(SearchValidation):
         searchText += ' & @topics ' + self.mapName
         # We only take the layers in prod for now
         searchText += ' & @staging prod'
-        temp = self.sphinx.Query(searchText, index=index_name)['matches']
-        if len(temp) != 0:
+        temp = self.sphinx.Query(searchText, index=index_name)
+        temp = temp['matches'] if temp is not None else temp
+        if temp is not None and len(temp) != 0:
             self.results['results'] += temp
-        return len(temp)
+            return  len(temp)
+        return 0
 
     def _feature_search(self):
         # all features in given bounding box
@@ -143,9 +147,10 @@ class Search(SearchValidation):
     def _parse_feature_results(self, results):
         nb_match = 0
         for i in range(0, len(results)):
-            nb_match += len(results[i]['matches'])
-            # Add results to the list
-            self.results['results'] += results[i]['matches']
+            if results[i] is not None:
+                nb_match += len(results[i]['matches'])
+                # Add results to the list
+                self.results['results'] += results[i]['matches']
         return nb_match
 
     def _get_quad_index(self):
