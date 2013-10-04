@@ -107,11 +107,11 @@ class Search(SearchValidation):
             raise exc.HTTPBadRequest('Please provide a bbox parameter')
 
         if self.featureIndexes is None:
-            raise exc.HTTPBadRequest('Please provide')
+            raise exc.HTTPBadRequest('Please provide a parameter features')
 
         self.sphinx.SetLimits(0, self.FEATURE_LIMIT)
-        searchText += '@geom_quadindex ' + self.quadindex + '*'
-        temp = self.sphinx.RunQueries()
+        geomFilter = '@geom_quadindex ' + self.quadindex + '*'
+        temp = self.sphinx.RunQueries(geomFilter)
         return self._parse_feature_results(temp)
 
     def _query_detail(self, fields):
