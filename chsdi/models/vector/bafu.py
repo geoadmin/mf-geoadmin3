@@ -115,6 +115,20 @@ class Teileinzugsgebiete2 (Base, Vector):
 register('ch.bafu.wasser-teileinzugsgebiete_2', Teileinzugsgebiete2)
 
 
+class Teileinzugsgebiete40 (Base, Vector):
+    # view in a schema
+    __tablename__ = 'ebene_40km'
+    __table_args__ = ({'schema': 'wasser', 'autoload': True})
+    __esriId__ = 2007
+    __bodId__ = 'ch.bafu.wasser-teileinzugsgebiete_40'
+    __template__ = 'templates/htmlpopup/teileinzugsgebiete40.mako'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    tezgnr40 = Column('tezgnr40', Integer)
+    teilezgfla = Column('teilezgfla', Numeric)
+    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+
+register('ch.bafu.wasser-teileinzugsgebiete_40', Teileinzugsgebiete40)
+
 
 class BLN(Base, Vector):
     # view in a schema
