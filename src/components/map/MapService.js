@@ -76,6 +76,47 @@
     };
   });
 
+  module.provider('gaMap', function() {
+    this.$get = function(gaPopup, gaLayers) {
+      var Map = function() {
+
+        this.addKMLLayer = function(olMap, olLayer, index) {
+          var onMapClick = function(evt) {
+            olMap.getFeatures({
+              pixel: evt.getPixel(),
+              layers: [olLayer],
+              success: function(features) {
+                if (features[0] && features[0][0] &&
+                    features[0][0].get('description')) {
+                  var feature = features[0][0];
+                  var pixel = evt.getPixel();
+                  gaPopup.create({
+                    title: feature.get('name'),
+                    content: feature.get('description'),
+                    x: pixel[0],
+                    y: pixel[1]
+                   }).open();
+                }
+              }
+            });
+          };
+          if (index) {
+            olMap.getLayers().insertAt(index, olLayer);
+          } else {
+            olMap.addLayer(olLayer);
+          }
+          olMap.on('click', onMapClick);
+          olMap.getLayers().on('remove', function(layersEvent) {
+            if (layersEvent.getElement() === olLayer) {
+              olMap.un('click', onMapClick);
+            }
+          });
+        };
+      };
+      return new Map();
+    };
+  });
+
   module.provider('gaLayers', function() {
 
     this.$get = function($q, $http, $translate, $rootScope,
@@ -247,14 +288,14 @@
           }
           return olLayer;
         };
-        
+
         /**
-         * Create a KML layer from a KML string 
+         * Create a KML layer from a KML string
          */
         this.getKMLLayer = function(kml, options) {
           var olLayer;
           options = options || {};
-          
+
           // Create the Parser the KML file
           var kmlParser = new ol.parser.KML({
             maxDepth: 1,
@@ -262,7 +303,7 @@
             extractStyles: true,
             extractAttributes: true
           });
-         
+
           // Create vector layer
           // FIXME currently ol3 doesn't allow to get the name of the KML
           // document, making it impossible to use a proper label for the
@@ -270,11 +311,13 @@
           var olLayer = new ol.layer.Vector({
             id: options.id,
             label: options.label || 'KML',
+            opacity: options.opacity,
+            visible: options.visible,
             source: new ol.source.Vector({
               parser: kmlParser,
               data: kml
             }),
-            style: options.style ||  new ol.style.Style({
+            style: options.style || new ol.style.Style({
               symbolizers: [
                 new ol.style.Fill({
                   color: '#ff0000'
@@ -298,7 +341,7 @@
           });
           gaDefinePropertiesForLayer(olLayer);
           return olLayer;
-        }
+        };
 
         /**
          * Returns layers definition for given bodId. Returns
@@ -404,7 +447,7 @@
   module.provider('gaLayersPermalinkManager', function() {
 
     this.$get = function($rootScope, gaLayers, gaPermalink, $translate, $http,
-        gaGlobalOptions) {
+        gaMap) {
 
       var layersParamValue = gaPermalink.getParams().layers;
       var layersOpacityParamValue = gaPermalink.getParams().layers_opacity;
@@ -416,6 +459,10 @@
           layersOpacityParamValue.split(',') : [];
       var layerVisibilities = layersVisibilityParamValue ?
           layersVisibilityParamValue.split(',') : [];
+
+      function isKMLLayer(layerId) {
+        return (layerId && layerId.indexOf('KML||') === 0);
+      }
 
       function updateLayersParam(layers) {
         var bodIds = $.map(layers, function(layer) {
@@ -431,8 +478,12 @@
       function updateLayersOpacityParam(layers) {
         var opacityTotal = 0;
         var opacityValues = $.map(layers, function(layer) {
+          // If no id the layer is not added in the permalink
+          // like the KML layer added after uploading a local file
+          if (!layer.get('id'))
+            return;
           var opacity = Math.round(layer.getOpacity() * 100) / 100;
-          opacityTotal += opacity;
+          opacityTotal += +opacity;
           return opacity;
         });
         if (opacityTotal === layers.length) {
@@ -446,6 +497,10 @@
       function updateLayersVisibilityParam(layers) {
         var visibilityTotal = true;
         var visibilityValues = $.map(layers, function(layer) {
+          // If no id the layer is not added in the permalink
+          // like the KML layer added after uploading a local file
+          if (!layer.get('id'))
+            return;
           var visibility = layer.visible;
           visibilityTotal = visibilityTotal && visibility;
           return visibility;
@@ -458,7 +513,7 @@
         }
       }
 
-      return function(map) {
+      return function(map, proxyUrl) {
         var scope = $rootScope.$new();
         var deregFns = [];
 
@@ -492,25 +547,16 @@
             }));
           });
         });
-        
-        
-        var applyProperties = function(layer, index) {
-          if (angular.isDefined(layer)) {
-            if (index < layerOpacities.length) {
-              layer.setOpacity(layerOpacities[index]);
-            }
-            if (index < layerVisibilities.length) {
-              layer.visible = layerVisibilities[index] == 'false' ?
-                  false : true;
-            }
-            map.addLayer(layer);
-          }
-        }
-
 
         var deregister = scope.$on('gaLayersChange', function() {
           angular.forEach(layerSpecs, function(layerSpec, index) {
             var layer;
+            var opacity = (index < layerOpacities.length) ?
+                layerOpacities[index] : 1;
+            var visible = (index < layerVisibilities.length &&
+                layerVisibilities[index] == 'false') ?
+                false : true;
+
             if (gaLayers.getLayer(layerSpec)) {
               // BOD layer.
               // Do not consider BOD layers that are already in the map.
@@ -518,17 +564,29 @@
               if (!gaMapUtils.getMapOverlayForBodId(map, bodId)) {
                 layer = gaLayers.getOlLayerById(layerSpec);
               }
-            } else if (layerSpec.indexOf('KML||') === 0 &&
+              if (angular.isDefined(layer)) {
+                layer.visible = visible;
+                layer.opacity = opacity;
+                map.addLayer(layer);
+              }
+
+            } else if (isKMLLayer(layerSpec) &&
                 confirm($translate('third_party_data_warning'))) {
               // KML layer
               var url = layerSpec.replace('KML||', '');
-              var proxyUrl = gaGlobalOptions.proxyUrl + '?url=' + encodeURIComponent(url);
+              proxyUrl = proxyUrl + encodeURIComponent(url);
               $http.get(proxyUrl).success(function(data) {
-                layer = gaLayers.getKMLLayer(data, {id: layerSpec});
-                applyProperties(layer, index);
-              })
+                layer = gaLayers.getKMLLayer(data, {
+                  id: layerSpec,
+                  opacity: opacity,
+                  visible: visible
+                });
+
+                if (angular.isDefined(layer)) {
+                  gaMap.addKMLLayer(map, layer, index + 1);
+                }
+              });
             }
-            applyProperties(layer, index);
           });
           deregister();
         });

@@ -3,20 +3,18 @@
 
   goog.require('ga_browsersniffer_service');
   goog.require('ga_map_service');
-  goog.require('ga_popup_service');
   goog.require('ga_urlutils_service');
 
   var module = angular.module('ga_importkml_directive', [
     'ga_browsersniffer_service',
     'ga_map_service',
-    'ga_popup_service',
     'ga_urlutils_service',
     'pascalprecht.translate'
   ]);
 
   module.controller('GaImportKmlDirectiveController',
       function($scope, $http, $q, $log, $translate, gaBrowserSniffer,
-            gaPopup, gaLayers, gaUrlUtils) {
+            gaLayers, gaMap) {
 
         $scope.isIE9 = (gaBrowserSniffer.msie == 9);
         $scope.isIE = !isNaN(gaBrowserSniffer.msie);
@@ -137,35 +135,15 @@
               // Create vector layer
               var vector = gaLayers.getKMLLayer($scope.fileContent, {
                 id: ($scope.currentTab === 2) ? 'KML||' + $scope.fileUrl :
-                    undefined,
+                    undefined
               });
-              
+
               // Add the layer
-              $scope.map.addLayer(vector);
+              gaMap.addKMLLayer($scope.map, vector);
 
               $scope.userMessage = $translate('parse_succeeded');
               $scope.progress += 20;
-              $scope.map.on('click', function(evt) {
-                $scope.map.getFeatures({
-                  pixel: evt.getPixel(),
-                  layers: [vector],
-                  success: function(features) {
-                    if (features[0] && features[0][0] &&
-                        features[0][0].get('description')) {
-                      var feature = features[0][0];
-                      var pixel = evt.getPixel();
-                      $scope.$apply(function() {
-                        gaPopup.create({
-                          title: feature.get('name'),
-                          content: feature.get('description'),
-                          x: pixel[0],
-                          y: pixel[1]
-                        }, $scope).open();
-                      });
-                    }
-                  }
-                });
-              });
+
             } catch (e) {
               $scope.userMessage = $translate('parse_failed') + e.message;
               $scope.progress = 0;
@@ -222,7 +200,7 @@
   );
 
   module.directive('gaImportKml',
-      function($http, $log, $compile, $translate, gaBrowserSniffer,
+      function($log, $compile, $translate, gaBrowserSniffer,
           gaUrlUtils) {
         return {
           restrict: 'A',
