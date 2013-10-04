@@ -11,8 +11,8 @@ from chsdi.lib import mortonspacekey as msk
 
 class Search(SearchValidation):
 
-    LIMIT = 30
-    LAYER_LIMIT = 20
+    LIMIT = 40
+    LAYER_LIMIT = 30
     FEATURE_LIMIT = 50
 
     def __init__(self, request):
