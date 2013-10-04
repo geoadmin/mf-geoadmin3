@@ -21,7 +21,7 @@
         gaPermalink, gaUrlUtils, gaGetCoordinate, gaBrowserSniffer) {
           var currentTopic,
               footer = [
-            '<div class="search-footer">',
+            '<div class="search-footer clearfix">',
             '<div class="footer-left">',
             '<b translate>search_help</b></div>',
             '<div class="footer-right">',
@@ -195,7 +195,6 @@
                 },
                 {
                   header: layerHeaderTemplate,
-                  footer: footerTemplate,
                   name: 'layers',
                   timeout: 20,
                   valueKey: 'inputVal',
@@ -256,6 +255,9 @@
                     scope.searchFocused = false;
                   });
                 }
+              });
+              taElt.on('typeahead:initialized', function() {
+                taElt.parent().find('.tt-dropdown-menu').append(footerTemplate);
               });
               taElt.typeahead(typeAheadDatasets)
                 .on('typeahead:selected', function(event, datum) {
