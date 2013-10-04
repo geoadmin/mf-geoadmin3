@@ -460,6 +460,12 @@
       var layerVisibilities = layersVisibilityParamValue ?
           layersVisibilityParamValue.split(',') : [];
 
+      var allowThirdData = false;
+      if (angular.isDefined(layersParamValue) &&
+          layersParamValue.match(/(KML\|\||WMS\|\|)/g)) {
+        allowThirdData = confirm($translate('third_party_data_warning'));
+      }
+
       function isKMLLayer(layerId) {
         return (layerId && layerId.indexOf('KML||') === 0);
       }
@@ -570,12 +576,11 @@
                 map.addLayer(layer);
               }
 
-            } else if (isKMLLayer(layerSpec) &&
-                confirm($translate('third_party_data_warning'))) {
+            } else if (allowThirdData && isKMLLayer(layerSpec)) {
               // KML layer
               var url = layerSpec.replace('KML||', '');
-              proxyUrl = proxyUrl + encodeURIComponent(url);
-              $http.get(proxyUrl).success(function(data) {
+              var dlUrl = proxyUrl + encodeURIComponent(url);
+              $http.get(dlUrl).success(function(data) {
                 layer = gaLayers.getKMLLayer(data, {
                   id: layerSpec,
                   opacity: opacity,
