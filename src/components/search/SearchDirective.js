@@ -157,7 +157,7 @@
                   label += ' ' + $translate('feature');
                 }
                 return label;
-              }
+              };
 
               var typeAheadDatasets = [
                 {
