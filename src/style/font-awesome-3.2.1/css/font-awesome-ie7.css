@@ -67,6 +67,9 @@ a [class^="icon-"],
 a [class*=" icon-"] {
   cursor: pointer;
 }
+.icon-search {
+  *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf002;');
+}
 .icon-zoom-in {
   *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf00e;');
 }
@@ -106,6 +109,9 @@ a [class*=" icon-"] {
 .icon-gears {
   *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf085;');
 }
+.icon-gear {
+  *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf085;');
+}
 .icon-cogs {
   *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf085;');
 }
@@ -136,7 +142,7 @@ a [class*=" icon-"] {
 .icon-caret-right {
   *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf0da;');
 }
-.icon-envelope {
+.icon-envelope-alt {
   *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf0e0;');
 }
 .icon-expand-alt {

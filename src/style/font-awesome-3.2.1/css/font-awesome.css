@@ -377,7 +377,10 @@ a .icon-flip-vertical:before {
 }
 /* Font Awesome uses the Unicode Private Use Area (PUA) to ensure screen
    readers do not read off random characters that represent icons */
-.icon-zoom-in:before {
+.icon-search:before {
+  content: "\f002";
+}
+   .icon-zoom-in:before {
   content: "\f00e";
 }
 .icon-refresh:before {
@@ -413,7 +416,12 @@ a .icon-flip-vertical:before {
 .icon-warning-sign:before {
   content: "\f071";
 }
-.icon-gears:before,
+.icon-gear:before {
+  content: "\f085";
+}
+.icon-gears:before {
+  content: "\f085";
+}
 .icon-cogs:before {
   content: "\f085";
 }
@@ -444,7 +452,7 @@ a .icon-flip-vertical:before {
 .icon-caret-right:before {
   content: "\f0da";
 }
-.icon-envelope:before {
+.icon-envelope-alt:before {
   content: "\f0e0";
 }
 .icon-expand-alt:before {

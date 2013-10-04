@@ -78,6 +78,11 @@ a [class*=" icon-"] {
 @mixin ie7icon($inner) { *zoom: expression(this.runtimeStyle['zoom'] = '1', this.innerHTML = '#{$inner}'); }
 
 
+.icon-search {
+  @include ie7icon('&#xf002;');
+}
+
+
 .icon-zoom-in {
   @include ie7icon('&#xf00e;');
 }
@@ -143,6 +148,11 @@ a [class*=" icon-"] {
 }
 
 
+.icon-gear {
+  @include ie7icon('&#xf085;');
+}
+
+
 .icon-cogs {
   @include ie7icon('&#xf085;');
 }
@@ -193,7 +203,7 @@ a [class*=" icon-"] {
 }
 
 
-.icon-envelope {
+.icon-envelope-alt {
   @include ie7icon('&#xf0e0;');
 }
 

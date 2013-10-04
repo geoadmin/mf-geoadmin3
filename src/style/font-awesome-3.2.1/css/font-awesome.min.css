@@ -40,6 +40,7 @@ a .icon-stack,a .icon-spin{display:inline-block;text-decoration:none;}
 .icon-flip-horizontal:before{-webkit-transform:scale(-1, 1);-moz-transform:scale(-1, 1);-ms-transform:scale(-1, 1);-o-transform:scale(-1, 1);transform:scale(-1, 1);}
 .icon-flip-vertical:before{-webkit-transform:scale(1, -1);-moz-transform:scale(1, -1);-ms-transform:scale(1, -1);-o-transform:scale(1, -1);transform:scale(1, -1);}
 a .icon-rotate-90:before,a .icon-rotate-180:before,a .icon-rotate-270:before,a .icon-flip-horizontal:before,a .icon-flip-vertical:before{display:inline-block;}
+.icon-search:before{content:"\f002";}
 .icon-zoom-in:before{content:"\f00e";}
 .icon-refresh:before{content:"\f021";}
 .icon-qrcode:before{content:"\f029";}
@@ -52,7 +53,8 @@ a .icon-rotate-90:before,a .icon-rotate-180:before,a .icon-rotate-270:before,a .
 .icon-plus:before{content:"\f067";}
 .icon-minus:before{content:"\f068";}
 .icon-warning-sign:before{content:"\f071";}
-.icon-gears:before,
+.icon-gears:before{content:"\f085";}
+.icon-gear:before{content:"\f085";}
 .icon-cogs:before{content:"\f085";}
 .icon-external-link:before{content:"\f08e";}
 .icon-phone:before{content:"\f095";}
@@ -63,7 +65,7 @@ a .icon-rotate-90:before,a .icon-rotate-180:before,a .icon-rotate-270:before,a .
 .icon-caret-down:before{content:"\f0d7";}
 .icon-caret-up:before{content:"\f0d8";}
 .icon-caret-right:before{content:"\f0da";}
-.icon-envelope:before{content:"\f0e0";}
+.icon-envelope-alt:before{content:"\f0e0";}
 .icon-expand-alt:before{content:"\f116";}
 .icon-collapse-alt:before{content:"\f117";}
 .icon-chevron-sign-right:before{content:"\f138";}
