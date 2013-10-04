@@ -65,7 +65,7 @@ class Search(SearchValidation):
         if len(self.searchText) < 1:
             return 0
         self.sphinx.SetLimits(0, limit)
-        self.sphinx.SetSortMode(sphinxapi.SPH_SORT_ATTR_ASC, 'rank')
+        self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, 'rank ASC, len ASC')
         temp = self.sphinx.Query(searchText, index='swisssearch')
         temp = temp['matches'] if temp is not None else temp
         if temp is not None and len(temp) != 0:
