@@ -25,6 +25,7 @@ allowed_hosts = (
     # list allowed hosts here (no port limiting)
 )
 
+
 @view_config(route_name='ogcproxy')
 def ogcproxy(request):
 
