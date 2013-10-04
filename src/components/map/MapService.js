@@ -247,6 +247,58 @@
           }
           return olLayer;
         };
+        
+        /**
+         * Create a KML layer from a KML string 
+         */
+        this.getKMLLayer = function(kml, options) {
+          var olLayer;
+          options = options || {};
+          
+          // Create the Parser the KML file
+          var kmlParser = new ol.parser.KML({
+            maxDepth: 1,
+            dimension: 2,
+            extractStyles: true,
+            extractAttributes: true
+          });
+         
+          // Create vector layer
+          // FIXME currently ol3 doesn't allow to get the name of the KML
+          // document, making it impossible to use a proper label for the
+          // layer.
+          var olLayer = new ol.layer.Vector({
+            id: options.id,
+            label: options.label || 'KML',
+            source: new ol.source.Vector({
+              parser: kmlParser,
+              data: kml
+            }),
+            style: options.style ||  new ol.style.Style({
+              symbolizers: [
+                new ol.style.Fill({
+                  color: '#ff0000'
+                }),
+                new ol.style.Stroke({
+                  color: '#ff0000',
+                  width: 2
+                }),
+                new ol.style.Shape({
+                  size: 10,
+                  fill: new ol.style.Fill({
+                    color: '#ff0000'
+                  }),
+                  stroke: new ol.style.Stroke({
+                    color: '#ff0000',
+                    width: 2
+                  })
+                })
+              ]
+            })
+          });
+          gaDefinePropertiesForLayer(olLayer);
+          return olLayer;
+        }
 
         /**
          * Returns layers definition for given bodId. Returns
@@ -351,7 +403,8 @@
    */
   module.provider('gaLayersPermalinkManager', function() {
 
-    this.$get = function($rootScope, gaLayers, gaPermalink, gaMapUtils) {
+    this.$get = function($rootScope, gaLayers, gaPermalink, $translate, $http,
+        gaGlobalOptions) {
 
       var layersParamValue = gaPermalink.getParams().layers;
       var layersOpacityParamValue = gaPermalink.getParams().layers_opacity;
@@ -439,6 +492,20 @@
             }));
           });
         });
+        
+        
+        var applyProperties = function(layer, index) {
+          if (angular.isDefined(layer)) {
+            if (index < layerOpacities.length) {
+              layer.setOpacity(layerOpacities[index]);
+            }
+            if (index < layerVisibilities.length) {
+              layer.visible = layerVisibilities[index] == 'false' ?
+                  false : true;
+            }
+            map.addLayer(layer);
+          }
+        }
 
 
         var deregister = scope.$on('gaLayersChange', function() {
@@ -451,17 +518,17 @@
               if (!gaMapUtils.getMapOverlayForBodId(map, bodId)) {
                 layer = gaLayers.getOlLayerById(layerSpec);
               }
+            } else if (layerSpec.indexOf('KML||') === 0 &&
+                confirm($translate('third_party_data_warning'))) {
+              // KML layer
+              var url = layerSpec.replace('KML||', '');
+              var proxyUrl = gaGlobalOptions.proxyUrl + '?url=' + encodeURIComponent(url);
+              $http.get(proxyUrl).success(function(data) {
+                layer = gaLayers.getKMLLayer(data, {id: layerSpec});
+                applyProperties(layer, index);
+              })
             }
-            if (angular.isDefined(layer)) {
-              if (index < layerOpacities.length) {
-                layer.setOpacity(layerOpacities[index]);
-              }
-              if (index < layerVisibilities.length) {
-                layer.visible = layerVisibilities[index] == 'false' ?
-                    false : true;
-              }
-              map.addLayer(layer);
-            }
+            applyProperties(layer, index);
           });
           deregister();
         });

@@ -16,7 +16,7 @@
 
   module.controller('GaImportKmlDirectiveController',
       function($scope, $http, $q, $log, $translate, gaBrowserSniffer,
-            gaPopup, gaDefinePropertiesForLayer, gaUrlUtils) {
+            gaPopup, gaLayers, gaUrlUtils) {
 
         $scope.isIE9 = (gaBrowserSniffer.msie == 9);
         $scope.isIE = !isNaN(gaBrowserSniffer.msie);
@@ -134,50 +134,12 @@
             $scope.progress = 80;
 
             try {
-
-              // Create the Parser the KML file
-              var kmlParser = new ol.parser.KML({
-                maxDepth: 1,
-                dimension: 2,
-                extractStyles: true,
-                extractAttributes: true
-              });
-
-
               // Create vector layer
-              // FIXME currently ol3 doesn't allow to get the name of the KML
-              // document, making it impossible to use a proper label for the
-              // layer.
-              var vector = new ol.layer.Vector({
-                label: 'KML',
-                source: new ol.source.Vector({
-                  parser: kmlParser,
-                  data: $scope.fileContent
-                }),
-                style: new ol.style.Style({
-                  symbolizers: [
-                    new ol.style.Fill({
-                      color: '#ff0000'
-                    }),
-                    new ol.style.Stroke({
-                      color: '#ff0000',
-                      width: 2
-                    }),
-                    new ol.style.Shape({
-                      size: 10,
-                      fill: new ol.style.Fill({
-                        color: '#ff0000'
-                      }),
-                      stroke: new ol.style.Stroke({
-                        color: '#ff0000',
-                        width: 2
-                      })
-                    })
-                  ]
-                })
+              var vector = gaLayers.getKMLLayer($scope.fileContent, {
+                id: ($scope.currentTab === 2) ? 'KML||' + $scope.fileUrl :
+                    undefined,
               });
-              gaDefinePropertiesForLayer(vector);
-
+              
               // Add the layer
               $scope.map.addLayer(vector);
 
