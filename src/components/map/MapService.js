@@ -55,12 +55,12 @@
               this.setVisible(val);
             }
           },
-          opacity: {
+          invertedOpacity: {
             get: function() {
-              return this.getOpacity() + '';
+              return (1 - this.getOpacity()) + '';
             },
             set: function(val) {
-              this.setOpacity(+val);
+              this.setOpacity(1 - val);
             }
           },
           background: {
@@ -336,7 +336,7 @@
       function updateLayersOpacityParam(layers) {
         var opacityTotal = 0;
         var opacityValues = $.map(layers, function(layer) {
-          var opacity = layer.opacity;
+          var opacity = layer.getOpacity();
           opacityTotal += +opacity;
           return opacity;
         });
@@ -385,7 +385,7 @@
 
           angular.forEach(layers, function(layer) {
             deregFns.push(scope.$watch(function() {
-              return layer.opacity;
+              return layer.getOpacity();
             }, function() {
               updateLayersOpacityParam(layers);
             }));
@@ -408,7 +408,7 @@
             }
             if (angular.isDefined(layer)) {
               if (index < layerOpacities.length) {
-                layer.opacity = layerOpacities[index];
+                layer.setOpacity(layerOpacities[index]);
               }
               if (index < layerVisibilities.length) {
                 layer.visible = layerVisibilities[index] == 'false' ?

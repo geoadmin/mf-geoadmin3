@@ -77,13 +77,13 @@ describe('ga_map_service', function() {
         $httpBackend.flush();
         var layer = layers.getOlLayerById('foo');
         expect(layer.getOpacity()).to.be(1);
-        expect(layer.opacity).to.be("1");
-        layer.opacity = 0.5;
-        expect(layer.getOpacity()).to.be(0.5);
-        expect(layer.opacity).to.be("0.5");
-        layer.opacity = 1;
-        expect(layer.getOpacity()).to.be(1);
-        expect(layer.opacity).to.be("1");
+        expect(layer.invertedOpacity).to.be("0");
+        layer.invertedOpacity = 0.2;
+        expect(layer.getOpacity()).to.be(0.8);
+        expect(typeof layer.invertedOpacity).to.eql('string');
+        layer.invertedOpacity = 1;
+        expect(layer.getOpacity()).to.be(0);
+        expect(layer.invertedOpacity).to.be("1");
       });
     });
 
@@ -169,7 +169,7 @@ describe('ga_map_service', function() {
         $rootScope.$digest();
         expect(permalink.getParams().layers_opacity).to.be(undefined);
 
-        fooLayer.opacity = '0.5';
+        fooLayer.setOpacity('0.5');
         $rootScope.$digest();
         expect(permalink.getParams().layers_opacity).to.eql('0.5');
 
@@ -178,15 +178,15 @@ describe('ga_map_service', function() {
         $rootScope.$digest();
         expect(permalink.getParams().layers_opacity).to.eql('0.5,1');
 
-        barLayer.opacity = '0.2';
+        barLayer.setOpacity('0.2');
         $rootScope.$digest();
         expect(permalink.getParams().layers_opacity).to.eql('0.5,0.2');
 
-        fooLayer.opacity = '1';
+        fooLayer.setOpacity('1');
         $rootScope.$digest();
         expect(permalink.getParams().layers_opacity).to.eql('1,0.2');
 
-        barLayer.opacity = '1';
+        barLayer.setOpacity('1');
         $rootScope.$digest();
         expect(permalink.getParams().layers_opacity).to.be(undefined);
       }));
