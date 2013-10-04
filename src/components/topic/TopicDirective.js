@@ -74,7 +74,6 @@
                 value.label = value.id;
                 value.thumbnail = 'http://placehold.it/110x60';
                 value.langs = extendLangs(value.langs);
-                value.bgLayer = value.defaultBackgroundLayer;
               });
               initTopics();
             });
