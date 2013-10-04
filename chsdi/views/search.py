@@ -48,15 +48,15 @@ class Search(SearchValidation):
             )
             self._layer_search()
         if self.typeInfo == 'features':
-            #search all features within bounding box
+            # search all features within bounding box
             self._feature_bbox_search()
         if self.typeInfo == 'locations':
-            #search all features with text and bounding box
+            # search all features with text and bounding box
             self.searchText = remove_accents(
                 self.request.params.get('searchText')
             )
             self._feature_search()
-            #swiss search
+            # swiss search
             self._swiss_search(self.LIMIT)
         return self.results
 
@@ -70,7 +70,7 @@ class Search(SearchValidation):
         temp = temp['matches'] if temp is not None else temp
         if temp is not None and len(temp) != 0:
             self.results['results'] += temp
-            return  len(temp)
+            return len(temp)
         return 0
 
     def _layer_search(self):
@@ -85,7 +85,7 @@ class Search(SearchValidation):
         temp = temp['matches'] if temp is not None else temp
         if temp is not None and len(temp) != 0:
             self.results['results'] += temp
-            return  len(temp)
+            return len(temp)
         return 0
 
     def _feature_search(self):
@@ -104,7 +104,7 @@ class Search(SearchValidation):
 
     def _feature_bbox_search(self):
         if self.quadindex is None:
-            raise exc.HTTPBadRequest('Please provide a bbox parameter') 
+            raise exc.HTTPBadRequest('Please provide a bbox parameter')
 
         if self.featureIndexes is None:
             raise exc.HTTPBadRequest('Please provide')
