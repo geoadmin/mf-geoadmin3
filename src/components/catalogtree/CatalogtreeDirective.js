@@ -25,7 +25,7 @@
             map: '=gaCatalogtreeMap'
           },
           link: function(scope, element, attrs) {
-            var currentTopic;
+            var currentTopicId;
 
             // This assumes that both trees contain the same
             // elements, categories are in the same order and
@@ -33,9 +33,7 @@
             // a different order (sorted by language)
             // FIXME being aware that layers can have different
             // order can change in the back-end (remove relevant code)
-            var retainTreeState = function(oldAndNewTrees) {
-              var oldTree = oldAndNewTrees.oldTree;
-              var newTree = oldAndNewTrees.newTree;
+            var retainTreeState = function(newTree, oldTree) {
               var i, oldChild, newChild, oldMap = {}, newMap = {};
               newTree.selectedOpen = oldTree.selectedOpen;
               if (newTree.children) {
@@ -44,10 +42,7 @@
                   newChild = newTree.children[i];
                   // If no idBod, then it's a node (category)
                   if (!angular.isDefined(oldChild.idBod)) {
-                    retainTreeState({
-                      oldTree: oldChild,
-                      newTree: newChild
-                    });
+                    retainTreeState(newChild, oldChild);
                   } else {
                     oldMap[oldChild.idBod] = oldChild;
                     newMap[newChild.idBod] = newChild;
@@ -60,9 +55,50 @@
               }
             };
 
+            var handleTree = function(newTree, oldTree) {
+              var i;
+              var id;
+              var map = scope.map;
+              var layers = map.getLayers().getArray();
+              var leaves;
+
+              var addDefaultLayersToMap = true;
+              if (!angular.isDefined(oldTree)) {
+                for (i = 0; i < layers.length; ++i) {
+                  id = layers[i].get('id');
+                  if (!gaLayers.getLayer(id) ||
+                      !gaLayers.getLayerProperty(id, 'background')) {
+                    addDefaultLayersToMap = false;
+                    break;
+                  }
+                }
+              }
+
+              if (addDefaultLayersToMap) {
+                visitTreeLeaves(newTree, function(leaf) {
+                  if (leaf.selectedOpen && !angular.isDefined(
+                      gaCatalogtreeMapUtils.getMapLayer(map, leaf.idBod))) {
+                    gaCatalogtreeMapUtils.addLayer(map, leaf);
+                  }
+                });
+              } else {
+                leaves = {};
+                visitTreeLeaves(newTree, function(leaf) {
+                  leaf.selectedOpen = false;
+                  leaves[leaf.idBod] = leaf;
+                });
+                for (i = 0; i < layers.length; ++i) {
+                  id = layers[i].get('id');
+                  if (leaves.hasOwnProperty(id)) {
+                    leaves[id].selectedOpen = true;
+                  }
+                }
+              }
+            };
+
             var updateCatalogTree = function() {
               var url = scope.options.catalogUrlTemplate
-                  .replace('{Topic}', currentTopic);
+                  .replace('{Topic}', currentTopicId);
               return $http.get(url, {
                 params: {
                   'lang': $translate.uses()
@@ -77,63 +113,19 @@
               });
             };
 
-            scope.$on('$translateChangeEnd', function() {
-              if (angular.isDefined(currentTopic)) {
-                updateCatalogTree().then(function(oldAndNewTrees) {
-                  if (angular.isDefined(oldAndNewTrees.oldTree)) {
-                    retainTreeState(oldAndNewTrees);
-                  }
-                });
-              }
-            });
-
-            scope.$on('gaLayersChange', function() {
+            scope.$on('gaLayersChange', function(event, data) {
+              currentTopicId = data.topicId;
               updateCatalogTree().then(function(trees) {
-                var i;
-                var id;
-                var map = scope.map;
-                var layers = map.getLayers().getArray();
-                var leaves;
                 var oldTree = trees.oldTree;
                 var newTree = trees.newTree;
-
-                var addDefaultLayersToMap = true;
-                if (!angular.isDefined(oldTree)) {
-                  for (i = 0; i < layers.length; ++i) {
-                    id = layers[i].get('id');
-                    if (!gaLayers.getLayer(id) ||
-                        !gaLayers.getLayerProperty(id, 'background')) {
-                      addDefaultLayersToMap = false;
-                      break;
-                    }
+                if (data.labelsOnly) {
+                  if (angular.isDefined(oldTree)) {
+                    retainTreeState(newTree, oldTree);
                   }
-                }
-
-                if (addDefaultLayersToMap) {
-                  visitTreeLeaves(newTree, function(leaf) {
-                    if (leaf.selectedOpen && !angular.isDefined(
-                        gaCatalogtreeMapUtils.getMapLayer(map, leaf.idBod))) {
-                      gaCatalogtreeMapUtils.addLayer(map, leaf);
-                    }
-                  });
                 } else {
-                  leaves = {};
-                  visitTreeLeaves(newTree, function(leaf) {
-                    leaf.selectedOpen = false;
-                    leaves[leaf.idBod] = leaf;
-                  });
-                  for (i = 0; i < layers.length; ++i) {
-                    id = layers[i].get('id');
-                    if (leaves.hasOwnProperty(id)) {
-                      leaves[id].selectedOpen = true;
-                    }
-                  }
+                  handleTree(newTree, oldTree);
                 }
               });
-            });
-
-            scope.$on('gaTopicChange', function(event, topic) {
-              currentTopic = topic.id;
             });
 
             scope.map.getLayers().on('remove', function(evt) {
