@@ -143,6 +143,22 @@
                 return res;
               };
 
+              var getLocationLabel = function(attrs) {
+                var label = attrs.label;
+                if (attrs.origin == 'zipcode') {
+                  label = $translate('plz') + ' ' + label;
+                } else if (attrs.origin == 'kantone') {
+                  label = $translate('ct') + ' ' + label;
+                } else if (attrs.origin == 'district') {
+                  label = $translate('district') + ' ' + label;
+                } else if (attrs.origin == 'parcel') {
+                  label += ' ' + $translate('parcel');
+                } else if (attrs.origin == 'feature') {
+                  label += ' ' + $translate('feature');
+                }
+                return label;
+              }
+
               var typeAheadDatasets = [
                 {
                   header: locationsHeaderTemplate,
@@ -151,7 +167,7 @@
                   valueKey: 'inputVal',
                   limit: 30,
                   template: function(context) {
-                    var label = context.attrs.label;
+                    var label = getLocationLabel(context.attrs);
                     var template = '<div class="tt-search" ' +
                         '>' + label + '</div>';
                     return template;

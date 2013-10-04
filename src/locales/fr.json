@@ -151,5 +151,10 @@
 	"uploading_file": "Chargement du fichier...",
 	"void_layer": "Fond blanc",
 	"wms": "WMS",
-	"wms_max_size_allowed": "Taille maximum WMS autorisée"
+	"wms_max_size_allowed": "Taille maximum WMS autorisée",
+  "plz": "NPA",
+  "ct": "Ct.",
+  "district": "district",
+  "parcel": "Parcelle",
+  "feature": "Objet"
 }

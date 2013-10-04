@@ -152,5 +152,10 @@
   "homescreen_title": "",
   "homescreen_content": "",
   "change_topic": "",
-  "last_available_year": ""
+  "last_available_year": "",
+  "plz": "",
+  "ct": "",
+  "district": "",
+  "parcel": "",
+  "feature": ""
 }
