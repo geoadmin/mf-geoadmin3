@@ -54,6 +54,22 @@ class LHG(Base, Vector):
 register('ch.bafu.hydrologie-hydromessstationen', LHG)
 
 
+class Temperaturmessnetz(Base, Vector):
+    # view in a schema
+    __tablename__ = 'temperaturmessnetz'
+    __table_args__ = ({'schema': 'hydrologie', 'autoload': False})
+    __esriId__ = 2004
+    __bodId__ = 'ch.bafu.hydrologie-wassertemperaturmessstationen'
+    __template__ = 'templates/htmlpopup/temperaturmessnetz.mako'
+    __queryable_attributes__ = ['nr','name']
+    id = Column('nr', Integer, primary_key=True)
+    url = Column('url', Text)
+    name = Column('name', Text)
+    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+
+register('ch.bafu.hydrologie-wassertemperaturmessstationen', Temperaturmessnetz)
+
+
 class BLN(Base, Vector):
     # view in a schema
     __tablename__ = 'bln'
