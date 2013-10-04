@@ -45,6 +45,7 @@ def remove_accents(input_str):
     input_str = input_str.replace('/', '')
     input_str = input_str.replace('(', '')
     input_str = input_str.replace(')', '')
+    input_str = input_str.replace('"', '')
     return ''.join(c for c in unicodedata.normalize('NFD', input_str) if unicodedata.category(c) != 'Mn')
 
 
