@@ -70,6 +70,35 @@ class Temperaturmessnetz(Base, Vector):
 register('ch.bafu.hydrologie-wassertemperaturmessstationen', Temperaturmessnetz)
 
 
+class Teileinzugsgebiete2 (Base, Vector):
+    # view in a schema
+    __tablename__ = 'ebene_2km'
+    __table_args__ = ({'schema': 'wasser', 'autoload': False})
+    __esriId__ = 2005
+    __bodId__ = 'ch.bafu.wasser-teileinzugsgebiete_2'
+    __template__ = 'templates/htmlpopup/teileinzugsgebiete2.mako'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    teilezgnr = Column('teilezgnr', Integer)
+    gwlnr = Column('gwlnr', Text)
+    measure = Column('measure', Integer)
+    teilezgfla = Column('teilezgfla', Text)
+    ezgflaeche = Column('ezgflaeche', Text)
+    typ2_de = Column ('typ2_de', Text)
+    flussgb_de = Column('flussgb_de', Text)
+    typ2_fr = Column ('typ2_fr', Text)
+    flussgb_fr = Column('flussgb_fr', Text)
+    typ2_it = Column ('typ2_it', Text)
+    flussgb_it = Column('flussgb_it', Text)
+    typ2_rm = Column ('typ2_rm', Text)
+    flussgb_rm = Column('flussgb_rm', Text)
+    typ2_en = Column ('typ2_en', Text)
+    flussgb_en = Column('flussgb_en', Text)
+    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+
+register('ch.bafu.wasser-teileinzugsgebiete_2', Teileinzugsgebiete2)
+
+
+
 class BLN(Base, Vector):
     # view in a schema
     __tablename__ = 'bln'
