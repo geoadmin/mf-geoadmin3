@@ -55,7 +55,7 @@
   <body ng-class="[topicId, globals.searchFocused ? 'search-focused' : '']">
     <div id="header" class="navbar navbar-fixed-top">
       <a ng-href="?topic={{topicId}}&lang={{langId}}" id="logo" class="pull-left">
-        <img ng-src="${version}img/logo.ch.{{langId}}.png" style="width: 246px; height: 89px"/>
+        <img ng-if="langId" ng-src="${version}img/logo.ch.{{langId}}.png" style="width: 246px; height: 89px"/>
         <img src="${version}img/logo.ch.small.png" style="width: 19px; height: 19.5px"/>
       </a>
       <div id="search-container" ng-controller="GaSearchController">
