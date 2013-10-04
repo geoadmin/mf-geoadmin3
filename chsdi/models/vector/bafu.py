@@ -70,6 +70,23 @@ class Temperaturmessnetz(Base, Vector):
 register('ch.bafu.hydrologie-wassertemperaturmessstationen', Temperaturmessnetz)
 
 
+class Gewaesserzustandst (Base, Vector):
+    # view in a schema
+    __tablename__ = 'dbgz'
+    __table_args__ = ({'schema': 'hydrologie', 'autoload': False})
+    __esriId__ = 2006
+    __bodId__ = 'ch.bafu.hydrologie-gewaesserzustandsmessstationen'
+    __template__ = 'templates/htmlpopup/gewaesserzustandsmessstationen.mako'
+    __queryable_attributes__ = ['nr','name','gewaesser']
+    id = Column('bgdi_id', Integer, primary_key=True)
+    name = Column('name', Text)
+    nr = Column('nr', Numeric)
+    gewaesser = Column('gewaesser', Text)
+    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+
+register('ch.bafu.hydrologie-gewaesserzustandsmessstationen', Gewaesserzustandst)
+
+
 class Teileinzugsgebiete2 (Base, Vector):
     # view in a schema
     __tablename__ = 'ebene_2km'
