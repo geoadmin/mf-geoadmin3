@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from pyramid.view import view_config
+import pyramid.httpexceptions as exc
 
 from chsdi.lib.validation import SearchValidation
 from chsdi.lib.helpers import remove_accents
@@ -48,14 +49,13 @@ class Search(SearchValidation):
             self._layer_search()
         if self.typeInfo == 'features':
             #search all features within bounding box
-            self.searchText = ''
-            self._feature_search()
+            self._feature_bbox_search()
         if self.typeInfo == 'locations':
             #search all features with text and bounding box
             self.searchText = remove_accents(
                 self.request.params.get('searchText')
             )
-            self._feature_location_search()
+            self._feature_search()
             #swiss search
             self._swiss_search(self.LIMIT)
         return self.results
@@ -102,16 +102,15 @@ class Search(SearchValidation):
         temp = self.sphinx.RunQueries()
         return self._parse_feature_results(temp)
 
-    def _feature_location_search(self):
-        searchText = self._query_detail('@detail')
-        if self.quadindex is None or \
-           self.featureIndexes is None or \
-           len(searchText) < 1:
-            return 0
+    def _feature_bbox_search(self):
+        if self.quadindex is None:
+            raise exc.HTTPBadRequest('Please provide a bbox parameter') 
+
+        if self.featureIndexes is None:
+            raise exc.HTTPBadRequest('Please provide')
 
         self.sphinx.SetLimits(0, self.FEATURE_LIMIT)
         searchText += '@geom_quadindex ' + self.quadindex + '*'
-        self._add_feature_queries(searchText)
         temp = self.sphinx.RunQueries()
         return self._parse_feature_results(temp)
 
@@ -147,6 +146,9 @@ class Search(SearchValidation):
     def _parse_feature_results(self, results):
         nb_match = 0
         for i in range(0, len(results)):
+            if 'error' in results[i]:
+                if results[i]['error'] != '':
+                    raise exc.HTTPNotFound(results[i]['error'])
             if results[i] is not None:
                 nb_match += len(results[i]['matches'])
                 # Add results to the list
