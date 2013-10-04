@@ -263,16 +263,24 @@
 
         $rootScope.$on('gaTopicChange', function(event, topic) {
           currentTopic = topic;
-          loadForTopic(topic.id, $translate.uses()).then(function() {
-            $rootScope.$broadcast('gaLayersChange', {labelsOnly: false});
-          });
+          // do nothing if there's no lang set
+          var currentLang = $translate.uses();
+          if (angular.isDefined(currentLang)) {
+            loadForTopic(topic.id, currentLang).then(function() {
+              $rootScope.$broadcast('gaLayersChange',
+                  {labelsOnly: false});
+            });
+          }
         });
 
         $rootScope.$on('$translateChangeEnd', function(event) {
           // do nothing if there's no topic set
           if (angular.isDefined(currentTopic)) {
+            // Do not set labelsOnly to true if initial load
+            var labelsOnly = angular.isDefined(layers);
             loadForTopic(currentTopic.id, $translate.uses()).then(function() {
-              $rootScope.$broadcast('gaLayersChange', {labelsOnly: true});
+              $rootScope.$broadcast('gaLayersChange',
+                  {labelsOnly: labelsOnly});
             });
           }
         });
