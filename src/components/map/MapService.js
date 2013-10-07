@@ -132,6 +132,7 @@
             })
           });
           gaDefinePropertiesForLayer(olLayer);
+          olLayer.permalink = (options.id);
           return olLayer;
         };
 
@@ -355,6 +356,7 @@
           }
           if (angular.isDefined(olLayer)) {
             gaDefinePropertiesForLayer(olLayer);
+            olLayer.permalink = true;
           }
           return olLayer;
         };
@@ -501,10 +503,6 @@
       function updateLayersOpacityParam(layers) {
         var opacityTotal = 0;
         var opacityValues = $.map(layers, function(layer) {
-          // If no id the layer is not added in the permalink
-          // like the KML layer added after uploading a local file
-          if (!layer.get('id'))
-            return;
           var opacity = Math.round(layer.getOpacity() * 100) / 100;
           opacityTotal += +opacity;
           return opacity;
@@ -520,10 +518,6 @@
       function updateLayersVisibilityParam(layers) {
         var visibilityTotal = true;
         var visibilityValues = $.map(layers, function(layer) {
-          // If no id the layer is not added in the permalink
-          // like the KML layer added after uploading a local file
-          if (!layer.get('id'))
-            return;
           var visibility = layer.visible;
           visibilityTotal = visibilityTotal && visibility;
           return visibility;
@@ -543,7 +537,7 @@
         scope.layers = map.getLayers().getArray();
 
         scope.layerFilter = function(layer) {
-          return !layer.background && !layer.preview;
+          return !layer.background && !layer.preview && layer.permalink;
         };
 
         scope.$watchCollection('layers | filter:layerFilter',

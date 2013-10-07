@@ -293,6 +293,7 @@
                   scope.$apply(function() {
                     scope.isDropped = true;
                     scope.files = files;
+                    scope.currentTab = 1;
                   });
 
                 } else if (evt.originalEvent.dataTransfer.types) {
@@ -305,6 +306,7 @@
                     scope.$apply(function() {
                       scope.isDropped = true;
                       scope.fileUrl = text;
+                      scope.currentTab = 2;
                     });
 
                   } else {

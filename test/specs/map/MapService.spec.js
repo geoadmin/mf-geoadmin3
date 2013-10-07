@@ -106,6 +106,7 @@ describe('ga_map_service', function() {
         bodId: bodId,
         source: new ol.source.OSM()
       });
+      layer.permalink = true;
       map.addLayer(layer);
       return layer;
     };
