@@ -266,7 +266,8 @@ class wasserentnahmeWkB(Base, Vector):
     __esriId__ = 2013
     __bodId__ = 'ch.bafu.wasser-entnahme'
     __template__ = 'templates/htmlpopup/wasserentnahme_wk_b.mako'
-    id = Column('rwknr', Integer, primary_key=True)
+    id = Column('gid', Text, primary_key=True)
+    rwknr = Column('rwknr', Text)
     kanton = Column('kanton', Text)
     kantoncode = Column('kantoncode', Text)
     ent_gew = Column('ent_gew', Text)
@@ -283,7 +284,7 @@ class wasserentnahmeWkW(Base, Vector):
     __esriId__ = 2014
     __bodId__ = 'ch.bafu.wasser-entnahme'
     __template__ = 'templates/htmlpopup/wasserentnahme_wk_w.mako'
-    id = Column('gid', Integer, primary_key=True)
+    id = Column('gid', Text, primary_key=True)
     rwknr = Column('rwknr', Text)
     kanton = Column('kanton', Text)
     kantoncode = Column('kantoncode', Text)
@@ -291,4 +292,39 @@ class wasserentnahmeWkW(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bafu.wasser-entnahme', wasserentnahmeWkW)
+
+
+class wasserentnahmeAnB(Base, Vector):
+    # view in a schema
+    __tablename__ = 'invent_ent_andere_bedeutend'
+    __table_args__ = ({'schema': 'wasser', 'autoload': False})
+    __esriId__ = 2015
+    __bodId__ = 'ch.bafu.wasser-entnahme'
+    __template__ = 'templates/htmlpopup/wasserentnahme_an_b.mako'
+    id = Column('gid', Text, primary_key=True)
+    rwknr = Column('rwknr', Text)
+    kanton = Column('kanton', Text)
+    kantoncode = Column('kantoncode', Text)
+    ent_gew = Column('ent_gew', Text)
+    link = Column('link', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.wasser-entnahme', wasserentnahmeAnB)
+
+
+class wasserentnahmeAnW(Base, Vector):
+    # view in a schema
+    __tablename__ = 'invent_ent_andere_weitere'
+    __table_args__ = ({'schema': 'wasser', 'autoload': False})
+    __esriId__ = 2016
+    __bodId__ = 'ch.bafu.wasser-entnahme'
+    __template__ = 'templates/htmlpopup/wasserentnahme_an_w.mako'
+    id = Column('gid', Text, primary_key=True)
+    rwknr = Column('rwknr', Text)
+    kanton = Column('kanton', Text)
+    kantoncode = Column('kantoncode', Text)
+    ent_gew = Column('ent_gew', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.wasser-entnahme', wasserentnahmeAnW)
 
