@@ -72,7 +72,8 @@
               scope.topics = result.data.topics;
               angular.forEach(scope.topics, function(value) {
                 value.label = value.id;
-                value.thumbnail = 'http://placehold.it/110x60';
+                value.thumbnail =
+                    options.thumbnailUrlTemplate.replace('{Topic}', value.id);
                 value.langs = extendLangs(value.langs);
               });
               initTopics();
