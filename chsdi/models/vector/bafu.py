@@ -391,3 +391,22 @@ class flachmooreReg(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bafu.bundesinventare-flachmoore_regional', flachmooreReg)
+
+
+class paerke_nationaler_bedeutung(Base, Vector):
+    # view in a schema
+    __tablename__ = 'paerke_nationaler_bedeutung'
+    __table_args__ = ({'schema': 'schutzge', 'autoload': False})
+    __esriId__ = 2021
+    __bodId__ = 'ch.bafu.schutzgebiete-paerke_nationaler_bedeutung'
+    __template__ = 'templates/htmlpopup/paerke_nationaler_bedeutung.mako'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    park_name = Column('park_name', Text)
+    park_nr = Column('park_nr', Numeric)
+    park_statu = Column('park_statu', Text)
+    park_fl = Column('park_fl', Numeric)
+    park_gf = Column('park_gf', Numeric)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.schutzgebiete-paerke_nationaler_bedeutung', paerke_nationaler_bedeutung)
+
