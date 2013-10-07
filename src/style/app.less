@@ -869,3 +869,27 @@ ul.panel-body-wide {
     opacity:1;
   }
 }
+
+// ***** IE10 input range
+input[type=range] {
+  &::-ms-fill-upper {
+    background: #fff;
+  }
+  &::-ms-fill-lower {
+    background: #666;
+  }
+  &::-ms-track {
+    height: 5px;
+    color: #666;
+    border-radius: 5px;
+    border: 1px solid #000;
+    margin: 0;
+  }
+  &::-ms-thumb {
+    background-color: #000;
+    border: 1px solid #000;
+  }
+  &::-ms-tooltip {
+    display: none;
+  }
+}
