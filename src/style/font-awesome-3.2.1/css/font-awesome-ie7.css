@@ -73,6 +73,12 @@ a [class*=" icon-"] {
 .icon-zoom-in {
   *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf00e;');
 }
+.icon-gear {
+  *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf013;');
+}
+.icon-cog {
+  *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf013;');
+}
 .icon-refresh {
   *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf021;');
 }
@@ -105,15 +111,6 @@ a [class*=" icon-"] {
 }
 .icon-warning-sign {
   *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf071;');
-}
-.icon-gears {
-  *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf085;');
-}
-.icon-gear {
-  *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf085;');
-}
-.icon-cogs {
-  *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf085;');
 }
 .icon-external-link {
   *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf08e;');

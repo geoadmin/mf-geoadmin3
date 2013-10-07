@@ -42,6 +42,8 @@ a .icon-stack,a .icon-spin{display:inline-block;text-decoration:none;}
 a .icon-rotate-90:before,a .icon-rotate-180:before,a .icon-rotate-270:before,a .icon-flip-horizontal:before,a .icon-flip-vertical:before{display:inline-block;}
 .icon-search:before{content:"\f002";}
 .icon-zoom-in:before{content:"\f00e";}
+.icon-gear:before{content:"\f013";}
+.icon-cog:before{content:"\f013";}
 .icon-refresh:before{content:"\f021";}
 .icon-qrcode:before{content:"\f029";}
 .icon-print:before{content:"\f02f";}
@@ -53,9 +55,6 @@ a .icon-rotate-90:before,a .icon-rotate-180:before,a .icon-rotate-270:before,a .
 .icon-plus:before{content:"\f067";}
 .icon-minus:before{content:"\f068";}
 .icon-warning-sign:before{content:"\f071";}
-.icon-gears:before{content:"\f085";}
-.icon-gear:before{content:"\f085";}
-.icon-cogs:before{content:"\f085";}
 .icon-external-link:before{content:"\f08e";}
 .icon-phone:before{content:"\f095";}
 .icon-twitter:before{content:"\f099";}
