@@ -24,6 +24,12 @@
       var p = gaPermalink.getParams();
       mobile = (mobile && p.mobile != 'false') || p.mobile == 'true';
 
+      if (msie == 10) {
+        $('body').on('change', 'input[type=range]', function() {
+          $(this).trigger('input');
+        });
+      }
+
       return {
         msie: msie,
         ios: ios,
