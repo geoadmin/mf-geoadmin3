@@ -4,12 +4,12 @@
   var module = angular.module('ga_tooltip_controller', []);
 
   module.controller('GaTooltipController',
-      function($scope, gaGlobalOptions) {
+      function($scope, gaGlobalOptions, gaBrowserSniffer) {
 
         var baseUrl = gaGlobalOptions.serviceUrl + '/rest/services';
 
         $scope.options = {
-          tolerance: 5,
+          tolerance: gaBrowserSniffer.touch ? 15 : 5,
           identifyUrlTemplate: baseUrl + '/{Topic}/MapServer/identify',
           htmlUrlTemplate: baseUrl + '/{Topic}/MapServer/{Layer}/{Feature}/htmlpopup'
         };
