@@ -468,3 +468,21 @@ class wege_wildruhezonen_jagdbanngebiete(Base, Vector):
 
 register('ch.bafu.wege-wildruhezonen-jagdbanngebiete', wege_wildruhezonen_jagdbanngebiete)
 
+
+class steinbockkolonien(Base, Vector):
+    # view in a schema
+    __tablename__ = 'sb'
+    __table_args__ = ({'schema': 'fauna', 'autoload': False})
+    __esriId__ = 2025
+    __bodId__ = 'ch.bafu.fauna-steinbockkolonien'
+    __template__ = 'templates/htmlpopup/steinbockkolonien.mako'
+    id = Column('gid', Integer, primary_key=True)
+    sb_name = Column('sb_name', Text)
+    sb_obj = Column('sb_obj', Integer)
+    sb_kt = Column('sb_kt', Text)
+    sb_fl = Column('sb_fl', Numeric)
+    sb_gf = Column('sb_gf', Numeric)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.fauna-steinbockkolonien', steinbockkolonien)
+
