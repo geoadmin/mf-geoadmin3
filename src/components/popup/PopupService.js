@@ -50,6 +50,10 @@
       Popup.prototype.close = function() {
         this.element.hide();
 
+        var onCloseCallback = this.scope.options.onCloseCallback;
+        if (angular.isFunction(onCloseCallback)) {
+            onCloseCallback(this);
+        }
         var destroyOnClose = this.scope.options.destroyOnClose;
         if (destroyOnClose !== false) {
           this.destroy();
