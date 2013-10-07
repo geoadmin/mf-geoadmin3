@@ -10,16 +10,17 @@
   a {
     cursor: pointer;
     text-decoration: none;
-    color: rgba(13, 13, 13, 1);
-    display: none;   
-     
+    display: none; 
+    height: 44px;  
+    background: data-uri('time_black.png');
+    
     &.enabled {
       display: block;
     }
 
     &.active {
       display: block;
-      color: rgba(255, 0, 0, 1);
+      background: data-uri('time_red.png');
     }
   }
 
@@ -34,7 +35,7 @@
   width: auto;
   height: auto;
   position: absolute;  
-  top: 130px;
+  top: 96px;
   left: 50%;
   margin-left: -300px; 
   background-color: rgba(255, 255, 255, 0.9);
@@ -72,7 +73,8 @@
   
   select {
     display: inline-block;
-    width: 150px; 
+    width: 150px;
+    top: 57px; 
   }
 
   @media (max-width: @screen-tablet) {
@@ -80,9 +82,8 @@
   }
 
   @media (max-width: @screen-phone) {
-    top: 70px;
+    top: 57px;
   }
-
 }
 
 .time-selector-slider {
@@ -103,12 +104,9 @@
       height: 30px;
       border: none;
       border-radius: 0px; 
-      margin-left: 1px;
       cursor: move;
       z-index: 0;
-      /*TODO: use font-awesome icon*/
-      background: url(http://map.swisstopo.admin.ch/main/wsgi/lib/GeoAdmin.ux/TimeSeries/img/slider-middle.png)
-      no-repeat center top;
+      background: data-uri('pointer.png') no-repeat 2px 1px;
 
       &::after {
         content: none;
