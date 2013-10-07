@@ -88,6 +88,16 @@ a [class*=" icon-"] {
 }
 
 
+.icon-gear {
+  @include ie7icon('&#xf013;');
+}
+
+
+.icon-cog {
+  @include ie7icon('&#xf013;');
+}
+
+
 .icon-refresh {
   @include ie7icon('&#xf021;');
 }
@@ -143,18 +153,13 @@ a [class*=" icon-"] {
 }
 
 
-.icon-gears {
-  @include ie7icon('&#xf085;');
-}
-
-
 .icon-gear {
-  @include ie7icon('&#xf085;');
+  @include ie7icon('&#xf013;');
 }
 
 
-.icon-cogs {
-  @include ie7icon('&#xf085;');
+.icon-cog {
+  @include ie7icon('&#xf013;');
 }
 
 
