@@ -451,3 +451,20 @@ class wildruhezonen_jagdbanngebiete(Base, Vector):
 
 register('ch.bafu.wildruhezonen-jagdbanngebiete', wildruhezonen_jagdbanngebiete)
 
+
+class wege_wildruhezonen_jagdbanngebiete(Base, Vector):
+    # view in a schema
+    __tablename__ = 'wege_wildruhezonen_jagdbanngebiete'
+    __table_args__ = ({'schema': 'schutzge', 'autoload': False})
+    __esriId__ = 2024
+    __bodId__ = 'ch.bafu.wege-wildruhezonen-jagdbanngebiete'
+    __template__ = 'templates/htmlpopup/wege_wildruhezonen_jagdbanngebiete.mako'
+    id = Column('weg_id', Integer, primary_key=True)
+    jb_obj = Column('jb_obj', Integer)
+    wrz_obj = Column('wrz_obj', Integer)
+    length_km = Column('length_km', Numeric)
+    weg_wrz_jb_version = Column('weg_wrz_jb_version', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.wege-wildruhezonen-jagdbanngebiete', wege_wildruhezonen_jagdbanngebiete)
+
