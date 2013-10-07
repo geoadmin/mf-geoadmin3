@@ -340,7 +340,7 @@
       function updateLayersOpacityParam(layers) {
         var opacityTotal = 0;
         var opacityValues = $.map(layers, function(layer) {
-          var opacity = layer.getOpacity();
+          var opacity = Math.round(layer.getOpacity() * 100) / 100;
           opacityTotal += +opacity;
           return opacity;
         });
