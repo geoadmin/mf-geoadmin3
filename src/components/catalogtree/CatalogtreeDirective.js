@@ -143,27 +143,25 @@
               var layerIds = [];
               if (!handlingTree && angular.isDefined(scope.root)) {
                 angular.forEach(layers, function(layer) {
-                  layerIds.push(layer.get('id'));
+                  var id = layer.get('id');
+                  if (angular.isDefined(id)) {
+                    layerIds.push(id);
+                  }
                 });
                 updateSelectionInTree(scope.root, layerIds);
-                }
+              }
             });
           }
         };
 
-        function updateSelectionInTree(node, layerIds) {
-          var i;
-          if (angular.isDefined(node.idBod)) {
+        function updateSelectionInTree(root, layerIds) {
+          visitTreeLeaves(root, function(node) {
             if (layerIds.indexOf(node.idBod) == -1) {
               node.selectedOpen = false;
             } else {
               node.selectedOpen = true;
             }
-          } else if (angular.isDefined(node.children)) {
-            for (i = 0; i < node.children.length; i++) {
-              updateSelectionInTree(node.children[i], layerIds);
-            }
-          }
+          });
         }
 
         function visitTreeLeaves(node, fn) {
