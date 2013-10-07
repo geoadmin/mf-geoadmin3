@@ -427,4 +427,28 @@
     };
   });
 
+  module.provider('gaHighlightFeature', function() {
+    this.$get = function($q, $http) {
+      var url = this.url;
+      var getFeatures = function(layer, ids) {
+        return $q.all($.map(ids, function(id) {
+          return $http.get(url + layer + '/' + id);
+        }));
+      };
+
+      return {
+          recenter: function(map, layer, ids) {
+            getFeatures(layer, ids).then(function(results) {
+              var extent = ol.extent.createEmpty();
+              angular.forEach(results, function(result) {
+                var bbox = result.data.feature.bbox;
+                ol.extent.extend(extent, bbox);
+              });
+              map.getView().fitExtent(extent, map.getSize());
+            });
+          }
+      };
+    };
+  });
+
 })();
