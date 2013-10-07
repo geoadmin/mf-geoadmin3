@@ -572,7 +572,7 @@
               }
               if (angular.isDefined(layer)) {
                 layer.visible = visible;
-                layer.opacity = opacity;
+                layer.setOpacity(opacity);
                 map.addLayer(layer);
               }
 
