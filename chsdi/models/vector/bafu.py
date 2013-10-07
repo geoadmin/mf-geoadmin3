@@ -118,7 +118,7 @@ register('ch.bafu.wasser-teileinzugsgebiete_2', Teileinzugsgebiete2)
 class Teileinzugsgebiete40 (Base, Vector):
     # view in a schema
     __tablename__ = 'ebene_40km'
-    __table_args__ = ({'schema': 'wasser', 'autoload': True})
+    __table_args__ = ({'schema': 'wasser', 'autoload': False})
     __esriId__ = 2007
     __bodId__ = 'ch.bafu.wasser-teileinzugsgebiete_40'
     __template__ = 'templates/htmlpopup/teileinzugsgebiete40.mako'
@@ -128,6 +128,47 @@ class Teileinzugsgebiete40 (Base, Vector):
     the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
 
 register('ch.bafu.wasser-teileinzugsgebiete_40', Teileinzugsgebiete40)
+
+
+class Gebietsauslaesse (Base, Vector):
+    # view in a schema
+    __tablename__ = 'outlets'
+    __table_args__ = ({'schema': 'wasser', 'autoload': False})
+    __esriId__ = 2008
+    __bodId__ = 'ch.bafu.wasser-gebietsauslaesse'
+    __template__ = 'templates/htmlpopup/gebietsauslaesse.mako'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    ezgnr = Column('ezgnr', Integer)
+    gwlnr = Column('gwlnr', Text)
+    measure = Column('measure', Integer)
+    gesamtflae = Column('gesamtflae', Text)
+    gewaessern = Column('gewaessern', Text)
+    anteil_ch = Column('anteil_ch', Text)
+    kanal_de = Column('kanal_de', Text)
+    kanal_fr = Column('kanal_fr', Text)
+    kanal_it = Column('kanal_it', Text)
+    kanal_rm = Column('kanal_rm', Text)
+    kanal_en = Column('kanal_en', Text)
+    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+
+register('ch.bafu.wasser-gebietsauslaesse', Gebietsauslaesse)
+
+
+class AU(Base, Vector):
+    # view in a schema
+    __tablename__ = 'au'
+    __table_args__ = ({'schema': 'bundinv', 'autoload': False})
+    __esriId__ = 2009
+    __bodId__ = 'ch.bafu.bundesinventare-auen'
+    __template__ = 'templates/htmlpopup/auen.mako'
+    __queryable_attributes__ = ['nr','name']
+    id = Column('gid', Integer, primary_key=True)
+    au_obj = Column('au_obj', Integer)
+    au_objtyp = Column('au_objtyp', Text)
+    au_fl = Column('au_fl', Numeric)
+    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+
+register('ch.bafu.bundesinventare-auen', AU)
 
 
 class BLN(Base, Vector):
