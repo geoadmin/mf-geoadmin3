@@ -328,3 +328,19 @@ class wasserentnahmeAnW(Base, Vector):
 
 register('ch.bafu.wasser-entnahme', wasserentnahmeAnW)
 
+
+class wasserleitungen(Base, Vector):
+    # view in a schema
+    __tablename__ = 'leitungen'
+    __table_args__ = ({'schema': 'wasser', 'autoload': False})
+    __esriId__ = 2017
+    __bodId__ = 'ch.bafu.wasser-leitungen'
+    __template__ = 'templates/htmlpopup/wasserleitungen.mako'
+    id = Column('gid', Integer, primary_key=True)
+    kanton = Column('kanton', Text)
+    kantoncode = Column('kantoncode', Text)
+    rwknr = Column('rwknr', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.wasser-leitungen', wasserleitungen)
+
