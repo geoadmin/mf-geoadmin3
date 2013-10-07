@@ -26,6 +26,8 @@
           },
           link: function(scope, element, attrs) {
             var currentTopicId;
+            var handlingTree = false;
+            scope.layers = scope.map.getLayers().getArray();
 
             // This assumes that both trees contain the same
             // elements, categories are in the same order and
@@ -59,8 +61,10 @@
               var i;
               var id;
               var map = scope.map;
-              var layers = map.getLayers().getArray();
+              var layers = scope.layers;
               var leaves;
+
+              handlingTree = true;
 
               var addDefaultLayersToMap = true;
               if (!angular.isDefined(oldTree)) {
@@ -94,6 +98,8 @@
                   }
                 }
               }
+
+              handlingTree = false;
             };
 
             var updateCatalogTree = function() {
@@ -128,25 +134,34 @@
               });
             });
 
-            scope.map.getLayers().on('remove', function(evt) {
-              var layer = evt.getElement();
-              if (layerFilter(layer)) {
-                deselectInTree(scope.root, layer.get('id'));
-              }
+            scope.layerFilter = function(layer) {
+              return !layer.background && !layer.preview;
+            };
+
+            scope.$watchCollection('layers | filter:layerFilter',
+                function(layers) {
+              var layerIds = [];
+              if (!handlingTree && angular.isDefined(scope.root)) {
+                angular.forEach(layers, function(layer) {
+                  layerIds.push(layer.get('id'));
+                });
+                updateSelectionInTree(scope.root, layerIds);
+                }
             });
           }
         };
 
-        function layerFilter(layer) {
-          return !layer.background && !layer.preview;
-        }
-
-        function deselectInTree(node, id) {
-          if (node.idBod == id) {
-            node.selectedOpen = false;
-          } else if (node.children) {
-            for (var i = 0; i < node.children.length; i++) {
-              deselectInTree(node.children[i], id);
+        function updateSelectionInTree(node, layerIds) {
+          var i;
+          if (angular.isDefined(node.idBod)) {
+            if (layerIds.indexOf(node.idBod) == -1) {
+              node.selectedOpen = false;
+            } else {
+              node.selectedOpen = true;
+            }
+          } else if (angular.isDefined(node.children)) {
+            for (i = 0; i < node.children.length; i++) {
+              updateSelectionInTree(node.children[i], layerIds);
             }
           }
         }
