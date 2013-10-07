@@ -344,3 +344,19 @@ class wasserleitungen(Base, Vector):
 
 register('ch.bafu.wasser-leitungen', wasserleitungen)
 
+
+class wasserrueckgabe(Base, Vector):
+    # view in a schema
+    __tablename__ = 'rueckgabe'
+    __table_args__ = ({'schema': 'wasser', 'autoload': False})
+    __esriId__ = 2018
+    __bodId__ = 'ch.bafu.wasser-rueckgabe'
+    __template__ = 'templates/htmlpopup/wasserrueckgabe.mako'
+    id = Column('gid', Integer, primary_key=True)
+    kanton = Column('kanton', Text)
+    kantoncode = Column('kantoncode', Text)
+    rwknr = Column('rwknr', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.wasser-rueckgabe', wasserrueckgabe)
+
