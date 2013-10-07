@@ -26,7 +26,6 @@
           },
           link: function(scope, element, attrs) {
             var currentTopicId;
-            var handlingTree = false;
             scope.layers = scope.map.getLayers().getArray();
 
             // This assumes that both trees contain the same
@@ -64,8 +63,6 @@
               var layers = scope.layers;
               var leaves;
 
-              handlingTree = true;
-
               var addDefaultLayersToMap = true;
               if (!angular.isDefined(oldTree)) {
                 for (i = 0; i < layers.length; ++i) {
@@ -98,8 +95,6 @@
                   }
                 }
               }
-
-              handlingTree = false;
             };
 
             var updateCatalogTree = function() {
@@ -141,7 +136,7 @@
             scope.$watchCollection('layers | filter:layerFilter',
                 function(layers) {
               var layerIds = [];
-              if (!handlingTree && angular.isDefined(scope.root)) {
+              if (angular.isDefined(scope.root)) {
                 angular.forEach(layers, function(layer) {
                   var id = layer.get('id');
                   if (angular.isDefined(id)) {
