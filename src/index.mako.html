@@ -52,7 +52,7 @@
     <link rel="shortcut icon" type="image/x-icon" href="${version}img/favicon.ico"/>
   </head>
 
-  <body ng-class="[topicId, globals.searchFocused ? 'search-focused' : '']">
+  <body ng-class="[topicId, globals.searchFocused ? 'search-focused' : '', globals.touch ? 'touch' : '']">
     <div id="header" class="navbar navbar-fixed-top">
       <a ng-href="?topic={{topicId}}&lang={{langId}}" id="logo" class="pull-left">
         <img ng-if="langId" ng-src="${version}img/logo.ch.{{langId}}.png" style="width: 246px; height: 89px"/>

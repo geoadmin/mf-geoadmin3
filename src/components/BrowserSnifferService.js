@@ -18,16 +18,17 @@
         var m = $window.matchMedia;
         return m && m('(max-width: ' + size + 'px)').matches;
       };
-      var mobile =
-        (('ontouchstart' in $window) || ('onmsgesturechange' in $window)) &&
-        (testSize(768));
-      var p = gaPermalink.getParams(),
-          mobile = (mobile && p.mobile != 'false') || p.mobile == 'true';
+      var touch = ('ontouchstart' in $window) ||
+          ('onmsgesturechange' in $window);
+      var mobile = touch && testSize(768);
+      var p = gaPermalink.getParams();
+      mobile = (mobile && p.mobile != 'false') || p.mobile == 'true';
 
       return {
         msie: msie,
         ios: ios,
         iosChrome: iosChrome,
+        touch: touch,
         mobile: mobile,
         phone: mobile && testSize(480)
       };
