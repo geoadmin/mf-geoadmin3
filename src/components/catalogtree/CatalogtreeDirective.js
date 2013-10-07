@@ -151,11 +151,7 @@
 
         function updateSelectionInTree(root, layerIds) {
           visitTreeLeaves(root, function(node) {
-            if (layerIds.indexOf(node.idBod) == -1) {
-              node.selectedOpen = false;
-            } else {
-              node.selectedOpen = true;
-            }
+            node.selectedOpen = layerIds.indexOf(node.idBod) >= 0;
           });
         }
 
