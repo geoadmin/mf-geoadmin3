@@ -26,6 +26,7 @@
           },
           link: function(scope, element, attrs) {
             var currentTopicId;
+            scope.layers = scope.map.getLayers().getArray();
 
             // This assumes that both trees contain the same
             // elements, categories are in the same order and
@@ -59,7 +60,7 @@
               var i;
               var id;
               var map = scope.map;
-              var layers = map.getLayers().getArray();
+              var layers = scope.layers;
               var leaves;
 
               var addDefaultLayersToMap = true;
@@ -128,27 +129,31 @@
               });
             });
 
-            scope.map.getLayers().on('remove', function(evt) {
-              var layer = evt.getElement();
-              if (layerFilter(layer)) {
-                deselectInTree(scope.root, layer.get('id'));
+            scope.layerFilter = function(layer) {
+              return !layer.background && !layer.preview;
+            };
+
+            scope.$watchCollection('layers | filter:layerFilter',
+                function(layers) {
+              var layerIds;
+              if (angular.isDefined(scope.root)) {
+                layerIds = [];
+                angular.forEach(layers, function(layer) {
+                  var id = layer.get('id');
+                  if (angular.isDefined(id)) {
+                    layerIds.push(id);
+                  }
+                });
+                updateSelectionInTree(scope.root, layerIds);
               }
             });
           }
         };
 
-        function layerFilter(layer) {
-          return !layer.background && !layer.preview;
-        }
-
-        function deselectInTree(node, id) {
-          if (node.idBod == id) {
-            node.selectedOpen = false;
-          } else if (node.children) {
-            for (var i = 0; i < node.children.length; i++) {
-              deselectInTree(node.children[i], id);
-            }
-          }
+        function updateSelectionInTree(root, layerIds) {
+          visitTreeLeaves(root, function(node) {
+            node.selectedOpen = layerIds.indexOf(node.idBod) >= 0;
+          });
         }
 
         function visitTreeLeaves(node, fn) {
