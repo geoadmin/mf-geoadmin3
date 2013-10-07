@@ -128,7 +128,7 @@ module.controller('GaMainController',
         searchFocused: false,
         homescreen: false,
         tablet: gaBrowserSniffer.mobile && !gaBrowserSniffer.phone,
-        touch: gaBrowserSniffer.touch
+        touch: gaBrowserSniffer.touchDevice
       };
 
       $timeout(function() {

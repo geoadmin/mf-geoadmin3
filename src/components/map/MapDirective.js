@@ -74,7 +74,7 @@
               view.on('change', updatePermalink);
               updatePermalink();
 
-              if (gaBrowserSniffer.touch === false) {
+              if (!gaBrowserSniffer.touchDevice) {
                 map.addControl(new ol.control.ZoomSlider());
               }
               map.addControl(new ol.control.ZoomToExtent());
@@ -84,5 +84,4 @@
           };
         });
 })();
-
 
