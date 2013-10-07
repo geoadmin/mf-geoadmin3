@@ -18,9 +18,9 @@
         var m = $window.matchMedia;
         return m && m('(max-width: ' + size + 'px)').matches;
       };
-      var touch = ('ontouchstart' in $window) ||
+      var touchDevice = ('ontouchstart' in $window) ||
           ('onmsgesturechange' in $window);
-      var mobile = touch && testSize(768);
+      var mobile = touchDevice && testSize(768);
       var p = gaPermalink.getParams();
       mobile = (mobile && p.mobile != 'false') || p.mobile == 'true';
 
@@ -36,7 +36,7 @@
         msie: msie,
         ios: ios,
         iosChrome: iosChrome,
-        touch: touch,
+        touchDevice: touchDevice,
         mobile: mobile,
         phone: mobile && testSize(480)
       };

@@ -9,7 +9,7 @@
         var baseUrl = gaGlobalOptions.serviceUrl + '/rest/services';
 
         $scope.options = {
-          tolerance: gaBrowserSniffer.touch ? 15 : 5,
+          tolerance: gaBrowserSniffer.touchDevice ? 15 : 5,
           identifyUrlTemplate: baseUrl + '/{Topic}/MapServer/identify',
           htmlUrlTemplate: baseUrl + '/{Topic}/MapServer/{Layer}/{Feature}/htmlpopup'
         };

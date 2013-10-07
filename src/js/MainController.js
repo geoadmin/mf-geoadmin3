@@ -17,7 +17,7 @@
 
     var resolutions = [650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0, 2.5,
       2.0, 1.0, 0.5, 0.25, 0.1];
-  
+ 
     var map = new ol.Map({
       controls: ol.control.defaults({
         attribution: false
@@ -35,8 +35,8 @@
         resolutions: resolutions
       })
     });
-    
-    // Defines default vector style 
+
+    // Defines default vector style
     ol.style.setDefault(new ol.style.Style({
       rules: [
         new ol.style.Rule({
@@ -62,10 +62,10 @@
                 opacity: 1,
                 width: 2
               })
-            }) 
-          ]              
+            })
+          ]
         })
-      ],    
+      ],
       symbolizers: [
         new ol.style.Fill({
           color: '#ffff00',
@@ -128,7 +128,7 @@ module.controller('GaMainController',
         searchFocused: false,
         homescreen: false,
         tablet: gaBrowserSniffer.mobile && !gaBrowserSniffer.phone,
-        touch: gaBrowserSniffer.touch
+        touch: gaBrowserSniffer.touchDevice
       };
 
       $timeout(function() {
