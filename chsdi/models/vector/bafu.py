@@ -258,3 +258,37 @@ class WV(Base, Vector):
 
 register('ch.bafu.bundesinventare-vogelreservate', WV)
 
+
+class wasserentnahmeWkB(Base, Vector):
+    # view in a schema
+    __tablename__ = 'invent_ent_wknutz_bedeutend'
+    __table_args__ = ({'schema': 'wasser', 'autoload': False})
+    __esriId__ = 2013
+    __bodId__ = 'ch.bafu.wasser-entnahme'
+    __template__ = 'templates/htmlpopup/wasserentnahme_wk_b.mako'
+    id = Column('rwknr', Integer, primary_key=True)
+    kanton = Column('kanton', Text)
+    kantoncode = Column('kantoncode', Text)
+    ent_gew = Column('ent_gew', Text)
+    link = Column('link', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.wasser-entnahme', wasserentnahmeWkB)
+
+
+class wasserentnahmeWkW(Base, Vector):
+    # view in a schema
+    __tablename__ = 'invent_ent_wknutz_weitere'
+    __table_args__ = ({'schema': 'wasser', 'autoload': False})
+    __esriId__ = 2014
+    __bodId__ = 'ch.bafu.wasser-entnahme'
+    __template__ = 'templates/htmlpopup/wasserentnahme_wk_w.mako'
+    id = Column('gid', Integer, primary_key=True)
+    rwknr = Column('rwknr', Text)
+    kanton = Column('kanton', Text)
+    kantoncode = Column('kantoncode', Text)
+    ent_gew = Column('ent_gew', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.wasser-entnahme', wasserentnahmeWkW)
+
