@@ -360,3 +360,34 @@ class wasserrueckgabe(Base, Vector):
 
 register('ch.bafu.wasser-rueckgabe', wasserrueckgabe)
 
+
+class flachmoore(Base, Vector):
+    # view in a schema
+    __tablename__ = 'fm'
+    __table_args__ = ({'schema': 'bundinv', 'autoload': False})
+    __esriId__ = 2019
+    __bodId__ = 'ch.bafu.bundesinventare-flachmoore'
+    __template__ = 'templates/htmlpopup/flachmoore.mako'
+    id = Column('gid', Integer, primary_key=True)
+    fm_name = Column('fm_name', Text)
+    fm_obj = Column('fm_obj', Text)
+    fm_gf = Column('fm_gf', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.bundesinventare-flachmoore', flachmoore)
+
+
+class flachmooreReg(Base, Vector):
+    # view in a schema
+    __tablename__ = 'flachmoore_regional'
+    __table_args__ = ({'schema': 'bundinv', 'autoload': False})
+    __esriId__ = 2020
+    __bodId__ = 'ch.bafu.bundesinventare-flachmoore_regional'
+    __template__ = 'templates/htmlpopup/flachmoore_reg.mako'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    fmreg_name = Column('fmreg_name', Text)
+    fmreg_obj = Column('fmreg_obj', Text)
+    fmreg_gf = Column('fmreg_gf', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.bundesinventare-flachmoore_regional', flachmooreReg)
