@@ -150,12 +150,12 @@
             function getLayersToQuery(layers) {
               var layersToQuery = [];
               map.getLayers().forEach(function(l) {
-                var id = l.get('id');
-                if (gaLayers.getLayer(id) &&
-                    gaLayers.getLayerProperty(id, 'queryable') &&
+                var bodId = l.get('bodId');
+                if (gaLayers.getLayer(bodId) &&
+                    gaLayers.getLayerProperty(bodId, 'queryable') &&
                     l.visible &&
-                    layersToQuery.indexOf(id) < 0) {
-                  layersToQuery.push(id);
+                    layersToQuery.indexOf(bodId) < 0) {
+                  layersToQuery.push(bodId);
                 }
               });
               return layersToQuery.join(',');

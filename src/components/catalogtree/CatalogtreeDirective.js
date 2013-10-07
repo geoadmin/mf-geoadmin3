@@ -92,7 +92,7 @@
                 });
                 for (i = 0; i < layers.length; ++i) {
                   var layer = layers[i];
-                  var bodId = layer.get('id');
+                  var bodId = layer.get('bodId');
                   if (!layer.background && leaves.hasOwnProperty(bodId)) {
                     leaves[bodId].selectedOpen = true;
                   }
@@ -138,24 +138,24 @@
 
             scope.$watchCollection('layers | filter:layerFilter',
                 function(layers) {
-              var layerIds;
+              var layerBodIds;
               if (angular.isDefined(scope.root)) {
-                layerIds = [];
+                layerBodIds = [];
                 angular.forEach(layers, function(layer) {
-                  var id = layer.get('id');
-                  if (angular.isDefined(id)) {
-                    layerIds.push(id);
+                  var bodId = layer.get('bodId');
+                  if (angular.isDefined(bodId)) {
+                    layerBodIds.push(bodId);
                   }
                 });
-                updateSelectionInTree(scope.root, layerIds);
+                updateSelectionInTree(scope.root, layerBodIds);
               }
             });
           }
         };
 
-        function updateSelectionInTree(root, layerIds) {
+        function updateSelectionInTree(root, layerBodIds) {
           visitTreeLeaves(root, function(node) {
-            node.selectedOpen = layerIds.indexOf(node.idBod) >= 0;
+            node.selectedOpen = layerBodIds.indexOf(node.idBod) >= 0;
           });
         }
 

@@ -110,14 +110,14 @@
                 scope.lang = $translate.uses();
               };
 
-              scope.getLegend = function(ev, id) {
-                gaLayerMetadataPopup(id);
+              scope.getLegend = function(ev, bodId) {
+                gaLayerMetadataPopup(bodId);
                 ev.stopPropagation();
               };
 
-              scope.addLayer = function(id) {
-                if (!hasLayer(id)) {
-                  var layer = gaLayers.getOlLayerById(id);
+              scope.addLayer = function(bodId) {
+                if (!hasLayer(bodId)) {
+                  var layer = gaLayers.getOlLayerById(bodId);
                   if (angular.isDefined(layer)) {
                     map.addLayer(layer);
                   } else {
@@ -126,17 +126,17 @@
                 }
               };
 
-              scope.removeLayer = function(id) {
-                if (hasLayer(id)) {
-                  var layer = gaLayers.getOlLayerById(id);
+              scope.removeLayer = function(bodId) {
+                if (hasLayer(bodId)) {
+                  var layer = gaLayers.getOlLayerById(bodId);
                   map.removeLayer(layer);
                 }
               };
 
-              var hasLayer = function(id) {
+              var hasLayer = function(bodId) {
                 var res = false;
                 map.getLayers().forEach(function(layer) {
-                  if (!layer.background && layer.get('id') == id) {
+                  if (!layer.background && layer.get('bodId') == bodId) {
                     res = true;
                   }
                 });

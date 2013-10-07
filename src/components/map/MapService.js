@@ -146,8 +146,8 @@
         /**
          * Return an ol.layer.Layer object for a layer id.
          */
-        this.getOlLayerById = function(id) {
-          var layer = layers[id];
+        this.getOlLayerById = function(bodId) {
+          var layer = layers[bodId];
           var olLayer;
           var olSource = layer.olSource;
           if (layer.type == 'wmts') {
@@ -170,7 +170,7 @@
               });
             }
             olLayer = new ol.layer.Tile({
-              id: id,
+              bodId: bodId,
               minResolution: layer.minResolution,
               maxResolution: layer.maxResolution,
               opacity: layer.opacity,
@@ -194,7 +194,7 @@
                 });
               }
               olLayer = new ol.layer.Image({
-                id: id,
+                bodId: bodId,
                 minResolution: layer.minResolution,
                 maxResolution: layer.maxResolution,
                 opacity: layer.opacity,
@@ -215,7 +215,7 @@
                 });
               }
               olLayer = new ol.layer.Tile({
-                id: id,
+                bodId: bodId,
                 minResolution: layer.minResolution,
                 maxResolution: layer.maxResolution,
                 opacity: layer.opacity,
@@ -230,7 +230,7 @@
               subLayers[i] = this.getOlLayerById(subLayerIds[i]);
             }
             olLayer = new ol.layer.Group({
-              id: id,
+              bodId: bodId,
               minResolution: layer.minResolution,
               maxResolution: layer.maxResolution,
               opacity: layer.opacity,
@@ -244,29 +244,29 @@
         };
 
         /**
-         * Returns layers definition for given id. Returns
-         * undefined if id does not exist
+         * Returns layers definition for given bodId. Returns
+         * undefined if bodId does not exist
          */
-        this.getLayer = function(id) {
-          return layers[id];
+        this.getLayer = function(bodId) {
+          return layers[bodId];
         };
 
         /**
-         * Returns a property of the layer with the given id.
-         * Note: this throws an exception if the id does not
+         * Returns a property of the layer with the given bodId.
+         * Note: this throws an exception if the bodId does not
          * exist in currently loaded topic/layers
          */
-        this.getLayerProperty = function(id, prop) {
-          return layers[id][prop];
+        this.getLayerProperty = function(bodId, prop) {
+          return layers[bodId][prop];
         };
 
         /**
-         * Get Metadata of given layer id
+         * Get Metadata of given layer bodId
          * Uses current topic and language
          * Returns a promise. Use accordingly
          */
-        this.getMetaDataOfLayer = function(id) {
-          var url = getMetaDataUrl(currentTopic.id, id, $translate.uses());
+        this.getMetaDataOfLayer = function(bodId) {
+          var url = getMetaDataUrl(currentTopic.id, bodId, $translate.uses());
           return $http.get(url);
         };
 
@@ -333,7 +333,7 @@
 
       function updateLayersParam(layers) {
         var bodIds = $.map(layers, function(layer) {
-          return layer.get('id');
+          return layer.get('bodId');
         });
         if (bodIds.length > 0) {
           gaPermalink.updateParams({layers: bodIds.join(',')});

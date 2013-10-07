@@ -101,9 +101,9 @@ describe('ga_map_service', function() {
   describe('gaLayersPermalinkManager', function() {
     var map, manager, permalink;
 
-    var addLayerToMap = function(id) {
+    var addLayerToMap = function(bodId) {
       var layer = new ol.layer.Tile({
-        id: id,
+        bodId: bodId,
         source: new ol.source.OSM()
       });
       map.addLayer(layer);

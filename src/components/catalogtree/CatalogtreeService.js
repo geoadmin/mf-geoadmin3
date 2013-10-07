@@ -47,7 +47,7 @@
         getMapOverlayForBodId: function(map, bodId) {
           var layer;
           map.getLayers().forEach(function(l) {
-            if (l.get('id') == bodId && !l.background) {
+            if (l.get('bodId') == bodId && !l.background) {
               layer = l;
             }
           });
