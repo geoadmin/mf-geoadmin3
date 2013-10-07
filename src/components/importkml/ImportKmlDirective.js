@@ -14,7 +14,7 @@
 
   module.controller('GaImportKmlDirectiveController',
       function($scope, $http, $q, $log, $translate, gaBrowserSniffer,
-            gaLayers, gaMap) {
+            gaLayers, gaKml) {
 
         $scope.isIE9 = (gaBrowserSniffer.msie == 9);
         $scope.isIE = !isNaN(gaBrowserSniffer.msie);
@@ -132,14 +132,11 @@
             $scope.progress = 80;
 
             try {
-              // Create vector layer
-              var vector = gaLayers.getKMLLayer($scope.fileContent, {
+              // Add the layer
+              gaKml.addKmlToMap($scope.map, $scope.fileContent, {
                 id: ($scope.currentTab === 2) ? 'KML||' + $scope.fileUrl :
                     undefined
               });
-
-              // Add the layer
-              gaMap.addKMLLayer($scope.map, vector);
 
               $scope.userMessage = $translate('parse_succeeded');
               $scope.progress += 20;
@@ -147,10 +144,6 @@
             } catch (e) {
               $scope.userMessage = $translate('parse_failed') + e.message;
               $scope.progress = 0;
-
-              if (vector) {
-                $scope.map.removeLayer(vector);
-              }
             }
           }
         };

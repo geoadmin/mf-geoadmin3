@@ -76,11 +76,69 @@
     };
   });
 
-  module.provider('gaMap', function() {
-    this.$get = function(gaPopup, gaLayers) {
-      var Map = function() {
+  module.provider('gaKml', function() {
+    this.$get = function($http, gaPopup, gaDefinePropertiesForLayer) {
+      var Kml = function() {
 
-        this.addKMLLayer = function(olMap, olLayer, index) {
+        /**
+         * Create a KML layer from a KML string
+         */
+        var getKmlLayer = function(kml, options) {
+          var olLayer;
+          options = options || {};
+
+          // Create the Parser the KML file
+          var kmlParser = new ol.parser.KML({
+            maxDepth: 1,
+            dimension: 2,
+            extractStyles: true,
+            extractAttributes: true
+          });
+
+
+          // Create vector layer
+          // FIXME currently ol3 doesn't allow to get the name of the KML
+          // document, making it impossible to use a proper label for the
+          // layer.
+          var olLayer = new ol.layer.Vector({
+            id: options.id,
+            label: options.label || 'KML',
+            opacity: options.opacity,
+            visible: options.visible,
+            source: new ol.source.Vector({
+              parser: kmlParser,
+              data: kml
+            }),
+            style: options.style || new ol.style.Style({
+              symbolizers: [
+                new ol.style.Fill({
+                  color: '#ff0000'
+                }),
+                new ol.style.Stroke({
+                  color: '#ff0000',
+                  width: 2
+                }),
+                new ol.style.Shape({
+                  size: 10,
+                  fill: new ol.style.Fill({
+                    color: '#ff0000'
+                  }),
+                  stroke: new ol.style.Stroke({
+                    color: '#ff0000',
+                    width: 2
+                  })
+                })
+              ]
+            })
+          });
+          gaDefinePropertiesForLayer(olLayer);
+          return olLayer;
+        };
+
+        /**
+         * Add an ol layer to the map and add specific event
+         */
+        var addKmlLayer = function(olMap, olLayer, index) {
           var onMapClick = function(evt) {
             olMap.getFeatures({
               pixel: evt.getPixel(),
@@ -112,8 +170,20 @@
             }
           });
         };
+
+        this.addKmlToMap = function(map, data, layerOptions, index) {
+          var layer = getKmlLayer(data, layerOptions);
+          addKmlLayer(map, layer, index);
+        };
+
+        this.addKmlToMapForUrl = function(map, url, layerOptions, index) {
+          var this_ = this;
+          $http.get(url).success(function(data) {
+            this_.addKmlToMap(map, data, layerOptions, index);
+          });
+        };
       };
-      return new Map();
+      return new Kml();
     };
   });
 
@@ -289,59 +359,6 @@
           return olLayer;
         };
 
-        /**
-         * Create a KML layer from a KML string
-         */
-        this.getKMLLayer = function(kml, options) {
-          var olLayer;
-          options = options || {};
-
-          // Create the Parser the KML file
-          var kmlParser = new ol.parser.KML({
-            maxDepth: 1,
-            dimension: 2,
-            extractStyles: true,
-            extractAttributes: true
-          });
-
-          // Create vector layer
-          // FIXME currently ol3 doesn't allow to get the name of the KML
-          // document, making it impossible to use a proper label for the
-          // layer.
-          var olLayer = new ol.layer.Vector({
-            id: options.id,
-            label: options.label || 'KML',
-            opacity: options.opacity,
-            visible: options.visible,
-            source: new ol.source.Vector({
-              parser: kmlParser,
-              data: kml
-            }),
-            style: options.style || new ol.style.Style({
-              symbolizers: [
-                new ol.style.Fill({
-                  color: '#ff0000'
-                }),
-                new ol.style.Stroke({
-                  color: '#ff0000',
-                  width: 2
-                }),
-                new ol.style.Shape({
-                  size: 10,
-                  fill: new ol.style.Fill({
-                    color: '#ff0000'
-                  }),
-                  stroke: new ol.style.Stroke({
-                    color: '#ff0000',
-                    width: 2
-                  })
-                })
-              ]
-            })
-          });
-          gaDefinePropertiesForLayer(olLayer);
-          return olLayer;
-        };
 
         /**
          * Returns layers definition for given bodId. Returns
@@ -447,7 +464,7 @@
   module.provider('gaLayersPermalinkManager', function() {
 
     this.$get = function($rootScope, gaLayers, gaPermalink, $translate, $http,
-        gaMap) {
+        gaKml) {
 
       var layersParamValue = gaPermalink.getParams().layers;
       var layersOpacityParamValue = gaPermalink.getParams().layers_opacity;
@@ -466,7 +483,7 @@
         allowThirdData = confirm($translate('third_party_data_warning'));
       }
 
-      function isKMLLayer(layerId) {
+      function isKmlLayer(layerId) {
         return (layerId && layerId.indexOf('KML||') === 0);
       }
 
@@ -576,21 +593,21 @@
                 map.addLayer(layer);
               }
 
-            } else if (allowThirdData && isKMLLayer(layerSpec)) {
+            } else if (allowThirdData && isKmlLayer(layerSpec)) {
               // KML layer
               var url = layerSpec.replace('KML||', '');
-              var dlUrl = proxyUrl + encodeURIComponent(url);
-              $http.get(dlUrl).success(function(data) {
-                layer = gaLayers.getKMLLayer(data, {
-                  id: layerSpec,
-                  opacity: opacity,
-                  visible: visible
-                });
-
-                if (angular.isDefined(layer)) {
-                  gaMap.addKMLLayer(map, layer, index + 1);
-                }
-              });
+              try {
+                gaKml.addKmlToMapForUrl(map,
+                  proxyUrl + encodeURIComponent(url),
+                  {
+                    id: layerSpec,
+                    opacity: opacity,
+                    visible: visible
+                  },
+                  index + 1);
+              } catch (e) {
+                // Adding KML layer failed
+              }
             }
           });
           deregister();
