@@ -33,7 +33,8 @@
                 map = $scope.map,
                 popup,
                 canceler,
-                currentTopic;
+                currentTopic,
+                vector;
 
             map.on('click', function(evt) {
               var size = map.getSize();
@@ -79,6 +80,7 @@
                   timeout: canceler.promise,
                   params: {
                     geometryType: 'esriGeometryPoint',
+                    geometryFormat: 'geojson',
                     geometry: coordinate[0] + ',' + coordinate[1],
                     // FIXME: make sure we are passing the right dpi here.
                     imageDisplay: size[0] + ',' + size[1] + ',96',
@@ -122,6 +124,9 @@
                       if (!popup) {
                         popup = gaPopup.create({
                           className: 'ga-tooltip',
+                          onCloseCallback: function() {
+                            map.removeLayer(vector);
+                          },
                           destroyOnClose: false,
                           className: 'tooltip-popup',
                           title: 'object_information',
@@ -144,6 +149,43 @@
                     htmls.push($sce.trustAsHtml(html));
                   });
                 });
+
+                // A new vector layer is created each time because
+                // there is no public function to access the features
+                // from the source.
+                map.removeLayer(vector);
+                vector = new ol.layer.Vector({
+                  style: new ol.style.Style({
+                    symbolizers: [
+                      new ol.style.Fill({
+                        color: '#ffff00'
+                      }),
+                      new ol.style.Stroke({
+                        color: '#ff8000',
+                        width: 3
+                      }),
+                      new ol.style.Shape({
+                        size: 20,
+                        fill: new ol.style.Fill({
+                          color: '#ffff00'
+                        }),
+                        stroke: new ol.style.Stroke({
+                          color: '#ff8000',
+                          width: 3
+                        })
+                      })
+                    ]
+                  }),
+                  source: new ol.source.Vector({
+                    projection: map.getView().getProjection(),
+                    parser: new ol.parser.GeoJSON(),
+                    data: {
+                      type: 'FeatureCollection',
+                      features: foundFeatures
+                    }
+                  })
+                });
+                map.addLayer(vector);
               }
             }
 
