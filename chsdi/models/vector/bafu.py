@@ -223,3 +223,38 @@ class JB(Base, Vector):
     jb_gf = Column('jb_gf', Numeric)
 
 register('ch.bafu.bundesinventare-jagdbanngebiete', JB)
+
+
+class ML(Base, Vector):
+    # view in a schema
+    __tablename__ = 'ml'
+    __table_args__ = ({'schema': 'bundinv', 'autoload': False})
+    __esriId__ = 2011
+    __bodId__ = 'ch.bafu.bundesinventare-moorlandschaften'
+    __template__ = 'templates/htmlpopup/moorlandschaften.mako'
+    id = Column('gid', Integer, primary_key=True)
+    ml_name = Column('ml_name', Text)
+    ml_obj = Column('ml_obj', Integer)
+    ml_fl = Column('ml_fl', Numeric)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.bundesinventare-moorlandschaften', ML)
+
+
+class WV(Base, Vector):
+    # view in a schema
+    __tablename__ = 'wv'
+    __table_args__ = ({'schema': 'bundinv', 'autoload': False})
+    __esriId__ = 2012
+    __bodId__ = 'ch.bafu.bundesinventare-vogelreservate'
+    __template__ = 'templates/htmlpopup/vogelreservate.mako'
+    id = Column('gid', Integer, primary_key=True)
+    wv_name = Column('wv_name', Text)
+    wv_obj = Column('wv_obj', Integer)
+    wv_kat = Column('wv_kat', Text)
+    wv_fl = Column('wv_fl', Numeric)
+    wv_gf = Column('wv_gf', Numeric)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.bundesinventare-vogelreservate', WV)
+
