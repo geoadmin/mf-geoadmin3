@@ -83,7 +83,9 @@
                     // FIXME: make sure we are passing the right dpi here.
                     imageDisplay: size[0] + ',' + size[1] + ',96',
                     mapExtent: extent.join(','),
-                    tolerance: $scope.options.tolerance,
+                    tolerance: gaBrowserSniffer.mobile ?
+                      3 * $scope.options.tolerance :
+                      $scope.options.tolerance,
                     layers: 'all:' + layersToQuery,
                     callback: 'JSON_CALLBACK'
                   }
