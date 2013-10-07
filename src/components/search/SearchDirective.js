@@ -146,15 +146,15 @@
               var getLocationLabel = function(attrs) {
                 var label = attrs.label;
                 if (attrs.origin == 'zipcode') {
-                  label = $translate('plz') + ' ' + label;
+                  label = '<span>{{ "plz" | translate }} ' + label;
                 } else if (attrs.origin == 'kantone') {
-                  label = $translate('ct') + ' ' + label;
+                  label = '<span>{{ "ct" | translate }} ' + label;
                 } else if (attrs.origin == 'district') {
-                  label = $translate('district') + ' ' + label;
+                  label = '<span>{{ "district" | translate }} ' + label;
                 } else if (attrs.origin == 'parcel') {
-                  label += ' ' + $translate('parcel');
+                  label += ' <span>{{ "parcel" | translate }} ';
                 } else if (attrs.origin == 'feature') {
-                  label += ' ' + $translate('feature');
+                  label += ' <span>{{ "feature" | translate }} ';
                 }
                 return label;
               };
@@ -308,10 +308,18 @@
                   suggestionsRendered += 1;
                   // Make sure the final html content is compiled once only
                   if (typeAheadDatasets.length === suggestionsRendered) {
-                    // Only for layer search at the moment
                     var elements = element.find('.tt-dataset-layers')
                       .find('.tt-suggestions');
                     $compile(elements)(scope);
+
+                    elements = element.find('.tt-dataset-locations')
+                      .find('.tt-suggestions');
+                    $compile(elements)(scope);
+
+                    //It seems that without this, translations are not
+                    //done on first rendering...
+                    scope.$apply();
+
                     suggestionsRendered = 0;
                   }
                 }
