@@ -380,8 +380,14 @@ a .icon-flip-vertical:before {
 .icon-search:before {
   content: "\f002";
 }
-   .icon-zoom-in:before {
+.icon-zoom-in:before {
   content: "\f00e";
+}
+.icon-gear:before {
+  content: "\f013";
+}
+.icon-cog:before {
+  content: "\f013";
 }
 .icon-refresh:before {
   content: "\f021";
@@ -415,15 +421,6 @@ a .icon-flip-vertical:before {
 }
 .icon-warning-sign:before {
   content: "\f071";
-}
-.icon-gear:before {
-  content: "\f085";
-}
-.icon-gears:before {
-  content: "\f085";
-}
-.icon-cogs:before {
-  content: "\f085";
 }
 .icon-external-link:before {
   content: "\f08e";
