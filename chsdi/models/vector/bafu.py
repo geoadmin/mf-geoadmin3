@@ -410,3 +410,20 @@ class paerke_nationaler_bedeutung(Base, Vector):
 
 register('ch.bafu.schutzgebiete-paerke_nationaler_bedeutung', paerke_nationaler_bedeutung)
 
+
+class ramsar(Base, Vector):
+    # view in a schema
+    __tablename__ = 'ramsar'
+    __table_args__ = ({'schema': 'schutzge', 'autoload': False})
+    __esriId__ = 2022
+    __bodId__ = 'ch.bafu.schutzgebiete-ramsar'
+    __template__ = 'templates/htmlpopup/ramsar.mako'
+    id = Column('ra_id', Integer, primary_key=True)
+    ra_name = Column('ra_name', Text)
+    ra_obj = Column('ra_obj', Integer)
+    ra_fl = Column('ra_fl', Text)
+    ra_gf = Column('ra_gf', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.schutzgebiete-ramsar', ramsar)
+
