@@ -25,6 +25,8 @@
       mobile = (mobile && p.mobile != 'false') || p.mobile == 'true';
 
       if (msie == 10) {
+        // IE10 doesn’t fire `input` event. Angular rely on it.
+        // So let’s fire it on `change`.
         $('body').on('change', 'input[type=range]', function() {
           $(this).trigger('input');
         });
