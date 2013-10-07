@@ -486,3 +486,18 @@ class steinbockkolonien(Base, Vector):
 
 register('ch.bafu.fauna-steinbockkolonien', steinbockkolonien)
 
+
+class SWISSPRTR(Base, Vector):
+    # view in a schema
+    __tablename__ = 'swissprtr'
+    __table_args__ = ({'schema': 'prtr', 'autoload': False})
+    __esriId__ = 2026
+    __bodId__ = 'ch.bafu.swissprtr'
+    __template__ = 'templates/htmlpopup/swissprtr.mako'
+    id = Column('prtrnr', Numeric, primary_key=True)
+    betrieb = Column('betrieb', Text)
+    ort = Column('ort', Text)
+    jahr = Column('jahr', Integer)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.swissprtr', SWISSPRTR)
