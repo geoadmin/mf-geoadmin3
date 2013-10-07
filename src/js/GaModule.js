@@ -76,9 +76,9 @@
     'ngAnimate'
   ]);
 
-  module.config(function($translateProvider) {
+  module.config(function($translateProvider, gaGlobalOptions) {
     $translateProvider.useStaticFilesLoader({
-      prefix: 'locales/',
+      prefix: gaGlobalOptions.version + 'locales/',
       suffix: '.json'
     });
   });
