@@ -188,6 +188,24 @@ class BLN(Base, Vector):
 register('ch.bafu.bundesinventare-bln', BLN)
 
 
+class HM(Base, Vector):
+    # view in a schema
+    __tablename__ = 'hm'
+    __table_args__ = ({'schema': 'bundinv', 'autoload': False})
+    __esriId__ = 2010
+    __bodId__ = 'ch.bafu.bundesinventare-hochmoore'
+    __template__ = 'templates/htmlpopup/hochmoore.mako'
+    id = Column('gid', Integer, primary_key=True)
+    hm_name = Column('hm_name', Text)
+    hm_obj = Column('hm_obj', Integer)
+    hm_typ = Column('hm_typ', Integer)
+    hm_fl = Column('hm_fl', Numeric)
+    hm_ke = Column('hm_ke', Integer)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.bundesinventare-hochmoore', HM)
+
+
 class JB(Base, Vector):
     # view in a schema
     __tablename__ = 'jb'
