@@ -427,3 +427,27 @@ class ramsar(Base, Vector):
 
 register('ch.bafu.schutzgebiete-ramsar', ramsar)
 
+
+class wildruhezonen_jagdbanngebiete(Base, Vector):
+    # view in a schema
+    __tablename__ = 'wildruhezonen_jagdbanngebiete'
+    __table_args__ = ({'schema': 'schutzge', 'autoload': False})
+    __esriId__ = 2023
+    __bodId__ = 'ch.bafu.wildruhezonen-jagdbanngebiete'
+    __template__ = 'templates/htmlpopup/wildruhezonen_jagdbanngebiete.mako'
+    id = Column('wrz_jb_obj', Text, primary_key=True)
+    wrz_obj = Column('wrz_obj', Integer)
+    wrz_name = Column('wrz_name', Text)
+    jb_obj = Column('jb_obj', Integer)
+    jb_name = Column('jb_name', Text)
+    wrz_status = Column('wrz_status', Text)
+    bestimmung = Column('bestimmung', Text)
+    zeitraum = Column('zeitraum', Text)
+    grundlage = Column('grundlage', Text)
+    zusatzinfo = Column('zusatzinfo', Text)
+    bearbeitungsjahr = Column('bearbeitungsjahr', Text)
+    kanton = Column('kanton', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.wildruhezonen-jagdbanngebiete', wildruhezonen_jagdbanngebiete)
+
