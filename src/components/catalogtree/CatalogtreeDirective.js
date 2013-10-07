@@ -135,8 +135,9 @@
 
             scope.$watchCollection('layers | filter:layerFilter',
                 function(layers) {
-              var layerIds = [];
+              var layerIds;
               if (angular.isDefined(scope.root)) {
+                layerIds = [];
                 angular.forEach(layers, function(layer) {
                   var id = layer.get('id');
                   if (angular.isDefined(id)) {
