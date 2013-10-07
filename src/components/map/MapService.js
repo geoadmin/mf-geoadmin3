@@ -155,6 +155,7 @@
                 id: id,
                 minResolution: layer.minResolution,
                 maxResolution: layer.maxResolution,
+                opacity: layer.opacity,
                 source: new ol.source.WMTS({
                   attributions: [
                     getAttribution('<a href="' +
@@ -180,6 +181,7 @@
                   id: id,
                   minResolution: layer.minResolution,
                   maxResolution: layer.maxResolution,
+                  opacity: layer.opacity,
                   source: new ol.source.ImageWMS({
                     url: gaUrlUtils.remove(
                         layer.wmsUrl, ['request', 'service', 'version'], true),
@@ -198,6 +200,7 @@
                   id: id,
                   minResolution: layer.minResolution,
                   maxResolution: layer.maxResolution,
+                  opacity: layer.opacity,
                   source: new ol.source.TileWMS({
                     url: gaUrlUtils.remove(
                         layer.wmsUrl, ['request', 'service', 'version'], true),
@@ -223,6 +226,7 @@
                 id: id,
                 minResolution: layer.minResolution,
                 maxResolution: layer.maxResolution,
+                opacity: layer.opacity,
                 layers: subLayers
               });
             }
