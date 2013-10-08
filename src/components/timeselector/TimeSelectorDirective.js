@@ -176,8 +176,8 @@
   module.directive('gaTimeSelectorBt', function($rootScope, gaPermalink) {
     return {
       restrict: 'A',
-      template: '<a href="#" class="icon-time icon-3x" ng-click="toggle()"' +
-        ' ng-class="stateClass"></a>',
+      template: '<a href="#" class="time-selector-bt" ng-click="toggle()"' +
+          ' ng-class="stateClass"></a>',
       link: function(scope, elt, attrs) {
         scope.isDisable = true;
 

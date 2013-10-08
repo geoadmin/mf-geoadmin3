@@ -1,4 +1,4 @@
-.time-selector-bt {
+[ga-time-selector-bt] {
   position: absolute;
   top: 400px;
   right: 7px;
@@ -6,31 +6,13 @@
   height: 44px;
   text-align: center;
   z-index: 1000;
-  
-  a {
-    cursor: pointer;
-    text-decoration: none;
-    display: none; 
-    height: 44px;  
-    background: data-uri('time_black.png');
-    
-    &.enabled {
-      display: block;
-    }
-
-    &.active {
-      display: block;
-      background: data-uri('time_red.png');
-    }
-  }
 
   @media screen and (max-width: @screen-tablet) {
     top: 260px;
   } 
 }
 
-
-.time-selector {
+[ga-time-selector] {
   display: block;
   width: auto;
   height: auto;
@@ -43,7 +25,27 @@
   box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.175);   
   padding: 5px;
   overflow: hidden; 
-   
+}
+
+.time-selector-bt {  
+  cursor: pointer;
+  text-decoration: none;
+  display: none; 
+  height: 44px;  
+  background: data-uri('time_black.png');
+  
+  &.enabled {
+    display: block;
+  }
+
+  &.active {
+    display: block;
+    background: data-uri('time_red.png');
+  }
+}
+
+.time-selector-container {   
+
   .last-title {
     position: absolute;
     right: 2px;

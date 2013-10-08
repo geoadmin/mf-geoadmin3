@@ -183,7 +183,9 @@
       restrict: 'A',
       require: '?ngModel',
       link: function(scope, element, attrs, ngModel) {
-        if (!ngModel) return;
+        if (!ngModel) {
+          return;
+        }
 
         // Specify how UI should be updated
         ngModel.$render = function() {
