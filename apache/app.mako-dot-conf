@@ -20,8 +20,7 @@ Alias ${base_url_path}/prod ${base_dir}/prod
 # Main webpage
 
 RewriteRule ^/(index.html|mobile.html|info.json)(.*) /var/www/vhosts/mf-geoadmin3/private/geoadmin/prod/$1
-RewriteRule ^/[0-9]+/(img|lib|style|rest)(.*) /var/www/vhosts/mf-geoadmin3/private/geoadmin/prod/$1$2
-RewriteRule ^/(locales)(.*) /var/www/vhosts/mf-geoadmin3/private/geoadmin/prod/$1$2
+RewriteRule ^/[0-9]+/(img|lib|style|rest|locales)(.*) /var/www/vhosts/mf-geoadmin3/private/geoadmin/prod/$1$2
 
 <LocationMatch /[0-9]+/>
    ExpiresDefault "now plus 1 year"
@@ -29,7 +28,6 @@ RewriteRule ^/(locales)(.*) /var/www/vhosts/mf-geoadmin3/private/geoadmin/prod/$
 </LocationMatch>
 
 % endif
-
 
 # Cached resources
 RewriteRule ^${base_url_path}/prod/[0-9]+/(.*)$ ${base_dir}/prod/$1
