@@ -20,7 +20,7 @@
 
       // Initialize variables
       $scope.stateClass = $scope.isActive ? '' : 'inactive';
-      $scope.minYear = 1845;
+      $scope.minYear = 1844;
       $scope.maxYear = (new Date()).getFullYear() + 1;
       $scope.currentYear = -1; // User selected year
       $scope.years = []; //List of all possible years 1845 -> current year
