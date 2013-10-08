@@ -401,8 +401,14 @@ a .icon-flip-vertical:before {
 .icon-share:before {
   content: "\f045";
 }
+.icon-check:before {
+  content: "\f046";
+}
 .icon-remove-sign:before {
   content: "\f057";
+}
+.icon-question-sign:before {
+  content: "\f059";
 }
 .icon-info-sign:before {
   content: "\f05a";
@@ -427,6 +433,10 @@ a .icon-flip-vertical:before {
 }
 .icon-phone:before {
   content: "\f095";
+}
+.icon-unchecked:before,
+.icon-check-empty:before {
+  content: "\f096";
 }
 .icon-twitter:before {
   content: "\f099";

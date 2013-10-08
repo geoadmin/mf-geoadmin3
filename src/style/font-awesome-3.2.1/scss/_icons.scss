@@ -7,7 +7,9 @@
 .icon-qrcode:before { content: $qrcode; }
 .icon-print:before { content: $print; }
 .icon-share:before { content: $share; }
+.icon-check:before { content: $check; }
 .icon-remove-sign:before { content: $remove-sign; }
+.icon-question-sign:before { content: $question-sign; }
 .icon-info-sign:before { content: $info-sign; }
 .icon-arrow-up:before { content: $arrow-up; }
 .icon-arrow-down:before { content: $arrow-down; }
@@ -18,6 +20,8 @@
 .icon-cog:before { content: $cog; }
 .icon-external-link:before { content: $external-link; }
 .icon-phone:before { content: $phone; }
+.icon-unchecked:before,
+.icon-check-empty:before { content: $check-empty; }
 .icon-twitter:before { content: $twitter; }
 .icon-facebook:before { content: $facebook; }
 .icon-reorder:before { content: $reorder; }

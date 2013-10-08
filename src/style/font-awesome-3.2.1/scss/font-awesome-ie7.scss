@@ -118,8 +118,18 @@ a [class*=" icon-"] {
 }
 
 
+.icon-check {
+  @include ie7icon('&#xf046;');
+}
+
+
 .icon-remove-sign {
   @include ie7icon('&#xf057;');
+}
+
+
+.icon-question-sign {
+  @include ie7icon('&#xf059;');
 }
 
 
@@ -170,6 +180,16 @@ a [class*=" icon-"] {
 
 .icon-phone {
   @include ie7icon('&#xf095;');
+}
+
+
+.icon-check-empty {
+  @include ie7icon('&#xf096;');
+}
+
+
+.icon-unchecked {
+  @include ie7icon('&#xf096;');
 }
 
 

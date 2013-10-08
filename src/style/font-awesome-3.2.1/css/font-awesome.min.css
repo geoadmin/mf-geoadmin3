@@ -48,7 +48,9 @@ a .icon-rotate-90:before,a .icon-rotate-180:before,a .icon-rotate-270:before,a .
 .icon-qrcode:before{content:"\f029";}
 .icon-print:before{content:"\f02f";}
 .icon-share:before{content:"\f045";}
+.icon-check:before{content:"\f046";}
 .icon-remove-sign:before{content:"\f057";}
+.icon-question-sign:before{content:"\f059";}
 .icon-info-sign:before{content:"\f05a";}
 .icon-arrow-up:before{content:"\f062";}
 .icon-arrow-down:before{content:"\f063";}
@@ -57,6 +59,7 @@ a .icon-rotate-90:before,a .icon-rotate-180:before,a .icon-rotate-270:before,a .
 .icon-warning-sign:before{content:"\f071";}
 .icon-external-link:before{content:"\f08e";}
 .icon-phone:before{content:"\f095";}
+.icon-unchecked:before,.icon-check-empty:before{content:"\f096";}
 .icon-twitter:before{content:"\f099";}
 .icon-facebook:before{content:"\f09a";}
 .icon-reorder:before{content:"\f0c9";}

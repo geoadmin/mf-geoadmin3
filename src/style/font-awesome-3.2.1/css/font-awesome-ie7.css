@@ -91,8 +91,14 @@ a [class*=" icon-"] {
 .icon-share {
   *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf045;');
 }
+.icon-check {
+  *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf046;');
+}
 .icon-remove-sign {
   *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf057;');
+}
+.icon-question-sign {
+  *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf059;');
 }
 .icon-info-sign {
   *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf05a;');
@@ -117,6 +123,9 @@ a [class*=" icon-"] {
 }
 .icon-phone {
   *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf095;');
+}
+.icon-check-empty {
+  *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf096;');
 }
 .icon-twitter {
   *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf099;');
