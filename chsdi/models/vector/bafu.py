@@ -879,3 +879,18 @@ class wrzportal(Base, Vector):
 
 register('ch.bafu.wrz-wildruhezonen_portal', wrzportal)
 
+
+class wildtier(Base, Vector):
+    # view in a schema
+    __tablename__ = 'wildtierkorridore'
+    __table_args__ = ({'schema': 'fauna', 'autoload': False})
+    __esriId__ = 2049
+    __bodId__ = 'ch.bafu.fauna-wildtierkorridor_national'
+    __template__ = 'templates/htmlpopup/wildtierkorridor.mako'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    nr = Column('nr', Text)
+    zusta_dt = Column('zusta_dt', Text)
+    zusta_fr = Column('zusta_fr', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.fauna-wildtierkorridor_national', wildtier)
