@@ -146,122 +146,127 @@
         /**
          * Return an ol.layer.Layer object for a layer id.
          */
-        this.getOlLayerById = function(id) {
-          var layer = layers[id];
-          var olLayer = layer.olLayer;
-          if (!angular.isDefined(olLayer)) {
-            if (layer.type == 'wmts') {
-              olLayer = new ol.layer.Tile({
-                id: id,
-                minResolution: layer.minResolution,
-                maxResolution: layer.maxResolution,
-                opacity: layer.opacity,
-                source: new ol.source.WMTS({
-                  attributions: [
-                    getAttribution('<a href="' +
-                      layer.attributionUrl +
-                      '" target="new">' +
-                      layer.attribution + '</a>')
-                  ],
-                  dimensions: {
-                    'Time': layer.timestamps[0]
+        this.getOlLayerById = function(bodId) {
+          var layer = layers[bodId];
+          var olLayer;
+          var olSource = layer.olSource;
+          if (layer.type == 'wmts') {
+            if (!olSource) {
+              olSource = layer.olSource = new ol.source.WMTS({
+                attributions: [
+                  getAttribution('<a href="' +
+                    layer.attributionUrl +
+                    '" target="new">' +
+                    layer.attribution + '</a>')
+                ],
+                dimensions: {
+                  'Time': layer.timestamps[0]
+                },
+                projection: 'EPSG:21781',
+                requestEncoding: 'REST',
+                tileGrid: gaTileGrid.get(layer.resolutions),
+                url: getWmtsGetTileUrl(layer.serverLayerName,
+                  layer.format)
+              });
+            }
+            olLayer = new ol.layer.Tile({
+              bodId: bodId,
+              minResolution: layer.minResolution,
+              maxResolution: layer.maxResolution,
+              opacity: layer.opacity,
+              source: olSource
+            });
+          } else if (layer.type == 'wms') {
+            //TODO: add support for layer.timeEnabled?
+            if (layer.singleTile === true) {
+              if (!olSource) {
+                olSource = layer.olSource = new ol.source.ImageWMS({
+                  url: gaUrlUtils.remove(
+                      layer.wmsUrl, ['request', 'service', 'version'], true),
+                  params: {
+                    LAYERS: layer.serverLayerName,
+                    FORMAT: 'image/' + layer.format
                   },
-                  projection: 'EPSG:21781',
-                  requestEncoding: 'REST',
-                  tileGrid: gaTileGrid.get(layer.resolutions),
-                  url: getWmtsGetTileUrl(layer.serverLayerName,
-                    layer.format)
-                })
-              });
-            }
-            else if (layer.type == 'wms') {
-              //TODO: add support for layer.timeEnabled?
-              if (layer.singleTile === true) {
-                olLayer = new ol.layer.Image({
-                  id: id,
-                  minResolution: layer.minResolution,
-                  maxResolution: layer.maxResolution,
-                  opacity: layer.opacity,
-                  source: new ol.source.ImageWMS({
-                    url: gaUrlUtils.remove(
-                        layer.wmsUrl, ['request', 'service', 'version'], true),
-                    params: {
-                      LAYERS: layer.serverLayerName,
-                      FORMAT: 'image/' + layer.format
-                    },
-                    attributions: [
-                      getAttribution(layer.attribution)
-                    ],
-                    ratio: 1
-                  })
-                });
-              } else {
-                olLayer = new ol.layer.Tile({
-                  id: id,
-                  minResolution: layer.minResolution,
-                  maxResolution: layer.maxResolution,
-                  opacity: layer.opacity,
-                  source: new ol.source.TileWMS({
-                    url: gaUrlUtils.remove(
-                        layer.wmsUrl, ['request', 'service', 'version'], true),
-                    params: {
-                      LAYERS: layer.serverLayerName,
-                      FORMAT: 'image/' + layer.format
-                    },
-                    attributions: [
-                      getAttribution(layer.attribution)
-                    ]
-                  })
+                  attributions: [
+                    getAttribution(layer.attribution)
+                  ],
+                  ratio: 1
                 });
               }
-            }
-            else if (layer.type == 'aggregate') {
-              var subLayerIds = layer.subLayerIds.split(',');
-              var i, len = subLayerIds.length;
-              var subLayers = new Array(len);
-              for (i = 0; i < len; i++) {
-                subLayers[i] = this.getOlLayerById(subLayerIds[i]);
-              }
-              olLayer = new ol.layer.Group({
-                id: id,
+              olLayer = new ol.layer.Image({
+                bodId: bodId,
                 minResolution: layer.minResolution,
                 maxResolution: layer.maxResolution,
                 opacity: layer.opacity,
-                layers: subLayers
+                source: olSource
+              });
+            } else {
+              if (!olSource) {
+                olSource = layer.olSource = new ol.source.TileWMS({
+                  url: gaUrlUtils.remove(
+                      layer.wmsUrl, ['request', 'service', 'version'], true),
+                  params: {
+                    LAYERS: layer.serverLayerName,
+                    FORMAT: 'image/' + layer.format
+                  },
+                  attributions: [
+                    getAttribution(layer.attribution)
+                  ]
+                });
+              }
+              olLayer = new ol.layer.Tile({
+                bodId: bodId,
+                minResolution: layer.minResolution,
+                maxResolution: layer.maxResolution,
+                opacity: layer.opacity,
+                source: olSource
               });
             }
-            layer.olLayer = olLayer;
-            if (angular.isDefined(olLayer)) {
-              gaDefinePropertiesForLayer(olLayer);
+          } else if (layer.type == 'aggregate') {
+            var subLayerIds = layer.subLayerIds.split(',');
+            var i, len = subLayerIds.length;
+            var subLayers = new Array(len);
+            for (i = 0; i < len; i++) {
+              subLayers[i] = this.getOlLayerById(subLayerIds[i]);
             }
+            olLayer = new ol.layer.Group({
+              bodId: bodId,
+              minResolution: layer.minResolution,
+              maxResolution: layer.maxResolution,
+              opacity: layer.opacity,
+              layers: subLayers
+            });
+          }
+          if (angular.isDefined(olLayer)) {
+            gaDefinePropertiesForLayer(olLayer);
           }
           return olLayer;
         };
 
         /**
-         * Returns layers definition for given id. Returns
-         * undefined if id does not exist
+         * Returns layers definition for given bodId. Returns
+         * undefined if bodId does not exist
          */
-        this.getLayer = function(id) {
-          return layers[id];
+        this.getLayer = function(bodId) {
+          return layers[bodId];
         };
 
         /**
-         * Returns a property of the layer with the given id.
-         * Note: this throws an exception if the id does not
+         * Returns a property of the layer with the given bodId.
+         * Note: this throws an exception if the bodId does not
          * exist in currently loaded topic/layers
          */
-        this.getLayerProperty = function(id, prop) {
-          return layers[id][prop];
+        this.getLayerProperty = function(bodId, prop) {
+          return layers[bodId][prop];
         };
 
         /**
-         * Get Metadata of given layer id
+         * Get Metadata of given layer bodId
          * Uses current topic and language
          * Returns a promise. Use accordingly
          */
-        this.getMetaDataOfLayer = function(id) {
-          var url = getMetaDataUrl(currentTopic.id, id, $translate.uses());
+        this.getMetaDataOfLayer = function(bodId) {
+          var url = getMetaDataUrl(currentTopic.id, bodId, $translate.uses());
           return $http.get(url);
         };
 
@@ -328,7 +333,7 @@
 
       function updateLayersParam(layers) {
         var bodIds = $.map(layers, function(layer) {
-          return layer.get('id');
+          return layer.get('bodId');
         });
         if (bodIds.length > 0) {
           gaPermalink.updateParams({layers: bodIds.join(',')});
