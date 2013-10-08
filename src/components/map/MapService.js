@@ -182,12 +182,12 @@
           } else if (layer.type == 'wms') {
             var wmsUrl = gaUrlUtils.remove(
                 layer.wmsUrl, ['request', 'service', 'version'], true);
-           
+
             var wmsParams = {
               LAYERS: layer.serverLayerName,
               FORMAT: 'image/' + layer.format
             };
- 
+
             if (layer.timeEnabled && angular.isDefined(time)) {
               wmsParams['TIME'] = time || layer.timestamps[0];
             }
