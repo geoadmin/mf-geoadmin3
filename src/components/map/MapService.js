@@ -304,6 +304,30 @@
   });
 
   /**
+   * Service provides map util functions.
+   */
+  module.provider('gaMapUtils', function() {
+    this.$get = function(gaLayers) {
+      return {
+        /**
+         * Search for an overlay identified by bodId in the map and
+         * return it. undefined is returned if the map does not have
+         * such a layer.
+         */
+        getMapOverlayForBodId: function(map, bodId) {
+          var layer;
+          map.getLayers().forEach(function(l) {
+            if (l.get('bodId') == bodId && !l.background) {
+              layer = l;
+            }
+          });
+          return layer;
+        }
+      };
+    };
+  });
+
+  /**
    * Service that manages the "layers", "layers_opacity", and
    * "layers_visibility" permalink parameter.
    *
@@ -318,7 +342,7 @@
    */
   module.provider('gaLayersPermalinkManager', function() {
 
-    this.$get = function($rootScope, gaLayers, gaPermalink) {
+    this.$get = function($rootScope, gaLayers, gaPermalink, gaMapUtils) {
 
       var layersParamValue = gaPermalink.getParams().layers;
       var layersOpacityParamValue = gaPermalink.getParams().layers_opacity;
@@ -412,8 +436,12 @@
           angular.forEach(layerSpecs, function(layerSpec, index) {
             var layer;
             if (gaLayers.getLayer(layerSpec)) {
-              // BOD layer
-              layer = gaLayers.getOlLayerById(layerSpec);
+              // BOD layer.
+              // Do not consider BOD layers that are already in the map.
+              var bodId = layerSpec;
+              if (!gaMapUtils.getMapOverlayForBodId(map, bodId)) {
+                layer = gaLayers.getOlLayerById(layerSpec);
+              }
             }
             if (angular.isDefined(layer)) {
               if (index < layerOpacities.length) {
@@ -455,7 +483,7 @@
 
   module.provider('gaHighlightFeaturePermalinkManager', function() {
     this.$get = function($rootScope, gaPermalink, gaLayers,
-        gaRecenterMapOnFeatures) {
+        gaRecenterMapOnFeatures, gaMapUtils) {
       var queryParams = gaPermalink.getParams();
       return function(map) {
         var deregister = $rootScope.$on('gaLayersChange', function() {
@@ -464,7 +492,9 @@
             if (gaLayers.getLayer(paramKey)) {
               var bodId = paramKey;
               var bodIds = queryParams[bodId].split(',');
-              map.addLayer(gaLayers.getOlLayerById(bodId));
+              if (!gaMapUtils.getMapOverlayForBodId(map, bodId)) {
+                map.addLayer(gaLayers.getOlLayerById(bodId));
+              }
               gaRecenterMapOnFeatures(map, bodId, bodIds);
             }
           }

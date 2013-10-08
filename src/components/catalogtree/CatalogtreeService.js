@@ -37,21 +37,6 @@
             alert('Layer not supported by gaLayers (' + item.idBod + ').');
             item.errorLoading = true;
           }
-        },
-
-        /**
-         * Search for an overlay identified by bodId in the map and
-         * return it. undefined is returned if the map does not have
-         * such a layer.
-         */
-        getMapOverlayForBodId: function(map, bodId) {
-          var layer;
-          map.getLayers().forEach(function(l) {
-            if (l.get('bodId') == bodId && !l.background) {
-              layer = l;
-            }
-          });
-          return layer;
         }
       };
     };
