@@ -719,3 +719,21 @@ class totholz(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bafu.landesforstinventar-totholz', totholz)
+
+
+class histerdbeben(Base, Vector):
+    # view in a schema
+    __tablename__ = 'historische_erdbeben'
+    __table_args__ = ({'schema': 'gefahren', 'autoload': False})
+    __esriId__ = 2039
+    __bodId__ = 'ch.bafu.gefahren-historische_erdbeben'
+    __template__ = 'templates/htmlpopup/histerdbeben.mako'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    fid = Column('id', Integer)
+    epicentral = Column('epicentral', Text)
+    intensity = Column('intensity', Text)
+    magnitude = Column('magnitude', Numeric)
+    date_time = Column('date_time', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.gefahren-historische_erdbeben', histerdbeben)
