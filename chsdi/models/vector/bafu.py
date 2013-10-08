@@ -803,3 +803,17 @@ class amphibien_anhang4(Base, Vector):
 
 register('ch.bafu.bundesinventare-amphibien_anhang4', amphibien_anhang4)
 
+
+class baugrundklassen(Base, Vector):
+    # view in a schema
+    __tablename__ = 'baugrundklassen'
+    __table_args__ = ({'schema': 'gefahren', 'autoload': False})
+    __esriId__ = 2044
+    __bodId__ = 'ch.bafu.gefahren-baugrundklassen'
+    __template__ = 'templates/htmlpopup/baugrundklassen.mako'
+    id = Column('_count', Integer, primary_key=True)
+    bgk = Column('bgk', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.gefahren-baugrundklassen', baugrundklassen)
+
