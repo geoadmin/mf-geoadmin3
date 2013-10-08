@@ -857,3 +857,25 @@ class wrzselect(Base, Vector):
 
 register('ch.bafu.wrz-jagdbanngebiete_select', wrzselect)
 
+
+class wrzportal(Base, Vector):
+    # view in a schema
+    __tablename__ = 'wrz_portal'
+    __table_args__ = ({'schema': 'wrzportal', 'autoload': False})
+    __esriId__ = 2047
+    __bodId__ = 'ch.bafu.wrz-wildruhezonen_portal'
+    __template__ = 'templates/htmlpopup/wrz_portal.mako'
+    id = Column('objectid', Integer, primary_key=True)
+    wrz_name = Column('wrz_name', Text)
+    wrz_obj = Column('wrz_obj', Integer)
+    schutzstatus = Column('schutzstatus', Text)
+    bestimmung = Column('bestimmung', Text)
+    schutzzeit = Column('schutzzeit', Text)
+    grundlage = Column('grundlage', Text)
+    beschlussjahr = Column('beschlussjahr', Text)
+    zusatzinformation = Column('zusatzinformation', Text)
+    kanton = Column('kanton', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.wrz-wildruhezonen_portal', wrzportal)
+
