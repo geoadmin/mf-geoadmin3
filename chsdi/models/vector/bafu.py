@@ -602,3 +602,19 @@ class biogeoreg(Base, Vector):
 
 register('ch.bafu.biogeographische_regionen', biogeoreg)
 
+
+class smaragd(Base, Vector):
+    # view in a schema
+    __tablename__ = 'smaragd'
+    __table_args__ = ({'schema': 'schutzge', 'autoload': False})
+    __esriId__ = 2033
+    __bodId__ = 'ch.bafu.schutzgebiete-smaragd'
+    __template__ = 'templates/htmlpopup/smaragd.mako'
+    id = Column('id', Integer, primary_key=True)
+    em_name = Column('em_name', Text)
+    em_obj = Column('em_obj', Numeric)
+    em_gf = Column('em_gf', Numeric)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.schutzgebiete-smaragd', smaragd)
+
