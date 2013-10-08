@@ -737,3 +737,19 @@ class histerdbeben(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bafu.gefahren-historische_erdbeben', histerdbeben)
+
+
+class spektral(Base, Vector):
+    # view in a schema
+    __tablename__ = 'baugrundkl_spectral'
+    __table_args__ = ({'schema': 'gefahren', 'autoload': False})
+    __esriId__ = 2040
+    __bodId__ = 'ch.bafu.gefahren-spektral'
+    __template__ = 'templates/htmlpopup/spektral.mako'
+    id = Column('_count', Integer, primary_key=True)
+    fid = Column('id', Integer)
+    spectral_3 = Column('spectral_3', Text)
+    spectral_4 = Column('spectral_4', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.gefahren-spektral', spektral)
