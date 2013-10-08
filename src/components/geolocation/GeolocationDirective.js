@@ -7,7 +7,7 @@
     'ga_permalink'
   ]);
 
-  module.directive('gaGeolocation', function($parse, gaPermalink) {
+  module.directive('gaGeolocation', function($parse, $window, gaPermalink) {
     return {
       restrict: 'A',
       scope: {
@@ -16,7 +16,7 @@
       template: '<a href="#geolocation" class="geolocation">',
       replace: true,
       link: function(scope, element, attrs) {
-        if (!('geolocation' in window.navigator)) {
+        if (!('geolocation' in $window.navigator)) {
           element.addClass('error');
           return;
         }
