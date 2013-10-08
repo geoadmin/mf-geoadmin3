@@ -672,3 +672,20 @@ class weltensutter(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bafu.flora-weltensutter_atlas', weltensutter)
+
+
+class baumarten(Base, Vector):
+    # view in a schema
+    __tablename__ = 'baumartenmischung'
+    __table_args__ = ({'schema': 'wald', 'autoload': False})
+    __esriId__ = 2036
+    __bodId__ = 'ch.bafu.landesforstinventar-baumarten'
+    __template__ = 'templates/htmlpopup/baumarten.mako'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    wirtschaft = Column('wirtschaft', Text)
+    anteil_lau = Column('anteil_lau', Numeric)
+    anteil_nad = Column('anteil_nad', Numeric)
+    vorrat = Column('vorrat', Numeric)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.landesforstinventar-baumarten', baumarten)
