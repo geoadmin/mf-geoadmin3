@@ -817,3 +817,22 @@ class baugrundklassen(Base, Vector):
 
 register('ch.bafu.gefahren-baugrundklassen', baugrundklassen)
 
+
+class emissionplan(Base, Vector):
+    # view in a schema
+    __tablename__ = 'laerm_emplan_bahn_2015'
+    __table_args__ = ({'schema': 'diverse', 'autoload': False})
+    __esriId__ = 2045
+    __bodId__ = 'ch.bav.laerm-emissionplan_eisenbahn_2015'
+    __template__ = 'templates/htmlpopup/emissionplan.mako'
+    __extended_info__ = True
+    id = Column('id', Integer, primary_key=True)
+    lin_nr_dfa = Column('lin_nr_dfa', Numeric)
+    von_m = Column('von_m', Numeric)
+    bis_m = Column('bis_m', Numeric)
+    lre_t = Column('lre_t', Numeric)
+    lre_n = Column('lre_n', Numeric)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bav.laerm-emissionplan_eisenbahn_2015', emissionplan)
+
