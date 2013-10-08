@@ -4,8 +4,7 @@
     <select ng-model="layout" ng-options="l.name for l in capabilities.layouts"></select>
   </div>
   <div class="checkbox">
-    <label>
-        <input ng-model="options.legend" type="checkbox" translate />legend
+      <input ng-model="options.legend" type="checkbox" /><label translate>legend
     </label>
   </div>
   <button type="submit" class="btn btn-primary" ng-click="submit()" translate>print_action</button>
