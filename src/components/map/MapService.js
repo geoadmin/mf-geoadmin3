@@ -612,7 +612,7 @@
   });
 
   module.provider('gaRecenterMapOnFeatures', function() {
-    this.$get = function($q, $http) {
+    this.$get = function($q, $http, gaDefinePropertiesForLayer) {
       var url = this.url;
       var vector;
       var foundFeatures;
@@ -680,6 +680,7 @@
               }
             })
           });
+          gaDefinePropertiesForLayer(vector);
           vector.preview = true;
           map.addLayer(vector);
         });
