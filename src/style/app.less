@@ -874,7 +874,7 @@ ul.panel-body-wide {
   }
 }
 
-// ***** IE10 input range
+// ***** IE10 INPUT RANGE
 input[type=range] {
   &::-ms-fill-upper {
     background: #fff;
@@ -895,5 +895,22 @@ input[type=range] {
   }
   &::-ms-tooltip {
     display: none;
+  }
+}
+
+// ***** CUSTOM CHECKBOXES
+input[type=checkbox] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  border: 0;
+  background: white;
+  &:after {
+    font-size: 14px;
+    content: "\f096";
+    font-family: FontAwesome;
+  }
+  &:checked:after {
+    content: "\f046";
   }
 }
