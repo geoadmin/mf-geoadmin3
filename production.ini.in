@@ -33,8 +33,6 @@ sqlalchemy.zeitreihen.url = postgresql://${vars:dbhost}:${vars:dbport}/zeitreihe
 
 # Mako specific
 mako.directories = chsdi:templates
-mako.imports = from markupsafe import escape_silent
-mako.default_filters = escape_silent
 
 data_path = /var/local/cartoweb/
 geodata_staging = ${geodata_staging}
