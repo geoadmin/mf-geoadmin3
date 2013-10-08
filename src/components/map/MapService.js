@@ -432,7 +432,7 @@
     };
   });
 
-  module.provider('gaHighlightFeature', function() {
+  module.provider('gaRecenterMapOnFeatures', function() {
     this.$get = function($q, $http) {
       var url = this.url;
       var getFeatures = function(layer, ids) {
@@ -440,25 +440,22 @@
           return $http.get(url + layer + '/' + id);
         }));
       };
-
-      return {
-        recenter: function(map, layer, ids) {
-          getFeatures(layer, ids).then(function(results) {
-            var extent = ol.extent.createEmpty();
-            angular.forEach(results, function(result) {
-              var bbox = result.data.feature.bbox;
-              ol.extent.extend(extent, bbox);
-            });
-            map.getView().fitExtent(extent, map.getSize());
+      return function(map, layer, ids) {
+        getFeatures(layer, ids).then(function(results) {
+          var extent = ol.extent.createEmpty();
+          angular.forEach(results, function(result) {
+            var bbox = result.data.feature.bbox;
+            ol.extent.extend(extent, bbox);
           });
-        }
+          map.getView().fitExtent(extent, map.getSize());
+        });
       };
     };
   });
 
   module.provider('gaHighlightFeaturePermalinkManager', function() {
     this.$get = function($rootScope, gaPermalink, gaLayers,
-        gaHighlightFeature) {
+        gaRecenterMapOnFeatures) {
       var queryParams = gaPermalink.getParams();
       return function(map) {
         var deregister = $rootScope.$on('gaLayersChange', function() {
@@ -468,7 +465,7 @@
               var bodId = paramKey;
               var bodIds = queryParams[bodId].split(',');
               map.addLayer(gaLayers.getOlLayerById(bodId));
-              gaHighlightFeature.recenter(map, bodId, bodIds);
+              gaRecenterMapOnFeatures(map, bodId, bodIds);
             }
           }
           deregister();
