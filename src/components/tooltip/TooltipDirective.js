@@ -195,6 +195,7 @@
                     }
                   })
                 });
+                gaDefinePropertiesForLayer(vector);
                 vector.preview = true;
                 map.addLayer(vector);
               }
