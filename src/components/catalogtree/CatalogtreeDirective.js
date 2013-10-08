@@ -56,19 +56,22 @@
               }
             };
 
+            // This function determines if the layers pre-selected in the
+            // catalog tree should be added to the map.
+            //
+            // If the map already includes non-background layers then we do
+            // not add the pre-selected layers to the map. In that case we
+            // just visit the tree leaves and set "selectedOpen" as
+            // appropriate.
             var handleTree = function(newTree, oldTree) {
               var i;
-              var id;
               var map = scope.map;
               var layers = scope.layers;
-              var leaves;
 
               var addDefaultLayersToMap = true;
               if (!angular.isDefined(oldTree)) {
                 for (i = 0; i < layers.length; ++i) {
-                  id = layers[i].get('id');
-                  if (!gaLayers.getLayer(id) ||
-                      !gaLayers.getLayerProperty(id, 'background')) {
+                  if (!layers[i].background) {
                     addDefaultLayersToMap = false;
                     break;
                   }
@@ -77,21 +80,21 @@
 
               if (addDefaultLayersToMap) {
                 visitTreeLeaves(newTree, function(leaf) {
-                  if (leaf.selectedOpen && !angular.isDefined(
-                      gaCatalogtreeMapUtils.getMapLayer(map, leaf.idBod))) {
+                  if (leaf.selectedOpen) {
                     gaCatalogtreeMapUtils.addLayer(map, leaf);
                   }
                 });
               } else {
-                leaves = {};
+                var leaves = {};
                 visitTreeLeaves(newTree, function(leaf) {
                   leaf.selectedOpen = false;
                   leaves[leaf.idBod] = leaf;
                 });
                 for (i = 0; i < layers.length; ++i) {
-                  id = layers[i].get('id');
-                  if (leaves.hasOwnProperty(id)) {
-                    leaves[id].selectedOpen = true;
+                  var layer = layers[i];
+                  var bodId = layer.get('bodId');
+                  if (!layer.background && leaves.hasOwnProperty(bodId)) {
+                    leaves[bodId].selectedOpen = true;
                   }
                 }
               }
@@ -135,24 +138,24 @@
 
             scope.$watchCollection('layers | filter:layerFilter',
                 function(layers) {
-              var layerIds;
+              var layerBodIds;
               if (angular.isDefined(scope.root)) {
-                layerIds = [];
+                layerBodIds = [];
                 angular.forEach(layers, function(layer) {
-                  var id = layer.get('id');
-                  if (angular.isDefined(id)) {
-                    layerIds.push(id);
+                  var bodId = layer.get('bodId');
+                  if (angular.isDefined(bodId)) {
+                    layerBodIds.push(bodId);
                   }
                 });
-                updateSelectionInTree(scope.root, layerIds);
+                updateSelectionInTree(scope.root, layerBodIds);
               }
             });
           }
         };
 
-        function updateSelectionInTree(root, layerIds) {
+        function updateSelectionInTree(root, layerBodIds) {
           visitTreeLeaves(root, function(node) {
-            node.selectedOpen = layerIds.indexOf(node.idBod) >= 0;
+            node.selectedOpen = layerBodIds.indexOf(node.idBod) >= 0;
           });
         }
 

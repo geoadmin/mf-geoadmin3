@@ -16,9 +16,9 @@ describe('ga_catalogtree_directive', function() {
         },
         getLayerProperty: function(key) {
         },
-        getOlLayerById: function(id) {
+        getOlLayerById: function(bodId) {
           return new ol.layer.Tile({
-            id: id,
+            bodId: bodId,
             source: new ol.source.OSM()
           });
         }
@@ -82,7 +82,7 @@ describe('ga_catalogtree_directive', function() {
     var layers = map.getLayers();
     var numLayers = layers.getLength();
     expect(numLayers).to.equal(1);
-    expect(layers.getAt(0).get('id')).to.equal('bar');
+    expect(layers.getAt(0).get('bodId')).to.equal('bar');
   });
 
   describe('layers already in the map', function() {
@@ -98,7 +98,7 @@ describe('ga_catalogtree_directive', function() {
       var layers = map.getLayers();
       var numLayers = layers.getLength();
       expect(numLayers).to.equal(1);
-      expect(layers.getAt(0).get('id')).to.equal('foo');
+      expect(layers.getAt(0).get('bodId')).to.equal('foo');
     });
   });
 

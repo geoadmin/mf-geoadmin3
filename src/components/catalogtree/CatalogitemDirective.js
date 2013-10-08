@@ -50,7 +50,8 @@
           // "this" is the scope
           var item = this.item;
           var map = this.map;
-          var layer = gaCatalogtreeMapUtils.getMapLayer(map, item.idBod);
+          var layer = gaCatalogtreeMapUtils.getMapOverlayForBodId(
+              map, item.idBod);
           if (!angular.isDefined(layer)) {
             // FIXME: we are super cautious here and display error messages
             // when either the layer identified by item.idBod doesn't exist
@@ -73,7 +74,8 @@
           // "this" is the scope
           var item = this.item;
           var map = this.map;
-          var layer = gaCatalogtreeMapUtils.getMapLayer(map, item.idBod);
+          var layer = gaCatalogtreeMapUtils.getMapOverlayForBodId(
+              map, item.idBod);
           if (angular.isDefined(layer) && layer.preview) {
             map.removeLayer(layer);
             layer.preview = false;
@@ -84,7 +86,8 @@
           // "this" is the scope
           var item = this.item;
           var map = this.map;
-          var layer = gaCatalogtreeMapUtils.getMapLayer(map, item.idBod);
+          var layer = gaCatalogtreeMapUtils.getMapOverlayForBodId(
+              map, item.idBod);
           return angular.isDefined(layer) && layer.preview;
         }
 
@@ -92,7 +95,8 @@
           // "this" is the scope
           var item = this.item;
           var map = this.map;
-          var layer = gaCatalogtreeMapUtils.getMapLayer(map, item.idBod);
+          var layer = gaCatalogtreeMapUtils.getMapOverlayForBodId(
+              map, item.idBod);
           if (!angular.isDefined(layer)) {
             gaCatalogtreeMapUtils.addLayer(map, item);
           } else {
