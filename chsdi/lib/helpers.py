@@ -95,4 +95,3 @@ def parseHydroXML(id, root):
                         html_attr['wassertemperatur'] = attr.text
                         break
     return html_attr
-

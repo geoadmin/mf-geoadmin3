@@ -10,6 +10,7 @@ from chsdi.models.vector import Vector
 
 Base = bases['bafu']
 
+
 class AM_G(Base, Vector):
     # view in a schema
     __tablename__ = 'am_g'
@@ -23,6 +24,7 @@ class AM_G(Base, Vector):
     the_geom = Column(Geometry)
 
 register('ch.bafu.bundesinventare-amphibien_wanderobjekte', AM_G)
+
 
 class AM_L(Base, Vector):
     # view in a schema
@@ -39,6 +41,7 @@ class AM_L(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
 
 register('ch.bafu.bundesinventare-amphibien', AM_L)
+
 
 class LHG(Base, Vector):
     # view in a schema
@@ -61,7 +64,7 @@ class Temperaturmessnetz(Base, Vector):
     __esriId__ = 2004
     __bodId__ = 'ch.bafu.hydrologie-wassertemperaturmessstationen'
     __template__ = 'templates/htmlpopup/temperaturmessnetz.mako'
-    __queryable_attributes__ = ['nr','name']
+    __queryable_attributes__ = ['nr', 'name']
     id = Column('nr', Integer, primary_key=True)
     url = Column('url', Text)
     name = Column('name', Text)
@@ -77,7 +80,7 @@ class Gewaesserzustandst (Base, Vector):
     __esriId__ = 2006
     __bodId__ = 'ch.bafu.hydrologie-gewaesserzustandsmessstationen'
     __template__ = 'templates/htmlpopup/gewaesserzustandsmessstationen.mako'
-    __queryable_attributes__ = ['nr','name','gewaesser']
+    __queryable_attributes__ = ['nr', 'name', 'gewaesser']
     id = Column('bgdi_id', Integer, primary_key=True)
     name = Column('name', Text)
     nr = Column('nr', Numeric)
@@ -100,15 +103,15 @@ class Teileinzugsgebiete2 (Base, Vector):
     measure = Column('measure', Integer)
     teilezgfla = Column('teilezgfla', Text)
     ezgflaeche = Column('ezgflaeche', Text)
-    typ2_de = Column ('typ2_de', Text)
+    typ2_de = Column('typ2_de', Text)
     flussgb_de = Column('flussgb_de', Text)
-    typ2_fr = Column ('typ2_fr', Text)
+    typ2_fr = Column('typ2_fr', Text)
     flussgb_fr = Column('flussgb_fr', Text)
-    typ2_it = Column ('typ2_it', Text)
+    typ2_it = Column('typ2_it', Text)
     flussgb_it = Column('flussgb_it', Text)
-    typ2_rm = Column ('typ2_rm', Text)
+    typ2_rm = Column('typ2_rm', Text)
     flussgb_rm = Column('flussgb_rm', Text)
-    typ2_en = Column ('typ2_en', Text)
+    typ2_en = Column('typ2_en', Text)
     flussgb_en = Column('flussgb_en', Text)
     the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
 
@@ -161,7 +164,7 @@ class AU(Base, Vector):
     __esriId__ = 2009
     __bodId__ = 'ch.bafu.bundesinventare-auen'
     __template__ = 'templates/htmlpopup/auen.mako'
-    __queryable_attributes__ = ['nr','name']
+    __queryable_attributes__ = ['nr', 'name']
     id = Column('gid', Integer, primary_key=True)
     au_obj = Column('au_obj', Integer)
     au_objtyp = Column('au_objtyp', Text)
