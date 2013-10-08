@@ -548,3 +548,21 @@ class HOLZNUTZUNG(Base, Vector):
 
 register('ch.bafu.holznutzung', HOLZNUTZUNG)
 
+
+class NABEL(Base, Vector):
+    # view in a schema
+    __tablename__ = 'nabel'
+    __table_args__ = ({'schema': 'luft', 'autoload': False})
+    __esriId__ = 2030
+    __bodId__ = 'ch.bafu.nabelstationen'
+    __template__ = 'templates/htmlpopup/nabel.mako'
+    id = Column('id_stat', Text, primary_key=True)
+    name = Column('name', Text)
+    typ_de = Column('typ_de', Text)
+    typ_fr = Column('typ_fr', Text)
+    desc_de = Column('desc_de', Text)
+    desc_fr = Column('desc_fr', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.nabelstationen', NABEL)
+
