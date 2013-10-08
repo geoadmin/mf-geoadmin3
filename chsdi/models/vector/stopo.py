@@ -54,20 +54,20 @@ class SwissboundariesKanton(Base, Vector):
 
 register('ch.swisstopo.swissboundaries3d-kanton-flaeche.fill', SwissboundariesKanton)
 
-# c.bbox not supported in the mako...
-# class CadastralWebMap(Base, Vector):
-#    __tablename__ = 'kantone25plus'
-#    __table_args__ = ({'autoload': False})
-#    __template__ = 'templates/htmlpopup/cadastralwebmap.mako'
-#    __esriId__ = 1000
-#    __bodId__ = 'ch.kantone.cadastralwebmap-farbe'
-##    __displayFieldName__ = 'kantonsnr'
-#    id = Column('gid', Integer, primary_key=True)
-#    kantonsnr = Column('kantonsnr', Integer)
-#    ak = Column('ak', Text)
-#    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-#
-#register('ch.kantone.cadastralwebmap-farbe', CadastralWebMap)
+
+class CadastralWebMap(Base, Vector):
+    __tablename__ = 'kantone25plus'
+    __table_args__ = ({'autoload': False})
+    __template__ = 'templates/htmlpopup/cadastralwebmap.mako'
+    __esriId__ = 1000
+    __bodId__ = 'ch.kantone.cadastralwebmap-farbe'
+    __displayFieldName__ = 'kantonsnr'
+    id = Column('gid', Integer, primary_key=True)
+    kantonsnr = Column('kantonsnr', Integer)
+    ak = Column('ak', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.kantone.cadastralwebmap-farbe', CadastralWebMap)
 
 
 class Vec200Terminal(Base, Vector):
