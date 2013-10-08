@@ -689,3 +689,18 @@ class baumarten(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bafu.landesforstinventar-baumarten', baumarten)
+
+
+class waldanteil(Base, Vector):
+    # view in a schema
+    __tablename__ = 'waldanteil'
+    __table_args__ = ({'schema': 'wald', 'autoload': False})
+    __esriId__ = 2037
+    __bodId__ = 'ch.bafu.landesforstinventar-waldanteil'
+    __template__ = 'templates/htmlpopup/waldanteil.mako'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    wirtschaft = Column('wirtschaft', Text)
+    waldflaech = Column('waldflaech', Numeric)
+    the_geom =  GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.landesforstinventar-waldanteil', waldanteil)
