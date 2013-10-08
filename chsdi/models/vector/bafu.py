@@ -621,3 +621,20 @@ class smaragd(Base, Vector):
 
 register('ch.bafu.schutzgebiete-smaragd', smaragd)
 
+
+class biosphaerenreservate(Base, Vector):
+    # view in a schema
+    __tablename__ = 'biores'
+    __table_args__ = ({'schema': 'schutzge', 'autoload': False})
+    __esriId__ = 2034
+    __bodId__ = 'ch.bafu.schutzgebiete-biosphaerenreservate'
+    __template__ = 'templates/htmlpopup/biosphaerenreservate.mako'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    biores_ver = Column('biores_ver', Text)
+    biores_fl = Column('biores_fl', Text)
+    biores_gf = Column('biores_gf', Text)
+    biores_nam = Column('biores_nam', Text)
+    biores_obj = Column('biores_obj', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.schutzgebiete-biosphaerenreservate', biosphaerenreservate)
