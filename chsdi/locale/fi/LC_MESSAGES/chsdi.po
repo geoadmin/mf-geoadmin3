@@ -482,6 +482,9 @@ msgstr "Convenziun da las Alps"
 msgid "ch.are.bauzonen"
 msgstr "Bauzonen Schweiz (harmonisiert)"
 
+msgid "ch.are.belastung-gueterverkehr-bahn-2008"
+msgstr "Güterverkehr 2008"
+
 msgid "ch.are.belastung-gueterverkehr-strasse-2008"
 msgstr "Schwerer Güterverkehr 2008"
 
@@ -494,6 +497,9 @@ msgstr "Jährliche Belastung des schweizerischen Strassennetzes 2008 (Personenve
 msgid "ch.are.beschaeftigtendichte-bz08"
 msgstr "Beschäftigtendichte 2008"
 
+msgid "ch.are.bevoelkerungsdichte-vz00"
+msgstr "Bevölkerungsdichte 2000"
+
 msgid "ch.are.gemeindetyp-1990-9klassen"
 msgstr "Tipologia da las vischnancas ARE"
 
@@ -502,6 +508,9 @@ msgstr "Gemeindetypologie ARE"
 
 msgid "ch.are.gueteklassen_oev"
 msgstr "ÖV-Güteklassen ARE"
+
+msgid "ch.are.landschaftstypen"
+msgstr "Landschaftstypologie Schweiz"
 
 msgid "ch.are.reisezeit_miv-2005"
 msgstr "Reisezeit zu Zentren mit dem MIV 2005"
@@ -524,8 +533,20 @@ msgstr "IVS charta topografica"
 msgid "ch.astra.ivs-nat"
 msgstr "IVS naziunal"
 
+msgid "ch.astra.ivs-nat-verlaeufe"
+msgstr "IVS naziunal"
+
+msgid "ch.astra.ivs-nat_abgrenzungen"
+msgstr "IVS, cunfinaziun"
+
+msgid "ch.astra.ivs-nat_wegbegleiter"
+msgstr "IVS, Elements cuntrada da vias"
+
 msgid "ch.astra.ivs-reg_loc"
 msgstr "IVS regiunal & local"
+
+msgid "ch.astra.ivs-reg_loc.sub"
+msgstr "IVS Regional und Lokal"
 
 msgid "ch.astra.strassenverkehrszaehlung_messstellen-regional_lokal"
 msgstr "Posts da quintar il traffic locals"
@@ -560,8 +581,17 @@ msgstr "Überschwemmung Aquaprotect 250"
 msgid "ch.bafu.aquaprotect_500"
 msgstr "Überschwemmung Aquaprotect 500"
 
+msgid "ch.bafu.biogeographische_regionen"
+msgstr "Biogeographische Regionen"
+
 msgid "ch.bafu.bundesinventare-amphibien"
 msgstr "Amfibis object ferms"
+
+msgid "ch.bafu.bundesinventare-amphibien_anhang4"
+msgstr "Amphibien Anhang 4"
+
+msgid "ch.bafu.bundesinventare-amphibien_wanderobjekte"
+msgstr "Amfibis object ambulant"
 
 msgid "ch.bafu.bundesinventare-auen"
 msgstr "Ognas"
@@ -571,6 +601,9 @@ msgstr "Inventari IFC"
 
 msgid "ch.bafu.bundesinventare-flachmoore"
 msgstr "Palids planivas"
+
+msgid "ch.bafu.bundesinventare-flachmoore_regional"
+msgstr "Flachmoore regional"
 
 msgid "ch.bafu.bundesinventare-hochmoore"
 msgstr "Palids autas"
@@ -599,8 +632,23 @@ msgstr "Vernetzungssystem"
 msgid "ch.bafu.fauna-wildtierkorridor_national"
 msgstr "Wildtierkorridore National"
 
+msgid "ch.bafu.fischerei-aeschen_kernzonen"
+msgstr "Äschen: Kernzonen"
+
+msgid "ch.bafu.fischerei-aeschen_laichplaetze"
+msgstr "Äschen: Laichplätze"
+
+msgid "ch.bafu.fischerei-aeschen_larvenhabitate"
+msgstr "Äschen: Larvenhabitate"
+
+msgid "ch.bafu.fischerei-aeschen_verbreitungsgebiet"
+msgstr "Äschen: Verbreitungsgebiet"
+
 msgid "ch.bafu.fischerei-krebspest"
 msgstr "Krebspest"
+
+msgid "ch.bafu.fischerei-nasenlaichplaetze"
+msgstr "Nasenlaichplätze"
 
 msgid "ch.bafu.fischerei-proliferative_nierenkrankheit"
 msgstr "PKD (Proliferative Nierenkrankheit)"
@@ -638,8 +686,14 @@ msgstr "Reserva da laina (IFN)"
 msgid "ch.bafu.holzzuwachs"
 msgstr "Creschientscha annuala da laina (IFN)"
 
+msgid "ch.bafu.hydrologie-gewaesserzustandsmessstationen"
+msgstr "Messstandorte Gewässerzustand"
+
 msgid "ch.bafu.hydrologie-hydromessstationen"
 msgstr "Staziuns idrometricas"
+
+msgid "ch.bafu.hydrologie-wassertemperaturmessstationen"
+msgstr "Messstationen Wassertemperatur"
 
 msgid "ch.bafu.laerm-bahnlaerm_nacht"
 msgstr "Canera da viafier (Lr_notg)"
@@ -662,8 +716,20 @@ msgstr "Totholz (LFI)"
 msgid "ch.bafu.landesforstinventar-waldanteil"
 msgstr "Waldanteil (LFI)"
 
+msgid "ch.bafu.moose"
+msgstr "Rote Liste Moose"
+
 msgid "ch.bafu.nabelstationen"
 msgstr "Contaminaziun da l'aria: Staziuns NABEL"
+
+msgid "ch.bafu.naqua-grundwasser_nitrat"
+msgstr "Nitrat"
+
+msgid "ch.bafu.naqua-grundwasser_psm"
+msgstr "Pflanzenschutzmittel"
+
+msgid "ch.bafu.naqua-grundwasser_voc"
+msgstr "Flüchtige org. Verbindungen"
 
 msgid "ch.bafu.permafrost"
 msgstr "Charta indicativa schelira permanenta"
@@ -694,6 +760,9 @@ msgstr "Biosphärenreservate"
 
 msgid "ch.bafu.schutzgebiete-biosphaerenreservate"
 msgstr "Biosphärenreservate"
+
+msgid "ch.bafu.schutzgebiete-luftfahrt"
+msgstr "Territoris da protecziun"
 
 msgid "ch.bafu.schutzgebiete-paerke_nationaler_bedeutung"
 msgstr "Parcs"
@@ -734,6 +803,21 @@ msgstr "ShowMe chantuns: bovas"
 msgid "ch.bafu.showme-kantone_sturzprozesse"
 msgstr "ShowMe chantuns: crudadas"
 
+msgid "ch.bafu.silvaprotect-hangmuren"
+msgstr "Hangmuren"
+
+msgid "ch.bafu.silvaprotect-lawinen"
+msgstr "Lawinen"
+
+msgid "ch.bafu.silvaprotect-murgang"
+msgstr "Murgang"
+
+msgid "ch.bafu.silvaprotect-sturz"
+msgstr "Sturz"
+
+msgid "ch.bafu.silvaprotect-uebersarung"
+msgstr "Übersarung"
+
 msgid "ch.bafu.swissprtr"
 msgstr "Emiss. da subs. nuschaivla (SwissPRTR)"
 
@@ -752,11 +836,23 @@ msgstr "Sturmschaden Vivian"
 msgid "ch.bafu.wasser-entnahme"
 msgstr "Retratga d'aua"
 
+msgid "ch.bafu.wasser-gebietsauslaesse"
+msgstr "Gebietsauslässe"
+
 msgid "ch.bafu.wasser-leitungen"
 msgstr "Conduct d'affluenza"
 
 msgid "ch.bafu.wasser-rueckgabe"
 msgstr "Restituziun d'aua"
+
+msgid "ch.bafu.wasser-teileinzugsgebiete_2"
+msgstr "Teileinzugsgebiete 2km2"
+
+msgid "ch.bafu.wasser-teileinzugsgebiete_40"
+msgstr "Teileinzugsgebiete 40km2"
+
+msgid "ch.bafu.wasser-vorfluter"
+msgstr "Vorfluter"
 
 msgid "ch.bafu.wege-wildruhezonen-jagdbanngebiete"
 msgstr "Zonas da paus per la selvaschina ? vias e rutas"
@@ -764,11 +860,29 @@ msgstr "Zonas da paus per la selvaschina ? vias e rutas"
 msgid "ch.bafu.wildruhezonen-jagdbanngebiete"
 msgstr "Zonas da paus per la selvaschina ? territoris scumandads per la chatscha"
 
+msgid "ch.bafu.wrz-jagdbanngebiete_select"
+msgstr "Jagdbanngebiete - select"
+
+msgid "ch.bafu.wrz-wildruhezonen-jagdbanngebiete-wege-routen"
+msgstr "WRZ Portal - Wege und Routen"
+
+msgid "ch.bafu.wrz-wildruhezonen_portal"
+msgstr "Wildruhezonen - Portal"
+
 msgid "ch.bag"
 msgstr "BAG"
 
 msgid "ch.bag.url"
 msgstr "http://www.bag.admin.ch/index.html?lang=de"
+
+msgid "ch.bag.zecken-fsme-faelle"
+msgstr "FSME - Lokale Häufungen"
+
+msgid "ch.bag.zecken-fsme-impfung"
+msgstr "FSME - Impfempfehlung"
+
+msgid "ch.bag.zecken-lyme"
+msgstr "Borreliose"
 
 msgid "ch.bak"
 msgstr "BAK"
@@ -791,8 +905,41 @@ msgstr "http://www.bak.admin.ch/index.html?lang=rm"
 msgid "ch.bakom"
 msgstr "BAKOM"
 
+msgid "ch.bakom.anbieter-eigenes_festnetz"
+msgstr "Anzahl Leitungsanbieter"
+
+msgid "ch.bakom.anschlussart-glasfaser"
+msgstr "Glasfaser"
+
+msgid "ch.bakom.anschlussart-koaxialkabel"
+msgstr "Koxial-Kabel"
+
+msgid "ch.bakom.anschlussart-kupferdraht"
+msgstr "Kupfer-Draht"
+
+msgid "ch.bakom.downlink1"
+msgstr "Download ≥ 1 Mbit/s"
+
+msgid "ch.bakom.downlink100"
+msgstr "Download ≥ 100 Mbit/s"
+
+msgid "ch.bakom.downlink2"
+msgstr "Download ≥ 2 Mbit/s"
+
+msgid "ch.bakom.downlink2"
+msgstr "Download ≥ 2 Mbit/s"
+
+msgid "ch.bakom.downlink20"
+msgstr "Download ≥ 20 Mbit/s"
+
+msgid "ch.bakom.downlink50"
+msgstr "Download ≥ 50 Mbit/s"
+
 msgid "ch.bakom.mobil-antennenstandorte-gsm"
 msgstr "Antennenstandorte GSM"
+
+msgid "ch.bakom.mobil-antennenstandorte-lte"
+msgstr "Antennenstandorte 4G (LTE)"
 
 msgid "ch.bakom.mobil-antennenstandorte-umts"
 msgstr "Antennenstandorte 3G (UMTS)"
@@ -800,8 +947,29 @@ msgstr "Antennenstandorte 3G (UMTS)"
 msgid "ch.bakom.radio-fernsehsender"
 msgstr "Radio- und Fernsehsender"
 
+msgid "ch.bakom.uplink1"
+msgstr "Upload ≥ 1 Mbit/s"
+
+msgid "ch.bakom.uplink10"
+msgstr "Upload ≥ 10 Mbit/s"
+
+msgid "ch.bakom.uplink2"
+msgstr "Upload ≥ 2 Mbit/s"
+
+msgid "ch.bakom.uplink20"
+msgstr "Upload ≥ 20 Mbit/s"
+
+msgid "ch.bakom.uplink50"
+msgstr "Upload ≥ 50 Mbit/s"
+
 msgid "ch.bakom.url"
 msgstr "http://www.bakom.admin.ch/index.html"
+
+msgid "ch.bakom.verfuegbarkeit-hdtv"
+msgstr "HDTV-Verfügbarkeit Festnetz"
+
+msgid "ch.bakom.verfuegbarkeit-tv"
+msgstr "TV-Verfügbarkeit via Festnetz"
 
 msgid "ch.bakom.versorgungsgebiet-tv"
 msgstr "Versorgungsgebiete TV"
@@ -812,17 +980,41 @@ msgstr "Versorgungsgebiete Radio"
 msgid "ch.bav"
 msgstr "BAV"
 
+msgid "ch.bav.kataster-belasteter-standorte-oev"
+msgstr "Lieu engrevgià - traffic public"
+
+msgid "ch.bav.laerm-emissionplan_eisenbahn_2015"
+msgstr "Emissionsplan Eisenbahn  2015"
+
 msgid "ch.bav.url"
 msgstr "http://www.bav.admin.ch/?lang=de"
 
 msgid "ch.bazl"
 msgstr "UFAC"
 
+msgid "ch.bazl.heliports-gebirgslandeplaetze"
+msgstr "Heli- und Gebirgslandeplätze"
+
+msgid "ch.bazl.landschaftsruhezonen"
+msgstr "Landschaftsruhezonen Luftfahrt"
+
+msgid "ch.bazl.luftfahrthindernis"
+msgstr "--"
+
 msgid "ch.bazl.luftfahrtkarten-icao"
 msgstr "Charta da aviatica ICAO"
 
+msgid "ch.bazl.points-of-interest"
+msgstr "Points of Interest"
+
 msgid "ch.bazl.projektierungszonen-flughafenanlagen"
 msgstr "Zonas reservà: Eroports"
+
+msgid "ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung"
+msgstr "PSIA in audiziun"
+
+msgid "ch.bazl.sachplan-infrastruktur-luftfahrt_kraft"
+msgstr "PS infrastructura aviatica"
 
 msgid "ch.bazl.segelflugkarte"
 msgstr "Charta da sgol senza motor"
@@ -838,6 +1030,15 @@ msgstr "Renunzia forza idraulica"
 
 msgid "ch.bfe.energieforschung"
 msgstr "Retschertga energia"
+
+msgid "ch.bfe.kernkraftwerke"
+msgstr "Kernkraftwerke"
+
+msgid "ch.bfe.kleinwasserkraftpotentiale"
+msgstr "Potential idraulica pitschen"
+
+msgid "ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung"
+msgstr "Plan sect. deposit geologic profund"
 
 msgid "ch.bfe.statistik-wasserkraftanlagen"
 msgstr "Statistica implant idraulic"
@@ -872,14 +1073,89 @@ msgstr "http://www.bfs.admin.ch/bfs/portal/de/index.html"
 msgid "ch.blw"
 msgstr "BLW"
 
+msgid "ch.blw.alpprodukte"
+msgstr "Products dallas Alps"
+
+msgid "ch.blw.bergprodukte"
+msgstr "Products dallas muntognas"
+
+msgid "ch.blw.bewaesserungsbeduerftigkeit"
+msgstr "Dumonda da irrigaziun"
+
+msgid "ch.blw.bodeneignung-gruendigkeit"
+msgstr "Gründigkeit"
+
+msgid "ch.blw.bodeneignung-kulturland"
+msgstr "Bodeneignung für Kulturland"
+
+msgid "ch.blw.bodeneignung-kulturtyp"
+msgstr "Bodeneignung: Kulturtyp"
+
+msgid "ch.blw.bodeneignung-naehrstoffspeichervermoegen"
+msgstr "Nährstoffspeichervermögen"
+
+msgid "ch.blw.bodeneignung-skelettgehalt"
+msgstr "Skelettgehalt"
+
+msgid "ch.blw.bodeneignung-vernaessung"
+msgstr "Vernässung"
+
+msgid "ch.blw.bodeneignung-wasserdurchlaessigkeit"
+msgstr "Wasserdurchlässigkeit"
+
+msgid "ch.blw.bodeneignung-wasserspeichervermoegen"
+msgstr "Wasserspeichervermögen"
+
 msgid "ch.blw.erosion"
 msgstr "Erosionsrisiko"
+
+msgid "ch.blw.erosion-mit_bergzonen"
+msgstr "Erosionsrisiko"
+
+msgid "ch.blw.erosion-quantitativ"
+msgstr "Erosionsrisiko quantitativ"
+
+msgid "ch.blw.feldblockkarte"
+msgstr "Feldblockkarte"
+
+msgid "ch.blw.gewaesseranschlusskarte"
+msgstr "Gewässeranschluss"
+
+msgid "ch.blw.gewaesseranschlusskarte-direkt"
+msgstr "Gewässeranschluss erweitert"
 
 msgid "ch.blw.hang_steillagen"
 msgstr "Costas e spundas"
 
+msgid "ch.blw.klimaeignung-futterbau"
+msgstr "Klimaeignung für Futterbau"
+
+msgid "ch.blw.klimaeignung-getreidebau"
+msgstr "Klimaeignung für Getreidebau"
+
+msgid "ch.blw.klimaeignung-kartoffeln"
+msgstr "Klima - Kartoffeln"
+
+msgid "ch.blw.klimaeignung-koernermais"
+msgstr "Klimaeignung für Körnermais"
+
+msgid "ch.blw.klimaeignung-kulturland"
+msgstr "Klimaeignung für Kulturland"
+
+msgid "ch.blw.klimaeignung-spezialkulturen"
+msgstr "Klimaeignung Spezialkulturen"
+
+msgid "ch.blw.klimaeignung-typ"
+msgstr "Klimaeignungskarte Übersicht"
+
+msgid "ch.blw.klimaeignung-zwischenfruchtbau"
+msgstr "Klima - Zwischenfruchtbau"
+
 msgid "ch.blw.landwirtschaftliche-zonengrenzen"
 msgstr "Cunfin da zona agricultura"
+
+msgid "ch.blw.niederschlagshaushalt"
+msgstr "Niederschlagshaushalt"
 
 msgid "ch.blw.steil_terrassenlagen_rebbau"
 msgstr "Steillagen Reben"
@@ -915,6 +1191,12 @@ msgstr "Mesiraziun uffiziala svizra / FL"
 msgid "ch.kanton.av.url"
 msgstr "http://www.cadastre.ch/internet/cadastre/de/home/products/webmap/cwm.html"
 
+msgid "ch.kantone.cadastralwebmap-farbe"
+msgstr "CadastralWebMap"
+
+msgid "ch.kantone.ivs-reg_loc"
+msgstr "IVS Kanton Bern"
+
 msgid "ch.kt.bafu"
 msgstr "Kt. [BAFU]"
 
@@ -927,8 +1209,17 @@ msgstr "swisstopo"
 msgid "ch.swisstopo-vd"
 msgstr "Mesiraziun Uffiziala Svizra"
 
+msgid "ch.swisstopo-vd.geometa-gemeinde"
+msgstr "Infurmaziuns davart la vischnanca"
+
+msgid "ch.swisstopo-vd.geometa-grundbuch"
+msgstr "Infurmaziuns (register funsil)"
+
 msgid "ch.swisstopo-vd.geometa-los"
 msgstr "Territoris cun lavurs en curs"
+
+msgid "ch.swisstopo-vd.geometa-nfgeom"
+msgstr "Geometer-revisur"
 
 msgid "ch.swisstopo-vd.geometa-standav"
 msgstr "Stadi da las mesiraziuns uffizialas"
@@ -951,6 +1242,9 @@ msgstr "AGNES"
 msgid "ch.swisstopo.fixpunkte-hfp1"
 msgstr "Höhenfixpunkte HFP1"
 
+msgid "ch.swisstopo.fixpunkte-hfp1"
+msgstr "Höhenfixpunkte HFP1"
+
 msgid "ch.swisstopo.fixpunkte-hfp2"
 msgstr "Höhenfixpunkte HFP2, HFP3"
 
@@ -969,6 +1263,12 @@ msgstr "Lagefixpunkte LFP1"
 msgid "ch.swisstopo.fixpunkte-lfp2"
 msgstr "Lagefixpunkte LFP2, LFP3"
 
+msgid "ch.swisstopo.geoidmodell-ch1903"
+msgstr "Geoidmodell in CH1903"
+
+msgid "ch.swisstopo.geoidmodell-etrs89"
+msgstr "Geoidmodell in ETRS89"
+
 msgid "ch.swisstopo.geologie-eiszeit-lgm-raster"
 msgstr "Maximum da l'ultim temp da glatsch"
 
@@ -977,6 +1277,9 @@ msgstr "Anomalias da Bouguer"
 
 msgid "ch.swisstopo.geologie-geodaesie-isostatische_anomalien"
 msgstr "Anomalia isostatica"
+
+msgid "ch.swisstopo.geologie-geolkarten500.metadata"
+msgstr "Blatteinteilung GeoKarten 500"
 
 msgid "ch.swisstopo.geologie-geologische_karte"
 msgstr "Geologia 1:500000"
@@ -1002,6 +1305,9 @@ msgstr "Inclinaziun"
 msgid "ch.swisstopo.geologie-geophysik-totalintensitaet"
 msgstr "Intensitad dal champ magnetic"
 
+msgid "ch.swisstopo.geologie-geotechnik-gk200"
+msgstr "Geotechnik Rohstoffe Gesteine"
+
 msgid "ch.swisstopo.geologie-geotechnik-gk500-genese"
 msgstr "Origin da crap"
 
@@ -1010,6 +1316,9 @@ msgstr "Classificaziun da mineral"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk500-lithologie_hauptgruppen"
 msgstr "Gruppas principalas da litologia"
+
+msgid "ch.swisstopo.geologie-geotechnik-mineralische_rohstoffe200"
+msgstr "Materias primas mineralas"
 
 msgid "ch.swisstopo.geologie-geotechnik-steinbrueche_1915"
 msgstr "Crapperas 1915"
@@ -1037,6 +1346,12 @@ msgstr "Fabricas da quadrels 1965"
 
 msgid "ch.swisstopo.geologie-geotechnik-ziegeleien_1995"
 msgstr "Fabricas da quadrels 1995"
+
+msgid "ch.swisstopo.geologie-geotope"
+msgstr "Geotop Svizzer"
+
+msgid "ch.swisstopo.geologie-gravimetrischer_atlas"
+msgstr "Gravimetrischer Atlas"
 
 msgid "ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen"
 msgstr "Resursas d'aua sutterrana"
@@ -1074,11 +1389,22 @@ msgstr "Charta Dufour"
 msgid "ch.swisstopo.hiks-siegfried"
 msgstr "Charta Siegfried"
 
+#. TODO
+msgid "ch.swisstopo.hiks-siegfried-ta25"
+msgstr "ch.swisstopo.hiks-siegfried-ta25"
+
+#. TODO
+msgid "ch.swisstopo.hiks-siegfried-ta50"
+msgstr "ch.swisstopo.hiks-siegfried-ta50"
+
 msgid "ch.swisstopo.images-swissimage"
 msgstr "Fotografia or da l'aria"
 
 msgid "ch.swisstopo.images-swissimage.metadata"
 msgstr "Divisiun tiles SWISSIMAGE"
+
+msgid "ch.swisstopo.koordinatenaenderung"
+msgstr "LV95 Midada da coordinatas"
 
 msgid "ch.swisstopo.kt"
 msgstr "swisstopo, Kt."
@@ -1087,6 +1413,12 @@ msgid "ch.swisstopo.kt.url"
 msgstr "http://www.swisstopo.admin.ch/internet/swisstopo/de/home/swisstopo/org/cartography.html"
 
 msgid "ch.swisstopo.lubis-luftbilder"
+msgstr "TODO"
+
+msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen"
+msgstr "TODO"
+
+msgid "ch.swisstopo.lubis-luftbilder-dritte-kantone"
 msgstr "TODO"
 
 msgid "ch.swisstopo.pixelkarte-farbe"
@@ -1134,8 +1466,38 @@ msgstr "Divisiun charta naziunala 1:500'000"
 msgid "ch.swisstopo.swissalti3d-reliefschattierung"
 msgstr "swissALTI3D charta da reliev"
 
+msgid "ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill"
+msgstr "Cunfins districtuals"
+
+msgid "ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill"
+msgstr "Cunfins communals"
+
+msgid "ch.swisstopo.swissboundaries3d-kanton-flaeche.fill"
+msgstr "Cunfins chantunals"
+
+msgid "ch.swisstopo.swissboundaries3d-land-flaeche.fill"
+msgstr "Confins naziunals"
+
+msgid "ch.swisstopo.swissbuildings3d"
+msgstr "3D- Edifizis simplifitgà"
+
 msgid "ch.swisstopo.swissimage"
 msgstr "Fotografia or da l'aria"
+
+msgid "ch.swisstopo.swisstlm3d-karte-farbe"
+msgstr "Model cuntrada topo. (colur)"
+
+msgid "ch.swisstopo.swisstlm3d-karte-grau"
+msgstr "Model cuntrada topo.(grisch)"
+
+msgid "ch.swisstopo.swisstlm3d-wanderwege"
+msgstr "Sendas da viandar"
+
+msgid "ch.swisstopo.transformationsgenauigkeit"
+msgstr "LV95 Precisiun da transfurmaziun"
+
+msgid "ch.swisstopo.treasurehunt"
+msgstr "Schatzkarte"
 
 msgid "ch.swisstopo.url"
 msgstr "http://www.swisstopo.admin.ch/internet/swisstopo/de/home.html"
@@ -1157,6 +1519,12 @@ msgstr "Surfatschas da guaud"
 
 msgid "ch.swisstopo.vec200-miscellaneous"
 msgstr "Objects singuls VECTOR200"
+
+msgid "ch.swisstopo.vec200-miscellaneous-geodpoint"
+msgstr "Puncts d'autezza VECTOR200"
+
+msgid "ch.swisstopo.vec200-names-namedlocation"
+msgstr "Nums VECTOR200"
 
 msgid "ch.swisstopo.vec200-transportation-oeffentliche-verkehr"
 msgstr "Traffic public VECTOR200"
@@ -1763,6 +2131,12 @@ msgstr "Offizielle Punktnummer"
 
 msgid "optionaler_name"
 msgstr "Optionaler Name"
+
+msgid "org.epsg.grid_21781"
+msgstr "Koordinatennetz CH1903/LV03"
+
+msgid "org.epsg.grid_4326"
+msgstr "Koordinatennetz WGS84"
 
 msgid "ort"
 msgstr "Ort"

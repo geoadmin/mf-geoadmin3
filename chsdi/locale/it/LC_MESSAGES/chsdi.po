@@ -482,6 +482,9 @@ msgstr "Convenzione delle alpi"
 msgid "ch.are.bauzonen"
 msgstr "Zone edificabili Svizzera (armon.)"
 
+msgid "ch.are.belastung-gueterverkehr-bahn-2008"
+msgstr "Traffico merci 2008"
+
 msgid "ch.are.belastung-gueterverkehr-strasse-2008"
 msgstr "Traffico merci dai veicoli pesanti 2008"
 
@@ -494,6 +497,9 @@ msgstr "Traffico viaggiatori 2008"
 msgid "ch.are.beschaeftigtendichte-bz08"
 msgstr "Densità di impieghi 2008"
 
+msgid "ch.are.bevoelkerungsdichte-vz00"
+msgstr "Densità di popolazione 2000"
+
 msgid "ch.are.gemeindetyp-1990-9klassen"
 msgstr "Tipologia dei comuni ARE"
 
@@ -502,6 +508,9 @@ msgstr "Tipologia dei comuni ARE"
 
 msgid "ch.are.gueteklassen_oev"
 msgstr "Classi di collegamento dei TP ARE"
+
+msgid "ch.are.landschaftstypen"
+msgstr "Typologie des paysages suisses"
 
 msgid "ch.are.reisezeit_miv-2005"
 msgstr "Temps de parcours en TIM vers un centre 2005"
@@ -524,7 +533,19 @@ msgstr "IVS Carta del territorio"
 msgid "ch.astra.ivs-nat"
 msgstr "IVS Nazionale"
 
+msgid "ch.astra.ivs-nat-verlaeufe"
+msgstr "IVS Tracciato senza sostanza"
+
+msgid "ch.astra.ivs-nat_abgrenzungen"
+msgstr "IVS Delimitazioni"
+
+msgid "ch.astra.ivs-nat_wegbegleiter"
+msgstr "IVS Supporti del traffico"
+
 msgid "ch.astra.ivs-reg_loc"
+msgstr "IVS Regionali e locali"
+
+msgid "ch.astra.ivs-reg_loc.sub"
 msgstr "IVS Regionali e locali"
 
 msgid "ch.astra.strassenverkehrszaehlung_messstellen-regional_lokal"
@@ -560,8 +581,17 @@ msgstr "Aree inondabili Aquaprotect 250"
 msgid "ch.bafu.aquaprotect_500"
 msgstr "Aree inondabili Aquaprotect 500"
 
+msgid "ch.bafu.biogeographische_regionen"
+msgstr "Regioni biogeografiche"
+
 msgid "ch.bafu.bundesinventare-amphibien"
 msgstr "Anfibi oggetti fissi"
+
+msgid "ch.bafu.bundesinventare-amphibien_anhang4"
+msgstr "Anfibi allegato 4"
+
+msgid "ch.bafu.bundesinventare-amphibien_wanderobjekte"
+msgstr "Anfibi oggetti mobili"
 
 msgid "ch.bafu.bundesinventare-auen"
 msgstr "Zone golenali"
@@ -571,6 +601,9 @@ msgstr "IFP"
 
 msgid "ch.bafu.bundesinventare-flachmoore"
 msgstr "Paludi"
+
+msgid "ch.bafu.bundesinventare-flachmoore_regional"
+msgstr "Paludi regionali"
 
 msgid "ch.bafu.bundesinventare-hochmoore"
 msgstr "Torbiere alte"
@@ -599,8 +632,23 @@ msgstr "Sistema di collegamento fauna"
 msgid "ch.bafu.fauna-wildtierkorridor_national"
 msgstr "Corridoi faunistici sovraregionale"
 
+msgid "ch.bafu.fischerei-aeschen_kernzonen"
+msgstr "Temoli: zone centrali"
+
+msgid "ch.bafu.fischerei-aeschen_laichplaetze"
+msgstr "Temoli: siti di riproduzione"
+
+msgid "ch.bafu.fischerei-aeschen_larvenhabitate"
+msgstr "Temoli: habitat delle larve"
+
+msgid "ch.bafu.fischerei-aeschen_verbreitungsgebiet"
+msgstr "Temoli: aree di diffusione"
+
 msgid "ch.bafu.fischerei-krebspest"
 msgstr "Peste del gambero"
+
+msgid "ch.bafu.fischerei-nasenlaichplaetze"
+msgstr "Naso: siti di riproduzione"
 
 msgid "ch.bafu.fischerei-proliferative_nierenkrankheit"
 msgstr "MRP (malattia renale proliferativa)"
@@ -638,8 +686,14 @@ msgstr "Provvigione di legname (IFN)"
 msgid "ch.bafu.holzzuwachs"
 msgstr "Incremento del legno (IFN)"
 
+msgid "ch.bafu.hydrologie-gewaesserzustandsmessstationen"
+msgstr "Siti misurazione stato delle acque"
+
 msgid "ch.bafu.hydrologie-hydromessstationen"
 msgstr "Stazioni idrologiche"
+
+msgid "ch.bafu.hydrologie-wassertemperaturmessstationen"
+msgstr "Stazioni misurazione temperatura"
 
 msgid "ch.bafu.laerm-bahnlaerm_nacht"
 msgstr "Rumore ferroviario (Lr_notte)"
@@ -662,8 +716,20 @@ msgstr "Legno morto (IFN)"
 msgid "ch.bafu.landesforstinventar-waldanteil"
 msgstr "Percentuale di bosco (IFN)"
 
+msgid "ch.bafu.moose"
+msgstr "Liste rosse muschi"
+
 msgid "ch.bafu.nabelstationen"
 msgstr "Qualità dell'aria: stazioni NABEL"
+
+msgid "ch.bafu.naqua-grundwasser_nitrat"
+msgstr "Nitrati"
+
+msgid "ch.bafu.naqua-grundwasser_psm"
+msgstr "Prodotti fitosanitari"
+
+msgid "ch.bafu.naqua-grundwasser_voc"
+msgstr "Composti organici volatili"
 
 msgid "ch.bafu.permafrost"
 msgstr "Cartina indicativa del permafrost"
@@ -694,6 +760,9 @@ msgstr "Riserve di biosfera"
 
 msgid "ch.bafu.schutzgebiete-biosphaerenreservate"
 msgstr "Riserve di biosfera"
+
+msgid "ch.bafu.schutzgebiete-luftfahrt"
+msgstr "Siti protetti"
 
 msgid "ch.bafu.schutzgebiete-paerke_nationaler_bedeutung"
 msgstr "Parchi"
@@ -734,6 +803,21 @@ msgstr "ShowMe cantoni: scivolamento"
 msgid "ch.bafu.showme-kantone_sturzprozesse"
 msgstr "ShowMe cantoni: crollo"
 
+msgid "ch.bafu.silvaprotect-hangmuren"
+msgstr "Colata detritica"
+
+msgid "ch.bafu.silvaprotect-lawinen"
+msgstr "Valanghe"
+
+msgid "ch.bafu.silvaprotect-murgang"
+msgstr "Lava torrentizia"
+
+msgid "ch.bafu.silvaprotect-sturz"
+msgstr "Caduta di massi"
+
+msgid "ch.bafu.silvaprotect-uebersarung"
+msgstr "Alluvionamento da sedimento"
+
 msgid "ch.bafu.swissprtr"
 msgstr "Emissioni di inquinanti (SwissPRTR)"
 
@@ -752,11 +836,23 @@ msgstr "Aree boschive danneggiate Vivian"
 msgid "ch.bafu.wasser-entnahme"
 msgstr "Prelievi d'acqua"
 
+msgid "ch.bafu.wasser-gebietsauslaesse"
+msgstr "Sbocchi dei bacini imbriferi"
+
 msgid "ch.bafu.wasser-leitungen"
 msgstr "Derivazione"
 
 msgid "ch.bafu.wasser-rueckgabe"
 msgstr "Restituzione"
+
+msgid "ch.bafu.wasser-teileinzugsgebiete_2"
+msgstr "Bacini imbriferi 2km2"
+
+msgid "ch.bafu.wasser-teileinzugsgebiete_40"
+msgstr "Bacini imbriferi 40 km2"
+
+msgid "ch.bafu.wasser-vorfluter"
+msgstr "Emissari dei bacini imbriferi"
 
 msgid "ch.bafu.wege-wildruhezonen-jagdbanngebiete"
 msgstr "Zone di tranquillitá Portale - strade"
@@ -764,11 +860,29 @@ msgstr "Zone di tranquillitá Portale - strade"
 msgid "ch.bafu.wildruhezonen-jagdbanngebiete"
 msgstr "Zone di tranquillitá - portale"
 
+msgid "ch.bafu.wrz-jagdbanngebiete_select"
+msgstr "Zone di tranquillitá - bandite di caccia"
+
+msgid "ch.bafu.wrz-wildruhezonen-jagdbanngebiete-wege-routen"
+msgstr "Zone di tranquillitá Portale - strade"
+
+msgid "ch.bafu.wrz-wildruhezonen_portal"
+msgstr "Zone di tranquillitá - portale"
+
 msgid "ch.bag"
 msgstr "UFSP"
 
 msgid "ch.bag.url"
 msgstr "http://www.bag.admin.ch/index.html?lang=it"
+
+msgid "ch.bag.zecken-fsme-faelle"
+msgstr "MEVE - zone a frequenza aumentata"
+
+msgid "ch.bag.zecken-fsme-impfung"
+msgstr "MEVE - vaccinazione raccomandata"
+
+msgid "ch.bag.zecken-lyme"
+msgstr "Zone a rischio di Borreliosi"
 
 msgid "ch.bak"
 msgstr "UFC"
@@ -791,8 +905,41 @@ msgstr "http://www.bak.admin.ch/index.html?lang=it"
 msgid "ch.bakom"
 msgstr "UFCOM"
 
+msgid "ch.bakom.anbieter-eigenes_festnetz"
+msgstr "Numero dei fornitori d'accesso"
+
+msgid "ch.bakom.anschlussart-glasfaser"
+msgstr "Fibra ottica"
+
+msgid "ch.bakom.anschlussart-koaxialkabel"
+msgstr "Cavo coassiale"
+
+msgid "ch.bakom.anschlussart-kupferdraht"
+msgstr "Cavo in rame"
+
+msgid "ch.bakom.downlink1"
+msgstr "Download ≥ 1 Mbit/s"
+
+msgid "ch.bakom.downlink100"
+msgstr "Download ≥100 Mbit/s"
+
+msgid "ch.bakom.downlink2"
+msgstr "Download ≥ 2 Mbit/s"
+
+msgid "ch.bakom.downlink2"
+msgstr "Download ≥ 2 Mbit/s"
+
+msgid "ch.bakom.downlink20"
+msgstr "Download ≥20 Mbit/s"
+
+msgid "ch.bakom.downlink50"
+msgstr "Download ≥50 Mbit/s"
+
 msgid "ch.bakom.mobil-antennenstandorte-gsm"
 msgstr "Ubicazione antenne GSM"
+
+msgid "ch.bakom.mobil-antennenstandorte-lte"
+msgstr "Ubicazione antenne 4G (LTE)"
 
 msgid "ch.bakom.mobil-antennenstandorte-umts"
 msgstr "Ubicazione antenne 3G (UMTS)"
@@ -800,8 +947,29 @@ msgstr "Ubicazione antenne 3G (UMTS)"
 msgid "ch.bakom.radio-fernsehsender"
 msgstr "Emittenti radiotelevisive"
 
+msgid "ch.bakom.uplink1"
+msgstr "Upload ≥ 1 Mbit/s"
+
+msgid "ch.bakom.uplink10"
+msgstr "Upload ≥10 Mbit/s"
+
+msgid "ch.bakom.uplink2"
+msgstr "Upload ≥ 2 Mbit/s"
+
+msgid "ch.bakom.uplink20"
+msgstr "Upload ≥20 Mbit/s"
+
+msgid "ch.bakom.uplink50"
+msgstr "Upload ≥50 Mbit/s"
+
 msgid "ch.bakom.url"
 msgstr "http://www.bakom.admin.ch/index.html"
+
+msgid "ch.bakom.verfuegbarkeit-hdtv"
+msgstr "Disponibilità TV HD rete fissa"
+
+msgid "ch.bakom.verfuegbarkeit-tv"
+msgstr "TV su rete fissa"
 
 msgid "ch.bakom.versorgungsgebiet-tv"
 msgstr "Zone di copertura TV"
@@ -812,17 +980,41 @@ msgstr "Zone di copertura radio"
 msgid "ch.bav"
 msgstr "UFT"
 
+msgid "ch.bav.kataster-belasteter-standorte-oev"
+msgstr "Siti inquinati trasporti pubbl."
+
+msgid "ch.bav.laerm-emissionplan_eisenbahn_2015"
+msgstr "Piano delle emissioni 2015"
+
 msgid "ch.bav.url"
 msgstr "http://www.bav.admin.ch/?lang=it"
 
 msgid "ch.bazl"
 msgstr "UFAC"
 
+msgid "ch.bazl.heliports-gebirgslandeplaetze"
+msgstr "Eliporti/aree d'atterr. in montagna"
+
+msgid "ch.bazl.landschaftsruhezonen"
+msgstr "Zone di calma per l'aviazione"
+
+msgid "ch.bazl.luftfahrthindernis"
+msgstr "Ostacoli alla navigazione aerea"
+
 msgid "ch.bazl.luftfahrtkarten-icao"
 msgstr "Carta aeronautica OACI"
 
+msgid "ch.bazl.points-of-interest"
+msgstr "Punti d'interesse"
+
 msgid "ch.bazl.projektierungszonen-flughafenanlagen"
 msgstr "Zone riservate: Aerodromi"
+
+msgid "ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung"
+msgstr "PSIA Consultazione"
+
+msgid "ch.bazl.sachplan-infrastruktur-luftfahrt_kraft"
+msgstr "PS infrastruttura aeronautica"
 
 msgid "ch.bazl.segelflugkarte"
 msgstr "Carta volo a vela"
@@ -838,6 +1030,15 @@ msgstr "Abbandono dell'idroelettricitá"
 
 msgid "ch.bfe.energieforschung"
 msgstr "Ricerca energetica"
+
+msgid "ch.bfe.kernkraftwerke"
+msgstr "Centrali nucleari"
+
+msgid "ch.bfe.kleinwasserkraftpotentiale"
+msgstr "Potenz. piccole centr. idraul."
+
+msgid "ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung"
+msgstr "PS depositi strati geol.prof.: p.t."
 
 msgid "ch.bfe.statistik-wasserkraftanlagen"
 msgstr "Statistica idroelettricitá"
@@ -872,14 +1073,89 @@ msgstr "http://www.bfs.admin.ch/bfs/portal/it/index.html"
 msgid "ch.blw"
 msgstr "UFAG"
 
+msgid "ch.blw.alpprodukte"
+msgstr "Prodotti dell'alpe"
+
+msgid "ch.blw.bergprodukte"
+msgstr "Prodotti montagna"
+
+msgid "ch.blw.bewaesserungsbeduerftigkeit"
+msgstr "Fabbisogno irriguo"
+
+msgid "ch.blw.bodeneignung-gruendigkeit"
+msgstr "Profondità"
+
+msgid "ch.blw.bodeneignung-kulturland"
+msgstr "Idoneità: terre agricole"
+
+msgid "ch.blw.bodeneignung-kulturtyp"
+msgstr "Idoneità: Tipologie di colture"
+
+msgid "ch.blw.bodeneignung-naehrstoffspeichervermoegen"
+msgstr "Stoccaggio di nutrienti"
+
+msgid "ch.blw.bodeneignung-skelettgehalt"
+msgstr "Scheletro"
+
+msgid "ch.blw.bodeneignung-vernaessung"
+msgstr "Saturazione idrica"
+
+msgid "ch.blw.bodeneignung-wasserdurchlaessigkeit"
+msgstr "Permeabilità"
+
+msgid "ch.blw.bodeneignung-wasserspeichervermoegen"
+msgstr "Capacità di stoccaggio idrico"
+
 msgid "ch.blw.erosion"
 msgstr "Rischio erosione qualitativo 1"
+
+msgid "ch.blw.erosion-mit_bergzonen"
+msgstr "Rischio erosione qualitativo 2"
+
+msgid "ch.blw.erosion-quantitativ"
+msgstr "Rischio erosione quantitativo"
+
+msgid "ch.blw.feldblockkarte"
+msgstr "Carta dei blocchi di particelle"
+
+msgid "ch.blw.gewaesseranschlusskarte"
+msgstr "Superfici collegate ad acque"
+
+msgid "ch.blw.gewaesseranschlusskarte-direkt"
+msgstr "superfici collegate integrate"
 
 msgid "ch.blw.hang_steillagen"
 msgstr "Zone declive"
 
+msgid "ch.blw.klimaeignung-futterbau"
+msgstr "Clima - foraggicoltura"
+
+msgid "ch.blw.klimaeignung-getreidebau"
+msgstr "Clima - cerealicoltura"
+
+msgid "ch.blw.klimaeignung-kartoffeln"
+msgstr "Clima - patate"
+
+msgid "ch.blw.klimaeignung-koernermais"
+msgstr "Clima - mais da granella"
+
+msgid "ch.blw.klimaeignung-kulturland"
+msgstr "Clima - terreni coltivi"
+
+msgid "ch.blw.klimaeignung-spezialkulturen"
+msgstr "Clima - colture speciali"
+
+msgid "ch.blw.klimaeignung-typ"
+msgstr "Clima - Visione d'insieme"
+
+msgid "ch.blw.klimaeignung-zwischenfruchtbau"
+msgstr "Clima - colture intercalari"
+
 msgid "ch.blw.landwirtschaftliche-zonengrenzen"
 msgstr "Limiti delle zone agricole"
+
+msgid "ch.blw.niederschlagshaushalt"
+msgstr "Andamento delle precipitazioni"
 
 msgid "ch.blw.steil_terrassenlagen_rebbau"
 msgstr "Vigneti in zone declive"
@@ -915,6 +1191,12 @@ msgstr "Misurazione ufficiale svizzera / FL"
 msgid "ch.kanton.av.url"
 msgstr "http://www.cadastre.ch/internet/cadastre/it/home/products/webmap/cwm.html"
 
+msgid "ch.kantone.cadastralwebmap-farbe"
+msgstr "CadastralWebMap"
+
+msgid "ch.kantone.ivs-reg_loc"
+msgstr "IVS Cantone di Berna"
+
 msgid "ch.kt.bafu"
 msgstr "ct. [UFAM]"
 
@@ -927,8 +1209,17 @@ msgstr "swisstopo"
 msgid "ch.swisstopo-vd"
 msgstr "Misurazione Ufficiale Svizzera"
 
+msgid "ch.swisstopo-vd.geometa-gemeinde"
+msgstr "Informazioni sul Comune"
+
+msgid "ch.swisstopo-vd.geometa-grundbuch"
+msgstr "Informazioni del registro fondiario"
+
 msgid "ch.swisstopo-vd.geometa-los"
 msgstr "Aree con lavori in corso"
+
+msgid "ch.swisstopo-vd.geometa-nfgeom"
+msgstr "Geometra revisore"
 
 msgid "ch.swisstopo-vd.geometa-standav"
 msgstr "Stato della misurazione ufficiale"
@@ -951,6 +1242,9 @@ msgstr "AGNES"
 msgid "ch.swisstopo.fixpunkte-hfp1"
 msgstr "Punti fissi altimetrici PFA1"
 
+msgid "ch.swisstopo.fixpunkte-hfp1"
+msgstr "Punti fissi altimetrici PFA1"
+
 msgid "ch.swisstopo.fixpunkte-hfp2"
 msgstr "Punti fissi altimetrici PFA2"
 
@@ -969,6 +1263,12 @@ msgstr "Punti fissi planimetrici PFP1"
 msgid "ch.swisstopo.fixpunkte-lfp2"
 msgstr "Punti fissi planimetrici PFP2"
 
+msgid "ch.swisstopo.geoidmodell-ch1903"
+msgstr "Geoide in CH1903"
+
+msgid "ch.swisstopo.geoidmodell-etrs89"
+msgstr "Geoide in ETRS89"
+
 msgid "ch.swisstopo.geologie-eiszeit-lgm-raster"
 msgstr "Ultimo massimo glaciale"
 
@@ -977,6 +1277,9 @@ msgstr "Anomalia di Bouguer"
 
 msgid "ch.swisstopo.geologie-geodaesie-isostatische_anomalien"
 msgstr "Anomalie isostatiche"
+
+msgid "ch.swisstopo.geologie-geolkarten500.metadata"
+msgstr "Suddivisione GeoCarte 500"
 
 msgid "ch.swisstopo.geologie-geologische_karte"
 msgstr "Geologia 1:500 000"
@@ -1002,6 +1305,9 @@ msgstr "Inclinazione"
 msgid "ch.swisstopo.geologie-geophysik-totalintensitaet"
 msgstr "Intensità campo magnetico"
 
+msgid "ch.swisstopo.geologie-geotechnik-gk200"
+msgstr "Geotecnica e rocce"
+
 msgid "ch.swisstopo.geologie-geotechnik-gk500-genese"
 msgstr "Origine delle rocce"
 
@@ -1010,6 +1316,9 @@ msgstr "Classificazione delle rocce"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk500-lithologie_hauptgruppen"
 msgstr "Gruppi litologici principali"
+
+msgid "ch.swisstopo.geologie-geotechnik-mineralische_rohstoffe200"
+msgstr "Materie prime minerali"
 
 msgid "ch.swisstopo.geologie-geotechnik-steinbrueche_1915"
 msgstr "Cave 1915"
@@ -1037,6 +1346,12 @@ msgstr "Mattonifici 1965"
 
 msgid "ch.swisstopo.geologie-geotechnik-ziegeleien_1995"
 msgstr "Mattonifici 1995"
+
+msgid "ch.swisstopo.geologie-geotope"
+msgstr "Geotopi svizzeri"
+
+msgid "ch.swisstopo.geologie-gravimetrischer_atlas"
+msgstr "Atlas gravimétrique"
 
 msgid "ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen"
 msgstr "Riserve acquifere"
@@ -1074,11 +1389,22 @@ msgstr "Carta Dufour Prima edizione"
 msgid "ch.swisstopo.hiks-siegfried"
 msgstr "Carta Siegfried Prima edizione"
 
+#. TODO
+msgid "ch.swisstopo.hiks-siegfried-ta25"
+msgstr "ch.swisstopo.hiks-siegfried-ta25"
+
+#. TODO
+msgid "ch.swisstopo.hiks-siegfried-ta50"
+msgstr "ch.swisstopo.hiks-siegfried-ta50"
+
 msgid "ch.swisstopo.images-swissimage"
 msgstr "SWISSIMAGE"
 
 msgid "ch.swisstopo.images-swissimage.metadata"
 msgstr "Divisione in tiles SWISSIMAGE"
+
+msgid "ch.swisstopo.koordinatenaenderung"
+msgstr "MN95 Cambiamenti di coordinate"
 
 msgid "ch.swisstopo.kt"
 msgstr "swisstopo, ct."
@@ -1088,6 +1414,12 @@ msgstr "http://www.swisstopo.admin.ch/internet/swisstopo/it/home/swisstopo/org/c
 
 msgid "ch.swisstopo.lubis-luftbilder"
 msgstr "Immagini aeree swisstopo"
+
+msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen"
+msgstr "Immagini aeree privati"
+
+msgid "ch.swisstopo.lubis-luftbilder-dritte-kantone"
+msgstr "Immagini aeree dei cantoni"
 
 msgid "ch.swisstopo.pixelkarte-farbe"
 msgstr "Carta a colori"
@@ -1134,8 +1466,38 @@ msgstr "Divisione carta nazionale 1:500'000"
 msgid "ch.swisstopo.swissalti3d-reliefschattierung"
 msgstr "swissALTI3D Hillshade"
 
+msgid "ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill"
+msgstr "Limiti di distretto"
+
+msgid "ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill"
+msgstr "Limiti comunali"
+
+msgid "ch.swisstopo.swissboundaries3d-kanton-flaeche.fill"
+msgstr "Frontiere cantonali"
+
+msgid "ch.swisstopo.swissboundaries3d-land-flaeche.fill"
+msgstr "Frontiere nazionali"
+
+msgid "ch.swisstopo.swissbuildings3d"
+msgstr "Gli edifici semplificati in 3D"
+
 msgid "ch.swisstopo.swissimage"
 msgstr "Veduta aerea"
+
+msgid "ch.swisstopo.swisstlm3d-karte-farbe"
+msgstr "Modello topo. del paesaggio"
+
+msgid "ch.swisstopo.swisstlm3d-karte-grau"
+msgstr "Modello topo. del paesaggio"
+
+msgid "ch.swisstopo.swisstlm3d-wanderwege"
+msgstr "percorsi escursionistici"
+
+msgid "ch.swisstopo.transformationsgenauigkeit"
+msgstr "MN95 Precisione di trasformazione"
+
+msgid "ch.swisstopo.treasurehunt"
+msgstr "Mappa-Tesoro"
 
 msgid "ch.swisstopo.url"
 msgstr "http://www.swisstopo.admin.ch/internet/swisstopo/it/home.html"
@@ -1157,6 +1519,12 @@ msgstr "Superficie forestali"
 
 msgid "ch.swisstopo.vec200-miscellaneous"
 msgstr "Oggetti singoli VECTOR200"
+
+msgid "ch.swisstopo.vec200-miscellaneous-geodpoint"
+msgstr "Altitudini VECTOR200"
+
+msgid "ch.swisstopo.vec200-names-namedlocation"
+msgstr "Nomi VECTOR200"
 
 msgid "ch.swisstopo.vec200-transportation-oeffentliche-verkehr"
 msgstr "Trasporti pubblici VECTOR200"
@@ -1760,6 +2128,12 @@ msgstr "Numero ufficiale di punto"
 
 msgid "optionaler_name"
 msgstr "Nom optionel"
+
+msgid "org.epsg.grid_21781"
+msgstr "Coordinate CH1903/MN03"
+
+msgid "org.epsg.grid_4326"
+msgstr "Coordinate WGS84"
 
 msgid "ort"
 msgstr "Località"
