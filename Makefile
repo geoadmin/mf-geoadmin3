@@ -66,8 +66,6 @@ deploybranch: deploy/deploy-branch.cfg $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/con
 	git checkout $(GIT_BRANCH); \
 	git pull; \
 	make all; \
-	chgrp -R geodata .; \
-	chmod -R g+rw .; \
 	sudo -u deploy deploy -r deploy/deploy-branch.cfg ab
 
 .PHONY: updateol
@@ -137,9 +135,9 @@ test/karma-conf-prod.js: test/karma-conf.mako.js .build-artefacts/python-venv/bi
 	.build-artefacts/python-venv/bin/mako-render --var "mode=prod" $< > $@
 
 node_modules: package.json
-	npm config set group geodata
-	npm config set umask 002
 	npm install
+	chgrp -R geodata node_modules
+	chmod -R g+rw node_modules
 
 .build-artefacts/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar .build-artefacts/externs/angular.js .build-artefacts/externs/jquery.js
 	mkdir -p $(dir $@)
