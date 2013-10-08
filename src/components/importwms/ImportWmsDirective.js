@@ -262,7 +262,7 @@
             // 39.37 INCHES_PER_UNIT
             // 72 DOTS_PER_INCH
             return $scope.map.getView().getView2D().
-                getResolutionFromExtent(extent, mapSize) * 39.37 * 72;
+                getResolutionForExtent(extent, mapSize) * 39.37 * 72;
           }
 
           // Get the layer extent defines in the GetCapabilities
