@@ -95,13 +95,13 @@
             extractAttributes: true
           });
 
-
           // Create vector layer
           // FIXME currently ol3 doesn't allow to get the name of the KML
           // document, making it impossible to use a proper label for the
           // layer.
           var olLayer = new ol.layer.Vector({
-            id: options.id,
+            url: options.url,
+            type: 'KML',
             label: options.label || 'KML',
             opacity: options.opacity,
             visible: options.visible,
@@ -132,7 +132,7 @@
             })
           });
           gaDefinePropertiesForLayer(olLayer);
-          olLayer.permalink = (options.id);
+          olLayer.permalink = (options.url);
           return olLayer;
         };
 
@@ -490,11 +490,15 @@
       }
 
       function updateLayersParam(layers) {
-        var bodIds = $.map(layers, function(layer) {
-          return layer.get('bodId');
+        var ids = $.map(layers, function(layer) {
+          if (layer.get('bodId')) {
+            return layer.get('id');
+          } else if (layer.get('type') === 'KML') {
+            return layer.get('type') + '||' + layer.get('url');
+          }
         });
-        if (bodIds.length > 0) {
-          gaPermalink.updateParams({layers: bodIds.join(',')});
+        if (ids.length > 0) {
+          gaPermalink.updateParams({layers: ids.join(',')});
         } else {
           gaPermalink.deleteParam('layers');
         }
@@ -594,13 +598,13 @@
                 gaKml.addKmlToMapForUrl(map,
                   proxyUrl + encodeURIComponent(url),
                   {
-                    id: layerSpec,
+                    url: url,
                     opacity: opacity,
                     visible: visible
                   },
                   index + 1);
               } catch (e) {
-                // Adding KML layer failed
+                // Adding KML layer failed, native alert, log message?
               }
             }
           });

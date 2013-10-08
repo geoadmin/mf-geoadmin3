@@ -134,7 +134,7 @@
             try {
               // Add the layer
               gaKml.addKmlToMap($scope.map, $scope.fileContent, {
-                id: ($scope.currentTab === 2) ? 'KML||' + $scope.fileUrl :
+                url: ($scope.currentTab === 2) ? $scope.fileUrl :
                     undefined
               });
 
