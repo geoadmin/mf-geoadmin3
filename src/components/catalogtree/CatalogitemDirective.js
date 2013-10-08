@@ -15,7 +15,7 @@
    * See examples on how it can be used
    */
   module.directive('gaCatalogitem',
-      function($compile, gaCatalogtreeMapUtils, gaLayers,
+      function($compile, gaCatalogtreeMapUtils, gaMapUtils, gaLayers,
           gaLayerMetadataPopup) {
         return {
           restrict: 'A',
@@ -50,7 +50,7 @@
           // "this" is the scope
           var item = this.item;
           var map = this.map;
-          var layer = gaCatalogtreeMapUtils.getMapOverlayForBodId(
+          var layer = gaMapUtils.getMapOverlayForBodId(
               map, item.idBod);
           if (!angular.isDefined(layer)) {
             // FIXME: we are super cautious here and display error messages
@@ -74,7 +74,7 @@
           // "this" is the scope
           var item = this.item;
           var map = this.map;
-          var layer = gaCatalogtreeMapUtils.getMapOverlayForBodId(
+          var layer = gaMapUtils.getMapOverlayForBodId(
               map, item.idBod);
           if (angular.isDefined(layer) && layer.preview) {
             map.removeLayer(layer);
@@ -86,7 +86,7 @@
           // "this" is the scope
           var item = this.item;
           var map = this.map;
-          var layer = gaCatalogtreeMapUtils.getMapOverlayForBodId(
+          var layer = gaMapUtils.getMapOverlayForBodId(
               map, item.idBod);
           return angular.isDefined(layer) && layer.preview;
         }
@@ -95,7 +95,7 @@
           // "this" is the scope
           var item = this.item;
           var map = this.map;
-          var layer = gaCatalogtreeMapUtils.getMapOverlayForBodId(
+          var layer = gaMapUtils.getMapOverlayForBodId(
               map, item.idBod);
           if (!angular.isDefined(layer)) {
             gaCatalogtreeMapUtils.addLayer(map, item);

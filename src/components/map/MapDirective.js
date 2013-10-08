@@ -8,7 +8,7 @@
 
   module.directive('gaMap',
       function($parse, $timeout, gaPermalink, gaBrowserSniffer, 
-               gaLayers, gaHighlightFeature) {
+               gaLayers) {
           return {
             restrict: 'A',
             scope: {
@@ -38,17 +38,6 @@
                 }));
                 gaPermalink.deleteParam('crosshair');
               }
-
-              gaLayers.loadForTopic('all').then(function() {
-                for (var key in queryParams) {
-                  if (gaLayers.getLayer(key)) {
-                    var ids = queryParams[key].split(',');
-                    map.addLayer(gaLayers.getOlLayerById(key));
-                    gaHighlightFeature.recenter(map, key, ids);
-                    return;
-                  }
-                }
-              });
 
               // Update permalink based on view states. We use a timeout
               // not to incur an Angular dirty-check cycle on each view
