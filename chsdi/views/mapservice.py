@@ -276,7 +276,6 @@ class MapService(MapServiceValidation):
             raise exc.HTTPInternalServerError()
 
         if self.returnGeometry:
-
             feature = json.loads(render(geometryFormat, feature.__geo_interface__))
         else:
             feature = json.loads(render(geometryFormat, feature.__interface__))
