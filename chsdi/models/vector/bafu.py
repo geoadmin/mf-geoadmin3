@@ -518,3 +518,17 @@ class HOLZVORRAT(Base, Vector):
 
 register('ch.bafu.holzvorrat', HOLZVORRAT)
 
+
+class HOLZZUWACHS(Base, Vector):
+    # view in a schema
+    __tablename__ = 'holzzuwachs'
+    __table_args__ = ({'schema': 'wald', 'autoload': False})
+    __esriId__ = 2028
+    __bodId__ = 'ch.bafu.holzzuwachs'
+    __template__ = 'templates/htmlpopup/holzzuwachs.mako'
+    id = Column('gid', Integer, primary_key=True)
+    wirtschaftsregion = Column('wirtschaftsregion', Text)
+    holzzuwachs = Column('holzzuwachs', Numeric)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.holzzuwachs', HOLZZUWACHS)
