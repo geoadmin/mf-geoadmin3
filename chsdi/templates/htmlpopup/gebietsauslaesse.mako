@@ -2,7 +2,6 @@
 
 <%def name="table_body(c, lang)">
 <%
-    lang = lang
     kanal = 'kanal_%s' % lang
 %>
 
