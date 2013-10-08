@@ -304,6 +304,30 @@
   });
 
   /**
+   * Service provides map util functions.
+   */
+  module.provider('gaMapUtils', function() {
+    this.$get = function(gaLayers) {
+      return {
+        /**
+         * Search for an overlay identified by bodId in the map and
+         * return it. undefined is returned if the map does not have
+         * such a layer.
+         */
+        getMapOverlayForBodId: function(map, bodId) {
+          var layer;
+          map.getLayers().forEach(function(l) {
+            if (l.get('bodId') == bodId && !l.background) {
+              layer = l;
+            }
+          });
+          return layer;
+        }
+      };
+    };
+  });
+
+  /**
    * Service that manages the "layers", "layers_opacity", and
    * "layers_visibility" permalink parameter.
    *
@@ -318,7 +342,7 @@
    */
   module.provider('gaLayersPermalinkManager', function() {
 
-    this.$get = function($rootScope, gaLayers, gaPermalink) {
+    this.$get = function($rootScope, gaLayers, gaPermalink, gaMapUtils) {
 
       var layersParamValue = gaPermalink.getParams().layers;
       var layersOpacityParamValue = gaPermalink.getParams().layers_opacity;
@@ -412,8 +436,12 @@
           angular.forEach(layerSpecs, function(layerSpec, index) {
             var layer;
             if (gaLayers.getLayer(layerSpec)) {
-              // BOD layer
-              layer = gaLayers.getOlLayerById(layerSpec);
+              // BOD layer.
+              // Do not consider BOD layers that are already in the map.
+              var bodId = layerSpec;
+              if (!gaMapUtils.getMapOverlayForBodId(map, bodId)) {
+                layer = gaLayers.getOlLayerById(layerSpec);
+              }
             }
             if (angular.isDefined(layer)) {
               if (index < layerOpacities.length) {
@@ -432,26 +460,66 @@
     };
   });
 
-  module.provider('gaHighlightFeature', function() {
+  module.provider('gaRecenterMapOnFeatures', function() {
     this.$get = function($q, $http) {
       var url = this.url;
-      var getFeatures = function(layer, ids) {
-        return $q.all($.map(ids, function(id) {
-          return $http.get(url + layer + '/' + id);
-        }));
+      var getFeatures = function(featureIdsByBodId) {
+        var promises = [];
+        angular.forEach(featureIdsByBodId, function(featureIds, bodId) {
+          Array.prototype.push.apply(promises, $.map(featureIds,
+              function(featureId) {
+                return $http.get(url + bodId + '/' + featureId);
+              }
+          ));
+        });
+        return $q.all(promises);
       };
-
-      return {
-          recenter: function(map, layer, ids) {
-            getFeatures(layer, ids).then(function(results) {
-              var extent = ol.extent.createEmpty();
-              angular.forEach(results, function(result) {
-                var bbox = result.data.feature.bbox;
-                ol.extent.extend(extent, bbox);
-              });
-              map.getView().fitExtent(extent, map.getSize());
-            });
+      return function(map, featureIdsByBodId) {
+        getFeatures(featureIdsByBodId).then(function(results) {
+          var extent = [Infinity, Infinity, -Infinity, -Infinity];
+          angular.forEach(results, function(result) {
+            var bbox = result.data.feature.bbox;
+            ol.extent.extend(extent, bbox);
+          });
+          if (extent[2] >= extent[0] && extent[3] >= extent[1]) {
+            map.getView().fitExtent(extent, map.getSize());
           }
+        });
+      };
+    };
+  });
+
+  module.provider('gaHighlightFeaturePermalinkManager', function() {
+    this.$get = function($rootScope, gaPermalink, gaLayers,
+        gaRecenterMapOnFeatures, gaMapUtils) {
+      var queryParams = gaPermalink.getParams();
+      return function(map) {
+        var deregister = $rootScope.$on('gaLayersChange', function() {
+          var featureIdsCount = 0;
+          var featureIdsByBodId = {};
+          var paramKey;
+          for (paramKey in queryParams) {
+            if (gaLayers.getLayer(paramKey)) {
+              var bodId = paramKey;
+              if (!(bodId in featureIdsByBodId)) {
+                featureIdsByBodId[bodId] = [];
+              }
+              var featureIds = queryParams[bodId].split(',');
+              if (featureIds.length > 0) {
+                featureIdsCount += featureIds.length;
+                Array.prototype.push.apply(featureIdsByBodId[bodId],
+                  featureIds);
+                if (!gaMapUtils.getMapOverlayForBodId(map, bodId)) {
+                  map.addLayer(gaLayers.getOlLayerById(bodId));
+                }
+              }
+            }
+          }
+          if (featureIdsCount > 0) {
+            gaRecenterMapOnFeatures(map, featureIdsByBodId);
+          }
+          deregister();
+        });
       };
     };
   });

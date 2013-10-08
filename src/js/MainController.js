@@ -99,7 +99,8 @@
    */
 module.controller('GaMainController',
   function($scope, $rootScope, $translate, $timeout, $window,  gaPermalink,
-    gaBrowserSniffer, gaLayersPermalinkManager) {
+    gaBrowserSniffer, gaLayersPermalinkManager,
+    gaHighlightFeaturePermalinkManager) {
 
       var mobile = (gaBrowserSniffer.mobile) ? 'false' : 'true',
         dismiss = 'none';
@@ -110,6 +111,9 @@ module.controller('GaMainController',
 
       // Activate the "layers" parameter permalink manager for the map.
       gaLayersPermalinkManager($scope.map);
+
+      // Activate the "highlight feature" permalink manager for the map.
+      gaHighlightFeaturePermalinkManager($scope.map);
 
       $rootScope.$on('gaTopicChange', function(event, topic) {
         $scope.topicId = topic.id;

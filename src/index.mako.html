@@ -452,8 +452,8 @@
               '${base_url_path}/${version}rest/services/{Topic}/MapServer/{Layer}/getlegend?lang={Lang}';
         }]);
 
-        module.config(['gaHighlightFeatureProvider', function(gaHighlightFeatureProvider) {
-          gaHighlightFeatureProvider.url =
+        module.config(['gaRecenterMapOnFeaturesProvider', function(gaRecenterMapOnFeaturesProvider) {
+          gaRecenterMapOnFeaturesProvider.url =
               '${base_url_path}/${version}rest/services/all/MapServer/';
         }]);
       })();
