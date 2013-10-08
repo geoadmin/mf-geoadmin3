@@ -31,7 +31,8 @@
         // used to having a zoom animation when we click on the button,
         // but not when we are tracking the position.
         var first = true;
-        var locate = function(dest) {
+        var locate = function() {
+          var dest = geolocation.getPosition();
           if (dest) {
             var source = view.getCenter();
             var dist = Math.sqrt(Math.pow(source[0] - dest[0], 2),
@@ -89,7 +90,7 @@
         geolocation.on('change:position', function(evt) {
           element.removeClass('error');
           element.addClass('tracking');
-          locate(geolocation.getPosition());
+          locate();
         });
         geolocation.on('change:tracking', function(evt) {
           var tracking = geolocation.getTracking();
