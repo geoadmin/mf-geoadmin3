@@ -566,3 +566,20 @@ class NABEL(Base, Vector):
 
 register('ch.bafu.nabelstationen', NABEL)
 
+
+class krebspest(Base, Vector):
+    # view in a schema
+    __tablename__ = 'krebspest'
+    __table_args__ = ({'schema': 'fischerei', 'autoload': False})
+    __esriId__ = 2031
+    __bodId__ = 'ch.bafu.fischerei-krebspest'
+    __template__ = 'templates/htmlpopup/krebspest.mako'
+    id = Column('_count', Integer, primary_key=True)
+    kennummer = Column('kennummer', Text)
+    gewaesser = Column('gewaesser', Text)
+    art_lat = Column('art_lat', Text)
+    jahr = Column('jahr', Text)
+    ort = Column('ort', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+register('ch.bafu.fischerei-krebspest', krebspest)
+
