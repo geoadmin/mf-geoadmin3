@@ -341,7 +341,7 @@
         var opacityTotal = 0;
         var opacityValues = $.map(layers, function(layer) {
           var opacity = Math.round(layer.getOpacity() * 100) / 100;
-          opacityTotal += +opacity;
+          opacityTotal += opacity;
           return opacity;
         });
         if (opacityTotal === layers.length) {
