@@ -442,7 +442,7 @@
       };
       return function(map, layer, ids) {
         getFeatures(layer, ids).then(function(results) {
-          var extent = ol.extent.createEmpty();
+          var extent = [Infinity, Infinity, -Infinity, -Infinity];
           angular.forEach(results, function(result) {
             var bbox = result.data.feature.bbox;
             ol.extent.extend(extent, bbox);
