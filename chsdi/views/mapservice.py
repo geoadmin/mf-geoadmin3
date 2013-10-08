@@ -209,7 +209,7 @@ class MapService(MapServiceValidation):
     @view_config(route_name='htmlpopup', renderer='jsonp')
     def htmlpopup(self):
         from pyramid.renderers import render_to_response
-        self.returnGeometry = False
+        self.returnGeometry = True
         idlayer = self.request.matchdict.get('idlayer')
         idfeature = self.request.matchdict.get('idfeature')
         models = models_from_name(idlayer)
@@ -261,7 +261,10 @@ class MapService(MapServiceValidation):
         return layer
 
     def _get_feature_resource(self, idlayer, idfeature, model):
+        from pyramid.renderers import render
+        import json
         layerName = self.translate(idlayer)
+        geometryFormat = self.request.params.get('geometryFormat', 'esrijson')
         query = self.request.db.query(model)
         query = query.filter(model.id == idfeature)
 
@@ -273,9 +276,10 @@ class MapService(MapServiceValidation):
             raise exc.HTTPInternalServerError()
 
         if self.returnGeometry:
-            feature = feature.__geo_interface__
+
+            feature = json.loads(render(geometryFormat, feature.__geo_interface__))
         else:
-            feature = feature.__interface__
+            feature = json.loads(render(geometryFormat, feature.__interface__))
 
         if hasattr(feature, 'extra'):
             feature.extra['layerName'] = layerName
