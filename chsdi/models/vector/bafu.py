@@ -701,7 +701,7 @@ class waldanteil(Base, Vector):
     id = Column('bgdi_id', Integer, primary_key=True)
     wirtschaft = Column('wirtschaft', Text)
     waldflaech = Column('waldflaech', Numeric)
-    the_geom =  GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bafu.landesforstinventar-waldanteil', waldanteil)
 
