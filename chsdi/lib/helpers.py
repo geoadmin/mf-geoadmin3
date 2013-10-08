@@ -57,3 +57,41 @@ def remove_accents(input_str):
 
 def quoting(text):
     return quote(text.encode('utf-8'))
+
+
+def parseHydroXML(id, root):
+    html_attr = {'date_time': '-', 'abfluss': '-', 'wasserstand': '-', 'wassertemperatur': '-'}
+    for child in root:
+        fid = child.attrib['StrNr']
+        if fid == id:
+            if child.attrib['Typ'] == '10':
+                for attr in child:
+                    if attr.tag == 'Datum':
+                        html_attr['date_time'] = attr.text
+                    # Zeit is always parsed after Datum
+                    elif attr.tag == 'Zeit':
+                        html_attr['date_time'] = html_attr['date_time'] + ' ' + attr.text
+                    elif attr.tag == 'Wert':
+                        html_attr['abfluss'] = attr.text
+                        break
+            elif child.attrib['Typ'] == '02':
+                for attr in child:
+                    if attr.tag == 'Datum':
+                        html_attr['date_time'] = attr.text
+                    # Zeit is always parsed after Datum
+                    elif attr.tag == 'Zeit':
+                        html_attr['date_time'] = html_attr['date_time'] + ' ' + attr.text
+                    elif attr.tag == 'Wert':
+                        html_attr['wasserstand'] = attr.text
+                        break
+            elif child.attrib['Typ'] == '03':
+                for attr in child:
+                    if attr.tag == 'Datum':
+                        html_attr['date_time'] = attr.text
+                    # Zeit is always parsed after Datum
+                    elif attr.tag == 'Zeit':
+                        html_attr['date_time'] = html_attr['date_time'] + ' ' + attr.text
+                    elif attr.tag == 'Wert':
+                        html_attr['wassertemperatur'] = attr.text
+                        break
+    return html_attr
