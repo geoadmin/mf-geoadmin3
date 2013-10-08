@@ -771,3 +771,20 @@ class trockenwiesenundweiden(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bafu.bundesinventare-trockenwiesen_trockenweiden', trockenwiesenundweiden)
+
+
+class trockenwiesenundweiden_anhang2(Base, Vector):
+    # view in a schema
+    __tablename__ = 'trockenwiesen_weiden_anhang2'
+    __table_args__ = ({'schema': 'bundinv', 'autoload': False})
+    __esriId__ = 2042
+    __bodId__ = 'ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhang2'
+    __template__ = 'templates/htmlpopup/tww_anhang2.mako'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    tww_name = Column('tww_name', Text)
+    tww_obj = Column('tww_obj', Numeric)
+    tww_tobj = Column('tww_tobj', Numeric)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhang2', trockenwiesenundweiden_anhang2)
+
