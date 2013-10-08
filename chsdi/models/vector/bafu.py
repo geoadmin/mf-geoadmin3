@@ -656,3 +656,19 @@ class moose(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bafu.moose', moose)
+
+
+class weltensutter(Base, Vector):
+    # view in a schema
+    __tablename__ = 'ws'
+    __table_args__ = ({'schema': 'flora', 'autoload': False})
+    __esriId__ = 2036
+    __bodId__ = 'ch.bafu.flora-weltensutter_atlas'
+    __template__ = 'templates/htmlpopup/weltensutter.mako'
+    id = Column('gid', Integer, primary_key=True)
+    nom = Column('nom', Text)
+    no_surface = Column('no_surface', Numeric)
+    ty_surface = Column('ty_surface', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.flora-weltensutter_atlas', weltensutter)
