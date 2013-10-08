@@ -501,3 +501,20 @@ class SWISSPRTR(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bafu.swissprtr', SWISSPRTR)
+
+
+class HOLZVORRAT(Base, Vector):
+    # view in a schema
+    __tablename__ = 'holzvorrat'
+    __table_args__ = ({'schema': 'wald', 'autoload': False})
+    __esriId__ = 2027
+    __bodId__ = 'ch.bafu.holzvorrat'
+    __template__ = 'templates/htmlpopup/holzvorrat.mako'
+    id = Column('gid', Integer, primary_key=True)
+    fid = Column('id', Integer)
+    vorrat = Column('vorrat', Numeric)
+    wireg_ = Column('wireg_', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.holzvorrat', HOLZVORRAT)
+
