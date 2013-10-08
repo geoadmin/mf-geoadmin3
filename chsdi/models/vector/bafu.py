@@ -532,3 +532,19 @@ class HOLZZUWACHS(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bafu.holzzuwachs', HOLZZUWACHS)
+
+
+class HOLZNUTZUNG(Base, Vector):
+    # view in a schema
+    __tablename__ = 'holznutzung'
+    __table_args__ = ({'schema': 'wald', 'autoload': False})
+    __esriId__ = 2029
+    __bodId__ = 'ch.bafu.holznutzung'
+    __template__ = 'templates/htmlpopup/holznutzung.mako'
+    id = Column('gid', Integer, primary_key=True)
+    wireg_ = Column('wireg_', Text)
+    nutzung = Column('nutzung', Numeric)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.holznutzung', HOLZNUTZUNG)
+
