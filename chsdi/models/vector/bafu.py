@@ -581,5 +581,24 @@ class krebspest(Base, Vector):
     jahr = Column('jahr', Text)
     ort = Column('ort', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
 register('ch.bafu.fischerei-krebspest', krebspest)
+
+
+class biogeoreg(Base, Vector):
+    # view in a schema
+    __tablename__ = 'biogeoreg'
+    __table_args__ = ({'schema': 'diverse', 'autoload': False})
+    __esriId__ = 2032
+    __bodId__ = 'ch.bafu.biogeographische_regionen'
+    __template__ = 'templates/htmlpopup/biogeoreg.mako'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    biogreg_r6 = Column('biogreg_r6', Text)
+    biogreg_ve = Column('biogreg_ve', Text)
+    biogreg_r1 = Column('biogreg_r1', Text)
+    biogreg_c6 = Column('biogreg_c6', Integer)
+    biogreg_c1 = Column('biogreg_c1', Integer)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.biogeographische_regionen', biogeoreg)
 
