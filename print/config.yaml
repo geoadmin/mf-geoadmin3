@@ -33,49 +33,49 @@ layouts:
 #---------------------------------------
 # header
 #---------------------------------------
-
-      header:
-        height: 42
-        items:
-          - !columns
-            widths: [35, 65]
-            items:
-              - !image
-                align: left
-                maxWidth: 251
-                maxHeight: 34
-                url: "${configDir}/print_logo.png"
-              - !text
-                condition: langde
-                fontSize: 14
-                fontColor: #333333
-                text: |
-                  www.geo.admin.ch
-              - !text
-                condition: langfr
-                fontSize: 14
-                fontColor: #333333
-                text: |
-                  www.geo.admin.ch
-              - !text
-                condition: langen
-                fontSize: 14
-                fontColor: #333333
-                text: |
-                  www.geo.admin.ch
-              - !text
-                condition: langrm
-                fontSize: 14
-                fontColor: #333333
-                text: |
-                  www.geo.admin.ch
-              - !text
-                condition: langit
-                fontSize: 14
-                fontColor: #333333
-                text: |
-                  www.geo.admin.ch
-
+#
+#      header:
+#        height: 42
+#        items:
+#          - !columns
+#            widths: [35, 65]
+#            items:
+#              - !image
+#                align: left
+#                maxWidth: 251
+#                maxHeight: 34
+#                url: "${configDir}/print_logo.png"
+#              - !text
+#                condition: langde
+#                fontSize: 14
+#                fontColor: #333333
+#                text: |
+#                  www.geo.admin.ch
+#              - !text
+#                condition: langfr
+#                fontSize: 14
+#                fontColor: #333333
+#                text: |
+#                  www.geo.admin.ch
+#              - !text
+#                condition: langen
+#                fontSize: 14
+#                fontColor: #333333
+#                text: |
+#                  www.geo.admin.ch
+#              - !text
+#                condition: langrm
+#                fontSize: 14
+#                fontColor: #333333
+#                text: |
+#                  www.geo.admin.ch
+#              - !text
+#                condition: langit
+#                fontSize: 14
+#                fontColor: #333333
+#                text: |
+#                  www.geo.admin.ch
+#
 #---------------------------------------
 # Map & overviewmap
 #---------------------------------------
@@ -370,51 +370,51 @@ layouts:
 #---------------------------------------
 # header
 #---------------------------------------
-      header:
-        height: 42
-        items:
-          - !columns
-            widths: [50, 50]
-            items:
-              - !image
-                align: left
-                maxWidth: 251
-                maxHeight: 34
-                url: "${configDir}/print_logo.png"
-              - !text
-                condition: langde
-                fontSize: 14
-                fontColor: #333333
-                text: |
-                  www.geo.admin.ch
-              - !text
-                condition: langfr
-                fontSize: 14
-                fontColor: #333333
-                text: |
-                  www.geo.admin.ch
-              - !text
-                condition: langen
-                fontSize: 14
-                fontColor: #333333
-                text: |
-                  www.geo.admin.ch
-              - !text
-                condition: langrm
-                fontSize: 14
-                fontColor: #333333
-                text: |
-                  www.geo.admin.ch
-              - !text
-                condition: langit
-                fontSize: 14
-                fontColor: #333333
-                text: |
-                  www.geo.admin.ch
-      items:
+#      header:
+#        height: 42
+#        items:
+#          - !columns
+#            widths: [50, 50]
+#            items:
+#              - !image
+#                align: left
+#                maxWidth: 251
+#                maxHeight: 34
+#                url: "${configDir}/print_logo.png"
+#              - !text
+#                condition: langde
+#                fontSize: 14
+#                fontColor: #333333
+#                text: |
+#                  www.geo.admin.ch
+#              - !text
+#                condition: langfr
+#                fontSize: 14
+#                fontColor: #333333
+#                text: |
+#                  www.geo.admin.ch
+#              - !text
+#                condition: langen
+#                fontSize: 14
+#                fontColor: #333333
+#                text: |
+#                  www.geo.admin.ch
+#              - !text
+#                condition: langrm
+#                fontSize: 14
+#                fontColor: #333333
+#                text: |
+#                  www.geo.admin.ch
+#              - !text
+#                condition: langit
+#                fontSize: 14
+#                fontColor: #333333
+#                text: |
+#                  www.geo.admin.ch
 #---------------------------------------
 # Map & overviewmap
 #---------------------------------------
+      items:
         - !map
           width: 510
           height: 720
