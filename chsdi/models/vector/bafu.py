@@ -836,3 +836,24 @@ class emissionplan(Base, Vector):
 
 register('ch.bav.laerm-emissionplan_eisenbahn_2015', emissionplan)
 
+
+class wrzselect(Base, Vector):
+    # view in a schema
+    __tablename__ = 'jgd_select'
+    __table_args__ = ({'schema': 'wrzportal', 'autoload': False})
+    __esriId__ = 2046
+    __bodId__ = 'ch.bafu.wrz-jagdbanngebiete_select'
+    __template__ = 'templates/htmlpopup/wrz_select.mako'
+    id = Column('objectid', Integer, primary_key=True)
+    jb_name = Column('jb_name', Text)
+    jb_obj = Column('jb_obj', Integer)
+    schutzstatus = Column('schutzstatus', Text)
+    bestimmung = Column('bestimmung', Text)
+    schutzzeit = Column('schutzzeit', Text)
+    grundlage = Column('grundlage', Text)
+    zusatzinformation = Column('zusatzinformation', Text)
+    kanton = Column('kanton', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.wrz-jagdbanngebiete_select', wrzselect)
+
