@@ -614,12 +614,15 @@
   module.provider('gaRecenterMapOnFeatures', function() {
     this.$get = function($q, $http) {
       var url = this.url;
+      var vector;
+      var foundFeatures;
       var getFeatures = function(featureIdsByBodId) {
         var promises = [];
         angular.forEach(featureIdsByBodId, function(featureIds, bodId) {
           Array.prototype.push.apply(promises, $.map(featureIds,
               function(featureId) {
-                return $http.get(url + bodId + '/' + featureId);
+                return $http.get(url + bodId + '/' +
+                  featureId + '?geometryFormat=geojson');
               }
           ));
         });
@@ -628,13 +631,57 @@
       return function(map, featureIdsByBodId) {
         getFeatures(featureIdsByBodId).then(function(results) {
           var extent = [Infinity, Infinity, -Infinity, -Infinity];
+          var foundFeatures = [];
           angular.forEach(results, function(result) {
             var bbox = result.data.feature.bbox;
             ol.extent.extend(extent, bbox);
+            foundFeatures.push(result.data.feature);
           });
           if (extent[2] >= extent[0] && extent[3] >= extent[1]) {
+            if (extent[2] - extent[0] < 200) {
+              extent[2] = extent[2] + 100;
+              extent[0] = extent[0] - 100;
+            }
+            if (extent[3] - extent[1] < 100) {
+              extent[3] = extent[3] + 100;
+              extent[1] = extent[1] - 100;
+            }
             map.getView().fitExtent(extent, map.getSize());
           }
+          map.removeLayer(vector);
+          vector = new ol.layer.Vector({
+            style: new ol.style.Style({
+              symbolizers: [
+                new ol.style.Fill({
+                  color: '#ffff00'
+                }),
+                new ol.style.Stroke({
+                  color: '#ff8000',
+                  width: 3
+                }),
+                new ol.style.Shape({
+                  size: 20,
+                  fill: new ol.style.Fill({
+                    color: '#ffff00'
+                  }),
+                  stroke: new ol.style.Stroke({
+                    color: '#ff8000',
+                    width: 3
+                  })
+                })
+              ]
+            }),
+            source: new ol.source.Vector({
+              projection: map.getView().getProjection(),
+              parser: new ol.parser.GeoJSON(),
+              data: {
+                type: 'FeatureCollection',
+                features: foundFeatures
+              }
+            })
+          });
+          vector.preview = true;
+          map.addLayer(vector);
         });
       };
     };
