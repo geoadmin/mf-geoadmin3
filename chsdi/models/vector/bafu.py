@@ -788,3 +788,18 @@ class trockenwiesenundweiden_anhang2(Base, Vector):
 
 register('ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhang2', trockenwiesenundweiden_anhang2)
 
+
+class amphibien_anhang4(Base, Vector):
+    # view in a schema
+    __tablename__ = 'amphibien_anhang4'
+    __table_args__ = ({'schema': 'bundinv', 'autoload': False})
+    __esriId__ = 2043
+    __bodId__ = 'ch.bafu.bundesinventare-amphibien_anhang4'
+    __template__ = 'templates/htmlpopup/amphibien_anhang4.mako'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    name = Column('name', Text)
+    obnr = Column('obnr', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.bundesinventare-amphibien_anhang4', amphibien_anhang4)
+
