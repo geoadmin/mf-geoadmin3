@@ -456,4 +456,25 @@
     };
   });
 
+  module.provider('gaHighlightFeaturePermalinkManager', function() {
+    this.$get = function($rootScope, gaPermalink, gaLayers,
+        gaHighlightFeature) {
+      var queryParams = gaPermalink.getParams();
+      return function(map) {
+        var deregister = $rootScope.$on('gaLayersChange', function() {
+          var paramKey;
+          for (paramKey in queryParams) {
+            if (gaLayers.getLayer(paramKey)) {
+              var bodId = paramKey;
+              var bodIds = queryParams[bodId].split(',');
+              map.addLayer(gaLayers.getOlLayerById(bodId));
+              gaHighlightFeature.recenter(map, bodId, bodIds);
+            }
+          }
+          deregister();
+        });
+      };
+    };
+  });
+
 })();
