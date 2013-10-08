@@ -42,6 +42,12 @@ def round(val):
 
 def remove_accents(input_str):
     # TODO find a better way to treat those characters
+    input_str = input_str.replace(u'ü', u'ue')
+    input_str = input_str.replace(u'Ü', u'ue')
+    input_str = input_str.replace(u'ä', u'ae')
+    input_str = input_str.replace(u'Ä', u'ae')
+    input_str = input_str.replace(u'ö', u'oe')
+    input_str = input_str.replace(u'Ö', u'oe')
     input_str = input_str.replace('/', '')
     input_str = input_str.replace('(', '')
     input_str = input_str.replace(')', '')
