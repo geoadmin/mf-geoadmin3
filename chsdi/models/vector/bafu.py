@@ -704,3 +704,18 @@ class waldanteil(Base, Vector):
     the_geom =  GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bafu.landesforstinventar-waldanteil', waldanteil)
+
+
+class totholz(Base, Vector):
+    # view in a schema
+    __tablename__ = 'totholzvolumen'
+    __table_args__ = ({'schema': 'wald', 'autoload': False})
+    __esriId__ = 2038
+    __bodId__ = 'ch.bafu.landesforstinventar-totholz'
+    __template__ = 'templates/htmlpopup/totholz.mako'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    wirtschaft = Column('wirtschaft', Text)
+    totholzvol = Column('totholzvol', Numeric)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.landesforstinventar-totholz', totholz)
