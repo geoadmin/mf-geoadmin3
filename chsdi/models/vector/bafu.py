@@ -638,3 +638,21 @@ class biosphaerenreservate(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bafu.schutzgebiete-biosphaerenreservate', biosphaerenreservate)
+
+
+class moose(Base, Vector):
+    # view in a schema
+    __tablename__ = 'mooseflora'
+    __table_args__ = ({'schema': 'flora', 'autoload': False})
+    __esriId__ = 2035
+    __bodId__ = 'ch.bafu.moose'
+    __template__ = 'templates/htmlpopup/moose.mako'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    populationsnr = Column('populationsnr', Numeric)
+    jahr = Column('jahr', Integer)
+    standort = Column('standort', Text)
+    rl_text = Column('rl_text', Text)
+    nhv_text = Column('nhv_text', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.moose', moose)
