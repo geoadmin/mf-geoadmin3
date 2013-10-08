@@ -195,6 +195,7 @@
                     }
                   })
                 });
+                vector.preview = true;
                 map.addLayer(vector);
               }
             }
