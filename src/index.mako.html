@@ -2,7 +2,11 @@
 <!DOCTYPE html>
 <html ng-app="ga" ng-controller="GaMainController">
   <head>
+% if device == 'desktop':
     <title translate="{{topicId + '_page_title'}}">map.geo.admin.ch</title>
+% else:
+    <title>geo.admin.ch</title>
+% endif
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
