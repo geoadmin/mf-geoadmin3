@@ -1,0 +1,198 @@
+[ga-time-selector-bt] {
+  position: absolute;
+  top: 400px;
+  right: 7px;
+  width: 44px;
+  height: 44px;
+  text-align: center;
+  z-index: 1000;
+
+  @media screen and (max-width: @screen-tablet) {
+    top: 260px;
+  } 
+}
+
+[ga-time-selector] {
+  display: block;
+  width: auto;
+  height: auto;
+  position: absolute;  
+  top: 96px;
+  left: 50%;
+  margin-left: -300px; 
+  background-color: rgba(255, 255, 255, 0.9);
+  -webkit-box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.175);
+  box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.175);   
+  padding: 5px;
+  overflow: hidden; 
+}
+
+.time-selector-bt {  
+  cursor: pointer;
+  text-decoration: none;
+  display: none; 
+  height: 44px;  
+  background: data-uri('time_black.png');
+  
+  &.enabled {
+    display: block;
+  }
+
+  &.active {
+    display: block;
+    background: data-uri('time_red.png');
+  }
+}
+
+.time-selector-container {   
+
+  .last-title {
+    position: absolute;
+    right: 2px;
+    bottom: 2px; 
+  }
+
+  &.mobile {
+    margin-left: -104px; 
+  
+    a {
+      line-height: 8px;
+    }
+
+    .last-title {
+      display: none;
+    }
+  }
+ 
+  a {
+    color: red;
+    line-height: 45px;
+
+    &:hover, &:focus {
+      text-decoration: none;
+    }
+  }
+  
+  select {
+    display: inline-block;
+    width: 150px;
+    top: 57px; 
+  }
+
+  @media (max-width: @screen-tablet) {
+    top: 90px;/* Under the pulldown menu */      
+  }
+
+  @media (max-width: @screen-phone) {
+    top: 57px;
+  }
+}
+
+.time-selector-slider {
+  height: 45px;
+  width: 510px; 
+  display: inline-block;
+  position: relative;
+  margin: 0px 40px 15px 40px;
+  vertical-align: bottom;
+ 
+  .ga-slider {
+    height: 100%;
+    margin: 0px;
+
+    span.pointer {
+      top: 0px;
+      width: 81px;
+      height: 30px;
+      border: none;
+      border-radius: 0px; 
+      cursor: move;
+      z-index: 0;
+      background: data-uri('pointer.png') no-repeat 2px 1px;
+
+      &::after {
+        content: none;
+      }
+    }
+  
+    .value1 {
+      font-size: 18px;
+      font-weight: bold;
+      color: darkgray;
+      top: 3px;
+      font-size: 18px;
+      width: 43px;
+      height: 20px;
+      overflow: hidden;
+      padding: 0px;
+      text-align: center;
+            
+      &.available {
+        color: red; 
+      }
+       
+      input[type=text] {
+        line-height: 20px;
+        box-shadow: none;
+      }
+    }
+
+    span.limit {
+      display: none;
+    }
+  
+    span.bar {
+      margin-top: 30px;
+      height: 10px;
+      background: none;
+      box-shadow: none;
+      border-radius: 0px; 
+      background-color: lightgray;
+
+      span {
+        height: 100%;
+        width: 3px;
+        bottom: 0px;
+        
+        &.bubble{
+          display: none;
+        }
+
+        &.minor, &.major {
+          width: 3px;
+          border-left: 1px solid black;
+
+          .available {
+            left: -2px;
+          }
+        }
+
+        &.major {
+          height: 15px;
+          bottom: 0px;
+
+          .bubble {
+            top: -18px;
+            left: -13px;
+            padding: 0px;
+            width: 30px;
+            display: inline-block;
+            font-size: 12px; 
+            background: none;
+          }
+        }
+
+        &.available {
+          background-color: rgba(255,0,0,.3);
+          bottom: 2px;
+          height: 6px;
+          left: -1px;
+        }
+
+        &.last .available {
+          background-color: transparent;
+        }
+      }
+    }
+  }
+}

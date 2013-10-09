@@ -1,0 +1,16 @@
+<div class="time-selector-container" ng-class="stateClass" >
+  <div ga-slider class="time-selector-slider" 
+      floor="{{minYear}}" 
+      ceiling="{{maxYear}}"
+      ng-model="currentYear"
+      translate2="formatYear"
+      ga-data="years"
+      ga-redraw="isActive"
+      ga-keyboard-events="isActive"
+      ga-magnetize="true"
+      ga-input-text="true"
+      ga-unfit-to-bar="true">
+  </div>
+  <span class="last-title" ng-show="currentYear == maxYear" translate>last_available_year</span>
+</div>
+

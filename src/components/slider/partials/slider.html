@@ -1,0 +1,27 @@
+<div class="ga-slider">
+  <span class="bar">
+    <span ng-repeat="data in dataList | orderBy:'value':false" 
+        ng-style="assignDivisionStyle($index)"
+        id="{{data.value}}"
+        class="bar-division 
+          {{($first) ? 'first ' : ''}}
+          {{($last) ? 'last ' : ''}}
+          {{(data.minor) ? 'minor' : ''}} 
+          {{(data.major) ? 'major' : ''}}"
+        title="{{($last) ? translate2({value:'slider_last_title'}) : data.value}}"> 
+      <span class="bubble" >{{data.value}}</span>
+      <span class="available" ng-show="data.available"></span>
+    </span>    
+  </span>
+  <span class="bar selection"></span>
+  <span class="pointer"></span>
+  <span class="pointer"></span>
+  <span class="bubble selection"></span>
+  <span ng-bind-template="{{translate2({value:floor})}}" class="bubble limit"></span>
+  <span ng-bind-template="{{translate2({value:ceiling})}}" class="bubble limit"></span>
+  <span class="bubble value1">
+    <input type="text" ng-model="ngModel" ng-change="onInputChange()" ga-format-input-value />
+  </span>
+  <span class="bubble value2"></span>
+  <span class="bubble value3"></span>
+</div>
