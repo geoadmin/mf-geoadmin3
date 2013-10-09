@@ -3,6 +3,11 @@
     Allow from all
 </Proxy>
 
+# # stateful cookies
+<Location /${vars:instanceid}/wsgi/print/>
+    Header set Set-Cookie "SRV=${hostname-digest}; path=/${vars:instanceid}/wsgi/print/"
+</Location>
+
 
 ProxyPass        /${vars:instanceid}/wsgi/print/ ajp://localhost:8009/print-chsdi3-${instanceid}/pdf/
 ProxyPassReverse /${vars:instanceid}/wsgi/print/ ajp://localhost:8009/print-chsdi3-${instanceid}/pdf/
