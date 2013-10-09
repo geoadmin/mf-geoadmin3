@@ -837,9 +837,7 @@
                 } else {
                     this.clearSuggestions(dataset.name);
                 }
-                // RE3 we add the dataset. Make sure you consider this when
-                // updating typeahead in the project!
-                this.trigger("suggestionsRendered", dataset);
+                this.trigger("suggestionsRendered");
             },
             clearSuggestions: function(datasetName) {
                 var $datasets = datasetName ? this.$menu.find(".tt-dataset-" + datasetName) : this.$menu.find('[class^="tt-dataset-"]'), $suggestions = $datasets.find(".tt-suggestions");
