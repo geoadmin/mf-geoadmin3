@@ -308,9 +308,7 @@
                 var layerBodIds = [];
                 angular.forEach(layers, function(layer) {
                   var bodId = layer.get('bodId');
-                  if (angular.isDefined(bodId)) {
-                    layerBodIds.push(bodId);
-                  }
+                  layerBodIds.push(bodId);
                 });
                 scope.searchableLayers = layerBodIds;
               });
