@@ -300,27 +300,17 @@
                   }
                 });
 
-              // FIXME Find a better way to handle suggestions compilation
-              var suggestionsRendered = 0;
               var viewDropDown = $(taElt).data('ttView').dropdownView;
-              viewDropDown.on('suggestionsRendered', function(event) {
+              viewDropDown.on('suggestionsRendered', function(evt) {
+                var el;
                 if (viewDropDown.isVisible()) {
-                  suggestionsRendered += 1;
-                  // Make sure the final html content is compiled once only
-                  if (typeAheadDatasets.length === suggestionsRendered) {
-                    var elements = element.find('.tt-dataset-layers')
-                      .find('.tt-suggestions');
-                    $compile(elements)(scope);
-
-                    elements = element.find('.tt-dataset-locations')
-                      .find('.tt-suggestions');
-                    $compile(elements)(scope);
-
-                    //It seems that without this, translations are not
-                    //done on first rendering...
-                    scope.$apply();
-
-                    suggestionsRendered = 0;
+                  el = element.find('.tt-dataset-' + evt.data.name);
+                  if (el) {
+                    el = el.find('.tt-suggestions');
+                    if (el) {
+                      $compile(el)(scope);
+                      scope.$apply();
+                    }
                   }
                 }
               });
