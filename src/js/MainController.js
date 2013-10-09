@@ -100,7 +100,7 @@
 module.controller('GaMainController',
   function($scope, $rootScope, $translate, $timeout, $window,  gaPermalink,
     gaBrowserSniffer, gaLayersPermalinkManager,
-    gaHighlightFeaturePermalinkManager) {
+    gaHighlightFeaturePermalinkManager, gaCatalogTreePermalinkManager) {
 
       var mobile = (gaBrowserSniffer.mobile) ? 'false' : 'true',
         dismiss = 'none';
@@ -114,6 +114,9 @@ module.controller('GaMainController',
 
       // Activate the "highlight feature" permalink manager for the map.
       gaHighlightFeaturePermalinkManager($scope.map);
+
+      // Activate the catalogNodes permalink manager for the map.
+      gaCatalogTreePermalinkManager($scope.map);
 
       $rootScope.$on('gaTopicChange', function(event, topic) {
         $scope.topicId = topic.id;

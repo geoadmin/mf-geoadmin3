@@ -41,4 +41,35 @@
       };
     };
   });
+
+  module.provider('gaCatalogTreePermalinkManager', function() {
+
+    this.$get = function($rootScope, gaPermalink) {
+      return function() {
+        var scope = $rootScope.$new();
+        var openIds = [];
+
+        scope.$on('catalogCategorySelectionChange', function(evt, el) {
+          var index = openIds.indexOf(el.id);
+          if (el.selected === true) {
+            if (index < 0) {
+              openIds.push(el.id);
+            }
+          } else {
+            if (index >= 0) {
+              openIds.splice(index, 1);
+            }
+          }
+          if (openIds.length > 0) {
+            gaPermalink.updateParams({catalognodes: openIds.join(',')});
+          } else {
+            gaPermalink.deleteParam('catalognodes');
+          }
+        });
+
+      }
+    };
+
+  });
+
 })();

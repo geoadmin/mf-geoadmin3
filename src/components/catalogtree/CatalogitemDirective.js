@@ -15,8 +15,8 @@
    * See examples on how it can be used
    */
   module.directive('gaCatalogitem',
-      function($compile, gaCatalogtreeMapUtils, gaMapUtils, gaLayers,
-          gaLayerMetadataPopup) {
+      function($compile, $rootScope, gaCatalogtreeMapUtils, gaMapUtils,
+          gaLayers, gaLayerMetadataPopup) {
         return {
           restrict: 'A',
           replace: true,
@@ -38,6 +38,13 @@
               scope.addPreviewLayer = addPreviewLayer;
               scope.removePreviewLayer = removePreviewLayer;
               scope.inPreviewMode = inPreviewMode;
+
+              if (angular.isDefined(scope.item.children)) {
+                scope.$watch('item.selectedOpen', function(value) {
+                  $rootScope.$broadcast('catalogCategorySelectionChange',
+                      {selected: value, id: scope.item.id});
+                });
+              }
 
               compiledContent(scope, function(clone, scope) {
                 iEl.append(clone);
