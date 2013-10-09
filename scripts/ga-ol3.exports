@@ -13,10 +13,10 @@
 @exportProperty ol.style.Point.prototype.createLiteral
 @exportProperty ol.style.Shape.prototype.createLiteral
 @exportProperty ol.style.Stroke.prototype.createLiteral
+@exportProperty ol.style.Style.prototype.createLiterals
 @exportProperty ol.style.Text.prototype.createLiteral
 @exportProperty ol.View2D.prototype.getResolutionForExtent
 @exportProperty ol.proj.Projection.prototype.getCode
 @exportProperty ol.proj.Projection.prototype.getUnits
 @exportSymbol ol.style.getDefault
 @exportSymbol ol.style.setDefault
-@exportSymbol ol.style.Style.createLiterals
