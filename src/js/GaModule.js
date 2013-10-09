@@ -31,6 +31,7 @@
   goog.require('ga_mouseposition_controller');
   goog.require('ga_share_controller');
   goog.require('ga_print_controller');
+  goog.require('ga_print_directive');
   goog.require('ga_translation_controller');
   goog.require('ga_topic_controller');
   goog.require('ga_feedback_controller');
@@ -67,6 +68,7 @@
     'ga_mouseposition_controller',
     'ga_share_controller',
     'ga_print_controller',
+    'ga_print_directive',
     'ga_translation_controller',
     'ga_topic_controller',
     'ga_feedback_controller',
