@@ -615,7 +615,6 @@
     this.$get = function($q, $http, gaDefinePropertiesForLayer) {
       var url = this.url;
       var vector;
-      var foundFeatures;
       var getFeatures = function(featureIdsByBodId) {
         var promises = [];
         angular.forEach(featureIdsByBodId, function(featureIds, bodId) {
