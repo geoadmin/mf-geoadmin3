@@ -466,7 +466,7 @@
   module.provider('gaLayersPermalinkManager', function() {
 
     this.$get = function($rootScope, gaLayers, gaPermalink, $translate, $http,
-        gaKml) {
+        gaKml, gaMapUtils) {
 
       var layersParamValue = gaPermalink.getParams().layers;
       var layersOpacityParamValue = gaPermalink.getParams().layers_opacity;
@@ -492,7 +492,7 @@
       function updateLayersParam(layers) {
         var ids = $.map(layers, function(layer) {
           if (layer.get('bodId')) {
-            return layer.get('id');
+            return layer.get('bodId');
           } else if (layer.get('type') === 'KML') {
             return layer.get('type') + '||' + layer.get('url');
           }
