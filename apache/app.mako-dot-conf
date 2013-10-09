@@ -19,7 +19,7 @@ Alias ${base_url_path}/prod ${base_dir}/prod
 % if 'main' in base_url_path:
 # Main webpage
 
-RewriteRule ^/(index.html|mobile.html|info.json)(.*) /var/www/vhosts/mf-geoadmin3/private/geoadmin/prod/$1
+RewriteRule ^/(index.html|mobile.html|info.json|checker)(.*) /var/www/vhosts/mf-geoadmin3/private/geoadmin/prod/$1
 RewriteRule ^/[0-9]+/(img|lib|style|rest|locales)(.*) /var/www/vhosts/mf-geoadmin3/private/geoadmin/prod/$1$2
 
 <LocationMatch /[0-9]+/>
@@ -50,4 +50,12 @@ ProxyPassReverse ${base_url_path} ${service_url}
     Order allow,deny
     Allow from all
 </LocationMatch>
+
+# Never ever cache the checker
+<Location ~ "${base_url_path}/checker$">
+    ExpiresDefault "access"
+    Header merge Cache-Control "no-cache"
+    Header unset ETag
+    Header unset Last-Modified
+</Location>
 
