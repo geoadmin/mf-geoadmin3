@@ -17,8 +17,9 @@
   ]);
 
   module.directive('gaSearch',
-      function($compile, $translate, $timeout, gaLayers, gaLayerMetadataPopup,
-        gaPermalink, gaUrlUtils, gaGetCoordinate, gaBrowserSniffer) {
+      function($compile, $translate, $timeout, gaMapUtils, gaLayers,
+        gaLayerMetadataPopup, gaPermalink, gaUrlUtils, gaGetCoordinate,
+        gaBrowserSniffer) {
           var currentTopic,
               footer = [
             '<div class="search-footer clearfix">',
@@ -103,6 +104,8 @@
               $compile(layerHeaderTemplate)(scope);
               scope.query = '';
 
+              scope.layers = [];
+
               scope.getHref = function() {
                 // set those values only on mouseover
                 scope.encodedPermalinkHref =
@@ -115,32 +118,23 @@
                 ev.stopPropagation();
               };
 
-              scope.addLayer = function(bodId) {
-                if (!hasLayer(bodId)) {
-                  var layer = gaLayers.getOlLayerById(bodId);
-                  if (angular.isDefined(layer)) {
-                    map.addLayer(layer);
-                  } else {
-                    alert('A configuration does not exist for this layer yet!');
-                  }
+              scope.addLayer = function(bodId, isPreview) {
+                var olLayer = gaLayers.getOlLayerById(bodId);
+                var isDefinedLayer = gaMapUtils.getMapOverlayForBodId(
+                     map, bodId);
+                if (angular.isDefined(olLayer) &&
+                    !angular.isDefined(isDefinedLayer)) {
+                  olLayer.preview = isPreview;
+                  map.addLayer(olLayer);
                 }
               };
 
-              scope.removeLayer = function(bodId) {
-                if (hasLayer(bodId)) {
-                  var layer = gaLayers.getOlLayerById(bodId);
-                  map.removeLayer(layer);
+              scope.removePreviewLayer = function(bodId) {
+                var olLayer = gaMapUtils.getMapOverlayForBodId(
+                    map, bodId);
+                if (angular.isDefined(olLayer) && olLayer.preview) {
+                  map.removeLayer(olLayer);
                 }
-              };
-
-              var hasLayer = function(bodId) {
-                var res = false;
-                map.getLayers().forEach(function(layer) {
-                  if (!layer.background && layer.get('bodId') == bodId) {
-                    res = true;
-                  }
-                });
-                return res;
               };
 
               var getLocationLabel = function(attrs) {
@@ -176,6 +170,9 @@
                     url: gaUrlUtils.append(options.serviceUrl,
                         'type=locations'),
                     beforeSend: function(jqXhr, settings) {
+                       scope.$apply(function() {
+                          scope.layers = map.getLayers().getArray();
+                       });
                        var position =
                          gaGetCoordinate(
                            map.getView().getProjection().getExtent(),
@@ -190,11 +187,11 @@
                       var queryText = '&searchText=' + searchText;
                       var bbox = '&bbox=' + getBBoxParameters(map);
                       var lang = '&lang=' + $translate.uses();
-                      // FIXME check if queryable layer is in the map
-                      // var features = '&features=';
+                      var searchableLayers = '&features=' +
+                          scope.searchableLayers.join(',');
                       url = options.applyTopicToUrl(url,
                                                    currentTopic);
-                      url += queryText + bbox + lang;
+                      url += queryText + searchableLayers + bbox + lang;
                       return url;
                     },
                     filter: function(response) {
@@ -217,8 +214,8 @@
                     var template = '<div ng-show="hasLayerResults" ' +
                         'class="tt-search"' +
                         'ng-mouseover="addLayer(\'' +
-                        context.attrs.layer + '\')" ' +
-                        'ng-mouseout="removeLayer(\'' +
+                        context.attrs.layer + '\', true)" ' +
+                        'ng-mouseout="removePreviewLayer(\'' +
                         context.attrs.layer + '\')"' +
                         '>' + context.attrs.label +
                         '<i ng-click="getLegend($event, \'' +
@@ -296,9 +293,25 @@
                     }
                   }
                   if (origin === 'layer') {
-                    scope.addLayer(datum.attrs.layer);
+                    scope.addLayer(datum.attrs.layer, false);
                   }
                 });
+
+              scope.searchableLayersFilter = function(layer) {
+                var layerBodId = layer.get('bodId');
+                return !layer.preview && angular.isDefined(layerBodId) &&
+                    gaLayers.getLayerProperty(layerBodId, 'searchable');
+              };
+
+              scope.$watchCollection('layers | filter:searchableLayersFilter',
+                  function(layers) {
+                var layerBodIds = [];
+                angular.forEach(layers, function(layer) {
+                  var bodId = layer.get('bodId');
+                  layerBodIds.push(bodId);
+                });
+                scope.searchableLayers = layerBodIds;
+              });
 
               var viewDropDown = $(taElt).data('ttView').dropdownView;
               viewDropDown.on('suggestionsRendered', function(evt) {
