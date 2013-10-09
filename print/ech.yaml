@@ -33,56 +33,71 @@ layouts:
 #---------------------------------------
 # header
 #---------------------------------------
-
-      header:
-        height: 42
-        items:
-          - !columns
-            widths: [35, 65]
-            items:
-              - !image
-                align: left
-                maxWidth: 251
-                maxHeight: 34
-                url: "${configDir}/print_logo.png"
-              - !text
-                condition: langde
-                fontSize: 14
-                fontColor: #333333
-                text: |
-                  www.geo.admin.ch
-              - !text
-                condition: langfr
-                fontSize: 14
-                fontColor: #333333
-                text: |
-                  www.geo.admin.ch
-              - !text
-                condition: langen
-                fontSize: 14
-                fontColor: #333333
-                text: |
-                  www.geo.admin.ch
-              - !text
-                condition: langrm
-                fontSize: 14
-                fontColor: #333333
-                text: |
-                  www.geo.admin.ch
-              - !text
-                condition: langit
-                fontSize: 14
-                fontColor: #333333
-                text: |
-                  www.geo.admin.ch
-
+#
+#      header:
+#        height: 42
+#        items:
+#          - !columns
+#            widths: [35, 65]
+#            items:
+#              - !image
+#                align: left
+#                maxWidth: 251
+#                maxHeight: 34
+#                url: "${configDir}/print_logo.png"
+#              - !text
+#                condition: langde
+#                fontSize: 14
+#                fontColor: #333333
+#                text: |
+#                  www.geo.admin.ch
+#              - !text
+#                condition: langfr
+#                fontSize: 14
+#                fontColor: #333333
+#                text: |
+#                  www.geo.admin.ch
+#              - !text
+#                condition: langen
+#                fontSize: 14
+#                fontColor: #333333
+#                text: |
+#                  www.geo.admin.ch
+#              - !text
+#                condition: langrm
+#                fontSize: 14
+#                fontColor: #333333
+#                text: |
+#                  www.geo.admin.ch
+#              - !text
+#                condition: langit
+#                fontSize: 14
+#                fontColor: #333333
+#                text: |
+#                  www.geo.admin.ch
+#
 #---------------------------------------
 # Map & overviewmap
 #---------------------------------------
       items:
         - !map
           width: 762
-          height: 486
+          height: 530
+
+#---------------------------------------
+# Logo
+#---------------------------------------
+        - !columns
+          absoluteX: 40
+          absoluteY: 45
+          width: 50
+          items:
+              - !image
+                   align: left
+                   maxWidth: 51
+                   maxHeight: 16
+                   url: "${configDir}/logo_ch.png"
+         
 #---------------------------------------
 # North arrow
 #---------------------------------------
@@ -114,81 +129,81 @@ layouts:
 #---------------------------------------
 # Scales
 #---------------------------------------
-        - !columns
-          absoluteY: 550
-          absoluteX: 652
-          width: 150
-          items:
-            - !text
-              condition: langde
-              fontSize: 9
-              align: right
-              text: |
-                Massstab 1: ${format %,d scale}
-            - !text
-              condition: langfr
-              fontSize: 9
-              align: right
-              text: |
-                Echelle 1: ${format %,d scale}
-            - !text
-              condition: langen
-              fontSize: 9
-              align: right
-              text: |
-                Scale 1: ${format %,d scale}
-            - !text
-              condition: langrm
-              fontSize: 9
-              align: right
-              text: |
-                Scala 1: ${format %,d scale}
-            - !text
-              condition: langit
-              fontSize: 9
-              align: right
-              text: |
-                Scala 1: ${format %,d scale}
-
+#        - !columns
+#          absoluteY: 550
+#          absoluteX: 652
+#          width: 150
+#          items:
+#            - !text
+#              condition: langde
+#              fontSize: 9
+#              align: right
+#              text: |
+#                Massstab 1: ${format %,d scale}
+#            - !text
+#              condition: langfr
+#              fontSize: 9
+#              align: right
+#              text: |
+#                Echelle 1: ${format %,d scale}
+#            - !text
+#              condition: langen
+#              fontSize: 9
+#              align: right
+#              text: |
+#                Scale 1: ${format %,d scale}
+#            - !text
+#              condition: langrm
+#              fontSize: 9
+#              align: right
+#              text: |
+#                Scala 1: ${format %,d scale}
+#            - !text
+#              condition: langit
+#              fontSize: 9
+#              align: right
+#              text: |
+#                Scala 1: ${format %,d scale}
+#
 #---------------------------------------
 # C part
 #---------------------------------------
-        - !columns
-          absoluteY: 555
-          absoluteX: 307
-          width: 300
-          items:
-            - !text
-              condition: langde
-              fontSize: 8
-              align: left
-              text: |
-                geo.admin.ch, das Geoportal des Bundes
-            - !text
-              condition: langfr
-              fontSize: 8
-              align: left
-              text: |
-                geo.admin.ch, le géoportail fédéral
-            - !text
-              condition: langen
-              fontSize: 8
-              align: left
-              text: |
-                geo.admin.ch, the swiss geoportal
-            - !text
-              condition: langrm
-              fontSize: 8
-              align: left
-              text: |
-                geo.admin.ch, il geoportal da la confederaziun
-            - !text
-              condition: langit
-              fontSize: 8
-              align: left
-              text: |
-                geo.admin.ch, il geoportale della Confederazione
-
+#        - !columns
+#          absoluteY: 555
+#          absoluteX: 307
+#          width: 300
+#          items:
+#            - !text
+#              condition: langde
+#              fontSize: 8
+#              align: left
+#              text: |
+#                geo.admin.ch, das Geoportal des Bundes
+#            - !text
+#              condition: langfr
+#              fontSize: 8
+#              align: left
+#              text: |
+#                geo.admin.ch, le géoportail fédéral
+#            - !text
+#              condition: langen
+#              fontSize: 8
+#              align: left
+#              text: |
+#                geo.admin.ch, the swiss geoportal
+#            - !text
+#              condition: langrm
+#              fontSize: 8
+#              align: left
+#              text: |
+#                geo.admin.ch, il geoportal da la confederaziun
+#            - !text
+#              condition: langit
+#              fontSize: 8
+#              align: left
+#              text: |
+#                geo.admin.ch, il geoportale della Confederazione
+#
 #---------------------------------------
 # E part: copyright
 #---------------------------------------
@@ -233,8 +248,8 @@ layouts:
 #---------------------------------------
         - !columns
           absoluteY: 45
-          absoluteX: 40
-          width: 768
+          absoluteX: 100
+          width: 708
           items:
             - !text
               condition: langde
@@ -272,8 +287,8 @@ layouts:
 #---------------------------------------
         - !columns
           absoluteY: 30
-          absoluteX: 40
-          width: 768
+          absoluteX: 100
+          width: 708
           items:
             - !text
               condition: langde
@@ -328,13 +343,44 @@ layouts:
           width: 124
           nbColumns: 1
           items:
-              - !scalebar
+            - !scalebar
                 type: line
                 units: m
                 color: black
                 align: center
+                vertAlign: top
                 fontSize: 8
                 maxSize: 128
+            - !text
+              condition: langde
+              fontSize: 7
+              align: left
+              text: |
+                Massstab 1: ${format %,d scale}
+            - !text
+              condition: langfr
+              fontSize: 7
+              align: left
+              text: |
+                Echelle 1: ${format %,d scale}
+            - !text
+              condition: langen
+              fontSize: 7
+              align: left
+              text: |
+                Scale 1: ${format %,d scale}
+            - !text
+              condition: langrm
+              fontSize: 7
+              align:left
+              text: |
+                Scala 1: ${format %,d scale}
+            - !text
+              condition: langit
+              fontSize: 7
+              align: left
+              text: |
+                Scala 1: ${format %,d scale}
     lastPage:
       pagesize: A4
       landscape: true
@@ -370,54 +416,67 @@ layouts:
 #---------------------------------------
 # header
 #---------------------------------------
-      header:
-        height: 42
-        items:
-          - !columns
-            widths: [50, 50]
-            items:
-              - !image
-                align: left
-                maxWidth: 251
-                maxHeight: 34
-                url: "${configDir}/print_logo.png"
-              - !text
-                condition: langde
-                fontSize: 14
-                fontColor: #333333
-                text: |
-                  www.geo.admin.ch
-              - !text
-                condition: langfr
-                fontSize: 14
-                fontColor: #333333
-                text: |
-                  www.geo.admin.ch
-              - !text
-                condition: langen
-                fontSize: 14
-                fontColor: #333333
-                text: |
-                  www.geo.admin.ch
-              - !text
-                condition: langrm
-                fontSize: 14
-                fontColor: #333333
-                text: |
-                  www.geo.admin.ch
-              - !text
-                condition: langit
-                fontSize: 14
-                fontColor: #333333
-                text: |
-                  www.geo.admin.ch
-      items:
+#      header:
+#        height: 42
+#        items:
+#          - !columns
+#            widths: [50, 50]
+#            items:
+#              - !image
+#                align: left
+#                maxWidth: 251
+#                maxHeight: 34
+#                url: "${configDir}/print_logo.png"
+#              - !text
+#                condition: langde
+#                fontSize: 14
+#                fontColor: #333333
+#                text: |
+#                  www.geo.admin.ch
+#              - !text
+#                condition: langfr
+#                fontSize: 14
+#                fontColor: #333333
+#                text: |
+#                  www.geo.admin.ch
+#              - !text
+#                condition: langen
+#                fontSize: 14
+#                fontColor: #333333
+#                text: |
+#                  www.geo.admin.ch
+#              - !text
+#                condition: langrm
+#                fontSize: 14
+#                fontColor: #333333
+#                text: |
+#                  www.geo.admin.ch
+#              - !text
+#                condition: langit
+#                fontSize: 14
+#                fontColor: #333333
+#                text: |
+#                  www.geo.admin.ch
 #---------------------------------------
 # Map & overviewmap
 #---------------------------------------
+      items:
         - !map
           width: 510
-          height: 720
+          height: 760
+#---------------------------------------
+# Logo
+#---------------------------------------
+        - !columns
+          absoluteX: 40
+          absoluteY: 45
+          width: 50
+          items:
+              - !image
+                   align: left
+                   maxWidth: 51
+                   maxHeight: 16
+                   url: "${configDir}/logo_ch.png"
 #---------------------------------------
 # North arrow
 #---------------------------------------
@@ -450,87 +509,87 @@ layouts:
 #---------------------------------------
 # Scales
 #---------------------------------------
-        - !columns
-          absoluteY: 795
-          absoluteX: 403
-          width: 150
-          items:
-            - !text
-              condition: langde
-              fontSize: 9
-              align: right
-              text: |
-                Massstab 1: ${format %,d scale}
-            - !text
-              condition: langfr
-              fontSize: 9
-              align: right
-              text: |
-                Echelle 1: ${format %,d scale}
-            - !text
-              condition: langen
-              fontSize: 9
-              align: right
-              text: |
-                Scale 1: ${format %,d scale}
-            - !text
-              condition: langrm
-              fontSize: 9
-              align: right
-              text: |
-                Scala 1: ${format %,d scale}
-            - !text
-              condition: langit
-              fontSize: 9
-              align: right
-              text: |
-                Scala 1: ${format %,d scale}
-
+#        - !columns
+#          absoluteY: 795
+#          absoluteX: 403
+#          width: 150
+#          items:
+#            - !text
+#              condition: langde
+#              fontSize: 9
+#              align: right
+#              text: |
+#                Massstab 1: ${format %,d scale}
+#            - !text
+#              condition: langfr
+#              fontSize: 9
+#              align: right
+#              text: |
+#                Echelle 1: ${format %,d scale}
+#            - !text
+#              condition: langen
+#              fontSize: 9
+#              align: right
+#              text: |
+#                Scale 1: ${format %,d scale}
+#            - !text
+#              condition: langrm
+#              fontSize: 9
+#              align: right
+#              text: |
+#                Scala 1: ${format %,d scale}
+#            - !text
+#              condition: langit
+#              fontSize: 9
+#              align: right
+#              text: |
+#                Scala 1: ${format %,d scale}
+#
 #---------------------------------------
 # C part
 #---------------------------------------
-        - !columns
-          absoluteY: 805
-          absoluteX: 297
-          width: 300
-          items:
-            - !text
-              condition: langde
-              fontSize: 8
-              align: left
-              text: |
-                geo.admin.ch, das Geoportal des Bundes
-            - !text
-              condition: langfr
-              fontSize: 8
-              align: left
-              text: |
-                geo.admin.ch, le géoportail fédéral
-            - !text
-              condition: langen
-              fontSize: 8
-              align: left
-              text: |
-                geo.admin.ch, the swiss geoportal
-            - !text
-              condition: langrm
-              fontSize: 8
-              align: left
-              text: |
-                geo.admin.ch, il geoportal da la confederaziun
-            - !text
-              condition: langit
-              fontSize: 8
-              align: left
-              text: |
-                geo.admin.ch, il geoportale della Confederazione
+#        - !columns
+#          absoluteY: 805
+#          absoluteX: 297
+#          width: 300
+#          items:
+#            - !text
+#              condition: langde
+#              fontSize: 8
+#              align: left
+#              text: |
+#                geo.admin.ch, das Geoportal des Bundes
+#            - !text
+#              condition: langfr
+#              fontSize: 8
+#              align: left
+#              text: |
+#                geo.admin.ch, le géoportail fédéral
+#            - !text
+#              condition: langen
+#              fontSize: 8
+#              align: left
+#              text: |
+#                geo.admin.ch, the swiss geoportal
+#            - !text
+#              condition: langrm
+#              fontSize: 8
+#              align: left
+#              text: |
+#                geo.admin.ch, il geoportal da la confederaziun
+#            - !text
+#              condition: langit
+#              fontSize: 8
+#              align: left
+#              text: |
+#                geo.admin.ch, il geoportale della Confederazione
 
 #---------------------------------------
 # E part: copyright
 #---------------------------------------
         - !columns
           absoluteY: 70
-          absoluteX: 45
+          absoluteX: 100
           width: 300
           items:
             - !text
@@ -569,8 +628,8 @@ layouts:
 #---------------------------------------
         - !columns
           absoluteY: 58
-          absoluteX: 42
-          width: 508
+          absoluteX: 100
+          width: 448
           items:
             - !text
               condition: langde
@@ -608,8 +667,8 @@ layouts:
 #---------------------------------------
         - !columns
           absoluteY: 43
-          absoluteX: 42
-          width: 508
+          absoluteX: 100
+          width: 448
           items:
             - !text
               condition: langde
@@ -662,13 +721,43 @@ layouts:
           width: 124
           nbColumns: 1
           items:
-              - !scalebar
+            - !scalebar
                 type: line
                 units: m
                 color: black
                 align: center
                 fontSize: 8
                 maxSize: 128
+            - !text
+              condition: langde
+              fontSize: 7
+              align:left
+              text: |
+                Massstab 1: ${format %,d scale}
+            - !text
+              condition: langfr
+              fontSize: 7
+              align:left
+              text: |
+                Echelle 1: ${format %,d scale}
+            - !text
+              condition: langen
+              fontSize: 7
+              align:left
+              text: |
+                Scale 1: ${format %,d scale}
+            - !text
+              condition: langrm
+              fontSize: 7
+              align:left
+              text: |
+                Scala 1: ${format %,d scale}
+            - !text
+              condition: langit
+              fontSize: 7
+              align:left
+              text: |
+                Scala 1: ${format %,d scale}
     lastPage:
       pageSize: A4
       landscape: true
