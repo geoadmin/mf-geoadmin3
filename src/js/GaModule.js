@@ -15,6 +15,7 @@
   goog.require('ga_scaleline');
   goog.require('ga_search');
   goog.require('ga_topic');
+  goog.require('ga_timeselector');
   goog.require('ga_translation');
   goog.require('ga_feedback');
   goog.require('ga_geolocation');
@@ -37,6 +38,7 @@
   goog.require('ga_feedback_controller');
   goog.require('ga_contextpopup_controller');
   goog.require('ga_search_controller');
+  goog.require('ga_timeselector_controller');
   goog.require('ga_tooltip_controller');
 
   var module = angular.module('ga', [
@@ -53,6 +55,7 @@
     'ga_scaleline',
     'ga_search',
     'ga_topic',
+    'ga_timeselector',
     'ga_translation',
     'ga_feedback',
     'ga_layermanager',
@@ -60,6 +63,7 @@
     'ga_modal_directive',
     'ga_draggable_directive',
     'ga_placeholder_directive',
+    'ga_slider_directive',
     'ga_importkml_controller',
     'ga_geolocation',
     'ga_importwms_controller',
@@ -74,6 +78,7 @@
     'ga_feedback_controller',
     'ga_contextpopup_controller',
     'ga_search_controller',
+    'ga_timeselector_controller',
     'ga_tooltip_controller',
     'ngAnimate'
   ]);

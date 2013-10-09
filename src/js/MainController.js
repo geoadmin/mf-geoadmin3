@@ -123,6 +123,10 @@ module.controller('GaMainController',
         $scope.langId = $translate.uses();
       });
 
+      $rootScope.$on('gaTimeSelectorChange', function(event, year) {
+        $scope.time = year;
+      });
+
       $scope.deviceSwitcherHref = gaPermalink.getHref({ mobile: mobile });
       $rootScope.$on('gaPermalinkChange', function() {
         $scope.deviceSwitcherHref = gaPermalink.getHref({ mobile: mobile });

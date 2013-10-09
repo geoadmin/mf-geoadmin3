@@ -94,8 +94,8 @@
 
       var Layers = function(wmtsGetTileUrlTemplate,
           layersConfigUrlTemplate, legendUrlTemplate) {
-
         var currentTopic;
+        var currentTime;
         var layers;
 
         var getWmtsGetTileUrl = function(layer, format) {
@@ -149,6 +149,9 @@
         this.getOlLayerById = function(bodId) {
           var layer = layers[bodId];
           var olLayer;
+          var time = (layer.timeEnabled) ?
+              currentTime : false;
+
           var olSource = layer.olSource;
           if (layer.type == 'wmts') {
             if (!olSource) {
@@ -160,7 +163,7 @@
                     layer.attribution + '</a>')
                 ],
                 dimensions: {
-                  'Time': layer.timestamps[0]
+                  'Time': time || layer.timestamps[0]
                 },
                 projection: 'EPSG:21781',
                 requestEncoding: 'REST',
@@ -177,16 +180,22 @@
               source: olSource
             });
           } else if (layer.type == 'wms') {
-            //TODO: add support for layer.timeEnabled?
+            var wmsUrl = gaUrlUtils.remove(
+                layer.wmsUrl, ['request', 'service', 'version'], true);
+
+            var wmsParams = {
+              LAYERS: layer.serverLayerName,
+              FORMAT: 'image/' + layer.format
+            };
+
+            if (layer.timeEnabled && angular.isDefined(time)) {
+              wmsParams['TIME'] = time || layer.timestamps[0];
+            }
             if (layer.singleTile === true) {
               if (!olSource) {
                 olSource = layer.olSource = new ol.source.ImageWMS({
-                  url: gaUrlUtils.remove(
-                      layer.wmsUrl, ['request', 'service', 'version'], true),
-                  params: {
-                    LAYERS: layer.serverLayerName,
-                    FORMAT: 'image/' + layer.format
-                  },
+                  url: wmsUrl,
+                  params: wmsParams,
                   attributions: [
                     getAttribution(layer.attribution)
                   ],
@@ -203,12 +212,8 @@
             } else {
               if (!olSource) {
                 olSource = layer.olSource = new ol.source.TileWMS({
-                  url: gaUrlUtils.remove(
-                      layer.wmsUrl, ['request', 'service', 'version'], true),
-                  params: {
-                    LAYERS: layer.serverLayerName,
-                    FORMAT: 'image/' + layer.format
-                  },
+                  url: wmsUrl,
+                  params: wmsParams,
                   attributions: [
                     getAttribution(layer.attribution)
                   ]
@@ -294,6 +299,10 @@
                   {labelsOnly: labelsOnly, topicId: currentTopicId});
             });
           }
+        });
+
+        $rootScope.$on('gaTimeSelectorChange', function(event, time) {
+          currentTime = time;
         });
       };
 
