@@ -8,11 +8,13 @@
     ['$scope', '$http', '$window', '$translate', 'gaLayers', 'gaPermalink',
     function($scope, $http, $window, $translate, gaLayers, gaPermalink) {
 
-    $scope.updatePrintConfig = function() {
+    var topicId;
+
+    var updatePrintConfig = function() {
       var printPath = $scope.options.printPath;
       var http = $http.get(printPath +
         '/info.json?url=' + encodeURIComponent(printPath) +
-        '&app=' + $scope.topicId);
+        '&app=' + topicId);
 
       http.success(function(data) {
         $scope.capabilities = data;
@@ -26,31 +28,31 @@
     };
 
     $scope.$on('gaTopicChange', function(event, topic) {
-      $scope.topicId = topic.id;
-      $scope.updatePrintConfig();
+      topicId = topic.id;
+      updatePrintConfig();
     });
 
-    $scope.encodeLayer = function(layer, proj) {
+    var encodeLayer = function(layer, proj) {
 
       var encLayer, encLegend;
       var ext = proj.getExtent();
       var resolution = $scope.map.getView().getResolution();
 
-      if (layer.constructor != ol.layer.Group) {
+      if (!(layer instanceof ol.layer.Group)) {
         var src = layer.getSource();
         var layerConfig = gaLayers.getLayer(layer.get('id')) || {};
         var minResolution = layerConfig.minResolution || 0;
-        var maxResolution = layerConfig.maxResolution || 1e6;
+        var maxResolution = layerConfig.maxResolution || Infinity;
 
         if (resolution <= maxResolution &&
               resolution >= minResolution) {
-          if (src.constructor === ol.source.WMTS) {
+          if (src instanceof ol.source.WMTS) {
              encLayer = $scope.encoders.layers['WMTS'].call(this,
                layer, layerConfig);
-          } else if (src.constructor === ol.source.ImageWMS) {
+          } else if (src instanceof ol.source.ImageWMS) {
              encLayer = $scope.encoders.layers['WMS'].call(this,
                layer, layerConfig);
-          } else if (layer.constructor === ol.layer.Vector) {
+          } else if (layer instanceof ol.layer.Vector) {
              var features =
                layer.getFeaturesObjectForExtent(ext, proj);
 
@@ -88,7 +90,7 @@
           subLayers.forEach(function(subLayer, idx, arr) {
              var enc = $scope.encoders.
               layers['Layer'].call(this, layer);
-             var layerEnc = $scope.encodeLayer(subLayer, proj);
+             var layerEnc = encodeLayer(subLayer, proj);
              if (layerEnc.layer !== undefined) {
                $.extend(enc, layerEnc);
                encs.push(enc.layer);
@@ -260,7 +262,7 @@
       }
     };
 
-    $scope.getNearestScale = function(target, scales) {
+    var getNearestScale = function(target, scales) {
 
       var nearest = null;
 
@@ -297,12 +299,12 @@
       var layers = this.map.getLayers();
       angular.forEach(layers, function(layer) {
 
-        if (layer.constructor === ol.layer.Group) {
+        if (layer instanceof ol.layer.Group) {
           var encs = $scope.encoders.layers['Group'].call(this,
              layer, proj);
           $.extend(encLayers, encs);
         } else {
-          var enc = $scope.encodeLayer(layer, proj);
+          var enc = encodeLayer(layer, proj);
           if (enc) {
             encLayers.push(enc.layer);
             if (enc.legend) {
@@ -322,7 +324,7 @@
         srs: proj.getCode(),
         units: proj.getUnits() || 'm',
         rotation: view.getRotation(),
-        app: $scope.topicId, //topic name
+        app: topicId, //topic name
         lang: $translate.uses(),
         dpi: this.dpi.value,
         layers: encLayers,
@@ -333,7 +335,7 @@
         angular.extend({
           center: view.getCenter(),
           // scale has to be one of the advertise by the print server
-          scale: $scope.getNearestScale(scale, scales),
+          scale: getNearestScale(scale, scales),
           mapTitle: '',
           mapFooter: '',
           dataOwner: '',
