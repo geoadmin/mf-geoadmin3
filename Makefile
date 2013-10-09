@@ -41,7 +41,7 @@ help:
 all: prod dev lint testdev testprod apache deploy/deploy-branch.cfg
 
 .PHONY: prod
-prod: prod/lib/build.js prod/style/app.css prod/index.html prod/mobile.html prod/info.json prod/img/ prod/style/font-awesome-3.2.1/font/ prod/locales/
+prod: prod/lib/build.js prod/style/app.css prod/index.html prod/mobile.html prod/info.json prod/img/ prod/style/font-awesome-3.2.1/font/ prod/locales/ prod/checker
 
 .PHONY: dev
 dev: src/deps.js src/style/app.css src/index.html src/mobile.html
@@ -105,6 +105,9 @@ prod/style/font-awesome-3.2.1/font/: src/style/font-awesome-3.2.1/font/*
 prod/locales/: src/locales/*.json
 	mkdir -p $@
 	cp $^ $@
+
+prod/checker: src/checker
+	cp $< $@
 
 # Temporary: the entire rule should go away eventually
 prod/info.json: src/info.json
