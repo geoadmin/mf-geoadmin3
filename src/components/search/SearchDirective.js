@@ -314,7 +314,16 @@
               });
 
               var viewDropDown = $(taElt).data('ttView').dropdownView;
-              viewDropDown.on('suggestionsRendered', function(evt) {
+              // We have to create a small workaround to get the
+              // a suggestionsRendered event that includes the
+              // dataset
+              var renderSuggestions = viewDropDown.renderSuggestions;
+              viewDropDown.renderSuggestions = function(dataset) {
+                renderSuggestions.apply(this, arguments);
+                this.trigger('gaSuggestionsRendered', dataset);
+              };
+
+              viewDropDown.on('gaSuggestionsRendered', function(evt) {
                 var el;
                 if (viewDropDown.isVisible()) {
                   el = element.find('.tt-dataset-' + evt.data.name);
