@@ -41,7 +41,7 @@ help:
 all: prod dev lint testdev testprod apache deploy/deploy-branch.cfg
 
 .PHONY: prod
-prod: prod/lib/build.js prod/style/app.css prod/index.html prod/mobile.html prod/info.json prod/img/ prod/style/font-awesome-3.2.1/font/ prod/locales/
+prod: prod/lib/build.js prod/style/app.css prod/index.html prod/mobile.html prod/info.json prod/img/ prod/style/font-awesome-3.2.1/font/ prod/locales/ prod/checker
 
 .PHONY: dev
 dev: src/deps.js src/style/app.css src/index.html src/mobile.html
@@ -92,6 +92,7 @@ prod/index.html: src/index.mako.html prod/lib/build.js prod/style/app.css .build
 	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "mode=prod" --var "version=$(VERSION)" --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" $< > $@
 
 prod/mobile.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render
+	mkdir -p $(dir $@)
 	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "mode=prod" --var "version=$(VERSION)" --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" $< > $@
 
 prod/img/: src/img/*
@@ -106,8 +107,13 @@ prod/locales/: src/locales/*.json
 	mkdir -p $@
 	cp $^ $@
 
+prod/checker: src/checker
+	mkdir -p $(dir $@)
+	cp $< $@
+
 # Temporary: the entire rule should go away eventually
 prod/info.json: src/info.json
+	mkdir -p $(dir $@)
 	cp $< $@
 
 src/deps.js: $(SRC_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
