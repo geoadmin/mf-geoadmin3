@@ -245,22 +245,32 @@
             // TimeSelector button else we disabled it
             var enabled = false;
             for (var i = 0, length = olLayers.getLength(); i < length; i++) {
+
+              // if there is one no- bod layer we disable the time selector
               var id = olLayers.getAt(i).get('bodId');
               if (!id) {
                 enabled = false;
                 break;
               }
+
+              // if there is one no-timeEnabled layer we disable the
+              // timeselector
               enabled = gaLayers.getLayerProperty(id, 'timeEnabled');
               if (!gaLayers.getLayerProperty(id, 'background') && !enabled) {
                 break;
               }
             }
 
+
+            // if the time selector is active, the slider is already initialized
+            // and there is dates available, we magnetize the current date value
+            // to the closest available date if needed
             if (scope.isActive && scope.currentYear !== -1 &&
                 scope.updateDatesAvailable()) {
               scope.magnetize();
             }
 
+            // we force the state of the time selector
             if (!enabled) {
               scope.isActive = false;
               $rootScope.$broadcast('gaTimeSelectorDisabled');
