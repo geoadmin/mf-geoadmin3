@@ -151,5 +151,10 @@
 	"uploading_file": "Datei wird hochgeladen...",
 	"void_layer": "kein Hintergrund",
 	"wms": "WMS",
-	"wms_max_size_allowed": "Maximal erlaubte WMS Grösse"
+	"wms_max_size_allowed": "Maximal erlaubte WMS Grösse",
+  "plz": "PLZ",
+  "ct": "Kt.",
+  "district": "Bezirk",
+  "parcel": "Parzelle",
+  "feature": "Objekt"
 }

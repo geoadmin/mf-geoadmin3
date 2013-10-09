@@ -143,6 +143,22 @@
                 return res;
               };
 
+              var getLocationLabel = function(attrs) {
+                var label = attrs.label;
+                if (attrs.origin == 'zipcode') {
+                  label = '<span>{{ "plz" | translate }} ' + label;
+                } else if (attrs.origin == 'kantone') {
+                  label = '<span>{{ "ct" | translate }} ' + label;
+                } else if (attrs.origin == 'district') {
+                  label = '<span>{{ "district" | translate }} ' + label;
+                } else if (attrs.origin == 'parcel') {
+                  label += ' <span>{{ "parcel" | translate }} ';
+                } else if (attrs.origin == 'feature') {
+                  label += ' <span>{{ "feature" | translate }} ';
+                }
+                return label;
+              };
+
               var typeAheadDatasets = [
                 {
                   header: locationsHeaderTemplate,
@@ -151,7 +167,7 @@
                   valueKey: 'inputVal',
                   limit: 30,
                   template: function(context) {
-                    var label = context.attrs.label;
+                    var label = getLocationLabel(context.attrs);
                     var template = '<div class="tt-search" ' +
                         '>' + label + '</div>';
                     return template;
@@ -284,19 +300,17 @@
                   }
                 });
 
-              // FIXME Find a better way to handle suggestions compilation
-              var suggestionsRendered = 0;
               var viewDropDown = $(taElt).data('ttView').dropdownView;
-              viewDropDown.on('suggestionsRendered', function(event) {
+              viewDropDown.on('suggestionsRendered', function(evt) {
+                var el;
                 if (viewDropDown.isVisible()) {
-                  suggestionsRendered += 1;
-                  // Make sure the final html content is compiled once only
-                  if (typeAheadDatasets.length === suggestionsRendered) {
-                    // Only for layer search at the moment
-                    var elements = element.find('.tt-dataset-layers')
-                      .find('.tt-suggestions');
-                    $compile(elements)(scope);
-                    suggestionsRendered = 0;
+                  el = element.find('.tt-dataset-' + evt.data.name);
+                  if (el) {
+                    el = el.find('.tt-suggestions');
+                    if (el) {
+                      $compile(el)(scope);
+                      scope.$apply();
+                    }
                   }
                 }
               });

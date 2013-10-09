@@ -151,5 +151,10 @@
 	"uploading_file": "Uploading file...",
 	"void_layer": "Nagina charta",
 	"wms": "WMS",
-	"wms_max_size_allowed": "WMS max size allowed"
+	"wms_max_size_allowed": "WMS max size allowed",
+  "plz": "PLZ",
+  "ct": "Kt.",
+  "district": "district",
+  "parcel": "Parcel",
+  "feature": "Oget"
 }
