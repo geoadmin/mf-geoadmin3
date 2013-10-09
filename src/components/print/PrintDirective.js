@@ -12,8 +12,8 @@
     var updatePrintConfig = function() {
       var printPath = $scope.options.printPath;
       var http = $http.get(printPath +
-        '/info.json?url=' + encodeURIComponent(printPath) +
-        '&app=' + topicId);
+          '/info.json?url=' + encodeURIComponent(printPath) +
+          '&app=' + topicId);
 
       http.success(function(data) {
         $scope.capabilities = data;
@@ -47,18 +47,18 @@
               resolution >= minResolution) {
           if (src instanceof ol.source.WMTS) {
              encLayer = $scope.encoders.layers['WMTS'].call(this,
-               layer, layerConfig);
+                 layer, layerConfig);
           } else if (src instanceof ol.source.ImageWMS) {
              encLayer = $scope.encoders.layers['WMS'].call(this,
-               layer, layerConfig);
+                 layer, layerConfig);
           } else if (layer instanceof ol.layer.Vector) {
              var features =
-               layer.getFeaturesObjectForExtent(ext, proj);
+                 layer.getFeaturesObjectForExtent(ext, proj);
 
              if (features) {
                encLayer =
-                 $scope.encoders.layers['Vector'].call(this,
-                           layer, features);
+                   $scope.encoders.layers['Vector'].call(this,
+                      layer, features);
              }
           }
         }
@@ -77,8 +77,8 @@
       'layers': {
         'Layer': function(layer) {
           var enc = {
-              layer: layer.get('bodId'),
-              opacity: layer.getOpacity()
+            layer: layer.get('bodId'),
+            opacity: layer.getOpacity()
           };
 
           return enc;
@@ -88,7 +88,7 @@
           var subLayers = layer.getLayers();
           subLayers.forEach(function(subLayer, idx, arr) {
              var enc = $scope.encoders.
-              layers['Layer'].call(this, layer);
+                 layers['Layer'].call(this, layer);
              var layerEnc = encodeLayer(subLayer, proj);
              if (layerEnc.layer !== undefined) {
                $.extend(enc, layerEnc);
@@ -99,7 +99,7 @@
         },
         'Vector': function(layer, features) {
           var enc = $scope.encoders.
-            layers['Layer'].call(this, layer);
+              layers['Layer'].call(this, layer);
           var format = new ol.parser.GeoJSON();
           var encStyles = {};
           var encFeatures = [];
@@ -121,10 +121,8 @@
                 var sym = symbolizers[i];
                 var literal = sym.createLiteral(feature);
                 if (literal) {
-                  if (type === ol.geom.GeometryType.
-                              LINESTRING ||
-                      type === ol.geom.GeometryType.
-                              MULTILINESTRING) {
+                  if (type === ol.geom.GeometryType.LINESTRING ||
+                      type === ol.geom.GeometryType.MULTILINESTRING) {
                     literal.strokeWidth = literal.width;
                     literal.strokeColor = literal.color;
                     literal.strokeOpacity = literal.opacity;
@@ -138,8 +136,7 @@
               var literals = style.createLiterals(feature);
               var literal = literals[0];
               if (type === ol.geom.GeometryType.LINESTRING ||
-                  type === ol.geom.GeometryType.
-                             MULTILINESTRING) {
+                  type === ol.geom.GeometryType.MULTILINESTRING) {
                 literal.strokeWidth = literal.width;
                 literal.strokeColor = literal.color;
                 literal.strokeOpacity = literal.opacity;
@@ -189,7 +186,7 @@
         },
         'WMTS': function(layer, config) {
             var enc = $scope.encoders.layers['Layer'].
-              call(this, layer);
+                call(this, layer);
             angular.extend(enc, {
               type: 'WMTS',
               baseURL: 'http://wmts.geo.admin.ch',
@@ -232,7 +229,7 @@
               style: 'default',
               dimensions: ['TIME'],
               params: {'TIME':
-                layer.getSource().getDimensions().Time},
+                  layer.getSource().getDimensions().Time},
               matrixSet: '21781'
           });
 
@@ -267,10 +264,10 @@
 
       angular.forEach(scales, function(scale) {
         if (nearest == null ||
-          Math.abs(scale - target) < Math.abs(nearest - target)) {
-            nearest = scale;
+            Math.abs(scale - target) < Math.abs(nearest - target)) {
+              nearest = scale;
         }
-       });
+      });
       return nearest;
     };
 
@@ -287,10 +284,10 @@
       var defaultPage = {};
       defaultPage[configLang] = true;
       var encodedPermalinkHref =
-            encodeURIComponent(gaPermalink.getHref());
+          encodeURIComponent(gaPermalink.getHref());
 
       var qrcodeurl = $scope.options.serviceUrl +
-             '/qrcodegenerator?url=' + encodedPermalinkHref;
+          '/qrcodegenerator?url=' + encodedPermalinkHref;
 
       var encLayers = [];
       var encLegends;
@@ -300,7 +297,7 @@
 
         if (layer instanceof ol.layer.Group) {
           var encs = $scope.encoders.layers['Group'].call(this,
-             layer, proj);
+              layer, proj);
           $.extend(encLayers, encs);
         } else {
           var enc = encodeLayer(layer, proj);
@@ -342,8 +339,8 @@
         }, defaultPage)]
       };
       var http = $http.post(this.capabilities.createURL +
-             '?url=' + encodeURIComponent($scope.options.printPath +
-                             '/create.json'), spec);
+          '?url=' + encodeURIComponent($scope.options.printPath +
+          '/create.json'), spec);
       http.success(function(data) {
         $scope.downloadUrl(data.getURL);
       });
