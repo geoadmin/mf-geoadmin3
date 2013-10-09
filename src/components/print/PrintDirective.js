@@ -5,7 +5,6 @@
     ['pascalprecht.translate']);
 
   module.controller('GaPrintDirectiveController',
-    ['$scope', '$http', '$window', '$translate', 'gaLayers', 'gaPermalink',
     function($scope, $http, $window, $translate, gaLayers, gaPermalink) {
 
     var topicId;
@@ -349,17 +348,17 @@
         $scope.downloadUrl(data.getURL);
       });
     };
-  }]);
+  });
 
   module.directive('gaPrint',
-      ['$http', '$log', '$translate', function($http, $log, $translate) {
-    return {
-      restrict: 'A',
-      templateUrl: 'components/print/partials/print.html',
-      controller: 'GaPrintDirectiveController',
-      link: function(scope, elt, attrs, controller) {
-
-      }
-    };
-  }]);
+    function($http, $log, $translate) {
+      return {
+        restrict: 'A',
+        templateUrl: 'components/print/partials/print.html',
+        controller: 'GaPrintDirectiveController',
+        link: function(scope, elt, attrs, controller) {
+        }
+      };
+    }
+  );
 })();
