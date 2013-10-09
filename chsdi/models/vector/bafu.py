@@ -164,8 +164,9 @@ class AU(Base, Vector):
     __esriId__ = 2009
     __bodId__ = 'ch.bafu.bundesinventare-auen'
     __template__ = 'templates/htmlpopup/auen.mako'
-    __queryable_attributes__ = ['nr', 'name']
+    __queryable_attributes__ = ['nr', 'au_name']
     id = Column('gid', Integer, primary_key=True)
+    au_name = Column('au_name', Text)
     au_obj = Column('au_obj', Integer)
     au_objtyp = Column('au_objtyp', Text)
     au_fl = Column('au_fl', Numeric)
