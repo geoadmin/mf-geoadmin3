@@ -86,9 +86,11 @@
                   }).then(function(results) {
                     var coord2056 = results.lv03tolv95.data.coordinates;
 
-                    scope.coord21781 = ol.coordinate.toStringXY(coord21781, 1);
+                    scope.coord21781 = ol.coordinate.toStringXY(coord21781, 1).
+                      replace(/\B(?=(\d{3})+(?!\d))/g, "'");
                     scope.coord4326 = ol.coordinate.toStringXY(coord4326, 5);
-                    scope.coord2056 = ol.coordinate.toStringXY(coord2056, 2);
+                    scope.coord2056 = ol.coordinate.toStringXY(coord2056, 2).
+                      replace(/\B(?=(\d{3})+(?!\d))/g, "'");
                     scope.altitude = parseFloat(results.height.data.height);
 
                     updatePopupLinks();

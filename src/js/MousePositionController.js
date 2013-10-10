@@ -9,16 +9,17 @@
       function($scope, $translate) {
         var coordinatesFormat = function(coordinates) {
           return $translate('coordinates_label') + ': ' +
-              ol.coordinate.toStringXY(coordinates, 0);
+              ol.coordinate.toStringXY(coordinates, 0).
+                replace(/\B(?=(\d{3})+(?!\d))/g, "'");
         };
 
         $scope.mousePositionProjections = [{
-          value: 'EPSG:21781',
-          label: 'CH1903 / LV03',
-          format: coordinatesFormat
-        }, {
           value: 'EPSG:2056',
           label: 'CH1903+ / LV95',
+          format: coordinatesFormat
+        }, {
+          value: 'EPSG:21781',
+          label: 'CH1903 / LV03',
           format: coordinatesFormat
         }, {
           value: 'EPSG:4326',
