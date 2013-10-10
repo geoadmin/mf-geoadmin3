@@ -65,7 +65,8 @@ class Search(SearchValidation):
         if len(self.searchText) < 1:
             return 0
         self.sphinx.SetLimits(0, limit)
-        self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, 'rank ASC, len ASC')
+        self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
+        self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, 'rank ASC, @weight DESC')
         temp = self.sphinx.Query(searchText, index='swisssearch')
         temp = temp['matches'] if temp is not None else temp
         if temp is not None and len(temp) != 0:
@@ -115,15 +116,23 @@ class Search(SearchValidation):
         return self._parse_feature_results(temp)
 
     def _query_detail(self, fields):
+        sentence = ' '.join(self.searchText)
         searchText = ''
         counter = 1
         for text in self.searchText:
             if counter != len(self.searchText):
-                searchText += fields + ' *' + text + '* & '
+                searchText += '*' + text + '* & '
             else:
-                searchText += fields + ' *' + text + '*'
+                searchText += '*' + text + '*'
             counter += 1
-        return searchText
+        # starts and ends with query words
+        finalQuery = '%s "^%s$" | ' % (fields, sentence)
+        # sentence search
+        finalQuery += '%s "%s" | ' % (fields, sentence)
+        # full text search word per word
+        finalQuery += '%s (%s)' % (fields, searchText)
+
+        return finalQuery
 
     def _query_layers_detail(self, fields):
         searchText = ''
