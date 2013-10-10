@@ -13,19 +13,22 @@
       scope: {
         map: '=gaGeolocationMap'
       },
-      template: '<a href="#geolocation" class="geolocation">',
-      replace: true,
+      templateUrl: 'components/geolocation/partials/geolocation.html',
       link: function(scope, element, attrs) {
+        var btnElt = $(element.children()[0]);
+        var markerElt = $(element.children()[1]);
         if (!('geolocation' in $window.navigator)) {
-          element.addClass('error');
+          btnElt.addClass('error');
           return;
         }
+        var overlay = null;
+        var currentResolution = null;
         var map = scope.map;
         var view = map.getView().getView2D();
         var geolocation = new ol.Geolocation();
         geolocation.on('error', function() {
-          element.removeClass('tracking');
-          element.addClass('error');
+          btnElt.removeClass('tracking');
+          btnElt.addClass('error');
         });
         geolocation.bindTo('projection', map.getView());
         // used to having a zoom animation when we click on the button,
@@ -49,7 +52,7 @@
             var bounce;
             if (first) {
               first = false;
-              var accuracy = geolocation.getAccuracy();
+              var accuracy = 150;
               var extent = [
                 dest[0] - accuracy,
                 dest[1] - accuracy,
@@ -87,22 +90,51 @@
             }
           }
         };
+        var markPosition = function() {
+          var divSize = accuracy / currentResolution;
+          markerElt.css({
+            width: divSize,
+            height: divSize,
+            'border-radius': divSize / 2
+          });
+        };
+        map.on('postrender', function(evt) {
+          var res = evt.frameState.view2DState.resolution;
+          if (res != currentResolution) {
+            currentResolution = res;
+            markPosition();
+          }
+        });
         geolocation.on('change:position', function(evt) {
-          element.removeClass('error');
-          element.addClass('tracking');
+          btnElt.removeClass('error');
+          btnElt.addClass('tracking');
           locate();
+          markPosition();
         });
         geolocation.on('change:tracking', function(evt) {
           var tracking = geolocation.getTracking();
           if (tracking) {
             first = true;
+            if (!overlay) {
+              overlay = new ol.Overlay({
+                element: markerElt,
+                positioning: ol.OverlayPositioning.CENTER_CENTER
+              });
+              overlay.bindTo('position', geolocation);
+            }
+            map.addOverlay(overlay);
           } else {
             // stop tracking
-            element.removeClass('tracking');
+            btnElt.removeClass('tracking');
+            if (overlay) {
+              map.removeOverlay(overlay);
+            }
           }
-
         });
-        element.bind('click', function(e) {
+        geolocation.on('change:accuracy', function(evt) {
+          markPosition();
+        });
+        btnElt.bind('click', function(e) {
           e.preventDefault();
           var tracking = !geolocation.getTracking();
           geolocation.setTracking(tracking);
