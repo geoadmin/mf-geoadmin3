@@ -77,23 +77,45 @@
   });
 
   module.provider('gaKml', function() {
+    // Create the Parser the KML file
+    var kmlParser = new ol.parser.KML({
+      maxDepth: 1,
+      dimension: 2,
+      extractStyles: true,
+      extractAttributes: true
+    });
+
+    var defaultStyle = new ol.style.Style({
+      symbolizers: [
+        new ol.style.Fill({
+          color: '#ff0000'
+        }),
+        new ol.style.Stroke({
+          color: '#ff0000',
+          width: 2
+        }),
+        new ol.style.Shape({
+          size: 10,
+          fill: new ol.style.Fill({
+            color: '#ff0000'
+          }),
+          stroke: new ol.style.Stroke({
+            color: '#ff0000',
+            width: 2
+          })
+        })
+      ]
+    });
+
     this.$get = function($http, gaPopup, gaDefinePropertiesForLayer) {
-      var Kml = function() {
+      var Kml = function(proxyUrl) {
 
         /**
          * Create a KML layer from a KML string
          */
-        var getKmlLayer = function(kml, options) {
+        var createKmlLayer = function(kml, options) {
           var olLayer;
           options = options || {};
-
-          // Create the Parser the KML file
-          var kmlParser = new ol.parser.KML({
-            maxDepth: 1,
-            dimension: 2,
-            extractStyles: true,
-            extractAttributes: true
-          });
 
           // Create vector layer
           // FIXME currently ol3 doesn't allow to get the name of the KML
@@ -109,37 +131,17 @@
               parser: kmlParser,
               data: kml
             }),
-            style: options.style || new ol.style.Style({
-              symbolizers: [
-                new ol.style.Fill({
-                  color: '#ff0000'
-                }),
-                new ol.style.Stroke({
-                  color: '#ff0000',
-                  width: 2
-                }),
-                new ol.style.Shape({
-                  size: 10,
-                  fill: new ol.style.Fill({
-                    color: '#ff0000'
-                  }),
-                  stroke: new ol.style.Stroke({
-                    color: '#ff0000',
-                    width: 2
-                  })
-                })
-              ]
-            })
+            style: options.style || defaultStyle
           });
           gaDefinePropertiesForLayer(olLayer);
-          olLayer.permalink = (options.url);
           return olLayer;
         };
 
         /**
          * Add an ol layer to the map and add specific event
          */
-        var addKmlLayer = function(olMap, olLayer, index) {
+        var addKmlLayer = function(olMap, data, options, index) {
+          var olLayer = createKmlLayer(data, options);
           var onMapClick = function(evt) {
             olMap.getFeatures({
               pixel: evt.getPixel(),
@@ -164,27 +166,26 @@
           } else {
             olMap.addLayer(olLayer);
           }
-          olMap.on('click', onMapClick);
+          var listenerKey = olMap.on('click', onMapClick);
           olMap.getLayers().on('remove', function(layersEvent) {
             if (layersEvent.getElement() === olLayer) {
-              olMap.un('click', onMapClick);
+              olMap.unByKey(listenerKey);
             }
           });
         };
 
         this.addKmlToMap = function(map, data, layerOptions, index) {
-          var layer = getKmlLayer(data, layerOptions);
-          addKmlLayer(map, layer, index);
+          addKmlLayer(map, data, layerOptions, index);
         };
 
         this.addKmlToMapForUrl = function(map, url, layerOptions, index) {
-          var this_ = this;
-          $http.get(url).success(function(data) {
-            this_.addKmlToMap(map, data, layerOptions, index);
+          layerOptions.url = url;
+          $http.get(proxyUrl + encodeURIComponent(url)).success(function(data) {
+            addKmlLayer(map, data, layerOptions, index);
           });
         };
       };
-      return new Kml();
+      return new Kml(this.proxyUrl);
     };
   });
 
@@ -356,7 +357,6 @@
           }
           if (angular.isDefined(olLayer)) {
             gaDefinePropertiesForLayer(olLayer);
-            olLayer.permalink = true;
           }
           return olLayer;
         };
@@ -479,26 +479,25 @@
       var layerVisibilities = layersVisibilityParamValue ?
           layersVisibilityParamValue.split(',') : [];
 
-      var allowThirdData = false;
-      if (angular.isDefined(layersParamValue) &&
-          layersParamValue.match(/(KML\|\||WMS\|\|)/g)) {
-        allowThirdData = confirm($translate('third_party_data_warning'));
-      }
+      var allowThirdData = (angular.isDefined(layersParamValue) &&
+          layersParamValue.match(/(KML\|\||WMS\|\|)/g) &&
+          confirm($translate('third_party_data_warning')));
 
-      function isKmlLayer(layerId) {
-        return (layerId && layerId.indexOf('KML||') === 0);
+
+      function isKmlLayer(layerSpec) {
+        return (layerSpec && layerSpec.indexOf('KML||') === 0);
       }
 
       function updateLayersParam(layers) {
-        var ids = $.map(layers, function(layer) {
+        var layerSpecs = $.map(layers, function(layer) {
           if (layer.get('bodId')) {
             return layer.get('bodId');
-          } else if (layer.get('type') === 'KML') {
+          } else if (layer.get('type') === 'KML' && layer.get('url')) {
             return layer.get('type') + '||' + layer.get('url');
           }
         });
-        if (ids.length > 0) {
-          gaPermalink.updateParams({layers: ids.join(',')});
+        if (layerSpecs.length > 0) {
+          gaPermalink.updateParams({layers: layerSpecs.join(',')});
         } else {
           gaPermalink.deleteParam('layers');
         }
@@ -508,7 +507,7 @@
         var opacityTotal = 0;
         var opacityValues = $.map(layers, function(layer) {
           var opacity = Math.round(layer.getOpacity() * 100) / 100;
-          opacityTotal += +opacity;
+          opacityTotal += opacity;
           return opacity;
         });
         if (opacityTotal === layers.length) {
@@ -534,14 +533,14 @@
         }
       }
 
-      return function(map, proxyUrl) {
+      return function(map) {
         var scope = $rootScope.$new();
         var deregFns = [];
 
         scope.layers = map.getLayers().getArray();
 
         scope.layerFilter = function(layer) {
-          return !layer.background && !layer.preview && layer.permalink;
+          return !layer.background && !layer.preview;
         };
 
         scope.$watchCollection('layers | filter:layerFilter',
@@ -586,7 +585,7 @@
                 layer = gaLayers.getOlLayerById(layerSpec);
               }
               if (angular.isDefined(layer)) {
-                layer.visible = visible;
+                layer.setVisible(visible);
                 layer.setOpacity(opacity);
                 map.addLayer(layer);
               }
@@ -595,10 +594,8 @@
               // KML layer
               var url = layerSpec.replace('KML||', '');
               try {
-                gaKml.addKmlToMapForUrl(map,
-                  proxyUrl + encodeURIComponent(url),
+                gaKml.addKmlToMapForUrl(map, url,
                   {
-                    url: url,
                     opacity: opacity,
                     visible: visible
                   },

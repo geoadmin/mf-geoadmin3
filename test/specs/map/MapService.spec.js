@@ -104,9 +104,9 @@ describe('ga_map_service', function() {
     var addLayerToMap = function(bodId) {
       var layer = new ol.layer.Tile({
         bodId: bodId,
+        permalink: true,
         source: new ol.source.OSM()
       });
-      layer.permalink = true;
       map.addLayer(layer);
       return layer;
     };

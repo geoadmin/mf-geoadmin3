@@ -335,7 +335,6 @@
             scope.$watch('fileContent', function() {
               scope.displayFileContent();
             });
-
           }
         };
       }

@@ -99,7 +99,7 @@
    */
 module.controller('GaMainController',
   function($scope, $rootScope, $translate, $timeout, $window,  gaPermalink,
-    gaBrowserSniffer, gaLayersPermalinkManager, gaGlobalOptions,
+    gaBrowserSniffer, gaLayersPermalinkManager, 
     gaHighlightFeaturePermalinkManager) {
 
       var mobile = (gaBrowserSniffer.mobile) ? 'false' : 'true',
@@ -110,7 +110,7 @@ module.controller('GaMainController',
       $scope.map = createMap();
 
       // Activate the "layers" parameter permalink manager for the map.
-      gaLayersPermalinkManager($scope.map, gaGlobalOptions.baseUrlPath + '/ogcproxy?url=');
+      gaLayersPermalinkManager($scope.map);
 
       // Activate the "highlight feature" permalink manager for the map.
       gaHighlightFeaturePermalinkManager($scope.map);
