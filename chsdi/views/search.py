@@ -121,10 +121,7 @@ class Search(SearchValidation):
             if counter != len(self.searchText):
                 searchText += fields + ' *' + text + '* & '
             else:
-                if text == '':
-                    searchText += ''
-                else:
-                    searchText += fields + ' *' + text + '*'
+                searchText += fields + ' *' + text + '*'
             counter += 1
         return searchText
 
