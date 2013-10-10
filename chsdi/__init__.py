@@ -81,8 +81,7 @@ def main(global_config, **settings):
     config.add_route('feedback', '/feedback')
 
     # Checker section
-    config.add_route('checker_home', '/checker_home')
-    config.add_route('checker_api', '/checker_api')
+    config.add_route('checker_dev', '/checker_dev')
 
     config.scan(ignore=['chsdi.tests', 'chsdi.models.bod'])  # required to find code decorated by view_config
     config.add_static_view('static', 'chsdi:static', cache_max_age=3600)
