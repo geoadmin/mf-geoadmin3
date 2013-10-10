@@ -22,7 +22,7 @@
   });
 
   module.directive('gaLayermanager',
-      function(gaLayers, gaLayerMetadataPopup) {
+      function(gaLayers, gaLayerMetadataPopup, gaBrowserSniffer) {
         return {
           restrict: 'A',
           replace: true,
@@ -82,6 +82,8 @@
               }
               e.preventDefault();
             };
+
+            scope.rangeSupported = gaBrowserSniffer.msie !== 9;
 
             // Toggle layer tools for mobiles
             element.on('click', '.icon-gear', function() {
