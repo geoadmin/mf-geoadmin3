@@ -120,14 +120,15 @@
 
               scope.addLayer = function(bodId, isPreview) {
                 var olLayer = gaLayers.getOlLayerById(bodId);
-                var isDefinedLayer = gaMapUtils.getMapOverlayForBodId(
+                var layerInMap = gaMapUtils.getMapOverlayForBodId(
                      map, bodId);
                 if (angular.isDefined(olLayer) &&
-                    !angular.isDefined(isDefinedLayer)) {
+                    !angular.isDefined(layerInMap)) {
                   olLayer.preview = isPreview;
                   map.addLayer(olLayer);
-                } else if (angular.isDefined(isDefinedLayer)) {
-                  isDefinedLayer.preview = isPreview;
+                } else if (angular.isDefined(layerInMap) &&
+                  !isPreview) {
+                  layerInMap.preview = isPreview;
                 }
               };
 
