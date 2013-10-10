@@ -66,4 +66,4 @@ WSGIScriptAlias /${vars:instanceid}/wsgi ${buildout:directory/buildout/parts/mod
     WSGIApplicationGroup %{GLOBAL}
 </Location>
 
-RewriteRule ^${vars:apache-entry-point}(rest/services|ogcproxy|testi18n|loader.js|checker_home|static|print|dev|feedback)(.*)$ /${vars:instanceid}/wsgi/$1$2 [PT]
+RewriteRule ^${vars:apache-entry-point}(rest/services|ogcproxy|testi18n|loader.js|checker_dev|static|print|dev|feedback)(.*)$ /${vars:instanceid}/wsgi/$1$2 [PT]
