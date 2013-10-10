@@ -9,7 +9,7 @@
   ]);
 
   module.directive('gaShare',
-      function($http, gaPermalink, gaUrlUtils) {
+      function($http, $window, gaPermalink, gaUrlUtils) {
           return {
             restrict: 'A',
             scope: {
@@ -71,6 +71,9 @@
               scope.selectOnClick = function(e) {
                 e.target.select();
               };
+
+              // Be able to disable some widgets on homescreen
+              scope.homescreen = $window.navigator.standalone;
             }
           };
         });
