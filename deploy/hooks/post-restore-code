@@ -1,0 +1,24 @@
+#!/bin/sh
+#
+# variables set here:
+#   $TARGET: name of the symbolic remote host key (see remote_hosts 
+#            section in config file)
+#
+
+PROJECT_NAME=$1
+CODE_DIR=$2
+
+cd $CODE_DIR
+# make sure that buildout is correctly installed
+##python bootstrap.py --distribute --version 1.5.2 > /dev/null
+
+
+if [ -f buildout_$TARGET.cfg ]; then
+    buildout/bin/buildout -c buildout_$TARGET.cfg
+elif [ -f buildout_main.cfg ]; then
+    buildout/bin/buildout -c buildout_main.cfg
+else
+    buildout/bin/buildout
+fi
+
+exit $?
