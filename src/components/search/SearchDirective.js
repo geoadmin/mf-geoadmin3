@@ -126,6 +126,8 @@
                     !angular.isDefined(isDefinedLayer)) {
                   olLayer.preview = isPreview;
                   map.addLayer(olLayer);
+                } else if (angular.isDefined(isDefinedLayer)) {
+                  isDefinedLayer.preview = isPreview;
                 }
               };
 
