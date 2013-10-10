@@ -1,0 +1,12 @@
+#!/bin/sh
+
+PROJECT_NAME=$1
+CODE_DIR=$2
+
+cd $CODE_DIR
+
+echo "running unit tests (wd: '$(pwd)')"
+
+buildout/bin/nosetests # > /dev/null 2>&1
+
+exit $?
