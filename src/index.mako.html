@@ -57,6 +57,15 @@
   </head>
 
   <body ng-class="[topicId, globals.searchFocused ? 'search-focused' : '', globals.touch ? 'touch' : '']">
+    <!--[if lte IE 8]>
+    <div style="position:absolute;width:100%;height:100%;background:#fff;z-index:5000;">
+      <div class="well" style="max-width:600px;margin:7em auto 0;">
+        <p>DE: Sie verwenden einen veralteten Browser. Um die website in vollem Umfang nutzen zu k&ouml;nnen, empfehlen wir Ihnen, einen neueren Browser zu installieren: <a href="http://browsehappy.com">www.browsehappy.com</a></p>
+        <p>FR: Vous utilisez un navigateur trop ancien. Pour utiliser toute les possibilit&eacute;s de ce site web, nous vous conseillons d'installer un navigateur plus r&eacute;cent: <a href="http://browsehappy.com">www.browsehappy.com</a></p>
+        <p>EN: You are using an outdated browser. Please upgrade your browser to improve your experience: <a href="http://browsehappy.com">www.browsehappy.com</a></p>
+      </div>
+    </div>
+    <![endif]-->
     <div id="header" class="navbar navbar-fixed-top">
       <a ng-href="?topic={{topicId}}&lang={{langId}}" id="logo" class="pull-left">
         <img ng-if="langId" ng-src="${version}img/logo.ch.{{langId}}.png" style="width: 246px; height: 89px"/>
