@@ -25,7 +25,7 @@ help:
 	@echo "- apache       Configure Apache (restart required)"
 	@echo "- all          All of the above (target to run prior to creating a PR)"
 	@echo "- clean        Remove generated files"
-	@echo "- cleanrc      Remove all rc_* dependant files"
+	@echo "- cleanrc      Remove all rc_* dependent files"
 	@echo "- cleanall     Remove all the build artefacts"
 	@echo "- deploybranch Deploys current branch (note: takes code from github)"
 	@echo "- updateol     Update ol.js, ol-simple.js and ol-whitespace.js"
