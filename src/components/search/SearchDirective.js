@@ -106,6 +106,8 @@
 
               scope.layers = [];
 
+              scope.overlay = undefined;
+
               scope.getHref = function() {
                 // set those values only on mouseover
                 scope.encodedPermalinkHref =
@@ -137,6 +139,26 @@
                     map, bodId);
                 if (angular.isDefined(olLayer) && olLayer.preview) {
                   map.removeLayer(olLayer);
+                }
+              };
+
+              scope.addCross = function(center) {
+                var cross = $('<div></div>')
+                  .addClass('crosshair')
+                  .addClass('cross');
+                if (scope.overlay) {
+                  scope.removeCross();
+                }
+                scope.overlay = new ol.Overlay({
+                  element: cross.get(0),
+                  position: center
+                });
+                map.addOverlay(scope.overlay);
+              };
+
+              scope.removeCross = function() {
+                if (scope.overlay) {
+                  map.removeOverlay(scope.overlay);
                 }
               };
 
@@ -182,8 +204,8 @@
                            scope.query);
                        if (position) {
                          moveTo(map, 8, position);
+                         scope.addCross(position);
                        }
-                       // TODO: add crosshair
                        return !position;
                     },
                     replace: function(url, searchText) {
@@ -283,16 +305,19 @@
 
                     var originZoom = {
                       address: 10,
-                      parcel: 9,
+                      parcel: 10,
                       sn25: 8
                     };
 
                     if (originZoom.hasOwnProperty(origin)) {
                       var zoom = originZoom[origin];
-                      var center = [extent[0], extent[1]];
+                      var center = [(extent[0] + extent[2]) / 2,
+                        (extent[1] + extent[3]) / 2];
                       moveTo(map, zoom, center);
+                      scope.addCross(center);
                     } else {
                       zoomToExtent(map, extent);
+                      scope.removeCross();
                     }
                   }
                   if (origin === 'layer') {
@@ -344,6 +369,7 @@
                 $(taElt).val('');
                 $(taElt).data('ttView').inputView.setQuery('');
                 scope.query = '';
+                scope.removeCross();
                 viewDropDown.clearSuggestions();
                 scope.searchFocused = false;
               };
