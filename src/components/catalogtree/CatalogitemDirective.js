@@ -20,6 +20,7 @@
         return {
           restrict: 'A',
           replace: true,
+          require: '^gaCatalogtree',
           templateUrl: 'components/catalogtree/partials/catalogitem.html',
           scope: {
             item: '=gaCatalogitemItem',
@@ -28,7 +29,7 @@
           compile: function(tEl, tAttr) {
             var contents = tEl.contents().remove();
             var compiledContent;
-            return function(scope, iEl, iAttr) {
+            return function(scope, iEl, iAttr, controller) {
               if (!compiledContent) {
                 compiledContent = $compile(contents);
               }
@@ -41,8 +42,7 @@
 
               if (angular.isDefined(scope.item.children)) {
                 scope.$watch('item.selectedOpen', function(value) {
-                  $rootScope.$broadcast('catalogCategorySelectionChange',
-                      {selected: value, id: scope.item.id});
+                  controller.updatePermalink(scope.item.id, value);
                 });
               }
 

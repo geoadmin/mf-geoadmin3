@@ -27,9 +27,29 @@
             options: '=gaCatalogtreeOptions',
             map: '=gaCatalogtreeMap'
           },
+          controller: function($scope, $element, $attrs, $transclude) {
+            this.updatePermalink = function(id, selected) {
+              var openIds = $scope.openIds;
+              var index = openIds.indexOf(id);
+              if (selected === true) {
+                if (index < 0) {
+                  openIds.push(id);
+                }
+              } else {
+                if (index >= 0) {
+                  openIds.splice(index, 1);
+                }
+              }
+              if (openIds.length > 0) {
+                gaPermalink.updateParams({catalogNodes: openIds.join(',')});
+              } else {
+                gaPermalink.deleteParam('catalogNodes');
+              }
+            };
+          },
           link: function(scope, element, attrs) {
             var currentTopicId;
-            var openIds = [];
+            scope.openIds = [];
             scope.layers = scope.map.getLayers().getArray();
 
             // This assumes that both trees contain the same
@@ -136,7 +156,7 @@
                 if (!angular.isDefined(oldTree)) {
                   openCategoriesInPermalink(newTree);
                 } else if (!data.labelsOnly) {
-                  openIds.length = 0;
+                  scope.openIds.length = 0;
                   gaPermalink.deleteParam('catalogNodes');
                 }
                 //update Tree
