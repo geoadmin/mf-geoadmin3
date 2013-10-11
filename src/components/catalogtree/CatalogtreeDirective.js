@@ -126,7 +126,7 @@
               updateCatalogTree().then(function(trees) {
                 var oldTree = trees.oldTree;
                 var newTree = trees.newTree;
-                if (firstLayerChangeEvent) {
+                if (!angular.isDefined(oldTree)) {
                   openCategoriesInPermalink(newTree);
                   firstLayerChangeEvent = false;
                 }
