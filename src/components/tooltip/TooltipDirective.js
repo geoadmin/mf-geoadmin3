@@ -75,7 +75,7 @@
                 // added. With $timeout we force the right order of execution.
                 $timeout(function() {
                   bodyEl.addClass(waitclass);
-                },1);
+                }, 0);
 
                 // Look for all features under clicked pixel
                 $http.get(identifyUrl, {
