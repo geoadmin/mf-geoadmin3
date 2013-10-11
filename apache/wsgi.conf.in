@@ -49,6 +49,9 @@ RewriteRule ^${vars:apache-entry-point}(qrcodegenerator|shorten|shorten.json)(.*
     Order allow,deny
     Allow from all
 </Location>
+
+# Print
+RewriteRule ^/${vars:instanceid}/(print)(.*)$ /${vars:instanceid}/wsgi/$1$2 [PT]
  
 # define a process group
 # WSGIDaemonProcess must be commented/removed when running the project on windows
