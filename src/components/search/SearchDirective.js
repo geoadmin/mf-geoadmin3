@@ -146,9 +146,7 @@
                 var cross = $('<div></div>')
                   .addClass('crosshair')
                   .addClass('cross');
-                if (scope.overlay) {
-                  scope.removeCross();
-                }
+                scope.removeCross();
                 scope.overlay = new ol.Overlay({
                   element: cross.get(0),
                   position: center
