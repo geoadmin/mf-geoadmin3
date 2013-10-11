@@ -25,6 +25,7 @@ help:
 	@echo "- apache       Configure Apache (restart required)"
 	@echo "- all          All of the above (target to run prior to creating a PR)"
 	@echo "- clean        Remove generated files"
+	@echo "- cleanrc      Remove all rc_* dependend files"
 	@echo "- cleanall     Remove all the build artefacts"
 	@echo "- deploybranch Deploys current branch (note: takes code from github)"
 	@echo "- updateol     Update ol.js, ol-simple.js and ol-whitespace.js"
@@ -232,7 +233,7 @@ cleanall: clean
 	rm -rf .build-artefacts
 
 .PHONY: clean
-clean:
+clean: cleanrc
 	rm -f .build-artefacts/app.js
 	rm -f .build-artefacts/js-files
 	rm -f .build-artefacts/lint.timestamp
@@ -240,10 +241,15 @@ clean:
 	rm -rf .build-artefacts/annotated
 	rm -f src/deps.js
 	rm -f src/style/app.css
-	rm -f src/index.html
-	rm -f src/mobile.html
 	rm -f src/TemplateCacheModule.js
 	rm -rf prod
-	rm -f apache/app.conf
 	rm -f deploy/deploy-branch.cfg
+
+.PHONY: cleanrc
+cleanrc:
+	rm -f src/index.html
+	rm -f src/mobile.html
+	rm -f prod/index.html
+	rm -f prod/mobile.html
+	rm -f apache/app.conf
 
