@@ -13,7 +13,7 @@
 
   module.directive('gaTooltip',
     function($timeout, $document, $http, $q, $translate, $sce, gaPopup,
-      gaLayers, gaBrowserSniffer)
+      gaLayers, gaBrowserSniffer, gaDefinePropertiesForLayer)
       {
         var waitclass = 'ga-tooltip-wait',
             bodyEl = angular.element($document[0].body),
@@ -195,6 +195,8 @@
                     }
                   })
                 });
+                gaDefinePropertiesForLayer(vector);
+                vector.preview = true;
                 map.addLayer(vector);
               }
             }
