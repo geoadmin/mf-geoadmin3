@@ -12,7 +12,7 @@
 
   module.controller('GaImportWmsDirectiveController',
       function($scope, $http, $q, $log, $translate, gaUrlUtils,
-          gaDefinePropertiesForLayer) {
+          gaWms) {
 
           // List of layers available in the GetCapabilities
           $scope.layers = [];
@@ -218,32 +218,22 @@
                   })];
                 }
 
-                var olSource = new ol.source.ImageWMS({
-                  params: {
-                    'LAYERS': layer.name
+                return gaWms.addWmsToMap($scope.map,
+                  {
+                    LAYERS: layer.name
                   },
-                  url: $scope.fileUrl,
-                  extent: getLayerExtentFromGetCap(layer),
-                  attributions: olAttributions,
-                  ratio: 1
-                });
-
-                var olLayer = new ol.layer.Image({
-                  label: layer.title,
-                  source: olSource
-                });
-
-                gaDefinePropertiesForLayer(olLayer);
-                olLayer.preview = isPreview;
-
-                $scope.map.addLayer(olLayer);
-                return olLayer;
+                  {
+                    url: $scope.fileUrl,
+                    label: layer.title,
+                    extent: getLayerExtentFromGetCap(layer),
+                    attributions: olAttributions,
+                    preview: isPreview
+                  }
+                );
 
               } catch (e) {
                 $scope.userMessage = $translate('add_wms_layer_failed') +
                     e.message;
-                //$log.log($scope.userMessage);
-
                 return null;
               }
             }
