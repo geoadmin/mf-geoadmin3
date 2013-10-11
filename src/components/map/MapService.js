@@ -76,6 +76,53 @@
     };
   });
 
+  /**
+   * Manage external WMS layers
+   */
+  module.provider('gaWms', function() {
+    this.$get = function(gaDefinePropertiesForLayer) {
+      var Wms = function() {
+
+        var createWmsLayer = function(params, options, index) {
+          options = options || {};
+          var source = new ol.source.ImageWMS({
+            params: params,
+            url: options.url,
+            extent: options.extent,
+            attributions: options.attributions,
+            ratio: options.ratio || 1
+          });
+
+          var layer = new ol.layer.Image({
+            url: options.url,
+            type: 'WMS',
+            label: options.label,
+            opacity: options.opacity,
+            visible: options.visible,
+            source: source
+          });
+          gaDefinePropertiesForLayer(layer);
+          layer.preview = options.preview;
+          return layer;
+        };
+
+        this.addWmsToMap = function(map, layerParams, layerOptions, index) {
+          var olLayer = createWmsLayer(layerParams, layerOptions);
+          if (index) {
+            map.getLayers().insertAt(index, olLayer);
+          } else {
+            map.addLayer(olLayer);
+          }
+          return olLayer;
+        };
+      };
+      return new Wms();
+    };
+  });
+
+  /**
+   * Manage KML layers
+   */
   module.provider('gaKml', function() {
     // Create the Parser the KML file
     var kmlParser = new ol.parser.KML({
@@ -189,6 +236,9 @@
     };
   });
 
+  /**
+   * Manage BOD layers
+   */
   module.provider('gaLayers', function() {
 
     this.$get = function($q, $http, $translate, $rootScope,
@@ -466,7 +516,7 @@
   module.provider('gaLayersPermalinkManager', function() {
 
     this.$get = function($rootScope, gaLayers, gaPermalink, $translate, $http,
-        gaKml, gaMapUtils) {
+        gaKml, gaMapUtils, gaWms) {
 
       var layersParamValue = gaPermalink.getParams().layers;
       var layersOpacityParamValue = gaPermalink.getParams().layers_opacity;
@@ -488,12 +538,20 @@
         return (layerSpec && layerSpec.indexOf('KML||') === 0);
       }
 
+      function isWmsLayer(layerSpec) {
+        return (layerSpec && layerSpec.indexOf('WMS||') === 0) &&
+            layerSpec.split('||').length === 4;
+      }
+
       function updateLayersParam(layers) {
         var layerSpecs = $.map(layers, function(layer) {
           if (layer.get('bodId')) {
             return layer.get('bodId');
           } else if (layer.get('type') === 'KML' && layer.get('url')) {
             return layer.get('type') + '||' + layer.get('url');
+          } else if (layer.get('type') === 'WMS') {
+            return [layer.get('type'), layer.get('label'), layer.get('url'),
+                layer.getSource().getParams().LAYERS].join('||');
           }
         });
         if (layerSpecs.length > 0) {
@@ -602,6 +660,25 @@
                   index + 1);
               } catch (e) {
                 // Adding KML layer failed, native alert, log message?
+              }
+
+            } else if (allowThirdData && isWmsLayer(layerSpec)) {
+              // External WMS layer
+              var infos = layerSpec.split('||');
+              try {
+                gaWms.addWmsToMap(map,
+                  {
+                    LAYERS: infos[3]
+                  },
+                  {
+                    url: infos[2],
+                    label: infos[1],
+                    opacity: opacity,
+                    visible: visible
+                  },
+                  index + 1);
+              } catch (e) {
+                // Adding external WMS layer failed, native alert, log message?
               }
             }
           });
