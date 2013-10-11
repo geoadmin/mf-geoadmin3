@@ -475,6 +475,11 @@
           gaRecenterMapOnFeaturesProvider.url =
               '${base_url_path}/${version}rest/services/all/MapServer/';
         }]);
+        
+        module.config(['gaKmlProvider', function(gaKmlProvider) {
+          gaKmlProvider.proxyUrl = '${base_url_path}/ogcproxy?url=';
+        }]);
+
       })();
 
 ## Workaround for iOS 6.x bug: content shifted after orientation change

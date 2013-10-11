@@ -99,7 +99,7 @@
    */
 module.controller('GaMainController',
   function($scope, $rootScope, $translate, $timeout, $window,  gaPermalink,
-    gaBrowserSniffer, gaLayersPermalinkManager,
+    gaBrowserSniffer, gaLayersPermalinkManager, 
     gaHighlightFeaturePermalinkManager) {
 
       var mobile = (gaBrowserSniffer.mobile) ? 'false' : 'true',

@@ -76,6 +76,119 @@
     };
   });
 
+  module.provider('gaKml', function() {
+    // Create the Parser the KML file
+    var kmlParser = new ol.parser.KML({
+      maxDepth: 1,
+      dimension: 2,
+      extractStyles: true,
+      extractAttributes: true
+    });
+
+    var defaultStyle = new ol.style.Style({
+      symbolizers: [
+        new ol.style.Fill({
+          color: '#ff0000'
+        }),
+        new ol.style.Stroke({
+          color: '#ff0000',
+          width: 2
+        }),
+        new ol.style.Shape({
+          size: 10,
+          fill: new ol.style.Fill({
+            color: '#ff0000'
+          }),
+          stroke: new ol.style.Stroke({
+            color: '#ff0000',
+            width: 2
+          })
+        })
+      ]
+    });
+
+    this.$get = function($http, gaPopup, gaDefinePropertiesForLayer) {
+      var Kml = function(proxyUrl) {
+
+        /**
+         * Create a KML layer from a KML string
+         */
+        var createKmlLayer = function(kml, options) {
+          var olLayer;
+          options = options || {};
+
+          // Create vector layer
+          // FIXME currently ol3 doesn't allow to get the name of the KML
+          // document, making it impossible to use a proper label for the
+          // layer.
+          var olLayer = new ol.layer.Vector({
+            url: options.url,
+            type: 'KML',
+            label: options.label || 'KML',
+            opacity: options.opacity,
+            visible: options.visible,
+            source: new ol.source.Vector({
+              parser: kmlParser,
+              data: kml
+            }),
+            style: options.style || defaultStyle
+          });
+          gaDefinePropertiesForLayer(olLayer);
+          return olLayer;
+        };
+
+        /**
+         * Add an ol layer to the map and add specific event
+         */
+        var addKmlLayer = function(olMap, data, options, index) {
+          var olLayer = createKmlLayer(data, options);
+          var onMapClick = function(evt) {
+            olMap.getFeatures({
+              pixel: evt.getPixel(),
+              layers: [olLayer],
+              success: function(features) {
+                if (features[0] && features[0][0] &&
+                    features[0][0].get('description')) {
+                  var feature = features[0][0];
+                  var pixel = evt.getPixel();
+                  gaPopup.create({
+                    title: feature.get('name'),
+                    content: feature.get('description'),
+                    x: pixel[0],
+                    y: pixel[1]
+                   }).open();
+                }
+              }
+            });
+          };
+          if (index) {
+            olMap.getLayers().insertAt(index, olLayer);
+          } else {
+            olMap.addLayer(olLayer);
+          }
+          var listenerKey = olMap.on('click', onMapClick);
+          olMap.getLayers().on('remove', function(layersEvent) {
+            if (layersEvent.getElement() === olLayer) {
+              olMap.unByKey(listenerKey);
+            }
+          });
+        };
+
+        this.addKmlToMap = function(map, data, layerOptions, index) {
+          addKmlLayer(map, data, layerOptions, index);
+        };
+
+        this.addKmlToMapForUrl = function(map, url, layerOptions, index) {
+          layerOptions.url = url;
+          $http.get(proxyUrl + encodeURIComponent(url)).success(function(data) {
+            addKmlLayer(map, data, layerOptions, index);
+          });
+        };
+      };
+      return new Kml(this.proxyUrl);
+    };
+  });
+
   module.provider('gaLayers', function() {
 
     this.$get = function($q, $http, $translate, $rootScope,
@@ -248,6 +361,7 @@
           return olLayer;
         };
 
+
         /**
          * Returns layers definition for given bodId. Returns
          * undefined if bodId does not exist
@@ -351,7 +465,8 @@
    */
   module.provider('gaLayersPermalinkManager', function() {
 
-    this.$get = function($rootScope, gaLayers, gaPermalink, gaMapUtils) {
+    this.$get = function($rootScope, gaLayers, gaPermalink, $translate, $http,
+        gaKml, gaMapUtils) {
 
       var layersParamValue = gaPermalink.getParams().layers;
       var layersOpacityParamValue = gaPermalink.getParams().layers_opacity;
@@ -364,12 +479,25 @@
       var layerVisibilities = layersVisibilityParamValue ?
           layersVisibilityParamValue.split(',') : [];
 
+      var allowThirdData = (angular.isDefined(layersParamValue) &&
+          layersParamValue.match(/(KML\|\||WMS\|\|)/g) &&
+          confirm($translate('third_party_data_warning')));
+
+
+      function isKmlLayer(layerSpec) {
+        return (layerSpec && layerSpec.indexOf('KML||') === 0);
+      }
+
       function updateLayersParam(layers) {
-        var bodIds = $.map(layers, function(layer) {
-          return layer.get('bodId');
+        var layerSpecs = $.map(layers, function(layer) {
+          if (layer.get('bodId')) {
+            return layer.get('bodId');
+          } else if (layer.get('type') === 'KML' && layer.get('url')) {
+            return layer.get('type') + '||' + layer.get('url');
+          }
         });
-        if (bodIds.length > 0) {
-          gaPermalink.updateParams({layers: bodIds.join(',')});
+        if (layerSpecs.length > 0) {
+          gaPermalink.updateParams({layers: layerSpecs.join(',')});
         } else {
           gaPermalink.deleteParam('layers');
         }
@@ -440,10 +568,15 @@
           });
         });
 
-
         var deregister = scope.$on('gaLayersChange', function() {
           angular.forEach(layerSpecs, function(layerSpec, index) {
             var layer;
+            var opacity = (index < layerOpacities.length) ?
+                layerOpacities[index] : 1;
+            var visible = (index < layerVisibilities.length &&
+                layerVisibilities[index] == 'false') ?
+                false : true;
+
             if (gaLayers.getLayer(layerSpec)) {
               // BOD layer.
               // Do not consider BOD layers that are already in the map.
@@ -451,16 +584,25 @@
               if (!gaMapUtils.getMapOverlayForBodId(map, bodId)) {
                 layer = gaLayers.getOlLayerById(layerSpec);
               }
-            }
-            if (angular.isDefined(layer)) {
-              if (index < layerOpacities.length) {
-                layer.setOpacity(layerOpacities[index]);
+              if (angular.isDefined(layer)) {
+                layer.setVisible(visible);
+                layer.setOpacity(opacity);
+                map.addLayer(layer);
               }
-              if (index < layerVisibilities.length) {
-                layer.visible = layerVisibilities[index] == 'false' ?
-                    false : true;
+
+            } else if (allowThirdData && isKmlLayer(layerSpec)) {
+              // KML layer
+              var url = layerSpec.replace('KML||', '');
+              try {
+                gaKml.addKmlToMapForUrl(map, url,
+                  {
+                    opacity: opacity,
+                    visible: visible
+                  },
+                  index + 1);
+              } catch (e) {
+                // Adding KML layer failed, native alert, log message?
               }
-              map.addLayer(layer);
             }
           });
           deregister();
