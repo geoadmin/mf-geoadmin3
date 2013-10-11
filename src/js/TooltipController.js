@@ -6,7 +6,7 @@
   module.controller('GaTooltipController',
       function($scope, gaGlobalOptions, gaBrowserSniffer) {
 
-        var baseUrl = gaGlobalOptions.serviceUrl + '/rest/services';
+        var baseUrl = gaGlobalOptions.baseUrlPath + '/rest/services';
 
         $scope.options = {
           tolerance: gaBrowserSniffer.touchDevice ? 15 : 5,

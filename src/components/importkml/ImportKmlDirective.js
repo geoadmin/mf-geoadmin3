@@ -3,20 +3,18 @@
 
   goog.require('ga_browsersniffer_service');
   goog.require('ga_map_service');
-  goog.require('ga_popup_service');
   goog.require('ga_urlutils_service');
 
   var module = angular.module('ga_importkml_directive', [
     'ga_browsersniffer_service',
     'ga_map_service',
-    'ga_popup_service',
     'ga_urlutils_service',
     'pascalprecht.translate'
   ]);
 
   module.controller('GaImportKmlDirectiveController',
       function($scope, $http, $q, $log, $translate, gaBrowserSniffer,
-            gaPopup, gaDefinePropertiesForLayer, gaUrlUtils) {
+            gaLayers, gaKml) {
 
         $scope.isIE9 = (gaBrowserSniffer.msie == 9);
         $scope.isIE = !isNaN(gaBrowserSniffer.msie);
@@ -134,83 +132,18 @@
             $scope.progress = 80;
 
             try {
-
-              // Create the Parser the KML file
-              var kmlParser = new ol.parser.KML({
-                maxDepth: 1,
-                dimension: 2,
-                extractStyles: true,
-                extractAttributes: true
-              });
-
-
-              // Create vector layer
-              // FIXME currently ol3 doesn't allow to get the name of the KML
-              // document, making it impossible to use a proper label for the
-              // layer.
-              var vector = new ol.layer.Vector({
-                label: 'KML',
-                source: new ol.source.Vector({
-                  parser: kmlParser,
-                  data: $scope.fileContent
-                }),
-                style: new ol.style.Style({
-                  symbolizers: [
-                    new ol.style.Fill({
-                      color: '#ff0000'
-                    }),
-                    new ol.style.Stroke({
-                      color: '#ff0000',
-                      width: 2
-                    }),
-                    new ol.style.Shape({
-                      size: 10,
-                      fill: new ol.style.Fill({
-                        color: '#ff0000'
-                      }),
-                      stroke: new ol.style.Stroke({
-                        color: '#ff0000',
-                        width: 2
-                      })
-                    })
-                  ]
-                })
-              });
-              gaDefinePropertiesForLayer(vector);
-
               // Add the layer
-              $scope.map.addLayer(vector);
+              gaKml.addKmlToMap($scope.map, $scope.fileContent, {
+                url: ($scope.currentTab === 2) ? $scope.fileUrl :
+                    undefined
+              });
 
               $scope.userMessage = $translate('parse_succeeded');
               $scope.progress += 20;
-              $scope.map.on('click', function(evt) {
-                $scope.map.getFeatures({
-                  pixel: evt.getPixel(),
-                  layers: [vector],
-                  success: function(features) {
-                    if (features[0] && features[0][0] &&
-                        features[0][0].get('description')) {
-                      var feature = features[0][0];
-                      var pixel = evt.getPixel();
-                      $scope.$apply(function() {
-                        gaPopup.create({
-                          title: feature.get('name'),
-                          content: feature.get('description'),
-                          x: pixel[0],
-                          y: pixel[1]
-                        }, $scope).open();
-                      });
-                    }
-                  }
-                });
-              });
+
             } catch (e) {
               $scope.userMessage = $translate('parse_failed') + e.message;
               $scope.progress = 0;
-
-              if (vector) {
-                $scope.map.removeLayer(vector);
-              }
             }
           }
         };
@@ -260,7 +193,7 @@
   );
 
   module.directive('gaImportKml',
-      function($http, $log, $compile, $translate, gaBrowserSniffer,
+      function($log, $compile, $translate, gaBrowserSniffer,
           gaUrlUtils) {
         return {
           restrict: 'A',
@@ -360,6 +293,7 @@
                   scope.$apply(function() {
                     scope.isDropped = true;
                     scope.files = files;
+                    scope.currentTab = 1;
                   });
 
                 } else if (evt.originalEvent.dataTransfer.types) {
@@ -372,6 +306,7 @@
                     scope.$apply(function() {
                       scope.isDropped = true;
                       scope.fileUrl = text;
+                      scope.currentTab = 2;
                     });
 
                   } else {
@@ -400,7 +335,6 @@
             scope.$watch('fileContent', function() {
               scope.displayFileContent();
             });
-
           }
         };
       }
