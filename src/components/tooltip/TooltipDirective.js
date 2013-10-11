@@ -69,10 +69,13 @@
               canceler = $q.defer();
               if (layersToQuery.length) {
                 // Show wait cursor
+                //
                 // The tricky part: without the $timeout, the call to
-                // canceler.resolve is scheduled but happen only after
-                // this `addClass`: so the class is removed just after being
-                // added. With $timeout we force the right order of execution.
+                // canceler.resolve above may schedule the execution of the
+                // $http.get error callback, but the execution of the callback
+                // will happen after the call to `addClass`. So the class is
+                // added and then removed. With $timeout we force the right
+                // order of execution.
                 $timeout(function() {
                   bodyEl.addClass(waitclass);
                 }, 0);
