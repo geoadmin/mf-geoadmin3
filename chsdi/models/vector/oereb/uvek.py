@@ -23,10 +23,10 @@ register_oereb('ch.bazl.projektierungszonen-flughafenanlagen.oereb', Projektieru
 class Sichereitszonen_Oereb(Base, Vector):
     __tablename__ = 'sichereitszonen_oereb'
     __table_args__ = ({'schema': 'bazl', 'autoload': False})
-    __bodId__ = 'ch.bazl.projektierungszonen-flughafenanlagen.oereb'
+    __bodId__ = 'ch.bazl.sicherheitszonenplan.oereb'
     id = Column('stabil_id', Text, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     geomType = Column('geom_type', Text)
     xmlData = Column('xml_data', Text)
 
-register_oereb('ch.bazl.sichereitszonen.oereb', Sichereitszonen_Oereb)
+register_oereb('ch.bazl.sicherheitszonenplan.oereb', Sichereitszonen_Oereb)
