@@ -12,8 +12,8 @@
   ]);
 
   module.directive('gaTooltip',
-    function($document, $http, $q, $translate, $sce, gaPopup, gaLayers,
-      gaBrowserSniffer)
+    function($timeout, $document, $http, $q, $translate, $sce, gaPopup,
+      gaLayers, gaBrowserSniffer)
       {
         var waitclass = 'ga-tooltip-wait',
             bodyEl = angular.element($document[0].body),
@@ -49,9 +49,7 @@
               // digest cycle for us.
 
               $scope.$apply(function() {
-                findFeatures(evt.getCoordinate(),
-                              size,
-                              extent);
+                findFeatures(evt.getCoordinate(), size, extent);
               });
             });
 
@@ -64,19 +62,26 @@
                                 .replace('{Topic}', currentTopic),
                   layersToQuery = getLayersToQuery();
               // Cancel all pending requests
-              // FIXME: are JSONP request cancelable? seems not. In the
-              // meanwhile, commenting this to avoid mobile issues
-              //if (canceler) {
-                // canceler.resolve();
-              //}
+              if (canceler) {
+                canceler.resolve();
+              }
               // Create new cancel object
               canceler = $q.defer();
               if (layersToQuery.length) {
                 // Show wait cursor
-                bodyEl.addClass(waitclass);
+                //
+                // The tricky part: without the $timeout, the call to
+                // canceler.resolve above may schedule the execution of the
+                // $http.get error callback, but the execution of the callback
+                // will happen after the call to `addClass`. So the class is
+                // added and then removed. With $timeout we force the right
+                // order of execution.
+                $timeout(function() {
+                  bodyEl.addClass(waitclass);
+                }, 0);
 
                 // Look for all features under clicked pixel
-                $http.jsonp(identifyUrl, {
+                $http.get(identifyUrl, {
                   timeout: canceler.promise,
                   params: {
                     geometryType: 'esriGeometryPoint',
@@ -86,11 +91,14 @@
                     imageDisplay: size[0] + ',' + size[1] + ',96',
                     mapExtent: extent.join(','),
                     tolerance: $scope.options.tolerance,
-                    layers: 'all:' + layersToQuery,
-                    callback: 'JSON_CALLBACK'
+                    layers: 'all:' + layersToQuery
                   }
                 }).success(function(features) {
-                  bodyEl.removeClass(waitclass);
+                  if (features.results.length == 0) {
+                    // if there are features, keeps waitclass until
+                    // popup is displayed
+                    bodyEl.removeClass(waitclass);
+                  }
                   showFeatures(size, features.results);
                 }).error(function() {
                   bodyEl.removeClass(waitclass);
@@ -112,13 +120,13 @@
                                 .replace('{Topic}', currentTopic)
                                 .replace('{Layer}', value.layerBodId)
                                 .replace('{Feature}', value.featureId);
-                  $http.jsonp(htmlUrl, {
+                  $http.get(htmlUrl, {
                     timeout: canceler.promise,
                     params: {
-                      lang: $translate.uses(),
-                      callback: 'JSON_CALLBACK'
+                      lang: $translate.uses()
                     }
                   }).success(function(html) {
+                    bodyEl.removeClass(waitclass);
                     // Show popup on first result
                     if (htmls.length === 0) {
                       if (!popup) {
@@ -147,6 +155,8 @@
                     // Add result to array. ng-repeat will take
                     // care of the rest
                     htmls.push($sce.trustAsHtml(html));
+                  }).error(function() {
+                    bodyEl.removeClass(waitclass);
                   });
                 });
 
