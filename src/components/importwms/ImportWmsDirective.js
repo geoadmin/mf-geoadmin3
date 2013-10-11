@@ -220,7 +220,7 @@
 
                 return gaWms.addWmsToMap($scope.map,
                   {
-                    'LAYERS': layer.name
+                    LAYERS: layer.name
                   },
                   {
                     url: $scope.fileUrl,

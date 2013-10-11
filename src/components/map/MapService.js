@@ -80,7 +80,7 @@
    * Manage external WMS layers
    */
   module.provider('gaWms', function() {
-    this.$get = function($http, gaPopup, gaDefinePropertiesForLayer) {
+    this.$get = function(gaDefinePropertiesForLayer) {
       var Wms = function() {
 
         var createWmsLayer = function(params, options, index) {
@@ -102,7 +102,7 @@
             source: source
           });
           gaDefinePropertiesForLayer(layer);
-          layer.preview = (options.preview);
+          layer.preview = options.preview;
           return layer;
         };
 
@@ -663,12 +663,12 @@
               }
 
             } else if (allowThirdData && isWmsLayer(layerSpec)) {
-              // External WMMS layer
+              // External WMS layer
               var infos = layerSpec.split('||');
               try {
                 gaWms.addWmsToMap(map,
                   {
-                    'LAYERS': infos[3]
+                    LAYERS: infos[3]
                   },
                   {
                     url: infos[2],
