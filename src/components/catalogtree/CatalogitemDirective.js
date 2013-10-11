@@ -15,7 +15,7 @@
    * See examples on how it can be used
    */
   module.directive('gaCatalogitem',
-      function($compile, $rootScope, gaCatalogtreeMapUtils, gaMapUtils,
+      function($compile, gaCatalogtreeMapUtils, gaMapUtils,
           gaLayers, gaLayerMetadataPopup) {
         return {
           restrict: 'A',

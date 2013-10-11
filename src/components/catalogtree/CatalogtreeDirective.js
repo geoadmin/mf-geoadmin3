@@ -27,7 +27,7 @@
             options: '=gaCatalogtreeOptions',
             map: '=gaCatalogtreeMap'
           },
-          controller: function($scope, $element, $attrs, $transclude) {
+          controller: function($scope) {
             this.updatePermalink = function(id, selected) {
               var openIds = $scope.openIds;
               var index = openIds.indexOf(id);
@@ -168,24 +168,6 @@
                   handleTree(newTree, oldTree);
                 }
               });
-            });
-
-            scope.$on('catalogCategorySelectionChange', function(evt, item) {
-              var index = openIds.indexOf(item.id);
-              if (item.selected === true) {
-                if (index < 0) {
-                  openIds.push(item.id);
-                }
-              } else {
-                if (index >= 0) {
-                  openIds.splice(index, 1);
-                }
-              }
-              if (openIds.length > 0) {
-                gaPermalink.updateParams({catalogNodes: openIds.join(',')});
-              } else {
-                gaPermalink.deleteParam('catalogNodes');
-              }
             });
 
             scope.layerFilter = function(layer) {
