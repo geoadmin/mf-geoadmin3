@@ -15,11 +15,12 @@
    * See examples on how it can be used
    */
   module.directive('gaCatalogitem',
-      function($compile, gaCatalogtreeMapUtils, gaMapUtils, gaLayers,
-          gaLayerMetadataPopup) {
+      function($compile, gaCatalogtreeMapUtils, gaMapUtils,
+          gaLayers, gaLayerMetadataPopup) {
         return {
           restrict: 'A',
           replace: true,
+          require: '^gaCatalogtree',
           templateUrl: 'components/catalogtree/partials/catalogitem.html',
           scope: {
             item: '=gaCatalogitemItem',
@@ -28,7 +29,7 @@
           compile: function(tEl, tAttr) {
             var contents = tEl.contents().remove();
             var compiledContent;
-            return function(scope, iEl, iAttr) {
+            return function(scope, iEl, iAttr, controller) {
               if (!compiledContent) {
                 compiledContent = $compile(contents);
               }
@@ -38,6 +39,12 @@
               scope.addPreviewLayer = addPreviewLayer;
               scope.removePreviewLayer = removePreviewLayer;
               scope.inPreviewMode = inPreviewMode;
+
+              if (angular.isDefined(scope.item.children)) {
+                scope.$watch('item.selectedOpen', function(value) {
+                  controller.updatePermalink(scope.item.id, value);
+                });
+              }
 
               compiledContent(scope, function(clone, scope) {
                 iEl.append(clone);
