@@ -16,8 +16,8 @@
    * See examples on how it can be used
    */
   module.directive('gaCatalogtree',
-      function($http, $translate, gaPermalink,
-          gaCatalogtreeMapUtils, gaLayers) {
+      function($http, $translate, gaPermalink, gaCatalogtreeMapUtils,
+          gaLayers) {
 
         return {
           restrict: 'A',
@@ -29,7 +29,7 @@
           },
           link: function(scope, element, attrs) {
             var currentTopicId;
-            var firstLayerChangeEvent = true;
+            var openIds = [];
             scope.layers = scope.map.getLayers().getArray();
 
             // This assumes that both trees contain the same
@@ -126,10 +126,20 @@
               updateCatalogTree().then(function(trees) {
                 var oldTree = trees.oldTree;
                 var newTree = trees.newTree;
+                // Strategy to handle permalink on layers change:
+                // - When first called (initial page load), we make
+                //   sure that all categegories specified in the
+                //   permalink are opened
+                // - When not inital page load and it's not a language
+                //   change (we assume topic change then), we
+                //   remove/reset the permalink parameter
                 if (!angular.isDefined(oldTree)) {
                   openCategoriesInPermalink(newTree);
-                  firstLayerChangeEvent = false;
+                } else if (!data.labelsOnly) {
+                  openIds.length = 0;
+                  gaPermalink.deleteParam('catalogNodes');
                 }
+                //update Tree
                 if (data.labelsOnly) {
                   if (angular.isDefined(oldTree)) {
                     retainTreeState(newTree, oldTree);
@@ -138,6 +148,24 @@
                   handleTree(newTree, oldTree);
                 }
               });
+            });
+
+            scope.$on('catalogCategorySelectionChange', function(evt, item) {
+              var index = openIds.indexOf(item.id);
+              if (item.selected === true) {
+                if (index < 0) {
+                  openIds.push(item.id);
+                }
+              } else {
+                if (index >= 0) {
+                  openIds.splice(index, 1);
+                }
+              }
+              if (openIds.length > 0) {
+                gaPermalink.updateParams({catalogNodes: openIds.join(',')});
+              } else {
+                gaPermalink.deleteParam('catalogNodes');
+              }
             });
 
             scope.layerFilter = function(layer) {
@@ -182,16 +210,16 @@
         }
 
         function openCategoriesInPermalink(tree) {
-          var openIds = [];
+          var ids = [];
           var params = gaPermalink.getParams();
           if (params.catalogNodes) {
-            openIds = $.map(params.catalogNodes.split(','), function(value) {
+            ids = $.map(params.catalogNodes.split(','), function(value) {
               return parseInt(value, 10);
             });
           }
-          if (openIds.length > 0) {
+          if (ids.length > 0) {
             visitTree(tree, angular.noop, function(ctg) {
-              ctg.selectedOpen = (openIds.indexOf(ctg.id) >= 0);
+              ctg.selectedOpen = (ids.indexOf(ctg.id) >= 0);
             });
           }
         }
