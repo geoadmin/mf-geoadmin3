@@ -3,10 +3,12 @@
 
   goog.require('ga_catalogtree_service');
   goog.require('ga_map_service');
+  goog.require('ga_permalink');
 
   var module = angular.module('ga_catalogtree_directive', [
     'ga_catalogtree_service',
     'ga_map_service',
+    'ga_permalink',
     'pascalprecht.translate'
   ]);
 
@@ -14,7 +16,8 @@
    * See examples on how it can be used
    */
   module.directive('gaCatalogtree',
-      function($http, $translate, gaCatalogtreeMapUtils, gaLayers) {
+      function($http, $translate, gaPermalink, gaCatalogtreeMapUtils,
+          gaLayers) {
 
         return {
           restrict: 'A',
@@ -24,8 +27,29 @@
             options: '=gaCatalogtreeOptions',
             map: '=gaCatalogtreeMap'
           },
+          controller: function($scope) {
+            this.updatePermalink = function(id, selected) {
+              var openIds = $scope.openIds;
+              var index = openIds.indexOf(id);
+              if (selected === true) {
+                if (index < 0) {
+                  openIds.push(id);
+                }
+              } else {
+                if (index >= 0) {
+                  openIds.splice(index, 1);
+                }
+              }
+              if (openIds.length > 0) {
+                gaPermalink.updateParams({catalogNodes: openIds.join(',')});
+              } else {
+                gaPermalink.deleteParam('catalogNodes');
+              }
+            };
+          },
           link: function(scope, element, attrs) {
             var currentTopicId;
+            scope.openIds = [];
             scope.layers = scope.map.getLayers().getArray();
 
             // This assumes that both trees contain the same
@@ -79,17 +103,17 @@
               }
 
               if (addDefaultLayersToMap) {
-                visitTreeLeaves(newTree, function(leaf) {
+                visitTree(newTree, function(leaf) {
                   if (leaf.selectedOpen) {
                     gaCatalogtreeMapUtils.addLayer(map, leaf);
                   }
-                });
+                }, angular.noop);
               } else {
                 var leaves = {};
-                visitTreeLeaves(newTree, function(leaf) {
+                visitTree(newTree, function(leaf) {
                   leaf.selectedOpen = false;
                   leaves[leaf.idBod] = leaf;
-                });
+                }, angular.noop);
                 for (i = 0; i < layers.length; ++i) {
                   var layer = layers[i];
                   var bodId = layer.get('bodId');
@@ -122,6 +146,20 @@
               updateCatalogTree().then(function(trees) {
                 var oldTree = trees.oldTree;
                 var newTree = trees.newTree;
+                // Strategy to handle permalink on layers change:
+                // - When first called (initial page load), we make
+                //   sure that all categegories specified in the
+                //   permalink are opened
+                // - When not inital page load and it's not a language
+                //   change (we assume topic change then), we
+                //   remove/reset the permalink parameter
+                if (!angular.isDefined(oldTree)) {
+                  openCategoriesInPermalink(newTree);
+                } else if (!data.labelsOnly) {
+                  scope.openIds.length = 0;
+                  gaPermalink.deleteParam('catalogNodes');
+                }
+                //update Tree
                 if (data.labelsOnly) {
                   if (angular.isDefined(oldTree)) {
                     retainTreeState(newTree, oldTree);
@@ -154,24 +192,39 @@
         };
 
         function updateSelectionInTree(root, layerBodIds) {
-          visitTreeLeaves(root, function(node) {
+          visitTree(root, function(node) {
             node.selectedOpen = layerBodIds.indexOf(node.idBod) >= 0;
-          });
+          }, angular.noop);
         }
 
-        function visitTreeLeaves(node, fn) {
+        function visitTree(node, leafFn, categoryFn) {
+          var i, len;
           if (!angular.isDefined(node.children)) {
             // "node" is a leaf
-            fn(node);
+            leafFn(node);
           } else {
-            var i;
-            var len = node.children.length;
+            categoryFn(node);
+            len = node.children.length;
             for (i = 0; i < len; ++i) {
-              visitTreeLeaves(node.children[i], fn);
+              visitTree(node.children[i], leafFn, categoryFn);
             }
           }
         }
 
+        function openCategoriesInPermalink(tree) {
+          var ids = [];
+          var params = gaPermalink.getParams();
+          if (params.catalogNodes) {
+            ids = $.map(params.catalogNodes.split(','), function(value) {
+              return parseInt(value, 10);
+            });
+          }
+          if (ids.length > 0) {
+            visitTree(tree, angular.noop, function(ctg) {
+              ctg.selectedOpen = (ids.indexOf(ctg.id) >= 0);
+            });
+          }
+        }
       }
   );
 })();
