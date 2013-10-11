@@ -4,7 +4,7 @@
     ng-class="{'preview': inPreviewMode() , 'selected': item.selectedOpen}"
     ng-mouseover="addPreviewLayer()"
     ng-mouseleave="removePreviewLayer()">
-    <label>
+    <label title="{{item.label}}" class="ga-truncate-text" >
       <input type="checkbox" ng-model="item.selectedOpen" ng-change="toggleLayer()">
       {{item.label}}
     </label>
@@ -13,7 +13,7 @@
   </div>
 
   <div ng-switch-default="" class="ga-catalogitem-node">
-    <a href="#" ng-click="toggle($event)" class="ga-catalogitem-entry">
+    <a href="#" ng-click="toggle($event)" class="ga-catalogitem-entry ga-truncate-text" title="{{item.label}}">
       <i ng-class="{'icon-minus': item.selectedOpen, 'icon-plus': !item.selectedOpen}"></i>
       {{item.label}}
     </a>
