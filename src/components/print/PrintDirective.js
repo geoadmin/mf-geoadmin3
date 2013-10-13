@@ -199,7 +199,7 @@
                 call(this, layer);
             angular.extend(enc, {
               type: 'WMTS',
-              baseURL: 'http://wmts.geo.admin.ch',
+              baseURL: location.protocol + '//wmts.geo.admin.ch',
               layer: config.serverLayerName,
               maxExtent: [420000, 30000, 900000, 350000],
               tileOrigin: [420000, 350000],
@@ -296,7 +296,7 @@
       var encodedPermalinkHref =
           encodeURIComponent(gaPermalink.getHref());
 
-      var qrcodeurl = $scope.options.serviceUrl +
+      var qrcodeurl = location.protocol + $scope.options.serviceUrl +
           '/qrcodegenerator?url=' + encodedPermalinkHref;
 
       var encLayers = [];
