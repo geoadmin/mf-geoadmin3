@@ -347,7 +347,7 @@
                 layer.wmsUrl, ['request', 'service', 'version'], true);
 
             var wmsParams = {
-              LAYERS: layer.serverLayerName,
+              LAYERS: layer.wmsLayers,
               FORMAT: 'image/' + layer.format
             };
 
