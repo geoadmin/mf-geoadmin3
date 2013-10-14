@@ -23,6 +23,7 @@
         }
         var overlay = null;
         var currentResolution = null;
+        var currentAccuracy = null;
         var map = scope.map;
         var view = map.getView().getView2D();
         var geolocation = new ol.Geolocation();
@@ -52,12 +53,11 @@
             var bounce;
             if (first) {
               first = false;
-              var accuracy = 150;
               var extent = [
-                dest[0] - accuracy,
-                dest[1] - accuracy,
-                dest[0] + accuracy,
-                dest[1] + accuracy
+                dest[0] - currentAccuracy,
+                dest[1] - currentAccuracy,
+                dest[0] + currentAccuracy,
+                dest[1] + currentAccuracy
               ];
               var size = map.getSize();
               var resolution = Math.max(
@@ -91,7 +91,7 @@
           }
         };
         var markPosition = function() {
-          var divSize = accuracy / currentResolution;
+          var divSize = currentAccuracy / currentResolution;
           markerElt.css({
             width: divSize,
             height: divSize,
@@ -132,7 +132,11 @@
           }
         });
         geolocation.on('change:accuracy', function(evt) {
-          markPosition();
+          var accuracy = geolocation.getAccuracy();
+          if (accuracy != currentAccuracy) {
+            currentAccuracy = accuracy;
+            markPosition();
+          }
         });
         btnElt.bind('click', function(e) {
           e.preventDefault();
