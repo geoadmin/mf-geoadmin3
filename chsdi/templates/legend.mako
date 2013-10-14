@@ -13,7 +13,7 @@
                     'ch.bazl.segelflugkarte', 'ch.kantone.cadastralwebmap-farbe',
                     'ch.swisstopo.swisstlm3d-karte')
   if c['idBod'] in pdf_legends:
-      legend_url_pdf = host + 'static/images/legends/' + c['idBod'] + '_' + lang + '_big.pdf'
+      legend_url_pdf = host + '/static/images/legends/' + c['idBod'] + '_' + lang + '_big.pdf'
   else:
       legend_url_pdf = False
   legend_url = host + '/static/images/legends/' + c['idBod'] + '_' + lang + '.png'
