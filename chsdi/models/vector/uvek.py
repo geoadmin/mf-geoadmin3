@@ -295,6 +295,7 @@ class bakomgsm(Base, Vector):
     id = Column('id', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     powercode = Column('powercode', Text)
+    bgdi_created = Column('bgdi_created', Text)
 
 register('ch.bakom.mobil-antennenstandorte-gsm', bakomgsm)
 
