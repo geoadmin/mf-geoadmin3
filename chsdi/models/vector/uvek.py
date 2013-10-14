@@ -57,6 +57,7 @@ class IVS_REG_LOC(Base, Vector):
     ivs_sladatemorph = Column('ivs_sladatemorph', Integer)
     ivs_slabedeutung = Column('ivs_slabedeutung', Integer)
     ivs_sortsla = Column('ivs_sortsla', Text)
+    bgdi_created = Column('bgdi_created', Text)
 
 register('ch.astra.ivs-reg_loc', IVS_REG_LOC)
 
@@ -114,6 +115,7 @@ class ZAEHLSTELLENREGLOC(Base, Vector):
     zaehlstellen_bezeichnung = Column('zaehlstellen_bezeichnung', Text)
     zst_physisch_virtuell = Column('zst_physisch_virtuell', Text)
     messstellentyp = Column('messstellentyp', Text)
+    bgdi_created = Column('bgdi_created', Text)
 
 register('ch.astra.strassenverkehrszaehlung_messstellen-regional_lokal', ZAEHLSTELLENREGLOC)
 
@@ -130,6 +132,7 @@ class ZAEHLSTELLENUEBER(Base, Vector):
     zaehlstellen_bezeichnung = Column('zaehlstellen_bezeichnung', Text)
     zst_physisch_virtuell = Column('zst_physisch_virtuell', Text)
     messstellentyp = Column('messstellentyp', Text)
+    bgdi_created = Column('bgdi_created', Text)
 
 register('ch.astra.strassenverkehrszaehlung_messstellen-uebergeordnet', ZAEHLSTELLENUEBER)
 
@@ -149,6 +152,7 @@ class KATASTERBELASTETERSTANDORTE(Base, Vector):
     bezeichnung = Column('bezeichnung', Text)
     bewertung_bez = Column('bewertung_bez', Text)
     untersuchungsstand_bez = Column('untersuchungsstand_bez', Text)
+    bgdi_created = Column('bgdi_created', Text)
 
 register('ch.bav.kataster-belasteter-standorte-oev', KATASTERBELASTETERSTANDORTE)
 
@@ -282,6 +286,7 @@ class bakomfernsehsender(Base, Vector):
     service = Column('service', Text)
     program = Column('program', Text)
     freqchan = Column('freqchan', Text)
+    bgdi_created = Column('bgdi_created', Text)
 
 register('ch.bakom.radio-fernsehsender', bakomfernsehsender)
 
@@ -309,6 +314,7 @@ class bakomumts(Base, Vector):
     id = Column('id', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     powercode = Column('powercode', Text)
+    bgdi_created = Column('bgdi_created', Text)
 
 register('ch.bakom.mobil-antennenstandorte-umts', bakomumts)
 
@@ -322,6 +328,7 @@ class bakomlte(Base, Vector):
     id = Column('id', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     powercode = Column('powercode', Text)
+    bgdi_created = Column('bgdi_created', Text)
 
 register('ch.bakom.mobil-antennenstandorte-lte', bakomlte)
 
@@ -400,6 +407,7 @@ class Luftfahrthindernis(Base, Vector):
     duration = Column('duration', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     registrationnumber = Column('registrationnumber', Text)
+    bgdi_created = Column('bgdi_created', Text)
 
 register('ch.bazl.luftfahrthindernis', Luftfahrthindernis)
 
