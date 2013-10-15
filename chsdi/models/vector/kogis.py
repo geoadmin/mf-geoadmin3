@@ -70,6 +70,7 @@ class FIXPUNKTE_LFP1(Base, Vector):
     zugang = Column('zugang', Text)
     url = Column('url', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    bgdi_created = Column('bgdi_created', Text)
 
 register('ch.swisstopo.fixpunkte-lfp1', FIXPUNKTE_LFP1)
 
@@ -95,6 +96,7 @@ class FIXPUNKTE_LFP2(Base, Vector):
     zugang = Column('zugang', Text)
     url = Column('url', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    bgdi_created = Column('bgdi_created', Text)
 
 register('ch.swisstopo.fixpunkte-lfp2', FIXPUNKTE_LFP2)
 
@@ -120,6 +122,7 @@ class FIXPUNKTE_HFP1(Base, Vector):
     zugang = Column('zugang', Text)
     url = Column('url', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    bgdi_created = Column('bgdi_created', Text)
 
 register('ch.swisstopo.fixpunkte-hfp1', FIXPUNKTE_HFP1)
 
@@ -145,5 +148,6 @@ class FIXPUNKTE_HFP2(Base, Vector):
     zugang = Column('zugang', Text)
     url = Column('url', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    bgdi_created = Column('bgdi_created', Text)
 
 register('ch.swisstopo.fixpunkte-hfp2', FIXPUNKTE_HFP2)

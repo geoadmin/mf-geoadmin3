@@ -3,7 +3,7 @@
 from pyramid.view import view_config
 import pyramid.httpexceptions as exc
 
-from sqlalchemy import or_
+from sqlalchemy import or_, func
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
 from chsdi.models import models_from_name
@@ -67,6 +67,16 @@ class MapService(MapServiceValidation):
         query = query.one()
         config = query.getLayerConfig(self.translate)
         hasLegend = config[idlayer]['hasLegend']
+
+        if  'attributes' in layer.keys() and 'dataStatus' in layer['attributes'].keys():
+            status = layer['attributes']['dataStatus']
+            if status == u'bgdi_created':
+                self.layers = idlayer
+                models = models_from_name(idlayer)
+                for model in models:
+                    modified = self.request.db.query(func.max(model.bgdi_created))
+                datenstand = modified.first()[0].strftime("%Y%m%d")
+                layer['attributes']['dataStatus'] = datenstand
 
         legend = {
             'layer': layer,
