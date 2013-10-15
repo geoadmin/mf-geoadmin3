@@ -36,7 +36,8 @@
               var popoverShown = false;
 
               var overlay = new ol.Overlay({
-                element: element[0]
+                element: element[0],
+                stopEvent: true
               });
               map.addOverlay(overlay);
 
