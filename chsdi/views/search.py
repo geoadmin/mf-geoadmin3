@@ -128,8 +128,11 @@ class Search(SearchValidation):
             counter += 1
         # starts and ends with query words
         finalQuery = '%s "^%s$" | ' % (fields, sentence)
-        # sentence search
+        # sentence search (the all sentence within the search field)
+        # order matters
         finalQuery += '%s "%s" | ' % (fields, sentence)
+        # words exact match
+        finalQuery += '%s (%s) | ' % (fields, sentence)
         # full text search word per word
         finalQuery += '%s (%s)' % (fields, searchText)
 
