@@ -33,6 +33,7 @@
 % else:
   <img src=${legend_url} alt="layer legend img"/><br><br>
 % endif
+% endif
   <span style="font-weight:bold;">${_('Information')}</span><br>
   <table border="0" cellspacing="0" cellpadding="1" width="400px" style="font-size: 100%;" padding="1 1 1 1">
     <tr><td>${_('geobasisdatensatz')}</td> <td>${c['attributes']['bundCollection'] or '-'}</td></tr>
@@ -75,7 +76,6 @@
       <td>-</td>
 % endif
     </tr>
-% endif
     <tr>
       <td>${_('Datenstand')}</td>
 % if times:
