@@ -53,7 +53,7 @@
                 timeoutPromise = $timeout(function() {
                   callback(clickEvent);
                   timeoutPromise = null;
-                }, 250, false);
+                }, 350, false);
               }
             }
             moving = false;
