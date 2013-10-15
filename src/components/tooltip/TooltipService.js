@@ -30,6 +30,7 @@
           var down = null;
           var moving = false;
           var timeoutPromise = null;
+          var touchstartTime;
 
           var isMouseAction = function(evt) {
             var s = gaBrowserSniffer;
@@ -59,6 +60,13 @@
             down = null;
           };
 
+          var touchendListener = function(evt) {
+            var now = (new Date()).getTime();
+            if (now - touchstartTime < 300) {
+              upListener(evt);
+            }
+          };
+
           var mousedownListener = function(evt) {
             if (bindUnbind) {
               $(viewport).unbind('touchstart', touchstartListener);
@@ -77,10 +85,11 @@
             if (bindUnbind) {
               $(viewport).unbind('mousedown', mousedownListener);
               $(viewport).unbind('MSPointerDown', mspointerdownListener);
-              $(viewport).on('touchend', upListener);
+              $(viewport).on('touchend', touchendListener);
               $(viewport).on('touchmove', moveListener);
               bindUnbind = false;
             }
+            touchstartTime = (new Date()).getTime();
             down = evt.originalEvent;
           };
 
