@@ -1,3 +1,4 @@
+var CLOSURE_NO_DEPS = true;
 var COMPILED = false;
 var goog = goog || {};
 goog.global = this;
@@ -641,7 +642,7 @@ goog.addDependency("../src/ol/layer/vectorlayerrenderintent.js", ["ol.layer.Vect
 goog.addDependency("../src/ol/map.js", ["ol.Map", "ol.MapProperty", "ol.RendererHint", "ol.RendererHints"], ["goog.Uri.QueryData", "goog.array", "goog.asserts", "goog.async.AnimationDelay", "goog.async.nextTick", "goog.debug.Console", "goog.dom", "goog.dom.TagName", "goog.dom.ViewportSizeMonitor", "goog.events", "goog.events.BrowserEvent", "goog.events.Event", "goog.events.EventType", "goog.events.KeyHandler", "goog.events.KeyHandler.EventType", "goog.events.MouseWheelHandler", "goog.events.MouseWheelHandler.EventType", 
 "goog.log", "goog.log.Level", "goog.object", "goog.style", "goog.vec.Mat4", "ol.BrowserFeature", "ol.Collection", "ol.FrameState", "ol.IView", "ol.MapBrowserEvent", "ol.MapBrowserEvent.EventType", "ol.MapBrowserEventHandler", "ol.MapEvent", "ol.MapEventType", "ol.Object", "ol.ObjectEventType", "ol.Pixel", "ol.PostRenderFunction", "ol.PreRenderFunction", "ol.Size", "ol.Tile", "ol.TileQueue", "ol.View", "ol.View2D", "ol.ViewHint", "ol.control", "ol.extent", "ol.interaction", "ol.layer.Base", "ol.layer.Group", 
 "ol.proj", "ol.proj.common", "ol.renderer.Map", "ol.renderer.canvas", "ol.renderer.canvas.Map", "ol.renderer.dom", "ol.renderer.dom.Map", "ol.renderer.webgl", "ol.renderer.webgl.Map", "ol.structs.PriorityQueue", "ol.vec.Mat4"]);
-goog.addDependency("../src/ol/mapbrowserevent.js", ["ol.MapBrowserEvent", "ol.MapBrowserEvent.EventType", "ol.MapBrowserEventHandler"], ["goog.array", "goog.events", "goog.events.BrowserEvent", "goog.events.EventTarget", "goog.events.EventType", "goog.style", "ol.BrowserFeature", "ol.Coordinate", "ol.FrameState", "ol.MapEvent", "ol.Pixel"]);
+goog.addDependency("../src/ol/mapbrowserevent.js", ["ol.MapBrowserEvent", "ol.MapBrowserEvent.EventType", "ol.MapBrowserEventHandler"], ["goog.array", "goog.events", "goog.events.BrowserEvent", "goog.events.EventTarget", "goog.events.EventType", "ol.BrowserFeature", "ol.Coordinate", "ol.FrameState", "ol.MapEvent", "ol.Pixel"]);
 goog.addDependency("../src/ol/mapevent.js", ["ol.MapEvent", "ol.MapEventType"], ["goog.events.Event", "ol.FrameState"]);
 goog.addDependency("../src/ol/math.js", ["ol.math"], ["goog.asserts"]);
 goog.addDependency("../src/ol/object.js", ["ol.Object", "ol.ObjectEventType"], ["goog.array", "goog.events", "goog.events.EventTarget", "goog.object"]);
@@ -16655,7 +16656,6 @@ goog.require("goog.events");
 goog.require("goog.events.BrowserEvent");
 goog.require("goog.events.EventTarget");
 goog.require("goog.events.EventType");
-goog.require("goog.style");
 goog.require("ol.BrowserFeature");
 goog.require("ol.Coordinate");
 goog.require("ol.FrameState");
@@ -16670,14 +16670,13 @@ ol.MapBrowserEvent = function(type, map, browserEvent, opt_frameState) {
 goog.inherits(ol.MapBrowserEvent, ol.MapEvent);
 ol.MapBrowserEvent.prototype.getCoordinate = function() {
   if(goog.isNull(this.coordinate_)) {
-    this.coordinate_ = this.map.getCoordinateFromPixel(this.getPixel())
+    this.coordinate_ = this.map.getEventCoordinate(this.browserEvent.getBrowserEvent())
   }
   return this.coordinate_
 };
 ol.MapBrowserEvent.prototype.getPixel = function() {
   if(goog.isNull(this.pixel_)) {
-    var eventPosition = goog.style.getRelativePosition(this.browserEvent, this.map.getViewport());
-    this.pixel_ = [eventPosition.x, eventPosition.y]
+    this.pixel_ = this.map.getEventPixel(this.browserEvent.getBrowserEvent())
   }
   return this.pixel_
 };
@@ -17058,7 +17057,7 @@ ol.control.Control.prototype.setMap = function(map) {
   }
   this.map_ = map;
   if(!goog.isNull(this.map_)) {
-    var target = goog.isDef(this.target_) ? this.target_ : map.getOverlayContainer();
+    var target = goog.isDef(this.target_) ? this.target_ : map.getOverlayContainerStopEvent();
     goog.dom.appendChild(target, this.element);
     if(this.handleMapPostrender !== goog.nullFunction) {
       this.listenerKeys.push(goog.events.listen(map, ol.MapEventType.POSTRENDER, this.handleMapPostrender, false, this))
@@ -17440,8 +17439,8 @@ ol.interaction.Drag = function() {
   this.dragging_ = false;
   this.startX = 0;
   this.startY = 0;
-  this.offsetX = 0;
-  this.offsetY = 0;
+  this.deltaX = 0;
+  this.deltaY = 0;
   this.startCenter = null;
   this.startCoordinate = null
 };
@@ -21363,6 +21362,7 @@ goog.require("ol.style.ShapeLiteral");
 goog.require("ol.style.ShapeType");
 goog.require("ol.style.Stroke");
 ol.style.Shape = function(options) {
+  goog.base(this);
   this.type_ = (goog.isDef(options.type) ? options.type : ol.style.ShapeDefaults.type);
   this.size_ = !goog.isDefAndNotNull(options.size) ? new ol.expr.Literal(ol.style.ShapeDefaults.size) : options.size instanceof ol.expr.Expression ? options.size : new ol.expr.Literal(options.size);
   this.fill_ = goog.isDefAndNotNull(options.fill) ? options.fill : null;
@@ -21370,6 +21370,7 @@ ol.style.Shape = function(options) {
   goog.asserts.assert(this.fill_ || this.stroke_, "Stroke or fill must be provided");
   this.zIndex_ = !goog.isDefAndNotNull(options.zIndex) ? new ol.expr.Literal(ol.style.ShapeDefaults.zIndex) : options.zIndex instanceof ol.expr.Expression ? options.zIndex : new ol.expr.Literal(options.zIndex)
 };
+goog.inherits(ol.style.Shape, ol.style.Point);
 ol.style.Shape.prototype.createLiteral = function(featureOrType) {
   var feature, type;
   if(featureOrType instanceof ol.Feature) {
@@ -21554,6 +21555,8 @@ ol.style.TextLiteral = function(options) {
   this.fontFamily = options.fontFamily;
   goog.asserts.assertNumber(options.fontSize, "fontSize must be a number");
   this.fontSize = options.fontSize;
+  goog.asserts.assertString(options.fontWeight, "fontWeight must be a string");
+  this.fontWeight = options.fontWeight;
   goog.asserts.assertString(options.text, "text must be a string");
   this.text = options.text;
   goog.asserts.assertNumber(options.opacity, "opacity must be a number");
@@ -21578,7 +21581,7 @@ ol.style.TextLiteral = function(options) {
 };
 goog.inherits(ol.style.TextLiteral, ol.style.Literal);
 ol.style.TextLiteral.prototype.equals = function(other) {
-  return this.color == other.color && this.fontFamily == other.fontFamily && this.fontSize == other.fontSize && this.opacity == other.opacity && this.strokeColor == other.strokeColor && this.strokeOpacity == other.strokeOpacity && this.strokeWidth == other.strokeWidth && this.zIndex == other.zIndex
+  return this.color == other.color && this.fontFamily == other.fontFamily && this.fontSize == other.fontSize && this.fontWeight == other.fontWeight && this.opacity == other.opacity && this.strokeColor == other.strokeColor && this.strokeOpacity == other.strokeOpacity && this.strokeWidth == other.strokeWidth && this.zIndex == other.zIndex
 };
 goog.provide("ol.layer.Vector");
 goog.provide("ol.layer.VectorEventType");
@@ -22895,7 +22898,7 @@ ol.renderer.canvas.Vector.prototype.renderText_ = function(features, text, texts
   if(context.fillStyle !== text.color) {
     context.fillStyle = text.color
   }
-  context.font = text.fontSize + "px " + text.fontFamily;
+  context.font = text.fontWeight + " " + text.fontSize + "px " + text.fontFamily;
   context.globalAlpha = text.opacity;
   context.textAlign = "center";
   context.textBaseline = "middle";
@@ -25996,8 +25999,10 @@ ol.Map = function(options) {
     this.viewport_.className = "ol-touch"
   }
   this.overlayContainer_ = goog.dom.createDom(goog.dom.TagName.DIV, "ol-overlaycontainer");
-  goog.events.listen(this.overlayContainer_, [goog.events.EventType.CLICK, goog.events.EventType.DBLCLICK, ol.BrowserFeature.HAS_TOUCH ? goog.events.EventType.TOUCHSTART : goog.events.EventType.MOUSEDOWN], goog.events.Event.stopPropagation);
   goog.dom.appendChild(this.viewport_, this.overlayContainer_);
+  this.overlayContainerStopEvent_ = goog.dom.createDom(goog.dom.TagName.DIV, "ol-overlaycontainer-stopevent");
+  goog.events.listen(this.overlayContainerStopEvent_, [goog.events.EventType.CLICK, goog.events.EventType.DBLCLICK, ol.BrowserFeature.HAS_TOUCH ? goog.events.EventType.TOUCHSTART : goog.events.EventType.MOUSEDOWN], goog.events.Event.stopPropagation);
+  goog.dom.appendChild(this.viewport_, this.overlayContainerStopEvent_);
   var mapBrowserEventHandler = new ol.MapBrowserEventHandler(this);
   goog.events.listen(mapBrowserEventHandler, goog.object.getValues(ol.MapBrowserEvent.EventType), this.handleMapBrowserEvent, false, this);
   this.registerDisposable(mapBrowserEventHandler);
@@ -26062,6 +26067,13 @@ ol.Map.prototype.disposeInternal = function() {
 ol.Map.prototype.freezeRendering = function() {
   ++this.freezeRenderingCount_
 };
+ol.Map.prototype.getEventCoordinate = function(event) {
+  return this.getCoordinateFromPixel(this.getEventPixel(event))
+};
+ol.Map.prototype.getEventPixel = function(event) {
+  var eventPosition = goog.style.getRelativePosition(event, this.viewport_);
+  return[eventPosition.x, eventPosition.y]
+};
 ol.Map.prototype.getRenderer = function() {
   return this.renderer_
 };
@@ -26124,6 +26136,9 @@ ol.Map.prototype.getViewport = function() {
 };
 ol.Map.prototype.getOverlayContainer = function() {
   return this.overlayContainer_
+};
+ol.Map.prototype.getOverlayContainerStopEvent = function() {
+  return this.overlayContainerStopEvent_
 };
 ol.Map.prototype.getTilePriority = function(tile, tileSourceKey, tileCenter, tileResolution) {
   var frameState = this.frameState_;
@@ -26481,6 +26496,7 @@ ol.OverlayProperty = {ELEMENT:"element", MAP:"map", POSITION:"position", POSITIO
 ol.OverlayPositioning = {BOTTOM_LEFT:"bottom-left", BOTTOM_CENTER:"bottom-center", BOTTOM_RIGHT:"bottom-right", CENTER_LEFT:"center-left", CENTER_CENTER:"center-center", CENTER_RIGHT:"center-right", TOP_LEFT:"top-left", TOP_CENTER:"top-center", TOP_RIGHT:"top-right"};
 ol.Overlay = function(options) {
   goog.base(this);
+  this.stopEvent_ = goog.isDef(options.stopEvent) ? options.stopEvent : false;
   this.element_ = goog.dom.createElement(goog.dom.TagName.DIV);
   this.element_.style.position = "absolute";
   this.rendered_ = {bottom_:"", left_:"", right_:"", top_:"", visible:true};
@@ -26533,7 +26549,7 @@ ol.Overlay.prototype.handleMapChanged = function() {
   if(goog.isDefAndNotNull(map)) {
     this.mapPostrenderListenerKey_ = goog.events.listen(map, ol.MapEventType.POSTRENDER, this.handleMapPostrender, false, this);
     this.updatePixelPosition_();
-    goog.dom.append((map.getOverlayContainer()), this.element_)
+    goog.dom.append((this.stopEvent_ ? map.getOverlayContainerStopEvent() : map.getOverlayContainer()), this.element_)
   }
 };
 ol.Overlay.prototype.handleMapPostrender = function() {
@@ -27909,10 +27925,10 @@ ol.interaction.DragRotateAndZoom = function(opt_options) {
 };
 goog.inherits(ol.interaction.DragRotateAndZoom, ol.interaction.Drag);
 ol.interaction.DragRotateAndZoom.prototype.handleDrag = function(mapBrowserEvent) {
-  var browserEvent = mapBrowserEvent.browserEvent;
   var map = mapBrowserEvent.map;
   var size = map.getSize();
-  var delta = new goog.math.Vec2(browserEvent.offsetX - size[0] / 2, size[1] / 2 - browserEvent.offsetY);
+  var offset = mapBrowserEvent.getPixel();
+  var delta = new goog.math.Vec2(offset[0] - size[0] / 2, size[1] / 2 - offset[1]);
   var theta = Math.atan2(delta.y, delta.x);
   var magnitude = delta.magnitude();
   var view = map.getView().getView2D();
@@ -30538,6 +30554,7 @@ goog.require("ol.geom.GeometryType");
 goog.require("ol.style.IconLiteral");
 goog.require("ol.style.Point");
 ol.style.Icon = function(options) {
+  goog.base(this);
   goog.asserts.assert(options.url, "url must be set");
   this.url_ = options.url instanceof ol.expr.Expression ? options.url : new ol.expr.Literal(options.url);
   this.width_ = !goog.isDef(options.width) ? null : options.width instanceof ol.expr.Expression ? options.width : new ol.expr.Literal(options.width);
@@ -30548,6 +30565,7 @@ ol.style.Icon = function(options) {
   this.yOffset_ = !goog.isDef(options.yOffset) ? new ol.expr.Literal(ol.style.IconDefaults.yOffset) : options.yOffset instanceof ol.expr.Expression ? options.yOffset : new ol.expr.Literal(options.yOffset);
   this.zIndex_ = !goog.isDefAndNotNull(options.zIndex) ? new ol.expr.Literal(ol.style.IconDefaults.zIndex) : options.zIndex instanceof ol.expr.Expression ? options.zIndex : new ol.expr.Literal(options.zIndex)
 };
+goog.inherits(ol.style.Icon, ol.style.Point);
 ol.style.Icon.prototype.createLiteral = function(featureOrType) {
   var feature, type;
   if(featureOrType instanceof ol.Feature) {
@@ -35900,6 +35918,7 @@ ol.style.Text = function(options) {
   this.color_ = !goog.isDef(options.color) ? new ol.expr.Literal(ol.style.TextDefaults.color) : options.color instanceof ol.expr.Expression ? options.color : new ol.expr.Literal(options.color);
   this.fontFamily_ = !goog.isDef(options.fontFamily) ? new ol.expr.Literal(ol.style.TextDefaults.fontFamily) : options.fontFamily instanceof ol.expr.Expression ? options.fontFamily : new ol.expr.Literal(options.fontFamily);
   this.fontSize_ = !goog.isDef(options.fontSize) ? new ol.expr.Literal(ol.style.TextDefaults.fontSize) : options.fontSize instanceof ol.expr.Expression ? options.fontSize : new ol.expr.Literal(options.fontSize);
+  this.fontWeight_ = !goog.isDef(options.fontWeight) ? new ol.expr.Literal(ol.style.TextDefaults.fontWeight) : options.fontWeight instanceof ol.expr.Expression ? options.fontWeight : new ol.expr.Literal(options.fontWeight);
   this.text_ = options.text instanceof ol.expr.Expression ? options.text : new ol.expr.Literal(options.text);
   this.opacity_ = !goog.isDef(options.opacity) ? new ol.expr.Literal(ol.style.TextDefaults.opacity) : options.opacity instanceof ol.expr.Expression ? options.opacity : new ol.expr.Literal(options.opacity);
   this.stroke_ = goog.isDefAndNotNull(options.stroke) ? options.stroke : null;
@@ -35921,6 +35940,8 @@ ol.style.Text.prototype.createLiteral = function(featureOrType) {
   goog.asserts.assertString(fontFamily, "fontFamily must be a string");
   var fontSize = Number(ol.expr.evaluateFeature(this.fontSize_, feature));
   goog.asserts.assert(!isNaN(fontSize), "fontSize must be a number");
+  var fontWeight = ol.expr.evaluateFeature(this.fontWeight_, feature);
+  goog.asserts.assertString(fontWeight, "fontWeight must be a string");
   var text = ol.expr.evaluateFeature(this.text_, feature);
   goog.asserts.assertString(text, "text must be a string");
   var opacity = Number(ol.expr.evaluateFeature(this.opacity_, feature));
@@ -35936,7 +35957,7 @@ ol.style.Text.prototype.createLiteral = function(featureOrType) {
   }
   var zIndex = Number(ol.expr.evaluateFeature(this.zIndex_, feature));
   goog.asserts.assert(!isNaN(zIndex), "zIndex must be a number");
-  return new ol.style.TextLiteral({color:color, fontFamily:fontFamily, fontSize:fontSize, text:text, opacity:opacity, strokeColor:strokeColor, strokeOpacity:strokeOpacity, strokeWidth:strokeWidth, zIndex:zIndex})
+  return new ol.style.TextLiteral({color:color, fontFamily:fontFamily, fontSize:fontSize, fontWeight:fontWeight, text:text, opacity:opacity, strokeColor:strokeColor, strokeOpacity:strokeOpacity, strokeWidth:strokeWidth, zIndex:zIndex})
 };
 ol.style.Text.prototype.getColor = function() {
   return this.color_
@@ -35946,6 +35967,9 @@ ol.style.Text.prototype.getFontFamily = function() {
 };
 ol.style.Text.prototype.getFontSize = function() {
   return this.fontSize_
+};
+ol.style.Text.prototype.getFontWeight = function() {
+  return this.fontWeight_
 };
 ol.style.Text.prototype.getOpacity = function() {
   return this.opacity_
@@ -35968,6 +35992,10 @@ ol.style.Text.prototype.setFontSize = function(fontSize) {
   goog.asserts.assertInstanceof(fontSize, ol.expr.Expression);
   this.fontSize_ = fontSize
 };
+ol.style.Text.prototype.setFontWeight = function(fontWeight) {
+  goog.asserts.assertInstanceof(fontWeight, ol.expr.Expression);
+  this.fontWeight_ = fontWeight
+};
 ol.style.Text.prototype.setOpacity = function(opacity) {
   goog.asserts.assertInstanceof(opacity, ol.expr.Expression);
   this.opacity_ = opacity
@@ -35980,7 +36008,7 @@ ol.style.Text.prototype.setZIndex = function(zIndex) {
   goog.asserts.assertInstanceof(zIndex, ol.expr.Expression);
   this.zIndex_ = zIndex
 };
-ol.style.TextDefaults = {color:"#000", fontFamily:"sans-serif", fontSize:10, opacity:1, zIndex:0};
+ol.style.TextDefaults = {color:"#000", fontFamily:"sans-serif", fontSize:10, fontWeight:"normal", opacity:1, zIndex:0};
 goog.require("libtess");
 goog.require("libtess.ActiveRegion");
 goog.require("libtess.CachedVertex");
