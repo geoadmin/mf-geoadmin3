@@ -18,3 +18,4 @@ MANIFEST
 chsdi.egg-info
 sphinx.conf
 .idea
+deploy/hooks/pre-create-code

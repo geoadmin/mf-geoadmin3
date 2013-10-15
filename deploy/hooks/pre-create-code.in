@@ -3,6 +3,9 @@
 PROJECT_NAME=$1
 CODE_DIR=$2
 
+
+export PGUSER='${vars:modwsgi_user}'
+
 cd $CODE_DIR
 
 echo "running unit tests (wd: '$(pwd)')"
