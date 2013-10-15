@@ -74,6 +74,5 @@ class TestSearchServiceView(TestsBase):
     def test_wilenstrasse_wil(self):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'wilenstrasse wil', 'type': 'locations'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
-        self.failUnless('wil' in resp.json['results'][0]['attrs']['detail'])
         self.failUnless('wilenstrasse' in resp.json['results'][0]['attrs']['detail'])
         self.failUnless('wil' in resp.json['results'][0]['attrs']['detail'])
