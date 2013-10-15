@@ -98,7 +98,8 @@ class Search(SearchValidation):
 
         self.sphinx.SetLimits(0, self.FEATURE_LIMIT)
         searchText = self._query_detail('@detail')
-        searchText += ' & @geom_quadindex ' + self.quadindex + '*'
+        if self.quadindex is not None:
+            searchText += ' & @geom_quadindex ' + self.quadindex + '*'
         self._add_feature_queries(searchText)
         temp = self.sphinx.RunQueries()
         return self._parse_feature_results(temp)
