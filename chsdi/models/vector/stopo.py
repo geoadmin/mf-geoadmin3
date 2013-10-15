@@ -895,6 +895,7 @@ class Geologischer_Aeromagnetik_Jura(Base, Vector):
 
 register('ch.swisstopo.geologie-geophysik-aeromagnetische_karte_jura', Geologischer_Aeromagnetik_Jura)
 
+
 class GeologieIsostatischeAnomalien(Base, Vector):
     __tablename__ = 'schwerekarte_isostatische_anomalien'
     __table_args__ = ({'schema': 'geol', 'autoload': False})
@@ -902,11 +903,12 @@ class GeologieIsostatischeAnomalien(Base, Vector):
     __esriId__ = 1000
     __bodId__ = 'ch.swisstopo.geologie-geodaesie-isostatische_anomalien'
     id = Column('gid', Integer, primary_key=True)
-    fid = Column ('id', Integer)
+    fid = Column('id', Integer)
     et_fromatt = Column('et_fromatt', Numeric)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.geologie-geodaesie-isostatische_anomalien',GeologieIsostatischeAnomalien)
+register('ch.swisstopo.geologie-geodaesie-isostatische_anomalien', GeologieIsostatischeAnomalien)
+
 
 class GeologieBouguerAnomalien(Base, Vector):
     __tablename__ = 'geodaesie_bouguer_anomalien'
@@ -918,7 +920,8 @@ class GeologieBouguerAnomalien(Base, Vector):
     et_fromatt = Column('et_fromatt', Numeric)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
-register('ch.swisstopo.geologie-geodaesie-bouguer_anomalien',GeologieBouguerAnomalien)
+register('ch.swisstopo.geologie-geodaesie-bouguer_anomalien', GeologieBouguerAnomalien)
+
 
 class GeologieGeophysikTotalintensitaet(Base, Vector):
     __tablename__ = 'geophysik_totalintensitaet'
