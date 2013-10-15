@@ -68,7 +68,7 @@ class MapService(MapServiceValidation):
         config = query.getLayerConfig(self.translate)
         hasLegend = config[idlayer]['hasLegend']
 
-        if  'attributes' in layer.keys() and 'dataStatus' in layer['attributes'].keys():
+        if 'attributes' in layer.keys() and 'dataStatus' in layer['attributes'].keys():
             status = layer['attributes']['dataStatus']
             if status == u'bgdi_created':
                 self.layers = idlayer
