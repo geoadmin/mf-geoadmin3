@@ -70,3 +70,10 @@ class TestSearchServiceView(TestsBase):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'fontenay 10 lausanne', 'type': 'locations'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(resp.json['results'][0]['attrs']['detail'] == '886311 chemin de fontenay 10 1007 lausanne 5586 lausanne ch vd')
+
+    def test_wilenstrasse_wil(self):
+        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'wilenstrasse wil', 'type': 'locations'}, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless('wil' in resp.json['results'][0]['attrs']['detail'])
+        self.failUnless('wilenstrasse' in resp.json['results'][0]['attrs']['detail'])
+        self.failUnless('wil' in resp.json['results'][0]['attrs']['detail'])
