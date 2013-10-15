@@ -61,12 +61,12 @@ class Search(SearchValidation):
         return self.results
 
     def _swiss_search(self, limit):
-        searchText = self._query_detail('@detail')
         if len(self.searchText) < 1:
             return 0
         self.sphinx.SetLimits(0, limit)
         self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
         self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, 'rank ASC, @weight DESC')
+        searchText = self._query_fields('@detail')
         temp = self.sphinx.Query(searchText, index='swisssearch')
         temp = temp['matches'] if temp is not None else temp
         if temp is not None and len(temp) != 0:
@@ -77,8 +77,10 @@ class Search(SearchValidation):
     def _layer_search(self):
         # 10 features per layer are returned at max
         self.sphinx.SetLimits(0, self.LAYER_LIMIT)
+        self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
+        self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, '@weight DESC')
         index_name = 'layers_' + self.lang
-        searchText = self._query_layers_detail('@(detail,layer)')
+        searchText = self._query_fields('@(detail,layer)')
         searchText += ' & @topics ' + self.mapName
         # We only take the layers in prod for now
         searchText += ' & @staging prod'
@@ -97,7 +99,9 @@ class Search(SearchValidation):
             return 0
 
         self.sphinx.SetLimits(0, self.FEATURE_LIMIT)
-        searchText = self._query_detail('@detail')
+        self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
+        self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, '@weight DESC')
+        searchText = self._query_fields('@detail')
         if self.quadindex is not None:
             searchText += ' & @geom_quadindex ' + self.quadindex + '*'
         self._add_feature_queries(searchText)
@@ -116,7 +120,7 @@ class Search(SearchValidation):
         temp = self.sphinx.RunQueries(geomFilter)
         return self._parse_feature_results(temp)
 
-    def _query_detail(self, fields):
+    def _query_fields(self, fields):
         sentence = ' '.join(self.searchText)
         searchText = ''
         counter = 1
