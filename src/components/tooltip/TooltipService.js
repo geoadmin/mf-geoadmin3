@@ -1,7 +1,11 @@
 (function() {
   goog.provide('ga_tooltip_service');
 
-  var module = angular.module('ga_tooltip_service', []);
+  goog.require('ga_browsersniffer_service');
+
+  var module = angular.module('ga_tooltip_service', [
+    'ga_browsersniffer_service'
+  ]);
 
   /**
    * This service is to be used to register a "click" listener
@@ -15,7 +19,7 @@
    * - No "click" event is triggered on double click/tap.
    */
   module.provider('gaMapClick', function() {
-    this.$get = function($timeout) {
+    this.$get = function($timeout, gaBrowserSniffer) {
       return {
         listen: function(map, callback) {
 
@@ -26,6 +30,11 @@
           var down = null;
           var moving = false;
           var timeoutPromise = null;
+
+          var isMouseAction = function(evt) {
+            var s = gaBrowserSniffer;
+            return (evt.button === 0) && !(s.webkit && s.mac && evt.ctrlKey);
+          };
 
           var moveListener = function(evt) {
             if (down) {
@@ -51,7 +60,6 @@
           };
 
           var mousedownListener = function(evt) {
-            down = evt.originalEvent;
             if (bindUnbind) {
               $(viewport).unbind('touchstart', touchstartListener);
               $(viewport).unbind('MSPointerDown', mspointerdownListener);
@@ -59,10 +67,13 @@
               $(viewport).on('mousemove', moveListener);
               bindUnbind = false;
             }
+            var originalEvent = evt.originalEvent;
+            if (isMouseAction(originalEvent)) {
+              down = evt.originalEvent;
+            }
           };
 
           var touchstartListener = function(evt) {
-            down = evt.originalEvent;
             if (bindUnbind) {
               $(viewport).unbind('mousedown', mousedownListener);
               $(viewport).unbind('MSPointerDown', mspointerdownListener);
@@ -70,10 +81,10 @@
               $(viewport).on('touchmove', moveListener);
               bindUnbind = false;
             }
+            down = evt.originalEvent;
           };
 
           var mspointerdownListener = function(evt) {
-            down = evt.originalEvent;
             if (bindUnbind) {
               $(viewport).unbind('mousedown', mousedownListener);
               $(viewport).unbind('touchstart', touchstartListener);
@@ -81,6 +92,7 @@
               $(viewport).on('MSPointerMove', moveListener);
               bindUnbind = false;
             }
+            down = evt.originalEvent;
           };
 
           $(viewport).on('mousedown', mousedownListener);
