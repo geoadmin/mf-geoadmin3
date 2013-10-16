@@ -58,14 +58,13 @@ def main(global_config, **settings):
     config.add_route('home', '/')
     config.add_route('dev', '/dev')
     config.add_route('testi18n', '/testi18n')
-    config.add_route('api', '/loader.js')
-    config.add_view(route_name='home', renderer='chsdi:static/doc/index.html', http_cache=0)
+
+    config.add_view(route_name='home', renderer='chsdi:static/doc/build/index.html', http_cache=0)
     config.add_view(route_name='dev', renderer='chsdi:templates/index.pt', http_cache=0)
     config.add_view(route_name='testi18n', renderer='chsdi:templates/testi18n.mako', http_cache=0)
-    config.add_view(route_name='api', renderer='chsdi:templates/loader.js', http_cache=0)
 
     # Application specific
-    config.add_route('topics', 'rest/services')
+    config.add_route('topics', '/rest/services')
     config.add_route('mapservice', '/rest/services/{map}/MapServer')
     config.add_route('layersconfig', '/rest/services/{map}/MapServer/layersconfig')
     config.add_route('catalog', '/rest/services/{map}/CatalogServer')
@@ -81,8 +80,15 @@ def main(global_config, **settings):
     config.add_route('feedback', '/feedback')
 
     # Checker section
+    config.add_route('checker_home', '/checker_home')
     config.add_route('checker_dev', '/checker_dev')
 
     config.scan(ignore=['chsdi.tests', 'chsdi.models.bod'])  # required to find code decorated by view_config
-    config.add_static_view('static', 'chsdi:static', cache_max_age=3600)
+
+    # Static view for sphinx
+    config.add_static_view('_static', 'chsdi:static/doc/build/_static', cache_max_age=3600)
+    config.add_static_view('api', 'chsdi:static/doc/build/api', cache_max_age=3600)
+    config.add_static_view('services', 'chsdi:static/doc/build/services', cache_max_age=3600)
+    config.add_static_view('realeasenotes', 'chsdi:static/doc/build/releasenotes', cache_max_age=3600)
+
     return config.make_wsgi_app()

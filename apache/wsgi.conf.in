@@ -35,12 +35,7 @@ RewriteRule ^/${vars:instanceid}/wsgi/(static)/(.*)$  ${buildout:directory/chsdi
     Header unset Etag
 </LocationMatch>
 
-# Main entry point
-RewriteCond %{HTTP:X-Forwarded-Proto} !=https
-RewriteRule ^${vars:apache-entry-point}$ http://%{SERVER_NAME}/${vars:instanceid}/wsgi/static/doc/build/ [R=302,env=nocache:1,L]
-RewriteCond %{HTTP:X-Forwarded-Proto} =https
-RewriteRule ^${vars:apache-entry-point}$ https://%{SERVER_NAME}/${vars:instanceid}/wsgi/static/doc/build/ [R=302,env=nocache:1,L]
-Header always set Cache-Control "no-store, no-cache, must-revalidate" env=nocache
+RewriteRule ^${vars:apache-entry-point}$ /${vars:instanceid}/wsgi/ [PT]
 
 # Proxy pass pointing on api.geo.admin.ch project
 RewriteRule ^${vars:apache-entry-point}(qrcodegenerator|shorten|shorten.json)(.*)$ http://api.geo.admin.ch/$1$2 [P]
@@ -69,4 +64,4 @@ WSGIScriptAlias /${vars:instanceid}/wsgi ${buildout:directory/buildout/parts/mod
     WSGIApplicationGroup %{GLOBAL}
 </Location>
 
-RewriteRule ^${vars:apache-entry-point}(rest/services|ogcproxy|testi18n|loader.js|checker_dev|static|print|dev|feedback)(.*)$ /${vars:instanceid}/wsgi/$1$2 [PT]
+RewriteRule ^${vars:apache-entry-point}(realeasenotes|services|_static|api|rest/services|ogcproxy|testi18n|loader.js|checker_home|checker_dev|static|print|dev|feedback)(.*)$ /${vars:instanceid}/wsgi/$1$2 [PT]
