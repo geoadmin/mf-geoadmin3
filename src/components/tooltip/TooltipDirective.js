@@ -4,16 +4,18 @@
   goog.require('ga_browsersniffer_service');
   goog.require('ga_map_service');
   goog.require('ga_popup_service');
+  goog.require('ga_tooltip_service');
 
   var module = angular.module('ga_tooltip_directive', [
     'ga_popup_service',
     'ga_map_service',
+    'ga_tooltip_service',
     'pascalprecht.translate'
   ]);
 
   module.directive('gaTooltip',
     function($timeout, $document, $http, $q, $translate, $sce, gaPopup,
-      gaLayers, gaBrowserSniffer, gaDefinePropertiesForLayer)
+      gaLayers, gaBrowserSniffer, gaDefinePropertiesForLayer, gaMapClick)
       {
         var waitclass = 'ga-tooltip-wait',
             bodyEl = angular.element($document[0].body),
@@ -36,9 +38,14 @@
                 currentTopic,
                 vector;
 
-            map.on('click', function(evt) {
+            $scope.$on('gaTopicChange', function(event, topic) {
+              currentTopic = topic.id;
+            });
+
+            gaMapClick.listen(map, function(evt) {
               var size = map.getSize();
               var extent = map.getView().calculateExtent(size);
+              var coordinate = map.getEventCoordinate(evt);
 
               // A digest cycle is necessary for $http requests to be
               // actually sent out. Angular-1.2.0rc2 changed the $evalSync
@@ -49,12 +56,8 @@
               // digest cycle for us.
 
               $scope.$apply(function() {
-                findFeatures(evt.getCoordinate(), size, extent);
+                findFeatures(coordinate, size, extent);
               });
-            });
-
-            $scope.$on('gaTopicChange', function(event, topic) {
-              currentTopic = topic.id;
             });
 
             function findFeatures(coordinate, size, extent) {
