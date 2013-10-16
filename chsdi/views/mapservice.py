@@ -164,7 +164,7 @@ class MapService(MapServiceValidation):
         if models is None:
             raise exc.HTTPBadRequest('No GeoTable was found for %s' % layers)
 
-        maxFeatures = 100
+        maxFeatures = 50
         queries = list(self._build_queries(models, maxFeatures))
 
         features = []
@@ -219,7 +219,13 @@ class MapService(MapServiceValidation):
     @view_config(route_name='htmlpopup', renderer='jsonp')
     def htmlpopup(self):
         from pyramid.renderers import render_to_response
-        self.returnGeometry = True
+        from chsdi.models.vector import getScale
+
+        defaultExtent = '42000,30000,350000,900000'
+        defaultImageDisplay = '400,600,96'
+        self.imageDisplay = self.request.params.get('imageDisplay', defaultImageDisplay)
+        self.mapExtent = self.request.params.get('mapExtent', defaultExtent)
+        scale = getScale(self.imageDisplay, self.mapExtent)
         idlayer = self.request.matchdict.get('idlayer')
         idfeature = self.request.matchdict.get('idfeature')
         models = models_from_name(idlayer)
@@ -244,6 +250,8 @@ class MapService(MapServiceValidation):
 
         feature.update({'attribution': layer.get('attributes')['dataOwner']})
         feature.update({'fullName': layer.get('fullName')})
+        feature.update({'bbox': self.mapExtent.bounds})
+        feature.update({'scale': scale})
         response = render_to_response(
             template,
             feature,
@@ -271,8 +279,6 @@ class MapService(MapServiceValidation):
         return layer
 
     def _get_feature_resource(self, idlayer, idfeature, model):
-        from pyramid.renderers import render
-        import json
         layerName = self.translate(idlayer)
         geometryFormat = self.request.params.get('geometryFormat', 'esrijson')
         query = self.request.db.query(model)
@@ -286,9 +292,9 @@ class MapService(MapServiceValidation):
             raise exc.HTTPInternalServerError()
 
         if self.returnGeometry:
-            feature = json.loads(render(geometryFormat, feature.__geo_interface__))
+            feature = feature.__geo_interface__
         else:
-            feature = json.loads(render(geometryFormat, feature.__interface__))
+            feature = feature.__interface__
 
         if hasattr(feature, 'extra'):
             feature.extra['layerName'] = layerName

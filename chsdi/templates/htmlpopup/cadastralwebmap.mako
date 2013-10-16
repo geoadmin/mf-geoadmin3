@@ -1,6 +1,9 @@
+# -*- coding: utf-8 -*-
+
+
 <%inherit file="base.mako"/>
 
-<%def name="table_body(c,lang)">
+<%def name="table_body(c, lang)">
     % if c['attributes']['ak'] in ['D','I','F','AUT']:
         <tr><td width="150">${_('No info outside CH and FL')}</td><td></td></tr>
     % elif c['attributes']['ak'] == 'AG':
@@ -12,15 +15,15 @@
     % elif c['attributes']['ak'] == 'FR':
         <tr><td width="150">${_('link to canton geoportal')}</td><td><a href="http://www.geo.fr.ch/index.php?reset_session&linkit=1&switch_id=switch_localisation&layer_select=Adresses,ParcVect,ParcVectnum,GrpMasque,GrpSituation,FondPlanContinu,copyright,Parcellaire,ParcScan&mapsize=0&recenter_bbox=${','.join(map(str,c['bbox']))}" target="_blank">FR</a></td></tr>
     % elif c['attributes']['ak'] == 'GE':
-        <tr><td width="150">${_('link to canton geoportal')}</td><td><a href="http://etat.geneve.ch/geoportail/monsitg/?X=${c['bbox'][0] + 2000000}&Y=${c['bbox'][1] + 1000000}&SCALE=${c.scale}" target="_blank">GE</a></td></tr>
+        <tr><td width="150">${_('link to canton geoportal')}</td><td><a href="http://etat.geneve.ch/geoportail/monsitg/?X=${c['bbox'][0] + 2000000}&Y=${c['bbox'][1] + 1000000}&SCALE=${c['scale']}" target="_blank">GE</a></td></tr>
     % elif c['attributes']['ak'] == 'GL':
         <tr><td width="150">${_('link to canton geoportal')}</td><td><a href="http://geo.gl.ch/maps/Public?visibleLayers=MOpublic" target="_blank">GL</a></td></tr>
     % elif c['attributes']['ak'] == 'JU':
-        <tr><td width="150">${_('link to canton geoportal')}</td><td><a href="http://sitn.ne.ch/jura.php?Y=${c['bbox'][0]}&X=${c['bbox'][1]}&echelle=${c.scale if float(c.scale) <=5000 else 5000}&theme=cadastre" target="_blank">JU</a></td></tr>
+        <tr><td width="150">${_('link to canton geoportal')}</td><td><a href="http://sitn.ne.ch/jura.php?Y=${c['bbox'][0]}&X=${c['bbox'][1]}&echelle=${c['scale'] if float(c['scale']) <=5000 else 5000}&theme=cadastre" target="_blank">JU</a></td></tr>
     % elif c['attributes']['ak'] == 'SH':   
        <tr><td width="150">${_('link to canton geoportal')}</td><td><a href="http://www.gis.sh.ch/GIS_SH/?idp=1&uid=1&pwd=&map=10&lan=de&typ=3&bmurl=Nav@g@98@u@West@g@${c['bbox'][0]}@u@Nord@g@${c['bbox'][1]}@u@B@g@600" target="_blank">SH</a></td></tr>
     % elif c['attributes']['ak'] == 'SZ':
-        <tr><td width="150">${_('link to canton geoportal')}</td><td><a href="http://webmap.sz.ch/bm31_webmap/?idp=1&uid=3&bmurl=Nav@g@129@u@West@g@${c['bbox'][0]}@u@Nord@g@${c['bbox'][1]}@u@B@g@${c.scale}" target="_blank">SZ</a></td></tr>
+        <tr><td width="150">${_('link to canton geoportal')}</td><td><a href="http://webmap.sz.ch/bm31_webmap/?idp=1&uid=3&bmurl=Nav@g@129@u@West@g@${c['bbox'][0]}@u@Nord@g@${c['bbox'][1]}@u@B@g@${c['scale']}" target="_blank">SZ</a></td></tr>
     % elif c['attributes']['ak'] == 'SO':
         <tr><td width="150">${_('link to canton geoportal')}</td><td><a href="http://www.sogis1.so.ch/sogis/internet/pmapper/somap.php?karte=ortsplan&extent=${','.join(map(str,c['bbox']))}" target="_blank">SO</a></td></tr>
     % elif c['attributes']['ak'] == 'TI':

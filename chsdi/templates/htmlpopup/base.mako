@@ -2,6 +2,8 @@
 
 <% 
   c = pageargs['feature']
+  c['bbox'] = pageargs.get('bbox')
+  c['scale'] = pageargs.get('scale')
   c['stable_id'] = False
   protocol = request.scheme
   baseUrl = protocol + '://' + request.registry.settings['geoadminhost']
