@@ -3,7 +3,8 @@
 <% 
   c = pageargs['feature']
   c['stable_id'] = False
-  baseUrl = 'http://' + request.registry.settings['geoadminhost']
+  protocol = request.scheme
+  baseUrl = protocol + '://' + request.registry.settings['geoadminhost']
   bbox = c['bbox']
   lang = request.lang
   attribution = pageargs.get('attribution')
