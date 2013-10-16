@@ -65,3 +65,20 @@ WSGIScriptAlias /${vars:instanceid}/wsgi ${buildout:directory/buildout/parts/mod
 </Location>
 
 RewriteRule ^${vars:apache-entry-point}(realeasenotes|services|_static|api|rest/services|ogcproxy|testi18n|loader.js|checker_home|checker_dev|static|print|dev|feedback)(.*)$ /${vars:instanceid}/wsgi/$1$2 [PT]
+
+# Some services are not "free": TODO THIS IS A PROVISORY SOLUTION
+SetEnvIf Referer ".admin.ch"                             GOODREF
+SetEnvIf Referer "^http://localhost"                     GOODREF
+
+SetEnvIf X-Forwarded-For "10.226.126.116"                GOODIP
+SetEnvIf X-Forwarded-For "10.227.67.80"                  GOODIP
+SetEnvIf X-Forwarded-For "46.51.190.137"                 GOODIP
+
+<LocationMatch /${vars:instanceid}/wsgi/rest/(height|profile)>
+   Order Deny,Allow
+   Deny from all
+
+   Allow from env=GOODIP
+   Allow from env=GOODREF
+
+</LocationMatch>
