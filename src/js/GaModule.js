@@ -40,6 +40,7 @@
   goog.require('ga_search_controller');
   goog.require('ga_timeselector_controller');
   goog.require('ga_tooltip_controller');
+  goog.require('ga_accordion_controller');
 
   var module = angular.module('ga', [
     'ga_attribution',
@@ -80,6 +81,7 @@
     'ga_search_controller',
     'ga_timeselector_controller',
     'ga_tooltip_controller',
+    'ga_accordion_controller',
     'ngAnimate'
   ]);
 
