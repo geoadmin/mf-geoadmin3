@@ -8,9 +8,9 @@
     }
   }
   ul {
-    padding-left: 0.8em;
+    padding-left: 1.6em;
     ul ul {
-      padding-left: 0.8em;
+      padding-left: 2em;
     }
   }
   ul.closed {
@@ -47,5 +47,20 @@
   margin-top: 0px;
   margin-bottom: 0px;
   padding-left: 0px;
+
+  label {
+    padding-right: 12px;
+  }
+}
+
+.ga-truncate-text {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  
+  /* IE9+FontAwesome hack: https://github.com/FortAwesome/Font-Awesome/issues/1079*/
+  &:before {
+    content: "";
+  }
 }
 
