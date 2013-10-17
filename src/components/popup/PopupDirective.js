@@ -38,7 +38,13 @@
 
           // Add close popup function
           scope.close = scope.options.close ||
-          (function() {element.toggle();});
+              (function() {
+                if (angular.isDefined(scope.toggle)) {
+                  scope.toggle = false;
+                } else {
+                  element.hide();
+                }
+              });
 
           // Move the popup to the correct position
           element.addClass('popover ga-popup');
@@ -55,7 +61,7 @@
             'toggle',
             function(newVal, oldVal) {
               if (newVal != oldVal) {
-                element.toggle();
+                element.toggle(newVal);
               }
             }
           );
