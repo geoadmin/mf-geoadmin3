@@ -86,6 +86,10 @@
           preview: {
             writable: true,
             value: false
+          },
+          highlight: {
+            writable: true,
+            value: false
           }
         });
       };
@@ -529,7 +533,9 @@
          * appear in the layer manager
          */
         selectedLayersFilter: function(layer) {
-          return !layer.background && !layer.preview;
+          return !layer.background &&
+                 !layer.preview &&
+                 !layer.highlight;
         }
       };
     };
@@ -788,7 +794,7 @@
             })
           });
           gaDefinePropertiesForLayer(vector);
-          vector.preview = true;
+          vector.highlight = true;
           map.addLayer(vector);
         });
       };
