@@ -164,7 +164,7 @@
       };
 
       var getLayerTimestamps = function(olLayer) {
-        var id = olLayer.get('bodId');
+        var id = olLayer.bodId;
         var timestamps;
         if (id && gaLayers.getLayer(id) &&
             gaLayers.getLayerProperty(id, 'timeEnabled')) {
@@ -249,7 +249,7 @@
             for (var i = 0, length = olLayers.getLength(); i < length; i++) {
 
               // if there is one no- bod layer we disable the time selector
-              var id = olLayers.getAt(i).get('bodId');
+              var id = olLayers.getAt(i).bodId;
               if (!id) {
                 enabled = false;
                 break;

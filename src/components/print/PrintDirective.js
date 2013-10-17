@@ -39,7 +39,7 @@
 
       if (!(layer instanceof ol.layer.Group)) {
         var src = layer.getSource();
-        var layerConfig = gaLayers.getLayer(layer.get('bodId')) || {};
+        var layerConfig = gaLayers.getLayer(layer.bodId) || {};
         var minResolution = layerConfig.minResolution || 0;
         var maxResolution = layerConfig.maxResolution || Infinity;
 
@@ -77,7 +77,7 @@
       'layers': {
         'Layer': function(layer) {
           var enc = {
-            layer: layer.get('bodId'),
+            layer: layer.bodId,
             opacity: layer.getOpacity()
           };
 
@@ -157,7 +157,7 @@
               type: 'FeatureCollection',
               features: encFeatures
             },
-            name: layer.get('bodId'),
+            name: layer.bodId,
             opacity: (layer.opacity != null) ? layer.opacity : 1.0
           });
           return enc;
@@ -244,7 +244,7 @@
             icon: $scope.options.serviceUrl +
                 $scope.options.baseUrlPath +
                 '/wsgi/static/images/legends/' +
-                layer.get('bodId') + '_' + $translate.uses() +
+                layer.bodId + '_' + $translate.uses() +
                 '.png'
           });
           return enc;
