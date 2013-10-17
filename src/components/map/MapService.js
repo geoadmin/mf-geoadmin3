@@ -79,6 +79,22 @@
               this.set('label', val);
             }
           },
+          url: {
+            get: function() {
+              return this.get('url');
+            },
+            set: function(val) {
+              this.set('url', val);
+            }
+          },
+          type: {
+            get: function() {
+              return this.get('type');
+            },
+            set: function(val) {
+              this.set('type', val);
+            }
+          },
           background: {
             writable: true,
             value: false
@@ -583,10 +599,10 @@
         var layerSpecs = $.map(layers, function(layer) {
           if (layer.bodId) {
             return layer.bodId;
-          } else if (layer.get('type') === 'KML' && layer.get('url')) {
-            return layer.get('type') + '||' + layer.get('url');
-          } else if (layer.get('type') === 'WMS') {
-            return [layer.get('type'), layer.label, layer.get('url'),
+          } else if (layer.type === 'KML' && layer.url) {
+            return layer.type + '||' + layer.url;
+          } else if (layer.type === 'WMS') {
+            return [layer.type, layer.label, layer.url,
                 layer.getSource().getParams().LAYERS].join('||');
           }
         });
