@@ -13,13 +13,13 @@
   fullName = pageargs.get('fullName')
 %>
 
-<div class="htmlpopup_header">
+<div class="htmlpopup-header">
   <span>${fullName}</span> (${attribution})
 </div>
-<div class="htmlpopup_content">
+<div class="htmlpopup-content">
   <span>${_('Information')}</span>
   <br>
-  <table class="htmlpopup_table" cellspacing="0" cellpadding="1" padding="1 1 1 1">
+  <table>
     ${self.table_body(c, lang)}
     % if c['stable_id'] is True:
       <tr><td width="150"></td><td><a href="${baseUrl}?${c['layerBodId']}=${c['featureId']}&lang=${lang}" target="new">${_('Link to object')}</a></td></tr>

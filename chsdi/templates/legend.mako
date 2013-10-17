@@ -20,13 +20,14 @@
   times = c['attributes']['dataStatus']
 %>
 
-<div class="legend_header">
-  <p class='bod_title'><span>${c['fullName']}</span> (${c['attributes']['dataOwner']})</p>
-  <p class='office_provider'>${c['attributes']['inspireUpperName']} -> ${c['attributes']['inspireName']}</p>
-  <p class='legend_abstract'>${c['attributes']['abstract'] or ''}</p>
+<div class="legend-header">
+  <p class='bod-title'><span>${c['fullName']}</span> (${c['attributes']['dataOwner']})</p>
+  <p class='office-provider'>${c['attributes']['inspireUpperName']} -> ${c['attributes']['inspireName']}</p>
+  <p class='legend-abstract'>${c['attributes']['abstract'] or ''}</p>
 </div>
-<div class="legend_footer">
+<div class="legend-footer">
 % if hasLegend:
+  <br>
   <span>${_('Legend')}</span><br>
 % if legend_url_pdf:
   <a href="${legend_url_pdf}" target="_blank"><img src="${legend_url}"></img></a><br> 
@@ -35,7 +36,7 @@
 % endif
 % endif
   <span>${_('Information')}</span><br>
-  <table class="legend_table" cellspacing="0" cellpadding="1" padding="1 1 1 1">
+  <table>
     <tr><td>${_('geobasisdatensatz')}</td> <td>${c['attributes']['bundCollection'] or '-'}</td></tr>
     <tr><td>${_('Gueltiger Massstabsbereich')}</td> <td>${c['attributes']['scaleLimit']}</td></tr>
     <tr><td>${_('Metadaten')}</td>
