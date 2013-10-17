@@ -15,8 +15,7 @@
         var params = gaPermalink.getParams();
 
         $scope.catalogPanelOpen = function() {
-          return !gaBrowserSniffer.mobile &&
-                 angular.isDefined(params.catalogNodes);
+          return !gaBrowserSniffer.mobile;
         };
 
         $scope.layerPanelOpen = function() {
