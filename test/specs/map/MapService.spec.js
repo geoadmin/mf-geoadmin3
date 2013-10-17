@@ -110,6 +110,45 @@ describe('ga_map_service', function() {
       return layer;
     };
 
+    var addKmlLayerToMap = function() {
+      var kmlParser = new ol.parser.KML({
+        maxDepth: 1,
+        dimension: 2,
+        extractStyles: true,
+        extractAttributes: true
+      });
+      var layer = new ol.layer.Vector({
+        url: 'http://foo.ch/bar.kml',
+        type: 'KML',
+        label: 'KML',
+        opacity: 0.1,
+        visible: false,
+        source: new ol.source.Vector({
+          parser: kmlParser,
+          data: '<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:gx="http://www.google.com/kml/ext/2.2"></kml>'
+        })
+      });
+      map.addLayer(layer);
+      return layer;
+    };
+    
+    var addExternalWmsLayerToMap = function() {
+      var source = new ol.source.ImageWMS({
+        params: {LAYERS: 'ch.wms.name'},
+        url: 'http://foo.ch/wms',
+      });
+      var layer = new ol.layer.Image({
+        url: 'http://foo.ch/wms',
+        type: 'WMS',
+        label: 'The wms layer',
+        opacity: 0.4,
+        visible: false,
+        source: source
+      });
+      map.addLayer(layer);
+      return layer;
+    };
+
     beforeEach(function() {
       map = new ol.Map({});
 
@@ -136,7 +175,7 @@ describe('ga_map_service', function() {
 
     describe('add/remove layers', function() {
       it('changes permalink', inject(function($rootScope) {
-        var fooLayer, barLayer;
+        var fooLayer, barLayer, kmlLayer, wmsLayer;
 
         expect(permalink.getParams().layers).to.be(undefined);
 
@@ -147,7 +186,17 @@ describe('ga_map_service', function() {
         barLayer = addLayerToMap('bar');
         $rootScope.$digest();
         expect(permalink.getParams().layers).to.eql('foo,bar');
-
+        
+        kmlLayer = addKmlLayerToMap();
+        $rootScope.$digest();
+        expect(permalink.getParams().layers).to.eql('foo,bar,KML||http://foo.ch/bar.kml');
+         
+        wmsLayer = addExternalWmsLayerToMap(); 
+        $rootScope.$digest();
+        expect(permalink.getParams().layers).to.eql('foo,bar,KML||http://foo.ch/bar.kml,WMS||The wms layer||http://foo.ch/wms||ch.wms.name');
+        
+        map.removeLayer(wmsLayer);
+        map.removeLayer(kmlLayer); 
         map.removeLayer(fooLayer);
         $rootScope.$digest();
         expect(permalink.getParams().layers).to.eql('bar');
