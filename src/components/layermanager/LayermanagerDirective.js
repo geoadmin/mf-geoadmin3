@@ -22,7 +22,8 @@
   });
 
   module.directive('gaLayermanager',
-      function(gaLayers, gaLayerMetadataPopup, gaBrowserSniffer) {
+      function(gaLayers, gaLayerMetadataPopup, gaBrowserSniffer,
+          gaLayerFilters) {
         return {
           restrict: 'A',
           replace: true,
@@ -41,24 +42,7 @@
 
             scope.layers = map.getLayers().getArray();
 
-            // layerFilter is the ngRepeat filter. We filter out background
-            // layers and preview layers.
-            scope.layerFilter = function(layer) {
-              return !layer.background && !layer.preview;
-            };
-
-            scope.getLayerLabel = function(layer) {
-              var label;
-              var bodId = layer.get('bodId');
-              if (gaLayers.getLayer(bodId)) {
-                // BOD layer
-                label = gaLayers.getLayerProperty(bodId, 'label');
-              } else {
-                // Non-BOD layer
-                label = layer.get('label');
-              }
-              return label;
-            };
+            scope.layerFilter = gaLayerFilters.selectedLayersFilter;
 
             scope.removeLayerFromMap = function(layer) {
               map.removeLayer(layer);
@@ -72,11 +56,11 @@
             };
 
             scope.isBodLayer = function(layer) {
-              return !!gaLayers.getLayer(layer.get('bodId'));
+              return !!gaLayers.getLayer(layer.bodId);
             };
 
             scope.displayLayerMetadata = function(e, layer) {
-              var bodId = layer.get('bodId');
+              var bodId = layer.bodId;
               if (gaLayers.getLayer(bodId)) {
                 gaLayerMetadataPopup(bodId);
               }

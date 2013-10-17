@@ -63,11 +63,47 @@
               this.setOpacity(1 - val);
             }
           },
+          bodId: {
+            get: function() {
+              return this.get('bodId');
+            },
+            set: function(val) {
+              this.set('bodId', val);
+            }
+          },
+          label: {
+            get: function() {
+              return this.get('label');
+            },
+            set: function(val) {
+              this.set('label', val);
+            }
+          },
+          url: {
+            get: function() {
+              return this.get('url');
+            },
+            set: function(val) {
+              this.set('url', val);
+            }
+          },
+          type: {
+            get: function() {
+              return this.get('type');
+            },
+            set: function(val) {
+              this.set('type', val);
+            }
+          },
           background: {
             writable: true,
             value: false
           },
           preview: {
+            writable: true,
+            value: false
+          },
+          highlight: {
             writable: true,
             value: false
           }
@@ -96,13 +132,13 @@
           var layer = new ol.layer.Image({
             url: options.url,
             type: 'WMS',
-            label: options.label,
             opacity: options.opacity,
             visible: options.visible,
             source: source
           });
           gaDefinePropertiesForLayer(layer);
           layer.preview = options.preview;
+          layer.label = options.label;
           return layer;
         };
 
@@ -336,7 +372,6 @@
               });
             }
             olLayer = new ol.layer.Tile({
-              bodId: bodId,
               minResolution: layer.minResolution,
               maxResolution: layer.maxResolution,
               opacity: layer.opacity,
@@ -366,7 +401,6 @@
                 });
               }
               olLayer = new ol.layer.Image({
-                bodId: bodId,
                 minResolution: layer.minResolution,
                 maxResolution: layer.maxResolution,
                 opacity: layer.opacity,
@@ -383,7 +417,6 @@
                 });
               }
               olLayer = new ol.layer.Tile({
-                bodId: bodId,
                 minResolution: layer.minResolution,
                 maxResolution: layer.maxResolution,
                 opacity: layer.opacity,
@@ -398,7 +431,6 @@
               subLayers[i] = this.getOlLayerById(subLayerIds[i]);
             }
             olLayer = new ol.layer.Group({
-              bodId: bodId,
               minResolution: layer.minResolution,
               maxResolution: layer.maxResolution,
               opacity: layer.opacity,
@@ -407,6 +439,8 @@
           }
           if (angular.isDefined(olLayer)) {
             gaDefinePropertiesForLayer(olLayer);
+            olLayer.bodId = bodId;
+            olLayer.label = layer.label;
           }
           return olLayer;
         };
@@ -490,11 +524,34 @@
         getMapOverlayForBodId: function(map, bodId) {
           var layer;
           map.getLayers().forEach(function(l) {
-            if (l.get('bodId') == bodId && !l.background) {
+            if (l.bodId == bodId && !l.background) {
               layer = l;
             }
           });
           return layer;
+        }
+      };
+    };
+  });
+
+  /**
+   * Service provides different kinds of filter for
+   * layers in the map
+   */
+  module.provider('gaLayerFilters', function() {
+    this.$get = function() {
+      return {
+        /**
+         * Filters out background layers, preview
+         * layers and highlight layers and drawing
+         * layers. In other words, all layers that
+         * were actively added by the user and that
+         * appear in the layer manager
+         */
+        selectedLayersFilter: function(layer) {
+          return !layer.background &&
+                 !layer.preview &&
+                 !layer.highlight;
         }
       };
     };
@@ -516,7 +573,7 @@
   module.provider('gaLayersPermalinkManager', function() {
 
     this.$get = function($rootScope, gaLayers, gaPermalink, $translate, $http,
-        gaKml, gaMapUtils, gaWms) {
+        gaKml, gaMapUtils, gaWms, gaLayerFilters) {
 
       var layersParamValue = gaPermalink.getParams().layers;
       var layersOpacityParamValue = gaPermalink.getParams().layers_opacity;
@@ -540,12 +597,12 @@
 
       function updateLayersParam(layers) {
         var layerSpecs = $.map(layers, function(layer) {
-          if (layer.get('bodId')) {
-            return layer.get('bodId');
-          } else if (layer.get('type') === 'KML' && layer.get('url')) {
-            return layer.get('type') + '||' + layer.get('url');
-          } else if (layer.get('type') === 'WMS') {
-            return [layer.get('type'), layer.get('label'), layer.get('url'),
+          if (layer.bodId) {
+            return layer.bodId;
+          } else if (layer.type === 'KML' && layer.url) {
+            return layer.type + '||' + layer.url;
+          } else if (layer.type === 'WMS') {
+            return [layer.type, layer.label, layer.url,
                 layer.getSource().getParams().LAYERS].join('||');
           }
         });
@@ -592,9 +649,7 @@
 
         scope.layers = map.getLayers().getArray();
 
-        scope.layerFilter = function(layer) {
-          return !layer.background && !layer.preview;
-        };
+        scope.layerFilter = gaLayerFilters.selectedLayersFilter;
 
         scope.$watchCollection('layers | filter:layerFilter',
             function(layers) {
@@ -637,8 +692,7 @@
             if (gaLayers.getLayer(layerSpec)) {
               // BOD layer.
               // Do not consider BOD layers that are already in the map.
-              var bodId = layerSpec;
-              if (!gaMapUtils.getMapOverlayForBodId(map, bodId)) {
+              if (!gaMapUtils.getMapOverlayForBodId(map, layerSpec)) {
                 layer = gaLayers.getOlLayerById(layerSpec);
               }
               if (angular.isDefined(layer)) {
@@ -756,7 +810,7 @@
             })
           });
           gaDefinePropertiesForLayer(vector);
-          vector.preview = true;
+          vector.highlight = true;
           map.addLayer(vector);
         });
       };

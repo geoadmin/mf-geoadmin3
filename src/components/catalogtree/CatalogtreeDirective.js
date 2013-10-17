@@ -17,7 +17,7 @@
    */
   module.directive('gaCatalogtree',
       function($http, $translate, gaPermalink, gaCatalogtreeMapUtils,
-          gaLayers) {
+          gaLayers, gaLayerFilters) {
 
         return {
           restrict: 'A',
@@ -116,7 +116,7 @@
                 }, angular.noop);
                 for (i = 0; i < layers.length; ++i) {
                   var layer = layers[i];
-                  var bodId = layer.get('bodId');
+                  var bodId = layer.bodId;
                   if (!layer.background && leaves.hasOwnProperty(bodId)) {
                     leaves[bodId].selectedOpen = true;
                   }
@@ -170,9 +170,7 @@
               });
             });
 
-            scope.layerFilter = function(layer) {
-              return !layer.background && !layer.preview;
-            };
+            scope.layerFilter = gaLayerFilters.selectedLayersFilter;
 
             scope.$watchCollection('layers | filter:layerFilter',
                 function(layers) {
@@ -180,7 +178,7 @@
               if (angular.isDefined(scope.root)) {
                 layerBodIds = [];
                 angular.forEach(layers, function(layer) {
-                  var bodId = layer.get('bodId');
+                  var bodId = layer.bodId;
                   if (angular.isDefined(bodId)) {
                     layerBodIds.push(bodId);
                   }
