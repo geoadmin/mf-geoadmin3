@@ -35,7 +35,7 @@
 % endif
 % endif
   <span>${_('Information')}</span><br>
-  <table class="legend_table" border="0" cellspacing="0" cellpadding="1" padding="1 1 1 1">
+  <table class="legend_table" cellspacing="0" cellpadding="1" padding="1 1 1 1">
     <tr><td>${_('geobasisdatensatz')}</td> <td>${c['attributes']['bundCollection'] or '-'}</td></tr>
     <tr><td>${_('Gueltiger Massstabsbereich')}</td> <td>${c['attributes']['scaleLimit']}</td></tr>
     <tr><td>${_('Metadaten')}</td>

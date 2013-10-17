@@ -19,7 +19,7 @@
 <div class="htmlpopup_content">
   <span>${_('Information')}</span>
   <br>
-  <table class="htmlpopup_table" border="0" cellspacing="0" cellpadding="1" padding="1 1 1 1">
+  <table class="htmlpopup_table" cellspacing="0" cellpadding="1" padding="1 1 1 1">
     ${self.table_body(c, lang)}
     % if c['stable_id'] is True:
       <tr><td width="150"></td><td><a href="${baseUrl}?${c['layerBodId']}=${c['featureId']}&lang=${lang}" target="new">${_('Link to object')}</a></td></tr>
