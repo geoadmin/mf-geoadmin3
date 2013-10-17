@@ -29,7 +29,7 @@ class Checker(object):
     def make_response(self, msg):
         return Response(body=msg, status_int=self.status_int)
 
-    @view_config(route_name='checker_home')
+    @view_config(route_name='checker')
     def home(self):
         _url = self.request.route_url('home')
         return self.make_response(self.testurl(_url))
