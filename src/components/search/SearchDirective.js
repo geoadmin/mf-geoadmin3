@@ -324,7 +324,7 @@
                 });
 
               scope.searchableLayersFilter = function(layer) {
-                var layerBodId = layer.get('bodId');
+                var layerBodId = layer.bodId;
                 return !layer.preview && angular.isDefined(layerBodId) &&
                     gaLayers.getLayerProperty(layerBodId, 'searchable');
               };
@@ -333,7 +333,7 @@
                   function(layers) {
                 var layerBodIds = [];
                 angular.forEach(layers, function(layer) {
-                  var bodId = layer.get('bodId');
+                  var bodId = layer.bodId;
                   layerBodIds.push(bodId);
                 });
                 scope.searchableLayers = layerBodIds;

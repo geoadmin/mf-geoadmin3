@@ -63,6 +63,22 @@
               this.setOpacity(1 - val);
             }
           },
+          bodId: {
+            get: function() {
+              return this.get('bodId');
+            },
+            set: function(val) {
+              this.set('bodId', val);
+            }
+          },
+          label: {
+            get: function() {
+              return this.get('label');
+            },
+            set: function(val) {
+              this.set('label', val);
+            }
+          },
           background: {
             writable: true,
             value: false
@@ -336,7 +352,6 @@
               });
             }
             olLayer = new ol.layer.Tile({
-              bodId: bodId,
               minResolution: layer.minResolution,
               maxResolution: layer.maxResolution,
               opacity: layer.opacity,
@@ -366,7 +381,6 @@
                 });
               }
               olLayer = new ol.layer.Image({
-                bodId: bodId,
                 minResolution: layer.minResolution,
                 maxResolution: layer.maxResolution,
                 opacity: layer.opacity,
@@ -383,7 +397,6 @@
                 });
               }
               olLayer = new ol.layer.Tile({
-                bodId: bodId,
                 minResolution: layer.minResolution,
                 maxResolution: layer.maxResolution,
                 opacity: layer.opacity,
@@ -398,7 +411,6 @@
               subLayers[i] = this.getOlLayerById(subLayerIds[i]);
             }
             olLayer = new ol.layer.Group({
-              bodId: bodId,
               minResolution: layer.minResolution,
               maxResolution: layer.maxResolution,
               opacity: layer.opacity,
@@ -407,6 +419,7 @@
           }
           if (angular.isDefined(olLayer)) {
             gaDefinePropertiesForLayer(olLayer);
+            olLayer.bodId = bodId;
           }
           return olLayer;
         };
@@ -490,7 +503,7 @@
         getMapOverlayForBodId: function(map, bodId) {
           var layer;
           map.getLayers().forEach(function(l) {
-            if (l.get('bodId') == bodId && !l.background) {
+            if (l.bodId == bodId && !l.background) {
               layer = l;
             }
           });
@@ -540,12 +553,12 @@
 
       function updateLayersParam(layers) {
         var layerSpecs = $.map(layers, function(layer) {
-          if (layer.get('bodId')) {
-            return layer.get('bodId');
+          if (layer.bodId) {
+            return layer.bodId;
           } else if (layer.get('type') === 'KML' && layer.get('url')) {
             return layer.get('type') + '||' + layer.get('url');
           } else if (layer.get('type') === 'WMS') {
-            return [layer.get('type'), layer.get('label'), layer.get('url'),
+            return [layer.get('type'), layer.label, layer.get('url'),
                 layer.getSource().getParams().LAYERS].join('||');
           }
         });
@@ -637,8 +650,7 @@
             if (gaLayers.getLayer(layerSpec)) {
               // BOD layer.
               // Do not consider BOD layers that are already in the map.
-              var bodId = layerSpec;
-              if (!gaMapUtils.getMapOverlayForBodId(map, bodId)) {
+              if (!gaMapUtils.getMapOverlayForBodId(map, layerSpec)) {
                 layer = gaLayers.getOlLayerById(layerSpec);
               }
               if (angular.isDefined(layer)) {

@@ -103,9 +103,9 @@ describe('ga_map_service', function() {
 
     var addLayerToMap = function(bodId) {
       var layer = new ol.layer.Tile({
-        bodId: bodId,
         source: new ol.source.OSM()
       });
+      layer.bodId = bodId;
       map.addLayer(layer);
       return layer;
     };

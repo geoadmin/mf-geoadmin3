@@ -207,7 +207,7 @@
             function getLayersToQuery(layers) {
               var layersToQuery = [];
               map.getLayers().forEach(function(l) {
-                var bodId = l.get('bodId');
+                var bodId = l.bodId;
                 if (gaLayers.getLayer(bodId) &&
                     gaLayers.getLayerProperty(bodId, 'queryable') &&
                     l.visible &&

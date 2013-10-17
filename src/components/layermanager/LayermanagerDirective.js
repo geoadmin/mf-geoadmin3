@@ -49,13 +49,13 @@
 
             scope.getLayerLabel = function(layer) {
               var label;
-              var bodId = layer.get('bodId');
+              var bodId = layer.bodId;
               if (gaLayers.getLayer(bodId)) {
                 // BOD layer
                 label = gaLayers.getLayerProperty(bodId, 'label');
               } else {
                 // Non-BOD layer
-                label = layer.get('label');
+                label = layer.label;
               }
               return label;
             };
@@ -72,11 +72,11 @@
             };
 
             scope.isBodLayer = function(layer) {
-              return !!gaLayers.getLayer(layer.get('bodId'));
+              return !!gaLayers.getLayer(layer.bodId);
             };
 
             scope.displayLayerMetadata = function(e, layer) {
-              var bodId = layer.get('bodId');
+              var bodId = layer.bodId;
               if (gaLayers.getLayer(bodId)) {
                 gaLayerMetadataPopup(bodId);
               }

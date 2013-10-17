@@ -116,7 +116,7 @@
                 }, angular.noop);
                 for (i = 0; i < layers.length; ++i) {
                   var layer = layers[i];
-                  var bodId = layer.get('bodId');
+                  var bodId = layer.bodId;
                   if (!layer.background && leaves.hasOwnProperty(bodId)) {
                     leaves[bodId].selectedOpen = true;
                   }
@@ -180,7 +180,7 @@
               if (angular.isDefined(scope.root)) {
                 layerBodIds = [];
                 angular.forEach(layers, function(layer) {
-                  var bodId = layer.get('bodId');
+                  var bodId = layer.bodId;
                   if (angular.isDefined(bodId)) {
                     layerBodIds.push(bodId);
                   }
