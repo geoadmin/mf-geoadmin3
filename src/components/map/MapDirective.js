@@ -1,14 +1,15 @@
 (function() {
   goog.provide('ga_map_directive');
+  goog.require('ga_debounce_service');
   goog.require('ga_permalink');
 
   var module = angular.module('ga_map_directive', [
+    'ga_debounce_service',
     'ga_permalink'
   ]);
 
   module.directive('gaMap',
-      function($parse, $timeout, gaPermalink, gaBrowserSniffer, 
-               gaLayers) {
+      function($parse, gaPermalink, gaBrowserSniffer, gaLayers, gaDebounce) {
           return {
             restrict: 'A',
             scope: {
@@ -39,28 +40,20 @@
                 gaPermalink.deleteParam('crosshair');
               }
 
-              // Update permalink based on view states. We use a timeout
-              // not to incur an Angular dirty-check cycle on each view
-              // change event.
-              var timeoutPromise = null;
+              // Update permalink based on view states.
               var updatePermalink = function() {
-                if (timeoutPromise !== null) {
-                  $timeout.cancel(timeoutPromise);
+                var center = view.getCenter();
+                var zoom = view.getZoom();
+                // when the directive is instantiated the view may not
+                // be defined yet.
+                if (center && zoom !== undefined) {
+                  var x = center[1].toFixed(2);
+                  var y = center[0].toFixed(2);
+                  gaPermalink.updateParams({X: x, Y: y, zoom: zoom});
                 }
-                timeoutPromise = $timeout(function() {
-                  var center = view.getCenter();
-                  var zoom = view.getZoom();
-                  // when the directive is instantiated the view may not
-                  // be defined yet.
-                  if (center && zoom !== undefined) {
-                    var x = center[1].toFixed(2);
-                    var y = center[0].toFixed(2);
-                    gaPermalink.updateParams({X: x, Y: y, zoom: zoom});
-                  }
-                  timeoutPromise = null;
-                }, 1000);
               };
-              view.on('change', updatePermalink);
+              view.on('change', gaDebounce.debounce(updatePermalink, 1000,
+                  false));
               updatePermalink();
 
               if (!gaBrowserSniffer.touchDevice) {
