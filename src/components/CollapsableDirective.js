@@ -14,8 +14,6 @@
     return {
       restrict: 'A',
       link: function(scope, element, attr) {
-        //console.log(attr);
-        //console.log(scope[attr.gaCollapsable]());
         if (scope[attr.gaCollapsable]()) {
           element.trigger('click');
         }
