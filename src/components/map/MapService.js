@@ -529,11 +529,6 @@
       var layerVisibilities = layersVisibilityParamValue ?
           layersVisibilityParamValue.split(',') : [];
 
-      var allowThirdData = (angular.isDefined(layersParamValue) &&
-          layersParamValue.match(/(KML\|\||WMS\|\|)/g) &&
-          confirm($translate('third_party_data_warning')));
-
-
       function isKmlLayer(layerSpec) {
         return (layerSpec && layerSpec.indexOf('KML||') === 0);
       }
@@ -627,6 +622,10 @@
         });
 
         var deregister = scope.$on('gaLayersChange', function() {
+          var allowThirdData = (angular.isDefined(layersParamValue) &&
+              layersParamValue.match(/(KML\|\||WMS\|\|)/g) &&
+              confirm($translate('third_party_data_warning')));
+
           angular.forEach(layerSpecs, function(layerSpec, index) {
             var layer;
             var opacity = (index < layerOpacities.length) ?
