@@ -1,17 +1,17 @@
 <%inherit file="base.mako"/>
 
 <%def name="table_body(c,lang)">
-    <tr><td width="150" valign="top">${_('nffirmenname')}</td>    <td>${c['attributes']['firmenname'] or '-'}</td></tr>
-    <tr><td width="150">${_('nfname')}</td>    <td>${c['attributes']['name'] or '-'}</td></tr>
-    <tr><td width="150">${_('grundadresse')}</td>
+    <tr><td class="cell-left">${_('nffirmenname')}</td>    <td>${c['attributes']['firmenname'] or '-'}</td></tr>
+    <tr><td class="cell-left">${_('nfname')}</td>    <td>${c['attributes']['name'] or '-'}</td></tr>
+    <tr><td class="cell-left">${_('grundadresse')}</td>
       % if c['attributes']['adresse'].strip() == '#':
            <td>-</td>
       % else:  
            <td>${c['attributes']['adresse'].replace("#","<br>") or '-'}</td>
       % endif
     </tr>
-    <tr><td width="150">${_('grundtel')}</td>    <td>${c['attributes']['telefon'] or '-'}</td></tr>
-     <tr><td width="150">${_('grundurl')}</td>
+    <tr><td class="cell-left">${_('grundtel')}</td>    <td>${c['attributes']['telefon'] or '-'}</td></tr>
+     <tr><td class="cell-left">${_('grundurl')}</td>
       % if c['attributes']['email'] == None:
        <td>-</td>
       % elif "@" in c['attributes']['email']:

@@ -7,7 +7,7 @@
     zusta = 'zusta_%s' % lang
 %>
 
-    <tr><td width="150">${_('tt_ch.bafu.fauna-wildtierkorridor_national_nr')}</td>       <td>${c['attributes']['nr'] or '-'}</td></tr>
-    <tr><td width="150">${_('tt_ch.bafu.fauna-wildtierkorridor_national_zustand')}</td>  <td>${c['attributes'][zusta] or '-'}</td></tr>
+    <tr><td class="cell-left">${_('tt_ch.bafu.fauna-wildtierkorridor_national_nr')}</td>       <td>${c['attributes']['nr'] or '-'}</td></tr>
+    <tr><td class="cell-left">${_('tt_ch.bafu.fauna-wildtierkorridor_national_zustand')}</td>  <td>${c['attributes'][zusta] or '-'}</td></tr>
 </%def>
 

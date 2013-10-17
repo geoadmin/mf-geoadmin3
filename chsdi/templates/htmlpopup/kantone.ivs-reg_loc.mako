@@ -3,26 +3,26 @@
 <%inherit file="base.mako"/>
 
 <%def name="table_body(c, lang)">
-    <tr><td width="150">${_('ivs_objekt')}</td>                 <td>${c['attributes']['ivs_nummer']}</td></tr>
+    <tr><td class="cell-left">${_('ivs_objekt')}</td>                 <td>${c['attributes']['ivs_nummer']}</td></tr>
     % if lang =='fr':
-        <tr><td width="150">${_('ivs_signatur')}</td>           <td>${c['attributes']['ivs_signatur_fr']}</td></tr>
+        <tr><td class="cell-left">${_('ivs_signatur')}</td>           <td>${c['attributes']['ivs_signatur_fr']}</td></tr>
     % elif lang == 'it':
-        <tr><td width="150">${_('ivs_signatur')}</td>           <td>${c['attributes']['ivs_signatur_it']}</td></tr>
+        <tr><td class="cell-left">${_('ivs_signatur')}</td>           <td>${c['attributes']['ivs_signatur_it']}</td></tr>
     % else:
-        <tr><td width="150">${_('ivs_signatur')}</td>           <td>${c['attributes']['ivs_signatur_de']}</td></tr>
+        <tr><td class="cell-left">${_('ivs_signatur')}</td>           <td>${c['attributes']['ivs_signatur_de']}</td></tr>
     % endif
-    <tr><td width="150">${_('gemkanton')}</td>                  <td>${c['attributes']['ivs_kanton']}</td></tr>
-    <tr><td width="150">${_('ivs_nat_historischen')}</td>       <td>${c['attributes']['ivs_sladatehist'] or '-'}</td></tr>
-    <tr><td width="150">${_('ivs_nat_morphologischen')}</td>    <td>${c['attributes']['ivs_sladatemorph']}</td></tr>
+    <tr><td class="cell-left">${_('gemkanton')}</td>                  <td>${c['attributes']['ivs_kanton']}</td></tr>
+    <tr><td class="cell-left">${_('ivs_nat_historischen')}</td>       <td>${c['attributes']['ivs_sladatehist'] or '-'}</td></tr>
+    <tr><td class="cell-left">${_('ivs_nat_morphologischen')}</td>    <td>${c['attributes']['ivs_sladatemorph']}</td></tr>
     % if c['attributes']['ivs_slabedeutung'] =='3':
-        <tr><td width="150">${_('ivs_slabedeutung')}</td>       <td>${_('national')}</td></tr>
+        <tr><td class="cell-left">${_('ivs_slabedeutung')}</td>       <td>${_('national')}</td></tr>
     % elif c['attributes']['ivs_slabedeutung'] =='2':
-        <tr><td width="150">${_('ivs_slabedeutung')}</td>       <td>${_('regional')}</td></tr>
+        <tr><td class="cell-left">${_('ivs_slabedeutung')}</td>       <td>${_('regional')}</td></tr>
     % elif c['attributes']['ivs_slabedeutung'] =='1':
-        <tr><td width="150">${_('ivs_slabedeutung')}</td>       <td>${_('lokal')}</td></tr>
+        <tr><td class="cell-left">${_('ivs_slabedeutung')}</td>       <td>${_('lokal')}</td></tr>
     % endif
-    <tr><td width="150">${_('ivs_slaname')}</td><td>${c['attributes']['ivs_slaname']}</td></tr> 
-    <tr><td width="150" valign="top">${_('ivs_documentation')}</td>
+    <tr><td class="cell-left">${_('ivs_slaname')}</td><td>${c['attributes']['ivs_slaname']}</td></tr> 
+    <tr><td class="cell-left">${_('ivs_documentation')}</td>
 <%
     from urllib2 import urlopen
     PDF_Full = c['attributes']['ivs_sortsla']

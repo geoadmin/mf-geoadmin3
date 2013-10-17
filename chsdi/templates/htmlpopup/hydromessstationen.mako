@@ -20,10 +20,10 @@
 
     %>
 % if image is None:
-    <tr><td width="150">${_('stationsname')}</td>   <td>${c['featureId']}</td></tr>
-    <tr><td width="150">${_('stationsnr')}</td>     <td>${c['featureId']}</td></tr>
+    <tr><td class="cell-left">${_('stationsname')}</td>   <td>${c['featureId']}</td></tr>
+    <tr><td class="cell-left">${_('stationsnr')}</td>     <td>${c['featureId']}</td></tr>
 % endif
-    <tr><td width="150" style="vertical-align: top;">${_('hydromessstationen_graph')}</td>
+    <tr><td class="cell-left">${_('hydromessstationen_graph')}</td>
         <td>
 % if image is not None:
             <img src="${image}"/>
@@ -31,11 +31,11 @@
             -
 % endif
         </td>
-    <tr><td width="150">${_('date_time')}</td>   <td>${html_attr['date_time']}</td></tr>
-    <tr><td width="150">${_('abfluss')}</td>    <td>${html_attr['abfluss']}</td></tr>
-    <tr><td width="150">${_('wasserstand')}</td>    <td>${html_attr['wasserstand']}</td></tr>
-    <tr><td width="150">${_('wassertemperatur')}</td>    <td>${html_attr['wassertemperatur']}</td></tr>
-    <tr><td width="150">${_('aktuelle_daten')}</td>
+    <tr><td class="cell-left">${_('date_time')}</td>   <td>${html_attr['date_time']}</td></tr>
+    <tr><td class="cell-left">${_('abfluss')}</td>    <td>${html_attr['abfluss']}</td></tr>
+    <tr><td class="cell-left">${_('wasserstand')}</td>    <td>${html_attr['wasserstand']}</td></tr>
+    <tr><td class="cell-left">${_('wassertemperatur')}</td>    <td>${html_attr['wassertemperatur']}</td></tr>
+    <tr><td class="cell-left">${_('aktuelle_daten')}</td>
       % if lang in ('de', 'en', 'rm'):
            <td><a target="_blank" href="http://www.hydrodaten.admin.ch/de/${c['featureId']}.html">${_('url') or '-'}</a></td>
       % elif lang == 'fr':
