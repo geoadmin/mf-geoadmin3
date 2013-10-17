@@ -3,7 +3,7 @@
     <button type="button" ng-click="removeLayerFromMap(layer)" class="btn btn-primary btn-xs">&times;</button>
     <label>
       <input type="checkbox" ng-model="layer.visible" />
-      {{getLayerLabel(layer)}}
+      {{layer.label}}
     </label>
     <span class="layertools">
       <label class="transparency">

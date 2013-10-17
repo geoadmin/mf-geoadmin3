@@ -420,6 +420,7 @@
           if (angular.isDefined(olLayer)) {
             gaDefinePropertiesForLayer(olLayer);
             olLayer.bodId = bodId;
+            olLayer.label = layer.label;
           }
           return olLayer;
         };

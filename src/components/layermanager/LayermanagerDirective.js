@@ -47,19 +47,6 @@
               return !layer.background && !layer.preview;
             };
 
-            scope.getLayerLabel = function(layer) {
-              var label;
-              var bodId = layer.bodId;
-              if (gaLayers.getLayer(bodId)) {
-                // BOD layer
-                label = gaLayers.getLayerProperty(bodId, 'label');
-              } else {
-                // Non-BOD layer
-                label = layer.label;
-              }
-              return label;
-            };
-
             scope.removeLayerFromMap = function(layer) {
               map.removeLayer(layer);
             };
