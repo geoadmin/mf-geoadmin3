@@ -57,7 +57,7 @@
           },
           invertedOpacity: {
             get: function() {
-              return (1 - this.getOpacity()) + '';
+              return (Math.round((1 - this.getOpacity()) * 100) / 100) + '';
             },
             set: function(val) {
               this.setOpacity(1 - val);
