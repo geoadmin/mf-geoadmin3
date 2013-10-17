@@ -2,12 +2,14 @@
   goog.provide('ga_timeselector_directive');
 
   goog.require('ga_browsersniffer_service');
+  goog.require('ga_debounce_service');
   goog.require('ga_map_service');
   goog.require('ga_permalink_service');
   goog.require('ga_slider_directive');
 
   var module = angular.module('ga_timeselector_directive', [
     'ga_browsersniffer_service',
+    'ga_debounce_service',
     'ga_map_service',
     'ga_permalink_service',
     'ga_slider_directive',
@@ -216,7 +218,7 @@
   });
 
   module.directive('gaTimeSelector',
-    function($rootScope, gaBrowserSniffer, gaPermalink, gaLayers) {
+    function($rootScope, gaBrowserSniffer, gaPermalink, gaLayers, gaDebounce) {
       return {
         restrict: 'A',
         templateUrl: function(element, attrs) {
@@ -314,10 +316,9 @@
               }
             }
           });
-
           scope.$watch('currentYear', function(year) {
             if (scope.isActive) {
-              applyNewYear(year);
+              applyNewYearDebounced(year);
             }
           });
 
@@ -342,6 +343,8 @@
               $rootScope.$broadcast('gaTimeSelectorChange', newYear);
             }
           };
+          var applyNewYearDebounced = gaDebounce.debounce(applyNewYear, 200,
+              false);
 
           /**
            * Tranform a year given by the select box or the slider component
