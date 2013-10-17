@@ -174,7 +174,8 @@ describe('ga_map_service', function() {
     });
 
     describe('add/remove layers', function() {
-      it('changes permalink', inject(function($rootScope) {
+      it('changes permalink', inject(function($rootScope,
+                                              gaDefinePropertiesForLayer) {
         var fooLayer, barLayer, kmlLayer, wmsLayer;
 
         expect(permalink.getParams().layers).to.be(undefined);
@@ -188,10 +189,12 @@ describe('ga_map_service', function() {
         expect(permalink.getParams().layers).to.eql('foo,bar');
         
         kmlLayer = addKmlLayerToMap();
+        gaDefinePropertiesForLayer(kmlLayer);
         $rootScope.$digest();
         expect(permalink.getParams().layers).to.eql('foo,bar,KML||http://foo.ch/bar.kml');
          
         wmsLayer = addExternalWmsLayerToMap(); 
+        gaDefinePropertiesForLayer(wmsLayer);
         $rootScope.$digest();
         expect(permalink.getParams().layers).to.eql('foo,bar,KML||http://foo.ch/bar.kml,WMS||The wms layer||http://foo.ch/wms||ch.wms.name');
         
