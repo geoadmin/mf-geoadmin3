@@ -17,7 +17,7 @@
    */
   module.directive('gaCatalogtree',
       function($http, $translate, gaPermalink, gaCatalogtreeMapUtils,
-          gaLayers) {
+          gaLayers, gaLayerFilters) {
 
         return {
           restrict: 'A',
@@ -170,9 +170,7 @@
               });
             });
 
-            scope.layerFilter = function(layer) {
-              return !layer.background && !layer.preview;
-            };
+            scope.layerFilter = gaLayerFilters.selectedLayersFilter;
 
             scope.$watchCollection('layers | filter:layerFilter',
                 function(layers) {

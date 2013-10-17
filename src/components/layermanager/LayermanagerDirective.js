@@ -22,7 +22,8 @@
   });
 
   module.directive('gaLayermanager',
-      function(gaLayers, gaLayerMetadataPopup, gaBrowserSniffer) {
+      function(gaLayers, gaLayerMetadataPopup, gaBrowserSniffer,
+          gaLayerFilters) {
         return {
           restrict: 'A',
           replace: true,
@@ -41,11 +42,7 @@
 
             scope.layers = map.getLayers().getArray();
 
-            // layerFilter is the ngRepeat filter. We filter out background
-            // layers and preview layers.
-            scope.layerFilter = function(layer) {
-              return !layer.background && !layer.preview;
-            };
+            scope.layerFilter = gaLayerFilters.selectedLayersFilter;
 
             scope.removeLayerFromMap = function(layer) {
               map.removeLayer(layer);

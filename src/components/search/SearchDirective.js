@@ -19,7 +19,7 @@
   module.directive('gaSearch',
       function($compile, $translate, $timeout, gaMapUtils, gaLayers,
         gaLayerMetadataPopup, gaPermalink, gaUrlUtils, gaGetCoordinate,
-        gaBrowserSniffer) {
+        gaBrowserSniffer, gaLayerFilters) {
           var currentTopic,
               footer = [
             '<div class="search-footer clearfix">',
@@ -325,8 +325,9 @@
 
               scope.searchableLayersFilter = function(layer) {
                 var layerBodId = layer.bodId;
-                return !layer.preview && angular.isDefined(layerBodId) &&
-                    gaLayers.getLayerProperty(layerBodId, 'searchable');
+                return gaLayerFilters.selectedLayersFilter(layer) &&
+                       angular.isDefined(layerBodId) &&
+                       gaLayers.getLayerProperty(layerBodId, 'searchable');
               };
 
               scope.$watchCollection('layers | filter:searchableLayersFilter',

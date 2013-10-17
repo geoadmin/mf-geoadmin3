@@ -112,13 +112,13 @@
           var layer = new ol.layer.Image({
             url: options.url,
             type: 'WMS',
-            label: options.label,
             opacity: options.opacity,
             visible: options.visible,
             source: source
           });
           gaDefinePropertiesForLayer(layer);
           layer.preview = options.preview;
+          layer.label = options.label;
           return layer;
         };
 
@@ -515,6 +515,27 @@
   });
 
   /**
+   * Service provides different kinds of filter for
+   * layers in the map
+   */
+  module.provider('gaLayerFilters', function() {
+    this.$get = function() {
+      return {
+        /**
+         * Filters out background layers, preview
+         * layers and highlight layers and drawing
+         * layers. In other words, all layers that
+         * were actively added by the user and that
+         * appear in the layer manager
+         */
+        selectedLayersFilter: function(layer) {
+          return !layer.background && !layer.preview;
+        }
+      };
+    };
+  });
+
+  /**
    * Service that manages the "layers", "layers_opacity", and
    * "layers_visibility" permalink parameter.
    *
@@ -530,7 +551,7 @@
   module.provider('gaLayersPermalinkManager', function() {
 
     this.$get = function($rootScope, gaLayers, gaPermalink, $translate, $http,
-        gaKml, gaMapUtils, gaWms) {
+        gaKml, gaMapUtils, gaWms, gaLayerFilters) {
 
       var layersParamValue = gaPermalink.getParams().layers;
       var layersOpacityParamValue = gaPermalink.getParams().layers_opacity;
@@ -606,9 +627,7 @@
 
         scope.layers = map.getLayers().getArray();
 
-        scope.layerFilter = function(layer) {
-          return !layer.background && !layer.preview;
-        };
+        scope.layerFilter = gaLayerFilters.selectedLayersFilter;
 
         scope.$watchCollection('layers | filter:layerFilter',
             function(layers) {
