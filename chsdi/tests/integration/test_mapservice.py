@@ -124,6 +124,11 @@ class TestMapServiceView(TestsBase):
         self.failUnless(resp.content_type == 'text/html')
         resp.mustcontain('<table')
 
+    def test_gethtmlpopup_cadastralwebmap(self):
+        resp = self.testapp.get('/rest/services/ech/MapServer/ch.kantone.cadastralwebmap-farbe/14/htmlpopup', params={'mapExtent': '485412.34375,109644.67,512974.44,135580.01999999999', 'imageDisplay': '600,400,96'}, status=200)
+        self.failUnless(resp.content_type == 'text/html')
+        resp.mustcontain('<table')
+
     def test_gethtmlpopup_valid_topic_all(self):
         resp = self.testapp.get('/rest/services/all/MapServer/ch.bafu.bundesinventare-bln/362/htmlpopup', status=200)
         self.failUnless(resp.content_type == 'text/html')
