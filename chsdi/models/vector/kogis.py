@@ -12,7 +12,6 @@ Base = bases['kogis']
 
 
 class Gebaeuderegister(Base, Vector):
-    # view in a schema
     __tablename__ = 'adr'
     __table_args__ = ({'schema': 'bfs', 'autoload': False})
     __template__ = 'templates/htmlpopup/gebaeuderegister.mako'
@@ -35,7 +34,6 @@ register('ch.bfs.gebaeude_wohnungs_register', Gebaeuderegister)
 
 
 class AGNES(Base, Vector):
-    # view in a schema
     __tablename__ = 'agnes'
     __table_args__ = ({'schema': 'fpds', 'autoload': False})
     __template__ = 'templates/htmlpopup/agnes.mako'
@@ -50,7 +48,6 @@ register('ch.swisstopo.fixpunkte-agnes', AGNES)
 
 
 class FIXPUNKTE_LFP1(Base, Vector):
-    # view in a schema
     __tablename__ = 'punkt_lage_lfp1'
     __table_args__ = ({'schema': 'fpds', 'autoload': False})
     __template__ = 'templates/htmlpopup/fixpunkte.mako'
@@ -76,7 +73,6 @@ register('ch.swisstopo.fixpunkte-lfp1', FIXPUNKTE_LFP1)
 
 
 class FIXPUNKTE_LFP2(Base, Vector):
-    # view in a schema
     __tablename__ = 'punkt_lage_lfp2'
     __table_args__ = ({'schema': 'fpds', 'autoload': False})
     __template__ = 'templates/htmlpopup/fixpunkte.mako'
@@ -102,7 +98,6 @@ register('ch.swisstopo.fixpunkte-lfp2', FIXPUNKTE_LFP2)
 
 
 class FIXPUNKTE_HFP1(Base, Vector):
-    # view in a schema
     __tablename__ = 'punkt_hoehe_hfp1'
     __table_args__ = ({'schema': 'fpds', 'autoload': True})
     __template__ = 'templates/htmlpopup/fixpunkte.mako'
@@ -128,13 +123,12 @@ register('ch.swisstopo.fixpunkte-hfp1', FIXPUNKTE_HFP1)
 
 
 class FIXPUNKTE_HFP2(Base, Vector):
-    # view in a schema
     __tablename__ = 'punkt_hoehe_hfp2'
     __table_args__ = ({'schema': 'fpds', 'autoload': True})
     __template__ = 'templates/htmlpopup/fixpunkte.mako'
     __queryable_attributes__ = ['pointid', 'nummer']
     __esriId__ = 3000
-    __bodId__ = 'ch.swisstopo.fixpunkte-hfp1'
+    __bodId__ = 'ch.swisstopo.fixpunkte-hfp2'
     id = Column('pointid', Text, primary_key=True)
     nbident = Column('nbident', Text)
     punktname = Column('punktname', Text)
