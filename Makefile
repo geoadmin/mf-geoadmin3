@@ -67,6 +67,7 @@ deploybranch: deploy/deploy-branch.cfg $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/con
 	cd $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH); \
 	git checkout $(GIT_BRANCH); \
 	git pull; \
+	source rc_dev \
 	make all; \
 	sudo -u deploy deploy -r deploy/deploy-branch.cfg ab
 
