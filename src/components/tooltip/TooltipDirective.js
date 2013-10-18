@@ -44,7 +44,7 @@
 
             gaMapClick.listen(map, function(evt) {
               var size = map.getSize();
-              var extent = map.getView().calculateExtent(size);
+              var mapExtent = map.getView().calculateExtent(size);
               var coordinate = map.getEventCoordinate(evt);
 
               // A digest cycle is necessary for $http requests to be
@@ -56,11 +56,11 @@
               // digest cycle for us.
 
               $scope.$apply(function() {
-                findFeatures(coordinate, size, extent);
+                findFeatures(coordinate, size, mapExtent);
               });
             });
 
-            function findFeatures(coordinate, size, extent) {
+            function findFeatures(coordinate, size, mapExtent) {
               var identifyUrl = $scope.options.identifyUrlTemplate
                                 .replace('{Topic}', currentTopic),
                   layersToQuery = getLayersToQuery();
@@ -92,7 +92,7 @@
                     geometry: coordinate[0] + ',' + coordinate[1],
                     // FIXME: make sure we are passing the right dpi here.
                     imageDisplay: size[0] + ',' + size[1] + ',96',
-                    mapExtent: extent.join(','),
+                    mapExtent: mapExtent.join(','),
                     tolerance: $scope.options.tolerance,
                     layers: 'all:' + layersToQuery
                   }
@@ -102,7 +102,7 @@
                     // popup is displayed
                     bodyEl.removeClass(waitclass);
                   }
-                  showFeatures(size, features.results);
+                  showFeatures(mapExtent, size, features.results);
                 }).error(function() {
                   bodyEl.removeClass(waitclass);
                 });
@@ -116,7 +116,7 @@
               }
             }
 
-            function showFeatures(size, foundFeatures) {
+            function showFeatures(mapExtent, size, foundFeatures) {
               if (foundFeatures && foundFeatures.length > 0) {
                 angular.forEach(foundFeatures, function(value) {
                   var htmlUrl = $scope.options.htmlUrlTemplate
@@ -126,7 +126,9 @@
                   $http.get(htmlUrl, {
                     timeout: canceler.promise,
                     params: {
-                      lang: $translate.uses()
+                      lang: $translate.uses(),
+                      mapExtent: mapExtent.join(','),
+                      imageDisplay: size[0] + ',' + size[1] + ',96'
                     }
                   }).success(function(html) {
                     bodyEl.removeClass(waitclass);
