@@ -143,6 +143,8 @@ test/karma-conf-prod.js: test/karma-conf.mako.js .build-artefacts/python-venv/bi
 
 node_modules: package.json
 	npm install
+	chgrp -R geodata node_modules
+	chmod -R g+rw node_modules
 
 .build-artefacts/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar .build-artefacts/externs/angular.js .build-artefacts/externs/jquery.js
 	mkdir -p $(dir $@)
