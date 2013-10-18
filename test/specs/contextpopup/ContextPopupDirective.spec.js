@@ -24,7 +24,8 @@ describe('ga_contextpopup_directive', function() {
       $rootScope.map = map;
       $rootScope.options = {
         heightUrl: "http://api.geo.admin.ch/height",
-        qrcodeUrl: "http://api.geo.admin.ch/qrcodegenerator"
+        qrcodeUrl: "http://api.geo.admin.ch/qrcodegenerator",
+        lv03tolv95Url: "http://api3.geo.admin.ch/reframe/lv03tolv95"
       };
       map.on = function(eventType, handler) {
         handlers[eventType] = handler;
@@ -52,8 +53,8 @@ describe('ga_contextpopup_directive', function() {
     var expectedHeightUrl = 'http://api.geo.admin.ch/height' +
         '?callback=JSON_CALLBACK&easting=661473&elevation_model=COMB' +
         '&northing=188192';
-    var expectedReframeUrl = 'http://tc-geodesy.bgdi.admin.ch/reframe/' +
-        'lv03tolv95?cb=JSON_CALLBACK&easting=661473&northing=188192';
+    var expectedReframeUrl = 'http://api3.geo.admin.ch/reframe/' +
+        'lv03tolv95?callback=JSON_CALLBACK&easting=661473&northing=188192';
 
     beforeEach(inject(function($injector) {
       contextmenuEvent = {

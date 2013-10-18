@@ -11,8 +11,6 @@
   module.directive('gaContextPopup',
       function($http, $q, $timeout, gaPermalink,
               gaUrlUtils, gaBrowserSniffer) {
-          var lv03tolv95Url =
-              'http://tc-geodesy.bgdi.admin.ch/reframe/lv03tolv95?cb=JSON_CALLBACK';
           return {
             restrict: 'A',
             replace: true,
@@ -25,6 +23,8 @@
               var heightUrl = gaUrlUtils.append(scope.options.heightUrl,
                   'callback=JSON_CALLBACK');
               var qrcodeUrl = scope.options.qrcodeUrl;
+              var lv03tolv95Url = gaUrlUtils.append(scope.options.lv03tolv95Url,
+                  'callback=JSON_CALLBACK');
 
               // The popup content is updated (a) on contextmenu events,
               // and (b) when the permalink is updated.
