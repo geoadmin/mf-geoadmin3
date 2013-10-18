@@ -495,6 +495,7 @@ class GridstandPk25(Base, Vector):
 
 register('ch.swisstopo.pixelkarte-farbe-pk25.noscale', GridstandPk25)
 
+
 class GridstandPk25Meta(GridstandPk25):
     __bodId__ = 'ch.swisstopo.pixelkarte-pk25.metadata'
 
@@ -514,10 +515,12 @@ class GridstandPk50(Base, Vector):
 
 register('ch.swisstopo.pixelkarte-farbe-pk50.noscale', GridstandPk50)
 
+
 class GridstandPk50Meta(GridstandPk50):
     __bodId__ = 'ch.swisstopo.pixelkarte-pk50.metadata'
 
 register('ch.swisstopo.pixelkarte-farbe-pk50.metadata', GridstandPk50Meta)
+
 
 class GridstandPk100(Base, Vector):
     __tablename__ = 'view_gridstand_datenhaltung_pk100_tilecache'
@@ -531,6 +534,7 @@ class GridstandPk100(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.pixelkarte-farbe-pk100.noscale', GridstandPk100)
+
 
 class GridstandPk100Meta(GridstandPk100):
     __bodId__ = 'ch.swisstopo.pixelkarte-pk100.metadata'
@@ -551,6 +555,7 @@ class GridstandPk200(Base, Vector):
 
 register('ch.swisstopo.pixelkarte-farbe-pk200.noscale', GridstandPk200)
 
+
 class GridstandPk200Meta(GridstandPk200):
     __bodId__ = 'ch.swisstopo.pixelkarte-pk200.metadata'
 
@@ -569,6 +574,7 @@ class GridstandPk500(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.pixelkarte-farbe-pk500.noscale', GridstandPk500)
+
 
 class GridstandPk500Meta(GridstandPk500):
     __bodId__ = 'ch.swisstopo.pixelkarte-pk500.metadata'
@@ -1225,9 +1231,10 @@ class spannungsarmeGebiete(Base, Vector):
 
 register('ch.swisstopo.transformationsgenauigkeit', spannungsarmeGebiete)
 
+
 class spannungsarmeGebieteVD(spannungsarmeGebiete):
     __bodId__ = 'ch.swisstopo-vd.spannungsarme-gebiete'
-    
+
 register('ch.swisstopo-vd.spannungsarme-gebiete', spannungsarmeGebieteVD)
 
 
