@@ -44,14 +44,14 @@
       // display of the slider (minor and major divisions ...)
       for (var i = $scope.maxYear; i >= $scope.minYear; i--) {
         var year = {
-          label: $scope.formatYear(i),
+          label: (gaBrowserSniffer.mobile) ? i : $scope.formatYear(i),
           value: i,
           available: false,
           minor: false,
           major: false
         };
 
-        // Defines if the current year should be displayed as a major
+        // Defnes if the current year should be displayed as a major
         // or a minor subdivison
         if ((i % 50) === 0) {
           year.major = true;
