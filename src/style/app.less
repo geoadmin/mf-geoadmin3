@@ -815,6 +815,8 @@ ul.panel-body-wide {
 // ***** MOBILE LOADER
 #loader {
   display: none;
+  z-index: 0;
+
   @media (max-width: @screen-tablet) {
     .transition(opacity .20s ease);
     display: block;
@@ -829,7 +831,6 @@ ul.panel-body-wide {
     height: 44px;
     line-height: 44px;
     background: white;
-    z-index: 5000;
     text-align: center;
     border-radius: 44px;
     opacity: 0;
@@ -846,6 +847,8 @@ ul.panel-body-wide {
 
 .ga-tooltip-wait, .metadata-popup-wait {
   #loader {
+    z-index: 5000;
+
     @media (max-width: @screen-tablet) {
       opacity: 1;
     }
