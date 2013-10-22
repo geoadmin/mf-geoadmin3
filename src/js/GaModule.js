@@ -24,7 +24,6 @@
   goog.require('ga_modal_directive');
   goog.require('ga_draggable_directive');
   goog.require('ga_placeholder_directive');
-  goog.require('ga_collapsable_directive');
 
   goog.require('ga_importkml_controller');
   goog.require('ga_importwms_controller');
@@ -41,7 +40,6 @@
   goog.require('ga_search_controller');
   goog.require('ga_timeselector_controller');
   goog.require('ga_tooltip_controller');
-  goog.require('ga_accordion_controller');
 
   var module = angular.module('ga', [
     'ga_attribution',
@@ -65,7 +63,6 @@
     'ga_modal_directive',
     'ga_draggable_directive',
     'ga_placeholder_directive',
-    'ga_collapsable_directive',
     'ga_slider_directive',
     'ga_importkml_controller',
     'ga_geolocation',
@@ -83,7 +80,6 @@
     'ga_search_controller',
     'ga_timeselector_controller',
     'ga_tooltip_controller',
-    'ga_accordion_controller',
     'ngAnimate'
   ]);
 
