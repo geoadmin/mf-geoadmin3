@@ -846,10 +846,10 @@ msgid "ch.bafu.wasser-rueckgabe"
 msgstr "Return flows"
 
 msgid "ch.bafu.wasser-teileinzugsgebiete_2"
-msgstr "2km2 catchment areas"
+msgstr "2km2 sub catchment areas"
 
 msgid "ch.bafu.wasser-teileinzugsgebiete_40"
-msgstr "40km2 catchment areas"
+msgstr "40km2 sub catchment areas"
 
 msgid "ch.bafu.wasser-vorfluter"
 msgstr "Receiving watercourses"
@@ -1744,10 +1744,10 @@ msgid "gesteinsgr"
 msgstr "Rock type"
 
 msgid "gewaesser"
-msgstr "Gewässername"
+msgstr "Waterbody name"
 
 msgid "gewaessername"
-msgstr "Gewässername"
+msgstr "Waterbody name"
 
 msgid "gewissnr"
 msgstr "GEWISS number"

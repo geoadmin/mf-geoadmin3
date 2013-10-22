@@ -846,10 +846,10 @@ msgid "ch.bafu.wasser-rueckgabe"
 msgstr "Restitution"
 
 msgid "ch.bafu.wasser-teileinzugsgebiete_2"
-msgstr "Bassins versants 2km2"
+msgstr "Bassins versants partiels 2km2"
 
 msgid "ch.bafu.wasser-teileinzugsgebiete_40"
-msgstr "Bassins versants Suisse 40km2"
+msgstr "Bassins versants partiels 40km2"
 
 msgid "ch.bafu.wasser-vorfluter"
 msgstr "Effluents des bassins versants"
