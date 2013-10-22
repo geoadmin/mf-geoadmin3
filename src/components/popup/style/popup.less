@@ -2,21 +2,20 @@
 
 .ga-popup {
   display: none;
+  overflow: hidden;
   min-width: 200px;
   max-width: 600px;
   min-height: 100px;
   max-height: @ga-popup-max-height;
   z-index: 2000;
-
   @media (max-width: @screen-tablet) {
     z-index: 1500;
     left: 2%;
     right: 2%;
-    top: 2%;
     bottom: 2%;
+    top: 2%;
     max-height: none;
     max-width: none;
-    overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
   @media (max-width: @screen-phone) {
@@ -30,21 +29,14 @@
   max-width: inherit;
   max-height: (@ga-popup-max-height - 60);
   font-size: 12px;
-  @media (max-width: @screen-phone) {
-    width: 100%;
-    height: auto;
-    max-height: none;
+  @media (max-width: @screen-tablet) {
     position: absolute;
     top: 36px;
     bottom: 10px;
+    width: 100%;
+    max-height: none;
     overflow-x: hidden;
     overflow-y: auto;
-    table {
-      width: 100% !important;
-      td {
-        vertical-align: top;
-      }
-    }
   }
 }
 

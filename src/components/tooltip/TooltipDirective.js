@@ -141,7 +141,6 @@
                             map.removeLayer(vector);
                           },
                           destroyOnClose: false,
-                          className: 'tooltip-popup',
                           title: 'object_information',
                           content: popupContent,
                           htmls: htmls

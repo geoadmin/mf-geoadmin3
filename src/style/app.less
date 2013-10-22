@@ -616,28 +616,38 @@ ul.panel-body-wide {
 }
 
 // ****** METADATA / LEGEND Information
-.legend_header, .bodsearch_header {
-  background-color: #eee;
-  margin: 1px;
-  padding: 4px;
-}
-
-.bod_title {
-  color: red;
-}
-
-.office_provider {
-  color: red;
-  font-style: italic;
-  margin-bottom: 5px;
-  margin-top: 1px;
-}
-
-.legend_footer .bod_footer {
-  background-color: white;
-  margin: 1px;
-  padding: 4px;
-}
+.ga-tooltip-metadata {
+  .popover-content {
+    padding: 0px;
+  }
+  .legend-header, .bodsearch-header {
+    background-color: #eee;
+    padding: 8px;
+  }
+  .bod-title {
+    color: red;
+  }
+  .office-provider {
+    color: red;
+    font-style: italic;
+    margin-bottom: 5px;
+    margin-top: 1px;
+  }
+  .legend-footer {
+    padding: 8px;
+    .bod-footer {
+      background-color: white;
+    }
+    span {
+      font-weight: bold;
+    }
+    table {
+      font-size: 100%;
+      width: 100%;
+      border: 0;
+    }
+  }
+} 
 
 // ***** LAYER SELECTION
 #selection {
@@ -779,6 +789,35 @@ ul.panel-body-wide {
   z-index: 1090;
   left: unit(-@contextpopup-width/2, px);
 }
+
+// ***** HTMLPOPUP
+.htmlpopup-container {
+  width: 100%;
+  font-size: 11px;
+  span {
+    font-weight: bold;
+  }
+  .htmlpopup-header {
+    background-color: #E9E9E9;
+    padding: 7px;
+  }
+  .htmlpopup-content {
+    padding: 7px;
+    table {
+      width: 100%;
+      border: 0;
+      td {
+        vertical-align: top;
+      }
+      .cell-left {
+        width: 150px;
+      }
+      .cell-left-large {
+        width: 320px;
+      }
+    }
+  }
+}  
 
 // ***** ICONS
 .icon-plus, .icon-minus {
