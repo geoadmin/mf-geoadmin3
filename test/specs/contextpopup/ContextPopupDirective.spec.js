@@ -23,8 +23,9 @@ describe('ga_contextpopup_directive', function() {
       var map = new ol.Map({});
       $rootScope.map = map;
       $rootScope.options = {
-        heightUrl: "http://api.geo.admin.ch/height",
-        qrcodeUrl: "http://api.geo.admin.ch/qrcodegenerator"
+        heightUrl: "http://api.example.com/height",
+        qrcodeUrl: "http://api.example.com/qrcodegenerator",
+        lv03tolv95Url: "http://api.example.com/reframe/lv03tolv95"
       };
       map.on = function(eventType, handler) {
         handlers[eventType] = handler;
@@ -49,11 +50,11 @@ describe('ga_contextpopup_directive', function() {
     var $httpBackend;
     var $timeout;
 
-    var expectedHeightUrl = 'http://api.geo.admin.ch/height' +
+    var expectedHeightUrl = 'http://api.example.com/height' +
         '?callback=JSON_CALLBACK&easting=661473&elevation_model=COMB' +
         '&northing=188192';
-    var expectedReframeUrl = 'http://tc-geodesy.bgdi.admin.ch/reframe/' +
-        'lv03tolv95?cb=JSON_CALLBACK&easting=661473&northing=188192';
+    var expectedReframeUrl = 'http://api.example.com/reframe/' +
+        'lv03tolv95?callback=JSON_CALLBACK&easting=661473&northing=188192';
 
     beforeEach(inject(function($injector) {
       contextmenuEvent = {

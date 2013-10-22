@@ -7,7 +7,8 @@
       function($scope, gaGlobalOptions) {
         $scope.options = {
           heightUrl: gaGlobalOptions.serviceUrl + '/rest/services/height',
-          qrcodeUrl: gaGlobalOptions.serviceUrl + '/qrcodegenerator'
+          qrcodeUrl: gaGlobalOptions.serviceUrl + '/qrcodegenerator',
+          lv03tolv95Url: gaGlobalOptions.serviceUrl + '/reframe/lv03tolv95'
         };
 
       });
