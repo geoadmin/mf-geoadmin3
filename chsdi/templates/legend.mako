@@ -19,7 +19,7 @@
   legend_url = host + '/static/images/legends/' + c['idBod'] + '_' + lang + '.png'
   times = c['attributes']['dataStatus']
 %>
-
+<div class="legend-container">
 <div class="legend-header">
   <p class='bod-title'><span>${c['fullName']}</span> (${c['attributes']['dataOwner']})</p>
   <p class='office-provider'>${c['attributes']['inspireUpperName']} -> ${c['attributes']['inspireName']}</p>
@@ -98,4 +98,5 @@
 % endif
     </tr>    
   </table>
+</div>
 </div>
