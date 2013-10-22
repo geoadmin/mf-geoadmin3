@@ -144,7 +144,7 @@
     </div>
 
     <div id="pulldown">
-      <div id="pulldown-content" class="panel-group content ${"in" if device == "desktop" else "collapse"}" ng-controller="GaAccordionController">
+      <div id="pulldown-content" class="panel-group content ${"in" if device == "desktop" else "collapse"}">
         <div class="panel">
           <a class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#share">
             <i class="visible-collapsed icon-caret-right spacer"></i>
@@ -234,7 +234,7 @@
             </div>
           </div>
 % endif
-          <a class="panel-heading accordion-toggle light collapsed" ga-collapsable="catalogPanelOpen" data-toggle="collapse" href="#catalog">
+          <a class="panel-heading accordion-toggle light collapsed" data-toggle="collapse" href="#catalog">
             <i class="visible-collapsed icon-caret-right"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
             <span translate={{topicId}}></span>
@@ -253,7 +253,7 @@
         </div> <!-- .panel -->
 
         <div class="panel">
-          <a class="panel-heading accordion-toggle light collapsed" ga-collapsable="layerPanelOpen" data-toggle="collapse" href="#selection">
+          <a class="panel-heading accordion-toggle light collapsed" data-toggle="collapse" href="#selection">
             <i class="visible-collapsed icon-caret-right"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
             <span translate>layer_selection</span>
