@@ -132,7 +132,8 @@
                 }
               }
             } else {
-              var style = ol.style.getDefault();
+
+              var style = layer.get('style') || ol.style.getDefault();
               var literals = style.createLiterals(feature);
               var literal = literals[0];
               if (type === ol.geom.GeometryType.LINESTRING ||
