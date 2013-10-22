@@ -73,6 +73,27 @@
 
     };
 
+    // Transform the result of createLiteral function to an object
+    // usable by the print service
+    var transformToPrintLiteral = function(type, literal) {
+      if (type === ol.geom.GeometryType.LINESTRING ||
+          type === ol.geom.GeometryType.MULTILINESTRING) {
+        literal.strokeWidth = literal.width;
+        literal.strokeColor = literal.color;
+        literal.strokeOpacity = literal.opacity;
+
+      } else if (type == ol.geom.GeometryType.POINT) {
+        literal.externalGraphic = literal.url;
+        literal.graphicHeight = literal.height;
+        literal.graphicOpacity = literal.opacity;
+        literal.graphicWidth = literal.width;
+        literal.graphicXOffset = literal.xOffset;
+        literal.graphicYOffset = literal.yOffset;
+      }
+
+      return literal;
+    };
+
     $scope.encoders = {
       'layers': {
         'Layer': function(layer) {
@@ -121,13 +142,7 @@
                 var sym = symbolizers[i];
                 var literal = sym.createLiteral(feature);
                 if (literal) {
-                  if (type === ol.geom.GeometryType.LINESTRING ||
-                      type === ol.geom.GeometryType.MULTILINESTRING) {
-                    literal.strokeWidth = literal.width;
-                    literal.strokeColor = literal.color;
-                    literal.strokeOpacity = literal.opacity;
-                  }
-
+                  literal = transformToPrintLiteral(type, literal);
                   $.extend(encStyle, literal);
                 }
               }
@@ -135,14 +150,7 @@
 
               var style = layer.get('style') || ol.style.getDefault();
               var literals = style.createLiterals(feature);
-              var literal = literals[0];
-              if (type === ol.geom.GeometryType.LINESTRING ||
-                  type === ol.geom.GeometryType.MULTILINESTRING) {
-                literal.strokeWidth = literal.width;
-                literal.strokeColor = literal.color;
-                literal.strokeOpacity = literal.opacity;
-              }
-              encStyle = literal;
+              encStyle = transformToPrintLiteral(type, literals[0]);
             }
 
             encStyle.id = styleId;
