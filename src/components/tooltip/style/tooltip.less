@@ -20,22 +20,18 @@
     margin-top: 4px;
     border-bottom-color: #c7c7c7;
   }
-}
-
-.ga-popup.tooltip-popup {
-  @media (max-width: @screen-tablet) {
-    left: 20%;
-    right: 20%;
-    top: 89px;
-    bottom: auto;
-    max-height: 50%;
-    max-width: none;
-  }
-  @media (max-width: @screen-phone) {
-    top: 50%;
-    right: 2%;
-    left: 2%;
-    bottom: 2%;
-    max-height: none;
+  &.ga-popup {
+    @media (max-width: @screen-tablet) {
+      top: 89px;
+      max-height: 300px;
+    }
+    @media (max-width: @screen-phone) {
+      top: 50%;
+      right: 2%;
+      left: 2%;
+      bottom: 2%;
+      max-height: none;
+      width: auto;
+    }
   }
 }
