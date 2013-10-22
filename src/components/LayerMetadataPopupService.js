@@ -22,6 +22,7 @@
               gaPopup.create({
                 title: $translate('metadata_window_title'),
                 content: data,
+                className: 'ga-tooltip-metadata',
                 x: 400,
                 y: 200
               }).open();
