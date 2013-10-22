@@ -7,6 +7,6 @@
     surface_ha = int(float(c['attributes']['bgdi_surface']) / 10000) 
 %>
 
-    <tr><td width="150">${_('bak_unesco_weltkulturerbe_name')}</td>     <td>${c['attributes']['bgdi_name'] or '-'}</td></tr>
-    <tr><td width="150">${_('bak_unesco_weltkulturerbe_flaeche')}</td>  <td>${surface_ha}</td></tr>
+    <tr><td class="cell-left">${_('bak_unesco_weltkulturerbe_name')}</td>     <td>${c['attributes']['bgdi_name'] or '-'}</td></tr>
+    <tr><td class="cell-left">${_('bak_unesco_weltkulturerbe_flaeche')}</td>  <td>${surface_ha}</td></tr>
 </%def>

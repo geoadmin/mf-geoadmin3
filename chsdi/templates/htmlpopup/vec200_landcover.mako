@@ -4,7 +4,7 @@
     <% c['stable_id'] = True %>
     % if c['attributes']['objval'].strip() in ['Gletscher', 'Stadtzentr', 'Sumpf', 'See', 'Siedl', 'Stausee']:
         <tr><th colspan=2>${_(c['attributes']['objval'])}:</th></tr>
-        <tr><td width="150">${_('name_lang1')}</td><td>
+        <tr><td class="cell-left">${_('name_lang1')}</td><td>
          % if c['attributes']['objname1'].strip() in ['N_P','N_A']:
              - 
          % else:   
@@ -12,7 +12,7 @@
          % endif     
          </td></tr>
         %if c['attributes']['objval'].strip() in ['Siedl', 'Stadtzentr']:
-            <tr><td width="150">${_('einwohnerzahl_b')}</td><td>
+            <tr><td class="cell-left">${_('einwohnerzahl_b')}</td><td>
             % if c['attributes']['ppi']:
             ${_(c['attributes']['ppi'])}
             % else:
@@ -20,7 +20,7 @@
             % endif
             </td></tr>
 
-            <tr><td width="150">${_('einwohnerzahl_s')}</td><td>
+            <tr><td class="cell-left">${_('einwohnerzahl_s')}</td><td>
             % if c['attributes']['ppl'] < 0:
             -
             % else:

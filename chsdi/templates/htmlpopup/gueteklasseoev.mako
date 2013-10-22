@@ -2,7 +2,7 @@
 
 <%def name="table_body(c, lang)">
   <tr>
-    <td width="150">${_('klasse')}</td>
+    <td class="cell-left">${_('klasse')}</td>
     <td>
       % if lang in ('de', 'rm', 'en'):
         ${c['attributes']['klasse_de']}
