@@ -1,6 +1,7 @@
 @dropdown-background-color: #fff;
 @dropdown-link-color-hover-color: #fff;
 @dropdown-link-background-hover-color: #666;
+@dropdown-feature-background-color: #FF8000;
 @suggestions-max-height: 200px;
 
 .search-wrapper {
@@ -42,13 +43,21 @@
       -webkit-overflow-scrolling: touch;
       .tt-suggestion {
         display: block;
-        padding: 3px 20px;
         background-color: #E6E6E6;
         margin-top: 1px;
         &.tt-is-under-cursor {
           color: @dropdown-link-color-hover-color;
           background-color: @dropdown-link-background-hover-color;
           border-top: 1px;
+          .tt-feature {
+            background-color: @dropdown-link-background-hover-color;
+          }
+        }
+        .tt-search {
+          padding: 3px 20px;
+        }
+        .tt-feature {
+          background-color: @dropdown-feature-background-color;
         }
       }
     }
@@ -131,8 +140,10 @@
     .tt-dataset-locations, .tt-dataset-layers {
       .tt-suggestions {
         .tt-suggestion {
-          padding: 5px 20px;
           position: relative;
+          .tt-search {
+            padding: 5px 20px;
+          }
         }
         i {
           font-size: 24px;
