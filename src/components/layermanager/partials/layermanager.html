@@ -1,5 +1,6 @@
 <ul>
-  <li ng-repeat="layer in layers | gaReverse | filter:layerFilter" class="folded">
+  <li ng-if="!(filteredLayers = (layers | gaReverse | filter:layerFilter)).length" translate>no_layers_info</li>
+  <li ng-repeat="layer in filteredLayers" class="folded">
     <button type="button" ng-click="removeLayerFromMap(layer)" class="btn btn-primary btn-xs">&times;</button>
     <label>
       <input type="checkbox" ng-model="layer.visible" />
