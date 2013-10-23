@@ -158,5 +158,6 @@
   "district": "",
   "parcel": "",
   "feature": "",
-  "third_party_data_warning": ""
+  "third_party_data_warning": "",
+  "no_layers_info": ""
 }
