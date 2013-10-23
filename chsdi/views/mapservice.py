@@ -51,7 +51,7 @@ class MapService(MapServiceValidation):
             ))
         query = self._geodata_staging_filter(query, model.staging)
         for q in query:
-            layer = q.getLayerConfig(self.translate)
+            layer = q.getLayerConfig(self.request)
             layers = dict(layers.items() + layer.items())
         return {'layers': layers}
 
