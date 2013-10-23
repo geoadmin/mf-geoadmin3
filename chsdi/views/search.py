@@ -65,7 +65,7 @@ class Search(SearchValidation):
             return 0
         self.sphinx.SetLimits(0, limit)
         self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
-        self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, 'rank ASC, @weight DESC')
+        self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, 'rank ASC, @weight DESC, num ASC')
         searchText = self._query_fields('@detail')
         temp = self.sphinx.Query(searchText, index='swisssearch')
         temp = temp['matches'] if temp is not None else temp
