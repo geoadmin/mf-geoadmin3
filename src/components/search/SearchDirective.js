@@ -389,7 +389,8 @@
                   // Only layers dataset needs to be updated
                   var datasetLayers = $(taElt).data('ttView').datasets[1];
                   datasetLayers.getSuggestions('http', function(suggestions) {
-                    viewDropDown.renderSuggestions(datasetLayers, suggestions, false);
+                    viewDropDown.renderSuggestions(datasetLayers, suggestions,
+                                                   false);
                   });
                 }
               });
