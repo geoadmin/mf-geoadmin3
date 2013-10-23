@@ -76,13 +76,15 @@
     // Transform the result of createLiteral function to an object
     // usable by the print service
     var transformToPrintLiteral = function(type, literal) {
+
       if (type === ol.geom.GeometryType.LINESTRING ||
           type === ol.geom.GeometryType.MULTILINESTRING) {
         literal.strokeWidth = literal.width;
         literal.strokeColor = literal.color;
         literal.strokeOpacity = literal.opacity;
 
-      } else if (type == ol.geom.GeometryType.POINT) {
+      } else if (type === ol.geom.GeometryType.POINT ||
+          type === ol.geom.GeometryType.MULTIPOINT) {
         literal.externalGraphic = literal.url;
         literal.graphicHeight = literal.height;
         literal.graphicOpacity = literal.opacity;
@@ -147,7 +149,6 @@
                 }
               }
             } else {
-
               var style = layer.get('style') || ol.style.getDefault();
               var literals = style.createLiterals(feature);
               encStyle = transformToPrintLiteral(type, literals[0]);
