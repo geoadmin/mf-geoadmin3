@@ -15,7 +15,7 @@ def topics(request):
     results = [{
         'id': q.id,
         'langs': q.availableLangs,
-        'defaultBackgroundLayer': q.defaultBackgroundLayer,
+        'showCatalog': q.showCatalog,
         'backgroundLayers': q.backgroundLayers,
         'selectedLayers': q.selectedLayers
     } for q in query]
