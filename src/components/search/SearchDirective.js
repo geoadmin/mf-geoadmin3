@@ -171,7 +171,10 @@
                 } else if (attrs.origin == 'parcel') {
                   label += ' <span>{{ "parcel" | translate }} ';
                 } else if (attrs.origin == 'feature') {
-                  label += ' <span>{{ "feature" | translate }} ';
+                  label = '<b>' +
+                      gaLayers.getLayerProperty(attrs.layer, 'label') +
+                      '</b><br>';
+                  label += attrs.label;
                 }
                 return label;
               };
@@ -185,8 +188,11 @@
                   limit: 30,
                   template: function(context) {
                     var label = getLocationLabel(context.attrs);
-                    var template = '<div class="tt-search" ' +
-                        '>' + label + '</div>';
+                    var template = '<div class="tt-search';
+                    if (context.attrs.origin == 'feature') {
+                      template += ' tt-feature';
+                    }
+                    template += ('">' + label + '</div>');
                     return template;
                   },
                   remote: {
