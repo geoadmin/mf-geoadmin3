@@ -1,7 +1,7 @@
 (function() {
-  goog.provide('ga_catalogcollapsable_directive');
+  goog.provide('ga_catalogcollapsible_directive');
 
-  var module = angular.module('ga_catalogcollapsable_directive', []);
+  var module = angular.module('ga_catalogcollapsible_directive', []);
 
   /**
    * Manipulates a bootstrap collapsible element with Javascript
@@ -10,7 +10,7 @@
    * href, collapse and in classes, etc)
    *
    */
-  module.directive('gaCatalogcollapsable', function() {
+  module.directive('gaCatalogcollapsible', function() {
     return {
       restrict: 'A',
       link: function(scope, element) {
