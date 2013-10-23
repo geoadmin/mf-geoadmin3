@@ -192,7 +192,7 @@
                     if (context.attrs.origin == 'feature') {
                       template += ' tt-feature';
                     }
-                    template += ('">' + label + '</div>');
+                    template += '">' + label + '</div>';
                     return template;
                   },
                   remote: {
