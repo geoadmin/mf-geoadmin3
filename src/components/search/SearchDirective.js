@@ -388,7 +388,8 @@
                 if (angular.isDefined(currentTopic) && scope.query !== '') {
                   // Only layers dataset needs to be updated
                   var datasetLayers = $(taElt).data('ttView').datasets[1];
-                  datasetLayers.getSuggestions(scope.query, function(suggestions) {
+                  datasetLayers.getSuggestions(scope.query,
+                                               function(suggestions) {
                     viewDropDown.renderSuggestions(datasetLayers, suggestions,
                                                    false);
                   });
