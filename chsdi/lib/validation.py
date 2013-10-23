@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import re
 import types
 import pyramid.httpexceptions as exc
 from chsdi.models import models_from_name
@@ -303,7 +304,7 @@ class SearchValidation(MapNameValidation):
     def searchText(self, value):
         if value is None:
             raise exc.HTTPBadRequest("Please provide a search text")
-        searchTextList = value.split(' ')
+        searchTextList = re.split(' |\'', value)
         # Remove empty strings
         searchTextList = filter(None, searchTextList)
         self._searchText = searchTextList
