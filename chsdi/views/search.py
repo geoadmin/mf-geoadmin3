@@ -13,7 +13,7 @@ class Search(SearchValidation):
 
     LIMIT = 40
     LAYER_LIMIT = 30
-    FEATURE_LIMIT = 50
+    FEATURE_LIMIT = 20
 
     def __init__(self, request):
         super(Search, self).__init__()
@@ -93,8 +93,7 @@ class Search(SearchValidation):
 
     def _feature_search(self):
         # all features in given bounding box
-        if self.quadindex is None or \
-           self.featureIndexes is None:
+        if self.featureIndexes is None:
             # we need bounding box and layernames. FIXME: this should be error
             return 0
 
