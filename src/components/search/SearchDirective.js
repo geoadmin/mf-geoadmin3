@@ -345,9 +345,17 @@
               // a suggestionsRendered event that includes the
               // dataset
               var renderSuggestions = viewDropDown.renderSuggestions;
-              viewDropDown.renderSuggestions = function(dataset) {
-                renderSuggestions.apply(this, arguments);
-                this.trigger('gaSuggestionsRendered', dataset);
+              viewDropDown.renderSuggestions = function(dataset, suggestions,
+                                                        invokeApply) {
+                renderSuggestions.apply(this, [dataset, suggestions]);
+                if (invokeApply !== false) {
+                  var self = this;
+                  scope.$apply(function() {
+                    self.trigger('gaSuggestionsRendered', dataset);
+                  });
+                } else {
+                  this.trigger('gaSuggestionsRendered', dataset);
+                }
               };
 
               viewDropDown.on('gaSuggestionsRendered', function(evt) {
@@ -358,19 +366,6 @@
                     el = el.find('.tt-suggestions');
                     if (el) {
                       $compile(el)(scope);
-                      // This if statement assuers we are not already
-                      // in a digest cycle. This can happen because the
-                      // result rendering can come from typeahead (when
-                      // entering search term) where we are not in a $digest
-                      // yet, or it can come from angular (on language
-                      // change), where we are already in a $digest.
-                      // This alsoe fixes #725
-                      // The check is explained here: http://stackoverflow.com/
-                      // questions/12729122/prevent-error-digest-already
-                      // -in-progress-when-calling-scope-apply
-                      if (!(scope.$$phase || scope.$root.$$phase)) {
-                        scope.$apply();
-                      }
                     }
                   }
                 }
@@ -394,7 +389,7 @@
                   // Only layers dataset needs to be updated
                   var datasetLayers = $(taElt).data('ttView').datasets[1];
                   datasetLayers.getSuggestions('http', function(suggestions) {
-                    viewDropDown.renderSuggestions(datasetLayers, suggestions);
+                    viewDropDown.renderSuggestions(datasetLayers, suggestions, false);
                   });
                 }
               });
