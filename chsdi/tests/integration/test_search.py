@@ -76,3 +76,15 @@ class TestSearchServiceView(TestsBase):
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless('wilenstrasse' in resp.json['results'][0]['attrs']['detail'])
         self.failUnless('wil' in resp.json['results'][0]['attrs']['detail'])
+
+    def test_searchtext_apostrophe(self):
+        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'av mont d\'or', 'type': 'locations'}, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless(resp.json['results'][0]['attrs']['detail'] == '886380 avenue du mont-d\'or 1 1007 lausanne 5586 lausanne ch vd')
+        self.failUnless(resp.json['results'][0]['attrs']['num'] == 1)
+
+    def test_address_order(self):
+        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'isabelle de montolieu', 'type': 'locations'}, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless(resp.json['results'][0]['attrs']['detail'] == '880819 chemin isabelle-de-montolieu 1 1010 lausanne 5586 lausanne ch vd')
+        self.failUnless(resp.json['results'][0]['attrs']['num'] == 1)
