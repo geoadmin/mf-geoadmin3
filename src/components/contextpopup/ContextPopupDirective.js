@@ -23,7 +23,6 @@
               var heightUrl = gaUrlUtils.append(scope.options.heightUrl,
                   'callback=JSON_CALLBACK');
               var qrcodeUrl = scope.options.qrcodeUrl;
-              // Specifying 'callback' instead of 'cb' leads to error (#754)
               var lv03tolv95Url = gaUrlUtils.append(scope.options.lv03tolv95Url,
                   'callback=JSON_CALLBACK');
 
