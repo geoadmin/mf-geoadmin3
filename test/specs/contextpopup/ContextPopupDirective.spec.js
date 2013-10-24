@@ -54,7 +54,7 @@ describe('ga_contextpopup_directive', function() {
         '?callback=JSON_CALLBACK&easting=661473&elevation_model=COMB' +
         '&northing=188192';
     var expectedReframeUrl = 'http://api.example.com/reframe/' +
-        'lv03tolv95?cb=JSON_CALLBACK&easting=661473&northing=188192';
+        'lv03tolv95?callback=JSON_CALLBACK&easting=661473&northing=188192';
 
     beforeEach(inject(function($injector) {
       contextmenuEvent = {

@@ -25,7 +25,7 @@
               var qrcodeUrl = scope.options.qrcodeUrl;
               // Specifying 'callback' instead of 'cb' leads to error (#754)
               var lv03tolv95Url = gaUrlUtils.append(scope.options.lv03tolv95Url,
-                  'cb=JSON_CALLBACK');
+                  'callback=JSON_CALLBACK');
 
               // The popup content is updated (a) on contextmenu events,
               // and (b) when the permalink is updated.
@@ -44,9 +44,12 @@
 
               scope.showQR = !gaBrowserSniffer.mobile;
 
-              var formatCoordinates = function(coord, prec) {
-                return ol.coordinate.toStringXY(coord, prec).
-                   replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+              var formatCoordinates = function(coord, prec, ignoreThousand) {
+                var fCoord = ol.coordinate.toStringXY(coord, prec);
+                if (!ignoreThousand) {
+                   fCoord = fCoord.replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+                }
+                return fCoord;
               };
 
               var handler = function(event) {
@@ -56,7 +59,7 @@
                 coord21781 = event.getCoordinate();
                 var coord4326 = ol.proj.transform(coord21781,
                     'EPSG:21781', 'EPSG:4326');
-                var coord2056 = coord21781;
+                var coord2056 = [];
                 //Simple reframe
                 coord2056[0] = coord21781[0] + 2000000;
                 coord2056[1] = coord21781[1] + 1000000;
@@ -72,7 +75,7 @@
                 }
 
                 scope.coord21781 = formatCoordinates(coord21781, 1);
-                scope.coord4326 = formatCoordinates(coord4326, 5);
+                scope.coord4326 = formatCoordinates(coord4326, 5, true);
                 scope.coord2056 = formatCoordinates(coord2056, 2) + ' *';
                 scope.altitude = '-';
 
@@ -93,7 +96,6 @@
                     }
                   }).success(function(response) {
                     scope.altitude = parseFloat(response.height);
-                    console.log(scope.altitude);
                   });
 
                   $http.jsonp(lv03tolv95Url, {
@@ -102,24 +104,20 @@
                       northing: coord21781[1]
                     }
                   }).success(function(response) {
-                    console.log(response);
                     coord2056 = response.coordinates;
                     scope.coord2056 = formatCoordinates(coord2056, 2);
-                    console.log(scope.coord2056);
                   });
 
-                  updatePopupLinks();
-
-                  view.once('change:center', function() {
-                    hidePopover();
-                  });
-
-                  overlay.setPosition(coord21781);
-                  console.log('show it');
-                  showPopover();
-   
                 });
 
+                updatePopupLinks();
+
+                view.once('change:center', function() {
+                  hidePopover();
+                });
+
+                overlay.setPosition(coord21781);
+                showPopover();
              };
 
               // Listen to contextmenu events from the map.
