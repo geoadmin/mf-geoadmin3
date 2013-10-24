@@ -84,7 +84,7 @@ url `/branch/`. The 00-branches.conf in the vhost configuration points to the
 latest deployed branch.
 
 Sample path:
-http://mf-geoadmin30i.bgdi.admin.ch/branch/dev_bottombar/app-prod
+http://mf-geoadmin30i.bgdi.admin.ch/branch/dev_bottombar/prod
 
 Overview of all deployed branches: http://mf-geoadmin30i.bgdi.admin.ch/branch
 

@@ -4,7 +4,7 @@
 /src/index.html
 /src/mobile.html
 /src/TemplateCacheModule.js
-/prod
+/prd
 /.build-artefacts
 /apache/app.conf
 /test/karma-conf-dev.js

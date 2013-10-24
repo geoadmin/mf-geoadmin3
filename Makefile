@@ -17,8 +17,8 @@ help:
 	@echo
 	@echo "Possible targets:"
 	@echo
-	@echo "- prod         Build app for prod (prod)"
-	@echo "- dev          Build app for dev (src)"
+	@echo "- prod         Build app for prod (/prd)"
+	@echo "- dev          Build app for dev (/src)"
 	@echo "- lint         Run the linter"
 	@echo "- testdev      Run the JavaScript tests in dev mode"
 	@echo "- testprod     Run the JavaScript tests in prod mode"
@@ -42,7 +42,7 @@ help:
 all: prod dev lint testdev testprod apache deploy/deploy-branch.cfg
 
 .PHONY: prod
-prod: prod/lib/build.js prod/style/app.css prod/index.html prod/mobile.html prod/info.json prod/img/ prod/style/font-awesome-3.2.1/font/ prod/locales/ prod/checker
+prod: prd/lib/build.js prd/style/app.css prd/index.html prd/mobile.html prd/info.json prd/img/ prd/style/font-awesome-3.2.1/font/ prd/locales/ prd/checker
 
 .PHONY: dev
 dev: src/deps.js src/style/app.css src/index.html src/mobile.html
@@ -55,7 +55,7 @@ testdev: .build-artefacts/app-whitespace.js test/karma-conf-dev.js node_modules
 	./node_modules/.bin/karma start test/karma-conf-dev.js --single-run
 
 .PHONY: testprod
-testprod: prod/lib/build.js test/karma-conf-prod.js node_modules
+testprod: prd/lib/build.js test/karma-conf-prod.js node_modules
 	./node_modules/.bin/karma start test/karma-conf-prod.js --single-run
 
 .PHONY: apache
@@ -80,40 +80,40 @@ updateol: .build-artefacts/ol3 .build-artefacts/ol-requirements-installation.tim
 translate: .build-artefacts/translate-requirements-installation.timestamp
 	.build-artefacts/python-venv/bin/python scripts/translation2js.py src/locales/
 
-prod/lib/build.js: src/lib/jquery-2.0.3.min.js src/lib/bootstrap-3.0.0.min.js src/lib/typeahead-0.9.3.min.js src/lib/angular-1.2.0rc2.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/EPSG2056.js src/lib/ol.js src/lib/angular-animate-1.2.0rc2.min.js src/lib/angular-translate-1.1.0.min.js src/lib/angular-translate-loader-static-files-0.1.5.min.js src/lib/fastclick.js .build-artefacts/app.js
+prd/lib/build.js: src/lib/jquery-2.0.3.min.js src/lib/bootstrap-3.0.0.min.js src/lib/typeahead-0.9.3.min.js src/lib/angular-1.2.0rc2.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/EPSG2056.js src/lib/ol.js src/lib/angular-animate-1.2.0rc2.min.js src/lib/angular-translate-1.1.0.min.js src/lib/angular-translate-loader-static-files-0.1.5.min.js src/lib/fastclick.js .build-artefacts/app.js
 	mkdir -p $(dir $@)
 	cat $^ > $@
 
-prod/style/app.css: src/style/app.less src/style/ga_bootstrap.less src/style/ga_variables.less $(SRC_COMPONENTS_LESS_FILES) node_modules .build-artefacts/bootstrap
+prd/style/app.css: src/style/app.less src/style/ga_bootstrap.less src/style/ga_variables.less $(SRC_COMPONENTS_LESS_FILES) node_modules .build-artefacts/bootstrap
 	mkdir -p $(dir $@)
 	node_modules/.bin/lessc -ru --yui-compress $< $@
 
-prod/index.html: src/index.mako.html prod/lib/build.js prod/style/app.css .build-artefacts/python-venv/bin/mako-render
+prd/index.html: src/index.mako.html prd/lib/build.js prd/style/app.css .build-artefacts/python-venv/bin/mako-render
 	mkdir -p $(dir $@)
 	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "mode=prod" --var "version=$(VERSION)" --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" $< > $@
 
-prod/mobile.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render
+prd/mobile.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render
 	mkdir -p $(dir $@)
 	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "mode=prod" --var "version=$(VERSION)" --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" $< > $@
 
-prod/img/: src/img/*
+prd/img/: src/img/*
 	mkdir -p $@
 	cp $^ $@
 
-prod/style/font-awesome-3.2.1/font/: src/style/font-awesome-3.2.1/font/*
+prd/style/font-awesome-3.2.1/font/: src/style/font-awesome-3.2.1/font/*
 	mkdir -p $@
 	cp $^ $@
 
-prod/locales/: src/locales/*.json
+prd/locales/: src/locales/*.json
 	mkdir -p $@
 	cp $^ $@
 
-prod/checker: src/checker
+prd/checker: src/checker
 	mkdir -p $(dir $@)
 	cp $< $@
 
 # Temporary: the entire rule should go away eventually
-prod/info.json: src/info.json
+prd/info.json: src/info.json
 	mkdir -p $(dir $@)
 	cp $< $@
 
@@ -132,7 +132,7 @@ src/mobile.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-rende
 src/TemplateCacheModule.js: src/TemplateCacheModule.mako.js $(SRC_COMPONENTS_PARTIALS_FILES) .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "partials=$(subst src/,,$(SRC_COMPONENTS_PARTIALS_FILES))" --var "basedir=src" $< > $@
 
-apache/app.conf: apache/app.mako-dot-conf prod/lib/build.js prod/style/app.css .build-artefacts/python-venv/bin/mako-render
+apache/app.conf: apache/app.mako-dot-conf prd/lib/build.js prd/style/app.css .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" --var "base_dir=$(CURDIR)" $< > $@
 
 test/karma-conf-dev.js: test/karma-conf.mako.js .build-artefacts/python-venv/bin/mako-render
@@ -244,14 +244,14 @@ clean: cleanrc
 	rm -f src/deps.js
 	rm -f src/style/app.css
 	rm -f src/TemplateCacheModule.js
-	rm -rf prod
+	rm -rf prd
 	rm -f deploy/deploy-branch.cfg
 
 .PHONY: cleanrc
 cleanrc:
 	rm -f src/index.html
 	rm -f src/mobile.html
-	rm -f prod/index.html
-	rm -f prod/mobile.html
+	rm -f prd/index.html
+	rm -f prd/mobile.html
 	rm -f apache/app.conf
 

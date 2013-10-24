@@ -14,13 +14,13 @@ AddOutputFilterByType DEFLATE application/xml
 AddOutputFilterByType DEFLATE application/json
 
 Alias ${base_url_path}/src ${base_dir}/src
-Alias ${base_url_path}/prod ${base_dir}/prod
+Alias ${base_url_path}/prod ${base_dir}/prd
 
 % if 'main' in base_url_path:
 # Main webpage
 
-RewriteRule ^/(index.html|mobile.html|info.json|checker)(.*) /var/www/vhosts/mf-geoadmin3/private/geoadmin/prod/$1
-RewriteRule ^/[0-9]+/(img|lib|style|rest|locales)(.*) /var/www/vhosts/mf-geoadmin3/private/geoadmin/prod/$1$2
+RewriteRule ^/(index.html|mobile.html|info.json|checker)(.*) /var/www/vhosts/mf-geoadmin3/private/geoadmin/prd/$1
+RewriteRule ^/[0-9]+/(img|lib|style|rest|locales)(.*) /var/www/vhosts/mf-geoadmin3/private/geoadmin/prd/$1$2
 
 <LocationMatch /[0-9]+/>
    ExpiresDefault "now plus 1 year"
@@ -30,7 +30,7 @@ RewriteRule ^/[0-9]+/(img|lib|style|rest|locales)(.*) /var/www/vhosts/mf-geoadmi
 % endif
 
 # Cached resources
-RewriteRule ^${base_url_path}/prod/[0-9]+/(.*)$ ${base_dir}/prod/$1
+RewriteRule ^${base_url_path}/prod/[0-9]+/(.*)$ ${base_dir}/prd/$1
 <LocationMatch ${base_url_path}/prod/[0-9]+/>
    ExpiresDefault "now plus 1 year"
    Header merge Cache-Control "public"
