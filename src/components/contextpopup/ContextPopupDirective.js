@@ -24,7 +24,7 @@
                   'callback=JSON_CALLBACK');
               var qrcodeUrl = scope.options.qrcodeUrl;
               var lv03tolv95Url = gaUrlUtils.append(scope.options.lv03tolv95Url,
-                  'callback=JSON_CALLBACK');
+                  'cb=JSON_CALLBACK');
 
               // The popup content is updated (a) on contextmenu events,
               // and (b) when the permalink is updated.
