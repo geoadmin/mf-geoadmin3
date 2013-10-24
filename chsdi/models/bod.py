@@ -91,8 +91,9 @@ class LayersConfig(Base):
     wmsLayers = Column('wms_layers', Text)
     wmsUrl = Column('wms_url', Text)
 
-    def getLayerConfig(self, translate):
+    def getLayerConfig(self, request):
         config = {}
+        translate = request.translate
         for k in self.__dict__.keys():
             if not k.startswith("_") and \
                 self.__dict__[k] is not None and \
@@ -111,6 +112,7 @@ class LayersConfig(Base):
         if config['type'] == 'wmts':
             del config['singleTile']
         if config['type'] == 'wms':
+            config['wmsUrl'] = config['wmsUrl'].replace('http', request.scheme)
             if 'staging' in config:
                 if config['staging'] == 'test':
                     config['wmsUrl'] = config['wmsUrl'].replace('wms.geo.admin.ch', 'wms-bgdi0t.bgdi.admin.ch')
