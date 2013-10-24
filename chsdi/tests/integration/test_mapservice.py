@@ -141,12 +141,12 @@ class TestMapServiceView(TestsBase):
     def test_getlegend_valid(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/getlegend', status=200)
         self.failUnless(resp.content_type == 'text/html')
-        resp.mustcontain('<div class="legend_header">')
+        resp.mustcontain('<div class="legend-header">')
 
     def test_getlegend_valid_all(self):
         resp = self.testapp.get('/rest/services/all/MapServer/ch.bafu.bundesinventare-bln/getlegend', status=200)
         self.failUnless(resp.content_type == 'text/html')
-        resp.mustcontain('<div class="legend_header">')
+        resp.mustcontain('<div class="legend-header">')
 
     def test_getlegend_wrong_layer_id(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/dummylayer/getlegend', status=404)
