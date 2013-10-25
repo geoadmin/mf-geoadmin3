@@ -58,10 +58,8 @@
                 coord21781 = event.getCoordinate();
                 var coord4326 = ol.proj.transform(coord21781,
                     'EPSG:21781', 'EPSG:4326');
-                var coord2056 = [];
-                //Simple reframe
-                coord2056[0] = coord21781[0] + 2000000;
-                coord2056[1] = coord21781[1] + 1000000;
+                var coord2056 = ol.proj.transform(coord21781,
+                    'EPSG:21781', 'EPSG:2056');
 
                 // recenter on phones
                 if (gaBrowserSniffer.phone) {
