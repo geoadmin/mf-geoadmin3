@@ -16,7 +16,7 @@
 
         // Test validity of a URL
         this.isValid = function(url) {
-            return (url && url.length > 0 && URL_REGEXP.test(url));
+            return (!!url && url.length > 0 && URL_REGEXP.test(url));
         };
 
         this.append = function(url, paramString) {
