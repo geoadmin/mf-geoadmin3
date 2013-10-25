@@ -24,7 +24,7 @@
                   'callback=JSON_CALLBACK');
               var qrcodeUrl = scope.options.qrcodeUrl;
               var lv03tolv95Url = gaUrlUtils.append(scope.options.lv03tolv95Url,
-                  'callback=JSON_CALLBACK');
+                  'cb=JSON_CALLBACK');
 
               // The popup content is updated (a) on contextmenu events,
               // and (b) when the permalink is updated.
@@ -43,6 +43,14 @@
 
               scope.showQR = !gaBrowserSniffer.mobile;
 
+              var formatCoordinates = function(coord, prec, ignoreThousand) {
+                var fCoord = ol.coordinate.toStringXY(coord, prec);
+                if (!ignoreThousand) {
+                   fCoord = fCoord.replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+                }
+                return fCoord;
+              };
+
               var handler = function(event) {
                 event.preventDefault();
 
@@ -50,6 +58,8 @@
                 coord21781 = event.getCoordinate();
                 var coord4326 = ol.proj.transform(coord21781,
                     'EPSG:21781', 'EPSG:4326');
+                var coord2056 = ol.proj.transform(coord21781,
+                    'EPSG:21781', 'EPSG:2056');
 
                 // recenter on phones
                 if (gaBrowserSniffer.phone) {
@@ -61,6 +71,11 @@
                   view.setCenter(coord21781);
                 }
 
+                scope.coord21781 = formatCoordinates(coord21781, 1);
+                scope.coord4326 = formatCoordinates(coord4326, 5, true);
+                scope.coord2056 = formatCoordinates(coord2056, 2) + ' *';
+                scope.altitude = '-';
+
                 // A digest cycle is necessary for $http requests to be
                 // actually sent out. Angular-1.2.0rc2 changed the $evalSync
                 // function of the $rootScope service for exactly this. See
@@ -68,44 +83,39 @@
                 // We use a conservative approach and call $apply ourselves
                 // here, but we instead could also let $evalSync trigger a
                 // digest cycle for us.
-
                 scope.$apply(function() {
-                  $q.all({
-                    height: $http.jsonp(heightUrl, {
-                      params: {
-                        easting: coord21781[0],
-                        northing: coord21781[1],
-                        elevation_model: 'COMB'
-                      }
-                    }),
-                    lv03tolv95: $http.jsonp(lv03tolv95Url, {
-                      params: {
-                        easting: coord21781[0],
-                        northing: coord21781[1]
-                      }
-                    })
-                  }).then(function(results) {
-                    var coord2056 = results.lv03tolv95.data.coordinates;
 
-                    scope.coord21781 = ol.coordinate.toStringXY(coord21781, 1).
-                      replace(/\B(?=(\d{3})+(?!\d))/g, "'");
-                    scope.coord4326 = ol.coordinate.toStringXY(coord4326, 5);
-                    scope.coord2056 = ol.coordinate.toStringXY(coord2056, 2).
-                      replace(/\B(?=(\d{3})+(?!\d))/g, "'");
-                    scope.altitude = parseFloat(results.height.data.height);
-
-                    updatePopupLinks();
-
-                    view.once('change:center', function() {
-                      hidePopover();
-                    });
-
-                    overlay.setPosition(coord21781);
-                    showPopover();
-
+                  $http.jsonp(heightUrl, {
+                    params: {
+                      easting: coord21781[0],
+                      northing: coord21781[1],
+                      elevation_model: 'COMB'
+                    }
+                  }).success(function(response) {
+                    scope.altitude = parseFloat(response.height);
                   });
+
+                  $http.jsonp(lv03tolv95Url, {
+                    params: {
+                      easting: coord21781[0],
+                      northing: coord21781[1]
+                    }
+                  }).success(function(response) {
+                    coord2056 = response.coordinates;
+                    scope.coord2056 = formatCoordinates(coord2056, 2);
+                  });
+
                 });
-              };
+
+                updatePopupLinks();
+
+                view.once('change:center', function() {
+                  hidePopover();
+                });
+
+                overlay.setPosition(coord21781);
+                showPopover();
+             };
 
               // Listen to contextmenu events from the map.
               map.on('contextmenu', handler);
