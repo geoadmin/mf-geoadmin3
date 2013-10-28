@@ -7,7 +7,7 @@ describe('ga_urlutils_service', function() {
     });
   });
   
-  it('verifies validty', function() {
+  it('verifies validity', function() {
     expect(gaUrlUtils.isValid(undefined)).to.be(false);
     expect(gaUrlUtils.isValid(null)).to.be(false);
     expect(gaUrlUtils.isValid('')).to.be(false);
@@ -36,7 +36,7 @@ describe('ga_urlutils_service', function() {
     expect(url).to.be('http://wms.admin.ch?Service=WMS&VERSION=1.1.1');
   });
   
-  it('removes a array of parameter', function() {
+  it('removes an array of parameters', function() {
     var url = 'http://wms.admin.ch?SErvice=WMS&VERSION=1.1.1';
     expect(gaUrlUtils.remove(url, ['SERVICE'], true)).to.be('http://wms.admin.ch?VERSION=1.1.1');
     expect(gaUrlUtils.remove(url, ['SERVICE'], false)).to.be('http://wms.admin.ch?SErvice=WMS&VERSION=1.1.1');
