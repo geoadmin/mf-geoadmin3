@@ -319,7 +319,7 @@
               });
 
               // Watchers
-              scope.$watch('files', function() {
+              scope.$watchCollection('files', function() {
                 scope.clearUserOutput();
                 scope.handleFileList();
               });
