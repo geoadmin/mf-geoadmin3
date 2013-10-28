@@ -957,7 +957,7 @@ msgid "ch.bakom.uplink2"
 msgstr "Upload ≥ 2 Mbit/s"
 
 msgid "ch.bakom.uplink20"
-msgstr "Uploqe ≥ 20 Mbit/s"
+msgstr "Upload ≥ 20 Mbit/s"
 
 msgid "ch.bakom.uplink50"
 msgstr "Upload ≥ 50 Mbit/s"

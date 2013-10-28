@@ -1125,7 +1125,7 @@ msgid "ch.blw.gewaesseranschlusskarte-direkt"
 msgstr "Surface en connection élargie"
 
 msgid "ch.blw.hang_steillagen"
-msgstr "Surfaces en pente"
+msgstr "Terrains en pente"
 
 msgid "ch.blw.klimaeignung-futterbau"
 msgstr "Climat - culture fourragère"
