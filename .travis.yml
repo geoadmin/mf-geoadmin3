@@ -13,4 +13,5 @@ before_script:
 
 script:
     - buildout/bin/buildout -c buildout_prod.cfg
+    - buildout/bin/nosetests chsdi/tests/functional
 
