@@ -19,7 +19,7 @@ class Test_EsriGeoJSON(unittest.TestCase):
         from geojson import Point
         point = Point([600000, 200000], properties={'name': 'toto'})
         result = encoder.default(point)
-        self.assertEqual(result, {'spatialReference': {'wkid': 21781}, 'attributes': {'name': 'toto'}, 'y': 200000, 'x': 600000, 'type': 'point'})
+        self.assertEqual(result, {'spatialReference': {'wkid': 21781}, 'attributes': {'name': 'toto'}, 'y': 200000, 'x': 600000})
 
     def test_dumps(self):
         from chsdi.esrigeojsonencoder import dumps as esri_dumps
@@ -27,7 +27,7 @@ class Test_EsriGeoJSON(unittest.TestCase):
         point = Point([600000, 200000], properties={'name': 'toto'})
 
         result = esri_dumps(point)
-        self.assertEqual(result, '{"spatialReference": {"wkid": 21781}, "attributes": {"name": "toto"}, "y": 200000, "x": 600000, "type": "point"}')
+        self.assertEqual(result, '{"spatialReference": {"wkid": 21781}, "attributes": {"name": "toto"}, "y": 200000, "x": 600000}')
 
     # Testing loading EsriGeometries
     def test_loads_simple_point(self):

@@ -23,7 +23,7 @@ class Test_EsriGeoJSON(unittest.TestCase):
         renderer = self._callFUT()
         request = testing.DummyRequest()
         result = renderer(f, {'request': request})
-        self.assertEqual(result, '{"spatialReference": {"wkid": 21781}, "attributes": {"name": "toto"}, "y": 200000, "x": 600000, "type": "point"}')
+        self.assertEqual(result, '{"spatialReference": {"wkid": 21781}, "attributes": {"name": "toto"}, "y": 200000, "x": 600000}')
 
         self.assertEqual(request.response.content_type, 'application/json')
 
@@ -34,5 +34,5 @@ class Test_EsriGeoJSON(unittest.TestCase):
         request = testing.DummyRequest()
         request.params['cb'] = 'jsonp_cb'
         result = renderer(f, {'request': request})
-        self.assertEqual(result, 'jsonp_cb({"spatialReference": {"wkid": 21781}, "attributes": {"name": "toto"}, "y": 200000, "x": 600000, "type": "point"});')
+        self.assertEqual(result, 'jsonp_cb({"spatialReference": {"wkid": 21781}, "attributes": {"name": "toto"}, "y": 200000, "x": 600000});')
         self.assertEqual(request.response.content_type, 'text/javascript')
