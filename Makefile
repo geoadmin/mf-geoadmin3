@@ -2,7 +2,11 @@ SRC_JS_FILES := $(shell find src/components src/js -type f -name '*.js')
 SRC_JS_FILES_FOR_COMPILER = $(shell sed -e ':a' -e 'N' -e '$$!ba' -e 's/\n/ --js /g' .build-artefacts/js-files | sed 's/^.*base\.js //')
 SRC_COMPONENTS_LESS_FILES := $(shell find src/components -type f -name '*.less')
 SRC_COMPONENTS_PARTIALS_FILES = $(shell find src/components -type f -path '*/partials/*' -name '*.html')
-BASE_URL_PATH ?= /$(shell id -un)
+ifeq "$(CURDIR)" "/var/www/vhosts/mf-geoadmin3/private/geoadmin"
+	BASE_URL_PATH ?= "/main"
+else
+	BASE_URL_PATH ?= /$(shell id -un)
+endif
 SERVICE_URL ?= http://mf-chsdi30t.bgdi.admin.ch
 LESS_PARAMETERS ?= '-ru'
 VERSION := $(shell date '+%s')/
