@@ -22,7 +22,7 @@
 	"cancel": "Interrumper",
 	"catalog": "Catalog",
 	"change_topic": "Tema",
-	"choose_theme": "Midar tema",
+	"choose_theme": "Midar tema  ",
 	"choose_wms_url": "URL",
 	"close": "Serrar",
 	"close_menu": "Serrar",
@@ -58,7 +58,7 @@
 	"file_is_not_kml": "Questa datoteca nun è ina datoteca KML",
 	"file_too_large": "Questa datoteca è memia grond",
 	"follow_us": "Giais suenter a nus",
-	"funksender": "Emettur radiofonic",
+	"funksender": "Emettur radiofonic ",
 	"funksender_help_link_href": "http://help.geo.admin.ch/",
 	"funksender_page_title": "map.geo.admin.ch",
 	"funksender_service_link_href": "mailto:info@bakom.admin.ch",
@@ -104,7 +104,7 @@
 	"map_tools": "Utensils",
 	"metadata_window_title": "Infobox",
 	"mobile_redirect": "Versiun mobila",
-	"nga": "Atlas da spectrum lartg",
+	"nga": "Atlas da spectrum lartg ",
 	"nga_help_link_href": "http://help.geo.admin.ch/",
 	"nga_page_title": "map.geo.admin.ch",
 	"nga_service_link_href": "http://www.bakom.admin.ch/index.html?lang=de",
@@ -140,7 +140,7 @@
 	"search_help": "Agid",
 	"search_placeholder": "Tschertgar lieu, chartas, coordinatas ...",
 	"send": "Trametter",
-	"settings": "Configuraziun",
+	"settings": "Configuraziun ",
 	"share": "Parter",
 	"shorten_url": "URL curt",
 	"success": "OK",
@@ -159,5 +159,5 @@
 	"uploading_file": "La datoteca vegn chargiada",
 	"void_layer": "Nagina charta",
 	"wms": "WMS",
-	"wms_max_size_allowed": "Capacitad da WMS maximala"
+	"wms_max_size_allowed": "Capacitad da WMS maximala "
 }
