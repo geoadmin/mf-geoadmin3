@@ -23,6 +23,7 @@ help:
 	@echo "- testdev      Run the JavaScript tests in dev mode"
 	@echo "- testprod     Run the JavaScript tests in prod mode"
 	@echo "- apache       Configure Apache (restart required)"
+	@echo "- fixrights		Fix rights in common folder"
 	@echo "- all          All of the above (target to run prior to creating a PR)"
 	@echo "- clean        Remove generated files"
 	@echo "- cleanrc      Remove all rc_* dependent files"
@@ -39,7 +40,7 @@ help:
 	@echo
 
 .PHONY: all
-all: prod dev lint testdev testprod apache deploy/deploy-branch.cfg
+all: prod dev lint testdev testprod apache deploy/deploy-branch.cfg fixrights
 
 .PHONY: prod
 prod: prd/lib/build.js prd/style/app.css prd/index.html prd/mobile.html prd/info.json prd/img/ prd/style/font-awesome-3.2.1/font/ prd/locales/ prd/checker
@@ -79,6 +80,11 @@ updateol: .build-artefacts/ol3 .build-artefacts/ol-requirements-installation.tim
 .PHONY: translate
 translate: .build-artefacts/translate-requirements-installation.timestamp
 	.build-artefacts/python-venv/bin/python scripts/translation2js.py src/locales/
+
+.PHONY: fixrights
+fixrights:
+	chgrp -R geodata .
+	chmod -R g+rw .
 
 prd/lib/build.js: src/lib/jquery-2.0.3.min.js src/lib/bootstrap-3.0.0.min.js src/lib/typeahead-0.9.3.min.js src/lib/angular-1.2.0rc2.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/EPSG2056.js src/lib/ol.js src/lib/angular-animate-1.2.0rc2.min.js src/lib/angular-translate-1.1.0.min.js src/lib/angular-translate-loader-static-files-0.1.5.min.js src/lib/fastclick.js .build-artefacts/app.js
 	mkdir -p $(dir $@)
@@ -143,8 +149,6 @@ test/karma-conf-prod.js: test/karma-conf.mako.js .build-artefacts/python-venv/bi
 
 node_modules: package.json
 	npm install
-	chgrp -R geodata node_modules
-	chmod -R g+rw node_modules
 
 .build-artefacts/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar .build-artefacts/externs/angular.js .build-artefacts/externs/jquery.js
 	mkdir -p $(dir $@)
