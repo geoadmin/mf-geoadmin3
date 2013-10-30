@@ -424,11 +424,11 @@
               });
             }
           } else if (layer.type == 'aggregate') {
-            var subLayerIds = layer.subLayerIds.split(',');
-            var i, len = subLayerIds.length;
+            var subLayersIds = layer.subLayersIds;
+            var i, len = subLayersIds.length;
             var subLayers = new Array(len);
             for (i = 0; i < len; i++) {
-              subLayers[i] = this.getOlLayerById(subLayerIds[i]);
+              subLayers[i] = this.getOlLayerById(subLayersIds[i]);
             }
             olLayer = new ol.layer.Group({
               minResolution: layer.minResolution,
