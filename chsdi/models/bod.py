@@ -83,7 +83,9 @@ class LayersConfig(Base):
     searchable = Column('searchable', Boolean)
     serverLayerName = Column('server_layername', Text)
     singleTile = Column('singletile', Boolean)
+     # Kept for backward compatibility to be removed
     subLayerIds = Column('sublayerids', Text)
+    subLayersIds = Column('sublayersids', postgresql.ARRAY(Text))
     matrixSet = Column('tilematrixsetid', Text)
     timeEnabled = Column('timeenabled', Boolean)
     timestamps = Column('timestamps', postgresql.ARRAY(Text))
