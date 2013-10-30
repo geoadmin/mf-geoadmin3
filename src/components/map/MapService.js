@@ -226,6 +226,8 @@
         var addKmlLayer = function(olMap, data, options, index) {
           var olLayer = createKmlLayer(data, options);
           var onMapClick = function(evt) {
+            evt.stopPropagation();
+            evt.preventDefault();
             olMap.getFeatures({
               pixel: evt.getPixel(),
               layers: [olLayer],

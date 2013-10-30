@@ -18,7 +18,7 @@
         template:
           '<h4 class="popover-title ga-popup-title">' +
           '<span translate>{{options.title}}</span>' +
-          '<button type="button" class="close" ng-click="close()">' +
+          '<button type="button" class="close" ng-click="close($event)">' +
           '&times;</button>' +
           '</h4>' +
           '<div class="popover-content ga-popup-content" ' +
@@ -38,7 +38,11 @@
 
           // Add close popup function
           scope.close = scope.options.close ||
-              (function() {
+              (function(event) {
+                if (event) {
+                  event.stopPropagation();
+                  event.preventDefault();
+                }
                 if (angular.isDefined(scope.toggle)) {
                   scope.toggle = false;
                 } else {

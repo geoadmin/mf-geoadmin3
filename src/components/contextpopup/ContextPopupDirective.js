@@ -52,10 +52,11 @@
               };
 
               var handler = function(event) {
+                event.stopPropagation();
                 event.preventDefault();
 
-                var pixel = event.getPixel();
-                coord21781 = event.getCoordinate();
+                var pixel = map.getEventPixel(event.originalEvent);
+                coord21781 = map.getEventCoordinate(event.originalEvent);
                 var coord4326 = ol.proj.transform(coord21781,
                     'EPSG:21781', 'EPSG:4326');
                 var coord2056 = ol.proj.transform(coord21781,
@@ -115,37 +116,41 @@
 
                 overlay.setPosition(coord21781);
                 showPopover();
-             };
+              };
 
-              // Listen to contextmenu events from the map.
-              map.on('contextmenu', handler);
+              var viewport = $(map.getViewport());
 
-              // On touch devices, display the context popup after a
-              // long press (300ms)
-              var startPixel, holdPromise;
-              map.on('touchstart', function(event) {
-                $timeout.cancel(holdPromise);
-                startPixel = event.getPixel();
-                holdPromise = $timeout(function() {
-                  handler(event);
-                }, 300, false);
-              });
-              map.on('touchend', function(event) {
-                $timeout.cancel(holdPromise);
-                startPixel = undefined;
-              });
-              map.on('touchmove', function(event) {
-                if (startPixel) {
-                  var pixel = event.getPixel();
-                  var deltaX = Math.abs(startPixel[0] - pixel[0]);
-                  var deltaY = Math.abs(startPixel[1] - pixel[1]);
-                  if (deltaX + deltaY > 6) {
-                    $timeout.cancel(holdPromise);
-                    startPixel = undefined;
+              if (!gaBrowserSniffer.touch) {
+                // Listen to contextmenu events from the map.
+                viewport.on('contextmenu', handler);
+
+              } else {
+                // On touch devices, display the context popup after a
+                // long press (300ms)
+                var startPixel, holdPromise;
+                viewport.on('touchstart', function(event) {
+                  $timeout.cancel(holdPromise);
+                  startPixel = map.getEventPixel(event.originalEvent);
+                  holdPromise = $timeout(function() {
+                    handler(event);
+                  }, 300, false);
+                });
+                viewport.on('touchend', function(event) {
+                  $timeout.cancel(holdPromise);
+                  startPixel = undefined;
+                });
+                viewport.on('touchmove', function(event) {
+                  if (startPixel) {
+                    var pixel = map.getEventPixel(event.originalEvent);
+                    var deltaX = Math.abs(startPixel[0] - pixel[0]);
+                    var deltaY = Math.abs(startPixel[1] - pixel[1]);
+                    if (deltaX + deltaY > 6) {
+                      $timeout.cancel(holdPromise);
+                      startPixel = undefined;
+                    }
                   }
-                }
-              });
-
+                });
+              }
               // Listen to permalink change events from the scope.
               scope.$on('gaPermalinkChange', function(event) {
                 if (angular.isDefined(coord21781) && popoverShown) {

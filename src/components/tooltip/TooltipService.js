@@ -37,6 +37,10 @@
             return (evt.button === 0) && !(s.webkit && s.mac && evt.ctrlKey);
           };
 
+          var isMouseRightAction = function(evt) {
+            return (evt.button === 2 || evt.which === 3);
+          };
+
           var moveListener = function(evt) {
             if (down) {
               moving = true;
@@ -101,7 +105,10 @@
               $(viewport).on('MSPointerMove', moveListener);
               bindUnbind = false;
             }
-            down = evt.originalEvent;
+            var originalEvent = evt.originalEvent;
+            if (!isMouseRightAction(originalEvent)) {
+              down = evt.originalEvent;
+            }
           };
 
           $(viewport).on('mousedown', mousedownListener);
