@@ -38,8 +38,7 @@
                   'email': scope.email,
                   'feedback': scope.feedback,
                   'ua': navigator.userAgent,
-                  'permalink': scope.permalinkValue,
-                  'typeOfRequest': 'feedback'
+                  'permalink': scope.permalinkValue
                 };
 
                 $http({
