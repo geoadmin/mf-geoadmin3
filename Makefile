@@ -27,7 +27,7 @@ help:
 	@echo "- testdev      Run the JavaScript tests in dev mode"
 	@echo "- testprod     Run the JavaScript tests in prod mode"
 	@echo "- apache       Configure Apache (restart required)"
-	@echo "- fixrights		Fix rights in common folder"
+	@echo "- fixrights    Fix rights in common folder"
 	@echo "- all          All of the above (target to run prior to creating a PR)"
 	@echo "- clean        Remove generated files"
 	@echo "- cleanrc      Remove all rc_* dependent files"
