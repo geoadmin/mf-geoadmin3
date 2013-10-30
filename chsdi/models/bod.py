@@ -74,6 +74,7 @@ class LayersConfig(Base):
     hasLegend = Column('haslegend', Boolean)
     format = Column('image_format', Text)
     type = Column('layertype', Text)
+    highlightable = Column('highlightable', Boolean)
     opacity = Column('opacity', postgresql.DOUBLE_PRECISION)
     minResolution = Column('minresolution', postgresql.DOUBLE_PRECISION)
     maxResolution = Column('maxresolution', postgresql.DOUBLE_PRECISION)
