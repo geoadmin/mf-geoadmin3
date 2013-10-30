@@ -4,6 +4,7 @@ node_js:
 
 before_script:
     - sudo pip install virtualenv
+    - sudo groupadd geodata
     - make all
 
 notifications:
