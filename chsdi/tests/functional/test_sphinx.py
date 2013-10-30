@@ -24,8 +24,8 @@ class Test_SphinxApi(unittest.TestCase):
         api = self._callFUT()
         q = ''
         mode = sphinxapi.SPH_MATCH_ALL
-        host = 'localhost'
-        port = 3312
+        host = 'service-sphinxsearch.dev.bgdi.ch'
+        port = 9312
         index = '*'
         filtercol = 'group_id'
         filtervals = []
