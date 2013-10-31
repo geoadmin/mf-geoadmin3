@@ -246,17 +246,24 @@
               }
             });
           };
-          if (index) {
-            olMap.getLayers().insertAt(index, olLayer);
-          } else {
-            olMap.addLayer(olLayer);
-          }
-          var listenerKey = olMap.on('click', onMapClick);
+
+          var listenerKey;
+          olMap.getLayers().on('add', function(layersEvent) {
+            if (layersEvent.getElement() === olLayer) {
+              listenerKey = olMap.on('click', onMapClick);
+            }
+          });
           olMap.getLayers().on('remove', function(layersEvent) {
             if (layersEvent.getElement() === olLayer) {
               olMap.unByKey(listenerKey);
             }
           });
+
+          if (index) {
+            olMap.getLayers().insertAt(index, olLayer);
+          } else {
+            olMap.addLayer(olLayer);
+          }
         };
 
         this.addKmlToMap = function(map, data, layerOptions, index) {
