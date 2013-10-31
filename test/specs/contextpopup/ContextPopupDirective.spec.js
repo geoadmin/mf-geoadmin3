@@ -1,5 +1,5 @@
 describe('ga_contextpopup_directive', function() {
-  var element, viewport, map, originalEvt;
+  var element, handlers = {}, viewport, map, originalEvt;
    
   beforeEach(function() {
 
@@ -24,6 +24,9 @@ describe('ga_contextpopup_directive', function() {
         lv03tolv95Url: "//api.example.com/reframe/lv03tolv95",
         heightUrl: "//api.geo.admin.ch/height",
         qrcodeUrl: "//api.geo.admin.ch/qrcodegenerator"
+      };
+      map.on = function(eventType, handler) {
+        handlers[eventType] = handler;
       };
       viewport = $(map.getViewport());
       $compile(element)($rootScope);
@@ -85,14 +88,17 @@ describe('ga_contextpopup_directive', function() {
     });
 
     describe('On touch devices', function() {
-      var touchStartEvt, touchEndEvt, touchMoveEvt;
+      var mapEvt;
       
       beforeEach(inject(function($rootScope, $compile, gaBrowserSniffer) {
-        touchStartEvt = $.Event("touchstart", originalEvt);
-        touchMoveEvt = $.Event("touchmove", originalEvt);
-        touchEndEvt = $.Event("touchend", originalEvt);
-
-        gaBrowserSniffer.touch = true;
+        mapEvt = {
+           stopPropagation: function() {},
+           preventDefault: function() {},
+           getPixel: function() { return [25, 50]; },
+           getCoordinate: function() { return [661473, 188192]; }
+        };
+        gaBrowserSniffer.touchDevice = true;
+        gaBrowserSniffer.msie = false;
         $compile(element)($rootScope);
         map.setTarget(element.find('#map')[0]);
         $rootScope.$digest();
@@ -101,7 +107,7 @@ describe('ga_contextpopup_directive', function() {
       it('correctly emulates contextmenu', function() {
         $httpBackend.expectJSONP(expectedHeightUrl);
         $httpBackend.expectJSONP(expectedReframeUrl);
-        viewport.trigger(touchStartEvt);
+        handlers.touchstart(mapEvt);
 
         $timeout.flush();
         $httpBackend.flush();
@@ -122,8 +128,8 @@ describe('ga_contextpopup_directive', function() {
         // Make sure there aren't any timouts left (this might
         // compenstate for a bug in angular.mock or angular in general)
         $timeout.flush();
-        viewport.trigger(touchStartEvt);
-        viewport.trigger(touchEndEvt);
+        handlers.touchstart(mapEvt);
+        handlers.touchend(mapEvt);
         $timeout.verifyNoPendingTasks();
 
         var popover = element.find('.popover');
@@ -135,11 +141,12 @@ describe('ga_contextpopup_directive', function() {
         // Make sure there aren't any timouts left (this might
         // compenstate for a bug in angular.mock or angular in general)
         $timeout.flush();
-        viewport.trigger(touchStartEvt);
-        map.getEventPixel =  function(event) {
+        handlers.touchstart(mapEvt);
+        handlers.touchmove({
+          getPixel: function() {
             return [30, 60];
-        };
-        viewport.trigger(touchMoveEvt);
+          }
+        });
         $timeout.verifyNoPendingTasks();
 
         var popover = element.find('.popover');

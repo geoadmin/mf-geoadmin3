@@ -55,8 +55,12 @@
                 event.stopPropagation();
                 event.preventDefault();
 
-                var pixel = map.getEventPixel(event.originalEvent);
-                coord21781 = map.getEventCoordinate(event.originalEvent);
+                var pixel = (event.originalEvent) ?
+                    map.getEventPixel(event.originalEvent) :
+                    event.getPixel();
+                coord21781 = (event.originalEvent) ?
+                    map.getEventCoordinate(event.originalEvent) :
+                    event.getCoordinate();
                 var coord4326 = ol.proj.transform(coord21781,
                     'EPSG:21781', 'EPSG:4326');
                 var coord2056 = ol.proj.transform(coord21781,
@@ -118,30 +122,32 @@
                 showPopover();
               };
 
-              var viewport = $(map.getViewport());
 
-              if (!gaBrowserSniffer.touch) {
-                // Listen to contextmenu events from the map.
-                viewport.on('contextmenu', handler);
+              if (!gaBrowserSniffer.touchDevice ||
+                  gaBrowserSniffer.msie >= 10) {
+                // On surface tablet a 'contextmenu' event is triggered
+                // on long press.
+                // Listen to contextmenu events from the viewport.
+                $(map.getViewport()).on('contextmenu', handler);
 
               } else {
-                // On touch devices, display the context popup after a
-                // long press (300ms)
+                // On touch devices and browsers others than ie10, display the
+                // context popup after a long press (300ms)
                 var startPixel, holdPromise;
-                viewport.on('touchstart', function(event) {
+                map.on('touchstart', function(event) {
                   $timeout.cancel(holdPromise);
-                  startPixel = map.getEventPixel(event.originalEvent);
+                  startPixel = event.getPixel();
                   holdPromise = $timeout(function() {
                     handler(event);
                   }, 300, false);
                 });
-                viewport.on('touchend', function(event) {
+                map.on('touchend', function(event) {
                   $timeout.cancel(holdPromise);
                   startPixel = undefined;
                 });
-                viewport.on('touchmove', function(event) {
+                map.on('touchmove', function(event) {
                   if (startPixel) {
-                    var pixel = map.getEventPixel(event.originalEvent);
+                    var pixel = event.getPixel();
                     var deltaX = Math.abs(startPixel[0] - pixel[0]);
                     var deltaY = Math.abs(startPixel[1] - pixel[1]);
                     if (deltaX + deltaY > 6) {
