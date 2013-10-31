@@ -585,7 +585,7 @@ goog.addDependency("../src/ol/easing.js", ["ol.easing"], ["goog.fx.easing"]);
 goog.addDependency("../src/ol/ellipsoid/bessel1841ellipsoid.js", ["ol.ellipsoid.BESSEL1841"], ["ol.Ellipsoid"]);
 goog.addDependency("../src/ol/ellipsoid/ellipsoid.js", ["ol.Ellipsoid"], ["goog.math", "ol.Coordinate"]);
 goog.addDependency("../src/ol/ellipsoid/wgs84ellipsoid.js", ["ol.ellipsoid.WGS84"], ["ol.Ellipsoid"]);
-goog.addDependency("../src/ol/events/condition.js", ["ol.events.ConditionType", "ol.events.condition"], ["goog.dom.TagName", "goog.events.EventType", "goog.functions"]);
+goog.addDependency("../src/ol/events/condition.js", ["ol.events.ConditionType", "ol.events.condition"], ["goog.dom.TagName", "goog.functions", "ol.MapBrowserEvent.EventType"]);
 goog.addDependency("../src/ol/expr/expression.js", ["ol.expr", "ol.expr.functions"], ["ol.Extent", "ol.Feature", "ol.expr.Call", "ol.expr.Expression", "ol.expr.Identifier", "ol.expr.Parser", "ol.extent", "ol.geom.GeometryType"]);
 goog.addDependency("../src/ol/expr/expressions.js", ["ol.expr.Call", "ol.expr.Comparison", "ol.expr.ComparisonOp", "ol.expr.Expression", "ol.expr.Identifier", "ol.expr.Literal", "ol.expr.Logical", "ol.expr.LogicalOp", "ol.expr.Math", "ol.expr.MathOp", "ol.expr.Member", "ol.expr.Not"], []);
 goog.addDependency("../src/ol/expr/lexer.js", ["ol.expr.Char", "ol.expr.Lexer", "ol.expr.Token", "ol.expr.TokenType", "ol.expr.UnexpectedToken"], ["goog.asserts", "goog.debug.Error"]);
@@ -642,7 +642,7 @@ goog.addDependency("../src/ol/layer/vectorlayerrenderintent.js", ["ol.layer.Vect
 goog.addDependency("../src/ol/map.js", ["ol.Map", "ol.MapProperty", "ol.RendererHint", "ol.RendererHints"], ["goog.Uri.QueryData", "goog.array", "goog.asserts", "goog.async.AnimationDelay", "goog.async.nextTick", "goog.debug.Console", "goog.dom", "goog.dom.TagName", "goog.dom.ViewportSizeMonitor", "goog.events", "goog.events.BrowserEvent", "goog.events.Event", "goog.events.EventType", "goog.events.KeyHandler", "goog.events.KeyHandler.EventType", "goog.events.MouseWheelHandler", "goog.events.MouseWheelHandler.EventType", 
 "goog.log", "goog.log.Level", "goog.object", "goog.style", "goog.vec.Mat4", "ol.BrowserFeature", "ol.Collection", "ol.FrameState", "ol.IView", "ol.MapBrowserEvent", "ol.MapBrowserEvent.EventType", "ol.MapBrowserEventHandler", "ol.MapEvent", "ol.MapEventType", "ol.Object", "ol.ObjectEventType", "ol.Pixel", "ol.PostRenderFunction", "ol.PreRenderFunction", "ol.Size", "ol.Tile", "ol.TileQueue", "ol.View", "ol.View2D", "ol.ViewHint", "ol.control", "ol.extent", "ol.interaction", "ol.layer.Base", "ol.layer.Group", 
 "ol.proj", "ol.proj.common", "ol.renderer.Map", "ol.renderer.canvas", "ol.renderer.canvas.Map", "ol.renderer.dom", "ol.renderer.dom.Map", "ol.renderer.webgl", "ol.renderer.webgl.Map", "ol.structs.PriorityQueue", "ol.vec.Mat4"]);
-goog.addDependency("../src/ol/mapbrowserevent.js", ["ol.MapBrowserEvent", "ol.MapBrowserEvent.EventType", "ol.MapBrowserEventHandler"], ["goog.array", "goog.asserts", "goog.events", "goog.events.BrowserEvent", "goog.events.EventTarget", "goog.events.EventType", "ol.BrowserFeature", "ol.Coordinate", "ol.FrameState", "ol.MapEvent", "ol.Pixel"]);
+goog.addDependency("../src/ol/mapbrowserevent.js", ["ol.MapBrowserEvent", "ol.MapBrowserEvent.EventType", "ol.MapBrowserEventHandler"], ["goog.array", "goog.asserts", "goog.events", "goog.events.BrowserEvent", "goog.events.EventTarget", "goog.events.EventType", "ol.Coordinate", "ol.FrameState", "ol.MapEvent", "ol.Pixel"]);
 goog.addDependency("../src/ol/mapevent.js", ["ol.MapEvent", "ol.MapEventType"], ["goog.events.Event", "ol.FrameState"]);
 goog.addDependency("../src/ol/math.js", ["ol.math"], ["goog.asserts"]);
 goog.addDependency("../src/ol/object.js", ["ol.Object", "ol.ObjectEventType"], ["goog.array", "goog.events", "goog.events.EventTarget", "goog.object"]);
@@ -16659,7 +16659,6 @@ goog.require("goog.events");
 goog.require("goog.events.BrowserEvent");
 goog.require("goog.events.EventTarget");
 goog.require("goog.events.EventType");
-goog.require("ol.BrowserFeature");
 goog.require("ol.Coordinate");
 goog.require("ol.FrameState");
 goog.require("ol.MapEvent");
@@ -16683,9 +16682,6 @@ ol.MapBrowserEvent.prototype.getPixel = function() {
   }
   return this.pixel_
 };
-ol.MapBrowserEvent.prototype.isMouseActionButton = function() {
-  return ol.BrowserFeature.HAS_TOUCH || this.browserEvent.isMouseActionButton()
-};
 ol.MapBrowserEvent.prototype.preventDefault = function() {
   goog.base(this, "preventDefault");
   this.browserEvent.preventDefault()
@@ -16699,48 +16695,51 @@ ol.MapBrowserEventHandler = function(map) {
   this.map_ = map;
   this.clickTimeoutId_ = 0;
   this.dragged_ = false;
-  this.listenerKeys_ = null;
   this.dragListenerKeys_ = null;
+  this.mousedownListenerKey_ = null;
   this.touchListenerKeys_ = null;
   this.down_ = null;
   var element = this.map_.getViewport();
-  this.listenerKeys_ = [goog.events.listen(element, [goog.events.EventType.CLICK, goog.events.EventType.DBLCLICK], this.click_, false, this), goog.events.listen(element, goog.events.EventType.MOUSEDOWN, this.handleMouseDown_, false, this)];
+  this.mousedownListenerKey_ = goog.events.listen(element, goog.events.EventType.MOUSEDOWN, this.handleMouseDown_, false, this);
   this.touchListenerKeys_ = [goog.events.listen(element, [goog.events.EventType.TOUCHSTART, goog.events.EventType.MSPOINTERDOWN], this.handleTouchStart_, false, this), goog.events.listen(goog.global.document, [goog.events.EventType.TOUCHMOVE, goog.events.EventType.MSPOINTERMOVE], this.handleTouchMove_, false, this), goog.events.listen(goog.global.document, [goog.events.EventType.TOUCHEND, goog.events.EventType.MSPOINTERUP], this.handleTouchEnd_, false, this)]
 };
 goog.inherits(ol.MapBrowserEventHandler, goog.events.EventTarget);
-ol.MapBrowserEventHandler.prototype.click_ = function(browserEvent) {
-  if(!this.dragged_) {
-    var newEvent;
-    var type = browserEvent.type;
-    if(type == goog.events.EventType.DBLCLICK) {
-      newEvent = new ol.MapBrowserEvent(ol.MapBrowserEvent.EventType.DBLCLICK, this.map_, browserEvent);
+ol.MapBrowserEventHandler.prototype.emulateClick_ = function(browserEvent) {
+  if(this.clickTimeoutId_ !== 0) {
+    goog.global.clearTimeout(this.clickTimeoutId_);
+    this.clickTimeoutId_ = 0;
+    var newEvent = new ol.MapBrowserEvent(ol.MapBrowserEvent.EventType.DBLCLICK, this.map_, browserEvent);
+    this.dispatchEvent(newEvent)
+  }else {
+    this.clickTimeoutId_ = goog.global.setTimeout(goog.bind(function() {
+      this.clickTimeoutId_ = 0;
+      var newEvent = new ol.MapBrowserEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, this.map_, browserEvent);
       this.dispatchEvent(newEvent)
-    }else {
-      newEvent = new ol.MapBrowserEvent(ol.MapBrowserEvent.EventType.CLICK, this.map_, browserEvent);
-      this.dispatchEvent(newEvent)
-    }
+    }, this), 250)
   }
 };
 ol.MapBrowserEventHandler.prototype.handleMouseUp_ = function(browserEvent) {
   if(this.down_) {
-    this.down_ = null;
     goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
     this.dragListenerKeys_ = null;
     if(this.dragged_) {
       var newEvent = new ol.MapBrowserEvent(ol.MapBrowserEvent.EventType.DRAGEND, this.map_, browserEvent);
-      this.dispatchEvent(newEvent)
+      this.dispatchEvent(newEvent);
+      this.down_ = null
+    }else {
+      if(browserEvent.isMouseActionButton()) {
+        this.emulateClick_(browserEvent)
+      }
     }
   }
 };
 ol.MapBrowserEventHandler.prototype.handleMouseDown_ = function(browserEvent) {
   var newEvent = new ol.MapBrowserEvent(ol.MapBrowserEvent.EventType.DOWN, this.map_, browserEvent);
   this.dispatchEvent(newEvent);
-  if(!this.down_) {
-    this.down_ = browserEvent;
-    this.dragged_ = false;
-    this.dragListenerKeys_ = [goog.events.listen(goog.global.document, goog.events.EventType.MOUSEMOVE, this.handleMouseMove_, false, this), goog.events.listen(goog.global.document, goog.events.EventType.MOUSEUP, this.handleMouseUp_, false, this)];
-    browserEvent.preventDefault()
-  }
+  this.down_ = browserEvent;
+  this.dragged_ = false;
+  this.dragListenerKeys_ = [goog.events.listen(goog.global.document, goog.events.EventType.MOUSEMOVE, this.handleMouseMove_, false, this), goog.events.listen(goog.global.document, goog.events.EventType.MOUSEUP, this.handleMouseUp_, false, this)];
+  browserEvent.preventDefault()
 };
 ol.MapBrowserEventHandler.prototype.handleMouseMove_ = function(browserEvent) {
   var newEvent;
@@ -16752,10 +16751,11 @@ ol.MapBrowserEventHandler.prototype.handleMouseMove_ = function(browserEvent) {
   newEvent = new ol.MapBrowserEvent(ol.MapBrowserEvent.EventType.DRAG, this.map_, browserEvent);
   this.dispatchEvent(newEvent)
 };
-ol.MapBrowserEventHandler.prototype.relayEvent_ = function(browserEvent) {
-  this.dispatchEvent(new ol.MapBrowserEvent(browserEvent.type, this.map_, browserEvent))
-};
 ol.MapBrowserEventHandler.prototype.handleTouchStart_ = function(browserEvent) {
+  if(!goog.isNull(this.mousedownListenerKey_)) {
+    goog.events.unlistenByKey(this.mousedownListenerKey_);
+    this.mousedownListenerKey_ = null
+  }
   browserEvent.preventDefault();
   this.down_ = browserEvent;
   this.dragged_ = false;
@@ -16774,26 +16774,13 @@ ol.MapBrowserEventHandler.prototype.handleTouchEnd_ = function(browserEvent) {
   this.dispatchEvent(newEvent);
   if(!this.dragged_) {
     goog.asserts.assert(!goog.isNull(this.down_));
-    if(this.clickTimeoutId_ !== 0) {
-      goog.global.clearTimeout(this.clickTimeoutId_);
-      this.clickTimeoutId_ = 0;
-      newEvent = new ol.MapBrowserEvent(ol.MapBrowserEvent.EventType.DBLCLICK, this.map_, this.down_);
-      this.dispatchEvent(newEvent);
-      this.down_ = null
-    }else {
-      this.clickTimeoutId_ = goog.global.setTimeout(goog.bind(function() {
-        this.clickTimeoutId_ = 0;
-        newEvent = new ol.MapBrowserEvent(ol.MapBrowserEvent.EventType.CLICK, this.map_, this.down_);
-        this.dispatchEvent(newEvent);
-        this.down_ = null
-      }, this), 250)
-    }
+    this.emulateClick_(this.down_)
   }
 };
 ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
-  if(!goog.isNull(this.listenerKeys_)) {
-    goog.array.forEach(this.listenerKeys_, goog.events.unlistenByKey);
-    this.listenerKeys_ = null
+  if(!goog.isNull(this.mousedownListenerKey_)) {
+    goog.events.unlistenByKey(this.mousedownListenerKey_);
+    this.mousedownListenerKey_ = null
   }
   if(!goog.isNull(this.dragListenerKeys_)) {
     goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
@@ -16805,7 +16792,7 @@ ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
   }
   goog.base(this, "disposeInternal")
 };
-ol.MapBrowserEvent.EventType = {CLICK:goog.events.EventType.CLICK, DBLCLICK:goog.events.EventType.DBLCLICK, DOWN:"down", DRAGSTART:"dragstart", DRAG:"drag", DRAGEND:"dragend", TOUCHSTART:goog.events.EventType.TOUCHSTART, TOUCHMOVE:goog.events.EventType.TOUCHMOVE, TOUCHEND:goog.events.EventType.TOUCHEND};
+ol.MapBrowserEvent.EventType = {DBLCLICK:goog.events.EventType.DBLCLICK, DOWN:"down", DRAGSTART:"dragstart", DRAG:"drag", DRAGEND:"dragend", SINGLECLICK:"singleclick", TOUCHSTART:goog.events.EventType.TOUCHSTART, TOUCHMOVE:goog.events.EventType.TOUCHMOVE, TOUCHEND:goog.events.EventType.TOUCHEND};
 goog.provide("ol.View2D");
 goog.provide("ol.View2DProperty");
 goog.require("goog.asserts");
@@ -17385,7 +17372,7 @@ goog.inherits(ol.interaction.DoubleClickZoom, ol.interaction.Interaction);
 ol.interaction.DoubleClickZoom.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
   var stopEvent = false;
   var browserEvent = mapBrowserEvent.browserEvent;
-  if(mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DBLCLICK && mapBrowserEvent.isMouseActionButton()) {
+  if(mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DBLCLICK) {
     var map = mapBrowserEvent.map;
     var anchor = mapBrowserEvent.getCoordinate();
     var delta = browserEvent.shiftKey ? -this.delta_ : this.delta_;
@@ -17399,8 +17386,8 @@ ol.interaction.DoubleClickZoom.prototype.handleMapBrowserEvent = function(mapBro
 goog.provide("ol.events.ConditionType");
 goog.provide("ol.events.condition");
 goog.require("goog.dom.TagName");
-goog.require("goog.events.EventType");
 goog.require("goog.functions");
+goog.require("ol.MapBrowserEvent.EventType");
 ol.events.ConditionType;
 ol.events.condition.altKeyOnly = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
@@ -17411,9 +17398,8 @@ ol.events.condition.altShiftKeysOnly = function(mapBrowserEvent) {
   return browserEvent.altKey && !browserEvent.platformModifierKey && browserEvent.shiftKey
 };
 ol.events.condition.always = goog.functions.TRUE;
-ol.events.condition.clickOnly = function(mapBrowserEvent) {
-  var browserEvent = mapBrowserEvent.browserEvent;
-  return browserEvent.type == goog.events.EventType.CLICK
+ol.events.condition.singleClick = function(mapBrowserEvent) {
+  return mapBrowserEvent.type == ol.MapBrowserEvent.EventType.SINGLECLICK
 };
 ol.events.condition.noModifierKeys = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.browserEvent;
@@ -28029,7 +28015,7 @@ goog.require("ol.layer.VectorLayerRenderIntent");
 goog.require("ol.source.Vector");
 ol.interaction.Select = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
-  this.condition_ = goog.isDef(options.condition) ? options.condition : ol.events.condition.clickOnly;
+  this.condition_ = goog.isDef(options.condition) ? options.condition : ol.events.condition.singleClick;
   this.addCondition_ = goog.isDef(options.addCondition) ? options.addCondition : ol.events.condition.shiftKeyOnly;
   this.featureMap_ = {};
   this.selectionLayers = {};
@@ -35447,7 +35433,11 @@ ol.source.ImageWMS.prototype.getImage = function(extent, resolution, projection)
   return this.image_
 };
 ol.source.ImageWMS.prototype.getFeatureInfoForPixel = function(pixel, map, success, opt_error) {
-  var view2D = map.getView().getView2D(), projection = view2D.getProjection(), size = map.getSize(), bottomLeft = map.getCoordinateFromPixel([0, size[1]]), topRight = map.getCoordinateFromPixel([size[0], 0]), extent = [bottomLeft[0], topRight[0], bottomLeft[1], topRight[1]], url = this.imageUrlFunction(extent, size, projection);
+  var view = map.getView().getView2D();
+  var size = map.getSize();
+  goog.asserts.assert(goog.isDefAndNotNull(size));
+  var extent = view.calculateExtent(size);
+  var url = this.imageUrlFunction(extent, size, view.getProjection());
   goog.asserts.assert(goog.isDef(url), "ol.source.ImageWMS#imageUrlFunction does not return a URL");
   ol.source.wms.getFeatureInfo(url, pixel, this.getFeatureInfoOptions_, success, opt_error)
 };
