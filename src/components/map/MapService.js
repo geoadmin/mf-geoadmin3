@@ -250,7 +250,7 @@
           var listenerKey;
           olMap.getLayers().on('add', function(layersEvent) {
             if (layersEvent.getElement() === olLayer) {
-              listenerKey = olMap.on('click', onMapClick);
+              listenerKey = olMap.on('singleclick', onMapClick);
             }
           });
           olMap.getLayers().on('remove', function(layersEvent) {
