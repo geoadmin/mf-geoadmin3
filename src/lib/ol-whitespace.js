@@ -16697,11 +16697,13 @@ ol.MapBrowserEventHandler = function(map) {
   this.dragged_ = false;
   this.dragListenerKeys_ = null;
   this.mousedownListenerKey_ = null;
-  this.touchListenerKeys_ = null;
+  this.pointerdownListenerKey_ = null;
+  this.touchstartListenerKey_ = null;
   this.down_ = null;
   var element = this.map_.getViewport();
   this.mousedownListenerKey_ = goog.events.listen(element, goog.events.EventType.MOUSEDOWN, this.handleMouseDown_, false, this);
-  this.touchListenerKeys_ = [goog.events.listen(element, [goog.events.EventType.TOUCHSTART, goog.events.EventType.MSPOINTERDOWN], this.handleTouchStart_, false, this), goog.events.listen(goog.global.document, [goog.events.EventType.TOUCHMOVE, goog.events.EventType.MSPOINTERMOVE], this.handleTouchMove_, false, this), goog.events.listen(goog.global.document, [goog.events.EventType.TOUCHEND, goog.events.EventType.MSPOINTERUP], this.handleTouchEnd_, false, this)]
+  this.pointerdownListenerKey_ = goog.events.listen(element, goog.events.EventType.MSPOINTERDOWN, this.handlePointerDown_, false, this);
+  this.touchstartListenerKey_ = goog.events.listen(element, goog.events.EventType.TOUCHSTART, this.handleTouchStart_, false, this)
 };
 goog.inherits(ol.MapBrowserEventHandler, goog.events.EventTarget);
 ol.MapBrowserEventHandler.prototype.emulateClick_ = function(browserEvent) {
@@ -16734,6 +16736,13 @@ ol.MapBrowserEventHandler.prototype.handleMouseUp_ = function(browserEvent) {
   }
 };
 ol.MapBrowserEventHandler.prototype.handleMouseDown_ = function(browserEvent) {
+  if(!goog.isNull(this.pointerdownListenerKey_)) {
+    goog.events.unlistenByKey(this.pointerdownListenerKey_);
+    this.pointerdownListenerKey_ = null;
+    goog.asserts.assert(!goog.isNull(this.touchstartListenerKey_));
+    goog.events.unlistenByKey(this.touchstartListenerKey_);
+    this.touchstartListenerKey_ = null
+  }
   var newEvent = new ol.MapBrowserEvent(ol.MapBrowserEvent.EventType.DOWN, this.map_, browserEvent);
   this.dispatchEvent(newEvent);
   this.down_ = browserEvent;
@@ -16751,27 +16760,59 @@ ol.MapBrowserEventHandler.prototype.handleMouseMove_ = function(browserEvent) {
   newEvent = new ol.MapBrowserEvent(ol.MapBrowserEvent.EventType.DRAG, this.map_, browserEvent);
   this.dispatchEvent(newEvent)
 };
+ol.MapBrowserEventHandler.prototype.handlePointerDown_ = function(browserEvent) {
+  if(!goog.isNull(this.mousedownListenerKey_)) {
+    goog.events.unlistenByKey(this.mousedownListenerKey_);
+    this.mousedownListenerKey_ = null;
+    goog.asserts.assert(!goog.isNull(this.touchstartListenerKey_));
+    goog.events.unlistenByKey(this.touchstartListenerKey_);
+    this.touchstartListenerKey_ = null
+  }
+  var newEvent = new ol.MapBrowserEvent(ol.MapBrowserEvent.EventType.TOUCHSTART, this.map_, browserEvent);
+  this.dispatchEvent(newEvent);
+  this.down_ = browserEvent;
+  this.dragged_ = false;
+  this.dragListenerKeys_ = [goog.events.listen(goog.global.document, goog.events.EventType.MSPOINTERMOVE, this.handlePointerMove_, false, this), goog.events.listen(goog.global.document, goog.events.EventType.MSPOINTERUP, this.handlePointerUp_, false, this)];
+  browserEvent.preventDefault()
+};
+ol.MapBrowserEventHandler.prototype.handlePointerMove_ = function(browserEvent) {
+  this.dragged_ = true;
+  var newEvent = new ol.MapBrowserEvent(ol.MapBrowserEvent.EventType.TOUCHMOVE, this.map_, browserEvent);
+  this.dispatchEvent(newEvent)
+};
+ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(browserEvent) {
+  var newEvent = new ol.MapBrowserEvent(ol.MapBrowserEvent.EventType.TOUCHEND, this.map_, browserEvent);
+  this.dispatchEvent(newEvent);
+  goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
+  if(!this.dragged_) {
+    goog.asserts.assert(!goog.isNull(this.down_));
+    this.emulateClick_(this.down_)
+  }
+};
 ol.MapBrowserEventHandler.prototype.handleTouchStart_ = function(browserEvent) {
   if(!goog.isNull(this.mousedownListenerKey_)) {
     goog.events.unlistenByKey(this.mousedownListenerKey_);
-    this.mousedownListenerKey_ = null
+    this.mousedownListenerKey_ = null;
+    goog.asserts.assert(!goog.isNull(this.pointerdownListenerKey_));
+    goog.events.unlistenByKey(this.pointerdownListenerKey_);
+    this.pointerdownListenerKey_ = null
   }
-  browserEvent.preventDefault();
+  var newEvent = new ol.MapBrowserEvent(ol.MapBrowserEvent.EventType.TOUCHSTART, this.map_, browserEvent);
+  this.dispatchEvent(newEvent);
   this.down_ = browserEvent;
   this.dragged_ = false;
-  var newEvent = new ol.MapBrowserEvent(ol.MapBrowserEvent.EventType.TOUCHSTART, this.map_, browserEvent);
-  this.dispatchEvent(newEvent)
+  this.dragListenerKeys_ = [goog.events.listen(goog.global.document, goog.events.EventType.TOUCHMOVE, this.handleTouchMove_, false, this), goog.events.listen(goog.global.document, goog.events.EventType.TOUCHEND, this.handleTouchEnd_, false, this)];
+  browserEvent.preventDefault()
 };
 ol.MapBrowserEventHandler.prototype.handleTouchMove_ = function(browserEvent) {
-  if(this.down_) {
-    this.dragged_ = true;
-    var newEvent = new ol.MapBrowserEvent(ol.MapBrowserEvent.EventType.TOUCHMOVE, this.map_, browserEvent);
-    this.dispatchEvent(newEvent)
-  }
+  this.dragged_ = true;
+  var newEvent = new ol.MapBrowserEvent(ol.MapBrowserEvent.EventType.TOUCHMOVE, this.map_, browserEvent);
+  this.dispatchEvent(newEvent)
 };
 ol.MapBrowserEventHandler.prototype.handleTouchEnd_ = function(browserEvent) {
   var newEvent = new ol.MapBrowserEvent(ol.MapBrowserEvent.EventType.TOUCHEND, this.map_, browserEvent);
   this.dispatchEvent(newEvent);
+  goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
   if(!this.dragged_) {
     goog.asserts.assert(!goog.isNull(this.down_));
     this.emulateClick_(this.down_)
@@ -16782,13 +16823,17 @@ ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
     goog.events.unlistenByKey(this.mousedownListenerKey_);
     this.mousedownListenerKey_ = null
   }
+  if(!goog.isNull(this.pointerdownListenerKey_)) {
+    goog.events.unlistenByKey(this.pointerdownListenerKey_);
+    this.pointerdownListenerKey_ = null
+  }
+  if(!goog.isNull(this.touchstartListenerKey_)) {
+    goog.events.unlistenByKey(this.touchstartListenerKey_);
+    this.touchstartListenerKey_ = null
+  }
   if(!goog.isNull(this.dragListenerKeys_)) {
     goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
     this.dragListenerKeys_ = null
-  }
-  if(!goog.isNull(this.touchListenerKeys_)) {
-    goog.array.forEach(this.touchListenerKeys_, goog.events.unlistenByKey);
-    this.touchListenerKeys_ = null
   }
   goog.base(this, "disposeInternal")
 };
@@ -27818,7 +27863,10 @@ ol.dom.Input.prototype.handleInputChanged_ = function() {
     this.setChecked(this.target_.checked)
   }else {
     this.setValue(this.target_.value);
-    this.setValueAsNumber(this.target_.valueAsNumber)
+    var number = this.target_.valueAsNumber;
+    if(goog.isDef(number) && !isNaN(number)) {
+      this.setValueAsNumber(number)
+    }
   }
 };
 ol.dom.Input.prototype.handleCheckedChanged_ = function() {
@@ -35267,6 +35315,7 @@ ol.source.BingMaps = function(options) {
   jsonp.send({"include":"ImageryProviders", "key":options.key}, goog.bind(this.handleImageryMetadataResponse, this))
 };
 goog.inherits(ol.source.BingMaps, ol.source.TileImage);
+ol.source.BingMaps.TOS_ATTRIBUTION = new ol.Attribution({html:'\x3ca class\x3d"ol-attribution-bing-tos" target\x3d"_blank" ' + 'href\x3d"http://www.microsoft.com/maps/product/terms.html"\x3e' + "Terms of Use\x3c/a\x3e"});
 ol.source.BingMaps.prototype.handleImageryMetadataResponse = function(response) {
   if(response.statusCode != 200 || response.statusDescription != "OK" || response.authenticationResultCode != "ValidCredentials" || response.resourceSets.length != 1 || response.resourceSets[0].resources.length != 1) {
     this.setState(ol.source.State.ERROR);
@@ -35296,7 +35345,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse = function(response) 
       var minZ = coverageArea.zoomMin;
       var maxZ = coverageArea.zoomMax;
       var bbox = coverageArea.bbox;
-      var epsg4326Extent = [bbox[1], bbox[3], bbox[0], bbox[2]];
+      var epsg4326Extent = [bbox[1], bbox[0], bbox[3], bbox[2]];
       var extent = ol.extent.transform(epsg4326Extent, transform);
       var tileRange, z, zKey;
       for(z = minZ;z <= maxZ;++z) {
@@ -35311,6 +35360,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse = function(response) 
     });
     return new ol.Attribution({html:html, tileRanges:tileRanges})
   });
+  attributions.push(ol.source.BingMaps.TOS_ATTRIBUTION);
   this.setAttributions(attributions);
   this.setLogo(brandLogoUri);
   this.setState(ol.source.State.READY)
