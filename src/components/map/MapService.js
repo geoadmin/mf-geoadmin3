@@ -113,6 +113,75 @@
   });
 
   /**
+   * This service is to be used to register a "click" listener
+   * on a OpenLayer map.
+   *
+   * Notes:
+   * - all desktop browsers and IE on touch devices , we add an ol3
+   *   "singleclick" event on the map.
+   * - others browsers on touch devices, we simulate the "click" behavior only
+   *   if it's not a long press touch.
+   */
+  module.provider('gaMapClick', function() {
+    this.$get = function($timeout, gaBrowserSniffer) {
+      return {
+        listen: function(map, callback) {
+          var down = null;
+          var moving = false;
+          var timeoutPromise = null;
+          var touchstartTime;
+
+          var touchstartListener = function(evt) {
+            touchstartTime = (new Date()).getTime();
+            down = evt;
+          };
+
+          var touchMoveListener = function(evt) {
+            if (down) {
+              moving = true;
+            }
+          };
+
+          var touchendListener = function(evt) {
+            var now = (new Date()).getTime();
+            if (now - touchstartTime < 300) {
+              if (down && !moving) {
+                if (timeoutPromise) {
+                  $timeout.cancel(timeoutPromise);
+                  timeoutPromise = null;
+                } else {
+                  var clickEvent = down;
+                  timeoutPromise = $timeout(function() {
+                    callback(clickEvent);
+                    timeoutPromise = null;
+                  }, 350, false);
+                }
+              }
+              moving = false;
+              down = null;
+            }
+          };
+
+          if (!gaBrowserSniffer.touchDevice || gaBrowserSniffer.msie >= 10) {
+            return map.on('singleclick', callback);
+
+          } else {
+            var viewport = $(map.getViewport());
+            viewport.on('touchstart', touchstartListener);
+            viewport.on('touchmove', touchMoveListener);
+            viewport.on('touchend', touchendListener);
+            return function() {
+              viewport.unbind('touchstart', touchstartListener);
+              viewport.unbind('touchmove', touchMoveListener);
+              viewport.unbind('touchend', touchendListener);
+            };
+          }
+        }
+      };
+    };
+  });
+
+  /**
    * Manage external WMS layers
    */
   module.provider('gaWms', function() {
@@ -190,7 +259,8 @@
       ]
     });
 
-    this.$get = function($http, gaPopup, gaDefinePropertiesForLayer) {
+    this.$get = function($http, gaPopup, gaDefinePropertiesForLayer,
+        gaMapClick) {
       var Kml = function(proxyUrl) {
 
         /**
@@ -250,7 +320,7 @@
           var listenerKey;
           olMap.getLayers().on('add', function(layersEvent) {
             if (layersEvent.getElement() === olLayer) {
-              listenerKey = olMap.on('singleclick', onMapClick);
+              listenerKey = gaMapClick.listen(olMap, onMapClick);
             }
           });
           olMap.getLayers().on('remove', function(layersEvent) {

@@ -4,12 +4,10 @@
   goog.require('ga_browsersniffer_service');
   goog.require('ga_map_service');
   goog.require('ga_popup_service');
-  goog.require('ga_tooltip_service');
 
   var module = angular.module('ga_tooltip_directive', [
     'ga_popup_service',
     'ga_map_service',
-    'ga_tooltip_service',
     'pascalprecht.translate'
   ]);
 
@@ -45,7 +43,9 @@
             gaMapClick.listen(map, function(evt) {
               var size = map.getSize();
               var mapExtent = map.getView().calculateExtent(size);
-              var coordinate = map.getEventCoordinate(evt);
+              var coordinate = (evt.originalEvent) ?
+                  map.getEventCoordinate(evt.originalEvent) :
+                  evt.getCoordinate();
 
               // A digest cycle is necessary for $http requests to be
               // actually sent out. Angular-1.2.0rc2 changed the $evalSync
