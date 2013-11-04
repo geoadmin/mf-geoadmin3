@@ -45,7 +45,8 @@
           l.href = l.origin + l.pathname.replace(/mobile/, 'index') + l.search;
         }
 
-        var onMobile = ( (('ontouchstart' in w) || ('onmsgesturechange' in w)) && (screen.width<=768) );
+        var onMobile = ( (('ontouchstart' in w) || ('onmsgesturechange' in w)) &&
+            (screen.width<=768 || screen.height<=768));
         if (m=='false' || (!onMobile && p=='mobile') ) {
           redirectToDesktop();
         } else if (m=='true' || (onMobile && p=='desktop') ) {
