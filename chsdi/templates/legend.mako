@@ -5,13 +5,25 @@
   hasLegend = pageargs['hasLegend']
   host = request.host_url + request.uscript_name
   lang = request.lang
-  pdf_legends = ('ch.swisstopo.geologie-eiszeit-lgm-raster', 'ch.swisstopo.geologie-geologische_karte',
-                    'ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen',
-                    'ch.swisstopo.geologie-hydrogeologische_karte-grundwasservulnerabilitaet',
-                    'ch.swisstopo.geologie-tektonische_karte', 'ch.astra.ivs-gelaendekarte',
-                    'ch.astra.ausnahmetransportrouten', 'ch.bazl.luftfahrtkarten-icao',
-                    'ch.bazl.segelflugkarte', 'ch.kantone.cadastralwebmap-farbe',
-                    'ch.swisstopo.swisstlm3d-karte')
+  pdf_legends = ('ch.swisstopo.geologie-eiszeit-lgm-raster', 
+                 'ch.swisstopo.geologie-geologische_karte',
+                 'ch.swisstopo.geologie-gravimetrischer_atlas',
+                 'ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen',
+                 'ch.swisstopo.geologie-hydrogeologische_karte-grundwasservulnerabilitaet',
+                 'ch.swisstopo.geologie-tektonische_karte', 
+                 'ch.astra.ivs-gelaendekarte',
+                 'ch.astra.ausnahmetransportrouten', 
+                 'ch.bazl.luftfahrtkarten-icao',
+                 'ch.bazl.segelflugkarte', 
+                 'ch.kantone.cadastralwebmap-farbe',
+                 'ch.swisstopo.swisstlm3d-karte-farbe',
+                 'ch.swisstopo.swisstlm3d-karte-grau', 
+                 'ch.swisstopo.pixelkarte-farbe-pk1000.noscale',
+                 'ch.swisstopo.pixelkarte-farbe-pk500.noscale', 
+                 'ch.swisstopo.pixelkarte-farbe-pk200.noscale',
+                 'ch.swisstopo.pixelkarte-farbe-pk100.noscale', 
+                 'ch.swisstopo.pixelkarte-farbe-pk50.noscale',
+                 'ch.swisstopo.pixelkarte-farbe-pk25.noscale')
   if c['idBod'] in pdf_legends:
       legend_url_pdf = host + '/static/images/legends/' + c['idBod'] + '_' + lang + '_big.pdf'
   else:
