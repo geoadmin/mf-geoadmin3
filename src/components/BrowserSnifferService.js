@@ -19,7 +19,8 @@
       var mac = /Mac/.test(platform);
       var testSize = function(size) {
         var m = $window.matchMedia;
-        return m && m('(max-width: ' + size + 'px)').matches;
+        return m && (m('(max-width: ' + size + 'px)').matches ||
+            m('(max-height: ' + size + 'px)').matches);
       };
       var touchDevice = ('ontouchstart' in $window) ||
           ('onmsgesturechange' in $window);
