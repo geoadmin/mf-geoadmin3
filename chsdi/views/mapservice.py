@@ -220,7 +220,7 @@ class MapService(MapServiceValidation):
 
     @view_config(route_name='htmlpopup', renderer='jsonp')
     def htmlpopup(self):
-        template, feature = self._get_html_response()
+        template, feature = self._get_html_response('simple')
         feature.update({'extended': False})
         response = render_to_response(
             template,
@@ -232,7 +232,7 @@ class MapService(MapServiceValidation):
 
     @view_config(route_name='extendedhtmlpopup', renderer='jsonp')
     def extendedhtmlpopup(self):
-        template, feature = self._get_html_response()
+        template, feature = self._get_html_response('extended')
         feature.update({'extended': True})
         response = render_to_response(
             template,
@@ -242,7 +242,7 @@ class MapService(MapServiceValidation):
             return response
         return response.body
 
-    def _get_html_response(self):
+    def _get_html_response(self, htmlType):
         defaultExtent = '42000,30000,350000,900000'
         defaultImageDisplay = '400,600,96'
         self.imageDisplay = self.request.params.get('imageDisplay', defaultImageDisplay)
@@ -258,6 +258,8 @@ class MapService(MapServiceValidation):
         layer = self._get_layer_resource(idlayer)
         # One layer can have several models
         for model in models:
+            if htmlType == 'extended' and not hasattr(model, '__extended_info__'):
+                raise exc.HTTPNotFound('No extended info has been found for %s' % idlayer)
             feature = self._get_feature_resource(idlayer, idfeature, model)
             if feature != 'No Result Found':
                 # One layer can have several templates
