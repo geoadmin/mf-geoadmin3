@@ -90,6 +90,15 @@
         })
       ]
     }));
+    
+    var dragClass = 'ga-dragging';
+    var viewport = $(map.getViewport());
+    map.on('dragstart', function() {
+      viewport.addClass(dragClass);
+    });
+    map.on('dragend', function() {
+      viewport.removeClass(dragClass);
+    });
 
     return map;
   }
