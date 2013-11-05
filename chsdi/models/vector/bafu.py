@@ -12,7 +12,6 @@ Base = bases['bafu']
 
 
 class AM_G(Base, Vector):
-    # view in a schema
     __tablename__ = 'am_g'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
     __esriId__ = 2000
@@ -27,7 +26,6 @@ register('ch.bafu.bundesinventare-amphibien_wanderobjekte', AM_G)
 
 
 class AM_L(Base, Vector):
-    # view in a schema
     __tablename__ = 'am_l'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
     __esriId__ = 2001
@@ -44,7 +42,6 @@ register('ch.bafu.bundesinventare-amphibien', AM_L)
 
 
 class LHG(Base, Vector):
-    # view in a schema
     __tablename__ = 'lhg'
     __table_args__ = ({'schema': 'hydrologie', 'autoload': False})
     __esriId__ = 2003
@@ -58,7 +55,6 @@ register('ch.bafu.hydrologie-hydromessstationen', LHG)
 
 
 class Temperaturmessnetz(Base, Vector):
-    # view in a schema
     __tablename__ = 'temperaturmessnetz'
     __table_args__ = ({'schema': 'hydrologie', 'autoload': False})
     __esriId__ = 2004
@@ -74,7 +70,6 @@ register('ch.bafu.hydrologie-wassertemperaturmessstationen', Temperaturmessnetz)
 
 
 class Gewaesserzustandst (Base, Vector):
-    # view in a schema
     __tablename__ = 'dbgz'
     __table_args__ = ({'schema': 'hydrologie', 'autoload': False})
     __esriId__ = 2006
@@ -91,7 +86,6 @@ register('ch.bafu.hydrologie-gewaesserzustandsmessstationen', Gewaesserzustandst
 
 
 class Teileinzugsgebiete2 (Base, Vector):
-    # view in a schema
     __tablename__ = 'ebene_2km'
     __table_args__ = ({'schema': 'wasser', 'autoload': False})
     __esriId__ = 2005
@@ -119,7 +113,6 @@ register('ch.bafu.wasser-teileinzugsgebiete_2', Teileinzugsgebiete2)
 
 
 class Teileinzugsgebiete40 (Base, Vector):
-    # view in a schema
     __tablename__ = 'ebene_40km'
     __table_args__ = ({'schema': 'wasser', 'autoload': False})
     __esriId__ = 2007
@@ -134,7 +127,6 @@ register('ch.bafu.wasser-teileinzugsgebiete_40', Teileinzugsgebiete40)
 
 
 class Gebietsauslaesse (Base, Vector):
-    # view in a schema
     __tablename__ = 'outlets'
     __table_args__ = ({'schema': 'wasser', 'autoload': False})
     __esriId__ = 2008
@@ -158,7 +150,6 @@ register('ch.bafu.wasser-gebietsauslaesse', Gebietsauslaesse)
 
 
 class AU(Base, Vector):
-    # view in a schema
     __tablename__ = 'au'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
     __esriId__ = 2009
@@ -176,7 +167,6 @@ register('ch.bafu.bundesinventare-auen', AU)
 
 
 class BLN(Base, Vector):
-    # view in a schema
     __tablename__ = 'bln'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
     __esriId__ = 1000
@@ -193,7 +183,6 @@ register('ch.bafu.bundesinventare-bln', BLN)
 
 
 class HM(Base, Vector):
-    # view in a schema
     __tablename__ = 'hm'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
     __esriId__ = 2010
@@ -211,7 +200,6 @@ register('ch.bafu.bundesinventare-hochmoore', HM)
 
 
 class JB(Base, Vector):
-    # view in a schema
     __tablename__ = 'jb'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
     __esriId__ = 2000
@@ -230,7 +218,6 @@ register('ch.bafu.bundesinventare-jagdbanngebiete', JB)
 
 
 class ML(Base, Vector):
-    # view in a schema
     __tablename__ = 'ml'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
     __esriId__ = 2011
@@ -246,7 +233,6 @@ register('ch.bafu.bundesinventare-moorlandschaften', ML)
 
 
 class WV(Base, Vector):
-    # view in a schema
     __tablename__ = 'wv'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
     __esriId__ = 2012
@@ -264,7 +250,6 @@ register('ch.bafu.bundesinventare-vogelreservate', WV)
 
 
 class wasserentnahmeWkB(Base, Vector):
-    # view in a schema
     __tablename__ = 'invent_ent_wknutz_bedeutend'
     __table_args__ = ({'schema': 'wasser', 'autoload': False})
     __esriId__ = 2013
@@ -282,7 +267,6 @@ register('ch.bafu.wasser-entnahme', wasserentnahmeWkB)
 
 
 class wasserentnahmeWkW(Base, Vector):
-    # view in a schema
     __tablename__ = 'invent_ent_wknutz_weitere'
     __table_args__ = ({'schema': 'wasser', 'autoload': False})
     __esriId__ = 2014
@@ -299,7 +283,6 @@ register('ch.bafu.wasser-entnahme', wasserentnahmeWkW)
 
 
 class wasserentnahmeAnB(Base, Vector):
-    # view in a schema
     __tablename__ = 'invent_ent_andere_bedeutend'
     __table_args__ = ({'schema': 'wasser', 'autoload': False})
     __esriId__ = 2015
@@ -317,7 +300,6 @@ register('ch.bafu.wasser-entnahme', wasserentnahmeAnB)
 
 
 class wasserentnahmeAnW(Base, Vector):
-    # view in a schema
     __tablename__ = 'invent_ent_andere_weitere'
     __table_args__ = ({'schema': 'wasser', 'autoload': False})
     __esriId__ = 2016
@@ -334,7 +316,6 @@ register('ch.bafu.wasser-entnahme', wasserentnahmeAnW)
 
 
 class wasserleitungen(Base, Vector):
-    # view in a schema
     __tablename__ = 'leitungen'
     __table_args__ = ({'schema': 'wasser', 'autoload': False})
     __esriId__ = 2017
@@ -350,7 +331,6 @@ register('ch.bafu.wasser-leitungen', wasserleitungen)
 
 
 class wasserrueckgabe(Base, Vector):
-    # view in a schema
     __tablename__ = 'rueckgabe'
     __table_args__ = ({'schema': 'wasser', 'autoload': False})
     __esriId__ = 2018
@@ -366,7 +346,6 @@ register('ch.bafu.wasser-rueckgabe', wasserrueckgabe)
 
 
 class flachmoore(Base, Vector):
-    # view in a schema
     __tablename__ = 'fm'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
     __esriId__ = 2019
@@ -382,7 +361,6 @@ register('ch.bafu.bundesinventare-flachmoore', flachmoore)
 
 
 class flachmooreReg(Base, Vector):
-    # view in a schema
     __tablename__ = 'flachmoore_regional'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
     __esriId__ = 2020
@@ -398,7 +376,6 @@ register('ch.bafu.bundesinventare-flachmoore_regional', flachmooreReg)
 
 
 class paerke_nationaler_bedeutung(Base, Vector):
-    # view in a schema
     __tablename__ = 'paerke_nationaler_bedeutung'
     __table_args__ = ({'schema': 'schutzge', 'autoload': False})
     __esriId__ = 2021
@@ -416,7 +393,6 @@ register('ch.bafu.schutzgebiete-paerke_nationaler_bedeutung', paerke_nationaler_
 
 
 class ramsar(Base, Vector):
-    # view in a schema
     __tablename__ = 'ramsar'
     __table_args__ = ({'schema': 'schutzge', 'autoload': False})
     __esriId__ = 2022
@@ -433,7 +409,6 @@ register('ch.bafu.schutzgebiete-ramsar', ramsar)
 
 
 class wildruhezonen_jagdbanngebiete(Base, Vector):
-    # view in a schema
     __tablename__ = 'wildruhezonen_jagdbanngebiete'
     __table_args__ = ({'schema': 'schutzge', 'autoload': False})
     __esriId__ = 2023
@@ -457,7 +432,6 @@ register('ch.bafu.wildruhezonen-jagdbanngebiete', wildruhezonen_jagdbanngebiete)
 
 
 class wege_wildruhezonen_jagdbanngebiete(Base, Vector):
-    # view in a schema
     __tablename__ = 'wege_wildruhezonen_jagdbanngebiete'
     __table_args__ = ({'schema': 'schutzge', 'autoload': False})
     __esriId__ = 2024
@@ -474,7 +448,6 @@ register('ch.bafu.wege-wildruhezonen-jagdbanngebiete', wege_wildruhezonen_jagdba
 
 
 class steinbockkolonien(Base, Vector):
-    # view in a schema
     __tablename__ = 'sb'
     __table_args__ = ({'schema': 'fauna', 'autoload': False})
     __esriId__ = 2025
@@ -492,7 +465,6 @@ register('ch.bafu.fauna-steinbockkolonien', steinbockkolonien)
 
 
 class SWISSPRTR(Base, Vector):
-    # view in a schema
     __tablename__ = 'swissprtr'
     __table_args__ = ({'schema': 'prtr', 'autoload': False})
     __esriId__ = 2026
@@ -508,7 +480,6 @@ register('ch.bafu.swissprtr', SWISSPRTR)
 
 
 class HOLZVORRAT(Base, Vector):
-    # view in a schema
     __tablename__ = 'holzvorrat'
     __table_args__ = ({'schema': 'wald', 'autoload': False})
     __esriId__ = 2027
@@ -524,7 +495,6 @@ register('ch.bafu.holzvorrat', HOLZVORRAT)
 
 
 class HOLZZUWACHS(Base, Vector):
-    # view in a schema
     __tablename__ = 'holzzuwachs'
     __table_args__ = ({'schema': 'wald', 'autoload': False})
     __esriId__ = 2028
@@ -539,7 +509,6 @@ register('ch.bafu.holzzuwachs', HOLZZUWACHS)
 
 
 class HOLZNUTZUNG(Base, Vector):
-    # view in a schema
     __tablename__ = 'holznutzung'
     __table_args__ = ({'schema': 'wald', 'autoload': False})
     __esriId__ = 2029
@@ -554,7 +523,6 @@ register('ch.bafu.holznutzung', HOLZNUTZUNG)
 
 
 class NABEL(Base, Vector):
-    # view in a schema
     __tablename__ = 'nabel'
     __table_args__ = ({'schema': 'luft', 'autoload': False})
     __esriId__ = 2030
@@ -572,7 +540,6 @@ register('ch.bafu.nabelstationen', NABEL)
 
 
 class krebspest(Base, Vector):
-    # view in a schema
     __tablename__ = 'krebspest'
     __table_args__ = ({'schema': 'fischerei', 'autoload': False})
     __esriId__ = 2031
@@ -590,7 +557,6 @@ register('ch.bafu.fischerei-krebspest', krebspest)
 
 
 class biogeoreg(Base, Vector):
-    # view in a schema
     __tablename__ = 'biogeoreg'
     __table_args__ = ({'schema': 'diverse', 'autoload': False})
     __esriId__ = 2032
@@ -608,7 +574,6 @@ register('ch.bafu.biogeographische_regionen', biogeoreg)
 
 
 class smaragd(Base, Vector):
-    # view in a schema
     __tablename__ = 'smaragd'
     __table_args__ = ({'schema': 'schutzge', 'autoload': False})
     __esriId__ = 2033
@@ -624,7 +589,6 @@ register('ch.bafu.schutzgebiete-smaragd', smaragd)
 
 
 class biosphaerenreservate(Base, Vector):
-    # view in a schema
     __tablename__ = 'biores'
     __table_args__ = ({'schema': 'schutzge', 'autoload': False})
     __esriId__ = 2034
@@ -642,7 +606,6 @@ register('ch.bafu.schutzgebiete-biosphaerenreservate', biosphaerenreservate)
 
 
 class moose(Base, Vector):
-    # view in a schema
     __tablename__ = 'mooseflora'
     __table_args__ = ({'schema': 'flora', 'autoload': False})
     __esriId__ = 2035
@@ -660,7 +623,6 @@ register('ch.bafu.moose', moose)
 
 
 class weltensutter(Base, Vector):
-    # view in a schema
     __tablename__ = 'ws'
     __table_args__ = ({'schema': 'flora', 'autoload': False})
     __esriId__ = 2036
@@ -676,7 +638,6 @@ register('ch.bafu.flora-weltensutter_atlas', weltensutter)
 
 
 class baumarten(Base, Vector):
-    # view in a schema
     __tablename__ = 'baumartenmischung'
     __table_args__ = ({'schema': 'wald', 'autoload': False})
     __esriId__ = 2036
@@ -693,7 +654,6 @@ register('ch.bafu.landesforstinventar-baumarten', baumarten)
 
 
 class waldanteil(Base, Vector):
-    # view in a schema
     __tablename__ = 'waldanteil'
     __table_args__ = ({'schema': 'wald', 'autoload': False})
     __esriId__ = 2037
@@ -708,7 +668,6 @@ register('ch.bafu.landesforstinventar-waldanteil', waldanteil)
 
 
 class totholz(Base, Vector):
-    # view in a schema
     __tablename__ = 'totholzvolumen'
     __table_args__ = ({'schema': 'wald', 'autoload': False})
     __esriId__ = 2038
@@ -723,7 +682,6 @@ register('ch.bafu.landesforstinventar-totholz', totholz)
 
 
 class histerdbeben(Base, Vector):
-    # view in a schema
     __tablename__ = 'historische_erdbeben'
     __table_args__ = ({'schema': 'gefahren', 'autoload': False})
     __esriId__ = 2039
@@ -741,7 +699,6 @@ register('ch.bafu.gefahren-historische_erdbeben', histerdbeben)
 
 
 class spektral(Base, Vector):
-    # view in a schema
     __tablename__ = 'baugrundkl_spectral'
     __table_args__ = ({'schema': 'gefahren', 'autoload': False})
     __esriId__ = 2040
@@ -757,7 +714,6 @@ register('ch.bafu.gefahren-spektral', spektral)
 
 
 class trockenwiesenundweiden(Base, Vector):
-    # view in a schema
     __tablename__ = 'tww'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
     __esriId__ = 2041
@@ -775,7 +731,6 @@ register('ch.bafu.bundesinventare-trockenwiesen_trockenweiden', trockenwiesenund
 
 
 class trockenwiesenundweiden_anhang2(Base, Vector):
-    # view in a schema
     __tablename__ = 'trockenwiesen_weiden_anhang2'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
     __esriId__ = 2042
@@ -791,7 +746,6 @@ register('ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhang2', trockenw
 
 
 class amphibien_anhang4(Base, Vector):
-    # view in a schema
     __tablename__ = 'amphibien_anhang4'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
     __esriId__ = 2043
@@ -806,7 +760,6 @@ register('ch.bafu.bundesinventare-amphibien_anhang4', amphibien_anhang4)
 
 
 class baugrundklassen(Base, Vector):
-    # view in a schema
     __tablename__ = 'baugrundklassen'
     __table_args__ = ({'schema': 'gefahren', 'autoload': False})
     __esriId__ = 2044
@@ -820,13 +773,12 @@ register('ch.bafu.gefahren-baugrundklassen', baugrundklassen)
 
 
 class emissionplan(Base, Vector):
-    # view in a schema
     __tablename__ = 'laerm_emplan_bahn_2015'
     __table_args__ = ({'schema': 'diverse', 'autoload': False})
     __esriId__ = 2045
     __bodId__ = 'ch.bav.laerm-emissionplan_eisenbahn_2015'
     __template__ = 'templates/htmlpopup/emissionplan.mako'
-    __extended_info__ = True
+    #__extended_info__ = True
     id = Column('id', Integer, primary_key=True)
     lin_nr_dfa = Column('lin_nr_dfa', Numeric)
     von_m = Column('von_m', Numeric)
@@ -839,7 +791,6 @@ register('ch.bav.laerm-emissionplan_eisenbahn_2015', emissionplan)
 
 
 class wrzselect(Base, Vector):
-    # view in a schema
     __tablename__ = 'jgd_select'
     __table_args__ = ({'schema': 'wrzportal', 'autoload': False})
     __esriId__ = 2046
@@ -860,7 +811,6 @@ register('ch.bafu.wrz-jagdbanngebiete_select', wrzselect)
 
 
 class wrzportal(Base, Vector):
-    # view in a schema
     __tablename__ = 'wrz_portal'
     __table_args__ = ({'schema': 'wrzportal', 'autoload': False})
     __esriId__ = 2047
@@ -882,7 +832,6 @@ register('ch.bafu.wrz-wildruhezonen_portal', wrzportal)
 
 
 class wildtier(Base, Vector):
-    # view in a schema
     __tablename__ = 'wildtierkorridore'
     __table_args__ = ({'schema': 'fauna', 'autoload': False})
     __esriId__ = 2049

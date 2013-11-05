@@ -180,7 +180,7 @@ class ENERGIEFORSCHUNG(Base, Vector):
     __template__ = 'templates/htmlpopup/energieforschung.mako'
     __esriId__ = 4004
     __bodId__ = 'ch.bfe.energieforschung'
-    __extended_info__ = True
+    #__extended_info__ = True
     id = Column('tid', Integer, primary_key=True)
     titel_fr = Column('titel_fr', Text)
     titel_it = Column('titel_it', Text)
@@ -393,7 +393,7 @@ class Luftfahrthindernis(Base, Vector):
     __template__ = 'templates/htmlpopup/luftfahrthindernisse.mako'
     __esriId__ = 4013
     __bodId__ = 'ch.bazl.luftfahrthindernis'
-    __extended_info__ = True
+    #__extended_info__ = True
     id = Column('bgdi_id', Integer, primary_key=True)
     sanctiontext = Column('sanctiontext', Text)
     registrationnumber = Column('registrationnumber', Text)
@@ -797,7 +797,7 @@ class kernkraftwerke (Base, Vector):
     __template__ = 'templates/htmlpopup/kernkraftwerke.mako'
     __esriId__ = 4025
     __bodId__ = 'ch.bfe.kernkraftwerke'
-    __extended_info__ = True
+    #__extended_info__ = True
     id = Column('plant_id', Text, primary_key=True)
     name = Column('name', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
