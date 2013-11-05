@@ -116,7 +116,8 @@ class Search(SearchValidation):
 
         self.sphinx.SetLimits(0, self.FEATURE_LIMIT)
         geomFilter = '@geom_quadindex ' + self.quadindex + '*'
-        temp = self.sphinx.RunQueries(geomFilter)
+        self._add_feature_queries(geomFilter)
+        temp = self.sphinx.RunQueries()
         return self._parse_feature_results(temp)
 
     def _query_fields(self, fields):
@@ -152,9 +153,9 @@ class Search(SearchValidation):
             counter += 1
         return searchText
 
-    def _add_feature_queries(self, searchText):
+    def _add_feature_queries(self, queryText):
         for index in self.featureIndexes:
-            self.sphinx.AddQuery(searchText, index=str(index))
+            self.sphinx.AddQuery(queryText, index=str(index))
 
     def _parse_feature_results(self, results):
         nb_match = 0
