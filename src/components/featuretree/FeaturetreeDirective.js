@@ -30,7 +30,7 @@
             var getLayersToQuery = function(layers) {
               var layerstring = '';
               map.getLayers().forEach(function(l) {
-                  var id = l.get('id');
+                  var id = l.get('bodId');
                   if (gaLayers.getLayer(id) &&
                       gaLayers.getLayerProperty(id, 'queryable')) {
                     if (layerstring.length) {
@@ -39,12 +39,6 @@
                     layerstring = layerstring + id;
                   }
               });
-              //FIXME: remove this once services are ready
-              if (layerstring != '') {
-                layerstring += ',';
-              }
-              layerstring += 'ch.bfs.gebaeude_wohnungs_register';
-              //end of FIXME
               return layerstring;
             };
 
@@ -66,9 +60,7 @@
                   features.results.length > 0) {
 
                 angular.forEach(features.results, function(result) {
-                  //FIXME once service is updated, remove the string
-                  var layerId = result.attrs.layer ||
-                            'ch.bfs.gebaeude_wohnungs_register';
+                  var layerId = result.attrs.layer;
 
                   if (!angular.isDefined(tree[layerId])) {
                     tree[layerId] = {
@@ -86,8 +78,7 @@
                     info: '',
                     id: result.attrs.id,
                     layer: layerId,
-                    //FIXME once service is updated, remove the string
-                    label: result.attrs.label || 'ch.astra.ivs-nat'
+                    label: result.attrs.label
                   });
                 });
               }
@@ -99,9 +90,8 @@
                   extent = view.calculateExtent(size),
                   url = scope.options.searchUrlTemplate,
                   params = {
-                    bbox: extent[0] + ',' + extent[2] +
-                        ',' + extent[1] + ',' + extent[3],
-                    searchText: '',
+                    bbox: extent[0] + ',' + extent[1] +
+                        ',' + extent[2] + ',' + extent[3],
                     type: 'features',
                     features: layersToQuery,
                     callback: 'JSON_CALLBACK'
@@ -139,6 +129,7 @@
             // order to not trigger angular digest cycles and too many
             // updates. We don't use the permalink here because we want
             // to separate these concerns.
+            // FIXME: replace by debounce service...
             var triggerChange = function() {
               if (scope.options.active) {
                 cancel();
