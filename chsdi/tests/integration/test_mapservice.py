@@ -138,6 +138,20 @@ class TestMapServiceView(TestsBase):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362/htmlpopup', params={'callback': 'cb'}, status=200)
         self.failUnless(resp.content_type == 'application/javascript')
 
+    def test_gethtmlpopup_missing_feature(self):
+        resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/1/htmlpopup', status=404)
+
+    def test_getextendedhtmlpopup_valid(self):
+        resp = self.testapp.get('/rest/services/ech/MapServer/ch.bakom.radio-fernsehsender/11/extendedhtmlpopup', status=200)
+        self.failUnless(resp.content_type == 'text/html')
+
+    def test_getextendedhtmlpopup_valid_with_callback(self):
+        resp = self.testapp.get('/rest/services/ech/MapServer/ch.bakom.radio-fernsehsender/12/extendedhtmlpopup', params={'callback': 'cb'}, status=200)
+        self.failUnless(resp.content_type == 'application/javascript')
+
+    def test_getextendedhtmlpopup_noinfo(self):
+        resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362/extendedhtmlpopup', status=404)
+
     def test_getlegend_valid(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/getlegend', status=200)
         self.failUnless(resp.content_type == 'text/html')
