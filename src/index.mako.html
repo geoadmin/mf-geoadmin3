@@ -322,7 +322,7 @@
     <!-- feedback dialog -->
     <div ng-controller="GaFeedbackController" class="modal-container">
       <div id="feedback" class="modal fade" tabindex="-1" role="dialog" ga-modal-show="feedbackModalShown">
-        <div class="modal-dialog">
+        <div class="modal-dialog" ga-draggable=".modal-header">
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -335,7 +335,7 @@
         </div>
       </div>
       <div id="feedback-success" class="modal fade" tabindex="-1" role="dialog" ga-modal-show="feedbackSuccessModalShown">
-        <div class="modal-dialog">
+        <div class="modal-dialog" ga-draggable=".modal-header">
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -351,7 +351,7 @@
         </div>
       </div>
       <div id="feedback-error" class="modal fade" tabindex="-1" role="dialog" ga-modal-show="feedbackErrorModalShown">
-        <div class="modal-dialog">
+        <div class="modal-dialog" ga-draggable=".modal-header">
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal">&times;</button>
