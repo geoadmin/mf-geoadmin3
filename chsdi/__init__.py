@@ -86,6 +86,7 @@ def main(global_config, **settings):
 
     config.scan(ignore=['chsdi.tests', 'chsdi.models.bod'])  # required to find code decorated by view_config
 
+    config.add_static_view('css', 'chsdi:static/css', cache_max_age=3600)
     # Static view for sphinx
     config.add_static_view('_static', 'chsdi:static/doc/build/_static', cache_max_age=3600)
     config.add_static_view('api', 'chsdi:static/doc/build/api', cache_max_age=3600)
