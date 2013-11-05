@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from pyramid.view import view_config
+from pyramid.renderers import render_to_response
 import pyramid.httpexceptions as exc
 
 from sqlalchemy import or_, func
@@ -8,6 +9,7 @@ from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
 from chsdi.models import models_from_name
 from chsdi.models.bod import LayersConfig, get_bod_model, computeHeader
+from chsdi.models.vector import getScale
 from chsdi.lib.validation import MapServiceValidation
 
 
@@ -218,9 +220,29 @@ class MapService(MapServiceValidation):
 
     @view_config(route_name='htmlpopup', renderer='jsonp')
     def htmlpopup(self):
-        from pyramid.renderers import render_to_response
-        from chsdi.models.vector import getScale
+        template, feature = self._get_html_response()
+        feature.update({'extended': False})
+        response = render_to_response(
+            template,
+            feature,
+            request=self.request)
+        if self.cbName is None:
+            return response
+        return response.body
 
+    @view_config(route_name='extendedhtmlpopup', renderer='jsonp')
+    def extendedhtmlpopup(self):
+        template, feature = self._get_html_response()
+        feature.update({'extended': True})
+        response = render_to_response(
+            template,
+            feature,
+            request=self.request)
+        if self.cbName is None:
+            return response
+        return response.body
+
+    def _get_html_response(self):
         defaultExtent = '42000,30000,350000,900000'
         defaultImageDisplay = '400,600,96'
         self.imageDisplay = self.request.params.get('imageDisplay', defaultImageDisplay)
@@ -252,14 +274,7 @@ class MapService(MapServiceValidation):
         feature.update({'fullName': layer.get('fullName')})
         feature.update({'bbox': self.mapExtent.bounds})
         feature.update({'scale': scale})
-        response = render_to_response(
-            template,
-            feature,
-            request=self.request)
-
-        if self.cbName is None:
-            return response
-        return response.body
+        return template, feature
 
     def _get_layer_resource(self, idlayer):
         model = get_bod_model(self.lang)

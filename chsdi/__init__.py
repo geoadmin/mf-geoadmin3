@@ -72,6 +72,7 @@ def main(global_config, **settings):
     config.add_route('getlegend', '/rest/services/{map}/MapServer/{idlayer}/getlegend')
     config.add_route('getfeature', '/rest/services/{map}/MapServer/{idlayer}/{idfeature}')
     config.add_route('htmlpopup', '/rest/services/{map}/MapServer/{idlayer}/{idfeature}/htmlpopup')
+    config.add_route('extendedhtmlpopup', '/rest/services/{map}/MapServer/{idlayer}/{idfeature}/extendedhtmlpopup')
     config.add_route('search', '/rest/services/{map}/SearchServer')
     config.add_route('wmtscapabilities', '/rest/services/{map}/1.0.0/WMTSCapabilities.xml')
     config.add_route('profile_json', '/rest/services/profile.json')
