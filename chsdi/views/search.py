@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from osgeo import osr, ogr
-
 from pyramid.view import view_config
 import pyramid.httpexceptions as exc
 
 from chsdi.lib.validation import SearchValidation
 from chsdi.lib.helpers import remove_accents
+from chsdi.lib.helpers import transformCoordinate
 from chsdi.lib.sphinxapi import sphinxapi
 from chsdi.lib import mortonspacekey as msk
 
@@ -113,15 +112,7 @@ class Search(SearchValidation):
         centerX = (self.bbox[2] + self.bbox[0]) / 2
         centerY = (self.bbox[3] + self.bbox[1]) / 2
         wkt = 'POINT(%s %s)' % (centerX, centerY)
-        srid_out = osr.SpatialReference()
-        srid_out.ImportFromEPSG(4326)
-        srid_in = osr.SpatialReference()
-        srid_in.ImportFromEPSG(21781)
-        point = ogr.CreateGeometryFromWkt(wkt)
-        point.AssignSpatialReference(srid_in)
-        point.TransformTo(srid_out)
-        return point
- 
+        return transformCoordinate(wkt, 21781, 4326)
 
     def _feature_bbox_search(self):
         if self.quadindex is None:
