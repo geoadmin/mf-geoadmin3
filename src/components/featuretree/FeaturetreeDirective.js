@@ -26,6 +26,7 @@
             var canceler = null;
             var map = scope.map;
             var view = map.getView();
+            var overlays = [];
             var objectInfoToggleEl = $('#object-info-toggle');
             var objectInfoParentEl = $('#object-info-parent');
             var objectInfo = {};
@@ -62,6 +63,27 @@
               canceler = $q.defer();
             };
 
+            var addOverlay = function(feat) {
+              var marker = $('<div><i class="icon-info-sign"></div>')
+                  .addClass('ga-marker');
+              var coord4326 = [feat.attrs.lon, feat.attrs.lat];
+              var coord21781 = ol.proj.transform(coord4326,
+                  'EPSG:4326', 'EPSG:21781');
+              var overlay = new ol.Overlay({
+                element: marker.get(0),
+                position: coord21781
+              });
+              overlays.push(overlay);
+              map.addOverlay(overlay);
+            };
+
+            var cleanOverlays = function() {
+              angular.forEach(overlays, function(overlay) {
+                map.removeOverlay(overlay);
+              });
+              overlays = [];
+            };
+
             var updateTree = function(features) {
               var tree = {};
               var oldTree;
@@ -89,6 +111,7 @@
                     layer: layerId,
                     label: result.attrs.label
                   });
+                  addOverlay(result);
                 });
               }
               scope.tree = tree;
@@ -115,6 +138,7 @@
             var requestFeatures = function() {
               var layersToQuery = getLayersToQuery(),
                   req;
+              cleanOverlays();
               if (layersToQuery.length) {
                 req = getUrlAndParameters(layersToQuery);
 
