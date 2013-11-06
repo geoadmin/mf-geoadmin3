@@ -2,6 +2,7 @@
 
 from sqlalchemy import Column, Text, Integer
 from sqlalchemy.types import Numeric
+from sqlalchemy.ext.declarative import declared_attr
 from geoalchemy import GeometryColumn, Geometry
 
 from chsdi.models import *

@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from sys import maxsize
+from shapely import wkb
 from shapely.geometry import asShape
-from geoalchemy import WKBSpatialElement, functions
+from sqlalchemy.orm.util import class_mapper
+from sqlalchemy.orm.properties import ColumnProperty
+from geoalchemy import Geometry, WKBSpatialElement, functions
 
 from papyrus.geo_interface import GeoInterface
-from geojson import Feature
+import geojson
 from chsdi.esrigeojsonencoder import loads
 from shapely.geometry import asShape
 
@@ -39,10 +42,39 @@ class Vector(GeoInterface):
     __maxscale__ = maxsize
     attributes = {}
 
+    # Overrides GeoInterface
+    def __read__(self):
+        id = None
+        geom = None
+        properties = {}
+
+        for p in class_mapper(self.__class__).iterate_properties:
+            if isinstance(p, ColumnProperty):
+                if len(p.columns) != 1:  # pragma: no cover
+                    raise NotImplementedError
+                col = p.columns[0]
+                val = getattr(self, p.key)
+                if col.primary_key:
+                    id = val
+                elif isinstance(col.type, Geometry) and col.name == self.geometry_column_to_return().name:
+                    if hasattr(self, '_shape'):
+                        geom = self._shape
+                    else:
+                        geom = wkb.loads(str(val.geom_wkb))
+                elif not col.foreign_keys and not isinstance(col.type, Geometry):
+                    properties[p.key] = val
+
+        if self.__add_properties__:
+            for k in self.__add_properties__:
+                properties[k] = getattr(self, k)
+
+        return geojson.Feature(id=id, geometry=geom, properties=properties)
+
     @property
     def srid(self):
         return self.geometry_column().type.srid
 
+    # Overrides GeoInterface
     @property
     def __geo_interface__(self):
         feature = self.__read__()
@@ -51,7 +83,7 @@ class Vector(GeoInterface):
             shape = asShape(feature.geometry)
         except:
             pass
-        return Feature(
+        return geojson.Feature(
             id=self.id,
             geometry=feature.geometry,
             bbox=shape.bounds if shape else None,
@@ -85,6 +117,10 @@ class Vector(GeoInterface):
     def geometry_column(cls):
         return cls.__table__.columns['the_geom']
 
+    def geometry_column_to_return(cls):
+        geomColumnName = cls.__returnedGeometry__ if hasattr(cls, '__returnedGeometry__') else 'the_geom'
+        return cls.__table__.columns[geomColumnName]
+
     @classmethod
     def primary_key_column(cls):
         return cls.__table__.primary_key
@@ -103,11 +139,12 @@ class Vector(GeoInterface):
 
     def getAttributes(self):
         attributes = dict()
-        fid_column = self.primary_key_column().name
-        geom_column = self.geometry_column().name
+        fidColumnName = self.primary_key_column().name
+        geomColumnName = self.geometry_column().name
+        geomColumnNameToReturn = self.geometry_column_to_return().name
         for column in self.__table__.columns:
             columnName = str(column.key)
-            if columnName not in (fid_column, geom_column) and hasattr(self, columnName):
+            if columnName not in (fidColumnName, geomColumnName, geomColumnNameToReturn) and hasattr(self, columnName):
                 attribute = getattr(self, columnName)
                 if attribute.__class__.__name__ == 'Decimal':
                     attributes[columnName] = attribute.__float__()
