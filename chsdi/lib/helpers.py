@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from osgeo import osr, ogr
 from pyramid.threadlocal import get_current_registry
 from pyramid.i18n import get_locale_name
 import unicodedata
@@ -95,3 +96,14 @@ def parseHydroXML(id, root):
                         html_attr['wassertemperatur'] = attr.text
                         break
     return html_attr
+
+def transformCoordinate(wkt, srid_from, srid_to):
+    srid_in = osr.SpatialReference()
+    srid_in.ImportFromEPSG(srid_from)
+    srid_out = osr.SpatialReference()
+    srid_out.ImportFromEPSG(srid_to)
+    geom = ogr.CreateGeometryFromWkt(wkt)
+    geom.AssignSpatialReference(srid_in)
+    geom.TransformTo(srid_out)
+    return geom
+

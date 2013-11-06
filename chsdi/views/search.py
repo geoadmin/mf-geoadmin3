@@ -5,6 +5,7 @@ import pyramid.httpexceptions as exc
 
 from chsdi.lib.validation import SearchValidation
 from chsdi.lib.helpers import remove_accents
+from chsdi.lib.helpers import transformCoordinate
 from chsdi.lib.sphinxapi import sphinxapi
 from chsdi.lib import mortonspacekey as msk
 
@@ -107,6 +108,12 @@ class Search(SearchValidation):
         temp = self.sphinx.RunQueries()
         return self._parse_feature_results(temp)
 
+    def _get_geoanchor_from_bbox(self):
+        centerX = (self.bbox[2] + self.bbox[0]) / 2
+        centerY = (self.bbox[3] + self.bbox[1]) / 2
+        wkt = 'POINT(%s %s)' % (centerX, centerY)
+        return transformCoordinate(wkt, 21781, 4326)
+
     def _feature_bbox_search(self):
         if self.quadindex is None:
             raise exc.HTTPBadRequest('Please provide a bbox parameter')
@@ -115,6 +122,11 @@ class Search(SearchValidation):
             raise exc.HTTPBadRequest('Please provide a parameter features')
 
         self.sphinx.SetLimits(0, self.FEATURE_LIMIT)
+
+        geoAnchor = self._get_geoanchor_from_bbox()
+        self.sphinx.SetGeoAnchor('lat', 'lon', geoAnchor.GetY(), geoAnchor.GetX())
+        self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, '@geodist ASC')
+
         geomFilter = '@geom_quadindex ' + self.quadindex + '*'
         self._add_feature_queries(geomFilter)
         temp = self.sphinx.RunQueries()
