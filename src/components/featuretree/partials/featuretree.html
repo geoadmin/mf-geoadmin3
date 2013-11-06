@@ -8,11 +8,7 @@
       </a>
       <ul ng-if="layer.open">
         <li ng-repeat="feature in layer.features">
-          <a ng-mouseover="showFeatureInfo(feature)"
-          ng-mouseleave="feature.showInfo = false">{{feature.label}}</a>
-          <div ng-if="feature.loading" class="featuerinfo">Loading feature info...</div>
-          <div ng-if="feature.showInfo" ng-bind-html="feature.info"
-          class="featureinfo"></div>
+          <a ng-mouseover="showFeatureInfo(feature)">{{feature.label}}</a>
         </li>
       </ul>
     </li>

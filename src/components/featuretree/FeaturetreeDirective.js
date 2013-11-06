@@ -9,8 +9,8 @@
   ]);
 
   module.directive('gaFeaturetree',
-      ['$timeout', '$http', '$q', '$translate', '$sce', 'gaLayers',
-      function($timeout, $http, $q, $translate, $sce, gaLayers) {
+      function($rootScope, $compile, $timeout, $http, $q, $translate, $sce,
+               gaLayers) {
 
         return {
           restrict: 'A',
@@ -26,6 +26,15 @@
             var canceler = null;
             var map = scope.map;
             var view = map.getView();
+            var objectInfoToggleEl = $('#object-info-toggle');
+            var objectInfoParentEl = $('#object-info-parent');
+            var objectInfo = {};
+
+            objectInfo.html = '';
+            objectInfo.loading = false;
+            $rootScope.objectinfo = objectInfo;
+
+            $compile($('#object-info-target')[0])($rootScope);
 
             var getLayersToQuery = function(layers) {
               var layerstring = '';
@@ -75,8 +84,6 @@
 
                   var node = tree[layerId];
                   node.features.push({
-                    loading: false,
-                    showInfo: false,
                     info: '',
                     id: result.attrs.id,
                     layer: layerId,
@@ -146,9 +153,14 @@
 
             scope.showFeatureInfo = function(feature) {
               var htmlUrl;
+
+              if (!objectInfoParentEl.hasClass('open')) {
+                objectInfoToggleEl.dropdown('toggle');
+              }
+
               //Load information if not already there
               if (feature.info == '') {
-                feature.loading = true;
+                objectInfo.loading = true;
                 htmlUrl = scope.options.htmlUrlTemplate
                           .replace('{Topic}', currentTopic)
                           .replace('{Layer}', feature.layer)
@@ -160,16 +172,16 @@
                     callback: 'JSON_CALLBACK'
                   }
                 }).success(function(html) {
-                  feature.showInfo = true;
                   feature.info = $sce.trustAsHtml(html);
-                  feature.loading = false;
+                  objectInfo.html = feature.info;
+                  objectInfo.loading = false;
                 }).error(function() {
-                  feature.showInfo = false;
                   feature.info = '';
-                  feature.loading = false;
+                  objectInfo.html = feature.info;
+                  objectInfo.loading = false;
                 });
               } else {
-                feature.showInfo = true;
+                objectInfo.html = feature.info;
               }
             };
 
@@ -189,7 +201,7 @@
           }
         };
 
-      }]
+      }
   );
 })();
 
