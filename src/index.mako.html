@@ -192,16 +192,27 @@
 
           </div>
         </div>  <!-- .panel -->
-% endif
 
-% if device == 'desktop':
         <div class="panel">
+
+          <div id="object-info-parent" class="object-info-toggle hidden-xs">
+            <a id="object-info-toggle" class="dropdown-toggle" data-toggle="dropdown"
+            data-target="object-info-target" href="object-info-target">
+            </a>
+            <div id="object-info-target" class="dropdown-menu">
+              <div ng-if="objectinfo.html == ''">No Information yet.</div>
+              <div ng-if="objectinfo.loading">Loading Information...</div>
+              <div ng-if="objectinfo.html != ''" ng-bind-html="objectinfo.html"></div>
+            </div>
+          </div>
+
           <a class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#tools">
             <i class="visible-collapsed icon-caret-right spacer"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
             <i class="icon-ga-mapfunction"></i>
             <span translate>map_tools</span>
           </a>
+
           <div id="tools" class="collapse">
             <div class="panel-body panel-body-wide">
 
@@ -249,7 +260,6 @@
                         </li>
                       </ul>
 
-% if device == 'desktop':
                 <li><!-- Feature Tree / Object information -->
                   <a id="featuretree-link" class="accordion-toggle collapsed" data-toggle="collapse" href="#featuretree">
                     <i class="visible-collapsed icon-plus"></i>
@@ -262,7 +272,6 @@
                     </div>
                   </div>
                 </li>
-% endif
               </ul>
             </div>
           </div>
