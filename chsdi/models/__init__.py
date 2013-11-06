@@ -15,7 +15,7 @@ oerebmap = {}
 esrimap = {}
 
 for db in dbs:
-    bases[db] = declarative_base(cls=GeoInterface)
+    bases[db] = declarative_base()
 
 
 def initialize_sql(settings):
