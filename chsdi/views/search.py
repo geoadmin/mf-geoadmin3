@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from osgeo import osr, ogr
+
 from pyramid.view import view_config
 import pyramid.httpexceptions as exc
 
@@ -107,6 +109,20 @@ class Search(SearchValidation):
         temp = self.sphinx.RunQueries()
         return self._parse_feature_results(temp)
 
+    def _get_geoanchor_from_bbox(self):
+        centerX = (self.bbox[2] + self.bbox[0]) / 2
+        centerY = (self.bbox[3] + self.bbox[1]) / 2
+        wkt = 'POINT(%s %s)' % (centerX, centerY)
+        srid_out = osr.SpatialReference()
+        srid_out.ImportFromEPSG(4326)
+        srid_in = osr.SpatialReference()
+        srid_in.ImportFromEPSG(21781)
+        point = ogr.CreateGeometryFromWkt(wkt)
+        point.AssignSpatialReference(srid_in)
+        point.TransformTo(srid_out)
+        return point
+ 
+
     def _feature_bbox_search(self):
         if self.quadindex is None:
             raise exc.HTTPBadRequest('Please provide a bbox parameter')
@@ -115,6 +131,11 @@ class Search(SearchValidation):
             raise exc.HTTPBadRequest('Please provide a parameter features')
 
         self.sphinx.SetLimits(0, self.FEATURE_LIMIT)
+
+        geoAnchor = self._get_geoanchor_from_bbox()
+        self.sphinx.SetGeoAnchor('lat', 'lon', geoAnchor.GetY(), geoAnchor.GetX())
+        self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, '@geodist ASC')
+
         geomFilter = '@geom_quadindex ' + self.quadindex + '*'
         self._add_feature_queries(geomFilter)
         temp = self.sphinx.RunQueries()
