@@ -55,9 +55,11 @@
 
             var updateTree = function(features) {
               var tree = {};
-              var oldTree = scope.tree;
+              var oldTree;
               if (features.results &&
                   features.results.length > 0) {
+
+                oldTree = scope.tree;
 
                 angular.forEach(features.results, function(result) {
                   var layerId = result.attrs.layer;
@@ -129,7 +131,6 @@
             // order to not trigger angular digest cycles and too many
             // updates. We don't use the permalink here because we want
             // to separate these concerns.
-            // FIXME: replace by debounce service...
             var triggerChange = function() {
               if (scope.options.active) {
                 cancel();
