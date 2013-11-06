@@ -10,7 +10,7 @@
 
   module.directive('gaFeaturetree',
       function($rootScope, $compile, $timeout, $http, $q, $translate, $sce,
-               gaLayers) {
+               gaLayers, gaDefinePropertiesForLayer) {
 
         return {
           restrict: 'A',
@@ -22,6 +22,7 @@
           },
           link: function(scope, element, attrs) {
             var currentTopic;
+            var vector;
             var timeoutPromise = null;
             var canceler = null;
             var map = scope.map;
@@ -107,6 +108,7 @@
                   var node = tree[layerId];
                   node.features.push({
                     info: '',
+                    geometry: null,
                     id: result.attrs.id,
                     layer: layerId,
                     label: result.attrs.label
@@ -172,11 +174,52 @@
               }
             };
 
+            var drawGeometry = function(geometry) {
+              map.removeLayer(vector);
+              if (geometry) {
+                vector = new ol.layer.Vector({
+                  style: new ol.style.Style({
+                    symbolizers: [
+                      new ol.style.Fill({
+                        color: '#ffff00'
+                      }),
+                      new ol.style.Stroke({
+                        color: '#ff8000',
+                        width: 3
+                      }),
+                      new ol.style.Shape({
+                        size: 20,
+                        fill: new ol.style.Fill({
+                          color: '#ffff00'
+                        }),
+                        stroke: new ol.style.Stroke({
+                          color: '#ff8000',
+                          width: 3
+                        })
+                      })
+                    ]
+                  }),
+                  source: new ol.source.Vector({
+                    projection: map.getView().getProjection(),
+                    parser: new ol.parser.GeoJSON(),
+                    data: {
+                      type: 'FeatureCollection',
+                      features: [geometry]
+                    }
+                  })
+                });
+                gaDefinePropertiesForLayer(vector);
+                vector.highlight = true;
+                map.addLayer(vector);
+              }
+            };
+
             scope.loading = false;
             scope.tree = {};
 
             scope.showFeatureInfo = function(feature) {
-              var htmlUrl;
+              var htmlUrl,
+                  featureUrl;
 
               if (!objectInfoParentEl.hasClass('open')) {
                 objectInfoToggleEl.dropdown('toggle');
@@ -206,6 +249,30 @@
                 });
               } else {
                 objectInfo.html = feature.info;
+              }
+
+              //Load geometriy and display it
+              if (!feature.geometry) {
+                featureUrl = scope.options.htmlUrlTemplate
+                             .replace('{Topic}', currentTopic)
+                             .replace('{Layer}', feature.layer)
+                             .replace('{Feature}', feature.id)
+                             .replace('/htmlpopup', '');
+                $http.jsonp(featureUrl, {
+                  timeout: canceler.promise,
+                  params: {
+                    geometryFormat: 'geojson',
+                    callback: 'JSON_CALLBACK'
+                  }
+                }).success(function(result) {
+                  feature.geometry = result.feature;
+                  drawGeometry(feature.geometry);
+                }).error(function() {
+                  feature.geometry = null;
+                  drawGeometry(null);
+                });
+              } else {
+                drawGeometry(feature.geometry);
               }
             };
 
