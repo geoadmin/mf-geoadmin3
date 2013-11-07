@@ -12,7 +12,7 @@ before_install:
     - sudo apt-key add launchpadkey.pgp
     - sudo apt-get update -qq
     - cat /etc/apt/sources.list
-    - sudo apt-get install -qq libgeos-dev gdal-bin
+    - sudo apt-get install -qq libgeos-dev gdal-bin python-gdal
 
 before_script:
     - python bootstrap.py --version 1.5.2 --distribute --download-base http://pypi.camptocamp.net/distribute-0.6.22_fix-issue-227/ --setup-source http://pypi.camptocamp.net/distribute-0.6.22_fix-issue-227/distribute_setup.py
