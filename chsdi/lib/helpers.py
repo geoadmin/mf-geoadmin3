@@ -97,6 +97,7 @@ def parseHydroXML(id, root):
                         break
     return html_attr
 
+
 def transformCoordinate(wkt, srid_from, srid_to):
     srid_in = osr.SpatialReference()
     srid_in.ImportFromEPSG(srid_from)
@@ -106,4 +107,3 @@ def transformCoordinate(wkt, srid_from, srid_to):
     geom.AssignSpatialReference(srid_in)
     geom.TransformTo(srid_out)
     return geom
-
