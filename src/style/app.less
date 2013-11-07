@@ -46,6 +46,10 @@ input::-ms-clear {
   display: none;
 }
 
+.ga-dragging {
+  cursor: move;
+}
+
 #map {
   position: absolute;
   width: 100%;
@@ -458,6 +462,12 @@ a .ga-icon-separator {
   top: 0;
   left: 100%;
   margin: 0;
+
+  @media (max-width: @screen-phone) {
+    right: 0px;
+    left: auto;
+    top: 40px;
+  }
 }
 
 #pulldown-content {
@@ -728,6 +738,25 @@ ul.panel-body-wide {
   }
   input[type=range] {
     width: 13em;
+    padding: 0px;
+    height: 14px;
+     
+    &::-ms-track {
+      height: 4px;
+      color: transparent;
+      background: linear-gradient(to right, rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%);
+    }
+    
+    &::-ms-fill-lower, &::-ms-fill-upper {
+      background: none;
+    }
+
+    &::-ms-thumb {
+      border: 1px solid black;
+      border-radius: 5px;
+      height: 12px;
+      background: linear-gradient(to bottom, #eeeeee 0%,#cccccc 100%);
+    }
   }
   select {
     width: 8em;

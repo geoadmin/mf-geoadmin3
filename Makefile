@@ -71,7 +71,7 @@ deploybranch: deploy/deploy-branch.cfg $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/con
 	cd $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH); \
 	git checkout $(GIT_BRANCH); \
 	git pull; \
-	source rc_dev \
+	source rc_dev; \
 	make all; \
 	sudo -u deploy deploy -r deploy/deploy-branch.cfg ab
 
@@ -228,7 +228,7 @@ deploy/deploy-branch.cfg: deploy/deploy-branch.mako.cfg .build-artefacts/last-gi
 
 .build-artefacts/externs/angular.js:
 	mkdir -p $(dir $@)
-	wget -O $@ http://closure-compiler.googlecode.com/git/contrib/externs/angular.js
+	wget -O $@ https://raw.github.com/angular/angular.js/master/closure/angular.js
 	touch $@
 
 # Closure's contrib dir doesn't include externs for jQuery 2, but the jQuery
