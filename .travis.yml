@@ -5,8 +5,9 @@ node_js:
 before_install:
     - sudo mkdir -p /srv/tomcat/tomcat1/webapps/
     - sudo chmod 777 /srv/tomcat/tomcat1/webapps
-    - cat /etc/apt/sources.list
+    - sudo echo 'deb http://ppa.launchpad.net/ubuntugis/ppa/ubuntu /' >> /etc/apt/sources.list.d/ppa.launchpad.net.sources.list
     - sudo apt-get update -qq
+    - cat /etc/apt/sources.list
     - sudo apt-get install -qq libgeos-dev gdal
 
 before_script:
