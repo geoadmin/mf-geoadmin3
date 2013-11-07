@@ -4,15 +4,9 @@ node_js:
 
 before_install:
     - sudo mkdir -p /srv/tomcat/tomcat1/webapps/
-    - sudo ls -ltra /etc/apt
     - sudo chmod 777 /srv/tomcat/tomcat1/webapps
-    - sudo chmod 777 /etc/apt/sources.list
-    - sudo echo 'deb http://ppa.launchpad.net/ubuntugis/ppa/ubuntu precise main' >> /etc/apt/sources.list
-    - sudo echo 'deb-src http://ppa.launchpad.net/ubuntugis/ppa/ubuntu precise main' >> /etc/apt/sources.list
-    - sudo apt-key add launchpadkey.pgp
     - sudo apt-get update -qq
-    - cat /etc/apt/sources.list
-    - sudo apt-get install -qq libgeos-dev gdal-bin python-gdal
+    - sudo apt-get install -qq libgeos-dev python-gdal
 
 before_script:
     - python bootstrap.py --version 1.5.2 --distribute --download-base http://pypi.camptocamp.net/distribute-0.6.22_fix-issue-227/ --setup-source http://pypi.camptocamp.net/distribute-0.6.22_fix-issue-227/distribute_setup.py
