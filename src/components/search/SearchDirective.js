@@ -373,6 +373,7 @@
                     if (el) {
                       $compile(el)(scope);
                     }
+                    el.scrollTop(0);
                   }
                 }
               });
