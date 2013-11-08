@@ -78,7 +78,7 @@ class Zeitreihen_22(Base, Vector):
     produkt = Column('produkt', Text)
     kbnum = Column('kbnum', Text)
     release_year = Column('release_year', Integer)
-    years = Column('years')
+    years = Column('years', Integer)
     bv_nummer = Column('bv_nummer', Text)
 
 register('ch.swisstopo.zeitreihen', Zeitreihen_15)
