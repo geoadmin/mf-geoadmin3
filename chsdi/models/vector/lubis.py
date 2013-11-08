@@ -15,6 +15,7 @@ class Lubis(Base, Vector):
     __template__ = 'templates/htmlpopup/lubis.mako'
     __bodId__ = 'ch.swisstopo.lubis-luftbilder'
     __returnedGeometry__ = 'the_geom_footprint'
+    __timeInstant__ = 'bgdi_flugjahr'
     id = Column('ebkey', Text, primary_key=True)
     the_geom = GeometryColumn('the_geom', Geometry(dimensions=2, srid=21781))
     the_geom_footprint = GeometryColumn('the_geom_footprint', Geometry(dimensions=2, srid=21781))

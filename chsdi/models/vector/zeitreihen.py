@@ -17,12 +17,14 @@ class Zeitreihen_15(Base, Vector):
     __bodId__ = 'ch.swisstopo.zeitreihen'
     __minscale__ = 100005
     __maxscale__ = 500000005
+    __timeInstant__ = 'years'
     id = Column('bgdi_id', Text, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     kbbez = Column('kbbez', Text)
     produkt = Column('produkt', Text)
     kbnum = Column('kbnum', Text)
     release_year = Column('release_year', Integer)
+    years = Column('years', Integer)
     bv_nummer = Column('bv_nummer', Text)
 
 
@@ -33,12 +35,14 @@ class Zeitreihen_20(Base, Vector):
     __bodId__ = 'ch.swisstopo.zeitreihen'
     __minscale__ = 50005
     __maxscale__ = 100005
+    __timeInstant__ = 'years'
     id = Column('bgdi_id', Text, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     kbbez = Column('kbbez', Text)
     produkt = Column('produkt', Text)
     kbnum = Column('kbnum', Text)
     release_year = Column('release_year', Integer)
+    years = Column('years', Integer)
     bv_nummer = Column('bv_nummer', Text)
 
 
@@ -49,12 +53,14 @@ class Zeitreihen_21(Base, Vector):
     __bodId__ = 'ch.swisstopo.zeitreihen'
     __minscale__ = 25005
     __maxscale__ = 50005
+    __timeInstant__ = 'years'
     id = Column('bgdi_id', Text, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     kbbez = Column('kbbez', Text)
     produkt = Column('produkt', Text)
     kbnum = Column('kbnum', Text)
     release_year = Column('release_year', Integer)
+    years = Column('years', Integer)
     bv_nummer = Column('bv_nummer', Text)
 
 
@@ -65,12 +71,14 @@ class Zeitreihen_22(Base, Vector):
     __bodId__ = 'ch.swisstopo.zeitreihen'
     __minscale__ = 24995
     __maxscale__ = 25005
+    __timeInstant__ = 'years'
     id = Column('bgdi_id', Text, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     kbbez = Column('kbbez', Text)
     produkt = Column('produkt', Text)
     kbnum = Column('kbnum', Text)
     release_year = Column('release_year', Integer)
+    years = Column('years')
     bv_nummer = Column('bv_nummer', Text)
 
 register('ch.swisstopo.zeitreihen', Zeitreihen_15)
