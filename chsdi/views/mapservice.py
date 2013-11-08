@@ -59,7 +59,6 @@ class MapService(MapServiceValidation):
 
     @view_config(route_name='getlegend', renderer='jsonp')
     def getlegend(self):
-        from pyramid.renderers import render_to_response
         idlayer = self.request.matchdict.get('idlayer')
         layer = self._get_layer_resource(idlayer)
 
