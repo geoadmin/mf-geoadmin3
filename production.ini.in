@@ -30,6 +30,7 @@ sqlalchemy.stopo.url = postgresql://${vars:dbhost}:${vars:dbport}/stopo
 sqlalchemy.uvek.url = postgresql://${vars:dbhost}:${vars:dbport}/uvek
 sqlalchemy.vbs.url = postgresql://${vars:dbhost}:${vars:dbport}/vbs
 sqlalchemy.zeitreihen.url = postgresql://${vars:dbhost}:${vars:dbport}/zeitreihen
+sqlalchemy.lubis.url = postgresql://${vars:dbhost}:${vars:dbport}/lubis
 
 # Mako specific
 mako.directories = chsdi:templates
