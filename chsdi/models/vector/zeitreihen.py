@@ -15,7 +15,7 @@ class Zeitreihen_15(Base, Vector):
     __table_args__ = ({'schema': 'public', 'autoload': False})
     __template__ = 'tooltips/zeitreihen.mako'
     __bodId__ = 'ch.swisstopo.zeitreihen'
-    id = Column('gid', Integer, primary_key=True)
+    id = Column('bgdi_id', Text, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     kbbez = Column('kbbez', Text)
     produkt = Column('produkt', Text)
@@ -31,7 +31,7 @@ class Zeitreihen_20(Base, Vector):
     __table_args__ = ({'schema': 'public', 'autoload': False})
     __template__ = 'tooltips/zeitreihen.mako'
     __bodId__ = 'ch.swisstopo.zeitreihen'
-    id = Column('gid', Integer, primary_key=True)
+    id = Column('bgdi_id', Text, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     kbbez = Column('kbbez', Text)
     produkt = Column('produkt', Text)
@@ -47,7 +47,7 @@ class Zeitreihen_21(Base, Vector):
     __table_args__ = ({'schema': 'public', 'autoload': False})
     __template__ = 'tooltips/zeitreihen.mako'
     __bodId__ = 'ch.swisstopo.zeitreihen'
-    id = Column('gid', Integer, primary_key=True)
+    id = Column('bgdi_id', Text, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     kbbez = Column('kbbez', Text)
     produkt = Column('produkt', Text)
@@ -63,7 +63,7 @@ class Zeitreihen_22(Base, Vector):
     __table_args__ = ({'schema': 'public', 'autoload': False})
     __template__ = 'tooltips/zeitreihen.mako'
     __bodId__ = 'ch.swisstopo.zeitreihen'
-    id = Column('gid', Integer, primary_key=True)
+    id = Column('bgdi_id', Text, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     kbbez = Column('kbbez', Text)
     produkt = Column('produkt', Text)
