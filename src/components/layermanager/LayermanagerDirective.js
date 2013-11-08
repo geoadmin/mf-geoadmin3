@@ -95,6 +95,14 @@
               });
             });
 
+            scope.$on('gaLayersChange', function(event, data) {
+              scope.map.getLayers().forEach(function(olLayer) {
+                if (scope.isBodLayer(olLayer)) {
+                  olLayer.label = gaLayers.getLayerProperty(olLayer.bodId,
+                      'label');
+                }
+              });
+            });
           }
         };
       }
