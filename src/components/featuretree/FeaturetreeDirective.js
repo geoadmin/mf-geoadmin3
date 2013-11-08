@@ -134,36 +134,51 @@
             };
 
             var updateTree = function(res) {
-              var tree = {};
-              var oldTree;
+              var tree = {}, i, li, j, lj, layerId, newNode, oldNode,
+                  feature, oldFeature, result;
               if (res.results &&
                   res.results.length > 0) {
 
-                oldTree = scope.tree;
+                for (i = 0, li = res.results.length; i < li; i++) {
+                  result = res.results[i];
+                  layerId = result.attrs.layer;
+                  newNode = tree[layerId];
+                  oldNode = scope.tree[layerId];
+                  feature = undefined;
 
-                angular.forEach(res.results, function(result) {
-                  var layerId = result.attrs.layer;
-
-                  if (!angular.isDefined(tree[layerId])) {
-                    tree[layerId] = {
+                  if (!angular.isDefined(newNode)) {
+                    newNode = {
                       label: gaLayers.getLayer(layerId).label,
                       features: [],
-                      // We want to keep the state
-                      open: oldTree[layerId] ? oldTree[layerId].open : false
+                      open: oldNode ? oldNode.open : false
                     };
+                    tree[layerId] = newNode;
                   }
 
-                  var node = tree[layerId];
-                  var feature = {
-                    info: '',
-                    geometry: null,
-                    id: result.attrs.id,
-                    layer: layerId,
-                    label: result.attrs.label
-                  };
-                  node.features.push(feature);
+                  //look if feature exists already. We do this
+                  //to avoid loading it time and again for
+                  //the same features
+                  if (oldNode) {
+                    for (j = 0, lj = oldNode.features.length; j < lj; j++) {
+                      oldFeature = oldNode.features[j];
+                      if (oldFeature.id === result.attrs.id) {
+                        feature = oldFeature;
+                        break;
+                      }
+                    }
+                  }
+                  if (!angular.isDefined(feature)) {
+                    feature = {
+                      info: '',
+                      geometry: null,
+                      id: result.attrs.id,
+                      layer: layerId,
+                      label: result.attrs.label
+                    };
+                  }
+                  newNode.features.push(feature);
                   loadAndDrawGeometry(feature, previewLayer);
-                });
+                }
               }
               scope.tree = tree;
             };
