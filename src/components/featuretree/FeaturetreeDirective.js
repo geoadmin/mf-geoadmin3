@@ -12,6 +12,43 @@
       function($rootScope, $compile, $timeout, $http, $q, $translate, $sce,
                gaLayers, gaDefinePropertiesForLayer) {
 
+        var createVectorLayer = function(proj, parser) {
+          var vector = new ol.layer.Vector({
+                style: new ol.style.Style({
+                  symbolizers: [
+                    new ol.style.Fill({
+                      color: '#ffff00'
+                    }),
+                    new ol.style.Stroke({
+                      color: '#ff8000',
+                      width: 3
+                    }),
+                    new ol.style.Shape({
+                      size: 20,
+                      fill: new ol.style.Fill({
+                        color: '#ffff00'
+                      }),
+                      stroke: new ol.style.Stroke({
+                        color: '#ff8000',
+                        width: 3
+                      })
+                    })
+                  ]
+                }),
+                source: new ol.source.Vector({
+                  projection: proj,
+                  parser: parser,
+                  data: {
+                    type: 'FeatureCollection',
+                    features: []
+                  }
+                })
+              });
+          gaDefinePropertiesForLayer(vector);
+          vector.highlight = true;
+          return vector;
+        };
+
         return {
           restrict: 'A',
           replace: true,
@@ -22,15 +59,19 @@
           },
           link: function(scope, element, attrs) {
             var currentTopic;
-            var vector;
             var timeoutPromise = null;
             var canceler = null;
             var map = scope.map;
             var view = map.getView();
-            var overlays = [];
+            var projection = view.getProjection();
+            var geoJsonParser = new ol.parser.GeoJSON();
             var objectInfoToggleEl = $('#object-info-toggle');
             var objectInfoParentEl = $('#object-info-parent');
             var objectInfo = {};
+            var selectionLayer = createVectorLayer(projection, geoJsonParser);
+            var previewLayer = createVectorLayer(projection, geoJsonParser);
+            map.addLayer(previewLayer);
+            map.addLayer(selectionLayer);
 
             objectInfo.html = '';
             objectInfo.loading = false;
@@ -64,27 +105,6 @@
               canceler = $q.defer();
             };
 
-            var addOverlay = function(feat) {
-              var marker = $('<div><i class="icon-info-sign"></div>')
-                  .addClass('ga-marker');
-              var coord4326 = [feat.attrs.lon, feat.attrs.lat];
-              var coord21781 = ol.proj.transform(coord4326,
-                  'EPSG:4326', 'EPSG:21781');
-              var overlay = new ol.Overlay({
-                element: marker.get(0),
-                position: coord21781
-              });
-              overlays.push(overlay);
-              map.addOverlay(overlay);
-            };
-
-            var cleanOverlays = function() {
-              angular.forEach(overlays, function(overlay) {
-                map.removeOverlay(overlay);
-              });
-              overlays = [];
-            };
-
             var updateTree = function(features) {
               var tree = {};
               var oldTree;
@@ -113,7 +133,6 @@
                     layer: layerId,
                     label: result.attrs.label
                   });
-                  addOverlay(result);
                 });
               }
               scope.tree = tree;
@@ -140,7 +159,6 @@
             var requestFeatures = function() {
               var layersToQuery = getLayersToQuery(),
                   req;
-              cleanOverlays();
               if (layersToQuery.length) {
                 req = getUrlAndParameters(layersToQuery);
 
@@ -174,43 +192,18 @@
               }
             };
 
+            var assureLayerOnTop = function(layer) {
+              map.removeLayer(layer);
+              map.addLayer(layer);
+            };
+
             var drawGeometry = function(geometry) {
-              map.removeLayer(vector);
+              selectionLayer.clear();
               if (geometry) {
-                vector = new ol.layer.Vector({
-                  style: new ol.style.Style({
-                    symbolizers: [
-                      new ol.style.Fill({
-                        color: '#ffff00'
-                      }),
-                      new ol.style.Stroke({
-                        color: '#ff8000',
-                        width: 3
-                      }),
-                      new ol.style.Shape({
-                        size: 20,
-                        fill: new ol.style.Fill({
-                          color: '#ffff00'
-                        }),
-                        stroke: new ol.style.Stroke({
-                          color: '#ff8000',
-                          width: 3
-                        })
-                      })
-                    ]
-                  }),
-                  source: new ol.source.Vector({
-                    projection: map.getView().getProjection(),
-                    parser: new ol.parser.GeoJSON(),
-                    data: {
-                      type: 'FeatureCollection',
-                      features: [geometry]
-                    }
-                  })
-                });
-                gaDefinePropertiesForLayer(vector);
-                vector.highlight = true;
-                map.addLayer(vector);
+                selectionLayer.parseFeatures(geometry,
+                                             geoJsonParser,
+                                             projection);
+                assureLayerOnTop(selectionLayer);
               }
             };
 
