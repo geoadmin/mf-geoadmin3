@@ -364,7 +364,7 @@ class MapService(MapServiceValidation):
                         try:
                             timeInstantColumn = model.time_instant_column()
                         except AttributeError:
-                            raise exc.HTTPBadRequest('%s is not time enabled' % layer.__bodId__)
+                            raise exc.HTTPBadRequest('%s is not time enabled' % model.__bodId__)
                         query = query.filter(timeInstantColumn == self.timeInstant)
                     # A maximum of 50 features are return
                     quey = query.limit(maxFeatures)
