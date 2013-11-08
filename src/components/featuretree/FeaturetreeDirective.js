@@ -12,29 +12,53 @@
       function($rootScope, $compile, $timeout, $http, $q, $translate, $sce,
                gaLayers, gaDefinePropertiesForLayer) {
 
-        var createVectorLayer = function(proj, parser) {
+        var selectStyle = new ol.style.Style({
+          symbolizers: [
+            new ol.style.Fill({
+              color: '#ff0000'
+            }),
+            new ol.style.Stroke({
+              color: '#f00000',
+              width: 6
+            }),
+            new ol.style.Shape({
+              size: 20,
+              fill: new ol.style.Fill({
+                color: '#ff0000'
+              }),
+              stroke: new ol.style.Stroke({
+                color: '#ff0000',
+                width: 6
+              })
+            })
+          ]
+        });
+
+        var highlightStyle = new ol.style.Style({
+          symbolizers: [
+            new ol.style.Fill({
+              color: '#ffff00'
+            }),
+            new ol.style.Stroke({
+              color: '#ff8000',
+              width: 3
+            }),
+            new ol.style.Shape({
+              size: 20,
+              fill: new ol.style.Fill({
+                color: '#ffff00'
+              }),
+              stroke: new ol.style.Stroke({
+                color: '#ff8000',
+                width: 3
+              })
+            })
+          ]
+        });
+
+        var createVectorLayer = function(proj, parser, style) {
           var vector = new ol.layer.Vector({
-                style: new ol.style.Style({
-                  symbolizers: [
-                    new ol.style.Fill({
-                      color: '#ffff00'
-                    }),
-                    new ol.style.Stroke({
-                      color: '#ff8000',
-                      width: 3
-                    }),
-                    new ol.style.Shape({
-                      size: 20,
-                      fill: new ol.style.Fill({
-                        color: '#ffff00'
-                      }),
-                      stroke: new ol.style.Stroke({
-                        color: '#ff8000',
-                        width: 3
-                      })
-                    })
-                  ]
-                }),
+                style: style,
                 source: new ol.source.Vector({
                   projection: proj,
                   parser: parser,
@@ -68,8 +92,12 @@
             var objectInfoToggleEl = $('#object-info-toggle');
             var objectInfoParentEl = $('#object-info-parent');
             var objectInfo = {};
-            var selectionLayer = createVectorLayer(projection, geoJsonParser);
-            var previewLayer = createVectorLayer(projection, geoJsonParser);
+            var selectionLayer = createVectorLayer(projection,
+                                                   geoJsonParser,
+                                                   selectStyle);
+            var previewLayer = createVectorLayer(projection,
+                                                 geoJsonParser,
+                                                 highlightStyle);
             map.addLayer(previewLayer);
             map.addLayer(selectionLayer);
 
@@ -105,15 +133,15 @@
               canceler = $q.defer();
             };
 
-            var updateTree = function(features) {
+            var updateTree = function(res) {
               var tree = {};
               var oldTree;
-              if (features.results &&
-                  features.results.length > 0) {
+              if (res.results &&
+                  res.results.length > 0) {
 
                 oldTree = scope.tree;
 
-                angular.forEach(features.results, function(result) {
+                angular.forEach(res.results, function(result) {
                   var layerId = result.attrs.layer;
 
                   if (!angular.isDefined(tree[layerId])) {
@@ -126,13 +154,15 @@
                   }
 
                   var node = tree[layerId];
-                  node.features.push({
+                  var feature = {
                     info: '',
                     geometry: null,
                     id: result.attrs.id,
                     layer: layerId,
                     label: result.attrs.label
-                  });
+                  };
+                  node.features.push(feature);
+                  loadAndDrawGeometry(feature, previewLayer);
                 });
               }
               scope.tree = tree;
@@ -159,6 +189,8 @@
             var requestFeatures = function() {
               var layersToQuery = getLayersToQuery(),
                   req;
+              previewLayer.clear();
+              selectionLayer.clear();
               if (layersToQuery.length) {
                 req = getUrlAndParameters(layersToQuery);
 
@@ -168,8 +200,8 @@
                 $http.jsonp(req.url, {
                   timeout: canceler.promise,
                   params: req.params
-                }).success(function(features) {
-                  updateTree(features);
+                }).success(function(res) {
+                  updateTree(res);
                   scope.loading = false;
                 }).error(function(reason) {
                   scope.tree = {};
@@ -197,13 +229,38 @@
               map.addLayer(layer);
             };
 
-            var drawGeometry = function(geometry) {
-              selectionLayer.clear();
+            var drawGeometry = function(geometry, layer) {
               if (geometry) {
-                selectionLayer.parseFeatures(geometry,
-                                             geoJsonParser,
-                                             projection);
-                assureLayerOnTop(selectionLayer);
+                layer.parseFeatures(geometry,
+                                    geoJsonParser,
+                                    projection);
+                assureLayerOnTop(layer);
+              }
+            };
+
+            var loadAndDrawGeometry = function(feature, layer) {
+              //Load geometry and display it
+              if (!feature.geometry) {
+                featureUrl = scope.options.htmlUrlTemplate
+                             .replace('{Topic}', currentTopic)
+                             .replace('{Layer}', feature.layer)
+                             .replace('{Feature}', feature.id)
+                             .replace('/htmlpopup', '');
+                $http.jsonp(featureUrl, {
+                  timeout: canceler.promise,
+                  params: {
+                    geometryFormat: 'geojson',
+                    callback: 'JSON_CALLBACK'
+                  }
+                }).success(function(result) {
+                  feature.geometry = result.feature;
+                  drawGeometry(feature.geometry, layer);
+                }).error(function() {
+                  feature.geometry = null;
+                  drawGeometry(null, layer);
+                });
+              } else {
+                drawGeometry(feature.geometry, layer);
               }
             };
 
@@ -243,30 +300,8 @@
               } else {
                 objectInfo.html = feature.info;
               }
-
-              //Load geometriy and display it
-              if (!feature.geometry) {
-                featureUrl = scope.options.htmlUrlTemplate
-                             .replace('{Topic}', currentTopic)
-                             .replace('{Layer}', feature.layer)
-                             .replace('{Feature}', feature.id)
-                             .replace('/htmlpopup', '');
-                $http.jsonp(featureUrl, {
-                  timeout: canceler.promise,
-                  params: {
-                    geometryFormat: 'geojson',
-                    callback: 'JSON_CALLBACK'
-                  }
-                }).success(function(result) {
-                  feature.geometry = result.feature;
-                  drawGeometry(feature.geometry);
-                }).error(function() {
-                  feature.geometry = null;
-                  drawGeometry(null);
-                });
-              } else {
-                drawGeometry(feature.geometry);
-              }
+              selectionLayer.clear();
+              loadAndDrawGeometry(feature, selectionLayer);
             };
 
             view.on('change', triggerChange);
