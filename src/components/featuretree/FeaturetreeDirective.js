@@ -240,6 +240,7 @@
 
             var loadAndDrawGeometry = function(feature, layer) {
               //Load geometry and display it
+              var featureUrl;
               if (!feature.geometry) {
                 featureUrl = scope.options.htmlUrlTemplate
                              .replace('{Topic}', currentTopic)
@@ -268,8 +269,7 @@
             scope.tree = {};
 
             scope.showFeatureInfo = function(feature) {
-              var htmlUrl,
-                  featureUrl;
+              var htmlUrl;
 
               if (!objectInfoParentEl.hasClass('open')) {
                 objectInfoToggleEl.dropdown('toggle');
