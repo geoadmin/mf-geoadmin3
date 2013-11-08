@@ -12,11 +12,9 @@ Base = bases['bak']
 
 
 class ISOS(Base, Vector):
-    # view in a schema
     __tablename__ = 'isos'
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/isos.mako'
-    __esriId__ = 3000
     __bodId__ = 'ch.bak.bundesinventar-schuetzenswerte-ortsbilder'
     id = Column('gid', Integer, primary_key=True)
     ortsbildname = Column('ortsbildname', Text)
@@ -38,11 +36,9 @@ register('ch.bak.bundesinventar-schuetzenswerte-ortsbilder', ISOS)
 
 
 class UNESCO(Base, Vector):
-    # view in a schema
     __tablename__ = 'unesco'
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/unesco_bak.mako'
-    __esriId__ = 3000
     __bodId__ = 'ch.bak.schutzgebiete-unesco_weltkulturerbe'
     id = Column('bgdi_id', Integer, primary_key=True)
     bgdi_name = Column('bgdi_name', Text)

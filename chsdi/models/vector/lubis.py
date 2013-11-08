@@ -13,7 +13,6 @@ class Lubis(Base, Vector):
     __tablename__ = 'lubis_data_view'
     __table_args__ = ({'schema': 'swisstopo', 'autoload': False})
     __template__ = 'templates/htmlpopup/lubis.mako'
-    __esriId__ = 1000
     __bodId__ = 'ch.swisstopo.lubis-luftbilder'
     __returnedGeometry__ = 'the_geom_footprint'
     id = Column('ebkey', Text, primary_key=True)

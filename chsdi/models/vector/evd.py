@@ -13,7 +13,6 @@ class BODENEIGNUNG(Base, Vector):
     __tablename__ = 'bodeneignung'
     __table_args__ = ({'schema': 'blw', 'autoload': False})
     __template__ = 'templates/htmlpopup/bodeneignung-kulurtyp.mako'
-    __esriId__ = 3000
     __bodId__ = 'ch.blw.bodeneignung-kulturtyp'
     __queryable_attributes__ = ['farbe']
     id = Column('bgdi_id', Integer, primary_key=True)
