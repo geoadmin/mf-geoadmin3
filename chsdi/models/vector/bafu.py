@@ -12,7 +12,6 @@ Base = bases['bafu']
 
 
 class AM_G(Base, Vector):
-    # view in a schema
     __tablename__ = 'am_g'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
     __esriId__ = 2000
@@ -27,7 +26,6 @@ register('ch.bafu.bundesinventare-amphibien_wanderobjekte', AM_G)
 
 
 class AM_L(Base, Vector):
-    # view in a schema
     __tablename__ = 'am_l'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
     __esriId__ = 2001
@@ -44,7 +42,6 @@ register('ch.bafu.bundesinventare-amphibien', AM_L)
 
 
 class LHG(Base, Vector):
-    # view in a schema
     __tablename__ = 'lhg'
     __table_args__ = ({'schema': 'hydrologie', 'autoload': False})
     __esriId__ = 2003
@@ -58,7 +55,6 @@ register('ch.bafu.hydrologie-hydromessstationen', LHG)
 
 
 class Temperaturmessnetz(Base, Vector):
-    # view in a schema
     __tablename__ = 'temperaturmessnetz'
     __table_args__ = ({'schema': 'hydrologie', 'autoload': False})
     __esriId__ = 2004
@@ -74,7 +70,6 @@ register('ch.bafu.hydrologie-wassertemperaturmessstationen', Temperaturmessnetz)
 
 
 class Gewaesserzustandst (Base, Vector):
-    # view in a schema
     __tablename__ = 'dbgz'
     __table_args__ = ({'schema': 'hydrologie', 'autoload': False})
     __esriId__ = 2006
@@ -91,7 +86,6 @@ register('ch.bafu.hydrologie-gewaesserzustandsmessstationen', Gewaesserzustandst
 
 
 class Teileinzugsgebiete2 (Base, Vector):
-    # view in a schema
     __tablename__ = 'ebene_2km'
     __table_args__ = ({'schema': 'wasser', 'autoload': False})
     __esriId__ = 2005
@@ -119,7 +113,6 @@ register('ch.bafu.wasser-teileinzugsgebiete_2', Teileinzugsgebiete2)
 
 
 class Teileinzugsgebiete40 (Base, Vector):
-    # view in a schema
     __tablename__ = 'ebene_40km'
     __table_args__ = ({'schema': 'wasser', 'autoload': False})
     __esriId__ = 2007
@@ -134,7 +127,6 @@ register('ch.bafu.wasser-teileinzugsgebiete_40', Teileinzugsgebiete40)
 
 
 class Gebietsauslaesse (Base, Vector):
-    # view in a schema
     __tablename__ = 'outlets'
     __table_args__ = ({'schema': 'wasser', 'autoload': False})
     __esriId__ = 2008
@@ -786,7 +778,7 @@ class emissionplan(Base, Vector):
     __esriId__ = 2045
     __bodId__ = 'ch.bav.laerm-emissionplan_eisenbahn_2015'
     __template__ = 'templates/htmlpopup/emissionplan.mako'
-    __extended_info__ = True
+    #__extended_info__ = True
     id = Column('id', Integer, primary_key=True)
     lin_nr_dfa = Column('lin_nr_dfa', Numeric)
     von_m = Column('von_m', Numeric)

@@ -72,6 +72,7 @@ def main(global_config, **settings):
     config.add_route('getlegend', '/rest/services/{map}/MapServer/{idlayer}/getlegend')
     config.add_route('getfeature', '/rest/services/{map}/MapServer/{idlayer}/{idfeature}')
     config.add_route('htmlpopup', '/rest/services/{map}/MapServer/{idlayer}/{idfeature}/htmlpopup')
+    config.add_route('extendedhtmlpopup', '/rest/services/{map}/MapServer/{idlayer}/{idfeature}/extendedhtmlpopup')
     config.add_route('search', '/rest/services/{map}/SearchServer')
     config.add_route('wmtscapabilities', '/rest/services/{map}/1.0.0/WMTSCapabilities.xml')
     config.add_route('profile_json', '/rest/services/profile.json')
@@ -85,6 +86,7 @@ def main(global_config, **settings):
 
     config.scan(ignore=['chsdi.tests', 'chsdi.models.bod'])  # required to find code decorated by view_config
 
+    config.add_static_view('css', 'chsdi:static/css', cache_max_age=3600)
     # Static view for sphinx
     config.add_static_view('_static', 'chsdi:static/doc/build/_static', cache_max_age=3600)
     config.add_static_view('api', 'chsdi:static/doc/build/api', cache_max_age=3600)

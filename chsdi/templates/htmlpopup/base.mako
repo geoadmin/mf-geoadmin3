@@ -5,6 +5,7 @@
   c['bbox'] = pageargs.get('bbox')
   c['scale'] = pageargs.get('scale')
   c['stable_id'] = False
+  extended = pageargs.get('extended')
   protocol = request.scheme
   baseUrl = protocol + '://' + request.registry.settings['geoadminhost']
   bbox = c['bbox']
@@ -13,23 +14,31 @@
   fullName = pageargs.get('fullName')
 %>
 
+% if extended:
+  <link rel="stylesheet" type="text/css" href="../../../../../../css/extended.css"/>
+% endif
+
 <div class="htmlpopup-container">
   <div class="htmlpopup-header">
     <span>${fullName}</span> (${attribution})
   </div>
   <div class="htmlpopup-content">
-    <span>${_('Information')}</span>
-    <br>
-    <table>
-      ${self.table_body(c, lang)}
-      % if c['stable_id'] is True:
-        <tr>
-          <td class="cell-left"></td>
-          <td>
-            <a href="${baseUrl}?${c['layerBodId']}=${c['featureId']}&lang=${lang}" target="new">${_('Link to object')}</a>
-          </td>
-        </tr>
-      %endif
-    </table>
+    % if extended:
+      ${self.extended_info(c, lang)}
+    % else:
+      <span>${_('Information')}</span>
+      <br>
+      <table>
+        ${self.table_body(c, lang)}
+        % if c['stable_id'] is True:
+          <tr>
+            <td class="cell-left"></td>
+            <td>
+              <a href="${baseUrl}?${c['layerBodId']}=${c['featureId']}&lang=${lang}" target="new">${_('Link to object')}</a>
+            </td>
+          </tr>
+        %endif
+      </table>
+    % endif
   </div>
 </div>
