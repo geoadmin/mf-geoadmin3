@@ -22,10 +22,6 @@ class Zeitreihen_15(Base, Vector):
     release_year = Column('release_year', Text)
     bv_nummer = Column('bv_nummer', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-    the_time = 'years'
-    the_time_operator = '=='
-    the_time_timestamp_format = '%Y%m%d'
-    the_time_db_format = '%Y'
     __minscale__ = 100005
     __maxscale__ = 500000005
 
@@ -42,10 +38,6 @@ class Zeitreihen_20(Base, Vector):
     release_year = Column('release_year', Text)
     bv_nummer = Column('bv_nummer', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-    the_time = 'years'
-    the_time_operator = '=='
-    the_time_timestamp_format = '%Y%m%d'
-    the_time_db_format = '%Y'
     __minscale__ = 50005
     __maxscale__ = 100005
 
@@ -62,10 +54,6 @@ class Zeitreihen_21(Base, Vector):
     release_year = Column('release_year', Text)
     bv_nummer = Column('bv_nummer', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-    the_time = 'years'
-    the_time_operator = '=='
-    the_time_timestamp_format = '%Y%m%d'
-    the_time_db_format = '%Y'
     __minscale__ = 25005
     __maxscale__ = 50005
 
@@ -82,13 +70,10 @@ class Zeitreihen_22(Base, Vector):
     release_year = Column('release_year', Text)
     bv_nummer = Column('bv_nummer', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-    the_time = 'years'
-    the_time_operator = '=='
-    the_time_timestamp_format = '%Y%m%d'
-    the_time_db_format = '%Y'
     __minscale__ = 24995
     __maxscale__ = 25005
 
 register('ch.swisstopo.zeitreihen', Zeitreihen_15)
 register('ch.swisstopo.zeitreihen', Zeitreihen_20)
 register('ch.swisstopo.zeitreihen', Zeitreihen_21)
+register('ch.swisstopo.zeitreihen', Zeitreihen_22)
