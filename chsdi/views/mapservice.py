@@ -160,14 +160,14 @@ class MapService(MapServiceValidation):
         self.tolerance = self.request.params.get('tolerance')
         self.returnGeometry = self.request.params.get('returnGeometry')
         self.layers = self.request.params.get('layers', 'all')
+        self.timeInstant = self.request.params.get('timeInstant')
 
         models = self._get_models_from_layername()
         if models is None:
             raise exc.HTTPBadRequest('No GeoTable was found for %s' % layers)
 
         maxFeatures = 50
-        queries = list(self._build_queries(models, maxFeatures))
-
+        queries = list(self._build_identify_queries(models, maxFeatures))
         features = []
         for query in queries:
             for feature in query:
@@ -347,23 +347,31 @@ class MapService(MapServiceValidation):
         elif self.geodataStaging == 'prod':
             return query.filter(orm_column == self.geodataStaging)
 
-    def _build_queries(self, models, maxFeatures):
+    def _build_identify_queries(self, models, maxFeatures):
         for layer in models:
             for model in layer:
-                geom_filter = model.geom_filter(
+                geomFilter = model.geom_filter(
                     self.geometry,
                     self.geometryType,
                     self.imageDisplay,
                     self.mapExtent,
                     self.tolerance
                 )
-                query = self.request.db.query(model).filter(geom_filter)
-                # A maximum of 100 features are return
-                quey = query.limit(maxFeatures)
-                query = self._full_text_search(
-                    query,
-                    model.queryable_attributes())
-                yield query
+                # Can be None because of max and min scale
+                if geomFilter is not None:
+                    query = self.request.db.query(model).filter(geomFilter)
+                    if self.timeInstant is not None:
+                        try:
+                            timeInstantColumn = model.time_instant_column()
+                        except AttributeError:
+                            raise exc.HTTPBadRequest('%s is not time enabled' % layer.__bodId__)
+                        query = query.filter(timeInstantColumn == self.timeInstant)
+                    # A maximum of 50 features are return
+                    quey = query.limit(maxFeatures)
+                    query = self._full_text_search(
+                        query,
+                        model.queryable_attributes())
+                    yield query
 
     def _get_models_from_layername(self):
         if self.layers == 'all':

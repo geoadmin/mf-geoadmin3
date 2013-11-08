@@ -32,6 +32,7 @@ class MapServiceValidation(MapNameValidation):
         self._imageDisplay = None
         self._mapExtent = None
         self._tolerance = None
+        self._timeInstant = None
         self._models = None
         self._layers = None
         self.esriGeometryTypes = (
@@ -64,6 +65,10 @@ class MapServiceValidation(MapNameValidation):
     @property
     def tolerance(self):
         return self._tolerance
+
+    @property
+    def timeInstant(self):
+        return self._timeInstant
 
     @property
     def models(self):
@@ -129,6 +134,18 @@ class MapServiceValidation(MapNameValidation):
             self._tolerance = float(value)
         except ValueError:
             raise exc.HTTPBadRequest('Please provide an integer value for the pixel tolerance')
+
+    @timeInstant.setter
+    def timeInstant(self, value):
+        if value is not None:
+            if len(value) != 4:
+                raise exc.HTTPBadRequest('Only years are supported as timeInstant parameter')
+            try:
+                self._timeInstant = int(value)
+            except ValueError:
+                raise exc.HTTPBadRequest('Please provide an integer for the parameter timeInstant')
+        else:
+            self._timeInstant = value
 
     @layers.setter
     def layers(self, value):
