@@ -16,12 +16,12 @@ class Zeitreihen_15(Base, Vector):
     __template__ = 'tooltips/zeitreihen.mako'
     __bodId__ = 'ch.swisstopo.zeitreihen'
     id = Column('gid', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     kbbez = Column('kbbez', Text)
     produkt = Column('produkt', Text)
     kbnum = Column('kbnum', Text)
-    release_year = Column('release_year', Text)
+    release_year = Column('release_year', Integer)
     bv_nummer = Column('bv_nummer', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     __minscale__ = 100005
     __maxscale__ = 500000005
 
@@ -32,12 +32,12 @@ class Zeitreihen_20(Base, Vector):
     __template__ = 'tooltips/zeitreihen.mako'
     __bodId__ = 'ch.swisstopo.zeitreihen'
     id = Column('gid', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     kbbez = Column('kbbez', Text)
     produkt = Column('produkt', Text)
     kbnum = Column('kbnum', Text)
-    release_year = Column('release_year', Text)
+    release_year = Column('release_year', Integer)
     bv_nummer = Column('bv_nummer', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     __minscale__ = 50005
     __maxscale__ = 100005
 
@@ -48,12 +48,12 @@ class Zeitreihen_21(Base, Vector):
     __template__ = 'tooltips/zeitreihen.mako'
     __bodId__ = 'ch.swisstopo.zeitreihen'
     id = Column('gid', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     kbbez = Column('kbbez', Text)
     produkt = Column('produkt', Text)
     kbnum = Column('kbnum', Text)
-    release_year = Column('release_year', Text)
+    release_year = Column('release_year', Integer)
     bv_nummer = Column('bv_nummer', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     __minscale__ = 25005
     __maxscale__ = 50005
 
@@ -64,12 +64,12 @@ class Zeitreihen_22(Base, Vector):
     __template__ = 'tooltips/zeitreihen.mako'
     __bodId__ = 'ch.swisstopo.zeitreihen'
     id = Column('gid', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     kbbez = Column('kbbez', Text)
     produkt = Column('produkt', Text)
     kbnum = Column('kbnum', Text)
-    release_year = Column('release_year', Text)
+    release_year = Column('release_year', Integer)
     bv_nummer = Column('bv_nummer', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     __minscale__ = 24995
     __maxscale__ = 25005
 
