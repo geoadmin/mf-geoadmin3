@@ -158,6 +158,7 @@ node_modules: package.json
 # There's no distribution of a minified version of fastclick so we minify it
 # ourselves as part of our build process.
 .build-artefacts/fastclick.min.js: src/lib/fastclick.js .build-artefacts/closure-compiler/compiler.jar
+	mkdir -p $(dir $@)
 	java -jar .build-artefacts/closure-compiler/compiler.jar $< --compilation_level SIMPLE_OPTIMIZATIONS --js_output_file $@
 
 .build-artefacts/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar .build-artefacts/externs/angular.js .build-artefacts/externs/jquery.js
