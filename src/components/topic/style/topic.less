@@ -1,22 +1,30 @@
 .topic-selector {
   width: 640px;
+  padding: 0px 4px;
   .topic {
     float: left;
-    margin: 5px;
+    margin: 2px;
     padding: 3px;
     border: 1px solid transparent;
     cursor: pointer;
+    width: 154px;
+    text-align: center;
+   
     &.active, &:hover {
       border: 1px solid #c6c6c6;
       background-color: #efefef;
     }
     @media (max-width: @screen-tablet) {
-      width: 150px;
+      width: 140px; 
+      img {
+        display: none;
+      }
     }
   }
   @media (max-width: @screen-tablet) {
     width: 160px;
     height: 250px;
+    padding: 0px;
     overflow-y: auto;
     overflow-x: hidden;
   }
