@@ -60,7 +60,18 @@
            'http://wms.pcn.minambiente.it/ogc?map=/ms_ogc/WMS_v1.3/raster/DTM_20M.map',
            'http://wms.pcn.minambiente.it/ogc?map=/ms_ogc/WMS_v1.3/Vettoriali/Rete_ferroviaria.map',
            'http://wms.pcn.minambiente.it/ogc?map=/ms_ogc/WMS_v1.3/Vettoriali/Rete_stradale.map',
-           'http://wms.pcn.minambiente.it/ogc?map=/ms_ogc/WMS_v1.3/raster/ortofoto_colore_06.map'                  
+           'http://wms.pcn.minambiente.it/ogc?map=/ms_ogc/WMS_v1.3/raster/ortofoto_colore_06.map',
+           'http://wms.zh.ch/FnsInvZHWMS',
+           'http://wms.zh.ch/FNSLRPZHWMS',
+           'http://wms.zh.ch/WaldVKWMS',
+           'http://wms.zh.ch/OrtsbildschutzZHWMS',
+           'http://wms.zh.ch/VelonetzZHWMS',
+           'http://wms.zh.ch/FNSOEQVZHWMS',
+           'http://wms.zh.ch/DenkmalschutzWMS',
+           'http://wms.zh.ch/FnsSVOZHWMS',
+           'http://wms.zh.ch/HaltestellenZHWMS',
+           'http://wms.zh.ch/FnsLWZHWMS',
+           'http://wms.zh.ch/ArchWMS'
          ]
        };
      });
