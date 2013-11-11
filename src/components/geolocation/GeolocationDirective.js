@@ -106,7 +106,7 @@
           });
         };
         map.on('postrender', function(evt) {
-          var res = evt.frameState.view2DState.resolution;
+          var res = view.getResolution();
           if (res != currentResolution) {
             currentResolution = res;
             markPosition();
