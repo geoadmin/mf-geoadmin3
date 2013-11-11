@@ -21,6 +21,11 @@
           btnElt.addClass('error');
           return;
         }
+        // This boolean defines if the user has moved the map itself after the
+        // first change of position.
+        var userTakesControl = false;
+        // Defines if the geolocation control is zooming
+        var geolocationZooming = false;
         var overlay = null;
         var currentResolution = null;
         var currentAccuracy = null;
@@ -36,6 +41,7 @@
         // but not when we are tracking the position.
         var first = true;
         var locate = function() {
+          geolocationZooming = true;
           var dest = geolocation.getPosition();
           if (dest) {
             var source = view.getCenter();
@@ -79,7 +85,7 @@
               map.beforeRender(pan, zoom, bounce);
               view.setCenter(dest);
               view.setResolution(resolution);
-            } else {
+            } else if (!userTakesControl) {
               bounce = ol.animation.bounce({
                 duration: duration,
                 resolution: Math.max(view.getResolution(), dist / 1000),
@@ -89,6 +95,7 @@
               view.setCenter(dest);
             }
           }
+          geolocationZooming = false;
         };
         var markPosition = function() {
           var divSize = currentAccuracy / currentResolution;
@@ -105,16 +112,19 @@
             markPosition();
           }
         });
+
         geolocation.on('change:position', function(evt) {
           btnElt.removeClass('error');
           btnElt.addClass('tracking');
           locate();
           markPosition();
         });
+
         geolocation.on('change:tracking', function(evt) {
           var tracking = geolocation.getTracking();
           if (tracking) {
             first = true;
+            userTakesControl = false;
             if (!overlay) {
               overlay = new ol.Overlay({
                 element: markerElt,
@@ -152,6 +162,14 @@
         });
 
         geolocation.setTracking(gaPermalink.getParams().geolocation == 'true');
+
+        var updateUserTakesControl = function() {
+          if (!geolocationZooming) {
+            userTakesControl = true;
+          }
+        };
+        view.on('change:center', updateUserTakesControl);
+        view.on('change:resolution', updateUserTakesControl);
       }
     };
   });
