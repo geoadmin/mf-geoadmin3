@@ -117,10 +117,10 @@
    * on a OpenLayer map.
    *
    * Notes:
-   * - all desktop browsers and IE on touch devices , we add an ol3
+   * - all desktop browsers except IE>=10, we add an ol3
    *   "singleclick" event on the map.
-   * - others browsers on touch devices, we simulate the "click" behavior only
-   *   if it's not a long press touch.
+   * - IE>=10 on desktop and  browsers on touch devices, we simulate the
+   *   "click" behavior to avoid conflict with long touch event.
    */
   module.provider('gaMapClick', function() {
     this.$get = function($timeout, gaBrowserSniffer) {
@@ -131,13 +131,27 @@
           var timeoutPromise = null;
           var touchstartTime;
 
-          var touchstartListener = function(evt) {
-            touchstartTime = (new Date()).getTime();
-            down = evt;
+          var isMouseRightAction = function(evt) {
+            return (evt.button === 2 || evt.which === 3);
           };
 
-          var touchMoveListener = function(evt) {
-            if (down) {
+          var touchstartListener = function(evt) {
+            // This test only needed for IE10, to fix conflict between click
+            // and contextmenu events on desktop
+            if (!isMouseRightAction(evt)) {
+              touchstartTime = (new Date()).getTime();
+              down = evt;
+            }
+          };
+
+          var touchmoveListener = function(evt) {
+            // Fix ie10 on windows surface : when you tap the tablet, it
+            // triggers multiple pointermove events between pointerdown and
+            // pointerup with the exact same coordinates of the pointerdown
+            // event. to avoid a 'false' touchmove event to be dispatched,
+            // we test if the pointer effectively moved.
+            if (down && (evt.clientX != down.clientX ||
+                evt.clientY != down.clientY)) {
               moving = true;
             }
           };
@@ -162,18 +176,25 @@
             }
           };
 
-          if (!gaBrowserSniffer.touchDevice || gaBrowserSniffer.msie >= 10) {
+          if (!gaBrowserSniffer.touchDevice) {
             return map.on('singleclick', callback);
 
           } else {
+            // We can't register 'singleclick' map event on touch devices
+            // to avoid a conflict between the long press event used for context
+            // popup
             var viewport = $(map.getViewport());
-            viewport.on('touchstart', touchstartListener);
-            viewport.on('touchmove', touchMoveListener);
-            viewport.on('touchend', touchendListener);
+            var touchEvents = (gaBrowserSniffer.msie >= 10) ?
+               ['MSPointerDown', 'MSPointerMove', 'MSPointerUp'] :
+               ['touchstart', 'touchmove', 'touchend'];
+
+            viewport.on(touchEvents[0], touchstartListener);
+            viewport.on(touchEvents[1], touchmoveListener);
+            viewport.on(touchEvents[2], touchendListener);
             return function() {
-              viewport.unbind('touchstart', touchstartListener);
-              viewport.unbind('touchmove', touchMoveListener);
-              viewport.unbind('touchend', touchendListener);
+              viewport.unbind(touchEvents[0], touchstartListener);
+              viewport.unbind(touchEvents[1], touchmoveListener);
+              viewport.unbind(touchEvents[2], touchendListener);
             };
           }
         }
@@ -298,14 +319,17 @@
           var onMapClick = function(evt) {
             evt.stopPropagation();
             evt.preventDefault();
+            var pixel = (evt.originalEvent) ?
+                olMap.getEventPixel(evt.originalEvent) :
+                evt.getPixel();
+
             olMap.getFeatures({
-              pixel: evt.getPixel(),
+              pixel: pixel,
               layers: [olLayer],
               success: function(features) {
                 if (features[0] && features[0][0] &&
                     features[0][0].get('description')) {
                   var feature = features[0][0];
-                  var pixel = evt.getPixel();
                   gaPopup.create({
                     title: feature.get('name'),
                     content: feature.get('description'),
