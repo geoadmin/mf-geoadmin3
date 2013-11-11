@@ -9,7 +9,7 @@ from chsdi.models.vector import Vector
 Base = bases['lubis']
 
 
-class Lubis(Base, Vector):
+class Luftbilder(Base, Vector):
     __tablename__ = 'lubis_data_view'
     __table_args__ = ({'schema': 'swisstopo', 'autoload': False})
     __template__ = 'templates/htmlpopup/lubis.mako'
@@ -32,4 +32,4 @@ class Lubis(Base, Vector):
     ort = Column('ort', Text)
     bgdi_imagemode = Column('bgdi_imagemode', Text)
 
-register('ch.swisstopo.lubis-luftbilder', Lubis)
+register('ch.swisstopo.lubis-luftbilder', Luftbilder)
