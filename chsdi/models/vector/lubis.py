@@ -10,9 +10,9 @@ Base = bases['lubis']
 
 
 class Luftbilder(Base, Vector):
-    __tablename__ = 'lubis_data_view'
-    __table_args__ = ({'schema': 'swisstopo', 'autoload': False})
-    __template__ = 'templates/htmlpopup/lubis.mako'
+    __tablename__ = 'luftbilder_swisstopo'
+    __table_args__ = ({'schema': 'public', 'autoload': False})
+    __template__ = 'templates/htmlpopup/lubis_quickview.mako'
     __bodId__ = 'ch.swisstopo.lubis-luftbilder'
     __returnedGeometry__ = 'the_geom_footprint'
     __timeInstant__ = 'bgdi_flugjahr'
@@ -33,3 +33,79 @@ class Luftbilder(Base, Vector):
     bgdi_imagemode = Column('bgdi_imagemode', Text)
 
 register('ch.swisstopo.lubis-luftbilder', Luftbilder)
+
+class Luftbilder(Base, Vector):
+    __tablename__ = 'luftbilder_dritte_firmen'
+    __table_args__ = ({'schema': 'public', 'autoload': False})  
+    __template__ = 'templates/htmlpopup/luftbilder_firmen.mako'
+    __esriId__ = 1000
+    __bodId__ = 'ch.swisstopo.lubis-luftbilder-dritte-firmen'
+    __returnedGeometry__ = 'the_geom_footprint'
+    __timeInstant__ = 'bgdi_flugjahr'
+    id = Column('ebkey', Text, primary_key=True)
+    the_geom = GeometryColumn('the_geom', Geometry(dimensions=2, srid=21781))
+    the_geom_footprint = GeometryColumn('the_geom_footprint', Geometry(dimensions=2, srid=21781))
+    filename = Column('filename', Text)
+    bildnummer = Column('bildnummer', Integer)
+    flugdatum = Column('flugdatum', Text)
+    firma = Column('firma', Text)
+    filmart = Column('filmart', Text)
+    bgdi_flugjahr = Column('bgdi_flugjahr', Integer)
+    orientierung = Column('orientierung', Boolean)
+    originalsize = Column('originalsize', Text)
+    x = Column('x', Integer)
+    y = Column('y', Integer)
+    ort = Column('ort', Text)
+    bgdi_imagemode = Column('bgdi_imagemode', Text) 
+
+register('ch.swisstopo.lubis-luftbilder-dritte-firmen', Luftbilder)
+
+
+
+class Luftbilder(Base, Vector):
+    __tablename__ = 'luftbilder_dritte_kanton'
+    __table_args__ = ({'schema': 'public', 'autoload': False})
+    __template__ = 'templates/htmlpopup/lubis_kanton.mako'
+    __esriId__ = 1000
+    __bodId__ = 'ch.swisstopo.lubis-luftbilder-dritte-kantone'
+    __returnedGeometry__ = 'the_geom_footprint'
+    __timeInstant__ = 'bgdi_flugjahr'
+    id = Column('ebkey', Text, primary_key=True)
+    the_geom = GeometryColumn('the_geom', Geometry(dimensions=2, srid=21781))
+    the_geom_footprint = GeometryColumn('the_geom_footprint', Geometry(dimensions=2, srid=21781))
+    filename = Column('filename', Text)
+    bildnummer = Column('bildnummer', Integer)
+    flugdatum = Column('flugdatum', Text)
+    firma = Column('firma', Text)
+    filmart = Column('filmart', Text)
+    bgdi_flugjahr = Column('bgdi_flugjahr', Integer)
+    orientierung = Column('orientierung', Boolean)
+    originalsize = Column('originalsize', Text)
+    x = Column('x', Integer)
+    y = Column('y', Integer)
+    ort = Column('ort', Text)
+    bgdi_imagemode = Column('bgdi_imagemode', Text)
+
+register('ch.swisstopo.lubis-luftbilder-dritte-kantone', Luftbilder)
+
+
+class Luftbilder(Base, Vector):
+    __tablename__ = ''
+    __table_args__ = ({'schema': 'ads40', 'autoload': False})
+    __template__ = 'templates/htmlpopup/view_bildstreifen.mako'
+    __esriId__ = 1000
+    __bodId__ = 'ch.swisstopo.lubis-bildstreifen'
+    __returnedGeometry__ = 'the_geom_footprint'
+    __timeInstant__ = 'bgdi_flugjahr'
+    id = Column('bildstreifen_nr', Text, primary_key=True)
+    the_geom = GeometryColumn('the_geom', Geometry(dimensions=2, srid=21781))
+    the_geom_footprint = GeometryColumn('the_geom_footprint', Geometry(dimensions=2, srid=21781))
+    flugdatum = Column('flugdatum', Text)
+    firma = Column('firma', Text)
+    filmart = Column('filmart', Text)
+    resolution = Column ('resolution', Text)
+    objectid = Column ('objectid', Text)
+    area = Column ('area', Text)
+
+register('ch.swisstopo.lubis-luftbilder-dritte-kantone', Luftbilder)
+
