@@ -54,6 +54,26 @@ class BBox:
             return True
         return False
 
+    def getIntersection(self, other):
+        if (other.maxx < self.minx or
+                other.minx > self.maxx or
+                other.maxy < self.miny or
+                other.miny > self.maxy):
+            return other
+
+        retBox = other
+
+        if (other.maxx > self.maxx):
+            retBox.maxx = self.maxx
+        if (other.minx < self.minx):
+            retBox.minx = self.minx
+        if (other.maxy > self.maxy):
+            retBox.maxy = self.maxy
+        if (other.miny < self.miny):
+            retBox.miny = self.miny
+
+        return retBox
+
     def create_quads(self):
         newWidth = self.width() / 2
         newHeight = self.height() / 2
@@ -135,7 +155,13 @@ class QuadTree:
         return res
 
     def bbox_to_morton(self, bbox):
-        return self._multi_points_dia1(bbox)
+        '''
+        We either take the intersection of bbox with
+        own quadindex bbox or, when there's no
+        intersection, we directly use the bbox
+        '''
+        intbox = self.bbox.getIntersection(bbox)
+        return self._multi_points_dia1(intbox)
 
     '''
     next 6 functions should deliver the same result
