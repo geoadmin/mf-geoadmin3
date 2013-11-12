@@ -26,6 +26,10 @@ Alias ${base_url_path}/prod ${base_dir}/prd
 RewriteRule ^/(index.html|mobile.html|info.json|checker)(.*) /var/www/vhosts/mf-geoadmin3/private/geoadmin/prd/$1
 RewriteRule ^/[0-9]+/(img|lib|style|rest|locales)(.*) /var/www/vhosts/mf-geoadmin3/private/geoadmin/prd/$1$2
 
+<IfModule mod_headers.c>
+  Header set X-UA-Compatible "IE=Edge"
+</IfModule>
+
 <LocationMatch /[0-9]+/>
    ExpiresDefault "now plus 1 year"
    Header merge Cache-Control "public"
