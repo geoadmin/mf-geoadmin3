@@ -29,7 +29,13 @@
         // Pass some popup functions for clients to be used in content
         var popup = this;
         options.open = function() {popup.open();};
-        options.close = function() {popup.close();};
+        options.close = function(event) {
+          if (event) {
+            event.stopPropagation();
+            event.preventDefault();
+          }
+          popup.close();
+        };
         options.destroy = function() {popup.destroy();};
 
         // Create scope, compile and link

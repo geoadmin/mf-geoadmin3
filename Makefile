@@ -91,7 +91,7 @@ fixrights:
 	chgrp -f -R geodata . || :
 	chmod -f -R g+rw . || :
 
-prd/lib/build.js: src/lib/jquery-2.0.3.min.js src/lib/bootstrap-3.0.0.min.js src/lib/typeahead-0.9.3.min.js src/lib/angular-1.2.0rc2.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/EPSG2056.js src/lib/ol.js src/lib/angular-animate-1.2.0rc2.min.js src/lib/angular-translate-1.1.0.min.js src/lib/angular-translate-loader-static-files-0.1.5.min.js src/lib/fastclick.js .build-artefacts/app.js
+prd/lib/build.js: src/lib/jquery-2.0.3.min.js src/lib/bootstrap-3.0.0.min.js src/lib/typeahead-0.9.3.min.js src/lib/angular-1.2.0rc2.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/EPSG2056.js src/lib/ol.js src/lib/angular-animate-1.2.0rc2.min.js src/lib/angular-translate-1.1.0.min.js src/lib/angular-translate-loader-static-files-0.1.5.min.js .build-artefacts/fastclick.min.js .build-artefacts/app.js
 	mkdir -p $(dir $@)
 	cat $^ > $@
 
@@ -154,6 +154,12 @@ test/karma-conf-prod.js: test/karma-conf.mako.js .build-artefacts/python-venv/bi
 
 node_modules: package.json
 	npm install
+
+# There's no distribution of a minified version of fastclick so we minify it
+# ourselves as part of our build process.
+.build-artefacts/fastclick.min.js: src/lib/fastclick.js .build-artefacts/closure-compiler/compiler.jar
+	mkdir -p $(dir $@)
+	java -jar .build-artefacts/closure-compiler/compiler.jar $< --compilation_level SIMPLE_OPTIMIZATIONS --js_output_file $@
 
 .build-artefacts/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar .build-artefacts/externs/angular.js .build-artefacts/externs/jquery.js
 	mkdir -p $(dir $@)
@@ -246,6 +252,7 @@ cleanall: clean
 .PHONY: clean
 clean: cleanrc
 	rm -f .build-artefacts/app.js
+	rm -f .build-artefacts/fastclick.min.js
 	rm -f .build-artefacts/js-files
 	rm -f .build-artefacts/lint.timestamp
 	rm -f .build-artefacts/last-git-branch

@@ -1,8 +1,6 @@
 describe('ga_contextpopup_directive', function() {
-
-  var element;
-  var handlers = {};
-
+  var element, handlers = {}, viewport, map, originalEvt;
+   
   beforeEach(function() {
 
     module(function($provide) {
@@ -12,7 +10,7 @@ describe('ga_contextpopup_directive', function() {
         phone: false
       });
     });
-
+    originalEvt = {originalEvent:{}}; 
     element = angular.element(
       '<div>' +
         '<div ga-context-popup ga-context-popup-map="map" ga-context-popup-options="options"></div>' +
@@ -20,7 +18,7 @@ describe('ga_contextpopup_directive', function() {
       '</div>');
 
     inject(function($rootScope, $compile) {
-      var map = new ol.Map({});
+      map = new ol.Map({});
       $rootScope.map = map;
       $rootScope.options = {
         lv03tolv95Url: "//api.example.com/reframe/lv03tolv95",
@@ -30,11 +28,11 @@ describe('ga_contextpopup_directive', function() {
       map.on = function(eventType, handler) {
         handlers[eventType] = handler;
       };
+      viewport = $(map.getViewport());
       $compile(element)($rootScope);
       map.setTarget(element.find('#map')[0]);
       $rootScope.$digest();
     });
-
   });
 
   it('creates <table> and <td>\'s', function() {
@@ -57,12 +55,9 @@ describe('ga_contextpopup_directive', function() {
         'lv03tolv95?cb=JSON_CALLBACK&easting=661473&northing=188192';
 
     beforeEach(inject(function($injector) {
-      contextmenuEvent = {
-        preventDefault: function() {},
-        getPixel: function() { return [25, 50]; },
-        getCoordinate: function() { return [661473, 188192]; }
-      };
-
+      map.getEventPixel = function(event) { return [25, 50]; };
+      map.getEventCoordinate = function(event) { return [661473, 188192]; };
+        
       inject(function($injector) {
         $httpBackend = $injector.get('$httpBackend');
         $httpBackend.when('JSONP', expectedHeightUrl).respond(
@@ -81,9 +76,7 @@ describe('ga_contextpopup_directive', function() {
     it('correctly handles map contextmenu events', function() {
       $httpBackend.expectJSONP(expectedHeightUrl);
       $httpBackend.expectJSONP(expectedReframeUrl);
-
-      handlers.contextmenu(contextmenuEvent);
-
+      viewport.trigger($.Event("contextmenu", originalEvt));
       $httpBackend.flush();
 
       var tables = element.find('div.popover-content table');
@@ -95,12 +88,26 @@ describe('ga_contextpopup_directive', function() {
     });
 
     describe('On touch devices', function() {
+      var mapEvt;
+      
+      beforeEach(inject(function($rootScope, $compile, gaBrowserSniffer) {
+        mapEvt = {
+           stopPropagation: function() {},
+           preventDefault: function() {},
+           getPixel: function() { return [25, 50]; },
+           getCoordinate: function() { return [661473, 188192]; }
+        };
+        gaBrowserSniffer.touchDevice = true;
+        gaBrowserSniffer.msie = false;
+        $compile(element)($rootScope);
+        map.setTarget(element.find('#map')[0]);
+        $rootScope.$digest();
+      }));
 
       it('correctly emulates contextmenu', function() {
         $httpBackend.expectJSONP(expectedHeightUrl);
         $httpBackend.expectJSONP(expectedReframeUrl);
-
-        handlers.touchstart(contextmenuEvent);
+        handlers.touchstart(mapEvt);
 
         $timeout.flush();
         $httpBackend.flush();
@@ -121,10 +128,8 @@ describe('ga_contextpopup_directive', function() {
         // Make sure there aren't any timouts left (this might
         // compenstate for a bug in angular.mock or angular in general)
         $timeout.flush();
-
-        handlers.touchstart(contextmenuEvent);
-        handlers.touchend();
-
+        handlers.touchstart(mapEvt);
+        handlers.touchend(mapEvt);
         $timeout.verifyNoPendingTasks();
 
         var popover = element.find('.popover');
@@ -136,21 +141,17 @@ describe('ga_contextpopup_directive', function() {
         // Make sure there aren't any timouts left (this might
         // compenstate for a bug in angular.mock or angular in general)
         $timeout.flush();
-
-        handlers.touchstart(contextmenuEvent);
+        handlers.touchstart(mapEvt);
         handlers.touchmove({
           getPixel: function() {
             return [30, 60];
           }
         });
-
         $timeout.verifyNoPendingTasks();
 
         var popover = element.find('.popover');
         expect(popover.css('display')).to.be('');
       });
     });
-
   });
-
 });
