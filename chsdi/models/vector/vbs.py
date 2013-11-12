@@ -14,7 +14,6 @@ class Kulturgueter(Base, Vector):
     __table_args__ = ({'schema': 'babs', 'autoload': False})
     __template__ = 'templates/htmlpopup/kgs.mako'
     __queryable_attributes__ = ['zkob']
-    __esriId__ = 3003
     __bodId__ = 'ch.babs.kulturgueter'
     id = Column('kgs_nr', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
@@ -31,7 +30,6 @@ class TERRITORIALREGIONEN(Base, Vector):
     __tablename__ = 'territorialregionen'
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/territorialregionen.mako'
-    __esriId__ = 3003
     __bodId__ = 'ch.bfs.arealstatistik-1985'
     id = Column('terreg_nr', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))

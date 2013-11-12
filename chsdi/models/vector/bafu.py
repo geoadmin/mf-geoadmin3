@@ -14,7 +14,6 @@ Base = bases['bafu']
 class AM_G(Base, Vector):
     __tablename__ = 'am_g'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
-    __esriId__ = 2000
     __bodId__ = 'ch.bafu.bundesinventare-amphibien_wanderobjekte'
     __template__ = 'templates/htmlpopup/bundinv_amphibien_w.mako'
     id = Column('am_g_obj', Integer, primary_key=True)
@@ -28,7 +27,6 @@ register('ch.bafu.bundesinventare-amphibien_wanderobjekte', AM_G)
 class AM_L(Base, Vector):
     __tablename__ = 'am_l'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
-    __esriId__ = 2001
     __bodId__ = 'ch.bafu.bundesinventare-amphibien'
     __template__ = 'templates/htmlpopup/bundinv_amphibien.mako'
     id = Column('am_l_obj', Text, primary_key=True)
@@ -44,7 +42,6 @@ register('ch.bafu.bundesinventare-amphibien', AM_L)
 class LHG(Base, Vector):
     __tablename__ = 'lhg'
     __table_args__ = ({'schema': 'hydrologie', 'autoload': False})
-    __esriId__ = 2003
     __bodId__ = 'ch.bafu.hydrologie-hydromessstationen'
     __template__ = 'templates/htmlpopup/hydromessstationen.mako'
     id = Column('edv_nr4', Text, primary_key=True)
@@ -57,7 +54,6 @@ register('ch.bafu.hydrologie-hydromessstationen', LHG)
 class Temperaturmessnetz(Base, Vector):
     __tablename__ = 'temperaturmessnetz'
     __table_args__ = ({'schema': 'hydrologie', 'autoload': False})
-    __esriId__ = 2004
     __bodId__ = 'ch.bafu.hydrologie-wassertemperaturmessstationen'
     __template__ = 'templates/htmlpopup/temperaturmessnetz.mako'
     __queryable_attributes__ = ['nr', 'name']
@@ -72,7 +68,6 @@ register('ch.bafu.hydrologie-wassertemperaturmessstationen', Temperaturmessnetz)
 class Gewaesserzustandst (Base, Vector):
     __tablename__ = 'dbgz'
     __table_args__ = ({'schema': 'hydrologie', 'autoload': False})
-    __esriId__ = 2006
     __bodId__ = 'ch.bafu.hydrologie-gewaesserzustandsmessstationen'
     __template__ = 'templates/htmlpopup/gewaesserzustandsmessstationen.mako'
     __queryable_attributes__ = ['nr', 'name', 'gewaesser']
@@ -88,7 +83,6 @@ register('ch.bafu.hydrologie-gewaesserzustandsmessstationen', Gewaesserzustandst
 class Teileinzugsgebiete2 (Base, Vector):
     __tablename__ = 'ebene_2km'
     __table_args__ = ({'schema': 'wasser', 'autoload': False})
-    __esriId__ = 2005
     __bodId__ = 'ch.bafu.wasser-teileinzugsgebiete_2'
     __template__ = 'templates/htmlpopup/teileinzugsgebiete2.mako'
     id = Column('bgdi_id', Integer, primary_key=True)
@@ -115,7 +109,6 @@ register('ch.bafu.wasser-teileinzugsgebiete_2', Teileinzugsgebiete2)
 class Teileinzugsgebiete40 (Base, Vector):
     __tablename__ = 'ebene_40km'
     __table_args__ = ({'schema': 'wasser', 'autoload': False})
-    __esriId__ = 2007
     __bodId__ = 'ch.bafu.wasser-teileinzugsgebiete_40'
     __template__ = 'templates/htmlpopup/teileinzugsgebiete40.mako'
     id = Column('bgdi_id', Integer, primary_key=True)
@@ -129,7 +122,6 @@ register('ch.bafu.wasser-teileinzugsgebiete_40', Teileinzugsgebiete40)
 class Gebietsauslaesse (Base, Vector):
     __tablename__ = 'outlets'
     __table_args__ = ({'schema': 'wasser', 'autoload': False})
-    __esriId__ = 2008
     __bodId__ = 'ch.bafu.wasser-gebietsauslaesse'
     __template__ = 'templates/htmlpopup/gebietsauslaesse.mako'
     id = Column('bgdi_id', Integer, primary_key=True)
@@ -152,7 +144,6 @@ register('ch.bafu.wasser-gebietsauslaesse', Gebietsauslaesse)
 class AU(Base, Vector):
     __tablename__ = 'au'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
-    __esriId__ = 2009
     __bodId__ = 'ch.bafu.bundesinventare-auen'
     __template__ = 'templates/htmlpopup/auen.mako'
     __queryable_attributes__ = ['au_obj', 'au_name']
@@ -169,7 +160,6 @@ register('ch.bafu.bundesinventare-auen', AU)
 class BLN(Base, Vector):
     __tablename__ = 'bln'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
-    __esriId__ = 1000
     __bodId__ = 'ch.bafu.bundesinventare-bln'
     #__queryable_attributes__ = ['bln_name']
     __template__ = 'templates/htmlpopup/bln.mako'
@@ -185,7 +175,6 @@ register('ch.bafu.bundesinventare-bln', BLN)
 class HM(Base, Vector):
     __tablename__ = 'hm'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
-    __esriId__ = 2010
     __bodId__ = 'ch.bafu.bundesinventare-hochmoore'
     __template__ = 'templates/htmlpopup/hochmoore.mako'
     id = Column('gid', Integer, primary_key=True)
@@ -202,7 +191,6 @@ register('ch.bafu.bundesinventare-hochmoore', HM)
 class JB(Base, Vector):
     __tablename__ = 'jb'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
-    __esriId__ = 2000
     __bodId__ = 'ch.bafu.bundesinventare-jagdbanngebiete'
     #__queryable_attributes__ = ['jb_name']
     __template__ = 'templates/htmlpopup/jb.mako'
@@ -220,7 +208,6 @@ register('ch.bafu.bundesinventare-jagdbanngebiete', JB)
 class ML(Base, Vector):
     __tablename__ = 'ml'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
-    __esriId__ = 2011
     __bodId__ = 'ch.bafu.bundesinventare-moorlandschaften'
     __template__ = 'templates/htmlpopup/moorlandschaften.mako'
     id = Column('gid', Integer, primary_key=True)
@@ -235,7 +222,6 @@ register('ch.bafu.bundesinventare-moorlandschaften', ML)
 class WV(Base, Vector):
     __tablename__ = 'wv'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
-    __esriId__ = 2012
     __bodId__ = 'ch.bafu.bundesinventare-vogelreservate'
     __template__ = 'templates/htmlpopup/vogelreservate.mako'
     id = Column('gid', Integer, primary_key=True)
@@ -252,7 +238,6 @@ register('ch.bafu.bundesinventare-vogelreservate', WV)
 class wasserentnahmeWkB(Base, Vector):
     __tablename__ = 'invent_ent_wknutz_bedeutend'
     __table_args__ = ({'schema': 'wasser', 'autoload': False})
-    __esriId__ = 2013
     __bodId__ = 'ch.bafu.wasser-entnahme'
     __template__ = 'templates/htmlpopup/wasserentnahme_wk_b.mako'
     id = Column('gid', Text, primary_key=True)
@@ -269,7 +254,6 @@ register('ch.bafu.wasser-entnahme', wasserentnahmeWkB)
 class wasserentnahmeWkW(Base, Vector):
     __tablename__ = 'invent_ent_wknutz_weitere'
     __table_args__ = ({'schema': 'wasser', 'autoload': False})
-    __esriId__ = 2014
     __bodId__ = 'ch.bafu.wasser-entnahme'
     __template__ = 'templates/htmlpopup/wasserentnahme_wk_w.mako'
     id = Column('gid', Text, primary_key=True)
@@ -285,7 +269,6 @@ register('ch.bafu.wasser-entnahme', wasserentnahmeWkW)
 class wasserentnahmeAnB(Base, Vector):
     __tablename__ = 'invent_ent_andere_bedeutend'
     __table_args__ = ({'schema': 'wasser', 'autoload': False})
-    __esriId__ = 2015
     __bodId__ = 'ch.bafu.wasser-entnahme'
     __template__ = 'templates/htmlpopup/wasserentnahme_an_b.mako'
     id = Column('gid', Text, primary_key=True)
@@ -302,7 +285,6 @@ register('ch.bafu.wasser-entnahme', wasserentnahmeAnB)
 class wasserentnahmeAnW(Base, Vector):
     __tablename__ = 'invent_ent_andere_weitere'
     __table_args__ = ({'schema': 'wasser', 'autoload': False})
-    __esriId__ = 2016
     __bodId__ = 'ch.bafu.wasser-entnahme'
     __template__ = 'templates/htmlpopup/wasserentnahme_an_w.mako'
     id = Column('gid', Text, primary_key=True)
@@ -318,7 +300,6 @@ register('ch.bafu.wasser-entnahme', wasserentnahmeAnW)
 class wasserleitungen(Base, Vector):
     __tablename__ = 'leitungen'
     __table_args__ = ({'schema': 'wasser', 'autoload': False})
-    __esriId__ = 2017
     __bodId__ = 'ch.bafu.wasser-leitungen'
     __template__ = 'templates/htmlpopup/wasserleitungen.mako'
     id = Column('gid', Integer, primary_key=True)
@@ -333,7 +314,6 @@ register('ch.bafu.wasser-leitungen', wasserleitungen)
 class wasserrueckgabe(Base, Vector):
     __tablename__ = 'rueckgabe'
     __table_args__ = ({'schema': 'wasser', 'autoload': False})
-    __esriId__ = 2018
     __bodId__ = 'ch.bafu.wasser-rueckgabe'
     __template__ = 'templates/htmlpopup/wasserrueckgabe.mako'
     id = Column('gid', Integer, primary_key=True)
@@ -348,7 +328,6 @@ register('ch.bafu.wasser-rueckgabe', wasserrueckgabe)
 class flachmoore(Base, Vector):
     __tablename__ = 'fm'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
-    __esriId__ = 2019
     __bodId__ = 'ch.bafu.bundesinventare-flachmoore'
     __template__ = 'templates/htmlpopup/flachmoore.mako'
     id = Column('gid', Integer, primary_key=True)
@@ -363,7 +342,6 @@ register('ch.bafu.bundesinventare-flachmoore', flachmoore)
 class flachmooreReg(Base, Vector):
     __tablename__ = 'flachmoore_regional'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
-    __esriId__ = 2020
     __bodId__ = 'ch.bafu.bundesinventare-flachmoore_regional'
     __template__ = 'templates/htmlpopup/flachmoore_reg.mako'
     id = Column('bgdi_id', Integer, primary_key=True)
@@ -378,7 +356,6 @@ register('ch.bafu.bundesinventare-flachmoore_regional', flachmooreReg)
 class paerke_nationaler_bedeutung(Base, Vector):
     __tablename__ = 'paerke_nationaler_bedeutung'
     __table_args__ = ({'schema': 'schutzge', 'autoload': False})
-    __esriId__ = 2021
     __bodId__ = 'ch.bafu.schutzgebiete-paerke_nationaler_bedeutung'
     __template__ = 'templates/htmlpopup/paerke_nationaler_bedeutung.mako'
     id = Column('bgdi_id', Integer, primary_key=True)
@@ -395,7 +372,6 @@ register('ch.bafu.schutzgebiete-paerke_nationaler_bedeutung', paerke_nationaler_
 class ramsar(Base, Vector):
     __tablename__ = 'ramsar'
     __table_args__ = ({'schema': 'schutzge', 'autoload': False})
-    __esriId__ = 2022
     __bodId__ = 'ch.bafu.schutzgebiete-ramsar'
     __template__ = 'templates/htmlpopup/ramsar.mako'
     id = Column('ra_id', Integer, primary_key=True)
@@ -411,7 +387,6 @@ register('ch.bafu.schutzgebiete-ramsar', ramsar)
 class wildruhezonen_jagdbanngebiete(Base, Vector):
     __tablename__ = 'wildruhezonen_jagdbanngebiete'
     __table_args__ = ({'schema': 'schutzge', 'autoload': False})
-    __esriId__ = 2023
     __bodId__ = 'ch.bafu.wildruhezonen-jagdbanngebiete'
     __template__ = 'templates/htmlpopup/wildruhezonen_jagdbanngebiete.mako'
     id = Column('wrz_jb_obj', Text, primary_key=True)
@@ -434,7 +409,6 @@ register('ch.bafu.wildruhezonen-jagdbanngebiete', wildruhezonen_jagdbanngebiete)
 class wege_wildruhezonen_jagdbanngebiete(Base, Vector):
     __tablename__ = 'wege_wildruhezonen_jagdbanngebiete'
     __table_args__ = ({'schema': 'schutzge', 'autoload': False})
-    __esriId__ = 2024
     __bodId__ = 'ch.bafu.wege-wildruhezonen-jagdbanngebiete'
     __template__ = 'templates/htmlpopup/wege_wildruhezonen_jagdbanngebiete.mako'
     id = Column('weg_id', Integer, primary_key=True)
@@ -450,7 +424,6 @@ register('ch.bafu.wege-wildruhezonen-jagdbanngebiete', wege_wildruhezonen_jagdba
 class steinbockkolonien(Base, Vector):
     __tablename__ = 'sb'
     __table_args__ = ({'schema': 'fauna', 'autoload': False})
-    __esriId__ = 2025
     __bodId__ = 'ch.bafu.fauna-steinbockkolonien'
     __template__ = 'templates/htmlpopup/steinbockkolonien.mako'
     id = Column('gid', Integer, primary_key=True)
@@ -467,7 +440,6 @@ register('ch.bafu.fauna-steinbockkolonien', steinbockkolonien)
 class SWISSPRTR(Base, Vector):
     __tablename__ = 'swissprtr'
     __table_args__ = ({'schema': 'prtr', 'autoload': False})
-    __esriId__ = 2026
     __bodId__ = 'ch.bafu.swissprtr'
     __template__ = 'templates/htmlpopup/swissprtr.mako'
     id = Column('prtrnr', Numeric, primary_key=True)
@@ -482,7 +454,6 @@ register('ch.bafu.swissprtr', SWISSPRTR)
 class HOLZVORRAT(Base, Vector):
     __tablename__ = 'holzvorrat'
     __table_args__ = ({'schema': 'wald', 'autoload': False})
-    __esriId__ = 2027
     __bodId__ = 'ch.bafu.holzvorrat'
     __template__ = 'templates/htmlpopup/holzvorrat.mako'
     id = Column('gid', Integer, primary_key=True)
@@ -497,7 +468,6 @@ register('ch.bafu.holzvorrat', HOLZVORRAT)
 class HOLZZUWACHS(Base, Vector):
     __tablename__ = 'holzzuwachs'
     __table_args__ = ({'schema': 'wald', 'autoload': False})
-    __esriId__ = 2028
     __bodId__ = 'ch.bafu.holzzuwachs'
     __template__ = 'templates/htmlpopup/holzzuwachs.mako'
     id = Column('gid', Integer, primary_key=True)
@@ -511,7 +481,6 @@ register('ch.bafu.holzzuwachs', HOLZZUWACHS)
 class HOLZNUTZUNG(Base, Vector):
     __tablename__ = 'holznutzung'
     __table_args__ = ({'schema': 'wald', 'autoload': False})
-    __esriId__ = 2029
     __bodId__ = 'ch.bafu.holznutzung'
     __template__ = 'templates/htmlpopup/holznutzung.mako'
     id = Column('gid', Integer, primary_key=True)
@@ -525,7 +494,6 @@ register('ch.bafu.holznutzung', HOLZNUTZUNG)
 class NABEL(Base, Vector):
     __tablename__ = 'nabel'
     __table_args__ = ({'schema': 'luft', 'autoload': False})
-    __esriId__ = 2030
     __bodId__ = 'ch.bafu.nabelstationen'
     __template__ = 'templates/htmlpopup/nabel.mako'
     id = Column('id_stat', Text, primary_key=True)
@@ -542,7 +510,6 @@ register('ch.bafu.nabelstationen', NABEL)
 class krebspest(Base, Vector):
     __tablename__ = 'krebspest'
     __table_args__ = ({'schema': 'fischerei', 'autoload': False})
-    __esriId__ = 2031
     __bodId__ = 'ch.bafu.fischerei-krebspest'
     __template__ = 'templates/htmlpopup/krebspest.mako'
     id = Column('_count', Integer, primary_key=True)
@@ -559,7 +526,6 @@ register('ch.bafu.fischerei-krebspest', krebspest)
 class biogeoreg(Base, Vector):
     __tablename__ = 'biogeoreg'
     __table_args__ = ({'schema': 'diverse', 'autoload': False})
-    __esriId__ = 2032
     __bodId__ = 'ch.bafu.biogeographische_regionen'
     __template__ = 'templates/htmlpopup/biogeoreg.mako'
     id = Column('bgdi_id', Integer, primary_key=True)
@@ -576,7 +542,6 @@ register('ch.bafu.biogeographische_regionen', biogeoreg)
 class smaragd(Base, Vector):
     __tablename__ = 'smaragd'
     __table_args__ = ({'schema': 'schutzge', 'autoload': False})
-    __esriId__ = 2033
     __bodId__ = 'ch.bafu.schutzgebiete-smaragd'
     __template__ = 'templates/htmlpopup/smaragd.mako'
     id = Column('id', Integer, primary_key=True)
@@ -591,7 +556,6 @@ register('ch.bafu.schutzgebiete-smaragd', smaragd)
 class biosphaerenreservate(Base, Vector):
     __tablename__ = 'biores'
     __table_args__ = ({'schema': 'schutzge', 'autoload': False})
-    __esriId__ = 2034
     __bodId__ = 'ch.bafu.schutzgebiete-biosphaerenreservate'
     __template__ = 'templates/htmlpopup/biosphaerenreservate.mako'
     id = Column('bgdi_id', Integer, primary_key=True)
@@ -608,7 +572,6 @@ register('ch.bafu.schutzgebiete-biosphaerenreservate', biosphaerenreservate)
 class moose(Base, Vector):
     __tablename__ = 'mooseflora'
     __table_args__ = ({'schema': 'flora', 'autoload': False})
-    __esriId__ = 2035
     __bodId__ = 'ch.bafu.moose'
     __template__ = 'templates/htmlpopup/moose.mako'
     id = Column('bgdi_id', Integer, primary_key=True)
@@ -625,7 +588,6 @@ register('ch.bafu.moose', moose)
 class weltensutter(Base, Vector):
     __tablename__ = 'ws'
     __table_args__ = ({'schema': 'flora', 'autoload': False})
-    __esriId__ = 2036
     __bodId__ = 'ch.bafu.flora-weltensutter_atlas'
     __template__ = 'templates/htmlpopup/weltensutter.mako'
     id = Column('gid', Integer, primary_key=True)
@@ -640,7 +602,6 @@ register('ch.bafu.flora-weltensutter_atlas', weltensutter)
 class baumarten(Base, Vector):
     __tablename__ = 'baumartenmischung'
     __table_args__ = ({'schema': 'wald', 'autoload': False})
-    __esriId__ = 2036
     __bodId__ = 'ch.bafu.landesforstinventar-baumarten'
     __template__ = 'templates/htmlpopup/baumarten.mako'
     id = Column('bgdi_id', Integer, primary_key=True)
@@ -656,7 +617,6 @@ register('ch.bafu.landesforstinventar-baumarten', baumarten)
 class waldanteil(Base, Vector):
     __tablename__ = 'waldanteil'
     __table_args__ = ({'schema': 'wald', 'autoload': False})
-    __esriId__ = 2037
     __bodId__ = 'ch.bafu.landesforstinventar-waldanteil'
     __template__ = 'templates/htmlpopup/waldanteil.mako'
     id = Column('bgdi_id', Integer, primary_key=True)
@@ -670,7 +630,6 @@ register('ch.bafu.landesforstinventar-waldanteil', waldanteil)
 class totholz(Base, Vector):
     __tablename__ = 'totholzvolumen'
     __table_args__ = ({'schema': 'wald', 'autoload': False})
-    __esriId__ = 2038
     __bodId__ = 'ch.bafu.landesforstinventar-totholz'
     __template__ = 'templates/htmlpopup/totholz.mako'
     id = Column('bgdi_id', Integer, primary_key=True)
@@ -684,7 +643,6 @@ register('ch.bafu.landesforstinventar-totholz', totholz)
 class histerdbeben(Base, Vector):
     __tablename__ = 'historische_erdbeben'
     __table_args__ = ({'schema': 'gefahren', 'autoload': False})
-    __esriId__ = 2039
     __bodId__ = 'ch.bafu.gefahren-historische_erdbeben'
     __template__ = 'templates/htmlpopup/histerdbeben.mako'
     id = Column('bgdi_id', Integer, primary_key=True)
@@ -701,7 +659,6 @@ register('ch.bafu.gefahren-historische_erdbeben', histerdbeben)
 class spektral(Base, Vector):
     __tablename__ = 'baugrundkl_spectral'
     __table_args__ = ({'schema': 'gefahren', 'autoload': False})
-    __esriId__ = 2040
     __bodId__ = 'ch.bafu.gefahren-spektral'
     __template__ = 'templates/htmlpopup/spektral.mako'
     id = Column('_count', Integer, primary_key=True)
@@ -716,7 +673,6 @@ register('ch.bafu.gefahren-spektral', spektral)
 class trockenwiesenundweiden(Base, Vector):
     __tablename__ = 'tww'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
-    __esriId__ = 2041
     __bodId__ = 'ch.bafu.bundesinventare-trockenwiesen_trockenweiden'
     __template__ = 'templates/htmlpopup/trockenwiesenundweiden.mako'
     id = Column('bgdi_id', Integer, primary_key=True)
@@ -733,7 +689,6 @@ register('ch.bafu.bundesinventare-trockenwiesen_trockenweiden', trockenwiesenund
 class trockenwiesenundweiden_anhang2(Base, Vector):
     __tablename__ = 'trockenwiesen_weiden_anhang2'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
-    __esriId__ = 2042
     __bodId__ = 'ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhang2'
     __template__ = 'templates/htmlpopup/tww_anhang2.mako'
     id = Column('bgdi_id', Integer, primary_key=True)
@@ -748,7 +703,6 @@ register('ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhang2', trockenw
 class amphibien_anhang4(Base, Vector):
     __tablename__ = 'amphibien_anhang4'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
-    __esriId__ = 2043
     __bodId__ = 'ch.bafu.bundesinventare-amphibien_anhang4'
     __template__ = 'templates/htmlpopup/amphibien_anhang4.mako'
     id = Column('bgdi_id', Integer, primary_key=True)
@@ -762,7 +716,6 @@ register('ch.bafu.bundesinventare-amphibien_anhang4', amphibien_anhang4)
 class baugrundklassen(Base, Vector):
     __tablename__ = 'baugrundklassen'
     __table_args__ = ({'schema': 'gefahren', 'autoload': False})
-    __esriId__ = 2044
     __bodId__ = 'ch.bafu.gefahren-baugrundklassen'
     __template__ = 'templates/htmlpopup/baugrundklassen.mako'
     id = Column('_count', Integer, primary_key=True)
@@ -775,7 +728,6 @@ register('ch.bafu.gefahren-baugrundklassen', baugrundklassen)
 class emissionplan(Base, Vector):
     __tablename__ = 'laerm_emplan_bahn_2015'
     __table_args__ = ({'schema': 'diverse', 'autoload': False})
-    __esriId__ = 2045
     __bodId__ = 'ch.bav.laerm-emissionplan_eisenbahn_2015'
     __template__ = 'templates/htmlpopup/emissionplan.mako'
     #__extended_info__ = True
@@ -793,7 +745,6 @@ register('ch.bav.laerm-emissionplan_eisenbahn_2015', emissionplan)
 class wrzselect(Base, Vector):
     __tablename__ = 'jgd_select'
     __table_args__ = ({'schema': 'wrzportal', 'autoload': False})
-    __esriId__ = 2046
     __bodId__ = 'ch.bafu.wrz-jagdbanngebiete_select'
     __template__ = 'templates/htmlpopup/wrz_select.mako'
     id = Column('objectid', Integer, primary_key=True)
@@ -813,7 +764,6 @@ register('ch.bafu.wrz-jagdbanngebiete_select', wrzselect)
 class wrzportal(Base, Vector):
     __tablename__ = 'wrz_portal'
     __table_args__ = ({'schema': 'wrzportal', 'autoload': False})
-    __esriId__ = 2047
     __bodId__ = 'ch.bafu.wrz-wildruhezonen_portal'
     __template__ = 'templates/htmlpopup/wrz_portal.mako'
     id = Column('objectid', Integer, primary_key=True)
@@ -834,7 +784,6 @@ register('ch.bafu.wrz-wildruhezonen_portal', wrzportal)
 class wildtier(Base, Vector):
     __tablename__ = 'wildtierkorridore'
     __table_args__ = ({'schema': 'fauna', 'autoload': False})
-    __esriId__ = 2049
     __bodId__ = 'ch.bafu.fauna-wildtierkorridor_national'
     __template__ = 'templates/htmlpopup/wildtierkorridor.mako'
     id = Column('bgdi_id', Integer, primary_key=True)

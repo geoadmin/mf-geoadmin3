@@ -7,8 +7,8 @@ from sqlalchemy.orm.util import class_mapper
 from sqlalchemy.orm.properties import ColumnProperty
 from geoalchemy import Geometry, WKBSpatialElement, functions
 
-from papyrus.geo_interface import GeoInterface
 import geojson
+from papyrus.geo_interface import GeoInterface
 from chsdi.esrigeojsonencoder import loads
 from shapely.geometry import asShape
 
@@ -89,7 +89,6 @@ class Vector(GeoInterface):
             bbox=shape.bounds if shape else None,
             properties=feature.properties,
             # For ESRI
-            layerId=self.__esriId__,
             layerBodId=self.__bodId__,
             layerName='',
             featureId=self.id,
@@ -99,7 +98,6 @@ class Vector(GeoInterface):
     @property
     def __interface__(self):
         return {
-            "layerId": self.__esriId__,
             "layerBodId": self.__bodId__,
             "layerName": '',
             "featureId": self.id,

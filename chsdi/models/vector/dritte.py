@@ -12,11 +12,9 @@ Base = bases['dritte']
 
 
 class FEUERSTELLEN(Base, Vector):
-    # view in a schema
     __tablename__ = 'feuerstellen'
     __table_args__ = ({'schema': 'tamedia', 'autoload': False})
     __template__ = 'templates/htmlpopup/swissmap_online_feuerstellen.mako'
-    __esriId__ = 3000
     __bodId__ = 'ch.tamedia.schweizerfamilie-feuerstellen'
     id = Column('nr', Integer, primary_key=True)
     gemeinde = Column('gemeinde', Text)
@@ -31,11 +29,9 @@ register('ch.tamedia.schweizerfamilie-feuerstellen', FEUERSTELLEN)
 
 
 class NOTFALLSCHUTZ(Base, Vector):
-    # view in a schema
     __tablename__ = 'zonenplan_kernanlagen'
     __table_args__ = ({'schema': 'ensi', 'autoload': False})
     __template__ = 'templates/htmlpopup/zonenplan_kernanlagen.mako'
-    __esriId__ = 3000
     __bodId__ = 'ch.ensi.zonenplan-notfallschutz-kernanlagen'
     id = Column('nr', Integer, primary_key=True)
     name = Column('name', Text)

@@ -15,7 +15,6 @@ class Gebaeuderegister(Base, Vector):
     __tablename__ = 'adr'
     __table_args__ = ({'schema': 'bfs', 'autoload': False})
     __template__ = 'templates/htmlpopup/gebaeuderegister.mako'
-    __esriId__ = 3000
     __bodId__ = 'ch.bfs.gebaeude_wohnungs_register'
     # __minscale__ = 5001
     # due to https://redmine.bgdi.admin.ch/issues/3146 ltmoc  __maxscale__ = 25000
@@ -37,7 +36,6 @@ class AGNES(Base, Vector):
     __tablename__ = 'agnes'
     __table_args__ = ({'schema': 'fpds', 'autoload': False})
     __template__ = 'templates/htmlpopup/agnes.mako'
-    __esriId__ = 3000
     __bodId__ = 'ch.swisstopo.fixpunkte-agnes'
     id = Column('no', Text, primary_key=True)
     url = Column('url', Text)
@@ -52,7 +50,6 @@ class FIXPUNKTE_LFP1(Base, Vector):
     __table_args__ = ({'schema': 'fpds', 'autoload': False})
     __template__ = 'templates/htmlpopup/fixpunkte.mako'
     __queryable_attributes__ = ['pointid', 'nummer']
-    __esriId__ = 3000
     __bodId__ = 'ch.swisstopo.fixpunkte-lfp1'
     id = Column('pointid', Text, primary_key=True)
     punktname = Column('punktname', Text)
@@ -77,7 +74,6 @@ class FIXPUNKTE_LFP2(Base, Vector):
     __table_args__ = ({'schema': 'fpds', 'autoload': False})
     __template__ = 'templates/htmlpopup/fixpunkte.mako'
     __queryable_attributes__ = ['pointid', 'nummer']
-    __esriId__ = 3000
     __bodId__ = 'ch.swisstopo.fixpunkte-lfp2'
     id = Column('pointid', Text, primary_key=True)
     nbident = Column('nbident', Text)
@@ -102,7 +98,6 @@ class FIXPUNKTE_HFP1(Base, Vector):
     __table_args__ = ({'schema': 'fpds', 'autoload': True})
     __template__ = 'templates/htmlpopup/fixpunkte.mako'
     __queryable_attributes__ = ['pointid', 'nummer', 'bgdi_label']
-    __esriId__ = 3000
     __bodId__ = 'ch.swisstopo.fixpunkte-hfp1'
     id = Column('pointid', Text, primary_key=True)
     nbident = Column('nbident', Text)
@@ -127,7 +122,6 @@ class FIXPUNKTE_HFP2(Base, Vector):
     __table_args__ = ({'schema': 'fpds', 'autoload': True})
     __template__ = 'templates/htmlpopup/fixpunkte.mako'
     __queryable_attributes__ = ['pointid', 'nummer']
-    __esriId__ = 3000
     __bodId__ = 'ch.swisstopo.fixpunkte-hfp2'
     id = Column('pointid', Text, primary_key=True)
     nbident = Column('nbident', Text)

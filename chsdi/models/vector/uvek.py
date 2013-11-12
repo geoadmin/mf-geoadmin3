@@ -16,7 +16,6 @@ class IVS_NAT(Base, Vector):
     __tablename__ = 'ivs_nat'
     __table_args__ = ({'schema': 'astra', 'autoload': False})
     __template__ = 'templates/htmlpopup/ivs_nat.mako'
-    __esriId__ = 3000
     __bodId__ = 'ch.astra.ivs-nat'
     __queryable_attributes__ = ['ivs_slaname', 'ivs_nummer', 'ivs_signatur']
     id = Column('nat_id', Integer, primary_key=True)
@@ -41,7 +40,6 @@ class IVS_REG_LOC(Base, Vector):
     __tablename__ = 'ivs_reg_loc'
     __table_args__ = ({'schema': 'astra', 'autoload': False})
     __template__ = 'templates/htmlpopup/ivs_nat.mako'
-    __esriId__ = 4000
     __bodId__ = 'ch.astra.ivs-reg_loc'
     __queryable_attributes__ = ['ivs_slaname', 'ivs_nummer', 'ivs_signatur']
     id = Column('reg_loc_id', Integer, primary_key=True)
@@ -66,7 +64,6 @@ class KANTONE_REG_LOC(Base, Vector):
     __tablename__ = 'kanton_reg_loc'
     __table_args__ = ({'schema': 'astra', 'autoload': False})
     __template__ = 'templates/htmlpopup/kantone.ivs-reg_loc.mako'
-    __esriId__ = 4001
     __bodId__ = 'ch.kantone.ivs-reg_loc'
     __queryable_attributes__ = ['ivs_slaname', 'ivs_nummer', 'ivs_signatur']
     id = Column('reg_loc_id', Integer, primary_key=True)
@@ -90,7 +87,6 @@ class AUSNAHMETRANSPORTROUTEN(Base, Vector):
     __tablename__ = 'ausnahmetransportrouten'
     __table_args__ = ({'schema': 'astra', 'autoload': False})
     __template__ = 'templates/htmlpopup/ausnahmetransportrouten.mako'
-    __esriId__ = 4002
     __bodId__ = 'ch.astra.ausnahmetransportrouten'
     id = Column('id', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
@@ -107,7 +103,6 @@ class ZAEHLSTELLENREGLOC(Base, Vector):
     __tablename__ = 'verkehr_reg_loc'
     __table_args__ = ({'schema': 'astra', 'autoload': False})
     __template__ = 'templates/htmlpopup/verkehrszaehlstellen.mako'
-    __esriId__ = 4002
     __bodId__ = 'ch.astra.strassenverkehrszaehlung_messstellen-regional_lokal'
     __queryable_attributes__ = ['nr', 'zaehlstellen_bezeichnung']
     id = Column('nr', Integer, primary_key=True)
@@ -124,7 +119,6 @@ class ZAEHLSTELLENUEBER(Base, Vector):
     __tablename__ = 'verkehr_ueber'
     __table_args__ = ({'schema': 'astra', 'autoload': False})
     __template__ = 'templates/htmlpopup/verkehrszaehlstellen.mako'
-    __esriId__ = 4003
     __bodId__ = 'ch.astra.strassenverkehrszaehlung_messstellen-uebergeordnet'
     __queryable_attributes__ = ['nr', 'zaehlstellen_bezeichnung']
     id = Column('nr', Integer, primary_key=True)
@@ -141,11 +135,10 @@ class KATASTERBELASTETERSTANDORTE(Base, Vector):
     __tablename__ = 'kataster_belasteter_standorte_oev'
     __table_args__ = ({'schema': 'bav', 'autoload': False})
     __template__ = 'templates/htmlpopup/kataster_belasteter_standorte_oev.mako'
-    __esriId__ = 4002
     __bodId__ = 'ch.bav.kataster-belasteter-standorte-oev'
     id = Column('vflz_id', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-#    not_used = Column('the_geom_gen50', Geometry(21781))
+    #not_used = Column('the_geom_gen50', Geometry(21781))
     nummer = Column('nummer', Text)
     typ_bez = Column('typ_bez', Text)
     url = Column('url', Text)
@@ -161,7 +154,6 @@ class ABGELTUNGWASSERKRAFTNUTZUNG(Base, Vector):
     __tablename__ = 'abgeltung_wasserkraftnutzung'
     __table_args__ = ({'schema': 'bfe', 'autoload': False})
     __template__ = 'templates/htmlpopup/abgeltungwasserkraftnutzung.mako'
-    __esriId__ = 4004
     __bodId__ = 'ch.bfe.abgeltung-wasserkraftnutzung'
     id = Column('objectnumber', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
@@ -178,7 +170,6 @@ class ENERGIEFORSCHUNG(Base, Vector):
     __tablename__ = 'energieforschung'
     __table_args__ = ({'schema': 'bfe', 'autoload': False})
     __template__ = 'templates/htmlpopup/energieforschung.mako'
-    __esriId__ = 4004
     __bodId__ = 'ch.bfe.energieforschung'
     #__extended_info__ = True
     id = Column('tid', Integer, primary_key=True)
@@ -205,7 +196,6 @@ class STATISTIKWASSERKRAFTANLAGEN(Base, Vector):
     __tablename__ = 'statistik_wasserkraftanlagen_powerplant'
     __table_args__ = ({'schema': 'bfe', 'autoload': False})
     __template__ = 'templates/htmlpopup/statistikwasserkraftanlagen.mako'
-    __esriId__ = 4005
     __bodId__ = 'ch.bfe.statistik-wasserkraftanlagen'
     id = Column('wastanumber', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
@@ -228,7 +218,6 @@ class STAUANLAGENBUNDESAUFSICHT(Base, Vector):
     __tablename__ = 'stauanlagen_bundesaufsicht'
     __table_args__ = ({'schema': 'bfe', 'autoload': False})
     __template__ = 'templates/htmlpopup/stauanlagenbundesaufsicht.mako'
-    __esriId__ = 4006
     __bodId__ = 'ch.bfe.stauanlagen-bundesaufsicht'
     id = Column('dam_stabil_id', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
@@ -259,7 +248,6 @@ class kleinwasserkraftpotentiale(Base, Vector):
     __tablename__ = 'kleinwasserkraftpotentiale'
     __table_args__ = ({'schema': 'bfe', 'autoload': False})
     __template__ = 'templates/htmlpopup/kleinwasserkraftpotentiale.mako'
-    __esriId__ = 4006
     __bodId__ = 'ch.bfe.kleinwasserkraftpotentiale'
     id = Column('bgdi_id', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
@@ -274,7 +262,6 @@ class bakomfernsehsender(Base, Vector):
     __tablename__ = 'nisdb_bro_tooltip'
     __table_args__ = ({'schema': 'bakom', 'autoload': False})
     __template__ = 'templates/htmlpopup/bakomfernsehsender.mako'
-    __esriId__ = 4007
     __bodId__ = 'ch.bakom.radio-fernsehsender'
     __extended_info__ = True
     __queryable_attributes__ = ['name', 'code']
@@ -295,7 +282,6 @@ class bakomgsm(Base, Vector):
     __tablename__ = 'nisdb_gsm'
     __table_args__ = ({'schema': 'bakom', 'autoload': False})
     __template__ = 'templates/htmlpopup/bakomgsm.mako'
-    __esriId__ = 4008
     __bodId__ = 'ch.bakom.mobil-antennenstandorte-gsm'
     id = Column('id', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
@@ -309,7 +295,6 @@ class bakomumts(Base, Vector):
     __tablename__ = 'nisdb_umts'
     __table_args__ = ({'schema': 'bakom', 'autoload': False})
     __template__ = 'templates/htmlpopup/bakomumts.mako'
-    __esriId__ = 4009
     __bodId__ = 'ch.bakom.mobil-antennenstandorte-umts'
     id = Column('id', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
@@ -323,7 +308,6 @@ class bakomlte(Base, Vector):
     __tablename__ = 'nisdb_lte'
     __table_args__ = ({'schema': 'bakom', 'autoload': False})
     __template__ = 'templates/htmlpopup/bakomlte.mako'
-    __esriId__ = 4010
     __bodId__ = 'ch.bakom.mobil-antennenstandorte-lte'
     id = Column('id', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
@@ -337,7 +321,6 @@ class bakomtv(Base, Vector):
     __tablename__ = 'tv_gebiet'
     __table_args__ = ({'schema': 'bakom', 'autoload': False})
     __template__ = 'templates/htmlpopup/bakomtv.mako'
-    __esriId__ = 4011
     __bodId__ = 'ch.bakom.versorgungsgebiet-tv'
     __queryable_attributes__ = ['prog']
     id = Column('gid', Integer, primary_key=True)
@@ -351,7 +334,6 @@ class bakomukw(Base, Vector):
     __tablename__ = 'ukw_gebiet'
     __table_args__ = ({'schema': 'bakom', 'autoload': False})
     __template__ = 'templates/htmlpopup/bakomukw.mako'
-    __esriId__ = 4012
     __bodId__ = 'ch.bakom.versorgungsgebiet-ukw'
     __queryable_attributes__ = ['prog']
     id = Column('gid', Integer, primary_key=True)
@@ -365,7 +347,6 @@ class ProjFlughafenanlagen(Base, Vector):
     __tablename__ = 'projektierungszonen'
     __table_args__ = ({'schema': 'bazl', 'autoload': False})
     __template__ = 'templates/htmlpopup/projflughafenanlagen.mako'
-    __esriId__ = 4012
     __bodId__ = 'ch.bazl.projektierungszonen-flughafenanlagen'
     id = Column('stabil_id', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
@@ -391,7 +372,6 @@ class Luftfahrthindernis(Base, Vector):
     __tablename__ = 'luftfahrthindernis'
     __table_args__ = ({'schema': 'bazl', 'autoload': False})
     __template__ = 'templates/htmlpopup/luftfahrthindernisse.mako'
-    __esriId__ = 4013
     __bodId__ = 'ch.bazl.luftfahrthindernis'
     #__extended_info__ = True
     id = Column('bgdi_id', Integer, primary_key=True)
@@ -416,7 +396,6 @@ class sgt_facilities(Base, Vector):
     __tablename__ = 'geologische_tiefenlager_fac'
     __table_args__ = ({'schema': 'bfe', 'autoload': False})
     __template__ = 'templates/htmlpopup/sgt_facilities.mako'
-    __esriId__ = 4014
     __bodId__ = 'ch.bfe.sachplan-geologie-tiefenlager'
     id = Column('stabil_id', Integer, primary_key=True)
     facname_de = Column('facname_de', Text)
@@ -446,7 +425,6 @@ class sgt_planning(Base, Vector):
     __tablename__ = 'geologische_tiefenlager'
     __table_args__ = ({'schema': 'bfe', 'autoload': False})
     __template__ = 'templates/htmlpopup/sgt_planning.mako'
-    __esriId__ = 4015
     __bodId__ = 'ch.bfe.sachplan-geologie-tiefenlager'
     id = Column('stabil_id', Text, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
@@ -480,7 +458,6 @@ class sgt_planning_raster(Base, Vector):
     __tablename__ = 'geologische_tiefenlager_raster'
     __table_args__ = ({'schema': 'bfe', 'autoload': False})
     __template__ = 'templates/htmlpopup/sgt_planning.mako'
-    __esriId__ = 4016
     __bodId__ = 'ch.bfe.sachplan-geologie-tiefenlager'
     id = Column('stabil_id', Integer, primary_key=True)
     facname_de = Column('facname_de', Text)
@@ -514,7 +491,6 @@ class sgt_facilities_td(Base, Vector):
     __tablename__ = 'geologische_tiefenlager_fac'
     __table_args__ = ({'schema': 'bfe', 'autoload': False, 'extend_existing': True})
     __template__ = 'templates/htmlpopup/sgt_facilities.mako'
-    __esriId__ = 4017
     __bodId__ = 'ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung'
     id = Column('stabil_id', Integer, primary_key=True)
     facname_de = Column('facname_de', Text)
@@ -544,7 +520,6 @@ class sgt_planning_td(Base, Vector):
     __tablename__ = 'geologische_tiefenlager'
     __table_args__ = ({'schema': 'bfe', 'autoload': False, 'extend_existing': True})
     __template__ = 'templates/htmlpopup/sgt_planning.mako'
-    __esriId__ = 4018
     __bodId__ = 'ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung'
     id = Column('stabil_id', Integer, primary_key=True)
     facname_de = Column('facname_de', Text)
@@ -578,7 +553,6 @@ class sgt_planning_raster_td(Base, Vector):
     __tablename__ = 'geologische_tiefenlager_raster'
     __table_args__ = ({'schema': 'bfe', 'autoload': False, 'extend_existing': True})
     __template__ = 'templates/htmlpopup/sgt_planning.mako'
-    __esriId__ = 4019
     __bodId__ = 'ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung'
     id = Column('stabil_id', Integer, primary_key=True)
     facname_de = Column('facname_de', Text)
@@ -612,7 +586,6 @@ class sil_facilities_a(Base, Vector):
     __tablename__ = 'sachplan_inf_luft_facilities_anhorung'
     __table_args__ = ({'schema': 'bazl', 'autoload': False})
     __template__ = 'templates/htmlpopup/sil_facilities.mako'
-    __esriId__ = 4020
     __bodId__ = 'ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung'
     id = Column('stabil_id', Integer, primary_key=True)
     facname_de = Column('facname_de', Text)
@@ -642,7 +615,6 @@ class sil_planning_a(Base, Vector):
     __tablename__ = 'sachplan_inf_luft_plmeasures_anhorung'
     __table_args__ = ({'schema': 'bazl', 'autoload': False})
     __template__ = 'templates/htmlpopup/sil_planning.mako'
-    __esriId__ = 4021
     __bodId__ = 'ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung'
     id = Column('stabil_id', Integer, primary_key=True)
     facname_de = Column('facname_de', Text)
@@ -678,7 +650,6 @@ class sil_planning_raster_a(Base, Vector):
     __tablename__ = 'sachplan_inf_luft_plmeasures_r_anhorung'
     __table_args__ = ({'schema': 'bazl', 'autoload': False})
     __template__ = 'templates/htmlpopup/sil_planning.mako'
-    __esriId__ = 4022
     __bodId__ = 'ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung'
     id = Column('stabil_id', Integer, primary_key=True)
     facname_de = Column('facname_de', Text)
@@ -714,7 +685,6 @@ class sil_facilities_k(Base, Vector):
     __tablename__ = 'sachplan_inf_luft_facilities_kraft'
     __table_args__ = ({'schema': 'bazl', 'autoload': False})
     __template__ = 'templates/htmlpopup/sil_facilities.mako'
-    __esriId__ = 4023
     __bodId__ = 'ch.bazl.sachplan-infrastruktur-luftfahrt_kraft'
     id = Column('stabil_id', Integer, primary_key=True)
     facname_de = Column('facname_de', Text)
@@ -744,7 +714,6 @@ class sil_planning_raster_k(Base, Vector):
     __tablename__ = 'sachplan_inf_luft_plmeasures_r_kraft'
     __table_args__ = ({'schema': 'bazl', 'autoload': False})
     __template__ = 'templates/htmlpopup/sil_planning.mako'
-    __esriId__ = 4023
     __bodId__ = 'ch.bazl.sachplan-infrastruktur-luftfahrt_kraft'
     id = Column('stabil_id', Integer, primary_key=True)
     facname_de = Column('facname_de', Text)
@@ -780,7 +749,6 @@ class nga_anbieter (Base, Vector):
     __tablename__ = 'nga_anbieter'
     __table_args__ = ({'schema': 'bakom', 'autoload': False})
     __template__ = 'templates/htmlpopup/ngamapping.mako'
-    __esriId__ = 4024
     __bodId__ = 'ch.bakom.anbieter-eigenes_festnetz'
     id = Column('cellid', Integer, primary_key=True)
     alias = Column('alias', Text)
@@ -795,7 +763,6 @@ class kernkraftwerke (Base, Vector):
     __tablename__ = 'kernkraftwerke'
     __table_args__ = ({'schema': 'bfe', 'autoload': False})
     __template__ = 'templates/htmlpopup/kernkraftwerke.mako'
-    __esriId__ = 4025
     __bodId__ = 'ch.bfe.kernkraftwerke'
     #__extended_info__ = True
     id = Column('plant_id', Text, primary_key=True)

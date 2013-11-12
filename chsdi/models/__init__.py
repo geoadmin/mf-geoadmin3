@@ -11,7 +11,6 @@ engines = {}
 bases = {}
 bodmap = {}
 oerebmap = {}
-esrimap = {}
 
 for db in dbs:
     bases[db] = declarative_base()
@@ -33,8 +32,6 @@ def initialize_sql(settings):
 def register(name, klass):
     name = unicode(name)
     bodmap.setdefault(name, []).append(klass)
-    if hasattr(klass, '__esriId__'):
-        esrimap[klass.__esriId__] = name
 
 
 def register_oereb(name, klass):
@@ -61,10 +58,4 @@ def models_from_name(name):
     if models is not None:
         return models
     else:
-        try:
-            id = int(name)
-            if id in esrimap:
-                bodid = esrimap[id]
-                return models_from_bodid(bodid)
-        except:
-            return None
+      return None
