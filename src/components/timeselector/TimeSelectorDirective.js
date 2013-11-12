@@ -249,7 +249,11 @@
             for (var i = 0, length = olLayers.getLength(); i < length; i++) {
 
               // if there is one no- bod layer we disable the time selector
-              var id = olLayers.getAt(i).bodId;
+              var olLayer = olLayers.getAt(i);
+              if (olLayer.highlight) {
+                continue;
+              }
+              var id = olLayer.bodId;
               if (!id) {
                 enabled = false;
                 break;
