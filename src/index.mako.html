@@ -70,10 +70,12 @@
     </div>
     <![endif]-->
     <div id="header" class="navbar navbar-fixed-top">
-      <a ng-href="?topic={{topicId}}&lang={{langId}}" id="logo" class="pull-left">
-        <img ng-if="langId" ng-src="${version}img/logo.ch.{{langId}}.png" style="width: 246px; height: 89px"/>
-        <img src="${version}img/logo.ch.small.png" style="width: 19px; height: 19.5px"/>
-      </a>
+      <div id="logo" class="pull-left">
+        <a ng-href="?topic={{topicId}}&lang={{langId}}">
+          <img ng-if="langId" ng-src="${version}img/logo.ch.{{langId}}.png" style="width: 246px; height: 89px"/>
+          <img src="${version}img/logo.ch.small.png" style="width: 19px; height: 19.5px"/>
+        </a>
+      </div>
       <div id="search-container" ng-controller="GaSearchController">
         <div ga-search ga-search-map="map" ga-search-options="options" ga-search-focused="globals.searchFocused"></div>
       </div>
