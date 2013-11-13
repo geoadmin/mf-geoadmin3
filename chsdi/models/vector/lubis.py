@@ -9,10 +9,10 @@ from chsdi.models.vector import Vector
 Base = bases['lubis']
 
 
-class Luftbilder(Base, Vector):
+class luftbilder_swisstopo(Base, Vector):
     __tablename__ = 'luftbilder_swisstopo'
     __table_args__ = ({'schema': 'public', 'autoload': False})
-    __template__ = 'templates/htmlpopup/lubis_quickview.mako'
+    __template__ = 'templates/htmlpopup/lubis_luftbilder_quickview.mako'
     __bodId__ = 'ch.swisstopo.lubis-luftbilder'
     __returnedGeometry__ = 'the_geom_footprint'
     __timeInstant__ = 'bgdi_flugjahr'
@@ -32,12 +32,13 @@ class Luftbilder(Base, Vector):
     ort = Column('ort', Text)
     bgdi_imagemode = Column('bgdi_imagemode', Text)
 
-register('ch.swisstopo.lubis-luftbilder', Luftbilder)
+register('ch.swisstopo.lubis-luftbilder', luftbilder_swisstopo)
 
-class Luftbilder(Base, Vector):
+
+class luftbilder_dritte_firmen(Base, Vector):
     __tablename__ = 'luftbilder_dritte_firmen'
     __table_args__ = ({'schema': 'public', 'autoload': False})  
-    __template__ = 'templates/htmlpopup/luftbilder_firmen.mako'
+    __template__ = 'templates/htmlpopup/lubis_luftbilder.mako'
     __esriId__ = 1000
     __bodId__ = 'ch.swisstopo.lubis-luftbilder-dritte-firmen'
     __returnedGeometry__ = 'the_geom_footprint'
@@ -58,14 +59,13 @@ class Luftbilder(Base, Vector):
     ort = Column('ort', Text)
     bgdi_imagemode = Column('bgdi_imagemode', Text) 
 
-register('ch.swisstopo.lubis-luftbilder-dritte-firmen', Luftbilder)
+register('ch.swisstopo.lubis-luftbilder-dritte-firmen', luftbilder_dritte_firmen)
 
 
-
-class Luftbilder(Base, Vector):
-    __tablename__ = 'luftbilder_dritte_kanton'
+class luftbilder_dritte_kantone(Base, Vector):
+    __tablename__ = 'luftbilder_dritte_kantone'
     __table_args__ = ({'schema': 'public', 'autoload': False})
-    __template__ = 'templates/htmlpopup/lubis_kanton.mako'
+    __template__ = 'templates/htmlpopup/lubis_luftbilder.mako'
     __esriId__ = 1000
     __bodId__ = 'ch.swisstopo.lubis-luftbilder-dritte-kantone'
     __returnedGeometry__ = 'the_geom_footprint'
@@ -86,13 +86,13 @@ class Luftbilder(Base, Vector):
     ort = Column('ort', Text)
     bgdi_imagemode = Column('bgdi_imagemode', Text)
 
-register('ch.swisstopo.lubis-luftbilder-dritte-kantone', Luftbilder)
+register('ch.swisstopo.lubis-luftbilder-dritte-kantone', luftbilder_dritte_kantone)
 
 
-class Luftbilder(Base, Vector):
-    __tablename__ = ''
+class bildstreifen(Base, Vector):
+    __tablename__ = 'view_bildstreifen'
     __table_args__ = ({'schema': 'ads40', 'autoload': False})
-    __template__ = 'templates/htmlpopup/view_bildstreifen.mako'
+    __template__ = 'templates/htmlpopup/lubis_bildstreifen.mako'
     __esriId__ = 1000
     __bodId__ = 'ch.swisstopo.lubis-bildstreifen'
     __returnedGeometry__ = 'the_geom_footprint'
@@ -107,5 +107,5 @@ class Luftbilder(Base, Vector):
     objectid = Column ('objectid', Text)
     area = Column ('area', Text)
 
-register('ch.swisstopo.lubis-luftbilder-dritte-kantone', Luftbilder)
+register('ch.swisstopo.lubis-bildstreifen', bildstreifen)
 
