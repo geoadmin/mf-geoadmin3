@@ -37,7 +37,7 @@ register('ch.swisstopo.lubis-luftbilder', luftbilder_swisstopo)
 
 class luftbilder_dritte_firmen(Base, Vector):
     __tablename__ = 'luftbilder_dritte_firmen'
-    __table_args__ = ({'schema': 'public', 'autoload': False})  
+    __table_args__ = ({'schema': 'public', 'autoload': False})
     __template__ = 'templates/htmlpopup/lubis_luftbilder.mako'
     __esriId__ = 1000
     __bodId__ = 'ch.swisstopo.lubis-luftbilder-dritte-firmen'
@@ -57,7 +57,7 @@ class luftbilder_dritte_firmen(Base, Vector):
     x = Column('x', Integer)
     y = Column('y', Integer)
     ort = Column('ort', Text)
-    bgdi_imagemode = Column('bgdi_imagemode', Text) 
+    bgdi_imagemode = Column('bgdi_imagemode', Text)
 
 register('ch.swisstopo.lubis-luftbilder-dritte-firmen', luftbilder_dritte_firmen)
 
@@ -103,9 +103,8 @@ class bildstreifen(Base, Vector):
     flugdatum = Column('flugdatum', Text)
     firma = Column('firma', Text)
     filmart = Column('filmart', Text)
-    resolution = Column ('resolution', Text)
-    objectid = Column ('objectid', Text)
-    area = Column ('area', Text)
+    resolution = Column('resolution', Text)
+    objectid = Column('objectid', Text)
+    area = Column('area', Text)
 
 register('ch.swisstopo.lubis-bildstreifen', bildstreifen)
-
