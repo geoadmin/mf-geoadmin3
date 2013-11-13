@@ -2343,12 +2343,11 @@ msgstr "Resolution"
 msgid "tt_bildstreifen_Flugdatum"
 msgstr "Flight date"
 
-msgid "tt_bildstreifen_Link "
+msgid "tt_bildstreifen_Link"
 msgstr "Order"
 
-#. TODO
-msgid "tt_bildstreifen_Quickview "
-msgstr "tt_bildstreifen_Quickview "
+msgid "tt_bildstreifen_Quickview"
+msgstr "Quickview"
 
 msgid "tt_bildstreifen_ebkey"
 msgstr "Strip number"

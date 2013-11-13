@@ -92,7 +92,7 @@ register('ch.swisstopo.lubis-luftbilder-dritte-kantone', luftbilder_dritte_kanto
 class bildstreifen(Base, Vector):
     __tablename__ = 'view_bildstreifen'
     __table_args__ = ({'schema': 'ads40', 'autoload': False})
-    __template__ = 'templates/htmlpopup/lubis_bildstreifen.mako'
+    __template__ = 'templates/htmlpopup/lubis_lufbilder.mako'
     __esriId__ = 1000
     __bodId__ = 'ch.swisstopo.lubis-bildstreifen'
     __returnedGeometry__ = 'the_geom_footprint'
