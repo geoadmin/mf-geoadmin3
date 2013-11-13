@@ -35,7 +35,46 @@
                 canceler,
                 currentTopic,
                 vector,
+                projection,
+                parser,
                 year;
+
+            projection = map.getView().getProjection();
+            parser = new ol.parser.GeoJSON();
+
+            vector = new ol.layer.Vector({
+              style: new ol.style.Style({
+                symbolizers: [
+                  new ol.style.Fill({
+                    color: '#ffff00'
+                  }),
+                  new ol.style.Stroke({
+                    color: '#ff8000',
+                    width: 3
+                  }),
+                  new ol.style.Shape({
+                    size: 20,
+                    fill: new ol.style.Fill({
+                      color: '#ffff00'
+                    }),
+                    stroke: new ol.style.Stroke({
+                      color: '#ff8000',
+                      width: 3
+                    })
+                  })
+                ]
+              }),
+              source: new ol.source.Vector({
+                projection: projection,
+                parser: parser,
+                data: {
+                  type: 'FeatureCollection',
+                  features: []
+                }
+              })
+            });
+            gaDefinePropertiesForLayer(vector);
+            vector.highlight = true;
 
             $scope.$on('gaTopicChange', function(event, topic) {
               currentTopic = topic.id;
@@ -137,11 +176,18 @@
               if (popup) {
                 popup.close();
               }
+              vector.clear();
+              map.removeLayer(vector);
+              map.addLayer(vector);
             }
 
             function showFeatures(mapExtent, size, foundFeatures) {
               if (foundFeatures && foundFeatures.length > 0) {
+
                 angular.forEach(foundFeatures, function(value) {
+
+                  vector.parseFeatures(value.geometry, parser, projection);
+
                   var htmlUrl = $scope.options.htmlUrlTemplate
                                 .replace('{Topic}', currentTopic)
                                 .replace('{Layer}', value.layerBodId)
@@ -161,6 +207,7 @@
                         popup = gaPopup.create({
                           className: 'ga-tooltip',
                           onCloseCallback: function() {
+                            vector.clear();
                             map.removeLayer(vector);
                           },
                           destroyOnClose: false,
@@ -186,45 +233,6 @@
                     bodyEl.removeClass(waitclass);
                   });
                 });
-
-                // A new vector layer is created each time because
-                // there is no public function to access the features
-                // from the source.
-                map.removeLayer(vector);
-                vector = new ol.layer.Vector({
-                  style: new ol.style.Style({
-                    symbolizers: [
-                      new ol.style.Fill({
-                        color: '#ffff00'
-                      }),
-                      new ol.style.Stroke({
-                        color: '#ff8000',
-                        width: 3
-                      }),
-                      new ol.style.Shape({
-                        size: 20,
-                        fill: new ol.style.Fill({
-                          color: '#ffff00'
-                        }),
-                        stroke: new ol.style.Stroke({
-                          color: '#ff8000',
-                          width: 3
-                        })
-                      })
-                    ]
-                  }),
-                  source: new ol.source.Vector({
-                    projection: map.getView().getProjection(),
-                    parser: new ol.parser.GeoJSON(),
-                    data: {
-                      type: 'FeatureCollection',
-                      features: foundFeatures
-                    }
-                  })
-                });
-                gaDefinePropertiesForLayer(vector);
-                vector.highlight = true;
-                map.addLayer(vector);
               }
             }
 
