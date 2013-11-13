@@ -34,10 +34,15 @@
                 popup,
                 canceler,
                 currentTopic,
-                vector;
+                vector,
+                year;
 
             $scope.$on('gaTopicChange', function(event, topic) {
               currentTopic = topic.id;
+            });
+
+            $scope.$on('gaTimeSelectorChange', function(event, currentyear) {
+              year = currentyear;
             });
 
             gaMapClick.listen(map, function(evt) {
@@ -63,14 +68,20 @@
             function findFeatures(coordinate, size, mapExtent) {
               var identifyUrl = $scope.options.identifyUrlTemplate
                                 .replace('{Topic}', currentTopic),
-                  layersToQuery = getLayersToQuery();
+                  layersToQuery = getLayersToQuery(),
+                  responseCount = 0,
+                  layerToQuery,
+                  params,
+                  identifyCount,
+                  i;
               // Cancel all pending requests
               if (canceler) {
                 canceler.resolve();
               }
               // Create new cancel object
               canceler = $q.defer();
-              if (layersToQuery.length) {
+              identifyCount = layersToQuery.length;
+              if (identifyCount) {
                 // Show wait cursor
                 //
                 // The tricky part: without the $timeout, the call to
@@ -83,10 +94,9 @@
                   bodyEl.addClass(waitclass);
                 }, 0);
 
-                // Look for all features under clicked pixel
-                $http.get(identifyUrl, {
-                  timeout: canceler.promise,
-                  params: {
+                for (i = 0; i < identifyCount; i++) {
+                  layerToQuery = layersToQuery[i];
+                  params = {
                     geometryType: 'esriGeometryPoint',
                     geometryFormat: 'geojson',
                     geometry: coordinate[0] + ',' + coordinate[1],
@@ -94,19 +104,32 @@
                     imageDisplay: size[0] + ',' + size[1] + ',96',
                     mapExtent: mapExtent.join(','),
                     tolerance: $scope.options.tolerance,
-                    layers: 'all:' + layersToQuery
+                    layers: 'all:' + layerToQuery.id
+                  };
+                  if (layerToQuery.year) {
+                    params.timeInstant = layerToQuery.year;
                   }
-                }).success(function(features) {
-                  if (features.results.length == 0) {
-                    // if there are features, keeps waitclass until
-                    // popup is displayed
+
+                  $http.get(identifyUrl, {
+                    timeout: canceler.promise,
+                    params: params
+                  }).success(function(features) {
+                    if (features.results.length == 0) {
+                      incResponseCount();
+                    }
+                    showFeatures(mapExtent, size, features.results);
+                  }).error(function() {
+                    incResponseCount();
+                  });
+                }
+
+                function incResponseCount() {
+                  responseCount += 1;
+                  if (responseCount == identifyCount) {
                     bodyEl.removeClass(waitclass);
                   }
-                  showFeatures(mapExtent, size, features.results);
-                }).error(function() {
-                  bodyEl.removeClass(waitclass);
-                });
-              }
+                }
+             }
 
               // htmls = [] would break the reference in the popup
               htmls.splice(0, htmls.length);
@@ -208,15 +231,47 @@
             function getLayersToQuery(layers) {
               var layersToQuery = [];
               map.getLayers().forEach(function(l) {
-                var bodId = l.bodId;
+                var bodId = l.bodId,
+                    layerToQuery = {},
+                    timestamps,
+                    src;
                 if (gaLayers.getLayer(bodId) &&
                     gaLayers.getLayerProperty(bodId, 'queryable') &&
                     l.visible &&
                     layersToQuery.indexOf(bodId) < 0) {
-                  layersToQuery.push(bodId);
+                  layerToQuery.id = bodId;
+
+                  timestamps = getLayerTimestamps(bodId);
+                  if (angular.isDefined(timestamps)) {
+                    src = l.getSource();
+                    layerToQuery.year = year;
+                    if (src instanceof ol.source.WMTS &&
+                        (!angular.isDefined(year) || year === null)) {
+                      layerToQuery.year = yearFromString(timestamps[0]);
+                    } else if ((src instanceof ol.source.ImageWMS ||
+                        src instanceof ol.source.TileWMS) &&
+                        year === null) {
+                      layerToQuery.year = yearFromString(timestamps[0]);
+                    }
+                  }
+
+                  layersToQuery.push(layerToQuery);
                 }
               });
-              return layersToQuery.join(',');
+              return layersToQuery;
+            }
+
+            function getLayerTimestamps(id) {
+              var timestamps;
+              if (id && gaLayers.getLayer(id) &&
+                  gaLayers.getLayerProperty(id, 'timeEnabled')) {
+                timestamps = gaLayers.getLayerProperty(id, 'timestamps');
+              }
+              return timestamps;
+            }
+
+            function yearFromString(timestamp) {
+              return parseInt(timestamp.substr(0, 4));
             }
           }
         };
