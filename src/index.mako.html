@@ -1,7 +1,14 @@
 # -*- coding: utf-8 -*-
+<!--[if HTML5]><![endif]-->
 <!DOCTYPE html>
-<html ng-app="ga" ng-controller="GaMainController">
+<!--[if lt IE 7]>      <html ng-app="ga" ng-controller="GaMainController" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html ng-app="ga" ng-controller="GaMainController" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html ng-app="ga" ng-controller="GaMainController" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html ng-app="ga" ng-controller="GaMainController" class="no-js"> <!--<![endif]-->
   <head>
+    <!--[if !HTML5]>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <![endif]-->
 % if device == 'desktop':
     <title translate="{{topicId + '_page_title'}}">map.geo.admin.ch</title>
 % else:
@@ -9,7 +16,6 @@
 % endif
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-    <meta http-equiv="X-UA-Compatible" content="IE=9;IE=10; IE=EDGE" />
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="msapplication-TileImage" content="${version}img/touch-icon-bund-144x144.png">
