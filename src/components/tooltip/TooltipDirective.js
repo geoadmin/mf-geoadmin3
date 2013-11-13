@@ -186,7 +186,11 @@
 
                 angular.forEach(foundFeatures, function(value) {
 
-                  vector.parseFeatures(value.geometry, parser, projection);
+                  //draw feature, but only if it should be drawn
+                  if (gaLayers.getLayer(value.layerBodId) &&
+                    gaLayers.getLayerProperty(value.layerBodId, 'highlightable')) {
+                    vector.parseFeatures(value.geometry, parser, projection);
+                  }
 
                   var htmlUrl = $scope.options.htmlUrlTemplate
                                 .replace('{Topic}', currentTopic)
