@@ -119,30 +119,24 @@
 
         $scope.map.getLayers().forEach(function(olLayer, opt) {
           var timestamps = getLayerTimestamps(olLayer);
-          if (timestamps) {
+          var id = olLayer.bodId;
+          if (timestamps &&
+              id && gaLayers.getLayer(id)) {
             var layerTimeStr = timeStr;
+            var timeBehaviour = gaLayers.getLayerProperty(id, 'timeBehaviour');
+            if (!angular.isDefined(layerTimeStr)) {
+              if (timeBehaviour === 'all') {
+                layerTimeStr = '';
+              } else { //most recent
+                layerTimeStr = timestamps[0];
+              }
+            }
             var src = olLayer.getSource();
             if (src instanceof ol.source.WMTS) {
-              if (!angular.isDefined(timeStr) || timeStr === null) {
-                layerTimeStr = timestamps[0];
-              } else {
-                for (var i = 0, ii = timestamps.length; i < ii; i++) {
-                  var timestamp = yearFromString(timestamps[i]);
-                  if (timestamp === parseInt(timeStr)) {
-                    layerTimeStr = timestamps[i];
-                    break;
-                  }
-                }
-              }
-              src.updateDimensions({'Time' : layerTimeStr});
-
+              var wmtsTS = timeStampFromYear(layerTimeStr, timestamps);
+              src.updateDimensions({'Time' : wmtsTS});
             } else if (src instanceof ol.source.ImageWMS ||
                 src instanceof ol.source.TileWMS) {
-              if (!angular.isDefined(timeStr)) {
-                layerTimeStr = '';
-              } else if (timeStr === null) {
-                layerTimeStr = timestamps[0];
-              }
               src.updateParams({'TIME' : layerTimeStr});
             }
           }
@@ -150,6 +144,18 @@
       };
 
       /** Utils **/
+      var timeStampFromYear = function(yearStr, timestamps) {
+        for (var i = 0, ii = timestamps.length; i < ii; i++) {
+          //Strange if statement here because yearStr can either be
+          //full timestamp string or year-only string...
+          if (yearStr === timestamps[i] ||
+              parseInt(yearStr) === yearFromString(timestamps[i])) {
+            return timestamps[i];
+          }
+        }
+        return undefined;
+      }
+
       var yearFromString = function(timestamp) {
         return parseInt(timestamp.substr(0, 4));
       };
