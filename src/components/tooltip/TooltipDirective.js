@@ -260,7 +260,7 @@
                     src = l.getSource();
                     layerToQuery.year = year;
                     //FIXME: we should use new 'timebehaviour' attribute
-                    //to define what should happen if we have 
+                    //to define what should happen if we have
                     //year === undefined (either take last year or no
                     //time attribute at all (meaning all))
                     //Note: year === null does not exist anymore
