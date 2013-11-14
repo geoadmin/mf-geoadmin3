@@ -23,20 +23,13 @@
       // Initialize variables
       $scope.stateClass = $scope.isActive ? '' : 'inactive';
       $scope.minYear = 1844;
-      $scope.maxYear = (new Date()).getFullYear() + 1;
+      $scope.maxYear = (new Date()).getFullYear();
       $scope.currentYear = -1; // User selected year
       $scope.years = []; //List of all possible years 1845 -> current year
       $scope.availableYears = []; // List of available years
 
       // Format the text of the current year (only used by slider)
       $scope.formatYear = function(value) {
-        if (parseInt(value) >= $scope.maxYear) {
-          value = (gaBrowserSniffer.mobile) ?
-              $translate('last_available_year') : '';
-        }
-        if (value === 'slider_last_title') {
-          value = $translate('last_available_year');
-        }
         return $sce.trustAsHtml('' + value);
       };
 
@@ -84,8 +77,7 @@
             var timestamps = getLayerTimestamps(olLayer);
             if (timestamps) {
               for (var i = 0, length = timestamps.length; i < length; i++) {
-                if (year.value === $scope.maxYear ||
-                    year.value === yearFromString(timestamps[i])) {
+                if (year.value === yearFromString(timestamps[i])) {
                   year.available = true;
                   $scope.availableYears.push(year);
                   if (year.value === $scope.currentYear) {
@@ -123,7 +115,6 @@
       $scope.updateLayers = function(timeStr) {
         // If time is:
         // undefined : Remove the use a parameter time
-        // null      : Apply the last available year
         // a string  : Apply the year selected
 
         $scope.map.getLayers().forEach(function(olLayer, opt) {
@@ -354,9 +345,6 @@
             // The select box returns an object
             if (year && typeof year === 'object') {
               year = '' + year.value;
-            }
-            if (year && parseInt(year) >= scope.maxYear) {
-              year = null;
             }
             return year;
           };
