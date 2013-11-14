@@ -259,12 +259,13 @@
                   if (angular.isDefined(timestamps)) {
                     src = l.getSource();
                     layerToQuery.year = year;
+                    //FIXME: we should use new 'timebehaviour' attribute
+                    //to define what should happen if we have 
+                    //year === undefined (either take last year or no
+                    //time attribute at all (meaning all))
+                    //Note: year === null does not exist anymore
                     if (src instanceof ol.source.WMTS &&
-                        (!angular.isDefined(year) || year === null)) {
-                      layerToQuery.year = yearFromString(timestamps[0]);
-                    } else if ((src instanceof ol.source.ImageWMS ||
-                        src instanceof ol.source.TileWMS) &&
-                        year === null) {
+                        !angular.isDefined(year)) {
                       layerToQuery.year = yearFromString(timestamps[0]);
                     }
                   }
