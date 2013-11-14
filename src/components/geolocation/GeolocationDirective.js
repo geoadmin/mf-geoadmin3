@@ -16,7 +16,9 @@
       templateUrl: 'components/geolocation/partials/geolocation.html',
       link: function(scope, element, attrs) {
         var btnElt = $(element.children()[0]);
-        var markerElt = $(element.children()[1]);
+        var markerElt = $('<div class="geolocation-marker">' +
+                            '<div class="user-position"></div>' +
+                        '</div>');
         if (!('geolocation' in $window.navigator)) {
           btnElt.addClass('error');
           return;
