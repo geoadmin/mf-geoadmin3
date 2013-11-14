@@ -23,5 +23,10 @@ except:
     <tr><td class="cell-left">${_('tt_bildstreifen_ebkey')}</td>   <td>${c['attributes']['bildnummer']}</td></tr>
     <tr><td class="cell-left">${_('tt_bildstreifen_Flugdatum')}</td>    <td>${c['attributes']['flugdatum']}</td></tr>
     <tr><td class="cell-left">${_('tt_luftbilder_Filmart')}</td>      <td>${c['attributes']['filmart']}</td></tr>
-    <tr><td class="cell-left">${_('tt_bildstreifen_Quickview')}</td>    <td><a href="http://web-iipimage.prod.bgdi.ch/viewer.html?image=${c['attributes']['filename'][12:]}&width=${image_width}&height=${image_height}&title=No%20de%20l%27image&bildnummer=${image_bildnummer}&datenherr=${datenherr}&layer=Photographies%20a%C3%A9riennes%20swisstopo" target="_blank"><img src="http://web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?FIF=${c['attributes']['filename'][12:]}&WID=150&CVT=jpeg" alt="quickview"></a></td></tr>
+
+%    if image_height > 1:
+         <tr><td class="cell-left">${_('tt_bildstreifen_Quickview')}</td>    <td><a href="http://web-iipimage.prod.bgdi.ch/viewer.html?image=${c['attributes']['filename'][12:]}&width=${image_width}&height=${image_height}&title=No%20de%20l%27image&bildnummer=${image_bildnummer}&datenherr=${datenherr}&layer=Photographies%20a%C3%A9riennes%20swisstopo" target="_blank"><img src="http://web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?FIF=${c['attributes']['filename'][12:]}&WID=150&CVT=jpeg" alt="quickview"></a></td></tr>
+%    else:
+        <tr><td class="cell-left">${_('tt_bildstreifen_Quickview')}</td>    <td>No QuickView available</td></tr>
+%    endif
 </%def>
