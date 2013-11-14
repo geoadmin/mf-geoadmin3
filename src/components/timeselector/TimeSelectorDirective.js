@@ -154,7 +154,7 @@
           }
         }
         return undefined;
-      }
+      };
 
       var yearFromString = function(timestamp) {
         return parseInt(timestamp.substr(0, 4));
