@@ -188,7 +188,8 @@
 
                   //draw feature, but only if it should be drawn
                   if (gaLayers.getLayer(value.layerBodId) &&
-                    gaLayers.getLayerProperty(value.layerBodId, 'highlightable')) {
+                    gaLayers.getLayerProperty(value.layerBodId,
+                        'highlightable')) {
                     vector.parseFeatures(value.geometry, parser, projection);
                   }
 
