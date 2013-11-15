@@ -42,7 +42,7 @@
               ' ,' + options.margin.top + ')');
 
       x.domain(d3.extent(data, function(d) { return d.dist; }));
-      y.domain([0, d3.max(data, function(d) { return d.alts.DTM25}; )]);
+      y.domain([0, d3.max(data, function(d) { return d.alts.DTM25; })]);
 
       svg.append('path')
           .datum(data)
@@ -67,22 +67,20 @@
       return element;
     }
 
-    this.$get = ['$translate', 'gaPopup',
-      function($translate, gaPopup) {
-        return function(data, options) {
-          var element = document.createElement('DIV');
-          element.className = 'profile-inner';
-          var template = createGraph(element, data, options);
-          template = angular.element(template).context.outerHTML;
-          var popup = gaPopup.create({
-            title: $translate('profile_title'),
-            content: template,
-            x: 10,
-            y: 10
-          });
-          popup.open();
-        };
-      }
-    ];
+    this.$get = function($translate, gaPopup) {
+      return function(data, options) {
+        var element = document.createElement('DIV');
+        element.className = 'profile-inner';
+        var template = createGraph(element, data, options);
+        template = angular.element(template).context.outerHTML;
+        var popup = gaPopup.create({
+          title: $translate('profile_title'),
+          content: template,
+          x: 10,
+          y: 10
+        });
+        popup.open();
+      };
+    };
   });
 })();
