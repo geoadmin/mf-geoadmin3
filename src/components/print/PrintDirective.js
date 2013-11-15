@@ -48,7 +48,8 @@
           if (src instanceof ol.source.WMTS) {
              encLayer = $scope.encoders.layers['WMTS'].call(this,
                  layer, layerConfig);
-          } else if (src instanceof ol.source.ImageWMS) {
+          } else if (src instanceof ol.source.ImageWMS ||
+              src instanceof ol.source.TileWMS) {
              encLayer = $scope.encoders.layers['WMS'].call(this,
                  layer, layerConfig);
           } else if (layer instanceof ol.layer.Vector) {
@@ -175,19 +176,21 @@
         'WMS': function(layer, config) {
             var enc = $scope.encoders.
               layers['Layer'].call(this, layer);
-            var layers = config.wmsLayers.split(',') || [];
+            var params = layer.getSource().getParams();
+            var layers = params.LAYERS.split(',') || [];
             var styles = new Array(layers.length + 1).
-                    join(',').split(',');
+                join(',').split(',');
             angular.extend(enc, {
               type: 'WMS',
-              baseURL: config.wmsUrl,
+              baseURL: config.wmsUrl || layer.url,
               layers: layers,
               styles: styles,
-              format: 'image/' + config.format,
+              format: 'image/' + (config.format || 'png'),
               customParams: {
                 'EXCEPTIONS': 'XML',
                 'TRANSPARENT': 'true',
-                'CRS': 'EPSG:21781'
+                'CRS': 'EPSG:21781',
+                'TIME': params.TIME
               },
               singleTile: config.singleTile || false
             });
@@ -296,7 +299,7 @@
       var encodedPermalinkHref =
           encodeURIComponent(gaPermalink.getHref());
 
-      var qrcodeurl = location.protocol + $scope.options.serviceUrl +
+      var qrcodeurl = $scope.options.serviceUrl +
           '/qrcodegenerator?url=' + encodedPermalinkHref;
 
       var encLayers = [];
