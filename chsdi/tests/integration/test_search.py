@@ -77,6 +77,11 @@ class TestSearchServiceView(TestsBase):
         self.failUnless('wilenstrasse' in resp.json['results'][0]['attrs']['detail'])
         self.failUnless('wil' in resp.json['results'][0]['attrs']['detail'])
 
+    def test_search_max_address(self):
+        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'seftigenstrasse', 'type': 'locations'}, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless(len(resp.json['results']) <= 20)
+
     def test_searchtext_apostrophe(self):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'av mont d\'or', 'type': 'locations'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
