@@ -13,82 +13,75 @@ Base = bases['zeitreihen']
 class Zeitreihen_15(Base, Vector):
     __tablename__ = 'tooltip_15'
     __table_args__ = ({'schema': 'public', 'autoload': False})
-    __template__ = 'tooltips/zeitreihen.mako'
+    __template__ = 'templates/htmlpopup/zeitreihen.mako'
     __bodId__ = 'ch.swisstopo.zeitreihen'
-    id = Column('gid', Integer, primary_key=True)
+    __minscale__ = 100005
+    __maxscale__ = 5000000005
+    __timeInstant__ = 'years'
+    id = Column('bgdi_id', Text, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     kbbez = Column('kbbez', Text)
     produkt = Column('produkt', Text)
     kbnum = Column('kbnum', Text)
-    release_year = Column('release_year', Text)
+    release_year = Column('release_year', Integer)
+    years = Column('years', Integer)
     bv_nummer = Column('bv_nummer', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-    the_time = 'years'
-    the_time_operator = '=='
-    the_time_timestamp_format = '%Y%m%d'
-    the_time_db_format = '%Y'
-    __minscale__ = 100005
-    __maxscale__ = 500000005
 
 
 class Zeitreihen_20(Base, Vector):
     __tablename__ = 'tooltip_20'
     __table_args__ = ({'schema': 'public', 'autoload': False})
-    __template__ = 'tooltips/zeitreihen.mako'
+    __template__ = 'templates/htmlpopup/zeitreihen.mako'
     __bodId__ = 'ch.swisstopo.zeitreihen'
-    id = Column('gid', Integer, primary_key=True)
+    __minscale__ = 50005
+    __maxscale__ = 100005
+    __timeInstant__ = 'years'
+    id = Column('bgdi_id', Text, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     kbbez = Column('kbbez', Text)
     produkt = Column('produkt', Text)
     kbnum = Column('kbnum', Text)
-    release_year = Column('release_year', Text)
+    release_year = Column('release_year', Integer)
+    years = Column('years', Integer)
     bv_nummer = Column('bv_nummer', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-    the_time = 'years'
-    the_time_operator = '=='
-    the_time_timestamp_format = '%Y%m%d'
-    the_time_db_format = '%Y'
-    __minscale__ = 50005
-    __maxscale__ = 100005
 
 
 class Zeitreihen_21(Base, Vector):
     __tablename__ = 'tooltip_21'
     __table_args__ = ({'schema': 'public', 'autoload': False})
-    __template__ = 'tooltips/zeitreihen.mako'
+    __template__ = 'templates/htmlpopup/zeitreihen.mako'
     __bodId__ = 'ch.swisstopo.zeitreihen'
-    id = Column('gid', Integer, primary_key=True)
+    __minscale__ = 25005
+    __maxscale__ = 50005
+    __timeInstant__ = 'years'
+    id = Column('bgdi_id', Text, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     kbbez = Column('kbbez', Text)
     produkt = Column('produkt', Text)
     kbnum = Column('kbnum', Text)
-    release_year = Column('release_year', Text)
+    release_year = Column('release_year', Integer)
+    years = Column('years', Integer)
     bv_nummer = Column('bv_nummer', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-    the_time = 'years'
-    the_time_operator = '=='
-    the_time_timestamp_format = '%Y%m%d'
-    the_time_db_format = '%Y'
-    __minscale__ = 25005
-    __maxscale__ = 50005
 
 
 class Zeitreihen_22(Base, Vector):
     __tablename__ = 'tooltip_22'
     __table_args__ = ({'schema': 'public', 'autoload': False})
-    __template__ = 'tooltips/zeitreihen.mako'
+    __template__ = 'templates/htmlpopup/zeitreihen.mako'
     __bodId__ = 'ch.swisstopo.zeitreihen'
-    id = Column('gid', Integer, primary_key=True)
+    __minscale__ = 0
+    __maxscale__ = 25005
+    __timeInstant__ = 'years'
+    id = Column('bgdi_id', Text, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     kbbez = Column('kbbez', Text)
     produkt = Column('produkt', Text)
     kbnum = Column('kbnum', Text)
-    release_year = Column('release_year', Text)
+    release_year = Column('release_year', Integer)
+    years = Column('years', Integer)
     bv_nummer = Column('bv_nummer', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-    the_time = 'years'
-    the_time_operator = '=='
-    the_time_timestamp_format = '%Y%m%d'
-    the_time_db_format = '%Y'
-    __minscale__ = 24995
-    __maxscale__ = 25005
 
 register('ch.swisstopo.zeitreihen', Zeitreihen_15)
 register('ch.swisstopo.zeitreihen', Zeitreihen_20)
 register('ch.swisstopo.zeitreihen', Zeitreihen_21)
+register('ch.swisstopo.zeitreihen', Zeitreihen_22)

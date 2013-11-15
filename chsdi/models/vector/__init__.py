@@ -124,16 +124,24 @@ class Vector(GeoInterface):
         return cls.__table__.primary_key
 
     @classmethod
+    def time_instant_column(cls):
+        return getattr(cls, cls.__timeInstant__)
+
+    @classmethod
     def geom_filter(cls, geometry, geometryType, imageDisplay, mapExtent, tolerance):
-        myFilter = None
-        tolerance_meters = getToleranceMeters(imageDisplay, mapExtent, tolerance)
-        scale = getScale(imageDisplay, mapExtent)
-        if scale is None or (scale >= cls.__minscale__ and scale <= cls.__maxscale__):
+        toleranceMeters = getToleranceMeters(imageDisplay, mapExtent, tolerance)
+        scale = None
+        minScale = cls.__minscale__ if hasattr(cls, '__minscale__') else None
+        maxScale = cls.__maxscale__ if hasattr(cls, '__maxscale__') else None
+        if minScale is not None and maxScale is not None:
+            scale = getScale(imageDisplay, mapExtent)
+        if scale is None or (scale > cls.__minscale__ and scale <= cls.__maxscale__):
             geom = esriRest2Shapely(geometry, geometryType)
-            wkb_geometry = WKBSpatialElement(buffer(geom.wkb), 21781)
-            geom_column = cls.geometry_column()
-            myFilter = functions.within_distance(geom_column, wkb_geometry, tolerance_meters)
-        return myFilter
+            wkbGeometry = WKBSpatialElement(buffer(geom.wkb), 21781)
+            geomColumn = cls.geometry_column()
+            geomFilter = functions.within_distance(geomColumn, wkbGeometry, toleranceMeters)
+            return geomFilter
+        return None
 
     def getAttributes(self):
         attributes = dict()

@@ -2345,12 +2345,11 @@ msgstr "Auflösung"
 msgid "tt_bildstreifen_Flugdatum"
 msgstr "Flugdatum"
 
-msgid "tt_bildstreifen_Link "
+msgid "tt_bildstreifen_Link"
 msgstr "Bestellen"
 
-#. TODO
-msgid "tt_bildstreifen_Quickview "
-msgstr "tt_bildstreifen_Quickview "
+msgid "tt_bildstreifen_Quickview"
+msgstr "Quickview"
 
 msgid "tt_bildstreifen_ebkey"
 msgstr "Bildstreifennummer"
