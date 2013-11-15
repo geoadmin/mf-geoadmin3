@@ -1569,7 +1569,7 @@ msgid "ch.swisstopo.verschiebungsvektoren-tsp2"
 msgstr "LV95 Displacement vectors TSP2"
 
 msgid "ch.swisstopo.zeitreihen"
-msgstr "Maps - Journay through time"
+msgstr "Maps - Journey through time"
 
 msgid "ch.vbs"
 msgstr "DDPS"

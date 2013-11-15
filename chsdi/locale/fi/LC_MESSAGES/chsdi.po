@@ -1413,13 +1413,13 @@ msgid "ch.swisstopo.kt.url"
 msgstr "http://www.swisstopo.admin.ch/internet/swisstopo/de/home/swisstopo/org/cartography.html"
 
 msgid "ch.swisstopo.lubis-luftbilder"
-msgstr "TODO"
+msgstr "Luftbilder swisstopo"
 
 msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen"
-msgstr "TODO"
+msgstr "Luftbilder Privater"
 
 msgid "ch.swisstopo.lubis-luftbilder-dritte-kantone"
-msgstr "TODO"
+msgstr "Luftbilder Kantone"
 
 msgid "ch.swisstopo.pixelkarte-farbe"
 msgstr "Charta en colur"
@@ -1570,9 +1570,8 @@ msgstr "ch.swisstopo.verschiebungsvektoren-tsp1"
 msgid "ch.swisstopo.verschiebungsvektoren-tsp2"
 msgstr "ch.swisstopo.verschiebungsvektoren-tsp2"
 
-#. TODO
 msgid "ch.swisstopo.zeitreihen"
-msgstr "ch.swisstopo.zeitreihen"
+msgstr "Karten - Zeitreise"
 
 msgid "ch.vbs"
 msgstr "VBS"
