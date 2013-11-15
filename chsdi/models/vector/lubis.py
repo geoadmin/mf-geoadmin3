@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from sqlalchemy import Column, Text, Integer, Boolean
+from sqlalchemy import Column, Text, Integer, Boolean, Numeric
 from geoalchemy import GeometryColumn, Geometry
 
 from chsdi.models import *
@@ -103,8 +103,14 @@ class bildstreifen(Base, Vector):
     flugdatum = Column('flugdatum', Text)
     firma = Column('firma', Text)
     filmart = Column('filmart', Text)
+    bgdi_flugjahr = Column('bgdi_flugjahr', Integer)
     resolution = Column('resolution', Text)
     objectid = Column('objectid', Text)
     area = Column('area', Text)
-
+    toposhop_length = Column('toposhop_length', Numeric)
+    toposhop_start_x = Column('toposhop_start_x', Integer)
+    toposhop_start_y = Column('toposhop_start_y', Integer)
+    toposhop_end_x = Column('toposhop_end_x', Integer)
+    toposhop_end_y = Column('toposhop_end_y', Integer)
+    toposhop_date = Column('toposhop_date', Text)
 register('ch.swisstopo.lubis-bildstreifen', bildstreifen)
