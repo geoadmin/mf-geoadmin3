@@ -65,7 +65,7 @@
         }
       }
 
-      if ($scope.options.legend && layerConfig.haslegend) {
+      if ($scope.options.legend && layerConfig.hasLegend) {
         encLegend = $scope.encoders.legends['ga_urllegend'].call(this,
                           layer, layerConfig);
       }
@@ -251,7 +251,7 @@
       },
       'legends' : {
         'ga_urllegend': function(layer, config) {
-          var enc = this.encoders.legends.base.call(this, config);
+          var enc = $scope.encoders.legends.base.call(this, config);
           enc.classes.push({
             name: '',
             icon: $scope.options.serviceUrl +
@@ -338,7 +338,7 @@
         dpi: this.dpi.value,
         layers: encLayers,
         legends: encLegends,
-        enhableLegends: true,
+        enhableLegends: (encLegends && encLegends.length > 0),
         qrcodeurl: qrcodeurl,
         pages: [
         angular.extend({
