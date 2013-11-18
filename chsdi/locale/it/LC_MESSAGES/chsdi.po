@@ -377,6 +377,222 @@ msgstr "Comuni toccati"
 msgid "betrieb"
 msgstr "Complesso/azienda"
 
+msgid "bfs_noas04_1"
+msgstr "Edifici industriali e artigianali"
+
+msgid "bfs_noas04_10"
+msgstr "Terreno annesso a edifici pubblici"
+
+msgid "bfs_noas04_11"
+msgstr "Edifici agricoli"
+
+msgid "bfs_noas04_12"
+msgstr "Terreno annesso a edifici agricoli"
+
+msgid "bfs_noas04_13"
+msgstr "Edifici non specificati"
+
+msgid "bfs_noas04_14"
+msgstr "Terreno annesso a edifici non specificati"
+
+msgid "bfs_noas04_15"
+msgstr "Autostrade"
+
+msgid "bfs_noas04_16"
+msgstr "Bordi di autostrade"
+
+msgid "bfs_noas04_17"
+msgstr "Strade"
+
+msgid "bfs_noas04_18"
+msgstr "Bordi della strada"
+
+msgid "bfs_noas04_19"
+msgstr "Area di parcheggio"
+
+msgid "bfs_noas04_2"
+msgstr "Terreno annesso a edifici industriali e artigianali"
+
+msgid "bfs_noas04_20"
+msgstr "Area ferroviaria consolidata"
+
+msgid "bfs_noas04_21"
+msgstr "Bordi della ferrovia"
+
+msgid "bfs_noas04_22"
+msgstr "Aeroporti"
+
+msgid "bfs_noas04_23"
+msgstr "Piste erbose, aeroporto erboso"
+
+msgid "bfs_noas04_24"
+msgstr "Impianti di approvvigionamento energetico"
+
+msgid "bfs_noas04_25"
+msgstr "Impianti di depurazione delle acque"
+
+msgid "bfs_noas04_26"
+msgstr "Altri impianti di approvvigionamento e smaltimento"
+
+msgid "bfs_noas04_27"
+msgstr "Discariche"
+
+msgid "bfs_noas04_28"
+msgstr "Cave"
+
+msgid "bfs_noas04_29"
+msgstr "Cantieri"
+
+msgid "bfs_noas04_3"
+msgstr "Case unifamiliari e bifamiliari"
+
+msgid "bfs_noas04_30"
+msgstr "Aree d’insediamento dismesse"
+
+msgid "bfs_noas04_31"
+msgstr "Parchi pubblici"
+
+msgid "bfs_noas04_32"
+msgstr "Istallazioni sportive"
+
+msgid "bfs_noas04_33"
+msgstr "Terreni da golf"
+
+msgid "bfs_noas04_34"
+msgstr "Campeggi"
+
+msgid "bfs_noas04_35"
+msgstr "Orti familiari"
+
+msgid "bfs_noas04_36"
+msgstr "Cimiteri"
+
+msgid "bfs_noas04_37"
+msgstr "Impianti di frutteti"
+
+msgid "bfs_noas04_38"
+msgstr "Alberi fruttiferi su campo"
+
+msgid "bfs_noas04_39"
+msgstr "Vigneti"
+
+msgid "bfs_noas04_4"
+msgstr "Terreno annesso a case unifamiliari e bifamiliari"
+
+msgid "bfs_noas04_40"
+msgstr "Orti"
+
+msgid "bfs_noas04_41"
+msgstr "Campi"
+
+msgid "bfs_noas04_42"
+msgstr "Prati naturali"
+
+msgid "bfs_noas04_43"
+msgstr "Pascoli locali"
+
+msgid "bfs_noas04_44"
+msgstr "Prati e pascoli locali cespugliosi"
+
+msgid "bfs_noas04_45"
+msgstr "Prati alpestri"
+
+msgid "bfs_noas04_46"
+msgstr "Alpeggi favorevoli"
+
+msgid "bfs_noas04_47"
+msgstr "Alpeggi cespugliosi"
+
+msgid "bfs_noas04_48"
+msgstr "Alpeggi pietrosi"
+
+msgid "bfs_noas04_49"
+msgstr "Alpi per pecore"
+
+msgid "bfs_noas04_5"
+msgstr "Case a schiera e a terrazza"
+
+msgid "bfs_noas04_50"
+msgstr "Bosco normale"
+
+msgid "bfs_noas04_51"
+msgstr "Bosco fitto"
+
+msgid "bfs_noas04_52"
+msgstr "Rimboschimenti"
+
+msgid "bfs_noas04_53"
+msgstr "Legname abbattuto"
+
+msgid "bfs_noas04_54"
+msgstr "Bosco danneggiato"
+
+msgid "bfs_noas04_55"
+msgstr "Bosco rado (in superfici agricole)"
+
+msgid "bfs_noas04_56"
+msgstr "Bosco rado (in superfici improduttive)"
+
+msgid "bfs_noas04_57"
+msgstr "Bosco arbustivo"
+
+msgid "bfs_noas04_58"
+msgstr "Boschetti in terreni aperti, siepi"
+
+msgid "bfs_noas04_59"
+msgstr "Gruppi di alberi (in superfici agricole)"
+
+msgid "bfs_noas04_6"
+msgstr "Terreno annesso a case a schiera e a terrazza"
+
+msgid "bfs_noas04_60"
+msgstr "Gruppi di alberi (in superfici non produttive)"
+
+msgid "bfs_noas04_61"
+msgstr "Laghi"
+
+msgid "bfs_noas04_62"
+msgstr "Corsi d’acqua"
+
+msgid "bfs_noas04_63"
+msgstr "Ripari per piene"
+
+msgid "bfs_noas04_64"
+msgstr "Cespugli, vegetazione arbustacea"
+
+msgid "bfs_noas04_65"
+msgstr "Vegetazione erbacea improduttiva"
+
+msgid "bfs_noas04_66"
+msgstr "Protezioni contro valanghe e cadute di massi"
+
+msgid "bfs_noas04_67"
+msgstr "Zone umide"
+
+msgid "bfs_noas04_68"
+msgstr "Infrastruttura per sport invernali"
+
+msgid "bfs_noas04_69"
+msgstr "Rocce"
+
+msgid "bfs_noas04_7"
+msgstr "Case plurifamiliari"
+
+msgid "bfs_noas04_70"
+msgstr "Detriti, sabbia"
+
+msgid "bfs_noas04_71"
+msgstr "Interventi nel paesaggio"
+
+msgid "bfs_noas04_72"
+msgstr "Ghiacciai, nevai"
+
+msgid "bfs_noas04_8"
+msgstr "Terreno annesso a case plurifamiliari"
+
+msgid "bfs_noas04_9"
+msgstr "Edifici pubblici"
+
 msgid "bfsnr"
 msgstr "Numéro OFS"
 
@@ -1819,6 +2035,9 @@ msgstr "Origine hydrographique"
 
 msgid "hydromessstationen_graph"
 msgstr "3 giorno Livelli d'acqua/Portata"
+
+msgid "id_arealstatistik_09"
+msgstr "Catégorie de base de la statistique de la superficie 2004/09"
 
 msgid "id_arealstatistik_85"
 msgstr "Catégorie de base de la statistique de la superficie 1979/85"

@@ -377,6 +377,222 @@ msgstr "Vischanca affectá"
 msgid "betrieb"
 msgstr "Betrieb"
 
+msgid "bfs_noas04_1"
+msgstr "Industrie- und Gewerbegebäude"
+
+msgid "bfs_noas04_10"
+msgstr "Umschwung von öffentlichen Gebäuden"
+
+msgid "bfs_noas04_11"
+msgstr "Landwirtschaftliche Gebäude"
+
+msgid "bfs_noas04_12"
+msgstr "Umschwung von landwirtschaftlichen Gebäuden"
+
+msgid "bfs_noas04_13"
+msgstr "Nicht spezifizierte Gebäude"
+
+msgid "bfs_noas04_14"
+msgstr "Umschwung von nicht spezifizierten Gebäuden"
+
+msgid "bfs_noas04_15"
+msgstr "Autobahnen"
+
+msgid "bfs_noas04_16"
+msgstr "Autobahngrün"
+
+msgid "bfs_noas04_17"
+msgstr "Strassen, Wege"
+
+msgid "bfs_noas04_18"
+msgstr "Strassengrün"
+
+msgid "bfs_noas04_19"
+msgstr "Parkplatzareal"
+
+msgid "bfs_noas04_2"
+msgstr "Umschwung von Industrie- und Gewerbegebäuden"
+
+msgid "bfs_noas04_20"
+msgstr "Befestigtes Bahnareal"
+
+msgid "bfs_noas04_21"
+msgstr "Bahngrün"
+
+msgid "bfs_noas04_22"
+msgstr "Flugplätze"
+
+msgid "bfs_noas04_23"
+msgstr "Graspisten, Flugplatzgrün"
+
+msgid "bfs_noas04_24"
+msgstr "Energieversorgungsanlagen"
+
+msgid "bfs_noas04_25"
+msgstr "Abwasserreinigungsanlagen"
+
+msgid "bfs_noas04_26"
+msgstr "Übrige Ver- und Entsorgungsanlagen"
+
+msgid "bfs_noas04_27"
+msgstr "Deponien"
+
+msgid "bfs_noas04_28"
+msgstr "Abbau"
+
+msgid "bfs_noas04_29"
+msgstr "Baustellen"
+
+msgid "bfs_noas04_3"
+msgstr "Ein- und Zweifamilienhäuser"
+
+msgid "bfs_noas04_30"
+msgstr "Bau- und Siedlungsbrachen"
+
+msgid "bfs_noas04_31"
+msgstr "Öffentliche Parkanlagen"
+
+msgid "bfs_noas04_32"
+msgstr "Sportanlagen"
+
+msgid "bfs_noas04_33"
+msgstr "Golfplätze"
+
+msgid "bfs_noas04_34"
+msgstr "Campingplätze"
+
+msgid "bfs_noas04_35"
+msgstr "Schrebergärten"
+
+msgid "bfs_noas04_36"
+msgstr "Friedhöfe"
+
+msgid "bfs_noas04_37"
+msgstr "Obstanlagen"
+
+msgid "bfs_noas04_38"
+msgstr "Feldobst"
+
+msgid "bfs_noas04_39"
+msgstr "Rebbauflächen"
+
+msgid "bfs_noas04_4"
+msgstr "Umschwung von Ein- und Zweifamilienhäusern"
+
+msgid "bfs_noas04_40"
+msgstr "Gartenbauflächen"
+
+msgid "bfs_noas04_41"
+msgstr "Ackerland"
+
+msgid "bfs_noas04_42"
+msgstr "Naturwiesen"
+
+msgid "bfs_noas04_43"
+msgstr "Heimweiden"
+
+msgid "bfs_noas04_44"
+msgstr "Verbuschte Wiesen und Heimweiden"
+
+msgid "bfs_noas04_45"
+msgstr "Alpwiesen"
+
+msgid "bfs_noas04_46"
+msgstr "Günstige Alp- und Juraweiden"
+
+msgid "bfs_noas04_47"
+msgstr "Verbuschte Alp- und Juraweiden"
+
+msgid "bfs_noas04_48"
+msgstr "Versteinte Alp- und Juraweiden"
+
+msgid "bfs_noas04_49"
+msgstr "Schafalpen"
+
+msgid "bfs_noas04_5"
+msgstr "Reihen- und Terrassenhäuser"
+
+msgid "bfs_noas04_50"
+msgstr "Normalwald"
+
+msgid "bfs_noas04_51"
+msgstr "Schmaler Wald"
+
+msgid "bfs_noas04_52"
+msgstr "Aufforstungen"
+
+msgid "bfs_noas04_53"
+msgstr "Holzschläge"
+
+msgid "bfs_noas04_54"
+msgstr "Waldschäden"
+
+msgid "bfs_noas04_55"
+msgstr "Aufgelöster Wald (auf Landwirtschaftsflächen)"
+
+msgid "bfs_noas04_56"
+msgstr "Aufgelöster Wald (auf unproduktiven Flächen)"
+
+msgid "bfs_noas04_57"
+msgstr "Gebüschwald"
+
+msgid "bfs_noas04_58"
+msgstr "Feldgehölze, Hecken"
+
+msgid "bfs_noas04_59"
+msgstr "Baumgruppen (auf Landwirtschaftsflächen)"
+
+msgid "bfs_noas04_6"
+msgstr "Umschwung von Reihen- und Terrassenhäusern"
+
+msgid "bfs_noas04_60"
+msgstr "Baumgruppen (auf unproduktiven Flächen)"
+
+msgid "bfs_noas04_61"
+msgstr "Stehende Gewässer"
+
+msgid "bfs_noas04_62"
+msgstr "Wasserläufe"
+
+msgid "bfs_noas04_63"
+msgstr "Hochwasserverbauungen"
+
+msgid "bfs_noas04_64"
+msgstr "Gebüsch, Strauchvegetation"
+
+msgid "bfs_noas04_65"
+msgstr "Unproduktive Gras- und Krautvegetation"
+
+msgid "bfs_noas04_66"
+msgstr "Lawinen- und Steinschlagverbauungen"
+
+msgid "bfs_noas04_67"
+msgstr "Feuchtgebiete"
+
+msgid "bfs_noas04_68"
+msgstr "Alpine Sportinfrastruktur"
+
+msgid "bfs_noas04_69"
+msgstr "Fels"
+
+msgid "bfs_noas04_7"
+msgstr "Mehrfamilienhäuser"
+
+msgid "bfs_noas04_70"
+msgstr "Geröll, Sand"
+
+msgid "bfs_noas04_71"
+msgstr "Landschaftseingriffe"
+
+msgid "bfs_noas04_72"
+msgstr "Gletscher, Firn"
+
+msgid "bfs_noas04_8"
+msgstr "Umschwung von Mehrfamilienhäusern"
+
+msgid "bfs_noas04_9"
+msgstr "Öffentliche Gebäude"
+
 msgid "bfsnr"
 msgstr "BFS-Nummer"
 
@@ -1821,6 +2037,9 @@ msgstr "Hydrografische Herkunft"
 
 msgid "hydromessstationen_graph"
 msgstr "3 di Livel da l'aura/Deflussiun"
+
+msgid "id_arealstatistik_09"
+msgstr "Grundkategorie Arealstatistik 2004/09"
 
 msgid "id_arealstatistik_85"
 msgstr "Grundkategorie Arealstatistik 1979/85"
