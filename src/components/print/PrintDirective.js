@@ -111,12 +111,14 @@
           var encs = [];
           var subLayers = layer.getLayers();
           subLayers.forEach(function(subLayer, idx, arr) {
-             var enc = $scope.encoders.
-                 layers['Layer'].call(this, layer);
-             var layerEnc = encodeLayer(subLayer, proj);
-             if (layerEnc.layer !== undefined) {
-               $.extend(enc, layerEnc);
-               encs.push(enc.layer);
+            if (subLayer.visible) {
+              var enc = $scope.encoders.
+                  layers['Layer'].call(this, layer);
+              var layerEnc = encodeLayer(subLayer, proj);
+              if (layerEnc.layer !== undefined) {
+                $.extend(enc, layerEnc);
+                encs.push(enc.layer);
+              }
             }
           });
           return encs;
@@ -307,18 +309,19 @@
 
       var layers = this.map.getLayers();
       angular.forEach(layers, function(layer) {
-
-        if (layer instanceof ol.layer.Group) {
-          var encs = $scope.encoders.layers['Group'].call(this,
-              layer, proj);
-          $.extend(encLayers, encs);
-        } else {
-          var enc = encodeLayer(layer, proj);
-          if (enc) {
-            encLayers.push(enc.layer);
-            if (enc.legend) {
-              encLegends = encLegends || [];
-              encLegends.push(enc.legend);
+        if (layer.visible) {
+          if (layer instanceof ol.layer.Group) {
+            var encs = $scope.encoders.layers['Group'].call(this,
+                layer, proj);
+            $.extend(encLayers, encs);
+          } else {
+            var enc = encodeLayer(layer, proj);
+            if (enc) {
+              encLayers.push(enc.layer);
+              if (enc.legend) {
+                encLegends = encLegends || [];
+                encLegends.push(enc.legend);
+              }
             }
           }
         }
