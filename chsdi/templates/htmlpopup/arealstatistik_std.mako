@@ -17,5 +17,3 @@
     <tr><td class="cell-left-large">${_('fj09')}</td>                   <td>${c['attributes']['fj09'] or '-'}</td></tr>
     <tr><td class="cell-left-large">${_('id_arealstatistik_09')}</td>   <td>${_(Key_To_Translate_09)}</td></tr>
 </%def>
-
-<td>${_(Key_To_Translate)}</td>
