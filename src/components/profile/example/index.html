@@ -12,6 +12,7 @@
     <div ga-profile
          ga-profile-options="options">
     </div>
+    <button class="btn btn-default" ng-click="updateData()" style="position: relative; top: 520px; left: 50%;">Update Data</button>
 
     <script src="lib/jquery-2.0.3.js"></script>
     <script src="lib/angular-1.2.0rc2.js"></script>
@@ -43,7 +44,7 @@
                 top: 60,
                 right: 20,
                 bottom: 40,
-                left: 20
+                left: 60
               },
               width: 1400,
               height: 400
@@ -51,11 +52,24 @@
             var template = 'components/profile/example/profile.json';
             $scope.getData = getData;
             getData();
+            $scope.updateData = updateData;
 
             function getData() {
               var http = $http.get(template);
               http.success(function(data, status) {
                 $rootScope.$broadcast('gaProfileDataLoaded', data);
+              });
+            }
+
+            function updateData() {
+              var http = $http.get(template);
+              var dataRandom = [];
+              http.success(function(data, status) {
+                angular.forEach(data, function(value, key) {
+                  value.alts.DTM25 += Math.round(Math.random() * 500 - Math.random() * 500);
+                  this.push(value);
+                }, dataRandom);
+                $rootScope.$broadcast('gaProfileDataUpdated', dataRandom);
               });
             }
           }

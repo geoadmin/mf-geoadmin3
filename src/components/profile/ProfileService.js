@@ -105,6 +105,24 @@
          return element;
       };
 
+      this.update = function(data) {
+        var that = this;
+        var domain = this.getXYDomains(data);
+        var axis = createAxis(domain);
+        var element = document.getElementsByClassName('profile-svg')[0];
+        element = d3.select(element);
+        var path = element.select('.profile-area');
+        this.area = createArea(domain, 'cardinal');
+        path.datum(data)
+          .transition().duration(1500)
+            .attr('class', 'profile-area')
+            .attr('d', that.area)
+            .style('opacity', 0.9);
+
+        element.selectAll('g.x').call(axis.X);
+        element.selectAll('g.y').call(axis.Y);
+      };
+
       this.remove = function() {
         if (this.svg) {
           this.svg.remove();

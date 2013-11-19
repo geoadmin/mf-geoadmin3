@@ -19,19 +19,24 @@
             options: '=gaProfileOptions'
           },
           link: function(scope, element, attrs) {
+            var popup = null;
             var options = scope.options;
             var profile = gaProfileService(options);
 
             scope.$on('gaProfileDataLoaded', function(ev, data) {
               var element = profile.create(data);
-              var popup = gaPopup.create({
+              popup = gaPopup.create({
                 title: $translate('profile_title'),
                 className: 'profile-popup',
                 content: angular.element(element).context.outerHTML,
-                x: 0,
-                y: 10
+                x: 5,
+                y: 5
               });
               popup.open();
+            });
+
+            scope.$on('gaProfileDataUpdated', function(ev, data) {
+              profile.update(data);
             });
           }
         };
