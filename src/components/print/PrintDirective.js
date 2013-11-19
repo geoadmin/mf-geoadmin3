@@ -48,7 +48,8 @@
           if (src instanceof ol.source.WMTS) {
              encLayer = $scope.encoders.layers['WMTS'].call(this,
                  layer, layerConfig);
-          } else if (src instanceof ol.source.ImageWMS) {
+          } else if (src instanceof ol.source.ImageWMS ||
+              src instanceof ol.source.TileWMS) {
              encLayer = $scope.encoders.layers['WMS'].call(this,
                  layer, layerConfig);
           } else if (layer instanceof ol.layer.Vector) {
@@ -64,7 +65,7 @@
         }
       }
 
-      if ($scope.options.legend && layerConfig.haslegend) {
+      if ($scope.options.legend && layerConfig.hasLegend) {
         encLegend = $scope.encoders.legends['ga_urllegend'].call(this,
                           layer, layerConfig);
       }
@@ -110,12 +111,14 @@
           var encs = [];
           var subLayers = layer.getLayers();
           subLayers.forEach(function(subLayer, idx, arr) {
-             var enc = $scope.encoders.
-                 layers['Layer'].call(this, layer);
-             var layerEnc = encodeLayer(subLayer, proj);
-             if (layerEnc.layer !== undefined) {
-               $.extend(enc, layerEnc);
-               encs.push(enc.layer);
+            if (subLayer.visible) {
+              var enc = $scope.encoders.
+                  layers['Layer'].call(this, layer);
+              var layerEnc = encodeLayer(subLayer, proj);
+              if (layerEnc.layer !== undefined) {
+                $.extend(enc, layerEnc);
+                encs.push(enc.layer);
+              }
             }
           });
           return encs;
@@ -175,19 +178,21 @@
         'WMS': function(layer, config) {
             var enc = $scope.encoders.
               layers['Layer'].call(this, layer);
-            var layers = config.wmsLayers.split(',') || [];
+            var params = layer.getSource().getParams();
+            var layers = params.LAYERS.split(',') || [];
             var styles = new Array(layers.length + 1).
-                    join(',').split(',');
+                join(',').split(',');
             angular.extend(enc, {
               type: 'WMS',
-              baseURL: config.wmsUrl,
+              baseURL: config.wmsUrl || layer.url,
               layers: layers,
               styles: styles,
-              format: 'image/' + config.format,
+              format: 'image/' + (config.format || 'png'),
               customParams: {
                 'EXCEPTIONS': 'XML',
                 'TRANSPARENT': 'true',
-                'CRS': 'EPSG:21781'
+                'CRS': 'EPSG:21781',
+                'TIME': params.TIME
               },
               singleTile: config.singleTile || false
             });
@@ -248,7 +253,7 @@
       },
       'legends' : {
         'ga_urllegend': function(layer, config) {
-          var enc = this.encoders.legends.base.call(this, config);
+          var enc = $scope.encoders.legends.base.call(this, config);
           enc.classes.push({
             name: '',
             icon: $scope.options.serviceUrl +
@@ -296,7 +301,7 @@
       var encodedPermalinkHref =
           encodeURIComponent(gaPermalink.getHref());
 
-      var qrcodeurl = location.protocol + $scope.options.serviceUrl +
+      var qrcodeurl = $scope.options.serviceUrl +
           '/qrcodegenerator?url=' + encodedPermalinkHref;
 
       var encLayers = [];
@@ -304,18 +309,19 @@
 
       var layers = this.map.getLayers();
       angular.forEach(layers, function(layer) {
-
-        if (layer instanceof ol.layer.Group) {
-          var encs = $scope.encoders.layers['Group'].call(this,
-              layer, proj);
-          $.extend(encLayers, encs);
-        } else {
-          var enc = encodeLayer(layer, proj);
-          if (enc) {
-            encLayers.push(enc.layer);
-            if (enc.legend) {
-              encLegends = encLegends || [];
-              encLegends.push(enc.legend);
+        if (layer.visible) {
+          if (layer instanceof ol.layer.Group) {
+            var encs = $scope.encoders.layers['Group'].call(this,
+                layer, proj);
+            $.extend(encLayers, encs);
+          } else {
+            var enc = encodeLayer(layer, proj);
+            if (enc) {
+              encLayers.push(enc.layer);
+              if (enc.legend) {
+                encLegends = encLegends || [];
+                encLegends.push(enc.legend);
+              }
             }
           }
         }
@@ -335,7 +341,7 @@
         dpi: this.dpi.value,
         layers: encLayers,
         legends: encLegends,
-        enhableLegends: true,
+        enhableLegends: (encLegends && encLegends.length > 0),
         qrcodeurl: qrcodeurl,
         pages: [
         angular.extend({
