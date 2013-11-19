@@ -1886,6 +1886,9 @@ msgstr "Objet"
 msgid "federal administration"
 msgstr "Administration fédérale admin.ch"
 
+msgid "fj09"
+msgstr "Vue aérienne pour la statistique de la superficie 2004/09 prise en"
+
 msgid "fj85"
 msgstr "Vue aérienne pour la statistique de la superficie 1979/85 prise en"
 

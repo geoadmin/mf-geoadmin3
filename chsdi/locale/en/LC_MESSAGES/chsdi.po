@@ -1887,6 +1887,9 @@ msgstr "Object"
 msgid "federal administration"
 msgstr "The Federal Authorities of the Swiss Confederation"
 
+msgid "fj09"
+msgstr "Aerial photo, aera statistic 2004/09"
+
 msgid "fj85"
 msgstr "Aerial photo, aera statistic 1979/85"
 

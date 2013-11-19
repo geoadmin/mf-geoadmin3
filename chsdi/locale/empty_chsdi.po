@@ -1775,6 +1775,9 @@ msgstr ""
 msgid "toll"
 msgstr ""
 
+msgid "fj09"
+msgstr ""
+
 msgid "fj85"
 msgstr ""
 

@@ -1888,6 +1888,9 @@ msgstr "Oget"
 msgid "federal administration"
 msgstr "Administraziun federala admin.ch"
 
+msgid "fj09"
+msgstr "Luftbild Arealstatistik 2004/09 von"
+
 msgid "fj85"
 msgstr "Luftbild Arealstatistik 1979/85 von"
 
