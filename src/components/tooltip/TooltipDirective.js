@@ -117,6 +117,7 @@
             }
 
             function showFeatures(mapExtent, size, foundFeatures) {
+              var drawFeatures = [];
               if (foundFeatures && foundFeatures.length > 0) {
                 angular.forEach(foundFeatures, function(value) {
                   var htmlUrl = $scope.options.htmlUrlTemplate
@@ -162,6 +163,13 @@
                   }).error(function() {
                     bodyEl.removeClass(waitclass);
                   });
+
+                  //draw feature, but only if it should be drawn
+                  if (gaLayers.getLayer(value.layerBodId) &&
+                      gaLayers.getLayerProperty(value.layerBodId,
+                                                'highlightable')) {
+                      drawFeatures.push(value);
+                  }
                 });
 
                 // A new vector layer is created each time because
@@ -195,7 +203,7 @@
                     parser: new ol.parser.GeoJSON(),
                     data: {
                       type: 'FeatureCollection',
-                      features: foundFeatures
+                      features: drawFeatures
                     }
                   })
                 });
