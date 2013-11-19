@@ -390,14 +390,14 @@ layouts:
 ##--------------------------------------
         - !columns
           absoluteX: 45
-          absoluteY: 500
-          width: 500
+          absoluteY: 575
+          width: 750
           condition: "enableLegends"
           items:
             - !legends
               inline: false
-              defaultScale: 0.3
-              maxHeight: 400
+              defaultScale: 0.5 
+              maxHeight: 555
               maxWidth: 250
               maxIconHeight: 0
               maxIconWidth: 0
@@ -760,21 +760,21 @@ layouts:
                 Scala 1: ${format %,d scale}
     lastPage:
       pageSize: A4
-      landscape: true
+      landscape: false
       items:
 ##---------------------------------------
 ## Legend
 ##---------------------------------------
         - !columns
           absoluteX: 45
-          absoluteY: 500
+          absoluteY: 822 
           width: 500
           condition: "enableLegends"
           items:
             - !legends
               inline: false
-              defaultScale: 0.3
-              maxHeight: 400
+              defaultScale: 0.5
+              maxHeight: 802
               maxWidth: 250
               maxIconHeight: 0
               maxIconWidth: 0
