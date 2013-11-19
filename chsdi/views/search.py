@@ -12,7 +12,7 @@ from chsdi.lib import mortonspacekey as msk
 
 class Search(SearchValidation):
 
-    LIMIT = 40
+    LIMIT = 50
     LAYER_LIMIT = 30
     FEATURE_LIMIT = 20
 
@@ -71,7 +71,14 @@ class Search(SearchValidation):
         temp = self.sphinx.Query(searchText, index='swisssearch')
         temp = temp['matches'] if temp is not None else temp
         if temp is not None and len(temp) != 0:
-            self.results['results'] += temp
+            nb_address = 0
+            for res in temp:
+                if res['attrs']['origin'] == 'address':
+                    if nb_address < 20:
+                        self.results['results'].append(res)
+                        nb_address += 1
+                else:
+                    self.results['results'].append(res)
             return len(temp)
         return 0
 
