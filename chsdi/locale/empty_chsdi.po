@@ -1775,6 +1775,9 @@ msgstr ""
 msgid "toll"
 msgstr ""
 
+msgid "fj09"
+msgstr ""
+
 msgid "fj85"
 msgstr ""
 
@@ -1842,6 +1845,9 @@ msgid "id_arealstatistik_85"
 msgstr ""
 
 msgid "id_arealstatistik_97"
+msgstr ""
+
+msgid "id_arealstatistik_09"
 msgstr ""
 
 msgid "bereich"
@@ -3076,6 +3082,21 @@ msgstr ""
 msgid "blw_farbe_19"
 msgstr ""
 
+msgid "tt_bildstreifen_Aufloesung"
+msgstr ""
+
+msgid "tt_bildstreifen_Flugdatum"
+msgstr ""
+
+msgid "tt_bildstreifen_Link"
+msgstr ""
+
+msgid "tt_bildstreifen_Quickview"
+msgstr ""
+
+msgid "tt_bildstreifen_ebkey"
+msgstr ""
+
 msgid "tt_bildstreifen_line_id"
 msgstr ""
 
@@ -3137,4 +3158,220 @@ msgid "tt_kantone_ebkey"
 msgstr ""
 
 msgid "tt_kantone_line_id"
+msgstr ""
+
+msgid "bfs_noas04_1"
+msgstr ""
+
+msgid "bfs_noas04_2"
+msgstr ""
+
+msgid "bfs_noas04_3"
+msgstr ""
+
+msgid "bfs_noas04_4"
+msgstr ""
+
+msgid "bfs_noas04_5"
+msgstr ""
+
+msgid "bfs_noas04_6"
+msgstr ""
+
+msgid "bfs_noas04_7"
+msgstr ""
+
+msgid "bfs_noas04_8"
+msgstr ""
+
+msgid "bfs_noas04_9"
+msgstr ""
+
+msgid "bfs_noas04_10"
+msgstr ""
+
+msgid "bfs_noas04_11"
+msgstr ""
+
+msgid "bfs_noas04_12"
+msgstr ""
+
+msgid "bfs_noas04_13"
+msgstr ""
+
+msgid "bfs_noas04_14"
+msgstr ""
+
+msgid "bfs_noas04_15"
+msgstr ""
+
+msgid "bfs_noas04_16"
+msgstr ""
+
+msgid "bfs_noas04_17"
+msgstr ""
+
+msgid "bfs_noas04_18"
+msgstr ""
+
+msgid "bfs_noas04_19"
+msgstr ""
+
+msgid "bfs_noas04_20"
+msgstr ""
+
+msgid "bfs_noas04_21"
+msgstr ""
+
+msgid "bfs_noas04_22"
+msgstr ""
+
+msgid "bfs_noas04_23"
+msgstr ""
+
+msgid "bfs_noas04_24"
+msgstr ""
+
+msgid "bfs_noas04_25"
+msgstr ""
+
+msgid "bfs_noas04_26"
+msgstr ""
+
+msgid "bfs_noas04_27"
+msgstr ""
+
+msgid "bfs_noas04_28"
+msgstr ""
+
+msgid "bfs_noas04_29"
+msgstr ""
+
+msgid "bfs_noas04_30"
+msgstr ""
+
+msgid "bfs_noas04_31"
+msgstr ""
+
+msgid "bfs_noas04_32"
+msgstr ""
+
+msgid "bfs_noas04_33"
+msgstr ""
+
+msgid "bfs_noas04_34"
+msgstr ""
+
+msgid "bfs_noas04_35"
+msgstr ""
+
+msgid "bfs_noas04_36"
+msgstr ""
+
+msgid "bfs_noas04_37"
+msgstr ""
+
+msgid "bfs_noas04_38"
+msgstr ""
+
+msgid "bfs_noas04_39"
+msgstr ""
+
+msgid "bfs_noas04_40"
+msgstr ""
+
+msgid "bfs_noas04_41"
+msgstr ""
+
+msgid "bfs_noas04_42"
+msgstr ""
+
+msgid "bfs_noas04_43"
+msgstr ""
+
+msgid "bfs_noas04_44"
+msgstr ""
+
+msgid "bfs_noas04_45"
+msgstr ""
+
+msgid "bfs_noas04_46"
+msgstr ""
+
+msgid "bfs_noas04_47"
+msgstr ""
+
+msgid "bfs_noas04_48"
+msgstr ""
+
+msgid "bfs_noas04_49"
+msgstr ""
+
+msgid "bfs_noas04_50"
+msgstr ""
+
+msgid "bfs_noas04_51"
+msgstr ""
+
+msgid "bfs_noas04_52"
+msgstr ""
+
+msgid "bfs_noas04_53"
+msgstr ""
+
+msgid "bfs_noas04_54"
+msgstr ""
+
+msgid "bfs_noas04_55"
+msgstr ""
+
+msgid "bfs_noas04_56"
+msgstr ""
+
+msgid "bfs_noas04_57"
+msgstr ""
+
+msgid "bfs_noas04_58"
+msgstr ""
+
+msgid "bfs_noas04_59"
+msgstr ""
+
+msgid "bfs_noas04_60"
+msgstr ""
+
+msgid "bfs_noas04_61"
+msgstr ""
+
+msgid "bfs_noas04_62"
+msgstr ""
+
+msgid "bfs_noas04_63"
+msgstr ""
+
+msgid "bfs_noas04_64"
+msgstr ""
+
+msgid "bfs_noas04_65"
+msgstr ""
+
+msgid "bfs_noas04_66"
+msgstr ""
+
+msgid "bfs_noas04_67"
+msgstr ""
+
+msgid "bfs_noas04_68"
+msgstr ""
+
+msgid "bfs_noas04_69"
+msgstr ""
+
+msgid "bfs_noas04_70"
+msgstr ""
+
+msgid "bfs_noas04_71"
+msgstr ""
+
+msgid "bfs_noas04_72"
 msgstr ""

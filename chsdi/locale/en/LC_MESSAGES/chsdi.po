@@ -377,6 +377,222 @@ msgstr "Concerned municipalities"
 msgid "betrieb"
 msgstr "Facility"
 
+msgid "bfs_noas04_1"
+msgstr "Industrial and commercial buildings"
+
+msgid "bfs_noas04_10"
+msgstr "Surroundings of public buildings"
+
+msgid "bfs_noas04_11"
+msgstr "Agricultural buildings"
+
+msgid "bfs_noas04_12"
+msgstr "Surroundings of agricultural buildings"
+
+msgid "bfs_noas04_13"
+msgstr "Unspecified buildings"
+
+msgid "bfs_noas04_14"
+msgstr "Surroundings of unspecified buildings"
+
+msgid "bfs_noas04_15"
+msgstr "Motorways"
+
+msgid "bfs_noas04_16"
+msgstr "Green motorway environs"
+
+msgid "bfs_noas04_17"
+msgstr "Roads and paths"
+
+msgid "bfs_noas04_18"
+msgstr "Green road environs"
+
+msgid "bfs_noas04_19"
+msgstr "Parking areas"
+
+msgid "bfs_noas04_2"
+msgstr "Surroundings of industrial and commercial buildings"
+
+msgid "bfs_noas04_20"
+msgstr "Sealed railway areas"
+
+msgid "bfs_noas04_21"
+msgstr "Green railway environs"
+
+msgid "bfs_noas04_22"
+msgstr "Airports"
+
+msgid "bfs_noas04_23"
+msgstr "Airfields, green airport environs"
+
+msgid "bfs_noas04_24"
+msgstr "Energy supply plants"
+
+msgid "bfs_noas04_25"
+msgstr "Waste water treatment plants"
+
+msgid "bfs_noas04_26"
+msgstr "Other supply or waste treatment plants"
+
+msgid "bfs_noas04_27"
+msgstr "Dumps"
+
+msgid "bfs_noas04_28"
+msgstr "Quarries, mines"
+
+msgid "bfs_noas04_29"
+msgstr "Construction sites"
+
+msgid "bfs_noas04_3"
+msgstr "One- and two-family houses"
+
+msgid "bfs_noas04_30"
+msgstr "Unexploited urban areas"
+
+msgid "bfs_noas04_31"
+msgstr "Public parks"
+
+msgid "bfs_noas04_32"
+msgstr "Sports facilities"
+
+msgid "bfs_noas04_33"
+msgstr "Golf courses"
+
+msgid "bfs_noas04_34"
+msgstr "Camping areas"
+
+msgid "bfs_noas04_35"
+msgstr "Garden allotments"
+
+msgid "bfs_noas04_36"
+msgstr "Cemeteries"
+
+msgid "bfs_noas04_37"
+msgstr "Intensive orchards"
+
+msgid "bfs_noas04_38"
+msgstr "Field fruit trees"
+
+msgid "bfs_noas04_39"
+msgstr "Vineyards"
+
+msgid "bfs_noas04_4"
+msgstr "Surroundings of one- and two-family houses"
+
+msgid "bfs_noas04_40"
+msgstr "Horticulture"
+
+msgid "bfs_noas04_41"
+msgstr "Arable land"
+
+msgid "bfs_noas04_42"
+msgstr "Meadows"
+
+msgid "bfs_noas04_43"
+msgstr "Farm pastures"
+
+msgid "bfs_noas04_44"
+msgstr "Brush meadows and farm pastures"
+
+msgid "bfs_noas04_45"
+msgstr "Alpine meadows"
+
+msgid "bfs_noas04_46"
+msgstr "Favorable alpine pastures"
+
+msgid "bfs_noas04_47"
+msgstr "Brush alpine pastures"
+
+msgid "bfs_noas04_48"
+msgstr "Rocky alpine pastures"
+
+msgid "bfs_noas04_49"
+msgstr "Sheep pastures"
+
+msgid "bfs_noas04_5"
+msgstr "Terraced houses"
+
+msgid "bfs_noas04_50"
+msgstr "Normal dense forest"
+
+msgid "bfs_noas04_51"
+msgstr "Forest strips"
+
+msgid "bfs_noas04_52"
+msgstr "Afforestations"
+
+msgid "bfs_noas04_53"
+msgstr "Felling areas"
+
+msgid "bfs_noas04_54"
+msgstr "Damaged forest areas"
+
+msgid "bfs_noas04_55"
+msgstr "Open forest (on agricultural areas)"
+
+msgid "bfs_noas04_56"
+msgstr "Open forest (on unproductive areas)"
+
+msgid "bfs_noas04_57"
+msgstr "Brush forest"
+
+msgid "bfs_noas04_58"
+msgstr "Groves, hedges"
+
+msgid "bfs_noas04_59"
+msgstr "Clusters of trees (on agricultural areas)"
+
+msgid "bfs_noas04_6"
+msgstr "Surroundings of terraced houses"
+
+msgid "bfs_noas04_60"
+msgstr "Clusters of trees (on unproductive areas)"
+
+msgid "bfs_noas04_61"
+msgstr "Lakes"
+
+msgid "bfs_noas04_62"
+msgstr "Rivers"
+
+msgid "bfs_noas04_63"
+msgstr "Flood protection structures"
+
+msgid "bfs_noas04_64"
+msgstr "Scrub vegetation"
+
+msgid "bfs_noas04_65"
+msgstr "Unproductive grass und shrubs"
+
+msgid "bfs_noas04_66"
+msgstr "Avalanche and rockfall barriers"
+
+msgid "bfs_noas04_67"
+msgstr "Wetlands"
+
+msgid "bfs_noas04_68"
+msgstr "Alpine sports facilities"
+
+msgid "bfs_noas04_69"
+msgstr "Rocks"
+
+msgid "bfs_noas04_7"
+msgstr "Blocks of flats"
+
+msgid "bfs_noas04_70"
+msgstr "Screes, sand"
+
+msgid "bfs_noas04_71"
+msgstr "Landscape interventions"
+
+msgid "bfs_noas04_72"
+msgstr "Glaciers, perpetual snow"
+
+msgid "bfs_noas04_8"
+msgstr "Surroundings of blocks of flats"
+
+msgid "bfs_noas04_9"
+msgstr "Public buildings"
+
 msgid "bfsnr"
 msgstr "BFS-Nummer"
 
@@ -1671,6 +1887,9 @@ msgstr "Object"
 msgid "federal administration"
 msgstr "The Federal Authorities of the Swiss Confederation"
 
+msgid "fj09"
+msgstr "Aerial photo, aera statistic 2004/09"
+
 msgid "fj85"
 msgstr "Aerial photo, aera statistic 1979/85"
 
@@ -1820,6 +2039,9 @@ msgstr "Hydrografische Herkunft"
 
 msgid "hydromessstationen_graph"
 msgstr "3 days Water level/Discharge"
+
+msgid "id_arealstatistik_09"
+msgstr "ID area statistic 2004/09"
 
 msgid "id_arealstatistik_85"
 msgstr "ID area statistic 1979/85"
