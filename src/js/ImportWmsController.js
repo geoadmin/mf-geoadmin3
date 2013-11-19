@@ -71,7 +71,14 @@
            'http://wms.zh.ch/FnsSVOZHWMS',
            'http://wms.zh.ch/HaltestellenZHWMS',
            'http://wms.zh.ch/FnsLWZHWMS',
-           'http://wms.zh.ch/ArchWMS'
+           'http://wms.zh.ch/ArchWMS',
+           'http://www.geoservice.apps.be.ch/geoservice/services/a4p/a4p_kbswms_d_fk_s/MapServer/WMSServer?',
+           'http://www.geoservice.apps.be.ch/geoservice/services/a4p/a4p_basiswms_d_fk_s/MapServer/WMSServer?',
+           'http://www.geoservice.apps.be.ch/geoservice/services/a4p/a4p_grenzenwms_d_fk_s/MapServer/WMSServer?',
+           'http://www.geoservice.apps.be.ch/geoservice/services/a4p/a4p_planungwms_d_fk_s/MapServer/WMSServer?',
+           'http://www.geoservice.apps.be.ch/geoservice/services/a4p/a4p_umweltwms_d_fk_s/MapServer/WMSServer?',
+           'http://www.geoservice.apps.be.ch/geoservice/services/a4p/a4p_geologiewms_d_fk_s/MapServer/WMSServer?',
+           'http://www.geoservice.apps.be.ch/geoservice/services/a4p/a4p_gewaesserwms_d_fk_s/MapServer/WMSServer?'
          ]
        };
      });
