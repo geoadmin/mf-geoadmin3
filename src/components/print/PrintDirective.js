@@ -341,7 +341,7 @@
         dpi: this.dpi.value,
         layers: encLayers,
         legends: encLegends,
-        enhableLegends: (encLegends && encLegends.length > 0),
+        enableLegends: (encLegends && encLegends.length > 0),
         qrcodeurl: qrcodeurl,
         pages: [
         angular.extend({
