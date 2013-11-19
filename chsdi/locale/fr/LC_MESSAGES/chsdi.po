@@ -2564,14 +2564,8 @@ msgstr "Résolution"
 msgid "tt_bildstreifen_Flugdatum"
 msgstr "Date du vol"
 
-<<<<<<< HEAD
 msgid "tt_bildstreifen_Link"
 msgstr "Bestellen"
-=======
-#. TODO
-msgid "tt_bildstreifen_Link "
-msgstr "tt_bildstreifen_Link "
->>>>>>> New translations
 
 msgid "tt_bildstreifen_Quickview"
 msgstr "Quickview"

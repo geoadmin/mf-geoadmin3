@@ -3082,6 +3082,24 @@ msgstr ""
 msgid "blw_farbe_19"
 msgstr ""
 
+<<<<<<< HEAD
+=======
+msgid "tt_bildstreifen_Aufloesung"
+msgstr ""
+
+msgid "tt_bildstreifen_Flugdatum"
+msgstr ""
+
+msgid "tt_bildstreifen_Link"
+msgstr ""
+
+msgid "tt_bildstreifen_Quickview "
+msgstr ""
+
+msgid "tt_bildstreifen_ebkey"
+msgstr ""
+
+>>>>>>> Update translations
 msgid "tt_bildstreifen_line_id"
 msgstr ""
 
