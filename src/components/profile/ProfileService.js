@@ -67,20 +67,26 @@
             .attr('height', height + marginVert)
             .attr('class', 'profile-svg');
 
+        var group = this.svg
+          .append('g')
+            .attr('class', 'profile-group')
+            .attr('transform', 'translate(' + options.margin.left +
+                ', ' + options.margin.top + ')');
+
         this.area = createArea(domain, 'cardinal');
 
-        this.svg.append('path')
+        group.append('path')
             .datum(data)
             .attr('class', 'profile-area')
             .attr('d', that.area)
             .style('opacity', 0.9);
 
-        this.svg.append('g')
+        group.append('g')
             .attr('class', 'x axis')
             .attr('transform', 'translate(0, ' + height + ')')
             .call(axis.X);
 
-        this.svg.append('g')
+        group.append('g')
             .attr('class', 'y axis')
             .call(axis.Y)
           .append('text')
@@ -89,13 +95,13 @@
             .attr('dy', '.71em')
             .style('text-anchor', 'end');
 
-        this.svg.append('text')
+        group.append('text')
             .attr('x', width / 2)
             .attr('y', height + options.margin.bottom)
             .style('text-anchor', 'middle')
             .text('Distance');
 
-        this.svg.append('text')
+        group.append('text')
             .attr('transform', 'rotate(-90)')
             .attr('y', 0 - options.margin.left)
             .attr('x', 0 - height / 2)
