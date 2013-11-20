@@ -256,7 +256,7 @@
           var enc = $scope.encoders.legends.base.call(this, config);
           enc.classes.push({
             name: '',
-            icon: $scope.options.serviceUrl +
+            icon: location.protocol + $scope.options.serviceUrl +
                 $scope.options.baseUrlPath +
                 '/wsgi/static/images/legends/' +
                 layer.bodId + '_' + $translate.uses() +
