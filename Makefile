@@ -213,7 +213,7 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 
 .build-artefacts/closure-compiler/compiler-latest.zip:
 	mkdir -p $(dir $@)
-	wget -O $@ http://closure-compiler.googlecode.com/files/compiler-latest.zip
+	wget -O $@ http://dl.google.com/closure-compiler/compiler-20131014.zip
 	touch $@
 
 $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/config:
