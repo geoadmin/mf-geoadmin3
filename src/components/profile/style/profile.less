@@ -14,18 +14,26 @@
       .profile-svg {
         display: block;
         margin: 0 auto;
-      }
-      .axis path,
-      .axis line {
-        fill: none;
-        stroke: #000;
-        shape-rendering: crispEdges;
-      }
-      .tick {
-        font-size: 11px;
-      }
-      .profile-area {
-        fill: steelblue;
+        .profile-grid-x,
+        .profile-grid-y {
+          stroke: lightgrey;
+          opacity: 0.8;
+          line {
+            stroke-width: 0.02em;
+          }
+        }
+        .axis path,
+        .axis line {
+          fill: none;
+          stroke: #000;
+          shape-rendering: crispEdges;
+        }
+        .tick {
+          font-size: 11px;
+        }
+        .profile-area {
+          fill: steelblue;
+        }
       }
     }
   }

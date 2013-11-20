@@ -73,7 +73,6 @@
                 ', ' + options.margin.top + ')');
 
         var area = createArea(domain, 'cardinal');
-
         group.append('path')
             .datum(data)
             .attr('class', 'profile-area')
@@ -93,6 +92,21 @@
             .attr('y', 6)
             .attr('dy', '.71em')
             .style('text-anchor', 'end');
+
+        group.append('g')
+            .attr('class', 'profile-grid-x')
+            .attr('transform', 'translate(0, ' + height + ')')
+            .call(axis.X
+                .tickSize(-height, 0, 0)
+                .tickFormat('')
+            );
+
+        group.append('g')
+            .attr('class', 'profile-grid-y')
+            .call(axis.Y
+                .tickSize(-width, 0, 0)
+                .tickFormat('')
+            );
 
         group.append('text')
             .attr('x', width / 2)
@@ -122,8 +136,18 @@
             .attr('d', area)
             .style('opacity', 0.9);
 
-        element.selectAll('g.x').call(axis.X);
-        element.selectAll('g.y').call(axis.Y);
+        element.select('g.x').call(axis.X);
+        element.select('g.y').call(axis.Y);
+        element.select('g.profile-grid-x')
+            .call(axis.X
+                .tickSize(-height, 0, 0)
+                .tickFormat('')
+            );
+        element.select('g.profile-grid-y')
+            .call(axis.Y
+                .tickSize(-width, 0, 0)
+                .tickFormat('')
+            );
       };
     }
 
