@@ -647,7 +647,7 @@ goog.addDependency("../src/ol/render/renderevent.js", ["ol.render.Event", "ol.re
 goog.addDependency("../src/ol/render/vector.js", ["ol.renderer.vector"], ["goog.asserts", "ol.geom.LineString", "ol.geom.MultiLineString", "ol.geom.MultiPoint", "ol.geom.MultiPolygon", "ol.geom.Point", "ol.geom.Polygon", "ol.render.IReplayGroup", "ol.style.Style"]);
 goog.addDependency("../src/ol/renderer/canvas/canvasimagelayerrenderer.js", ["ol.renderer.canvas.ImageLayer"], ["goog.events", "goog.events.EventType", "goog.vec.Mat4", "ol.Image", "ol.ImageState", "ol.ViewHint", "ol.layer.Image", "ol.renderer.Map", "ol.renderer.canvas.Layer"]);
 goog.addDependency("../src/ol/renderer/canvas/canvaslayerrenderer.js", ["ol.renderer.canvas.Layer"], ["goog.vec.Mat4", "ol.layer.Layer", "ol.render.Event", "ol.render.EventType", "ol.render.canvas.Immediate", "ol.renderer.Layer"]);
-goog.addDependency("../src/ol/renderer/canvas/canvasmaprenderer.js", ["ol.renderer.canvas.Map"], ["goog.asserts", "goog.dom", "goog.dom.TagName", "goog.style", "ol.Size", "ol.css", "ol.layer.Image", "ol.layer.Tile", "ol.layer.Vector", "ol.render.Event", "ol.render.EventType", "ol.render.canvas.Immediate", "ol.renderer.Map", "ol.renderer.canvas.ImageLayer", "ol.renderer.canvas.TileLayer", "ol.renderer.canvas.VectorLayer", "ol.size", "ol.source.State"]);
+goog.addDependency("../src/ol/renderer/canvas/canvasmaprenderer.js", ["ol.renderer.canvas.Map"], ["goog.asserts", "goog.dom", "goog.dom.TagName", "goog.style", "ol.css", "ol.layer.Image", "ol.layer.Tile", "ol.layer.Vector", "ol.render.Event", "ol.render.EventType", "ol.render.canvas.Immediate", "ol.renderer.Map", "ol.renderer.canvas.ImageLayer", "ol.renderer.canvas.TileLayer", "ol.renderer.canvas.VectorLayer", "ol.source.State"]);
 goog.addDependency("../src/ol/renderer/canvas/canvasrenderer.js", ["ol.renderer.canvas"], ["ol.canvas"]);
 goog.addDependency("../src/ol/renderer/canvas/canvastilelayerrenderer.js", ["ol.renderer.canvas.TileLayer"], ["goog.array", "goog.asserts", "goog.dom", "goog.dom.TagName", "goog.object", "goog.vec.Mat4", "ol.Size", "ol.Tile", "ol.TileCoord", "ol.TileRange", "ol.TileState", "ol.extent", "ol.layer.Tile", "ol.renderer.Map", "ol.renderer.canvas.Layer"]);
 goog.addDependency("../src/ol/renderer/canvas/canvasvectorlayerrenderer.js", ["ol.renderer.canvas.VectorLayer"], ["goog.vec.Mat4", "ol.ViewHint", "ol.extent", "ol.render.canvas.ReplayGroup", "ol.renderer.canvas.Layer", "ol.renderer.vector", "ol.style.DefaultStyleFunction"]);
@@ -662,8 +662,8 @@ goog.addDependency("../src/ol/renderer/webgl/webglimagelayerrenderer.js", ["ol.r
 goog.addDependency("../src/ol/renderer/webgl/webgllayerrenderer.js", ["ol.renderer.webgl.Layer"], ["goog.vec.Mat4", "goog.webgl", "ol.FrameState", "ol.color.Matrix", "ol.layer.Layer", "ol.render.Event", "ol.render.EventType", "ol.renderer.Layer", "ol.renderer.webgl.map.shader.Color", "ol.renderer.webgl.map.shader.Default", "ol.structs.Buffer"]);
 goog.addDependency("../src/ol/renderer/webgl/webglmapcolorshader.js", ["ol.renderer.webgl.map.shader.Color"], ["ol.webgl.shader"]);
 goog.addDependency("../src/ol/renderer/webgl/webglmapdefaultshader.js", ["ol.renderer.webgl.map.shader.Default"], ["ol.webgl.shader"]);
-goog.addDependency("../src/ol/renderer/webgl/webglmaprenderer.js", ["ol.renderer.webgl.Map"], ["goog.array", "goog.asserts", "goog.dom", "goog.dom.TagName", "goog.events", "goog.events.Event", "goog.log", "goog.log.Logger", "goog.object", "goog.style", "goog.webgl", "ol.FrameState", "ol.Size", "ol.Tile", "ol.css", "ol.layer.Image", "ol.layer.Tile", "ol.render.Event", "ol.render.EventType", "ol.renderer.Map", "ol.renderer.webgl.ImageLayer", "ol.renderer.webgl.Layer", "ol.renderer.webgl.TileLayer", 
-"ol.size", "ol.source.State", "ol.structs.LRUCache", "ol.structs.PriorityQueue", "ol.webgl", "ol.webgl.Context", "ol.webgl.WebGLContextEventType"]);
+goog.addDependency("../src/ol/renderer/webgl/webglmaprenderer.js", ["ol.renderer.webgl.Map"], ["goog.array", "goog.asserts", "goog.dom", "goog.dom.TagName", "goog.events", "goog.events.Event", "goog.log", "goog.log.Logger", "goog.object", "goog.style", "goog.webgl", "ol.FrameState", "ol.Tile", "ol.css", "ol.layer.Image", "ol.layer.Tile", "ol.render.Event", "ol.render.EventType", "ol.renderer.Map", "ol.renderer.webgl.ImageLayer", "ol.renderer.webgl.TileLayer", "ol.source.State", "ol.structs.LRUCache", 
+"ol.structs.PriorityQueue", "ol.webgl", "ol.webgl.Context", "ol.webgl.WebGLContextEventType"]);
 goog.addDependency("../src/ol/renderer/webgl/webglrenderer.js", ["ol.renderer.webgl"], ["ol.webgl"]);
 goog.addDependency("../src/ol/renderer/webgl/webgltilelayerrenderer.js", ["ol.renderer.webgl.TileLayer"], ["goog.array", "goog.object", "goog.vec.Mat4", "goog.vec.Vec4", "goog.webgl", "ol.Tile", "ol.TileRange", "ol.TileState", "ol.extent", "ol.layer.Tile", "ol.math", "ol.renderer.webgl.Layer", "ol.renderer.webgl.tilelayer.shader", "ol.structs.Buffer"]);
 goog.addDependency("../src/ol/renderer/webgl/webgltilelayershader.js", ["ol.renderer.webgl.tilelayer.shader"], ["ol.webgl.shader"]);
@@ -21114,7 +21114,7 @@ ol.renderer.vector.renderLineStringGeometry_ = function(replayGroup, geometry, s
   if(goog.isNull(style.stroke)) {
     return
   }
-  goog.asserts.assert(geometry instanceof ol.geom.LineString);
+  goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
   var lineStringGeometry = (geometry);
   var replay = replayGroup.getReplay(style.zIndex, ol.render.ReplayType.LINE_STRING);
   replay.setFillStrokeStyle(null, style.stroke);
@@ -21124,7 +21124,7 @@ ol.renderer.vector.renderMultiLineStringGeometry_ = function(replayGroup, geomet
   if(goog.isNull(style.stroke)) {
     return
   }
-  goog.asserts.assert(geometry instanceof ol.geom.MultiLineString);
+  goog.asserts.assertInstanceof(geometry, ol.geom.MultiLineString);
   var multiLineStringGeometry = (geometry);
   var replay = replayGroup.getReplay(style.zIndex, ol.render.ReplayType.LINE_STRING);
   replay.setFillStrokeStyle(null, style.stroke);
@@ -21134,7 +21134,7 @@ ol.renderer.vector.renderMultiPolygonGeometry_ = function(replayGroup, geometry,
   if(goog.isNull(style.stroke) && goog.isNull(style.fill)) {
     return
   }
-  goog.asserts.assert(geometry instanceof ol.geom.MultiPolygon);
+  goog.asserts.assertInstanceof(geometry, ol.geom.MultiPolygon);
   var multiPolygonGeometry = (geometry);
   var replay = replayGroup.getReplay(style.zIndex, ol.render.ReplayType.POLYGON);
   replay.setFillStrokeStyle(style.fill, style.stroke);
@@ -21144,7 +21144,7 @@ ol.renderer.vector.renderPointGeometry_ = function(replayGroup, geometry, style)
   if(goog.isNull(style.image)) {
     return
   }
-  goog.asserts.assert(geometry instanceof ol.geom.Point);
+  goog.asserts.assertInstanceof(geometry, ol.geom.Point);
   var pointGeometry = (geometry);
   var replay = replayGroup.getReplay(style.zIndex, ol.render.ReplayType.IMAGE);
   replay.setImageStyle(style.image);
@@ -21154,7 +21154,7 @@ ol.renderer.vector.renderMultiPointGeometry_ = function(replayGroup, geometry, s
   if(goog.isNull(style.image)) {
     return
   }
-  goog.asserts.assert(geometry instanceof ol.geom.MultiPoint);
+  goog.asserts.assertInstanceof(geometry, ol.geom.MultiPoint);
   var multiPointGeometry = (geometry);
   var replay = replayGroup.getReplay(style.zIndex, ol.render.ReplayType.IMAGE);
   replay.setImageStyle(style.image);
@@ -21164,7 +21164,7 @@ ol.renderer.vector.renderPolygonGeometry_ = function(replayGroup, geometry, styl
   if(goog.isNull(style.fill) && goog.isNull(style.stroke)) {
     return
   }
-  goog.asserts.assert(geometry instanceof ol.geom.Polygon);
+  goog.asserts.assertInstanceof(geometry, ol.geom.Polygon);
   var polygonGeometry = (geometry);
   var replay = replayGroup.getReplay(style.zIndex, ol.render.ReplayType.POLYGON);
   replay.setFillStrokeStyle(style.fill, style.stroke);
@@ -21240,7 +21240,6 @@ goog.require("goog.asserts");
 goog.require("goog.dom");
 goog.require("goog.dom.TagName");
 goog.require("goog.style");
-goog.require("ol.Size");
 goog.require("ol.css");
 goog.require("ol.layer.Image");
 goog.require("ol.layer.Tile");
@@ -21252,17 +21251,13 @@ goog.require("ol.renderer.Map");
 goog.require("ol.renderer.canvas.ImageLayer");
 goog.require("ol.renderer.canvas.TileLayer");
 goog.require("ol.renderer.canvas.VectorLayer");
-goog.require("ol.size");
 goog.require("ol.source.State");
 ol.renderer.canvas.Map = function(container, map) {
   goog.base(this, container, map);
   this.canvas_ = (goog.dom.createElement(goog.dom.TagName.CANVAS));
-  this.canvas_.height = container.clientHeight;
-  this.canvas_.width = container.clientWidth;
   this.canvas_.className = ol.css.CLASS_UNSELECTABLE;
   goog.dom.insertChildAt(container, this.canvas_, 0);
   this.renderedVisible_ = true;
-  this.canvasSize_ = [container.clientHeight, container.clientWidth];
   this.context_ = (this.canvas_.getContext("2d"))
 };
 goog.inherits(ol.renderer.canvas.Map, ol.renderer.Map);
@@ -21301,10 +21296,9 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
   }
   var context = this.context_;
   var size = frameState.size;
-  if(!ol.size.equals(this.canvasSize_, size)) {
+  if(this.canvas_.width != size[0] || this.canvas_.height != size[1]) {
     this.canvas_.width = size[0];
-    this.canvas_.height = size[1];
-    this.canvasSize_ = size
+    this.canvas_.height = size[1]
   }else {
     context.clearRect(0, 0, size[0], size[1])
   }
@@ -21761,7 +21755,7 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
   var layerKey;
   for(layerKey in this.getLayerRenderers()) {
     if(!(layerKey in layerStates)) {
-      layerRenderer = this.getLayerRendererByKey(layerKey);
+      layerRenderer = (this.getLayerRendererByKey(layerKey));
       goog.dom.removeNode(layerRenderer.getTarget())
     }
   }
@@ -23326,7 +23320,6 @@ goog.require("goog.object");
 goog.require("goog.style");
 goog.require("goog.webgl");
 goog.require("ol.FrameState");
-goog.require("ol.Size");
 goog.require("ol.Tile");
 goog.require("ol.css");
 goog.require("ol.layer.Image");
@@ -23335,9 +23328,7 @@ goog.require("ol.render.Event");
 goog.require("ol.render.EventType");
 goog.require("ol.renderer.Map");
 goog.require("ol.renderer.webgl.ImageLayer");
-goog.require("ol.renderer.webgl.Layer");
 goog.require("ol.renderer.webgl.TileLayer");
-goog.require("ol.size");
 goog.require("ol.source.State");
 goog.require("ol.structs.LRUCache");
 goog.require("ol.structs.PriorityQueue");
@@ -23349,12 +23340,9 @@ ol.renderer.webgl.TextureCacheEntry;
 ol.renderer.webgl.Map = function(container, map) {
   goog.base(this, container, map);
   this.canvas_ = (goog.dom.createElement(goog.dom.TagName.CANVAS));
-  this.canvas_.height = container.clientHeight;
-  this.canvas_.width = container.clientWidth;
   this.canvas_.className = ol.css.CLASS_UNSELECTABLE;
   goog.dom.insertChildAt(container, this.canvas_, 0);
   this.renderedVisible_ = true;
-  this.canvasSize_ = [container.clientHeight, container.clientWidth];
   this.gl_ = ol.webgl.getContext(this.canvas_, {antialias:true, depth:false, preserveDrawingBuffer:false, stencil:true});
   goog.asserts.assert(!goog.isNull(this.gl_));
   this.context_ = new ol.webgl.Context(this.canvas_, this.gl_);
@@ -23430,9 +23418,9 @@ ol.renderer.webgl.Map.prototype.dispatchComposeEvent_ = function(type, frameStat
 ol.renderer.webgl.Map.prototype.disposeInternal = function() {
   var gl = this.getGL();
   if(!gl.isContextLost()) {
-    this.textureCache_.forEach(function(value, key, lruCache) {
-      if(!goog.isNull(value)) {
-        gl.deleteTexture(value.texture)
+    this.textureCache_.forEach(function(textureCacheEntry) {
+      if(!goog.isNull(textureCacheEntry)) {
+        gl.deleteTexture(textureCacheEntry.texture)
       }
     })
   }
@@ -23443,7 +23431,7 @@ ol.renderer.webgl.Map.prototype.expireCache_ = function(map, frameState) {
   var gl = this.getGL();
   var textureCacheEntry;
   while(this.textureCache_.getCount() - this.textureCacheFrameMarkerCount_ > ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK) {
-    textureCacheEntry = this.textureCache_.peekLast();
+    textureCacheEntry = (this.textureCache_.peekLast());
     if(goog.isNull(textureCacheEntry)) {
       if(+this.textureCache_.peekLastKey() == frameState.index) {
         break
@@ -23469,10 +23457,8 @@ ol.renderer.webgl.Map.prototype.handleWebGLContextLost = function(event) {
   event.preventDefault();
   this.textureCache_.clear();
   this.textureCacheFrameMarkerCount_ = 0;
-  goog.object.forEach(this.getLayerRenderers(), function(layerRenderer, index, object) {
-    goog.asserts.assert(layerRenderer instanceof ol.renderer.webgl.Layer);
-    var webglLayerRenderer = (layerRenderer);
-    webglLayerRenderer.handleWebGLContextLost()
+  goog.object.forEach(this.getLayerRenderers(), function(layerRenderer) {
+    layerRenderer.handleWebGLContextLost()
   })
 };
 ol.renderer.webgl.Map.prototype.handleWebGLContextRestored = function() {
@@ -23521,15 +23507,14 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   }
   for(i = 0, ii = layersToDraw.length;i < ii;++i) {
     layer = layersToDraw[i];
-    layerRenderer = (this.getLayerRenderer(layer));
+    layerRenderer = this.getLayerRenderer(layer);
     layerState = frameState.layerStates[goog.getUid(layer)];
     layerRenderer.prepareFrame(frameState, layerState)
   }
   var size = frameState.size;
-  if(!ol.size.equals(this.canvasSize_, size)) {
+  if(this.canvas_.width != size[0] || this.canvas_.height != size[1]) {
     this.canvas_.width = size[0];
-    this.canvas_.height = size[1];
-    this.canvasSize_ = size
+    this.canvas_.height = size[1]
   }
   gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, null);
   gl.clearColor(0, 0, 0, 0);
@@ -23540,7 +23525,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   for(i = 0, ii = layersToDraw.length;i < ii;++i) {
     layer = layersToDraw[i];
     layerState = frameState.layerStates[goog.getUid(layer)];
-    layerRenderer = (this.getLayerRenderer(layer));
+    layerRenderer = this.getLayerRenderer(layer);
     layerRenderer.composeFrame(frameState, layerState, context)
   }
   if(!this.renderedVisible_) {
@@ -24342,7 +24327,7 @@ ol.TileCache.prototype.canExpireCache = function() {
 ol.TileCache.prototype.expireCache = function(usedTiles) {
   var tile, zKey;
   while(this.canExpireCache()) {
-    tile = this.peekLast();
+    tile = (this.peekLast());
     zKey = tile.tileCoord.z.toString();
     if(zKey in usedTiles && usedTiles[zKey].contains(tile.tileCoord)) {
       break
