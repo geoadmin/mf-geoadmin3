@@ -86,7 +86,7 @@ deploybranch: deploy/deploy-branch.cfg $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/con
 updateol: OL_JS = ol.js ol-simple.js ol-whitespace.js
 updateol: .build-artefacts/ol3 .build-artefacts/ol-requirements-installation.timestamp
 	rm -f .build-artefacts/ol3/src/ol/ga-ol3.exports
-	cd .build-artefacts/ol3; git checkout master; git fetch origin; git merge --ff origin/master; git checkout canvas-exp; git show; ../python-venv/bin/python build.py $(addprefix build/,$(OL_JS))
+	cd .build-artefacts/ol3; git checkout master; git fetch origin; git merge --ff origin/master; git checkout vector-api; git show; ../python-venv/bin/python build.py $(addprefix build/,$(OL_JS))
 	cp $(addprefix .build-artefacts/ol3/build/,$(OL_JS)) src/lib/
 
 .PHONY: translate
@@ -234,7 +234,7 @@ deploy/deploy-branch.cfg: deploy/deploy-branch.mako.cfg .build-artefacts/last-gi
 	test $(GIT_BRANCH) != $(GIT_LAST_BRANCH) && echo $(GIT_BRANCH) > .build-artefacts/last-git-branch || :
 
 .build-artefacts/ol3:
-	git clone https://github.com/camptocamp/ol3.git $@
+	git clone https://github.com/openlayers/ol3.git $@
 
 .build-artefacts/bootstrap:
 	git clone https://github.com/twbs/bootstrap.git $@ && cd .build-artefacts/bootstrap && git checkout v3.0.0
