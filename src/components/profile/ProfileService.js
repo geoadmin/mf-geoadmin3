@@ -108,6 +108,27 @@
                 .tickFormat('')
             );
 
+        var legend = group.append('g')
+            .attr('class', 'profile-legend')
+            .attr('x', width - 65)
+            .attr('y', 25)
+            .attr('width', 100)
+            .attr('height', 100);
+
+        legend.append('rect')
+            .attr('x', width - 65)
+            .attr('y', 25)
+            .attr('width', 10)
+            .attr('height', 10)
+            .style('fill', 'steelblue');
+
+        legend.append('text')
+            .attr('x', width - 50)
+            .attr('y', 34)
+            .attr('width', 100)
+            .attr('height', 30)
+            .text('DTM 25');
+
         group.append('text')
             .attr('x', width / 2)
             .attr('y', height + options.margin.bottom)
