@@ -234,7 +234,7 @@ deploy/deploy-branch.cfg: deploy/deploy-branch.mako.cfg .build-artefacts/last-gi
 
 .build-artefacts/externs/angular.js:
 	mkdir -p $(dir $@)
-	wget -O $@ https://raw.github.com/angular/angular.js/master/closure/angular.js
+	wget -O $@ https://raw.github.com/angular/angular.js/v1.2.1/closure/angular.js
 	touch $@
 
 # Closure's contrib dir doesn't include externs for jQuery 2, but the jQuery
