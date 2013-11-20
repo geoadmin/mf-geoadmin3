@@ -37,7 +37,7 @@
     });
 
     // Defines default vector style
-    ol.style.setDefault(new ol.style.Style({
+    /*ol.style.setDefault(new ol.style.Style({
       rules: [
         new ol.style.Rule({
           filter: 'renderintent("selected")',
@@ -89,7 +89,7 @@
           })
         })
       ]
-    }));
+    }));*/
     
     var dragClass = 'ga-dragging';
     var viewport = $(map.getViewport());

@@ -259,7 +259,7 @@
    */
   module.provider('gaKml', function() {
     // Create the Parser the KML file
-    var kmlParser = new ol.parser.KML({
+    /*var kmlParser = new ol.parser.KML({
       maxDepth: 1,
       dimension: 2,
       extractStyles: true,
@@ -287,7 +287,7 @@
         })
       ]
     });
-
+    */
     this.$get = function($http, gaPopup, gaDefinePropertiesForLayer,
         gaMapClick) {
       var Kml = function(proxyUrl) {
@@ -296,7 +296,8 @@
          * Create a KML layer from a KML string
          */
         var createKmlLayer = function(kml, options) {
-          var olLayer;
+          return null;
+          /*var olLayer;
           options = options || {};
 
           // Create vector layer
@@ -316,14 +317,14 @@
             style: options.style || defaultStyle
           });
           gaDefinePropertiesForLayer(olLayer);
-          return olLayer;
+          return olLayer;*/
         };
 
         /**
          * Add an ol layer to the map and add specific event
          */
         var addKmlLayer = function(olMap, data, options, index) {
-          var olLayer = createKmlLayer(data, options);
+          /*var olLayer = createKmlLayer(data, options);
           var onMapClick = function(evt) {
             evt.stopPropagation();
             evt.preventDefault();
@@ -365,7 +366,7 @@
             olMap.getLayers().insertAt(index, olLayer);
           } else {
             olMap.addLayer(olLayer);
-          }
+          }*/
         };
 
         this.addKmlToMap = function(map, data, layerOptions, index) {

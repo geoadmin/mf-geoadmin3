@@ -6,7 +6,7 @@
   goog.require('ga_backgroundlayerselector');
   goog.require('ga_catalogtree');
   goog.require('ga_contextpopup');
-  goog.require('ga_importkml');
+  //goog.require('ga_importkml');
   goog.require('ga_importwms');
   goog.require('ga_map');
   goog.require('ga_mouseposition');
@@ -47,7 +47,7 @@
     'ga_backgroundlayerselector',
     'ga_catalogtree',
     'ga_contextpopup',
-    'ga_importkml',
+    //'ga_importkml',
     'ga_importwms',
     'ga_map',
     'ga_mouseposition',
