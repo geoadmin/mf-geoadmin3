@@ -36,7 +36,7 @@
             });
 
             scope.$on('gaProfileDataUpdated', function(ev, data) {
-              profile.update(data);
+              profile.update(data, popup.element[0]);
             });
           }
         };

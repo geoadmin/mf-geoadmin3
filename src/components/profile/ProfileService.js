@@ -43,42 +43,41 @@
         };
       };
 
-      this.x = d3.scale.linear().range([0, width]);
-      this.y = d3.scale.linear().range([height, 0]);
+      var x = d3.scale.linear().range([0, width]);
+      var y = d3.scale.linear().range([height, 0]);
 
-      this.getXYDomains = function(data) {
-        this.x.domain(d3.extent(data, function(d) { return d.dist; }));
-        this.y.domain([0, d3.max(data, function(d) { return d.alts.DTM25; })]);
+      var getXYDomains = function(data) {
+        x.domain(d3.extent(data, function(d) { return d.dist; }));
+        y.domain([0, d3.max(data, function(d) { return d.alts.DTM25; })]);
         return {
-          X: this.x,
-          Y: this.y
+          X: x,
+          Y: y
         };
       };
 
       this.create = function(data) {
-        var that = this;
-        var domain = this.getXYDomains(data);
+        var domain = getXYDomains(data);
         var axis = createAxis(domain);
         var element = document.createElement('DIV');
         element.className = 'profile-inner';
 
-        this.svg = d3.select(element).append('svg')
+        var svg = d3.select(element).append('svg')
             .attr('width', width + marginHoriz)
             .attr('height', height + marginVert)
             .attr('class', 'profile-svg');
 
-        var group = this.svg
+        var group = svg
           .append('g')
             .attr('class', 'profile-group')
             .attr('transform', 'translate(' + options.margin.left +
                 ', ' + options.margin.top + ')');
 
-        this.area = createArea(domain, 'cardinal');
+        var area = createArea(domain, 'cardinal');
 
         group.append('path')
             .datum(data)
             .attr('class', 'profile-area')
-            .attr('d', that.area)
+            .attr('d', area)
             .style('opacity', 0.9);
 
         group.append('g')
@@ -111,28 +110,20 @@
          return element;
       };
 
-      this.update = function(data) {
-        var that = this;
-        var domain = this.getXYDomains(data);
+      this.update = function(data, element) {
+        var domain = getXYDomains(data);
         var axis = createAxis(domain);
-        var element = document.getElementsByClassName('profile-svg')[0];
         element = d3.select(element);
         var path = element.select('.profile-area');
-        this.area = createArea(domain, 'cardinal');
+        var area = createArea(domain, 'cardinal');
         path.datum(data)
           .transition().duration(1500)
             .attr('class', 'profile-area')
-            .attr('d', that.area)
+            .attr('d', area)
             .style('opacity', 0.9);
 
         element.selectAll('g.x').call(axis.X);
         element.selectAll('g.y').call(axis.Y);
-      };
-
-      this.remove = function() {
-        if (this.svg) {
-          this.svg.remove();
-        }
       };
     }
 
