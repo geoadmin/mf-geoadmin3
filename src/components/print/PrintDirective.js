@@ -301,7 +301,7 @@
       var encodedPermalinkHref =
           encodeURIComponent(gaPermalink.getHref());
 
-      var qrcodeurl = $scope.options.serviceUrl +
+      var qrcodeurl = location.protocol + $scope.options.serviceUrl +
           '/qrcodegenerator?url=' + encodedPermalinkHref;
 
       var encLayers = [];
