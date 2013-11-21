@@ -56,8 +56,8 @@
       };
 
       this.create = function(data) {
-        var domain = getXYDomains(data);
-        var axis = createAxis(domain);
+        this.domain = getXYDomains(data);
+        var axis = createAxis(this.domain);
         var element = document.createElement('DIV');
         element.className = 'profile-inner';
 
@@ -72,7 +72,7 @@
             .attr('transform', 'translate(' + options.margin.left +
                 ', ' + options.margin.top + ')');
 
-        var area = createArea(domain, 'cardinal');
+        var area = createArea(this.domain, 'cardinal');
         group.append('path')
             .datum(data)
             .attr('class', 'profile-area')
@@ -116,11 +116,11 @@
             .attr('height', 100);
 
         legend.append('rect')
+            .attr('class', 'profile-legend-rect')
             .attr('x', width - 65)
             .attr('y', 25)
             .attr('width', 10)
-            .attr('height', 10)
-            .style('fill', 'steelblue');
+            .attr('height', 10);
 
         legend.append('text')
             .attr('x', width - 50)
@@ -133,24 +133,24 @@
             .attr('x', width / 2)
             .attr('y', height + options.margin.bottom)
             .style('text-anchor', 'middle')
-            .text('Distance');
+            .text(options.xLabel);
 
         group.append('text')
             .attr('transform', 'rotate(-90)')
             .attr('y', 0 - options.margin.left)
             .attr('x', 0 - height / 2)
             .attr('dy', '1em')
-            .text('Elevation');
+            .text(options.yLabel);
 
          return element;
       };
 
       this.update = function(data, element) {
-        var domain = getXYDomains(data);
-        var axis = createAxis(domain);
-        element = d3.select(element);
+        this.domain = getXYDomains(data);
+        var axis = createAxis(this.domain);
+        element = d3.select(element[0]);
         var path = element.select('.profile-area');
-        var area = createArea(domain, 'cardinal');
+        var area = createArea(this.domain, 'cardinal');
         path.datum(data)
           .transition().duration(1500)
             .attr('class', 'profile-area')

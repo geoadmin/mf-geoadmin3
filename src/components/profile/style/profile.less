@@ -1,9 +1,7 @@
-.profile-popup {
+#profile-popup {
   overflow: hidden;
   max-height: none;
   max-width: none;
-  width: 1500px;
-  height: 470px;
   .ga-popup-content {
     overflow: hidden;
     max-height: inherit;
@@ -13,7 +11,7 @@
       width: inherit;
       .profile-svg {
         display: block;
-        margin: 0 auto;
+        margin: 0;
         .profile-grid-x,
         .profile-grid-y {
           stroke: lightgrey;
@@ -35,6 +33,38 @@
         .profile-legend-rect {
           fill: steelblue;
         }
+      }
+    }
+    .profile-tooltip {
+      position: absolute;
+      height: 65px;
+      width: 150px;
+      display: none;
+      background-color: black;
+      color: white;
+      opacity: 0.8;
+      padding-top: 8px;
+      font-size: 13px;
+      -webkit-border-radius: 5px;
+      -moz-border-radius: 5px;
+      border-radius: 5px;
+      .profile-tooltip-inner {
+        top: -15px;
+        position: relative;
+        width: inherit;
+        height: inherit;
+        text-align: center;
+      }
+      &:before {
+        content: '';
+        border-color: black transparent transparent;
+        border-style: solid;
+        border-width: 10px;
+        height: 0;
+        width: 0;
+        position: relative;
+        top: 65px;
+        left: 65px;
       }
     }
   }

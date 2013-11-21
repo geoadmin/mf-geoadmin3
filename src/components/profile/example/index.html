@@ -9,10 +9,18 @@
     <link href="style/app.css" rel="stylesheet" media="screen">
   </head>
   <body ng-controller="MainController">
-    <div ga-profile
-         ga-profile-options="options">
+    <div ga-popup="show"
+         ga-popup-options="options"
+         ga-draggable=".ga-popup-title"
+         id="profile-popup">
+      <div ng-controller="ProfileController">
+        <div ga-profile
+             ga-profile-options="options">
+        </div>
+      </div>
     </div>
-    <button class="btn btn-default" ng-click="updateData()" style="position: relative; top: 520px; left: 50%;">Update Data</button>
+    <button class="btn btn-default" ng-click="showPopup()">{{toggleText}} Popup</button>
+    <button class="btn btn-default" ng-click="updateData()">Update Data</button>
 
     <script src="lib/jquery-2.0.3.js"></script>
     <script src="lib/angular-1.2.0rc2.js"></script>
@@ -29,39 +37,50 @@
     <script src="lib/ol-whitespace.js"></script>
     <script src="deps.js"></script>
     <script>
+      goog.require('ga_popup');
       goog.require('ga_profile');
     </script>
     <script>
       (function() {
         var module = angular.module('ga_profile_example', [
+          'ga_popup',
           'ga_profile'
         ]);
 
+        var width = $(document.body).width();
+        var height = $(document.body).height();
+
         module.controller('MainController', ['$scope', '$http', '$rootScope',
           function($scope, $http, $rootScope) {
+            $scope.show = false;
+            $scope.toggleText = 'Show';
+            $scope.className = 'profile-popup';
             $scope.options = {
-              margin: {
-                top: 20,
-                right: 20,
-                bottom: 40,
-                left: 60
-              },
-              width: 1400,
-              height: 400
+              title: 'profile_title',
+              x: '0%',
+              y: '60%'
             };
-            var template = 'components/profile/example/profile.json';
+            $scope.showPopup = showPopup;
             $scope.getData = getData;
-            getData();
-            $scope.updateData = updateData;
+
+            function showPopup() {
+              $scope.show = !$scope.show;
+              $scope.toggleText = $scope.show ? 'Hide' : 'Show';
+              $scope.getData();
+            }
 
             function getData() {
+              var template = 'components/profile/example/profile.json';
               var http = $http.get(template);
               http.success(function(data, status) {
                 $rootScope.$broadcast('gaProfileDataLoaded', data);
               });
             }
 
+            $scope.updateData = updateData;
+
             function updateData() {
+              var template = 'components/profile/example/profile.json';
               var http = $http.get(template);
               var dataRandom = [];
               http.success(function(data, status) {
@@ -72,6 +91,23 @@
                 $rootScope.$broadcast('gaProfileDataUpdated', dataRandom);
               });
             }
+          }
+        ]);
+
+        module.controller('ProfileController', ['$scope',
+          function($scope) {
+            $scope.options = {
+              xLabel: 'Distance',
+              yLabel: 'Elevation',
+              margin: {
+                top: 20,
+                right: 20,
+                bottom: 40,
+                left: 60
+              },
+              width: width - 20,
+              height: (height * 0.4) - 60
+            };
           }
         ]);
       })();
