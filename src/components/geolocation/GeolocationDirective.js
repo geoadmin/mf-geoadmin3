@@ -33,7 +33,13 @@
         var currentAccuracy = null;
         var map = scope.map;
         var view = map.getView().getView2D();
-        var geolocation = new ol.Geolocation();
+        var geolocation = new ol.Geolocation({
+          trackingOptions: {
+            maximumAge: 10000,
+            enableHighAccuracy: true,
+            timeout: 600000
+          }
+        });
         geolocation.on('error', function() {
           btnElt.removeClass('tracking');
           btnElt.addClass('error');
