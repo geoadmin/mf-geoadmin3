@@ -66,11 +66,7 @@
               }),
               source: new ol.source.Vector({
                 projection: projection,
-                parser: parser,
-                data: {
-                  type: 'FeatureCollection',
-                  features: []
-                }
+                parser: parser
               })
             });
             gaDefinePropertiesForLayer(vector);

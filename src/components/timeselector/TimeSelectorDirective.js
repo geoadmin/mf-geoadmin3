@@ -241,19 +241,16 @@
 
               // if there is one no- bod layer we disable the time selector
               var olLayer = olLayers.getAt(i);
-              if (olLayer.highlight) {
+              if (olLayer.highlight || olLayer.background) {
                 continue;
               }
               var id = olLayer.bodId;
               if (!id) {
                 enabled = false;
-                break;
+              } else {
+                enabled = gaLayers.getLayerProperty(id, 'timeEnabled');
               }
-
-              // if there is one no-timeEnabled layer we disable the
-              // timeselector
-              enabled = gaLayers.getLayerProperty(id, 'timeEnabled');
-              if (!gaLayers.getLayerProperty(id, 'background') && !enabled) {
+              if (!enabled) {
                 break;
               }
             }
