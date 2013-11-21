@@ -192,7 +192,6 @@
                                                 'highlightable')) {
                     vector.parseFeatures(value.geometry, parser, projection);
                   }
- 
 
                   var htmlUrl = $scope.options.htmlUrlTemplate
                                 .replace('{Topic}', currentTopic)
