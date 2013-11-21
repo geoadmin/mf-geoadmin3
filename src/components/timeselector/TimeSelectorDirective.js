@@ -120,11 +120,11 @@
         $scope.map.getLayers().forEach(function(olLayer, opt) {
           var timestamps = getLayerTimestamps(olLayer);
           var id = olLayer.bodId;
-          if (timestamps &&
-              id && gaLayers.getLayer(id)) {
+          if (timestamps) {
             var layerTimeStr = timeStr;
-            var timeBehaviour = gaLayers.getLayerProperty(id, 'timeBehaviour');
             if (!angular.isDefined(layerTimeStr)) {
+              var timeBehaviour = gaLayers.getLayerProperty(id,
+                                                            'timeBehaviour');
               if (timeBehaviour === 'all') {
                 layerTimeStr = '';
               } else { //most recent
@@ -145,12 +145,14 @@
 
       /** Utils **/
       var timeStampFromYear = function(yearStr, timestamps) {
+        var ts;
         for (var i = 0, ii = timestamps.length; i < ii; i++) {
+          ts = timestamps[i];
           //Strange if statement here because yearStr can either be
           //full timestamp string or year-only string...
-          if (yearStr === timestamps[i] ||
-              parseInt(yearStr) === yearFromString(timestamps[i])) {
-            return timestamps[i];
+          if (yearStr === ts ||
+              parseInt(yearStr) === yearFromString(ts)) {
+            return ts;
           }
         }
         return undefined;
