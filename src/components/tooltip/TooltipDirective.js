@@ -34,10 +34,50 @@
                 popup,
                 canceler,
                 currentTopic,
-                vector;
+                vector,
+                projection,
+                parser,
+                year;
+
+            projection = map.getView().getProjection();
+            parser = new ol.parser.GeoJSON();
+
+            vector = new ol.layer.Vector({
+              style: new ol.style.Style({
+                symbolizers: [
+                  new ol.style.Fill({
+                    color: '#ffff00'
+                  }),
+                  new ol.style.Stroke({
+                    color: '#ff8000',
+                    width: 3
+                  }),
+                  new ol.style.Shape({
+                    size: 20,
+                    fill: new ol.style.Fill({
+                      color: '#ffff00'
+                    }),
+                    stroke: new ol.style.Stroke({
+                      color: '#ff8000',
+                      width: 3
+                    })
+                  })
+                ]
+              }),
+              source: new ol.source.Vector({
+                projection: projection,
+                parser: parser
+              })
+            });
+            gaDefinePropertiesForLayer(vector);
+            vector.highlight = true;
 
             $scope.$on('gaTopicChange', function(event, topic) {
               currentTopic = topic.id;
+            });
+
+            $scope.$on('gaTimeSelectorChange', function(event, currentyear) {
+              year = currentyear;
             });
 
             gaMapClick.listen(map, function(evt) {
@@ -63,14 +103,20 @@
             function findFeatures(coordinate, size, mapExtent) {
               var identifyUrl = $scope.options.identifyUrlTemplate
                                 .replace('{Topic}', currentTopic),
-                  layersToQuery = getLayersToQuery();
+                  layersToQuery = getLayersToQuery(),
+                  responseCount = 0,
+                  layerToQuery,
+                  params,
+                  identifyCount,
+                  i;
               // Cancel all pending requests
               if (canceler) {
                 canceler.resolve();
               }
               // Create new cancel object
               canceler = $q.defer();
-              if (layersToQuery.length) {
+              identifyCount = layersToQuery.length;
+              if (identifyCount) {
                 // Show wait cursor
                 //
                 // The tricky part: without the $timeout, the call to
@@ -83,10 +129,9 @@
                   bodyEl.addClass(waitclass);
                 }, 0);
 
-                // Look for all features under clicked pixel
-                $http.get(identifyUrl, {
-                  timeout: canceler.promise,
-                  params: {
+                for (i = 0; i < identifyCount; i++) {
+                  layerToQuery = layersToQuery[i];
+                  params = {
                     geometryType: 'esriGeometryPoint',
                     geometryFormat: 'geojson',
                     geometry: coordinate[0] + ',' + coordinate[1],
@@ -94,19 +139,32 @@
                     imageDisplay: size[0] + ',' + size[1] + ',96',
                     mapExtent: mapExtent.join(','),
                     tolerance: $scope.options.tolerance,
-                    layers: 'all:' + layersToQuery
+                    layers: 'all:' + layerToQuery.id
+                  };
+                  if (layerToQuery.year) {
+                    params.timeInstant = layerToQuery.year;
                   }
-                }).success(function(features) {
-                  if (features.results.length == 0) {
-                    // if there are features, keeps waitclass until
-                    // popup is displayed
+
+                  $http.get(identifyUrl, {
+                    timeout: canceler.promise,
+                    params: params
+                  }).success(function(features) {
+                    if (features.results.length == 0) {
+                      incResponseCount();
+                    }
+                    showFeatures(mapExtent, size, features.results);
+                  }).error(function() {
+                    incResponseCount();
+                  });
+                }
+
+                function incResponseCount() {
+                  responseCount += 1;
+                  if (responseCount == identifyCount) {
                     bodyEl.removeClass(waitclass);
                   }
-                  showFeatures(mapExtent, size, features.results);
-                }).error(function() {
-                  bodyEl.removeClass(waitclass);
-                });
-              }
+                }
+             }
 
               // htmls = [] would break the reference in the popup
               htmls.splice(0, htmls.length);
@@ -114,12 +172,23 @@
               if (popup) {
                 popup.close();
               }
+              vector.clear();
+              map.removeLayer(vector);
+              map.addLayer(vector);
             }
 
             function showFeatures(mapExtent, size, foundFeatures) {
-              var drawFeatures = [];
               if (foundFeatures && foundFeatures.length > 0) {
+
                 angular.forEach(foundFeatures, function(value) {
+
+                  //draw feature, but only if it should be drawn
+                  if (gaLayers.getLayer(value.layerBodId) &&
+                      gaLayers.getLayerProperty(value.layerBodId,
+                                                'highlightable')) {
+                    vector.parseFeatures(value.geometry, parser, projection);
+                  }
+
                   var htmlUrl = $scope.options.htmlUrlTemplate
                                 .replace('{Topic}', currentTopic)
                                 .replace('{Layer}', value.layerBodId)
@@ -139,6 +208,7 @@
                         popup = gaPopup.create({
                           className: 'ga-tooltip',
                           onCloseCallback: function() {
+                            vector.clear();
                             map.removeLayer(vector);
                           },
                           destroyOnClose: false,
@@ -163,68 +233,55 @@
                   }).error(function() {
                     bodyEl.removeClass(waitclass);
                   });
-
-                  //draw feature, but only if it should be drawn
-                  if (gaLayers.getLayer(value.layerBodId) &&
-                      gaLayers.getLayerProperty(value.layerBodId,
-                                                'highlightable')) {
-                      drawFeatures.push(value);
-                  }
                 });
-
-                // A new vector layer is created each time because
-                // there is no public function to access the features
-                // from the source.
-                map.removeLayer(vector);
-                vector = new ol.layer.Vector({
-                  style: new ol.style.Style({
-                    symbolizers: [
-                      new ol.style.Fill({
-                        color: '#ffff00'
-                      }),
-                      new ol.style.Stroke({
-                        color: '#ff8000',
-                        width: 3
-                      }),
-                      new ol.style.Shape({
-                        size: 20,
-                        fill: new ol.style.Fill({
-                          color: '#ffff00'
-                        }),
-                        stroke: new ol.style.Stroke({
-                          color: '#ff8000',
-                          width: 3
-                        })
-                      })
-                    ]
-                  }),
-                  source: new ol.source.Vector({
-                    projection: map.getView().getProjection(),
-                    parser: new ol.parser.GeoJSON(),
-                    data: {
-                      type: 'FeatureCollection',
-                      features: drawFeatures
-                    }
-                  })
-                });
-                gaDefinePropertiesForLayer(vector);
-                vector.highlight = true;
-                map.addLayer(vector);
               }
             }
 
             function getLayersToQuery(layers) {
               var layersToQuery = [];
               map.getLayers().forEach(function(l) {
-                var bodId = l.bodId;
+                var bodId = l.bodId,
+                    layerToQuery = {},
+                    timestamps,
+                    src;
                 if (gaLayers.getLayer(bodId) &&
                     gaLayers.getLayerProperty(bodId, 'queryable') &&
                     l.visible &&
                     layersToQuery.indexOf(bodId) < 0) {
-                  layersToQuery.push(bodId);
+                  layerToQuery.id = bodId;
+
+                  timestamps = getLayerTimestamps(bodId);
+                  if (angular.isDefined(timestamps)) {
+                    src = l.getSource();
+                    layerToQuery.year = year;
+                    //FIXME: we should use new 'timebehaviour' attribute
+                    //to define what should happen if we have
+                    //year === undefined (either take last year or no
+                    //time attribute at all (meaning all))
+                    //Note: year === null does not exist anymore
+                    if (src instanceof ol.source.WMTS &&
+                        !angular.isDefined(year)) {
+                      layerToQuery.year = yearFromString(timestamps[0]);
+                    }
+                  }
+
+                  layersToQuery.push(layerToQuery);
                 }
               });
-              return layersToQuery.join(',');
+              return layersToQuery;
+            }
+
+            function getLayerTimestamps(id) {
+              var timestamps;
+              if (id && gaLayers.getLayer(id) &&
+                  gaLayers.getLayerProperty(id, 'timeEnabled')) {
+                timestamps = gaLayers.getLayerProperty(id, 'timestamps');
+              }
+              return timestamps;
+            }
+
+            function yearFromString(timestamp) {
+              return parseInt(timestamp.substr(0, 4));
             }
           }
         };
