@@ -1268,6 +1268,9 @@ msgstr "http://www.bfe.admin.ch/index.html?lang=en"
 msgid "ch.bfs"
 msgstr "FSO"
 
+msgid "ch.bfs.arealstatistik"
+msgstr "Area statistics 2004/2009"
+
 msgid "ch.bfs.arealstatistik-1985"
 msgstr "Area statistics 1979/1985"
 
@@ -2562,14 +2565,29 @@ msgstr "Artificial surfaces"
 msgid "tt_bildstreifen_Aufloesung"
 msgstr "Resolution"
 
+msgid "tt_bildstreifen_Aufloesung"
+msgstr "Resolution"
+
+msgid "tt_bildstreifen_Flugdatum"
+msgstr "Flight date"
+
 msgid "tt_bildstreifen_Flugdatum"
 msgstr "Flight date"
 
 msgid "tt_bildstreifen_Link"
 msgstr "Order"
 
+msgid "tt_bildstreifen_Link"
+msgstr "Order"
+
 msgid "tt_bildstreifen_Quickview"
 msgstr "Quickview"
+
+msgid "tt_bildstreifen_Quickview"
+msgstr "Quickview"
+
+msgid "tt_bildstreifen_ebkey"
+msgstr "Strip number"
 
 msgid "tt_bildstreifen_ebkey"
 msgstr "Strip number"

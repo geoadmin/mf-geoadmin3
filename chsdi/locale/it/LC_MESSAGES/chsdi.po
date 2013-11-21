@@ -1268,6 +1268,9 @@ msgstr "http://www.bfe.admin.ch/index.html?lang=it"
 msgid "ch.bfs"
 msgstr "UST"
 
+msgid "ch.bfs.arealstatistik"
+msgstr "Statistica di superficie 2004/2009"
+
 msgid "ch.bfs.arealstatistik-1985"
 msgstr "Statistica di superficie 1979/1985"
 
@@ -2561,14 +2564,29 @@ msgstr "Superfici costruite"
 msgid "tt_bildstreifen_Aufloesung"
 msgstr "Risoluzione"
 
+msgid "tt_bildstreifen_Aufloesung"
+msgstr "Risoluzione"
+
+msgid "tt_bildstreifen_Flugdatum"
+msgstr "Data del volo"
+
 msgid "tt_bildstreifen_Flugdatum"
 msgstr "Data del volo"
 
 msgid "tt_bildstreifen_Link"
 msgstr "Ordinare"
 
+msgid "tt_bildstreifen_Link"
+msgstr "Ordinare"
+
 msgid "tt_bildstreifen_Quickview"
 msgstr "Quickview"
+
+msgid "tt_bildstreifen_Quickview"
+msgstr "Quickview"
+
+msgid "tt_bildstreifen_ebkey"
+msgstr "Numero strisciata"
 
 msgid "tt_bildstreifen_ebkey"
 msgstr "Numero strisciata"

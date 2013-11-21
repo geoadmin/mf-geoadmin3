@@ -806,6 +806,9 @@ msgstr ""
 msgid "ch.bfe.stauanlagen-bundesaufsicht"
 msgstr ""
 
+msgid "ch.bfs.arealstatistik"
+msgstr ""
+
 msgid "ch.bfs.arealstatistik-1985"
 msgstr ""
 
