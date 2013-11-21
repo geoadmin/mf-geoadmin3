@@ -169,8 +169,8 @@
   module.directive('gaTimeSelectorBt', function($rootScope, gaPermalink) {
     return {
       restrict: 'A',
-      template: '<a href="#" class="time-selector-bt" ng-click="toggle()"' +
-          ' ng-class="stateClass"></a>',
+      template: '<a href="#" class="time-selector-bt"' +
+          ' ng-click="toggle($event)" ng-class="stateClass"></a>',
       link: function(scope, elt, attrs) {
         scope.isDisable = true;
 
@@ -197,11 +197,15 @@
         });
 
         // Toggle the state of the component
-        scope.toggle = function() {
+        scope.toggle = function(event) {
           if (!scope.isDisable) {
             scope.isActive = !scope.isActive;
             scope.stateClass = scope.isActive ? 'active' : 'enabled';
             $rootScope.$broadcast('gaTimeSelectorToggle', scope.isActive);
+          }
+          // Avoid the add of # at the end of the url
+          if (event) {
+            event.preventDefault();
           }
         };
       }
