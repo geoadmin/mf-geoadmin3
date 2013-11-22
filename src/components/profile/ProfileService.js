@@ -111,31 +111,33 @@
         var legend = group.append('g')
             .attr('class', 'profile-legend')
             .attr('x', width - 65)
-            .attr('y', 25)
+            .attr('y', 10)
             .attr('width', 100)
             .attr('height', 100);
 
         legend.append('rect')
             .attr('class', 'profile-legend-rect')
             .attr('x', width - 65)
-            .attr('y', 25)
+            .attr('y', 10)
             .attr('width', 10)
             .attr('height', 10);
 
         legend.append('text')
             .attr('x', width - 50)
-            .attr('y', 34)
+            .attr('y', 19)
             .attr('width', 100)
             .attr('height', 30)
             .text('DTM 25');
 
         group.append('text')
+            .attr('class', 'profile-label')
             .attr('x', width / 2)
             .attr('y', height + options.margin.bottom)
             .style('text-anchor', 'middle')
             .text(options.xLabel);
 
         group.append('text')
+            .attr('class', 'profile-label')
             .attr('transform', 'rotate(-90)')
             .attr('y', 0 - options.margin.left)
             .attr('x', 0 - height / 2)
