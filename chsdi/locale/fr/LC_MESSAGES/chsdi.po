@@ -1268,6 +1268,9 @@ msgstr "http://www.bfe.admin.ch/index.html?lang=fr"
 msgid "ch.bfs"
 msgstr "OFS"
 
+msgid "ch.bfs.arealstatistik"
+msgstr "Stat. superficie 2004/09 NOAS04"
+
 msgid "ch.bfs.arealstatistik-1985"
 msgstr "Stat. superficie 1979/85 NOAS04"
 
@@ -2561,14 +2564,29 @@ msgstr "Surfaces bâties"
 msgid "tt_bildstreifen_Aufloesung"
 msgstr "Résolution"
 
+msgid "tt_bildstreifen_Aufloesung"
+msgstr "Résolution"
+
+msgid "tt_bildstreifen_Flugdatum"
+msgstr "Date du vol"
+
 msgid "tt_bildstreifen_Flugdatum"
 msgstr "Date du vol"
 
 msgid "tt_bildstreifen_Link"
 msgstr "Bestellen"
 
+msgid "tt_bildstreifen_Link"
+msgstr "Bestellen"
+
 msgid "tt_bildstreifen_Quickview"
 msgstr "Quickview"
+
+msgid "tt_bildstreifen_Quickview"
+msgstr "Quickview"
+
+msgid "tt_bildstreifen_ebkey"
+msgstr "No de la bande"
 
 msgid "tt_bildstreifen_ebkey"
 msgstr "No de la bande"
