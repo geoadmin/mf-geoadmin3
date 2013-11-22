@@ -23,7 +23,7 @@
     <button class="btn btn-default" ng-click="updateData()">Update Data</button>
 
     <script src="lib/jquery-2.0.3.js"></script>
-    <script src="lib/angular-1.2.0rc2.js"></script>
+    <script src="lib/angular-1.2.1.js"></script>
     <script src="lib/angular-translate-1.1.0.js"></script>
     <script src="lib/angular-translate-loader-static-files-0.1.5.js"></script>
     <script src="lib/bootstrap-3.0.0.js"></script>
@@ -85,7 +85,7 @@
               var dataRandom = [];
               http.success(function(data, status) {
                 angular.forEach(data, function(value, key) {
-                  value.alts.DTM25 += Math.round(Math.random() * 500 - Math.random() * 500);
+                  value.alts.DTM25 += Math.round(Math.random() * 200);
                   this.push(value);
                 }, dataRandom);
                 $rootScope.$broadcast('gaProfileDataUpdated', dataRandom);
@@ -105,7 +105,7 @@
                 bottom: 40,
                 left: 60
               },
-              width: width - 20,
+              width: width - 30,
               height: (height * 0.4) - 60
             };
           }
