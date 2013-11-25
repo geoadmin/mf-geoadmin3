@@ -56,7 +56,7 @@
                   var accuracy = 5;
                   //TODO use binary search instead
                   for (var i = start; i > end; i += accuracy) {
-                    var pos = this.getPointAtLength(i);
+                    pos = this.getPointAtLength(i);
                     if (pos.x >= x) {
                       break;
                     }
