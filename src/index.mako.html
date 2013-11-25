@@ -68,6 +68,7 @@
   <body ng-class="[topicId, globals.searchFocused ? 'search-focused' : '', globals.touch ? 'touch' : '']">
     <!--[if IE]>
       <script>
+       (function(){
        var msgDocumentMode = "";
        var msgCompatibilityView = "";
        if (document.documentMode < 9) {
@@ -79,6 +80,7 @@
        if (msgDocumentMode.length > 0 || msgCompatibilityView.length > 0) {
          alert((msgDocumentMode.length > 0 ? msgDocumentMode +  " " : "") + (msgCompatibilityView.length > 0 ? msgCompatibilityView +  " " : "") + "Click on F12 and change the compatibility view mode and the document mode.");
        }
+       })();
       </script>
     <![endif]-->
     <div id="header" class="navbar navbar-fixed-top">
