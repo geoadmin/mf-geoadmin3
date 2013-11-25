@@ -159,14 +159,20 @@
             .attr('d', area)
             .style('opacity', 0.9);
 
-        element.select('g.x').call(axis.X);
-        element.select('g.y').call(axis.Y);
+        element.select('g.x')
+          .transition().duration(1500)
+            .call(axis.X);
+        element.select('g.y')
+          .transition().duration(1500)
+            .call(axis.Y);
         element.select('g.profile-grid-x')
+          .transition().duration(1500)
             .call(axis.X
                 .tickSize(-height, 0, 0)
                 .tickFormat('')
             );
         element.select('g.profile-grid-y')
+          .transition().duration(1500)
             .call(axis.Y
                 .tickSize(-width, 0, 0)
                 .tickFormat('')
