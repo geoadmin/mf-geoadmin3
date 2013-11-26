@@ -27,6 +27,7 @@ class Arealstatistik2009(Base, Vector):
 
 register('ch.bfs.arealstatistik', Arealstatistik2009)
 
+
 class Arealstatistik1985(Base, Vector):
     __tablename__ = 'arealstatistik_std_1985'
     __table_args__ = ({'schema': 'bfs', 'autoload': False})
