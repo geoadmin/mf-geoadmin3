@@ -76,8 +76,7 @@
         group.append('path')
             .datum(data)
             .attr('class', 'profile-area')
-            .attr('d', area)
-            .style('opacity', 0.9);
+            .attr('d', area);
 
         group.append('g')
             .attr('class', 'x axis')
@@ -156,8 +155,7 @@
         path.datum(data)
           .transition().duration(1500)
             .attr('class', 'profile-area')
-            .attr('d', area)
-            .style('opacity', 0.9);
+            .attr('d', area);
 
         element.select('g.x')
           .transition().duration(1500)
