@@ -6,6 +6,33 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no,
     width=device-width">
     <base href="../../../">
+    <script>
+      function toAbsURL(s) {
+        var l = location, h, p, f, i;
+        if (/^\w+:/.test(s)) {
+          return s;
+        }
+        h = l.protocol + '//' + l.host;
+        if (s.indexOf('/') == 0) {
+          return h + s;
+        }
+        p = l.pathname.replace(/\/[^\/]*$/, '');
+        f = s.match(/\.\.\//g);
+        if (f) {
+          s = s.substring(f.length * 3);
+          for (i = f.length; i--;) {
+            p = p.substring(0, p.lastIndexOf('/'));
+          }
+        }
+        return h + p + '/' + s;
+      }
+    </script>
+    <!--[if IE]>
+    <script>
+      var base = document.getElementsByTagName('base')[0];
+      base.href = toAbsURL(base.href);
+    </script>
+    <![endif]-->
     <link href="style/app.css" rel="stylesheet" media="screen">
     <style>
       #map {
@@ -47,8 +74,7 @@
     <script>
       goog.require('ga_importwms');
       goog.require('ga_map');
-    </script>
-    <script>
+
       (function() {
         var module = angular.module('ga_importwms_example', [
           'ga_importwms',

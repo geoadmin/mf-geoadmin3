@@ -1,94 +1,120 @@
 <!DOCTYPE html>
 <html ng-app='ga_map_example'>
-<head>
-  <title>Map Component Example</title>
-  <meta charset="utf-8">
-  <meta name="viewport"
-        content="initial-scale=1.0, user-scalable=no, width=device-width">
-  <base href="../../../">
-  <style>
-    #map {
-      width: 600px;
-      height: 400px;
-    }
-  </style>
-</head>
-<body ng-controller="MainController">
+  <head>
+    <title>Map Component Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <base href="../../../">
+    <script>
+      function toAbsURL(s) {
+        var l = location, h, p, f, i;
+        if (/^\w+:/.test(s)) {
+          return s;
+        }
+        h = l.protocol + '//' + l.host;
+        if (s.indexOf('/') == 0) {
+          return h + s;
+        }
+        p = l.pathname.replace(/\/[^\/]*$/, '');
+        f = s.match(/\.\.\//g);
+        if (f) {
+          s = s.substring(f.length * 3);
+          for (i = f.length; i--;) {
+            p = p.substring(0, p.lastIndexOf('/'));
+          }
+        }
+        return h + p + '/' + s;
+      }
+    </script>
+    <!--[if IE]>
+    <script>
+      var base = document.getElementsByTagName('base')[0];
+      base.href = toAbsURL(base.href);
+    </script>
+    <![endif]-->
+    <style>
+      #map {
+        width: 600px;
+        height: 400px;
+      }
+    </style>
+  </head>
+  <body ng-controller="MainController">
 
-  <div id="map" ga-map ga-map-map="map"></div>
+    <div id="map" ga-map ga-map-map="map"></div>
 
-  <div>
-    <label for="visible">Layer visibility</label>
-    <input id="visible" type="checkbox" ng-model="layer.visible" />
-  </div>
-  <div>
-    <label for="opacity">Layer opacity</label>
-    <input id="opacity" type="range" min="0" max="1" step="0.01" ng-model="layer.opacity" />
-  </div>
+    <div>
+      <label for="visible">Layer visibility</label>
+      <input id="visible" type="checkbox" ng-model="layer.visible" />
+    </div>
+    <div>
+      <label for="opacity">Layer opacity</label>
+      <input id="opacity" type="range" min="0" max="1" step="0.01" ng-model="layer.opacity" />
+    </div>
 
-  <script src="lib/jquery-2.0.3.js"></script>
-  <script src="lib/angular-1.2.1.js"></script>
-  <script src="lib/angular-translate-1.1.0.js"></script>
-  <script src="lib/angular-translate-loader-static-files-0.1.5.js"></script>
-  <script src="lib/proj4js-compressed.js"></script>
-  <script src="lib/EPSG21781.js"></script>
-  <script>
-    window.CLOSURE_NO_DEPS = true;
-  </script>
-  <script src="lib/ol-whitespace.js"></script>
-  <script src="deps.js"></script>
-  <script>
-    goog.require('ga_map');
-  </script>
-  <script>
-    (function() {
-      var module = angular.module('ga_map_example', [
-        'ga_map'
-      ]);
+    <script src="lib/jquery-2.0.3.js"></script>
+    <script src="lib/angular-1.2.1.js"></script>
+    <script src="lib/angular-translate-1.1.0.js"></script>
+    <script src="lib/angular-translate-loader-static-files-0.1.5.js"></script>
+    <script src="lib/proj4js-compressed.js"></script>
+    <script src="lib/EPSG21781.js"></script>
+    <script>
+      window.CLOSURE_NO_DEPS = true;
+    </script>
+    <script src="lib/ol-whitespace.js"></script>
+    <script src="deps.js"></script>
+    <script>
+      goog.require('ga_map');
 
-      module.config(['gaLayersProvider', function(gaLayersProvider) {
-        gaLayersProvider.wmtsGetTileUrlTemplate =
-            'http://wmts{0-4}.geo.admin.ch/1.0.0/{Layer}/default/' +
-            '{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
+      (function() {
+        var module = angular.module('ga_map_example', [
+          'ga_map'
+        ]);
 
-        gaLayersProvider.layersConfigUrlTemplate =
+        module.config(['gaLayersProvider', function(gaLayersProvider) {
+          gaLayersProvider.wmtsGetTileUrlTemplate =
+              'http://wmts{0-4}.geo.admin.ch/1.0.0/{Layer}/default/' +
+              '{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
+
+          gaLayersProvider.layersConfigUrlTemplate =
             'http://mf-chsdi3.dev.bgdi.admin.ch/rest/services/{Topic}/MapServer/layersconfig' +
             '?lang={Lang}';
-      }]);
-
-      module.controller('MainController', ['$scope',
-        'gaLayers', function($scope, gaLayers) {
-
-          var swissExtent = [485869.5728, 76443.1884, 837076.5648, 299941.7864];
-          var swissProjection = ol.proj.configureProj4jsProjection({
-            code: 'EPSG:21781',
-            extent: swissExtent
-          });
-
-          var resolutions = [650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0, 2.5,
-            2.0, 1.0, 0.5, 0.25, 0.1];
-
-          var map = new ol.Map({
-            controls: ol.control.defaults({
-              attribution: false
-            }),
-            renderer: ol.RendererHint.CANVAS,
-            view: new ol.View2D({
-              projection: swissProjection,
-              center: ol.extent.getCenter(swissExtent),
-              resolution: 500.0,
-              resolutions: resolutions
-            })
-          });
-
-          $scope.map = map;
-          gaLayers.loadForTopic('inspire', 'en').then(function() {
-            $scope.layer = gaLayers.getOlLayerById('ch.swisstopo.swissimage');
-            map.addLayer($scope.layer);
-          });
         }]);
 
-    })();
-  </script>
-</body>
+        module.controller('MainController', ['$scope',
+          'gaLayers', function($scope, gaLayers) {
+
+            var swissExtent = [485869.5728, 76443.1884, 837076.5648, 299941.7864];
+            var swissProjection = ol.proj.configureProj4jsProjection({
+              code: 'EPSG:21781',
+              extent: swissExtent
+            });
+
+            var resolutions = [650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0, 2.5,
+              2.0, 1.0, 0.5, 0.25, 0.1];
+
+            var map = new ol.Map({
+              controls: ol.control.defaults({
+                attribution: false
+              }),
+              renderer: ol.RendererHint.CANVAS,
+              view: new ol.View2D({
+                projection: swissProjection,
+                center: ol.extent.getCenter(swissExtent),
+                resolution: 500.0,
+                resolutions: resolutions
+              })
+            });
+
+            $scope.map = map;
+            gaLayers.loadForTopic('inspire', 'en').then(function() {
+              $scope.layer = gaLayers.getOlLayerById('ch.swisstopo.swissimage');
+              map.addLayer($scope.layer);
+            });
+          }]);
+
+      })();
+    </script>
+  </body>
 </html>
