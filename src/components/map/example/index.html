@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport"
           content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <base href="../../../">
     <script>
       function toAbsURL(s) {
@@ -29,8 +30,10 @@
     </script>
     <!--[if IE]>
     <script>
-      var base = document.getElementsByTagName('base')[0];
-      base.href = toAbsURL(base.href);
+      (function() {
+        var base = document.getElementsByTagName('base')[0];
+        base.href = toAbsURL(base.href);
+      })();
     </script>
     <![endif]-->
     <style>
