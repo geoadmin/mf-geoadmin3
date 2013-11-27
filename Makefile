@@ -14,7 +14,6 @@ GIT_BRANCH := $(shell git rev-parse --symbolic-full-name --abbrev-ref HEAD)
 GIT_LAST_BRANCH := $(shell if [ -f .build-artefacts/last-git-branch ]; then cat .build-artefacts/last-git-branch 2> /dev/null; else echo 'dummy'; fi)
 DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branches
 
-
 .PHONY: help
 help:
 	@echo "Usage: make <target>"
@@ -71,8 +70,7 @@ deploybranch: deploy/deploy-branch.cfg $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/con
 	cd $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH); \
 	git checkout $(GIT_BRANCH); \
 	git pull; \
-	source rc_dev; \
-	make all; \
+	bash -c "source rc_dev && make all"; \
 	sudo -u deploy deploy -r deploy/deploy-branch.cfg ab
 
 .PHONY: updateol
