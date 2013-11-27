@@ -16,6 +16,9 @@
 
 % if extended:
   <link rel="stylesheet" type="text/css" href="../../../../../../css/extended.css"/>
+  <link rel="stylesheet" type="text/css" href="../../../../../../css/blueimp-gallery-2.11.0.min.css"/>
+  <script src="../../../../../../js/jquery-2.0.3.min.js"></script>
+  <script src="../../../../../../js/blueimp-gallery-2.11.5.min.js"></script>
 % endif
 
 <div class="htmlpopup-container">
