@@ -290,14 +290,14 @@
    */
   module.provider('gaKml', function() {
     // Create the Parser the KML file
-    /*var kmlParser = new ol.parser.KML({
+    var kmlParser = null;/*new ol.parser.KML({
       maxDepth: 1,
       dimension: 2,
       extractStyles: true,
       extractAttributes: true
     });
 
-    var defaultStyle = new ol.style.Style({
+    var defaultStyle = {}; /*new ol.style.Style({
       symbolizers: [
         new ol.style.Fill({
           color: '#ff0000'
@@ -317,8 +317,7 @@
           })
         })
       ]
-    });
-    */
+    });*/
     this.$get = function($http, gaPopup, gaDefinePropertiesForLayer,
         gaMapClick) {
       var Kml = function(proxyUrl) {
