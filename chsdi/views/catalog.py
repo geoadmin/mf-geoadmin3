@@ -35,11 +35,9 @@ class CatalogService(MapNameValidation):
         current_depth = 0
 
         def getListIndexFromPath(list_nodes, category):
-            i = 0
-            for node in list_nodes:
+            for i, node in enumerate(list_nodes):
                 if node['category'] == category:
                     return i
-                i += 1
 
         if len(rows) < 1:
             return nodes
