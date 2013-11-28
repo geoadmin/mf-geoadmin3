@@ -20,3 +20,4 @@ sphinx.conf
 .idea
 deploy/hooks/pre-create-code
 node_modules
+chsdi/static/css/extended.min.css
