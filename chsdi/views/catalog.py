@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from pyramid.view import view_config
+from pyramid.renderers import render_to_response
 from pyramid.httpexceptions import HTTPNotFound
 
 from chsdi.models.bod import get_catalog_model
@@ -17,8 +18,6 @@ class CatalogService(MapNameValidation):
 
     @view_config(route_name='catalog', renderer='jsonp')
     def catalog(self):
-        from pyramid.renderers import render_to_response
-
         model = get_catalog_model(self.lang, self.mapName)
         rows = self.request.db.query(model)\
             .filter(model.topic.ilike('%%%s%%' % self.mapName))\
@@ -39,8 +38,14 @@ class CatalogService(MapNameValidation):
                 if node['category'] == category:
                     return i
 
-        if len(rows) < 1:
-            return nodes
+        def cleanNode(node):
+            # Remove useless info
+            node.pop('path', None)
+            node.pop('depth', None)
+            node.pop('topic', None)
+            node.pop('orderKey', None)
+            node.pop('parentId', None)
+            return node
 
         nodes_final = {}
 
@@ -67,24 +72,28 @@ class CatalogService(MapNameValidation):
         # Append the last list
         nodes_all.append(nodes_depth)
 
+        # At this point nodes are classified by hierachical level
+        # The children property must contain an array of nodes
         for i in range(0, len(nodes_all)):
             for node in nodes_all[i]:
                 path = node['path'].split('/')
-                if len(path) == 1:
-                    nodes_final[path[0]] = node
-                elif len(path) == 2:
-                    nodes_final[path[0]]['children'].append(node)
-                elif len(path) == 3:
-                    index = getListIndexFromPath(nodes_final[path[0]]['children'], path[1])
-                    nodes_final[path[0]]['children'][index]['children'].append(node)
-                elif len(path) == 4:
-                    index_1 = getListIndexFromPath(nodes_final[path[0]]['children'], path[1])
-                    index_2 = getListIndexFromPath(nodes_final[path[0]]['children'][index_1]['children'], path[2])
-                    nodes_final[path[0]]['children'][index_1]['children'][index_2]['children'].append(node)
-                elif len(path) == 5:
-                    index_1 = getListIndexFromPath(nodes_final[path[0]]['children'], path[1])
-                    index_2 = getListIndexFromPath(nodes_final[path[0]]['children'][index_1]['children'], path[2])
-                    index_3 = getListIndexFromPath(nodes_final[path[0]]['children'][index_1]['children'][index_2]['children'], path[3])
-                    nodes_final[path[0]]['children'][index_1]['children'][index_2]['children'][index_3]['children'].append(node)
+                root = path[0]
+                node = cleanNode(node)
+                if i == 0:
+                    nodes_final[root] = node
+                elif i == 1:
+                    nodes_final[root]['children'].append(node)
+                elif i == 2:
+                    idx = getListIndexFromPath(nodes_final[path[0]]['children'], path[1])
+                    nodes_final[root]['children'][idx]['children'].append(node)
+                elif i == 3:
+                    idx_1 = getListIndexFromPath(nodes_final[path[0]]['children'], path[1])
+                    idx_2 = getListIndexFromPath(nodes_final[path[0]]['children'][idx_1]['children'], path[2])
+                    nodes_final[root]['children'][idx_1]['children'][idx_2]['children'].append(node)
+                elif i == 4:
+                    idx_1 = getListIndexFromPath(nodes_final[path[0]]['children'], path[1])
+                    idx_2 = getListIndexFromPath(nodes_final[path[0]]['children'][idx_1]['children'], path[2])
+                    idx_3 = getListIndexFromPath(nodes_final[path[0]]['children'][idx_1]['children'][idx_2]['children'], path[3])
+                    nodes_final[root]['children'][idx_1]['children'][idx_2]['children'][idx_3]['children'].append(node)
 
         return nodes_final
