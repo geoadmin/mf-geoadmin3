@@ -83,7 +83,7 @@
                   '';
 
               // We don't add the root layer node in the list
-              for (var i = 0, len = result.capability.layers.length - 1;
+              for (var i = 0, len = result.capability.layers.length;
                   i < len; i++) {
                 var layer = result.capability.layers[i];
 

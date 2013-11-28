@@ -124,7 +124,7 @@ describe('ga_importwms__directive', function() {
 
     it('uploads and parses successfully', inject(function($rootScope) {
       expect($rootScope.userMessage).to.be('parse_succeeded');   
-      expect($rootScope.layers.length).to.be(2);    
+      expect($rootScope.layers.length).to.be(3);    
     }));
     
    /* it('reorders list of layers', inject(function($rootScope) {
