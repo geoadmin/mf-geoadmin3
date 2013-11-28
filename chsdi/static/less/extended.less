@@ -46,10 +46,16 @@
       padding: 4px;
       width: 47%;
       float: left;
+      @media print {
+        width: 100%;
+      }
     }
     .image {
       vertical-align: top;
       width: 100%;
+    }
+    @media print {
+      border: none;
     }
   }
   h1 {
@@ -79,6 +85,11 @@
     }
   }
   @media screen and (max-width: 768px) {
+    width: 90%;
+    padding-right: 5%;
+    padding-left: 5%;
+  }
+  @media print {
     width: 90%;
     padding-right: 5%;
     padding-left: 5%;
