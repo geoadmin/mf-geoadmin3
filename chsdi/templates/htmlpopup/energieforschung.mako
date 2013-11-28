@@ -35,9 +35,9 @@
 </%def>
 
 <%def name="extended_info(c, lang)">
-
 <%
-lang = 'de' if lang == 'rm' else 'de'
+c['stable_id'] = True
+lang = 'de' if lang == 'rm' else lang
 title = 'titel_%s' %lang
 beschreibung = 'beschreibung_%s' %lang
 projektstatus = 'projektstatus_%s' %lang
@@ -215,7 +215,7 @@ ort = 'ort_%s' %lang
 </br>
 <div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls">
   <div class="slides"></div>
-  <h3 class="title"></h3>
+  <div class="title">${c['attributes'][title] or ''}</div>
   <a class="prev">&lsaquo;</a>
   <a class="next">&rsaquo;</a>
   <a class="close">x</a>
