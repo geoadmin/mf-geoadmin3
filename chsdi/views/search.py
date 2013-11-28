@@ -32,7 +32,9 @@ class Search(SearchValidation):
         self.bbox = request.params.get('bbox')
         self.quadindex = None
         self.featureIndexes = request.params.get('features')
+        self.timeInstant = request.params.get('timeInstant')
         self.typeInfo = request.params.get('type')
+
         self.geodataStaging = request.registry.settings['geodata_staging']
         self.results = {'results': []}
         self.request = request
@@ -108,6 +110,8 @@ class Search(SearchValidation):
         self.sphinx.SetLimits(0, self.FEATURE_LIMIT)
         self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
         self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, '@weight DESC')
+        if self.timeInstant is not None:
+            self.sphinx.SetFilter('year',[self.timeInstant])
         searchText = self._query_fields('@detail')
         if self.quadindex is not None:
             searchText += ' & @geom_quadindex ' + self.quadindex + '*'
@@ -130,6 +134,8 @@ class Search(SearchValidation):
 
         self.sphinx.SetLimits(0, self.FEATURE_LIMIT)
 
+        if self.timeInstant is not None:
+            self.sphinx.SetFilter('year',[self.timeInstant])
         geoAnchor = self._get_geoanchor_from_bbox()
         self.sphinx.SetGeoAnchor('lat', 'lon', geoAnchor.GetY(), geoAnchor.GetX())
         self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, '@geodist ASC')

@@ -297,6 +297,7 @@ class SearchValidation(MapNameValidation):
         super(SearchValidation, self).__init__()
         self._searchText = None
         self._featureIndexes = None
+        self._timeInstant = None
         self._bbox = None
 
     @property
@@ -310,6 +311,10 @@ class SearchValidation(MapNameValidation):
     @property
     def bbox(self):
         return self._bbox
+
+    @property
+    def timeInstant(self):
+        return self._timeInstant
 
     @featureIndexes.setter
     def featureIndexes(self, value):
@@ -341,3 +346,16 @@ class SearchValidation(MapNameValidation):
             elif values[2] < values[3]:
                 raise exc.HTTPBadRequest("The third coordinate must be higher than the fourth")
             self._bbox = values
+
+    @timeInstant.setter
+    def timeInstant(self, value):
+        if value is not None:
+            if len(value) != 4:
+                raise exc.HTTPBadRequest('Only years are supported as timeInstant parameter')
+            try:
+                self._timeInstant = int(value)
+            except ValueError:
+                raise exc.HTTPBadRequest('Please provide an integer for the parameter timeInstant')
+        else:
+            self._timeInstant = value
+
