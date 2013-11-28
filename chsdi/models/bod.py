@@ -98,7 +98,7 @@ class LayersConfig(Base):
         for k in self.__dict__.keys():
             if not k.startswith("_") and \
                 self.__dict__[k] is not None and \
-                    k != 'maps':
+                    k not in ('maps', 'staging'):
                 if k == 'idBod':
                     config['label'] = translate(self.__dict__[k])
                 elif k == 'attribution':
@@ -110,14 +110,15 @@ class LayersConfig(Base):
                         )
                 else:
                     config[k] = self.__dict__[k]
+
+        staging = self.__dict__['staging']
         if config['type'] == 'wmts':
             del config['singleTile']
         if config['type'] == 'wms':
-            if 'staging' in config:
-                if config['staging'] == 'test':
-                    config['wmsUrl'] = config['wmsUrl'].replace('wms.geo.admin.ch', 'wms-bgdi0t.bgdi.admin.ch')
-                if config['staging'] == 'integration':
-                    config['wmsUrl'] = config['wmsUrl'].replace('wms.geo.admin.ch', 'wms-bgdi0i.bgdi.admin.ch')
+            if staging == 'test':
+                config['wmsUrl'] = config['wmsUrl'].replace('wms.geo.admin.ch', 'wms-bgdi0t.bgdi.admin.ch')
+            if staging == 'integration':
+                config['wmsUrl'] = config['wmsUrl'].replace('wms.geo.admin.ch', 'wms-bgdi0i.bgdi.admin.ch')
         # sublayers don't have attributions
         if 'attribution' in config:
             config['attributionUrl'] = translate(self.__dict__['attribution'] + '.url')
