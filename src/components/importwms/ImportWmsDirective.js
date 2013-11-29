@@ -204,18 +204,17 @@
 
               try {
                 var layer = getCapLayer;
-                var olAttributions = null;
+                var htmlAttribution = null;
 
                 if (layer.attribution) {
-                  olAttributions = [new ol.Attribution({
-                    html: '<a href="' + layer.attribution.href + '">' +
+                  htmlAttribution =
+                      '<a href="' + layer.attribution.href + '">' +
                         ((layer.attribution.logo) ?
                           '<img src="' + layer.attribution.logo.href +
                              '" title="' + layer.attribution.title +
-                             '" alt="' + layer.attribution.title + '" />"' :
+                             '" alt="' + layer.attribution.title + '" />' :
                           layer.attribution.title) +
-                      '</a>'
-                  })];
+                      '</a>';
                 }
 
                 return gaWms.addWmsToMap($scope.map,
@@ -226,7 +225,7 @@
                     url: $scope.fileUrl,
                     label: layer.title,
                     extent: getLayerExtentFromGetCap(layer),
-                    attributions: olAttributions,
+                    attribution: htmlAttribution,
                     preview: isPreview
                   }
                 );

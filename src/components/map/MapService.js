@@ -206,16 +206,24 @@
    * Manage external WMS layers
    */
   module.provider('gaWms', function() {
-    this.$get = function(gaDefinePropertiesForLayer) {
+    this.$get = function(gaDefinePropertiesForLayer, gaMapUtils) {
       var Wms = function() {
 
         var createWmsLayer = function(params, options, index) {
           options = options || {};
+          var attributions;
+
+          if (options.attribution) {
+            attributions = [
+              gaMapUtils.getAttribution(options.attribution)
+            ];
+          }
+
           var source = new ol.source.ImageWMS({
             params: params,
             url: options.url,
             extent: options.extent,
-            attributions: options.attributions,
+            attributions: attributions,
             ratio: options.ratio || 1
           });
 
@@ -380,19 +388,8 @@
    */
   module.provider('gaLayers', function() {
 
-    this.$get = function($q, $http, $translate, $rootScope,
+    this.$get = function($q, $http, $translate, $rootScope, gaMapUtils,
           gaUrlUtils, gaTileGrid, gaDefinePropertiesForLayer) {
-      var attributions = {};
-      var getAttribution = function(text) {
-        var key = text;
-        if (key in attributions) {
-          return attributions[key];
-        } else {
-          var a = new ol.Attribution({html: text});
-          attributions[key] = a;
-          return a;
-        }
-      };
 
       var Layers = function(wmtsGetTileUrlTemplate,
           layersConfigUrlTemplate, legendUrlTemplate) {
@@ -454,7 +451,7 @@
           var time = (layer.timeEnabled) ?
               currentTime : false;
           var attributions = [
-            getAttribution('<a href="' +
+            gaMapUtils.getAttribution('<a href="' +
               layer.attributionUrl +
               '" target="new">' +
               layer.attribution + '</a>')
@@ -613,7 +610,8 @@
    * Service provides map util functions.
    */
   module.provider('gaMapUtils', function() {
-    this.$get = function(gaLayers) {
+    this.$get = function() {
+      var attributions = {};
       return {
         /**
          * Search for an overlay identified by bodId in the map and
@@ -628,6 +626,20 @@
             }
           });
           return layer;
+        },
+
+        /**
+         * Manage map attributions.
+         */
+        getAttribution: function(text) {
+          var key = text;
+          if (key in attributions) {
+            return attributions[key];
+          } else {
+            var a = new ol.Attribution({html: text});
+            attributions[key] = a;
+            return a;
+          }
         }
       };
     };
