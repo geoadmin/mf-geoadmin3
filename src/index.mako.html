@@ -121,6 +121,7 @@
         <div ga-attribution ga-attribution-map="map"></div>
       </div>
       <div ga-time-selector-bt id="time-selector-bt"></div>
+      <div ga-swipe ga-swipe-map="map" ga-swipe-active="isSwipeActive"></div>
     </div> <!-- #map -->
 
 
@@ -227,6 +228,12 @@
                           <a href=""  ng-click="importKmlPopupShown = !importKmlPopupShown">
                             <i class="icon-file ga-icon-separator"></i>
                             <span translate>kml</span>
+                          </a>
+                        </li>
+                        <li>
+                          <a href=""  ng-click="isSwipeActive = !isSwipeActive">
+                            <i class="icon-file ga-icon-separator"></i>
+                            <span translate="{{(isSwipeActive) ? 'swipe_active' : 'swipe_inactive'}}"</span>
                           </a>
                         </li>
                       </ul>
