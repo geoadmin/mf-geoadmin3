@@ -57,6 +57,21 @@
       function mousemove(evt) {
         y = evt.clientY - startY;
         x = evt.clientX - startX;
+        
+        if (x < 0) {
+          x = 0;
+        } else if (x + element.width() > $(document.body).width()) {
+          x = $(document.body).width() - element.width();
+        }
+
+        if (y < 0) {
+          y = 0;
+        } else if (y + element.height() > $(document.body).height()) {
+          y = $(document.body).height() - element.height();
+        }
+
+
+
         element.css({
           margin: 0,
           top: y + 'px',
