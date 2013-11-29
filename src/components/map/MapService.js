@@ -453,17 +453,17 @@
           var olLayer;
           var time = (layer.timeEnabled) ?
               currentTime : false;
-
+          var attributions = [
+            getAttribution('<a href="' +
+              layer.attributionUrl +
+              '" target="new">' +
+              layer.attribution + '</a>')
+          ];
           var olSource = layer.olSource;
           if (layer.type == 'wmts') {
             if (!olSource) {
               olSource = layer.olSource = new ol.source.WMTS({
-                attributions: [
-                  getAttribution('<a href="' +
-                    layer.attributionUrl +
-                    '" target="new">' +
-                    layer.attribution + '</a>')
-                ],
+                attributions: attributions,
                 dimensions: {
                   'Time': time || layer.timestamps[0]
                 },
@@ -497,9 +497,7 @@
                 olSource = layer.olSource = new ol.source.ImageWMS({
                   url: wmsUrl,
                   params: wmsParams,
-                  attributions: [
-                    getAttribution(layer.attribution)
-                  ],
+                  attributions: attributions,
                   ratio: 1
                 });
               }
@@ -514,9 +512,7 @@
                 olSource = layer.olSource = new ol.source.TileWMS({
                   url: wmsUrl,
                   params: wmsParams,
-                  attributions: [
-                    getAttribution(layer.attribution)
-                  ]
+                  attributions: attributions
                 });
               }
               olLayer = new ol.layer.Tile({
