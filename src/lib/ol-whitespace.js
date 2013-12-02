@@ -519,13 +519,13 @@ goog.addDependency("../build/src/internal/src/requireall.js", [], ["libtess", "l
 "ol.BrowserFeature", "ol.CenterConstraint", "ol.CenterConstraintType", "ol.Collection", "ol.CollectionEvent", "ol.CollectionEventType", "ol.Constraints", "ol.Coordinate", "ol.CoordinateArray", "ol.CoordinateFormatType", "ol.DeviceOrientation", "ol.DeviceOrientationProperty", "ol.Ellipsoid", "ol.Extent", "ol.Feature", "ol.FrameState", "ol.Geolocation", "ol.GeolocationProperty", "ol.IView", "ol.IView2D", "ol.IView3D", "ol.Image", "ol.ImageState", "ol.ImageTile", "ol.ImageUrlFunction", "ol.ImageUrlFunctionType", 
 "ol.Kinetic", "ol.Map", "ol.MapBrowserEvent", "ol.MapBrowserEvent.EventType", "ol.MapBrowserEventHandler", "ol.MapEvent", "ol.MapEventType", "ol.MapProperty", "ol.Object", "ol.ObjectEventType", "ol.Overlay", "ol.OverlayPositioning", "ol.OverlayProperty", "ol.Pixel", "ol.PostRenderFunction", "ol.PreRenderFunction", "ol.RendererHint", "ol.RendererHints", "ol.ResolutionConstraint", "ol.ResolutionConstraintType", "ol.RotationConstraint", "ol.RotationConstraintType", "ol.Size", "ol.Sphere", "ol.Tile", 
 "ol.TileCache", "ol.TileCoord", "ol.TileLoadFunctionType", "ol.TilePriorityFunction", "ol.TileQueue", "ol.TileRange", "ol.TileState", "ol.TileUrlFunction", "ol.TileUrlFunctionType", "ol.TransformFunction", "ol.View", "ol.View2D", "ol.View2DProperty", "ol.View2DState", "ol.ViewHint", "ol.animation", "ol.array", "ol.canvas", "ol.color", "ol.color.Matrix", "ol.control", "ol.control.Attribution", "ol.control.Control", "ol.control.FullScreen", "ol.control.Logo", "ol.control.MousePosition", "ol.control.ScaleLine", 
-"ol.control.ScaleLineProperty", "ol.control.ScaleLineUnits", "ol.control.Zoom", "ol.control.ZoomSlider", "ol.control.ZoomToExtent", "ol.coordinate", "ol.css", "ol.dom", "ol.dom.BrowserFeature", "ol.dom.Input", "ol.dom.InputProperty", "ol.easing", "ol.ellipsoid.BESSEL1841", "ol.ellipsoid.WGS84", "ol.events.ConditionType", "ol.events.condition", "ol.extent", "ol.format", "ol.format.GeoJSON", "ol.format.IReader", "ol.geom.Geometry", "ol.geom.LineString", "ol.geom.MultiLineString", "ol.geom.MultiPoint", 
-"ol.geom.MultiPolygon", "ol.geom.Point", "ol.geom.Polygon", "ol.geom.flat", "ol.icon", "ol.interaction", "ol.interaction.DoubleClickZoom", "ol.interaction.Drag", "ol.interaction.DragPan", "ol.interaction.DragRotate", "ol.interaction.DragRotateAndZoom", "ol.interaction.DragZoom", "ol.interaction.Interaction", "ol.interaction.KeyboardPan", "ol.interaction.KeyboardZoom", "ol.interaction.MouseWheelZoom", "ol.interaction.Touch", "ol.interaction.TouchPan", "ol.interaction.TouchRotate", "ol.interaction.TouchZoom", 
-"ol.layer.Base", "ol.layer.Group", "ol.layer.Image", "ol.layer.Layer", "ol.layer.LayerProperty", "ol.layer.LayerState", "ol.layer.Tile", "ol.layer.Vector", "ol.math", "ol.proj", "ol.proj.CH", "ol.proj.EPSG2056", "ol.proj.EPSG21781", "ol.proj.EPSG3857", "ol.proj.EPSG4326", "ol.proj.Projection", "ol.proj.ProjectionLike", "ol.proj.Units", "ol.proj.common", "ol.render.DragBox", "ol.render.Event", "ol.render.EventType", "ol.render.IRender", "ol.render.IReplayGroup", "ol.render.canvas", "ol.render.canvas.Immediate", 
-"ol.render.canvas.ReplayGroup", "ol.renderer.Layer", "ol.renderer.Map", "ol.renderer.canvas", "ol.renderer.canvas.ImageLayer", "ol.renderer.canvas.Layer", "ol.renderer.canvas.Map", "ol.renderer.canvas.TileLayer", "ol.renderer.canvas.VectorLayer", "ol.renderer.dom", "ol.renderer.dom.ImageLayer", "ol.renderer.dom.Layer", "ol.renderer.dom.Map", "ol.renderer.dom.TileLayer", "ol.renderer.vector", "ol.renderer.webgl", "ol.renderer.webgl.ImageLayer", "ol.renderer.webgl.Layer", "ol.renderer.webgl.Map", "ol.renderer.webgl.TileLayer", 
-"ol.renderer.webgl.map.shader.Color", "ol.renderer.webgl.map.shader.Default", "ol.renderer.webgl.tilelayer.shader", "ol.shape", "ol.size", "ol.source.BingMaps", "ol.source.Image", "ol.source.ImageStatic", "ol.source.ImageWMS", "ol.source.MapQuestOSM", "ol.source.MapQuestOpenAerial", "ol.source.OSM", "ol.source.Source", "ol.source.Stamen", "ol.source.State", "ol.source.Tile", "ol.source.TileDebug", "ol.source.TileImage", "ol.source.TileJSON", "ol.source.TileOptions", "ol.source.TileWMS", "ol.source.Vector", 
-"ol.source.WMTS", "ol.source.WMTSRequestEncoding", "ol.source.XYZ", "ol.source.wms", "ol.sphere.NORMAL", "ol.sphere.WGS84", "ol.structs.Buffer", "ol.structs.IntegerSet", "ol.structs.LRUCache", "ol.structs.PriorityQueue", "ol.structs.RBush", "ol.style.Fill", "ol.style.Image", "ol.style.ImageState", "ol.style.Stroke", "ol.style.Style", "ol.style.StyleFunction", "ol.style.Text", "ol.tilegrid.TileGrid", "ol.tilegrid.WMTS", "ol.tilegrid.XYZ", "ol.tilejson", "ol.vec.Mat4", "ol.webgl", "ol.webgl.Context", 
-"ol.webgl.WebGLContextEventType", "ol.webgl.shader"]);
+"ol.control.ScaleLineProperty", "ol.control.ScaleLineUnits", "ol.control.Zoom", "ol.control.ZoomSlider", "ol.control.ZoomToExtent", "ol.coordinate", "ol.css", "ol.dom", "ol.dom.BrowserFeature", "ol.dom.Input", "ol.dom.InputProperty", "ol.easing", "ol.ellipsoid.BESSEL1841", "ol.ellipsoid.WGS84", "ol.events.ConditionType", "ol.events.condition", "ol.extent", "ol.format", "ol.format.GeoJSON", "ol.format.IReader", "ol.geom.Geometry", "ol.geom.LineString", "ol.geom.LinearRing", "ol.geom.MultiLineString", 
+"ol.geom.MultiPoint", "ol.geom.MultiPolygon", "ol.geom.Point", "ol.geom.Polygon", "ol.geom.flat", "ol.icon", "ol.interaction", "ol.interaction.DoubleClickZoom", "ol.interaction.Drag", "ol.interaction.DragPan", "ol.interaction.DragRotate", "ol.interaction.DragRotateAndZoom", "ol.interaction.DragZoom", "ol.interaction.Interaction", "ol.interaction.KeyboardPan", "ol.interaction.KeyboardZoom", "ol.interaction.MouseWheelZoom", "ol.interaction.Touch", "ol.interaction.TouchPan", "ol.interaction.TouchRotate", 
+"ol.interaction.TouchZoom", "ol.layer.Base", "ol.layer.Group", "ol.layer.Image", "ol.layer.Layer", "ol.layer.LayerProperty", "ol.layer.LayerState", "ol.layer.Tile", "ol.layer.Vector", "ol.math", "ol.proj", "ol.proj.CH", "ol.proj.EPSG2056", "ol.proj.EPSG21781", "ol.proj.EPSG3857", "ol.proj.EPSG4326", "ol.proj.Projection", "ol.proj.ProjectionLike", "ol.proj.Units", "ol.proj.common", "ol.render.DragBox", "ol.render.Event", "ol.render.EventType", "ol.render.IRender", "ol.render.IReplayGroup", "ol.render.canvas", 
+"ol.render.canvas.Immediate", "ol.render.canvas.ReplayGroup", "ol.renderer.Layer", "ol.renderer.Map", "ol.renderer.canvas", "ol.renderer.canvas.ImageLayer", "ol.renderer.canvas.Layer", "ol.renderer.canvas.Map", "ol.renderer.canvas.TileLayer", "ol.renderer.canvas.VectorLayer", "ol.renderer.dom", "ol.renderer.dom.ImageLayer", "ol.renderer.dom.Layer", "ol.renderer.dom.Map", "ol.renderer.dom.TileLayer", "ol.renderer.vector", "ol.renderer.webgl", "ol.renderer.webgl.ImageLayer", "ol.renderer.webgl.Layer", 
+"ol.renderer.webgl.Map", "ol.renderer.webgl.TileLayer", "ol.renderer.webgl.map.shader.Color", "ol.renderer.webgl.map.shader.Default", "ol.renderer.webgl.tilelayer.shader", "ol.shape", "ol.size", "ol.source.BingMaps", "ol.source.Image", "ol.source.ImageStatic", "ol.source.ImageWMS", "ol.source.MapQuestOSM", "ol.source.MapQuestOpenAerial", "ol.source.OSM", "ol.source.Source", "ol.source.Stamen", "ol.source.State", "ol.source.Tile", "ol.source.TileDebug", "ol.source.TileImage", "ol.source.TileJSON", 
+"ol.source.TileOptions", "ol.source.TileWMS", "ol.source.Vector", "ol.source.VectorEvent", "ol.source.VectorEventType", "ol.source.WMTS", "ol.source.WMTSRequestEncoding", "ol.source.XYZ", "ol.source.wms", "ol.sphere.NORMAL", "ol.sphere.WGS84", "ol.structs.Buffer", "ol.structs.IntegerSet", "ol.structs.LRUCache", "ol.structs.PriorityQueue", "ol.structs.RBush", "ol.style.Fill", "ol.style.Image", "ol.style.ImageState", "ol.style.Stroke", "ol.style.Style", "ol.style.StyleFunction", "ol.style.Text", "ol.tilegrid.TileGrid", 
+"ol.tilegrid.WMTS", "ol.tilegrid.XYZ", "ol.tilejson", "ol.vec.Mat4", "ol.webgl", "ol.webgl.Context", "ol.webgl.WebGLContextEventType", "ol.webgl.shader"]);
 goog.addDependency("../build/src/internal/src/types.js", ["ol.AttributionOptions", "ol.DeviceOrientationOptions", "ol.GeolocationOptions", "ol.MapOptions", "ol.OverlayOptions", "ol.Proj4jsProjectionOptions", "ol.ProjectionOptions", "ol.View2DOptions", "ol.animation.BounceOptions", "ol.animation.PanOptions", "ol.animation.RotateOptions", "ol.animation.ZoomOptions", "ol.control.AttributionOptions", "ol.control.ControlOptions", "ol.control.DefaultsOptions", "ol.control.FullScreenOptions", "ol.control.LogoOptions", 
 "ol.control.MousePositionOptions", "ol.control.ScaleLineOptions", "ol.control.ZoomOptions", "ol.control.ZoomSliderOptions", "ol.control.ZoomToExtentOptions", "ol.format.GeoJSONOptions", "ol.interaction.DefaultsOptions", "ol.interaction.DoubleClickZoomOptions", "ol.interaction.DragPanOptions", "ol.interaction.DragRotateAndZoomOptions", "ol.interaction.DragRotateOptions", "ol.interaction.DragZoomOptions", "ol.interaction.KeyboardPanOptions", "ol.interaction.KeyboardZoomOptions", "ol.interaction.MouseWheelZoomOptions", 
 "ol.interaction.TouchPanOptions", "ol.interaction.TouchRotateOptions", "ol.interaction.TouchZoomOptions", "ol.layer.BaseOptions", "ol.layer.GroupOptions", "ol.layer.LayerOptions", "ol.layer.TileOptions", "ol.layer.VectorOptions", "ol.source.BingMapsOptions", "ol.source.GeoJSONOptions", "ol.source.ImageStaticOptions", "ol.source.ImageWMSOptions", "ol.source.MapQuestOptions", "ol.source.OSMOptions", "ol.source.StamenOptions", "ol.source.TileDebugOptions", "ol.source.TileJSONOptions", "ol.source.TileWMSOptions", 
@@ -590,12 +590,13 @@ goog.addDependency("../src/ol/framestate.js", ["ol.FrameState", "ol.PostRenderFu
 goog.addDependency("../src/ol/geolocation.js", ["ol.Geolocation", "ol.GeolocationProperty"], ["goog.events", "goog.events.EventType", "goog.math", "ol.Coordinate", "ol.Object", "ol.proj"]);
 goog.addDependency("../src/ol/geom/flatgeom.js", ["ol.geom.flat"], ["goog.asserts", "goog.vec.Mat4"]);
 goog.addDependency("../src/ol/geom/geometry.js", ["ol.geom.Geometry"], ["goog.asserts", "goog.events.EventTarget", "goog.events.EventType", "goog.functions", "ol.extent", "ol.geom.flat"]);
+goog.addDependency("../src/ol/geom/linearring.js", ["ol.geom.LinearRing"], ["ol.geom.Geometry", "ol.geom.flat"]);
 goog.addDependency("../src/ol/geom/linestring.js", ["ol.geom.LineString"], ["ol.geom.Geometry", "ol.geom.flat"]);
 goog.addDependency("../src/ol/geom/multilinestring.js", ["ol.geom.MultiLineString"], ["ol.geom.Geometry", "ol.geom.flat"]);
 goog.addDependency("../src/ol/geom/multipoint.js", ["ol.geom.MultiPoint"], ["ol.geom.Geometry", "ol.geom.flat"]);
 goog.addDependency("../src/ol/geom/multipolygon.js", ["ol.geom.MultiPolygon"], ["ol.geom.Geometry", "ol.geom.flat"]);
 goog.addDependency("../src/ol/geom/point.js", ["ol.geom.Point"], ["goog.asserts", "ol.extent", "ol.geom.Geometry"]);
-goog.addDependency("../src/ol/geom/polygon.js", ["ol.geom.Polygon"], ["ol.geom.Geometry", "ol.geom.flat"]);
+goog.addDependency("../src/ol/geom/polygon.js", ["ol.geom.Polygon"], ["ol.geom.Geometry", "ol.geom.LinearRing", "ol.geom.flat"]);
 goog.addDependency("../src/ol/icon.js", ["ol.icon"], ["ol.style.Image"]);
 goog.addDependency("../src/ol/image.js", ["ol.Image", "ol.ImageState"], ["goog.array", "goog.asserts", "goog.events", "goog.events.EventTarget", "goog.events.EventType", "goog.object", "ol.Attribution", "ol.Extent"]);
 goog.addDependency("../src/ol/imagetile.js", ["ol.ImageTile"], ["goog.array", "goog.asserts", "goog.events", "goog.events.EventType", "goog.object", "ol.Tile", "ol.TileCoord", "ol.TileLoadFunctionType", "ol.TileState"]);
@@ -687,7 +688,7 @@ goog.addDependency("../src/ol/source/tileimagesource.js", ["ol.source.TileImage"
 goog.addDependency("../src/ol/source/tilejsonsource.js", ["ol.source.TileJSON", "ol.tilejson"], ["goog.asserts", "goog.net.jsloader", "ol.Attribution", "ol.TileRange", "ol.TileUrlFunction", "ol.extent", "ol.proj", "ol.source.State", "ol.source.TileImage", "ol.tilegrid.XYZ"]);
 goog.addDependency("../src/ol/source/tilesource.js", ["ol.source.Tile", "ol.source.TileOptions"], ["goog.functions", "ol.Attribution", "ol.Extent", "ol.Tile", "ol.TileCoord", "ol.TileRange", "ol.source.Source", "ol.tilegrid.TileGrid"]);
 goog.addDependency("../src/ol/source/tilewmssource.js", ["ol.source.TileWMS"], ["goog.array", "goog.math", "goog.object", "ol.TileCoord", "ol.TileUrlFunction", "ol.extent", "ol.source.TileImage", "ol.source.wms"]);
-goog.addDependency("../src/ol/source/vectorsource.js", ["ol.source.Vector"], ["goog.asserts", "goog.events", "goog.events.Event", "goog.events.EventType", "ol.source.Source", "ol.structs.RBush"]);
+goog.addDependency("../src/ol/source/vectorsource.js", ["ol.source.Vector", "ol.source.VectorEvent", "ol.source.VectorEventType"], ["goog.asserts", "goog.events", "goog.events.Event", "goog.events.EventType", "ol.source.Source", "ol.structs.RBush"]);
 goog.addDependency("../src/ol/source/wmssource.js", ["ol.source.wms"], ["goog.object", "goog.uri.utils"]);
 goog.addDependency("../src/ol/source/wmtssource.js", ["ol.source.WMTS", "ol.source.WMTSRequestEncoding"], ["goog.array", "goog.asserts", "goog.math", "goog.object", "goog.uri.utils", "ol.TileCoord", "ol.TileUrlFunction", "ol.TileUrlFunctionType", "ol.extent", "ol.proj", "ol.source.TileImage", "ol.tilegrid.WMTS"]);
 goog.addDependency("../src/ol/source/xyzsource.js", ["ol.source.XYZ"], ["ol.Attribution", "ol.TileUrlFunction", "ol.TileUrlFunctionType", "ol.proj", "ol.source.TileImage", "ol.tilegrid.XYZ"]);
@@ -9458,7 +9459,7 @@ goog.require("goog.events.EventType");
 goog.require("goog.functions");
 goog.require("ol.extent");
 goog.require("ol.geom.flat");
-ol.geom.Type = {POINT:"Point", LINE_STRING:"LineString", POLYGON:"Polygon", MULTI_POINT:"MultiPoint", MULTI_LINE_STRING:"MultiLineString", MULTI_POLYGON:"MultiPolygon"};
+ol.geom.Type = {POINT:"Point", LINE_STRING:"LineString", LINEAR_RING:"LinearRing", POLYGON:"Polygon", MULTI_POINT:"MultiPoint", MULTI_LINE_STRING:"MultiLineString", MULTI_POLYGON:"MultiPolygon"};
 ol.geom.Layout = {XY:"XY", XYZ:"XYZ", XYM:"XYM", XYZM:"XYZM"};
 ol.geom.Geometry = function() {
   goog.base(this);
@@ -17679,8 +17680,28 @@ ol.interaction.DragRotate.prototype.handleDragStart = function(mapBrowserEvent) 
     return false
   }
 };
+goog.provide("ol.geom.LinearRing");
+goog.require("ol.geom.Geometry");
+goog.require("ol.geom.flat");
+ol.geom.LinearRing = function(coordinates, opt_layout) {
+  goog.base(this);
+  this.setCoordinates(coordinates, opt_layout)
+};
+goog.inherits(ol.geom.LinearRing, ol.geom.Geometry);
+ol.geom.LinearRing.prototype.getCoordinates = function() {
+  return ol.geom.flat.inflateCoordinates(this.flatCoordinates, 0, this.flatCoordinates.length, this.stride)
+};
+ol.geom.LinearRing.prototype.getType = function() {
+  return ol.geom.Type.LINEAR_RING
+};
+ol.geom.LinearRing.prototype.setCoordinates = function(coordinates, opt_layout) {
+  this.setLayout(opt_layout, coordinates, 1);
+  ol.geom.flat.deflateCoordinates(this.flatCoordinates, 0, coordinates, this.stride);
+  this.dispatchChangeEvent()
+};
 goog.provide("ol.geom.Polygon");
 goog.require("ol.geom.Geometry");
+goog.require("ol.geom.LinearRing");
 goog.require("ol.geom.flat");
 ol.geom.Polygon = function(coordinates, opt_layout) {
   goog.base(this);
@@ -17696,6 +17717,15 @@ ol.geom.Polygon.prototype.getCoordinates = function() {
 };
 ol.geom.Polygon.prototype.getEnds = function() {
   return this.ends_
+};
+ol.geom.Polygon.prototype.getLinearRings = function() {
+  var linearRings = [];
+  var coordinates = this.getCoordinates();
+  var i, ii;
+  for(i = 0, ii = coordinates.length;i < ii;++i) {
+    linearRings.push(new ol.geom.LinearRing(coordinates[i]))
+  }
+  return linearRings
 };
 ol.geom.Polygon.prototype.getType = function() {
   return ol.geom.Type.POLYGON
@@ -18298,21 +18328,6 @@ goog.provide("ol.style.Fill");
 goog.require("ol.color");
 ol.style.Fill = function(options) {
   this.color = goog.isDef(options.color) ? options.color : null
-};
-ol.style.Fill.equals = function(fillStyle1, fillStyle2) {
-  if(!goog.isNull(fillStyle1)) {
-    if(!goog.isNull(fillStyle2)) {
-      return fillStyle1 === fillStyle2 || ol.color.stringOrColorEquals(fillStyle1.color, fillStyle2.color)
-    }else {
-      return false
-    }
-  }else {
-    if(!goog.isNull(fillStyle2)) {
-      return false
-    }else {
-      return true
-    }
-  }
 };
 goog.provide("ol.style.Image");
 goog.provide("ol.style.ImageState");
@@ -20095,12 +20110,15 @@ ol.structs.RBush.prototype.update = function(extent, value) {
   }
 };
 goog.provide("ol.source.Vector");
+goog.provide("ol.source.VectorEvent");
+goog.provide("ol.source.VectorEventType");
 goog.require("goog.asserts");
 goog.require("goog.events");
 goog.require("goog.events.Event");
 goog.require("goog.events.EventType");
 goog.require("ol.source.Source");
 goog.require("ol.structs.RBush");
+ol.source.VectorEventType = {ADDFEATURE:"addfeature", REMOVEFEATURE:"removefeature"};
 ol.source.Vector = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
   goog.base(this, {attributions:options.attributions, extent:options.extent, logo:options.logo, projection:options.projection, state:options.state});
@@ -20121,6 +20139,7 @@ ol.source.Vector.prototype.addFeature = function(feature) {
   this.featureChangeKeys_[featureKey] = goog.events.listen(feature, goog.events.EventType.CHANGE, this.handleFeatureChange_, false, this);
   var extent = feature.getGeometry().getExtent();
   this.rBush_.insert(extent, feature);
+  this.dispatchEvent(new ol.source.VectorEvent(ol.source.VectorEventType.ADDFEATURE, feature));
   this.dispatchChangeEvent()
 };
 ol.source.Vector.prototype.forEachFeature = function(f, opt_obj) {
@@ -20163,7 +20182,16 @@ ol.source.Vector.prototype.removeFeature = function(feature) {
   goog.asserts.assert(featureKey in this.featureChangeKeys_);
   goog.events.unlistenByKey(this.featureChangeKeys_[featureKey]);
   delete this.featureChangeKeys_[featureKey];
+  this.dispatchEvent(new ol.source.VectorEvent(ol.source.VectorEventType.REMOVEFEATURE, feature));
   this.dispatchChangeEvent()
+};
+ol.source.VectorEvent = function(type, opt_feature) {
+  goog.base(this, type);
+  this.feature_ = opt_feature
+};
+goog.inherits(ol.source.VectorEvent, goog.events.Event);
+ol.source.VectorEvent.prototype.getFeature = function() {
+  return this.feature_
 };
 goog.provide("ol.layer.Vector");
 goog.require("ol.layer.Layer");
@@ -20199,6 +20227,10 @@ goog.exportProperty(ol.layer.Vector.prototype, "setStyleFunction", ol.layer.Vect
 goog.provide("ol.render.canvas");
 goog.require("ol.color");
 ol.render.canvas.defaultFillStyle = ol.color.fromString("black");
+ol.render.canvas.defaultLineCap = "butt";
+ol.render.canvas.defaultLineDash = [];
+ol.render.canvas.defaultLineJoin = "miter";
+ol.render.canvas.defaultMiterLimit = 10;
 ol.render.canvas.defaultStrokeStyle = ol.color.fromString("black");
 ol.render.canvas.defaultLineWidth = 1;
 goog.provide("ol.style.Text");
@@ -20234,7 +20266,7 @@ ol.render.canvas.Immediate = function(context, extent, transform) {
   this.context_ = context;
   this.extent_ = extent;
   this.transform_ = transform;
-  this.state_ = {currentFillStyle:undefined, currentStrokeStyle:undefined, currentLineWidth:undefined, fillStyle:undefined, strokeStyle:undefined, lineWidth:undefined, anchorX:undefined, anchorY:undefined, image:null, height:undefined, width:undefined, snapToPixel:undefined, textStyle:null};
+  this.state_ = {currentFillStyle:undefined, currentStrokeStyle:undefined, currentLineCap:undefined, currentLineDash:null, currentLineJoin:undefined, currentLineWidth:undefined, currentMiterLimit:undefined, fillStyle:undefined, strokeStyle:undefined, lineWidth:undefined, anchorX:undefined, anchorY:undefined, image:null, height:undefined, width:undefined, lineCap:undefined, lineDash:null, lineJoin:undefined, miterLimit:undefined, snapToPixel:undefined, textStyle:null};
   this.pixelCoordinates_ = []
 };
 ol.render.canvas.Immediate.prototype.drawImages_ = function(geometry) {
@@ -20408,10 +20440,18 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyle = function(fillStyle, st
   }
   if(!goog.isNull(strokeStyle)) {
     state.strokeStyle = ol.color.asString(!goog.isNull(strokeStyle.color) ? strokeStyle.color : ol.render.canvas.defaultStrokeStyle);
-    state.lineWidth = goog.isDef(strokeStyle.width) ? strokeStyle.width : ol.render.canvas.defaultLineWidth
+    state.lineCap = goog.isDef(strokeStyle.lineCap) ? strokeStyle.lineCap : ol.render.canvas.defaultLineCap;
+    state.lineDash = !goog.isNull(strokeStyle.lineDash) ? strokeStyle.lineDash : ol.render.canvas.defaultLineDash;
+    state.lineJoin = goog.isDef(strokeStyle.lineJoin) ? strokeStyle.lineJoin : ol.render.canvas.defaultLineJoin;
+    state.lineWidth = goog.isDef(strokeStyle.width) ? strokeStyle.width : ol.render.canvas.defaultLineWidth;
+    state.miterLimit = goog.isDef(strokeStyle.miterLimit) ? strokeStyle.miterLimit : ol.render.canvas.defaultMiterLimit
   }else {
     state.strokeStyle = undefined;
-    state.lineWidth = undefined
+    state.lineCap = undefined;
+    state.lineDash = null;
+    state.lineJoin = undefined;
+    state.lineWidth = undefined;
+    state.miterLimit = undefined
   }
 };
 ol.render.canvas.Immediate.prototype.setFillStrokeStyles_ = function() {
@@ -20419,15 +20459,29 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyles_ = function() {
   var context = this.context_;
   var fillStyle = state.fillStyle;
   var strokeStyle = state.strokeStyle;
+  var lineCap = state.lineCap;
+  var lineDash = state.lineDash;
+  var lineJoin = state.lineJoin;
   var lineWidth = state.lineWidth;
+  var miterLimit = state.miterLimit;
   if(goog.isDef(fillStyle) && state.currentFillStyle != fillStyle) {
     context.fillStyle = fillStyle;
     state.currentFillStyle = fillStyle
   }
   if(goog.isDef(strokeStyle)) {
     goog.asserts.assert(goog.isDef(lineWidth));
-    if(state.currentStrokeStyle != strokeStyle || state.currentLineWidth != lineWidth) {
+    goog.asserts.assert(goog.isDef(lineCap));
+    goog.asserts.assert(!goog.isNull(lineDash));
+    goog.asserts.assert(goog.isDef(lineJoin));
+    goog.asserts.assert(goog.isDef(miterLimit));
+    if(state.currentStrokeStyle != strokeStyle || state.currentLineCap != lineCap || state.currentLineDash != lineDash || state.currentLineJoin != lineJoin || state.currentMiterLimit != miterLimit || state.currentLineWidth != lineWidth) {
       context.strokeStyle = strokeStyle;
+      context.lineCap = lineCap;
+      if(goog.isDef(context.setLineDash)) {
+        context.setLineDash(lineDash)
+      }
+      context.lineJoin = lineJoin;
+      context.miterLimit = miterLimit;
       context.lineWidth = lineWidth
     }
   }
@@ -20933,8 +20987,18 @@ ol.render.canvas.Replay.prototype.replay = function(context, transform, renderGe
                   if(type == ol.render.canvas.Instruction.SET_STROKE_STYLE) {
                     goog.asserts.assert(goog.isString(instruction[1]));
                     goog.asserts.assert(goog.isNumber(instruction[2]));
+                    goog.asserts.assert(goog.isString(instruction[3]));
+                    goog.asserts.assert(goog.isString(instruction[4]));
+                    goog.asserts.assert(goog.isNumber(instruction[5]));
+                    goog.asserts.assert(!goog.isNull(instruction[6]));
                     context.strokeStyle = (instruction[1]);
                     context.lineWidth = (instruction[2]);
+                    context.lineCap = (instruction[3]);
+                    context.lineJoin = (instruction[4]);
+                    context.miterLimit = (instruction[5]);
+                    if(goog.isDef(context.setLineDash)) {
+                      context.setLineDash((instruction[6]))
+                    }
                     ++i
                   }else {
                     if(type == ol.render.canvas.Instruction.STROKE) {
@@ -21041,7 +21105,7 @@ ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
 };
 ol.render.canvas.LineStringReplay = function() {
   goog.base(this);
-  this.state_ = {currentStrokeStyle:undefined, currentLineWidth:undefined, lastStroke:0, strokeStyle:undefined, lineWidth:undefined}
+  this.state_ = {currentStrokeStyle:undefined, currentLineCap:undefined, currentLineDash:null, currentLineJoin:undefined, currentLineWidth:undefined, currentMiterLimit:undefined, lastStroke:0, strokeStyle:undefined, lineCap:undefined, lineDash:null, lineJoin:undefined, lineWidth:undefined, miterLimit:undefined}
 };
 goog.inherits(ol.render.canvas.LineStringReplay, ol.render.canvas.Replay);
 ol.render.canvas.LineStringReplay.prototype.drawFlatCoordinates_ = function(flatCoordinates, offset, end, stride) {
@@ -21052,17 +21116,29 @@ ol.render.canvas.LineStringReplay.prototype.drawFlatCoordinates_ = function(flat
 ol.render.canvas.LineStringReplay.prototype.setStrokeStyle_ = function() {
   var state = this.state_;
   var strokeStyle = state.strokeStyle;
+  var lineCap = state.lineCap;
+  var lineDash = state.lineDash;
+  var lineJoin = state.lineJoin;
   var lineWidth = state.lineWidth;
+  var miterLimit = state.miterLimit;
   goog.asserts.assert(goog.isDef(strokeStyle));
+  goog.asserts.assert(goog.isDef(lineCap));
+  goog.asserts.assert(!goog.isNull(lineDash));
+  goog.asserts.assert(goog.isDef(lineJoin));
   goog.asserts.assert(goog.isDef(lineWidth));
-  if(state.currentStrokeStyle != strokeStyle || state.currentLineWidth != lineWidth) {
+  goog.asserts.assert(goog.isDef(miterLimit));
+  if(state.currentStrokeStyle != strokeStyle || state.currentLineCap != lineCap || state.currentLineDash != lineDash || state.currentLineJoin != lineJoin || state.currentLineWidth != lineWidth || state.currentMiterLimit != miterLimit) {
     if(state.lastStroke != this.coordinates.length) {
       this.instructions.push([ol.render.canvas.Instruction.STROKE]);
       state.lastStroke = this.coordinates.length
     }
-    this.instructions.push([ol.render.canvas.Instruction.SET_STROKE_STYLE, strokeStyle, lineWidth], [ol.render.canvas.Instruction.BEGIN_PATH]);
+    this.instructions.push([ol.render.canvas.Instruction.SET_STROKE_STYLE, strokeStyle, lineWidth, lineCap, lineJoin, miterLimit, lineDash], [ol.render.canvas.Instruction.BEGIN_PATH]);
     state.currentStrokeStyle = strokeStyle;
-    state.currentLineWidth = lineWidth
+    state.currentLineCap = lineCap;
+    state.currentLineDash = lineDash;
+    state.currentLineJoin = lineJoin;
+    state.currentLineWidth = lineWidth;
+    state.currentMiterLimit = miterLimit
   }
 };
 ol.render.canvas.LineStringReplay.prototype.drawLineStringGeometry = function(lineStringGeometry) {
@@ -21115,11 +21191,15 @@ ol.render.canvas.LineStringReplay.prototype.setFillStrokeStyle = function(fillSt
   goog.asserts.assert(goog.isNull(fillStyle));
   goog.asserts.assert(!goog.isNull(strokeStyle));
   this.state_.strokeStyle = ol.color.asString(!goog.isNull(strokeStyle.color) ? strokeStyle.color : ol.render.canvas.defaultStrokeStyle);
-  this.state_.lineWidth = goog.isDef(strokeStyle.width) ? strokeStyle.width : ol.render.canvas.defaultLineWidth
+  this.state_.lineCap = goog.isDef(strokeStyle.lineCap) ? strokeStyle.lineCap : ol.render.canvas.defaultLineCap;
+  this.state_.lineDash = !goog.isNull(strokeStyle.lineDash) ? strokeStyle.lineDash : ol.render.canvas.defaultLineDash;
+  this.state_.lineJoin = goog.isDef(strokeStyle.lineJoin) ? strokeStyle.lineJoin : ol.render.canvas.defaultLineJoin;
+  this.state_.lineWidth = goog.isDef(strokeStyle.width) ? strokeStyle.width : ol.render.canvas.defaultLineWidth;
+  this.state_.miterLimit = goog.isDef(strokeStyle.miterLimit) ? strokeStyle.miterLimit : ol.render.canvas.defaultMiterLimit
 };
 ol.render.canvas.PolygonReplay = function() {
   goog.base(this);
-  this.state_ = {currentFillStyle:undefined, currentStrokeStyle:undefined, currentLineWidth:undefined, fillStyle:undefined, strokeStyle:undefined, lineWidth:undefined}
+  this.state_ = {currentFillStyle:undefined, currentStrokeStyle:undefined, currentLineCap:undefined, currentLineDash:null, currentLineJoin:undefined, currentLineWidth:undefined, currentMiterLimit:undefined, fillStyle:undefined, strokeStyle:undefined, lineCap:undefined, lineDash:null, lineJoin:undefined, lineWidth:undefined, miterLimit:undefined}
 };
 goog.inherits(ol.render.canvas.PolygonReplay, ol.render.canvas.Replay);
 ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ = function(flatCoordinates, offset, ends, stride) {
@@ -21200,27 +21280,47 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle = function(fillStyle
   }
   if(!goog.isNull(strokeStyle)) {
     state.strokeStyle = ol.color.asString(!goog.isNull(strokeStyle.color) ? strokeStyle.color : ol.render.canvas.defaultStrokeStyle);
-    state.lineWidth = goog.isDef(strokeStyle.width) ? strokeStyle.width : ol.render.canvas.defaultLineWidth
+    state.lineCap = goog.isDef(strokeStyle.lineCap) ? strokeStyle.lineCap : ol.render.canvas.defaultLineCap;
+    state.lineDash = !goog.isNull(strokeStyle.lineDash) ? strokeStyle.lineDash : ol.render.canvas.defaultLineDash;
+    state.lineJoin = goog.isDef(strokeStyle.lineJoin) ? strokeStyle.lineJoin : ol.render.canvas.defaultLineJoin;
+    state.lineWidth = goog.isDef(strokeStyle.width) ? strokeStyle.width : ol.render.canvas.defaultLineWidth;
+    state.miterLimit = goog.isDef(strokeStyle.miterLimit) ? strokeStyle.miterLimit : ol.render.canvas.defaultMiterLimit
   }else {
     state.strokeStyle = undefined;
-    state.lineWidth = undefined
+    state.lineCap = undefined;
+    state.lineDash = null;
+    state.lineJoin = undefined;
+    state.lineWidth = undefined;
+    state.miterLimit = undefined
   }
 };
 ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
   var state = this.state_;
   var fillStyle = state.fillStyle;
   var strokeStyle = state.strokeStyle;
+  var lineCap = state.lineCap;
+  var lineDash = state.lineDash;
+  var lineJoin = state.lineJoin;
   var lineWidth = state.lineWidth;
+  var miterLimit = state.miterLimit;
   if(goog.isDef(fillStyle) && state.currentFillStyle != fillStyle) {
     this.instructions.push([ol.render.canvas.Instruction.SET_FILL_STYLE, fillStyle]);
     state.currentFillStyle = state.fillStyle
   }
   if(goog.isDef(strokeStyle)) {
+    goog.asserts.assert(goog.isDef(lineCap));
+    goog.asserts.assert(!goog.isNull(lineDash));
+    goog.asserts.assert(goog.isDef(lineJoin));
     goog.asserts.assert(goog.isDef(lineWidth));
-    if(state.currentStrokeStyle != strokeStyle || state.currentLineWidth != lineWidth) {
-      this.instructions.push([ol.render.canvas.Instruction.SET_STROKE_STYLE, strokeStyle, lineWidth]);
+    goog.asserts.assert(goog.isDef(miterLimit));
+    if(state.currentStrokeStyle != strokeStyle || state.currentLineCap != lineCap || state.currentLineDash != lineDash || state.currentLineJoin != lineJoin || state.currentLineWidth != lineWidth || state.currentMiterLimit != miterLimit) {
+      this.instructions.push([ol.render.canvas.Instruction.SET_STROKE_STYLE, strokeStyle, lineWidth, lineCap, lineJoin, miterLimit, lineDash]);
       state.currentStrokeStyle = strokeStyle;
-      state.currentLineWidth = lineWidth
+      state.currentLineCap = lineCap;
+      state.currentLineDash = lineDash;
+      state.currentLineJoin = lineJoin;
+      state.currentLineWidth = lineWidth;
+      state.currentMiterLimit = miterLimit
     }
   }
 };
@@ -26402,22 +26502,11 @@ goog.provide("ol.style.Stroke");
 goog.require("ol.color");
 ol.style.Stroke = function(options) {
   this.color = goog.isDef(options.color) ? options.color : null;
+  this.lineCap = options.lineCap;
+  this.lineDash = goog.isDef(options.lineDash) ? options.lineDash : null;
+  this.lineJoin = options.lineJoin;
+  this.miterLimit = options.miterLimit;
   this.width = options.width
-};
-ol.style.Stroke.equals = function(strokeStyle1, strokeStyle2) {
-  if(!goog.isNull(strokeStyle1)) {
-    if(!goog.isNull(strokeStyle2)) {
-      return strokeStyle1 === strokeStyle2 || ol.color.stringOrColorEquals(strokeStyle1.color, strokeStyle2.color) && strokeStyle1.width == strokeStyle2.width
-    }else {
-      return false
-    }
-  }else {
-    if(!goog.isNull(strokeStyle2)) {
-      return false
-    }else {
-      return true
-    }
-  }
 };
 goog.provide("ol.shape");
 goog.require("goog.dom");
@@ -27805,6 +27894,7 @@ goog.require("ol.format.GeoJSON");
 goog.require("ol.format.IReader");
 goog.require("ol.geom.Geometry");
 goog.require("ol.geom.LineString");
+goog.require("ol.geom.LinearRing");
 goog.require("ol.geom.MultiLineString");
 goog.require("ol.geom.MultiPoint");
 goog.require("ol.geom.MultiPolygon");
@@ -27895,6 +27985,8 @@ goog.require("ol.source.TileJSON");
 goog.require("ol.source.TileOptions");
 goog.require("ol.source.TileWMS");
 goog.require("ol.source.Vector");
+goog.require("ol.source.VectorEvent");
+goog.require("ol.source.VectorEventType");
 goog.require("ol.source.WMTS");
 goog.require("ol.source.WMTSRequestEncoding");
 goog.require("ol.source.XYZ");
