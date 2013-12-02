@@ -46,14 +46,14 @@
           };
           var drag = function(evt) {
             scope.map.requestRenderFrame();
-            scope.$apply(function() {
-              scope.ratio = draggableElt.offset().left / scope.map.getSize()[0];
-            });
           };
           var dragEnd = function(evt) {
              arrowsElt.show();
              $document.unbind('mousemove', drag);
              $document.unbind('mouseup', dragEnd);
+             scope.$apply(function() {
+               scope.ratio = draggableElt.offset().left / scope.map.getSize()[0];
+             });
           };
 
           // Compose events
