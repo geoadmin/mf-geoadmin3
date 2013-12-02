@@ -36,15 +36,19 @@
           var draggableElt = elt.find('[ga-draggable]');
           var arrowsElt = elt.find('.ga-swipe-arrows');
           var listenerKeys = [];
+          var layerListenerKeys = [];
 
-          // Drag callbacks
+          // Drag swipe element callbacks
           var dragStart = function(evt) {
             arrowsElt.hide();
             $document.on('mousemove', drag);
             $document.on('mouseup', dragEnd);
           };
           var drag = function(evt) {
-             scope.map.requestRenderFrame();
+            scope.map.requestRenderFrame();
+            scope.$apply(function() {
+              scope.ratio = draggableElt.offset().left / scope.map.getSize()[0];
+            });
           };
           var dragEnd = function(evt) {
              arrowsElt.show();
@@ -65,60 +69,84 @@
           var handlePostCompose = function(evt) {
             evt.getContext().restore();
           };
+
           // Display swipe or not depends on the number of layers currently on
           // the map.
-          var refreshComp = function(collectionEvent) {
-            var olLayers = collectionEvent.target;
-            if (olLayers.getLength < 2) {
+          var refreshComp = function() {
+
+            // Unset the layer and remov its listeners
+            if (scope.layer) {
+              scope.layer.unByKey(layerListenerKeys[0]);
+              scope.layer.unByKey(layerListenerKeys[1]);
+              scope.layer = null;
+              scope.map.requestRenderFrame();
+            }
+
+            var olLayers = scope.map.getLayers();
+            if (!scope.isActive || olLayers.getLength() < 2) {
               elt.hide();
               return;
             }
-            elt.show();
-          };
 
-
-          // Active the swipe adding events.
-          var activate = function() {
-            if (scope.map.getLayers().getLength() < 2) {
-              alert($translate('not_enough_layer_for_swipe'));
-              scope.isActive = false;
-              return;
-            }
-            var olLayers = scope.map.getLayers();
+            // Set the layer if the component is active and if there is 2 or
+            // more layers on the map.
             scope.layer = olLayers.getAt(olLayers.getLength() - 1);
-            listenerKeys = [
-              olLayers.on('add', refreshComp),
-              olLayers.on('remove', refreshComp),
+            layerListenerKeys = [
               scope.layer.on('precompose', handlePreCompose),
               scope.layer.on('postcompose', handlePostCompose)
             ];
-
-            elt.on('mousedown', dragStart);
             elt.show();
             scope.map.requestRenderFrame();
           };
 
 
+          // Active the swipe adding events.
+          var activate = function() {
+            var olLayers = scope.map.getLayers();
+            listenerKeys = [
+              olLayers.on('add', refreshComp),
+              olLayers.on('remove', refreshComp)
+            ];
+            elt.on('mousedown', dragStart);
+            refreshComp();
+          };
+
+
           // Deactive the swipe removing the events
           var deactivate = function() {
-            elt.hide();
             scope.map.getLayers().unByKey(listenerKeys[0]);
             scope.map.getLayers().unByKey(listenerKeys[1]);
-            if (scope.layer) {
-              scope.layer.unByKey(listenerKeys[2]);
-              scope.layer.unByKey(listenerKeys[3]);
-            }
-            scope.layer = null;
+            refreshComp();
+            gaPermalink.deleteParam('swipe');
           };
+
+          var fromPermalink = false;
+          // Initalize component with permlink paraneter
+          if (!angular.isDefined(scope.isActive) &&
+             angular.isDefined(gaPermalink.getParams().swipe)) {
+            scope.ratio = parseFloat(gaPermalink.getParams().swipe);
+            draggableElt.css({left: scope.map.getSize()[0] * scope.ratio});
+            fromPermalink = true;
+            scope.isActive = true;
+            activate();
+          }
 
           // Watchers
           scope.$watch('isActive', function(active) {
             if (active) {
+              if (!fromPermalink && scope.map.getLayers().getLength() < 2) {
+                alert($translate('not_enough_layer_for_swipe'));
+              }
               activate();
+              fromPermalink = false;
             } else {
               deactivate();
             }
           });
+          scope.$watch('ratio', function(ratio) {
+            gaPermalink.updateParams({swipe: ratio.toFixed(2)});
+          });
+
         }
       };
     }
