@@ -37,10 +37,15 @@
                 vector,
                 projection,
                 parser,
-                year;
+                year,
+                source;
 
             projection = map.getView().getProjection();
             parser = new ol.parser.GeoJSON();
+            source = new ol.source.Vector({
+              projection: projection,
+              parser: parser
+            });
 
             vector = new ol.layer.Vector({
               style: new ol.style.Style({
@@ -64,10 +69,7 @@
                   })
                 ]
               }),
-              source: new ol.source.Vector({
-                projection: projection,
-                parser: parser
-              })
+              source: source
             });
             gaDefinePropertiesForLayer(vector);
             vector.highlight = true;
@@ -172,7 +174,7 @@
               if (popup) {
                 popup.close();
               }
-              vector.clear();
+              source.removeFeatures(source.getFeatures());
               map.removeLayer(vector);
               map.addLayer(vector);
             }
@@ -186,7 +188,11 @@
                   if (gaLayers.getLayer(value.layerBodId) &&
                       gaLayers.getLayerProperty(value.layerBodId,
                                                 'highlightable')) {
-                    vector.parseFeatures(value.geometry, parser, projection);
+                    var feature = new ol.Feature({
+                      geometry: new ol.geom[value.geometry.type](
+                        value.geometry.coordinates)
+                    });
+                    source.addFeatures([feature]);
                   }
 
                   var htmlUrl = $scope.options.htmlUrlTemplate
@@ -208,7 +214,7 @@
                         popup = gaPopup.create({
                           className: 'ga-tooltip',
                           onCloseCallback: function() {
-                            vector.clear();
+                            source.removeFeatures(source.getFeatures());
                             map.removeLayer(vector);
                           },
                           destroyOnClose: false,
