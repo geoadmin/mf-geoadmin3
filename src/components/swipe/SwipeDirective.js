@@ -2,25 +2,16 @@
   goog.provide('ga_swipe_directive');
 
   goog.require('ga_browsersniffer_service');
-  goog.require('ga_debounce_service');
-  goog.require('ga_map_service');
   goog.require('ga_permalink_service');
 
   var module = angular.module('ga_swipe_directive', [
     'ga_browsersniffer_service',
-    'ga_map_service',
     'ga_permalink_service',
     'pascalprecht.translate'
   ]);
 
-  module.controller('GaSwipeDirectiveController',
-    function($scope, $translate, $sce, gaLayers, gaPermalink,
-        gaBrowserSniffer) {
-
-  });
-
   module.directive('gaSwipe',
-    function($document, $translate, gaBrowserSniffer, gaPermalink, gaLayers) {
+    function($document, $translate, gaBrowserSniffer, gaPermalink) {
       return {
         restrict: 'A',
         templateUrl: function(element, attrs) {
@@ -31,28 +22,45 @@
           options: '=gaSwipeOptions',
           isActive: '=gaSwipeActive'
         },
-        controller: 'GaSwipeDirectiveController',
         link: function(scope, elt, attrs, controller) {
           var draggableElt = elt.find('[ga-draggable]');
           var arrowsElt = elt.find('.ga-swipe-arrows');
           var listenerKeys = [];
           var layerListenerKeys = [];
+          var events = {
+            mouse: {
+              start: 'mousedown',
+              move: 'mousemove',
+              end: 'mouseup'
+            },
+            touch: {
+              start: 'touchstart',
+              move: 'touchmove',
+              end: 'touchend'
+            }
+          };
+
+          var eventKey = events.mouse;
+          if (!gaBrowserSniffer.msie && gaBrowserSniffer.touchDevice) {
+            eventKey = events.touch;
+          }
 
           // Drag swipe element callbacks
           var dragStart = function(evt) {
             arrowsElt.hide();
-            $document.on('mousemove', drag);
-            $document.on('mouseup', dragEnd);
+            $document.on(eventKey.move, drag);
+            $document.on(eventKey.end, dragEnd);
           };
           var drag = function(evt) {
             scope.map.requestRenderFrame();
           };
           var dragEnd = function(evt) {
              arrowsElt.show();
-             $document.unbind('mousemove', drag);
-             $document.unbind('mouseup', dragEnd);
+             $document.unbind(eventKey.move, drag);
+             $document.unbind(eventKey.end, dragEnd);
              scope.$apply(function() {
-               scope.ratio = draggableElt.offset().left / scope.map.getSize()[0];
+               scope.ratio = draggableElt.offset().left /
+                   scope.map.getSize()[0];
              });
           };
 
@@ -107,7 +115,7 @@
               olLayers.on('add', refreshComp),
               olLayers.on('remove', refreshComp)
             ];
-            elt.on('mousedown', dragStart);
+            elt.on(eventKey.start, dragStart);
             refreshComp();
           };
 
