@@ -17,11 +17,8 @@ i = 0
 
 <table>
   <tr>
-    <td class="cell-meta">
+    <td class="cell-meta-one" colspan="2">
       <h1>${c['attributes']['name'] or '-'}</h1>
-    </td>
-    <td class="cell-meta">
-      &nbsp;
     </td>
   </tr>
   <tr>
