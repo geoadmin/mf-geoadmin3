@@ -38,14 +38,13 @@ i = 0
     </td>
   </tr>
 </table>
-
+</br>
 <table class="table-with-border">
   <tr>
     <th>${_('tt_service')}</th>
     <th>${_('tt_program')}</th>
     <th>${_('tt_freqchan')}</th>
   </tr>
-  </br>
 % while i < len(service):
   <tr>
     <td class="cell-left">
