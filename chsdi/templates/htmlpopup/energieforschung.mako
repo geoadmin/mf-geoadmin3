@@ -222,7 +222,7 @@ ort = 'ort_%s' %lang
   <a class="play-pause"></a>
   <ol class="indicator"></ol>
 </div>
-<div id="links">
+<div class="thumbnail-container">
 % if c['attributes']['bild_1']:
   <div class="thumbnail">
     <a href="https://dav0.bgdi.admin.ch/bfe_pub/images_energieforschung/${c['attributes']['bild_1']}.jpg">
@@ -247,14 +247,14 @@ ort = 'ort_%s' %lang
 </div>
 </br>
 <script>
-document.getElementById('links').onclick = function (event) {
+$('.thumbnail-container').on('click', function (event) {
   event = event || window.event;
   var target = event.target || event.srcElement,
     link = target.src ? target.parentNode : target,
     options = {index: link, event: event},
     links = this.getElementsByTagName('a');
   blueimp.Gallery(links, options);
-};
+});
 </script>
 
 </%def>
