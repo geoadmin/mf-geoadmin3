@@ -12,6 +12,7 @@
   lang = request.lang
   attribution = pageargs.get('attribution')
   fullName = pageargs.get('fullName')
+  topic = request.matchdict.get('map')
 %>
 
 % if extended:
@@ -34,7 +35,7 @@
           <tr>
             <td class="cell-left"></td>
             <td>
-              <a href="${baseUrl}?${c['layerBodId']}=${c['featureId']}&lang=${lang}" target="new">${_('Link to object')}</a>
+              <a href="${baseUrl}?${c['layerBodId']}=${c['featureId']}&lang=${lang}&topic=${topic}" target="new">${_('Link to object')}</a>
             </td>
           </tr>
         %endif
