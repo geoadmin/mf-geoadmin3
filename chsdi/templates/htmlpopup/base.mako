@@ -16,6 +16,7 @@
 %>
 
 % if extended:
+  <meta name="viewport" content="initial-scale=1.0"/>
   <link rel="stylesheet" type="text/css" href="../../../../../../css/extended.min.css"/>
   <link rel="stylesheet" type="text/css" href="../../../../../../css/blueimp-gallery-2.11.0.min.css"/>
   <script src="../../../../../../js/jquery-2.0.3.min.js"></script>
