@@ -358,4 +358,3 @@ class SearchValidation(MapNameValidation):
                 raise exc.HTTPBadRequest('Please provide an integer for the parameter timeInstant')
         else:
             self._timeInstant = value
-
