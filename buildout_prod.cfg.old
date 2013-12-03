@@ -6,7 +6,7 @@ extends = buildout.cfg
 instanceid = main
 apache-entry-point = /
 # urls
-host = mf-chsdi3.prod.bgdi.ch
+host = mf-chsdi3.bgdi.admin.ch
 # geomadmin
 geoadminhost = map3.geo.admin.ch
 # sphinx
