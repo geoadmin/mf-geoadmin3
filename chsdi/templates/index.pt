@@ -95,7 +95,7 @@
           <a
           href="rest/services/inspire/SearchServer?searchText=9990044&features=ch.swisstopo.lubis-luftbilder&type=locations&bbox=551306.5625,167918.328125,551754.125,168514.625">Combined
           search for locations *and* features in ch.swisstopo.lubis-luftbilder
-          with time parameter (no  results)</a> <br>
+          with time parameter (1  result)</a> <br>
       <h3>Feature Search (onlye bbox search, no search text)</h3>
 
           <a href="rest/services/inspire/SearchServer?features=ch.astra.ivs-reg_loc&type=features&bbox=551306.5625,167918.328125,551754.125,168514.625">Search for features in ch.astra.ivs-reg_loc (only features within the bbox)</a> <br>

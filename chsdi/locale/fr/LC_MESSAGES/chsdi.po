@@ -345,7 +345,7 @@ msgid "band_1_2"
 msgstr "Volume 1 | 2"
 
 msgid "bazlrechtstatus"
-msgstr "État legal"
+msgstr "Statut juridique"
 
 msgid "bearbeitungsjahr"
 msgstr "Année de mise à jour"
@@ -372,7 +372,7 @@ msgid "bestimmung"
 msgstr "Dispositions"
 
 msgid "betrgemeinde"
-msgstr "Communes touchés"
+msgstr "Communes concernées"
 
 msgid "betrieb"
 msgstr "Établissement"
