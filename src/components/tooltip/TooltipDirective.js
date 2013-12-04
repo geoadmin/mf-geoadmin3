@@ -16,7 +16,7 @@
   module.directive('gaTooltip',
     function($timeout, $document, $http, $q, $translate, $sce, gaPopup,
       gaLayers, gaBrowserSniffer, gaDefinePropertiesForLayer, gaMapClick,
-      gaStyles)
+      gaStyleFunctionFactory)
       {
         var waitclass = 'ga-tooltip-wait',
             bodyEl = angular.element($document[0].body),
@@ -52,7 +52,7 @@
 
             vector = new ol.layer.Vector({
               source: vectorSource,
-              styleFunction: gaStyles.styleFunction('select')
+              styleFunction: gaStyleFunctionFactory('select')
             });
             gaDefinePropertiesForLayer(vector);
             vector.highlight = true;

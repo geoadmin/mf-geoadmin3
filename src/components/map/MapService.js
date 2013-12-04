@@ -901,7 +901,8 @@
   });
 
   module.provider('gaRecenterMapOnFeatures', function() {
-    this.$get = function($q, $http, gaDefinePropertiesForLayer, gaStyles) {
+    this.$get = function($q, $http, gaDefinePropertiesForLayer,
+                         gaStyleFunctionFactory) {
       var MINIMAL_EXTENT_SIZE = 1965;
       var url = this.url;
       var vector;
@@ -953,7 +954,7 @@
           vectorSource = new ol.source.Vector();
           vector = new ol.layer.Vector({
             source: vectorSource,
-            styleFunction: gaStyles.styleFunction('select')
+            styleFunction: gaStyleFunctionFactory('select')
           });
           gaDefinePropertiesForLayer(vector);
           vector.highlight = true;
