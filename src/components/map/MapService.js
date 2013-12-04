@@ -1,10 +1,12 @@
 (function() {
   goog.provide('ga_map_service');
 
+  goog.require('ga_styles_service');
   goog.require('ga_urlutils_service');
 
   var module = angular.module('ga_map_service', [
     'pascalprecht.translate',
+    'ga_styles_service',
     'ga_urlutils_service'
   ]);
 
@@ -853,9 +855,11 @@
   });
 
   module.provider('gaRecenterMapOnFeatures', function() {
-    this.$get = function($q, $http, gaDefinePropertiesForLayer) {
+    this.$get = function($q, $http, gaDefinePropertiesForLayer,
+                         gaStyleFunctionFactory) {
       var url = this.url;
       var vector;
+      var parser = new ol.format.GeoJSON();
       var getFeatures = function(featureIdsByBodId) {
         var promises = [];
         angular.forEach(featureIdsByBodId, function(featureIds, bodId) {
@@ -870,6 +874,7 @@
       };
       return function(map, featureIdsByBodId) {
         getFeatures(featureIdsByBodId).then(function(results) {
+          var vectorSource;
           var extent = [Infinity, Infinity, -Infinity, -Infinity];
           var foundFeatures = [];
           angular.forEach(results, function(result) {
@@ -889,39 +894,20 @@
             map.getView().fitExtent(extent, map.getSize());
           }
           map.removeLayer(vector);
+          vectorSource = new ol.source.Vector();
           vector = new ol.layer.Vector({
-            style: new ol.style.Style({
-              symbolizers: [
-                new ol.style.Fill({
-                  color: '#ffff00'
-                }),
-                new ol.style.Stroke({
-                  color: '#ff8000',
-                  width: 3
-                }),
-                new ol.style.Shape({
-                  size: 20,
-                  fill: new ol.style.Fill({
-                    color: '#ffff00'
-                  }),
-                  stroke: new ol.style.Stroke({
-                    color: '#ff8000',
-                    width: 3
-                  })
-                })
-              ]
-            }),
-            source: new ol.source.Vector({
-              projection: map.getView().getProjection(),
-              parser: new ol.parser.GeoJSON(),
-              data: {
-                type: 'FeatureCollection',
-                features: foundFeatures
-              }
-            })
+            source: vectorSource,
+            styleFunction: gaStyleFunctionFactory('select')
           });
           gaDefinePropertiesForLayer(vector);
           vector.highlight = true;
+          vector.invertedOpacity = 0.25;
+          parser.readObject({
+              type: 'FeatureCollection',
+              features: foundFeatures
+            },
+            vectorSource.addFeature,
+            vectorSource);
           map.addLayer(vector);
         });
       };
