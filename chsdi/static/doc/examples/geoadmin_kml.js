@@ -20,9 +20,6 @@ var map = new ga.Map({
   // Define the div where the map is placed
   target: 'map',
   
-  // Add the two layers directly in the map
-  layers: [lyr1, vector],
-
   // Create a 2D view
   view: new ol.View2D({
     
@@ -37,3 +34,23 @@ var map = new ga.Map({
   })
 });
 
+// Create a background layer
+var lyr1 = ga.layer.create('ch.swisstopo.pixelkarte-farbe');
+
+map.addLayer(lyr1);
+
+// Create the KML Layer
+var vector = new ol.layer.Vector({
+  source: new ol.source.Vector({
+    parser: new ol.parser.KML({
+      maxDepth: 1,
+      dimension: 2,
+      extractStyles: true,
+      extractAttributes: true
+    }),
+    projection: map.getView().getProjection(),
+    url: 'swissmetnet.kml'
+  })
+});
+
+map.addLayer(vector);
