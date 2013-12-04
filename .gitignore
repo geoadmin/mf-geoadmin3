@@ -5,6 +5,8 @@
 *.iml
 *.swp
 *~
+.coverage
+.idea
 .installed.cfg
 apache/wsgi.conf
 apache/tomcat-print.conf
@@ -12,12 +14,9 @@ buildout/bin/
 buildout/develop-eggs/
 buildout/eggs/
 buildout/parts/
-chsdi/static/doc/build/
-MANIFEST
-.coverage
 chsdi.egg-info
-sphinx.conf
-.idea
+chsdi/static/doc/build/
+chsdi/static/css/extended.min.css
 deploy/hooks/pre-create-code
 node_modules
-chsdi/static/css/extended.min.css
+MANIFEST
