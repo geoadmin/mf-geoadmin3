@@ -71,6 +71,7 @@ RewriteRule ^${vars:apache-entry-point}(img|js|css|realeasenotes|services|_stati
 
 # Some services are not "free": TODO THIS IS A PROVISORY SOLUTION
 SetEnvIf Referer ".admin.ch"                             GOODREF
+SetEnvIf Referer ".bgdi.ch"                              GOODREF
 SetEnvIf Referer "^http://localhost"                     GOODREF
 
 SetEnvIf X-Forwarded-For "10.226.126.116"                GOODIP
