@@ -32,7 +32,6 @@ var vector = new ol.layer.Vector({
       extractStyles: true,
       extractAttributes: true
     }),
-    projection: map.getView().getProjection(),
     url: 'swissmetnet.kml'
   })
 });
