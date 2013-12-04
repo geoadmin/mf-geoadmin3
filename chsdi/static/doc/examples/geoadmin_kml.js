@@ -14,7 +14,7 @@ var map = new ga.Map({
     resolution: 500,
     
     // Define a coordinate CH1903 (EPSG:21781) for the center of the view
-    center: [600000, 200000]
+    center: [670000, 160000]
   })
 });
 
