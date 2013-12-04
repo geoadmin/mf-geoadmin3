@@ -1,19 +1,3 @@
-// Create a background layer
-var lyr1 = ga.layer.create('ch.swisstopo.pixelkarte-farbe');
-
-// Create the KML Layer
-var vector = new ol.layer.Vector({
-  source: new ol.source.Vector({
-    parser: new ol.parser.KML({
-      maxDepth: 1,
-      dimension: 2,
-      extractStyles: true,
-      extractAttributes: true
-    }),
-    url: 'swissmetnet.kml'
-  })
-});
-
 // Create a GeoAdmin Map
 var map = new ga.Map({
   
