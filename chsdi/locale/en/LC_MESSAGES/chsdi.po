@@ -1212,7 +1212,7 @@ msgid "ch.bazl.heliports-gebirgslandeplaetze"
 msgstr "Heliports/mountain landing sites"
 
 msgid "ch.bazl.landschaftsruhezonen"
-msgstr "Quiet area for aviation"
+msgstr "Sanctuaries for silence: aviation"
 
 msgid "ch.bazl.luftfahrthindernis"
 msgstr "Air navigation obstacles"

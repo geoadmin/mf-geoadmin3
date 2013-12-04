@@ -318,7 +318,7 @@ msgid "atlassheetnumber"
 msgstr "Numéro du atlas géologique"
 
 msgid "ausgabejahr"
-msgstr "Année de publication"
+msgstr "Anno di pubblicazione"
 
 msgid "bafu_NHVText"
 msgstr "Stato OPN"
@@ -345,7 +345,7 @@ msgid "band_1_2"
 msgstr "Volume 1 | 2"
 
 msgid "bazlrechtstatus"
-msgstr "Stato legale"
+msgstr "Status giuridico"
 
 msgid "bearbeitungsjahr"
 msgstr "Année de mise à jour"
@@ -357,7 +357,7 @@ msgid "belastung_tonnen"
 msgstr "Charge [t/an]"
 
 msgid "bereich"
-msgstr "Site"
+msgstr "Sito"
 
 msgid "beschaeftigte_ha"
 msgstr "Emplois par ha"
@@ -2733,10 +2733,10 @@ msgid "tt_ch.bfe.energieforschung_projektstatus"
 msgstr "Stato del progetto"
 
 msgid "tt_ch.bfe.energieforschung_projekttitel"
-msgstr "Titolo eld progetto"
+msgstr "Titolo del progetto"
 
 msgid "tt_ch.bfe.energieforschung_projekttitel"
-msgstr "Titolo eld progetto"
+msgstr "Titolo del progetto"
 
 msgid "tt_ch.bfe.energieforschung_schluesselwoerter"
 msgstr "Parole chiave"
@@ -2751,40 +2751,40 @@ msgid "tt_ch.bfe.energieforschung_sprachregion"
 msgstr "Regione linguistica"
 
 msgid "tt_ch.bfe.statistik-wasserkraftanlagen_beginningofoperation"
-msgstr "Mise en service"
+msgstr "Messa in esercizio"
 
 msgid "tt_ch.bfe.statistik-wasserkraftanlagen_beginningofoperation"
-msgstr "Mise en service"
+msgstr "Messa in esercizio"
 
 msgid "tt_ch.bfe.statistik-wasserkraftanlagen_canton"
-msgstr "Canton"
+msgstr "Cantone"
 
 msgid "tt_ch.bfe.statistik-wasserkraftanlagen_canton"
-msgstr "Canton"
+msgstr "Cantone"
 
 msgid "tt_ch.bfe.statistik-wasserkraftanlagen_endofoperation"
-msgstr "Mise hors service"
+msgstr "Messa fuori servizio"
 
 msgid "tt_ch.bfe.statistik-wasserkraftanlagen_endofoperation"
-msgstr "Mise hors service"
+msgstr "Messa fuori servizio"
 
 msgid "tt_ch.bfe.statistik-wasserkraftanlagen_hydropowerplantoperationalstatus_de"
-msgstr "Statut opérationnel"
+msgstr "Statut operativo"
 
 msgid "tt_ch.bfe.statistik-wasserkraftanlagen_hydropowerplantoperationalstatus_de"
-msgstr "Statut opérationnel"
+msgstr "Statut operativo"
 
 msgid "tt_ch.bfe.statistik-wasserkraftanlagen_hydropowerplanttype"
-msgstr "Type d'aménagement hydroélectrique"
+msgstr "Tipo di installazione idroelettrica"
 
 msgid "tt_ch.bfe.statistik-wasserkraftanlagen_hydropowerplanttype"
-msgstr "Type d'aménagement hydroélectrique"
+msgstr "Tipo di installazione idroelettrica"
 
 msgid "tt_ch.bfe.statistik-wasserkraftanlagen_location"
-msgstr "Site"
+msgstr "Sito"
 
 msgid "tt_ch.bfe.statistik-wasserkraftanlagen_location"
-msgstr "Site"
+msgstr "Sito"
 
 msgid "tt_ch.bfe.statistik-wasserkraftanlagen_name"
 msgstr "Nom"
@@ -2793,10 +2793,10 @@ msgid "tt_ch.bfe.statistik-wasserkraftanlagen_name"
 msgstr "Nom"
 
 msgid "tt_ch.bfe.statistik-wasserkraftanlagen_wastanumber"
-msgstr "Numéro SAHE"
+msgstr "Numero SAHE"
 
 msgid "tt_ch.bfe.statistik-wasserkraftanlagen_wastanumber"
-msgstr "Numéro SAHE"
+msgstr "Numero SAHE"
 
 msgid "tt_ch.bfe.stauanlagen-bundesaufsicht_aufsichtstart"
 msgstr "Inizio del periodo di vigilanza"
