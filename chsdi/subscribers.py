@@ -20,6 +20,8 @@ def add_localizer(event):
     localizer = get_localizer(request)
     request.lang = 'rm' if localizer.locale_name == 'fi' else localizer.locale_name
     request.lang = request.lang.encode('ascii', 'ignore')
+    # The load balancer forwards requests as http, therefore we need to check X-Forwarded-Proto
+    request.scheme = request.headers.get('X-Forwarded-Proto', request.scheme)
 
     def auto_translate(string):
         return localizer.translate(tsf(string))
