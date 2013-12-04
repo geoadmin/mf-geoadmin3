@@ -53,7 +53,7 @@ class MapService(MapServiceValidation):
             ))
         query = self._geodata_staging_filter(query, model.staging)
         for q in query:
-            layer = q.getLayerConfig(self.translate)
+            layer = q.getLayerConfig(self.request)
             layers = dict(layers.items() + layer.items())
         return {'layers': layers}
 
@@ -66,7 +66,7 @@ class MapService(MapServiceValidation):
         query = self.request.db.query(LayersConfig)
         query = query.filter(LayersConfig.idBod == idlayer)
         query = query.one()
-        config = query.getLayerConfig(self.translate)
+        config = query.getLayerConfig(self.request)
         hasLegend = config[idlayer]['hasLegend']
 
         if 'attributes' in layer.keys() and 'dataStatus' in layer['attributes'].keys():
