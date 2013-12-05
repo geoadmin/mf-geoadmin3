@@ -60,7 +60,7 @@ Deploy to the integration server (ab = Abnahme = integration):
     
     $ sudo -u deploy deploy -r deploy/deploy.cfg ab
 
-And test on http://mf-geoadmin30i.bgdi.admin.ch/
+And test on http://mf-geoadmin3.int.bgdi.admin.ch/
 
 ## Deploying a branch
 
@@ -84,9 +84,9 @@ url `/branch/`. The 00-branches.conf in the vhost configuration points to the
 latest deployed branch.
 
 Sample path:
-http://mf-geoadmin30i.bgdi.admin.ch/branch/dev_bottombar/prod
+http://mf-geoadmin3.int.bgdi.admin.ch/branch/dev_bottombar/prod
 
-Overview of all deployed branches: http://mf-geoadmin30i.bgdi.admin.ch/branch
+Overview of all deployed branches: http://mf-geoadmin3.int.bgdi.admin.ch/branch
 
 Please only use integration url for external communication (including here on 
 github), even though the exact same structure is also available on our test 
