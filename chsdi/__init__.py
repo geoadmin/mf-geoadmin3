@@ -94,5 +94,7 @@ def main(global_config, **settings):
     config.add_static_view('api', 'chsdi:static/doc/build/api', cache_max_age=3600)
     config.add_static_view('services', 'chsdi:static/doc/build/services', cache_max_age=3600)
     config.add_static_view('realeasenotes', 'chsdi:static/doc/build/releasenotes', cache_max_age=3600)
+    config.add_static_view('examples', 'chsdi:static/doc/examples', cache_max_age=3600)
+
 
     return config.make_wsgi_app()
