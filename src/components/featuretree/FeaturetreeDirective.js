@@ -95,8 +95,8 @@
             };
 
             var updateTree = function(res, searchExtent) {
-              var tree = {}, k, i, li, j, lj, layerId, newNode, oldNode,
-                  feature, oldFeature, result, bbox, inside;
+              var tree = {}, i, li, j, lj, layerId, newNode, oldNode,
+                  feature, oldFeature, result, bbox, ext;
               if (res.results &&
                   res.results.length > 0) {
 
@@ -114,16 +114,16 @@
                   // the future (but after making the request to get the
                   // geometry)
                   if (result.attrs.geom_st_box2d) {
-                    inside = false;
                     bbox = parseBoxString(result.attrs.geom_st_box2d);
-                    for (k = 0; k < bbox.length - 1; k = k + 2) {
-                      if (ol.extent.containsCoordinate(searchExtent,
-                            [bbox[k], bbox[k + 1]])) {
-                        inside = true;
-                        break;
+                    ext = ol.extent.boundingExtent([[bbox[0], bbox[1]],
+                                                       [bbox[2], bbox[3]]]);
+                    if (ol.extent.getArea(ext) <= 0) {
+                      if (!ol.extent.containsCoordinate(searchExtent,
+                                                        [ext[0], ext[1]])) {
+                        continue;
                       }
-                    }
-                    if (!inside) {
+                    } else if (ol.extent.getIntersectionArea(searchExtent,
+                                                      ext) <= 0) {
                       continue;
                     }
                   }
