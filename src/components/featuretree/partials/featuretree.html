@@ -1,0 +1,17 @@
+<div>
+  <div ng-if="loading">Please wait, data is loading...</div>
+  <ul>
+    <li ng-repeat="(key, layer) in tree">
+      <a ng-click="layer.open = !layer.open">
+        <i ng-class="{'icon-minus': layer.open, 'icon-plus': !layer.open}"></i>
+        {{layer.label}}
+      </a>
+      <ul ng-if="layer.open">
+        <li ng-repeat="feature in layer.features">
+          <a ng-mouseover="showFeatureInfo(feature)">{{feature.label}}</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
