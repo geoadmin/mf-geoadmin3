@@ -12,7 +12,8 @@
 
   module.directive('gaFeaturetree',
       function($rootScope, $compile, $timeout, $http, $q, $translate, $sce,
-               gaLayers, gaDefinePropertiesForLayer, gaStyleFunctionFactory) {
+               gaLayers, gaDefinePropertiesForLayer, gaStyleFunctionFactory, 
+               gaMapClick) {
 
         var createVectorLayer = function(style) {
           var vector = new ol.layer.Vector({
@@ -39,6 +40,7 @@
             var canceler = null;
             var map = scope.map;
             var view = map.getView();
+            var viewport = $(map.getViewport());
             var projection = view.getProjection();
             var objectInfoToggleEl = $('#object-info-toggle');
             var objectInfoParentEl = $('#object-info-parent');
@@ -46,6 +48,10 @@
             var parser = new ol.format.GeoJSON();
             var hlLayer = createVectorLayer('highlight');
             var selectLayer = createVectorLayer('select');
+            var rectangleLayer = createVectorLayer('lightselect');
+            //FIXME improve the drawing. Right now is very simple
+            var firstPoint;
+            rectangleLayer.invertedOpacity = 0.25;
             map.addLayer(hlLayer);
             map.addLayer(selectLayer);
 
@@ -134,7 +140,7 @@
             var getSearchExtent = function() {
               if (scope.searchmode === 'rectangle') {
                 return ol.extent.boundingExtent(
-                    scope.searchRectangle.getCoordinates()[0]);
+                    scope.searchRectangle.getCoordinates());
               }
               return view.calculateExtent(map.getSize());
             };
@@ -183,13 +189,17 @@
             // order to not trigger angular digest cycles and too many
             // updates. We don't use the permalink here because we want
             // to separate these concerns.
-            var triggerChange = function() {
+            var triggerChange = function(delay) {
+              var to = delay;
+              if (angular.isDefined(to)) {
+                to = 300;
+              }
               if (scope.options.active) {
                 cancel();
                 timeoutPromise = $timeout(function() {
                   requestFeatures();
                   timeoutPromise = null;
-                }, 300);
+                }, to);
               }
             };
 
@@ -234,13 +244,15 @@
             };
 
             scope.searchmode = 'auto';
-            scope.searchRectangle = new ol.geom.Polygon([[
+            scope.searchRectangle = new ol.geom.LineString([
               [590000, 190000],
               [590000, 210000],
               [610000, 210000],
               [610000, 190000],
               [590000, 190000]
-            ]]);
+            ]);
+            rectangleLayer.getSource().addFeature(
+                new ol.Feature(scope.searchRectangle));
             scope.loading = false;
             scope.tree = {};
 
@@ -296,9 +308,52 @@
               }
             });
 
+            var updateRectangle = function(evt) {
+              var coordinate = (evt.originalEvent) ?
+                  map.getEventCoordinate(evt.originalEvent) :
+                  evt.getCoordinate();
+              scope.searchRectangle.setCoordinates([
+                [firstPoint[0], firstPoint[1]],
+                [firstPoint[0], coordinate[1]],
+                [coordinate[0], coordinate[1]],
+                [coordinate[0], firstPoint[1]],
+                [firstPoint[0], firstPoint[1]]
+              ]);
+            };
+
+            var resetRectangleDrawing = function() {
+              firstPoint = undefined;
+              viewport.unbind('mousemove', updateRectangle);
+            };
+
             scope.$watch('searchmode', function(newVal, oldVal) {
               if (newVal !== oldVal) {
-                triggerChange();
+                resetRectangleDrawing();
+                if (newVal === 'rectangle') {
+                  map.addLayer(rectangleLayer);
+                } else {
+                  map.removeLayer(rectangleLayer);
+                }
+                triggerChange(0);
+              }
+            });
+
+            gaMapClick.listen(map, function(evt) {
+              var coordinate;
+              if (scope.searchmode === 'rectangle') {
+                coordinate = (evt.originalEvent) ?
+                    map.getEventCoordinate(evt.originalEvent) :
+                    evt.getCoordinate();
+
+                if (!angular.isDefined(firstPoint) &&
+                    evt.browserEvent.ctrlKey) {
+                    firstPoint = coordinate;
+                    viewport.on('mousemove', updateRectangle);
+                } else if (angular.isDefined(firstPoint)) {
+                  updateRectangle(evt);
+                  resetRectangleDrawing();
+                  triggerChange(0);
+                }
               }
             });
 

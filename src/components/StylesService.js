@@ -55,7 +55,7 @@
       });
 
       var hlPointStyle = new ol.style.Style({
-        image: selectCircle
+        image: hlCircle
       });
 
       var hlStyle = {
@@ -67,9 +67,40 @@
         'Polygon': [hlStyle]
       };
 
+      var lsStroke = new ol.style.Stroke({
+        color: 'red',
+        width: 3
+      });
+
+      var lsFill = new ol.style.Fill({
+        color: '#D8Ddi8D8'
+      });
+
+      var lsCircle = ol.shape.renderCircle(10, lsFill,
+                                              lsStroke);
+
+      var lsStyle = new ol.style.Style({
+        fill: lsFill,
+        stroke: lsStroke
+      });
+
+      var lsPointStyle = new ol.style.Style({
+        image: lsCircle
+      });
+
+      var lsStyle = {
+        'Point': [lsPointStyle],
+        'LineString': [lsStyle],
+        'MultiLineString': [lsStyle],
+        'MultiPoint': [lsPointStyle],
+        'MultiPolygon': [lsStyle],
+        'Polygon': [lsStyle]
+      };
+
       var styles = {
         'select': selectStyle,
-        'highlight': hlStyle
+        'highlight': hlStyle,
+        'lightselect': lsStyle
       };
 
       return function(type) {
