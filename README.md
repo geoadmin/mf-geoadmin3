@@ -32,7 +32,7 @@ You can customize the build by creating an `rc` file that you source once. Ex:
 
     $ cat rc_elemoine 
     export BASE_URL_PATH=/mypath
-    export SERVICE_URL=/http://mf-chsdi30t.bgdi.admin.ch
+    export SERVICE_URL=/http://mf-chsdi.dev.bgdi.ch
     $ source rc_elemoine 
     $ make  
 
