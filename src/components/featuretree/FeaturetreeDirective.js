@@ -131,9 +131,15 @@
               scope.tree = tree;
             };
 
+            var getSearchExtent = function() {
+              if (scope.bboxmode === 'rectangle') {
+                return ol.extent.boundingExtent([[610000, 210000],[590000, 190000]]);
+              }
+              return view.calculateExtent(map.getSize());
+            };
+
             var getUrlAndParameters = function(layersToQuery) {
-              var size = map.getSize(),
-                  extent = view.calculateExtent(size),
+              var extent = getSearchExtent(),
                   url = scope.options.searchUrlTemplate,
                   params = {
                     bbox: extent[0] + ',' + extent[1] +
@@ -225,7 +231,8 @@
                 drawGeometry(feature.geometry, layer);
               }
             };
-
+            
+            scope.bboxmode = 'auto';
             scope.loading = false;
             scope.tree = {};
 
@@ -264,7 +271,11 @@
               loadAndDrawGeometry(feature, hlLayer);
             };
 
-            view.on('change', triggerChange);
+            view.on('change', function() {
+              if (scope.bboxmode === 'auto') {
+                triggerChange();
+              }
+            });
 
             scope.$on('gaTopicChange', function(event, topic) {
               currentTopic = topic.id;
@@ -274,6 +285,13 @@
               cancel();
               if (newVal === true) {
                 requestFeatures();
+              }
+            });
+
+            scope.$watch('bboxmode', function(newVal, oldVal) {
+              console.log('mode was changed', newVal, oldVal);
+              if (newVal !== oldVal) {
+                triggerChange();
               }
             });
 

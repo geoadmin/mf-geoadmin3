@@ -1,4 +1,8 @@
 <div>
+  <form>
+    <input type="radio" ng-model="bboxmode" value="auto"><label translate>Auto</label>
+    <input type="radio" ng-model="bboxmode" value="rectangle"><label translate>Rectangle</label>
+  </form>
   <div ng-if="loading">Please wait, data is loading...</div>
   <ul>
     <li ng-repeat="(key, layer) in tree">
