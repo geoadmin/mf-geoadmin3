@@ -132,8 +132,9 @@
             };
 
             var getSearchExtent = function() {
-              if (scope.bboxmode === 'rectangle') {
-                return ol.extent.boundingExtent([[610000, 210000],[590000, 190000]]);
+              if (scope.searchmode === 'rectangle') {
+                return ol.extent.boundingExtent(
+                    scope.searchRectangle.getCoordinates()[0]);
               }
               return view.calculateExtent(map.getSize());
             };
@@ -231,8 +232,15 @@
                 drawGeometry(feature.geometry, layer);
               }
             };
-            
-            scope.bboxmode = 'auto';
+
+            scope.searchmode = 'auto';
+            scope.searchRectangle = new ol.geom.Polygon([[
+              [590000, 190000],
+              [590000, 210000],
+              [610000, 210000],
+              [610000, 190000],
+              [590000, 190000]
+            ]]);
             scope.loading = false;
             scope.tree = {};
 
@@ -272,7 +280,7 @@
             };
 
             view.on('change', function() {
-              if (scope.bboxmode === 'auto') {
+              if (scope.searchmode === 'auto') {
                 triggerChange();
               }
             });
@@ -288,8 +296,7 @@
               }
             });
 
-            scope.$watch('bboxmode', function(newVal, oldVal) {
-              console.log('mode was changed', newVal, oldVal);
+            scope.$watch('searchmode', function(newVal, oldVal) {
               if (newVal !== oldVal) {
                 triggerChange();
               }
