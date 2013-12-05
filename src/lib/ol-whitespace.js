@@ -9662,11 +9662,11 @@ goog.require("goog.events.EventType");
 goog.require("goog.functions");
 goog.require("ol.extent");
 goog.require("ol.geom.flat");
-ol.geom.Type = {POINT:"Point", LINE_STRING:"LineString", LINEAR_RING:"LinearRing", POLYGON:"Polygon", MULTI_POINT:"MultiPoint", MULTI_LINE_STRING:"MultiLineString", MULTI_POLYGON:"MultiPolygon"};
-ol.geom.Layout = {XY:"XY", XYZ:"XYZ", XYM:"XYM", XYZM:"XYZM"};
+ol.geom.GeometryType = {POINT:"Point", LINE_STRING:"LineString", LINEAR_RING:"LinearRing", POLYGON:"Polygon", MULTI_POINT:"MultiPoint", MULTI_LINE_STRING:"MultiLineString", MULTI_POLYGON:"MultiPolygon"};
+ol.geom.GeometryLayout = {XY:"XY", XYZ:"XYZ", XYM:"XYM", XYZM:"XYZM"};
 ol.geom.Geometry = function() {
   goog.base(this);
-  this.layout = ol.geom.Layout.XY;
+  this.layout = ol.geom.GeometryLayout.XY;
   this.stride = 2;
   this.flatCoordinates = null;
   this.revision = 0;
@@ -9676,13 +9676,13 @@ ol.geom.Geometry = function() {
 goog.inherits(ol.geom.Geometry, goog.events.EventTarget);
 ol.geom.Geometry.getLayoutForStride_ = function(stride) {
   if(stride == 2) {
-    return ol.geom.Layout.XY
+    return ol.geom.GeometryLayout.XY
   }else {
     if(stride == 3) {
-      return ol.geom.Layout.XYZ
+      return ol.geom.GeometryLayout.XYZ
     }else {
       if(stride == 4) {
-        return ol.geom.Layout.XYZM
+        return ol.geom.GeometryLayout.XYZM
       }else {
         throw new Error("unsupported stride: " + stride);
       }
@@ -9690,16 +9690,16 @@ ol.geom.Geometry.getLayoutForStride_ = function(stride) {
   }
 };
 ol.geom.Geometry.getStrideForLayout_ = function(layout) {
-  if(layout == ol.geom.Layout.XY) {
+  if(layout == ol.geom.GeometryLayout.XY) {
     return 2
   }else {
-    if(layout == ol.geom.Layout.XYZ) {
+    if(layout == ol.geom.GeometryLayout.XYZ) {
       return 3
     }else {
-      if(layout == ol.geom.Layout.XYM) {
+      if(layout == ol.geom.GeometryLayout.XYM) {
         return 3
       }else {
-        if(layout == ol.geom.Layout.XYZM) {
+        if(layout == ol.geom.GeometryLayout.XYZM) {
           return 4
         }else {
           throw new Error("unsupported layout: " + layout);
@@ -9750,7 +9750,7 @@ ol.geom.Geometry.prototype.setLayout = function(layout, coordinates, nesting) {
     var i;
     for(i = 0;i < nesting;++i) {
       if(coordinates.length === 0) {
-        this.layout = ol.geom.Layout.XY;
+        this.layout = ol.geom.GeometryLayout.XY;
         this.stride = 2;
         return
       }else {
@@ -17916,7 +17916,7 @@ ol.geom.LinearRing.prototype.getCoordinates = function() {
   return ol.geom.flat.inflateCoordinates(this.flatCoordinates, 0, this.flatCoordinates.length, this.stride)
 };
 ol.geom.LinearRing.prototype.getType = function() {
-  return ol.geom.Type.LINEAR_RING
+  return ol.geom.GeometryType.LINEAR_RING
 };
 ol.geom.LinearRing.prototype.setCoordinates = function(coordinates, opt_layout) {
   this.setLayout(opt_layout, coordinates, 1);
@@ -17966,11 +17966,11 @@ ol.geom.Polygon.prototype.getLinearRings = function() {
   return linearRings
 };
 ol.geom.Polygon.prototype.getType = function() {
-  return ol.geom.Type.POLYGON
+  return ol.geom.GeometryType.POLYGON
 };
 ol.geom.Polygon.prototype.setCoordinates = function(coordinates, opt_layout) {
   if(goog.isNull(coordinates)) {
-    this.setFlatCoordinates(ol.geom.Layout.XY, null, this.ends_)
+    this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null, this.ends_)
   }else {
     this.setLayout(opt_layout, coordinates, 2);
     if(goog.isNull(this.flatCoordinates)) {
@@ -20329,6 +20329,9 @@ ol.structs.RBush.prototype.insert_ = function(extent, value, level) {
   }
   return node
 };
+ol.structs.RBush.prototype.isEmpty = function() {
+  return this.root_.children.length === 0
+};
 ol.structs.RBush.prototype.remove = function(value) {
   if(goog.DEBUG && this.readers_) {
     throw Error("cannot remove value while reading");
@@ -20444,6 +20447,11 @@ ol.source.Vector.prototype.addFeature = function(feature) {
   this.dispatchEvent(new ol.source.VectorEvent(ol.source.VectorEventType.ADDFEATURE, feature));
   this.dispatchChangeEvent()
 };
+ol.source.Vector.prototype.clear = function() {
+  this.rBush_.forEach(this.removeFeatureInternal_, this);
+  this.rBush_.clear();
+  this.dispatchChangeEvent()
+};
 ol.source.Vector.prototype.forEachFeature = function(f, opt_obj) {
   return this.rBush_.forEach(f, opt_obj)
 };
@@ -20478,14 +20486,20 @@ ol.source.Vector.prototype.handleFeatureChange_ = function(event) {
   this.rBush_.update(feature.getGeometry().getExtent(), feature);
   this.dispatchChangeEvent()
 };
+ol.source.Vector.prototype.isEmpty = function() {
+  return this.rBush_.isEmpty()
+};
 ol.source.Vector.prototype.removeFeature = function(feature) {
   this.rBush_.remove(feature);
+  this.removeFeatureInternal_(feature);
+  this.dispatchChangeEvent()
+};
+ol.source.Vector.prototype.removeFeatureInternal_ = function(feature) {
   var featureKey = goog.getUid(feature) + "";
   goog.asserts.assert(featureKey in this.featureChangeKeys_);
   goog.events.unlistenByKey(this.featureChangeKeys_[featureKey]);
   delete this.featureChangeKeys_[featureKey];
-  this.dispatchEvent(new ol.source.VectorEvent(ol.source.VectorEventType.REMOVEFEATURE, feature));
-  this.dispatchChangeEvent()
+  this.dispatchEvent(new ol.source.VectorEvent(ol.source.VectorEventType.REMOVEFEATURE, feature))
 };
 ol.source.VectorEvent = function(type, opt_feature) {
   goog.base(this, type);
@@ -21727,11 +21741,11 @@ ol.geom.LineString.prototype.getLength = function() {
   return ol.geom.flat.lineStringLength(this.flatCoordinates, 0, this.flatCoordinates.length, this.stride)
 };
 ol.geom.LineString.prototype.getType = function() {
-  return ol.geom.Type.LINE_STRING
+  return ol.geom.GeometryType.LINE_STRING
 };
 ol.geom.LineString.prototype.setCoordinates = function(coordinates, opt_layout) {
   if(goog.isNull(coordinates)) {
-    this.setFlatCoordinates(ol.geom.Layout.XY, null)
+    this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null)
   }else {
     this.setLayout(opt_layout, coordinates, 1);
     if(goog.isNull(this.flatCoordinates)) {
@@ -21771,11 +21785,11 @@ ol.geom.MultiLineString.prototype.getLineStrings = function() {
   return lineStrings
 };
 ol.geom.MultiLineString.prototype.getType = function() {
-  return ol.geom.Type.MULTI_LINE_STRING
+  return ol.geom.GeometryType.MULTI_LINE_STRING
 };
 ol.geom.MultiLineString.prototype.setCoordinates = function(coordinates, opt_layout) {
   if(goog.isNull(coordinates)) {
-    this.setFlatCoordinates(ol.geom.Layout.XY, null, this.ends_)
+    this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null, this.ends_)
   }else {
     this.setLayout(opt_layout, coordinates, 2);
     if(goog.isNull(this.flatCoordinates)) {
@@ -21813,11 +21827,11 @@ ol.geom.Point.prototype.getExtent = function(opt_extent) {
   return ol.extent.returnOrUpdate(this.extent, opt_extent)
 };
 ol.geom.Point.prototype.getType = function() {
-  return ol.geom.Type.POINT
+  return ol.geom.GeometryType.POINT
 };
 ol.geom.Point.prototype.setCoordinates = function(coordinates, opt_layout) {
   if(goog.isNull(coordinates)) {
-    this.setFlatCoordinates(ol.geom.Layout.XY, null)
+    this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null)
   }else {
     this.setLayout(opt_layout, coordinates, 0);
     if(goog.isNull(this.flatCoordinates)) {
@@ -21853,11 +21867,11 @@ ol.geom.MultiPoint.prototype.getPoints = function() {
   return points
 };
 ol.geom.MultiPoint.prototype.getType = function() {
-  return ol.geom.Type.MULTI_POINT
+  return ol.geom.GeometryType.MULTI_POINT
 };
 ol.geom.MultiPoint.prototype.setCoordinates = function(coordinates, opt_layout) {
   if(goog.isNull(coordinates)) {
-    this.setFlatCoordinates(ol.geom.Layout.XY, null)
+    this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null)
   }else {
     this.setLayout(opt_layout, coordinates, 1);
     if(goog.isNull(this.flatCoordinates)) {
@@ -21913,11 +21927,11 @@ ol.geom.MultiPolygon.prototype.getPolygons = function() {
   return polygons
 };
 ol.geom.MultiPolygon.prototype.getType = function() {
-  return ol.geom.Type.MULTI_POLYGON
+  return ol.geom.GeometryType.MULTI_POLYGON
 };
 ol.geom.MultiPolygon.prototype.setCoordinates = function(coordinates, opt_layout) {
   if(goog.isNull(coordinates)) {
-    this.setFlatCoordinates(ol.geom.Layout.XY, null, this.endss_)
+    this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null, this.endss_)
   }else {
     this.setLayout(opt_layout, coordinates, 3);
     if(goog.isNull(this.flatCoordinates)) {
