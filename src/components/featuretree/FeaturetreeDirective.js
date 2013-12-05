@@ -2,74 +2,26 @@
   goog.provide('ga_featuretree_directive');
 
   goog.require('ga_map_service');
+  goog.require('ga_styles_service');
 
   var module = angular.module('ga_featuretree_directive', [
     'ga_map_service',
+    'ga_styles_service',
     'pascalprecht.translate'
   ]);
 
   module.directive('gaFeaturetree',
       function($rootScope, $compile, $timeout, $http, $q, $translate, $sce,
-               gaLayers, gaDefinePropertiesForLayer) {
+               gaLayers, gaDefinePropertiesForLayer, gaStyleFunctionFactory) {
 
-        var selectStyle = new ol.style.Style({
-          symbolizers: [
-            new ol.style.Fill({
-              color: '#ff0000'
-            }),
-            new ol.style.Stroke({
-              color: '#f00000',
-              width: 6
-            }),
-            new ol.style.Shape({
-              size: 20,
-              fill: new ol.style.Fill({
-                color: '#ff0000'
-              }),
-              stroke: new ol.style.Stroke({
-                color: '#ff0000',
-                width: 6
-              })
-            })
-          ]
-        });
-
-        var highlightStyle = new ol.style.Style({
-          symbolizers: [
-            new ol.style.Fill({
-              color: '#ffff00'
-            }),
-            new ol.style.Stroke({
-              color: '#ff8000',
-              width: 3
-            }),
-            new ol.style.Shape({
-              size: 20,
-              fill: new ol.style.Fill({
-                color: '#ffff00'
-              }),
-              stroke: new ol.style.Stroke({
-                color: '#ff8000',
-                width: 3
-              })
-            })
-          ]
-        });
-
-        var createVectorLayer = function(proj, parser, style) {
+        var createVectorLayer = function(style) {
           var vector = new ol.layer.Vector({
-                style: style,
-                source: new ol.source.Vector({
-                  projection: proj,
-                  parser: parser,
-                  data: {
-                    type: 'FeatureCollection',
-                    features: []
-                  }
-                })
+                styleFunction: gaStyleFunctionFactory(style),
+                source: new ol.source.Vector()
               });
           gaDefinePropertiesForLayer(vector);
           vector.highlight = true;
+          vector.invertedOpacity = 0.25;
           return vector;
         };
 
@@ -88,18 +40,14 @@
             var map = scope.map;
             var view = map.getView();
             var projection = view.getProjection();
-            var geoJsonParser = new ol.parser.GeoJSON();
             var objectInfoToggleEl = $('#object-info-toggle');
             var objectInfoParentEl = $('#object-info-parent');
             var objectInfo = {};
-            var selectionLayer = createVectorLayer(projection,
-                                                   geoJsonParser,
-                                                   selectStyle);
-            var previewLayer = createVectorLayer(projection,
-                                                 geoJsonParser,
-                                                 highlightStyle);
-            map.addLayer(previewLayer);
-            map.addLayer(selectionLayer);
+            var parser = new ol.format.GeoJSON();
+            var hlLayer = createVectorLayer('highlight');
+            var selectLayer = createVectorLayer('select');
+            map.addLayer(hlLayer);
+            map.addLayer(selectLayer);
 
             objectInfo.html = '';
             objectInfo.loading = false;
@@ -177,7 +125,7 @@
                     };
                   }
                   newNode.features.push(feature);
-                  loadAndDrawGeometry(feature, previewLayer);
+                  loadAndDrawGeometry(feature, selectLayer);
                 }
               }
               scope.tree = tree;
@@ -204,8 +152,8 @@
             var requestFeatures = function() {
               var layersToQuery = getLayersToQuery(),
                   req;
-              previewLayer.clear();
-              selectionLayer.clear();
+              selectLayer.getSource().clear();
+              hlLayer.getSource().clear();
               if (layersToQuery.length) {
                 req = getUrlAndParameters(layersToQuery);
 
@@ -246,9 +194,13 @@
 
             var drawGeometry = function(geometry, layer) {
               if (geometry) {
-                layer.parseFeatures(geometry,
-                                    geoJsonParser,
-                                    projection);
+                parser.readObject(geometry,
+                                  layer.getSource().addFeature,
+                                  layer.getSource());
+
+                //layer.parseFeatures(geometry,
+                //                    geoJsonParser,
+                //                    projection);
                 assureLayerOnTop(layer);
               }
             };
@@ -315,8 +267,8 @@
               } else {
                 objectInfo.html = feature.info;
               }
-              selectionLayer.clear();
-              loadAndDrawGeometry(feature, selectionLayer);
+              hlLayer.getSource().clear();
+              loadAndDrawGeometry(feature, hlLayer);
             };
 
             view.on('change', triggerChange);
