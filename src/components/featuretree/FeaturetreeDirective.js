@@ -87,14 +87,47 @@
               canceler = $q.defer();
             };
 
-            var updateTree = function(res) {
-              var tree = {}, i, li, j, lj, layerId, newNode, oldNode,
-                  feature, oldFeature, result;
+            var parseBoxString = function(stringBox2D) {
+              var extent = stringBox2D.replace('BOX(', '')
+                .replace(')', '').replace(',', ' ')
+                .split(' ');
+              return $.map(extent, parseFloat);
+            };
+
+            var updateTree = function(res, searchExtent) {
+              var tree = {}, k, i, li, j, lj, layerId, newNode, oldNode,
+                  feature, oldFeature, result, bbox, inside;
               if (res.results &&
                   res.results.length > 0) {
 
                 for (i = 0, li = res.results.length; i < li; i++) {
                   result = res.results[i];
+
+                  // The feature search using sphinxsearch uses quadindex
+                  // to filter results based on their bounding boxes. This is
+                  // in order to make the search extremely fast even for a large
+                  // number of features. The downside is that we will have false
+                  // positives in the results (features which are outside of
+                  // the searched box). Here, we filter out those false
+                  // positives based on the bounding box of the feature. Note
+                  // that we could refine this by using the exact geometry in
+                  // the future (but after making the request to get the
+                  // geometry)
+                  if (result.attrs.geom_st_box2d) {
+                    inside = false;
+                    bbox = parseBoxString(result.attrs.geom_st_box2d);
+                    for (k = 0; k < bbox.length - 1; k = k + 2) {
+                      if (ol.extent.containsCoordinate(searchExtent,
+                            [bbox[k], bbox[k + 1]])) {
+                        inside = true;
+                        break;
+                      }
+                    }
+                    if (!inside) {
+                      continue;
+                    }
+                  }
+
                   layerId = result.attrs.layer;
                   newNode = tree[layerId];
                   oldNode = scope.tree[layerId];
@@ -145,9 +178,8 @@
               return view.calculateExtent(map.getSize());
             };
 
-            var getUrlAndParameters = function(layersToQuery) {
-              var extent = getSearchExtent(),
-                  url = scope.options.searchUrlTemplate,
+            var getUrlAndParameters = function(layersToQuery, extent) {
+              var url = scope.options.searchUrlTemplate,
                   params = {
                     bbox: extent[0] + ',' + extent[1] +
                         ',' + extent[2] + ',' + extent[3],
@@ -163,11 +195,12 @@
 
             var requestFeatures = function() {
               var layersToQuery = getLayersToQuery(),
-                  req;
+                  req, searchExtent;
               selectLayer.getSource().clear();
               hlLayer.getSource().clear();
               if (layersToQuery.length) {
-                req = getUrlAndParameters(layersToQuery);
+                searchExtent = getSearchExtent();
+                req = getUrlAndParameters(layersToQuery, searchExtent);
 
                 scope.loading = true;
 
@@ -176,7 +209,7 @@
                   timeout: canceler.promise,
                   params: req.params
                 }).success(function(res) {
-                  updateTree(res);
+                  updateTree(res, searchExtent);
                   scope.loading = false;
                 }).error(function(reason) {
                   scope.tree = {};
@@ -344,7 +377,6 @@
                 coordinate = (evt.originalEvent) ?
                     map.getEventCoordinate(evt.originalEvent) :
                     evt.getCoordinate();
-
                 if (!angular.isDefined(firstPoint) &&
                     evt.browserEvent.ctrlKey) {
                     firstPoint = coordinate;
