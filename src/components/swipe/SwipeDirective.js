@@ -25,8 +25,10 @@
         link: function(scope, elt, attrs, controller) {
           var draggableElt = elt.find('[ga-draggable]');
           var arrowsElt = elt.find('.ga-swipe-arrows');
+          var layerLabelElt = elt.find('.ga-swipe-layer-label');
           var listenerKeys = [];
           var layerListenerKeys = [];
+          var isDragging = false;
           var events = {
             mouse: {
               start: 'mousedown',
@@ -45,8 +47,20 @@
             eventKey = events.touch;
           }
 
+          // Hide laye label on mouse over/out events
+          elt.mouseover(function(evt) {
+             if (!isDragging) {
+              layerLabelElt.show();
+            }
+          }).mouseout(function(evt) {
+            if (!isDragging) {
+              layerLabelElt.hide();
+            }
+          });
+
           // Drag swipe element callbacks
           var dragStart = function(evt) {
+            isDragging = true;
             arrowsElt.hide();
             $document.on(eventKey.move, drag);
             $document.on(eventKey.end, dragEnd);
@@ -55,6 +69,7 @@
             scope.map.requestRenderFrame();
           };
           var dragEnd = function(evt) {
+            isDragging = false;
              arrowsElt.show();
              $document.unbind(eventKey.move, drag);
              $document.unbind(eventKey.end, dragEnd);
@@ -82,7 +97,7 @@
           // the map.
           var refreshComp = function() {
 
-            // Unset the layer and remov its listeners
+            // Unset the layer and remove its listeners
             if (scope.layer) {
               scope.layer.unByKey(layerListenerKeys[0]);
               scope.layer.unByKey(layerListenerKeys[1]);
