@@ -125,7 +125,6 @@ class LayersConfig(Base):
         # sublayers don't have attributions
         if 'attribution' in config:
             config['attributionUrl'] = translate(self.__dict__['attribution'] + '.url').replace('http', scheme)
-        
 
         return {self.idBod: config}
 
