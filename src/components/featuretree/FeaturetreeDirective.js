@@ -104,8 +104,8 @@
                   }
 
                   //look if feature exists already. We do this
-                  //to avoid loading it time and again for
-                  //the same features
+                  //to avoid loading the same feature again and
+                  //again
                   if (oldNode) {
                     for (j = 0, lj = oldNode.features.length; j < lj; j++) {
                       oldFeature = oldNode.features[j];
@@ -139,8 +139,7 @@
                     bbox: extent[0] + ',' + extent[1] +
                         ',' + extent[2] + ',' + extent[3],
                     type: 'features',
-                    features: layersToQuery,
-                    callback: 'JSON_CALLBACK'
+                    features: layersToQuery
                   };
               url = url.replace('{Topic}', currentTopic);
               return {
@@ -160,7 +159,7 @@
                 scope.loading = true;
 
                 // Look for all features in current bounding box
-                $http.jsonp(req.url, {
+                $http.get(req.url, {
                   timeout: canceler.promise,
                   params: req.params
                 }).success(function(res) {
@@ -197,10 +196,6 @@
                 parser.readObject(geometry,
                                   layer.getSource().addFeature,
                                   layer.getSource());
-
-                //layer.parseFeatures(geometry,
-                //                    geoJsonParser,
-                //                    projection);
                 assureLayerOnTop(layer);
               }
             };
@@ -214,11 +209,10 @@
                              .replace('{Layer}', feature.layer)
                              .replace('{Feature}', feature.id)
                              .replace('/htmlpopup', '');
-                $http.jsonp(featureUrl, {
+                $http.get(featureUrl, {
                   timeout: canceler.promise,
                   params: {
-                    geometryFormat: 'geojson',
-                    callback: 'JSON_CALLBACK'
+                    geometryFormat: 'geojson'
                   }
                 }).success(function(result) {
                   feature.geometry = result.feature;
@@ -249,11 +243,10 @@
                           .replace('{Topic}', currentTopic)
                           .replace('{Layer}', feature.layer)
                           .replace('{Feature}', feature.id);
-                $http.jsonp(htmlUrl, {
+                $http.get(htmlUrl, {
                   timeout: canceler.promise,
                   params: {
-                    lang: $translate.uses(),
-                    callback: 'JSON_CALLBACK'
+                    lang: $translate.uses()
                   }
                 }).success(function(html) {
                   feature.info = $sce.trustAsHtml(html);
