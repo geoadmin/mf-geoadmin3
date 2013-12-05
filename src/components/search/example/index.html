@@ -53,8 +53,8 @@
         ]);
 
         module.constant('gaGlobalOptions', {
-          serviceUrl: 'http://mf-chsdi30t.bgdi.admin.ch',
-          baseUrlPath: 'http://mf-geoadmin30t.bgdi.admin.ch/main'
+          serviceUrl: 'http://mf-chsdi3.dev.bgdi.admin.ch',
+          baseUrlPath: 'http://mf-geoadmin3.dev.bgdi.admin.ch/main'
         });
         
         module.config(['gaLayersProvider', function(gaLayersProvider) {
@@ -63,7 +63,7 @@
               '{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
 
           gaLayersProvider.layersConfigUrlTemplate =
-              'http://mf-chsdi30t.bgdi.admin.ch/rest/services/{Topic}/MapServer/layersconfig' +
+              'http://mf-chsdi3.dev.bgdi.admin.ch/rest/services/{Topic}/MapServer/layersconfig' +
               '?lang={Lang}';
         }]);
 
