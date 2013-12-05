@@ -37,8 +37,39 @@
         'Polygon': [selectStyle]
       };
 
+      var hlStroke = new ol.style.Stroke({
+        color: '#f00000',
+        width: 6
+      });
+
+      var hlFill = new ol.style.Fill({
+        color: '#ff0000'
+      });
+
+      var hlCircle = ol.shape.renderCircle(10, hlFill,
+                                              hlStroke);
+
+      var hlStyle = new ol.style.Style({
+        fill: hlFill,
+        stroke: hlStroke
+      });
+
+      var hlPointStyle = new ol.style.Style({
+        image: selectCircle
+      });
+
+      var hlStyle = {
+        'Point': [hlPointStyle],
+        'LineString': [hlStyle],
+        'MultiLineString': [hlStyle],
+        'MultiPoint': [hlPointStyle],
+        'MultiPolygon': [hlStyle],
+        'Polygon': [hlStyle]
+      };
+
       var styles = {
-        'select': selectStyle
+        'select': selectStyle,
+        'highlight': hlStyle
       };
 
       return function(type) {
