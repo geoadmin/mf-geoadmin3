@@ -66,12 +66,7 @@
             });
 
             function clearAll() {
-              //FIXME: there should be a better way to remove all features
-              //from a given source. Should be part of ol3.
-              var allFeatures = vectorSource.getAllFeatures();
-              angular.forEach(allFeatures, function(f) {
-                vectorSource.removeFeature(f);
-              });
+              vectorSource.clear();
               map.removeLayer(vector);
             }
 
