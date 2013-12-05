@@ -32,8 +32,45 @@ var vector = new ol.layer.Vector({
       extractStyles: true,
       extractAttributes: true
     }),
-    url: 'swissmetnet.kml'
+    url: 'bln-style.kml'
   })
 });
 
 map.addLayer(vector);
+
+var displayFeatureInfo = function(pixel, coordinate) {
+  map.getFeatures({
+    pixel: pixel,
+    layers: [vector],
+    success: function(layerFeatures) {
+      var element = popup.getElement(); 
+      var feature = layerFeatures[0][0];
+      if (feature) {
+        $(element).popover('destroy');
+        popup.setPosition(coordinate);
+        // the keys are quoted to prevent renaming in ADVANCED_OPTIMIZATIONS mode.
+        $(element).popover({
+          'placement': 'top',
+          'animation': false,
+          'html': true,
+          'content': feature.get('description')
+        });
+        $(element).popover('show');
+      } else {
+        $(element).popover('destroy');
+      }
+    }
+  });
+};
+
+// Popup showing the position the user clicked
+var popup = new ol.Overlay({
+  element: document.getElementById('popup')
+});
+map.addOverlay(popup);
+
+map.on('singleclick', function(evt) {
+  var pixel = evt.getPixel();
+  var coordinate = evt.getCoordinate();
+  displayFeatureInfo(pixel, coordinate);
+});
