@@ -51,6 +51,7 @@ a .icon-rotate-90:before,a .icon-rotate-180:before,a .icon-rotate-270:before,a .
 .icon-check:before{content:"\f046";}
 .icon-remove-sign:before{content:"\f057";}
 .icon-question-sign:before{content:"\f059";}
+.icon-question-circle:before{content:"\f059";}
 .icon-info-sign:before{content:"\f05a";}
 .icon-arrow-up:before{content:"\f062";}
 .icon-arrow-down:before{content:"\f063";}
@@ -67,6 +68,7 @@ a .icon-rotate-90:before,a .icon-rotate-180:before,a .icon-rotate-270:before,a .
 .icon-caret-down:before{content:"\f0d7";}
 .icon-caret-up:before{content:"\f0d8";}
 .icon-caret-right:before{content:"\f0da";}
+.icon-caret-left:before{content:"\f0d9";}
 .icon-envelope-alt:before{content:"\f0e0";}
 .icon-expand-alt:before{content:"\f116";}
 .icon-collapse-alt:before{content:"\f117";}
