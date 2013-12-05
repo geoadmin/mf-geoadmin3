@@ -410,6 +410,9 @@ a .icon-flip-vertical:before {
 .icon-question-sign:before {
   content: "\f059";
 }
+.icon-question-circle:before {
+  content: "\f059";
+}
 .icon-info-sign:before {
   content: "\f05a";
 }
@@ -458,6 +461,9 @@ a .icon-flip-vertical:before {
 }
 .icon-caret-right:before {
   content: "\f0da";
+}
+.icon-caret-left:before {
+  content: "\f0d9";
 }
 .icon-envelope-alt:before {
   content: "\f0e0";

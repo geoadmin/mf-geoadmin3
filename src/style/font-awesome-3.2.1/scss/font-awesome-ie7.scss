@@ -133,6 +133,11 @@ a [class*=" icon-"] {
 }
 
 
+.icon-question-circle {
+  @include ie7icon('&#xf059;');
+}
+
+
 .icon-info-sign {
   @include ie7icon('&#xf05a;');
 }
@@ -225,6 +230,11 @@ a [class*=" icon-"] {
 
 .icon-caret-right {
   @include ie7icon('&#xf0da;');
+}
+
+
+.icon-caret-left {
+  @include ie7icon('&#xf0d9;');
 }
 
 

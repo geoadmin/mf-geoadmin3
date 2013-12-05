@@ -100,6 +100,9 @@ a [class*=" icon-"] {
 .icon-question-sign {
   *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf059;');
 }
+.icon-question-circle {
+  *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf059;');
+}
 .icon-info-sign {
   *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf05a;');
 }
@@ -147,6 +150,9 @@ a [class*=" icon-"] {
 }
 .icon-caret-right {
   *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf0da;');
+}
+.icon-caret-left {
+  *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf0d9;');
 }
 .icon-envelope-alt {
   *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf0e0;');
