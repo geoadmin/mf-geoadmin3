@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <style>
+      .map {
+        height: 400px;
+        width: 100%;
+      }
+    </style>
+    <script src="../loader.js?lang=en" type="text/javascript"></script>
+    <title>GeoAdmin API example</title>
+  </head>
+  <body>
+    <h2>My first GeoAdmin map</h2>
+    <div id="map" class="map"></div>
+    <script type="text/javascript">
+      var layer = ga.layer.create('ch.swisstopo.pixelkarte-farbe');
+      var map = new ga.Map({
+        target: 'map',
+        layers: [layer],
+        view: new ol.View2D({
+          resolution: 500,
+          center: [670000, 160000]
+        })
+      });
+    </script>
+  </body>
+</html>
