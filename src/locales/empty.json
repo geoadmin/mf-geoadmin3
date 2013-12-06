@@ -162,5 +162,9 @@
   "no_layers_info": "",
   "time_bt_disabled_tooltip": "",
   "time_bt_enabled_tooltip": "",
-  "graticule": ""
+  "graticule": "",
+  "compare": "",
+  "swipe_active": "",
+  "swipe_inactive": "",
+  "not_enough_layer_for_swipe"
 }
