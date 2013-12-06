@@ -93,6 +93,24 @@
             evt.getContext().restore();
           };
 
+          // Get a valid layer to compare.
+          // To have the swipe available we need at least 2 valid layers on
+          // the map.
+          var findLayerToCompare = function() {
+            var olLayers = scope.map.getLayers();
+            var validLayers = [];
+            for (var i = olLayers.getLength() - 1; i >= 0; i--) {
+              var olLayer = olLayers.getAt(i);
+              if (!olLayer.highlight) {
+                validLayers.push(olLayer);
+              }
+            }
+            if (validLayers.length < 2) {
+              return null;
+            }
+            return validLayers[0];
+          };
+
           // Display swipe or not depends on the number of layers currently on
           // the map.
           var refreshComp = function() {
@@ -105,15 +123,12 @@
               scope.map.requestRenderFrame();
             }
 
-            var olLayers = scope.map.getLayers();
-            if (!scope.isActive || olLayers.getLength() < 2) {
+            scope.layer = findLayerToCompare();
+            if (!scope.isActive || !scope.layer) {
               elt.hide();
               return;
             }
 
-            // Set the layer if the component is active and if there is 2 or
-            // more layers on the map.
-            scope.layer = olLayers.getAt(olLayers.getLength() - 1);
             layerListenerKeys = [
               scope.layer.on('precompose', handlePreCompose),
               scope.layer.on('postcompose', handlePostCompose)
@@ -137,6 +152,7 @@
 
           // Deactive the swipe removing the events
           var deactivate = function() {
+            elt.unbind(eventKey.start, dragStart);
             scope.map.getLayers().unByKey(listenerKeys[0]);
             scope.map.getLayers().unByKey(listenerKeys[1]);
             refreshComp();
@@ -147,7 +163,7 @@
           // parameter
           var fromPermalink = false;
 
-          // Initalize component with permlink paraneter
+          // Initalize component with permalink paraneter
           if (!angular.isDefined(scope.isActive) &&
              angular.isDefined(gaPermalink.getParams().swipe_ratio)) {
             var ratio = parseFloat(gaPermalink.getParams().swipe_ratio);
@@ -160,7 +176,7 @@
           // Watchers
           scope.$watch('isActive', function(active) {
             if (active) {
-              if (!fromPermalink && scope.map.getLayers().getLength() < 2) {
+              if (!fromPermalink && !findLayerToCompare()) {
                 alert($translate('not_enough_layer_for_swipe'));
               }
               activate();
