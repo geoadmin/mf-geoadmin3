@@ -109,4 +109,4 @@ class TestSearchServiceView(TestsBase):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '9990044', 'features': 'ch.swisstopo.lubis-luftbilder', 'type': 'locations', 'bbox': '551306.5625,167918.328125,551754.125,168514.625', 'timeInstant': '19522'}, status=400)
 
     def test_features_wrong_time_2(self):
-        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '9990044', 'features': 'ch.swisstopo.lubis-luftbilder', 'type': 'locations', 'bbox': '551306.5625,167918.328125,551754.125,168514.625', 'timeInstant': '1952.00'}, status=400) 
+        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '9990044', 'features': 'ch.swisstopo.lubis-luftbilder', 'type': 'locations', 'bbox': '551306.5625,167918.328125,551754.125,168514.625', 'timeInstant': '1952.00'}, status=400)
