@@ -40,6 +40,14 @@ Below you'll find a complete working example. Create a new file, copy in the con
 Understanding what is going on
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+To include a map in a web page you will need 3 things:
+
+ 1. Include the GeoAdmin JavaScript API
+ 1. <div> map container
+ 1. JavaScript to create a simple map with a layer
+ 
+
+
 
 
 
