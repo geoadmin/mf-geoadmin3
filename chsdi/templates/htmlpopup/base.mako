@@ -17,10 +17,10 @@
 
 % if extended:
   <meta name="viewport" content="initial-scale=1.0"/>
-  <link rel="stylesheet" type="text/css" href="../../../../../../css/extended.min.css"/>
-  <link rel="stylesheet" type="text/css" href="../../../../../../css/blueimp-gallery-2.11.0.min.css"/>
-  <script src="../../../../../../js/jquery-2.0.3.min.js"></script>
-  <script src="../../../../../../js/blueimp-gallery-2.11.5.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="${h.versioned(request.static_url('chsdi:static/css/extended.min.css'))}"/>
+  <link rel="stylesheet" type="text/css" href="../../../../../../static/css/blueimp-gallery-2.11.0.min.css"/>
+  <script src="../../../../../../static/js/jquery-2.0.3.min.js"></script>
+  <script src="../../../../../../static/js/blueimp-gallery-2.11.5.min.js"></script>
 % endif
 
 <div class="htmlpopup-container">
