@@ -7,6 +7,10 @@
 @exportProperty ol.geom.MultiPolygon.prototype.getType
 @exportProperty ol.geom.Point.prototype.getType
 @exportProperty ol.geom.Polygon.prototype.getType
+@exportProperty ol.parser.KML.prototype.read
+@exportProperty ol.source.Vector.prototype.forEachFeatureInExtent
+@exportProperty ol.source.Vector.prototype.getFeatures
+@exportProperty ol.source.Vector.prototype.removeFeatures
 @exportProperty ol.style.Fill.prototype.createLiteral
 @exportProperty ol.style.Icon.prototype.createLiteral
 @exportProperty ol.style.Point.prototype.createLiteral
