@@ -70,13 +70,13 @@
           };
           var dragEnd = function(evt) {
             isDragging = false;
-             arrowsElt.show();
-             $document.unbind(eventKey.move, drag);
-             $document.unbind(eventKey.end, dragEnd);
-             scope.$apply(function() {
-               scope.ratio = draggableElt.offset().left /
-                   scope.map.getSize()[0];
-             });
+            arrowsElt.show();
+            $document.unbind(eventKey.move, drag);
+            $document.unbind(eventKey.end, dragEnd);
+            var ratio = draggableElt.offset().left / scope.map.getSize()[0];
+            scope.$apply(function() {
+              gaPermalink.updateParams({swipe_ratio: ratio.toFixed(2)});
+            });
           };
 
           // Compose events
@@ -143,12 +143,15 @@
             gaPermalink.deleteParam('swipe_ratio');
           };
 
+          // Boolean determining if the swipe is activated from the permalink
+          // parameter
           var fromPermalink = false;
+
           // Initalize component with permlink paraneter
           if (!angular.isDefined(scope.isActive) &&
              angular.isDefined(gaPermalink.getParams().swipe_ratio)) {
-            scope.ratio = parseFloat(gaPermalink.getParams().swipe_ratio);
-            draggableElt.css({left: scope.map.getSize()[0] * scope.ratio});
+            var ratio = parseFloat(gaPermalink.getParams().swipe_ratio);
+            draggableElt.css({left: scope.map.getSize()[0] * ratio});
             fromPermalink = true;
             scope.isActive = true;
             activate();
@@ -166,10 +169,6 @@
               deactivate();
             }
           });
-          scope.$watch('ratio', function(ratio) {
-            gaPermalink.updateParams({swipe_ratio: ratio.toFixed(2)});
-          });
-
         }
       };
     }
