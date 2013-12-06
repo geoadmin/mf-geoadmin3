@@ -329,7 +329,6 @@
         var addKmlLayer = function(olMap, data, options, index) {
           options.projection = olMap.getView().getProjection();
           var olLayer = createKmlLayer(data, options);
-          var features = olLayer.getSource().getFeatures();
           var onMapClick = function(evt) {
             evt.stopPropagation();
             evt.preventDefault();
