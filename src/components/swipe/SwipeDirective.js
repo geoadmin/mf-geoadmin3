@@ -140,14 +140,14 @@
             scope.map.getLayers().unByKey(listenerKeys[0]);
             scope.map.getLayers().unByKey(listenerKeys[1]);
             refreshComp();
-            gaPermalink.deleteParam('swipe');
+            gaPermalink.deleteParam('swipe_ratio');
           };
 
           var fromPermalink = false;
           // Initalize component with permlink paraneter
           if (!angular.isDefined(scope.isActive) &&
-             angular.isDefined(gaPermalink.getParams().swipe)) {
-            scope.ratio = parseFloat(gaPermalink.getParams().swipe);
+             angular.isDefined(gaPermalink.getParams().swipe_ratio)) {
+            scope.ratio = parseFloat(gaPermalink.getParams().swipe_ratio);
             draggableElt.css({left: scope.map.getSize()[0] * scope.ratio});
             fromPermalink = true;
             scope.isActive = true;
@@ -167,7 +167,7 @@
             }
           });
           scope.$watch('ratio', function(ratio) {
-            gaPermalink.updateParams({swipe: ratio.toFixed(2)});
+            gaPermalink.updateParams({swipe_ratio: ratio.toFixed(2)});
           });
 
         }
