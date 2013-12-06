@@ -33,6 +33,7 @@ JavaScript API
 .. toctree::
    :maxdepth: 1
 
+   api/gettingstarted
    api/faq/index
    api/examples
    api/migration
