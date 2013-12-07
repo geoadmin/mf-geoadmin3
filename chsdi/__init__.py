@@ -63,7 +63,7 @@ def main(global_config, **settings):
 
     config.add_view(route_name='home', renderer='chsdi:static/doc/build/index.html', http_cache=3600)
     config.add_view(route_name='dev', renderer='chsdi:templates/index.pt', http_cache=0)
-    config.add_view(route_name='ga_api', renderer='chsdi:templates/loader.js', http_cache=3600)
+    config.add_view(route_name='ga_api', renderer='chsdi:templates/loader.js', http_cache=0)
     config.add_view(route_name='testi18n', renderer='chsdi:templates/testi18n.mako', http_cache=0)
 
     # Application specific
