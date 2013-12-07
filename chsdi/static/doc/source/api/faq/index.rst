@@ -59,6 +59,10 @@ Here is a list of all the freely accessible layers:
       <div id="free" style="margin-left:10px;"></div>
    </body>
 
+.. raw:: html
+
+   <script type="text/javascript">
+
     function init() {
         var myInnerHtml_free, myInnerHtml_notfree, layerArray_free, layerArray_notfree, layers;
         myInnerHtml_free = "<br><table border=\"0\">";
@@ -66,16 +70,22 @@ Here is a list of all the freely accessible layers:
         layerArray_free = [];
         layerArray_notfree = [];
         layers = getConfig();
+        var counterFree = 1;
         for (var layer in layers) {
-          console.log(layer);
+          if (!layers[layer]['parentLayerId']) {
+            myInnerHtml_free = myInnerHtml_free + '<tr><td>' + counterFree + '</td><td><a href="http://map3.geo.admin.ch/?layers=' +
+                                      layer + '" target="new"> ' + layer + '</a>&nbsp('+layers[layer]['label']+')</td></tr>';
+            counterFree++;
+          }
         }
+        document.getElementById("free").innerHTML=myInnerHtml_free;
         
    }
 
    </script>
 
    <body onload="init();">
-     <script type="text/javascript" src="../loader.js?lang=en"></script>
+     <script type="text/javascript" src="../../loader.js?lang=en"></script>
    </body>
 
 What mean the permalink parameters ?
