@@ -43,7 +43,40 @@ Which layers are available ?
 
 Some layers can’t be freely used. These layers are accessible by the way of `swisstopo web access - WMTS documentation <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/products/services/web_services/webaccess.html>`_
 
-TODO
+Here is a list of the layers that requires a swisstopo web acesss:
+
+.. raw:: html
+
+   <body>
+      <div id="notfree" style="margin-left:10px;"></div>
+   </body>
+
+Here is a list of all the freely accessible layers:
+
+.. raw:: html
+
+   <body>
+      <div id="free" style="margin-left:10px;"></div>
+   </body>
+
+    function init() {
+        var myInnerHtml_free, myInnerHtml_notfree, layerArray_free, layerArray_notfree, layers;
+        myInnerHtml_free = "<br><table border=\"0\">";
+        myInnerHtml_notfree =  "<br><table border=\"0\">";
+        layerArray_free = [];
+        layerArray_notfree = [];
+        layers = getConfig();
+        for (var layer in layers) {
+          console.log(layer);
+        }
+        
+   }
+
+   </script>
+
+   <body onload="init();">
+     <script type="text/javascript" src="../loader.js?lang=en"></script>
+   </body>
 
 What mean the permalink parameters ?
 ------------------------------------
