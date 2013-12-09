@@ -1,5 +1,5 @@
-<div class="time-selector-container" ng-class="stateClass" >
-  <div ga-slider class="time-selector-slider" 
+<div class="ga-time-selector-container" ng-class="stateClass" >
+  <div ga-slider class="ga-time-selector-slider" 
       floor="{{minYear}}" 
       ceiling="{{maxYear}}"
       ng-model="currentYear"
@@ -11,5 +11,7 @@
       ga-input-text="true"
       ga-unfit-to-bar="true">
   </div>
+  <select class="ga-time-selector-select" ng-model="currentYear" ng-options="year.value as formatYear(year.label) for year in availableYears">
+  </select>
 </div>
 

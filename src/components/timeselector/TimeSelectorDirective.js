@@ -177,8 +177,8 @@
   module.directive('gaTimeSelectorBt', function($rootScope, gaPermalink) {
     return {
       restrict: 'A',
-      template: '<a href="#" class="time-selector-bt"' +
-          ' ng-click="toggle($event)" ng-class="stateClass"></a>',
+      template: '<a href="#" ng-click="toggle($event)" ng-class="stateClass">' +
+          '</a>',
       link: function(scope, elt, attrs) {
         scope.isDisable = true;
 
@@ -234,11 +234,6 @@
         },
         controller: 'GaTimeSelectorDirectiveController',
         link: function(scope, elt, attrs, controller) {
-
-          // Add css mobile class
-          if (gaBrowserSniffer.mobile) {
-            elt.addClass('mobile');
-          }
 
           /**
            * Update list of available years then hide/show the HTML
