@@ -308,7 +308,7 @@
             feature.getGeometry().transform(transformFn);
           }
           var olLayer = new ol.layer.Vector({
-            //url: options.url,
+            url: options.url,
             type: 'KML',
             label: options.label || obj.name || 'KML',
             opacity: options.opacity,
