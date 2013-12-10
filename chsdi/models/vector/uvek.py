@@ -138,7 +138,6 @@ class KATASTERBELASTETERSTANDORTE(Base, Vector):
     __bodId__ = 'ch.bav.kataster-belasteter-standorte-oev'
     id = Column('vflz_id', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-    #not_used = Column('the_geom_gen50', Geometry(21781))
     nummer = Column('nummer', Text)
     typ_bez = Column('typ_bez', Text)
     url = Column('url', Text)
