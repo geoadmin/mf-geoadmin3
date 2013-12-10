@@ -1,14 +1,12 @@
 (function() {
   goog.provide('ga_timeselector_directive');
 
-  goog.require('ga_browsersniffer_service');
   goog.require('ga_debounce_service');
   goog.require('ga_map_service');
   goog.require('ga_permalink_service');
   goog.require('ga_slider_directive');
 
   var module = angular.module('ga_timeselector_directive', [
-    'ga_browsersniffer_service',
     'ga_debounce_service',
     'ga_map_service',
     'ga_permalink_service',
@@ -174,7 +172,8 @@
     }
   );
 
-  module.directive('gaTimeSelectorBt', function($rootScope, gaPermalink) {
+  module.directive('gaTimeSelectorBt', function($rootScope, gaPermalink,
+      $translate) {
     return {
       restrict: 'A',
       template: '<a href="#" ng-click="toggle($event)" ng-class="stateClass">' +
@@ -186,7 +185,7 @@
           if (scope.isDisable) {
             scope.stateClass = 'enabled';
             scope.isDisable = false;
-
+            elt.tooltip('destroy');
             // When isActive is undefined that means it's the first time
             // the button is enabled.
             // Force activation of the TimeSelector if a time parameter is
@@ -202,6 +201,12 @@
           scope.stateClass = '';
           scope.isDisable = true;
           scope.isActive = false;
+          elt.tooltip({
+            placement: 'left',
+            title: function() {
+               return $translate('time_bt_disabled_tooltip');
+            }
+          });
         });
 
         // Toggle the state of the component
@@ -211,6 +216,7 @@
             scope.stateClass = scope.isActive ? 'active' : 'enabled';
             $rootScope.$broadcast('gaTimeSelectorToggle', scope.isActive);
           }
+
           // Avoid the add of # at the end of the url
           if (event) {
             event.preventDefault();
