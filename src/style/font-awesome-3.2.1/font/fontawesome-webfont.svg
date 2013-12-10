@@ -2,7 +2,7 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
 <svg>
 <metadata>
-Created by FontForge 20120702 at Mon Dec 02 15:35:59 2013
+Created by FontForge 20120702 at Tue Dec 10 09:21:33 2013
 
 </metadata>
 <defs>
@@ -109,6 +109,8 @@ t5 19.5t8 21.5t7 21.5q-40 -5 -70 -5q-149 0 -255.5 98t-106.5 246q0 140 95 250.5t2
 d="M1024 832q0 -26 -19 -45l-448 -448q-19 -19 -45 -19t-45 19l-448 448q-19 19 -19 45t19 45t45 19h896q26 0 45 -19t19 -45z" />
     <glyph glyph-name="caret_up" unicode="&#xf0d8;" horiz-adv-x="1024" 
 d="M1024 320q0 -26 -19 -45t-45 -19h-896q-26 0 -45 19t-19 45t19 45l448 448q19 19 45 19t45 -19l448 -448q19 -19 19 -45z" />
+    <glyph glyph-name="caret_left" unicode="&#xf0d9;" horiz-adv-x="640" 
+d="M640 1088v-896q0 -26 -19 -45t-45 -19t-45 19l-448 448q-19 19 -19 45t19 45l448 448q19 19 45 19t45 -19t19 -45z" />
     <glyph glyph-name="caret_right" unicode="&#xf0da;" horiz-adv-x="640" 
 d="M576 640q0 -26 -19 -45l-448 -448q-19 -19 -45 -19t-45 19t-19 45v896q0 26 19 45t45 19t45 -19l448 -448q19 -19 19 -45z" />
     <glyph glyph-name="envelope_alt" unicode="&#xf0e0;" horiz-adv-x="1792" 
@@ -161,7 +163,10 @@ l180 181l-464 464l208 209l31 -7h58l47 8l56 32l40 40l30 48l16 65v50l-8 31l-162 -1
 l-58 -37l-102 -102l-38 39l-150 -150l37 -38l-88 -88l-38 38l-124 -125z" />
     <glyph glyph-name="glyph3" horiz-adv-x="896" 
 d="M224 112h448v1312h-448v-1312zM112 0v1536h672v-1536h-672z" />
-    <glyph glyph-name="caret_left" unicode="&#xf0d9;" horiz-adv-x="640" 
-d="M640 1088v-896q0 -26 -19 -45t-45 -19t-45 19l-448 448q-19 19 -19 45t19 45l448 448q19 19 45 19t45 -19t19 -45z" />
+    <glyph glyph-name="arrow_left" unicode="&#xf060;" horiz-adv-x="1536" 
+d="M1536 640v-128q0 -53 -32.5 -90.5t-84.5 -37.5h-704l293 -294q38 -36 38 -90t-38 -90l-75 -76q-37 -37 -90 -37q-52 0 -91 37l-651 652q-37 37 -37 90q0 52 37 91l651 650q38 38 91 38q52 0 90 -38l75 -74q38 -38 38 -91t-38 -91l-293 -293h704q52 0 84.5 -37.5
+t32.5 -90.5z" />
+    <glyph glyph-name="arrow_right" unicode="&#xf061;" horiz-adv-x="1536" 
+d="M1472 576q0 -54 -37 -91l-651 -651q-39 -37 -91 -37q-51 0 -90 37l-75 75q-38 38 -38 91t38 91l293 293h-704q-52 0 -84.5 37.5t-32.5 90.5v128q0 53 32.5 90.5t84.5 37.5h704l-293 294q-38 36 -38 90t38 90l75 75q38 38 90 38q53 0 91 -38l651 -651q37 -35 37 -90z" />
   </font>
 </defs></svg>

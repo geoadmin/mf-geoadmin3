@@ -53,10 +53,12 @@
              encLayer = $scope.encoders.layers['WMS'].call(this,
                  layer, layerConfig);
           } else if (layer instanceof ol.layer.Vector) {
-             var features =
-                 layer.getFeaturesObjectForExtent(ext, proj);
+             var features = [];
+             src.forEachFeatureInExtent(ext, proj, function(feat) {
+               features.push(feat);
+             });
 
-             if (features) {
+             if (features && features.length > 0) {
                encLayer =
                    $scope.encoders.layers['Vector'].call(this,
                       layer, features);

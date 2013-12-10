@@ -53,6 +53,8 @@ a .icon-rotate-90:before,a .icon-rotate-180:before,a .icon-rotate-270:before,a .
 .icon-question-sign:before{content:"\f059";}
 .icon-question-circle:before{content:"\f059";}
 .icon-info-sign:before{content:"\f05a";}
+.icon-arrow-left:before{content:"\f060";}
+.icon-arrow-right:before{content:"\f061";}
 .icon-arrow-up:before{content:"\f062";}
 .icon-arrow-down:before{content:"\f063";}
 .icon-plus:before{content:"\f067";}

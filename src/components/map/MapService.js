@@ -302,18 +302,22 @@
           options = options || {};
 
           // Create vector layer
-          // FIXME currently ol3 doesn't allow to get the name of the KML
-          // document, making it impossible to use a proper label for the
-          // layer.
+          var obj = kmlParser.read(kml);
+          var transformFn = ol.proj.getTransform(obj.metadata.projection,
+              options.projection);
+          for (var i = 0, ii = obj.features.length; i < ii; i++) {
+            var feature = obj.features[i];
+            feature.getGeometry().transform(transformFn);
+          }
           var olLayer = new ol.layer.Vector({
             url: options.url,
             type: 'KML',
-            label: options.label || 'KML',
+            label: options.label || obj.name || 'KML',
             opacity: options.opacity,
             visible: options.visible,
             source: new ol.source.Vector({
               parser: kmlParser,
-              data: kml
+              features: obj.features
             }),
             style: options.style || defaultStyle
           });
@@ -325,7 +329,8 @@
          * Add an ol layer to the map and add specific event
          */
         var addKmlLayer = function(olMap, data, options, index) {
-          /*var olLayer = createKmlLayer(data, options);
+          /*options.projection = olMap.getView().getProjection();
+          var olLayer = createKmlLayer(data, options);
           var onMapClick = function(evt) {
             evt.stopPropagation();
             evt.preventDefault();

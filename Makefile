@@ -7,7 +7,7 @@ ifeq "$(CURDIR)" "/var/www/vhosts/mf-geoadmin3/private/geoadmin"
 else
 	BASE_URL_PATH ?= /$(shell id -un)
 endif
-SERVICE_URL ?= //mf-chsdi30t.bgdi.admin.ch
+SERVICE_URL ?= //mf-chsdi3.dev.bgdi.ch
 LESS_PARAMETERS ?= '-ru'
 VERSION := $(shell date '+%s')/
 GIT_BRANCH := $(shell git rev-parse --symbolic-full-name --abbrev-ref HEAD)

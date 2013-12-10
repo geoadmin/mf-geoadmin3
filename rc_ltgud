@@ -1,4 +1,4 @@
 source rc_dev
 
 export BASE_URL_PATH=/ltgud
-export SERVICE_URL=http://mf-chsdi30t.bgdi.admin.ch/ltgud
+export SERVICE_URL=http://mf-chsdi3.dev.bgdi.admin.ch/ltgud

@@ -416,6 +416,12 @@ a .icon-flip-vertical:before {
 .icon-info-sign:before {
   content: "\f05a";
 }
+.icon-arrow-left:before {
+  content: "\f060";
+}
+.icon-arrow-right:before {
+  content: "\f061";
+}
 .icon-arrow-up:before {
   content: "\f062";
 }

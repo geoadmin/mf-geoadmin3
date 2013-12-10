@@ -40,7 +40,8 @@
                 vector,
                 vectorSource,
                 parser,
-                year;
+                year,
+                source;
 
             //FIXME: as the tooltip highlight is never printed, we could draw
             //these features using the 'postcompose' function on either the
