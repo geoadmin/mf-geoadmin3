@@ -4,6 +4,7 @@ import datetime
 from pyramid.mako_templating import renderer_factory as mako_renderer_factory
 from pyramid.config import Configurator
 from pyramid.events import BeforeRender, NewRequest
+from pyramid.static import static_view
 from chsdi.subscribers import add_localizer, add_renderer_globals
 from pyramid.renderers import JSONP
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -61,7 +62,7 @@ def main(global_config, **settings):
     config.add_route('ga_api', '/loader.js')
     config.add_route('testi18n', '/testi18n')
 
-    config.add_view(route_name='home', renderer='chsdi:static/doc/build/index.html', http_cache=3600)
+    config.add_view(static_view('chsdi:static/doc/build', use_subpath=True), route_name='home', http_cache=3600)
     config.add_view(route_name='dev', renderer='chsdi:templates/index.pt', http_cache=0)
     config.add_view(route_name='ga_api', renderer='chsdi:templates/loader.js', http_cache=0)
     config.add_view(route_name='testi18n', renderer='chsdi:templates/testi18n.mako', http_cache=0)
@@ -91,12 +92,7 @@ def main(global_config, **settings):
 
     config.add_static_view('static/css', 'chsdi:static/css', cache_max_age=datetime.timedelta(days=365))
     config.add_static_view('static/js', 'chsdi:static/js', cache_max_age=datetime.timedelta(days=365))
-    config.add_static_view('img', 'chsdi:static/images', cache_max_age=3600)
-    # Static view for sphinx
-    config.add_static_view('_static', 'chsdi:static/doc/build/_static', cache_max_age=3600)
-    config.add_static_view('api', 'chsdi:static/doc/build/api', cache_max_age=3600)
-    config.add_static_view('services', 'chsdi:static/doc/build/services', cache_max_age=3600)
-    config.add_static_view('realeasenotes', 'chsdi:static/doc/build/releasenotes', cache_max_age=3600)
+    config.add_static_view('static/img', 'chsdi:static/images', cache_max_age=3600)
     config.add_static_view('examples', 'chsdi:static/doc/examples', cache_max_age=3600)
 
     return config.make_wsgi_app()
