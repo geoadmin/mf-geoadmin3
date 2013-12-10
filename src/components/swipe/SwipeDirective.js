@@ -2,16 +2,19 @@
   goog.provide('ga_swipe_directive');
 
   goog.require('ga_browsersniffer_service');
+  goog.require('ga_debounce_service');
   goog.require('ga_permalink_service');
 
   var module = angular.module('ga_swipe_directive', [
     'ga_browsersniffer_service',
+    'ga_debounce_service',
     'ga_permalink_service',
     'pascalprecht.translate'
   ]);
 
   module.directive('gaSwipe',
-    function($document, $translate, gaBrowserSniffer, gaPermalink) {
+    function($document, $translate, gaBrowserSniffer, gaPermalink,
+        gaDebounce) {
       return {
         restrict: 'A',
         templateUrl: function(element, attrs) {
@@ -45,18 +48,18 @@
           var eventKey = events.mouse;
           if (!gaBrowserSniffer.msie && gaBrowserSniffer.touchDevice) {
             eventKey = events.touch;
+          } else {
+            // Hide laye label on mouse over/out events
+            elt.on('mouseover', function(evt) {
+               if (!isDragging) {
+                layerLabelElt.show();
+              }
+            }).on('mouseout', function(evt) {
+              if (!isDragging) {
+                layerLabelElt.hide();
+              }
+            });
           }
-
-          // Hide laye label on mouse over/out events
-          elt.mouseover(function(evt) {
-             if (!isDragging) {
-              layerLabelElt.show();
-            }
-          }).mouseout(function(evt) {
-            if (!isDragging) {
-              layerLabelElt.hide();
-            }
-          });
 
           // Drag swipe element callbacks
           var dragStart = function(evt) {
@@ -64,6 +67,7 @@
             arrowsElt.hide();
             $document.on(eventKey.move, drag);
             $document.on(eventKey.end, dragEnd);
+            layerLabelElt.show();
           };
           var drag = function(evt) {
             scope.map.requestRenderFrame();
@@ -73,10 +77,11 @@
             arrowsElt.show();
             $document.unbind(eventKey.move, drag);
             $document.unbind(eventKey.end, dragEnd);
-            var ratio = draggableElt.offset().left / scope.map.getSize()[0];
+            scope.ratio = draggableElt.offset().left / scope.map.getSize()[0];
             scope.$apply(function() {
-              gaPermalink.updateParams({swipe_ratio: ratio.toFixed(2)});
+              gaPermalink.updateParams({swipe_ratio: scope.ratio.toFixed(2)});
             });
+            layerLabelElt.hide();
           };
 
           // Compose events
@@ -166,11 +171,10 @@
           // Initalize component with permalink paraneter
           if (!angular.isDefined(scope.isActive) &&
              angular.isDefined(gaPermalink.getParams().swipe_ratio)) {
-            var ratio = parseFloat(gaPermalink.getParams().swipe_ratio);
-            draggableElt.css({left: scope.map.getSize()[0] * ratio});
+            scope.ratio = parseFloat(gaPermalink.getParams().swipe_ratio);
+            draggableElt.css({left: scope.map.getSize()[0] * scope.ratio});
             fromPermalink = true;
             scope.isActive = true;
-            activate();
           }
 
           // Watchers
@@ -184,6 +188,23 @@
             } else {
               deactivate();
             }
+          });
+
+          // Move swipe element on resize.
+          // We use a debounce function because map.requestRenderFrame() is
+          // already called by the map itself on each resize so we want to
+          // trigger only a map.requestRenderFrame() when the user has
+          // finished to resize.
+          var requestRenderFrame = function() {
+            if (scope.layer) {
+              scope.map.requestRenderFrame();
+            }
+          };
+          var requestRenderFrameDebounced = gaDebounce.debounce(
+            requestRenderFrame, 200, false);
+          scope.map.on('change:size', function(evt) {
+            draggableElt.css({left: scope.map.getSize()[0] * scope.ratio});
+            requestRenderFrameDebounced();
           });
         }
       };
