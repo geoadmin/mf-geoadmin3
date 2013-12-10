@@ -53,7 +53,7 @@
     </div>
     <div>
       <label for="opacity">Layer opacity</label>
-      <input id="opacity" type="range" min="0" max="1" step="0.01" ng-model="layer.opacity" />
+      <input id="opacity" type="range" min="0" max="1" step="0.01" ng-model="layer.invertedOpacity" />
     </div>
 
     <script src="lib/jquery-2.0.3.js"></script>
@@ -81,7 +81,7 @@
               '{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
 
           gaLayersProvider.layersConfigUrlTemplate =
-            'http://mf-chsdi3.dev.bgdi.admin.ch/rest/services/{Topic}/MapServer/layersconfig' +
+            'http://mf-chsdi3.dev.bgdi.ch/rest/services/{Topic}/MapServer/layersconfig' +
             '?lang={Lang}';
         }]);
 
