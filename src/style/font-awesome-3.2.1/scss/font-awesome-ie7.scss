@@ -143,6 +143,16 @@ a [class*=" icon-"] {
 }
 
 
+.icon-arrow-left {
+  @include ie7icon('&#xf060;');
+}
+
+
+.icon-arrow-right {
+  @include ie7icon('&#xf061;');
+}
+
+
 .icon-arrow-up {
   @include ie7icon('&#xf062;');
 }
