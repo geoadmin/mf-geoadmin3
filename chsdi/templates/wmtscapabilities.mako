@@ -6,7 +6,7 @@
   scheme = pageargs['scheme']
   onlineressource = pageargs['onlineressource']
   def validate_tilematrixset(id):
-      if int(id) in range(18, 29):
+      if int(id) in (18,20,21,22,26,27,28):
           return id
       return '26'
 %>
@@ -82,11 +82,75 @@
   % endfor
   ## End main loop
     <TileMatrixSet>
-            <ows:Identifier>21781</ows:Identifier>
-            <ows:SupportedCRS>urn:ogc:def:crs:EPSG:21781</ows:SupportedCRS>
-
-            <%include file="TileMatrixSet.mako"/>
-
+        <ows:Identifier>21781_18</ows:Identifier>
+        <ows:SupportedCRS>urn:ogc:def:crs:EPSG:21781</ows:SupportedCRS>
+        <%include file="TileMatrixSet.mako"/>
+    </TileMatrixSet>
+    <TileMatrixSet>
+        <ows:Identifier>21781_20</ows:Identifier>
+        <ows:SupportedCRS>urn:ogc:def:crs:EPSG:21781</ows:SupportedCRS>
+        <%include file="TileMatrixSet.mako"/>
+        <%include file="TileMatrixSet_19.mako"/>
+        <%include file="TileMatrixSet_20.mako"/>
+    </TileMatrixSet>
+    <TileMatrixSet>
+        <ows:Identifier>21781_21</ows:Identifier>
+        <ows:SupportedCRS>urn:ogc:def:crs:EPSG:21781</ows:SupportedCRS>
+        <%include file="TileMatrixSet.mako"/>
+        <%include file="TileMatrixSet_19.mako"/>
+        <%include file="TileMatrixSet_20.mako"/>
+        <%include file="TileMatrixSet_21.mako"/>
+    </TileMatrixSet>
+    <TileMatrixSet>
+        <ows:Identifier>21781_22</ows:Identifier>
+        <ows:SupportedCRS>urn:ogc:def:crs:EPSG:21781</ows:SupportedCRS>
+        <%include file="TileMatrixSet.mako"/>
+        <%include file="TileMatrixSet_19.mako"/>
+        <%include file="TileMatrixSet_20.mako"/>
+        <%include file="TileMatrixSet_21.mako"/>
+        <%include file="TileMatrixSet_22.mako"/>
+    </TileMatrixSet>
+    <TileMatrixSet>
+        <ows:Identifier>21781_26</ows:Identifier>
+        <ows:SupportedCRS>urn:ogc:def:crs:EPSG:21781</ows:SupportedCRS>
+        <%include file="TileMatrixSet.mako"/>
+        <%include file="TileMatrixSet_19.mako"/>
+        <%include file="TileMatrixSet_20.mako"/>
+        <%include file="TileMatrixSet_21.mako"/>
+        <%include file="TileMatrixSet_22.mako"/>
+        <%include file="TileMatrixSet_23.mako"/>
+        <%include file="TileMatrixSet_24.mako"/>
+        <%include file="TileMatrixSet_25.mako"/>
+        <%include file="TileMatrixSet_26.mako"/>
+    </TileMatrixSet>
+    <TileMatrixSet>
+        <ows:Identifier>21781_27</ows:Identifier>
+        <ows:SupportedCRS>urn:ogc:def:crs:EPSG:21781</ows:SupportedCRS>
+        <%include file="TileMatrixSet.mako"/>
+        <%include file="TileMatrixSet_19.mako"/>
+        <%include file="TileMatrixSet_20.mako"/>
+        <%include file="TileMatrixSet_21.mako"/>
+        <%include file="TileMatrixSet_22.mako"/>
+        <%include file="TileMatrixSet_23.mako"/>
+        <%include file="TileMatrixSet_24.mako"/>
+        <%include file="TileMatrixSet_25.mako"/>
+        <%include file="TileMatrixSet_26.mako"/>
+        <%include file="TileMatrixSet_27.mako"/>
+    </TileMatrixSet>
+    <TileMatrixSet>
+        <ows:Identifier>21781_28</ows:Identifier>
+        <ows:SupportedCRS>urn:ogc:def:crs:EPSG:21781</ows:SupportedCRS>
+        <%include file="TileMatrixSet.mako"/>
+        <%include file="TileMatrixSet_19.mako"/>
+        <%include file="TileMatrixSet_20.mako"/>
+        <%include file="TileMatrixSet_21.mako"/>
+        <%include file="TileMatrixSet_22.mako"/>
+        <%include file="TileMatrixSet_23.mako"/>
+        <%include file="TileMatrixSet_24.mako"/>
+        <%include file="TileMatrixSet_25.mako"/>
+        <%include file="TileMatrixSet_26.mako"/>
+        <%include file="TileMatrixSet_27.mako"/>
+        <%include file="TileMatrixSet_28.mako"/>
     </TileMatrixSet>
     </Contents>
     <Themes>
