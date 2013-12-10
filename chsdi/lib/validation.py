@@ -18,6 +18,8 @@ class MapNameValidation(object):
         # FIXME add this info in DB
         availableMaps.append('all')
         availableMaps.append('api')
+        availableMaps.append('api-free')
+        availableMaps.append('api-notfree')
         if mapName not in availableMaps:
             raise exc.HTTPBadRequest('The map you provided does not exist')
 
