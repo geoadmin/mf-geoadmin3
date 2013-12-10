@@ -106,6 +106,12 @@ a [class*=" icon-"] {
 .icon-info-sign {
   *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf05a;');
 }
+.icon-arrow-left {
+  *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf060;');
+}
+.icon-arrow-right {
+  *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf061;');
+}
 .icon-arrow-up {
   *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf062;');
 }
