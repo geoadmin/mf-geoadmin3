@@ -56,13 +56,8 @@
       dragZone.bind(eventKey.start, function(evt) {
         var elt = $(evt.target);
 
-        if (x === null) {
-          x = element.prop('offsetLeft');
-        }
-
-        if (y === null) {
-          y = element.prop('offsetTop');
-        }
+        x = element.prop('offsetLeft');
+        y = element.prop('offsetTop');
 
         // preventDefault block user interaction with input field
         if (evt.target.nodeName !== 'INPUT') {
