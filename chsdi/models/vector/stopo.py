@@ -1050,8 +1050,8 @@ class geometaStandAV(Base, Vector):
     fid = Column('id', Integer)
     quality = Column('quality', Text)
     frame = Column('frame', Text)
-    the_geom = Column('the_geom_gen50', Geometry(21781))
-    not_used = Column('the_geom', Geometry(21781))
+    the_geom = GeometryColumn('the_geom_gen50', Geometry(dimension=2, srid=21781))
+    not_used = GeometryColumn('the_geom', Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo-vd.geometa-standav', geometaStandAV)
 
@@ -1072,8 +1072,8 @@ class geometaLos(Base, Vector):
     quality = Column('quality', Text)
     flaeche_vertrag = Column('flaeche_vertrag', Text)
     frame = Column('frame', Text)
-    the_geom = Column('the_geom_gen50', Geometry(21781))
-    not_used = Column('the_geom', Geometry(21781))
+    the_geom = GeometryColumn('the_geom_gen50', Geometry(dimension=2, srid=21781))
+    not_used = GeometryColumn('the_geom', Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo-vd.geometa-los', geometaLos)
 
@@ -1093,8 +1093,8 @@ class geometaGemeinde(Base, Vector):
     bfs_nr = Column('bfs_nr', Integer)
     pdf_liste = Column('pdf_liste', Text)
     abgabestelle = Column('abgabestelle', Text)
-    the_geom = Column('the_geom_gen50', Geometry(21781))
-    not_used = Column('the_geom', Geometry(21781))
+    the_geom = GeometryColumn('the_geom_gen50', Geometry(dimension=2, srid=21781))
+    not_used = GeometryColumn('the_geom', Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo-vd.geometa-gemeinde', geometaGemeinde)
 
@@ -1114,8 +1114,8 @@ class geometaGrundbuch(Base, Vector):
     adresse = Column('adresse', Text)
     telefon = Column('telefon', Text)
     email = Column('email', Text)
-    the_geom = Column('the_geom_gen50', Geometry(21781))
-    not_used = Column('the_geom', Geometry(21781))
+    the_geom = GeometryColumn('the_geom_gen50', Geometry(dimension=2, srid=21781))
+    not_used = GeometryColumn('the_geom', Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo-vd.geometa-grundbuch', geometaGrundbuch)
 
@@ -1131,8 +1131,8 @@ class geometaNfgeom(Base, Vector):
     adresse = Column('adresse', Text)
     telefon = Column('telefon', Text)
     email = Column('email', Text)
-    the_geom = Column('the_geom_gen50', Geometry(21781))
-    not_used = Column('the_geom', Geometry(21781))
+    the_geom = GeometryColumn('the_geom_gen50', Geometry(dimension=2, srid=21781))
+    not_used = GeometryColumn('the_geom', Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo-vd.geometa-nfgeom', geometaNfgeom)
 
