@@ -243,7 +243,8 @@ def computeHeader(mapName):
                 {'level': 24, 'resolution': 1.5, 'scale': 5357.15646431, 'width': 1250, 'height': 834},
                 {'level': 25, 'resolution': 1, 'scale': 3571.43764288, 'width': 1875, 'height': 1250},
                 {'level': 26, 'resolution': 0.5, 'scale': 1785.71882144, 'width': 3750, 'height': 2500},
-                {'level': 27, 'resolution': 0.25, 'scale': 892.857, 'width': 7500, 'height': 5000}
+                {'level': 27, 'resolution': 0.25, 'scale': 892.857, 'width': 7500, 'height': 5000},
+                {'level': 28, 'resolution': 0.1, 'scale': 357.1425, 'width': 18750, 'height': 12500}
             ]
         },
         'initialExtent': {
