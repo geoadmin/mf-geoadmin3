@@ -43,7 +43,7 @@
             var viewport = $(map.getViewport());
             var projection = view.getProjection();
             var parser = new ol.format.GeoJSON();
-            var selectLayer = createVectorLayer('select');
+            var selectLayer = createVectorLayer('highlight');
             var rectangleLayer = createVectorLayer('lightselect');
             //FIXME improve the drawing. Right now is very simple
             var firstPoint;
@@ -83,6 +83,23 @@
               return $.map(extent, parseFloat);
             };
 
+            //FIXME: should use ol.extent.getArea,
+            //but it's not in ol build.
+            var area = function(ext) {
+              return ol.extent.getWidth(ext) *
+                     ol.extent.getHeight(ext);
+            };
+
+            //FIXME: should use ol.extent.getIntersectionArea,
+            //but it's not in ol build.
+            var intersectionArea = function(extent1, extent2) {
+              var minX = Math.max(extent1[0], extent2[0]);
+              var minY = Math.max(extent1[1], extent2[1]);
+              var maxX = Math.min(extent1[2], extent2[2]);
+              var maxY = Math.min(extent1[3], extent2[3]);
+              return Math.max(0, maxX - minX) * Math.max(0, maxY - minY);
+            };
+
             var updateTree = function(res, searchExtent) {
               var tree = {}, i, li, j, lj, layerId, newNode, oldNode,
                   feature, oldFeature, result, bbox, ext;
@@ -105,12 +122,12 @@
                     bbox = parseBoxString(result.attrs.geom_st_box2d);
                     ext = ol.extent.boundingExtent([[bbox[0], bbox[1]],
                                                        [bbox[2], bbox[3]]]);
-                    if (ol.extent.getArea(ext) <= 0) {
+                    if (area(ext) <= 0) {
                       if (!ol.extent.containsCoordinate(searchExtent,
                                                         [ext[0], ext[1]])) {
                         continue;
                       }
-                    } else if (ol.extent.getIntersectionArea(searchExtent,
+                    } else if (intersectionArea(searchExtent,
                                                       ext) <= 0) {
                       continue;
                     }
@@ -278,6 +295,10 @@
             scope.selectFeatureInMap = function(feature) {
               selectLayer.getSource().clear();
               loadAndDrawGeometry(feature, selectLayer);
+            };
+
+            scope.showTooltip = function(feature) {
+              $rootScope.$broadcast('gaTriggerTooltipRequest', feature);
             };
 
             view.on('change', function() {
