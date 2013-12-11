@@ -66,6 +66,32 @@
               year = currentyear;
             });
 
+            $scope.$on('gaTriggerTooltipRequest', function(event, feature) {
+              var size = map.getSize();
+              var mapExtent = map.getView().calculateExtent(size);
+              initTooltip();
+
+              //FIXME: check if 'geometry' already exists. Request if
+              //not already there
+              showFeatures(mapExtent, size, [feature.geometry]);
+            });
+
+            function initTooltip() {
+               // Cancel all pending requests
+              if (canceler) {
+                canceler.resolve();
+              }
+              // Create new cancel object
+              canceler = $q.defer();
+              // htmls = [] would break the reference in the popup
+              htmls.splice(0, htmls.length);
+              if (popup) {
+                popup.close();
+              }
+              clearAll();
+              map.addLayer(vector);
+            }
+
             function clearAll() {
               vectorSource.clear();
               map.removeLayer(vector);
@@ -100,12 +126,9 @@
                   params,
                   identifyCount,
                   i;
-              // Cancel all pending requests
-              if (canceler) {
-                canceler.resolve();
-              }
-              // Create new cancel object
-              canceler = $q.defer();
+
+              initTooltip();
+
               identifyCount = layersToQuery.length;
               if (identifyCount) {
                 // Show wait cursor
@@ -157,15 +180,7 @@
                 }
              }
 
-              // htmls = [] would break the reference in the popup
-              htmls.splice(0, htmls.length);
-
-              if (popup) {
-                popup.close();
-              }
-              clearAll();
-              map.addLayer(vector);
-            }
+           }
 
             function showFeatures(mapExtent, size, foundFeatures) {
               if (foundFeatures && foundFeatures.length > 0) {
