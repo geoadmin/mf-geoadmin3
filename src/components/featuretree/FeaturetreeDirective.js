@@ -111,8 +111,7 @@
                   // the searched box). Here, we filter out those false
                   // positives based on the bounding box of the feature. Note
                   // that we could refine this by using the exact geometry in
-                  // the future (but after making the request to get the
-                  // geometry)
+                  // the future
                   if (result.attrs.geom_st_box2d) {
                     bbox = parseBoxString(result.attrs.geom_st_box2d);
                     ext = ol.extent.boundingExtent([[bbox[0], bbox[1]],
