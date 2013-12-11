@@ -46,13 +46,11 @@
             var objectInfoParentEl = $('#object-info-parent');
             var objectInfo = {};
             var parser = new ol.format.GeoJSON();
-            var hlLayer = createVectorLayer('highlight');
             var selectLayer = createVectorLayer('select');
             var rectangleLayer = createVectorLayer('lightselect');
             //FIXME improve the drawing. Right now is very simple
             var firstPoint;
             rectangleLayer.invertedOpacity = 0.25;
-            map.addLayer(hlLayer);
             map.addLayer(selectLayer);
 
             objectInfo.html = '';
@@ -163,7 +161,6 @@
                     };
                   }
                   newNode.features.push(feature);
-                  loadAndDrawGeometry(feature, selectLayer);
                 }
               }
               scope.tree = tree;
@@ -196,7 +193,6 @@
               var layersToQuery = getLayersToQuery(),
                   req, searchExtent;
               selectLayer.getSource().clear();
-              hlLayer.getSource().clear();
               if (layersToQuery.length) {
                 searchExtent = getSearchExtent();
                 req = getUrlAndParameters(layersToQuery, searchExtent);
@@ -319,8 +315,8 @@
               } else {
                 objectInfo.html = feature.info;
               }
-              hlLayer.getSource().clear();
-              loadAndDrawGeometry(feature, hlLayer);
+              selectLayer.getSource().clear();
+              loadAndDrawGeometry(feature, selectLayer);
             };
 
             view.on('change', function() {
