@@ -45,11 +45,9 @@
             var parser = new ol.format.GeoJSON();
             var selectLayer = createVectorLayer('highlight');
             var rectangleLayer = createVectorLayer('lightselect');
-            //FIXME improve the drawing. Right now is very simple
-            var firstPoint;
+            var firstPoint, searchRectangle;
             rectangleLayer.invertedOpacity = 0.25;
             map.addLayer(selectLayer);
-            map.addLayer(rectangleLayer);
 
             var getLayersToQuery = function(layers) {
               var layerstring = '';
@@ -176,9 +174,9 @@
             };
 
             var getSearchExtent = function() {
-              if (scope.searchmode === 'rectangle') {
+              if (angular.isDefined(searchRectangle)) {
                 return ol.extent.boundingExtent(
-                    scope.searchRectangle.getCoordinates());
+                    searchRectangle.getCoordinates());
               }
               return view.calculateExtent(map.getSize());
             };
@@ -279,16 +277,6 @@
               }
             };
 
-            scope.searchmode = 'rectangle';
-            scope.searchRectangle = new ol.geom.LineString([
-              [590000, 190000],
-              [590000, 210000],
-              [610000, 210000],
-              [610000, 190000],
-              [590000, 190000]
-            ]);
-            rectangleLayer.getSource().addFeature(
-                new ol.Feature(scope.searchRectangle));
             scope.loading = false;
             scope.tree = {};
 
@@ -316,7 +304,7 @@
             };
 
             view.on('change', function() {
-              if (scope.searchmode === 'auto') {
+              if (!angular.isDefined(searchRectangle)) {
                 triggerChange();
               }
             });
@@ -328,13 +316,16 @@
             scope.$watch('options.active', function(newVal, oldVal) {
               cancel();
               if (newVal === true) {
+                map.addLayer(rectangleLayer);
                 requestFeatures();
+              } else {
+                map.removeLayer(rectangleLayer);
               }
             });
 
             var updateRectangle = function(evt) {
               var coordinate = evt.getCoordinate();
-              scope.searchRectangle.setCoordinates([
+              searchRectangle.setCoordinates([
                 [firstPoint[0], firstPoint[1]],
                 [firstPoint[0], coordinate[1]],
                 [coordinate[0], coordinate[1]],
@@ -343,22 +334,18 @@
               ]);
             };
 
-            scope.$watch('searchmode', function(newVal, oldVal) {
-              if (newVal !== oldVal) {
-                firstPoint = undefined;
-                if (newVal === 'rectangle') {
-                  map.addLayer(rectangleLayer);
-                } else {
-                  map.removeLayer(rectangleLayer);
-                }
-                triggerChange(0);
-              }
-            });
-
             map.on('dragstart', function(evt) {
-              if (!angular.isDefined(firstPoint) &&
+              if (scope.options.active &&
+                  !angular.isDefined(firstPoint) &&
                   evt.browserEvent.ctrlKey) {
                 firstPoint = evt.getCoordinate();
+                //make sure searchRectangle exists
+                if (!angular.isDefined(searchRectangle)) {
+                  searchRectangle = new ol.geom.LineString([
+                    firstPoint]);
+                  rectangleLayer.getSource().addFeature(
+                      new ol.Feature(searchRectangle));
+                }
               }
             });
 
