@@ -13,7 +13,7 @@
   module.directive('gaFeaturetree',
       function($rootScope, $compile, $timeout, $http, $q, $translate, $sce,
                gaLayers, gaDefinePropertiesForLayer, gaStyleFunctionFactory, 
-               gaMapClick) {
+               gaMapClick, gaRecenterMapOnFeatures) {
 
         var createVectorLayer = function(style) {
           var vector = new ol.layer.Vector({
@@ -305,6 +305,13 @@
               loadGeometry(feature, function(geometry) {
                 $rootScope.$broadcast('gaTriggerTooltipRequest', geometry);
               });
+            };
+
+            scope.recenterToFeature = function(evt, f) {
+              var recenterObject = {};
+              evt.stopPropagation();
+              recenterObject[f.layer] = [f.id];
+              gaRecenterMapOnFeatures(map, recenterObject);
             };
 
             view.on('change', function() {
