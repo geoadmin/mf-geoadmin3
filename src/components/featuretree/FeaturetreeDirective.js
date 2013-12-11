@@ -253,8 +253,7 @@
               }
             };
 
-            var loadAndDrawGeometry = function(feature, layer) {
-              //Load geometry and display it
+            var loadGeometry = function(feature, cb) {
               var featureUrl;
               if (!feature.geometry) {
                 featureUrl = scope.options.htmlUrlTemplate
@@ -269,13 +268,13 @@
                   }
                 }).success(function(result) {
                   feature.geometry = result.feature;
-                  drawGeometry(feature.geometry, layer);
+                  cb(feature.geometry);
                 }).error(function() {
                   feature.geometry = null;
-                  drawGeometry(null, layer);
+                  cb(null);
                 });
               } else {
-                drawGeometry(feature.geometry, layer);
+                cb(feature.geometry);
               }
             };
 
@@ -293,7 +292,9 @@
             scope.tree = {};
 
             scope.selectFeatureInMap = function(feature) {
-              loadAndDrawGeometry(feature, selectLayer);
+              loadGeometry(feature, function(geometry) {
+                drawGeometry(geometry, selectLayer);
+              });
             };
 
             scope.clearSelection = function() {
@@ -301,7 +302,9 @@
             };
 
             scope.showTooltip = function(feature) {
-              $rootScope.$broadcast('gaTriggerTooltipRequest', feature);
+              loadGeometry(feature, function(geometry) {
+                $rootScope.$broadcast('gaTriggerTooltipRequest', geometry);
+              });
             };
 
             view.on('change', function() {
