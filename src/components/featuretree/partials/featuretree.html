@@ -1,4 +1,4 @@
-<div>
+<div class="ga-feature-tree">
   <form>
     <input type="radio" ng-model="searchmode" value="auto"><label translate>Auto</label>
     <input type="radio" ng-model="searchmode" value="rectangle"><label translate>Rectangle</label>
@@ -10,9 +10,11 @@
         <i ng-class="{'icon-minus': layer.open, 'icon-plus': !layer.open}"></i>
         {{layer.label}}
       </a>
-      <ul ng-if="layer.open">
+      <ul ng-if="layer.open" class="ga-feature">
         <li ng-repeat="feature in layer.features">
-          <a ng-mouseover="selectFeatureInMap(feature)" ng-click="showTooltip(feature)" ng-mouseleave="clearSelection()">{{feature.label}}</a>
+          <a ng-mouseover="selectFeatureInMap(feature)" ng-click="showTooltip(feature)" ng-mouseleave="clearSelection()">{{feature.label}}
+            <i ng-click="recenterToFeature($event, feature)" class="icon-plus"></i>
+          </a>
         </li>
       </ul>
     </li>
