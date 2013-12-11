@@ -12,7 +12,7 @@
       </a>
       <ul ng-if="layer.open">
         <li ng-repeat="feature in layer.features">
-          <a ng-mouseover="selectFeatureInMap(feature)" ng-click="showTooltip(feature)">{{feature.label}}</a>
+          <a ng-mouseover="selectFeatureInMap(feature)" ng-click="showTooltip(feature)" ng-mouseleave="clearSelection()">{{feature.label}}</a>
         </li>
       </ul>
     </li>

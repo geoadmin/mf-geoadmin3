@@ -293,8 +293,11 @@
             scope.tree = {};
 
             scope.selectFeatureInMap = function(feature) {
-              selectLayer.getSource().clear();
               loadAndDrawGeometry(feature, selectLayer);
+            };
+
+            scope.clearSelection = function() {
+              selectLayer.getSource().clear();
             };
 
             scope.showTooltip = function(feature) {
