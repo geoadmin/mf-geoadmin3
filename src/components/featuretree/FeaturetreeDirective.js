@@ -49,6 +49,7 @@
             var firstPoint;
             rectangleLayer.invertedOpacity = 0.25;
             map.addLayer(selectLayer);
+            map.addLayer(rectangleLayer);
 
             var getLayersToQuery = function(layers) {
               var layerstring = '';
@@ -278,7 +279,7 @@
               }
             };
 
-            scope.searchmode = 'auto';
+            scope.searchmode = 'rectangle';
             scope.searchRectangle = new ol.geom.LineString([
               [590000, 190000],
               [590000, 210000],
@@ -332,9 +333,7 @@
             });
 
             var updateRectangle = function(evt) {
-              var coordinate = (evt.originalEvent) ?
-                  map.getEventCoordinate(evt.originalEvent) :
-                  evt.getCoordinate();
+              var coordinate = evt.getCoordinate();
               scope.searchRectangle.setCoordinates([
                 [firstPoint[0], firstPoint[1]],
                 [firstPoint[0], coordinate[1]],
@@ -344,14 +343,9 @@
               ]);
             };
 
-            var resetRectangleDrawing = function() {
-              firstPoint = undefined;
-              viewport.unbind('mousemove', updateRectangle);
-            };
-
             scope.$watch('searchmode', function(newVal, oldVal) {
               if (newVal !== oldVal) {
-                resetRectangleDrawing();
+                firstPoint = undefined;
                 if (newVal === 'rectangle') {
                   map.addLayer(rectangleLayer);
                 } else {
@@ -361,24 +355,26 @@
               }
             });
 
-            gaMapClick.listen(map, function(evt) {
-              var coordinate;
-              if (scope.searchmode === 'rectangle') {
-                coordinate = (evt.originalEvent) ?
-                    map.getEventCoordinate(evt.originalEvent) :
-                    evt.getCoordinate();
-                if (!angular.isDefined(firstPoint) &&
-                    evt.browserEvent.ctrlKey) {
-                    firstPoint = coordinate;
-                    viewport.on('mousemove', updateRectangle);
-                } else if (angular.isDefined(firstPoint)) {
-                  updateRectangle(evt);
-                  resetRectangleDrawing();
-                  triggerChange(0);
-                }
+            map.on('dragstart', function(evt) {
+              if (!angular.isDefined(firstPoint) &&
+                  evt.browserEvent.ctrlKey) {
+                firstPoint = evt.getCoordinate();
               }
             });
 
+            map.on('drag', function(evt) {
+              if (angular.isDefined(firstPoint)) {
+                updateRectangle(evt);
+              }
+            });
+
+           map.on('dragend', function(evt) {
+              if (angular.isDefined(firstPoint)) {
+                updateRectangle(evt);
+                firstPoint = undefined;
+                triggerChange(0);
+              }
+            });
           }
         };
 
