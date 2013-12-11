@@ -42,9 +42,6 @@
             var view = map.getView();
             var viewport = $(map.getViewport());
             var projection = view.getProjection();
-            var objectInfoToggleEl = $('#object-info-toggle');
-            var objectInfoParentEl = $('#object-info-parent');
-            var objectInfo = {};
             var parser = new ol.format.GeoJSON();
             var selectLayer = createVectorLayer('select');
             var rectangleLayer = createVectorLayer('lightselect');
@@ -52,12 +49,6 @@
             var firstPoint;
             rectangleLayer.invertedOpacity = 0.25;
             map.addLayer(selectLayer);
-
-            objectInfo.html = '';
-            objectInfo.loading = false;
-            $rootScope.objectinfo = objectInfo;
-
-            $compile($('#object-info-target')[0])($rootScope);
 
             var getLayersToQuery = function(layers) {
               var layerstring = '';
@@ -284,37 +275,7 @@
             scope.loading = false;
             scope.tree = {};
 
-            scope.showFeatureInfo = function(feature) {
-              var htmlUrl;
-
-              if (!objectInfoParentEl.hasClass('open')) {
-                objectInfoToggleEl.dropdown('toggle');
-              }
-
-              //Load information if not already there
-              if (feature.info == '') {
-                objectInfo.loading = true;
-                htmlUrl = scope.options.htmlUrlTemplate
-                          .replace('{Topic}', currentTopic)
-                          .replace('{Layer}', feature.layer)
-                          .replace('{Feature}', feature.id);
-                $http.get(htmlUrl, {
-                  timeout: canceler.promise,
-                  params: {
-                    lang: $translate.uses()
-                  }
-                }).success(function(html) {
-                  feature.info = $sce.trustAsHtml(html);
-                  objectInfo.html = feature.info;
-                  objectInfo.loading = false;
-                }).error(function() {
-                  feature.info = '';
-                  objectInfo.html = feature.info;
-                  objectInfo.loading = false;
-                });
-              } else {
-                objectInfo.html = feature.info;
-              }
+            scope.selectFeatureInMap = function(feature) {
               selectLayer.getSource().clear();
               loadAndDrawGeometry(feature, selectLayer);
             };
