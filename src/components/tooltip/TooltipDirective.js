@@ -66,14 +66,13 @@
               year = currentyear;
             });
 
-            $scope.$on('gaTriggerTooltipRequest', function(event, feature) {
-              var size = map.getSize();
-              var mapExtent = map.getView().calculateExtent(size);
-              initTooltip();
-
-              //FIXME: check if 'geometry' already exists. Request if
-              //not already there
-              showFeatures(mapExtent, size, [feature.geometry]);
+            $scope.$on('gaTriggerTooltipRequest', function(event, featuregeom) {
+              if (featuregeom) {
+                var size = map.getSize();
+                var mapExtent = map.getView().calculateExtent(size);
+                initTooltip();
+                showFeatures(mapExtent, size, [featuregeom]);
+              }
             });
 
             function initTooltip() {
