@@ -15,6 +15,7 @@ class Search(SearchValidation):
     LIMIT = 50
     LAYER_LIMIT = 30
     FEATURE_LIMIT = 20
+    FEATURE_GEO_LIMIT = 200
 
     def __init__(self, request):
         super(Search, self).__init__()
@@ -132,7 +133,7 @@ class Search(SearchValidation):
         if self.featureIndexes is None:
             raise exc.HTTPBadRequest('Please provide a parameter features')
 
-        self.sphinx.SetLimits(0, self.FEATURE_LIMIT)
+        self.sphinx.SetLimits(0, self.FEATURE_GEO_LIMIT)
 
         if self.timeInstant is not None:
             self.sphinx.SetFilter('year', [self.timeInstant])
