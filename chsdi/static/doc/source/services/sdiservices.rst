@@ -3,7 +3,7 @@
 Layers Metadata
 ---------------
 
-This service provides metatdata for the available geographical layers available in the API.
+This service provides metatdata for the available layers in the API.
 
 URL
 ^^^
@@ -33,7 +33,7 @@ Examples
 
 .. _identify_description:
 
-Identify features
+Identify Features
 -----------------
 
 This service can be used to discover features at a specific location.
@@ -83,6 +83,36 @@ Examples
 - Identify all the features belonging to ch.bfs.arealstatistik-1985 using an enveloppe (or bounding box): `https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985 <../../../rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985>`_
 - Same request than above but returned geometry format is GeoJSON: `https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985&geometryFormat=geojson <../../../rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985&geometryFormat=geojson>`_
 - Same request than above but geometry is not returned: `https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985&returnGeometry=false <../../../rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985&returnGeometry=false>`_
+
+.. _featureresource_description:
+
+Feature Resource
+----------------
+
+With an ID and a layer technical name, this service can be used to retrieve a feature resource.
+
+URL
+^^^
+
+https://api3.geo.admin.ch/rest/services/api/MapServer/{layerId}/{featureId}
+
+Input Parameters
+^^^^^^^^^^^^^^^^
+
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| Parameters                        | Description                                                                               |
++===================================+===========================================================================================+
+| lang (optional)                   | The language in which you want the metadata. "de" (default)                               |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| geometryFormat (optional)         | Default to ESRI geometry format. Possible values are: "esrijson" or "geojson".            |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| callback (optional)               | The name of the callback function.                                                        |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+
+Example
+^^^^^^^
+
+- Get the feature with the ID 342 belonging to ch.bafu.bundesinventare-bln: `https://api3.geo.admin.ch/rest/services/api/MapServer/ch.bafu.bundesinventare-bln/362 <../../../rest/services/api/MapServer/ch.bafu.bundesinventare-bln/362>`_
 
 .. _search_description:
 
@@ -275,9 +305,8 @@ Resolution [m]   Zoomlevel Map zoom  Tile width m Tiles X  Tiles Y    Tiles     
 
 **Notes**
 
- #. The zoom level 24 (resolution 1.5m) has been generated, but is not currently used in the API.
- #. The zoom levels 27 and 28 (resolution 0.25m and 0.1m) are only available for a few layers, e.g. swissimage or cadastral web map. For the others 
-    layers it is only a client zoom (tiles are stretched).
+#. The zoom level 24 (resolution 1.5m) has been generated, but is not currently used in the API.
+#. The zoom levels 27 and 28 (resolution 0.25m and 0.1m) are only available for a few layers, e.g. swissimage or cadastral web map. For the others layers it is only a client zoom (tiles are stretched).
 
 Result
 ^^^^^^
