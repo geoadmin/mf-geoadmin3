@@ -3,7 +3,8 @@
 <%
 mode = request.params.get('mode')
 lang = request.lang
-layersconfig = 'http://api3.geo.admin.ch/rest/services/all/MapServer/layersconfig?lang=' + lang
+appUrl = request.application_url.replace('http', request.scheme)
+layersconfig = appUrl + '/rest/services/all/MapServer/layersconfig?lang=' + lang
 import urllib2, json
 f = urllib2.urlopen(layersconfig)
 conf = """function getConfig(){ return %s } """ %json.dumps(json.loads(f.read())['layers'])
