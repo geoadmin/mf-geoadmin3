@@ -62,7 +62,6 @@ def main(global_config, **settings):
     config.add_route('testi18n', '/testi18n')
     config.add_view(route_name='home', renderer='chsdi:static/doc/build/index.html', http_cache=3600)
     config.add_view(route_name='dev', renderer='chsdi:templates/index.pt', http_cache=0)
-    config.add_view(route_name='ga_api', renderer='chsdi:templates/loader.js', http_cache=0)
     config.add_view(route_name='testi18n', renderer='chsdi:templates/testi18n.mako', http_cache=0)
 
     # Application specific
@@ -94,6 +93,5 @@ def main(global_config, **settings):
     config.add_static_view('examples', 'chsdi:static/doc/examples')
     # Static view for sphinx
     config.add_static_view('/', 'chsdi:static/doc/build', cache_max_age=3600)
-    
 
     return config.make_wsgi_app()
