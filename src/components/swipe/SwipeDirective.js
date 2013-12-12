@@ -1,20 +1,17 @@
 (function() {
   goog.provide('ga_swipe_directive');
 
-  goog.require('ga_browsersniffer_service');
   goog.require('ga_debounce_service');
-  goog.require('ga_permalink_service');
+  goog.require('ga_map_service');
 
   var module = angular.module('ga_swipe_directive', [
-    'ga_browsersniffer_service',
     'ga_debounce_service',
-    'ga_permalink_service',
-    'pascalprecht.translate'
+    'ga_map_service'
   ]);
 
   module.directive('gaSwipe',
     function($document, $translate, gaBrowserSniffer, gaPermalink,
-        gaDebounce) {
+        gaDebounce, gaLayerFilters) {
       return {
         restrict: 'A',
         templateUrl: function(element, attrs) {
@@ -26,11 +23,13 @@
           isActive: '=gaSwipeActive'
         },
         link: function(scope, elt, attrs, controller) {
+          scope.layers = scope.map.getLayers().getArray();
+          scope.layerFilter = gaLayerFilters.permanentLayersFilter;
           var draggableElt = elt.find('[ga-draggable]');
           var arrowsElt = elt.find('.ga-swipe-arrows');
           var layerLabelElt = elt.find('.ga-swipe-layer-label');
-          var listenerKeys = [];
           var layerListenerKeys = [];
+          var layersDeregisterFn = null;
           var isDragging = false;
           var events = {
             mouse: {
@@ -78,9 +77,6 @@
             $document.unbind(eventKey.move, drag);
             $document.unbind(eventKey.end, dragEnd);
             scope.ratio = draggableElt.offset().left / scope.map.getSize()[0];
-            scope.$apply(function() {
-              gaPermalink.updateParams({swipe_ratio: scope.ratio.toFixed(2)});
-            });
             layerLabelElt.hide();
           };
 
@@ -98,27 +94,9 @@
             evt.getContext().restore();
           };
 
-          // Get a valid layer to compare.
-          // To have the swipe available we need at least 2 valid layers on
-          // the map.
-          var findLayerToCompare = function() {
-            var olLayers = scope.map.getLayers();
-            var validLayers = [];
-            for (var i = olLayers.getLength() - 1; i >= 0; i--) {
-              var olLayer = olLayers.getAt(i);
-              if (!olLayer.highlight) {
-                validLayers.push(olLayer);
-              }
-            }
-            if (validLayers.length < 2) {
-              return null;
-            }
-            return validLayers[0];
-          };
-
           // Display swipe or not depends on the number of layers currently on
           // the map.
-          var refreshComp = function() {
+          var refreshComp = function(olLayers) {
 
             // Unset the layer and remove its listeners
             if (scope.layer) {
@@ -139,12 +117,17 @@
               scope.map.requestRenderFrame();
             }
 
-            scope.layer = findLayerToCompare();
-            if (!scope.isActive || !scope.layer) {
+            if (!scope.isActive || olLayers.length < 2) {
               elt.hide();
               return;
             }
 
+            // Set the new layer
+            scope.layer = olLayers[olLayers.length - 1];
+
+            // ol.layer.Group doesn't trigger XXXcompose events so we handle
+            // events on each sublayers.
+            // see bug: https://github.com/openlayers/ol3/issues/1362
             if (scope.layer instanceof ol.layer.Group) {
               scope.layer.getLayers().forEach(function(olLayer, idx, arr) {
                 layerListenerKeys = layerListenerKeys.concat([
@@ -162,26 +145,24 @@
             scope.map.requestRenderFrame();
           };
 
-
           // Active the swipe adding events.
           var activate = function() {
-            var olLayers = scope.map.getLayers();
-            listenerKeys = [
-              olLayers.on('add', refreshComp),
-              olLayers.on('remove', refreshComp)
-            ];
+            scope.ratio = scope.ratio || 0.5;
+            updatePermalink(scope.ratio);
+            layersDeregisterFn = scope.$watchCollection(
+                'layers | filter:layerFilter', refreshComp);
             elt.on(eventKey.start, dragStart);
-            refreshComp();
           };
 
 
           // Deactive the swipe removing the events
           var deactivate = function() {
-            elt.unbind(eventKey.start, dragStart);
-            scope.map.getLayers().unByKey(listenerKeys[0]);
-            scope.map.getLayers().unByKey(listenerKeys[1]);
             refreshComp();
-            gaPermalink.deleteParam('swipe_ratio');
+            elt.unbind(eventKey.start, dragStart);
+            if (layersDeregisterFn) {
+              layersDeregisterFn();
+            }
+            updatePermalink();
           };
 
           // Boolean determining if the swipe is activated from the permalink
@@ -200,7 +181,7 @@
           // Watchers
           scope.$watch('isActive', function(active) {
             if (active) {
-              if (!fromPermalink && !findLayerToCompare()) {
+              if (!fromPermalink && scope.layers.length < 2) {
                 alert($translate('not_enough_layer_for_swipe'));
               }
               activate();
@@ -208,6 +189,9 @@
             } else {
               deactivate();
             }
+          });
+          scope.$watch('ratio', function(ratio) {
+            updatePermalink(ratio);
           });
 
           // Move swipe element on resize.
@@ -226,6 +210,16 @@
             draggableElt.css({left: scope.map.getSize()[0] * scope.ratio});
             requestRenderFrameDebounced();
           });
+
+
+          // Manage permalink parameter
+          var updatePermalink = function(ratio) {
+            if (ratio) {
+              gaPermalink.updateParams({swipe_ratio: ratio.toFixed(2)});
+            } else {
+              gaPermalink.deleteParam('swipe_ratio');
+            }
+          };
         }
       };
     }
