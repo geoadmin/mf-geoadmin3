@@ -70,13 +70,13 @@ deploybranch: deploy/deploy-branch.cfg $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/con
 	cd $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH); \
 	git checkout $(GIT_BRANCH); \
 	git pull; \
-	make preparebranch; \
+	make preparebranch SERVICE_URL=//mf-chsdi3.dev.bgdi.ch; \
 	cp scripts/00-$(GIT_BRANCH).conf /var/www/vhosts/mf-geoadmin3/conf; \
 	bash -c "source rc_branch && make all";
 #	sudo -u deploy deploy -r deploy/deploy-branch.cfg int
 
 .PHONY: preparebranch
-preparebranch: rc_branch scripts/00-$(GIT_BRANCH).conf
+preparebranch: cleanrc rc_branch scripts/00-$(GIT_BRANCH).conf
 
 .PHONY: updateol
 updateol: OL_JS = ol.js ol-simple.js ol-whitespace.js
@@ -227,7 +227,7 @@ deploy/deploy-branch.cfg: deploy/deploy-branch.mako.cfg .build-artefacts/last-gi
 	.build-artefacts/python-venv/bin/mako-render --var "git_branch=$(GIT_BRANCH)" $< > $@
 
 rc_branch: rc_branch.mako .build-artefacts/last-git-branch .build-artefacts/python-venv/bin/mako-render
-	.build-artefacts/python-venv/bin/mako-render --var "base_url=$(GIT_BRANCH)" $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "base_url=$(GIT_BRANCH)" --var "service_url=$(SERVICE_URL)" $< > $@
 
 scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf .build-artefacts/last-git-branch .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "git_branch=$(GIT_BRANCH)" $< > $@
@@ -271,7 +271,6 @@ clean: cleanrc
 	rm -f src/style/app.css
 	rm -f src/TemplateCacheModule.js
 	rm -rf prd
-	rm -f deploy/deploy-branch.cfg
 
 .PHONY: cleanrc
 cleanrc:
@@ -280,4 +279,8 @@ cleanrc:
 	rm -f prd/index.html
 	rm -f prd/mobile.html
 	rm -f apache/app.conf
+	rm -f deploy/deploy-branch.cfg
+	rm -f scripts/00-*.conf
+	rm -f rc_branch
+
 
