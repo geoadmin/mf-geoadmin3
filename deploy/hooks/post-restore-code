@@ -10,22 +10,15 @@ CODE_DIR=$2
 
 cd $CODE_DIR
 
-if [[ $CODE_DIR != */branch/* ]]; then
-    echo "doing standard post-restore-code work..."
-    if [ -f rc_$TARGET ]; then
-        source rc_$TARGET
-        make cleanrc all
+if [ -f rc_$TARGET ]; then
+    source rc_$TARGET
+    if [[ $CODE_DIR == */branch/* ]]; then
+        make preparebranch
+        if [ -f rc_branch ]; then
+            source rc_branch
+        fi
     fi
-else
-    echo "doing branch post-restore-code work..."
-    echo $TARGET
-    echo $PROJECT_NAME
-    echo $CODE_DIR
-    make preparebranch SERVICE_URL=//mf-chsdi3.$TARGET.bgdi.ch
-    if [ -f rc_branch ]; then
-        source rc_branch
-        make cleanrc all
-    fi
+    make cleanrc all
 fi
 
 exit $?

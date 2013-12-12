@@ -71,7 +71,7 @@ deploybranch: deploy/deploy-branch.cfg $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/con
 	cd $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH); \
 	git checkout $(GIT_BRANCH); \
 	git pull; \
-	make preparebranch SERVICE_URL=//mf-chsdi3.dev.bgdi.ch; \
+	make preparebranch; \
 	cp scripts/00-$(GIT_BRANCH).conf /var/www/vhosts/mf-geoadmin3/conf; \
 	bash -c "source rc_branch && make all";
 
