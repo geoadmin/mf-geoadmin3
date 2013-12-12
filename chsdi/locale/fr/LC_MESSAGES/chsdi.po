@@ -1602,6 +1602,9 @@ msgstr "Limites cantonales GG25"
 msgid "ch.swisstopo.gg25-land-flaeche.fill"
 msgstr "Frontières nationales GG25"
 
+msgid "ch.swisstopo.hangneigung-ueber_30"
+msgstr "Pentes de plus de 30°"
+
 msgid "ch.swisstopo.hiks-dufour"
 msgstr "Carte Dufour Première édition"
 
@@ -1704,10 +1707,10 @@ msgid "ch.swisstopo.swissimage"
 msgstr "Photo aérienne"
 
 msgid "ch.swisstopo.swisstlm3d-karte-farbe"
-msgstr "Modèle topographique du paysage"
+msgstr "Carte swissTLM (couleur)"
 
 msgid "ch.swisstopo.swisstlm3d-karte-grau"
-msgstr "Modèle topographique du paysage"
+msgstr "Carte swissTLM (grise)"
 
 msgid "ch.swisstopo.swisstlm3d-wanderwege"
 msgstr "chemins de randonnée pédestre"
@@ -3390,7 +3393,7 @@ msgid "zielhafen"
 msgstr "Destination"
 
 msgid "zone"
-msgstr "Zone"
+msgstr "zone"
 
 msgid "zugang"
 msgstr "Accessible"
