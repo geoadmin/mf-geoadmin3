@@ -31,6 +31,34 @@ Examples
 - List all the layers available in the API: `https://api3.geo.admin.ch/rest/services/api/MapServer <../../../rest/services/api/MapServer>`_
 - List all the layers available in the API where the word "wasser" is found in their description: `https://api3.geo.admin.ch/rest/services/api/MapServer?searchText=wasser <../../../rest/services/api/MapServer?searchText=wasser>`_
 
+.. _legend_description:
+
+Legend Resource
+---------------
+
+With a layer technical name, this service can be used to retrieve a legend.
+
+URL
+^^^
+
+https://api3.geo.admin.ch/rest/services/api/MapServer/{layerID}/getlegend
+
+Input Parameters
+^^^^^^^^^^^^^^^^
+
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| Parameters                        | Description                                                                               |
++===================================+===========================================================================================+
+| lang (optional)                   | The language in which you want the metadata. "de" (default)                               |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| callback (optional)               | The name of the callback function.                                                        |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+
+Example
+^^^^^^^
+
+- Get the legend for ch.bafu.bundesinventare-bln: `https://api3.geo.admin.ch/rest/services/api/MapServer/ch.bafu.bundesinventare-bln/getlegend <../../../rest/services/api/MapServer/ch.bafu.bundesinventare-bln/getlegend>`_
+
 .. _identify_description:
 
 Identify Features
@@ -94,7 +122,7 @@ With an ID and a layer technical name, this service can be used to retrieve a fe
 URL
 ^^^
 
-https://api3.geo.admin.ch/rest/services/api/MapServer/{layerId}/{featureId}
+https://api3.geo.admin.ch/rest/services/api/MapServer/{layerID}/{featureID}
 
 Input Parameters
 ^^^^^^^^^^^^^^^^
