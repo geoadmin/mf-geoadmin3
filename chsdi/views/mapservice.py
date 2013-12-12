@@ -35,8 +35,9 @@ class MapService(MapServiceValidation):
         query = self._map_name_filter(query, model.maps)
         query = self._geodata_staging_filter(query, model.staging)
         query = self._full_text_search(query, [model.fullTextSearch])
-        layers = [layer.layerMetadata() for layer in query]
-        results['layers'] = layers
+        for q in query:
+            layer = q.layerMetadata()
+            results['layers'].append(layer)
         return results
 
     @view_config(route_name='layersconfig', renderer='jsonp')

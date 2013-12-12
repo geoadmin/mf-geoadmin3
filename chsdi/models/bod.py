@@ -36,33 +36,15 @@ class Bod(object):
     scaleLimit = Column('scale_limit', Text)
 
     def layerMetadata(self):
-        return {
-            'id': self.id,
-            'idBod': self.idBod,
-            'idGeoCat': self.idGeoCat,
-            'name': self.name,
-            'fullName': self.fullName,
-            'attributes': {
-                'maps': self.maps,
-                'dataOwner': self.dataOwner,
-                'abstract': self.abstract,
-                'dataStatus': self.dataStatus,
-                'downloadUrl': self.downloadUrl,
-                'urlApplication': self.urlApplication,
-                'wmsContactAbbreviation': self.wmsContactAbbreviation,
-                'wmsContactName': self.wmsContactName,
-                'wmsUrlResource': self.wmsUrlResource,
-                'urlDetails': self.urlDetails,
-                'inspireUpperAbstract': self.inspireUpperAbstract,
-                'inspireUpperName': self.inspireUpperName,
-                'inspireAbstract': self.inspireAbstract,
-                'inspireName': self.inspireName,
-                'bundCollectionNumber': self.bundCollectionNumber,
-                'bundCollection': self.bundCollection,
-                'scaleLimit': self.scaleLimit
-            }
-        }
-
+        primaryAttr = ('id', 'idBod', 'idGeoCat', 'name', 'fullName')
+        meta = {'attributes': {}}
+        for k in self.__dict__.keys():
+            if k != '_sa_instance_state':
+                if k in primaryAttr and self.__dict__[k] is not None:
+                    meta[k] = self.__dict__[k]
+                elif self.__dict__[k] is not None:
+                    meta['attributes'][k] = self.__dict__[k]
+        return meta
 
 class LayersConfig(Base):
     __tablename__ = 'view_layers_js'
