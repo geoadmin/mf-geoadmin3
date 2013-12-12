@@ -17,7 +17,7 @@ Use the GeoAdmin API Forum to ask questions: http://groups.google.com/group/geoa
     <div class="warning"i style="background-color: #ffffff; padding: 5px; border: 1px solid black;">
     <img src="_static/warning.png" style="float: left; margin: 10px;" />
 
-The GeoAdmin API and all GeoAdmin services can be used in both HTTP and HTTPS contexts. Though most layers are freely accessible, a `swisstopo web access <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/products/services/web_services/webaccess.html>`_ is required. For a list of all available layers and their accessibility please refer to the `FAQ <api/faq/index.html#which-layers-are-available>`_.
+The GeoAdmin API and all GeoAdmin services can be used in both HTTP and HTTPS contexts. Though most layers are freely accessible, a `swisstopo web access <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/products/services/web_services/webaccess.html>`_ is required for some of them. For a list of all available layers and their accessibility please refer to the `FAQ <api/faq/index.html#which-layers-are-available>`_.
 
 .. raw:: html
 
