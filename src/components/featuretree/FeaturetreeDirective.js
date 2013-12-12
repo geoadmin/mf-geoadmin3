@@ -43,6 +43,7 @@
             var viewport = $(map.getViewport());
             var projection = view.getProjection();
             var parser = new ol.format.GeoJSON();
+            var dragBox = new ol.render.DragBox();
             var selectLayer = createVectorLayer('highlight');
             var rectangleLayer = createVectorLayer('lightselect');
             var firstPoint, searchRectangle;
@@ -339,6 +340,8 @@
                   !angular.isDefined(firstPoint) &&
                   evt.browserEvent.ctrlKey) {
                 firstPoint = evt.getCoordinate();
+                dragBox.setCoordinates(firstPoint, firstPoint);
+                dragBox.setMap(map);
                 //make sure searchRectangle exists
                 if (!angular.isDefined(searchRectangle)) {
                   searchRectangle = new ol.geom.LineString([
@@ -351,12 +354,14 @@
 
             map.on('drag', function(evt) {
               if (angular.isDefined(firstPoint)) {
+                dragBox.setCoordinates(firstPoint, evt.getCoordinate());
                 updateRectangle(evt);
               }
             });
 
            map.on('dragend', function(evt) {
               if (angular.isDefined(firstPoint)) {
+                dragBox.setMap(null);
                 updateRectangle(evt);
                 firstPoint = undefined;
                 triggerChange(0);
