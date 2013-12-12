@@ -122,8 +122,19 @@
 
             // Unset the layer and remove its listeners
             if (scope.layer) {
-              scope.layer.unByKey(layerListenerKeys[0]);
-              scope.layer.unByKey(layerListenerKeys[1]);
+              if (scope.layer instanceof ol.layer.Group) {
+                scope.layer.getLayers().forEach(function(olLayer, idx, arr) {
+                  var i = idx * 2;
+                  olLayer.unByKey(layerListenerKeys[i]);
+                  olLayer.unByKey(layerListenerKeys[i + 1]);
+                });
+
+              } else {
+                for (var i = 0, ii = layerListenerKeys.length; i < ii; i++) {
+                  scope.layer.unByKey(layerListenerKeys[i]);
+                }
+              }
+              layerListenerKeys = [];
               scope.layer = null;
               scope.map.requestRenderFrame();
             }
@@ -134,10 +145,19 @@
               return;
             }
 
-            layerListenerKeys = [
-              scope.layer.on('precompose', handlePreCompose),
-              scope.layer.on('postcompose', handlePostCompose)
-            ];
+            if (scope.layer instanceof ol.layer.Group) {
+              scope.layer.getLayers().forEach(function(olLayer, idx, arr) {
+                layerListenerKeys = layerListenerKeys.concat([
+                  olLayer.on('precompose', handlePreCompose),
+                  olLayer.on('postcompose', handlePostCompose)
+                ]);
+              });
+            } else {
+              layerListenerKeys = [
+                scope.layer.on('precompose', handlePreCompose),
+                scope.layer.on('postcompose', handlePostCompose)
+              ];
+            }
             elt.show();
             scope.map.requestRenderFrame();
           };
@@ -201,7 +221,7 @@
             }
           };
           var requestRenderFrameDebounced = gaDebounce.debounce(
-            requestRenderFrame, 200, false);
+              requestRenderFrame, 200, false);
           scope.map.on('change:size', function(evt) {
             draggableElt.css({left: scope.map.getSize()[0] * scope.ratio});
             requestRenderFrameDebounced();
