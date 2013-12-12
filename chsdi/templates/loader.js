@@ -3,6 +3,7 @@
 <%
 mode = request.params.get('mode')
 lang = request.lang
+# Because of elastic load balancer application url is always http
 appUrl = request.application_url.replace('http', request.scheme)
 layersconfig = appUrl + '/rest/services/all/MapServer/layersconfig?lang=' + lang
 import urllib2, json
