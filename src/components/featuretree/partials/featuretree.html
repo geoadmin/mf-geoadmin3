@@ -1,5 +1,6 @@
 <div class="ga-feature-tree">
-  <div ng-if="loading">Please wait, data is loading...</div>
+  <div ng-if="loading" translate>wait_data_loading</div>
+  <div ng-if="!searchRectangle" translate>inform_draw_rectangl_ctrl</div>
   <ul>
     <li ng-repeat="(key, layer) in tree">
       <a ng-click="layer.open = !layer.open">
