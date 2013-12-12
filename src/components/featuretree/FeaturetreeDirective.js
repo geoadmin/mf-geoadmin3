@@ -12,7 +12,6 @@
 
   /**
    * TODOs:
-   * - number of found items per layer
    * - change cursor on hover (clickable..)
    * - react on changes in layer selection
    * - rectangle drawing always active. auto-open accordion
@@ -151,7 +150,7 @@
 
                   if (!angular.isDefined(newNode)) {
                     newNode = {
-                      label: gaLayers.getLayer(layerId).label,
+                      label: '',
                       features: [],
                       open: oldNode ? oldNode.open : false
                     };
@@ -160,7 +159,7 @@
 
                   //look if feature exists already. We do this
                   //to avoid loading the same feature again and
-                  //again
+                  //to preserve state (selected)
                   if (oldNode) {
                     for (j = 0, lj = oldNode.features.length; j < lj; j++) {
                       oldFeature = oldNode.features[j];
@@ -182,6 +181,20 @@
                   }
                   newNode.features.push(feature);
                 }
+                //assure that label contains number of items
+                angular.forEach(tree, function(value, key) {
+                  var l = gaLayers.getLayer(layerId).label +
+                          ' (' + value.features.length + ' ' +
+                          getItemText(value.features.length) + ')';
+                  value.label = l;
+
+                  function getItemText(number) {
+                    if (number <= 1) {
+                      return $translate('item');
+                    }
+                    return $translate('items');
+                  }
+                });
               }
               scope.tree = tree;
             };
