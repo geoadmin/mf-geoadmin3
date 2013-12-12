@@ -142,6 +142,34 @@ Example
 
 - Get the feature with the ID 342 belonging to ch.bafu.bundesinventare-bln: `https://api3.geo.admin.ch/rest/services/api/MapServer/ch.bafu.bundesinventare-bln/362 <../../../rest/services/api/MapServer/ch.bafu.bundesinventare-bln/362>`_
 
+.. _htmlpopup_description:
+
+Htmlpopup Resource
+------------------
+
+With an ID and a layer technical name, this service can be used to retrieve an html popup.
+
+URL
+^^^
+
+https://api3.geo.admin.ch/rest/services/api/MapServer/{layerID}/{featureID}/htmlpopup
+
+Input Parameters
+^^^^^^^^^^^^^^^^
+
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| Parameters                        | Description                                                                               |
++===================================+===========================================================================================+
+| lang (optional)                   | The language in which you want the metadata. "de" (default)                               |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| callback (optional)               | The name of the callback function.                                                        |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+
+Example
+^^^^^^^
+
+- Get the html popup with the ID 342 belonging to ch.bafu.bundesinventare-bln: `https://api3.geo.admin.ch/rest/services/api/MapServer/ch.bafu.bundesinventare-bln/362/htmlpopup <../../../rest/services/api/MapServer/ch.bafu.bundesinventare-bln/362/htmlpopup>`_
+
 .. _search_description:
 
 Search
