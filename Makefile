@@ -20,21 +20,22 @@ help:
 	@echo
 	@echo "Possible targets:"
 	@echo
-	@echo "- prod         Build app for prod (/prd)"
-	@echo "- dev          Build app for dev (/src)"
-	@echo "- lint         Run the linter"
-	@echo "- testdev      Run the JavaScript tests in dev mode"
-	@echo "- testprod     Run the JavaScript tests in prod mode"
-	@echo "- apache       Configure Apache (restart required)"
-	@echo "- fixrights    Fix rights in common folder"
-	@echo "- all          All of the above (target to run prior to creating a PR)"
-	@echo "- clean        Remove generated files"
-	@echo "- cleanrc      Remove all rc_* dependent files"
-	@echo "- cleanall     Remove all the build artefacts"
-	@echo "- deploybranch Deploys current branch (note: takes code from github)"
-	@echo "- updateol     Update ol.js, ol-simple.js and ol-whitespace.js"
-	@echo "- translate    Generate the translation files (requires db user pwd in ~/.pgpass: dbServer:dbPort:*:dbUser:dbUserPwd)"
-	@echo "- help         Display this help"
+	@echo "- prod            Build app for prod (/prd)"
+	@echo "- dev             Build app for dev (/src)"
+	@echo "- lint            Run the linter"
+	@echo "- testdev         Run the JavaScript tests in dev mode"
+	@echo "- testprod        Run the JavaScript tests in prod mode"
+	@echo "- apache          Configure Apache (restart required)"
+	@echo "- fixrights       Fix rights in common folder"
+	@echo "- all             All of the above (target to run prior to creating a PR)"
+	@echo "- clean           Remove generated files"
+	@echo "- cleanrc         Remove all rc_* dependent files"
+	@echo "- cleanall        Remove all the build artefacts"
+	@echo "- deploybranch    Deploys current branch to test (note: takes code from github)"
+	@echo "- deploybranchint Deploys current branch to test and int (note: takes code from github)"
+	@echo "- updateol        Update ol.js, ol-simple.js and ol-whitespace.js"
+	@echo "- translate       Generate the translation files (requires db user pwd in ~/.pgpass: dbServer:dbPort:*:dbUser:dbUserPwd)"
+	@echo "- help            Display this help"
 	@echo
 	@echo "Variables:"
 	@echo
@@ -73,7 +74,11 @@ deploybranch: deploy/deploy-branch.cfg $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/con
 	make preparebranch SERVICE_URL=//mf-chsdi3.dev.bgdi.ch; \
 	cp scripts/00-$(GIT_BRANCH).conf /var/www/vhosts/mf-geoadmin3/conf; \
 	bash -c "source rc_branch && make all";
-#	sudo -u deploy deploy -r deploy/deploy-branch.cfg int
+
+.PHONY: deploybranchint
+deploybranchint: deploybranch
+	cd $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH); \
+	sudo -u deploy deploy -r deploy/deploy-branch.cfg int;
 
 .PHONY: preparebranch
 preparebranch: cleanrc rc_branch scripts/00-$(GIT_BRANCH).conf
