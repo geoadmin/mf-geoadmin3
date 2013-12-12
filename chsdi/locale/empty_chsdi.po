@@ -1,3 +1,5 @@
+msgid "ch.swisstopo.hangneigung-ueber_30"
+msgstr ""
 
 msgid "tt_bildstreifen_ebkey"
 msgstr ""

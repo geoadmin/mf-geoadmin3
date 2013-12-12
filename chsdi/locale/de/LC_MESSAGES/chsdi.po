@@ -1602,6 +1602,9 @@ msgstr "Kantonsgrenzen GG25"
 msgid "ch.swisstopo.gg25-land-flaeche.fill"
 msgstr "Landesgrenzen GG25"
 
+msgid "ch.swisstopo.hangneigung-ueber_30"
+msgstr "Hangneigungen ab 30°"
+
 msgid "ch.swisstopo.hiks-dufour"
 msgstr "Dufourkarte Erstausgabe"
 
@@ -1704,10 +1707,10 @@ msgid "ch.swisstopo.swissimage"
 msgstr "Luftbild"
 
 msgid "ch.swisstopo.swisstlm3d-karte-farbe"
-msgstr "Topo. Landschaftsmodell"
+msgstr "Karte swissTLM (farbig)"
 
 msgid "ch.swisstopo.swisstlm3d-karte-grau"
-msgstr "Topo. Landschaftsmodell"
+msgstr "Karte swissTLM (grau)"
 
 msgid "ch.swisstopo.swisstlm3d-wanderwege"
 msgstr "Wanderwege"
