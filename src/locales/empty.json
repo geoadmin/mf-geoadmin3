@@ -166,5 +166,10 @@
   "compare": "",
   "swipe_active": "",
   "swipe_inactive": "",
-  "not_enough_layer_for_swipe"
+  "not_enough_layer_for_swipe": "",
+  "graticule": "",
+  "wait_data_loading": "",
+  "inform_draw_rectangl_ctrl": "",
+  "item": "",
+  "items": ""
 }
