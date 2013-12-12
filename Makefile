@@ -32,7 +32,6 @@ help:
 	@echo "- cleanrc      Remove all rc_* dependent files"
 	@echo "- cleanall     Remove all the build artefacts"
 	@echo "- deploybranch Deploys current branch (note: takes code from github)"
-	@echo "- deploybranchold Deploys current branch, deploy to old infra..."
 	@echo "- updateol     Update ol.js, ol-simple.js and ol-whitespace.js"
 	@echo "- translate    Generate the translation files (requires db user pwd in ~/.pgpass: dbServer:dbPort:*:dbUser:dbUserPwd)"
 	@echo "- help         Display this help"
@@ -65,14 +64,6 @@ testprod: prd/lib/build.js test/karma-conf-prod.js node_modules
 
 .PHONY: apache
 apache: apache/app.conf
-
-.PHONY: deploybranchold
-deploybranch: deploy/deploy-branch.cfg $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/config
-	cd $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH); \
-	git checkout $(GIT_BRANCH); \
-	git pull; \
-	bash -c "source rc_dev_old && make all"; \
-	sudo -u deploy deploy -r deploy/deploy-branch.cfg ab
 
 .PHONY: deploybranch
 deploybranch: deploy/deploy-branch.cfg $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/config
