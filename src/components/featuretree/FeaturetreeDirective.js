@@ -47,7 +47,8 @@
             var dragBox = new ol.render.DragBox();
             var selectLayer = createVectorLayer('highlight');
             var rectangleLayer = createVectorLayer('lightselect');
-            var firstPoint, searchRectangle;
+            var firstPoint;
+            scope.searchRectangle = undefined;
             rectangleLayer.invertedOpacity = 0.25;
             map.addLayer(selectLayer);
 
@@ -176,14 +177,6 @@
               scope.tree = tree;
             };
 
-            var getSearchExtent = function() {
-              if (angular.isDefined(searchRectangle)) {
-                return ol.extent.boundingExtent(
-                    searchRectangle.getCoordinates());
-              }
-              return view.calculateExtent(map.getSize());
-            };
-
             var getUrlAndParameters = function(layersToQuery, extent) {
               var url = scope.options.searchUrlTemplate,
                   params = {
@@ -203,8 +196,10 @@
               var layersToQuery = getLayersToQuery(),
                   req, searchExtent;
               selectLayer.getSource().clear();
-              if (layersToQuery.length) {
-                searchExtent = getSearchExtent();
+              if (layersToQuery.length &&
+                  angular.isDefined(scope.searchRectangle)) {
+                searchExtent = ol.extent.boundingExtent(
+                     scope.searchRectangle.getCoordinates());
                 req = getUrlAndParameters(layersToQuery, searchExtent);
 
                 scope.loading = true;
@@ -309,12 +304,6 @@
               gaRecenterMapOnFeatures(map, recenterObject);
             };
 
-            view.on('change', function() {
-              if (!angular.isDefined(searchRectangle)) {
-                triggerChange();
-              }
-            });
-
             scope.$on('gaTopicChange', function(event, topic) {
               currentTopic = topic.id;
             });
@@ -331,7 +320,7 @@
 
             var updateRectangle = function(evt) {
               var coordinate = evt.getCoordinate();
-              searchRectangle.setCoordinates([
+              scope.searchRectangle.setCoordinates([
                 [firstPoint[0], firstPoint[1]],
                 [firstPoint[0], coordinate[1]],
                 [coordinate[0], coordinate[1]],
@@ -348,11 +337,11 @@
                 dragBox.setCoordinates(firstPoint, firstPoint);
                 dragBox.setMap(map);
                 //make sure searchRectangle exists
-                if (!angular.isDefined(searchRectangle)) {
-                  searchRectangle = new ol.geom.LineString([
+                if (!angular.isDefined(scope.searchRectangle)) {
+                  scope.searchRectangle = new ol.geom.LineString([
                     firstPoint]);
                   rectangleLayer.getSource().addFeature(
-                      new ol.Feature(searchRectangle));
+                      new ol.Feature(scope.searchRectangle));
                 }
               }
             });
