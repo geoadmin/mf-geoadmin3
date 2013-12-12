@@ -91,7 +91,9 @@ def main(global_config, **settings):
     config.add_static_view('static/css', 'chsdi:static/css', cache_max_age=datetime.timedelta(days=365))
     config.add_static_view('static/js', 'chsdi:static/js', cache_max_age=datetime.timedelta(days=365))
     config.add_static_view('img', 'chsdi:static/images', cache_max_age=3600)
+    config.add_static_view('examples', 'chsdi:static/doc/examples')
     # Static view for sphinx
     config.add_static_view('/', 'chsdi:static/doc/build', cache_max_age=3600)
+    
 
     return config.make_wsgi_app()
