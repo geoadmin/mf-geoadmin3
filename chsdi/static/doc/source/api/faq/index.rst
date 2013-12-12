@@ -91,6 +91,8 @@ Here is a list of all the freely accessible layers:
 What mean the permalink parameters ?
 ------------------------------------
 
+The permalink parameters are used in map.geo.admin.ch. The JavaScript API doesn't support the pemalink parameters.
+
 ===================            ==========================================================    =========================================================
 Parameter                      Description                                                    Example
 ===================            ==========================================================    =========================================================
