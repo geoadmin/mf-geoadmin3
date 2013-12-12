@@ -16,6 +16,8 @@ Input Parameters
 Only RESTFul interface is available.
 
 +-----------------------------------+-------------------------------------------------------------------------------------------+
+| Parameters                        | Description                                                                               |
++===================================+===========================================================================================+
 | searchText (optional)             | The text to search for in the layer description.                                          |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | lang (optional)                   | The language in which you want the metadata. "de" (default)                               |
@@ -28,6 +30,22 @@ Examples
 
 - List all the layers available in the API: `https://api3.geo.admin.ch/rest/services/api/MapServer <../../../rest/services/api/MapServer>`_
 - List all the layers available in the API where the word "wasser" is found in their description: `https://api3.geo.admin.ch/rest/services/api/MapServer?searchText=wasser <../../../rest/services/api/MapServer?searchText=wasser>`_
+
+.. _identify_description:
+
+Identify features
+-----------------
+
+This service can be used to discover features at a specific location.
+
+URL
+^^^
+
+https://api3.geo.admin.ch/rest/services/api/MapServer/identify
+
+Input Parameters
+^^^^^^^^^^^^^^^^
+
 
 .. _search_description:
 
@@ -63,9 +81,10 @@ Input parameters
 
 Only RESTFul interface is available.
 
-+-------------------------------------------------------------------------------------------------------------------------------+
-| Location Search                                                                                                               |
-|                                                                                                                               |
+**Location Search**
+
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| Parameters                        | Description                                                                               |
 +===================================+===========================================================================================+
 | searchText (required)             | The text to search for.                                                                   |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
@@ -79,10 +98,10 @@ Only RESTFul interface is available.
 | callback (optional)               | The name of the callback function.                                                        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 
+**Layer Search**
 
 +-----------------------------------+-------------------------------------------------------------------------------------------+
-| Layer Search                                                                                                                  |
-|                                                                                                                               |
+| Parameters                        | Description                                                                               |
 +===================================+===========================================================================================+
 | searchText (required)             | The text to search for.                                                                   |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
@@ -93,9 +112,10 @@ Only RESTFul interface is available.
 | callback (optional)               | The name of the callback function.                                                        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 
-+-------------------------------------------------------------------------------------------------------------------------------+
-| Feature Search                                                                                                                |
-|                                                                                                                               |
+**Feature Search**
+
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| Parameters                        | Description                                                                               |
 +===================================+===========================================================================================+
 | type (required)                   | The type of search one wants to perform. Specify “features” to perform a feature search.  |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
