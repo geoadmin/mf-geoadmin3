@@ -670,6 +670,14 @@
           return !layer.background &&
                  !layer.preview &&
                  !layer.highlight;
+        },
+        /**
+         * Filters out preview layers and highlight
+         * layers and drawing layers.
+         */
+        permanentLayersFilter: function(layer) {
+          return !layer.preview &&
+                 !layer.highlight;
         }
       };
     };
