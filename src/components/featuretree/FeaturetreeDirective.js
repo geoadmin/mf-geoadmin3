@@ -38,6 +38,7 @@
             var currentTopic;
             var timeoutPromise = null;
             var canceler = null;
+            var prevFeature = {};
             var map = scope.map;
             var view = map.getView();
             var viewport = $(map.getViewport());
@@ -163,6 +164,7 @@
                     feature = {
                       info: '',
                       geometry: null,
+                      selected: false,
                       id: result.attrs.id,
                       layer: layerId,
                       label: result.attrs.label
@@ -268,13 +270,13 @@
                   }
                 }).success(function(result) {
                   feature.geometry = result.feature;
-                  cb(feature.geometry);
+                  cb();
                 }).error(function() {
                   feature.geometry = null;
-                  cb(null);
+                  cb();
                 });
               } else {
-                cb(feature.geometry);
+                cb();
               }
             };
 
@@ -282,8 +284,8 @@
             scope.tree = {};
 
             scope.selectFeatureInMap = function(feature) {
-              loadGeometry(feature, function(geometry) {
-                drawGeometry(geometry, selectLayer);
+              loadGeometry(feature, function() {
+                drawGeometry(feature.geometry, selectLayer);
               });
             };
 
@@ -292,8 +294,11 @@
             };
 
             scope.showTooltip = function(feature) {
-              loadGeometry(feature, function(geometry) {
-                $rootScope.$broadcast('gaTriggerTooltipRequest', geometry);
+              prevFeature.selected = false;
+              prevFeature = feature;
+              feature.selected = true;
+              loadGeometry(feature, function() {
+                $rootScope.$broadcast('gaTriggerTooltipRequest', feature);
               });
             };
 
