@@ -46,6 +46,43 @@ https://api3.geo.admin.ch/rest/services/api/MapServer/identify
 Input Parameters
 ^^^^^^^^^^^^^^^^
 
+No more than 50 features can be retrieved per request.
+
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| Parameters                        | Description                                                                               |
++===================================+===========================================================================================+
+| geometry (required)               | The geometry to identify on. The geometry is specified by the geometry type.              |
+|                                   | This parameter is specified as a separated list of coordinates.                           |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| geometryType (required)           | The type of geometry to identify on. Possible values are:                                 |
+|                                   | esriGeometryPoint or esriGeometryPolyline or esriGeometryPolygon or esriGeometryEnvelope  |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| layers (optional)                 | The layers to perform the identify operation on. Per default query all the layers in the  |
+|                                   | API. Notation: all:"comma separated list of techincal layer names"                        |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| mapExtent (required)              | The extent of the map. (minX, minY, maxX, maxY)                                           |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| imageDisplay (required)           | The screen image display parameters (width, height, and dpi) of the map.                  |
+|                                   | API dpi is 96.                                                                            |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| tolerance (required)              | The tolerance in pixels around the specified geometry. (Used to create the buffer)        |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| returnGeometry (optional)         | This parameter defines whether the geometry is returned or not. Default to "true".        |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| geometryFormat (optional)         | Default to ESRI geometry format. Possible values are: "esrijson" or "geojson".            |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| lang (optional)                   | The language in which you want the metadata. "de" (default)                               |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| callback (optional)               | The name of the callback function.                                                        |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+
+Examples
+^^^^^^^^
+
+- Identify all the features belonging to ch.bafu.bundesinventare-bln using a tolerance of 5 pixels around a point: `https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryPoint&geometry=653246,173129&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=5&layers=all:ch.bafu.bundesinventare-bln <../../../rest/services/api/MapServer/identify?geometryType=esriGeometryPoint&geometry=653246,173129&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=5&layers=all:ch.bafu.bundesinventare-bln>`_
+- Identify all the features belonging to ch.bfs.arealstatistik-1985 using an enveloppe (or bounding box): `https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985 <../../../rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985>`_
+- Same request than above but returned geometry format is GeoJSON: `https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985&geometryFormat=geojson <../../../rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985&geometryFormat=geojson>`_
+- Same request than above but geometry is not returned: `https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985&returnGeometry=false <../../../rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985&returnGeometry=false>`_
 
 .. _search_description:
 
