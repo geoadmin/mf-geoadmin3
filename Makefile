@@ -12,7 +12,7 @@ LESS_PARAMETERS ?= '-ru'
 VERSION := $(shell date '+%s')/
 GIT_BRANCH := $(shell git rev-parse --symbolic-full-name --abbrev-ref HEAD)
 GIT_LAST_BRANCH := $(shell if [ -f .build-artefacts/last-git-branch ]; then cat .build-artefacts/last-git-branch 2> /dev/null; else echo 'dummy'; fi)
-DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branches
+DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branch
 
 .PHONY: help
 help:
@@ -70,8 +70,13 @@ deploybranch: deploy/deploy-branch.cfg $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/con
 	cd $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH); \
 	git checkout $(GIT_BRANCH); \
 	git pull; \
-	bash -c "source rc_dev && make all"; \
-	sudo -u deploy deploy -r deploy/deploy-branch.cfg int
+	make preparebranch; \
+	cp scripts/00-$(GIT_BRANCH).conf /var/www/vhosts/mf-geoadmin3/conf
+	bash -c "source rc_branch && make all";
+#	sudo -u deploy deploy -r deploy/deploy-branch.cfg int
+
+.PHONY: preparebranch
+preparebranch: rc_branch scripts/00-$(GIT_BRANCH).conf
 
 .PHONY: updateol
 updateol: OL_JS = ol.js ol-simple.js ol-whitespace.js
@@ -219,6 +224,12 @@ $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/config:
 	git clone https://github.com/geoadmin/mf-geoadmin3 $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)
 
 deploy/deploy-branch.cfg: deploy/deploy-branch.mako.cfg .build-artefacts/last-git-branch .build-artefacts/python-venv/bin/mako-render
+	.build-artefacts/python-venv/bin/mako-render --var "git_branch=$(GIT_BRANCH)" $< > $@
+
+rc_branch: rc_branch.mako .build-artefacts/last-git-branch .build-artefacts/python-venv/bin/mako-render
+	.build-artefacts/python-venv/bin/mako-render --var "base_url=$(GIT_BRANCH)" $< > $@
+
+scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf .build-artefacts/last-git-branch .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "git_branch=$(GIT_BRANCH)" $< > $@
 
 .build-artefacts/last-git-branch::
