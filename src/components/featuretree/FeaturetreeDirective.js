@@ -10,6 +10,15 @@
     'pascalprecht.translate'
   ]);
 
+  /**
+   * TODOs:
+   * - number of found items per layer
+   * - change cursor on hover (clickable..)
+   * - react on changes in layer selection
+   * - rectangle drawing always active. auto-open accordion
+   * - translations
+   **/
+
   module.directive('gaFeaturetree',
       function($rootScope, $compile, $timeout, $http, $q, $translate, $sce,
                gaLayers, gaDefinePropertiesForLayer, gaStyleFunctionFactory, 
