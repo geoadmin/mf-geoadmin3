@@ -70,7 +70,7 @@ def main(global_config, **settings):
     config.add_route('layersconfig', '/rest/services/{map}/MapServer/layersconfig')
     config.add_route('catalog', '/rest/services/{map}/CatalogServer')
     config.add_route('identify', '/rest/services/{map}/MapServer/identify')
-    config.add_route('getlegend', '/rest/services/{map}/MapServer/{idlayer}/getlegend')
+    config.add_route('legend', '/rest/services/{map}/MapServer/{idlayer}/legend')
     config.add_route('getfeature', '/rest/services/{map}/MapServer/{idlayer}/{idfeature}')
     config.add_route('htmlpopup', '/rest/services/{map}/MapServer/{idlayer}/{idfeature}/htmlpopup')
     config.add_route('extendedhtmlpopup', '/rest/services/{map}/MapServer/{idlayer}/{idfeature}/extendedhtmlpopup')

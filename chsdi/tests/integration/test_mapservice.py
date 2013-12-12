@@ -172,20 +172,20 @@ class TestMapServiceView(TestsBase):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362/extendedhtmlpopup', status=404)
 
     def test_getlegend_valid(self):
-        resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/getlegend', status=200)
+        resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/legend', status=200)
         self.failUnless(resp.content_type == 'text/html')
         resp.mustcontain('<div class="legend-header">')
 
     def test_getlegend_valid_all(self):
-        resp = self.testapp.get('/rest/services/all/MapServer/ch.bafu.bundesinventare-bln/getlegend', status=200)
+        resp = self.testapp.get('/rest/services/all/MapServer/ch.bafu.bundesinventare-bln/legend', status=200)
         self.failUnless(resp.content_type == 'text/html')
         resp.mustcontain('<div class="legend-header">')
 
     def test_getlegend_wrong_layer_id(self):
-        resp = self.testapp.get('/rest/services/ech/MapServer/dummylayer/getlegend', status=404)
+        resp = self.testapp.get('/rest/services/ech/MapServer/dummylayer/legend', status=404)
 
     def test_getlegend_valid_with_callback(self):
-        resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/getlegend', params={'callback': 'cb'}, status=200)
+        resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/legend', params={'callback': 'cb'}, status=200)
         self.failUnless(resp.content_type == 'application/javascript')
 
     def test_layersconfig_valid(self):
