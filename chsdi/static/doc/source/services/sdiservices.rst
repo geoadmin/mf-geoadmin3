@@ -1,3 +1,89 @@
+.. _search_description:
+
+Search
+------
+
+The search service can be used to search for locations, layers or features.
+
+URL
+^^^
+
+https://api3.geo.admin.ch/rest/services/api/SearchServer
+
+Description
+^^^^^^^^^^^
+
+The search service is separated in 3 different categories or types:
+
+* The **location search** which is composed of the following geocoded locations:
+
+  * Cantons, Cities and communes
+  * All names as printed on the national map (`SwissNames <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/products/landscape/toponymy.html>`_)
+  * The districts
+  * The ZIP codes
+  * The addresses
+  * The cadastral parcels
+  * And optionally features belonging to a specified layer. The search is here performed within the attribute information of a layer using a search text.
+* The **layer search** wich enables the search of layers belonging to the API.
+* The **feature search** which is designed to efficiently discover the features of a layer based on an geographic extent.
+
+Input parameters
+^^^^^^^^^^^^^^^^
+
+Only RESTFul interface is available.
+
++-------------------------------------------------------------------------------------------------------------------------------+
+| Location Search                                                                                                               |
+|                                                                                                                               |
++===================================+===========================================================================================+
+| searchText (required)             | The text to search for.                                                                   |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| type (required)                   | The type of search one wants to perform. Specify “locations” to perform a location search.|
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| features (optional)               | A comma separated list of technical layer names.                                          |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| bbox (optional)                   | A comma separated list of 4 coordinates representing the bounding box on which features   |
+|                                   | should be filtered. (SRID: 21781)                                                         |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| callback (optional)               | The name of the callback function.                                                        |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+
+
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| Layer Search                                                                                                                  |
+|                                                                                                                               |
++===================================+===========================================================================================+
+| searchText (required)             | The text to search for.                                                                   |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| type (required)                   | The type of search one wants to perform. Specify “layers” to perform a layer search.      |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| lang (optional)                   | The lang in which the layers are searched. “de” (default)                                 |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| callback (optional)               | The name of the callback function.                                                        |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+
++-------------------------------------------------------------------------------------------------------------------------------+
+| Feature Search                                                                                                                |
+|                                                                                                                               |
++===================================+===========================================================================================+
+| type (required)                   | The type of search one wants to perform. Specify “features” to perform a feature search.  |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| bbox (optional)                   | A comma separated list of 4 coordinates representing the bounding box on which features   |
+|                                   | should be filtered. (SRID: 21781)                                                         |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| features (optional)               | A comma separated list of technical layer names.                                          |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| callback (optional)               | The name of the callback function.                                                        |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+
+Examples
+^^^^^^^^
+
+- Look for locations matching the word “wabern”: `https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=wabern&type=locations <../../../rest/services/api/SearchServer?searchText=wabern&type=locations>`_
+- Look for locations and features matching the word “vd 446” (only features are filtered within the bbox are returned): `https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=vd 446&features=ch.astra.ivs-reg_loc&type=locations&bbox=551306.5625,167918.328125,551754.125,168514.625 <../../../rest/services/api/SearchServer?searchText=vd 446&features=ch.astra.ivs-reg_loc&type=locations&bbox=551306.5625,167918.328125,551754.125,168514.625>`_
+- Look for layers in French matching the word “géoïde” in their description: `https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=géoïde&type=layers&lang=fr <../../../rest/services/api/SearchServer?searchText=géoïde&type=layers&lang=fr>`_ 
+- Look only for features belonging to the layer “ch.astra.ivs-reg_loc” (only using a bbox, no search text): `https://api3.geo.admin.ch/rest/services/api/SearchServer?features=ch.astra.ivs-reg_loc&type=features&bbox=551306.5625,167918.328125,551754.125,168514.625 <../../../rest/services/api/SearchServer?features=ch.astra.ivs-reg_loc&type=features&bbox=551306.5625,167918.328125,551754.125,168514.625>`_
+
 .. _wmts_description:
 
 WMTS
