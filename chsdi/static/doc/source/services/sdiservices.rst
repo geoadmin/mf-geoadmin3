@@ -1,3 +1,34 @@
+.. _metatdata_description:
+
+Layers Metadata
+---------------
+
+This service provides metatdata for the available geographical layers available in the API.
+
+URL
+^^^
+
+https://api3.geo.admin.ch/rest/services/api/MapServer
+
+Input Parameters
+^^^^^^^^^^^^^^^^
+
+Only RESTFul interface is available.
+
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| searchText (optional)             | The text to search for in the layer description.                                          |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| lang (optional)                   | The language in which you want the metadata. "de" (default)                               |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| callback (optional)               | The name of the callback function.                                                        |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+
+Examples
+^^^^^^^^
+
+- List all the layers available in the API: `https://api3.geo.admin.ch/rest/services/api/MapServer <../../../rest/services/api/MapServer>`_
+- List all the layers available in the API where the word "wasser" is found in their description: `https://api3.geo.admin.ch/rest/services/api/MapServer?searchText=wasser <../../../rest/services/api/MapServer?searchText=wasser>`_
+
 .. _search_description:
 
 Search
