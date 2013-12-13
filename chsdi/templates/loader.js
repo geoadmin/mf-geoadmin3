@@ -17,13 +17,7 @@ conf = """function getConfig(){ return %s } """ %json.dumps(json.loads(f.read())
 %>
 
 (function() {
-document.write(
-  '<scr' + 'ipt type="text/javascript">' +
-    'if (!window.GeoAdmin) {' +
-       'window.GeoAdmin = {};' +
-    '}' +
-    'window.GeoAdmin.lang = "${lang}";' +
-  '</scr' + 'ipt>');
+window.onload = function(){ ga.lang = "${lang}";};
 // Load css
 document.write('<link rel="stylesheet" type="text/css" href="' + "${h.versioned(request.static_url('chsdi:static/css/ga.css'))}" + '" />');
 // Load js
