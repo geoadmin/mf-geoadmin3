@@ -10,8 +10,5 @@ GeoAdmin Examples
 OpenLayers Examples
 ~~~~~~~~~~~~~~~~~~~
 
-All OpenLayers 3 examples are supposed to work with the GeoAdmin API. `OpenLayers 3 Examples <http://ol3js.org/en/master/examples/>`_.
-
-The OpenLayers 3 documentation is available `here <http://ol3js.org/>`_.
-
-The GeoAdmin API uses the master branch of `OpenLayers 3 <https://github.com/openlayers/ol3/tree/master>`_.
+- `OpenLayers 3 Examples <http://ol3js.org/en/master/examples/>`_. All OpenLayers 3 examples are supposed to work with the GeoAdmin API. 
+  
