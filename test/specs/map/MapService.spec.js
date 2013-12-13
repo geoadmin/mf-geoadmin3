@@ -10,17 +10,15 @@ describe('ga_map_service', function() {
       inject(function($injector) {
         $httpBackend = $injector.get('$httpBackend');
         $httpBackend.whenGET(expectedUrl).respond({
-          layers: {
-            foo: {
-              type: 'wmts',
-              matrixSet: 'set1',
-              timestamps: ['t1', 't2']
-            },
-            bar: {
-              type: 'wmts',
-              matrixSet: 'set2',
-              timestamps: ['t3', 't4']
-            }
+          foo: {
+            type: 'wmts',
+            matrixSet: 'set1',
+            timestamps: ['t1', 't2']
+          },
+          bar: {
+            type: 'wmts',
+            matrixSet: 'set2',
+            timestamps: ['t3', 't4']
           }
         });
       });

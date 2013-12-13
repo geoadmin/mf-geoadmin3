@@ -432,7 +432,7 @@
           var url = getLayersConfigUrl(topicId, lang);
 
           var promise = $http.get(url).then(function(response) {
-            layers = response.data.layers;
+            layers = response.data;
           }, function(response) {
             layers = undefined;
           });
