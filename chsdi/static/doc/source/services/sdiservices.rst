@@ -86,14 +86,14 @@ No more than 50 features can be retrieved per request.
 |                                   | esriGeometryPoint or esriGeometryPolyline or esriGeometryPolygon or esriGeometryEnvelope  |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | layers (optional)                 | The layers to perform the identify operation on. Per default query all the layers in the  |
-|                                   | API. Notation: all:"comma separated list of techincal layer names"                        |
+|                                   | GeoAdmin API. Notation: all:"comma separated list of techincal layer names"               |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | mapExtent (required)              | The extent of the map. (minX, minY, maxX, maxY)                                           |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | imageDisplay (required)           | The screen image display parameters (width, height, and dpi) of the map.                  |
-|                                   | API dpi is 96.                                                                            |
+|                                   | GeoAdmin API dpi is 96.                                                                   |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
-| tolerance (required)              | The tolerance in pixels around the specified geometry. (Used to create the buffer)        |
+| tolerance (required)              | The tolerance in pixels around the specified geometry (used to create the buffer)         |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | returnGeometry (optional)         | This parameter defines whether the geometry is returned or not. Default to "true".        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
@@ -147,7 +147,7 @@ Example
 Htmlpopup Resource
 ------------------
 
-With an ID and a layer technical name, this service can be used to retrieve an html popup.
+With an ID and a layer technical name, this service can be used to retrieve an html popup. An html popup is an html formatted representation of the textual information about the feature.
 
 URL
 ^^^
@@ -193,7 +193,7 @@ The search service is separated in 3 different categories or types:
   * All names as printed on the national map (`SwissNames <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/products/landscape/toponymy.html>`_)
   * The districts
   * The ZIP codes
-  * The addresses
+  * The addresses (!! the swiss cantons only allow websites of the federal governement to use the addresses search service !!)
   * The cadastral parcels
   * And optionally features belonging to a specified layer. The search is here performed within the attribute information of a layer using a search text.
 * The **layer search** wich enables the search of layers belonging to the API.
@@ -211,7 +211,7 @@ Only RESTFul interface is available.
 +===================================+===========================================================================================+
 | searchText (required)             | The text to search for.                                                                   |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
-| type (required)                   | The type of search one wants to perform. Specify “locations” to perform a location search.|
+| type (required)                   | The type of performed search. Specify “locations” to perform a location search.           |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | features (optional)               | A comma separated list of technical layer names.                                          |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
@@ -228,7 +228,7 @@ Only RESTFul interface is available.
 +===================================+===========================================================================================+
 | searchText (required)             | The text to search for.                                                                   |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
-| type (required)                   | The type of search one wants to perform. Specify “layers” to perform a layer search.      |
+| type (required)                   | The type of performed search.  Specify “layers” to perform a layer search.                |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | lang (optional)                   | The language metadata. Possible values: de (default), fr, it, rm, en                      |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
@@ -240,7 +240,7 @@ Only RESTFul interface is available.
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | Parameters                        | Description                                                                               |
 +===================================+===========================================================================================+
-| type (required)                   | The type of search one wants to perform. Specify “features” to perform a feature search.  |
+| type (required)                   | The type of performed search. Specify “features” to perform a feature search.             |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | bbox (optional)                   | A comma separated list of 4 coordinates representing the bounding box on which features   |
 |                                   | should be filtered. (SRID: 21781)                                                         |
@@ -253,10 +253,10 @@ Only RESTFul interface is available.
 Examples
 ^^^^^^^^
 
-- Look for locations matching the word “wabern”: `https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=wabern&type=locations <../../../rest/services/api/SearchServer?searchText=wabern&type=locations>`_
-- Look for locations and features matching the word “vd 446” (only features are filtered within the bbox are returned): `https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=vd 446&features=ch.astra.ivs-reg_loc&type=locations&bbox=551306.5625,167918.328125,551754.125,168514.625 <../../../rest/services/api/SearchServer?searchText=vd 446&features=ch.astra.ivs-reg_loc&type=locations&bbox=551306.5625,167918.328125,551754.125,168514.625>`_
-- Look for layers in French matching the word “géoïde” in their description: `https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=géoïde&type=layers&lang=fr <../../../rest/services/api/SearchServer?searchText=géoïde&type=layers&lang=fr>`_ 
-- Look only for features belonging to the layer “ch.astra.ivs-reg_loc” (only using a bbox, no search text): `https://api3.geo.admin.ch/rest/services/api/SearchServer?features=ch.astra.ivs-reg_loc&type=features&bbox=551306.5625,167918.328125,551754.125,168514.625 <../../../rest/services/api/SearchServer?features=ch.astra.ivs-reg_loc&type=features&bbox=551306.5625,167918.328125,551754.125,168514.625>`_
+- Search for locations matching the word “wabern”: `https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=wabern&type=locations <../../../rest/services/api/SearchServer?searchText=wabern&type=locations>`_
+- Search for locations and features matching the word “vd 446” (only features are filtered within the bbox are returned): `https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=vd 446&features=ch.astra.ivs-reg_loc&type=locations&bbox=551306.5625,167918.328125,551754.125,168514.625 <../../../rest/services/api/SearchServer?searchText=vd 446&features=ch.astra.ivs-reg_loc&type=locations&bbox=551306.5625,167918.328125,551754.125,168514.625>`_
+- Search for layers in French matching the word “géoïde” in their description: `https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=géoïde&type=layers&lang=fr <../../../rest/services/api/SearchServer?searchText=géoïde&type=layers&lang=fr>`_ 
+- Search only for features belonging to the layer “ch.astra.ivs-reg_loc” (only using a bbox, no search text): `https://api3.geo.admin.ch/rest/services/api/SearchServer?features=ch.astra.ivs-reg_loc&type=features&bbox=551306.5625,167918.328125,551754.125,168514.625 <../../../rest/services/api/SearchServer?features=ch.astra.ivs-reg_loc&type=features&bbox=551306.5625,167918.328125,551754.125,168514.625>`_
 
 .. _wmts_description:
 
