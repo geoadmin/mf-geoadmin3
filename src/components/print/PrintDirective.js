@@ -77,25 +77,94 @@
 
     };
 
-    // Transform the result of createLiteral function to an object
-    // usable by the print service
-    var transformToPrintLiteral = function(type, literal) {
+    // Transform a ol.style.Style to a print literal object
+    var transformToPrintLiteral = function(style) {
+      /**
+       * ol.style.Style properties:
+       *
+       *  fill: ol.style.Fill :
+       *    fill: String
+       *  image: ol.style.Image:
+       *    anchor: array[2]
+       *    rotation
+       *    size: array[2]
+       *    src: String
+       *  stroke: ol.style.Stroke:
+       *    color: String
+       *    lineCap
+       *    lineDash
+       *    lineJoin
+       *    miterLimit
+       *    width: Number
+       *  text
+       *  zIndex
+       */
 
-      if (type === ol.geom.GeometryType.LINESTRING ||
-          type === ol.geom.GeometryType.MULTILINESTRING) {
-        literal.strokeWidth = literal.width;
-        literal.strokeColor = literal.color;
-        literal.strokeOpacity = literal.opacity;
+      /**
+       * Print server properties:
+       *
+       * fillColor
+       * fillOpacity
+       * strokeColor
+       * strokeOpacity
+       * strokeWidth
+       * strokeLinecap
+       * strokeDashstyle
+       * pointRadius
+       * label
+       * fontFamily
+       * fontSize
+       * fontWeight
+       * fontColor
+       * labelAlign
+       * labelOutlineColor
+       * labelOutlineWidth
+       * graphicHeight
+       * graphicOpacity
+       * graphicWidth
+       * graphicXOffset
+       * graphicYOffset
+       * zIndex
+       */
 
-      } else if (type === ol.geom.GeometryType.POINT ||
-          type === ol.geom.GeometryType.MULTIPOINT) {
-        literal.externalGraphic = literal.url;
-        literal.graphicHeight = literal.height;
-        literal.graphicOpacity = literal.opacity;
-        literal.graphicWidth = literal.width;
-        literal.graphicXOffset = literal.xOffset;
-        literal.graphicYOffset = literal.yOffset;
+      var literal = {
+        zIndex: style.zIndex
+      };
+
+      if (style.image) {
+        //literal.pointRadius = style.image.;
+        literal.rotation = style.image.rotation;
+        literal.externalGraphic = style.image.src_;
+        literal.graphicWidth = style.image.size[0];
+        literal.graphicHeight = style.image.size[1];
+        literal.graphicOpacity = style.image.opacity;
+        literal.graphicXOffset = style.image.anchor[0];
+        literal.graphicYOffset = style.image.anchor[1];
+
       }
+      if (style.stroke) {
+        literal.strokeWidth = style.stroke.width;
+        literal.strokeColor = style.stroke.color;
+        literal.strokeOpacity = style.stroke.opacity;
+        literal.strokeLinecap = style.stroke.lineCap;
+        literal.strokeDashstyle = style.stroke.lineDash;
+      }
+
+      if (style.fill) {
+        literal.fillColor = style.fill.color;
+        literal.fillOpacity = style.fill.opacity;
+      }
+
+      /*if (style.text) {
+        literal.label
+        literal.fontFamily
+        literal.fontSize
+        literal.fontWeight
+        literal.fontColor = style.text.color;
+        literal.labelAlign = style.text.;
+        literal.labelOutlineColor = style.text.;
+        literal.labelOutlineWidth = style.text.;
+      }*/
 
       return literal;
     };
@@ -130,39 +199,33 @@
           var enc = $scope.encoders.
               layers['Layer'].call(this, layer);
           var format = new ol.format.GeoJSON();
+          var encStyle = {};
           var encStyles = {};
           var encFeatures = [];
           var stylesDict = {};
           var styleId = 1;
 
           angular.forEach(features, function(feature) {
-            var encStyle = {};
             var geometry = feature.getGeometry();
-            var type = geometry ? geometry.getType() : null;
             var encJSON = format.writeFeature(feature);
             encJSON.properties._gx_style = styleId;
             encFeatures.push(encJSON);
-            var symbolizers = layer.getStyleFunction()(feature);
+            var styles =
+                //(feature.getStyleFunction()) ? feature.getStyleFunction()() :
+                  (layer.getStyleFunction()) ?
+                    layer.getStyleFunction()(feature) :
+                    ol.layer.Vector.defaultStyleFunction(feature);
 
-            if (symbolizers) {
-              var i = symbolizers.length;
+            if (styles) {
+              var i = styles.length;
               while (i--) {
-                var sym = symbolizers[i];
-                var literal = sym.createLiteral(feature);
-                if (literal) {
-                  literal = transformToPrintLiteral(type, literal);
-                  $.extend(encStyle, literal);
-                }
+                encStyle.id = styleId;
+                var literal = transformToPrintLiteral(styles[i]);
+                $.extend(encStyle, literal);
               }
-            } else {
-              var style = layer.get('style') || ol.style.getDefault();
-              var literals = style.createLiterals(feature);
-              encStyle = transformToPrintLiteral(type, literals[0]);
             }
 
-            encStyle.id = styleId;
             encStyles[styleId] = encStyle;
-
             styleId++;
           });
           angular.extend(enc, {
