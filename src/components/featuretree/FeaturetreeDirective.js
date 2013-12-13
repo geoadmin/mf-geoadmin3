@@ -12,7 +12,7 @@
 
   /**
    * TODOs:
-   * - change cursor on hover (clickable..)
+   * - blue rectangle instead of red
    * - react on changes in layer selection
    * - keyboard controls
    * - update ol3 to support dragbox (waitin on pr)
