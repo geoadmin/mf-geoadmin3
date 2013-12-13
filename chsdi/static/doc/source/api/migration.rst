@@ -10,7 +10,9 @@ You are therefore free to choose the JavaScript framework you want to use for th
 API Loader
 ~~~~~~~~~~
 
-Map & Layers
+As in previous version, the `API loader <http://api3.geo.admin.ch/loader.js>`_ loads all necessary CSS and JavaScript ressources. The loader is language dependent (?lang=fr parameter can be used, for example).
+
+Map & Layerr
 ~~~~~~~~~~~~
 
 
