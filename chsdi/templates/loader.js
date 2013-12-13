@@ -2,13 +2,7 @@
 
 <%
 mode = request.params.get('mode')
-lang = request.params.get('lang', None)
-AVAILABLE_LANGUAGES = request.registry.settings['available_languages']
-if lang is None and request.accept_language:
-    lang = request.accept_language.best_match(AVAILABLE_LANGUAGES, default_match='de')
-else:
-    lang = 'de'
-
+lang = request.params.get('lang')
 appUrl = request.application_url.replace('http:', request.scheme + ":")
 layersconfig = appUrl + '/rest/services/all/MapServer/layersconfig?lang=' + lang
 import urllib2, json

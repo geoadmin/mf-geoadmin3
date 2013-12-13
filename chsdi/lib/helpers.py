@@ -25,6 +25,8 @@ def locale_negotiator(request):
     if lang == 'rm':
         return 'fi'
     elif lang is None or lang not in languages:
+        if request.accept_language:
+            return request.accept_language.best_match(languages, 'de')
         # the default_locale_name configuration variable
         return get_locale_name(request)
     return lang
