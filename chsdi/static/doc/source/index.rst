@@ -34,6 +34,7 @@ JavaScript API
    :maxdepth: 1
 
    api/quickstart
+   api/doc
    api/faq/index
    api/examples
    api/migration
