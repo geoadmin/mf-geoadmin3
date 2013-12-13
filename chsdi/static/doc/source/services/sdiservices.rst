@@ -3,7 +3,7 @@
 Layers Metadata
 ---------------
 
-This service provides metatdata for the available layers in the API.
+This service provides metatdata for the available layers in the GeoAdmin API.
 
 URL
 ^^^
@@ -13,14 +13,14 @@ https://api3.geo.admin.ch/rest/services/api/MapServer
 Input Parameters
 ^^^^^^^^^^^^^^^^
 
-Only RESTFul interface is available.
+RESTFul interface is available.
 
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | Parameters                        | Description                                                                               |
 +===================================+===========================================================================================+
 | searchText (optional)             | The text to search for in the layer description.                                          |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
-| lang (optional)                   | The language in which you want the metadata. "de" (default)                               |
+| lang (optional)                   | The language metadata. Possible values: de (default), fr, it, rm, en                      |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | callback (optional)               | The name of the callback function.                                                        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
@@ -28,8 +28,8 @@ Only RESTFul interface is available.
 Examples
 ^^^^^^^^
 
-- List all the layers available in the API: `https://api3.geo.admin.ch/rest/services/api/MapServer <../../../rest/services/api/MapServer>`_
-- List all the layers available in the API where the word "wasser" is found in their description: `https://api3.geo.admin.ch/rest/services/api/MapServer?searchText=wasser <../../../rest/services/api/MapServer?searchText=wasser>`_
+- List all the layers available in the GeoAdmin API: `https://api3.geo.admin.ch/rest/services/api/MapServer <../../../rest/services/api/MapServer>`_
+- List all the layers available in the GeoAdmin API where the word "wasser" is found in their description: `https://api3.geo.admin.ch/rest/services/api/MapServer?searchText=wasser <../../../rest/services/api/MapServer?searchText=wasser>`_
 
 .. _legend_description:
 
@@ -49,7 +49,7 @@ Input Parameters
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | Parameters                        | Description                                                                               |
 +===================================+===========================================================================================+
-| lang (optional)                   | The language in which you want the metadata. "de" (default)                               |
+| lang (optional)                   | The language metadata. Possible values: de (default), fr, it, rm, en                      |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | callback (optional)               | The name of the callback function.                                                        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
@@ -99,7 +99,7 @@ No more than 50 features can be retrieved per request.
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | geometryFormat (optional)         | Default to ESRI geometry format. Possible values are: "esrijson" or "geojson".            |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
-| lang (optional)                   | The language in which you want the metadata. "de" (default)                               |
+| lang (optional)                   | The language metadata. Possible values: de (default), fr, it, rm, en                      |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | callback (optional)               | The name of the callback function.                                                        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
@@ -130,7 +130,7 @@ Input Parameters
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | Parameters                        | Description                                                                               |
 +===================================+===========================================================================================+
-| lang (optional)                   | The language in which you want the metadata. "de" (default)                               |
+| lang (optional)                   | The language metadata. Possible values: de (default), fr, it, rm, en                      |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | geometryFormat (optional)         | Default to ESRI geometry format. Possible values are: "esrijson" or "geojson".            |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
@@ -160,7 +160,7 @@ Input Parameters
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | Parameters                        | Description                                                                               |
 +===================================+===========================================================================================+
-| lang (optional)                   | The language in which you want the metadata. "de" (default)                               |
+| lang (optional)                   | The language metadata. Possible values: de (default), fr, it, rm, en                      |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | callback (optional)               | The name of the callback function.                                                        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
@@ -230,7 +230,7 @@ Only RESTFul interface is available.
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | type (required)                   | The type of search one wants to perform. Specify “layers” to perform a layer search.      |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
-| lang (optional)                   | The lang in which the layers are searched. “de” (default)                                 |
+| lang (optional)                   | The language metadata. Possible values: de (default), fr, it, rm, en                      |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | callback (optional)               | The name of the callback function.                                                        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
