@@ -290,34 +290,11 @@
    */
   module.provider('gaKml', function() {
     // Create the Parser the KML file
-    var kmlParser = null;/*new ol.parser.KML({
-      maxDepth: 1,
-      dimension: 2,
+    var kmlFormat = new ol.format.KML({
       extractStyles: true,
       extractAttributes: true
     });
 
-    var defaultStyle = {}; /*new ol.style.Style({
-      symbolizers: [
-        new ol.style.Fill({
-          color: '#ff0000'
-        }),
-        new ol.style.Stroke({
-          color: '#ff0000',
-          width: 2
-        }),
-        new ol.style.Shape({
-          size: 10,
-          fill: new ol.style.Fill({
-            color: '#ff0000'
-          }),
-          stroke: new ol.style.Stroke({
-            color: '#ff0000',
-            width: 2
-          })
-        })
-      ]
-    });*/
     this.$get = function($http, gaPopup, gaDefinePropertiesForLayer,
         gaMapClick) {
       var Kml = function(proxyUrl) {
@@ -326,74 +303,93 @@
          * Create a KML layer from a KML string
          */
         var createKmlLayer = function(kml, options) {
-          return null;
-          /*var olLayer;
+          var olLayer;
           options = options || {};
 
           // Create vector layer
-          var obj = kmlParser.read(kml);
-          var transformFn = ol.proj.getTransform(obj.metadata.projection,
+          var features = kmlFormat.readFeatures(kml);
+          var transformFn = ol.proj.getTransform('EPSG:4326',
               options.projection);
-          for (var i = 0, ii = obj.features.length; i < ii; i++) {
-            var feature = obj.features[i];
+          for (var i = 0, ii = features.length; i < ii; i++) {
+            var feature = features[i];
             feature.getGeometry().transform(transformFn);
           }
           var olLayer = new ol.layer.Vector({
             url: options.url,
             type: 'KML',
-            label: options.label || obj.name || 'KML',
+            label: options.label || 'KML',
             opacity: options.opacity,
             visible: options.visible,
             source: new ol.source.Vector({
-              parser: kmlParser,
-              features: obj.features
-            }),
-            style: options.style || defaultStyle
+              features: features
+            })
           });
           gaDefinePropertiesForLayer(olLayer);
-          return olLayer;*/
+          return olLayer;
         };
 
         /**
          * Add an ol layer to the map and add specific event
          */
         var addKmlLayer = function(olMap, data, options, index) {
-          /* options.projection = olMap.getView().getProjection();
-           * var olLayer = createKmlLayer(data, options);
+          options.projection = olMap.getView().getProjection();
+          var olLayer = createKmlLayer(data, options);
+
+          // Find features on a specific pixel
+          var findFeatures = function(pixel) {
+            var features = [];
+            olMap.forEachFeatureAtPixel(pixel, function(feature, layer) {
+              if (layer === olLayer) {
+                features.push(feature);
+              }
+            });
+            return features;
+          };
+
+          // Change cursor style on mouse move
+          var onMouseMove = function(evt) {
+            var pixel = (evt.originalEvent) ?
+                olMap.getEventPixel(evt.originalEvent) :
+                evt.getPixel();
+
+            var features = findFeatures(pixel);
+            if (features.length > 0) {
+              olMap.getTarget().style.cursor = 'pointer';
+            } else {
+              olMap.getTarget().style.cursor = '';
+            }
+          };
+
+          // Display popup on mouse click
           var onMapClick = function(evt) {
             evt.stopPropagation();
             evt.preventDefault();
             var pixel = (evt.originalEvent) ?
                 olMap.getEventPixel(evt.originalEvent) :
                 evt.getPixel();
-
-            olMap.getFeatures({
-              pixel: pixel,
-              layers: [olLayer],
-              success: function(features) {
-                if (features[0] && features[0][0] &&
-                    features[0][0].get('description')) {
-                  var feature = features[0][0];
-                  gaPopup.create({
-                    title: feature.get('name'),
-                    content: feature.get('description'),
-                    x: pixel[0],
-                    y: pixel[1]
-                   }).open();
-                }
-              }
-            });
+            var features = findFeatures(pixel);
+            if (features.length > 0) {
+              var feature = features[0];
+              gaPopup.create({
+                title: feature.get('name'),
+                content: feature.get('description'),
+                x: pixel[0],
+                y: pixel[1]
+              }).open();
+            }
           };
 
           var listenerKey;
           olMap.getLayers().on('add', function(layersEvent) {
             if (layersEvent.getElement() === olLayer) {
               listenerKey = gaMapClick.listen(olMap, onMapClick);
+              $(olMap.getViewport()).on('mousemove', onMouseMove);
             }
           });
           olMap.getLayers().on('remove', function(layersEvent) {
             if (layersEvent.getElement() === olLayer) {
               olMap.unByKey(listenerKey);
+              $(olMap.getViewport()).unbind('mousemove', onMouseMove);
             }
           });
 
@@ -401,7 +397,7 @@
             olMap.getLayers().insertAt(index, olLayer);
           } else {
             olMap.addLayer(olLayer);
-          }*/
+          }
         };
 
         this.addKmlToMap = function(map, data, layerOptions, index) {
