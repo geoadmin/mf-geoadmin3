@@ -12,7 +12,8 @@ conf = """function getConfig(){ return %s } """ %f.read()
 
 (function() {
 var load = function() {
-  ga.lang = "${lang}";
+  window.GeoAdmin = {};
+  window.GeoAdmin.lang = "${lang}";
 }
 window.addEventListener ? 
 window.addEventListener("load",load,false) : 
