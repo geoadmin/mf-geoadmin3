@@ -861,6 +861,7 @@
 
   module.provider('gaRecenterMapOnFeatures', function() {
     this.$get = function($q, $http, gaDefinePropertiesForLayer) {
+      var MINIMAL_EXTENT_SIZE = 1965;
       var url = this.url;
       var vector;
       var getFeatures = function(featureIdsByBodId) {
@@ -875,6 +876,23 @@
         });
         return $q.all(promises);
       };
+
+      var getMinimalExtent = function(extent) {
+        var center, minS;
+        if (ol.extent.getHeight(extent) < MINIMAL_EXTENT_SIZE &&
+            ol.extent.getWidth(extent) < MINIMAL_EXTENT_SIZE) {
+          center = ol.extent.getCenter(extent);
+          minS = MINIMAL_EXTENT_SIZE / 2;
+          return ol.extent.boundingExtent([
+            [center[0] - minS, center[1] - minS],
+            [center[0] + minS, center[1] + minS]
+          ]);
+
+        } else {
+          return extent;
+        }
+      };
+
       return function(map, featureIdsByBodId) {
         getFeatures(featureIdsByBodId).then(function(results) {
           var extent = [Infinity, Infinity, -Infinity, -Infinity];
@@ -885,15 +903,8 @@
             foundFeatures.push(result.data.feature);
           });
           if (extent[2] >= extent[0] && extent[3] >= extent[1]) {
-            if (extent[2] - extent[0] < 200) {
-              extent[2] = extent[2] + 100;
-              extent[0] = extent[0] - 100;
-            }
-            if (extent[3] - extent[1] < 100) {
-              extent[3] = extent[3] + 100;
-              extent[1] = extent[1] - 100;
-            }
-            map.getView().fitExtent(extent, map.getSize());
+            map.getView().fitExtent(getMinimalExtent(extent),
+                map.getSize());
           }
           map.removeLayer(vector);
           vector = new ol.layer.Vector({
