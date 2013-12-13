@@ -53,8 +53,8 @@
           <a href="rest/services/ech/MapServer/ch.kantone.cadastralwebmap-farbe/11/htmlpopup?imageDisplay=600,400,96&mapExtent=573090.125,142393.0625,573097.625,142400.5625">Html popup Ex 4 cadastral web map</a> <br>
           <a href="rest/services/ech/MapServer/ch.bakom.radio-fernsehsender/5/extendedhtmlpopup?imageDisplay=600,400,96&mapExtent=573090.125,142393.0625,573097.625,142400.5625">Extended html content Ex 1</a> <br>
           <a href="rest/services/ech/MapServer/ch.bfe.energieforschung/4/extendedhtmlpopup?imageDisplay=600,400,96&mapExtent=573090.125,142393.0625,573097.625,142400.5625">Extended html content Ex 2 with images</a> <br>
-          <a href="rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/getlegend">Get Legend Ex 1</a> <br>
-          <a href="rest/services/ech/MapServer/ch.bafu.bundesinventare-jagdbanngebiete/getlegend?lang=fr&callback=cb">Get Legend Ex 2 with callback</a> <br>
+          <a href="rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/legend">Get Legend Ex 1</a> <br>
+          <a href="rest/services/ech/MapServer/ch.bafu.bundesinventare-jagdbanngebiete/legend?lang=fr&callback=cb">Get Legend Ex 2 with callback</a> <br>
           <a href="rest/services/height?easting=600000&northing=200000">Height example</a> <br>
           <a href='rest/services/profile.json?geom={"type"%3A"LineString"%2C"coordinates"%3A[[550050%2C206550]%2C[556950%2C204150]%2C[561050%2C207950]]}&elevation_models=DTM25,DTM2'>Profile in json format</a> <br>
           <a href='rest/services/profile.csv?geom={"type"%3A"LineString"%2C"coordinates"%3A[[550050%2C206550]%2C[556950%2C204150]%2C[561050%2C207950]]}&elevation_models=DTM25,DTM2'>Profile in csv format</a> <br>

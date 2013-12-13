@@ -41,7 +41,7 @@ With a layer technical name, this service can be used to retrieve a legend.
 URL
 ^^^
 
-https://api3.geo.admin.ch/rest/services/api/MapServer/{layerID}/getlegend
+https://api3.geo.admin.ch/rest/services/api/MapServer/{layerID}/legend
 
 Input Parameters
 ^^^^^^^^^^^^^^^^
@@ -57,7 +57,7 @@ Input Parameters
 Example
 ^^^^^^^
 
-- Get the legend for ch.bafu.bundesinventare-bln: `https://api3.geo.admin.ch/rest/services/api/MapServer/ch.bafu.bundesinventare-bln/getlegend <../../../rest/services/api/MapServer/ch.bafu.bundesinventare-bln/getlegend>`_
+- Get the legend for ch.bafu.bundesinventare-bln: `https://api3.geo.admin.ch/rest/services/api/MapServer/ch.bafu.bundesinventare-bln/legend <../../../rest/services/api/MapServer/ch.bafu.bundesinventare-bln/legend>`_
 
 .. _identify_description:
 

@@ -58,8 +58,8 @@ class MapService(MapServiceValidation):
             layers = dict(layers.items() + layer.items())
         return {'layers': layers}
 
-    @view_config(route_name='getlegend', renderer='jsonp')
-    def getlegend(self):
+    @view_config(route_name='legend', renderer='jsonp')
+    def legend(self):
         idlayer = self.request.matchdict.get('idlayer')
         layer = self._get_layer_resource(idlayer)
 
