@@ -46,6 +46,7 @@ class Bod(object):
                     meta['attributes'][k] = self.__dict__[k]
         return meta
 
+
 class LayersConfig(Base):
     __tablename__ = 'view_layers_js'
     __table_args__ = ({'schema': 're3', 'autoload': False})
