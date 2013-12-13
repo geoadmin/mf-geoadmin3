@@ -258,6 +258,77 @@ Examples
 - Search for layers in French matching the word “géoïde” in their description: `https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=géoïde&type=layers&lang=fr <../../../rest/services/api/SearchServer?searchText=géoïde&type=layers&lang=fr>`_ 
 - Search only for features belonging to the layer “ch.astra.ivs-reg_loc” (only using a bbox, no search text): `https://api3.geo.admin.ch/rest/services/api/SearchServer?features=ch.astra.ivs-reg_loc&type=features&bbox=551306.5625,167918.328125,551754.125,168514.625 <../../../rest/services/api/SearchServer?features=ch.astra.ivs-reg_loc&type=features&bbox=551306.5625,167918.328125,551754.125,168514.625>`_
 
+.. _height_description:
+
+Height
+------
+
+This service allows to obtain elevation information for a point. **Note: this service is not freely accessible (fee required)**.
+
+URL
+^^^
+https://api3.geo.admin.ch/rest/services/height
+
+Input Parameters
+^^^^^^^^^^^^^^^^
+
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| Parameters                        | Description                                                                               |
++===================================+===========================================================================================+
+| easting (required)                | The Y position in CH1903 coordinate system (SRID: 21781)                                  |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| northing (required)               | The X position in CH1903 coordinate system (SRIF: 21781)                                  |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| elevation_model (optional)        | The elevation model. Three elevation models are available DTM25, DTM2 (swissALTI3D)       |
+|                                   | and COMB (a combination of DTM25 and DTM2). Default to "DTM25"                            |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| callback (optional)               | The name of the callback function.                                                        |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+
+Examples
+^^^^^^^^
+
+- `https://api3.geo.admin.ch/rest/services/height?easting=600000&northing=200000 <../../../rest/services/height?easting=600000&northing=200000>`_
+
+.. _profile_description:
+
+Profile
+-------
+
+This service allows to obtain elevation information for a polyline in CSV format. **Note: this service is not freely accessible (fee required)**.
+
+URL
+^^^
+https://api3.geo.admin.ch/rest/services/profile.json (for json format)
+https://api3.geo.admin.ch/rest/services/profile.csv  (for a csv)
+
+Input Parameters
+^^^^^^^^^^^^^^^^
+
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| Parameters                        | Description                                                                               |
++===================================+===========================================================================================+
+| geom (required)                   | A GeoJSON representation of a polyline (type = LineString)                                |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| elevation_models (optional)       | A comma separated list of elevation models. Three elevation models are available DTM25,   |
+|                                   | DTM2 (swissALTI3D) and COMB (a combination of DTM25 and DTM2).  Default to "DTM25"        |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| nb_points (optional)              | The number of points used for the polyline segmentation. Default "200"                    |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| offset (optional)                 | The offset value (INTEGER) in order to use the `exponential moving algorithm              |
+|                                   | <http://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average>`_ . For a given  |
+|                                   | value the offset value specify the number of values before and after used to calculate    | 
+|                                   | the average.                                                                              |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| callback (optional)               | Only available for **profile.json**. The name of the callback function.                   |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+
+Example
+^^^^^^^
+
+- A profile in JSON: `https://api3.geo.admin.ch/rest/services/profile.json?geom={"type"%3A"LineString"%2C"coordinates"%3A[[550050%2C206550]%2C[556950%2C204150]%2C[561050%2C207950]]} <../../../rest/services/profile.json?geom={"type"%3A"LineString"%2C"coordinates"%3A[[550050%2C206550]%2C[556950%2C204150]%2C[561050%2C207950]]}>`_
+- A profile in CSV: `https://api3.geo.admin.ch/rest/services/profile.csv?geom={"type"%3A"LineString"%2C"coordinates"%3A[[550050%2C206550]%2C[556950%2C204150]%2C[561050%2C207950]]} <../../../rest/services/profile.csv?geom={"type"%3A"LineString"%2C"coordinates"%3A[[550050%2C206550]%2C[556950%2C204150]%2C[561050%2C207950]]}>`_
+
 .. _wmts_description:
 
 WMTS
@@ -281,9 +352,9 @@ GetCapabilities
 
 The GetCapabilites document provides informations on the service, along with layer description, both in german and french.
 
-http://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml or https://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml
+http://api3.geo.admin.ch/rest/services/api/1.0.0/WMTSCapabilities.xml
 
-http://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml?lang=fr or https://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml?lang=fr
+http://api3.geo.admin.ch/rest/services/api/1.0.0/WMTSCapabilities.xml?lang=fr
 
 Parameters
 ^^^^^^^^^^
