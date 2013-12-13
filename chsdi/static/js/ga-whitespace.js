@@ -24720,7 +24720,7 @@ ga.Tooltip.prototype.handleClick_ = function(mapBrowserEvent) {
       layerList.push(layer.id)
     }
   }
-  var payload = {"geometryType":"esriGeometryPoint", "geometry":coordinate[0] + "," + coordinate[1], "geometryFormat":"geojson", "imageDisplay":size[0] + "," + size[1] + ",96", "mapExtent":extent.join(","), "tolerance":10, "layers":"all:" + layerList.join(","), "lang":window.GeoAdmin.lang ? window.GeoAdmin.lang : "de"};
+  var payload = {"geometryType":"esriGeometryPoint", "geometry":coordinate[0] + "," + coordinate[1], "geometryFormat":"geojson", "imageDisplay":size[0] + "," + size[1] + ",96", "mapExtent":extent.join(","), "tolerance":10, "layers":"all:" + layerList.join(","), "lang":window.GeoAdmibn && window.GeoAdmin.lang ? window.GeoAdmin.lang : "de"};
   jsonp.send(payload, goog.bind(this.handleIdentifyResponse_, this), goog.bind(this.handleIdentifyError_, this))
 };
 ga.Tooltip.prototype.handleIdentifyResponse_ = function(response) {
@@ -24735,7 +24735,7 @@ ga.Tooltip.prototype.handleIdentifyResponse_ = function(response) {
     this.source_.addFeatures(this.createFeatures_(response))
   }
   for(var i in response["results"]) {
-    var lang = window.GeoAdmin.lang ? window.GeoAdmin.lang : "de";
+    var lang = window.GeoAdmin && window.GeoAdmin.lang ? window.GeoAdmin.lang : "de";
     var jsonp = new goog.net.Jsonp(new goog.Uri("//api3.geo.admin.ch/rest/services/api/MapServer/" + response["results"][i]["layerBodId"] + "/" + response["results"][i]["featureId"] + "/" + "/htmlpopup?lang\x3d" + lang), "callback");
     jsonp.send({}, goog.bind(this.handleHtmlpopupResponse_, this), goog.bind(this.handleHtmlpopupError_, this))
   }
