@@ -11,7 +11,13 @@ conf = """function getConfig(){ return %s } """ %json.dumps(json.loads(f.read())
 %>
 
 (function() {
-window.onload = function(){ ga.lang = "${lang}";};
+var load = function() {
+  ga.lang = "${lang}";
+}
+window.addEventListener ? 
+window.addEventListener("load",load,false) : 
+window.attachEvent && window.attachEvent("onload",load);
+
 // Load css
 document.write('<link rel="stylesheet" type="text/css" href="' + "${h.versioned(request.static_url('chsdi:static/css/ga.css'))}" + '" />');
 // Load js
