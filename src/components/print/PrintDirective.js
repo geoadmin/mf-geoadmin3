@@ -23,6 +23,7 @@
         $scope.dpi = data.dpis[0];
         $scope.scales = data.scales;
         $scope.options.legend = false;
+        $scope.options.graticule = false;
       });
     };
 
@@ -328,6 +329,22 @@
           }
         }
       });
+
+      if ($scope.options.graticule) {
+        var graticule = {
+          "baseURL": "http://wms.geo.admin.ch/",
+          "opacity": 1,
+          "singleTile": true,
+          "type": "WMS",
+          "layers": ["org.epsg.grid_21781"],
+          "format": "image/png",
+          "styles": [""],
+          "customParams": {
+            "TRANSPARENT": true
+          }
+        }
+        encLayers.push(graticule);
+      }
       // scale = resolution * inches per map unit (m) * dpi
       var scale = parseInt(view.getResolution() * 39.37 * 254);
       var scales = this.scales.map(function(scale) {
