@@ -951,7 +951,12 @@
                 map.getSize());
           }
           map.removeLayer(vector);
-          vectorSource = new ol.source.Vector();
+          vectorSource = new ol.source.Vector({
+            features: parser.readFeatures({
+              type: 'FeatureCollection',
+              features: foundFeatures
+            })
+          });
           vector = new ol.layer.Vector({
             source: vectorSource,
             styleFunction: gaStyleFunctionFactory('select')
@@ -959,12 +964,6 @@
           gaDefinePropertiesForLayer(vector);
           vector.highlight = true;
           vector.invertedOpacity = 0.25;
-          parser.readObject({
-              type: 'FeatureCollection',
-              features: foundFeatures
-            },
-            vectorSource.addFeature,
-            vectorSource);
           map.addLayer(vector);
         });
       };

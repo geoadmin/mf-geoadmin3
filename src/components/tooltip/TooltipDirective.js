@@ -176,9 +176,10 @@
                   if (gaLayers.getLayer(value.layerBodId) &&
                       gaLayers.getLayerProperty(value.layerBodId,
                                                 'highlightable')) {
-                    parser.readObject(value,
-                                      vectorSource.addFeature,
-                                      vectorSource);
+                    var features = parser.readFeatures(value);
+                    for (var i = 0, ii = features.length; i < ii; ++i) {
+                      vectorSource.addFeature(features[i]);
+                    }
                   }
 
                   var htmlUrl = $scope.options.htmlUrlTemplate
