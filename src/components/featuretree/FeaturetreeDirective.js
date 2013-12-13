@@ -12,8 +12,7 @@
 
   /**
    * TODOs:
-   * - blue rectangle instead of red
-   * - react on changes in layer selection
+   * - on hover does not overwrite selection
    * - keyboard controls
    * - update ol3 to support dragbox (waitin on pr)
    * - update ol3 to support getBrowserEvent (waitin on pr)
@@ -24,7 +23,7 @@
   module.directive('gaFeaturetree',
       function($rootScope, $compile, $timeout, $http, $q, $translate, $sce,
                gaLayers, gaDefinePropertiesForLayer, gaStyleFunctionFactory, 
-               gaMapClick, gaRecenterMapOnFeatures) {
+               gaMapClick, gaRecenterMapOnFeatures, gaLayerFilters) {
 
         var createVectorLayer = function(style) {
           var vector = new ol.layer.Vector({
@@ -62,17 +61,29 @@
             rectangleLayer.invertedOpacity = 0.25;
             map.addLayer(selectLayer);
 
-            var getLayersToQuery = function(layers) {
+            scope.layerFilter = function(l) {
+              return gaLayerFilters.selectedLayersFilter(l) &&
+                     gaLayers.getLayer(l.bodId) &&
+                     gaLayers.getLayerProperty(l.bodId, 'queryable');
+
+            };
+
+            scope.layers = map.getLayers().getArray();
+            scope.filteredLayers = [];
+
+            scope.$watchCollection('layers | filter:layerFilter',
+                function(layers) {
+              scope.filteredLayers = layers;
+              triggerChange();
+            });
+
+            var getLayersToQuery = function() {
               var layerstring = '';
-              map.getLayers().forEach(function(l) {
-                  var id = l.get('bodId');
-                  if (gaLayers.getLayer(id) &&
-                      gaLayers.getLayerProperty(id, 'queryable')) {
-                    if (layerstring.length) {
-                      layerstring = layerstring + ',';
-                    }
-                    layerstring = layerstring + id;
-                  }
+              scope.filteredLayers.forEach(function(l) {
+                if (layerstring.length) {
+                  layerstring = layerstring + ',';
+                }
+                layerstring = layerstring + l.bodId;
               });
               return layerstring;
             };
@@ -185,7 +196,7 @@
                 }
                 //assure that label contains number of items
                 angular.forEach(tree, function(value, key) {
-                  var l = gaLayers.getLayer(layerId).label +
+                  var l = gaLayers.getLayer(key).label +
                           ' (' + value.features.length + ' ' +
                           getItemText(value.features.length) + ')';
                   value.label = l;
@@ -246,17 +257,13 @@
             // order to not trigger angular digest cycles and too many
             // updates. We don't use the permalink here because we want
             // to separate these concerns.
-            var triggerChange = function(delay) {
-              var to = delay;
-              if (angular.isDefined(to)) {
-                to = 300;
-              }
+            var triggerChange = function() {
               if (scope.options.active) {
                 cancel();
                 timeoutPromise = $timeout(function() {
                   requestFeatures();
                   timeoutPromise = null;
-                }, to);
+                }, 0);
               }
             };
 
@@ -337,7 +344,7 @@
               cancel();
               if (newVal === true) {
                 map.addLayer(rectangleLayer);
-                requestFeatures();
+                triggerChange();
               } else {
                 map.removeLayer(rectangleLayer);
               }
@@ -383,7 +390,7 @@
                 dragBox.setMap(null);
                 updateRectangle(evt);
                 firstPoint = undefined;
-                triggerChange(0);
+                triggerChange();
               }
             });
           }
