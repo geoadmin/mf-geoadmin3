@@ -332,17 +332,17 @@
 
       if ($scope.options.graticule) {
         var graticule = {
-          "baseURL": "http://wms.geo.admin.ch/",
-          "opacity": 1,
-          "singleTile": true,
-          "type": "WMS",
-          "layers": ["org.epsg.grid_21781"],
-          "format": "image/png",
-          "styles": [""],
-          "customParams": {
-            "TRANSPARENT": true
+          'baseURL': 'http://wms.geo.admin.ch/',
+          'opacity': 1,
+          'singleTile': true,
+          'type': 'WMS',
+          'layers': ['org.epsg.grid_21781'],
+          'format': 'image/png',
+          'styles': [''],
+          'customParams': {
+            'TRANSPARENT': true
           }
-        }
+        };
         encLayers.push(graticule);
       }
       // scale = resolution * inches per map unit (m) * dpi
