@@ -16,7 +16,7 @@ buildout/eggs/
 buildout/parts/
 chsdi.egg-info
 chsdi/static/doc/build/
-chsdi/static/css/*
+chsdi/static/css/extended.min.css
 chsdi/static/js/ol3/
 deploy/hooks/pre-create-code
 node_modules
