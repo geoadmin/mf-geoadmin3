@@ -515,7 +515,7 @@ goog.base = function(me, opt_methodName, var_args) {
 goog.scope = function(fn) {
   fn.call(goog.global)
 };
-goog.addDependency("../build/src/internal/src/requireallga.js", [], ["ga", "ga.Map", "ga.Tooltip", "ga.lang", "ga.layer", "ga.source.wms", "ga.source.wmts", "libtess", "libtess.ActiveRegion", "libtess.CachedVertex", "libtess.Dict", "libtess.DictNode", "libtess.FaceCount", "libtess.GluFace", "libtess.GluHalfEdge", "libtess.GluMesh", "libtess.GluTesselator", "libtess.GluVertex", "libtess.PQHandleElem", "libtess.PQNode", "libtess.PriorityQ", "libtess.PriorityQHeap", "libtess.geom", "libtess.mesh", "libtess.normal", 
+goog.addDependency("../build/src/internal/src/requireallga.js", [], ["ga", "ga.Map", "ga.Tooltip", "ga.layer", "ga.source.wms", "ga.source.wmts", "libtess", "libtess.ActiveRegion", "libtess.CachedVertex", "libtess.Dict", "libtess.DictNode", "libtess.FaceCount", "libtess.GluFace", "libtess.GluHalfEdge", "libtess.GluMesh", "libtess.GluTesselator", "libtess.GluVertex", "libtess.PQHandleElem", "libtess.PQNode", "libtess.PriorityQ", "libtess.PriorityQHeap", "libtess.geom", "libtess.mesh", "libtess.normal", 
 "libtess.render", "libtess.sweep", "libtess.tessmono", "ol", "ol.Attribution", "ol.BrowserFeature", "ol.CenterConstraint", "ol.CenterConstraintType", "ol.Collection", "ol.CollectionEvent", "ol.CollectionEventType", "ol.Color", "ol.Constraints", "ol.Coordinate", "ol.CoordinateArray", "ol.CoordinateFormatType", "ol.DeviceOrientation", "ol.DeviceOrientationProperty", "ol.Ellipsoid", "ol.Extent", "ol.Feature", "ol.FeatureEvent", "ol.FeatureEventType", "ol.FeatureRenderIntent", "ol.FrameState", "ol.Geolocation", 
 "ol.GeolocationProperty", "ol.IView", "ol.IView2D", "ol.IView3D", "ol.Image", "ol.ImageState", "ol.ImageTile", "ol.ImageUrlFunction", "ol.ImageUrlFunctionType", "ol.Kinetic", "ol.Map", "ol.MapBrowserEvent", "ol.MapBrowserEvent.EventType", "ol.MapBrowserEventHandler", "ol.MapEvent", "ol.MapEventType", "ol.MapProperty", "ol.Object", "ol.ObjectEventType", "ol.Observable", "ol.Overlay", "ol.OverlayPositioning", "ol.OverlayProperty", "ol.Pixel", "ol.PostRenderFunction", "ol.PreRenderFunction", "ol.RendererHint", 
 "ol.RendererHints", "ol.ResolutionConstraint", "ol.ResolutionConstraintType", "ol.RotationConstraint", "ol.RotationConstraintType", "ol.Size", "ol.Sphere", "ol.Tile", "ol.TileCache", "ol.TileCoord", "ol.TileLoadFunctionType", "ol.TilePriorityFunction", "ol.TileQueue", "ol.TileRange", "ol.TileState", "ol.TileUrlFunction", "ol.TileUrlFunctionType", "ol.TransformFunction", "ol.View", "ol.View2D", "ol.View2DProperty", "ol.View2DState", "ol.ViewHint", "ol.animation", "ol.array", "ol.canvas", "ol.control", 
@@ -535,11 +535,11 @@ goog.addDependency("../build/src/internal/src/types.js", ["olx.AttributionOption
 "olx.interaction.KeyboardZoomOptions", "olx.interaction.ModifyOptions", "olx.interaction.MouseWheelZoomOptions", "olx.interaction.SelectOptions", "olx.interaction.TouchPanOptions", "olx.interaction.TouchRotateOptions", "olx.interaction.TouchZoomOptions", "olx.layer.BaseOptions", "olx.layer.GroupOptions", "olx.layer.LayerOptions", "olx.layer.TileOptions", "olx.layer.VectorLayerOptions", "olx.parser.GMLOptions", "olx.parser.GMLReadOptions", "olx.parser.GMLWriteOptions", "olx.parser.GPXOptions", "olx.parser.GPXWriteOptions", 
 "olx.parser.KMLOptions", "olx.parser.SLDReadOptions", "olx.parser.SLDWriteOptions", "olx.parser.WFSWriteGetFeatureOptions", "olx.parser.WFSWriteTransactionOptions", "olx.source.BingMapsOptions", "olx.source.ImageStaticOptions", "olx.source.ImageWMSOptions", "olx.source.MapGuideOptions", "olx.source.MapQuestOptions", "olx.source.OSMOptions", "olx.source.StamenOptions", "olx.source.TileDebugOptions", "olx.source.TileJSONOptions", "olx.source.TileWMSOptions", "olx.source.VectorOptions", "olx.source.WMSGetFeatureInfoOptions", 
 "olx.source.WMTSOptions", "olx.source.XYZOptions", "olx.style.FillOptions", "olx.style.IconOptions", "olx.style.RuleOptions", "olx.style.ShapeOptions", "olx.style.StrokeOptions", "olx.style.StyleOptions", "olx.style.TextOptions", "olx.tilegrid.TileGridOptions", "olx.tilegrid.WMTSOptions", "olx.tilegrid.XYZOptions"], []);
-goog.addDependency("../src/ga/ga.js", ["ga", "ga.lang"], []);
+goog.addDependency("../src/ga/ga.js", ["ga"], []);
 goog.addDependency("../src/ga/layer/layer.js", ["ga.layer", "ga.source.wms", "ga.source.wmts"], ["goog.array", "ol.Attribution", "ol.layer.Group", "ol.layer.Tile", "ol.layer.Image", "ol.source.TileWMS", "ol.source.ImageWMS", "ol.source.WMTS", "ol.tilegrid.WMTS"]);
 goog.addDependency("../src/ga/map.js", ["ga.Map"], ["goog.asserts", "goog.net.Jsonp", "ol.Map", "ol.RendererHint", "ol.View2D", "ol.control.ScaleLine", "ol.proj.EPSG21781", "ol.source.State", "ga.Tooltip"]);
 goog.addDependency("../src/ga/tooltip.js", ["ga.Tooltip"], ["goog.dom", "goog.dom.TagName", "goog.net.Jsonp", "goog.Uri", "goog.events", "goog.events.EventType", "goog.style", "goog.Disposable", "goog.events.MouseWheelEvent", "goog.events.MouseWheelHandler", "goog.events.MouseWheelHandler.EventType", "ol.Overlay", "ol.MapBrowserEvent.EventType", "ol.Overlay", "ol.layer.Vector", "ol.style.Style", "ol.style.Fill", "ol.style.Stroke", "ol.style.Shape", "ol.source.Vector", "ol.parser.GeoJSON", "ol.Feature", 
-"ol.geom.Point", "ol.geom.LineString", "ol.geom.Polygon", "ol.geom.MultiPoint", "ol.geom.MultiLineString", "ol.geom.MultiPolygon", "ol.geom.GeometryCollection", "ga", "ga.lang"]);
+"ol.geom.Point", "ol.geom.LineString", "ol.geom.Polygon", "ol.geom.MultiPoint", "ol.geom.MultiLineString", "ol.geom.MultiPolygon", "ol.geom.GeometryCollection"]);
 goog.addDependency("../src/libtess.js/dict/Dict.js", ["libtess.Dict"], ["libtess", "libtess.DictNode"]);
 goog.addDependency("../src/libtess.js/dict/DictNode.js", ["libtess.DictNode"], ["libtess"]);
 goog.addDependency("../src/libtess.js/geom.js", ["libtess.geom"], ["libtess"]);
@@ -1908,7 +1908,6 @@ goog.addDependency("/third_party/closure/goog/mochikit/async/deferred.js", ["goo
 goog.addDependency("/third_party/closure/goog/mochikit/async/deferredlist.js", ["goog.async.DeferredList"], ["goog.async.Deferred"]);
 goog.addDependency("/third_party/closure/goog/osapi/osapi.js", ["goog.osapi"], []);
 goog.provide("ga");
-goog.provide("ga.lang");
 goog.provide("goog.debug.Error");
 goog.debug.Error = function(opt_msg) {
   if(Error.captureStackTrace) {
@@ -24682,8 +24681,6 @@ goog.require("ol.geom.MultiPoint");
 goog.require("ol.geom.MultiLineString");
 goog.require("ol.geom.MultiPolygon");
 goog.require("ol.geom.GeometryCollection");
-goog.require("ga");
-goog.require("ga.lang");
 ga.Tooltip = function() {
   goog.base(this);
   this.map_ = null;
@@ -24723,7 +24720,7 @@ ga.Tooltip.prototype.handleClick_ = function(mapBrowserEvent) {
       layerList.push(layer.id)
     }
   }
-  var payload = {"geometryType":"esriGeometryPoint", "geometry":coordinate[0] + "," + coordinate[1], "geometryFormat":"geojson", "imageDisplay":size[0] + "," + size[1] + ",96", "mapExtent":extent.join(","), "tolerance":10, "layers":"all:" + layerList.join(","), "lang":ga.lang ? ga.lang : "de"};
+  var payload = {"geometryType":"esriGeometryPoint", "geometry":coordinate[0] + "," + coordinate[1], "geometryFormat":"geojson", "imageDisplay":size[0] + "," + size[1] + ",96", "mapExtent":extent.join(","), "tolerance":10, "layers":"all:" + layerList.join(","), "lang":window.GeoAdmin.lang ? window.GeoAdmin.lang : "de"};
   jsonp.send(payload, goog.bind(this.handleIdentifyResponse_, this), goog.bind(this.handleIdentifyError_, this))
 };
 ga.Tooltip.prototype.handleIdentifyResponse_ = function(response) {
@@ -24738,7 +24735,7 @@ ga.Tooltip.prototype.handleIdentifyResponse_ = function(response) {
     this.source_.addFeatures(this.createFeatures_(response))
   }
   for(var i in response["results"]) {
-    var lang = ga.lang ? ga.lang : "de";
+    var lang = window.GeoAdmin.lang ? window.GeoAdmin.lang : "de";
     var jsonp = new goog.net.Jsonp(new goog.Uri("//api3.geo.admin.ch/rest/services/api/MapServer/" + response["results"][i]["layerBodId"] + "/" + response["results"][i]["featureId"] + "/" + "/htmlpopup?lang\x3d" + lang), "callback");
     jsonp.send({}, goog.bind(this.handleHtmlpopupResponse_, this), goog.bind(this.handleHtmlpopupError_, this))
   }
@@ -37854,7 +37851,6 @@ ol.sphere.WGS84 = new ol.Sphere(6378137);
 goog.require("ga");
 goog.require("ga.Map");
 goog.require("ga.Tooltip");
-goog.require("ga.lang");
 goog.require("ga.layer");
 goog.require("ga.source.wms");
 goog.require("ga.source.wmts");
