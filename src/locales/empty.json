@@ -159,5 +159,9 @@
   "parcel": "",
   "feature": "",
   "third_party_data_warning": "",
-  "no_layers_info": ""
+  "no_layers_info": "",
+  "compare": "",
+  "swipe_active": "",
+  "swipe_inactive": "",
+  "not_enough_layer_for_swipe"
 }
