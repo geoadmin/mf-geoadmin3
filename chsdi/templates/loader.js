@@ -2,8 +2,8 @@
 
 <%
 mode = request.params.get('mode')
-lang = request.params.get('lang')
-appUrl = request.application_url.replace('http:', request.scheme + ":")
+lang = request.lang
+appUrl = request.application_url.replace('http:', request.scheme + ':')
 layersconfig = appUrl + '/rest/services/all/MapServer/layersconfig?lang=' + lang
 import urllib2, json
 f = urllib2.urlopen(layersconfig)
