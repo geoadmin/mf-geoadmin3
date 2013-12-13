@@ -12,8 +12,9 @@
 
   /**
    * TODOs:
-   * - on hover does not overwrite selection
+   * - multiple clicks handles selction incorrectyl
    * - keyboard controls
+   * - create all sphinxsearch indices (querable layers)
    * - update ol3 to support dragbox (waitin on pr)
    * - update ol3 to support getBrowserEvent (waitin on pr)
    * - translations
