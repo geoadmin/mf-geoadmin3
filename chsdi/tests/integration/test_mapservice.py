@@ -191,18 +191,18 @@ class TestMapServiceView(TestsBase):
     def test_layersconfig_valid(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/layersconfig', status=200)
         self.failUnless(resp.content_type == 'application/json')
-        self.failUnless('ch.swisstopo.pixelkarte-farbe' in resp.json['layers'])
-        self.failUnless('attribution' in resp.json['layers']['ch.swisstopo.pixelkarte-farbe'])
-        self.failUnless('label' in resp.json['layers']['ch.swisstopo.pixelkarte-farbe'])
-        self.failUnless('background' in resp.json['layers']['ch.swisstopo.pixelkarte-farbe'])
+        self.failUnless('ch.swisstopo.pixelkarte-farbe' in resp.json)
+        self.failUnless('attribution' in resp.json['ch.swisstopo.pixelkarte-farbe'])
+        self.failUnless('label' in resp.json['ch.swisstopo.pixelkarte-farbe'])
+        self.failUnless('background' in resp.json['ch.swisstopo.pixelkarte-farbe'])
 
     def test_layersconfig_valid_topic_all(self):
         resp = self.testapp.get('/rest/services/all/MapServer/layersconfig', status=200)
         self.failUnless(resp.content_type == 'application/json')
-        self.failUnless('ch.swisstopo.pixelkarte-farbe' in resp.json['layers'])
-        self.failUnless('attribution' in resp.json['layers']['ch.swisstopo.pixelkarte-farbe'])
-        self.failUnless('label' in resp.json['layers']['ch.swisstopo.pixelkarte-farbe'])
-        self.failUnless('background' in resp.json['layers']['ch.swisstopo.pixelkarte-farbe'])
+        self.failUnless('ch.swisstopo.pixelkarte-farbe' in resp.json)
+        self.failUnless('attribution' in resp.json['ch.swisstopo.pixelkarte-farbe'])
+        self.failUnless('label' in resp.json['ch.swisstopo.pixelkarte-farbe'])
+        self.failUnless('background' in resp.json['ch.swisstopo.pixelkarte-farbe'])
 
     def test_layersconfig_with_callback(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/layersconfig', params={'callback': 'cb'}, status=200)
