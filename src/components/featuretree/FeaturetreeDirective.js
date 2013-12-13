@@ -48,7 +48,6 @@
             var currentTopic;
             var timeoutPromise = null;
             var canceler = null;
-            var prevFeature = {};
             var map = scope.map;
             var view = map.getView();
             var viewport = $(map.getViewport());
@@ -313,10 +312,11 @@
             };
 
             scope.showTooltip = function(feature) {
-              prevFeature.selected = false;
-              prevFeature = feature;
+              var prevFeature = {};
               feature.selected = true;
               loadGeometry(feature, function() {
+                prevFeature.selected = false;
+                prevFeature = feature;
                 $rootScope.$broadcast('gaTriggerTooltipRequest', feature);
               });
             };
