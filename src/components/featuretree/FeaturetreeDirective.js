@@ -12,11 +12,10 @@
 
   /**
    * TODOs:
-   * - multiple clicks handles selction incorrectyl
    * - keyboard controls
    * - create all sphinxsearch indices (querable layers)
-   * - update ol3 to support dragbox (waitin on pr)
-   * - update ol3 to support getBrowserEvent (waitin on pr)
+   * - update ol3 to support dragbox (PR done, waiting on merge)
+   * - update ol3 to support getBrowserEvent (waitin on vector-api update)
    * - translations
    * - rectangle drawing always active. auto-open accordion
    **/
@@ -55,12 +54,12 @@
             var projection = view.getProjection();
             var parser = new ol.format.GeoJSON();
             var dragBox = new ol.render.DragBox();
-            var selectLayer = createVectorLayer('highlight');
+            var highlightLayer = createVectorLayer('highlight');
             var rectangleLayer = createVectorLayer('selectrectangle');
             var firstPoint;
             scope.searchRectangle = undefined;
             rectangleLayer.invertedOpacity = 0.25;
-            map.addLayer(selectLayer);
+            map.addLayer(highlightLayer);
 
             scope.layerFilter = function(l) {
               return gaLayerFilters.selectedLayersFilter(l) &&
@@ -231,7 +230,7 @@
             var requestFeatures = function() {
               var layersToQuery = getLayersToQuery(),
                   req, searchExtent;
-              selectLayer.getSource().clear();
+              highlightLayer.getSource().clear();
               if (layersToQuery.length &&
                   angular.isDefined(scope.searchRectangle)) {
                 searchExtent = ol.extent.boundingExtent(
@@ -273,15 +272,6 @@
               map.addLayer(layer);
             };
 
-            var drawGeometry = function(geometry, layer) {
-              if (geometry) {
-                parser.readObject(geometry,
-                                  layer.getSource().addFeature,
-                                  layer.getSource());
-                assureLayerOnTop(layer);
-              }
-            };
-
             var loadGeometry = function(feature, cb) {
               var featureUrl;
               if (!feature.geometry) {
@@ -310,23 +300,27 @@
             scope.loading = false;
             scope.tree = {};
 
-            scope.selectFeatureInMap = function(feature) {
+            scope.highlightFeatureInMap = function(feature) {
               loadGeometry(feature, function() {
-                drawGeometry(feature.geometry, selectLayer);
+                if (feature.geometry) {
+                  parser.readObject(feature.geometry,
+                                    highlightLayer.getSource().addFeature,
+                                    highlightLayer.getSource());
+                  assureLayerOnTop(highlightLayer);
+                }
               });
             };
 
-            scope.clearSelection = function() {
-              selectLayer.getSource().clear();
+            scope.clearHighlight = function() {
+              highlightLayer.getSource().clear();
             };
 
-            scope.showTooltip = function(feature) {
-              var prevFeature = {};
-              feature.selected = true;
+            scope.selectFeature = function(feature) {
               loadGeometry(feature, function() {
-                prevFeature.selected = false;
-                prevFeature = feature;
-                $rootScope.$broadcast('gaTriggerTooltipRequest', feature);
+                if (!feature.selected) {
+                  feature.selected = true;
+                  $rootScope.$broadcast('gaTriggerTooltipRequest', feature);
+                }
               });
             };
 
