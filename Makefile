@@ -44,7 +44,7 @@ help:
 	@echo
 
 .PHONY: all
-all: prod dev lint apache deploy/deploy-branch.cfg fixrights
+all: prod dev lint apache testdev testprod deploy/deploy-branch.cfg fixrights
 
 .PHONY: prod
 prod: prd/lib/build.js prd/style/app.css prd/index.html prd/mobile.html prd/info.json prd/img/ prd/style/font-awesome-3.2.1/font/ prd/locales/ prd/checker

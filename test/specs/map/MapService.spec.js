@@ -109,12 +109,10 @@ describe('ga_map_service', function() {
     };
 
     var addKmlLayerToMap = function() {
-      var kmlParser = new ol.parser.KML({
-        maxDepth: 1,
-        dimension: 2,
+      var kmlFormat = new ol.format.KML({
         extractStyles: true,
         extractAttributes: true
-      });
+      }); 
       var layer = new ol.layer.Vector({
         url: 'http://foo.ch/bar.kml',
         type: 'KML',
@@ -122,8 +120,7 @@ describe('ga_map_service', function() {
         opacity: 0.1,
         visible: false,
         source: new ol.source.Vector({
-          parser: kmlParser,
-          data: '<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:gx="http://www.google.com/kml/ext/2.2"></kml>'
+          features: kmlFormat.readFeatures('<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:gx="http://www.google.com/kml/ext/2.2"></kml>')
         })
       });
       map.addLayer(layer);
