@@ -56,7 +56,7 @@
             var parser = new ol.format.GeoJSON();
             var dragBox = new ol.render.DragBox();
             var selectLayer = createVectorLayer('highlight');
-            var rectangleLayer = createVectorLayer('lightselect');
+            var rectangleLayer = createVectorLayer('selectrectangle');
             var firstPoint;
             scope.searchRectangle = undefined;
             rectangleLayer.invertedOpacity = 0.25;
