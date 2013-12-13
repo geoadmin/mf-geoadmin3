@@ -74,6 +74,7 @@
                 initTooltip();
                 showFeatures(mapExtent, size, [feature.geometry]);
                 shownFeature = feature;
+                shownFeature.selected = true;
               }
             });
 
