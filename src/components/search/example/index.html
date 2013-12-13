@@ -5,6 +5,35 @@
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
     <base href="../../../">
+    <script>
+      function toAbsURL(s) {
+        var l = location, h, p, f, i;
+        if (/^\w+:/.test(s)) {
+          return s;
+        }
+        h = l.protocol + '//' + l.host;
+        if (s.indexOf('/') == 0) {
+          return h + s;
+        }
+        p = l.pathname.replace(/\/[^\/]*$/, '');
+        f = s.match(/\.\.\//g);
+        if (f) {
+          s = s.substring(f.length * 3);
+          for (i = f.length; i--;) {
+            p = p.substring(0, p.lastIndexOf('/'));
+          }
+        }
+        return h + p + '/' + s;
+      }
+    </script>
+    <!--[if IE]>
+    <script>
+      (function() {
+        var base = document.getElementsByTagName('base')[0];
+        base.href = toAbsURL(base.href);
+      })();
+    </script>
+    <![endif]-->
     <link href="style/app.css" rel="stylesheet" media="screen">
     <style>
       #map {
@@ -23,7 +52,8 @@
       <div id="search-input"
            ga-search
            ga-search-map="map"
-           ga-search-options="options">
+           ga-search-options="options"
+           ga-search-focused="globals.searchFocused">
       </div>
     </div>
     <div id="map" class="map" ga-map ga-map-map="map"></div>
@@ -42,10 +72,9 @@
     <script src="lib/ol-whitespace.js"></script>
     <script src="deps.js"></script>
     <script>
-      goog.require('ga_search');
       goog.require('ga_map');
-    </script>
-    <script>
+      goog.require('ga_search');
+
       (function() {
         var module = angular.module('ga_search_example', [
           'ga_search',
@@ -53,8 +82,8 @@
         ]);
 
         module.constant('gaGlobalOptions', {
-          serviceUrl: 'http://mf-chsdi3.dev.bgdi.admin.ch',
-          baseUrlPath: 'http://mf-geoadmin3.dev.bgdi.admin.ch/main'
+          serviceUrl: 'http://mf-chsdi3.dev.bgdi.ch',
+          baseUrlPath: 'http://mf-geoadmin3.dev.bgdi.ch/main'
         });
         
         module.config(['gaLayersProvider', function(gaLayersProvider) {
@@ -63,7 +92,7 @@
               '{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
 
           gaLayersProvider.layersConfigUrlTemplate =
-              'http://mf-chsdi3.dev.bgdi.admin.ch/rest/services/{Topic}/MapServer/layersconfig' +
+              'http://mf-chsdi3.dev.bgdi.ch/rest/services/{Topic}/MapServer/layersconfig' +
               '?lang={Lang}';
         }]);
 
