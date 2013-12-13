@@ -24695,12 +24695,24 @@ ga.Tooltip = function() {
 goog.inherits(ga.Tooltip, goog.Disposable);
 ga.Tooltip.prototype.createOverlay_ = function() {
   var className = "ga-tooltip";
+  var setPositionStyle = function(element) {
+    if(document.body.clientWidth <= 480) {
+      element.style.position = "static"
+    }else {
+      element.style.position = "absolute"
+    }
+  };
   this.tooltipContentElement_ = goog.dom.createDom(goog.dom.TagName.DIV, {"class":className + "-content"});
   goog.events.listen(this.tooltipContentElement_, "mousewheel", this.handleWheel_, false, this);
   var closeAnchor = goog.dom.createDom(goog.dom.TagName.A, {"href":"#", "class":className + "-closer"});
   goog.events.listen(closeAnchor, "click", this.handleClose_, false, this);
   this.tooltipElement_ = goog.dom.createDom(goog.dom.TagName.DIV, {"class":className}, closeAnchor, this.tooltipContentElement_);
-  this.overlay_ = new ol.Overlay({element:this.tooltipElement_})
+  this.overlay_ = new ol.Overlay({element:this.tooltipElement_});
+  var parentEl = this.overlay_.getElement().parentNode;
+  setPositionStyle(parentEl);
+  window.onresize = function() {
+    setPositionStyle(parentEl)
+  }
 };
 ga.Tooltip.prototype.disposeInternal = function() {
   this.setMap(null)
