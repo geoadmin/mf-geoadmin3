@@ -4,7 +4,7 @@ from pyramid.view import view_config
 from pyramid.renderers import render_to_response
 from pyramid.httpexceptions import HTTPNotFound
 
-from chsdi.models.bod import get_catalog_model
+from chsdi.models.bod import Catalog
 from chsdi.lib.validation import MapNameValidation
 
 
@@ -18,7 +18,7 @@ class CatalogService(MapNameValidation):
 
     @view_config(route_name='catalog', renderer='jsonp')
     def catalog(self):
-        model = get_catalog_model(self.lang, self.mapName)
+        model = Catalog
         rows = self.request.db.query(model)\
             .filter(model.topic.ilike('%%%s%%' % self.mapName))\
             .order_by(model.depth)\
