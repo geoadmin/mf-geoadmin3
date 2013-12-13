@@ -56,7 +56,7 @@ class MapService(MapServiceValidation):
         for q in query:
             layer = q.getLayerConfig(self.request)
             layers = dict(layers.items() + layer.items())
-        return {'layers': layers}
+        return layers
 
     @view_config(route_name='legend', renderer='jsonp')
     def legend(self):
