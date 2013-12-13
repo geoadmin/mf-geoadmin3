@@ -1,0 +1,58 @@
+.ga-swipe {
+  position: absolute;
+  width: 32px;
+  height: 100%;
+  top: 0px;
+  left: 50%;
+  margin-left: -16px;
+  z-index: 1000; 
+  cursor: w-resize; 
+}
+
+.ga-swipe-line {
+  position: absolute;
+  width: 4px;
+  height: 100%;
+  left: 50%;
+  margin-left: -2px;
+  background-color: red;
+}
+
+.ga-swipe-arrows {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  left: 0px;
+  top: 50%;
+  margin-top: -16px;
+  background-color: red;
+  padding: 5px 2px;
+  color: white;
+
+  i {
+    float: left;
+    line-height: 22px;
+    margin: 0px 2px;
+  }
+}
+
+.ga-swipe-layer-label {
+  display: none;
+  position: absolute;
+  width: 120px;
+  bottom: 55px;
+  right: 30px;
+  padding: 5px 3px; 
+  font-size: 11px;
+  font-weight: bold;
+  background-color: white;
+  
+  &:before {
+    padding-right: 3px;
+  }
+  
+  @media screen and (max-width: @screen-tablet) {
+    bottom: 20px;
+  } 
+}
+

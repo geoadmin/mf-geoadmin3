@@ -1,7 +1,11 @@
 (function() {
   goog.provide('ga_draggable_directive');
 
-  var module = angular.module('ga_draggable_directive', []);
+  goog.require('ga_browsersniffer_service');
+
+  var module = angular.module('ga_draggable_directive', [
+    'ga_browsersniffer_service'
+  ]);
 
   /**
    * Directive to make an HTML element draggable.
@@ -16,9 +20,26 @@
    * a draggable zone, otherwise the entire element is the draggable zone.
    *
    */
-  module.directive('gaDraggable', function($document) {
+  module.directive('gaDraggable', function($document, gaBrowserSniffer) {
     return function(scope, element, attr) {
       var startX = 0, startY = 0, x = null, y = null;
+      var events = {
+        mouse: {
+          start: 'mousedown',
+          move: 'mousemove',
+          end: 'mouseup'
+        },
+        touch: {
+          start: 'touchstart',
+          move: 'touchmove',
+          end: 'touchend'
+        }
+      };
+
+      var eventKey = events.mouse;
+      if (!gaBrowserSniffer.msie && gaBrowserSniffer.touchDevice) {
+        eventKey = events.touch;
+      }
 
       // Firefox doesn't like transition during drag
       element.addClass('ga-draggable');
@@ -32,31 +53,39 @@
         dragZone = element;
       }
 
-      dragZone.bind('mousedown', function(evt) {
+      dragZone.bind(eventKey.start, function(evt) {
         var elt = $(evt.target);
 
-        if (x === null) {
-          x = element.prop('offsetLeft');
-        }
-
-        if (y === null) {
-          y = element.prop('offsetTop');
-        }
+        x = element.prop('offsetLeft');
+        y = element.prop('offsetTop');
 
         // preventDefault block user interaction with input field
         if (evt.target.nodeName !== 'INPUT') {
           evt.preventDefault();
         }
 
-        startX = evt.clientX - x;
-        startY = evt.clientY - y;
-        $document.bind('mousemove', mousemove);
-        $document.bind('mouseup', mouseup);
+        startX = getMouseEventX(evt) - x;
+        startY = getMouseEventY(evt) - y;
+        $document.bind(eventKey.move, drag);
+        $document.bind(eventKey.end, dragend);
       });
 
-      function mousemove(evt) {
-        y = evt.clientY - startY;
-        x = evt.clientX - startX;
+      function drag(evt) {
+        x = getMouseEventX(evt) - startX;
+        y = getMouseEventY(evt) - startY;
+
+        if (x < 0) {
+          x = 0;
+        } else if (x + element.width() > $(document.body).width()) {
+          x = $(document.body).width() - element.width();
+        }
+
+        if (y < 0) {
+          y = 0;
+        } else if (y + element.height() > $(document.body).height()) {
+          y = $(document.body).height() - element.height();
+        }
+
         element.css({
           margin: 0,
           top: y + 'px',
@@ -64,10 +93,31 @@
         });
       }
 
-      function mouseup() {
-        $document.unbind('mousemove', mousemove);
-        $document.unbind('mouseup', mousemove);
+      function dragend() {
+        $document.unbind(eventKey.move, drag);
+        $document.unbind(eventKey.end, dragend);
       }
+
+
+
+      /* Utils */
+
+      // RE3: Get the X coordinate of a mouse or a touch event
+      var getMouseEventX = function(event) {
+        if (event.originalEvent) {
+          event = event.originalEvent;
+        }
+        return event.clientX || event.touches[0].clientX;
+      };
+
+      // RE3: Get the Y coordinate of a mouse or touch event
+      var getMouseEventY = function(event) {
+        if (event.originalEvent) {
+          event = event.originalEvent;
+        }
+        return event.clientY || event.touches[0].clientY;
+      };
+
     }
   });
 })();

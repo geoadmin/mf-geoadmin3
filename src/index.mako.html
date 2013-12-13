@@ -121,6 +121,7 @@
         <div ga-attribution ga-attribution-map="map"></div>
       </div>
       <div ga-time-selector-bt id="time-selector-bt"></div>
+      <div ga-swipe ga-swipe-map="map" ga-swipe-active="isSwipeActive"></div>
     </div> <!-- #map -->
 
 
@@ -233,6 +234,26 @@
                     </div>
                   </div>
                 </li>
+                <li><!-- Compare -->
+                  <a class="accordion-toggle collapsed" data-toggle="collapse" href="#compare">
+                    <i class="visible-collapsed icon-plus"></i>
+                    <i class="hidden-collapsed icon-minus"></i>
+                    <span translate>compare</span>
+                  </a>
+                  <div id="compare" class="collapse">
+                    <div class="panel-body">
+                      <ul>
+                        <li>
+                          <a href=""  ng-click="isSwipeActive = !isSwipeActive">
+                            <i class="icon-file ga-icon-separator"></i>
+                            <span translate="{{(isSwipeActive) ? 'swipe_active' : 'swipe_inactive'}}"</span>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </li>
+
               </ul>
             </div>
           </div>
