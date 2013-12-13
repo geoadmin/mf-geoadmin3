@@ -54,7 +54,7 @@
                  layer, layerConfig);
           } else if (layer instanceof ol.layer.Vector) {
              var features = [];
-             src.forEachFeatureInExtent(ext, proj, function(feat) {
+             src.forEachFeatureInExtent(ext, function(feat) {
                features.push(feat);
              });
 
@@ -128,7 +128,7 @@
         'Vector': function(layer, features) {
           var enc = $scope.encoders.
               layers['Layer'].call(this, layer);
-          var format = new ol.parser.GeoJSON();
+          var format = new ol.format.GeoJSON();
           var encStyles = {};
           var encFeatures = [];
           var stylesDict = {};
@@ -138,10 +138,10 @@
             var encStyle = {};
             var geometry = feature.getGeometry();
             var type = geometry ? geometry.getType() : null;
-            var encJSON = JSON.parse(format.write(feature));
+            var encJSON = format.writeFeature(feature);
             encJSON.properties._gx_style = styleId;
             encFeatures.push(encJSON);
-            var symbolizers = feature.getSymbolizers();
+            var symbolizers = layer.getStyleFunction()(feature);
 
             if (symbolizers) {
               var i = symbolizers.length;
