@@ -12,12 +12,13 @@
 
   /**
    * TODOs:
-   * - update ol3 to support dragbox (waitin on pr)
-   * - update ol3 to support getBrowserEvent (waitin on pr)
    * - change cursor on hover (clickable..)
    * - react on changes in layer selection
-   * - rectangle drawing always active. auto-open accordion
+   * - keyboard controls
+   * - update ol3 to support dragbox (waitin on pr)
+   * - update ol3 to support getBrowserEvent (waitin on pr)
    * - translations
+   * - rectangle drawing always active. auto-open accordion
    **/
 
   module.directive('gaFeaturetree',
