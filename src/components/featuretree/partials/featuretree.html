@@ -3,14 +3,17 @@
   <div ng-if="!searchRectangle" translate>inform_draw_rectangl_ctrl</div>
   <ul>
     <li ng-repeat="(key, layer) in tree">
-      <a ng-click="layer.open = !layer.open">
+      <a ng-click="layer.open = !layer.open" class="ga-truncate-text">
         <i ng-class="{'icon-minus': layer.open, 'icon-plus': !layer.open}"></i>
         {{layer.label}}
       </a>
       <ul ng-if="layer.open" class="ga-feature">
         <li ng-repeat="feature in layer.features">
-          <a ng-class="{'selected': feature.selected}" ng-mouseover="selectFeatureInMap(feature)" ng-click="showTooltip(feature)" ng-mouseleave="clearSelection()">{{feature.label}}
-            <i ng-click="recenterToFeature($event, feature)" class="icon-plus"></i>
+          <i ng-click="recenterToFeature($event, feature)" class="icon-plus"></i>
+          <a ng-class="{'selected': feature.selected}"
+              ng-mouseover="selectFeatureInMap(feature)"
+              ng-click="showTooltip(feature)" ng-mouseleave="clearSelection()"
+              class="ga-truncate-text">{{feature.label}}
           </a>
         </li>
       </ul>
