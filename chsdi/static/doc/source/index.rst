@@ -39,8 +39,8 @@ JavaScript API
    api/examples
    api/migration
    
-Services
---------
+Services API
+------------
 
 .. toctree::
    :maxdepth: 1
