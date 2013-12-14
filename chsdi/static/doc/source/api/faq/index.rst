@@ -9,9 +9,9 @@ General Information
 What is the GeoAdmin API ?
 --------------------------
 
-The GeoAdmin API allows the integration in web pages of geospatial information provided by the Swiss Confederation.
+The GeoAdmin API allows the integration in web pages of geospatial information provided by the Swiss Confederation and Cantons.
 
-The GeoAdmin API provides also some REST web services like :doc:`../../services/sdiservices`
+The GeoAdmin API provides also REST web services:doc:`../../services/sdiservices`
 
 Who can use the GeoAdmin API ?
 ------------------------------
@@ -21,12 +21,12 @@ The GeoAdmin API terms of use are accessible here: http://www.geo.admin.ch/inter
 What is the license of the GeoAdmin API ?
 -----------------------------------------
 
-The GeoAdmin API has a BSD license.
+The GeoAdmin JavaScript API has a BSD license.
 
 What are the technical restrictions of the GeoAdmin API ?
 ---------------------------------------------------------
 
-The GeoAdmin API has been tested in the two last version of the following browsers:  Firefox, Internet Explorer, Chrome, Safari.
+The GeoAdmin API has been tested in the two last versions of the following browsers:  Firefox, Internet Explorer, Chrome, Safari.
 
 The GeoAdmin API does support mobile devices.
 
