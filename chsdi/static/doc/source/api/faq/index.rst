@@ -114,6 +114,10 @@ Where is the source code ?
 
 The source code of the GeoAdmin API project can be found here: https://github.com/geoadmin/ol3
 
+I have difficulty to use map.geo.admin.ch, where can I get more help ?
+----------------------------------------------------------------------
+
+The help pages of http://map.geo.admin.ch is accessible here: http://help.geo.admin.ch/
 
 Can I use http://localhost to test my developments ?
 ----------------------------------------------------
