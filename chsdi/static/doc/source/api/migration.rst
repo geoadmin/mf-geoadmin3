@@ -9,11 +9,15 @@ You are therefore free to choose the JavaScript framework you want to use for th
 
 The new service GeoAdmin API is implemented according to the `GeoServices REST API specification <http://www.opengeospatial.org/standards/requests/89>`_
 
-GeoAdmin JavaScript API 3.0 functions has feature equivalence with GeoAdmin Light API 2.0
+Feature equivalence
+~~~~~~~~~~~~~~~~~~~
 
-GeoAdmin Service API 3.0 are migrated and have feature equivalence with GeoAdmin Service API 2.0 v2
+GeoAdmin JavaScript API 3.0 has feature equivalence with GeoAdmin Light API 2.0.
 
-Due to fact that OpenLayers 3 is the base library, the GeoAdmin JavaScript API 3.0 focuses to the map functions only:
+GeoAdmin Service API 3.0 is migrated and has feature equivalence with GeoAdmin Service API 2.0.
+
+Due to fact that OpenLayers 3 is the base library, the GeoAdmin JavaScript API 3.0 focuses on the map functions only:
+
 - Map 
 - Map navigation tools (pan/zoom) 
 - Access to 200+ layers 
