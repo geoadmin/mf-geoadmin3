@@ -24,7 +24,7 @@ What is the license of the GeoAdmin API ?
 The GeoAdmin JavaScript API has a BSD license.
 
 Are the GeoAdmin services running ?
-----------------------------------
+-----------------------------------
 
 The status of all GeoAdmin services and applications is available here: http://status.geo.admin.ch 
 
