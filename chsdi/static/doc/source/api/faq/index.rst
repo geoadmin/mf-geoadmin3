@@ -88,39 +88,6 @@ Here is a list of all the freely accessible layers:
      <script type="text/javascript" src="../../loader.js?lang=en"></script>
    </body>
 
-What mean the permalink parameters ?
-------------------------------------
-
-The permalink parameters are used in map.geo.admin.ch. The JavaScript API doesn't support the pemalink parameters.
-
-===================            ==========================================================    =========================================================
-Parameter                      Description                                                    Example
-===================            ==========================================================    =========================================================
-lang                           Language of the interface: de, fr, it, rm or en               http://map.geo.admin.ch?lang=rm
-zoom                           Zoom level, from 0 to 13                                      http://map.geo.admin.ch?zoom=12
-Y                              easting value (from 450'000 to                                http://map.geo.admin.ch?Y=600000
-                               900'000)
-X                              northing value, ranging from 50'000 to                        http://map.geo.admin.ch?X=150000
-                               350'000 (always smaller than Y)
-bgLayer                        Base layer: one of `ch.swisstopo.pixelkarte-farbe`,           http://map.geo.admin.ch?bgLayer=voidLayer
-                               `ch.swisstopo.pixelkarte-farbe` or `voidLayer`
-layers                         Layer to display, see :ref:`available_layers`                 `http://map.geo.admin.ch/?layers=WMS%7C%7CGeothermie%7C%7C
-                               for a complete list                                           http%3A%2F%2Fwms.geo.admin.ch%2F%3F%7C%7Cch.swisstopo.geo
-                               KML layers are supported with a || separated list with:       logie-geophysik-geothermie,ch.ensi.zonenplan-notfallschut
-                               KML||kml url                                                  z-kernanlagen,KML%7C%7Chttp%3A%2F%2Fwww.meteoschweiz.admi
-                               WMS layers are supported with a || separated list with:       n.ch%2Fweb%2Fde%2Fklima%2Fmesssysteme%2Fboden%2Fgoogle_ea
-                               WMS||layer title||wms url||layer name                         rth.Par.0007.DownloadFile.ext.tmp%2Fobs.kml <http://map.geo.admin.ch/?layers=WMS%7C%7CGeothermie%7C%7Chttp%3A%2F%2Fwms.geo.admin.ch%2F%3F%7C%7Cch.swisstopo.geologie-geophysik-geothermie,ch.ensi.zonenplan-notfallschutz-kernanlagen,KML%7C%7Chttp%3A%2F%2Fwww.meteoschweiz.admin.ch%2Fweb%2Fde%2Fklima%2Fmesssysteme%2Fboden%2Fgoogle_earth.Par.0007.DownloadFile.ext.tmp%2Fobs.kml>`_
-layers_opacity                 Layers opaciy, should match number of layers (0-1.0)          http://map.geo.admin.ch?layers=ch.swisstopo.hiks-dufour&layers_opacity=0.5
-layers_visibility              Toggle the visibility of layers present in the tree           `http://map.geo.admin.ch?layers=ch.swisstopo.hiks-dufour&l
-                                                                                             ayers_visibility=False <http://map.geo.admin.ch?layers=ch.swisstopo.hiks-dufour&layers_visibility=False>`_
-selectedNode                   Selected node in INSPIRE Catalog tree                         http://map.geo.admin.ch/?selectedNode=LT2_3
-<layer bod id>                 Layer bod id (:ref:`available_layers`) from which             http://map.geo.admin.ch/?ch.bafu.bundesinventare-moorlandschaften=212,213
-                               to highlight feature(s) with id                               
-crosshair                      crosshair=<type>, possible type: cross, circle, bowl and      http://map.geo.admin.ch/?Y=538700&X=165890&zoom=6&crosshair=circle
-                               point                                                         
-===================            ==========================================================    =========================================================
-
-
 How can I accessed the tiles ?
 ------------------------------
 
