@@ -4,7 +4,7 @@ API Examples
 GeoAdmin Examples
 ~~~~~~~~~~~~~~~~~
 
-- `Simple GeoAdmin map <../examples/geoadmin_simple.html>`_
+- `GeoAdmin map with overlay layer <../examples/geoadmin_mapoverlay.html>`_
 - `Map with KML file overlay <../examples/geoadmin_kml.html>`_
 
 OpenLayers Examples
