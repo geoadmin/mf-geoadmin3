@@ -657,7 +657,7 @@
    * layers in the map
    */
   module.provider('gaLayerFilters', function() {
-    this.$get = function() {
+    this.$get = function(gaLayers) {
       return {
         /**
          * Filters out background layers, preview
@@ -670,6 +670,19 @@
           return !layer.background &&
                  !layer.preview &&
                  !layer.highlight;
+        },
+        /**
+         * Filters out background layers, preview
+         * layers and highlight layers and drawing
+         * layers. In other words, all layers that
+         * were actively added by the user and that
+         * appear in the layer manager
+         */
+        timeEnabledLayersFilter: function(layer) {
+          return !layer.background &&
+                 !layer.highlight &&
+                 layer.bodId &&
+                 gaLayers.getLayerProperty(layer.bodId, 'timeEnabled');
         }
       };
     };
