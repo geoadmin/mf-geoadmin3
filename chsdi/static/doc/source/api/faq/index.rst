@@ -68,29 +68,39 @@ Here is a list of all the freely accessible layers:
 
    <script type="text/javascript">
 
-    function init() {
-        var myInnerHtml_free, myInnerHtml_notfree, layerArray_free, layerArray_notfree, layers;
-        myInnerHtml_free = "<br><table border=\"0\">";
-        myInnerHtml_notfree =  "<br><table border=\"0\">";
-        layerArray_free = [];
-        layerArray_notfree = [];
-        layers = getConfig();
-        var counterFree = 1;
-        for (var layer in layers) {
-          if (!layers[layer]['parentLayerId']) {
-            myInnerHtml_free = myInnerHtml_free + '<tr><td>' + counterFree + '</td><td><a href="http://map3.geo.admin.ch/?layers=' +
-                                      layer + '" target="new"> ' + layer + '</a>&nbsp('+layers[layer]['label']+')</td></tr>';
-            counterFree++;
-          }
-        }
-        document.getElementById("free").innerHTML=myInnerHtml_free;
-        
+   function init() {
+        $.getJSON( "../../rest/services/api-notfree/MapServer/layersconfig", function( data ) {
+           myInnerHtml_notfree =  "<br><table border=\"0\">";
+           var layers_notfree = data;
+           var counterNotFree = 1;
+           for (var layer in layers_notfree) {
+              if (!layers_notfree[layer]['parentLayerId']) {
+                  myInnerHtml_notfree = myInnerHtml_notfree + '<tr><td>' + counterNotFree + '</td><td><a href="http://map3.geo.admin.ch/?layers=' +
+                    layer + '" target="new"> ' + layer + '</a>&nbsp('+layers_notfree[layer]['label']+')</td></tr>';
+                  counterNotFree++;
+              }
+           }
+           document.getElementById("notfree").innerHTML=myInnerHtml_notfree;
+        });
+        $.getJSON( "../../rest/services/api-free/MapServer/layersconfig", function( data ) {
+           myInnerHtml_free =  "<br><table border=\"0\">";
+           var layers_free = data;
+           var counterFree = 1;
+           for (var layer in layers_free) {
+              if (!layers_free[layer]['parentLayerId']) {
+                  myInnerHtml_free = myInnerHtml_free + '<tr><td>' + counterFree + '</td><td><a href="http://map3.geo.admin.ch/?layers=' +
+                    layer + '" target="new"> ' + layer + '</a>&nbsp('+layers_free[layer]['label']+')</td></tr>';
+                  counterFree++;
+              }
+           }
+           document.getElementById("free").innerHTML=myInnerHtml_free;
+        });
+
    }
 
    </script>
 
    <body onload="init();">
-     <script type="text/javascript" src="../../loader.js?lang=en"></script>
    </body>
 
 How can I accessed the tiles ?
