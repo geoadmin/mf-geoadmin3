@@ -97,6 +97,35 @@
               this.set('type', val);
             }
           },
+          timeEnabled: {
+            get: function() {
+              return this.get('timeEnabled');
+            },
+            set: function(val) {
+              this.set('timeEnabled', val);
+            }
+          },
+          time: {
+            get: function() {
+              var src = this.getSource();
+              if (src instanceof ol.source.WMTS) {
+                return src.getDimensions().Time;
+              } else if (src instanceof ol.source.ImageWMS ||
+                  src instanceof ol.source.TileWMS) {
+                return src.getParams().TIME;
+              }
+              return undefined;
+            },
+            set: function(val) {
+              var src = this.getSource();
+              if (src instanceof ol.source.WMTS) {
+                src.updateDimensions({'Time': val});
+              } else if (src instanceof ol.source.ImageWMS ||
+                  src instanceof ol.source.TileWMS) {
+                src.updateParams({'TIME': val});
+              }
+            }
+          },
           background: {
             writable: true,
             value: false
@@ -544,6 +573,7 @@
             gaDefinePropertiesForLayer(olLayer);
             olLayer.bodId = bodId;
             olLayer.label = layer.label;
+            olLayer.timeEnabled = layer.timeEnabled;
           }
           return olLayer;
         };
@@ -672,17 +702,12 @@
                  !layer.highlight;
         },
         /**
-         * Filters out background layers, preview
-         * layers and highlight layers and drawing
-         * layers. In other words, all layers that
-         * were actively added by the user and that
-         * appear in the layer manager
+         * Keep only time enabled layer
          */
         timeEnabledLayersFilter: function(layer) {
           return !layer.background &&
                  !layer.highlight &&
-                 layer.bodId &&
-                 gaLayers.getLayerProperty(layer.bodId, 'timeEnabled');
+                 layer.timeEnabled;
         }
       };
     };

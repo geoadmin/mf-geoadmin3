@@ -131,12 +131,9 @@
             }
             var src = olLayer.getSource();
             if (src instanceof ol.source.WMTS) {
-              var wmtsTS = timeStampFromYear(layerTimeStr, timestamps);
-              src.updateDimensions({'Time' : wmtsTS});
-            } else if (src instanceof ol.source.ImageWMS ||
-                src instanceof ol.source.TileWMS) {
-              src.updateParams({'TIME' : layerTimeStr});
+              layerTimeStr = timeStampFromYear(layerTimeStr, timestamps);
             }
+            olLayer.time = layerTimeStr;
           }
         });
       };
