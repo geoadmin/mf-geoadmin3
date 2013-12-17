@@ -14,6 +14,7 @@
               ng-mouseover="highlightFeatureInMap(feature)"
               ng-mouseleave="clearHighlight()"
               ng-focus="selectFeature(feature)"
+              ng-keydown="onKeyDown($event, feature, key)"
               class="ga-truncate-text" tabindex=1>{{feature.label}}
           </a>
         </li>
