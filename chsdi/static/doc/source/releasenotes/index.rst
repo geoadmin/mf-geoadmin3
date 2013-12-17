@@ -57,10 +57,17 @@ API & applications
 
 `API <//api3.geo.admin.ch>`__
 -----------------------------------
-- Initial preview
+- Initial preview of the new GeoAdmin API
+- Documentation
+- Support of HTTPS
+- Various minor improvements and glitches
+
 
 `map3.geo.admin.ch <//map3.geo.admin.ch>`__
 --------------------------------------------------
-- Nothing.
+- Fix KML features reprojection
+- Add WMS servers
+- Adding graticule option to print
+- Various minor fixes and improvements
 
 
