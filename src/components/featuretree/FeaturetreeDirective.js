@@ -324,6 +324,24 @@
               });
             };
 
+            scope.onKeyDown = function(evt, feature, index) {
+              if (evt.keyCode == 38) {
+                console.log('up key pressed on feature at', evt, index, feature.layer);
+                if (evt.target.parentElement.previousElementSibling) {
+                  console.log('set it');
+                  evt.target.parentElement.previousElementSibling.focus();
+                  //setTimeout(evt.target.parentElement.previousElementSibling.focus, 0);
+                }
+              } else if (evt.keyCode == 40) {
+                console.log('down key pressed on feature at', evt, index, feature.layer);
+                if (evt.target.parentElement.nextElementSibling) {
+                  console.log('set it');
+                  evt.target.parentElement.nextElementSibling.focus();
+                  //setTimeout(evt.target.parentElement.nextElementSibling.focus, 0);
+                }
+              }
+            };
+
             scope.recenterToFeature = function(evt, f) {
               var recenterObject = {};
               evt.stopPropagation();
