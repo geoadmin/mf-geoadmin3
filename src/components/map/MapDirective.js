@@ -55,8 +55,8 @@
                   gaPermalink.updateParams({X: x, Y: y, zoom: zoom});
                 }
               };
-              view.on('propertychange', gaDebounce.debounce(updatePermalink, 1000,
-                  false));
+              view.on('propertychange', gaDebounce.debounce(updatePermalink,
+                  1000, false));
               updatePermalink();
 
               if (!gaBrowserSniffer.touchDevice) {
