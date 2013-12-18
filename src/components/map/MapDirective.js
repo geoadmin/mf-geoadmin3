@@ -55,7 +55,7 @@
                   gaPermalink.updateParams({X: x, Y: y, zoom: zoom});
                 }
               };
-              view.on('change', gaDebounce.debounce(updatePermalink, 1000,
+              view.on('propertychange', gaDebounce.debounce(updatePermalink, 1000,
                   false));
               updatePermalink();
 
