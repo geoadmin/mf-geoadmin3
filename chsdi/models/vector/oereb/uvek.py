@@ -30,3 +30,15 @@ class Sichereitszonen_Oereb(Base, Vector):
     xmlData = Column('xml_data', Text)
 
 register_oereb('ch.bazl.sicherheitszonenplan.oereb', Sichereitszonen_Oereb)
+
+
+class Kataster_belasteten_standorte_Oereb(Base, Vector):
+    __tablename__ = 'kataster_belasteter_standorte_oev_oereb'
+    __table_args__ = ({'schema': 'bav', 'autoload': False})
+    __bodId__ = 'ch.bav.kataster-belasteter-standorte-oev.oereb'
+    id = Column('stabil_id', Text, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    geomType = Column('geom_type', Text)
+    xmlData = Column('xml_data', Text)
+
+register_oereb('ch.bav.kataster-belasteter-standorte-oev.oereb', Kataster_belasteten_standorte_Oereb)
