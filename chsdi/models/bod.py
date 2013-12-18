@@ -40,9 +40,9 @@ class Bod(object):
         meta = {'attributes': {}}
         for k in self.__dict__.keys():
             if k != '_sa_instance_state':
-                if k in primaryAttr:
+                if k in primaryAttr and self.__dict__[k] is not None:
                     meta[k] = self.__dict__[k]
-                else:
+                elif self.__dict__[k] is not None:
                     meta['attributes'][k] = self.__dict__[k]
         return meta
 
