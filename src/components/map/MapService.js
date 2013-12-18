@@ -517,7 +517,7 @@
                   url: wmsUrl,
                   params: wmsParams,
                   attributions: attributions,
-                  gutter: layer.gutter ? layer.gutter : 0
+                  gutter: layer.gutter || 0
                 });
               }
               olLayer = new ol.layer.Tile({
