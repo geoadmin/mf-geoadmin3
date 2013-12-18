@@ -8,14 +8,15 @@
         {{layer.label}}
       </a>
       <ul ng-if="layer.open" class="ga-feature">
-        <li ng-repeat="(key, feature) in layer.features">
+        <li ng-repeat="(key, feature) in layer.features"
+            ng-keydown="onKeyDown($event, feature, key)"
+            ng-focus="selectFeature(feature)"
+            tabindex=1>
           <i ng-click="recenterToFeature($event, feature)" class="icon-plus"></i>
           <a ng-class="{'selected': feature.selected}"
               ng-mouseover="highlightFeatureInMap(feature)"
               ng-mouseleave="clearHighlight()"
-              ng-focus="selectFeature(feature)"
-              ng-keydown="onKeyDown($event, feature, key)"
-              class="ga-truncate-text" tabindex=1>{{feature.label}}
+              class="ga-truncate-text">{{feature.label}}
           </a>
         </li>
       </ul>

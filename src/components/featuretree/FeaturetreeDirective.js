@@ -14,8 +14,7 @@
    * TODOs:
    * - keyboard controls
    * - create all sphinxsearch indices (querable layers)
-   * - update ol3 to support dragbox (PR done, waiting on merge)
-   * - update ol3 to support getBrowserEvent (waitin on vector-api update)
+   * - updtae ol3 to export readFeatureFromObject function
    * - translations
    * - rectangle drawing always active. auto-open accordion
    **/
@@ -303,9 +302,8 @@
             scope.highlightFeatureInMap = function(feature) {
               loadGeometry(feature, function() {
                 if (feature.geometry) {
-                  parser.readObject(feature.geometry,
-                                    highlightLayer.getSource().addFeature,
-                                    highlightLayer.getSource());
+                  highlightLayer.getSource().addFeature(
+                      parser.readFeatureFromObject(feature.geometry));
                   assureLayerOnTop(highlightLayer);
                 }
               });
@@ -325,23 +323,24 @@
             };
 
             scope.onKeyDown = function(evt, feature, index) {
+              var focusFn, el;
+              //upKey
               if (evt.keyCode == 38) {
-                //console.log('up key pressed on feature at', evt,
-                //              index, feature.layer);
-                if (evt.target.parentElement.previousElementSibling) {
-                  //console.log('set it');
-                  evt.target.parentElement.previousElementSibling.focus();
-                  //setTimeout(evt.target.parentElement.previousElementSibling.focus,
-                  //             0);
+                if (evt.target &&
+                    evt.target.previousElementSibling) {
+                  $timeout(function() {
+                    evt.target.previousElementSibling.focus();
+                  }, 0);
+                  evt.preventDefault();
                 }
+              //downKey
               } else if (evt.keyCode == 40) {
-                //console.log('down key pressed on feature at', evt, index,
-                //              feature.layer);
-                if (evt.target.parentElement.nextElementSibling) {
-                  //console.log('set it');
-                  evt.target.parentElement.nextElementSibling.focus();
-                  //setTimeout(evt.target.parentElement.nextElementSibling.focus,
-                  //             0);
+                if (evt.target &&
+                    evt.target.nextElementSibling) {
+                  $timeout(function() {
+                    evt.target.nextElementSibling.focus();
+                  }, 0);
+                  evt.preventDefault();
                 }
               }
             };
