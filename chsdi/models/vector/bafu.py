@@ -17,9 +17,8 @@ class AM_G(Base, Vector):
     __bodId__ = 'ch.bafu.bundesinventare-amphibien_wanderobjekte'
     __template__ = 'templates/htmlpopup/bundinv_amphibien_w.mako'
     id = Column('am_g_obj', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     am_g_name = Column('am_g_name', Text)
-    the_geom = Column(Geometry)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bafu.bundesinventare-amphibien_wanderobjekte', AM_G)
 
