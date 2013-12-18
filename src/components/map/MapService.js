@@ -516,7 +516,8 @@
                 olSource = layer.olSource = new ol.source.TileWMS({
                   url: wmsUrl,
                   params: wmsParams,
-                  attributions: attributions
+                  attributions: attributions,
+                  gutter: layer.gutter ? layer.gutter : 0
                 });
               }
               olLayer = new ol.layer.Tile({
