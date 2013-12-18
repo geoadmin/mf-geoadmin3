@@ -56,6 +56,7 @@ class LayersConfig(Base):
     background = Column('backgroundlayer', Boolean)
     hasLegend = Column('haslegend', Boolean)
     format = Column('image_format', Text)
+    gutter = Column('wms_gutter', Integer)
     type = Column('layertype', Text)
     highlightable = Column('highlightable', Boolean)
     opacity = Column('opacity', postgresql.DOUBLE_PRECISION)
