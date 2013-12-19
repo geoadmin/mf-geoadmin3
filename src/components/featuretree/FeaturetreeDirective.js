@@ -389,6 +389,8 @@
                   rectangleLayer.getSource().addFeature(
                       new ol.Feature(scope.searchRectangle));
                 }
+                evt.preventDefault();
+                evt.stopPropagation();
               }
             });
 
