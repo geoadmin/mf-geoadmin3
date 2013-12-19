@@ -481,7 +481,7 @@
             olLayer = new ol.layer.Tile({
               minResolution: layer.minResolution,
               maxResolution: layer.maxResolution,
-              opacity: layer.opacity,
+              opacity: layer.opacity || 1,
               source: olSource
             });
           } else if (layer.type == 'wms') {
@@ -508,7 +508,7 @@
               olLayer = new ol.layer.Image({
                 minResolution: layer.minResolution,
                 maxResolution: layer.maxResolution,
-                opacity: layer.opacity,
+                opacity: layer.opacity || 1,
                 source: olSource
               });
             } else {
@@ -522,7 +522,7 @@
               olLayer = new ol.layer.Tile({
                 minResolution: layer.minResolution,
                 maxResolution: layer.maxResolution,
-                opacity: layer.opacity,
+                opacity: layer.opacity || 1,
                 source: olSource
               });
             }
@@ -536,7 +536,7 @@
             olLayer = new ol.layer.Group({
               minResolution: layer.minResolution,
               maxResolution: layer.maxResolution,
-              opacity: layer.opacity,
+              opacity: layer.opacity || 1,
               layers: subLayers
             });
           }
@@ -815,7 +815,9 @@
               }
               if (angular.isDefined(layer)) {
                 layer.setVisible(visible);
-                layer.setOpacity(opacity);
+                if (index < layerOpacities.length) {
+                  layer.setOpacity(opacity);
+                }
                 map.addLayer(layer);
               }
 
