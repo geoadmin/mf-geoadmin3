@@ -1575,6 +1575,9 @@ msgstr "Géotopes suisses"
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas"
 msgstr "Atlas gravimétrique"
 
+msgid "ch.swisstopo.geologie-gravimetrischer_atlas.metadata"
+msgstr "Découpage atlas gravimétrique"
+
 msgid "ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen"
 msgstr "Réservoirs aquifères"
 
