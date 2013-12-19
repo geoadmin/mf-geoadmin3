@@ -709,6 +709,12 @@ ul.panel-body-wide {
       cursor: default;
     }
   }
+  .time-label {
+    position: absolute;
+    top: .5em;
+    right: 16px;
+    color: red;
+  }
   .layerinfo, .ordering, .icon-gear {
     position: absolute;
     top: .6em;
@@ -727,7 +733,9 @@ ul.panel-body-wide {
   label {
     font-weight: normal;
     &:first-of-type {
+      width: 100%;
       padding-left: 2.7em;
+      padding-right: 1.3em;
     }
     &.transparency {
       padding-left: 3em;
@@ -736,7 +744,10 @@ ul.panel-body-wide {
       input {
         vertical-align: middle;
       }
-    }
+    } 
+  }
+  .timeEnabled label:first-of-type {
+    padding-right: 3.7em;
   }
   input[type=checkbox] {
     vertical-align: -10%;
@@ -782,12 +793,27 @@ ul.panel-body-wide {
       line-height: 3em;
       padding: 0;
       overflow: hidden;
+      
+      label:first-of-type {
+        padding-right: 2.1em;
+        height: 35px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis; 
+      }
+      &.timeEnabled label:first-of-type {
+        padding-right: 4.7em; 
+      }
     }
     input[type=range] {
       width: 8em;
-    }
+    }       
     label.transparency {
       padding-left: 1em;
+    }
+    .time-label {
+      top: 0em;
+      right: 28px;
     }
     .layertools {
       position: absolute;

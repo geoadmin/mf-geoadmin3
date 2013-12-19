@@ -1,11 +1,27 @@
 [ga-time-selector-bt] {
   position: absolute;
-  top: 400px;
+  top: 389px;
   right: 7px;
   width: 44px;
   height: 44px;
   text-align: center;
   z-index: 1000;
+  
+  a {  
+    display: block;
+    cursor: pointer;
+    text-decoration: none;
+    height: 44px;  
+    background: data-uri('time_black_disabled.png') no-repeat center center;
+    
+    &.enabled {
+      background: data-uri('time_black.png') no-repeat center center;
+    }
+
+    &.active {
+      background: data-uri('time_red.png') no-repeat center center;
+    }
+  }
 
   @media screen and (max-width: @screen-tablet) {
     top: 260px;
@@ -25,52 +41,34 @@
   box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.175);   
   padding: 5px;
   overflow: hidden;
+
+  @media screen and (max-width: @screen-tablet) {
+    top: 90px;/* Under the pulldown menu */   
+    margin-left: -104px;
+  }  
   
-  &.mobile {
-    margin-left: -75px;
-    
-    @media screen and (max-width: @screen-phone) {
-      top: 57px;
-    } 
+  @media screen and (max-width: @screen-phone) {
+    top: 57px;
+  } 
+}
+
+.ga-time-selector-select {
+  display: none;
+  width: 150px;
+  top: 57px; 
+   
+  @media (max-width: @screen-tablet) {
+    display: inline-block;      
   }
 }
 
-.time-selector-bt {  
-  cursor: pointer;
-  text-decoration: none;
-  display: none; 
-  height: 44px;  
-  background: data-uri('time_black.png');
-  
-  &.enabled {
-    display: block;
-  }
-
-  &.active {
-    display: block;
-    background: data-uri('time_red.png');
-  }
-}
-
-.time-selector-container {   
-
-  .last-title {
-    position: absolute;
-    right: 2px;
-    bottom: 2px; 
-  }
-
-  &.mobile {
-    margin-left: -104px; 
-  
-    a {
-      line-height: 8px;
-    }
-
-    .last-title {
-      display: none;
-    }
-  }
+.ga-time-selector-slider {
+  height: 30px;
+  width: 507px; 
+  display: inline-block;
+  position: relative;
+  margin: 0px 40px 15px 40px;
+  vertical-align: bottom;
  
   a {
     color: red;
@@ -80,30 +78,7 @@
       text-decoration: none;
     }
   }
-  
-  select {
-    display: inline-block;
-    width: 150px;
-    top: 57px; 
-  }
 
-  @media (max-width: @screen-tablet) {
-    top: 90px;/* Under the pulldown menu */      
-  }
-
-  @media (max-width: @screen-phone) {
-    top: 57px;
-  }
-}
-
-.time-selector-slider {
-  height: 30px;
-  width: 507px; 
-  display: inline-block;
-  position: relative;
-  margin: 0px 40px 15px 40px;
-  vertical-align: bottom;
- 
   .ga-slider {
     height: 100%;
     margin: 0px;
@@ -134,10 +109,7 @@
       overflow: hidden;
       padding: 0px;
       text-align: center;
-            
-      &.available {
-        color: red; 
-      }
+      color: red; 
        
       input[type=text] {
         line-height: 20px;
@@ -202,5 +174,9 @@
         }
       }
     }
+  }
+  
+  @media (max-width: @screen-tablet) {
+    display: none;      
   }
 }

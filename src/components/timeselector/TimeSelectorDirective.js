@@ -1,14 +1,12 @@
 (function() {
   goog.provide('ga_timeselector_directive');
 
-  goog.require('ga_browsersniffer_service');
   goog.require('ga_debounce_service');
   goog.require('ga_map_service');
   goog.require('ga_permalink_service');
   goog.require('ga_slider_directive');
 
   var module = angular.module('ga_timeselector_directive', [
-    'ga_browsersniffer_service',
     'ga_debounce_service',
     'ga_map_service',
     'ga_permalink_service',
@@ -133,12 +131,9 @@
             }
             var src = olLayer.getSource();
             if (src instanceof ol.source.WMTS) {
-              var wmtsTS = timeStampFromYear(layerTimeStr, timestamps);
-              src.updateDimensions({'Time' : wmtsTS});
-            } else if (src instanceof ol.source.ImageWMS ||
-                src instanceof ol.source.TileWMS) {
-              src.updateParams({'TIME' : layerTimeStr});
+              layerTimeStr = timeStampFromYear(layerTimeStr, timestamps);
             }
+            olLayer.time = layerTimeStr;
           }
         });
       };
@@ -174,54 +169,75 @@
     }
   );
 
-  module.directive('gaTimeSelectorBt', function($rootScope, gaPermalink) {
+  module.directive('gaTimeSelectorBt', function($rootScope, gaPermalink,
+      $translate) {
     return {
       restrict: 'A',
-      template: '<a href="#" class="time-selector-bt"' +
-          ' ng-click="toggle($event)" ng-class="stateClass"></a>',
+      template: '<a href="#" ng-click="toggle($event)" ng-class="stateClass">' +
+          '</a>',
       link: function(scope, elt, attrs) {
-        scope.isDisable = true;
 
-        $rootScope.$on('gaTimeSelectorEnabled', function() {
+        // Enable the button if it is disable
+        var enable = function() {
           if (scope.isDisable) {
             scope.stateClass = 'enabled';
             scope.isDisable = false;
-
-            // When isActive is undefined that means it's the first time
-            // the button is enabled.
-            // Force activation of the TimeSelector if a time parameter is
-            // defined in the permalink
-            if (!angular.isDefined(scope.isActive) &&
-               angular.isDefined(gaPermalink.getParams().time)) {
-              scope.toggle();
-            }
+            elt.tooltip('destroy');
+            elt.tooltip({
+              placement: 'left',
+              title: function() {
+                return $translate('time_bt_enabled_tooltip');
+              }
+            });
           }
-        });
+        };
 
-        $rootScope.$on('gaTimeSelectorDisabled', function() {
+        // Disable the button in any case
+        var disable = function() {
           scope.stateClass = '';
           scope.isDisable = true;
           scope.isActive = false;
-        });
+          elt.tooltip('destroy');
+          elt.tooltip({
+            placement: 'left',
+            title: function() {
+               return $translate('time_bt_disabled_tooltip');
+            }
+          });
+        };
 
-        // Toggle the state of the component
+        // Events to force the state of the component from another directive
+        $rootScope.$on('gaTimeSelectorEnabled', enable);
+        $rootScope.$on('gaTimeSelectorDisabled', disable);
+
+        // Toggle the state of the component between active and enable
         scope.toggle = function(event) {
           if (!scope.isDisable) {
             scope.isActive = !scope.isActive;
             scope.stateClass = scope.isActive ? 'active' : 'enabled';
             $rootScope.$broadcast('gaTimeSelectorToggle', scope.isActive);
           }
+
           // Avoid the add of # at the end of the url
           if (event) {
             event.preventDefault();
           }
         };
+
+        // Initially the button is always disable, then if a parameter exists in
+        // the permalink we enable the button then we active the slider.
+        disable();
+        if (angular.isDefined(gaPermalink.getParams().time)) {
+          enable();
+          scope.toggle();
+        }
       }
     };
   });
 
   module.directive('gaTimeSelector',
-    function($rootScope, gaBrowserSniffer, gaPermalink, gaLayers, gaDebounce) {
+    function($rootScope, gaBrowserSniffer, gaPermalink, gaLayers, gaDebounce,
+        gaLayerFilters) {
       return {
         restrict: 'A',
         templateUrl: function(element, attrs) {
@@ -234,61 +250,33 @@
         },
         controller: 'GaTimeSelectorDirectiveController',
         link: function(scope, elt, attrs, controller) {
-
-          // Add css mobile class
-          if (gaBrowserSniffer.mobile) {
-            elt.addClass('mobile');
-          }
-
           /**
-           * Update list of available years then hide/show the HTML
-           * element if the list is empty or not
+           * Refresh the list of available date and the currentYear on each
+           * changes in the layers list.
            */
-          var refreshComp = function(collectionEvent) {
-            var olLayers = collectionEvent.target;
-            // If there is only timeEnabled layers on the map we enable the
-            // TimeSelector button else we disabled it
-            var enabled = false;
-            for (var i = 0, length = olLayers.getLength(); i < length; i++) {
-
-              // if there is one no- bod layer we disable the time selector
-              var olLayer = olLayers.getAt(i);
-              if (olLayer.highlight || olLayer.background) {
-                continue;
-              }
-              var id = olLayer.bodId;
-              if (!id) {
-                enabled = false;
-              } else {
-                enabled = gaLayers.getLayerProperty(id, 'timeEnabled');
-              }
-              if (!enabled) {
-                break;
-              }
-            }
-
-
-            // if the time selector is active, the slider is already initialized
-            // and there is dates available, we magnetize the current date value
-            // to the closest available date if needed
-            if (scope.isActive && scope.currentYear !== -1 &&
-                scope.updateDatesAvailable()) {
+          var refreshComp = function(olLayers) {
+            // We update the list of dates available then
+            // we magnetize the current year value
+            // to the closest available year if needed
+            if (scope.updateDatesAvailable()) {
               scope.magnetize();
             }
 
-            // we force the state of the time selector
-            if (!enabled) {
-              scope.isActive = false;
+            // If there is one or more timeEnabled layer
+            // we broadcast event to inform other directives that the slider
+            // can be activate or not
+            if (olLayers.length == 0 && !fromPermalink) {
               $rootScope.$broadcast('gaTimeSelectorDisabled');
             } else {
               $rootScope.$broadcast('gaTimeSelectorEnabled');
             }
-
           };
-          scope.map.getLayers().on('add', refreshComp);
-          scope.map.getLayers().on('remove', refreshComp);
 
-          // Active/deactive manually the time selector
+          scope.layers = scope.map.getLayers().getArray();
+          scope.layerFilter = gaLayerFilters.timeEnabledLayersFilter;
+          scope.$watchCollection('layers | filter:layerFilter', refreshComp);
+
+          // Activate/deactivate manually the time selector
           $rootScope.$on('gaTimeSelectorToggle', function(event, active) {
             scope.isActive = active;
           });
@@ -297,29 +285,10 @@
           scope.$watch('isActive', function(active) {
             if (angular.isDefined(active)) {
               scope.stateClass = (active) ? 'active' : '';
-              if (active) {
-                // Set default value on the first display
-                if (scope.currentYear === -1) {
-                  var permalinkValue = parseFloat(gaPermalink.getParams().time);
-                  scope.currentYear = !isNaN(permalinkValue) ?
-                      permalinkValue : scope.maxYear;
-                }
-
-                // If the currentYear has not changed we force the refresh of
-                // layers
-                if (scope.updateDatesAvailable()) {
-                  scope.magnetize();
-                } else {
-                  applyNewYear(scope.currentYear);
-                }
-
-              } else {
-                // Here we don't set currentYear as undefined to keep the last
-                // value selected by the user.
-                applyNewYear((active ? scope.currentYear : undefined));
-              }
+              applyNewYear((active ? scope.currentYear : undefined));
             }
           });
+
           scope.$watch('currentYear', function(year) {
             if (scope.isActive) {
               applyNewYearDebounced(year);
@@ -361,6 +330,12 @@
             }
             return year;
           };
+
+          // Initialize the state of the component
+          var permalinkValue = parseFloat(gaPermalink.getParams().time);
+          var fromPermalink = !isNaN(permalinkValue);
+          scope.currentYear = (fromPermalink) ? permalinkValue : scope.maxYear;
+          scope.isActive = fromPermalink;
         }
       };
     }
