@@ -36,4 +36,48 @@
       }
     };
   });
+
+  /**
+   * The directive below allows you to connect to a
+   * boostrap collapsible element and observe state
+   * changes. Use it like:
+   * ga-collapsible-observe="variable"
+   * When the state of the collapsible changes, the
+   * 'variable' passed as parameter will be changed.
+   * true if it's shown, false if it's hidden.
+   *
+   * It's a conveniencs directive that removes
+   * the need to create a controller specifically for
+   * a collapsible element
+   *
+   * Note: don't use this directive if you have a
+   * ng-controller already on the same element. In
+   * that case, you can use the standard
+   * 'show.bs.collapse' and 'hide.bs.collapse' messages
+   * of bootstrap on your elements
+   */
+  module.directive('gaCollapsibleObserve', function() {
+    return {
+      restrict: 'A',
+      scope: {
+        shown: '=gaCollapsibleObserve'
+      },
+      link: function(scope, element, attrs) {
+
+        element.on('show.bs.collapse', function() {
+          scope.$apply(function() {
+            scope.shown = true;
+          });
+        });
+
+        element.on('hidden.bs.collapse', function() {
+          scope.$apply(function() {
+            scope.shown = false;
+          });
+        });
+      }
+    };
+  });
+
+
 })();
