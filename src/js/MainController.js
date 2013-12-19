@@ -73,11 +73,11 @@ module.controller('GaMainController',
 
       $rootScope.$on('gaTopicChange', function(event, topic) {
         $scope.topicId = topic.id;
-        var showCatalog = topic.showCatalog;
+        var showCatalog = topic.showCatalog ? 'show' : 'hide';
         if (gaBrowserSniffer.mobile) {
-          showCatalog = false;
+          showCatalog = 'hide';
         }
-        $rootScope.$broadcast('gaCatalogState', showCatalog);
+        $rootScope.$broadcast('catalogCollapse', showCatalog);
       });
 
       $rootScope.$on('$translateChangeEnd', function() {
