@@ -60,6 +60,7 @@
 
             scope.layerFilter = function(l) {
               return gaLayerFilters.selectedLayersFilter(l) &&
+                     l.visible &&
                      gaLayers.getLayer(l.bodId) &&
                      gaLayers.getLayerProperty(l.bodId, 'queryable');
 
