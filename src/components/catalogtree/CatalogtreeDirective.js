@@ -170,7 +170,7 @@
               });
             });
 
-            scope.layerFilter = gaLayerFilters.selectedLayersFilter;
+            scope.layerFilter = gaLayerFilters.selected;
 
             scope.$watchCollection('layers | filter:layerFilter',
                 function(layers) {

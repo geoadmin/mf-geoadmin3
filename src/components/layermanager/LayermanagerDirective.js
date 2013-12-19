@@ -42,7 +42,7 @@
 
             scope.layers = map.getLayers().getArray();
 
-            scope.layerFilter = gaLayerFilters.selectedLayersFilter;
+            scope.layerFilter = gaLayerFilters.selected;
 
             scope.removeLayerFromMap = function(layer) {
               map.removeLayer(layer);
