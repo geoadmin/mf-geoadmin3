@@ -666,7 +666,7 @@
          * were actively added by the user and that
          * appear in the layer manager
          */
-        selectedLayersFilter: function(layer) {
+        selected: function(layer) {
           return !layer.background &&
                  !layer.preview &&
                  !layer.highlight;
@@ -767,7 +767,7 @@
 
         scope.layers = map.getLayers().getArray();
 
-        scope.layerFilter = gaLayerFilters.selectedLayersFilter;
+        scope.layerFilter = gaLayerFilters.selected;
 
         scope.$watchCollection('layers | filter:layerFilter',
             function(layers) {

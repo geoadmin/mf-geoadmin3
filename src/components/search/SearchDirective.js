@@ -337,7 +337,7 @@
 
               scope.searchableLayersFilter = function(layer) {
                 var layerBodId = layer.bodId;
-                return gaLayerFilters.selectedLayersFilter(layer) &&
+                return gaLayerFilters.selected(layer) &&
                        angular.isDefined(layerBodId) &&
                        gaLayers.getLayerProperty(layerBodId, 'searchable');
               };
