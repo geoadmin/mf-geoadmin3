@@ -3380,3 +3380,10 @@ msgstr ""
 
 msgid "bfs_noas04_72"
 msgstr ""
+
+msgid "format_de"
+msgstr ""
+
+msgid "autor"
+msgstr ""
+

@@ -320,6 +320,9 @@ msgstr "Nummer Geologischer Atlas"
 msgid "ausgabejahr"
 msgstr "Ausgabejahr"
 
+msgid "autor"
+msgstr "Author"
+
 msgid "bafu_NHVText"
 msgstr "OPN Status"
 
@@ -1913,6 +1916,9 @@ msgstr "Area [m2]"
 
 msgid "fliessgewaesser"
 msgstr "Fliessgewässer"
+
+msgid "format_de"
+msgstr "Available formats"
 
 msgid "fp_E95_N95"
 msgstr "Coordinates MN95 (E / N)"

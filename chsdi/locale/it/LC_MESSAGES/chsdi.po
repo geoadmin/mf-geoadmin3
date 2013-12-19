@@ -320,6 +320,9 @@ msgstr "Numéro du atlas géologique"
 msgid "ausgabejahr"
 msgstr "Anno di pubblicazione"
 
+msgid "autor"
+msgstr "Autore"
+
 msgid "bafu_NHVText"
 msgstr "Stato OPN"
 
@@ -1912,6 +1915,9 @@ msgstr "Surface [m2]"
 
 msgid "fliessgewaesser"
 msgstr "Cours d'eau"
+
+msgid "format_de"
+msgstr "Formati disponibili"
 
 msgid "fp_E95_N95"
 msgstr "Coordinate MN95 (E / N)"
