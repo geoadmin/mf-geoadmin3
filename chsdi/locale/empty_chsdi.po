@@ -3437,3 +3437,12 @@ msgstr ""
 
 msgid "bfs_noas04_72"
 msgstr ""
+
+msgid "format_de"
+msgstr ""
+
+msgid "autor"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-gravimetrischer_atlas.metadata"
+msgstr ""
