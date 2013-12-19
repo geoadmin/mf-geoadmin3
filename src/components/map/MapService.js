@@ -347,18 +347,19 @@
           };
 
           // Change cursor style on mouse move
-          var onMouseMove = function(evt) {
+          // FIXME: It's nice but unusable when too much features are displayed
+          /*var onMouseMove = function(evt) {
             var pixel = (evt.originalEvent) ?
                 olMap.getEventPixel(evt.originalEvent) :
                 evt.getPixel();
 
             var features = findFeatures(pixel);
-            if (features.length > 0) {
+            if (features.length > 0 && features[0].get('description')) {
               olMap.getTarget().style.cursor = 'pointer';
             } else {
               olMap.getTarget().style.cursor = '';
             }
-          };
+          };*/
 
           // Display popup on mouse click
           var onMapClick = function(evt) {
@@ -370,12 +371,14 @@
             var features = findFeatures(pixel);
             if (features.length > 0) {
               var feature = features[0];
-              gaPopup.create({
-                title: feature.get('name'),
-                content: feature.get('description'),
-                x: pixel[0],
-                y: pixel[1]
-              }).open();
+              if (feature.get('description')) {
+                gaPopup.create({
+                  title: feature.get('name'),
+                  content: feature.get('description'),
+                  x: pixel[0],
+                  y: pixel[1]
+                }).open();
+              }
             }
           };
 
@@ -383,13 +386,13 @@
           olMap.getLayers().on('add', function(layersEvent) {
             if (layersEvent.getElement() === olLayer) {
               listenerKey = gaMapClick.listen(olMap, onMapClick);
-              $(olMap.getViewport()).on('mousemove', onMouseMove);
+              //$(olMap.getViewport()).on('mousemove', onMouseMove);
             }
           });
           olMap.getLayers().on('remove', function(layersEvent) {
             if (layersEvent.getElement() === olLayer) {
               olMap.unByKey(listenerKey);
-              $(olMap.getViewport()).unbind('mousemove', onMouseMove);
+              //$(olMap.getViewport()).unbind('mousemove', onMouseMove);
             }
           });
 
