@@ -12,9 +12,7 @@
 
   /**
    * TODOs:
-   * - keyboard controls
    * - create all sphinxsearch indices (querable layers)
-   * - updtae ol3 to export readFeatureFromObject function
    * - translations
    * - rectangle drawing always active. auto-open accordion
    **/
@@ -303,7 +301,7 @@
               loadGeometry(feature, function() {
                 if (feature.geometry) {
                   highlightLayer.getSource().addFeature(
-                      parser.readFeatureFromObject(feature.geometry));
+                      parser.readFeature(feature.geometry));
                   assureLayerOnTop(highlightLayer);
                 }
               });
