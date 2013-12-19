@@ -248,8 +248,7 @@
               map.getLayers().forEach(function(l) {
                 var bodId = l.bodId,
                     layerToQuery = {},
-                    timestamps,
-                    src;
+                    timestamps, timeBehaviour;
                 if (gaLayers.getLayer(bodId) &&
                     gaLayers.getLayerProperty(bodId, 'queryable') &&
                     l.visible &&
@@ -258,16 +257,15 @@
 
                   timestamps = getLayerTimestamps(bodId);
                   if (angular.isDefined(timestamps)) {
-                    src = l.getSource();
+
                     layerToQuery.year = year;
-                    //FIXME: we should use new 'timebehaviour' attribute
-                    //to define what should happen if we have
-                    //year === undefined (either take last year or no
-                    //time attribute at all (meaning all))
-                    //Note: year === null does not exist anymore
-                    if (src instanceof ol.source.WMTS &&
-                        !angular.isDefined(year)) {
-                      layerToQuery.year = yearFromString(timestamps[0]);
+
+                    //In case we don't have active year,
+                    //the timeBehaviour decide on what to do
+                    if (!angular.isDefined(layerToQuery.year) &&
+                        gaLayers.getLayerProperty(bodId, 'timeBehaviour') !==
+                            'all') {
+                        layerToQuery.year = yearFromString(timestamps[0]);
                     }
                   }
 
