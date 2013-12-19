@@ -5,18 +5,47 @@
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
     <base href="../../../">
+    <script>
+      function toAbsURL(s) {
+        var l = location, h, p, f, i;
+        if (/^\w+:/.test(s)) {
+          return s;
+        }
+        h = l.protocol + '//' + l.host;
+        if (s.indexOf('/') == 0) {
+          return h + s;
+        }
+        p = l.pathname.replace(/\/[^\/]*$/, '');
+        f = s.match(/\.\.\//g);
+        if (f) {
+          s = s.substring(f.length * 3);
+          for (i = f.length; i--;) {
+            p = p.substring(0, p.lastIndexOf('/'));
+          }
+        }
+        return h + p + '/' + s;
+      }
+    </script>
+    <!--[if IE]>
+    <script>
+      (function() {
+        var base = document.getElementsByTagName('base')[0];
+        base.href = toAbsURL(base.href);
+      })();
+    </script>
+    <![endif]-->
     <link href="style/app.css" rel="stylesheet" media="screen">
     <style>
       #container {
       }
       #map {
-        height: 400px;
-        width: 400px;
+        height: 600px;
+        width: 900px;
         float: left;
       }
 
       #featurecontainer {
-        margin-left: 430px;
+        margin-left: 930px;
       }
 
       #featurecontainer .hidden-collapsed {
@@ -59,10 +88,13 @@
         <div>
       </div>
     </div>
+    <div ga-tooltip ga-tooltip-map="map" ga-tooltip-options="options"></div>
+
+
     
        
     <script src="lib/jquery-2.0.3.js"></script>
-    <script src="lib/angular-1.2.0rc2.js"></script>
+    <script src="lib/angular-1.2.1.js"></script>
     <script src="lib/angular-translate-1.1.0.js"></script>
     <script src="lib/angular-translate-loader-static-files-0.1.5.js"></script>
     <script src="lib/bootstrap-3.0.0.js"></script>
@@ -74,19 +106,24 @@
     <script src="lib/ol-whitespace.js"></script>
     <script src="deps.js"></script>
     <script>
+      goog.require('ga_popup');
+      goog.require('ga_tooltip');
       goog.require('ga_featuretree');
       goog.require('ga_map');
     </script>
     <script>
       (function() {
         var module = angular.module('ga_featuretree_example', [
+          'ga_popup',
+          'ga_tooltip',
           'ga_featuretree',
           'ga_map'
         ]);
         
-        module.constant('gaGlobalOptions',
-          {serviceUrl : 'http://mf-chsdi30t.bgdi.admin.ch',
-           baseUrlPath: ''});
+        module.constant('gaGlobalOptions', {
+          serviceUrl : '//mf-chsdi3.dev.bgdi.ch',
+          baseUrlPath: '/main'
+        });
 
          module.config(['gaLayersProvider', function(gaLayersProvider) {
            gaLayersProvider.wmtsGetTileUrlTemplate =
@@ -94,20 +131,26 @@
                '{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
 
            gaLayersProvider.layersConfigUrlTemplate =
-               'http://mf-chsdi30t.bgdi.admin.ch/rest/services/{Topic}/MapServer/layersconfig' +
+               'http://mf-chsdi3.dev.bgdi.ch/rest/services/{Topic}/MapServer/layersconfig' +
                '?lang={Lang}';
            gaLayersProvider.legendUrlTemplate =
-               'http://mf-chsdi30t.bgdi.admin.ch/rest/services/{Topic}/MapServer/{Layer}/getlegend' +
+               'http://mf-chsdi3.dev.bgdi.ch/rest/services/{Topic}/MapServer/{Layer}/getlegend' +
                '?lang={Lang}';
         }]);
+
+        module.config(['gaRecenterMapOnFeaturesProvider', function(gaRecenterMapOnFeaturesProvider) {
+          gaRecenterMapOnFeaturesProvider.url =
+              '/main/rest/services/all/MapServer/';
+        }]);
+ 
  
 
 
         module.controller('MainController', 
-          ['$timeout', '$rootScope', '$scope', 'gaLayers', 
-          function($timeout, $rootScope, $scope, gaLayers) {
+          ['$timeout', '$rootScope', '$scope', 'gaLayers', 'gaGlobalOptions',
+          function($timeout, $rootScope, $scope, gaLayers, gaGlobalOptions) {
 
-            var swissExtent = [485869.5728, 837076.5648, 76443.1884, 299941.7864];
+            var swissExtent = [485869.5728, 76443.1884, 837076.5648, 299941.7864];
             var swissProjection = ol.proj.configureProj4jsProjection({
               code: 'EPSG:21781',
               extent: swissExtent
@@ -130,35 +173,34 @@
             });
 
             $scope.map = map;
-            //FIXME there should be a better way to boostrap our components
-            $timeout(function() {
-              $rootScope.$broadcast('gaTopicChange', {id: 'ech'});
-            }, 333);
-
-            $scope.$on('gaLayersChange', function() {
-              var layer = gaLayers.getOlLayerById('ch.swisstopo.swissimage');
+            gaLayers.loadForTopic('ech', 'en').then(function() {
+              var layer = gaLayers.getOlLayerById('ch.swisstopo.pixelkarte-farbe');
+              layer.background = true;
               map.addLayer(layer);
-              layer = gaLayers.getOlLayerById('ch.astra.ivs-nat');
-              map.addLayer(layer);
-              layer = gaLayers.getOlLayerById('ch.astra.ivs-reg_loc');
-              map.addLayer(layer);
-              //FIXME you can add the following once we support aggregate layers
-              /*
-              layer = gaLayers.getOlLayerById('ch.bfs.gebaeude_wohnungs_register');
-              map.addLayer(layer);
-              */
+              map.addLayer(gaLayers.getOlLayerById('ch.bafu.bundesinventare-auen'));
+              map.addLayer(gaLayers.getOlLayerById('ch.babs.kulturgueter'));
+              map.addLayer(gaLayers.getOlLayerById('ch.astra.ivs-nat'));
             });
 
+            $rootScope.$broadcast('gaTopicChange', 'ech');
+
+            var baseUrl = gaGlobalOptions.baseUrlPath + '//rest/services';
+
+            $scope.options = {
+              tolerance: 10,
+              identifyUrlTemplate: baseUrl + '/ech/MapServer/identify',
+              htmlUrlTemplate: baseUrl + '/ech/MapServer/{Layer}/{Feature}/htmlpopup'
+            };
         }]);
      
         module.controller('FeatureTreeController', ['$scope',
           function($scope) {
 
-            var baseUrl = 'http://mf-chsdi30t.bgdi.admin.ch/ltjeg/rest/services';
+            var baseUrl = 'http://mf-geoadmin3.dev.bgdi.ch/main//rest/services';
 
             $scope.options = {
-              searchUrlTemplate: baseUrl + '/{Topic}/SearchServer',
-              htmlUrlTemplate: baseUrl + '/{Topic}/MapServer/{Layer}/{Feature}/htmlpopup',
+              searchUrlTemplate: baseUrl + '/ech/SearchServer',
+              htmlUrlTemplate: baseUrl + '/ech/MapServer/{Layer}/{Feature}/htmlpopup',
               active: false
             };
 
