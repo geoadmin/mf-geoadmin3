@@ -55,6 +55,15 @@
                 event.stopPropagation();
                 event.preventDefault();
 
+                //On Max, left-click with ctrlKey also fires
+                //the 'contextmenu' event. But this conflicts
+                //with selectByRectangl feature (in featuretree
+                //directive). So we bail out here if
+                //ctrlKey is pressed
+                if (event.ctrlKey) {
+                  return;
+                }
+
                 var pixel = (event.originalEvent) ?
                     map.getEventPixel(event.originalEvent) :
                     event.getPixel();
