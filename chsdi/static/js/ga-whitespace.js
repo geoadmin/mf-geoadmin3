@@ -28955,7 +28955,7 @@ ga.Tooltip.prototype.handleClick_ = function(mapBrowserEvent) {
       layerList.push(layer.id)
     }
   }
-  var payload = {"geometryType":"esriGeometryPoint", "geometry":coordinate[0] + "," + coordinate[1], "geometryFormat":"geojson", "imageDisplay":size[0] + "," + size[1] + ",96", "mapExtent":extent.join(","), "tolerance":10, "layers":"all:" + layerList.join(","), "lang":window.GeoAdmin && window.GeoAdmin.lang ? window.GeoAdmin.lang : "de"};
+  var payload = {"geometryType":"esriGeometryPoint", "geometry":coordinate[0] + "," + coordinate[1], "geometryFormat":"geojson", "imageDisplay":size[0] + "," + size[1] + ",96", "mapExtent":extent.join(","), "tolerance":10, "layers":"all:" + layerList.join(","), "lang":window["GeoAdmin"] && window["GeoAdmin"]["lang"] ? window["GeoAdmin"]["lang"] : "de"};
   jsonp.send(payload, goog.bind(this.handleIdentifyResponse_, this), goog.bind(this.handleIdentifyError_, this))
 };
 ga.Tooltip.prototype.handleIdentifyResponse_ = function(response) {
@@ -29121,7 +29121,7 @@ ga.Map.prototype.recenter_ = function() {
 };
 ga.Map.prototype.createGeocoderDialog_ = function() {
   this.geocoderDialog_ = new goog.ui.Dialog;
-  this.geocoderDialog_.setTitle(ga.Translate[window.GeoAdmin && window.GeoAdmin.lang ? window.GeoAdmin.lang : "de"]["geocoding_results"]);
+  this.geocoderDialog_.setTitle(ga.Translate[window["GeoAdmin"] && window["GeoAdmin"]["lang"] ? window["GeoAdmin"]["lang"] : "de"]["geocoding_results"]);
   this.geocoderDialog_.setModal(true);
   this.geocoderDialog_.setButtonSet(null)
 };
@@ -29145,9 +29145,9 @@ ga.Map.prototype.recenterToResult_ = function(resultItem) {
   var extent = resultItem["geom_st_box2d"];
   extent = this.parseExtent_(extent);
   var origin = resultItem["origin"];
-  var originZoom = {address:10, parcel:10, sn25:8};
+  var originZoom = {"address":"10", "parcel":"10", "sn25":"8"};
   if(originZoom.hasOwnProperty(origin)) {
-    var zoom = originZoom[origin];
+    var zoom = parseInt(originZoom[origin], 10);
     var center = [(extent[0] + extent[2]) / 2, (extent[1] + extent[3]) / 2];
     this.getView().getView2D().setZoom(zoom);
     this.getView().getView2D().setCenter(center);
