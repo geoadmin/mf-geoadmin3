@@ -25,7 +25,9 @@
       interactions: ol.interaction.defaults({
         altShiftDragRotate: false,
         touchRotate: false
-      }),
+      }).extend([
+        new ol.interaction.DragZoom()
+      ]),
       renderer: ol.RendererHint.CANVAS,
       view: new ol.View2D({
         projection: swissProjection,
@@ -35,6 +37,8 @@
         resolutions: resolutions
       })
     });
+
+
 
     // Defines default vector style
     /*ol.style.setDefault(new ol.style.Style({

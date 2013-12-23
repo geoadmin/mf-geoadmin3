@@ -50,7 +50,7 @@
             var viewport = $(map.getViewport());
             var projection = view.getProjection();
             var parser = new ol.format.GeoJSON();
-            var dragBox = new ol.render.DragBox();
+            //var dragBox = new ol.render.Box();
             var highlightLayer = createVectorLayer('highlight');
             var rectangleLayer = createVectorLayer('selectrectangle');
             var firstPoint;
@@ -381,14 +381,19 @@
                   !angular.isDefined(firstPoint) &&
                   evt.getBrowserEvent().ctrlKey) {
                 firstPoint = evt.getCoordinate();
-                dragBox.setCoordinates(firstPoint, firstPoint);
-                dragBox.setMap(map);
+                //dragBox.setCoordinates(firstPoint, firstPoint);
+                //dragBox.setMap(map);
                 //make sure searchRectangle exists
                 if (!angular.isDefined(scope.searchRectangle)) {
                   scope.searchRectangle = new ol.geom.LineString([
                     firstPoint]);
-                  rectangleLayer.getSource().addFeature(
-                      new ol.Feature(scope.searchRectangle));
+                  /*
+                  var feature = new ol.Feature();
+                  feature.setId('my_ga_id');
+                  feature.setGeometryName('my_ga_geometry');
+                  feature.setGeometry(scope.searchRectangle);
+                  rectangleLayer.getSource().addFeature(feature);
+                  */
                 }
                 evt.preventDefault();
                 evt.stopPropagation();
@@ -397,14 +402,14 @@
 
             map.on('drag', function(evt) {
               if (angular.isDefined(firstPoint)) {
-                dragBox.setCoordinates(firstPoint, evt.getCoordinate());
+                //dragBox.setCoordinates(firstPoint, evt.getCoordinate());
                 updateRectangle(evt);
               }
             });
 
            map.on('dragend', function(evt) {
               if (angular.isDefined(firstPoint)) {
-                dragBox.setMap(null);
+                //dragBox.setMap(null);
                 updateRectangle(evt);
                 firstPoint = undefined;
                 triggerChange();
