@@ -16,8 +16,11 @@
         color: '#ffff00'
       });
 
-      var selectCircle = ol.shape.renderCircle(10, selectFill,
-                                              selectStroke);
+      var selectCircle = new ol.style.Circle({
+        radius: 10,
+        fill: selectFill,
+        stroke: selectStroke
+      });
 
       var selectStyle = new ol.style.Style({
         fill: selectFill,
@@ -46,8 +49,11 @@
         color: '#ff0000'
       });
 
-      var hlCircle = ol.shape.renderCircle(10, hlFill,
-                                              hlStroke);
+      var hlCircle = new ol.style.Circle({
+        radius: 10,
+        fill: hlFill,
+        stroke: hlStroke
+      });
 
       var hlStyle = new ol.style.Style({
         fill: hlFill,
@@ -76,8 +82,11 @@
         color: '#D8Ddi8D8'
       });
 
-      var srCircle = ol.shape.renderCircle(10, srFill,
-                                              srStroke);
+      var srCircle = new ol.style.Circle({
+        radius: 10,
+        fill: srFill,
+        stroke: srStroke
+      });
 
       var srStyle = new ol.style.Style({
         fill: srFill,
