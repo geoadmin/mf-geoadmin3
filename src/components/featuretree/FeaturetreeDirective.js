@@ -59,7 +59,7 @@
             map.addLayer(highlightLayer);
 
             scope.layerFilter = function(l) {
-              return gaLayerFilters.selectedLayersFilter(l) &&
+              return gaLayerFilters.selected(l) &&
                      l.visible &&
                      gaLayers.getLayer(l.bodId) &&
                      gaLayers.getLayerProperty(l.bodId, 'queryable');
