@@ -1,4 +1,5 @@
-@exportProperty ol.source.Vector.prototype.forEachFeatureInExtent
 @exportProperty ol.View2D.prototype.getResolutionForExtent
+@exportProperty ol.format.KML.prototype.readName
 @exportProperty ol.proj.Projection.prototype.getCode
 @exportProperty ol.proj.Projection.prototype.getUnits
+@exportProperty ol.source.Vector.prototype.forEachFeatureInExtent
