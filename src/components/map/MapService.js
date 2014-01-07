@@ -317,7 +317,7 @@
           var olLayer = new ol.layer.Vector({
             url: options.url,
             type: 'KML',
-            label: options.label || 'KML',
+            label: options.label || kmlFormat.readName(kml) || 'KML',
             opacity: options.opacity,
             visible: options.visible,
             source: new ol.source.Vector({
@@ -371,7 +371,7 @@
             var features = findFeatures(pixel);
             if (features.length > 0) {
               var feature = features[0];
-              if (feature.get('description')) {
+              if (feature.get('name') || feature.get('description')) {
                 gaPopup.create({
                   title: feature.get('name'),
                   content: feature.get('description'),
