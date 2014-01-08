@@ -412,7 +412,7 @@
       angular.forEach(layers, function(layer) {
         if (layer.visible) {
           var attribution =
-            gaLayers.getLayerProperty(layer.bodId,'attribution');
+            gaLayers.getLayerProperty(layer.bodId, 'attribution');
           if (attributions.indexOf(attribution) == -1) {
             attributions.push(attribution);
           }
@@ -476,7 +476,7 @@
             // scale has to be one of the advertise by the print server
             scale: getNearestScale(scale, scales),
             dataOwner: '© ' + attributions.join(),
-            shortLink: response.shorturl.replace('/shorten','')
+            shortLink: response.shorturl.replace('/shorten', '')
           }, defaultPage)]
         };
         var http = $http.post(that.capabilities.createURL +
