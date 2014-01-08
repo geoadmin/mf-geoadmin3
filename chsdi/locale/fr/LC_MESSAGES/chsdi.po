@@ -599,6 +599,87 @@ msgstr "Terrains attenants aux immeubles résidentiels"
 msgid "bfs_noas04_9"
 msgstr "Bâtiments publics"
 
+msgid "bfs_nolc_11"
+msgstr "Surfaces compactées"
+
+msgid "bfs_nolc_12"
+msgstr "Bâtiments"
+
+msgid "bfs_nolc_13"
+msgstr "Serres"
+
+msgid "bfs_nolc_14"
+msgstr "Structures des cultures en planches"
+
+msgid "bfs_nolc_15"
+msgstr "Gazon"
+
+msgid "bfs_nolc_16"
+msgstr "Arbres sur terrains aménagés"
+
+msgid "bfs_nolc_17"
+msgstr "Petites structures mixtes"
+
+msgid "bfs_nolc_21"
+msgstr "Végétation herbacée"
+
+msgid "bfs_nolc_31"
+msgstr "Buissons"
+
+msgid "bfs_nolc_32"
+msgstr "Surfaces embroussaillées"
+
+msgid "bfs_nolc_33"
+msgstr "Arbres fruitiers à basses tiges"
+
+msgid "bfs_nolc_34"
+msgstr "Vignes"
+
+msgid "bfs_nolc_35"
+msgstr "Cultures horticoles permanentes"
+
+msgid "bfs_nolc_41"
+msgstr "Peuplements d´arbres denses"
+
+msgid "bfs_nolc_42"
+msgstr "Coins de forêt"
+
+msgid "bfs_nolc_43"
+msgstr "Bandes de forêt"
+
+msgid "bfs_nolc_44"
+msgstr "Peuplements d´arbres clairsemés"
+
+msgid "bfs_nolc_45"
+msgstr "Peuplements de forêt buissonnante"
+
+msgid "bfs_nolc_46"
+msgstr "Peuplements d´arbres linéaires"
+
+msgid "bfs_nolc_47"
+msgstr "Groupes d´arbres"
+
+msgid "bfs_nolc_51"
+msgstr "Rochers saillants"
+
+msgid "bfs_nolc_52"
+msgstr "Pierres meubles"
+
+msgid "bfs_nolc_53"
+msgstr "Surfaces pierreuses"
+
+msgid "bfs_nolc_61"
+msgstr "Plans d´eau"
+
+msgid "bfs_nolc_62"
+msgstr "Glaciers, névés"
+
+msgid "bfs_nolc_63"
+msgstr "Biotopes humides"
+
+msgid "bfs_nolc_64"
+msgstr "Roselières"
+
 msgid "bfsnr"
 msgstr "Numéro OFS"
 

@@ -599,6 +599,87 @@ msgstr "Umschwung von Mehrfamilienhäusern"
 msgid "bfs_noas04_9"
 msgstr "Öffentliche Gebäude"
 
+msgid "bfs_nolc_11"
+msgstr "Befestigte Flächen"
+
+msgid "bfs_nolc_12"
+msgstr "Gebäude"
+
+msgid "bfs_nolc_13"
+msgstr "Treibhäuser"
+
+msgid "bfs_nolc_14"
+msgstr "Beetstrukturen"
+
+msgid "bfs_nolc_15"
+msgstr "Rasen"
+
+msgid "bfs_nolc_16"
+msgstr "Bäume auf künstlich angelegten Flächen"
+
+msgid "bfs_nolc_17"
+msgstr "Gemischte Kleinstrukturen"
+
+msgid "bfs_nolc_21"
+msgstr "Gras-, Krautvegetation"
+
+msgid "bfs_nolc_31"
+msgstr "Gebüsch"
+
+msgid "bfs_nolc_32"
+msgstr "Verbuschte Flächen"
+
+msgid "bfs_nolc_33"
+msgstr "Niederstammobst"
+
+msgid "bfs_nolc_34"
+msgstr "Reben"
+
+msgid "bfs_nolc_35"
+msgstr "Gärtnerische Dauerkulturen"
+
+msgid "bfs_nolc_41"
+msgstr "Geschlossene Baumbestände"
+
+msgid "bfs_nolc_42"
+msgstr "Waldecken"
+
+msgid "bfs_nolc_43"
+msgstr "Waldstreifen"
+
+msgid "bfs_nolc_44"
+msgstr "Aufgelöste Baumbestände"
+
+msgid "bfs_nolc_45"
+msgstr "Gebüschwaldbestände"
+
+msgid "bfs_nolc_46"
+msgstr "Lineare Baumbestände"
+
+msgid "bfs_nolc_47"
+msgstr "Baumgruppen"
+
+msgid "bfs_nolc_51"
+msgstr "Anstehender Fels"
+
+msgid "bfs_nolc_52"
+msgstr "Lockergestein"
+
+msgid "bfs_nolc_53"
+msgstr "Versteinte Flächen"
+
+msgid "bfs_nolc_61"
+msgstr "Wasser"
+
+msgid "bfs_nolc_62"
+msgstr "Gletscher, Firn"
+
+msgid "bfs_nolc_63"
+msgstr "Nassstandorte"
+
+msgid "bfs_nolc_64"
+msgstr "Schilfbestände"
+
 msgid "bfsnr"
 msgstr "BFS-Nummer"
 

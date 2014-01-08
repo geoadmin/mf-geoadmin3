@@ -3429,6 +3429,87 @@ msgstr ""
 msgid "bfs_noas04_72"
 msgstr ""
 
+msgid "bfs_nolc_11"
+msgstr ""
+
+msgid "bfs_nolc_12"
+msgstr ""
+
+msgid "bfs_nolc_13"
+msgstr ""
+
+msgid "bfs_nolc_14"
+msgstr ""
+
+msgid "bfs_nolc_15"
+msgstr ""
+
+msgid "bfs_nolc_16"
+msgstr ""
+
+msgid "bfs_nolc_17"
+msgstr ""
+
+msgid "bfs_nolc_21"
+msgstr ""
+
+msgid "bfs_nolc_31"
+msgstr ""
+
+msgid "bfs_nolc_32"
+msgstr ""
+
+msgid "bfs_nolc_33"
+msgstr ""
+
+msgid "bfs_nolc_34"
+msgstr ""
+
+msgid "bfs_nolc_35"
+msgstr ""
+
+msgid "bfs_nolc_41"
+msgstr ""
+
+msgid "bfs_nolc_42"
+msgstr ""
+
+msgid "bfs_nolc_43"
+msgstr ""
+
+msgid "bfs_nolc_44"
+msgstr ""
+
+msgid "bfs_nolc_45"
+msgstr ""
+
+msgid "bfs_nolc_46"
+msgstr ""
+
+msgid "bfs_nolc_47"
+msgstr ""
+
+msgid "bfs_nolc_51"
+msgstr ""
+
+msgid "bfs_nolc_52"
+msgstr ""
+
+msgid "bfs_nolc_53"
+msgstr ""
+
+msgid "bfs_nolc_61"
+msgstr ""
+
+msgid "bfs_nolc_62"
+msgstr ""
+
+msgid "bfs_nolc_63"
+msgstr ""
+
+msgid "bfs_nolc_64"
+msgstr ""
+
 msgid "format_de"
 msgstr ""
 

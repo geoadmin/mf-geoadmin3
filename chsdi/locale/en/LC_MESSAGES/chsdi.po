@@ -599,6 +599,87 @@ msgstr "Surroundings of blocks of flats"
 msgid "bfs_noas04_9"
 msgstr "Public buildings"
 
+msgid "bfs_nolc_11"
+msgstr "Consolidated surfaces"
+
+msgid "bfs_nolc_12"
+msgstr "Buildings"
+
+msgid "bfs_nolc_13"
+msgstr "Greenhouses"
+
+msgid "bfs_nolc_14"
+msgstr "Gardens with border and patch structures"
+
+msgid "bfs_nolc_15"
+msgstr "Lawns"
+
+msgid "bfs_nolc_16"
+msgstr "Trees in artificial areas"
+
+msgid "bfs_nolc_17"
+msgstr "Mix of small structures"
+
+msgid "bfs_nolc_21"
+msgstr "Grass and herb vegetation"
+
+msgid "bfs_nolc_31"
+msgstr "Shrubs"
+
+msgid "bfs_nolc_32"
+msgstr "Brush meadows"
+
+msgid "bfs_nolc_33"
+msgstr "Short-stem fruit trees"
+
+msgid "bfs_nolc_34"
+msgstr "Vines"
+
+msgid "bfs_nolc_35"
+msgstr "Permanent garden plants and brush crops"
+
+msgid "bfs_nolc_41"
+msgstr "Closed forest"
+
+msgid "bfs_nolc_42"
+msgstr "Forest edges"
+
+msgid "bfs_nolc_43"
+msgstr "Forest strips"
+
+msgid "bfs_nolc_44"
+msgstr "Open forest"
+
+msgid "bfs_nolc_45"
+msgstr "Brush forest"
+
+msgid "bfs_nolc_46"
+msgstr "Linear woods"
+
+msgid "bfs_nolc_47"
+msgstr "Clusters of trees"
+
+msgid "bfs_nolc_51"
+msgstr "Solid rock"
+
+msgid "bfs_nolc_52"
+msgstr "Granular soil"
+
+msgid "bfs_nolc_53"
+msgstr "Rocky areas"
+
+msgid "bfs_nolc_61"
+msgstr "Water"
+
+msgid "bfs_nolc_62"
+msgstr "Glacier, perpetual snow"
+
+msgid "bfs_nolc_63"
+msgstr "Wetlands"
+
+msgid "bfs_nolc_64"
+msgstr "Reedy marshes"
+
 msgid "bfsnr"
 msgstr "BFS-Nummer"
 

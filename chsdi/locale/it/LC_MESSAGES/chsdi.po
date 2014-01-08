@@ -599,6 +599,87 @@ msgstr "Terreno annesso a case plurifamiliari"
 msgid "bfs_noas04_9"
 msgstr "Edifici pubblici"
 
+msgid "bfs_nolc_11"
+msgstr "Superficie a rivestimento duro"
+
+msgid "bfs_nolc_12"
+msgstr "Edifici"
+
+msgid "bfs_nolc_13"
+msgstr "Serre"
+
+msgid "bfs_nolc_14"
+msgstr "Aree con aiuole"
+
+msgid "bfs_nolc_15"
+msgstr "Tappeti verdi"
+
+msgid "bfs_nolc_16"
+msgstr "Alberi su superfici artificiali"
+
+msgid "bfs_nolc_17"
+msgstr "Piccole strutture di vario genere"
+
+msgid "bfs_nolc_21"
+msgstr "Vegetazione erbacea"
+
+msgid "bfs_nolc_31"
+msgstr "Cespugli"
+
+msgid "bfs_nolc_32"
+msgstr "Superfici cespugliose"
+
+msgid "bfs_nolc_33"
+msgstr "Frutteti a basso fusto"
+
+msgid "bfs_nolc_34"
+msgstr "Vigneti"
+
+msgid "bfs_nolc_35"
+msgstr "Colture orticole perenni"
+
+msgid "bfs_nolc_41"
+msgstr "Gruppo di alberi fitti"
+
+msgid "bfs_nolc_42"
+msgstr "Angolo boschivo"
+
+msgid "bfs_nolc_43"
+msgstr "Striscia boschiva"
+
+msgid "bfs_nolc_44"
+msgstr "Gruppo di alberi radi"
+
+msgid "bfs_nolc_45"
+msgstr "Gruppo di alberi arbustivi"
+
+msgid "bfs_nolc_46"
+msgstr "Gruppo lineare di alberi"
+
+msgid "bfs_nolc_47"
+msgstr "Gruppi di alberi"
+
+msgid "bfs_nolc_51"
+msgstr "Rocce in posto"
+
+msgid "bfs_nolc_52"
+msgstr "Rocce incoerenti"
+
+msgid "bfs_nolc_53"
+msgstr "Superfici rocciose"
+
+msgid "bfs_nolc_61"
+msgstr "Acqua"
+
+msgid "bfs_nolc_62"
+msgstr "Ghiacciai, nevai"
+
+msgid "bfs_nolc_63"
+msgstr "Biotopi umidi"
+
+msgid "bfs_nolc_64"
+msgstr "Canneti"
+
 msgid "bfsnr"
 msgstr "Numéro OFS"
 
