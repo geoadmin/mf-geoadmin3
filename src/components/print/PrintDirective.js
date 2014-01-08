@@ -404,10 +404,16 @@
 
       var encLayers = [];
       var encLegends;
+      var attributions = [];
 
       var layers = this.map.getLayers();
       angular.forEach(layers, function(layer) {
         if (layer.visible) {
+          var attribution =
+            gaLayers.getLayerProperty(layer.bodId,'attribution');
+          if (attributions.indexOf(attribution) == -1) {
+            attributions.push(attribution);
+          }
           if (layer instanceof ol.layer.Group) {
             var encs = $scope.encoders.layers['Group'].call(this,
                 layer, proj);
@@ -424,7 +430,6 @@
           }
         }
       });
-
       if ($scope.options.graticule) {
         var graticule = {
           'baseURL': 'http://wms.geo.admin.ch/',
@@ -462,10 +467,8 @@
           center: view.getCenter(),
           // scale has to be one of the advertise by the print server
           scale: getNearestScale(scale, scales),
-          mapTitle: '',
-          mapFooter: '',
-          dataOwner: '',
-          customLogo: false
+          dataOwner: '© ' + attributions.join(),
+          shortLink: ''
         }, defaultPage)]
       };
       var http = $http.post(this.capabilities.createURL +
