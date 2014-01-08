@@ -89,7 +89,6 @@
       });
 
       var srStyle = new ol.style.Style({
-        fill: srFill,
         stroke: srStroke
       });
 

@@ -43,6 +43,7 @@
           },
           link: function(scope, element, attrs) {
             var currentTopic;
+            var rectangleFeature;
             var timeoutPromise = null;
             var canceler = null;
             var map = scope.map;
@@ -50,22 +51,24 @@
             var viewport = $(map.getViewport());
             var projection = view.getProjection();
             var parser = new ol.format.GeoJSON();
-            var dragBox = new ol.interaction.DragBox();
             var highlightLayer = createVectorLayer('highlight');
             var rectangleLayer = createVectorLayer('selectrectangle');
-            var firstPoint;
-            scope.searchRectangle = undefined;
             rectangleLayer.invertedOpacity = 0.25;
             map.addLayer(highlightLayer);
 
-            dragBox = new ol.interaction.DragBox({
+            scope.dragBox = new ol.interaction.DragBox({
               condition: function(evt) {
                 return scope.options.active &&
-                       !angular.isDefined(firstPoint) &&
-                       mapBrowserEvent.getBrowserEvent().ctrlKey;
-              }
+                       evt.getBrowserEvent().ctrlKey;
+              },
+              style: new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                  color: 'blue',
+                  width: 3
+                })
+              })
             });
-            map.addInteraction(dragBox);
+            map.addInteraction(scope.dragBox);
 
             scope.layerFilter = function(l) {
               return gaLayerFilters.selected(l) &&
@@ -194,7 +197,7 @@
                       info: '',
                       geometry: null,
                       selected: false,
-                      id: result.attrs.id,
+                      id: result.attrs.feature_id || result.attrs.id,
                       layer: layerId,
                       label: result.attrs.label
                     };
@@ -239,9 +242,9 @@
                   req, searchExtent;
               highlightLayer.getSource().clear();
               if (layersToQuery.length &&
-                  angular.isDefined(scope.searchRectangle)) {
+                  scope.dragBox.getGeometry()) {
                 searchExtent = ol.extent.boundingExtent(
-                     scope.searchRectangle.getCoordinates());
+                    scope.dragBox.getGeometry().getCoordinates()[0]);
                 req = getUrlAndParameters(layersToQuery, searchExtent);
 
                 scope.loading = true;
@@ -374,59 +377,18 @@
               }
             });
 
-            var updateRectangle = function(evt) {
-              var coordinate = evt.getCoordinate();
-              scope.searchRectangle.setCoordinates([
-                [firstPoint[0], firstPoint[1]],
-                [firstPoint[0], coordinate[1]],
-                [coordinate[0], coordinate[1]],
-                [coordinate[0], firstPoint[1]],
-                [firstPoint[0], firstPoint[1]]
-              ]);
-            };
-
-            dragBox.on('boxstart', function(evt) {
-              console.log('box start called');
-            });
-
-            map.on('dragstart', function(evt) {
-              /*
-              if (scope.options.active &&
-                  !angular.isDefined(firstPoint) &&
-                  evt.getBrowserEvent().ctrlKey) {
-                firstPoint = evt.getCoordinate();
-                //dragBox.setCoordinates(firstPoint, firstPoint);
-                //dragBox.setMap(map);
-                //make sure searchRectangle exists
-                if (!angular.isDefined(scope.searchRectangle)) {
-                  scope.searchRectangle = new ol.geom.LineString([
-                    firstPoint]);
-                  //var feature = new ol.Feature();
-                  //feature.setId('my_ga_id');
-                  //feature.setGeometryName('my_ga_geometry');
-                  //feature.setGeometry(scope.searchRectangle);
-                  //rectangleLayer.getSource().addFeature(feature);
-                }
-                evt.preventDefault();
-                evt.stopPropagation();
-              }
-              */
-            });
-
-            map.on('drag', function(evt) {
-              if (angular.isDefined(firstPoint)) {
-                //dragBox.setCoordinates(firstPoint, evt.getCoordinate());
-                updateRectangle(evt);
+            scope.dragBox.on('boxstart', function(evt) {
+              if (rectangleFeature) {
+                rectangleLayer.getSource().removeFeature(rectangleFeature);
               }
             });
 
-           map.on('dragend', function(evt) {
-              if (angular.isDefined(firstPoint)) {
-                //dragBox.setMap(null);
-                updateRectangle(evt);
-                firstPoint = undefined;
-                triggerChange();
-              }
+            scope.dragBox.on('boxend', function(evt) {
+              rectangleFeature = new ol.Feature();
+              rectangleFeature.setGeometry(scope.dragBox.getGeometry());
+              rectangleLayer.getSource().addFeature(rectangleFeature);
+
+              triggerChange();
             });
           }
         };
