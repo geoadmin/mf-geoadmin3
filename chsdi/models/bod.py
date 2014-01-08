@@ -56,6 +56,7 @@ class LayersConfig(Base):
     background = Column('backgroundlayer', Boolean)
     hasLegend = Column('haslegend', Boolean)
     format = Column('image_format', Text)
+    gutter = Column('wms_gutter', Integer)
     type = Column('layertype', Text)
     highlightable = Column('highlightable', Boolean)
     opacity = Column('opacity', postgresql.DOUBLE_PRECISION)
@@ -255,8 +256,10 @@ class Topics(Base):
     staging = Column('staging', Text)
 
 
-class Catalog(object):
+class Catalog(Base):
     __dbname__ = 'bod'
+    __tablename__ = 'view_catalog'
+    __table_args__ = ({'schema': 're3', 'autoload': False})
     id = Column('bgdi_id', Integer, primary_key=True)
     parentId = Column('parent_id', Integer)
     topic = Column('topic', Text)
@@ -294,31 +297,6 @@ class Catalog(object):
         }[lang]
 
 
-class CatalogDe(Base, Catalog):
-    __tablename__ = 'view_catalog_de'
-    __table_args__ = ({'schema': 're3'})
-
-
-class CatalogFr(Base, Catalog):
-    __tablename__ = 'view_catalog_fr'
-    __table_args__ = ({'schema': 're3'})
-
-
-class CatalogIt(Base, Catalog):
-    __tablename__ = 'view_catalog_it'
-    __table_args__ = ({'schema': 're3'})
-
-
-class CatalogRm(Base, Catalog):
-    __tablename__ = 'view_catalog_rm'
-    __table_args__ = ({'schema': 're3'})
-
-
-class CatalogEn(Base, Catalog):
-    __tablename__ = 'view_catalog_en'
-    __table_args__ = ({'schema': 're3'})
-
-
 class OerebMetadata(Base):
     __tablename__ = 'oereb_interlis_metadata'
     __table_args__ = ({'schema': 're3', 'autoload': False})
@@ -338,19 +316,6 @@ def get_bod_model(lang):
         return BodLayerEn
     else:
         return BodLayerDe
-
-
-def get_catalog_model(lang, topic):
-    if lang == 'fr':
-        return CatalogFr
-    elif lang == 'it':
-        return CatalogIt
-    elif lang == 'rm':
-        return CatalogRm
-    elif lang == 'en':
-        return CatalogEn
-    else:
-        return CatalogDe
 
 
 def get_wmts_models(lang):

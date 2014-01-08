@@ -311,6 +311,9 @@ msgstr "map.geo.admin.ch"
 msgid "applicant"
 msgstr "Gesuchsteller"
 
+msgid "approval_date"
+msgstr "Genehmigungsdatum"
+
 msgid "arch__hist__qualitaeten"
 msgstr "Arch. hist. Qualitäten"
 
@@ -319,6 +322,9 @@ msgstr "Nummer Geologischer Atlas"
 
 msgid "ausgabejahr"
 msgstr "Ausgabejahr"
+
+msgid "autor"
+msgstr "Autor"
 
 msgid "bafu_NHVText"
 msgstr "NHV Status"
@@ -1235,6 +1241,9 @@ msgstr "SP Infrastruktur Luftfahrt"
 msgid "ch.bazl.segelflugkarte"
 msgstr "Segelflugkarte"
 
+msgid "ch.bazl.sicherheitszonenplan"
+msgstr "Sicherheitszonenplan"
+
 msgid "ch.bazl.url"
 msgstr "http://www.bazl.admin.ch/index.html?lang=de"
 
@@ -1572,6 +1581,9 @@ msgstr "Schweizerische Geotope"
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas"
 msgstr "Gravimetrischer Atlas"
 
+msgid "ch.swisstopo.geologie-gravimetrischer_atlas.metadata"
+msgstr "Einteilung gravimetrischer Atlas"
+
 msgid "ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen"
 msgstr "Grundwasservorkommen"
 
@@ -1871,6 +1883,9 @@ msgstr "Einwohnerzahl (Bandbreite, nur für Siedl.)"
 msgid "einwohnerzahl_s"
 msgstr "Einwohnerzahl (nur für Siedl.)"
 
+msgid "energiebedarf_motoren"
+msgstr "Energiebedarf Motoren"
+
 msgid "ent_gew"
 msgstr "Fliessgewässer"
 
@@ -1913,6 +1928,9 @@ msgstr "Fläche [m2]"
 msgid "fliessgewaesser"
 msgstr "Fliessgewässer"
 
+msgid "format_de"
+msgstr "Lieferbare Formate"
+
 msgid "fp_E95_N95"
 msgstr "LV95-Koordinaten (E / N)"
 
@@ -1951,6 +1969,9 @@ msgstr "Einheit"
 
 msgid "geometalink"
 msgstr "Nachführungsgeometer, Grundbuch und andere Metadata"
+
+msgid "geometry_type"
+msgstr "Sicherheitszonentyp"
 
 msgid "geompdf_liste"
 msgstr "Detailinformationen"
@@ -2216,6 +2237,15 @@ msgstr "Link zu Detailbeschreibung"
 msgid "legalregulationlink"
 msgstr "Weitere Informationen"
 
+msgid "leistung"
+msgstr "Leistung"
+
+msgid "leistungsaufnahme_pumpen"
+msgstr "Leistungsaufnahme Pumpen"
+
+msgid "leistungsaufnahme_pumpen"
+msgstr "Leistungsaufnahme Pumpen"
+
 msgid "length_km"
 msgstr "Länge [km]"
 
@@ -2272,6 +2302,9 @@ msgstr "Messstellentyp"
 
 msgid "modif_validfrom"
 msgstr "Beschlussdatum"
+
+msgid "municipality"
+msgstr "Betroffene Gemeinden"
 
 msgid "nabeltyp"
 msgstr "Lage"
@@ -2363,6 +2396,9 @@ msgstr "Koordinatennetz CH1903/LV03"
 msgid "org.epsg.grid_4326"
 msgstr "Koordinatennetz WGS84"
 
+msgid "originator"
+msgstr "Name des Antragstellers"
+
 msgid "ort"
 msgstr "Ort"
 
@@ -2395,6 +2431,9 @@ msgstr "Drucken"
 
 msgid "produkt"
 msgstr "Produkt"
+
+msgid "produktionserwartung"
+msgstr "Produktionserwartung"
 
 msgid "protokoll"
 msgstr "Protokoll"
@@ -2443,6 +2482,9 @@ msgstr "http://www.geo.admin.ch/internet/geoportal/de/home/current.enhRSS.html"
 
 msgid "rwknr"
 msgstr "Restwasserkarte Nr."
+
+msgid "safety_zone"
+msgstr "Bezeichnung"
 
 msgid "schiffbarkeit"
 msgstr "Schiffbarkeit des Gewässers"
@@ -2497,6 +2539,12 @@ msgstr "Historischer Verlauf mit Substanz"
 
 msgid "substanzgrad"
 msgstr "Substanzgrad"
+
+msgid "technische_angaben"
+msgstr "Technische Angabe"
+
+msgid "technische_angaben"
+msgstr "Technische Angabe"
 
 msgid "teilezgfla"
 msgstr "Fläche Teileinzugsgebiet [km2]"
@@ -2879,6 +2927,9 @@ msgstr "Standorttyp"
 
 msgid "tt_ch_bav_kataster_belasteter_standorte_oev_untersuchungsstand"
 msgstr "Untersuchungsstand gemäss AltIV"
+
+msgid "tt_document"
+msgstr "Weitere Informationen "
 
 msgid "tt_emission_bis_abkz"
 msgstr "Bis (Kürzel)"
@@ -3316,6 +3367,9 @@ msgstr "Historischer Verlauf mit viel Substanz"
 msgid "waldanteil"
 msgstr "Waldanteil [%]"
 
+msgid "wasserkraftanlagen"
+msgstr "Wasserkraftanlage"
+
 msgid "wasserstand"
 msgstr "Wasserstand m ü. M"
 
@@ -3384,6 +3438,9 @@ msgstr "Zählstelle"
 
 msgid "zeitraum"
 msgstr "Schutzzeit"
+
+msgid "zentrale"
+msgstr "Zentrale"
 
 msgid "ziegeleien"
 msgstr "Name der Ziegelei"

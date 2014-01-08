@@ -67,22 +67,10 @@ WSGIScriptAlias /${vars:instanceid}/wsgi ${buildout:directory/buildout/parts/mod
     WSGIApplicationGroup %{GLOBAL}
 </Location>
 
-RewriteRule ^${vars:apache-entry-point}(search|index|genindex|examples|img|js|css|realeasenotes|services|_sources|_static|api|rest/services|ogcproxy|testi18n|loader.js|checker|checker_dev|static|print|dev|feedback)(.*)$ /${vars:instanceid}/wsgi/$1$2 [PT]
+RewriteRule ^${vars:apache-entry-point}(search|index|genindex|examples|img|js|css|releasenotes|services|_sources|_static|api|rest/services|ogcproxy|testi18n|loader.js|checker|checker_dev|static|print|dev|feedback)(.*)$ /${vars:instanceid}/wsgi/$1$2 [PT]
 
-# Some services are not "free": TODO THIS IS A PROVISORY SOLUTION
-SetEnvIf Referer ".admin.ch"                             GOODREF
-SetEnvIf Referer ".bgdi.ch"                              GOODREF
-SetEnvIf Referer "^http://localhost"                     GOODREF
-
-SetEnvIf X-Forwarded-For "10.226.126.116"                GOODIP
-SetEnvIf X-Forwarded-For "10.227.67.80"                  GOODIP
-SetEnvIf X-Forwarded-For "46.51.190.137"                 GOODIP
-
+# Some services are not "free": control is done at varnish level
 <LocationMatch /${vars:instanceid}/wsgi/rest/(height|profile)>
    Order Deny,Allow
-   Deny from all
-
-   Allow from env=GOODIP
-   Allow from env=GOODREF
-
+   Allow from all
 </LocationMatch>

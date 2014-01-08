@@ -17,9 +17,8 @@ class AM_G(Base, Vector):
     __bodId__ = 'ch.bafu.bundesinventare-amphibien_wanderobjekte'
     __template__ = 'templates/htmlpopup/bundinv_amphibien_w.mako'
     id = Column('am_g_obj', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     am_g_name = Column('am_g_name', Text)
-    the_geom = Column(Geometry)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bafu.bundesinventare-amphibien_wanderobjekte', AM_G)
 
@@ -730,13 +729,26 @@ class emissionplan(Base, Vector):
     __table_args__ = ({'schema': 'diverse', 'autoload': False})
     __bodId__ = 'ch.bav.laerm-emissionplan_eisenbahn_2015'
     __template__ = 'templates/htmlpopup/emissionplan.mako'
-    #__extended_info__ = True
+    __extended_info__ = True
     id = Column('id', Integer, primary_key=True)
     lin_nr_dfa = Column('lin_nr_dfa', Numeric)
     von_m = Column('von_m', Numeric)
     bis_m = Column('bis_m', Numeric)
     lre_t = Column('lre_t', Numeric)
     lre_n = Column('lre_n', Numeric)
+    k1_t = Column('k1_t', Numeric)
+    k1_n = Column('k1_n', Numeric)
+    fb1 = Column('fb1', Numeric)
+    fb2 = Column('fb2', Numeric)
+    grund1 = Column('grund1', Text)
+    grund2 = Column('grund2', Text)
+    linienbeze = Column('linienbeze', Text)
+    von_abkz = Column('von_abkz', Text)
+    von_bpk_bp = Column('von_bpk_bp', Text)
+    bis_abkz = Column('bis_abkz', Text)
+    bis_bpk_bp = Column('bis_bpk_bp', Text)
+    typ_aender = Column('typ_aender', Text)
+    datum = Column('datum', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bav.laerm-emissionplan_eisenbahn_2015', emissionplan)

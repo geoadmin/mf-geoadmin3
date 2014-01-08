@@ -1,3 +1,51 @@
+msgid "approval_date"
+msgstr ""
+
+msgid "geometry_type"
+msgstr ""
+
+msgid "municipality"
+msgstr ""
+
+msgid "originator"
+msgstr ""
+
+msgid "safety_zone"
+msgstr ""
+
+msgid "tt_document"
+msgstr ""
+
+msgid "produktionserwartung"
+msgstr ""
+
+msgid "technische_angaben"
+msgstr ""
+
+msgid "technische_angaben"
+msgstr ""
+
+msgid "zentrale"
+msgstr ""
+
+msgid "wasserkraftanlagen"
+msgstr ""
+
+msgid "leistungsaufnahme_pumpen"
+msgstr ""
+
+msgid "leistungsaufnahme_pumpen"
+msgstr ""
+
+msgid "leistung"
+msgstr ""
+
+msgid "energiebedarf_motoren"
+msgstr ""
+
+msgid "ch.bazl.sicherheitszonenplan"
+msgstr ""
+
 msgid "ch.swisstopo.hangneigung-ueber_30"
 msgstr ""
 
@@ -3379,4 +3427,13 @@ msgid "bfs_noas04_71"
 msgstr ""
 
 msgid "bfs_noas04_72"
+msgstr ""
+
+msgid "format_de"
+msgstr ""
+
+msgid "autor"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-gravimetrischer_atlas.metadata"
 msgstr ""

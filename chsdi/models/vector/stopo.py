@@ -11,6 +11,22 @@ from chsdi.models.vector import Vector
 Base = bases['stopo']
 
 
+class GravimetrischerAtlasMetadata (Base, Vector):
+    __tablename__ = 'gravimetrie_atlas_metadata'
+    __table_args__ = ({'schema': 'geol', 'autoload': False})
+    __template__ = 'templates/htmlpopup/gravimetrischer_atlas_metadata.mako'
+    __bodId__ = 'ch.swisstopo.geologie-gravimetrischer_atlas.metadata'
+    id = Column('nr', Integer, primary_key=True)
+    titel = Column('titel', Text)
+    jahr = Column('jahr', Numeric)
+    autor = Column('autor', Text)
+    formate_de = Column('formate_de', Text)
+    formate_fr = Column('formate_fr', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-gravimetrischer_atlas.metadata', GravimetrischerAtlasMetadata)
+
+
 class SwissboundariesBezirk(Base, Vector):
     __tablename__ = 'swissboundaries_bezirke'
     __table_args__ = ({'schema': 'tlm', 'autoload': False})

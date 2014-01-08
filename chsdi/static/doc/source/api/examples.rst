@@ -6,6 +6,7 @@ GeoAdmin Examples
 
 - `GeoAdmin map with overlay layer <../examples/geoadmin_mapoverlay.html>`_
 - `Map with KML file overlay <../examples/geoadmin_kml.html>`_
+- `Geocoder <../examples/geoadmin_geocoder.html>`_
 
 OpenLayers Examples
 ~~~~~~~~~~~~~~~~~~~

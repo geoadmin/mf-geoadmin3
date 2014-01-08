@@ -51,7 +51,7 @@ class Search(SearchValidation):
                 self.request.params.get('searchText')
             )
             self._layer_search()
-        if self.typeInfo == 'features':
+        if self.typeInfo in ('features', 'featureidentify'):
             # search all features within bounding box
             self._feature_bbox_search()
         if self.typeInfo == 'locations':

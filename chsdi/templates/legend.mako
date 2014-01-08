@@ -29,13 +29,19 @@
   else:
       legend_url_pdf = False
   legend_url = host + '/static/images/legends/' + c['idBod'] + '_' + lang + '.png'
-  times = c['attributes']['dataStatus']
+  times = c['attributes']['dataStatus'] if 'dataStatus' in c['attributes'] else '-'
 %>
 <div class="legend-container">
 <div class="legend-header">
-  <p class='bod-title'><span>${c['fullName']}</span> (${c['attributes']['dataOwner']})</p>
+% if 'dataOwner' in c['attributes']:
+  <p class='bod-title'><span>${c['fullName'] or '-'}</span> (${c['attributes']['dataOwner'] or '-'})</p>
+% endif
+% if 'inspireName' in c['attributes'] and 'inspireNameUpper' in c['attributes']:
   <p class='office-provider'>${c['attributes']['inspireUpperName']} -> ${c['attributes']['inspireName']}</p>
-  <p class='legend-abstract'>${c['attributes']['abstract'] or ''}</p>
+% endif
+% if 'abstract' in c['attributes']:
+  <p class='legend-abstract'>${c['attributes']['abstract'] or '-'}</p>
+% endif
 </div>
 <div class="legend-footer">
 % if hasLegend:
@@ -49,8 +55,12 @@
 % endif
   <span>${_('Information')}</span><br>
   <table>
-    <tr><td>${_('geobasisdatensatz')}</td> <td>${c['attributes']['bundCollection'] or '-'}</td></tr>
+% if 'bundCollection' in c['attributes']:
+    <tr><td>${_('geobasisdatensatz')}</td> <td>${c['attributes']['bundCollection']}</td></tr>
+% endif
+% if 'scaleLimit' in c['attributes']:
     <tr><td>${_('Gueltiger Massstabsbereich')}</td> <td>${c['attributes']['scaleLimit']}</td></tr>
+% endif
     <tr><td>${_('Metadaten')}</td>
 % if c['idGeoCat']:
   % if lang in ('de', 'rm'):
@@ -67,7 +77,7 @@
     </tr>
     <tr>
     <td>${_('Datenbezug')}</td>
-% if c['attributes']['downloadUrl']:
+% if 'downloadUrl' in c['attributes']:
       <td><a href="${c['attributes']['downloadUrl']}" target="new">${_('layer_url_download_text')}</a></td>
 % else:
       <td>-</td>
@@ -75,7 +85,7 @@
     </tr>
     <tr>
       <td>${_('Thematisches Geoportal')}</td>
-% if c['attributes']['urlApplication']:
+% if 'urlApplication' in c['attributes']:
       <td><a href="${c['attributes']['urlApplication']}" target="new">${_('layer_url_portal_text')}</a></td>
 % else:
       <td>-</td>
@@ -83,7 +93,7 @@
     </tr>
     <tr>
       <td>${_('WMS Dienst')}</td>
-% if c['attributes']['wmsUrlResource']:
+% if 'wmsUrlResource' in c['attributes']:
       <td><a href="${c['attributes']['wmsUrlResource']}" target="new">${_('wms_resource_text')}</a></td>
 % else:
       <td>-</td>
