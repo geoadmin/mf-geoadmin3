@@ -36,9 +36,6 @@
 % if 'dataOwner' in c['attributes']:
   <p class='bod-title'><span>${c['fullName'] or '-'}</span> (${c['attributes']['dataOwner'] or '-'})</p>
 % endif
-% if 'inspireName' in c['attributes'] and 'inspireNameUpper' in c['attributes']:
-  <p class='office-provider'>${c['attributes']['inspireUpperName']} -> ${c['attributes']['inspireName']}</p>
-% endif
 % if 'abstract' in c['attributes']:
   <p class='legend-abstract'>${c['attributes']['abstract'] or '-'}</p>
 % endif
