@@ -31,7 +31,7 @@
       <h2 id="mapservices">Map Services</h2> 
           <h3>Mapservice (Layer metadata)</h3>
           <a href="rest/services/ech/MapServer">Topic (ech)</a> <br>
-          <a href="rest/services/ech/MapServer?searchText=bern">Topic with fulltext search on the column "volltextsuche"</a> <br>
+          <a href="rest/services/ech/MapServer?searchText=bern">Topic with fulltext search on the column "volltextsuche, bod id and geocat id"</a> <br>
           <h3>Identify</h3>
           <a href="rest/services/ech/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=545000,145000,555000,155000&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bafu.bundesinventare-bln">Identify using an envelope (bbox)</a> <br>
           <a href="rest/services/ech/MapServer/identify?geometryType=esriGeometryPoint&geometry=653246,173129&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=5&layers=all:ch.bafu.bundesinventare-bln">Identify using a simple point and a tolerance of 5 pixels</a> <br>

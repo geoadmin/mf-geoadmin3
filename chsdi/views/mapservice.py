@@ -34,7 +34,11 @@ class MapService(MapServiceValidation):
         query = self.request.db.query(model)
         query = self._map_name_filter(query, model.maps)
         query = self._geodata_staging_filter(query, model.staging)
-        query = self._full_text_search(query, [model.fullTextSearch])
+        query = self._full_text_search(query, [
+            model.fullTextSearch,
+            model.idBod,
+            model.idGeoCat
+        ])
         for q in query:
             layer = q.layerMetadata()
             results['layers'].append(layer)
