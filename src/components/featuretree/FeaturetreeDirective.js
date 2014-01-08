@@ -53,7 +53,6 @@
             var parser = new ol.format.GeoJSON();
             var highlightLayer = createVectorLayer('highlight');
             var rectangleLayer = createVectorLayer('selectrectangle');
-            rectangleLayer.invertedOpacity = 0.25;
             map.addLayer(highlightLayer);
 
             scope.dragBox = new ol.interaction.DragBox({
@@ -269,6 +268,9 @@
             // to separate these concerns.
             var triggerChange = function() {
               if (scope.options.active) {
+                //Make sure layer is always on top
+                map.removeLayer(rectangleLayer);
+                map.addLayer(rectangleLayer);
                 cancel();
                 timeoutPromise = $timeout(function() {
                   requestFeatures();
