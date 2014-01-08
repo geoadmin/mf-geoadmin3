@@ -50,13 +50,22 @@
             var viewport = $(map.getViewport());
             var projection = view.getProjection();
             var parser = new ol.format.GeoJSON();
-            //var dragBox = new ol.render.Box();
+            var dragBox = new ol.interaction.DragBox();
             var highlightLayer = createVectorLayer('highlight');
             var rectangleLayer = createVectorLayer('selectrectangle');
             var firstPoint;
             scope.searchRectangle = undefined;
             rectangleLayer.invertedOpacity = 0.25;
             map.addLayer(highlightLayer);
+
+            dragBox = new ol.interaction.DragBox({
+              condition: function(evt) {
+                return scope.options.active &&
+                       !angular.isDefined(firstPoint) &&
+                       mapBrowserEvent.getBrowserEvent().ctrlKey;
+              }
+            });
+            map.addInteraction(dragBox);
 
             scope.layerFilter = function(l) {
               return gaLayerFilters.selected(l) &&
@@ -376,7 +385,12 @@
               ]);
             };
 
+            dragBox.on('boxstart', function(evt) {
+              console.log('box start called');
+            });
+
             map.on('dragstart', function(evt) {
+              /*
               if (scope.options.active &&
                   !angular.isDefined(firstPoint) &&
                   evt.getBrowserEvent().ctrlKey) {
@@ -387,17 +401,16 @@
                 if (!angular.isDefined(scope.searchRectangle)) {
                   scope.searchRectangle = new ol.geom.LineString([
                     firstPoint]);
-                  /*
-                  var feature = new ol.Feature();
-                  feature.setId('my_ga_id');
-                  feature.setGeometryName('my_ga_geometry');
-                  feature.setGeometry(scope.searchRectangle);
-                  rectangleLayer.getSource().addFeature(feature);
-                  */
+                  //var feature = new ol.Feature();
+                  //feature.setId('my_ga_id');
+                  //feature.setGeometryName('my_ga_geometry');
+                  //feature.setGeometry(scope.searchRectangle);
+                  //rectangleLayer.getSource().addFeature(feature);
                 }
                 evt.preventDefault();
                 evt.stopPropagation();
               }
+              */
             });
 
             map.on('drag', function(evt) {
