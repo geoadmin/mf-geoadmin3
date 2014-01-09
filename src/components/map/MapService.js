@@ -289,10 +289,28 @@
    * Manage KML layers
    */
   module.provider('gaKml', function() {
-    // Create the Parser the KML file
+    // Default style
+    var fill = new ol.style.Fill({
+      color: 'rgba(255,0,0,0.7)'
+    });
+    var stroke = new ol.style.Stroke({
+      color: 'rgb(255,0,0)',
+      width: 2
+    });
+
+    // Create the parser
     var kmlFormat = new ol.format.KML({
       extractStyles: true,
-      extractAttributes: true
+      extractAttributes: true,
+      defaultStyle: new ol.style.Style({
+        fill: fill,
+        stroke: stroke,
+        image: new ol.style.Circle({
+          radius: 10,
+          fill: fill,
+          stroke: stroke
+        })
+      })
     });
 
     this.$get = function($http, gaPopup, gaDefinePropertiesForLayer,
