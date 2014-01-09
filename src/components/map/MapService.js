@@ -295,22 +295,22 @@
     });
     var stroke = new ol.style.Stroke({
       color: 'rgb(255,0,0)',
-      width: 2
+      width: 1.5
     });
 
     // Create the parser
     var kmlFormat = new ol.format.KML({
       extractStyles: true,
       extractAttributes: true,
-      defaultStyle: new ol.style.Style({
+      defaultStyle: [new ol.style.Style({
         fill: fill,
         stroke: stroke,
         image: new ol.style.Circle({
-          radius: 10,
+          radius: 7,
           fill: fill,
           stroke: stroke
         })
-      })
+      })]
     });
 
     this.$get = function($http, gaPopup, gaDefinePropertiesForLayer,

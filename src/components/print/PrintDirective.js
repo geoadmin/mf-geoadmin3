@@ -77,7 +77,7 @@
 
     };
 
-    // Transform an ol.style.Color to an hexadecimal string
+    // Transform an ol.Color to an hexadecimal string
     var toHexa = function(olColor) {
       var hex = '#';
       for (var i = 0; i < 3; i++) {
@@ -171,13 +171,13 @@
       }
 
       if (fill) {
-        var color = fill.getColor();
+        var color = ol.color.asArray(fill.getColor());
         literal.fillColor = toHexa(color);
         literal.fillOpacity = color[3];
       }
 
       if (stroke) {
-        var color = stroke.getColor();
+        var color = ol.color.asArray(stroke.getColor());
         literal.strokeWidth = stroke.getWidth();
         literal.strokeColor = toHexa(color);
         literal.strokeOpacity = color[3];
