@@ -214,7 +214,7 @@
                 //(feature.getStyleFunction()) ? feature.getStyleFunction()() :
                   (layer.getStyleFunction()) ?
                     layer.getStyleFunction()(feature) :
-                    ol.layer.Vector.defaultStyleFunction(feature);
+                    ol.feature.defaultStyleFunction(feature);
 
             if (styles) {
               var i = styles.length;
