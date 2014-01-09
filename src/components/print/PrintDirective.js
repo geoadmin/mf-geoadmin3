@@ -77,8 +77,21 @@
 
     };
 
+    // Transform an ol.style.Color to an hexadecimal string
+    var toHexa = function(olColor) {
+      var hex = '#';
+      for (var i = 0; i < 3; i++) {
+        var part = olColor[i].toString(16);
+        if (parseInt(part) < 10) {
+          hex += '0';
+        }
+        hex += part;
+      }
+      return hex;
+    };
+
     // Transform a ol.style.Style to a print literal object
-    var transformToPrintLiteral = function(style) {
+    var transformToPrintLiteral = function(feature, style) {
       /**
        * ol.style.Style properties:
        *
@@ -126,44 +139,67 @@
        * graphicYOffset
        * zIndex
        */
-
       var literal = {
-        zIndex: style.zIndex
+        zIndex: style.getZIndex()
       };
+      var type = feature.getGeometry().getType();
+      var fill = style.getFill();
+      var stroke = style.getStroke();
+      var textStyle = style.getText();
+      var imageStyle = style.getImage();
 
-      if (style.image) {
-        //literal.pointRadius = style.image.;
-        literal.rotation = style.image.rotation;
-        literal.externalGraphic = style.image.src_;
-        literal.graphicWidth = style.image.size[0];
-        literal.graphicHeight = style.image.size[1];
-        literal.graphicOpacity = style.image.opacity;
-        literal.graphicXOffset = style.image.anchor[0];
-        literal.graphicYOffset = style.image.anchor[1];
-
+      if (imageStyle) {
+        var size = imageStyle.getSize();
+        var anchor = imageStyle.getAnchor();
+        literal.rotation = imageStyle.getRotation();
+        if (size) {
+          literal.graphicWidth = size[0];
+          literal.graphicHeight = size[1];
+        }
+        if (anchor) {
+          literal.graphicXOffset = anchor[0];
+          literal.graphicYOffset = anchor[1];
+        }
+        if (imageStyle instanceof ol.style.Icon) {
+          literal.externalGraphic = imageStyle.getSrc();
+        } else { // ol.style.Circle
+          fill = imageStyle.getFill();
+          stroke = imageStyle.getStroke();
+          literal.pointRadius = imageStyle.getRadius();
+        }
       }
-      if (style.stroke) {
-        literal.strokeWidth = style.stroke.width;
-        literal.strokeColor = style.stroke.color;
-        literal.strokeOpacity = style.stroke.opacity;
-        literal.strokeLinecap = style.stroke.lineCap;
-        literal.strokeDashstyle = style.stroke.lineDash;
+
+      if (fill) {
+        var color = fill.getColor();
+        literal.fillColor = toHexa(color);
+        literal.fillOpacity = color[3];
       }
 
-      if (style.fill) {
-        literal.fillColor = style.fill.color;
-        literal.fillOpacity = style.fill.opacity;
+      if (stroke) {
+        var color = stroke.getColor();
+        literal.strokeWidth = stroke.getWidth();
+        literal.strokeColor = toHexa(color);
+        literal.strokeOpacity = color[3];
+        literal.strokeLinecap = stroke.getLineCap() || 'round';
+
+        if (stroke.getLineDash()) {
+          literal.strokeDashstyle = stroke.getLineDash();
+        }
+        // TO FIX: Not managed by the print server
+        // literal.strokeLinejoin = stroke.getLineJoin();
+        // literal.strokeMiterlimit = stroke.getMiterLimit();
       }
 
-      /*if (style.text) {
-        literal.label
-        literal.fontFamily
-        literal.fontSize
-        literal.fontWeight
-        literal.fontColor = style.text.color;
-        literal.labelAlign = style.text.;
-        literal.labelOutlineColor = style.text.;
-        literal.labelOutlineWidth = style.text.;
+      // TO FIX: Not managed by OL3
+      /*if (textStyle) {
+        literal.fontColor = textStyle.getFill().getColor();
+        literal.fontFamily = textStyle.getFont();
+        literal.fontSize =
+        literal.fontWeight =
+        literal.label = textStyle.getText();
+        literal.labelAlign = textStyle.getTextAlign();
+        literal.labelOutlineColor = textStyle.getStroke().getColor();
+        literal.labelOutlineWidth = textStyle.getStroke().getWidth();
       }*/
 
       return literal;
@@ -199,30 +235,25 @@
           var enc = $scope.encoders.
               layers['Layer'].call(this, layer);
           var format = new ol.format.GeoJSON();
-          var encStyle = {};
           var encStyles = {};
           var encFeatures = [];
           var stylesDict = {};
-          var styleId = 1;
+          var styleId = 0;
 
           angular.forEach(features, function(feature) {
+            var encStyle = {
+              id: styleId
+            };
             var geometry = feature.getGeometry();
             var encJSON = format.writeFeature(feature);
             encJSON.properties._gx_style = styleId;
             encFeatures.push(encJSON);
-            var styles =
-                //(feature.getStyleFunction()) ? feature.getStyleFunction()() :
-                  (layer.getStyleFunction()) ?
-                    layer.getStyleFunction()(feature) :
-                    ol.feature.defaultStyleFunction(feature);
+            var styles = (layer.getStyleFunction()) ?
+                layer.getStyleFunction()(feature) :
+                ol.feature.defaultStyleFunction(feature);
 
-            if (styles) {
-              var i = styles.length;
-              while (i--) {
-                encStyle.id = styleId;
-                var literal = transformToPrintLiteral(styles[i]);
-                $.extend(encStyle, literal);
-              }
+            if (styles && styles.length > 0) {
+              $.extend(encStyle, transformToPrintLiteral(feature, styles[0]));
             }
 
             encStyles[styleId] = encStyle;
