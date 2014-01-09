@@ -82,7 +82,7 @@
       var hex = '#';
       for (var i = 0; i < 3; i++) {
         var part = olColor[i].toString(16);
-        if (parseInt(part) < 10) {
+        if (part.length === 1 && parseInt(part) < 10) {
           hex += '0';
         }
         hex += part;
@@ -151,14 +151,15 @@
       if (imageStyle) {
         var size = imageStyle.getSize();
         var anchor = imageStyle.getAnchor();
+        var scale = imageStyle.getScale();
         literal.rotation = imageStyle.getRotation();
         if (size) {
-          literal.graphicWidth = size[0];
-          literal.graphicHeight = size[1];
+          literal.graphicWidth = size[0] * scale;
+          literal.graphicHeight = size[1] * scale;
         }
         if (anchor) {
-          literal.graphicXOffset = anchor[0];
-          literal.graphicYOffset = anchor[1];
+          literal.graphicXOffset = -anchor[0] * scale;
+          literal.graphicYOffset = -anchor[1] * scale;
         }
         if (imageStyle instanceof ol.style.Icon) {
           literal.externalGraphic = imageStyle.getSrc();
