@@ -37,63 +37,6 @@
         resolutions: resolutions
       })
     });
-
-
-
-    // Defines default vector style
-    /*ol.style.setDefault(new ol.style.Style({
-      rules: [
-        new ol.style.Rule({
-          filter: 'renderintent("selected")',
-          symbolizers: [
-            new ol.style.Fill({
-              color: '#ff0000',
-              opacity: 1
-            }),
-            new ol.style.Stroke({
-              color: '#000000',
-              opacity: 1,
-              width: 2
-            }),
-            new ol.style.Shape({
-              size: 10,
-              fill: new ol.style.Fill({
-                color: '#ff0000',
-                opacity: 1
-              }),
-              stroke: new ol.style.Stroke({
-                color: '#000000',
-                opacity: 1,
-                width: 2
-              })
-            })
-          ]
-        })
-      ],
-      symbolizers: [
-        new ol.style.Fill({
-          color: '#ffff00',
-          opacity: 0.8
-        }),
-        new ol.style.Stroke({
-          color: '#ff8000',
-          opacity: 0.8,
-          width: 3
-        }),
-        new ol.style.Shape({
-          size: 10,
-          fill: new ol.style.Fill({
-            color: '#ffff00',
-            opacity: 0.8
-          }),
-          stroke: new ol.style.Stroke({
-            color: '#ff8000',
-            opacity: 0.8,
-            width: 3
-          })
-        })
-      ]
-    }));*/
     
     var dragClass = 'ga-dragging';
     var viewport = $(map.getViewport());
