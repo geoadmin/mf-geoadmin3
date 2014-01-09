@@ -297,7 +297,7 @@
                   if ($(this).val() != '') {
                     return;
                   }
-                  scope.$apply(function() {
+                  $timeout(function() {
                     scope.searchFocused = false;
                   });
                 }
@@ -427,7 +427,7 @@
               });
 
               taElt.focus(function() {
-                scope.$apply(function() {
+                $timeout(function() {
                   scope.searchFocused = true;
                   window.scrollTo(0, 1);
                 });
