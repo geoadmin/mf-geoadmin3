@@ -4,16 +4,19 @@
   goog.require('ga_browsersniffer_service');
   goog.require('ga_map_service');
   goog.require('ga_popup_service');
+  goog.require('ga_styles_service');
 
   var module = angular.module('ga_tooltip_directive', [
     'ga_popup_service',
     'ga_map_service',
+    'ga_styles_service',
     'pascalprecht.translate'
   ]);
 
   module.directive('gaTooltip',
     function($timeout, $document, $http, $q, $translate, $sce, gaPopup,
-      gaLayers, gaBrowserSniffer, gaDefinePropertiesForLayer, gaMapClick)
+      gaLayers, gaBrowserSniffer, gaDefinePropertiesForLayer, gaMapClick,
+      gaStyleFunctionFactory)
       {
         var waitclass = 'ga-tooltip-wait',
             bodyEl = angular.element($document[0].body),
@@ -30,49 +33,31 @@
           },
           link: function($scope, element, attrs) {
             var htmls = [],
+                shownFeature = {},
                 map = $scope.map,
                 popup,
                 canceler,
                 currentTopic,
                 vector,
-                projection,
+                vectorSource,
                 parser,
                 year,
                 source;
 
-            projection = map.getView().getProjection();
-            parser = new ol.parser.GeoJSON();
-            source = new ol.source.Vector({
-              projection: projection,
-              parser: parser
-            });
+            //FIXME: as the tooltip highlight is never printed, we could draw
+            //these features using the 'postcompose' function on either the
+            //layer or the map directly.
+            //See ol3 examples: dynamic-data.js or geojson.js
+            parser = new ol.format.GeoJSON();
+            vectorSource = new ol.source.Vector();
 
             vector = new ol.layer.Vector({
-              style: new ol.style.Style({
-                symbolizers: [
-                  new ol.style.Fill({
-                    color: '#ffff00'
-                  }),
-                  new ol.style.Stroke({
-                    color: '#ff8000',
-                    width: 3
-                  }),
-                  new ol.style.Shape({
-                    size: 20,
-                    fill: new ol.style.Fill({
-                      color: '#ffff00'
-                    }),
-                    stroke: new ol.style.Stroke({
-                      color: '#ff8000',
-                      width: 3
-                    })
-                  })
-                ]
-              }),
-              source: source
+              source: vectorSource,
+              styleFunction: gaStyleFunctionFactory('select')
             });
             gaDefinePropertiesForLayer(vector);
             vector.highlight = true;
+            vector.invertedOpacity = 0.25;
 
             $scope.$on('gaTopicChange', function(event, topic) {
               currentTopic = topic.id;
@@ -81,6 +66,39 @@
             $scope.$on('gaTimeSelectorChange', function(event, currentyear) {
               year = currentyear;
             });
+
+            $scope.$on('gaTriggerTooltipRequest', function(event, feature) {
+              if (feature && feature.geometry) {
+                var size = map.getSize();
+                var mapExtent = map.getView().calculateExtent(size);
+                initTooltip();
+                showFeatures(mapExtent, size, [feature.geometry]);
+                shownFeature = feature;
+                shownFeature.selected = true;
+              }
+            });
+
+            function initTooltip() {
+               // Cancel all pending requests
+              if (canceler) {
+                canceler.resolve();
+              }
+              // Create new cancel object
+              canceler = $q.defer();
+              // htmls = [] would break the reference in the popup
+              htmls.splice(0, htmls.length);
+              if (popup) {
+                popup.close();
+              }
+              clearAll();
+              map.addLayer(vector);
+            }
+
+            function clearAll() {
+              vectorSource.clear();
+              map.removeLayer(vector);
+              shownFeature.selected = false;
+            }
 
             gaMapClick.listen(map, function(evt) {
               var size = map.getSize();
@@ -111,12 +129,9 @@
                   params,
                   identifyCount,
                   i;
-              // Cancel all pending requests
-              if (canceler) {
-                canceler.resolve();
-              }
-              // Create new cancel object
-              canceler = $q.defer();
+
+              initTooltip();
+
               identifyCount = layersToQuery.length;
               if (identifyCount) {
                 // Show wait cursor
@@ -168,16 +183,7 @@
                 }
              }
 
-              // htmls = [] would break the reference in the popup
-              htmls.splice(0, htmls.length);
-
-              if (popup) {
-                popup.close();
-              }
-              source.removeFeatures(source.getFeatures());
-              map.removeLayer(vector);
-              map.addLayer(vector);
-            }
+           }
 
             function showFeatures(mapExtent, size, foundFeatures) {
               if (foundFeatures && foundFeatures.length > 0) {
@@ -188,11 +194,10 @@
                   if (gaLayers.getLayer(value.layerBodId) &&
                       gaLayers.getLayerProperty(value.layerBodId,
                                                 'highlightable')) {
-                    var feature = new ol.Feature({
-                      geometry: new ol.geom[value.geometry.type](
-                        value.geometry.coordinates)
-                    });
-                    source.addFeatures([feature]);
+                    var features = parser.readFeatures(value);
+                    for (var i = 0, ii = features.length; i < ii; ++i) {
+                      vectorSource.addFeature(features[i]);
+                    }
                   }
 
                   var htmlUrl = $scope.options.htmlUrlTemplate
@@ -214,8 +219,7 @@
                         popup = gaPopup.create({
                           className: 'ga-tooltip',
                           onCloseCallback: function() {
-                            source.removeFeatures(source.getFeatures());
-                            map.removeLayer(vector);
+                            clearAll();
                           },
                           destroyOnClose: false,
                           title: 'object_information',

@@ -1,12 +1,12 @@
 (function() {
   goog.provide('ga_map_service');
 
-  goog.require('ga_popup_service');
+  goog.require('ga_styles_service');
   goog.require('ga_urlutils_service');
 
   var module = angular.module('ga_map_service', [
     'pascalprecht.translate',
-    'ga_popup_service',
+    'ga_styles_service',
     'ga_urlutils_service'
   ]);
 
@@ -289,34 +289,28 @@
    * Manage KML layers
    */
   module.provider('gaKml', function() {
-    // Create the Parser the KML file
-    var kmlParser = new ol.parser.KML({
-      maxDepth: 1,
-      dimension: 2,
-      extractStyles: true,
-      extractAttributes: true
+    // Default style
+    var fill = new ol.style.Fill({
+      color: 'rgba(255,0,0,0.7)'
+    });
+    var stroke = new ol.style.Stroke({
+      color: 'rgb(255,0,0)',
+      width: 1.5
     });
 
-    var defaultStyle = new ol.style.Style({
-      symbolizers: [
-        new ol.style.Fill({
-          color: '#ff0000'
-        }),
-        new ol.style.Stroke({
-          color: '#ff0000',
-          width: 2
-        }),
-        new ol.style.Shape({
-          size: 10,
-          fill: new ol.style.Fill({
-            color: '#ff0000'
-          }),
-          stroke: new ol.style.Stroke({
-            color: '#ff0000',
-            width: 2
-          })
+    // Create the parser
+    var kmlFormat = new ol.format.KML({
+      extractStyles: true,
+      extractAttributes: true,
+      defaultStyle: [new ol.style.Style({
+        fill: fill,
+        stroke: stroke,
+        image: new ol.style.Circle({
+          radius: 7,
+          fill: fill,
+          stroke: stroke
         })
-      ]
+      })]
     });
 
     this.$get = function($http, gaPopup, gaDefinePropertiesForLayer,
@@ -331,24 +325,22 @@
           options = options || {};
 
           // Create vector layer
-          var obj = kmlParser.read(kml);
-          var transformFn = ol.proj.getTransform(obj.metadata.projection,
+          var features = kmlFormat.readFeatures(kml);
+          var transformFn = ol.proj.getTransform('EPSG:4326',
               options.projection);
-          for (var i = 0, ii = obj.features.length; i < ii; i++) {
-            var feature = obj.features[i];
+          for (var i = 0, ii = features.length; i < ii; i++) {
+            var feature = features[i];
             feature.getGeometry().transform(transformFn);
           }
           var olLayer = new ol.layer.Vector({
             url: options.url,
             type: 'KML',
-            label: options.label || obj.name || 'KML',
+            label: options.label || kmlFormat.readName(kml) || 'KML',
             opacity: options.opacity,
             visible: options.visible,
             source: new ol.source.Vector({
-              parser: kmlParser,
-              features: obj.features
-            }),
-            style: options.style || defaultStyle
+              features: features
+            })
           });
           gaDefinePropertiesForLayer(olLayer);
           return olLayer;
@@ -360,40 +352,65 @@
         var addKmlLayer = function(olMap, data, options, index) {
           options.projection = olMap.getView().getProjection();
           var olLayer = createKmlLayer(data, options);
+
+          // Find features on a specific pixel
+          var findFeatures = function(pixel) {
+            var features = [];
+            olMap.forEachFeatureAtPixel(pixel, function(feature, layer) {
+              if (layer === olLayer) {
+                features.push(feature);
+              }
+            });
+            return features;
+          };
+
+          // Change cursor style on mouse move
+          // FIXME: It's nice but unusable when too much features are displayed
+          /*var onMouseMove = function(evt) {
+            var pixel = (evt.originalEvent) ?
+                olMap.getEventPixel(evt.originalEvent) :
+                evt.getPixel();
+
+            var features = findFeatures(pixel);
+            if (features.length > 0 && features[0].get('description')) {
+              olMap.getTarget().style.cursor = 'pointer';
+            } else {
+              olMap.getTarget().style.cursor = '';
+            }
+          };*/
+
+          // Display popup on mouse click
           var onMapClick = function(evt) {
             evt.stopPropagation();
             evt.preventDefault();
             var pixel = (evt.originalEvent) ?
                 olMap.getEventPixel(evt.originalEvent) :
                 evt.getPixel();
-
-            olMap.getFeatures({
-              pixel: pixel,
-              layers: [olLayer],
-              success: function(features) {
-                if (features[0] && features[0][0] &&
-                    features[0][0].get('description')) {
-                  var feature = features[0][0];
-                  gaPopup.create({
-                    title: feature.get('name'),
-                    content: feature.get('description'),
-                    x: pixel[0],
-                    y: pixel[1]
-                   }).open();
-                }
+            var features = findFeatures(pixel);
+            if (features.length > 0) {
+              var feature = features[0];
+              if (feature.get('name') || feature.get('description')) {
+                gaPopup.create({
+                  title: feature.get('name'),
+                  content: feature.get('description'),
+                  x: pixel[0],
+                  y: pixel[1]
+                }).open();
               }
-            });
+            }
           };
 
           var listenerKey;
           olMap.getLayers().on('add', function(layersEvent) {
             if (layersEvent.getElement() === olLayer) {
               listenerKey = gaMapClick.listen(olMap, onMapClick);
+              //$(olMap.getViewport()).on('mousemove', onMouseMove);
             }
           });
           olMap.getLayers().on('remove', function(layersEvent) {
             if (layersEvent.getElement() === olLayer) {
               olMap.unByKey(listenerKey);
+              //$(olMap.getViewport()).unbind('mousemove', onMouseMove);
             }
           });
 
@@ -709,6 +726,14 @@
           return !layer.background &&
                  !layer.highlight &&
                  layer.timeEnabled;
+        },
+        /**
+         * Filters out preview layers and highlight
+         * layers and drawing layers.
+         */
+        permanentLayersFilter: function(layer) {
+          return !layer.preview &&
+                 !layer.highlight;
         }
       };
     };
@@ -901,10 +926,12 @@
   });
 
   module.provider('gaRecenterMapOnFeatures', function() {
-    this.$get = function($q, $http, gaDefinePropertiesForLayer) {
+    this.$get = function($q, $http, gaDefinePropertiesForLayer,
+                         gaStyleFunctionFactory) {
       var MINIMAL_EXTENT_SIZE = 1965;
       var url = this.url;
       var vector;
+      var parser = new ol.format.GeoJSON();
       var getFeatures = function(featureIdsByBodId) {
         var promises = [];
         angular.forEach(featureIdsByBodId, function(featureIds, bodId) {
@@ -936,6 +963,7 @@
 
       return function(map, featureIdsByBodId) {
         getFeatures(featureIdsByBodId).then(function(results) {
+          var vectorSource;
           var extent = [Infinity, Infinity, -Infinity, -Infinity];
           var foundFeatures = [];
           angular.forEach(results, function(result) {
@@ -948,39 +976,19 @@
                 map.getSize());
           }
           map.removeLayer(vector);
-          vector = new ol.layer.Vector({
-            style: new ol.style.Style({
-              symbolizers: [
-                new ol.style.Fill({
-                  color: '#ffff00'
-                }),
-                new ol.style.Stroke({
-                  color: '#ff8000',
-                  width: 3
-                }),
-                new ol.style.Shape({
-                  size: 20,
-                  fill: new ol.style.Fill({
-                    color: '#ffff00'
-                  }),
-                  stroke: new ol.style.Stroke({
-                    color: '#ff8000',
-                    width: 3
-                  })
-                })
-              ]
-            }),
-            source: new ol.source.Vector({
-              projection: map.getView().getProjection(),
-              parser: new ol.parser.GeoJSON(),
-              data: {
-                type: 'FeatureCollection',
-                features: foundFeatures
-              }
+          vectorSource = new ol.source.Vector({
+            features: parser.readFeatures({
+              type: 'FeatureCollection',
+              features: foundFeatures
             })
+          });
+          vector = new ol.layer.Vector({
+            source: vectorSource,
+            styleFunction: gaStyleFunctionFactory('select')
           });
           gaDefinePropertiesForLayer(vector);
           vector.highlight = true;
+          vector.invertedOpacity = 0.25;
           map.addLayer(vector);
         });
       };

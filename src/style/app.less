@@ -17,9 +17,11 @@
 @import "../components/tooltip/style/tooltip.less";
 @import "../components/slider/style/slider.less";
 @import "../components/timeselector/style/timeselector.less";
+@import "../components/swipe/style/swipe.less";
+@import "../components/featuretree/style/featuretree.less";
 
 @header-height: 89;
-@footer-height: 36;
+@footer-height: 26;
 @small-header-height: 50;
 @tooltip-bg: #999;
 @pulldown-width: 320;
@@ -215,7 +217,7 @@ input[type=text][readonly] {
   #scaleline {
     line-height: 1.5em;
     height: 1.5em;
-    margin-top: .8em;
+    margin-top: .4em;
     width: 150px;
   }
   @media (max-width: @screen-tablet) {
@@ -1028,3 +1030,51 @@ input[type=checkbox] {
     content: "\f046";
   }
 }
+
+// ***** DRAGGABLE ELEMENT
+.ga-draggable {
+  -ms-touch-action: none;
+}
+
+// ***** Feature Tree
+#featuretree {
+  .panel-body {
+    max-height: none;
+  }
+
+  ul {
+    padding-left: 1.6em;
+  }
+
+  ul li a {
+    border-bottom-width: 1px;
+  }
+
+  ul ul li {
+    height: auto;
+  }
+
+  ul ul li {
+    border-bottom-width: 1px;
+    border-bottom-style: dashed;
+    border-bottom-color: #c7c7c7;
+    height: auto;
+  }
+
+  ul ul li a {
+    border-bottom-width: 0px;
+  }
+
+  ul ul li .selected, a:hover.selected, a:focus.selected {
+    color: #f00;
+    background-color: #fff;
+  }
+
+  ul ul li .icon-plus {
+    border: 3px solid black;
+    box-shadow: 0 0 2px #c7c7c7;
+    font-size: 8px;
+    margin: 1.0em .5em;
+  }
+}
+
