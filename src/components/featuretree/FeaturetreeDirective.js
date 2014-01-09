@@ -43,7 +43,6 @@
           },
           link: function(scope, element, attrs) {
             var currentTopic;
-            var rectangleFeature;
             var timeoutPromise = null;
             var canceler = null;
             var map = scope.map;
@@ -52,7 +51,11 @@
             var projection = view.getProjection();
             var parser = new ol.format.GeoJSON();
             var highlightLayer = createVectorLayer('highlight');
-            var rectangleLayer = createVectorLayer('selectrectangle');
+            var selectionRecFeature = new ol.Feature();
+            var selectionRecOverlay = new ol.render.FeaturesOverlay({
+              map: map,
+              styleFunction: gaStyleFunctionFactory('selectrectangle')
+            });
             map.addLayer(highlightLayer);
 
             scope.dragBox = new ol.interaction.DragBox({
@@ -268,9 +271,6 @@
             // to separate these concerns.
             var triggerChange = function() {
               if (scope.options.active) {
-                //Make sure layer is always on top
-                map.removeLayer(rectangleLayer);
-                map.addLayer(rectangleLayer);
                 cancel();
                 timeoutPromise = $timeout(function() {
                   requestFeatures();
@@ -369,27 +369,36 @@
               currentTopic = topic.id;
             });
 
+            var showSelectionRectangle = function() {
+              if (!selectionRecOverlay.getFeatures().getLength() &&
+                  selectionRecFeature.getGeometry()) {
+                selectionRecOverlay.addFeature(selectionRecFeature);
+              }
+            };
+
+            var hideSelectionRectangle = function() {
+              if (selectionRecOverlay.getFeatures().getLength()) {
+                selectionRecOverlay.removeFeature(selectionRecFeature);
+              }
+            };
+
             scope.$watch('options.active', function(newVal, oldVal) {
               cancel();
               if (newVal === true) {
-                map.addLayer(rectangleLayer);
+                showSelectionRectangle();
                 triggerChange();
               } else {
-                map.removeLayer(rectangleLayer);
+                hideSelectionRectangle();
               }
             });
 
             scope.dragBox.on('boxstart', function(evt) {
-              if (rectangleFeature) {
-                rectangleLayer.getSource().removeFeature(rectangleFeature);
-              }
+              hideSelectionRectangle();
             });
 
             scope.dragBox.on('boxend', function(evt) {
-              rectangleFeature = new ol.Feature();
-              rectangleFeature.setGeometry(scope.dragBox.getGeometry());
-              rectangleLayer.getSource().addFeature(rectangleFeature);
-
+              selectionRecFeature.setGeometry(scope.dragBox.getGeometry());
+              showSelectionRectangle();
               triggerChange();
             });
           }
