@@ -15,9 +15,9 @@ files = [
   'lib/build.js',
 % else:
   'lib/jquery-2.0.3.js',
-  'lib/angular-1.2.1.js',
-  'lib/angular-animate-1.2.1.js',
-  'lib/angular-translate-1.1.0.js',
+  'lib/angular-1.2.9.js',
+  'lib/angular-animate-1.2.9.js',
+  'lib/angular-translate-1.1.1.js',
   'lib/angular-translate-loader-static-files-0.1.5.js',
   'lib/bootstrap-3.0.0.js',
   'lib/typeahead-0.9.3.js',
