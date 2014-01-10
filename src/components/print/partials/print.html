@@ -2,6 +2,7 @@
   <div>
     <label translate>print_layout</label>
     <select ng-model="layout" ng-options="l.name for l in capabilities.layouts"></select>
+    <select ng-model="scale" ng-options="l.name for l in capabilities.scales"></select>
   </div>
   <div class="checkbox">
       <input ng-model="options.legend" type="checkbox" /><label translate>legend
