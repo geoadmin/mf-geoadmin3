@@ -411,13 +411,7 @@
       var layers = this.map.getLayers();
       angular.forEach(layers, function(layer) {
         if (layer.visible) {
-          var attribution;
-          if (layer.bodId) {
-            attribution =
-            gaLayers.getLayerProperty(layer.bodId, 'attribution');
-          } else {
-            attribution = layer.attribution;
-          }
+          var attribution = layer.attribution;
           if (attribution !== undefined &&
               attributions.indexOf(attribution) == -1) {
             attributions.push(attribution);

@@ -546,6 +546,7 @@
               minResolution: layer.minResolution,
               maxResolution: layer.maxResolution,
               opacity: layer.opacity || 1,
+              attribution: layer.attribution,
               source: olSource
             });
           } else if (layer.type == 'wms') {
@@ -573,6 +574,7 @@
                 minResolution: layer.minResolution,
                 maxResolution: layer.maxResolution,
                 opacity: layer.opacity || 1,
+                attribution: layer.attribution,
                 source: olSource
               });
             } else {
@@ -588,6 +590,7 @@
                 minResolution: layer.minResolution,
                 maxResolution: layer.maxResolution,
                 opacity: layer.opacity || 1,
+                attribution: layer.attribution,
                 source: olSource
               });
             }
@@ -602,6 +605,7 @@
               minResolution: layer.minResolution,
               maxResolution: layer.maxResolution,
               opacity: layer.opacity || 1,
+              attribution: layer.attribution,
               layers: subLayers
             });
           }
