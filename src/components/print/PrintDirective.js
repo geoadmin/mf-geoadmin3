@@ -537,15 +537,35 @@
       overlay_.removeFeature(printRecFeature);
     };
 
+    var calculatePageBounds = function(scale) {
+        var s = parseFloat(scale.value);
+        var size = $scope.layout.map;
+        var view = $scope.map.getView();
+        var center = view.getCenter();
+
+        var unitsRatio = 39.37;
+        var w = size.width / 72 / unitsRatio * s / 2;
+        var h = size.height / 72 / unitsRatio * s / 2;
+        
+        return ol.extent.createOrUpdate(center[0] - w, center[1] - h,
+                          center[0] + w, center[1] + h);
+    };
 
     $scope.$watch('options.active', function(newVal, oldVal) {
       if (newVal === true) {
-                showPrintRectangle();
-                //triggerChange();
-              } else {
-                hidePrintRectangle();
-              }
-     });
+        showPrintRectangle();
+        //triggerChange();
+      } else {
+        hidePrintRectangle();
+      }
+    });
+    $scope.$watch('scale', function() {
+      console.log($scope.scale)
+      calculatePageBounds($scope.scale);
+    });
+    $scope.$watch('layout', function() {
+      console.log($scope.layout)
+    });
 
   });
 
