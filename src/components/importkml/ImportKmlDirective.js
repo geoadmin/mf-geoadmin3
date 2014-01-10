@@ -14,7 +14,7 @@
 
   module.controller('GaImportKmlDirectiveController',
       function($scope, $http, $q, $log, $translate, gaBrowserSniffer,
-            gaLayers, gaKml) {
+            gaLayers, gaKml, gaUrlUtils) {
 
         $scope.isIE9 = (gaBrowserSniffer.msie == 9);
         $scope.isIE = !isNaN(gaBrowserSniffer.msie);
@@ -138,7 +138,7 @@
                     undefined,
                 attribution: ($scope.currentTab === 2) ?
                     gaUrlUtils.getHostname($scope.fileUrl) :
-                    undefined,
+                    undefined
               });
 
               $scope.userMessage = $translate('parse_succeeded');
