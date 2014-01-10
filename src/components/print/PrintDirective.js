@@ -505,9 +505,9 @@
           qrcodeurl: qrcodeurl,
           pages: [
           angular.extend({
-            center: view.getCenter(),
+            center: printRecFeature.getGeometry().getInteriorPoint(),
             // scale has to be one of the advertise by the print server
-            scale: getNearestScale(scale, scales),
+            scale: $scope.scale.value,
             dataOwner: '© ' + attributions.join(),
             shortLink: response.shorturl.replace('/shorten', '')
           }, defaultPage)]
