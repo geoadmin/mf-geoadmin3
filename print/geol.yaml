@@ -232,7 +232,7 @@ layouts:
               align: center
               text: |
                 Massstab 1: ${format %,d scale}
-                Drucken am ${now dd/MM/yyyy HH:mm}
+                Drucken am ${now dd.MM.yyyy HH:mm}
                 ${shortLink}
             - !text
               condition: langfr
@@ -240,7 +240,7 @@ layouts:
               align: center
               text: |
                 Echelle 1: ${format %,d scale}
-                Imprimé le ${now dd/MM/yyyy HH:mm}
+                Imprimé le ${now dd.MM.yyyy HH:mm}
                 ${shortLink}
             - !text
               condition: langen
@@ -248,7 +248,7 @@ layouts:
               align: center
               text: |
                 Scale 1: ${format %,d scale}
-                Printed on ${now dd/MM/yyyy HH:mm}
+                Printed on ${now dd.MM.yyyy HH:mm}
                 ${shortLink}
             - !text
               condition: langrm
@@ -256,7 +256,7 @@ layouts:
               align: center
               text: |
                 Scala 1: ${format %,d scale}
-                Stampar am ${now dd/MM/yyyy HH:mm}
+                Stampar am ${now dd.MM.yyyy HH:mm}
                 ${shortLink}
             - !text
               condition: langit
@@ -264,7 +264,7 @@ layouts:
               align: center
               text: |
                 Scala 1: ${format %,d scale}
-                Stampato il ${now dd/MM/yyyy HH:mm}
+                Stampato il ${now dd.MM.yyyy HH:mm}
                 {shortLink}
     lastPage:
       pagesize: A4
@@ -502,7 +502,7 @@ layouts:
               align: center
               text: |
                 Massstab 1: ${format %,d scale}
-                Drucken am ${now dd/MM/yyyy HH:mm}
+                Drucken am ${now dd.MM.yyyy HH:mm}
                 ${shortLink}
             - !text
               condition: langfr
@@ -510,7 +510,7 @@ layouts:
               align: center
               text: |
                 Echelle 1: ${format %,d scale}
-                Imprimé le ${now dd/MM/yyyy HH:mm}
+                Imprimé le ${now dd.MM.yyyy HH:mm}
                 ${shortLink}
             - !text
               condition: langen
@@ -518,7 +518,7 @@ layouts:
               align: center
               text: |
                 Scale 1: ${format %,d scale}
-                Printed on ${now dd/MM/yyyy HH:mm}
+                Printed on ${now dd.MM.yyyy HH:mm}
                 ${shortLink}
             - !text
               condition: langrm
@@ -526,7 +526,7 @@ layouts:
               align: center
               text: |
                 Scala 1: ${format %,d scale}
-                Stampar am ${now dd/MM/yyyy HH:mm}
+                Stampar am ${now dd.MM.yyyy HH:mm}
                 ${shortLink}
             - !text
               condition: langit
@@ -534,7 +534,7 @@ layouts:
               align: center
               text: |
                 Scala 1: ${format %,d scale}
-                Stampato il ${now dd/MM/yyyy HH:mm}
+                Stampato il ${now dd.MM.yyyy HH:mm}
                 ${shortLink}
     lastPage:
       pageSize: A4
