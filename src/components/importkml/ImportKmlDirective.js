@@ -14,7 +14,7 @@
 
   module.controller('GaImportKmlDirectiveController',
       function($scope, $http, $q, $log, $translate, gaBrowserSniffer,
-            gaLayers, gaKml) {
+            gaLayers, gaKml, gaUrlUtils) {
 
         $scope.isIE9 = (gaBrowserSniffer.msie == 9);
         $scope.isIE = !isNaN(gaBrowserSniffer.msie);
@@ -135,6 +135,9 @@
               // Add the layer
               gaKml.addKmlToMap($scope.map, $scope.fileContent, {
                 url: ($scope.currentTab === 2) ? $scope.fileUrl :
+                    undefined,
+                attribution: ($scope.currentTab === 2) ?
+                    gaUrlUtils.getHostname($scope.fileUrl) :
                     undefined
               });
 

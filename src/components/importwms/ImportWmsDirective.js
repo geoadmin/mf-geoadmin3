@@ -204,18 +204,6 @@
 
               try {
                 var layer = getCapLayer;
-                var htmlAttribution = null;
-
-                if (layer.attribution) {
-                  htmlAttribution =
-                      '<a href="' + layer.attribution.href + '">' +
-                        ((layer.attribution.logo) ?
-                          '<img src="' + layer.attribution.logo.href +
-                             '" title="' + layer.attribution.title +
-                             '" alt="' + layer.attribution.title + '" />' :
-                          layer.attribution.title) +
-                      '</a>';
-                }
 
                 return gaWms.addWmsToMap($scope.map,
                   {
@@ -225,7 +213,7 @@
                     url: $scope.fileUrl,
                     label: layer.title,
                     extent: getLayerExtentFromGetCap(layer),
-                    attribution: htmlAttribution,
+                    attribution: gaUrlUtils.getHostname($scope.fileUrl),
                     preview: isPreview
                   }
                 );

@@ -401,13 +401,21 @@
 
       var qrcodeurl = location.protocol + $scope.options.serviceUrl +
           '/qrcodegenerator?url=' + encodedPermalinkHref;
+      var shortenUrl = location.protocol + $scope.options.serviceUrl +
+          '/shorten.json?cb=JSON_CALLBACK';
 
       var encLayers = [];
       var encLegends;
+      var attributions = [];
 
       var layers = this.map.getLayers();
       angular.forEach(layers, function(layer) {
         if (layer.visible) {
+          var attribution = layer.attribution;
+          if (attribution !== undefined &&
+              attributions.indexOf(attribution) == -1) {
+            attributions.push(attribution);
+          }
           if (layer instanceof ol.layer.Group) {
             var encs = $scope.encoders.layers['Group'].call(this,
                 layer, proj);
@@ -424,7 +432,6 @@
           }
         }
       });
-
       if ($scope.options.graticule) {
         var graticule = {
           'baseURL': 'http://wms.geo.admin.ch/',
@@ -445,34 +452,39 @@
       var scales = this.scales.map(function(scale) {
         return parseInt(scale.value);
       });
-      var spec = {
-        layout: this.layout.name,
-        srs: proj.getCode(),
-        units: proj.getUnits() || 'm',
-        rotation: view.getRotation(),
-        app: topicId, //topic name
-        lang: $translate.uses(),
-        dpi: this.dpi.value,
-        layers: encLayers,
-        legends: encLegends,
-        enableLegends: (encLegends && encLegends.length > 0),
-        qrcodeurl: qrcodeurl,
-        pages: [
-        angular.extend({
-          center: view.getCenter(),
-          // scale has to be one of the advertise by the print server
-          scale: getNearestScale(scale, scales),
-          mapTitle: '',
-          mapFooter: '',
-          dataOwner: '',
-          customLogo: false
-        }, defaultPage)]
-      };
-      var http = $http.post(this.capabilities.createURL +
-          '?url=' + encodeURIComponent($scope.options.printPath +
-          '/create.json'), spec);
-      http.success(function(data) {
-        $scope.downloadUrl(data.getURL);
+      var that = this;
+      $http.jsonp(shortenUrl, {
+        params: {
+          url: gaPermalink.getHref()
+        }
+      }).success(function(response) {
+        var spec = {
+          layout: that.layout.name,
+          srs: proj.getCode(),
+          units: proj.getUnits() || 'm',
+          rotation: view.getRotation(),
+          app: topicId, //topic name
+          lang: $translate.uses(),
+          dpi: that.dpi.value,
+          layers: encLayers,
+          legends: encLegends,
+          enableLegends: (encLegends && encLegends.length > 0),
+          qrcodeurl: qrcodeurl,
+          pages: [
+          angular.extend({
+            center: view.getCenter(),
+            // scale has to be one of the advertise by the print server
+            scale: getNearestScale(scale, scales),
+            dataOwner: '© ' + attributions.join(),
+            shortLink: response.shorturl.replace('/shorten', '')
+          }, defaultPage)]
+        };
+        var http = $http.post(that.capabilities.createURL +
+            '?url=' + encodeURIComponent($scope.options.printPath +
+            '/create.json'), spec);
+        http.success(function(data) {
+          $scope.downloadUrl(data.getURL);
+        });
       });
     };
   });

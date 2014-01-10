@@ -49,6 +49,14 @@
     this.$get = function() {
       return function defineProperties(olLayer) {
         Object.defineProperties(olLayer, {
+          attribution: {
+            get: function() {
+              return this.get('attribution');
+            },
+            set: function(val) {
+              this.set('attribution', val);
+            }
+          },
           visible: {
             get: function() {
               return this.getVisible();
@@ -263,6 +271,7 @@
             type: 'WMS',
             opacity: options.opacity,
             visible: options.visible,
+            attribution: options.attribution,
             source: source
           });
           gaDefinePropertiesForLayer(layer);
@@ -314,7 +323,7 @@
     });
 
     this.$get = function($http, gaPopup, gaDefinePropertiesForLayer,
-        gaMapClick) {
+        gaMapClick, gaMapUtils) {
       var Kml = function(proxyUrl) {
 
         /**
@@ -332,14 +341,23 @@
             var feature = features[i];
             feature.getGeometry().transform(transformFn);
           }
+          var attributions;
+
+          if (options.attribution) {
+            attributions = [
+              gaMapUtils.getAttribution(options.attribution)
+            ];
+          }
           var olLayer = new ol.layer.Vector({
             url: options.url,
             type: 'KML',
             label: options.label || kmlFormat.readName(kml) || 'KML',
             opacity: options.opacity,
             visible: options.visible,
+            attribution: options.attribution,
             source: new ol.source.Vector({
-              features: features
+              features: features,
+              attributions: attributions
             })
           });
           gaDefinePropertiesForLayer(olLayer);
@@ -528,6 +546,7 @@
               minResolution: layer.minResolution,
               maxResolution: layer.maxResolution,
               opacity: layer.opacity || 1,
+              attribution: layer.attribution,
               source: olSource
             });
           } else if (layer.type == 'wms') {
@@ -555,6 +574,7 @@
                 minResolution: layer.minResolution,
                 maxResolution: layer.maxResolution,
                 opacity: layer.opacity || 1,
+                attribution: layer.attribution,
                 source: olSource
               });
             } else {
@@ -570,6 +590,7 @@
                 minResolution: layer.minResolution,
                 maxResolution: layer.maxResolution,
                 opacity: layer.opacity || 1,
+                attribution: layer.attribution,
                 source: olSource
               });
             }
@@ -584,6 +605,7 @@
               minResolution: layer.minResolution,
               maxResolution: layer.maxResolution,
               opacity: layer.opacity || 1,
+              attribution: layer.attribution,
               layers: subLayers
             });
           }
@@ -755,7 +777,7 @@
   module.provider('gaLayersPermalinkManager', function() {
 
     this.$get = function($rootScope, gaLayers, gaPermalink, $translate, $http,
-        gaKml, gaMapUtils, gaWms, gaLayerFilters) {
+        gaKml, gaMapUtils, gaWms, gaLayerFilters, gaUrlUtils) {
 
       var layersParamValue = gaPermalink.getParams().layers;
       var layersOpacityParamValue = gaPermalink.getParams().layers_opacity;
@@ -892,7 +914,8 @@
                 gaKml.addKmlToMapForUrl(map, url,
                   {
                     opacity: opacity,
-                    visible: visible
+                    visible: visible,
+                    attribution: gaUrlUtils.getHostname(url)
                   },
                   index + 1);
               } catch (e) {
@@ -911,7 +934,8 @@
                     url: infos[2],
                     label: infos[1],
                     opacity: opacity,
-                    visible: visible
+                    visible: visible,
+                    attribution: gaUrlUtils.getHostname(infos[2])
                   },
                   index + 1);
               } catch (e) {
