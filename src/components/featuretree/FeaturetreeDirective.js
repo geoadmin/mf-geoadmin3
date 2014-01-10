@@ -52,7 +52,6 @@
             var projection = view.getProjection();
             var parser = new ol.format.GeoJSON();
             var highlightLayer = createVectorLayer('highlight');
-            var macEnv = gaBrowserSniffer.mac && gaBrowserSniffer.webkit;
             var selectionRecFeature = new ol.Feature();
             var selectionRecOverlay = new ol.render.FeaturesOverlay({
               map: map,
@@ -67,7 +66,7 @@
                 //We have to use the apple key on those devices
                 return scope.options.active &&
                        (evt.getBrowserEvent().ctrlKey ||
-                        (macEnv && evt.getBrowserEvent().metaKey));
+                       (gaBrowserSniffer.mac && evt.getBrowserEvent().metaKey));
               },
               style: new ol.style.Style({
                 stroke: new ol.style.Stroke({
