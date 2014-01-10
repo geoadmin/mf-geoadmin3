@@ -243,12 +243,31 @@
                       <ul>
                         <li>
                           <a href=""  ng-click="isSwipeActive = !isSwipeActive">
-                            <i class="icon-file ga-icon-separator"></i>
                             <span translate="{{(isSwipeActive) ? 'swipe_active' : 'swipe_inactive'}}"</span>
                           </a>
                         </li>
                       </ul>
-
+                    </div>
+                  </div>
+                </li>
+                <li><!-- Measure -->
+                  <a class="accordion-toggle collapsed" data-toggle="collapse" href="#measure">
+                    <i class="visible-collapsed icon-plus"></i>
+                    <i class="hidden-collapsed icon-minus"></i>
+                    <span translate>measure</span>
+                  </a>
+                  <div id="measure" class="collapse">
+                    <div class="panel-body">
+                      <ul>
+                        <li>
+                          <a href=""  ng-click="isMeasureActive = !isMeasureActive">
+                            <span translate="{{(isMeasureActive) ? 'measure_active' : 'measure_inactive'}}"</span>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </li>
                 <li><!-- Feature Tree / Object information -->
                   <a id="featuretree-link" class="accordion-toggle collapsed" data-toggle="collapse" href="#featuretree">
                     <i class="visible-collapsed icon-plus"></i>
@@ -441,6 +460,16 @@
         </div>
       </div>
     </div><!-- end Import KML -->
+   
+    <!-- Popup: Measure -->
+    <div ga-popup="isMeasureActive"
+      ga-popup-options="{title:'measure'}"
+      ga-draggable=".ga-popup-title"
+      id="measure-popup" >
+      <div ga-measure ga-measure-map="map" ga-measure-active="isMeasureActive"></div>
+      </div>
+    </div><!-- end Measure -->
+
 
     <div class="popover homescreen" ng-if="globals.homescreen" ng-class="[ globals.homescreen ? 'visible' : '', globals.tablet ? 'bottom' : 'top']">
       <div class="arrow"></div>
