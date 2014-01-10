@@ -46,6 +46,7 @@
         $scope.layout = data.layouts[0];
         $scope.dpi = data.dpis[0];
         $scope.scales = data.scales;
+        $scope.scale = data.scales[5];
         $scope.options.legend = false;
         $scope.options.graticule = false;
       });
@@ -78,6 +79,10 @@
     $scope.$on('gaTopicChange', function(event, topic) {
       topicId = topic.id;
       updatePrintConfig();
+    });
+    $scope.map.on('moveend', function(event) {
+      event.stopPropagation();
+      updatePrintRectangle($scope.scale);
     });
 
     var encodeLayer = function(layer, proj) {
@@ -522,19 +527,23 @@
     };
 
     var showPrintRectangle = function() {
-        console.log('show');
         var geom = new ol.geom.Polygon(
-                    [[[600000, 200000], [650000, 200000], [650000,250000], 
-                     [600000, 250000], [600000, 200000]]]) ;
-        printRecFeature.setGeometry(geom);        
-        overlay_.setStyleFunction( defaultStyleFunction);
+                    [[[600000, 200000], [650000, 200000], [650000, 250000],
+                     [600000, 250000], [600000, 200000]]]);
+        printRecFeature.setGeometry(geom);
+        overlay_.setStyleFunction(defaultStyleFunction);
         overlay_.setMap($scope.map);
         overlay_.addFeature(printRecFeature);
-    
+
     };
     var hidePrintRectangle = function() {
-      console.log('hide');
       overlay_.removeFeature(printRecFeature);
+    };
+    var updatePrintRectangle = function(scale) {
+      if ($scope.options.active) {
+        var extent = calculatePageBounds(scale);
+        printRecFeature.setGeometry(extent);
+      }
     };
 
     var calculatePageBounds = function(scale) {
@@ -546,25 +555,32 @@
         var unitsRatio = 39.37;
         var w = size.width / 72 / unitsRatio * s / 2;
         var h = size.height / 72 / unitsRatio * s / 2;
-        
-        return ol.extent.createOrUpdate(center[0] - w, center[1] - h,
-                          center[0] + w, center[1] + h);
+
+        var minx, miny, maxx, maxy;
+
+        minx = center[0] - w;
+        miny = center[1] - h;
+        maxx = center[0] + w;
+        maxy = center[1] + h;
+
+        return new ol.geom.Polygon(
+                    [[[minx, miny], [maxx, miny], [maxx, maxy],
+                     [minx, maxy], [minx, miny]]]);
     };
 
     $scope.$watch('options.active', function(newVal, oldVal) {
       if (newVal === true) {
         showPrintRectangle();
-        //triggerChange();
+        updatePrintRectangle($scope.scale);
       } else {
         hidePrintRectangle();
       }
     });
     $scope.$watch('scale', function() {
-      console.log($scope.scale)
-      calculatePageBounds($scope.scale);
+      updatePrintRectangle($scope.scale);
     });
     $scope.$watch('layout', function() {
-      console.log($scope.layout)
+      updatePrintRectangle($scope.scale);
     });
 
   });
