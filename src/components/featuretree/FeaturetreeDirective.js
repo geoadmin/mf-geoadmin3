@@ -20,7 +20,8 @@
   module.directive('gaFeaturetree',
       function($rootScope, $compile, $timeout, $http, $q, $translate, $sce,
                gaLayers, gaDefinePropertiesForLayer, gaStyleFunctionFactory, 
-               gaMapClick, gaRecenterMapOnFeatures, gaLayerFilters) {
+               gaMapClick, gaRecenterMapOnFeatures, gaLayerFilters,
+               gaBrowserSniffer) {
 
         var createVectorLayer = function(style) {
           var vector = new ol.layer.Vector({
@@ -51,6 +52,7 @@
             var projection = view.getProjection();
             var parser = new ol.format.GeoJSON();
             var highlightLayer = createVectorLayer('highlight');
+            var macEnv = gaBrowserSniffer.mac && gaBrowserSniffer.webkit;
             var selectionRecFeature = new ol.Feature();
             var selectionRecOverlay = new ol.render.FeaturesOverlay({
               map: map,
@@ -60,8 +62,12 @@
 
             scope.dragBox = new ol.interaction.DragBox({
               condition: function(evt) {
+                //MacEnvironments don't get here because the event is not
+                //recognized as mouseEvent on Mac by the google closure.
+                //We have to use the apple key on those devices
                 return scope.options.active &&
-                       evt.getBrowserEvent().ctrlKey;
+                       (evt.getBrowserEvent().ctrlKey ||
+                        (macEnv && evt.getBrowserEvent().metaKey));
               },
               style: new ol.style.Style({
                 stroke: new ol.style.Stroke({
