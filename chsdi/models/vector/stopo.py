@@ -1052,6 +1052,7 @@ class PLZOrtschaften(Base, Vector):
     plz = Column('plz', Integer)
     zusziff = Column('zusziff', Text)
     langtext = Column('langtext', Text)
+    bgdi_created = Column('bgdi_created', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo-vd.ortschaftenverzeichnis_plz', PLZOrtschaften)
