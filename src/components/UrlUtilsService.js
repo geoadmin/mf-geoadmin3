@@ -19,6 +19,10 @@
             return (!!url && url.length > 0 && URL_REGEXP.test(url));
         };
 
+        this.getHostname = function(str) {
+          return decodeURIComponent(str).match(/:\/\/(.[^/]+)/)[1].toString();
+        };
+
         this.append = function(url, paramString) {
           if (paramString) {
             var parts = (url + ' ').split(/[?&]/);

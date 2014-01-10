@@ -135,7 +135,10 @@
               // Add the layer
               gaKml.addKmlToMap($scope.map, $scope.fileContent, {
                 url: ($scope.currentTab === 2) ? $scope.fileUrl :
-                    undefined
+                    undefined,
+                attribution: ($scope.currentTab === 2) ?
+                    gaUrlUtils.getHostname($scope.fileUrl) :
+                    undefined,
               });
 
               $scope.userMessage = $translate('parse_succeeded');

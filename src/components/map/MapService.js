@@ -49,6 +49,14 @@
     this.$get = function() {
       return function defineProperties(olLayer) {
         Object.defineProperties(olLayer, {
+          attribution: {
+            get: function() {
+              return this.get('attribution');
+            },
+            set: function(val) {
+              this.set('attribution', val);
+            }
+          },
           visible: {
             get: function() {
               return this.getVisible();
@@ -263,6 +271,7 @@
             type: 'WMS',
             opacity: options.opacity,
             visible: options.visible,
+            attribution: options.attribution,
             source: source
           });
           gaDefinePropertiesForLayer(layer);
@@ -755,7 +764,7 @@
   module.provider('gaLayersPermalinkManager', function() {
 
     this.$get = function($rootScope, gaLayers, gaPermalink, $translate, $http,
-        gaKml, gaMapUtils, gaWms, gaLayerFilters) {
+        gaKml, gaMapUtils, gaWms, gaLayerFilters, gaUrlUtils) {
 
       var layersParamValue = gaPermalink.getParams().layers;
       var layersOpacityParamValue = gaPermalink.getParams().layers_opacity;
@@ -911,7 +920,8 @@
                     url: infos[2],
                     label: infos[1],
                     opacity: opacity,
-                    visible: visible
+                    visible: visible,
+                    attribution: gaUrlUtils.getHostname(infos[2])
                   },
                   index + 1);
               } catch (e) {
