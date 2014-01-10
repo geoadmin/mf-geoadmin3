@@ -323,7 +323,7 @@
     });
 
     this.$get = function($http, gaPopup, gaDefinePropertiesForLayer,
-        gaMapClick) {
+        gaMapClick, gaMapUtils) {
       var Kml = function(proxyUrl) {
 
         /**
@@ -341,14 +341,23 @@
             var feature = features[i];
             feature.getGeometry().transform(transformFn);
           }
+          var attributions;
+
+          if (options.attribution) {
+            attributions = [
+              gaMapUtils.getAttribution(options.attribution)
+            ];
+          }
           var olLayer = new ol.layer.Vector({
             url: options.url,
             type: 'KML',
             label: options.label || kmlFormat.readName(kml) || 'KML',
             opacity: options.opacity,
             visible: options.visible,
+            attribution: options.attribution,
             source: new ol.source.Vector({
-              features: features
+              features: features,
+              attributions: attributions
             })
           });
           gaDefinePropertiesForLayer(olLayer);
@@ -901,7 +910,8 @@
                 gaKml.addKmlToMapForUrl(map, url,
                   {
                     opacity: opacity,
-                    visible: visible
+                    visible: visible,
+                    attribution: gaUrlUtils.getHostname(url)
                   },
                   index + 1);
               } catch (e) {
