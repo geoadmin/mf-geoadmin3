@@ -19,7 +19,7 @@
   module.directive('gaSearch',
       function($compile, $translate, $timeout, gaMapUtils, gaLayers,
         gaLayerMetadataPopup, gaPermalink, gaUrlUtils, gaGetCoordinate,
-        gaBrowserSniffer, gaLayerFilters) {
+        gaBrowserSniffer, gaLayerFilters, gaKml) {
           var currentTopic,
               footer = [
             '<div class="search-footer clearfix">',
@@ -203,6 +203,14 @@
                        scope.$apply(function() {
                           scope.layers = map.getLayers().getArray();
                        });
+                       // Check url
+                       if (gaUrlUtils.isValid(scope.query)) {
+                         gaKml.addKmlToMapForUrl(map,
+                           scope.query, {
+                           attribution: gaUrlUtils.getHostname(scope.query)
+                         });
+                         return false;
+                       }
                        var position =
                          gaGetCoordinate(
                            map.getView().getProjection().getExtent(),
