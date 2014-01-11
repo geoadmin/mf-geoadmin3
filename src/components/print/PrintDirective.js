@@ -133,6 +133,7 @@
       updatePrintConfig();
     });
     $scope.$on('gaLayersChange', function(event, data) {
+      updatePrintRectanglePixels($scope.scale);
     });
     
     $scope.printing = false;
