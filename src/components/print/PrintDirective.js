@@ -1,6 +1,7 @@
 (function() {
   goog.provide('ga_print_directive');
 
+
   var module = angular.module('ga_print_directive',
     ['pascalprecht.translate']);
 
@@ -32,6 +33,10 @@
     var pdfLegendsToDownload = [];
 
     var topicId;
+    var layerListenerKeys = [];
+    var listenerKeys = [];
+    var printRectangle;
+    var topLayer;
 
     var updatePrintConfig = function() {
       var printPath = $scope.options.printPath;
@@ -46,48 +51,90 @@
         $scope.layout = data.layouts[0];
         $scope.dpi = data.dpis[0];
         $scope.scales = data.scales;
+        $scope.scale = data.scales[5];
         $scope.options.legend = false;
         $scope.options.graticule = false;
       });
     };
+     var findTopMostLayer = function() {
+       var olLayers = $scope.map.getLayers();
+       var validLayers = [];
+       for (var i = olLayers.getLength() - 1; i >= 0; i--) {
+         var olLayer = olLayers.getAt(i);
+         if (!olLayer.highlight) {
+           validLayers.push(olLayer);
+         }
+       }
+       if (validLayers.length < 1) {
+         return null;
+       }
 
-   var printRecFeature = new ol.Feature();
+       return validLayers[0];
+    };
 
-    var defaultStyleFunction = (function() {
-      var styles = {};
-      styles['Polygon'] = [
-        new ol.style.Style({
-          fill: new ol.style.Fill({
-            color: 'rgba(0, 5, 25, 0.75)'
-          })
-        })
-      ];
-      styles['MultiPoint'] = styles['Point'];
+   var activate = function() {
+     var olLayers = $scope.map.getLayers();
+     listenerKeys = [
+       olLayers.on('add', refreshComp),
+       olLayers.on('remove', refreshComp)
+     ];
+     //topLayer = findTopMostLayer();
 
-      return function(feature, resolution) {
-        return styles[feature.getGeometry().getType()];
-      };
-    })();
+     //topLayer.on('precompose', handlePreCompose);
+     //topLayer.on('postcompose', handlePostCompose);
+     refreshComp();
+   };
 
-    var overlay_ = new ol.render.FeaturesOverlay({
-      map: $scope.map,
-      styleFunction: defaultStyleFunction
-    });
+   var deactivate = function() {
+     //refreshComp();
+   };
+
+
+   var refreshComp = function() {
+     $scope.layer = findTopMostLayer();
+     if ($scope.layer instanceof ol.layer.Group) {
+       $scope.layer.getLayers().forEach(function(olLayer, idx, arr) {
+         layerListenerKeys = layerListenerKeys.concat([
+           olLayer.on('precompose', handlePreCompose),
+           olLayer.on('postcompose', handlePostCompose)
+         ]);
+        });
+     } else {
+       layerListenerKeys = [
+         $scope.layer.on('precompose', handlePreCompose),
+         $scope.layer.on('postcompose', handlePostCompose)
+       ];
+     }
+     $scope.map.requestRenderFrame();
+    };
+
+
+    // Compose events
+    var handlePreCompose = function(evt) {
+      updatePrintRectanglePixels($scope.scale);
+    };
+
+    var handlePostCompose = function(evt) {
+      //   evt.getContext().restore();
+      var ctx = evt.getContext();
+      ctx.save();
+      ctx.beginPath();
+      var width = printRectangle[2] - printRectangle[0];
+      var height = printRectangle[3] - printRectangle[1];
+      ctx.rect(printRectangle[0], printRectangle[1], width, height);
+      ctx.lineWidth = 7;
+      ctx.strokeStyle = 'blue';
+      ctx.stroke();
+    };
 
 
     $scope.$on('gaTopicChange', function(event, topic) {
       topicId = topic.id;
       updatePrintConfig();
     });
-
-   //We should think about deregistering this event, becaus
-    //it's fired so often, it might have an impact on
-    //overall performance even if updatePrintRectangle does
-    //nothing
-    $scope.map.getView().on('propertychange', function(event) {
-      updatePrintRectangle($scope.scale);
+    $scope.$on('gaLayersChange', function(event, data) {
     });
-
+    
     $scope.printing = false;
 
     var encodeLayer = function(layer, proj) {
@@ -210,6 +257,7 @@
        * graphicYOffset
        * zIndex
        */
+
       var literal = {
         zIndex: style.getZIndex()
       };
@@ -444,13 +492,26 @@
       }
     };
 
+    var getNearestScale = function(target, scales) {
+
+      var nearest = null;
+
+      angular.forEach(scales, function(scale) {
+        if (nearest == null ||
+            Math.abs(scale - target) < Math.abs(nearest - target)) {
+              nearest = scale;
+        }
+      });
+      return nearest;
+    };
+
     $scope.downloadUrl = function(url) {
       $window.location.href = url;
     };
 
     $scope.submit = function() {
       // http://mapfish.org/doc/print/protocol.html#print-pdf
-      $scope.printing = true;
+      $scope.printing = false;
       var view = $scope.map.getView();
       var proj = view.getProjection();
       var lang = $translate.uses();
@@ -511,7 +572,11 @@
         };
         encLayers.push(graticule);
       }
-
+      // scale = resolution * inches per map unit (m) * dpi
+      var scale = parseInt(view.getResolution() * 39.37 * 254);
+      var scales = this.scales.map(function(scale) {
+        return parseInt(scale.value);
+      });
       var that = this;
       $http.jsonp(shortenUrl, {
         params: {
@@ -532,7 +597,7 @@
           qrcodeurl: qrcodeurl,
           pages: [
           angular.extend({
-            center: view.getCenter(),
+            center: getPrintRectangleCenterCoord(),
             // scale has to be one of the advertise by the print server
             scale: $scope.scale.value,
             dataOwner: '© ' + attributions.join(),
@@ -556,29 +621,28 @@
         });
       }).error(function() {
         $scope.printing = false;
-      });
+       });
     };
 
-    var showPrintRectangle = function() {
-      if (!overlay_.getFeatures().getLength() &&
-          printRecFeature.getGeometry()) {
-        overlay_.addFeature(printRecFeature);
-      }
-   };
-    var hidePrintRectangle = function() {
-      if (overlay_.getFeatures().getLength()) {
-        overlay_.removeFeature(printRecFeature);
-      }
+    var getPrintRectangleCenterCoord = function() {
+        var bottomLeft = printRectangle.slice(0, 2);
+        var width = printRectangle[2] - printRectangle[0];
+        var height = printRectangle[3] - printRectangle[1];
+        var center = [bottomLeft[0] + width / 2, bottomLeft[1] + height / 2];
+
+        return $scope.map.getCoordinateFromPixel(center);
     };
-    var updatePrintRectangle = function(scale) {
+
+    var updatePrintRectanglePixels = function(scale) {
       if ($scope.options.active) {
-        var extent = calculatePageBounds(scale);
-        printRecFeature.setGeometry(extent);
+        printRectangle = calculatePageBoundsPixels(scale);
+        $scope.map.requestRenderFrame();
       }
     };
 
     var DPI = 72;
-    var UNITS_RATIO = 39.37;
+    var MM_PER_INCHES = 25.4;
+        var UNITS_RATIO = 39.37;
 
     var getOptimalScale = function() {
       var size = $scope.map.getSize();
@@ -640,22 +704,42 @@
                   ]);
     };
 
+    var calculatePageBoundsPixels = function(scale) {
+        var s = parseFloat(scale.value);
+        var size = $scope.layout.map; // papersize in dot!
+        var view = $scope.map.getView();
+        var center = view.getCenter();
+        var resolution = view.getResolution();
+
+        var w = size.width / DPI * MM_PER_INCHES / 1000.0 * s / resolution;
+        var h = size.height / DPI * MM_PER_INCHES / 1000.0 * s / resolution;
+        var mapSize = $scope.map.getSize();
+        var center = [mapSize[0] / 2 , mapSize[1] / 2];
+
+
+        var minx, miny, maxx, maxy;
+
+        minx = center[0] - (w / 2);
+        miny = center[1] - (h / 2);
+        maxx = center[0] + (w / 2);
+        maxy = center[1] + (h / 2);
+
+        return [minx, miny, maxx, maxy];
+    };
+
     $scope.$watch('options.active', function(newVal, oldVal) {
       if (newVal === true) {
-        $scope.scale = getOptimalScale();
-        updatePrintRectangle($scope.scale);
-        showPrintRectangle();
+        activate();
       } else {
-        hidePrintRectangle();
+        deactivate();
       }
     });
     $scope.$watch('scale', function() {
-      updatePrintRectangle($scope.scale);
+       //updatePrintRectanglePixels($scope.scale);
     });
     $scope.$watch('layout', function() {
-      updatePrintRectangle($scope.scale);
+      //updatePrintRectanglePixels($scope.scale);
     });
-
 
   });
 
@@ -671,4 +755,3 @@
     }
   );
 })();
-
