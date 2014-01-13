@@ -21,10 +21,10 @@
     format = 'formate_%s' % lang
 %>
   <table>
-    <tr><td class="cell-align-left">${_('safety_zone')}</td><td>${c['attributes']['zone_name']}</td></tr>
-    <tr><td class="cell-align-left">${_('geometry_type')}</td><td>${c['attributes']['zonetype_%s' % lang]}</td></tr>
-    <tr><td class="cell-align-left">${_('originator')}</td><td>${c['attributes']['originator']}</td></tr>
-    <tr><td class="cell-align-left">${_('kanton')}</td><td>${c['attributes']['canton']}</td></tr>
+    <tr><td class="cell-meta-small">${_('safety_zone')}</td><td class="cell-meta-big">${c['attributes']['zone_name']}</td></tr>
+    <tr><td class="cell-meta-small">${_('geometry_type')}</td><td class="cell-meta-big">${c['attributes']['zonetype_%s' % lang]}</td></tr>
+    <tr><td class="cell-meta-small">${_('originator')}</td><td class="cell-meta-big">${c['attributes']['originator']}</td></tr>
+    <tr><td class="cell-meta-small">${_('kanton')}</td><td class="cell-meta-big">${c['attributes']['canton']}</td></tr>
 <%
     municipality = c['attributes']['municipality']
     if municipality is not None:
@@ -33,9 +33,9 @@
     else:
         municipality = 0
 %>
-    <tr><td class="cell-align-left">${_('municipality')}</td><td>${nb_municipality}</td></tr>
-    <tr><td class="cell-align-left">${_('bazlrechtstatus')}</td><td>${c['attributes']['legalstatus_%s' % lang]}</td></tr>
-    <tr><td class="cell-align-left">${_('approval_date')}</td><td>${c['attributes']['approval_date']}</td></tr>  
+    <tr><td class="cell-meta-small">${_('municipality')}</td><td class="cell-meta-big">${nb_municipality}</td></tr>
+    <tr><td class="cell-meta-small">${_('bazlrechtstatus')}</td><td class="cell-meta-big">${c['attributes']['legalstatus_%s' % lang]}</td></tr>
+    <tr><td class="cell-meta-small">${_('approval_date')}</td><td class="cell-meta-big">${c['attributes']['approval_date']}</td></tr>  
    
 <%
      weblink = c['attributes']['weblink']
@@ -60,7 +60,7 @@
       weblink_nb = 0
 %>
 % for i in range(arr_len):
-<tr><td class="cell-align-left">${_('tt_document')}</td> <td><a href=${weblink_new[i]}  target="_blank">${doctitle_new[1]}<a/></td></tr>
+<tr><td class="cell-meta-small">${_('tt_document')}</td> <td class="cell-meta-big"><a href=${weblink_new[i]}  target="_blank">${doctitle_new[1]}<a/></td></tr>
 % endfor
 </table>
 </%def>
