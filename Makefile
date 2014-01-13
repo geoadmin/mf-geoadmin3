@@ -12,7 +12,7 @@ LESS_PARAMETERS ?= '-ru'
 VERSION := $(shell date '+%s')/
 GIT_BRANCH := $(shell git rev-parse --symbolic-full-name --abbrev-ref HEAD)
 GIT_LAST_BRANCH := $(shell if [ -f .build-artefacts/last-git-branch ]; then cat .build-artefacts/last-git-branch 2> /dev/null; else echo 'dummy'; fi)
-DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branches
+DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branch
 
 .PHONY: help
 help:
@@ -20,22 +20,22 @@ help:
 	@echo
 	@echo "Possible targets:"
 	@echo
-	@echo "- prod         Build app for prod (/prd)"
-	@echo "- dev          Build app for dev (/src)"
-	@echo "- lint         Run the linter"
-	@echo "- testdev      Run the JavaScript tests in dev mode"
-	@echo "- testprod     Run the JavaScript tests in prod mode"
-	@echo "- apache       Configure Apache (restart required)"
-	@echo "- fixrights    Fix rights in common folder"
-	@echo "- all          All of the above (target to run prior to creating a PR)"
-	@echo "- clean        Remove generated files"
-	@echo "- cleanrc      Remove all rc_* dependent files"
-	@echo "- cleanall     Remove all the build artefacts"
-	@echo "- deploybranch Deploys current branch (note: takes code from github)"
-	@echo "- deploybranchold Deploys current branch, deploy to old infra..."
-	@echo "- updateol     Update ol.js, ol-simple.js and ol-whitespace.js"
-	@echo "- translate    Generate the translation files (requires db user pwd in ~/.pgpass: dbServer:dbPort:*:dbUser:dbUserPwd)"
-	@echo "- help         Display this help"
+	@echo "- prod            Build app for prod (/prd)"
+	@echo "- dev             Build app for dev (/src)"
+	@echo "- lint            Run the linter"
+	@echo "- testdev         Run the JavaScript tests in dev mode"
+	@echo "- testprod        Run the JavaScript tests in prod mode"
+	@echo "- apache          Configure Apache (restart required)"
+	@echo "- fixrights       Fix rights in common folder"
+	@echo "- all             All of the above (target to run prior to creating a PR)"
+	@echo "- clean           Remove generated files"
+	@echo "- cleanrc         Remove all rc_* dependent files"
+	@echo "- cleanall        Remove all the build artefacts"
+	@echo "- deploybranch    Deploys current branch to test (note: takes code from github)"
+	@echo "- deploybranchint Deploys current branch to test and int (note: takes code from github)"
+	@echo "- updateol        Update ol.js, ol-simple.js and ol-whitespace.js"
+	@echo "- translate       Generate the translation files (requires db user pwd in ~/.pgpass: dbServer:dbPort:*:dbUser:dbUserPwd)"
+	@echo "- help            Display this help"
 	@echo
 	@echo "Variables:"
 	@echo
@@ -66,21 +66,22 @@ testprod: prd/lib/build.js test/karma-conf-prod.js node_modules
 .PHONY: apache
 apache: apache/app.conf
 
-.PHONY: deploybranchold
-deploybranch: deploy/deploy-branch.cfg $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/config
-	cd $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH); \
-	git checkout $(GIT_BRANCH); \
-	git pull; \
-	bash -c "source rc_dev_old && make all"; \
-	sudo -u deploy deploy -r deploy/deploy-branch.cfg ab
-
 .PHONY: deploybranch
 deploybranch: deploy/deploy-branch.cfg $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/config
 	cd $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH); \
 	git checkout $(GIT_BRANCH); \
 	git pull; \
-	bash -c "source rc_dev && make all"; \
-	sudo -u deploy deploy -r deploy/deploy-branch.cfg int
+	make preparebranch; \
+	cp scripts/00-$(GIT_BRANCH).conf /var/www/vhosts/mf-geoadmin3/conf; \
+	bash -c "source rc_branch && make all";
+
+.PHONY: deploybranchint
+deploybranchint: deploybranch
+	cd $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH); \
+	sudo -u deploy deploy -r deploy/deploy-branch.cfg int;
+
+.PHONY: preparebranch
+preparebranch: cleanrc rc_branch scripts/00-$(GIT_BRANCH).conf
 
 .PHONY: updateol
 updateol: OL_JS = ol.js ol-simple.js ol-whitespace.js
@@ -230,7 +231,14 @@ $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/config:
 deploy/deploy-branch.cfg: deploy/deploy-branch.mako.cfg .build-artefacts/last-git-branch .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "git_branch=$(GIT_BRANCH)" $< > $@
 
+rc_branch: rc_branch.mako .build-artefacts/last-git-branch .build-artefacts/python-venv/bin/mako-render
+	.build-artefacts/python-venv/bin/mako-render --var "base_url=$(GIT_BRANCH)" --var "service_url=$(SERVICE_URL)" $< > $@
+
+scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf .build-artefacts/last-git-branch .build-artefacts/python-venv/bin/mako-render
+	.build-artefacts/python-venv/bin/mako-render --var "git_branch=$(GIT_BRANCH)" $< > $@
+
 .build-artefacts/last-git-branch::
+	mkdir -p $(dir $@)
 	test $(GIT_BRANCH) != $(GIT_LAST_BRANCH) && echo $(GIT_BRANCH) > .build-artefacts/last-git-branch || :
 
 .build-artefacts/ol3:
@@ -268,7 +276,6 @@ clean: cleanrc
 	rm -f src/style/app.css
 	rm -f src/TemplateCacheModule.js
 	rm -rf prd
-	rm -f deploy/deploy-branch.cfg
 
 .PHONY: cleanrc
 cleanrc:
@@ -277,4 +284,8 @@ cleanrc:
 	rm -f prd/index.html
 	rm -f prd/mobile.html
 	rm -f apache/app.conf
+	rm -f deploy/deploy-branch.cfg
+	rm -f scripts/00-*.conf
+	rm -f rc_branch
+
 
