@@ -98,7 +98,7 @@ class TestSearchServiceView(TestsBase):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'features': 'ch.astra.ivs-reg_loc', 'type': 'featureidentify', 'bbox': '551306.5625,167918.328125,551754.125,168514.625'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'feature')
-        self.failUnless(resp.json['results'][0]['attrs']['id'] == 43543)
+        self.failUnless(resp.json['results'][0]['attrs']['feature_id'] == '43543')
 
     def test_features_time(self):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '9990044', 'features': 'ch.swisstopo.lubis-luftbilder', 'type': 'locations', 'bbox': '551306.5625,167918.328125,551754.125,168514.625', 'timeInstant': '1952'}, status=200)
