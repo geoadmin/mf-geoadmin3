@@ -4,12 +4,11 @@
   goog.require('ga_profile_service');
 
   var module = angular.module('ga_profile_directive', [
-    'ga_profile_service',
-    'pascalprecht.translate'
+    'ga_profile_service'
   ]);
 
   module.directive('gaProfile',
-      function($translate, $rootScope, gaProfileService) {
+      function($rootScope, gaProfileService) {
         return {
           restrict: 'A',
           replace: true,

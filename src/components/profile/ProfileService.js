@@ -5,8 +5,7 @@
 
   var module = angular.module('ga_profile_service', [
     'ga_draggable_directive',
-    'ga_popup',
-    'pascalprecht.translate'
+    'ga_popup'
   ]);
 
   module.provider('gaProfileService', function() {
@@ -185,7 +184,7 @@
       };
     }
 
-    this.$get = function($translate) {
+    this.$get = function() {
       return function(options) {
         var chart = new ProfileChart(options);
         return chart;
