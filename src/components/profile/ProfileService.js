@@ -61,7 +61,24 @@
         };
       };
 
+      this.formatData = function(data) {
+        var maxX = data[data.length - 1].dist;
+        if (maxX >= 10000) {
+          this.unitX = 'km';
+          $.map(data, function(val) {
+            val.dist = val.dist / 1000;
+            return val;
+          });
+        } else {
+          this.unitX = 'm';
+        }
+        return data;
+      };
+
       this.create = function(data) {
+        var that = this;
+        data = this.formatData(data);
+
         this.domain = getXYDomains(data);
         var axis = createAxis(this.domain);
         var element = document.createElement('DIV');
@@ -113,7 +130,7 @@
                 .tickFormat('')
             );
 
-        this.path = group.select('.profile-area');
+        this.group = group;
 
         var legend = group.append('g')
             .attr('class', 'profile-legend')
@@ -137,50 +154,59 @@
             .text('swissALTI3D/DHM25');
 
         group.append('text')
-            .attr('class', 'profile-label')
+            .attr('class', 'profile-label profile-label-x')
             .attr('x', width / 2)
             .attr('y', height + options.margin.bottom)
             .style('text-anchor', 'middle')
-            .text(options.xLabel);
+            .text(options.xLabel + ' [' + that.unitX + ']');
 
         group.append('text')
-            .attr('class', 'profile-label')
+            .attr('class', 'profile-label profile-label-y')
             .attr('transform', 'rotate(-90)')
             .attr('y', 0 - options.margin.left)
             .attr('x', 0 - height / 2)
             .attr('dy', '1em')
-            .text(options.yLabel);
+            .text(options.yLabel + ' [m]');
 
          return element;
       };
 
       this.update = function(data) {
+        var that = this;
+        data = this.formatData(data);
+
         this.domain = getXYDomains(data);
         var axis = createAxis(this.domain);
         var area = createArea(this.domain, 'cardinal');
-        this.path.datum(data)
+        var path = this.group.select('.profile-area');
+        path.datum(data)
           .transition().duration(1500)
             .attr('class', 'profile-area')
             .attr('d', area);
 
-        element.select('g.x')
+        this.group.select('g.x')
           .transition().duration(1500)
             .call(axis.X);
-        element.select('g.y')
+        this.group.select('g.y')
           .transition().duration(1500)
             .call(axis.Y);
-        element.select('g.profile-grid-x')
+        this.group.select('g.profile-grid-x')
           .transition().duration(1500)
             .call(axis.X
                 .tickSize(-height, 0, 0)
                 .tickFormat('')
             );
-        element.select('g.profile-grid-y')
+        this.group.select('g.profile-grid-y')
           .transition().duration(1500)
             .call(axis.Y
                 .tickSize(-width, 0, 0)
                 .tickFormat('')
             );
+        this.group.select('text.profile-label-x')
+          .transition().duration(1500)
+            .text(
+                options.xLabel + ' [' + that.unitX + ']'
+          );
       };
     }
 

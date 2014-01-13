@@ -22,11 +22,15 @@
             var tooltipEl = element.find('.profile-tooltip');
 
             scope.coordinates = [0, 0];
+            scope.unitX = '';
 
             profile = gaProfileService(options);
 
             $rootScope.$on('gaProfileDataLoaded', function(ev, data) {
-              var profileEl = angular.element(profile.create(data));
+              var profileEl = angular.element(
+                  profile.create(data)
+              );
+              scope.unitX = profile.unitX;
               var previousProfileEl = element.find('.profile-inner');
               if (previousProfileEl.length > 0) {
                 previousProfileEl.replaceWith(profileEl);
@@ -39,6 +43,7 @@
 
             $rootScope.$on('gaProfileDataUpdated', function(ev, data) {
               profile.update(data);
+              scope.unitX = profile.unitX;
             });
 
             function attachPathListeners(areaChartPath) {
