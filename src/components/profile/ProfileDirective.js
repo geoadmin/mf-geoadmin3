@@ -44,10 +44,10 @@
 
             function attachPathListeners(areaChartPath) {
               areaChartPath.on('mousemove', function() {
-                var path = d3.select(this);
+                var path = d3.select(areaChartPath[0][0]);
                 var pathEl = path.node();
                 if (angular.isDefined(pathEl.getTotalLength)) {
-                  var mousePos = d3.mouse(this);
+                  var mousePos = d3.mouse(areaChartPath[0][0]);
                   var x = mousePos[0];
 
                   var pos = this.getPointAtLength(x);
@@ -80,7 +80,7 @@
               });
 
               areaChartPath.on('mouseover', function(d) {
-                var path = d3.select(this);
+                var path = d3.select(areaChartPath[0][0]);
                 var pathEl = path.node();
                 if (angular.isDefined(pathEl.getTotalLength)) {
                   tooltipEl.css({ display: 'block' });
@@ -88,7 +88,7 @@
               });
 
               areaChartPath.on('mouseout', function(d) {
-                var path = d3.select(this);
+                var path = d3.select(areaChartPath[0][0]);
                 var pathEl = path.node();
                 if (angular.isDefined(pathEl.getTotalLength)) {
                   tooltipEl.css({ display: 'none' });
