@@ -124,14 +124,14 @@
 
         legend.append('rect')
             .attr('class', 'profile-legend-rect')
-            .attr('x', width - 65)
-            .attr('y', 10)
+            .attr('x', width - 128)
+            .attr('y', 2)
             .attr('width', 10)
             .attr('height', 10);
 
         legend.append('text')
-            .attr('x', width - 50)
-            .attr('y', 19)
+            .attr('x', width - 113)
+            .attr('y', 11)
             .attr('width', 100)
             .attr('height', 30)
             .text('swissALTI3D/DHM25');
