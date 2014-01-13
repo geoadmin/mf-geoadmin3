@@ -53,14 +53,14 @@ RewriteRule ^${base_url_path}/prod/[0-9]+/(.*)$ ${base_dir}/prd/$1
 # proxy
 
 % if (re.match('^http(s)?:*', service_url)):
-ProxyPassMatch ${base_url_path}/[0-9/]*(print|ogcproxy|feedback|rest)(.*) ${service_url}/$1$2
+ProxyPassMatch ${base_url_path}/[0-9/]*(print|ogcproxy|feedback|rest|static)(.*) ${service_url}/$1$2
 ProxyPassReverse ${base_url_path} ${service_url}
 % else:
 ProxyPassReverse ${base_url_path} http:${service_url}
-ProxyPassMatch ${base_url_path}/[0-9/]*(print|ogcproxy|feedback|rest)(.*) http:${service_url}/$1$2
+ProxyPassMatch ${base_url_path}/[0-9/]*(print|ogcproxy|feedback|rest|static)(.*) http:${service_url}/$1$2
 % endif
 
-<LocationMatch ${base_url_path}/[0-9/]*(print|ogcproxy|feedback|rest)>
+<LocationMatch ${base_url_path}/[0-9/]*(print|ogcproxy|feedback|rest|static)>
     Order allow,deny
     Allow from all
 </LocationMatch>
