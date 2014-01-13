@@ -11,7 +11,7 @@
     <tr><td class="cell-left">${_('geometry_type')}</td><td>${c['attributes']['zonetype_%s' % lang]}</td></tr>
     <tr><td class="cell-left">${_('originator')}</td><td>${c['attributes']['originator']}</td></tr>
     <tr><td class="cell-left">${_('kanton')}</td><td>${c['attributes']['canton']}</td></tr>
-    <tr><td width="170"></td><td><a href="http://mf-chsdi3.dev.bgdi.ch/ltboj/rest/services/all/MapServer/${c['layerBodId']}/${c['featureId']}/extendedhtmlpopup" target="_blank">${_('zusatzinfo')}<img src="http://www.swisstopo.admin.ch/images/ico_extern.gif" /></a></td></tr>
+    <tr><td width="170"></td><td><a href="${c['baseUrl']}rest/services/all/MapServer/${c['layerBodId']}/${c['featureId']}/extendedhtmlpopup" target="_blank">${_('zusatzinfo')}<img src="http://www.swisstopo.admin.ch/images/ico_extern.gif" /></a></td></tr>
 </%def>
 
 <%def name="extended_info(c, lang)"> 
@@ -21,17 +21,27 @@
     format = 'formate_%s' % lang
 %>
   <table>
-    <tr><td class="cell-left">${_('safety_zone')}</td><td>${c['attributes']['zone_name']}</td></tr>
-    <tr><td class="cell-left">${_('geometry_type')}</td><td>${c['attributes']['zonetype_%s' % lang]}</td></tr>
-    <tr><td class="cell-left">${_('originator')}</td><td>${c['attributes']['originator']}</td></tr>
-    <tr><td class="cell-left">${_('kanton')}</td><td>${c['attributes']['canton']}</td></tr>
-    <tr><td class="cell-left">${_('municipality')}</td><td>${c['attributes']['municipality']}</td></tr>
-    <tr><td class="cell-left">${_('bazlrechtstatus')}</td><td>${c['attributes']['legalstatus_%s' % lang]}</td></tr>
-    <tr><td class="cell-left">${_('approval_date')}</td><td>${c['attributes']['approval_date']}</td></tr>  
+    <tr><td class="cell-align-left">${_('safety_zone')}</td><td>${c['attributes']['zone_name']}</td></tr>
+    <tr><td class="cell-align-left">${_('geometry_type')}</td><td>${c['attributes']['zonetype_%s' % lang]}</td></tr>
+    <tr><td class="cell-align-left">${_('originator')}</td><td>${c['attributes']['originator']}</td></tr>
+    <tr><td class="cell-align-left">${_('kanton')}</td><td>${c['attributes']['canton']}</td></tr>
 <%
-  ''' if attirbute.weblink is not None:
-      weblink = attribute.weblink.split('##')
-      doctitle = attribute.title.split('##')
+    municipality = c['attributes']['municipality']
+    if municipality is not None:
+        nb_municipality = ", ".join(c['attributes']['municipality'].split(','))
+        i = 0
+    else:
+        municipality = 0
+%>
+    <tr><td class="cell-align-left">${_('municipality')}</td><td>${nb_municipality}</td></tr>
+    <tr><td class="cell-align-left">${_('bazlrechtstatus')}</td><td>${c['attributes']['legalstatus_%s' % lang]}</td></tr>
+    <tr><td class="cell-align-left">${_('approval_date')}</td><td>${c['attributes']['approval_date']}</td></tr>  
+   
+<%
+     weblink = c['attributes']['weblink']
+     if weblink:
+      weblink = c['attributes']['weblink'].split('##')
+      doctitle = c['attributes']['title'].split('##')
       nb=len(weblink)
       doctitle_new = []
       weblink_new = []
@@ -46,14 +56,11 @@
 
       arr_len = len(weblink_new)
 
-   else:
+     else:
       weblink_nb = 0
-   '''
 %>
-<%doc>
 % for i in range(arr_len):
- <tr><td class="cell-left">${_('weblink')}</td><td>${c['attributes']['weblink']}</td></tr>
+<tr><td class="cell-align-left">${_('tt_document')}</td> <td><a href=${weblink_new[i]}  target="_blank">${doctitle_new[1]}<a/></td></tr>
 % endfor
-</%doc>
 </table>
 </%def>
