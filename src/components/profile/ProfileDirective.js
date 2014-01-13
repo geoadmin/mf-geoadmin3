@@ -18,7 +18,7 @@
             options: '=gaProfileOptions'
           },
           link: function(scope, element, attrs) {
-            var profile, profileEl;
+            var profile;
             var options = scope.options;
             var tooltipEl = element.find('.profile-tooltip');
 
@@ -27,7 +27,7 @@
             profile = gaProfileService(options);
 
             $rootScope.$on('gaProfileDataLoaded', function(ev, data) {
-              profileEl = angular.element(profile.create(data, element));
+              var profileEl = angular.element(profile.create(data));
               var previousProfileEl = element.find('.profile-inner');
               if (previousProfileEl.length > 0) {
                 previousProfileEl.replaceWith(profileEl);
