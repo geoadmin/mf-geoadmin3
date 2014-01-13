@@ -1,3 +1,35 @@
+Release 20141501 -  Wednesday, January 15th 2014
+====================================================
+
+Geodata
+********
+
++--------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Safety zone plan <//map3.geo.admin.ch/?layers=ch.bazl.sicherheitszonenplan>`__  (ch.bazl.sicherheitszonenplan)                                             |
++--------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+Listing all publicly available layers of the Geoadmin API :
+
+- `List only <//s.geo.admin.ch/5d5d40a>`__
+- `With Preview <//s.geo.admin.ch/ebae1145>`__
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+-----------------------------------
+- Initial preview of the new GeoAdmin API
+- Documentation
+- Support of HTTPS
+- Various minor improvements and glitches
+
+
+`map3.geo.admin.ch <//map3.geo.admin.ch>`__
+--------------------------------------------------
+- Fix KML features reprojection
+- Add WMS servers
+- Adding graticule option to print
+- Various minor fixes and improvements
 
 Release 20131218 -  Wednesday, December 18th 2013
 ====================================================
