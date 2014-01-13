@@ -31,22 +31,22 @@ class SicherheitsZonenPlan (Base, Vector):
     canton = Column('canton', Text)
     municipality = Column('municipality', Text)
     approval_date = Column('approval_date', Text)
-    status_id = Column ('status_id', Text)
-    legalstatus_tid = Column ('legalstatus_tid', Text)
-    legalstatus_de = Column ('legalstatus_de', Text)
-    legalstatus_fr = Column ('legalstatus_fr', Text)
-    legalstatus_it = Column ('legalstatus_it', Text)
-    title = Column ('title', Text)
-    weblink = Column ('weblink', Text)
-    valid_from = Column ('valid_from', Text)
-    valid_until = Column ('valid_until', Text)
-    latest_modification = Column ('latest_modification', Text)
-    doc_description = Column ('doc_description', Text)
-    doc_id = Column ('doc_id', Text)
+    status_id = Column('status_id', Text)
+    legalstatus_tid = Column('legalstatus_tid', Text)
+    legalstatus_de = Column('legalstatus_de', Text)
+    legalstatus_fr = Column('legalstatus_fr', Text)
+    legalstatus_it = Column('legalstatus_it', Text)
+    title = Column('title', Text)
+    weblink = Column('weblink', Text)
+    valid_from = Column('valid_from', Text)
+    valid_until = Column('valid_until', Text)
+    latest_modification = Column('latest_modification', Text)
+    doc_description = Column('doc_description', Text)
+    doc_id = Column('doc_id', Text)
 
 register('ch.bazl.sicherheitszonenplan', SicherheitsZonenPlan)
 
- 
+
 class IVS_NAT(Base, Vector):
     __tablename__ = 'ivs_nat'
     __table_args__ = ({'schema': 'astra', 'autoload': False})
