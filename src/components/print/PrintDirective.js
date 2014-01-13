@@ -122,7 +122,7 @@
        * strokeOpacity
        * strokeWidth
        * strokeLinecap
-       * strokLinejoin
+       * strokeLinejoin
        * strokeDashstyle
        * pointRadius
        * label
