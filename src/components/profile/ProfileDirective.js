@@ -66,9 +66,9 @@
                   var xCoord = profile.domain.X.invert(x);
                   var yCoord = profile.domain.Y.invert(pos.y);
                   // Get the tooltip position
-                  // 8 refers to the height of the arrow
+                  var heightOfArrow = 8;
                   var positionX = profile.domain.X(xCoord);
-                  var positionY = profile.domain.Y(yCoord) - 8;
+                  var positionY = profile.domain.Y(yCoord) - heightOfArrow;
                   tooltipEl.css({
                     left: positionX + 'px',
                     top: positionY + 'px'

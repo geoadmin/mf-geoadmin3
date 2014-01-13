@@ -2,7 +2,6 @@
   goog.provide('ga_profile_service');
 
   goog.require('ga_draggable_directive');
-  goog.require('ga_popup');
 
   var module = angular.module('ga_profile_service', [
     'ga_draggable_directive',
@@ -24,9 +23,13 @@
         var y = domain.Y;
         var area = d3.svg.area()
             .interpolate(interpolationMethod)
-            .x(function(d) { return x(d.dist); })
+            .x(function(d) {
+              return x(d.dist);
+            })
             .y0(height)
-            .y1(function(d) { return y(d.alts.DTM25); });
+            .y1(function(d) {
+              return y(d.alts.DTM25);
+            });
         return area;
       };
 
@@ -47,8 +50,12 @@
       var y = d3.scale.linear().range([height, 0]);
 
       var getXYDomains = function(data) {
-        x.domain(d3.extent(data, function(d) { return d.dist; }));
-        y.domain([0, d3.max(data, function(d) { return d.alts.DTM25; })]);
+        x.domain(d3.extent(data, function(d) {
+          return d.dist;
+        }));
+        y.domain([0, d3.max(data, function(d) {
+          return d.alts.DTM25;
+        })]);
         return {
           X: x,
           Y: y
@@ -126,7 +133,7 @@
             .attr('y', 19)
             .attr('width', 100)
             .attr('height', 30)
-            .text('DTM 25');
+            .text('swissALTI3D/DHM25');
 
         group.append('text')
             .attr('class', 'profile-label')
