@@ -38,7 +38,7 @@
             });
 
             $rootScope.$on('gaProfileDataUpdated', function(ev, data) {
-              profile.update(data, element);
+              profile.update(data);
             });
 
             function attachPathListeners(areaChartPath) {

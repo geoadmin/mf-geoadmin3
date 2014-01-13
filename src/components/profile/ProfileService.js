@@ -113,6 +113,8 @@
                 .tickFormat('')
             );
 
+        this.path = group.select('.profile-area');
+
         var legend = group.append('g')
             .attr('class', 'profile-legend')
             .attr('x', width - 65)
@@ -152,13 +154,11 @@
          return element;
       };
 
-      this.update = function(data, element) {
+      this.update = function(data) {
         this.domain = getXYDomains(data);
         var axis = createAxis(this.domain);
-        element = d3.select(element[0]);
-        var path = element.select('.profile-area');
         var area = createArea(this.domain, 'cardinal');
-        path.datum(data)
+        this.path.datum(data)
           .transition().duration(1500)
             .attr('class', 'profile-area')
             .attr('d', area);
