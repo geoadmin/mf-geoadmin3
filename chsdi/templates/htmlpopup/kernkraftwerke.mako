@@ -8,8 +8,7 @@
 
 <%def name="extended_info(c, lang)">
     <%
-        langs = ['de', 'fr', 'it', 'en']
-        lang_i =  langs.index(lang) if lang in langs else 0
+        lang_i = {'de':0, 'fr':1, 'it':2, 'en':3}.get(lang, 0)
         link_i = 4
         operator = c['attributes']['operator'].split('##')
         enforcement_1 = c['attributes']['enforcement_1'].split('##')
