@@ -72,6 +72,7 @@
        return validLayers[0];
     };
 
+
    var activate = function() {
      var olLayers = $scope.map.getLayers();
      listenerKeys = [
@@ -639,7 +640,7 @@
         printRectangle = calculatePageBoundsPixels(scale);
         $scope.map.requestRenderFrame();
       }
-    };
+    }; 
 
     var DPI = 72;
     var MM_PER_INCHES = 25.4;
@@ -740,6 +741,9 @@
     });
     $scope.$watch('layout', function() {
       //updatePrintRectanglePixels($scope.scale);
+    });
+    $scope.$watch('layout', function() {
+      //updatePrintRectangle($scope.scale);
     });
 
   });
