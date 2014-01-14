@@ -122,6 +122,7 @@
        * strokeOpacity
        * strokeWidth
        * strokeLinecap
+       * strokeLinejoin
        * strokeDashstyle
        * pointRadius
        * label
@@ -182,12 +183,12 @@
         literal.strokeColor = toHexa(color);
         literal.strokeOpacity = color[3];
         literal.strokeLinecap = stroke.getLineCap() || 'round';
+        literal.strokeLinejoin = stroke.getLineJoin() || 'round';
 
         if (stroke.getLineDash()) {
           literal.strokeDashstyle = stroke.getLineDash();
         }
         // TO FIX: Not managed by the print server
-        // literal.strokeLinejoin = stroke.getLineJoin();
         // literal.strokeMiterlimit = stroke.getMiterLimit();
       }
 
