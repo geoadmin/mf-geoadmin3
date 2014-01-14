@@ -40,7 +40,7 @@
           <tr>
             <td class="cell-left"></td>
             <td>
-              <a href="${baseUrl}?${c['layerBodId']}=${c['featureId']}&lang=${lang}&topic=${topic}" target="new">${_('Link to object')}</a>
+              <a href="${c['baseUrl']}?${c['layerBodId']}=${c['featureId']}&lang=${lang}&topic=${topic}" target="new">${_('Link to object')}</a>
             </td>
           </tr>
         %endif
