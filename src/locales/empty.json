@@ -185,5 +185,7 @@
   "surface_label": "",
   "profile_x_label": "",
   "profile_y_label": "",
-  "profile_title": ""
+  "profile_title": "",
+  "display_profile": "",
+  "hide_profile": "" 
 }

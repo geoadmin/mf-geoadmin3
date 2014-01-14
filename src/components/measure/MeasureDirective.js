@@ -1,7 +1,11 @@
 (function() {
   goog.provide('ga_measure_directive');
 
-  var module = angular.module('ga_measure_directive', []);
+  goog.require('ga_debounce_service');
+
+  var module = angular.module('ga_measure_directive', [
+    'ga_debounce_service'
+  ]);
 
   module.filter('measure', function() {
     return function(floatInMeter, type, units) {
@@ -39,7 +43,7 @@
   });
 
   module.directive('gaMeasure',
-    function($rootScope) {
+    function($rootScope, gaDebounce) {
       return {
         restrict: 'A',
         templateUrl: function(element, attrs) {
@@ -51,55 +55,10 @@
           isActive: '=gaMeasureActive'
         },
         link: function(scope, elt, attrs, controller) {
+          var isDblClick = false;
           var sketchFeatDistance, sketchFeatArea;
-          var sketchFeatDeregister, deregister;
-          var styleFunction = (function() {
-            var styles = {};
-            styles['Polygon'] = [
-              new ol.style.Style({
-                fill: new ol.style.Fill({
-                  color: [255, 0, 0, 0.4]
-                }),
-                stroke: new ol.style.Stroke({
-                  color: [255, 0, 0, 1],
-                  width: 2
-                })
-              })
-            ];
-            styles['MultiPolygon'] = styles['Polygon'];
-
-            styles['LineString'] = [
-              new ol.style.Style({
-                stroke: new ol.style.Stroke({
-                  color: [255, 0, 0, 0.7],
-                  width: 3,
-                  lineCap: 'dash'
-                })
-              })
-            ];
-            styles['MultiLineString'] = styles['LineString'];
-
-            styles['Point'] = [
-              new ol.style.Style({
-                image: new ol.style.Circle({
-                  radius: 4,
-                  fill: new ol.style.Fill({
-                    color: [255, 0, 0, 0.4]
-                  }),
-                  stroke: new ol.style.Stroke({
-                    color: [255, 0, 0, 1],
-                    width: 1
-                  })
-                })
-              })
-            ];
-            styles['MultiPoint'] = styles['Point'];
-
-            return function(feature, resolution) {
-                return styles[feature.getGeometry().getType()];
-            };
-          })();
-
+          var deregister, deregisterMap, deregisterFeature;
+          var styleFunction = scope.options.styleFunction;
           var drawArea = new ol.interaction.Draw({
             type: 'Polygon'
           });
@@ -107,11 +66,6 @@
           var featuresOverlay = new ol.render.FeaturesOverlay();
           featuresOverlay.setStyleFunction(styleFunction);
           featuresOverlay.setMap(scope.map);
-
-          var isDblClick = false;
-          scope.map.on('dblclick', function(evt) {
-            isDblClick = true;
-          });
 
           var activate = function() {
             scope.map.addInteraction(drawArea);
@@ -122,21 +76,32 @@
                 isDblClick = false;
                 featuresOverlay.getFeatures().clear();
                 sketchFeatArea = evt.getFeature();
-                sketchFeatDeregister = sketchFeatArea.on('change',
+                deregisterFeature = sketchFeatArea.on('change',
                   function(evt) {
                     updateMeasures();
                   }
                 );
               }),
               drawArea.on('drawend', function(evt) {
-                sketchFeatArea.unByKey(sketchFeatDeregister);
+                sketchFeatArea.unByKey(deregisterFeature);
                 featuresOverlay.addFeature(isDblClick ? sketchFeatDistance :
                    sketchFeatArea);
               })
             ];
-         };
 
-         var deactivate = function() {
+            deregisterMap = [
+              scope.map.on('dblclick', function(evt) {
+                isDblClick = true;
+              }),
+              scope.map.on('click', function(evt) {
+                if (scope.options.isProfileActive) {
+                   updateProfileDebounced();
+                }
+              })
+            ];
+          };
+
+          var deactivate = function() {
             featuresOverlay.getFeatures().clear();
             scope.map.removeInteraction(drawArea);
 
@@ -146,6 +111,12 @@
                 drawArea.unByKey(deregister[i]);
               }
             }
+            if (deregisterMap) {
+              for (var i = deregisterMap.length - 1; i >= 0; i--) {
+                scope.map.unByKey(deregisterMap[i]);
+              }
+            }
+
           };
 
           var updateMeasures = function() {
@@ -158,6 +129,14 @@
             });
           };
 
+
+          var updateProfile = function() {
+            scope.options.drawProfile(sketchFeatDistance);
+          };
+          var updateProfileDebounced = gaDebounce.debounce(updateProfile, 500,
+              false);
+
+
           // Watchers
           scope.$watch('isActive', function(active) {
             $rootScope.isMeasureActive = active;
@@ -169,6 +148,12 @@
               deactivate();
             }
           });
+          scope.$watch('options.isProfileActive', function(active) {
+            if (active) {
+              updateProfileDebounced();
+            }
+          });
+
         }
       };
     }

@@ -100,7 +100,7 @@ fixrights:
 	chgrp -f -R geodata . || :
 	chmod -f -R g+rw . || :
 
-prd/lib/build.js: src/lib/jquery-2.0.3.min.js src/lib/bootstrap-3.0.0.min.js src/lib/typeahead-0.9.3.min.js src/lib/angular-1.2.1.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/EPSG2056.js src/lib/ol.js src/lib/angular-animate-1.2.1.min.js src/lib/angular-translate-1.1.0.min.js src/lib/angular-translate-loader-static-files-0.1.5.min.js .build-artefacts/fastclick.min.js .build-artefacts/app.js
+prd/lib/build.js: src/lib/jquery-2.0.3.min.js src/lib/bootstrap-3.0.0.min.js src/lib/typeahead-0.9.3.min.js src/lib/d3-3.3.1.min.js src/lib/angular-1.2.1.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/EPSG2056.js src/lib/ol.js src/lib/angular-animate-1.2.1.min.js src/lib/angular-translate-1.1.0.min.js src/lib/angular-translate-loader-static-files-0.1.5.min.js .build-artefacts/fastclick.min.js .build-artefacts/app.js
 	mkdir -p $(dir $@)
 	cat $^ > $@
 

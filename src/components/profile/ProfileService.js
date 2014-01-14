@@ -16,6 +16,7 @@
 
       var width = options.width - marginHoriz;
       var height = options.height - marginVert;
+      var d3 = window.d3;
 
       var createArea = function(domain, interpolationMethod) {
         var x = domain.X;
@@ -156,9 +157,9 @@
         group.append('text')
             .attr('class', 'profile-label profile-label-x')
             .attr('x', width / 2)
-            .attr('y', height + options.margin.bottom)
+            .attr('y', height + options.margin.bottom - 2)
             .style('text-anchor', 'middle')
-            .text(options.xLabel + ' [' + that.unitX + ']');
+            .text('{{"' + options.xLabel + '" | translate}} [{{unitX}}]');
 
         group.append('text')
             .attr('class', 'profile-label profile-label-y')
@@ -166,7 +167,7 @@
             .attr('y', 0 - options.margin.left)
             .attr('x', 0 - height / 2)
             .attr('dy', '1em')
-            .text(options.yLabel + ' [m]');
+            .text('{{"' + options.yLabel + '" | translate}} [m]');
 
          return element;
       };
@@ -202,11 +203,6 @@
                 .tickSize(-width, 0, 0)
                 .tickFormat('')
             );
-        this.group.select('text.profile-label-x')
-          .transition().duration(1500)
-            .text(
-                options.xLabel + ' [' + that.unitX + ']'
-          );
       };
     }
 

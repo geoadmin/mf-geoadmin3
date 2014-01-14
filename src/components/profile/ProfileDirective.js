@@ -8,7 +8,7 @@
   ]);
 
   module.directive('gaProfile',
-      function($rootScope, gaProfileService) {
+      function($rootScope, $compile, gaProfileService) {
         return {
           restrict: 'A',
           replace: true,
@@ -17,19 +17,19 @@
             options: '=gaProfileOptions'
           },
           link: function(scope, element, attrs) {
-            var profile;
+            var d3 = window.d3;
             var options = scope.options;
             var tooltipEl = element.find('.profile-tooltip');
-
             scope.coordinates = [0, 0];
             scope.unitX = '';
 
-            profile = gaProfileService(options);
+            var profile = gaProfileService(options);
 
             $rootScope.$on('gaProfileDataLoaded', function(ev, data) {
               var profileEl = angular.element(
                   profile.create(data)
               );
+              $compile(profileEl)(scope);
               scope.unitX = profile.unitX;
               var previousProfileEl = element.find('.profile-inner');
               if (previousProfileEl.length > 0) {
