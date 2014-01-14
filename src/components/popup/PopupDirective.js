@@ -3,11 +3,12 @@
   goog.require('ga_browsersniffer_service');
 
   var module = angular.module('ga_popup_directive', [
-    'ga_browsersniffer_service'
+    'ga_browsersniffer_service',
+    'pascalprecht.translate'
   ]);
 
   module.directive('gaPopup',
-    function(gaBrowserSniffer) {
+    function($translate, gaBrowserSniffer) {
       return {
         restrict: 'A',
         transclude: true,
@@ -20,7 +21,7 @@
           '<span translate>{{options.title}}</span>' +
           '<button type="button" class="close" ng-click="close($event)">' +
           '&times;</button>' +
-          '<i class="icon-print ga-popup-print" ' +
+          '<i class="icon-print ga-popup-print" title="{{titlePrint}}" ' +
           'ng-if="options.showPrint" ng-click="print()"></i>' +
           '</h4>' +
           '<div class="popover-content ga-popup-content" ' +
@@ -31,6 +32,7 @@
 
           // Get the popup options
           scope.options = scope.optionsFunc();
+          scope.titlePrint = $translate('print_action');
 
           if (!scope.options) {
             scope.options = {
