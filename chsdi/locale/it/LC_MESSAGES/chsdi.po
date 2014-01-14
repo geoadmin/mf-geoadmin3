@@ -1660,7 +1660,7 @@ msgid "ch.swisstopo.geologie-geotope"
 msgstr "Geotopi svizzeri"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas"
-msgstr "Atlas gravimétrique"
+msgstr "Atlante gravimetrico"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas.metadata"
 msgstr "Divisione Atlante gravimetrico"

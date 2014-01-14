@@ -1728,7 +1728,7 @@ msgid "ch.swisstopo.kt.url"
 msgstr "http://www.swisstopo.admin.ch/internet/swisstopo/fr/home/swisstopo/org/cartography.html"
 
 msgid "ch.swisstopo.lubis-luftbilder"
-msgstr "Photographies aériennes swisstopo"
+msgstr "Images aér. swisstopo"
 
 msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen"
 msgstr "Images aériennes de privés"

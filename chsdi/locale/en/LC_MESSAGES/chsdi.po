@@ -1660,7 +1660,7 @@ msgid "ch.swisstopo.geologie-geotope"
 msgstr "Swiss Geotopes"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas"
-msgstr "Gravimetrischer Atlas"
+msgstr "Gravimetric Atlas"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas.metadata"
 msgstr "Division Gravimetric Atlas"
@@ -1728,7 +1728,7 @@ msgid "ch.swisstopo.kt.url"
 msgstr "http://www.swisstopo.admin.ch/internet/swisstopo/en/home/swisstopo/org/cartography.html"
 
 msgid "ch.swisstopo.lubis-luftbilder"
-msgstr "Aerial images swisstopo"
+msgstr "Aerial Images swisstopo"
 
 msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen"
 msgstr "Aerial images privates"
