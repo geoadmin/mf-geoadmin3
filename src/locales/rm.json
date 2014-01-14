@@ -151,6 +151,8 @@
 	"swisstopo_service_link_href": "http://www.swisstopo.admin.ch/internet/swisstopo/de/home.html",
 	"swisstopo_service_link_label": "www.swisstopo.admin.ch",
 	"third_party_data_warning": "Warnung: diese Daten kommen von einem Drittanbieter. Dieser Permalink zeigt möglicherweise auf Daten eines Drittanbieters. Wollen Sie diese Daten dennoch laden ?",
+	"time_bt_disabled_tooltip": "Die Darstellung von Zeitständen ist nur mit historisierten Daten möglich. Sie müssen zuerst einen historisierten Datensatz in die Karte laden.",
+	"time_bt_enabled_tooltip": "Aktivieren und Deaktivieren der Anzeige von Daten-Zeitständen.",
 	"title": "Titel",
 	"tooltip": "Tooltip",
 	"transparency": "Transparenza",
