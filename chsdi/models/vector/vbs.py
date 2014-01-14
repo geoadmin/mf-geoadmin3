@@ -11,7 +11,7 @@ Base = bases['vbs']
 
 class Kulturgueter(Base, Vector):
     __tablename__ = 'kgs'
-    __table_args__ = ({'schema': 'babs', 'autoload': False, 'extend_existing': True})
+    __table_args__ = ({'schema': 'babs', 'autoload': False})
     __template__ = 'templates/htmlpopup/kgs.mako'
     __queryable_attributes__ = ['zkob']
     __bodId__ = 'ch.babs.kulturgueter'
