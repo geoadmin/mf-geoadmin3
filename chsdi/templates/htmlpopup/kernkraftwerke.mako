@@ -33,19 +33,19 @@
         dismantling_phase = c['attributes']['dismantling_phase'].split('##');
 
     %>
-        <script>
-            $(document).ready(function(){
-                $('.thumbnail-container').on('click', function (event) {
-                  event = event || window.event;
-                    event.preventDefault();
-                  var target = event.target || event.srcElement,
-                    link = target.src ? target.parentNode : target,
-                    options = {index: link, event: event},
-                    links = this.getElementsByTagName('a');
-                  blueimp.Gallery(links, options);
-                });
+    <script>
+        $(document).ready(function(){
+            $('.thumbnail-container').on('click', function (event) {
+              event = event || window.event;
+                event.preventDefault();
+              var target = event.target || event.srcElement,
+                link = target.src ? target.parentNode : target,
+                options = {index: link, event: event},
+                links = this.getElementsByTagName('a');
+              blueimp.Gallery(links, options);
             });
-        </script>
+        });
+    </script>
     <table class="table-with-border kernkraftwerke_extended">
         <tr><th class="cell-left">${_('tt_kkw_name')}</th>          <td>${c['attributes']['name']}</td></tr>
         <tr><th class="cell-left">${_('tt_kkw_operator')}</th>      <td><a href='${operator[link_i]}'>${operator[lang_i]}</a></td></tr>
@@ -73,12 +73,12 @@
         <tr><th class="cell-left">${_('tt_kkw_dismantling')}</th>      <td>${dismantling_phase[reactor_i]}</td></tr>
     % endfor
     </table>
-        <div class="thumbnail-container">
-            <div class="thumbnail">
-                <a href="https://dav0.bgdi.admin.ch/bfe_pub/images_kkw/plant${c['featureId']}.jpg">
-                    <img class="image" src="https://dav0.bgdi.admin.ch/bfe_pub/images_kkw/plant${c['featureId']}.jpg" />
-                </a>
-    221	Bild copyright ENSI
+    <div class="thumbnail-container">
+        <div class="thumbnail">
+            <a href="https://dav0.bgdi.admin.ch/bfe_pub/images_kkw/plant${c['featureId']}.jpg">
+                <img class="image" src="https://dav0.bgdi.admin.ch/bfe_pub/images_kkw/plant${c['featureId']}.jpg" />
+            </a>
+            221	Bild copyright ENSI
         </div>
     </div>
     <div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls">

@@ -11,17 +11,31 @@ Base = bases['vbs']
 
 class Kulturgueter(Base, Vector):
     __tablename__ = 'kgs'
-    __table_args__ = ({'schema': 'babs', 'autoload': False})
+    __table_args__ = ({'schema': 'babs', 'autoload': False, 'extend_existing': True})
     __template__ = 'templates/htmlpopup/kgs.mako'
     __queryable_attributes__ = ['zkob']
     __bodId__ = 'ch.babs.kulturgueter'
+    __extended_info__ = True
     id = Column('kgs_nr', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     zkob = Column('zkob', Text)
     x = Column('x', Numeric)
     y = Column('y', Numeric)
+    kategorie = Column('kategorie', Text)
     gemeinde = Column('gemeinde', Text)
+    gemeinde_ehemalig = Column('gemeinde_ehemalig', Text)
+    objektart = Column('objektart', Text)
+    hausnr = Column('hausnr', Text)
+    adresse = Column('adresse', Text)
+    kurztexte = Column('kurztexte', Text)
     kt_kz = Column('kt_kz', Text)
+    pdf_list = Column('pdf_list', Text)
+    link_uri = Column('link_uri', Text)
+    link_title = Column('link_title', Text)
+    link_2_uri = Column('link_2_uri', Text)
+    link_2_title = Column('link_2_title', Text)
+    link_3_uri = Column('link_3_uri', Text)
+    link_3_title = Column('link_3_title', Text)
 
 register('ch.babs.kulturgueter', Kulturgueter)
 
