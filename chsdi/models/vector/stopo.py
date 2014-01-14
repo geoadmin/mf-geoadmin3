@@ -1089,6 +1089,7 @@ class geometaLos(Base, Vector):
     quality = Column('quality', Text)
     flaeche_vertrag = Column('flaeche_vertrag', Text)
     frame = Column('frame', Text)
+    bgdi_created = Column('bgdi_created', Text)
     the_geom = GeometryColumn('the_geom_gen50', Geometry(dimension=2, srid=21781))
     not_used = GeometryColumn('the_geom', Geometry(dimension=2, srid=21781))
 
@@ -1110,6 +1111,7 @@ class geometaGemeinde(Base, Vector):
     bfs_nr = Column('bfs_nr', Integer)
     pdf_liste = Column('pdf_liste', Text)
     abgabestelle = Column('abgabestelle', Text)
+    bgdi_created = Column('bgdi_created', Text)
     the_geom = GeometryColumn('the_geom_gen50', Geometry(dimension=2, srid=21781))
     not_used = GeometryColumn('the_geom', Geometry(dimension=2, srid=21781))
 
@@ -1131,6 +1133,7 @@ class geometaGrundbuch(Base, Vector):
     adresse = Column('adresse', Text)
     telefon = Column('telefon', Text)
     email = Column('email', Text)
+    bgdi_created = Column('bgdi_created', Text)
     the_geom = GeometryColumn('the_geom_gen50', Geometry(dimension=2, srid=21781))
     not_used = GeometryColumn('the_geom', Geometry(dimension=2, srid=21781))
 
@@ -1148,6 +1151,7 @@ class geometaNfgeom(Base, Vector):
     adresse = Column('adresse', Text)
     telefon = Column('telefon', Text)
     email = Column('email', Text)
+    bgdi_created = Column('bgdi_created', Text)
     the_geom = GeometryColumn('the_geom_gen50', Geometry(dimension=2, srid=21781))
     not_used = GeometryColumn('the_geom', Geometry(dimension=2, srid=21781))
 
