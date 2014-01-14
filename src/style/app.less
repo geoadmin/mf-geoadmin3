@@ -632,39 +632,51 @@ ul.panel-body-wide {
   }
 }
 
+// ****** PRINT SETTINGS
+@media print {
+  a[href]:after {
+    content: " (" attr(href) ")";
+  }
+  .ir a:after,
+  a[href^="javascript:"]:after,
+  a[href^="#"]:after {
+    content: "";
+  }
+}
+
 // ****** METADATA / LEGEND Information
 .ga-tooltip-metadata {
   .popover-content {
     padding: 0px;
   }
-  .legend-header, .bodsearch-header {
-    background-color: #eee;
-    padding: 8px;
+}
+.bod-title {
+  color: red;
+}
+.legend-header, .bodsearch-header {
+  background-color: #eee;
+  padding: 8px;
+}
+.office-provider {
+  color: red;
+  font-style: italic;
+  margin-bottom: 5px;
+  margin-top: 1px;
+}
+.legend-footer {
+  padding: 8px;
+  .bod-footer {
+    background-color: white;
   }
-  .bod-title {
-    color: red;
+  span {
+    font-weight: bold;
   }
-  .office-provider {
-    color: red;
-    font-style: italic;
-    margin-bottom: 5px;
-    margin-top: 1px;
+  table {
+    font-size: 100%;
+    width: 100%;
+    border: 0;
   }
-  .legend-footer {
-    padding: 8px;
-    .bod-footer {
-      background-color: white;
-    }
-    span {
-      font-weight: bold;
-    }
-    table {
-      font-size: 100%;
-      width: 100%;
-      border: 0;
-    }
-  }
-} 
+}
 
 // ***** LAYER SELECTION
 #selection {
