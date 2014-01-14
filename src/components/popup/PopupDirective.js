@@ -20,6 +20,8 @@
           '<span translate>{{options.title}}</span>' +
           '<button type="button" class="close" ng-click="close($event)">' +
           '&times;</button>' +
+          '<i class="icon-print ga-popup-print" ' +
+          'ng-if="options.showPrint" ng-click="print()"></i>' +
           '</h4>' +
           '<div class="popover-content ga-popup-content" ' +
           'ng-transclude>' +
@@ -36,6 +38,12 @@
             };
           }
 
+          // Per default hide the print function
+          if (!angular.isDefined(scope.options.showPrint) ||
+              gaBrowserSniffer.mobile) {
+            scope.options.showPrint = false;
+          }
+
           // Add close popup function
           scope.close = scope.options.close ||
               (function(event) {
@@ -48,6 +56,29 @@
                 } else {
                   element.hide();
                 }
+              });
+
+          scope.print = scope.options.print ||
+              (function() {
+                var cssLinks = angular.element.find('link');
+                var contentEl = element.find('.ga-popup-content');
+                var windowPrint = window.open('', '', 'height=400, width=600');
+                windowPrint.document.write('<html><head>');
+                for (var i = 0; i < cssLinks.length; i++) {
+                  if (cssLinks[i].href) {
+                    var href = cssLinks[i].href;
+                    if (href.indexOf('css') !== -1) {
+                      windowPrint.document.write('<link href="' + href +
+                          '" rel="stylesheet" type="text/css" media="all">');
+                    }
+                  }
+                }
+                windowPrint.document.write('</head><body>');
+                windowPrint.document.write(contentEl.clone().html());
+                windowPrint.document.write('</body></html>');
+                windowPrint.document.close();
+                windowPrint.print();
+                windowPrint.close();
               });
 
           // Move the popup to the correct position
