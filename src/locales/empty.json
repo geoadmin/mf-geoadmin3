@@ -171,5 +171,19 @@
   "wait_data_loading": "",
   "inform_draw_rectangl_ctrl": "",
   "item": "",
-  "items": ""
+  "items": "",
+  "lubis": "",
+  "lubis_help_link_href": "",
+  "lubis_page_title": "",
+  "lubis_service_link_href": "",
+  "lubis_service_link_label": "",
+  "measure": "",
+  "measure_active": "",
+  "measure_inactive": "",
+  "measure_instruction": "",
+  "distance_label": "",
+  "surface_label": "",
+  "profile_x_label": "",
+  "profile_y_label": "",
+  "profile_title": ""
 }
