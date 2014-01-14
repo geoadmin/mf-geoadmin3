@@ -26,6 +26,22 @@
             if int(row[0]) == c['featureId']:
                 pic_list.append(row)
     %>
+    <script>
+        $(document).ready(function(){
+            $('.thumbnail-container').on('click', function (event) {
+              event = event || window.event;
+                event.preventDefault();
+              var target = event.target || event.srcElement,
+                link = target.src ? target.parentNode : target,
+                options = {index: link, event: event, onslide: function(index, slide){
+                    /** a "beautiful" line of code which sets the title of the gallery to the current copyright + photographer of the current photo**/
+                    $('#blueimp-gallery-title').html(($($('.thumbnail-container').children('.thumbnail')[index]).children('div').html()));
+                }},
+                links = this.getElementsByTagName('a');
+              blueimp.Gallery(links, options);
+            });
+        });
+    </script>
 
 
     <table class="table-with-border kernkraftwerke_extended">
@@ -114,18 +130,4 @@
             </tr>
         % endif
     </table>
-        <script>
-            $('.thumbnail-container').on('click', function (event) {
-              event = event || window.event;
-                event.preventDefault();
-              var target = event.target || event.srcElement,
-                link = target.src ? target.parentNode : target,
-                options = {index: link, event: event, onslide: function(index, slide){
-                    /** a "beautiful" line of code which sets the title of the gallery to the current copyright + photographer of the current photo**/
-                    $('#blueimp-gallery-title').html(($($('.thumbnail-container').children('.thumbnail')[index]).children('div').html()));
-                }},
-                links = this.getElementsByTagName('a');
-              blueimp.Gallery(links, options);
-            });
-    </script>
 </%def>
