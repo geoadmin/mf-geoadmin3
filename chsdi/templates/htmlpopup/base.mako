@@ -7,7 +7,8 @@
   c['stable_id'] = False
   extended = pageargs.get('extended')
   protocol = request.scheme
-  baseUrl = protocol + '://' + request.registry.settings['geoadminhost']
+  instanceId = request.registry.settings['instanceid'] + '/' if request.registry.settings['instanceid'] != 'main' else ''
+  c['baseUrl'] = protocol + '://' + request.registry.settings['geoadminhost'] + '/' + instanceId
   bbox = c['bbox']
   lang = request.lang
   attribution = pageargs.get('attribution')
