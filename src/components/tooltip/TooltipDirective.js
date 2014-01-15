@@ -16,7 +16,7 @@
   module.directive('gaTooltip',
     function($timeout, $document, $http, $q, $translate, $sce, gaPopup,
       gaLayers, gaBrowserSniffer, gaDefinePropertiesForLayer, gaMapClick,
-      gaStyleFunctionFactory)
+      gaStyleFunctionFactory, $rootScope)
       {
         var waitclass = 'ga-tooltip-wait',
             bodyEl = angular.element($document[0].body),
@@ -101,6 +101,9 @@
             }
 
             gaMapClick.listen(map, function(evt) {
+              if ($rootScope.isMeasureActive) {
+                return;
+              }
               var size = map.getSize();
               var mapExtent = map.getView().calculateExtent(size);
               var coordinate = (evt.originalEvent) ?
