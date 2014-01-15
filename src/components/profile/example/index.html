@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html ng-app="ga_profile_example">
+  <head>
+    <title>Profile example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <base href="../../../">
+    <script>
+      function toAbsURL(s) {
+        var l = location, h, p, f, i;
+        if (/^\w+:/.test(s)) {
+          return s;
+        }
+        h = l.protocol + '//' + l.host;
+        if (s.indexOf('/') == 0) {
+          return h + s;
+        }
+        p = l.pathname.replace(/\/[^\/]*$/, '');
+        f = s.match(/\.\.\//g);
+        if (f) {
+          s = s.substring(f.length * 3);
+          for (i = f.length; i--;) {
+            p = p.substring(0, p.lastIndexOf('/'));
+          }
+        }
+        return h + p + '/' + s;
+      }
+    </script>
+    <!--[if IE]>
+    <script>
+      (function() {
+        var base = document.getElementsByTagName('base')[0];
+        base.href = toAbsURL(base.href);
+      })();
+    </script>
+    <![endif]-->
+    <link href="style/app.css" rel="stylesheet" media="screen">
+  </head>
+  <body ng-controller="MainController">
+    <div ga-popup="show"
+         ga-popup-options="options"
+         ga-draggable=".ga-popup-title"
+         id="profile-popup">
+      <div ng-controller="ProfileController">
+        <div ga-profile
+             ga-profile-options="options">
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-default" ng-click="showPopup()">{{toggleText}} Popup</button>
+    <button class="btn btn-default" ng-click="updateData()">Update Data</button>
+
+    <script src="lib/jquery-2.0.3.js"></script>
+    <script src="lib/angular-1.2.1.js"></script>
+    <script src="lib/angular-translate-1.1.0.js"></script>
+    <script src="lib/angular-translate-loader-static-files-0.1.5.js"></script>
+    <script src="lib/bootstrap-3.0.0.js"></script>
+    <script src="lib/typeahead-0.9.3.js"></script>
+    <script src="lib/d3-3.3.1.js"></script>
+    <script src="lib/proj4js-compressed.js"></script>
+    <script src="lib/EPSG21781.js"></script>
+    <script>
+      window.CLOSURE_NO_DEPS = true;
+    </script>
+    <script src="lib/ol-whitespace.js"></script>
+    <script src="deps.js"></script>
+    <script>
+      goog.require('ga_popup');
+      goog.require('ga_profile');
+
+      (function() {
+        var module = angular.module('ga_profile_example', [
+          'ga_popup',
+          'ga_profile'
+        ]);
+
+        var width = $(document.body).width();
+        var height = $(document.body).height();
+
+        module.controller('MainController', ['$scope', '$http', '$rootScope',
+          function($scope, $http, $rootScope) {
+            $scope.show = false;
+            $scope.toggleText = 'Show';
+            $scope.className = 'profile-popup';
+            $scope.options = {
+              title: 'profile_title',
+              x: '0%',
+              y: '60%'
+            };
+            $scope.showPopup = showPopup;
+            $scope.getData = getData;
+
+            function showPopup() {
+              $scope.show = !$scope.show;
+              $scope.toggleText = $scope.show ? 'Hide' : 'Show';
+              $scope.getData();
+            }
+
+            function getData() {
+              var template = 'components/profile/example/profile.json';
+              var http = $http.get(template);
+              http.success(function(data, status) {
+                $rootScope.$broadcast('gaProfileDataLoaded', data);
+              });
+            }
+
+            $scope.updateData = updateData;
+
+            function updateData() {
+              var template = 'components/profile/example/profile.json';
+              var http = $http.get(template);
+              var dataRandom = [];
+              http.success(function(data, status) {
+                angular.forEach(data, function(value, key) {
+                  value.alts.DTM25 += Math.round(Math.random() * 200);
+                  this.push(value);
+                }, dataRandom);
+                $rootScope.$broadcast('gaProfileDataUpdated', dataRandom);
+              });
+            }
+          }
+        ]);
+
+        module.controller('ProfileController', ['$scope',
+          function($scope) {
+            $scope.options = {
+              xLabel: 'Distance',
+              yLabel: 'Elevation',
+              margin: {
+                top: 20,
+                right: 20,
+                bottom: 40,
+                left: 60
+              },
+              width: width - 30,
+              height: (height * 0.4) - 60
+            };
+          }
+        ]);
+      })();
+    </script>
+  </body>
+</html>
