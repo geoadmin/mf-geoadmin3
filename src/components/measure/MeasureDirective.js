@@ -1,7 +1,11 @@
 (function() {
   goog.provide('ga_measure_directive');
 
-  var module = angular.module('ga_measure_directive', []);
+  goog.require('ga_map_service');
+
+  var module = angular.module('ga_measure_directive', [
+    'ga_map_service'
+  ]);
 
   module.filter('measure', function() {
     return function(floatInMeter, units) {
@@ -14,7 +18,7 @@
   });
 
   module.directive('gaMeasure',
-    function() {
+    function(gaMapClick) {
       return {
         restrict: 'A',
         templateUrl: function(element, attrs) {
@@ -86,6 +90,13 @@
           var isDblClick = false;
           scope.map.on('dblclick', function(evt) {
             isDblClick = true;
+          });
+
+          gaMapClick.listen('singleclick', function(evt) {
+            if (scope.isActive) {
+              evt.stopPropagation();
+              evt.preventDefault();
+            }
           });
 
           var activate = function() {
