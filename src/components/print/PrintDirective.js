@@ -72,7 +72,6 @@
        return validLayers[0];
     };
 
-
    var activate = function() {
      var olLayers = $scope.map.getLayers();
      listenerKeys = [
