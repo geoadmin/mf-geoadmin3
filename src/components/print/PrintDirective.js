@@ -88,6 +88,8 @@
       updatePrintRectangle($scope.scale);
     });
 
+    $scope.printing = false;
+
     var encodeLayer = function(layer, proj) {
 
       var encLayer, encLegend;
@@ -448,6 +450,7 @@
 
     $scope.submit = function() {
       // http://mapfish.org/doc/print/protocol.html#print-pdf
+      $scope.printing = true;
       var view = $scope.map.getView();
       var proj = view.getProjection();
       var lang = $translate.uses();
@@ -540,6 +543,7 @@
             '?url=' + encodeURIComponent($scope.options.printPath +
             '/create.json'), spec);
         http.success(function(data) {
+          $scope.printing = false;
           $scope.downloadUrl(data.getURL);
           //After standard print, download the pdf Legends
           //if there are any
@@ -547,6 +551,11 @@
             $window.open(pdfLegendsToDownload[i]);
           }
         });
+        http.error(function() {
+          $scope.printing = false;
+        });
+      }).error(function() {
+        $scope.printing = false;
       });
     };
 
