@@ -865,6 +865,15 @@ msgstr ""
 msgid "ch.bfs.arealstatistik-1997"
 msgstr ""
 
+msgid "ch.bfs.arealstatistik-bodenbedeckung"
+msgstr ""
+
+msgid "ch.bfs.arealstatistik-bodenbedeckung-1997"
+msgstr ""
+
+msgid "ch.bfs.arealstatistik-bodenbedeckung-1985"
+msgstr ""
+
 msgid "ch.bfs.arealstatistik-hintergrund"
 msgstr ""
 

@@ -1286,6 +1286,15 @@ msgstr "Arealstatistik 1979/85 NOAS04"
 msgid "ch.bfs.arealstatistik-1997"
 msgstr "Arealstatistik 1992/97 NOAS04"
 
+msgid "ch.bfs.arealstatistik-bodenbedeckung"
+msgstr "Arealstatistik 2004/09 NOLC04"
+
+msgid "ch.bfs.arealstatistik-bodenbedeckung-1985"
+msgstr "Arealstatistik 1979/85 NOLC04"
+
+msgid "ch.bfs.arealstatistik-bodenbedeckung-1997"
+msgstr "Arealstatistik 1992/97 NOLC04"
+
 msgid "ch.bfs.arealstatistik-hintergrund"
 msgstr "Vereinfachte Bodennutzung"
 

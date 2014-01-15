@@ -1286,6 +1286,15 @@ msgstr "Statistica da la surfatscha 1979/1985"
 msgid "ch.bfs.arealstatistik-1997"
 msgstr "Statistica da la surfatscha 1992/1997"
 
+msgid "ch.bfs.arealstatistik-bodenbedeckung"
+msgstr "Arealstatistik 2004/09 NOLC04"
+
+msgid "ch.bfs.arealstatistik-bodenbedeckung-1985"
+msgstr "Arealstatistik 1979/85 NOLC04"
+
+msgid "ch.bfs.arealstatistik-bodenbedeckung-1997"
+msgstr "Arealstatistik 1992/97 NOLC04"
+
 msgid "ch.bfs.arealstatistik-hintergrund"
 msgstr "Utilisaziun dal terren simplifitgada"
 

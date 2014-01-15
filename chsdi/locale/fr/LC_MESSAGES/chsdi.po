@@ -1286,6 +1286,15 @@ msgstr "Stat. superficie 1979/85 NOAS04"
 msgid "ch.bfs.arealstatistik-1997"
 msgstr "Stat. superficie 1992/97 NOAS04"
 
+msgid "ch.bfs.arealstatistik-bodenbedeckung"
+msgstr "Stat. superficie 2004/09 NOLC04"
+
+msgid "ch.bfs.arealstatistik-bodenbedeckung-1985"
+msgstr "Stat. superficie 1979/85 NOLC04"
+
+msgid "ch.bfs.arealstatistik-bodenbedeckung-1997"
+msgstr "Stat. superficie 1992/97 NOLC04"
+
 msgid "ch.bfs.arealstatistik-hintergrund"
 msgstr "Utilisation simplifiée du sol"
 
@@ -1647,7 +1656,7 @@ msgid "ch.swisstopo.kt.url"
 msgstr "http://www.swisstopo.admin.ch/internet/swisstopo/fr/home/swisstopo/org/cartography.html"
 
 msgid "ch.swisstopo.lubis-luftbilder"
-msgstr "Photographies aériennes swisstopo"
+msgstr "Images aér. swisstopo"
 
 msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen"
 msgstr "Images aériennes de privés"

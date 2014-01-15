@@ -1286,6 +1286,15 @@ msgstr "Area statistics 1979/1985"
 msgid "ch.bfs.arealstatistik-1997"
 msgstr "Area statistics 1992/1997"
 
+msgid "ch.bfs.arealstatistik-bodenbedeckung"
+msgstr "Area statistics 2004/2009 NOLC04"
+
+msgid "ch.bfs.arealstatistik-bodenbedeckung-1985"
+msgstr "Area statistics 1979/85 NOLC04"
+
+msgid "ch.bfs.arealstatistik-bodenbedeckung-1997"
+msgstr "Area statistics 1992/97 NOLC04"
+
 msgid "ch.bfs.arealstatistik-hintergrund"
 msgstr "Simplified land occupancy"
 
@@ -1579,7 +1588,7 @@ msgid "ch.swisstopo.geologie-geotope"
 msgstr "Swiss Geotopes"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas"
-msgstr "Gravimetrischer Atlas"
+msgstr "Gravimetric Atlas"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas.metadata"
 msgstr "Division Gravimetric Atlas"
@@ -1647,7 +1656,7 @@ msgid "ch.swisstopo.kt.url"
 msgstr "http://www.swisstopo.admin.ch/internet/swisstopo/en/home/swisstopo/org/cartography.html"
 
 msgid "ch.swisstopo.lubis-luftbilder"
-msgstr "Aerial images swisstopo"
+msgstr "Aerial Images swisstopo"
 
 msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen"
 msgstr "Aerial images privates"
