@@ -224,7 +224,8 @@
                           destroyOnClose: false,
                           title: 'object_information',
                           content: popupContent,
-                          htmls: htmls
+                          htmls: htmls,
+                          showPrint: true
                         }, $scope);
                       }
                       popup.open();

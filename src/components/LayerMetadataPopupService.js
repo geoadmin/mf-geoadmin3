@@ -24,7 +24,8 @@
                 content: data,
                 className: 'ga-tooltip-metadata',
                 x: 400,
-                y: 200
+                y: 200,
+                showPrint: true
               }).open();
             })
             .error(function() {

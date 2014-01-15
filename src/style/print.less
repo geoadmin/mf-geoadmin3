@@ -1,0 +1,11 @@
+@import "app_print.less";
+
+// ****** PRINT GENERAL SETTINGS
+a[href]:after {
+  content: " (" attr(href) ")";
+}
+.ir a:after,
+a[href^="javascript:"]:after,
+a[href^="#"]:after {
+  content: "";
+}
