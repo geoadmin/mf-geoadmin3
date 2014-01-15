@@ -1,37 +1,20 @@
 (function() {
   goog.provide('ga_measure_directive');
 
-  goog.require('ga_debounce_service');
-  goog.require('ga_map_service');
+  var module = angular.module('ga_measure_directive', []);
 
-  var module = angular.module('ga_measure_directive', [
-    'ga_debounce_service',
-    'ga_map_service'
-  ]);
-
-  module.filter('distance', function() {
-    return function(floatInMeter) {
+  module.filter('measure', function() {
+    return function(floatInMeter, units) {
        floatInMeter = floatInMeter || 0;
        var distance = floatInMeter.toFixed(2);
        var km = Math.floor(distance / 1000);
        var m = (km < 0) ? distance : Math.floor(distance) % 1000;
-       return ((km > 0) ? km + '.' + m + ' km' : m + ' m');
+       return ((km > 0) ? km + '.' + m + ' ' + units[0] : m + ' ' + units[1]);
     };
   });
-  module.filter('area', function() {
-    return function(floatInMeter2) {
-      floatInMeter2 = floatInMeter2 || 0;
-      var distance = Math.floor(floatInMeter2);
-      var km = Math.floor(distance / 1000);
-      var m = (km < 0) ? distance : Math.floor(distance) % 1000;
-      return ((km > 0) ? km + '.' + m + ' km²' : m + ' m²');
-    };
-  });
-
 
   module.directive('gaMeasure',
-    function($document, $translate, gaBrowserSniffer, gaPermalink,
-        gaDebounce, gaLayerFilters) {
+    function() {
       return {
         restrict: 'A',
         templateUrl: function(element, attrs) {
