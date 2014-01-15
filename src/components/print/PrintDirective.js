@@ -585,6 +585,8 @@
       return nearest;
     };
 
+    var fullExtent = [-300000, -300000, 2000000, 2000000];
+
     var calculatePageBounds = function(scale) {
         var s = parseFloat(scale.value);
         var size = $scope.layout.map;
@@ -601,15 +603,13 @@
         maxx = center[0] + w;
         maxy = center[1] + h;
 
-        var extent = view.getProjection().getExtent();
-
         return new ol.geom.Polygon([
                     //outer ring
                     [
-                      [extent[0], extent[1]],
-                      [extent[0], extent[3]],
-                      [extent[2], extent[3]],
-                      [extent[2], extent[1]]
+                      [fullExtent[0], fullExtent[1]],
+                      [fullExtent[0], fullExtent[3]],
+                      [fullExtent[2], fullExtent[3]],
+                      [fullExtent[2], fullExtent[1]]
                     ],
                     //inner ring
                     [
