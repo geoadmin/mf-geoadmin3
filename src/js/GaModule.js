@@ -23,6 +23,7 @@
   goog.require('ga_tooltip');
   goog.require('ga_swipe');
   goog.require('ga_featuretree');
+  goog.require('ga_measure');
   goog.require('ga_modal_directive');
   goog.require('ga_draggable_directive');
   goog.require('ga_placeholder_directive');
@@ -66,6 +67,7 @@
     'ga_tooltip',
     'ga_swipe',
     'ga_featuretree',
+    'ga_measure',
     'ga_modal_directive',
     'ga_draggable_directive',
     'ga_placeholder_directive',

@@ -249,7 +249,7 @@ scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf .build-artefacts/
 	test $(GIT_BRANCH) != $(GIT_LAST_BRANCH) && echo $(GIT_BRANCH) > .build-artefacts/last-git-branch || :
 
 .build-artefacts/ol3:
-	git clone https://github.com/openlayers/ol3.git $@
+	git clone https://github.com/oterral/ol3.git $@
 
 .build-artefacts/bootstrap:
 	git clone https://github.com/twbs/bootstrap.git $@ && cd .build-artefacts/bootstrap && git checkout v3.0.0
