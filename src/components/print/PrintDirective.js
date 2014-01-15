@@ -52,36 +52,38 @@
       });
     };
 
+    var printRecFeature = new ol.Feature();
 
-   var overlay_ = new ol.render.FeaturesOverlay();
-   var printRecFeature = new ol.Feature();
+    var defaultStyleFunction = (function() {
+      var styles = {};
+      styles['Polygon'] = [
+        new ol.style.Style({
+          fill: new ol.style.Fill({
+            color: 'rgba(0, 5, 25, 0.75)'
+          })
+        })
+      ];
+      styles['MultiPoint'] = styles['Point'];
 
-   var defaultStyleFunction = (function() {
-   /** @type {Object.<ol.geom.GeometryType, Array.<ol.style.Style>>} */
-     var styles = {};
-     styles[ol.geom.GeometryType.POLYGON] = [
-       new ol.style.Style({
-         fill: new ol.style.Fill({
-           color: 'rgba(200, 5, 25, 0.5)'
-         })
-       })
-     ];
-     styles[ol.geom.GeometryType.MULTI_POINT] =
-       styles[ol.geom.GeometryType.POINT];
-
-     return function(feature, resolution) {
-       return styles[feature.getGeometry().getType()];
-     };
-   })();
-
-
+      return function(feature, resolution) {
+        return styles[feature.getGeometry().getType()];
+      };
+    })();
+    var overlay_ = new ol.render.FeaturesOverlay({
+      map: $scope.map,
+      styleFunction: defaultStyleFunction
+    });
 
     $scope.$on('gaTopicChange', function(event, topic) {
       topicId = topic.id;
       updatePrintConfig();
     });
-    $scope.map.on('moveend', function(event) {
-      event.stopPropagation();
+
+    //We should think about deregistering this event, becaus
+    //it's fired so often, it might have an impact on
+    //overall performance even if updatePrintRectangle does
+    //nothing
+    $scope.map.getView().on('propertychange', function(event) {
       updatePrintRectangle($scope.scale);
     });
 
@@ -527,17 +529,15 @@
     };
 
     var showPrintRectangle = function() {
-        var geom = new ol.geom.Polygon(
-                    [[[600000, 200000], [650000, 200000], [650000, 250000],
-                     [600000, 250000], [600000, 200000]]]);
-        printRecFeature.setGeometry(geom);
-        overlay_.setStyleFunction(defaultStyleFunction);
-        overlay_.setMap($scope.map);
+      if (!overlay_.getFeatures().getLength() &&
+          printRecFeature.getGeometry()) {
         overlay_.addFeature(printRecFeature);
-
-    };
+      }
+   };
     var hidePrintRectangle = function() {
-      overlay_.removeFeature(printRecFeature);
+      if (overlay_.getFeatures().getLength()) {
+        overlay_.removeFeature(printRecFeature);
+      }
     };
     var updatePrintRectangle = function(scale) {
       if ($scope.options.active) {
@@ -563,15 +563,30 @@
         maxx = center[0] + w;
         maxy = center[1] + h;
 
-        return new ol.geom.Polygon(
-                    [[[minx, miny], [maxx, miny], [maxx, maxy],
-                     [minx, maxy], [minx, miny]]]);
+        var extent = view.getProjection().getExtent();
+
+        return new ol.geom.Polygon([
+                    //outer ring
+                    [
+                      [extent[0], extent[1]],
+                      [extent[0], extent[3]],
+                      [extent[2], extent[3]],
+                      [extent[2], extent[1]]
+                    ],
+                    //inner ring
+                    [
+                      [minx, miny],
+                      [maxx, miny],
+                      [maxx, maxy],
+                      [minx, maxy] //, [minx, miny]
+                    ]
+                  ]);
     };
 
     $scope.$watch('options.active', function(newVal, oldVal) {
       if (newVal === true) {
-        showPrintRectangle();
         updatePrintRectangle($scope.scale);
+        showPrintRectangle();
       } else {
         hidePrintRectangle();
       }
