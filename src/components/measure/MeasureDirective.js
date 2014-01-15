@@ -1,11 +1,7 @@
 (function() {
   goog.provide('ga_measure_directive');
 
-  goog.require('ga_map_service');
-
-  var module = angular.module('ga_measure_directive', [
-    'ga_map_service'
-  ]);
+  var module = angular.module('ga_measure_directive', []);
 
   module.filter('measure', function() {
     return function(floatInMeter, units) {
@@ -18,7 +14,7 @@
   });
 
   module.directive('gaMeasure',
-    function(gaMapClick) {
+    function($rootScope) {
       return {
         restrict: 'A',
         templateUrl: function(element, attrs) {
@@ -92,13 +88,6 @@
             isDblClick = true;
           });
 
-          gaMapClick.listen('singleclick', function(evt) {
-            if (scope.isActive) {
-              evt.stopPropagation();
-              evt.preventDefault();
-            }
-          });
-
           var activate = function() {
             scope.map.addInteraction(drawArea);
 
@@ -146,6 +135,7 @@
 
           // Watchers
           scope.$watch('isActive', function(active) {
+            $rootScope.isMeasureActive = active;
             scope.distance = 0;
             scope.surface = 0;
             if (active) {

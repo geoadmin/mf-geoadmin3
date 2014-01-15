@@ -327,7 +327,7 @@
     });
 
     this.$get = function($http, gaPopup, gaDefinePropertiesForLayer,
-        gaMapClick, gaMapUtils) {
+        gaMapClick, gaMapUtils, $rootScope) {
       var Kml = function(proxyUrl) {
 
         /**
@@ -403,8 +403,9 @@
 
           // Display popup on mouse click
           var onMapClick = function(evt) {
-            evt.stopPropagation();
-            evt.preventDefault();
+            if ($rootScope.isMeasureActive) {
+              return;
+            }
             var pixel = (evt.originalEvent) ?
                 olMap.getEventPixel(evt.originalEvent) :
                 evt.getPixel();
