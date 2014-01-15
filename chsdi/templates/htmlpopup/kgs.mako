@@ -28,7 +28,7 @@
             if i == 0: # The first row is NUMMER;BILDNR;FOTOGRAF;COPYRIGHT and cannot be parsed.
                 continue
             if int(row[0]) == c['featureId']:
-                pic_list.append(row)
+                pic_list.append(map(lambda x: x.decode('cp1252'), row))
     %>
     <script>
         $(document).ready(function(){
@@ -98,7 +98,7 @@
                     <a href="http://dav0.bgdi.admin.ch/kogis_web/downloads/kgs/bilder/kgs_${pic[0]}_${pic[1]}.jpg">
                         <img class="image" src="http://dav0.bgdi.admin.ch/kogis_web/downloads/kgs/bilder/kgs_${pic[0]}_${pic[1]}.jpg" />
                     </a>
-                    <div>${pic[3]} - ${pic[2]}</div>
+                    <div>${pic[3] or ''} - ${pic[2] or ''}</div>
                 </div>
             %endfor
             </div>
