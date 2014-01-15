@@ -7,6 +7,30 @@
   module.controller('GaPrintDirectiveController',
     function($scope, $http, $window, $translate, gaLayers, gaPermalink) {
 
+    // Hardcode listd of legends that should be downloaded in
+    // separate PDF instead of putting the image in the same
+    // PDF as the print (as in RE2). Note: We should avoid doing
+    // this as it feels hacky. We should create nice png what are
+    // usable in the pdf
+    var pdfLegendList = ['ch.astra.ivs-gelaendekarte',
+        'ch.astra.ausnahmetransportrouten',
+        'ch.bazl.luftfahrtkarten-icao',
+        'ch.bazl.segelflugkarte',
+        'ch.swisstopo.geologie-eiszeit-lgm-raster',
+        'ch.swisstopo.geologie-geologische_karte',
+        'ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen',
+        'ch.swisstopo.geologie-hydrogeologische_karte-grundwasservulnerabilitaet',
+        'ch.swisstopo.geologie-tektonische_karte',
+        'ch.kantone.cadastralwebmap-farbe',
+        'ch.swisstopo.pixelkarte-farbe-pk1000.noscale',
+        'ch.swisstopo.pixelkarte-farbe-pk500.noscale',
+        'ch.swisstopo.pixelkarte-farbe-pk200.noscale',
+        'ch.swisstopo.pixelkarte-farbe-pk100.noscale',
+        'ch.swisstopo.pixelkarte-farbe-pk50.noscale',
+        'ch.swisstopo.pixelkarte-farbe-pk25.noscale'];
+    var pdfLegendString = '_big.pdf';
+    var pdfLegendsToDownload = [];
+
     var topicId;
 
     var updatePrintConfig = function() {
@@ -71,7 +95,19 @@
       if ($scope.options.legend && layerConfig.hasLegend) {
         encLegend = $scope.encoders.legends['ga_urllegend'].call(this,
                           layer, layerConfig);
-      }
+
+        if (encLegend.classes &&
+            encLegend.classes[0] &&
+            encLegend.classes[0].icon) {
+          var legStr = encLegend.classes[0].icon;
+          if (legStr.indexOf(pdfLegendString,
+                             legStr.length - pdfLegendString.length) !== -1) {
+            pdfLegendsToDownload.push(legStr);
+            encLegend = undefined;
+          }
+        }
+
+     }
 
       return {layer: encLayer, legend: encLegend};
 
@@ -352,14 +388,16 @@
       },
       'legends' : {
         'ga_urllegend': function(layer, config) {
+          var format = '.png';
+          if (pdfLegendList.indexOf(layer.bodId) != -1) {
+            format = pdfLegendString;
+          }
           var enc = $scope.encoders.legends.base.call(this, config);
           enc.classes.push({
             name: '',
             icon: location.protocol + $scope.options.serviceUrl +
-                $scope.options.baseUrlPath +
-                '/wsgi/static/images/legends/' +
-                layer.bodId + '_' + $translate.uses() +
-                '.png'
+                '/static/images/legends/' +
+                layer.bodId + '_' + $translate.uses() + format
           });
           return enc;
         },
@@ -410,6 +448,9 @@
       var attributions = [];
 
       var layers = this.map.getLayers();
+
+      pdfLegendsToDownload = [];
+
       angular.forEach(layers, function(layer) {
         if (layer.visible) {
           var attribution = layer.attribution;
@@ -485,6 +526,11 @@
             '/create.json'), spec);
         http.success(function(data) {
           $scope.downloadUrl(data.getURL);
+          //After standard print, download the pdf Legends
+          //if there are any
+          for (var i = 0; i < pdfLegendsToDownload.length; i++) {
+            $window.open(pdfLegendsToDownload[i]);
+          }
         });
       });
     };
