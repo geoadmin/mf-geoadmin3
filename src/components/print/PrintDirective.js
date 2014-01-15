@@ -640,7 +640,7 @@
         printRectangle = calculatePageBoundsPixels(scale);
         $scope.map.requestRenderFrame();
       }
-    }; 
+    };
 
     var DPI = 72;
     var MM_PER_INCHES = 25.4;

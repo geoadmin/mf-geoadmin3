@@ -1,3 +1,5 @@
 @exportProperty ol.View2D.prototype.getResolutionForExtent
 @exportSymbol ol.feature
 @exportProperty ol.feature.defaultStyleFunction
+@exportProperty ol.Map.prototype.getPixelFromCoordinate
+@exportProperty ol.Map.prototype.getCoordinateFromPixel
