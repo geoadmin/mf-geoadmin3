@@ -396,8 +396,7 @@
           enc.classes.push({
             name: '',
             icon: location.protocol + $scope.options.serviceUrl +
-                $scope.options.baseUrlPath +
-                '/wsgi/static/images/legends/' +
+                '/static/images/legends/' +
                 layer.bodId + '_' + $translate.uses() + format
           });
           return enc;
