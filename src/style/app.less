@@ -1,4 +1,5 @@
 @import "ga_bootstrap.less";
+@import "app_print.less";
 @import "font-awesome-3.2.1/less/font-awesome.less";
 @import "../components/map/style/map.less";
 @import "../components/geolocation/style/geolocation.less";
@@ -632,40 +633,6 @@ ul.panel-body-wide {
   }
 }
 
-// ****** METADATA / LEGEND Information
-.ga-tooltip-metadata {
-  .popover-content {
-    padding: 0px;
-  }
-}
-.bod-title {
-  color: red;
-}
-.legend-header, .bodsearch-header {
-  background-color: #eee;
-  padding: 8px;
-}
-.office-provider {
-  color: red;
-  font-style: italic;
-  margin-bottom: 5px;
-  margin-top: 1px;
-}
-.legend-footer {
-  padding: 8px;
-  .bod-footer {
-    background-color: white;
-  }
-  span {
-    font-weight: bold;
-  }
-  table {
-    font-size: 100%;
-    width: 100%;
-    border: 0;
-  }
-}
-
 // ***** LAYER SELECTION
 #selection {
   .btn-xs {
@@ -857,36 +824,6 @@ ul.panel-body-wide {
   z-index: 1090;
   left: unit(-@contextpopup-width/2, px);
 }
-
-// ***** HTMLPOPUP
-.htmlpopup-container {
-  width: 100%;
-  font-size: 11px;
-  span {
-    font-weight: bold;
-  }
-  .htmlpopup-header {
-    background-color: #E9E9E9;
-    padding: 7px;
-  }
-  .htmlpopup-content {
-    padding: 7px;
-    table {
-      font-size: 11px;
-      width: 100%;
-      border: 0;
-      td {
-        vertical-align: top;
-      }
-      .cell-left {
-        width: 150px;
-      }
-      .cell-left-large {
-        width: 320px;
-      }
-    }
-  }
-}  
 
 // ***** ICONS
 .icon-plus, .icon-minus {
