@@ -46,13 +46,12 @@
         $scope.layout = data.layouts[0];
         $scope.dpi = data.dpis[0];
         $scope.scales = data.scales;
-        $scope.scale = data.scales[5];
         $scope.options.legend = false;
         $scope.options.graticule = false;
       });
     };
 
-    var printRecFeature = new ol.Feature();
+   var printRecFeature = new ol.Feature();
 
     var defaultStyleFunction = (function() {
       var styles = {};
@@ -69,17 +68,19 @@
         return styles[feature.getGeometry().getType()];
       };
     })();
+
     var overlay_ = new ol.render.FeaturesOverlay({
       map: $scope.map,
       styleFunction: defaultStyleFunction
     });
+
 
     $scope.$on('gaTopicChange', function(event, topic) {
       topicId = topic.id;
       updatePrintConfig();
     });
 
-    //We should think about deregistering this event, becaus
+   //We should think about deregistering this event, becaus
     //it's fired so often, it might have an impact on
     //overall performance even if updatePrintRectangle does
     //nothing
@@ -144,8 +145,21 @@
 
     };
 
+    // Transform an ol.Color to an hexadecimal string
+    var toHexa = function(olColor) {
+      var hex = '#';
+      for (var i = 0; i < 3; i++) {
+        var part = olColor[i].toString(16);
+        if (part.length === 1 && parseInt(part) < 10) {
+          hex += '0';
+        }
+        hex += part;
+      }
+      return hex;
+    };
+
     // Transform a ol.style.Style to a print literal object
-    var transformToPrintLiteral = function(style) {
+    var transformToPrintLiteral = function(feature, style) {
       /**
        * ol.style.Style properties:
        *
@@ -194,20 +208,42 @@
        * graphicYOffset
        * zIndex
        */
-
       var literal = {
-        zIndex: style.zIndex
+        zIndex: style.getZIndex()
       };
+      var type = feature.getGeometry().getType();
+      var fill = style.getFill();
+      var stroke = style.getStroke();
+      var textStyle = style.getText();
+      var imageStyle = style.getImage();
 
-      if (style.image) {
-        //literal.pointRadius = style.image.;
-        literal.rotation = style.image.rotation;
-        literal.externalGraphic = style.image.src_;
-        literal.graphicWidth = style.image.size[0];
-        literal.graphicHeight = style.image.size[1];
-        literal.graphicOpacity = style.image.opacity;
-        literal.graphicXOffset = style.image.anchor[0];
-        literal.graphicYOffset = style.image.anchor[1];
+      if (imageStyle) {
+        var size = imageStyle.getSize();
+        var anchor = imageStyle.getAnchor();
+        var scale = imageStyle.getScale();
+        literal.rotation = imageStyle.getRotation();
+        if (size) {
+          literal.graphicWidth = size[0] * scale;
+          literal.graphicHeight = size[1] * scale;
+        }
+        if (anchor) {
+          literal.graphicXOffset = -anchor[0] * scale;
+          literal.graphicYOffset = -anchor[1] * scale;
+        }
+        if (imageStyle instanceof ol.style.Icon) {
+          literal.externalGraphic = imageStyle.getSrc();
+        } else { // ol.style.Circle
+          fill = imageStyle.getFill();
+          stroke = imageStyle.getStroke();
+          literal.pointRadius = imageStyle.getRadius();
+        }
+      }
+
+      if (fill) {
+        var color = ol.color.asArray(fill.getColor());
+        literal.fillColor = toHexa(color);
+        literal.fillOpacity = color[3];
+      }
 
       if (stroke) {
         var color = ol.color.asArray(stroke.getColor());
@@ -224,15 +260,16 @@
         // literal.strokeMiterlimit = stroke.getMiterLimit();
       }
 
-      /*if (style.text) {
-        literal.label
-        literal.fontFamily
-        literal.fontSize
-        literal.fontWeight
-        literal.fontColor = style.text.color;
-        literal.labelAlign = style.text.;
-        literal.labelOutlineColor = style.text.;
-        literal.labelOutlineWidth = style.text.;
+      // TO FIX: Not managed by OL3
+      /*if (textStyle) {
+        literal.fontColor = textStyle.getFill().getColor();
+        literal.fontFamily = textStyle.getFont();
+        literal.fontSize =
+        literal.fontWeight =
+        literal.label = textStyle.getText();
+        literal.labelAlign = textStyle.getTextAlign();
+        literal.labelOutlineColor = textStyle.getStroke().getColor();
+        literal.labelOutlineWidth = textStyle.getStroke().getWidth();
       }*/
 
       return literal;
@@ -268,30 +305,25 @@
           var enc = $scope.encoders.
               layers['Layer'].call(this, layer);
           var format = new ol.format.GeoJSON();
-          var encStyle = {};
           var encStyles = {};
           var encFeatures = [];
           var stylesDict = {};
-          var styleId = 1;
+          var styleId = 0;
 
           angular.forEach(features, function(feature) {
+            var encStyle = {
+              id: styleId
+            };
             var geometry = feature.getGeometry();
             var encJSON = format.writeFeature(feature);
             encJSON.properties._gx_style = styleId;
             encFeatures.push(encJSON);
-            var styles =
-                //(feature.getStyleFunction()) ? feature.getStyleFunction()() :
-                  (layer.getStyleFunction()) ?
-                    layer.getStyleFunction()(feature) :
-                    ol.layer.Vector.defaultStyleFunction(feature);
+            var styles = (layer.getStyleFunction()) ?
+                layer.getStyleFunction()(feature) :
+                ol.feature.defaultStyleFunction(feature);
 
-            if (styles) {
-              var i = styles.length;
-              while (i--) {
-                encStyle.id = styleId;
-                var literal = transformToPrintLiteral(styles[i]);
-                $.extend(encStyle, literal);
-              }
+            if (styles && styles.length > 0) {
+              $.extend(encStyle, transformToPrintLiteral(feature, styles[0]));
             }
 
             encStyles[styleId] = encStyle;
@@ -410,19 +442,6 @@
       }
     };
 
-    var getNearestScale = function(target, scales) {
-
-      var nearest = null;
-
-      angular.forEach(scales, function(scale) {
-        if (nearest == null ||
-            Math.abs(scale - target) < Math.abs(nearest - target)) {
-              nearest = scale;
-        }
-      });
-      return nearest;
-    };
-
     $scope.downloadUrl = function(url) {
       $window.location.href = url;
     };
@@ -440,9 +459,12 @@
 
       var qrcodeurl = location.protocol + $scope.options.serviceUrl +
           '/qrcodegenerator?url=' + encodedPermalinkHref;
+      var shortenUrl = location.protocol + $scope.options.serviceUrl +
+          '/shorten.json?cb=JSON_CALLBACK';
 
       var encLayers = [];
       var encLegends;
+      var attributions = [];
 
       var layers = this.map.getLayers();
 
@@ -450,6 +472,11 @@
 
       angular.forEach(layers, function(layer) {
         if (layer.visible) {
+          var attribution = layer.attribution;
+          if (attribution !== undefined &&
+              attributions.indexOf(attribution) == -1) {
+            attributions.push(attribution);
+          }
           if (layer instanceof ol.layer.Group) {
             var encs = $scope.encoders.layers['Group'].call(this,
                 layer, proj);
@@ -466,7 +493,6 @@
           }
         }
       });
-
       if ($scope.options.graticule) {
         var graticule = {
           'baseURL': 'http://wms.geo.admin.ch/',
@@ -482,11 +508,7 @@
         };
         encLayers.push(graticule);
       }
-      // scale = resolution * inches per map unit (m) * dpi
-      var scale = parseInt(view.getResolution() * 39.37 * 254);
-      var scales = this.scales.map(function(scale) {
-        return parseInt(scale.value);
-      });
+
       var that = this;
       $http.jsonp(shortenUrl, {
         params: {
@@ -507,7 +529,7 @@
           qrcodeurl: qrcodeurl,
           pages: [
           angular.extend({
-            center: printRecFeature.getGeometry().getInteriorPoint(),
+            center: view.getCenter(),
             // scale has to be one of the advertise by the print server
             scale: $scope.scale.value,
             dataOwner: '© ' + attributions.join(),
@@ -546,15 +568,31 @@
       }
     };
 
+    var DPI = 72;
+    var UNITS_RATIO = 39.37;
+
+    var getOptimalScale = function() {
+      var view = $scope.map.getView();
+      var testScale = view.getResolution() * 1000 * 2 * (DPI / UNITS_RATIO);
+      var nearest = null;
+      angular.forEach($scope.scales, function(scale) {
+        if (nearest == null ||
+            Math.abs(scale.value - testScale) <
+            Math.abs(nearest.value - testScale)) {
+              nearest = scale;
+        }
+      });
+      return nearest;
+    };
+
     var calculatePageBounds = function(scale) {
         var s = parseFloat(scale.value);
         var size = $scope.layout.map;
         var view = $scope.map.getView();
         var center = view.getCenter();
 
-        var unitsRatio = 39.37;
-        var w = size.width / 72 / unitsRatio * s / 2;
-        var h = size.height / 72 / unitsRatio * s / 2;
+        var w = size.width / DPI / UNITS_RATIO * s / 2;
+        var h = size.height / DPI / UNITS_RATIO * s / 2;
 
         var minx, miny, maxx, maxy;
 
@@ -585,6 +623,7 @@
 
     $scope.$watch('options.active', function(newVal, oldVal) {
       if (newVal === true) {
+        $scope.scale = getOptimalScale();
         updatePrintRectangle($scope.scale);
         showPrintRectangle();
       } else {
@@ -597,6 +636,7 @@
     $scope.$watch('layout', function() {
       updatePrintRectangle($scope.scale);
     });
+
 
   });
 
@@ -612,3 +652,4 @@
     }
   );
 })();
+
