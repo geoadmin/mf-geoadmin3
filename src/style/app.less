@@ -632,18 +632,6 @@ ul.panel-body-wide {
   }
 }
 
-// ****** PRINT SETTINGS
-@media print {
-  a[href]:after {
-    content: " (" attr(href) ")";
-  }
-  .ir a:after,
-  a[href^="javascript:"]:after,
-  a[href^="#"]:after {
-    content: "";
-  }
-}
-
 // ****** METADATA / LEGEND Information
 .ga-tooltip-metadata {
   .popover-content {
@@ -884,6 +872,7 @@ ul.panel-body-wide {
   .htmlpopup-content {
     padding: 7px;
     table {
+      font-size: 11px;
       width: 100%;
       border: 0;
       td {

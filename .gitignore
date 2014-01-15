@@ -1,6 +1,7 @@
 /node_modules
 /src/deps.js
 /src/style/app.css
+/src/style/print.css
 /src/index.html
 /src/mobile.html
 /src/TemplateCacheModule.js

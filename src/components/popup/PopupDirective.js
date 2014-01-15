@@ -71,16 +71,18 @@
                     var href = cssLinks[i].href;
                     if (href.indexOf('css') !== -1) {
                       windowPrint.document.write('<link href="' + href +
-                          '" rel="stylesheet" type="text/css" media="all">');
+                          '" rel="stylesheet" type="text/css" media="screen">');
+                      windowPrint.document.write('<link href="' +
+                          href.replace('app.css', 'print.css') +
+                          '" rel="stylesheet" type="text/css" media="print">');
                     }
                   }
                 }
-                windowPrint.document.write('</head><body>');
+                windowPrint.document.write('</head><body ' +
+                    'onload="window.print(); window.close();">');
                 windowPrint.document.write(contentEl.clone().html());
                 windowPrint.document.write('</body></html>');
                 windowPrint.document.close();
-                windowPrint.print();
-                windowPrint.close();
               });
 
           // Move the popup to the correct position

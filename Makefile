@@ -47,10 +47,10 @@ help:
 all: prod dev lint apache testdev testprod deploy/deploy-branch.cfg fixrights
 
 .PHONY: prod
-prod: prd/lib/build.js prd/style/app.css prd/index.html prd/mobile.html prd/info.json prd/img/ prd/style/font-awesome-3.2.1/font/ prd/locales/ prd/checker
+prod: prd/lib/build.js prd/style/app.css prd/style/print.css prd/index.html prd/mobile.html prd/info.json prd/img/ prd/style/font-awesome-3.2.1/font/ prd/locales/ prd/checker
 
 .PHONY: dev
-dev: src/deps.js src/style/app.css src/index.html src/mobile.html
+dev: src/deps.js src/style/app.css src/style/print.css src/index.html src/mobile.html
 
 .PHONY: lint
 lint: .build-artefacts/lint.timestamp
@@ -107,6 +107,10 @@ prd/style/app.css: src/style/app.less src/style/ga_bootstrap.less src/style/ga_v
 	mkdir -p $(dir $@)
 	node_modules/.bin/lessc -ru --yui-compress $< $@
 
+prd/style/print.css: src/style/print.less node_modules .build-artefacts/bootstrap
+	mkdir -p $(dir $@)
+	node_modules/.bin/lessc -ru --yui-compress $< $@
+
 prd/index.html: src/index.mako.html prd/lib/build.js prd/style/app.css .build-artefacts/python-venv/bin/mako-render
 	mkdir -p $(dir $@)
 	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "mode=prod" --var "version=$(VERSION)" --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" $< > $@
@@ -140,6 +144,9 @@ src/deps.js: $(SRC_JS_FILES) .build-artefacts/python-venv .build-artefacts/closu
 	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root_with_prefix="src/components components" --root_with_prefix="src/js js" --output_file=$@
 
 src/style/app.css: src/style/app.less src/style/ga_bootstrap.less src/style/ga_variables.less $(SRC_COMPONENTS_LESS_FILES) node_modules .build-artefacts/bootstrap
+	node_modules/.bin/lessc $(LESS_PARAMETERS) $< $@
+
+src/style/print.css: src/style/print.less node_modules .build-artefacts/bootstrap
 	node_modules/.bin/lessc $(LESS_PARAMETERS) $< $@
 
 src/index.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render
@@ -274,6 +281,7 @@ clean: cleanrc
 	rm -rf .build-artefacts/annotated
 	rm -f src/deps.js
 	rm -f src/style/app.css
+	rm -f src/style/print.css
 	rm -f src/TemplateCacheModule.js
 	rm -rf prd
 
