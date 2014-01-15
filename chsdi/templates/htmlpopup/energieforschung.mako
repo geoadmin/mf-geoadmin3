@@ -32,6 +32,10 @@
   <td class="cell-left">${_('tt_ch.bfe.energieforschung_kontaktperson')}</td>
   <td>${c['attributes']['kontaktperson_bfe'] or '-'}</td>
 </tr>
+<tr>
+  <td class="cell-left"></td>
+  <td><a href="${c['baseUrl']}rest/services/all/MapServer/${c['layerBodId']}/${c['featureId']}/extendedhtmlpopup" target="_blank">${_('zusatzinfo')}<img src="http://www.swisstopo.admin.ch/images/ico_extern.gif" /></a></td>
+</tr>
 </%def>
 
 <%def name="extended_info(c, lang)">

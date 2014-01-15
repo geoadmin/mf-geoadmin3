@@ -11,7 +11,7 @@
     <tr><td class="cell-left">${_('geometry_type')}</td><td>${c['attributes']['zonetype_%s' % lang]}</td></tr>
     <tr><td class="cell-left">${_('originator')}</td><td>${c['attributes']['originator']}</td></tr>
     <tr><td class="cell-left">${_('kanton')}</td><td>${c['attributes']['canton']}</td></tr>
-    <tr><td width="170"></td><td><a href="${c['baseUrl']}rest/services/all/MapServer/${c['layerBodId']}/${c['featureId']}/extendedhtmlpopup" target="_blank">${_('zusatzinfo')}<img src="http://www.swisstopo.admin.ch/images/ico_extern.gif" /></a></td></tr>
+    <tr><td class="cell-left"></td><td><a href="${c['baseUrl']}rest/services/all/MapServer/${c['layerBodId']}/${c['featureId']}/extendedhtmlpopup" target="_blank">${_('zusatzinfo')}<img src="http://www.swisstopo.admin.ch/images/ico_extern.gif" /></a></td></tr>
 </%def>
 
 <%def name="extended_info(c, lang)"> 
