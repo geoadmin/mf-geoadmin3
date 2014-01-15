@@ -2,11 +2,12 @@
 
 <% 
   c = pageargs['feature']
+  protocol = request.scheme
   c['bbox'] = pageargs.get('bbox')
   c['scale'] = pageargs.get('scale')
   c['stable_id'] = False
   extended = pageargs.get('extended')
-  protocol = request.scheme
+  extendedPathCss = request.static_url('chsdi:static/css/extended.min.css').replace('http', 'https')
   instanceId = request.registry.settings['instanceid'] + '/' if request.registry.settings['instanceid'] != 'main' else ''
   c['baseUrl'] = protocol + '://' + request.registry.settings['geoadminhost'] + '/' + instanceId
   bbox = c['bbox']
@@ -18,7 +19,7 @@
 
 % if extended:
   <meta name="viewport" content="initial-scale=1.0"/>
-  <link rel="stylesheet" type="text/css" href="${h.versioned(request.static_url('chsdi:static/css/extended.min.css'))}"/>
+  <link rel="stylesheet" type="text/css" href="${h.versioned(extendedPathCss)}"/>
   <link rel="stylesheet" type="text/css" href="../../../../../../static/css/blueimp-gallery-2.11.0.min.css"/>
   <script src="../../../../../../static/js/jquery-2.0.3.min.js"></script>
   <script src="../../../../../../static/js/blueimp-gallery-2.11.5.min.js"></script>
