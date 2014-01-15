@@ -8,7 +8,7 @@
   ]);
 
   module.directive('gaPopup',
-    function($translate, gaBrowserSniffer) {
+    function($rootScope, $translate, gaBrowserSniffer) {
       return {
         restrict: 'A',
         transclude: true,
@@ -104,6 +104,10 @@
               }
             }
           );
+
+          $rootScope.$on('$translateChangeEnd', function() {
+            scope.titlePrint = $translate('print_action');
+          });
         }
       };
     }
