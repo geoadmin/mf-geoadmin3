@@ -51,9 +51,41 @@
       });
     };
 
+   var printRecFeature = new ol.Feature();
+
+    var defaultStyleFunction = (function() {
+      var styles = {};
+      styles['Polygon'] = [
+        new ol.style.Style({
+          fill: new ol.style.Fill({
+            color: 'rgba(0, 5, 25, 0.75)'
+          })
+        })
+      ];
+      styles['MultiPoint'] = styles['Point'];
+
+      return function(feature, resolution) {
+        return styles[feature.getGeometry().getType()];
+      };
+    })();
+
+    var overlay_ = new ol.render.FeaturesOverlay({
+      map: $scope.map,
+      styleFunction: defaultStyleFunction
+    });
+
+
     $scope.$on('gaTopicChange', function(event, topic) {
       topicId = topic.id;
       updatePrintConfig();
+    });
+
+   //We should think about deregistering this event, becaus
+    //it's fired so often, it might have an impact on
+    //overall performance even if updatePrintRectangle does
+    //nothing
+    $scope.map.getView().on('propertychange', function(event) {
+      updatePrintRectangle($scope.scale);
     });
 
     var encodeLayer = function(layer, proj) {
@@ -410,19 +442,6 @@
       }
     };
 
-    var getNearestScale = function(target, scales) {
-
-      var nearest = null;
-
-      angular.forEach(scales, function(scale) {
-        if (nearest == null ||
-            Math.abs(scale - target) < Math.abs(nearest - target)) {
-              nearest = scale;
-        }
-      });
-      return nearest;
-    };
-
     $scope.downloadUrl = function(url) {
       $window.location.href = url;
     };
@@ -489,11 +508,7 @@
         };
         encLayers.push(graticule);
       }
-      // scale = resolution * inches per map unit (m) * dpi
-      var scale = parseInt(view.getResolution() * 39.37 * 254);
-      var scales = this.scales.map(function(scale) {
-        return parseInt(scale.value);
-      });
+
       var that = this;
       $http.jsonp(shortenUrl, {
         params: {
@@ -516,7 +531,7 @@
           angular.extend({
             center: view.getCenter(),
             // scale has to be one of the advertise by the print server
-            scale: getNearestScale(scale, scales),
+            scale: $scope.scale.value,
             dataOwner: '© ' + attributions.join(),
             shortLink: response.shorturl.replace('/shorten', '')
           }, defaultPage)]
@@ -534,6 +549,95 @@
         });
       });
     };
+
+    var showPrintRectangle = function() {
+      if (!overlay_.getFeatures().getLength() &&
+          printRecFeature.getGeometry()) {
+        overlay_.addFeature(printRecFeature);
+      }
+   };
+    var hidePrintRectangle = function() {
+      if (overlay_.getFeatures().getLength()) {
+        overlay_.removeFeature(printRecFeature);
+      }
+    };
+    var updatePrintRectangle = function(scale) {
+      if ($scope.options.active) {
+        var extent = calculatePageBounds(scale);
+        printRecFeature.setGeometry(extent);
+      }
+    };
+
+    var DPI = 72;
+    var UNITS_RATIO = 39.37;
+
+    var getOptimalScale = function() {
+      var view = $scope.map.getView();
+      var testScale = view.getResolution() * 1000 * 2 * (DPI / UNITS_RATIO);
+      var nearest = null;
+      angular.forEach($scope.scales, function(scale) {
+        if (nearest == null ||
+            Math.abs(scale.value - testScale) <
+            Math.abs(nearest.value - testScale)) {
+              nearest = scale;
+        }
+      });
+      return nearest;
+    };
+
+    var fullExtent = [-300000, -300000, 2000000, 2000000];
+
+    var calculatePageBounds = function(scale) {
+        var s = parseFloat(scale.value);
+        var size = $scope.layout.map;
+        var view = $scope.map.getView();
+        var center = view.getCenter();
+
+        var w = size.width / DPI / UNITS_RATIO * s / 2;
+        var h = size.height / DPI / UNITS_RATIO * s / 2;
+
+        var minx, miny, maxx, maxy;
+
+        minx = center[0] - w;
+        miny = center[1] - h;
+        maxx = center[0] + w;
+        maxy = center[1] + h;
+
+        return new ol.geom.Polygon([
+                    //outer ring
+                    [
+                      [fullExtent[0], fullExtent[1]],
+                      [fullExtent[0], fullExtent[3]],
+                      [fullExtent[2], fullExtent[3]],
+                      [fullExtent[2], fullExtent[1]]
+                    ],
+                    //inner ring
+                    [
+                      [minx, miny],
+                      [maxx, miny],
+                      [maxx, maxy],
+                      [minx, maxy] //, [minx, miny]
+                    ]
+                  ]);
+    };
+
+    $scope.$watch('options.active', function(newVal, oldVal) {
+      if (newVal === true) {
+        $scope.scale = getOptimalScale();
+        updatePrintRectangle($scope.scale);
+        showPrintRectangle();
+      } else {
+        hidePrintRectangle();
+      }
+    });
+    $scope.$watch('scale', function() {
+      updatePrintRectangle($scope.scale);
+    });
+    $scope.$watch('layout', function() {
+      updatePrintRectangle($scope.scale);
+    });
+
+
   });
 
   module.directive('gaPrint',
@@ -548,3 +652,4 @@
     }
   );
 })();
+

@@ -10,5 +10,16 @@
         baseUrlPath:  gaGlobalOptions.baseUrlPath,
         serviceUrl: gaGlobalOptions.serviceUrl
       };
+      $('#print').on('show.bs.collapse', function() {
+        $scope.$apply(function() {
+          $scope.options.active = true;
+        });
+      });
+
+      $('#print').on('hide.bs.collapse', function() {
+        $scope.$apply(function() {
+          $scope.options.active = false;
+        });
+      });
   });
 })();
