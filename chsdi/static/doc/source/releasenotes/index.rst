@@ -1,33 +1,48 @@
-Release 20141501 -  Wednesday, January 15th 2014
+Release 20140115 -  Wednesday, January 15th 2014
 ====================================================
 
 Geodata
 ********
 
-+--------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| New    | `Safety zone plan <//map3.geo.admin.ch/?layers=ch.bazl.sicherheitszonenplan>`__  (ch.bazl.sicherheitszonenplan)                                             |
-+--------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Safety zone plan <//map3.geo.admin.ch/?layers=ch.bazl.sicherheitszonenplan>`__  (ch.bazl.sicherheitszonenplan)                                                                  |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Arealstatistik 2004/09 NOLC04 <//map3.geo.admin.ch/?layers=ch.bfs.arealstatistik-bodenbedeckung>`__ (ch.bfs.arealstatistik-bodenbedeckung)                                      |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Arealstatistik 1992/97 NOLC04 <//map3.geo.admin.ch/?layers=ch.bfs.arealstatistik-bodenbedeckung-1997>`__ (ch.bfs.arealstatistik-bodenbedeckung-1997)                            |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Arealstatistik 1979/85 NOLC04 <//map3.geo.admin.ch/?layers=ch.bfs.arealstatistik-bodenbedeckung-1985>`__ (ch.bfs.arealstatistik-bodenbedeckung-1985)                            |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Division National Map 1:1 million (grey) <//map3.geo.admin.ch/?bgLayer=ch.swisstopo.pixelkarte-grau>`__ (ch.swisstopo.pixelkarte-grau)                                          |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Division National Map 1:1 million (color) <//map3.geo.admin.ch/?bgLayer=ch.swisstopo.pixelkarte-farbe>`__ (ch.swisstopo.pixelkarte-farbe)                                       |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `National Map 1:1 million (colour) <//map3.geo.admin.ch/?layers=ch.swisstopo.pixelkarte-farbe-pk1000.noscale>`__ (ch.swisstopo.pixelkarte-farbe-pk1000.noscale)                  |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `National Map 1:100'000 <//map3.geo.admin.ch/?layers=ch.swisstopo.pixelkarte-farbe-pk100.noscale>`__ (ch.swisstopo.pixelkarte-farbe-pk100.noscale)                               |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `National Map 1:50'000 <//map3.geo.admin.ch/?layers=ch.swisstopo.pixelkarte-farbe-pk50.noscale>`__ (ch.swisstopo.pixelkarte-farbe-pk50.noscale)                                  |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `National Map 1:25'000 <//map3.geo.admin.ch/?layers=ch.swisstopo.pixelkarte-farbe-pk25.noscale>`__ (ch.swisstopo.pixelkarte-farbe-pk25.noscale)                                  |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
-Listing all publicly available layers of the Geoadmin API :
-
-- `List only <//s.geo.admin.ch/5d5d40a>`__
-- `With Preview <//s.geo.admin.ch/ebae1145>`__
+Listing all publicly available layers of the Geoadmin API: `List <//api3.geo.admin.ch/api/faq/index.html#which-layers-are-available>`__
 
 API & applications
 ******************
 
 `API <//api3.geo.admin.ch>`__
 -----------------------------------
-- Initial preview of the new GeoAdmin API
 - Documentation
 - Support of HTTPS
 - Various minor improvements and glitches
-
 
 `map3.geo.admin.ch <//map3.geo.admin.ch>`__
 --------------------------------------------------
 - Fix KML features reprojection
 - Add WMS servers
+- Add measure tool
+- Add print area definition
 - Adding graticule option to print
 - Various minor fixes and improvements
 
