@@ -115,22 +115,26 @@
           },
           time: {
             get: function() {
-              var src = this.getSource();
-              if (src instanceof ol.source.WMTS) {
-                return src.getDimensions().Time;
-              } else if (src instanceof ol.source.ImageWMS ||
-                  src instanceof ol.source.TileWMS) {
-                return src.getParams().TIME;
+              if (this instanceof ol.layer.Layer) {
+                var src = this.getSource();
+                if (src instanceof ol.source.WMTS) {
+                  return src.getDimensions().Time;
+                } else if (src instanceof ol.source.ImageWMS ||
+                    src instanceof ol.source.TileWMS) {
+                  return src.getParams().TIME;
+                }
               }
               return undefined;
             },
             set: function(val) {
-              var src = this.getSource();
-              if (src instanceof ol.source.WMTS) {
-                src.updateDimensions({'Time': val});
-              } else if (src instanceof ol.source.ImageWMS ||
-                  src instanceof ol.source.TileWMS) {
-                src.updateParams({'TIME': val});
+              if (this instanceof ol.layer.Layer) {
+                var src = this.getSource();
+                if (src instanceof ol.source.WMTS) {
+                  src.updateDimensions({'Time': val});
+                } else if (src instanceof ol.source.ImageWMS ||
+                    src instanceof ol.source.TileWMS) {
+                  src.updateParams({'TIME': val});
+                }
               }
             }
           },
