@@ -8,7 +8,7 @@
   c['stable_id'] = False
   extended = pageargs.get('extended')
   extendedPathCss = request.static_url('chsdi:static/css/extended.min.css').replace('http', 'https')
-  instanceId = request.registry.settings['instanceid'] + '/' if request.registry.settings['instanceid'] != 'main' else ''
+  instanceId = request.registry.settings['instanceid'] + '/'
   c['baseUrl'] = protocol + '://' + request.registry.settings['geoadminhost'] + '/' + instanceId
   bbox = c['bbox']
   lang = request.lang
