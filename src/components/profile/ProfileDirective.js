@@ -70,9 +70,10 @@
                   var xCoord = profile.domain.X.invert(x);
                   var yCoord = profile.domain.Y.invert(pos.y);
                   // Get the tooltip position
-                  var heightOfArrow = 8;
-                  var positionX = profile.domain.X(xCoord);
-                  var positionY = profile.domain.Y(yCoord) - heightOfArrow;
+                  var positionX = profile.domain.X(xCoord) +
+                      scope.options.margin.left;
+                  var positionY = profile.domain.Y(yCoord) +
+                      scope.options.margin.top;
                   tooltipEl.css({
                     left: positionX + 'px',
                     top: positionY + 'px'
