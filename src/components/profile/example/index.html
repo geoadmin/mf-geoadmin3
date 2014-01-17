@@ -36,12 +36,26 @@
     </script>
     <![endif]-->
     <link href="style/app.css" rel="stylesheet" media="screen">
+    <style>
+      #profile-popup {
+        overflow: visible;
+        max-height: none;
+        max-width: none; 
+      }
+
+      #profile-popup .ga-popup-content {
+        overflow: visible;
+        max-height: none;
+        max-width: none;
+      }     
+    </style>
   </head>
   <body ng-controller="MainController">
     <div ga-popup="show"
          ga-popup-options="options"
          ga-draggable=".ga-popup-title"
          id="profile-popup">
+      <div>This text to test tooltip position</div>
       <div ng-controller="ProfileController">
         <div ga-profile
              ga-profile-options="options">

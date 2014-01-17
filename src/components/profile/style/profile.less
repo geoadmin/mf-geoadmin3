@@ -1,82 +1,88 @@
-#profile-popup {
-  overflow: visible;
-  max-height: none;
-  max-width: none;
-  .ga-popup-content {
+[ga-profile] {
+  position:relative;
+
+  .profile-inner {
     overflow: hidden;
-    max-height: inherit;
-    max-width: inherit;
-    .profile-inner {
-      overflow: hidden;
-      width: inherit;
-      .profile-svg {
-        display: block;
-        margin: 0;
-        .profile-grid-x,
-        .profile-grid-y {
-          stroke: lightgrey;
-          opacity: 0.8;
-          line {
-            stroke-width: 0.02em;
-          }
+    width: inherit;
+
+    .profile-svg {
+      display: block;
+      margin: 0;
+
+      .profile-grid-x,
+      .profile-grid-y {
+        stroke: lightgrey;
+        opacity: 0.8;
+        line {
+          stroke-width: 0.02em;
         }
-        .axis path,
-        .axis line {
-          fill: none;
-          stroke: #000;
-          shape-rendering: crispEdges;
+      }
+
+      .axis path,
+      .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+      }
+
+      .tick {
+        font-size: 11px;
+      }
+
+      .profile-area,
+      .profile-legend-rect {
+        fill: steelblue;
+        fill-opacity: 0.95;
+      }
+
+      .profile-area {
+        &:hover {
+          fill-opacity: 0.85;
         }
-        .tick {
-          font-size: 11px;
-        }
-        .profile-area,
-        .profile-legend-rect {
-          fill: steelblue;
-          fill-opacity: 0.95;
-        }
-        .profile-area {
-          &:hover {
-            fill-opacity: 0.85;
-          }
-        }
-        .profile-legend,
-        .profile-label {
-          font-weight: bold;
-          text-shadow: 1px 1px lightgrey;
-        }
+      }
+
+      .profile-legend,
+      .profile-label {
+        font-weight: bold;
+        text-shadow: 1px 1px lightgrey;
       }
     }
-    .profile-tooltip {
-      position: absolute;
-      height: 65px;
-      width: 150px;
-      display: none;
-      background-color: black;
-      color: white;
-      opacity: 0.8;
-      padding-top: 8px;
-      font-size: 13px;
-      -webkit-border-radius: 5px;
-      -moz-border-radius: 5px;
-      border-radius: 5px;
-      .profile-tooltip-inner {
-        top: -15px;
-        position: relative;
-        width: inherit;
-        height: inherit;
-        text-align: center;
-      }
-      &:before {
-        content: '';
-        border-color: black transparent transparent;
-        border-style: solid;
-        border-width: 10px;
-        height: 0;
-        width: 0;
-        position: relative;
-        top: 65px;
-        left: 65px;
-      }
+  }
+
+  .profile-tooltip {
+    position: absolute;
+    height: 65px;
+    width: 150px;
+    display: none;
+    background-color: black;
+    color: white;
+    opacity: 0.8;
+    margin-left: -75px;
+    margin-top: -73px;
+    padding-top: 8px;/*for the arrow*/
+    font-size: 13px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    
+    .profile-tooltip-inner {
+      top: -15px;
+      position: relative;
+      width: inherit;
+      height: inherit;
+      text-align: center;
+    }
+    
+    &:before {
+      content: '';
+      border-color: black transparent transparent;
+      border-style: solid;
+      border-width: 10px;
+      height: 0;
+      width: 0;
+      position: relative;
+      top: 65px;
+      left: 65px;
     }
   }
 }
