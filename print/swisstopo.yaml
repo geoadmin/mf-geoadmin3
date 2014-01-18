@@ -265,7 +265,7 @@ layouts:
               text: |
                 Scala 1: ${format %,d scale}
                 Stampato il ${now dd.MM.yyyy HH:mm}
-                {shortLink}
+                ${shortLink}
     lastPage:
       pagesize: A4
       landscape: true
