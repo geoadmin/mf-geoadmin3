@@ -232,7 +232,7 @@ layouts:
               align: center
               text: |
                 Massstab 1: ${format %,d scale}
-                Drucken am ${now dd.MM.yyyy HH:mm}
+                Gedruckt am ${now dd.MM.yyyy HH:mm}
                 ${shortLink}
             - !text
               condition: langfr
@@ -256,7 +256,7 @@ layouts:
               align: center
               text: |
                 Scala 1: ${format %,d scale}
-                Stampar am ${now dd.MM.yyyy HH:mm}
+                Stampà il(s) ${now dd.MM.yyyy HH:mm}
                 ${shortLink}
             - !text
               condition: langit
@@ -502,7 +502,7 @@ layouts:
               align: center
               text: |
                 Massstab 1: ${format %,d scale}
-                Drucken am ${now dd.MM.yyyy HH:mm}
+                Gedruckt am ${now dd.MM.yyyy HH:mm}
                 ${shortLink}
             - !text
               condition: langfr
@@ -526,7 +526,7 @@ layouts:
               align: center
               text: |
                 Scala 1: ${format %,d scale}
-                Stampar am ${now dd.MM.yyyy HH:mm}
+                Stampà il(s) ${now dd.MM.yyyy HH:mm}
                 ${shortLink}
             - !text
               condition: langit
