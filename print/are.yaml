@@ -256,7 +256,7 @@ layouts:
               align: center
               text: |
                 Scala 1: ${format %,d scale}
-                Stampà ils ${now dd.MM.yyyy HH:mm}
+                Stampà il(s) ${now dd.MM.yyyy HH:mm}
                 ${shortLink}
             - !text
               condition: langit
@@ -526,7 +526,7 @@ layouts:
               align: center
               text: |
                 Scala 1: ${format %,d scale}
-                Stampà ils ${now dd.MM.yyyy HH:mm}
+                Stampà il(s) ${now dd.MM.yyyy HH:mm}
                 ${shortLink}
             - !text
               condition: langit
