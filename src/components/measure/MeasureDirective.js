@@ -4,12 +4,37 @@
   var module = angular.module('ga_measure_directive', []);
 
   module.filter('measure', function() {
-    return function(floatInMeter, units) {
+    return function(floatInMeter, type, units) {
+       // Type could be: volume, area or distance
+       var factor = 1000;
+       switch (type) {
+         case 'volume': factor = Math.pow(factor, 3);
+                        break;
+         case 'area': factor = Math.pow(factor, 2);
+                      break;
+         default: break;
+       }
+       units = units || ['km', 'm'];
        floatInMeter = floatInMeter || 0;
-       var distance = floatInMeter.toFixed(2);
-       var km = Math.floor(distance / 1000);
-       var m = (km < 0) ? distance : Math.floor(distance) % 1000;
-       return ((km > 0) ? km + '.' + m + ' ' + units[0] : m + ' ' + units[1]);
+       var measure = floatInMeter.toFixed(2);
+       var km = Math.floor(measure / factor);
+
+       if (km < 0) {
+         return measure + '' + units[1];
+       }
+
+       var str = '' + km;
+       var m = Math.floor(Math.floor(measure) % factor * 100 / factor);
+
+       if (m > 0) {
+         str += '.';
+         if (m < 10) {
+           str += '0';
+         }
+         str += m;
+       }
+       str += ' ' + units[0];
+       return str;
     };
   });
 
