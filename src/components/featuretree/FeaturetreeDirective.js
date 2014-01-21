@@ -259,7 +259,7 @@
             var requestFeatures = function() {
               var layersToQuery = getLayersToQuery(),
                   req, searchExtent;
-              highlightLayer.getSource().clear();
+              scope.clearHighlight();
               if (layersToQuery.length &&
                   scope.dragBox.getGeometry()) {
                 searchExtent = ol.extent.boundingExtent(
@@ -379,7 +379,7 @@
               var recenterObject = {};
               evt.stopPropagation();
               recenterObject[f.layer] = [f.id];
-              gaRecenterMapOnFeatures(map, recenterObject);
+              gaRecenterMapOnFeatures(map, recenterObject, false);
             };
 
             scope.$on('gaTopicChange', function(event, topic) {
@@ -405,6 +405,7 @@
                 showSelectionRectangle();
                 triggerChange();
               } else {
+                scope.clearHighlight();
                 hideSelectionRectangle();
               }
             });
