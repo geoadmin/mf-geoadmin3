@@ -208,6 +208,20 @@
             }
           });
 
+          // Listen Profile directive events
+          var sketchFeatPoint;
+          $rootScope.$on('gaProfileMapPositionActivate',
+            function(event, coords) {
+              sketchFeatPoint = new ol.Feature(new ol.geom.Point(coords));
+              featuresOverlay.addFeature(sketchFeatPoint);
+          });
+          $rootScope.$on('gaProfileMapPositionUpdated',
+            function(event, coords) {
+              sketchFeatPoint.getGeometry().setCoordinates(coords);
+          });
+          $rootScope.$on('gaProfileMapPositionDeactivate', function(event) {
+            featuresOverlay.removeFeature(sketchFeatPoint);
+          });
         }
       };
     }
