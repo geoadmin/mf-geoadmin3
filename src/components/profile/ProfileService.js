@@ -53,7 +53,9 @@
         x.domain(d3.extent(data, function(d) {
           return d.dist;
         }));
-        y.domain([0, d3.max(data, function(d) {
+        y.domain([d3.min(data, function(d) {
+          return d.alts.DTM25;
+        }), d3.max(data, function(d) {
           return d.alts.DTM25;
         })]);
         return {
