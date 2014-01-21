@@ -220,6 +220,9 @@ Only RESTFul interface is available.
 | bbox (optional)                   | A comma separated list of 4 coordinates representing the bounding box on which features   |
 |                                   | should be filtered. (SRID: 21781)                                                         |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
+| returnGeometry (optional)         | This parameter defines whether the geometry is returned or not. You have to set this      |
+|                                   | parameter to "false" if your website is not a federal one. Default to "true".             |
++-----------------------------------+-------------------------------------------------------------------------------------------+
 | callback (optional)               | The name of the callback function.                                                        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 
