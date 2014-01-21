@@ -64,6 +64,26 @@
         };
       };
 
+      this.findCoordinates = function(searchDist) {
+        var currentIdx, previousIdx, currentDist;
+        var i = 0;
+        var j = this.data.length - 1;
+        while (i < j) {
+          currentIdx = (i + j) / 2 | 0;
+          currentDist = this.data[currentIdx].dist;
+          if (currentDist < searchDist) {
+            i = currentIdx + 1;
+          } else if (currentDist > searchDist) {
+            j = currentIdx - 1;
+          } else {
+            return [this.data[currentIdx].easting,
+                this.data[currentIdx].northing];
+          }
+        }
+        return [this.data[currentIdx].easting,
+            this.data[currentIdx].northing];
+      };
+
       this.formatData = function(data) {
         var maxX = data[data.length - 1].dist;
         if (maxX >= 10000) {
@@ -80,9 +100,9 @@
 
       this.create = function(data) {
         var that = this;
-        data = this.formatData(data);
+        this.data = this.formatData(data);
 
-        this.domain = getXYDomains(data);
+        this.domain = getXYDomains(that.data);
         var axis = createAxis(this.domain);
         var element = document.createElement('DIV');
         element.className = 'profile-inner';
@@ -100,7 +120,7 @@
 
         var area = createArea(this.domain, 'cardinal');
         group.append('path')
-            .datum(data)
+            .datum(that.data)
             .attr('class', 'profile-area')
             .attr('d', area);
 
@@ -176,13 +196,13 @@
 
       this.update = function(data) {
         var that = this;
-        data = this.formatData(data);
+        this.data = this.formatData(data);
 
-        this.domain = getXYDomains(data);
+        this.domain = getXYDomains(that.data);
         var axis = createAxis(this.domain);
         var area = createArea(this.domain, 'cardinal');
         var path = this.group.select('.profile-area');
-        path.datum(data)
+        path.datum(that.data)
           .transition().duration(1500)
             .attr('class', 'profile-area')
             .attr('d', area);

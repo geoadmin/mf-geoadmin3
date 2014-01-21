@@ -81,6 +81,8 @@
                   scope.$apply(function() {
                     scope.coordinates = [xCoord, yCoord];
                   });
+                  var coordsMap = profile.findCoordinates(xCoord);
+                  $rootScope.$broadcast('gaProfileMapPositionUpdated', coordsMap);
                 }
               });
 
@@ -90,6 +92,7 @@
                 if (angular.isDefined(pathEl.getTotalLength)) {
                   tooltipEl.css({ display: 'block' });
                 }
+                $rootScope.$broadcast('gaProfileMapPositionActivate', true);
               });
 
               areaChartPath.on('mouseout', function(d) {
@@ -98,6 +101,7 @@
                 if (angular.isDefined(pathEl.getTotalLength)) {
                   tooltipEl.css({ display: 'none' });
                 }
+                $rootScope.$broadcast('gaProfileMapPositionDeactivate', false);
               });
             }
           }
