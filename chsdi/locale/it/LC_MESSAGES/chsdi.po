@@ -1343,6 +1343,9 @@ msgstr "Centrali nucleari"
 msgid "ch.bfe.kleinwasserkraftpotentiale"
 msgstr "Potenz. piccole centr. idraul."
 
+msgid "ch.bfe.sachplan-geologie-tiefenlager"
+msgstr "PS depositi strati geol. profondi"
+
 msgid "ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung"
 msgstr "PS depositi strati geol.prof.: p.t."
 

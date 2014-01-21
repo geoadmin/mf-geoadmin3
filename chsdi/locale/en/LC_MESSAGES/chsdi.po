@@ -1343,6 +1343,9 @@ msgstr "Nuclear Power Plants"
 msgid "ch.bfe.kleinwasserkraftpotentiale"
 msgstr "Water power potential"
 
+msgid "ch.bfe.sachplan-geologie-tiefenlager"
+msgstr "SP Deep Geol. Repositories"
+
 msgid "ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung"
 msgstr "SP Deep Geol.Repositories: T.p."
 

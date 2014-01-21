@@ -1343,6 +1343,9 @@ msgstr "Centrales nucléaires"
 msgid "ch.bfe.kleinwasserkraftpotentiale"
 msgstr "Potentiel petite hydraulique"
 
+msgid "ch.bfe.sachplan-geologie-tiefenlager"
+msgstr "PS dépôts couches géol. profondes"
+
 msgid "ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung"
 msgstr "PS dépôts couches géol.prof.: p.t."
 
