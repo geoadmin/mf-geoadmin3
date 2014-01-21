@@ -41,16 +41,26 @@
             ];
             styles['MultiPolygon'] = styles['Polygon'];
 
+
             styles['LineString'] = [
               new ol.style.Style({
                 stroke: new ol.style.Stroke({
                   color: [255, 0, 0, 0.7],
                   width: 3,
-                  lineCap: 'dash'
+                  lineDash: [8]
                 })
               })
             ];
             styles['MultiLineString'] = styles['LineString'];
+             
+            styles['Circle'] = [
+              new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                  color: [255, 0, 0, 0.7],
+                  width: 3
+                })
+              })
+            ];
 
             styles['Point'] = [
               new ol.style.Style({
@@ -67,12 +77,34 @@
               })
             ];
             styles['MultiPoint'] = styles['Point'];
-
+            
             return function(feature, resolution) {
                 return styles[feature.getGeometry().getType()];
             };
           })()
         };
+
+        $scope.options.drawStyleFunction = (function() {
+          return function(feature, resolution) {
+            var styles;
+            if (feature.getGeometry().getType() === 'Polygon') {
+              styles =  [
+                new ol.style.Style({
+                  fill: new ol.style.Fill({
+                    color: [255, 255, 255, 0.4]
+                  }),
+                  stroke: new ol.style.Stroke({
+                    color: [255, 255, 255, 0],
+                    width: 0
+                  })
+                })
+              ];
+            } else {
+              styles = $scope.options.styleFunction(feature, resolution);
+            }
+            return styles;
+          }
+        })();
 
         var isProfileCreated = false;
         //http/api3.geo.admin.ch/rest/services/profile.json?geom=
