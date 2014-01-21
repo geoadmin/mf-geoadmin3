@@ -60,14 +60,22 @@
           var deregister, deregisterMap, deregisterFeature;
           var styleFunction = scope.options.styleFunction;
           var drawArea = new ol.interaction.Draw({
-            type: 'Polygon'
+            type: 'Polygon',
+            styleFunction: scope.options.drawStyleFunction
           });
 
           var featuresOverlay = new ol.render.FeaturesOverlay();
           featuresOverlay.setStyleFunction(styleFunction);
           featuresOverlay.setMap(scope.map);
 
+          var sketchFeatAzimuth = new ol.Feature(new ol.geom.Circle([0, 0], 0));
+          var sketchFeatDistance = new ol.Feature(
+              new ol.geom.LineString([[0, 0]]));
+
+          // Activate the component: add listeners, last features drawn and draw
+          // interaction.
           var activate = function() {
+            updateFeaturesOverlay();
             scope.map.addInteraction(drawArea);
 
             // Add events
@@ -76,16 +84,38 @@
                 isDblClick = false;
                 featuresOverlay.getFeatures().clear();
                 sketchFeatArea = evt.getFeature();
+
+                sketchFeatAzimuth.getGeometry().setCenter(
+                    sketchFeatArea.getGeometry().getCoordinates()[0][0]);
+                featuresOverlay.addFeature(sketchFeatAzimuth);
                 deregisterFeature = sketchFeatArea.on('change',
                   function(evt) {
+                    var feature = evt.target; //sketchFeatArea
+                    var lineCoords = feature.getGeometry().getCoordinates()[0];
+                    sketchFeatDistance.getGeometry().setCoordinates(lineCoords);
+
                     updateMeasures();
+
+                    if (lineCoords.length == 2) {
+                      sketchFeatAzimuth.getGeometry().setRadius(scope.distance);
+                    } else {
+                      featuresOverlay.removeFeature(sketchFeatAzimuth);
+                    }
                   }
                 );
               }),
+
               drawArea.on('drawend', function(evt) {
+                // Unregister the change event
                 sketchFeatArea.unByKey(deregisterFeature);
-                featuresOverlay.addFeature(isDblClick ? sketchFeatDistance :
-                   sketchFeatArea);
+
+                // Remove the last coordinates of the polygon
+                var lineCoords = sketchFeatArea.getGeometry()
+                    .getCoordinates()[0];
+                lineCoords.pop();
+                sketchFeatDistance.getGeometry().setCoordinates(lineCoords);
+
+                updateFeaturesOverlay();
               })
             ];
 
@@ -101,6 +131,9 @@
             ];
           };
 
+
+          // Deactivate the component: remove listeners, features and draw
+          // interaction.
           var deactivate = function() {
             featuresOverlay.getFeatures().clear();
             scope.map.removeInteraction(drawArea);
@@ -116,20 +149,43 @@
                 scope.map.unByKey(deregisterMap[i]);
               }
             }
-
           };
 
+
+          // Add sketch feature to the featuresOverlay if possible
+          var updateFeaturesOverlay = function() {
+            if (sketchFeatArea) {
+              var lineCoords = sketchFeatDistance.getGeometry()
+                  .getCoordinates();
+              if (lineCoords.length == 2) {
+                featuresOverlay.addFeature(sketchFeatAzimuth);
+              }
+              featuresOverlay.addFeature(isDblClick ? sketchFeatDistance :
+                  sketchFeatArea);
+            }
+          };
+
+          // Update value of measures from the sketch features
           var updateMeasures = function() {
             scope.$apply(function() {
-              var geom = sketchFeatArea.getGeometry();
-              sketchFeatDistance = new ol.Feature(new ol.geom.LineString(
-                  geom.getCoordinates()[0]));
+              var coords = sketchFeatDistance.getGeometry().getCoordinates();
               scope.distance = sketchFeatDistance.getGeometry().getLength();
-              scope.surface = geom.getArea();
+              scope.azimuth = calculateAzimuth(coords[0], coords[1]);
+              scope.surface = sketchFeatArea.getGeometry().getArea();
             });
           };
 
 
+          // Calulate the azimuth from 2 points
+          var calculateAzimuth = function(pt1, pt2) {
+            var x = pt2[0] - pt1[0];
+            var y = pt2[1] - pt1[1];
+            var rad = Math.acos(y / Math.sqrt(x * x + y * y));
+            var factor = x > 0 ? 1 : -1;
+            return Math.round(360 + (factor * rad * 180 / Math.PI)) % 360;
+          };
+
+          // Update profile functions
           var updateProfile = function() {
             scope.options.drawProfile(sketchFeatDistance);
           };
@@ -140,8 +196,6 @@
           // Watchers
           scope.$watch('isActive', function(active) {
             $rootScope.isMeasureActive = active;
-            scope.distance = 0;
-            scope.surface = 0;
             if (active) {
               activate();
             } else {

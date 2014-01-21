@@ -3,6 +3,7 @@
     <div translate>measure_instruction</div>
     <div>{{'distance_label' | translate}}: {{distance | measure:'distance':['km', 'm']}}</div>
     <div>{{'surface_label' | translate}}: {{surface | measure:'area':['km&sup2', 'm&sup2']}}</div>
+    <div>{{'azimuth_label' | translate}}: {{azimuth | number:0}} &deg</div>
   </div>
   <div class="ga-measure-buttons">
     <button ng-click="options.isProfileActive = !options.isProfileActive"
