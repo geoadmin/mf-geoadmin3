@@ -1343,6 +1343,9 @@ msgstr "Kernkraftwerke"
 msgid "ch.bfe.kleinwasserkraftpotentiale"
 msgstr "Kleinwasserkraftpotentiale"
 
+msgid "ch.bfe.sachplan-geologie-tiefenlager"
+msgstr "SP Geologische Tiefenlager"
+
 msgid "ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung"
 msgstr "SP Geologische Tiefenlager: t.D."
 

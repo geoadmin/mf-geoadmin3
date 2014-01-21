@@ -1343,6 +1343,9 @@ msgstr "Kernkraftwerke"
 msgid "ch.bfe.kleinwasserkraftpotentiale"
 msgstr "Potential idraulica pitschen"
 
+msgid "ch.bfe.sachplan-geologie-tiefenlager"
+msgstr "Plan sect. deposit geologic profund"
+
 msgid "ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung"
 msgstr "Plan sect. deposit geologic profund"
 
