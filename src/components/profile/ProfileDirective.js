@@ -82,7 +82,8 @@
                     scope.coordinates = [xCoord, yCoord];
                   });
                   var coordsMap = profile.findCoordinates(xCoord);
-                  $rootScope.$broadcast('gaProfileMapPositionUpdated', coordsMap);
+                  $rootScope.$broadcast('gaProfileMapPositionUpdated',
+                      coordsMap);
                 }
               });
 
@@ -91,8 +92,13 @@
                 var pathEl = path.node();
                 if (angular.isDefined(pathEl.getTotalLength)) {
                   tooltipEl.css({ display: 'block' });
+                  var mousePos = d3.mouse(areaChartPath[0][0]);
+                  var x = mousePos[0];
+                  var xCoord = profile.domain.X.invert(x);
+                  var coordsMap = profile.findCoordinates(xCoord);
+                  $rootScope.$broadcast('gaProfileMapPositionActivate',
+                      coordsMap);
                 }
-                $rootScope.$broadcast('gaProfileMapPositionActivate', true);
               });
 
               areaChartPath.on('mouseout', function(d) {
@@ -100,8 +106,8 @@
                 var pathEl = path.node();
                 if (angular.isDefined(pathEl.getTotalLength)) {
                   tooltipEl.css({ display: 'none' });
+                   $rootScope.$broadcast('gaProfileMapPositionDeactivate');
                 }
-                $rootScope.$broadcast('gaProfileMapPositionDeactivate', false);
               });
             }
           }
