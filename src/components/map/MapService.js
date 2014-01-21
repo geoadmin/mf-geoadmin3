@@ -343,7 +343,9 @@
               options.projection);
           for (var i = 0, ii = features.length; i < ii; i++) {
             var feature = features[i];
-            feature.getGeometry().transform(transformFn);
+            if (feature.getGeometry()) {
+              feature.getGeometry().transform(transformFn);
+            }
           }
           var attributions;
 
