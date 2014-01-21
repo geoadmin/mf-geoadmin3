@@ -643,7 +643,7 @@
 
     var DPI = 72;
     var MM_PER_INCHES = 25.4;
-        var UNITS_RATIO = 39.37;
+    var UNITS_RATIO = 39.37;
 
     var getOptimalScale = function() {
       var size = $scope.map.getSize();
@@ -671,39 +671,6 @@
 
     var fullExtent = [-300000, -300000, 2000000, 2000000];
 
-    var calculatePageBounds = function(scale) {
-        var s = parseFloat(scale.value);
-        var size = $scope.layout.map;
-        var view = $scope.map.getView();
-        var center = view.getCenter();
-
-        var w = size.width / DPI / UNITS_RATIO * s / 2;
-        var h = size.height / DPI / UNITS_RATIO * s / 2;
-
-        var minx, miny, maxx, maxy;
-
-        minx = center[0] - w;
-        miny = center[1] - h;
-        maxx = center[0] + w;
-        maxy = center[1] + h;
-
-        return new ol.geom.Polygon([
-                    //outer ring
-                    [
-                      [fullExtent[0], fullExtent[1]],
-                      [fullExtent[0], fullExtent[3]],
-                      [fullExtent[2], fullExtent[3]],
-                      [fullExtent[2], fullExtent[1]]
-                    ],
-                    //inner ring
-                    [
-                      [minx, miny],
-                      [maxx, miny],
-                      [maxx, maxy],
-                      [minx, maxy] //, [minx, miny]
-                    ]
-                  ]);
-    };
 
     var calculatePageBoundsPixels = function(scale) {
         var s = parseFloat(scale.value);
