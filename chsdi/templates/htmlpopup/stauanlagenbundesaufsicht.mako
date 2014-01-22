@@ -12,14 +12,18 @@
     <tr><td class="cell-left">${_('tt_ch.bfe.stauanlagen-bundesaufsicht_damheight')}</td>         <td>${int(c['attributes']['damheight']) or '-'}&nbsp;m</td></tr>
     <tr><td class="cell-left">${_('tt_ch.bfe.stauanlagen-bundesaufsicht_crestlevel')}</td>        <td>${int(c['attributes']['crestlevel']) or '-'}&nbsp;${_('abk_meter_ueber_meer')}</td></tr>
     <tr><td class="cell-left">${_('tt_ch.bfe.stauanlagen-bundesaufsicht_crestlength')}</td>       <td>${int(c['attributes']['crestlength']) or '-'}&nbsp;m</td></tr>
+    <tr>
+      <td class="cell-left"></td>
+      <td><a href="${c['baseUrl']}rest/services/all/MapServer/${c['layerBodId']}/${c['featureId']}/extendedhtmlpopup" target="_blank">${_('zusatzinfo')}<img src="http://www.swisstopo.admin.ch/images/ico_extern.gif" /></a></td>
+    </tr>
 </%def>
 
 <%def name="extended_info(c, lang)">
     <%
-    c['stable_id'] = True
-    lang = lang if lang in ('fr','it','en') else 'de'
-    lang = lang if lang != 'it' else 'fr'
-    damtype = 'damtype_%s' % lang
+        c['stable_id'] = True
+        lang = lang if lang in ('fr','it','en') else 'de'
+        lang = lang if lang != 'it' else 'fr'
+        damtype = 'damtype_%s' % lang
     %>
     <h1>${_('tt_ch.bfe.stauanlagen-bundesaufsicht_stauanlage')} ${c['attributes']['facilityname']}</h1>
     <table class="kernkraftwerke_extended">
