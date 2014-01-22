@@ -11405,7 +11405,11 @@ ol.MapBrowserEventHandler = function(map) {
   var element = this.map_.getViewport();
   this.relayedListenerKeys_ = [goog.events.listen(element, goog.events.EventType.MOUSEMOVE, this.relayEvent_, false, this), goog.events.listen(element, goog.events.EventType.CLICK, this.relayEvent_, false, this)];
   this.mousedownListenerKey_ = goog.events.listen(element, goog.events.EventType.MOUSEDOWN, this.handleMouseDown_, false, this);
-  this.pointerdownListenerKey_ = goog.events.listen(element, goog.events.EventType.MSPOINTERDOWN, this.handlePointerDown_, false, this);
+  if(goog.global.window.MSPointerEvent) {
+    this.pointerdownListenerKey_ = goog.events.listen(element, goog.events.EventType.MSPOINTERDOWN, this.handlePointerDown_, false, this)
+  }else {
+    this.pointerdownListenerKey_ = goog.events.listen(element, "pointerdown", this.handlePointerDown_, false, this)
+  }
   this.touchstartListenerKey_ = goog.events.listen(element, goog.events.EventType.TOUCHSTART, this.handleTouchStart_, false, this)
 };
 goog.inherits(ol.MapBrowserEventHandler, goog.events.EventTarget);
@@ -11475,22 +11479,26 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ = function(browserEvent) 
     goog.events.unlistenByKey(this.touchstartListenerKey_);
     this.touchstartListenerKey_ = null
   }
-  if(browserEvent.getBrowserEvent().pointerType === 4) {
+  if(browserEvent.getBrowserEvent().pointerType === 4 || browserEvent.getBrowserEvent().pointerType === "mouse") {
     this.handleMouseDown_(browserEvent)
   }else {
     this.handleTouchStart_(browserEvent)
   }
-  this.dragListenerKeys_ = [goog.events.listen(goog.global.document, goog.events.EventType.MSPOINTERMOVE, this.handlePointerMove_, false, this), goog.events.listen(goog.global.document, goog.events.EventType.MSPOINTERUP, this.handlePointerUp_, false, this)]
+  if(goog.global.window.MSPointerEvent) {
+    this.dragListenerKeys_ = [goog.events.listen(goog.global.document, goog.events.EventType.MSPOINTERMOVE, this.handlePointerMove_, false, this), goog.events.listen(goog.global.document, goog.events.EventType.MSPOINTERUP, this.handlePointerUp_, false, this)]
+  }else {
+    this.dragListenerKeys_ = [goog.events.listen(goog.global.document, "pointermove", this.handlePointerMove_, false, this), goog.events.listen(goog.global.document, "pointerup", this.handlePointerUp_, false, this)]
+  }
 };
 ol.MapBrowserEventHandler.prototype.handlePointerMove_ = function(browserEvent) {
-  if(browserEvent.getBrowserEvent().pointerType === 4) {
+  if(browserEvent.getBrowserEvent().pointerType === 4 || browserEvent.getBrowserEvent().pointerType === "mouse") {
     this.handleMouseMove_(browserEvent)
   }else {
     this.handleTouchMove_(browserEvent)
   }
 };
 ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(browserEvent) {
-  if(browserEvent.getBrowserEvent().pointerType === 4) {
+  if(browserEvent.getBrowserEvent().pointerType === 4 || browserEvent.getBrowserEvent().pointerType === "mouse") {
     this.handleMouseUp_(browserEvent)
   }else {
     this.handleTouchEnd_(browserEvent)
@@ -26005,7 +26013,7 @@ ol.Map = function(options) {
   this.overlayContainer_ = goog.dom.createDom(goog.dom.TagName.DIV, "ol-overlaycontainer");
   goog.dom.appendChild(this.viewport_, this.overlayContainer_);
   this.overlayContainerStopEvent_ = goog.dom.createDom(goog.dom.TagName.DIV, "ol-overlaycontainer-stopevent");
-  goog.events.listen(this.overlayContainerStopEvent_, [goog.events.EventType.CLICK, goog.events.EventType.DBLCLICK, goog.events.EventType.MOUSEDOWN, goog.events.EventType.TOUCHSTART, goog.events.EventType.MSPOINTERDOWN], goog.events.Event.stopPropagation);
+  goog.events.listen(this.overlayContainerStopEvent_, [goog.events.EventType.CLICK, goog.events.EventType.DBLCLICK, goog.events.EventType.MOUSEDOWN, goog.events.EventType.TOUCHSTART, goog.events.EventType.MSPOINTERDOWN, "pointerdown"], goog.events.Event.stopPropagation);
   goog.dom.appendChild(this.viewport_, this.overlayContainerStopEvent_);
   var mapBrowserEventHandler = new ol.MapBrowserEventHandler(this);
   goog.events.listen(mapBrowserEventHandler, goog.object.getValues(ol.MapBrowserEvent.EventType), this.handleMapBrowserEvent, false, this);
