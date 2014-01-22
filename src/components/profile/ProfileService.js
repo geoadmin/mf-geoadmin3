@@ -16,8 +16,19 @@
 
       var width = options.width - marginHoriz;
       var height = options.height - marginVert;
-      var d3 = window.d3;
-      this.unitX = 'm';
+      var d3, x, y;
+
+      var onD3Loaded = function() {
+        d3 = window.d3;
+        x = d3.scale.linear().range([0, width]);
+        y = d3.scale.linear().range([height, 0]);
+      };
+
+      if (!window.d3) {
+        $.getScript('lib/d3-3.3.1.min.js', onD3Loaded);
+      } else {
+        onD3Loaded();
+      }
 
       var createArea = function(domain, interpolationMethod) {
         var x = domain.X;
@@ -47,12 +58,9 @@
         };
       };
 
-      var x = d3.scale.linear().range([0, width]);
-      var y = d3.scale.linear().range([height, 0]);
-
       var getXYDomains = function(data) {
         x.domain(d3.extent(data, function(d) {
-          return d.dist ? d.dist : 0;
+          return d.dist || 0;
         }));
         var yMin = d3.min(data, function(d) {
           return d.alts.DTM25 ? d.alts.DTM25 : 0;
