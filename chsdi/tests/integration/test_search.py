@@ -82,6 +82,11 @@ class TestSearchServiceView(TestsBase):
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(len(resp.json['results']) <= 20)
 
+    def test_search_no_geometry(self):
+        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'seftigenstrasse 264', 'type': 'locations', 'returnGeometry': 'false'}, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless('geom_st_box2d' not in resp.json['results'][0]['attrs'].keys())
+
     def test_searchtext_apostrophe(self):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'av mont d\'or', 'type': 'locations'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
