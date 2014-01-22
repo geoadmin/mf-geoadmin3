@@ -30,11 +30,10 @@
         onD3Loaded();
       }
 
-      var createArea = function(domain, interpolationMethod) {
+      var createArea = function(domain) {
         var x = domain.X;
         var y = domain.Y;
         var area = d3.svg.area()
-            .interpolate(interpolationMethod)
             .x(function(d) {
               return x(d.dist);
             })
@@ -63,13 +62,14 @@
           return d.dist || 0;
         }));
         var yMin = d3.min(data, function(d) {
-          return d.alts.DTM25 ? d.alts.DTM25 : 0;
+          return d.alts.DTM25;
         });
         var yMax = d3.max(data, function(d) {
-          return d.alts.DTM25 ? d.alts.DTM25 : 0;
+          return d.alts.DTM25;
         });
         var decile = (yMax - yMin) / 10;
-        y.domain([yMin - decile, yMax + decile]);
+        yMin = yMin - decile > 0 ? yMin - decile : 0;
+        y.domain([yMin, yMax + decile]);
         return {
           X: x,
           Y: y
@@ -99,15 +99,13 @@
       this.formatData = function(data) {
         if (data.length != 0) {
           var maxX = data[data.length - 1].dist;
-          if (maxX >= 10000) {
-            this.unitX = 'km';
-            $.map(data, function(val) {
-              val.dist = val.dist / 1000;
-              return val;
-            });
-          } else {
-            this.unitX = 'm';
-          }
+          var denom = maxX >= 10000 ? 1000 : 1;
+          this.unitX = maxX >= 10000 ? 'km' : 'm';
+          $.map(data, function(val) {
+            val.dist = val.dist / denom;
+            val.alts.DTM25 = val.alts.DTM25 || 0;
+            return val;
+          });
         }
         return data;
       };
@@ -132,7 +130,7 @@
             .attr('transform', 'translate(' + options.margin.left +
                 ', ' + options.margin.top + ')');
 
-        var area = createArea(this.domain, 'cardinal');
+        var area = createArea(this.domain);
         group.append('path')
             .datum(that.data)
             .attr('class', 'profile-area')
