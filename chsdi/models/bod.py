@@ -143,19 +143,37 @@ class BodLayerEn(Base, Bod):
     __tablename__ = 'view_bod_layer_info_en'
     __table_args__ = ({'schema': 're3'})
 
+class GetCap(object):
+    __dbname__ = 'bod'
+    id = Column('fk_dataset_id', Text, primary_key=True)
+    arr_all_formats = Column('format', Text)
+    tile_matrix_set_id = Column('tile_matrix_set_id', Text)
+    timestamp = Column('timestamp', Text)
+    sswmts = Column('sswmts', Integer)
+    bod_layer_id = Column('bod_layer_id', Text)
+    projekte = Column('projekte', Text)
+    bezeichnung = Column('bezeichnung', Text)
+    kurzbezeichnung = Column('kurzbezeichnung', Text)
+    abstract = Column('abstract', Text)
+    inspire_name = Column('inspire_name', Text)
+    inspire_abstract = Column('inspire_abstract', Text)
+    inspire_oberthema_name = Column('inspire_oberthema_name', Text)
+    inspire_oberthema_abstract = Column('inspire_oberthema_abstract', Text)
+    geobasisdatensatz_name = Column('geobasisdatensatz_name', Text)
+    datenherr = Column('datenherr', Text)
+    wms_kontakt_abkuerzung = Column('wms_kontakt_abkuerzung', Text)
+    wms_kontakt_name = Column('wms_kontakt_name', Text)
+    zoomlevel_min = Column('zoomlevel_min', Integer)
+    zoomlevel_max = Column('zoomlevel_max', Integer)
 
-class GetCapFr(Base):
+class GetCapFr(Base, GetCap):
     __tablename__ = 'view_bod_wmts_getcapabilities_fr'
-    __table_args__ = ({'schema': 're3', 'autoload': True})
-    id = Column('fk_dataset_id', Text, primary_key=True)
-    arr_all_formats = Column('format', Text)
+    __table_args__ = ({'schema': 're3', 'autoload': False})
 
 
-class GetCapDe(Base):
+class GetCapDe(Base, GetCap):
     __tablename__ = 'view_bod_wmts_getcapabilities_de'
-    __table_args__ = ({'schema': 're3', 'autoload': True})
-    id = Column('fk_dataset_id', Text, primary_key=True)
-    arr_all_formats = Column('format', Text)
+    __table_args__ = ({'schema': 're3', 'autoload': False})
 
 
 class GetCapThemesFr(Base):
