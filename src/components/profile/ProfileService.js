@@ -17,6 +17,7 @@
       var width = options.width - marginHoriz;
       var height = options.height - marginVert;
       var d3 = window.d3;
+      this.unitX = 'm';
 
       var createArea = function(domain, interpolationMethod) {
         var x = domain.X;
@@ -85,15 +86,17 @@
       };
 
       this.formatData = function(data) {
-        var maxX = data[data.length - 1].dist;
-        if (maxX >= 10000) {
-          this.unitX = 'km';
-          $.map(data, function(val) {
-            val.dist = val.dist / 1000;
-            return val;
-          });
-        } else {
-          this.unitX = 'm';
+        if (data.length != 0) {
+          var maxX = data[data.length - 1].dist;
+          if (maxX >= 10000) {
+            this.unitX = 'km';
+            $.map(data, function(val) {
+              val.dist = val.dist / 1000;
+              return val;
+            });
+          } else {
+            this.unitX = 'm';
+          }
         }
         return data;
       };
