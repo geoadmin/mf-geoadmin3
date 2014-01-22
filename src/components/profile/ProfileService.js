@@ -165,13 +165,6 @@
             .attr('width', 100)
             .attr('height', 100);
 
-        legend.append('rect')
-            .attr('class', 'profile-legend-rect')
-            .attr('x', width - 128)
-            .attr('y', 2)
-            .attr('width', 10)
-            .attr('height', 10);
-
         legend.append('text')
             .attr('x', width - 113)
             .attr('y', 11)
