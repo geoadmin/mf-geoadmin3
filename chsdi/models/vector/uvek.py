@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from sqlalchemy import Column, Text, Integer
+from sqlalchemy import Column, Text, Integer, Date
 from geoalchemy import GeometryColumn, Geometry
 from sqlalchemy.types import Numeric
 
@@ -289,6 +289,7 @@ class STAUANLAGENBUNDESAUFSICHT(Base, Vector):
     __table_args__ = ({'schema': 'bfe', 'autoload': False})
     __template__ = 'templates/htmlpopup/stauanlagenbundesaufsicht.mako'
     __bodId__ = 'ch.bfe.stauanlagen-bundesaufsicht'
+    __extended_info__ = True
     id = Column('dam_stabil_id', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     damname = Column('damname', Text)
@@ -443,7 +444,7 @@ class Luftfahrthindernis(Base, Vector):
     __table_args__ = ({'schema': 'bazl', 'autoload': False})
     __template__ = 'templates/htmlpopup/luftfahrthindernisse.mako'
     __bodId__ = 'ch.bazl.luftfahrthindernis'
-    #__extended_info__ = True
+    __extended_info__ = True
     id = Column('bgdi_id', Integer, primary_key=True)
     sanctiontext = Column('sanctiontext', Text)
     registrationnumber = Column('registrationnumber', Text)
@@ -453,10 +454,12 @@ class Luftfahrthindernis(Base, Vector):
     maxheightagl = Column('maxheightagl', Integer)
     topelevationamsl = Column('topelevationamsl', Integer)
     totallength = Column('totallength', Integer)
-    startofconstruction = Column('startofconstruction', Text)
+    startofconstruction = Column('startofconstruction', Date)
     duration = Column('duration', Text)
+    geomtype = Column('geomtype', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     registrationnumber = Column('registrationnumber', Text)
+    abortionaccomplished = Column('abortionaccomplished', Date)
     bgdi_created = Column('bgdi_created', Text)
 
 register('ch.bazl.luftfahrthindernis', Luftfahrthindernis)
