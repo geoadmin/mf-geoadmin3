@@ -123,6 +123,7 @@ class Gebietsauslaesse (Base, Vector):
     __table_args__ = ({'schema': 'wasser', 'autoload': False})
     __bodId__ = 'ch.bafu.wasser-gebietsauslaesse'
     __template__ = 'templates/htmlpopup/gebietsauslaesse.mako'
+    __extended_info__ = True
     id = Column('bgdi_id', Integer, primary_key=True)
     ezgnr = Column('ezgnr', Integer)
     gwlnr = Column('gwlnr', Text)
@@ -135,6 +136,14 @@ class Gebietsauslaesse (Base, Vector):
     kanal_it = Column('kanal_it', Text)
     kanal_rm = Column('kanal_rm', Text)
     kanal_en = Column('kanal_en', Text)
+    meanalt = Column('meanalt', Text)
+    maxalt = Column('maxalt', Text)
+    mq_jahr = Column('mq_jahr', Text)
+    feuchtflae = Column('feuchtflae', Text)
+    wasserflae = Column('wasserflae', Text)
+    bebautefl = Column('bebautefl', Text)
+    landwirtsc = Column('landwirtsc', Text)
+    wald_natur = Column('wald_natur', Text)
     the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
 
 register('ch.bafu.wasser-gebietsauslaesse', Gebietsauslaesse)
