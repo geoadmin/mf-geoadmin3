@@ -123,6 +123,63 @@ class ArealstatistikBodenbedeckung1985(Base, Vector):
 register('ch.bfs.arealstatistik-bodenbedeckung-1985', ArealstatistikBodenbedeckung1985)
 
 
+class ArealstatistikBodennutzung(Base, Vector):
+    __tablename__ = 'arealstatistik_nolu_2009'
+    __table_args__ = ({'schema': 'bfs', 'autoload': False})
+    __template__ = 'templates/htmlpopup/arealstatistik_nolu.mako'
+    __bodId__ = 'ch.bfs.arealstatistik-bodennutzung'
+    #__minscale__ = 5001
+    __maxscale__ = 50000
+    id = Column('bgdi_id', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    fj85 = Column('fj85', Integer)
+    fj97 = Column('fj97', Integer)
+    fj09 = Column('fj09', Integer)
+    id_arealstatistik_nolc_85 = Column('id_arealstatistik_nolu_85', Integer)
+    id_arealstatistik_nolc_97 = Column('id_arealstatistik_nolu_97', Integer)
+    id_arealstatistik_nolc_09 = Column('id_arealstatistik_nolu_09', Integer)
+
+register('ch.bfs.arealstatistik-bodennutzung', ArealstatistikBodennutzung)
+
+
+class ArealstatistikBodennutzung1997(Base, Vector):
+    __tablename__ = 'arealstatistik_nolu_1997'
+    __table_args__ = ({'schema': 'bfs', 'autoload': False})
+    __template__ = 'templates/htmlpopup/arealstatistik_nolu.mako'
+    __bodId__ = 'ch.bfs.arealstatistik-bodennutzung-1997'
+    #__minscale__ = 5001
+    __maxscale__ = 50000
+    id = Column('bgdi_id', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    fj85 = Column('fj85', Integer)
+    fj97 = Column('fj97', Integer)
+    fj09 = Column('fj09', Integer)
+    id_arealstatistik_nolc_85 = Column('id_arealstatistik_nolu_85', Integer)
+    id_arealstatistik_nolc_97 = Column('id_arealstatistik_nolu_97', Integer)
+    id_arealstatistik_nolc_09 = Column('id_arealstatistik_nolu_09', Integer)
+
+register('ch.bfs.arealstatistik-bodennutzung-1997', ArealstatistikBodennutzung1997)
+
+
+class ArealstatistikBodennutzung1985(Base, Vector):
+    __tablename__ = 'arealstatistik_nolu_1985'
+    __table_args__ = ({'schema': 'bfs', 'autoload': False})
+    __template__ = 'templates/htmlpopup/arealstatistik_nolu.mako'
+    __bodId__ = 'ch.bfs.arealstatistik-bodennutzung-1985'
+    #__minscale__ = 5001
+    __maxscale__ = 50000
+    id = Column('bgdi_id', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    fj85 = Column('fj85', Integer)
+    fj97 = Column('fj97', Integer)
+    fj09 = Column('fj09', Integer)
+    id_arealstatistik_nolc_85 = Column('id_arealstatistik_nolu_85', Integer)
+    id_arealstatistik_nolc_97 = Column('id_arealstatistik_nolu_97', Integer)
+    id_arealstatistik_nolc_09 = Column('id_arealstatistik_nolu_09', Integer)
+
+register('ch.bfs.arealstatistik-bodennutzung-1985', ArealstatistikBodennutzung1985)
+
+
 class fsme_faelle(Base, Vector):
     __tablename__ = 'fsme_faelle'
     __table_args__ = ({'schema': 'bag', 'autoload': False})
