@@ -680,6 +680,54 @@ msgstr "Biotopes humides"
 msgid "bfs_nolc_64"
 msgstr "Roselières"
 
+msgid "bfs_nolu_100"
+msgstr "Aires de bâtiments"
+
+msgid "bfs_nolu_120"
+msgstr "Surfaces de transport"
+
+msgid "bfs_nolu_140"
+msgstr "Surfaces d´infrastructure spéciale"
+
+msgid "bfs_nolu_160"
+msgstr "Espaces verts et lieux de détente"
+
+msgid "bfs_nolu_201"
+msgstr "Arboriculture"
+
+msgid "bfs_nolu_202"
+msgstr "Viticulture"
+
+msgid "bfs_nolu_203"
+msgstr "Horticulture"
+
+msgid "bfs_nolu_221"
+msgstr "Terres arables au sens large"
+
+msgid "bfs_nolu_222"
+msgstr "Prairies naturelles au sens large"
+
+msgid "bfs_nolu_223"
+msgstr "Pâturages locaux au sens large"
+
+msgid "bfs_nolu_241"
+msgstr "Alpages fauchés au sens large"
+
+msgid "bfs_nolu_242"
+msgstr "Alpages pâturés au sens large"
+
+msgid "bfs_nolu_243"
+msgstr "Alpes à moutons au sens large"
+
+msgid "bfs_nolu_300"
+msgstr "Forêt (exploitation agricole non comprise)"
+
+msgid "bfs_nolu_400"
+msgstr "Lacs et cours d´eau"
+
+msgid "bfs_nolu_420"
+msgstr "Terres improductives"
+
 msgid "bfsnr"
 msgstr "Numéro OFS"
 
@@ -1378,6 +1426,15 @@ msgstr "Stat. superficie 1979/85 NOLC04"
 
 msgid "ch.bfs.arealstatistik-bodenbedeckung-1997"
 msgstr "Stat. superficie 1992/97 NOLC04"
+
+msgid "ch.bfs.arealstatistik-bodennutzung"
+msgstr "Stat. superficie 2004/09 NOLU04"
+
+msgid "ch.bfs.arealstatistik-bodennutzung-1985"
+msgstr "Stat. superficie 1979/85 NOLU04"
+
+msgid "ch.bfs.arealstatistik-bodennutzung-1997"
+msgstr "Stat. superficie 1992/97 NOLU04"
 
 msgid "ch.bfs.arealstatistik-hintergrund"
 msgstr "Utilisation simplifiée du sol"
@@ -2167,6 +2224,24 @@ msgstr "Catégorie de base de la statistique de la superficie 1979/85"
 
 msgid "id_arealstatistik_97"
 msgstr "Catégorie de base de la statistique de la superficie 1992/97"
+
+msgid "id_arealstatistik_lc_09"
+msgstr "Catégorie de la couverture du sol 2004/09"
+
+msgid "id_arealstatistik_lc_85"
+msgstr "Catégorie de la couverture du sol 1979/85"
+
+msgid "id_arealstatistik_lc_97"
+msgstr "Catégorie de la couverture du sol 1992/97"
+
+msgid "id_arealstatistik_lu_09"
+msgstr "Catégorie de l’utilisation du sol 2004/09"
+
+msgid "id_arealstatistik_lu_85"
+msgstr "Catégorie de l’utilisation du sol 1979/85"
+
+msgid "id_arealstatistik_lu_97"
+msgstr "Catégorie de l’utilisation du sol 1992/97"
 
 msgid "id_objekt"
 msgstr "Objet"
