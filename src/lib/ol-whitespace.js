@@ -11441,7 +11441,7 @@ ol.MapBrowserEventHandler.prototype.handleMouseUp_ = function(browserEvent) {
   }
 };
 ol.MapBrowserEventHandler.prototype.handleMouseDown_ = function(browserEvent) {
-  if(!goog.isNull(this.pointerdownListenerKey_)) {
+  if(browserEvent.type === goog.events.EventType.MOUSEDOWN && !goog.isNull(this.pointerdownListenerKey_)) {
     goog.events.unlistenByKey(this.pointerdownListenerKey_);
     this.pointerdownListenerKey_ = null;
     goog.asserts.assert(!goog.isNull(this.touchstartListenerKey_));
@@ -11452,7 +11452,9 @@ ol.MapBrowserEventHandler.prototype.handleMouseDown_ = function(browserEvent) {
   this.dispatchEvent(newEvent);
   this.down_ = browserEvent;
   this.dragged_ = false;
-  this.dragListenerKeys_ = [goog.events.listen(goog.global.document, goog.events.EventType.MOUSEMOVE, this.handleMouseMove_, false, this), goog.events.listen(goog.global.document, goog.events.EventType.MOUSEUP, this.handleMouseUp_, false, this)];
+  if(browserEvent.type === goog.events.EventType.MOUSEDOWN) {
+    this.dragListenerKeys_ = [goog.events.listen(goog.global.document, goog.events.EventType.MOUSEMOVE, this.handleMouseMove_, false, this), goog.events.listen(goog.global.document, goog.events.EventType.MOUSEUP, this.handleMouseUp_, false, this)]
+  }
   browserEvent.preventDefault()
 };
 ol.MapBrowserEventHandler.prototype.handleMouseMove_ = function(browserEvent) {
@@ -11473,31 +11475,29 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ = function(browserEvent) 
     goog.events.unlistenByKey(this.touchstartListenerKey_);
     this.touchstartListenerKey_ = null
   }
-  var newEvent = new ol.MapBrowserEvent(ol.MapBrowserEvent.EventType.TOUCHSTART, this.map_, browserEvent);
-  this.dispatchEvent(newEvent);
-  this.down_ = browserEvent;
-  this.dragged_ = false;
-  this.dragListenerKeys_ = [goog.events.listen(goog.global.document, goog.events.EventType.MSPOINTERMOVE, this.handlePointerMove_, false, this), goog.events.listen(goog.global.document, goog.events.EventType.MSPOINTERUP, this.handlePointerUp_, false, this)];
-  browserEvent.preventDefault()
+  if(browserEvent.getBrowserEvent().pointerType === 4) {
+    this.handleMouseDown_(browserEvent)
+  }else {
+    this.handleTouchStart_(browserEvent)
+  }
+  this.dragListenerKeys_ = [goog.events.listen(goog.global.document, goog.events.EventType.MSPOINTERMOVE, this.handlePointerMove_, false, this), goog.events.listen(goog.global.document, goog.events.EventType.MSPOINTERUP, this.handlePointerUp_, false, this)]
 };
 ol.MapBrowserEventHandler.prototype.handlePointerMove_ = function(browserEvent) {
-  if(browserEvent.clientX != this.down_.clientX || browserEvent.clientY != this.down_.clientY) {
-    this.dragged_ = true;
-    var newEvent = new ol.MapBrowserEvent(ol.MapBrowserEvent.EventType.TOUCHMOVE, this.map_, browserEvent);
-    this.dispatchEvent(newEvent)
+  if(browserEvent.getBrowserEvent().pointerType === 4) {
+    this.handleMouseMove_(browserEvent)
+  }else {
+    this.handleTouchMove_(browserEvent)
   }
 };
 ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(browserEvent) {
-  var newEvent = new ol.MapBrowserEvent(ol.MapBrowserEvent.EventType.TOUCHEND, this.map_, browserEvent);
-  this.dispatchEvent(newEvent);
-  goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
-  if(!this.dragged_ && browserEvent.isMouseActionButton()) {
-    goog.asserts.assert(!goog.isNull(this.down_));
-    this.emulateClick_(this.down_)
+  if(browserEvent.getBrowserEvent().pointerType === 4) {
+    this.handleMouseUp_(browserEvent)
+  }else {
+    this.handleTouchEnd_(browserEvent)
   }
 };
 ol.MapBrowserEventHandler.prototype.handleTouchStart_ = function(browserEvent) {
-  if(!goog.isNull(this.mousedownListenerKey_)) {
+  if(browserEvent.type === goog.events.EventType.TOUCHSTART && !goog.isNull(this.mousedownListenerKey_)) {
     goog.events.unlistenByKey(this.mousedownListenerKey_);
     this.mousedownListenerKey_ = null;
     goog.asserts.assert(!goog.isNull(this.pointerdownListenerKey_));
@@ -11508,7 +11508,7 @@ ol.MapBrowserEventHandler.prototype.handleTouchStart_ = function(browserEvent) {
   this.dispatchEvent(newEvent);
   this.down_ = browserEvent;
   this.dragged_ = false;
-  if(goog.isNull(this.dragListenerKeys_)) {
+  if(browserEvent.type === goog.events.EventType.TOUCHSTART && goog.isNull(this.dragListenerKeys_)) {
     this.dragListenerKeys_ = [goog.events.listen(goog.global.document, goog.events.EventType.TOUCHMOVE, this.handleTouchMove_, false, this), goog.events.listen(goog.global.document, goog.events.EventType.TOUCHEND, this.handleTouchEnd_, false, this)]
   }
   browserEvent.preventDefault()
