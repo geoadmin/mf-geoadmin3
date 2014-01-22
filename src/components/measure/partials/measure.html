@@ -1,6 +1,6 @@
 <div class="ga-measure">
   <div translate>measure_instruction</div>
-  <div>{{'distance_label' | translate}}: {{distance | measure:['km', 'm']}}</div>
-  <div>{{'surface_label' | translate}}: {{surface | measure:['km&sup2', 'm&sup2']}}</div>
+  <div>{{'distance_label' | translate}}: {{distance | measure:'distance':['km', 'm']}}</div>
+  <div>{{'surface_label' | translate}}: {{surface | measure:'area':['km&sup2', 'm&sup2']}}</div>
   <!--button ng-click="displayProfile()" translate>display_profile</button-->
 </div>
