@@ -173,18 +173,6 @@
                     }
                   }
 
-                  //Temporary fix as long as indices are not updated
-                  if (result.attrs.layer ==
-                      'ch.bfs.arealstatistik-bodennutzung') {
-                    result.attrs.layer = 'ch.bfs.arealstatistik-bodenbedeckung';
-                  }
-
-                  if (result.attrs.layer ==
-                    'ch.bfs.arealstatistik-bodennutzung-1985') {
-                    result.attrs.layer =
-                    'ch.bfs.arealstatistik-bodenbedeckung-1985';
-                  }
-
                   layerId = result.attrs.layer;
                   newNode = tree[layerId];
                   oldNode = scope.tree[layerId];
