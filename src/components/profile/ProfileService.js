@@ -52,20 +52,23 @@
 
       var getXYDomains = function(data) {
         x.domain(d3.extent(data, function(d) {
-          return d.dist;
+          return d.dist ? d.dist : 0;
         }));
-        y.domain([d3.min(data, function(d) {
-          return d.alts.DTM25;
-        }), d3.max(data, function(d) {
-          return d.alts.DTM25;
-        })]);
+        var yMin = d3.min(data, function(d) {
+          return d.alts.DTM25 ? d.alts.DTM25 : 0;
+        });
+        var yMax = d3.max(data, function(d) {
+          return d.alts.DTM25 ? d.alts.DTM25 : 0;
+        });
+        var decile = (yMax - yMin) / 10;
+        y.domain([yMin - decile, yMax + decile]);
         return {
           X: x,
           Y: y
         };
       };
 
-      this.findCoordinates = function(searchDist) {
+      this.findMapCoordinates = function(searchDist) {
         var currentIdx, previousIdx, currentDist;
         var i = 0;
         var j = this.data.length - 1;

@@ -81,7 +81,7 @@
                   scope.$apply(function() {
                     scope.coordinates = [xCoord, yCoord];
                   });
-                  var coordsMap = profile.findCoordinates(xCoord);
+                  var coordsMap = profile.findMapCoordinates(xCoord);
                   $rootScope.$broadcast('gaProfileMapPositionUpdated',
                       coordsMap);
                 }
@@ -95,7 +95,7 @@
                   var mousePos = d3.mouse(areaChartPath[0][0]);
                   var x = mousePos[0];
                   var xCoord = profile.domain.X.invert(x);
-                  var coordsMap = profile.findCoordinates(xCoord);
+                  var coordsMap = profile.findMapCoordinates(xCoord);
                   $rootScope.$broadcast('gaProfileMapPositionActivate',
                       coordsMap);
                 }
