@@ -301,6 +301,7 @@ class SearchValidation(MapNameValidation):
         self._featureIndexes = None
         self._timeInstant = None
         self._bbox = None
+        self._returnGeometry = None
 
     @property
     def searchText(self):
@@ -317,6 +318,10 @@ class SearchValidation(MapNameValidation):
     @property
     def timeInstant(self):
         return self._timeInstant
+
+    @property
+    def returnGeometry(self):
+        return self._returnGeometry
 
     @featureIndexes.setter
     def featureIndexes(self, value):
@@ -360,3 +365,10 @@ class SearchValidation(MapNameValidation):
                 raise exc.HTTPBadRequest('Please provide an integer for the parameter timeInstant')
         else:
             self._timeInstant = value
+
+    @returnGeometry.setter
+    def returnGeometry(self, value):
+        if value is False or value == 'false':
+            self._returnGeometry = False
+        else:
+            self._returnGeometry = True

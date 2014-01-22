@@ -79,7 +79,7 @@ class Search(SearchValidation):
             for res in temp:
                 if res['attrs']['origin'] == 'address':
                     if nb_address < 20:
-                        if self.returnGeometry == 'false':
+                        if self.returnGeometry is False:
                             if 'geom_st_box2d' in res['attrs'].keys(): del res['attrs']['geom_st_box2d']
                         self.results['results'].append(res)
                         nb_address += 1
