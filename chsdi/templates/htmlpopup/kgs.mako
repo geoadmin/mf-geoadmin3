@@ -109,29 +109,31 @@
         </div>
     % endif
     <table class="kernkraftwerke_extended">
-        <tr>
+    % if c['attributes']['pdf_list'] is not None:
+       <tr>
 	        % for pdf in c['attributes']['pdf_list'].split('##'):
                 <th class="cell-left">${_('Feature tooltip')}:</th>
                 <td><a href="http://dav0.bgdi.admin.ch/kogis_web/downloads/kgs/matrizen/${pdf}.pdf" target="_blank">${pdf}</a></td>
 	        % endfor
 	     </tr>
-        % if c['attributes']['link_uri'] is not None:
-            <tr>
-                <th class="cell-left">${_('legalregulationlink')}</th>
-                <td><a href="${c['attributes']['link_uri']}">${c['attributes']['link_title']}</a></td>
-            </tr>
-        % endif
-        % if c['attributes']['link_2_uri'] is not None:
-            <tr>
-                <th class="cell-left">${_('legalregulationlink')}</th>
-                <td><a href="${c['attributes']['link_2_uri']}">${c['attributes']['link_2_title']}</a></td>
-            </tr>
-        % endif
-        % if c['attributes']['link_3_uri'] is not None:
-            <tr>
-                <th class="cell-left">${_('legalregulationlink')}</th>
-                <td><a href="${c['attributes']['link_3_uri']}">${c['attributes']['link_3_title']}</a></td>
-            </tr>
-        % endif
+    %endif
+    % if c['attributes']['link_uri'] is not None:
+        <tr>
+          <th class="cell-left">${_('legalregulationlink')}</th>
+            <td><a href="${c['attributes']['link_uri']}">${c['attributes']['link_title']}</a></td>
+        </tr>
+    % endif
+    % if c['attributes']['link_2_uri'] is not None:
+        <tr>
+          <th class="cell-left">${_('legalregulationlink')}</th>
+          <td><a href="${c['attributes']['link_2_uri']}">${c['attributes']['link_2_title']}</a></td>
+        </tr>
+    % endif
+    % if c['attributes']['link_3_uri'] is not None:
+        <tr>
+          <th class="cell-left">${_('legalregulationlink')}</th>
+          <td><a href="${c['attributes']['link_3_uri']}">${c['attributes']['link_3_title']}</a></td>
+        </tr>
+    % endif
     </table>
 </%def>
