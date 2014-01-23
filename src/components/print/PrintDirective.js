@@ -115,15 +115,35 @@
     };
 
     var handlePostCompose = function(evt) {
-      //   evt.getContext().restore();
       var ctx = evt.getContext();
       ctx.save();
-      ctx.beginPath();
-      var width = printRectangle[2] - printRectangle[0];
-      var height = printRectangle[3] - printRectangle[1];
-      ctx.rect(printRectangle[0], printRectangle[1], width, height);
-      ctx.lineWidth = 7;
-      ctx.strokeStyle = 'blue';
+      var size = $scope.map.getSize();
+      var width = size[0];
+      var height = size[1];
+      var minx, miny, maxx, maxy;
+      minx = printRectangle[0], miny = printRectangle[1],
+           maxx = printRectangle[2], maxy = printRectangle[3];
+
+      // Outside polygon, must be clockwise
+      ctx.moveTo(0, 0);
+      ctx.lineTo(width, 0);
+      ctx.lineTo(width, height);
+      ctx.lineTo(0, height);
+      ctx.lineTo(0, 0);
+      ctx.closePath();
+
+      // Inner polygon,must be counter-clockwise
+      ctx.moveTo(minx, miny);
+      ctx.lineTo(minx, maxy);
+      ctx.lineTo(maxx, maxy);
+      ctx.lineTo(maxx, miny);
+      ctx.lineTo(minx, miny);
+      ctx.closePath();
+
+      ctx.fillStyle = 'rgba(0, 5, 25, 0.75)';
+      ctx.strokeStyle = 'rgba(0.5,0.5,0.5,0.5)';
+      ctx.lineWidth = 1;
+      ctx.fill();
       ctx.stroke();
     };
 
