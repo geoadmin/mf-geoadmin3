@@ -3530,3 +3530,495 @@ msgstr ""
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas.metadata"
 msgstr ""
+
+msgid "kultur1"
+msgstr ""
+
+msgid "kultur111"
+msgstr ""
+
+msgid "kultur1110"
+msgstr ""
+
+msgid "kultur1111"
+msgstr ""
+
+msgid "kultur1112"
+msgstr ""
+
+msgid "kultur1113"
+msgstr ""
+
+msgid "kultur112"
+msgstr ""
+
+msgid "kultur1121"
+msgstr ""
+
+msgid "kultur113"
+msgstr ""
+
+msgid "kultur114"
+msgstr ""
+
+msgid "kultur115"
+msgstr ""
+
+msgid "kultur1151"
+msgstr ""
+
+msgid "kultur1152"
+msgstr ""
+
+msgid "kultur116"
+msgstr ""
+
+msgid "kultur117"
+msgstr ""
+
+msgid "kultur118"
+msgstr ""
+
+msgid "kultur1181"
+msgstr ""
+
+msgid "kultur1182"
+msgstr ""
+
+msgid "kultur1183"
+msgstr ""
+
+msgid "kultur119"
+msgstr ""
+
+msgid "kultur1191"
+msgstr ""
+
+msgid "kultur1192"
+msgstr ""
+
+msgid "kultur2"
+msgstr ""
+
+msgid "kultur2111"
+msgstr ""
+
+msgid "kultur2112"
+msgstr ""
+
+msgid "kultur2113"
+msgstr ""
+
+msgid "kultur212"
+msgstr ""
+
+msgid "kultur2121"
+msgstr ""
+
+msgid "kultur213"
+msgstr ""
+
+msgid "kultur214"
+msgstr ""
+
+msgid "kultur215"
+msgstr ""
+
+msgid "kultur216"
+msgstr ""
+
+msgid "kultur217"
+msgstr ""
+
+msgid "kultur218"
+msgstr ""
+
+msgid "kultur2181"
+msgstr ""
+
+msgid "kultur221"
+msgstr ""
+
+msgid "kultur222"
+msgstr ""
+
+msgid "kultur223"
+msgstr ""
+
+msgid "kultur2231"
+msgstr ""
+
+msgid "kultur224"
+msgstr ""
+
+msgid "kultur2241"
+msgstr ""
+
+msgid "kultur2242"
+msgstr ""
+
+msgid "kultur2243"
+msgstr ""
+
+msgid "kultur229"
+msgstr ""
+
+msgid "kultur231"
+msgstr ""
+
+msgid "kultur232"
+msgstr ""
+
+msgid "kultur2322"
+msgstr ""
+
+msgid "kultur233"
+msgstr ""
+
+msgid "kultur234"
+msgstr ""
+
+msgid "kultur2341"
+msgstr ""
+
+msgid "kultur2342"
+msgstr ""
+
+msgid "kultur2343"
+msgstr ""
+
+msgid "kultur241"
+msgstr ""
+
+msgid "kultur242"
+msgstr ""
+
+msgid "kultur2421"
+msgstr ""
+
+msgid "kultur243"
+msgstr ""
+
+msgid "kultur2431"
+msgstr ""
+
+msgid "kultur244"
+msgstr ""
+
+msgid "kultur245"
+msgstr ""
+
+msgid "kultur246"
+msgstr ""
+
+msgid "kultur247"
+msgstr ""
+
+msgid "kultur251"
+msgstr ""
+
+msgid "kultur252"
+msgstr ""
+
+msgid "kultur261"
+msgstr ""
+
+msgid "kultur2621"
+msgstr ""
+
+msgid "kultur2622"
+msgstr ""
+
+msgid "kultur2623"
+msgstr ""
+
+msgid "kultur263"
+msgstr ""
+
+msgid "kultur264"
+msgstr ""
+
+msgid "kultur265"
+msgstr ""
+
+msgid "kultur266"
+msgstr ""
+
+msgid "kultur2661"
+msgstr ""
+
+msgid "kultur2662"
+msgstr ""
+
+msgid "kultur267"
+msgstr ""
+
+msgid "kultur2670"
+msgstr ""
+
+msgid "kultur268"
+msgstr ""
+
+msgid "kultur2681"
+msgstr ""
+
+msgid "kultur2682"
+msgstr ""
+
+msgid "kultur271"
+msgstr ""
+
+msgid "kultur2711"
+msgstr ""
+
+msgid "kultur2712"
+msgstr ""
+
+msgid "kultur272"
+msgstr ""
+
+msgid "kultur3"
+msgstr ""
+
+msgid "kultur311"
+msgstr ""
+
+msgid "kultur3111"
+msgstr ""
+
+msgid "kultur3112"
+msgstr ""
+
+msgid "kultur312"
+msgstr ""
+
+msgid "kultur313"
+msgstr ""
+
+msgid "kultur314"
+msgstr ""
+
+msgid "kultur315"
+msgstr ""
+
+msgid "kultur316"
+msgstr ""
+
+msgid "kultur321"
+msgstr ""
+
+msgid "kultur3211"
+msgstr ""
+
+msgid "kultur322"
+msgstr ""
+
+msgid "kultur3212"
+msgstr ""
+
+msgid "kultur3213"
+msgstr ""
+
+msgid "kultur3214"
+msgstr ""
+
+msgid "kultur323"
+msgstr ""
+
+msgid "kultur324"
+msgstr ""
+
+msgid "kultur331"
+msgstr ""
+
+msgid "kultur332"
+msgstr ""
+
+msgid "kultur333"
+msgstr ""
+
+msgid "kultur334"
+msgstr ""
+
+msgid "kultur335"
+msgstr ""
+
+msgid "kultur4"
+msgstr ""
+
+msgid "kultur411"
+msgstr ""
+
+msgid "kultur4111"
+msgstr ""
+
+msgid "kultur421"
+msgstr ""
+
+msgid "kultur431"
+msgstr ""
+
+msgid "kultur432"
+msgstr ""
+
+msgid "kultur436"
+msgstr ""
+
+msgid "kultur5"
+msgstr ""
+
+msgid "kultur521"
+msgstr ""
+
+msgid "kultur5211"
+msgstr ""
+
+msgid "kultur5212"
+msgstr ""
+
+msgid "kultur523"
+msgstr ""
+
+msgid "kultur5232"
+msgstr ""
+
+msgid "kultur5233"
+msgstr ""
+
+msgid "kultur524"
+msgstr ""
+
+msgid "kultur531"
+msgstr ""
+
+msgid "kultur5312"
+msgstr ""
+
+msgid "kultur532"
+msgstr ""
+
+msgid "kultur533"
+msgstr ""
+
+msgid "kultur541"
+msgstr ""
+
+msgid "kultur542"
+msgstr ""
+
+msgid "kultur543"
+msgstr ""
+
+msgid "kultur544"
+msgstr ""
+
+msgid "kultur545"
+msgstr ""
+
+msgid "kultur6"
+msgstr ""
+
+msgid "kultur6001"
+msgstr ""
+
+msgid "kultur6002"
+msgstr ""
+
+msgid "kultur6003"
+msgstr ""
+
+msgid "kultur6004"
+msgstr ""
+
+msgid "kultur6005"
+msgstr ""
+
+msgid "kultur6006"
+msgstr ""
+
+msgid "kultur6007"
+msgstr ""
+
+msgid "kultur6008"
+msgstr ""
+
+msgid "kultur6009"
+msgstr ""
+
+msgid "kultur7"
+msgstr ""
+
+msgid "kultur711"
+msgstr ""
+
+msgid "kultur712"
+msgstr ""
+
+msgid "kultur713"
+msgstr ""
+
+msgid "kultur714"
+msgstr ""
+
+msgid "kultur718"
+msgstr ""
+
+msgid "kultur719"
+msgstr ""
+
+msgid "kultur8"
+msgstr ""
+
+msgid "kultur811"
+msgstr ""
+
+msgid "kultur812"
+msgstr ""
+
+msgid "kultur813"
+msgstr ""
+
+msgid "kultur814"
+msgstr ""
+
+msgid "kultur815"
+msgstr ""
+
+msgid "kultur8151"
+msgstr ""
+
+msgid "kultur816"
+msgstr ""
+
+msgid "kultur817"
+msgstr ""
+
+msgid "kultur841"
+msgstr ""
+
+msgid "kultur842"
+msgstr ""
+
+msgid "kultur843"
+msgstr ""
+
+msgid "kultur844"
+msgstr ""
+
+msgid "kultur845"
+msgstr ""
+
+msgid "kultur8451"
+msgstr ""
+
+msgid "kultur860"
+msgstr ""
+
+msgid "kultur861"
+msgstr ""
+
+msgid "kultur862"
+msgstr ""
+
+msgid "kultur863"
+msgstr ""
