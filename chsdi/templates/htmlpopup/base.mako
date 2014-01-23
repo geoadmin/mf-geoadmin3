@@ -40,11 +40,32 @@
           <tr>
             <td class="cell-left"></td>
             <td>
-              <a href="${c['baseUrl']}?${c['layerBodId']}=${c['featureId']}&lang=${lang}&topic=${topic}" target="new">${_('Link to object')}</a>
+              <a href="${c['baseUrl']}?${c['layerBodId']}=${c['featureId']}&lang=${lang}&topic=${topic}" target="new">
+                ${_('Link to object')}
+              </a>
             </td>
           </tr>
         %endif
       </table>
     % endif
   </div>
+  % if extended:
+  <div class="htmlpopup-footer">
+    <a href="${_('disclaimer url')}" target="_blank">
+      ${_('disclaimer title')}
+    </a>
+    <div class="float-right">
+      % if c['stable_id'] is True:
+      <a class="link-red" href="${c['baseUrl']}?${c['layerBodId']}=${c['featureId']}&lang=${lang}&topic=${topic}" target="new">
+        ${_('Link to object')}
+      </a>
+      &nbsp;|&nbsp;
+      % endif
+      <a href="javascript:window.print();">
+        ${_('print')}
+      </a>
+    </div>
+    </div>
+  </div>
+  % endif
 </div>
