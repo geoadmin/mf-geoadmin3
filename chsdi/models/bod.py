@@ -50,7 +50,6 @@ class Bod(object):
 class LayersConfig(Base):
     __tablename__ = 'view_layers_js'
     __table_args__ = ({'schema': 're3', 'autoload': False})
-
     idBod = Column('layer_id', Text, primary_key=True)
     attribution = Column('attribution', Text)
     background = Column('backgroundlayer', Boolean)
@@ -144,46 +143,100 @@ class BodLayerEn(Base, Bod):
     __table_args__ = ({'schema': 're3'})
 
 
-class GetCapFr(Base):
+class GetCap(object):
+    __dbname__ = 'bod'
+    id = Column('fk_dataset_id', Text, primary_key=True)
+    arr_all_formats = Column('format', Text)
+    tile_matrix_set_id = Column('tile_matrix_set_id', Text)
+    timestamp = Column('timestamp', Text)
+    sswmts = Column('sswmts', Integer)
+    bod_layer_id = Column('bod_layer_id', Text)
+    projekte = Column('projekte', Text)
+    bezeichnung = Column('bezeichnung', Text)
+    kurzbezeichnung = Column('kurzbezeichnung', Text)
+    abstract = Column('abstract', Text)
+    inspire_name = Column('inspire_name', Text)
+    inspire_abstract = Column('inspire_abstract', Text)
+    inspire_oberthema_name = Column('inspire_oberthema_name', Text)
+    inspire_oberthema_abstract = Column('inspire_oberthema_abstract', Text)
+    geobasisdatensatz_name = Column('geobasisdatensatz_name', Text)
+    datenherr = Column('datenherr', Text)
+    wms_kontakt_abkuerzung = Column('wms_kontakt_abkuerzung', Text)
+    wms_kontakt_name = Column('wms_kontakt_name', Text)
+    zoomlevel_min = Column('zoomlevel_min', Integer)
+    zoomlevel_max = Column('zoomlevel_max', Integer)
+
+
+class GetCapFr(Base, GetCap):
     __tablename__ = 'view_bod_wmts_getcapabilities_fr'
-    __table_args__ = ({'schema': 're3', 'autoload': True})
-    id = Column('fk_dataset_id', Text, primary_key=True)
-    arr_all_formats = Column('format', Text)
+    __table_args__ = ({'schema': 're3', 'autoload': False})
 
 
-class GetCapDe(Base):
+class GetCapDe(Base, GetCap):
     __tablename__ = 'view_bod_wmts_getcapabilities_de'
-    __table_args__ = ({'schema': 're3', 'autoload': True})
-    id = Column('fk_dataset_id', Text, primary_key=True)
-    arr_all_formats = Column('format', Text)
+    __table_args__ = ({'schema': 're3', 'autoload': False})
 
 
-class GetCapThemesFr(Base):
+class GetCapThemes(object):
+    __dbname__ = 'bod'
+    id = Column('inspire_id', Text, primary_key=True)
+    inspire_name = Column('inspire_name', Text)
+    inspire_abstract = Column('inspire_abstract', Text)
+    inspire_oberthema_name = Column('inspire_oberthema_name', Text)
+    oberthema_id = Column('oberthema_id', Text)
+    inspire_oberthema_abstract = Column('inspire_oberthema_abstract', Text)
+    fk_dataset_id = Column('fk_dataset_id', Text)
+    sswmts = Column('sswmts', Text)
+
+
+class GetCapThemesFr(Base, GetCapThemes):
     __tablename__ = 'view_bod_wmts_getcapabilities_themes_fr'
-    __table_args__ = ({'schema': 're3', 'autoload': True})
-    id = Column('inspire_id', Text, primary_key=True)
+    __table_args__ = ({'schema': 're3', 'autoload': False})
 
 
-class GetCapThemesDe(Base):
+class GetCapThemesDe(Base, GetCapThemes):
     __tablename__ = 'view_bod_wmts_getcapabilities_themes_de'
-    __table_args__ = ({'schema': 're3', 'autoload': True})
-    id = Column('inspire_id', Text, primary_key=True)
+    __table_args__ = ({'schema': 're3', 'autoload': False})
 
 
-class ServiceMetadataDe(Base):
+class ServiceMetadata(object):
+    id = Column('wms_id', Text, primary_key=True)
+    pk_map_name = Column('pk_map_name', Text)
+    title = Column('title', Text)
+    onlineresource = Column('onlineresource', Text)
+    abstract = Column('abstract', Text)
+    keywords = Column('keywords', Text)
+    fee = Column('fee', Text)
+    accessconstraint = Column('accessconstraint', Text)
+    encoding = Column('encoding', Text)
+    feature_info_mime_type = Column('feature_info_mime_type', Text)
+    map_projection = Column('map_projection', Text)
+    fk_contact_id = Column('fk_contact_id', Integer)
+    addresstype = Column('addresstype', Text)
+    address = Column('address', Text)
+    postcode = Column('postcode', Integer)
+    city = Column('city', Text)
+    country = Column('country', Text)
+    contactelectronicmailaddress = Column('contactelectronicmailaddress', Text)
+    contactperson = Column('contactperson', Text)
+    contactvoicetelephon = Column('contactvoicetelephon', Text)
+    stateorprovince = Column('stateorprovince', Text)
+    fk_contactorganisation_id = Column('fk_contactorganisation_id', Integer)
+    abkuerzung = Column('abkuerzung', Text)
+    name = Column('name', Text)
+
+
+class ServiceMetadataDe(Base, ServiceMetadata):
     __tablename__ = 'view_wms_service_metadata_de'
-    __table_args__ = ({'schema': 're3', 'autoload': True})
-    id = Column('wms_id', Text, primary_key=True)
+    __table_args__ = ({'schema': 're3', 'autoload': False})
 
 
-class ServiceMetadataFr(Base):
+class ServiceMetadataFr(Base, ServiceMetadata):
     __tablename__ = 'view_wms_service_metadata_fr'
-    __table_args__ = ({'schema': 're3', 'autoload': True})
-    id = Column('wms_id', Text, primary_key=True)
+    __table_args__ = ({'schema': 're3', 'autoload': False})
+
 
 # TODO use GetCap model to fill that up instead
-
-
 def computeHeader(mapName):
     return {
         'mapName': mapName,
