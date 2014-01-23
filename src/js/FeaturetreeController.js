@@ -17,16 +17,10 @@
           active: false
         };
 
-        $('#featuretree').on('show.bs.collapse', function() {
-          $scope.$apply(function() {
-            $scope.options.active = true;
-          });
-        });
-
-        $('#featuretree').on('hide.bs.collapse', function() {
-          $scope.$apply(function() {
-            $scope.options.active = false;
-          });
+        $scope.$watch('isFeatureTreeActive', function(newval, oldval) {
+          if (angular.isDefined(newval)) {
+            $scope.options.active = newval;
+          }
         });
       }
   ]);

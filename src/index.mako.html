@@ -227,15 +227,11 @@
                     <span  ng-class="{'selected': isMeasureActive}" translate="{{(isMeasureActive) ? 'measure_active' : 'measure_inactive'}}"</span>
                   </a>
                 </li>
-                <li><!-- Feature Tree / Object information -->
-                  <a id="featuretree-link" class="accordion-toggle collapsed" data-toggle="collapse" href="#featuretree">
-                    <i class="visible-collapsed icon-plus"></i>
-                    <i class="hidden-collapsed icon-minus"></i>
-                    <span translate>object_information</span>
+                <li><!-- Feature Tree -->
+                  <a href=""  ng-click="isFeatureTreeActive = !isFeatureTreeActive">
+                    <span  ng-class="{'selected': isFeatureTreeActive}"
+                    translate="{{(isFeatureTreeActive) ? 'object_information' : 'object_information'}}"</span>
                   </a>
-                  <div id="featuretree" class="collapse" ng-controller="GaFeaturetreeController">
-                    <div ga-featuretree ga-featuretree-options="options" ga-featuretree-map="map"></div>
-                  </div>
                 </li>
               </ul>
             </div>
@@ -429,6 +425,15 @@
         <div ga-measure ga-measure-map="map" ga-measure-options="options" ga-measure-active="isMeasureActive"></div>
       </div>
     </div><!-- end Measure -->
+
+    <!-- Popup: Featuer Tree -->
+    <div ga-popup="isFeatureTreeActive"
+      ga-popup-options="{title: 'object_information'}"
+      ga-draggable=".ga-popup-title">
+      <div id="featuretree" class="panel-body panel-body-wide" ng-controller="GaFeaturetreeController">
+        <div ga-featuretree ga-featuretree-options="options" ga-featuretree-map="map"></div>
+      </div>
+    </div>
 
 
     <div class="popover homescreen" ng-if="globals.homescreen" ng-class="[ globals.homescreen ? 'visible' : '', globals.tablet ? 'bottom' : 'top']">
