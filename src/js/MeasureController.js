@@ -12,8 +12,7 @@
       function($scope, $translate, gaGlobalOptions, $http, $rootScope, gaUrlUtils) {
         $scope.options = {
           isProfileActive: false,
-          //profileUrl: gaGlobalOptions.baseUrlPath + '/profile.json',
-          profileUrl: "https://api3.geo.admin.ch/rest/services/profile.json",
+          profileUrl: gaGlobalOptions.baseUrlPath + '/rest/services/profile.json',
           profileOptions: {
               xLabel: 'profile_x_label',
               yLabel: 'profile_y_label',
@@ -28,37 +27,34 @@
           },
           styleFunction: (function() {
             var styles = {};
+
+            var stroke = new ol.style.Stroke({
+              color: [255, 0, 0, 1],
+              width: 3
+            });
+            
+            var strokeDashed = new ol.style.Stroke({
+              color: [255, 0, 0, 1],
+              width: 3,
+              lineDash: [8]
+            });
+            var fill = new ol.style.Fill({
+              color: [255, 0, 0, 0.4]
+            })
+
             styles['Polygon'] = [
               new ol.style.Style({
-                fill: new ol.style.Fill({
-                  color: [255, 0, 0, 0.4]
-                }),
-                stroke: new ol.style.Stroke({
-                  color: [255, 0, 0, 1],
-                  width: 2
-                })
+                fill: fill,
+                stroke: strokeDashed
               })
             ];
             styles['MultiPolygon'] = styles['Polygon'];
-
-
-            styles['LineString'] = [
-              new ol.style.Style({
-                stroke: new ol.style.Stroke({
-                  color: [255, 0, 0, 0.7],
-                  width: 3,
-                  lineDash: [8]
-                })
-              })
-            ];
+            styles['LineString'] = styles['Polygon'];
             styles['MultiLineString'] = styles['LineString'];
              
             styles['Circle'] = [
               new ol.style.Style({
-                stroke: new ol.style.Stroke({
-                  color: [255, 0, 0, 0.7],
-                  width: 3
-                })
+                stroke: stroke
               })
             ];
 
@@ -66,13 +62,8 @@
               new ol.style.Style({
                 image: new ol.style.Circle({
                   radius: 4,
-                  fill: new ol.style.Fill({
-                    color: [255, 0, 0, 0.4]
-                  }),
-                  stroke: new ol.style.Stroke({
-                    color: [255, 0, 0, 1],
-                    width: 1
-                  })
+                  fill: fill,
+                  stroke: stroke
                 })
               })
             ];
@@ -105,11 +96,9 @@
             return styles;
           }
         })();
+        
 
         var isProfileCreated = false;
-        //http/api3.geo.admin.ch/rest/services/profile.json?geom=
-        //{“type”%3A”LineString”%2C”coordinates”%3A[[550050%2C20
-        //6550]%2C[556950%2C204150]%2C[561050%2C207950]]};
         var createProfile = function(feature, callback) {
           var coordinates = feature.getGeometry().getCoordinates();
           var wkt = '{"type":"LineString","coordinates":' + angular.toJson(coordinates) + '}'; 
@@ -119,6 +108,7 @@
             callback = function(data, status) {
               isProfileCreated = true;
               $rootScope.$broadcast('gaProfileDataLoaded', data);
+              $scope.options.profileBt.button('reset');
             };
           }
           http.success(callback); 
@@ -127,11 +117,13 @@
         var updateProfile = function(feature) {
           createProfile(feature, function(data, status) {
             $rootScope.$broadcast('gaProfileDataUpdated', data);
+            $scope.options.profileBt.button('reset');
           });
         };
 
        $scope.options.drawProfile = function(feature) {
          if (feature) {
+           $scope.options.profileBt.button('loading');
            if (!isProfileCreated) {
              createProfile(feature);
            } else {

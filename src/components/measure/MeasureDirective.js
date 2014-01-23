@@ -18,13 +18,16 @@
                       break;
          default: break;
        }
-       units = units || ['km', 'm'];
+       units = units || [' km', ' m'];
        floatInMeter = floatInMeter || 0;
        var measure = floatInMeter.toFixed(2);
        var km = Math.floor(measure / factor);
 
-       if (km < 0) {
-         return measure + '' + units[1];
+       if (km <= 0) {
+         if (parseInt(measure) == 0) {
+           measure = 0;
+         }
+         return measure + units[1];
        }
 
        var str = '' + km;
@@ -55,9 +58,11 @@
           isActive: '=gaMeasureActive'
         },
         link: function(scope, elt, attrs, controller) {
-          var isDblClick = false;
-          var sketchFeatDistance, sketchFeatArea;
-          var deregister, deregisterMap, deregisterFeature;
+          scope.options.profileBt = elt.find('.ga-measure-profile-bt');
+          var isClick = false;
+          var isSnapOnFirstPoint = false;
+          var sketchFeatArea, sketchFeatDistance, sketchFeatAzimuth;
+          var deregister, deregisterFeature;
           var styleFunction = scope.options.styleFunction;
           var drawArea = new ol.interaction.Draw({
             type: 'Polygon',
@@ -68,10 +73,6 @@
           featuresOverlay.setStyleFunction(styleFunction);
           featuresOverlay.setMap(scope.map);
 
-          var sketchFeatAzimuth = new ol.Feature(new ol.geom.Circle([0, 0], 0));
-          var sketchFeatDistance = new ol.Feature(
-              new ol.geom.LineString([[0, 0]]));
-
           // Activate the component: add listeners, last features drawn and draw
           // interaction.
           var activate = function() {
@@ -81,25 +82,53 @@
             // Add events
             deregister = [
               drawArea.on('drawstart', function(evt) {
-                isDblClick = false;
+                var isSnapOnLastPoint = false;
                 featuresOverlay.getFeatures().clear();
                 sketchFeatArea = evt.getFeature();
-
-                sketchFeatAzimuth.getGeometry().setCenter(
-                    sketchFeatArea.getGeometry().getCoordinates()[0][0]);
+                var firstPoint = sketchFeatArea.getGeometry()
+                    .getCoordinates()[0][0];
+                sketchFeatDistance = new ol.Feature(
+                    new ol.geom.LineString([firstPoint]));
+                sketchFeatAzimuth = new ol.Feature(
+                    new ol.geom.Circle(firstPoint, 0));
                 featuresOverlay.addFeature(sketchFeatAzimuth);
+
                 deregisterFeature = sketchFeatArea.on('change',
                   function(evt) {
-                    var feature = evt.target; //sketchFeatArea
-                    var lineCoords = feature.getGeometry().getCoordinates()[0];
-                    sketchFeatDistance.getGeometry().setCoordinates(lineCoords);
 
-                    updateMeasures();
+                    if (!isClick) {
+                      var feature = evt.target; //sketchFeatArea
+                      var lineCoords = feature.getGeometry()
+                          .getCoordinates()[0];
+                      var lastPoint = lineCoords[lineCoords.length - 1];
+                      var lastPoint2 = lineCoords[lineCoords.length - 2];
 
-                    if (lineCoords.length == 2) {
-                      sketchFeatAzimuth.getGeometry().setRadius(scope.distance);
+                      isSnapOnFirstPoint = (lastPoint[0] == firstPoint[0] &&
+                          lastPoint[1] == firstPoint[1]);
+
+                      isSnapOnLastPoint = (lastPoint[0] == lastPoint2[0] &&
+                          lastPoint[1] == lastPoint2[1]);
+
+                      if (isSnapOnLastPoint) {
+                        lineCoords.pop();
+                      }
+
+                      sketchFeatDistance.getGeometry()
+                          .setCoordinates(lineCoords);
+                      updateMeasures();
+
+                      if (!isSnapOnFirstPoint) {
+                        if (lineCoords.length == 2) {
+                          sketchFeatAzimuth.getGeometry()
+                              .setRadius(scope.distance);
+                        } else if (!isSnapOnLastPoint) {
+                          sketchFeatAzimuth.getGeometry().setRadius(0);
+                        }
+                      }
+
                     } else {
-                      featuresOverlay.removeFeature(sketchFeatAzimuth);
+                      updateProfileDebounced();
+                      isClick = false;
                     }
                   }
                 );
@@ -108,25 +137,11 @@
               drawArea.on('drawend', function(evt) {
                 // Unregister the change event
                 sketchFeatArea.unByKey(deregisterFeature);
-
-                // Remove the last coordinates of the polygon
-                var lineCoords = sketchFeatArea.getGeometry()
-                    .getCoordinates()[0];
-                lineCoords.pop();
-                sketchFeatDistance.getGeometry().setCoordinates(lineCoords);
-
                 updateFeaturesOverlay();
-              })
-            ];
-
-            deregisterMap = [
-              scope.map.on('dblclick', function(evt) {
-                isDblClick = true;
               }),
-              scope.map.on('click', function(evt) {
-                if (scope.options.isProfileActive) {
-                   updateProfileDebounced();
-                }
+
+              scope.map.on('click', function() {
+                isClick = true;
               })
             ];
           };
@@ -141,12 +156,7 @@
             // Remove events
             if (deregister) {
               for (var i = deregister.length - 1; i >= 0; i--) {
-                drawArea.unByKey(deregister[i]);
-              }
-            }
-            if (deregisterMap) {
-              for (var i = deregisterMap.length - 1; i >= 0; i--) {
-                scope.map.unByKey(deregisterMap[i]);
+                deregister[i].src.unByKey(deregister[i]);
               }
             }
           };
@@ -159,9 +169,11 @@
                   .getCoordinates();
               if (lineCoords.length == 2) {
                 featuresOverlay.addFeature(sketchFeatAzimuth);
+              } else {
+                featuresOverlay.removeFeature(sketchFeatAzimuth);
               }
-              featuresOverlay.addFeature(isDblClick ? sketchFeatDistance :
-                  sketchFeatArea);
+              featuresOverlay.addFeature(isSnapOnFirstPoint ? sketchFeatArea :
+                  sketchFeatDistance);
             }
           };
 
@@ -178,16 +190,26 @@
 
           // Calulate the azimuth from 2 points
           var calculateAzimuth = function(pt1, pt2) {
+            if (!pt1 || !pt2) {
+              return undefined;
+            }
+
             var x = pt2[0] - pt1[0];
             var y = pt2[1] - pt1[1];
             var rad = Math.acos(y / Math.sqrt(x * x + y * y));
             var factor = x > 0 ? 1 : -1;
-            return Math.round(360 + (factor * rad * 180 / Math.PI)) % 360;
+            return (360 + (factor * rad * 180 / Math.PI)) % 360;
           };
 
           // Update profile functions
           var updateProfile = function() {
-            scope.options.drawProfile(sketchFeatDistance);
+            if (scope.options.isProfileActive &&
+                 sketchFeatDistance &&
+                 sketchFeatDistance.getGeometry() &&
+                 sketchFeatDistance.getGeometry()
+                     .getCoordinates().length >= 2) {
+              scope.options.drawProfile(sketchFeatDistance);
+            }
           };
           var updateProfileDebounced = gaDebounce.debounce(updateProfile, 500,
               false);

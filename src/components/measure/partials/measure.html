@@ -1,13 +1,13 @@
 <div class="ga-measure">
   <div class="ga-measure-text">
     <div translate>measure_instruction</div>
-    <div>{{'distance_label' | translate}}: {{distance | measure:'distance':['km', 'm']}}</div>
-    <div>{{'surface_label' | translate}}: {{surface | measure:'area':['km&sup2', 'm&sup2']}}</div>
-    <div>{{'azimuth_label' | translate}}: {{azimuth | number:0}} &deg</div>
+    <div>{{'distance_label' | translate}}: {{distance | measure}}</div>
+    <div>{{'surface_label' | translate}}: {{surface | measure:'area':['km&sup2', ' m&sup2']}}</div>
+    <div>{{'azimuth_label' | translate}}: {{azimuth | number:2}} &deg</div>
   </div>
   <div class="ga-measure-buttons">
     <button ng-click="options.isProfileActive = !options.isProfileActive"
-    class="btn btn-default">{{(options.isProfileActive ? 'hide_profile' : 'display_profile') | translate}}</button>
+    class="btn btn-default ga-measure-profile-bt" data-loading-text="{{'wait_data_loading' |translate}}">{{(options.isProfileActive ? 'hide_profile' : 'display_profile') | translate}}</button>
   </div>
   <div ng-show="options.isProfileActive" ga-profile ga-profile-options="options.profileOptions"></div>
 </div>
