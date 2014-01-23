@@ -73,15 +73,7 @@
     };
 
    var activate = function() {
-     var olLayers = $scope.map.getLayers();
-     listenerKeys = [
-       olLayers.on('add', refreshComp),
-       olLayers.on('remove', refreshComp)
-     ];
-     //topLayer = findTopMostLayer();
-
-     //topLayer.on('precompose', handlePreCompose);
-     //topLayer.on('postcompose', handlePostCompose);
+     $scope.scale = getOptimalScale();
      refreshComp();
    };
 
@@ -91,20 +83,8 @@
 
 
    var refreshComp = function() {
-     $scope.layer = findTopMostLayer();
-     if ($scope.layer instanceof ol.layer.Group) {
-       $scope.layer.getLayers().forEach(function(olLayer, idx, arr) {
-         layerListenerKeys = layerListenerKeys.concat([
-           olLayer.on('precompose', handlePreCompose),
-           olLayer.on('postcompose', handlePostCompose)
-         ]);
-        });
-     } else {
-       layerListenerKeys = [
-         $scope.layer.on('precompose', handlePreCompose),
-         $scope.layer.on('postcompose', handlePostCompose)
-       ];
-     }
+     $scope.map.on('precompose', handlePreCompose),
+     $scope.map.on('postcompose', handlePostCompose);
      $scope.map.requestRenderFrame();
     };
 
