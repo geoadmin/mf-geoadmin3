@@ -267,6 +267,7 @@ class STATISTIKWASSERKRAFTANLAGEN(Base, Vector):
     __table_args__ = ({'schema': 'bfe', 'autoload': False})
     __template__ = 'templates/htmlpopup/statistikwasserkraftanlagen.mako'
     __bodId__ = 'ch.bfe.statistik-wasserkraftanlagen'
+    __extended_info__ = True
     id = Column('wastanumber', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     name = Column('name', Text)
@@ -280,6 +281,10 @@ class STATISTIKWASSERKRAFTANLAGEN(Base, Vector):
     hydropowerplanttype_de = Column('hydropowerplanttype_de', Text)
     beginningofoperation = Column('beginningofoperation', Integer)
     endofoperation = Column('endofoperation', Integer)
+    leistung = Column('leistung', Numeric)
+    produktionserwartung = Column('produktionserwartung', Numeric)
+    leistungsaufnahme_pumpen = Column('leistungsaufnahme_pumpen', Numeric)
+    energiebedarf_motore = Column('energiebedarf_motore', Numeric)
 
 register('ch.bfe.statistik-wasserkraftanlagen', STATISTIKWASSERKRAFTANLAGEN)
 
