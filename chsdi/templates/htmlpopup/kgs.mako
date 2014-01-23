@@ -48,7 +48,7 @@
     </script>
 
 
-    <table class="table-with-border kernkraftwerke_extended">
+    <table class="table-with-border kernkraftwerke-extended">
         <tr>
             <th class="cell-left">${_('name')}</th>
             <td>${c['attributes']['zkob'] or '-'}</td>
@@ -91,7 +91,7 @@
         <a class="play-pause"></a>
         <ol class="indicator"></ol>
      </div>
-        <div class="kgs_thumbnails">
+        <div class="kgs-thumbnails">
             <div class="thumbnail-container">
             %for pic in pic_list:
                 <div class="thumbnail">
@@ -104,11 +104,11 @@
             </div>
         </div>
     % if c['attributes']['kurztexte'] is not None:
-        <div class="kgs_kurztext">
+        <div class="kgs-kurztext">
             ${c['attributes']['kurztexte']}
         </div>
     % endif
-    <table class="kernkraftwerke_extended">
+    <table class="kernkraftwerke-extended">
     % if c['attributes']['pdf_list'] is not None:
        <tr>
 	        % for pdf in c['attributes']['pdf_list'].split('##'):
