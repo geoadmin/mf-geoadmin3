@@ -429,8 +429,9 @@
     <!-- Popup: Featuer Tree -->
     <div ga-popup="isFeatureTreeActive"
       ga-popup-options="{title: 'object_information'}"
-      ga-draggable=".ga-popup-title">
-      <div id="featuretree" class="panel-body panel-body-wide" ng-controller="GaFeaturetreeController">
+      ga-draggable=".ga-popup-title"
+      id="featuretree-popup">
+      <div id="featuretree" ng-controller="GaFeaturetreeController">
         <div ga-featuretree ga-featuretree-options="options" ga-featuretree-map="map"></div>
       </div>
     </div>
