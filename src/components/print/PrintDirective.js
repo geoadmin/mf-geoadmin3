@@ -708,9 +708,6 @@
     $scope.$watch('layout', function() {
       //updatePrintRectanglePixels($scope.scale);
     });
-    $scope.$watch('layout', function() {
-      //updatePrintRectangle($scope.scale);
-    });
 
   });
 
