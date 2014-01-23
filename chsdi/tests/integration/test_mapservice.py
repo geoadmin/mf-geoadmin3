@@ -104,87 +104,92 @@ class TestMapServiceView(TestsBase):
         params = {'geometryType': 'esriGeometryPoint', 'geometry': '630853.809670509,170647.93120352627', 'geometryFormat': 'geojson', 'imageDisplay': '1920,734,96', 'mapExtent': '134253,-21102,1382253,455997', 'tolerance': '5', 'layers': 'all:ch.bafu.bundesinventare-bln', 'timeInstant': '1936'}
         resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=400)
 
-    def test_getfeature_wrong_idlayer(self):
+    def test_feature_wrong_idlayer(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/toto/362', status=400)
         resp.mustcontain('No GeoTable was found for')
 
-    def test_getfeature_wrong_idfeature(self):
+    def test_feature_wrong_idfeature(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/0', status=404)
         resp.mustcontain('No feature with id')
 
-    def test_getfeature_valid(self):
+    def test_feature_valid(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362', status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless('attributes' in resp.json['feature'])
         self.failUnless('geometry' in resp.json['feature'])
         self.failUnless(resp.json['feature']['id'] == 362)
 
-    def test_getfeature_valid_topic_all(self):
+    def test_feature_valid_topic_all(self):
         resp = self.testapp.get('/rest/services/all/MapServer/ch.bafu.bundesinventare-bln/362', status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless('attributes' in resp.json['feature'])
         self.failUnless('geometry' in resp.json['feature'])
         self.failUnless(resp.json['feature']['id'] == 362)
 
-    def test_getfeature_geojson(self):
+    def test_feature_geojson(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362', params={'geometryFormat': 'geojson'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless('properties' in resp.json['feature'])
         self.failUnless('geometry' in resp.json['feature'])
         self.failUnless(resp.json['feature']['id'] == 362)
 
-    def test_getfeature_with_callback(self):
+    def test_feature_with_callback(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362', params={'callback': 'cb'}, status=200)
         self.failUnless(resp.content_type == 'text/javascript')
         resp.mustcontain('cb({')
 
-    def test_gethtmlpopup_valid(self):
+    def test_htmlpopup_valid(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362/htmlpopup', status=200)
         self.failUnless(resp.content_type == 'text/html')
         resp.mustcontain('<table')
 
-    def test_gethtmlpopup_cadastralwebmap(self):
+    def test_htmlpopup_cadastralwebmap(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.kantone.cadastralwebmap-farbe/14/htmlpopup', params={'mapExtent': '485412.34375,109644.67,512974.44,135580.01999999999', 'imageDisplay': '600,400,96'}, status=200)
         self.failUnless(resp.content_type == 'text/html')
         resp.mustcontain('<table')
 
-    def test_gethtmlpopup_valid_topic_all(self):
+    def test_htmlpopup_valid_topic_all(self):
         resp = self.testapp.get('/rest/services/all/MapServer/ch.bafu.bundesinventare-bln/362/htmlpopup', status=200)
         self.failUnless(resp.content_type == 'text/html')
         resp.mustcontain('<table')
 
-    def test_gethtmlpopup_valid_with_callback(self):
+    def test_htmlpopup_valid_with_callback(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362/htmlpopup', params={'callback': 'cb'}, status=200)
         self.failUnless(resp.content_type == 'application/javascript')
 
-    def test_gethtmlpopup_missing_feature(self):
+    def test_htmlpopup_missing_feature(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/1/htmlpopup', status=404)
 
-    def test_getextendedhtmlpopup_valid(self):
+    def test_extendedhtmlpopup_valid(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bakom.radio-fernsehsender/11/extendedhtmlpopup', status=200)
         self.failUnless(resp.content_type == 'text/html')
 
-    def test_getextendedhtmlpopup_valid_with_callback(self):
+    def test_extendedhtmlpopup_valid_langs(self):
+        for lang in ('de', 'fr', 'it', 'rm', 'en'):
+            resp = self.testapp.get('/rest/services/ech/MapServer/ch.babs.kulturgueter/6967/extendedhtmlpopup', params={'lang': lang}, status=200)
+            self.failUnless(resp.content_type == 'text/html')
+
+    def test_extendedhtmlpopup_valid_with_callback(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bakom.radio-fernsehsender/12/extendedhtmlpopup', params={'callback': 'cb'}, status=200)
         self.failUnless(resp.content_type == 'application/javascript')
 
-    def test_getextendedhtmlpopup_noinfo(self):
+    def test_extendedhtmlpopup_noinfo(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362/extendedhtmlpopup', status=404)
 
-    def test_getlegend_valid(self):
+    def test_legend_valid(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/legend', status=200)
         self.failUnless(resp.content_type == 'text/html')
         resp.mustcontain('<div class="legend-header">')
 
-    def test_getlegend_valid_all(self):
+    def test_legend_valid_all(self):
         resp = self.testapp.get('/rest/services/all/MapServer/ch.bafu.bundesinventare-bln/legend', status=200)
         self.failUnless(resp.content_type == 'text/html')
         resp.mustcontain('<div class="legend-header">')
 
-    def test_getlegend_wrong_layer_id(self):
+    def test_legend_wrong_layer_id(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/dummylayer/legend', status=404)
 
-    def test_getlegend_valid_with_callback(self):
+    def test_legend_valid_with_callback(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/legend', params={'callback': 'cb'}, status=200)
         self.failUnless(resp.content_type == 'application/javascript')
 
