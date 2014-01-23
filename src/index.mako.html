@@ -207,66 +207,25 @@
 
               <ul>
 
-                <li><!-- Import -->
-                  <a class="accordion-toggle collapsed" data-toggle="collapse" href="#import">
-                    <i class="visible-collapsed icon-plus"></i>
-                    <i class="hidden-collapsed icon-minus"></i>
-                    <span translate>import</span>
+                <li><!-- Import WMS -->
+                  <a href="" ng-click="importWmsPopupShown = !importWmsPopupShown">
+                    <span ng-class="{'selected': importWmsPopupShown}" translate>wms</span>
                   </a>
-                  <div id="import" class="collapse">
-                    <div class="panel-body">
-                      <ul>
-                        <!-- We can't use translate directive for these links, see:
-                        https://github.com/PascalPrecht/angular-translate/issues/129 -->
-                        <li>
-                          <a href="" ng-click="importWmsPopupShown = !importWmsPopupShown">
-                            <span translate>wms</span>
-                          </a>
-                        </li>
-                        <li>
-                          <a href=""  ng-click="importKmlPopupShown = !importKmlPopupShown">
-                            <span translate>kml</span>
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
+                </li>
+                <li><!-- Import KML -->
+                  <a href=""  ng-click="importKmlPopupShown = !importKmlPopupShown">
+                    <span ng-class="{'selected': importKmlPopupShown}" translate>kml</span>
+                  </a>
                 </li>
                 <li><!-- Compare -->
-                  <a class="accordion-toggle collapsed" data-toggle="collapse" href="#compare">
-                    <i class="visible-collapsed icon-plus"></i>
-                    <i class="hidden-collapsed icon-minus"></i>
-                    <span translate>compare</span>
+                  <a href=""  ng-click="isSwipeActive = !isSwipeActive">
+                    <span ng-class="{'selected': isSwipeActive}" translate="{{(isSwipeActive) ? 'swipe_active' : 'swipe_inactive'}}"</span>
                   </a>
-                  <div id="compare" class="collapse">
-                    <div class="panel-body">
-                      <ul>
-                        <li>
-                          <a href=""  ng-click="isSwipeActive = !isSwipeActive">
-                            <span translate="{{(isSwipeActive) ? 'swipe_active' : 'swipe_inactive'}}"</span>
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
                 </li>
                 <li><!-- Measure -->
-                  <a class="accordion-toggle collapsed" data-toggle="collapse" href="#measure">
-                    <i class="visible-collapsed icon-plus"></i>
-                    <i class="hidden-collapsed icon-minus"></i>
-                    <span translate>measure</span>
+                  <a href=""  ng-click="isMeasureActive = !isMeasureActive">
+                    <span  ng-class="{'selected': isMeasureActive}" translate="{{(isMeasureActive) ? 'measure_active' : 'measure_inactive'}}"</span>
                   </a>
-                  <div id="measure" class="collapse">
-                    <div class="panel-body">
-                      <ul>
-                        <li>
-                          <a href=""  ng-click="isMeasureActive = !isMeasureActive">
-                            <span translate="{{(isMeasureActive) ? 'measure_active' : 'measure_inactive'}}"</span>
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
                 </li>
                 <li><!-- Feature Tree / Object information -->
                   <a id="featuretree-link" class="accordion-toggle collapsed" data-toggle="collapse" href="#featuretree">
