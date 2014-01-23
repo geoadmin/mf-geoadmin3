@@ -17,6 +17,7 @@
 
 <%def name="extended_info(c, lang)">
     <%
+        c['stable_id'] = True
         objarts = c['attributes']['objektart'].split(',')
         import csv
         from urllib2 import urlopen
