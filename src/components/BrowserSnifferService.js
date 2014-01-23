@@ -12,7 +12,12 @@
     this.$get = function($window, gaPermalink) {
       var ua = $window.navigator.userAgent;
       var platform = $window.navigator.platform;
+      //For IE, we are using angular approach
+      //https://github.com/angular/angular.js/blob/e415e916e85040fe62c801092be698ab06c1d11c/src/Angular.js#L157
       var msie = +((/msie (\d+)/.exec(ua.toLowerCase()) || [])[1]);
+      if (isNaN(msie)) {
+        msie = +((/trident\/.*; rv:(\d+)/.exec(ua.toLowerCase()) || [])[1]);
+      }
       var ios = /(iPhone|iPad)/.test(ua);
       var iosChrome = /CriOS/.test(ua);
       var webkit = /WebKit/.test(ua);
@@ -28,16 +33,7 @@
       var p = gaPermalink.getParams();
       mobile = (mobile && p.mobile != 'false') || p.mobile == 'true';
 
-      //IE detection above only works up to IE10. Later IE do have
-      //different UA set. We detect IE11 only here.
-      //FIXME: to detect newer version of IE, adapt accordingly
-      if (/Trident\/7.0/.test(ua) &&
-          /rv:11.0/.test(ua)) {
-        msie = 11;
-      }
-
-      if (msie == 10 ||
-          msie == 11) {
+      if (msie > 9) {
         // IE10/IE11 don’t fire `input` event. Angular rely on it.
         // So let’s fire it on `change`.
         $('body').on('change', 'input[type=range]', function() {
