@@ -579,18 +579,12 @@
 
     var DPI = 72;
     var UNITS_RATIO = 39.37;
-    //FIXME: the below is not true for mobile, but we
-    //don't have print on mobile (yet). When we have it
-    //we need to take it into account here.
-    var NAVBAR_HEIGHT = 89; //height of Navbar in pixels
-    var ACCORDION_WIDTH = 320;
 
     var getOptimalScale = function() {
       var size = $scope.map.getSize();
       var resolution = $scope.map.getView().getResolution();
-      //Width and height in real coordinates of visible area
-      var width = resolution * (size[0] - (ACCORDION_WIDTH * 2));
-      var height = resolution * (size[1] - (NAVBAR_HEIGHT * 2));
+      var width = resolution * (size[0] - ($scope.options.widthMargin * 2));
+      var height = resolution * (size[1] - ($scope.options.heightMargin * 2));
       var layoutSize = $scope.layout.map;
       var scaleWidth = width * UNITS_RATIO * DPI / layoutSize.width;
       var scaleHeight = height * UNITS_RATIO * DPI / layoutSize.height;
@@ -600,7 +594,7 @@
       }
       var nextBiggest = null;
       //The algo below assumes that scales are sorted from
-      //biggest (1:500) to smalles (1:2500000)
+      //biggest (1:500) to smallest (1:2500000)
       angular.forEach($scope.scales, function(scale) {
         if (nextBiggest == null ||
             testScale > scale.value) {
