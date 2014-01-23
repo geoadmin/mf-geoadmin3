@@ -581,17 +581,27 @@
     var UNITS_RATIO = 39.37;
 
     var getOptimalScale = function() {
-      var view = $scope.map.getView();
-      var testScale = view.getResolution() * 1000 * 2 * (DPI / UNITS_RATIO);
-      var nearest = null;
+      var size = $scope.map.getSize();
+      var resolution = $scope.map.getView().getResolution();
+      var width = resolution * (size[0] - ($scope.options.widthMargin * 2));
+      var height = resolution * (size[1] - ($scope.options.heightMargin * 2));
+      var layoutSize = $scope.layout.map;
+      var scaleWidth = width * UNITS_RATIO * DPI / layoutSize.width;
+      var scaleHeight = height * UNITS_RATIO * DPI / layoutSize.height;
+      var testScale = scaleWidth;
+      if (scaleHeight < testScale) {
+        testScale = scaleHeight;
+      }
+      var nextBiggest = null;
+      //The algo below assumes that scales are sorted from
+      //biggest (1:500) to smallest (1:2500000)
       angular.forEach($scope.scales, function(scale) {
-        if (nearest == null ||
-            Math.abs(scale.value - testScale) <
-            Math.abs(nearest.value - testScale)) {
-              nearest = scale;
+        if (nextBiggest == null ||
+            testScale > scale.value) {
+              nextBiggest = scale;
         }
       });
-      return nearest;
+      return nextBiggest;
     };
 
     var fullExtent = [-300000, -300000, 2000000, 2000000];
