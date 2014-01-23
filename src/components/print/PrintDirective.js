@@ -135,7 +135,7 @@
     $scope.$on('gaLayersChange', function(event, data) {
       updatePrintRectanglePixels($scope.scale);
     });
-    
+
     $scope.printing = false;
 
     var encodeLayer = function(layer, proj) {
