@@ -50,7 +50,7 @@
             });
         });
     </script>
-    <table class="table-with-border kernkraftwerke_extended">
+    <table class="table-with-border kernkraftwerke-extended">
         <tr><th class="cell-left">${_('tt_kkw_name')}</th>          <td>${c['attributes']['name']}</td></tr>
         <tr><th class="cell-left">${_('tt_kkw_operator')}</th>      <td><a href='${operator[link_i]}'>${operator[lang_i]}</a></td></tr>
         <tr><th class="cell-left">${_('tt_kkw_enforcement_1')}</th>      <td><a href='${enforcement_1[link_i]}'>${enforcement_1[lang_i]}</a></td></tr>

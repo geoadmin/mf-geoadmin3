@@ -26,7 +26,7 @@
         damtype = 'damtype_%s' % lang
     %>
     <h1>${_('tt_ch.bfe.stauanlagen-bundesaufsicht_stauanlage')} ${c['attributes']['facilityname']}</h1>
-    <table class="kernkraftwerke_extended">
+    <table class="kernkraftwerke-extended">
         <tr>
             <th class="cell-left">${_('tt_ch.bfe.stauanlagen-bundesaufsicht_stauanlage')}</th>
             <td>${c['attributes']['facilityname']}</td>

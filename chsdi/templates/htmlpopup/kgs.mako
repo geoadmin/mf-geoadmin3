@@ -17,6 +17,7 @@
 
 <%def name="extended_info(c, lang)">
     <%
+        c['stable_id'] = True
         objarts = c['attributes']['objektart'].split(',')
         import csv
         from urllib2 import urlopen
@@ -48,7 +49,7 @@
     </script>
 
 
-    <table class="table-with-border kernkraftwerke_extended">
+    <table class="table-with-border kernkraftwerke-extended">
         <tr>
             <th class="cell-left">${_('name')}</th>
             <td>${c['attributes']['zkob'] or '-'}</td>
@@ -91,7 +92,7 @@
         <a class="play-pause"></a>
         <ol class="indicator"></ol>
      </div>
-        <div class="kgs_thumbnails">
+        <div class="kgs-thumbnails">
             <div class="thumbnail-container">
             %for pic in pic_list:
                 <div class="thumbnail">
@@ -104,34 +105,36 @@
             </div>
         </div>
     % if c['attributes']['kurztexte'] is not None:
-        <div class="kgs_kurztext">
+        <div class="kgs-kurztext">
             ${c['attributes']['kurztexte']}
         </div>
     % endif
-    <table class="kernkraftwerke_extended">
-        <tr>
+    <table class="kernkraftwerke-extended">
+    % if c['attributes']['pdf_list'] is not None:
+       <tr>
 	        % for pdf in c['attributes']['pdf_list'].split('##'):
                 <th class="cell-left">${_('Feature tooltip')}:</th>
                 <td><a href="http://dav0.bgdi.admin.ch/kogis_web/downloads/kgs/matrizen/${pdf}.pdf" target="_blank">${pdf}</a></td>
 	        % endfor
 	     </tr>
-        % if c['attributes']['link_uri'] is not None:
-            <tr>
-                <th class="cell-left">${_('legalregulationlink')}</th>
-                <td><a href="${c['attributes']['link_uri']}">${c['attributes']['link_title']}</a></td>
-            </tr>
-        % endif
-        % if c['attributes']['link_2_uri'] is not None:
-            <tr>
-                <th class="cell-left">${_('legalregulationlink')}</th>
-                <td><a href="${c['attributes']['link_2_uri']}">${c['attributes']['link_2_title']}</a></td>
-            </tr>
-        % endif
-        % if c['attributes']['link_3_uri'] is not None:
-            <tr>
-                <th class="cell-left">${_('legalregulationlink')}</th>
-                <td><a href="${c['attributes']['link_3_uri']}">${c['attributes']['link_3_title']}</a></td>
-            </tr>
-        % endif
+    %endif
+    % if c['attributes']['link_uri'] is not None:
+        <tr>
+          <th class="cell-left">${_('legalregulationlink')}</th>
+            <td><a href="${c['attributes']['link_uri']}">${c['attributes']['link_title']}</a></td>
+        </tr>
+    % endif
+    % if c['attributes']['link_2_uri'] is not None:
+        <tr>
+          <th class="cell-left">${_('legalregulationlink')}</th>
+          <td><a href="${c['attributes']['link_2_uri']}">${c['attributes']['link_2_title']}</a></td>
+        </tr>
+    % endif
+    % if c['attributes']['link_3_uri'] is not None:
+        <tr>
+          <th class="cell-left">${_('legalregulationlink')}</th>
+          <td><a href="${c['attributes']['link_3_uri']}">${c['attributes']['link_3_title']}</a></td>
+        </tr>
+    % endif
     </table>
 </%def>

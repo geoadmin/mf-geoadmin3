@@ -2298,6 +2298,498 @@ msgstr "Konfiguration der Objekte"
 msgid "krebsart"
 msgstr "Krebsart lateinisch"
 
+msgid "kultur1"
+msgstr "Sakralbauten"
+
+msgid "kultur111"
+msgstr "Kirchen"
+
+msgid "kultur1110"
+msgstr "Kathedralen"
+
+msgid "kultur1111"
+msgstr "Kirchtürme"
+
+msgid "kultur1112"
+msgstr "Baptisterien"
+
+msgid "kultur1113"
+msgstr "Bischofsresidenzen"
+
+msgid "kultur112"
+msgstr "Klöster, Stifte, Kartausen, Priorate"
+
+msgid "kultur1121"
+msgstr "Klosterschulen, Kollegien"
+
+msgid "kultur113"
+msgstr "Bauten anderer Glaubensrichtungen (Moscheen, Synagogen, Tempel usw.)"
+
+msgid "kultur114"
+msgstr "Kapellen"
+
+msgid "kultur115"
+msgstr "Wegkreuze, Bildstöcke"
+
+msgid "kultur1151"
+msgstr "Stationenwege"
+
+msgid "kultur1152"
+msgstr "(Marien-)Grotten"
+
+msgid "kultur116"
+msgstr "Wallfahrtsort"
+
+msgid "kultur117"
+msgstr "Einsiedeleien"
+
+msgid "kultur118"
+msgstr "Friedhöfe, Friedhofsanlagen"
+
+msgid "kultur1181"
+msgstr "Krematorien"
+
+msgid "kultur1182"
+msgstr "Beinhäuser"
+
+msgid "kultur1183"
+msgstr "Grabmäler"
+
+msgid "kultur119"
+msgstr "Pfarrhäuser"
+
+msgid "kultur1191"
+msgstr "Domherren-, Chorherrenhäuser, Probsteien, Abteien"
+
+msgid "kultur1192"
+msgstr "Pfrundscheunen, -speicher"
+
+msgid "kultur2"
+msgstr "Bauten für Öffentlichkeit, Gewerbe, Handel, Industrie, Tourismus usw."
+
+msgid "kultur2111"
+msgstr "Regierungsgebäude, Ratshäuser"
+
+msgid "kultur2112"
+msgstr "Verwaltung (Gemeindehäuser, Amtshäuser, Kanzleien)"
+
+msgid "kultur2113"
+msgstr "Polizeibauten, Feuerwehrbauten"
+
+msgid "kultur212"
+msgstr "Gerichtsbauten"
+
+msgid "kultur2121"
+msgstr "Richtstätten, Galgen"
+
+msgid "kultur213"
+msgstr "Banken, Börsen"
+
+msgid "kultur214"
+msgstr "Bürogebäude"
+
+msgid "kultur215"
+msgstr "Postgebäude"
+
+msgid "kultur216"
+msgstr "Zollhäuser"
+
+msgid "kultur217"
+msgstr "Gefängnisbauten, Bauten Strafvollzug"
+
+msgid "kultur218"
+msgstr "Gesellschaftshäuser, Vereinsbauten, Logen"
+
+msgid "kultur2181"
+msgstr "Zunfthäuser"
+
+msgid "kultur221"
+msgstr "Archive (Gebäude)"
+
+msgid "kultur222"
+msgstr "Bibliotheken (Gebäude)"
+
+msgid "kultur223"
+msgstr "Museen (Gebäude)"
+
+msgid "kultur2231"
+msgstr "Panoramen"
+
+msgid "kultur224"
+msgstr "Opernhäuser,  Konzerthallen"
+
+msgid "kultur2241"
+msgstr "Schauspielhäuser, Theater"
+
+msgid "kultur2242"
+msgstr "Kongresszentren, Mehrzweckbauten"
+
+msgid "kultur2243"
+msgstr "Casinos"
+
+msgid "kultur229"
+msgstr "Depotstandorte von Museen, Archiven, Bibliotheken"
+
+msgid "kultur231"
+msgstr "Kindergärten, Vorschulbauten"
+
+msgid "kultur232"
+msgstr "Grund- und Mittelschulen"
+
+msgid "kultur2322"
+msgstr "Gewerbeschulen"
+
+msgid "kultur233"
+msgstr "Internate, Jugendheime"
+
+msgid "kultur234"
+msgstr "Hochschulen, Fachhochschulen"
+
+msgid "kultur2341"
+msgstr "Forschungszentren"
+
+msgid "kultur2342"
+msgstr "Sternwarten"
+
+msgid "kultur2343"
+msgstr "Konservatorien"
+
+msgid "kultur241"
+msgstr "Hospize, Susten"
+
+msgid "kultur242"
+msgstr "Gasthöfe, Pensionen, Herbergen"
+
+msgid "kultur2421"
+msgstr "Hotels"
+
+msgid "kultur243"
+msgstr "Spitäler, Kliniken"
+
+msgid "kultur2431"
+msgstr "Sanatorien, Kuranlagen"
+
+msgid "kultur244"
+msgstr "Siechenhäuser"
+
+msgid "kultur245"
+msgstr "Thermalbäder, Badeanstalten, Frei- und Hallenbäder"
+
+msgid "kultur246"
+msgstr "Waisenhäuser"
+
+msgid "kultur247"
+msgstr "Altersheime"
+
+msgid "kultur251"
+msgstr "Stadien, Rennbahnen, Sportanlagen"
+
+msgid "kultur252"
+msgstr "Schützenhäuser"
+
+msgid "kultur261"
+msgstr "Fabrikgebäude, Manufaktur- und Industrieanlagen"
+
+msgid "kultur2621"
+msgstr "Mühlen"
+
+msgid "kultur2622"
+msgstr "Sägereien"
+
+msgid "kultur2623"
+msgstr "Gewerbebauten"
+
+msgid "kultur263"
+msgstr "Ziegeleien"
+
+msgid "kultur264"
+msgstr "Bergwerke, Bergbau"
+
+msgid "kultur265"
+msgstr "Kraft- und Stauwerke"
+
+msgid "kultur266"
+msgstr "Markthallen"
+
+msgid "kultur2661"
+msgstr "Einkaufszentren, Warenhäuser, Läden"
+
+msgid "kultur2662"
+msgstr "Ausstellungs- und Messebauten"
+
+msgid "kultur267"
+msgstr "Gaswerke"
+
+msgid "kultur2670"
+msgstr "Kommunikations- und Sendeanlagen"
+
+msgid "kultur268"
+msgstr "Kornhäuser"
+
+msgid "kultur2681"
+msgstr "Schlachthäuser"
+
+msgid "kultur2682"
+msgstr "Salzhäuser"
+
+msgid "kultur271"
+msgstr "Gartenanlagen, Pärke"
+
+msgid "kultur2711"
+msgstr "Botanische Gärten, Gewächshäuser"
+
+msgid "kultur2712"
+msgstr "Zoos, Tierpärke"
+
+msgid "kultur272"
+msgstr "Platz- und Quaianlagen"
+
+msgid "kultur3"
+msgstr "Anlagen für den Verkehr"
+
+msgid "kultur311"
+msgstr "Bahnhöfe"
+
+msgid "kultur3111"
+msgstr "Rangier-, Stellwerke, Depots, Remisen"
+
+msgid "kultur3112"
+msgstr "Bahnstrecken"
+
+msgid "kultur312"
+msgstr "Flughäfen, Flugplätze und ihre Bauten (Kontrollturm, Einstellhallen, Hangare usw.)"
+
+msgid "kultur313"
+msgstr "Autowerkstätten, Garagen, Tankstellen"
+
+msgid "kultur314"
+msgstr "Luftseil-, Standseilbahnen, Zahnradbahnen, Lifte (evtl. inkl. Station)"
+
+msgid "kultur315"
+msgstr "Tram-, Busanlagen"
+
+msgid "kultur316"
+msgstr "Anlagen Schifffahrt"
+
+msgid "kultur321"
+msgstr "Brücken, Viadukte"
+
+msgid "kultur3211"
+msgstr "Steinbrücken"
+
+msgid "kultur3212"
+msgstr "Holzbrücken"
+
+msgid "kultur3213"
+msgstr "Stahlbrücken"
+
+msgid "kultur3214"
+msgstr "Stahlbetonbrücken"
+
+msgid "kultur322"
+msgstr "Ports"
+
+msgid "kultur323"
+msgstr "Historische Strassen und Wege"
+
+msgid "kultur324"
+msgstr "Tunnels, Tunnelportale"
+
+msgid "kultur331"
+msgstr "Eisenbahnen, Bahnen allg., Lokomotiven usw."
+
+msgid "kultur332"
+msgstr "Flugzeuge"
+
+msgid "kultur333"
+msgstr "Automobile"
+
+msgid "kultur334"
+msgstr "Motorräder, Fahrräder"
+
+msgid "kultur335"
+msgstr "Schiffe, Dampfschiffe, Motorschiffe, Segelboote usw."
+
+msgid "kultur4"
+msgstr "Militärische Anlagen und Wehrbauten"
+
+msgid "kultur411"
+msgstr "Wehrbauten"
+
+msgid "kultur4111"
+msgstr "Stadt- und Ortsbefestigungen"
+
+msgid "kultur421"
+msgstr "Kampf- und Führungsbauten (Festungen, Stellungen)"
+
+msgid "kultur431"
+msgstr "Militärische Hochbauten (Kasernen, Unterkünfte)"
+
+msgid "kultur432"
+msgstr "Andere militärische Bauten"
+
+msgid "kultur436"
+msgstr "Zeughäuser"
+
+msgid "kultur5"
+msgstr "Wohnbauten und ihre Nebenanlagen"
+
+msgid "kultur521"
+msgstr "Burgen"
+
+msgid "kultur5211"
+msgstr "Burgruinen"
+
+msgid "kultur5212"
+msgstr "Wohntürme"
+
+msgid "kultur523"
+msgstr "Herrenhäuser (Schlösser, Herrensitze, Landsitze)"
+
+msgid "kultur5232"
+msgstr "Stadtpalais, Palazzo"
+
+msgid "kultur5233"
+msgstr "Villen, Landhäuser"
+
+msgid "kultur524"
+msgstr "Orangerien, Pavillons"
+
+msgid "kultur531"
+msgstr "Arbeitersiedlungen, Genossenschaftssiedlungen, Wohnsiedlungen"
+
+msgid "kultur5312"
+msgstr "Städt. Bürgerhäuser, Handwerkerhäuser"
+
+msgid "kultur532"
+msgstr "Einfamilienhäuser"
+
+msgid "kultur533"
+msgstr "Städt. Wohnhäuser"
+
+msgid "kultur541"
+msgstr "Bauernhäuser"
+
+msgid "kultur542"
+msgstr "Stöckli"
+
+msgid "kultur543"
+msgstr "Ställe, Scheunen"
+
+msgid "kultur544"
+msgstr "Ländliche Kleinbauten (Speicher, Ofenhäuser, Waschhäuser)"
+
+msgid "kultur545"
+msgstr "Bauten Alpwirtschaft (Alphütten und Alpställe, Maiensässe, Heustadel, Sennhütten)"
+
+msgid "kultur6"
+msgstr "Archäologische Objekte"
+
+msgid "kultur6001"
+msgstr "Paläolithikum"
+
+msgid "kultur6002"
+msgstr "Mesolithikum"
+
+msgid "kultur6003"
+msgstr "Neolithikum"
+
+msgid "kultur6004"
+msgstr "Bronzezeit"
+
+msgid "kultur6005"
+msgstr "Eisenzeit"
+
+msgid "kultur6006"
+msgstr "Römische Zeit"
+
+msgid "kultur6007"
+msgstr "Frühmittelalter"
+
+msgid "kultur6008"
+msgstr "Mittelalter"
+
+msgid "kultur6009"
+msgstr "Neuzeit"
+
+msgid "kultur7"
+msgstr "Verschiedenes"
+
+msgid "kultur711"
+msgstr "Memorialstätten, Historische Stätten"
+
+msgid "kultur712"
+msgstr "Inschriften"
+
+msgid "kultur713"
+msgstr "Denkmäler, Standbilder"
+
+msgid "kultur714"
+msgstr "Gedenksteine, Distanzsteine"
+
+msgid "kultur718"
+msgstr "Brunnen"
+
+msgid "kultur719"
+msgstr "Inseln, Halbinseln"
+
+msgid "kultur8"
+msgstr "Sammlungen"
+
+msgid "kultur811"
+msgstr "Archäologie Museum (Sammlung)"
+
+msgid "kultur812"
+msgstr "Geschichte Museum  (Sammlung)"
+
+msgid "kultur813"
+msgstr "Kunst Museum (Sammlung)"
+
+msgid "kultur814"
+msgstr "Naturwissenschaften Museum (Sammlung)"
+
+msgid "kultur815"
+msgstr "Spezial Museum (Sammlung)"
+
+msgid "kultur8151"
+msgstr "Kirchenschatz, Domschatz"
+
+msgid "kultur816"
+msgstr "Technik Museum (Sammlung)"
+
+msgid "kultur817"
+msgstr "Volkskunde Museum (Sammlung)"
+
+msgid "kultur841"
+msgstr "Bundes- und Staatsarchive (Sammlung)"
+
+msgid "kultur842"
+msgstr "Firmenarchive (Sammlung)"
+
+msgid "kultur843"
+msgstr "Geistliche Archive (Sammlung)"
+
+msgid "kultur844"
+msgstr "Gemeindearchive (Sammlung)"
+
+msgid "kultur845"
+msgstr "Spezialarchive (Sammlung)"
+
+msgid "kultur8451"
+msgstr "Musikaliensammlung"
+
+msgid "kultur860"
+msgstr "Öffentliche Bibliothek (Bund, Kantone, Gemeinden, Universitäten usw.) (Sammlung)"
+
+msgid "kultur861"
+msgstr "Bibliothek mit geistlicher Trägerschaft (Sammlung)"
+
+msgid "kultur862"
+msgstr "Spezialbibliothek (Museen, Archive usw.) (Sammlung)"
+
+msgid "kultur863"
+msgstr "Private Bibliothek (Sammlung)"
+
 msgid "laenge_m"
 msgstr "Length [m]"
 
