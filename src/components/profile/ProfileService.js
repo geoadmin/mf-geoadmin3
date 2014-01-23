@@ -131,10 +131,6 @@
                 ', ' + options.margin.top + ')');
 
         var area = createArea(this.domain);
-        group.append('path')
-            .datum(that.data)
-            .attr('class', 'profile-area')
-            .attr('d', area);
 
         group.append('g')
             .attr('class', 'x axis')
@@ -164,6 +160,11 @@
                 .tickSize(-width, 0, 0)
                 .tickFormat('')
             );
+
+        group.append('path')
+            .datum(that.data)
+            .attr('class', 'profile-area')
+            .attr('d', area);
 
         this.group = group;
 
