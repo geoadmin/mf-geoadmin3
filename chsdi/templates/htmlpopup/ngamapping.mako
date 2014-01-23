@@ -4,19 +4,14 @@
 
 <%def name="table_body(c, lang)">
     % if c['attributes']['nbofprovider'] > 0:
-        <%        
+        <%
             import numpy
-            i=c['attributes']['nbofprovider']
-            aliasarr=[unicode(a) for a in c['attributes']['alias'].split(';')]
-            urlarr=[unicode(b) for b in c['attributes']['fdaurl'].split(';')]
-            inds = numpy.argsort(aliasarr)
-            sortedalias = numpy.take(aliasarr, inds)
-            sortedurl = numpy.take(urlarr, inds)
-
-
+            aliasarr = c['attributes']['alias'].split(';')
+            urlarr = c['attributes']['fdaurl'].split(';')
+            aliasdict = dict(zip(aliasarr, urlarr))
         %>
-        % for x in xrange(0,i):
-            <tr><td><a href="${sortedurl[x] or '-'}" target="_blank">${sortedalias[x] or '-'}</a></td></tr>
+        % for key in sorted(aliasdict.iterkeys(), key=unicode.lower):
+            <tr><td><a href="${aliasdict[key] or '-'}" target="_blank">${key or '-'}</a></td></tr>
 	    % endfor
     % else:
         <tr><td> - </td></tr>
