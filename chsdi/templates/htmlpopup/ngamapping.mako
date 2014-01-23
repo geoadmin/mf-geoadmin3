@@ -5,7 +5,6 @@
 <%def name="table_body(c, lang)">
     % if c['attributes']['nbofprovider'] > 0:
         <%
-            import numpy
             aliasarr = c['attributes']['alias'].split(';')
             urlarr = c['attributes']['fdaurl'].split(';')
             aliasdict = dict(zip(aliasarr, urlarr))
