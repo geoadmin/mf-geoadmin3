@@ -992,7 +992,7 @@
         }
       };
 
-      return function(map, featureIdsByBodId) {
+      return function(map, featureIdsByBodId, drawFeature) {
         getFeatures(featureIdsByBodId).then(function(results) {
           var vectorSource;
           var extent = [Infinity, Infinity, -Infinity, -Infinity];
@@ -1007,20 +1007,22 @@
                 map.getSize());
           }
           map.removeLayer(vector);
-          vectorSource = new ol.source.Vector({
-            features: parser.readFeatures({
-              type: 'FeatureCollection',
-              features: foundFeatures
-            })
-          });
-          vector = new ol.layer.Vector({
-            source: vectorSource,
-            styleFunction: gaStyleFunctionFactory('select')
-          });
-          gaDefinePropertiesForLayer(vector);
-          vector.highlight = true;
-          vector.invertedOpacity = 0.25;
-          map.addLayer(vector);
+          if (drawFeature) {
+            vectorSource = new ol.source.Vector({
+              features: parser.readFeatures({
+                type: 'FeatureCollection',
+                features: foundFeatures
+              })
+            });
+            vector = new ol.layer.Vector({
+              source: vectorSource,
+              styleFunction: gaStyleFunctionFactory('select')
+            });
+            gaDefinePropertiesForLayer(vector);
+            vector.highlight = true;
+            vector.invertedOpacity = 0.25;
+            map.addLayer(vector);
+          }
         });
       };
     };
@@ -1053,7 +1055,7 @@
             }
           }
           if (featureIdsCount > 0) {
-            gaRecenterMapOnFeatures(map, featureIdsByBodId);
+            gaRecenterMapOnFeatures(map, featureIdsByBodId, true);
           }
           deregister();
         });
