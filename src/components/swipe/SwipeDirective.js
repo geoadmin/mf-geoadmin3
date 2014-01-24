@@ -41,10 +41,18 @@
               start: 'touchstart',
               move: 'touchmove',
               end: 'touchend'
+            },
+            pointer: {
+              start: 'pointerdown',
+              move: 'pointermove',
+              end: 'pointerup'
             }
           };
 
           var eventKey = events.mouse;
+          if (gaBrowserSniffer.msie >= 11) {
+            eventKey = events.pointer;
+          }
           if (!gaBrowserSniffer.msie && gaBrowserSniffer.touchDevice) {
             eventKey = events.touch;
           } else {
