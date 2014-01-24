@@ -16,6 +16,7 @@
       var elevationModel = options.elevationModel || 'DTM25';
       var width = options.width - marginHoriz;
       var height = options.height - marginVert;
+      var versionPath = options.version || '';
       var d3, x, y;
 
       var onD3Loaded = function() {
@@ -25,7 +26,7 @@
       };
 
       if (!window.d3) {
-        $.getScript('lib/d3-3.3.1.min.js', onD3Loaded);
+        $.getScript(versionPath + 'lib/d3-3.3.1.min.js', onD3Loaded);
       } else {
         onD3Loaded();
       }
@@ -234,8 +235,9 @@
       };
     }
 
-    this.$get = function() {
+    this.$get = function(gaGlobalOptions) {
       return function(options) {
+        options.version = gaGlobalOptions.version;
         var chart = new ProfileChart(options);
         return chart;
       };
