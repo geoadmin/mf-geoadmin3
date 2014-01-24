@@ -1,53 +1,4 @@
 [ga-profile] {
-  position:relative;
-
-  .profile-inner {
-    overflow: hidden;
-    width: inherit;
-
-    .profile-svg {
-      display: block;
-      margin: 0;
-
-      .profile-grid-x,
-      .profile-grid-y {
-        stroke: lightgrey;
-        opacity: 0.8;
-        line {
-          stroke-width: 0.02em;
-        }
-      }
-
-      .axis path,
-      .axis line {
-        fill: none;
-        stroke: #000;
-        shape-rendering: crispEdges;
-      }
-
-      .tick {
-        font-size: 11px;
-      }
-
-      .profile-area,
-      .profile-legend-rect {
-        fill: steelblue;
-        fill-opacity: 0.95;
-      }
-
-      .profile-area {
-        &:hover {
-          fill-opacity: 0.85;
-        }
-      }
-
-      .profile-legend,
-      .profile-label {
-        font-weight: bold;
-        text-shadow: 1px 1px lightgrey;
-      }
-    }
-  }
 
   .profile-tooltip {
     position: absolute;
@@ -66,21 +17,18 @@
     border-radius: 5px;
     
     .profile-tooltip-inner {
-      top: -15px;
+      top: 5px;
       position: relative;
       width: inherit;
-      height: inherit;
+      height: 50px;
       text-align: center;
     }
     
-    &:before {
-      content: '';
+    .profile-tooltip-arrow {
       border-color: black transparent transparent;
       border-style: solid;
-      border-width: 10px;
-      height: 0;
-      width: 0;
-      position: relative;
+      border-width: 10px 10px 0px 10px;
+      position: absolute;
       top: 65px;
       left: 65px;
     }

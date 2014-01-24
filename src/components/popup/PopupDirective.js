@@ -69,7 +69,7 @@
                 for (var i = 0; i < cssLinks.length; i++) {
                   if (cssLinks[i].href) {
                     var href = cssLinks[i].href;
-                    if (href.indexOf('css') !== -1) {
+                    if (href.indexOf('app.css') !== -1) {
                       windowPrint.document.write('<link href="' + href +
                           '" rel="stylesheet" type="text/css" media="screen">');
                       windowPrint.document.write('<link href="' +

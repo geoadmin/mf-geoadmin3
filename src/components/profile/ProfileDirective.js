@@ -8,7 +8,7 @@
   ]);
 
   module.directive('gaProfile',
-      function($rootScope, gaProfileService) {
+      function($rootScope, $compile, gaProfileService) {
         return {
           restrict: 'A',
           replace: true,
@@ -17,19 +17,19 @@
             options: '=gaProfileOptions'
           },
           link: function(scope, element, attrs) {
-            var profile;
             var options = scope.options;
             var tooltipEl = element.find('.profile-tooltip');
-
             scope.coordinates = [0, 0];
             scope.unitX = '';
 
-            profile = gaProfileService(options);
+            var profile = gaProfileService(options);
 
             $rootScope.$on('gaProfileDataLoaded', function(ev, data) {
+              var d3 = window.d3;
               var profileEl = angular.element(
                   profile.create(data)
               );
+              $compile(profileEl)(scope);
               scope.unitX = profile.unitX;
               var previousProfileEl = element.find('.profile-inner');
               if (previousProfileEl.length > 0) {
@@ -48,6 +48,7 @@
 
             function attachPathListeners(areaChartPath) {
               areaChartPath.on('mousemove', function() {
+                var d3 = window.d3;
                 var path = d3.select(areaChartPath[0][0]);
                 var pathEl = path.node();
                 if (angular.isDefined(pathEl.getTotalLength)) {
@@ -81,22 +82,34 @@
                   scope.$apply(function() {
                     scope.coordinates = [xCoord, yCoord];
                   });
+                  var coordsMap = profile.findMapCoordinates(xCoord);
+                  $rootScope.$broadcast('gaProfileMapPositionUpdated',
+                      coordsMap);
                 }
               });
 
               areaChartPath.on('mouseover', function(d) {
+                var d3 = window.d3;
                 var path = d3.select(areaChartPath[0][0]);
                 var pathEl = path.node();
                 if (angular.isDefined(pathEl.getTotalLength)) {
                   tooltipEl.css({ display: 'block' });
+                  var mousePos = d3.mouse(areaChartPath[0][0]);
+                  var x = mousePos[0];
+                  var xCoord = profile.domain.X.invert(x);
+                  var coordsMap = profile.findMapCoordinates(xCoord);
+                  $rootScope.$broadcast('gaProfileMapPositionActivate',
+                      coordsMap);
                 }
               });
 
               areaChartPath.on('mouseout', function(d) {
+                var d3 = window.d3;
                 var path = d3.select(areaChartPath[0][0]);
                 var pathEl = path.node();
                 if (angular.isDefined(pathEl.getTotalLength)) {
                   tooltipEl.css({ display: 'none' });
+                   $rootScope.$broadcast('gaProfileMapPositionDeactivate');
                 }
               });
             }

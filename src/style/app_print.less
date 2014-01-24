@@ -31,20 +31,6 @@
     border: 0;
   }
 }
-.legend-footer {
-  padding: 8px;
-  .bod-footer {
-    background-color: white;
-  }
-  span {
-    font-weight: bold;
-  }
-  table {
-    font-size: 100%;
-    width: 100%;
-    border: 0;
-  }
-}
 
 // ****** HTMLPOPUP
 .htmlpopup-container {
@@ -71,6 +57,51 @@
       }
       .cell-left-large {
         width: 320px;
+      }
+    }
+  }
+}
+
+// ****** PROFILE
+[ga-profile] {
+  position:relative;
+
+  .profile-inner {
+    overflow: hidden;
+    width: inherit;
+
+    .profile-svg {
+      display: block;
+      margin: 0;
+
+      .profile-grid-x,
+      .profile-grid-y {
+        stroke: black;
+        opacity: 0.8;
+        line {
+          stroke-width: 0.02em;
+        }
+      }
+
+      .axis path,
+      .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+      }
+
+      .tick {
+        font-size: 11px;
+      }
+      .profile-area {
+        fill: #f00;
+        fill-opacity: 0.5;
+      }
+      
+      .profile-legend,
+      .profile-label {
+        font-weight: bold;
+        text-shadow: 1px 1px lightgrey;
       }
     }
   }

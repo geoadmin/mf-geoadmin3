@@ -47,7 +47,7 @@ help:
 all: prod dev lint apache testdev testprod deploy/deploy-branch.cfg fixrights
 
 .PHONY: prod
-prod: prd/lib/build.js prd/style/app.css prd/style/print.css prd/index.html prd/mobile.html prd/info.json prd/img/ prd/style/font-awesome-3.2.1/font/ prd/locales/ prd/checker
+prod: prd/lib/ prd/lib/build.js prd/style/app.css prd/style/print.css prd/index.html prd/mobile.html prd/info.json prd/img/ prd/style/font-awesome-3.2.1/font/ prd/locales/ prd/checker
 
 .PHONY: dev
 dev: src/deps.js src/style/app.css src/style/print.css src/index.html src/mobile.html
@@ -100,15 +100,19 @@ fixrights:
 	chgrp -f -R geodata . || :
 	chmod -f -R g+rw . || :
 
+prd/lib/: src/lib/d3-3.3.1.min.js
+	mkdir -p $@
+	cp $^ $@
+
 prd/lib/build.js: src/lib/jquery-2.0.3.min.js src/lib/bootstrap-3.0.0.min.js src/lib/typeahead-0.9.3.min.js src/lib/angular-1.2.1.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/EPSG2056.js src/lib/ol.js src/lib/angular-animate-1.2.1.min.js src/lib/angular-translate-1.1.0.min.js src/lib/angular-translate-loader-static-files-0.1.5.min.js .build-artefacts/fastclick.min.js .build-artefacts/app.js
 	mkdir -p $(dir $@)
 	cat $^ > $@
 
-prd/style/app.css: src/style/app.less src/style/ga_bootstrap.less src/style/ga_variables.less $(SRC_COMPONENTS_LESS_FILES) node_modules .build-artefacts/bootstrap
+prd/style/app.css: src/style/app.less src/style/app_print.less src/style/ga_bootstrap.less src/style/ga_variables.less $(SRC_COMPONENTS_LESS_FILES) node_modules .build-artefacts/bootstrap
 	mkdir -p $(dir $@)
 	node_modules/.bin/lessc -ru --yui-compress $< $@
 
-prd/style/print.css: src/style/print.less node_modules .build-artefacts/bootstrap
+prd/style/print.css: src/style/print.less src/style/app_print.less node_modules .build-artefacts/bootstrap
 	mkdir -p $(dir $@)
 	node_modules/.bin/lessc -ru --yui-compress $< $@
 
@@ -144,10 +148,10 @@ prd/info.json: src/info.json
 src/deps.js: $(SRC_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
 	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root_with_prefix="src/components components" --root_with_prefix="src/js js" --output_file=$@
 
-src/style/app.css: src/style/app.less src/style/ga_bootstrap.less src/style/ga_variables.less $(SRC_COMPONENTS_LESS_FILES) node_modules .build-artefacts/bootstrap
+src/style/app.css: src/style/app.less src/style/app_print.less src/style/ga_bootstrap.less src/style/ga_variables.less $(SRC_COMPONENTS_LESS_FILES) node_modules .build-artefacts/bootstrap
 	node_modules/.bin/lessc $(LESS_PARAMETERS) $< $@
 
-src/style/print.css: src/style/print.less node_modules .build-artefacts/bootstrap
+src/style/print.css: src/style/print.less src/style/app_print.less node_modules .build-artefacts/bootstrap
 	node_modules/.bin/lessc $(LESS_PARAMETERS) $< $@
 
 src/index.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render

@@ -1,7 +1,11 @@
 (function() {
   goog.provide('ga_measure_directive');
 
-  var module = angular.module('ga_measure_directive', []);
+  goog.require('ga_debounce_service');
+
+  var module = angular.module('ga_measure_directive', [
+    'ga_debounce_service'
+  ]);
 
   module.filter('measure', function() {
     return function(floatInMeter, type, units) {
@@ -14,13 +18,16 @@
                       break;
          default: break;
        }
-       units = units || ['km', 'm'];
+       units = units || [' km', ' m'];
        floatInMeter = floatInMeter || 0;
        var measure = floatInMeter.toFixed(2);
        var km = Math.floor(measure / factor);
 
-       if (km < 0) {
-         return measure + '' + units[1];
+       if (km <= 0) {
+         if (parseInt(measure) == 0) {
+           measure = 0;
+         }
+         return measure + units[1];
        }
 
        var str = '' + km;
@@ -39,7 +46,7 @@
   });
 
   module.directive('gaMeasure',
-    function($rootScope) {
+    function($rootScope, gaDebounce) {
       return {
         restrict: 'A',
         templateUrl: function(element, attrs) {
@@ -51,123 +58,191 @@
           isActive: '=gaMeasureActive'
         },
         link: function(scope, elt, attrs, controller) {
-          var sketchFeatDistance, sketchFeatArea;
-          var sketchFeatDeregister, deregister;
-          var styleFunction = (function() {
-            var styles = {};
-            styles['Polygon'] = [
-              new ol.style.Style({
-                fill: new ol.style.Fill({
-                  color: [255, 0, 0, 0.4]
-                }),
-                stroke: new ol.style.Stroke({
-                  color: [255, 0, 0, 1],
-                  width: 2
-                })
-              })
-            ];
-            styles['MultiPolygon'] = styles['Polygon'];
-
-            styles['LineString'] = [
-              new ol.style.Style({
-                stroke: new ol.style.Stroke({
-                  color: [255, 0, 0, 0.7],
-                  width: 3,
-                  lineCap: 'dash'
-                })
-              })
-            ];
-            styles['MultiLineString'] = styles['LineString'];
-
-            styles['Point'] = [
-              new ol.style.Style({
-                image: new ol.style.Circle({
-                  radius: 4,
-                  fill: new ol.style.Fill({
-                    color: [255, 0, 0, 0.4]
-                  }),
-                  stroke: new ol.style.Stroke({
-                    color: [255, 0, 0, 1],
-                    width: 1
-                  })
-                })
-              })
-            ];
-            styles['MultiPoint'] = styles['Point'];
-
-            return function(feature, resolution) {
-                return styles[feature.getGeometry().getType()];
-            };
-          })();
-
+          scope.options.profileBt = elt.find('.ga-measure-profile-bt');
+          var isClick = false;
+          var isSnapOnFirstPoint = false;
+          var sketchFeatArea, sketchFeatDistance, sketchFeatAzimuth;
+          var deregister, deregisterFeature;
+          var styleFunction = scope.options.styleFunction;
           var drawArea = new ol.interaction.Draw({
-            type: 'Polygon'
+            type: 'Polygon',
+            styleFunction: scope.options.drawStyleFunction
           });
 
           var featuresOverlay = new ol.render.FeaturesOverlay();
           featuresOverlay.setStyleFunction(styleFunction);
           featuresOverlay.setMap(scope.map);
 
-          var isDblClick = false;
-          scope.map.on('dblclick', function(evt) {
-            isDblClick = true;
-          });
-
+          // Activate the component: add listeners, last features drawn and draw
+          // interaction.
           var activate = function() {
+            updateFeaturesOverlay();
             scope.map.addInteraction(drawArea);
 
             // Add events
             deregister = [
               drawArea.on('drawstart', function(evt) {
-                isDblClick = false;
+                var isSnapOnLastPoint = false;
                 featuresOverlay.getFeatures().clear();
                 sketchFeatArea = evt.getFeature();
-                sketchFeatDeregister = sketchFeatArea.on('change',
+                var firstPoint = sketchFeatArea.getGeometry()
+                    .getCoordinates()[0][0];
+                sketchFeatDistance = new ol.Feature(
+                    new ol.geom.LineString([firstPoint]));
+                sketchFeatAzimuth = new ol.Feature(
+                    new ol.geom.Circle(firstPoint, 0));
+                featuresOverlay.addFeature(sketchFeatAzimuth);
+
+                deregisterFeature = sketchFeatArea.on('change',
                   function(evt) {
-                    updateMeasures();
+
+                    if (!isClick) {
+                      var feature = evt.target; //sketchFeatArea
+                      var lineCoords = feature.getGeometry()
+                          .getCoordinates()[0];
+                      var lastPoint = lineCoords[lineCoords.length - 1];
+                      var lastPoint2 = lineCoords[lineCoords.length - 2];
+
+                      isSnapOnFirstPoint = (lastPoint[0] == firstPoint[0] &&
+                          lastPoint[1] == firstPoint[1]);
+
+                      isSnapOnLastPoint = (lastPoint[0] == lastPoint2[0] &&
+                          lastPoint[1] == lastPoint2[1]);
+
+                      if (isSnapOnLastPoint) {
+                        lineCoords.pop();
+                      }
+
+                      sketchFeatDistance.getGeometry()
+                          .setCoordinates(lineCoords);
+                      updateMeasures();
+
+                      if (!isSnapOnFirstPoint) {
+                        if (lineCoords.length == 2) {
+                          sketchFeatAzimuth.getGeometry()
+                              .setRadius(scope.distance);
+                        } else if (!isSnapOnLastPoint) {
+                          sketchFeatAzimuth.getGeometry().setRadius(0);
+                        }
+                      }
+
+                    } else {
+                      updateProfileDebounced();
+                      isClick = false;
+                    }
                   }
                 );
               }),
+
               drawArea.on('drawend', function(evt) {
-                sketchFeatArea.unByKey(sketchFeatDeregister);
-                featuresOverlay.addFeature(isDblClick ? sketchFeatDistance :
-                   sketchFeatArea);
+                // Unregister the change event
+                sketchFeatArea.unByKey(deregisterFeature);
+                updateFeaturesOverlay();
+              }),
+
+              scope.map.on('click', function() {
+                isClick = true;
               })
             ];
-         };
+          };
 
-         var deactivate = function() {
+
+          // Deactivate the component: remove listeners, features and draw
+          // interaction.
+          var deactivate = function() {
             featuresOverlay.getFeatures().clear();
             scope.map.removeInteraction(drawArea);
 
             // Remove events
             if (deregister) {
               for (var i = deregister.length - 1; i >= 0; i--) {
-                drawArea.unByKey(deregister[i]);
+                deregister[i].src.unByKey(deregister[i]);
               }
             }
           };
 
+
+          // Add sketch feature to the featuresOverlay if possible
+          var updateFeaturesOverlay = function() {
+            if (sketchFeatArea) {
+              var lineCoords = sketchFeatDistance.getGeometry()
+                  .getCoordinates();
+              if (lineCoords.length == 2) {
+                featuresOverlay.addFeature(sketchFeatAzimuth);
+              } else {
+                featuresOverlay.removeFeature(sketchFeatAzimuth);
+              }
+              featuresOverlay.addFeature(isSnapOnFirstPoint ? sketchFeatArea :
+                  sketchFeatDistance);
+            }
+          };
+
+          // Update value of measures from the sketch features
           var updateMeasures = function() {
             scope.$apply(function() {
-              var geom = sketchFeatArea.getGeometry();
-              sketchFeatDistance = new ol.Feature(new ol.geom.LineString(
-                  geom.getCoordinates()[0]));
+              var coords = sketchFeatDistance.getGeometry().getCoordinates();
               scope.distance = sketchFeatDistance.getGeometry().getLength();
-              scope.surface = geom.getArea();
+              scope.azimuth = calculateAzimuth(coords[0], coords[1]);
+              scope.surface = sketchFeatArea.getGeometry().getArea();
             });
           };
+
+
+          // Calulate the azimuth from 2 points
+          var calculateAzimuth = function(pt1, pt2) {
+            if (!pt1 || !pt2) {
+              return undefined;
+            }
+
+            var x = pt2[0] - pt1[0];
+            var y = pt2[1] - pt1[1];
+            var rad = Math.acos(y / Math.sqrt(x * x + y * y));
+            var factor = x > 0 ? 1 : -1;
+            return (360 + (factor * rad * 180 / Math.PI)) % 360;
+          };
+
+          // Update profile functions
+          var updateProfile = function() {
+            if (scope.options.isProfileActive &&
+                 sketchFeatDistance &&
+                 sketchFeatDistance.getGeometry() &&
+                 sketchFeatDistance.getGeometry()
+                     .getCoordinates().length >= 2) {
+              scope.options.drawProfile(sketchFeatDistance);
+            }
+          };
+          var updateProfileDebounced = gaDebounce.debounce(updateProfile, 500,
+              false);
+
 
           // Watchers
           scope.$watch('isActive', function(active) {
             $rootScope.isMeasureActive = active;
-            scope.distance = 0;
-            scope.surface = 0;
             if (active) {
               activate();
             } else {
               deactivate();
             }
+          });
+          scope.$watch('options.isProfileActive', function(active) {
+            if (active) {
+              updateProfileDebounced();
+            }
+          });
+
+          // Listen Profile directive events
+          var sketchFeatPoint;
+          $rootScope.$on('gaProfileMapPositionActivate',
+            function(event, coords) {
+              sketchFeatPoint = new ol.Feature(new ol.geom.Point(coords));
+              featuresOverlay.addFeature(sketchFeatPoint);
+          });
+          $rootScope.$on('gaProfileMapPositionUpdated',
+            function(event, coords) {
+              sketchFeatPoint.getGeometry().setCoordinates(coords);
+          });
+          $rootScope.$on('gaProfileMapPositionDeactivate', function(event) {
+            featuresOverlay.removeFeature(sketchFeatPoint);
           });
         }
       };
