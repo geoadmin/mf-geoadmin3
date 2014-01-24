@@ -64,9 +64,8 @@
                 //MacEnvironments don't get here because the event is not
                 //recognized as mouseEvent on Mac by the google closure.
                 //We have to use the apple key on those devices
-                return scope.options.active &&
-                       (evt.getBrowserEvent().ctrlKey ||
-                       (gaBrowserSniffer.mac && evt.getBrowserEvent().metaKey));
+                return evt.getBrowserEvent().ctrlKey ||
+                       (gaBrowserSniffer.mac && evt.getBrowserEvent().metaKey);
               },
               style: new ol.style.Style({
                 stroke: new ol.style.Stroke({
@@ -276,6 +275,7 @@
             // to separate these concerns.
             var triggerChange = function() {
               if (scope.options.active) {
+                scope.tree = {};
                 cancel();
                 timeoutPromise = $timeout(function() {
                   requestFeatures();
@@ -387,11 +387,15 @@
               }
             };
 
+            var activate = function() {
+              showSelectionRectangle();
+              triggerChange();
+            };
+
             scope.$watch('options.active', function(newVal, oldVal) {
               cancel();
               if (newVal === true) {
-                showSelectionRectangle();
-                triggerChange();
+                activate();
               } else {
                 scope.clearHighlight();
                 hideSelectionRectangle();
@@ -404,8 +408,13 @@
 
             scope.dragBox.on('boxend', function(evt) {
               selectionRecFeature.setGeometry(scope.dragBox.getGeometry());
-              showSelectionRectangle();
-              triggerChange();
+              if (scope.options.active) {
+                activate();
+              } else {
+                scope.$apply(function() {
+                  $rootScope.$broadcast('gaTriggerFeatureTreeActivation');
+                });
+              }
             });
           }
         };

@@ -17,7 +17,14 @@
           active: false
         };
 
-        $scope.$watch('isFeatureTreeActive', function(newval, oldval) {
+        $scope.$on('gaTriggerFeatureTreeActivation', function() {
+          if (!$scope.globals.isFeatureTreeActive) {
+            $scope.globals.isFeatureTreeActive = true;
+          }
+        });
+
+
+        $scope.$watch('globals.isFeatureTreeActive', function(newval, oldval) {
           if (angular.isDefined(newval)) {
             $scope.options.active = newval;
           }
