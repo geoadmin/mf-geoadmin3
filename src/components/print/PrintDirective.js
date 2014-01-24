@@ -72,34 +72,51 @@
        return validLayers[0];
     };
 
+   var deregister;
+
    var activate = function() {
+     deregister = [
+       $scope.map.on('precompose', handlePreCompose),
+       $scope.map.on('postcompose', handlePostCompose)
+     ];
      $scope.scale = getOptimalScale();
+     $scope.isActive = true;
      refreshComp();
    };
 
    var deactivate = function() {
-     //refreshComp();
+      $scope.isActive = false;
+      if (deregister) {
+        for (var i = 0; i < deregister.length; i++) {
+         deregister[i].src.unByKey(deregister[i]);
+        }
+      }
+      refreshComp();
    };
 
 
    var refreshComp = function() {
-     $scope.map.on('precompose', handlePreCompose),
-     $scope.map.on('postcompose', handlePostCompose);
-     $scope.map.requestRenderFrame();
+      $scope.map.requestRenderFrame();
     };
 
 
     // Compose events
     var handlePreCompose = function(evt) {
-      updatePrintRectanglePixels($scope.scale);
+      if (!$scope.isActive) {
+        return;
+      }
+      var ctx = evt.getContext();
+      // FIXME
+      ctx.canvas.width = ctx.canvas.width;
+      ctx.save();
     };
 
     var handlePostCompose = function(evt) {
-      var ctx = evt.getContext();
-      ctx.save();
       var size = $scope.map.getSize();
       var width = size[0];
       var height = size[1];
+      var ctx = evt.getContext();
+
       var minx, miny, maxx, maxy;
       minx = printRectangle[0], miny = printRectangle[1],
            maxx = printRectangle[2], maxy = printRectangle[3];
@@ -121,10 +138,9 @@
       ctx.closePath();
 
       ctx.fillStyle = 'rgba(0, 5, 25, 0.75)';
-      ctx.strokeStyle = 'rgba(0.5,0.5,0.5,0.5)';
-      ctx.lineWidth = 1;
       ctx.fill();
-      ctx.stroke();
+
+      ctx.restore();
     };
 
 
@@ -133,6 +149,14 @@
       updatePrintConfig();
     });
     $scope.$on('gaLayersChange', function(event, data) {
+      updatePrintRectanglePixels($scope.scale);
+    });
+
+    //We should think about deregistering this event, becaus
+    //it's fired so often, it might have an impact on
+    //overall performance even if updatePrintRectangle does
+    //nothing
+    $scope.map.getView().on('propertychange', function(event) {
       updatePrintRectanglePixels($scope.scale);
     });
 
@@ -703,10 +727,10 @@
       }
     });
     $scope.$watch('scale', function() {
-       //updatePrintRectanglePixels($scope.scale);
+       updatePrintRectanglePixels($scope.scale);
     });
     $scope.$watch('layout', function() {
-      //updatePrintRectanglePixels($scope.scale);
+      updatePrintRectanglePixels($scope.scale);
     });
 
   });
