@@ -97,8 +97,8 @@ describe('ga_contextpopup_directive', function() {
         mapEvt = {
            stopPropagation: function() {},
            preventDefault: function() {},
-           getPixel: function() { return [25, 50]; },
-           getCoordinate: function() { return [661473, 188192]; }
+           pixel: [25, 50],
+           coordinate: [661473, 188192]
         };
         gaBrowserSniffer.touchDevice = true;
         gaBrowserSniffer.msie = false;
@@ -148,9 +148,7 @@ describe('ga_contextpopup_directive', function() {
         $timeout.flush();
         handlers.touchstart(mapEvt);
         handlers.touchmove({
-          getPixel: function() {
-            return [30, 60];
-          }
+          pixel: [30, 60]
         });
         $timeout.verifyNoPendingTasks();
 

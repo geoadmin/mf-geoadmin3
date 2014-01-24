@@ -400,7 +400,7 @@
           /*var onMouseMove = function(evt) {
             var pixel = (evt.originalEvent) ?
                 olMap.getEventPixel(evt.originalEvent) :
-                evt.getPixel();
+                evt.pixel;
 
             var features = findFeatures(pixel);
             if (features.length > 0 && features[0].get('description')) {
@@ -417,7 +417,7 @@
             }
             var pixel = (evt.originalEvent) ?
                 olMap.getEventPixel(evt.originalEvent) :
-                evt.getPixel();
+                evt.pixel;
             var features = findFeatures(pixel);
             if (features.length > 0) {
               var feature = features[0];
@@ -434,13 +434,13 @@
 
           var listenerKey;
           olMap.getLayers().on('add', function(layersEvent) {
-            if (layersEvent.getElement() === olLayer) {
+            if (layersEvent.element === olLayer) {
               listenerKey = gaMapClick.listen(olMap, onMapClick);
               //$(olMap.getViewport()).on('mousemove', onMouseMove);
             }
           });
           olMap.getLayers().on('remove', function(layersEvent) {
-            if (layersEvent.getElement() === olLayer) {
+            if (layersEvent.element === olLayer) {
               olMap.unByKey(listenerKey);
               //$(olMap.getViewport()).unbind('mousemove', onMouseMove);
             }

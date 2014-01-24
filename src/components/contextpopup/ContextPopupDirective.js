@@ -66,10 +66,10 @@
 
                 var pixel = (event.originalEvent) ?
                     map.getEventPixel(event.originalEvent) :
-                    event.getPixel();
+                    event.pixel;
                 coord21781 = (event.originalEvent) ?
                     map.getEventCoordinate(event.originalEvent) :
-                    event.getCoordinate();
+                    event.coordinate;
                 var coord4326 = ol.proj.transform(coord21781,
                     'EPSG:21781', 'EPSG:4326');
                 var coord2056 = ol.proj.transform(coord21781,
@@ -147,7 +147,7 @@
                 var startPixel, holdPromise;
                 map.on('touchstart', function(event) {
                   $timeout.cancel(holdPromise);
-                  startPixel = event.getPixel();
+                  startPixel = event.pixel;
                   holdPromise = $timeout(function() {
                     handler(event);
                   }, 300, false);
@@ -158,7 +158,7 @@
                 });
                 map.on('touchmove', function(event) {
                   if (startPixel) {
-                    var pixel = event.getPixel();
+                    var pixel = event.pixel;
                     var deltaX = Math.abs(startPixel[0] - pixel[0]);
                     var deltaY = Math.abs(startPixel[1] - pixel[1]);
                     if (deltaX + deltaY > 6) {

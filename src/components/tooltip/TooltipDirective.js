@@ -108,7 +108,7 @@
               var mapExtent = map.getView().calculateExtent(size);
               var coordinate = (evt.originalEvent) ?
                   map.getEventCoordinate(evt.originalEvent) :
-                  evt.getCoordinate();
+                  evt.coordinate;
 
               // A digest cycle is necessary for $http requests to be
               // actually sent out. Angular-1.2.0rc2 changed the $evalSync
