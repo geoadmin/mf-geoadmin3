@@ -23,7 +23,8 @@
                 left: 60
               },
               width: 600,
-              height: 350
+              height: 350,
+              elevationModel: 'COMB'
           },
           styleFunction: (function() {
             var styles = {};
@@ -101,8 +102,11 @@
         var isProfileCreated = false;
         var createProfile = function(feature, callback) {
           var coordinates = feature.getGeometry().getCoordinates();
-          var wkt = '{"type":"LineString","coordinates":' + angular.toJson(coordinates) + '}'; 
-          var template = $scope.options.profileUrl + '?geom=' + wkt;
+          var wkt = '{"type":"LineString","coordinates":' +
+              angular.toJson(coordinates) + '}'; 
+          var template = $scope.options.profileUrl + '?geom=' + wkt +
+              '&elevation_models=' +
+              $scope.options.profileOptions.elevationModel;
           var http = $http.get(template);
           if (!callback) {
             callback = function(data, status) {
@@ -111,7 +115,10 @@
               $scope.options.profileBt.button('reset');
             };
           }
-          http.success(callback); 
+          http.success(callback);
+          http.error(function(data, status) {
+            $scope.options.profileBt.button('reset');
+          });
         };
 
         var updateProfile = function(feature) {

@@ -13,7 +13,7 @@
     function ProfileChart(options) {
       var marginHoriz = options.margin.left + options.margin.right;
       var marginVert = options.margin.top + options.margin.bottom;
-
+      var elevationModel = options.elevationModel || 'DTM25';
       var width = options.width - marginHoriz;
       var height = options.height - marginVert;
       var d3, x, y;
@@ -39,7 +39,7 @@
             })
             .y0(height)
             .y1(function(d) {
-              return y(d.alts.DTM25);
+              return y(d.alts[elevationModel]);
             });
         return area;
       };
@@ -62,10 +62,10 @@
           return d.dist || 0;
         }));
         var yMin = d3.min(data, function(d) {
-          return d.alts.DTM25;
+          return d.alts[elevationModel];
         });
         var yMax = d3.max(data, function(d) {
-          return d.alts.DTM25;
+          return d.alts[elevationModel];
         });
         var decile = (yMax - yMin) / 10;
         yMin = yMin - decile > 0 ? yMin - decile : 0;
@@ -103,7 +103,7 @@
           this.unitX = maxX >= 10000 ? 'km' : 'm';
           $.map(data, function(val) {
             val.dist = val.dist / denom;
-            val.alts.DTM25 = val.alts.DTM25 || 0;
+            val.alts[elevationModel] = val.alts[elevationModel] || 0;
             return val;
           });
         }
