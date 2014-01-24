@@ -275,19 +275,18 @@ layouts:
 ## Legend
 ##--------------------------------------
         - !columns
-          absoluteX: 45
+          absoluteX: 22
           absoluteY: 575
-          width: 750
+          width: 798
           condition: "enableLegends"
           items:
             - !legends
+              horizontalAlignment: left
               inline: false
               defaultScale: 0.5 
-              maxHeight: 555
-              maxWidth: 250
-              maxIconHeight: 0
-              maxIconWidth: 0
-              columnMargin: 10
+              maxHeight: 420
+              iconMaxHeight: 420
+              columnMargin: 5
               classIndentation: 3
               classSpace: 5
               backgroundColor: white
@@ -545,19 +544,19 @@ layouts:
 ## Legend
 ##---------------------------------------
         - !columns
-          absoluteX: 45
-          absoluteY: 822 
-          width: 500
+          absoluteX: 22
+          absoluteY: 820 
+          width: 551
           condition: "enableLegends"
           items:
             - !legends
+              horizontalAlignment: left
               inline: false
-              defaultScale: 0.5
-              maxHeight: 802
-              maxWidth: 250
-              maxIconHeight: 0
-              maxIconWidth: 0
-              columnMargin: 10
+              defaultScale: 0.5 
+              maxHeight: 798
+              iconMaxHeight: 798
+              iconMaxWidth: 250
+              columnMargin: 5
               classIndentation: 3
               classSpace: 5
               backgroundColor: white
