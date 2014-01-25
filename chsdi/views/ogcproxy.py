@@ -8,6 +8,9 @@ from pyramid.httpexceptions import (HTTPForbidden, HTTPBadRequest,
                                     HTTPBadGateway, HTTPNotAcceptable)
 from pyramid.response import Response
 
+from StringIO import StringIO
+from urllib import urlopen
+from zipfile import ZipFile
 
 allowed_content_types = (
     "application/xml", "text/xml",
@@ -18,7 +21,8 @@ allowed_content_types = (
     "application/vnd.ogc.context+xml",      # WMC
     "application/vnd.ogc.gml",              # GML
     "application/vnd.ogc.sld+xml",          # SLD
-    "application/vnd.google-earth.kml+xml",  # KML
+    "application/vnd.google-earth.kml+xml", # KML
+    "application/vnd.google-earth.kmz"      # KMZ
 )
 
 allowed_hosts = (
@@ -55,6 +59,13 @@ def ogcproxy(request):
             # allow any content type from allowed hosts (any port)
             if not parsed_url.netloc in allowed_hosts:
                 return HTTPForbidden()
+        if resp["content-type"] == "application/vnd.google-earth.kmz":
+            zipurl = urlopen(url)
+            zipfile = ZipFile(StringIO(zipurl.read()))
+            content = ''
+            for line in zipfile.open(zipfile.namelist()[0]).readlines():
+                content = content + line
+            ct = 'application/vnd.google-earth.kml+xml'
     else:
         return HTTPNotAcceptable()
 
