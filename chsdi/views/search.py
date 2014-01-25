@@ -113,6 +113,17 @@ class Search(SearchValidation):
             return len(temp)
         return 0
 
+    def _get_quadindex_string(self):
+        retVal = ''
+        tokens = []
+        if self.quadindex is not None:
+            retVal += '@geom_quadindex ' + self.quadindex + '*'
+            retVal += ' | @geom_quadindex ' + self.quadindex
+            qlen = len(self.quadindex)
+            for x in range(1, qlen):
+                retVal += ' | @geom_quadindex ' + self.quadindex[:-x]
+        return retVal
+
     def _feature_search(self):
         # all features in given bounding box
         if self.featureIndexes is None:
@@ -126,7 +137,7 @@ class Search(SearchValidation):
             self.sphinx.SetFilter('year', [self.timeInstant])
         searchText = self._query_fields('@detail')
         if self.quadindex is not None:
-            searchText += ' & @geom_quadindex ' + self.quadindex + '*'
+            searchText += ' & (' + self._get_quadindex_string() + ')'
         self._add_feature_queries(searchText)
         temp = self.sphinx.RunQueries()
         return self._parse_feature_results(temp)
@@ -152,7 +163,7 @@ class Search(SearchValidation):
         self.sphinx.SetGeoAnchor('lat', 'lon', geoAnchor.GetY(), geoAnchor.GetX())
         self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, '@geodist ASC')
 
-        geomFilter = '@geom_quadindex ' + self.quadindex + '*'
+        geomFilter = self._get_quadindex_string()
         self._add_feature_queries(geomFilter)
         temp = self.sphinx.RunQueries()
         return self._parse_feature_results(temp)
