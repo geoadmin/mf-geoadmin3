@@ -116,13 +116,15 @@ prd/style/print.css: src/style/print.less src/style/app_print.less node_modules 
 	mkdir -p $(dir $@)
 	node_modules/.bin/lessc -ru --yui-compress $< $@
 
-prd/index.html: src/index.mako.html prd/lib/build.js prd/style/app.css .build-artefacts/python-venv/bin/mako-render
+prd/index.html: src/index.mako.html prd/lib/build.js prd/style/app.css .build-artefacts/python-venv/bin/mako-render .build-artefacts/python-venv/bin/htmlmin
 	mkdir -p $(dir $@)
 	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "mode=prod" --var "version=$(VERSION)" --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" $< > $@
+	.build-artefacts/python-venv/bin/htmlmin $@ $@
 
-prd/mobile.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render
+prd/mobile.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render .build-artefacts/python-venv/bin/htmlmin
 	mkdir -p $(dir $@)
 	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "mode=prod" --var "version=$(VERSION)" --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" $< > $@
+	.build-artefacts/python-venv/bin/htmlmin $@ $@
 
 prd/img/: src/img/*
 	mkdir -p $@
@@ -204,6 +206,10 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 
 .build-artefacts/python-venv/bin/mako-render: .build-artefacts/python-venv
 	.build-artefacts/python-venv/bin/pip install "Mako==0.8.1"
+	touch $@
+
+.build-artefacts/python-venv/bin/htmlmin: .build-artefacts/python-venv
+	.build-artefacts/python-venv/bin/pip install "htmlmin"
 	touch $@
 
 .build-artefacts/translate-requirements-installation.timestamp: .build-artefacts/python-venv
