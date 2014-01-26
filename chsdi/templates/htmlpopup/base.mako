@@ -9,6 +9,7 @@
   extended = pageargs.get('extended')
   extendedPathCss = request.static_url('chsdi:static/css/extended.min.css').replace('http://', 'https://')
   c['baseUrl'] = protocol + '://' + request.registry.settings['geoadminhost']
+  c['instanceId'] = request.registry.settings['instanceid']
   bbox = c['bbox']
   lang = request.lang
   attribution = pageargs.get('attribution')
