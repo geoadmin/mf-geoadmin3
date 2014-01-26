@@ -118,7 +118,6 @@ class Search(SearchValidation):
         tokens = []
         if self.quadindex is not None:
             retVal += '@geom_quadindex ' + self.quadindex + '*'
-            retVal += ' | @geom_quadindex ' + self.quadindex
             qlen = len(self.quadindex)
             for x in range(1, qlen):
                 retVal += ' | @geom_quadindex ' + self.quadindex[:-x]
