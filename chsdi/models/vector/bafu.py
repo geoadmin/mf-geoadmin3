@@ -64,6 +64,24 @@ class Temperaturmessnetz(Base, Vector):
 register('ch.bafu.hydrologie-wassertemperaturmessstationen', Temperaturmessnetz)
 
 
+class Vorfluter (Base, Vector):
+    __tablename__ = 'vorfluter'
+    __table_args__ = ({'schema': 'wasser', 'autoload': False})
+    __bodId__ = 'ch.bafu.wasser-vorfluter'
+    __template__ = 'templates/htmlpopup/vorfluter.mako'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    teilezgnr = Column('teilezgnr', Integer)
+    gwlnr = Column('gwlnr', Text)
+    measure = Column('measure', Integer)
+    endmeasure = Column('endmeasure', Integer)
+    name = Column('name', Text)
+    regimenr = Column('regimenr', Integer)
+    regimetyp = Column('regimetyp', Text)
+    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+
+register('ch.bafu.wasser-vorfluter', Vorfluter)
+
+
 class Gewaesserzustandst (Base, Vector):
     __tablename__ = 'dbgz'
     __table_args__ = ({'schema': 'hydrologie', 'autoload': False})
