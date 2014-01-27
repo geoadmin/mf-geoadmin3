@@ -93,6 +93,7 @@ class IVS_REG_LOC(Base, Vector):
     bgdi_created = Column('bgdi_created', Text)
 
 register('ch.astra.ivs-reg_loc', IVS_REG_LOC)
+register('ch.astra.ivs-reg_loc.sub', IVS_REG_LOC)
 
 
 class KANTONE_REG_LOC(Base, Vector):
