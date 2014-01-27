@@ -99,6 +99,14 @@ class TestSearchServiceView(TestsBase):
         self.failUnless(resp.json['results'][0]['attrs']['detail'] == '880819 chemin isabelle-de-montolieu 1 1010 lausanne 5586 lausanne ch vd')
         self.failUnless(resp.json['results'][0]['attrs']['num'] == 1)
 
+    def test_search_features(self):
+        resp = self.testapp.get('/rest/services/inspire/SearchServer', params={'searchText': 'vd 446', 'type': 'featuresearch', 'bbox': '551306.5625,167918.328125,551754.125,168514.625', 'features': 'ch.astra.ivs-reg_loc'}, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+
+    def test_search_features(self):
+        resp = self.testapp.get('/rest/services/inspire/SearchServer', params={'searchText': '4331', 'type': 'featuresearch', 'features': 'ch.bafu.hydrologie-gewaesserzustandsmessstationen'}, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+
     def test_features_bbox(self):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'features': 'ch.astra.ivs-reg_loc', 'type': 'featureidentify', 'bbox': '551306.5625,167918.328125,551754.125,168514.625'}, status=200)
         self.failUnless(resp.content_type == 'application/json')

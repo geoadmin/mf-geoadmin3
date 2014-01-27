@@ -14,7 +14,7 @@ class Search(SearchValidation):
 
     LIMIT = 50
     LAYER_LIMIT = 30
-    FEATURE_LIMIT = 20
+    FEATURE_LIMIT = 10
     FEATURE_GEO_LIMIT = 200
 
     def __init__(self, request):
@@ -55,6 +55,12 @@ class Search(SearchValidation):
         if self.typeInfo in ('features', 'featureidentify'):
             # search all features within bounding box
             self._feature_bbox_search()
+        if self.typeInfo == 'featuresearch':
+            # search all features using searchText
+            self.searchText = remove_accents(
+                self.request.params.get('searchText')
+            )
+            self._feature_search()
         if self.typeInfo == 'locations':
             # search all features with text and bounding box
             self.searchText = remove_accents(
