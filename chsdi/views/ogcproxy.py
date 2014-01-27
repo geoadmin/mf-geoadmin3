@@ -14,15 +14,15 @@ from zipfile import ZipFile
 
 allowed_content_types = (
     "application/xml", "text/xml",
-    "application/vnd.ogc.se_xml",           # OGC Service Exception
-    "application/vnd.ogc.se+xml",           # OGC Service Exception
-    "application/vnd.ogc.success+xml",      # OGC Success (SLD Put)
-    "application/vnd.ogc.wms_xml",          # WMS Capabilities
-    "application/vnd.ogc.context+xml",      # WMC
-    "application/vnd.ogc.gml",              # GML
-    "application/vnd.ogc.sld+xml",          # SLD
-    "application/vnd.google-earth.kml+xml", # KML
-    "application/vnd.google-earth.kmz"      # KMZ
+    "application/vnd.ogc.se_xml",            # OGC Service Exception
+    "application/vnd.ogc.se+xml",            # OGC Service Exception
+    "application/vnd.ogc.success+xml",       # OGC Success (SLD Put)
+    "application/vnd.ogc.wms_xml",           # WMS Capabilities
+    "application/vnd.ogc.context+xml",       # WMC
+    "application/vnd.ogc.gml",               # GML
+    "application/vnd.ogc.sld+xml",           # SLD
+    "application/vnd.google-earth.kml+xml",  # KML
+    "application/vnd.google-earth.kmz"       # KMZ
 )
 
 allowed_hosts = (
