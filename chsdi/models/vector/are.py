@@ -88,13 +88,13 @@ class Beschaeftigtendichte(Base, Vector):
     __tablename__ = 'beschaeftigtendichte_bz08'
     __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': False})
     __template__ = 'templates/htmlpopup/beschaeftigtendichte.mako'
-    __bodId__ = 'ch.are.beschaeftigtendichte-bz9'
+    __bodId__ = 'ch.are.beschaeftigtendichte-bz08'
     id = Column('row_id', Integer, primary_key=True)
     empt_ha = Column('empt_ha', Numeric)
     stand = Column('stand', Numeric)
     the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
 
-register('ch.are.beschaeftigtendichte-bz9', Beschaeftigtendichte)
+register('ch.are.beschaeftigtendichte-bz08', Beschaeftigtendichte)
 
 
 class Bauzonen(Base, Vector):
