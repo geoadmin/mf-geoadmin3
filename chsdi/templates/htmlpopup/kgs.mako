@@ -85,7 +85,7 @@
     </table>
      <div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls">
         <div class="slides"></div>
-        <div class="title" id="blueimp-gallery-title">hello</div>
+        <div class="title" id="blueimp-gallery-title"></div>
         <a class="prev">&lsaquo;</a>
         <a class="next">&rsaquo;</a>
         <a class="close">x</a>
