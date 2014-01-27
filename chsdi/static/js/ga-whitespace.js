@@ -31647,7 +31647,7 @@ ga.source.wmts = function(layer, options) {
   var tileGrid = new ol.tilegrid.WMTS({origin:[42E4, 35E4], resolutions:resolutions, matrixIds:goog.array.range(resolutions.length)});
   var extension = options.format || "png";
   var timestamp = options["timestamps"][0];
-  return new ol.source.WMTS(({crossOrigin:"anonymous", attributions:[ga.layer.getAttribution('\x3ca href\x3d"' + options["attributionUrl"] + '" target\x3d"new"\x3e' + options["attribution"] + "\x3c/a\x3e")], url:"http://wmts{0-4}.geo.admin.ch/1.0.0/{Layer}/default/" + timestamp + "/21781/" + "{TileMatrix}/{TileRow}/{TileCol}.".replace("http:", location.protocol) + extension, tileGrid:tileGrid, layer:options["serverLayerName"] ? options["serverLayerName"] : layer, requestEncoding:"REST"}))
+  return new ol.source.WMTS(({crossOrigin:"anonymous", attributions:[ga.layer.getAttribution('\x3ca href\x3d"' + options["attributionUrl"] + '" target\x3d"new"\x3e' + options["attribution"] + "\x3c/a\x3e")], url:("http://wmts{0-4}.geo.admin.ch/1.0.0/{Layer}/default/" + timestamp + "/21781/" + "{TileMatrix}/{TileRow}/{TileCol}.").replace("http:", location.protocol) + extension, tileGrid:tileGrid, layer:options["serverLayerName"] ? options["serverLayerName"] : layer, requestEncoding:"REST"}))
 };
 ga.source.wms = function(layer, options) {
   return new ol.source.TileWMS({crossOrigin:"anonymous", attributions:[ga.layer.getAttribution('\x3ca href\x3d"' + options["attributionUrl"] + '" target\x3d"new"\x3e' + options["attribution"] + "\x3c/a\x3e")], params:{"LAYERS":options["wmsLayers"] || layer}, url:options["wmsUrl"].split("?")[0].replace("http:", location.protocol)})
