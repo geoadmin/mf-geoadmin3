@@ -17,16 +17,17 @@
           active: false
         };
 
-        $('#featuretree').on('show.bs.collapse', function() {
-          $scope.$apply(function() {
-            $scope.options.active = true;
-          });
+        $scope.$on('gaTriggerFeatureTreeActivation', function() {
+          if (!$scope.globals.isFeatureTreeActive) {
+            $scope.globals.isFeatureTreeActive = true;
+          }
         });
 
-        $('#featuretree').on('hide.bs.collapse', function() {
-          $scope.$apply(function() {
-            $scope.options.active = false;
-          });
+
+        $scope.$watch('globals.isFeatureTreeActive', function(newval, oldval) {
+          if (angular.isDefined(newval)) {
+            $scope.options.active = newval;
+          }
         });
       }
   ]);

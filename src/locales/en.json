@@ -118,8 +118,6 @@
 	"map_info": "Maps",
 	"map_tools": "Tools",
 	"measure": "Measure",
-	"measure_active": "Stop measure",
-	"measure_inactive": "Start measure",
 	"measure_instruction": "Digitize a polyline...",
 	"metadata_window_title": "Infobox",
 	"mobile_redirect": "Mobile version",
