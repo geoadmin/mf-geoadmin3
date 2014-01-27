@@ -88,7 +88,7 @@ class TestSearchServiceView(TestsBase):
         self.failUnless('geom_st_box2d' not in resp.json['results'][0]['attrs'].keys())
 
     def test_searchtext_apostrophe(self):
-        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'av mont d\'or', 'type': 'locations'}, status=200)
+        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'av mont d\'or lausanne', 'type': 'locations'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(resp.json['results'][0]['attrs']['detail'] == '886380 avenue du mont-d\'or 1 1007 lausanne 5586 lausanne ch vd')
         self.failUnless(resp.json['results'][0]['attrs']['num'] == 1)
