@@ -500,7 +500,7 @@ register('ch.swisstopo.pixelkarte-farbe-pk50.noscale', GridstandPk50)
 class GridstandPk50Meta(GridstandPk50):
     __bodId__ = 'ch.swisstopo.pixelkarte-pk50.metadata'
 
-register('ch.swisstopo.pixelkarte-farbe-pk50.metadata', GridstandPk50Meta)
+register('ch.swisstopo.pixelkarte-pk50.metadata', GridstandPk50Meta)
 
 
 class GridstandPk100(Base, Vector):
