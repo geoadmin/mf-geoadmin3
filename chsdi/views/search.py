@@ -74,6 +74,7 @@ class Search(SearchValidation):
     def _swiss_search(self, limit):
         if len(self.searchText) < 1:
             return 0
+        self.sphinx.SetConnectTimeout(1.5)
         self.sphinx.SetLimits(0, limit)
         self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
         self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, 'rank ASC, @weight DESC, num ASC')
