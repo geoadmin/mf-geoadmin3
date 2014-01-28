@@ -121,6 +121,7 @@
       minx = printRectangle[0], miny = printRectangle[1],
            maxx = printRectangle[2], maxy = printRectangle[3];
 
+      ctx.beginPath(); 
       // Outside polygon, must be clockwise
       ctx.moveTo(0, 0);
       ctx.lineTo(width, 0);
