@@ -1,3 +1,18 @@
-.print {
-
+#print {
+  input[type=checkbox] {
+    opacity: 0;
+  }
+  input[type=checkbox] + label:before {
+    font-family: FontAwesome;
+    display: inline-block;
+    letter-spacing: 10px;
+    content: "\f096";
+  }
+  input[type=checkbox]:checked + label:before {
+    content: "\f046";
+    letter-spacing: 10px;
+  }
+  .checkbox {
+    padding-left: 0;
+  }
 }

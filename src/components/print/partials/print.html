@@ -6,9 +6,9 @@
     <select ng-model="scale" ng-options="l.name for l in capabilities.scales"></select>
   </div>
   <div class="checkbox">
-      <input ng-model="options.legend" type="checkbox" /><label translate>legend
+      <input ng-model="options.legend" type="checkbox" id="print-legend" /><label for="print-legend" translate>legend
       </label><br />
-      <input ng-model="options.graticule" type="checkbox" /><label translate>graticule
+      <input ng-model="options.graticule" type="checkbox" id="print-graticule" /><label for="print-graticule" translate>graticule
       </label>
   </div>
   <button type="submit" ng-class="{'ga-print-wait': printing}" class="btn btn-primary" ng-click="submit()" translate>print_action</button>
