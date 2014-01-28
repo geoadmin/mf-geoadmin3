@@ -460,6 +460,7 @@
             addKmlLayer(map, data, layerOptions, index);
           });
         };
+        this.proxyUrl = proxyUrl;
       };
       return new Kml(this.proxyUrl);
     };
