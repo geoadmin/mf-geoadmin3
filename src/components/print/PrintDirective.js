@@ -33,10 +33,7 @@
     var pdfLegendsToDownload = [];
 
     var topicId;
-    var layerListenerKeys = [];
-    var listenerKeys = [];
     var printRectangle;
-    var topLayer;
 
     var updatePrintConfig = function() {
       var printPath = $scope.options.printPath;
@@ -77,15 +74,16 @@
    var activate = function() {
      deregister = [
        $scope.map.on('precompose', handlePreCompose),
-       $scope.map.on('postcompose', handlePostCompose)
+       $scope.map.on('postcompose', handlePostCompose),
+       $scope.map.getView().on('propertychange', function(event) {
+         updatePrintRectanglePixels($scope.scale);
+       })
      ];
      $scope.scale = getOptimalScale();
-     $scope.isActive = true;
      refreshComp();
    };
 
    var deactivate = function() {
-      $scope.isActive = false;
       if (deregister) {
         for (var i = 0; i < deregister.length; i++) {
          deregister[i].src.unByKey(deregister[i]);
@@ -102,9 +100,6 @@
 
     // Compose events
     var handlePreCompose = function(evt) {
-      if (!$scope.isActive) {
-        return;
-      }
       var ctx = evt.getContext();
       // FIXME
       ctx.canvas.width = ctx.canvas.width;
@@ -150,14 +145,6 @@
       updatePrintConfig();
     });
     $scope.$on('gaLayersChange', function(event, data) {
-      updatePrintRectanglePixels($scope.scale);
-    });
-
-    //We should think about deregistering this event, becaus
-    //it's fired so often, it might have an impact on
-    //overall performance even if updatePrintRectangle does
-    //nothing
-    $scope.map.getView().on('propertychange', function(event) {
       updatePrintRectanglePixels($scope.scale);
     });
 
@@ -647,7 +634,7 @@
         });
       }).error(function() {
         $scope.printing = false;
-       });
+      });
     };
 
     var getPrintRectangleCenterCoord = function() {
