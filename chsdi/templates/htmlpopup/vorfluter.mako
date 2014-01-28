@@ -2,7 +2,7 @@
 
 <%inherit file="base.mako"/>
 
-<%def name="table_body()">
+<%def name="table_body(c, lang)">
     <tr>
       <td class="cell-left-large">${_('tezgnr40')}</td>
       <td>${c['attributes']['teilezgnr'] or '-'}</td>

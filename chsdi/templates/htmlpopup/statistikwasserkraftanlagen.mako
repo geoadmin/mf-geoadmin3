@@ -29,7 +29,7 @@
     </tr>
     <tr>
       <td class="cell-left">${_('tt_ch.bfe.statistik-wasserkraftanlagen_hydropowerplanttype')}</td>
-      <td>${c['attributes']['hydropowerplanttype'] or '-'}</td>
+      <td>${c['attributes'][hydropowerplanttype] or '-'}</td>
     </tr>
     <tr>
       <td class="cell-left">${_('tt_ch.bfe.statistik-wasserkraftanlagen_beginningofoperation')}</td>
