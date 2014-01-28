@@ -1,2 +1,2 @@
-export BASE_RUL = /ltmoc 
+export BASE_URL = /ltmoc 
 export SERVICE_URL=//mf-chsdi3.dev.bgdi.ch/ltmoc
