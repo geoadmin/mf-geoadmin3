@@ -586,8 +586,8 @@ goog.addDependency("../src/ol/format/geojsonformat.js", ["ol.format.GeoJSON"], [
 goog.addDependency("../src/ol/format/gpxformat.js", ["ol.format.GPX"], ["goog.array", "goog.asserts", "goog.dom.NodeType", "goog.object", "ol.Feature", "ol.format.XML", "ol.format.XSD", "ol.geom.LineString", "ol.geom.MultiLineString", "ol.geom.Point", "ol.proj", "ol.xml"]);
 goog.addDependency("../src/ol/format/igcformat.js", ["ol.format.IGC", "ol.format.IGCZ"], ["goog.asserts", "goog.string", "goog.string.newlines", "ol.Feature", "ol.format.Text", "ol.geom.LineString", "ol.proj"]);
 goog.addDependency("../src/ol/format/jsonformat.js", ["ol.format.JSON"], ["goog.asserts", "goog.json", "ol.format.Format", "ol.format.FormatType"]);
-goog.addDependency("../src/ol/format/kmlformat.js", ["ol.format.KML"], ["goog.Uri", "goog.array", "goog.asserts", "goog.dom.NodeType", "goog.dom.xml", "goog.math", "goog.object", "goog.string", "ol.Feature", "ol.feature", "ol.format.XML", "ol.geom.GeometryCollection", "ol.geom.GeometryType", "ol.geom.LineString", "ol.geom.MultiLineString", "ol.geom.MultiPoint", "ol.geom.MultiPolygon", "ol.geom.Point", "ol.geom.Polygon", "ol.proj", "ol.style.Fill", "ol.style.Icon", "ol.style.IconAnchorUnits", "ol.style.Image", 
-"ol.style.Stroke", "ol.style.Style", "ol.xml"]);
+goog.addDependency("../src/ol/format/kmlformat.js", ["ol.format.KML"], ["goog.Uri", "goog.array", "goog.asserts", "goog.dom.NodeType", "goog.dom.xml", "goog.math", "goog.object", "goog.string", "ol.Feature", "ol.feature", "ol.format.XML", "ol.format.XSD", "ol.geom.GeometryCollection", "ol.geom.GeometryType", "ol.geom.LineString", "ol.geom.MultiLineString", "ol.geom.MultiPoint", "ol.geom.MultiPolygon", "ol.geom.Point", "ol.geom.Polygon", "ol.proj", "ol.style.Fill", "ol.style.Icon", "ol.style.IconAnchorUnits", 
+"ol.style.Image", "ol.style.Stroke", "ol.style.Style", "ol.xml"]);
 goog.addDependency("../src/ol/format/polylineformat.js", ["ol.format.Polyline"], ["goog.asserts", "ol.Feature", "ol.format.Text", "ol.geom.LineString", "ol.geom.flat", "ol.proj"]);
 goog.addDependency("../src/ol/format/textformat.js", ["ol.format.Text"], ["goog.asserts", "ol.format.Format", "ol.format.FormatType"]);
 goog.addDependency("../src/ol/format/topojsonformat.js", ["ol.format.TopoJSON"], ["goog.array", "goog.asserts", "goog.object", "ol.Feature", "ol.format.JSON", "ol.geom.LineString", "ol.geom.MultiLineString", "ol.geom.MultiPoint", "ol.geom.MultiPolygon", "ol.geom.Point", "ol.geom.Polygon", "ol.proj"]);
@@ -18675,7 +18675,7 @@ goog.require("ol.Object");
 ol.control.Control = function(options) {
   goog.base(this);
   this.element = goog.isDef(options.element) ? options.element : null;
-  this.target_ = options.target;
+  this.target_ = goog.isDef(options.target) ? goog.dom.getElement(options.target) : null;
   this.map_ = null;
   this.listenerKeys = []
 };
@@ -18698,11 +18698,12 @@ ol.control.Control.prototype.setMap = function(map) {
   }
   this.map_ = map;
   if(!goog.isNull(this.map_)) {
-    var target = goog.isDef(this.target_) ? this.target_ : map.getOverlayContainerStopEvent();
+    var target = !goog.isNull(this.target_) ? this.target_ : map.getOverlayContainerStopEvent();
     goog.dom.appendChild(target, this.element);
     if(this.handleMapPostrender !== goog.nullFunction) {
       this.listenerKeys.push(goog.events.listen(map, ol.MapEventType.POSTRENDER, this.handleMapPostrender, false, this))
     }
+    map.render()
   }
 };
 goog.provide("ol.css");
@@ -26676,6 +26677,7 @@ goog.require("ol.style.Stroke");
 ol.style.Circle = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
   this.canvas_ = (goog.dom.createElement(goog.dom.TagName.CANVAS));
+  this.hitDetectionCanvas_ = null;
   this.fill_ = goog.isDef(options.fill) ? options.fill : null;
   this.radius_ = options.radius;
   this.stroke_ = goog.isDef(options.stroke) ? options.stroke : null;
@@ -26687,7 +26689,7 @@ ol.style.Circle.prototype.getFill = function() {
   return this.fill_
 };
 ol.style.Circle.prototype.getHitDetectionImage = function(pixelRatio) {
-  return this.canvas_
+  return this.hitDetectionCanvas_
 };
 ol.style.Circle.prototype.getImage = function(pixelRatio) {
   return this.canvas_
@@ -26701,10 +26703,11 @@ ol.style.Circle.prototype.getStroke = function() {
 ol.style.Circle.prototype.load = goog.nullFunction;
 ol.style.Circle.prototype.render_ = function() {
   var canvas = this.canvas_;
-  var strokeWidth;
+  var strokeStyle, strokeWidth;
   if(goog.isNull(this.stroke_)) {
     strokeWidth = 0
   }else {
+    strokeStyle = ol.color.asString(this.stroke_.getColor());
     strokeWidth = this.stroke_.getWidth();
     if(!goog.isDef(strokeWidth)) {
       strokeWidth = ol.render.canvas.defaultLineWidth
@@ -26720,10 +26723,26 @@ ol.style.Circle.prototype.render_ = function() {
     context.fill()
   }
   if(!goog.isNull(this.stroke_)) {
-    var strokeColor = this.stroke_.getColor();
-    context.strokeStyle = ol.color.asString(strokeColor);
+    context.strokeStyle = strokeStyle;
     context.lineWidth = strokeWidth;
     context.stroke()
+  }
+  if(!goog.isNull(this.fill_)) {
+    this.hitDetectionCanvas_ = canvas
+  }else {
+    this.hitDetectionCanvas_ = (goog.dom.createElement(goog.dom.TagName.CANVAS));
+    canvas = this.hitDetectionCanvas_;
+    canvas.height = size;
+    canvas.width = size;
+    context = (canvas.getContext("2d"));
+    context.arc(size / 2, size / 2, this.radius_, 0, 2 * Math.PI, true);
+    context.fillStyle = ol.render.canvas.defaultFillStyle;
+    context.fill();
+    if(!goog.isNull(this.stroke_)) {
+      context.strokeStyle = strokeStyle;
+      context.lineWidth = strokeWidth;
+      context.stroke()
+    }
   }
   return size
 };
@@ -29012,6 +29031,15 @@ goog.provide("ol.format.XSD");
 goog.require("goog.string");
 goog.require("ol.xml");
 ol.format.XSD.NAMESPACE_URI = "http://www.w3.org/2001/XMLSchema";
+ol.format.XSD.readBoolean = function(node) {
+  var s = ol.xml.getAllTextContent(node, false);
+  var m = /^\s*(true|1)|(false|0)\s*$/.exec(s);
+  if(m) {
+    return goog.isDef(m[1]) || false
+  }else {
+    return undefined
+  }
+};
 ol.format.XSD.readDateTime = function(node) {
   var s = ol.xml.getAllTextContent(node, false);
   var re = /^\s*(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(Z|(?:([+\-])(\d{2})(?::(\d{2}))?))\s*$/;
@@ -29023,7 +29051,7 @@ ol.format.XSD.readDateTime = function(node) {
     var hour = parseInt(m[4], 10);
     var minute = parseInt(m[5], 10);
     var second = parseInt(m[6], 10);
-    var dateTime = Date.UTC(year, month, day, hour, minute, second, 0) / 1E3;
+    var dateTime = Date.UTC(year, month, day, hour, minute, second) / 1E3;
     if(m[7] != "Z") {
       var sign = m[8] == "-" ? -1 : 1;
       dateTime += sign * 60 * parseInt(m[9], 10);
@@ -29038,7 +29066,7 @@ ol.format.XSD.readDateTime = function(node) {
 };
 ol.format.XSD.readDecimal = function(node) {
   var s = ol.xml.getAllTextContent(node, false);
-  var m = /^\s*([+\-]?\d+(?:\.\d*)?)\s*$/.exec(s);
+  var m = /^\s*([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?)\s*$/i.exec(s);
   if(m) {
     return parseFloat(m[1])
   }else {
@@ -29733,7 +29761,7 @@ ol.format.IGC.prototype.readFeatureFromText = function(text) {
           }
           flatCoordinates.push(z)
         }
-        var dateTime = Date.UTC(year, month, day, hour, minute, second, 0);
+        var dateTime = Date.UTC(year, month, day, hour, minute, second);
         flatCoordinates.push(dateTime / 1E3)
       }
     }else {
@@ -29883,6 +29911,7 @@ goog.require("goog.string");
 goog.require("ol.Feature");
 goog.require("ol.feature");
 goog.require("ol.format.XML");
+goog.require("ol.format.XSD");
 goog.require("ol.geom.GeometryCollection");
 goog.require("ol.geom.GeometryType");
 goog.require("ol.geom.LineString");
@@ -29962,15 +29991,6 @@ ol.format.KML.makeFeatureStyleFunction_ = function(style) {
     return styleArray
   }
 };
-ol.format.KML.readBoolean_ = function(node) {
-  var s = ol.xml.getAllTextContent(node, false);
-  var m = /^\s*(0|1)\s*$/.exec(s);
-  if(m) {
-    return m[1] == "1"
-  }else {
-    return undefined
-  }
-};
 ol.format.KML.readColor_ = function(node) {
   var s = ol.xml.getAllTextContent(node, false);
   var m = /^\s*#?\s*([0-9A-Fa-f]{8})\s*$/.exec(s);
@@ -29998,19 +30018,6 @@ ol.format.KML.readFlatCoordinates_ = function(node) {
   }
   return flatCoordinates
 };
-ol.format.KML.readNumber_ = function(node) {
-  var s = ol.xml.getAllTextContent(node, false);
-  var m = /^\s*([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?)\s*$/i.exec(s);
-  if(m) {
-    return parseFloat(m[1])
-  }else {
-    return undefined
-  }
-};
-ol.format.KML.readString_ = function(node) {
-  var s = ol.xml.getAllTextContent(node, false);
-  return goog.string.trim(s)
-};
 ol.format.KML.readStyleUrl_ = function(node) {
   var s = goog.string.trim(ol.xml.getAllTextContent(node, false));
   if(goog.isNull(node.baseURI)) {
@@ -30032,8 +30039,8 @@ ol.format.KML.readVec2_ = function(node) {
   var yunits = node.getAttribute("yunits");
   return{x:parseFloat(node.getAttribute("x")), xunits:ol.format.KML.ICON_ANCHOR_UNITS_MAP_[xunits], y:parseFloat(node.getAttribute("y")), yunits:ol.format.KML.ICON_ANCHOR_UNITS_MAP_[yunits]}
 };
-ol.format.KML.readscale_ = function(node) {
-  var number = ol.format.KML.readNumber_(node);
+ol.format.KML.readScale_ = function(node) {
+  var number = ol.format.XSD.readDecimal(node);
   if(goog.isDef(number)) {
     return Math.sqrt(number)
   }else {
@@ -30073,8 +30080,6 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
         anchor = [0.5, 1];
         anchorXUnits = ol.style.IconAnchorUnits.FRACTION;
         anchorYUnits = ol.style.IconAnchorUnits.FRACTION
-      }else {
-        anchor = null
       }
     }
   }
@@ -30082,15 +30087,11 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
   var heading = (goog.object.get(object, "heading"));
   if(goog.isDef(heading)) {
     rotation = goog.math.toRadians(heading)
-  }else {
-    rotation = 0
   }
   var scale = (goog.object.get(object, "scale"));
   var size;
   if(src == ol.format.KML.DEFAULT_IMAGE_STYLE_SRC_) {
     size = ol.format.KML.DEFAULT_IMAGE_STYLE_SIZE_
-  }else {
-    size = null
   }
   var imageStyle = new ol.style.Icon({anchor:anchor, anchorXUnits:anchorXUnits, anchorYUnits:anchorYUnits, crossOrigin:"anonymous", rotation:rotation, scale:scale, size:size, src:src});
   goog.object.set(styleObject, "imageStyle", imageStyle)
@@ -30414,7 +30415,7 @@ ol.format.KML.SimpleDataParser_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == "SimpleData");
   var name = node.getAttribute("name");
   if(!goog.isNull(name)) {
-    var data = ol.format.KML.readString_(node);
+    var data = ol.format.XSD.readString(node);
     var featureObject = (objectStack[objectStack.length - 1]);
     goog.object.set(featureObject, name, data)
   }
@@ -30462,7 +30463,7 @@ ol.format.KML.whenParser_ = function(node, objectStack) {
     var hour = parseInt(m[4], 10);
     var minute = parseInt(m[5], 10);
     var second = parseInt(m[6], 10);
-    var when = Date.UTC(year, month, day, hour, minute, second, 0);
+    var when = Date.UTC(year, month, day, hour, minute, second);
     if(m[7] != "Z") {
       var sign = m[8] == "-" ? -1 : 1;
       when += sign * 60 * parseInt(m[9], 10);
@@ -30475,24 +30476,24 @@ ol.format.KML.whenParser_ = function(node, objectStack) {
     whens.push(0)
   }
 };
-ol.format.KML.DATA_PARSERS_ = ol.xml.makeParsersNS(ol.format.KML.NAMESPACE_URIS_, {"value":ol.xml.makeReplacer(ol.format.KML.readString_)});
+ol.format.KML.DATA_PARSERS_ = ol.xml.makeParsersNS(ol.format.KML.NAMESPACE_URIS_, {"value":ol.xml.makeReplacer(ol.format.XSD.readString)});
 ol.format.KML.EXTENDED_DATA_PARSERS_ = ol.xml.makeParsersNS(ol.format.KML.NAMESPACE_URIS_, {"Data":ol.format.KML.DataParser_, "SchemaData":ol.format.KML.SchemaDataParser_});
 ol.format.KML.FLAT_LINEAR_RING_PARSERS_ = ol.xml.makeParsersNS(ol.format.KML.NAMESPACE_URIS_, {"coordinates":ol.xml.makeReplacer(ol.format.KML.readFlatCoordinates_)});
 ol.format.KML.FLAT_LINEAR_RINGS_PARSERS_ = ol.xml.makeParsersNS(ol.format.KML.NAMESPACE_URIS_, {"innerBoundaryIs":ol.format.KML.innerBoundaryIsParser_, "outerBoundaryIs":ol.format.KML.outerBoundaryIsParser_});
 ol.format.KML.GX_TRACK_PARSERS_ = ol.xml.makeParsersNS(ol.format.KML.NAMESPACE_URIS_, {"when":ol.format.KML.whenParser_}, ol.xml.makeParsersNS(ol.format.KML.GX_NAMESPACE_URIS_, {"coord":ol.format.KML.gxCoordParser_}));
 ol.format.KML.GEOMETRY_FLAT_COORDINATES_PARSERS_ = ol.xml.makeParsersNS(ol.format.KML.NAMESPACE_URIS_, {"coordinates":ol.xml.makeReplacer(ol.format.KML.readFlatCoordinates_)});
-ol.format.KML.ICON_PARSERS_ = ol.xml.makeParsersNS(ol.format.KML.NAMESPACE_URIS_, {"href":ol.xml.makeObjectPropertySetter(ol.format.KML.readString_)});
-ol.format.KML.ICON_STYLE_PARSERS_ = ol.xml.makeParsersNS(ol.format.KML.NAMESPACE_URIS_, {"Icon":ol.xml.makeObjectPropertySetter(ol.format.KML.readIcon_), "heading":ol.xml.makeObjectPropertySetter(ol.format.KML.readNumber_), "hotSpot":ol.xml.makeObjectPropertySetter(ol.format.KML.readVec2_), "scale":ol.xml.makeObjectPropertySetter(ol.format.KML.readscale_)});
+ol.format.KML.ICON_PARSERS_ = ol.xml.makeParsersNS(ol.format.KML.NAMESPACE_URIS_, {"href":ol.xml.makeObjectPropertySetter(ol.format.XSD.readString)});
+ol.format.KML.ICON_STYLE_PARSERS_ = ol.xml.makeParsersNS(ol.format.KML.NAMESPACE_URIS_, {"Icon":ol.xml.makeObjectPropertySetter(ol.format.KML.readIcon_), "heading":ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal), "hotSpot":ol.xml.makeObjectPropertySetter(ol.format.KML.readVec2_), "scale":ol.xml.makeObjectPropertySetter(ol.format.KML.readScale_)});
 ol.format.KML.INNER_BOUNDARY_IS_PARSERS_ = ol.xml.makeParsersNS(ol.format.KML.NAMESPACE_URIS_, {"LinearRing":ol.xml.makeReplacer(ol.format.KML.readFlatLinearRing_)});
-ol.format.KML.LINE_STYLE_PARSERS_ = ol.xml.makeParsersNS(ol.format.KML.NAMESPACE_URIS_, {"color":ol.xml.makeObjectPropertySetter(ol.format.KML.readColor_), "width":ol.xml.makeObjectPropertySetter(ol.format.KML.readNumber_)});
+ol.format.KML.LINE_STYLE_PARSERS_ = ol.xml.makeParsersNS(ol.format.KML.NAMESPACE_URIS_, {"color":ol.xml.makeObjectPropertySetter(ol.format.KML.readColor_), "width":ol.xml.makeObjectPropertySetter(ol.format.XSD.readDecimal)});
 ol.format.KML.MULTI_GEOMETRY_PARSERS_ = ol.xml.makeParsersNS(ol.format.KML.NAMESPACE_URIS_, {"LineString":ol.xml.makeArrayPusher(ol.format.KML.readLineString_), "LinearRing":ol.xml.makeArrayPusher(ol.format.KML.readLinearRing_), "MultiGeometry":ol.xml.makeArrayPusher(ol.format.KML.readMultiGeometry_), "Point":ol.xml.makeArrayPusher(ol.format.KML.readPoint_), "Polygon":ol.xml.makeArrayPusher(ol.format.KML.readPolygon_)});
 ol.format.KML.GX_MULTITRACK_GEOMETRY_PARSERS_ = ol.xml.makeParsersNS(ol.format.KML.GX_NAMESPACE_URIS_, {"Track":ol.xml.makeArrayPusher(ol.format.KML.readGxTrack_)});
 ol.format.KML.OUTER_BOUNDARY_IS_PARSERS_ = ol.xml.makeParsersNS(ol.format.KML.NAMESPACE_URIS_, {"LinearRing":ol.xml.makeReplacer(ol.format.KML.readFlatLinearRing_)});
-ol.format.KML.PAIR_PARSERS_ = ol.xml.makeParsersNS(ol.format.KML.NAMESPACE_URIS_, {"Style":ol.xml.makeObjectPropertySetter(ol.format.KML.readStyle_), "key":ol.xml.makeObjectPropertySetter(ol.format.KML.readString_), "styleUrl":ol.xml.makeObjectPropertySetter(ol.format.KML.readStyleUrl_)});
+ol.format.KML.PAIR_PARSERS_ = ol.xml.makeParsersNS(ol.format.KML.NAMESPACE_URIS_, {"Style":ol.xml.makeObjectPropertySetter(ol.format.KML.readStyle_), "key":ol.xml.makeObjectPropertySetter(ol.format.XSD.readString), "styleUrl":ol.xml.makeObjectPropertySetter(ol.format.KML.readStyleUrl_)});
 ol.format.KML.PLACEMARK_PARSERS_ = ol.xml.makeParsersNS(ol.format.KML.NAMESPACE_URIS_, {"ExtendedData":ol.format.KML.ExtendedDataParser_, "MultiGeometry":ol.xml.makeObjectPropertySetter(ol.format.KML.readMultiGeometry_, "geometry"), "LineString":ol.xml.makeObjectPropertySetter(ol.format.KML.readLineString_, "geometry"), "LinearRing":ol.xml.makeObjectPropertySetter(ol.format.KML.readLinearRing_, "geometry"), "Point":ol.xml.makeObjectPropertySetter(ol.format.KML.readPoint_, "geometry"), "Polygon":ol.xml.makeObjectPropertySetter(ol.format.KML.readPolygon_, 
-"geometry"), "Style":ol.xml.makeObjectPropertySetter(ol.format.KML.readStyle_), "StyleMap":ol.format.KML.StyleMapParser_, "address":ol.xml.makeObjectPropertySetter(ol.format.KML.readString_), "description":ol.xml.makeObjectPropertySetter(ol.format.KML.readString_), "name":ol.xml.makeObjectPropertySetter(ol.format.KML.readString_), "open":ol.xml.makeObjectPropertySetter(ol.format.KML.readBoolean_), "phoneNumber":ol.xml.makeObjectPropertySetter(ol.format.KML.readString_), "styleUrl":ol.xml.makeObjectPropertySetter(ol.format.KML.readURI_), 
-"visibility":ol.xml.makeObjectPropertySetter(ol.format.KML.readBoolean_)}, ol.xml.makeParsersNS(ol.format.KML.GX_NAMESPACE_URIS_, {"MultiTrack":ol.xml.makeObjectPropertySetter(ol.format.KML.readGxMultiTrack_, "geometry"), "Track":ol.xml.makeObjectPropertySetter(ol.format.KML.readGxTrack_, "geometry")}));
-ol.format.KML.POLY_STYLE_PARSERS_ = ol.xml.makeParsersNS(ol.format.KML.NAMESPACE_URIS_, {"color":ol.xml.makeObjectPropertySetter(ol.format.KML.readColor_), "fill":ol.xml.makeObjectPropertySetter(ol.format.KML.readBoolean_), "outline":ol.xml.makeObjectPropertySetter(ol.format.KML.readBoolean_)});
+"geometry"), "Style":ol.xml.makeObjectPropertySetter(ol.format.KML.readStyle_), "StyleMap":ol.format.KML.StyleMapParser_, "address":ol.xml.makeObjectPropertySetter(ol.format.XSD.readString), "description":ol.xml.makeObjectPropertySetter(ol.format.XSD.readString), "name":ol.xml.makeObjectPropertySetter(ol.format.XSD.readString), "open":ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean), "phoneNumber":ol.xml.makeObjectPropertySetter(ol.format.XSD.readString), "styleUrl":ol.xml.makeObjectPropertySetter(ol.format.KML.readURI_), 
+"visibility":ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean)}, ol.xml.makeParsersNS(ol.format.KML.GX_NAMESPACE_URIS_, {"MultiTrack":ol.xml.makeObjectPropertySetter(ol.format.KML.readGxMultiTrack_, "geometry"), "Track":ol.xml.makeObjectPropertySetter(ol.format.KML.readGxTrack_, "geometry")}));
+ol.format.KML.POLY_STYLE_PARSERS_ = ol.xml.makeParsersNS(ol.format.KML.NAMESPACE_URIS_, {"color":ol.xml.makeObjectPropertySetter(ol.format.KML.readColor_), "fill":ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean), "outline":ol.xml.makeObjectPropertySetter(ol.format.XSD.readBoolean)});
 ol.format.KML.SCHEMA_DATA_PARSERS_ = ol.xml.makeParsersNS(ol.format.KML.NAMESPACE_URIS_, {"SimpleData":ol.format.KML.SimpleDataParser_});
 ol.format.KML.STYLE_PARSERS_ = ol.xml.makeParsersNS(ol.format.KML.NAMESPACE_URIS_, {"IconStyle":ol.format.KML.IconStyleParser_, "LineStyle":ol.format.KML.LineStyleParser_, "PolyStyle":ol.format.KML.PolyStyleParser_});
 ol.format.KML.STYLE_MAP_PARSERS_ = ol.xml.makeParsersNS(ol.format.KML.NAMESPACE_URIS_, {"Pair":ol.format.KML.PairDataParser_});
@@ -30662,7 +30663,7 @@ ol.format.KML.prototype.readNameFromNode = function(node) {
   var n;
   for(n = node.firstElementChild;!goog.isNull(n);n = n.nextElementSibling) {
     if(goog.array.indexOf(ol.format.KML.NAMESPACE_URIS_, n.namespaceURI) != -1 && n.localName == "name") {
-      return ol.format.KML.readString_(n)
+      return ol.format.XSD.readString(n)
     }
   }
   for(n = node.firstElementChild;!goog.isNull(n);n = n.nextElementSibling) {
