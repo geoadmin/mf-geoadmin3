@@ -44,7 +44,7 @@
         // Handle fileURL
         $scope.handleFileUrl = function() {
           if ($scope.fileUrl) {
-            var proxyUrl = $scope.options.proxyUrl +
+            var proxyUrl = gaKml.proxyUrl +
                 encodeURIComponent($scope.fileUrl);
             $scope.cancel();// Kill the current uploading
             $scope.fileContent = null;

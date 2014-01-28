@@ -521,7 +521,7 @@
         }]);
         
         module.config(['gaKmlProvider', function(gaKmlProvider) {
-          gaKmlProvider.proxyUrl = '${base_url_path}/ogcproxy?url=';
+          gaKmlProvider.proxyUrl = location.protocol + '${service_url}${base_url_path}/ogcproxy?url='; 
         }]);
 
         module.config(['$sceDelegateProvider', function($sceDelegateProvider) {
