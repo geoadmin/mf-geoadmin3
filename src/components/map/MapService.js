@@ -337,6 +337,10 @@
           var olLayer;
           options = options || {};
 
+          // Replace all hrefs to prevent errors if image doesn't have
+          // CORS headers
+          kml = kml.replace(/<href>http/g , '<href>' + proxyUrl + 'http');
+
           // Create vector layer
           var features = kmlFormat.readFeatures(kml);
           var transformFn = ol.proj.getTransform('EPSG:4326',
