@@ -349,7 +349,7 @@
               layers['Layer'].call(this, layer);
             var params = layer.getSource().getParams();
             var layers = params.LAYERS.split(',') || [];
-            var styles = new Array(layers.length + 1).
+            var styles = new Array(layers.length).
                 join(',').split(',');
             angular.extend(enc, {
               type: 'WMS',
