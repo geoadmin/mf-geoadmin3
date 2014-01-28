@@ -458,11 +458,11 @@
     <script src="${version}lib/build.js"></script>
 % else:
     <script src="lib/jquery-2.0.3.js"></script>
-    <script src="lib/angular-1.2.1.js"></script>
-    <script src="lib/angular-translate-1.1.0.js"></script>
+    <script src="lib/angular-1.2.9.js"></script>
+    <script src="lib/angular-translate-1.1.1.js"></script>
     <script src="lib/angular-translate-loader-static-files-0.1.5.js"></script>
-    <script src="lib/angular-animate-1.2.1.js"></script>
     <script src="lib/d3-3.3.1.js"></script>
+    <script src="lib/angular-animate-1.2.9.js"></script>
     <script src="lib/bootstrap-3.0.0.js"></script>
     <script src="lib/typeahead-0.9.3.js"></script>
     <script src="lib/proj4js-compressed.js"></script>
@@ -522,6 +522,13 @@
         
         module.config(['gaKmlProvider', function(gaKmlProvider) {
           gaKmlProvider.proxyUrl = '${base_url_path}/ogcproxy?url=';
+        }]);
+
+        module.config(['$sceDelegateProvider', function($sceDelegateProvider) {
+          var validatorUrl = 'http://www.kmlvalidator.org/validate.htm';
+          var whitelist = $sceDelegateProvider.resourceUrlWhitelist();
+          whitelist.push(validatorUrl);
+          $sceDelegateProvider.resourceUrlWhitelist(whitelist);
         }]);
 
       })();
