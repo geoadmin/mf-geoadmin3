@@ -483,7 +483,7 @@
           if (layer instanceof ol.layer.Group) {
             var encs = $scope.encoders.layers['Group'].call(this,
                 layer, proj);
-            $.extend(encLayers, encs);
+            encLayers = encLayers.concat(encs);
           } else {
             var enc = encodeLayer(layer, proj);
             if (enc) {
