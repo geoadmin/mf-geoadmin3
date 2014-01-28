@@ -86,8 +86,6 @@
     // Compose events
     var handlePreCompose = function(evt) {
       var ctx = evt.getContext();
-      // FIXME
-      ctx.canvas.width = ctx.canvas.width;
       ctx.save();
     };
 
