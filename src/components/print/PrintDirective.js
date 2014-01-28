@@ -474,7 +474,7 @@
           var enc = $scope.encoders.legends.base.call(this, config);
           enc.classes.push({
             name: '',
-            icon: location.protocol + $scope.options.serviceUrl +
+            icon: $scope.options.serviceUrl +
                 '/static/images/legends/' +
                 layer.bodId + '_' + $translate.uses() + format
           });
@@ -518,9 +518,9 @@
       var encodedPermalinkHref =
           encodeURIComponent(gaPermalink.getHref());
 
-      var qrcodeurl = location.protocol + $scope.options.serviceUrl +
+      var qrcodeurl = $scope.options.serviceUrl +
           '/qrcodegenerator?url=' + encodedPermalinkHref;
-      var shortenUrl = location.protocol + $scope.options.serviceUrl +
+      var shortenUrl = $scope.options.serviceUrl +
           '/shorten.json?cb=JSON_CALLBACK';
 
       var encLayers = [];
