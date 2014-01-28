@@ -53,21 +53,6 @@
         $scope.options.graticule = false;
       });
     };
-     var findTopMostLayer = function() {
-       var olLayers = $scope.map.getLayers();
-       var validLayers = [];
-       for (var i = olLayers.getLength() - 1; i >= 0; i--) {
-         var olLayer = olLayers.getAt(i);
-         if (!olLayer.highlight) {
-           validLayers.push(olLayer);
-         }
-       }
-       if (validLayers.length < 1) {
-         return null;
-       }
-
-       return validLayers[0];
-    };
 
    var deregister;
 
