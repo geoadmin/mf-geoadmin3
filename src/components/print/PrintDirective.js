@@ -395,8 +395,9 @@
               layers['Layer'].call(this, layer);
             var params = layer.getSource().getParams();
             var layers = params.LAYERS.split(',') || [];
-            var styles = new Array(layers.length + 1).
-                join(',').split(',');
+            var styles = (params.STYLES !== undefined) ?
+                params.STYLES.split(',') :
+                new Array(layers.length).join(',').split(',');
             angular.extend(enc, {
               type: 'WMS',
               baseURL: config.wmsUrl || layer.url,
@@ -542,7 +543,7 @@
           if (layer instanceof ol.layer.Group) {
             var encs = $scope.encoders.layers['Group'].call(this,
                 layer, proj);
-            $.extend(encLayers, encs);
+            encLayers = encLayers.concat(encs);
           } else {
             var enc = encodeLayer(layer, proj);
             if (enc) {
