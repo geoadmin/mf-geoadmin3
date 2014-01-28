@@ -22,7 +22,10 @@ allowed_content_types = (
     "application/vnd.ogc.gml",               # GML
     "application/vnd.ogc.sld+xml",           # SLD
     "application/vnd.google-earth.kml+xml",  # KML
-    "application/vnd.google-earth.kmz"       # KMZ
+    "application/vnd.google-earth.kmz",      # KMZ
+    "image/gif",                             # GIF
+    "image/jpeg",                            # JPEG
+    "image/png"                              # PNG
 )
 
 allowed_hosts = (
