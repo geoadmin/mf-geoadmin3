@@ -231,10 +231,9 @@
           });
 
           // Listen Profile directive events
-          var sketchFeatPoint;
+          var sketchFeatPoint = new ol.Feature(new ol.geom.Point([0, 0]));
           $rootScope.$on('gaProfileMapPositionActivate',
             function(event, coords) {
-              sketchFeatPoint = new ol.Feature(new ol.geom.Point(coords));
               featuresOverlay.addFeature(sketchFeatPoint);
           });
           $rootScope.$on('gaProfileMapPositionUpdated',
