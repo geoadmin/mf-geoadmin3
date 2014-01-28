@@ -72,13 +72,13 @@
        var msgDocumentMode = "";
        var msgCompatibilityView = "";
        if (document.documentMode < 9) {
-          msgDocumentMode = "The document mode of your navigator should be 9 or higher.\n";
+          msgDocumentMode = "DE: Dokumentmodus von Internet Explorer muss 9 oder gr\366sser sein.\nFR: Le mode de document d'Internet Explorer doit \352tre plus grand ou \351gal \340 9.\nIT: Modalit\340 documento dev'essere maggiore o uguale a 9.\nEN: The document mode of your navigator should be 9 or higher.\n\n";
        }
        if (navigator.userAgent.indexOf("MSIE 7.0") > 0 || navigator.userAgent.indexOf("MSIE 8.0") > 0) {
-          msgCompatibilityView = "DE: Sie verwenden einen veralteten Browser. Um die website in vollem Umfang nutzen zu k\366nnnen, empfehlen wir Ihnen in diesem Falle, einen neueren Browser zu installieren: www.browsehappy.com/?locale=de\nFR: Vous utilisez un navigateur trop ancien. Pour utiliser toute les possibilit\351s de ce site web, nous vous conseillons d'installer un navigateur plus r\351cent: www.browsehappy.com/?locale=fr\nIT:Si sta utilizzando un browser non completamente supportato. Per sfruttare appieno le funzionalit\340 di questo sito web, consigliamo di installare un browser pi\371 recente: www.browsehappy.com/?locale=it\nEN: You are using an outdated browser. Please upgrade in this case your browser to improve your experience: browsehappy.com/?locale=en\n";
+          msgCompatibilityView = "DE: Sie verwenden einen veralteten Browser. Um die Website in vollem Umfang nutzen zu k\366nnnen, empfehlen wir Ihnen in diesem Falle, einen neueren Browser zu installieren: www.browsehappy.com/?locale=de\nFR: Vous utilisez un navigateur trop ancien. Pour utiliser toute les possibilit\351s de ce site web, nous vous conseillons d'installer un navigateur plus r\351cent: www.browsehappy.com/?locale=fr\nIT:Si sta utilizzando un browser non completamente supportato. Per sfruttare appieno le funzionalit\340 di questo sito web, consigliamo di installare un browser pi\371 recente: www.browsehappy.com/?locale=it\nEN: You are using an outdated browser. Please upgrade in this case your browser to improve your experience: browsehappy.com/?locale=en\n\n";
        }
        if (msgDocumentMode.length > 0 || msgCompatibilityView.length > 0) {
-         alert(msgDocumentMode + msgCompatibilityView + "Click on F12 and change the compatibility view mode and the document mode.");
+         alert(msgDocumentMode + msgCompatibilityView + "DE: \334ber die 'F12' Taste k\366nnen Sie die Einstellungen auf 'Browsermodus:IE9' und 'Dokumentmodus:IE-9-Standards' setzen.\nFR: En appuyant sur F12, vous pouvez modifier l'affichage de compatibilit\351 en choisissant le mode navigateur IE9 et le mode de document normes IE9.\nIT: Premere F12 per modificare la Modalit\340 browser scegliendo poi 'Modalit\340 browser IE9' e 'Modalit\340 documento: IE9'.\nEN: Click on F12 and change the compatibility view mode and the document mode to 'Browser Mode:IE9' and 'Document Mode: IE9 standards'.");
        }
        })();
       </script>
