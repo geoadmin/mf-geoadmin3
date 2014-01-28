@@ -30,5 +30,16 @@ except:
        <tr><td class="cell-left">${_('tt_bildstreifen_Quickview')}</td>    <td>No QuickView available</td></tr>
 %    endif
     <tr><td class="cell-left">${_('link')} Toposhop</td>   <td><a href="http://www.toposhop.admin.ch/de/shop/satair/lubis_1?ext=1&pics=${c['featureId']},0,${c['attributes']['ort'].strip()},${c['attributes']['y']},${c['attributes']['x']},nein" target="toposhop">Toposhop</a></td></tr>
+<tr>
+      <td class="cell-left"></td>
+      <td><a href="${c['baseUrl']}/${c['instanceId']}/rest/services/all/MapServer/${c['layerBodId']}/${c['featureId']}/extendedhtmlpopup" target="_blank">${_('zusatzinfo')}<img src="http://www.swisstopo.admin.ch/images/ico_extern.gif" /></a></td>
+</tr>
+</%def>
+
+<%def name="extended_info(c, lang)">
+
+    <table class="table-with-border kernkraftwerke-extended">
+        <tr><th class="cell-left">${_('tt_bildstreifen_ebkey')}</th>          <td>${c['attributes']['bildnummer']}</td></tr>
+    </table>
 
 </%def>
