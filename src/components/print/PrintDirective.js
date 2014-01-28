@@ -349,8 +349,9 @@
               layers['Layer'].call(this, layer);
             var params = layer.getSource().getParams();
             var layers = params.LAYERS.split(',') || [];
-            var styles = new Array(layers.length).
-                join(',').split(',');
+            var styles = (params.STYLES !== undefined) ?
+                params.STYLES.split(',') :
+                new Array(layers.length).join(',').split(',');
             angular.extend(enc, {
               type: 'WMS',
               baseURL: config.wmsUrl || layer.url,
