@@ -86,8 +86,8 @@
     <div id="header" class="navbar navbar-fixed-top">
       <div id="logo" class="pull-left">
         <a ng-href="?topic={{topicId}}&lang={{langId}}">
-          <img ng-if="langId" ng-src="${version}img/logo.ch.{{langId}}.png" style="width: 246px; height: 89px"/>
-          <img src="${version}img/logo.ch.small.png" style="width: 19px; height: 19.5px"/>
+          <img ng-if="langId" ng-src="${version}img/logo.ch.{{langId}}.png" style="width: 246px; height: 89px" alt="big_logo"/>
+          <img src="${version}img/logo.ch.small.png" style="width: 19px; height: 19.5px" alt="small_logo"/>
         </a>
       </div>
       <div id="search-container" ng-controller="GaSearchController">
@@ -218,18 +218,17 @@
                 </li>
                 <li><!-- Compare -->
                   <a href=""  ng-click="isSwipeActive = !isSwipeActive">
-                    <span ng-class="{'selected': isSwipeActive}" translate="{{(isSwipeActive) ? 'swipe_active' : 'swipe_inactive'}}"</span>
+                    <span ng-class="{'selected': isSwipeActive}" translate="{{(isSwipeActive) ? 'swipe_active' : 'swipe_inactive'}}"></span>
                   </a>
                 </li>
                 <li><!-- Measure -->
                   <a href=""  ng-click="isMeasureActive = !isMeasureActive">
-                    <span  ng-class="{'selected': isMeasureActive}" translate="{{'measure'}}"</span>
+                    <span  ng-class="{'selected': isMeasureActive}" translate="{{'measure'}}"></span>
                   </a>
                 </li>
                 <li><!-- Feature Tree -->
                   <a href=""  ng-click="globals.isFeatureTreeActive = !globals.isFeatureTreeActive">
-                    <span  ng-class="{'selected': globals.isFeatureTreeActive}"
-                    translate="{{(globals.isFeatureTreeActive) ? 'object_information' : 'object_information'}}"</span>
+                    <span  ng-class="{'selected': globals.isFeatureTreeActive}" translate="{{(globals.isFeatureTreeActive) ? 'object_information' : 'object_information'}}"></span>
                   </a>
                 </li>
               </ul>
