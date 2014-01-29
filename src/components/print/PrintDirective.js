@@ -6,7 +6,10 @@
     ['pascalprecht.translate']);
 
   module.controller('GaPrintDirectiveController',
-    function($scope, $http, $window, $translate, gaLayers, gaPermalink) {
+    function($scope, $http, $window, $translate, $document,
+             gaLayers, gaPermalink) {
+    var waitclass = 'ga-print-wait';
+    var bodyEl = angular.element($document[0].body);
 
     // Hardcode listd of legends that should be downloaded in
     // separate PDF instead of putting the image in the same
@@ -131,7 +134,7 @@
       updatePrintRectanglePixels($scope.scale);
     });
 
-    $scope.printing = false;
+    bodyEl.removeClass(waitclass);
 
     var encodeLayer = function(layer, proj) {
 
@@ -508,7 +511,7 @@
 
     $scope.submit = function() {
       // http://mapfish.org/doc/print/protocol.html#print-pdf
-      $scope.printing = false;
+      bodyEl.addClass(waitclass);
       var view = $scope.map.getView();
       var proj = view.getProjection();
       var lang = $translate.uses();
@@ -605,7 +608,7 @@
             '?url=' + encodeURIComponent($scope.options.printPath +
             '/create.json'), spec);
         http.success(function(data) {
-          $scope.printing = false;
+          bodyEl.removeClass(waitclass);
           $scope.downloadUrl(data.getURL);
           //After standard print, download the pdf Legends
           //if there are any
@@ -614,10 +617,10 @@
           }
         });
         http.error(function() {
-          $scope.printing = false;
+          bodyEl.removeClass(waitclass);
         });
       }).error(function() {
-        $scope.printing = false;
+        bodyEl.removeClass(waitclass);
       });
     };
 
