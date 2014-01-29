@@ -73,7 +73,15 @@
 % endif
     </tr>
     <tr>
-    <td>${_('Datenbezug')}</td>
+      <td>${_('Detailbeschreibung')}</td>
+% if 'urlDetails' in c['attributes']:
+      <td><a href="${c['attributes']['urlDetails']}" target="new">${_('layer_url_text')}</a></td>
+% else:
+      <td>-</td>
+% endif
+    </tr>
+    <tr>
+      <td>${_('Datenbezug')}</td>
 % if 'downloadUrl' in c['attributes']:
       <td><a href="${c['attributes']['downloadUrl']}" target="new">${_('layer_url_download_text')}</a></td>
 % else:
