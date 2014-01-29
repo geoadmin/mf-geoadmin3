@@ -9,8 +9,9 @@
   ]);
 
   module.controller('GaMeasureController',
-      function($scope, $translate, gaGlobalOptions, $http, $rootScope, gaUrlUtils) {
+      function($scope, $translate, gaGlobalOptions, $http, $rootScope, gaUrlUtils, $document) {
         $scope.options = {
+          waitClass: 'ga-measure-wait',
           isProfileActive: false,
           profileUrl: gaGlobalOptions.baseUrlPath + '/rest/services/profile.json',
           profileOptions: {
@@ -98,7 +99,7 @@
           }
         })();
         
-
+        var bodyEl = angular.element($document[0].body);
         var isProfileCreated = false;
         var createProfile = function(feature, callback) {
           var coordinates = feature.getGeometry().getCoordinates();
@@ -112,25 +113,22 @@
             callback = function(data, status) {
               isProfileCreated = true;
               $rootScope.$broadcast('gaProfileDataLoaded', data);
-              $scope.options.profileBt.button('reset');
             };
           }
           http.success(callback);
           http.error(function(data, status) {
-            $scope.options.profileBt.button('reset');
-          });
+            bodyEl.removeClass($scope.options.waitClass);
+          });;
         };
 
         var updateProfile = function(feature) {
           createProfile(feature, function(data, status) {
             $rootScope.$broadcast('gaProfileDataUpdated', data);
-            $scope.options.profileBt.button('reset');
           });
         };
 
        $scope.options.drawProfile = function(feature) {
          if (feature) {
-           $scope.options.profileBt.button('loading');
            if (!isProfileCreated) {
              createProfile(feature);
            } else {
