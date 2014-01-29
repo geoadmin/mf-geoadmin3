@@ -25,13 +25,8 @@ map.addLayer(lyr1);
 
 // Create the KML Layer
 var vector = new ol.layer.Vector({
-  source: new ol.source.Vector({
-    parser: new ol.parser.KML({
-      maxDepth: 1,
-      dimension: 2,
-      extractStyles: true,
-      extractAttributes: true
-    }),
+  source: new ol.source.KML({
+    reprojectTo: 'EPSG:21781',
     url: 'bln-style.kml'
   })
 });
