@@ -227,9 +227,12 @@
             // to avoid a conflict between the long press event used for context
             // popup
             var viewport = $(map.getViewport());
-            var touchEvents = (gaBrowserSniffer.msie >= 10) ?
-               ['MSPointerDown', 'MSPointerMove', 'MSPointerUp'] :
-               ['touchstart', 'touchmove', 'touchend'];
+            var touchEvents = ['touchstart', 'touchmove', 'touchend'];
+            if (gaBrowserSniffer.msie == 10) {
+              touchEvents = ['MSPointerDown', 'MSPointerMove', 'MSPointerUp'];
+            } else if (gaBrowserSniffer.msie >= 11) {
+              touchEvents = ['pointerdown', 'pointermove', 'pointerup'];
+            }
 
             viewport.on(touchEvents[0], touchstartListener);
             viewport.on(touchEvents[1], touchmoveListener);
