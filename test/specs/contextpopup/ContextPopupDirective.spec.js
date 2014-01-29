@@ -7,7 +7,10 @@ describe('ga_contextpopup_directive', function() {
       $provide.value('gaBrowserSniffer', {
         msie: false,
         mobile: false,
-        phone: false
+        phone: false,
+        events:{
+          menu: 'contextmenu'
+        }
       });
     });
     originalEvt = {originalEvent:{}}; 
@@ -87,7 +90,7 @@ describe('ga_contextpopup_directive', function() {
       expect($(tds[7]).text()).to.be('1233 [m]');
     });
 
-    describe('On touch devices', function() {
+    describe('On device without contextmenu event', function() {
       var mapEvt;
       
       beforeEach(inject(function($rootScope, $compile, gaBrowserSniffer) {
@@ -99,6 +102,8 @@ describe('ga_contextpopup_directive', function() {
         };
         gaBrowserSniffer.touchDevice = true;
         gaBrowserSniffer.msie = false;
+        gaBrowserSniffer.events.menu = undefined;
+
         $compile(element)($rootScope);
         map.setTarget(element.find('#map')[0]);
         $rootScope.$digest();

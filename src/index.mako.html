@@ -31,7 +31,7 @@
 
     <script>
       (function(){
-        var w = window, l = w.location, pathname, p = '${device}',
+        var w = window, l = w.location, n = w.navigator, pathname, p = '${device}',
           m = l.search.match(/(?:mobile=(true|false))/);
 
         if (!l.origin) { l.origin = l.protocol + "//" + l.hostname } // IE fix
@@ -51,7 +51,9 @@
           l.href = l.origin + l.pathname.replace(/mobile/, 'index') + l.search;
         }
 
-        var onMobile = ( (('ontouchstart' in w) || ('onmsgesturechange' in w)) &&
+        var onMobile = ((('ontouchstart' in w) ||
+            (('maxTouchPoints' in n) && n.maxTouchPoints > 0) ||
+            (('msMaxTouchPoints' in n) && n.msMaxTouchPoints > 0)) &&
             (screen.width<=768 || screen.height<=768));
         if (m=='false' || (!onMobile && p=='mobile') ) {
           redirectToDesktop();

@@ -23,31 +23,7 @@
   module.directive('gaDraggable', function($document, gaBrowserSniffer) {
     return function(scope, element, attr) {
       var startX = 0, startY = 0, x = null, y = null;
-      var events = {
-        mouse: {
-          start: 'mousedown',
-          move: 'mousemove',
-          end: 'mouseup'
-        },
-        touch: {
-          start: 'touchstart',
-          move: 'touchmove',
-          end: 'touchend'
-        },
-        pointer: {
-          start: 'pointerdown',
-          move: 'pointermove',
-          end: 'pointerup'
-        }
-
-      };
-
-      var eventKey = events.mouse;
-      if (!gaBrowserSniffer.msie && gaBrowserSniffer.touchDevice) {
-        eventKey = events.touch;
-      } else if (gaBrowserSniffer.msie >= 11) {
-        eventKey = events.pointer;
-      }
+      var eventKey = gaBrowserSniffer.events;
 
       // Firefox doesn't like transition during drag
       element.addClass('ga-draggable');

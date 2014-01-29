@@ -31,37 +31,15 @@
           var layerListenerKeys = [];
           var layersDeregisterFn = null;
           var isDragging = false;
-          var events = {
-            mouse: {
-              start: 'mousedown',
-              move: 'mousemove',
-              end: 'mouseup'
-            },
-            touch: {
-              start: 'touchstart',
-              move: 'touchmove',
-              end: 'touchend'
-            },
-            pointer: {
-              start: 'pointerdown',
-              move: 'pointermove',
-              end: 'pointerup'
-            }
-          };
+          var eventKey = gaBrowserSniffer.events;
 
-          var eventKey = events.mouse;
-          if (gaBrowserSniffer.msie >= 11) {
-            eventKey = events.pointer;
-          }
-          if (!gaBrowserSniffer.msie && gaBrowserSniffer.touchDevice) {
-            eventKey = events.touch;
-          } else {
+          if (eventKey.over) {
             // Hide laye label on mouse over/out events
-            elt.on('mouseover', function(evt) {
+            elt.on(eventKey.over, function(evt) {
                if (!isDragging) {
                 layerLabelElt.show();
               }
-            }).on('mouseout', function(evt) {
+            }).on(eventKey.out, function(evt) {
               if (!isDragging) {
                 layerLabelElt.hide();
               }

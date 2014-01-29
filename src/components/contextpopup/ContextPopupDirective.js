@@ -132,12 +132,14 @@
               };
 
 
-              if (!gaBrowserSniffer.touchDevice ||
-                  gaBrowserSniffer.msie >= 10) {
+              if (gaBrowserSniffer.events.menu) {
                 // On surface tablet a 'contextmenu' event is triggered
                 // on long press.
                 // Listen to contextmenu events from the viewport.
-                $(map.getViewport()).on('contextmenu', handler);
+                $(map.getViewport()).on(gaBrowserSniffer.events.menu, handler);
+                element.on(gaBrowserSniffer.events.menu, 'a', function(e) {
+                  e.stopPropagation();
+                });
 
               } else {
                 // On touch devices and browsers others than ie10, display the
@@ -205,12 +207,7 @@
                     escape(contextPermalink);
                 }
               }
-
-              element.on('contextmenu', 'a', function(e) {
-                e.stopPropagation();
-              });
             }
           };
         });
-
 })();

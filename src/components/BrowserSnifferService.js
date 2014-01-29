@@ -27,8 +27,14 @@
         return m && (m('(max-width: ' + size + 'px)').matches ||
             m('(max-height: ' + size + 'px)').matches);
       };
-      var touchDevice = ('ontouchstart' in $window) ||
-          ('onmsgesturechange' in $window);
+      var useTouchEvents = ('ontouchstart' in $window);
+      var usePointerEvents = ('PointerEvent' in $window);
+      var useMSPointerEvents = !('PointerEvent' in $window) &&
+          ('MSPointerEvent' in $window);
+      var navigator = $window.navigator;
+      var touchDevice = useTouchEvents ||
+          (('maxTouchPoints' in navigator) && navigator.maxTouchPoints > 0) ||
+          (('msMaxTouchPoints' in navigator) && navigator.msMaxTouchPoints > 0);
       var mobile = touchDevice && testSize(768);
       var p = gaPermalink.getParams();
       mobile = (mobile && p.mobile != 'false') || p.mobile == 'true';
@@ -41,6 +47,47 @@
         });
       }
 
+      var events = {
+        mouse: {
+          start: 'mousedown',
+          move: 'mousemove',
+          end: 'mouseup',
+          over: 'mouseover',
+          out: 'mouseout',
+          menu: 'contextmenu'
+        },
+        touch: {
+          start: 'touchstart',
+          move: 'touchmove',
+          end: 'touchend'
+        },
+        msPointer: {
+          start: 'MSPointerDown',
+          move: 'MSPointerMove',
+          end: 'MSPointerUp',
+          over: 'MSPointerOver',
+          out: 'MSPointerOut',
+          menu: 'contextmenu'
+        },
+        pointer: {
+          start: 'pointerdown',
+          move: 'pointermove',
+          end: 'pointerup',
+          over: 'pointerover',
+          out: 'pointerout',
+          menu: 'contextmenu'
+        }
+      };
+
+      var eventsKeys = events.mouse;
+      if (usePointerEvents) {
+        eventsKeys = events.pointer;
+      } else if (useMSPointerEvents) {
+        eventsKeys = events.msPointer;
+      } else if (useTouchEvents) {
+        eventsKeys = events.touch;
+      }
+
       return {
         msie: msie,
         webkit: webkit,
@@ -49,7 +96,8 @@
         iosChrome: iosChrome,
         touchDevice: touchDevice,
         mobile: mobile,
-        phone: mobile && testSize(480)
+        phone: mobile && testSize(480),
+        events: eventsKeys
       };
     };
 
