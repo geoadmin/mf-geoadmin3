@@ -67,8 +67,9 @@
         x = element.prop('offsetLeft');
         y = element.prop('offsetTop');
 
-        // preventDefault block user interaction with input field
-        if (evt.target.nodeName !== 'INPUT') {
+
+        // block user interaction
+        if (evt.target.nodeName.test(/^(input|textarea|a|button)$/i)) {
           evt.preventDefault();
         }
 
