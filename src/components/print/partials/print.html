@@ -1,4 +1,4 @@
-<form ng-class="{'ga-print-wait': printing}">
+<form>
   <div>
     <label translate>print_layout</label>
     <select ng-model="layout" ng-options="l.name for l in capabilities.layouts"></select>
@@ -11,5 +11,5 @@
       <input ng-model="options.graticule" type="checkbox" id="print-graticule" /><label for="print-graticule" translate>graticule
       </label>
   </div>
-  <button type="submit" ng-class="{'ga-print-wait': printing}" class="btn btn-primary" ng-click="submit()" translate>print_action</button>
+  <button type="submit" class="btn btn-primary" ng-click="submit()" translate>print_action</button>
 </form>
