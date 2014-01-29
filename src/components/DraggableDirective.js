@@ -69,7 +69,7 @@
 
 
         // block user interaction
-        if (evt.target.nodeName.test(/^(input|textarea|a|button)$/i)) {
+        if (/^(input|textarea|a|button)$/i.test(evt.target.nodeName)) {
           evt.preventDefault();
         }
 
