@@ -46,7 +46,7 @@
   });
 
   module.directive('gaMeasure',
-    function($rootScope, gaDebounce) {
+    function($rootScope, $document, gaDebounce) {
       return {
         restrict: 'A',
         templateUrl: function(element, attrs) {
@@ -58,7 +58,7 @@
           isActive: '=gaMeasureActive'
         },
         link: function(scope, elt, attrs, controller) {
-          scope.options.profileBt = elt.find('.ga-measure-profile-bt');
+          var bodyEl = angular.element($document[0].body);
           var isClick = false;
           var isSnapOnFirstPoint = false;
           var sketchFeatArea, sketchFeatDistance, sketchFeatAzimuth;
@@ -135,6 +135,9 @@
               }),
 
               drawArea.on('drawend', function(evt) {
+                if (scope.options.isProfileActive) {
+                  bodyEl.addClass(scope.options.waitClass);
+                }
                 // Unregister the change event
                 sketchFeatArea.unByKey(deregisterFeature);
                 updateFeaturesOverlay();
@@ -159,6 +162,7 @@
                 deregister[i].src.unByKey(deregister[i]);
               }
             }
+            bodyEl.removeClass(scope.options.waitClass);
           };
 
 
@@ -226,7 +230,10 @@
           });
           scope.$watch('options.isProfileActive', function(active) {
             if (active) {
+              bodyEl.addClass(scope.options.waitClass);
               updateProfileDebounced();
+            } else {
+              bodyEl.removeClass(scope.options.waitClass);
             }
           });
 
@@ -243,6 +250,13 @@
           $rootScope.$on('gaProfileMapPositionDeactivate', function(event) {
             featuresOverlay.removeFeature(sketchFeatPoint);
           });
+          $rootScope.$on('gaProfileDataLoaded', function(ev, data) {
+            bodyEl.removeClass(scope.options.waitClass);
+          });
+          $rootScope.$on('gaProfileDataUpdated', function(ev, data) {
+            bodyEl.removeClass(scope.options.waitClass);
+          });
+
         }
       };
     }
