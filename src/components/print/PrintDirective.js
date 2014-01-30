@@ -563,7 +563,7 @@
           'opacity': 1,
           'singleTile': true,
           'type': 'WMS',
-          'layers': ['org.epsg.grid_21781'],
+          'layers': ['org.epsg.grid_21781,org.epsg.grid_4326'],
           'format': 'image/png',
           'styles': [''],
           'customParams': {
