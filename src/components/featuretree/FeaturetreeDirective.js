@@ -84,6 +84,14 @@
 
             };
 
+            scope.noResults = function() {
+              var dummy;
+              for (dummy in scope.tree) {
+                return false;
+              }
+              return true;
+            };
+
             scope.layers = map.getLayers().getArray();
             scope.filteredLayers = [];
 
