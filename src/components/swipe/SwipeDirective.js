@@ -55,6 +55,7 @@
             layerLabelElt.show();
           };
           var drag = function(evt) {
+            scope.ratio = calculateRatio();
             scope.map.requestRenderFrame();
           };
           var dragEnd = function(evt) {
@@ -62,14 +63,13 @@
             arrowsElt.show();
             $document.unbind(eventKey.move, drag);
             $document.unbind(eventKey.end, dragEnd);
-            scope.ratio = draggableElt.offset().left / scope.map.getSize()[0];
             layerLabelElt.hide();
           };
 
           // Compose events
           var handlePreCompose = function(evt) {
             var ctx = evt.getContext();
-            var width = draggableElt.offset().left + draggableElt.width() / 2;
+            var width = ctx.canvas.width * scope.ratio;
             ctx.save();
             ctx.beginPath();
             ctx.rect(0, 0, width, ctx.canvas.height);
@@ -80,6 +80,10 @@
             evt.getContext().restore();
           };
 
+          var calculateRatio = function() {
+            return (draggableElt.offset().left + draggableElt.width() / 2) /
+                scope.map.getSize()[0];
+          };
           // Display swipe or not depends on the number of layers currently on
           // the map.
           var refreshComp = function(olLayers) {
