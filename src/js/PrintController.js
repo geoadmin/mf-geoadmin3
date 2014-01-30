@@ -12,16 +12,16 @@
         heightMargin: $('#header').height(),
         widthMargin: $('#pulldown').width()
       };
-      $('#print').on('show.bs.collapse', function() {
-        $scope.$apply(function() {
-          $scope.options.active = true;
-        });
-      });
+      // $('#print').on('show.bs.collapse', function() {
+      //   $scope.$apply(function() {
+      //     $scope.options.active = true;
+      //   });
+      // });
 
-      $('#print').on('hide.bs.collapse', function() {
-        $scope.$apply(function() {
-          $scope.options.active = false;
-        });
-      });
+      // $('#print').on('hide.bs.collapse', function() {
+      //   $scope.$apply(function() {
+      //     $scope.options.active = false;
+      //   });
+      // });
   });
 })();
