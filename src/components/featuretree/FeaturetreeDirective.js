@@ -52,6 +52,7 @@
             var projection = view.getProjection();
             var parser = new ol.format.GeoJSON();
             var highlightLayer = createVectorLayer('highlight');
+            var tooltipShown = false;
             var selectionRecFeature = new ol.Feature();
             var selectionRecOverlay = new ol.render.FeaturesOverlay({
               map: map,
@@ -310,7 +311,10 @@
                   cb();
                 });
               } else {
-                cb();
+                //make sure it's async as the other cb() calls
+                $timeout(function() {
+                  cb();
+                }, 0);
               }
             };
 
@@ -331,16 +335,56 @@
               highlightLayer.getSource().clear();
             };
 
-            scope.selectFeature = function(feature) {
+            var selectAndTriggerTooltip = function(feature) {
               loadGeometry(feature, function() {
                 if (!feature.selected) {
                   feature.selected = true;
-                  $rootScope.$broadcast('gaTriggerTooltipRequest', feature);
+                  if (feature.geometry) {
+                    tooltipShown = true;
+                    $rootScope.$broadcast('gaTriggerTooltipRequest', {
+                      features: [feature.geometry],
+                      onCloseCB: function() {
+                        tooltipShown = false;
+                        if (feature.selected) {
+                          feature.selected = false;
+                        }
+                      }
+                    });
+                  }
                 }
               });
             };
 
-            scope.onKeyDown = function(evt, feature, index) {
+            var ignoreOneClick = false;
+            var fromMouseDown = false;
+
+            scope.onFocus = function(evt, feature) {
+              if (!feature.selected) {
+                if (fromMouseDown) {
+                  ignoreOneClick = true;
+                }
+                selectAndTriggerTooltip(feature);
+              }
+            };
+
+            scope.onMouseDown = function(evt, feature) {
+              fromMouseDown = true;
+            };
+
+            scope.onClick = function(evt, feature) {
+              fromMouseDown = false;
+              if (ignoreOneClick) {
+                ignoreOneClick = false;
+              } else {
+                if (feature.selected) {
+                  $rootScope.$broadcast('gaTriggerTooltipInit');
+                } else {
+                  selectAndTriggerTooltip(feature);
+                }
+              }
+            };
+
+            scope.onKeyDown = function(evt, feature) {
               var focusFn, el;
               //upKey
               if (evt.keyCode == 38) {
@@ -397,6 +441,9 @@
               if (newVal === true) {
                 activate();
               } else {
+                if (tooltipShown) {
+                  $rootScope.$broadcast('gaTriggerTooltipInit');
+                }
                 scope.clearHighlight();
                 hideSelectionRectangle();
               }
