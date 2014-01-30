@@ -186,5 +186,6 @@
   "profile_title": "",
   "display_profile": "",
   "hide_profile": "",
-  "azimuth_label": "" 
+  "azimuth_label": "",
+  "no_feature_results": ""
 }
