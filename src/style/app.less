@@ -496,15 +496,22 @@ a .ga-icon-separator {
 }
 
 .modal-dialog {
-  padding-top: 10%;
+  padding: 0px;
+  display: block;
+  top: unit(@header-height, px);
+  max-height: none;
   
   &.ga-draggable { 
     margin-left: -300px;
+    
+    @media (max-width: @screen-tablet) {
+      top: 1%;
+      padding: 0px;
+      margin: 0px;
+    }
   }
 
-  @media (max-width: @screen-phone) {
-    padding-top: .5em;
-  }
+  
 }
 .modal-backdrop {
   z-index: 1240;
@@ -515,9 +522,19 @@ a .ga-icon-separator {
 }
 .modal-header {
   .border-top-radius(6px);
+  
+  @media (max-width: @screen-phone) {
+    padding: 5px 15px; 
+  }
 }
 .modal-body {
-  padding: 20px 20px 5px;
+  padding: 20px;
+  overflow-y: auto;
+
+  @media (max-width: @screen-phone) {
+    padding: 10px; 
+    max-height: 340px;
+  }
 }
 
 #feedback-success .modal-header {

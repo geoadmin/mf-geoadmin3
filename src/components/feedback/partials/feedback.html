@@ -1,20 +1,17 @@
 <form ng-submit="submit()">
-  <div class="modal-body">
-    <label translate>feedback_mail</label>
-    <input type="email" name="email" ng-model="email">
-    <label translate>feedback_description</label>
-    <textarea rows=3 name="feedback" ng-model="feedback" class="form-control" required></textarea>
-    <p class="help-block">
-      <span translate>feedback_permalink</span>
-      <a href="{{permalinkValue}}" target="_blank" translate>permalink</a>
-    </p>
-    <p class="help-block">
-      <span translate>feedback_revision</span>
-      <a href="http://map.revision.admin.ch" target="_blank" translate>revision_service</a>
-    </p>
-  </div>
+  <label translate>feedback_mail</label>
+  <input type="email" name="email" ng-model="email">
+  <label translate>feedback_description</label>
+  <textarea rows=3 name="feedback" ng-model="feedback" class="form-control" required></textarea>
+  <p class="help-block">
+    <span translate>feedback_permalink</span>
+    <a href="{{permalinkValue}}" target="_blank" translate>permalink</a>
+  </p>
+  <p class="help-block">
+    <span translate>feedback_revision</span>
+    <a href="http://map.revision.admin.ch" target="_blank" translate>revision_service</a>
 
-  <div class="modal-footer">
-    <button type="submit" class="btn btn-default" translate>send</button>
+  <div class="ga-feedback-footer">
+    <button type="submit" class="pull-right btn btn-default" translate>send</button>
   </div>
 </form>
