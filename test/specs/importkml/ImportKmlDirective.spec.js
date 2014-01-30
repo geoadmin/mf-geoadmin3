@@ -1,4 +1,3 @@
-/*
 describe('ga_importkml__directive', function() {
   var scope, element, map, controller, urlTab, localFileTab, loadKmlBt, tabsContainer,
       tabContents, formLocalFile, formUrl, inputFile, inputFileUrl, tabsLi;
@@ -22,6 +21,7 @@ describe('ga_importkml__directive', function() {
     controller = $injector.get('$controller')('GaImportKmlDirectiveController',
         {'$scope': $rootScope});
     $compile(element)($rootScope);
+
     scope = element.scope();
     $rootScope.$digest();
   
@@ -56,7 +56,7 @@ describe('ga_importkml__directive', function() {
     expect(inputFileUrl.length).to.be(1); 
     expect(formUrl.find('input[type=hidden][name=type][value=uri]').length).to.be(1); 
   });
-
+/*
   it('actives tab', inject(function($timeout) {
     var tabsLink = element.find('.nav-tabs  a');
     var tabLi1 = $(tabsLi[0]);
@@ -80,7 +80,7 @@ describe('ga_importkml__directive', function() {
     expect(tabLi1.hasClass('active')).to.be(true);
     expect(tabLi2.hasClass('active')).to.be(false);
   }));
-  
+*/
   it('tests validity of a file', function() {
     var file = {
       name: 'test.kml',
@@ -133,7 +133,7 @@ describe('ga_importkml__directive', function() {
       $httpBackend.verifyNoOutstandingExpectation();
       $httpBackend.verifyNoOutstandingRequest();
     });
-
+/*
     it('uses the load KML button', function() {
       scope.activeTab(2);
       urlTab.find('input[ng-model=fileUrl]').val(fileUrlTest).trigger('input');
@@ -147,6 +147,6 @@ describe('ga_importkml__directive', function() {
         expect(scope.map.getLayers().getAt(0).getSource().prepareFeatures()).to.be(2);    
       }
     });
+    */
   });
 });
-*/
