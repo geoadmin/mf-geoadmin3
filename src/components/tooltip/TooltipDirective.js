@@ -33,7 +33,7 @@
           },
           link: function($scope, element, attrs) {
             var htmls = [],
-                shownFeature = {},
+                onCloseCB = function(){},
                 map = $scope.map,
                 popup,
                 canceler,
@@ -67,15 +67,16 @@
               year = currentyear;
             });
 
-            $scope.$on('gaTriggerTooltipRequest', function(event, feature) {
-              if (feature && feature.geometry) {
-                var size = map.getSize();
-                var mapExtent = map.getView().calculateExtent(size);
-                initTooltip();
-                showFeatures(mapExtent, size, [feature.geometry]);
-                shownFeature = feature;
-                shownFeature.selected = true;
-              }
+            $scope.$on('gaTriggerTooltipRequest', function(event, data) {
+              var size = map.getSize();
+              var mapExtent = map.getView().calculateExtent(size);
+              initTooltip();
+              showFeatures(mapExtent, size, data.features);
+              onCloseCB = data.onCloseCB;
+            });
+
+            $scope.$on('gaTriggerTooltipInit', function(event) {
+              initTooltip();
             });
 
             function initTooltip() {
@@ -97,7 +98,7 @@
             function clearAll() {
               vectorSource.clear();
               map.removeLayer(vector);
-              shownFeature.selected = false;
+              onCloseCB();
             }
 
             gaMapClick.listen(map, function(evt) {

@@ -10,7 +10,9 @@
       <ul ng-if="layer.open" class="ga-feature">
         <li ng-repeat="(key, feature) in layer.features"
             ng-keydown="onKeyDown($event, feature, key)"
-            ng-focus="selectFeature(feature)"
+            ng-focus="onFocus($event, feature)"
+            ng-click="onClick($event, feature)"
+            ng-blur="onBlur($event, feature)"
             tabindex=1>
           <i ng-click="recenterToFeature($event, feature)" class="icon-plus"></i>
           <a ng-class="{'selected': feature.selected}"

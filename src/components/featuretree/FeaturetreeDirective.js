@@ -331,13 +331,40 @@
               highlightLayer.getSource().clear();
             };
 
-            scope.selectFeature = function(feature) {
+            scope.onFocus = function(evt, feature) {
+              console.log('onFocus');
+              feature.clickCount = 0;
               loadGeometry(feature, function() {
                 if (!feature.selected) {
                   feature.selected = true;
-                  $rootScope.$broadcast('gaTriggerTooltipRequest', feature);
+                  if (feature.geometry) {
+                    $rootScope.$broadcast('gaTriggerTooltipRequest', { 
+                      features: [feature.geometry],
+                      onCloseCB: function() {
+                        feature.selected = false;
+                      }
+                    });
+                  }
                 }
               });
+            };
+
+            scope.onBlur = function(evt, feature) {
+              console.log('onBlur', evt);
+              /*
+              feature.selected = false;
+              feature.clickCount = 0;
+              */
+            };
+
+            scope.onClick = function(evt, feature) {
+              console.log('onClick', feature.selected, feature.clickCount);
+              if (feature.selected) {
+                feature.clickCount += 1;
+              }
+              if (feature.clickCount > 1) {
+                feature.selected = !feature.selected;
+              }
             };
 
             scope.onKeyDown = function(evt, feature, index) {
