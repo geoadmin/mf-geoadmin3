@@ -24,6 +24,7 @@
     return function(scope, element, attr) {
       var startX = 0, startY = 0, x = null, y = null;
       var eventKey = gaBrowserSniffer.events;
+      var regex = /^(input|textarea|a|button)$/i;
 
       // Firefox doesn't like transition during drag
       element.addClass('ga-draggable');
@@ -44,8 +45,8 @@
         y = element.prop('offsetTop');
 
 
-        // block user interaction
-        if (/^(input|textarea|a|button)$/i.test(evt.target.nodeName)) {
+        // block default interaction
+        if (!regex.test(evt.target.nodeName)) {
           evt.preventDefault();
         }
 
@@ -76,11 +77,21 @@
           top: y + 'px',
           left: x + 'px'
         });
+
+        // block default interaction
+        if (!regex.test(evt.target.nodeName)) {
+          evt.preventDefault();
+        }
       }
 
-      function dragend() {
+      function dragend(evt) {
         $document.unbind(eventKey.move, drag);
         $document.unbind(eventKey.end, dragend);
+
+        // block default interaction
+        if (!regex.test(evt.target.nodeName)) {
+          evt.preventDefault();
+        }
       }
 
 
