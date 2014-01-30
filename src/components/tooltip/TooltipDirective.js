@@ -33,7 +33,7 @@
           },
           link: function($scope, element, attrs) {
             var htmls = [],
-                onCloseCB = function(){},
+                onCloseCB = angular.noop,
                 map = $scope.map,
                 popup,
                 canceler,
@@ -98,7 +98,6 @@
             function clearAll() {
               vectorSource.clear();
               map.removeLayer(vector);
-              onCloseCB();
             }
 
             gaMapClick.listen(map, function(evt) {
@@ -223,6 +222,8 @@
                         popup = gaPopup.create({
                           className: 'ga-tooltip',
                           onCloseCallback: function() {
+                            onCloseCB();
+                            onCloseCB = angular.noop;
                             clearAll();
                           },
                           destroyOnClose: false,
