@@ -397,68 +397,6 @@
           options.projection = olMap.getView().getProjection();
           var olLayer = createKmlLayer(data, options);
 
-          // Find features on a specific pixel
-          var findFeatures = function(pixel) {
-            var features = [];
-            olMap.forEachFeatureAtPixel(pixel, function(feature, layer) {
-              if (layer === olLayer) {
-                features.push(feature);
-              }
-            });
-            return features;
-          };
-
-          // Change cursor style on mouse move
-          // FIXME: It's nice but unusable when too much features are displayed
-          /*var onMouseMove = function(evt) {
-            var pixel = (evt.originalEvent) ?
-                olMap.getEventPixel(evt.originalEvent) :
-                evt.pixel;
-
-            var features = findFeatures(pixel);
-            if (features.length > 0 && features[0].get('description')) {
-              olMap.getTarget().style.cursor = 'pointer';
-            } else {
-              olMap.getTarget().style.cursor = '';
-            }
-          };*/
-
-          // Display popup on mouse click
-          var onMapClick = function(evt) {
-            if ($rootScope.isMeasureActive) {
-              return;
-            }
-            var pixel = (evt.originalEvent) ?
-                olMap.getEventPixel(evt.originalEvent) :
-                evt.pixel;
-            var features = findFeatures(pixel);
-            if (features.length > 0) {
-              var feature = features[0];
-              if (feature.get('name') || feature.get('description')) {
-                gaPopup.create({
-                  title: feature.get('name'),
-                  content: feature.get('description'),
-                  x: pixel[0],
-                  y: pixel[1]
-                }).open();
-              }
-            }
-          };
-
-          var listenerKey;
-          olMap.getLayers().on('add', function(layersEvent) {
-            if (layersEvent.element === olLayer) {
-              listenerKey = gaMapClick.listen(olMap, onMapClick);
-              //$(olMap.getViewport()).on('mousemove', onMouseMove);
-            }
-          });
-          olMap.getLayers().on('remove', function(layersEvent) {
-            if (layersEvent.element === olLayer) {
-              olMap.unByKey(listenerKey);
-              //$(olMap.getViewport()).unbind('mousemove', onMouseMove);
-            }
-          });
-
           if (index) {
             olMap.getLayers().insertAt(index, olLayer);
           } else {
