@@ -31,6 +31,7 @@ class luftbilder_swisstopo(Base, Vector):
     x = Column('x', Integer)
     y = Column('y', Integer)
     ort = Column('ort', Text)
+    massstab = Column('massstab', Integer)
     bgdi_imagemode = Column('bgdi_imagemode', Text)
 
 register('ch.swisstopo.lubis-luftbilder', luftbilder_swisstopo)
