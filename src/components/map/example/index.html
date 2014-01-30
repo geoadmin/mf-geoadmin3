@@ -112,7 +112,7 @@
 
             $scope.map = map;
             gaLayers.loadForTopic('inspire', 'en').then(function() {
-              $scope.layer = gaLayers.getOlLayerById('ch.swisstopo.swissimage');
+              $scope.layer = gaLayers.getOlLayerById('ch.swisstopo.pixelkarte-farbe');
               map.addLayer($scope.layer);
             });
           }]);
