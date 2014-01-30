@@ -85,6 +85,10 @@
             };
 
             scope.noResults = function() {
+              // We can't use undefined or null for scope.tree
+              // because it would break the ng-repeat in the partial.
+              // Therefore, we have to have this dummy for loop to
+              // determine if we have results or not
               var dummy;
               for (dummy in scope.tree) {
                 return false;
