@@ -93,6 +93,7 @@
       (function() {
         var module = angular.module('ga_catalogtree_example', [
           'ga_catalogtree',
+          'pascalprecht.translate',
           'ga_map'
         ]);
         
@@ -110,7 +111,7 @@
                'http://mf-chsdi3.dev.bgdi.ch/rest/services/{Topic}/MapServer/layersconfig' +
                '?lang={Lang}';
            gaLayersProvider.legendUrlTemplate =
-               'http://mf-chsdi3.dev.bgdi.ch/rest/services/{Topic}/MapServer/{Layer}/getlegend' +
+               'http://mf-chsdi3.dev.bgdi.ch/rest/services/{Topic}/MapServer/{Layer}/legend' +
                '?lang={Lang}';
         }]);
 
@@ -124,8 +125,9 @@
 
 
         module.controller('MainController', 
-          ['$scope', 'gaLayers', 
-          function($scope, gaLayers, $rootScope) {
+          ['$scope', 'gaLayers', '$rootScope', '$translate',
+          function($scope, gaLayers, $rootScope, $translate) {
+            $translate.uses('en');
 
             var swissExtent = [485869.5728, 76443.1884, 837076.5648, 299941.7864];
             var swissProjection = ol.proj.configureProj4jsProjection({
@@ -150,14 +152,20 @@
             });
 
             $scope.map = map;
+            var loadedBackground = false;
 
-            gaLayers.loadForTopic('ech', 'en').then(function() {
-              var layer = gaLayers.getOlLayerById('ch.swisstopo.pixelkarte-farbe');
-              layer.background = true;
-              map.addLayer(layer);
-              $scope.$broadcast('gaLayersChange', {topicId: 'ech'});
+            $scope.$on('gaLayersChange', function(event, data) {
+              if (!loadedBackground) {
+                var layer = gaLayers.getOlLayerById('ch.swisstopo.pixelkarte-farbe');
+                layer.background = true;
+                map.addLayer(layer);
+                loadedBackground = true;
+              }
             });
 
+            $rootScope.$broadcast('gaTopicChange', {
+              id: 'ech'
+            });
 
         }]);
      
@@ -175,12 +183,12 @@
             ];
             var curTemplate = 0;
             $scope.switchCatalog = switchCatalog;
-            $scope.switchCatalog();
 
             function switchCatalog() {
-              gaLayers.loadForTopic(templates[curTemplate], 'en');
-              $rootScope.$broadcast('gaLayersChange', {topicId: templates[curTemplate]});
               curTemplate = curTemplate === 0 ? 1 : 0;
+              $rootScope.$broadcast('gaTopicChange', {
+                id: templates[curTemplate]
+              });
             }
 
         }]);
