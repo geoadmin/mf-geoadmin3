@@ -342,7 +342,7 @@
               var enc = $scope.encoders.
                   layers['Layer'].call(this, layer);
               var layerEnc = encodeLayer(subLayer, proj);
-              if (layerEnc.layer !== undefined) {
+              if (layerEnc && layerEnc.layer) {
                 $.extend(enc, layerEnc);
                 encs.push(enc.layer);
               }
@@ -547,7 +547,7 @@
             encLayers = encLayers.concat(encs);
           } else {
             var enc = encodeLayer(layer, proj);
-            if (enc) {
+            if (enc && enc.layer) {
               encLayers.push(enc.layer);
               if (enc.legend) {
                 encLegends = encLegends || [];
