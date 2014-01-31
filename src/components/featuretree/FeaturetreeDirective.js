@@ -65,8 +65,8 @@
                 //MacEnvironments don't get here because the event is not
                 //recognized as mouseEvent on Mac by the google closure.
                 //We have to use the apple key on those devices
-                return evt.getBrowserEvent().ctrlKey ||
-                       (gaBrowserSniffer.mac && evt.getBrowserEvent().metaKey);
+                return evt.originalEvent.ctrlKey ||
+                       (gaBrowserSniffer.mac && evt.originalEvent.metaKey);
               },
               style: new ol.style.Style({
                 stroke: new ol.style.Stroke({

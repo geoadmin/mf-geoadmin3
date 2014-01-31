@@ -88,7 +88,7 @@
 
     // Compose events
     var handlePreCompose = function(evt) {
-      var ctx = evt.getContext();
+      var ctx = evt.context;
       ctx.save();
     };
 
@@ -96,7 +96,7 @@
       var size = $scope.map.getSize();
       var width = size[0];
       var height = size[1];
-      var ctx = evt.getContext();
+      var ctx = evt.context;
 
       var minx, miny, maxx, maxy;
       minx = printRectangle[0], miny = printRectangle[1],

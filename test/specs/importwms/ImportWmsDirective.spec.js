@@ -162,7 +162,7 @@ describe('ga_importwms__directive', function() {
     it('zooms on layer extent', inject(function($rootScope) {
       $rootScope.zoomOnLayerExtent($rootScope.layers[1]);
       var i = $rootScope.map.getView().getView2D().calculateExtent($rootScope.map.getSize());
-      expect(i.toString()).to.be('320102.264231154,-20448.867884423,1053897.735768846,346448.867884423');
+      expect(i.toString()).to.be('-46795.47153769201,-203897.735768846,1420795.471537692,529897.735768846');
     }));
   });
 });

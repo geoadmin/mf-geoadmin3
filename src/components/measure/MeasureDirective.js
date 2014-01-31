@@ -84,7 +84,7 @@
               drawArea.on('drawstart', function(evt) {
                 var isSnapOnLastPoint = false;
                 featuresOverlay.getFeatures().clear();
-                sketchFeatArea = evt.getFeature();
+                sketchFeatArea = evt.feature;
                 var firstPoint = sketchFeatArea.getGeometry()
                     .getCoordinates()[0][0];
                 sketchFeatDistance = new ol.Feature(

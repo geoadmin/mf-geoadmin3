@@ -68,7 +68,7 @@
 
           // Compose events
           var handlePreCompose = function(evt) {
-            var ctx = evt.getContext();
+            var ctx = evt.context;
             var width = ctx.canvas.width * scope.ratio;
             ctx.save();
             ctx.beginPath();
@@ -77,7 +77,7 @@
           };
 
           var handlePostCompose = function(evt) {
-            evt.getContext().restore();
+            evt.context.restore();
           };
 
           var calculateRatio = function() {
