@@ -56,31 +56,7 @@ describe('ga_importkml__directive', function() {
     expect(inputFileUrl.length).to.be(1); 
     expect(formUrl.find('input[type=hidden][name=type][value=uri]').length).to.be(1); 
   });
-/*
-  it('actives tab', inject(function($timeout) {
-    var tabsLink = element.find('.nav-tabs  a');
-    var tabLi1 = $(tabsLi[0]);
-    var tabLi2 = $(tabsLi[1]);
-    var tabLink1 = $(tabsLink[0]);
-    var tabLink2 = $(tabsLink[1]);
   
-    tabLink2.trigger('click');
-    $timeout.flush();
-    expect(scope.currentTab).to.be(2);
-    expect(scope.getTabClass(1)).to.be('');
-    expect(scope.getTabClass(2)).to.be('active');
-    expect(tabLi1.hasClass('active')).to.be(false);
-    expect(tabLi2.hasClass('active')).to.be(true);
-    
-    tabLink1.trigger('click');
-    $timeout.flush();
-    expect(scope.currentTab).to.be(1);
-    expect(scope.getTabClass(1)).to.be('active');
-    expect(scope.getTabClass(2)).to.be('');
-    expect(tabLi1.hasClass('active')).to.be(true);
-    expect(tabLi2.hasClass('active')).to.be(false);
-  }));
-*/
   it('tests validity of a file', function() {
     var file = {
       name: 'test.kml',
@@ -133,20 +109,5 @@ describe('ga_importkml__directive', function() {
       $httpBackend.verifyNoOutstandingExpectation();
       $httpBackend.verifyNoOutstandingRequest();
     });
-/*
-    it('uses the load KML button', function() {
-      scope.activeTab(2);
-      urlTab.find('input[ng-model=fileUrl]').val(fileUrlTest).trigger('input');
-      expect(scope.fileUrl).to.be(fileUrlTest);
-      loadKmlBt.trigger('click');
-      $httpBackend.flush(); 
-      expect(scope.userMessage).to.be('parse_succeeded');   
-     
-      // Works only in dev mode 
-      if (scope.map.getLayers().getAt(0).getSource().prepareFeatures) {
-        expect(scope.map.getLayers().getAt(0).getSource().prepareFeatures()).to.be(2);    
-      }
-    });
-    */
   });
 });
