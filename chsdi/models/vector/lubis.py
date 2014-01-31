@@ -9,11 +9,11 @@ from chsdi.models.vector import Vector
 Base = bases['lubis']
 
 
-class luftbilder_swisstopo(Base, Vector):
+class luftbilder_swisstopo_farbe(Base, Vector):
     __tablename__ = 'luftbilder_swisstopo'
     __table_args__ = ({'schema': 'public', 'autoload': False})
     __template__ = 'templates/htmlpopup/lubis.mako'
-    __bodId__ = 'ch.swisstopo.lubis-luftbilder'
+    __bodId__ = 'ch.swisstopo.lubis-luftbilder_farbe'
     __returnedGeometry__ = 'the_geom_footprint'
     __timeInstant__ = 'bgdi_flugjahr'
     __extended_info__ = True
@@ -34,7 +34,63 @@ class luftbilder_swisstopo(Base, Vector):
     massstab = Column('massstab', Integer)
     bgdi_imagemode = Column('bgdi_imagemode', Text)
 
-register('ch.swisstopo.lubis-luftbilder', luftbilder_swisstopo)
+register('ch.swisstopo.lubis-luftbilder_farbe', luftbilder_swisstopo_farbe)
+
+
+class luftbilder_swisstopo_ir(Base, Vector):
+    __tablename__ = 'luftbilder_swisstopo'
+    __table_args__ = ({'schema': 'public', 'autoload': False})
+    __template__ = 'templates/htmlpopup/lubis.mako'
+    __bodId__ = 'ch.swisstopo.lubis-luftbilder_infrarot'
+    __returnedGeometry__ = 'the_geom_footprint'
+    __timeInstant__ = 'bgdi_flugjahr'
+    __extended_info__ = True
+    id = Column('ebkey', Text, primary_key=True)
+    the_geom = GeometryColumn('the_geom', Geometry(dimensions=2, srid=21781))
+    the_geom_footprint = GeometryColumn('the_geom_footprint', Geometry(dimensions=2, srid=21781))
+    filename = Column('filename', Text)
+    bildnummer = Column('bildnummer', Integer)
+    flugdatum = Column('flugdatum', Text)
+    firma = Column('firma', Text)
+    filmart = Column('filmart', Text)
+    bgdi_flugjahr = Column('bgdi_flugjahr', Integer)
+    orientierung = Column('orientierung', Boolean)
+    originalsize = Column('originalsize', Text)
+    x = Column('x', Integer)
+    y = Column('y', Integer)
+    ort = Column('ort', Text)
+    massstab = Column('massstab', Integer)
+    bgdi_imagemode = Column('bgdi_imagemode', Text)
+
+register('ch.swisstopo.lubis-luftbilder_infrarot', luftbilder_swisstopo_ir)
+
+
+class luftbilder_swisstopo_sw(Base, Vector):
+    __tablename__ = 'luftbilder_swisstopo'
+    __table_args__ = ({'schema': 'public', 'autoload': False})
+    __template__ = 'templates/htmlpopup/lubis.mako'
+    __bodId__ = 'ch.swisstopo.lubis-luftbilder_schwarzweiss'
+    __returnedGeometry__ = 'the_geom_footprint'
+    __timeInstant__ = 'bgdi_flugjahr'
+    __extended_info__ = True
+    id = Column('ebkey', Text, primary_key=True)
+    the_geom = GeometryColumn('the_geom', Geometry(dimensions=2, srid=21781))
+    the_geom_footprint = GeometryColumn('the_geom_footprint', Geometry(dimensions=2, srid=21781))
+    filename = Column('filename', Text)
+    bildnummer = Column('bildnummer', Integer)
+    flugdatum = Column('flugdatum', Text)
+    firma = Column('firma', Text)
+    filmart = Column('filmart', Text)
+    bgdi_flugjahr = Column('bgdi_flugjahr', Integer)
+    orientierung = Column('orientierung', Boolean)
+    originalsize = Column('originalsize', Text)
+    x = Column('x', Integer)
+    y = Column('y', Integer)
+    ort = Column('ort', Text)
+    massstab = Column('massstab', Integer)
+    bgdi_imagemode = Column('bgdi_imagemode', Text)
+
+register('ch.swisstopo.lubis-luftbilder_schwarzweiss', luftbilder_swisstopo_sw)
 
 
 class luftbilder_dritte_firmen(Base, Vector):
