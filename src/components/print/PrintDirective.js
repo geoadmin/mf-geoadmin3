@@ -572,6 +572,55 @@
         };
         encLayers.push(graticule);
       }
+      // FIXME this is a temporary solution
+      var overlays = $scope.map.getOverlays();
+      var resolution = $scope.map.getView().getResolution();
+
+      overlays.forEach(function(overlay) {
+        var center = overlay.getPosition();
+        var offset = 5 * resolution;
+        if (center) {
+          var cross = {
+            'type': 'Vector',
+            'styles': {
+              '1': {
+                'strokeColor': 'red',
+                'strokeWidth': 2,
+                'strokeOpacity': 1,
+                'strokeDashstyle': 'solid',
+                'strokeLinecap': 'round'
+              }
+            },
+            'styleProperty': '_gx_style',
+            'geoJson': {
+              'type': 'FeatureCollection',
+              'features': [{
+                'type': 'Feature',
+                'properties': {
+                  '_gx_style': 1
+                },
+                'geometry': {
+                  'type': 'MultiLineString',
+                  'coordinates': [
+                    [
+                      [center[0] - offset, center[1]],
+                      [center[0] + offset, center[1]]
+                    ],
+                    [
+                      [center[0], center[1] - offset],
+                      [center[0], center[1] + offset]
+                    ]
+                  ]
+                }
+              }]
+            },
+            'name': 'drawing',
+            'opacity': 1
+          };
+          encLayers.push(cross);
+        }
+      });
+
       // scale = resolution * inches per map unit (m) * dpi
       var scale = parseInt(view.getResolution() * 39.37 * 254);
       var scales = this.scales.map(function(scale) {
