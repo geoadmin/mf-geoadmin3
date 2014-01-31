@@ -53,9 +53,6 @@
       #catalog1 {
        float: left;
       }
-      #catalog2 {
-        float: right;
-      }
     </style>
   </head>
   <body ng-controller="MainController">
@@ -69,15 +66,7 @@
         <div>
           <div class="catalog" id="catalog1">
              <!-- This shows the tree including the root node -->
-             <div ga-catalogitem ga-catalogitem-item="tree" ga-catalogitem-map="map"></div>
-          </div>
-          <div class="catalog" id="catalog2">
-            <!-- This will show the tree without the root node -->
-            <ul>
-              <li class="ga-catalogtree-node" ng-repeat="child in tree.children">
-                <div ga-catalogitem ga-catalogitem-item="child" ga-catalogitem-map="map"></div>
-              </li>
-            </ul>
+             <div ga-catalogtree ga-catalogtree-options="options" ga-catalogtree-map="map"></div>
           </div>
         <div>
       </div>
@@ -104,12 +93,41 @@
       (function() {
         var module = angular.module('ga_catalogtree_example', [
           'ga_catalogtree',
+          'pascalprecht.translate',
           'ga_map'
         ]);
+        
+        module.constant('gaGlobalOptions', {
+          serviceUrl : '//mf-chsdi3.dev.bgdi.ch',
+          baseUrlPath: '/main'
+        });
+
+        module.config(['gaLayersProvider', function(gaLayersProvider) {
+           gaLayersProvider.wmtsGetTileUrlTemplate =
+               'http://wmts{0-4}.geo.admin.ch/1.0.0/{Layer}/default/' +
+               '{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
+
+           gaLayersProvider.layersConfigUrlTemplate =
+               'http://mf-chsdi3.dev.bgdi.ch/rest/services/{Topic}/MapServer/layersconfig' +
+               '?lang={Lang}';
+           gaLayersProvider.legendUrlTemplate =
+               'http://mf-chsdi3.dev.bgdi.ch/rest/services/{Topic}/MapServer/{Layer}/legend' +
+               '?lang={Lang}';
+        }]);
+
+        module.config(['gaRecenterMapOnFeaturesProvider', function(gaRecenterMapOnFeaturesProvider) {
+          gaRecenterMapOnFeaturesProvider.url =
+              '/main/rest/services/all/MapServer/';
+        }]);
+ 
+ 
+
+
 
         module.controller('MainController', 
-          ['$scope', 'gaLayers', 
-          function($scope, gaLayers) {
+          ['$scope', 'gaLayers', '$rootScope', '$translate',
+          function($scope, gaLayers, $rootScope, $translate) {
+            $translate.uses('en');
 
             var swissExtent = [485869.5728, 76443.1884, 837076.5648, 299941.7864];
             var swissProjection = ol.proj.configureProj4jsProjection({
@@ -134,30 +152,43 @@
             });
 
             $scope.map = map;
+            var loadedBackground = false;
 
-            gaLayers.loadForTopic('ech');
-            $scope.$on('gaLayersChange', function() {
-              var layer = gaLayers.getOlLayerById('ch.swisstopo.swissimage');
-              map.addLayer(layer);
+            $scope.$on('gaLayersChange', function(event, data) {
+              if (!loadedBackground) {
+                var layer = gaLayers.getOlLayerById('ch.swisstopo.pixelkarte-farbe');
+                layer.background = true;
+                map.addLayer(layer);
+                loadedBackground = true;
+              }
             });
+
+            $rootScope.$broadcast('gaTopicChange', {
+              id: 'ech'
+            });
+
         }]);
      
-        module.controller('CatalogTreeController', ['$scope',
-        '$http', function($scope, $http) {
+        module.controller('CatalogTreeController', ['$rootScope', '$scope', '$http', 'gaLayers',
+        function($rootScope, $scope, $http, gaLayers) {
+
+            var baseUrl = 'http://mf-chsdi3.dev.bgdi.ch/rest/services';
+            $scope.options = {
+              catalogUrlTemplate: baseUrl + '/{Topic}/CatalogServer'
+            };
+
             var templates = [
-              'components/catalogtree/example/tree.json',
-              'components/catalogtree/example/bigtree.json'
+              'ech',
+              'inspire'
             ];
-            var curTemplate = 1;
+            var curTemplate = 0;
             $scope.switchCatalog = switchCatalog;
-            $scope.switchCatalog();
 
             function switchCatalog() {
-              var http = $http.get(templates[curTemplate]);
-              http.success(function(data, status, header, config) {
-                $scope.tree = data.results.root;
-              });
               curTemplate = curTemplate === 0 ? 1 : 0;
+              $rootScope.$broadcast('gaTopicChange', {
+                id: templates[curTemplate]
+              });
             }
 
         }]);
