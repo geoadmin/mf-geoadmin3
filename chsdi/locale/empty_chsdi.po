@@ -52,21 +52,6 @@ msgstr ""
 msgid "ch.swisstopo.hangneigung-ueber_30"
 msgstr ""
 
-msgid "tt_bildstreifen_ebkey"
-msgstr ""
-
-msgid "tt_bildstreifen_Quickview"
-msgstr ""
-
-msgid "tt_bildstreifen_Link"
-msgstr ""
-
-msgid "tt_bildstreifen_Flugdatum"
-msgstr ""
-
-msgid "tt_bildstreifen_Aufloesung"
-msgstr ""
-
 msgid "ch.swisstopo"
 msgstr ""
 
@@ -3147,39 +3132,6 @@ msgstr ""
 msgid "blw_farbe_19"
 msgstr ""
 
-msgid "tt_bildstreifen_Aufloesung"
-msgstr ""
-
-msgid "tt_bildstreifen_Flugdatum"
-msgstr ""
-
-msgid "tt_bildstreifen_Link"
-msgstr ""
-
-msgid "tt_bildstreifen_Quickview"
-msgstr ""
-
-msgid "tt_bildstreifen_ebkey"
-msgstr ""
-
-msgid "tt_bildstreifen_line_id"
-msgstr ""
-
-msgid "tt_luftbilder_Filmart"
-msgstr ""
-
-msgid "tt_luftbilder_Flugdatum"
-msgstr ""
-
-msgid "tt_luftbilder_Link"
-msgstr ""
-
-msgid "tt_luftbilder_Quickview"
-msgstr ""
-
-msgid "tt_luftbilder_ebkey"
-msgstr ""
-
 msgid "tt_luftbilder_line_id"
 msgstr ""
 
@@ -4023,5 +3975,44 @@ msgstr ""
 msgid "kultur863"
 msgstr ""
 
-msgid "tt_bildstreifen_noQuickview"
+msgid "tt_lubis_noQuickview"
+msgstr ""
+
+msgid "tt_lubis_Quickview"
+msgstr ""
+
+msgid "tt_lubis_massstab"
+msgstr ""
+
+msgid "tt_lubis_x"
+msgstr ""
+
+msgid "tt_lubis_y"
+msgstr ""
+
+msgid "tt_lubis_originalsize"
+msgstr ""
+
+msgid "tt_lubis_scan"
+msgstr ""
+
+msgid "tt_lubis_lineId"
+msgstr ""
+
+msgid "tt_lubis_ebkey"
+msgstr ""
+
+msgid "tt_lubis_Flugdatum"
+msgstr ""
+
+msgid "tt_lubis_Filmart"
+msgstr ""
+
+msgid "tt_lubis_ort"
+msgstr ""
+
+msgid "tt_lubis_orientierung"
+msgstr ""
+
+msgid "tt_luftbilderOL"
 msgstr ""

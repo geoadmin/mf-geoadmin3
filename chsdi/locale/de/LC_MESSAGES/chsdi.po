@@ -3197,39 +3197,6 @@ msgstr "Abbruch ausgeführt"
 msgid "tt_bebautefl"
 msgstr "Bebaute Flächen"
 
-msgid "tt_bildstreifen_Aufloesung"
-msgstr "Auflösung"
-
-msgid "tt_bildstreifen_Aufloesung"
-msgstr "Auflösung"
-
-msgid "tt_bildstreifen_Flugdatum"
-msgstr "Flugdatum"
-
-msgid "tt_bildstreifen_Flugdatum"
-msgstr "Flugdatum"
-
-msgid "tt_bildstreifen_Link"
-msgstr "Commander"
-
-msgid "tt_bildstreifen_Link"
-msgstr "Commander"
-
-msgid "tt_bildstreifen_Quickview"
-msgstr "Quickview"
-
-msgid "tt_bildstreifen_Quickview"
-msgstr "Quickview"
-
-msgid "tt_bildstreifen_ebkey"
-msgstr "Bildstreifennummer"
-
-msgid "tt_bildstreifen_ebkey"
-msgstr "Bildstreifennummer"
-
-msgid "tt_bildstreifen_line_id"
-msgstr "Fluglinie"
-
 msgid "tt_ch.bafu.fauna-wildtierkorridor_national_nr"
 msgstr "Korridor Nummer"
 
@@ -3760,20 +3727,47 @@ msgstr "Aufsichtsbehörde"
 msgid "tt_landwirtsc"
 msgstr "Landwirtschaft"
 
-msgid "tt_luftbilder_Filmart"
+msgid "tt_lubis_Filmart"
 msgstr "Filmart"
 
-msgid "tt_luftbilder_Flugdatum"
+msgid "tt_lubis_Flugdatum"
 msgstr "Flugdatum"
 
-msgid "tt_luftbilder_Link"
-msgstr "Bestellen"
-
-msgid "tt_luftbilder_Quickview"
+msgid "tt_lubis_Quickview"
 msgstr "Quickview"
 
-msgid "tt_luftbilder_ebkey"
+msgid "tt_lubis_ebkey"
 msgstr "Bildnummer"
+
+msgid "tt_lubis_lineId"
+msgstr "Fluglinie"
+
+msgid "tt_lubis_massstab"
+msgstr "Massstab"
+
+msgid "tt_lubis_noQuickview"
+msgstr "Keine Vorschau zu diesem Bild vorhanden."
+
+msgid "tt_lubis_orientierung"
+msgstr "Orientierungselemente"
+
+msgid "tt_lubis_originalsize"
+msgstr "Original Bildgrösse"
+
+msgid "tt_lubis_ort"
+msgstr "Ort"
+
+msgid "tt_lubis_scan"
+msgstr "Scan"
+
+msgid "tt_lubis_x"
+msgstr "Zentrumskoordinate X"
+
+msgid "tt_lubis_y"
+msgstr "Zentrumskoordinate Y"
+
+msgid "tt_luftbilderOL"
+msgstr "Bild"
 
 msgid "tt_luftbilder_line_id"
 msgstr "Fluglinie"
