@@ -17,6 +17,13 @@ beforeEach(function() {
     $translateProvider.useLoader(undefined);
   });
 
+  module(function($sceDelegateProvider) {
+    var validatorUrl = 'http://www.kmlvalidator.org/validate.htm';
+    var whitelist = $sceDelegateProvider.resourceUrlWhitelist();
+    whitelist.push(validatorUrl);
+    $sceDelegateProvider.resourceUrlWhitelist(whitelist);
+  });
+
   module(function(gaLayersProvider) {
     gaLayersProvider.wmtsGetTileUrlTemplate =
         'http://wmts.com/foo/{Layer}/default/{Time}/21781/' +
