@@ -4,9 +4,9 @@
 
 <%def name="table_body(c,lang)">
 <%
-  Key_To_Translate_85 = 'bfs_nolu_' + str(c['attributes']['id_arealstatistik_nolc_85'])
-  Key_To_Translate_97 = 'bfs_nolu_' + str(c['attributes']['id_arealstatistik_nolc_97'])
-  Key_To_Translate_09 = 'bfs_nolu_' + str(c['attributes']['id_arealstatistik_nolc_09'])
+  Key_To_Translate_85 = 'bfs_nolu_' + str(c['attributes']['id_arealstatistik_nolu_85'])
+  Key_To_Translate_97 = 'bfs_nolu_' + str(c['attributes']['id_arealstatistik_nolu_97'])
+  Key_To_Translate_09 = 'bfs_nolu_' + str(c['attributes']['id_arealstatistik_nolu_09'])
 %>
 
 <% c['stable_id'] = True %>

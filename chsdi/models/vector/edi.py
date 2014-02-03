@@ -135,9 +135,9 @@ class ArealstatistikBodennutzung(Base, Vector):
     fj85 = Column('fj85', Integer)
     fj97 = Column('fj97', Integer)
     fj09 = Column('fj09', Integer)
-    id_arealstatistik_nolc_85 = Column('id_arealstatistik_nolu_85', Integer)
-    id_arealstatistik_nolc_97 = Column('id_arealstatistik_nolu_97', Integer)
-    id_arealstatistik_nolc_09 = Column('id_arealstatistik_nolu_09', Integer)
+    id_arealstatistik_nolu_85 = Column('id_arealstatistik_nolu_85', Integer)
+    id_arealstatistik_nolu_97 = Column('id_arealstatistik_nolu_97', Integer)
+    id_arealstatistik_nolu_09 = Column('id_arealstatistik_nolu_09', Integer)
 
 register('ch.bfs.arealstatistik-bodennutzung', ArealstatistikBodennutzung)
 
@@ -154,9 +154,9 @@ class ArealstatistikBodennutzung1997(Base, Vector):
     fj85 = Column('fj85', Integer)
     fj97 = Column('fj97', Integer)
     fj09 = Column('fj09', Integer)
-    id_arealstatistik_nolc_85 = Column('id_arealstatistik_nolu_85', Integer)
-    id_arealstatistik_nolc_97 = Column('id_arealstatistik_nolu_97', Integer)
-    id_arealstatistik_nolc_09 = Column('id_arealstatistik_nolu_09', Integer)
+    id_arealstatistik_nolu_85 = Column('id_arealstatistik_nolu_85', Integer)
+    id_arealstatistik_nolu_97 = Column('id_arealstatistik_nolu_97', Integer)
+    id_arealstatistik_nolu_09 = Column('id_arealstatistik_nolu_09', Integer)
 
 register('ch.bfs.arealstatistik-bodennutzung-1997', ArealstatistikBodennutzung1997)
 
@@ -173,9 +173,9 @@ class ArealstatistikBodennutzung1985(Base, Vector):
     fj85 = Column('fj85', Integer)
     fj97 = Column('fj97', Integer)
     fj09 = Column('fj09', Integer)
-    id_arealstatistik_nolc_85 = Column('id_arealstatistik_nolu_85', Integer)
-    id_arealstatistik_nolc_97 = Column('id_arealstatistik_nolu_97', Integer)
-    id_arealstatistik_nolc_09 = Column('id_arealstatistik_nolu_09', Integer)
+    id_arealstatistik_nolu_85 = Column('id_arealstatistik_nolu_85', Integer)
+    id_arealstatistik_nolu_97 = Column('id_arealstatistik_nolu_97', Integer)
+    id_arealstatistik_nolu_09 = Column('id_arealstatistik_nolu_09', Integer)
 
 register('ch.bfs.arealstatistik-bodennutzung-1985', ArealstatistikBodennutzung1985)
 
