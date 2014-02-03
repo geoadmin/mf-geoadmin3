@@ -39,7 +39,7 @@ register('ch.swisstopo.lubis-luftbilder_farbe', luftbilder_swisstopo_farbe)
 
 class luftbilder_swisstopo_ir(Base, Vector):
     __tablename__ = 'luftbilder_swisstopo'
-    __table_args__ = ({'schema': 'public', 'autoload': False})
+    __table_args__ = ({'schema': 'public', 'autoload': False, 'extend_existing':True})
     __template__ = 'templates/htmlpopup/lubis.mako'
     __bodId__ = 'ch.swisstopo.lubis-luftbilder_infrarot'
     __returnedGeometry__ = 'the_geom_footprint'
@@ -67,7 +67,7 @@ register('ch.swisstopo.lubis-luftbilder_infrarot', luftbilder_swisstopo_ir)
 
 class luftbilder_swisstopo_sw(Base, Vector):
     __tablename__ = 'luftbilder_swisstopo'
-    __table_args__ = ({'schema': 'public', 'autoload': False})
+    __table_args__ = ({'schema': 'public', 'autoload': False, 'extend_existing':True})
     __template__ = 'templates/htmlpopup/lubis.mako'
     __bodId__ = 'ch.swisstopo.lubis-luftbilder_schwarzweiss'
     __returnedGeometry__ = 'the_geom_footprint'
