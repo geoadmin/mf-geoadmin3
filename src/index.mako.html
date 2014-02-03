@@ -162,10 +162,10 @@
       <div ga-time-selector ga-time-selector-map="map" ga-time-selector-options="options" ng-show="isActive" id="time-selector" class="ng-hide"></div>
     </div>
 
-    <div id="pulldown">
+    <div id="pulldown" class="{{(globals.catalogShown && globals.selectionShown) ? 'selection-and-catalog-shown' : ''}}">
       <div id="pulldown-content" class="panel-group content ${"in" if device == "desktop" else "collapse"}">
         <div class="panel">
-          <a class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#share">
+          <a id="shareHeading" class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#share">
             <i class="visible-collapsed icon-caret-right spacer"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
             <i class="icon-share"></i>
@@ -180,7 +180,7 @@
 
 % if device == 'desktop':
         <div class="panel">
-          <a class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#print">
+          <a id="printHeading" class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#print">
             <i class="visible-collapsed icon-caret-right spacer"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
             <i class="icon-print"></i>
@@ -196,7 +196,7 @@
 
         <div class="panel">
 
-          <a class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#tools">
+          <a id="toolsHeading" class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#tools">
             <i class="visible-collapsed icon-caret-right spacer"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
             <i class="icon-ga-mapfunction"></i>
@@ -251,14 +251,14 @@
             </div>
           </div>
 % endif
-          <a class="panel-heading accordion-toggle light collapsed"
+          <a id="catalogHeading" class="panel-heading accordion-toggle light collapsed"
              data-toggle="collapse" href="#catalog"
              ga-collapsible-trigger="'catalogCollapse'">
             <i class="visible-collapsed icon-caret-right"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
             <span translate={{topicId}}></span>
           </a>
-          <div id="catalog" class="collapse" ng-controller="GaCatalogtreeController">
+          <div id="catalog" class="collapse"  ga-collapsible-observe="globals.catalogShown" ng-controller="GaCatalogtreeController">
 % if device == 'mobile':
             <label class="topic-container" ng-controller="GaTopicController">
               <span translate>change_topic</span>
@@ -272,12 +272,12 @@
         </div> <!-- .panel -->
 
         <div class="panel">
-          <a class="panel-heading accordion-toggle light ${"collapsed" if device != "desktop" else ""}" data-toggle="collapse" href="#selection">
+          <a id="selectionHeading" class="panel-heading accordion-toggle light ${"collapsed" if device!= "desktop" else ""}" data-toggle="collapse" href="#selection">
             <i class="visible-collapsed icon-caret-right"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
             <span translate>layer_selection</span>
           </a>
-          <div id="selection" class="collapse ${"in" if device == "desktop" else ""}">
+          <div id="selection"  ga-collapsible-observe="globals.selectionShown" class="${"in" if device == "desktop" else ""}">
             <div class="panel-body panel-body-wide" ga-layermanager ga-layermanager-map="map">
             </div>
           </div>

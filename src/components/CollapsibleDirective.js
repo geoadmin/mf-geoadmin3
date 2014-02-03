@@ -56,7 +56,7 @@
    * 'show.bs.collapse' and 'hide.bs.collapse' messages
    * of bootstrap on your elements
    */
-  module.directive('gaCollapsibleObserve', function() {
+  module.directive('gaCollapsibleObserve', function($timeout) {
     return {
       restrict: 'A',
       scope: {
@@ -64,14 +64,16 @@
       },
       link: function(scope, element, attrs) {
 
+        scope.shown = !element.hasClass('collapse');
+
         element.on('show.bs.collapse', function() {
-          scope.$apply(function() {
+          $timeout(function() {
             scope.shown = true;
           });
         });
 
         element.on('hidden.bs.collapse', function() {
-          scope.$apply(function() {
+          $timeout(function() {
             scope.shown = false;
           });
         });
