@@ -109,7 +109,7 @@
             }
 
             gaMapClick.listen(map, function(evt) {
-              if ($rootScope.isMeasureActive) {
+              if ($rootScope.isMeasureActive || $rootScope.isDrawActive) {
                 return;
               }
               var size = map.getSize();
