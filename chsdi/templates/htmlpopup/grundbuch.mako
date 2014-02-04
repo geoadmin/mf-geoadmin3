@@ -14,10 +14,15 @@
     <tr><td class="cell-left">${_('grundkreis')}</td>    <td>${c['attributes']['grundbuchkreis'] or '-'}</td></tr>
     <tr><td class="cell-left">${_('grundadresse')}</td>
     % if c['attributes']['adresse'].strip() == "#":
-       <td>-</td></tr>
+       <td>-</td>
     % else:
-      <td>${c['attributes']['adresse'].replace("#","<br>") or '-'}</td></tr>
+      <td>
+      % for address in c['attributes']['adresse'].split('#'):
+      ${address or '-'} <br>
+      % endfor
+      </td>
     % endif
+    </tr>
     <tr><td class="cell-left">${_('grundtel')}</td>    <td>${c['attributes']['telefon'] or '-'}</td></tr>
     <tr><td class="cell-left">${_('grundurl')}</td>
       % if c['attributes']['email'] == None:
