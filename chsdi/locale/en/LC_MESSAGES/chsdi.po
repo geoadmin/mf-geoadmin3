@@ -680,6 +680,54 @@ msgstr "Wetlands"
 msgid "bfs_nolc_64"
 msgstr "Reedy marshes"
 
+msgid "bfs_nolu_100"
+msgstr "Building areas"
+
+msgid "bfs_nolu_120"
+msgstr "Transport surfaces"
+
+msgid "bfs_nolu_140"
+msgstr "Special urban areas"
+
+msgid "bfs_nolu_160"
+msgstr "Recreational areas and cemeteries"
+
+msgid "bfs_nolu_201"
+msgstr "Orchards"
+
+msgid "bfs_nolu_202"
+msgstr "Vineyards"
+
+msgid "bfs_nolu_203"
+msgstr "Horticulture"
+
+msgid "bfs_nolu_221"
+msgstr "Arable land, in general"
+
+msgid "bfs_nolu_222"
+msgstr "Semi-natural grassland, in general"
+
+msgid "bfs_nolu_223"
+msgstr "Farm pastures, in general"
+
+msgid "bfs_nolu_241"
+msgstr "Alpine meadows, in general"
+
+msgid "bfs_nolu_242"
+msgstr "Alpine pastures, in general"
+
+msgid "bfs_nolu_243"
+msgstr "Alpine sheep grazing pastures, in general"
+
+msgid "bfs_nolu_300"
+msgstr "Forest (not used for agricultural purposes)"
+
+msgid "bfs_nolu_400"
+msgstr "Lakes and rivers"
+
+msgid "bfs_nolu_420"
+msgstr "Unproductive land"
+
 msgid "bfsnr"
 msgstr "BFS-Nummer"
 
@@ -1378,6 +1426,15 @@ msgstr "Area statistics 1979/85 NOLC04"
 
 msgid "ch.bfs.arealstatistik-bodenbedeckung-1997"
 msgstr "Area statistics 1992/97 NOLC04"
+
+msgid "ch.bfs.arealstatistik-bodennutzung"
+msgstr "Arealstatistik 2004/09 NOLU04"
+
+msgid "ch.bfs.arealstatistik-bodennutzung-1985"
+msgstr "Arealstatistik 1979/85 NOLU04"
+
+msgid "ch.bfs.arealstatistik-bodennutzung-1997"
+msgstr "Arealstatistik 1992/97 NOLU04"
 
 msgid "ch.bfs.arealstatistik-hintergrund"
 msgstr "Simplified land occupancy"
@@ -2168,6 +2225,24 @@ msgstr "ID area statistic 1979/85"
 
 msgid "id_arealstatistik_97"
 msgstr "ID area statistic 1992/97"
+
+msgid "id_arealstatistik_lc_09"
+msgstr "Kategorie Bodenbedeckung 2004/09"
+
+msgid "id_arealstatistik_lc_85"
+msgstr "Kategorie Bodenbedeckung 1979/85"
+
+msgid "id_arealstatistik_lc_97"
+msgstr "Kategorie Bodenbedeckung 1992/97"
+
+msgid "id_arealstatistik_lu_09"
+msgstr "Kategorie Bodennutzung 2004/09"
+
+msgid "id_arealstatistik_lu_85"
+msgstr "Kategorie Bodennutzung 1979/85"
+
+msgid "id_arealstatistik_lu_97"
+msgstr "Kategorie Bodennutzung 1992/97"
 
 msgid "id_objekt"
 msgstr "Object"

@@ -680,6 +680,54 @@ msgstr "Nassstandorte"
 msgid "bfs_nolc_64"
 msgstr "Schilfbestände"
 
+msgid "bfs_nolu_100"
+msgstr "Gebäudeareal"
+
+msgid "bfs_nolu_120"
+msgstr "Verkehrsflächen"
+
+msgid "bfs_nolu_140"
+msgstr "Besondere Siedlungsflächen"
+
+msgid "bfs_nolu_160"
+msgstr "Erholungs- und Grünanlagen"
+
+msgid "bfs_nolu_201"
+msgstr "Obstbau"
+
+msgid "bfs_nolu_202"
+msgstr "Rebbau"
+
+msgid "bfs_nolu_203"
+msgstr "Gartenbau"
+
+msgid "bfs_nolu_221"
+msgstr "Ackerland i.w.S."
+
+msgid "bfs_nolu_222"
+msgstr "Naturwiesen i.w.S."
+
+msgid "bfs_nolu_223"
+msgstr "Heimweiden i.w.S."
+
+msgid "bfs_nolu_241"
+msgstr "Alpwiesen i.w.S."
+
+msgid "bfs_nolu_242"
+msgstr "Alp- und Juraweiden i.w.S."
+
+msgid "bfs_nolu_243"
+msgstr "Schafalpen i.w.S."
+
+msgid "bfs_nolu_300"
+msgstr "Wald (ohne landwirtschaftliche Nutzung)"
+
+msgid "bfs_nolu_400"
+msgstr "Seen und Flüsse"
+
+msgid "bfs_nolu_420"
+msgstr "Unproduktives Land"
+
 msgid "bfsnr"
 msgstr "BFS-Nummer"
 
@@ -1378,6 +1426,15 @@ msgstr "Arealstatistik 1979/85 NOLC04"
 
 msgid "ch.bfs.arealstatistik-bodenbedeckung-1997"
 msgstr "Arealstatistik 1992/97 NOLC04"
+
+msgid "ch.bfs.arealstatistik-bodennutzung"
+msgstr "Arealstatistik 2004/09 NOLU04 "
+
+msgid "ch.bfs.arealstatistik-bodennutzung-1985"
+msgstr "Arealstatistik 1979/85 NOLU04"
+
+msgid "ch.bfs.arealstatistik-bodennutzung-1997"
+msgstr "Arealstatistik 1992/97 NOLU04"
 
 msgid "ch.bfs.arealstatistik-hintergrund"
 msgstr "Vereinfachte Bodennutzung"
@@ -2167,6 +2224,24 @@ msgstr "Grundkategorie Arealstatistik 1979/85"
 
 msgid "id_arealstatistik_97"
 msgstr "Grundkategorie Arealstatistik 1992/97"
+
+msgid "id_arealstatistik_lc_09"
+msgstr "Kategorie Bodenbedeckung 2004/09"
+
+msgid "id_arealstatistik_lc_85"
+msgstr "Kategorie Bodenbedeckung 1979/85"
+
+msgid "id_arealstatistik_lc_97"
+msgstr "Kategorie Bodenbedeckung 1992/97"
+
+msgid "id_arealstatistik_lu_09"
+msgstr "Kategorie Bodennutzung 2004/09"
+
+msgid "id_arealstatistik_lu_85"
+msgstr "Kategorie Bodennutzung 1979/85"
+
+msgid "id_arealstatistik_lu_97"
+msgstr "Kategorie Bodennutzung 1992/97"
 
 msgid "id_objekt"
 msgstr "Objekt"
