@@ -20753,7 +20753,7 @@ ol.render.canvas.Immediate.prototype.drawPointGeometry = function(pointGeometry,
     this.drawImages_(flatCoordinates, 0, flatCoordinates.length, stride)
   }
   if(this.text_ !== "") {
-    this.drawImages_(flatCoordinates, 0, flatCoordinates.length, stride)
+    this.drawText_(flatCoordinates, 0, flatCoordinates.length, stride)
   }
 };
 ol.render.canvas.Immediate.prototype.drawMultiPointGeometry = function(multiPointGeometry, data) {
@@ -26354,6 +26354,7 @@ ol.Map = function(options) {
   var mapBrowserEventHandler = new ol.MapBrowserEventHandler(this);
   goog.events.listen(mapBrowserEventHandler, goog.object.getValues(ol.MapBrowserEvent.EventType), this.handleMapBrowserEvent, false, this);
   this.registerDisposable(mapBrowserEventHandler);
+  this.keyboardEventTarget_ = optionsInternal.keyboardEventTarget;
   this.keyHandler_ = new goog.events.KeyHandler;
   goog.events.listen(this.keyHandler_, goog.events.KeyHandler.EventType.KEY, this.handleBrowserEvent, false, this);
   this.registerDisposable(this.keyHandler_);
@@ -26584,7 +26585,8 @@ ol.Map.prototype.handleTargetChanged_ = function() {
     goog.dom.removeNode(this.viewport_)
   }else {
     goog.dom.appendChild(targetElement, this.viewport_);
-    this.keyHandler_.attach(targetElement)
+    var keyboardEventTarget = goog.isNull(this.keyboardEventTarget_) ? targetElement : this.keyboardEventTarget_;
+    this.keyHandler_.attach(keyboardEventTarget)
   }
   this.updateSize()
 };
@@ -26628,8 +26630,21 @@ ol.Map.prototype.handleLayerGroupChanged_ = function() {
   this.render()
 };
 ol.Map.prototype.isDef = function() {
+  if(!goog.dom.contains(document, this.viewport_)) {
+    return false
+  }
+  if(!goog.style.isElementShown(this.viewport_)) {
+    return false
+  }
+  var size = this.getSize();
+  if(!goog.isDefAndNotNull(size) || size[0] <= 0 || size[1] <= 0) {
+    return false
+  }
   var view = this.getView();
-  return goog.isDef(view) && view.isDef() && goog.isDefAndNotNull(this.getSize())
+  if(!goog.isDef(view) || !view.isDef()) {
+    return false
+  }
+  return true
 };
 ol.Map.prototype.render = function() {
   if(this.animationDelay_.isActive()) {
@@ -26782,6 +26797,10 @@ ol.Map.prototype.withFrozenRendering = function(f, opt_this) {
 };
 ol.MapOptionsInternal;
 ol.Map.createOptionsInternal = function(options) {
+  var keyboardEventTarget = null;
+  if(goog.isDef(options.keyboardEventTarget)) {
+    keyboardEventTarget = goog.isString(options.keyboardEventTarget) ? document.getElementById(options.keyboardEventTarget) : options.keyboardEventTarget
+  }
   var values = {};
   var ol3Logo = goog.isDef(options.ol3Logo) ? options.ol3Logo : true;
   var layerGroup = options.layers instanceof ol.layer.Group ? options.layers : new ol.layer.Group({layers:options.layers});
@@ -26856,7 +26875,7 @@ ol.Map.createOptionsInternal = function(options) {
   }else {
     overlays = new ol.Collection
   }
-  return{controls:controls, interactions:interactions, ol3Logo:ol3Logo, overlays:overlays, rendererConstructor:rendererConstructor, values:values}
+  return{controls:controls, interactions:interactions, keyboardEventTarget:keyboardEventTarget, ol3Logo:ol3Logo, overlays:overlays, rendererConstructor:rendererConstructor, values:values}
 };
 ol.RendererHints.createFromQueryData = function(opt_queryData) {
   var query = goog.global.location.search.substring(1), queryData = goog.isDef(opt_queryData) ? opt_queryData : new goog.Uri.QueryData(query);
@@ -27803,6 +27822,7 @@ ol.Overlay.prototype.updatePixelPosition_ = function() {
     return
   }
   var pixel = map.getPixelFromCoordinate(position);
+  goog.asserts.assert(!goog.isNull(pixel));
   var mapSize = map.getSize();
   goog.asserts.assert(goog.isDef(mapSize));
   var style = this.element_.style;
@@ -31362,7 +31382,6 @@ ol.format.TopoJSON.prototype.readFeaturesFromObject = function(object) {
     }
     return features
   }else {
-    goog.asserts.fail();
     return[]
   }
 };
