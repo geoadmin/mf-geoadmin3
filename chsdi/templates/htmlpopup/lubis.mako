@@ -8,7 +8,7 @@ import urllib2
 import datetime
 from xml.dom import minidom
 
-if hasattr(c['attributes']['bildnummer']):
+if c['attributes']['bildnummer']:
     image_bildnummer = c['attributes']['bildnummer']
 endif
 datenherr = c['attributes']['firma']
@@ -66,6 +66,9 @@ orientierung = '-'
 image_width = 1
 image_height = 1
 filenamee = c['attributes']['filename']
+scan = '-'
+protocol = request.headers.get('X-Forwarded-Proto','http')
+chsdihost = 'https' + '://' + request.registry.settings['host']
 
 if c['attributes']['filename']: 
     scan = 'True'
@@ -87,7 +90,7 @@ if c['attributes']['filename']:
 endif
 %>
 <head>
-    <script type="text/javascript" src="https://mf-chsdi3.dev.bgdi.ch/loader.js"></script>
+    <script type="text/javascript" src="${chsdihost}/loader.js"></script>
     <script>
     function init() {
 % if image_width > 2:
