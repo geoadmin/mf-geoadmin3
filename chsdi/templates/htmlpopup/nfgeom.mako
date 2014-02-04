@@ -7,7 +7,11 @@
       % if c['attributes']['adresse'].strip() == '#':
            <td>-</td>
       % else:  
-           <td>${c['attributes']['adresse'].replace("#","<br>") or '-'}</td>
+           <td>
+        % for address in c['attributes']['adresse'].split('#'):
+          ${address or '-'} <br>
+        % endfor
+      </td>
       % endif
     </tr>
     <tr><td class="cell-left">${_('grundtel')}</td>    <td>${c['attributes']['telefon'] or '-'}</td></tr>
