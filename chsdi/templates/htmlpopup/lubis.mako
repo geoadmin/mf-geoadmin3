@@ -8,19 +8,25 @@ import urllib2
 import datetime
 from xml.dom import minidom
 
-image_bildnummer = c['attributes']['bildnummer']
+if hasattr(c['attributes']['bildnummer']):
+    image_bildnummer = c['attributes']['bildnummer']
+endif
 datenherr = c['attributes']['firma']
 datum = datetime.datetime.strptime(c['attributes']['flugdatum'], "%Y%m%d  ").strftime("%d-%m-%Y")
+image_width = 1
+image_height = 1
 
-try:
-    xml_file = urllib2.urlopen("http://web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?DeepZoom="+c['attributes']['filename'][12:]+".dzi")
-    xmldoc = minidom.parse(xml_file)
-    dimensions = xmldoc.getElementsByTagName('Size')
-    image_width = dimensions[0].getAttribute('Width')
-    image_height = dimensions[0].getAttribute('Height')
-except: 
-    image_width = None
-    image_height = None
+if c['attributes']['filename']:
+    try:
+        xml_file = urllib2.urlopen("http://web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?DeepZoom="+c['attributes']['filename'][12:]+".dzi")
+        xmldoc = minidom.parse(xml_file)
+        dimensions = xmldoc.getElementsByTagName('Size')
+        image_width = dimensions[0].getAttribute('Width')
+        image_height = dimensions[0].getAttribute('Height')
+    except: 
+        image_width = 1
+        image_height = 1
+endif
 %>
 
 %    if image_bildnummer: 
@@ -32,8 +38,8 @@ except:
     <tr><td class="cell-left">${_('tt_lubis_Flugdatum')}</td>    <td>${datum or '-'}</td></tr>
     <tr><td class="cell-left">${_('tt_lubis_Filmart')}</td>      <td>${c['attributes']['filmart'] or '-'}</td></tr>
 
-%    if image_height > 1:
-       <tr><td class="cell-left">${_('tt_lubis_Quickview')}</td>    <td><a href="/wsgi/static/iipimage/viewer.html?image=${c['attributes']['filename'][12:]}&width=${image_width}&height=${image_height}&title=No%20de%20l%27image&bildnummer=${image_bildnummer}&datenherr=${datenherr}&layer=Photographies%20a%C3%A9riennes%20swisstopo" target="_blank"><img src="http://web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?FIF=${c['attributes']['filename'][12:]}&WID=150&CVT=jpeg" alt="quickview"></a></td></tr>
+%    if image_height > 2:
+       <tr><td class="cell-left">${_('tt_lubis_Quickview')}</td>    <td><a href="https://mf-chsdi3.dev.bgdi.ch/ltfoa/wsgi/static/iipimage/viewer.html?image=${c['attributes']['filename'][12:]}&width=${image_width}&height=${image_height}&title=${_('tt_lubis_ebkey')}&bildnummer=${image_bildnummer}&datenherr=${datenherr}&layer=${fullName}" target="_blank"><img src="http://web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?FIF=${c['attributes']['filename'][12:]}&WID=150&CVT=jpeg" alt="quickview"></a></td></tr>
 %    else:
        <tr><td class="cell-left">${_('tt_lubis_Quickview')}</td>    <td>${_('tt_lubis_noQuickview')}</td></tr>
 %    endif
@@ -51,66 +57,76 @@ import urllib2
 import datetime
 from xml.dom import minidom
 
-image_bildnummer = c['attributes']['bildnummer']
+if c['attributes']['bildnummer']:
+    image_bildnummer = c['attributes']['bildnummer']
+endif
 datenherr = c['attributes']['firma']
 datum = datetime.datetime.strptime(c['attributes']['flugdatum'], "%Y%m%d  ").strftime("%d-%m-%Y")
-scan = '-'
 orientierung = '-'
-if c['attributes']['filename']:
+image_width = 1
+image_height = 1
+filenamee = c['attributes']['filename']
+
+if c['attributes']['filename']: 
     scan = 'True'
 endif
 if c['attributes']['orientierung']:
     orientierung = 'True'
 endif
 
-try:
-    xml_file = urllib2.urlopen("http://web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?DeepZoom="+c['attributes']['filename'][12:]+".dzi")
-    xmldoc = minidom.parse(xml_file)
-    dimensions = xmldoc.getElementsByTagName('Size')
-    image_width = dimensions[0].getAttribute('Width')
-    image_height = dimensions[0].getAttribute('Height')
-except: 
-    image_width = None
-    image_height = None
+if c['attributes']['filename']:
+    try:
+        xml_file = urllib2.urlopen("http://web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?DeepZoom="+c['attributes']['filename'][12:]+".dzi")
+        xmldoc = minidom.parse(xml_file)
+        dimensions = xmldoc.getElementsByTagName('Size')
+        image_width = dimensions[0].getAttribute('Width')
+        image_height = dimensions[0].getAttribute('Height')
+    except: 
+        image_width = 1
+        image_height = 1
+endif
 %>
 <head>
-    <script type="text/javascript" src="/loader.js"></script>
+    <script type="text/javascript" src="https://mf-chsdi3.dev.bgdi.ch/loader.js"></script>
     <script>
     function init() {
-      var image_width = parseInt(${image_width});
-      var image_height = parseInt(${image_height});
-      var url = "https://web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?Zoomify=${c['attributes']['filename'][12:]}/";
-      var proj = new ol.proj.Projection({
-        code: 'ZOOMIFY',
-        units: ol.proj.Units.PIXELS,
-        extent: [0, 0, image_width, image_height]
-      });
-
-      var source = new ol.source.Zoomify({
-        url: url,
-        size: [image_width, image_height]
-      });
-
-      if (url && image_width && image_height) {
-        var map = new ga.Map({
-          layers: [
-            new ol.layer.Tile({
-              source: source
-            })
-          ],
-          controls: ol.control.defaults().extend([new ol.control.FullScreen()]),
-          renderer: ol.RendererHint.CANVAS,
-          target: 'zoomify',
-          ol3Logo: false,
-          view: new ol.View2D({
-            projection: proj,
-            center:  [image_width / 2, - image_height / 2],
-            zoom: 0
-          })
+% if image_width > 2:
+        var image_width = parseInt(${image_width});
+        var image_height = parseInt(${image_height});
+        var url = "https://web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?Zoomify=${c['attributes']['filename'][12:]}/";
+      
+        var proj = new ol.proj.Projection({
+          code: 'ZOOMIFY',
+          units: ol.proj.Units.PIXELS,
+          extent: [0, 0, image_width, image_height]
         });
-      } else {
-        alert('Missing parameters');
-      };
+
+        var source = new ol.source.Zoomify({
+          url: url,
+          size: [image_width, image_height]
+        });
+
+        if (url && image_width && image_height) {
+          var map = new ga.Map({
+            layers: [
+              new ol.layer.Tile({
+                source: source
+              })
+            ],
+            controls: ol.control.defaults().extend([new ol.control.FullScreen()]),
+            renderer: ol.RendererHint.CANVAS,
+            target: 'zoomify',
+            ol3Logo: false,
+            view: new ol.View2D({
+              projection: proj,
+              center:  [image_width / 2, - image_height / 2],
+              zoom: 0
+            })
+          });
+        } else {
+          alert('Missing parameters');
+        };
+% endif
     
       // Create a GeoAdmin Map
       var map = new ga.Map({
@@ -129,14 +145,14 @@ except:
         resolution: 10,
     
         // Define a coordinate CH1903 (EPSG:21781) for the center of the view
-        center: [561666.5, 185569.5]
+        center: [${c['attributes']['x']},${c['attributes']['y']}]
       })
     });
 
     // Create a background layer
     var lyr1 = ga.layer.create('ch.swisstopo.pixelkarte-grau');
     // Create an overlay layer
-    var lyr2 = ga.layer.create('ch.swisstopo.lubis-luftbilder');
+    var lyr2 = ga.layer.create('${c['layerBodId']}');
 
     // Add the layers in the map
     map.addLayer(lyr1);
@@ -144,13 +160,12 @@ except:
     }
     </script>
     <style>
-      #zoomify {
-        width: 600px;
+      #zoomify, #map {
+        width: 100%;
         height: 300px;
       }
-      #map {
-        width: 600px;
-        height: 300px;
+      .htmlpopup-container {
+        width: 60%;      
       }
     </style>
   </head>
@@ -180,8 +195,8 @@ except:
     <div id="map"></div>
     <br>
     <br>
-%    if image_height > 1:
-    <tr><td>${_('tt_luftbilderOL')}</td> <td><a href="/wsgi/static/iipimage/viewer.html?image=${c['attributes']['filename'][12:]}&width=${image_width}&height=${image_height}&title=No%20de%20l%27image&bildnummer=${image_bildnummer}&datenherr=${datenherr}&layer=Photographies%20a%C3%A9riennes%20swisstopo" target="_blank" alt="Fullscreen">(fullscreen)</a></td></tr>
+%    if image_height > 2:
+    <tr><td>${_('tt_luftbilderOL')}</td> <td><a href="https://mf-chsdi3.dev.bgdi.ch/ltfoa/wsgi/static/iipimage/viewer.html?image=${c['attributes']['filename'][12:]}&width=${image_width}&height=${image_height}&title=${_('tt_lubis_ebkey')}&bildnummer=${image_bildnummer}&datenherr=${datenherr}&layer=${fullName}" target="_blank" alt="Fullscreen">(fullscreen)</a></td></tr>
     <div id="zoomify"></div>
 %    endif
     <tr><td>
