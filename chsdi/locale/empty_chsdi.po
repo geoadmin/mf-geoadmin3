@@ -4016,3 +4016,21 @@ msgstr ""
 
 msgid "tt_luftbilderOL"
 msgstr ""
+
+msgid "tt_lubis_auflosung"
+msgstr ""
+
+msgid "tt_lubis_x1"
+msgstr ""
+
+msgid "tt_lubis_x2"
+msgstr ""
+
+msgid "tt_lubis_y1"
+msgstr ""
+
+msgid "tt_lubis_y2"
+msgstr ""
+
+msgid "tt_lubis_linielaenge"
+msgstr ""

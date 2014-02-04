@@ -3737,11 +3737,17 @@ msgstr "Date du vol"
 msgid "tt_lubis_Quickview"
 msgstr "Quickview"
 
+msgid "tt_lubis_auflosung"
+msgstr "Résolution"
+
 msgid "tt_lubis_ebkey"
 msgstr "No de l'image"
 
 msgid "tt_lubis_lineId"
 msgstr "Ligne aérienne"
+
+msgid "tt_lubis_linielaenge"
+msgstr "Longueur"
 
 msgid "tt_lubis_massstab"
 msgstr "Échelle"
@@ -3764,8 +3770,20 @@ msgstr "Scan"
 msgid "tt_lubis_x"
 msgstr "Coordonnée centre X"
 
+msgid "tt_lubis_x1"
+msgstr "X1"
+
+msgid "tt_lubis_x2"
+msgstr "X2"
+
 msgid "tt_lubis_y"
 msgstr "Coordonnée centre Y"
+
+msgid "tt_lubis_y1"
+msgstr "Y1"
+
+msgid "tt_lubis_y2"
+msgstr "Y2"
 
 msgid "tt_luftbilderOL"
 msgstr "Image"
@@ -3828,7 +3846,7 @@ msgid "tt_sachplan_planning_coordstand"
 msgstr "Etat de coordination"
 
 msgid "tt_sachplan_planning_name"
-msgstr "Nom de la mesure"
+msgstr "Mesure"
 
 msgid "tt_sachplan_planning_planungstand"
 msgstr "Etat de la planification"
