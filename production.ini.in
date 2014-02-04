@@ -40,6 +40,7 @@ geodata_staging = ${geodata_staging}
 instanceid = ${instanceid}
 sphinxhost = ${sphinxhost}
 geoadminhost = ${geoadminhost}
+host = ${host}
 address_search_referers = localhost,admin.ch,awk.ch,cadastre.ch,rspp.ch,rollstuhlparkplatz.ch,placehandicape.ch,parcheggiodisabili.chi,zh.ch
 
 ###
