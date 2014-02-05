@@ -507,7 +507,8 @@
         module.constant('gaGlobalOptions', {
           serviceUrl : '${service_url}',
           baseUrlPath: '${base_url_path}',
-          version: '${version}'
+          version: '${version}',
+          ogcproxyUrl: location.protocol + '${geoadmin_url}${base_url_path}' + '/ogcproxy?url='
         });
 
         module.config(['gaLayersProvider', function(gaLayersProvider) {
@@ -526,10 +527,6 @@
               '${base_url_path}/${version}rest/services/all/MapServer/';
         }]);
         
-        module.config(['gaKmlProvider', function(gaKmlProvider) {
-          gaKmlProvider.proxyUrl = location.protocol + '${service_url}/ogcproxy?url='; 
-        }]);
-
         module.config(['$sceDelegateProvider', function($sceDelegateProvider) {
           var validatorUrl = 'http://www.kmlvalidator.org/validate.htm';
           var whitelist = $sceDelegateProvider.resourceUrlWhitelist();

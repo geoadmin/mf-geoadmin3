@@ -330,7 +330,7 @@
     });
 
     this.$get = function($http, gaPopup, gaDefinePropertiesForLayer,
-        gaMapClick, gaMapUtils, $rootScope) {
+        gaMapClick, gaMapUtils, gaGlobalOptions, $rootScope) {
       var Kml = function(proxyUrl) {
 
         /**
@@ -465,7 +465,7 @@
         };
         this.proxyUrl = proxyUrl;
       };
-      return new Kml(this.proxyUrl);
+      return new Kml(gaGlobalOptions.ogcproxyUrl);
     };
   });
 
