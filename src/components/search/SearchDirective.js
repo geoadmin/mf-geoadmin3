@@ -324,7 +324,8 @@
                     var originZoom = {
                       address: 10,
                       parcel: 10,
-                      sn25: 8
+                      sn25: 8,
+                      feature: 7
                     };
 
                     if (originZoom.hasOwnProperty(origin)) {
