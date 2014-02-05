@@ -26,7 +26,9 @@
               // set view states based on URL query string
               var queryParams = gaPermalink.getParams();
               if (queryParams.Y !== undefined && queryParams.X !== undefined) {
-                view.setCenter([+queryParams.Y, +queryParams.X]);
+                var eastings = parseFloat(queryParams.Y.replace(/,/g, '.'));
+                var northings = parseFloat(queryParams.X.replace(/,/g, '.'));
+                view.setCenter([+eastings, +northings]);
               }
               if (queryParams.zoom !== undefined) {
                 view.setZoom(+queryParams.zoom);
