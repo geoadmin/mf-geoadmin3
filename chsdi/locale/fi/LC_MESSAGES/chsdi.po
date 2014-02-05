@@ -1739,6 +1739,9 @@ msgstr "swisstopo, Kt."
 msgid "ch.swisstopo.kt.url"
 msgstr "http://www.swisstopo.admin.ch/internet/swisstopo/de/home/swisstopo/org/cartography.html"
 
+msgid "ch.swisstopo.lubis-bildstreifen"
+msgstr "TODO"
+
 msgid "ch.swisstopo.lubis-luftbilder"
 msgstr "TODO"
 
@@ -1746,6 +1749,15 @@ msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen"
 msgstr "TODO"
 
 msgid "ch.swisstopo.lubis-luftbilder-dritte-kantone"
+msgstr "TODO"
+
+msgid "ch.swisstopo.lubis-luftbilder_farbe"
+msgstr "TODO"
+
+msgid "ch.swisstopo.lubis-luftbilder_infrarot"
+msgstr "TODO"
+
+msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss"
 msgstr "TODO"
 
 msgid "ch.swisstopo.pixelkarte-farbe"

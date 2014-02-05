@@ -4034,3 +4034,15 @@ msgstr ""
 
 msgid "tt_lubis_linielaenge"
 msgstr ""
+
+msgid "ch.swisstopo.lubis-luftbilder_farbe"
+msgstr ""
+
+msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss"
+msgstr ""
+
+msgid "ch.swisstopo.lubis-luftbilder_infrarot"
+msgstr ""
+
+msgid "ch.swisstopo.lubis-bildstreifen"
+msgstr ""
