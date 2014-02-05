@@ -47,12 +47,12 @@
           <a href="/rest/services/ech/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=630000,245000,645000,265000&imageDisplay=500,600,96&mapExtent=545132.87362333,147068.69380758,550132.87362333,150568.69380758&tolerance=1&layers=all&returnGeometry=false">Identify - without geometry</a> <br>
           <h3>Varia</h3>
           <a href="rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362">Get Feature with id 362</a> <br>
-          <a href="rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362/htmlpopup">Html Popup Ex 1</a> <br>
-          <a href="rest/services/ech/MapServer/ch.bafu.bundesinventare-jagdbanngebiete/145/htmlpopup?lang=fr&callback=cb">Html Popup Ex 2 with callback</a> <br>
-          <a href="rest/services/ech/MapServer/ch.astra.ivs-reg_loc/54967/htmlpopup">Html Popup Ex 3</a> <br>
-          <a href="rest/services/ech/MapServer/ch.kantone.cadastralwebmap-farbe/11/htmlpopup?imageDisplay=600,400,96&mapExtent=573090.125,142393.0625,573097.625,142400.5625">Html popup Ex 4 cadastral web map</a> <br>
-          <a href="rest/services/ech/MapServer/ch.bakom.radio-fernsehsender/5/extendedhtmlpopup?imageDisplay=600,400,96&mapExtent=573090.125,142393.0625,573097.625,142400.5625">Extended html content Ex 1</a> <br>
-          <a href="rest/services/ech/MapServer/ch.bfe.energieforschung/4/extendedhtmlpopup?imageDisplay=600,400,96&mapExtent=573090.125,142393.0625,573097.625,142400.5625">Extended html content Ex 2 with images</a> <br>
+          <a href="rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362/htmlPopup">Html Popup Ex 1</a> <br>
+          <a href="rest/services/ech/MapServer/ch.bafu.bundesinventare-jagdbanngebiete/145/htmlPopup?lang=fr&callback=cb">Html Popup Ex 2 with callback</a> <br>
+          <a href="rest/services/ech/MapServer/ch.astra.ivs-reg_loc/54967/htmlPopup">Html Popup Ex 3</a> <br>
+          <a href="rest/services/ech/MapServer/ch.kantone.cadastralwebmap-farbe/11/htmlPopup?imageDisplay=600,400,96&mapExtent=573090.125,142393.0625,573097.625,142400.5625">Html popup Ex 4 cadastral web map</a> <br>
+          <a href="rest/services/ech/MapServer/ch.bakom.radio-fernsehsender/5/extendedHtmlPopup?imageDisplay=600,400,96&mapExtent=573090.125,142393.0625,573097.625,142400.5625">Extended html content Ex 1</a> <br>
+          <a href="rest/services/ech/MapServer/ch.bfe.energieforschung/4/extendedHtmlPopup?imageDisplay=600,400,96&mapExtent=573090.125,142393.0625,573097.625,142400.5625">Extended html content Ex 2 with images</a> <br>
           <a href="rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/legend">Get Legend Ex 1</a> <br>
           <a href="rest/services/ech/MapServer/ch.bafu.bundesinventare-jagdbanngebiete/legend?lang=fr&callback=cb">Get Legend Ex 2 with callback</a> <br>
           <a href="rest/services/height?easting=600000&northing=200000">Height example</a> <br>

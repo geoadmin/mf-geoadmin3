@@ -4,7 +4,7 @@
 mode = request.params.get('mode')
 lang = request.lang
 appUrl = request.application_url.replace('http:', request.scheme + ':')
-layersconfig = appUrl + '/rest/services/all/MapServer/layersconfig?lang=' + lang
+layersconfig = appUrl + '/rest/services/all/MapServer/layersConfig?lang=' + lang
 import urllib2
 f = urllib2.urlopen(layersconfig)
 conf = """function getConfig(){ return %s } """ %f.read()

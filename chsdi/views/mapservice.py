@@ -44,6 +44,7 @@ class MapService(MapServiceValidation):
             results['layers'].append(layer)
         return results
 
+    @view_config(route_name='layersConfig', renderer='jsonp')
     @view_config(route_name='layersconfig', renderer='jsonp')
     def layersconfig(self):
         layers = {}
@@ -191,12 +192,12 @@ class MapService(MapServiceValidation):
 
         return {'results': features}
 
-    @view_config(route_name='getfeature', renderer='geojson',
+    @view_config(route_name='feature', renderer='geojson',
                  request_param='geometryFormat=geojson')
     def view_get_feature_geojson(self):
         return self._get_feature()
 
-    @view_config(route_name='getfeature', renderer='esrijson')
+    @view_config(route_name='feature', renderer='esrijson')
     def view_get_feature_esrijson(self):
         return self._get_feature()
 
@@ -222,6 +223,7 @@ class MapService(MapServiceValidation):
         feature = self._get_feature_resource(idlayer, idfeature, model)
         return feature
 
+    @view_config(route_name='htmlPopup', renderer='jsonp')
     @view_config(route_name='htmlpopup', renderer='jsonp')
     def htmlpopup(self):
         template, feature = self._get_html_response('simple')
@@ -234,6 +236,7 @@ class MapService(MapServiceValidation):
             return response
         return response.body
 
+    @view_config(route_name='extendedHtmlPopup', renderer='jsonp')
     @view_config(route_name='extendedhtmlpopup', renderer='jsonp')
     def extendedhtmlpopup(self):
         template, feature = self._get_html_response('extended')

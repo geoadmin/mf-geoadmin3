@@ -139,42 +139,42 @@ class TestMapServiceView(TestsBase):
         resp.mustcontain('cb({')
 
     def test_htmlpopup_valid(self):
-        resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362/htmlpopup', status=200)
+        resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362/htmlPopup', status=200)
         self.failUnless(resp.content_type == 'text/html')
         resp.mustcontain('<table')
 
     def test_htmlpopup_cadastralwebmap(self):
-        resp = self.testapp.get('/rest/services/ech/MapServer/ch.kantone.cadastralwebmap-farbe/14/htmlpopup', params={'mapExtent': '485412.34375,109644.67,512974.44,135580.01999999999', 'imageDisplay': '600,400,96'}, status=200)
+        resp = self.testapp.get('/rest/services/ech/MapServer/ch.kantone.cadastralwebmap-farbe/14/htmlPopup', params={'mapExtent': '485412.34375,109644.67,512974.44,135580.01999999999', 'imageDisplay': '600,400,96'}, status=200)
         self.failUnless(resp.content_type == 'text/html')
         resp.mustcontain('<table')
 
     def test_htmlpopup_valid_topic_all(self):
-        resp = self.testapp.get('/rest/services/all/MapServer/ch.bafu.bundesinventare-bln/362/htmlpopup', status=200)
+        resp = self.testapp.get('/rest/services/all/MapServer/ch.bafu.bundesinventare-bln/362/htmlPopup', status=200)
         self.failUnless(resp.content_type == 'text/html')
         resp.mustcontain('<table')
 
     def test_htmlpopup_valid_with_callback(self):
-        resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362/htmlpopup', params={'callback': 'cb'}, status=200)
+        resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362/htmlPopup', params={'callback': 'cb'}, status=200)
         self.failUnless(resp.content_type == 'application/javascript')
 
     def test_htmlpopup_missing_feature(self):
-        resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/1/htmlpopup', status=404)
+        resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/1/htmlPopup', status=404)
 
     def test_extendedhtmlpopup_valid(self):
-        resp = self.testapp.get('/rest/services/ech/MapServer/ch.bakom.radio-fernsehsender/11/extendedhtmlpopup', status=200)
+        resp = self.testapp.get('/rest/services/ech/MapServer/ch.bakom.radio-fernsehsender/11/extendedHtmlPopup', status=200)
         self.failUnless(resp.content_type == 'text/html')
 
     def test_extendedhtmlpopup_valid_langs(self):
         for lang in ('de', 'fr', 'it', 'rm', 'en'):
-            resp = self.testapp.get('/rest/services/ech/MapServer/ch.babs.kulturgueter/6967/extendedhtmlpopup', params={'lang': lang}, status=200)
+            resp = self.testapp.get('/rest/services/ech/MapServer/ch.babs.kulturgueter/6967/extendedHtmlPopup', params={'lang': lang}, status=200)
             self.failUnless(resp.content_type == 'text/html')
 
     def test_extendedhtmlpopup_valid_with_callback(self):
-        resp = self.testapp.get('/rest/services/ech/MapServer/ch.bakom.radio-fernsehsender/12/extendedhtmlpopup', params={'callback': 'cb'}, status=200)
+        resp = self.testapp.get('/rest/services/ech/MapServer/ch.bakom.radio-fernsehsender/12/extendedHtmlPopup', params={'callback': 'cb'}, status=200)
         self.failUnless(resp.content_type == 'application/javascript')
 
     def test_extendedhtmlpopup_noinfo(self):
-        resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362/extendedhtmlpopup', status=404)
+        resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362/extendedHtmlPopup', status=404)
 
     def test_legend_valid(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/legend', status=200)
@@ -194,7 +194,7 @@ class TestMapServiceView(TestsBase):
         self.failUnless(resp.content_type == 'application/javascript')
 
     def test_layersconfig_valid(self):
-        resp = self.testapp.get('/rest/services/ech/MapServer/layersconfig', status=200)
+        resp = self.testapp.get('/rest/services/ech/MapServer/layersConfig', status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless('ch.swisstopo.pixelkarte-farbe' in resp.json)
         self.failUnless('attribution' in resp.json['ch.swisstopo.pixelkarte-farbe'])
@@ -202,7 +202,7 @@ class TestMapServiceView(TestsBase):
         self.failUnless('background' in resp.json['ch.swisstopo.pixelkarte-farbe'])
 
     def test_layersconfig_valid_topic_all(self):
-        resp = self.testapp.get('/rest/services/all/MapServer/layersconfig', status=200)
+        resp = self.testapp.get('/rest/services/all/MapServer/layersConfig', status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless('ch.swisstopo.pixelkarte-farbe' in resp.json)
         self.failUnless('attribution' in resp.json['ch.swisstopo.pixelkarte-farbe'])
@@ -210,8 +210,8 @@ class TestMapServiceView(TestsBase):
         self.failUnless('background' in resp.json['ch.swisstopo.pixelkarte-farbe'])
 
     def test_layersconfig_with_callback(self):
-        resp = self.testapp.get('/rest/services/ech/MapServer/layersconfig', params={'callback': 'cb'}, status=200)
+        resp = self.testapp.get('/rest/services/ech/MapServer/layersConfig', params={'callback': 'cb'}, status=200)
         self.failUnless(resp.content_type == 'application/javascript')
 
     def test_layersconfig_wrong_map(self):
-        resp = self.testapp.get('/rest/services/foo/MapServer/layersconfig', status=400)
+        resp = self.testapp.get('/rest/services/foo/MapServer/layersConfig', status=400)

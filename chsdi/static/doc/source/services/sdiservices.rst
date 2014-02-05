@@ -154,7 +154,7 @@ With an ID and a layer technical name, this service can be used to retrieve an h
 URL
 ^^^
 
-https://api3.geo.admin.ch/rest/services/api/MapServer/{layerID}/{featureID}/htmlpopup
+https://api3.geo.admin.ch/rest/services/api/MapServer/{layerID}/{featureID}/htmlPopup
 
 Input Parameters
 ^^^^^^^^^^^^^^^^
@@ -170,7 +170,7 @@ Input Parameters
 Example
 ^^^^^^^
 
-- Get the html popup with the ID 342 belonging to ch.bafu.bundesinventare-bln: `https://api3.geo.admin.ch/rest/services/api/MapServer/ch.bafu.bundesinventare-bln/362/htmlpopup <../../../rest/services/api/MapServer/ch.bafu.bundesinventare-bln/362/htmlpopup>`_
+- Get the html popup with the ID 342 belonging to ch.bafu.bundesinventare-bln: `https://api3.geo.admin.ch/rest/services/api/MapServer/ch.bafu.bundesinventare-bln/362/htmlPopup <../../../rest/services/api/MapServer/ch.bafu.bundesinventare-bln/362/htmlPopup>`_
 
 .. _search_description:
 

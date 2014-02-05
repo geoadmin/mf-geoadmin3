@@ -69,7 +69,7 @@ Here is a list of all the freely accessible layers:
    <script type="text/javascript">
 
    function init() {
-        $.getJSON( "../../rest/services/api-notfree/MapServer/layersconfig", function( data ) {
+        $.getJSON( "../../rest/services/api-notfree/MapServer/layersConfig", function( data ) {
            myInnerHtml_notfree =  "<br><table border=\"0\">";
            var layers_notfree = data;
            var counterNotFree = 1;
@@ -82,7 +82,7 @@ Here is a list of all the freely accessible layers:
            }
            document.getElementById("notfree").innerHTML=myInnerHtml_notfree;
         });
-        $.getJSON( "../../rest/services/api-free/MapServer/layersconfig", function( data ) {
+        $.getJSON( "../../rest/services/api-free/MapServer/layersConfig", function( data ) {
            myInnerHtml_free =  "<br><table border=\"0\">";
            var layers_free = data;
            var counterFree = 1;
