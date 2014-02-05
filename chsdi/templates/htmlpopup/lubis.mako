@@ -112,7 +112,7 @@ endif
         });
 
         if (url && image_width && image_height) {
-          var map = new ga.Map({
+          var map = new ol.Map({
             layers: [
               new ol.layer.Tile({
                 source: source
