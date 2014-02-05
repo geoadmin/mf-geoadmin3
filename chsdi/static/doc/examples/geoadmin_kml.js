@@ -26,7 +26,7 @@ map.addLayer(lyr1);
 // Create the KML Layer
 var vector = new ol.layer.Vector({
   source: new ol.source.KML({
-    reprojectTo: 'EPSG:21781',
+    projection: 'EPSG:21781',
     url: 'bln-style.kml'
   })
 });
@@ -68,7 +68,7 @@ var displayFeatureInfo = function(pixel, coordinate) {
 };
 
 map.on('singleclick', function(evt) {
-  var pixel = evt.getPixel();
-  var coordinate = evt.getCoordinate();
+  var pixel = evt.pixel;
+  var coordinate = evt.coordinate;
   displayFeatureInfo(pixel, coordinate);
 });
