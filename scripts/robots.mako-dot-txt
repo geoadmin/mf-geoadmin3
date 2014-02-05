@@ -1,0 +1,6 @@
+User-agent: *
+% if deploy_target == 'prod':
+Disallow: /main/src/
+% else:
+Disallow: /
+% endif

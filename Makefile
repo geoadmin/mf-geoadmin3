@@ -13,6 +13,8 @@ VERSION := $(shell date '+%s')/
 GIT_BRANCH := $(shell git rev-parse --symbolic-full-name --abbrev-ref HEAD)
 GIT_LAST_BRANCH := $(shell if [ -f .build-artefacts/last-git-branch ]; then cat .build-artefacts/last-git-branch 2> /dev/null; else echo 'dummy'; fi)
 DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branch
+DEPLOY_TARGET ?= 'dev'
+LAST_DEPLOY_TARGET := $(shell if [ -f .build-artefacts/last-deploy-target ]; then cat .build-artefacts/last-deploy-target 2> /dev/null; else echo 'dev'; fi)
 
 .PHONY: help
 help:
@@ -47,7 +49,7 @@ help:
 all: prod dev lint apache testdev testprod deploy/deploy-branch.cfg fixrights
 
 .PHONY: prod
-prod: prd/lib/ prd/lib/build.js prd/style/app.css prd/style/print.css prd/index.html prd/mobile.html prd/info.json prd/img/ prd/style/font-awesome-3.2.1/font/ prd/locales/ prd/checker
+prod: prd/lib/ prd/lib/build.js prd/style/app.css prd/style/print.css prd/index.html prd/mobile.html prd/info.json prd/img/ prd/style/font-awesome-3.2.1/font/ prd/locales/ prd/checker prd/robots.txt
 
 .PHONY: dev
 dev: src/deps.js src/style/app.css src/style/print.css src/index.html src/mobile.html
@@ -99,6 +101,10 @@ translate: .build-artefacts/translate-requirements-installation.timestamp
 fixrights:
 	chgrp -f -R geodata . || :
 	chmod -f -R g+rw . || :
+
+prd/robots.txt: scripts/robots.mako-dot-txt .build-artefacts/last-deploy-target
+	mkdir -p $(dir $@)
+	.build-artefacts/python-venv/bin/mako-render --var "deploy_target=$(DEPLOY_TARGET)" $< > $@
 
 prd/lib/: src/lib/d3-3.3.1.min.js
 	mkdir -p $@
@@ -259,6 +265,10 @@ scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf .build-artefacts/
 	mkdir -p $(dir $@)
 	test $(GIT_BRANCH) != $(GIT_LAST_BRANCH) && echo $(GIT_BRANCH) > .build-artefacts/last-git-branch || :
 
+.build-artefacts/last-deploy-target::
+	mkdir -p $(dir $@)
+	test $(DEPLOY_TARGET) != $(LAST_DEPLOY_TARGET) && echo $(DEPLOY_TARGET) > .build-artefacts/last-deploy-target || :
+
 .build-artefacts/ol3:
 	git clone https://github.com/openlayers/ol3.git $@
 
@@ -289,6 +299,7 @@ clean: cleanrc
 	rm -f .build-artefacts/js-files
 	rm -f .build-artefacts/lint.timestamp
 	rm -f .build-artefacts/last-git-branch
+	rm -f .build-artefacts/last-deploy-target
 	rm -rf .build-artefacts/annotated
 	rm -f src/deps.js
 	rm -f src/style/app.css
@@ -302,6 +313,7 @@ cleanrc:
 	rm -f src/mobile.html
 	rm -f prd/index.html
 	rm -f prd/mobile.html
+	rm -f prd/robots.txt
 	rm -f apache/app.conf
 	rm -f deploy/deploy-branch.cfg
 	rm -f scripts/00-*.conf

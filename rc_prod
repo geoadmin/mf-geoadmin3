@@ -1,3 +1,4 @@
+export DEPLOY_TARGET=prod
 export BASE_URL_PATH=/main 
 export SERVICE_URL=//api3.geo.admin.ch
 
