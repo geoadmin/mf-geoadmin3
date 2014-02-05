@@ -30809,21 +30809,21 @@ ol.format.KML.whenParser_ = function(node, objectStack) {
   goog.asserts.assert(goog.isObject(gxTrackObject));
   var whens = gxTrackObject.whens;
   var s = ol.xml.getAllTextContent(node, false);
-  var re = /^\s*(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(Z|(?:([+\-])(\d{2})(?::(\d{2}))?))\s*$/;
+  var re = /^\s*(\d{4})($|-(\d{2})($|-(\d{2})($|T(\d{2}):(\d{2}):(\d{2})(Z|(?:([+\-])(\d{2})(?::(\d{2}))?)))))\s*$/;
   var m = re.exec(s);
   if(m) {
     var year = parseInt(m[1], 10);
-    var month = parseInt(m[2], 10) - 1;
-    var day = parseInt(m[3], 10);
-    var hour = parseInt(m[4], 10);
-    var minute = parseInt(m[5], 10);
-    var second = parseInt(m[6], 10);
+    var month = goog.isDef(m[3]) ? parseInt(m[3], 10) - 1 : 0;
+    var day = goog.isDef(m[5]) ? parseInt(m[5], 10) : 1;
+    var hour = goog.isDef(m[7]) ? parseInt(m[7], 10) : 0;
+    var minute = goog.isDef(m[8]) ? parseInt(m[8], 10) : 0;
+    var second = goog.isDef(m[9]) ? parseInt(m[9], 10) : 0;
     var when = Date.UTC(year, month, day, hour, minute, second);
-    if(m[7] != "Z") {
-      var sign = m[8] == "-" ? -1 : 1;
-      when += sign * 60 * parseInt(m[9], 10);
-      if(goog.isDef(m[10])) {
-        when += sign * 60 * 60 * parseInt(m[10], 10)
+    if(goog.isDef(m[10]) && m[10] != "Z") {
+      var sign = m[11] == "-" ? -1 : 1;
+      when += sign * 60 * parseInt(m[12], 10);
+      if(goog.isDef(m[13])) {
+        when += sign * 60 * 60 * parseInt(m[13], 10)
       }
     }
     whens.push(when)
@@ -34234,7 +34234,6 @@ ol.source.VectorFile = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
   goog.base(this, {attributions:options.attributions, extent:options.extent, logo:options.logo, projection:options.projection});
   this.format = options.format;
-  this.reprojectTo_ = goog.isDef(options.reprojectTo) ? ol.proj.get(options.reprojectTo) : ol.proj.get("EPSG:3857");
   if(goog.isDef(options.doc)) {
     this.readFeatures_(options.doc)
   }
@@ -34301,14 +34300,17 @@ ol.source.VectorFile.prototype.readFeatures_ = function(source) {
   var format = this.format;
   var features = format.readFeatures(source);
   var featureProjection = format.readProjection(source);
-  if(!ol.proj.equivalent(featureProjection, this.reprojectTo_)) {
-    var transform = ol.proj.getTransform(featureProjection, this.reprojectTo_);
-    var i, ii;
-    for(i = 0, ii = features.length;i < ii;++i) {
-      var feature = features[i];
-      var geometry = feature.getGeometry();
-      if(!goog.isNull(geometry)) {
-        geometry.transform(transform)
+  var projection = this.getProjection();
+  if(!goog.isNull(projection)) {
+    if(!ol.proj.equivalent(featureProjection, projection)) {
+      var transform = ol.proj.getTransform(featureProjection, projection);
+      var i, ii;
+      for(i = 0, ii = features.length;i < ii;++i) {
+        var feature = features[i];
+        var geometry = feature.getGeometry();
+        if(!goog.isNull(geometry)) {
+          geometry.transform(transform)
+        }
       }
     }
   }
@@ -34320,7 +34322,7 @@ goog.require("ol.format.GPX");
 goog.require("ol.source.VectorFile");
 ol.source.GPX = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
-  goog.base(this, {attributions:options.attributions, doc:options.doc, extent:options.extent, format:new ol.format.GPX, logo:options.logo, node:options.node, projection:options.projection, reprojectTo:options.reprojectTo, text:options.text, url:options.url, urls:options.urls})
+  goog.base(this, {attributions:options.attributions, doc:options.doc, extent:options.extent, format:new ol.format.GPX, logo:options.logo, node:options.node, projection:options.projection, text:options.text, url:options.url, urls:options.urls})
 };
 goog.inherits(ol.source.GPX, ol.source.VectorFile);
 goog.provide("ol.source.GeoJSON");
@@ -34328,7 +34330,7 @@ goog.require("ol.format.GeoJSON");
 goog.require("ol.source.VectorFile");
 ol.source.GeoJSON = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
-  goog.base(this, {attributions:options.attributions, extent:options.extent, format:new ol.format.GeoJSON({defaultProjection:options.defaultProjection}), logo:options.logo, object:options.object, projection:options.projection, reprojectTo:options.reprojectTo, text:options.text, url:options.url, urls:options.urls})
+  goog.base(this, {attributions:options.attributions, extent:options.extent, format:new ol.format.GeoJSON({defaultProjection:options.defaultProjection}), logo:options.logo, object:options.object, projection:options.projection, text:options.text, url:options.url, urls:options.urls})
 };
 goog.inherits(ol.source.GeoJSON, ol.source.VectorFile);
 goog.provide("ol.source.IGC");
@@ -34651,7 +34653,7 @@ goog.require("ol.format.KML");
 goog.require("ol.source.VectorFile");
 ol.source.KML = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
-  goog.base(this, {attributions:options.attributions, doc:options.doc, extent:options.extent, format:new ol.format.KML({defaultStyle:options.defaultStyle}), logo:options.logo, node:options.node, projection:options.projection, reprojectTo:options.reprojectTo, text:options.text, url:options.url, urls:options.urls})
+  goog.base(this, {attributions:options.attributions, doc:options.doc, extent:options.extent, format:new ol.format.KML({defaultStyle:options.defaultStyle}), logo:options.logo, node:options.node, projection:options.projection, text:options.text, url:options.url, urls:options.urls})
 };
 goog.inherits(ol.source.KML, ol.source.VectorFile);
 goog.provide("ol.source.MapGuide");
@@ -35105,7 +35107,7 @@ goog.require("ol.format.TopoJSON");
 goog.require("ol.source.VectorFile");
 ol.source.TopoJSON = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
-  goog.base(this, {attributions:options.attributions, extent:options.extent, format:new ol.format.TopoJSON({defaultProjection:options.defaultProjection}), logo:options.logo, object:options.object, projection:options.projection, reprojectTo:options.reprojectTo, text:options.text, url:options.url})
+  goog.base(this, {attributions:options.attributions, extent:options.extent, format:new ol.format.TopoJSON({defaultProjection:options.defaultProjection}), logo:options.logo, object:options.object, projection:options.projection, text:options.text, url:options.url})
 };
 goog.inherits(ol.source.TopoJSON, ol.source.VectorFile);
 goog.provide("ol.tilegrid.WMTS");

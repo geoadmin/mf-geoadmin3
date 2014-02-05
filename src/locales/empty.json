@@ -187,5 +187,10 @@
   "display_profile": "",
   "hide_profile": "",
   "azimuth_label": "",
-  "no_feature_results": ""
+  "no_feature_results": "",
+  "lubidx": "",
+  "lubidx_help_link_href": "",
+  "lubidx_page_title": "",
+  "lubidx_service_link_href": "",
+  "lubidx_service_link_label": ""
 }
