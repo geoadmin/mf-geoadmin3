@@ -43,6 +43,7 @@ help:
 	@echo
 	@echo "- BASE_URL_PATH Base URL path (current value: $(BASE_URL_PATH))"
 	@echo "- SERVICE_URL Service URL (current value: $(SERVICE_URL))"
+	@echo "- GEOADMIN_URL Geoadmin URL (current value: $(GEOADMIN_URL))"
 	@echo
 
 .PHONY: all
@@ -124,12 +125,12 @@ prd/style/print.css: src/style/print.less src/style/app_print.less node_modules 
 
 prd/index.html: src/index.mako.html prd/lib/build.js prd/style/app.css .build-artefacts/python-venv/bin/mako-render .build-artefacts/python-venv/bin/htmlmin
 	mkdir -p $(dir $@)
-	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "mode=prod" --var "version=$(VERSION)" --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "mode=prod" --var "version=$(VERSION)" --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" --var "geoadmin_url=$(GEOADMIN_URL)" $< > $@
 	.build-artefacts/python-venv/bin/htmlmin $@ $@
 
 prd/mobile.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render .build-artefacts/python-venv/bin/htmlmin
 	mkdir -p $(dir $@)
-	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "mode=prod" --var "version=$(VERSION)" --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "mode=prod" --var "version=$(VERSION)" --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" --var "geoadmin_url=$(GEOADMIN_URL)" $< > $@
 	.build-artefacts/python-venv/bin/htmlmin $@ $@
 
 prd/img/: src/img/*
@@ -163,16 +164,16 @@ src/style/print.css: src/style/print.less src/style/app_print.less node_modules 
 	node_modules/.bin/lessc $(LESS_PARAMETERS) $< $@
 
 src/index.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render
-	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "version=" --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "version=" --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" --var "geoadmin_url=$(GEOADMIN_URL)" $< > $@
 
 src/mobile.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render
-	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "version=" --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "version=" --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" --var "geoadmin_url=$(GEOADMIN_URL)" $< > $@
 
 src/TemplateCacheModule.js: src/TemplateCacheModule.mako.js $(SRC_COMPONENTS_PARTIALS_FILES) .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "partials=$(subst src/,,$(SRC_COMPONENTS_PARTIALS_FILES))" --var "basedir=src" $< > $@
 
 apache/app.conf: apache/app.mako-dot-conf prd/lib/build.js prd/style/app.css .build-artefacts/python-venv/bin/mako-render
-	.build-artefacts/python-venv/bin/mako-render --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" --var "base_dir=$(CURDIR)" $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" --var "geoadmin_url=$(GEOADMIN_URL)" --var "base_dir=$(CURDIR)" $< > $@
 
 test/karma-conf-dev.js: test/karma-conf.mako.js .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render $< > $@
@@ -256,7 +257,7 @@ deploy/deploy-branch.cfg: deploy/deploy-branch.mako.cfg .build-artefacts/last-gi
 	.build-artefacts/python-venv/bin/mako-render --var "git_branch=$(GIT_BRANCH)" $< > $@
 
 rc_branch: rc_branch.mako .build-artefacts/last-git-branch .build-artefacts/python-venv/bin/mako-render
-	.build-artefacts/python-venv/bin/mako-render --var "base_url=$(GIT_BRANCH)" --var "service_url=$(SERVICE_URL)" $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "base_url=$(GIT_BRANCH)" --var "service_url=$(SERVICE_URL)" --var "geoadmin_url=$(GEOADMIN_URL)" $< > $@
 
 scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf .build-artefacts/last-git-branch .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "git_branch=$(GIT_BRANCH)" $< > $@

@@ -1,3 +1,4 @@
 export BASE_URL_PATH=/main 
 export SERVICE_URL=//mf-chsdi3.dev.bgdi.ch
+export GEOADMIN_URL=//mf-geoadmin3.dev.bgdi.ch
 
