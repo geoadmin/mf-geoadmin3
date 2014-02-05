@@ -1,6 +1,7 @@
 User-agent: *
 % if deploy_target == 'prod':
 Disallow: /main/src/
+Disallow: /main/prod/
 % else:
 Disallow: /
 % endif
