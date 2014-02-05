@@ -15,6 +15,8 @@ datenherr = c['attributes']['firma']
 datum = datetime.datetime.strptime(c['attributes']['flugdatum'], "%Y%m%d  ").strftime("%d-%m-%Y")
 image_width = 1
 image_height = 1
+protocol = request.headers.get('X-Forwarded-Proto','http')
+chsdihost = 'https' + '://' + request.registry.settings['host']
 
 if c['attributes']['filename']:
     try:
@@ -39,7 +41,7 @@ endif
     <tr><td class="cell-left">${_('tt_lubis_Filmart')}</td>      <td>${c['attributes']['filmart'] or '-'}</td></tr>
 
 %    if image_height > 2:
-       <tr><td class="cell-left">${_('tt_lubis_Quickview')}</td>    <td><a href="https://mf-chsdi3.dev.bgdi.ch/ltfoa/wsgi/static/iipimage/viewer.html?image=${c['attributes']['filename'][12:]}&width=${image_width}&height=${image_height}&title=${_('tt_lubis_ebkey')}&bildnummer=${image_bildnummer}&datenherr=${datenherr}&layer=${fullName}" target="_blank"><img src="http://web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?FIF=${c['attributes']['filename'][12:]}&WID=150&CVT=jpeg" alt="quickview"></a></td></tr>
+       <tr><td class="cell-left">${_('tt_lubis_Quickview')}</td>    <td><a href="${chsdihost}/main/wsgi/static/iipimage/viewer.html?image=${c['attributes']['filename'][12:]}&width=${image_width}&height=${image_height}&title=${_('tt_lubis_ebkey')}&bildnummer=${image_bildnummer}&datenherr=${datenherr}&layer=${fullName}" target="_blank"><img src="http://web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?FIF=${c['attributes']['filename'][12:]}&WID=150&CVT=jpeg" alt="quickview"></a></td></tr>
 %    else:
        <tr><td class="cell-left">${_('tt_lubis_Quickview')}</td>    <td>${_('tt_lubis_noQuickview')}</td></tr>
 %    endif
@@ -199,7 +201,7 @@ endif
     <br>
     <br>
 %    if image_height > 2:
-    <tr><td>${_('tt_luftbilderOL')}</td> <td><a href="https://mf-chsdi3.dev.bgdi.ch/ltfoa/wsgi/static/iipimage/viewer.html?image=${c['attributes']['filename'][12:]}&width=${image_width}&height=${image_height}&title=${_('tt_lubis_ebkey')}&bildnummer=${image_bildnummer}&datenherr=${datenherr}&layer=${fullName}" target="_blank" alt="Fullscreen">(fullscreen)</a></td></tr>
+    <tr><td>${_('tt_luftbilderOL')}</td> <td><a href="${chsdihost}/main/wsgi/static/iipimage/viewer.html?image=${c['attributes']['filename'][12:]}&width=${image_width}&height=${image_height}&title=${_('tt_lubis_ebkey')}&bildnummer=${image_bildnummer}&datenherr=${datenherr}&layer=${fullName}" target="_blank" alt="Fullscreen">(fullscreen)</a></td></tr>
     <div id="zoomify"></div>
 %    endif
     <tr><td>
