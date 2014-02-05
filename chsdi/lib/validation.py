@@ -3,7 +3,6 @@
 import re
 import types
 import pyramid.httpexceptions as exc
-from chsdi.models import models_from_name
 from chsdi.lib.helpers import check_even
 
 from chsdi.esrigeojsonencoder import loads
@@ -243,7 +242,6 @@ class ProfileValidation(object):
     @linestring.setter
     def linestring(self, value):
         import geojson
-        from shapely.geometry import asShape
         if value is None:
             raise exc.HTTPBadRequest("Missing parameter geom")
         try:
