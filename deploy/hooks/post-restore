@@ -1,0 +1,16 @@
+#!/bin/sh
+#
+# variables set here:
+#   $TARGET: name of the symbolic remote host key (see remote_hosts
+#            section in config file)
+#
+if [ -x /etc/init.d/tomcat-tomcat1 ]; then
+    sudo /etc/init.d/tomcat-tomcat1 restart
+fi
+
+
+if [ -x /etc/init.d/apache2 ]; then
+    sudo /etc/init.d/apache2 start
+fi
+
+exit 0
