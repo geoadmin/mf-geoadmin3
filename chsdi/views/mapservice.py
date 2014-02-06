@@ -4,7 +4,8 @@ from pyramid.view import view_config
 from pyramid.renderers import render_to_response
 import pyramid.httpexceptions as exc
 
-from sqlalchemy import or_, func
+from sqlalchemy import Text, or_, func
+from sqlalchemy.sql.expression import cast
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
 from chsdi.models import models_from_name
@@ -191,6 +192,42 @@ class MapService(MapServiceValidation):
 
         return {'results': features}
 
+   # order matters, last route is the default!
+    @view_config(route_name='find', renderer='geojson',
+                 request_param='geometryFormat=geojson')
+    def view_find_geosjon(self):
+        return self._find()
+
+    @view_config(route_name='find', renderer='esrijson',
+                 request_param='geometryFormat=esrijson')
+    def view_find_esrijson(self):
+        return self._find()
+
+    @view_config(route_name='find', renderer='esrijson')
+    def _find(self):
+        self.searchFields = self.request.params.get('searchFields')
+        self.returnGeometry = self.request.params.get('returnGeometry')
+        layers = self.request.params.get('layers')
+        models = models_from_name(layers)
+        # Iterate through models here
+        searchColumn = models[0].get_column_by_name(self.searchFields)
+        if searchColumn is None:
+            exc.HTTPNotFound('No column with the name %s was found for %s.' %(self.searchFields, layers))
+        query = self.request.db.query(models[0])
+        query = self._full_text_search(query, [searchColumn])
+        features = []
+        for feature in query:
+            if self.returnGeometry:
+                f = feature.__geo_interface__
+            else:
+                f = feature.__interface__
+            if hasattr(f, 'extra'):
+                layerBodId = f.extra['layerBodId']
+                f.extra['layerName'] = self.translate(layerBodId)
+            features.append(f)
+
+        return {'results': features}
+
     @view_config(route_name='feature', renderer='geojson',
                  request_param='geometryFormat=geojson')
     def view_get_feature_geojson(self):
@@ -327,6 +364,7 @@ class MapService(MapServiceValidation):
         filters = []
         for col in orm_column:
             if col is not None:
+                col = cast(col, Text)
                 filters.append(col.ilike('%%%s%%' % self.searchText))
         query = query.filter(
             or_(*filters)) if self.searchText is not None else query

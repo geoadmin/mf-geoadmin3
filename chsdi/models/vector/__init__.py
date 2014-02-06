@@ -143,6 +143,12 @@ class Vector(GeoInterface):
             return geomFilter
         return None
 
+    @classmethod
+    def get_column_by_name(cls, columnName):
+        if columnName in cls.__table__.columns:
+            return cls.__table__.columns.get(columnName)
+        return None
+
     def getAttributes(self):
         attributes = dict()
         fidColumnName = self.primary_key_column().name
