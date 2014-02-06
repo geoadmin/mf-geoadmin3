@@ -93,10 +93,10 @@
     };
 
     var handlePostCompose = function(evt) {
-      var size = $scope.map.getSize();
-      var width = size[0];
-      var height = size[1];
       var ctx = evt.context;
+      var size = $scope.map.getSize();
+      var height = size[1] * ol.BrowserFeature.DEVICE_PIXEL_RATIO;
+      var width = size[0] * ol.BrowserFeature.DEVICE_PIXEL_RATIO;
 
       var minx, miny, maxx, maxy;
       minx = printRectangle[0], miny = printRectangle[1],
@@ -730,8 +730,8 @@
         var w = size.width / DPI * MM_PER_INCHES / 1000.0 * s / resolution;
         var h = size.height / DPI * MM_PER_INCHES / 1000.0 * s / resolution;
         var mapSize = $scope.map.getSize();
-        var center = [mapSize[0] / 2 , mapSize[1] / 2];
-
+        var center = [mapSize[0] * ol.BrowserFeature.DEVICE_PIXEL_RATIO / 2 ,
+                mapSize[1] * ol.BrowserFeature.DEVICE_PIXEL_RATIO / 2];
 
         var minx, miny, maxx, maxy;
 
