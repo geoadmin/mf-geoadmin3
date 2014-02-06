@@ -14,6 +14,130 @@ from chsdi.models.vector import getScale
 from chsdi.lib.validation import MapServiceValidation
 
 
+class LayersParams(MapServiceValidation):
+
+    def __init__(self, request, model=None):
+        super(LayersParams, self).__init__()
+
+        # Map and topic represent the same resource
+        self.mapName = request.matchdict.get('map')
+        self.hasMap(request.db, self.mapName)
+        self.cbName = request.params.get('callback')
+        self.lang = request.lang
+        self.searchText = request.params.get('searchText')
+        self.geodataStaging = request.registry.settings['geodata_staging']
+
+        if model is None:
+            self.model = get_bod_model(self.lang)
+        else:
+            self.model = model
+        self.query = request.db.query(self.model)
+        self.translate = request.translate
+
+
+@view_config(route_name='mapservice', renderer='jsonp')
+def metadata(request):
+    params = LayersParams(request)
+    results = computeHeader(params.mapName)
+    for layer in _get_layer_metadata_for_params(params):
+        results['layers'].append(layer)
+    return results
+
+
+@view_config(route_name='layersconfig', renderer='jsonp')
+def layers_config(request):
+    params = LayersParams(request, LayersConfig)
+    layers = dict()
+    for layer in _get_layer_config_for_params(params):
+        layers = dict(layers.items() + layer.items())
+    return layers
+
+
+def _get_layer_config_for_params(params):
+    query = params.query
+    model = params.model
+    bgLayers = True
+    if params.mapName != 'all':
+        # per default we want to include background layers
+        query = query.filter(or_(
+            model.maps.ilike('%%%s%%' % params.mapName),
+            model.background == bgLayers)
+        )
+    query = _filter_by_geodata_staging(
+        query,
+        model.staging,
+        params.geodataStaging
+    )
+    for q in query:
+        yield q.layerConfig(params.translate)
+
+
+def _get_layer_metadata_for_params(params):
+    ''' Returns a generator function that yields
+    layer metadata dictionaries. '''
+    query = params.query
+    model = params.model
+    query = _filter_by_map_name(
+        query,
+        model.maps,
+        params.mapName
+    )
+    query = _filter_by_geodata_staging(
+        query,
+        model.staging,
+        params.geodataStaging
+    )
+    query = _full_text_search(
+        query,
+        [
+            model.fullTextSearch,
+            model.idBod,
+            model.idGeoCat
+        ],
+        params.searchText
+    )
+    for q in query:
+        yield q.layerMetadata()
+
+
+# Shared filters
+def _filter_by_map_name(query, ormColumn, mapName):
+    ''' Applies a map/topic filter '''
+    if mapName != 'all':
+        return query.filter(
+            ormColumn.ilike('%%%s%%' % mapName)
+        )
+    return query
+
+
+def _filter_by_geodata_staging(query, ormColumn, staging):
+    ''' Applies a filter on geodata based on application
+    staging '''
+    if staging == 'test':
+        return query
+    elif staging == 'integration':
+        return query.filter(
+            or_(
+                ormColumn == staging,
+                ormColumn == 'prod'
+            )
+        )
+    elif staging == 'prod':
+        return query.filter(ormColumn == staging)
+
+
+def _full_text_search(query, ormColumns, searchText):
+    ''' Given a list of columns and a searchText, returns
+    a filtered query '''
+    filters = []
+    for col in ormColumns:
+        if col is not None:
+            col = cast(col, Text)
+            filters.append(col.ilike('%%%s%%' % searchText))
+    return query.filter(
+        or_(*filters)) if searchText is not None else query
+
+
 class MapService(MapServiceValidation):
 
     def __init__(self, request):
@@ -28,41 +152,6 @@ class MapService(MapServiceValidation):
         self.translate = request.translate
         self.request = request
 
-    @view_config(route_name='mapservice', renderer='jsonp')
-    def mapservice(self):
-        model = get_bod_model(self.lang)
-        results = computeHeader(self.mapName)
-        query = self.request.db.query(model)
-        query = self._map_name_filter(query, model.maps)
-        query = self._geodata_staging_filter(query, model.staging)
-        query = self._full_text_search(query, [
-            model.fullTextSearch,
-            model.idBod,
-            model.idGeoCat
-        ])
-        for q in query:
-            layer = q.layerMetadata()
-            results['layers'].append(layer)
-        return results
-
-    @view_config(route_name='layersConfig', renderer='jsonp')
-    def layersconfig(self):
-        layers = {}
-        model = LayersConfig
-        _bool = True
-        query = self.request.db.query(model)
-        if self.mapName != 'all':
-            # per default we want the include background layers
-            query = query.filter(or_(
-                model.maps.ilike('%%%s%%' % self.mapName),
-                model.background == _bool
-            ))
-        query = self._geodata_staging_filter(query, model.staging)
-        for q in query:
-            layer = q.getLayerConfig(self.request)
-            layers = dict(layers.items() + layer.items())
-        return layers
-
     @view_config(route_name='legend', renderer='jsonp')
     def legend(self):
         idlayer = self.request.matchdict.get('idlayer')
@@ -72,7 +161,7 @@ class MapService(MapServiceValidation):
         query = self.request.db.query(LayersConfig)
         query = query.filter(LayersConfig.idBod == idlayer)
         query = query.one()
-        config = query.getLayerConfig(self.request)
+        config = query.layerConfig(self.translate)
         hasLegend = config[idlayer]['hasLegend']
 
         if 'attributes' in layer.keys() and 'dataStatus' in layer['attributes'].keys():
@@ -212,7 +301,7 @@ class MapService(MapServiceValidation):
         # Iterate through models here
         searchColumn = models[0].get_column_by_name(self.searchFields)
         if searchColumn is None:
-            exc.HTTPNotFound('No column with the name %s was found for %s.' %(self.searchFields, layers))
+            exc.HTTPNotFound('No column with the name %s was found for %s.' % (self.searchFields, layers))
         query = self.request.db.query(models[0])
         query = self._full_text_search(query, [searchColumn])
         features = []

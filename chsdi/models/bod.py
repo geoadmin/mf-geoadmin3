@@ -76,9 +76,8 @@ class LayersConfig(Base):
     wmsLayers = Column('wms_layers', Text)
     wmsUrl = Column('wms_url', Text)
 
-    def getLayerConfig(self, request):
+    def layerConfig(self, translate):
         config = {}
-        translate = request.translate
         for k in self.__dict__.keys():
             if not k.startswith("_") and \
                 self.__dict__[k] is not None and \
