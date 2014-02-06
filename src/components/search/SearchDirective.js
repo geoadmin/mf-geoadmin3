@@ -150,7 +150,8 @@
                 scope.removeCross();
                 scope.overlay = new ol.Overlay({
                   element: cross.get(0),
-                  position: center
+                  position: center,
+                  stopEvent: false
                 });
                 map.addOverlay(scope.overlay);
               };
