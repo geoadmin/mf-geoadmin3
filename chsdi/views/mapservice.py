@@ -39,21 +39,79 @@ class LayersParams(MapServiceValidation):
 def metadata(request):
     params = LayersParams(request)
     results = computeHeader(params.mapName)
-    for layer in _get_layer_metadata_for_params(params):
+    for layer in _get_layers_metadata_for_params(params):
         results['layers'].append(layer)
     return results
-
 
 @view_config(route_name='layersconfig', renderer='jsonp')
 def layers_config(request):
     params = LayersParams(request, LayersConfig)
     layers = dict()
-    for layer in _get_layer_config_for_params(params):
+    for layer in _get_layers_config_for_params(params):
         layers = dict(layers.items() + layer.items())
     return layers
 
+@view_config(route_name='legend', renderer='jsonp')
+def legend(request):
+    params = LayersParams(request, LayersConfig)
+    layerId = request.matchdict.get('idlayer')
+    layerMetadata = next(
+        _get_layers_metadata_for_params(
+            params,
+            list(layerId)
+        )
+    )
+    # FIXME a second request shouldn't be necessary (use relationship)
+    layerConfig = next(
+        _get_layers_config_for_params(
+            params,
+            list(layerId)
+        )
+    )
+    hasLegend = config[layerId].get('hasLegend')
 
-def _get_layer_config_for_params(params):
+    # FIXME datenstand if not defined 
+    # should be available in view_bod_layer_info
+    if 'attributes' in layerMetadata.keys():
+        if 'dataStatus' in layerMetadata['attributes'].keys():
+            status = layerMetadata['attributes']['dataStatus']
+            if status == u'bgdi_created':
+                models = models_from_name(layerId)
+                for model in models:
+                    modified = request.db.query(
+                        func.max(model.bgdi_created)
+                    )
+                datenstand = modified.first().pop(0).strftime("%Y%m%d")
+                layerMetadata['attributes']['dataStatus'] = datenstand
+
+    legend = {
+        'layer': layerMetadata,
+        'hasLegend': hasLegend
+    }
+    response = render_to_response(
+        'chsdi:templates/legend.mako',
+        legend,
+        request=request
+    )
+    if params.cbName is None:
+        return response
+    return response.body 
+
+def _get_layer(query, model, layerId):
+    query = query.filter(model.idBod == layerId)
+
+    try:
+        layer = query.one()
+    except NoResultFound:
+        raise exc.HTTPNotFound('No layer with id %s' % layerId)
+    except MultipleResultsFound:
+        raise exc.HTTPInternalServerError()
+
+    yield layer
+
+def _get_layers_config_for_params(params, layerIds=None):
+    ''' Returns a generator function that yields
+    layer config dictionaries. '''
     query = params.query
     model = params.model
     bgLayers = True
@@ -68,11 +126,15 @@ def _get_layer_config_for_params(params):
         model.staging,
         params.geodataStaging
     )
+    if layerIds is not None:
+        for layerId in layerIds:
+            layer = _get_layer(query, model, layerId)
+            yield q.layerConfig(params.translate)
+
     for q in query:
         yield q.layerConfig(params.translate)
 
-
-def _get_layer_metadata_for_params(params):
+def _get_layers_metadata_for_params(params, layerIds=None):
     ''' Returns a generator function that yields
     layer metadata dictionaries. '''
     query = params.query
@@ -96,9 +158,13 @@ def _get_layer_metadata_for_params(params):
         ],
         params.searchText
     )
+    if layerIds is not None:
+        for layerId in layerIds:
+            layer = _get_layer(query, model, layerId)
+            yield layer.layerMetadata()
+
     for q in query:
         yield q.layerMetadata()
-
 
 # Shared filters
 def _filter_by_map_name(query, ormColumn, mapName):
@@ -152,7 +218,7 @@ class MapService(MapServiceValidation):
         self.translate = request.translate
         self.request = request
 
-    @view_config(route_name='legend', renderer='jsonp')
+    #@view_config(route_name='legend', renderer='jsonp')
     def legend(self):
         idlayer = self.request.matchdict.get('idlayer')
         layer = self._get_layer_resource(idlayer)
