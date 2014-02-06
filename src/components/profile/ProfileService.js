@@ -10,7 +10,7 @@
 
   module.provider('gaProfileService', function() {
 
-    function ProfileChart(options) {
+    function ProfileChart($timeout, options, lazyLoadCB) {
       var marginHoriz = options.margin.left + options.margin.right;
       var marginVert = options.margin.top + options.margin.bottom;
       var elevationModel = options.elevationModel || 'DTM25';
@@ -23,12 +23,13 @@
         d3 = window.d3;
         x = d3.scale.linear().range([0, width]);
         y = d3.scale.linear().range([height, 0]);
+        lazyLoadCB();
       };
 
       if (!window.d3) {
         $.getScript(versionPath + 'lib/d3-3.3.1.min.js', onD3Loaded);
       } else {
-        onD3Loaded();
+        $timeout(onD3Loaded, 0);
       }
 
       var createArea = function(domain) {
@@ -235,10 +236,10 @@
       };
     }
 
-    this.$get = function(gaGlobalOptions) {
-      return function(options) {
+    this.$get = function($timeout, gaGlobalOptions) {
+      return function(options, lazyLoadCB) {
         options.version = gaGlobalOptions.version;
-        var chart = new ProfileChart(options);
+        var chart = new ProfileChart($timeout, options, lazyLoadCB);
         return chart;
       };
     };
