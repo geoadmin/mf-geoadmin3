@@ -1796,14 +1796,26 @@ msgstr "swisstopo, Kt."
 msgid "ch.swisstopo.kt.url"
 msgstr "http://www.swisstopo.admin.ch/internet/swisstopo/de/home/swisstopo/org/cartography.html"
 
+msgid "ch.swisstopo.lubis-bildstreifen"
+msgstr "Luftbildstreifen swisstopo"
+
 msgid "ch.swisstopo.lubis-luftbilder"
-msgstr "TODO"
+msgstr "Luftbilder swisstopo"
 
 msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen"
-msgstr "TODO"
+msgstr "Luftbilder Privater"
 
 msgid "ch.swisstopo.lubis-luftbilder-dritte-kantone"
-msgstr "TODO"
+msgstr "Luftbilder Kantone"
+
+msgid "ch.swisstopo.lubis-luftbilder_farbe"
+msgstr "Luftbilder swisstopo farbig"
+
+msgid "ch.swisstopo.lubis-luftbilder_infrarot"
+msgstr "Luftbilder swisstopo infrarot"
+
+msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss"
+msgstr "Luftbilder swisstopo s/w"
 
 msgid "ch.swisstopo.pixelkarte-farbe"
 msgstr "Charta en colur"
@@ -3274,39 +3286,6 @@ msgstr "Abbruch ausgeführt"
 msgid "tt_bebautefl"
 msgstr "Bebaute Flächen"
 
-msgid "tt_bildstreifen_Aufloesung"
-msgstr "Auflösung"
-
-msgid "tt_bildstreifen_Aufloesung"
-msgstr "Auflösung"
-
-msgid "tt_bildstreifen_Flugdatum"
-msgstr "Flugdatum"
-
-msgid "tt_bildstreifen_Flugdatum"
-msgstr "Flugdatum"
-
-msgid "tt_bildstreifen_Link"
-msgstr "Bestellen"
-
-msgid "tt_bildstreifen_Link"
-msgstr "Bestellen"
-
-msgid "tt_bildstreifen_Quickview"
-msgstr "Quickview"
-
-msgid "tt_bildstreifen_Quickview"
-msgstr "Quickview"
-
-msgid "tt_bildstreifen_ebkey"
-msgstr "Bildstreifennummer"
-
-msgid "tt_bildstreifen_ebkey"
-msgstr "Bildstreifennummer"
-
-msgid "tt_bildstreifen_line_id"
-msgstr "Fluglinie"
-
 msgid "tt_ch.bafu.fauna-wildtierkorridor_national_nr"
 msgstr "Korridor Nummer"
 
@@ -3837,20 +3816,65 @@ msgstr "Aufsichtsbehörde"
 msgid "tt_landwirtsc"
 msgstr "Landwirtschaft"
 
-msgid "tt_luftbilder_Filmart"
-msgstr "Filmart"
+msgid "tt_lubis_Filmart"
+msgstr "Emulsiun"
 
-msgid "tt_luftbilder_Flugdatum"
-msgstr "Flugdatum"
+msgid "tt_lubis_Flugdatum"
+msgstr "Data da sgol"
 
-msgid "tt_luftbilder_Link"
-msgstr "Bestellen"
-
-msgid "tt_luftbilder_Quickview"
+msgid "tt_lubis_Quickview"
 msgstr "Quickview"
 
-msgid "tt_luftbilder_ebkey"
-msgstr "Bildnummer"
+msgid "tt_lubis_auflosung"
+msgstr "Resoluzion"
+
+msgid "tt_lubis_ebkey"
+msgstr "Numer da maletg"
+
+msgid "tt_lubis_lineId"
+msgstr "Traject da sgol"
+
+msgid "tt_lubis_linielaenge"
+msgstr "Lunghezza"
+
+msgid "tt_lubis_massstab"
+msgstr "Scala"
+
+msgid "tt_lubis_noQuickview"
+msgstr "Keine Vorschau zu diesem Bild vorhanden."
+
+msgid "tt_lubis_orientierung"
+msgstr "Element d'orientaziun"
+
+msgid "tt_lubis_originalsize"
+msgstr "Resoluziun dal maletg original"
+
+msgid "tt_lubis_ort"
+msgstr "Lieu"
+
+msgid "tt_lubis_scan"
+msgstr "Scan"
+
+msgid "tt_lubis_x"
+msgstr "Coordinata X"
+
+msgid "tt_lubis_x1"
+msgstr "X1"
+
+msgid "tt_lubis_x2"
+msgstr "X2"
+
+msgid "tt_lubis_y"
+msgstr "Coordinata Y"
+
+msgid "tt_lubis_y1"
+msgstr "Y1"
+
+msgid "tt_lubis_y2"
+msgstr "Y2"
+
+msgid "tt_luftbilderOL"
+msgstr "Maletg"
 
 msgid "tt_luftbilder_line_id"
 msgstr "Fluglinie"
@@ -3910,7 +3934,7 @@ msgid "tt_sachplan_planning_coordstand"
 msgstr "Koordinationsstand"
 
 msgid "tt_sachplan_planning_name"
-msgstr "Name planerische Massnahme"
+msgstr "Planerische Massnahme"
 
 msgid "tt_sachplan_planning_planungstand"
 msgstr "Planungsstand"

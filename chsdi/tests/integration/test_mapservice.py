@@ -79,7 +79,7 @@ class TestMapServiceView(TestsBase):
         self.failUnless('geometry' in resp.json['results'][0])
 
     def test_identify_with_geojson_returned_geometry(self):
-        params = {'geometry': '600000,200000,631000,210000', 'geometryType': 'esriGeometryEnvelope', 'imageDisplay': '500,600,96', 'mapExtent': '548945.5,147956,549402,148103.5', 'tolerance': '1', 'layers': 'all:ch.swisstopo.lubis-luftbilder', 'geometryFormat': 'geojson'}
+        params = {'geometry': '600000,200000,631000,210000', 'geometryType': 'esriGeometryEnvelope', 'imageDisplay': '500,600,96', 'mapExtent': '548945.5,147956,549402,148103.5', 'tolerance': '1', 'layers': 'all:ch.swisstopo.lubis-luftbilder_farbe', 'geometryFormat': 'geojson'}
         resp = self.testapp.get('/rest/services/ech/MapServer/identify', params=params, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(resp.json['results'][0]['geometry']['type'] == 'Polygon')

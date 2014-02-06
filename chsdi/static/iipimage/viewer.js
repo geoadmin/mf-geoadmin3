@@ -42,7 +42,7 @@ function init() {
   });
 
   if (url && imgWidth && imgHeight) { 
-    var map = new ga.Map({
+    var map = new ol.Map({
       layers: [
         new ol.layer.Tile({
           source: source

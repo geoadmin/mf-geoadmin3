@@ -1796,6 +1796,9 @@ msgstr "swisstopo, ct."
 msgid "ch.swisstopo.kt.url"
 msgstr "http://www.swisstopo.admin.ch/internet/swisstopo/it/home/swisstopo/org/cartography.html"
 
+msgid "ch.swisstopo.lubis-bildstreifen"
+msgstr "Striscie aeree swisstopo"
+
 msgid "ch.swisstopo.lubis-luftbilder"
 msgstr "Immagini aeree swisstopo"
 
@@ -1804,6 +1807,15 @@ msgstr "Immagini aeree privati"
 
 msgid "ch.swisstopo.lubis-luftbilder-dritte-kantone"
 msgstr "Immagini aeree dei cantoni"
+
+msgid "ch.swisstopo.lubis-luftbilder_farbe"
+msgstr "Immagini aer. swisstopo colori"
+
+msgid "ch.swisstopo.lubis-luftbilder_infrarot"
+msgstr "Immagini aeree swisstopo IR"
+
+msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss"
+msgstr "Immagini aeree swisstopo b/n"
 
 msgid "ch.swisstopo.pixelkarte-farbe"
 msgstr "Carta a colori"
@@ -3272,39 +3284,6 @@ msgstr "Eliminazione effettuata"
 msgid "tt_bebautefl"
 msgstr "Superfici costruite"
 
-msgid "tt_bildstreifen_Aufloesung"
-msgstr "Risoluzione"
-
-msgid "tt_bildstreifen_Aufloesung"
-msgstr "Risoluzione"
-
-msgid "tt_bildstreifen_Flugdatum"
-msgstr "Data del volo"
-
-msgid "tt_bildstreifen_Flugdatum"
-msgstr "Data del volo"
-
-msgid "tt_bildstreifen_Link"
-msgstr "Ordinare"
-
-msgid "tt_bildstreifen_Link"
-msgstr "Ordinare"
-
-msgid "tt_bildstreifen_Quickview"
-msgstr "Quickview"
-
-msgid "tt_bildstreifen_Quickview"
-msgstr "Quickview"
-
-msgid "tt_bildstreifen_ebkey"
-msgstr "Numero strisciata"
-
-msgid "tt_bildstreifen_ebkey"
-msgstr "Numero strisciata"
-
-msgid "tt_bildstreifen_line_id"
-msgstr "Linea di volo"
-
 msgid "tt_ch.bafu.fauna-wildtierkorridor_national_nr"
 msgstr "Numero del corridoio"
 
@@ -3836,20 +3815,65 @@ msgstr "Organo regolatore"
 msgid "tt_landwirtsc"
 msgstr "Superfici agricole"
 
-msgid "tt_luftbilder_Filmart"
+msgid "tt_lubis_Filmart"
 msgstr "Emulsione"
 
-msgid "tt_luftbilder_Flugdatum"
+msgid "tt_lubis_Flugdatum"
 msgstr "Data del volo"
 
-msgid "tt_luftbilder_Link"
-msgstr "Ordinare"
-
-msgid "tt_luftbilder_Quickview"
+msgid "tt_lubis_Quickview"
 msgstr "Quickview"
 
-msgid "tt_luftbilder_ebkey"
+msgid "tt_lubis_auflosung"
+msgstr "Risoluzione"
+
+msgid "tt_lubis_ebkey"
 msgstr "Numero immagine"
+
+msgid "tt_lubis_lineId"
+msgstr "Linea di volo"
+
+msgid "tt_lubis_linielaenge"
+msgstr "Lunghezza"
+
+msgid "tt_lubis_massstab"
+msgstr "Scala"
+
+msgid "tt_lubis_noQuickview"
+msgstr "Nessuna previsualizzazione disponibile."
+
+msgid "tt_lubis_orientierung"
+msgstr "Elementi d'orientamento"
+
+msgid "tt_lubis_originalsize"
+msgstr "Dimensione originale dell'immagine"
+
+msgid "tt_lubis_ort"
+msgstr "Località"
+
+msgid "tt_lubis_scan"
+msgstr "Scan"
+
+msgid "tt_lubis_x"
+msgstr "Coordinata centrale X"
+
+msgid "tt_lubis_x1"
+msgstr "X1"
+
+msgid "tt_lubis_x2"
+msgstr "X2"
+
+msgid "tt_lubis_y"
+msgstr "Coordinata centrale Y"
+
+msgid "tt_lubis_y1"
+msgstr "Y1"
+
+msgid "tt_lubis_y2"
+msgstr "Y2"
+
+msgid "tt_luftbilderOL"
+msgstr "Immagine"
 
 msgid "tt_luftbilder_line_id"
 msgstr "Linea aerea"
@@ -3909,7 +3933,7 @@ msgid "tt_sachplan_planning_coordstand"
 msgstr "Stato di coordinamento"
 
 msgid "tt_sachplan_planning_name"
-msgstr "Nome della misura"
+msgstr "Misura"
 
 msgid "tt_sachplan_planning_planungstand"
 msgstr "Stato della pianificazione"

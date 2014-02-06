@@ -10,12 +10,12 @@ body {
 .header {
   height: 30px;
   margin: 10px 0px;
-  border-bottom: 1px solid #fcb100;
   font-size: 14px;
   font-weight: bold;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  background-color:#EFEFEF;
 
 }
 
