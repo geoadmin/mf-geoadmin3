@@ -43,6 +43,7 @@
             map: '=gaFeaturetreeMap'
           },
           link: function(scope, element, attrs) {
+            var currentYear;
             var currentTopic;
             var timeoutPromise = null;
             var canceler = null;
@@ -249,6 +250,10 @@
                     type: 'features',
                     features: layersToQuery
                   };
+              if (currentYear) {
+                params.timeInstant = currentYear;
+              }
+
               url = url.replace('{Topic}', currentTopic);
               return {
                 url: url,
@@ -428,6 +433,13 @@
 
             scope.$on('gaTopicChange', function(event, topic) {
               currentTopic = topic.id;
+            });
+
+            scope.$on('gaTimeSelectorChange', function(event, newYear) {
+              if (newYear !== currentYear) {
+                currentYear = newYear;
+                triggerChange();
+              }
             });
 
             var showSelectionRectangle = function() {
