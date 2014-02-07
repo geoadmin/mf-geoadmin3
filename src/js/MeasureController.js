@@ -50,13 +50,10 @@
                 stroke: strokeDashed
               })
             ];
-            styles['MultiPolygon'] = styles['Polygon'];
-            styles['LineString'] = styles['Polygon'];
-            styles['MultiLineString'] = styles['LineString'];
-             
-            styles['Circle'] = [
+
+            styles['LineString'] = [
               new ol.style.Style({
-                stroke: stroke
+                stroke: strokeDashed
               })
             ];
 
@@ -69,7 +66,12 @@
                 })
               })
             ];
-            styles['MultiPoint'] = styles['Point'];
+
+            styles['Circle'] = [
+              new ol.style.Style({
+                stroke: stroke
+              })
+            ];
             
             return function(feature, resolution) {
                 return styles[feature.getGeometry().getType()];
@@ -78,24 +80,22 @@
         };
 
         $scope.options.drawStyleFunction = (function() {
+          var drawStylePolygon = [new ol.style.Style({
+            fill: new ol.style.Fill({
+              color: [255, 255, 255, 0.4]
+            }),
+            stroke: new ol.style.Stroke({
+              color: [255, 255, 255, 0],
+              width: 0
+            })
+          })];
+
           return function(feature, resolution) {
-            var styles;
             if (feature.getGeometry().getType() === 'Polygon') {
-              styles =  [
-                new ol.style.Style({
-                  fill: new ol.style.Fill({
-                    color: [255, 255, 255, 0.4]
-                  }),
-                  stroke: new ol.style.Stroke({
-                    color: [255, 255, 255, 0],
-                    width: 0
-                  })
-                })
-              ];
+              return drawStylePolygon;
             } else {
-              styles = $scope.options.styleFunction(feature, resolution);
+              return $scope.options.styleFunction(feature, resolution);
             }
-            return styles;
           }
         })();
         

@@ -193,6 +193,28 @@
 
     };
 
+
+    // Create a ol.geom.Polygon from an ol.geom.Circle, comes from OL2
+    // https://github.com/openlayers/openlayers/blob/master/lib/OpenLayers/Geometry/Polygon.js#L240
+    var circleToPolygon = function(circle, sides, rotation) {
+      var origin = circle.getCenter();
+      var radius = circle.getRadius();
+      sides = sides || 40;
+      var angle = Math.PI * ((1 / sides) - (1 / 2));
+      if (rotation) {
+        angle += (rotation / 180) * Math.PI;
+      }
+      var points = [];
+      for (var i = 0; i < sides; ++i) {
+        var rotatedAngle = angle + (i * 2 * Math.PI / sides);
+        var x = origin[0] + (radius * Math.cos(rotatedAngle));
+        var y = origin[1] + (radius * Math.sin(rotatedAngle));
+        points.push([x, y]);
+      }
+      points.push(points[0]);// Close the polygon
+      return new ol.geom.Polygon([points]);
+    };
+
     // Transform an ol.Color to an hexadecimal string
     var toHexa = function(olColor) {
       var hex = '#';
@@ -292,6 +314,8 @@
         var color = ol.color.asArray(fill.getColor());
         literal.fillColor = toHexa(color);
         literal.fillOpacity = color[3];
+      } else {
+        literal.fillOpacity = 0; // No fill
       }
 
       if (stroke) {
@@ -303,11 +327,14 @@
         literal.strokeLinejoin = stroke.getLineJoin() || 'round';
 
         if (stroke.getLineDash()) {
-          literal.strokeDashstyle = stroke.getLineDash();
+          literal.strokeDashstyle = 'dash';
         }
         // TO FIX: Not managed by the print server
         // literal.strokeMiterlimit = stroke.getMiterLimit();
+      } else {
+        literal.strokeOpacity = 0; // No Stroke
       }
+
 
       // TO FIX: Not managed by OL3
       /*if (textStyle) {
@@ -363,13 +390,25 @@
             var encStyle = {
               id: styleId
             };
-            var geometry = feature.getGeometry();
-            var encJSON = format.writeFeature(feature);
-            encJSON.properties._gx_style = styleId;
-            encFeatures.push(encJSON);
             var styles = (layer.getStyleFunction()) ?
                 layer.getStyleFunction()(feature) :
                 ol.feature.defaultStyleFunction(feature);
+
+
+            var geometry = feature.getGeometry();
+
+            // Transform an ol.geom.Circle to a ol.geom.Polygon
+            if (geometry.getType() === 'Circle') {
+              var polygon = circleToPolygon(geometry);
+              feature = new ol.Feature(polygon);
+            }
+
+            var encJSON = format.writeFeature(feature);
+            if (!encJSON.properties) {
+              encJSON.properties = {};
+            }
+            encJSON.properties._gx_style = styleId;
+            encFeatures.push(encJSON);
 
             if (styles && styles.length > 0) {
               $.extend(encStyle, transformToPrintLiteral(feature, styles[0]));
