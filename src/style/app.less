@@ -315,22 +315,10 @@ a .ga-icon-separator {
   .panel-body {
     background-color: #fff;
     border-top: none;
-    max-height: 400px;
+    max-height: 320px;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     font-size: 12px;
-    @media (max-height: 800px) {
-      max-height: 300px;
-    }
-    @media (max-height: 680px) {
-      max-height: 200px;
-    }
-    @media (max-height: 550px) {
-      max-height: 150px;
-    }
-    @media (max-height: 480px) {
-      max-height: 100px;
-    }
     @media (max-width: @screen-phone) {
       background-color: rgba(255,255,255,0.9);
     }
@@ -385,6 +373,9 @@ a .ga-icon-separator {
       margin-right: .5em;
     }
     .pulldown-hover;
+    &.only .icon-caret-down::before{
+      content: '×';
+    }
   }
 }
 
