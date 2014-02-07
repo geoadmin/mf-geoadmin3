@@ -69,7 +69,7 @@
             styleFunction: scope.options.drawStyleFunction
           });
 
-          var featuresOverlay = new ol.render.FeaturesOverlay();
+          var featuresOverlay = new ol.FeatureOverlay();
           featuresOverlay.setStyleFunction(styleFunction);
           featuresOverlay.setMap(scope.map);
 

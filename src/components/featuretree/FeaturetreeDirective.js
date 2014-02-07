@@ -55,7 +55,7 @@
             var highlightLayer = createVectorLayer('highlight');
             var tooltipShown = false;
             var selectionRecFeature = new ol.Feature();
-            var selectionRecOverlay = new ol.render.FeaturesOverlay({
+            var selectionRecOverlay = new ol.FeatureOverlay({
               map: map,
               styleFunction: gaStyleFunctionFactory('selectrectangle')
             });
