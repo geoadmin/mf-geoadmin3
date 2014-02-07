@@ -2,13 +2,44 @@ language: node_js
 node_js:
     - "0.8"
 
+env:
+    global:
+        - BROWSERSTACK_USER=hanspeterchrist
+        - CURRENT_BRANCH=$TRAVIS_BRANCH
+        - BASE_DIR=/home/travis/sync
+        - secure: "b/i7FFs88uFoeGA/YKYeLyqQuwKLvRE+PQocbMW/pU6wGh41p1k5p5+CiriBAZ7obPusRI2gg00bmGOcEQyJyNBOsh83lq55DMqyDdWCBy04hxpDye7B844Ez0ouNQ+2KQ6m+OgoIyGZ2oNG3mu/XDgTs+BRLzs1XJL9mOwaHyE="
+        - secure: "mRIQ7Lj5gUtj73AtY6Lx4rHh+IeMkow6bOTuEBabuw7nPanprVP0AzGbCT36RLADSNCenObwBsMpJ8+tEf+y3S6gmWHAU+SPxf+webv+vnwLV70zUuBQ9MXNjQu/xzeM6W82cb3UIXJLFjzib1byQufwLylvm1ltzg/lxgq0wI4="
+        - secure: "VhlL+pQYLHbgJWBaQ6kC7J6kPRQkr4Rn4iDJ5lm8/sapKNfzMY8DN+ddaQUmfZt3GTNK3k9/F+amEHlpspJ+AEeFQQWfT0wMngIgzqGuWocEnXnMKqjZuZl3cyoVc7Cpa8fT3MTIFIgl0XW/BSma959+dCo9Ozb3N/v3eua8z50="
+        - secure: "ORLYYULEgJLl/6+P9or1/a8VnkDu8gEMK/fp5P8nQJUcSTiVS+whFG+ylfXQPNJBadhcoYDFArNsdE3d+0nw3EDnu9wlBB2dSInqpn+S2WSEloIfC7p3HT/zF3HMl0RRehe+wPs2mt6gxPxODoP3oA080kw4YcHL1QwEifGBaqo="
+        - secure: "SyU+ajDzQJNwA1OuTWL06BJrGA0/40zTlLE4Bc5zuqSlqCHBAIkm/evCHOcKT9AvXdIG2RReij19RvzhpdD86/gOGhUx+PPccs9AbPdk3sqp39gPx7pGLZqrRdThM5JzvI0f0YNxjia+91rqynur/AK+Ms0AM8cbqcKMWndkQoI="
+        - secure: "cR4ZZ2hqxM2sgpoTLN4ZC/8hj/V8OgQmTk5CDToZKoVhLkcrQK477HdQA8bmQPx6X59Md73b32X+cM4XOZkmoiYJcwZPlYCu2buWIjW9R94aftq6aF6RiD9WOBysr+mNp1mchlfBOwteKLvAY2zPfBOFYiTU86TOqbNx6ljZBdE="
+        - secure: "b38wUyMx5FMex8zzuJri8zX0yn3KKIIEpVh6zThX656kqQmMAa0fACrVvrHzsFV+di4GETpUWW0jDhlpAC8W8j40rF9KLL3nRDl0XfVj6xBmS16phzLFcCbn9eY8NF8+9zdXaQLRV6EVwknMQvNrbwqeQkv18fHLll9lslIlA8M="
+        - secure: "hWvRam73FKB1UuttH6vjKWSk83Gr5tzzKTI3OviaAeyO0g+UgK3zcpbaBp7EyDL4q1NkUxBdaReWu/NJAhfECi0XXZs/XJdQ3P+9bXaGEC1yMQq8cUIJ8JII/3MJkPxHcyX0OV8TU9evz7I0U7645R66CVM0Hn2sr8IvEVui7Wo="
+        - secure: "ZZwiqBcgOSU60FcO5YiYo1E9x3JhPoMpXeJekqizo0GwrvYZBBCUgYSTMmPX9ZWdJ83J7rlXJgOHpXKL4HeBkyKcswacJ3C+7X8PDvdFvCvYbAk2VgEYZGk2Cy6stzguzJXkuhOOULmFMzSfxs/neSYfwYLdBPj0QKdxQR+vS24="
+        - secure: "IcpJ+uxdofEPuzC9fPbSKtL7s09tr70yz0Q9nhqw9ssMBnk6dfZQXRH0Jqy/MgXjPphGCG93llGVgDyYsqDcKcXiDo6mnHG9Ud74Dr2IuuMr76MwLw9wnst9HeVj/lX7B1GvZxIMkgCaMGkIbOD8iWzeus7Ln+O+0DdKsgUqLCQ="
+        - secure: "jRkF5GDbmn+cjT/XNUM8s1uGVrzs7FzCYtnQTbHkoToDvNqtDisq4bmutvqb4HBFB14R/CkiBlMiyKquH6EYqHlHcc5Hp0AGjkETe4foEUeS/iLvMSw9zHls+V9w2ShzOsPXK/tbCC58Vv1x6leNHQ028U26nO7vBvxRat7iqhY="
+        - secure: "j9PO9SLMvv3lmhIqexM8nwL9cBQ5LEBe6yQh2MbKa3fofPZeMJ97npPXbGHcfBpEOiVyvu92R4hKALX62bVoPS93zn3Mt++IlN4Ug1Sa7wOTvRKUcS4VvjIbiOGKNqBMvEsMeIGVYa7X2ekgvnpmaMmxNXMt2ooIjO6QyeJRVes="
+        - secure: "QgSJn9f82bBsC54DBifisux5cbBffTM8s4nENjCNSlb619gzEarSxQKnTJ+lpKYTum4lEQWHwdzo6DCYmIczTPbbthlevF77CnegPKTXWFbKKyouQI8OXAFo8bh4YH6FGctg3anzvXD8utBTB9kPVn/W/eNUf9T3KWu9QM0Iy0U="
+        - secure: "h9Oyd1SbtYHSNa3v7YwTw5fJGf/bWayrXmZTYhXsjjyJvmcavZlWtSVRcbtTMzurjtqTSWYIfAwDTQGC4SpfkZ3n4+gRQPqitJVEXl7dHdcon8qrmA7P+i8EIlNuHDbfq6Kcw4sDDByfXkd0Sz0cRTxV5T4TnuoQDeN+Zk45AaA="
+        - secure: "cUckeIcdir4SPunzBXLUd/bGBQzciPylFgOn5yLMa4q860c36Ri1ECpgpyQJh3XJihcOnGAM/IRHCPjur6tyNVSypEiGLyf1YaGf5T4EbC1CinYUx5PD0EWVx1fR7kHHP9rMrt0JgtV02wpsG/bESbOdq9Pt9e8kkukcMvHzxDw="
+        - secure: "Mk1kc4PnT3hXEPSCXDYR0H4kV1p6xi5P9qY6nhBE1QAQjG8nhr7b6XgDt7UUM2Ai5NM6l7j5Ihr58+zhgz8yXACYN/0AUkaLyclgkOtkHcsbquNesGGqHHyIVw3vaK+GXX3pAQx3HPuLUN6qdlgkQsjTGMXIldaaYU1nMdO/rqM="
+        - secure: "Ho+/+Re07K8jpfI3TkDr+Ym3gxkeO3IdreZCMk63U+eBd2GDJf21lzNInErYFiZX5AM0nYqoLQh8ZUmucxHUBhil9lVu9S3+HyUOvvVwpoO3LzcWA9bK8+vmqx1fVD/RV+4AIj+kkjM01IcCT8eEfgNhV9R4wHxaV31Lef3Q/a8="
+        - secure: "G7PUaBuNr1Ka+hKOY52lG3BxbIxiY+xHI/36MSp+IQd6htCF6j2UAvJIT2GeK/lDhwL5NtL4GjT5TDE8MAkGHEPOykW1IBdTXDI1cjte4jGWNSqt3tapL+BdfK+IHS6VZ/UeEOhHfTy5YXGr2jxYG5OXoQG2I83WqtaxHzSIhaI="
+        - secure: "TWV37EwJFAkz2S6k/AtwBbLS06zWymO9DqK/hU5mxOQUItY1j/eH9KijrhTje9pDtjSOFnJN/vgmZagZOYM5xgPB+/btBLzttXQCOLhlmODi6AeXB3VZAST+4ikvk6uiSPpb3ulQZPPbd0BVQDJM14OEjzWuAgyGVBC4UL0QDXs="
+        - secure: "mxzT/PR1wVjbmXW6ueY1IyPVVZ22m3b0rYmVg31fm/GwnzeQR/QzUm3Ia19G/DUJjU9iT2y35BlYNycgDee3Kq+BcgF4yu8nTrGGf5YZeRvM1m0vke/ZLfL0nVVQqH/TLGY4PgWg7eht1Zq/Dgr9a+yWxx8MMw7zxAjC/l8k2g0="
+        - secure: "kNf8dxLlRk09SAsXWxONPeZbzdKRno3+cMVmxSOwjRj3jSW4tJCqBsrMIW2KjhlLIxmdssoUqXVLBxbq4XHS7ioTSTyu9X6R6ZLUwwTpGi2La9TWXfuQQM7CBsBTEGjRUgrDoQHN51NiWElr2pMvHytd8340v1VJ7yYa+aa3izw="
+        - secure: "TOKM29ZGgVOcEMfOBrSCmGrocMxRJlQ5ScDHWEmnAUDzWLKzDmloSHyaS2ez/vbZjRwL1I9iWh1GDe8WUXq5NCqu6YdUADLRafdcpupJUWyj6X2vLiTIV2/dGT7Wtu5fNOc2tcgmBZUS0q58lEt7td4Hd3kHw1Oq2zIdW3GgLmw="
+        - secure: "cFafo4oqARbr19AqtbqnVLgwcN1XnccNu9fy0oKX9Q8HEl0z01RKu138tmjhUW8c4no8c3Af0Y7BJxspqXAfBR/bLPtco2mHjTb7VQR+DLXBsL1OwJkIr746tZIjcqOEqEoeJnZvgqXyoJqMLhT+8eLpWqzXGpbhE7b+JVSpDXE="
+        - secure: "HMa1iGGcTJ+H9YF9LriVkaPx8Ue1FJ3DpQ1Nag0oHnIDBXqt13L6S08Q3mxg6nYsyVCjGWF5WSQSdLFv0m452Wbevf1D3pIVVRqiDp8K7ns3/8nmDa67dz60oCbzu9iArzROXO/2eoAA32XY25VxE79rGZVEjHwln3BmhXZ5EMw="
+
 before_script:
     - sudo pip install virtualenv
     - sudo groupadd geodata
     - make all
+    - chmod 0775 ./scripts/travis_deploy_on_mf0_dev.sh
+    - ./scripts/travis_deploy_on_mf0_dev.sh
 
 notifications:
     email:
         recipients:
             - re3-dev@googlegroups.com
-

@@ -2,6 +2,7 @@
   "name": "geoadmin3",
   "version": "3.0.0",
   "description": "GeoAdmin 3 Application",
+	"scripts": { "test": "node test/selenium/basic.js" },
   "repository": {
     "type": "git",
     "url": "git://github.com/geoadmin/mf-geoadmin3"
@@ -11,7 +12,9 @@
   "devDependencies": {
     "less": "1.4.0",
     "karma": "0.8.5",
-    "ng-annotate": "0.2.0"
+    "ng-annotate": "0.2.0",
+    "browserstack": "1.0.1",
+    "browserstack-webdriver": "2.39.2"
   }
 }
 
