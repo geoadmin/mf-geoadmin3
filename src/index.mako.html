@@ -505,7 +505,7 @@
         var module = angular.module('ga');
 
         module.constant('gaGlobalOptions', {
-          serviceUrl : '${service_url}',
+          serviceUrl : location.protocol + '${service_url}',
           baseUrlPath: '${base_url_path}',
           version: '${version}',
           ogcproxyUrl: location.protocol + '${geoadmin_url}${base_url_path}' + '/ogcproxy?url='
