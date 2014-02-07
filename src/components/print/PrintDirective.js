@@ -133,6 +133,9 @@
     $scope.$on('gaLayersChange', function(event, data) {
       updatePrintRectanglePixels($scope.scale);
     });
+    $scope.map.on('change:size', function(event) {
+      updatePrintRectanglePixels($scope.scale);
+    });
 
     bodyEl.removeClass(waitclass);
 
