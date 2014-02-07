@@ -508,31 +508,37 @@
           serviceUrl : '${service_url}',
           baseUrlPath: '${base_url_path}',
           version: '${version}',
-          ogcproxyUrl: location.protocol + '${geoadmin_url}${base_url_path}' + '/ogcproxy?url='
+          ogcproxyUrl: location.protocol + '${geoadmin_url}${base_url_path}' + '/ogcproxy?url=',
+          whitelist: [
+            'http://www.kmlvalidator.org/validate.htm'
+          ]
         });
 
-        module.config(['gaLayersProvider', function(gaLayersProvider) {
+        module.config(function(gaLayersProvider, gaGlobalOptions) {
           gaLayersProvider.wmtsGetTileUrlTemplate =
               '//wmts{0-4}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
 
           gaLayersProvider.layersConfigUrlTemplate =
-              '${base_url_path}/${version}rest/services/{Topic}/MapServer/layersconfig?lang={Lang}';
+              gaGlobalOptions.baseUrlPath + '/' + gaGlobalOptions.version + 'rest/services/{Topic}/MapServer/layersconfig?lang={Lang}';
 
           gaLayersProvider.legendUrlTemplate =
-              '${base_url_path}/${version}rest/services/{Topic}/MapServer/{Layer}/legend?lang={Lang}';
-        }]);
+               gaGlobalOptions.baseUrlPath + '/' + gaGlobalOptions.version + 'rest/services/{Topic}/MapServer/{Layer}/legend?lang={Lang}';
+        });
 
-        module.config(['gaRecenterMapOnFeaturesProvider', function(gaRecenterMapOnFeaturesProvider) {
+        module.config(function(gaRecenterMapOnFeaturesProvider, gaGlobalOptions) {
           gaRecenterMapOnFeaturesProvider.url =
-              '${base_url_path}/${version}rest/services/all/MapServer/';
-        }]);
+              gaGlobalOptions.baseUrlPath + '/' + gaGlobalOptions.version + 'rest/services/all/MapServer/';
+        });
         
-        module.config(['$sceDelegateProvider', function($sceDelegateProvider) {
-          var validatorUrl = 'http://www.kmlvalidator.org/validate.htm';
+        module.config(function(gaKmlProvider, gaGlobalOptions) {
+          gaKmlProvider.proxyUrl =  gaGlobalOptions.ogcproxyUrl; 
+        });
+
+        module.config(function($sceDelegateProvider, gaGlobalOptions) {
           var whitelist = $sceDelegateProvider.resourceUrlWhitelist();
-          whitelist.push(validatorUrl);
+          whitelist = whitelist.concat(gaGlobalOptions.whitelist);
           $sceDelegateProvider.resourceUrlWhitelist(whitelist);
-        }]);
+        });
 
       })();
 
