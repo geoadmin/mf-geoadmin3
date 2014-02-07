@@ -587,11 +587,10 @@
             'type': 'Vector',
             'styles': {
               '1': {
-                'strokeColor': 'red',
-                'strokeWidth': 2,
-                'strokeOpacity': 1,
-                'strokeDashstyle': 'solid',
-                'strokeLinecap': 'round'
+                'externalGraphic': location.origin +
+                  location.pathname + 'img/cross.png',
+                'graphicWidth': 16,
+                'graphicHeight': 16
               }
             },
             'styleProperty': '_gx_style',
@@ -603,17 +602,8 @@
                   '_gx_style': 1
                 },
                 'geometry': {
-                  'type': 'MultiLineString',
-                  'coordinates': [
-                    [
-                      [center[0] - offset, center[1]],
-                      [center[0] + offset, center[1]]
-                    ],
-                    [
-                      [center[0], center[1] - offset],
-                      [center[0], center[1] + offset]
-                    ]
-                  ]
+                  'type': 'Point',
+                  'coordinates': [center[0], center[1], 0]
                 }
               }]
             },
