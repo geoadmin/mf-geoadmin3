@@ -73,8 +73,10 @@ apache: apache/app.conf
 .PHONY: deploybranch
 deploybranch: deploy/deploy-branch.cfg $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/config
 	cd $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH); \
-	git checkout $(GIT_BRANCH); \
+	git checkout master; \
+	git branch -D $(GIT_BRANCH); \
 	git pull; \
+	git checkout $(GIT_BRANCH); \
 	make preparebranch; \
 	cp scripts/00-$(GIT_BRANCH).conf /var/www/vhosts/mf-geoadmin3/conf; \
 	bash -c "source rc_branch && make all";
