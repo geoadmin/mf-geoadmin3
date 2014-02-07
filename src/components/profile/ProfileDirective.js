@@ -17,28 +17,35 @@
             options: '=gaProfileOptions'
           },
           link: function(scope, element, attrs) {
+            var profile;
             var options = scope.options;
             var tooltipEl = element.find('.profile-tooltip');
             scope.coordinates = [0, 0];
             scope.unitX = '';
 
-            var profile = gaProfileService(options);
-
             $rootScope.$on('gaProfileDataLoaded', function(ev, data) {
-              var d3 = window.d3;
-              var profileEl = angular.element(
-                  profile.create(data)
-              );
-              $compile(profileEl)(scope);
-              scope.unitX = profile.unitX;
-              var previousProfileEl = element.find('.profile-inner');
-              if (previousProfileEl.length > 0) {
-                previousProfileEl.replaceWith(profileEl);
+              var loadData = function() {
+                var d3 = window.d3;
+                var profileEl = angular.element(
+                    profile.create(data)
+                );
+                $compile(profileEl)(scope);
+                scope.unitX = profile.unitX;
+                var previousProfileEl = element.find('.profile-inner');
+                if (previousProfileEl.length > 0) {
+                  previousProfileEl.replaceWith(profileEl);
+                } else {
+                  element.append(profileEl);
+                }
+                var areaChartPath = d3.select('.profile-area');
+                attachPathListeners(areaChartPath);
+              };
+
+              if (!angular.isDefined(profile)) {
+                profile = gaProfileService(options, loadData);
               } else {
-                element.append(profileEl);
+                loadData();
               }
-              var areaChartPath = d3.select('.profile-area');
-              attachPathListeners(areaChartPath);
             });
 
             $rootScope.$on('gaProfileDataUpdated', function(ev, data) {
