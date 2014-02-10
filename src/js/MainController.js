@@ -21,9 +21,11 @@
     var map = new ol.Map({
       controls: ol.control.defaults({
         attribution: false
-      }),
+      }).extend([
+        new ol.control.FullScreen()
+      ]),
       interactions: ol.interaction.defaults({
-        altShiftDragRotate: false,
+        altShiftDragRotate: true,
         touchRotate: false
       }).extend([
         new ol.interaction.DragZoom()
