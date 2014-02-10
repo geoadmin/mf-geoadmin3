@@ -82,6 +82,7 @@
 
 
    var refreshComp = function() {
+      updatePrintRectanglePixels($scope.scale);
       $scope.map.requestRenderFrame();
     };
 
