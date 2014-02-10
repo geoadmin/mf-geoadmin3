@@ -11,7 +11,7 @@ What is the GeoAdmin API ?
 
 The GeoAdmin API allows the integration in web pages of geospatial information provided by the Swiss Confederation and Cantons.
 
-The GeoAdmin API provides also REST web services:doc:`../../services/sdiservices`
+The GeoAdmin API provides also :ref:`rest_services`
 
 Who can use the GeoAdmin API ?
 ------------------------------
