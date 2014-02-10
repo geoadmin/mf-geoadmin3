@@ -1,9 +1,11 @@
 (function() {
   goog.provide('ga_print_directive');
+  goog.require('ga_browsersniffer_service');
 
 
   var module = angular.module('ga_print_directive',
-    ['pascalprecht.translate']);
+    ['ga_browsersniffer_service',
+     'pascalprecht.translate']);
 
   module.controller('GaPrintDirectiveController',
     function($scope, $http, $window, $translate, $document,
