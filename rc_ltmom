@@ -1,5 +1,5 @@
-source rc_dev
-
-export BASE_URL_PATH=/ltmom
-export SERVICE_URL=//mf-chsdi3.dev.bgdi.ch/ltmom
+export API_URL=//mf-chsdi3.dev.bgdi.ch/ltmom
+export MAP_URL=//mf-geoadmin3.dev.bgdi.ch/ltmom
+export APACHE_BASE_PATH=ltmom
+export APACHE_BASE_DIRECTORY=/home/ltmom/mf-geoadmin3
 

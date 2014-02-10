@@ -8,7 +8,7 @@
       ['$scope', 'gaGlobalOptions',
       function($scope, gaGlobalOptions) {
 
-        var baseUrl = gaGlobalOptions.baseUrlPath + '/' + 
+        var baseUrl = gaGlobalOptions.mapUrl + '/' + 
                       gaGlobalOptions.version + '/rest/services';
 
         $scope.options = {

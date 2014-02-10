@@ -1,2 +1,3 @@
-export BASE_URL_PATH=/${base_url} 
+export API_URL=//mf-chsdi3.int.bgdi.ch
+export APACHE_BASE_PATH=/${apache_base_path}
 

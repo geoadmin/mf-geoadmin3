@@ -13,7 +13,7 @@
         $scope.options = {
           waitClass: 'ga-measure-wait',
           isProfileActive: false,
-          profileUrl: gaGlobalOptions.baseUrlPath + '/rest/services/profile.json',
+          profileUrl: gaGlobalOptions.mapUrl + '/rest/services/profile.json',
           profileOptions: {
               xLabel: 'profile_x_label',
               yLabel: 'profile_y_label',
