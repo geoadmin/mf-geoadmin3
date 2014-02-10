@@ -58,6 +58,11 @@ module.controller('GaMainController',
   function($scope, $rootScope, $translate, $timeout, $window,  gaPermalink,
     gaBrowserSniffer, gaLayersPermalinkManager, 
     gaHighlightFeaturePermalinkManager) {
+     
+      // Determines if the window has a height <= 550
+      var isWindowTooSmall = function() {
+        return ($($window).height() <= 550);
+      };
 
       var mobile = (gaBrowserSniffer.mobile) ? 'false' : 'true',
         dismiss = 'none';
@@ -75,7 +80,8 @@ module.controller('GaMainController',
       $rootScope.$on('gaTopicChange', function(event, topic) {
         $scope.topicId = topic.id;
         var showCatalog = topic.showCatalog ? 'show' : 'hide';
-        if (gaBrowserSniffer.mobile) {
+        if (gaBrowserSniffer.mobile ||
+            isWindowTooSmall()) {
           showCatalog = 'hide';
         }
         $rootScope.$broadcast('catalogCollapse', showCatalog);
@@ -113,8 +119,61 @@ module.controller('GaMainController',
           $window.localStorage.setItem('homescreen', dismiss);
         });
       }, 2000);
+     
+      // Try to manage the menu correctly when height is too small,
+      // only on desktop.
+      if (!gaBrowserSniffer.mobile) {
+      
+        $($window).on('resize', function() {
+          if(isWindowTooSmall()) {
+            $rootScope.$broadcast('catalogCollapse', 'hide');
+          }
+        });
+        
+        // Hide a panel clicking on its heading    
+        var hidePanel = function(id) {
+          if (!$('#' + id ).hasClass('collapse')) {
+            $('#' + id + 'Heading').click();
+          }
+        }
 
+        var hideAccordionPanels = function() {
+          hidePanel('share')
+          hidePanel('print')
+          hidePanel('tools')
+        }
 
+        $('#catalog').on('shown.bs.collapse', function() {
+          // Close accordion
+          hideAccordionPanels(); 
+          
+          if (isWindowTooSmall()) { 
+            // Close selection
+            hidePanel('selection');
+          }
+        });
+
+        $('#selection').on('shown.bs.collapse', function() {
+          // Close accordion
+          hideAccordionPanels(); 
+          
+          if (isWindowTooSmall()) { 
+            // Close catalog
+            hidePanel('catalog');
+          }
+        });
+      }
+     
+      // When a menu of accordion (tools, share, print) is shown, the others
+      // panels (catalog and selection) are collapsed but their headings
+      // haven't the 'collapsed' css applied. So we force it.
+      $('#catalog').on('hidden.bs.collapse', function() {
+        $('#catalogHeading').addClass('collapsed');
+      });
+    
+      $('#selection').on('hidden.bs.collapse', function() {
+        $('#selectionHeading').addClass('collapsed');
+      });
   });
 
 })();

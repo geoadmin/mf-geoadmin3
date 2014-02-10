@@ -338,7 +338,18 @@ a .ga-icon-separator {
       padding: 0;
     }
   }
+
+  &.selection-and-catalog-shown {
+    .panel-body {
+      max-height: 250px;
+    
+      @media (max-height: 800px) {
+        max-height: 150px;
+      }
+    }
+  }
 }
+
 .pulldown-hover() {
     &:hover, &:focus {
       text-decoration: none;
