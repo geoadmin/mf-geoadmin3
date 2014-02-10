@@ -636,7 +636,7 @@
           layout: that.layout.name,
           srs: proj.getCode(),
           units: proj.getUnits() || 'm',
-          rotation: view.getRotation(),
+          rotation: -((view.getRotation() * 180.0) / Math.PI),
           app: topicId, //topic name
           lang: $translate.uses(),
           dpi: that.dpi.value,
@@ -650,7 +650,8 @@
             // scale has to be one of the advertise by the print server
             scale: $scope.scale.value,
             dataOwner: '© ' + attributions.join(),
-            shortLink: response.shorturl.replace('/shorten', '')
+            shortLink: response.shorturl.replace('/shorten', ''),
+            rotation: -((view.getRotation() * 180.0) / Math.PI),
           }, defaultPage)]
         };
         var http = $http.post(that.capabilities.createURL +

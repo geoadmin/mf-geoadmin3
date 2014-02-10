@@ -23,7 +23,7 @@
         attribution: false
       }),
       interactions: ol.interaction.defaults({
-        altShiftDragRotate: false,
+        altShiftDragRotate: true,
         touchRotate: false
       }).extend([
         new ol.interaction.DragZoom()
