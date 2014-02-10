@@ -651,7 +651,7 @@
             scale: $scope.scale.value,
             dataOwner: '© ' + attributions.join(),
             shortLink: response.shorturl.replace('/shorten', ''),
-            rotation: -((view.getRotation() * 180.0) / Math.PI),
+            rotation: -((view.getRotation() * 180.0) / Math.PI)
           }, defaultPage)]
         };
         var http = $http.post(that.capabilities.createURL +
