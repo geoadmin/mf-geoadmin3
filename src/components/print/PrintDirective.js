@@ -7,7 +7,7 @@
 
   module.controller('GaPrintDirectiveController',
     function($scope, $http, $window, $translate, $document,
-             gaLayers, gaPermalink) {
+             gaLayers, gaPermalink, gaBrowserSniffer) {
     var waitclass = 'ga-print-wait';
     var bodyEl = angular.element($document[0].body);
 
@@ -510,7 +510,11 @@
     };
 
     $scope.downloadUrl = function(url) {
-      $window.location.href = url;
+      if (gaBrowserSniffer.msie == 9) {
+        $window.open(url);
+      } else {
+        $window.location = url;
+      }
     };
 
     $scope.submit = function() {
