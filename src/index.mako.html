@@ -125,8 +125,14 @@
         </div>
         <div ga-attribution ga-attribution-map="map"></div>
       </div>
-      <!-- <div ga-time-selector-bt id="time-selector-bt"></div> -->
-      <div ga-swipe ga-swipe-map="map" ga-swipe-active="isSwipeActive"></div>
+      <!--div ga-time-selector-bt 
+           ga-time-selector-bt-active="isTimeSelectorActive"-->
+      </div> 
+      <div ga-swipe 
+           ga-swipe-map="map" 
+           ga-swipe-active="isSwipeActive" 
+           style="display:none;">
+      </div>
     </div> <!-- #map -->
 
 
@@ -163,7 +169,11 @@
     </div>
 
     <div ng-controller="GaTimeSelectorController">
-      <div ga-time-selector ga-time-selector-map="map" ga-time-selector-options="options" ng-show="isActive" id="time-selector" class="ng-hide"></div>
+      <div ga-time-selector ga-time-selector-map="map"
+           ga-time-selector-options="options"
+           ga-time-selector-active="isTimeSelectorActive" 
+           style="display:none;">
+      </div>
     </div>
 
     <div id="pulldown" class="{{(globals.catalogShown && globals.selectionShown) ? 'selection-and-catalog-shown' : ''}}">
@@ -229,12 +239,12 @@
                 </li>
                 <li><!-- Measure -->
                   <a href=""  ng-click="isMeasureActive = !isMeasureActive">
-                    <span  ng-class="{'selected': isMeasureActive}" translate="{{'measure'}}"></span>
+                    <span  ng-class="{'selected': isMeasureActive}" translate>measure</span>
                   </a>
                 </li>
                 <li><!-- Feature Tree -->
                   <a href=""  ng-click="globals.isFeatureTreeActive = !globals.isFeatureTreeActive">
-                    <span  ng-class="{'selected': globals.isFeatureTreeActive}" translate="{{(globals.isFeatureTreeActive) ? 'object_information' : 'object_information'}}"></span>
+                    <span  ng-class="{'selected': globals.isFeatureTreeActive}" translate>object_information</span>
                   </a>
                 </li>
               </ul>
@@ -394,51 +404,53 @@
 
     <!-- Popup: Import WMS -->
     <div ga-popup="importWmsPopupShown"
-      ga-popup-options="{title:'import_wms'}"
-      ga-draggable=".ga-popup-title"
-      id="import-wms-popup" >
+         ga-popup-options="{title:'import_wms'}"
+         ga-draggable=".ga-popup-title"
+         id="import-wms-popup" >
       <div ng-controller="GaImportWmsController">
         <div ga-import-wms
-          ga-import-wms-map="map"
-          ga-import-wms-options="options"
-          id="import-wms"
-          class="import-wms">
+             ga-import-wms-map="map"
+             ga-import-wms-options="options">
         </div>
       </div>
     </div> <!-- end Import WMS -->
 
     <!-- Popup: Import KML -->
     <div ga-popup="importKmlPopupShown"
-      ga-popup-options="{title:'import_kml'}"
-      ga-draggable=".ga-popup-title"
-      id="import-kml-popup" >
+         ga-popup-options="{title:'import_kml'}"
+         ga-draggable=".ga-popup-title"
+         id="import-kml-popup" >
       <div ng-controller="GaImportKmlController">
         <div ga-import-kml
-          ga-import-kml-map="map"
-          ga-import-kml-options="options"
-          id="import-kml"
-          class="import-kml">
+             ga-import-kml-map="map"
+             ga-import-kml-options="options">
         </div>
       </div>
     </div><!-- end Import KML -->
    
     <!-- Popup: Measure -->
     <div ga-popup="isMeasureActive"
-      ga-popup-options="{title:'measure',showPrint:true}"
-      ga-draggable=".ga-popup-title"
-      id="measure-popup" >
+         ga-popup-options="{title:'measure',showPrint:true}"
+         ga-draggable=".ga-popup-title"
+         id="measure-popup" >
       <div ng-controller="GaMeasureController">
-        <div ga-measure ga-measure-map="map" ga-measure-options="options" ga-measure-active="isMeasureActive"></div>
+        <div ga-measure 
+             ga-measure-map="map" 
+             ga-measure-options="options" 
+             ga-measure-active="isMeasureActive"></div>
       </div>
     </div><!-- end Measure -->
 
     <!-- Popup: Feature Tree -->
     <div ga-popup="globals.isFeatureTreeActive"
-      ga-popup-options="{title: 'object_information'}"
-      ga-draggable=".ga-popup-title"
-      id="featuretree-popup">
-      <div id="featuretree" ng-controller="GaFeaturetreeController">
-        <div ga-featuretree ga-featuretree-options="options" ga-featuretree-map="map"></div>
+         ga-popup-options="{title: 'object_information'}"
+         ga-draggable=".ga-popup-title"
+         id="featuretree-popup">
+      <div ng-controller="GaFeaturetreeController" 
+           id="featuretree"> 
+        <div ga-featuretree 
+             ga-featuretree-options="options" 
+             ga-featuretree-map="map"></div>
       </div>
     </div>
 
