@@ -25,7 +25,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="msapplication-TileImage" content="${version}img/touch-icon-bund-144x144.png">
     <meta name="msapplication-TileColor" content="#ffffff">
-    <link rel="dns-prefetch" href="${service_url}"/>
+    <link rel="dns-prefetch" href="${api_url}"/>
 
     <link rel="apple-touch-icon" sizes="76x76" href="${version}img/touch-icon-bund-76x76.png" />
     <link rel="apple-touch-icon" sizes="120x120" href="${version}img/touch-icon-bund-120x120.png" />
@@ -505,10 +505,11 @@
         var module = angular.module('ga');
 
         module.constant('gaGlobalOptions', {
-          serviceUrl : '${service_url}',
-          baseUrlPath: '${base_url_path}',
+          apiUrl : '${api_url}',
+          mapUrl : '${map_url}',
+          apacheBasePath: '${apache_base_path}',
           version: '${version}',
-          ogcproxyUrl: location.protocol + '${geoadmin_url}${base_url_path}' + '/ogcproxy?url='
+          ogcproxyUrl: location.protocol + '${map_url}' + '/ogcproxy?url='
         });
 
         module.config(['gaLayersProvider', function(gaLayersProvider) {
@@ -516,15 +517,15 @@
               '//wmts{0-4}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
 
           gaLayersProvider.layersConfigUrlTemplate =
-              '${base_url_path}/${version}rest/services/{Topic}/MapServer/layersconfig?lang={Lang}';
+              '${apache_base_path}/${version}rest/services/{Topic}/MapServer/layersconfig?lang={Lang}';
 
           gaLayersProvider.legendUrlTemplate =
-              '${base_url_path}/${version}rest/services/{Topic}/MapServer/{Layer}/legend?lang={Lang}';
+              '${apache_base_path}/${version}rest/services/{Topic}/MapServer/{Layer}/legend?lang={Lang}';
         }]);
 
         module.config(['gaRecenterMapOnFeaturesProvider', function(gaRecenterMapOnFeaturesProvider) {
           gaRecenterMapOnFeaturesProvider.url =
-              '${base_url_path}/${version}rest/services/all/MapServer/';
+              '${apache_base_path}/${version}rest/services/all/MapServer/';
         }]);
         
         module.config(['$sceDelegateProvider', function($sceDelegateProvider) {

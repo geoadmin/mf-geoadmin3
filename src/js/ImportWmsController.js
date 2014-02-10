@@ -6,7 +6,7 @@
   module.controller('GaImportWmsController',
     function($scope, gaGlobalOptions) {
        $scope.options = {  
-         proxyUrl: gaGlobalOptions.baseUrlPath + '/ogcproxy?url=',
+         proxyUrl: gaGlobalOptions.mapUrl + '/ogcproxy?url=',
          defaultGetCapParams: 'SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0',
          defaultWMSList: [
            'http://wms.geo.admin.ch/',

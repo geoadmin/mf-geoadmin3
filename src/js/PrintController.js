@@ -6,9 +6,9 @@
   module.controller('GaPrintController',
     function($scope, gaGlobalOptions) {
       $scope.options = {
-        printPath:  gaGlobalOptions.baseUrlPath + '/print',
-        baseUrlPath:  gaGlobalOptions.baseUrlPath,
-        serviceUrl: gaGlobalOptions.serviceUrl,
+        printPath:  gaGlobalOptions.mapUrl + '/print',
+        mapUrl:  gaGlobalOptions.mapUrl,
+        apiUrl: gaGlobalOptions.apiUrl,
         heightMargin: $('#header').height(),
         widthMargin: $('#pulldown').width()
       };
