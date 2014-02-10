@@ -131,10 +131,10 @@
                '{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
 
            gaLayersProvider.layersConfigUrlTemplate =
-               'http://mf-chsdi3.dev.bgdi.ch/rest/services/{Topic}/MapServer/layersconfig' +
+               'http://mf-chsdi3.dev.bgdi.ch/rest/services/{Topic}/MapServer/layersConfig' +
                '?lang={Lang}';
            gaLayersProvider.legendUrlTemplate =
-               'http://mf-chsdi3.dev.bgdi.ch/rest/services/{Topic}/MapServer/{Layer}/getlegend' +
+               'http://mf-chsdi3.dev.bgdi.ch/rest/services/{Topic}/MapServer/{Layer}/legend' +
                '?lang={Lang}';
         }]);
 
@@ -189,7 +189,7 @@
             $scope.options = {
               tolerance: 10,
               identifyUrlTemplate: baseUrl + '/ech/MapServer/identify',
-              htmlUrlTemplate: baseUrl + '/ech/MapServer/{Layer}/{Feature}/htmlpopup'
+              htmlUrlTemplate: baseUrl + '/ech/MapServer/{Layer}/{Feature}/htmlPopup'
             };
         }]);
      
@@ -200,7 +200,7 @@
 
             $scope.options = {
               searchUrlTemplate: baseUrl + '/ech/SearchServer',
-              htmlUrlTemplate: baseUrl + '/ech/MapServer/{Layer}/{Feature}/htmlpopup',
+              htmlUrlTemplate: baseUrl + '/ech/MapServer/{Layer}/{Feature}/htmlPopup',
               active: false
             };
 

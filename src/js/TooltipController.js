@@ -11,7 +11,7 @@
         $scope.options = {
           tolerance: gaBrowserSniffer.touchDevice ? 15 : 5,
           identifyUrlTemplate: baseUrl + '/{Topic}/MapServer/identify',
-          htmlUrlTemplate: baseUrl + '/{Topic}/MapServer/{Layer}/{Feature}/htmlpopup'
+          htmlUrlTemplate: baseUrl + '/{Topic}/MapServer/{Layer}/{Feature}/htmlPopup'
         };
       });
 })();

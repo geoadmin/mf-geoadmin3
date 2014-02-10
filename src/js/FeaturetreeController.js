@@ -13,7 +13,7 @@
 
         $scope.options = {
           searchUrlTemplate: baseUrl + '/{Topic}/SearchServer',
-          htmlUrlTemplate: baseUrl + '/{Topic}/MapServer/{Layer}/{Feature}/htmlpopup',
+          htmlUrlTemplate: baseUrl + '/{Topic}/MapServer/{Layer}/{Feature}/htmlPopup',
           active: false
         };
 

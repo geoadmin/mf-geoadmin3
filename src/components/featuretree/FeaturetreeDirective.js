@@ -314,7 +314,7 @@
                              .replace('{Topic}', currentTopic)
                              .replace('{Layer}', feature.layer)
                              .replace('{Feature}', feature.id)
-                             .replace('/htmlpopup', '');
+                             .replace('/htmlPopup', '');
                 $http.get(featureUrl, {
                   timeout: canceler.promise,
                   params: {
