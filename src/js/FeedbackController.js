@@ -6,7 +6,7 @@
   module.controller('GaFeedbackController',
       function($scope, gaGlobalOptions) {
         $scope.options = {
-          feedbackUrl: gaGlobalOptions.baseUrlPath + '/feedback'
+          feedbackUrl: gaGlobalOptions.mapUrl + '/feedback'
         };
 
         // Feedback success and error modals are hidden by default.

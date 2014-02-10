@@ -28,7 +28,7 @@
       }).extend([
         new ol.interaction.DragZoom()
       ]),
-      renderer: ol.RendererHint.CANVAS,
+      renderer: 'canvas',
       view: new ol.View2D({
         projection: swissProjection,
         center: ol.extent.getCenter(swissExtent),

@@ -17,10 +17,10 @@ AddOutputFilterByType DEFLATE application/javascript
 AddOutputFilterByType DEFLATE application/xml
 AddOutputFilterByType DEFLATE application/json
 
-Alias ${base_url_path}/src ${base_dir}/src
-Alias ${base_url_path}/prod ${base_dir}/prd
+Alias /${apache_base_path}/src ${apache_base_directory}/src
+Alias /${apache_base_path}/prod ${apache_base_directory}/prd
 
-% if 'main' in base_url_path:
+% if 'main' in apache_base_path:
 # Main webpage
 
 RewriteRule ^/(index.html|mobile.html|info.json|checker|robots.txt)(.*) /var/www/vhosts/mf-geoadmin3/private/geoadmin/prd/$1
@@ -38,35 +38,35 @@ RewriteRule ^/[0-9]+/(img|lib|style|rest|locales)(.*) /var/www/vhosts/mf-geoadmi
 % endif
 
 # Cached resources
-RewriteRule ^${base_url_path}/prod/[0-9]+/(.*)$ ${base_dir}/prd/$1
-<LocationMatch ${base_url_path}/prod/[0-9]+/>
+RewriteRule ^/${apache_base_path}/prod/[0-9]+/(.*)$ ${apache_base_directory}/prd/$1
+<LocationMatch ${apache_base_path}/prod/[0-9]+/>
    ExpiresDefault "now plus 1 year"
    Header merge Cache-Control "public"
 </LocationMatch>
 
 # FIXME: merge with above
-<LocationMatch ${base_url_path}/[0-9]+/>
+<LocationMatch /${apache_base_path}/[0-9]+/>
    ExpiresDefault "now plus 1 year"
    Header merge Cache-Control "public"
 </LocationMatch>
 
 # proxy
 
-% if (re.match('^http(s)?:*', service_url)):
-ProxyPassMatch ${base_url_path}/[0-9/]*(print|ogcproxy|feedback|rest|static)(.*) ${service_url}/$1$2
-ProxyPassReverse ${base_url_path} ${service_url}
+% if (re.match('^http(s)?:*', api_url)):
+ProxyPassMatch /${apache_base_path}/[0-9/]*(print|ogcproxy|feedback|rest|static)(.*) ${api_url}/$1$2
+ProxyPassReverse /${apache_base_path} ${api_url}
 % else:
-ProxyPassReverse ${base_url_path} http:${service_url}
-ProxyPassMatch ${base_url_path}/[0-9/]*(print|ogcproxy|feedback|rest|static)(.*) http:${service_url}/$1$2
+ProxyPassReverse /${apache_base_path} http:${api_url}
+ProxyPassMatch /${apache_base_path}/[0-9/]*(print|ogcproxy|feedback|rest|static)(.*) http:${api_url}/$1$2
 % endif
 
-<LocationMatch ${base_url_path}/[0-9/]*(print|ogcproxy|feedback|rest|static)>
+<LocationMatch /${apache_base_path}/[0-9/]*(print|ogcproxy|feedback|rest|static)>
     Order allow,deny
     Allow from all
 </LocationMatch>
 
 # Never ever cache the checker
-<Location ~ "${base_url_path}/checker$">
+<Location ~ "/${apache_base_path}/checker$">
     ExpiresDefault "access"
     Header merge Cache-Control "no-cache"
     Header unset ETag

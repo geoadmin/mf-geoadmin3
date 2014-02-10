@@ -6,9 +6,9 @@
   module.controller('GaShareController',
       function($scope, gaGlobalOptions) {
         $scope.options = {
-          shortenUrl: gaGlobalOptions.serviceUrl
+          shortenUrl: gaGlobalOptions.apiUrl
               + '/shorten.json',
-          qrcodegeneratorPath: gaGlobalOptions.serviceUrl
+          qrcodegeneratorPath: gaGlobalOptions.apiUrl
               + '/qrcodegenerator'
         };
       });

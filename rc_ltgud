@@ -1,4 +1,4 @@
-source rc_dev
-
-export BASE_URL_PATH=/ltgud
-export SERVICE_URL=http://mf-chsdi3.dev.bgdi.ch/ltgud
+export API_URL=//mf-chsdi3.dev.bgdi.ch/ltgud
+export MAP_URL=//mf-geoadmin3.dev.bgdi.ch/ltgud
+export APACHE_BASE_PATH=ltgud
+export APACHE_BASE_DIRECTORY=/home/ltgud/mf-geoadmin3
