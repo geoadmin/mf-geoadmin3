@@ -28,14 +28,15 @@
       }).extend([
         new ol.interaction.DragZoom()
       ]),
-      renderer: ol.RendererHint.CANVAS,
+      renderer: 'canvas',
       view: new ol.View2D({
         projection: swissProjection,
         center: ol.extent.getCenter(swissExtent),
         extent: swissExtent,
         resolution: 500.0,
         resolutions: resolutions
-      })
+      }),
+      ol3Logo: false
     });
     
     var dragClass = 'ga-dragging';

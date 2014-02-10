@@ -27363,11 +27363,11 @@ ol.DrawEvent = function(type, feature) {
   this.feature = feature
 };
 goog.inherits(ol.DrawEvent, goog.events.Event);
-ol.interaction.Draw = function(opt_options) {
+ol.interaction.Draw = function(options) {
   goog.base(this);
-  this.source_ = goog.isDef(opt_options.source) ? opt_options.source : null;
-  this.snapTolerance_ = goog.isDef(opt_options.snapTolerance) ? opt_options.snapTolerance : 12;
-  this.type_ = opt_options.type;
+  this.source_ = goog.isDef(options.source) ? options.source : null;
+  this.snapTolerance_ = goog.isDef(options.snapTolerance) ? options.snapTolerance : 12;
+  this.type_ = options.type;
   this.mode_ = ol.interaction.Draw.getMode_(this.type_);
   this.finishCoordinate_ = null;
   this.sketchFeature_ = null;
@@ -27376,7 +27376,7 @@ ol.interaction.Draw = function(opt_options) {
   this.sketchRawPolygon_ = null;
   this.squaredClickTolerance_ = 4;
   this.overlay_ = new ol.FeatureOverlay;
-  this.overlay_.setStyleFunction(goog.isDef(opt_options.styleFunction) ? opt_options.styleFunction : ol.interaction.Draw.defaultStyleFunction)
+  this.overlay_.setStyleFunction(goog.isDef(options.styleFunction) ? options.styleFunction : ol.interaction.Draw.defaultStyleFunction)
 };
 goog.inherits(ol.interaction.Draw, ol.interaction.Interaction);
 ol.interaction.Draw.defaultStyleFunction = function() {
