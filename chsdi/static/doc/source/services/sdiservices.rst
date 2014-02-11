@@ -1,4 +1,9 @@
-.. _metatdata_description:
+.. _rest_services:
+
+REST Services
+=============
+
+.. _metadata_description:
 
 Layers Metadata
 ---------------
