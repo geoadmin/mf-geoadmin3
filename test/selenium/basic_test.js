@@ -5,6 +5,7 @@ var runTest = function(cap, driver){
   driver.get('https://mf-geoadmin3.dev.bgdi.ch/travis/prod/');
   driver.manage().timeouts().implicitlyWait(1000);
   driver.findElement(webdriver.By.xpath("//*[@type='search']")).sendKeys('Bern');
+  driver.sleep(3000);
   driver.findElement(webdriver.By.xpath("//*[contains(text(), 'Bern (BE)')]")).click().then(function(){
     driver.sleep(3000).then(function() {
       driver.getCurrentUrl().then(function(url) {
