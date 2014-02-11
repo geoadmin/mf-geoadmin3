@@ -674,12 +674,16 @@
     };
 
     var getPrintRectangleCenterCoord = function() {
+        // Framebuffer size!!
         var bottomLeft = printRectangle.slice(0, 2);
         var width = printRectangle[2] - printRectangle[0];
         var height = printRectangle[3] - printRectangle[1];
         var center = [bottomLeft[0] + width / 2, bottomLeft[1] + height / 2];
+        // convert back to map display size
+        var mapPixelCenter = [center[0] / ol.BrowserFeature.DEVICE_PIXEL_RATIO,
+               center[1] / ol.BrowserFeature.DEVICE_PIXEL_RATIO];
 
-        return $scope.map.getCoordinateFromPixel(center);
+        return $scope.map.getCoordinateFromPixel(mapPixelCenter);
     };
 
     var updatePrintRectanglePixels = function(scale) {
