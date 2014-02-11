@@ -65,12 +65,6 @@ class TestMapServiceView(TestsBase):
         self.failUnless(resp.content_type == 'text/javascript')
         resp.mustcontain('cb({')
 
-    def test_identify_with_searchtext(self):
-        params = {'geometry': '548945.5,147956,549402,148103.5', 'geometryType': 'esriGeometryEnvelope', 'imageDisplay': '500,600,96', 'mapExtent': '548945.5,147956,549402,148103.5', 'tolerance': '1', 'layers': 'all:ch.bafu.bundesinventare-bln', 'searchText': 'pied'}
-        resp = self.testapp.get('/rest/services/ech/MapServer/identify', params=params, status=200)
-        self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(len(resp.json) == 1)
-
     def test_identify_with_geojson(self):
         params = {'geometry': '600000,200000,631000,210000', 'geometryType': 'esriGeometryEnvelope', 'imageDisplay': '500,600,96', 'mapExtent': '548945.5,147956,549402,148103.5', 'tolerance': '1', 'layers': 'all:ch.bafu.bundesinventare-bln', 'geometryFormat': 'geojson'}
         resp = self.testapp.get('/rest/services/ech/MapServer/identify', params=params, status=200)
@@ -106,7 +100,7 @@ class TestMapServiceView(TestsBase):
 
     def test_feature_wrong_idlayer(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/toto/362', status=400)
-        resp.mustcontain('No GeoTable was found for')
+        resp.mustcontain('No Vector Table was found for')
 
     def test_feature_wrong_idfeature(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/0', status=404)
