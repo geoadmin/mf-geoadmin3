@@ -29546,7 +29546,10 @@ goog.require("ol.xml");
 ol.format.XSD.NAMESPACE_URI = "http://www.w3.org/2001/XMLSchema";
 ol.format.XSD.readBoolean = function(node) {
   var s = ol.xml.getAllTextContent(node, false);
-  var m = /^\s*(true|1)|(false|0)\s*$/.exec(s);
+  return ol.format.XSD.readBooleanString(s)
+};
+ol.format.XSD.readBooleanString = function(string) {
+  var m = /^\s*(true|1)|(false|0)\s*$/.exec(string);
   if(m) {
     return goog.isDef(m[1]) || false
   }else {
@@ -29579,7 +29582,10 @@ ol.format.XSD.readDateTime = function(node) {
 };
 ol.format.XSD.readDecimal = function(node) {
   var s = ol.xml.getAllTextContent(node, false);
-  var m = /^\s*([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?)\s*$/i.exec(s);
+  return ol.format.XSD.readDecimalString(s)
+};
+ol.format.XSD.readDecimalString = function(string) {
+  var m = /^\s*([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?)\s*$/i.exec(string);
   if(m) {
     return parseFloat(m[1])
   }else {
@@ -29588,7 +29594,10 @@ ol.format.XSD.readDecimal = function(node) {
 };
 ol.format.XSD.readNonNegativeInteger = function(node) {
   var s = ol.xml.getAllTextContent(node, false);
-  var m = /^\s*(\d+)\s*$/.exec(s);
+  return ol.format.XSD.readNonNegativeIntegerString(s)
+};
+ol.format.XSD.readNonNegativeIntegerString = function(string) {
+  var m = /^\s*(\d+)\s*$/.exec(string);
   if(m) {
     return parseInt(m[1], 10)
   }else {
