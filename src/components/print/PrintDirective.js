@@ -1,13 +1,15 @@
 (function() {
   goog.provide('ga_print_directive');
+  goog.require('ga_browsersniffer_service');
 
 
   var module = angular.module('ga_print_directive',
-    ['pascalprecht.translate']);
+    ['ga_browsersniffer_service',
+     'pascalprecht.translate']);
 
   module.controller('GaPrintDirectiveController',
     function($scope, $http, $window, $translate, $document,
-             gaLayers, gaPermalink) {
+             gaLayers, gaPermalink, gaBrowserSniffer) {
     var waitclass = 'ga-print-wait';
     var bodyEl = angular.element($document[0].body);
 
@@ -82,6 +84,7 @@
 
 
    var refreshComp = function() {
+      updatePrintRectanglePixels($scope.scale);
       $scope.map.requestRenderFrame();
     };
 
@@ -93,10 +96,10 @@
     };
 
     var handlePostCompose = function(evt) {
-      var size = $scope.map.getSize();
-      var width = size[0];
-      var height = size[1];
       var ctx = evt.context;
+      var size = $scope.map.getSize();
+      var height = size[1] * ol.BrowserFeature.DEVICE_PIXEL_RATIO;
+      var width = size[0] * ol.BrowserFeature.DEVICE_PIXEL_RATIO;
 
       var minx, miny, maxx, maxy;
       minx = printRectangle[0], miny = printRectangle[1],
@@ -131,6 +134,9 @@
       updatePrintConfig();
     });
     $scope.$on('gaLayersChange', function(event, data) {
+      updatePrintRectanglePixels($scope.scale);
+    });
+    $scope.map.on('change:size', function(event) {
       updatePrintRectanglePixels($scope.scale);
     });
 
@@ -545,7 +551,11 @@
     };
 
     $scope.downloadUrl = function(url) {
-      $window.location.href = url;
+      if (gaBrowserSniffer.msie == 9) {
+        $window.open(url);
+      } else {
+        $window.location = url;
+      }
     };
 
     $scope.submit = function() {
@@ -623,11 +633,10 @@
             'type': 'Vector',
             'styles': {
               '1': {
-                'strokeColor': 'red',
-                'strokeWidth': 2,
-                'strokeOpacity': 1,
-                'strokeDashstyle': 'solid',
-                'strokeLinecap': 'round'
+                'externalGraphic': location.origin +
+                  location.pathname + 'img/cross.png',
+                'graphicWidth': 16,
+                'graphicHeight': 16
               }
             },
             'styleProperty': '_gx_style',
@@ -639,17 +648,8 @@
                   '_gx_style': 1
                 },
                 'geometry': {
-                  'type': 'MultiLineString',
-                  'coordinates': [
-                    [
-                      [center[0] - offset, center[1]],
-                      [center[0] + offset, center[1]]
-                    ],
-                    [
-                      [center[0], center[1] - offset],
-                      [center[0], center[1] + offset]
-                    ]
-                  ]
+                  'type': 'Point',
+                  'coordinates': [center[0], center[1], 0]
                 }
               }]
             },
@@ -713,12 +713,16 @@
     };
 
     var getPrintRectangleCenterCoord = function() {
+        // Framebuffer size!!
         var bottomLeft = printRectangle.slice(0, 2);
         var width = printRectangle[2] - printRectangle[0];
         var height = printRectangle[3] - printRectangle[1];
         var center = [bottomLeft[0] + width / 2, bottomLeft[1] + height / 2];
+        // convert back to map display size
+        var mapPixelCenter = [center[0] / ol.BrowserFeature.DEVICE_PIXEL_RATIO,
+               center[1] / ol.BrowserFeature.DEVICE_PIXEL_RATIO];
 
-        return $scope.map.getCoordinateFromPixel(center);
+        return $scope.map.getCoordinateFromPixel(mapPixelCenter);
     };
 
     var updatePrintRectanglePixels = function(scale) {
@@ -769,8 +773,8 @@
         var w = size.width / DPI * MM_PER_INCHES / 1000.0 * s / resolution;
         var h = size.height / DPI * MM_PER_INCHES / 1000.0 * s / resolution;
         var mapSize = $scope.map.getSize();
-        var center = [mapSize[0] / 2 , mapSize[1] / 2];
-
+        var center = [mapSize[0] * ol.BrowserFeature.DEVICE_PIXEL_RATIO / 2 ,
+                mapSize[1] * ol.BrowserFeature.DEVICE_PIXEL_RATIO / 2];
 
         var minx, miny, maxx, maxy;
 
