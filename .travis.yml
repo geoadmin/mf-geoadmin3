@@ -2,6 +2,11 @@ language: node_js
 node_js:
     - "0.8"
 
+# here are the different environment variables stored. The secure lines are encoded keys eg: the browserstack secret key. Heres how you can secure an environment variable with travis: http://docs.travis-ci.com/user/encryption-keys/
+# Furtheremore there is a ssh key encrypted in these env variables. Read more about this here: https://gist.github.com/lukewpatterson/4242707
+# Essentially what happens is: we take the ssh key, tranform it into a base64 string, cut this string in bits of 100 chars (as this is the max size we can squeeze into one secure env var), and then encode these bits using the travis public key.
+# i used this command on the base 64 encoded string (stored in a file) bash <(cat ~/.ssh/travis_rsa_64 | perl -pe 's/(.{100})/$1\n/g' | nl | perl -pe 's/\s*(\d+)\s*(.*)/travis encrypt -r <org>\/<repo> id_rsa_$1="$2" --add env.global/')
+# credits to this lane here: https://gist.github.com/douglasduteil/5525750. To see how the ssh key is decoded from these env vars see the scripts/travis_deploy_on_mf0_dev.sh script or one of the github links in this description.
 env:
     global:
         - BROWSERSTACK_USER=hanspeterchrist
