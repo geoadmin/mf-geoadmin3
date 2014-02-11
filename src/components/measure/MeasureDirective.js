@@ -2,9 +2,11 @@
   goog.provide('ga_measure_directive');
 
   goog.require('ga_debounce_service');
+  goog.require('ga_map_service');
 
   var module = angular.module('ga_measure_directive', [
-    'ga_debounce_service'
+    'ga_debounce_service',
+    'ga_map_service'
   ]);
 
   module.filter('measure', function() {
@@ -46,7 +48,7 @@
   });
 
   module.directive('gaMeasure',
-    function($rootScope, $document, gaDebounce) {
+    function($rootScope, $document, gaDebounce, gaDefinePropertiesForLayer) {
       return {
         restrict: 'A',
         templateUrl: function(element, attrs) {
@@ -64,26 +66,42 @@
           var sketchFeatArea, sketchFeatDistance, sketchFeatAzimuth;
           var deregister, deregisterFeature;
           var styleFunction = scope.options.styleFunction;
+
+          var layer = new ol.layer.Vector({
+            type: 'MEASURE',
+            label: 'measure',
+            source: new ol.source.Vector(),
+            styleFunction: scope.options.styleFunction
+          });
+          gaDefinePropertiesForLayer(layer);
+          layer.highlight = true;
+
+          // Creates the additional overlay to display azimuth circle
+          var featuresOverlay = new ol.FeatureOverlay();
+          featuresOverlay.setStyleFunction(scope.options.styleFunction);
+
           var drawArea = new ol.interaction.Draw({
             type: 'Polygon',
             styleFunction: scope.options.drawStyleFunction
           });
 
-          var featuresOverlay = new ol.FeatureOverlay();
-          featuresOverlay.setStyleFunction(styleFunction);
-          featuresOverlay.setMap(scope.map);
-
           // Activate the component: add listeners, last features drawn and draw
           // interaction.
           var activate = function() {
-            updateFeaturesOverlay();
+            scope.map.addLayer(layer);
             scope.map.addInteraction(drawArea);
+            featuresOverlay.setMap(scope.map);
+
 
             // Add events
             deregister = [
               drawArea.on('drawstart', function(evt) {
+
+                // Clear the layer
+                layer.getSource().clear();
+
+                // Initialisation of the sketchFeatures
                 var isSnapOnLastPoint = false;
-                featuresOverlay.getFeatures().clear();
                 sketchFeatArea = evt.feature;
                 var firstPoint = sketchFeatArea.getGeometry()
                     .getCoordinates()[0][0];
@@ -115,6 +133,7 @@
 
                       sketchFeatDistance.getGeometry()
                           .setCoordinates(lineCoords);
+
                       updateMeasures();
 
                       if (!isSnapOnFirstPoint) {
@@ -127,6 +146,7 @@
                       }
 
                     } else {
+                      // Update profile on each new point
                       updateProfileDebounced();
                       isClick = false;
                     }
@@ -138,9 +158,15 @@
                 if (scope.options.isProfileActive) {
                   bodyEl.addClass(scope.options.waitClass);
                 }
+
+                // Update the layer
+                updateLayer();
+
+                // Clear the additional overlay
+                featuresOverlay.getFeatures().clear();
+
                 // Unregister the change event
                 sketchFeatArea.unByKey(deregisterFeature);
-                updateFeaturesOverlay();
               }),
 
               scope.map.on('click', function() {
@@ -154,7 +180,9 @@
           // interaction.
           var deactivate = function() {
             featuresOverlay.getFeatures().clear();
+            featuresOverlay.setMap(null);
             scope.map.removeInteraction(drawArea);
+            scope.map.removeLayer(layer);
 
             // Remove events
             if (deregister) {
@@ -166,17 +194,15 @@
           };
 
 
-          // Add sketch feature to the featuresOverlay if possible
-          var updateFeaturesOverlay = function() {
+          // Add sketch features to the layer
+          var updateLayer = function() {
             if (sketchFeatArea) {
               var lineCoords = sketchFeatDistance.getGeometry()
                   .getCoordinates();
               if (lineCoords.length == 2) {
-                featuresOverlay.addFeature(sketchFeatAzimuth);
-              } else {
-                featuresOverlay.removeFeature(sketchFeatAzimuth);
+                layer.getSource().addFeature(sketchFeatAzimuth);
               }
-              featuresOverlay.addFeature(isSnapOnFirstPoint ? sketchFeatArea :
+              layer.getSource().addFeature(isSnapOnFirstPoint ? sketchFeatArea :
                   sketchFeatDistance);
             }
           };
@@ -190,7 +216,6 @@
               scope.surface = sketchFeatArea.getGeometry().getArea();
             });
           };
-
 
           // Calulate the azimuth from 2 points
           var calculateAzimuth = function(pt1, pt2) {
