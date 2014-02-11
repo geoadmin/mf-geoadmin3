@@ -464,23 +464,23 @@
         'WMTS': function(layer, config) {
             var enc = $scope.encoders.layers['Layer'].
                 call(this, layer);
+            var source = layer.getSource();
+            var tileGrid = source.getTileGrid();
             angular.extend(enc, {
               type: 'WMTS',
               baseURL: location.protocol + '//wmts.geo.admin.ch',
               layer: config.serverLayerName,
-              maxExtent: [420000, 30000, 900000, 350000],
-              tileOrigin: [420000, 350000],
-              tileSize: [256, 256],
-              style: 'default',
-              resolutions: layer.getSource().getTileGrid().getResolutions(),
-              zoomOffset: 0,
+              maxExtent: source.getExtent(),
+              tileOrigin: tileGrid.getOrigin(),
+              tileSize: [tileGrid.getTileSize(), tileGrid.getTileSize()],
+              resolutions: tileGrid.getResolutions(),
+              zoomOffset: tileGrid.getMinZoom(),
               version: '1.0.0',
               requestEncoding: 'REST',
               formatSuffix: config.format || 'jpeg',
               style: 'default',
               dimensions: ['TIME'],
-              params: {'TIME':
-                  layer.getSource().getDimensions().Time},
+              params: {'TIME': source.getDimensions().Time},
               matrixSet: '21781'
           });
 
