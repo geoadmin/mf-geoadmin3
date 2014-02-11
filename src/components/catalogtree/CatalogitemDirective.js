@@ -47,6 +47,11 @@
               compiledContent(scope, function(clone, scope) {
                 iEl.append(clone);
               });
+              
+              scope.$on('gaTimeSelectorChange', function(event, newYear) {
+                scope.currentYear = newYear;
+              });
+
             };
           }
         };
@@ -72,6 +77,10 @@
               }
             }
             item.errorLoading = error;
+          }
+
+          if (layer && layer.timeEnabled) {      
+            layer.time = this.currentYear;
           }
         }
 
