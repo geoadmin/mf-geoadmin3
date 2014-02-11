@@ -472,33 +472,7 @@
               tileOrigin: [420000, 350000],
               tileSize: [256, 256],
               style: 'default',
-              resolutions: [4000,
-                    3750,
-                    3500,
-                    3250,
-                    3000,
-                    2750,
-                    2500,
-                    2250,
-                    2000,
-                    1750,
-                    1500,
-                    1250,
-                    1000,
-                     750,
-                     650,
-                     500,
-                     250,
-                     100,
-                      50,
-                      20,
-                      10,
-                       5,
-                     2.5,
-                       2,
-                     1.5,
-                       1,
-                     0.5],
+              resolutions: layer.getSource().getTileGrid().getResolutions(),
               zoomOffset: 0,
               version: '1.0.0',
               requestEncoding: 'REST',
@@ -675,7 +649,7 @@
           layout: that.layout.name,
           srs: proj.getCode(),
           units: proj.getUnits() || 'm',
-          rotation: view.getRotation(),
+          rotation: -((view.getRotation() * 180.0) / Math.PI),
           app: topicId, //topic name
           lang: $translate.uses(),
           dpi: that.dpi.value,
@@ -689,7 +663,8 @@
             // scale has to be one of the advertise by the print server
             scale: $scope.scale.value,
             dataOwner: '© ' + attributions.join(),
-            shortLink: response.shorturl.replace('/shorten', '')
+            shortLink: response.shorturl.replace('/shorten', ''),
+            rotation: -((view.getRotation() * 180.0) / Math.PI)
           }, defaultPage)]
         };
         var http = $http.post(that.capabilities.createURL +
