@@ -12,24 +12,35 @@
 
   module.provider('gaTileGrid', function() {
 
-    function createTileGrid(resolutions) {
+    function createTileGrid(resolutions, type) {
       var origin = [420000, 350000];
       var matrixIds = $.map(resolutions, function(r, i) { return i + ''; });
-      return new ol.tilegrid.WMTS({
-        matrixIds: matrixIds,
-        origin: origin,
-        resolutions: resolutions
-      });
+      if (type === 'wms') {
+        return new ol.tilegrid.TileGrid({
+          tileSize: 512,
+          origin: origin,
+          resolutions: resolutions
+        });
+      } else {
+        return new ol.tilegrid.WMTS({
+          matrixIds: matrixIds,
+          origin: origin,
+          resolutions: resolutions
+        });
+      }
     }
 
-    var defaultTileGrid = createTileGrid(
-      [4000, 3750, 3500, 3250, 3000, 2750, 2500, 2250, 2000, 1750, 1500, 1250,
-      1000, 750, 650, 500, 250, 100, 50, 20, 10, 5, 2.5, 2, 1.5, 1, 0.5]);
+    function defaultTileGrid(type) {
+      return createTileGrid([4000, 3750, 3500, 3250, 3000, 2750, 2500, 2250,
+                             2000, 1750, 1500, 1250, 1000, 750, 650, 500, 250,
+                             100, 50, 20, 10, 5, 2.5, 2, 1.5, 1, 0.5], type);
+    };
 
     this.$get = function() {
       return {
-        get: function(resolutions) {
-          return resolutions ? createTileGrid(resolutions) : defaultTileGrid;
+        get: function(resolutions, type) {
+          return resolutions ? createTileGrid(resolutions, type) :
+                               defaultTileGrid(type);
         }
       };
     };
@@ -598,7 +609,8 @@
                   url: wmsUrl,
                   params: wmsParams,
                   attributions: attributions,
-                  gutter: layer.gutter || 0
+                  gutter: layer.gutter || 0,
+                  tileGrid: gaTileGrid.get(layer.resolutions, 'wms')
                 });
               }
               olLayer = new ol.layer.Tile({
