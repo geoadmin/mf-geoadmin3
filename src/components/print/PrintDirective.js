@@ -341,18 +341,19 @@
         literal.strokeOpacity = 0; // No Stroke
       }
 
-
-      // TO FIX: Not managed by OL3
-      /*if (textStyle) {
-        literal.fontColor = textStyle.getFill().getColor();
-        literal.fontFamily = textStyle.getFont();
-        literal.fontSize =
-        literal.fontWeight =
+      if (textStyle) {
+        var fillColor = ol.color.asArray(textStyle.getFill().getColor());
+        var strokeColor = ol.color.asArray(textStyle.getStroke().getColor());
+        var fontValues = textStyle.getFont().split(' ');
+        literal.fontColor = toHexa(fillColor);
+        literal.fontFamily = fontValues[2];
+        literal.fontSize = fontValues[0];
+        literal.fontWeight = fontValues[1];
         literal.label = textStyle.getText();
         literal.labelAlign = textStyle.getTextAlign();
-        literal.labelOutlineColor = textStyle.getStroke().getColor();
+        literal.labelOutlineColor = toHexa(strokeColor);
         literal.labelOutlineWidth = textStyle.getStroke().getWidth();
-      }*/
+      }
 
       return literal;
     };
