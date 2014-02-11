@@ -128,12 +128,10 @@
         };
 
        $scope.options.drawProfile = function(feature) {
-         if (feature) {
-           if (!isProfileCreated) {
-             createProfile(feature);
-           } else {
-             updateProfile(feature);
-           }
+         if (!isProfileCreated) {
+           createProfile(feature);
+         } else {
+           updateProfile(feature);
          }
        }
 

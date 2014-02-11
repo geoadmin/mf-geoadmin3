@@ -238,6 +238,8 @@
                  sketchFeatDistance.getGeometry()
                      .getCoordinates().length >= 2) {
               scope.options.drawProfile(sketchFeatDistance);
+            } else {
+              bodyEl.removeClass(scope.options.waitClass);
             }
           };
           var updateProfileDebounced = gaDebounce.debounce(updateProfile, 500,
