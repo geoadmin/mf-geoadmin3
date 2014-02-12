@@ -4130,3 +4130,6 @@ msgstr ""
 
 msgid "ch.swisstopo.lubis-bildstreifen"
 msgstr ""
+
+msgid "tt_lubis_bildorder"
+msgstr ""

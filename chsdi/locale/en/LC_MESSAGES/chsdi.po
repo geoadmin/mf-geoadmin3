@@ -3836,6 +3836,9 @@ msgstr "Quickview"
 msgid "tt_lubis_auflosung"
 msgstr "Resolution"
 
+msgid "tt_lubis_bildorder"
+msgstr "To order please contact directly:"
+
 msgid "tt_lubis_ebkey"
 msgstr "Picture number"
 
