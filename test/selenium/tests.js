@@ -27,6 +27,13 @@ browsers.capabilities.forEach(function(cap){
   });
 
   //run all the tests
-  basictest.runTest(cap, driver); 
+  try{
+    basictest.runTest(cap, driver); 
+  }catch(err){
+    //we need this block for the finally, as we definitly want to quit the driver, otherwise it stays idle for ~2 min blocking the next testrun.
+    throw err;
+  }finally{
+    driver.quit();
+  }
 });
 
