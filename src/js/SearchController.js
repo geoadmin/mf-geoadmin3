@@ -8,7 +8,7 @@
           var topicPlaceHolder = '--DUMMYTOPIC--';
 
           $scope.options = {
-            searchUrl: gaGlobalOptions.cachedMapUrl + '/rest/services/' +
+            searchUrl: gaGlobalOptions.mapUrl + '/rest/services/' +
                         topicPlaceHolder + '/SearchServer?',
             applyTopicToUrl: function (url, topic) {
               return url.replace(topicPlaceHolder, topic);
