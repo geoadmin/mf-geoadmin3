@@ -156,6 +156,10 @@ endif
     // Add the layers in the map
     map.addLayer(lyr1);
     map.addLayer(lyr2);
+
+    map.highlightFeature('${c['layerBodId']}', '${c['featureId']}');
+    map.recenterFeature('${c['layerBodId']}', '${c['featureId']}');
+
     }
     </script>
     <style>
