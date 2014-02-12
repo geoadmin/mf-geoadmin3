@@ -1797,25 +1797,25 @@ msgid "ch.swisstopo.kt.url"
 msgstr "http://www.swisstopo.admin.ch/internet/swisstopo/de/home/swisstopo/org/cartography.html"
 
 msgid "ch.swisstopo.lubis-bildstreifen"
-msgstr "Luftbildstreifen swisstopo"
+msgstr "TODO"
 
 msgid "ch.swisstopo.lubis-luftbilder"
 msgstr "TODO"
 
 msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen"
-msgstr "Luftbilder Privater"
+msgstr "TODO"
 
 msgid "ch.swisstopo.lubis-luftbilder-dritte-kantone"
-msgstr "Luftbilder Kantone"
+msgstr "TODO"
 
 msgid "ch.swisstopo.lubis-luftbilder_farbe"
-msgstr "Luftbilder swisstopo farbig"
+msgstr "TODO"
 
 msgid "ch.swisstopo.lubis-luftbilder_infrarot"
-msgstr "Luftbilder swisstopo infrarot"
+msgstr "TODO"
 
 msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss"
-msgstr "Luftbilder swisstopo s/w"
+msgstr "TODO"
 
 msgid "ch.swisstopo.pixelkarte-farbe"
 msgstr "Charta en colur"
