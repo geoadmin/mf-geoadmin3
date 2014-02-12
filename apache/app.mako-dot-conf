@@ -60,6 +60,7 @@ RewriteRule ^/${apache_base_path}/(prod|src)/(index.html|mobile.html)(.*) ${api_
 RewriteRule ^/${apache_base_path}/(prod|src)/(index.html|mobile.html)(.*) http:${api_url}/snapshot [L,P]
 % endif
 RewriteRule ^/${apache_base_path}/[0-9]+/(img|lib)(.*) ${apache_base_directory}/prd/$1$2
+RewriteRule ^/${apache_base_path}/(img|lib)(.*) ${apache_base_directory}/prd/$1$2
 
 % endif
 
