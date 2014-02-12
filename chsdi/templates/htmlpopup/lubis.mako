@@ -97,7 +97,7 @@ endif
       
         var proj = new ol.proj.Projection({
           code: 'ZOOMIFY',
-          units: ol.proj.Units.PIXELS,
+          //units: ol.proj.Units.PIXELS,
           extent: [0, 0, image_width, image_height]
         });
 
@@ -114,7 +114,7 @@ endif
               })
             ],
             controls: ol.control.defaults().extend([new ol.control.FullScreen()]),
-            renderer: ol.RendererHint.CANVAS,
+            renderer: 'canvas',
             target: 'zoomify',
             ol3Logo: false,
             view: new ol.View2D({
@@ -157,6 +157,10 @@ endif
     // Add the layers in the map
     map.addLayer(lyr1);
     map.addLayer(lyr2);
+    
+    map.highlightFeature('${c['layerBodId']}', '${c['featureId']}');
+    map.recenterFeature('${c['layerBodId']}', '${c['featureId']}');
+
     }
     </script>
     <style>
