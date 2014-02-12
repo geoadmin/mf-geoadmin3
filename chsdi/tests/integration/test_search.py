@@ -114,12 +114,12 @@ class TestSearchServiceView(TestsBase):
         self.failUnless(resp.json['results'][0]['attrs']['feature_id'] == '43543')
 
     def test_features_time(self):
-        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '9990044', 'features': 'ch.swisstopo.lubis-luftbilder', 'type': 'locations', 'bbox': '551306.5625,167918.328125,551754.125,168514.625', 'timeInstant': '1952'}, status=200)
+        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'locations', 'bbox': '542200,206800,542200,206800', 'timeInstant': '1981'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'feature')
 
     def test_features_wrong_time(self):
-        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '9990044', 'features': 'ch.swisstopo.lubis-luftbilder', 'type': 'locations', 'bbox': '551306.5625,167918.328125,551754.125,168514.625', 'timeInstant': '19522'}, status=400)
+        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'locations', 'bbox': '542200,206800,542200,206800', 'timeInstant': '19522'}, status=400)
 
     def test_features_wrong_time_2(self):
-        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '9990044', 'features': 'ch.swisstopo.lubis-luftbilder', 'type': 'locations', 'bbox': '551306.5625,167918.328125,551754.125,168514.625', 'timeInstant': '1952.00'}, status=400)
+        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'locations', 'bbox': '542200,206800,542200,206800', 'timeInstant': '1952.00'}, status=400)
