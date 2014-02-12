@@ -6,7 +6,7 @@ before_install:
     - sudo mkdir -p /srv/tomcat/tomcat1/webapps/
     - sudo chmod 777 /srv/tomcat/tomcat1/webapps
     - sudo apt-get update -qq
-    - sudo apt-get install -qq libgeos-dev python-gdal
+    - sudo apt-get install -qq libgeos-dev python-gdal python-regex
 
 before_script:
     - python bootstrap.py --version 1.5.2 --distribute --download-base http://pypi.camptocamp.net/distribute-0.6.22_fix-issue-227/ --setup-source http://pypi.camptocamp.net/distribute-0.6.22_fix-issue-227/distribute_setup.py
