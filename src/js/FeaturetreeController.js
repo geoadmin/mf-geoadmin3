@@ -8,8 +8,7 @@
       ['$scope', 'gaGlobalOptions',
       function($scope, gaGlobalOptions) {
 
-        var baseUrl = gaGlobalOptions.mapUrl + '/' + 
-                      gaGlobalOptions.version + '/rest/services';
+        var baseUrl = gaGlobalOptions.cachedMapUrl + '/rest/services';
 
         $scope.options = {
           searchUrlTemplate: baseUrl + '/{Topic}/SearchServer',

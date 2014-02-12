@@ -27,7 +27,7 @@
       };
 
       if (!window.d3) {
-        $.getScript(versionPath + 'lib/d3-3.3.1.min.js', onD3Loaded);
+        $.getScript(versionPath + '/lib/d3-3.3.1.min.js', onD3Loaded);
       } else {
         $timeout(onD3Loaded, 0);
       }
@@ -238,7 +238,7 @@
 
     this.$get = function($timeout, gaGlobalOptions) {
       return function(options, lazyLoadCB) {
-        options.version = gaGlobalOptions.version;
+        options.version = gaGlobalOptions.cachedMapUrl;
         var chart = new ProfileChart($timeout, options, lazyLoadCB);
         return chart;
       };

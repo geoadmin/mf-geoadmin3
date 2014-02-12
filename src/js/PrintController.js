@@ -7,7 +7,6 @@
     function($scope, gaGlobalOptions) {
       $scope.options = {
         printPath:  gaGlobalOptions.mapUrl + '/print',
-        mapUrl:  gaGlobalOptions.mapUrl,
         apiUrl: gaGlobalOptions.apiUrl,
         crossUrl: location.origin + location.pathname +
             gaGlobalOptions.version + 'img/cross.png',

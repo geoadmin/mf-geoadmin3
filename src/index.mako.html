@@ -526,28 +526,44 @@
       (function() {
         var module = angular.module('ga');
 
+        var myOriginWithEnv = location.origin + '/${user_env}';
+        var v = '${version}';
+        console.log('v is', v);
+        var myOriginWithEnvVersioned = myOriginWithEnv;
+        //remove slash from version, if it exists
+        v = v.replace('/', '');
+        if (v != "") {
+          myOriginWithEnvVersioned += '/' + v;
+        }
+
         module.constant('gaGlobalOptions', {
-          apiUrl : '${api_url}',
-          mapUrl : '${map_url}',
-          apacheBasePath: '${apache_base_path}',
-          version: '${version}',
-          ogcproxyUrl: location.protocol + '${map_url}' + '/ogcproxy?url='
+          apiUrl : location.protocol + '${api_url}',
+          mapUrl : myOriginWithEnv,
+          cachedMapUrl: myOriginWithEnvVersioned,
+          ogcproxyUrl: myOriginWithEnv + '/ogcproxy?url='
         });
 
-        module.config(['gaLayersProvider', function(gaLayersProvider) {
+        module.config(function($translateProvider, gaGlobalOptions) {
+          $translateProvider.useStaticFilesLoader({
+            prefix: '${version}locales/',
+            suffix: '.json'
+          });
+        });
+
+        module.config(['gaLayersProvider', 'gaGlobalOptions', function(gaLayersProvider, gaGlobalOptions) {
           gaLayersProvider.wmtsGetTileUrlTemplate =
               '//wmts{0-4}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
 
           gaLayersProvider.layersConfigUrlTemplate =
-              '${apache_base_path}/${version}rest/services/{Topic}/MapServer/layersConfig?lang={Lang}';
+              gaGlobalOptions.cachedMapUrl + '/rest/services/{Topic}/MapServer/layersConfig?lang={Lang}';
 
           gaLayersProvider.legendUrlTemplate =
-              '${apache_base_path}/${version}rest/services/{Topic}/MapServer/{Layer}/legend?lang={Lang}';
+              gaGlobalOptions.cachedMapUrl + '/rest/services/{Topic}/MapServer/{Layer}/legend?lang={Lang}';
         }]);
 
-        module.config(['gaRecenterMapOnFeaturesProvider', function(gaRecenterMapOnFeaturesProvider) {
+        module.config(['gaRecenterMapOnFeaturesProvider', 'gaGlobalOptions', function(gaRecenterMapOnFeaturesProvider, gaGlobalOptions) {
           gaRecenterMapOnFeaturesProvider.url =
-              '${apache_base_path}/${version}rest/services/all/MapServer/';
+              gaGlobalOptions.cachedMapUrl + '/rest/services/all/MapServer/';
         }]);
         
         module.config(['$sceDelegateProvider', function($sceDelegateProvider) {

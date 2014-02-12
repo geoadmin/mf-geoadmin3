@@ -1,4 +1,2 @@
 export API_URL=//mf-chsdi3.dev.bgdi.ch/ltgal
-export MAP_URL=//mf-geoadmin3.dev.bgdi.ch/ltgal
 export APACHE_BASE_PATH=ltgal
-export APACHE_BASE_DIRECTORY=/home/ltgal/mf-geoadmin3
