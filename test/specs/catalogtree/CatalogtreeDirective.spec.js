@@ -76,15 +76,6 @@ describe('ga_catalogtree_directive', function() {
     $httpBackend.flush();
   });
 
-  it('adds preselected layers', function() {
-    $httpBackend.expectGET(expectedUrl);
-    $httpBackend.flush();
-    var layers = map.getLayers();
-    var numLayers = layers.getLength();
-    expect(numLayers).to.equal(1);
-    expect(layers.getAt(0).get('bodId')).to.equal('bar');
-  });
-
   describe('layers already in the map', function() {
 
     beforeEach(inject(function(gaLayers) {

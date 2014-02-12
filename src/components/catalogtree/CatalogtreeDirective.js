@@ -80,46 +80,23 @@
               }
             };
 
-            // This function determines if the layers pre-selected in the
-            // catalog tree should be added to the map.
-            //
-            // If the map already includes non-background layers then we do
-            // not add the pre-selected layers to the map. In that case we
-            // just visit the tree leaves and set "selectedOpen" as
-            // appropriate.
+            // This function check the currently active layers
+            // in the map and marks them selected in the catalog
             var handleTree = function(newTree, oldTree) {
-              var i;
-              var map = scope.map;
-              var layers = scope.layers;
+              var i, layer, bodId,
+                  map = scope.map,
+                  layers = scope.layers,
+                  leaves = {};
 
-              var addDefaultLayersToMap = true;
-              if (!angular.isDefined(oldTree)) {
-                for (i = 0; i < layers.length; ++i) {
-                  if (!layers[i].background) {
-                    addDefaultLayersToMap = false;
-                    break;
-                  }
-                }
-              }
-
-              if (addDefaultLayersToMap) {
-                visitTree(newTree, function(leaf) {
-                  if (leaf.selectedOpen) {
-                    gaCatalogtreeMapUtils.addLayer(map, leaf);
-                  }
-                }, angular.noop);
-              } else {
-                var leaves = {};
-                visitTree(newTree, function(leaf) {
-                  leaf.selectedOpen = false;
-                  leaves[leaf.idBod] = leaf;
-                }, angular.noop);
-                for (i = 0; i < layers.length; ++i) {
-                  var layer = layers[i];
-                  var bodId = layer.bodId;
-                  if (!layer.background && leaves.hasOwnProperty(bodId)) {
-                    leaves[bodId].selectedOpen = true;
-                  }
+              visitTree(newTree, function(leaf) {
+                leaf.selectedOpen = false;
+                leaves[leaf.idBod] = leaf;
+              }, angular.noop);
+              for (i = 0; i < layers.length; ++i) {
+                layer = layers[i];
+                bodId = layer.bodId;
+                if (!layer.background && leaves.hasOwnProperty(bodId)) {
+                  leaves[bodId].selectedOpen = true;
                 }
               }
             };
