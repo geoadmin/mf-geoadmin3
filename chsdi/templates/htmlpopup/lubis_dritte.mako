@@ -96,7 +96,7 @@ endif
       
         var proj = new ol.proj.Projection({
           code: 'ZOOMIFY',
-          units: ol.proj.Units.PIXELS,
+          //units: ol.proj.Units.PIXELS,
           extent: [0, 0, image_width, image_height]
         });
 
@@ -113,7 +113,7 @@ endif
               })
             ],
             controls: ol.control.defaults().extend([new ol.control.FullScreen()]),
-            renderer: ol.RendererHint.CANVAS,
+            renderer: 'canvas',
             target: 'zoomify',
             ol3Logo: false,
             view: new ol.View2D({
