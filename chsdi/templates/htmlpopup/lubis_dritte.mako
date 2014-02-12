@@ -94,7 +94,6 @@ endif
       
         var proj = new ol.proj.Projection({
           code: 'ZOOMIFY',
-          //units: ol.proj.Units.PIXELS,
           extent: [0, 0, image_width, image_height]
         });
 
