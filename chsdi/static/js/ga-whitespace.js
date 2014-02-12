@@ -522,18 +522,18 @@ goog.addDependency("../build/src/internal/src/requireallga.js", [], ["ga", "ga.M
 "ol.array", "ol.color", "ol.color.Matrix", "ol.control", "ol.control.Attribution", "ol.control.Control", "ol.control.FullScreen", "ol.control.Logo", "ol.control.MousePosition", "ol.control.ScaleLine", "ol.control.ScaleLineProperty", "ol.control.ScaleLineUnits", "ol.control.Zoom", "ol.control.ZoomSlider", "ol.control.ZoomToExtent", "ol.coordinate", "ol.css", "ol.dom", "ol.dom.BrowserFeature", "ol.dom.Input", "ol.dom.InputProperty", "ol.easing", "ol.ellipsoid.BESSEL1841", "ol.ellipsoid.WGS84", "ol.events.ConditionType", 
 "ol.events.condition", "ol.extent", "ol.feature", "ol.format.Format", "ol.format.FormatType", "ol.format.GPX", "ol.format.GeoJSON", "ol.format.IGC", "ol.format.IGCZ", "ol.format.JSON", "ol.format.KML", "ol.format.Polyline", "ol.format.Text", "ol.format.TopoJSON", "ol.format.XML", "ol.format.XSD", "ol.geom.Circle", "ol.geom.Geometry", "ol.geom.GeometryCollection", "ol.geom.GeometryType", "ol.geom.LineString", "ol.geom.LinearRing", "ol.geom.MultiLineString", "ol.geom.MultiPoint", "ol.geom.MultiPolygon", 
 "ol.geom.Point", "ol.geom.Polygon", "ol.geom.SimpleGeometry", "ol.geom.closest", "ol.geom.flat", "ol.geom.simplify", "ol.interaction", "ol.interaction.DoubleClickZoom", "ol.interaction.Drag", "ol.interaction.DragAndDrop", "ol.interaction.DragAndDropEvent", "ol.interaction.DragBox", "ol.interaction.DragPan", "ol.interaction.DragRotate", "ol.interaction.DragRotateAndZoom", "ol.interaction.DragZoom", "ol.interaction.Draw", "ol.interaction.Interaction", "ol.interaction.KeyboardPan", "ol.interaction.KeyboardZoom", 
-"ol.interaction.MouseWheelZoom", "ol.interaction.Select", "ol.interaction.Touch", "ol.interaction.TouchPan", "ol.interaction.TouchRotate", "ol.interaction.TouchZoom", "ol.layer.Base", "ol.layer.Group", "ol.layer.Image", "ol.layer.Layer", "ol.layer.LayerProperty", "ol.layer.LayerState", "ol.layer.Tile", "ol.layer.Vector", "ol.math", "ol.parser.Parser", "ol.parser.XML", "ol.parser.ogc.ExceptionReport", "ol.parser.ogc.Versioned", "ol.parser.ogc.WMSCapabilities", "ol.parser.ogc.WMSCapabilities_v1", "ol.parser.ogc.WMSCapabilities_v1_0_0", 
-"ol.parser.ogc.WMSCapabilities_v1_1", "ol.parser.ogc.WMSCapabilities_v1_1_0", "ol.parser.ogc.WMSCapabilities_v1_1_1", "ol.parser.ogc.WMSCapabilities_v1_1_1_WMSC", "ol.parser.ogc.WMSCapabilities_v1_3_0", "ol.proj", "ol.proj.CH", "ol.proj.EPSG2056", "ol.proj.EPSG21781", "ol.proj.EPSG3857", "ol.proj.EPSG4326", "ol.proj.METERS_PER_UNIT", "ol.proj.Projection", "ol.proj.ProjectionLike", "ol.proj.Units", "ol.proj.common", "ol.render.Box", "ol.render.Event", "ol.render.EventType", "ol.render.IReplayGroup", 
-"ol.render.IVectorContext", "ol.render.canvas", "ol.render.canvas.Immediate", "ol.render.canvas.ReplayGroup", "ol.render.webgl.Immediate", "ol.renderer.Layer", "ol.renderer.Map", "ol.renderer.canvas.ImageLayer", "ol.renderer.canvas.Layer", "ol.renderer.canvas.Map", "ol.renderer.canvas.TileLayer", "ol.renderer.canvas.VectorLayer", "ol.renderer.dom.ImageLayer", "ol.renderer.dom.Layer", "ol.renderer.dom.Map", "ol.renderer.dom.TileLayer", "ol.renderer.vector", "ol.renderer.webgl.ImageLayer", "ol.renderer.webgl.Layer", 
-"ol.renderer.webgl.Map", "ol.renderer.webgl.TileLayer", "ol.renderer.webgl.map.shader.Color", "ol.renderer.webgl.map.shader.Default", "ol.renderer.webgl.tilelayer.shader", "ol.size", "ol.source.BingMaps", "ol.source.GPX", "ol.source.GeoJSON", "ol.source.IGC", "ol.source.Image", "ol.source.ImageCanvas", "ol.source.ImageStatic", "ol.source.ImageVector", "ol.source.ImageWMS", "ol.source.KML", "ol.source.MapGuide", "ol.source.MapQuest", "ol.source.OSM", "ol.source.Source", "ol.source.Stamen", "ol.source.State", 
-"ol.source.Tile", "ol.source.TileDebug", "ol.source.TileImage", "ol.source.TileJSON", "ol.source.TileOptions", "ol.source.TileWMS", "ol.source.TopoJSON", "ol.source.Vector", "ol.source.VectorEvent", "ol.source.VectorEventType", "ol.source.VectorFile", "ol.source.WMTS", "ol.source.WMTSRequestEncoding", "ol.source.XYZ", "ol.source.Zoomify", "ol.source.wms", "ol.source.wms.ServerType", "ol.sphere.NORMAL", "ol.sphere.WGS84", "ol.structs.Buffer", "ol.structs.IntegerSet", "ol.structs.LRUCache", "ol.structs.PriorityQueue", 
-"ol.structs.RBush", "ol.style.Circle", "ol.style.Fill", "ol.style.Icon", "ol.style.IconAnchorUnits", "ol.style.IconImageCache", "ol.style.Image", "ol.style.ImageState", "ol.style.Stroke", "ol.style.Style", "ol.style.Text", "ol.tilegrid.TileGrid", "ol.tilegrid.WMTS", "ol.tilegrid.XYZ", "ol.tilegrid.Zoomify", "ol.tilejson", "ol.vec.Mat4", "ol.webgl", "ol.webgl.Context", "ol.webgl.WebGLContextEventType", "ol.webgl.shader", "ol.xml"]);
+"ol.interaction.Modify", "ol.interaction.MouseWheelZoom", "ol.interaction.Select", "ol.interaction.Touch", "ol.interaction.TouchPan", "ol.interaction.TouchRotate", "ol.interaction.TouchZoom", "ol.layer.Base", "ol.layer.Group", "ol.layer.Image", "ol.layer.Layer", "ol.layer.LayerProperty", "ol.layer.LayerState", "ol.layer.Tile", "ol.layer.Vector", "ol.math", "ol.parser.Parser", "ol.parser.XML", "ol.parser.ogc.ExceptionReport", "ol.parser.ogc.Versioned", "ol.parser.ogc.WMSCapabilities", "ol.parser.ogc.WMSCapabilities_v1", 
+"ol.parser.ogc.WMSCapabilities_v1_0_0", "ol.parser.ogc.WMSCapabilities_v1_1", "ol.parser.ogc.WMSCapabilities_v1_1_0", "ol.parser.ogc.WMSCapabilities_v1_1_1", "ol.parser.ogc.WMSCapabilities_v1_1_1_WMSC", "ol.parser.ogc.WMSCapabilities_v1_3_0", "ol.proj", "ol.proj.CH", "ol.proj.EPSG2056", "ol.proj.EPSG21781", "ol.proj.EPSG3857", "ol.proj.EPSG4326", "ol.proj.METERS_PER_UNIT", "ol.proj.Projection", "ol.proj.ProjectionLike", "ol.proj.Units", "ol.proj.common", "ol.render.Box", "ol.render.Event", "ol.render.EventType", 
+"ol.render.IReplayGroup", "ol.render.IVectorContext", "ol.render.canvas", "ol.render.canvas.Immediate", "ol.render.canvas.ReplayGroup", "ol.render.webgl.Immediate", "ol.renderer.Layer", "ol.renderer.Map", "ol.renderer.canvas.ImageLayer", "ol.renderer.canvas.Layer", "ol.renderer.canvas.Map", "ol.renderer.canvas.TileLayer", "ol.renderer.canvas.VectorLayer", "ol.renderer.dom.ImageLayer", "ol.renderer.dom.Layer", "ol.renderer.dom.Map", "ol.renderer.dom.TileLayer", "ol.renderer.vector", "ol.renderer.webgl.ImageLayer", 
+"ol.renderer.webgl.Layer", "ol.renderer.webgl.Map", "ol.renderer.webgl.TileLayer", "ol.renderer.webgl.map.shader.Color", "ol.renderer.webgl.map.shader.Default", "ol.renderer.webgl.tilelayer.shader", "ol.size", "ol.source.BingMaps", "ol.source.GPX", "ol.source.GeoJSON", "ol.source.IGC", "ol.source.Image", "ol.source.ImageCanvas", "ol.source.ImageStatic", "ol.source.ImageVector", "ol.source.ImageWMS", "ol.source.KML", "ol.source.MapGuide", "ol.source.MapQuest", "ol.source.OSM", "ol.source.Source", 
+"ol.source.Stamen", "ol.source.State", "ol.source.Tile", "ol.source.TileDebug", "ol.source.TileImage", "ol.source.TileJSON", "ol.source.TileOptions", "ol.source.TileWMS", "ol.source.TopoJSON", "ol.source.Vector", "ol.source.VectorEvent", "ol.source.VectorEventType", "ol.source.VectorFile", "ol.source.WMTS", "ol.source.WMTSRequestEncoding", "ol.source.XYZ", "ol.source.Zoomify", "ol.source.wms", "ol.source.wms.ServerType", "ol.sphere.NORMAL", "ol.sphere.WGS84", "ol.structs.Buffer", "ol.structs.IntegerSet", 
+"ol.structs.LRUCache", "ol.structs.PriorityQueue", "ol.structs.RBush", "ol.style.Circle", "ol.style.Fill", "ol.style.Icon", "ol.style.IconAnchorUnits", "ol.style.IconImageCache", "ol.style.Image", "ol.style.ImageState", "ol.style.Stroke", "ol.style.Style", "ol.style.Text", "ol.tilegrid.TileGrid", "ol.tilegrid.WMTS", "ol.tilegrid.XYZ", "ol.tilegrid.Zoomify", "ol.tilejson", "ol.vec.Mat4", "ol.webgl", "ol.webgl.Context", "ol.webgl.WebGLContextEventType", "ol.webgl.shader", "ol.xml"]);
 goog.addDependency("../build/src/internal/src/types.js", ["olx.AttributionOptions", "olx.DeviceOrientationOptions", "olx.FeatureOverlayOptions", "olx.GeolocationOptions", "olx.MapOptions", "olx.OverlayOptions", "olx.Proj4jsProjectionOptions", "olx.ProjectionOptions", "olx.View2DOptions", "olx.animation.BounceOptions", "olx.animation.PanOptions", "olx.animation.RotateOptions", "olx.animation.ZoomOptions", "olx.control.AttributionOptions", "olx.control.ControlOptions", "olx.control.DefaultsOptions", 
 "olx.control.FullScreenOptions", "olx.control.LogoOptions", "olx.control.MousePositionOptions", "olx.control.ScaleLineOptions", "olx.control.ZoomOptions", "olx.control.ZoomSliderOptions", "olx.control.ZoomToExtentOptions", "olx.format.GeoJSONOptions", "olx.format.IGCOptions", "olx.format.KMLOptions", "olx.format.TopoJSONOptions", "olx.interaction.DefaultsOptions", "olx.interaction.DoubleClickZoomOptions", "olx.interaction.DragAndDropOptions", "olx.interaction.DragBoxOptions", "olx.interaction.DragPanOptions", 
-"olx.interaction.DragRotateAndZoomOptions", "olx.interaction.DragRotateOptions", "olx.interaction.DragZoomOptions", "olx.interaction.DrawOptions", "olx.interaction.KeyboardPanOptions", "olx.interaction.KeyboardZoomOptions", "olx.interaction.MouseWheelZoomOptions", "olx.interaction.SelectOptions", "olx.interaction.TouchPanOptions", "olx.interaction.TouchRotateOptions", "olx.interaction.TouchZoomOptions", "olx.layer.BaseOptions", "olx.layer.GroupOptions", "olx.layer.LayerOptions", "olx.layer.TileOptions", 
-"olx.layer.VectorOptions", "olx.parser.WFSWriteGetFeatureOptions", "olx.parser.WFSWriteTransactionOptions", "olx.source.BingMapsOptions", "olx.source.GPXOptions", "olx.source.GeoJSONOptions", "olx.source.IGCOptions", "olx.source.ImageCanvasOptions", "olx.source.ImageStaticOptions", "olx.source.ImageVectorOptions", "olx.source.ImageWMSOptions", "olx.source.KMLOptions", "olx.source.MapGuideOptions", "olx.source.MapQuestOptions", "olx.source.OSMOptions", "olx.source.StamenOptions", "olx.source.TileDebugOptions", 
-"olx.source.TileJSONOptions", "olx.source.TileWMSOptions", "olx.source.TopoJSONOptions", "olx.source.VectorFileOptions", "olx.source.VectorOptions", "olx.source.WMTSOptions", "olx.source.XYZOptions", "olx.source.ZoomifyOptions", "olx.style.CircleOptions", "olx.style.FillOptions", "olx.style.IconOptions", "olx.style.StrokeOptions", "olx.style.StyleOptions", "olx.style.TextOptions", "olx.tilegrid.TileGridOptions", "olx.tilegrid.WMTSOptions", "olx.tilegrid.XYZOptions", "olx.tilegrid.ZoomifyOptions"], 
-[]);
+"olx.interaction.DragRotateAndZoomOptions", "olx.interaction.DragRotateOptions", "olx.interaction.DragZoomOptions", "olx.interaction.DrawOptions", "olx.interaction.KeyboardPanOptions", "olx.interaction.KeyboardZoomOptions", "olx.interaction.ModifyOptions", "olx.interaction.MouseWheelZoomOptions", "olx.interaction.SelectOptions", "olx.interaction.TouchPanOptions", "olx.interaction.TouchRotateOptions", "olx.interaction.TouchZoomOptions", "olx.layer.BaseOptions", "olx.layer.GroupOptions", "olx.layer.LayerOptions", 
+"olx.layer.TileOptions", "olx.layer.VectorOptions", "olx.parser.WFSWriteGetFeatureOptions", "olx.parser.WFSWriteTransactionOptions", "olx.source.BingMapsOptions", "olx.source.GPXOptions", "olx.source.GeoJSONOptions", "olx.source.IGCOptions", "olx.source.ImageCanvasOptions", "olx.source.ImageStaticOptions", "olx.source.ImageVectorOptions", "olx.source.ImageWMSOptions", "olx.source.KMLOptions", "olx.source.MapGuideOptions", "olx.source.MapQuestOptions", "olx.source.OSMOptions", "olx.source.StamenOptions", 
+"olx.source.TileDebugOptions", "olx.source.TileJSONOptions", "olx.source.TileWMSOptions", "olx.source.TopoJSONOptions", "olx.source.VectorFileOptions", "olx.source.VectorOptions", "olx.source.WMTSOptions", "olx.source.XYZOptions", "olx.source.ZoomifyOptions", "olx.style.CircleOptions", "olx.style.FillOptions", "olx.style.IconOptions", "olx.style.StrokeOptions", "olx.style.StyleOptions", "olx.style.TextOptions", "olx.tilegrid.TileGridOptions", "olx.tilegrid.WMTSOptions", "olx.tilegrid.XYZOptions", 
+"olx.tilegrid.ZoomifyOptions"], []);
 goog.addDependency("../src/ga/ga.js", ["ga"], []);
 goog.addDependency("../src/ga/layer/layer.js", ["ga.layer", "ga.source.wms", "ga.source.wmts"], ["goog.array", "ol.Attribution", "ol.layer.Group", "ol.layer.Tile", "ol.layer.Image", "ol.source.TileWMS", "ol.source.ImageWMS", "ol.source.WMTS", "ol.tilegrid.WMTS"]);
 goog.addDependency("../src/ga/map.js", ["ga.Map"], ["goog.asserts", "goog.net.Jsonp", "goog.events", "goog.events.EventType", "goog.ui.Dialog", "goog.ui.Menu", "goog.ui.MenuItem", "goog.dom", "ol.Map", "ol.RendererHint", "ol.View2D", "ol.control.ScaleLine", "ol.proj.EPSG21781", "ol.source.State", "ol.extent", "ol.Overlay", "ol.format.GeoJSON", "ol.source.Vector", "ol.layer.Vector", "ol.style.Style", "ol.style.Fill", "ol.style.Stroke", "ol.style.Circle", "ga.Tooltip"]);
@@ -563,7 +563,7 @@ goog.addDependency("../src/libtess.js/tessmono.js", ["libtess.tessmono"], ["libt
 goog.addDependency("../src/ol/animation.js", ["ol.animation"], ["ol.PreRenderFunction", "ol.ViewHint", "ol.easing"]);
 goog.addDependency("../src/ol/array.js", ["ol.array"], ["goog.array", "goog.asserts"]);
 goog.addDependency("../src/ol/attribution.js", ["ol.Attribution"], ["ol.TileRange"]);
-goog.addDependency("../src/ol/browserfeature.js", ["ol.BrowserFeature"], ["goog.dom", "goog.dom.TagName", "ol.webgl"]);
+goog.addDependency("../src/ol/browserfeature.js", ["ol.BrowserFeature"], ["goog.dom", "goog.dom.TagName", "goog.userAgent", "ol.webgl"]);
 goog.addDependency("../src/ol/canvasfunction.js", ["ol.CanvasFunctionType"], []);
 goog.addDependency("../src/ol/centerconstraint.js", ["ol.CenterConstraint", "ol.CenterConstraintType"], ["goog.math"]);
 goog.addDependency("../src/ol/collection.js", ["ol.Collection", "ol.CollectionEvent", "ol.CollectionEventType"], ["goog.array", "goog.events.Event", "ol.Object"]);
@@ -583,7 +583,7 @@ goog.addDependency("../src/ol/control/zoomtoextentcontrol.js", ["ol.control.Zoom
 goog.addDependency("../src/ol/coordinate.js", ["ol.Coordinate", "ol.CoordinateArray", "ol.CoordinateFormatType", "ol.coordinate"], ["goog.math"]);
 goog.addDependency("../src/ol/css.js", ["ol.css"], []);
 goog.addDependency("../src/ol/deviceorientation.js", ["ol.DeviceOrientation", "ol.DeviceOrientationProperty"], ["goog.events", "goog.math", "ol.BrowserFeature", "ol.Object"]);
-goog.addDependency("../src/ol/dom/dom.js", ["ol.dom", "ol.dom.BrowserFeature"], ["goog.asserts", "goog.vec.Mat4"]);
+goog.addDependency("../src/ol/dom/dom.js", ["ol.dom", "ol.dom.BrowserFeature"], ["goog.asserts", "goog.dom", "goog.dom.TagName", "goog.style", "goog.userAgent", "goog.vec.Mat4"]);
 goog.addDependency("../src/ol/dom/input.js", ["ol.dom.Input", "ol.dom.InputProperty"], ["goog.events", "goog.events.EventType", "ol.Object"]);
 goog.addDependency("../src/ol/easing.js", ["ol.easing"], ["goog.fx.easing"]);
 goog.addDependency("../src/ol/ellipsoid/bessel1841ellipsoid.js", ["ol.ellipsoid.BESSEL1841"], ["ol.Ellipsoid"]);
@@ -640,6 +640,7 @@ goog.addDependency("../src/ol/interaction/interaction.js", ["ol.interaction.Inte
 goog.addDependency("../src/ol/interaction/interactiondefaults.js", ["ol.interaction"], ["ol.Collection", "ol.Kinetic", "ol.interaction.DoubleClickZoom", "ol.interaction.DragPan", "ol.interaction.DragRotate", "ol.interaction.DragZoom", "ol.interaction.KeyboardPan", "ol.interaction.KeyboardZoom", "ol.interaction.MouseWheelZoom", "ol.interaction.TouchPan", "ol.interaction.TouchRotate", "ol.interaction.TouchZoom"]);
 goog.addDependency("../src/ol/interaction/keyboardpaninteraction.js", ["ol.interaction.KeyboardPan"], ["goog.asserts", "goog.events.KeyCodes", "goog.events.KeyHandler.EventType", "goog.functions", "ol.View2D", "ol.coordinate", "ol.events.ConditionType", "ol.events.condition", "ol.interaction.Interaction"]);
 goog.addDependency("../src/ol/interaction/keyboardzoominteraction.js", ["ol.interaction.KeyboardZoom"], ["goog.asserts", "goog.events.KeyHandler.EventType", "ol.events.ConditionType", "ol.events.condition", "ol.interaction.Interaction"]);
+goog.addDependency("../src/ol/interaction/modifyinteraction.js", ["ol.interaction.Modify"], ["goog.array", "goog.asserts", "ol.Collection", "ol.CollectionEventType", "ol.Feature", "ol.FeatureOverlay", "ol.MapBrowserEvent.EventType", "ol.ViewHint", "ol.coordinate", "ol.extent", "ol.geom.LineString", "ol.geom.MultiLineString", "ol.geom.MultiPoint", "ol.geom.MultiPolygon", "ol.geom.Point", "ol.geom.Polygon", "ol.interaction.Drag", "ol.structs.RBush", "ol.style.Style"]);
 goog.addDependency("../src/ol/interaction/mousewheelzoominteraction.js", ["ol.interaction.MouseWheelZoom"], ["goog.asserts", "goog.events.MouseWheelEvent", "goog.events.MouseWheelHandler.EventType", "goog.math", "ol.Coordinate", "ol.interaction.Interaction"]);
 goog.addDependency("../src/ol/interaction/selectinteraction.js", ["ol.interaction.Select"], ["goog.array", "goog.functions", "ol.FeatureOverlay", "ol.events.condition", "ol.interaction.Interaction"]);
 goog.addDependency("../src/ol/interaction/touchinteraction.js", ["ol.interaction.Touch"], ["goog.asserts", "goog.functions", "goog.object", "ol.MapBrowserEvent", "ol.MapBrowserEvent.EventType", "ol.Pixel", "ol.ViewHint", "ol.interaction.Interaction"]);
@@ -659,7 +660,7 @@ goog.addDependency("../src/ol/layer/vectorlayer.js", ["ol.layer.Vector"], ["ol.f
 goog.addDependency("../src/ol/map.js", ["ol.Map", "ol.MapProperty", "ol.RendererHint", "ol.RendererHints"], ["goog.Uri.QueryData", "goog.array", "goog.asserts", "goog.async.AnimationDelay", "goog.async.nextTick", "goog.debug.Console", "goog.dom", "goog.dom.TagName", "goog.dom.ViewportSizeMonitor", "goog.events", "goog.events.BrowserEvent", "goog.events.Event", "goog.events.EventType", "goog.events.KeyHandler", "goog.events.KeyHandler.EventType", "goog.events.MouseWheelHandler", "goog.events.MouseWheelHandler.EventType", 
 "goog.log", "goog.log.Level", "goog.object", "goog.style", "goog.vec.Mat4", "ol.BrowserFeature", "ol.Collection", "ol.FrameState", "ol.IView", "ol.MapBrowserEvent", "ol.MapBrowserEvent.EventType", "ol.MapBrowserEventHandler", "ol.MapEvent", "ol.MapEventType", "ol.Object", "ol.ObjectEvent", "ol.ObjectEventType", "ol.Pixel", "ol.PostRenderFunction", "ol.PreRenderFunction", "ol.Size", "ol.Tile", "ol.TileQueue", "ol.View", "ol.View2D", "ol.ViewHint", "ol.control", "ol.extent", "ol.interaction", "ol.layer.Base", 
 "ol.layer.Group", "ol.proj", "ol.proj.common", "ol.renderer.Map", "ol.renderer.canvas.Map", "ol.renderer.dom.Map", "ol.renderer.webgl.Map", "ol.structs.PriorityQueue", "ol.vec.Mat4"]);
-goog.addDependency("../src/ol/mapbrowserevent.js", ["ol.MapBrowserEvent", "ol.MapBrowserEvent.EventType", "ol.MapBrowserEventHandler"], ["goog.array", "goog.asserts", "goog.events", "goog.events.BrowserEvent", "goog.events.EventTarget", "goog.events.EventType", "ol.Coordinate", "ol.FrameState", "ol.MapEvent", "ol.Pixel"]);
+goog.addDependency("../src/ol/mapbrowserevent.js", ["ol.MapBrowserEvent", "ol.MapBrowserEvent.EventType", "ol.MapBrowserEventHandler"], ["goog.array", "goog.asserts", "goog.events", "goog.events.BrowserEvent", "goog.events.EventTarget", "goog.events.EventType", "goog.object", "ol.Coordinate", "ol.FrameState", "ol.MapEvent", "ol.Pixel"]);
 goog.addDependency("../src/ol/mapevent.js", ["ol.MapEvent", "ol.MapEventType"], ["goog.events.Event", "ol.FrameState"]);
 goog.addDependency("../src/ol/math.js", ["ol.math"], ["goog.asserts"]);
 goog.addDependency("../src/ol/object.js", ["ol.Object", "ol.ObjectEvent", "ol.ObjectEventType"], ["goog.array", "goog.events", "goog.events.Event", "goog.functions", "goog.object", "ol.Observable"]);
@@ -700,8 +701,8 @@ goog.addDependency("../src/ol/renderer/canvas/canvastilelayerrenderer.js", ["ol.
 goog.addDependency("../src/ol/renderer/canvas/canvasvectorlayerrenderer.js", ["ol.renderer.canvas.VectorLayer"], ["goog.asserts", "goog.events", "goog.functions", "ol.ViewHint", "ol.extent", "ol.feature", "ol.layer.Vector", "ol.render.canvas.ReplayGroup", "ol.renderer.canvas.Layer", "ol.renderer.vector", "ol.source.Vector"]);
 goog.addDependency("../src/ol/renderer/dom/domimagelayerrenderer.js", ["ol.renderer.dom.ImageLayer"], ["goog.asserts", "goog.dom", "goog.dom.TagName", "goog.events", "goog.events.EventType", "goog.vec.Mat4", "ol.ImageBase", "ol.ImageState", "ol.ViewHint", "ol.dom", "ol.layer.Image", "ol.renderer.dom.Layer", "ol.source.Image", "ol.vec.Mat4"]);
 goog.addDependency("../src/ol/renderer/dom/domlayerrenderer.js", ["ol.renderer.dom.Layer"], ["goog.dom", "ol.layer.Layer", "ol.renderer.Layer"]);
-goog.addDependency("../src/ol/renderer/dom/dommaprenderer.js", ["ol.renderer.dom.Map"], ["goog.asserts", "goog.dom", "goog.dom.TagName", "goog.style", "ol.css", "ol.layer.Image", "ol.layer.Tile", "ol.renderer.Map", "ol.renderer.dom.ImageLayer", "ol.renderer.dom.Layer", "ol.renderer.dom.TileLayer", "ol.source.State"]);
-goog.addDependency("../src/ol/renderer/dom/domtilelayerrenderer.js", ["ol.renderer.dom.TileLayer"], ["goog.array", "goog.asserts", "goog.dom", "goog.dom.TagName", "goog.object", "goog.style", "goog.vec.Mat4", "ol.Coordinate", "ol.Tile", "ol.TileCoord", "ol.TileRange", "ol.TileState", "ol.ViewHint", "ol.dom", "ol.extent", "ol.layer.Tile", "ol.renderer.dom.Layer", "ol.source.Tile", "ol.tilegrid.TileGrid", "ol.vec.Mat4"]);
+goog.addDependency("../src/ol/renderer/dom/dommaprenderer.js", ["ol.renderer.dom.Map"], ["goog.asserts", "goog.dom", "goog.dom.TagName", "goog.functions", "goog.style", "ol.css", "ol.layer.Image", "ol.layer.Tile", "ol.renderer.Map", "ol.renderer.dom.ImageLayer", "ol.renderer.dom.Layer", "ol.renderer.dom.TileLayer", "ol.source.State"]);
+goog.addDependency("../src/ol/renderer/dom/domtilelayerrenderer.js", ["ol.renderer.dom.TileLayer"], ["goog.array", "goog.asserts", "goog.dom", "goog.dom.TagName", "goog.object", "goog.style", "goog.vec.Mat4", "ol.Coordinate", "ol.Tile", "ol.TileCoord", "ol.TileRange", "ol.TileState", "ol.ViewHint", "ol.dom", "ol.dom.BrowserFeature", "ol.extent", "ol.layer.Tile", "ol.renderer.dom.Layer", "ol.source.Tile", "ol.tilegrid.TileGrid", "ol.vec.Mat4"]);
 goog.addDependency("../src/ol/renderer/layerrenderer.js", ["ol.renderer.Layer"], ["goog.Disposable", "ol.FrameState", "ol.Image", "ol.ImageState", "ol.Tile", "ol.TileRange", "ol.TileState", "ol.layer.Layer", "ol.layer.LayerState", "ol.source.Source", "ol.source.State", "ol.source.Tile"]);
 goog.addDependency("../src/ol/renderer/maprenderer.js", ["ol.renderer.Map"], ["goog.Disposable", "goog.asserts", "goog.dispose", "goog.object", "goog.vec.Mat4", "ol.FrameState", "ol.layer.Layer", "ol.renderer.Layer", "ol.style.IconImageCache", "ol.vec.Mat4"]);
 goog.addDependency("../src/ol/renderer/webgl/webglimagelayerrenderer.js", ["ol.renderer.webgl.ImageLayer"], ["goog.asserts", "goog.events", "goog.events.EventType", "goog.vec.Mat4", "goog.webgl", "ol.Coordinate", "ol.Extent", "ol.ImageBase", "ol.ImageState", "ol.ViewHint", "ol.layer.Image", "ol.renderer.webgl.Layer", "ol.source.Image"]);
@@ -16055,6 +16056,7 @@ ol.webgl.getContext = function(canvas, opt_attributes) {
 goog.provide("ol.BrowserFeature");
 goog.require("goog.dom");
 goog.require("goog.dom.TagName");
+goog.require("goog.userAgent");
 goog.require("ol.webgl");
 ol.ASSUME_TOUCH = false;
 ol.ENABLE_CANVAS = true;
@@ -16063,6 +16065,8 @@ ol.ENABLE_IMAGE = true;
 ol.ENABLE_TILE = true;
 ol.ENABLE_VECTOR = true;
 ol.ENABLE_WEBGL = true;
+ol.LEGACY_IE_SUPPORT = false;
+ol.IS_LEGACY_IE = goog.userAgent.IE && !goog.userAgent.isVersionOrHigher("9.0") && goog.userAgent.VERSION !== "";
 ol.BrowserFeature.DEVICE_PIXEL_RATIO = goog.global.devicePixelRatio || 1;
 ol.BrowserFeature.HAS_CANVAS = ol.ENABLE_CANVAS && function() {
   if(!("HTMLCanvasElement" in goog.global)) {
@@ -17823,6 +17827,7 @@ goog.require("goog.events");
 goog.require("goog.events.BrowserEvent");
 goog.require("goog.events.EventTarget");
 goog.require("goog.events.EventType");
+goog.require("goog.object");
 goog.require("ol.Coordinate");
 goog.require("ol.FrameState");
 goog.require("ol.MapEvent");
@@ -17852,6 +17857,9 @@ ol.MapBrowserEventHandler = function(map) {
   this.mousedownListenerKey_ = null;
   this.pointerdownListenerKey_ = null;
   this.touchstartListenerKey_ = null;
+  if(ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
+    this.ieDblclickListenerKey_ = null
+  }
   this.down_ = null;
   var element = this.map_.getViewport();
   this.relayedListenerKeys_ = [goog.events.listen(element, goog.events.EventType.MOUSEMOVE, this.relayEvent_, false, this), goog.events.listen(element, goog.events.EventType.CLICK, this.relayEvent_, false, this)];
@@ -17861,7 +17869,10 @@ ol.MapBrowserEventHandler = function(map) {
   }else {
     this.pointerdownListenerKey_ = goog.events.listen(element, "pointerdown", this.handlePointerDown_, false, this)
   }
-  this.touchstartListenerKey_ = goog.events.listen(element, goog.events.EventType.TOUCHSTART, this.handleTouchStart_, false, this)
+  this.touchstartListenerKey_ = goog.events.listen(element, goog.events.EventType.TOUCHSTART, this.handleTouchStart_, false, this);
+  if(ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
+    this.ieDblclickListenerKey_ = goog.events.listen(element, goog.events.EventType.DBLCLICK, this.emulateClick_, false, this)
+  }
 };
 goog.inherits(ol.MapBrowserEventHandler, goog.events.EventTarget);
 ol.MapBrowserEventHandler.prototype.getDown = function() {
@@ -17874,11 +17885,20 @@ ol.MapBrowserEventHandler.prototype.emulateClick_ = function(browserEvent) {
     var newEvent = new ol.MapBrowserEvent(ol.MapBrowserEvent.EventType.DBLCLICK, this.map_, browserEvent);
     this.dispatchEvent(newEvent)
   }else {
-    this.clickTimeoutId_ = goog.global.setTimeout(goog.bind(function() {
-      this.clickTimeoutId_ = 0;
-      var newEvent = new ol.MapBrowserEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, this.map_, browserEvent);
-      this.dispatchEvent(newEvent)
-    }, this), 250)
+    if(ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
+      var ev = (goog.object.clone(browserEvent.getBrowserEvent()));
+      this.clickTimeoutId_ = goog.global.setTimeout(goog.bind(function() {
+        this.clickTimeoutId_ = 0;
+        var newEvent = new ol.MapBrowserEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, this.map_, new goog.events.BrowserEvent(ev, browserEvent.currentTarget));
+        this.dispatchEvent(newEvent)
+      }, this), 250)
+    }else {
+      this.clickTimeoutId_ = goog.global.setTimeout(goog.bind(function() {
+        this.clickTimeoutId_ = 0;
+        var newEvent = new ol.MapBrowserEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, this.map_, browserEvent);
+        this.dispatchEvent(newEvent)
+      }, this), 250)
+    }
   }
 };
 ol.MapBrowserEventHandler.prototype.handleMouseUp_ = function(browserEvent) {
@@ -18010,6 +18030,10 @@ ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
   if(!goog.isNull(this.dragListenerKeys_)) {
     goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
     this.dragListenerKeys_ = null
+  }
+  if(ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE && !goog.isNull(this.ieDblclickListenerKey_)) {
+    goog.events.unlistenByKey(this.ieDblclickListenerKey_);
+    this.ieDblclickListenerKey_ = null
   }
   goog.base(this, "disposeInternal")
 };
@@ -18870,9 +18894,10 @@ ol.control.Zoom = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
   var className = goog.isDef(options.className) ? options.className : "ol-zoom";
   var delta = goog.isDef(options.delta) ? options.delta : 1;
-  var inElement = goog.dom.createDom(goog.dom.TagName.A, {"href":"#zoomIn", "class":className + "-in"});
+  var zoomInLabel = goog.isDef(options.zoomInLabel) ? options.zoomInLabel : "+", zoomOutLabel = goog.isDef(options.zoomOutLabel) ? options.zoomOutLabel : "-";
+  var inElement = goog.dom.createDom(goog.dom.TagName.A, {"href":"#zoomIn", "class":className + "-in"}, zoomInLabel);
   goog.events.listen(inElement, [goog.events.EventType.TOUCHEND, goog.events.EventType.CLICK], goog.partial(ol.control.Zoom.prototype.zoomByDelta_, delta), false, this);
-  var outElement = goog.dom.createDom(goog.dom.TagName.A, {"href":"#zoomOut", "class":className + "-out"});
+  var outElement = goog.dom.createDom(goog.dom.TagName.A, {"href":"#zoomOut", "class":className + "-out"}, zoomOutLabel);
   goog.events.listen(outElement, [goog.events.EventType.TOUCHEND, goog.events.EventType.CLICK], goog.partial(ol.control.Zoom.prototype.zoomByDelta_, -delta), false, this);
   var cssClasses = className + " " + ol.css.CLASS_UNSELECTABLE;
   var element = goog.dom.createDom(goog.dom.TagName.DIV, cssClasses, inElement, outElement);
@@ -26330,16 +26355,86 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
 goog.provide("ol.dom");
 goog.provide("ol.dom.BrowserFeature");
 goog.require("goog.asserts");
+goog.require("goog.dom");
+goog.require("goog.dom.TagName");
+goog.require("goog.style");
+goog.require("goog.userAgent");
 goog.require("goog.vec.Mat4");
-ol.dom.BrowserFeature = {CAN_USE_CSS_TRANSFORM:false, CAN_USE_CSS_TRANSFORM3D:true};
+ol.dom.BrowserFeature = {CAN_USE_CSS_TRANSFORM:function() {
+  if(!window.getComputedStyle) {
+    return false
+  }
+  var el = goog.dom.createElement(goog.dom.TagName.P), has2d, transforms = {"webkitTransform":"-webkit-transform", "OTransform":"-o-transform", "msTransform":"-ms-transform", "MozTransform":"-moz-transform", "transform":"transform"};
+  goog.dom.appendChild(document.body, el);
+  for(var t in transforms) {
+    if(t in el.style) {
+      el.style[t] = "translate(1px,1px)";
+      has2d = window.getComputedStyle(el).getPropertyValue(transforms[t])
+    }
+  }
+  goog.dom.removeNode(el);
+  return goog.isDefAndNotNull(has2d) && has2d.length > 0 && has2d !== "none"
+}(), CAN_USE_CSS_TRANSFORM3D:function() {
+  if(!window.getComputedStyle) {
+    return false
+  }
+  var el = goog.dom.createElement(goog.dom.TagName.P), has3d, transforms = {"webkitTransform":"-webkit-transform", "OTransform":"-o-transform", "msTransform":"-ms-transform", "MozTransform":"-moz-transform", "transform":"transform"};
+  goog.dom.appendChild(document.body, el);
+  for(var t in transforms) {
+    if(t in el.style) {
+      el.style[t] = "translate3d(1px,1px,1px)";
+      has3d = window.getComputedStyle(el).getPropertyValue(transforms[t])
+    }
+  }
+  goog.dom.removeNode(el);
+  return goog.isDefAndNotNull(has3d) && has3d.length > 0 && has3d !== "none"
+}(), USE_MS_MATRIX_TRANSFORM:ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE, USE_MS_ALPHA_FILTER:ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE};
 ol.dom.setTransform = function(element, value) {
   var style = element.style;
   style.WebkitTransform = value;
   style.MozTransform = value;
   style.OTransform = value;
-  style.transform = value
+  style.msTransform = value;
+  style.transform = value;
+  if(goog.userAgent.IE && !ol.IS_LEGACY_IE) {
+    element.style.transformOrigin = "0 0"
+  }
 };
-ol.dom.transformElement2D = function(element, transform, opt_precision) {
+ol.dom.setOpacity = function(element, value) {
+  if(ol.dom.BrowserFeature.USE_MS_ALPHA_FILTER) {
+    var filter = element.currentStyle.filter;
+    var regex;
+    var alpha;
+    if(goog.userAgent.VERSION == "8.0") {
+      regex = /progid:DXImageTransform\.Microsoft\.Alpha\(.*?\)/i, alpha = "progid:DXImageTransform.Microsoft.Alpha(Opacity\x3d" + value * 100 + ")"
+    }else {
+      regex = /alpha\(.*?\)/i;
+      alpha = "alpha(opacity\x3d" + value * 100 + ")"
+    }
+    var newFilter = filter.replace(regex, alpha);
+    if(newFilter === filter) {
+      newFilter += " " + alpha
+    }
+    element.style.filter = newFilter;
+    if(element.currentStyle.zIndex === "auto") {
+      element.style.zIndex = 0
+    }
+  }else {
+    goog.style.setOpacity(element, value)
+  }
+};
+ol.dom.setIEMatrix_ = function(element, value) {
+  var filter = element.currentStyle.filter;
+  var newFilter = filter.replace(/progid:DXImageTransform.Microsoft.Matrix\(.*?\)/i, value);
+  if(newFilter === filter) {
+    newFilter = " " + value
+  }
+  element.style.filter = newFilter;
+  if(element.currentStyle.zIndex === "auto") {
+    element.style.zIndex = 0
+  }
+};
+ol.dom.transformElement2D = function(element, transform, opt_precision, opt_translationElement) {
   var i;
   if(ol.dom.BrowserFeature.CAN_USE_CSS_TRANSFORM3D) {
     var value3D;
@@ -26368,9 +26463,24 @@ ol.dom.transformElement2D = function(element, transform, opt_precision) {
       }
       ol.dom.setTransform(element, "matrix(" + value2D + ")")
     }else {
-      var style = element.style;
-      style.left = Math.round(goog.vec.Mat4.getElement(transform, 0, 3)) + "px";
-      style.top = Math.round(goog.vec.Mat4.getElement(transform, 1, 3)) + "px"
+      if(ol.dom.BrowserFeature.USE_MS_MATRIX_TRANSFORM) {
+        var m11 = goog.vec.Mat4.getElement(transform, 0, 0), m12 = goog.vec.Mat4.getElement(transform, 0, 1), m21 = goog.vec.Mat4.getElement(transform, 1, 0), m22 = goog.vec.Mat4.getElement(transform, 1, 1), dx = goog.vec.Mat4.getElement(transform, 0, 3), dy = goog.vec.Mat4.getElement(transform, 1, 3);
+        var s = "progid:DXImageTransform.Microsoft.Matrix(";
+        s += 'sizingMethod\x3d"auto expand"';
+        s += ",M11\x3d" + m11.toFixed(opt_precision || 20);
+        s += ",M12\x3d" + m12.toFixed(opt_precision || 20);
+        s += ",M21\x3d" + m21.toFixed(opt_precision || 20);
+        s += ",M22\x3d" + m22.toFixed(opt_precision || 20);
+        s += ")";
+        ol.dom.setIEMatrix_(element, s);
+        dx /= m11;
+        dy /= m22;
+        opt_translationElement.style.left = Math.round(dx) + "px";
+        opt_translationElement.style.top = Math.round(dy) + "px"
+      }else {
+        element.style.left = Math.round(goog.vec.Mat4.getElement(transform, 0, 3)) + "px";
+        element.style.top = Math.round(goog.vec.Mat4.getElement(transform, 1, 3)) + "px"
+      }
     }
   }
 };
@@ -26484,6 +26594,7 @@ goog.require("ol.TileRange");
 goog.require("ol.TileState");
 goog.require("ol.ViewHint");
 goog.require("ol.dom");
+goog.require("ol.dom.BrowserFeature");
 goog.require("ol.extent");
 goog.require("ol.layer.Tile");
 goog.require("ol.renderer.dom.Layer");
@@ -26493,6 +26604,10 @@ goog.require("ol.vec.Mat4");
 ol.renderer.dom.TileLayer = function(mapRenderer, tileLayer) {
   var target = goog.dom.createElement(goog.dom.TagName.DIV);
   target.style.position = "absolute";
+  if(ol.dom.BrowserFeature.USE_MS_MATRIX_TRANSFORM) {
+    target.style.width = "100%";
+    target.style.height = "100%"
+  }
   goog.base(this, mapRenderer, tileLayer, target);
   this.renderedVisible_ = true;
   this.renderedOpacity_ = 1;
@@ -26620,7 +26735,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame = function(frameState, layerSta
     }
   }
   if(layerState.opacity != this.renderedOpacity_) {
-    goog.style.setOpacity(this.target, layerState.opacity);
+    ol.dom.setOpacity(this.target, layerState.opacity);
     this.renderedOpacity_ = layerState.opacity
   }
   if(layerState.visible && !this.renderedVisible_) {
@@ -26635,6 +26750,15 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame = function(frameState, layerSta
 ol.renderer.dom.TileLayerZ_ = function(tileGrid, tileCoordOrigin) {
   this.target = goog.dom.createElement(goog.dom.TagName.DIV);
   this.target.style.position = "absolute";
+  this.target.style.width = "100%";
+  this.target.style.height = "100%";
+  if(ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
+    this.translateTarget_ = goog.dom.createElement(goog.dom.TagName.DIV);
+    this.translateTarget_.style.position = "absolute";
+    this.translateTarget_.style.width = "100%";
+    this.translateTarget_.style.height = "100%";
+    goog.dom.appendChild(this.target, this.translateTarget_)
+  }
   this.tileGrid_ = tileGrid;
   this.tileCoordOrigin_ = tileCoordOrigin;
   this.origin_ = ol.extent.getTopLeft(tileGrid.getTileCoordExtent(tileCoordOrigin));
@@ -26685,7 +26809,11 @@ ol.renderer.dom.TileLayerZ_.prototype.addTile = function(tile, tileGutter) {
 };
 ol.renderer.dom.TileLayerZ_.prototype.finalizeAddTiles = function() {
   if(!goog.isNull(this.documentFragment_)) {
-    goog.dom.appendChild(this.target, this.documentFragment_);
+    if(ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
+      goog.dom.appendChild(this.translateTarget_, this.documentFragment_)
+    }else {
+      goog.dom.appendChild(this.target, this.documentFragment_)
+    }
     this.documentFragment_ = null
   }
 };
@@ -26715,7 +26843,11 @@ ol.renderer.dom.TileLayerZ_.prototype.removeTilesOutsideExtent = function(extent
 };
 ol.renderer.dom.TileLayerZ_.prototype.setTransform = function(transform) {
   if(!ol.vec.Mat4.equals2D(transform, this.transform_)) {
-    ol.dom.transformElement2D(this.target, transform, 6);
+    if(ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
+      ol.dom.transformElement2D(this.target, transform, 6, this.translateTarget_)
+    }else {
+      ol.dom.transformElement2D(this.target, transform, 6)
+    }
     goog.vec.Mat4.setFromArray(this.transform_, transform)
   }
 };
@@ -26723,6 +26855,7 @@ goog.provide("ol.renderer.dom.Map");
 goog.require("goog.asserts");
 goog.require("goog.dom");
 goog.require("goog.dom.TagName");
+goog.require("goog.functions");
 goog.require("goog.style");
 goog.require("ol.css");
 goog.require("ol.layer.Image");
@@ -26740,6 +26873,10 @@ ol.renderer.dom.Map = function(container, map) {
   style.position = "absolute";
   style.width = "100%";
   style.height = "100%";
+  if(ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
+    this.layersPane_.ondragstart = goog.functions.FALSE;
+    this.layersPane_.onselectstart = goog.functions.FALSE
+  }
   goog.dom.insertChildAt(container, this.layersPane_, 0);
   this.renderedVisible_ = true
 };
@@ -26756,7 +26893,6 @@ ol.renderer.dom.Map.prototype.createLayerRenderer = function(layer) {
       return null
     }
   }
-  goog.dom.appendChild(this.layersPane_, layerRenderer.getTarget());
   return layerRenderer
 };
 ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
@@ -26767,12 +26903,24 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
     }
     return
   }
+  var addChild;
+  if(ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
+    addChild = function(elem) {
+      goog.dom.appendChild(this.layersPane_, elem)
+    }
+  }else {
+    addChild = function(elem, i) {
+      goog.dom.insertChildAt(this.layersPane_, elem, i)
+    }
+  }
   var layerStates = frameState.layerStates;
   var layersArray = frameState.layersArray;
   var i, ii, layer, layerRenderer, layerState;
   for(i = 0, ii = layersArray.length;i < ii;++i) {
     layer = layersArray[i];
-    layerRenderer = this.getLayerRenderer(layer);
+    layerRenderer = (this.getLayerRenderer(layer));
+    goog.asserts.assertInstanceof(layerRenderer, ol.renderer.dom.Layer);
+    addChild.call(this, layerRenderer.getTarget(), i);
     layerState = frameState.layerStates[goog.getUid(layer)];
     if(layerState.sourceState == ol.source.State.READY) {
       layerRenderer.prepareFrame(frameState, layerState)
@@ -31238,7 +31386,7 @@ ga.Tooltip.prototype.handleIdentifyResponse_ = function(response) {
   }
   for(var i in response["results"]) {
     var lang = window.GeoAdmin && window.GeoAdmin.lang ? window.GeoAdmin.lang : "de";
-    var jsonp = new goog.net.Jsonp(new goog.Uri("//api3.geo.admin.ch/rest/services/api/MapServer/" + response["results"][i]["layerBodId"] + "/" + response["results"][i]["featureId"] + "/" + "/htmlpopup?lang\x3d" + lang), "callback");
+    var jsonp = new goog.net.Jsonp(new goog.Uri("//api3.geo.admin.ch/rest/services/api/MapServer/" + response["results"][i]["layerBodId"] + "/" + response["results"][i]["featureId"] + "/" + "/htmlPopup?lang\x3d" + lang), "callback");
     jsonp.send({}, goog.bind(this.handleHtmlpopupResponse_, this), goog.bind(this.handleHtmlpopupError_, this))
   }
 };
@@ -31597,6 +31745,10 @@ ol.ImageTile.prototype.handleImageError_ = function() {
   this.dispatchChangeEvent()
 };
 ol.ImageTile.prototype.handleImageLoad_ = function() {
+  if(!goog.isDef(this.image_.naturalWidth)) {
+    this.image_.naturalWidth = this.image_.width;
+    this.image_.naturalHeight = this.image_.height
+  }
   if(this.image_.naturalWidth && this.image_.naturalHeight) {
     this.state = ol.TileState.LOADED
   }else {
@@ -34965,6 +35117,9 @@ ol.FeatureOverlay.prototype.handleMapPostCompose_ = function(event) {
   var i, ii, feature, styles;
   this.features_.forEach(function(feature) {
     styles = this.styleFunction_(feature, resolution);
+    if(!goog.isDefAndNotNull(styles)) {
+      return
+    }
     ii = styles.length;
     for(i = 0;i < ii;++i) {
       vectorContext.drawFeature(feature, styles[i])
@@ -35018,6 +35173,9 @@ ol.FeatureOverlay.prototype.setStyleFunction = function(styleFunction) {
   this.styleFunction_ = styleFunction;
   this.requestRenderFrame_()
 };
+ol.FeatureOverlay.prototype.getStyleFunction = function() {
+  return this.styleFunction_
+};
 goog.provide("ol.DrawEvent");
 goog.provide("ol.interaction.Draw");
 goog.require("goog.asserts");
@@ -35061,10 +35219,10 @@ ol.interaction.Draw = function(options) {
   this.sketchRawPolygon_ = null;
   this.squaredClickTolerance_ = 4;
   this.overlay_ = new ol.FeatureOverlay;
-  this.overlay_.setStyleFunction(goog.isDef(options.styleFunction) ? options.styleFunction : ol.interaction.Draw.defaultStyleFunction)
+  this.overlay_.setStyleFunction(goog.isDef(options.styleFunction) ? options.styleFunction : ol.interaction.Draw.getDefaultStyleFunction())
 };
 goog.inherits(ol.interaction.Draw, ol.interaction.Interaction);
-ol.interaction.Draw.defaultStyleFunction = function() {
+ol.interaction.Draw.getDefaultStyleFunction = function() {
   var styles = {};
   styles[ol.geom.GeometryType.POLYGON] = [new ol.style.Style({fill:new ol.style.Fill({color:[255, 255, 255, 0.5]})})];
   styles[ol.geom.GeometryType.MULTI_POLYGON] = styles[ol.geom.GeometryType.POLYGON];
@@ -35075,7 +35233,7 @@ ol.interaction.Draw.defaultStyleFunction = function() {
   return function(feature, resolution) {
     return styles[feature.getGeometry().getType()]
   }
-}();
+};
 ol.interaction.Draw.prototype.setMap = function(map) {
   if(goog.isNull(map)) {
     this.abortDrawing_()
@@ -36074,7 +36232,10 @@ goog.require("ol.xml");
 ol.format.XSD.NAMESPACE_URI = "http://www.w3.org/2001/XMLSchema";
 ol.format.XSD.readBoolean = function(node) {
   var s = ol.xml.getAllTextContent(node, false);
-  var m = /^\s*(true|1)|(false|0)\s*$/.exec(s);
+  return ol.format.XSD.readBooleanString(s)
+};
+ol.format.XSD.readBooleanString = function(string) {
+  var m = /^\s*(true|1)|(false|0)\s*$/.exec(string);
   if(m) {
     return goog.isDef(m[1]) || false
   }else {
@@ -36107,7 +36268,10 @@ ol.format.XSD.readDateTime = function(node) {
 };
 ol.format.XSD.readDecimal = function(node) {
   var s = ol.xml.getAllTextContent(node, false);
-  var m = /^\s*([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?)\s*$/i.exec(s);
+  return ol.format.XSD.readDecimalString(s)
+};
+ol.format.XSD.readDecimalString = function(string) {
+  var m = /^\s*([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?)\s*$/i.exec(string);
   if(m) {
     return parseFloat(m[1])
   }else {
@@ -36116,7 +36280,10 @@ ol.format.XSD.readDecimal = function(node) {
 };
 ol.format.XSD.readNonNegativeInteger = function(node) {
   var s = ol.xml.getAllTextContent(node, false);
-  var m = /^\s*(\d+)\s*$/.exec(s);
+  return ol.format.XSD.readNonNegativeIntegerString(s)
+};
+ol.format.XSD.readNonNegativeIntegerString = function(string) {
+  var m = /^\s*(\d+)\s*$/.exec(string);
   if(m) {
     return parseInt(m[1], 10)
   }else {
@@ -38122,6 +38289,340 @@ ol.interaction.DragRotateAndZoom.prototype.handleDragStart = function(mapBrowser
     return false
   }
 };
+goog.provide("ol.interaction.Modify");
+goog.require("goog.array");
+goog.require("goog.asserts");
+goog.require("ol.Collection");
+goog.require("ol.CollectionEventType");
+goog.require("ol.Feature");
+goog.require("ol.FeatureOverlay");
+goog.require("ol.MapBrowserEvent.EventType");
+goog.require("ol.ViewHint");
+goog.require("ol.coordinate");
+goog.require("ol.extent");
+goog.require("ol.geom.LineString");
+goog.require("ol.geom.MultiLineString");
+goog.require("ol.geom.MultiPoint");
+goog.require("ol.geom.MultiPolygon");
+goog.require("ol.geom.Point");
+goog.require("ol.geom.Polygon");
+goog.require("ol.interaction.Drag");
+goog.require("ol.structs.RBush");
+goog.require("ol.style.Style");
+ol.interaction.SegmentDataType;
+ol.interaction.Modify = function(options) {
+  goog.base(this);
+  this.vertexFeature_ = null;
+  this.modifiable_ = false;
+  this.lastPixel_ = null;
+  this.rBush_ = null;
+  this.pixelTolerance_ = goog.isDef(options.pixelTolerance) ? options.pixelTolerance : 20;
+  this.dragSegments_ = null;
+  this.overlay_ = options.featureOverlay;
+  this.overlay_.getFeatures().listen(ol.CollectionEventType.ADD, this.addFeature_, false, this);
+  this.overlay_.getFeatures().listen(ol.CollectionEventType.REMOVE, this.removeFeature_, false, this);
+  this.SEGMENT_WRITERS_ = {"Point":this.writePointGeometry_, "LineString":this.writeLineStringGeometry_, "LinearRing":this.writeLineStringGeometry_, "Polygon":this.writePolygonGeometry_, "MultiPoint":this.writeMultiPointGeometry_, "MultiLineString":this.writeMultiLineStringGeometry_, "MultiPolygon":this.writeMultiPolygonGeometry_, "GeometryCollection":this.writeGeometryCollectionGeometry_}
+};
+goog.inherits(ol.interaction.Modify, ol.interaction.Drag);
+ol.interaction.Modify.prototype.setMap = function(map) {
+  if(!goog.isNull(map)) {
+    if(goog.isNull(this.rBush_)) {
+      this.rBush_ = new ol.structs.RBush
+    }
+  }else {
+    this.rBush_ = null
+  }
+  this.overlay_.setMap(map);
+  goog.base(this, "setMap", map)
+};
+ol.interaction.Modify.prototype.addFeature_ = function(evt) {
+  var feature = evt.element;
+  goog.asserts.assertInstanceof(feature, ol.Feature);
+  var geometry = feature.getGeometry();
+  if(goog.isDef(this.SEGMENT_WRITERS_[geometry.getType()])) {
+    this.SEGMENT_WRITERS_[geometry.getType()].call(this, feature, geometry)
+  }
+  this.handleMouseAtPixel_(this.lastPixel_, this.getMap())
+};
+ol.interaction.Modify.prototype.writePointGeometry_ = function(feature, geometry) {
+  var coordinates = geometry.getCoordinates();
+  var segmentData = ({feature:feature, geometry:geometry, segment:[coordinates, coordinates], style:this.overlay_.getStyleFunction()});
+  this.rBush_.insert(geometry.getExtent(), segmentData)
+};
+ol.interaction.Modify.prototype.writeMultiPointGeometry_ = function(feature, geometry) {
+  var points = geometry.getCoordinates();
+  var coordinates, i, ii, segmentData;
+  for(i = 0, ii = points.length - 1;i < ii;++i) {
+    coordinates = points[i];
+    segmentData = ({feature:feature, geometry:geometry, depth:[i], segment:[coordinates, coordinates], style:this.overlay_.getStyleFunction()});
+    this.rBush_.insert(geometry.getExtent(), segmentData)
+  }
+};
+ol.interaction.Modify.prototype.writeLineStringGeometry_ = function(feature, geometry) {
+  var coordinates = geometry.getCoordinates();
+  var i, ii, segment, segmentData;
+  for(i = 0, ii = coordinates.length - 1;i < ii;++i) {
+    segment = coordinates.slice(i, i + 2);
+    segmentData = ({feature:feature, geometry:geometry, index:i, style:this.overlay_.getStyleFunction(), segment:segment});
+    this.rBush_.insert(ol.extent.boundingExtent(segment), segmentData)
+  }
+};
+ol.interaction.Modify.prototype.writeMultiLineStringGeometry_ = function(feature, geometry) {
+  var lines = geometry.getCoordinates();
+  var coordinates, i, ii, j, jj, segment, segmentData;
+  for(j = 0, jj = lines.length;j < jj;++j) {
+    coordinates = lines[j];
+    for(i = 0, ii = coordinates.length - 1;i < ii;++i) {
+      segment = coordinates.slice(i, i + 2);
+      segmentData = ({feature:feature, geometry:geometry, depth:[j], index:i, style:this.overlay_.getStyleFunction(), segment:segment});
+      this.rBush_.insert(ol.extent.boundingExtent(segment), segmentData)
+    }
+  }
+};
+ol.interaction.Modify.prototype.writePolygonGeometry_ = function(feature, geometry) {
+  var rings = geometry.getCoordinates();
+  var coordinates = rings[0];
+  var i, ii, segment, segmentData;
+  for(i = 0, ii = coordinates.length - 1;i < ii;++i) {
+    segment = coordinates.slice(i, i + 2);
+    segmentData = ({feature:feature, geometry:geometry, index:i, style:this.overlay_.getStyleFunction(), segment:segment});
+    this.rBush_.insert(ol.extent.boundingExtent(segment), segmentData)
+  }
+};
+ol.interaction.Modify.prototype.writeMultiPolygonGeometry_ = function(feature, geometry) {
+  var polygons = geometry.getCoordinates();
+  var coordinates, i, ii, j, jj, segment, segmentData;
+  for(j = 0, jj = polygons.length;j < jj;++j) {
+    coordinates = polygons[j][0];
+    for(i = 0, ii = coordinates.length - 1;i < ii;++i) {
+      segment = coordinates.slice(i, i + 2);
+      segmentData = ({feature:feature, geometry:geometry, depth:[j], index:i, style:this.overlay_.getStyleFunction(), segment:segment});
+      this.rBush_.insert(ol.extent.boundingExtent(segment), segmentData)
+    }
+  }
+};
+ol.interaction.Modify.prototype.writeGeometryCollectionGeometry_ = function(feature, geometry) {
+  var i, geometries = geometry.getGeometriesArray();
+  for(i = 0;i < geometries.length;++i) {
+    this.SEGMENT_WRITERS_[geometries[i].getType()].call(this, feature, geometries[i])
+  }
+};
+ol.interaction.Modify.prototype.removeFeature_ = function(evt) {
+  var feature = evt.element;
+  var rBush = this.rBush_;
+  var i, nodesToRemove = [];
+  rBush.forEachInExtent(feature.getGeometry().getExtent(), function(node) {
+    if(feature === node.feature) {
+      nodesToRemove.push(node)
+    }
+  });
+  for(i = nodesToRemove.length - 1;i >= 0;--i) {
+    rBush.remove(nodesToRemove[i])
+  }
+  if(!goog.isNull(this.vertexFeature_) && this.overlay_.getFeatures().getLength() === 1 && this.overlay_.getFeatures().getAt(0) == this.vertexFeature_) {
+    this.overlay_.removeFeature(this.vertexFeature_);
+    this.vertexFeature_ = null
+  }
+};
+ol.interaction.Modify.prototype.createOrUpdateVertexFeature_ = function(style, coordinates) {
+  var vertexFeature = this.vertexFeature_;
+  if(goog.isNull(vertexFeature)) {
+    vertexFeature = new ol.Feature(new ol.geom.Point(coordinates));
+    this.vertexFeature_ = vertexFeature;
+    this.overlay_.addFeature(vertexFeature)
+  }else {
+    var geometry = (vertexFeature.getGeometry());
+    geometry.setCoordinates(coordinates)
+  }
+  return vertexFeature
+};
+ol.interaction.Modify.prototype.handleDragStart = function(evt) {
+  this.dragSegments_ = [];
+  var vertexFeature = this.vertexFeature_;
+  if(!goog.isNull(vertexFeature)) {
+    var insertVertices = [];
+    var geometry = (vertexFeature.getGeometry());
+    var vertex = geometry.getCoordinates();
+    var vertexExtent = ol.extent.boundingExtent([vertex]);
+    var segmentDataMatches = [];
+    this.rBush_.forEachInExtent(vertexExtent, function(segmentData) {
+      segmentDataMatches.push(segmentData)
+    });
+    var distinctFeatures = {};
+    for(var i = 0, ii = segmentDataMatches.length;i < ii;++i) {
+      var segmentDataMatch = segmentDataMatches[i];
+      var segment = segmentDataMatch.segment;
+      if(!(goog.getUid(segmentDataMatch.feature) in distinctFeatures)) {
+        var feature = segmentDataMatch.feature;
+        distinctFeatures[goog.getUid(feature)] = true
+      }
+      if(ol.coordinate.equals(segment[0], vertex)) {
+        this.dragSegments_.push([segmentDataMatch, 0])
+      }else {
+        if(ol.coordinate.equals(segment[1], vertex)) {
+          this.dragSegments_.push([segmentDataMatch, 1])
+        }else {
+          if(ol.coordinate.squaredDistanceToSegment(vertex, segment) === 0) {
+            insertVertices.push([segmentDataMatch, vertex])
+          }
+        }
+      }
+    }
+    for(i = insertVertices.length - 1;i >= 0;--i) {
+      this.insertVertex_.apply(this, insertVertices[i])
+    }
+  }
+  return this.modifiable_
+};
+ol.interaction.Modify.prototype.handleDrag = function(evt) {
+  var vertex = evt.coordinate;
+  for(var i = 0, ii = this.dragSegments_.length;i < ii;++i) {
+    var dragSegment = this.dragSegments_[i];
+    var segmentData = dragSegment[0];
+    var depth = segmentData.depth;
+    var geometry = segmentData.geometry;
+    var coordinates = geometry.getCoordinates();
+    var segment = segmentData.segment;
+    var index = dragSegment[1];
+    if(geometry instanceof ol.geom.Point) {
+      coordinates = vertex;
+      segment[0] = segment[1] = vertex
+    }else {
+      if(geometry instanceof ol.geom.MultiPoint) {
+        coordinates[depth[0]][segmentData.index + index] = vertex;
+        segment[0] = segment[1] = vertex
+      }else {
+        if(geometry instanceof ol.geom.LineString) {
+          coordinates[segmentData.index + index] = vertex;
+          segment[index] = vertex
+        }else {
+          if(geometry instanceof ol.geom.MultiLineString) {
+            coordinates[depth[0]][segmentData.index + index] = vertex;
+            segment[index] = vertex
+          }else {
+            if(geometry instanceof ol.geom.Polygon) {
+              coordinates[0][segmentData.index + index] = vertex;
+              segment[index] = vertex
+            }else {
+              if(geometry instanceof ol.geom.MultiPolygon) {
+                coordinates[depth[0]][0][segmentData.index + index] = vertex;
+                segment[index] = vertex
+              }
+            }
+          }
+        }
+      }
+    }
+    geometry.setCoordinates(coordinates);
+    var newBounds = ol.extent.boundingExtent(segment);
+    this.createOrUpdateVertexFeature_(segmentData.style, vertex);
+    this.rBush_.remove(segmentData);
+    this.rBush_.insert(newBounds, segmentData)
+  }
+};
+ol.interaction.Modify.prototype.handleDragEnd = function(evt) {
+  var segmentData;
+  for(var i = this.dragSegments_.length - 1;i >= 0;--i) {
+    segmentData = this.dragSegments_[i][0];
+    this.rBush_.update(ol.extent.boundingExtent(segmentData.segment), segmentData)
+  }
+};
+ol.interaction.Modify.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
+  if(!mapBrowserEvent.map.getView().getHints()[ol.ViewHint.INTERACTING] && !this.getDragging() && mapBrowserEvent.type == ol.MapBrowserEvent.EventType.MOUSEMOVE) {
+    this.handleMouseMove_(mapBrowserEvent)
+  }
+  goog.base(this, "handleMapBrowserEvent", mapBrowserEvent);
+  return!this.modifiable_
+};
+ol.interaction.Modify.prototype.handleMouseMove_ = function(evt) {
+  this.lastPixel_ = evt.pixel;
+  this.handleMouseAtPixel_(evt.pixel, evt.map)
+};
+ol.interaction.Modify.prototype.handleMouseAtPixel_ = function(pixel, map) {
+  var pixelCoordinate = map.getCoordinateFromPixel(pixel);
+  var sortByDistance = function(a, b) {
+    return ol.coordinate.squaredDistanceToSegment(pixelCoordinate, a.segment) - ol.coordinate.squaredDistanceToSegment(pixelCoordinate, b.segment)
+  };
+  var lowerLeft = map.getCoordinateFromPixel([pixel[0] - this.pixelTolerance_, pixel[1] + this.pixelTolerance_]);
+  var upperRight = map.getCoordinateFromPixel([pixel[0] + this.pixelTolerance_, pixel[1] - this.pixelTolerance_]);
+  var box = ol.extent.boundingExtent([lowerLeft, upperRight]);
+  this.modifiable_ = false;
+  var rBush = this.rBush_;
+  var nodes = rBush.getAllInExtent(box);
+  if(nodes.length > 0) {
+    nodes.sort(sortByDistance);
+    var node = nodes[0];
+    var segment = node.segment;
+    var vertex = ol.coordinate.closestOnSegment(pixelCoordinate, segment);
+    var vertexPixel = map.getPixelFromCoordinate(vertex);
+    if(Math.sqrt(ol.coordinate.squaredDistance(pixel, vertexPixel)) <= this.pixelTolerance_) {
+      var pixel1 = map.getPixelFromCoordinate(segment[0]);
+      var pixel2 = map.getPixelFromCoordinate(segment[1]);
+      var squaredDist1 = ol.coordinate.squaredDistance(vertexPixel, pixel1);
+      var squaredDist2 = ol.coordinate.squaredDistance(vertexPixel, pixel2);
+      var dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
+      if(dist <= 10) {
+        vertex = squaredDist1 > squaredDist2 ? segment[1] : segment[0]
+      }
+      this.createOrUpdateVertexFeature_(node.style, vertex);
+      this.modifiable_ = true;
+      return
+    }
+  }
+  if(!goog.isNull(this.vertexFeature_)) {
+    this.overlay_.removeFeature(this.vertexFeature_);
+    this.vertexFeature_ = null
+  }
+};
+ol.interaction.Modify.prototype.insertVertex_ = function(segmentData, vertex) {
+  var segment = segmentData.segment;
+  var feature = segmentData.feature;
+  var geometry = segmentData.geometry;
+  var depth = segmentData.depth;
+  var index = segmentData.index;
+  geometry = (geometry);
+  var coordinates = geometry.getCoordinates();
+  if(geometry instanceof ol.geom.MultiPoint) {
+    coordinates[depth[0]] = coordinates
+  }else {
+    if(geometry instanceof ol.geom.MultiLineString) {
+      coordinates[depth[0]].splice(index + 1, 0, vertex)
+    }else {
+      if(geometry instanceof ol.geom.Polygon) {
+        coordinates[0].splice(index + 1, 0, vertex)
+      }else {
+        if(geometry instanceof ol.geom.MultiPolygon) {
+          coordinates[depth[0]][0].splice(index + 1, 0, vertex)
+        }else {
+          coordinates.splice(index + 1, 0, vertex)
+        }
+      }
+    }
+  }
+  geometry.setCoordinates(coordinates);
+  var rTree = this.rBush_;
+  goog.asserts.assert(goog.isDef(segment));
+  rTree.remove(segmentData);
+  var uid = goog.getUid(feature);
+  var segmentDataMatches = [];
+  this.rBush_.forEachInExtent(geometry.getExtent(), function(segmentData) {
+    if(goog.getUid(segmentData.feature) === uid) {
+      segmentDataMatches.push(segmentData)
+    }
+  });
+  for(var i = 0, ii = segmentDataMatches.length;i < ii;++i) {
+    var segmentDataMatch = segmentDataMatches[i];
+    if(segmentDataMatch.geometry === geometry && segmentDataMatch.index > index) {
+      ++segmentDataMatch.index
+    }
+  }
+  var newSegmentData = ({style:segmentData.style, segment:[segment[0], vertex], feature:feature, geometry:geometry, depth:depth, index:index});
+  rTree.insert(ol.extent.boundingExtent(newSegmentData.segment), newSegmentData);
+  this.dragSegments_.push([newSegmentData, 1]);
+  var newSegmentData2 = ({style:segmentData.style, segment:[vertex, segment[1]], feature:feature, geometry:geometry, depth:depth, index:index + 1});
+  rTree.insert(ol.extent.boundingExtent(newSegmentData2.segment), newSegmentData2);
+  this.dragSegments_.push([newSegmentData2, 0])
+};
 goog.provide("ol.interaction.Select");
 goog.require("goog.array");
 goog.require("goog.functions");
@@ -39998,6 +40499,7 @@ goog.require("ol.interaction.Draw");
 goog.require("ol.interaction.Interaction");
 goog.require("ol.interaction.KeyboardPan");
 goog.require("ol.interaction.KeyboardZoom");
+goog.require("ol.interaction.Modify");
 goog.require("ol.interaction.MouseWheelZoom");
 goog.require("ol.interaction.Select");
 goog.require("ol.interaction.Touch");
@@ -40164,6 +40666,7 @@ goog.provide("olx.interaction.DragZoomOptions");
 goog.provide("olx.interaction.DrawOptions");
 goog.provide("olx.interaction.KeyboardPanOptions");
 goog.provide("olx.interaction.KeyboardZoomOptions");
+goog.provide("olx.interaction.ModifyOptions");
 goog.provide("olx.interaction.MouseWheelZoomOptions");
 goog.provide("olx.interaction.SelectOptions");
 goog.provide("olx.interaction.TouchPanOptions");
@@ -40246,6 +40749,7 @@ olx.interaction.DragZoomOptions;
 olx.interaction.DrawOptions;
 olx.interaction.KeyboardPanOptions;
 olx.interaction.KeyboardZoomOptions;
+olx.interaction.ModifyOptions;
 olx.interaction.MouseWheelZoomOptions;
 olx.interaction.SelectOptions;
 olx.interaction.TouchPanOptions;
