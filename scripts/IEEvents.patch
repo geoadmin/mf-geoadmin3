@@ -1,4 +1,4 @@
-From 4d403522e94206c4764affa33fd507ede4b8a8df Mon Sep 17 00:00:00 2001
+From 53a4658cf30f0d3b84a8f8121d638c72a5919e33 Mon Sep 17 00:00:00 2001
 From: Gilbert Jeiziner <gjn@space.ch>
 Date: Wed, 22 Jan 2014 14:02:51 +0100
 Subject: [PATCH] Add IE10/IE11 fix
@@ -7,12 +7,12 @@ Remove it
 
 Right pointerType
 ---
- src/ol/map.js             |    3 +-
- src/ol/mapbrowserevent.js |  109 ++++++++++++++++++++++++---------------------
- 2 files changed, 60 insertions(+), 52 deletions(-)
+ src/ol/map.js             |   3 +-
+ src/ol/mapbrowserevent.js | 110 +++++++++++++++++++++++++---------------------
+ 2 files changed, 61 insertions(+), 52 deletions(-)
 
 diff --git a/src/ol/map.js b/src/ol/map.js
-index d7b3a4e..d008af8 100644
+index 7d24ae5..3ed838d 100644
 --- a/src/ol/map.js
 +++ b/src/ol/map.js
 @@ -274,7 +274,8 @@ ol.Map = function(options) {
@@ -26,10 +26,10 @@ index d7b3a4e..d008af8 100644
    goog.dom.appendChild(this.viewport_, this.overlayContainerStopEvent_);
  
 diff --git a/src/ol/mapbrowserevent.js b/src/ol/mapbrowserevent.js
-index e27ca0e..90ef1c6 100644
+index 326505f..3f9bbe9 100644
 --- a/src/ol/mapbrowserevent.js
 +++ b/src/ol/mapbrowserevent.js
-@@ -182,9 +182,15 @@ ol.MapBrowserEventHandler = function(map) {
+@@ -162,9 +162,15 @@ ol.MapBrowserEventHandler = function(map) {
        goog.events.EventType.MOUSEDOWN,
        this.handleMouseDown_, false, this);
  
@@ -81,7 +81,7 @@ index e27ca0e..90ef1c6 100644
    // prevent browser image dragging with the dom renderer
    browserEvent.preventDefault();
  };
-@@ -315,23 +326,30 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ =
+@@ -315,23 +326,31 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ =
      this.touchstartListenerKey_ = null;
    }
  
@@ -113,7 +113,8 @@ index e27ca0e..90ef1c6 100644
 +      goog.events.listen(goog.global.document,
 +          goog.events.EventType.MSPOINTERMOVE,
 +          this.handlePointerMove_, false, this),
-+      goog.events.listen(goog.global.document, goog.events.EventType.MSPOINTERUP,
++      goog.events.listen(goog.global.document,
++          goog.events.EventType.MSPOINTERUP,
 +          this.handlePointerUp_, false, this)
 +    ];
 +  } else {
@@ -128,7 +129,7 @@ index e27ca0e..90ef1c6 100644
  };
  
  
-@@ -341,17 +359,11 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ =
+@@ -341,17 +360,11 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ =
   */
  ol.MapBrowserEventHandler.prototype.handlePointerMove_ =
      function(browserEvent) {
@@ -151,7 +152,7 @@ index e27ca0e..90ef1c6 100644
    }
  };
  
-@@ -361,18 +373,11 @@ ol.MapBrowserEventHandler.prototype.handlePointerMove_ =
+@@ -361,18 +374,11 @@ ol.MapBrowserEventHandler.prototype.handlePointerMove_ =
   * @private
   */
  ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(browserEvent) {
@@ -175,7 +176,7 @@ index e27ca0e..90ef1c6 100644
    }
  };
  
-@@ -382,7 +387,8 @@ ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(browserEvent) {
+@@ -382,7 +388,8 @@ ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(browserEvent) {
   * @private
   */
  ol.MapBrowserEventHandler.prototype.handleTouchStart_ = function(browserEvent) {
@@ -185,16 +186,16 @@ index e27ca0e..90ef1c6 100644
      // touch device detected - unregister the mousedown and pointerdown
      // listeners
      goog.events.unlistenByKey(this.mousedownListenerKey_);
-@@ -400,7 +406,8 @@ ol.MapBrowserEventHandler.prototype.handleTouchStart_ = function(browserEvent) {
+@@ -400,7 +407,8 @@ ol.MapBrowserEventHandler.prototype.handleTouchStart_ = function(browserEvent) {
    this.down_ = browserEvent;
    this.dragged_ = false;
  
 -  if (goog.isNull(this.dragListenerKeys_)) {
 +  if (browserEvent.type === goog.events.EventType.TOUCHSTART &&
-+     goog.isNull(this.dragListenerKeys_)) {
++      goog.isNull(this.dragListenerKeys_)) {
      this.dragListenerKeys_ = [
        goog.events.listen(goog.global.document, goog.events.EventType.TOUCHMOVE,
            this.handleTouchMove_, false, this),
 -- 
-1.7.10.4
+1.8.3.4 (Apple Git-47)
 
