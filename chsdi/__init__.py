@@ -91,7 +91,7 @@ def main(global_config, **settings):
     config.add_route('checker', '/checker')
     config.add_route('checker_dev', '/checker_dev')
 
-    config.scan(ignore=['chsdi.tests', 'chsdi.models.bod'])  # required to find code decorated by view_config
+    config.scan(ignore=['chsdi.tests', 'chsdi.models.bod', 'chsdi.models.vector'])  # required to find code decorated by view_config
 
     config.add_static_view('static/css', 'chsdi:static/css', cache_max_age=datetime.timedelta(days=365))
     config.add_static_view('static/js', 'chsdi:static/js', cache_max_age=datetime.timedelta(days=365))
