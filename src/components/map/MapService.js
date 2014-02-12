@@ -529,6 +529,13 @@
         };
 
         /**
+         * Reurn an array of pre-selected bodId from current topic
+         */
+        this.getSelectedLayers = function() {
+          return currentTopic.selectedLayers;
+        };
+
+        /**
          * Return an array of ol.layer.Layer objects for the background
          * layers.
          */

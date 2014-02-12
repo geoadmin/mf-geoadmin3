@@ -9,6 +9,9 @@ describe('ga_catalogtree_directive', function() {
 
     module(function($provide) {
       $provide.value('gaLayers', {
+        getSelectedLayers: function() {
+          return ['bar'];
+        },
         loadForTopic: function() {
         },
         getLayer: function() {
