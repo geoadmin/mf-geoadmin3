@@ -1,6 +1,5 @@
 var webdriver = require('browserstack-webdriver');
 var assert = require('assert');
-var assertUtils = require('./assertUtils');
 
 var URL_OF_BERN = "mf-geoadmin3.dev.bgdi.ch/travis/prod/?X=200393.27&Y=596671.16";
 
