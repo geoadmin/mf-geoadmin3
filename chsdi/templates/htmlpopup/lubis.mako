@@ -12,7 +12,7 @@ if c['attributes']['bildnummer']:
     image_bildnummer = c['attributes']['bildnummer']
 endif
 datenherr = c['attributes']['firma']
-datum = datetime.datetime.strptime(c['attributes']['flugdatum'], "%Y%m%d").strftime("%d-%m-%Y")
+datum = datetime.datetime.strptime(c['attributes']['flugdatum'].strip(), "%Y%m%d").strftime("%d-%m-%Y")
 image_width = 1
 image_height = 1
 protocol = request.headers.get('X-Forwarded-Proto','http')
@@ -31,12 +31,7 @@ if c['attributes']['filename']:
 endif
 %>
 
-%    if image_bildnummer: 
     <tr><td class="cell-left">${_('tt_lubis_ebkey')}</td>   <td>${c['featureId'] or '-'}</td></tr>
-%    else:
-    <tr><td class="cell-left">${_('tt_lubis_lineId')}</td>   <td>${c['featureId'] or '-'}</td></tr>
-%    endif
-
     <tr><td class="cell-left">${_('tt_lubis_Flugdatum')}</td>    <td>${datum or '-'}</td></tr>
     <tr><td class="cell-left">${_('tt_lubis_Filmart')}</td>      <td>${c['attributes']['filmart'] or '-'}</td></tr>
 
@@ -63,7 +58,7 @@ if c['attributes']['bildnummer']:
     image_bildnummer = c['attributes']['bildnummer']
 endif
 datenherr = c['attributes']['firma']
-datum = datetime.datetime.strptime(c['attributes']['flugdatum'], "%Y%m%d  ").strftime("%d-%m-%Y")
+datum = datetime.datetime.strptime(c['attributes']['flugdatum'].strip(), "%Y%m%d").strftime("%d-%m-%Y")
 orientierung = '-'
 image_width = 1
 image_height = 1
@@ -175,7 +170,6 @@ endif
     </style>
   </head>
   <body onload="init()">
-%    if image_bildnummer:
     <table class="table-with-border kernkraftwerke-extended">
         <tr><th class="cell-left">${_('tt_lubis_ebkey')}</th>            <td>${c['featureId'] or '-'}</td></tr>
         <tr><th class="cell-left">${_('tt_lubis_Flugdatum')}</th>        <td>${datum or '-'}</td></tr>
@@ -189,14 +183,6 @@ endif
         <tr><th class="cell-left">${_('tt_lubis_orientierung')}</th>     <td>${orientierung or '-'}</td></tr>
         <tr><th class="cell-left">${_('link')} Toposhop</th>             <td><a href="http://www.toposhop.admin.ch/de/shop/satair/lubis_1?ext=1&pics=${c['featureId']},0,${c['attributes']['ort'].strip()},${c['attributes']['y']},${c['attributes']['x']},nein" target="toposhop">Toposhop</a></td></tr>
     </table>
-%   else:
-    <table class="table-with-border kernkraftwerke-extended">
-        <tr><th class="cell-left">${_('tt_lubis_lineId')}</th>           <td>${c['featureId'] or '-'}</td></tr>
-        <tr><th class="cell-left">${_('tt_lubis_Flugdatum')}</th>        <td>${datum or '-'}</td></tr>
-        <tr><th class="cell-left">${_('tt_lubis_Filmart')}</th>          <td>${c['attributes']['filmart'] or '-'}</td></tr>
-        <tr><th class="cell-left">${_('link')} Toposhop</th>             <td><a href="http://www.toposhop.admin.ch/de/shop/satair/lubis_1?ext=1&pics=${c['featureId']},0,${c['attributes']['ort'].strip()},${c['attributes']['y']},${c['attributes']['x']},nein" target="toposhop">Toposhop</a></td></tr>
-    </table>
-%   endif
     <div id="map"></div>
     <br>
     <br>
