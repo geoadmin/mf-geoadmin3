@@ -70,8 +70,8 @@ class FeatureParams(MapServiceValidation):
         self.geodataStaging = request.registry.settings['geodata_staging']
 
         self.returnGeometry = request.params.get('returnGeometry')
-        self.idlayer = request.matchdict.get('idlayer')
-        self.idfeature = request.matchdict.get('idfeature')
+        self.layerId = request.matchdict.get('layerId')
+        self.featureId = request.matchdict.get('featureId')
 
         # TODO get rid of those parameters only used for cadastral
         defaultExtent = '42000,30000,350000,900000'
@@ -238,14 +238,13 @@ def view_get_feature_esrijson(request):
 
 
 @view_config(route_name='htmlPopup', renderer='jsonp')
-@view_config(route_name='htmlpopup', renderer='jsonp')
 def htmlpopup(request):
     params = FeatureParams(request)
     params.returnGeometry = False
-    models = models_from_name(params.idlayer)
+    models = models_from_name(params.layerId)
     if models is None:
-        raise exc.HTTPBadRequest('No Vector Table was found for %s' % params.idlayer)
-    feature, template = _get_feature(params, models, params.idlayer, params.idfeature)
+        raise exc.HTTPBadRequest('No Vector Table was found for %s' % params.layerId)
+    feature, template = _get_feature(params, models, params.layerId, params.featureId)
 
     modelLayer = get_bod_model(params.lang)
     layer = next(_get_layers_metadata_for_params(
@@ -269,18 +268,17 @@ def htmlpopup(request):
 
 
 @view_config(route_name='extendedHtmlPopup', renderer='jsonp')
-@view_config(route_name='extendedhtmlpopup', renderer='jsonp')
 def extendedhtmlpopup(request):
     params = FeatureParams(request)
     params.returnGeometry = False
-    models = models_from_name(params.idlayer)
+    models = models_from_name(params.layerId)
     if models is None:
-        raise exc.HTTPBadRequest('No Vector Table was found for %s' % params.idlayer)
+        raise exc.HTTPBadRequest('No Vector Table was found for %s' % params.layerId)
     feature, template = _get_feature(
         params,
         models,
-        params.idlayer,
-        params.idfeature,
+        params.layerId,
+        params.featureId,
         extended=True)
 
     modelLayer = get_bod_model(params.lang)
@@ -302,12 +300,12 @@ def extendedhtmlpopup(request):
 
 def _get_feature_service(request):
     params = FeatureParams(request)
-    models = models_from_name(params.idlayer)
+    models = models_from_name(params.layerId)
 
     if models is None:
-        raise exc.HTTPBadRequest('No Vector Table was found for %s' % params.idlayer)
+        raise exc.HTTPBadRequest('No Vector Table was found for %s' % params.layerId)
 
-    feature, template = _get_feature(params, models, params.idlayer, params.idfeature)
+    feature, template = _get_feature(params, models, params.layerId, params.featureId)
     return feature
 
 
@@ -411,7 +409,6 @@ def metadata(request):
     return results
 
 
-@view_config(route_name='layersconfig', renderer='jsonp')
 @view_config(route_name='layersConfig', renderer='jsonp')
 def layers_config(request):
     params = LayersParams(request)
@@ -425,7 +422,7 @@ def layers_config(request):
 @view_config(route_name='legend', renderer='jsonp')
 def legend(request):
     params = LayersParams(request)
-    layerId = request.matchdict.get('idlayer')
+    layerId = request.matchdict.get('layerId')
     # FIXME a second request shouldn't be necessary (use relationship)
     layerConfig = next(
         _get_layers_config_for_params(
