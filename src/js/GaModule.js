@@ -25,6 +25,7 @@
   goog.require('ga_featuretree');
   goog.require('ga_measure');
   goog.require('ga_profile');
+  goog.require('ga_seo');
   goog.require('ga_modal_directive');
   goog.require('ga_draggable_directive');
   goog.require('ga_placeholder_directive');
@@ -71,6 +72,7 @@
     'ga_featuretree',
     'ga_measure',
     'ga_profile',
+    'ga_seo',
     'ga_modal_directive',
     'ga_draggable_directive',
     'ga_placeholder_directive',
