@@ -84,6 +84,26 @@ class FeatureParams(MapServiceValidation):
         self.request = request
 
 
+class FindFeaturesParams(MapServiceValidation):
+
+    def __init__(self, request):
+        super(FindFeaturesParams, self).__init__()
+
+        self.mapName = request.matchdict.get('map')
+        self.hasMap(request.db, self.mapName)
+        self.cbName = request.params.get('callback')
+        self.lang = request.lang
+        self.geodataStaging = request.registry.settings['geodata_staging']
+
+        self.returnGeometry = request.params.get('returnGeometry')
+        self.layer = request.params.get('layer')
+        self.searchText = request.params.get('searchText')
+        self.searchField = request.params.get('searchField')
+
+        self.translate = request.translate
+        self.request = request
+
+
 # Order matters, last one is the default one
 @view_config(route_name='identify', request_param='geometryFormat=interlis')
 def identify_oereb(request):
@@ -149,13 +169,13 @@ def _identify(request):
     maxFeatures = 50
     features = []
     for feature in _get_features_for_extent(params, models, maxFeatures=maxFeatures):
-        if params.returnGeometry:
-            f = feature.__geo_interface__
-        else:
-            f = feature.__interface__
+        f = feature.__geo_interface__ if params.returnGeometry else feature.__interface__
         if hasattr(f, 'extra'):
             layerBodId = f.extra['layerBodId']
             f.extra['layerName'] = params.translate(layerBodId)
+        else:
+            layerBodId = f.get('layerBodId')
+            f['layerName'] = params.translate(layerBodId)
         features.append(f)
         if len(features) > maxFeatures:
             break
@@ -163,6 +183,47 @@ def _identify(request):
     return {'results': features}
 
 
+# order matters, last route is the default one!
+@view_config(route_name='find', renderer='geojson',
+    request_param='geometryFormat=geojson')
+def view_find_geojson(request):
+    return _find(request)
+
+
+@view_config(route_name='find', renderer='esrijson')
+def view_find_esrijson(request):
+    return _find(request)
+
+
+def _find(request):
+    params = FindFeaturesParams(request) 
+    if params.searchText is None:
+        raise exc.HTTPBadRequest('Please provide a searchText')
+    models = models_from_name(params.layer)
+    features = []
+    findColumn = lambda x: (x, x.get_column_by_name(params.searchField))
+    for model in models:
+        vectorModel, searchColumn = findColumn(model)
+        query = request.db.query(vectorModel)
+        query = _full_text_search(
+            query,
+            [searchColumn],
+            params.searchText
+        )
+        for feature in query:
+            f = feature.__geo_interface__ if params.returnGeometry else feature.__interface__
+            # TODO find a way to use translate directly in the model
+            if hasattr(f, 'extra'):
+                layerBodId = f.extra['layerBodId']
+                f.extra['layerName'] = params.translate(layerBodId)
+            else:
+                layerBodId = f.get('layerBodId')
+                f['layerName'] = params.translate(layerBodId)
+            features.append(f)
+
+    return {'results': features}
+
+ 
 @view_config(route_name='feature', renderer='geojson',
              request_param='geometryFormat=geojson')
 def view_get_feature_geojson(request):
@@ -289,15 +350,13 @@ def _get_feature(params, models, layerId, featureId, extended=False):
     if feature is None:
         raise exc.HTTPNotFound('No feature with id %s' % featureId)
 
-    if params.returnGeometry:
-        # Per defautl geojson
-        feature = feature.__geo_interface__
-    else:
-        # Per default esrijson
-        feature = feature.__interface__
+    feature = feature.__geo_interface__ if params.returnGeometry else feature.__interface__
 
     if hasattr(feature, 'extra'):
         feature.extra['layerName'] = params.translate(feature.extra['layerBodId'])
+    else:
+        layerBodId = feature.get('layerBodId')
+        feature['layerName'] = params.translate(layerBodId)
 
     feature = {'feature': feature}
     return feature, template
@@ -509,108 +568,3 @@ def _full_text_search(query, ormColumns, searchText):
             filters.append(col.ilike('%%%s%%' % searchText))
     return query.filter(
         or_(*filters)) if searchText is not None else query
-
-
-class MapService(MapServiceValidation):
-
-    def __init__(self, request):
-        super(MapService, self).__init__()
-        # Map and topic represents the same resource in chsdi
-        self.mapName = request.matchdict.get('map')
-        self.hasMap(request.db, self.mapName)
-        self.cbName = request.params.get('callback')
-        self.lang = request.lang
-        self.searchText = request.params.get('searchText')
-        self.geodataStaging = request.registry.settings['geodata_staging']
-        self.translate = request.translate
-        self.request = request
-
-    # order matters, last route is the default!
-    @view_config(route_name='find', renderer='geojson',
-                 request_param='geometryFormat=geojson')
-    def view_find_geosjon(self):
-        return self._find()
-
-    @view_config(route_name='find', renderer='esrijson',
-                 request_param='geometryFormat=esrijson')
-    def view_find_esrijson(self):
-        return self._find()
-
-    @view_config(route_name='find', renderer='esrijson')
-    def _find(self):
-        self.searchFields = self.request.params.get('searchFields')
-        self.returnGeometry = self.request.params.get('returnGeometry')
-        layers = self.request.params.get('layers')
-        models = models_from_name(layers)
-        # Iterate through models here
-        searchColumn = models[0].get_column_by_name(self.searchFields)
-        if searchColumn is None:
-            exc.HTTPNotFound('No column with the name %s was found for %s.' % (self.searchFields, layers))
-        query = self.request.db.query(models[0])
-        query = self._full_text_search(query, [searchColumn])
-        features = []
-        for feature in query:
-            if self.returnGeometry:
-                f = feature.__geo_interface__
-            else:
-                f = feature.__interface__
-            if hasattr(f, 'extra'):
-                layerBodId = f.extra['layerBodId']
-                f.extra['layerName'] = self.translate(layerBodId)
-            features.append(f)
-
-        return {'results': features}
-
-    def _get_feature_resource(self, idlayer, idfeature, model):
-        layerName = self.translate(idlayer)
-        geometryFormat = self.request.params.get('geometryFormat', 'esrijson')
-        query = self.request.db.query(model)
-        query = query.filter(model.id == idfeature)
-
-        try:
-            feature = query.one()
-        except NoResultFound:
-            return 'No Result Found'
-        except MultipleResultsFound:
-            raise exc.HTTPInternalServerError()
-
-        if self.returnGeometry:
-            feature = feature.__geo_interface__
-        else:
-            feature = feature.__interface__
-
-        if hasattr(feature, 'extra'):
-            feature.extra['layerName'] = layerName
-        feature = {'feature': feature}
-
-        return feature
-
-    def _full_text_search(self, query, orm_column):
-        filters = []
-        for col in orm_column:
-            if col is not None:
-                col = cast(col, Text)
-                filters.append(col.ilike('%%%s%%' % self.searchText))
-        query = query.filter(
-            or_(*filters)) if self.searchText is not None else query
-        return query
-
-    def _map_name_filter(self, query, orm_column):
-        if self.mapName != 'all':
-            query = query.filter(
-                orm_column.ilike('%%%s%%' % self.mapName)
-            )
-            return query
-        return query
-
-    def _geodata_staging_filter(self, query, orm_column):
-        if self.geodataStaging == 'test':
-            return query
-        elif self.geodataStaging == 'integration':
-            return (
-                query.filter(
-                    or_(orm_column == self.geodataStaging,
-                        orm_column == 'prod'))
-            )
-        elif self.geodataStaging == 'prod':
-            return query.filter(orm_column == self.geodataStaging)
