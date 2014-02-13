@@ -22,7 +22,8 @@
           templateUrl: 'components/catalogtree/partials/catalogitem.html',
           scope: {
             item: '=gaCatalogitemItem',
-            map: '=gaCatalogitemMap'
+            map: '=gaCatalogitemMap',
+            options: '=gaCatalogitemOptions'
           },
           compile: function(tEl, tAttr) {
             var contents = tEl.contents().remove();
@@ -45,9 +46,6 @@
               }
               compiledContent(scope, function(clone, scope) {
                 iEl.append(clone);
-              });
-              scope.$on('gaTimeSelectorChange', function(event, newYear) {
-                scope.currentYear = newYear;
               });
             };
           }
@@ -76,7 +74,8 @@
             item.errorLoading = error;
           }
           if (layer && layer.timeEnabled) {
-            layer.time = this.currentYear;
+            // options.currentYear is setted in CatalogTreeDirective
+            layer.time = this.options.currentYear;
           }
         }
 
