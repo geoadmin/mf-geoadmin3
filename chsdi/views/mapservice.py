@@ -170,6 +170,37 @@ def htmlpopup(request):
         return response
     return response.body
 
+@view_config(route_name='extendedHtmlPopup', renderer='jsonp')
+@view_config(route_name='extendedhtmlpopup', renderer='jsonp')
+def extendedhtmlpopup(request):
+    params = FeatureParams(request)
+    params.returnGeometry = False
+    models = models_from_name(params.idlayer)
+    if models is None:
+        raise exc.HTTPBadRequest('No Vector Table was found for %s' % params.idlayer)
+    feature, template = _get_feature(
+        params,
+        models,
+        params.idlayer,
+        params.idfeature,
+        extended=True)
+
+    modelLayer = get_bod_model(params.lang)
+    layer = next(_get_layers_metadata_for_params(
+        params,
+        request.db.query(modelLayer),
+        modelLayer
+    ))
+    feature.update({'attribution': layer.get('attributes')['dataOwner']})
+    feature.update({'extended': True})
+    response = render_to_response(
+        template,
+        feature,
+        request=request)
+    if params.cbName is None:
+        return response
+    return response.body
+
 
 def _get_feature_service(request):
     params = FeatureParams(request)
@@ -199,7 +230,7 @@ def _get_layer(query, model, layerId):
     return layer
 
 
-def _get_feature(params, models, layerId, featureId):
+def _get_feature(params, models, layerId, featureId, extended=False):
     ''' Returns exactly one feature or raises
     an excpetion '''
     # One layer can have several models
@@ -216,14 +247,18 @@ def _get_feature(params, models, layerId, featureId):
 
         if feature is not None:
             template = 'chsdi:%s' % model.__template__
+            if extended and not hasattr(model, '__extended_info__'):
+                raise exc.HTTPNotFound('No extended info has been found for %s' % layerId)
             break
 
     if feature is None:
         raise exc.HTTPNotFound('No feature with id %s' % featureId)
 
     if params.returnGeometry:
+        # Per defautl geojson
         feature = feature.__geo_interface__
     else:
+        # Per default esrijson
         feature = feature.__interface__
 
     if hasattr(feature, 'extra'):
@@ -541,54 +576,6 @@ class MapService(MapServiceValidation):
             features.append(f)
 
         return {'results': features}
-
-    @view_config(route_name='extendedHtmlPopup', renderer='jsonp')
-    def extendedhtmlpopup(self):
-        template, feature = self._get_html_response('extended')
-        feature.update({'extended': True})
-        response = render_to_response(
-            template,
-            feature,
-            request=self.request)
-        if self.cbName is None:
-            return response
-        return response.body
-
-    def _get_html_response(self, htmlType):
-        defaultExtent = '42000,30000,350000,900000'
-        defaultImageDisplay = '400,600,96'
-        self.imageDisplay = self.request.params.get('imageDisplay', defaultImageDisplay)
-        self.mapExtent = self.request.params.get('mapExtent', defaultExtent)
-        scale = getScale(self.imageDisplay, self.mapExtent)
-        idlayer = self.request.matchdict.get('idlayer')
-        idfeature = self.request.matchdict.get('idfeature')
-        models = models_from_name(idlayer)
-
-        if models is None:
-            raise exc.HTTPBadRequest('No GeoTable was found for %s' % idlayer)
-
-        layer = self._get_layer_resource(idlayer)
-        # One layer can have several models
-        for model in models:
-            if htmlType == 'extended' and not hasattr(model, '__extended_info__'):
-                raise exc.HTTPNotFound('No extended info has been found for %s' % idlayer)
-            feature = self._get_feature_resource(idlayer, idfeature, model)
-            if feature != 'No Result Found':
-                # One layer can have several templates
-                model_containing_feature_id = model
-                # Exit the loop when a feature is found
-                break
-
-        if feature == 'No Result Found':
-            raise exc.HTTPNotFound('No feature with id %s' % idfeature)
-
-        template = 'chsdi:%s' % model_containing_feature_id.__template__
-
-        feature.update({'attribution': layer.get('attributes')['dataOwner']})
-        feature.update({'fullName': layer.get('fullName')})
-        feature.update({'bbox': self.mapExtent.bounds})
-        feature.update({'scale': scale})
-        return template, feature
 
     def _get_feature_resource(self, idlayer, idfeature, model):
         layerName = self.translate(idlayer)
