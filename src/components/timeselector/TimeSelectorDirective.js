@@ -175,6 +175,9 @@
       restrict: 'A',
       template: '<a href="#" ng-click="toggle($event)" ng-class="stateClass">' +
           '</a>',
+      scope: {
+        isActive: '=gaTimeSelectorBtActive'
+      },
       link: function(scope, elt, attrs) {
 
         // Enable the button if it is disable
@@ -246,7 +249,8 @@
         },
         scope: {
           map: '=gaTimeSelectorMap',
-          options: '=gaTimeSelectorOptions'
+          options: '=gaTimeSelectorOptions',
+          isActive: '=gaTimeSelectorActive'
         },
         controller: 'GaTimeSelectorDirectiveController',
         link: function(scope, elt, attrs, controller) {
@@ -284,8 +288,11 @@
           // Watchers
           scope.$watch('isActive', function(active) {
             if (angular.isDefined(active)) {
+              elt.toggle(active);
               scope.stateClass = (active) ? 'active' : '';
               applyNewYear((active ? scope.currentYear : undefined));
+            } else {
+              elt.hide();
             }
           });
 
