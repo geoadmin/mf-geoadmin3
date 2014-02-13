@@ -20,6 +20,14 @@ AddOutputFilterByType DEFLATE application/json
 Alias ${base_url_path}/src ${base_dir}/src
 Alias ${base_url_path}/prod ${base_dir}/prd
 
+<Location ${base_url_path}/prod>
+  Order allow,deny
+  Allow from all
+</Location>
+
+RewriteCond %{QUERY_STRING} _escaped_fragment_=(.*)$
+RewriteRule (.*) ${service_url}/snapshot [L,P]
+
 % if 'main' in base_url_path:
 # Main webpage
 
