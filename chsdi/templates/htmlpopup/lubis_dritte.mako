@@ -57,7 +57,7 @@ if c['attributes']['bildnummer']:
     image_bildnummer = c['attributes']['bildnummer']
 endif
 datenherr = c['attributes']['firma']
-datum = datetime.datetime.strptime(c['attributes']['flugdatum'], "%Y%m%d  ").strftime("%d-%m-%Y")
+datum = datetime.datetime.strptime(c['attributes']['flugdatum'].strip(), "%Y%m%d").strftime("%d-%m-%Y")
 orientierung = '-'
 image_width = 1
 image_height = 1
