@@ -89,32 +89,33 @@ class FeatureParams(MapServiceValidation):
 def identify_oereb(request):
     return _identify_oereb(request)
 
+
 @view_config(route_name='identify', renderer='geojson', request_param='geometryFormat=geojson')
 def identify_geojson(request):
-    return _indentify(request)
+    return _identify(request)
 
 
 @view_config(route_name='identify', renderer='esrijson')
 def identify_esrijson(request):
-    return _indentify(request)
+    return _identify(request)
 
 
-def _intentify_oereb(request):
+def _identify_oereb(request):
     params = FeaturesParams(request)
-    # At the moment only one layer at a time and no support of all    
+    # At the moment only one layer at a time and no support of all
     if params.layers == 'all' or len(params.layers) > 1:
         raise exc.HTTPBadRequest('Please specify the id of the layer you want to query')
     idBod = params.layers[0]
     query = params.request.db.query(OerebMetadata)
     layerMetadata = _get_layer(
         query,
-        model,
+        OerebMetadata,
         idBod
     )
     header = layerMetadata.header
     footer = layerMetadata.footer
     # Only relation 1 to 1 is needed at the moment
-    layerVectorModel = [oereb_models_from_bodid(idBod)[0]]
+    layerVectorModel = [[oereb_models_from_bodid(idBod)[0]]]
     features = []
     for feature in _get_features_for_extent(params, layerVectorModel):
         temp = feature.xmlData.split('##')
@@ -126,7 +127,8 @@ def _intentify_oereb(request):
     response.content_type = 'text/xml'
     return response
 
-def _indentify(request):
+
+def _identify(request):
     params = FeaturesParams(request)
     if params.layers == 'all':
         model = get_bod_model(params.lang)
@@ -201,6 +203,7 @@ def htmlpopup(request):
     if params.cbName is None:
         return response
     return response.body
+
 
 @view_config(route_name='extendedHtmlPopup', renderer='jsonp')
 @view_config(route_name='extendedhtmlpopup', renderer='jsonp')
@@ -345,6 +348,7 @@ def metadata(request):
     for layer in _get_layers_metadata_for_params(params, query, model):
         results['layers'].append(layer)
     return results
+
 
 @view_config(route_name='layersconfig', renderer='jsonp')
 @view_config(route_name='layersConfig', renderer='jsonp')
