@@ -204,6 +204,8 @@ def _find(request):
     findColumn = lambda x: (x, x.get_column_by_name(params.searchField))
     for model in models:
         vectorModel, searchColumn = findColumn(model)
+        if searchColumn is None:
+            raise exc.HTTPBadRequest('Please provide a existing searchField')
         query = request.db.query(vectorModel)
         query = _full_text_search(
             query,
