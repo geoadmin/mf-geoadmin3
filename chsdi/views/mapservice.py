@@ -185,7 +185,7 @@ def _identify(request):
 
 # order matters, last route is the default one!
 @view_config(route_name='find', renderer='geojson',
-    request_param='geometryFormat=geojson')
+             request_param='geometryFormat=geojson')
 def view_find_geojson(request):
     return _find(request)
 
@@ -196,7 +196,7 @@ def view_find_esrijson(request):
 
 
 def _find(request):
-    params = FindFeaturesParams(request) 
+    params = FindFeaturesParams(request)
     if params.searchText is None:
         raise exc.HTTPBadRequest('Please provide a searchText')
     models = models_from_name(params.layer)
@@ -225,7 +225,7 @@ def _find(request):
 
     return {'results': features}
 
- 
+
 @view_config(route_name='feature', renderer='geojson',
              request_param='geometryFormat=geojson')
 def view_get_feature_geojson(request):
