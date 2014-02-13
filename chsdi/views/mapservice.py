@@ -2,14 +2,15 @@
 
 from pyramid.view import view_config
 from pyramid.renderers import render_to_response
+from pyramid.response import Response
 import pyramid.httpexceptions as exc
 
 from sqlalchemy import Text, or_, func
 from sqlalchemy.sql.expression import cast
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
-from chsdi.models import models_from_name
-from chsdi.models.bod import LayersConfig, get_bod_model, computeHeader
+from chsdi.models import models_from_name, oereb_models_from_bodid
+from chsdi.models.bod import LayersConfig, OerebMetadata, get_bod_model, computeHeader
 from chsdi.models.vector import getScale
 from chsdi.lib.validation import MapServiceValidation
 
@@ -84,6 +85,10 @@ class FeatureParams(MapServiceValidation):
 
 
 # Order matters, last one is the default one
+@view_config(route_name='identify', request_param='geometryFormat=interlis')
+def identify_oereb(request):
+    return _identify_oereb(request)
+
 @view_config(route_name='identify', renderer='geojson', request_param='geometryFormat=geojson')
 def identify_geojson(request):
     return _indentify(request)
@@ -93,6 +98,33 @@ def identify_geojson(request):
 def identify_esrijson(request):
     return _indentify(request)
 
+
+def _intentify_oereb(request):
+    params = FeaturesParams(request)
+    # At the moment only one layer at a time and no support of all    
+    if params.layers == 'all' or len(params.layers) > 1:
+        raise exc.HTTPBadRequest('Please specify the id of the layer you want to query')
+    idBod = params.layers[0]
+    query = params.request.db.query(OerebMetadata)
+    layerMetadata = _get_layer(
+        query,
+        model,
+        idBod
+    )
+    header = layerMetadata.header
+    footer = layerMetadata.footer
+    # Only relation 1 to 1 is needed at the moment
+    layerVectorModel = [oereb_models_from_bodid(idBod)[0]]
+    features = []
+    for feature in _get_features_for_extent(params, layerVectorModel):
+        temp = feature.xmlData.split('##')
+        for fragment in temp:
+            if fragment not in features:
+                features.append(fragment)
+    results = header + ''.join(features) + footer
+    response = Response(results)
+    response.content_type = 'text/xml'
+    return response
 
 def _indentify(request):
     params = FeaturesParams(request)
@@ -114,7 +146,7 @@ def _indentify(request):
 
     maxFeatures = 50
     features = []
-    for feature in _get_features_for_extent(params, models, maxFeatures):
+    for feature in _get_features_for_extent(params, models, maxFeatures=maxFeatures):
         if params.returnGeometry:
             f = feature.__geo_interface__
         else:
@@ -268,7 +300,7 @@ def _get_feature(params, models, layerId, featureId, extended=False):
     return feature, template
 
 
-def _get_features_for_extent(params, models, maxFeatures):
+def _get_features_for_extent(params, models, maxFeatures=None):
     ''' Returns a generator function that yields
     a feature. '''
     for vectorLayer in models:
@@ -289,7 +321,7 @@ def _get_features_for_extent(params, models, maxFeatures):
                     except AttributeError:
                         raise exc.HTTPBadRequest('%s is not time enabled' % model.__bodId__)
                     query = query.filter(timeInstantColumn == params.timeInstant)
-                query = query.limit(maxFeatures)
+                query = query.limit(maxFeatures) if maxFeatures is not None else query
                 for feature in query:
                     yield feature
 
@@ -488,58 +520,6 @@ class MapService(MapServiceValidation):
         self.geodataStaging = request.registry.settings['geodata_staging']
         self.translate = request.translate
         self.request = request
-
-    @view_config(route_name='identify', request_param='geometryFormat=interlis')
-    def view_identify_oereb(self):
-        from chsdi.models import oereb_models_from_bodid
-        from chsdi.models.bod import OerebMetadata
-        from pyramid.response import Response
-        self.geometry = self.request.params.get('geometry')
-        self.geometryType = self.request.params.get('geometryType')
-        self.imageDisplay = self.request.params.get('imageDisplay')
-        self.mapExtent = self.request.params.get('mapExtent')
-        self.tolerance = self.request.params.get('tolerance')
-        # FIXME not supported at the moment
-        self.returnGeometry = self.request.params.get('returnGeometry')
-        self.layers = self.request.params.get('layers', 'all')
-
-        # At the moment only one layer at a time and no support of all
-        if self.layers == 'all' or len(self.layers) > 1:
-            raise exc.HTTPBadRequest('Please specify the id of the layer you want to query')
-        idBod = self.layers[0]
-        model = OerebMetadata
-        query = self.request.db.query(model)
-        query = query.filter(model.idBod == idBod)
-        try:
-            layer_metadata = query.one()
-        except NoResultFound:
-            raise exc.HTTPNotFound('No layer with id %s' % idBod)
-        except MultipleResultsFound:
-            raise exc.HTTPInternalServerError()
-        header = layer_metadata.header
-        footer = layer_metadata.footer
-
-        # Only relation 1 to 1 at the moment
-        model = oereb_models_from_bodid(idBod)[0]
-        geom_filter = model.geom_filter(
-            self.geometry,
-            self.geometryType,
-            self.imageDisplay,
-            self.mapExtent,
-            self.tolerance
-        )
-        query = self.request.db.query(model).filter(geom_filter)
-        features = []
-        for q in query:
-            temp = q.xmlData.split('##')
-            for fragment in temp:
-                if fragment not in features:
-                    features.append(fragment)
-
-        results = header + ''.join(features) + footer
-        response = Response(results)
-        response.content_type = 'text/xml'
-        return response
 
     # order matters, last route is the default!
     @view_config(route_name='find', renderer='geojson',
