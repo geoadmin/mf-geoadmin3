@@ -87,6 +87,9 @@ def main(global_config, **settings):
     config.add_route('height', '/rest/services/height')
     config.add_route('feedback', '/feedback')
 
+    #Service to create snapshot of map.geo.admin.ch 
+    config.add_route('snapshot', '/snapshot')
+
     # Checker section
     config.add_route('checker', '/checker')
     config.add_route('checker_dev', '/checker_dev')
