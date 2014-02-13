@@ -24,7 +24,8 @@
       }),
       interactions: ol.interaction.defaults({
         altShiftDragRotate: true,
-        touchRotate: false
+        touchRotate: false,
+        keyboard: false
       }).extend([
         new ol.interaction.DragZoom()
       ]),
@@ -38,7 +39,7 @@
       }),
       ol3Logo: false
     });
-    
+   
     var dragClass = 'ga-dragging';
     var viewport = $(map.getViewport());
     map.on('dragstart', function() {
@@ -70,6 +71,16 @@ module.controller('GaMainController',
       // The main controller creates the OpenLayers map object. The map object
       // is central, as most directives/components need a reference to it.
       $scope.map = createMap();
+      
+      // We add manually the keyboard interactions to have the possibility to
+      // specify a condition
+      var keyboardPan = new ol.interaction.KeyboardPan({
+        condition: function() {
+          return (!$scope.isTimeSelectorActive);
+        }
+      });
+      $scope.map.addInteraction(keyboardPan);
+      $scope.map.addInteraction(new ol.interaction.KeyboardZoom());
 
       // Activate the "layers" parameter permalink manager for the map.
       gaLayersPermalinkManager($scope.map);
