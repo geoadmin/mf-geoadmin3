@@ -98,6 +98,15 @@ class TestMapServiceView(TestsBase):
         params = {'geometryType': 'esriGeometryPoint', 'geometry': '630853.809670509,170647.93120352627', 'geometryFormat': 'geojson', 'imageDisplay': '1920,734,96', 'mapExtent': '134253,-21102,1382253,455997', 'tolerance': '5', 'layers': 'all:ch.bafu.bundesinventare-bln', 'timeInstant': '1936'}
         resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=400)
 
+    def test_identify_oereb(self):
+        params = {'geometry': '618953,170093', 'geometryType': 'esriGeometryPoint', 'imageDisplay': '1920,576,96', 'layers': 'all:ch.bav.kataster-belasteter-standorte-oev.oereb', 'mapExtent': '671164.31244,253770,690364.31244,259530', 'tolerance': '5', 'geometryFormat': 'interlis'}
+        resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=200)
+        self.failUnless(resp.content_type == 'text/xml')
+
+    def test_identify_oereb_several_layers(self):
+        params = {'geometry': '618953,170093', 'geometryType': 'esriGeometryPoint', 'imageDisplay': '1920,576,96', 'layers': 'all:    ch.bav.kataster-belasteter-standorte-oev.oereb,ch.bazl.sicherheitszonenplan.oereb', 'mapExtent': '671164.31244,253770,690364.31244,259530', 'tolerance': '5', 'geometryFormat': 'interlis'}
+        resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=400)
+
     def test_feature_wrong_idlayer(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/toto/362', status=400)
         resp.mustcontain('No Vector Table was found for')
