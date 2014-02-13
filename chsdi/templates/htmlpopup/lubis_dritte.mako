@@ -15,8 +15,7 @@ datenherr = c['attributes']['firma']
 datum = datetime.datetime.strptime(c['attributes']['flugdatum'].strip(), "%Y%m%d").strftime("%d-%m-%Y")
 image_width = 1
 image_height = 1
-protocol = request.headers.get('X-Forwarded-Proto','http')
-chsdihost = 'https' + '://' + request.registry.settings['host']
+chsdihost = '//' + request.registry.settings['host']
 
 if c['attributes']['filename']:
     try:
@@ -63,8 +62,7 @@ image_width = 1
 image_height = 1
 filenamee = c['attributes']['filename']
 scan = '-'
-protocol = request.headers.get('X-Forwarded-Proto','http')
-chsdihost = 'https' + '://' + request.registry.settings['host']
+chsdihost = '//' + request.registry.settings['host']
 
 if c['attributes']['filename']: 
     scan = 'True'
