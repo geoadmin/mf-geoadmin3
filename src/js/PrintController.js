@@ -5,9 +5,14 @@
 
   module.controller('GaPrintController',
     function($scope, gaGlobalOptions) {
+      var printPath = gaGlobalOptions.mapUrl + '/print'
+      
       $scope.options = {
-        printPath:  gaGlobalOptions.mapUrl + '/print',
-        apiUrl: gaGlobalOptions.apiUrl,
+        printConfigUrl: printPath + '/info.json?url=' +
+            encodeURIComponent(printPath) + '&app=',
+        legendUrl: gaGlobalOptions.apiUrl + '/static/images/legends/',
+        qrcodeUrl: gaGlobalOptions.apiUrl + '/qrcodegenerator?url=',
+        shortenUrl: gaGlobalOptions.apiUrl + '/shorten.json?cb=JSON_CALLBACK',
         crossUrl: location.origin + location.pathname +
             gaGlobalOptions.version + 'img/cross.png',
         heightMargin: $('#header').height(),
