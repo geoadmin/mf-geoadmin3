@@ -19,7 +19,8 @@ class Snapshot(object):
     def home(self):
         querystring = ''
         for key in self.request.params.keys():
-            querystring += key + '=' + self.request.params.get(key) + '&'
+            if (key != '_escaped_fragment_'):
+                querystring += key + '=' + self.request.params.get(key) + '&'
         querystring += 'snapshot=true'
         retval = 'OK'
         driver = selenium.webdriver.PhantomJS(service_log_path='/tmp/ghostdriver.log')
