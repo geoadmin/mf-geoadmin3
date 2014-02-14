@@ -27,13 +27,13 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="msapplication-TileImage" content="${version}img/touch-icon-bund-144x144.png">
+    <meta name="msapplication-TileImage" content="${versionslashed}img/touch-icon-bund-144x144.png">
     <meta name="msapplication-TileColor" content="#ffffff">
     <link rel="dns-prefetch" href="${api_url}"/>
 
-    <link rel="apple-touch-icon" sizes="76x76" href="${version}img/touch-icon-bund-76x76.png" />
-    <link rel="apple-touch-icon" sizes="120x120" href="${version}img/touch-icon-bund-120x120.png" />
-    <link rel="apple-touch-icon" sizes="152x152" href="${version}img/touch-icon-bund-152x152.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="${versionslashed}img/touch-icon-bund-76x76.png" />
+    <link rel="apple-touch-icon" sizes="120x120" href="${versionslashed}img/touch-icon-bund-120x120.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="${versionslashed}img/touch-icon-bund-152x152.png" />
 
     <meta name="description" content="Maps of Switzerland : The official geoportal of the Swiss Confederation provides digital data which can be viewed, printed out, ordered and supplied by means of the map viewer tool. Geoinformation is made available by public-sector organisations and is accessible to the general public."/>
     <meta name="keywords" content="maps Switzerland, map viewer, Confederation, geodata, public platform, geographical information, geoportal, orthophotos, geolocation, geoinformation, Geodaten, Geoinformation, Bund, Plattform, Karte, Kartendienst, Kartenviewer"/>
@@ -78,8 +78,8 @@
       })();
     </script>
 
-    <link href="${version}style/app.css" rel="stylesheet" media="screen">
-    <link rel="shortcut icon" type="image/x-icon" href="${version}img/favicon.ico"/>
+    <link href="${versionslashed}style/app.css" rel="stylesheet" media="screen">
+    <link rel="shortcut icon" type="image/x-icon" href="${versionslashed}img/favicon.ico"/>
   </head>
 
   <body ng-class="[topicId, globals.searchFocused ? 'search-focused' : '', globals.touch ? 'touch' : '']">
@@ -104,8 +104,8 @@
     <div id="header" class="navbar navbar-fixed-top">
       <div id="logo" class="pull-left">
         <a ng-href="?topic={{topicId}}&lang={{langId}}">
-          <img ng-if="langId" ng-src="${version}img/logo.ch.{{langId}}.png" style="width: 246px; height: 89px" alt="big_logo"/>
-          <img src="${version}img/logo.ch.small.png" style="width: 19px; height: 19.5px" alt="small_logo"/>
+          <img ng-if="langId" ng-src="${versionslashed}img/logo.ch.{{langId}}.png" style="width: 246px; height: 89px" alt="big_logo"/>
+          <img src="${versionslashed}img/logo.ch.small.png" style="width: 19px; height: 19.5px" alt="small_logo"/>
         </a>
       </div>
       <div id="search-container" ng-controller="GaSearchController">
@@ -483,7 +483,7 @@
     <i id="loader" class="icon-spin icon-refresh"></i>
 
 % if mode == "prod":
-    <script src="${version}lib/build.js"></script>
+    <script src="${versionslashed}lib/build.js"></script>
 % else:
     <script src="lib/jquery-2.0.3.js"></script>
     <script src="lib/angular-1.2.9.js"></script>
@@ -525,27 +525,21 @@
     <script>
       (function() {
         var module = angular.module('ga');
-
-        var myOriginWithEnv = location.origin + '/${user_env}';
-        var v = '${version}';
-        console.log('v is', v);
-        var myOriginWithEnvVersioned = myOriginWithEnv;
-        //remove slash from version, if it exists
-        v = v.replace('/', '');
-        if (v != "") {
-          myOriginWithEnvVersioned += '/' + v;
-        }
+  
+        
+        var cacheAdd = '${version}' != '' ? '/' + '${version}' : '';
 
         module.constant('gaGlobalOptions', {
           apiUrl : location.protocol + '${api_url}',
-          mapUrl : myOriginWithEnv,
-          cachedMapUrl: myOriginWithEnvVersioned,
-          ogcproxyUrl: myOriginWithEnv + '/ogcproxy?url='
+          mapUrl : location.origin + '/${user_env}',
+          cachedMapUrl: location.origin + '/${user_env}' + cacheAdd,
+          ogcproxyUrl: location.origin + '/${user_env}' + '/ogcproxy?url=',
+          topicUrlTemplate: '${versionslashed}img/{Topic}.jpg'
         });
 
         module.config(function($translateProvider, gaGlobalOptions) {
           $translateProvider.useStaticFilesLoader({
-            prefix: '${version}locales/',
+            prefix: '${versionslashed}locales/',
             suffix: '.json'
           });
         });

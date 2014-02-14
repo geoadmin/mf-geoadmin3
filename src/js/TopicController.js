@@ -7,7 +7,7 @@
       function($scope, gaGlobalOptions) {
           $scope.options = {
             defaultTopicId: 'ech',
-            thumbnailUrlTemplate: gaGlobalOptions.cachedMapUrl + '/img/{Topic}.jpg',
+            thumbnailUrlTemplate: gaGlobalOptions.topicUrlTemplate,
             url: gaGlobalOptions.cachedMapUrl + '/rest/services'
           };
       });

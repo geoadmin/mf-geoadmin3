@@ -16,7 +16,7 @@
       var elevationModel = options.elevationModel || 'DTM25';
       var width = options.width - marginHoriz;
       var height = options.height - marginVert;
-      var versionPath = options.version || '';
+      var libBase = options.cachedMapUrl || '';
       var d3, x, y;
 
       var onD3Loaded = function() {
@@ -27,7 +27,7 @@
       };
 
       if (!window.d3) {
-        $.getScript(versionPath + '/lib/d3-3.3.1.min.js', onD3Loaded);
+        $.getScript(libBase + '/lib/d3-3.3.1.min.js', onD3Loaded);
       } else {
         $timeout(onD3Loaded, 0);
       }
@@ -238,7 +238,7 @@
 
     this.$get = function($timeout, gaGlobalOptions) {
       return function(options, lazyLoadCB) {
-        options.version = gaGlobalOptions.cachedMapUrl;
+        options.cachedMapUrl = gaGlobalOptions.cachedMapUrl;
         var chart = new ProfileChart($timeout, options, lazyLoadCB);
         return chart;
       };
