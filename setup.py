@@ -28,6 +28,7 @@ requires = [
     'pep8',
     'autopep8',
     'selenium',
+    'regex',
     ]
 
 setup(name='chsdi',
