@@ -116,7 +116,7 @@ prd/lib/: src/lib/d3-3.3.1.min.js
 
 prd/lib/build.js: src/lib/jquery-2.0.3.min.js src/lib/bootstrap-3.0.0.min.js src/lib/typeahead-0.9.3.min.js src/lib/angular-1.2.9.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/EPSG2056.js src/lib/ol.js src/lib/angular-animate-1.2.9.min.js src/lib/angular-translate-1.1.1.min.js src/lib/angular-translate-loader-static-files-0.1.5.min.js .build-artefacts/fastclick.min.js .build-artefacts/app.js
 	mkdir -p $(dir $@)
-	cat $^ > $@
+	cat $^ | sed 's/^\/\/[#,@] sourceMappingURL=.*//' > $@
 
 prd/style/app.css: src/style/app.less src/style/app_print.less src/style/ga_bootstrap.less src/style/ga_variables.less $(SRC_COMPONENTS_LESS_FILES) node_modules .build-artefacts/bootstrap
 	mkdir -p $(dir $@)
