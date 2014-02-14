@@ -60,6 +60,10 @@
           this.deleteParam = function(key) {
              delete params[key];
           };
+
+          this.refresh = function() {
+             gaHistory.replaceState(null, '', this.getHref());
+          };
         };
 
         var loc = $window.location;
@@ -79,7 +83,10 @@
           if (lastHref !== newHref) {
             $rootScope.$evalAsync(function() {
               lastHref = newHref;
-              if ($sniffer.history) {
+              if ($sniffer.history && !(document.fullscreenElement ||
+                  document.msFullscreenElement ||
+                  document.mozFullScreen ||
+                  document.webkitIsFullScreen)) {
                 gaHistory.replaceState(null, '', newHref);
               }
               $rootScope.$broadcast('gaPermalinkChange');
