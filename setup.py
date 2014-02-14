@@ -29,6 +29,7 @@ requires = [
     'autopep8',
     'selenium',
     'regex',
+    'pystache',
     ]
 
 setup(name='chsdi',
