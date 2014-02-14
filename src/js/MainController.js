@@ -20,7 +20,11 @@
  
     var map = new ol.Map({
       controls: ol.control.defaults({
-        attribution: false
+        attribution: false,
+        zoomOptions: {
+          zoomInLabel: '',
+          zoomOutLabel: ''
+        }
       }),
       interactions: ol.interaction.defaults({
         altShiftDragRotate: true,
