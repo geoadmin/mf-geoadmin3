@@ -267,7 +267,7 @@ layouts:
                 Stampato il ${now dd.MM.yyyy HH:mm}
                 ${shortLink}
     lastPage:
-      pagesize: A4
+      pageSize: A4
       landscape: true
       items:
 
