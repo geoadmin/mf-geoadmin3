@@ -597,7 +597,7 @@
         encLayers.push(graticule);
       }
       // FIXME this is a temporary solution
-      var overlays = $scope.map.getOverlays();
+      /*var overlays = $scope.map.getOverlays();
       var resolution = $scope.map.getView().getResolution();
 
       overlays.forEach(function(overlay) {
@@ -633,7 +633,7 @@
           };
           encLayers.push(cross);
         }
-      });
+      });*/
 
       // scale = resolution * inches per map unit (m) * dpi
       var scale = parseInt(view.getResolution() * 39.37 * 254);
