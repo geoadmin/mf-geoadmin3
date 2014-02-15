@@ -27,11 +27,11 @@ Below you'll find a complete working example. Create a new file, copy in the con
           width: 100%;
         }
       </style>
-      <script src="http://api3.geo.admin.ch/loader.js?lang=en" type="text/javascript"></script>
       <title>GeoAdmin API example</title>
     </head>
     <body>
       <h2>My first GeoAdmin map</h2>
+      <script src="http://api3.geo.admin.ch/loader.js?lang=en" type="text/javascript"></script>
       <div id="map" class="map"></div>
       <script type="text/javascript">
         var layer = ga.layer.create('ch.swisstopo.pixelkarte-farbe');
