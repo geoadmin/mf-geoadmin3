@@ -533,6 +533,7 @@
           apiUrl : location.protocol + '${api_url}',
           mapUrl : location.origin + '/${user_env}',
           cachedMapUrl: location.origin + '/${user_env}' + cacheAdd,
+          resourceUrl: location.origin + location.pathname + '${versionslashed}',
           ogcproxyUrl: location.origin + '/${user_env}' + '/ogcproxy?url=',
           topicUrlTemplate: '${versionslashed}img/{Topic}.jpg',
           whitelist: [

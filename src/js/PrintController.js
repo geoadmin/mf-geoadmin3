@@ -13,8 +13,7 @@
         legendUrl: gaGlobalOptions.apiUrl + '/static/images/legends/',
         qrcodeUrl: gaGlobalOptions.apiUrl + '/qrcodegenerator?url=',
         shortenUrl: gaGlobalOptions.apiUrl + '/shorten.json?cb=JSON_CALLBACK',
-        crossUrl: location.origin + location.pathname +
-            gaGlobalOptions.version + 'img/cross.png',
+        crossUrl: gaGlobalOptions.resourceUrl + 'img/cross.png',
         heightMargin: $('#header').height(),
         widthMargin: $('#pulldown').width(),
         // Hardcode listd of legends that should be downloaded in
