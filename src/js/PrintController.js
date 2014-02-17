@@ -9,6 +9,8 @@
         printPath:  gaGlobalOptions.baseUrlPath + '/print',
         baseUrlPath:  gaGlobalOptions.baseUrlPath,
         serviceUrl: gaGlobalOptions.serviceUrl,
+        crossUrl: location.origin + location.pathname +
+            gaGlobalOptions.version + 'img/cross.png',
         heightMargin: $('#header').height(),
         widthMargin: $('#pulldown').width()
       };
