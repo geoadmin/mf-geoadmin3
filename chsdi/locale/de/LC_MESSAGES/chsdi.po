@@ -3929,7 +3929,7 @@ msgid "tt_sachplan_planning_bis"
 msgstr "bis"
 
 msgid "tt_sachplan_planning_coordstand"
-msgstr "Koordinationsstand"
+msgstr "Stand der Koordination"
 
 msgid "tt_sachplan_planning_name"
 msgstr "Planerische Massnahme"

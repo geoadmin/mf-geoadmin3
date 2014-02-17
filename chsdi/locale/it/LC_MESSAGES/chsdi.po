@@ -2079,7 +2079,7 @@ msgid "fj97"
 msgstr "Vue aérienne pour la statistique de la superficie 1992/97 prise en"
 
 msgid "flaeche_ha"
-msgstr "Surface [ha]"
+msgstr "Superficie [ha]"
 
 msgid "flaeche_km2"
 msgstr "Surface [km2]"
@@ -2142,7 +2142,7 @@ msgid "geothermie"
 msgstr "Densité de flux thermique [mW/m2]"
 
 msgid "gesamtflaeche_ha"
-msgstr "Surface totale [ha]"
+msgstr "Superficie totale [ha]"
 
 msgid "gestein"
 msgstr "Rocce"
@@ -2265,7 +2265,7 @@ msgid "information"
 msgstr "Informazioni"
 
 msgid "intern"
-msgstr "Intern"
+msgstr "Interno"
 
 msgid "ivs_bedeutung"
 msgstr "classificazione (LPN)"
@@ -2970,7 +2970,7 @@ msgid "messstandort_name"
 msgstr "Nome del sito di prova"
 
 msgid "messstellentyp"
-msgstr "Type"
+msgstr "Tipo"
 
 msgid "modif_validfrom"
 msgstr "Data della decisione"
@@ -3039,19 +3039,19 @@ msgid "nummer_terreg"
 msgstr "Numéro de la région territoriale"
 
 msgid "nutzung"
-msgstr "Type"
+msgstr "Tipo"
 
 msgid "nutzungsart_verbindung"
 msgstr "Usage de la connexion"
 
 msgid "objektname"
-msgstr "Nom de l'objet"
+msgstr "Nome dell'oggetto"
 
 msgid "objektnr"
-msgstr "Numéro de l'objet"
+msgstr "Numero dell'oggetto"
 
 msgid "oeffentlich"
-msgstr "Öffentlich"
+msgstr "Pubblico"
 
 msgid "official object webpage"
 msgstr "Pagina ufficiale dell'oggetto"
@@ -4119,7 +4119,7 @@ msgid "y"
 msgstr "Y-Coordonnée"
 
 msgid "zaehlstelle"
-msgstr "Poste de comptage"
+msgstr "Posti di contaggio"
 
 msgid "zeitraum"
 msgstr "Période de protection"
