@@ -46,6 +46,15 @@
             scope.options.showPrint = false;
           }
 
+          // Move the popup to its original position, only used on desktop
+          scope.moveToOriginalPosition = function() {
+            element.css({
+              left: scope.options.x ||
+                $(document.body).width() / 2 - element.width() / 2,
+              top: scope.options.y || 89 //89 is the default size of the header
+            });
+          };
+
           // Add close popup function
           scope.close = scope.options.close ||
               (function(event) {
@@ -85,14 +94,11 @@
                 windowPrint.document.close();
               });
 
-          // Move the popup to the correct position
           element.addClass('popover ga-popup');
+
+          // Move the popup to the correct position
           if (!gaBrowserSniffer.mobile) {
-            element.css({
-              left: scope.options.x ||
-                $(document.body).width() / 2 - element.width() / 2,
-              top: scope.options.y || 150
-            });
+            scope.moveToOriginalPosition();
           }
 
           // Watch the shown property
@@ -101,6 +107,7 @@
             function(newVal, oldVal) {
               if (newVal != oldVal) {
                 element.toggle(newVal);
+                scope.moveToOriginalPosition();
               }
             }
           );

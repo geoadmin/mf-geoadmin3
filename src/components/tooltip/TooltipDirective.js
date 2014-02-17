@@ -237,7 +237,6 @@
                       //always reposition element when newly opened
                       if (!gaBrowserSniffer.mobile) {
                         popup.element.css({
-                          top: 89,
                           left: ((size[0] / 2) -
                               (parseFloat(popup.element.css('max-width')) / 2))
                         });

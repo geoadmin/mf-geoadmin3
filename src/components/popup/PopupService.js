@@ -64,6 +64,7 @@
         if (destroyOnClose !== false) {
           this.destroy();
         }
+
       };
 
       Popup.prototype.destroy = function() {
