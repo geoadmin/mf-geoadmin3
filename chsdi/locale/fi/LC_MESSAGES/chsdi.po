@@ -1800,7 +1800,7 @@ msgid "ch.swisstopo.lubis-bildstreifen"
 msgstr "Luftbildstreifen swisstopo"
 
 msgid "ch.swisstopo.lubis-luftbilder"
-msgstr "Luftbilder swisstopo"
+msgstr "TODO"
 
 msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen"
 msgstr "Luftbilder Privater"
