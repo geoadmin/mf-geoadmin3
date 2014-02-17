@@ -136,7 +136,7 @@
             if (!overlay) {
               overlay = new ol.Overlay({
                 element: markerElt,
-                positioning: 'CENTER_CENTER',
+                positioning: 'center-center',
                 stopEvent: false
               });
               overlay.bindTo('position', geolocation);
