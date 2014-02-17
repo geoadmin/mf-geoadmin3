@@ -271,7 +271,7 @@
             link: function(scope, elt, attrs, controller) {
 
               // Create the typeAhead input for the list of WMSs available
-              var taElt = elt.find('input[type=url]').typeahead({
+              var taElt = elt.find('input[name=url]').typeahead({
                 local: scope.options.defaultWMSList,
                 limit: 500
 
