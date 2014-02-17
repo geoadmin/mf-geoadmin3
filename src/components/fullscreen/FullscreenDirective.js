@@ -19,22 +19,11 @@
         //  ccc?key=0AvgmqEgDEiu5dGtqVEUySnBvNkxiYlAtbks1eDFibkE#gid=0
         var docElm = document.documentElement;
         scope.fullscreenSupported = (docElm.requestFullScreen ||
-          docElm.mozRequestFullScreen ||
-          docElm.webkitRequestFullScreen ||
-          docElm.msRequestFullscreen
+            docElm.mozRequestFullScreen ||
+            docElm.webkitRequestFullScreen ||
+            docElm.msRequestFullscreen
         );
-        document.addEventListener('fullscreenchange', function(evt) {
-          scope.onFullscreenChange();
-        });
-        document.addEventListener('mozfullscreenchange', function(evt) {
-          scope.onFullscreenChange();
-        });
-        document.addEventListener('webkitfullscreenchange', function(evt) {
-          scope.onFullscreenChange();
-        });
-        document.addEventListener('msfullscreenchange', function(evt) {
-          scope.onFullscreenChange();
-        });
+
         scope.click = function() {
           var target = scope.map.getTarget();
           if (target.requestFullScreen) {
@@ -47,17 +36,26 @@
             target.msRequestFullscreen();
           }
         };
-        scope.onFullscreenChange = function() {
-          // Bug in Safari
-          scope.map.updateSize();
-          var target = scope.map.getTarget();
-          if (!(document.fullscreenElement ||
-            document.mozFullScreenElement ||
-            document.webkitFullscreenElement ||
-            document.msFullscreenElement)) {
-            gaPermalink.refresh();
-          }
-        };
+
+        if (scope.fullscreenSupported) {
+          var onFullscreenChange = function() {
+            // Bug in Safari
+            scope.map.updateSize();
+            var target = scope.map.getTarget();
+            if (!(document.fullscreenElement ||
+                document.mozFullScreenElement ||
+                document.webkitFullscreenElement ||
+                document.msFullscreenElement)) {
+              gaPermalink.refresh();
+            }
+          };
+
+          document.addEventListener('fullscreenchange', onFullscreenChange);
+          document.addEventListener('mozfullscreenchange', onFullscreenChange);
+          document.addEventListener('webkitfullscreenchange',
+              onFullscreenChange);
+          document.addEventListener('msfullscreenchange', onFullscreenChange);
+        }
       }
     };
   });
