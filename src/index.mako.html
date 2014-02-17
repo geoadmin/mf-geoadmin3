@@ -534,7 +534,10 @@
           mapUrl : location.origin + '/${user_env}',
           cachedMapUrl: location.origin + '/${user_env}' + cacheAdd,
           ogcproxyUrl: location.origin + '/${user_env}' + '/ogcproxy?url=',
-          topicUrlTemplate: '${versionslashed}img/{Topic}.jpg'
+          topicUrlTemplate: '${versionslashed}img/{Topic}.jpg',
+          whitelist: [
+            'http://www.kmlvalidator.org/validate.htm'
+          ]
         });
 
         module.config(function($translateProvider, gaGlobalOptions) {
@@ -544,7 +547,7 @@
           });
         });
 
-        module.config(['gaLayersProvider', 'gaGlobalOptions', function(gaLayersProvider, gaGlobalOptions) {
+        module.config(function(gaLayersProvider, gaGlobalOptions) {
           gaLayersProvider.wmtsGetTileUrlTemplate =
               '//wmts{0-4}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
 
@@ -553,19 +556,18 @@
 
           gaLayersProvider.legendUrlTemplate =
               gaGlobalOptions.cachedMapUrl + '/rest/services/{Topic}/MapServer/{Layer}/legend?lang={Lang}';
-        }]);
+        });
 
-        module.config(['gaRecenterMapOnFeaturesProvider', 'gaGlobalOptions', function(gaRecenterMapOnFeaturesProvider, gaGlobalOptions) {
+        module.config(function(gaRecenterMapOnFeaturesProvider, gaGlobalOptions) {
           gaRecenterMapOnFeaturesProvider.url =
               gaGlobalOptions.cachedMapUrl + '/rest/services/all/MapServer/';
-        }]);
-        
-        module.config(['$sceDelegateProvider', function($sceDelegateProvider) {
-          var validatorUrl = 'http://www.kmlvalidator.org/validate.htm';
+        });
+         
+        module.config(function($sceDelegateProvider, gaGlobalOptions) {
           var whitelist = $sceDelegateProvider.resourceUrlWhitelist();
-          whitelist.push(validatorUrl);
+          whitelist = whitelist.concat(gaGlobalOptions.whitelist);
           $sceDelegateProvider.resourceUrlWhitelist(whitelist);
-        }]);
+        });
 
       })();
 
