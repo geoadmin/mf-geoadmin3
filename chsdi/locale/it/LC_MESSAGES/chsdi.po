@@ -2060,6 +2060,15 @@ msgstr "Ovest"
 msgid "et_fromatt"
 msgstr "Anomalie aeromagnet. Altipiano/Giura [nT]"
 
+msgid "et_fromatt_anom"
+msgstr "Anomalia isostatico [mGal]"
+
+msgid "et_fromatt_bouguer"
+msgstr "Anomalia Bouguer [mGal]"
+
+msgid "et_fromatt_ch"
+msgstr "Anomalia aeromagnetica, Svizzera [nT]"
+
 msgid "fassung"
 msgstr "Stesura"
 
@@ -3375,10 +3384,10 @@ msgid "tt_ch.bfe.energieforschung_beauftragter"
 msgstr "Mandatario"
 
 msgid "tt_ch.bfe.energieforschung_beschreibung"
-msgstr "Descripzione"
+msgstr "Descrizione"
 
 msgid "tt_ch.bfe.energieforschung_beschreibung"
-msgstr "Descripzione"
+msgstr "Descrizione"
 
 msgid "tt_ch.bfe.energieforschung_ch_hauptbereich"
 msgstr "Settore principale CH"
@@ -3918,7 +3927,7 @@ msgid "tt_sachplan_facility_beschlussdatum"
 msgstr "Data della delibera"
 
 msgid "tt_sachplan_facility_name"
-msgstr "Nome dell`installazione"
+msgstr "Installazione"
 
 msgid "tt_sachplan_facility_uberobjekt"
 msgstr "Oggetto preposto"

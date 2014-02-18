@@ -2060,6 +2060,15 @@ msgstr "Ost"
 msgid "et_fromatt"
 msgstr "Aeromagnet. Anomal. Alpenvorland/Jura[nT]"
 
+msgid "et_fromatt_anom"
+msgstr "Isostatische Anomalie [mGal]"
+
+msgid "et_fromatt_bouguer"
+msgstr "Bouguer Anomalie [mGal]"
+
+msgid "et_fromatt_ch"
+msgstr "Aeromagnetische Anomalien Schweiz [nT]"
+
 msgid "fassung"
 msgstr "Fassung"
 
@@ -3917,7 +3926,7 @@ msgid "tt_sachplan_facility_beschlussdatum"
 msgstr "Beschlussdatum"
 
 msgid "tt_sachplan_facility_name"
-msgstr "Name Anlage"
+msgstr "Anlage"
 
 msgid "tt_sachplan_facility_uberobjekt"
 msgstr "Übergeordnetes Objekt"

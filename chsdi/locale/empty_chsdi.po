@@ -2946,6 +2946,15 @@ msgstr ""
 msgid "et_fromatt"
 msgstr ""
 
+msgid "et_fromatt_anom"
+msgstr ""
+
+msgid "et_fromatt_bouguer"
+msgstr ""
+
+msgid "et_fromatt_ch"
+msgstr ""
+
 msgid "kartenwerk"
 msgstr ""
 

@@ -2061,6 +2061,15 @@ msgstr "East"
 msgid "et_fromatt"
 msgstr "Aeromagnetic anomalies Plateau/Jura [nT]"
 
+msgid "et_fromatt_anom"
+msgstr "Isostatic anomaly [mGal]"
+
+msgid "et_fromatt_bouguer"
+msgstr "Bouguer anomaly [mGal]"
+
+msgid "et_fromatt_ch"
+msgstr "Aeromagnetic anomalies Switzerland [nT]"
+
 msgid "fassung"
 msgstr "Version"
 
@@ -3918,7 +3927,7 @@ msgid "tt_sachplan_facility_beschlussdatum"
 msgstr "Valid from"
 
 msgid "tt_sachplan_facility_name"
-msgstr "Facility name"
+msgstr "Facility"
 
 msgid "tt_sachplan_facility_uberobjekt"
 msgstr "Belongs to object"

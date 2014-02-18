@@ -2060,6 +2060,15 @@ msgstr "Est"
 msgid "et_fromatt"
 msgstr "Anomalies aéromagnet. Plateau/Jura [nT]"
 
+msgid "et_fromatt_anom"
+msgstr "Anomalies isostatiques [mGal]"
+
+msgid "et_fromatt_bouguer"
+msgstr "Anomalies de Bouguer [mGal]"
+
+msgid "et_fromatt_ch"
+msgstr "Anomalies aéromagnétiques Suisse [nT]"
+
 msgid "fassung"
 msgstr "Version"
 
@@ -3918,7 +3927,7 @@ msgid "tt_sachplan_facility_beschlussdatum"
 msgstr "Date de l`arrêt"
 
 msgid "tt_sachplan_facility_name"
-msgstr "Nom de l`installation"
+msgstr "Installation"
 
 msgid "tt_sachplan_facility_uberobjekt"
 msgstr "Objet d`appartenance"
