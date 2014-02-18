@@ -7,39 +7,24 @@
     ['ga_browsersniffer_service',
      'pascalprecht.translate']);
 
-  module.controller('GaPrintDirectiveController',
-    function($scope, $http, $window, $translate, $document,
-             gaLayers, gaPermalink, gaBrowserSniffer) {
+  module.controller('GaPrintDirectiveController', function($scope, $http,
+      $window, $translate, $document,
+      gaLayers, gaPermalink, gaBrowserSniffer) {
+
     var waitclass = 'ga-print-wait';
     var bodyEl = angular.element($document[0].body);
-
-    // Hardcode listd of legends that should be downloaded in
-    // separate PDF instead of putting the image in the same
-    // PDF as the print (as in RE2). Note: We should avoid doing
-    // this as it feels hacky. We should create nice png what are
-    // usable in the pdf
-    var pdfLegendList = ['ch.astra.ivs-gelaendekarte',
-        'ch.astra.ausnahmetransportrouten',
-        'ch.bazl.luftfahrtkarten-icao',
-        'ch.bazl.segelflugkarte',
-        'ch.swisstopo.geologie-eiszeit-lgm-raster',
-        'ch.swisstopo.geologie-geologische_karte',
-        'ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen',
-        'ch.swisstopo.geologie-hydrogeologische_karte-grundwasservulnerabilitaet',
-        'ch.swisstopo.geologie-tektonische_karte',
-        'ch.kantone.cadastralwebmap-farbe',
-        'ch.swisstopo.pixelkarte-farbe-pk1000.noscale',
-        'ch.swisstopo.pixelkarte-farbe-pk500.noscale',
-        'ch.swisstopo.pixelkarte-farbe-pk200.noscale',
-        'ch.swisstopo.pixelkarte-farbe-pk100.noscale',
-        'ch.swisstopo.pixelkarte-farbe-pk50.noscale',
-        'ch.swisstopo.pixelkarte-farbe-pk25.noscale'];
-    var pdfLegendString = '_big.pdf';
+    bodyEl.removeClass(waitclass);
     var pdfLegendsToDownload = [];
-
+    var pdfLegendString = '_big.pdf';
     var topicId;
     var printRectangle;
+    var deregister;
+    var DPI = 72;
+    var DPI2 = 254;
+    var MM_PER_INCHES = 25.4;
+    var UNITS_RATIO = 39.37;
 
+    // Get print config
     var updatePrintConfig = function() {
       var printPath = $scope.options.printPath;
       var http = $http.get(printPath +
@@ -59,35 +44,31 @@
       });
     };
 
-   var deregister;
+    var activate = function() {
+      deregister = [
+        $scope.map.on('precompose', handlePreCompose),
+        $scope.map.on('postcompose', handlePostCompose),
+        $scope.map.getView().on('propertychange', function(event) {
+          updatePrintRectanglePixels($scope.scale);
+        })
+      ];
+      $scope.scale = getOptimalScale();
+      refreshComp();
+    };
 
-   var activate = function() {
-     deregister = [
-       $scope.map.on('precompose', handlePreCompose),
-       $scope.map.on('postcompose', handlePostCompose),
-       $scope.map.getView().on('propertychange', function(event) {
-         updatePrintRectanglePixels($scope.scale);
-       })
-     ];
-     $scope.scale = getOptimalScale();
-     refreshComp();
-   };
-
-   var deactivate = function() {
+    var deactivate = function() {
       if (deregister) {
         for (var i = 0; i < deregister.length; i++) {
-         deregister[i].src.unByKey(deregister[i]);
+          deregister[i].src.unByKey(deregister[i]);
         }
       }
       refreshComp();
-   };
+    };
 
-
-   var refreshComp = function() {
+    var refreshComp = function() {
       updatePrintRectanglePixels($scope.scale);
       $scope.map.requestRenderFrame();
     };
-
 
     // Compose events
     var handlePreCompose = function(evt) {
@@ -128,7 +109,7 @@
       ctx.restore();
     };
 
-
+    // Listeners
     $scope.$on('gaTopicChange', function(event, topic) {
       topicId = topic.id;
       updatePrintConfig();
@@ -139,11 +120,16 @@
     $scope.map.on('change:size', function(event) {
       updatePrintRectanglePixels($scope.scale);
     });
+    $scope.$watch('scale', function() {
+      updatePrintRectanglePixels($scope.scale);
+    });
+    $scope.$watch('layout', function() {
+      updatePrintRectanglePixels($scope.scale);
+    });
 
-    bodyEl.removeClass(waitclass);
 
+    // Encode ol.Layer to a basic js object
     var encodeLayer = function(layer, proj) {
-
       var encLayer, encLegend;
       var ext = proj.getExtent();
       var resolution = $scope.map.getView().getResolution();
@@ -155,48 +141,45 @@
         var maxResolution = layerConfig.maxResolution || Infinity;
 
         if (resolution <= maxResolution &&
-              resolution >= minResolution) {
+            resolution >= minResolution) {
           if (src instanceof ol.source.WMTS) {
-             encLayer = $scope.encoders.layers['WMTS'].call(this,
-                 layer, layerConfig);
+            encLayer = $scope.encoders.layers['WMTS'].call(this,
+                layer, layerConfig);
           } else if (src instanceof ol.source.ImageWMS ||
               src instanceof ol.source.TileWMS) {
-             encLayer = $scope.encoders.layers['WMS'].call(this,
-                 layer, layerConfig);
+            encLayer = $scope.encoders.layers['WMS'].call(this,
+                layer, layerConfig);
           } else if (layer instanceof ol.layer.Vector) {
-             var features = [];
-             src.forEachFeatureInExtent(ext, function(feat) {
-               features.push(feat);
-             });
+            var features = [];
+            src.forEachFeatureInExtent(ext, function(feat) {
+              features.push(feat);
+            });
 
-             if (features && features.length > 0) {
-               encLayer =
-                   $scope.encoders.layers['Vector'].call(this,
-                      layer, features);
-             }
+            if (features && features.length > 0) {
+              encLayer =
+                  $scope.encoders.layers['Vector'].call(this,
+                     layer, features);
+            }
           }
         }
       }
 
       if ($scope.options.legend && layerConfig.hasLegend) {
         encLegend = $scope.encoders.legends['ga_urllegend'].call(this,
-                          layer, layerConfig);
+            layer, layerConfig);
 
         if (encLegend.classes &&
             encLegend.classes[0] &&
             encLegend.classes[0].icon) {
           var legStr = encLegend.classes[0].icon;
           if (legStr.indexOf(pdfLegendString,
-                             legStr.length - pdfLegendString.length) !== -1) {
+              legStr.length - pdfLegendString.length) !== -1) {
             pdfLegendsToDownload.push(legStr);
             encLegend = undefined;
           }
         }
-
-     }
-
+      }
       return {layer: encLayer, legend: encLegend};
-
     };
 
 
@@ -358,6 +341,7 @@
       return literal;
     };
 
+    // Encoders by type of layer
     $scope.encoders = {
       'layers': {
         'Layer': function(layer) {
@@ -365,7 +349,6 @@
             layer: layer.bodId,
             opacity: layer.getOpacity()
           };
-
           return enc;
         },
         'Group': function(layer, proj) {
@@ -491,7 +474,7 @@
       'legends' : {
         'ga_urllegend': function(layer, config) {
           var format = '.png';
-          if (pdfLegendList.indexOf(layer.bodId) != -1) {
+          if ($scope.options.pdfLegendList.indexOf(layer.bodId) != -1) {
             format = pdfLegendString;
           }
           var enc = $scope.encoders.legends.base.call(this, config);
@@ -513,9 +496,7 @@
     };
 
     var getNearestScale = function(target, scales) {
-
       var nearest = null;
-
       angular.forEach(scales, function(scale) {
         if (nearest == null ||
             Math.abs(scale - target) < Math.abs(nearest - target)) {
@@ -544,18 +525,14 @@
       defaultPage[configLang] = true;
       var encodedPermalinkHref =
           encodeURIComponent(gaPermalink.getHref());
-
       var qrcodeurl = location.protocol + $scope.options.serviceUrl +
           '/qrcodegenerator?url=' + encodedPermalinkHref;
       var shortenUrl = location.protocol + $scope.options.serviceUrl +
           '/shorten.json?cb=JSON_CALLBACK';
-
       var encLayers = [];
       var encLegends;
       var attributions = [];
-
       var layers = this.map.getLayers();
-
       pdfLegendsToDownload = [];
 
       angular.forEach(layers, function(layer) {
@@ -635,7 +612,7 @@
       });
 
       // scale = resolution * inches per map unit (m) * dpi
-      var scale = parseInt(view.getResolution() * 39.37 * 254);
+      var scale = parseInt(view.getResolution() * UNITS_RATIO * DPI2);
       var scales = this.scales.map(function(scale) {
         return parseInt(scale.value);
       });
@@ -658,14 +635,15 @@
           enableLegends: (encLegends && encLegends.length > 0),
           qrcodeurl: qrcodeurl,
           pages: [
-          angular.extend({
-            center: getPrintRectangleCenterCoord(),
-            // scale has to be one of the advertise by the print server
-            scale: $scope.scale.value,
-            dataOwner: '© ' + attributions.join(),
-            shortLink: response.shorturl.replace('/shorten', ''),
-            rotation: -((view.getRotation() * 180.0) / Math.PI)
-          }, defaultPage)]
+            angular.extend({
+              center: getPrintRectangleCenterCoord(),
+              // scale has to be one of the advertise by the print server
+              scale: $scope.scale.value,
+              dataOwner: '© ' + attributions.join(),
+              shortLink: response.shorturl.replace('/shorten', ''),
+              rotation: -((view.getRotation() * 180.0) / Math.PI)
+            }, defaultPage)
+          ]
         };
         var http = $http.post(that.capabilities.createURL +
             '?url=' + encodeURIComponent($scope.options.printPath +
@@ -688,16 +666,15 @@
     };
 
     var getPrintRectangleCenterCoord = function() {
-        // Framebuffer size!!
-        var bottomLeft = printRectangle.slice(0, 2);
-        var width = printRectangle[2] - printRectangle[0];
-        var height = printRectangle[3] - printRectangle[1];
-        var center = [bottomLeft[0] + width / 2, bottomLeft[1] + height / 2];
-        // convert back to map display size
-        var mapPixelCenter = [center[0] / ol.BrowserFeature.DEVICE_PIXEL_RATIO,
-               center[1] / ol.BrowserFeature.DEVICE_PIXEL_RATIO];
-
-        return $scope.map.getCoordinateFromPixel(mapPixelCenter);
+      // Framebuffer size!!
+      var bottomLeft = printRectangle.slice(0, 2);
+      var width = printRectangle[2] - printRectangle[0];
+      var height = printRectangle[3] - printRectangle[1];
+      var center = [bottomLeft[0] + width / 2, bottomLeft[1] + height / 2];
+      // convert back to map display size
+      var mapPixelCenter = [center[0] / ol.BrowserFeature.DEVICE_PIXEL_RATIO,
+           center[1] / ol.BrowserFeature.DEVICE_PIXEL_RATIO];
+      return $scope.map.getCoordinateFromPixel(mapPixelCenter);
     };
 
     var updatePrintRectanglePixels = function(scale) {
@@ -706,10 +683,6 @@
         $scope.map.requestRenderFrame();
       }
     };
-
-    var DPI = 72;
-    var MM_PER_INCHES = 25.4;
-    var UNITS_RATIO = 39.37;
 
     var getOptimalScale = function() {
       var size = $scope.map.getSize();
@@ -735,30 +708,25 @@
       return nextBiggest;
     };
 
-    var fullExtent = [-300000, -300000, 2000000, 2000000];
-
-
     var calculatePageBoundsPixels = function(scale) {
-        var s = parseFloat(scale.value);
-        var size = $scope.layout.map; // papersize in dot!
-        var view = $scope.map.getView();
-        var center = view.getCenter();
-        var resolution = view.getResolution();
+      var s = parseFloat(scale.value);
+      var size = $scope.layout.map; // papersize in dot!
+      var view = $scope.map.getView();
+      var center = view.getCenter();
+      var resolution = view.getResolution();
+      var w = size.width / DPI * MM_PER_INCHES / 1000.0 * s / resolution;
+      var h = size.height / DPI * MM_PER_INCHES / 1000.0 * s / resolution;
+      var mapSize = $scope.map.getSize();
+      var center = [mapSize[0] * ol.BrowserFeature.DEVICE_PIXEL_RATIO / 2 ,
+          mapSize[1] * ol.BrowserFeature.DEVICE_PIXEL_RATIO / 2];
 
-        var w = size.width / DPI * MM_PER_INCHES / 1000.0 * s / resolution;
-        var h = size.height / DPI * MM_PER_INCHES / 1000.0 * s / resolution;
-        var mapSize = $scope.map.getSize();
-        var center = [mapSize[0] * ol.BrowserFeature.DEVICE_PIXEL_RATIO / 2 ,
-                mapSize[1] * ol.BrowserFeature.DEVICE_PIXEL_RATIO / 2];
+      var minx, miny, maxx, maxy;
 
-        var minx, miny, maxx, maxy;
-
-        minx = center[0] - (w / 2);
-        miny = center[1] - (h / 2);
-        maxx = center[0] + (w / 2);
-        maxy = center[1] + (h / 2);
-
-        return [minx, miny, maxx, maxy];
+      minx = center[0] - (w / 2);
+      miny = center[1] - (h / 2);
+      maxx = center[0] + (w / 2);
+      maxy = center[1] + (h / 2);
+      return [minx, miny, maxx, maxy];
     };
 
     $scope.$watch('options.active', function(newVal, oldVal) {
@@ -767,12 +735,6 @@
       } else {
         deactivate();
       }
-    });
-    $scope.$watch('scale', function() {
-       updatePrintRectanglePixels($scope.scale);
-    });
-    $scope.$watch('layout', function() {
-      updatePrintRectanglePixels($scope.scale);
     });
 
   });
