@@ -3914,6 +3914,18 @@ msgstr "N° de régime d’écoulement"
 msgid "tt_regimetyp"
 msgstr "Type de régime d’écoulement"
 
+msgid "tt_sachplan-infrastruktur-schiene_aus_anlage"
+msgstr "Projet"
+
+msgid "tt_sachplan-infrastruktur-schiene_aus_anlageart"
+msgstr "Type de projet"
+
+msgid "tt_sachplan-infrastruktur-schiene_aus_doc_title"
+msgstr "Fiche d´objet"
+
+msgid "tt_sachplan-infrastruktur-schiene_aus_validform"
+msgstr "Date de décision"
+
 msgid "tt_sachplan_beschreibung"
 msgstr "Description"
 

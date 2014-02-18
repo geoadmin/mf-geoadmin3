@@ -1528,6 +1528,18 @@ msgstr ""
 msgid "tt_ch.bazl.registrationnummer"
 msgstr ""
 
+msgid "tt_sachplan-infrastruktur-schiene_aus_anlage"
+msgstr ""
+
+msgid "tt_sachplan-infrastruktur-schiene_aus_anlageart"
+msgstr ""
+
+msgid "tt_sachplan-infrastruktur-schiene_aus_validform"
+msgstr ""
+
+msgid "tt_sachplan-infrastruktur-schiene_aus_doc_title"
+msgstr ""
+
 msgid "tt_sachplan_planning_name"
 msgstr ""
 

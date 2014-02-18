@@ -3913,6 +3913,18 @@ msgstr "Abflussregimenummer"
 msgid "tt_regimetyp"
 msgstr "Abflussregimetyp"
 
+msgid "tt_sachplan-infrastruktur-schiene_aus_anlage"
+msgstr "Anlage"
+
+msgid "tt_sachplan-infrastruktur-schiene_aus_anlageart"
+msgstr "Anlageart"
+
+msgid "tt_sachplan-infrastruktur-schiene_aus_doc_title"
+msgstr "Objektblatt"
+
+msgid "tt_sachplan-infrastruktur-schiene_aus_validform"
+msgstr "Beschlussdatum"
+
 msgid "tt_sachplan_beschreibung"
 msgstr "Beschreibung"
 
