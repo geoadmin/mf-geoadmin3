@@ -176,8 +176,23 @@
             userTakesControl = true;
           }
         };
+
+        var userRotate = function() {
+          userTakesControl = true;
+          var rotation = view.getRotation() * 180 / Math.PI;
+          btnElt[0]['style']['-webkit-transform'] =
+            'rotate(' + rotation + 'deg)';
+          btnElt[0]['style']['-moz-transform'] =
+            'rotate(' + rotation + 'deg)';
+          btnElt[0]['style']['-ms-transform'] =
+            'rotate(' + rotation + 'deg)';
+          btnElt[0]['style']['transform'] =
+            'rotate(' + rotation + 'deg)';
+        };
+
         view.on('change:center', updateUserTakesControl);
         view.on('change:resolution', updateUserTakesControl);
+        view.on('change:rotation', userRotate);
       }
     };
   });
