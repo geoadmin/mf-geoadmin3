@@ -957,6 +957,7 @@ class sis_angaben (Base, Vector):
     __tablename__ = 'sis_angaben'
     __table_args__ = ({'schema': 'bav', 'autoload': False})
     __template__ = 'templates/htmlpopup/sis_angaben.mako'
+    __bodId__ = 'ch.bav.sachplan-infrastruktur-schiene_ausgangslage'
     __queryable_attributes__ = ['name', 'description_de', 'description_fr', 'description_it', 'description_en']
     id = Column('anlage_id', Text, primary_key=True)
     name = Column('name', Text)
