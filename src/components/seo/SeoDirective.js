@@ -23,6 +23,7 @@
             scope.showPopup = false;
             scope.htmls = [];
 
+
             var addHtmlSnippet = function(htmlSnippet) {
               scope.htmls.push($sce.trustAsHtml(htmlSnippet));
             };
@@ -35,6 +36,9 @@
               $timeout(function() {
                 scope.showPopup = true;
               }, 0);
+
+              //We could adapt the description
+              //$('meta[name=description]').attr('content', 'holidu');
 
               scope.$on('gaLayersChange', function() {
                 if (firstTime) {
