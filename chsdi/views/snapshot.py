@@ -19,11 +19,13 @@ class Snapshot(object):
     def home(self):
         querystring = ''
         for key in self.request.params.keys():
-            if (key != '_escaped_fragment_'):
+            if (key != '_escaped_fragment_') and (key != 'snapshot'):
                 querystring += key + '=' + self.request.params.get(key) + '&'
         querystring += 'snapshot=true'
         retval = 'OK'
+        #FIXME: where to put the log? I think it's re-created on every request
         driver = selenium.webdriver.PhantomJS(service_log_path='/tmp/ghostdriver.log')
+        #FIXME: there's a need to specify protocol here.
         driver.get('http://' + self.remoteUrl + '/?' + querystring)
 
         try:
