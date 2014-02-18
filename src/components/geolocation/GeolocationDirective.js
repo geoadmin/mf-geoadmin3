@@ -161,6 +161,11 @@
           e.preventDefault();
           var tracking = !geolocation.getTracking();
           geolocation.setTracking(tracking);
+          if (tracking) {
+            btnElt.addClass('tracking');
+          } else {
+            btnElt.removeClass('tracking');
+          }
 
           scope.$apply(function() {
             gaPermalink.updateParams({
