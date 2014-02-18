@@ -535,7 +535,6 @@
           cachedMapUrl: location.origin + '/${user_env}' + cacheAdd,
           resourceUrl: location.origin + location.pathname + '${versionslashed}',
           ogcproxyUrl: location.origin + '/${user_env}' + '/ogcproxy?url=',
-          topicUrlTemplate: '${versionslashed}img/{Topic}.jpg',
           whitelist: [
             'http://www.kmlvalidator.org/validate.htm'
           ]
@@ -566,8 +565,8 @@
 
         module.config(['gaProfileServiceProvider', 'gaGlobalOptions', function(gaProfileServiceProvider, gaGlobalOptions) {
           gaProfileServiceProvider.d3libUrl =
-              gaGlobalOptions.cachedMapUrl + '/lib/d3-3.3.1.min.js';
-        }]);
+              gaGlobalOptions.resourceUrl + 'lib/d3-3.3.1.min.js';
+        });
  
         module.config(['$sceDelegateProvider', function($sceDelegateProvider) {
           var whitelist = $sceDelegateProvider.resourceUrlWhitelist();
