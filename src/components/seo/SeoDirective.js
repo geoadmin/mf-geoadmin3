@@ -10,7 +10,7 @@
   ]);
 
   module.directive('gaSeo',
-      function($sce, $timeout, gaSeoService, gaLayers) {
+      function($sce, $timeout, $interval, gaSeoService, gaLayers) {
         return {
           restrict: 'A',
           replace: true,
@@ -29,9 +29,15 @@
             };
 
             var initSnapshot = function() {
-              var i,
+              var i, intervalpromise,
                   layers = gaSeoService.getLayers(),
-                  firstTime = true;
+                  firstTime = true,
+                  MIN_WAIT = 1000;
+
+              //Minimal wait is 1 second and is the minimal wait time
+              //after the layersconfig is loaded. Usually, catalog
+              //is loaded later...so if we want to assure that
+              //the catalog is loaded, we have to adapt a little
 
               $timeout(function() {
                 scope.showPopup = true;
@@ -44,21 +50,27 @@
                 if (firstTime) {
                   //Load metadata of selected layers
                   for (i = 0; i < layers.length; i++) {
+                    gaSeoService.addRequestCount();
                     gaLayers.getMetaDataOfLayer(layers[i])
                         .success(function(data) {
                           addHtmlSnippet(data);
+                          gaSeoService.removeRequestCount();
                         }).error(function() {
+                          gaSeoService.removeRequestCount();
                         });
                   }
+
+
+                  //keep this in the end here
+                  intervalpromise = $interval(function() {
+                    if (!gaSeoService.waitOnRequests()) {
+                      $interval.cancel(intervalpromise);
+                      scope.triggerPageEnd = true;
+                    }
+                  }, MIN_WAIT);
                 }
                 firstTime = false;
               });
-
-              //FIXME: right now, hardcoded pagload trigger of 3 seconds
-              //Maybe this need to be adapted
-              $timeout(function() {
-                scope.triggerPageEnd = true;
-              }, 3000);
 
             };
 
