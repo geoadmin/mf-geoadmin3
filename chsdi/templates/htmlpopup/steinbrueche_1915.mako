@@ -1,7 +1,6 @@
 <%inherit file="base.mako"/>
-<%def name="preview()">${c.feature.id or '-'}</%def>
 
-<%def name="table_body()">
-       <tr><td width="150" valign="top">${_('gesteinsgr')}</td><td>${c.feature.gesteinsgr or '-'}</td></tr>
-       <tr><td width="150">${_('gestein')}</td><td>${c.feature.gestein or '-'}</td></tr>
+<%def name="table_body(c,lang)">
+       <tr><td class="cell-left" valign="top">${_('gesteinsgr')}</td><td>${c['attributes']['gesteinsgr'] or '-'}</td></tr>
+       <tr><td class="cell-left">${_('gestein')}</td><td>${c['attributes']['gestein'] or '-'}</td></tr>
 </%def>
