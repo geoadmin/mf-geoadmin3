@@ -970,8 +970,6 @@ class sis_angaben (Base, Vector):
     valid_from = Column('valid_from', Text)
     doc_title  = Column('doc_title', Text)
     bgdi_created = Column('bgdi_created', Text)
-    __maxscale__ = 50005
-    __minscale__ = 1
     the_geom = GeometryColumn(Geometry(dimentsion=2, srid=21781))
 
 register('ch.bav.sachplan-infrastruktur-schiene_ausgangslage', sis_angaben)
