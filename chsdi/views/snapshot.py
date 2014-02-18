@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import selenium.webdriver
+from selenium.webdriver import PhantomJS
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -8,8 +8,6 @@ from pyramid.view import view_config
 from pyramid.response import Response
 
 class Snapshot(object):
-
-    status_int = 200
 
     def __init__(self, request):
         self.request = request
@@ -24,12 +22,14 @@ class Snapshot(object):
         querystring += 'snapshot=true'
         retval = 'OK'
         #FIXME: where to put the log? I think it's re-created on every request
-        driver = selenium.webdriver.PhantomJS(service_log_path='/tmp/ghostdriver.log')
+        driver = PhantomJS(service_log_path='/tmp/ghostdriver.log')
         #FIXME: there's a need to specify protocol here.
         driver.get('http://' + self.remoteUrl + '/?' + querystring)
 
         try:
-            element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "seo-test")))
+            #It seems that in this context, the second parameter passed
+            #to the WebDriverWait constructor does not have any influence
+            element = WebDriverWait(driver, 0).until(EC.presence_of_element_located((By.ID, "seo-test")))
 
         finally:
             retval = driver.page_source
