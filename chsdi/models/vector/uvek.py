@@ -951,6 +951,29 @@ class sis_planning_a (Base, Vector):
 register('ch.bav.sachplan-infrastruktur-schiene_anhorung', sis_planning_a)
 
 
+class sis_angaben (Base, Vector):
+    __tablename__ = 'sis_angaben'
+    __table_args__ = ({'schema': 'bav', 'autoload': False})
+    __template__ = 'templates/htmlpopup/sis_angaben.mako'
+    __queryable_attributes__ = ['name', 'description_de', 'description_fr', 'description_it', 'description_en']
+    id = Column('anlage_id', Text, primary_key=True)
+    name = Column('name', Text)
+    description_de = Column('description_de', Text)
+    description_fr = Column('description_fr', Text)
+    description_it = Column('description_it', Text)
+    description_en = Column('description_en', Text)
+    facility_kind = Column('facility_kind', Text)
+    facility_status = Column('facility_status', Text)
+    valid_from = Column('valid_from', Text)
+    doc_title  = Column('doc_title', Text)
+    bgdi_created = Column('bgdi_created', Text)
+    __maxscale__ = 50005
+    __minscale__ = 1
+    the_geom = GeometryColumn(Geometry(dimentsion=2, srid=21781))
+
+register('ch.bav.sachplan-infrastruktur-schiene_ausgangslage', sis_angaben)
+
+
 class sis_planning_raster_a (Base, Vector):
     __tablename__ = 'sis_pl_r_anhorung'
     __table_args__ = ({'schema': 'bav', 'autoload': False})
