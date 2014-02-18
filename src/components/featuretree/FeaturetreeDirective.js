@@ -19,15 +19,15 @@
 
   module.directive('gaFeaturetree',
       function($rootScope, $compile, $timeout, $http, $q, $translate, $sce,
-               gaLayers, gaDefinePropertiesForLayer, gaStyleFunctionFactory, 
-               gaMapClick, gaRecenterMapOnFeatures, gaLayerFilters,
-               gaBrowserSniffer) {
+          gaLayers, gaDefinePropertiesForLayer, gaStyleFunctionFactory, 
+          gaMapClick, gaRecenterMapOnFeatures, gaLayerFilters,
+          gaBrowserSniffer) {
 
         var createVectorLayer = function(style) {
           var vector = new ol.layer.Vector({
-                styleFunction: gaStyleFunctionFactory(style),
-                source: new ol.source.Vector()
-              });
+            style: gaStyleFunctionFactory(style),
+            source: new ol.source.Vector()
+          });
           gaDefinePropertiesForLayer(vector);
           vector.highlight = true;
           vector.invertedOpacity = 0.25;
@@ -57,7 +57,7 @@
             var selectionRecFeature = new ol.Feature();
             var selectionRecOverlay = new ol.FeatureOverlay({
               map: map,
-              styleFunction: gaStyleFunctionFactory('selectrectangle')
+              style: gaStyleFunctionFactory('selectrectangle')
             });
             map.addLayer(highlightLayer);
 

@@ -1043,7 +1043,7 @@
             });
             vector = new ol.layer.Vector({
               source: vectorSource,
-              styleFunction: gaStyleFunctionFactory('select')
+              style: gaStyleFunctionFactory('select')
             });
             gaDefinePropertiesForLayer(vector);
             vector.highlight = true;
