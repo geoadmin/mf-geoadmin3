@@ -40,8 +40,7 @@
                 vector,
                 vectorSource,
                 parser,
-                year,
-                source;
+                year;
 
             //FIXME: as the tooltip highlight is never printed, we could draw
             //these features using the 'postcompose' function on either the
@@ -49,7 +48,6 @@
             //See ol3 examples: dynamic-data.js or geojson.js
             parser = new ol.format.GeoJSON();
             vectorSource = new ol.source.Vector();
-
             vector = new ol.layer.Vector({
               source: vectorSource,
               style: gaStyleFunctionFactory('select')
@@ -77,6 +75,17 @@
             $scope.$on('gaTriggerTooltipInit', function(event) {
               initTooltip();
             });
+
+            // Change cursor style on mouse move, only on desktop
+            if (!gaBrowserSniffer.mobile) {
+              $(map.getViewport()).on('mousemove', function(evt) {
+                if ($rootScope.isMeasureActive) {
+                  return;
+                }
+                var feature = findVectorFeature(map.getEventPixel(evt));
+                map.getTarget().style.cursor = (feature) ? 'pointer' : '';
+              });
+            }
 
             function initTooltip() {
                // Cancel all pending requests
@@ -122,6 +131,22 @@
               });
             });
 
+            // Find the first feature from a vector layer
+            function findVectorFeature(pixel, vectorLayer) {
+              var featureFound;
+              map.forEachFeatureAtPixel(pixel, function(feature, layer) {
+                if (!vectorLayer || vectorLayer == layer) {
+                  if (!featureFound &&
+                      (feature.get('name') ||
+                      feature.get('description'))) {
+                    featureFound = feature;
+                  }
+                }
+              });
+              return featureFound;
+            };
+
+            // Find features for bod layers
             function findFeatures(coordinate, size, mapExtent) {
               var identifyUrl = $scope.options.identifyUrlTemplate
                                 .replace('{Topic}', currentTopic),
@@ -133,9 +158,17 @@
                   i;
 
               initTooltip();
-
+              var pixel = map.getPixelFromCoordinate(coordinate);
               identifyCount = layersToQuery.length;
               if (identifyCount) {
+
+                function incResponseCount() {
+                  responseCount += 1;
+                  if (responseCount == identifyCount) {
+                    bodyEl.removeClass(waitclass);
+                  }
+                }
+
                 // Show wait cursor
                 //
                 // The tricky part: without the $timeout, the call to
@@ -150,118 +183,146 @@
 
                 for (i = 0; i < identifyCount; i++) {
                   layerToQuery = layersToQuery[i];
-                  params = {
-                    geometryType: 'esriGeometryPoint',
-                    geometryFormat: 'geojson',
-                    geometry: coordinate[0] + ',' + coordinate[1],
-                    // FIXME: make sure we are passing the right dpi here.
-                    imageDisplay: size[0] + ',' + size[1] + ',96',
-                    mapExtent: mapExtent.join(','),
-                    tolerance: $scope.options.tolerance,
-                    layers: 'all:' + layerToQuery.id
-                  };
-                  if (layerToQuery.year) {
-                    params.timeInstant = layerToQuery.year;
-                  }
-
-                  $http.get(identifyUrl, {
-                    timeout: canceler.promise,
-                    params: params
-                  }).success(function(features) {
-                    if (features.results.length == 0) {
-                      incResponseCount();
-                    }
-                    showFeatures(mapExtent, size, features.results);
-                  }).error(function() {
+                  if (layerToQuery instanceof ol.layer.Vector) {
                     incResponseCount();
-                  });
-                }
+                    var feature = findVectorFeature(pixel, layerToQuery);
+                    if (feature) {
+                      var htmlpopup =
+                        '<div class="htmlpopup-container">' +
+                          '<div class="htmlpopup-header">' +
+                            '<span>' + layerToQuery.label + ' &nbsp;</span>' +
+                            '(' + feature.get('name') + ')' +
+                          '</div>' +
+                          '<div class="htmlpopup-content">' +
+                            feature.get('description') +
+                          '</div>' +
+                        '</div>';
+                      feature.set('htmlpopup', htmlpopup);
+                      showFeatures(layerToQuery.getSource().getExtent(), size,
+                          [feature]);
+                    }
+                  } else {
+                    params = {
+                      geometryType: 'esriGeometryPoint',
+                      geometryFormat: 'geojson',
+                      geometry: coordinate[0] + ',' + coordinate[1],
+                      // FIXME: make sure we are passing the right dpi here.
+                      imageDisplay: size[0] + ',' + size[1] + ',96',
+                      mapExtent: mapExtent.join(','),
+                      tolerance: $scope.options.tolerance,
+                      layers: 'all:' + layerToQuery.id
+                    };
+                    if (layerToQuery.year) {
+                      params.timeInstant = layerToQuery.year;
+                    }
 
-                function incResponseCount() {
-                  responseCount += 1;
-                  if (responseCount == identifyCount) {
-                    bodyEl.removeClass(waitclass);
+                    $http.get(identifyUrl, {
+                      timeout: canceler.promise,
+                      params: params
+                    }).success(function(features) {
+                      if (features.results.length == 0) {
+                        incResponseCount();
+                      }
+                      showFeatures(mapExtent, size, features.results);
+                    }).error(function() {
+                      incResponseCount();
+                    });
                   }
                 }
-             }
+              }
+            }
 
-           }
-
+            // Highlight the features found
             function showFeatures(mapExtent, size, foundFeatures) {
               if (foundFeatures && foundFeatures.length > 0) {
-
                 angular.forEach(foundFeatures, function(value) {
 
-                  //draw feature, but only if it should be drawn
-                  if (gaLayers.getLayer(value.layerBodId) &&
-                      gaLayers.getLayerProperty(value.layerBodId,
-                                                'highlightable')) {
-                    var features = parser.readFeatures(value);
-                    for (var i = 0, ii = features.length; i < ii; ++i) {
-                      vectorSource.addFeature(features[i]);
-                    }
-                  }
+                  if (value instanceof ol.Feature) {
+                    vectorSource.addFeature(value);
+                    showPopup(value.get('htmlpopup'));
 
-                  var htmlUrl = $scope.options.htmlUrlTemplate
-                                .replace('{Topic}', currentTopic)
-                                .replace('{Layer}', value.layerBodId)
-                                .replace('{Feature}', value.featureId);
-                  $http.get(htmlUrl, {
-                    timeout: canceler.promise,
-                    params: {
-                      lang: $translate.uses(),
-                      mapExtent: mapExtent.join(','),
-                      imageDisplay: size[0] + ',' + size[1] + ',96'
-                    }
-                  }).success(function(html) {
-                    bodyEl.removeClass(waitclass);
-                    // Show popup on first result
-                    if (htmls.length === 0) {
-                      if (!popup) {
-                        popup = gaPopup.create({
-                          className: 'ga-tooltip',
-                          onCloseCallback: function() {
-                            onCloseCB();
-                            onCloseCB = angular.noop;
-                            clearAll();
-                          },
-                          destroyOnClose: false,
-                          title: 'object_information',
-                          content: popupContent,
-                          htmls: htmls,
-                          showPrint: true
-                        }, $scope);
-                      }
-                      popup.open();
-                      //always reposition element when newly opened
-                      if (!gaBrowserSniffer.mobile) {
-                        popup.element.css({
-                          left: ((size[0] / 2) -
-                              (parseFloat(popup.element.css('max-width')) / 2))
-                        });
+                  } else {
+                    //draw feature, but only if it should be drawn
+                    if (gaLayers.getLayer(value.layerBodId) &&
+                        gaLayers.getLayerProperty(value.layerBodId,
+                                                  'highlightable')) {
+                      var features = parser.readFeatures(value);
+                      for (var i = 0, ii = features.length; i < ii; ++i) {
+                        vectorSource.addFeature(features[i]);
                       }
                     }
-                    // Add result to array. ng-repeat will take
-                    // care of the rest
-                    htmls.push($sce.trustAsHtml(html));
-                  }).error(function() {
-                    bodyEl.removeClass(waitclass);
-                  });
+
+                    var htmlUrl = $scope.options.htmlUrlTemplate
+                                  .replace('{Topic}', currentTopic)
+                                  .replace('{Layer}', value.layerBodId)
+                                  .replace('{Feature}', value.featureId);
+                    $http.get(htmlUrl, {
+                      timeout: canceler.promise,
+                      params: {
+                        lang: $translate.uses(),
+                        mapExtent: mapExtent.join(','),
+                        imageDisplay: size[0] + ',' + size[1] + ',96'
+                      }
+                    }).success(function(html) {
+                      bodyEl.removeClass(waitclass);
+                      showPopup(html);
+                    }).error(function() {
+                      bodyEl.removeClass(waitclass);
+                    });
+                  }
                 });
               }
+            }
+
+            // Show the popup with all features informations
+            function showPopup(html) {
+              // Show popup on first result
+              if (htmls.length === 0) {
+                if (!popup) {
+                  popup = gaPopup.create({
+                    className: 'ga-tooltip',
+                    onCloseCallback: function() {
+                      onCloseCB();
+                      onCloseCB = angular.noop;
+                      clearAll();
+                    },
+                    destroyOnClose: false,
+                    title: 'object_information',
+                    content: popupContent,
+                    htmls: htmls,
+                    showPrint: true
+                  }, $scope);
+                }
+                popup.open();
+                //always reposition element when newly opened
+                if (!gaBrowserSniffer.mobile) {
+                  popup.element.css({
+                    left: ((map.getSize()[0] / 2) -
+                        (parseFloat(popup.element.css('max-width')) / 2))
+                  });
+                }
+              }
+              // Add result to array. ng-repeat will take
+              // care of the rest
+              htmls.push($sce.trustAsHtml(html));
             }
 
             function getLayersToQuery(layers) {
               var layersToQuery = [];
               map.getLayers().forEach(function(l) {
                 var bodId = l.bodId,
-                    layerToQuery = {},
+                    layerToQuery,
                     timestamps, timeBehaviour;
-                if (gaLayers.getLayer(bodId) &&
+                if (l instanceof ol.layer.Vector && !l.highlight) {
+                  layerToQuery = l;
+                } else if (gaLayers.getLayer(bodId) &&
                     gaLayers.getLayerProperty(bodId, 'queryable') &&
                     l.visible &&
                     layersToQuery.indexOf(bodId) < 0) {
-                  layerToQuery.id = bodId;
+
+                  layerToQuery = {
+                    id: bodId
+                  };
 
                   timestamps = getLayerTimestamps(bodId);
                   if (angular.isDefined(timestamps)) {
@@ -276,7 +337,9 @@
                         layerToQuery.year = yearFromString(timestamps[0]);
                     }
                   }
+                }
 
+                if (layerToQuery) {
                   layersToQuery.push(layerToQuery);
                 }
               });
