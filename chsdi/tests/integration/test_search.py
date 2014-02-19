@@ -108,12 +108,20 @@ class TestSearchServiceView(TestsBase):
         self.failUnless(resp.content_type == 'application/json')
 
     def test_search_locations_not_authorized(self):
-        resp = self.testapp.get('/rest/services/inspire/SearchServer', params={'searchText': 'Beaulieustrasse 2', 'type': 'locations'}, headers=dict(HTTP_X_SEARCHSERVER_AUTHORIZED='false'), status=200)
+        self.testapp.extra_environ = {'HTTP_X_SEARCHSERVER_AUTHORIZED': 'false'}
+        resp = self.testapp.get('/rest/services/inspire/SearchServer', params={'searchText': 'Beaulieustrasse 2', 'type': 'locations'},  status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless('geom_st_box2d' not in resp.json['results'][0]['attrs'].keys())
 
     def test_search_locations_authorized(self):
-        resp = self.testapp.get('/rest/services/inspire/SearchServer', params={'searchText': 'Beaulieustrasse 2', 'type': 'locations'}, headers=dict(HTTP_X_SEARCHSERVER_AUTHORIZED='true'), status=200)
+        self.testapp.extra_environ = {'HTTP_X_SEARCHSERVER_AUTHORIZED': 'true'}
+        resp = self.testapp.get('/rest/services/inspire/SearchServer', params={'searchText': 'Beaulieustrasse 2', 'type': 'locations'},  status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless('geom_st_box2d' in resp.json['results'][0]['attrs'].keys())
+
+    def test_search_locations_authorizedi_not_set(self):
+        self.testapp.extra_environ = {}
+        resp = self.testapp.get('/rest/services/inspire/SearchServer', params={'searchText': 'Beaulieustrasse 2', 'type': 'locations'},  status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless('geom_st_box2d' in resp.json['results'][0]['attrs'].keys())
 
