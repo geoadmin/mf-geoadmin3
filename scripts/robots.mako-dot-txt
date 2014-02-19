@@ -1,7 +1,9 @@
 User-agent: *
 % if deploy_target == 'prod':
-Disallow: /main/src/
-Disallow: /main/prod/
+Disallow: /main/
+Disallow: /${version}
+Disallow: /info.json
+Disallow: /checker
 % else:
 Disallow: /
 % endif

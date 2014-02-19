@@ -1,0 +1,16 @@
+<div>
+ <!-- this is the popup we will show our information -->
+  <div ga-popup="showPopup"
+       ga-popup-options="{title:'seo title'}"
+       ga-draggable=".ga-popup-title"
+       id="seo-popup" >
+    <div ng-repeat="htmlsnippet in htmls">
+      <div ng-bind-html="htmlsnippet"></div>
+    </div>
+  </div> <!-- end popup -->
+
+  <!-- this is the trigger. activate to indicate the end of page loading -->
+  <div id="seo-test" ng-if="triggerPageEnd"></div>
+</div>
+
+
