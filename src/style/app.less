@@ -54,6 +54,17 @@ input::-ms-clear {
   cursor: move;
 }
 
+.ga-truncate-text {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  
+  /* IE9+FontAwesome hack: https://github.com/FortAwesome/Font-Awesome/issues/1079*/
+  &:before {
+    content: "";
+  }
+}
+
 #map {
   position: relative;
   width: 100%;
@@ -558,6 +569,7 @@ a .ga-icon-separator {
   background-color: #f2dede;
 }
 
+// ****** POPUP
 #import-wms-popup {
   max-width: none;
   max-height: none;
@@ -567,6 +579,7 @@ a .ga-icon-separator {
     max-height: inherit;
   }
 }
+
 #measure-popup {
   max-width: none;
   max-height: none;
@@ -577,7 +590,14 @@ a .ga-icon-separator {
   }
 }
 
-[ga-popup] .ga-popup-content, 
+#featuretree-popup {
+  width: 320px;
+  
+  .ga-popup-content {
+    padding: 5px 9px 5px 5px;
+  }
+}
+
 [ga-context-popup] .popover-content {
   a {
     text-decoration: underline;
@@ -979,69 +999,6 @@ input[type=checkbox] {
 .ga-draggable {
   -ms-touch-action: none;
 }
-
-// ***** Feature Tree
-#featuretree-popup {
-  width: 320px;
-
-  .popover-content {
-    padding: 0;
-  }
-}
-
-#featuretree {
-  a {
-    display: block;
-    color: #000;
-    text-decoration: none;
-    border-bottom-style: solid;
-    border-bottom-color: #e9e9e9;
-    height: 32px;
-    line-height: 32px;
-  }
-
-  ul {
-    padding-left: 0;
-    list-style-type: none;
-  }
-
-  ul ul {
-    padding-left: 1.6em;
-  }
-
-  ul li a {
-    border-bottom-width: 1px;
-  }
-
-  ul ul li {
-    height: auto;
-  }
-
-  ul ul li {
-    border-bottom-width: 1px;
-    border-bottom-style: dashed;
-    border-bottom-color: #c7c7c7;
-    height: auto;
-  }
-
-  ul ul li a {
-    border-bottom-width: 0px;
-  }
-
-  ul ul li .selected, a:hover.selected, a:focus.selected {
-    color: #f00;
-    background-color: #fff;
-  }
-
-  ul ul li .icon-plus {
-    border: 3px solid black;
-    box-shadow: 0 0 2px #c7c7c7;
-    font-size: 8px;
-    margin: 1.0em .5em;
-  }
-}
-
-
 
 #tools .selected {
   color: #f00;
