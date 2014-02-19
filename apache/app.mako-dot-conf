@@ -20,14 +20,6 @@ AddOutputFilterByType DEFLATE application/json
 Alias ${base_url_path}/src ${base_dir}/src
 Alias ${base_url_path}/prod ${base_dir}/prd
 
-<LocationMatch "${base_url_path}/(prod|src)">
-  Order allow,deny
-  Allow from all
-</LocationMatch>
-
-RewriteCond %{QUERY_STRING} _escaped_fragment_=(.*)$
-RewriteRule ^${base_url_path}/(prod|src)/(index.html|mobile.html)(.*) ${service_url}/snapshot [L,P]
-
 % if 'main' in base_url_path:
 # Main webpage
 
@@ -42,6 +34,16 @@ RewriteRule ^/[0-9]+/(img|lib|style|rest|locales)(.*) /var/www/vhosts/mf-geoadmi
    ExpiresDefault "now plus 1 year"
    Header merge Cache-Control "public"
 </LocationMatch>
+
+% else:
+
+<LocationMatch "${base_url_path}/(prod|src)">
+  Order allow,deny
+  Allow from all
+</LocationMatch>
+
+RewriteCond %{QUERY_STRING} _escaped_fragment_=(.*)$
+RewriteRule ^${base_url_path}/(prod|src)/(index.html|mobile.html)(.*) ${service_url}/snapshot [L,P]
 
 % endif
 
