@@ -35,9 +35,17 @@ RewriteRule ^/[0-9]+/(img|lib|style|rest|locales)(.*) /var/www/vhosts/mf-geoadmi
    Header merge Cache-Control "public"
 </LocationMatch>
 
+<LocationMatch "/(index.html|mobile.html)">
+  Order allow,deny
+  Allow from all
+</LocationMatch>
+
+RewriteCond %{QUERY_STRING} _escaped_fragment_=(.*)$
+RewriteRule ^/(index.html|mobile.html)(.*) ${service_url}/snapshot [L,P]
+
 % else:
 
-<LocationMatch "${base_url_path}/(prod|src)">
+<LocationMatch "${base_url_path}/(prod|src)/(index.html|mobile.html)">
   Order allow,deny
   Allow from all
 </LocationMatch>
