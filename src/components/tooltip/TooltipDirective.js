@@ -146,7 +146,7 @@
               return featureFound;
             };
 
-            // Find features for bod layers
+            // Find features for all type of layers
             function findFeatures(coordinate, size, mapExtent) {
               var identifyUrl = $scope.options.identifyUrlTemplate
                                 .replace('{Topic}', currentTopic),
@@ -178,7 +178,9 @@
                 // added and then removed. With $timeout we force the right
                 // order of execution.
                 $timeout(function() {
-                  bodyEl.addClass(waitclass);
+                  if (responseCount < identifyCount) {
+                    bodyEl.addClass(waitclass);
+                  }
                 }, 0);
 
                 for (i = 0; i < identifyCount; i++) {
