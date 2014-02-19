@@ -107,6 +107,29 @@ class TestSearchServiceView(TestsBase):
         resp = self.testapp.get('/rest/services/inspire/SearchServer', params={'searchText': '4331', 'type': 'featuresearch', 'features': 'ch.bafu.hydrologie-gewaesserzustandsmessstationen'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
 
+    def test_search_locations_not_authorized(self):
+        self.testapp.extra_environ = {'HTTP_X_SEARCHSERVER_AUTHORIZED': 'false'}
+        resp = self.testapp.get('/rest/services/inspire/SearchServer', params={'searchText': 'Beaulieustrasse 2', 'type': 'locations'},  status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless('geom_st_box2d' not in resp.json['results'][0]['attrs'].keys())
+
+    def test_search_locations_authorized(self):
+        self.testapp.extra_environ = {'HTTP_X_SEARCHSERVER_AUTHORIZED': 'true'}
+        resp = self.testapp.get('/rest/services/inspire/SearchServer', params={'searchText': 'Beaulieustrasse 2', 'type': 'locations'},  status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless('geom_st_box2d' in resp.json['results'][0]['attrs'].keys())
+
+    def test_search_locations_authorizedi_not_set(self):
+        self.testapp.extra_environ = {}
+        resp = self.testapp.get('/rest/services/inspire/SearchServer', params={'searchText': 'Beaulieustrasse 2', 'type': 'locations'},  status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless('geom_st_box2d' in resp.json['results'][0]['attrs'].keys())
+
+    def test_search_locations_authorized_no_geometry(self):
+        resp = self.testapp.get('/rest/services/inspire/SearchServer', params={'searchText': 'Beaulieustrasse 2', 'type': 'locations', 'returnGeometry': 'false'}, headers=dict(HTTP_X_SEARCHSERVER_AUTHORIZED='true'), status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless('geom_st_box2d' not in resp.json['results'][0]['attrs'].keys())
+
     def test_features_bbox(self):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'features': 'ch.astra.ivs-reg_loc', 'type': 'featureidentify', 'bbox': '551306.5625,167918.328125,551754.125,168514.625'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
