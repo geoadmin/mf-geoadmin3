@@ -567,12 +567,6 @@ a .ga-icon-separator {
     max-height: inherit;
   }
 }
-.ga-popup-content, .contextpopup .popover-content {
-  a {
-    text-decoration: underline;
-    color: #069;
-  }
-}
 #measure-popup {
   max-width: none;
   max-height: none;
@@ -582,7 +576,9 @@ a .ga-icon-separator {
     max-height: inherit;
   }
 }
-.ga-popup-content, .contextpopup .popover-content {
+
+[ga-popup] .ga-popup-content, 
+[ga-context-popup] .popover-content {
   a {
     text-decoration: underline;
     color: #069;
@@ -833,12 +829,6 @@ ul.panel-body-wide {
       }
     }
   }
-}
-
-// ***** CONTEXTPOPUP
-.contextpopup {
-  z-index: 1090;
-  left: unit(-@contextpopup-width/2, px);
 }
 
 // ***** ICONS

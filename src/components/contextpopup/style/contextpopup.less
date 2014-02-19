@@ -1,8 +1,12 @@
-@contextpopup-width: 300;
-.contextpopup {
+@context-popup-width: 300;
+
+[ga-context-popup] {
+  left: unit(-@context-popup-width/2, px);
+  width: unit(@context-popup-width, px);
+  max-width: unit(@context-popup-width, px);
   font-size: 12px;
-  max-width: unit(@contextpopup-width, px);
-  width: unit(@contextpopup-width, px);
+  z-index: 1090;
+  
   table {
     width: 100%;
   }
