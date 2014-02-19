@@ -198,6 +198,10 @@
                 updateSelectionInTree(scope.root, layerBodIds);
               }
             });
+
+            scope.$on('gaTimeSelectorChange', function(event, newYear) {
+              scope.options.currentYear = newYear;
+            });
           }
         };
 
