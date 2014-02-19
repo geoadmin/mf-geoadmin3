@@ -10,7 +10,7 @@
   /**
    * The seo service.
    *
-   * The serice takes care to capture the application state
+   * The service takes care to capture the application state
    * relevant to seo  at initialisation.
    *
    * We can't put this in the directive because of how
