@@ -71,18 +71,19 @@
             type: 'MEASURE',
             label: 'measure',
             source: new ol.source.Vector(),
-            styleFunction: scope.options.styleFunction
+            style: scope.options.styleFunction
           });
           gaDefinePropertiesForLayer(layer);
           layer.highlight = true;
 
           // Creates the additional overlay to display azimuth circle
-          var featuresOverlay = new ol.FeatureOverlay();
-          featuresOverlay.setStyleFunction(scope.options.styleFunction);
+          var featuresOverlay = new ol.FeatureOverlay({
+            style: scope.options.styleFunction
+          });
 
           var drawArea = new ol.interaction.Draw({
             type: 'Polygon',
-            styleFunction: scope.options.drawStyleFunction
+            style: scope.options.drawStyleFunction
           });
 
           // Activate the component: add listeners, last features drawn and draw

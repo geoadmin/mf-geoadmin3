@@ -14,10 +14,9 @@
   ]);
 
   module.directive('gaTooltip',
-    function($timeout, $document, $http, $q, $translate, $sce, gaPopup,
-      gaLayers, gaBrowserSniffer, gaDefinePropertiesForLayer, gaMapClick,
-      gaStyleFunctionFactory, $rootScope)
-      {
+      function($timeout, $document, $http, $q, $translate, $sce, gaPopup,
+          gaLayers, gaBrowserSniffer, gaDefinePropertiesForLayer, gaMapClick,
+          gaStyleFunctionFactory, $rootScope) {
         var waitclass = 'ga-tooltip-wait',
             bodyEl = angular.element($document[0].body),
             popupContent = '<div ng-repeat="htmlsnippet in options.htmls">' +
@@ -53,7 +52,7 @@
 
             vector = new ol.layer.Vector({
               source: vectorSource,
-              styleFunction: gaStyleFunctionFactory('select')
+              style: gaStyleFunctionFactory('select')
             });
             gaDefinePropertiesForLayer(vector);
             vector.highlight = true;
