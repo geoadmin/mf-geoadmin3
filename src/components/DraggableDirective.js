@@ -60,17 +60,8 @@
         x = getMouseEventX(evt) - startX;
         y = getMouseEventY(evt) - startY;
 
-        if (x < 0) {
-          x = 0;
-        } else if (x + element.width() > $(document.body).width()) {
-          x = $(document.body).width() - element.width();
-        }
-
-        if (y < 0) {
-          y = 0;
-        } else if (y + element.height() > $(document.body).height()) {
-          y = $(document.body).height() - element.height();
-        }
+        x = adjustX(x);
+        y = adjustY(y);
 
         element.css({
           margin: 0,
@@ -98,12 +89,46 @@
 
       /* Utils */
 
+      // Ensure the x coordinate has a valid value
+      var adjustX = function(x) {
+        if (x < 0) {
+          x = 0;
+        } else if (x + element.width() > $(document.body).width()) {
+          x = $(document.body).width() - element.width();
+        }
+        return x;
+      };
+
+      // Ensure the y coordinate has a valid value
+      var adjustY = function(y) {
+        if (y < 0) {
+          y = 0;
+        } else if (y + element.height() > $(document.body).height()) {
+          var newY = $(document.body).height() - element.height();
+
+          // This usecase happens when screen's height is too small to display
+          // the popup entirely. In that case we try to make the dragzone
+          // available all the time so the user can move/close the popup.
+          // Works only if the dragZone is on top of the draggable element.
+          if (newY < 0) {
+            var maxY = $(document.body).height() - dragZone.outerHeight();
+            if (y > maxY) {
+              y = maxY;
+            }
+          } else {
+            y = newY;
+          }
+        }
+        return y;
+      };
+
       // RE3: Get the X coordinate of a mouse or a touch event
       var getMouseEventX = function(event) {
         if (event.originalEvent) {
           event = event.originalEvent;
         }
-        return event.clientX || event.touches[0].clientX;
+        return angular.isNumber(event.clientX) ? event.clientX :
+            event.touches[0].clientX;
       };
 
       // RE3: Get the Y coordinate of a mouse or touch event
@@ -111,7 +136,8 @@
         if (event.originalEvent) {
           event = event.originalEvent;
         }
-        return event.clientY || event.touches[0].clientY;
+        return angular.isNumber(event.clientY) ? event.clientY :
+            event.touches[0].clientY;
       };
 
     }
