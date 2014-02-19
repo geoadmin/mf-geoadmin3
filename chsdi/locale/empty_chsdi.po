@@ -1054,9 +1054,6 @@ msgstr ""
 msgid "ch.swisstopo.images-swissimage.metadata"
 msgstr ""
 
-msgid "ch.swisstopo.lubis-luftbilder"
-msgstr ""
-
 msgid "ch.swisstopo.pixelkarte-farbe"
 msgstr ""
 

@@ -1799,9 +1799,6 @@ msgstr "http://www.swisstopo.admin.ch/internet/swisstopo/it/home/swisstopo/org/c
 msgid "ch.swisstopo.lubis-bildstreifen"
 msgstr "Striscie aeree swisstopo"
 
-msgid "ch.swisstopo.lubis-luftbilder"
-msgstr "Immagini aeree swisstopo"
-
 msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen"
 msgstr "Immagini aeree privati"
 
