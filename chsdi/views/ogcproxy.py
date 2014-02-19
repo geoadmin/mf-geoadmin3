@@ -55,13 +55,9 @@ def ogcproxy(request):
     except:
         return HTTPBadGateway()
 
-    # check for allowed content types
+    #  All content types are allowed
     if "content-type" in resp:
         ct = resp["content-type"]
-        if not ct.split(";")[0] in allowed_content_types:
-            # allow any content type from allowed hosts (any port)
-            if not parsed_url.netloc in allowed_hosts:
-                return HTTPForbidden()
         if resp["content-type"] == "application/vnd.google-earth.kmz":
             zipurl = urlopen(url)
             zipfile = ZipFile(StringIO(zipurl.read()))
