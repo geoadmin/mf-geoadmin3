@@ -108,6 +108,10 @@ fixrights:
 	chgrp -f -R geodata . || :
 	chmod -f -R g+rw . || :
 
+.PHONY: updatesitemaps
+updatesitemaps:
+	node scripts/create_sitemaps.js
+
 prd/testsitemap.xml: src/testsitemap.xml
 	mkdir -p $(dir $@)
 
