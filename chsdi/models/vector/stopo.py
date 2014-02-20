@@ -699,6 +699,7 @@ class Gk500_lithologie_hauptgruppen(Base, Vector):
 
 register('ch.swisstopo.geologie-geotechnik-gk500-lithologie_hauptgruppen', Gk500_lithologie_hauptgruppen)
 
+
 class GeologieGeotechnikSteinbrueche1915(Base, Vector):
     __tablename__ = 'geotechnik_steinbrueche_1915'
     __table_args__ = ({'schema': 'geol', 'autoload': False})
@@ -711,6 +712,7 @@ class GeologieGeotechnikSteinbrueche1915(Base, Vector):
 
 register('ch.swisstopo.geologie-geotechnik-steinbrueche_1915', GeologieGeotechnikSteinbrueche1915)
 
+
 class GeologieGeotechnikSteinbrueche1965(Base, Vector):
     __tablename__ = 'geotechnik_steinbrueche_1965'
     __table_args__ = ({'schema': 'geol', 'autoload': False})
@@ -722,6 +724,7 @@ class GeologieGeotechnikSteinbrueche1965(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geotechnik-steinbrueche_1965', GeologieGeotechnikSteinbrueche1965)
+
 
 class GeologieGeotechnikSteinbrueche1980(Base, Vector):
     __tablename__ = 'geotechnik_steinbrueche_1980'
