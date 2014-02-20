@@ -31,7 +31,7 @@ class Search(SearchValidation):
         self.lang = request.lang
         self.cbName = request.params.get('callback')
         self.bbox = request.params.get('bbox')
-        self.returnGeometry = request.params.get('returnGeometry','true').lower() == 'true'
+        self.returnGeometry = request.params.get('returnGeometry', 'true').lower() == 'true'
         self.quadindex = None
         self.featureIndexes = request.params.get('features')
         self.timeInstant = request.params.get('timeInstant')
@@ -87,7 +87,7 @@ class Search(SearchValidation):
             for res in temp:
                 if res['attrs']['origin'] == 'address':
                     if nb_address < 20:
-                        if not (self.varnish_authorized  and self.returnGeometry):
+                        if not (self.varnish_authorized and self.returnGeometry):
                             if 'geom_st_box2d' in res['attrs'].keys():
                                 del res['attrs']['geom_st_box2d']
                         self.results['results'].append(res)
