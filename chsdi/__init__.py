@@ -67,18 +67,12 @@ def main(global_config, **settings):
     # Application specific
     config.add_route('topics', '/rest/services')
     config.add_route('mapservice', '/rest/services/{map}/MapServer')
-    # REMOVE ME AFTER NEXT DEPLOY
-    config.add_route('layersconfig', '/rest/services/{map}/MapServer/layersconfig')
     config.add_route('layersConfig', '/rest/services/{map}/MapServer/layersConfig')
     config.add_route('catalog', '/rest/services/{map}/CatalogServer')
     config.add_route('identify', '/rest/services/{map}/MapServer/identify')
     config.add_route('legend', '/rest/services/{map}/MapServer/{idlayer}/legend')
     config.add_route('feature', '/rest/services/{map}/MapServer/{idlayer}/{idfeature}')
-    # REMOVE ME AFTER NEXT DEPLOY
-    config.add_route('htmlpopup', '/rest/services/{map}/MapServer/{idlayer}/{idfeature}/htmlpopup')
     config.add_route('htmlPopup', '/rest/services/{map}/MapServer/{idlayer}/{idfeature}/htmlPopup')
-    # REMOVE ME AFTER NEXT DEPLOY
-    config.add_route('extendedhtmlpopup', '/rest/services/{map}/MapServer/{idlayer}/{idfeature}/extendedhtmlpopup')
     config.add_route('extendedHtmlPopup', '/rest/services/{map}/MapServer/{idlayer}/{idfeature}/extendedHtmlPopup')
     config.add_route('search', '/rest/services/{map}/SearchServer')
     config.add_route('wmtscapabilities', '/rest/services/{map}/1.0.0/WMTSCapabilities.xml')
