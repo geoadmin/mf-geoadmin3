@@ -911,7 +911,7 @@ class sis_facilities_a (Base, Vector):
     objectname_text_fr = Column('objname_fr', Text)
     objectname_text_it = Column('objname_it', Text)
     bgdi_created = Column('bgdi_created', Text)
-    the_geom = GeometryColumn(Geometry(dimentsion=2, srid=21781))
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bav.sachplan-infrastruktur-schiene_anhorung', sis_facilities_a)
 
@@ -948,7 +948,7 @@ class sis_planning_a (Base, Vector):
     bgdi_created = Column('bgdi_created', Text)
     __minscale__ = 50005
     __maxscale__ = 1000005
-    the_geom = GeometryColumn(Geometry(dimentsion=2, srid=21781))
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bav.sachplan-infrastruktur-schiene_anhorung', sis_planning_a)
 
@@ -970,7 +970,7 @@ class sis_angaben (Base, Vector):
     valid_from = Column('valid_from', Text)
     doc_title  = Column('doc_title', Text)
     bgdi_created = Column('bgdi_created', Text)
-    the_geom = GeometryColumn(Geometry(dimentsion=2, srid=21781))
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bav.sachplan-infrastruktur-schiene_ausgangslage', sis_angaben)
 
@@ -1007,7 +1007,7 @@ class sis_planning_raster_a (Base, Vector):
     bgdi_created = Column('bgdi_created', Text)
     __maxscale__ = 50005
     __minscale__ = 1
-    the_geom = GeometryColumn(Geometry(dimentsion=2, srid=21781))
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bav.sachplan-infrastruktur-schiene_anhorung', sis_planning_raster_a)
 
@@ -1038,7 +1038,7 @@ class sis_facilities_k (Base, Vector):
     objectname_text_fr = Column('objname_fr', Text)
     objectname_text_it = Column('objname_it', Text)
     bgdi_created = Column('bgdi_created', Text)
-    the_geom = GeometryColumn(Geometry(dimentsion=2, srid=21781))
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bav.sachplan-infrastruktur-schiene_kraft', sis_facilities_k)
 
@@ -1075,7 +1075,7 @@ class sis_planning_k (Base, Vector):
     bgdi_created = Column('bgdi_created', Text)
     __minscale__ = 50005
     __maxscale__ = 1000005
-    the_geom = GeometryColumn(Geometry(dimentsion=2, srid=21781))
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bav.sachplan-infrastruktur-schiene_kraft', sis_planning_k)
 
@@ -1112,6 +1112,6 @@ class sis_planning_raster_k (Base, Vector):
     bgdi_created = Column('bgdi_created', Text)
     __maxscale__ = 50005
     __minscale__ = 1
-    the_geom = GeometryColumn(Geometry(dimentsion=2, srid=21781))
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bav.sachplan-infrastruktur-schiene_kraft', sis_planning_raster_k)
