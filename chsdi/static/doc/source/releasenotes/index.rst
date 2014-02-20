@@ -1,3 +1,19 @@
+Release 20140220 -  Thursday, February 20th 2014
+====================================================
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+-----------------------------------
+- Various minor improvements and glitches
+
+`map.geo.admin.ch <//map.geo.admin.ch>`__
+--------------------------------------------------
+- Add link to map in full screen
+- Various minor fixes and improvements
+
+
 Release 20140213 -  Thursday, February 13th 2014
 ====================================================
 
