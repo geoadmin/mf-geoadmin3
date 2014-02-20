@@ -105,13 +105,6 @@ class Vector(GeoInterface):
         }
 
     @classmethod
-    def queryable_attributes(cls):
-        if hasattr(cls, '__queryable_attributes__'):
-            return [cls.__table__.columns[col] for col in cls.__queryable_attributes__]
-        else:
-            return [None]
-
-    @classmethod
     def geometry_column(cls):
         return cls.__table__.columns['the_geom']
 
