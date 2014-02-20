@@ -45,6 +45,8 @@ class CatalogService(MapNameValidation):
             node.pop('topic', None)
             node.pop('orderKey', None)
             node.pop('parentId', None)
+            if node['category'] == 'layer':
+                node.pop('selectedOpen', None)
             return node
 
         nodes_final = {}
