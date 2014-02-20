@@ -89,17 +89,17 @@
           without bbox, features within the bbox)</a> <br>
       <h4>Locations with features and time </h4>
           <a
-          href="rest/services/inspire/SearchServer?searchText=9990044&features=ch.swisstopo.lubis-luftbilder_farbe&type=locations&bbox=551306.5625,167918.328125,551754.125,168514.625&timeInstant=1952">Combined
+          href="rest/services/inspire/SearchServer?searchText=19810590048970&features=ch.swisstopo.lubis-luftbilder_farbe&type=locations&bbox=542200,206800,542200,206800&timeInstant=1981">Combined
           search for locations *and* features in ch.swisstopo.lubis-luftbilder_farbe
           with time parameter (1 result)</a> <br>
           <a
-          href="rest/services/inspire/SearchServer?searchText=9990044&features=ch.swisstopo.lubis-luftbilder_farbe&type=locations&bbox=551306.5625,167918.328125,551754.125,168514.625&timeInstant=1953">Combined
+          href="rest/services/inspire/SearchServer?searchText=19810590048970&features=ch.swisstopo.lubis-luftbilder_farbe&type=locations&bbox=542200,206800,542200,206800&timeInstant=1953">Combined
           search for locations *and* features in ch.swisstopo.lubis-luftbilder_farbe
           with time parameter (no  results)</a> <br>
           <a
-          href="rest/services/inspire/SearchServer?searchText=9990044&features=ch.swisstopo.lubis-luftbilder_farbe&type=locations&bbox=551306.5625,167918.328125,551754.125,168514.625">Combined
+          href="rest/services/inspire/SearchServer?searchText=19&features=ch.swisstopo.lubis-luftbilder_farbe&type=locations&bbox=540000,140000,560000,160000&timeInstant=1990">Combined
           search for locations *and* features in ch.swisstopo.lubis-luftbilder_farbe
-          with time parameter (1  result)</a> <br>
+          with time parameter (several  results)</a> <br>
       <h3>Feature search (type=featuresearch)</h3>
           <a href="rest/services/inspire/SearchServer?features=ch.bafu.hydrologie-gewaesserzustandsmessstationen&type=featuresearch&searchText=4331">Search for features using that matches a given searchText in their search fields</a> <br>
       <h3>Feature identify (type=featureidentify) only bbox search, no search text)</h3>
