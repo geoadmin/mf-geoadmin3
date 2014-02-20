@@ -205,7 +205,6 @@ class MapService(MapServiceValidation):
         idlayer = self.request.matchdict.get('idlayer')
         idfeature = self.request.matchdict.get('idfeature')
         models = models_from_name(idlayer)
-
         if models is None:
             raise exc.HTTPBadRequest('No GeoTable was found for %s' % idlayer)
 
@@ -320,7 +319,6 @@ class MapService(MapServiceValidation):
         if hasattr(feature, 'extra'):
             feature.extra['layerName'] = layerName
         feature = {'feature': feature}
-
         return feature
 
     def _full_text_search(self, query, orm_column):
