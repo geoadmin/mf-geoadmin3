@@ -145,7 +145,7 @@
 
               scope.addCross = function(center) {
                 var cross = $('<div></div>')
-                  .addClass('crosshair')
+                  .addClass('ga-crosshair')
                   .addClass('cross');
                 scope.removeCross();
                 scope.overlay = new ol.Overlay({

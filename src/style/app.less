@@ -77,16 +77,6 @@ form {
   }
 }
 
-#map {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  .ol-dragbox {
-    position:absolute;
-    border: 1px solid #2E2F2F;
-    background-color: rgba(255, 255, 255, 0.5);
-  }
-}
 #copyrightsdata {
   font-size: 11px;
   position: absolute;
@@ -611,6 +601,15 @@ a .ga-icon-separator {
   
   .ga-popup-content {
     padding: 5px 9px 5px 5px;
+
+    a {
+      text-decoration: none;
+      color: #000;
+    }
+
+    li.selected a {
+      color: #f00;
+    }
   }
 }
 
@@ -702,7 +701,7 @@ ul.panel-body-wide {
 }
 
 // ***** METADATA POPUP
-.ga-measure-wait, .ga-tooltip-wait .map, .metadata-popup-wait, .ga-print-wait {
+.ga-measure-wait, .ga-tooltip-wait .ga-map, .metadata-popup-wait, .ga-print-wait {
   cursor: wait;
 }
 @media (max-width: @screen-tablet) {
