@@ -89,16 +89,16 @@
           without bbox, features within the bbox)</a> <br>
       <h4>Locations with features and time </h4>
           <a
-          href="rest/services/inspire/SearchServer?searchText=9990044&features=ch.swisstopo.lubis-luftbilder&type=locations&bbox=551306.5625,167918.328125,551754.125,168514.625&timeInstant=1952">Combined
-          search for locations *and* features in ch.swisstopo.lubis-luftbilder
+          href="rest/services/inspire/SearchServer?searchText=9990044&features=ch.swisstopo.lubis-luftbilder_farbe&type=locations&bbox=551306.5625,167918.328125,551754.125,168514.625&timeInstant=1952">Combined
+          search for locations *and* features in ch.swisstopo.lubis-luftbilder_farbe
           with time parameter (1 result)</a> <br>
           <a
-          href="rest/services/inspire/SearchServer?searchText=9990044&features=ch.swisstopo.lubis-luftbilder&type=locations&bbox=551306.5625,167918.328125,551754.125,168514.625&timeInstant=1953">Combined
-          search for locations *and* features in ch.swisstopo.lubis-luftbilder
+          href="rest/services/inspire/SearchServer?searchText=9990044&features=ch.swisstopo.lubis-luftbilder_farbe&type=locations&bbox=551306.5625,167918.328125,551754.125,168514.625&timeInstant=1953">Combined
+          search for locations *and* features in ch.swisstopo.lubis-luftbilder_farbe
           with time parameter (no  results)</a> <br>
           <a
-          href="rest/services/inspire/SearchServer?searchText=9990044&features=ch.swisstopo.lubis-luftbilder&type=locations&bbox=551306.5625,167918.328125,551754.125,168514.625">Combined
-          search for locations *and* features in ch.swisstopo.lubis-luftbilder
+          href="rest/services/inspire/SearchServer?searchText=9990044&features=ch.swisstopo.lubis-luftbilder_farbe&type=locations&bbox=551306.5625,167918.328125,551754.125,168514.625">Combined
+          search for locations *and* features in ch.swisstopo.lubis-luftbilder_farbe
           with time parameter (1  result)</a> <br>
       <h3>Feature search (type=featuresearch)</h3>
           <a href="rest/services/inspire/SearchServer?features=ch.bafu.hydrologie-gewaesserzustandsmessstationen&type=featuresearch&searchText=4331">Search for features using that matches a given searchText in their search fields</a> <br>
