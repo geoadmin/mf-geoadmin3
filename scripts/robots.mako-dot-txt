@@ -1,9 +1,13 @@
 User-agent: *
 % if deploy_target == 'prod':
+
+Sitemap: http://map.geo.admin.ch/sitemap.xml
+
 Disallow: /main/
 Disallow: /${version}
 Disallow: /info.json
 Disallow: /checker
+
 % else:
 Disallow: /
 % endif
