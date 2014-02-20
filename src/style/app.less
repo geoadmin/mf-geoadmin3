@@ -50,6 +50,17 @@ input::-ms-clear {
   display: none;
 }
 
+form {
+
+  input.ng-invalid.ng-dirty {
+    background-color: #FA787E;
+  }
+
+  input.ng-valid.ng-dirty {
+    background-color: white;
+  }
+}
+
 .ga-dragging {
   cursor: move;
 }
@@ -598,6 +609,7 @@ a .ga-icon-separator {
   }
 }
 
+.ga-popup-content,
 [ga-context-popup] .popover-content {
   a {
     text-decoration: underline;
