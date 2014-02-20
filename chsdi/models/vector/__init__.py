@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from sys import maxsize
+import datetime
+import decimal
 from shapely import wkb
 from shapely.geometry import asShape
 from sqlalchemy.orm.util import class_mapper
@@ -121,7 +123,7 @@ class Vector(GeoInterface):
 
     @classmethod
     def primary_key_column(cls):
-        return cls.__table__.primary_key
+        return cls.__mapper__.primary_key[0]
 
     @classmethod
     def time_instant_column(cls):
@@ -145,19 +147,19 @@ class Vector(GeoInterface):
 
     def getAttributes(self):
         attributes = dict()
-        fidColumnName = self.primary_key_column().name
-        geomColumnName = self.geometry_column().name
-        geomColumnNameToReturn = self.geometry_column_to_return().name
+        primaryKeyColumn = self.primary_key_column()
+        geomColumn = self.geometry_column()
+        geomColumnToReturn = self.geometry_column_to_return()
         for column in self.__table__.columns:
-            columnName = str(column.key)
-            if columnName not in (fidColumnName, geomColumnName, geomColumnNameToReturn) and hasattr(self, columnName):
-                attribute = getattr(self, columnName)
-                if attribute.__class__.__name__ == 'Decimal':
-                    attributes[columnName] = attribute.__float__()
-                elif attribute.__class__.__name__ == 'datetime':
-                    attributes[columnName] = attribute.strftime("%d.%m.%Y")
+            if column not in (primaryKeyColumn, geomColumn, geomColumnToReturn):
+                ormColumnName = self.__mapper__.get_property_by_column(column).key
+                attribute = getattr(self, ormColumnName)
+                if isinstance(attribute, decimal.Decimal):
+                    attributes[ormColumnName] = attribute.__float__()
+                elif isinstance(attribute, datetime.datetime):
+                    attributes[ormColumnName] = attribute.strftime("%d.%m.%Y")
                 else:
-                    attributes[columnName] = attribute
+                    attributes[ormColumnName] = attribute
         return attributes
 
 
