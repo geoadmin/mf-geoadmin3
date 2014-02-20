@@ -119,16 +119,16 @@
         this.domain = getXYDomains(that.data);
         var axis = createAxis(this.domain);
         var element = document.createElement('DIV');
-        element.className = 'profile-inner';
+        element.className = 'ga-profile-inner';
 
         var svg = d3.select(element).append('svg')
             .attr('width', width + marginHoriz)
             .attr('height', height + marginVert)
-            .attr('class', 'profile-svg');
+            .attr('class', 'ga-profile-svg');
 
         var group = svg
           .append('g')
-            .attr('class', 'profile-group')
+            .attr('class', 'ga-profile-group')
             .attr('transform', 'translate(' + options.margin.left +
                 ', ' + options.margin.top + ')');
 
@@ -149,7 +149,7 @@
             .style('text-anchor', 'end');
 
         group.append('g')
-            .attr('class', 'profile-grid-x')
+            .attr('class', 'ga-profile-grid-x')
             .attr('transform', 'translate(0, ' + height + ')')
             .call(axis.X
                 .tickSize(-height, 0, 0)
@@ -157,7 +157,7 @@
             );
 
         group.append('g')
-            .attr('class', 'profile-grid-y')
+            .attr('class', 'ga-profile-grid-y')
             .call(axis.Y
                 .tickSize(-width, 0, 0)
                 .tickFormat('')
@@ -165,13 +165,13 @@
 
         group.append('path')
             .datum(that.data)
-            .attr('class', 'profile-area')
+            .attr('class', 'ga-profile-area')
             .attr('d', area);
 
         this.group = group;
 
         var legend = group.append('g')
-            .attr('class', 'profile-legend')
+            .attr('class', 'ga-profile-legend')
             .attr('x', width - 65)
             .attr('y', 10)
             .attr('width', 100)
@@ -185,14 +185,14 @@
             .text('swissALTI3D/DHM25');
 
         group.append('text')
-            .attr('class', 'profile-label profile-label-x')
+            .attr('class', 'ga-profile-label ga-profile-label-x')
             .attr('x', width / 2)
             .attr('y', height + options.margin.bottom - 2)
             .style('text-anchor', 'middle')
             .text('{{"' + options.xLabel + '" | translate}} [{{unitX}}]');
 
         group.append('text')
-            .attr('class', 'profile-label profile-label-y')
+            .attr('class', 'ga-profile-label ga-profile-label-y')
             .attr('transform', 'rotate(-90)')
             .attr('y', 0 - options.margin.left)
             .attr('x', 0 - height / 2)
@@ -209,10 +209,10 @@
         this.domain = getXYDomains(that.data);
         var axis = createAxis(this.domain);
         var area = createArea(this.domain, 'cardinal');
-        var path = this.group.select('.profile-area');
+        var path = this.group.select('.ga-profile-area');
         path.datum(that.data)
           .transition().duration(1500)
-            .attr('class', 'profile-area')
+            .attr('class', 'ga-profile-area')
             .attr('d', area);
 
         this.group.select('g.x')
@@ -221,13 +221,13 @@
         this.group.select('g.y')
           .transition().duration(1500)
             .call(axis.Y);
-        this.group.select('g.profile-grid-x')
+        this.group.select('g.ga-profile-grid-x')
           .transition().duration(1500)
             .call(axis.X
                 .tickSize(-height, 0, 0)
                 .tickFormat('')
             );
-        this.group.select('g.profile-grid-y')
+        this.group.select('g.ga-profile-grid-y')
           .transition().duration(1500)
             .call(axis.Y
                 .tickSize(-width, 0, 0)
