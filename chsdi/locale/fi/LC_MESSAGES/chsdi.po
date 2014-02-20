@@ -1337,6 +1337,18 @@ msgstr "Lieu engrevgià - traffic public"
 msgid "ch.bav.laerm-emissionplan_eisenbahn_2015"
 msgstr "Emissionsplan Eisenbahn  2015"
 
+#. TODO
+msgid "ch.bav.sachplan-infrastruktur-schiene_anhorung"
+msgstr "ch.bav.sachplan-infrastruktur-schiene_anhorung"
+
+#. TODO
+msgid "ch.bav.sachplan-infrastruktur-schiene_ausgangslage"
+msgstr "ch.bav.sachplan-infrastruktur-schiene_ausgangslage"
+
+#. TODO
+msgid "ch.bav.sachplan-infrastruktur-schiene_kraft"
+msgstr "ch.bav.sachplan-infrastruktur-schiene_kraft"
+
 msgid "ch.bav.url"
 msgstr "http://www.bav.admin.ch/?lang=de"
 

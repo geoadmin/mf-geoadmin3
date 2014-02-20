@@ -1337,6 +1337,15 @@ msgstr "Siti inquinati trasporti pubbl."
 msgid "ch.bav.laerm-emissionplan_eisenbahn_2015"
 msgstr "Piano delle emissioni 2015"
 
+msgid "ch.bav.sachplan-infrastruktur-schiene_anhorung"
+msgstr "SIS consultazione"
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_ausgangslage"
+msgstr "PSIF consultazione: statu quo"
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_kraft"
+msgstr "PS infrastruttura ferroviaria"
+
 msgid "ch.bav.url"
 msgstr "http://www.bav.admin.ch/?lang=it"
 
