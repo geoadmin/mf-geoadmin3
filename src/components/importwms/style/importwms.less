@@ -1,5 +1,4 @@
 [ga-import-wms] {
-
   position: relative;
   background-color: white;
   padding: 10px;
@@ -32,65 +31,27 @@
       height: 35px;
     }
 
-    th.add, td.add {
-      width: 25px;
-    }
-
-    th.title, td.title {
-      width: 295px;
-    }
-
-    tr.row-first td {
-      border-top: none;
-    }
-
     th, td {
+      width: 295px;
       border-left: 1px solid #dddddd;
     }
 
-    td.col-first, th.col-first {
+    tbody > tr:first-child td { /* first-row of table content */
+      border-top: none;
+    }
+
+    tr > :first-child { /* first-col */
+      width: 25px;
       border-left: none;
     }
 
-    tr {
+    tr, .icon-zoom-in {
       cursor: pointer;
     }
 
-    tr.selected {
+    tr.success {
       cursor: default;
     }
-  }
-
-  .tables-container {
-    width: 330px;
-    border: 1px solid #dddddd;
-    border-collapse: separate;
-    border-radius: 4px;
-    z-index: 50;
-
-    th {
-      border-bottom: none;
-    }
-  }
-
-  .table-content-container {
-    width: 100%;
-    height: 240px;
-    position: relative;
-    overflow-y: auto;
-    overflow-x: hidden;
-    border-top: 1px solid #dddddd;
-  }
-
-  .tables-container, .description-container {
-    display: inline-block;
-    position: relative;
-    margin: 20px 0px 0px 0px;
-  }
-
-  .description-container {
-    vertical-align: top;
-    margin-left: 20px;
   }
 
   textarea[readonly] {
@@ -102,26 +63,12 @@
     font-size: 12px;
   }
 
-  .bt-connect {
-    position: absolute;
-    left: 596px;
-    top: 0px;
-    width: 120px;
-  }
-
-  .open-wms-list {
-    cursor: pointer;
-    position: absolute;
-    left: 566px;
-    top: .7em;
-    font-size: 14px;
-  }
-
   .tt-dropdown-menu {
     height: 280px;
     overflow-y: auto;
     border: 1px solid black;
     background-color: white;
+    
     p {
       margin: 5px 10px;
     }
@@ -148,16 +95,55 @@
     }
   }
 
-  .bt-addlayer {
+  .ga-import-wms-container {
+    width: 330px;
+    border: 1px solid #dddddd;
+    border-collapse: separate;
+    border-radius: 4px;
+    z-index: 50;
+
+    th {
+      border-bottom: none;
+    }
+  }
+
+  .ga-import-wms-content {
+    width: 100%;
+    height: 240px;
+    position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-top: 1px solid #dddddd;
+  }
+
+  .ga-import-wms-container, .ga-import-wms-descr {
+    display: inline-block;
+    position: relative;
+    margin: 20px 0px 0px 0px;
+  }
+
+  .ga-import-wms-connect {
+    position: absolute;
+    left: 596px;
+    top: 0px;
+    width: 120px;
+  }
+
+  .ga-import-wms-open {
+    cursor: pointer;
+    position: absolute;
+    left: 566px;
+    top: .7em;
+    font-size: 14px;
+  }
+
+  .ga-import-wms-descr {
+    vertical-align: top;
+    margin-left: 20px;
+  }
+ 
+  .ga-import-wms-add {
     width: 100%;
     margin-top: 10px;
-  }
-
-  .icon-thumbs-down {
-    color: red;
-  }
-
-  .icon-thumbs-up {
-    color: green;
   }
 }

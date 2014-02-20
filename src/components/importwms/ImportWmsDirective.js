@@ -294,7 +294,7 @@
 
 
               // Toggle list of suggestions
-              elt.find('.open-wms-list').on('click', function(evt) {
+              elt.find('.ga-import-wms-open').on('click', function(evt) {
                 elt.find('.tt-dropdown-menu').toggle();
                 // Re-initialize the list of suggestions
                 initSuggestions();
