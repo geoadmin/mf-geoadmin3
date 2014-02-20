@@ -45,7 +45,6 @@ class MapService(MapServiceValidation):
         return results
 
     @view_config(route_name='layersConfig', renderer='jsonp')
-    @view_config(route_name='layersconfig', renderer='jsonp')
     def layersconfig(self):
         layers = {}
         model = LayersConfig
@@ -224,7 +223,6 @@ class MapService(MapServiceValidation):
         return feature
 
     @view_config(route_name='htmlPopup', renderer='jsonp')
-    @view_config(route_name='htmlpopup', renderer='jsonp')
     def htmlpopup(self):
         template, feature = self._get_html_response('simple')
         feature.update({'extended': False})
@@ -237,7 +235,6 @@ class MapService(MapServiceValidation):
         return response.body
 
     @view_config(route_name='extendedHtmlPopup', renderer='jsonp')
-    @view_config(route_name='extendedhtmlpopup', renderer='jsonp')
     def extendedhtmlpopup(self):
         template, feature = self._get_html_response('extended')
         feature.update({'extended': True})
