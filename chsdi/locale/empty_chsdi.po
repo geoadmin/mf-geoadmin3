@@ -1054,9 +1054,6 @@ msgstr ""
 msgid "ch.swisstopo.images-swissimage.metadata"
 msgstr ""
 
-msgid "ch.swisstopo.lubis-luftbilder"
-msgstr ""
-
 msgid "ch.swisstopo.pixelkarte-farbe"
 msgstr ""
 
@@ -4129,4 +4126,7 @@ msgid "ch.swisstopo.lubis-luftbilder_infrarot"
 msgstr ""
 
 msgid "ch.swisstopo.lubis-bildstreifen"
+msgstr ""
+
+msgid "tt_lubis_bildorder"
 msgstr ""

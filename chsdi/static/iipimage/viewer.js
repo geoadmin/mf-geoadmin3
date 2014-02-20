@@ -53,11 +53,11 @@ function init() {
       target: 'map',
       ol3Logo: false,
       view: new ol.View2D({
-        projection: proj,
-        center:  [imgWidth / 2, - imgHeight / 2],
-        zoom: 0
+        projection: proj
       })
     });
+    map.getView().fitExtent([0, -imgHeight, imgWidth, 0], map.getSize());
+
   } else {
     alert('Missing parameters');
   }  

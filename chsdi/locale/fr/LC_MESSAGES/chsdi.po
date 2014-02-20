@@ -1799,9 +1799,6 @@ msgstr "http://www.swisstopo.admin.ch/internet/swisstopo/fr/home/swisstopo/org/c
 msgid "ch.swisstopo.lubis-bildstreifen"
 msgstr "Bandes d'images aériennes swisstopo"
 
-msgid "ch.swisstopo.lubis-luftbilder"
-msgstr "Images aér. swisstopo"
-
 msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen"
 msgstr "Images aériennes de privés"
 
@@ -3835,6 +3832,9 @@ msgstr "Quickview"
 
 msgid "tt_lubis_auflosung"
 msgstr "Résolution"
+
+msgid "tt_lubis_bildorder"
+msgstr "Pour cette commande, veuillez contacter directement:"
 
 msgid "tt_lubis_ebkey"
 msgstr "No de l'image"

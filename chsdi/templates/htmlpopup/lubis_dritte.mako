@@ -39,7 +39,6 @@ endif
 %    else:
        <tr><td class="cell-left">${_('tt_lubis_Quickview')}</td>    <td>${_('tt_lubis_noQuickview')}</td></tr>
 %    endif
-    <tr><td class="cell-left">${_('link')} Toposhop</td>   <td><a href="http://www.toposhop.admin.ch/de/shop/satair/lubis_1?ext=1&pics=${c['featureId']},0,${c['attributes']['ort'].strip()},${c['attributes']['y']},${c['attributes']['x']},nein" target="toposhop">Toposhop</a></td></tr>
 <tr>
       <td class="cell-left"></td>
       <td><a href="${c['baseUrl']}/${c['instanceId']}/rest/services/all/MapServer/${c['layerBodId']}/${c['featureId']}/extendedhtmlpopup" target="_blank">${_('zusatzinfo')}<img src="http://www.swisstopo.admin.ch/images/ico_extern.gif" /></a></td>
@@ -154,7 +153,7 @@ endif
     // Add the layers in the map
     map.addLayer(lyr1);
     map.addLayer(lyr2);
-    
+
     map.highlightFeature('${c['layerBodId']}', '${c['featureId']}');
     map.recenterFeature('${c['layerBodId']}', '${c['featureId']}');
 
@@ -182,7 +181,7 @@ endif
         <tr><th class="cell-left">${_('tt_lubis_originalsize')}</th>     <td>${c['attributes']['originalsize'] or '-'}</td></tr>
         <tr><th class="cell-left">${_('tt_lubis_scan')}</th>             <td>${scan or '-'}</td></tr>
         <tr><th class="cell-left">${_('tt_lubis_orientierung')}</th>     <td>${orientierung or '-'}</td></tr>
-        <tr><th class="cell-left">${_('link')} Toposhop</th>             <td><a href="http://www.toposhop.admin.ch/de/shop/satair/lubis_1?ext=1&pics=${c['featureId']},0,${c['attributes']['ort'].strip()},${c['attributes']['y']},${c['attributes']['x']},nein" target="toposhop">Toposhop</a></td></tr>
+        <tr><th class="cell-left">${_('tt_lubis_bildorder')}</th>        <td>${c['attributes']['contact']} <br /> ${c['attributes']['contact_email']} <br /><a href="${c['attributes']['contact_web']}" target="_blank">${c['attributes']['contact_web']}</a></td></tr>
     </table>
     <div id="map"></div>
     <br>
