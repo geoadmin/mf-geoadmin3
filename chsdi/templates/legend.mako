@@ -23,7 +23,8 @@
                  'ch.swisstopo.pixelkarte-farbe-pk200.noscale',
                  'ch.swisstopo.pixelkarte-farbe-pk100.noscale', 
                  'ch.swisstopo.pixelkarte-farbe-pk50.noscale',
-                 'ch.swisstopo.pixelkarte-farbe-pk25.noscale')
+                 'ch.swisstopo.pixelkarte-farbe-pk25.noscale',
+                 'ch.swisstopo.geologie-geotechnik-mineralische_rohstoffe200')
   if c['idBod'] in pdf_legends:
       legend_url_pdf = host + '/static/images/legends/' + c['idBod'] + '_' + lang + '_big.pdf'
   else:
