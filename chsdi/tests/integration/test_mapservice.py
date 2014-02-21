@@ -225,6 +225,16 @@ class TestMapServiceView(TestsBase):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/legend', params={'callback': 'cb'}, status=200)
         self.failUnless(resp.content_type == 'application/javascript')
 
+    def test_all_legends(self):
+        import os
+        legendsPath = os.getcwd() + '/chsdi/static/images/legends/'
+        legendNames = os.listdir(legendsPath)
+        parseLegendNames = lambda x: x[:-7] if 'big' not in x else x[:-11]
+        layers = list(set(map(parseLegendNames, legendNames)))
+        for layer in layers:
+            for lang in ('de', 'fr', 'it', 'rm', 'en'):
+                resp = self.testapp.get('/rest/services/all/MapServer/%s/legend' %layer, params={'callback': 'cb', 'lang': '%s' %lang}, status=200)
+
     def test_layersconfig_valid(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/layersConfig', status=200)
         self.failUnless(resp.content_type == 'application/json')
