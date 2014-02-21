@@ -83,7 +83,7 @@
                   document.getElementsByClassName('ol-zoom-extent')[0];
                 var rotation = view.getRotation() * 180 / Math.PI;
                 setRotate(zoomExtentElement, rotation);
-                zoomExtentElement.onclick=function(){
+                zoomExtentElement.onclick = function() {
                   view.setRotation(0);
                 };
               };
