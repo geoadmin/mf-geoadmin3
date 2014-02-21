@@ -231,7 +231,7 @@ class TestMapServiceView(TestsBase):
         legendNames = os.listdir(legendsPath)
         parseLegendNames = lambda x: x[:-7] if 'big' not in x else x[:-11]
         layers = list(set(map(parseLegendNames, legendNames)))
-        swissmaponlineLegends = ['ch.swisstopo-karto.hangneigung', 'ch.swisstopo-karto.skitouren', 'ch.swisstopo-karto.wanderwege']
+        swissmaponlineLegends = ['ch.swisstopo-karto.hangneigung', 'ch.swisstopo-karto.skitouren', 'ch.swisstopo-karto.wanderwege', 'ch.tamedia.schweizerfamilie-feuerstellen']
         for layer in layers:
             if layer not in swissmaponlineLegends:
                 for lang in ('de', 'fr', 'it', 'rm', 'en'):
