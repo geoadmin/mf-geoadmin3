@@ -968,7 +968,7 @@ class sis_angaben (Base, Vector):
     facility_kind = Column('facility_kind', Text)
     facility_status = Column('facility_status', Text)
     valid_from = Column('valid_from', Text)
-    doc_title  = Column('doc_title', Text)
+    doc_title = Column('doc_title', Text)
     bgdi_created = Column('bgdi_created', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
