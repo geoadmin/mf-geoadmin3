@@ -225,24 +225,28 @@ input[type=text][readonly] {
   background-color: rgba(214, 214, 214, 0.9);
   padding-left: 12px;
   padding-right: 0;
-  & > div {
+
+  & > div  {
     height: unit(@footer-height, px);
     line-height: unit(@footer-height, px);
     margin-right: 1em;
   }
-  #scaleline {
+  
+  [ga-scale-line] {
     line-height: 1.5em;
     height: 1.5em;
-    margin-top: .4em;
-    width: 150px;
+    margin-top: .4em;  
   }
+
   @media (max-width: @screen-tablet) {
     background: transparent;
     padding-left: 2px;
+    
     & > div {
       display: none;
     }
-    #scaleline {
+      
+    [ga-scale-line] {
       display: inline-block;
       position: absolute;
       bottom: 0;
@@ -250,16 +254,18 @@ input[type=text][readonly] {
       height: auto;
       line-height: 1.4em;
       margin: 0;
-    }
-    .ol-scale-line-inner {
-      background: rgba(255,255,255,.7);
-      outline: 2px solid rgba(255,255,255,.7);
-      font-weight: normal;
-      height: 14px;
-      line-height: 1em;
+      
+      .ol-scale-line-inner {
+        background: rgba(255,255,255,.7);
+        outline: 2px solid rgba(255,255,255,.7);
+        font-weight: normal;
+        height: 14px;
+        line-height: 1em;
+      }
     }
   }
 }
+
 #mouseposition {
   select {
     height: auto;
