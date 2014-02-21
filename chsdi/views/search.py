@@ -44,6 +44,7 @@ class Search(SearchValidation):
 
     @view_config(route_name='search', renderer='jsonp')
     def search(self):
+        self.sphinx.SetConnectTimeout(2.0)
         # create a quadindex if the bbox is defined
         if self.bbox is not None and self.typeInfo != 'layers':
             self._get_quad_index()
@@ -75,12 +76,14 @@ class Search(SearchValidation):
     def _swiss_search(self, limit):
         if len(self.searchText) < 1:
             return 0
-        self.sphinx.SetConnectTimeout(1.5)
         self.sphinx.SetLimits(0, limit)
         self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
         self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, 'rank ASC, @weight DESC, num ASC')
         searchText = self._query_fields('@detail')
-        temp = self.sphinx.Query(searchText, index='swisssearch')
+        try:
+            temp = self.sphinx.Query(searchText, index='swisssearch')
+        except IOError:
+            raise exc.HTTPGatewayTimeout()
         temp = temp['matches'] if temp is not None else temp
         if temp is not None and len(temp) != 0:
             nb_address = 0
@@ -107,7 +110,10 @@ class Search(SearchValidation):
         searchText += ' & @topics ' + self.mapName
         # We only take the layers in prod for now
         searchText += ' & @staging prod'
-        temp = self.sphinx.Query(searchText, index=index_name)
+        try:
+            temp = self.sphinx.Query(searchText, index=index_name)
+        except IOError:
+            raise exc.HTTPGatewayTimeout()
         temp = temp['matches'] if temp is not None else temp
         if temp is not None and len(temp) != 0:
             self.results['results'] += temp
@@ -139,7 +145,10 @@ class Search(SearchValidation):
         if self.quadindex is not None:
             searchText += ' & (' + self._get_quadindex_string() + ')'
         self._add_feature_queries(searchText)
-        temp = self.sphinx.RunQueries()
+        try:
+            temp = self.sphinx.RunQueries()
+        except IOError:
+            raise exc.HTTPGatewayTimeout()
         return self._parse_feature_results(temp)
 
     def _get_geoanchor_from_bbox(self):
