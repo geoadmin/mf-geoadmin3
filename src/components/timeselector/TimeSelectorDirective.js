@@ -19,7 +19,7 @@
         gaBrowserSniffer) {
 
       // Initialize variables
-      $scope.stateClass = $scope.isActive ? '' : 'inactive';
+      $scope.stateClass = $scope.isActive ? '' : 'ga-time-selector-inactive';
       $scope.minYear = 1844;
       $scope.maxYear = (new Date()).getFullYear();
       $scope.currentYear = -1; // User selected year
@@ -183,7 +183,7 @@
         // Enable the button if it is disable
         var enable = function() {
           if (scope.isDisable) {
-            scope.stateClass = 'enabled';
+            scope.stateClass = 'ga-time-selector-enabled';
             scope.isDisable = false;
             elt.tooltip('destroy');
             elt.tooltip({
@@ -217,7 +217,8 @@
         scope.toggle = function(event) {
           if (!scope.isDisable) {
             scope.isActive = !scope.isActive;
-            scope.stateClass = scope.isActive ? 'active' : 'enabled';
+            scope.stateClass = scope.isActive ? 'ga-time-selector-active' :
+                'ga-time-selector-enabled';
             $rootScope.$broadcast('gaTimeSelectorToggle', scope.isActive);
           }
 
@@ -289,7 +290,7 @@
           scope.$watch('isActive', function(active) {
             if (angular.isDefined(active)) {
               elt.toggle(active);
-              scope.stateClass = (active) ? 'active' : '';
+              scope.stateClass = (active) ? 'ga-time-selector-active' : '';
               applyNewYear((active ? scope.currentYear : undefined));
             } else {
               elt.hide();
