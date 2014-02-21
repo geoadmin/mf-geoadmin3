@@ -1,7 +1,8 @@
-.topic-selector {
+div[ga-topic] {
   width: 640px;
   padding: 0px 4px;
-  .topic {
+
+  & > div {
     float: left;
     margin: 2px;
     padding: 3px;
@@ -10,17 +11,20 @@
     width: 154px;
     text-align: center;
    
-    &.active, &:hover {
+    &.ga-topic-active, &:hover {
       border: 1px solid #c6c6c6;
       background-color: #efefef;
     }
+
     @media (max-width: @screen-tablet) {
       width: 140px; 
+      
       img {
         display: none;
       }
     }
   }
+
   @media (max-width: @screen-tablet) {
     width: 160px;
     height: 250px;
@@ -29,3 +33,8 @@
     overflow-x: hidden;
   }
 }
+
+select[ga-topic] {
+  width: 100%;
+}
+
