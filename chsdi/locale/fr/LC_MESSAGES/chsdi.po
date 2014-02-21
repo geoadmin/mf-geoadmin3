@@ -1337,6 +1337,15 @@ msgstr "Sites pollués transports publics"
 msgid "ch.bav.laerm-emissionplan_eisenbahn_2015"
 msgstr "Plan des émissions en 2015"
 
+msgid "ch.bav.sachplan-infrastruktur-schiene_anhorung"
+msgstr "SIS consultation"
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_ausgangslage"
+msgstr "SIS consultation: données de base"
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_kraft"
+msgstr "PS infrastructure rail"
+
 msgid "ch.bav.url"
 msgstr "http://www.bav.admin.ch/?lang=fr"
 
@@ -3913,6 +3922,18 @@ msgstr "N° de régime d’écoulement"
 
 msgid "tt_regimetyp"
 msgstr "Type de régime d’écoulement"
+
+msgid "tt_sachplan-infrastruktur-schiene_aus_anlage"
+msgstr "Projet"
+
+msgid "tt_sachplan-infrastruktur-schiene_aus_anlageart"
+msgstr "Type de projet"
+
+msgid "tt_sachplan-infrastruktur-schiene_aus_doc_title"
+msgstr "Fiche d´objet"
+
+msgid "tt_sachplan-infrastruktur-schiene_aus_validform"
+msgstr "Date de décision"
 
 msgid "tt_sachplan_beschreibung"
 msgstr "Description"

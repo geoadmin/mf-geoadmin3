@@ -1337,6 +1337,18 @@ msgstr "Polluted sites - pub. transp."
 msgid "ch.bav.laerm-emissionplan_eisenbahn_2015"
 msgstr "Emissions Plan 2015"
 
+#. TODO
+msgid "ch.bav.sachplan-infrastruktur-schiene_anhorung"
+msgstr "ch.bav.sachplan-infrastruktur-schiene_anhorung"
+
+#. TODO
+msgid "ch.bav.sachplan-infrastruktur-schiene_ausgangslage"
+msgstr "ch.bav.sachplan-infrastruktur-schiene_ausgangslage"
+
+#. TODO
+msgid "ch.bav.sachplan-infrastruktur-schiene_kraft"
+msgstr "ch.bav.sachplan-infrastruktur-schiene_kraft"
+
 msgid "ch.bav.url"
 msgstr "http://www.bav.admin.ch/?lang=en"
 
@@ -3913,6 +3925,18 @@ msgstr "River regime number"
 
 msgid "tt_regimetyp"
 msgstr "River regime type"
+
+msgid "tt_sachplan-infrastruktur-schiene_aus_anlage"
+msgstr "Facility name"
+
+msgid "tt_sachplan-infrastruktur-schiene_aus_anlageart"
+msgstr "Facility kind"
+
+msgid "tt_sachplan-infrastruktur-schiene_aus_doc_title"
+msgstr "Object sheet"
+
+msgid "tt_sachplan-infrastruktur-schiene_aus_validform"
+msgstr "Date of decision"
 
 msgid "tt_sachplan_beschreibung"
 msgstr "Description"

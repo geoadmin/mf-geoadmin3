@@ -1337,6 +1337,15 @@ msgstr "Siti inquinati trasporti pubbl."
 msgid "ch.bav.laerm-emissionplan_eisenbahn_2015"
 msgstr "Piano delle emissioni 2015"
 
+msgid "ch.bav.sachplan-infrastruktur-schiene_anhorung"
+msgstr "SIS consultazione"
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_ausgangslage"
+msgstr "PSIF consultazione: statu quo"
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_kraft"
+msgstr "PS infrastruttura ferroviaria"
+
 msgid "ch.bav.url"
 msgstr "http://www.bav.admin.ch/?lang=it"
 
@@ -3913,6 +3922,18 @@ msgstr "Numero del regime di scorrimento"
 
 msgid "tt_regimetyp"
 msgstr "Tipo del regime di scorrimento"
+
+msgid "tt_sachplan-infrastruktur-schiene_aus_anlage"
+msgstr "Nome di progetto"
+
+msgid "tt_sachplan-infrastruktur-schiene_aus_anlageart"
+msgstr "Tipo di progetto"
+
+msgid "tt_sachplan-infrastruktur-schiene_aus_doc_title"
+msgstr "Scheda di coordinamento"
+
+msgid "tt_sachplan-infrastruktur-schiene_aus_validform"
+msgstr "Data di decisione"
 
 msgid "tt_sachplan_beschreibung"
 msgstr "Descrizione"

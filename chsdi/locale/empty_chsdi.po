@@ -1528,6 +1528,18 @@ msgstr ""
 msgid "tt_ch.bazl.registrationnummer"
 msgstr ""
 
+msgid "tt_sachplan-infrastruktur-schiene_aus_anlage"
+msgstr ""
+
+msgid "tt_sachplan-infrastruktur-schiene_aus_anlageart"
+msgstr ""
+
+msgid "tt_sachplan-infrastruktur-schiene_aus_validform"
+msgstr ""
+
+msgid "tt_sachplan-infrastruktur-schiene_aus_doc_title"
+msgstr ""
+
 msgid "tt_sachplan_planning_name"
 msgstr ""
 
@@ -4129,4 +4141,13 @@ msgid "ch.swisstopo.lubis-bildstreifen"
 msgstr ""
 
 msgid "tt_lubis_bildorder"
+msgstr ""
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_anhorung"
+msgstr ""
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_kraft"
+msgstr ""
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_ausgangslage"
 msgstr ""

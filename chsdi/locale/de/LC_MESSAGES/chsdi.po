@@ -1337,6 +1337,15 @@ msgstr "Altlasten/belastete Standorte öV"
 msgid "ch.bav.laerm-emissionplan_eisenbahn_2015"
 msgstr "Emissionsplan Eisenbahn  2015"
 
+msgid "ch.bav.sachplan-infrastruktur-schiene_anhorung"
+msgstr "SIS Anhörung"
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_ausgangslage"
+msgstr "SIS Anhörung: Ausgangslage"
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_kraft"
+msgstr "SP Infrastruktur Schiene"
+
 msgid "ch.bav.url"
 msgstr "http://www.bav.admin.ch/?lang=de"
 
@@ -3912,6 +3921,18 @@ msgstr "Abflussregimenummer"
 
 msgid "tt_regimetyp"
 msgstr "Abflussregimetyp"
+
+msgid "tt_sachplan-infrastruktur-schiene_aus_anlage"
+msgstr "Anlage"
+
+msgid "tt_sachplan-infrastruktur-schiene_aus_anlageart"
+msgstr "Anlageart"
+
+msgid "tt_sachplan-infrastruktur-schiene_aus_doc_title"
+msgstr "Objektblatt"
+
+msgid "tt_sachplan-infrastruktur-schiene_aus_validform"
+msgstr "Beschlussdatum"
 
 msgid "tt_sachplan_beschreibung"
 msgstr "Beschreibung"
