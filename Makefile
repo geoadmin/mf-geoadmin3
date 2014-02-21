@@ -51,7 +51,7 @@ help:
 all: prod dev lint apache testdev testprod deploy/deploy-branch.cfg fixrights
 
 .PHONY: prod
-prod: prd/lib/ prd/lib/build.js prd/style/app.css prd/style/print.css prd/index.html prd/mobile.html prd/info.json prd/img/ prd/style/font-awesome-3.2.1/font/ prd/locales/ prd/checker prd/robots.txt
+prod: prd/testsitemap.xml prd/lib/ prd/lib/build.js prd/style/app.css prd/style/print.css prd/index.html prd/mobile.html prd/info.json prd/img/ prd/style/font-awesome-3.2.1/font/ prd/locales/ prd/checker prd/robots.txt
 
 .PHONY: dev
 dev: src/deps.js src/style/app.css src/style/print.css src/index.html src/mobile.html
@@ -105,6 +105,10 @@ translate: .build-artefacts/translate-requirements-installation.timestamp
 fixrights:
 	chgrp -f -R geodata . || :
 	chmod -f -R g+rw . || :
+
+prd/testsitemap.xml: src/testsitemap.xml
+	mkdir -p $(dir $@)
+	cp $^ $@
 
 prd/robots.txt: scripts/robots.mako-dot-txt .build-artefacts/last-deploy-target
 	mkdir -p $(dir $@)
