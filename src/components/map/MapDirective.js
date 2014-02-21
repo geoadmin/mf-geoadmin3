@@ -66,6 +66,30 @@
               }
               map.addControl(new ol.control.ZoomToExtent({tipLabel: ''}));
 
+              var setRotate = function(element, rotation) {
+                var rotationStyle = 'rotate(' + rotation + 'deg)';
+                element['style']['-webkit-transform'] =
+                  rotationStyle;
+                element['style']['-moz-transform'] =
+                  rotationStyle;
+                element['style']['-ms-transform'] =
+                  rotationStyle;
+                element['style']['transform'] =
+                  rotationStyle;
+              };
+
+              var userRotate = function() {
+                var zoomExtentElement =
+                  document.getElementsByClassName('ol-zoom-extent')[0];
+                var rotation = view.getRotation() * 180 / Math.PI;
+                setRotate(zoomExtentElement, rotation);
+                zoomExtentElement.onclick=function(){
+                  view.setRotation(0);
+                };
+              };
+
+              view.on('change:rotation', userRotate);
+
               map.setTarget(element[0]);
             }
           };
