@@ -890,7 +890,7 @@ class sis_facilities_a (Base, Vector):
     __table_args__ = ({'schema': 'bav', 'autoload': False})
     __bodId__ = 'ch.bav.sachplan-infrastruktur-schiene_anhorung'
     __template__ = 'templates/htmlpopup/sis_facilities.mako'
-    __queryable_attributes__ = ['facname_de', 'facname_fr', 'facname_it', 'doc_title']
+    #__queryable_attributes__ = ['facname_de', 'facname_fr', 'facname_it', 'doc_title']
     id = Column('stabil_id', Text, primary_key=True)
     facname_de = Column('facname_de', Text)
     facname_fr = Column('facname_fr', Text)
@@ -921,7 +921,7 @@ class sis_planning_a (Base, Vector):
     __table_args__ = ({'schema': 'bav', 'autoload': False})
     __template__ = 'templates/htmlpopup/sis_planning.mako'
     __bodId__ = 'ch.bav.sachplan-infrastruktur-schiene_anhorung'
-    __queryable_attributes__ = ['plname_de', 'plname_fr', 'plname_it', 'doc_title']
+    #__queryable_attributes__ = ['plname_de', 'plname_fr', 'plname_it', 'doc_title']
     id = Column('stabil_id', Text, primary_key=True)
     facname_de = Column('facname_de', Text)
     facname_fr = Column('facname_fr', Text)
@@ -958,7 +958,7 @@ class sis_angaben (Base, Vector):
     __table_args__ = ({'schema': 'bav', 'autoload': False})
     __template__ = 'templates/htmlpopup/sis_angaben.mako'
     __bodId__ = 'ch.bav.sachplan-infrastruktur-schiene_ausgangslage'
-    __queryable_attributes__ = ['name', 'description_de', 'description_fr', 'description_it', 'description_en']
+    #__queryable_attributes__ = ['name', 'description_de', 'description_fr', 'description_it', 'description_en']
     id = Column('anlage_id', Text, primary_key=True)
     name = Column('name', Text)
     description_de = Column('description_de', Text)
@@ -980,7 +980,7 @@ class sis_planning_raster_a (Base, Vector):
     __table_args__ = ({'schema': 'bav', 'autoload': False})
     __template__ = 'templates/htmlpopup/sis_planning.mako'
     __bodId__ = 'ch.bav.sachplan-infrastruktur-schiene_anhorung'
-    __queryable_attributes__ = ['plname_de', 'plname_fr', 'plname_it', 'doc_title']
+    #__queryable_attributes__ = ['plname_de', 'plname_fr', 'plname_it', 'doc_title']
     id = Column('stabil_id', Text, primary_key=True)
     facname_de = Column('facname_de', Text)
     facname_fr = Column('facname_fr', Text)
@@ -1017,7 +1017,7 @@ class sis_facilities_k (Base, Vector):
     __table_args__ = ({'schema': 'bav', 'autoload': False})
     __template__ = 'templates/htmlpopup/sis_facilities.mako'
     __bodId__ = 'ch.bav.sachplan-infrastruktur-schiene_kraft'
-    __queryable_attributes__ = ['facname_de', 'facname_fr', 'facname_it', 'doc_title']
+    #__queryable_attributes__ = ['facname_de', 'facname_fr', 'facname_it', 'doc_title']
     id = Column('stabil_id', Text, primary_key=True)
     facname_de = Column('facname_de', Text)
     facname_fr = Column('facname_fr', Text)
@@ -1048,7 +1048,7 @@ class sis_planning_k (Base, Vector):
     __table_args__ = ({'schema': 'bav', 'autoload': False})
     __template__ = 'templates/htmlpopup/sis_planning.mako'
     __bodId__ = 'ch.bav.sachplan-infrastruktur-schiene_kraft'
-    __queryable_attributes__ = ['plname_de', 'plname_fr', 'plname_it', 'doc_title']
+    #__queryable_attributes__ = ['plname_de', 'plname_fr', 'plname_it', 'doc_title']
     id = Column('stabil_id', Text, primary_key=True)
     facname_de = Column('facname_de', Text)
     facname_fr = Column('facname_fr', Text)
@@ -1085,7 +1085,7 @@ class sis_planning_raster_k (Base, Vector):
     __table_args__ = ({'schema': 'bav', 'autoload': False})
     __template__ = 'templates/htmlpopup/sis_planning.mako'
     __bodId__ = 'ch.bav.sachplan-infrastruktur-schiene_kraft'
-    __queryable_attributes__ = ['plname_de', 'plname_fr', 'plname_it', 'doc_title']
+    #__queryable_attributes__ = ['plname_de', 'plname_fr', 'plname_it', 'doc_title']
     id = Column('stabil_id', Text, primary_key=True)
     facname_de = Column('facname_de', Text)
     facname_fr = Column('facname_fr', Text)
