@@ -161,6 +161,9 @@ msgstr "No additional information for this object type"
 msgid "No info outside CH and FL"
 msgstr "No info outside Switzerland and Liechsteinstein"
 
+msgid "None"
+msgstr "None"
+
 msgid "Not applicable"
 msgstr "Not applicable"
 

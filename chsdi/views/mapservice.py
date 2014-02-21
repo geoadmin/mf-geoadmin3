@@ -449,13 +449,7 @@ def legend(request):
         if 'dataStatus' in layerMetadata['attributes'].keys():
             status = layerMetadata['attributes']['dataStatus']
             if status == u'bgdi_created':
-                models = models_from_name(layerId)
-                for model in models:
-                    modified = request.db.query(
-                        func.max(model.bgdi_created)
-                    )
-                datenstand = modified.first().pop(0).strftime("%Y%m%d")
-                layerMetadata['attributes']['dataStatus'] = datenstand
+                layerMetadata['attributes']['dataStatus'] = self.translate('None') + self.translate('Datenstand')
 
     legend = {
         'layer': layerMetadata,

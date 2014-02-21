@@ -1,3 +1,6 @@
+msgid "None"
+msgstr ""
+
 msgid "ch.bfe.sachplan-geologie-tiefenlager"
 msgstr ""
 

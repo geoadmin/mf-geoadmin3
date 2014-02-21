@@ -161,6 +161,9 @@ msgstr "Betg infurmaziuns davart il object"
 msgid "No info outside CH and FL"
 msgstr "Nessun informazione fuori della Svizzera e Liechstenstein"
 
+msgid "None"
+msgstr "Nagina"
+
 msgid "Not applicable"
 msgstr "nicht anwendbar"
 
