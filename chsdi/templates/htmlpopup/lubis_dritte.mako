@@ -19,7 +19,7 @@ chsdihost = '//' + request.registry.settings['host']
 
 if c['attributes']['filename']:
     try:
-        xml_file = urllib2.urlopen("http://web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?DeepZoom="+c['attributes']['filename'][12:]+".dzi")
+        xml_file = urllib2.urlopen("http://web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?DeepZoom="+c['attributes']['filename']+".dzi")
         xmldoc = minidom.parse(xml_file)
         dimensions = xmldoc.getElementsByTagName('Size')
         image_width = dimensions[0].getAttribute('Width')
@@ -35,7 +35,7 @@ endif
     <tr><td class="cell-left">${_('tt_lubis_Filmart')}</td>      <td>${c['attributes']['filmart'] or '-'}</td></tr>
 
 %    if image_height > 2:
-       <tr><td class="cell-left">${_('tt_lubis_Quickview')}</td>    <td><a href="${chsdihost}/main/wsgi/static/iipimage/viewer.html?image=${c['attributes']['filename'][12:]}&width=${image_width}&height=${image_height}&title=${_('tt_lubis_ebkey')}&bildnummer=${image_bildnummer}&datenherr=${datenherr}&layer=${fullName}" target="_blank"><img src="http://web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?FIF=${c['attributes']['filename'][12:]}&WID=150&CVT=jpeg" alt="quickview"></a></td></tr>
+       <tr><td class="cell-left">${_('tt_lubis_Quickview')}</td>    <td><a href="${chsdihost}/main/wsgi/static/iipimage/viewer.html?image=${c['attributes']['filename']}&width=${image_width}&height=${image_height}&title=${_('tt_lubis_ebkey')}&bildnummer=${image_bildnummer}&datenherr=${datenherr}&layer=${fullName}" target="_blank"><img src="http://web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?FIF=${c['attributes']['filename']}&WID=150&CVT=jpeg" alt="quickview"></a></td></tr>
 %    else:
        <tr><td class="cell-left">${_('tt_lubis_Quickview')}</td>    <td>${_('tt_lubis_noQuickview')}</td></tr>
 %    endif
@@ -73,7 +73,7 @@ endif
 
 if c['attributes']['filename']:
     try:
-        xml_file = urllib2.urlopen("http://web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?DeepZoom="+c['attributes']['filename'][12:]+".dzi")
+        xml_file = urllib2.urlopen("http://web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?DeepZoom="+c['attributes']['filename']+".dzi")
         xmldoc = minidom.parse(xml_file)
         dimensions = xmldoc.getElementsByTagName('Size')
         image_width = dimensions[0].getAttribute('Width')
@@ -90,7 +90,7 @@ endif
 % if image_width > 2:
         var image_width = parseInt(${image_width});
         var image_height = parseInt(${image_height});
-        var url = "https://web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?Zoomify=${c['attributes']['filename'][12:]}/";
+        var url = "https://web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?Zoomify=${c['attributes']['filename']}/";
       
         var proj = new ol.proj.Projection({
           code: 'ZOOMIFY',
@@ -187,7 +187,7 @@ endif
     <br>
     <br>
 %    if image_height > 2:
-    <tr><td>${_('tt_luftbilderOL')}</td> <td><a href="${chsdihost}/main/wsgi/static/iipimage/viewer.html?image=${c['attributes']['filename'][12:]}&width=${image_width}&height=${image_height}&title=${_('tt_lubis_ebkey')}&bildnummer=${image_bildnummer}&datenherr=${datenherr}&layer=${fullName}" target="_blank" alt="Fullscreen">(fullscreen)</a></td></tr>
+    <tr><td>${_('tt_luftbilderOL')}</td> <td><a href="${chsdihost}/main/wsgi/static/iipimage/viewer.html?image=${c['attributes']['filename']}&width=${image_width}&height=${image_height}&title=${_('tt_lubis_ebkey')}&bildnummer=${image_bildnummer}&datenherr=${datenherr}&layer=${fullName}" target="_blank" alt="Fullscreen">(fullscreen)</a></td></tr>
     <div id="zoomify"></div>
 %    endif
     <tr><td>
