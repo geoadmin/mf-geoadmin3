@@ -6,7 +6,7 @@
     lang = lang if lang in ('fr','it') else 'de'
     plname = 'plname_%s' % lang
     facname = 'facname_%s' % lang
-    measuretype_text = 'measuretype_%s' % lang
+    measuretype_text = 'meastype_text_%s' % lang
     coordinationlevel_text = 'coordlevel_text_%s' % lang
     planningstatus_text = 'plstatus_text_%s' % lang
     description_text = 'description_%s' % lang
