@@ -107,13 +107,6 @@ class Vector(GeoInterface):
         }
 
     @classmethod
-    def queryable_attributes(cls):
-        if hasattr(cls, '__queryable_attributes__'):
-            return [cls.__table__.columns[col] for col in cls.__queryable_attributes__]
-        else:
-            return [None]
-
-    @classmethod
     def geometry_column(cls):
         return cls.__table__.columns['the_geom']
 
@@ -143,6 +136,12 @@ class Vector(GeoInterface):
             geomColumn = cls.geometry_column()
             geomFilter = functions.within_distance(geomColumn, wkbGeometry, toleranceMeters)
             return geomFilter
+        return None
+
+    @classmethod
+    def get_column_by_name(cls, columnName):
+        if columnName in cls.__table__.columns:
+            return cls.__table__.columns.get(columnName)
         return None
 
     def getAttributes(self):

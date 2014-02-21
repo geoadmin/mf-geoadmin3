@@ -780,7 +780,7 @@ class GeologieGeotechnikZiegeleien1907(Base, Vector):
     __tablename__ = 'geotechnik_ziegeleien_1907'
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/ziegeleien_1907.mako'
-    __queryable_attributes__ = ['ziegelei_2']
+    #__queryable_attributes__ = ['ziegelei_2']
     __bodId__ = 'ch.swisstopo.geologie-geotechnik-ziegeleien_1907'
     id = Column('id', Integer, primary_key=True)
     ziegelei_2 = Column('ziegelei_2', Text)
@@ -793,7 +793,7 @@ class GeologieGeotechnikZiegeleien1965(Base, Vector):
     __tablename__ = 'geotechnik_ziegeleien_1965'
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/ziegeleien_1965.mako'
-    __queryable_attributes__ = ['ziegelei']
+    #__queryable_attributes__ = ['ziegelei']
     __bodId__ = 'ch.swisstopo.geologie-geotechnik-ziegeleien_1965'
     id = Column('id', Integer, primary_key=True)
     ziegelei = Column('ziegelei', Text)
@@ -806,7 +806,7 @@ class GeologieGeotechnikZiegeleien1995(Base, Vector):
     __tablename__ = 'geotechnik_ziegeleien_1995'
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/ziegeleien_1995.mako'
-    __queryable_attributes__ = ['ziegeleien']
+    #__queryable_attributes__ = ['ziegeleien']
     __bodId__ = 'ch.swisstopo.geologie-geotechnik-ziegeleien_1995'
     id = Column('id', Integer, primary_key=True)
     ziegeleien = Column('ziegeleien', Text)
@@ -945,7 +945,7 @@ class GeologieRohstoffeIndustrieminerale(Base, Vector):
     __tablename__ = 'rohstoffe_industrieminerale'
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/rohstoffe_industrieminerale.mako'
-    __queryable_attributes__ = ['name_ads']
+    #__queryable_attributes__ = ['name_ads']
     __bodId__ = 'ch.swisstopo.geologie-rohstoffe-industrieminerale'
     id = Column('id', Integer, primary_key=True)
     rohstoff = Column('rohstoff', Text)
@@ -959,7 +959,7 @@ class GeologieRohstoffeKohlenBitumenErdgas(Base, Vector):
     __tablename__ = 'rohstoffe_kohlen_bitumen_erdgas'
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/rohstoffe_kohlen_bitumen_erdgas.mako'
-    __queryable_attributes__ = ['name_ads']
+    #__queryable_attributes__ = ['name_ads']
     __bodId__ = 'ch.swisstopo.geologie-rohstoffe-kohlen_bitumen_erdgas'
     id = Column('id', Integer, primary_key=True)
     rohstoff = Column('rohstoff', Text)
@@ -973,7 +973,7 @@ class GeologieRohstoffeVererzungen(Base, Vector):
     __tablename__ = 'rohstoffe_vererzungen'
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/rohstoffe_vererzungen.mako'
-    __queryable_attributes__ = ['name_ads']
+    #__queryable_attributes__ = ['name_ads']
     __bodId__ = 'ch.swisstopo.geologie-rohstoffe-vererzungen'
     id = Column('id', Integer, primary_key=True)
     rohstoff = Column('rohstoff', Text)
@@ -1028,7 +1028,7 @@ class VerschiebungsvektorenTsp1(Base, Vector):
     __tablename__ = 'verschiebungsvektoren_tsp1'
     __table_args__ = ({'schema': 'geodaesie', 'autoload': False})
     __template__ = 'templates/htmlpopup/verschiebungsvektoren_tps1.mako'
-    __queryable_attributes__ = ['name']
+    #__queryable_attributes__ = ['name']
     __bodId__ = 'ch.swisstopo.verschiebungsvektoren-tsp1'
     id = Column('id', Integer, primary_key=True)
     name = Column('name', Text)
@@ -1049,7 +1049,7 @@ class VerschiebungsvektorenTsp2(Base, Vector):
     __tablename__ = 'verschiebungsvektoren_tsp2'
     __table_args__ = ({'schema': 'geodaesie', 'autoload': False})
     __template__ = 'templates/htmlpopup/verschiebungsvektoren_tps2.mako'
-    __queryable_attributes__ = ['name']
+    #__queryable_attributes__ = ['name']
     __bodId__ = 'ch.swisstopo.verschiebungsvektoren-tsp2'
     id = Column('id', Integer, primary_key=True)
     name = Column('name', Text)

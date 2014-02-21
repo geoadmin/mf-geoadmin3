@@ -3,7 +3,6 @@
 import re
 import types
 import pyramid.httpexceptions as exc
-from chsdi.models import models_from_name
 from chsdi.lib.helpers import check_even
 
 from chsdi.esrigeojsonencoder import loads
@@ -35,8 +34,10 @@ class MapServiceValidation(MapNameValidation):
         self._mapExtent = None
         self._tolerance = None
         self._timeInstant = None
-        self._models = None
         self._layers = None
+        self._layer = None
+        self._searchText = None
+        self._searchField = None
         self.esriGeometryTypes = (
             'esriGeometryPoint',
             'esriGeometryPolyline',
@@ -79,6 +80,14 @@ class MapServiceValidation(MapNameValidation):
     @property
     def layers(self):
         return self._layers
+
+    @property
+    def layer(self):
+        return self._layer
+
+    @property
+    def searchField(self):
+        return self._searchField
 
     @geometry.setter
     def geometry(self, value):
@@ -162,11 +171,21 @@ class MapServiceValidation(MapNameValidation):
             except:
                 exc.HTTPBadRequest('There is an error in the parameter layers')
 
-    @models.setter
-    def models(self, value):
+    @layer.setter
+    def layer(self, value):
         if value is None:
-            raise exc.HTTPBadRequest('Please provide a valid layer Id')
-        self._models = value
+            raise exc.HTTPBadRequest('Please provide a parameter layer')
+        if len(value.split(',')) > 1:
+            raise exc.HTTPBadRequest('You can provide only one layer at a time')
+        self._layer = value
+
+    @searchField.setter
+    def searchField(self, value):
+        if value is None:
+            raise exc.HTTPBadRequest('Please provide a searchField')
+        if len(value.split(',')) > 1:
+            raise exc.HTTPBadRequest('You can provide only one searchField at a time')
+        self._searchField = value
 
 
 class HeightValidation(object):
@@ -243,7 +262,6 @@ class ProfileValidation(object):
     @linestring.setter
     def linestring(self, value):
         import geojson
-        from shapely.geometry import asShape
         if value is None:
             raise exc.HTTPBadRequest("Missing parameter geom")
         try:

@@ -55,7 +55,7 @@ class Temperaturmessnetz(Base, Vector):
     __table_args__ = ({'schema': 'hydrologie', 'autoload': False})
     __bodId__ = 'ch.bafu.hydrologie-wassertemperaturmessstationen'
     __template__ = 'templates/htmlpopup/temperaturmessnetz.mako'
-    __queryable_attributes__ = ['nr', 'name']
+    #__queryable_attributes__ = ['nr', 'name']
     id = Column('nr', Integer, primary_key=True)
     url = Column('url', Text)
     name = Column('name', Text)
@@ -87,7 +87,7 @@ class Gewaesserzustandst (Base, Vector):
     __table_args__ = ({'schema': 'hydrologie', 'autoload': False})
     __bodId__ = 'ch.bafu.hydrologie-gewaesserzustandsmessstationen'
     __template__ = 'templates/htmlpopup/gewaesserzustandsmessstationen.mako'
-    __queryable_attributes__ = ['nr', 'name', 'gewaesser']
+    #__queryable_attributes__ = ['nr', 'name', 'gewaesser']
     id = Column('bgdi_id', Integer, primary_key=True)
     name = Column('name', Text)
     nr = Column('nr', Numeric)
@@ -172,7 +172,7 @@ class AU(Base, Vector):
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
     __bodId__ = 'ch.bafu.bundesinventare-auen'
     __template__ = 'templates/htmlpopup/auen.mako'
-    __queryable_attributes__ = ['au_obj', 'au_name']
+    #__queryable_attributes__ = ['au_obj', 'au_name']
     id = Column('gid', Integer, primary_key=True)
     au_name = Column('au_name', Text)
     au_obj = Column('au_obj', Integer)

@@ -7,7 +7,7 @@
   c['scale'] = pageargs.get('scale')
   c['stable_id'] = False
   extended = pageargs.get('extended')
-  extendedPathCss = request.static_url('chsdi:static/css/extended.min.css').replace('http://', 'https://')
+  extendedPathCss = request.static_url('chsdi:static/css/extended.min.css')
   c['baseUrl'] = protocol + '://' + request.registry.settings['geoadminhost']
   c['instanceId'] = request.registry.settings['instanceid']
   bbox = c['bbox']

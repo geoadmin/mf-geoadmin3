@@ -2,402 +2,568 @@
 
 from pyramid.view import view_config
 from pyramid.renderers import render_to_response
+from pyramid.response import Response
 import pyramid.httpexceptions as exc
 
-from sqlalchemy import or_, func
+from sqlalchemy import Text, or_, func
+from sqlalchemy.sql.expression import cast
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
-from chsdi.models import models_from_name
-from chsdi.models.bod import LayersConfig, get_bod_model, computeHeader
+from chsdi.models import models_from_name, oereb_models_from_bodid
+from chsdi.models.bod import LayersConfig, OerebMetadata, get_bod_model, computeHeader
 from chsdi.models.vector import getScale
 from chsdi.lib.validation import MapServiceValidation
 
 
-class MapService(MapServiceValidation):
+class LayersParams(MapServiceValidation):
 
     def __init__(self, request):
-        super(MapService, self).__init__()
-        # Map and topic represents the same resource in chsdi
+        super(LayersParams, self).__init__()
+
+        # Map and topic represent the same resource
         self.mapName = request.matchdict.get('map')
         self.hasMap(request.db, self.mapName)
         self.cbName = request.params.get('callback')
         self.lang = request.lang
         self.searchText = request.params.get('searchText')
         self.geodataStaging = request.registry.settings['geodata_staging']
+
         self.translate = request.translate
         self.request = request
 
-    @view_config(route_name='mapservice', renderer='jsonp')
-    def mapservice(self):
-        model = get_bod_model(self.lang)
-        results = computeHeader(self.mapName)
-        query = self.request.db.query(model)
-        query = self._map_name_filter(query, model.maps)
-        query = self._geodata_staging_filter(query, model.staging)
-        query = self._full_text_search(query, [
-            model.fullTextSearch,
-            model.idBod,
-            model.idGeoCat
-        ])
-        for q in query:
-            layer = q.layerMetadata()
-            results['layers'].append(layer)
-        return results
 
-    @view_config(route_name='layersConfig', renderer='jsonp')
-    def layersconfig(self):
-        layers = {}
-        model = LayersConfig
-        _bool = True
-        query = self.request.db.query(model)
-        if self.mapName != 'all':
-            # per default we want the include background layers
-            query = query.filter(or_(
-                model.maps.ilike('%%%s%%' % self.mapName),
-                model.background == _bool
-            ))
-        query = self._geodata_staging_filter(query, model.staging)
-        for q in query:
-            layer = q.getLayerConfig(self.request)
-            layers = dict(layers.items() + layer.items())
-        return layers
+class FeaturesParams(MapServiceValidation):
 
-    @view_config(route_name='legend', renderer='jsonp')
-    def legend(self):
-        idlayer = self.request.matchdict.get('idlayer')
-        layer = self._get_layer_resource(idlayer)
+    def __init__(self, request):
+        super(FeaturesParams, self).__init__()
 
-        # only stored layers_config table at the moment
-        query = self.request.db.query(LayersConfig)
-        query = query.filter(LayersConfig.idBod == idlayer)
-        query = query.one()
-        config = query.getLayerConfig(self.request)
-        hasLegend = config[idlayer]['hasLegend']
+        # Map and topic represent the same resource
+        self.mapName = request.matchdict.get('map')
+        self.hasMap(request.db, self.mapName)
+        self.cbName = request.params.get('callback')
+        self.lang = request.lang
+        self.searchText = request.params.get('searchText')
+        self.geodataStaging = request.registry.settings['geodata_staging']
 
-        if 'attributes' in layer.keys() and 'dataStatus' in layer['attributes'].keys():
-            status = layer['attributes']['dataStatus']
-            if status == u'bgdi_created':
-                self.layers = idlayer
-                models = models_from_name(idlayer)
-                for model in models:
-                    modified = self.request.db.query(func.max(model.bgdi_created))
-                datenstand = modified.first()[0].strftime("%Y%m%d")
-                layer['attributes']['dataStatus'] = datenstand
+        self.geometry = request.params.get('geometry')
+        self.geometryType = request.params.get('geometryType')
+        self.imageDisplay = request.params.get('imageDisplay')
+        self.mapExtent = request.params.get('mapExtent')
+        self.tolerance = request.params.get('tolerance')
+        self.returnGeometry = request.params.get('returnGeometry')
+        self.layers = request.params.get('layers', 'all')
+        self.timeInstant = request.params.get('timeInstant')
 
-        legend = {
-            'layer': layer,
-            'hasLegend': hasLegend
-        }
-        response = render_to_response(
-            'chsdi:templates/legend.mako', legend, request=self.request
-        )
-        if self.cbName is None:
-            return response
-        return response.body
+        self.translate = request.translate
+        self.request = request
 
-    # order matters, last route is the default!
-    @view_config(route_name='identify', renderer='geojson',
-                 request_param='geometryFormat=geojson')
-    def view_identify_geosjon(self):
-        return self._identify()
 
-    @view_config(route_name='identify', request_param='geometryFormat=interlis')
-    def view_identify_oereb(self):
-        from chsdi.models import oereb_models_from_bodid
-        from chsdi.models.bod import OerebMetadata
-        from pyramid.response import Response
-        self.geometry = self.request.params.get('geometry')
-        self.geometryType = self.request.params.get('geometryType')
-        self.imageDisplay = self.request.params.get('imageDisplay')
-        self.mapExtent = self.request.params.get('mapExtent')
-        self.tolerance = self.request.params.get('tolerance')
-        # FIXME not supported at the moment
-        self.returnGeometry = self.request.params.get('returnGeometry')
-        self.layers = self.request.params.get('layers', 'all')
+class FeatureParams(MapServiceValidation):
 
-        # At the moment only one layer at a time and no support of all
-        if self.layers == 'all' or len(self.layers) > 1:
-            raise exc.HTTPBadRequest('Please specify the id of the layer you want to query')
-        idBod = self.layers[0]
-        model = OerebMetadata
-        query = self.request.db.query(model)
-        query = query.filter(model.idBod == idBod)
-        try:
-            layer_metadata = query.one()
-        except NoResultFound:
-            raise exc.HTTPNotFound('No layer with id %s' % idBod)
-        except MultipleResultsFound:
-            raise exc.HTTPInternalServerError()
-        header = layer_metadata.header
-        footer = layer_metadata.footer
+    def __init__(self, request):
+        super(FeatureParams, self).__init__()
 
-        # Only relation 1 to 1 at the moment
-        model = oereb_models_from_bodid(idBod)[0]
-        geom_filter = model.geom_filter(
-            self.geometry,
-            self.geometryType,
-            self.imageDisplay,
-            self.mapExtent,
-            self.tolerance
-        )
-        query = self.request.db.query(model).filter(geom_filter)
-        features = []
-        for q in query:
-            temp = q.xmlData.split('##')
-            for fragment in temp:
-                if fragment not in features:
-                    features.append(fragment)
+        self.mapName = request.matchdict.get('map')
+        self.hasMap(request.db, self.mapName)
+        self.cbName = request.params.get('callback')
+        self.lang = request.lang
+        self.geodataStaging = request.registry.settings['geodata_staging']
 
-        results = header + ''.join(features) + footer
-        response = Response(results)
-        response.content_type = 'text/xml'
-        return response
+        self.returnGeometry = request.params.get('returnGeometry')
+        self.layerId = request.matchdict.get('layerId')
+        self.featureId = request.matchdict.get('featureId')
 
-    @view_config(route_name='identify', renderer='esrijson')
-    def view_identify_esrijson(self):
-        return self._identify()
-
-    def _identify(self):
-        self.geometry = self.request.params.get('geometry')
-        self.geometryType = self.request.params.get('geometryType')
-        self.imageDisplay = self.request.params.get('imageDisplay')
-        self.mapExtent = self.request.params.get('mapExtent')
-        self.tolerance = self.request.params.get('tolerance')
-        self.returnGeometry = self.request.params.get('returnGeometry')
-        self.layers = self.request.params.get('layers', 'all')
-        self.timeInstant = self.request.params.get('timeInstant')
-
-        models = self._get_models_from_layername()
-        if models is None:
-            raise exc.HTTPBadRequest('No GeoTable was found for %s' % layers)
-
-        maxFeatures = 50
-        queries = list(self._build_identify_queries(models, maxFeatures))
-        features = []
-        for query in queries:
-            for feature in query:
-                if self.returnGeometry:
-                    f = feature.__geo_interface__
-                else:
-                    f = feature.__interface__
-                if hasattr(f, 'extra'):
-                    layerBodId = f.extra['layerBodId']
-                    f.extra['layerName'] = self.translate(layerBodId)
-                features.append(f)
-                if len(features) > maxFeatures:
-                    break
-            if len(features) > maxFeatures:
-                break
-
-        return {'results': features}
-
-    @view_config(route_name='feature', renderer='geojson',
-                 request_param='geometryFormat=geojson')
-    def view_get_feature_geojson(self):
-        return self._get_feature()
-
-    @view_config(route_name='feature', renderer='esrijson')
-    def view_get_feature_esrijson(self):
-        return self._get_feature()
-
-    def _get_feature(self):
-        self.returnGeometry = self.request.params.get('returnGeometry')
-        idlayer = self.request.matchdict.get('idlayer')
-        idfeature = self.request.matchdict.get('idfeature')
-        models = models_from_name(idlayer)
-
-        if models is None:
-            raise exc.HTTPBadRequest('No GeoTable was found for %s' % idlayer)
-
-        # One layer can have several models
-        for model in models:
-            feature = self._get_feature_resource(idlayer, idfeature, model)
-            if feature != 'No Result Found':
-                # One layer can have several templates
-                break
-
-        if feature == 'No Result Found':
-            raise exc.HTTPNotFound('No feature with id %s' % idfeature)
-
-        feature = self._get_feature_resource(idlayer, idfeature, model)
-        return feature
-
-    @view_config(route_name='htmlPopup', renderer='jsonp')
-    def htmlpopup(self):
-        template, feature = self._get_html_response('simple')
-        feature.update({'extended': False})
-        response = render_to_response(
-            template,
-            feature,
-            request=self.request)
-        if self.cbName is None:
-            return response
-        return response.body
-
-    @view_config(route_name='extendedHtmlPopup', renderer='jsonp')
-    def extendedhtmlpopup(self):
-        template, feature = self._get_html_response('extended')
-        feature.update({'extended': True})
-        response = render_to_response(
-            template,
-            feature,
-            request=self.request)
-        if self.cbName is None:
-            return response
-        return response.body
-
-    def _get_html_response(self, htmlType):
+        # TODO get rid of those parameters only used for cadastral
         defaultExtent = '42000,30000,350000,900000'
         defaultImageDisplay = '400,600,96'
-        self.imageDisplay = self.request.params.get('imageDisplay', defaultImageDisplay)
-        self.mapExtent = self.request.params.get('mapExtent', defaultExtent)
-        scale = getScale(self.imageDisplay, self.mapExtent)
-        idlayer = self.request.matchdict.get('idlayer')
-        idfeature = self.request.matchdict.get('idfeature')
-        models = models_from_name(idlayer)
+        self.mapExtent = request.params.get('mapExtent', defaultExtent)
+        self.imageDisplay = request.params.get('imageDisplay', defaultImageDisplay)
+        self.scale = getScale(self.imageDisplay, self.mapExtent)
 
-        if models is None:
-            raise exc.HTTPBadRequest('No GeoTable was found for %s' % idlayer)
+        self.translate = request.translate
+        self.request = request
 
-        layer = self._get_layer_resource(idlayer)
-        # One layer can have several models
-        for model in models:
-            if htmlType == 'extended' and not hasattr(model, '__extended_info__'):
-                raise exc.HTTPNotFound('No extended info has been found for %s' % idlayer)
-            feature = self._get_feature_resource(idlayer, idfeature, model)
-            if feature != 'No Result Found':
-                # One layer can have several templates
-                model_containing_feature_id = model
-                # Exit the loop when a feature is found
-                break
 
-        if feature == 'No Result Found':
-            raise exc.HTTPNotFound('No feature with id %s' % idfeature)
+class FindFeaturesParams(MapServiceValidation):
 
-        template = 'chsdi:%s' % model_containing_feature_id.__template__
+    def __init__(self, request):
+        super(FindFeaturesParams, self).__init__()
 
-        feature.update({'attribution': layer.get('attributes')['dataOwner']})
-        feature.update({'fullName': layer.get('fullName')})
-        feature.update({'bbox': self.mapExtent.bounds})
-        feature.update({'scale': scale})
-        return template, feature
+        self.mapName = request.matchdict.get('map')
+        self.hasMap(request.db, self.mapName)
+        self.cbName = request.params.get('callback')
+        self.lang = request.lang
+        self.geodataStaging = request.registry.settings['geodata_staging']
 
-    def _get_layer_resource(self, idlayer):
-        model = get_bod_model(self.lang)
-        query = self.request.db.query(model)
-        query = self._map_name_filter(query, model.maps)
-        query = query.filter(model.idBod == idlayer)
+        self.returnGeometry = request.params.get('returnGeometry')
+        self.layer = request.params.get('layer')
+        self.searchText = request.params.get('searchText')
+        self.searchField = request.params.get('searchField')
 
-        try:
-            layer = query.one()
-        except NoResultFound:
-            raise exc.HTTPNotFound('No layer with id %s' % idlayer)
-        except MultipleResultsFound:
-            raise exc.HTTPInternalServerError()
+        self.translate = request.translate
+        self.request = request
 
-        layer = layer.layerMetadata()
 
-        return layer
+# Order matters, last one is the default one
+@view_config(route_name='identify', request_param='geometryFormat=interlis')
+def identify_oereb(request):
+    return _identify_oereb(request)
 
-    def _get_feature_resource(self, idlayer, idfeature, model):
-        layerName = self.translate(idlayer)
-        geometryFormat = self.request.params.get('geometryFormat', 'esrijson')
-        query = self.request.db.query(model)
-        query = query.filter(model.id == idfeature)
 
+@view_config(route_name='identify', renderer='geojson', request_param='geometryFormat=geojson')
+def identify_geojson(request):
+    return _identify(request)
+
+
+@view_config(route_name='identify', renderer='esrijson')
+def identify_esrijson(request):
+    return _identify(request)
+
+
+def _identify_oereb(request):
+    params = FeaturesParams(request)
+    # At the moment only one layer at a time and no support of all
+    if params.layers == 'all' or len(params.layers) > 1:
+        raise exc.HTTPBadRequest('Please specify the id of the layer you want to query')
+    idBod = params.layers[0]
+    query = params.request.db.query(OerebMetadata)
+    layerMetadata = _get_layer(
+        query,
+        OerebMetadata,
+        idBod
+    )
+    header = layerMetadata.header
+    footer = layerMetadata.footer
+    # Only relation 1 to 1 is needed at the moment
+    layerVectorModel = [[oereb_models_from_bodid(idBod)[0]]]
+    features = []
+    for feature in _get_features_for_extent(params, layerVectorModel):
+        temp = feature.xmlData.split('##')
+        for fragment in temp:
+            if fragment not in features:
+                features.append(fragment)
+    results = header + ''.join(features) + footer
+    response = Response(results)
+    response.content_type = 'text/xml'
+    return response
+
+
+def _identify(request):
+    params = FeaturesParams(request)
+    if params.layers == 'all':
+        model = get_bod_model(params.lang)
+        query = params.request.db.query(model)
+        layerIds = []
+        for layer in _get_layers_metadata_for_params(params, query, model):
+            layerIds.append(layer['idBod'])
+    else:
+        layerIds = params.layers
+    models = [
+        models_from_name(layerId) for
+        layerId in layerIds
+        if models_from_name(layerId) is not None
+    ]
+    if models is None:
+        raise exc.HTTPBadRequest('No GeoTable was found for %s' % ' '.join(layerIds))
+
+    maxFeatures = 50
+    features = []
+    for feature in _get_features_for_extent(params, models, maxFeatures=maxFeatures):
+        f = feature.__geo_interface__ if params.returnGeometry else feature.__interface__
+        if hasattr(f, 'extra'):
+            layerBodId = f.extra['layerBodId']
+            f.extra['layerName'] = params.translate(layerBodId)
+        else:
+            layerBodId = f.get('layerBodId')
+            f['layerName'] = params.translate(layerBodId)
+        features.append(f)
+        if len(features) > maxFeatures:
+            break
+
+    return {'results': features}
+
+
+# order matters, last route is the default one!
+@view_config(route_name='find', renderer='geojson',
+             request_param='geometryFormat=geojson')
+def view_find_geojson(request):
+    return _find(request)
+
+
+@view_config(route_name='find', renderer='esrijson')
+def view_find_esrijson(request):
+    return _find(request)
+
+
+def _find(request):
+    params = FindFeaturesParams(request)
+    if params.searchText is None:
+        raise exc.HTTPBadRequest('Please provide a searchText')
+    models = models_from_name(params.layer)
+    features = []
+    findColumn = lambda x: (x, x.get_column_by_name(params.searchField))
+    for model in models:
+        vectorModel, searchColumn = findColumn(model)
+        if searchColumn is None:
+            raise exc.HTTPBadRequest('Please provide a existing searchField')
+        query = request.db.query(vectorModel)
+        query = _full_text_search(
+            query,
+            [searchColumn],
+            params.searchText
+        )
+        for feature in query:
+            f = feature.__geo_interface__ if params.returnGeometry else feature.__interface__
+            # TODO find a way to use translate directly in the model
+            if hasattr(f, 'extra'):
+                layerBodId = f.extra['layerBodId']
+                f.extra['layerName'] = params.translate(layerBodId)
+            else:
+                layerBodId = f.get('layerBodId')
+                f['layerName'] = params.translate(layerBodId)
+            features.append(f)
+
+    return {'results': features}
+
+
+@view_config(route_name='feature', renderer='geojson',
+             request_param='geometryFormat=geojson')
+def view_get_feature_geojson(request):
+    return _get_feature_service(request)
+
+
+@view_config(route_name='feature', renderer='esrijson')
+def view_get_feature_esrijson(request):
+    return _get_feature_service(request)
+
+
+@view_config(route_name='htmlPopup', renderer='jsonp')
+def htmlpopup(request):
+    params = FeatureParams(request)
+    params.returnGeometry = False
+    models = models_from_name(params.layerId)
+    if models is None:
+        raise exc.HTTPBadRequest('No Vector Table was found for %s' % params.layerId)
+    feature, template = _get_feature(params, models, params.layerId, params.featureId)
+
+    modelLayer = get_bod_model(params.lang)
+    layer = next(_get_layers_metadata_for_params(
+        params,
+        request.db.query(modelLayer),
+        modelLayer
+    ))
+
+    feature.update({'attribution': layer.get('attributes')['dataOwner']})
+    feature.update({'fullName': layer.get('fullName')})
+    feature.update({'bbox': params.mapExtent.bounds})
+    feature.update({'scale': params.scale})
+    feature.update({'extended': False})
+    response = render_to_response(
+        template,
+        feature,
+        request=request)
+    if params.cbName is None:
+        return response
+    return response.body
+
+
+@view_config(route_name='extendedHtmlPopup', renderer='jsonp')
+def extendedhtmlpopup(request):
+    params = FeatureParams(request)
+    params.returnGeometry = False
+    models = models_from_name(params.layerId)
+    if models is None:
+        raise exc.HTTPBadRequest('No Vector Table was found for %s' % params.layerId)
+    feature, template = _get_feature(
+        params,
+        models,
+        params.layerId,
+        params.featureId,
+        extended=True)
+
+    modelLayer = get_bod_model(params.lang)
+    layer = next(_get_layers_metadata_for_params(
+        params,
+        request.db.query(modelLayer),
+        modelLayer
+    ))
+    feature.update({'attribution': layer.get('attributes')['dataOwner']})
+    feature.update({'extended': True})
+    response = render_to_response(
+        template,
+        feature,
+        request=request)
+    if params.cbName is None:
+        return response
+    return response.body
+
+
+def _get_feature_service(request):
+    params = FeatureParams(request)
+    models = models_from_name(params.layerId)
+
+    if models is None:
+        raise exc.HTTPBadRequest('No Vector Table was found for %s' % params.layerId)
+
+    feature, template = _get_feature(params, models, params.layerId, params.featureId)
+    return feature
+
+
+def _get_layer(query, model, layerId):
+    ''' Returns exactly one layer or raises
+    an exception. This function can be used with
+    both a layer config model or a layer metadata
+    model. '''
+    query = query.filter(model.idBod == layerId)
+
+    try:
+        layer = query.one()
+    except NoResultFound:
+        raise exc.HTTPNotFound('No layer with id %s' % layerId)
+    except MultipleResultsFound:
+        raise exc.HTTPInternalServerError('Multiple layers found for the same id %s' % layerId)
+
+    return layer
+
+
+def _get_feature(params, models, layerId, featureId, extended=False):
+    ''' Returns exactly one feature or raises
+    an excpetion '''
+    # One layer can have several models
+    for model in models:
+        query = params.request.db.query(model)
+        query = query.filter(model.id == featureId)
         try:
             feature = query.one()
+            template = 'chsdi:%s' % model.__template__
         except NoResultFound:
-            return 'No Result Found'
+            feature = None
         except MultipleResultsFound:
-            raise exc.HTTPInternalServerError()
+            raise exc.HTTPInternalServerError('Multiple features found for the same id %s' % featureId)
 
-        if self.returnGeometry:
-            feature = feature.__geo_interface__
-        else:
-            feature = feature.__interface__
+        if feature is not None:
+            template = 'chsdi:%s' % model.__template__
+            if extended and not hasattr(model, '__extended_info__'):
+                raise exc.HTTPNotFound('No extended info has been found for %s' % layerId)
+            break
 
-        if hasattr(feature, 'extra'):
-            feature.extra['layerName'] = layerName
-        feature = {'feature': feature}
+    if feature is None:
+        raise exc.HTTPNotFound('No feature with id %s' % featureId)
 
-        return feature
+    feature = feature.__geo_interface__ if params.returnGeometry else feature.__interface__
 
-    def _full_text_search(self, query, orm_column):
-        filters = []
-        for col in orm_column:
-            if col is not None:
-                filters.append(col.ilike('%%%s%%' % self.searchText))
-        query = query.filter(
-            or_(*filters)) if self.searchText is not None else query
-        return query
+    if hasattr(feature, 'extra'):
+        feature.extra['layerName'] = params.translate(feature.extra['layerBodId'])
+    else:
+        layerBodId = feature.get('layerBodId')
+        feature['layerName'] = params.translate(layerBodId)
 
-    def _map_name_filter(self, query, orm_column):
-        if self.mapName != 'all':
-            query = query.filter(
-                orm_column.ilike('%%%s%%' % self.mapName)
+    feature = {'feature': feature}
+    return feature, template
+
+
+def _get_features_for_extent(params, models, maxFeatures=None):
+    ''' Returns a generator function that yields
+    a feature. '''
+    for vectorLayer in models:
+        for model in vectorLayer:
+            geomFilter = model.geom_filter(
+                params.geometry,
+                params.geometryType,
+                params.imageDisplay,
+                params.mapExtent,
+                params.tolerance
             )
-            return query
+            # Can be None because of max and min scale
+            if geomFilter is not None:
+                query = params.request.db.query(model).filter(geomFilter)
+                if params.timeInstant is not None:
+                    try:
+                        timeInstantColumn = model.time_instant_column()
+                    except AttributeError:
+                        raise exc.HTTPBadRequest('%s is not time enabled' % model.__bodId__)
+                    query = query.filter(timeInstantColumn == params.timeInstant)
+                query = query.limit(maxFeatures) if maxFeatures is not None else query
+                for feature in query:
+                    yield feature
+
+
+@view_config(route_name='mapservice', renderer='jsonp')
+def metadata(request):
+    params = LayersParams(request)
+    model = get_bod_model(params.lang)
+    query = params.request.db.query(model)
+    if params.searchText is not None:
+        query = _full_text_search(
+            query,
+            [
+                model.fullTextSearch,
+                model.idBod,
+                model.idGeoCat
+            ],
+            params.searchText
+        )
+    results = computeHeader(params.mapName)
+    for layer in _get_layers_metadata_for_params(params, query, model):
+        results['layers'].append(layer)
+    return results
+
+
+@view_config(route_name='layersConfig', renderer='jsonp')
+def layers_config(request):
+    params = LayersParams(request)
+    query = params.request.db.query(LayersConfig)
+    layers = {}
+    for layer in _get_layers_config_for_params(params, query, LayersConfig):
+        layers = dict(layers.items() + layer.items())
+    return layers
+
+
+@view_config(route_name='legend', renderer='jsonp')
+def legend(request):
+    params = LayersParams(request)
+    layerId = request.matchdict.get('layerId')
+    # FIXME a second request shouldn't be necessary (use relationship)
+    layerConfig = next(
+        _get_layers_config_for_params(
+            params,
+            params.request.db.query(LayersConfig),
+            LayersConfig,
+            layerIds=[layerId]
+        ))
+    model = get_bod_model(params.lang)
+    layerMetadata = next(
+        _get_layers_metadata_for_params(
+            params,
+            params.request.db.query(model),
+            model,
+            layerIds=[layerId]
+        ))
+    hasLegend = layerConfig[layerId].get('hasLegend')
+
+    # FIXME datenstand if not defined
+    # should be available in view_bod_layer_info
+    if 'attributes' in layerMetadata.keys():
+        if 'dataStatus' in layerMetadata['attributes'].keys():
+            status = layerMetadata['attributes']['dataStatus']
+            if status == u'bgdi_created':
+                models = models_from_name(layerId)
+                for model in models:
+                    modified = request.db.query(
+                        func.max(model.bgdi_created)
+                    )
+                datenstand = modified.first().pop(0).strftime("%Y%m%d")
+                layerMetadata['attributes']['dataStatus'] = datenstand
+
+    legend = {
+        'layer': layerMetadata,
+        'hasLegend': hasLegend
+    }
+    response = render_to_response(
+        'chsdi:templates/legend.mako',
+        legend,
+        request=request
+    )
+    if params.cbName is None:
+        return response
+    return response.body
+
+
+def _get_layer(query, model, layerId):
+    ''' Returns exactly one result or raises
+    raises an exception. '''
+    query = query.filter(model.idBod == layerId)
+    try:
+        layer = query.one()
+    except NoResultFound:
+        raise exc.HTTPNotFound('No layer with id %s' % layerId)
+    except MultipleResultsFound:
+        raise exc.HTTPInternalServerError()
+
+    return layer
+
+
+def _get_layers_config_for_params(params, query, model, layerIds=None):
+    ''' Returns a generator function that yields
+    layer config dictionaries. '''
+    model = LayersConfig
+    bgLayers = True
+    if params.mapName != 'all':
+        # per default we want to include background layers
+        query = query.filter(or_(
+            model.maps.ilike('%%%s%%' % params.mapName),
+            model.background == bgLayers)
+        )
+    query = _filter_by_geodata_staging(
+        query,
+        model.staging,
+        params.geodataStaging
+    )
+    if layerIds is not None:
+        for layerId in layerIds:
+            layer = _get_layer(query, model, layerId)
+            yield layer.layerConfig(params.translate)
+
+    for q in query:
+        yield q.layerConfig(params.translate)
+
+
+def _get_layers_metadata_for_params(params, query, model, layerIds=None):
+    ''' Returns a generator function that yields
+    layer metadata dictionaries. '''
+    query = _filter_by_map_name(
+        query,
+        model.maps,
+        params.mapName
+    )
+    query = _filter_by_geodata_staging(
+        query,
+        model.staging,
+        params.geodataStaging
+    )
+    if layerIds is not None:
+        for layerId in layerIds:
+            layer = _get_layer(query, model, layerId)
+            yield layer.layerMetadata()
+
+    for q in query:
+        yield q.layerMetadata()
+
+# Shared filters
+
+
+def _filter_by_map_name(query, ormColumn, mapName):
+    ''' Applies a map/topic filter '''
+    if mapName != 'all':
+        return query.filter(
+            ormColumn.ilike('%%%s%%' % mapName)
+        )
+    return query
+
+
+def _filter_by_geodata_staging(query, ormColumn, staging):
+    ''' Applies a filter on geodata based on application
+    staging '''
+    if staging == 'test':
         return query
-
-    def _geodata_staging_filter(self, query, orm_column):
-        if self.geodataStaging == 'test':
-            return query
-        elif self.geodataStaging == 'integration':
-            return (
-                query.filter(
-                    or_(orm_column == self.geodataStaging,
-                        orm_column == 'prod'))
+    elif staging == 'integration':
+        return query.filter(
+            or_(
+                ormColumn == staging,
+                ormColumn == 'prod'
             )
-        elif self.geodataStaging == 'prod':
-            return query.filter(orm_column == self.geodataStaging)
+        )
+    elif staging == 'prod':
+        return query.filter(ormColumn == staging)
 
-    def _build_identify_queries(self, models, maxFeatures):
-        for layer in models:
-            for model in layer:
-                geomFilter = model.geom_filter(
-                    self.geometry,
-                    self.geometryType,
-                    self.imageDisplay,
-                    self.mapExtent,
-                    self.tolerance
-                )
-                # Can be None because of max and min scale
-                if geomFilter is not None:
-                    query = self.request.db.query(model).filter(geomFilter)
-                    if self.timeInstant is not None:
-                        try:
-                            timeInstantColumn = model.time_instant_column()
-                        except AttributeError:
-                            raise exc.HTTPBadRequest('%s is not time enabled' % model.__bodId__)
-                        query = query.filter(timeInstantColumn == self.timeInstant)
-                    # A maximum of 50 features are return
-                    quey = query.limit(maxFeatures)
-                    query = self._full_text_search(
-                        query,
-                        model.queryable_attributes())
-                    yield query
 
-    def _get_models_from_layername(self):
-        if self.layers == 'all':
-            layers = self._get_layer_list_from_map()
-        else:
-            layers = self.layers
-        models = [
-            models_from_name(layer) for
-            layer in layers
-            if models_from_name(layer) is not None
-        ]
-        return models
-
-    def _get_layer_list_from_map(self):
-        model = get_bod_model(self.lang)
-        query = self.request.db.query(model)
-        query = self._map_name_filter(query, model.maps)
-        # only return layers which have geometries
-        layerList = [
-            q.idBod for
-            q in query
-            if models_from_name(q.idBod) is not None
-        ]
-        return layerList
+def _full_text_search(query, ormColumns, searchText):
+    ''' Given a list of columns and a searchText, returns
+    a filtered query '''
+    filters = []
+    for col in ormColumns:
+        if col is not None:
+            col = cast(col, Text)
+            filters.append(col.ilike('%%%s%%' % searchText))
+    return query.filter(
+        or_(*filters)) if searchText is not None else query

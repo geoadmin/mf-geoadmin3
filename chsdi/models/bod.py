@@ -76,10 +76,8 @@ class LayersConfig(Base):
     wmsLayers = Column('wms_layers', Text)
     wmsUrl = Column('wms_url', Text)
 
-    def getLayerConfig(self, request):
+    def layerConfig(self, translate):
         config = {}
-        translate = request.translate
-        scheme = request.scheme
         for k in self.__dict__.keys():
             if not k.startswith("_") and \
                 self.__dict__[k] is not None and \
@@ -104,10 +102,9 @@ class LayersConfig(Base):
                 config['wmsUrl'] = config['wmsUrl'].replace('wms.geo.admin.ch', 'wms-bgdi0t.bgdi.admin.ch')
             if staging == 'integration':
                 config['wmsUrl'] = config['wmsUrl'].replace('wms.geo.admin.ch', 'wms-bgdi0i.bgdi.admin.ch')
-            config['wmsUrl'] = config['wmsUrl'].replace('http', scheme)
         # sublayers don't have attributions
         if 'attribution' in config:
-            config['attributionUrl'] = translate(self.__dict__['attribution'] + '.url').replace('http', scheme)
+            config['attributionUrl'] = translate(self.__dict__['attribution'] + '.url')
 
         return {self.idBod: config}
 

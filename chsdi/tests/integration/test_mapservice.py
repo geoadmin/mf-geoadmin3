@@ -65,12 +65,6 @@ class TestMapServiceView(TestsBase):
         self.failUnless(resp.content_type == 'text/javascript')
         resp.mustcontain('cb({')
 
-    def test_identify_with_searchtext(self):
-        params = {'geometry': '548945.5,147956,549402,148103.5', 'geometryType': 'esriGeometryEnvelope', 'imageDisplay': '500,600,96', 'mapExtent': '548945.5,147956,549402,148103.5', 'tolerance': '1', 'layers': 'all:ch.bafu.bundesinventare-bln', 'searchText': 'pied'}
-        resp = self.testapp.get('/rest/services/ech/MapServer/identify', params=params, status=200)
-        self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(len(resp.json) == 1)
-
     def test_identify_with_geojson(self):
         params = {'geometry': '600000,200000,631000,210000', 'geometryType': 'esriGeometryEnvelope', 'imageDisplay': '500,600,96', 'mapExtent': '548945.5,147956,549402,148103.5', 'tolerance': '1', 'layers': 'all:ch.bafu.bundesinventare-bln', 'geometryFormat': 'geojson'}
         resp = self.testapp.get('/rest/services/ech/MapServer/identify', params=params, status=200)
@@ -104,9 +98,47 @@ class TestMapServiceView(TestsBase):
         params = {'geometryType': 'esriGeometryPoint', 'geometry': '630853.809670509,170647.93120352627', 'geometryFormat': 'geojson', 'imageDisplay': '1920,734,96', 'mapExtent': '134253,-21102,1382253,455997', 'tolerance': '5', 'layers': 'all:ch.bafu.bundesinventare-bln', 'timeInstant': '1936'}
         resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=400)
 
+    def test_identify_oereb(self):
+        params = {'geometry': '618953,170093', 'geometryType': 'esriGeometryPoint', 'imageDisplay': '1920,576,96', 'layers': 'all:ch.bav.kataster-belasteter-standorte-oev.oereb', 'mapExtent': '671164.31244,253770,690364.31244,259530', 'tolerance': '5', 'geometryFormat': 'interlis'}
+        resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=200)
+        self.failUnless(resp.content_type == 'text/xml')
+
+    def test_identify_oereb_several_layers(self):
+        params = {'geometry': '618953,170093', 'geometryType': 'esriGeometryPoint', 'imageDisplay': '1920,576,96', 'layers': 'all:    ch.bav.kataster-belasteter-standorte-oev.oereb,ch.bazl.sicherheitszonenplan.oereb', 'mapExtent': '671164.31244,253770,690364.31244,259530', 'tolerance': '5', 'geometryFormat': 'interlis'}
+        resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=400)
+
+    def test_find(self):
+        params = {'layer': 'ch.bfs.gebaeude_wohnungs_register', 'searchField': 'egid', 'searchText': '1231641'}
+        resp = self.testapp.get('/rest/services/all/MapServer/find', params=params, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless(len(resp.json['results']) == 1)
+
+    def test_find_geojson(self):
+        params = {'layer': 'ch.bfs.gebaeude_wohnungs_register', 'searchField': 'egid', 'searchText': '1231641', 'geometryFormat': 'geojson'}
+        resp = self.testapp.get('/rest/services/all/MapServer/find', params=params, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+
+    def test_find_withcb(self):
+        params = {'layer': 'ch.bfs.gebaeude_wohnungs_register', 'searchField': 'egid', 'searchText': '1231641', 'callback': 'cb'}
+        resp = self.testapp.get('/rest/services/all/MapServer/find', params=params, status=200)
+        self.failUnless(resp.content_type == 'text/javascript')
+
+    def test_find_nogeom(self):
+        params = {'layer': 'ch.are.bauzonen', 'searchField': 'bfs_no', 'searchText': '4262', 'returnGeometry': 'false'}
+        resp = self.testapp.get('/rest/services/all/MapServer/find', params=params, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+
+    def test_find_wrong_searchfield(self):
+        params = {'layer': 'ch.are.bauzonen', 'searchField': 'toto', 'searchText': '4262', 'returnGeometry': 'false'}
+        resp = self.testapp.get('/rest/services/all/MapServer/find', params=params, status=400)
+
+    def test_find_nosearchtext(self):
+        params = {'layer': 'ch.are.bauzonen', 'searchField': 'toto', 'returnGeometry': 'false'}
+        resp = self.testapp.get('/rest/services/all/MapServer/find', params=params, status=400)
+
     def test_feature_wrong_idlayer(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/toto/362', status=400)
-        resp.mustcontain('No GeoTable was found for')
+        resp.mustcontain('No Vector Table was found for')
 
     def test_feature_wrong_idfeature(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/0', status=404)
