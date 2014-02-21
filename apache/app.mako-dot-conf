@@ -34,7 +34,7 @@ RewriteRule ^/(index.html|mobile.html)(.*) ${service_url}/snapshot [L,P]
 RewriteRule ^/(index.html|mobile.html)(.*) http:${service_url}/snapshot [L,P]
 % endif
 
-RewriteRule ^/(index.html|mobile.html|info.json|checker|robots.txt)(.*) /var/www/vhosts/mf-geoadmin3/private/geoadmin/prd/$1
+RewriteRule ^/(index.html|mobile.html|info.json|checker|robots.txt|testsitemap.xml)(.*) /var/www/vhosts/mf-geoadmin3/private/geoadmin/prd/$1
 RewriteRule ^/[0-9]+/(img|lib|style|rest|locales)(.*) /var/www/vhosts/mf-geoadmin3/private/geoadmin/prd/$1$2
 
 <IfModule mod_headers.c>
