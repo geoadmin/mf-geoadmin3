@@ -4,11 +4,14 @@
 @dropdown-feature-background-color: #FF8000;
 @suggestions-max-height: 200px;
 
-.search-wrapper {
+[ga-search] {
   position: relative;
+  width: 100%;
+
   .twitter-typeahead {
     width: 100%;
     position: relative;
+    
     &::after {
       content: '\f002';
       font-family: FontAwesome;
@@ -20,11 +23,13 @@
       color: #c6c6c6;
     }
   }
+
   .tt-query {
     background: white !important;
     padding-left: 2em;
     padding-right: 2.5em;
   }
+
   .tt-dropdown-menu {
     width: 100%;
     font-size: 11px;
@@ -37,15 +42,19 @@
     -moz-background-clip: padding;
     background-clip: padding-box;
   }
+
   .tt-dataset-locations, .tt-dataset-layers {
+    
     .tt-suggestions {
       max-height: @suggestions-max-height;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
+      
       .tt-suggestion {
         display: block;
         background-color: #E6E6E6;
         margin-top: 1px;
+        
         &.tt-is-under-cursor {
           color: @dropdown-link-color-hover-color;
           background-color: @dropdown-link-background-hover-color;
@@ -54,57 +63,69 @@
             background-color: @dropdown-link-background-hover-color;
           }
         }
+        
         .tt-search {
           padding: 3px 20px;
         }
+        
         .tt-feature {
           background-color: @dropdown-feature-background-color;
         }
       }
     }
+    
     p {
       margin: 0;
     }
   }
+  
   .tt-dataset-layers {
     display: block !important;
   }
+  
   .tt-header-locations, .tt-header-mapinfos {
     padding-top: 5px;
     padding-bottom: 5px;
     padding-left: 20px;
   }
+  
   .icon-info-sign {
     float: right;
     padding-top: 2px;
   }
-  .deleteicon {
+  
+  .icon-remove-sign {
     position: absolute;
     right: 0.6em;
     top: 0;
     cursor: pointer;
     height: 30px;
     line-height: 30px;
+    
     @media (max-width: @screen-tablet) {
       right: 0.2em;
       font-size: 24px;
     }
   }
-  .search-footer {
+  
+  .ga-search-footer {
     position: absolute;
     bottom:0;
     width: 100%;
-    .footer-right {
+    
+    .ga-search-footer-right {
       float: right;
       padding-right: 12px;
     }
-    .footer-left {
+    
+    .ga-search-footer-left {
       float: left;
       padding-top: 10px;
       padding-left: 20px;
     }
   }
-  .contact-icon {
+
+  .ga-search-contact-icon {
     display: inline-block;
     padding: 0 6px;
     color: #474949;
@@ -114,38 +135,29 @@
       text-decoration: none;
     }
   }
-}
-.search-focused {
-  @media (max-width: @screen-phone) {
-    .twitter-typeahead:after {
-      left: 1.2em;
-      color: #666;
-    }
-    .search-wrapper {
-      .tt-dropdown-menu {
-        top: 37px !important;
-        border-width: 1px 0;
-        padding: 0;
-      }
-    }
-  }
-}
-@media (max-width: @screen-tablet) {
-  .search-wrapper {
+
+  @media (max-width: @screen-tablet) {
+  
     .tt-dropdown-menu, input {
       font-size: 13px;
     }
+    
     .tt-header-locations, .tt-header-mapinfos {
       padding: 5px 10px;
     }
+    
     .tt-dataset-locations, .tt-dataset-layers {
+      
       .tt-suggestions {
+        
         .tt-suggestion {
           position: relative;
+          
           .tt-search {
             padding: 5px 20px;
           }
         }
+        
         i {
           font-size: 24px;
           padding-top: 0;

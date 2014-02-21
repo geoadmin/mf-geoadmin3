@@ -151,6 +151,7 @@ input[type=text][readonly] {
   left: 1.6em;
   position: relative;
   margin-top: 29px;
+  
   @media (max-width: @screen-tablet) {
     margin-top: 0;
     width: 260px;
@@ -158,26 +159,43 @@ input[type=text][readonly] {
     left: 44px;
     position: absolute;
   }
+  
   @media (max-width: @screen-phone) {
     right: 50px;
     width: auto;
   }
 }
+
 .search-focused #search-container {
+
   @media (max-width: @screen-phone) {
     width: 100%;
     padding: 0;
     left: 0;
     background: #fff;
+
     input {
       width: 96%;
       margin-left: 2%;
     }
-    .deleteicon {
+    
+    .twitter-typeahead:after {
+      left: 1.2em;
+      color: #666;
+    }
+      
+    .tt-dropdown-menu {
+      top: 37px !important;
+      border-width: 1px 0;
+      padding: 0;
+    }
+
+    .icon-remove-sign {
       right: 0.5em;
     }
   }
 }
+
 #logo {
   width: 320px;
   display: inline-block;
