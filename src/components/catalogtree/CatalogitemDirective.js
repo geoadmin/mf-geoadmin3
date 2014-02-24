@@ -14,7 +14,7 @@
    */
   module.directive('gaCatalogitem',
       function($compile, gaCatalogtreeMapUtils, gaMapUtils,
-          gaLayers, gaLayerMetadataPopup) {
+          gaLayers, gaLayerMetadataPopup, gaBrowserSniffer) {
         return {
           restrict: 'A',
           replace: true,
@@ -27,6 +27,9 @@
           },
           controller: function($scope) {
             $scope.addPreviewLayer = function() {
+              if (gaBrowserSniffer.mobile) {
+                return;
+              }
               var item = $scope.item;
               var map = $scope.map;
               var layer = gaMapUtils.getMapOverlayForBodId(
@@ -54,6 +57,9 @@
             };
 
             $scope.removePreviewLayer = function() {
+              if (gaBrowserSniffer.mobile) {
+                return;
+              }
               var item = $scope.item;
               var map = $scope.map;
               var layer = gaMapUtils.getMapOverlayForBodId(
