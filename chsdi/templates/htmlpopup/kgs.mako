@@ -5,8 +5,8 @@
 <%def name="table_body(c, lang)">
     <% c['stable_id'] = True %>
     <tr><td class="cell-left">${_('beschreibung')}</td>   <td>${c['attributes']['zkob']}</td></tr>
-    <tr><td class="cell-left">${_('x')}</td>              <td>${c['attributes']['x'] or '-'}</td></tr>
-    <tr><td class="cell-left">${_('y')}</td>              <td>${c['attributes']['y'] or '-'}</td></tr>
+    <tr><td class="cell-left">${_('x')}</td>              <td>${int(round(c['attributes']['x'],0)) or '-'}</td></tr>
+    <tr><td class="cell-left">${_('y')}</td>              <td>${int(round(c['attributes']['y'],0)) or '-'}</td></tr>
     <tr><td class="cell-left">${_('gemeinde')}</td>       <td>${c['attributes']['gemeinde'] or '-'}</td></tr>
     <tr><td class="cell-left">${_('kanton')}</td>         <td>${c['attributes']['kt_kz'] or '-'}</td></tr>
     <tr>
@@ -80,36 +80,8 @@
         </tr>
         <tr>
             <th class="cell-left">${_('Coordinates')}</th>
-            <td>${c['attributes']['x'] or ''} / ${c['attributes']['y'] or ''}</td>
+            <td>${int(round(c['attributes']['x'],0)) or ''} / ${int(round(c['attributes']['y'],0)) or ''}</td>
         </tr>
-    </table>
-     <div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls">
-        <div class="slides"></div>
-        <div class="title" id="blueimp-gallery-title"></div>
-        <a class="prev">&lsaquo;</a>
-        <a class="next">&rsaquo;</a>
-        <a class="close">x</a>
-        <a class="play-pause"></a>
-        <ol class="indicator"></ol>
-     </div>
-        <div class="kgs-thumbnails">
-            <div class="thumbnail-container">
-            %for pic in pic_list:
-                <div class="thumbnail">
-                    <a href="http://dav0.bgdi.admin.ch/kogis_web/downloads/kgs/bilder/kgs_${pic[0]}_${pic[1]}.jpg">
-                        <img class="image" src="http://dav0.bgdi.admin.ch/kogis_web/downloads/kgs/bilder/kgs_${pic[0]}_${pic[1]}.jpg" />
-                    </a>
-                    <div>${pic[3] or ''} - ${pic[2] or ''}</div>
-                </div>
-            %endfor
-            </div>
-        </div>
-    % if c['attributes']['kurztexte'] is not None:
-        <div class="kgs-kurztext">
-            ${c['attributes']['kurztexte']}
-        </div>
-    % endif
-    <table class="kernkraftwerke-extended">
     % if c['attributes']['pdf_list'] is not None:
        <tr>
 	        % for pdf in c['attributes']['pdf_list'].split('##'):
@@ -134,6 +106,34 @@
         <tr>
           <th class="cell-left">${_('legalregulationlink')}</th>
           <td><a href="${c['attributes']['link_3_uri']}">${c['attributes']['link_3_title']}</a></td>
+        </tr>
+    % endif
+    </table>
+     <div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls">
+        <div class="slides"></div>
+        <div class="title" id="blueimp-gallery-title"></div>
+        <a class="prev">&lsaquo;</a>
+        <a class="next">&rsaquo;</a>
+        <a class="close">x</a>
+        <a class="play-pause"></a>
+        <ol class="indicator"></ol>
+     </div>
+        <div class="kgs-thumbnails">
+            <div class="thumbnail-container">
+            %for pic in pic_list:
+                <div class="thumbnail">
+                    <a href="http://dav0.bgdi.admin.ch/kogis_web/downloads/kgs/bilder/kgs_${pic[0]}_${pic[1]}.jpg">
+                        <img class="image" src="http://dav0.bgdi.admin.ch/kogis_web/downloads/kgs/bilder/kgs_${pic[0]}_${pic[1]}.jpg" />
+                    </a>
+                    <div>${pic[3] or ''} - ${pic[2] or ''}</div>
+                </div>
+            %endfor
+            </div>
+        </div>
+    <table class="kernkraftwerke-extended">
+    % if c['attributes']['kurztexte'] is not None:
+        <tr>
+          <td>${c['attributes']['kurztexte']}</td>
         </tr>
     % endif
     </table>
