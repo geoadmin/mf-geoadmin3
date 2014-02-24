@@ -45,6 +45,12 @@
   background-color: #f9f9f9;
   background-image: data-uri('mapbg.png');
  
+  button {
+    padding: 0;
+    background-color: transparent;
+    border: none;
+  }
+
   .ol-dragbox {
     position:absolute;
     border: 1px solid #2E2F2F;
@@ -97,18 +103,18 @@
   }
 
   .ol-zoom-extent {
-    background-image: data-uri('zoomToFullExtent.png');
     position: absolute;
     right: unit(@control-btns-right, px);
     top: unit(@header-height + @control-btns-top + @control-btn-next + @zoombar-height + @control-btn-space, px);
   }
 
-  .ol-zoom-extent a {
+  .ol-zoom-extent button {
+    background-image: data-uri('zoomToFullExtent.png');
     width: unit(@control-btn-size, px);
     height: unit(@control-btn-size, px);
     display: block;
   }
-  
+
   @media screen and (max-width: @screen-tablet) {
     .mini-zoombar-mixin;
     .mini-zoombar-mixin(@small-header-height);
