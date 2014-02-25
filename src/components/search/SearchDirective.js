@@ -122,6 +122,9 @@
               };
 
               scope.addLayer = function(bodId, isPreview) {
+                if (isPreview && gaBrowserSniffer.mobile) {
+                  return;
+                }
                 var olLayer = gaLayers.getOlLayerById(bodId);
                 var layerInMap = gaMapUtils.getMapOverlayForBodId(
                      map, bodId);
@@ -136,6 +139,9 @@
               };
 
               scope.removePreviewLayer = function(bodId) {
+                 if (gaBrowserSniffer.mobile) {
+                  return;
+                }
                 var olLayer = gaMapUtils.getMapOverlayForBodId(
                     map, bodId);
                 if (angular.isDefined(olLayer) && olLayer.preview) {
