@@ -16,11 +16,11 @@
       templateUrl: 'components/geolocation/partials/geolocation.html',
       link: function(scope, element, attrs) {
         var btnElt = $(element.children()[0]);
-        var markerElt = $('<div class="geolocation-marker">' +
-                            '<div class="user-position"></div>' +
+        var markerElt = $('<div class="ga-geolocation-marker">' +
+                            '<div class="ga-geolocation-position"></div>' +
                         '</div>');
         if (!('geolocation' in $window.navigator)) {
-          btnElt.addClass('error');
+          btnElt.addClass('ga-geolocation-error');
           return;
         }
         // This boolean defines if the user has moved the map itself after the
@@ -41,8 +41,8 @@
           }
         });
         geolocation.on('error', function() {
-          btnElt.removeClass('tracking');
-          btnElt.addClass('error');
+          btnElt.removeClass('ga-geolocation-tracking');
+          btnElt.addClass('ga-geolocation-error');
         });
         geolocation.bindTo('projection', map.getView());
         // used to having a zoom animation when we click on the button,
@@ -122,8 +122,8 @@
         });
 
         geolocation.on('change:position', function(evt) {
-          btnElt.removeClass('error');
-          btnElt.addClass('tracking');
+          btnElt.removeClass('ga-geolocation-error');
+          btnElt.addClass('ga-geolocation-tracking');
           locate();
           markPosition();
         });
@@ -144,7 +144,7 @@
             map.addOverlay(overlay);
           } else {
             // stop tracking
-            btnElt.removeClass('tracking');
+            btnElt.removeClass('ga-geolocation-tracking');
             if (overlay) {
               map.removeOverlay(overlay);
             }
@@ -162,9 +162,9 @@
           var tracking = !geolocation.getTracking();
           geolocation.setTracking(tracking);
           if (tracking) {
-            btnElt.addClass('tracking');
+            btnElt.addClass('ga-geolocation-tracking');
           } else {
-            btnElt.removeClass('tracking');
+            btnElt.removeClass('ga-geolocation-tracking');
           }
 
           scope.$apply(function() {

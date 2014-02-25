@@ -216,7 +216,7 @@
             });
 
             // Submit the current form displayed for validation
-            elt.find('.validate-kml-file').click(function() {
+            elt.find('.ga-import-kml-validate').click(function() {
               var form = $(elt).find('.tab-pane.active form');
               form.submit();
             });
@@ -230,7 +230,8 @@
               };
 
               // Trigger the hidden input[type=file] onclick event
-              elt.find('button.browse').click(triggerInputFileClick);
+              elt.find('button.ga-import-kml-browse').
+                  click(triggerInputFileClick);
               elt.find('input[type=text][readonly]').
                   click(triggerInputFileClick);
 
@@ -247,7 +248,7 @@
 
               // Register drag'n'drop events on <body>
               var dropZone = angular.element(
-                  '<div class="import-kml-drop-zone">' +
+                  '<div class="ga-import-kml-drop-zone">' +
                   '  <div>{{"drop_me_here" | translate}}</div>' +
                   '</div>');
 

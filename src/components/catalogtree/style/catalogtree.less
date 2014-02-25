@@ -1,66 +1,85 @@
-.ga-catalogitem-node {
-  a {
-    color: black;
-    display: block;
-    text-decoration: none;
-    &:hover, &:focus {
-      color: #666;
+[ga-catalogtree] {
+   
+  .ga-catalogitem-node {
+    
+    a {
+      color: black;
+      display: block;
+      text-decoration: none;
+      &:hover, &:focus {
+        color: #666;
+      }
+    }
+
+    ul {
+      padding-left: 1.6em;
+      
+      ul ul {
+        padding-left: 2em;
+      }
+    }
+
+    .icon-collapse-alt, .icon-expand-alt {
+      float: left;
+      padding-top: 2px;
+      padding-right: 3px;
     }
   }
-  ul {
-    padding-left: 1.6em;
-    ul ul {
-      padding-left: 2em;
-    }
-  }
-  ul.closed {
-    display: none;
-  }
-
-  .icon-collapse-alt, .icon-expand-alt {
-    float: left;
-    padding-top: 2px;
-    padding-right: 3px;
-  }
-}
-
-.ga-catalogitem-leaf {
-  position: relative;
-  i {
-    position: absolute;
-    right: 0;
-    top: .8em;
-    @media (max-width: @screen-tablet) {
-      font-size: 26px;
-      top: 2px;
-    }
-  }
-  .icon-warning-sign {
-    right: 1em;
-  }
-  i, label input {
-    cursor: pointer;
-  }
-}
-
-.ga-catalogitem-entry {
-  margin-top: 0px;
-  margin-bottom: 0px;
-  padding-left: 0px;
-
-  label {
-    padding-right: 12px;
-  }
-}
-
-.ga-truncate-text {
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
   
-  /* IE9+FontAwesome hack: https://github.com/FortAwesome/Font-Awesome/issues/1079*/
-  &:before {
-    content: "";
+  .ga-catalogitem-template {
+    background-color: #fff;
+
+    .ga-catalogitem-selected {
+      color: #f00;
+    }
+
+    .ga-catalogitem-preview {
+      color: #666;
+      cursor: pointer;
+    }
+  }
+
+  .ga-catalogitem-leaf {
+    position: relative;
+    
+    i {
+      position: absolute;
+      right: 0;
+      top: .8em;
+      @media (max-width: @screen-tablet) {
+        font-size: 26px;
+        top: 2px;
+      }
+    }
+    .icon-warning-sign {
+      right: 1em;
+    }
+    i, label input {
+      cursor: pointer;
+    }
+    
+    .panel-subtitle;
+    border-bottom-style: dashed;
+    border-bottom-color: #c7c7c7;
+
+    label {
+      font-weight: normal;
+      width: 100%;
+      cursor: pointer;
+    }
+    input[type=checkbox] {
+      margin-left: .5em;
+      margin-right: .5em;
+    }
+  }
+
+  .ga-catalogitem-entry {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-left: 0px;
+
+    label {
+      padding-right: 12px;
+    }
   }
 }
-

@@ -16,7 +16,6 @@ describe('ga_popup_service', function() {
   });
   
   it('creates a popup with a content', function() {
-    expect(popup.element.hasClass('ga-popup')).to.be(true);
     expect(popup.element.hasClass('custom-class')).to.be(true);
     expect(popup.element.find('.ga-popup-content').html()).to.be('<div class="ng-scope"> content </div>');
     expect(popup.destroyed).to.be(false);

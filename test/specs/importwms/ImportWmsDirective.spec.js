@@ -34,12 +34,12 @@ describe('ga_importwms__directive', function() {
     var form = element.find('form');
     expect(form.find('input[type=url][ng-model=fileUrl]').length).to.be(1);
     expect(form.find('.twitter-typeahead').length).to.be(1);
-    expect(form.find('.open-wms-list').length).to.be(1);    
-    expect(form.find('.bt-connect').length).to.be(1); 
+    expect(form.find('.ga-import-wms-open').length).to.be(1);    
+    expect(form.find('.ga-import-wms-connect').length).to.be(1); 
     expect(element.find('table').length).to.be(2); 
     expect(element.find('textarea').length).to.be(1); 
-    expect(element.find('.bt-addlayer').length).to.be(1); 
-    form.find('.open-wms-list').click();
+    expect(element.find('.ga-import-wms-add').length).to.be(1); 
+    form.find('.ga-import-wms-open').click();
     expect(element.find('.tt-dropdown-menu').css('display')).not.to.be('none');
     expect(element.find('.tt-suggestion').length).to.be(5);
   }));

@@ -487,7 +487,7 @@
                     lastPointerOffsetLeft;
 
                 onEnd = function() {
-                  pointer.removeClass('active');
+                  pointer.removeClass('ga-slider-active');
                   $document.unbind(events.move);
                   return $document.unbind(events.end);
                 };
@@ -517,14 +517,14 @@
                     if (ref === refLow) {
                       if (newValue > scope[refHigh]) {
                         ref = refHigh;
-                        minPtr.removeClass('active');
-                        maxPtr.addClass('active');
+                        minPtr.removeClass('ga-slider-active');
+                        maxPtr.addClass('ga-slider-active');
                       }
                     } else {
                       if (newValue < scope[refLow]) {
                         ref = refLow;
-                        maxPtr.removeClass('active');
-                        minPtr.addClass('active');
+                        maxPtr.removeClass('ga-slider-active');
+                        minPtr.addClass('ga-slider-active');
                       }
                     }
                   }
@@ -534,7 +534,7 @@
                 onStart = function(event) {
                   lastMouseOffsetLeft = getMouseOffsetLeft(event, element);
                   lastPointerOffsetLeft = offsetLeft(pointer);
-                  pointer.addClass('active');
+                  pointer.addClass('ga-slider-active');
                   dimensions();
                   event.stopPropagation();
                   event.preventDefault();
@@ -569,7 +569,7 @@
                     return scope.$apply();
                   }));
 
-                  var input = element.find('.value1 input');
+                  var input = element.find('.ga-slider-value1 input');
                   _results.push(input.bind('keydown', function(event) {
                     // RE3: Stop propagation of arrows key event
                     if (event.which == 37 || event.which == 39) {
@@ -601,9 +601,9 @@
                 });
 
                 if (arr.length === 1) {
-                  lowBub.addClass('available');
+                  lowBub.addClass('ga-slider-available');
                 } else {
-                  lowBub.removeClass('available');
+                  lowBub.removeClass('ga-slider-available');
                 }
               }
 

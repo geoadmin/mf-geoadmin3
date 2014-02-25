@@ -1,6 +1,6 @@
 @ga-popup-max-height: 400px;
 
-.ga-popup {
+[ga-popup] {
   display: none;
   overflow: hidden;
   min-width: 200px;
@@ -8,6 +8,7 @@
   min-height: 100px;
   max-height: @ga-popup-max-height;
   z-index: 2000;
+
   @media (max-width: @screen-tablet) {
     z-index: 1500;
     left: 2%;
@@ -18,35 +19,39 @@
     max-width: none;
     -webkit-overflow-scrolling: touch;
   }
+
   @media (max-width: @screen-phone) {
     position: fixed !important;
     overflow: hidden;
   }
-}
+  
+  .ga-popup-content {
+    overflow: auto;
+    max-width: inherit;
+    max-height: (@ga-popup-max-height - 60);
+    font-size: 12px;
+    
+    @media (max-width: @screen-tablet) {
+      position: absolute;
+      top: 36px;
+      bottom: 10px;
+      width: 100%;
+      max-height: none;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+  }
 
-.ga-popup-content {
-  overflow: auto;
-  max-width: inherit;
-  max-height: (@ga-popup-max-height - 60);
-  font-size: 12px;
-  @media (max-width: @screen-tablet) {
-    position: absolute;
-    top: 36px;
-    bottom: 10px;
-    width: 100%;
-    max-height: none;
-    overflow-x: hidden;
-    overflow-y: auto;
+  .ga-popup-print {
+    float: right;
+    cursor: pointer;
+    margin-right: 8px;
+    margin-top: 2px;
+    opacity: 0.3;
+    
+    &:hover {
+      opacity: 1;
+    }
   }
 }
 
-.ga-popup-print {
-  float: right;
-  cursor: pointer;
-  margin-right: 8px;
-  margin-top: 2px;
-  opacity: 0.3;
-  &:hover {
-    opacity: 1;
-  }
-}

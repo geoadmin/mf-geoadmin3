@@ -125,7 +125,7 @@
 % endif
     </div> <!-- #header -->
 
-    <div id="map" class="map" tabindex="1" ga-map ga-map-map="map">
+    <div tabindex="1" ga-map ga-map-map="map">
       <div ga-geolocation ga-geolocation-map="map"></div>
       <div id="copyrightsdata">
         <div>
@@ -146,30 +146,28 @@
 
 
     <div id="footer" class="navbar navbar-fixed-bottom">
-      <div id="scaleline" class="pull-left" ga-scale-line ga-scale-line-map="map"></div>
+      <div  class="pull-left" ga-scale-line ga-scale-line-map="map"></div>
 % if device == 'desktop':
       <div id="mouseposition" class="pull-left hidden-xs" ng-controller="GaMousePositionController">
-        <select
-          ng-model="options.projection"
-          ng-options="p.label for p in mousePositionProjections">
+        <select ng-model="options.projection"
+                ng-options="p.label for p in mousePositionProjections">
         </select>
-        <div class="ga-mouse-position"
-          ga-mouse-position
-          ga-mouse-position-map="map"
-          ga-mouse-position-options="options"></div>
+        <div ga-mouse-position
+             ga-mouse-position-map="map"
+             ga-mouse-position-options="options"></div>
       </div>
 % endif
-      <div id="copyrights" class="pull-right">
+      <div class="pull-right">
         <a target="_blank" ng-href="http://www.geo.admin.ch/internet/geoportal/{{langId}}/home/geoadmin/contact.html#copyright" translate>copyright_label</a>
       </div>
 % if device == 'desktop':
-      <div id="geoadminlink" class="pull-right">
+      <div class="pull-right">
         <a target="_blank" ng-href="{{topicId + '_service_link_href' | translate}}" ng-cloak translate="{{topicId + '_service_link_label'}}"></a>
       </div>
 % endif
     </div><!-- #footer -->
 
-    <div  ng-controller="GaContextPopupController" class="ga-context-popup">
+    <div ng-controller="GaContextPopupController">
       <div ga-context-popup ga-context-popup-map="map" ga-context-popup-options="options"></div>
     </div>
 
@@ -322,11 +320,11 @@
               <div class="options">
                 <label ng-controller="GaTranslationController">
                   <span translate>lang_chooser_label</span>
-                  <div id="lang-chooser" ga-translation-selector ga-translation-selector-options="options"></div>
+                  <div ga-translation-selector ga-translation-selector-options="options"></div>
                 </label>
                 <label>
                   <span translate>bg_chooser_label</span>
-                  <div id="bg-chooser" ga-background-layer-selector ga-background-layer-selector-map="map"></div>
+                  <div ga-background-layer-selector ga-background-layer-selector-map="map"></div>
                 </label>
               </div>
               <hr>
@@ -363,7 +361,7 @@
     <!-- feedback dialog -->
     <div ng-controller="GaFeedbackController" class="modal-container">
       <div id="feedback" class="modal fade" tabindex="-1" role="dialog" ga-modal-show="feedbackModalShown">
-        <div class="ga-popup modal-dialog" ga-draggable=".modal-header">
+        <div class="modal-dialog" ga-draggable=".modal-header">
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -455,8 +453,7 @@
          ga-popup-options="{title: 'object_information'}"
          ga-draggable=".ga-popup-title"
          id="featuretree-popup">
-      <div ng-controller="GaFeaturetreeController" 
-           id="featuretree"> 
+      <div ng-controller="GaFeaturetreeController"> 
         <div ga-featuretree 
              ga-featuretree-options="options" 
              ga-featuretree-map="map"></div>

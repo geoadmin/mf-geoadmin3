@@ -94,7 +94,7 @@
                 windowPrint.document.close();
               });
 
-          element.addClass('popover ga-popup');
+          element.addClass('popover');
 
           // Move the popup to the correct position
           if (!gaBrowserSniffer.mobile) {

@@ -11,7 +11,6 @@ describe('ga_popup_directive', function() {
   });
 
   it('creates html elements', function() {
-    expect(element.hasClass('ga-popup')).to.be(true);
     
     var elt = element.find('.ga-popup-title');
     expect(elt.length).to.be(1);

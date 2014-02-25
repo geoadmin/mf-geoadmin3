@@ -1,16 +1,55 @@
-.ga-feature-tree {
-  a {
+[ga-featuretree] {
+  
+  label {
+    width: 100%;
+    height: 32px;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color:#e9e9e9;
+    font-weight: normal;
+    line-height: 32px;
+    margin: 0;
+  }
+  
+  label:hover, i:hover {
+    opacity: 0.6;
+  }
+  
+  .icon-zoom-in {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0.8em;
+  }
+  
+  .selected {
+    color: #f00;
+  }
+
+  li, i, label {
     cursor: pointer;
   }
+
+  ul {
+    padding-left: 0;
+    list-style-type: none;
+  }
+
+  ul ul {
+    padding-left: 1.6em;
+  }
+
   .ga-feature {
-    i {
-      float: right;
-      margin-right: .6em;
-      margin-top: .8em;
-      &:hover {
-        opacity: 0.6;
-        cursor: pointer;
-      }
+    
+    li {
+      position: relative;
+      padding-left: 0.6em;
+    }
+
+    label {  
+      border-bottom-style: dashed;
+      border-bottom-color: #c7c7c7;
+      padding-right: 2em;
     }
   }
 }

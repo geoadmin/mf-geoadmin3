@@ -1,18 +1,26 @@
-.ol-attribution {
-  ul {
-    margin: 0;
-    padding: 0;
-  }
-  li {
-    list-style-type: none;
-    display: inline;
-    &:last-child {
-      &:after {
-        content: '';
-      }
+[ga-attribution] {
+  
+  .ol-attribution {
+    
+    ul {
+      margin: 0;
+      padding: 0;
     }
-    &:after {
-      content: ', ';
+    
+    li {
+      list-style-type: none;
+      display: inline;
+      
+      &:last-child {
+        
+        &:after {
+          content: '';
+        }
+      }
+      
+      &:after {
+        content: ', ';
+      }
     }
   }
 }

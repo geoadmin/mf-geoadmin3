@@ -1,5 +1,6 @@
 (function() {
   goog.provide('ga_share_directive');
+
   goog.require('ga_permalink');
   goog.require('ga_urlutils_service');
 
@@ -21,10 +22,10 @@
                   'cb=JSON_CALLBACK');
               scope.qrcodegeneratorPath = scope.options.qrcodegeneratorPath;
 
-              $('.share-icon').tooltip({
+              $('.ga-share-icon').tooltip({
                 placement: 'bottom'
               });
-              $('.share-permalink input').on({
+              $('.ga-share-permalink input').on({
                 focus: function() {
                   this.setSelectionRange(0, 9999);
                 },

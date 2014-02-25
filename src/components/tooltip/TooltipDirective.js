@@ -21,7 +21,7 @@
             bodyEl = angular.element($document[0].body),
             popupContent = '<div ng-repeat="htmlsnippet in options.htmls">' +
                               '<div ng-bind-html="htmlsnippet"></div>' +
-                              '<div class="tooltip-separator" ' +
+                              '<div class="ga-tooltip-separator" ' +
                                 'ng-show="!$last"></div>' +
                             '</div>';
         return {

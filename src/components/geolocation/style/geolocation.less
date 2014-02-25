@@ -1,27 +1,34 @@
-.geolocation {
-  position: absolute;
-  z-index: 10;
-  top: unit(@header-height + @control-btns-top, px);
-  right: unit(@control-btns-right, px);
-  width: unit(@control-btn-size, px);
-  height: unit(@control-btn-size, px);
-  background-image: data-uri('geolocation.png');
-  &.error {
-    background-image: data-uri('geolocation_disabled.png');
-    cursor: default;
-  }
-  &.tracking {
-    background-image: data-uri('geolocation_on.png');
-  }
-  @media screen and (max-width: @screen-tablet) {
-    top: unit(@small-header-height + @control-btns-top, px);
+[ga-geolocation] {
+
+  a {
+    position: absolute;
+    z-index: 10;
+    top: unit(@header-height + @control-btns-top, px);
+    right: unit(@control-btns-right, px);
+    width: unit(@control-btn-size, px);
+    height: unit(@control-btn-size, px);
+    background-image: data-uri('geolocation.png');
+    
+    &.ga-geolocation-error {
+      background-image: data-uri('geolocation_disabled.png');
+      cursor: default;
+    }
+    
+    &.ga-geolocation-tracking {
+      background-image: data-uri('geolocation_on.png');
+    }
+    
+    @media screen and (max-width: @screen-tablet) {
+      top: unit(@small-header-height + @control-btns-top, px);
+    }
   }
 }
-.geolocation-marker {
+
+.ga-geolocation-marker {
   background-color:  rgba(255, 0, 0, 0.1);
   border: 2px solid rgba(255, 0, 0, 0.9);
   
-  .user-position {
+  .ga-geolocation-position {
     position: absolute;
     width: 14px;
     height: 14px;

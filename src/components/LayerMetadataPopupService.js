@@ -13,7 +13,7 @@
   module.provider('gaLayerMetadataPopup', function() {
     this.$get = function($document, $translate, gaPopup, gaLayers) {
           return function(bodid) {
-            var waitClass = 'metadata-popup-wait';
+            var waitClass = 'ga-metadata-popup-wait';
             var bodyEl = angular.element($document[0].body);
             bodyEl.addClass(waitClass);
             gaLayers.getMetaDataOfLayer(bodid)

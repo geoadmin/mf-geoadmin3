@@ -19,7 +19,7 @@
           link: function(scope, element, attrs) {
             var profile;
             var options = scope.options;
-            var tooltipEl = element.find('.profile-tooltip');
+            var tooltipEl = element.find('.ga-profile-tooltip');
             scope.coordinates = [0, 0];
             scope.unitX = '';
 
@@ -31,13 +31,13 @@
                 );
                 $compile(profileEl)(scope);
                 scope.unitX = profile.unitX;
-                var previousProfileEl = element.find('.profile-inner');
+                var previousProfileEl = element.find('.ga-profile-inner');
                 if (previousProfileEl.length > 0) {
                   previousProfileEl.replaceWith(profileEl);
                 } else {
                   element.append(profileEl);
                 }
-                var areaChartPath = d3.select('.profile-area');
+                var areaChartPath = d3.select('.ga-profile-area');
                 attachPathListeners(areaChartPath);
               };
 

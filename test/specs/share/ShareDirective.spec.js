@@ -18,7 +18,7 @@ describe('ga_share_directive', function() {
   });
 
   it('creates 5 <i>', function() {
-      var icon = element.find('.share-icons i');
+      var icon = element.find('.ga-share-icons i');
       expect(icon.length).to.be(5);
   });
 

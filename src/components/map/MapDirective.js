@@ -36,7 +36,7 @@
 
               if (queryParams.crosshair !== undefined) {
                 var crosshair = $('<div></div>')
-                  .addClass('crosshair')
+                  .addClass('ga-crosshair')
                   .addClass(queryParams.crosshair);
                 map.addOverlay(new ol.Overlay({
                   element: crosshair.get(0),
