@@ -149,8 +149,8 @@ class Vector(GeoInterface):
         primaryKeyColumn = self.primary_key_column()
         geomColumn = self.geometry_column()
         geomColumnToReturn = self.geometry_column_to_return()
-        for column in self.__table__.columns:
-            if column not in (primaryKeyColumn, geomColumn, geomColumnToReturn):
+        for column in self.__mapper__.columns:
+            if column.key not in (primaryKeyColumn.key, geomColumn.key, geomColumnToReturn.key):
                 ormColumnName = self.__mapper__.get_property_by_column(column).key
                 attribute = getattr(self, ormColumnName)
                 if isinstance(attribute, decimal.Decimal):
