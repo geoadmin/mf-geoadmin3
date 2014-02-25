@@ -250,7 +250,8 @@ def htmlpopup(request):
     layer = next(_get_layers_metadata_for_params(
         params,
         request.db.query(modelLayer),
-        modelLayer
+        modelLayer,
+        layerIds=[params.layerId]
     ))
 
     feature.update({'attribution': layer.get('attributes')['dataOwner']})
@@ -285,7 +286,8 @@ def extendedhtmlpopup(request):
     layer = next(_get_layers_metadata_for_params(
         params,
         request.db.query(modelLayer),
-        modelLayer
+        modelLayer,
+        layerIds=[params.layerId]
     ))
     feature.update({'attribution': layer.get('attributes')['dataOwner']})
     feature.update({'extended': True})
