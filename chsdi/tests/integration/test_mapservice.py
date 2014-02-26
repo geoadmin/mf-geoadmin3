@@ -235,7 +235,7 @@ class TestMapServiceView(TestsBase):
         for layer in layers:
             if layer not in swissmaponlineLegends:
                 for lang in ('de', 'fr', 'it', 'rm', 'en'):
-                    self.testapp.get('/rest/services/all/MapServer/%s/legend' %layer, params={'callback': 'cb', 'lang': '%s' %lang}, status=200)
+                    self.testapp.get('/rest/services/all/MapServer/%s/legend' % layer, params={'callback': 'cb', 'lang': '%s' % lang}, status=200)
 
     def test_layersconfig_valid(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/layersConfig', status=200)

@@ -449,7 +449,7 @@ def legend(request):
         if 'dataStatus' in layerMetadata['attributes'].keys():
             status = layerMetadata['attributes']['dataStatus']
             if status == u'bgdi_created':
-                layerMetadata['attributes']['dataStatus'] = self.translate('None') + self.translate('Datenstand')
+                layerMetadata['attributes']['dataStatus'] = params.translate('None') + params.translate('Datenstand')
 
     legend = {
         'layer': layerMetadata,
