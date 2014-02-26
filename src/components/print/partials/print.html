@@ -1,16 +1,31 @@
-<form>
-  <div>
-    <label translate>print_layout</label>
-    <select ng-model="layout" ng-options="l.name for l in capabilities.layouts"></select>
-    <label translate>print_scale</label>
-    <select ng-model="scale" ng-options="l.name for l in capabilities.scales"></select>
+<form class="form-horizontal" >
+  <div class="form-group">
+    <label class="col-xs-4 control-label" translate>print_layout</label>
+    <div class="col-xs-8">
+      <select class="form-control" ng-model="layout" ng-options="l.name for l in capabilities.layouts"></select>
+    </div>
   </div>
-  <div class="ga-print-options checkbox">
-      <input ng-model="options.legend" type="checkbox" id="ga-print-legend" />
-      <label for="ga-print-legend" translate>legend</label>
-      <br/>
-      <input ng-model="options.graticule" type="checkbox" id="ga-print-graticule" />
-      <label for="ga-print-graticule" translate>graticule</label>
+  <div class="form-group">
+    <label class="col-xs-4 control-label" translate>print_scale</label>
+    <div class="col-xs-8">
+      <select class="form-control" ng-model="scale" ng-options="l.name for l in capabilities.scales"></select>
+    </div>
   </div>
-  <button type="submit" class="btn btn-primary" ng-click="submit()" translate>print_action</button>
+  <div class="form-group">
+    <div class="col-xs-4">
+      <div class="checkbox">
+        <label>
+          <input ng-model="options.legend" type="checkbox"/>{{'legend' | translate}}
+        </label>
+      </div>
+    </div>
+    <div class="col-xs-8">
+      <div class="checkbox">
+        <label>
+          <input ng-model="options.graticule" type="checkbox"/>{{'graticule' | translate}}
+        </label>
+      </div>
+    </div>
+  </div>
+  <button type="submit" class="btn btn-default col-xs-12" ng-click="submit()" translate>print_action</button>
 </form>
