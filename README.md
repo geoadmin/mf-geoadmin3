@@ -49,7 +49,7 @@ If you do this on mf1t, you need to make sure that a correct configuration exist
 
 that points to your working directory. If all is well, you can reach your pages at:
 
-    http://mf-chsdi30t.bgdi.admin.ch/<username>/
+    http://mf-chsdi3.dev.bgdi.ch/<username>/
 
 # Python Code Styling
 
