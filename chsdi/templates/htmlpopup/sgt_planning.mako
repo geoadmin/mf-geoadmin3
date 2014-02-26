@@ -27,5 +27,4 @@
 % else:
     <tr><td class="cell-left">${_('tt_sachplan_weitereinfo')}</td>            <td> - </td></tr>
 %endif
-    <tr><td class="cell-left">${_('tt_sachplan_planning_ueberanlage')}</td>   <td>${c['attributes'][facname] or '-'}</td></tr>
 </%def>
