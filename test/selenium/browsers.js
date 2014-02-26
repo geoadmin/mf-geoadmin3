@@ -7,7 +7,6 @@ var capabilities = [{
     'resolution' : '1280x1024',
     'browserstack.user' : process.env.BROWSERSTACK_USER,
     'browserstack.key' : process.env.BROWSERSTACK_KEY,
-    'browserstack.debug' : 'true'
   },
   {
     'browser' : 'IE',
@@ -17,7 +16,6 @@ var capabilities = [{
     'resolution' : '1280x1024',
     'browserstack.user' : process.env.BROWSERSTACK_USER,
     'browserstack.key' : process.env.BROWSERSTACK_KEY,
-    'browserstack.debug' : 'true'
   },
   {
     'browser' : 'IE',
@@ -27,7 +25,6 @@ var capabilities = [{
     'resolution' : '1280x1024',
     'browserstack.user' : process.env.BROWSERSTACK_USER,
     'browserstack.key' : process.env.BROWSERSTACK_KEY,
-    'browserstack.debug' : 'true'
   },
   {
     'browser' : 'IE',
@@ -37,7 +34,6 @@ var capabilities = [{
     'resolution' : '1280x1024',
     'browserstack.user' : process.env.BROWSERSTACK_USER,
     'browserstack.key' : process.env.BROWSERSTACK_KEY,
-    'browserstack.debug' : 'true'
   },
   {
     'browser' : 'Firefox',
@@ -47,7 +43,6 @@ var capabilities = [{
     'resolution' : '1280x1024',
     'browserstack.user' : process.env.BROWSERSTACK_USER,
     'browserstack.key' : process.env.BROWSERSTACK_KEY,
-    'browserstack.debug' : 'true'
   },
   {
     'browser' : 'Safari',
@@ -57,7 +52,6 @@ var capabilities = [{
     'resolution' : '1280x1024',
     'browserstack.user' : process.env.BROWSERSTACK_USER,
     'browserstack.key' : process.env.BROWSERSTACK_KEY,
-    'browserstack.debug' : 'true'
   } 
 ]
 
