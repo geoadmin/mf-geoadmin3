@@ -20,5 +20,4 @@
 % else:
     <tr><td class="cell-left">${_('tt_sachplan_weitereinfo')}</td>                    <td> - </td></tr>
 %endif
-    <tr><td class="cell-left">${_('tt_sachplan_facility_uberobjekt')}</td>            <td>${c['attributes'][objectname] or '-'}</td></tr>
 </%def>

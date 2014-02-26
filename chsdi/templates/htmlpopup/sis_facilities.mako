@@ -3,7 +3,6 @@
 <%def name="table_body(c, lang)">
 <% 
     import datetime
-    c['stable_id'] = True
     lang = lang if lang in ('fr','it') else 'de'
     facname = 'facname_%s' % lang
     fackind_text = 'fackind_text_%s' % lang
@@ -22,5 +21,4 @@
 % else:
     <tr><td class="cell-left">${_('tt_sachplan_weitereinfo')}</td>                    <td> - </td></tr>
 %endif
-    <tr><td class="cell-left">${_('tt_sachplan_facility_uberobjekt')}</td>            <td>${c['attributes'][objectname] or '-'}</td></tr>
 </%def>
