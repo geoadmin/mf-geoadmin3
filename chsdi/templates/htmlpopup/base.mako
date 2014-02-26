@@ -23,6 +23,7 @@
   <link rel="stylesheet" type="text/css" href="../../../../../../static/css/blueimp-gallery-2.11.0.min.css"/>
   <script src="../../../../../../static/js/jquery-2.0.3.min.js"></script>
   <script src="../../../../../../static/js/blueimp-gallery-2.11.5.min.js"></script>
+  <link rel="shortcut icon" type="image/x-icon" href="${h.versioned(request.static_url('chsdi:static/images/favicon.ico'))}">
 % endif
 
 <div class="htmlpopup-container">
