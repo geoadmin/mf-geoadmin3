@@ -6,7 +6,7 @@ var capabilities = [{
     'os_version' : '7',
     'resolution' : '1280x1024',
     'browserstack.user' : process.env.BROWSERSTACK_USER,
-    'browserstack.key' : process.env.BROWSERSTACK_KEY,
+    'browserstack.key' : process.env.BROWSERSTACK_KEY
   },
   {
     'browser' : 'IE',
@@ -15,7 +15,7 @@ var capabilities = [{
     'os_version' : '7',
     'resolution' : '1280x1024',
     'browserstack.user' : process.env.BROWSERSTACK_USER,
-    'browserstack.key' : process.env.BROWSERSTACK_KEY,
+    'browserstack.key' : process.env.BROWSERSTACK_KEY
   },
   {
     'browser' : 'IE',
@@ -24,7 +24,7 @@ var capabilities = [{
     'os_version' : '7',
     'resolution' : '1280x1024',
     'browserstack.user' : process.env.BROWSERSTACK_USER,
-    'browserstack.key' : process.env.BROWSERSTACK_KEY,
+    'browserstack.key' : process.env.BROWSERSTACK_KEY
   },
   {
     'browser' : 'IE',
@@ -33,7 +33,7 @@ var capabilities = [{
     'os_version' : '7',
     'resolution' : '1280x1024',
     'browserstack.user' : process.env.BROWSERSTACK_USER,
-    'browserstack.key' : process.env.BROWSERSTACK_KEY,
+    'browserstack.key' : process.env.BROWSERSTACK_KEY
   },
   {
     'browser' : 'Firefox',
@@ -42,7 +42,7 @@ var capabilities = [{
     'os_version' : '7',
     'resolution' : '1280x1024',
     'browserstack.user' : process.env.BROWSERSTACK_USER,
-    'browserstack.key' : process.env.BROWSERSTACK_KEY,
+    'browserstack.key' : process.env.BROWSERSTACK_KEY
   },
   {
     'browser' : 'Safari',
@@ -51,7 +51,7 @@ var capabilities = [{
     'os_version' : '7',
     'resolution' : '1280x1024',
     'browserstack.user' : process.env.BROWSERSTACK_USER,
-    'browserstack.key' : process.env.BROWSERSTACK_KEY,
+    'browserstack.key' : process.env.BROWSERSTACK_KEY
   } 
 ]
 
