@@ -290,6 +290,7 @@ def extendedhtmlpopup(request):
         layerIds=[params.layerId]
     ))
     feature.update({'attribution': layer.get('attributes')['dataOwner']})
+    feature.update({'fullName': layer.get('fullName')})
     feature.update({'extended': True})
     response = render_to_response(
         template,
