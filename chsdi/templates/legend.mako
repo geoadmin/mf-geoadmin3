@@ -23,7 +23,8 @@
                  'ch.swisstopo.pixelkarte-farbe-pk200.noscale',
                  'ch.swisstopo.pixelkarte-farbe-pk100.noscale', 
                  'ch.swisstopo.pixelkarte-farbe-pk50.noscale',
-                 'ch.swisstopo.pixelkarte-farbe-pk25.noscale')
+                 'ch.swisstopo.pixelkarte-farbe-pk25.noscale',
+                 'ch.swisstopo.geologie-geotechnik-mineralische_rohstoffe200')
   if c['idBod'] in pdf_legends:
       legend_url_pdf = host + '/static/images/legends/' + c['idBod'] + '_' + lang + '_big.pdf'
   else:
@@ -59,7 +60,7 @@
     <tr><td>${_('Gueltiger Massstabsbereich')}</td> <td>${c['attributes']['scaleLimit']}</td></tr>
 % endif
     <tr><td>${_('Metadaten')}</td>
-% if c['idGeoCat']:
+% if 'idGeoCat' in c:
   % if lang in ('de', 'rm'):
       <td><a target="_blank" href="http://www.geocat.ch/geonetwork/srv/deu/metadata.show?uuid=${c['idGeoCat']}&currTab=simple">
   % elif lang in ('fr', 'it'):

@@ -161,6 +161,9 @@ msgstr "Keine weiteren Informationen für diesen Objekttyp"
 msgid "No info outside CH and FL"
 msgstr "Keine Infos ausserhalb Schweiz und Liechstenstein"
 
+msgid "None"
+msgstr "Keine"
+
 msgid "Not applicable"
 msgstr "nicht anwendbar"
 
