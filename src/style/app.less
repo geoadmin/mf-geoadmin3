@@ -536,9 +536,18 @@ a .ga-icon-separator {
   }
 }
 // ****** SELECTION
-#selection .panel-body  a {
-  display: inline;
-  line-height: 12px;
+#selection .panel-body {
+  padding: 0px 4px;
+    
+  a {
+    display: inline;
+    line-height: 12px;
+    border: none;
+     
+    @media (max-width: @screen-tablet) {
+      line-height: 32px;
+    }
+  }
 }
 
 // ****** MODAL
@@ -841,20 +850,59 @@ input[type=range] {
   }
 }
 
-// ***** CUSTOM CHECKBOXES
-input[type=checkbox] {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  -ms-appearance: none;
-  border: 0;
-  background: white;
-  &:after {
-    font-size: 14px;
-    content: "\f096";
-    font-family: FontAwesome;
+
+//***** CUSTOM CHECKBOXES
+.ga-checkbox {
+  cursor: pointer;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.no-webkit .ga-checkbox {
+    
+  input[type=checkbox] {
+    display: none;
+  
+    & + span:before {
+      font-family: "FontAwesome";
+      font-size: 14px;
+      content: "\f096";
+      letter-spacing: 4px;
+      vertical-align: -0.1em;
+    }
+    
+    &:checked + span:before {
+      content: "\f046";
+      color: #000;
+      letter-spacing: 2px;
+    }
   }
-  &:checked:after {
-    content: "\f046";
+}
+
+.webkit .ga-checkbox {
+    
+  input[type=checkbox] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    border: 0;
+    background: white;
+    
+    &:after {
+      font-size: 14px;
+      content: "\f096";
+      font-family: FontAwesome;
+      letter-spacing: 2px;
+    }
+    
+    &:checked:after {
+      content: "\f046";
+      letter-spacing: 0px;
+    }
   }
 }
 

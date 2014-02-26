@@ -2,8 +2,9 @@
   <li ng-if="!(filteredLayers = (layers | gaReverse | filter:layerFilter)).length" translate>no_layers_info</li>
   <li ng-repeat="layer in filteredLayers" class="ga-layer-folded {{layer.time ? 'ga-layer-time-enabled' : ''}}">
     <button type="button" ng-click="removeLayerFromMap(layer)" class="btn btn-primary btn-xs">&times;</button>
-    <label>
+    <label class="ga-checkbox">
       <input type="checkbox" ng-model="layer.visible" />
+      <span></span>
       {{layer.label}}
     </label>
     <span ng-if="layer.timeEnabled" class="ga-layer-time-label">{{layer.time | limitTo:4}}</span>

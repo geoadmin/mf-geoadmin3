@@ -1,109 +1,20 @@
 [ga-layermanager] {
   
-  .btn-xs {
-    line-height: 1;
-    padding: 1px 3px 0;
-    margin: 0 .6em;
-    position: absolute;
-    left: 0;
-    height: 15px;
-    top: 5px;
-    @media (max-width: @screen-tablet) {
-      top: 8px;
-      height: 20px;
-      font-size: 20px;
-      margin: 0 0 0 5px;
-      padding: 0 3px 0px;
-      line-height: 20px;
-    }
+  a {
+    display: inline;
+    border: none;
+    line-height: 12px;
   }
-  
-  li {
-    .panel-subtitle;
-    
-    height: auto;
-    line-height: 1.2em;
-    position: relative;
-    padding: .2em 0;
-    
-    label, input {
-      cursor: pointer;
-    }
-    
-    label span {
-      cursor: default;
-    }
+   
+  select {
+    width: 8em;
+    display: inline;
   }
-  
-  li:first-of-type {
-    .icon-arrow-up {
-      color: #ccc;
-      cursor: default;
-    }
-  }
-  
-  li:last-of-type {
-    border-bottom-width: 0;
-    
-    .icon-arrow-down {
-      color: #ccc;
-      cursor: default;
-    }
-  }
-  
-  .ga-layer-time-label {
-    position: absolute;
-    top: .5em;
-    right: 16px;
-    color: red;
-  }
-  
-  .ga-layer-info, .ga-layer-ordering, .icon-gear {
-    position: absolute;
-    top: .6em;
-    right: 0;
-  }
-  
-  .icon-gear {
-    top: 5px;
-    font-size: 26px;
-    display: none;
-    .rotate(0deg);
-  }
-  
-  .ga-layer-ordering {
-    bottom: .6em;
-    top: auto;
-  }
-  
-  label {
-    font-weight: normal;
-    
-    &:first-of-type {
-      width: 100%;
-      padding-left: 2.7em;
-      padding-right: 1.3em;
-    }
-    
-    &.ga-layer-transparency {
-      padding-left: 3em;
-      display: block;
-      font-size: 90%;
-      
-      input {
-        vertical-align: middle;
-      }
-    } 
-  }
-  
-  .ga-layer-time-enabled label:first-of-type {
-    padding-right: 3.7em;
-  }
-  
+ 
   input[type=checkbox] {
-    vertical-align: -10%;
+    vertical-align: -5%;
   }
-  
+
   input[type=range] {
     width: 13em;
     padding: 0px;
@@ -126,28 +37,119 @@
       background: linear-gradient(to bottom, #eeeeee 0%,#cccccc 100%);
     }
   }
-  
-  select {
-    width: 8em;
-    display: inline;
-  }
-  
-  a {
-    line-height: 12px;
-    display: inline;
-    border: none;
-  }
-  
-  @media (max-width: @screen-tablet) {
-    
-    .icon-gear {
-      display: inline;
-      .transition(all .35s ease);
+   
+  label {
+    font-weight: normal;
+    padding-top: 3px;
+      
+    &:first-of-type {
+      width: 100%;
+      padding-left: 2.7em;
+      padding-right: 1.3em;
     }
     
+    &.ga-layer-transparency {
+      padding-left: 3em;
+      display: block;
+      font-size: 90%;
+      
+      input {
+        vertical-align: middle;
+      }
+    } 
+  }
+  
+  label, input, a, i {
+    cursor: pointer;
+  }
+
+  li {
+    .panel-subtitle;
+    
+    height: auto;
+    line-height: 1.2em;
+    position: relative;
+    padding: .2em 0;
+    
+  }
+  
+  li:first-of-type {
+    .icon-arrow-up {
+      color: #ccc;
+      cursor: default;
+    }
+  }
+  
+  li:last-of-type {
+    border-bottom-width: 0;
+    
+    .icon-arrow-down {
+      color: #ccc;
+      cursor: default;
+    }
+  }
+
+  .btn-xs {
+    line-height: 1;
+    padding: 1px 3px 0;
+    margin: 0 .6em;
+    position: absolute;
+    left: 0;
+    height: 15px;
+    top: 5px;
+  }
+   
+  .ga-layer-time-label {
+    position: absolute;
+    top: .5em;
+    right: 16px;
+    color: red;
+  }
+
+  .ga-layer-info, .btn-xs {
+    margin-top: 3px;
+  }
+
+  .ga-layer-info, .ga-layer-ordering, .icon-gear {
+    position: absolute;
+    top: .5em;
+    right: 0;
+  }
+  
+  .icon-gear {
+    display: none;
+    .rotate(0deg);
+
+    &:hover {
+      opacity: 0.6;
+    }
+  }
+  
+  .ga-layer-ordering {
+    bottom: .6em;
+    top: auto;
+  }
+   
+  .ga-layer-time-enabled label:first-of-type {
+    padding-right: 3.7em;
+  }
+       
+  @media (max-width: @screen-tablet) {
+     
+    a, i {
+      font-size: 26px;
+      background-color: inherit;
+      border: none;
+      line-height: 32px;
+    }
+      
+    input[type=range] {
+      width: 8em;
+    }
+     
     li {
       height: 3em;
-      line-height: 3em;
+      line-height: 2.5;
       padding: 0;
       overflow: hidden;
       
@@ -164,19 +166,46 @@
       }
     }
     
-    input[type=range] {
-      width: 8em;
-    }       
-    
     label.ga-layer-transparency {
       padding-left: 1em;
     }
     
+    .btn-xs {
+      top: 8px;
+      height: 20px;
+      font-size: 20px;
+      margin: 0 0 0 5px;
+      padding: 0 3px 0px;
+      line-height: 20px;
+    }
+    
+    .icon-gear {
+      display: inline;
+      .transition(all .35s ease);
+    }
+
+       
     .ga-layer-time-label {
       top: 0em;
       right: 28px;
     }
+       
+    .ga-layer-ordering {
+      right: 65px;
+    }
     
+    .ga-layer-info {
+      right: 40px;
+    }
+    
+    .ga-layer-info, .btn-xs {
+      margin-top: 0px;
+    }
+ 
+    .ga-layer-ordering, .ga-layer-info, .icon-gear {
+      top: 1px;
+    }
+
     .ga-layer-tools {
       position: absolute;
       height: 100%;
@@ -186,23 +215,6 @@
       background: #fff;
       border-left: 3px solid #666;
       .transition(margin-left .35s ease);
-      
-      a, i {
-        font-size: 26px;
-        background-color: inherit;
-        line-height: normal;
-      }
-      
-      .ga-layer-ordering {
-        right: 65px;
-        bottom: auto;
-        top: 6px;
-      }
-      
-      .ga-layer-info {
-        right: 40px;
-        top: 4px;
-      }
     }
     
     .ga-layer-folded {

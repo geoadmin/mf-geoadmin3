@@ -1,11 +1,12 @@
 <div class="ga-catalogitem-template" ng-switch="item.children">
 
   <div ng-switch-when="undefined" class="ga-catalogitem-leaf ga-catalogitem-entry"
-    ng-class="{'ga-catalogitem-preview': inPreviewMode() , 'ga-catalogitem-selected': item.selectedOpen}"
-    ng-mouseover="addPreviewLayer()"
-    ng-mouseleave="removePreviewLayer()">
-    <label title="{{item.label}}" class="ga-truncate-text" >
-      <input type="checkbox" ng-model="item.selectedOpen" ng-change="toggleLayer()">
+    ng-class="{'ga-catalogitem-preview': inPreviewMode(), 'ga-catalogitem-selected': item.selectedOpen}"
+    ng-mouseover="addPreviewLayer($event)"
+    ng-mouseleave="removePreviewLayer($event)">
+    <label title="{{item.label}}" class="ga-truncate-text ga-checkbox">
+      <input type="checkbox" ng-model="item.selectedOpen" ng-change="toggleLayer()" />
+      <span></span>
       {{item.label}}
     </label>
     <i class="icon-warning-sign" ng-show="item.errorLoading"></i>

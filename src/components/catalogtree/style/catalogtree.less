@@ -45,10 +45,11 @@
     i {
       position: absolute;
       right: 0;
-      top: .8em;
+      top: 0em;
+      line-height: 32px;
+      
       @media (max-width: @screen-tablet) {
         font-size: 26px;
-        top: 2px;
       }
     }
     .icon-warning-sign {
@@ -80,6 +81,10 @@
 
     label {
       padding-right: 12px;
+      
+      @media (max-width: @screen-tablet) {
+        padding-right: 26px;
+      }
     }
   }
 }

@@ -26,8 +26,9 @@
             options: '=gaCatalogitemOptions'
           },
           controller: function($scope) {
-            $scope.addPreviewLayer = function() {
+            $scope.addPreviewLayer = function(evt) {
               if (gaBrowserSniffer.mobile) {
+                evt.preventDefault();
                 return;
               }
               var item = $scope.item;
@@ -56,8 +57,9 @@
               }
             };
 
-            $scope.removePreviewLayer = function() {
+            $scope.removePreviewLayer = function(evt) {
               if (gaBrowserSniffer.mobile) {
+                evt.preventDefault();
                 return;
               }
               var item = $scope.item;
