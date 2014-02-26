@@ -3,7 +3,6 @@
 <%def name="table_body(c, lang)">
 <% 
     import datetime
-    c['stable_id'] = True
     lang = lang if lang in ('fr','it','en') else 'de'
     description = 'description_%s' % lang
     datefrom = datetime.datetime.strptime(c['attributes']['valid_from'].strip(), "%Y%m%d").strftime("%d.%m.%Y")
