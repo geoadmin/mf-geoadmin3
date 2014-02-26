@@ -5,7 +5,7 @@ var URL_OF_BERN = "mf-geoadmin3.dev.bgdi.ch/travis/prod/?X=200393.27&Y=596671.16
 
 var runTest = function(cap, driver){
   //on every action we wait a maximum of 10 seconds before thrwosing and error (ajax etc.)
-  driver.manage().timeouts().implicitlyWait(10000);
+  driver.manage().timeouts().implicitlyWait(30000);
   //Goto the travis deployed site.
   driver.get('https://mf-geoadmin3.dev.bgdi.ch/travis/prod/');
   //type in "Bern" into the search field.
