@@ -273,6 +273,7 @@
             if (olLayers.length == 0 && !fromPermalink) {
               $rootScope.$broadcast('gaTimeSelectorDisabled');
             } else {
+              fromPermalink = false;
               $rootScope.$broadcast('gaTimeSelectorEnabled');
             }
           };
