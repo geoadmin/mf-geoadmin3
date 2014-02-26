@@ -32,6 +32,7 @@ requires = [
     'pystache',
     'lxml',
     'OWSLib',
+    'MapProxy',
     ]
 
 setup(name='chsdi',

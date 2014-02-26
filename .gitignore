@@ -8,6 +8,7 @@
 .idea
 .installed.cfg
 apache/wsgi.conf
+apache/mapproxy.conf
 apache/tomcat-print.conf
 buildout/bin/
 buildout/develop-eggs/

@@ -1,0 +1,43 @@
+#
+# The Apache mod_wsgi configuration file for MapProxy.
+#
+# We use mod_wsgi's daemon mode. And we assign a specific process
+# group to the WSGI application.
+#
+# Note: once we use mod_wsgi 3 we'll be able to get rid of the
+# Location block by passing process-group and application-group
+# options to the WSGIScriptAlias directive.
+#
+
+RewriteEngine On
+ExpiresActive On
+
+# MapProxy access control
+# TODO THIS SHOULD BE SOLVED BY THE WAF
+
+RewriteRule ^${apache_entry_path}mapproxy(.*)$ /${vars:apache_base_path}/mapproxy/$1 [PT]
+
+WSGIDaemonProcess mf-chsdi3:${vars:apache_base_path}-mapproxy display-name=%{GROUP} user=${vars:modwsgi_user} processes=4
+
+# define the path to the WSGI app
+WSGIScriptAlias /${vars:apache_base_path}/mapproxy ${buildout:directory}/buildout/parts/mapproxy/wsgi
+
+# assign the WSGI app instance the process group defined aboven, we put the WSGI
+# app instance in the global application group so it is always executed within
+# the main interpreter
+
+<Location /${vars:apache_base_path}/mapproxy>
+    WSGIProcessGroup mf-chsdi3:${vars:apache_base_path}-mapproxy
+    WSGIApplicationGroup %{GLOBAL}
+
+    Order Deny,Allow
+    Allow from all
+
+    ExpiresActive On
+    ExpiresDefault "now plus 1 days"
+    Header set Cache-Control "public, max-age=86400"
+    Header unset Etag
+
+</Location>
+
+
