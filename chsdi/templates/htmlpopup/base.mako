@@ -25,7 +25,7 @@
   <script src="../../../../../../static/js/blueimp-gallery-2.11.5.min.js"></script>
 % endif
 
-<div class="htmlpopup-container">
+<div class="chsdi-htmlpopup-container">
   <div class="htmlpopup-header">
     <span>${fullName}</span> (${attribution})
   </div>
