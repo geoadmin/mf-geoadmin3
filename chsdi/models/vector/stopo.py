@@ -891,6 +891,7 @@ class Geologischer_Aeromagnetik_Jura(Base, Vector):
 
 register('ch.swisstopo.geologie-geophysik-aeromagnetische_karte_jura', Geologischer_Aeromagnetik_Jura)
 
+
 class Geologischer_Aeromagnetik_CH(Base, Vector):
     __tablename__ = 'gravimetrie_aeromagnetik_ch'
     __table_args__ = ({'schema': 'geol', 'autoload': False})
@@ -902,6 +903,7 @@ class Geologischer_Aeromagnetik_CH(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geophysik-aeromagnetische_karte_schweiz', Geologischer_Aeromagnetik_CH)
+
 
 class GeologieIsostatischeAnomalien(Base, Vector):
     __tablename__ = 'schwerekarte_isostatische_anomalien'
