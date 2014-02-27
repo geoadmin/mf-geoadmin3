@@ -9,13 +9,21 @@ from urllib import quote
 
 def versioned(path):
     version = get_current_registry().settings['app_version']
-    handle_path = lambda x: x.split('://')[1] if len(x.split('://')) == 2 else path
     if version is not None:
-        if path.startswith('http'):
-            path = handle_path(path)
-            return '//' + path.replace('wsgi', 'wsgi/' + version)
+        agnosticPath = make_agnostic(path)
+        if '/wsgi' in agnosticPath:
+            return agnosticPath.replace('wsgi', 'wsgi/' + version)
         else:
-            return version + '/' + path
+            return version + '/' + agnosticPath
+    else:
+        return path
+
+
+def make_agnostic(path):
+    handle_path = lambda x: x.split('://')[1] if len(x.split('://')) == 2 else path
+    if path.startswith('http'):
+        path = handle_path(path)
+        return '//' + path
     else:
         return path
 
