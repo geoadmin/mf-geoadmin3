@@ -26,7 +26,11 @@
   <link rel="shortcut icon" type="image/x-icon" href="${h.versioned(request.static_url('chsdi:static/images/favicon.ico'))}">
 % endif
 
+% if extended:
 <div class="chsdi-htmlpopup-container">
+% else:
+<div class="htmlpopup-container">
+% endif
   <div class="htmlpopup-header">
     <span>${fullName}</span> (${attribution})
   </div>
