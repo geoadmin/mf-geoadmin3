@@ -11,10 +11,10 @@ def versioned(path):
     version = get_current_registry().settings['app_version']
     if version is not None:
         agnosticPath = make_agnostic(path)
+        # Only resources with wsgi are versioned
         if '/wsgi' in agnosticPath:
             return agnosticPath.replace('wsgi', 'wsgi/' + version)
-        else:
-            return version + '/' + agnosticPath
+        return agnosticPath
     else:
         return path
 
