@@ -437,7 +437,7 @@ def legend(request):
             layerIds=[layerId]
         ))
     legends_dir = os.path.join(os.path.dirname(__file__), '../static/images/legends')
-    image = "%s_%s.png" % (layerId,  params.lang)
+    image = "%s_%s.png" % (layerId, params.lang)
     image_full_path = os.path.abspath(os.path.join(legends_dir, image))
     hasLegend = os.path.exists(image_full_path)
 
