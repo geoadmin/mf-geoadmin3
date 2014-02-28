@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import os.path
+
 from pyramid.view import view_config
 from pyramid.renderers import render_to_response
 from pyramid.response import Response
@@ -426,14 +428,6 @@ def layers_config(request):
 def legend(request):
     params = LayersParams(request)
     layerId = request.matchdict.get('layerId')
-    # FIXME a second request shouldn't be necessary (use relationship)
-    layerConfig = next(
-        _get_layers_config_for_params(
-            params,
-            params.request.db.query(LayersConfig),
-            LayersConfig,
-            layerIds=[layerId]
-        ))
     model = get_bod_model(params.lang)
     layerMetadata = next(
         _get_layers_metadata_for_params(
@@ -442,7 +436,10 @@ def legend(request):
             model,
             layerIds=[layerId]
         ))
-    hasLegend = layerConfig[layerId].get('hasLegend')
+    legends_dir = os.path.join(os.path.dirname(__file__), '../static/images/legends')
+    image = "%s_%s.png" % (layerId,  params.lang)
+    image_full_path = os.path.abspath(os.path.join(legends_dir, image))
+    hasLegend = os.path.exists(image_full_path)
 
     # FIXME datenstand if not defined
     # should be available in view_bod_layer_info
