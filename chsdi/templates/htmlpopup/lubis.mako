@@ -61,14 +61,13 @@ quickview_url = route_url('iipimage', request) + '?image=%s&width=%s&height=%s&t
 </tr>
 % endif
 <tr>
-  <td class="cell-left">${_('link')} Toposhop</td>
-  <td>
 % if 'contact_web' not in c['attributes']:
-    <a href="http://www.toposhop.admin.ch/de/shop/satair/lubis_1?ext=1&pics=${c['featureId']},0,${c['attributes']['ort'].strip()},${c['attributes']['y']},${c['attributes']['x']},nein" target="toposhop">Toposhop</a>
+  <td class="cell-left">${_('link')} Toposhop</td>
+  <a href="http://www.toposhop.admin.ch/de/shop/satair/lubis_1?ext=1&pics=${c['featureId']},0,${c['attributes']['ort'].strip()},${c['attributes']['y']},${c['attributes']['x']},nein" target="toposhop">Toposhop</a>
 % else:
-    ${c['attributes']['contact']} <br /> ${c['attributes']['contact_email']} <br /><a href="${c['attributes']['contact_web']}" target="_blank">${c['attributes']['contact_web']}</a>
+  <th class="cell-left">${_('tt_lubis_bildorder')}</th>
+  <td>${c['attributes']['contact']} <br /> ${c['attributes']['contact_email']} <br /><a href="${c['attributes']['contact_web']}" target="_blank">${c['attributes']['contact_web']}</a></td>
 % endif
-  </td>
 </tr>
 <tr>
   <td class="cell-left"></td>
@@ -142,14 +141,13 @@ quickview_url += '?image=%s&width=%s&height=%s&title=%s&bildnummer=%s&datenherr=
     <tr><th class="cell-left">${_('tt_lubis_scan')}</th>             <td>${scan or '-'}</td></tr>
     <tr><th class="cell-left">${_('tt_lubis_orientierung')}</th>     <td>${orientierung or '-'}</td></tr>
     <tr>
-      <th class="cell-left">${_('link')} Toposhop</th>
-      <td>
 % if 'contact_web' not in c['attributes']:
-        <a href="http://www.toposhop.admin.ch/de/shop/satair/lubis_1?ext=1&pics=${c['featureId']},0,${c['attributes']['ort'].strip()},${c['attributes']['y']},${c['attributes']['x']},nein" target="toposhop">Toposhop</a>
+      <td class="cell-left">${_('link')} Toposhop</td>
+      <td><a href="http://www.toposhop.admin.ch/de/shop/satair/lubis_1?ext=1&pics=${c['featureId']},0,${c['attributes']['ort'].strip()},${c['attributes']['y']},${c['attributes']['x']},nein" target="toposhop">Toposhop</a></td>
 % else:
-        ${c['attributes']['contact']} <br /> ${c['attributes']['contact_email']} <br /><a href="${c['attributes']['contact_web']}" target="_blank">${c['attributes']['contact_web']}</a>
+      <th class="cell-left">${_('tt_lubis_bildorder')}</th>
+      <td>${c['attributes']['contact']} <br /> ${c['attributes']['contact_email']} <br /><a href="${c['attributes']['contact_web']}" target="_blank">${c['attributes']['contact_web']}</a></td>
 % endif
-      </td>
     </tr>
   </table>
     <div id="map"></div>
@@ -190,7 +188,41 @@ quickview_url += '?image=%s&width=%s&height=%s&title=%s&bildnummer=%s&datenherr=
 
     map.highlightFeature('${c['layerBodId']}', '${c['featureId']}');
     map.recenterFeature('${c['layerBodId']}', '${c['featureId']}');
+% if image_width > 2:
+    var image_width = parseInt(${image_width});
+    var image_height = parseInt(${image_height});
+    var url = "https://web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?Zoomify=${c['attributes']['filename']}/";
+    var proj = new ol.proj.Projection({
+      code: 'ZOOMIFY',
+      extent: [0, 0, image_width, image_height]
+    });
 
+    var source = new ol.source.Zoomify({
+      url: url,
+      size: [image_width, image_height]
+    });
+ 
+    if (url && image_width && image_height) {
+      var mapIipimage = new ol.Map({
+        layers: [
+          new ol.layer.Tile({
+            source: source
+          })
+        ],
+        controls: ol.control.defaults().extend([new ol.control.FullScreen()]),
+        renderer: 'canvas',
+        target: 'zoomify',
+        ol3Logo: false,
+        view: new ol.View2D({
+          projection: proj,
+          center:  [image_width / 2, - image_height / 2],
+          zoom: 0
+        })
+      });
+    } else {
+      alert('Missing parameters');
+    }
+% endif
   }
 </script>
 </body>
