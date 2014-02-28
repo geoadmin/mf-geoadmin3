@@ -76,6 +76,8 @@
 
       <h2>CatalogService (non ESRI)</h2>
           <a href="rest/services/blw/CatalogServer?callback=callback">Catalog for topic 'blw'</a>
+      <h2>Lubis Viewer</h2>
+          <a href="/iipimage/viewer.html?image=CH261/1998/261NE155_3722.jp2&width=16434&height=16433&title=No%20de%20l'image&bildnummer=3722&datenherr=swisstopo&layer=Images%20aériennes%20swisstopo%20couleur">Link to Lubis full screen Viewer</a>
 
       <h2>Search</h2>
       <h3>Layers Search (type=layers)</h3>
