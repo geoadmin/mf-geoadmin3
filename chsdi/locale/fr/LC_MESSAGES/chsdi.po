@@ -1347,7 +1347,7 @@ msgid "ch.bav.sachplan-infrastruktur-schiene_ausgangslage"
 msgstr "SIS consultation: données de base"
 
 msgid "ch.bav.sachplan-infrastruktur-schiene_kraft"
-msgstr "PS infrastructure rail"
+msgstr "SIS en vigueur"
 
 msgid "ch.bav.url"
 msgstr "http://www.bav.admin.ch/?lang=fr"
