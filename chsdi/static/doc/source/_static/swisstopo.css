@@ -12,7 +12,6 @@ body {
     color: black !important;
     padding: 0 !important;
     border: 1px solid #aaa !important;
-
     margin: 0px 80px 0px 80px !important;
     min-width: 740px !important;
 }
@@ -40,6 +39,7 @@ div.sphinxsidebar {
 
 div.bodywrapper {
     margin: 0 290px 0 0 !important;
+    overflow-x: auto;
 }
 
 div.sphinxsidebar input {

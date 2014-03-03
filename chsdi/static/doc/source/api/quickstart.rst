@@ -14,7 +14,7 @@ The GeoAdmin API and all GeoAdmin services can be used in both HTTP and HTTPS co
 Put a map on a page
 ~~~~~~~~~~~~~~~~~~~
 
-Below you'll find a complete working example. Create a new file, copy in the contents below, and open in a browser:
+Below you'll find a complete working example. Create a new file, copy/paste the content below, and open it a browser:
 
 .. code-block:: html
 
