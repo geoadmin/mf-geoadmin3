@@ -30,7 +30,7 @@
                       layers.getAt(0).background === true) {
                     layers.removeAt(0);
                   }
-                } else {
+                } else if (gaLayers.getLayer(newVal)) {
                   var layer = gaLayers.getOlLayerById(newVal);
                   layer.background = true;
                   if (!oldVal || oldVal == 'voidLayer') {
@@ -39,6 +39,8 @@
                   } else {
                     layers.setAt(0, layer);
                   }
+                } else {
+                  scope.currentLayer = scope.backgroundLayers[0].id;
                 }
                 gaPermalink.updateParams({bgLayer: newVal});
               }

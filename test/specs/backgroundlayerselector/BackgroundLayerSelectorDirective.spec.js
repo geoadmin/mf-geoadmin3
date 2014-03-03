@@ -16,6 +16,9 @@ describe('ga_backgroundlayerselector_directive', function() {
 
     module(function($provide) {
       $provide.value('gaLayers', {
+        getLayer: function(id) {
+          return {}; 
+        },
         getOlLayerById: function(id) {
           return id == 'foo' ? layer1 : layer2;
         },
