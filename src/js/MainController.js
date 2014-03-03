@@ -23,7 +23,9 @@
         attribution: false,
         zoomOptions: {
           zoomInLabel: '',
-          zoomOutLabel: ''
+          zoomOutLabel: '',
+          zoomInTipLabel: '',
+          zoomOutTipLabel: ''
         }
       }),
       interactions: ol.interaction.defaults({

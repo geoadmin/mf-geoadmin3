@@ -173,8 +173,8 @@
       $translate) {
     return {
       restrict: 'A',
-      template: '<a href="#" ng-click="toggle($event)" ng-class="stateClass">' +
-          '</a>',
+      template: '<button ng-click="toggle($event)" ng-class="stateClass">' +
+          '</button>',
       scope: {
         isActive: '=gaTimeSelectorBtActive'
       },
