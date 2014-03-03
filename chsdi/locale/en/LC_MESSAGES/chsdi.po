@@ -1343,9 +1343,8 @@ msgstr "Emissions Plan 2015"
 msgid "ch.bav.sachplan-infrastruktur-schiene_anhorung"
 msgstr "SIS Anhörung"
 
-#. TODO
 msgid "ch.bav.sachplan-infrastruktur-schiene_ausgangslage"
-msgstr "ch.bav.sachplan-infrastruktur-schiene_ausgangslage"
+msgstr "SIS Ausgangslage"
 
 msgid "ch.bav.sachplan-infrastruktur-schiene_kraft"
 msgstr "SIS in Kraft"

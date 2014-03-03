@@ -1344,7 +1344,7 @@ msgid "ch.bav.sachplan-infrastruktur-schiene_anhorung"
 msgstr "SIS consultazione"
 
 msgid "ch.bav.sachplan-infrastruktur-schiene_ausgangslage"
-msgstr "PSIF consultazione: statu quo"
+msgstr "SIS statu quo"
 
 msgid "ch.bav.sachplan-infrastruktur-schiene_kraft"
 msgstr "SIS in vigore"
