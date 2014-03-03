@@ -31,7 +31,7 @@
           $scope.printInProgress = true;
           $scope.printProgressPercentage = 0;
 
-          printElementLoaded = function(html, layer_name){
+          var printElementLoaded = function(html, layer_name){
             printLayers[layer_name] += html;
             printElementsLoaded++;
             $scope.printProgressPercentage = Math.round(printElementsLoaded / printElementsTotal * 100);
@@ -41,7 +41,7 @@
           }
 
           for(var layer_name in featureTree){
-            layer = featureTree[layer_name];
+            var layer = featureTree[layer_name];
             printLayers[layer_name] = "";
             for(var array_id in layer.features){
               var htmlUrl = $scope.options.htmlUrlTemplate
@@ -59,10 +59,10 @@
           } 
         };
 
-        printFinished = function(printLayers){
+        var printFinished = function(printLayers){
           $scope.printInProgress = false;
           var printHtml = "";
-          for (layer_name in printLayers){
+          for (var layer_name in printLayers){
             printHtml += printLayers[layer_name];
           }
           var cssLinks = angular.element.find('link');
@@ -87,8 +87,8 @@
           windowPrint.document.close();
         }
 
-        countFeatures = function(featureTree){
-          counter = 0;
+       var  countFeatures = function(featureTree){
+          var counter = 0;
           for(var layer_name in featureTree){
             counter += featureTree[layer_name].features.length;
           }
