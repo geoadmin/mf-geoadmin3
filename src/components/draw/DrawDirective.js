@@ -170,10 +170,9 @@
           };
 
           var deleteAllFeatures = function() {
-            if (confirm($translate('confirm_remove_all_features')) && select) {
-              var features = select.getFeatures();
-              if (features) {
-                features.clear();
+            if (confirm($translate('confirm_remove_all_features'))) {
+              if (select) {
+                select.getFeatures().clear();
               }
               layer.getSource().clear();
             }
