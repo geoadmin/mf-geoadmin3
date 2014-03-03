@@ -56,7 +56,7 @@
           };
           var drag = function(evt) {
             scope.ratio = calculateRatio();
-            scope.map.requestRenderFrame();
+            scope.map.render();
           };
           var dragEnd = function(evt) {
             isDragging = false;
@@ -104,7 +104,7 @@
               }
               layerListenerKeys = [];
               scope.layer = null;
-              scope.map.requestRenderFrame();
+              scope.map.render();
             }
 
             if (!scope.isActive || olLayers.length < 2) {
@@ -132,7 +132,7 @@
               ];
             }
             elt.show();
-            scope.map.requestRenderFrame();
+            scope.map.render();
           };
 
           // Active the swipe adding events.
@@ -185,13 +185,13 @@
           });
 
           // Move swipe element on resize.
-          // We use a debounce function because map.requestRenderFrame() is
+          // We use a debounce function because map.render() is
           // already called by the map itself on each resize so we want to
-          // trigger only a map.requestRenderFrame() when the user has
+          // trigger only a map.render() when the user has
           // finished to resize.
           var requestRenderFrame = function() {
             if (scope.layer) {
-              scope.map.requestRenderFrame();
+              scope.map.render();
             }
           };
           var requestRenderFrameDebounced = gaDebounce.debounce(

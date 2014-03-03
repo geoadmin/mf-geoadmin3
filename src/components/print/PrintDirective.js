@@ -67,7 +67,7 @@
 
     var refreshComp = function() {
       updatePrintRectanglePixels($scope.scale);
-      $scope.map.requestRenderFrame();
+      $scope.map.render();
     };
 
     // Compose events
@@ -680,7 +680,7 @@
     var updatePrintRectanglePixels = function(scale) {
       if ($scope.options.active) {
         printRectangle = calculatePageBoundsPixels(scale);
-        $scope.map.requestRenderFrame();
+        $scope.map.render();
       }
     };
 
