@@ -855,9 +855,9 @@
         });
 
         var deregister = scope.$on('gaLayersChange', function() {
-          var allowThirdData = (angular.isDefined(layersParamValue) &&
-              layersParamValue.match(/(KML\|\||WMS\|\|)/g) &&
-              confirm($translate('third_party_data_warning')));
+
+          var allowThirdData = false;
+          var confirmedOnce = false;
 
           angular.forEach(layerSpecs, function(layerSpec, index) {
             var layer;
@@ -866,6 +866,26 @@
             var visible = (index < layerVisibilities.length &&
                 layerVisibilities[index] == 'false') ?
                 false : true;
+
+            if (isKmlLayer(layerSpec) || isWmsLayer(layerSpec)) {
+              var url = '';
+              if (isKmlLayer(layerSpec)) {
+                url = layerSpec.replace('KML||', '');
+              }
+              if (isWmsLayer(layerSpec)) {
+                url = layerSpec.split('||')[2];
+              }
+              if (!confirmedOnce &&
+                  gaUrlUtils.getHostname(url).indexOf('admin.ch') !==
+                  (gaUrlUtils.getHostname(url).length - 'admin.ch'.length)) {
+                allowThirdData =
+                  (isKmlLayer(layerSpec) || isWmsLayer(layerSpec)) &&
+                  confirm($translate('third_party_data_warning'));
+                confirmedOnce = true;
+              } else {
+                allowThirdData = true;
+              }
+            }
 
             if (gaLayers.getLayer(layerSpec)) {
               // BOD layer.
@@ -883,7 +903,6 @@
 
             } else if (allowThirdData && isKmlLayer(layerSpec)) {
               // KML layer
-              var url = layerSpec.replace('KML||', '');
               try {
                 gaKml.addKmlToMapForUrl(map, url,
                   {
@@ -905,7 +924,7 @@
                     LAYERS: infos[3]
                   },
                   {
-                    url: infos[2],
+                    url: url,
                     label: infos[1],
                     opacity: opacity,
                     visible: visible,
