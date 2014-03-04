@@ -22,13 +22,13 @@ def iipimage(request):
     return render_to_response(
         'chsdi:templates/iipimage/viewer.mako',
         {
-          'image': image,
-          'width': width,
-          'height': height,
-          'title': title,
-          'bildnummer': bildnummer,
-          'datenherr': datenherr,
-          'layer': layer
+            'image': image,
+            'width': width,
+            'height': height,
+            'title': title,
+            'bildnummer': bildnummer,
+            'datenherr': datenherr,
+            'layer': layer
         },
         request=request
     )
