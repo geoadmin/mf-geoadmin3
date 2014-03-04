@@ -1,4 +1,4 @@
-<%def name="init_map(filename, width, height)">
+<%def name="init_map(filename, width, height, target)">
         var width = parseInt(${width});
         var height = parseInt(${height});
         var url = "https://web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?Zoomify=${filename}/";
@@ -13,7 +13,7 @@
           ],
           controls: ol.control.defaults().extend([new ol.control.FullScreen()]),
           renderer: 'canvas',
-          target: 'zoomify',
+          target: ${target},
           ol3Logo: false,
           view: new ol.View2D({
             projection: new ol.proj.Projection({

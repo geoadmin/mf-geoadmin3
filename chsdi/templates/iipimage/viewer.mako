@@ -81,7 +81,7 @@
     <script type="text/javascript" src="${loaderUrl}"></script>
     <script type="text/javascript">
       function init() {
-        ${iipimage.init_map(c.get('image'), c.get('width'), c.get('height'))}
+        ${iipimage.init_map(c.get('image'), c.get('width'), c.get('height'), 'zoomify')}
       }
     </script>
   </body>

@@ -196,7 +196,7 @@ quickview_url = get_quickview_url(request, params)
 
 
 % if image_width > 2:
-      ${iipimage.init_map(c['attributes']['filename'], image_width, image_height)}
+      ${iipimage.init_map(c['attributes']['filename'], image_width, image_height, 'zoomify')}
 % endif
 
     }
