@@ -1,5 +1,13 @@
-Release 20140305 -  Wednesday, March 5th 2014
+Release 20140306 -  Thursday, March 6th 2014
 ====================================================
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+-----------------------------------
+- I18n
+- Out of beta
 
 Geodata
 ********
