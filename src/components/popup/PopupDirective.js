@@ -1,14 +1,16 @@
 (function() {
   goog.provide('ga_popup_directive');
   goog.require('ga_browsersniffer_service');
+  goog.require('ga_print_service');
 
   var module = angular.module('ga_popup_directive', [
     'ga_browsersniffer_service',
+    'ga_print_service',
     'pascalprecht.translate'
   ]);
 
   module.directive('gaPopup',
-    function($rootScope, $translate, gaBrowserSniffer) {
+    function($rootScope, $translate, gaBrowserSniffer, gaPrintService) {
       return {
         restrict: 'A',
         transclude: true,
@@ -71,27 +73,8 @@
 
           scope.print = scope.options.print ||
               (function() {
-                var cssLinks = angular.element.find('link');
                 var contentEl = element.find('.ga-popup-content');
-                var windowPrint = window.open('', '', 'height=400, width=600');
-                windowPrint.document.write('<html><head>');
-                for (var i = 0; i < cssLinks.length; i++) {
-                  if (cssLinks[i].href) {
-                    var href = cssLinks[i].href;
-                    if (href.indexOf('app.css') !== -1) {
-                      windowPrint.document.write('<link href="' + href +
-                          '" rel="stylesheet" type="text/css" media="screen">');
-                      windowPrint.document.write('<link href="' +
-                          href.replace('app.css', 'print.css') +
-                          '" rel="stylesheet" type="text/css" media="print">');
-                    }
-                  }
-                }
-                windowPrint.document.write('</head><body ' +
-                    'onload="window.print(); window.close();">');
-                windowPrint.document.write(contentEl.clone().html());
-                windowPrint.document.write('</body></html>');
-                windowPrint.document.close();
+                gaPrintService.htmlPrintout(contentEl.clone().html());
               });
 
           element.addClass('popover');
