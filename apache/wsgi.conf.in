@@ -29,6 +29,11 @@ WSGIPassAuthorization On
 # Static files with aggressive cache:
 RewriteRule ^/${vars:instanceid}/wsgi/[0-9a-fA-F]*/(static)/(.*)$  ${buildout:directory/chsdi/$1/$2}
 RewriteRule ^/${vars:instanceid}/wsgi/(static)/(.*)$  ${buildout:directory/chsdi/$1/$2}
+
+<IfModule mod_headers.c>
+  Header set X-UA-Compatible "IE=Edge"
+</IfModule>
+
 <LocationMatch "/${vars:instanceid}/wsgi/[0-9a-fA-F]*/(static)/">
     ExpiresDefault "now plus 1 year"
     Header merge Cache-Control "public"
