@@ -43,17 +43,17 @@
           for (var layerName in featureTree) {
             var layer = featureTree[layerName];
             printLayers[layerName] = '';
-            for (var array_id in layer.features) {
+            for (var arrayId in layer.features) {
               var htmlUrl = $scope.options.htmlUrlTemplate
                 .replace('{Topic}', currentTopic)
                 .replace('{Layer}', layerName)
-                .replace('{Feature}', layer.features[array_id].id);
+                .replace('{Feature}', layer.features[arrayId].id);
               $http.get(htmlUrl)
                 .success(function(data, status, headers, config) {
                   printElementLoaded(data, layerName);
                 })
                 .error(function(data, status, headers, config) {
-                  printElementLoaded("<div>There was a problem loading this feature. topic: "+currentTopic+", layer: "+layerName+", feature: "+layer.features[array_id].id+", status: "+status+"<div>", "failure");
+                  printElementLoaded("<div>There was a problem loading this feature. topic: "+currentTopic+", layer: "+layerName+", feature: "+layer.features[arrayId].id+", status: "+status+"<div>", "failure");
                 });
             }
           }
