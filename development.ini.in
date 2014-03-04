@@ -11,6 +11,7 @@ pyramid.reload_templates = true
 pyramid.debug_authorization = true
 pyramid.debug_notfound = true
 pyramid.debug_routematch = true
+pyramid.prevent_http_cache = true
 pyramid.includes = 
     pyramid_debugtoolbar
 mako.imports =

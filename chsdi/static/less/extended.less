@@ -1,12 +1,11 @@
 @screen-tablet: 768px;
 
 .chsdi-htmlpopup-container {
+  width: 580px; /* size for A4 print */ 
   font-size: 11px;
   font-family: arial,helvetia,verdana;
-  width: 60%;
   height: 100%;
-  margin-right: 20%;
-  margin-left: 20%;
+  margin: auto;
   color: #333333;
   .htmlpopup-header {
     background-color: #E9E9E9;
@@ -126,8 +125,20 @@
     margin-left: 5%;
   }
   @media print {
-    width: 90%;
-    margin-right: 5%;
-    margin-left: 5%;
+    .chsdi-no-print, .htmlpopup-footer, #pDebug {
+      display: none;
+    }
+  }
+  
+  .chsdi-map-container {
+    width: 100%;
+    height: 300px;
+    margin: 10px auto 0px auto;
+
+    & > div {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
   }
 }

@@ -29,6 +29,11 @@ WSGIPassAuthorization On
 # Static files with aggressive cache:
 RewriteRule ^/${vars:instanceid}/wsgi/[0-9a-fA-F]*/(static)/(.*)$  ${buildout:directory/chsdi/$1/$2}
 RewriteRule ^/${vars:instanceid}/wsgi/(static)/(.*)$  ${buildout:directory/chsdi/$1/$2}
+
+<IfModule mod_headers.c>
+  Header set X-UA-Compatible "IE=Edge"
+</IfModule>
+
 <LocationMatch "/${vars:instanceid}/wsgi/[0-9a-fA-F]*/(static)/">
     ExpiresDefault "now plus 1 year"
     Header merge Cache-Control "public"
@@ -67,7 +72,7 @@ WSGIScriptAlias /${vars:instanceid}/wsgi ${buildout:directory/buildout/parts/mod
     WSGIApplicationGroup %{GLOBAL}
 </Location>
 
-RewriteRule ^${vars:apache-entry-point}(search|index|genindex|examples|img|js|css|releasenotes|services|_sources|_static|api|rest/services|ogcproxy|testi18n|loader.js|snapshot|checker|checker_dev|static|print|dev|feedback)(.*)$ /${vars:instanceid}/wsgi/$1$2 [PT]
+RewriteRule ^${vars:apache-entry-point}(iipimage|search|index|genindex|examples|img|js|css|releasenotes|services|_sources|_static|api|rest/services|ogcproxy|testi18n|loader.js|snapshot|checker|checker_dev|static|print|dev|feedback)(.*)$ /${vars:instanceid}/wsgi/$1$2 [PT]
 
 # Some services are not "free": control is done at varnish level
 <LocationMatch /${vars:instanceid}/wsgi/rest/(height|profile)>

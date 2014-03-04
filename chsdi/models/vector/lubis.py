@@ -96,8 +96,7 @@ register('ch.swisstopo.lubis-luftbilder_schwarzweiss', luftbilder_swisstopo_sw)
 class luftbilder_dritte_firmen(Base, Vector):
     __tablename__ = 'luftbilder_dritte_firmen'
     __table_args__ = ({'schema': 'public', 'autoload': False})
-    __template__ = 'templates/htmlpopup/lubis_dritte.mako'
-    __esriId__ = 1000
+    __template__ = 'templates/htmlpopup/lubis.mako'
     __bodId__ = 'ch.swisstopo.lubis-luftbilder-dritte-firmen'
     __returnedGeometry__ = 'the_geom_footprint'
     __timeInstant__ = 'bgdi_flugjahr'
@@ -128,8 +127,7 @@ register('ch.swisstopo.lubis-luftbilder-dritte-firmen', luftbilder_dritte_firmen
 class luftbilder_dritte_kantone(Base, Vector):
     __tablename__ = 'luftbilder_dritte_kantone'
     __table_args__ = ({'schema': 'public', 'autoload': False})
-    __template__ = 'templates/htmlpopup/lubis_dritte.mako'
-    __esriId__ = 1000
+    __template__ = 'templates/htmlpopup/lubis.mako'
     __bodId__ = 'ch.swisstopo.lubis-luftbilder-dritte-kantone'
     __returnedGeometry__ = 'the_geom_footprint'
     __timeInstant__ = 'bgdi_flugjahr'
@@ -161,7 +159,6 @@ class bildstreifen(Base, Vector):
     __tablename__ = 'view_bildstreifen'
     __table_args__ = ({'schema': 'ads40', 'autoload': False})
     __template__ = 'templates/htmlpopup/lubis_bildstreifen.mako'
-    __esriId__ = 1000
     __bodId__ = 'ch.swisstopo.lubis-bildstreifen'
     __returnedGeometry__ = 'the_geom_footprint'
     __timeInstant__ = 'bgdi_flugjahr'

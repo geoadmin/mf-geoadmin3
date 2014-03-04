@@ -7,8 +7,7 @@
   c['scale'] = pageargs.get('scale')
   c['stable_id'] = False
   extended = pageargs.get('extended')
-  extendedPathCss = request.static_url('chsdi:static/css/extended.min.css')
-  c['baseUrl'] = protocol + '://' + request.registry.settings['geoadminhost']
+  c['baseUrl'] = h.make_agnostic(''.join((protocol, '://', request.registry.settings['geoadminhost'])))
   c['instanceId'] = request.registry.settings['instanceid']
   bbox = c['bbox']
   lang = request.lang
@@ -18,12 +17,17 @@
 %>
 
 % if extended:
+  <head>
+  <!--[if !HTML5]>
+  <meta http-equiv="X-UA-Compatible" content="IE=9,IE=10,IE=edge,chrome=1"/>
+  <![endif]-->
   <meta name="viewport" content="initial-scale=1.0"/>
-  <link rel="stylesheet" type="text/css" href="${h.versioned(extendedPathCss)}"/>
-  <link rel="stylesheet" type="text/css" href="../../../../../../static/css/blueimp-gallery-2.11.0.min.css"/>
-  <script src="../../../../../../static/js/jquery-2.0.3.min.js"></script>
-  <script src="../../../../../../static/js/blueimp-gallery-2.11.5.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="${h.versioned(request.static_url('chsdi:static/css/extended.min.css'))}"/>
+  <link rel="stylesheet" type="text/css" href="${h.versioned(request.static_url('chsdi:static/css/blueimp-gallery-2.11.0.min.css'))}"/>
+  <script src="${h.versioned(request.static_url('chsdi:static/js/jquery-2.0.3.min.js'))}"></script>
+  <script src="${h.versioned(request.static_url('chsdi:static/js/blueimp-gallery-2.11.5.min.js'))}"></script>
   <link rel="shortcut icon" type="image/x-icon" href="${h.versioned(request.static_url('chsdi:static/images/favicon.ico'))}">
+  </head>
 % endif
 
 % if extended:
@@ -46,7 +50,7 @@
           <tr>
             <td class="cell-left"></td>
             <td>
-              <a href="${c['baseUrl']}?${c['layerBodId']}=${c['featureId']}&lang=${lang}&topic=${topic}" target="new">
+              <a href="${''.join((c['baseUrl'], '?', c['layerBodId'], '=', str(c['featureId']), '&lang=', lang, '&topic=', topic))}" target="new">
                 ${_('Link to object')}
               </a>
             </td>
@@ -62,7 +66,7 @@
     </a>
     <div class="float-right">
       % if c['stable_id'] is True:
-      <a class="link-red" href="${c['baseUrl']}?${c['layerBodId']}=${c['featureId']}&lang=${lang}&topic=${topic}" target="new">
+      <a class="link-red" href="${''.join((c['baseUrl'], '?', c['layerBodId'], '=', str(c['featureId']), '&lang=', lang, '&topic=', topic))}" target="new">
         ${_('Link to object')}
       </a>
       &nbsp;|&nbsp;
