@@ -20,7 +20,7 @@ def iipimage(request):
         raise exc.HTTPBadRequest('Missing parameter(s)')
 
     return render_to_response(
-        'chsdi:templates/iipimage/viewer.html',
+        'chsdi:templates/iipimage/viewer.mako',
         {
           'image': image,
           'width': width,
