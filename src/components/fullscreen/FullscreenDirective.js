@@ -12,6 +12,7 @@
       template: "<a href='#' ng-if='fullscreenSupported' " +
         "ng-click='click()' translate>full_screen</a>",
       link: function(scope, element, attrs) {
+        var fullScreenCssClass = 'ga-full-screen';
         // Use the documentElement element in order to check if the
         // Fullscreen API is usable
         // Documentation about Fullscreen API flavours:
@@ -39,6 +40,7 @@
 
         if (scope.fullscreenSupported) {
           var onFullscreenChange = function() {
+            $(document.body).addClass(fullScreenCssClass);
             // Bug in Safari
             scope.map.updateSize();
             var target = scope.map.getTarget();
@@ -47,6 +49,7 @@
                 document.webkitFullscreenElement ||
                 document.msFullscreenElement)) {
               gaPermalink.refresh();
+              $(document.body).removeClass(fullScreenCssClass);
             }
           };
 
