@@ -207,13 +207,13 @@ def _find(request):
     for model in models:
         vectorModel, searchColumn = findColumn(model)
         if searchColumn is None:
-            raise exc.HTTPBadRequest('Please provide a existing searchField')
+            raise exc.HTTPBadRequest('Please provide an existing searchField')
         query = request.db.query(vectorModel)
         query = _full_text_search(
             query,
             [searchColumn],
             params.searchText
-        )
+        ).limit(50)
         for feature in query:
             f = feature.__geo_interface__ if params.returnGeometry else feature.__interface__
             # TODO find a way to use translate directly in the model
