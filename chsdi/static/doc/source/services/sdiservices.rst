@@ -96,9 +96,12 @@ No more than 50 features can be retrieved per request.
 | mapExtent (required)              | The extent of the map. (minX, minY, maxX, maxY)                                           |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | imageDisplay (required)           | The screen image display parameters (width, height, and dpi) of the map.                  |
-|                                   | GeoAdmin API dpi is 96.                                                                   |
+|                                   | The mapExtent and the imageDisplay parameters are used by the server  to calculate the    |
+|                                   | the distance on the map to search based on the tolerance in screen pixels.                |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
-| tolerance (required)              | The tolerance in pixels around the specified geometry (used to create the buffer)         |
+| tolerance (required)              | The tolerance in pixels around the specified geometry This parameter is used to create    |
+|                                   | a buffer around the provided geometry. Therefore, a tolerance of 0 deactivatees the buffer|
+|                                   | creation.                                                                                 |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | returnGeometry (optional)         | This parameter defines whether the geometry is returned or not. Default to "true".        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
@@ -116,6 +119,14 @@ Examples
 - Identify all the features belonging to ch.bfs.arealstatistik-1985 using an enveloppe (or bounding box): `https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985 <../../../rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985>`_
 - Same request than above but returned geometry format is GeoJSON: `https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985&geometryFormat=geojson <../../../rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985&geometryFormat=geojson>`_
 - Same request than above but geometry is not returned: `https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985&returnGeometry=false <../../../rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985&returnGeometry=false>`_
+
+Examples for Reverse Geocoding
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The service identify can be used perform Reverse Geocoding operations. Here is a `list of all the available layers <../../../api/faq/index.html#which-layers-are-available>`_.
+
+- Perform an identify request to find the ditricts intersecting a given enveloppe geometry (no buffer): `https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=0,0,0&mapExtent=0,0,0,0&tolerance=0&layers=all:ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill&returnGeometry=false  <../../../rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=0,0,0&mapExtent=0,0,0,0&tolerance=0&layers=all:ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill&returnGeometry=false>`_
+- Perform an identify request to find the municipal boundaries and NPA intersecting with a point (no buffer): `https://api3.geo.admin.ch/rest/services/api/MapServer/identify?/rest/services/api/MapServer/identify?geometryType=esriGeometryPoint&geometry=548945.5,147956&imageDisplay=0,0,0&mapExtent=0,0,0,0&tolerance=0&layers=all:ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill,ch.swisstopo-vd.ortschaftenverzeichnis_plz&returnGeometry=false <../../..//rest/services/api/MapServer/identify?geometryType=esriGeometryPoint&geometry=548945.5,147956&imageDisplay=0,0,0&mapExtent=0,0,0,0&tolerance=0&layers=all:ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill,ch.swisstopo-vd.ortschaftenverzeichnis_plz&returnGeometry=false>`_
 
 .. _featureresource_description:
 
