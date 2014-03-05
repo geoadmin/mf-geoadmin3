@@ -16,7 +16,7 @@ Geodata
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Update | `Segelflugkarte Schweiz 1:300'000 <//map.geo.admin.ch/?layers=ch.bazl.segelflugkarte>`__ (ch.bazl.segelflugkarte)                                                               |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Update | `Luftfahrtkarte ICAO Schweiz 1:500'000 <//map.geo.admin.ch/?layers=ch.bazl.luftfahrtkarten-icao>`__ (ch.bazl.luftfahrtkarten-icao)                                                               |
+| Update | `Luftfahrtkarte ICAO Schweiz 1:500'000 <//map.geo.admin.ch/?layers=ch.bazl.luftfahrtkarten-icao>`__ (ch.bazl.luftfahrtkarten-icao)                                              |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 
