@@ -18,7 +18,7 @@ Geodata
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Update | `Luftfahrtkarte ICAO Schweiz 1:500'000 <//map.geo.admin.ch/?layers=ch.bazl.luftfahrtkarten-icao>`__ (ch.bazl.luftfahrtkarten-icao)                                              |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Update | `Protection of cultural property inventory <//map.geo.admin.ch/?layers=ch.babs.kulturgueter>`__ (ch.babs.kulturgueter)                                                          |
+| Update | `Kulturgüterschutz Inventar <//map.geo.admin.ch/?layers=ch.babs.kulturgueter>`__ (ch.babs.kulturgueter)                                                                         |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 
