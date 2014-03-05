@@ -6,8 +6,8 @@ API & applications
 
 `API <//api3.geo.admin.ch>`__
 -----------------------------------
-- I18n
-- Out of beta
+- Adding support for internationalization of the client side
+- Geo.admin.ch API RE3 is going out of beta
 
 Geodata
 ********
@@ -17,6 +17,8 @@ Geodata
 | Update | `Segelflugkarte Schweiz 1:300'000 <//map.geo.admin.ch/?layers=ch.bazl.segelflugkarte>`__ (ch.bazl.segelflugkarte)                                                               |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Update | `Luftfahrtkarte ICAO Schweiz 1:500'000 <//map.geo.admin.ch/?layers=ch.bazl.luftfahrtkarten-icao>`__ (ch.bazl.luftfahrtkarten-icao)                                              |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Kulturgüterschutz Inventar <//map.geo.admin.ch/?layers=ch.babs.kulturgueter>`__ (ch.babs.kulturgueter)                                                                         |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 
