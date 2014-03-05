@@ -35,6 +35,7 @@ Examples
 
 - List all the layers available in the GeoAdmin API: `https://api3.geo.admin.ch/rest/services/api/MapServer <../../../rest/services/api/MapServer>`_
 - List all the layers available in the GeoAdmin API where the word "wasser" is found in their description: `https://api3.geo.admin.ch/rest/services/api/MapServer?searchText=wasser <../../../rest/services/api/MapServer?searchText=wasser>`_
+- Find a layer by `geocat ID <http://www.geocat.ch/geonetwork/srv/eng/geocat>`_: `https://api3.geo.admin.ch/rest/services/api/MapServer?searchText=f198f6f6-8efa-4235-a55f-99767ea0206c  <../../../rest/services/api/MapServer?searchText=f198f6f6-8efa-4235-a55f-99767ea0206c>`_
 
 .. _legend_description:
 
@@ -96,9 +97,12 @@ No more than 50 features can be retrieved per request.
 | mapExtent (required)              | The extent of the map. (minX, minY, maxX, maxY)                                           |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | imageDisplay (required)           | The screen image display parameters (width, height, and dpi) of the map.                  |
-|                                   | GeoAdmin API dpi is 96.                                                                   |
+|                                   | The mapExtent and the imageDisplay parameters are used by the server  to calculate the    |
+|                                   | the distance on the map to search based on the tolerance in screen pixels.                |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
-| tolerance (required)              | The tolerance in pixels around the specified geometry (used to create the buffer)         |
+| tolerance (required)              | The tolerance in pixels around the specified geometry This parameter is used to create    |
+|                                   | a buffer around the provided geometry. Therefore, a tolerance of 0 deactivatees the buffer|
+|                                   | creation.                                                                                 |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | returnGeometry (optional)         | This parameter defines whether the geometry is returned or not. Default to "true".        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
@@ -116,6 +120,53 @@ Examples
 - Identify all the features belonging to ch.bfs.arealstatistik-1985 using an enveloppe (or bounding box): `https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985 <../../../rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985>`_
 - Same request than above but returned geometry format is GeoJSON: `https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985&geometryFormat=geojson <../../../rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985&geometryFormat=geojson>`_
 - Same request than above but geometry is not returned: `https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985&returnGeometry=false <../../../rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985&returnGeometry=false>`_
+
+Examples of Reverse Geocoding
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The service identify can be used perform Reverse Geocoding operations. Here is a `list of all the available layers <../../../api/faq/index.html#which-layers-are-available>`_.
+
+- Perform an identify request to find the ditricts intersecting a given enveloppe geometry (no buffer): `https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=0,0,0&mapExtent=0,0,0,0&tolerance=0&layers=all:ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill&returnGeometry=false  <../../../rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=0,0,0&mapExtent=0,0,0,0&tolerance=0&layers=all:ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill&returnGeometry=false>`_
+- Perform an identify request to find the municipal boundaries and NPA intersecting with a point (no buffer): `https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryPoint&geometry=548945.5,147956&imageDisplay=0,0,0&mapExtent=0,0,0,0&tolerance=0&layers=all:ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill,ch.swisstopo-vd.ortschaftenverzeichnis_plz&returnGeometry=false <../../../rest/services/api/MapServer/identify?geometryType=esriGeometryPoint&geometry=548945.5,147956&imageDisplay=0,0,0&mapExtent=0,0,0,0&tolerance=0&layers=all:ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill,ch.swisstopo-vd.ortschaftenverzeichnis_plz&returnGeometry=false>`_
+
+.. _find_description:
+
+Find
+----
+
+This service is used to search the attributes of features. Each result include a feature ID, a layer ID, a layer name, a geometry (optionally) and attributes in the form of name-value pair.
+
+URL
+^^^
+
+https://api3.geo.admin.ch/rest/services/api/MapServer/find
+
+Input Parameters
+^^^^^^^^^^^^^^^^
+
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| Parameters                        | Description                                                                               |
++===================================+===========================================================================================+
+| layer (required)                  | A layer ID (only one layer at a time can be specified)                                    |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| searchText (required)             | The text to search for. (one can use numerical values as well)                            |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| searchField (required)            | The name of the field to search (only one search field can be searched at a time)         |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| lang (optional)                   | The language metadata. Possible values: de (default), fr, it, rm, en                      |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| geometryFormat (optional)         | Default to ESRI geometry format. Possible values are: "esrijson" or "geojson".            |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| returnGeometry (optional)         | This parameter defines whether the geometry is returned or not. Default to "true".        |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| callback (optional)               | The name of the callback function.                                                        |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+
+Examples
+^^^^^^^^
+
+- Search for “Lavaux” in the field “bln_name” of the layer “ch.bafu.bundesinventare-bln”: `https://api3.geo.admin.ch/rest/services/api/MapServer/find?layer=ch.bafu.bundesinventare-bln&searchText=Lavaux&searchField=bln_name&returnGeometry=false  <../../../rest/services/api/MapServer/find?layer=ch.bafu.bundesinventare-bln&searchText=Lavaux&searchField=bln_name&returnGeometry=false>`_
+- Search for “1231641” in the field “egid” of the layer “ch.bfs.gebaeude_wohnungs_register”: `https://api3.geo.admin.ch/rest/services/api/MapServer/find?layer=ch.bfs.gebaeude_wohnungs_register&searchText=1231641&searchField=egid&returnGeometry=false <../../../rest/services/api/MapServer/find?layer=ch.bfs.gebaeude_wohnungs_register&searchText=1231641&searchField=egid&returnGeometry=false>`_
 
 .. _featureresource_description:
 
@@ -286,6 +337,14 @@ Examples
 - Search for layers in French matching the word “géoïde” in their description: `https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=géoïde&type=layers&lang=fr <../../../rest/services/api/SearchServer?searchText=géoïde&type=layers&lang=fr>`_ 
 - Search for features matching word "433" in their description: `https://api3.geo.admin.ch/rest/services/api/SearchServer?features=ch.bafu.hydrologie-gewaesserzustandsmessstationen&type=featuresearch&searchText=433 <../../../rest/services/api/SearchServer?features=ch.bafu.hydrologie-gewaesserzustandsmessstationen&type=featuresearch&searchText=433>`_
 - Search only for features belonging to the layer “ch.astra.ivs-reg_loc” (only using a bbox, no search text): `https://api3.geo.admin.ch/rest/services/api/SearchServer?features=ch.astra.ivs-reg_loc&type=featureidentify&bbox=551306.5625,167918.328125,551754.125,168514.625 <../../../rest/services/api/SearchServer?features=ch.astra.ivs-reg_loc&type=featureidentify&bbox=551306.5625,167918.328125,551754.125,168514.625>`_
+
+Example of feature search usage with other services
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+1. Search for addresses using the feature search service: `https://api3.geo.admin.ch/rest/services/api/SearchServer?features=ch.bfs.gebaeude_wohnungs_register&type=featuresearch&searchText=isabelle <../../../rest/services/api/SearchServer?features=ch.bfs.gebaeude_wohnungs_register&type=featuresearch&searchText=isabelle>`_
+2. Use "feature_id" found in "attrs" to get detailed information about a feature: `https://api3.geo.admin.ch/rest/services/api/MapServer/ch.bfs.gebaeude_wohnungs_register/880711_0?returnGeometry=false <../../../rest/services/api/MapServer/ch.bfs.gebaeude_wohnungs_register/880711_0?returnGeometry=false>`_
+
+Important note: not all layers are searchable per default. A list of searchable layers will be provided in the API documentation page as soon as possible.
 
 .. _height_description:
 

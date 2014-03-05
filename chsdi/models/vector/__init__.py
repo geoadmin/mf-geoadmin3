@@ -35,8 +35,10 @@ def getToleranceMeters(imageDisplay, mapExtent, tolerance):
     mapMeterWidth = abs(bounds[0] - bounds[2])
     imgPixelWidth = imageDisplay[0]
 
-    toleranceMeters = (mapMeterWidth / imgPixelWidth) * tolerance
-    return toleranceMeters
+    if 0.0 not in (tolerance, imgPixelWidth, mapMeterWidth):
+        toleranceMeters = (mapMeterWidth / imgPixelWidth) * tolerance
+        return toleranceMeters
+    return 0.0
 
 
 class Vector(GeoInterface):
@@ -128,7 +130,7 @@ class Vector(GeoInterface):
         scale = None
         minScale = cls.__minscale__ if hasattr(cls, '__minscale__') else None
         maxScale = cls.__maxscale__ if hasattr(cls, '__maxscale__') else None
-        if minScale is not None and maxScale is not None:
+        if minScale is not None and maxScale is not None and toleranceMeters != 0.0:
             scale = getScale(imageDisplay, mapExtent)
         if scale is None or (scale > cls.__minscale__ and scale <= cls.__maxscale__):
             geom = esriRest2Shapely(geometry, geometryType)
