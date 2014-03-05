@@ -136,6 +136,10 @@ class TestMapServiceView(TestsBase):
         params = {'layer': 'ch.are.bauzonen', 'searchField': 'toto', 'returnGeometry': 'false'}
         resp = self.testapp.get('/rest/services/all/MapServer/find', params=params, status=400)
 
+    def test_find_wrong_layer(self):
+        params = {'layer': 'dummy', 'searchField': 'gdename', 'returnGeometry': 'false'}
+        resp = self.testapp.get('/rest/services/all/MapServer/find', params=params, status=400)
+
     def test_feature_wrong_idlayer(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/toto/362', status=400)
         resp.mustcontain('No Vector Table was found for')
