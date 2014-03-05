@@ -8,6 +8,7 @@ layersconfig = appUrl + '/rest/services/all/MapServer/layersConfig?lang=' + lang
 import urllib2
 f = urllib2.urlopen(layersconfig)
 conf = """function getConfig(){ return %s } """ %f.read()
+defaultLang = """function getDefaultLang() { return "%s" } """ % request.lang
 %>
 
 (function() {
@@ -23,6 +24,7 @@ window.attachEvent && window.attachEvent("onload", load);
 document.write('<link rel="stylesheet" type="text/css" href="' + "${h.versioned(request.static_url('chsdi:static/css/ga.css'))}" + '" />');
 // Load js
 document.write('<scr' + 'ipt type="text/javascript">' + ${conf|n} + '</scr' + 'ipt>');
+document.write('<scr' + 'ipt type="text/javascript">' + ${defaultLang|n} + '</scr' + 'ipt>');
 document.write('<scr' + 'ipt type="text/javascript" src="' + "${h.versioned(request.static_url('chsdi:static/js/proj4js-compressed.js'))}" + '"></scr' + 'ipt>');
 document.write('<scr' + 'ipt type="text/javascript" src="' + "${h.versioned(request.static_url('chsdi:static/js/EPSG21781.js'))}" + '"></scr' + 'ipt>');
 document.write('<scr' + 'ipt type="text/javascript" src="' + "${h.versioned(request.static_url('chsdi:static/js/EPSG2056.js'))}" + '"></scr' + 'ipt>');
