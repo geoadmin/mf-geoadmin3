@@ -204,6 +204,8 @@ def _find(request):
     models = models_from_name(params.layer)
     features = []
     findColumn = lambda x: (x, x.get_column_by_name(params.searchField))
+    if models is None:
+        raise exc.HTTPBadRequest('No Vector Table was found for %s' %params.layer)
     for model in models:
         vectorModel, searchColumn = findColumn(model)
         if searchColumn is None:
