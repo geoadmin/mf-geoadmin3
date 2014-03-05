@@ -876,12 +876,12 @@
                 url = layerSpec.split('||')[2];
               }
               if (!confirmedOnce &&
-                  gaUrlUtils.getHostname(url).indexOf('admin.ch') !==
-                  (gaUrlUtils.getHostname(url).length - 'admin.ch'.length)) {
+                  !/(admin|bgdi)\.ch$/.test(gaUrlUtils.getHostname(url))) {
                 allowThirdData =
-                  (isKmlLayer(layerSpec) || isWmsLayer(layerSpec)) &&
                   confirm($translate('third_party_data_warning'));
-                confirmedOnce = true;
+                if (allowThirdData) {
+                  confirmedOnce = true;
+                }
               } else {
                 allowThirdData = true;
               }
