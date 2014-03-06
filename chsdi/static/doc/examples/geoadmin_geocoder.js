@@ -1,3 +1,4 @@
+ga.Lang.setCode('en');
 // Create a GeoAdmin Map
 var map = new ga.Map({
   
