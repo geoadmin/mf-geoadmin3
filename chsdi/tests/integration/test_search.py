@@ -69,7 +69,7 @@ class TestSearchServiceView(TestsBase):
     def test_search_fontenay(self):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'fontenay 10 lausanne', 'type': 'locations'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(resp.json['results'][0]['attrs']['detail'] == '886311 chemin de fontenay 10 1007 lausanne 5586 lausanne ch vd')
+        self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'chemin de fontenay 10 1007 lausanne 5586 lausanne ch vd')
 
     def test_wilenstrasse_wil(self):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'wilenstrasse wil', 'type': 'locations'}, status=200)
@@ -90,13 +90,13 @@ class TestSearchServiceView(TestsBase):
     def test_searchtext_apostrophe(self):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'av mont d\'or lausanne', 'type': 'locations'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(resp.json['results'][0]['attrs']['detail'] == '886380 avenue du mont-d\'or 1 1007 lausanne 5586 lausanne ch vd')
+        self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'avenue du mont-d\'or 1 1007 lausanne 5586 lausanne ch vd')
         self.failUnless(resp.json['results'][0]['attrs']['num'] == 1)
 
     def test_address_order(self):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'isabelle de montolieu', 'type': 'locations'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(resp.json['results'][0]['attrs']['detail'] == '880819 chemin isabelle-de-montolieu 1 1010 lausanne 5586 lausanne ch vd')
+        self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'chemin isabelle-de-montolieu 1 1010 lausanne 5586 lausanne ch vd')
         self.failUnless(resp.json['results'][0]['attrs']['num'] == 1)
 
     def test_search_features(self):
