@@ -24,12 +24,12 @@
           waitClass: 'ga-draw-wait',
           text: '',
           tools: [
-            {id: 'point',   iconClass: 'icon-gear'},
-            {id: 'line',    iconClass: 'icon-gear'},
-            {id: 'polygon', iconClass: 'icon-gear'},
-            {id: 'text',    iconClass: 'icon-gear'},
-            {id: 'modify',  iconClass: 'icon-gear'},
-            {id: 'delete',  iconClass: 'icon-gear'}
+            {id: 'point',   iconClass: 'icon-ga-point'},
+            {id: 'line',    iconClass: 'icon-ga-line'},
+            {id: 'polygon', iconClass: 'icon-ga-polygon'},
+            {id: 'text',    iconClass: 'icon-ga-text'},
+            {id: 'modify',  iconClass: 'icon-ga-edit'},
+            {id: 'delete',  iconClass: 'icon-ga-delete'}
           ],
           colors: [
             {name:'black',  fill: [0, 0, 0],       textStroke: white},

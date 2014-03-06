@@ -321,3 +321,33 @@ a [class*=" icon-"] {
 .icon-ga-mapfunction {
   @include ie7icon('&#xf190;');
 }
+
+
+.icon-ga-point {
+  @include ie7icon('&#xf191;');
+}
+
+
+.icon-ga-line {
+  @include ie7icon('&#xf192;');
+}
+
+
+.icon-ga-polygon {
+  @include ie7icon('&#xf193;');
+}
+
+
+.icon-ga-text {
+  @include ie7icon('&#xf194;');
+}
+
+
+.icon-ga-edit {
+  @include ie7icon('&#xf195;');
+}
+
+
+.icon-ga-delete {
+  @include ie7icon('&#xf196;');
+}
