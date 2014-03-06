@@ -555,23 +555,20 @@ a .ga-icon-separator {
 }
 
 .modal-dialog {
-  padding: 0px;
   display: block;
   top: unit(@header-height, px);
+  left: 2%;
+  right: 2%; 
+  margin: auto;
+  max-width: 600px;
   max-height: none;
-  
-  &.ga-draggable { 
-    margin-left: -300px;
-    
-    @media (max-width: @screen-tablet) {
-      top: 1%;
-      padding: 0px;
-      margin: 0px;
-    }
-  }
+  padding: 0px;
 
-  
+  @media (max-width: @screen-tablet) {
+    top: unit(@small-header-height, px);
+  }
 }
+
 .modal-backdrop {
   z-index: 1240;
 }
