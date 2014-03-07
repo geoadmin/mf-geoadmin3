@@ -1,0 +1,5 @@
+source rc_dev
+
+export BASE_URL_PATH=/ltclm
+export SERVICE_URL=http://mf-chsdi3.dev.bgdi.ch/ltclm
+
