@@ -7,7 +7,7 @@
       <span></span>
       {{layer.label}}
     </label>
-    <span ng-if="layer.timeEnabled" class="ga-layer-time-label">{{layer.time | limitTo:4}}</span>
+    <span ng-if="layer.timeEnabled" class="ga-layer-time-label">{{layer.time | gaPlausibleYear| limitTo:4}}</span>
     <span class="ga-layer-tools">
       <label class="ga-layer-transparency">
         <span translate>transparency</span>&nbsp;
