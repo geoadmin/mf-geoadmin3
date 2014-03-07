@@ -57,6 +57,7 @@ params = (
     c['attributes']['firma'],
     fullName)
 quickview_url = get_quickview_url(request, params)
+image_size = get_image_size(c['attributes']['filename'])
 %>
 <tr>
   <td class="cell-left">${_('tt_lubis_ebkey')}</td>
@@ -70,7 +71,7 @@ quickview_url = get_quickview_url(request, params)
   <td class="cell-left">${_('tt_lubis_Filmart')}</td>
   <td>${c['attributes']['filmart'] or '-'}</td>
 </tr>
-% if image_height > 2:
+% if image_size[1] > 2:
 <tr>
   <td class="cell-left">${_('tt_lubis_Quickview')}</td>
   <td>
