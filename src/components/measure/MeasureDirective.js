@@ -83,6 +83,7 @@
 
           var drawArea = new ol.interaction.Draw({
             type: 'Polygon',
+            minPointsPerRing: 2,
             style: scope.options.drawStyleFunction
           });
 
