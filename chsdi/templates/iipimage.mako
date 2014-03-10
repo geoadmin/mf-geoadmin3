@@ -7,7 +7,8 @@
             new ol.layer.Tile({
               source: new ol.source.Zoomify({
                 url: url,
-                size: [width, height]
+                size: [width, height],
+                tierSizeCalculation: 'truncated'
               })
             })
           ],
