@@ -86,7 +86,7 @@
        <tr>
 	        % for pdf in c['attributes']['pdf_list'].split('##'):
                 <th class="cell-left">${_('Feature tooltip')}:</th>
-                <td><a href="http://dav0.bgdi.admin.ch/kogis_web/downloads/kgs/matrizen/${pdf}.pdf" target="_blank">${pdf}</a></td>
+                <td><a href="http://dav0.bgdi.admin.ch/kogis_web/downloads/kgs/matrizen/${pdf}" target="_blank">${pdf}</a></td>
 	        % endfor
 	     </tr>
     %endif
