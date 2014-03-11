@@ -57,7 +57,6 @@ params = (
     c['attributes']['firma'],
     fullName)
 quickview_url = get_quickview_url(request, params)
-image_size = get_image_size(c['attributes']['filename'])
 %>
 <tr>
   <td class="cell-left">${_('tt_lubis_ebkey')}</td>
@@ -71,7 +70,7 @@ image_size = get_image_size(c['attributes']['filename'])
   <td class="cell-left">${_('tt_lubis_Filmart')}</td>
   <td>${c['attributes']['filmart'] or '-'}</td>
 </tr>
-% if image_size[1] > 2:
+% if image_size[1] > 1:
 <tr>
   <td class="cell-left">${_('tt_lubis_Quickview')}</td>
   <td>
@@ -158,7 +157,7 @@ quickview_url = get_quickview_url(request, params)
     <div id="map"></div>
   </div>
   <br>
-% if image_height > 2:
+% if image_height > 1:
   <span class="chsdi-no-print">${_('tt_luftbilderOL')}<a href="${quickview_url}" target="_blank" alt="Fullscreen">(fullscreen)</a></span>
   <div class="chsdi-map-container table-with-border">
     <div id="zoomify"></div>
@@ -196,7 +195,7 @@ quickview_url = get_quickview_url(request, params)
       map.recenterFeature('${c['layerBodId']}', '${c['featureId']}');
 
 
-% if image_width > 2:
+% if image_width > 1:
       ${iipimage.init_map(c['attributes']['filename'], image_width, image_height, 'zoomify')}
 % endif
 
