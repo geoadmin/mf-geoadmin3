@@ -393,7 +393,12 @@
             var encJSON = format.writeFeature(feature);
             if (!encJSON.properties) {
               encJSON.properties = {};
+
+            // Fix https://github.com/geoadmin/mf-geoadmin3/issues/1213
+            } else if (encJSON.properties.Style) {
+              delete encJSON.properties.Style;
             }
+
             encJSON.properties._gx_style = styleId;
             encFeatures.push(encJSON);
 
