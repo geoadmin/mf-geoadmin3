@@ -7,9 +7,8 @@
       function($scope, gaGlobalOptions) {
           $scope.options = {
             defaultTopicId: 'ech',
-            thumbnailUrlTemplate: gaGlobalOptions.version + 'img/{Topic}.jpg',
-            url: gaGlobalOptions.baseUrlPath + '/' + gaGlobalOptions.version +
-                'rest/services'
+            thumbnailUrlTemplate: gaGlobalOptions.resourceUrl + 'img/{Topic}.jpg',
+            url: gaGlobalOptions.cachedMapUrl + '/rest/services'
           };
       });
 })();

@@ -5,12 +5,15 @@
 
   module.controller('GaPrintController',
     function($scope, gaGlobalOptions) {
+      var printPath = gaGlobalOptions.mapUrl + '/print'
+      
       $scope.options = {
-        printPath:  gaGlobalOptions.baseUrlPath + '/print',
-        baseUrlPath:  gaGlobalOptions.baseUrlPath,
-        serviceUrl: gaGlobalOptions.serviceUrl,
-        crossUrl: location.origin + location.pathname +
-            gaGlobalOptions.version + 'img/cross.png',
+        printConfigUrl: printPath + '/info.json?url=' +
+            encodeURIComponent(printPath) + '&app=',
+        legendUrl: gaGlobalOptions.apiUrl + '/static/images/legends/',
+        qrcodeUrl: gaGlobalOptions.apiUrl + '/qrcodegenerator?url=',
+        shortenUrl: gaGlobalOptions.apiUrl + '/shorten.json?cb=JSON_CALLBACK',
+        crossUrl: gaGlobalOptions.resourceUrl + 'img/cross.png',
         heightMargin: $('#header').height(),
         widthMargin: $('#pulldown').width(),
         // Hardcode listd of legends that should be downloaded in

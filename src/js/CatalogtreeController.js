@@ -7,9 +7,8 @@
       function($scope, gaGlobalOptions) {
         
         $scope.options = {
-          catalogUrlTemplate: 
-            gaGlobalOptions.baseUrlPath + '/' + gaGlobalOptions.version +
-            'rest/services/{Topic}/CatalogServer'
+          catalogUrlTemplate: gaGlobalOptions.cachedMapUrl +
+            '/rest/services/{Topic}/CatalogServer'
         };
 
       });

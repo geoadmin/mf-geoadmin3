@@ -26,11 +26,7 @@
 
     // Get print config
     var updatePrintConfig = function() {
-      var printPath = $scope.options.printPath;
-      var http = $http.get(printPath +
-          '/info.json?url=' + encodeURIComponent(printPath) +
-          '&app=' + topicId);
-
+      var http = $http.get($scope.options.printConfigUrl + topicId);
       http.success(function(data) {
         $scope.capabilities = data;
 
@@ -480,8 +476,7 @@
           var enc = $scope.encoders.legends.base.call(this, config);
           enc.classes.push({
             name: '',
-            icon: location.protocol + $scope.options.serviceUrl +
-                '/static/images/legends/' +
+            icon: $scope.options.legendUrl +
                 layer.bodId + '_' + $translate.uses() + format
           });
           return enc;
@@ -520,15 +515,10 @@
       var view = $scope.map.getView();
       var proj = view.getProjection();
       var lang = $translate.uses();
-      var configLang = 'lang' + lang;
       var defaultPage = {};
-      defaultPage[configLang] = true;
-      var encodedPermalinkHref =
+      defaultPage['lang' + lang] = true;
+      var qrcodeUrl = $scope.options.qrcodeUrl +
           encodeURIComponent(gaPermalink.getHref());
-      var qrcodeurl = location.protocol + $scope.options.serviceUrl +
-          '/qrcodegenerator?url=' + encodedPermalinkHref;
-      var shortenUrl = location.protocol + $scope.options.serviceUrl +
-          '/shorten.json?cb=JSON_CALLBACK';
       var encLayers = [];
       var encLegends;
       var attributions = [];
@@ -617,7 +607,7 @@
         return parseInt(scale.value);
       });
       var that = this;
-      $http.jsonp(shortenUrl, {
+      $http.jsonp($scope.options.shortenUrl, {
         params: {
           url: gaPermalink.getHref()
         }
@@ -628,12 +618,12 @@
           units: proj.getUnits() || 'm',
           rotation: -((view.getRotation() * 180.0) / Math.PI),
           app: topicId, //topic name
-          lang: $translate.uses(),
+          lang: lang,
           dpi: that.dpi.value,
           layers: encLayers,
           legends: encLegends,
           enableLegends: (encLegends && encLegends.length > 0),
-          qrcodeurl: qrcodeurl,
+          qrcodeurl: qrcodeUrl,
           pages: [
             angular.extend({
               center: getPrintRectangleCenterCoord(),
@@ -645,9 +635,8 @@
             }, defaultPage)
           ]
         };
-        var http = $http.post(that.capabilities.createURL +
-            '?url=' + encodeURIComponent($scope.options.printPath +
-            '/create.json'), spec);
+        var http = $http.post(that.capabilities.createURL + '?url=' +
+            encodeURIComponent(that.capabilities.createURL), spec);
         http.success(function(data) {
           bodyEl.removeClass(waitclass);
           $scope.downloadUrl(data.getURL);

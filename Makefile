@@ -2,15 +2,15 @@ SRC_JS_FILES := $(shell find src/components src/js -type f -name '*.js')
 SRC_JS_FILES_FOR_COMPILER = $(shell sed -e ':a' -e 'N' -e '$$!ba' -e 's/\n/ --js /g' .build-artefacts/js-files | sed 's/^.*base\.js //')
 SRC_COMPONENTS_LESS_FILES := $(shell find src/components -type f -name '*.less')
 SRC_COMPONENTS_PARTIALS_FILES = $(shell find src/components -type f -path '*/partials/*' -name '*.html')
-BASE_DIR ?= $(CURDIR)
+APACHE_BASE_DIRECTORY ?= $(CURDIR)
 ifeq "$(CURDIR)" "/var/www/vhosts/mf-geoadmin3/private/geoadmin"
-	BASE_URL_PATH ?= "/main"
+	APACHE_BASE_PATH ?= "main"
 else
-	BASE_URL_PATH ?= /$(shell id -un)
+	APACHE_BASE_PATH ?= $(shell id -un)
 endif
-SERVICE_URL ?= //mf-chsdi3.dev.bgdi.ch
+API_URL ?= //mf-chsdi3.dev.bgdi.ch
 LESS_PARAMETERS ?= '-ru'
-VERSION := $(shell date '+%s')/
+VERSION := $(shell date '+%s')
 GIT_BRANCH := $(shell git rev-parse --symbolic-full-name --abbrev-ref HEAD)
 GIT_LAST_BRANCH := $(shell if [ -f .build-artefacts/last-git-branch ]; then cat .build-artefacts/last-git-branch 2> /dev/null; else echo 'dummy'; fi)
 DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branch
@@ -42,9 +42,10 @@ help:
 	@echo
 	@echo "Variables:"
 	@echo
-	@echo "- BASE_URL_PATH Base URL path (current value: $(BASE_URL_PATH))"
-	@echo "- SERVICE_URL Service URL (current value: $(SERVICE_URL))"
-	@echo "- GEOADMIN_URL Geoadmin URL (current value: $(GEOADMIN_URL))"
+	@echo "- API_URL Service URL (current value: $(API_URL))"
+	@echo "- APACHE_BASE_PATH Base path (current value: $(APACHE_BASE_PATH))"
+	@echo "- APACHE_BASE_DIRECTORY Base directory (current value: $(APACHE_BASE_DIRECTORY))"
+
 	@echo
 
 .PHONY: all
@@ -132,12 +133,12 @@ prd/style/print.css: src/style/print.less src/style/app_print.less node_modules 
 
 prd/index.html: src/index.mako.html prd/lib/build.js prd/style/app.css .build-artefacts/python-venv/bin/mako-render .build-artefacts/python-venv/bin/htmlmin
 	mkdir -p $(dir $@)
-	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "mode=prod" --var "version=$(VERSION)" --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" --var "geoadmin_url=$(GEOADMIN_URL)" $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "mode=prod" --var "version=$(VERSION)" --var "versionslashed=$(VERSION)/" --var "user_env=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
 	.build-artefacts/python-venv/bin/htmlmin $@ $@
 
 prd/mobile.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render .build-artefacts/python-venv/bin/htmlmin
 	mkdir -p $(dir $@)
-	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "mode=prod" --var "version=$(VERSION)" --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" --var "geoadmin_url=$(GEOADMIN_URL)" $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "mode=prod" --var "version=$(VERSION)" --var "versionslashed=$(VERSION)/" --var "user_env=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
 	.build-artefacts/python-venv/bin/htmlmin $@ $@
 
 prd/img/: src/img/*
@@ -171,16 +172,16 @@ src/style/print.css: src/style/print.less src/style/app_print.less node_modules 
 	node_modules/.bin/lessc $(LESS_PARAMETERS) $< $@
 
 src/index.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render
-	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "version=" --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" --var "geoadmin_url=$(GEOADMIN_URL)" $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "version=" --var "versionslashed=" --var "user_env=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
 
 src/mobile.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render
-	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "version=" --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" --var "geoadmin_url=$(GEOADMIN_URL)" $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "version=" --var "versionslashed=" --var "user_env=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
 
 src/TemplateCacheModule.js: src/TemplateCacheModule.mako.js $(SRC_COMPONENTS_PARTIALS_FILES) .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "partials=$(subst src/,,$(SRC_COMPONENTS_PARTIALS_FILES))" --var "basedir=src" $< > $@
 
 apache/app.conf: apache/app.mako-dot-conf prd/lib/build.js prd/style/app.css .build-artefacts/python-venv/bin/mako-render
-	.build-artefacts/python-venv/bin/mako-render --var "base_url_path=$(BASE_URL_PATH)" --var "service_url=$(SERVICE_URL)" --var "geoadmin_url=$(GEOADMIN_URL)" --var "base_dir=$(BASE_DIR)" $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "apache_base_path=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" --var "apache_base_directory=$(APACHE_BASE_DIRECTORY)" $< > $@
 
 test/karma-conf-dev.js: test/karma-conf.mako.js .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render $< > $@
@@ -263,8 +264,8 @@ $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/config:
 deploy/deploy-branch.cfg: deploy/deploy-branch.mako.cfg .build-artefacts/last-git-branch .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "git_branch=$(GIT_BRANCH)" $< > $@
 
-rc_branch: rc_branch.mako .build-artefacts/last-git-branch .build-artefacts/python-venv/bin/mako-render
-	.build-artefacts/python-venv/bin/mako-render --var "base_url=$(GIT_BRANCH)" --var "service_url=$(SERVICE_URL)" --var "geoadmin_url=$(GEOADMIN_URL)" $< > $@
+rc_branch: rc_branch.mako .build-artefacts/last-git-branch .build-artefacts/last-deploy-target .build-artefacts/python-venv/bin/mako-render
+	.build-artefacts/python-venv/bin/mako-render --var "base_url=$(GIT_BRANCH)" --var "apache_base_path=$(APACHE_BASE_PATH)" --var "deploy_target=$(DEPLOY_TARGET) "$< > $@
 
 scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf .build-artefacts/last-git-branch .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "git_branch=$(GIT_BRANCH)" $< > $@

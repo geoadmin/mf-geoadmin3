@@ -10,13 +10,12 @@
 
   module.provider('gaProfileService', function() {
 
-    function ProfileChart($timeout, options, lazyLoadCB) {
+    function ProfileChart($timeout, options, lazyLoadCB, d3LibUrl) {
       var marginHoriz = options.margin.left + options.margin.right;
       var marginVert = options.margin.top + options.margin.bottom;
       var elevationModel = options.elevationModel || 'DTM25';
       var width = options.width - marginHoriz;
       var height = options.height - marginVert;
-      var versionPath = options.version || '';
       var d3, x, y;
 
       var onD3Loaded = function() {
@@ -27,7 +26,7 @@
       };
 
       if (!window.d3) {
-        $.getScript(versionPath + 'lib/d3-3.3.1.min.js', onD3Loaded);
+        $.getScript(d3LibUrl, onD3Loaded);
       } else {
         $timeout(onD3Loaded, 0);
       }
@@ -236,10 +235,11 @@
       };
     }
 
-    this.$get = function($timeout, gaGlobalOptions) {
+    this.$get = function($timeout) {
+      var d3LibUrl = this.d3libUrl;
       return function(options, lazyLoadCB) {
-        options.version = gaGlobalOptions.version;
-        var chart = new ProfileChart($timeout, options, lazyLoadCB);
+        var chart = new ProfileChart($timeout, options,
+                                     lazyLoadCB, d3LibUrl);
         return chart;
       };
     };
