@@ -70,30 +70,53 @@ Here is a list of all the freely accessible layers:
 
    function init() {
         $.getJSON( "../../rest/services/api-notfree/MapServer/layersConfig", function( data ) {
-           myInnerHtml_notfree =  "<br><table border=\"0\">";
+           var myInnerHtml_notfree =  "<br><table border=\"0\">";
            var layers_notfree = data;
            var counterNotFree = 1;
            for (var layer in layers_notfree) {
-              if (!layers_notfree[layer]['parentLayerId']) {
-                  myInnerHtml_notfree = myInnerHtml_notfree + '<tr><td>' + counterNotFree + '</td><td><a href="http://map3.geo.admin.ch/?layers=' +
-                    layer + '" target="new"> ' + layer + '</a>&nbsp('+layers_notfree[layer]['label']+')</td></tr>';
+              if (!layers_notfree[layer].parentLayerId) {
+                  myInnerHtml_notfree += '<tr><td>' + counterNotFree + '</td><td><a href="http://map3.geo.admin.ch/?layers=' +
+                    layer + '" target="new"> ' + layer + '</a>&nbsp('+layers_notfree[layer].label+')</td></tr>';
                   counterNotFree++;
               }
            }
            document.getElementById("notfree").innerHTML=myInnerHtml_notfree;
         });
         $.getJSON( "../../rest/services/api-free/MapServer/layersConfig", function( data ) {
-           myInnerHtml_free =  "<br><table border=\"0\">";
+           var myInnerHtml_free =  "<br><table border=\"0\">";
            var layers_free = data;
            var counterFree = 1;
            for (var layer in layers_free) {
-              if (!layers_free[layer]['parentLayerId']) {
-                  myInnerHtml_free = myInnerHtml_free + '<tr><td>' + counterFree + '</td><td><a href="http://map3.geo.admin.ch/?layers=' +
-                    layer + '" target="new"> ' + layer + '</a>&nbsp('+layers_free[layer]['label']+')</td></tr>';
+              if (!layers_free[layer].parentLayerId) {
+                  myInnerHtml_free += '<tr><td>' + counterFree + '</td><td><a href="http://map3.geo.admin.ch/?layers=' +
+                    layer + '" target="new"> ' + layer + '</a>&nbsp('+layers_free[layer].label+')</td></tr>';
                   counterFree++;
               }
            }
            document.getElementById("free").innerHTML=myInnerHtml_free;
+        });
+        $.getJSON( "../../rest/services/api/MapServer/layersConfig", function( data ) {
+          var myInnerHtml_queryable = "<br><table border=\"0\">";
+          var myInnerHtml_searchable =  "<br><table border=\"0\">";
+          var layers_api = data;
+          var counterQueryable = 1;
+          var counterSearchable = 1;
+          for (var layer in layers_api) {
+            if (!layers_api[layer].parentLayerId) {
+              if (layers_api[layer].queryable) {
+                myInnerHtml_queryable += '<tr><td>' + counterQueryable + '</td><td><a href="http://map3.geo.admin.ch/?layers=' +
+                  layer + '" target="new"> ' + layer + '</a>&nbsp('+layers_api[layer].label+')</td></tr>';
+                counterQueryable++;
+              }
+              if (layers_api[layer].searchable) {
+                myInnerHtml_searchable += '<tr><td>' + counterSearchable + '</td><td><a href="http://map3.geo.admin.ch/?layers=' +
+                  layer + '" target="new"> ' + layer + '</a>&nbsp('+layers_api[layer].label+')</td></tr>';
+                counterSearchable++;
+              }
+            }
+          }
+          document.getElementById("queryable").innerHTML=myInnerHtml_queryable;
+          document.getElementById("searchable").innerHTML=myInnerHtml_searchable;
         });
 
    }
@@ -102,6 +125,32 @@ Here is a list of all the freely accessible layers:
 
    <body onload="init();">
    </body>
+
+.. _querybale_layers:
+
+Which layers have a tooltip?
+----------------------------
+
+Not all the layers have a tooltip. Here is a complete list of all the layers that have a tooltip:
+
+.. raw:: html
+
+  <body>
+    <div id="queryable" style="margin-left:10px;"></div>
+  </bod>
+
+.. _searchable_layers:
+
+Which layers are searchable?
+----------------------------
+
+We define a layer as searchable when its features can be searched. Here is a list of all searchable layers:
+
+.. raw:: html
+
+  <body>
+    <div id="searchable" style="margin-left:10px;"></div>
+  </bod>
 
 How can I accessed the tiles ?
 ------------------------------

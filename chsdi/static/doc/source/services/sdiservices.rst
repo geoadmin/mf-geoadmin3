@@ -78,7 +78,7 @@ Example
 Identify Features
 -----------------
 
-This service can be used to discover features at a specific location.
+This service can be used to discover features at a specific location. Here is a `complete list of layers <../../../api/faq/index.html#which-layers-have-a-tooltip>`_ for which this service is available.
 
 URL
 ^^^
@@ -149,6 +149,7 @@ Find
 ----
 
 This service is used to search the attributes of features. Each result include a feature ID, a layer ID, a layer name, a geometry (optionally) and attributes in the form of name-value pair.
+Here is a `complete list of layers <../../../api/faq/index.html#which-layers-have-a-tooltip>`_ for which this service is available.
 
 URL
 ^^^
@@ -191,7 +192,8 @@ Examples
 Feature Resource
 ----------------
 
-With an ID and a layer technical name, this service can be used to retrieve a feature resource.
+With an ID and a layer ID (technical name), this service can be used to retrieve a feature resource.
+Here is a `complete list of layers <../../../api/faq/index.html#which-layers-have-a-tooltip>`_ for which this service is available.
 
 URL
 ^^^
@@ -226,7 +228,8 @@ Example
 Htmlpopup Resource
 ------------------
 
-With an ID and a layer technical name, this service can be used to retrieve an html popup. An html popup is an html formatted representation of the textual information about the feature.
+With an ID and a layer ID (technical name), this service can be used to retrieve an html popup. An html popup is an html formatted representation of the textual information about the feature.
+Here is a `complete list of layers <../../../api/faq/index.html#which-layers-have-a-tooltip>`_ for which this service is available.
 
 URL
 ^^^
@@ -279,8 +282,8 @@ The search service is separated in 3 different categories or types:
   * The cadastral parcels
   * And optionally features belonging to a specified layer. The search is here performed within the attribute information of a layer using a search text.
 * The **layer search** wich enables the search of layers belonging to the API.
-* The **feature search** which is used to search through features descriptions. Note that you can also specify a bounding box to filter the features.
-* The **feature identify** which is designed to efficiently discover the features of a layer based on a geographic extent.
+* The **feature search** which is used to search through features descriptions. Note: you can also specify a bounding box to filter the features. (`Searchable layer <../../../api/faq/index.html#which-layers-are-searchable>`_)
+* The **feature identify** which is designed to efficiently discover the features of a layer based on a geographic extent. (`Complete list <../../../api/faq/index.html#which-layers-have-a-tooltip>`_)
 
 Input parameters
 ^^^^^^^^^^^^^^^^
@@ -370,19 +373,18 @@ Examples
 Example of feature search usage with other services
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1. Search for addresses using the feature search service:
+- First: search for addresses using the feature search service:
 - `https://api3.geo.admin.ch/rest/services/api/SearchServer?features=ch.bfs.gebaeude_wohnungs_register&type=featuresearch&searchText=isabelle <../../../rest/services/api/SearchServer?features=ch.bfs.gebaeude_wohnungs_register&type=featuresearch&searchText=isabelle>`_
-2. Use "feature_id" found in "attrs" to get detailed information about a feature:
+- Then: use "feature_id" found in "attrs" to get detailed information about a feature:
 - `https://api3.geo.admin.ch/rest/services/api/MapServer/ch.bfs.gebaeude_wohnungs_register/880711_0?returnGeometry=false <../../../rest/services/api/MapServer/ch.bfs.gebaeude_wohnungs_register/880711_0?returnGeometry=false>`_
 
-Important note: not all layers are searchable per default. A list of searchable layers will be provided in the API documentation page as soon as possible.
 
 .. _height_description:
 
 Height
 ------
 
-This service allows to obtain elevation information for a point. **Note: this service is not freely accessible (fee required)**.
+This service allows to obtain elevation information for a point. **Note: this service is not freely accessible (fee required).** `Please Contact us <mailto:geodata@swisstopo.ch>`_
 
 URL
 ^^^
@@ -416,7 +418,7 @@ Examples
 Profile
 -------
 
-This service allows to obtain elevation information for a polyline in CSV format. **Note: this service is not freely accessible (fee required)**.
+This service allows to obtain elevation information for a polyline in CSV format. **Note: this service is not freely accessible (fee required).** `Please Contact us <mailto:geodata@swisstopo.ch>`_
 
 URL
 ^^^
@@ -461,6 +463,7 @@ WMTS
 
 A RESTFul implementation of the `WMTS <http://www.opengeospatial.org/standards/wmts>`_ `OGC <http://www.opengeospatial.org/>`_ standard.
 For detailed information, see See `WMTS OGC standard <http://www.opengeospatial.org/standards/wmts>`_
+In order to have acces to the WMTS, some layers require a `swisstopo web access - WMTS documentation <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/products/services/web_services/webaccess.html>`_
 
 URL
 ^^^
