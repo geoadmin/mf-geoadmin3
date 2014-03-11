@@ -516,3 +516,21 @@ a .icon-flip-vertical:before {
 .icon-ga-mapfunction:before {
   content: "\f190";
 }
+.icon-ga-point:before {
+  content: "\f191";
+}
+.icon-ga-line:before {
+  content: "\f192";
+}
+.icon-ga-polygon:before {
+  content: "\f193";
+}
+.icon-ga-text:before {
+  content: "\f194";
+}
+.icon-ga-edit:before {
+  content: "\f195";
+}
+.icon-ga-delete:before {
+  content: "\f196";
+}

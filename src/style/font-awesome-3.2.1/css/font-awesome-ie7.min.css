@@ -51,3 +51,9 @@ a [class^="icon-"],a [class*=" icon-"]{cursor:pointer;}
 .icon-ga-slider{*zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf18e;');}
 .icon-ga-slider-bckgd{*zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf18f;');}
 .icon-ga-mapfunction{*zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf190;');}
+.icon-ga-point{*zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf191;');}
+.icon-ga-line{*zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf192;');}
+.icon-ga-polygon{*zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf193;');}
+.icon-ga-text{*zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf194;');}
+.icon-ga-edit{*zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf195;');}
+.icon-ga-delete{*zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf196;');}
