@@ -561,14 +561,14 @@
         module.config(function(gaRecenterMapOnFeaturesProvider, gaGlobalOptions) {
           gaRecenterMapOnFeaturesProvider.url =
               gaGlobalOptions.cachedMapUrl + '/rest/services/all/MapServer/';
-        }]);
+        });
 
-        module.config(['gaProfileServiceProvider', 'gaGlobalOptions', function(gaProfileServiceProvider, gaGlobalOptions) {
+        module.config(function(gaProfileServiceProvider, gaGlobalOptions) {
           gaProfileServiceProvider.d3libUrl =
               gaGlobalOptions.resourceUrl + 'lib/d3-3.3.1.min.js';
         });
  
-        module.config(['$sceDelegateProvider', function($sceDelegateProvider) {
+        module.config(function($sceDelegateProvider, gaGlobalOptions) {
           var whitelist = $sceDelegateProvider.resourceUrlWhitelist();
           whitelist = whitelist.concat(gaGlobalOptions.whitelist);
           $sceDelegateProvider.resourceUrlWhitelist(whitelist);
