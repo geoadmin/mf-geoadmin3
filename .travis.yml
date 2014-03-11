@@ -11,7 +11,7 @@ env:
     global:
         - BROWSERSTACK_USER=hanspeterchrist
         - CURRENT_BRANCH=$TRAVIS_BRANCH
-        - BASE_DIR=/home/travis/sync
+        - APACHE_BASE_DIRECTORY=/home/travis/sync
         - secure: "b/i7FFs88uFoeGA/YKYeLyqQuwKLvRE+PQocbMW/pU6wGh41p1k5p5+CiriBAZ7obPusRI2gg00bmGOcEQyJyNBOsh83lq55DMqyDdWCBy04hxpDye7B844Ez0ouNQ+2KQ6m+OgoIyGZ2oNG3mu/XDgTs+BRLzs1XJL9mOwaHyE="
         - secure: "mRIQ7Lj5gUtj73AtY6Lx4rHh+IeMkow6bOTuEBabuw7nPanprVP0AzGbCT36RLADSNCenObwBsMpJ8+tEf+y3S6gmWHAU+SPxf+webv+vnwLV70zUuBQ9MXNjQu/xzeM6W82cb3UIXJLFjzib1byQufwLylvm1ltzg/lxgq0wI4="
         - secure: "VhlL+pQYLHbgJWBaQ6kC7J6kPRQkr4Rn4iDJ5lm8/sapKNfzMY8DN+ddaQUmfZt3GTNK3k9/F+amEHlpspJ+AEeFQQWfT0wMngIgzqGuWocEnXnMKqjZuZl3cyoVc7Cpa8fT3MTIFIgl0XW/BSma959+dCo9Ozb3N/v3eua8z50="
