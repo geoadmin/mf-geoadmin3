@@ -28,10 +28,10 @@ Alias /${apache_base_path}/prod ${apache_base_directory}/prd
 </LocationMatch>
 
 RewriteCond %{QUERY_STRING} _escaped_fragment_=(.*)$
-% if (re.match('^http(s)?:*', service_url)):
-RewriteRule ^/(index.html|mobile.html)(.*) ${service_url}/snapshot [L,P]
+% if (re.match('^http(s)?:*', api_url)):
+RewriteRule ^/(index.html|mobile.html)(.*) ${api_url}/snapshot [L,P]
 % else:
-RewriteRule ^/(index.html|mobile.html)(.*) http:${service_url}/snapshot [L,P]
+RewriteRule ^/(index.html|mobile.html)(.*) http:${api_url}/snapshot [L,P]
 % endif
 
 RewriteRule ^/(index.html|mobile.html|info.json|checker|robots.txt|testsitemap.xml)(.*) /var/www/vhosts/mf-geoadmin3/private/geoadmin/prd/$1
