@@ -325,9 +325,10 @@
         var strokeColor = ol.color.asArray(textStyle.getStroke().getColor());
         var fontValues = textStyle.getFont().split(' ');
         literal.fontColor = toHexa(fillColor);
-        literal.fontFamily = fontValues[2];
-        literal.fontSize = fontValues[0];
-        literal.fontWeight = fontValues[1];
+        // Fonts managed by print server: COURIER, HELVETICA, TIMES_ROMAN
+        literal.fontFamily = fontValues[2].toUpperCase();
+        literal.fontSize = parseInt(fontValues[1]);
+        literal.fontWeight = fontValues[0];
         literal.label = textStyle.getText();
         literal.labelAlign = textStyle.getTextAlign();
         literal.labelOutlineColor = toHexa(strokeColor);

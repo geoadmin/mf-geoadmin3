@@ -76,7 +76,7 @@
                 angular.isDefined($scope.options.text)) {
 
               text = new ol.style.Text({
-                font: '16px Calibri,sans-serif',
+                font: 'normal 16px Helvetica',
                 text: $scope.options.text,
                 fill: new ol.style.Fill({
                   color: stroke.getColor()
