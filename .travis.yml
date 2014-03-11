@@ -13,5 +13,6 @@ before_script:
 
 script:
     - buildout/bin/buildout -c buildout_prod.cfg
-    - buildout/bin/nosetests chsdi/tests/functional
-
+    - buildout/bin/nosetests chsdi/tests/functional/test_encoders.py
+    - buildout/bin/nosetests chsdi/tests/functional/test_mortonspacekey.py
+    - buildout/bin/nosetests chsdi/tests/functional/test_renderer.py
