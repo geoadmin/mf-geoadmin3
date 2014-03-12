@@ -346,6 +346,16 @@ class Catalog(Base):
             'en': self.nameEn
         }[lang]
 
+    @classmethod
+    def get_name_from_lang(cls, lang):
+        return {
+            'de': cls.nameDe,
+            'fr': cls.nameFr,
+            'it': cls.nameIt,
+            'rm': cls.nameRm,
+            'en': cls.nameEn
+        }[lang]
+
 
 class OerebMetadata(Base):
     __tablename__ = 'oereb_interlis_metadata'
