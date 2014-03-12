@@ -463,7 +463,8 @@ WMTS
 
 A RESTFul implementation of the `WMTS <http://www.opengeospatial.org/standards/wmts>`_ `OGC <http://www.opengeospatial.org/>`_ standard.
 For detailed information, see See `WMTS OGC standard <http://www.opengeospatial.org/standards/wmts>`_
-In order to have acces to the WMTS, some layers require a `swisstopo web access - WMTS documentation <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/products/services/web_services/webaccess.html>`_
+In order to have acces to the WMTS, you require a `swisstopo web access - WMTS documentation <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/products/services/web_services/webaccess.html>`_, 
+despite the fact that most layers are free to use. See :ref:`available_layers` for a list of all available layers.
 
 URL
 ^^^
