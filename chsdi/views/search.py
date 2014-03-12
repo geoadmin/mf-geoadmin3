@@ -105,11 +105,13 @@ class Search(SearchValidation):
         self.sphinx.SetLimits(0, self.LAYER_LIMIT)
         self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
         self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, '@weight DESC')
-        index_name = 'layers_' + self.lang
-        searchText = self._query_fields('@(detail,layer)')
-        searchText += ' & @topics ' + self.mapName
-        # We only take the layers in prod for now
-        searchText += ' & @staging prod'
+        index_name = 'layers_%s' % self.lang
+        mapName = self.mapName if self.mapName != 'all' else ''
+        searchText = ' '.join((
+            self._query_fields('@(detail,layer)'),
+            '& @topics %s' % mapName,                 # Filter by to topic if string not empty
+            '& @staging prod'                         # Only layers in prod are searched
+        ))
         try:
             temp = self.sphinx.Query(searchText, index=index_name)
         except IOError:
@@ -195,12 +197,6 @@ class Search(SearchValidation):
         ))
 
         return finalQuery
-
-    def _query_layers_detail(self, fields):
-        wordsSearch = lambda x: ''.join((fields, ' ', x, ' & '))
-        wordsSearchText = ''.join(wordsSearch(text) for text in self.searchText)[:-len(' & ')]
-
-        return wordsSearchText
 
     def _add_feature_queries(self, queryText):
         for index in self.featureIndexes:
