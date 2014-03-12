@@ -178,24 +178,19 @@ class Search(SearchValidation):
         return self._parse_feature_results(temp)
 
     def _query_fields(self, fields):
+        infix = lambda x : ''.join(('*', x, '* & '))
+        prefix = lambda x: ''.join((x, '* & '))
+        infixSearchText = ''.join(infix(text) for text in self.searchText)[:-len(' & ')]
+        prefixSearchText = ''.join(prefix(text) for text in self.searchText)[:-len(' & ')]
         sentence = ' '.join(self.searchText)
-        searchText = ''
-        counter = 1
-        for text in self.searchText:
-            if counter != len(self.searchText):
-                searchText += '*' + text + '* & '
-            else:
-                searchText += '*' + text + '*'
-            counter += 1
-        # starts and ends with query words
-        finalQuery = '%s "^%s$" | ' % (fields, sentence)
-        # sentence search (the all sentence within the search field)
-        # order matters
-        finalQuery += '%s "%s" | ' % (fields, sentence)
-        # words exact match
-        finalQuery += '%s (%s) | ' % (fields, sentence)
-        # full text search word per word
-        finalQuery += '%s (%s)' % (fields, searchText)
+
+        finalQuery = ''.join((
+            '%s "^%s$" | '  % (fields, sentence),         # starts and ends with sentence
+            '%s "%s$" | '   % (fields, sentence),         # ends with sentence
+            '%s "^%s" | '   % (fields, sentence),         # starts with sentence
+            '%s (%s)  | '   % (fields, prefixSearchText), # matching all words one by one (prefix)
+            '%s (%s)'       % (fields, infixSearchText)   # matching all words one by one (infix)
+        ))
 
         return finalQuery
 
