@@ -143,9 +143,7 @@
               if (this instanceof ol.layer.Layer) {
                 var src = this.getSource();
                 if (src instanceof ol.source.WMTS) {
-                  // Time parameter of WMTS from bod can't be undefined,
-                  // and a WMTS layer has at least one timestamp defined.
-                  src.updateDimensions({'Time': val || this.timestamps[0]});
+                  src.updateDimensions({'Time': val});
                 } else if (src instanceof ol.source.ImageWMS ||
                     src instanceof ol.source.TileWMS) {
                   src.updateParams({'TIME': val});

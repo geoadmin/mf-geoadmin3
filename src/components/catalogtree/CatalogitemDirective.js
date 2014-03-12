@@ -35,13 +35,13 @@
               var map = $scope.map;
               var layer = gaMapUtils.getMapOverlayForBodId(
                   map, item.idBod);
+              var bodLayer = gaLayers.getLayer(item.idBod);
               if (!angular.isDefined(layer)) {
                 // FIXME: we are super cautious here and display error messages
                 // when either the layer identified by item.idBod doesn't exist
                 // in the gaLayers service, or gaLayers cannot construct an ol
                 // layer object for that layer.
                 var error = true;
-                var bodLayer = gaLayers.getLayer(item.idBod);
                 if (angular.isDefined(bodLayer)) {
                   layer = gaLayers.getOlLayerById(item.idBod);
                   if (angular.isDefined(layer)) {
