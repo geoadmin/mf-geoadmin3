@@ -48,3 +48,9 @@ notifications:
     email:
         recipients:
             - re3-dev@googlegroups.com
+    webhooks:
+        urls:
+            - https://webhooks.gitter.im/e/bd09bf21de1072767c9d
+            on_success: always  # options: [always|never|change] default: always
+            on_failure: always  # options: [always|never|change] default: always
+            on_start: false     # default: false
