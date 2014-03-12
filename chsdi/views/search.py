@@ -121,14 +121,16 @@ class Search(SearchValidation):
         return 0
 
     def _get_quadindex_string(self):
-        retVal = ''
-        tokens = []
+        ''' Recursive and inclusive search through
+            quadindex windows. '''
         if self.quadindex is not None:
-            retVal += '@geom_quadindex ' + self.quadindex + '*'
-            qlen = len(self.quadindex)
-            for x in range(1, qlen):
-                retVal += ' | @geom_quadindex ' + self.quadindex[:-x]
-        return retVal
+            buildQuadQuery = lambda x: ''.join(('@geom_quadindex ', x, '* | '))
+            quadSearch = ''.join(
+                buildQuadQuery(self.quadindex[:-x]) if x != 0 else buildQuadQuery(self.quadindex)
+                for x in range(0, len(self.quadindex))
+            )[:-len(' | ')]
+            return quadSearch
+        return ''
 
     def _feature_search(self):
         # all features in given bounding box
