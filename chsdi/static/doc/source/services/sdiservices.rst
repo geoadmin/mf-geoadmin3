@@ -3,12 +3,16 @@
 REST Services
 =============
 
+Most services are implementing or are heavily inspired by `ESRI GeoServices REST Specification <http://www.esri.com/industries/landing-pages/geoservices/geoservices>`_
+or by the `Open Geospatial Consortium (OGC) <http://opengeospatial.org>`_.
+
+
 .. _metadata_description:
 
 Layers Metadata
 ---------------
 
-This service provides metatdata for the available layers in the GeoAdmin API.
+This service provides metadata for the available layers in the GeoAdmin API.
 
 URL
 ^^^
@@ -385,6 +389,7 @@ Height
 ------
 
 This service allows to obtain elevation information for a point. **Note: this service is not freely accessible (fee required).** `Please Contact us <mailto:geodata@swisstopo.ch>`_
+See `Height models <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/products/height.html>`_ for more details on data used by this service.
 
 URL
 ^^^
@@ -400,7 +405,7 @@ RESTFul interface is available.
 +===================================+===========================================================================================+
 | easting (required)                | The Y position in CH1903 coordinate system (SRID: 21781)                                  |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
-| northing (required)               | The X position in CH1903 coordinate system (SRIF: 21781)                                  |
+| northing (required)               | The X position in CH1903 coordinate system (SRID: 21781)                                  |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | elevation_model (optional)        | The elevation model. Three elevation models are available DTM25, DTM2 (swissALTI3D)       |
 |                                   | and COMB (a combination of DTM25 and DTM2). Default to "DTM25"                            |
@@ -419,6 +424,7 @@ Profile
 -------
 
 This service allows to obtain elevation information for a polyline in CSV format. **Note: this service is not freely accessible (fee required).** `Please Contact us <mailto:geodata@swisstopo.ch>`_
+See `Height models <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/products/height.html>`_ for more details on data used by this service.
 
 URL
 ^^^
@@ -488,7 +494,8 @@ http://api3.geo.admin.ch/rest/services/api/1.0.0/WMTSCapabilities.xml?lang=fr
 Parameters
 ^^^^^^^^^^
 
-Only the RESTFul interface ist implemented. No KVP and SOAP.
+Only the RESTFul interface ist implemented. No KVP and SOAP. You *have* to provide a value for the `timestamp` parameter, the keywords `current` or 
+`default` are not supported for now.
 
 A request is in the form:
 
@@ -563,6 +570,7 @@ Resolution [m]   Zoomlevel Map zoom  Tile width m Tiles X  Tiles Y    Tiles     
 
 #. The zoom level 24 (resolution 1.5m) has been generated, but is not currently used in the API.
 #. The zoom levels 27 and 28 (resolution 0.25m and 0.1m) are only available for a few layers, e.g. swissimage or cadastral web map. For the others layers it is only a client zoom (tiles are stretched).
+#. You **have** to use the `<ResourceURL>` to construct the `GetTile` request. 
 
 Result
 ^^^^^^
