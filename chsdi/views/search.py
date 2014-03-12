@@ -105,11 +105,13 @@ class Search(SearchValidation):
         self.sphinx.SetLimits(0, self.LAYER_LIMIT)
         self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
         self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, '@weight DESC')
-        index_name = 'layers_' + self.lang
-        searchText = self._query_fields('@(detail,layer)')
-        searchText += ' & @topics ' + self.mapName
-        # We only take the layers in prod for now
-        searchText += ' & @staging prod'
+        index_name = 'layers_%s' % self.lang
+        mapName = self.mapName if self.mapName != 'all' else ''
+        searchText = ' '.join((
+            self._query_fields('@(detail,layer)'),
+            '& @topics %s' % mapName,                 # Filter by to topic if string not empty
+            '& @staging prod'                         # Only layers in prod are searched
+        ))
         try:
             temp = self.sphinx.Query(searchText, index=index_name)
         except IOError:
@@ -121,14 +123,17 @@ class Search(SearchValidation):
         return 0
 
     def _get_quadindex_string(self):
-        retVal = ''
-        tokens = []
+        ''' Recursive and inclusive search through
+            quadindex windows. '''
         if self.quadindex is not None:
-            retVal += '@geom_quadindex ' + self.quadindex + '*'
-            qlen = len(self.quadindex)
-            for x in range(1, qlen):
-                retVal += ' | @geom_quadindex ' + self.quadindex[:-x]
-        return retVal
+            buildQuadQuery = lambda x: ''.join(('@geom_quadindex ', x, ' | '))
+            quadSearch = ''.join(('@geom_quadindex ', self.quadindex, '* | '))
+            quadSearch += ''.join(
+                buildQuadQuery(self.quadindex[:-x])
+                for x in range(1, len(self.quadindex))
+            )[:-len(' | ')]
+            return quadSearch
+        return ''
 
     def _feature_search(self):
         # all features in given bounding box
@@ -178,37 +183,21 @@ class Search(SearchValidation):
         return self._parse_feature_results(temp)
 
     def _query_fields(self, fields):
+        infix = lambda x: ''.join(('*', x, '* & '))
+        prefix = lambda x: ''.join((x, '* & '))
+        infixSearchText = ''.join(infix(text) for text in self.searchText)[:-len(' & ')]
+        prefixSearchText = ''.join(prefix(text) for text in self.searchText)[:-len(' & ')]
         sentence = ' '.join(self.searchText)
-        searchText = ''
-        counter = 1
-        for text in self.searchText:
-            if counter != len(self.searchText):
-                searchText += '*' + text + '* & '
-            else:
-                searchText += '*' + text + '*'
-            counter += 1
-        # starts and ends with query words
-        finalQuery = '%s "^%s$" | ' % (fields, sentence)
-        # sentence search (the all sentence within the search field)
-        # order matters
-        finalQuery += '%s "%s" | ' % (fields, sentence)
-        # words exact match
-        finalQuery += '%s (%s) | ' % (fields, sentence)
-        # full text search word per word
-        finalQuery += '%s (%s)' % (fields, searchText)
+
+        finalQuery = ''.join((
+            '%s "^%s$" | ' % (fields, sentence),         # starts and ends with sentence
+            '%s "^%s" | ' % (fields, sentence),          # starts with sentence
+            '%s "%s$" | ' % (fields, sentence),          # ends with sentence
+            '%s (%s)  | ' % (fields, prefixSearchText),  # matching all words one by one (prefix)
+            '%s (%s)' % (fields, infixSearchText)        # matching all words one by one (infix)
+        ))
 
         return finalQuery
-
-    def _query_layers_detail(self, fields):
-        searchText = ''
-        counter = 1
-        for text in self.searchText:
-            if counter != len(self.searchText):
-                searchText += fields + ' ' + text + ' & '
-            else:
-                searchText += fields + ' ' + text
-            counter += 1
-        return searchText
 
     def _add_feature_queries(self, queryText):
         for index in self.featureIndexes:
