@@ -22,3 +22,9 @@ class TestCatalogService(TestsBase):
 
     def test_catalog_wrong_map(self):
         self.testapp.get('/rest/services/foo/CatalogServer', status=400)
+
+    def test_catalog_ordering(self):
+        resp = self.testapp.get('/rest/services/inspire/CatalogServer', params={'lang': 'en'}, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless('AGNES' in resp.json['results']['root']['children'][0]['children'][0]['children'][0]['label'])
+        self.failUnless('Geoid in CH1903' in resp.json['results']['root']['children'][0]['children'][0]['children'][1]['label'])
