@@ -86,7 +86,7 @@ quickview_url = get_quickview_url(request, params)
 <tr>
 % if 'contact_web' not in c['attributes']:
   <td class="cell-left">${_('link')} Toposhop</td>
-  <a href="http://www.toposhop.admin.ch/de/shop/satair/lubis_1?ext=1&pics=${c['featureId']},0,${c['attributes']['ort'].strip()},${c['attributes']['y']},${c['attributes']['x']},nein" target="toposhop">Toposhop</a>
+  <td><a href="http://www.toposhop.admin.ch/de/shop/satair/lubis_1?ext=1&pics=${c['featureId']},0,${c['attributes']['ort'].strip()},${c['attributes']['y']},${c['attributes']['x']},nein" target="toposhop">Toposhop</a></td>
 % else:
   <th class="cell-left">${_('tt_lubis_bildorder')}</th>
   <td>${c['attributes']['contact']} <br /> ${c['attributes']['contact_email']} <br /><a href="${c['attributes']['contact_web']}" target="_blank">${c['attributes']['contact_web']}</a></td>
