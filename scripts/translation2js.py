@@ -3,11 +3,12 @@
 translation2js.py
 This script is used to translate the {lang}.json-files. The scripts uses the content of the table bod.translations
 to generate the {lang}.json-files.
+Rq : Modificaton : Read translations directly from the GoogleSpreadsheet (12.03.2014)
 
 Usage: ./env/bin/python translation2js.py /home/ltmoc/mf-geoadmin3/src/locales/ 
 """
 
-import os, sys, codecs, re
+import os, sys, codecs, re, gspread
 
 # getting path for the input-file empty.js
 try:
@@ -61,30 +62,38 @@ finally:
 
 config = yaml.load(yml)
 
-try:
-   conn=psycopg2.connect(config['dsn'])
-   print "Database connection established"
-except:
-   print "Critical Error: Unable to connect to the database. Exit"
-   sys.exit()
+# Read GoogleSpreadsheet
+print "Connexion au GoogleSpreadSheet"
+if 'DRIVE_USER' in os.environ.keys() and  'DRIVE_PWD' in os.environ.keys():
+    gc = gspread.login(os.environ['DRIVE_USER'],os.environ['DRIVE_PWD'])
+else:
+    print "DRIVE_USER and DRIVE_PWD are not set."
+    sys.exit(1)
 
-register_type(UNICODE)
-conn.set_client_encoding('UTF8')
+gsheet = gc.open_by_key('0AvgmqEgDEiu5dGpFRlpxTU9fVzN3cHNYbWtqOEtKbkE')
+# Conexion sur la premiere feuille
+worksheet = gsheet.get_worksheet(0)
+list_of_lists = worksheet.get_all_values()
+nb_translation_exist = len(list_of_lists)
+print "Nombre de record : " + str(nb_translation_exist)
 
 # Create a multinensional array [lang][msg-ud]  Example: translationDict["it"]["zoomin"]
 translationDict = Ddict(dict)
 
-for lang in config['langs']:
+for idRow in range(1,nb_translation_exist):
+    for lang in config['langs']:
+        if lang == 'de':
+            idlang = 1
+        elif lang == 'en':
+            idlang = 2
+        elif lang == 'fr':
+            idlang = 3
+        elif lang == 'it':
+            idlang = 4
+        elif lang == 'rm':
+            idlang = 5
+        translationDict[lang][list_of_lists[idRow][0]] = list_of_lists[idRow][idlang]
 
-    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    cur.execute(config['sql'])
-
-    rows = cur.fetchall()
-
-    for row in rows:
-        translationDict[lang][row["msg_id"]] = row[lang]
-
-# Parsing the file empty.js and write msgids into var_arr
 try:
     file_emptyjs = codecs.open(Path2emptyjs + config["emptyFilename"],'r', 'utf-8')
 except:
