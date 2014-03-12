@@ -32,5 +32,9 @@
     };
   };
 
-  module.service('gaPrintService', [Print]);
+  module.provider('gaPrintService', function() {
+    this.$get = function() {
+      return new Print();
+    };
+  });
 })();

@@ -1,12 +1,12 @@
 (function() {
   goog.provide('ga_featuretree_controller');
   goog.require('ga_print_service');
-  var module = angular.module('ga_featuretree_controller', [
-  ]);
+  var module = angular.module('ga_featuretree_controller',
+    ['ga_print_service']
+  );
 
   module.controller('GaFeaturetreeController',
-      ['$scope', 'gaGlobalOptions', 'gaPrintService', '$http',
-      function($scope, gaGlobalOptions, gaPrintService, $http) {
+        function($scope, gaGlobalOptions, gaPrintService, $http) {
 
         $scope.options = {
           searchUrlTemplate: gaGlobalOptions.mapUrl + '/rest/services/{Topic}/SearchServer',
@@ -92,5 +92,5 @@
           }
         });
       }
-  ]);
+  );
 })();
