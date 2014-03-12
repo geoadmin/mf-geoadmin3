@@ -105,7 +105,7 @@
               $compile(layerHeaderTemplate)(scope);
               scope.query = '';
 
-              scope.layers = [];
+              scope.layers = map.getLayers().getArray();
 
               scope.overlay = undefined;
 
