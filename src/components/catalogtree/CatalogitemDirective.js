@@ -41,7 +41,8 @@
                 // in the gaLayers service, or gaLayers cannot construct an ol
                 // layer object for that layer.
                 var error = true;
-                if (angular.isDefined(gaLayers.getLayer(item.idBod))) {
+                var bodLayer = gaLayers.getLayer(item.idBod);
+                if (angular.isDefined(bodLayer)) {
                   layer = gaLayers.getOlLayerById(item.idBod);
                   if (angular.isDefined(layer)) {
                     error = false;
@@ -53,7 +54,13 @@
               }
               if (layer && layer.timeEnabled) {
                 // options.currentYear is setted in CatalogTreeDirective
-                layer.time = $scope.options.currentYear;
+                var val = $scope.options.currentYear;
+
+                if (!val && bodLayer &&
+                    layer.getSource() instanceof ol.source.WMTS) {
+                  val = bodLayer.timestamps[0];
+                }
+                layer.time = val;
               }
             };
 
