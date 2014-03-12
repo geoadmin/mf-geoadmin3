@@ -228,8 +228,8 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 	touch $@
 
 .build-artefacts/translate-requirements-installation.timestamp: .build-artefacts/python-venv
-	.build-artefacts/python-venv/bin/pip install "psycopg2==2.5.1"
 	.build-artefacts/python-venv/bin/pip install "PyYAML==3.10"
+	.build-artefacts/python-venv/bin/pip install "gspread==0.1.0"
 	touch $@
 
 .build-artefacts/ol-requirements-installation.timestamp: .build-artefacts/python-venv

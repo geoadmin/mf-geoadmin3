@@ -31,14 +31,6 @@ try:
 except ImportError:
     from yaml import Loader, Dumper
 
-try:
-    import psycopg2
-    import psycopg2.extras
-    from psycopg2.extensions import register_type, UNICODE, connection
-except ImportError:
-    print "You need psycopg2 to run this script. Try to install it with 'easy_install psycopg2'"
-    sys.exit()
-
 print "Translating... "
 
 class Ddict(dict):
