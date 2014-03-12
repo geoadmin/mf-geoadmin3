@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 """
 translation2js.py
-This script is used to translate the {lang}.json-files. The scripts uses the content of the table bod.translations
+This script is used to translate the {lang}.json-files. The scripts uses the googlespreadsheet (key : 0AvgmqEgDEiu5dGpFRlpxTU9fVzN3cHNYbWtqOEtKbkE) 
 to generate the {lang}.json-files.
-Rq : Modificaton : Read translations directly from the GoogleSpreadsheet (12.03.2014)
 
 Usage: ./env/bin/python translation2js.py /home/ltmoc/mf-geoadmin3/src/locales/ 
 """
@@ -63,7 +62,7 @@ finally:
 config = yaml.load(yml)
 
 # Read GoogleSpreadsheet
-print "Connexion au GoogleSpreadSheet"
+print "Connection to GoogleSpreadSheet..."
 if 'DRIVE_USER' in os.environ.keys() and  'DRIVE_PWD' in os.environ.keys():
     gc = gspread.login(os.environ['DRIVE_USER'],os.environ['DRIVE_PWD'])
 else:
@@ -75,7 +74,7 @@ gsheet = gc.open_by_key('0AvgmqEgDEiu5dGpFRlpxTU9fVzN3cHNYbWtqOEtKbkE')
 worksheet = gsheet.get_worksheet(0)
 list_of_lists = worksheet.get_all_values()
 nb_translation_exist = len(list_of_lists)
-print "Nombre de record : " + str(nb_translation_exist)
+print "Nb record : " + str(nb_translation_exist)
 
 # Create a multinensional array [lang][msg-ud]  Example: translationDict["it"]["zoomin"]
 translationDict = Ddict(dict)
