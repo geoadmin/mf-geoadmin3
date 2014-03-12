@@ -126,10 +126,11 @@ class Search(SearchValidation):
         ''' Recursive and inclusive search through
             quadindex windows. '''
         if self.quadindex is not None:
-            buildQuadQuery = lambda x: ''.join(('@geom_quadindex ', x, '* | '))
-            quadSearch = ''.join(
-                buildQuadQuery(self.quadindex[:-x]) if x != 0 else buildQuadQuery(self.quadindex)
-                for x in range(0, len(self.quadindex))
+            buildQuadQuery = lambda x: ''.join(('@geom_quadindex ', x, ' | '))
+            quadSearch = ''.join(('@geom_quadindex ', self.quadindex, '* | '))
+            quadSearch += ''.join(
+                buildQuadQuery(self.quadindex[:-x])
+                for x in range(1, len(self.quadindex))
             )[:-len(' | ')]
             return quadSearch
         return ''
@@ -190,8 +191,8 @@ class Search(SearchValidation):
 
         finalQuery = ''.join((
             '%s "^%s$" | ' % (fields, sentence),         # starts and ends with sentence
-            '%s "%s$" | ' % (fields, sentence),          # ends with sentence
             '%s "^%s" | ' % (fields, sentence),          # starts with sentence
+            '%s "%s$" | ' % (fields, sentence),          # ends with sentence
             '%s (%s)  | ' % (fields, prefixSearchText),  # matching all words one by one (prefix)
             '%s (%s)' % (fields, infixSearchText)        # matching all words one by one (infix)
         ))
