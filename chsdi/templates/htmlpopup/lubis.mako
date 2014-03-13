@@ -132,6 +132,7 @@ params = (
     fullName)
 quickview_url = get_quickview_url(request, params)
 %>
+<title>${_('tt_lubis_ebkey')}: ${c['attributes']['bildnummer']}</title>
 <body onload="init()">
   <table class="table-with-border kernkraftwerke-extended">
     <tr><th class="cell-left">${_('tt_lubis_ebkey')}</th>            <td>${c['featureId'] or '-'}</td></tr>
