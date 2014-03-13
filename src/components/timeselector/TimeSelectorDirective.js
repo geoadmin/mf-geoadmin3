@@ -69,20 +69,19 @@
           var year = $scope.years[i];
           year.available = false;
           $scope.map.getLayers().forEach(function(olLayer, opt) {
-            if (year.available) {
+            if (year.available || !olLayer.bodId || !olLayer.timeEnabled) {
               return;
             }
-            var timestamps = getLayerTimestamps(olLayer);
-            if (timestamps) {
-              for (var i = 0, length = timestamps.length; i < length; i++) {
-                if (year.value === yearFromString(timestamps[i])) {
-                  year.available = true;
-                  $scope.availableYears.push(year);
-                  if (year.value === $scope.currentYear) {
-                    magnetizeCurrentYear = false;
-                  }
-                  break;
+            var timestamps = gaLayers.getLayerProperty(olLayer.bodId,
+                'timestamps') || [];
+            for (var i = 0, length = timestamps.length; i < length; i++) {
+              if (year.value === parseInt(timestamps[i].substr(0, 4))) {
+                year.available = true;
+                $scope.availableYears.push(year);
+                if (year.value === $scope.currentYear) {
+                  magnetizeCurrentYear = false;
                 }
+                break;
               }
             }
           });
@@ -116,55 +115,13 @@
         // a string  : Apply the year selected
 
         $scope.map.getLayers().forEach(function(olLayer, opt) {
-          var timestamps = getLayerTimestamps(olLayer);
-          var id = olLayer.bodId;
-          if (timestamps) {
-            var layerTimeStr = timeStr;
-            if (!angular.isDefined(layerTimeStr)) {
-              var timeBehaviour = gaLayers.getLayerProperty(id,
-                                                            'timeBehaviour');
-              if (timeBehaviour === 'all') {
-                layerTimeStr = '';
-              } else { //most recent
-                layerTimeStr = timestamps[0];
-              }
-            }
-            var src = olLayer.getSource();
-            if (src instanceof ol.source.WMTS) {
-              layerTimeStr = timeStampFromYear(layerTimeStr, timestamps);
-            }
+          // We update only time enabled bod layers
+          if (olLayer.bodId && olLayer.timeEnabled) {
+            var layerTimeStr = gaLayers.getLayerTimestampFromYear(olLayer.bodId,
+                timeStr);
             olLayer.time = layerTimeStr;
           }
         });
-      };
-
-      /** Utils **/
-      var timeStampFromYear = function(yearStr, timestamps) {
-        var ts;
-        for (var i = 0, ii = timestamps.length; i < ii; i++) {
-          ts = timestamps[i];
-          //Strange if statement here because yearStr can either be
-          //full timestamp string or year-only string...
-          if (yearStr === ts ||
-              parseInt(yearStr) === yearFromString(ts)) {
-            return ts;
-          }
-        }
-        return undefined;
-      };
-
-      var yearFromString = function(timestamp) {
-        return parseInt(timestamp.substr(0, 4));
-      };
-
-      var getLayerTimestamps = function(olLayer) {
-        var id = olLayer.bodId;
-        var timestamps;
-        if (id && gaLayers.getLayer(id) &&
-            gaLayers.getLayerProperty(id, 'timeEnabled')) {
-          timestamps = gaLayers.getLayerProperty(id, 'timestamps');
-        }
-        return timestamps;
       };
     }
   );
