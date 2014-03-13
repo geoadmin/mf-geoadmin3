@@ -83,15 +83,18 @@ quickview_url = get_quickview_url(request, params)
   <td>${_('tt_lubis_noQuickview')}</td>
 </tr>
 % endif
+% if 'contact_web' not in c['attributes'] and 'ort' not in c['attributes']:
 <tr>
-% if 'contact_web' not in c['attributes']:
   <td class="cell-left">${_('link')} Toposhop</td>
   <td><a href="http://www.toposhop.admin.ch/de/shop/satair/lubis_1?ext=1&pics=${c['featureId']},0,${c['attributes']['ort'].strip()},${c['attributes']['y']},${c['attributes']['x']},nein" target="toposhop">Toposhop</a></td>
-% else:
+</tr>
+% endif
+% if 'contact_web' in c['attributes']:
+<tr>
   <th class="cell-left">${_('tt_lubis_bildorder')}</th>
   <td>${c['attributes']['contact']} <br /> ${c['attributes']['contact_email']} <br /><a href="${c['attributes']['contact_web']}" target="_blank">${c['attributes']['contact_web']}</a></td>
-% endif
 </tr>
+% endif
 <tr>
   <td class="cell-left"></td>
   <td>
@@ -141,16 +144,17 @@ quickview_url = get_quickview_url(request, params)
     <tr><th class="cell-left">${_('tt_lubis_originalsize')}</th>     <td>${c['attributes']['originalsize'] or '-'}</td></tr>
     <tr><th class="cell-left">${_('tt_lubis_scan')}</th>             <td>${scan or '-'}</td></tr>
     <tr><th class="cell-left">${_('tt_lubis_orientierung')}</th>     <td>${orientierung or '-'}</td></tr>
-% if 'contact_web' not in c['attributes']:
-    <tr class="chsdi-no-print">
-      <th class="cell-left">${_('link')} Toposhop</th>
-      <td><a href="http://www.toposhop.admin.ch/de/shop/satair/lubis_1?ext=1&pics=${c['featureId']},0,${c['attributes']['ort'].strip()},${c['attributes']['y']},${c['attributes']['x']},nein" target="toposhop">Toposhop</a></td>
-    </tr>
-% else:
-    <tr>
-      <th class="cell-left">${_('tt_lubis_bildorder')}</th>
-      <td>${c['attributes']['contact']} <br /> ${c['attributes']['contact_email']} <br /><a href="${c['attributes']['contact_web']}" target="_blank">${c['attributes']['contact_web']}</a></td>
-    </tr>
+% if 'contact_web' not in c['attributes'] and 'ort' not in c['attributes']:
+  <tr class="chsdi-no-print">
+    <td class="cell-left">${_('link')} Toposhop</td>
+    <td><a href="http://www.toposhop.admin.ch/de/shop/satair/lubis_1?ext=1&pics=${c['featureId']},0,${c['attributes']['ort'].strip()},${c['attributes']['y']},${c['attributes']['x']},nein" target="toposhop">Toposhop</a></td>
+  </tr>
+% endif
+% if 'contact_web' in c['attributes']:
+  <tr class="chsdi-no-print">
+    <th class="cell-left">${_('tt_lubis_bildorder')}</th>
+    <td>${c['attributes']['contact']} <br /> ${c['attributes']['contact_email']} <br /><a href="${c['attributes']['contact_web']}" target="_blank">${c['attributes']['contact_web']}</a></td>
+  </tr>
 % endif
   </table>
   <div class="chsdi-map-container table-with-border" >
