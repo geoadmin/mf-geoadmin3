@@ -520,7 +520,8 @@
               maxResolution: layer.maxResolution,
               opacity: layer.opacity || 1,
               attribution: layer.attribution,
-              source: olSource
+              source: olSource,
+              useInterimTilesOnError: false
             });
           } else if (layer.type == 'wms') {
             var wmsUrl = gaUrlUtils.remove(
@@ -565,7 +566,8 @@
                 maxResolution: layer.maxResolution,
                 opacity: layer.opacity || 1,
                 attribution: layer.attribution,
-                source: olSource
+                source: olSource,
+                useInterimTilesOnError: false
               });
             }
           } else if (layer.type == 'aggregate') {
