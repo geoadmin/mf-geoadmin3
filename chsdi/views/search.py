@@ -128,7 +128,7 @@ class Search(SearchValidation):
         if self.quadindex is not None:
             buildQuadQuery = lambda x: ''.join(('@geom_quadindex ', x, ' | '))
             if len(self.quadindex) == 1:
-                quadSearch = ''.join(('@geom_quadindex ', self.quadindex))
+                quadSearch = ''.join(('@geom_quadindex ', self.quadindex, '*'))
             else:
                 quadSearch = ''.join(('@geom_quadindex ', self.quadindex, '* | '))
                 quadSearch += ''.join(
