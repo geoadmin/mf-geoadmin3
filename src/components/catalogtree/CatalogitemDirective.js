@@ -52,14 +52,11 @@
                 }
                 item.errorLoading = error;
               }
-              if (layer && layer.timeEnabled) {
-                // options.currentYear is setted in CatalogTreeDirective
-                var val = $scope.options.currentYear;
 
-                if (!val && bodLayer &&
-                    layer.getSource() instanceof ol.source.WMTS) {
-                  val = bodLayer.timestamps[0];
-                }
+              if (layer.bodId && layer.timeEnabled) {
+                // options.currentYear is setted in CatalogTreeDirective
+                var val = gaLayers.getLayerTimestampFromYear(layer.bodId,
+                    $scope.options.currentYear);
                 layer.time = val;
               }
             };

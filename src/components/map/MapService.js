@@ -492,8 +492,7 @@
         this.getOlLayerById = function(bodId) {
           var layer = layers[bodId];
           var olLayer;
-          var time = (layer.timeEnabled) ?
-              currentTime : false;
+          var timestamp = this.getLayerTimestampFromYear(bodId, currentTime);
           var attributions = [
             gaMapUtils.getAttribution('<a href="' +
               layer.attributionUrl +
@@ -506,7 +505,7 @@
               olSource = layer.olSource = new ol.source.WMTS({
                 attributions: attributions,
                 dimensions: {
-                  'Time': time || layer.timestamps[0]
+                  'Time': timestamp
                 },
                 projection: 'EPSG:21781',
                 requestEncoding: 'REST',
@@ -532,8 +531,8 @@
               FORMAT: 'image/' + layer.format
             };
 
-            if (layer.timeEnabled && angular.isDefined(time)) {
-              wmsParams['TIME'] = time || layer.timestamps[0];
+            if (timestamp) {
+              wmsParams['TIME'] = timestamp;
             }
             if (layer.singleTile === true) {
               if (!olSource) {
@@ -620,6 +619,47 @@
         this.getMetaDataOfLayer = function(bodId) {
           var url = getMetaDataUrl(currentTopic.id, bodId, $translate.uses());
           return $http.get(url);
+        };
+
+        /**
+         * Find the correct timestamp of layer from a specific year string.
+         *
+         * Returns undefined if the layer has no timestamp.
+         * Returns undefined if the layer has not a timestamp for this year.
+         * If there is more than one timestamp for a year we choose the first
+         * found.
+         */
+        this.getLayerTimestampFromYear = function(bodId, yearStr) {
+          var layer = this.getLayer(bodId);
+          var timestamps = layer.timestamps || [];
+
+          if (!layer.timeEnabled) {
+            // a WMTS layer has at least one timestamp
+            return (layer.type == 'wmts') ? timestamps[0] : undefined;
+          } else if (layer.type == 'wms') {
+            // A time enabled WMS layer has no timestamps so we return the
+            // yearsStr unchanged
+            return yearStr;
+          }
+
+          if (!angular.isDefined(yearStr)) {
+            var timeBehaviour = this.getLayerProperty(bodId,
+                'timeBehaviour');
+            yearStr = (timeBehaviour === 'all' || timestamps.length == 0) ?
+                undefined : timestamps[0];
+          }
+
+          for (var i = 0, ii = timestamps.length; i < ii; i++) {
+            var ts = timestamps[i];
+            //Strange if statement here because yearStr can either be
+            //full timestamp string or year-only string...
+            if (yearStr === ts ||
+                parseInt(yearStr) === parseInt(ts.substr(0, 4))) {
+              return ts;
+            }
+          }
+
+          return undefined;
         };
 
         $rootScope.$on('gaTopicChange', function(event, topic) {

@@ -136,6 +136,12 @@
                   !isPreview) {
                   layerInMap.preview = isPreview;
                 }
+                if (olLayer.bodId && olLayer.timeEnabled) {
+                  // options.currentYear is setted in CatalogTreeDirective
+                  var val = gaLayers.getLayerTimestampFromYear(olLayer.bodId,
+                      year);
+                  olLayer.time = val;
+                }
               };
 
               scope.removePreviewLayer = function(bodId) {
@@ -426,9 +432,9 @@
                 }
               });
 
-              scope.$on('gaTimeSelectorChange', function(event, currentyear) {
-                if (currentyear !== year) {
-                  year = currentyear;
+              scope.$on('gaTimeSelectorChange', function(event, newYear) {
+                if (newYear !== year) {
+                  year = newYear;
                   if (scope.query !== '') {
                     //Update locations search (containing feature search)
                     var datasetLocations = $(taElt).data('ttView').datasets[0];
