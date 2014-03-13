@@ -22,7 +22,13 @@ class Search(SearchValidation):
         self.quadtree = msk.QuadTree(
             msk.BBox(420000, 30000, 900000, 510000), 20)
         self.sphinx = sphinxapi.SphinxClient()
-        sphinxHost = request.registry.settings['sphinxhost']
+
+        # optional get parameter to override host
+        if 'host' in request.params:
+            sphinxHost = str(request.params.get('host'))
+        else:
+            sphinxHost = request.registry.settings['sphinxhost']
+
         self.sphinx.SetServer(sphinxHost, 9312)
         self.sphinx.SetMatchMode(sphinxapi.SPH_MATCH_EXTENDED)
 
