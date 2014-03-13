@@ -127,11 +127,14 @@ class Search(SearchValidation):
             quadindex windows. '''
         if self.quadindex is not None:
             buildQuadQuery = lambda x: ''.join(('@geom_quadindex ', x, ' | '))
-            quadSearch = ''.join(('@geom_quadindex ', self.quadindex, '* | '))
-            quadSearch += ''.join(
-                buildQuadQuery(self.quadindex[:-x])
-                for x in range(1, len(self.quadindex))
-            )[:-len(' | ')]
+            if len(self.quadindex) == 1:
+                quadSearch = ''.join(('@geom_quadindex ', self.quadindex))
+            else:
+                quadSearch = ''.join(('@geom_quadindex ', self.quadindex, '* | '))
+                quadSearch += ''.join(
+                    buildQuadQuery(self.quadindex[:-x])
+                    for x in range(1, len(self.quadindex))
+                )[:-len(' | ')]
             return quadSearch
         return ''
 
