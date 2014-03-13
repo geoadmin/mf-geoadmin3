@@ -468,14 +468,17 @@
     </div><!-- end Draw -->
 
     <!-- Popup: Feature Tree -->
-    <div ga-popup="globals.isFeatureTreeActive"
-         ga-popup-options="{title: 'object_information'}"
+    <div ng-controller="GaFeaturetreeController">
+      <div ga-popup="globals.isFeatureTreeActive"
+         ga-popup-options="{title:'object_information', showPrint:true, print: print}"
          ga-draggable=".ga-popup-title"
          id="featuretree-popup">
-      <div ng-controller="GaFeaturetreeController"> 
-        <div ga-featuretree 
-             ga-featuretree-options="options" 
-             ga-featuretree-map="map"></div>
+      <div ga-featuretree 
+        ga-featuretree-options="options" 
+        ga-featuretree-map="map"></div>
+	<div ng-show='printInProgress' class='ga-popup-print-in-progress'>
+	  {{printProgressPercentage}}%
+        </div>
       </div>
     </div>
 
