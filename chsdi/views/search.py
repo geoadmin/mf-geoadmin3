@@ -14,7 +14,7 @@ class Search(SearchValidation):
 
     LIMIT = 50
     LAYER_LIMIT = 30
-    FEATURE_LIMIT = 20
+    FEATURE_LIMIT = 10
     FEATURE_GEO_LIMIT = 200
 
     def __init__(self, request):
@@ -22,7 +22,13 @@ class Search(SearchValidation):
         self.quadtree = msk.QuadTree(
             msk.BBox(420000, 30000, 900000, 510000), 20)
         self.sphinx = sphinxapi.SphinxClient()
-        sphinxHost = request.registry.settings['sphinxhost']
+
+        # optional get parameter to override host
+        if 'host' in request.params:
+            sphinxHost = str(request.params.get('host'))
+        else:
+            sphinxHost = request.registry.settings['sphinxhost']
+
         self.sphinx.SetServer(sphinxHost, 9312)
         self.sphinx.SetMatchMode(sphinxapi.SPH_MATCH_EXTENDED)
 
@@ -31,10 +37,12 @@ class Search(SearchValidation):
         self.lang = request.lang
         self.cbName = request.params.get('callback')
         self.bbox = request.params.get('bbox')
+        self.returnGeometry = request.params.get('returnGeometry', 'true').lower() == 'true'
         self.quadindex = None
         self.featureIndexes = request.params.get('features')
         self.timeInstant = request.params.get('timeInstant')
         self.typeInfo = request.params.get('type')
+        self.varnish_authorized = request.headers.get('X-Searchserver-Authorized', 'true').lower() == 'true'
 
         self.geodataStaging = request.registry.settings['geodata_staging']
         self.results = {'results': []}
@@ -42,6 +50,7 @@ class Search(SearchValidation):
 
     @view_config(route_name='search', renderer='jsonp')
     def search(self):
+        self.sphinx.SetConnectTimeout(2.0)
         # create a quadindex if the bbox is defined
         if self.bbox is not None and self.typeInfo != 'layers':
             self._get_quad_index()
@@ -54,6 +63,12 @@ class Search(SearchValidation):
         if self.typeInfo in ('features', 'featureidentify'):
             # search all features within bounding box
             self._feature_bbox_search()
+        if self.typeInfo == 'featuresearch':
+            # search all features using searchText
+            self.searchText = remove_accents(
+                self.request.params.get('searchText')
+            )
+            self._feature_search()
         if self.typeInfo == 'locations':
             # search all features with text and bounding box
             self.searchText = remove_accents(
@@ -71,13 +86,19 @@ class Search(SearchValidation):
         self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
         self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, 'rank ASC, @weight DESC, num ASC')
         searchText = self._query_fields('@detail')
-        temp = self.sphinx.Query(searchText, index='swisssearch')
+        try:
+            temp = self.sphinx.Query(searchText, index='swisssearch')
+        except IOError:
+            raise exc.HTTPGatewayTimeout()
         temp = temp['matches'] if temp is not None else temp
         if temp is not None and len(temp) != 0:
             nb_address = 0
             for res in temp:
                 if res['attrs']['origin'] == 'address':
                     if nb_address < 20:
+                        if not (self.varnish_authorized and self.returnGeometry):
+                            if 'geom_st_box2d' in res['attrs'].keys():
+                                del res['attrs']['geom_st_box2d']
                         self.results['results'].append(res)
                         nb_address += 1
                 else:
@@ -90,17 +111,34 @@ class Search(SearchValidation):
         self.sphinx.SetLimits(0, self.LAYER_LIMIT)
         self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
         self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, '@weight DESC')
-        index_name = 'layers_' + self.lang
-        searchText = self._query_fields('@(detail,layer)')
-        searchText += ' & @topics ' + self.mapName
-        # We only take the layers in prod for now
-        searchText += ' & @staging prod'
-        temp = self.sphinx.Query(searchText, index=index_name)
+        index_name = 'layers_%s' % self.lang
+        mapName = self.mapName if self.mapName != 'all' else ''
+        searchText = ' '.join((
+            self._query_fields('@(detail,layer)'),
+            '& @topics %s' % mapName,                 # Filter by to topic if string not empty
+            '& @staging prod'                         # Only layers in prod are searched
+        ))
+        try:
+            temp = self.sphinx.Query(searchText, index=index_name)
+        except IOError:
+            raise exc.HTTPGatewayTimeout()
         temp = temp['matches'] if temp is not None else temp
         if temp is not None and len(temp) != 0:
             self.results['results'] += temp
             return len(temp)
         return 0
+
+    def _get_quadindex_string(self):
+        ''' Recursive and inclusive search through
+            quadindex windows. '''
+        if self.quadindex is not None:
+            buildQuadQuery = lambda x: ''.join(('@geom_quadindex ', x, '* | '))
+            quadSearch = ''.join(
+                buildQuadQuery(self.quadindex[:-x]) if x != 0 else buildQuadQuery(self.quadindex)
+                for x in range(0, len(self.quadindex))
+            )[:-len(' | ')]
+            return quadSearch
+        return ''
 
     def _feature_search(self):
         # all features in given bounding box
@@ -115,9 +153,12 @@ class Search(SearchValidation):
             self.sphinx.SetFilter('year', [self.timeInstant])
         searchText = self._query_fields('@detail')
         if self.quadindex is not None:
-            searchText += ' & @geom_quadindex ' + self.quadindex + '*'
+            searchText += ' & (' + self._get_quadindex_string() + ')'
         self._add_feature_queries(searchText)
-        temp = self.sphinx.RunQueries()
+        try:
+            temp = self.sphinx.RunQueries()
+        except IOError:
+            raise exc.HTTPGatewayTimeout()
         return self._parse_feature_results(temp)
 
     def _get_geoanchor_from_bbox(self):
@@ -141,43 +182,27 @@ class Search(SearchValidation):
         self.sphinx.SetGeoAnchor('lat', 'lon', geoAnchor.GetY(), geoAnchor.GetX())
         self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, '@geodist ASC')
 
-        geomFilter = '@geom_quadindex ' + self.quadindex + '*'
+        geomFilter = self._get_quadindex_string()
         self._add_feature_queries(geomFilter)
         temp = self.sphinx.RunQueries()
         return self._parse_feature_results(temp)
 
     def _query_fields(self, fields):
+        infix = lambda x: ''.join(('*', x, '* & '))
+        prefix = lambda x: ''.join((x, '* & '))
+        infixSearchText = ''.join(infix(text) for text in self.searchText)[:-len(' & ')]
+        prefixSearchText = ''.join(prefix(text) for text in self.searchText)[:-len(' & ')]
         sentence = ' '.join(self.searchText)
-        searchText = ''
-        counter = 1
-        for text in self.searchText:
-            if counter != len(self.searchText):
-                searchText += '*' + text + '* & '
-            else:
-                searchText += '*' + text + '*'
-            counter += 1
-        # starts and ends with query words
-        finalQuery = '%s "^%s$" | ' % (fields, sentence)
-        # sentence search (the all sentence within the search field)
-        # order matters
-        finalQuery += '%s "%s" | ' % (fields, sentence)
-        # words exact match
-        finalQuery += '%s (%s) | ' % (fields, sentence)
-        # full text search word per word
-        finalQuery += '%s (%s)' % (fields, searchText)
+
+        finalQuery = ''.join((
+            '%s "^%s$" | ' % (fields, sentence),         # starts and ends with sentence
+            '%s "%s$" | ' % (fields, sentence),          # ends with sentence
+            '%s "^%s" | ' % (fields, sentence),          # starts with sentence
+            '%s (%s)  | ' % (fields, prefixSearchText),  # matching all words one by one (prefix)
+            '%s (%s)' % (fields, infixSearchText)        # matching all words one by one (infix)
+        ))
 
         return finalQuery
-
-    def _query_layers_detail(self, fields):
-        searchText = ''
-        counter = 1
-        for text in self.searchText:
-            if counter != len(self.searchText):
-                searchText += fields + ' ' + text + ' & '
-            else:
-                searchText += fields + ' ' + text
-            counter += 1
-        return searchText
 
     def _add_feature_queries(self, queryText):
         for index in self.featureIndexes:
