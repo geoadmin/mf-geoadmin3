@@ -3,6 +3,7 @@
 from sqlalchemy import Column, Text, Integer, Boolean
 from sqlalchemy.dialects import postgresql
 
+from chsdi.lib.helpers import make_agnostic
 from chsdi.models import bases
 
 Base = bases['bod']
@@ -99,9 +100,11 @@ class LayersConfig(Base):
             del config['singleTile']
         if config['type'] == 'wms':
             if staging == 'test':
-                config['wmsUrl'] = config['wmsUrl'].replace('wms.geo.admin.ch', 'wms-bgdi0t.bgdi.admin.ch')
+                config['wmsUrl'] = make_agnostic(
+                    config['wmsUrl'].replace('wms.geo.admin.ch', 'wms-bgdi0t.bgdi.admin.ch'))
             if staging == 'integration':
-                config['wmsUrl'] = config['wmsUrl'].replace('wms.geo.admin.ch', 'wms-bgdi0i.bgdi.admin.ch')
+                config['wmsUrl'] = make_agnostic(
+                    config['wmsUrl'].replace('wms.geo.admin.ch', 'wms-bgdi0i.bgdi.admin.ch'))
         # sublayers don't have attributions
         if 'attribution' in config:
             config['attributionUrl'] = translate(self.__dict__['attribution'] + '.url')
