@@ -22,7 +22,8 @@ class CatalogService(MapNameValidation):
         rows = self.request.db.query(model)\
             .filter(model.topic.ilike('%%%s%%' % self.mapName))\
             .order_by(model.depth)\
-            .order_by(model.orderKey).all()
+            .order_by(model.orderKey)\
+            .order_by(model.get_name_from_lang(self.lang)).all()
         if len(rows) == 0:
             raise HTTPNotFound('No catalog with id %s is available' % self.mapName)
 
