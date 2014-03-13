@@ -26,6 +26,11 @@
 
       var isSnapshot = gaPermalink.getParams().snapshot == 'true';
 
+      // We remove the snapshot parameter in order to not have it
+      // anywhere in the page as part of the permalink inside the page.
+      // Snapshot state is available through the isSnapshot function.
+      gaPermalink.deleteParam('snapshot');
+
       var SeoService = function() {
         this.addRequestCount = function() {
           openRequests += 1;
