@@ -92,7 +92,23 @@ quickview_url = get_quickview_url(request, params)
 % if 'contact_web' in c['attributes']:
 <tr>
   <th class="cell-left">${_('tt_lubis_bildorder')}</th>
-  <td>${c['attributes']['contact']} <br /> ${c['attributes']['contact_email']} <br /><a href="${c['attributes']['contact_web']}" target="_blank">${c['attributes']['contact_web']}</a></td>
+  <td>
+    ${c['attributes']['contact']} 
+    <br/> 
+    ${c['attributes']['contact_email']} 
+    <br/>
+
+% if  c['attributes']['contact_web'] != '-':
+    <a href="${c['attributes']['contact_web']}" target="_blank">
+% endif
+
+    ${c['attributes']['contact_web']}
+
+% if  c['attributes']['contact_web'] != '-':
+    </a>
+% endif
+
+  </td>
 </tr>
 % endif
 <tr>
