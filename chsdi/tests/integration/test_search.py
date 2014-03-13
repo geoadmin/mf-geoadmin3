@@ -146,3 +146,7 @@ class TestSearchServiceView(TestsBase):
 
     def test_features_wrong_time_2(self):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'locations', 'bbox': '542200,206800,542200,206800', 'timeInstant': '1952.00'}, status=400)
+
+    def test_featuresearch_quad_len_1(self):
+        resp = self.testapp.get('/rest/services/funksender/SearchServer', params={'type': 'locations', 'searchText': 'laus', 'features': 'ch.bakom.radio-fernsehsender', 'bbox': '356250,72250,963750,307750', 'lang': 'de'}, status=200)
+        self.failUnless(resp.content_type == 'application/json')
