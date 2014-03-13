@@ -1,7 +1,7 @@
 <%def name="init_map(filename, width, height, target)">
         var width = parseInt(${width});
         var height = parseInt(${height});
-        var url = "https://web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?Zoomify=${filename}/";
+        var url = "//web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?Zoomify=${filename}/";
         var mapIipimage = new ol.Map({
           layers: [
             new ol.layer.Tile({

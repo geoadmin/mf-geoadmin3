@@ -15,7 +15,7 @@ def get_image_size(filename):
 
     if filename:
         try:
-            file = urllib2.urlopen("http://web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?DeepZoom=" + filename + ".dzi")
+            file = urllib2.urlopen("https://web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?DeepZoom=" + filename + ".dzi")
             xmldoc = minidom.parse(file)
             dimensions = xmldoc.getElementsByTagName('Size')
             width = dimensions[0].getAttribute('Width')
@@ -74,7 +74,7 @@ quickview_url = get_quickview_url(request, params)
 <tr>
   <td class="cell-left">${_('tt_lubis_Quickview')}</td>
   <td>
-    <a href="${quickview_url}" target="_blank"><img src="http://web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?FIF=${c['attributes']['filename']}&WID=150&CVT=jpeg" alt="quickview"></a>
+    <a href="${quickview_url}" target="_blank"><img src="//web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?FIF=${c['attributes']['filename']}&WID=150&CVT=jpeg" alt="quickview"></a>
   </td>
 </tr>
 % else:
