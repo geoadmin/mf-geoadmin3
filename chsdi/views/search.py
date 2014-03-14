@@ -9,6 +9,7 @@ from chsdi.lib.helpers import transformCoordinate
 from chsdi.lib.sphinxapi import sphinxapi
 from chsdi.lib import mortonspacekey as msk
 
+import re
 
 class Search(SearchValidation):
 
@@ -153,8 +154,20 @@ class Search(SearchValidation):
         self.sphinx.SetLimits(0, self.FEATURE_LIMIT)
         self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
         self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, '@weight DESC')
+       
+        # test if searchText contains time interval pattern yyyy-yyyy
+        timeInterval=re.search(r'((\b\d{4})-(\d{4}\b))',' '.join(self.searchText)) or False
         if self.timeInstant is not None:
             self.sphinx.SetFilter('year', [self.timeInstant])
+        elif timeInterval:
+            numbers=[timeInterval.group(2),timeInterval.group(3)]
+            start=min(numbers)
+            stop=max(numbers)
+            if min != max:
+                self.sphinx.SetFilterRange('year',long(start),long(stop))
+                # remove time intervall from searchtext
+                self.searchText.remove(timeInterval.group(1))
+
         searchText = self._query_fields('@detail')
         if self.quadindex is not None:
             searchText += ' & (' + self._get_quadindex_string() + ')'
