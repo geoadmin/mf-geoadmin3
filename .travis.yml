@@ -41,8 +41,8 @@ before_script:
     - sudo pip install virtualenv
     - sudo groupadd geodata
     - make all
-    - chmod 0775 ./scripts/travis_deploy_on_mf0_dev.sh
-    - ./scripts/travis_deploy_on_mf0_dev.sh
+#    - chmod 0775 ./scripts/travis_deploy_on_mf0_dev.sh
+#    - ./scripts/travis_deploy_on_mf0_dev.sh
 
 notifications:
     email:

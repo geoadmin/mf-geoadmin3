@@ -2,7 +2,7 @@
   "name": "geoadmin3",
   "version": "3.0.0",
   "description": "GeoAdmin 3 Application",
-	"scripts": { "test": "node test/selenium/tests.js" },
+  "_scripts": { "test": "node test/selenium/tests.js" },
   "repository": {
     "type": "git",
     "url": "git://github.com/geoadmin/mf-geoadmin3"
