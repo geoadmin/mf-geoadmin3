@@ -195,7 +195,7 @@
                     newNode = {
                       label: '',
                       features: [],
-                      open: oldNode ? oldNode.open : false
+                      open: oldNode ? oldNode.open : true
                     };
                     tree[layerId] = newNode;
                   }
