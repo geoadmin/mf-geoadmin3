@@ -32421,7 +32421,7 @@ ga.Tooltip.prototype.handleClick_ = function(mapBrowserEvent) {
   this.overlay_.setPosition(coordinate);
   var size = this.map_.getSize();
   var extent = this.map_.getView().getView2D().calculateExtent(size);
-  var jsonp = new goog.net.Jsonp(new goog.Uri("//api3.geo.admin.ch/rest/services/api/MapServer/identify"), "callback");
+  var jsonp = new goog.net.Jsonp(new goog.Uri(GeoAdmin.serviceUrl + "/rest/services/api/MapServer/identify"), "callback");
   var layerList = new Array;
   var layer;
   for(var i in this.map_.getLayers().getArray()) {
@@ -32448,7 +32448,7 @@ ga.Tooltip.prototype.handleIdentifyResponse_ = function(response) {
   }
   for(var i in response["results"]) {
     var lang = window.GeoAdmin && window.GeoAdmin.lang ? window.GeoAdmin.lang : "de";
-    var jsonp = new goog.net.Jsonp(new goog.Uri("//api3.geo.admin.ch/rest/services/api/MapServer/" + response["results"][i]["layerBodId"] + "/" + response["results"][i]["featureId"] + "/" + "/htmlPopup?lang\x3d" + lang), "callback");
+    var jsonp = new goog.net.Jsonp(new goog.Uri(GeoAdmin.serviceUrl + "/rest/services/api/MapServer/" + response["results"][i]["layerBodId"] + "/" + response["results"][i]["featureId"] + "/" + "/htmlPopup?lang\x3d" + lang), "callback");
     jsonp.send({}, goog.bind(this.handleHtmlpopupResponse_, this), goog.bind(this.handleHtmlpopupError_, this))
   }
 };
@@ -32571,6 +32571,10 @@ ga.Map = function(options) {
   options.ol3Logo = false;
   goog.base(this, options);
   this.addControl(new ol.control.ScaleLine);
+  this.serviceUrl = "//api3.geo.admin.ch/";
+  if(goog.isDef(GeoAdmin) && goog.isDefAndNotNull(GeoAdmin.serviceUrl)) {
+    this.serviceUrl = GeoAdmin.serviceUrl
+  }
   this.geocoderDialog_ = null;
   this.geocoderList_ = null;
   this.geocoderCrossElement_ = null;
@@ -32582,7 +32586,7 @@ ga.Map = function(options) {
 };
 goog.inherits(ga.Map, ol.Map);
 ga.Map.prototype.geocode = function(text) {
-  var jsonp = new goog.net.Jsonp("//api3.geo.admin.ch/rest/services/api/SearchServer");
+  var jsonp = new goog.net.Jsonp(this.serviceUrl + "rest/services/api/SearchServer");
   var payload = {"searchText":text, "type":"locations", "returnGeometry":true};
   jsonp.send(payload, goog.bind(this.handleGeocode_, this), goog.bind(this.handleGeocodeError_, this))
 };
@@ -32601,7 +32605,7 @@ ga.Map.prototype.handleGeocodeError_ = function(response) {
   alert("Geocoding failed. Sorry for inconvenience.")
 };
 ga.Map.prototype.recenterFeature = function(layerId, featureId) {
-  var jsonp = new goog.net.Jsonp("//api3.geo.admin.ch/rest/services/api/MapServer/" + layerId + "/" + featureId);
+  var jsonp = new goog.net.Jsonp(this.serviceUrl + "rest/services/api/MapServer/" + layerId + "/" + featureId);
   var payload = {"geometryFormat":"geojson"};
   jsonp.send(payload, goog.bind(this.handleRecenter_, this), goog.bind(this.handleRecenterError_, this))
 };
@@ -32620,7 +32624,7 @@ ga.Map.prototype.recenterToFeature_ = function(feature) {
   }
 };
 ga.Map.prototype.highlightFeature = function(layerId, featureId) {
-  var jsonp = new goog.net.Jsonp("//api3.geo.admin.ch/rest/services/api/MapServer/" + layerId + "/" + featureId);
+  var jsonp = new goog.net.Jsonp(this.serviceUrl + "rest/services/api/MapServer/" + layerId + "/" + featureId);
   var payload = {"geometryFormat":"geojson"};
   jsonp.send(payload, goog.bind(this.handleHighlight_, this), goog.bind(this.handleHighlightError_, this))
 };
@@ -33531,7 +33535,7 @@ ga.layer.create = function(layer) {
   }}});
   return olLayer
 };
-ga.layer.layerConfig = getConfig() || {};
+ga.layer.layerConfig = GeoAdmin.getConfig() || {};
 ga.layer.attributions = {};
 ga.layer.getAttribution = function(text) {
   var key = text;
