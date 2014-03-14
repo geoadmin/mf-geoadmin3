@@ -987,72 +987,78 @@
   module.provider('gaRecenterMapOnFeatures', function() {
     this.$get = function($q, $http, gaDefinePropertiesForLayer,
                          gaStyleFunctionFactory) {
-      var MINIMAL_EXTENT_SIZE = 1965;
+
       var url = this.url;
-      var vector;
-      var parser = new ol.format.GeoJSON();
-      var getFeatures = function(featureIdsByBodId) {
-        var promises = [];
-        angular.forEach(featureIdsByBodId, function(featureIds, bodId) {
-          Array.prototype.push.apply(promises, $.map(featureIds,
-              function(featureId) {
-                return $http.get(url + bodId + '/' +
-                  featureId + '?geometryFormat=geojson');
-              }
-          ));
-        });
-        return $q.all(promises);
-      };
+      var RecenterMapOnFeatures = function() {
 
-      var getMinimalExtent = function(extent) {
-        var center, minS;
-        if (ol.extent.getHeight(extent) < MINIMAL_EXTENT_SIZE &&
-            ol.extent.getWidth(extent) < MINIMAL_EXTENT_SIZE) {
-          center = ol.extent.getCenter(extent);
-          minS = MINIMAL_EXTENT_SIZE / 2;
-          return ol.extent.boundingExtent([
-            [center[0] - minS, center[1] - minS],
-            [center[0] + minS, center[1] + minS]
-          ]);
-
-        } else {
-          return extent;
-        }
-      };
-
-      return function(map, featureIdsByBodId, drawFeature) {
-        getFeatures(featureIdsByBodId).then(function(results) {
-          var vectorSource;
-          var extent = [Infinity, Infinity, -Infinity, -Infinity];
-          var foundFeatures = [];
-          angular.forEach(results, function(result) {
-            var bbox = result.data.feature.bbox;
-            ol.extent.extend(extent, bbox);
-            foundFeatures.push(result.data.feature);
+        var MINIMAL_EXTENT_SIZE = 1965;
+        var vector;
+        var parser = new ol.format.GeoJSON();
+        var getFeatures = function(featureIdsByBodId) {
+          var promises = [];
+          angular.forEach(featureIdsByBodId, function(featureIds, bodId) {
+            Array.prototype.push.apply(promises, $.map(featureIds,
+                function(featureId) {
+                  return $http.get(url + bodId + '/' +
+                    featureId + '?geometryFormat=geojson');
+                }
+            ));
           });
-          if (extent[2] >= extent[0] && extent[3] >= extent[1]) {
-            map.getView().fitExtent(getMinimalExtent(extent),
-                map.getSize());
+          return $q.all(promises);
+        };
+
+        var getMinimalExtent = function(extent) {
+          var center, minS;
+          if (ol.extent.getHeight(extent) < MINIMAL_EXTENT_SIZE &&
+              ol.extent.getWidth(extent) < MINIMAL_EXTENT_SIZE) {
+            center = ol.extent.getCenter(extent);
+            minS = MINIMAL_EXTENT_SIZE / 2;
+            return ol.extent.boundingExtent([
+              [center[0] - minS, center[1] - minS],
+              [center[0] + minS, center[1] + minS]
+            ]);
+
+          } else {
+            return extent;
           }
-          map.removeLayer(vector);
-          if (drawFeature) {
-            vectorSource = new ol.source.Vector({
-              features: parser.readFeatures({
-                type: 'FeatureCollection',
-                features: foundFeatures
-              })
+        };
+
+        this.recenter = function(map, featureIdsByBodId, drawFeature) {
+          getFeatures(featureIdsByBodId).then(function(results) {
+            var vectorSource;
+            var extent = [Infinity, Infinity, -Infinity, -Infinity];
+            var foundFeatures = [];
+            angular.forEach(results, function(result) {
+              var bbox = result.data.feature.bbox;
+              ol.extent.extend(extent, bbox);
+              foundFeatures.push(result.data.feature);
             });
-            vector = new ol.layer.Vector({
-              source: vectorSource,
-              style: gaStyleFunctionFactory('select')
-            });
-            gaDefinePropertiesForLayer(vector);
-            vector.highlight = true;
-            vector.invertedOpacity = 0.25;
-            map.addLayer(vector);
-          }
-        });
+            if (extent[2] >= extent[0] && extent[3] >= extent[1]) {
+              map.getView().fitExtent(getMinimalExtent(extent),
+                  map.getSize());
+            }
+            map.removeLayer(vector);
+            if (drawFeature) {
+              vectorSource = new ol.source.Vector({
+                features: parser.readFeatures({
+                  type: 'FeatureCollection',
+                  features: foundFeatures
+                })
+              });
+              vector = new ol.layer.Vector({
+                source: vectorSource,
+                style: gaStyleFunctionFactory('select')
+              });
+              gaDefinePropertiesForLayer(vector);
+              vector.highlight = true;
+              vector.invertedOpacity = 0.25;
+              map.addLayer(vector);
+            }
+          });
+        };
       };
+
+      return new RecenterMapOnFeatures();
     };
   });
 
@@ -1083,7 +1089,7 @@
             }
           }
           if (featureIdsCount > 0) {
-            gaRecenterMapOnFeatures(map, featureIdsByBodId, true);
+            gaRecenterMapOnFeatures.recenter(map, featureIdsByBodId, true);
           }
           deregister();
         });
