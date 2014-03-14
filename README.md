@@ -29,21 +29,23 @@ export DRIVE_PWD=your_password
 
 Variables have sensible default values for development. Anyhow, they can be set as make macros or envvars. For example:
 
-    $ make BASE_URL_PATH=/elemoine apache 
-    $ BASE_URL_PATH=/elemoine make 
+    $ make APACHE_BASE_PATH=elemoine apache 
+    $ APACHE_BASE_PATH=elemoine make 
 
 You can customize the build by creating an `rc` file that you source once. Ex:  
 
     $ cat rc_elemoine 
-    export BASE_URL_PATH=/mypath
-    export SERVICE_URL=/http://mf-chsdi.dev.bgdi.ch
+    export APACHE_BASE_PATH=mypath
+    export APACHE_BASE_DIRECTORY=/home/elemoine/mf-geoadmin3
+    export API_URL=//mf-chsdi.3dev.bgdi.ch
+    export DEPLOY_TARGET=dev
     $ source rc_elemoine 
     $ make  
 
 For builds on test (rc_dev), integration (rc_ab) and production (rc_prod), you
 should source the corresponding `rc` file.
 
-On mf1t, create an Apache configuration file for your environment. Ex:
+On mf0t, create an Apache configuration file for your environment. Ex:
 
     $ cat /var/www/vhosts/mf-geoadmin3/conf/00-elemoine.conf
     Include /home/elemoine/mf-geoadmin3/apache/*.conf 
@@ -56,6 +58,8 @@ Update and build the project in the main directory of the vhost as
 describe above
 
     $ cd /var/www/vhosts/mf-geoadmin3/private/geoadmin
+    $ git checkout master
+    $ git pull origin master
     $ make all  && sudo apache2ctl graceful
 
 And test it.
@@ -69,10 +73,10 @@ And test on http://mf-geoadmin3.int.bgdi.ch/
 ## Deploying a branch
 
 Use `make deploybranch` *in your working directory* to deploy your current 
-branch to test and integration. The code for deployment, however, does not 
-come from your working directory, but does get cloned (first time) or pulled
-(if done once) *directly from github*. So you'll likely use this command 
-*after* you push your branch to github.
+branch to test (Use `make deploybranchint` to also deploy it to integration).
+The code for deployment, however, does not come from your working directory,
+but does get cloned (first time) or pulled (if done once) *directly from github*.
+So you'll likely use this command *after* you push your branch to github.
 
 Use `make deploybranch GIT_BRANCH=dev_other_branch` to deploy a different 
 branch than the one you are currently working on. Make sure that the branch 
@@ -81,17 +85,15 @@ specified exists on github.
 The first time you use the command will take some time to execute.
 
 The code of the deployed branch is in a specific directory 
-`/var/www/vhosts/mf-geoadmin3/private/branches` on both test and integration. 
-The apache configuration for all branches is in apache/branches.conf, which 
-should be the same accross all branches. It puts all branches under the 
-url `/branch/`. The 00-branches.conf in the vhost configuration points to the 
-latest deployed branch.
+`/var/www/vhosts/mf-geoadmin3/private/branch` on both test and integration.
+The command adds a branch specific configuration to
+`/var/www/vhosts/mf-geoadmin3/conf`. This way, the deployed branch
+behaves exactly the same as any user specific deploy.
 
 Sample path:
-http://mf-geoadmin3.int.bgdi.ch/branch/dev_bottombar/prod
-
-Overview of all deployed branches: http://mf-geoadmin3.int.bgdi.ch/branch
+http://mf-geoadmin3.int.bgdi.ch/dev_bottombar/prod
 
 Please only use integration url for external communication (including here on 
 github), even though the exact same structure is also available on our test 
 instances.
+
