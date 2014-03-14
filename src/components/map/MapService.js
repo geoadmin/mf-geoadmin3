@@ -992,7 +992,7 @@
       var RecenterMapOnFeatures = function() {
 
         var MINIMAL_EXTENT_SIZE = 1965;
-        var vector;
+        var vector, resetCallback;
         var parser = new ol.format.GeoJSON();
         var getFeatures = function(featureIdsByBodId) {
           var promises = [];
@@ -1027,9 +1027,14 @@
           if (angular.isDefined(vector)) {
             map.removeLayer(vector);
           }
+
+          if (angular.isDefined(resetCallback)) {
+            resetCallback();
+            resetCallback = undefined;
+          }
         };
 
-        this.recenter = function(map, featureIdsByBodId, drawFeature) {
+        this.recenter = function(map, featureIdsByBodId, drawFeature, resetCB) {
           var that = this;
           getFeatures(featureIdsByBodId).then(function(results) {
             var vectorSource;
@@ -1061,6 +1066,7 @@
               vector.invertedOpacity = 0.25;
               map.addLayer(vector);
             }
+            resetCallback = resetCB;
           });
         };
 
@@ -1096,8 +1102,17 @@
               }
             }
           }
+
+          var removeParamsFromPL = function() {
+            var bodId;
+            for (bodId in featureIdsByBodId) {
+              gaPermalink.deleteParam(bodId);
+            }
+          };
+
           if (featureIdsCount > 0) {
-            gaRecenterMapOnFeatures.recenter(map, featureIdsByBodId, true);
+            gaRecenterMapOnFeatures.recenter(map, featureIdsByBodId, true,
+                                             removeParamsFromPL);
           }
           deregister();
         });
