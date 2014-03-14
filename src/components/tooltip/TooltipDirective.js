@@ -16,7 +16,7 @@
   module.directive('gaTooltip',
       function($timeout, $document, $http, $q, $translate, $sce, gaPopup,
           gaLayers, gaBrowserSniffer, gaDefinePropertiesForLayer, gaMapClick,
-          gaStyleFunctionFactory, $rootScope) {
+          gaStyleFunctionFactory, $rootScope, gaRecenterMapOnFeatures) {
         var waitclass = 'ga-tooltip-wait',
             bodyEl = angular.element($document[0].body),
             popupContent = '<div ng-repeat="htmlsnippet in options.htmls">' +
@@ -240,6 +240,10 @@
                 angular.forEach(foundFeatures, function(value) {
 
                   if (value instanceof ol.Feature) {
+                    //Make sure that there's no highlight from PL anymore
+                    //Should be refactored
+                    gaRecenterMapOnFeatures.reset(map);
+
                     vectorSource.addFeature(value);
                     showPopup(value.get('htmlpopup'));
 
@@ -249,6 +253,13 @@
                         gaLayers.getLayerProperty(value.layerBodId,
                                                   'highlightable')) {
                       var features = parser.readFeatures(value);
+
+                      //Make sure that there's no highlight from PL anymore
+                      //Should be refactored
+                      if (features.length > 0) {
+                        gaRecenterMapOnFeatures.reset(map);
+                      }
+
                       for (var i = 0, ii = features.length; i < ii; ++i) {
                         vectorSource.addFeature(features[i]);
                       }
