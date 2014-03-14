@@ -17,6 +17,9 @@ chsdi.egg-info
 chsdi/static/doc/build/
 chsdi/static/css/extended.min.css
 chsdi/static/js/ol3/
+chsdi/static/js/layersconfig.*.js
+chsdi/static/js/serverconfig.js
+chsdi/static/js/*.css
 deploy/hooks/pre-create-code
 node_modules
 MANIFEST
