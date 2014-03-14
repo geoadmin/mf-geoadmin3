@@ -43,7 +43,6 @@ def get_quickview_url(request, params):
 %>
 
 <%def name="table_body(c, lang)">
-<% c['stable_id'] = True %>
 
 <%
 datum = date_to_str(c['attributes']['flugdatum'])
@@ -115,6 +114,12 @@ quickview_url = get_quickview_url(request, params)
   <td class="cell-left"></td>
   <td>
     <a href="${c['baseUrl']}/${c['instanceId']}/rest/services/all/MapServer/${c['layerBodId']}/${c['featureId']}/extendedHtmlPopup" target="_blank">${_('zusatzinfo')}<img src="http://www.swisstopo.admin.ch/images/ico_extern.gif" /></a>
+  </td>
+</tr>
+<tr>
+  <td class="cell-left"></td>
+  <td>
+     <a href="https://mf-geoadmin3.int.bgdi.ch/lubis_demo/prod/?${c['layerBodId']}=${str(c['featureId'])}&lang=${lang}&topic=lubis" target="new"> ${_('Link to object')}</a>
   </td>
 </tr>
 </%def>
@@ -222,5 +227,12 @@ quickview_url = get_quickview_url(request, params)
 
     }
   </script>
+<tr>
+  <td class="cell-left"></td>
+  <td>
+     <a href="https://mf-geoadmin3.int.bgdi.ch/lubis_demo/prod/?${c['layerBodId']}=${str(c['featureId'])}&lang=${lang}&topic=lubis" target="new"> ${_('Link to object')}</a>
+  </td>
+</tr>
+
 </body>
 </%def>
