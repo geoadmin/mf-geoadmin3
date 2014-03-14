@@ -1,4 +1,2 @@
 langs: [de,fr,en,it,rm]
-dsn: dbname='bod' user='www-data' host='pgcluster0t.bgdi.admin.ch'
-sql: select * from re3.translations order by msg_id
 emptyFilename: empty.json
