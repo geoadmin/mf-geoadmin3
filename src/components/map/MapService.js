@@ -1023,7 +1023,14 @@
           }
         };
 
+        this.reset = function(map) {
+          if (angular.isDefined(vector)) {
+            map.removeLayer(vector);
+          }
+        };
+
         this.recenter = function(map, featureIdsByBodId, drawFeature) {
+          var that = this;
           getFeatures(featureIdsByBodId).then(function(results) {
             var vectorSource;
             var extent = [Infinity, Infinity, -Infinity, -Infinity];
@@ -1037,7 +1044,7 @@
               map.getView().fitExtent(getMinimalExtent(extent),
                   map.getSize());
             }
-            map.removeLayer(vector);
+            that.reset(map);
             if (drawFeature) {
               vectorSource = new ol.source.Vector({
                 features: parser.readFeatures({
@@ -1056,6 +1063,7 @@
             }
           });
         };
+
       };
 
       return new RecenterMapOnFeatures();
