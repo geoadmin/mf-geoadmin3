@@ -19,7 +19,7 @@
   module.directive('gaSearch',
       function($compile, $translate, $timeout, gaMapUtils, gaLayers,
         gaLayerMetadataPopup, gaPermalink, gaUrlUtils, gaGetCoordinate,
-        gaBrowserSniffer, gaLayerFilters, gaKml) {
+        gaBrowserSniffer, gaLayerFilters, gaKml, gaPreviewLayers) {
           var currentTopic,
               footer = [
             '<div class="ga-search-footer clearfix">',
@@ -121,38 +121,34 @@
                 ev.stopPropagation();
               };
 
-              scope.addLayer = function(bodId, isPreview) {
-                if (isPreview && gaBrowserSniffer.mobile) {
-                  return;
-                }
-                var olLayer = gaLayers.getOlLayerById(bodId);
+              scope.addLayer = function(bodId) {
                 var layerInMap = gaMapUtils.getMapOverlayForBodId(
-                     map, bodId);
-                if (angular.isDefined(olLayer) &&
-                    !angular.isDefined(layerInMap)) {
-                  olLayer.preview = isPreview;
+                    map, bodId);
+                if (!angular.isDefined(layerInMap)) {
+                  var olLayer = gaLayers.getOlLayerById(bodId);
                   map.addLayer(olLayer);
-                } else if (angular.isDefined(layerInMap) &&
-                  !isPreview) {
-                  layerInMap.preview = isPreview;
-                }
-                if (olLayer.bodId && olLayer.timeEnabled) {
-                  // options.currentYear is setted in CatalogTreeDirective
-                  var val = gaLayers.getLayerTimestampFromYear(olLayer.bodId,
-                      year);
-                  olLayer.time = val;
                 }
               };
 
-              scope.removePreviewLayer = function(bodId) {
-                 if (gaBrowserSniffer.mobile) {
+              scope.addPreviewLayer = function(bodId) {
+                if (gaBrowserSniffer.mobile) {
                   return;
                 }
-                var olLayer = gaMapUtils.getMapOverlayForBodId(
-                    map, bodId);
-                if (angular.isDefined(olLayer) && olLayer.preview) {
-                  map.removeLayer(olLayer);
+
+                var layer = gaMapUtils.getMapOverlayForBodId(
+                    scope.map, bodId);
+
+                // Don't add preview layer if the layer is already on the map
+                if (!layer) {
+                  gaPreviewLayers.addBodLayer(scope.map, bodId);
                 }
+              };
+
+              scope.removePreviewLayer = function() {
+                if (gaBrowserSniffer.mobile) {
+                  return;
+                }
+                gaPreviewLayers.removeAll(scope.map);
               };
 
               scope.addCross = function(center) {
@@ -271,7 +267,7 @@
                   template: function(context) {
                     var template = '<div ng-show="hasLayerResults" ' +
                         'class="tt-search"' +
-                        'ng-mouseover="addLayer(\'' +
+                        'ng-mouseover="addPreviewLayer(\'' +
                         context.attrs.layer + '\', true)" ' +
                         'ng-mouseout="removePreviewLayer(\'' +
                         context.attrs.layer + '\')"' +

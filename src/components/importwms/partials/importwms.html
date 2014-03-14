@@ -30,8 +30,8 @@
             <td>
               <div class="icon-zoom-in" ng-click="zoomOnLayerExtent(layer)"></div>
             </td>
-            <td ng-mouseover="addLayerHovered(layer)"
-                ng-mouseleave="removeLayerHovered()"
+            <td ng-mouseover="addPreviewLayer(layer)"
+                ng-mouseleave="removePreviewLayer()"
                 ng-click="toggleLayerSelected(layer)" >
               {{layer.Title}}
             </td>

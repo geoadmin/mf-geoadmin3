@@ -14,7 +14,7 @@
    */
   module.directive('gaCatalogitem',
       function($compile, gaCatalogtreeMapUtils, gaMapUtils,
-          gaLayers, gaLayerMetadataPopup, gaBrowserSniffer) {
+          gaLayers, gaLayerMetadataPopup, gaBrowserSniffer, gaPreviewLayers) {
         return {
           restrict: 'A',
           replace: true,
@@ -26,38 +26,21 @@
             options: '=gaCatalogitemOptions'
           },
           controller: function($scope) {
+            $scope.isPreviewMode = false;
+
             $scope.addPreviewLayer = function(evt) {
               if (gaBrowserSniffer.mobile) {
                 evt.preventDefault();
                 return;
               }
-              var item = $scope.item;
-              var map = $scope.map;
               var layer = gaMapUtils.getMapOverlayForBodId(
-                  map, item.idBod);
-              var bodLayer = gaLayers.getLayer(item.idBod);
-              if (!angular.isDefined(layer)) {
-                // FIXME: we are super cautious here and display error messages
-                // when either the layer identified by item.idBod doesn't exist
-                // in the gaLayers service, or gaLayers cannot construct an ol
-                // layer object for that layer.
-                var error = true;
-                if (angular.isDefined(bodLayer)) {
-                  layer = gaLayers.getOlLayerById(item.idBod);
-                  if (angular.isDefined(layer)) {
-                    error = false;
-                    layer.preview = true;
-                    map.addLayer(layer);
-                  }
-                }
-                item.errorLoading = error;
-              }
+                  $scope.map, $scope.item.idBod);
 
-              if (layer.bodId && layer.timeEnabled) {
-                // options.currentYear is setted in CatalogTreeDirective
-                var val = gaLayers.getLayerTimestampFromYear(layer.bodId,
-                    $scope.options.currentYear);
-                layer.time = val;
+              // Don't add preview layer if the layer is already on the map
+              if (!layer) {
+                $scope.inPreviewMode = true;
+                $scope.item.errorLoading = (!gaPreviewLayers.addBodLayer(
+                    $scope.map, $scope.item.idBod));
               }
             };
 
@@ -66,22 +49,8 @@
                 evt.preventDefault();
                 return;
               }
-              var item = $scope.item;
-              var map = $scope.map;
-              var layer = gaMapUtils.getMapOverlayForBodId(
-                  map, item.idBod);
-              if (angular.isDefined(layer) && layer.preview) {
-                map.removeLayer(layer);
-                layer.preview = false;
-              }
-            };
-
-            $scope.inPreviewMode = function() {
-              var item = $scope.item;
-              var map = $scope.map;
-              var layer = gaMapUtils.getMapOverlayForBodId(
-                  map, item.idBod);
-              return angular.isDefined(layer) && layer.preview;
+              gaPreviewLayers.removeAll($scope.map);
+              $scope.inPreviewMode = false;
             };
 
             $scope.toggleLayer = function() {
@@ -92,11 +61,7 @@
               if (!angular.isDefined(layer)) {
                 gaCatalogtreeMapUtils.addLayer(map, item);
               } else {
-                if (!layer.preview) {
-                  map.removeLayer(layer);
-                } else {
-                  layer.preview = false;
-                }
+                map.removeLayer(layer);
               }
             };
 
