@@ -119,7 +119,7 @@ quickview_url = get_quickview_url(request, params)
 <tr>
   <td class="cell-left"></td>
   <td>
-     <a href="https://mf-geoadmin3.int.bgdi.ch/lubis_demo/prod/?${c['layerBodId']}=${str(c['featureId'])}&lang=${lang}&topic=lubis" target="new"> ${_('Link to object')}</a>
+     <a href="${c['baseUrl']}/lubis_demo/prod/?${c['layerBodId']}=${str(c['featureId'])}&lang=${lang}&topic=lubis" target="new"> ${_('Link to object')}</a>
   </td>
 </tr>
 </%def>
@@ -230,7 +230,7 @@ quickview_url = get_quickview_url(request, params)
 <tr>
   <td class="cell-left"></td>
   <td>
-     <a href="https://mf-geoadmin3.int.bgdi.ch/lubis_demo/prod/?${c['layerBodId']}=${str(c['featureId'])}&lang=${lang}&topic=lubis" target="new"> ${_('Link to object')}</a>
+     <a href="${c['baseUrl']}/lubis_demo/prod/?${c['layerBodId']}=${str(c['featureId'])}&lang=${lang}&topic=lubis" target="new"> ${_('Link to object')}</a>
   </td>
 </tr>
 
