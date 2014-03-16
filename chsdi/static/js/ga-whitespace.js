@@ -32571,10 +32571,7 @@ ga.Map = function(options) {
   options.ol3Logo = false;
   goog.base(this, options);
   this.addControl(new ol.control.ScaleLine);
-  this.serviceUrl = "//api3.geo.admin.ch/";
-  if(goog.isDef(GeoAdmin) && goog.isDefAndNotNull(GeoAdmin.serviceUrl)) {
-    this.serviceUrl = GeoAdmin.serviceUrl
-  }
+  this.serviceUrl = window["GeoAdmin"]["serviceUrl"];
   this.geocoderDialog_ = null;
   this.geocoderList_ = null;
   this.geocoderCrossElement_ = null;
@@ -32586,7 +32583,7 @@ ga.Map = function(options) {
 };
 goog.inherits(ga.Map, ol.Map);
 ga.Map.prototype.geocode = function(text) {
-  var jsonp = new goog.net.Jsonp(this.serviceUrl + "rest/services/api/SearchServer");
+  var jsonp = new goog.net.Jsonp(this.serviceUrl + "/rest/services/api/SearchServer");
   var payload = {"searchText":text, "type":"locations", "returnGeometry":true};
   jsonp.send(payload, goog.bind(this.handleGeocode_, this), goog.bind(this.handleGeocodeError_, this))
 };
