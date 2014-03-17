@@ -1809,22 +1809,22 @@ msgid "ch.swisstopo.kt.url"
 msgstr "http://www.swisstopo.admin.ch/internet/swisstopo/de/home/swisstopo/org/cartography.html"
 
 msgid "ch.swisstopo.lubis-bildstreifen"
-msgstr "Luftbildstreifen swisstopo"
+msgstr "Strivlas da fotografias ord l'aria"
 
 msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen"
-msgstr "Luftbilder Privater"
+msgstr "Fotografias ord l'aria privats"
 
 msgid "ch.swisstopo.lubis-luftbilder-dritte-kantone"
-msgstr "Luftbilder Kantone"
+msgstr "Fotografias ord l'aria chantuns"
 
 msgid "ch.swisstopo.lubis-luftbilder_farbe"
-msgstr "Luftbilder swisstopo farbig"
+msgstr "Fotografias ord l'aria colur"
 
 msgid "ch.swisstopo.lubis-luftbilder_infrarot"
-msgstr "Luftbilder swisstopo infrarot"
+msgstr "Fotografias ord l'aria IR"
 
 msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss"
-msgstr "Luftbilder swisstopo s/w"
+msgstr "Fotografias ord l'aria nair/alv"
 
 msgid "ch.swisstopo.pixelkarte-farbe"
 msgstr "Charta en colur"
