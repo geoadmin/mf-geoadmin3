@@ -47,7 +47,7 @@
 	"draw": "Draw",
 	"draw_delete": "Delete",
 	"draw_delete_description": "Delete all features",
-	"draw_delete_selected_features": "Supprimer les objets sélectionnés",
+	"draw_delete_selected_features": "Delete selected features",
 	"draw_line": "Line",
 	"draw_line_description": "Create line",
 	"draw_line_instructions": "Create line",
