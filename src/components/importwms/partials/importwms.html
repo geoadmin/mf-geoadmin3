@@ -23,17 +23,17 @@
     <div class="ga-import-wms-content">
       <table class="table table-striped table-hover table-condensed">
         <tbody>
-          <tr ng-repeat="layer in layers | orderBy:'title':reverse"
+          <tr ng-repeat="layer in layers | orderBy:'Title':reverse"
               class="
-              {{(layerSelected.name == layer.name) ? 'success ' : ''}}
-              {{(layerHovered.name == layer.name) ? 'pending ' : ''}}">
+              {{(layerSelected.Name == layer.Name) ? 'success ' : ''}}
+              {{(layerHovered.Name == layer.Name) ? 'pending ' : ''}}">
             <td>
               <div class="icon-zoom-in" ng-click="zoomOnLayerExtent(layer)"></div>
             </td>
             <td ng-mouseover="addLayerHovered(layer)"
                 ng-mouseleave="removeLayerHovered()"
                 ng-click="toggleLayerSelected(layer)" >
-              {{layer.title}}
+              {{layer.Title}}
             </td>
           </tr>
         </tbody>
@@ -48,7 +48,7 @@
   <div class="ga-import-wms-descr">
     <label translate>description</label>
     <textarea  placeholder="{{'description_instructions' | translate}}" class="form-control" readonly>
-{{(layerSelected) ? layerSelected.abstract : layerHovered.abstract}}</textarea>
+{{(layerSelected) ? layerSelected.Abstract : layerHovered.Abstract}}</textarea>
     <button type="button" class="btn btn-default ga-import-wms-add" ng-click="addLayerSelected()" translate>add_layer</button>
   </div>
 </div>
