@@ -32448,7 +32448,7 @@ ga.Tooltip.prototype.handleIdentifyResponse_ = function(response) {
   }
   for(var i in response["results"]) {
     var lang = window.GeoAdmin && window.GeoAdmin.lang ? window.GeoAdmin.lang : "de";
-    var jsonp = new goog.net.Jsonp(new goog.Uri(window["GeoAdmin"]["serviceUrl"] + "/rest/services/api/MapServer/" + response["results"][i]["layerBodId"] + "/" + response["results"][i]["featureId"] + "/" + "/htmlPopup?lang\x3d" + lang), "callback");
+    var jsonp = new goog.net.Jsonp(new goog.Uri(window["GeoAdmin"]["serviceUrl"] + "/rest/services/api/MapServer/" + response["results"][i]["layerBodId"] + "/" + response["results"][i]["featureId"] + "/" + "htmlPopup?lang\x3d" + lang), "callback");
     jsonp.send({}, goog.bind(this.handleHtmlpopupResponse_, this), goog.bind(this.handleHtmlpopupError_, this))
   }
 };
