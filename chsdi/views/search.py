@@ -10,7 +10,6 @@ from chsdi.lib.sphinxapi import sphinxapi
 from chsdi.lib import mortonspacekey as msk
 
 import re
-from chsdi.models.bod import LayersConfig
 
 class Search(SearchValidation):
 
