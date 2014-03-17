@@ -429,7 +429,7 @@
               var recenterObject = {};
               evt.stopPropagation();
               recenterObject[f.layer] = [f.id];
-              gaRecenterMapOnFeatures(map, recenterObject, false);
+              gaRecenterMapOnFeatures.recenter(map, recenterObject, false);
             };
 
             scope.$on('gaTopicChange', function(event, topic) {
