@@ -38,7 +38,7 @@ mako.directories = chsdi:templates
 
 data_path = /var/local/cartoweb/
 geodata_staging = ${geodata_staging}
-instanceid = ${instanceid}
+instanceid = ${apache_base_path}
 sphinxhost = ${sphinxhost}
 geoadminhost = ${geoadminhost}
 host = ${host}

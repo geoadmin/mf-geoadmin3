@@ -27,55 +27,55 @@ AddOutputFilterByType DEFLATE text/html text/plain text/xml
 WSGIPassAuthorization On
 
 # Static files with aggressive cache:
-RewriteRule ^/${vars:instanceid}/wsgi/[0-9a-fA-F]*/(static)/(.*)$  ${buildout:directory/chsdi/$1/$2}
-RewriteRule ^/${vars:instanceid}/wsgi/(static)/(.*)$  ${buildout:directory/chsdi/$1/$2}
+RewriteRule ^/${vars:apache_base_path}/wsgi/[0-9a-fA-F]*/(static)/(.*)$  ${buildout:directory/chsdi/$1/$2}
+RewriteRule ^/${vars:apache_base_path}/wsgi/(static)/(.*)$  ${buildout:directory/chsdi/$1/$2}
 
 <IfModule mod_headers.c>
   Header set X-UA-Compatible "IE=Edge"
 </IfModule>
 
-<LocationMatch "/${vars:instanceid}/wsgi/[0-9a-fA-F]*/(static)/">
+<LocationMatch "/${vars:apache_base_path}/wsgi/[0-9a-fA-F]*/(static)/">
     ExpiresDefault "now plus 1 year"
     Header merge Cache-Control "public"
     Header unset Etag
 </LocationMatch>
 
-RewriteRule ^${vars:apache-entry-point}$ /${vars:instanceid}/wsgi/ [PT]
+RewriteRule ^/${vars:apache_base_path}/$ /${vars:apache_base_path}/wsgi/ [PT]
 
 # Proxy pass pointing on api.geo.admin.ch project
-RewriteRule ^${vars:apache-entry-point}(qrcodegenerator|shorten|shorten.json)(.*)$ http://api.geo.admin.ch/$1$2 [P]
+RewriteRule ^/${vars:apache_base_path}/(qrcodegenerator|shorten|shorten.json)(.*)$ http://api.geo.admin.ch/$1$2 [P]
 
 # Proxy pass for geodesy services
-RewriteRule ^${vars:apache-entry-point}reframe/lv03tolv95(.*)$ http://tc-geodesy.bgdi.admin.ch/reframe/lv03tolv95$1 [P]
+RewriteRule ^/${vars:apache_base_path}/reframe/lv03tolv95(.*)$ http://tc-geodesy.bgdi.admin.ch/reframe/lv03tolv95$1 [P]
 
-<Location ${vars:apache-entry-point}>
+<Location /${vars:apache_base_path}/>
     Order allow,deny
     Allow from all
 </Location>
 
 # Print
-RewriteRule ^/${vars:instanceid}/(print)(.*)$ /${vars:instanceid}/wsgi/$1$2 [PT]
+RewriteRule ^/${vars:apache_base_path}/(print)(.*)$ /${vars:apache_base_path}/wsgi/$1$2 [PT]
  
 # define a process group
 # WSGIDaemonProcess must be commented/removed when running the project on windows
-WSGIDaemonProcess mf-chsdi3:${vars:instanceid} display-name=%{GROUP} user=${vars:modwsgi_user}
+WSGIDaemonProcess mf-chsdi3:${vars:apache_base_path} display-name=%{GROUP} user=${vars:modwsgi_user}
 
 # define the path to the WSGI app
-WSGIScriptAlias /${vars:instanceid}/wsgi ${buildout:directory/buildout/parts/modwsgi/wsgi}
+WSGIScriptAlias /${vars:apache_base_path}/wsgi ${buildout:directory/buildout/parts/modwsgi/wsgi}
 
 # assign the WSGI app instance the process group defined aboven, we put the WSGI
 # app instance in the global application group so it is always executed within
 # the main interpreter
-<Location /${vars:instanceid}/wsgi>
+<Location /${vars:apache_base_path}/wsgi>
     # WSGIProcessGroup must be commented/removed when running the project on windows
-    WSGIProcessGroup mf-chsdi3:${vars:instanceid}
+    WSGIProcessGroup mf-chsdi3:${vars:apache_base_path}
     WSGIApplicationGroup %{GLOBAL}
 </Location>
 
-RewriteRule ^${vars:apache-entry-point}(iipimage|search|index|genindex|examples|img|js|css|releasenotes|services|_sources|_static|api|rest/services|ogcproxy|testi18n|loader.js|snapshot|checker|checker_dev|static|print|dev|feedback)(.*)$ /${vars:instanceid}/wsgi/$1$2 [PT]
+RewriteRule ^/${vars:apache_base_path}/(iipimage|search|index|genindex|examples|img|js|css|releasenotes|services|_sources|_static|api|rest/services|ogcproxy|testi18n|loader.js|snapshot|checker|checker_dev|static|print|dev|feedback)(.*)$ /${vars:apache_base_path}/wsgi/$1$2 [PT]
 
 # Some services are not "free": control is done at varnish level
-<LocationMatch /${vars:instanceid}/wsgi/rest/(height|profile)>
+<LocationMatch /${vars:apache_base_path}/wsgi/rest/(height|profile)>
    Order Deny,Allow
    Allow from all
 </LocationMatch>
