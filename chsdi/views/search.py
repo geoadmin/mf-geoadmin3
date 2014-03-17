@@ -10,6 +10,7 @@ from chsdi.lib.sphinxapi import sphinxapi
 from chsdi.lib import mortonspacekey as msk
 
 import re
+from chsdi.models.bod import LayersConfig
 
 class Search(SearchValidation):
 
@@ -30,7 +31,8 @@ class Search(SearchValidation):
         else:
             sphinxHost = request.registry.settings['sphinxhost']
 
-        self.sphinx.SetServer(sphinxHost, 9312)
+        self.sphinxHost = sphinxHost
+        self.sphinx.SetServer(self.sphinxHost, 9312)
         self.sphinx.SetMatchMode(sphinxapi.SPH_MATCH_EXTENDED)
 
         self.mapName = request.matchdict.get('map')
@@ -154,24 +156,27 @@ class Search(SearchValidation):
         self.sphinx.SetLimits(0, self.FEATURE_LIMIT)
         self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
         self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, '@weight DESC')
-       
-        # test if searchText contains time interval pattern yyyy-yyyy
+
+
+        timeFilter = []
         timeInterval=re.search(r'((\b\d{4})-(\d{4}\b))',' '.join(self.searchText)) or False
+        # search for year with getparameter timeInstand=2010
         if self.timeInstant is not None:
-            self.sphinx.SetFilter('year', [self.timeInstant])
+            timeFilter=[self.timeInstant]
+        # search for year interval with searchText Pattern .*YYYY-YYYY.*
         elif timeInterval:
             numbers=[timeInterval.group(2),timeInterval.group(3)]
             start=min(numbers)
             stop=max(numbers)
+            # remove time intervall from searchtext
+            self.searchText.remove(timeInterval.group(1))
             if min != max:
-                self.sphinx.SetFilterRange('year',long(start),long(stop))
-                # remove time intervall from searchtext
-                self.searchText.remove(timeInterval.group(1))
-
-        searchText = self._query_fields('@detail')
+                timeFilter=[start,stop]
+                
+        searchdText = self._query_fields('@detail')
         if self.quadindex is not None:
-            searchText += ' & (' + self._get_quadindex_string() + ')'
-        self._add_feature_queries(searchText)
+            searchdText += ' & (' + self._get_quadindex_string() + ')'
+        self._add_feature_queries(searchdText,timeFilter)
         try:
             temp = self.sphinx.RunQueries()
         except IOError:
@@ -221,8 +226,23 @@ class Search(SearchValidation):
 
         return finalQuery
 
-    def _add_feature_queries(self, queryText):
+    def _set_time_Filter(self, queryText):
+        print self.searchText
+
+    def _add_feature_queries(self, queryText, timeFilter):
+        tmp = sphinxapi.SphinxClient()
+        tmp.SetServer(self.sphinxHost, 9312)
+        tmp.SetFilter('year', [9999])
+
         for index in self.featureIndexes:
+            # default: no filter
+            self.sphinx.ResetFilters()
+            if timeFilter and tmp.Query('bgdi_internal: check presence of time Filter Attribute',index=str(index)):
+                if len(timeFilter) == 1:
+                    self.sphinx.SetFilter('year', [self.timeInstant])
+                elif len(timeFilter) == 2:
+                    self.sphinx.SetFilterRange('year',long(min(timeFilter)),long(max(timeFilter)))
+
             self.sphinx.AddQuery(queryText, index=str(index))
 
     def _parse_feature_results(self, results):
