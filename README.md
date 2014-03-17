@@ -24,8 +24,9 @@ Use `make help` to know about the possible `make` targets and the currently set 
     $ make help
 
 Use `make translate` to import directly translations from the googlespreadshhet. Don't forget to set up first these 2 following environment parameter:
-export DRIVE_USER=your_login
-export DRIVE_PWD=your_password
+    
+    export DRIVE_USER=your_login
+    export DRIVE_PWD=your_password
 
 Variables have sensible default values for development. Anyhow, they can be set as make macros or envvars. For example:
 
