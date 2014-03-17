@@ -8,7 +8,7 @@
   c['stable_id'] = False
   extended = pageargs.get('extended')
   c['baseUrl'] = h.make_agnostic(''.join((protocol, '://', request.registry.settings['geoadminhost'])))
-  c['instanceId'] = request.registry.settings['apache_base_path']
+  c['instanceId'] = request.registry.settings['instanceid']
   bbox = c['bbox']
   lang = request.lang
   attribution = pageargs.get('attribution')
