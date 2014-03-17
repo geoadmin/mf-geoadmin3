@@ -40,21 +40,21 @@ RewriteRule ^/${vars:apache_base_path}/wsgi/(static)/(.*)$  ${buildout:directory
     Header unset Etag
 </LocationMatch>
 
-RewriteRule ^/${vars:apache_base_path}/$ /${vars:apache_base_path}/wsgi/ [PT]
+RewriteRule ^${vars:apache_entry_path}$ /${vars:apache_base_path}/wsgi/ [PT]
 
 # Proxy pass pointing on api.geo.admin.ch project
-RewriteRule ^/${vars:apache_base_path}/(qrcodegenerator|shorten|shorten.json)(.*)$ http://api.geo.admin.ch/$1$2 [P]
+RewriteRule ^${vars:apache_entry_path}(qrcodegenerator|shorten|shorten.json)(.*)$ http://api.geo.admin.ch/$1$2 [P]
 
 # Proxy pass for geodesy services
-RewriteRule ^/${vars:apache_base_path}/reframe/lv03tolv95(.*)$ http://tc-geodesy.bgdi.admin.ch/reframe/lv03tolv95$1 [P]
+RewriteRule ^${vars:apache_entry_path}reframe/lv03tolv95(.*)$ http://tc-geodesy.bgdi.admin.ch/reframe/lv03tolv95$1 [P]
 
-<Location /${vars:apache_base_path}/>
+<Location ${vars:apache_entry_path}>
     Order allow,deny
     Allow from all
 </Location>
 
 # Print
-RewriteRule ^/${vars:apache_base_path}/(print)(.*)$ /${vars:apache_base_path}/wsgi/$1$2 [PT]
+RewriteRule ^${vars:apache_entry_path}(print)(.*)$ /${vars:apache_base_path}/wsgi/$1$2 [PT]
  
 # define a process group
 # WSGIDaemonProcess must be commented/removed when running the project on windows
@@ -72,7 +72,7 @@ WSGIScriptAlias /${vars:apache_base_path}/wsgi ${buildout:directory/buildout/par
     WSGIApplicationGroup %{GLOBAL}
 </Location>
 
-RewriteRule ^/${vars:apache_base_path}/(iipimage|search|index|genindex|examples|img|js|css|releasenotes|services|_sources|_static|api|rest/services|ogcproxy|testi18n|loader.js|snapshot|checker|checker_dev|static|print|dev|feedback)(.*)$ /${vars:apache_base_path}/wsgi/$1$2 [PT]
+RewriteRule ^${vars:apache_entry_path}(iipimage|search|index|genindex|examples|img|js|css|releasenotes|services|_sources|_static|api|rest/services|ogcproxy|testi18n|loader.js|snapshot|checker|checker_dev|static|print|dev|feedback)(.*)$ /${vars:apache_base_path}/wsgi/$1$2 [PT]
 
 # Some services are not "free": control is done at varnish level
 <LocationMatch /${vars:apache_base_path}/wsgi/rest/(height|profile)>
