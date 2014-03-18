@@ -29,7 +29,7 @@ RESTFul interface is available.
 +===================================+===========================================================================================+
 | searchText (optional)             | The text to search for in the layer description.                                          |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
-| lang (optional)                   | The language metadata. Possible values: de (default), fr, it, rm, en                      |
+| lang (optional)                   | The language metadata. Possible values: de (default), fr, it, rm, en.                     |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | callback (optional)               | The name of the callback function.                                                        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
@@ -37,12 +37,9 @@ RESTFul interface is available.
 Examples
 ^^^^^^^^
 
-- List all the layers available in the GeoAdmin API:
-- `https://api3.geo.admin.ch/rest/services/api/MapServer <../../../rest/services/api/MapServer>`_
-- List all the layers available in the GeoAdmin API where the word "wasser" is found in their description:
-- `https://api3.geo.admin.ch/rest/services/api/MapServer?searchText=wasser <../../../rest/services/api/MapServer?searchText=wasser>`_
-- Find a layer by `geocat ID <http://www.geocat.ch/geonetwork/srv/eng/geocat>`_:
-- `https://api3.geo.admin.ch/rest/services/api/MapServer?searchText=f198f6f6-8efa-4235-a55f-99767ea0206c  <../../../rest/services/api/MapServer?searchText=f198f6f6-8efa-4235-a55f-99767ea0206c>`_
+- List all the layers available in the GeoAdmin API: `https://api3.geo.admin.ch/rest/services/api/MapServer <../../../rest/services/api/MapServer>`_
+- List all the layers available in the GeoAdmin API where the word "wasser" is found in their description: `https://api3.geo.admin.ch/rest/services/api/MapServer?searchText=wasser <../../../rest/services/api/MapServer?searchText=wasser>`_
+- Find a layer by `geocat ID <http://www.geocat.ch/geonetwork/srv/eng/geocat>`_: `https://api3.geo.admin.ch/rest/services/api/MapServer?searchText=f198f6f6-8efa-4235-a55f-99767ea0206c  <../../../rest/services/api/MapServer?searchText=f198f6f6-8efa-4235-a55f-99767ea0206c>`_
 
 .. _legend_description:
 
@@ -64,7 +61,7 @@ No css styling is provided per default so that you can use your own.
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | Parameters                        | Description                                                                               |
 +===================================+===========================================================================================+
-| lang (optional)                   | The language metadata. Possible values: de (default), fr, it, rm, en                      |
+| lang (optional)                   | The language metadata. Possible values: de (default), fr, it, rm, en.                     |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | callback (optional)               | The name of the callback function.                                                        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
@@ -72,10 +69,8 @@ No css styling is provided per default so that you can use your own.
 Example
 ^^^^^^^
 
-- Get the legend for ch.bafu.bundesinventare-bln:
-- `https://api3.geo.admin.ch/rest/services/api/MapServer/ch.bafu.bundesinventare-bln/legend <../../../rest/services/api/MapServer/ch.bafu.bundesinventare-bln/legend>`_
-- Get the same legend using JSONP:
-- `https://api3.geo.admin.ch/rest/services/api/MapServer/ch.bafu.bundesinventare-bln/legend?callback=cb <../../../rest/services/api/MapServer/ch.bafu.bundesinventare-bln/legend?callback=cb>`_
+- Get the legend for ch.bafu.bundesinventare-bln: `https://api3.geo.admin.ch/rest/services/api/MapServer/ch.bafu.bundesinventare-bln/legend <../../../rest/services/api/MapServer/ch.bafu.bundesinventare-bln/legend>`_
+- Get the same legend using JSONP: `https://api3.geo.admin.ch/rest/services/api/MapServer/ch.bafu.bundesinventare-bln/legend?callback=cb <../../../rest/services/api/MapServer/ch.bafu.bundesinventare-bln/legend?callback=cb>`_
 
 .. _identify_description:
 
@@ -101,12 +96,12 @@ No more than 50 features can be retrieved per request.
 |                                   | This parameter is specified as a separated list of coordinates.                           |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | geometryType (required)           | The type of geometry to identify on. Possible values are:                                 |
-|                                   | esriGeometryPoint or esriGeometryPolyline or esriGeometryPolygon or esriGeometryEnvelope  |
+|                                   | esriGeometryPoint or esriGeometryPolyline or esriGeometryPolygon or esriGeometryEnvelope. |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | layers (optional)                 | The layers to perform the identify operation on. Per default query all the layers in the  |
-|                                   | GeoAdmin API. Notation: all:"comma separated list of techincal layer names"               |
+|                                   | GeoAdmin API. Notation: all:"comma separated list of techincal layer names".              |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
-| mapExtent (required)              | The extent of the map. (minX, minY, maxX, maxY)                                           |
+| mapExtent (required)              | The extent of the map. (minx, miny, maxx, maxy).                                          |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | imageDisplay (required)           | The screen image display parameters (width, height, and dpi) of the map.                  |
 |                                   | The mapExtent and the imageDisplay parameters are used by the server to calculate the     |
@@ -120,7 +115,7 @@ No more than 50 features can be retrieved per request.
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | geometryFormat (optional)         | Default to ESRI geometry format. Possible values are: "esrijson" or "geojson".            |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
-| lang (optional)                   | The language (when available). Possible values: de (default), fr, it, rm, en              |
+| lang (optional)                   | The language (when available). Possible values: de (default), fr, it, rm, en.             |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | callback (optional)               | The name of the callback function.                                                        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
@@ -128,24 +123,18 @@ No more than 50 features can be retrieved per request.
 Examples
 ^^^^^^^^
 
-- Identify all the features belonging to ch.bafu.bundesinventare-bln using a tolerance of 5 pixels around a point:
-- `https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryPoint&geometry=653246,173129&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=5&layers=all:ch.bafu.bundesinventare-bln <../../../rest/services/api/MapServer/identify?geometryType=esriGeometryPoint&geometry=653246,173129&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=5&layers=all:ch.bafu.bundesinventare-bln>`_
-- Identify all the features belonging to ch.bfs.arealstatistik-1985 intersecting an enveloppe (or bounding box):
-- `https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985 <../../../rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985>`_
-- Same request than above but returned geometry format is GeoJSON:
-- `https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985&geometryFormat=geojson <../../../rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985&geometryFormat=geojson>`_
-- Same request than above but geometry is not returned:
-- `https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985&returnGeometry=false <../../../rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985&returnGeometry=false>`_
+- Identify all the features belonging to ch.bafu.bundesinventare-bln using a tolerance of 5 pixels around a point: `https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryPoint&geometry=653246,173129&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=5&layers=all:ch.bafu.bundesinventare-bln <../../../rest/services/api/MapServer/identify?geometryType=esriGeometryPoint&geometry=653246,173129&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=5&layers=all:ch.bafu.bundesinventare-bln>`_
+- Identify all the features belonging to ch.bfs.arealstatistik-1985 intersecting an enveloppe (or bounding box): `https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985 <../../../rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985>`_
+- Same request than above but returned geometry format is GeoJSON: `https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985&geometryFormat=geojson <../../../rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985&geometryFormat=geojson>`_
+- Same request than above but geometry is not returned: `https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985&returnGeometry=false <../../../rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=500,600,96&mapExtent=548945.5,147956,549402,148103.5&tolerance=1&layers=all:ch.bfs.arealstatistik-1985&returnGeometry=false>`_
 
 Examples of Reverse Geocoding
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The service identify can be used for Reverse Geocoding operations. Here is a `list of all the available layers <../../../api/faq/index.html#which-layers-are-available>`_.
 
-- Perform an identify request to find the ditricts intersecting a given enveloppe geometry (no buffer):
-- `https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=0,0,0&mapExtent=0,0,0,0&tolerance=0&layers=all:ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill&returnGeometry=false  <../../../rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=0,0,0&mapExtent=0,0,0,0&tolerance=0&layers=all:ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill&returnGeometry=false>`_
-- Perform an identify request to find the municipal boundaries and NPA intersecting with a point (no buffer):
-- `https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryPoint&geometry=548945.5,147956&imageDisplay=0,0,0&mapExtent=0,0,0,0&tolerance=0&layers=all:ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill,ch.swisstopo-vd.ortschaftenverzeichnis_plz&returnGeometry=false <../../../rest/services/api/MapServer/identify?geometryType=esriGeometryPoint&geometry=548945.5,147956&imageDisplay=0,0,0&mapExtent=0,0,0,0&tolerance=0&layers=all:ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill,ch.swisstopo-vd.ortschaftenverzeichnis_plz&returnGeometry=false>`_
+- Perform an identify request to find the districts intersecting a given enveloppe geometry (no buffer): `https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=0,0,0&mapExtent=0,0,0,0&tolerance=0&layers=all:ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill&returnGeometry=false  <../../../rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=548945.5,147956,549402,148103.5&imageDisplay=0,0,0&mapExtent=0,0,0,0&tolerance=0&layers=all:ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill&returnGeometry=false>`_
+- Perform an identify request to find the municipal boundaries and ZIP (PLZ or NPA) intersecting with a point (no buffer): `https://api3.geo.admin.ch/rest/services/api/MapServer/identify?geometryType=esriGeometryPoint&geometry=548945.5,147956&imageDisplay=0,0,0&mapExtent=0,0,0,0&tolerance=0&layers=all:ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill,ch.swisstopo-vd.ortschaftenverzeichnis_plz&returnGeometry=false <../../../rest/services/api/MapServer/identify?geometryType=esriGeometryPoint&geometry=548945.5,147956&imageDisplay=0,0,0&mapExtent=0,0,0,0&tolerance=0&layers=all:ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill,ch.swisstopo-vd.ortschaftenverzeichnis_plz&returnGeometry=false>`_
 
 .. _find_description:
 
@@ -168,13 +157,13 @@ One layer, one search text and one attribute.
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | Parameters                        | Description                                                                               |
 +===================================+===========================================================================================+
-| layer (required)                  | A layer ID (only one layer at a time can be specified)                                    |
+| layer (required)                  | A layer ID (only one layer at a time can be specified).                                   |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
-| searchText (required)             | The text to search for. (one can use numerical values as well)                            |
+| searchText (required)             | The text to search for (one can use numerical values as well).                            |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
-| searchField (required)            | The name of the field to search (only one search field can be searched at a time)         |
+| searchField (required)            | The name of the field to search (only one search field can be searched at a time).        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
-| lang (optional)                   | The language metadata. Possible values: de (default), fr, it, rm, en                      |
+| lang (optional)                   | The language metadata. Possible values: de (default), fr, it, rm, en.                     |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | geometryFormat (optional)         | Default to ESRI geometry format. Possible values are: "esrijson" or "geojson".            |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
@@ -186,10 +175,8 @@ One layer, one search text and one attribute.
 Examples
 ^^^^^^^^
 
-- Search for “Lavaux” in the field “bln_name” of the layer “ch.bafu.bundesinventare-bln”:
-- `https://api3.geo.admin.ch/rest/services/api/MapServer/find?layer=ch.bafu.bundesinventare-bln&searchText=Lavaux&searchField=bln_name&returnGeometry=false  <../../../rest/services/api/MapServer/find?layer=ch.bafu.bundesinventare-bln&searchText=Lavaux&searchField=bln_name&returnGeometry=false>`_
-- Search for “1231641” in the field “egid” of the layer “ch.bfs.gebaeude_wohnungs_register”:
-- `https://api3.geo.admin.ch/rest/services/api/MapServer/find?layer=ch.bfs.gebaeude_wohnungs_register&searchText=1231641&searchField=egid&returnGeometry=false <../../../rest/services/api/MapServer/find?layer=ch.bfs.gebaeude_wohnungs_register&searchText=1231641&searchField=egid&returnGeometry=false>`_
+- Search for “Lavaux” in the field “bln_name” of the layer “ch.bafu.bundesinventare-bln”: `https://api3.geo.admin.ch/rest/services/api/MapServer/find?layer=ch.bafu.bundesinventare-bln&searchText=Lavaux&searchField=bln_name&returnGeometry=false  <../../../rest/services/api/MapServer/find?layer=ch.bafu.bundesinventare-bln&searchText=Lavaux&searchField=bln_name&returnGeometry=false>`_
+- Search for “1231641” in the field “egid” of the layer “ch.bfs.gebaeude_wohnungs_register”: `https://api3.geo.admin.ch/rest/services/api/MapServer/find?layer=ch.bfs.gebaeude_wohnungs_register&searchText=1231641&searchField=egid&returnGeometry=false <../../../rest/services/api/MapServer/find?layer=ch.bfs.gebaeude_wohnungs_register&searchText=1231641&searchField=egid&returnGeometry=false>`_
 
 .. _featureresource_description:
 
@@ -212,7 +199,7 @@ RESTFul interface is available.
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | Parameters                        | Description                                                                               |
 +===================================+===========================================================================================+
-| lang (optional)                   | The language metadata. Possible values: de (default), fr, it, rm, en                      |
+| lang (optional)                   | The language metadata. Possible values: de (default), fr, it, rm, en.                     |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | geometryFormat (optional)         | Default to ESRI geometry format. Possible values are: "esrijson" or "geojson".            |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
@@ -224,8 +211,7 @@ RESTFul interface is available.
 Example
 ^^^^^^^
 
-- Get the feature with the ID 342 belonging to ch.bafu.bundesinventare-bln:
-- `https://api3.geo.admin.ch/rest/services/api/MapServer/ch.bafu.bundesinventare-bln/362 <../../../rest/services/api/MapServer/ch.bafu.bundesinventare-bln/362>`_
+- Get the feature with the ID 342 belonging to ch.bafu.bundesinventare-bln: `https://api3.geo.admin.ch/rest/services/api/MapServer/ch.bafu.bundesinventare-bln/362 <../../../rest/services/api/MapServer/ch.bafu.bundesinventare-bln/362>`_
 
 .. _htmlpopup_description:
 
@@ -248,7 +234,7 @@ No css styling is provided per default so that you can use your own.
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | Parameters                        | Description                                                                               |
 +===================================+===========================================================================================+
-| lang (optional)                   | The language. Possible values: de (default), fr, it, rm, en                               |
+| lang (optional)                   | The language. Possible values: de (default), fr, it, rm, en.                              |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | callback (optional)               | The name of the callback function.                                                        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
@@ -256,8 +242,7 @@ No css styling is provided per default so that you can use your own.
 Example
 ^^^^^^^
 
-- Get the html popup with the ID 342 belonging to ch.bafu.bundesinventare-bln:
-- `https://api3.geo.admin.ch/rest/services/api/MapServer/ch.bafu.bundesinventare-bln/362/htmlPopup <../../../rest/services/api/MapServer/ch.bafu.bundesinventare-bln/362/htmlPopup>`_
+- Get the html popup with the feature ID 342 belonging to layer ch.bafu.bundesinventare-bln: `https://api3.geo.admin.ch/rest/services/api/MapServer/ch.bafu.bundesinventare-bln/362/htmlPopup <../../../rest/services/api/MapServer/ch.bafu.bundesinventare-bln/362/htmlPopup>`_
 
 .. _search_description:
 
@@ -285,7 +270,7 @@ The search service is separated in 3 different categories or types:
   * The addresses (!! the swiss cantons only allow websites of the federal governement to use the addresses search service !!)
   * The cadastral parcels
   * And optionally features belonging to a specified layer. The search is here performed within the attribute information of a layer using a search text.
-* The **layer search** wich enables the search of layers belonging to the API.
+* The **layer search** wich enables the search of layers belonging to the GeoAdmin API.
 * The **feature search** which is used to search through features descriptions. Note: you can also specify a bounding box to filter the features. (`Searchable layer <../../../api/faq/index.html#which-layers-are-searchable>`_)
 * The **feature identify** which is designed to efficiently discover the features of a layer based on a geographic extent. (`Complete list <../../../api/faq/index.html#which-layers-have-a-tooltip>`_)
 
@@ -306,10 +291,9 @@ Only RESTFul interface is available.
 | features (optional)               | A comma separated list of technical layer names.                                          |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | bbox (optional)                   | A comma separated list of 4 coordinates representing the bounding box on which features   |
-|                                   | should be filtered. (SRID: 21781)                                                         |
+|                                   | should be filtered (SRID: 21781).                                                         |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
-| returnGeometry (optional)         | This parameter defines whether the geometry is returned or not. You have to set this      |
-|                                   | parameter to "false" if your website is not a federal one. Default to "true".             |
+| returnGeometry (optional)         | This parameter defines whether the geometry is returned or not. Default to "true".        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | callback (optional)               | The name of the callback function.                                                        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
@@ -323,7 +307,7 @@ Only RESTFul interface is available.
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | type (required)                   | The type of performed search.  Specify “layers” to perform a layer search.                |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
-| lang (optional)                   | The language metadata. Possible values: de (default), fr, it, rm, en                      |
+| lang (optional)                   | The language metadata. Possible values: de (default), fr, it, rm, en.                     |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | callback (optional)               | The name of the callback function.                                                        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
@@ -333,12 +317,12 @@ Only RESTFul interface is available.
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | Parameters                        | Description                                                                               |
 +===================================+===========================================================================================+
-| searchText (required)             | The text to search for. (in features detail field)                                        |
+| searchText (required)             | The text to search for (in features detail field).                                        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | type (required)                   | The type of performed search. Specify “featuresearch” to perform a feature search.        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | bbox (optional)                   | A comma separated list of 4 coordinates representing the bounding box on which features   |
-|                                   | should be filtered. (SRID: 21781)                                                         |
+|                                   | should be filtered (SRID: 21781).                                                         |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | features (required)               | A comma separated list of technical layer names.                                          |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
@@ -353,7 +337,7 @@ Only RESTFul interface is available.
 | type (required)                   | The type of performed search. Specify “featureidentify” to perform a feature search.      |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | bbox (optional)                   | A comma separated list of 4 coordinates representing the bounding box on which features   |
-|                                   | should be filtered. (SRID: 21781)                                                         |
+|                                   | should be filtered (SRID: 21781).                                                         |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | features (optional)               | A comma separated list of technical layer names.                                          |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
@@ -363,24 +347,17 @@ Only RESTFul interface is available.
 Examples
 ^^^^^^^^
 
-- Search for locations matching the word “wabern”:
-- `https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=wabern&type=locations <../../../rest/services/api/SearchServer?searchText=wabern&type=locations>`_
-- Search for locations and features matching the word “vd 446” (only features are filtered within the bbox are returned):
-- `https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=vd%20446&features=ch.astra.ivs-reg_loc&type=locations&bbox=551306.5625,167918.328125,551754.125,168514.625 <../../../rest/services/api/SearchServer?searchText=vd%20446&features=ch.astra.ivs-reg_loc&type=locations&bbox=551306.5625,167918.328125,551754.125,168514.625>`_
-- Search for layers in French matching the word “géoïde” in their description:
-- `https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=géoïde&type=layers&lang=fr <../../../rest/services/api/SearchServer?searchText=géoïde&type=layers&lang=fr>`_ 
-- Search for features matching word "433" in their description:
-- `https://api3.geo.admin.ch/rest/services/api/SearchServer?features=ch.bafu.hydrologie-gewaesserzustandsmessstationen&type=featuresearch&searchText=433 <../../../rest/services/api/SearchServer?features=ch.bafu.hydrologie-gewaesserzustandsmessstationen&type=featuresearch&searchText=433>`_
-- Search only for features belonging to the layer “ch.astra.ivs-reg_loc” (only using a bbox, no search text):
-- `https://api3.geo.admin.ch/rest/services/api/SearchServer?features=ch.astra.ivs-reg_loc&type=featureidentify&bbox=551306.5625,167918.328125,551754.125,168514.625 <../../../rest/services/api/SearchServer?features=ch.astra.ivs-reg_loc&type=featureidentify&bbox=551306.5625,167918.328125,551754.125,168514.625>`_
+- Search for locations matching the word “wabern”: `https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=wabern&type=locations <../../../rest/services/api/SearchServer?searchText=wabern&type=locations>`_
+- Search for locations and features matching the word “vd 446” (only features are filtered within the bbox are returned): `https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=vd%20446&features=ch.astra.ivs-reg_loc&type=locations&bbox=551306.5625,167918.328125,551754.125,168514.625 <../../../rest/services/api/SearchServer?searchText=vd%20446&features=ch.astra.ivs-reg_loc&type=locations&bbox=551306.5625,167918.328125,551754.125,168514.625>`_
+- Search for layers in French matching the word “géoïde” in their description: `https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=géoïde&type=layers&lang=fr <../../../rest/services/api/SearchServer?searchText=géoïde&type=layers&lang=fr>`_ 
+- Search for features matching word "433" in their description: `https://api3.geo.admin.ch/rest/services/api/SearchServer?features=ch.bafu.hydrologie-gewaesserzustandsmessstationen&type=featuresearch&searchText=433 <../../../rest/services/api/SearchServer?features=ch.bafu.hydrologie-gewaesserzustandsmessstationen&type=featuresearch&searchText=433>`_
+- Search only for features belonging to the layer “ch.astra.ivs-reg_loc” (only using a bbox, no search text): `https://api3.geo.admin.ch/rest/services/api/SearchServer?features=ch.astra.ivs-reg_loc&type=featureidentify&bbox=551306.5625,167918.328125,551754.125,168514.625 <../../../rest/services/api/SearchServer?features=ch.astra.ivs-reg_loc&type=featureidentify&bbox=551306.5625,167918.328125,551754.125,168514.625>`_
 
 Example of feature search usage with other services
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-- First: search for addresses using the feature search service:
-- `https://api3.geo.admin.ch/rest/services/api/SearchServer?features=ch.bfs.gebaeude_wohnungs_register&type=featuresearch&searchText=isabelle <../../../rest/services/api/SearchServer?features=ch.bfs.gebaeude_wohnungs_register&type=featuresearch&searchText=isabelle>`_
-- Then: use "feature_id" found in "attrs" to get detailed information about a feature:
-- `https://api3.geo.admin.ch/rest/services/api/MapServer/ch.bfs.gebaeude_wohnungs_register/880711_0?returnGeometry=false <../../../rest/services/api/MapServer/ch.bfs.gebaeude_wohnungs_register/880711_0?returnGeometry=false>`_
+- First: search for addresses using the feature search service: `https://api3.geo.admin.ch/rest/services/api/SearchServer?features=ch.bfs.gebaeude_wohnungs_register&type=featuresearch&searchText=isabelle <../../../rest/services/api/SearchServer?features=ch.bfs.gebaeude_wohnungs_register&type=featuresearch&searchText=isabelle>`_
+- Then: use "feature_id" found in "attrs" to get detailed information about a feature: `https://api3.geo.admin.ch/rest/services/api/MapServer/ch.bfs.gebaeude_wohnungs_register/880711_0?returnGeometry=false <../../../rest/services/api/MapServer/ch.bfs.gebaeude_wohnungs_register/880711_0?returnGeometry=false>`_
 
 
 .. _height_description:
@@ -389,7 +366,7 @@ Height
 ------
 
 This service allows to obtain elevation information for a point. **Note: this service is not freely accessible (fee required).** `Please Contact us <mailto:geodata@swisstopo.ch>`_
-See `Height models <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/products/height.html>`_ for more details on data used by this service.
+See `Height models <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/products/height.html>`_ for more details about data used by this service.
 
 URL
 ^^^
@@ -403,12 +380,12 @@ RESTFul interface is available.
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | Parameters                        | Description                                                                               |
 +===================================+===========================================================================================+
-| easting (required)                | The Y position in CH1903 coordinate system (SRID: 21781)                                  |
+| easting (required)                | The Y position in CH1903 coordinate system (SRID: 21781).                                 |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
-| northing (required)               | The X position in CH1903 coordinate system (SRID: 21781)                                  |
+| northing (required)               | The X position in CH1903 coordinate system (SRID: 21781).                                 |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | elevation_model (optional)        | The elevation model. Three elevation models are available DTM25, DTM2 (swissALTI3D)       |
-|                                   | and COMB (a combination of DTM25 and DTM2). Default to "DTM25"                            |
+|                                   | and COMB (a combination of DTM25 and DTM2). Default to "DTM25".                           |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | callback (optional)               | The name of the callback function.                                                        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
@@ -424,7 +401,7 @@ Profile
 -------
 
 This service allows to obtain elevation information for a polyline in CSV format. **Note: this service is not freely accessible (fee required).** `Please Contact us <mailto:geodata@swisstopo.ch>`_
-See `Height models <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/products/height.html>`_ for more details on data used by this service.
+See `Height models <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/products/height.html>`_ for more details about data used by this service.
 
 URL
 ^^^
@@ -439,12 +416,12 @@ RESTFul interface is available.
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | Parameters                        | Description                                                                               |
 +===================================+===========================================================================================+
-| geom (required)                   | A GeoJSON representation of a polyline (type = LineString)                                |
+| geom (required)                   | A GeoJSON representation of a polyline (type = LineString).                               |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | elevation_models (optional)       | A comma separated list of elevation models. Three elevation models are available DTM25,   |
-|                                   | DTM2 (swissALTI3D) and COMB (a combination of DTM25 and DTM2).  Default to "DTM25"        |
+|                                   | DTM2 (swissALTI3D) and COMB (a combination of DTM25 and DTM2).  Default to "DTM25".       |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
-| nb_points (optional)              | The number of points used for the polyline segmentation. Default "200"                    |
+| nb_points (optional)              | The number of points used for the polyline segmentation. Default "200".                   |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | offset (optional)                 | The offset value (INTEGER) in order to use the `exponential moving algorithm              |
 |                                   | <http://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average>`_ . For a given  |
@@ -457,10 +434,8 @@ RESTFul interface is available.
 Example
 ^^^^^^^
 
-- A profile in JSON:
-- `https://api3.geo.admin.ch/rest/services/profile.json?geom={"type"%3A"LineString"%2C"coordinates"%3A[[550050%2C206550]%2C[556950%2C204150]%2C[561050%2C207950]]} <../../../rest/services/profile.json?geom={"type"%3A"LineString"%2C"coordinates"%3A[[550050%2C206550]%2C[556950%2C204150]%2C[561050%2C207950]]}>`_
-- A profile in CSV:
-- `https://api3.geo.admin.ch/rest/services/profile.csv?geom={"type"%3A"LineString"%2C"coordinates"%3A[[550050%2C206550]%2C[556950%2C204150]%2C[561050%2C207950]]} <../../../rest/services/profile.csv?geom={"type"%3A"LineString"%2C"coordinates"%3A[[550050%2C206550]%2C[556950%2C204150]%2C[561050%2C207950]]}>`_
+- A profile in JSON: `https://api3.geo.admin.ch/rest/services/profile.json?geom={"type"%3A"LineString"%2C"coordinates"%3A[[550050%2C206550]%2C[556950%2C204150]%2C[561050%2C207950]]} <../../../rest/services/profile.json?geom={"type"%3A"LineString"%2C"coordinates"%3A[[550050%2C206550]%2C[556950%2C204150]%2C[561050%2C207950]]}>`_
+- A profile in CSV: `https://api3.geo.admin.ch/rest/services/profile.csv?geom={"type"%3A"LineString"%2C"coordinates"%3A[[550050%2C206550]%2C[556950%2C204150]%2C[561050%2C207950]]} <../../../rest/services/profile.csv?geom={"type"%3A"LineString"%2C"coordinates"%3A[[550050%2C206550]%2C[556950%2C204150]%2C[561050%2C207950]]}>`_
 
 .. _wmts_description:
 
@@ -468,8 +443,8 @@ WMTS
 ----
 
 A RESTFul implementation of the `WMTS <http://www.opengeospatial.org/standards/wmts>`_ `OGC <http://www.opengeospatial.org/>`_ standard.
-For detailed information, see See `WMTS OGC standard <http://www.opengeospatial.org/standards/wmts>`_
-In order to have acces to the WMTS, you require a `swisstopo web access - WMTS documentation <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/products/services/web_services/webaccess.html>`_, 
+For detailed information, see `WMTS OGC standard <http://www.opengeospatial.org/standards/wmts>`_
+In order to have access to the WMTS, you require a `swisstopo web access - WMTS documentation <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/products/services/web_services/webaccess.html>`_, 
 despite the fact that most layers are free to use. See :ref:`available_layers` for a list of all available layers.
 
 URL
@@ -485,7 +460,7 @@ URL
 GetCapabilities
 ^^^^^^^^^^^^^^^
 
-The GetCapabilites document provides informations on the service, along with layer description, both in german and french.
+The GetCapabilites document provides informations about the service, along with layer description, both in german and french.
 
 http://api3.geo.admin.ch/rest/services/api/1.0.0/WMTSCapabilities.xml
 
