@@ -53,7 +53,7 @@ help:
 all: prod dev lint apache testdev testprod deploy/deploy-branch.cfg fixrights
 
 .PHONY: prod
-prod: prd/testsitemap.xml prd/ prd/lib/ prd/lib/build.js prd/style/app.css prd/style/print.css prd/index.html prd/mobile.html prd/info.json prd/img/ prd/style/font-awesome-3.2.1/font/ prd/locales/ prd/checker prd/robots.txt
+prod: prd/ prd/lib/ prd/lib/build.js prd/style/app.css prd/style/print.css prd/index.html prd/mobile.html prd/info.json prd/img/ prd/style/font-awesome-3.2.1/font/ prd/locales/ prd/checker prd/robots.txt
 
 .PHONY: dev
 dev: src/deps.js src/style/app.css src/style/print.css src/index.html src/mobile.html
@@ -111,9 +111,6 @@ fixrights:
 .PHONY: updatesitemaps
 updatesitemaps:
 	node scripts/create_sitemaps.js
-
-prd/testsitemap.xml: src/testsitemap.xml
-	mkdir -p $(dir $@)
 
 prd/: $(SITEMAP_FILES)
 	mkdir -p $@
