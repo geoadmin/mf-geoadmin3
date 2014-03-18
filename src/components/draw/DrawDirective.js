@@ -30,7 +30,7 @@
             style: scope.options.styleFunction
           });
           gaDefinePropertiesForLayer(layer);
-          layer.highlight = true;
+          layer.preview = true;
 
           // Activate the component: active a tool if one was active when draw
           // has been deactivated.

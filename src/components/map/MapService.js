@@ -86,6 +86,14 @@
               this.setOpacity(1 - val);
             }
           },
+          id: {
+            get: function() {
+              return this.get('id') || this.bodId;
+            },
+            set: function(val) {
+              this.set('id', val);
+            }
+          },
           bodId: {
             get: function() {
               return this.get('bodId');
@@ -156,10 +164,6 @@
             value: false
           },
           preview: {
-            writable: true,
-            value: false
-          },
-          highlight: {
             writable: true,
             value: false
           }
@@ -390,6 +394,7 @@
             ];
           }
           var olLayer = new ol.layer.Vector({
+            id: 'KML||' + options.url,
             url: options.url,
             type: 'KML',
             label: options.label || kmlFormat.readName(kml) || 'KML',
@@ -762,31 +767,27 @@
       return {
         /**
          * Filters out background layers, preview
-         * layers and highlight layers and drawing
-         * layers. In other words, all layers that
+         * layers.
+         * In other words, all layers that
          * were actively added by the user and that
          * appear in the layer manager
          */
         selected: function(layer) {
           return !layer.background &&
-                 !layer.preview &&
-                 !layer.highlight;
+                 !layer.preview;
         },
         /**
          * Keep only time enabled layer
          */
         timeEnabledLayersFilter: function(layer) {
           return !layer.background &&
-                 !layer.highlight &&
                  layer.timeEnabled;
         },
         /**
-         * Filters out preview layers and highlight
-         * layers and drawing layers.
+         * Filters out preview layers.
          */
         permanentLayersFilter: function(layer) {
-          return !layer.preview &&
-                 !layer.highlight;
+          return !layer.preview;
         }
       };
     };
@@ -999,107 +1000,185 @@
     };
   });
 
-  module.provider('gaRecenterMapOnFeatures', function() {
-    this.$get = function($q, $http, gaDefinePropertiesForLayer,
-                         gaStyleFunctionFactory) {
 
+  /**
+   * This service manage features on vector preview layer.
+   * This preview layer is used to display temporary features.
+   * Used by Tooltip, FeatureTree and Permalink.
+   */
+  module.provider('gaPreviewFeatures', function() {
+    var MINIMAL_EXTENT_SIZE = 1965;
+    var highlightedFeature, onClear, listenerKeyRemove, listenerKeyAdd;
+    var geojson = new ol.format.GeoJSON();
+    var source = new ol.source.Vector();
+    var vector = new ol.layer.Vector({
+      source: source
+    });
+
+    this.$get = function($rootScope, $q, $http, gaDefinePropertiesForLayer,
+        gaStyleFactory) {
       var url = this.url;
-      var RecenterMapOnFeatures = function() {
+      var selectStyle = gaStyleFactory.getStyle('select');
+      var highlightStyle = gaStyleFactory.getStyle('highlight');
 
-        var MINIMAL_EXTENT_SIZE = 1965;
-        var vector, resetCallback;
-        var parser = new ol.format.GeoJSON();
-        var getFeatures = function(featureIdsByBodId) {
-          var promises = [];
-          angular.forEach(featureIdsByBodId, function(featureIds, bodId) {
-            Array.prototype.push.apply(promises, $.map(featureIds,
-                function(featureId) {
-                  return $http.get(url + bodId + '/' +
-                    featureId + '?geometryFormat=geojson');
-                }
-            ));
-          });
-          return $q.all(promises);
-        };
+      // Define layer default properties
+      gaDefinePropertiesForLayer(vector);
+      vector.preview = true;
+      vector.invertedOpacity = 0.25;
 
-        var getMinimalExtent = function(extent) {
-          var center, minS;
-          if (ol.extent.getHeight(extent) < MINIMAL_EXTENT_SIZE &&
-              ol.extent.getWidth(extent) < MINIMAL_EXTENT_SIZE) {
-            center = ol.extent.getCenter(extent);
-            minS = MINIMAL_EXTENT_SIZE / 2;
-            return ol.extent.boundingExtent([
-              [center[0] - minS, center[1] - minS],
-              [center[0] + minS, center[1] + minS]
-            ]);
-
-          } else {
-            return extent;
-          }
-        };
-
-        this.reset = function(map) {
-          if (angular.isDefined(vector)) {
-            map.removeLayer(vector);
-          }
-
-          if (angular.isDefined(resetCallback)) {
-            resetCallback();
-            resetCallback = undefined;
-          }
-        };
-
-        this.recenter = function(map, featureIdsByBodId, drawFeature, resetCB) {
-          var that = this;
-          getFeatures(featureIdsByBodId).then(function(results) {
-            var vectorSource;
-            var extent = [Infinity, Infinity, -Infinity, -Infinity];
-            var foundFeatures = [];
-            angular.forEach(results, function(result) {
-              var bbox = result.data.feature.bbox;
-              ol.extent.extend(extent, bbox);
-              foundFeatures.push(result.data.feature);
-            });
-            if (extent[2] >= extent[0] && extent[3] >= extent[1]) {
-              map.getView().fitExtent(getMinimalExtent(extent),
-                  map.getSize());
-            }
-            that.reset(map);
-            if (drawFeature) {
-              vectorSource = new ol.source.Vector({
-                features: parser.readFeatures({
-                  type: 'FeatureCollection',
-                  features: foundFeatures
-                })
-              });
-              vector = new ol.layer.Vector({
-                source: vectorSource,
-                style: gaStyleFunctionFactory('select')
-              });
-              gaDefinePropertiesForLayer(vector);
-              vector.highlight = true;
-              vector.invertedOpacity = 0.25;
-              map.addLayer(vector);
-            }
-            resetCallback = resetCB;
-          });
-        };
-
+      // TO DO: May be this method should be elsewher?
+      var getFeatures = function(featureIdsByBodId) {
+        var promises = [];
+        angular.forEach(featureIdsByBodId, function(featureIds, bodId) {
+          Array.prototype.push.apply(promises, $.map(featureIds,
+              function(featureId) {
+                return $http.get(url + bodId + '/' +
+                  featureId + '?geometryFormat=geojson');
+              }
+          ));
+        });
+        return $q.all(promises);
       };
 
-      return new RecenterMapOnFeatures();
+      // Get a buffered extent if necessary
+      var getMinimalExtent = function(extent) {
+        if (ol.extent.getHeight(extent) < MINIMAL_EXTENT_SIZE &&
+            ol.extent.getWidth(extent) < MINIMAL_EXTENT_SIZE) {
+          var center = ol.extent.getCenter(extent);
+          return ol.extent.buffer(center.concat(center),
+              MINIMAL_EXTENT_SIZE / 2);
+        } else {
+          return extent;
+        }
+      };
+
+      // Move layer on top
+      var moveToTop = function(map) {
+        if (map.getLayers().getArray().indexOf(vector) != -1) {
+          map.removeLayer(vector);
+          map.addLayer(vector);
+        }
+      };
+
+      // Remove features associated with a layer.
+      var removeFromLayer = function(layer) {
+        var features = source.getFeatures();
+        for (var i = 0, ii = features.length; i < ii; i++) {
+          var layerId = features[i].get('layerId');
+          if (angular.isDefined(layerId) && layerId == layer.id) {
+            source.removeFeature(features[i]);
+          }
+        }
+      };
+
+      // Add/remove/move to top the vector layer.
+      var updateLayer = function(map) {
+        if (source.getFeatures().length == 0) {
+          map.getLayers().unByKey(listenerKeyRemove);
+          map.getLayers().unByKey(listenerKeyAdd);
+          map.removeLayer(vector);
+        } else if (map.getLayers().getArray().indexOf(vector) == -1) {
+          map.addLayer(vector);
+
+          // Add event for automatically put the vector layer on top.
+          listenerKeyAdd = map.getLayers().on('add', function(event) {
+            if (event.element != vector) {
+              moveToTop(map);
+            }
+          });
+
+          // Add event for automatically removing the features when the
+          // corresponding layer is removed.
+          listenerKeyRemove = map.getLayers().on('remove', function(event) {
+            removeFromLayer(event.element);
+          });
+
+        } else {
+          moveToTop(map);
+        }
+      };
+
+      var PreviewFeatures = function() {
+
+        // Add a feature.
+        this.add = function(map, feature) {
+          feature.setStyle(selectStyle);
+          source.addFeature(feature);
+          updateLayer(map);
+        };
+
+        // Add features from an array<layerBodId,array<featureIds>>.
+        // Param onNextClear is a function to call on the next execution of
+        // clear function.
+        this.addBodFeatures = function(map, featureIdsByBodId, onNextClear) {
+          this.clear(map);
+          var that = this;
+          getFeatures(featureIdsByBodId).then(function(results) {
+            angular.forEach(results, function(result) {
+              result.data.feature.properties.layerId =
+                  result.data.feature.layerBodId;
+              that.add(map, geojson.readFeature(result.data.feature));
+            });
+            that.zoom(map);
+          });
+
+          onClear = onNextClear;
+        };
+
+        // Remove all.
+        this.clear = function(map) {
+          source.clear();
+          if (map) {
+            updateLayer(map);
+          }
+          highlightedFeature = undefined;
+
+          if (onClear) {
+            onClear();
+            onClear = undefined;
+          }
+        };
+
+        // Remove only the highlighted feature.
+        this.clearHighlight = function(map) {
+          if (highlightedFeature) {
+            source.removeFeature(highlightedFeature);
+            highlightedFeature = undefined;
+          }
+        };
+
+        // Remove the precedent feature highlighted then add the new one.
+        this.highlight = function(map, feature) {
+          this.clearHighlight();
+          // We clone the feature to avoid duplicate features with same ids
+          highlightedFeature = new ol.Feature(feature.getGeometry());
+          highlightedFeature.setStyle(highlightStyle);
+          source.addFeature(highlightedFeature);
+          updateLayer(map);
+        };
+
+        // Zoom on a feature (if defined) or zoom on the entire source
+        // extent.
+        this.zoom = function(map, feature) {
+          var extent = getMinimalExtent((feature) ?
+              feature.getGeometry().getExtent() : source.getExtent());
+          map.getView().fitExtent(extent, map.getSize());
+        };
+      };
+      return new PreviewFeatures();
     };
   });
 
-  module.provider('gaHighlightFeaturePermalinkManager', function() {
+  module.provider('gaFeaturesPermalinkManager', function() {
     this.$get = function($rootScope, gaPermalink, gaLayers,
-        gaRecenterMapOnFeatures, gaMapUtils) {
+        gaPreviewFeatures, gaMapUtils) {
       var queryParams = gaPermalink.getParams();
       return function(map) {
         var deregister = $rootScope.$on('gaLayersChange', function() {
           var featureIdsCount = 0;
           var featureIdsByBodId = {};
           var paramKey;
+          var listenerKey;
           for (paramKey in queryParams) {
             if (gaLayers.getLayer(paramKey)) {
               var bodId = paramKey;
@@ -1110,7 +1189,7 @@
               if (featureIds.length > 0) {
                 featureIdsCount += featureIds.length;
                 Array.prototype.push.apply(featureIdsByBodId[bodId],
-                  featureIds);
+                    featureIds);
                 if (!gaMapUtils.getMapOverlayForBodId(map, bodId)) {
                   map.addLayer(gaLayers.getOlLayerById(bodId));
                 }
@@ -1123,11 +1202,26 @@
             for (bodId in featureIdsByBodId) {
               gaPermalink.deleteParam(bodId);
             }
+            featureIdsCount = 0;
           };
 
           if (featureIdsCount > 0) {
-            gaRecenterMapOnFeatures.recenter(map, featureIdsByBodId, true,
-                                             removeParamsFromPL);
+            gaPreviewFeatures.addBodFeatures(map, featureIdsByBodId,
+                removeParamsFromPL);
+
+            // When a layer is removed, we need to update the permalink
+            listenerKey = map.getLayers().on('remove', function(event) {
+              var layerBodId = event.element.bodId;
+              if (featureIdsCount > 0 && (layerBodId in featureIdsByBodId)) {
+                featureIdsCount -= featureIdsByBodId[layerBodId].length;
+                gaPermalink.deleteParam(layerBodId);
+              }
+              if (featureIdsCount == 0 && listenerKey) {
+                // Unlisten the remove event when there is no more features
+                // (from permalink) displayed.
+                map.getLayers().unByKey(listenerKey);
+              }
+            });
           }
           deregister();
         });

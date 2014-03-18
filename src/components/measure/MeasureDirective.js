@@ -72,7 +72,7 @@
             style: scope.options.styleFunction
           });
           gaDefinePropertiesForLayer(layer);
-          layer.highlight = true;
+          layer.preview = true;
 
           // Creates the additional overlay to display azimuth circle
           var featuresOverlay = new ol.FeatureOverlay({

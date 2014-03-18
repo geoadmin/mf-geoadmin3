@@ -576,8 +576,8 @@
               gaGlobalOptions.cachedMapUrl + '/rest/services/{Topic}/MapServer/{Layer}/legend?lang={Lang}';
         });
 
-        module.config(function(gaRecenterMapOnFeaturesProvider, gaGlobalOptions) {
-          gaRecenterMapOnFeaturesProvider.url =
+        module.config(function(gaPreviewFeaturesProvider, gaGlobalOptions) {
+          gaPreviewFeaturesProvider.url =
               gaGlobalOptions.cachedMapUrl + '/rest/services/all/MapServer/';
         });
 

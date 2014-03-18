@@ -4,19 +4,17 @@
   goog.require('ga_browsersniffer_service');
   goog.require('ga_map_service');
   goog.require('ga_popup_service');
-  goog.require('ga_styles_service');
 
   var module = angular.module('ga_tooltip_directive', [
     'ga_popup_service',
     'ga_map_service',
-    'ga_styles_service',
     'pascalprecht.translate'
   ]);
 
   module.directive('gaTooltip',
       function($timeout, $document, $http, $q, $translate, $sce, gaPopup,
           gaLayers, gaBrowserSniffer, gaDefinePropertiesForLayer, gaMapClick,
-          gaStyleFunctionFactory, $rootScope, gaRecenterMapOnFeatures) {
+          $rootScope, gaPreviewFeatures) {
         var waitclass = 'ga-tooltip-wait',
             bodyEl = angular.element($document[0].body),
             popupContent = '<div ng-repeat="htmlsnippet in options.htmls">' +
@@ -40,24 +38,14 @@
                 vector,
                 vectorSource,
                 parser,
-                year;
+                year,
+                listenerKey;
 
-            //FIXME: as the tooltip highlight is never printed, we could draw
-            //these features using the 'postcompose' function on either the
-            //layer or the map directly.
-            //See ol3 examples: dynamic-data.js or geojson.js
             parser = new ol.format.GeoJSON();
-            vectorSource = new ol.source.Vector();
-            vector = new ol.layer.Vector({
-              source: vectorSource,
-              style: gaStyleFunctionFactory('select')
-            });
-            gaDefinePropertiesForLayer(vector);
-            vector.highlight = true;
-            vector.invertedOpacity = 0.25;
 
             $scope.$on('gaTopicChange', function(event, topic) {
               currentTopic = topic.id;
+              initTooltip();
             });
 
             $scope.$on('gaTimeSelectorChange', function(event, currentyear) {
@@ -99,13 +87,14 @@
               if (popup) {
                 popup.close();
               }
-              clearAll();
-              map.addLayer(vector);
-            }
 
-            function clearAll() {
-              vectorSource.clear();
-              map.removeLayer(vector);
+              // Clear the preview features
+              gaPreviewFeatures.clear(map);
+
+              // Remove the remove layer listener if exist
+              if (listenerKey) {
+                map.getLayers().unByKey(listenerKey);
+              }
             }
 
             gaMapClick.listen(map, function(evt) {
@@ -139,6 +128,7 @@
                   if (!featureFound &&
                       (feature.get('name') ||
                       feature.get('description'))) {
+                    feature.set('layerId', layer.id);
                     featureFound = feature;
                   }
                 }
@@ -243,14 +233,23 @@
             // Highlight the features found
             function showFeatures(mapExtent, size, foundFeatures) {
               if (foundFeatures && foundFeatures.length > 0) {
+
+                // Remove the tooltip, if a layer is removed, we don't care
+                // which layer. It worked like that in RE2.
+                listenerKey = $scope.map.getLayers().on('remove',
+                  function(event) {
+                    if (!event.element.preview) {
+                      initTooltip();
+                    }
+                  }
+                );
+
                 angular.forEach(foundFeatures, function(value) {
 
                   if (value instanceof ol.Feature) {
-                    //Make sure that there's no highlight from PL anymore
-                    //Should be refactored
-                    gaRecenterMapOnFeatures.reset(map);
-
-                    vectorSource.addFeature(value);
+                    var feature = new ol.Feature(value.getGeometry());
+                    feature.set('layerId', value.get('layerId'));
+                    gaPreviewFeatures.add(map, feature);
                     showPopup(value.get('htmlpopup'));
 
                   } else {
@@ -259,15 +258,9 @@
                         gaLayers.getLayerProperty(value.layerBodId,
                                                   'highlightable')) {
                       var features = parser.readFeatures(value);
-
-                      //Make sure that there's no highlight from PL anymore
-                      //Should be refactored
-                      if (features.length > 0) {
-                        gaRecenterMapOnFeatures.reset(map);
-                      }
-
                       for (var i = 0, ii = features.length; i < ii; ++i) {
-                        vectorSource.addFeature(features[i]);
+                        features[i].set('layerId', value.layerBodId);
+                        gaPreviewFeatures.add(map, features[i]);
                       }
                     }
 
@@ -303,7 +296,7 @@
                     onCloseCallback: function() {
                       onCloseCB();
                       onCloseCB = angular.noop;
-                      clearAll();
+                      gaPreviewFeatures.clear(map);
                     },
                     destroyOnClose: false,
                     title: 'object_information',
@@ -332,7 +325,7 @@
                 var bodId = l.bodId,
                     layerToQuery,
                     timestamps, timeBehaviour;
-                if (l instanceof ol.layer.Vector && !l.highlight) {
+                if (l instanceof ol.layer.Vector && !l.preview) {
                   layerToQuery = l;
                 } else if (gaLayers.getLayer(bodId) &&
                     gaLayers.getLayerProperty(bodId, 'queryable') &&

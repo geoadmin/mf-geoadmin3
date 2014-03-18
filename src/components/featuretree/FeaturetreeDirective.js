@@ -19,20 +19,9 @@
 
   module.directive('gaFeaturetree',
       function($rootScope, $compile, $timeout, $http, $q, $translate, $sce,
-          gaLayers, gaDefinePropertiesForLayer, gaStyleFunctionFactory, 
-          gaMapClick, gaRecenterMapOnFeatures, gaLayerFilters,
+          gaLayers, gaDefinePropertiesForLayer, gaStyleFactory, 
+          gaMapClick, gaPreviewFeatures, gaLayerFilters,
           gaBrowserSniffer) {
-
-        var createVectorLayer = function(style) {
-          var vector = new ol.layer.Vector({
-            style: gaStyleFunctionFactory(style),
-            source: new ol.source.Vector()
-          });
-          gaDefinePropertiesForLayer(vector);
-          vector.highlight = true;
-          vector.invertedOpacity = 0.25;
-          return vector;
-        };
 
         return {
           restrict: 'A',
@@ -52,14 +41,12 @@
             var viewport = $(map.getViewport());
             var projection = view.getProjection();
             var parser = new ol.format.GeoJSON();
-            var highlightLayer = createVectorLayer('highlight');
             var tooltipShown = false;
             var selectionRecFeature = new ol.Feature();
             var selectionRecOverlay = new ol.FeatureOverlay({
               map: map,
-              style: gaStyleFunctionFactory('selectrectangle')
+              style: gaStyleFactory.getStyle('selectrectangle')
             });
-            map.addLayer(highlightLayer);
 
             scope.dragBox = new ol.interaction.DragBox({
               condition: function(evt) {
@@ -136,23 +123,6 @@
               return $.map(extent, parseFloat);
             };
 
-            //FIXME: should use ol.extent.getArea,
-            //but it's not in ol build.
-            var area = function(ext) {
-              return ol.extent.getWidth(ext) *
-                     ol.extent.getHeight(ext);
-            };
-
-            //FIXME: should use ol.extent.getIntersectionArea,
-            //but it's not in ol build.
-            var intersectionArea = function(extent1, extent2) {
-              var minX = Math.max(extent1[0], extent2[0]);
-              var minY = Math.max(extent1[1], extent2[1]);
-              var maxX = Math.min(extent1[2], extent2[2]);
-              var maxY = Math.min(extent1[3], extent2[3]);
-              return Math.max(0, maxX - minX) * Math.max(0, maxY - minY);
-            };
-
             var updateTree = function(res, searchExtent) {
               var tree = {}, i, li, j, lj, layerId, newNode, oldNode,
                   feature, oldFeature, result, bbox, ext;
@@ -175,13 +145,13 @@
                     bbox = parseBoxString(result.attrs.geom_st_box2d);
                     ext = ol.extent.boundingExtent([[bbox[0], bbox[1]],
                                                        [bbox[2], bbox[3]]]);
-                    if (area(ext) <= 0) {
+                    if (ol.extent.getArea(ext) <= 0) {
                       if (!ol.extent.containsCoordinate(searchExtent,
                                                         [ext[0], ext[1]])) {
                         continue;
                       }
-                    } else if (intersectionArea(searchExtent,
-                                                      ext) <= 0) {
+                    } else if (ol.extent.getIntersectionArea(searchExtent,
+                                                              ext) <= 0) {
                       continue;
                     }
                   }
@@ -265,7 +235,7 @@
             var requestFeatures = function() {
               var layersToQuery = getLayersToQuery(),
                   req, searchExtent;
-              scope.clearHighlight();
+              gaPreviewFeatures.clearHighlight();
               if (layersToQuery.length &&
                   scope.dragBox.getGeometry()) {
                 searchExtent = ol.extent.boundingExtent(
@@ -303,11 +273,6 @@
               }
             };
 
-            var assureLayerOnTop = function(layer) {
-              map.removeLayer(layer);
-              map.addLayer(layer);
-            };
-
             var loadGeometry = function(feature, cb) {
               var featureUrl;
               if (!feature.geometry) {
@@ -339,18 +304,17 @@
             scope.loading = false;
             scope.tree = {};
 
-            scope.highlightFeatureInMap = function(feature) {
+            scope.highlightFeature = function(feature) {
               loadGeometry(feature, function() {
                 if (feature.geometry) {
-                  highlightLayer.getSource().addFeature(
+                  gaPreviewFeatures.highlight(map,
                       parser.readFeature(feature.geometry));
-                  assureLayerOnTop(highlightLayer);
                 }
               });
             };
 
             scope.clearHighlight = function() {
-              highlightLayer.getSource().clear();
+              gaPreviewFeatures.clearHighlight();
             };
 
             var selectAndTriggerTooltip = function(feature) {
@@ -425,23 +389,10 @@
               }
             };
 
-            scope.recenterToFeature = function(evt, f) {
-              var recenterObject = {};
+            scope.recenterToFeature = function(evt, feature) {
               evt.stopPropagation();
-              recenterObject[f.layer] = [f.id];
-              gaRecenterMapOnFeatures.recenter(map, recenterObject, false);
+              gaPreviewFeatures.zoom(map, parser.readFeature(feature.geometry));
             };
-
-            scope.$on('gaTopicChange', function(event, topic) {
-              currentTopic = topic.id;
-            });
-
-            scope.$on('gaTimeSelectorChange', function(event, newYear) {
-              if (newYear !== currentYear) {
-                currentYear = newYear;
-                triggerChange();
-              }
-            });
 
             var showSelectionRectangle = function() {
               if (!selectionRecOverlay.getFeatures().getLength() &&
@@ -461,6 +412,7 @@
               triggerChange();
             };
 
+            // Watchers and scope events
             scope.$watch('options.active', function(newVal, oldVal) {
               cancel();
               if (newVal === true) {
@@ -474,6 +426,18 @@
               }
             });
 
+            scope.$on('gaTopicChange', function(event, topic) {
+              currentTopic = topic.id;
+            });
+
+            scope.$on('gaTimeSelectorChange', function(event, newYear) {
+              if (newYear !== currentYear) {
+                currentYear = newYear;
+                triggerChange();
+              }
+            });
+
+            // Events on dragbox
             scope.dragBox.on('boxstart', function(evt) {
               hideSelectionRectangle();
             });
