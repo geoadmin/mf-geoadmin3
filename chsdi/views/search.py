@@ -11,6 +11,7 @@ from chsdi.lib import mortonspacekey as msk
 
 import re
 
+
 class Search(SearchValidation):
 
     LIMIT = 50
@@ -149,26 +150,25 @@ class Search(SearchValidation):
         self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
         self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, '@weight DESC')
 
-
         timeFilter = []
-        timeInterval=re.search(r'((\b\d{4})-(\d{4}\b))',' '.join(self.searchText)) or False
+        timeInterval = re.search(r'((\b\d{4})-(\d{4}\b))', ' '.join(self.searchText)) or False
         # search for year with getparameter timeInstand=2010
         if self.timeInstant is not None:
-            timeFilter=[self.timeInstant]
+            timeFilter = [self.timeInstant]
         # search for year interval with searchText Pattern .*YYYY-YYYY.*
         elif timeInterval:
-            numbers=[timeInterval.group(2),timeInterval.group(3)]
-            start=min(numbers)
-            stop=max(numbers)
+            numbers = [timeInterval.group(2), timeInterval.group(3)]
+            start = min(numbers)
+            stop = max(numbers)
             # remove time intervall from searchtext
             self.searchText.remove(timeInterval.group(1))
             if min != max:
-                timeFilter=[start,stop]
-                
+                timeFilter = [start, stop]
+
         searchdText = self._query_fields('@detail')
         if self.quadindex is not None:
             searchdText += ' & (' + self._get_quadindex_string() + ')'
-        self._add_feature_queries(searchdText,timeFilter)
+        self._add_feature_queries(searchdText, timeFilter)
         try:
             temp = self.sphinx.RunQueries()
         except IOError:
@@ -229,11 +229,11 @@ class Search(SearchValidation):
         for index in self.featureIndexes:
             # default: no filter
             self.sphinx.ResetFilters()
-            if timeFilter and checkFilter.Query('bgdi_internal: check presence of time Filter Attribute',index=str(index)):
+            if timeFilter and checkFilter.Query('bgdi_internal: check presence of time Filter Attribute', index=str(index)):
                 if len(timeFilter) == 1:
                     self.sphinx.SetFilter('year', [self.timeInstant])
                 elif len(timeFilter) == 2:
-                    self.sphinx.SetFilterRange('year',long(min(timeFilter)),long(max(timeFilter)))
+                    self.sphinx.SetFilterRange('year', long(min(timeFilter)), long(max(timeFilter)))
 
             self.sphinx.AddQuery(queryText, index=str(index))
 
