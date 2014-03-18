@@ -12,13 +12,16 @@ var fs = require('fs'),
 var HOSTNAME = 'http://map.geo.admin.ch';
 var LANGUAGES = ['de', 'fr', 'it', 'rm', 'en'];
 
-var getAllLanguageUrls = function(templates, pre, post) {
+var getAllLanguageUrls = function(templates, prio, pre, post) {
   var ret = [],
+      priority = prio || 0.5,
       prefix = pre || '',
       postfix = post || '';
   LANGUAGES.forEach(function(lan) {
     templates.forEach(function(template) {
-      ret.push({url: template + prefix + 'lang=' + lan + postfix});
+      ret.push({url: template + prefix + 'lang=' + lan + postfix,
+                priority: priority
+               });
     });
   });
   return ret;
@@ -34,7 +37,7 @@ var createBaseSM = function(origin) {
   try {
     var sitemap = sm.createSitemap({
       hostname: HOSTNAME,
-      urls: getAllLanguageUrls(['/?'])
+      urls: getAllLanguageUrls(['/?'], 1.0)
     });
     fs.writeFile(getFullPath(origin.name), (sitemap.toString() + '\n\n'));
   } catch(err) {
@@ -58,7 +61,7 @@ var createTopicsSM = function(origin) {
         
         var sitemap = sm.createSitemap({
           hostname: HOSTNAME,
-          urls: getAllLanguageUrls(topicPathTemplates, '&')
+          urls: getAllLanguageUrls(topicPathTemplates, 0.8, '&')
         });
         fs.writeFile(getFullPath(origin.name), sitemap.toString() + '\n\n');
         deferred.resolve({result: true, origin: origin});
@@ -129,7 +132,7 @@ var createLayersSM = function(origin) {
           });
           var sitemap = sm.createSitemap({
             hostname: HOSTNAME,
-            urls: getAllLanguageUrls(templates, '&')
+            urls: getAllLanguageUrls(templates, 0.6, '&')
           });
           fs.writeFile(getFullPath(origin.name), sitemap.toString() + '\n\n');
           deferred.resolve({result: true, origin: origin});
