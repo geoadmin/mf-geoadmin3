@@ -182,6 +182,7 @@ class Search(SearchValidation):
         return transformCoordinate(wkt, 21781, 4326)
 
     def _feature_bbox_search(self):
+        timeFilter = []
         if self.quadindex is None:
             raise exc.HTTPBadRequest('Please provide a bbox parameter')
 
@@ -191,13 +192,13 @@ class Search(SearchValidation):
         self.sphinx.SetLimits(0, self.FEATURE_GEO_LIMIT)
 
         if self.timeInstant is not None:
-            self.sphinx.SetFilter('year', [self.timeInstant])
+            timeFilter = [self.timeInstant]
         geoAnchor = self._get_geoanchor_from_bbox()
         self.sphinx.SetGeoAnchor('lat', 'lon', geoAnchor.GetY(), geoAnchor.GetX())
         self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, '@geodist ASC')
 
         geomFilter = self._get_quadindex_string()
-        self._add_feature_queries(geomFilter)
+        self._add_feature_queries(geomFilter,timeFilter)
         temp = self.sphinx.RunQueries()
         return self._parse_feature_results(temp)
 
@@ -222,13 +223,12 @@ class Search(SearchValidation):
         print self.searchText
 
     def _add_feature_queries(self, queryText, timeFilter):
-        checkFilter = sphinxapi.SphinxClient()
-        checkFilter.SetServer(self.sphinxHost, 9312)
-        checkFilter.SetFilter('year', [9999])
+        if timeFilter:
+            checkFilter = sphinxapi.SphinxClient()
+            checkFilter.SetServer(self.sphinxHost, 9312)
+            checkFilter.SetFilter('year', [9999])
 
         for index in self.featureIndexes:
-            # default: no filter
-            self.sphinx.ResetFilters()
             if timeFilter and checkFilter.Query('bgdi_internal: check presence of time Filter Attribute', index=str(index)):
                 if len(timeFilter) == 1:
                     self.sphinx.SetFilter('year', [self.timeInstant])
