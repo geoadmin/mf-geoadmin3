@@ -25,7 +25,12 @@ class Gebaeuderegister(Base, Vector):
     plz4 = Column('plz4', Integer)
     plzname = Column('plzname', Text)
     gdename = Column('gdename', Text)
+    gdekt = Column('gdekt', Text)
+    dstrid = Column('dstrid', Integer)
+    gkplaus = Column('gkplaus', Integer)
+    gstat = Column('gstat', Integer)
     gdenr = Column('gdenr', Integer)
+    ggbkr = Column('ggbkr', Text)
     bgdi_created = Column('bgdi_created', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
