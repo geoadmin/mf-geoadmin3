@@ -20,8 +20,10 @@
 <%def name="extended_info(c, lang)"> 
 
 <%
+    import datetime
     lang = lang if lang in ('fr','it') else 'de'
     format = 'formate_%s' % lang
+    date = datetime.datetime.strptime(c['attributes']['approval_date'].strip(), "%d-%m-%Y").strftime("%d.%m.%Y")
 %>
   <table>
     <tr><td class="cell-meta-small">${_('safety_zone')}</td><td class="cell-meta-big">${c['attributes']['zone_name']}</td></tr>
@@ -38,7 +40,7 @@
 %>
     <tr><td class="cell-meta-small">${_('municipality')}</td><td class="cell-meta-big">${nb_municipality}</td></tr>
     <tr><td class="cell-meta-small">${_('bazlrechtstatus')}</td><td class="cell-meta-big">${c['attributes']['legalstatus_%s' % lang]}</td></tr>
-    <tr><td class="cell-meta-small">${_('approval_date')}</td><td class="cell-meta-big">${c['attributes']['approval_date']}</td></tr>  
+    <tr><td class="cell-meta-small">${_('approval_date')}</td><td class="cell-meta-big">${date or '-'}</td></tr>  
    
 <%
      weblink = c['attributes']['weblink']

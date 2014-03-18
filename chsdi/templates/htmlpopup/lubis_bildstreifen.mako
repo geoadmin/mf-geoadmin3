@@ -1,4 +1,5 @@
 <%inherit file="base.mako"/>
+<% c['stable_id'] = True %>
 
 <%def name="table_body(c, lang)">
     <tr><td class="cell-left">${_('tt_lubis_lineId')}</td>   <td>${c['featureId']}</td></tr>
@@ -30,12 +31,6 @@
         <tr><th class="cell-left">${_('tt_lubis_x2')}</th>                <td>${c['attributes']['toposhop_end_y'] or '-'}</td></tr>
         <tr><th class="cell-left">${_('tt_lubis_linielaenge')}</th>     <td>${c['attributes']['toposhop_length'] or '-'}</td></tr>
         <tr><th class="cell-left">${_('link')} Toposhop</th>   <td><a href="http://www.toposhop.admin.ch/de/shop/satair/lubis_1?ext=1&bs=${c['featureId']},${c['attributes']['toposhop_date']},${c['attributes']['toposhop_length']},${c['attributes']['resolution']},${c['attributes']['toposhop_start_x']},${c['attributes']['toposhop_start_y']},${c['attributes']['toposhop_end_x']},${c['attributes']['toposhop_end_y']}" target="toposhop">Toposhop</a></td></tr>
-<tr>
-  <td class="cell-left"></td>
-  <td>
-     <a href="${c['baseUrl']}/lubis_demo/prod/?${c['layerBodId']}=${str(c['featureId'])}&lang=${lang}&topic=lubis" target="new"> ${_('Link to object')}</a>
-  </td>
-</tr>
 
 </table>
 
