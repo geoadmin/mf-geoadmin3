@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import os.path
+import re
 
 from pyramid.view import view_config
-from pyramid.renderers import render_to_response
+from pyramid.renderers import render, render_to_response
 from pyramid.response import Response
 import pyramid.httpexceptions as exc
 
@@ -123,6 +124,14 @@ def identify_esrijson(request):
 
 
 def _identify_oereb(request):
+    def insertTimestamps(header, comments):
+      pos =  re.search(r'\?>', header).end()
+      return ''.join((
+          header[:pos],
+          comments,
+          header[pos:]
+      ))    
+
     params = FeaturesParams(request)
     # At the moment only one layer at a time and no support of all
     if params.layers == 'all' or len(params.layers) > 1:
@@ -144,7 +153,22 @@ def _identify_oereb(request):
         for fragment in temp:
             if fragment not in features:
                 features.append(fragment)
-    results = header + ''.join(features) + footer
+    if len(features):
+        bgdi_created = feature.bgdi_created
+        data_created = feature.data_created
+        comments = render(
+            'chsdi:templates/oereb_timestamps.mako',
+            {
+                'bgdi_created': bgdi_created,
+                'data_created': data_created
+            }
+        )
+        header = insertTimestamps(header, comments)
+    results = ''.join((
+        header,
+        ''.join(features),
+        footer
+    ))
     response = Response(results)
     response.content_type = 'text/xml'
     return response

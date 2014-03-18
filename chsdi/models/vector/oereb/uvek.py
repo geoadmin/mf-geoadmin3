@@ -16,6 +16,8 @@ class Projektierungszonen_Oereb(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     geomType = Column('geom_type', Text)
     xmlData = Column('xml_data', Text)
+    bgdi_created = Column('bgdi_created', Text)
+    data_created = Column('data_created', Text)
 
 register_oereb('ch.bazl.projektierungszonen-flughafenanlagen.oereb', Projektierungszonen_Oereb)
 
@@ -28,6 +30,8 @@ class Sichereitszonen_Oereb(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     geomType = Column('geom_type', Text)
     xmlData = Column('xml_data', Text)
+    bgdi_created = Column('bgdi_created', Text)
+    data_created = Column('data_created', Text)
 
 register_oereb('ch.bazl.sicherheitszonenplan.oereb', Sichereitszonen_Oereb)
 
@@ -40,5 +44,7 @@ class Kataster_belasteten_standorte_Oereb(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     geomType = Column('geom_type', Text)
     xmlData = Column('xml_data', Text)
+    bgdi_created = Column('bgdi_created', Text)
+    data_created = Column('data_created', Text)
 
 register_oereb('ch.bav.kataster-belasteter-standorte-oev.oereb', Kataster_belasteten_standorte_Oereb)
