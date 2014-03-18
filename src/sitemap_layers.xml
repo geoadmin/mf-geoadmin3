@@ -353,6 +353,9 @@
 <url> <loc>http://map.geo.admin.ch/?topic=ivs&amp;layers=ch.swisstopo.hiks-siegfried&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ivs&amp;layers=ch.astra.ivs-reg_loc.sub&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ivs&amp;layers=ch.kantone.ivs-reg_loc&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=sachplan&amp;layers=ch.bav.sachplan-infrastruktur-schiene_kraft&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=sachplan&amp;layers=ch.bav.sachplan-infrastruktur-schiene_anhorung&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=sachplan&amp;layers=ch.bav.sachplan-infrastruktur-schiene_ausgangslage&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=sachplan&amp;layers=ch.bazl.sachplan-infrastruktur-luftfahrt_kraft&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=sachplan&amp;layers=ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=sachplan&amp;layers=ch.bazl.landschaftsruhezonen&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -511,7 +514,6 @@
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bafu.laerm-strassenlaerm_nacht&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bafu.laerm-strassenlaerm_tag&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.ensi.zonenplan-notfallschutz-kernanlagen&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
-<url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.vbs.territorialregionen&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.blw.alpprodukte&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.blw.bergprodukte&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bak.bundesinventar-schuetzenswerte-ortsbilder&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -524,6 +526,7 @@
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bazl.projektierungszonen-flughafenanlagen&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bazl.sachplan-infrastruktur-luftfahrt_kraft&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bazl.sicherheitszonenplan&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.vbs.territorialregionen&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.swisstopo.vec25-anlagen&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.astra.ausnahmetransportrouten&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.swisstopo.vec25-eisenbahnnetz&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -568,6 +571,7 @@
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bakom.anschlussart-kupferdraht&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bakom.radio-fernsehsender&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bfe.sachplan-geologie-tiefenlager&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bav.sachplan-infrastruktur-schiene_kraft&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bazl.sachplan-infrastruktur-luftfahrt_kraft&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bakom.verfuegbarkeit-tv&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bakom.uplink1&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -779,6 +783,7 @@
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.are.bauzonen&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.are.gemeindetypen&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.bazl.projektierungszonen-flughafenanlagen&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.bav.sachplan-infrastruktur-schiene_kraft&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.bfe.sachplan-geologie-tiefenlager&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.bazl.sachplan-infrastruktur-luftfahrt_kraft&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.bazl.sicherheitszonenplan&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -786,6 +791,7 @@
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo-vd.geometa-grundbuch&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo-vd.geometa-nfgeom&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo-vd.geometa-standav&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-geophysik-deklination&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-gravimetrischer_atlas.metadata&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-eiszeit-lgm-raster&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-geotechnik-gk500-genese&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -820,7 +826,6 @@
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-geophysik-aeromagnetische_karte_jura&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-geolkarten500.metadata&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-geodaesie-bouguer_anomalien&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
-<url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-geophysik-deklination&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.blw.bodeneignung-kulturland&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.blw.bodeneignung-kulturtyp&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.blw.erosion&amp;lang=de</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -1362,6 +1367,9 @@
 <url> <loc>http://map.geo.admin.ch/?topic=ivs&amp;layers=ch.swisstopo.hiks-siegfried&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ivs&amp;layers=ch.astra.ivs-reg_loc.sub&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ivs&amp;layers=ch.kantone.ivs-reg_loc&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=sachplan&amp;layers=ch.bav.sachplan-infrastruktur-schiene_kraft&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=sachplan&amp;layers=ch.bav.sachplan-infrastruktur-schiene_anhorung&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=sachplan&amp;layers=ch.bav.sachplan-infrastruktur-schiene_ausgangslage&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=sachplan&amp;layers=ch.bazl.sachplan-infrastruktur-luftfahrt_kraft&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=sachplan&amp;layers=ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=sachplan&amp;layers=ch.bazl.landschaftsruhezonen&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -1520,7 +1528,6 @@
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bafu.laerm-strassenlaerm_nacht&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bafu.laerm-strassenlaerm_tag&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.ensi.zonenplan-notfallschutz-kernanlagen&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
-<url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.vbs.territorialregionen&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.blw.alpprodukte&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.blw.bergprodukte&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bak.bundesinventar-schuetzenswerte-ortsbilder&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -1533,6 +1540,7 @@
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bazl.projektierungszonen-flughafenanlagen&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bazl.sachplan-infrastruktur-luftfahrt_kraft&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bazl.sicherheitszonenplan&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.vbs.territorialregionen&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.swisstopo.vec25-anlagen&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.astra.ausnahmetransportrouten&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.swisstopo.vec25-eisenbahnnetz&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -1577,6 +1585,7 @@
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bakom.anschlussart-kupferdraht&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bakom.radio-fernsehsender&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bfe.sachplan-geologie-tiefenlager&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bav.sachplan-infrastruktur-schiene_kraft&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bazl.sachplan-infrastruktur-luftfahrt_kraft&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bakom.verfuegbarkeit-tv&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bakom.uplink1&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -1788,6 +1797,7 @@
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.are.bauzonen&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.are.gemeindetypen&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.bazl.projektierungszonen-flughafenanlagen&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.bav.sachplan-infrastruktur-schiene_kraft&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.bfe.sachplan-geologie-tiefenlager&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.bazl.sachplan-infrastruktur-luftfahrt_kraft&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.bazl.sicherheitszonenplan&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -1795,6 +1805,7 @@
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo-vd.geometa-grundbuch&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo-vd.geometa-nfgeom&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo-vd.geometa-standav&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-geophysik-deklination&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-gravimetrischer_atlas.metadata&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-eiszeit-lgm-raster&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-geotechnik-gk500-genese&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -1829,7 +1840,6 @@
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-geophysik-aeromagnetische_karte_jura&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-geolkarten500.metadata&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-geodaesie-bouguer_anomalien&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
-<url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-geophysik-deklination&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.blw.bodeneignung-kulturland&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.blw.bodeneignung-kulturtyp&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.blw.erosion&amp;lang=fr</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -2371,6 +2381,9 @@
 <url> <loc>http://map.geo.admin.ch/?topic=ivs&amp;layers=ch.swisstopo.hiks-siegfried&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ivs&amp;layers=ch.astra.ivs-reg_loc.sub&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ivs&amp;layers=ch.kantone.ivs-reg_loc&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=sachplan&amp;layers=ch.bav.sachplan-infrastruktur-schiene_kraft&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=sachplan&amp;layers=ch.bav.sachplan-infrastruktur-schiene_anhorung&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=sachplan&amp;layers=ch.bav.sachplan-infrastruktur-schiene_ausgangslage&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=sachplan&amp;layers=ch.bazl.sachplan-infrastruktur-luftfahrt_kraft&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=sachplan&amp;layers=ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=sachplan&amp;layers=ch.bazl.landschaftsruhezonen&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -2529,7 +2542,6 @@
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bafu.laerm-strassenlaerm_nacht&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bafu.laerm-strassenlaerm_tag&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.ensi.zonenplan-notfallschutz-kernanlagen&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
-<url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.vbs.territorialregionen&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.blw.alpprodukte&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.blw.bergprodukte&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bak.bundesinventar-schuetzenswerte-ortsbilder&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -2542,6 +2554,7 @@
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bazl.projektierungszonen-flughafenanlagen&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bazl.sachplan-infrastruktur-luftfahrt_kraft&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bazl.sicherheitszonenplan&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.vbs.territorialregionen&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.swisstopo.vec25-anlagen&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.astra.ausnahmetransportrouten&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.swisstopo.vec25-eisenbahnnetz&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -2586,6 +2599,7 @@
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bakom.anschlussart-kupferdraht&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bakom.radio-fernsehsender&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bfe.sachplan-geologie-tiefenlager&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bav.sachplan-infrastruktur-schiene_kraft&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bazl.sachplan-infrastruktur-luftfahrt_kraft&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bakom.verfuegbarkeit-tv&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bakom.uplink1&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -2797,6 +2811,7 @@
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.are.bauzonen&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.are.gemeindetypen&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.bazl.projektierungszonen-flughafenanlagen&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.bav.sachplan-infrastruktur-schiene_kraft&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.bfe.sachplan-geologie-tiefenlager&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.bazl.sachplan-infrastruktur-luftfahrt_kraft&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.bazl.sicherheitszonenplan&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -2804,6 +2819,7 @@
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo-vd.geometa-grundbuch&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo-vd.geometa-nfgeom&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo-vd.geometa-standav&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-geophysik-deklination&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-gravimetrischer_atlas.metadata&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-eiszeit-lgm-raster&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-geotechnik-gk500-genese&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -2838,7 +2854,6 @@
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-geophysik-aeromagnetische_karte_jura&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-geolkarten500.metadata&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-geodaesie-bouguer_anomalien&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
-<url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-geophysik-deklination&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.blw.bodeneignung-kulturland&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.blw.bodeneignung-kulturtyp&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.blw.erosion&amp;lang=it</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -3380,6 +3395,9 @@
 <url> <loc>http://map.geo.admin.ch/?topic=ivs&amp;layers=ch.swisstopo.hiks-siegfried&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ivs&amp;layers=ch.astra.ivs-reg_loc.sub&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ivs&amp;layers=ch.kantone.ivs-reg_loc&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=sachplan&amp;layers=ch.bav.sachplan-infrastruktur-schiene_kraft&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=sachplan&amp;layers=ch.bav.sachplan-infrastruktur-schiene_anhorung&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=sachplan&amp;layers=ch.bav.sachplan-infrastruktur-schiene_ausgangslage&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=sachplan&amp;layers=ch.bazl.sachplan-infrastruktur-luftfahrt_kraft&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=sachplan&amp;layers=ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=sachplan&amp;layers=ch.bazl.landschaftsruhezonen&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -3538,7 +3556,6 @@
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bafu.laerm-strassenlaerm_nacht&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bafu.laerm-strassenlaerm_tag&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.ensi.zonenplan-notfallschutz-kernanlagen&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
-<url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.vbs.territorialregionen&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.blw.alpprodukte&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.blw.bergprodukte&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bak.bundesinventar-schuetzenswerte-ortsbilder&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -3551,6 +3568,7 @@
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bazl.projektierungszonen-flughafenanlagen&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bazl.sachplan-infrastruktur-luftfahrt_kraft&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bazl.sicherheitszonenplan&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.vbs.territorialregionen&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.swisstopo.vec25-anlagen&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.astra.ausnahmetransportrouten&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.swisstopo.vec25-eisenbahnnetz&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -3595,6 +3613,7 @@
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bakom.anschlussart-kupferdraht&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bakom.radio-fernsehsender&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bfe.sachplan-geologie-tiefenlager&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bav.sachplan-infrastruktur-schiene_kraft&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bazl.sachplan-infrastruktur-luftfahrt_kraft&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bakom.verfuegbarkeit-tv&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bakom.uplink1&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -3806,6 +3825,7 @@
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.are.bauzonen&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.are.gemeindetypen&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.bazl.projektierungszonen-flughafenanlagen&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.bav.sachplan-infrastruktur-schiene_kraft&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.bfe.sachplan-geologie-tiefenlager&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.bazl.sachplan-infrastruktur-luftfahrt_kraft&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.bazl.sicherheitszonenplan&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -3813,6 +3833,7 @@
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo-vd.geometa-grundbuch&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo-vd.geometa-nfgeom&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo-vd.geometa-standav&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-geophysik-deklination&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-gravimetrischer_atlas.metadata&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-eiszeit-lgm-raster&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-geotechnik-gk500-genese&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -3847,7 +3868,6 @@
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-geophysik-aeromagnetische_karte_jura&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-geolkarten500.metadata&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-geodaesie-bouguer_anomalien&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
-<url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-geophysik-deklination&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.blw.bodeneignung-kulturland&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.blw.bodeneignung-kulturtyp&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.blw.erosion&amp;lang=rm</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -4389,6 +4409,9 @@
 <url> <loc>http://map.geo.admin.ch/?topic=ivs&amp;layers=ch.swisstopo.hiks-siegfried&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ivs&amp;layers=ch.astra.ivs-reg_loc.sub&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ivs&amp;layers=ch.kantone.ivs-reg_loc&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=sachplan&amp;layers=ch.bav.sachplan-infrastruktur-schiene_kraft&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=sachplan&amp;layers=ch.bav.sachplan-infrastruktur-schiene_anhorung&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=sachplan&amp;layers=ch.bav.sachplan-infrastruktur-schiene_ausgangslage&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=sachplan&amp;layers=ch.bazl.sachplan-infrastruktur-luftfahrt_kraft&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=sachplan&amp;layers=ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=sachplan&amp;layers=ch.bazl.landschaftsruhezonen&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -4547,7 +4570,6 @@
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bafu.laerm-strassenlaerm_nacht&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bafu.laerm-strassenlaerm_tag&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.ensi.zonenplan-notfallschutz-kernanlagen&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
-<url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.vbs.territorialregionen&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.blw.alpprodukte&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.blw.bergprodukte&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bak.bundesinventar-schuetzenswerte-ortsbilder&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -4560,6 +4582,7 @@
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bazl.projektierungszonen-flughafenanlagen&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bazl.sachplan-infrastruktur-luftfahrt_kraft&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bazl.sicherheitszonenplan&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.vbs.territorialregionen&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.swisstopo.vec25-anlagen&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.astra.ausnahmetransportrouten&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.swisstopo.vec25-eisenbahnnetz&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -4604,6 +4627,7 @@
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bakom.anschlussart-kupferdraht&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bakom.radio-fernsehsender&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bfe.sachplan-geologie-tiefenlager&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bav.sachplan-infrastruktur-schiene_kraft&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bazl.sachplan-infrastruktur-luftfahrt_kraft&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bakom.verfuegbarkeit-tv&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=inspire&amp;layers=ch.bakom.uplink1&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -4815,6 +4839,7 @@
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.are.bauzonen&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.are.gemeindetypen&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.bazl.projektierungszonen-flughafenanlagen&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.bav.sachplan-infrastruktur-schiene_kraft&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.bfe.sachplan-geologie-tiefenlager&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.bazl.sachplan-infrastruktur-luftfahrt_kraft&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.bazl.sicherheitszonenplan&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -4822,6 +4847,7 @@
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo-vd.geometa-grundbuch&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo-vd.geometa-nfgeom&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo-vd.geometa-standav&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-geophysik-deklination&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-gravimetrischer_atlas.metadata&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-eiszeit-lgm-raster&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-geotechnik-gk500-genese&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -4856,7 +4882,6 @@
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-geophysik-aeromagnetische_karte_jura&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-geolkarten500.metadata&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-geodaesie-bouguer_anomalien&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
-<url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.swisstopo.geologie-geophysik-deklination&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.blw.bodeneignung-kulturland&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.blw.bodeneignung-kulturtyp&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://map.geo.admin.ch/?topic=ech&amp;layers=ch.blw.erosion&amp;lang=en</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>

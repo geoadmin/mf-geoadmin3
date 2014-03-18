@@ -16,7 +16,7 @@ GIT_LAST_BRANCH := $(shell if [ -f .build-artefacts/last-git-branch ]; then cat 
 DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branch
 DEPLOY_TARGET ?= 'dev'
 LAST_DEPLOY_TARGET := $(shell if [ -f .build-artefacts/last-deploy-target ]; then cat .build-artefacts/last-deploy-target 2> /dev/null; else echo 'dev'; fi)
-SITEMAP_FILES := $(shell find src -type f -name '*.xml')
+SITEMAP_FILES := $(shell find src -type f -name 'sitemap_*.xml')
 
 .PHONY: help
 help:

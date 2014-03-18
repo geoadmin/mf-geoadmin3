@@ -25,7 +25,7 @@ var getAllLanguageUrls = function(templates, pre, post) {
 };
 
 var getFullPath = function(name) {
-  return 'src/' + name + '.xml';
+  return 'src/sitemap_' + name + '.xml';
 };
 
 
@@ -160,7 +160,7 @@ smList.forEach(function(sm) {
 Q.allSettled(indexPromises)
 .then(function(results) {
   //Create index sitemap
-  var file = fs.createWriteStream(getFullPath('sitemap'));
+  var file = fs.createWriteStream(getFullPath('index'));
   var endMarker = '</sitemapindex>';
   file.on('open', function(fd) {
     var indexRoot = xml.element({ _attr: {xmlns: 'http://www.sitemaps.org/schemas/sitemap/0.9'}});
