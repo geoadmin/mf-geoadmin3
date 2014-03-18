@@ -227,6 +227,8 @@ class Search(SearchValidation):
             checkFilter = sphinxapi.SphinxClient()
             checkFilter.SetServer(self.sphinxHost, 9312)
             checkFilter.SetFilter('year', [9999])
+            checkFilter.SetLimits(0, 1)
+
 
         for index in self.featureIndexes:
             if timeFilter and checkFilter.Query('bgdi_internal: check presence of time Filter Attribute', index=str(index)):
