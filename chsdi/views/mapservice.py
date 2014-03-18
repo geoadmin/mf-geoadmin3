@@ -125,12 +125,12 @@ def identify_esrijson(request):
 
 def _identify_oereb(request):
     def insertTimestamps(header, comments):
-      pos =  re.search(r'\?>', header).end()
-      return ''.join((
-          header[:pos],
-          comments,
-          header[pos:]
-      ))    
+        pos = re.search(r'\?>', header).end()
+        return ''.join((
+            header[:pos],
+            comments,
+            header[pos:]
+        ))
 
     params = FeaturesParams(request)
     # At the moment only one layer at a time and no support of all
