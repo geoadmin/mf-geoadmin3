@@ -13,7 +13,6 @@ data = simplejson.loads(f.read())
 layersconfig = """if (typeof window['GeoAdmin'] == 'undefined') window['GeoAdmin'] =  {}; window.GeoAdmin.getConfig  = function(){ return %s } """ % simplejson.dumps(data,separators=(',',':'))
 defaultLang = """function getDefaultLang() { return "%s" } """ % request.lang
 %>
-${appUrl} 
 (function() {
 var load = function() {
 if (typeof window['GeoAdmin'] == 'undefined') window.GeoAdmin = {};
