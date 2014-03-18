@@ -16,6 +16,7 @@ GIT_LAST_BRANCH := $(shell if [ -f .build-artefacts/last-git-branch ]; then cat 
 DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branch
 DEPLOY_TARGET ?= 'dev'
 LAST_DEPLOY_TARGET := $(shell if [ -f .build-artefacts/last-deploy-target ]; then cat .build-artefacts/last-deploy-target 2> /dev/null; else echo 'dev'; fi)
+SITEMAP_FILES := $(shell find src -type f -name 'sitemap_*.xml')
 
 .PHONY: help
 help:
@@ -52,7 +53,7 @@ help:
 all: prod dev lint apache testdev testprod deploy/deploy-branch.cfg fixrights
 
 .PHONY: prod
-prod: prd/testsitemap.xml prd/lib/ prd/lib/build.js prd/style/app.css prd/style/print.css prd/index.html prd/mobile.html prd/info.json prd/img/ prd/style/font-awesome-3.2.1/font/ prd/locales/ prd/checker prd/robots.txt
+prod: prd/ prd/lib/ prd/lib/build.js prd/style/app.css prd/style/print.css prd/index.html prd/mobile.html prd/info.json prd/img/ prd/style/font-awesome-3.2.1/font/ prd/locales/ prd/checker prd/robots.txt
 
 .PHONY: dev
 dev: src/deps.js src/style/app.css src/style/print.css src/index.html src/mobile.html
@@ -107,8 +108,12 @@ fixrights:
 	chgrp -f -R geodata . || :
 	chmod -f -R g+rw . || :
 
-prd/testsitemap.xml: src/testsitemap.xml
-	mkdir -p $(dir $@)
+.PHONY: updatesitemaps
+updatesitemaps:
+	node scripts/create_sitemaps.js
+
+prd/: $(SITEMAP_FILES)
+	mkdir -p $@
 	cp $^ $@
 
 prd/robots.txt: scripts/robots.mako-dot-txt .build-artefacts/last-deploy-target
