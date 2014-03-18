@@ -229,14 +229,14 @@ class Search(SearchValidation):
         print self.searchText
 
     def _add_feature_queries(self, queryText, timeFilter):
-        tmp = sphinxapi.SphinxClient()
-        tmp.SetServer(self.sphinxHost, 9312)
-        tmp.SetFilter('year', [9999])
+        checkFilter = sphinxapi.SphinxClient()
+        checkFilter.SetServer(self.sphinxHost, 9312)
+        checkFilter.SetFilter('year', [9999])
 
         for index in self.featureIndexes:
             # default: no filter
             self.sphinx.ResetFilters()
-            if timeFilter and tmp.Query('bgdi_internal: check presence of time Filter Attribute',index=str(index)):
+            if timeFilter and checkFilter.Query('bgdi_internal: check presence of time Filter Attribute',index=str(index)):
                 if len(timeFilter) == 1:
                     self.sphinx.SetFilter('year', [self.timeInstant])
                 elif len(timeFilter) == 2:
