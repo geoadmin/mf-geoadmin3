@@ -36,7 +36,7 @@
           // has been deactivated.
           var activate = function() {
             if (lastActiveTool) {
-              scope.activateTool(lastActiveTool);
+              activateTool(lastActiveTool);
             }
           };
 
