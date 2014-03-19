@@ -54,7 +54,7 @@ RewriteRule ^${apache_entry_path}reframe/lv03tolv95(.*)$ http://tc-geodesy.bgdi.
 </Location>
 
 # Print
-RewriteRule ^${apache_entry_path}(print)(.*)$ /${vars:apache_base_path}/wsgi/$1$2 [PT]
+RewriteRule ^/${apache_base_path}/(print)(.*)$ /${vars:apache_base_path}/wsgi/$1$2 [PT]
  
 # define a process group
 # WSGIDaemonProcess must be commented/removed when running the project on windows
