@@ -19,7 +19,8 @@
   module.directive('gaSearch',
       function($compile, $translate, $timeout, gaMapUtils, gaLayers,
         gaLayerMetadataPopup, gaPermalink, gaUrlUtils, gaGetCoordinate,
-        gaBrowserSniffer, gaLayerFilters, gaKml, gaPreviewLayers) {
+        gaBrowserSniffer, gaLayerFilters, gaKml, gaPreviewLayers,
+        gaPermalinkSearch) {
           var currentTopic,
               footer = [
             '<div class="ga-search-footer clearfix">',
@@ -192,6 +193,11 @@
                 }
                 return label;
               };
+
+              //These definitions here have to correspond to
+              //the array that follows
+              var LOCATIONS = 0;
+              var LAYERS = 1;
 
               var typeAheadDatasets = [
                 {
@@ -405,10 +411,12 @@
                     el = el.find('.tt-suggestions');
                     if (el) {
                       $compile(el)(scope);
+                      gaPermalinkSearch.feed(el);
                     }
                     el.scrollTop(0);
                   }
                 }
+                gaPermalinkSearch.check();
               });
 
               scope.clearInput = function() {
@@ -424,15 +432,18 @@
                 currentTopic = topic.id;
               });
 
+              var triggerSearch = function(dataSetIndex) {
+                var dataset = $(taElt).data('ttView').datasets[dataSetIndex];
+                dataset.getSuggestions(scope.query,
+                    function(suggestions) {
+                      viewDropDown.renderSuggestions(dataset, suggestions,
+                          false);
+                });
+              };
+
               scope.$on('$translateChangeEnd', function() {
                 if (angular.isDefined(currentTopic) && scope.query !== '') {
-                  // Only layers dataset needs to be updated
-                  var datasetLayers = $(taElt).data('ttView').datasets[1];
-                  datasetLayers.getSuggestions(scope.query,
-                                               function(suggestions) {
-                    viewDropDown.renderSuggestions(datasetLayers, suggestions,
-                                                   false);
-                  });
+                  triggerSearch(LAYERS);
                 }
               });
 
@@ -440,14 +451,7 @@
                 if (newYear !== year) {
                   year = newYear;
                   if (scope.query !== '') {
-                    //Update locations search (containing feature search)
-                    var datasetLocations = $(taElt).data('ttView').datasets[0];
-                    datasetLocations.getSuggestions(scope.query,
-                                                 function(suggestions) {
-                      viewDropDown.renderSuggestions(datasetLocations,
-                                                     suggestions,
-                                                     false);
-                    });
+                    triggerSearch(LOCATIONS);
                   }
                 }
               });
@@ -462,11 +466,27 @@
                 taElt.trigger('blur');
               });
 
-              if (!gaBrowserSniffer.mobile) {
+              //if search parameter specified, start it with a search parameter
+              var searchParam = gaPermalink.getParams()['swisssearch'];
+              if (angular.isDefined(searchParam) &&
+                  searchParam.length > 0) {
+                var unregister = scope.$on('gaLayersChange', function() {
+                  gaPermalinkSearch.activate((2 * typeAheadDatasets.length));
+                  scope.query = searchParam;
+                  triggerSearch(LOCATIONS);
+                  triggerSearch(LAYERS);
+                  unregister();
+                });
+              }
+
+              if (!gaBrowserSniffer.mobile ||
+                  (angular.isDefined(searchParam) &&
+                  searchParam.length > 0)) {
                 $timeout(function() {
                   taElt.focus();
                 });
               }
+
             }
           };
         });
