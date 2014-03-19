@@ -60,6 +60,13 @@
         // Define layer style function
         $scope.options.styleFunction = (function() {
           return function(feature, resolution) {
+            
+            if (feature.getStyleFunction() &&
+                feature.getStyleFunction()() !== null) {
+              return feature.getStyleFunction()(resolution); 
+            }
+            
+            // Only update features with new colors if its style is null
             var text;
             var color = $scope.options.color;
             var fill = new ol.style.Fill({
@@ -72,7 +79,8 @@
 
             if (($scope.options.isTextActive ||
                 ($scope.options.isModifyActive &&
-                    feature.getGeometry() instanceof ol.geom.Point)) &&
+                    feature.getGeometry() instanceof ol.geom.Point &&
+                    feature.get('useText'))) &&
                 angular.isDefined($scope.options.text)) {
 
               text = new ol.style.Text({
@@ -88,6 +96,8 @@
               });
             }
             
+            feature.set('useText', (!!text));
+            
             var styles = [
               new ol.style.Style({
                 fill: fill,
@@ -101,10 +111,6 @@
               })
             ];
 
-            if (feature.getStyleFunction() &&
-                feature.getStyleFunction()() !== null) {
-              return feature.getStyleFunction()(resolution); 
-            }
             return styles;
           };
         })()
