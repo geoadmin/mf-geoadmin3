@@ -1,3 +1,39 @@
+Release 20140319 -  Wednesday, March 19th 2014
+====================================================
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+-----------------------------------
+
+- Minor bug fixes
+
+`MAP <//map.geo.admin.ch>`__
+-----------------------------------
+
+- Drawing tools!
+- Catalog layer entries are now sorted alphabetically
+- Cosmetic changes for several browsers
+- Add ability to print out feature tree information
+- Minor bug fixes
+
+Geodata
+********
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Road traffic noise (Lr_day) <//map.geo.admin.ch/?layers=ch.bafu.laerm-strassenlaerm_tag>`__ (ch.bafu.laerm-strassenlaerm_tag)                                                  |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Railway noise (Lr_day) <//map.geo.admin.ch/?layers=ch.bafu.laerm-bahnlaerm_tag>`__ (ch.bafu.laerm-bahnlaerm_tag)                                                               |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Railway noise (Lr_night) <//map.geo.admin.ch/?layers=ch.bafu.laerm-bahnlaerm_nacht>`__ (ch.bafu.laerm-bahnlaerm_nacht)                                                         |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Road traffic noise (Lr_night) <//map.geo.admin.ch/?layers=ch.bafu.laerm-strassenlaerm_nacht>`__ (ch.bafu.laerm-strassenlaerm_nacht)                                            |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `PKD (proliferative kidney disease) <//map.geo.admin.ch/?layers=ch.bafu.fischerei-proliferative_nierenkrankheit>`__ (ch.bafu.fischerei-proliferative_nierenkrankheit)           |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Pollutant releases (SwissPRTR) <//map.geo.admin.ch/?layers=ch.bafu.swissprtr>`__ (ch.bafu.swissprtr)                                                                           |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
 Release 20140306 -  Thursday, March 6th 2014
 ====================================================
 
