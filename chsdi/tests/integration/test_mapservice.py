@@ -265,3 +265,10 @@ class TestMapServiceView(TestsBase):
 
     def test_layersconfig_wrong_map(self):
         resp = self.testapp.get('/rest/services/foo/MapServer/layersConfig', status=400)
+
+    def test_features_attributes(self):
+        resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln', status=200)
+        self.failUnless(resp.content_type == 'application/json')
+
+    def test_features_attributes_wrong_layer(self):
+        resp = self.testapp.get('/rest/services/ech/MapServer/dummy', status=400)
