@@ -193,11 +193,13 @@ class Search(SearchValidation):
         sentence = ' '.join(self.searchText)
 
         finalQuery = ''.join((
-            '%s "^%s$" | ' % (fields, sentence),         # starts and ends with sentence
-            '%s "^%s" | ' % (fields, sentence),          # starts with sentence
-            '%s "%s$" | ' % (fields, sentence),          # ends with sentence
-            '%s (%s)  | ' % (fields, prefixSearchText),  # matching all words one by one (prefix)
-            '%s (%s)' % (fields, infixSearchText)        # matching all words one by one (infix)
+            '%s "^%s$" | ' % (fields, sentence),          # starts and ends with sentence (exact matching)
+            '%s "^%s"  | ' % (fields, sentence),          # starts with sentence (order matters)
+            '%s "%s$"  | ' % (fields, sentence),          # ends with sentence (order matters)
+            '%s "^%s*" | ' % (fields, sentence),          # starts with sentence (prefix sentence matching)
+            '%s "*%s$" | ' % (fields, sentence),          # ends with sentence (start with anything as long as the end of the sentence is matched)
+            '%s (%s)   | ' % (fields, prefixSearchText),  # matching all words one by one (prefix)
+            '%s (%s)' % (fields, infixSearchText)         # matching all words one by one (infix)
         ))
 
         return finalQuery
