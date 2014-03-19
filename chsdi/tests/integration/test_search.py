@@ -141,11 +141,6 @@ class TestSearchServiceView(TestsBase):
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'feature')
 
-    def test_features_timeInterval(self):
-        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'Triftgletscher 2000-2010', 'features': 'ch.swisstopo.fixpunkte-lfp1,ch.swisstopo.lubis-luftbilder_schwarzweiss,ch.swisstopo.lubis-luftbilder_farbe', 'type': 'locations' }, status=200)
-        self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'feature')
-
     def test_features_wrong_time(self):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'locations', 'bbox': '542200,206800,542200,206800', 'timeInstant': '19522'}, status=400)
 
