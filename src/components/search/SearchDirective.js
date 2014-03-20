@@ -240,14 +240,16 @@
                       var lang = '&lang=' + $translate.uses();
                       var searchableLayers = '&features=' +
                           scope.searchableLayers.join(',');
+                      var timeEnabled = '&timeEnabled=' +
+                          scope.timeEnabled.join(',');
                       var timeInstant = '';
                       if (year) {
                         timeInstant = '&timeInstant=' + year;
                       }
                       url = options.applyTopicToUrl(url,
                                                    currentTopic);
-                      url += queryText + searchableLayers + bbox +
-                             lang + timeInstant;
+                      url += queryText + searchableLayers + timeEnabled +
+                             bbox + lang + timeInstant;
                       return url;
                     },
                     filter: function(response) {
@@ -368,11 +370,13 @@
               scope.$watchCollection('layers | filter:searchableLayersFilter',
                   function(layers) {
                 var layerBodIds = [];
+                var timeEnabled = [];
                 angular.forEach(layers, function(layer) {
-                  var bodId = layer.bodId;
-                  layerBodIds.push(bodId);
+                  layerBodIds.push(layer.bodId);
+                  timeEnabled.push(layer.timeEnabled);
                 });
                 scope.searchableLayers = layerBodIds;
+                scope.timeEnabled = timeEnabled;
               });
 
               var viewDropDown = $(taElt).data('ttView').dropdownView;
