@@ -177,7 +177,7 @@ Q.allSettled(indexPromises)
 
     results.forEach(function(res) {
       if (res.value.result) {
-        indexRoot.push({ sitemap: [{ loc: HOSTNAME + '/' + res.value.origin.name + '.xml'}] });
+        indexRoot.push({ sitemap: [{ loc: HOSTNAME + '/sitemap_' + res.value.origin.name + '.xml'}] });
       } else {
         console.log('An Error occured during the creation of the ' +  res.value.origin.name + ' sitemap. ------> SKIPPED!');
       }

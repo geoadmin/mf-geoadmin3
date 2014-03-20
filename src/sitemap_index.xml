@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
-    <loc>http://map.geo.admin.ch/base.xml</loc>
+    <loc>http://map.geo.admin.ch/sitemap_base.xml</loc>
   </sitemap>
   <sitemap>
-    <loc>http://map.geo.admin.ch/topics.xml</loc>
+    <loc>http://map.geo.admin.ch/sitemap_topics.xml</loc>
   </sitemap>
   <sitemap>
-    <loc>http://map.geo.admin.ch/layers.xml</loc>
+    <loc>http://map.geo.admin.ch/sitemap_layers.xml</loc>
   </sitemap>
 </sitemapindex>
 
