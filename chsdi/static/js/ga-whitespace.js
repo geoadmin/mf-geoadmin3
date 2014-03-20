@@ -32602,7 +32602,7 @@ ga.Map.prototype.handleGeocodeError_ = function(response) {
   alert("Geocoding failed. Sorry for inconvenience.")
 };
 ga.Map.prototype.recenterFeature = function(layerId, featureId) {
-  var jsonp = new goog.net.Jsonp(this.serviceUrl + "rest/services/api/MapServer/" + layerId + "/" + featureId);
+  var jsonp = new goog.net.Jsonp(this.serviceUrl + "/rest/services/api/MapServer/" + layerId + "/" + featureId);
   var payload = {"geometryFormat":"geojson"};
   jsonp.send(payload, goog.bind(this.handleRecenter_, this), goog.bind(this.handleRecenterError_, this))
 };
@@ -32621,7 +32621,7 @@ ga.Map.prototype.recenterToFeature_ = function(feature) {
   }
 };
 ga.Map.prototype.highlightFeature = function(layerId, featureId) {
-  var jsonp = new goog.net.Jsonp(this.serviceUrl + "rest/services/api/MapServer/" + layerId + "/" + featureId);
+  var jsonp = new goog.net.Jsonp(this.serviceUrl + "/rest/services/api/MapServer/" + layerId + "/" + featureId);
   var payload = {"geometryFormat":"geojson"};
   jsonp.send(payload, goog.bind(this.handleHighlight_, this), goog.bind(this.handleHighlightError_, this))
 };
