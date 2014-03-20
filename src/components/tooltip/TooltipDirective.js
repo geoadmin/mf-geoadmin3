@@ -214,7 +214,13 @@
                       tolerance: $scope.options.tolerance,
                       layers: 'all:' + layerToQuery.id
                     };
-                    if (layerToQuery.year) {
+                    /**
+                     * Layers with year well in the future have special meaning
+                     * (aggregateted years) and should not be queried as it
+                     * were a real year.
+                     */
+                    if (layerToQuery.year &&
+                        layerToQuery.year <= (new Date()).getFullYear()) {
                       params.timeInstant = layerToQuery.year;
                     }
 
