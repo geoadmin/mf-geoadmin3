@@ -24,8 +24,7 @@ class Search(SearchValidation):
         self.quadtree = msk.QuadTree(
             msk.BBox(420000, 30000, 900000, 510000), 20)
         self.sphinx = sphinxapi.SphinxClient()
-        self.sphinxHost = request.registry.settings['sphinxhost']
-        self.sphinx.SetServer(self.sphinxHost, 9312)
+        self.sphinx.SetServer(request.registry.settings['sphinxhost'], 9312)
         self.sphinx.SetMatchMode(sphinxapi.SPH_MATCH_EXTENDED)
 
         self.mapName = request.matchdict.get('map')
@@ -153,7 +152,7 @@ class Search(SearchValidation):
 
         timeFilter = []
         timeInterval = re.search(r'((\b\d{4})-(\d{4}\b))', ' '.join(self.searchText)) or False
-        # search for year with getparameter timeInstand=2010
+        # search for year with getparameter timeInstant=2010
         if self.timeInstant is not None:
             timeFilter = [self.timeInstant]
         # search for year interval with searchText Pattern .*YYYY-YYYY.*
@@ -198,7 +197,7 @@ class Search(SearchValidation):
         self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, '@geodist ASC')
 
         geomFilter = self._get_quadindex_string()
-        self._add_feature_queries(geomFilter,timeFilter)
+        self._add_feature_queries(geomFilter, timeFilter)
         temp = self.sphinx.RunQueries()
         return self._parse_feature_results(temp)
 
@@ -220,14 +219,13 @@ class Search(SearchValidation):
         return finalQuery
 
     def _add_feature_queries(self, queryText, timeFilter):
-
         i=0
         for index in self.featureIndexes:
             if timeFilter and self.timeEnabled is not None and self.timeEnabled[i]:
                     if len(timeFilter) == 1:
-                        self.sphinx.SetFilter('year', [self.timeInstant])
+                        self.sphinx.SetFilter('year', timeFilter )
                     elif len(timeFilter) == 2:
-                        self.sphinx.SetFilterRange('year', long(min(timeFilter)), long(max(timeFilter)))
+                        self.sphinx.SetFilterRange('year', int(min(timeFilter)), int(max(timeFilter)))
             i += 1
             self.sphinx.AddQuery(queryText, index=str(index))
 
