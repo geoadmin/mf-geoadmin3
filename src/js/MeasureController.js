@@ -117,6 +117,8 @@
           }
           http.success(callback);
           http.error(function(data, status) {
+            // Display an empty profile
+            callback([{alts:{COMB: 0}, dist: 0}], status);
             bodyEl.removeClass($scope.options.waitClass);
           });;
         };
