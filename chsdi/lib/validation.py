@@ -318,6 +318,7 @@ class SearchValidation(MapNameValidation):
         self._searchText = None
         self._featureIndexes = None
         self._timeInstant = None
+        self._timeEnabled = None
         self._bbox = None
         self._returnGeometry = None
 
@@ -328,6 +329,10 @@ class SearchValidation(MapNameValidation):
     @property
     def featureIndexes(self):
         return self._featureIndexes
+
+    @property
+    def timeEnabled(self):
+        return self._timeEnabled
 
     @property
     def bbox(self):
@@ -351,6 +356,15 @@ class SearchValidation(MapNameValidation):
             value = value.replace('ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen', 'ch_swisstopo_geologie-hydro_karte-grundwasservor')
             value = value.replace('.', '_')
             self._featureIndexes = value.split(',')
+
+    @timeEnabled.setter
+    def timeEnabled(self, value):
+        if value is not None and value != '':
+            values = value.split(',')
+            result = []
+            for val in values:
+                result.append(True if val.lower() in ['true','t','1'] else False)
+            self._timeEnabled = result
 
     @searchText.setter
     def searchText(self, value):

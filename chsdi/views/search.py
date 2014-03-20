@@ -37,6 +37,7 @@ class Search(SearchValidation):
         self.quadindex = None
         self.featureIndexes = request.params.get('features')
         self.timeInstant = request.params.get('timeInstant')
+        self.timeEnabled = request.params.get('timeEnabled')
         self.typeInfo = request.params.get('type')
         self.varnish_authorized = request.headers.get('X-Searchserver-Authorized', 'true').lower() == 'true'
 
@@ -164,7 +165,6 @@ class Search(SearchValidation):
             self.searchText.remove(timeInterval.group(1))
             if min != max:
                 timeFilter = [start, stop]
-
         searchdText = self._query_fields('@detail')
         if self.quadindex is not None:
             searchdText += ' & (' + self._get_quadindex_string() + ')'
@@ -219,24 +219,16 @@ class Search(SearchValidation):
 
         return finalQuery
 
-    def _set_time_Filter(self, queryText):
-        print self.searchText
-
     def _add_feature_queries(self, queryText, timeFilter):
-        if timeFilter:
-            checkFilter = sphinxapi.SphinxClient()
-            checkFilter.SetServer(self.sphinxHost, 9312)
-            checkFilter.SetFilter('year', [9999])
-            checkFilter.SetLimits(0, 1)
 
-
+        i=0
         for index in self.featureIndexes:
-            if timeFilter and checkFilter.Query('bgdi_internal: check presence of time Filter Attribute', index=str(index)):
-                if len(timeFilter) == 1:
-                    self.sphinx.SetFilter('year', [self.timeInstant])
-                elif len(timeFilter) == 2:
-                    self.sphinx.SetFilterRange('year', long(min(timeFilter)), long(max(timeFilter)))
-
+            if timeFilter and self.timeEnabled is not None and self.timeEnabled[i]:
+                    if len(timeFilter) == 1:
+                        self.sphinx.SetFilter('year', [self.timeInstant])
+                    elif len(timeFilter) == 2:
+                        self.sphinx.SetFilterRange('year', long(min(timeFilter)), long(max(timeFilter)))
+            i += 1
             self.sphinx.AddQuery(queryText, index=str(index))
 
     def _parse_feature_results(self, results):
