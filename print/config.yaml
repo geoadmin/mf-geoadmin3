@@ -267,7 +267,6 @@ layouts:
                 Stampato il ${now dd.MM.yyyy HH:mm}
                 ${shortLink}
     lastPage:
-      pageSize: A4
       landscape: true
       items:
 
@@ -536,7 +535,6 @@ layouts:
                 Stampato il ${now dd.MM.yyyy HH:mm}
                 ${shortLink}
     lastPage:
-      pageSize: A4
       landscape: false
       items:
 
