@@ -172,6 +172,7 @@ class Search(SearchValidation):
             temp = self.sphinx.RunQueries()
         except IOError:
             raise exc.HTTPGatewayTimeout()
+        self.sphinx.ResetFilters()
         return self._parse_feature_results(temp)
 
     def _get_geoanchor_from_bbox(self):
