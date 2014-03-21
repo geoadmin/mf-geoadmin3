@@ -73,28 +73,21 @@
 
             try {
               var srsCode = $scope.map.getView().getProjection().getCode();
-              var parser = new ol.parser.ogc.WMSCapabilities();
+              var parser = new ol.format.WMSCapabilities();
               var result = parser.read(data);
-
-              $scope.wmsConstraintsMessage = (result.service.maxWidth) ?
+              $scope.wmsConstraintsMessage = (result.Service.MaxWidth) ?
                   $translate('wms_max_size_allowed') + ' ' +
-                    result.service.maxWidth +
-                    ' * ' + result.service.maxHeight :
+                    result.Service.MaxWidth +
+                    ' * ' + result.Service.MaxHeight :
                   '';
 
-              // We don't add the root layer node in the list
-              for (var i = 0, len = result.capability.layers.length;
-                  i < len; i++) {
-                var layer = result.capability.layers[i];
 
-                // If the  WMS layer has no name or if it can't be
-                // displayed in the current SRS, we don't add it
-                // to the list
-                if (layer.name && (layer.srs &&
-                    (layer.srs[srsCode.toUpperCase()] ||
-                    layer.srs[srsCode.toLowerCase()]))) {
-                  $scope.layers.push(layer);
-                }
+              if (result.Capability.Layer) {
+                $scope.layers = getChildLayers(result.Capability.Layer,
+                    srsCode);
+
+                // We remove the root layer node in the list
+                $scope.layers.shift();
               }
 
               $scope.userMessage = $translate('parse_succeeded');
@@ -103,7 +96,6 @@
             } catch (e) {
               $scope.userMessage = $translate('parse_failed') + e.message;
               $scope.progress = 0;
-              //$log.log($scope.userMessage);
             }
           };
 
@@ -153,7 +145,7 @@
           // Select the layer clicked
           $scope.toggleLayerSelected = function(getCapLayer) {
             $scope.layerSelected = ($scope.layerSelected &&
-                $scope.layerSelected.name == getCapLayer.name) ?
+                $scope.layerSelected.Name == getCapLayer.Name) ?
                 null :
                 getCapLayer;
           };
@@ -166,15 +158,15 @@
             var mapSize = $scope.map.getSize();
 
             // If a minScale is defined
-            if (layer.minScale && extent) {
+            if (layer.MaxScaleDenominator && extent) {
 
               // We test if the layer extent specified in the
               // getCapabilities fit the minScale value.
               var layerExtentScale = getScaleFromExtent(extent, mapSize);
 
-              if (layerExtentScale > layer.minScale) {
+              if (layerExtentScale > layer.MaxScaleDenominator) {
                 var layerExtentCenter = ol.extent.getCenter(extent);
-                var factor = layerExtentScale / layer.minScale;
+                var factor = layerExtentScale / layer.MaxScaleDenominator;
                 var width = ol.extent.getWidth(extent) / factor;
                 var height = ol.extent.getHeight(extent) / factor;
                 extent = [
@@ -207,11 +199,11 @@
 
                 return gaWms.addWmsToMap($scope.map,
                   {
-                    LAYERS: layer.name
+                    LAYERS: layer.Name
                   },
                   {
                     url: $scope.fileUrl,
-                    label: layer.title,
+                    label: layer.Title,
                     extent: getLayerExtentFromGetCap(layer),
                     attribution: gaUrlUtils.getHostname($scope.fileUrl),
                     preview: isPreview
@@ -248,13 +240,45 @@
             var layer = getCapLayer;
             var srsCode = $scope.map.getView().getProjection().getCode();
 
-            if (layer.bbox) {
-              if (srsCode.toUpperCase() in layer.bbox) {
-                extent = layer.bbox[srsCode.toUpperCase()].bbox;
+            if (layer.BoundingBox) {
+              for (var i = 0, ii = layer.BoundingBox.length; i < ii; i++) {
+                var bbox = layer.BoundingBox[i];
+                if (bbox.crs == srsCode.toUpperCase()) {
+                  extent = bbox.extent;
+                  break;
+                }
               }
             }
 
+            if (!extent && layer.EX_GeographicBoundingBox) {
+              var extent = layer.EX_GeographicBoundingBox;
+              var bottomLeft = ol.proj.transform(
+                  ol.extent.getBottomLeft(extent), 'EPSG:4326', srsCode);
+              var topRight = ol.proj.transform(
+                  ol.extent.getTopRight(extent), 'EPSG:4326', srsCode);
+              extent = bottomLeft.concat(topRight);
+            }
+
             return extent;
+          }
+
+          function getChildLayers(getCapLayer, srsCode) {
+            var layers = [];
+            // If the  WMS layer has no name or if it can't be
+            // displayed in the current SRS, we don't add it
+            // to the list
+            if (getCapLayer.Name && getCapLayer.CRS &&
+                (getCapLayer.CRS.indexOf(srsCode.toUpperCase()) != -1 ||
+                getCapLayer.CRS.indexOf(srsCode.toLowerCase()) != -1)) {
+              layers.push(getCapLayer);
+            }
+            if (getCapLayer.Layer) {
+              for (var i = 0, ii = getCapLayer.Layer.length; i < ii; i++) {
+                layers = layers.concat(getChildLayers(getCapLayer.Layer[i],
+                    srsCode));
+              }
+            }
+            return layers;
           }
   });
 

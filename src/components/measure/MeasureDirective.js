@@ -11,39 +11,39 @@
 
   module.filter('measure', function() {
     return function(floatInMeter, type, units) {
-       // Type could be: volume, area or distance
-       var factor = 1000;
-       switch (type) {
-         case 'volume': factor = Math.pow(factor, 3);
-                        break;
-         case 'area': factor = Math.pow(factor, 2);
-                      break;
-         default: break;
-       }
-       units = units || [' km', ' m'];
-       floatInMeter = floatInMeter || 0;
-       var measure = floatInMeter.toFixed(2);
-       var km = Math.floor(measure / factor);
+      // Type could be: volume, area or distance
+      var factor = 1000;
+      switch (type) {
+        case 'volume': factor = Math.pow(factor, 3);
+                       break;
+        case 'area': factor = Math.pow(factor, 2);
+                     break;
+        default: break;
+      }
+      units = units || [' km', ' m'];
+      floatInMeter = floatInMeter || 0;
+      var measure = floatInMeter.toFixed(2);
+      var km = Math.floor(measure / factor);
 
-       if (km <= 0) {
-         if (parseInt(measure) == 0) {
-           measure = 0;
-         }
-         return measure + units[1];
-       }
+      if (km <= 0) {
+        if (parseInt(measure) == 0) {
+          measure = 0;
+        }
+        return measure + units[1];
+      }
 
-       var str = '' + km;
-       var m = Math.floor(Math.floor(measure) % factor * 100 / factor);
+      var str = '' + km;
+      var m = Math.floor(Math.floor(measure) % factor * 100 / factor);
 
-       if (m > 0) {
-         str += '.';
-         if (m < 10) {
-           str += '0';
-         }
-         str += m;
-       }
-       str += ' ' + units[0];
-       return str;
+      if (m > 0) {
+        str += '.';
+        if (m < 10) {
+          str += '0';
+        }
+        str += m;
+      }
+      str += ' ' + units[0];
+      return str;
     };
   });
 
@@ -61,8 +61,6 @@
         },
         link: function(scope, elt, attrs, controller) {
           var bodyEl = angular.element($document[0].body);
-          var isClick = false;
-          var isSnapOnFirstPoint = false;
           var sketchFeatArea, sketchFeatDistance, sketchFeatAzimuth;
           var deregister, deregisterFeature;
           var styleFunction = scope.options.styleFunction;
@@ -90,20 +88,21 @@
           // Activate the component: add listeners, last features drawn and draw
           // interaction.
           var activate = function() {
+            var isFinishOnFirstPoint;
             scope.map.addLayer(layer);
             scope.map.addInteraction(drawArea);
             featuresOverlay.setMap(scope.map);
 
-
             // Add events
             deregister = [
               drawArea.on('drawstart', function(evt) {
+                var nbPoint = 1;
+                var isSnapOnLastPoint = false;
 
                 // Clear the layer
                 layer.getSource().clear();
 
                 // Initialisation of the sketchFeatures
-                var isSnapOnLastPoint = false;
                 sketchFeatArea = evt.feature;
                 var firstPoint = sketchFeatArea.getGeometry()
                     .getCoordinates()[0][0];
@@ -113,26 +112,49 @@
                     new ol.geom.Circle(firstPoint, 0));
                 featuresOverlay.addFeature(sketchFeatAzimuth);
 
+                // Update the profile
+                if (scope.options.isProfileActive) {
+                  updateProfileDebounced();
+                }
+
                 deregisterFeature = sketchFeatArea.on('change',
                   function(evt) {
+                    var feature = evt.target; //sketchFeatArea
+                    var lineCoords = feature.getGeometry()
+                        .getCoordinates()[0];
 
-                    if (!isClick) {
-                      var feature = evt.target; //sketchFeatArea
-                      var lineCoords = feature.getGeometry()
-                          .getCoordinates()[0];
+                    if (nbPoint != lineCoords.length) {
+                      // A point is added
+                      nbPoint++;
+
+                      // Update the profile
+                      if (scope.options.isProfileActive) {
+                        updateProfileDebounced();
+                      }
+
+                    } else {
+                      // We update features and measures
                       var lastPoint = lineCoords[lineCoords.length - 1];
                       var lastPoint2 = lineCoords[lineCoords.length - 2];
 
-                      isSnapOnFirstPoint = (lastPoint[0] == firstPoint[0] &&
+                      var isSnapOnFirstPoint = (lastPoint[0] == firstPoint[0] &&
                           lastPoint[1] == firstPoint[1]);
+
+                      // When the last change event is triggered the polygon is
+                      // closed so isSnapOnFirstPoint is true. We need to know
+                      // if on the change event just before, the snap on last
+                      // point was active.
+                      isFinishOnFirstPoint = (!isSnapOnLastPoint &&
+                          isSnapOnFirstPoint);
 
                       isSnapOnLastPoint = (lastPoint[0] == lastPoint2[0] &&
                           lastPoint[1] == lastPoint2[1]);
 
                       if (isSnapOnLastPoint) {
+                        // In that case the 2 last points of the coordinates
+                        // array are identical, so we remove the useless one.
                         lineCoords.pop();
                       }
-
                       sketchFeatDistance.getGeometry()
                           .setCoordinates(lineCoords);
 
@@ -146,35 +168,44 @@
                           sketchFeatAzimuth.getGeometry().setRadius(0);
                         }
                       }
-
-                    } else {
-                      // Update profile on each new point
-                      updateProfileDebounced();
-                      isClick = false;
                     }
                   }
                 );
               }),
 
               drawArea.on('drawend', function(evt) {
-                if (scope.options.isProfileActive) {
-                  bodyEl.addClass(scope.options.waitClass);
+
+                if (!isFinishOnFirstPoint) {
+                  // The sketchFeatureArea is automatically closed by the draw
+                  // interaction even if the user has finished drawing on the
+                  // last point. So we remove the useless coordinates.
+                  var lineCoords = sketchFeatDistance.getGeometry()
+                      .getCoordinates();
+                  lineCoords.pop();
+                  sketchFeatDistance.getGeometry().setCoordinates(lineCoords);
                 }
 
                 // Update the layer
-                updateLayer();
+                updateLayer(isFinishOnFirstPoint);
+
+                // Update measures
+                updateMeasures();
 
                 // Clear the additional overlay
                 featuresOverlay.getFeatures().clear();
 
                 // Unregister the change event
                 sketchFeatArea.unByKey(deregisterFeature);
-              }),
 
-              scope.map.on('click', function() {
-                isClick = true;
+                // Update the profile
+                if (scope.options.isProfileActive) {
+                  bodyEl.addClass(scope.options.waitClass);
+                  updateProfileDebounced();
+                }
+
               })
             ];
+
           };
 
 
@@ -197,15 +228,16 @@
 
 
           // Add sketch features to the layer
-          var updateLayer = function() {
+          var updateLayer = function(isFinishOnFirstPoint) {
             if (sketchFeatArea) {
               var lineCoords = sketchFeatDistance.getGeometry()
                   .getCoordinates();
+
               if (lineCoords.length == 2) {
                 layer.getSource().addFeature(sketchFeatAzimuth);
               }
-              layer.getSource().addFeature(isSnapOnFirstPoint ? sketchFeatArea :
-                  sketchFeatDistance);
+              layer.getSource().addFeature(isFinishOnFirstPoint ?
+                  sketchFeatArea : sketchFeatDistance);
             }
           };
 
@@ -238,7 +270,7 @@
                  sketchFeatDistance &&
                  sketchFeatDistance.getGeometry() &&
                  sketchFeatDistance.getGeometry()
-                     .getCoordinates().length >= 2) {
+                     .getCoordinates().length >= 1) {
               scope.options.drawProfile(sketchFeatDistance);
             } else {
               bodyEl.removeClass(scope.options.waitClass);

@@ -124,16 +124,9 @@ describe('ga_importwms__directive', function() {
 
     it('uploads and parses successfully', inject(function($rootScope) {
       expect($rootScope.userMessage).to.be('parse_succeeded');   
-      expect($rootScope.layers.length).to.be(3);    
+      expect($rootScope.layers.length).to.be(2);    
     }));
     
-   /* it('reorders list of layers', inject(function($rootScope) {
-      var titleTds = element.find('.table-content tr');
-      expect(titleTds.length).to.be(2);
-      expect(titleTds[0].html()).to.be('Title bar');
-      expect(titleTds[1].html()).to.be('Title foo');
-    }));*/
-
     it('adds/removes a preview layer to the map', inject(function($rootScope) {
       $rootScope.addLayerHovered($rootScope.layers[0]);
       expect($rootScope.map.getLayers().getLength()).to.be(1);      
@@ -147,7 +140,7 @@ describe('ga_importwms__directive', function() {
     
     it('selects/unselects a layer', inject(function($rootScope) {
       $rootScope.toggleLayerSelected($rootScope.layers[0]);
-      expect($rootScope.layerSelected.title).to.be('Title foo');
+      expect($rootScope.layerSelected.Title).to.be('Title foo');
       $rootScope.toggleLayerSelected($rootScope.layers[0]);
       expect($rootScope.layerSelected).to.be(null);
     }));
