@@ -16,17 +16,17 @@
     bodyEl.removeClass(waitclass);
     var pdfLegendsToDownload = [];
     var pdfLegendString = '_big.pdf';
-    var topicId;
     var printRectangle;
     var deregister;
     var DPI = 72;
     var DPI2 = 254;
     var MM_PER_INCHES = 25.4;
     var UNITS_RATIO = 39.37;
+    var printConfigLoaded = false;
 
     // Get print config
     var updatePrintConfig = function() {
-      var http = $http.get($scope.options.printConfigUrl + topicId);
+      var http = $http.get($scope.options.printConfigUrl);
       http.success(function(data) {
         $scope.capabilities = data;
 
@@ -107,8 +107,10 @@
 
     // Listeners
     $scope.$on('gaTopicChange', function(event, topic) {
-      topicId = topic.id;
-      updatePrintConfig();
+      if (!printConfigLoaded) {
+        updatePrintConfig();
+        printConfigLoaded = true;
+      }
     });
     $scope.$on('gaLayersChange', function(event, data) {
       updatePrintRectanglePixels($scope.scale);
@@ -623,7 +625,6 @@
           srs: proj.getCode(),
           units: proj.getUnits() || 'm',
           rotation: -((view.getRotation() * 180.0) / Math.PI),
-          app: topicId, //topic name
           lang: lang,
           dpi: that.dpi.value,
           layers: encLayers,
