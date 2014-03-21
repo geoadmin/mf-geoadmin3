@@ -1050,16 +1050,16 @@ msgid "ch.bafu.hydrologie-wassertemperaturmessstationen"
 msgstr "Stations de mesure Température eau"
 
 msgid "ch.bafu.laerm-bahnlaerm_nacht"
-msgstr "Bruit ferroviaire (Lr_nuit)"
+msgstr "Bruit ferroviaire la nuit"
 
 msgid "ch.bafu.laerm-bahnlaerm_tag"
-msgstr "Bruit ferroviaire (Lr_jour)"
+msgstr "Bruit ferroviaire en journée"
 
 msgid "ch.bafu.laerm-strassenlaerm_nacht"
-msgstr "Bruit routier (Lr_nuit)"
+msgstr "Bruit du trafic routier la nuit"
 
 msgid "ch.bafu.laerm-strassenlaerm_tag"
-msgstr "Bruit routier (Lr_jour)"
+msgstr "Bruit routier en journée"
 
 msgid "ch.bafu.landesforstinventar-baumarten"
 msgstr "Essences (IFN)"
