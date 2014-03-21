@@ -265,7 +265,7 @@
    * Manage external WMS layers
    */
   module.provider('gaWms', function() {
-    this.$get = function(gaDefinePropertiesForLayer, gaMapUtils) {
+    this.$get = function(gaDefinePropertiesForLayer, gaMapUtils, gaUrlUtils) {
       var Wms = function() {
 
         var createWmsLayer = function(params, options, index) {
@@ -287,6 +287,8 @@
           });
 
           var layer = new ol.layer.Image({
+            id: 'WMS||' + options.label + '||' + options.url + '||' +
+                params.LAYERS,
             url: options.url,
             type: 'WMS',
             opacity: options.opacity,
@@ -300,6 +302,19 @@
           return layer;
         };
 
+        // Create an ol WMS layer from GetCapabilities informations
+        this.getOlLayerFromGetCapLayer = function(getCapLayer) {
+          var wmsParams = {LAYERS: getCapLayer.Name};
+          var wmsOptions = {
+            url: getCapLayer.wmsUrl,
+            label: getCapLayer.Title,
+            extent: getCapLayer.extent,
+            attribution: gaUrlUtils.getHostname(getCapLayer.wmsUrl)
+          };
+          return createWmsLayer(wmsParams, wmsOptions);
+        };
+
+        // Create a WMS layer and add it to the map
         this.addWmsToMap = function(map, layerParams, layerOptions, index) {
           var olLayer = createWmsLayer(layerParams, layerOptions);
           if (index) {
@@ -714,7 +729,7 @@
         getMapOverlayForBodId: function(map, bodId) {
           var layer;
           map.getLayers().forEach(function(l) {
-            if (l.bodId == bodId && !l.background) {
+            if (l.bodId == bodId && !l.background && !l.preview) {
               layer = l;
             }
           });
@@ -1119,5 +1134,94 @@
       };
     };
   });
+
+  /**
+   * Service manages preview layers on map, used by CatalogTree,
+   * Search, ImportWMS
+   */
+  module.provider('gaPreviewLayers', function() {
+    // We store all review layers we add
+    var olPreviewLayers = {};
+
+    this.$get = function($rootScope, gaLayers, gaWms) {
+      var olPreviewLayer;
+      var time;
+
+      $rootScope.$on('gaTimeSelectorChange', function(event, year) {
+        time = year;
+      });
+
+      var PreviewLayers = function() {
+
+        this.addBodLayer = function(map, bodId) {
+
+          // Remove all preview layers
+          this.removeAll(map);
+
+          // Search or create the preview layer
+          var olPreviewLayer = olPreviewLayers[bodId];
+
+          if (!olPreviewLayer) {
+            olPreviewLayer = gaLayers.getOlLayerById(bodId);
+          }
+
+          // Something failed, layer doesn't exist
+          if (!olPreviewLayer) {
+            return undefined;
+          }
+
+          // Apply the current time
+          if (olPreviewLayer.bodId && olPreviewLayer.timeEnabled) {
+            olPreviewLayer.time = gaLayers.getLayerTimestampFromYear(
+                olPreviewLayer.bodId, time);
+          }
+
+          olPreviewLayer.preview = true;
+          olPreviewLayers[bodId] = olPreviewLayer;
+          map.addLayer(olPreviewLayer);
+
+          return olPreviewLayer;
+        };
+
+        this.addGetCapWMSLayer = function(map, getCapLayer) {
+          // Remove all preview layers
+          this.removeAll(map);
+
+          // Search or create the preview layer
+          var olPreviewLayer = olPreviewLayers[getCapLayer.id];
+
+          if (!olPreviewLayer) {
+            olPreviewLayer = gaWms.getOlLayerFromGetCapLayer(getCapLayer);
+          }
+
+          // Something failed, layer doesn't exist
+          if (!olPreviewLayer) {
+            return undefined;
+          }
+
+          olPreviewLayer.preview = true;
+          olPreviewLayers[getCapLayer.id] = olPreviewLayer;
+          map.addLayer(olPreviewLayer);
+
+          return olPreviewLayer;
+        };
+
+        // Remove all preview layers currently on the map, to be sure there is
+        // one and only one preview layer at a time
+        this.removeAll = function(map) {
+          var layers = map.getLayers().getArray();
+          for (var i = 0; i < layers.length; i++) {
+            if (layers[i].preview) {
+              map.removeLayer(layers[i]);
+              i--;
+            }
+          }
+        };
+      };
+
+      return new PreviewLayers();
+    };
+  });
+
 
 })();

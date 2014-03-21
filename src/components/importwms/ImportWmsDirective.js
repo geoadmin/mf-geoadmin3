@@ -12,7 +12,7 @@
 
   module.controller('GaImportWmsDirectiveController',
       function($scope, $http, $q, $log, $translate, gaUrlUtils,
-          gaWms) {
+          gaWms, gaPreviewLayers) {
 
           // List of layers available in the GetCapabilities
           $scope.layers = [];
@@ -81,7 +81,6 @@
                     ' * ' + result.Service.MaxHeight :
                   '';
 
-
               if (result.Capability.Layer) {
                 $scope.layers = getChildLayers(result.Capability.Layer,
                     srsCode);
@@ -124,22 +123,16 @@
             }
           };
 
-          // Add the hovered layer to the map
-          $scope.addLayerHovered = function(getCapLayer) {
-            if (getCapLayer) {
-              $scope.layerHovered = getCapLayer;
-              $scope.olLayerHovered = $scope.addLayer(
-                  $scope.layerHovered, /* isPreview */ true);
-            }
+          // Add preview  dlayer to the map
+          $scope.addPreviewLayer = function(getCapLayer) {
+            $scope.layerHovered = getCapLayer;
+            gaPreviewLayers.addGetCapWMSLayer($scope.map, getCapLayer);
           };
 
-          // Remove layer hovered
-          $scope.removeLayerHovered = function() {
-            if ($scope.olLayerHovered) {
-              $scope.map.removeLayer($scope.olLayerHovered);
-              $scope.layerHovered = null;
-              $scope.olLayerHovered = null;
-            }
+          // Remove preview layer
+          $scope.removePreviewLayer = function() {
+            gaPreviewLayers.removeAll($scope.map);
+            $scope.layerHovered = null;
           };
 
           // Select the layer clicked
@@ -153,7 +146,7 @@
           // Zoom on layer extent
           $scope.zoomOnLayerExtent = function(getCapLayer) {
             var layer = getCapLayer;
-            var extent = getLayerExtentFromGetCap(layer);
+            var extent = layer.extent || getLayerExtentFromGetCap(layer);
             var view2D = $scope.map.getView().getView2D();
             var mapSize = $scope.map.getSize();
 
@@ -190,25 +183,15 @@
          };
 
           // Add a layer from GetCapabilities object to the map
-          $scope.addLayer = function(getCapLayer, isPreview) {
-
+          $scope.addLayer = function(getCapLayer) {
             if (getCapLayer) {
-
               try {
                 var layer = getCapLayer;
-
-                return gaWms.addWmsToMap($scope.map,
-                  {
-                    LAYERS: layer.Name
-                  },
-                  {
-                    url: $scope.fileUrl,
-                    label: layer.Title,
-                    extent: getLayerExtentFromGetCap(layer),
-                    attribution: gaUrlUtils.getHostname($scope.fileUrl),
-                    preview: isPreview
-                  }
-                );
+                var olLayer = gaWms.getOlLayerFromGetCapLayer(getCapLayer);
+                if (olLayer) {
+                  $scope.map.addLayer(olLayer);
+                }
+                return olLayer;
 
               } catch (e) {
                 $scope.userMessage = $translate('add_wms_layer_failed') +
@@ -217,8 +200,6 @@
               }
             }
           };
-
-
 
           /**** UTILS functions ****/
           // from OL2
@@ -270,6 +251,10 @@
             if (getCapLayer.Name && getCapLayer.CRS &&
                 (getCapLayer.CRS.indexOf(srsCode.toUpperCase()) != -1 ||
                 getCapLayer.CRS.indexOf(srsCode.toLowerCase()) != -1)) {
+              getCapLayer.wmsUrl = $scope.fileUrl;
+              getCapLayer.id = 'WMS||' + getCapLayer.wmsUrl + '||' +
+                getCapLayer.Name;
+              getCapLayer.extent = getLayerExtentFromGetCap(getCapLayer);
               layers.push(getCapLayer);
             }
             if (getCapLayer.Layer) {
