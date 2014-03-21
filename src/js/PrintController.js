@@ -9,7 +9,7 @@
       
       $scope.options = {
         printConfigUrl: printPath + '/info.json?url=' +
-            encodeURIComponent(printPath) + '&app=',
+            encodeURIComponent(printPath),
         legendUrl: gaGlobalOptions.apiUrl + '/static/images/legends/',
         qrcodeUrl: gaGlobalOptions.apiUrl + '/qrcodegenerator?url=',
         shortenUrl: gaGlobalOptions.apiUrl + '/shorten.json?cb=JSON_CALLBACK',
