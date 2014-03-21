@@ -1050,16 +1050,16 @@ msgid "ch.bafu.hydrologie-wassertemperaturmessstationen"
 msgstr "Messstationen Wassertemperatur"
 
 msgid "ch.bafu.laerm-bahnlaerm_nacht"
-msgstr "Canera da viafier (Lr_notg)"
+msgstr "Canera da viafier notg"
 
 msgid "ch.bafu.laerm-bahnlaerm_tag"
-msgstr "Canera da viafier (Lr_di)"
+msgstr "Canera da viafier di"
 
 msgid "ch.bafu.laerm-strassenlaerm_nacht"
-msgstr "Canera da via (Lr_notg)"
+msgstr "Canera da via notg"
 
 msgid "ch.bafu.laerm-strassenlaerm_tag"
-msgstr "Canera da via (Lr_di)"
+msgstr "Canera da via di"
 
 msgid "ch.bafu.landesforstinventar-baumarten"
 msgstr "Baumarten (LFI)"

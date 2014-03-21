@@ -1050,16 +1050,16 @@ msgid "ch.bafu.hydrologie-wassertemperaturmessstationen"
 msgstr "Temperature monitoring stations"
 
 msgid "ch.bafu.laerm-bahnlaerm_nacht"
-msgstr "Railway noise (Lr_night)"
+msgstr "Nighttime railway noise"
 
 msgid "ch.bafu.laerm-bahnlaerm_tag"
-msgstr "Railway noise (Lr_day)"
+msgstr "Daytime railway noise"
 
 msgid "ch.bafu.laerm-strassenlaerm_nacht"
-msgstr "Road traffic noise (Lr_night)"
+msgstr "Nighttime road traffic noise"
 
 msgid "ch.bafu.laerm-strassenlaerm_tag"
-msgstr "Road traffic noise (Lr_day)"
+msgstr "Daytime road traffic noise"
 
 msgid "ch.bafu.landesforstinventar-baumarten"
 msgstr "Tree species (NFI)"
