@@ -15,7 +15,7 @@ def get_image_size(filename):
 
     if filename:
         try:
-            file = urllib2.urlopen("https://web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?DeepZoom=" + filename + ".dzi")
+            file = urllib2.urlopen("https://web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?DeepZoom=" + filename + ".dzi", timeout = 3)
             xmldoc = minidom.parse(file)
             dimensions = xmldoc.getElementsByTagName('Size')
             width = dimensions[0].getAttribute('Width')
