@@ -363,7 +363,7 @@ class SearchValidation(MapNameValidation):
             values = value.split(',')
             result = []
             for val in values:
-                result.append(True if val.lower() in ['true','t','1'] else False)
+                result.append(True if val.lower() in ['true', 't', '1'] else False)
             self._timeEnabled = result
 
     @searchText.setter

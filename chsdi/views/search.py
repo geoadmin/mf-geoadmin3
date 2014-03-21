@@ -221,11 +221,11 @@ class Search(SearchValidation):
         return finalQuery
 
     def _add_feature_queries(self, queryText, timeFilter):
-        i=0
+        i = 0
         for index in self.featureIndexes:
             if timeFilter and self.timeEnabled is not None and self.timeEnabled[i]:
                     if len(timeFilter) == 1:
-                        self.sphinx.SetFilter('year', timeFilter )
+                        self.sphinx.SetFilter('year', timeFilter)
                     elif len(timeFilter) == 2:
                         self.sphinx.SetFilterRange('year', int(min(timeFilter)), int(max(timeFilter)))
             i += 1
