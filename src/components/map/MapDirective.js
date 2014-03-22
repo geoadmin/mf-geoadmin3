@@ -64,7 +64,9 @@
               if (!gaBrowserSniffer.touchDevice) {
                 map.addControl(new ol.control.ZoomSlider());
               }
-              map.addControl(new ol.control.ZoomToExtent({tipLabel: ''}));
+              var zoomToExtentControl =
+                new ol.control.ZoomToExtent({tipLabel: ''});
+              map.addControl(zoomToExtentControl);
 
               var setRotate = function(element, rotation) {
                 var rotationStyle = 'rotate(' + rotation + 'deg)';
@@ -87,6 +89,15 @@
                   view.setRotation(0);
                 };
               };
+              var deviceOrientation = new ol.DeviceOrientation();
+              deviceOrientation.on('change', function(event) {
+                if (deviceOrientation.getHeading() != undefined) {
+                  var heading = -deviceOrientation.getHeading();
+                  heading -= window['orientation'] * Math.PI / 180.0;
+                  map.getView().setRotation(heading);
+                }
+              });
+              deviceOrientation.setTracking(true);
 
               view.on('change:rotation', userRotate);
 
