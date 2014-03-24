@@ -242,7 +242,10 @@
                 features.forEach(function(feature) {
                   layer.getSource().removeFeature(feature);
                 });
-                features.clear();
+                // We reactivate the select interaction instead of clearing
+                // directly the selectd features array to avoid an digest cycle
+                // error in updateUseTextStyle function
+                activateSelectInteraction();
               }
             }
           };
