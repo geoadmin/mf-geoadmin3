@@ -53,7 +53,9 @@
               $scope.inPreviewMode = false;
             };
 
-            $scope.toggleLayer = function() {
+            $scope.toggleLayer = function(evt) {
+              // Avoid to have the same layer twice on the map
+              $scope.removePreviewLayer(evt);
               var item = $scope.item;
               var map = $scope.map;
               var layer = gaMapUtils.getMapOverlayForBodId(
