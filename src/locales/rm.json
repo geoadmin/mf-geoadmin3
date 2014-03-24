@@ -2,6 +2,7 @@
 	"add_layer": "Agiuntar Layer",
 	"add_wms_layer_failed": "Sbagl tar il chargiar de la WMS layer",
 	"add_wms_layer_succeeded": "Chargià con success il WMS Layer",
+	"appcache_update_available": "",
 	"are": "ARE",
 	"are_help_link_href": "http://help.geo.admin.ch/",
 	"are_service_link_href": "http://www.are.admin.ch/index.html?lang=de",

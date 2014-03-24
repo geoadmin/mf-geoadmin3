@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 <!DOCTYPE html>
-<html ng-app="ga" ng-controller="GaMainController">
+<html ng-app="ga" ng-controller="GaMainController"
+% if mode == 'prod':
+ manifest="geoadmin.appcache"
+% endif
+>
   <head>
     <!--![if !HTML5]>
     <meta http-equiv="X-UA-Compatible" content="IE=9,IE=10,IE=edge,chrome=1"/>
@@ -616,6 +620,7 @@
         var pathname = location.pathname.replace(/(index.html)|(mobile.html)/g, '');
 
         module.constant('gaGlobalOptions', {
+          mapUrl : location.origin + '${apache_base_path}',
           apiUrl : location.protocol + '${api_url}',
           cachedApiUrl: location.protocol + '${api_url}' + cacheAdd,
           resourceUrl: location.origin + pathname + '${versionslashed}',
@@ -637,7 +642,7 @@
               '//wmts{5-9}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
 
           gaLayersProvider.layersConfigUrlTemplate =
-              gaGlobalOptions.cachedApiUrl + '/rest/services/{Topic}/MapServer/layersConfig?lang={Lang}';
+              gaGlobalOptions.mapUrl + '/rest/services/{Topic}/MapServer/layersConfig?lang={Lang}';
 
           gaLayersProvider.legendUrlTemplate =
               gaGlobalOptions.cachedApiUrl + '/rest/services/{Topic}/MapServer/{Layer}/legend?lang={Lang}';

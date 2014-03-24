@@ -194,6 +194,13 @@ module.controller('GaMainController',
       $('#selection').on('hidden.bs.collapse', function() {
         $('#selectionHeading').addClass('collapsed');
       });
+
+      // Browser downloaded a new app cache.
+      window.applicationCache.addEventListener('updateready', function(e) {
+        if (confirm($translate('appcache_update_available'))) {
+          window.location.reload();
+        }
+      });
   });
 
 })();

@@ -2,6 +2,7 @@
 	"add_layer": "Add Layer",
 	"add_wms_layer_failed": "Error when loading WMS layer",
 	"add_wms_layer_succeeded": "WMS layer successfully loaded",
+	"appcache_update_available": "A new version of this site is available. Load it?",
 	"are": "ARE",
 	"are_help_link_href": "http://help.geo.admin.ch/?lang=en",
 	"are_service_link_href": "http://www.are.admin.ch/index.html?lang=en",
