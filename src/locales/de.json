@@ -47,7 +47,7 @@
 	"draw": "Zeichnen",
 	"draw_delete": "Löschen",
 	"draw_delete_description": "Alle Objekte löschen",
-	"draw_delete_selected_features": "Selektierten Objekte löschen",
+	"draw_delete_selected_features": "Selektierte Objekte löschen",
 	"draw_line": "Linie",
 	"draw_line_description": "Linie erfassen",
 	"draw_line_instructions": "Linie erfassen",
