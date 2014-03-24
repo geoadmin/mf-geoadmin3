@@ -16,23 +16,43 @@
       templateUrl: 'components/geolocation/partials/geolocation.html',
       link: function(scope, element, attrs) {
         var btnElt = $(element.children()[0]);
-        var markerElt = $('<div class="ga-geolocation-marker">' +
-                            '<div class="ga-geolocation-position"></div>' +
-                        '</div>');
+
         if (!('geolocation' in $window.navigator)) {
           btnElt.addClass('ga-geolocation-error');
           return;
         }
+
         // This boolean defines if the user has moved the map itself after the
         // first change of position.
         var userTakesControl = false;
         // Defines if the geolocation control is zooming
         var geolocationZooming = false;
-        var overlay = null;
-        var currentResolution = null;
-        var currentAccuracy = null;
         var map = scope.map;
         var view = map.getView().getView2D();
+        var accuracyFeature = new ol.Feature();
+        var positionFeature = new ol.Feature();
+        var featuresOverlay = new ol.FeatureOverlay({
+          features: [accuracyFeature, positionFeature],
+          style: new ol.style.Style({
+            fill: new ol.style.Fill({
+              color: [255, 0, 0, 0.1]
+            }),
+            stroke: new ol.style.Stroke({
+              color: [255, 0, 0, 0.9],
+              width: 3
+            }),
+            image: new ol.style.Circle({
+              radius: 5,
+              fill: new ol.style.Fill({
+                color: [255, 0, 0, 0.9]
+              }),
+              stroke: new ol.style.Stroke({
+                color: [255, 0, 0, 1],
+                width: 3
+              })
+            })
+          })
+        });
         var geolocation = new ol.Geolocation({
           trackingOptions: {
             maximumAge: 10000,
@@ -40,14 +60,12 @@
             timeout: 600000
           }
         });
-        geolocation.on('error', function() {
-          btnElt.removeClass('ga-geolocation-tracking');
-          btnElt.addClass('ga-geolocation-error');
-        });
-        geolocation.bindTo('projection', map.getView());
+
+        // Animation
         // used to having a zoom animation when we click on the button,
         // but not when we are tracking the position.
         var first = true;
+        var currentAccuracy = 0;
         var locate = function() {
           geolocationZooming = true;
           var dest = geolocation.getPosition();
@@ -105,27 +123,25 @@
           }
           geolocationZooming = false;
         };
-        var markPosition = function() {
-          var divSize = currentAccuracy / currentResolution;
-          markerElt.css({
-            width: divSize,
-            height: divSize,
-            'border-radius': divSize / 2
-          });
-        };
-        map.on('postrender', function(evt) {
-          var res = view.getResolution();
-          if (res != currentResolution) {
-            currentResolution = res;
-            markPosition();
-          }
-        });
 
+        var updateAccuracyFeature = function() {
+          if (geolocation.getPosition() && geolocation.getAccuracy()) {
+            accuracyFeature.setGeometry(new ol.geom.Circle(
+                geolocation.getPosition(), geolocation.getAccuracy()));
+          }
+        };
+
+        // Geolocation control events
         geolocation.on('change:position', function(evt) {
           btnElt.removeClass('ga-geolocation-error');
           btnElt.addClass('ga-geolocation-tracking');
           locate();
-          markPosition();
+          updateAccuracyFeature();
+        });
+
+        geolocation.on('change:accuracy', function(evt) {
+          currentAccuracy = geolocation.getAccuracy();
+          updateAccuracyFeature();
         });
 
         geolocation.on('change:tracking', function(evt) {
@@ -133,30 +149,36 @@
           if (tracking) {
             first = true;
             userTakesControl = false;
-            if (!overlay) {
-              overlay = new ol.Overlay({
-                element: markerElt,
-                positioning: 'center-center',
-                stopEvent: false
-              });
-              overlay.bindTo('position', geolocation);
-            }
-            map.addOverlay(overlay);
+            featuresOverlay.setMap(map);
           } else {
             // stop tracking
             btnElt.removeClass('ga-geolocation-tracking');
-            if (overlay) {
-              map.removeOverlay(overlay);
-            }
+            featuresOverlay.setMap(null);
           }
         });
-        geolocation.on('change:accuracy', function(evt) {
-          var accuracy = geolocation.getAccuracy();
-          if (accuracy != currentAccuracy) {
-            currentAccuracy = accuracy;
-            markPosition();
-          }
+
+        geolocation.on('error', function() {
+          btnElt.removeClass('ga-geolocation-tracking');
+          btnElt.addClass('ga-geolocation-error');
         });
+
+        // Geolocation control bindings
+        geolocation.bindTo('projection', view);
+        positionFeature.bindTo('geometry', geolocation, 'position')
+            .transform(function() {}, function(coordinates) {
+          return coordinates ? new ol.geom.Point(coordinates) : null;
+        });
+
+        // View events
+        var updateUserTakesControl = function() {
+          if (!geolocationZooming) {
+            userTakesControl = true;
+          }
+        };
+        view.on('change:center', updateUserTakesControl);
+        view.on('change:resolution', updateUserTakesControl);
+
+        // Button event
         btnElt.bind('click', function(e) {
           e.preventDefault();
           var tracking = !geolocation.getTracking();
@@ -174,15 +196,8 @@
           });
         });
 
+        // Init with permalink
         geolocation.setTracking(gaPermalink.getParams().geolocation == 'true');
-
-        var updateUserTakesControl = function() {
-          if (!geolocationZooming) {
-            userTakesControl = true;
-          }
-        };
-        view.on('change:center', updateUserTakesControl);
-        view.on('change:resolution', updateUserTakesControl);
       }
     };
   });
