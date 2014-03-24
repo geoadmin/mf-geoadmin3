@@ -8,7 +8,7 @@
   ]);
 
   module.directive('gaDraw',
-    function($rootScope, gaDefinePropertiesForLayer, $translate) {
+    function($rootScope, gaDefinePropertiesForLayer, $translate, $timeout) {
       return {
         restrict: 'A',
         templateUrl: function(element, attrs) {
@@ -31,6 +31,13 @@
           });
           gaDefinePropertiesForLayer(layer);
           layer.highlight = true;
+
+          // Focus on the first input.
+          var setFocus = function() {
+            $timeout(function() {
+              $(elt).find('input, select')[0].focus();
+            });
+          };
 
           // Activate the component: active a tool if one was active when draw
           // has been deactivated.
@@ -74,6 +81,7 @@
 
             scope.options.instructions = tool.instructions;
             lastActiveTool = tool;
+            setFocus();
           };
 
           // Set the draw interaction with the good geometry
@@ -99,10 +107,6 @@
                 sketchFeature.setStyle(style);
               })
             ];
-
-            // Focus on the important input
-            $(elt).find(((scope.options.isTextActive) ? 'input' : 'select')).
-                focus();
 
             if (scope.isActive) {
               map.addInteraction(draw);
@@ -245,23 +249,6 @@
 
           scope.aToolIsActive = function() {
             return !!lastActiveTool;
-          };
-
-          scope.displayTextInput = function() {
-            if (scope.options.isTextActive) {
-              return true;
-            }
-
-            if (scope.options.isModifyActive) {
-              // If modify tool is active display text input only if
-              // feature using text style is selected.
-              var textStyleFound = false;
-              select.getFeatures().forEach(function(feature) {
-                             });
-
-              return textStyleFound;
-            }
-            return false;
           };
 
           // Watchers
