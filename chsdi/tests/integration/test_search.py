@@ -46,6 +46,12 @@ class TestSearchServiceView(TestsBase):
             resp = self.testapp.get('/rest/services/inspire/SearchServer', params={'searchText': 'mont d\'or', 'type': 'locations', 'bbox': '551306.5625,167918.328125,551754.125,168514.625', 'lang': lang}, status=200)
             self.failUnless(resp.content_type == 'application/json')
 
+    def test_search_locations_prefix_sentence_match(self):
+        resp = self.testapp.get('/rest/services/inspire/SearchServer', params={'searchText': 'lausann', 'type': 'locations'}, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'lausanne _vd_')
+        self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'gg25')
+
     def test_search_loactions_and_features(self):
         resp = self.testapp.get('/rest/services/inspire/SearchServer', params={'searchText': 'vd 446', 'type': 'locations', 'bbox': '551306.5625,167918.328125,551754.125,168514.625', 'features': 'ch.astra.ivs-reg_loc'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
