@@ -31,7 +31,7 @@
       // input is the timestamp applied to a layer, it can be a '1978' or
       // '19783112' or undefined or ''
       if (!input || input.length < 4) {
-        return '';
+        return '-';
       }
       var yearStr = input.substring(0, 4);
       return (parseInt(yearStr) <= (new Date()).getFullYear()) ? yearStr : '';
