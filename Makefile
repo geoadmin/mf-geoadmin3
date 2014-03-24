@@ -140,28 +140,12 @@ prd/style/app.css: src/style/app.less src/style/print.less src/style/ga_bootstra
 	mkdir -p $(dir $@)
 	node_modules/.bin/lessc -ru --yui-compress $< $@
 
-<<<<<<< HEAD
 prd/index.html: src/index.mako.html prd/lib/build.js prd/style/app.css .build-artefacts/python-venv/bin/mako-render .build-artefacts/python-venv/bin/htmlmin .build-artefacts/last-api-url .build-artefacts/last-apache-base-path
-=======
-prd/style/print.css: src/style/print.less src/style/app_print.less node_modules .build-artefacts/bootstrap
-	mkdir -p $(dir $@)
-	node_modules/.bin/lessc -ru --yui-compress $< $@
-
-prd/index.html: src/index.mako.html prd/lib/build.js prd/style/app.css prd/geoadmin.appcache .build-artefacts/python-venv/bin/mako-render .build-artefacts/python-venv/bin/htmlmin
->>>>>>> Naive implementation of appcache
 	mkdir -p $(dir $@)
 	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "mode=prod" --var "version=$(VERSION)" --var "versionslashed=$(VERSION)/" --var "user_env=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
 	.build-artefacts/python-venv/bin/htmlmin --remove-comments --keep-optional-attribute-quotes $@ $@
 
-<<<<<<< HEAD
 prd/mobile.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render .build-artefacts/python-venv/bin/htmlmin .build-artefacts/last-api-url .build-artefacts/last-apache-base-path
-=======
-prd/geoadmin.appcache: src/geoadmin.mako.appcache .build-artefacts/python-venv/bin/mako-render
-	mkdir -p $(dir $@)
-	.build-artefacts/python-venv/bin/mako-render --var "version=$(VERSION)" --var "versionslashed=$(VERSION)/" --var "user_env=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
-
-prd/mobile.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render .build-artefacts/python-venv/bin/htmlmin
->>>>>>> Naive implementation of appcache
 	mkdir -p $(dir $@)
 	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "mode=prod" --var "version=$(VERSION)" --var "versionslashed=$(VERSION)/" --var "user_env=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
 	.build-artefacts/python-venv/bin/htmlmin --remove-comments --keep-optional-attribute-quotes $@ $@
@@ -187,34 +171,30 @@ prd/info.json: src/info.json
 	mkdir -p $(dir $@)
 	cp $< $@
 
+prd/geoadmin.appcache: src/geoadmin.mako.appcache .build-artefacts/python-venv/bin/mako-render
+	mkdir -p $(dir $@)
+	.build-artefacts/python-venv/bin/mako-render --var "version=$(VERSION)" --var "versionslashed=$(VERSION)/" --var "user_env=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
+
+
 src/deps.js: $(SRC_JS_FILES) .build-artefacts/python-venv .build-artefacts/closure-library
 	.build-artefacts/python-venv/bin/python .build-artefacts/closure-library/closure/bin/build/depswriter.py --root_with_prefix="src/components components" --root_with_prefix="src/js js" --output_file=$@
 
 src/style/app.css: src/style/app.less src/style/print.less src/style/ga_bootstrap.less src/style/ga_variables.less $(SRC_COMPONENTS_LESS_FILES) node_modules .build-artefacts/bootstrap
 	node_modules/.bin/lessc $(LESS_PARAMETERS) $< $@
 
-<<<<<<< HEAD
 src/index.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render .build-artefacts/last-api-url .build-artefacts/last-apache-base-path
 	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "version=" --var "versionslashed=" --var "user_env=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
 
 src/mobile.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render .build-artefacts/last-api-url .build-artefacts/last-apache-base-path
-=======
-src/style/print.css: src/style/print.less src/style/app_print.less node_modules .build-artefacts/bootstrap
-	node_modules/.bin/lessc $(LESS_PARAMETERS) $< $@
+	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "version=" --var "versionslashed=" --var "user_env=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
 
-src/index.html: src/index.mako.html src/geoadmin.appcache .build-artefacts/python-venv/bin/mako-render
-	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "version=" --var "versionslashed=" --var "user_env=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
+src/TemplateCacheModule.js: src/TemplateCacheModule.mako.js $(SRC_COMPONENTS_PARTIALS_FILES) .build-artefacts/python-venv/bin/mako-render
+	.build-artefacts/python-venv/bin/mako-render --var "partials=$(subst src/,,$(SRC_COMPONENTS_PARTIALS_FILES))" --var "basedir=src" $< > $@
 
 src/geoadmin.appcache: src/geoadmin.mako.appcache .build-artefacts/python-venv/bin/mako-render
 	mkdir -p $(dir $@)
 	.build-artefacts/python-venv/bin/mako-render --var "version=$(VERSION)" --var "versionslashed=$(VERSION)/" --var "user_env=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
 
-src/mobile.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render
->>>>>>> Naive implementation of appcache
-	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "version=" --var "versionslashed=" --var "user_env=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
-
-src/TemplateCacheModule.js: src/TemplateCacheModule.mako.js $(SRC_COMPONENTS_PARTIALS_FILES) .build-artefacts/python-venv/bin/mako-render
-	.build-artefacts/python-venv/bin/mako-render --var "partials=$(subst src/,,$(SRC_COMPONENTS_PARTIALS_FILES))" --var "basedir=src" $< > $@
 
 apache/app.conf: apache/app.mako-dot-conf prd/lib/build.js prd/style/app.css .build-artefacts/python-venv/bin/mako-render .build-artefacts/last-api-url .build-artefacts/last-apache-base-path .build-artefacts/last-apache-base-directory
 	.build-artefacts/python-venv/bin/mako-render --var "apache_base_path=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" --var "apache_base_directory=$(APACHE_BASE_DIRECTORY)" $< > $@
@@ -369,21 +349,3 @@ clean:
 	rm -f src/lib/fastclick.js
 	rm -rf prd
 
-<<<<<<< HEAD
-=======
-.PHONY: cleanrc
-cleanrc:
-	rm -f src/index.html
-	rm -f src/mobile.html
-	rm -f src/geoadmin.appcache
-	rm -f prd/index.html
-	rm -f prd/mobile.html
-	rm -f prd/geoadmin.appcache
-	rm -f prd/robots.txt
-	rm -f apache/app.conf
-	rm -f deploy/deploy-branch.cfg
-	rm -f scripts/00-*.conf
-	rm -f rc_branch
-
-
->>>>>>> Naive implementation of appcache
