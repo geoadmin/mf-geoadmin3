@@ -5,7 +5,7 @@
     ng-mouseover="addPreviewLayer($event)"
     ng-mouseleave="removePreviewLayer($event)">
     <label title="{{item.label}}" class="ga-truncate-text ga-checkbox">
-      <input type="checkbox" ng-model="item.selectedOpen" ng-change="toggleLayer()" />
+      <input type="checkbox" ng-model="item.selectedOpen" ng-change="toggleLayer($event)" />
       <span></span>
       {{item.label}}
     </label>

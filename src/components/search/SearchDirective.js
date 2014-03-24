@@ -122,6 +122,10 @@
               };
 
               scope.addLayer = function(bodId) {
+                // removePreviewLayer is not called automaticallay
+                // after a click
+                scope.removePreviewLayer();
+
                 var layerInMap = gaMapUtils.getMapOverlayForBodId(
                     map, bodId);
                 if (!angular.isDefined(layerInMap)) {
