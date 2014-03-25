@@ -166,4 +166,3 @@ class TestSearchServiceView(TestsBase):
         resp = self.testapp.get('/rest/services/lubis/SearchServer', params={'type': 'locations', 'searchText': 'raron', 'features': 'ch.swisstopo.lubis-luftbilder_schwarzweiss,ch.swisstopo.lubis-luftbilder_farbe', 'timeEnable': 'true,true', 'bbox': '666045,170025,675645,174235', 'timeInstant': '2008'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(len(resp.json['results']) != 0)
-         
