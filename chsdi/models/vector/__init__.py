@@ -158,7 +158,6 @@ class Vector(GeoInterface):
         attributes = [column.key for column in self._get_attributes_columns()]
         return attributes
 
-
     def getAttributes(self):
         attributes = {}
         for column in self._get_attributes_columns():

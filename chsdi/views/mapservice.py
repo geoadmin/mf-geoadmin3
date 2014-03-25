@@ -253,6 +253,7 @@ def _find(request):
 
     return {'results': features}
 
+
 @view_config(route_name='featureAttributes', renderer='jsonp')
 def feature_attributes(request):
     ''' This service is used to expose the
@@ -262,9 +263,10 @@ def feature_attributes(request):
     models = models_from_name(layerId)
     # Models for the same layer have the same attributes
     if models is None:
-        raise exc.HTTPBadRequest('No Vector Table was found for %s' %layerId)
+        raise exc.HTTPBadRequest('No Vector Table was found for %s' % layerId)
     attributes = models[0]().getAttributesKeys()
     return attributes
+
 
 @view_config(route_name='feature', renderer='geojson',
              request_param='geometryFormat=geojson')
