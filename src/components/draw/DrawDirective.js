@@ -35,7 +35,10 @@
           // Focus on the first input.
           var setFocus = function() {
             $timeout(function() {
-              $(elt).find('input, select')[0].focus();
+              var inputs = $(elt).find('input, select');
+              if (inputs.length > 0) {
+                inputs[0].focus();
+              }
             });
           };
 
@@ -125,7 +128,6 @@
             draw = deactivateInteraction(draw);
           };
 
-
           // Set the select interaction
           var activateSelectInteraction = function() {
             deactivateDrawInteraction();
@@ -139,13 +141,15 @@
 
             if (scope.isActive) {
               map.addInteraction(select);
-              select.getFeatures().on('add', updateUseTextStyle);
-              select.getFeatures().on('remove', updateUseTextStyle);
+              select.getFeatures().on('add', updateUseStyles);
+              select.getFeatures().on('remove', updateUseStyles);
             }
           };
 
           var deactivateSelectInteraction = function() {
             scope.useTextStyle = false;
+            scope.useIconStyle = false;
+            scope.useColorStyle = false;
             select = deactivateInteraction(select);
           };
 
@@ -190,20 +194,27 @@
             }
           };
 
-          // Determines if at least one selected feature use a text style
-          var updateUseTextStyle = function(evt) {
+          // Determines which styles are used by selected fetures
+          var updateUseStyles = function(evt) {
             var features = select.getFeatures().getArray();
             var useTextStyle = false;
+            var useIconStyle = false;
+            var useColorStyle = false;
+
             for (var i = 0, ii = features.length; i < ii; i++) {
               var styles = features[i].getStyleFunction()();
-              var style = styles[0].getText();
-              if (style) {
+              if (styles[0].getImage() instanceof ol.style.Icon) {
+                useIconStyle = true;
+                continue;
+              } else if (styles[0].getText()) {
                 useTextStyle = true;
-                break;
               }
+              useColorStyle = true;
             }
             scope.$apply(function() {
               scope.useTextStyle = useTextStyle;
+              scope.useIconStyle = useIconStyle;
+              scope.useColorStyle = useColorStyle;
             });
           };
 
@@ -243,7 +254,7 @@
                 });
                 // We reactivate the select interaction instead of clearing
                 // directly the selectd features array to avoid an digest cycle
-                // error in updateUseTextStyle function
+                // error in updateUseStyles function
                 activateSelectInteraction();
               }
             }
@@ -262,6 +273,19 @@
               deactivate();
             }
           });
+
+          scope.$watch('options.iconSize', function(active) {
+            if (scope.options.isModifyActive) {
+              updateSelectedFeatures();
+            }
+          });
+
+          scope.$watch('options.icon', function(active) {
+            if (scope.options.isModifyActive) {
+              updateSelectedFeatures();
+            }
+          });
+
           scope.$watch('options.color', function(active) {
             if (scope.options.isModifyActive) {
               updateSelectedFeatures();
