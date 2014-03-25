@@ -6,6 +6,7 @@ from pyramid.httpexceptions import HTTPNotFound
 
 from chsdi.models.bod import Catalog
 from chsdi.lib.validation import MapNameValidation
+from chsdi.lib.sqlalchemy_customs import remove_accents
 
 
 class CatalogService(MapNameValidation):
@@ -23,7 +24,7 @@ class CatalogService(MapNameValidation):
             .filter(model.topic.ilike('%%%s%%' % self.mapName))\
             .order_by(model.depth)\
             .order_by(model.orderKey)\
-            .order_by(model.get_name_from_lang(self.lang)).all()
+            .order_by(remove_accents(model.get_name_from_lang(self.lang))).all()
         if len(rows) == 0:
             raise HTTPNotFound('No catalog with id %s is available' % self.mapName)
 
