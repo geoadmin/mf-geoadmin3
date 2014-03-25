@@ -13,6 +13,11 @@
                 replace(/\B(?=(\d{3})+(?!\d))/g, "'");
         };
 
+        var coordinatesFormatUTM = function(coordinates) {
+          return ol.coordinate.toStringXY(coordinates, 0).
+              replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+        };
+
         $scope.mousePositionProjections = [{
           value: 'EPSG:2056',
           label: 'CH1903+ / LV95',
@@ -28,6 +33,10 @@
             return ol.coordinate.toStringHDMS(coordinates) +
                 ' (' + ol.coordinate.toStringXY(coordinates, 5) + ')';
           }
+        }, {
+          value: 'EPSG:32632',
+          label: 'UTM zone 32N',
+          format: coordinatesFormatUTM
         }
         ];
 
