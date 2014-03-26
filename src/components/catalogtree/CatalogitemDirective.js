@@ -30,7 +30,9 @@
 
             $scope.addPreviewLayer = function(evt) {
               if (gaBrowserSniffer.mobile) {
-                evt.preventDefault();
+                if (evt) {
+                  evt.preventDefault();
+                }
                 return;
               }
               var layer = gaMapUtils.getMapOverlayForBodId(
@@ -46,16 +48,18 @@
 
             $scope.removePreviewLayer = function(evt) {
               if (gaBrowserSniffer.mobile) {
-                evt.preventDefault();
+                if (evt) {
+                  evt.preventDefault();
+                }
                 return;
               }
               gaPreviewLayers.removeAll($scope.map);
               $scope.inPreviewMode = false;
             };
 
-            $scope.toggleLayer = function(evt) {
+            $scope.toggleLayer = function() {
               // Avoid to have the same layer twice on the map
-              $scope.removePreviewLayer(evt);
+              $scope.removePreviewLayer();
               var item = $scope.item;
               var map = $scope.map;
               var layer = gaMapUtils.getMapOverlayForBodId(
