@@ -112,7 +112,7 @@ describe('ga_contextpopup_directive', function() {
       it('correctly emulates contextmenu', function() {
         $httpBackend.expectJSONP(expectedHeightUrl);
         $httpBackend.expectJSONP(expectedReframeUrl);
-        handlers.touchstart(mapEvt);
+        handlers.pointerdown(mapEvt);
 
         $timeout.flush();
         $httpBackend.flush();
@@ -133,8 +133,8 @@ describe('ga_contextpopup_directive', function() {
         // Make sure there aren't any timouts left (this might
         // compenstate for a bug in angular.mock or angular in general)
         $timeout.flush();
-        handlers.touchstart(mapEvt);
-        handlers.touchend(mapEvt);
+        handlers.pointerdown(mapEvt);
+        handlers.pointerup(mapEvt);
         $timeout.verifyNoPendingTasks();
 
         var popover = element.find('.popover');
@@ -146,8 +146,8 @@ describe('ga_contextpopup_directive', function() {
         // Make sure there aren't any timouts left (this might
         // compenstate for a bug in angular.mock or angular in general)
         $timeout.flush();
-        handlers.touchstart(mapEvt);
-        handlers.touchmove({
+        handlers.pointerdown(mapEvt);
+        handlers.pointermove({
           pixel: [30, 60]
         });
         $timeout.verifyNoPendingTasks();

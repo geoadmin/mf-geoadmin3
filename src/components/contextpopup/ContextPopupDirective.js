@@ -145,18 +145,18 @@
                 // On touch devices and browsers others than ie10, display the
                 // context popup after a long press (300ms)
                 var startPixel, holdPromise;
-                map.on('touchstart', function(event) {
+                map.on('pointerdown', function(event) {
                   $timeout.cancel(holdPromise);
                   startPixel = event.pixel;
                   holdPromise = $timeout(function() {
                     handler(event);
                   }, 300, false);
                 });
-                map.on('touchend', function(event) {
+                map.on('pointerup', function(event) {
                   $timeout.cancel(holdPromise);
                   startPixel = undefined;
                 });
-                map.on('touchmove', function(event) {
+                map.on('pointermove', function(event) {
                   if (startPixel) {
                     var pixel = event.pixel;
                     var deltaX = Math.abs(startPixel[0] - pixel[0]);
