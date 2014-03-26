@@ -76,7 +76,7 @@
       <div id="zoomify"></div>
     </div>
     <div class="footer">
-      <a class="pull-left" href="http://www.geo.admin.ch/internet/geoportal/fr/home/geoadmin/contact.html#copyright" target="_blank">Copyright</a>
+      <a class="pull-left" href="${_('disclaimer url')}" target="_blank">Copyright</a>
     </div>
     <script type="text/javascript" src="${loaderUrl}"></script>
     <script type="text/javascript">
