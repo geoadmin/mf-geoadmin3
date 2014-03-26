@@ -1,3 +1,5 @@
 @exportProperty ol.View2D.prototype.getResolutionForExtent
+@exportSymbol ol.extent.getArea
+@exportSymbol ol.extent.getIntersectionArea
 @exportSymbol ol.feature
 @exportProperty ol.feature.defaultStyleFunction

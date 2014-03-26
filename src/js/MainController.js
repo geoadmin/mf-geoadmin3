@@ -64,7 +64,7 @@
 module.controller('GaMainController',
   function($scope, $rootScope, $translate, $timeout, $window,  gaPermalink,
     gaBrowserSniffer, gaLayersPermalinkManager, 
-    gaHighlightFeaturePermalinkManager) {
+    gaFeaturesPermalinkManager) {
      
       // Determines if the window has a height <= 550
       var isWindowTooSmall = function() {
@@ -91,8 +91,8 @@ module.controller('GaMainController',
       // Activate the "layers" parameter permalink manager for the map.
       gaLayersPermalinkManager($scope.map);
 
-      // Activate the "highlight feature" permalink manager for the map.
-      gaHighlightFeaturePermalinkManager($scope.map);
+      // Activate the "features" permalink manager for the map.
+      gaFeaturesPermalinkManager($scope.map);
 
       $rootScope.$on('gaTopicChange', function(event, topic) {
         $scope.topicId = topic.id;

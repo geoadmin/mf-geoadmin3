@@ -30,7 +30,7 @@
             style: scope.options.styleFunction
           });
           gaDefinePropertiesForLayer(layer);
-          layer.highlight = true;
+          layer.preview = true;
 
           // Focus on the first input.
           var setFocus = function() {
