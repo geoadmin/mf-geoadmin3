@@ -781,7 +781,8 @@
          */
         timeEnabledLayersFilter: function(layer) {
           return !layer.background &&
-                 layer.timeEnabled;
+                 layer.timeEnabled &&
+                 layer.visible;
         },
         /**
          * Filters out preview layers.

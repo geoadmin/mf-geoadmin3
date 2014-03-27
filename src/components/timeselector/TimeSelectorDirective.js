@@ -62,14 +62,14 @@
       /**
        * Update the list of years available
        */
-      $scope.updateDatesAvailable = function() {
+      $scope.updateDatesAvailable = function(olLayers) {
         var magnetizeCurrentYear = true;
         $scope.availableYears = [];
         for (var i = 0, length = $scope.years.length; i < length; i++) {
           var year = $scope.years[i];
           year.available = false;
-          $scope.map.getLayers().forEach(function(olLayer, opt) {
-            if (year.available || !olLayer.bodId || !olLayer.timeEnabled) {
+          olLayers.forEach(function(olLayer, opt) {
+            if (year.available || !olLayer.bodId) {
               return;
             }
             var timestamps = gaLayers.getLayerProperty(olLayer.bodId,
@@ -220,7 +220,7 @@
             // We update the list of dates available then
             // we magnetize the current year value
             // to the closest available year if needed
-            if (scope.updateDatesAvailable()) {
+            if (scope.updateDatesAvailable(olLayers)) {
               scope.magnetize();
             }
 
