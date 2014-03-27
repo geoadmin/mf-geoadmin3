@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 
-<% 
-  c = pageargs['feature']
+<%
+  c = feature['feature']
   protocol = request.scheme
-  c['bbox'] = pageargs.get('bbox')
-  c['scale'] = pageargs.get('scale')
+  c['bbox'] = feature.get('bbox')
+  c['scale'] = feature.get('scale')
   c['stable_id'] = False
-  extended = pageargs.get('extended')
   c['baseUrl'] = h.make_agnostic(''.join((protocol, '://', request.registry.settings['geoadminhost'])))
   c['instanceId'] = request.registry.settings['instanceid']
-  bbox = c['bbox']
+  c['attribution'] = feature['attribution']
+  c['fullName'] = feature['fullName']
+  extended = feature['extended']
   lang = request.lang
-  attribution = pageargs.get('attribution')
-  fullName = pageargs.get('fullName')
   topic = request.matchdict.get('map')
 %>
 
@@ -36,7 +35,7 @@
 <div class="htmlpopup-container">
 % endif
   <div class="htmlpopup-header">
-    <span>${fullName}</span> (${attribution})
+    <span>${c['fullName']}</span> (${c['attribution']})
   </div>
   <div class="htmlpopup-content">
     % if extended:
@@ -46,6 +45,14 @@
       <br>
       <table>
         ${self.table_body(c, lang)}
+        % if hasExtendedInfo:
+        <tr>
+          <td class="cell-left"></td>
+          <td>
+            <a href="${h.make_agnostic(request.route_url('extendedHtmlPopup', map=topic, layerId=c['layerBodId'], featureId=str(c['featureId'])))}?lang=${lang}" target="_blank">${_('zusatzinfo')}<img src="http://www.swisstopo.admin.ch/images/ico_extern.gif" /></a>
+          </td>
+        </tr>
+        % endif
         % if c['stable_id'] is True:
           <tr>
             <td class="cell-left"></td>

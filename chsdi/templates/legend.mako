@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 <%
-  c = pageargs['layer']
-  hasLegend = pageargs['hasLegend']
+  c = legend['layer']
+  hasLegend = legend['hasLegend']
   host = request.host_url + request.uscript_name
   lang = request.lang
   pdf_legends = ('ch.swisstopo.geologie-eiszeit-lgm-raster', 

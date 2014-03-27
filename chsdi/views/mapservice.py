@@ -272,7 +272,12 @@ def htmlpopup(request):
     models = models_from_name(params.layerId)
     if models is None:
         raise exc.HTTPBadRequest('No Vector Table was found for %s' % params.layerId)
-    feature, template = _get_feature(params, models, params.layerId, params.featureId)
+    feature, template, hasExtendedInfo = _get_feature(
+        params,
+        models,
+        params.layerId,
+        params.featureId
+    )
 
     modelLayer = get_bod_model(params.lang)
     layer = next(_get_layers_metadata_for_params(
@@ -289,7 +294,10 @@ def htmlpopup(request):
     feature.update({'extended': False})
     response = render_to_response(
         template,
-        feature,
+        {
+            'feature': feature,
+            'hasExtendedInfo': hasExtendedInfo
+        },
         request=request)
     if params.cbName is None:
         return response
@@ -303,7 +311,7 @@ def extendedhtmlpopup(request):
     models = models_from_name(params.layerId)
     if models is None:
         raise exc.HTTPBadRequest('No Vector Table was found for %s' % params.layerId)
-    feature, template = _get_feature(
+    feature, template, hasExtendedInfo = _get_feature(
         params,
         models,
         params.layerId,
@@ -322,7 +330,10 @@ def extendedhtmlpopup(request):
     feature.update({'extended': True})
     response = render_to_response(
         template,
-        feature,
+        {
+            'feature': feature,
+            'hasExtendedInfo': hasExtendedInfo
+        },
         request=request)
     if params.cbName is None:
         return response
@@ -336,7 +347,12 @@ def _get_feature_service(request):
     if models is None:
         raise exc.HTTPBadRequest('No Vector Table was found for %s' % params.layerId)
 
-    feature, template = _get_feature(params, models, params.layerId, params.featureId)
+    feature, template, hasExtendedInfo = _get_feature(
+        params,
+        models,
+        params.layerId,
+        params.featureId
+    )
     return feature
 
 
@@ -374,7 +390,8 @@ def _get_feature(params, models, layerId, featureId, extended=False):
 
         if feature is not None:
             template = 'chsdi:%s' % model.__template__
-            if extended and not hasattr(model, '__extended_info__'):
+            hasExtendedInfo = True if hasattr(model, '__extended_info__') else False
+            if extended and not hasExtendedInfo:
                 raise exc.HTTPNotFound('No extended info has been found for %s' % layerId)
             break
 
@@ -390,7 +407,7 @@ def _get_feature(params, models, layerId, featureId, extended=False):
         feature['layerName'] = params.translate(layerBodId)
 
     feature = {'feature': feature}
-    return feature, template
+    return feature, template, hasExtendedInfo
 
 
 def _get_features_for_extent(params, models, maxFeatures=None):
@@ -481,7 +498,9 @@ def legend(request):
     }
     response = render_to_response(
         'chsdi:templates/legend.mako',
-        legend,
+        {
+            'legend': legend
+        },
         request=request
     )
     if params.cbName is None:
