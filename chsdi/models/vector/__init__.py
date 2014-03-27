@@ -146,21 +146,29 @@ class Vector(GeoInterface):
             return cls.__table__.columns.get(columnName)
         return None
 
-    def getAttributes(self):
-        attributes = dict()
+    def _get_attributes_columns(self):
         primaryKeyColumn = self.primary_key_column()
         geomColumn = self.geometry_column()
         geomColumnToReturn = self.geometry_column_to_return()
         for column in self.__mapper__.columns:
             if column.key not in (primaryKeyColumn.key, geomColumn.key, geomColumnToReturn.key):
-                ormColumnName = self.__mapper__.get_property_by_column(column).key
-                attribute = getattr(self, ormColumnName)
-                if isinstance(attribute, decimal.Decimal):
-                    attributes[ormColumnName] = attribute.__float__()
-                elif isinstance(attribute, datetime.datetime):
-                    attributes[ormColumnName] = attribute.strftime("%d.%m.%Y")
-                else:
-                    attributes[ormColumnName] = attribute
+                yield column
+
+    def getAttributesKeys(self):
+        attributes = [column.key for column in self._get_attributes_columns()]
+        return attributes
+
+    def getAttributes(self):
+        attributes = {}
+        for column in self._get_attributes_columns():
+            ormColumnName = self.__mapper__.get_property_by_column(column).key
+            attribute = getattr(self, ormColumnName)
+            if isinstance(attribute, decimal.Decimal):
+                attributes[ormColumnName] = attribute.__float__()
+            elif isinstance(attribute, datetime.datetime):
+                attributes[ormColumnName] = attribute.strftime("%d.%m.%Y")
+            else:
+                attributes[ormColumnName] = attribute
         return attributes
 
 

@@ -45,6 +45,8 @@
           <a href="rest/services/ech/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=630000,245000,645000,265000&imageDisplay=500,350,96&mapExtent=545132.87362333,147068.69380758,550132.87362333,150568.69380758&tolerance=1&layers=all&callback=cb">Identify - example with callback</a> <br>
           <a href="/rest/services/ech/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=630000,245000,645000,265000&imageDisplay=500,600,96&mapExtent=545132.87362333,147068.69380758,550132.87362333,150568.69380758&tolerance=1&layers=all&returnGeometry=false">Identify - without geometry</a> <br>
           <a href="/rest/services/api/MapServer/identify?geometry=618953,170093&geometryType=esriGeometryPoint&imageDisplay=1920,576,96&layers=all:ch.bav.kataster-belasteter-standorte-oev.oereb&mapExtent=671164.31244,253770,690364.31244,259530&tolerance=5&geometryFormat=interlis">Identify - geometryFormat=interlis on Oereb layers</a>
+          <h3>Get the attributes of layer</h3>
+          <a href="/rest/services/ech/MapServer/ch.swisstopo.geologie-gravimetrischer_atlas.metadata">Returns all the attributes of the layer ch.swisstopo.geologie-gravimetrischer_atlas.metadata</a>
           <h3>Find</h3>
           <a href="rest/services/ech/MapServer/find?layer=ch.bafu.bundesinventare-bln&searchText=Lavaux&searchField=bln_name&returnGeometry=false">Find Lavaux in the field bln_name of the layer ch.bafu.bundesinventare-bln</a> <br>
           <a href="/rest/services/ech/MapServer/find?layer=ch.are.agglomerationen_isolierte_staedte-2000&searchText=15105&searchField=flaeche_ha">Find 15105 in field flaeche_ha of layer ch.are.agglomerationen_isolierte_staedte-2000</a> <br>
