@@ -52,7 +52,7 @@ params = (
     image_size[0], 
     image_size[1], 
     _('tt_lubis_ebkey'),
-    c['attributes']['bildnummer'],
+    c['featureId'],
     c['attributes']['firma'],
     fullName)
 quickview_url = get_quickview_url(request, params)
@@ -113,7 +113,7 @@ quickview_url = get_quickview_url(request, params)
 <tr>
   <td class="cell-left"></td>
   <td>
-    <a href="${c['baseUrl']}/${c['instanceId']}/rest/services/all/MapServer/${c['layerBodId']}/${c['featureId']}/extendedHtmlPopup?lang=${lang}" target="_blank">${_('zusatzinfo')}<img src="http://www.swisstopo.admin.ch/images/ico_extern.gif" /></a>
+    <a href="${c['baseUrl']}/${c['instanceId']}/rest/services/all/MapServer/${c['layerBodId']}/${c['featureId']}/extendedHtmlPopup" target="_blank">${_('zusatzinfo')}<img src="http://www.swisstopo.admin.ch/images/ico_extern.gif" /></a>
   </td>
 </tr>
 </%def>
@@ -147,7 +147,7 @@ params = (
     fullName)
 quickview_url = get_quickview_url(request, params)
 %>
-<title>${_('tt_lubis_ebkey')}: ${c['attributes']['bildnummer']}</title>
+<title>${_('tt_lubis_ebkey')}: ${c['featureId']}</title>
 <body onload="init()">
   <table class="table-with-border kernkraftwerke-extended">
     <tr><th class="cell-left">${_('tt_lubis_ebkey')}</th>            <td>${c['featureId'] or '-'}</td></tr>
