@@ -19,7 +19,7 @@
     % elif c['attributes']['ak'] == 'GL':
         <tr><td class="cell-left">${_('link to canton geoportal')}</td><td><a href="http://geo.gl.ch/maps/Public?visibleLayers=MOpublic" target="_blank">GL</a></td></tr>
     % elif c['attributes']['ak'] == 'JU':
-        <tr><td class="cell-left">${_('link to canton geoportal')}</td><td><a href="http://sitn.ne.ch/jura.php?Y=${c['bbox'][0]}&X=${c['bbox'][1]}&echelle=${c['scale'] if float(c['scale']) <=5000 else 5000}&theme=cadastre" target="_blank">JU</a></td></tr>
+        <tr><td class="cell-left">${_('link to canton geoportal')}</td><td><a href="http://mapfish.jura.ch/main/wsgi/theme/Cadastre?&map_x=${(c['bbox'][0] + c['bbox'][2])/2}&map_y=${(c['bbox'][1] + c['bbox'][3])/2}&map_zoom=11" target="_blank">JU</a></td></tr>
     % elif c['attributes']['ak'] == 'SH':   
        <tr><td class="cell-left">${_('link to canton geoportal')}</td><td><a href="http://www.gis.sh.ch/GIS_SH/?idp=1&uid=1&pwd=&map=10&lan=de&typ=3&bmurl=Nav@g@98@u@West@g@${c['bbox'][0]}@u@Nord@g@${c['bbox'][1]}@u@B@g@600" target="_blank">SH</a></td></tr>
     % elif c['attributes']['ak'] == 'SZ':
