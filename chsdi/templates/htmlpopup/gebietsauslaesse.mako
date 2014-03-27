@@ -12,10 +12,6 @@
     <tr><td class="cell-left">${_('tt_anteil_ch')}</td>         <td>${c['attributes']['anteil_ch'] or '-'}</td></tr>
     <tr><td class="cell-left">${_('gewaesser')}</td>         <td>${c['attributes']['gewaessern'] or '-'}</td></tr>
     <tr><td class="cell-left">${_('tt_kanal')}</td>       <td>${c['attributes'][kanal] or '-'}</td></tr>
-    <tr>
-      <td class="cell-left"></td>
-      <td><a href="${c['baseUrl']}/${c['instanceId']}/rest/services/all/MapServer/${c['layerBodId']}/${c['featureId']}/extendedHtmlPopup" target="_blank">${_('zusatzinfo')}<img src="http://www.swisstopo.admin.ch/images/ico_extern.gif" /></a></td>
-    </tr>
 </%def>
 
 <%def name="extended_info(c, lang)">

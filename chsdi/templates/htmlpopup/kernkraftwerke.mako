@@ -4,10 +4,6 @@
 
 <%def name="table_body(c, lang)">
     <tr><td class="cell-left">${_('tt_kkw_name')}</td>          <td>${c['attributes']['name']}</td></tr>
-    <tr>
-      <td class="cell-left"></td>
-      <td><a href="${c['baseUrl']}/${c['instanceId']}/rest/services/all/MapServer/${c['layerBodId']}/${c['featureId']}/extendedHtmlPopup" target="_blank">${_('zusatzinfo')}<img src="http://www.swisstopo.admin.ch/images/ico_extern.gif" /></a></td>
-    </tr>
 </%def>
 
 <%def name="extended_info(c, lang)">
