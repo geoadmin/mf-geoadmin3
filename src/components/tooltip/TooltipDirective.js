@@ -2,10 +2,12 @@
   goog.provide('ga_tooltip_directive');
 
   goog.require('ga_browsersniffer_service');
+  goog.require('ga_debounce_service');
   goog.require('ga_map_service');
   goog.require('ga_popup_service');
 
   var module = angular.module('ga_tooltip_directive', [
+    'ga_debounce_service',
     'ga_popup_service',
     'ga_map_service',
     'pascalprecht.translate'
@@ -14,7 +16,7 @@
   module.directive('gaTooltip',
       function($timeout, $document, $http, $q, $translate, $sce, gaPopup,
           gaLayers, gaBrowserSniffer, gaDefinePropertiesForLayer, gaMapClick,
-          $rootScope, gaPreviewFeatures) {
+          $rootScope, gaPreviewFeatures, gaDebounce) {
         var waitclass = 'ga-tooltip-wait',
             bodyEl = angular.element($document[0].body),
             popupContent = '<div ng-repeat="htmlsnippet in options.htmls">' +
@@ -65,13 +67,19 @@
             });
 
             // Change cursor style on mouse move, only on desktop
+            var updateCursorStyle = function(evt) {
+              var feature = findVectorFeature(map.getEventPixel(evt));
+              map.getTarget().style.cursor = (feature) ? 'pointer' : '';
+            };
+            var updateCursorStyleDebounced = gaDebounce.debounce(
+                updateCursorStyle, 100, false);
+
             if (!gaBrowserSniffer.mobile) {
               $(map.getViewport()).on('mousemove', function(evt) {
                 if ($rootScope.isMeasureActive) {
                   return;
                 }
-                var feature = findVectorFeature(map.getEventPixel(evt));
-                map.getTarget().style.cursor = (feature) ? 'pointer' : '';
+                updateCursorStyleDebounced(evt);
               });
             }
 
