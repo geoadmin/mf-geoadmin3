@@ -55,7 +55,9 @@
             layerLabelElt.show();
           };
           var drag = function(evt) {
-            scope.ratio = calculateRatio();
+            scope.$apply(function() {
+              scope.ratio = calculateRatio();
+            });
             scope.map.render();
           };
           var dragEnd = function(evt) {
@@ -181,7 +183,7 @@
             }
           });
           scope.$watch('ratio', function(ratio) {
-            updatePermalink(ratio);
+            updatePermalinkDebounced(ratio);
           });
 
           // Move swipe element on resize.
@@ -210,6 +212,9 @@
               gaPermalink.deleteParam('swipe_ratio');
             }
           };
+          var updatePermalinkDebounced = gaDebounce.debounce(
+              updatePermalink, 200, false);
+
         }
       };
     }
