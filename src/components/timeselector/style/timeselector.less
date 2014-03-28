@@ -5,20 +5,21 @@
   z-index: 1000;
   
   button {  
-    display: block;
+    display: none;
     width: 44px;
     height: 44px;
     text-align: center;
     cursor: pointer;
     text-decoration: none;
-    background: data-uri('time_black_disabled.png') no-repeat center center;
     
     &.ga-time-selector-enabled {
       background: data-uri('time_black.png') no-repeat center center;
+      display: block;
     }
 
     &.ga-time-selector-active {
       background: data-uri('time_red.png') no-repeat center center;
+      display: block;
     }
   }
 
