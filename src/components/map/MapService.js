@@ -1025,7 +1025,6 @@
       // Define layer default properties
       gaDefinePropertiesForLayer(vector);
       vector.preview = true;
-      vector.invertedOpacity = 0.25;
 
       // TO DO: May be this method should be elsewher?
       var getFeatures = function(featureIdsByBodId) {

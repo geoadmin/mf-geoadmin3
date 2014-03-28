@@ -5,12 +5,12 @@
 
   module.provider('gaStyleFactory', function() {
     var selectStroke = new ol.style.Stroke({
-      color: '#ff8000',
+      color: [255, 128, 0, 1],
       width: 3
     });
 
     var selectFill = new ol.style.Fill({
-      color: '#ffff00'
+      color: [255, 255, 0, 0.75]
     });
 
     var selectStyle = new ol.style.Style({
@@ -24,12 +24,12 @@
     });
 
     var hlStroke = new ol.style.Stroke({
-      color: '#f00000',
+      color: [240, 0, 0, 1],
       width: 6
     });
 
     var hlFill = new ol.style.Fill({
-      color: '#ff0000'
+      color: [255, 0, 0, 1]
     });
 
     var hlStyle = new ol.style.Style({
@@ -44,7 +44,7 @@
 
     var srStyle = new ol.style.Style({
       stroke: new ol.style.Stroke({
-        color: 'blue',
+        color: [0, 0, 255, 1],
         width: 3
       })
     });
