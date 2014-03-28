@@ -24,10 +24,7 @@
       var html = '';
       var cssElement = $('link[href*="app.css"]');
       var cssLink = cssElement.attr('href');
-      html += '<link href="' + cssLink + '" rel="stylesheet" type="text/css"' +
-        'media="screen">';
-      html += '<link href="' + cssLink.replace('app.css', 'print.css') +
-        '" rel="stylesheet" type="text/css" media="print">';
+      html += '<link href="' + cssLink + '" rel="stylesheet" type="text/css">';
       return html;
     };
   };

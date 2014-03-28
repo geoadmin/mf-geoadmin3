@@ -23,7 +23,8 @@
           '<span translate>{{options.title}}</span>' +
           '<button type="button" class="close" ng-click="close($event)">' +
           '&times;</button>' +
-          '<i class="icon-print ga-popup-print" title="{{titlePrint}}" ' +
+          '<i class="icon-print ga-popup-print hidden-print" ' +
+          'title="{{titlePrint}}" ' +
           'ng-if="options.showPrint" ng-click="print()"></i>' +
           '</h4>' +
           '<div class="popover-content ga-popup-content" ' +
