@@ -67,6 +67,13 @@
         width: 100%;
         height: 100%;
       }
+      @media print { /* Used by Chrome */
+        #zoomify, .wrapper {
+          width: 650px;
+          height: 650px;
+        }
+      }
+
     </style>
     <link rel="shortcut icon" type="image/x-icon" href="${h.versioned(request.static_url('chsdi:static/images/favicon.ico'))}">
   </head>
@@ -82,6 +89,30 @@
     <script type="text/javascript">
       function init() {
         ${iipimage.init_map(c.get('image'), c.get('width'), c.get('height'), 'zoomify')}
+       
+        // FF/IE
+        if ('onbeforeprint' in window) {
+          var element = document.getElementById('zoomify');
+          window.onbeforeprint = function() {
+            var size = mapIipimage.getSize();
+            element.style.width = "650px";
+            element.style.height = (650 * size[1] / size[0]) + 'px';
+          };
+          window.onafterprint = function() {
+            element.style.width =  '100%';
+            element.style.height = '100%';
+          };
+        }
+        // Chrome
+        if (window.matchMedia) {
+          window.matchMedia('print').addListener(function(mql) {
+            if (mql.matches) {
+              mapIipimage.updateSize(); 
+            } else {
+              window.setTimeout(function(){mapIipimage.updateSize()}, 500);
+            }
+          });
+        }
       }
     </script>
   </body>
