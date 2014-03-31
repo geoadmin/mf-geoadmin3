@@ -145,7 +145,11 @@
             color: white.concat([0.6]),
             width: 3 
           });
-          
+          var defaultCircle = new ol.style.Circle({
+            radius: 4,
+            fill: fill,
+            stroke: stroke
+          }); 
           var vertexStyle = new ol.style.Style({
             image: new ol.style.Circle({
               radius: 7,
@@ -156,7 +160,7 @@
                 color: black.concat([1])
               })
             }) 
-          })
+          }) 
            
           return function(feature, resolution) {
             if (!feature.getStyleFunction() ||
@@ -174,18 +178,16 @@
                 stroke: stroke
               });
             }
-
+            
+            // When a feature is selected we apply its current style and a white
+            // transparent style on top.
             return [
+              style, 
               new ol.style.Style({
                 fill: fill,
                 stroke: stroke,
                 text: text,
-                image: (text) ? style.getImage() :
-                  new ol.style.Circle({
-                    radius: 4,
-                    fill: fill,
-                    stroke: stroke
-                  }) 
+                image: (text) ? style.getImage() : defaultCircle                
               })
             ];
           }
