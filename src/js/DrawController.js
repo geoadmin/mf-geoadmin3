@@ -160,7 +160,7 @@
                 color: black.concat([1])
               })
             }) 
-          }) 
+          });
            
           return function(feature, resolution) {
             if (!feature.getStyleFunction() ||

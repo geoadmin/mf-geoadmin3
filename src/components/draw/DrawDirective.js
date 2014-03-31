@@ -93,7 +93,6 @@
             draw = new ol.interaction.Draw({
               type: type,
               source: source,
-              minPointsPerRing: 2,
               style: scope.options.drawStyleFunction
             });
 
