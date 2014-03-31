@@ -99,6 +99,9 @@
   }
   table {
     width: 100%;
+    table-layout: fixed; /*Limit the size to the surrounding div */
+    overflow: hidden;
+
     td, th {
       font-size: 75%;
       vertical-align: middle;
@@ -107,6 +110,10 @@
     th {
       font-weight: bold;
       background-color: #EFEFEF;
+    }
+    td {
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
   .table-with-border {
