@@ -43,9 +43,11 @@ class Profile(ProfileValidation):
 
         # Simplify input line with a tolerance of 2 m
         if self.nb_points < len(self.linestring.coords):
-            self.linestring = self.linestring.simplify(12.5)
+            linestring = self.linestring.simplify(12.5)
+        else:
+            linestring = self.linestring
 
-        coords = self._create_points(self.linestring.coords, self.nb_points)
+        coords = self._create_points(linestring.coords, self.nb_points)
         zvalues = {}
         for i in xrange(0, len(self.layers)):
             zvalues[self.layers[i]] = []
