@@ -100,7 +100,7 @@
 
             if (!scope.rangeSupported) {
               scope.opacityValues = [
-                { key: '1' , value: '100%' },
+                { key: '1' , value: '100%'},
                 { key: '0.95' , value: '95%' }, { key: '0.9' , value: '90%' },
                 { key: '0.85' , value: '85%' }, { key: '0.8' , value: '80%' },
                 { key: '0.75' , value: '75%' }, { key: '0.7' , value: '70%' },
@@ -110,7 +110,7 @@
                 { key: '0.35' , value: '35%' }, { key: '0.3' , value: '30%' },
                 { key: '0.25' , value: '25%' }, { key: '0.2' , value: '20%' },
                 { key: '0.15' , value: '15%' }, { key: '0.1' , value: '10%' },
-                { key: '5' , value: '5%' }, { key: '0', value: '0%' }
+                { key: '0.05' , value: '5%' }, { key: '0' , value: '0%' }
               ];
             }
             // Toggle layer tools for mobiles
