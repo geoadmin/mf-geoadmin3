@@ -72,6 +72,9 @@
           width: 650px;
           height: 650px;
         }
+        .footer a {
+          display: none;
+        }
       }
 
     </style>
