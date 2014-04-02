@@ -55,8 +55,14 @@
             // Angularjs doesn't handle onprogress event
             $http.get(proxyUrl, {timeout: $scope.canceler.promise})
             .success(function(data, status, headers, config) {
-              $scope.userMessage = $translate('upload_succeeded');
-              $scope.fileContent = data;
+              if ($scope.isValidFileContent(data) &&
+                  $scope.isValidFileSize(headers('content-length'))) {
+                $scope.userMessage = $translate('upload_succeeded');
+                $scope.fileContent = data;
+              } else {
+                $scope.userMessage = $translate('upload_failed');
+                $scope.progress = 0;
+              }
             })
             .error(function(data, status, headers, config) {
               $scope.userMessage = $translate('upload_failed');
@@ -71,7 +77,7 @@
         $scope.handleFileList = function() {
           if ($scope.files && $scope.files.length > 0) {
             var file = $scope.files[0];
-            if ($scope.isValidFile(file)) {
+            if ($scope.isValidFileSize(file.size)) {
               $scope.file = file;
               if ($scope.isDropped) {
                 $scope.handleFile();
@@ -112,8 +118,12 @@
         // Callback when FileReader has finished
         $scope.handleReaderLoadEnd = function(evt) {
           $scope.$apply(function() {
-            $scope.userMessage = $translate('read_succeeded');
-            $scope.fileContent = evt.target.result;
+            if ($scope.isValidFileContent(evt.target.result)) {
+              $scope.userMessage = $translate('read_succeeded');
+              $scope.fileContent = evt.target.result;
+            } else {
+              $scope.handleReaderError(evt);
+            }
           });
         };
 
@@ -180,18 +190,24 @@
           $scope.fileContent = null;
         };
 
-        // Test the validity of the file
-        $scope.isValidFile = function(file) {
-          if (!/\.kml$/g.test(file.name)) {
-            alert($translate('file_is_not_kml'));
-            return false;
-          }
-          if (file.size > $scope.options.maxFileSize) {
+        // Test the validity of the file size
+        $scope.isValidFileSize = function(fileSize) {
+          if (fileSize > $scope.options.maxFileSize) {
             alert($translate('file_too_large'));
             return false;
           }
           return true;
         };
+
+        // Test the validity of the fileContent
+        $scope.isValidFileContent = function(fileContent) {
+          if (!/<kml/.test(fileContent) || !/<\/kml>/.test(fileContent)) {
+            alert($translate('file_is_not_kml'));
+            return false;
+          }
+          return true;
+        };
+
       }
   );
 
