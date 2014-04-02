@@ -1,38 +1,45 @@
 # -*- coding: utf-8 -*-
+import os
 from selenium.webdriver import PhantomJS
+from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 from pyramid.view import view_config
 from pyramid.response import Response
+import pyramid.httpexceptions as exc
 
 
-class Snapshot(object):
+def _connect():
+    try:
+        driver = PhantomJS(service_log_path=os.devnull)
+        return driver
+    except WebDriverException as e:
+        raise exc.HTTPBadRequest(e)
 
-    def __init__(self, request):
-        self.request = request
-        self.remoteUrl = request.registry.settings['geoadminhost']
 
-    @view_config(route_name='snapshot')
-    def home(self):
-        querystring = ''
-        for key in self.request.params.keys():
-            if (key != '_escaped_fragment_') and (key != 'snapshot'):
-                querystring += key + '=' + self.request.params.get(key) + '&'
-        querystring += 'snapshot=true'
-        retval = 'OK'
-        # FIXME: where to put the log? I think it's re-created on every request
-        driver = PhantomJS(service_log_path='/tmp/ghostdriver.log')
+@view_config(route_name='snapshot')
+def home(request):
+    querystring = ''
+    remoteUrl = request.registry.settings['geoadminhost']
+    build_query_string = lambda x: ''.join((x, '=', request.params.get(x), '&'))
+    for key in request.params.keys():
+        if (key != '_escaped_fragment_') and (key != 'snapshot'):
+            querystring += build_query_string(key)
+    querystring += 'snapshot=true'
+    driver = _connect()
+    try:
         # FIXME: there's a need to specify protocol here.
-        driver.get('http://' + self.remoteUrl + '/?' + querystring)
+        driver.get('http://' + remoteUrl + '/?' + querystring)
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'seo-load-end')))
+        pageSource = driver.page_source
+    except TimeoutException:
+        raise exc.HTTPBadRequest('Page could not be loaded in time')
+    except WebDriverException as e:
+        raise exc.HTTPBadRequest(e)
+    finally:
+        driver.quit()
 
-        try:
-            # It seems that in this context, the second parameter passed
-            # to the WebDriverWait constructor does not have any influence
-            element = WebDriverWait(driver, 0).until(EC.presence_of_element_located((By.ID, "seo-test")))
-
-        finally:
-            retval = driver.page_source
-            driver.quit()
-            return Response(body=retval, content_type='text/html', request=self.request)
+    return Response(body=pageSource, content_type='text/html', request=request)
