@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
+import os
 from selenium.webdriver import PhantomJS
 from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -12,8 +14,7 @@ import pyramid.httpexceptions as exc
 
 def _connect():
     try:
-        # FIXME: Logs should not be overriden each time
-        driver = PhantomJS(service_log_path='/tmp/ghostdriver.log')
+        driver = PhantomJS(service_log_path=os.devnull)
         return driver
     except WebDriverException as e:
         raise exc.HTTPBadRequest(e)
@@ -23,18 +24,19 @@ def _connect():
 def home(request):
     querystring = ''
     remoteUrl = request.registry.settings['geoadminhost']
-    build_query_string = lambda x : ''.join((x, '=', request.params.get(x), '&'))
+    build_query_string = lambda x: ''.join((x, '=', request.params.get(x), '&'))
     for key in request.params.keys():
         if (key != '_escaped_fragment_') and (key != 'snapshot'):
             querystring += build_query_string(key)
     querystring += 'snapshot=true'
     driver = _connect()
-    driver.implicitly_wait(10)
     try:
         # FIXME: there's a need to specify protocol here.
         driver.get('http://' + remoteUrl + '/?' + querystring)
-        driver.find_element_by_id('seo-popup')
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'seo-load-end')))
         pageSource = driver.page_source
+    except TimeoutException:
+        raise exc.HTTPBadRequest('Page could not be loaded in time')
     except WebDriverException as e:
         raise exc.HTTPBadRequest(e)
     finally:
