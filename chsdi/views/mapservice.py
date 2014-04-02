@@ -145,6 +145,18 @@ def _identify_oereb(request):
     )
     header = layerMetadata.header
     footer = layerMetadata.footer
+    data_created = layerMetadata.data_created
+    data_imported = layerMetadata.data_imported
+
+    comments = render(
+        'chsdi:templates/oereb_timestamps.mako',
+        {
+            'data_imported': data_imported,
+            'data_created': data_created
+        }
+    )
+    header = insertTimestamps(header, comments)
+
     # Only relation 1 to 1 is needed at the moment
     layerVectorModel = [[oereb_models_from_bodid(idBod)[0]]]
     features = []
@@ -153,17 +165,6 @@ def _identify_oereb(request):
         for fragment in temp:
             if fragment not in features:
                 features.append(fragment)
-    if len(features):
-        bgdi_created = feature.bgdi_created
-        data_created = feature.data_created
-        comments = render(
-            'chsdi:templates/oereb_timestamps.mako',
-            {
-                'bgdi_created': bgdi_created,
-                'data_created': data_created
-            }
-        )
-        header = insertTimestamps(header, comments)
     results = ''.join((
         header,
         ''.join(features),

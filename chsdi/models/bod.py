@@ -366,6 +366,8 @@ class OerebMetadata(Base):
     idBod = Column('layer_id', Text, primary_key=True)
     header = Column('header', Text)
     footer = Column('footer', Text)
+    data_created = Column('data_created', Text)
+    data_imported = Column('data_imported', Text)
 
 
 def get_bod_model(lang):
