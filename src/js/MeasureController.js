@@ -105,8 +105,8 @@
           var coordinates = feature.getGeometry().getCoordinates();
           var wkt = '{"type":"LineString","coordinates":' +
               angular.toJson(coordinates) + '}'; 
-          var template = $scope.options.profileUrl + '?geom=' + wkt +
-              '&elevation_models=' +
+          var template = $scope.options.profileUrl + '?geom=' +
+               gaUrlUtils.encodeUriQuery(wkt) + '&elevation_models=' +
               $scope.options.profileOptions.elevationModel;
           var http = $http.get(template);
           if (!callback) {
