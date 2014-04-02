@@ -17,7 +17,9 @@ def _connect():
         driver = PhantomJS(service_log_path=os.devnull)
         return driver
     except WebDriverException as e:
-        raise exc.HTTPBadRequest(e)
+        #Make sure to quite driver to stop process
+        driver.quit()
+        raise exc.HTTPInternalServerError(e)
 
 
 @view_config(route_name='snapshot')
@@ -36,9 +38,9 @@ def home(request):
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'seo-load-end')))
         pageSource = driver.page_source
     except TimeoutException:
-        raise exc.HTTPBadRequest('Page could not be loaded in time')
+        raise exc.HTTPGatewayTimeout('Page could not be loaded in time')
     except WebDriverException as e:
-        raise exc.HTTPBadRequest(e)
+        raise exc.HTTPInternalServerError(e)
     finally:
         driver.quit()
 
