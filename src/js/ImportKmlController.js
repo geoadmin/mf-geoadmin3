@@ -6,7 +6,6 @@
   module.controller('GaImportKmlController',
       function($scope) {
          $scope.options = {
-           maxFileSize: 20000000, //20mo
            validationServiceUrl: 'http://www.kmlvalidator.org/validate.htm'
          };
   });

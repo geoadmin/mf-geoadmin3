@@ -56,19 +56,6 @@ describe('ga_importkml__directive', function() {
     expect(inputFileUrl.length).to.be(1); 
     expect(formUrl.find('input[type=hidden][name=type][value=uri]').length).to.be(1); 
   });
-  
-  it('tests validity of a file', function() {
-    var file = {
-      name: 'test.kml',
-      size: '10000000' 
-    };
-    expect(scope.isValidFile(file)).to.be(true);
-    file.size = '30000000';
-    expect(scope.isValidFile(file)).to.be(false);
-    file.name = 'text.xml';
-    file.size = '10000000';
-    expect(scope.isValidFile(file)).to.be(false);
-  });
 
   describe('load KML from an URL', function() {
     var $httpBackend;

@@ -273,5 +273,27 @@ describe('ga_map_service', function() {
     });
 
   });
+  
+  describe('gaKml', function() {
+    var gaKml;
 
+    beforeEach(function() {
+      inject(function($injector) {
+        gaKml = $injector.get('gaKml');
+      });
+    });
+ 
+    it('tests validity of a file size', function() {
+      expect(gaKml.isValidFileSize(10000000)).to.be(true);
+      expect(gaKml.isValidFileSize(30000000)).to.be(false);
+      expect(gaKml.isValidFileSize('10000000')).to.be(true);
+      expect(gaKml.isValidFileSize('30000000')).to.be(false);
+
+    });
+     
+    it('tests validity of a file content', function() {
+      expect(gaKml.isValidFileContent('<html></html')).to.be(false);
+      expect(gaKml.isValidFileSize('<kml></kml>')).to.be(true);
+    });
+  });
 });

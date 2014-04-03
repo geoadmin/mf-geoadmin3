@@ -55,8 +55,8 @@
             // Angularjs doesn't handle onprogress event
             $http.get(proxyUrl, {timeout: $scope.canceler.promise})
             .success(function(data, status, headers, config) {
-              if ($scope.isValidFileContent(data) &&
-                  $scope.isValidFileSize(headers('content-length'))) {
+              if (gaKml.isValidFileContent(data) &&
+                  gaKml.isValidFileSize(headers('content-length'))) {
                 $scope.userMessage = $translate('upload_succeeded');
                 $scope.fileContent = data;
               } else {
@@ -77,7 +77,7 @@
         $scope.handleFileList = function() {
           if ($scope.files && $scope.files.length > 0) {
             var file = $scope.files[0];
-            if ($scope.isValidFileSize(file.size)) {
+            if (gaKml.isValidFileSize(file.size)) {
               $scope.file = file;
               if ($scope.isDropped) {
                 $scope.handleFile();
@@ -118,7 +118,7 @@
         // Callback when FileReader has finished
         $scope.handleReaderLoadEnd = function(evt) {
           $scope.$apply(function() {
-            if ($scope.isValidFileContent(evt.target.result)) {
+            if (gaKml.isValidFileContent(evt.target.result)) {
               $scope.userMessage = $translate('read_succeeded');
               $scope.fileContent = evt.target.result;
             } else {
@@ -189,25 +189,6 @@
           $scope.fileUrl = null;
           $scope.fileContent = null;
         };
-
-        // Test the validity of the file size
-        $scope.isValidFileSize = function(fileSize) {
-          if (fileSize > $scope.options.maxFileSize) {
-            alert($translate('file_too_large'));
-            return false;
-          }
-          return true;
-        };
-
-        // Test the validity of the fileContent
-        $scope.isValidFileContent = function(fileContent) {
-          if (!/<kml/.test(fileContent) || !/<\/kml>/.test(fileContent)) {
-            alert($translate('file_is_not_kml'));
-            return false;
-          }
-          return true;
-        };
-
       }
   );
 

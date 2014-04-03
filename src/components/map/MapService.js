@@ -362,7 +362,7 @@
     });
 
     this.$get = function($http, gaPopup, gaDefinePropertiesForLayer,
-        gaMapClick, gaMapUtils, gaGlobalOptions, $rootScope) {
+        gaMapClick, gaMapUtils, gaGlobalOptions, $rootScope, $translate) {
       var Kml = function(proxyUrl) {
 
         /**
@@ -430,10 +430,34 @@
 
         this.addKmlToMapForUrl = function(map, url, layerOptions, index) {
           layerOptions.url = url;
-          $http.get(proxyUrl + encodeURIComponent(url)).success(function(data) {
-            addKmlLayer(map, data, layerOptions, index);
+          var that = this;
+          $http.get(proxyUrl + encodeURIComponent(url)).success(function(data,
+              status, headers, config) {
+             if (that.isValidFileContent(data) &&
+                 that.isValidFileSize(headers('content-length'))) {
+               addKmlLayer(map, data, layerOptions, index);
+             }
           });
         };
+
+        // Test the validity of the file size
+        this.isValidFileSize = function(fileSize) {
+          if (fileSize > 20000000) { // 20mo
+            alert($translate('file_too_large'));
+            return false;
+          }
+          return true;
+        };
+
+        // Test the validity of the file content
+        this.isValidFileContent = function(fileContent) {
+          if (!/<kml/.test(fileContent) || !/<\/kml>/.test(fileContent)) {
+            alert($translate('file_is_not_kml'));
+            return false;
+          }
+          return true;
+        };
+
         this.proxyUrl = proxyUrl;
       };
       return new Kml(gaGlobalOptions.ogcproxyUrl);
