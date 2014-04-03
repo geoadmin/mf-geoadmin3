@@ -95,14 +95,16 @@
             });
 
             var getLayersToQuery = function() {
-              var layerstring = '';
+              var ids = [];
+              var timeenabled = [];
               scope.filteredLayers.forEach(function(l) {
-                if (layerstring.length) {
-                  layerstring = layerstring + ',';
-                }
-                layerstring = layerstring + l.bodId;
+                ids.push(l.bodId);
+                timeenabled.push(l.timeEnabled);
               });
-              return layerstring;
+              return {
+                ids: ids,
+                timeenabled: timeenabled
+              };
             };
 
             var cancel = function() {
@@ -219,7 +221,8 @@
                     bbox: extent[0] + ',' + extent[1] +
                         ',' + extent[2] + ',' + extent[3],
                     type: 'features',
-                    features: layersToQuery
+                    features: layersToQuery.ids.join(','),
+                    timeEnabled: layersToQuery.timeenabled.join(',')
                   };
               if (currentYear) {
                 params.timeInstant = currentYear;
@@ -236,7 +239,7 @@
               var layersToQuery = getLayersToQuery(),
                   req, searchExtent;
               gaPreviewFeatures.clearHighlight();
-              if (layersToQuery.length &&
+              if (layersToQuery.ids.length &&
                   scope.dragBox.getGeometry()) {
                 searchExtent = ol.extent.boundingExtent(
                     scope.dragBox.getGeometry().getCoordinates()[0]);
