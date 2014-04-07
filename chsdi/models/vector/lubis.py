@@ -173,6 +173,7 @@ class bildstreifen(Base, Vector):
     resolution = Column('resolution', Text)
     objectid = Column('objectid', Text)
     area = Column('area', Text)
+    gsd = Column('gsd', Numeric)
     toposhop_length = Column('toposhop_length', Numeric)
     toposhop_start_x = Column('toposhop_start_x', Integer)
     toposhop_start_y = Column('toposhop_start_y', Integer)
