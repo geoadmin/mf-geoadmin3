@@ -1241,3 +1241,43 @@ class geologieGeotopeFlaechen(Base, Vector):
 
 register('ch.swisstopo.geologie-geotope', geologieGeotopePunkte)
 register('ch.swisstopo.geologie-geotope', geologieGeotopeFlaechen)
+
+
+class spezialkarten_metadata(Base, Vector):
+    __tablename__ = 'grid_gsk'
+    __table_args__ = ({'schema': 'public', 'autoload': False})
+    __template__ = 'templates/htmlpopup/geol_spezialkarten_metadata.mako'
+    __bodId__ = 'ch.swisstopo.geologie-spezialkarten_schweiz.metadata'
+    __extended_info__ = True
+    id = Column('gid', Integer, primary_key=True)
+    titel = Column('titel', Text)
+    nr = Column('nr', Text)
+    authoren = Column('authoren', Text)
+    jahrgang = Column('jahrgang', Integer)
+    massstab = Column('massstab', Text)
+    format_de = Column('format_de', Text)
+    format_fr = Column('format_fr', Text)
+    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+
+register('ch.swisstopo.geologie-spezialkarten_schweiz.metadata', spezialkarten_metadata)
+
+
+class steine_hist_bauwerke(Base, Vector):
+    __tablename__ = 'geotechnik_steine_historische_bauwerke'
+    __table_args__ = ({'schema': 'geol', 'autoload': False})
+    __template__ = 'templates/htmlpopup/geol_steine_hist_bauwerke.mako'
+    __bodId__ = 'ch.swisstopo.geologie-geotechnik-steine_historische_bauwerke'
+    __extended_info__ = True
+    id = Column('bgdi_id', Integer, primary_key=True)
+    objekt = Column('objekt', Text)
+    obtyp = Column('obtyp', Text)
+    ort = Column('ort', Text)
+    objektteil = Column('objektteil', Text)
+    age = Column('age', Text)
+    gestart = Column('gestart', Text)
+    referenz = Column('referenz', Text)
+    hyperlink = Column('hyperlink', Text)
+    abbauort = Column('abbauort', Text)
+    the_geom = Column(Geometry(dimensions=2, srid=21781))
+
+register('ch.swisstopo.geologie-geotechnik-steine_historische_bauwerke', steine_hist_bauwerke)
