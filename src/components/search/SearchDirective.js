@@ -17,10 +17,10 @@
   ]);
 
   module.directive('gaSearch',
-      function($compile, $translate, $timeout, gaMapUtils, gaLayers,
+      function($compile, $translate, $timeout, $rootScope, $http, gaMapUtils,
         gaLayerMetadataPopup, gaPermalink, gaUrlUtils, gaGetCoordinate,
-        gaBrowserSniffer, gaLayerFilters, gaKml, gaPreviewLayers,
-        gaPermalinkSearch) {
+        gaBrowserSniffer, gaLayerFilters, gaKml, gaPreviewLayers, gaLayers,
+        gaPreviewFeatures, gaPermalinkSearch) {
           var currentTopic,
               footer = [
             '<div class="ga-search-footer clearfix">',
@@ -49,6 +49,7 @@
             '<i class="icon-envelope-alt"></i>',
             '</a>',
             '</div>'].join('');
+          var geojsonParser = new ol.format.GeoJSON();
 
           function parseExtent(stringBox2D) {
             var extent = stringBox2D.replace('BOX(', '')
@@ -91,6 +92,7 @@
               var year;
               var map = scope.map;
               var options = scope.options;
+              var highlightedFeatures = {};
 
               var footerTemplate = angular.element(footer);
               $compile(footerTemplate)(scope);
@@ -100,10 +102,38 @@
                   'translate>locations</div>');
               $compile(locationsHeaderTemplate)(scope);
 
+              var featureSearchHeaderTemplate = angular.element(
+                  '<div class="tt-header-locations" ' +
+                  'translate>items</div>');
+              $compile(featureSearchHeaderTemplate)(scope);
+
               var layerHeaderTemplate = angular.element(
                   '<div class="tt-header-mapinfos" ' +
                   'ng-show="hasLayerResults" translate>map_info</div>');
               $compile(layerHeaderTemplate)(scope);
+
+              var loadGeometry = function(layerId, featureId, cb) {
+                var key = layerId + featureId;
+                if (!highlightedFeatures.hasOwnProperty(key)) {
+                  var featureUrl = options.featureUrl
+                               .replace('{Topic}', currentTopic)
+                               .replace('{Layer}', layerId)
+                               .replace('{Feature}', featureId);
+                  $http.get(featureUrl, {
+                    params: {
+                       geometryFormat: 'geojson'
+                    }
+                  }).success(function(result) {
+                    highlightedFeatures[key] = result.feature;
+                    cb(result.feature);
+                  });
+                } else {
+                  $timeout(function() {
+                    cb(highlightedFeatures[key]);
+                  }, 0);
+                }
+              };
+
               scope.query = '';
 
               scope.layers = map.getLayers().getArray();
@@ -156,6 +186,35 @@
                 gaPreviewLayers.removeAll(scope.map);
               };
 
+              scope.addPreviewFeature = function(layerId, featureId) {
+                if (gaBrowserSniffer.mobile) {
+                  return;
+                }
+                loadGeometry(layerId, featureId, function(feature) {
+                  gaPreviewFeatures.highlight(map,
+                      geojsonParser.readFeature(feature));
+                });
+              };
+
+              scope.removePreviewFeature = function() {
+                if (gaBrowserSniffer.mobile) {
+                  return;
+                }
+                gaPreviewFeatures.clearHighlight();
+              };
+
+              scope.selectFeature = function(layerId, featureId) {
+                loadGeometry(layerId, featureId, function(feature) {
+                  $rootScope.$broadcast('gaTriggerTooltipRequest', {
+                    features: [feature],
+                    onCloseCB: function() {}
+                  });
+                  gaPreviewFeatures.zoom(map,
+                      geojsonParser.readFeature(feature));
+
+                });
+              };
+
               scope.addCross = function(center) {
                 var cross = $('<div></div>')
                   .addClass('ga-crosshair')
@@ -197,7 +256,8 @@
               //These definitions here have to correspond to
               //the array that follows
               var LOCATIONS = 0;
-              var LAYERS = 1;
+              var FEATURES = 1;
+              var LAYERS = 2;
 
               var typeAheadDatasets = [
                 {
@@ -208,20 +268,14 @@
                   limit: 30,
                   template: function(context) {
                     var label = getLocationLabel(context.attrs);
-                    var template = '<div class="tt-search';
-                    if (context.attrs.origin == 'feature') {
-                      template += ' tt-feature';
-                    }
-                    template += '">' + label + '</div>';
+                    var template = '<div class="tt-search">' +
+                        label + '</div>';
                     return template;
                   },
                   remote: {
                     url: gaUrlUtils.append(options.searchUrl,
                         'type=locations'),
                     beforeSend: function(jqXhr, settings) {
-                       scope.$apply(function() {
-                          scope.layers = map.getLayers().getArray();
-                       });
                        // Check url
                        if (gaUrlUtils.isValid(scope.query)) {
                          gaKml.addKmlToMapForUrl(map,
@@ -242,6 +296,60 @@
                     },
                     replace: function(url, searchText) {
                       var queryText = '&searchText=' + searchText;
+                      var lang = '&lang=' + $translate.uses();
+                      url = options.applyTopicToUrl(url,
+                          currentTopic);
+                      url += queryText + lang;
+                      return url;
+                    },
+                    filter: function(response) {
+                      var results = response.results;
+                      return $.map(results, function(val) {
+                        val.inputVal = val.attrs.label
+                            .replace('<b>', '').replace('</b>', '');
+                        return val;
+                      });
+                    }
+                  }
+                },
+                {
+                  header: featureSearchHeaderTemplate,
+                  name: 'featuresearch',
+                  timeout: 20,
+                  valueKey: 'inputVal',
+                  limit: 30,
+                  template: function(context) {
+                    var attrs = context.attrs;
+                    var label = getLocationLabel(attrs);
+                    var template = '<div class="tt-search" ' +
+                        'ng-mouseover="addPreviewFeature(\'' +
+                        attrs.layer + '\', \'' + attrs.feature_id + '\')"' +
+                        'ng-mouseout="removePreviewFeature()"' +
+                        'ng-click="selectFeature(\'' +
+                        attrs.layer + '\', \'' + attrs.feature_id + '\')" >' +
+                        label + '</div>';
+                    return template;
+                  },
+                  remote: {
+                    url: gaUrlUtils.append(options.searchUrl,
+                        'type=featuresearch'),
+                    beforeSend: function(jqXhr, settings) {
+                      scope.$apply(function() {
+                        scope.layers = map.getLayers().getArray();
+                      });
+                      if (!gaGetCoordinate(
+                          map.getView().getProjection().getExtent(),
+                          scope.query) &&
+                              scope.searchableLayers.length) {
+                        highlightedFeatures = {};
+                        return true;
+                      } else {
+                        // Do not perform a query
+                        return false;
+                      }
+                    },
+                    replace: function(url, searchText) {
+                      var queryText = '&searchText=' + searchText;
                       var bbox = '&bbox=' + getBBoxParameters(map);
                       var lang = '&lang=' + $translate.uses();
                       var searchableLayers = '&features=' +
@@ -253,16 +361,16 @@
                         timeInstant = '&timeInstant=' + year;
                       }
                       url = options.applyTopicToUrl(url,
-                                                   currentTopic);
+                          currentTopic);
                       url += queryText + searchableLayers + timeEnabled +
-                             bbox + lang + timeInstant;
+                          bbox + lang + timeInstant;
                       return url;
                     },
                     filter: function(response) {
                       var results = response.results;
                       return $.map(results, function(val) {
                         val.inputVal = val.attrs.label
-                          .replace('<b>', '').replace('</b>', '');
+                            .replace('<b>', '').replace('</b>', '');
                         return val;
                       });
                     }
@@ -298,13 +406,13 @@
                       var queryText = '&searchText=' + searchText;
                       var lang = '&lang=' + $translate.uses();
                       url = options.applyTopicToUrl(url,
-                                                   currentTopic);
+                          currentTopic);
                       url += queryText + lang;
                       return url;
                     },
                     filter: function(response) {
                       var results = response.results;
-                      // hasLaerResults is used to control
+                      // hasLayerResults is used to control
                       // the display of the footer
                       scope.$apply(function() {
                         scope.hasLayerResults = (results.length !== 0);
@@ -339,7 +447,7 @@
                   var origin = datum.attrs.origin;
                   scope.searchFocused = false;
                   taElt.trigger('blur', [true]);
-                  if (angular.isDefined(datum.attrs.geom_st_box2d)) {
+                  if (origin !== 'feature' && origin !== 'layer') {
                     var extent = parseExtent(datum.attrs.geom_st_box2d);
 
                     var originZoom = {
@@ -451,7 +559,7 @@
                 if (newYear !== year) {
                   year = newYear;
                   if (scope.query !== '') {
-                    triggerSearch(LOCATIONS);
+                    triggerSearch(FEATURES);
                   }
                 }
               });
@@ -474,6 +582,7 @@
                   gaPermalinkSearch.activate((2 * typeAheadDatasets.length));
                   scope.query = searchParam;
                   triggerSearch(LOCATIONS);
+                  triggerSearch(FEATURES);
                   triggerSearch(LAYERS);
                   unregister();
                 });

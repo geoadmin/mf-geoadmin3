@@ -1053,7 +1053,7 @@
   /**
    * This service manage features on vector preview layer.
    * This preview layer is used to display temporary features.
-   * Used by Tooltip, FeatureTree and Permalink.
+   * Used by Tooltip, FeatureTree, Search and Permalink.
    */
   module.provider('gaPreviewFeatures', function() {
     var MINIMAL_EXTENT_SIZE = 1965;
