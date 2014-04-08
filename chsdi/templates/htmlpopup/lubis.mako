@@ -43,6 +43,7 @@ def get_quickview_url(request, params):
 %>
 
 <%def name="table_body(c, lang)">
+<% lang = lang if lang in ('fr','it','en') else 'de' %>
 <% c['stable_id'] = True %>
 <%
 if c['layerBodId'] == 'ch.swisstopo.lubis-luftbilder_farbe':
@@ -93,7 +94,7 @@ quickview_url = get_quickview_url(request, params)
 % if 'contact_web' not in c['attributes'] and c['attributes']['ort'] is not None:
 <tr>
   <th class="cell-left">${_('link')} Toposhop</th>
-  <td><a href="http://www.toposhop.admin.ch/de/shop/satair/lubis_1?ext=1&pics=${c['featureId']},${imgtype},${c['attributes']['ort'].strip()},${c['attributes']['y']},${c['attributes']['x']},nein" target="toposhop">Toposhop</a></td>
+  <td><a href="http://www.toposhop.admin.ch/${lang}/shop/satair/lubis_1?ext=1&pics=${c['featureId']},${imgtype},${c['attributes']['ort'].strip()},${c['attributes']['y']},${c['attributes']['x']},nein" target="toposhop">Toposhop</a></td>
 </tr>
 % endif
 % if 'contact_web' in c['attributes']:
@@ -173,7 +174,7 @@ quickview_url = get_quickview_url(request, params)
 % if 'contact_web' not in c['attributes'] and c['attributes']['ort'] is not None:
   <tr class="chsdi-no-print">
     <th class="cell-left">${_('link')} Toposhop</th>
-    <td><a href="http://www.toposhop.admin.ch/de/shop/satair/lubis_1?ext=1&pics=${c['featureId']},${imgtype},${c['attributes']['ort'].strip()},${c['attributes']['y']},${c['attributes']['x']},nein" target="toposhop">Toposhop</a></td>
+    <td><a href="http://www.toposhop.admin.ch/${lang}/shop/satair/lubis_1?ext=1&pics=${c['featureId']},${imgtype},${c['attributes']['ort'].strip()},${c['attributes']['y']},${c['attributes']['x']},nein" target="toposhop">Toposhop</a></td>
   </tr>
 % endif
 % if 'contact_web' in c['attributes']:
