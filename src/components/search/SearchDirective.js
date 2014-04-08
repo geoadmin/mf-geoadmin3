@@ -99,6 +99,11 @@
                   'translate>locations</div>');
               $compile(locationsHeaderTemplate)(scope);
 
+              var featureSearchHeaderTemplate = angular.element(
+                  '<div class="tt-header-locations" ' +
+                  'translate>feature</div>');
+              $compile(featureSearchHeaderTemplate)(scope);
+
               var layerHeaderTemplate = angular.element(
                   '<div class="tt-header-mapinfos" ' +
                   'ng-show="hasLayerResults" translate>map_info</div>');
@@ -202,20 +207,14 @@
                   limit: 30,
                   template: function(context) {
                     var label = getLocationLabel(context.attrs);
-                    var template = '<div class="tt-search';
-                    if (context.attrs.origin == 'feature') {
-                      template += ' tt-feature';
-                    }
-                    template += '">' + label + '</div>';
+                    var template = '<div class="tt-search">' +
+                        label + '</div>';
                     return template;
                   },
                   remote: {
                     url: gaUrlUtils.append(options.searchUrl,
                         'type=locations'),
                     beforeSend: function(jqXhr, settings) {
-                       scope.$apply(function() {
-                          scope.layers = map.getLayers().getArray();
-                       });
                        // Check url
                        if (gaUrlUtils.isValid(scope.query)) {
                          gaKml.addKmlToMapForUrl(map,
@@ -236,10 +235,51 @@
                     },
                     replace: function(url, searchText) {
                       var queryText = '&searchText=' + searchText;
+                      var lang = '&lang=' + $translate.uses();
+                      url = options.applyTopicToUrl(url,
+                                                   currentTopic);
+                      url += queryText + lang;
+                      return url;
+                    },
+                    filter: function(response) {
+                      var results = response.results;
+                      return $.map(results, function(val) {
+                        val.inputVal = val.attrs.label
+                            .replace('<b>', '').replace('</b>', '');
+                        return val;
+                      });
+                    }
+                  }
+                },
+                {
+                  header: featureSearchHeaderTemplate,
+                  name: 'featuresearch',
+                  timeout: 20,
+                  valueKey: 'inputVal',
+                  limit: 30,
+                  template: function(context) {
+                    var label = getLocationLabel(context.attrs);
+                    var template = '<div class="tt-search">' +
+                        label + '</div>';
+                    return template;
+                  },
+                  remote: {
+                    url: gaUrlUtils.append(options.searchUrl,
+                        'type=featuresearch'),
+                    beforeSend: function(jqXhr, settings) {
+                      scope.$apply(function() {
+                        scope.layers = map.getLayers().getArray();
+                      });
+                      return !gaGetCoordinate(
+                          map.getView().getProjection().getExtent(),
+                          scope.query);
+                    },
+                    replace: function(url, searchText) {
+                      var queryText = '&searchText=' + searchText;
                       var bbox = '&bbox=' + getBBoxParameters(map);
                       var lang = '&lang=' + $translate.uses();
                       var searchableLayers = '&features=' +
-                          scope.searchableLayers.join(',');
+                           scope.searchableLayers.join(',');
                       var timeEnabled = '&timeEnabled=' +
                           scope.timeEnabled.join(',');
                       var timeInstant = '';
@@ -247,16 +287,16 @@
                         timeInstant = '&timeInstant=' + year;
                       }
                       url = options.applyTopicToUrl(url,
-                                                   currentTopic);
+                                                    currentTopic);
                       url += queryText + searchableLayers + timeEnabled +
-                             bbox + lang + timeInstant;
+                          bbox + lang + timeInstant;
                       return url;
                     },
                     filter: function(response) {
                       var results = response.results;
                       return $.map(results, function(val) {
                         val.inputVal = val.attrs.label
-                          .replace('<b>', '').replace('</b>', '');
+                            .replace('<b>', '').replace('</b>', '');
                         return val;
                       });
                     }
