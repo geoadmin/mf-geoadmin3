@@ -4157,3 +4157,57 @@ msgstr ""
 
 msgid "ch.bav.sachplan-infrastruktur-schiene_ausgangslage"
 msgstr ""
+
+msgid "tt_shb_objekt"
+msgstr ""
+
+msgid "tt_shb_objtyp"
+msgstr ""
+
+msgid "tt_shb_ort"
+msgstr ""
+
+msgid "tt_shb_objteil"
+msgstr ""
+
+msgid "tt_shb_alter"
+msgstr ""
+
+msgid "tt_shb_gart"
+msgstr ""
+
+msgid "tt_shb_ref"
+msgstr ""
+
+msgid "tt_shb_abbauort"
+msgstr ""
+
+msgid "tt_shb_bemerkung"
+msgstr ""
+
+msgid "tt_shb_link"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-geotechnik-steine_historische_bauwerke"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-spezialkarten_schweiz.metadata"
+msgstr ""
+
+msgid "tt_gsk_meta_name"
+msgstr ""
+
+msgid "tt_gsk_meta_nummer"
+msgstr ""
+
+msgid "tt_gsk_meta_author"
+msgstr ""
+
+msgid "tt_gsk_meta_publikation"
+msgstr ""
+
+msgid "tt_gsk_meta_massstab"
+msgstr ""
+
+msgid "tt_gsk_meta_formate"
+msgstr ""
