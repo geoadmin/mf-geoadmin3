@@ -1,3 +1,48 @@
+Release 20140409 -  Wednesday, April 9th 2014
+====================================================
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+-----------------------------------
+
+- Minor bug fixes
+
+`MAP <//map.geo.admin.ch>`__
+-----------------------------------
+
+- TODO
+
+Geodata
+********
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `TBE: cluster <//map.geo.admin.ch/?layers=ch.bag.zecken-fsme-faell>`__ (ch.bag.zecken-fsme-faell)                                                                                                    |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `TBE: recommendation of vaccination <//map.geo.admin.ch/?layers=ch.bag.zecken-fsme-impfung>`__ (ch.bag.zecken-fsme-impfung)                                                                          |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Map of seismic subgrade categories under standard SIA 261 <//map.geo.admin.ch/?layers=ch.bafu.gefahren-baugrundklassen>`__ (ch.bafu.gefahren-baugrundklassen)                                       |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Perimeters of existing spectral micro-zoning studies <//map.geo.admin.ch/?layers=Perimeters of existing spectral micro-zoning studies>`__ (Perimeters of existing spectral micro-zoning studies)    |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Image strips swisstopo <//map.geo.admin.ch/?layers=ch.swisstopo.lubis-bildstreifen>`__ (ch.swisstopo.lubis-bildstreifen)                                                                            |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Aerial images cantons <//map.geo.admin.ch/?layers=ch.swisstopo.lubis-luftbilder-dritte-kantone>`__ (ch.swisstopo.lubis-luftbilder-dritte-kantone)                                                   |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Aerial images privates <//map.geo.admin.ch/?layers=ch.swisstopo.lubis-luftbilder-dritte-firmen>`__ (ch.swisstopo.lubis-luftbilder-dritte-firmen)                                                    |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Aerial Images swisstopo color <//map.geo.admin.ch/?layers=ch.swisstopo.lubis-luftbilder_farbe>`__ (ch.swisstopo.lubis-luftbilder_farbe)                                                             |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Aerial Images swisstopo b / w <//map.geo.admin.ch/?layers=ch.swisstopo.lubis-luftbilder_schwarzweiss>`__ (ch.swisstopo.lubis-luftbilder_schwarzweiss)                                               |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Aerial Images swisstopo infrared <//map.geo.admin.ch/?layers=ch.swisstopo.lubis-luftbilder_infrarot>`__ (ch.swisstopo.lubis-luftbilder_infrarot)                                                    |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Historical monuments' rocks <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-geotechnik-steine_historische_bauwerke>`__ (ch.swisstopo.geologie-geotechnik-steine_historische_bauwerke)             |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Subdivision special geological maps <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-spezialkarten_schweiz.metadata>`__ (ch.swisstopo.geologie-spezialkarten_schweiz.metadata)                     |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+
 Release 20140319 -  Wednesday, March 19th 2014
 ====================================================
 
