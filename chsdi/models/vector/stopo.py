@@ -1243,24 +1243,6 @@ register('ch.swisstopo.geologie-geotope', geologieGeotopePunkte)
 register('ch.swisstopo.geologie-geotope', geologieGeotopeFlaechen)
 
 
-class spezialkarten_metadata(Base, Vector):
-    __tablename__ = 'grid_gsk'
-    __table_args__ = ({'schema': 'public', 'autoload': False})
-    __template__ = 'templates/htmlpopup/geol_spezialkarten_metadata.mako'
-    __bodId__ = 'ch.swisstopo.geologie-spezialkarten_schweiz.metadata'
-    id = Column('gid', Integer, primary_key=True)
-    titel = Column('titel', Text)
-    nr = Column('nr', Text)
-    authoren = Column('authoren', Text)
-    jahrgang = Column('jahrgang', Integer)
-    massstab = Column('massstab', Text)
-    format_de = Column('format_de', Text)
-    format_fr = Column('format_fr', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-
-register('ch.swisstopo.geologie-spezialkarten_schweiz.metadata', spezialkarten_metadata)
-
-
 class steine_hist_bauwerke(Base, Vector):
     __tablename__ = 'geotechnik_steine_historische_bauwerke'
     __table_args__ = ({'schema': 'geol', 'autoload': False})
