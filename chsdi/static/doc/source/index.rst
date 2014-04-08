@@ -12,6 +12,33 @@ These pages are dedicated to developer interested in using the API.
 
 Use the GeoAdmin API Forum to ask questions: http://groups.google.com/group/geoadmin-api
 
+.. raw:: html
+
+  <style>
+    #map {
+      width: 600px;
+      height: 400px;
+      border: 1px solid black;
+    }
+  </style>
+  <body>
+    <div id="map"></div>
+    <script type="text/javascript" src="../../../loader.js"></script>
+    <script type="text/javascript">
+      var layer = ga.layer.create('ch.swisstopo.pixelkarte-farbe');
+      var map = new ga.Map({
+        target: 'map',
+        layers: [layer],
+        view: new ol.View2D({
+          resolution: 750,
+          center: [660000, 170000]
+        })
+      });
+    </script>
+  </body>
+  
+`Do you want to see the code? <api/quickstart.html>`_
+
 .. raw:: html 
 
     <div class="warning"i style="background-color: #ffffff; padding: 5px; border: 1px solid black;">
