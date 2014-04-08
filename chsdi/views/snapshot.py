@@ -24,24 +24,28 @@ def _connect():
 
 @view_config(route_name='snapshot')
 def home(request):
-    querystring = ''
-    remoteUrl = request.registry.settings['geoadminhost']
-    build_query_string = lambda x: ''.join((x, '=', request.params.get(x), '&'))
-    for key in request.params.keys():
-        if (key != '_escaped_fragment_') and (key != 'snapshot'):
-            querystring += build_query_string(key)
-    querystring += 'snapshot=true'
-    driver = _connect()
-    try:
-        # FIXME: there's a need to specify protocol here.
-        driver.get('http://' + remoteUrl + '/?' + querystring)
-        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'seo-load-end')))
-        pageSource = driver.page_source
-    except TimeoutException:
-        raise exc.HTTPGatewayTimeout('Page could not be loaded in time')
-    except WebDriverException as e:
-        raise exc.HTTPInternalServerError(e)
-    finally:
-        driver.quit()
 
-    return Response(body=pageSource, content_type='text/html', request=request)
+    #bail out directly with error
+    raise exc.HTTPInternalServerError('Service is currently inactive')
+    
+#    querystring = ''
+#    remoteUrl = request.registry.settings['geoadminhost']
+#    build_query_string = lambda x: ''.join((x, '=', request.params.get(x), '&'))
+#    for key in request.params.keys():
+#        if (key != '_escaped_fragment_') and (key != 'snapshot'):
+#            querystring += build_query_string(key)
+#    querystring += 'snapshot=true'
+#    driver = _connect()
+#    try:
+#        # FIXME: there's a need to specify protocol here.
+#        driver.get('http://' + remoteUrl + '/?' + querystring)
+#        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'seo-load-end')))
+#        pageSource = driver.page_source
+#    except TimeoutException:
+#        raise exc.HTTPGatewayTimeout('Page could not be loaded in time')
+#    except WebDriverException as e:
+#        raise exc.HTTPInternalServerError(e)
+#    finally:
+#        driver.quit()
+#
+#    return Response(body=pageSource, content_type='text/html', request=request)
