@@ -1868,6 +1868,9 @@ msgstr "Division National Map 1:50'000"
 msgid "ch.swisstopo.pixelkarte-pk500.metadata"
 msgstr "Division National Map 1:500'000"
 
+msgid "ch.swisstopo.private"
+msgstr "swisstopo, prv."
+
 msgid "ch.swisstopo.swissalti3d-reliefschattierung"
 msgstr "swissALTI3D Hillshade"
 

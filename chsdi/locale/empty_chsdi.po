@@ -94,6 +94,9 @@ msgstr ""
 msgid "ch.swisstopo.kt"
 msgstr ""
 
+msgid "ch.swisstopo.private"
+msgstr ""
+
 msgid "ch.swisstopo.kt.url"
 msgstr ""
 
