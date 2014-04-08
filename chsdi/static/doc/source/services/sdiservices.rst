@@ -299,6 +299,7 @@ The search service is separated in 3 different categories or types:
   * The addresses (!! the swiss cantons only allow websites of the federal governement to use the addresses search service !!)
   * The cadastral parcels
   * And optionally features belonging to a specified layer. The search is here performed within the attribute information of a layer using a search text.
+  * **IMPORTANT** : if you want to search only in one or serveral fields described above, please use the feature search service.
 * The **layer search** wich enables the search of layers belonging to the GeoAdmin API.
 * The **feature search** which is used to search through features descriptions. Note: you can also specify a bounding box to filter the features. (`Searchable layer <../../../api/faq/index.html#which-layers-are-searchable>`_)
 * The **feature identify** which is designed to efficiently discover the features of a layer based on a geographic extent. (`Complete list <../../../api/faq/index.html#which-layers-have-a-tooltip>`_)
@@ -372,6 +373,43 @@ Only RESTFul interface is available.
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | callback (optional)               | The name of the callback function.                                                        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
+
+Response syntax
+^^^^^^^^^^^^^^^
+
+The results are presented as a list of object literals.
+
+.. code-block:: html
+  :linenos:
+
+  {
+
+    "id": 161506,
+    "weight": 4,
+    "attrs": {
+        "origin": "sn25",
+        "detail": "wabern _be_",
+        "rank": 5,
+        "geom_st_box2d": "BOX(600714.875 197675.296875,600714.9375 197675.3125)",
+        "num": 1,
+        "label": "<b>Wabern</b> (BE) - Köniz"
+    }
+  }
+
+The attribute "origin" refers to the type of data an entry stands for. A different "rank" is associated to each origin. Results are always ordered in ascending ranks.
+Here is a list of possible origins and in ascending ranking order:
+
+- zipcode (ch.swisstopo-vd.ortschaftenverzeichnis_plz)
+- gg25 (ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill)
+- district (ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill)
+- kantone (ch.swisstopo.swissboundaries3d-kanton-flaeche.fill)
+- sn25 (ch.swisstopo.vec200-names-namedlocation)
+- address (ch.bfs.gebaeude_wohnungs_register)
+- parcel (use prefix "parcel", "parzelle", "parcelle" or "parcella" in your requests to filter out other origins)
+
+The attribute "geom_st_box2d" is in CH1903 / LV03 (EPSG:21781) reference system and represents the bounding box of the associated geometry.
+The weight is dynamically computed according to the search text that is provided.
+
 
 Examples
 ^^^^^^^^
