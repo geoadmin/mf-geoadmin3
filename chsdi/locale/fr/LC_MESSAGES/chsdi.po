@@ -1347,7 +1347,7 @@ msgid "ch.bav.sachplan-infrastruktur-schiene_ausgangslage"
 msgstr "SIS données de base"
 
 msgid "ch.bav.sachplan-infrastruktur-schiene_kraft"
-msgstr "SIS en vigueur"
+msgstr "PS infrastructure rail"
 
 msgid "ch.bav.url"
 msgstr "http://www.bav.admin.ch/?lang=fr"
@@ -1867,6 +1867,9 @@ msgstr "Découpage carte nationale 1:50’000"
 
 msgid "ch.swisstopo.pixelkarte-pk500.metadata"
 msgstr "Découpage carte nationale 1:500’000"
+
+msgid "ch.swisstopo.private"
+msgstr "swisstopo, prv"
 
 msgid "ch.swisstopo.swissalti3d-reliefschattierung"
 msgstr "swissALTI3D estompage du relief"

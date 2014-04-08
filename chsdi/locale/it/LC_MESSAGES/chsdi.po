@@ -1347,7 +1347,7 @@ msgid "ch.bav.sachplan-infrastruktur-schiene_ausgangslage"
 msgstr "SIS statu quo"
 
 msgid "ch.bav.sachplan-infrastruktur-schiene_kraft"
-msgstr "SIS in vigore"
+msgstr "PS infrastruttura ferroviaria"
 
 msgid "ch.bav.url"
 msgstr "http://www.bav.admin.ch/?lang=it"
@@ -1867,6 +1867,9 @@ msgstr "Divisione carta nazionale 1:50'000"
 
 msgid "ch.swisstopo.pixelkarte-pk500.metadata"
 msgstr "Divisione carta nazionale 1:500'000"
+
+msgid "ch.swisstopo.private"
+msgstr "swisstopo, prv."
 
 msgid "ch.swisstopo.swissalti3d-reliefschattierung"
 msgstr "swissALTI3D Hillshade"

@@ -1347,7 +1347,7 @@ msgid "ch.bav.sachplan-infrastruktur-schiene_ausgangslage"
 msgstr "SIS Ausgangslage "
 
 msgid "ch.bav.sachplan-infrastruktur-schiene_kraft"
-msgstr "SIS in Kraft"
+msgstr "Sachplan Infrastruktur Schiene"
 
 msgid "ch.bav.url"
 msgstr "http://www.bav.admin.ch/?lang=de"
@@ -1867,6 +1867,9 @@ msgstr "Einteilung Landeskarte 1:50'000"
 
 msgid "ch.swisstopo.pixelkarte-pk500.metadata"
 msgstr "Einteilung Landeskarte 1:500'000"
+
+msgid "ch.swisstopo.private"
+msgstr "swisstopo, Prv."
 
 msgid "ch.swisstopo.swissalti3d-reliefschattierung"
 msgstr "swissALTI3D Reliefschattierung"
