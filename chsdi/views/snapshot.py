@@ -17,7 +17,7 @@ def _connect():
         driver = PhantomJS(service_log_path=os.devnull)
         return driver
     except WebDriverException as e:
-        #Make sure to quite driver to stop process
+        # Make sure to quite driver to stop process
         driver.quit()
         raise exc.HTTPInternalServerError(e)
 
@@ -25,9 +25,9 @@ def _connect():
 @view_config(route_name='snapshot')
 def home(request):
 
-    #bail out directly with error
+    # bail out directly with error
     raise exc.HTTPInternalServerError('Service is currently inactive')
-    
+
 #    querystring = ''
 #    remoteUrl = request.registry.settings['geoadminhost']
 #    build_query_string = lambda x: ''.join((x, '=', request.params.get(x), '&'))
@@ -37,7 +37,7 @@ def home(request):
 #    querystring += 'snapshot=true'
 #    driver = _connect()
 #    try:
-#        # FIXME: there's a need to specify protocol here.
+# FIXME: there's a need to specify protocol here.
 #        driver.get('http://' + remoteUrl + '/?' + querystring)
 #        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'seo-load-end')))
 #        pageSource = driver.page_source
