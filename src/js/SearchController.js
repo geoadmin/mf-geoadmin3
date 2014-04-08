@@ -10,6 +10,8 @@
           $scope.options = {
             searchUrl: gaGlobalOptions.mapUrl + '/rest/services/' +
                         topicPlaceHolder + '/SearchServer?',
+            featureUrl: gaGlobalOptions.cachedMapUrl +
+                        '/rest/services/{Topic}/MapServer/{Layer}/{Feature}',
             applyTopicToUrl: function (url, topic) {
               return url.replace(topicPlaceHolder, topic);
             }
