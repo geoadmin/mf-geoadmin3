@@ -49,7 +49,7 @@
         <tr>
           <td class="cell-left"></td>
           <td>
-            <a href="${h.make_agnostic(request.route_url('extendedHtmlPopup', map=topic, layerId=c['layerBodId'], featureId=str(c['featureId'])))}?lang=${lang}" target="_blank">${_('zusatzinfo')}<img src="http://www.swisstopo.admin.ch/images/ico_extern.gif" /></a>
+            <a href="${h.make_agnostic(request.route_url('extendedHtmlPopup', map=topic, layerId=c['layerBodId'], featureId=str(c['featureId'])))}?lang=${lang}" target="_blank">${_('zusatzinfo')}<img src="${h.versioned(request.static_url('chsdi:static/images/ico_extern.gif'))}" /></a>
           </td>
         </tr>
         % endif
