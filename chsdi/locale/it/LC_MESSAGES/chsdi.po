@@ -1722,6 +1722,9 @@ msgstr "Cave 1980"
 msgid "ch.swisstopo.geologie-geotechnik-steinbrueche_1995"
 msgstr "Cave 1995"
 
+msgid "ch.swisstopo.geologie-geotechnik-steine_historische_bauwerke"
+msgstr "Pietre dei monumenti storici"
+
 msgid "ch.swisstopo.geologie-geotechnik-zementindustrie_1965"
 msgstr "Industria dei cementi 1965"
 
@@ -1760,6 +1763,9 @@ msgstr "Materie prime energetiche"
 
 msgid "ch.swisstopo.geologie-rohstoffe-vererzungen"
 msgstr "Mineralizzazioni"
+
+msgid "ch.swisstopo.geologie-spezialkarten_schweiz.metadata"
+msgstr "Divisione carte geologiche speciali"
 
 msgid "ch.swisstopo.geologie-tektonische_karte"
 msgstr "Tettonica 1:500 000"
@@ -3727,6 +3733,24 @@ msgstr "Classificazione delle rocce"
 msgid "tt_gk_500_LithoHaupt"
 msgstr "Caratterizzazione litologica petrografica"
 
+msgid "tt_gsk_meta_author"
+msgstr "Autori"
+
+msgid "tt_gsk_meta_formate"
+msgstr "Formati disponibili"
+
+msgid "tt_gsk_meta_massstab"
+msgstr "Scala"
+
+msgid "tt_gsk_meta_name"
+msgstr "Titolo del foglio"
+
+msgid "tt_gsk_meta_nummer"
+msgstr "Numero del foglio"
+
+msgid "tt_gsk_meta_publikation"
+msgstr "Anno di pubblicazione"
+
 msgid "tt_kanal"
 msgstr "Tipo del corso d’acqua"
 
@@ -3988,6 +4012,36 @@ msgstr "Informazioni supplementari"
 
 msgid "tt_service"
 msgstr "Servizio radio"
+
+msgid "tt_shb_abbauort"
+msgstr "Sito d'estrazione"
+
+msgid "tt_shb_alter"
+msgstr "Età"
+
+msgid "tt_shb_bemerkung"
+msgstr "Osservazioni"
+
+msgid "tt_shb_gart"
+msgstr "Tipo di rocca"
+
+msgid "tt_shb_link"
+msgstr "Link verso il pdf"
+
+msgid "tt_shb_objekt"
+msgstr "Oggetto"
+
+msgid "tt_shb_objteil"
+msgstr "Parte dell'oggetto"
+
+msgid "tt_shb_objtyp"
+msgstr "Tipo d'oggetto"
+
+msgid "tt_shb_ort"
+msgstr "Luogo"
+
+msgid "tt_shb_ref"
+msgstr "Referenza"
 
 msgid "tt_swissprtr_detaildaten"
 msgstr "Informazioni dettagliate sul complesso/azienda"
