@@ -41,6 +41,7 @@ geodata_staging = ${geodata_staging}
 instanceid = ${apache_base_path}
 sphinxhost = ${sphinxhost}
 geoadminhost = ${geoadminhost}
+install_directory = ${buildout:directory}
 host = ${host}
 address_search_referers = localhost,admin.ch,awk.ch,cadastre.ch,rspp.ch,rollstuhlparkplatz.ch,placehandicape.ch,parcheggiodisabili.chi,zh.ch
 
