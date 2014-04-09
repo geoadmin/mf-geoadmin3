@@ -1,3 +1,4 @@
+.bafu.bundesinventare-amphibien
 # -*- coding: utf-8 -*-
 
 from sqlalchemy import Column, Text, Integer
@@ -28,7 +29,7 @@ class AM_L(Base, Vector):
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
     __bodId__ = 'ch.bafu.bundesinventare-amphibien'
     __template__ = 'templates/htmlpopup/bundinv_amphibien.mako'
-    id = Column('am_l_obj', Text, primary_key=True)
+    id = Column('bgdi_id', Text, primary_key=True)
     am_l_name = Column('am_l_name', Text)
     am_l_fl = Column('am_l_fl', Text)
     am_l_berei = Column('am_l_berei', Text)
