@@ -69,8 +69,8 @@
           <a href='rest/services'>List all the available topics</a> <br>
 
       <h2>Layers Configuration</h2>
-          <a href='rest/services/ech/MapServer/layersconfig'>Get the layers configuration for topic ech</a> <br>
-          <a href='rest/services/all/MapServer/layersconfig'>Get the layers configuration for all topics</a> <br>
+          <a href='rest/services/ech/MapServer/layersConfig'>Get the layers configuration for topic ech</a> <br>
+          <a href='rest/services/all/MapServer/layersConfig'>Get the layers configuration for all topics</a> <br>
           
       <h2>Ogcproxy</h2>
           <a href="ogcproxy?url=http://wms.pcn.minambiente.it/ogc?map=/ms_ogc/WMS_v1.3/raster/IGM_100000.map&VERSION=1.3.0&SERVICE=WMS&REQUEST=GetCapabilities">Get
