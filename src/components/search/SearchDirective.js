@@ -17,9 +17,10 @@
   ]);
 
   module.directive('gaSearch',
-      function($compile, $translate, $timeout, gaMapUtils, gaLayers,
+      function($compile, $translate, $timeout, $http, gaMapUtils, gaLayers,
         gaLayerMetadataPopup, gaPermalink, gaUrlUtils, gaGetCoordinate,
-        gaBrowserSniffer, gaLayerFilters, gaKml, gaPreviewLayers) {
+        gaBrowserSniffer, gaLayerFilters, gaKml, gaPreviewLayers,
+        gaPreviewFeatures) {
           var currentTopic,
               footer = [
             '<div class="ga-search-footer clearfix">',
@@ -48,6 +49,7 @@
             '<i class="icon-envelope-alt"></i>',
             '</a>',
             '</div>'].join('');
+          var geojsonParser = new ol.format.GeoJSON();
 
           function parseExtent(stringBox2D) {
             var extent = stringBox2D.replace('BOX(', '')
@@ -90,6 +92,7 @@
               var year;
               var map = scope.map;
               var options = scope.options;
+              var highlightedFeatures = {};
 
               var footerTemplate = angular.element(footer);
               $compile(footerTemplate)(scope);
@@ -101,13 +104,41 @@
 
               var featureSearchHeaderTemplate = angular.element(
                   '<div class="tt-header-locations" ' +
-                  'translate>feature</div>');
+                  'translate>items</div>');
               $compile(featureSearchHeaderTemplate)(scope);
 
               var layerHeaderTemplate = angular.element(
                   '<div class="tt-header-mapinfos" ' +
                   'ng-show="hasLayerResults" translate>map_info</div>');
               $compile(layerHeaderTemplate)(scope);
+
+              var loadGeometry = function(feature, cb) {
+                if (!highlightedFeatures.hasOwnProperty(feature)) {
+                  var featureUrl;
+                  var f = feature.split('##');
+                  var bodId = f[0];
+                  var featureId = f[1];
+                  featureUrl = options.featureUrl
+                               .replace('{Topic}', currentTopic)
+                               .replace('{Layer}', bodId)
+                               .replace('{Feature}', featureId);
+                  var promise = $http.get(featureUrl, {
+                    params: {
+                       geometryFormat: 'geojson'
+                    }
+                  }).success(function(result) {
+                    var geojsonGeometry = geojsonParser.readFeature(
+                        result.feature);
+                    highlightedFeatures[feature] = geojsonGeometry;
+                    cb(geojsonGeometry);
+                  }).error(function(reason) {
+                    // TODO
+                  });
+                } else {
+                  cb(highlightedFeatures[feature]);
+                }
+              };
+
               scope.query = '';
 
               scope.layers = map.getLayers().getArray();
@@ -158,6 +189,31 @@
                   return;
                 }
                 gaPreviewLayers.removeAll(scope.map);
+              };
+
+              scope.addPreviewFeature = function(feature) {
+                if (gaBrowserSniffer.mobile) {
+                  return;
+                }
+                loadGeometry(feature, function(geojsonGeometry) {
+                  gaPreviewFeatures.highlight(map,
+                      geojsonGeometry);
+                });
+              };
+
+              scope.removePreviewFeature = function() {
+                if (gaBrowserSniffer.mobile) {
+                  return;
+                }
+                gaPreviewFeatures.clearHighlight();
+              };
+
+              scope.selectFeature = function(feature) {
+                loadGeometry(feature, function(geojsonGeometry) {
+                  gaPreviewFeatures.clear();
+                  gaPreviewFeatures.add(map, geojsonGeometry);
+                  gaPreviewFeatures.zoom(map, geojsonGeometry);
+                });
               };
 
               scope.addCross = function(center) {
@@ -258,8 +314,14 @@
                   valueKey: 'inputVal',
                   limit: 30,
                   template: function(context) {
-                    var label = getLocationLabel(context.attrs);
-                    var template = '<div class="tt-search">' +
+                    var attrs = context.attrs;
+                    var label = getLocationLabel(attrs);
+                    var template = '<div class="tt-search" ' +
+                        'ng-mouseover="addPreviewFeature(\'' +
+                        attrs.layer + '##' + attrs.feature_id + '\')"' +
+                        'ng-mouseout="removePreviewFeature()"' +
+                        'ng-click="selectFeature(\'' +
+                        attrs.layer + '##' + attrs.feature_id + '\')" >' +
                         label + '</div>';
                     return template;
                   },
@@ -270,9 +332,16 @@
                       scope.$apply(function() {
                         scope.layers = map.getLayers().getArray();
                       });
-                      return !gaGetCoordinate(
+                      if (!gaGetCoordinate(
                           map.getView().getProjection().getExtent(),
-                          scope.query);
+                          scope.query) &&
+                              scope.searchableLayers.length) {
+                        highlightedFeatures = {};
+                        return true;
+                      } else {
+                        // Do not perform a query
+                        return false;
+                      }
                     },
                     replace: function(url, searchText) {
                       var queryText = '&searchText=' + searchText;
@@ -309,7 +378,7 @@
                   valueKey: 'inputVal',
                   limit: 20,
                   template: function(context) {
-                    var template = '<div ng-show="hasLayerResults" ' +
+                    var template = '<div ' +
                         'class="tt-search"' +
                         'ng-mouseover="addPreviewLayer(\'' +
                         context.attrs.layer + '\', true)" ' +
@@ -338,7 +407,7 @@
                     },
                     filter: function(response) {
                       var results = response.results;
-                      // hasLaerResults is used to control
+                      // hasLayerResults is used to control
                       // the display of the footer
                       scope.$apply(function() {
                         scope.hasLayerResults = (results.length !== 0);
@@ -373,7 +442,7 @@
                   var origin = datum.attrs.origin;
                   scope.searchFocused = false;
                   taElt.trigger('blur', [true]);
-                  if (angular.isDefined(datum.attrs.geom_st_box2d)) {
+                  if (origin !== 'feature' && origin !== 'layer') {
                     var extent = parseExtent(datum.attrs.geom_st_box2d);
 
                     var originZoom = {
