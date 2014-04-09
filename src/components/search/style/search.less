@@ -50,6 +50,18 @@
       max-height: @suggestions-max-height;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
+      @media (max-height: 800px) {
+        max-height: 170px;
+      }
+      @media (max-height: 680px) {
+        max-height: 140px;
+      }
+      @media (max-height: 550px) {
+        max-height: 110px;
+      }
+      @media (max-height: 480px) {
+        max-height: 80px;
+      }
       
       .tt-suggestion {
         display: block;
