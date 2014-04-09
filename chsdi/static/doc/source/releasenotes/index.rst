@@ -7,12 +7,16 @@ API & applications
 `API <//api3.geo.admin.ch>`__
 -----------------------------------
 
+- Improve search for parcels (language dependant keyword support)
 - Minor bug fixes
 
 `MAP <//map.geo.admin.ch>`__
 -----------------------------------
 
-- TODO
+- Added TimeSelector tool to support layers with a time dimension
+- Improved map interaction on some mobile devices
+- Support UTM zone 32N coordinates for mouse position
+- Minor bug fixes
 
 Geodata
 ********
@@ -23,7 +27,7 @@ Geodata
 +--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Update | `Map of seismic subgrade categories under standard SIA 261 <//map.geo.admin.ch/?layers=ch.bafu.gefahren-baugrundklassen>`__ (ch.bafu.gefahren-baugrundklassen)                                       |
 +--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Update | `Perimeters of existing spectral micro-zoning studies <//map.geo.admin.ch/?layers=Perimeters of existing spectral micro-zoning studies>`__ (Perimeters of existing spectral micro-zoning studies)    |
+| Update | `Perimeters of existing spectral micro-zoning studies <//map.geo.admin.ch/?layers=ch.bafu.gefahren-spektral>`__ (ch.bafu.gefahren-spektral)                                                          |
 +--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | New    | `Image strips swisstopo <//map.geo.admin.ch/?layers=ch.swisstopo.lubis-bildstreifen>`__ (ch.swisstopo.lubis-bildstreifen)                                                                            |
 +--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
