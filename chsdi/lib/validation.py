@@ -272,8 +272,8 @@ class ProfileValidation(object):
             value = asShape(geom)
         except:
             raise exc.HTTPBadRequest("Error converting JSON to Shape")
-        if value.length == 0:
-            raise exc.HTTPBadRequest("Linestring has a length of 0")
+        if value.length < 2:
+            raise exc.HTTPBadRequest("Linestring must have at least 2 points")
         if not value.is_valid:
             raise exc.HTTPBadRequest("Invalid Linestring syntax")
         self._linestring = value
