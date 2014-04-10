@@ -41,7 +41,7 @@ RewriteRule ^/${vars:apache_base_path}/wsgi/(static)/(.*)$  ${buildout:directory
 </LocationMatch>
 
 # Static for cross domain flash/arcgis
-<LocationMatch "/${vars:apache_base_path}/(crossdomain.xml|clientaccesspolicy.xml)">
+<LocationMatch "/${vars:apache_base_path}/wsgi/static/(crossdomain.xml|clientaccesspolicy.xml)">
     Header set Content-type "text/x-cross-domain-policy"
 </LocationMatch>
 RewriteRule ^${apache_entry_path}(crossdomain.xml|clientaccesspolicy.xml) /${vars:apache_base_path}/wsgi/static/$1 [PT]
