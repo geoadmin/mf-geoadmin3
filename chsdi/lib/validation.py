@@ -269,14 +269,15 @@ class ProfileValidation(object):
         except:
             raise exc.HTTPBadRequest("Error loading geometry in JSON string")
         try:
-            value = asShape(geom)
+            shape = asShape(geom)
         except:
             raise exc.HTTPBadRequest("Error converting JSON to Shape")
-        if value.length == 0:
-            raise exc.HTTPBadRequest("Linestring has a length of 0")
-        if not value.is_valid:
+        try:
+            shape.is_valid
+        except:
             raise exc.HTTPBadRequest("Invalid Linestring syntax")
-        self._linestring = value
+
+        self._linestring = shape
 
     @layers.setter
     def layers(self, value):
