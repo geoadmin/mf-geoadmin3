@@ -53,6 +53,12 @@ def round(val):
     return math.floor(val + 0.5)
 
 
+def format_search_text(input_str):
+    return remove_accents(
+        escape_sphinx_syntax(input_str)
+    )
+
+
 def remove_accents(input_str):
     # TODO find a better way to treat those characters
     input_str = input_str.replace(u'ü', u'ue')
@@ -61,11 +67,27 @@ def remove_accents(input_str):
     input_str = input_str.replace(u'Ä', u'ae')
     input_str = input_str.replace(u'ö', u'oe')
     input_str = input_str.replace(u'Ö', u'oe')
-    input_str = input_str.replace('/', '')
-    input_str = input_str.replace('(', '')
-    input_str = input_str.replace(')', '')
-    input_str = input_str.replace('"', '')
     return ''.join(c for c in unicodedata.normalize('NFD', input_str) if unicodedata.category(c) != 'Mn')
+
+
+def escape_sphinx_syntax(input_str):
+    input_str = input_str.replace('|', '\\|')
+    input_str = input_str.replace('!', '\\!')
+    input_str = input_str.replace('@', '\\@')
+    input_str = input_str.replace('&', '\\&')
+    input_str = input_str.replace('~', '\\~')
+    input_str = input_str.replace('^', '\\^')
+    input_str = input_str.replace('=', '\\=')
+    input_str = input_str.replace('/', '\\/')
+    input_str = input_str.replace('(', '\\(')
+    input_str = input_str.replace(')', '\\)')
+    input_str = input_str.replace(']', '\\]')
+    input_str = input_str.replace('[', '\\[')
+    input_str = input_str.replace('*', '\\*')
+    input_str = input_str.replace('<', '\\<')
+    input_str = input_str.replace('$', '\\$')
+    input_str = input_str.replace('"', '\"')
+    return input_str
 
 
 def quoting(text):

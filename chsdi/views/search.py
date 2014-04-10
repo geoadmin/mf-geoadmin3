@@ -4,7 +4,7 @@ from pyramid.view import view_config
 import pyramid.httpexceptions as exc
 
 from chsdi.lib.validation import SearchValidation
-from chsdi.lib.helpers import remove_accents
+from chsdi.lib.helpers import format_search_text
 from chsdi.lib.helpers import transformCoordinate
 from chsdi.lib.sphinxapi import sphinxapi
 from chsdi.lib import mortonspacekey as msk
@@ -52,7 +52,7 @@ class Search(SearchValidation):
             self._get_quad_index()
         if self.typeInfo == 'layers':
             # search all layers
-            self.searchText = remove_accents(
+            self.searchText = format_search_text(
                 self.request.params.get('searchText')
             )
             self._layer_search()
@@ -61,13 +61,13 @@ class Search(SearchValidation):
             self._feature_bbox_search()
         if self.typeInfo == 'featuresearch':
             # search all features using searchText
-            self.searchText = remove_accents(
+            self.searchText = format_search_text(
                 self.request.params.get('searchText')
             )
             self._feature_search()
         if self.typeInfo == 'locations':
             # search all features with text and bounding box
-            self.searchText = remove_accents(
+            self.searchText = format_search_text(
                 self.request.params.get('searchText')
             )
             self._feature_search()
