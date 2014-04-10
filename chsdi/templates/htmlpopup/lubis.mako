@@ -27,7 +27,10 @@ def get_image_size(filename):
     return (width, height)
 
 def date_to_str(datum):
-    return datetime.datetime.strptime(datum.strip(), "%Y%m%d").strftime("%d-%m-%Y")
+    try:
+        return datetime.datetime.strptime(datum.strip(), "%Y%m%d").strftime("%d-%m-%Y")
+    except:
+        return request.translate('None') + request.translate('Datenstand')
 
 def get_quickview_url(request, params):
     f = {
