@@ -33,6 +33,9 @@ class luftbilder_swisstopo_farbe(Base, Vector):
     ort = Column('ort', Text)
     massstab = Column('massstab', Integer)
     bgdi_imagemode = Column('bgdi_imagemode', Text)
+    image_height = Column('image_height', Integer)
+    image_width = Column('image_width', Integer)
+    bgdi_zoomlevel = Column('bgdi_zoomlevel', Integer)
 
 register('ch.swisstopo.lubis-luftbilder_farbe', luftbilder_swisstopo_farbe)
 
@@ -61,6 +64,9 @@ class luftbilder_swisstopo_ir(Base, Vector):
     ort = Column('ort', Text)
     massstab = Column('massstab', Integer)
     bgdi_imagemode = Column('bgdi_imagemode', Text)
+    image_height = Column('image_height', Integer)
+    image_width = Column('image_width', Integer)
+    bgdi_zoomlevel = Column('bgdi_zoomlevel', Integer)
 
 register('ch.swisstopo.lubis-luftbilder_infrarot', luftbilder_swisstopo_ir)
 
@@ -89,6 +95,9 @@ class luftbilder_swisstopo_sw(Base, Vector):
     ort = Column('ort', Text)
     massstab = Column('massstab', Integer)
     bgdi_imagemode = Column('bgdi_imagemode', Text)
+    image_height = Column('image_height', Integer)
+    image_width = Column('image_width', Integer)
+    bgdi_zoomlevel = Column('bgdi_zoomlevel', Integer)
 
 register('ch.swisstopo.lubis-luftbilder_schwarzweiss', luftbilder_swisstopo_sw)
 

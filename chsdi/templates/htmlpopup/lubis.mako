@@ -1,34 +1,47 @@
 <%inherit file="base.mako"/>
-<%namespace name="iipimage" file="../iipimage.mako"/>
+<%namespace name="lubis_map" file="../lubis_map.mako"/>
 
 <%!
 import datetime
 import urllib
 import urllib2
 from pyramid.url import route_url
-from xml.dom import minidom
 import chsdi.lib.helpers as h
 
-def get_image_size(filename):
-    width = 1
-    height = 1
+def determinePreviewUrl(ebkey):
+    tileUrlBasePath = "http://aerialimages0.geo.admin.ch/tiles"
 
-    if filename:
-        metadata_file = None
+    def getPreviewImageUrl(ebkey):
+        return tileUrlBasePath + "/" + ebkey + "/quickview.jpg"
+
+    def getZeroTileUrl(ebkey):
+        return tileUrlBasePath + "/" + ebkey + "/0/0/0.jpg"
+
+    class HeadRequest(urllib2.Request):
+        def get_method(self):
+            return "HEAD"
+
+    def testForUrl(url):
+        response = None
         try:
-            metadata_file = urllib2.urlopen("https://web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?DeepZoom=" + filename + ".dzi", timeout = 3)
-            xmldoc = minidom.parse(metadata_file)
-            dimensions = xmldoc.getElementsByTagName('Size')
-            width = dimensions[0].getAttribute('Width')
-            height = dimensions[0].getAttribute('Height')
-        except: 
-            width = 1
-            height = 1
-        finally:
-            if metadata_file:
-                metadata_file.close()
+            request = HeadRequest(url)
+            response = urllib2.urlopen(request)
 
-    return (width, height)
+        finally:
+            if response:
+                if response.getcode() != 200:
+                    url = ""
+                response.close()
+            else:
+                url = ""
+            return url
+
+
+    #testing these 2 url could be done more python like
+    url = testForUrl(getPreviewImageUrl(ebkey))
+    if url == "":
+        url = testForUrl(getZeroTileUrl(ebkey))
+    return url
 
 def date_to_str(datum):
     try:
@@ -36,17 +49,16 @@ def date_to_str(datum):
     except:
         return request.translate('None') + request.translate('Datenstand')
 
-def get_quickview_url(request, params):
+def get_viewer_url(request, params):
     f = {
-        'image': params[0],
-        'width': params[1],
-        'height': params[2],
-        'title': params[3].encode('utf8'),
-        'bildnummer': params[4],
-        'datenherr': params[5].encode('utf8'),
-        'layer': params[6].encode('utf8')
+        'width': params[0],
+        'height': params[1],
+        'title': params[2].encode('utf8'),
+        'bildnummer': params[3],
+        'datenherr': params[4].encode('utf8'),
+        'layer': params[5].encode('utf8')
     }
-    return h.make_agnostic(route_url('iipimage', request)) + '?' + urllib.urlencode(f)
+    return h.make_agnostic(route_url('luftbilder', request)) + '?' + urllib.urlencode(f)
 %>
 
 <%def name="table_body(c, lang)">
@@ -64,18 +76,17 @@ endif
 toposhopscan = 'nein'
 if c['attributes']['filename'] :
     toposhopscan = 'ja'
+preview_url = determinePreviewUrl(c['featureId'])
 
 datum = date_to_str(c['attributes']['flugdatum'])
-image_size = get_image_size(c['attributes']['filename'])
 params = (
-    c['attributes']['filename'], 
-    image_size[0], 
-    image_size[1], 
+    c['attributes']['image_width'] if 'image_width' in  c['attributes'] else 0,
+    c['attributes']['image_height'] if 'image_height' in c['attributes'] else 0,
     _('tt_lubis_ebkey'),
     c['featureId'],
     c['attributes']['firma'],
     c['fullName'])
-quickview_url = get_quickview_url(request, params)
+viewer_url = get_viewer_url(request, params)
 %>
 <tr>
   <td class="cell-left">${_('tt_lubis_ebkey')}</td>
@@ -89,11 +100,12 @@ quickview_url = get_quickview_url(request, params)
   <td class="cell-left">${_('tt_lubis_Filmart')}</td>
   <td>${c['attributes']['filmart'] or '-'}</td>
 </tr>
-% if image_size[1] > 1:
+
+% if preview_url != "":
 <tr>
   <td class="cell-left">${_('tt_lubis_Quickview')}</td>
   <td>
-    <a href="${quickview_url}" target="_blank"><img src="//web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?FIF=${c['attributes']['filename']}&WID=150&CVT=jpeg" alt="quickview"></a>
+    <a href="${viewer_url}" target="_blank"><img src="${preview_url}" alt="quickview"></a>
   </td>
 </tr>
 % else:
@@ -102,6 +114,7 @@ quickview_url = get_quickview_url(request, params)
   <td>${_('tt_lubis_noQuickview')}</td>
 </tr>
 % endif
+
 % if 'contact_web' not in c['attributes'] and c['attributes']['ort'] is not None:
 <tr>
   <th class="cell-left">${_('link')} Toposhop</th>
@@ -144,7 +157,7 @@ else:
 endif
 
 loader_url = h.make_agnostic(route_url('ga_api', request))
-orientierung = '-'
+preview_url = determinePreviewUrl(c['featureId'])
 scan = '-'
 toposhopscan = 'nein'
 filename = c['attributes']['filename']
@@ -152,24 +165,23 @@ if filename:
     scan = 'True'
     toposhopscan = 'ja'
 endif
+orientierung = '-'
 if c['attributes']['orientierung']:
     orientierung = 'True'
 endif
 
 datum = date_to_str(c['attributes']['flugdatum'])
-image_size = get_image_size(c['attributes']['filename'])
-image_width =  image_size[0];
-image_height = image_size[1];
+image_width =  c['attributes']['image_width'] if 'image_width' in  c['attributes'] else 0
+image_height = c['attributes']['image_height'] if 'image_height' in c['attributes'] else 0
 
 params = (
-    filename, 
     image_width, 
     image_height, 
     _('tt_lubis_ebkey'),
-    c['attributes']['bildnummer'],
+    c['featureId'],
     c['attributes']['firma'],
     c['fullName'])
-quickview_url = get_quickview_url(request, params)
+viewer_url = get_viewer_url(request, params)
 %>
 <title>${_('tt_lubis_ebkey')}: ${c['featureId']}</title>
 <body onload="init()">
@@ -201,13 +213,16 @@ quickview_url = get_quickview_url(request, params)
     <div id="map"></div>
   </div>
   <br>
-% if image_height > 1:
-  <span class="chsdi-no-print">${_('tt_luftbilderOL')}<a href="${quickview_url}" target="_blank" alt="Fullscreen">(fullscreen)</a></span>
+
+% if preview_url != "":
+  <span class="chsdi-no-print">${_('tt_luftbilderOL')}<a href="${viewer_url}" target="_blank" alt="Fullscreen">(fullscreen)</a></span>
   <div class="chsdi-map-container table-with-border">
-    <div id="zoomify"></div>
+    <div id="lubismap"></div>
   </div>
 % endif
-  <script type="text/javascript" src="${loader_url}"></script>
+
+  <!-- TODO: REMOVE DEBUG FROM LOADER -->
+  <script type="text/javascript" src="${loader_url}?mode=debug"></script>
   <script type="text/javascript">
     function init() {
       // Create a GeoAdmin Map
@@ -238,10 +253,9 @@ quickview_url = get_quickview_url(request, params)
       map.highlightFeature('${c['layerBodId']}', '${c['featureId']}');
       map.recenterFeature('${c['layerBodId']}', '${c['featureId']}');
 
-
-% if image_width > 1:
-      ${iipimage.init_map(c['attributes']['filename'], image_width, image_height, 'zoomify')}
-% endif
+% if preview_url != "":
+      ${lubis_map.init_map(c['featureId'], image_width, image_height, 'lubismap')}
+%endif
 
     }
   </script>
