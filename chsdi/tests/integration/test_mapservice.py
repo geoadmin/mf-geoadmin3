@@ -243,6 +243,37 @@ class TestMapServiceView(TestsBase):
             for lang in ('de', 'fr', 'it', 'rm', 'en'):
                 self.testapp.get('/rest/services/all/MapServer/%s/legend' % layer, params={'callback': 'cb', 'lang': '%s' % lang}, status=200)
 
+    def test_all_htmlpopups(self):
+        from chsdi.models import models_from_name
+        from chsdi.models.bod import LayersConfig
+        from sqlalchemy import distinct
+        from sqlalchemy.orm import scoped_session, sessionmaker
+        val = True
+        DBSession = scoped_session(sessionmaker())
+        query = DBSession.query(distinct(LayersConfig.idBod)).filter(LayersConfig.queryable == val).filter(LayersConfig.staging == 'prod')
+        # Get a list of all the queryable layers
+        layers = [q[0] for q in query]
+        DBSession.close()
+        # Get a list of feature ids
+        features = []
+        for layer in layers:
+            try:
+                model = models_from_name(layer)[0]
+                DBSession = scoped_session(sessionmaker())
+                query = DBSession.query(model.primary_key_column()).limit(1)
+                ID = [q[0] for q in query]
+                # If tables are empty ID is an empty list
+                if ID:
+                    features.append((layer, str(ID[0])))
+                DBSession.close()
+            except Exception as e:
+                print e
+            finally:
+                DBSession.close()
+        for f in features:
+            for lang in ('de', 'fr', 'it', 'rm', 'en'):
+                self.testapp.get('/rest/services/all/MapServer/%s/%s/htmlPopup' % (f[0], f[1]), params={'callback': 'cb', 'lang': '%s' % lang}, status=200)
+
     def test_layersconfig_valid(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/layersConfig', status=200)
         self.failUnless(resp.content_type == 'application/json')
