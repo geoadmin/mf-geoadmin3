@@ -16,8 +16,8 @@
    * See examples on how it can be used
    */
   module.directive('gaCatalogtree',
-      function($http, $translate, gaPermalink, gaCatalogtreeMapUtils,
-          gaLayers, gaLayerFilters) {
+      function($http, $translate, $rootScope, gaPermalink,
+          gaCatalogtreeMapUtils, gaLayers, gaLayerFilters) {
 
         return {
           restrict: 'A',
@@ -179,6 +179,7 @@
                 } else {
                   handleTree(newTree, oldTree);
                 }
+                $rootScope.$broadcast('gaCatalogChange');
               });
             });
 

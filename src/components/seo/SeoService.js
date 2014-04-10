@@ -19,8 +19,6 @@
    */
   module.provider('gaSeoService', function() {
     this.$get = function(gaPermalink) {
-      var openRequests = 0;
-
       var layersAtStart = gaPermalink.getParams().layers ?
                           gaPermalink.getParams().layers.split(',') : [];
 
@@ -32,18 +30,6 @@
       gaPermalink.deleteParam('snapshot');
 
       var SeoService = function() {
-        this.addRequestCount = function() {
-          openRequests += 1;
-        };
-
-        this.removeRequestCount = function() {
-          openRequests -= 1;
-        };
-
-        this.waitOnRequests = function() {
-          return openRequests > 0;
-        };
-
         this.isSnapshot = function() {
           return isSnapshot;
         };
