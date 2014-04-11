@@ -119,6 +119,10 @@ class TestSearchServiceView(TestsBase):
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless('geom_st_box2d' not in resp.json['results'][0]['attrs'].keys())
 
+    def test_search_locations_escape_charachters(self):
+        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'Biel/Bienne', 'type': 'locations'}, status=200)
+        self.failUnless(len(resp.json['results']) > 0)
+
     def test_search_locations_authorized(self):
         self.testapp.extra_environ = {'HTTP_X_SEARCHSERVER_AUTHORIZED': 'true'}
         resp = self.testapp.get('/rest/services/inspire/SearchServer', params={'searchText': 'Beaulieustrasse 2', 'type': 'locations'}, status=200)
