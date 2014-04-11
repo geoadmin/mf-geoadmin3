@@ -666,7 +666,7 @@ class sil_facilities_a(Base, Vector):
     __table_args__ = ({'schema': 'bazl', 'autoload': False})
     __template__ = 'templates/htmlpopup/sil_facilities.mako'
     __bodId__ = 'ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung'
-    id = Column('stabil_id', Integer, primary_key=True)
+    id = Column('stabil_id', Text, primary_key=True)
     facname_de = Column('facname_de', Text)
     facname_fr = Column('facname_fr', Text)
     facname_it = Column('facname_it', Text)
@@ -695,7 +695,7 @@ class sil_planning_a(Base, Vector):
     __table_args__ = ({'schema': 'bazl', 'autoload': False})
     __template__ = 'templates/htmlpopup/sil_planning.mako'
     __bodId__ = 'ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung'
-    id = Column('stabil_id', Integer, primary_key=True)
+    id = Column('stabil_id', Text, primary_key=True)
     facname_de = Column('facname_de', Text)
     facname_fr = Column('facname_fr', Text)
     facname_it = Column('facname_it', Text)
@@ -730,7 +730,7 @@ class sil_planning_raster_a(Base, Vector):
     __table_args__ = ({'schema': 'bazl', 'autoload': False})
     __template__ = 'templates/htmlpopup/sil_planning.mako'
     __bodId__ = 'ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung'
-    id = Column('stabil_id', Integer, primary_key=True)
+    id = Column('stabil_id', Text, primary_key=True)
     facname_de = Column('facname_de', Text)
     facname_fr = Column('facname_fr', Text)
     facname_it = Column('facname_it', Text)
