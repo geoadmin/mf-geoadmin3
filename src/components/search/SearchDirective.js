@@ -112,15 +112,12 @@
                   'ng-show="hasLayerResults" translate>map_info</div>');
               $compile(layerHeaderTemplate)(scope);
 
-              var loadGeometry = function(feature, cb) {
-                if (!highlightedFeatures.hasOwnProperty(feature)) {
-                  var featureUrl;
-                  var f = feature.split('##');
-                  var bodId = f[0];
-                  var featureId = f[1];
-                  featureUrl = options.featureUrl
+              var loadGeometry = function(layerId, featureId, cb) {
+                var key = layerId + featureId;
+                if (!highlightedFeatures.hasOwnProperty(key)) {
+                  var featureUrl = options.featureUrl
                                .replace('{Topic}', currentTopic)
-                               .replace('{Layer}', bodId)
+                               .replace('{Layer}', layerId)
                                .replace('{Feature}', featureId);
                   var promise = $http.get(featureUrl, {
                     params: {
@@ -129,13 +126,13 @@
                   }).success(function(result) {
                     var geojsonGeometry = geojsonParser.readFeature(
                         result.feature);
-                    highlightedFeatures[feature] = geojsonGeometry;
+                    highlightedFeatures[key] = geojsonGeometry;
                     cb(geojsonGeometry);
                   }).error(function(reason) {
                     // TODO
                   });
                 } else {
-                  cb(highlightedFeatures[feature]);
+                  cb(highlightedFeatures[key]);
                 }
               };
 
@@ -191,11 +188,11 @@
                 gaPreviewLayers.removeAll(scope.map);
               };
 
-              scope.addPreviewFeature = function(feature) {
+              scope.addPreviewFeature = function(layerId, featureId) {
                 if (gaBrowserSniffer.mobile) {
                   return;
                 }
-                loadGeometry(feature, function(geojsonGeometry) {
+                loadGeometry(layerId, featureId, function(geojsonGeometry) {
                   gaPreviewFeatures.highlight(map,
                       geojsonGeometry);
                 });
@@ -208,8 +205,8 @@
                 gaPreviewFeatures.clearHighlight();
               };
 
-              scope.selectFeature = function(feature) {
-                loadGeometry(feature, function(geojsonGeometry) {
+              scope.selectFeature = function(layerId, featureId) {
+                loadGeometry(layerId, featureId, function(geojsonGeometry) {
                   gaPreviewFeatures.clear();
                   gaPreviewFeatures.add(map, geojsonGeometry);
                   gaPreviewFeatures.zoom(map, geojsonGeometry);
@@ -318,10 +315,10 @@
                     var label = getLocationLabel(attrs);
                     var template = '<div class="tt-search" ' +
                         'ng-mouseover="addPreviewFeature(\'' +
-                        attrs.layer + '##' + attrs.feature_id + '\')"' +
+                        attrs.layer + '\', \'' + attrs.feature_id + '\')"' +
                         'ng-mouseout="removePreviewFeature()"' +
                         'ng-click="selectFeature(\'' +
-                        attrs.layer + '##' + attrs.feature_id + '\')" >' +
+                        attrs.layer + '\', \'' + attrs.feature_id + '\')" >' +
                         label + '</div>';
                     return template;
                   },
