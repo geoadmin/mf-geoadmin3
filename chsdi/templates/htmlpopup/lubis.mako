@@ -57,6 +57,10 @@ else:
     imgtype = 0
 endif
 
+toposhopscan = 'nein'
+if c['attributes']['filename'] :
+    toposhopscan = 'ja'
+
 datum = date_to_str(c['attributes']['flugdatum'])
 image_size = get_image_size(c['attributes']['filename'])
 params = (
@@ -97,7 +101,7 @@ quickview_url = get_quickview_url(request, params)
 % if 'contact_web' not in c['attributes'] and c['attributes']['ort'] is not None:
 <tr>
   <th class="cell-left">${_('link')} Toposhop</th>
-  <td><a href="http://www.toposhop.admin.ch/${lang}/shop/satair/lubis_1?ext=1&pics=${c['featureId']},${imgtype},${c['attributes']['ort'].strip()},${c['attributes']['y']},${c['attributes']['x']},nein" target="toposhop">Toposhop</a></td>
+  <td><a href="http://www.toposhop.admin.ch/${lang}/shop/satair/lubis_1?ext=1&pics=${c['featureId']},${imgtype},${c['attributes']['ort'].strip()},${c['attributes']['x']},${c['attributes']['y']},${toposhopscan}" target="toposhop">Toposhop</a></td>
 </tr>
 % endif
 % if 'contact_web' in c['attributes']:
@@ -138,9 +142,11 @@ endif
 loader_url = h.make_agnostic(route_url('ga_api', request))
 orientierung = '-'
 scan = '-'
+toposhopscan = 'nein'
 filename = c['attributes']['filename']
 if filename:
     scan = 'True'
+    toposhopscan = 'ja'
 endif
 if c['attributes']['orientierung']:
     orientierung = 'True'
@@ -177,7 +183,7 @@ quickview_url = get_quickview_url(request, params)
 % if 'contact_web' not in c['attributes'] and c['attributes']['ort'] is not None:
   <tr class="chsdi-no-print">
     <th class="cell-left">${_('link')} Toposhop</th>
-    <td><a href="http://www.toposhop.admin.ch/${lang}/shop/satair/lubis_1?ext=1&pics=${c['featureId']},${imgtype},${c['attributes']['ort'].strip()},${c['attributes']['y']},${c['attributes']['x']},nein" target="toposhop">Toposhop</a></td>
+    <td><a href="http://www.toposhop.admin.ch/${lang}/shop/satair/lubis_1?ext=1&pics=${c['featureId']},${imgtype},${c['attributes']['ort'].strip()},${c['attributes']['x']},${c['attributes']['y']},${toposhopscan}" target="toposhop">Toposhop</a></td>
   </tr>
 % endif
 % if 'contact_web' in c['attributes']:
