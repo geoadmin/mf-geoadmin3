@@ -55,10 +55,12 @@
             // Angularjs doesn't handle onprogress event
             $http.get(proxyUrl, {timeout: $scope.canceler.promise})
             .success(function(data, status, headers, config) {
+              var fileSize = headers('content-length');
               if (gaKml.isValidFileContent(data) &&
-                  gaKml.isValidFileSize(headers('content-length'))) {
+                  gaKml.isValidFileSize(fileSize)) {
                 $scope.userMessage = $translate('upload_succeeded');
                 $scope.fileContent = data;
+                $scope.fileSize = fileSize;
               } else {
                 $scope.userMessage = $translate('upload_failed');
                 $scope.progress = 0;
@@ -79,6 +81,7 @@
             var file = $scope.files[0];
             if (gaKml.isValidFileSize(file.size)) {
               $scope.file = file;
+              $scope.fileSize = file.size;
               if ($scope.isDropped) {
                 $scope.handleFile();
               }
@@ -148,7 +151,8 @@
                     undefined,
                 attribution: ($scope.currentTab === 2) ?
                     gaUrlUtils.getHostname($scope.fileUrl) :
-                    undefined
+                    undefined,
+                useImageVector: gaKml.useImageVector($scope.fileSize)
               });
 
               $scope.userMessage = $translate('parse_succeeded');

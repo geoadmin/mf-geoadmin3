@@ -183,7 +183,10 @@
 
                 for (i = 0; i < identifyCount; i++) {
                   layerToQuery = layersToQuery[i];
-                  if (layerToQuery instanceof ol.layer.Vector) {
+                  if (layerToQuery instanceof ol.layer.Vector ||
+                      (layerToQuery instanceof ol.layer.Image &&
+                      layerToQuery.getSource() instanceof
+                        ol.source.ImageVector)) {
                     incResponseCount();
                     var feature = findVectorFeature(pixel, layerToQuery);
                     if (feature) {
@@ -333,7 +336,10 @@
                 var bodId = l.bodId,
                     layerToQuery,
                     timestamps, timeBehaviour;
-                if (l instanceof ol.layer.Vector && !l.preview) {
+                if ((l instanceof ol.layer.Vector ||
+                    (l instanceof ol.layer.Image &&
+                    l.getSource() instanceof ol.source.ImageVector)) &&
+                    !l.preview) {
                   layerToQuery = l;
                 } else if (gaLayers.getLayer(bodId) &&
                     gaLayers.getLayerProperty(bodId, 'queryable') &&
