@@ -17,9 +17,9 @@
   ]);
 
   module.directive('gaSearch',
-      function($compile, $translate, $timeout, $http, gaMapUtils, gaLayers,
+      function($compile, $translate, $timeout, $rootScope, $http, gaMapUtils,
         gaLayerMetadataPopup, gaPermalink, gaUrlUtils, gaGetCoordinate,
-        gaBrowserSniffer, gaLayerFilters, gaKml, gaPreviewLayers,
+        gaBrowserSniffer, gaLayerFilters, gaKml, gaPreviewLayers, gaLayers,
         gaPreviewFeatures) {
           var currentTopic,
               footer = [
@@ -124,10 +124,8 @@
                        geometryFormat: 'geojson'
                     }
                   }).success(function(result) {
-                    var geojsonGeometry = geojsonParser.readFeature(
-                        result.feature);
-                    highlightedFeatures[key] = geojsonGeometry;
-                    cb(geojsonGeometry);
+                    highlightedFeatures[key] = result.feature;
+                    cb(result.feature);
                   }).error(function(reason) {
                     // TODO
                   });
@@ -192,9 +190,9 @@
                 if (gaBrowserSniffer.mobile) {
                   return;
                 }
-                loadGeometry(layerId, featureId, function(geojsonGeometry) {
+                loadGeometry(layerId, featureId, function(feature) {
                   gaPreviewFeatures.highlight(map,
-                      geojsonGeometry);
+                      geojsonParser.readFeature(feature));
                 });
               };
 
@@ -206,10 +204,14 @@
               };
 
               scope.selectFeature = function(layerId, featureId) {
-                loadGeometry(layerId, featureId, function(geojsonGeometry) {
-                  gaPreviewFeatures.clear();
-                  gaPreviewFeatures.add(map, geojsonGeometry);
-                  gaPreviewFeatures.zoom(map, geojsonGeometry);
+                loadGeometry(layerId, featureId, function(feature) {
+                  $rootScope.$broadcast('gaTriggerTooltipRequest', {
+                    features: [feature],
+                    onCloseCB: function() {}
+                  });
+                  gaPreviewFeatures.zoom(map,
+                      geojsonParser.readFeature(feature));
+
                 });
               };
 
