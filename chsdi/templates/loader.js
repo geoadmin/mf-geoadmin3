@@ -8,8 +8,13 @@ mode = request.params.get('mode')
 lang = request.lang
 appUrl = request.application_url.replace('http:', request.scheme + ':')
 layersconfig = appUrl + versioned( '/rest/services/all/MapServer/layersConfig?lang=' + lang)
-f = urllib2.urlopen(layersconfig)
-data = simplejson.loads(f.read())
+f = None
+try:
+    f = urllib2.urlopen(layersconfig)
+    data = simplejson.loads(f.read())
+finally:
+    if f:
+        f.close()
 layersconfig = """if (typeof window['GeoAdmin'] == 'undefined') window['GeoAdmin'] =  {}; window.GeoAdmin.getConfig  = function(){ return %s } """ % simplejson.dumps(data,separators=(',',':'))
 defaultLang = """function getDefaultLang() { return "%s" } """ % request.lang
 %>

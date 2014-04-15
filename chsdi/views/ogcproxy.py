@@ -28,7 +28,7 @@ def ogcproxy(request):
     # check for full url
     parsed_url = urlparse(url)
     if not parsed_url.netloc or parsed_url.scheme not in ("http", "https"):
-        return HTTPBadRequest()
+        raise HTTPBadRequest()
 
     # forward request to target (without Host Header)
     http = Http(disable_ssl_certificate_validation=True)
@@ -38,27 +38,34 @@ def ogcproxy(request):
         resp, content = http.request(url, method=request.method,
                                      body=request.body, headers=h)
     except:
-        return HTTPBadGateway()
+        raise HTTPBadGateway()
 
     #  All content types are allowed
     if "content-type" in resp:
         ct = resp["content-type"]
         if resp["content-type"] == "application/vnd.google-earth.kmz":
-            zipurl = urlopen(url)
-            zipfile = ZipFile(StringIO(zipurl.read()))
-            content = ''
-            for line in zipfile.open(zipfile.namelist()[0]).readlines():
-                content = content + line
-            ct = 'application/vnd.google-earth.kml+xml'
+            zipfile = None
+            try:
+                zipurl = urlopen(url)
+                zipfile = ZipFile(StringIO(zipurl.read()))
+                content = ''
+                for line in zipfile.open(zipfile.namelist()[0]).readlines():
+                    content = content + line
+                ct = 'application/vnd.google-earth.kml+xml'
+            except:
+                raise HTTPBadGateway()
+            finally:
+                if zipfile:
+                    zipurl.close()
     else:
-        return HTTPNotAcceptable()
+        raise HTTPNotAcceptable()
 
     if content.find('encoding=') > 0:
         m = re.search("encoding=\"(.*?)\\\"", content)
         try:
             data = content.decode(m.group(1))
         except Exception:
-            abort(406)
+            raise HTTPNotAcceptable()
         content = data.encode('utf-8')
 
     response = Response(content, status=resp.status,

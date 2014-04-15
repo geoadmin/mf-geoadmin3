@@ -18,14 +18,18 @@
         import csv
         from urllib2 import urlopen
         csv_url = 'http://dav0.bgdi.admin.ch/kogis_web/downloads/kgs/bilder/meta.txt'
-        csv_file = urlopen(csv_url)
-        reader = csv.reader(csv_file, delimiter =';')  # creates the reader object
-        pic_list = []
-        for i, row in enumerate(reader):   # iterates the rows of the file in orders
-            if i == 0: # The first row is NUMMER;BILDNR;FOTOGRAF;COPYRIGHT and cannot be parsed.
-                continue
-            if int(row[0]) == c['featureId']:
-                pic_list.append(map(lambda x: x.decode('cp1252'), row))
+        csv_file = None
+        try:
+            csv_file = urlopen(csv_url)
+            reader = csv.reader(csv_file, delimiter =';')  # creates the reader object
+            pic_list = []
+            for i, row in enumerate(reader):   # iterates the rows of the file in orders
+                if i == 0: # The first row is NUMMER;BILDNR;FOTOGRAF;COPYRIGHT and cannot be parsed.
+                    continue
+                if int(row[0]) == c['featureId']:
+                    pic_list.append(map(lambda x: x.decode('cp1252'), row))
+        finally:
+            csv_file.close()
     %>
     <script>
         $(document).ready(function(){

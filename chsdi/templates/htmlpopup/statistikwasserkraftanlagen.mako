@@ -47,10 +47,14 @@
     lang = 'de' if lang in ('de', 'rm', 'en') else lang
     import urllib2
     has_picture = True
+    xml_file = None
     try:
         xml_file == urllib2.urlopen("http://dav0.bgdi.admin.ch/bfe_pub/images_wasserkraftanlagen/%d.jpg" % c['featureId'])
     except:
         has_picture = False
+    finally:
+        if xml_file:
+            xml_file.close()
 
 %>
 <table>
