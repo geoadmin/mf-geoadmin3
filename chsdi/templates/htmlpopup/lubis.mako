@@ -14,15 +14,19 @@ def get_image_size(filename):
     height = 1
 
     if filename:
+        metadata_file = None
         try:
-            file = urllib2.urlopen("https://web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?DeepZoom=" + filename + ".dzi", timeout = 3)
-            xmldoc = minidom.parse(file)
+            metadata_file = urllib2.urlopen("https://web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?DeepZoom=" + filename + ".dzi", timeout = 3)
+            xmldoc = minidom.parse(metadata_file)
             dimensions = xmldoc.getElementsByTagName('Size')
             width = dimensions[0].getAttribute('Width')
             height = dimensions[0].getAttribute('Height')
         except: 
             width = 1
             height = 1
+        finally:
+            if metadata_file:
+                metadata_file.close()
 
     return (width, height)
 

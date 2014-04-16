@@ -12,11 +12,15 @@
         root = tree.getroot()
         fid = str(c['featureId'])
         html_attr = parseHydroXML(fid, root)
+        file_image = None
         try:
             image = "http://www.hydrodaten.admin.ch/lhg/az/plots/surface/3day_mobile/" + fid + ".png"
-            file = urllib2.urlopen(image)
+            file_image = urllib2.urlopen(image)
         except:
             image = None
+        finally:
+            if file_image:
+                file_image.close()
 
     %>
 % if image is None:

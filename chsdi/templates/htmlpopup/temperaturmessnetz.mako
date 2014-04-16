@@ -13,12 +13,16 @@
         fid = str(c['featureId'])
         link_image = str(c['featureId'])
         html_attr = parseHydroXML(fid, root)
+        image_file = None
         try:
             image = "http://www.hydrodaten.admin.ch/lhg/az/plots/surface/3day_mobile/T_" + link_image + ".png"
             image = "http://www.hydrodaten.admin.ch/lhg/az/plots/naduf/3day_mobile/T_" + link_image + ".png"
-            file = urllib2.urlopen(image)
+            image_file = urllib2.urlopen(image)
         except:
             image = None
+        finally:
+            if image_file:
+                image_file.close()
 
     %>
     <tr><td class="cell-left">${_('wassertemp_3tagtemp')}</td>

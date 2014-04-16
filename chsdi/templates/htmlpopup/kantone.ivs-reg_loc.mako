@@ -35,6 +35,7 @@
     PDF_Level_3 = PDF_Full 
     PDF_Level_3_Name = PDF_Level_2_Name + '.' + str(int(PDF_Full[8:10]))
     url = "http://dav0.bgdi.admin.ch/kogis_web/downloads/ivs/beschr/de/"+c['attributes']['ivs_sortsla']+".pdf"
+    response = None
     try:
         response = urlopen(url)
         pdf = True
@@ -42,6 +43,9 @@
         pdf = False
         ivs_kanton = c['attributes']['ivs_kanton'].replace(' ','').lower()
         default_pdf_link = "http://dav0.bgdi.admin.ch/kogis_web/downloads/ivs/Kantonshefte/"+ivs_kanton+"_kantonsheft.pdf"
+    finally:
+        if response:
+            response.close()
 %>
 
     % if pdf: 
