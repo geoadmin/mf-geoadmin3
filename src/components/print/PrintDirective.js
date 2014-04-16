@@ -625,6 +625,7 @@
           srs: proj.getCode(),
           units: proj.getUnits() || 'm',
           rotation: -((view.getRotation() * 180.0) / Math.PI),
+          app: 'config',
           lang: lang,
           dpi: that.dpi.value,
           layers: encLayers,
