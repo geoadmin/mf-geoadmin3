@@ -203,7 +203,7 @@
                 gaPreviewFeatures.clearHighlight();
               };
 
-              scope.selectFeature = function(layerId, featureId) {
+              var selectFeature = function(layerId, featureId) {
                 loadGeometry(layerId, featureId, function(feature) {
                   $rootScope.$broadcast('gaTriggerTooltipRequest', {
                     features: [feature],
@@ -323,10 +323,8 @@
                     var label = getLocationLabel(attrs);
                     var template = '<div class="tt-search" ' +
                         'ng-mouseover="addPreviewFeature(\'' +
-                        attrs.layer + '\', \'' + attrs.feature_id + '\')"' +
-                        'ng-mouseout="removePreviewFeature()"' +
-                        'ng-click="selectFeature(\'' +
-                        attrs.layer + '\', \'' + attrs.feature_id + '\')" >' +
+                        attrs.layer + '\', \'' + attrs.feature_id + '\')" ' +
+                        'ng-mouseout="removePreviewFeature()">' +
                         label + '</div>';
                     return template;
                   },
@@ -467,6 +465,11 @@
                       zoomToExtent(map, extent);
                       scope.removeCross();
                     }
+                  }
+                  if (origin === 'feature') {
+                    var layerId = datum.attrs.layer;
+                    var featureId = datum.attrs.feature_id;
+                    selectFeature(layerId, featureId);
                   }
                   if (origin === 'layer') {
                     scope.addLayer(datum.attrs.layer, false);
