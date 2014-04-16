@@ -1,7 +1,7 @@
 /*
  * This script should be called with phantomjs
  * It loads a given page and waits until
- * and element with a given ID is present on
+ * an element with a given ID is present on
  * the page.
  * It times out after a given timout is passed
  * > phantomjs load_page_until.js "http://map.geo.admin.ch/?topic=ech&snapshot=true" seo-load-end 10

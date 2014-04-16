@@ -28,7 +28,7 @@
       <h2 id="checkers">Checkers</h2>
           <a href="checker">Checker for home page</a> <br>
           <a href="checker_dev">Checker for dev page</a> <br> 
-      <h2 id="snapchot">Snapshot service</h2>
+      <h2 id="snapshot">Snapshot service</h2>
           <a href="snapshot?X=190000.00&Y=660000.00&zoom=1&lang=fr&topic=ech&bgLayer=ch.swisstopo.pixelkarte-farbe&snapshot=true">Snapshot</a> <br>
       <h2 id="mapservices">Map Services</h2> 
           <h3>Mapservice (Layer metadata)</h3>
