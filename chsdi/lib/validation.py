@@ -371,7 +371,7 @@ class SearchValidation(MapNameValidation):
     def searchText(self, value):
         if value is None:
             raise exc.HTTPBadRequest("Please provide a search text")
-        searchTextList = re.split(' |\'', value)
+        searchTextList = value.split(' ')
         # Remove empty strings
         searchTextList = filter(None, searchTextList)
         self._searchText = searchTextList

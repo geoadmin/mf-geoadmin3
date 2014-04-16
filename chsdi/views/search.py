@@ -4,8 +4,7 @@ from pyramid.view import view_config
 import pyramid.httpexceptions as exc
 
 from chsdi.lib.validation import SearchValidation
-from chsdi.lib.helpers import format_search_text
-from chsdi.lib.helpers import transformCoordinate
+from chsdi.lib.helpers import format_search_text, transformCoordinate
 from chsdi.lib.sphinxapi import sphinxapi
 from chsdi.lib import mortonspacekey as msk
 
@@ -206,20 +205,44 @@ class Search(SearchValidation):
         return self._parse_feature_results(temp)
 
     def _query_fields(self, fields):
-        infix = lambda x: ''.join(('*', x, '* & '))
-        prefix = lambda x: ''.join((x, '* & '))
-        infixSearchText = ''.join(infix(text) for text in self.searchText)[:-len(' & ')]
-        prefixSearchText = ''.join(prefix(text) for text in self.searchText)[:-len(' & ')]
-        sentence = ' '.join(self.searchText)
+        def format_number(string):
+            if len(string) <= 4:
+                return string
+            else:
+                return ''.join(
+                    (string, '*'))
 
+        def prefix_format_string(string):
+            if string.isdigit():
+                return format_number(string)
+            else:
+                return ''.join(
+                    (string, '*'))
+
+        def infix_format_string(string):
+            if string.isdigit():
+                return format_number(string)
+            else:
+                return ''.join(
+                    ('*', string, '*'))
+
+        sentence = ' '.join(self.searchText)
+        proximitySearchPre = ' '.join(
+            map(prefix_format_string, self.searchText)
+        )
+        proximitySearchInf = ' '.join(
+            map(infix_format_string, self.searchText)
+        )
         finalQuery = ''.join((
-            '%s "^%s$" | ' % (fields, sentence),          # starts and ends with sentence (exact matching)
-            '%s "^%s"  | ' % (fields, sentence),          # starts with sentence (order matters)
-            '%s "%s$"  | ' % (fields, sentence),          # ends with sentence (order matters)
-            '%s "^%s*" | ' % (fields, sentence),          # starts with sentence (prefix sentence matching)
-            '%s "*%s$" | ' % (fields, sentence),          # ends with sentence (start with anything as long as the end of the sentence is matched)
-            '%s (%s)   | ' % (fields, prefixSearchText),  # matching all words one by one (prefix)
-            '%s (%s)' % (fields, infixSearchText)         # matching all words one by one (infix)
+            '%s "^%s"  | ' % (fields, sentence),            # starts with sentence (order matters)
+            '%s "%s$"  | ' % (fields, sentence),            # ends with sentence (order matters)
+            '%s "%s"   | ' % (fields, sentence),            # exact matching word by word
+            '%s "%s"~1 | ' % (fields, sentence),            # proximity (a max of 1 word between each word), exact matching word by word
+            '%s "%s"~5 | ' % (fields, sentence),            # proximity (a max of 5 word between each word), exact matching word by word
+            '%s "%s"   | ' % (fields, proximitySearchPre),  # prefix search (except for int <= 4 numbers)
+            '%s "%s"~1 | ' % (fields, proximitySearchPre),  # proximity (a max of 1 word between each word), prefix search (except for int <= 4 numbers)
+            '%s "%s"~5 | ' % (fields, proximitySearchPre),  # proximity (a max of 5 word between each word), prefix search (except for int <= 4 numbers)
+            '%s "%s"~5' % (fields, proximitySearchInf)      # proximity (a max of 5 word between each word), infix search (except for int <= 4 numbers)
         ))
 
         return finalQuery
