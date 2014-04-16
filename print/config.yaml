@@ -19,8 +19,11 @@ scales: [2500000, 1500000, 1000000, 500000, 200000, 100000, 50000, 25000, 20000,
 
 outputFilename: 'map.geo.admin.ch.pdf'
 
-globalParallelFetches: 25
-perHostParallelFetches: 25
+globalParallelFetches: 32
+perHostParallelFetches: 32
+connectionTimeout: 30000
+socketTimeout: 60000
+
 #---------------------------------------
 # A4 landscape:
 #---------------------------------------
