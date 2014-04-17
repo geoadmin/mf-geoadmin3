@@ -351,8 +351,8 @@ Only RESTFul interface is available.
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | type (required)                   | The type of performed search. Specify “featuresearch” to perform a feature search.        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
-| bbox (optional)                   | A comma separated list of 4 coordinates representing the bounding box on which features   |
-|                                   | should be filtered (SRID: 21781).                                                         |
+| bbox (optional)                   | A comma separated list of 4 coordinates representing the bounding box according to which  |
+|                                   | features should be ordered (SRID: 21781).                                                 |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | features (required)               | A comma separated list of technical layer names.                                          |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
