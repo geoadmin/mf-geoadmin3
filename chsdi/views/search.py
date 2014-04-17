@@ -148,7 +148,12 @@ class Search(SearchValidation):
 
         self.sphinx.SetLimits(0, self.FEATURE_LIMIT)
         self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
-        self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, '@weight DESC')
+        if self.bbox:
+            geoAnchor = self._get_geoanchor_from_bbox()
+            self.sphinx.SetGeoAnchor('lat', 'lon', geoAnchor.GetY(), geoAnchor.GetX())
+            self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, '@weight DESC, @geodist ASC')
+        else:
+            self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, '@weight DESC')
 
         timeFilter = []
         timeInterval = re.search(r'((\b\d{4})-(\d{4}\b))', ' '.join(self.searchText)) or False
@@ -165,8 +170,6 @@ class Search(SearchValidation):
             if min != max:
                 timeFilter = [start, stop]
         searchdText = self._query_fields('@detail')
-        if self.quadindex is not None:
-            searchdText += ' & (' + self._get_quadindex_string() + ')'
         self._add_feature_queries(searchdText, timeFilter)
         try:
             temp = self.sphinx.RunQueries()
