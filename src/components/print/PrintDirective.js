@@ -18,10 +18,9 @@
     var pdfLegendString = '_big.pdf';
     var printRectangle;
     var deregister;
-    var DPI = 72;
-    var DPI2 = 254;
+    var POINTS_PER_INCH = 72; //PostScript points 1/72"
     var MM_PER_INCHES = 25.4;
-    var UNITS_RATIO = 39.37;
+    var UNITS_RATIO = 39.37; // inches per meter
     var printConfigLoaded = false;
 
     // Get print config
@@ -609,8 +608,6 @@
         }
       });
 
-      // scale = resolution * inches per map unit (m) * dpi
-      var scale = parseInt(view.getResolution() * UNITS_RATIO * DPI2);
       var scales = this.scales.map(function(scale) {
         return parseInt(scale.value);
       });
@@ -687,8 +684,10 @@
       var width = resolution * (size[0] - ($scope.options.widthMargin * 2));
       var height = resolution * (size[1] - ($scope.options.heightMargin * 2));
       var layoutSize = $scope.layout.map;
-      var scaleWidth = width * UNITS_RATIO * DPI / layoutSize.width;
-      var scaleHeight = height * UNITS_RATIO * DPI / layoutSize.height;
+      var scaleWidth = width * UNITS_RATIO * POINTS_PER_INCH /
+          layoutSize.width;
+      var scaleHeight = height * UNITS_RATIO * POINTS_PER_INCH /
+          layoutSize.height;
       var testScale = scaleWidth;
       if (scaleHeight < testScale) {
         testScale = scaleHeight;
@@ -709,10 +708,11 @@
       var s = parseFloat(scale.value);
       var size = $scope.layout.map; // papersize in dot!
       var view = $scope.map.getView();
-      var center = view.getCenter();
       var resolution = view.getResolution();
-      var w = size.width / DPI * MM_PER_INCHES / 1000.0 * s / resolution;
-      var h = size.height / DPI * MM_PER_INCHES / 1000.0 * s / resolution;
+      var w = size.width / POINTS_PER_INCH * MM_PER_INCHES / 1000.0 *
+          s / resolution * ol.BrowserFeature.DEVICE_PIXEL_RATIO;
+      var h = size.height / POINTS_PER_INCH * MM_PER_INCHES / 1000.0 *
+          s / resolution * ol.BrowserFeature.DEVICE_PIXEL_RATIO;
       var mapSize = $scope.map.getSize();
       var center = [mapSize[0] * ol.BrowserFeature.DEVICE_PIXEL_RATIO / 2 ,
           mapSize[1] * ol.BrowserFeature.DEVICE_PIXEL_RATIO / 2];
