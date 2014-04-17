@@ -162,11 +162,13 @@ class TestSearchServiceView(TestsBase):
     def test_features_wrong_time_2(self):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'locations', 'bbox': '542200,206800,542200,206800', 'timeInstant': '1952.00'}, status=400)
 
-    def test_featuresearch_quad_len_1(self):
-        resp = self.testapp.get('/rest/services/funksender/SearchServer', params={'type': 'locations', 'searchText': 'laus', 'features': 'ch.bakom.radio-fernsehsender', 'bbox': '356250,72250,963750,307750', 'lang': 'de'}, status=200)
-        self.failUnless(resp.content_type == 'application/json')
-
     def test_locationsearch_with_timeinstant(self):
         resp = self.testapp.get('/rest/services/luftbilder/SearchServer', params={'type': 'locations', 'searchText': 'raron', 'features': 'ch.swisstopo.lubis-luftbilder_schwarzweiss,ch.swisstopo.lubis-luftbilder_farbe', 'timeEnable': 'true,true', 'bbox': '666045,170025,675645,174235', 'timeInstant': '2008'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(len(resp.json['results']) != 0)
+
+    def test_featuressearch_geodist(self):
+        resp = self.testapp.get('/rest/services/all/SearchServer', params={'searchText': 'gen', 'features': 'ch.babs.kulturgueter', 'type': 'featuresearch', 'bbox': '688301,166874,688301,166874')
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'feature')
+        self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'general-suworow-denkmal')
