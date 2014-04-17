@@ -46,7 +46,7 @@ class Search(SearchValidation):
 
     @view_config(route_name='search', renderer='jsonp')
     def search(self):
-        self.sphinx.SetConnectTimeout(2.0)
+        self.sphinx.SetConnectTimeout(2.5)
         # create a quadindex if the bbox is defined
         if self.bbox is not None and self.typeInfo != 'layers':
             self._get_quad_index()
