@@ -205,44 +205,33 @@ class Search(SearchValidation):
         return self._parse_feature_results(temp)
 
     def _query_fields(self, fields):
-        def format_number(string):
-            if len(string) <= 4:
-                return string
-            else:
-                return ''.join(
-                    (string, '*'))
+        exact_nondigit_prefix_digit = lambda x: ''.join((x, '*')) if x.isdigit() else x
+        prefix_nondigit_exact_digit = lambda x: x if x.isdigit() else ''.join((x, '*'))
+        prefix_match_all = lambda x: ''.join((x, '*'))
+        infix_nondigit_prefix_digit = lambda x: ''.join((x, '*')) if x.isdigit() else ''.join(('*', x, '*'))
 
-        def prefix_format_string(string):
-            if string.isdigit():
-                return format_number(string)
-            else:
-                return ''.join(
-                    (string, '*'))
+        exactAll = ' '.join(self.searchText)
+        exactNonDigitPreDigit = ' '.join(
+            map(exact_nondigit_prefix_digit, self.searchText))
+        preNonDigitExactDigit = ' '.join(
+            map(prefix_nondigit_exact_digit, self.searchText))
+        preNonDigitPreDigit = ' '.join(
+            map(prefix_match_all, self.searchText))
+        infNonDigitPreDigit = ' '.join(
+            map(infix_nondigit_prefix_digit, self.searchText))
 
-        def infix_format_string(string):
-            if string.isdigit():
-                return format_number(string)
-            else:
-                return ''.join(
-                    ('*', string, '*'))
-
-        sentence = ' '.join(self.searchText)
-        proximitySearchPre = ' '.join(
-            map(prefix_format_string, self.searchText)
-        )
-        proximitySearchInf = ' '.join(
-            map(infix_format_string, self.searchText)
-        )
-        finalQuery = ''.join((
-            '%s "^%s"  | ' % (fields, sentence),            # starts with sentence (order matters)
-            '%s "%s$"  | ' % (fields, sentence),            # ends with sentence (order matters)
-            '%s "%s"   | ' % (fields, sentence),            # exact matching word by word
-            '%s "%s"~1 | ' % (fields, sentence),            # proximity (a max of 1 word between each word), exact matching word by word
-            '%s "%s"~5 | ' % (fields, sentence),            # proximity (a max of 5 word between each word), exact matching word by word
-            '%s "%s"   | ' % (fields, proximitySearchPre),  # prefix search (except for int <= 4 numbers)
-            '%s "%s"~1 | ' % (fields, proximitySearchPre),  # proximity (a max of 1 word between each word), prefix search (except for int <= 4 numbers)
-            '%s "%s"~5 | ' % (fields, proximitySearchPre),  # proximity (a max of 5 word between each word), prefix search (except for int <= 4 numbers)
-            '%s "%s"~5' % (fields, proximitySearchInf)      # proximity (a max of 5 word between each word), infix search (except for int <= 4 numbers)
+        finalQuery = ' | '.join((
+            '%s "^%s"' % (fields, exactAll),
+            '%s "%s"' % (fields, exactAll),
+            '%s "%s"~5' % (fields, exactAll),
+            '%s "%s"' % (fields, exactNonDigitPreDigit),
+            '%s "%s"~5' % (fields, exactNonDigitPreDigit),
+            '%s "%s"' % (fields, preNonDigitExactDigit),
+            '%s "%s"~5' % (fields, preNonDigitExactDigit),
+            '%s "%s"' % (fields, preNonDigitPreDigit),
+            '%s "%s"~5' % (fields, preNonDigitPreDigit),
+            '%s "%s"' % (fields, infNonDigitPreDigit),
+            '%s "%s"~5' % (fields, infNonDigitPreDigit)
         ))
 
         return finalQuery
