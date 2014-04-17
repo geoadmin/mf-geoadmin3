@@ -4,6 +4,7 @@
   var module = angular.module('ga_styles_service', []);
 
   module.provider('gaStyleFactory', function() {
+
     var selectStroke = new ol.style.Stroke({
       color: [255, 128, 0, 1],
       width: 3
@@ -49,10 +50,18 @@
       })
     });
 
+    var defaultRectangleStyle = new ol.style.Style({
+      fill: new ol.style.Fill({
+        color: 'rgba(255, 0, 0, 0.0)'
+      }),
+      stroke: hlStroke
+    });
+
     var styles = {
       'select': selectStyle,
       'highlight': hlStyle,
-      'selectrectangle': srStyle
+      'selectrectangle': srStyle,
+      'defaultrectangle': defaultRectangleStyle
     };
 
     this.$get = function() {

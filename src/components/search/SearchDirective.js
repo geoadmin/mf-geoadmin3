@@ -1,6 +1,7 @@
 (function() {
   goog.provide('ga_search_directive');
 
+  goog.require('ga_custom_overlay_service');
   goog.require('ga_layer_metadata_popup_service');
   goog.require('ga_map_service');
   goog.require('ga_permalink');
@@ -8,6 +9,7 @@
   goog.require('ga_urlutils_service');
 
   var module = angular.module('ga_search_directive', [
+    'ga_custom_overlay_service',
     'ga_layer_metadata_popup_service',
     'ga_map_service',
     'ga_permalink',
@@ -20,7 +22,7 @@
       function($compile, $translate, $timeout, $rootScope, $http, gaMapUtils,
         gaLayerMetadataPopup, gaPermalink, gaUrlUtils, gaGetCoordinate,
         gaBrowserSniffer, gaLayerFilters, gaKml, gaPreviewLayers, gaLayers,
-        gaPreviewFeatures, gaPermalinkSearch) {
+        gaPreviewFeatures, gaCustomOverlay, gaPermalinkSearch) {
           var currentTopic,
               footer = [
             '<div class="ga-search-footer clearfix">',
@@ -138,8 +140,6 @@
 
               scope.layers = map.getLayers().getArray();
 
-              scope.overlay = undefined;
-
               scope.getHref = function() {
                 // set those values only on mouseover
                 scope.encodedPermalinkHref =
@@ -171,11 +171,11 @@
                 }
 
                 var layer = gaMapUtils.getMapOverlayForBodId(
-                    scope.map, bodId);
+                    map, bodId);
 
                 // Don't add preview layer if the layer is already on the map
                 if (!layer) {
-                  gaPreviewLayers.addBodLayer(scope.map, bodId);
+                  gaPreviewLayers.addBodLayer(map, bodId);
                 }
               };
 
@@ -183,7 +183,7 @@
                 if (gaBrowserSniffer.mobile) {
                   return;
                 }
-                gaPreviewLayers.removeAll(scope.map);
+                gaPreviewLayers.removeAll(map);
               };
 
               scope.addPreviewFeature = function(layerId, featureId) {
@@ -215,23 +215,12 @@
                 });
               };
 
-              scope.addCross = function(center) {
-                var cross = $('<div></div>')
-                  .addClass('ga-crosshair')
-                  .addClass('cross');
-                scope.removeCross();
-                scope.overlay = new ol.Overlay({
-                  element: cross.get(0),
-                  position: center,
-                  stopEvent: false
-                });
-                map.addOverlay(scope.overlay);
+              var addOverlay = function(extent) {
+                gaCustomOverlay.add(map, extent);
               };
 
-              scope.removeCross = function() {
-                if (scope.overlay) {
-                  map.removeOverlay(scope.overlay);
-                }
+              var removeOverlay = function() {
+                gaCustomOverlay.removeAll(map);
               };
 
               var getLocationLabel = function(attrs) {
@@ -288,10 +277,6 @@
                          gaGetCoordinate(
                            map.getView().getProjection().getExtent(),
                            scope.query);
-                       if (position) {
-                         moveTo(map, 8, position);
-                         scope.addCross(position);
-                       }
                        return !position;
                     },
                     replace: function(url, searchText) {
@@ -443,6 +428,8 @@
               taElt.typeahead(typeAheadDatasets)
                 .on('typeahead:selected', function(event, datum) {
                   var origin = datum.attrs.origin;
+                  removeOverlay();
+                  scope.removePreviewLayer();
                   scope.searchFocused = false;
                   taElt.trigger('blur', [true]);
                   if (origin !== 'feature' && origin !== 'layer') {
@@ -451,8 +438,7 @@
                     var originZoom = {
                       address: 10,
                       parcel: 10,
-                      sn25: 8,
-                      feature: 7
+                      sn25: 8
                     };
 
                     if (originZoom.hasOwnProperty(origin)) {
@@ -460,11 +446,10 @@
                       var center = [(extent[0] + extent[2]) / 2,
                         (extent[1] + extent[3]) / 2];
                       moveTo(map, zoom, center);
-                      scope.addCross(center);
                     } else {
                       zoomToExtent(map, extent);
-                      scope.removeCross();
                     }
+                    addOverlay(extent);
                   }
                   if (origin === 'feature') {
                     var layerId = datum.attrs.layer;
@@ -534,7 +519,7 @@
                 $(taElt).val('');
                 $(taElt).data('ttView').inputView.setQuery('');
                 scope.query = '';
-                scope.removeCross();
+                removeOverlay();
                 viewDropDown.clearSuggestions();
                 scope.searchFocused = false;
               };
