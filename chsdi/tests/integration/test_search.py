@@ -168,7 +168,7 @@ class TestSearchServiceView(TestsBase):
         self.failUnless(len(resp.json['results']) != 0)
 
     def test_featuressearch_geodist(self):
-        resp = self.testapp.get('/rest/services/all/SearchServer', params={'searchText': 'gen', 'features': 'ch.babs.kulturgueter', 'type': 'featuresearch', 'bbox': '688301,166874,688301,166874')
+        resp = self.testapp.get('/rest/services/all/SearchServer', params={'searchText': 'gen', 'features': 'ch.babs.kulturgueter', 'type': 'featuresearch', 'bbox': '688301,166874,688301,166874'})
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'feature')
         self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'general-suworow-denkmal')
