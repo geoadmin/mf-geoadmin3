@@ -3,7 +3,7 @@
 <%def name="table_body(c, lang)">
 <% 
     import datetime
-    lang = lang if lang in ('fr','it','en') else 'de'
+    lang = lang if lang in ('fr','it','de') else 'de'
     description = 'description_%s' % lang
     facility_kind = 'fackind_text_%s' % lang
     facility_status = 'facstatus_text_%s' % lang
