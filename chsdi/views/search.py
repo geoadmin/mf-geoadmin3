@@ -228,6 +228,7 @@ class Search(SearchValidation):
             '%s "%s"~5' % (fields, exactNonDigitPreDigit),
             '%s "%s"' % (fields, preNonDigitExactDigit),
             '%s "%s"~5' % (fields, preNonDigitExactDigit),
+            '%s "^%s"' % (fields, preNonDigitPreDigit),
             '%s "%s"' % (fields, preNonDigitPreDigit),
             '%s "%s"~5' % (fields, preNonDigitPreDigit),
             '%s "%s"' % (fields, infNonDigitPreDigit),
