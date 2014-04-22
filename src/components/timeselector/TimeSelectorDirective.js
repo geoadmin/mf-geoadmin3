@@ -35,7 +35,7 @@
       // display of the slider (minor and major divisions ...)
       for (var i = $scope.maxYear; i >= $scope.minYear; i--) {
         var year = {
-          label: (gaBrowserSniffer.mobile) ? i : $scope.formatYear(i),
+          label: $scope.formatYear(i),
           value: i,
           available: false,
           minor: false,
@@ -202,8 +202,7 @@
       return {
         restrict: 'A',
         templateUrl: function(element, attrs) {
-          return 'components/timeselector/partials/timeselector.' +
-              ((gaBrowserSniffer.mobile) ? 'select.html' : 'html');
+          return 'components/timeselector/partials/timeselector.html';
         },
         scope: {
           map: '=gaTimeSelectorMap',
