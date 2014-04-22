@@ -4,8 +4,7 @@ from pyramid.view import view_config
 import pyramid.httpexceptions as exc
 
 from chsdi.lib.validation import SearchValidation
-from chsdi.lib.helpers import format_search_text
-from chsdi.lib.helpers import transformCoordinate
+from chsdi.lib.helpers import format_search_text, transformCoordinate
 from chsdi.lib.sphinxapi import sphinxapi
 from chsdi.lib import mortonspacekey as msk
 
@@ -206,20 +205,34 @@ class Search(SearchValidation):
         return self._parse_feature_results(temp)
 
     def _query_fields(self, fields):
-        infix = lambda x: ''.join(('*', x, '* & '))
-        prefix = lambda x: ''.join((x, '* & '))
-        infixSearchText = ''.join(infix(text) for text in self.searchText)[:-len(' & ')]
-        prefixSearchText = ''.join(prefix(text) for text in self.searchText)[:-len(' & ')]
-        sentence = ' '.join(self.searchText)
+        exact_nondigit_prefix_digit = lambda x: ''.join((x, '*')) if x.isdigit() else x
+        prefix_nondigit_exact_digit = lambda x: x if x.isdigit() else ''.join((x, '*'))
+        prefix_match_all = lambda x: ''.join((x, '*'))
+        infix_nondigit_prefix_digit = lambda x: ''.join((x, '*')) if x.isdigit() else ''.join(('*', x, '*'))
 
-        finalQuery = ''.join((
-            '%s "^%s$" | ' % (fields, sentence),          # starts and ends with sentence (exact matching)
-            '%s "^%s"  | ' % (fields, sentence),          # starts with sentence (order matters)
-            '%s "%s$"  | ' % (fields, sentence),          # ends with sentence (order matters)
-            '%s "^%s*" | ' % (fields, sentence),          # starts with sentence (prefix sentence matching)
-            '%s "*%s$" | ' % (fields, sentence),          # ends with sentence (start with anything as long as the end of the sentence is matched)
-            '%s (%s)   | ' % (fields, prefixSearchText),  # matching all words one by one (prefix)
-            '%s (%s)' % (fields, infixSearchText)         # matching all words one by one (infix)
+        exactAll = ' '.join(self.searchText)
+        exactNonDigitPreDigit = ' '.join(
+            map(exact_nondigit_prefix_digit, self.searchText))
+        preNonDigitExactDigit = ' '.join(
+            map(prefix_nondigit_exact_digit, self.searchText))
+        preNonDigitPreDigit = ' '.join(
+            map(prefix_match_all, self.searchText))
+        infNonDigitPreDigit = ' '.join(
+            map(infix_nondigit_prefix_digit, self.searchText))
+
+        finalQuery = ' | '.join((
+            '%s "^%s"' % (fields, exactAll),
+            '%s "%s"' % (fields, exactAll),
+            '%s "%s"~5' % (fields, exactAll),
+            '%s "%s"' % (fields, exactNonDigitPreDigit),
+            '%s "%s"~5' % (fields, exactNonDigitPreDigit),
+            '%s "%s"' % (fields, preNonDigitExactDigit),
+            '%s "%s"~5' % (fields, preNonDigitExactDigit),
+            '%s "^%s"' % (fields, preNonDigitPreDigit),
+            '%s "%s"' % (fields, preNonDigitPreDigit),
+            '%s "%s"~5' % (fields, preNonDigitPreDigit),
+            '%s "%s"' % (fields, infNonDigitPreDigit),
+            '%s "%s"~5' % (fields, infNonDigitPreDigit)
         ))
 
         return finalQuery
