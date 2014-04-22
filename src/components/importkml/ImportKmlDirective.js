@@ -55,8 +55,16 @@
             // Angularjs doesn't handle onprogress event
             $http.get(proxyUrl, {timeout: $scope.canceler.promise})
             .success(function(data, status, headers, config) {
-              $scope.userMessage = $translate('upload_succeeded');
-              $scope.fileContent = data;
+              var fileSize = headers('content-length');
+              if (gaKml.isValidFileContent(data) &&
+                  gaKml.isValidFileSize(fileSize)) {
+                $scope.userMessage = $translate('upload_succeeded');
+                $scope.fileContent = data;
+                $scope.fileSize = fileSize;
+              } else {
+                $scope.userMessage = $translate('upload_failed');
+                $scope.progress = 0;
+              }
             })
             .error(function(data, status, headers, config) {
               $scope.userMessage = $translate('upload_failed');
@@ -71,8 +79,9 @@
         $scope.handleFileList = function() {
           if ($scope.files && $scope.files.length > 0) {
             var file = $scope.files[0];
-            if ($scope.isValidFile(file)) {
+            if (gaKml.isValidFileSize(file.size)) {
               $scope.file = file;
+              $scope.fileSize = file.size;
               if ($scope.isDropped) {
                 $scope.handleFile();
               }
@@ -112,8 +121,12 @@
         // Callback when FileReader has finished
         $scope.handleReaderLoadEnd = function(evt) {
           $scope.$apply(function() {
-            $scope.userMessage = $translate('read_succeeded');
-            $scope.fileContent = evt.target.result;
+            if (gaKml.isValidFileContent(evt.target.result)) {
+              $scope.userMessage = $translate('read_succeeded');
+              $scope.fileContent = evt.target.result;
+            } else {
+              $scope.handleReaderError(evt);
+            }
           });
         };
 
@@ -138,7 +151,8 @@
                     undefined,
                 attribution: ($scope.currentTab === 2) ?
                     gaUrlUtils.getHostname($scope.fileUrl) :
-                    undefined
+                    undefined,
+                useImageVector: gaKml.useImageVector($scope.fileSize)
               });
 
               $scope.userMessage = $translate('parse_succeeded');
@@ -178,19 +192,6 @@
           $scope.files = null;
           $scope.fileUrl = null;
           $scope.fileContent = null;
-        };
-
-        // Test the validity of the file
-        $scope.isValidFile = function(file) {
-          if (!/\.kml$/g.test(file.name)) {
-            alert($translate('file_is_not_kml'));
-            return false;
-          }
-          if (file.size > $scope.options.maxFileSize) {
-            alert($translate('file_too_large'));
-            return false;
-          }
-          return true;
         };
       }
   );

@@ -362,7 +362,7 @@
     });
 
     this.$get = function($http, gaPopup, gaDefinePropertiesForLayer,
-        gaMapClick, gaMapUtils, gaGlobalOptions, $rootScope) {
+        gaMapClick, gaMapUtils, gaGlobalOptions, $rootScope, $translate) {
       var Kml = function(proxyUrl) {
 
         /**
@@ -393,19 +393,31 @@
               gaMapUtils.getAttribution(options.attribution)
             ];
           }
-          var olLayer = new ol.layer.Vector({
+          var source = new ol.source.Vector({
+            features: features,
+            attributions: attributions
+          });
+
+          var layerOptions = {
             id: 'KML||' + options.url,
             url: options.url,
             type: 'KML',
             label: options.label || kmlFormat.readName(kml) || 'KML',
             opacity: options.opacity,
             visible: options.visible,
-            attribution: options.attribution,
-            source: new ol.source.Vector({
-              features: features,
+            source: source
+          };
+
+          var olLayer;
+          if (options.useImageVector === true) {
+            layerOptions.source = new ol.source.ImageVector({
+              source: layerOptions.source,
               attributions: attributions
-            })
-          });
+            });
+            olLayer = new ol.layer.Image(layerOptions);
+          } else {
+            olLayer = new ol.layer.Vector(layerOptions);
+          }
           gaDefinePropertiesForLayer(olLayer);
           return olLayer;
         };
@@ -430,10 +442,46 @@
 
         this.addKmlToMapForUrl = function(map, url, layerOptions, index) {
           layerOptions.url = url;
-          $http.get(proxyUrl + encodeURIComponent(url)).success(function(data) {
-            addKmlLayer(map, data, layerOptions, index);
+          var that = this;
+          $http.get(proxyUrl + encodeURIComponent(url)).success(function(data,
+              status, headers, config) {
+             var fileSize = headers('content-length');
+             if (that.isValidFileContent(data) &&
+                 that.isValidFileSize(fileSize)) {
+               if (layerOptions &&
+                   !angular.isDefined(layerOptions.useImageVector)) {
+                 layerOptions.useImageVector = that.useImageVector(fileSize);
+               }
+               addKmlLayer(map, data, layerOptions, index);
+             }
           });
         };
+
+        // Defines if we should use a ol.layer.Image instead of a
+        // ol.layer.Vector. Currently we define this, only testing the
+        // file size but it could be another condition.
+        this.useImageVector = function(fileSize) {
+          return (!!fileSize && parseInt(fileSize) >= 1000000); // < 1mo
+        };
+
+        // Test the validity of the file size
+        this.isValidFileSize = function(fileSize) {
+          if (fileSize > 20000000) { // 20mo
+            alert($translate('file_too_large'));
+            return false;
+          }
+          return true;
+        };
+
+        // Test the validity of the file content
+        this.isValidFileContent = function(fileContent) {
+          if (!/<kml/.test(fileContent) || !/<\/kml>/.test(fileContent)) {
+            alert($translate('file_is_not_kml'));
+            return false;
+          }
+          return true;
+        };
+
         this.proxyUrl = proxyUrl;
       };
       return new Kml(gaGlobalOptions.ogcproxyUrl);

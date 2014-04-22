@@ -146,7 +146,11 @@
               src instanceof ol.source.TileWMS) {
             encLayer = $scope.encoders.layers['WMS'].call(this,
                 layer, layerConfig);
-          } else if (layer instanceof ol.layer.Vector) {
+          } else if (src instanceof ol.source.Vector ||
+              src instanceof ol.source.ImageVector) {
+            if (src instanceof ol.source.ImageVector) {
+              src = src.getSource();
+            }
             var features = [];
             src.forEachFeatureInExtent(ext, function(feat) {
               features.push(feat);
@@ -373,12 +377,14 @@
           var encFeatures = [];
           var stylesDict = {};
           var styleId = 0;
+          var hasLayerStyleFunction = !!(layer.getStyleFunction &&
+              layer.getStyleFunction());
 
           angular.forEach(features, function(feature) {
             var encStyle = {
               id: styleId
             };
-            var styles = (layer.getStyleFunction()) ?
+            var styles = (hasLayerStyleFunction) ?
                 layer.getStyleFunction()(feature) :
                 ol.feature.defaultStyleFunction(feature);
 
