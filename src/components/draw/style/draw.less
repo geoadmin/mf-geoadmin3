@@ -1,7 +1,7 @@
 [ga-draw] {
   .ga-draw-buttons {
     position: relative;
-    width: 100%;
+    width: 350px;
     padding: 0px 0px 5px;
     
     button {
@@ -55,9 +55,44 @@
     }
 
     label {
-     width: 110px;
+     width: 140px;
      text-align: right;
     }
+  }
+  
+  .ga-icons {
+    height: 140px;
+    overflow: hidden;
+
+    .ga-choose-icon {
+      width: 340px;
+      height: 72px;
+      overflow-y: auto; 
+    }
+
+    .ga-icon-size-24 img {
+      width: 24px;
+    }
+
+    .ga-icon-size-36 img {
+      width: 36px;
+    }
+
+    .ga-icon-size-48 img {
+      width: 48px;
+    }
     
+    img {
+      cursor: pointer;
+    }
+    
+    img:hover {
+      background-color: #e9e9e9;
+    }
+    
+    .ga-selected, .ga-selected:hover {
+      background-color: darkgray;
+      cursor: default;
+    }
   }
 }

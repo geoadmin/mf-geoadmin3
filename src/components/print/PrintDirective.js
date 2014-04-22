@@ -293,6 +293,7 @@
         }
         if (imageStyle instanceof ol.style.Icon) {
           literal.externalGraphic = imageStyle.getSrc();
+          literal.fillOpacity = 1;
         } else { // ol.style.Circle
           fill = imageStyle.getFill();
           stroke = imageStyle.getStroke();
@@ -304,7 +305,7 @@
         var color = ol.color.asArray(fill.getColor());
         literal.fillColor = toHexa(color);
         literal.fillOpacity = color[3];
-      } else {
+      } else if (!literal.fillOpacity) {
         literal.fillOpacity = 0; // No fill
       }
 

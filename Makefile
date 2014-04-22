@@ -148,7 +148,7 @@ prd/mobile.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-rende
 
 prd/img/: src/img/*
 	mkdir -p $@
-	cp $^ $@
+	cp -R $^ $@
 
 prd/style/font-awesome-3.2.1/font/: src/style/font-awesome-3.2.1/font/*
 	mkdir -p $@

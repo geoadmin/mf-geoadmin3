@@ -3,8 +3,7 @@
     <button ng-repeat="tool in options.tools"
       ng-click="toggleTool(tool)"
       title="{{tool.description | translate}}"
-      class="{{tool.cssClass}}
-      {{options[tool.activeKey] ? 'active' : ''}}">
+      class="{{tool.cssClass}} {{options[tool.activeKey] ? 'active' : ''}}">
       <i class="{{tool.iconClass}}"></i>
       <div translate>{{tool.title}}</div>
     </button>
@@ -19,11 +18,29 @@
       <input ng-model="options.text" type="text"
       placeholder="{{'draw_text_placeholder' | translate}}"/>
     </div>
-    <div>
+    <div ng-if="options.isTextActive || options.isLineActive || options.isPolygonActive || useColorStyle">
       <label translate>modify_color_label</label>: 
       <select ng-model="options.color" ng-options="options.translate(c.name) for c in options.colors">
       </select>
     </div>
+    <div class="ga-icons" ng-if="options.isPointActive || useIconStyle">
+      <div>
+        <label translate>modify_icon_size_label</label>: 
+        <select ng-model="options.iconSize" ng-options="s.label for s in options.iconSizes">
+        </select>
+      </div>
+      <div>
+        <label translate>modify_icon_label</label>: 
+        <div class="ga-choose-icon ga-icon-size-{{options.iconSize.value[0]}}">
+          <img class="{{(options.icon == i) ? 'ga-selected' : ''}}" 
+               draggable="false" 
+               ng-click="options.icon = i" 
+               ng-repeat="i in options.icons" 
+               ng-src="{{i.url}}" />
+        </div>
+      </div>
+    </div>
+
     <div ng-if="options.isModifyActive">
       <button class="btn btn-default" ng-click="deleteFeatures()" translate>draw_delete_selected_features</button>
     </div>
