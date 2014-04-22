@@ -12,6 +12,7 @@ import pyramid.httpexceptions as exc
 def luftbilder(request):
     width = request.params.get('width')
     height = request.params.get('height')
+    rotation = request.params.get('rotation')
     title = request.params.get('title')
     bildnummer = request.params.get('bildnummer')
     datenherr = request.params.get('datenherr')
@@ -25,6 +26,7 @@ def luftbilder(request):
         {
             'width': width,
             'height': height,
+            'rotation': rotation,
             'title': title,
             'bildnummer': bildnummer,
             'datenherr': datenherr,

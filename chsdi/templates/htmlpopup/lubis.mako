@@ -254,7 +254,7 @@ viewer_url = get_viewer_url(request, params)
       map.recenterFeature('${c['layerBodId']}', '${c['featureId']}');
 
 % if preview_url != "":
-      ${lubis_map.init_map(c['featureId'], image_width, image_height, 'lubismap')}
+      ${lubis_map.init_map(c['featureId'], image_width, image_height, 0, 'lubismap')}
 %endif
 
     }

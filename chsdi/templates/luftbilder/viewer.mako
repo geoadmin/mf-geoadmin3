@@ -92,7 +92,7 @@
     <script type="text/javascript" src="${loaderUrl}?mode=debug"></script>
     <script type="text/javascript">
       function init() {
-        ${lubis_map.init_map(c.get('bildnummer'), c.get('width'), c.get('height'), 'lubismap')}
+        ${lubis_map.init_map(c.get('bildnummer'), c.get('width'), c.get('height'), c.get('rotation'), 'lubismap')}
        
         // FF/IE
         if ('onbeforeprint' in window) {
@@ -176,9 +176,12 @@
               !isNaN(center[1])) {
             var x = center[0].toFixed(2);
             var y = center[1].toFixed(2);
+            var rotation = parseInt(view.getRotation() * 180 / Math.PI) % 360;
+
             var newHref = updateQueryStringParameter(window.location.href, 'x', x);
             newHref = updateQueryStringParameter(newHref, 'y', y);
             newHref = updateQueryStringParameter(newHref, 'zoom', zoom);
+            newHref = updateQueryStringParameter(newHref, 'rotation', rotation);
             window.history.replaceState(null, '', newHref);
           }
         };

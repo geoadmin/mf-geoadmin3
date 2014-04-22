@@ -1,9 +1,10 @@
-<%def name="init_map(ebkey, width, height, target)">
+<%def name="init_map(ebkey, width, height, rotation, target)">
         var TILE_SIZE = 256;
         var MAX_INSTANCES = 4;
         var curInstance = MAX_INSTANCES;
         var width = parseInt(${width});
         var height = parseInt(${height});
+        var rotation= parseInt(${rotation if rotation is not None else 0}) * Math.PI / 180;
 
         var url = 'http://aerialimages{curInstance}.geo.admin.ch/tiles/${ebkey}/';
         var resolutions = [1]; // 1 is the min resolution of the pyramid (for all images)
@@ -56,5 +57,6 @@
           })
         });
         lubisMap.getView().fitExtent([0, 0, width, height], lubisMap.getSize());
+        lubisMap.getView().setRotation(rotation);
 </%def>
 
