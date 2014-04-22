@@ -1,9 +1,16 @@
 (function() {
   goog.provide('ga_fullscreen_directive');
 
-  var module = angular.module('ga_fullscreen_directive', ['ga_permalink']);
+  goog.require('ga_browsersniffer_service');
+  goog.require('ga_permalink');
 
-  module.directive('gaFullscreen', function(gaPermalink) {
+
+  var module = angular.module('ga_fullscreen_directive', [
+    'ga_browsersniffer_service',
+    'ga_permalink'
+  ]);
+
+  module.directive('gaFullscreen', function(gaPermalink, gaBrowserSniffer) {
     return {
       restrict: 'A',
       scope: {
@@ -19,10 +26,16 @@
         // https://docs.google.com/spreadsheet/
         //  ccc?key=0AvgmqEgDEiu5dGtqVEUySnBvNkxiYlAtbks1eDFibkE#gid=0
         var docElm = document.documentElement;
-        scope.fullscreenSupported = (docElm.requestFullScreen ||
+        scope.fullscreenSupported = (
+            // IE 11 bug when the page is inside an iframe:
+            // http://connect.microsoft.com/IE/feedback/details/814527/
+            // ie11-iframes-body-offsetwidth-incorrect-when-iframe-is-in
+            // -full-screen-mode
+            !(gaBrowserSniffer.msie == 11 && gaBrowserSniffer.isInFrame) &&
+            (docElm.requestFullScreen ||
             docElm.mozRequestFullScreen ||
             docElm.webkitRequestFullScreen ||
-            docElm.msRequestFullscreen
+            docElm.msRequestFullscreen)
         );
 
         scope.click = function() {
