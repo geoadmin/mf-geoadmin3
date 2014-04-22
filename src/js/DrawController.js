@@ -203,6 +203,21 @@
         $scope.getIconUrl = function(i) {
           return i.url;
         };
+        
+        // Rules for the z-index (useful for a correct selection):
+        // Sketch features (when modifying): 60
+        // Features selected: 50
+        // Point with Icon: 40
+        // Point with Text: 30
+        // Line: 20
+        // Polygon: 10
+        var ZPOLYGON = 10;
+        var ZLINE = 20;
+        var ZTEXT = 30;
+        var ZICON = 40;
+        var ZSELECT = 50;
+        var ZSKETCH = 60;
+
         // Define layer style function
         $scope.options.styleFunction = (function() {
           return function(feature, resolution) {
@@ -211,9 +226,10 @@
                 feature.getStyleFunction()() !== null) {
               return feature.getStyleFunction()(resolution); 
             }
-            
+            var zIndex = ZPOLYGON;
+
             // Only update features with new colors if its style is null
-            var text;
+            var text, icon;
             var color = $scope.options.color;
             var fill = new ol.style.Fill({
               color: color.fill.concat([0.4])
@@ -222,13 +238,18 @@
               color: color.fill.concat([1]),
               width: 3
             });
-            var icon = new ol.style.Circle({
+            var sketchCircle = new ol.style.Circle({
               radius: 4,
               fill: fill,
               stroke: stroke
             });
-
-
+            
+            // Drawing line
+            if ($scope.options.isLineActive) {
+              zIndex = ZLINE;
+            }
+            
+            // Drawing text
             if (($scope.options.isTextActive ||
                 ($scope.options.isModifyActive &&
                     feature.getGeometry() instanceof ol.geom.Point &&
@@ -248,10 +269,11 @@
               });
               fill = undefined;
               stroke = undefined;
+              zIndex = ZTEXT;
             } 
             feature.set('useText', (!!text));
 
-            
+            // Drawing icon
             if (($scope.options.isPointActive ||
                 ($scope.options.isModifyActive &&
                     feature.getGeometry() instanceof ol.geom.Point &&
@@ -264,6 +286,7 @@
               });
               fill = undefined;
               stroke = undefined;
+              zIndex = ZICON;
             } 
             feature.set('useIcon', (!!icon));
             
@@ -272,7 +295,8 @@
                 fill: fill,
                 stroke: stroke,
                 text: text,
-                image: (text) ? transparentCircle : icon
+                image: icon || ((text) ? transparentCircle : sketchCircle),
+                zIndex: zIndex
               })
             ];
 
@@ -324,7 +348,8 @@
               stroke: new ol.style.Stroke({
                 color: black.concat([1])
               })
-            }) 
+            }), 
+            zIndex: ZSKETCH 
           });
            
           return function(feature, resolution) {
@@ -352,7 +377,8 @@
                 fill: fill,
                 stroke: stroke,
                 text: text,
-                image: (text) ? style.getImage() : defaultCircle                
+                image: (text) ? style.getImage() : defaultCircle,
+                zIndex: ZSELECT                
               })
             ];
           }
