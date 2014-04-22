@@ -4211,3 +4211,160 @@ msgstr ""
 
 msgid "tt_gsk_meta_formate"
 msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_abschnr"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_breitenvar"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_gsbreite"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_lufbebre"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_oekomklasse"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_rufbebre"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_sohlver"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abstuerze_absthoehe"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abstuerze_abstmat"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abstuerze_abstnr"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abstuerze_absttyp"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_bauwhoehe"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_bauwnr"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_bauwtyp"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_bemerkung"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_anfangsmass"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_endmass"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_anfangsrechtswert"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_anfangshochwert"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_endrechtswert"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_endhochwert"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_eindol"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_vnatabst"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_tiefenvar"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_sohlmat"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_lbukver"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_rbukver"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_lbukmat"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_rbukmat"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_luferber"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_ruferber"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_lufbebew"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_rufbebew"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_bewalgen"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_bewmakro"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_totholz"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_notizen"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_datum"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abstuerze_bemerkung"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abstuerze_mass"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abstuerze_rechtswert"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abstuerze_hochwert"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abstuerze_abschnr"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abstuerze_notizen"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_abstuerze_datum"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_mass"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_rechtswert"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_hochwert"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_abschnr"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_bemerkung"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_notizen"
+msgstr ""
+
+msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_datum"
+msgstr ""
+
