@@ -97,7 +97,8 @@
         touchDevice: touchDevice,
         mobile: mobile,
         phone: mobile && testSize(480),
-        events: eventsKeys
+        events: eventsKeys,
+        isInFrame: ($window.location != $window.parent.location)
       };
     };
 
