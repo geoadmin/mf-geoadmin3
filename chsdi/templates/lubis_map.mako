@@ -26,19 +26,17 @@
                   resolutions: resolutions
                 }),
                 tileUrlFunction: function(tileCoord, pixelRatio, projection) {
-                  if (tileCoord.x < 0 || tileCoord.y < 0 || tileCoord.z < 0) {
+                  var coords = tileCoord.getZXY();
+                  if (coords[0] < 0 || coords[1] < 0 || coords[2] < 0) {
                     return undefined;
                   }
-                  var factor = this.getTileGrid().getTileSize() * this.getTileGrid().getResolutions()[tileCoord.z];
-                  if (tileCoord.x * factor > width || tileCoord.y * factor > height) {
+                  var factor = this.getTileGrid().getTileSize() * this.getTileGrid().getResolutions()[coords[0]];
+                  if (coords[1] * factor > width || coords[2] * factor > height) {
                     return undefined;
                   }
 
                   curInstance = (++curInstance > MAX_INSTANCES) ? 0 : curInstance;
-                  return url.replace('{curInstance}', curInstance) + 
-                         tileCoord.z.toString() + "/" +
-                         tileCoord.x.toString() + "/" +
-                         tileCoord.y.toString() + ".jpg";
+                  return url.replace('{curInstance}', curInstance) + tileCoord.toString() + ".jpg";
                 }
               })
             })

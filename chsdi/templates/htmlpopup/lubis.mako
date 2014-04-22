@@ -221,8 +221,7 @@ viewer_url = get_viewer_url(request, params)
   </div>
 % endif
 
-  <!-- TODO: REMOVE DEBUG FROM LOADER -->
-  <script type="text/javascript" src="${loader_url}?mode=debug"></script>
+  <script type="text/javascript" src="${loader_url}"></script>
   <script type="text/javascript">
     function init() {
       // Create a GeoAdmin Map

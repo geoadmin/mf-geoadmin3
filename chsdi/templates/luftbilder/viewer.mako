@@ -88,8 +88,7 @@
     <div class="footer">
       <a class="pull-left" href="${_('disclaimer url')}" target="_blank">Copyright</a>
     </div>
-    <!-- TODO: LOAD NON DEBUG VERSION -->
-    <script type="text/javascript" src="${loaderUrl}?mode=debug"></script>
+    <script type="text/javascript" src="${loaderUrl}"></script>
     <script type="text/javascript">
       function init() {
         ${lubis_map.init_map(c.get('bildnummer'), c.get('width'), c.get('height'), c.get('rotation'), 'lubismap')}
