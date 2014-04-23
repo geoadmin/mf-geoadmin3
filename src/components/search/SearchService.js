@@ -103,5 +103,56 @@
         };
       };
     });
+
+  module.provider('gaPermalinkSearch', function() {
+    this.$get = function($timeout) {
+
+      var PermalinkSearch = function() {
+        var active = false,
+            resultCounter = 0,
+            clickEl = undefined,
+            maxRounds = 0;
+
+       this.activate = function(numberOfResults) {
+          active = true;
+          resultCounter = 0;
+          clickEl = undefined;
+          maxRounds = numberOfResults;
+        };
+
+        this.feed = function(el) {
+          if (!active) {
+            return;
+          }
+          el = el.find('.tt-suggestion');
+          if (el.length > 1) {
+            active = false;
+          } else if (el.length == 1) {
+            if (clickEl) {
+              active = false;
+            } else {
+              clickEl = el[0];
+            }
+          }
+        };
+
+        this.check = function() {
+          if (active) {
+            resultCounter += 1;
+            if (resultCounter >= maxRounds) {
+              active = false;
+              if (clickEl) {
+                clickEl.click();
+              }
+            }
+          }
+        };
+
+      };
+
+      return new PermalinkSearch();
+    };
+  });
+
 })();
 
