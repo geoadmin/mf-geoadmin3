@@ -149,6 +149,8 @@
 	"metadata_window_title": "Infobox",
 	"mobile_redirect": "Mobile Version",
 	"modify_color_label": "Farbe",
+	"modify_icon_label": "Symbol",
+	"modify_icon_size_label": "Grösse",
 	"modify_text_label": "Label",
 	"nga": "Breitbandatlas",
 	"nga_help_link_href": "http://help.geo.admin.ch/",
