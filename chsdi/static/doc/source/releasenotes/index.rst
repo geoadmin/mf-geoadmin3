@@ -7,10 +7,17 @@ API & applications
 `API <//api3.geo.admin.ch>`__
 -----------------------------------
 
+- Search: allow queries with special characters (like "Biel/Bienne")
+- Search: heavily improved ranking of results
+- Minor bug fixes
+
 
 `MAP <//map.geo.admin.ch>`__
 -----------------------------------
 
+- Draw: you are now able to draw icons on the map
+- Import KML: improved performance for big kml files
+- Time Selector: fix on mobile devices
 
 Geodata
 ********
