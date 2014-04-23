@@ -149,6 +149,8 @@
 	"metadata_window_title": "Infobox",
 	"mobile_redirect": "Mobile version",
 	"modify_color_label": "Color",
+	"modify_icon_label": "Icon",
+	"modify_icon_size_label": "Size",
 	"modify_text_label": "Label",
 	"nga": "Broadband map",
 	"nga_help_link_href": "http://help.geo.admin.ch/?lang=en",
