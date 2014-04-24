@@ -104,20 +104,23 @@
       };
     });
 
-  module.provider('gaPermalinkSearch', function() {
-    this.$get = function($timeout) {
+  module.provider('gaSwisssearch', function() {
+    this.$get = function($timeout, $rootScope) {
 
       var PermalinkSearch = function() {
         var active = false,
-            resultCounter = 0,
+            hitCount = 0,
+            totalResults = 0,
             clickEl = undefined,
             maxRounds = 0;
 
        this.activate = function(numberOfResults) {
           active = true;
-          resultCounter = 0;
+          hitCount = 0;
+          totalResults = 0;
           clickEl = undefined;
           maxRounds = numberOfResults;
+          $rootScope.$broadcast('gaSwisssearchActivated');
         };
 
         this.feed = function(el) {
@@ -125,25 +128,22 @@
             return;
           }
           el = el.find('.tt-suggestion');
-          if (el.length > 1) {
-            active = false;
-          } else if (el.length == 1) {
-            if (clickEl) {
-              active = false;
-            } else {
-              clickEl = el[0];
-            }
+          totalResults += el.length;
+          if (el.length > 0) {
+            clickEl = el[0];
           }
         };
 
         this.check = function() {
           if (active) {
-            resultCounter += 1;
-            if (resultCounter >= maxRounds) {
+            hitCount += 1;
+            if (hitCount >= maxRounds) {
               active = false;
-              if (clickEl) {
+              if (totalResults == 1 &&
+                  clickEl) {
                 clickEl.click();
               }
+              $rootScope.$broadcast('gaSwisssearchDone');
             }
           }
         };
