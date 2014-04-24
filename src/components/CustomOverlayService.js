@@ -15,7 +15,7 @@
       function addCross(map, center) {
         var cross = $('<div></div>')
             .addClass('ga-crosshair')
-            .addClass('cross');
+            .addClass('marker');
         overlay = new ol.Overlay({
           element: cross.get(0),
           position: center,
