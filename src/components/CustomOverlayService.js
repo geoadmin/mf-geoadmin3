@@ -46,7 +46,7 @@
             (extent[1] + extent[3]) / 2];
 
         if (extent[0] === extent[2] &&
-            extent[1] == extent[3]) {
+            extent[1] === extent[3]) {
           addCross(map, center);
         } else {
           addRectangle(map, extent, center);
