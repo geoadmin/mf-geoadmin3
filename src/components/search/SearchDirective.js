@@ -561,15 +561,19 @@
               });
 
               //if search parameter specified, start it with a search parameter
-              var searchParam = gaPermalink.getParams()['swisssearch'];
+              var searchParam = gaPermalink.getParams().swisssearch;
               if (angular.isDefined(searchParam) &&
                   searchParam.length > 0) {
                 var unregister = scope.$on('gaLayersChange', function() {
+                  // At this point layers are not added to the map yet
+                  var unregisterLayers = scope.$watchCollection('layers', function(layers) {
+                    triggerSearch(FEATURES);
+                    triggerSearch(LAYERS);
+                    unregisterLayers();
+                  });
                   gaPermalinkSearch.activate((2 * typeAheadDatasets.length));
                   scope.query = searchParam;
                   triggerSearch(LOCATIONS);
-                  triggerSearch(FEATURES);
-                  triggerSearch(LAYERS);
                   unregister();
                 });
               }
