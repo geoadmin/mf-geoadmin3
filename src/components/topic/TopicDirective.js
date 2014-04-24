@@ -56,18 +56,6 @@
               return res;
             }
 
-            function removeOverlays() {
-              var i, layer;
-              var map = scope.map;
-              var layers = map.getLayers().getArray();
-              for (i = layers.length - 1; i >= 0; --i) {
-                layer = layers[i];
-                if (!layer.background) {
-                  map.removeLayer(layer);
-                }
-              }
-            }
-
             $http.get(options.url).then(function(result) {
               scope.topics = result.data.topics;
               angular.forEach(scope.topics, function(value) {
@@ -93,11 +81,6 @@
                 for (i = 0; i < len; i++) {
                   var topic = scope.topics[i];
                   if (topic.id == newVal) {
-                    // We remove the overlays only as the new topic's default
-                    // background layer may be the same as the current
-                    // background layer.
-                    removeOverlays();
-
                     gaPermalink.updateParams({topic: newVal});
                     $rootScope.$broadcast('gaTopicChange', topic);
                     break;
