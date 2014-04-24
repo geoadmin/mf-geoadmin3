@@ -14,9 +14,11 @@ import ows_checker._checker
 
 
 class Bunch(dict):
+
     def __init__(self, d):
         dict.__init__(self, d)
         self.__dict__.update(d)
+
 
 def to_bunch(d):
     r = {}
@@ -27,11 +29,10 @@ def to_bunch(d):
     return Bunch(r)
 
 
-
-
 def makotest(self):
         name = 'Pylons Developer'
         return render('/test.mako', extra_vars={'name': name})
+
 
 @view_config(route_name='owschecker_bykvp', renderer='json')
 def bykvp(request):
@@ -47,14 +48,15 @@ def bykvp(request):
         else:
             restful = False
         c = ows_checker._checker.OWSCheck(base_url=base_url,
-                             service=service,
-                             #version='1.1.1',
-                             auto=True,
-                             cwd= os.path.join(request.registry.settings['install_directory'], "ows_checker/settings/"),
-                             ssurl=ssurl,
-                             restful=restful
-                             )
+                                          service=service,
+                                          # version='1.1.1',
+                                          auto=True,
+                                          cwd=os.path.join(request.registry.settings['install_directory'], "ows_checker/settings/"),
+                                          ssurl=ssurl,
+                                          restful=restful
+                                          )
         return c.getResultsOverview(aggregate=True)
+
 
 @view_config(route_name='owschecker_form', renderer='html')
 def form(request):
@@ -65,13 +67,13 @@ def form(request):
 
         if base_url and service:
             c = ows_checker._checker.OWSCheck(base_url=base_url,
-                service=service,
-                #version='1.1.1',
-                auto=True,
-                cwd= os.path.join(request.registry.settings['install_directory'], "ows_checker/settings/"),
-                ssurl=ssurl,
-                restful=restful
-            )
+                                              service=service,
+                                              # version='1.1.1',
+                                              auto=True,
+                                              cwd=os.path.join(request.registry.settings['install_directory'], "ows_checker/settings/"),
+                                              ssurl=ssurl,
+                                              restful=restful
+                                              )
             # see http://stackoverflow.com/questions/2352252/how-to-use-dicts-in-mako-templates
             #results_dict = to_bunch(c.getResultsOverview())
             results_dict = c.getResultsOverview(aggregate=True)
@@ -79,9 +81,9 @@ def form(request):
         else:
             results_dict = None
         return render_to_response('chsdi:templates/owschecker.mako', {
-            'results_dict':results_dict,
+            'results_dict': results_dict,
             'base_url': base_url,
             'service': service,
             'restful': restful,
-            'ssurl':ssurl
+            'ssurl': ssurl
         })
