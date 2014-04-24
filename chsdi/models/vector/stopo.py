@@ -1264,6 +1264,7 @@ class steine_hist_bauwerke(Base, Vector):
 
 register('ch.swisstopo.geologie-geotechnik-steine_historische_bauwerke', steine_hist_bauwerke)
 
+
 class gisgeol_punkte(Base, Vector):
     __tablename__ = 'view_gisgeol_points'
     __table_args__ = ({'schema': 'geol', 'autoload': False})
@@ -1283,6 +1284,7 @@ class gisgeol_punkte(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-gisgeol-punkte', gisgeol_punkte)
+
 
 class gisgeol_linien(Base, Vector):
     __tablename__ = 'view_gisgeol_lines'
@@ -1304,6 +1306,7 @@ class gisgeol_linien(Base, Vector):
 
 register('ch.swisstopo.geologie-gisgeol-linien', gisgeol_linien)
 
+
 class gisgeol_flaechen_1x1km(Base, Vector):
     __tablename__ = 'view_gisgeol_surfaces_1x1km'
     __table_args__ = ({'schema': 'geol', 'autoload': False})
@@ -1323,6 +1326,7 @@ class gisgeol_flaechen_1x1km(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-gisgeol-flaechen-1x1km', gisgeol_flaechen_1x1km)
+
 
 class gisgeol_flaechen_10x10km(Base, Vector):
     __tablename__ = 'view_gisgeol_surfaces_10x10km'
@@ -1344,6 +1348,7 @@ class gisgeol_flaechen_10x10km(Base, Vector):
 
 register('ch.swisstopo.geologie-gisgeol-flaechen-10x10km', gisgeol_flaechen_10x10km)
 
+
 class gisgeol_flaechen_10to21000km2(Base, Vector):
     __tablename__ = 'view_gisgeol_surfaces_10to21000km2'
     __table_args__ = ({'schema': 'geol', 'autoload': False})
@@ -1364,6 +1369,7 @@ class gisgeol_flaechen_10to21000km2(Base, Vector):
 
 register('ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2', gisgeol_flaechen_10to21000km2)
 
+
 class gisgeol_flaechen_gt21000km2(Base, Vector):
     __tablename__ = 'view_gisgeol_surfaces_gt21000km2'
     __table_args__ = ({'schema': 'geol', 'autoload': False})
@@ -1383,6 +1389,7 @@ class gisgeol_flaechen_gt21000km2(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2', gisgeol_flaechen_gt21000km2)
+
 
 class gisgeol_flaechen_lt10km2(Base, Vector):
     __tablename__ = 'view_gisgeol_surfaces_lt10km2'
