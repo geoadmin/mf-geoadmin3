@@ -1,0 +1,67 @@
+<csw>
+	<minVersion>2.0.2</minVersion>
+	<!-- Sollte Version, bisher nicht genutzt -->
+	<currVersion>2.0.2</currVersion>
+	<XML>
+		<Encoding>UTF-8</Encoding>
+	</XML>
+    <Version num="2.0.1">
+        <MIME>text/xml</MIME>
+        <MIME>application/xml</MIME>
+        <OWS_Common>1</OWS_Common>
+        <Schema></Schema>
+        <Schema_local></Schema_local>
+        <Exception>application/vnd.ogc.se_xml</Exception>
+        <Exception>text/xml</Exception>
+        <Exception>application/xml</Exception>
+    </Version>
+    <Version num="2.0.2">
+		<MIME>text/xml</MIME>
+		<MIME>application/xml</MIME>
+		<OWS_Common>1</OWS_Common>
+		<Schema></Schema>
+		<Schema_local></Schema_local>
+		<Exception>application/vnd.ogc.se_xml</Exception>
+		<Exception>text/xml</Exception>
+		<Exception>application/xml</Exception>
+	</Version>
+
+	<Operations>
+		<GetCapabilities>
+			<Encoding>UTF-8</Encoding>
+			<WayToServiceTypeNode>Capabilities.ServiceIdentification.ServiceType</WayToServiceTypeNode>
+		</GetCapabilities>
+		<DescribeRecord>
+			<Encoding>UTF-8</Encoding>
+		</DescribeRecord>
+		<GetRecords>
+			<Encoding>UTF-8</Encoding>
+		</GetRecords>
+		<GetRecordById>
+			<Encoding>UTF-8</Encoding>
+		</GetRecordById>
+
+		<!--
+		<TEST>
+			<Encoding>UTF-8</Encoding>
+		</TEST>
+		<TEST2>
+			<Encoding>UTF-8</Encoding>
+		</TEST2>
+		-->
+	</Operations>
+	<RefSys>
+		<CRS status="must" rili="CRS-01">EPSG:21781</CRS>
+		<CRS status="must" rili="CRS-02">EPSG:4326</CRS>
+		<CRS status="not" rili="CRS-03">EPSG:9814</CRS>
+		<CRS status="optional" dim="3D" rili="CRS-04">EPSG:5728</CRS>
+		<CRS status="optional" rili="CRS-05">EPSG:2056</CRS>
+		<CRS status="optional" rili="CRS-06">EPSG:4258</CRS>
+		
+		<CRS status="optional" dim="3D" rili="CRS-07">EPSG:5729</CRS>
+		<!-- CRS-08 -->
+		<CRS status="optional" dim="3D" rili="CRS-08">EPSG:5730</CRS>
+		
+		<CRS status="optional" rili="CRS-09">EPSG:21782</CRS>
+	</RefSys>
+</csw>

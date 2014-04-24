@@ -82,6 +82,8 @@ def main(global_config, **settings):
     config.add_route('profile_csv', '/rest/services/profile.csv')
     config.add_route('height', '/rest/services/height')
     config.add_route('feedback', '/feedback')
+    config.add_route('owschecker_bykvp', '/owschecker/bykvp')
+    config.add_route('owschecker_form', '/owschecker/form')
 
     # Service to create the iimage viewer
     config.add_route('iipimage', '/iipimage/viewer.html')
