@@ -386,10 +386,13 @@ class SearchValidation(MapNameValidation):
                 values = map(float, values)
             except ValueError:
                 raise exc.HTTPBadRequest("Please provide numerical values for the parameter bbox")
-            if values[0] < values[1]:
-                raise exc.HTTPBadRequest("The first coordinate must be higher than the second")
-            elif values[2] < values[3]:
-                raise exc.HTTPBadRequest("The third coordinate must be higher than the fourth")
+            # Swiss extent
+            if values[0] >= 420000 and values[1] >= 30000:
+                if values[0] < values[1]:
+                    raise exc.HTTPBadRequest("The first coordinate must be higher than the second")
+            if values[2] >= 420000 and values[3] >= 30000:
+                if values[2] < values[3]:
+                    raise exc.HTTPBadRequest("The third coordinate must be higher than the fourth")
             self._bbox = values
 
     @timeInstant.setter
