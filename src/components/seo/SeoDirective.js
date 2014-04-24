@@ -96,11 +96,47 @@
               return def.promise;
             };
 
+            var swissSearchParameter = function() {
+              var def = $q.defer(),
+                  active = false,
+                  uregLay, uregAct, uregDone;
+
+              uregAct = scope.$on('gaSwisssearchActivated', function() {
+                 active = true;
+                 uregAct();
+              });
+
+              uregDone = scope.$on('gaSwisssearchDone', function() {
+                // We wait a certain time after the done message
+                getWaitPromise(MIN_WAIT).then(function() {
+                  def.resolve();
+                });
+                uregDone();
+              });
+
+              uregLay = scope.$on('gaLayersChange', function() {
+                // When there is no swisssearch parameter, the gaSwissearch*
+                // messages are never send and the defer never gets resolved.
+                // Therefore, we check after a certain time if the
+                // message was send, and if it's not send, we resolve
+                // the defer.
+                getWaitPromise(MIN_WAIT).then(function() {
+                  if (!active) {
+                    def.resolve();
+                  }
+                });
+                uregLay();
+              });
+
+              return def.promise;
+            };
+
             var injectSnapshotData = function() {
               var promises = [];
 
               promises.push(onLayersChange());
               promises.push(onCatalogChange());
+              promises.push(swissSearchParameter());
 
               return $q.all(promises);
             };
