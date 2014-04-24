@@ -1,29 +1,76 @@
-@import "app_print.less";
+@media print {
+  // ****** PRINT GENERAL SETTINGS
 
-// ****** PRINT GENERAL SETTINGS
-a[href]:after {
-  content: " (" attr(href) ")";
-}
-.ir a:after,
-a[href^="javascript:"]:after,
-a[href^="#"]:after {
-  content: "";
-}
+  body {
+    overflow: visible;
+  }
 
-// ****** PRINT PROFILE SETTINGS
-.ga-measure-buttons {
-  display: none;
-}
-[ga-profile] {
-  margin-top: 15px;
-}
-.ga-profile-tooltip {
-  display: none;
-}
+  .popover {
+    box-shadow: none;
+    -webkit-box-shadow: none;
+  }
 
-[ga-profile] .profile-inner .profile-svg .profile-area {
-   fill-opacity: 0;
-   stroke: #000;
-   stroke-width: 2;
-}
+  #header {
+    box-shadow: none !important;
+    height: 110px;
+  }
 
+  button, [alt=small_logo], [ga-geolocation], [ga-seo],
+  .ol-zoomslider,
+  #pulldown, #search-container, #mouseposition,
+  #feedback, #feedback-success, #feedback-error,
+  #import-wms-popup, #import-kml-popup, #draw-popup, #featuretree-popup,
+  #header form, #footer a {
+    display: none !important;
+  }
+
+  [alt=big_logo] {
+    display: block !important;
+  }
+
+  #measure-popup[style] {
+    page-break-before: always;
+    position: relative !important;
+    left: 0px !important;
+    top: 0px !important;
+    height: 500px;
+  }
+
+  // ****** PRINT POPUP CONTENT SETTINGS
+  .htmlpopup-container, .legend-container {
+    a[href]:after {
+      content: " (" attr(href) ")";
+    }
+
+    .ir a:after,
+    a[href^="javascript:"]:after,
+    a[href^="#"]:after {
+      content: "";
+    }
+  }
+
+  // ****** PRINT MAP SETTINGS
+  [ga-map] {
+    border: 1px solid lightgray;
+    top: 120px !important;
+    width: 650px !important;/* A4 portrait width */ 
+    height: 650px; /* only useful for chrome and safari, never set !important for
+    the height because Firefox could use it and so the map printed will not be resized
+    keeping the ratio */
+  }
+
+  // ****** PRINT PROFILE SETTINGS
+  [ga-profile] {
+    margin-top: 15px;
+  }
+
+  .ga-profile-tooltip {
+    display: none;
+  }
+
+  [ga-profile] .profile-inner .profile-svg .profile-area {
+     fill-opacity: 0;
+     stroke: #000;
+     stroke-width: 2;
+  }
+}

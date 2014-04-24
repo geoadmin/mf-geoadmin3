@@ -1,4 +1,47 @@
 [ga-profile] {
+  position:relative;
+  
+  .axis path,
+  .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+  }
+
+  .tick {
+    font-size: 11px;
+  }
+  
+  .ga-profile-inner {
+    overflow: hidden;
+    width: inherit;
+  }
+
+  .ga-profile-svg {
+    display: block;
+    margin: 0;
+  }
+
+  .ga-profile-grid-x,
+  .ga-profile-grid-y {
+    stroke: black;
+    opacity: 0.8;
+    
+    line {
+      stroke-width: 0.02em;
+    }
+  }
+ 
+  .ga-profile-area {
+    fill: #f00;
+    fill-opacity: 0.5;
+  }
+  
+  .ga-profile-legend,
+  .ga-profile-label {
+    font-weight: bold;
+    text-shadow: 1px 1px lightgrey;
+  }
 
   .ga-profile-tooltip {
     position: absolute;
