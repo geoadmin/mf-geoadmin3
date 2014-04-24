@@ -566,7 +566,8 @@
                   searchParam.length > 0) {
                 var unregister = scope.$on('gaLayersChange', function() {
                   // At this point layers are not added to the map yet
-                  var unregisterLayers = scope.$watchCollection('layers', function(layers) {
+                  var unregisterLayers = scope.$watchCollection('layers',
+                      function(layers) {
                     triggerSearch(FEATURES);
                     triggerSearch(LAYERS);
                     unregisterLayers();
