@@ -326,8 +326,16 @@ msgstr "Numéro du atlas géologique"
 msgid "ausgabejahr"
 msgstr "Anno di pubblicazione"
 
+#. TODO
+msgid "author"
+msgstr "author"
+
 msgid "autor"
 msgstr "Autore"
+
+#. TODO
+msgid "auxiliary_information"
+msgstr "auxiliary_information"
 
 msgid "bafu_NHVText"
 msgstr "Stato OPN"
@@ -1743,6 +1751,34 @@ msgstr "Mattonifici 1995"
 msgid "ch.swisstopo.geologie-geotope"
 msgstr "Geotopi svizzeri"
 
+#. TODO
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2"
+msgstr "ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2"
+
+#. TODO
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-10x10km"
+msgstr "ch.swisstopo.geologie-gisgeol-flaechen-10x10km"
+
+#. TODO
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-1x1km"
+msgstr "ch.swisstopo.geologie-gisgeol-flaechen-1x1km"
+
+#. TODO
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2"
+msgstr "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2"
+
+#. TODO
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-lt10km2"
+msgstr "ch.swisstopo.geologie-gisgeol-flaechen-lt10km2"
+
+#. TODO
+msgid "ch.swisstopo.geologie-gisgeol-linien"
+msgstr "ch.swisstopo.geologie-gisgeol-linien"
+
+#. TODO
+msgid "ch.swisstopo.geologie-gisgeol-punkte"
+msgstr "ch.swisstopo.geologie-gisgeol-punkte"
+
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas"
 msgstr "Atlante gravimetrico"
 
@@ -2012,6 +2048,10 @@ msgstr "Inclinazione [°]"
 msgid "contour_totalintensitaet"
 msgstr "Intensità totale [nT]"
 
+#. TODO
+msgid "copy_avail"
+msgstr "copy_avail"
+
 msgid "ct"
 msgstr "Ct."
 
@@ -2041,6 +2081,10 @@ msgstr "http://www.geo.admin.ch/internet/geoportal/it/home/geoadmin/contact.html
 
 msgid "district"
 msgstr "distretto"
+
+#. TODO
+msgid "doccreation_date"
+msgstr "doccreation_date"
 
 msgid "durationofeffect"
 msgstr "Durata dell'effetto"
@@ -3116,6 +3160,10 @@ msgstr "PDF"
 msgid "pdf_dokument_1_2"
 msgstr "PDF 1 | 2"
 
+#. TODO
+msgid "pdf_url"
+msgstr "pdf_url"
+
 msgid "perimeter_m"
 msgstr "Perimètre [m]"
 
@@ -3164,6 +3212,10 @@ msgstr "Stato d'attualità"
 msgid "report problem"
 msgstr "Segnala un problema"
 
+#. TODO
+msgid "report_structure"
+msgstr "report_structure"
+
 msgid "richtungsgetrennt"
 msgstr "A carregiate separate"
 
@@ -3193,6 +3245,10 @@ msgstr "Période de fermeture de la chasse"
 
 msgid "sektor"
 msgstr "Settore"
+
+#. TODO
+msgid "sgd_nr"
+msgstr "sgd_nr"
 
 msgid "sheetname"
 msgstr "Denominazione di foglio"
@@ -4294,6 +4350,10 @@ msgstr "Date de validation"
 
 msgid "viel_sub"
 msgstr "molta sostanza"
+
+#. TODO
+msgid "view_avail"
+msgstr "view_avail"
 
 msgid "waldanteil"
 msgstr "Taux de boisement [%]"

@@ -326,8 +326,14 @@ msgstr "Nummer Geologischer Atlas"
 msgid "ausgabejahr"
 msgstr "Ausgabejahr"
 
+msgid "author"
+msgstr "Autor"
+
 msgid "autor"
 msgstr "Autur"
+
+msgid "auxiliary_information"
+msgstr "Beschreibung des Inhaltes"
 
 msgid "bafu_NHVText"
 msgstr "NHV Status"
@@ -1743,6 +1749,34 @@ msgstr "Fabricas da quadrels 1995"
 msgid "ch.swisstopo.geologie-geotope"
 msgstr "Geotop Svizzer"
 
+#. TODO
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2"
+msgstr "ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2"
+
+#. TODO
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-10x10km"
+msgstr "ch.swisstopo.geologie-gisgeol-flaechen-10x10km"
+
+#. TODO
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-1x1km"
+msgstr "ch.swisstopo.geologie-gisgeol-flaechen-1x1km"
+
+#. TODO
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2"
+msgstr "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2"
+
+#. TODO
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-lt10km2"
+msgstr "ch.swisstopo.geologie-gisgeol-flaechen-lt10km2"
+
+#. TODO
+msgid "ch.swisstopo.geologie-gisgeol-linien"
+msgstr "ch.swisstopo.geologie-gisgeol-linien"
+
+#. TODO
+msgid "ch.swisstopo.geologie-gisgeol-punkte"
+msgstr "ch.swisstopo.geologie-gisgeol-punkte"
+
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas"
 msgstr "Gravimetrischer Atlas"
 
@@ -2014,6 +2048,9 @@ msgstr "Inclinaziun [°]"
 msgid "contour_totalintensitaet"
 msgstr "Totalintensität [nT]"
 
+msgid "copy_avail"
+msgstr "Zugangsstufe "copy""
+
 msgid "ct"
 msgstr "Kt."
 
@@ -2043,6 +2080,9 @@ msgstr "http://www.geo.admin.ch/internet/geoportal/rm/home/geoadmin/contact.html
 
 msgid "district"
 msgstr "district"
+
+msgid "doccreation_date"
+msgstr "Dokumentsdatum"
 
 msgid "durationofeffect"
 msgstr "Durada da l'effect"
@@ -3118,6 +3158,9 @@ msgstr "PDF"
 msgid "pdf_dokument_1_2"
 msgstr "PDF 1 | 2"
 
+msgid "pdf_url"
+msgstr "PDF Download"
+
 msgid "perimeter_m"
 msgstr "Perimeter [m]"
 
@@ -3166,6 +3209,9 @@ msgstr "Stadi da las datas"
 msgid "report problem"
 msgstr "Rapportar in problem"
 
+msgid "report_structure"
+msgstr "Inhalt/Umfang des Berichtes"
+
 msgid "richtungsgetrennt"
 msgstr "Richtungsgetrennt"
 
@@ -3195,6 +3241,9 @@ msgstr "Schonzeit"
 
 msgid "sektor"
 msgstr "Sektor"
+
+msgid "sgd_nr"
+msgstr "InfoGeol-Nr."
 
 msgid "sheetname"
 msgstr "Blattbezeichnung"
@@ -4295,6 +4344,9 @@ msgstr "Validierungsdatum"
 
 msgid "viel_sub"
 msgstr "Historischer Verlauf mit viel Substanz"
+
+msgid "view_avail"
+msgstr "Zugangsstufe "view""
 
 msgid "waldanteil"
 msgstr "Waldanteil [%]"

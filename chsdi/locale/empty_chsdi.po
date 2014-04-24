@@ -4212,6 +4212,7 @@ msgstr ""
 msgid "tt_gsk_meta_formate"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_abschnr"
 msgstr ""
 
@@ -4368,3 +4369,47 @@ msgstr ""
 msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_datum"
 msgstr ""
 
+msgid "sgd_nr"
+msgstr ""
+
+msgid "author"
+msgstr ""
+
+msgid "report_structure"
+msgstr ""
+
+msgid "auxiliary_information"
+msgstr ""
+
+msgid "doccreation_date"
+msgstr ""
+
+msgid "copy_avail"
+msgstr ""
+
+msgid "view_avail"
+msgstr ""
+
+msgid "pdf_url"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-gisgeol-punkte"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-gisgeol-linien"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-1x1km"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-10x10km"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-lt10km2"
+msgstr ""
