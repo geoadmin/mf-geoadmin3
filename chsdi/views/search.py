@@ -110,8 +110,8 @@ class Search(SearchValidation):
         mapName = self.mapName if self.mapName != 'all' else ''
         searchText = ' '.join((
             self._query_fields('@(detail,layer)'),
-            '& @topics %s' % mapName,                 # Filter by to topic if string not empty
-            '& @staging prod'                         # Only layers in prod are searched
+            '& @topics (%s | ech)' % mapName,  # Filter by to topic if string not empty, ech whitelist hack
+            '& @staging prod'                            # Only layers in prod are searched
         ))
         try:
             temp = self.sphinx.Query(searchText, index=index_name)
