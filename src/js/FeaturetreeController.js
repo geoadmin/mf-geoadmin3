@@ -10,7 +10,7 @@
 
         $scope.options = {
           searchUrlTemplate: gaGlobalOptions.mapUrl + '/rest/services/{Topic}/SearchServer',
-          htmlUrlTemplate: gaGlobalOptions.cachedMapUrl + '/rest/services/{Topic}/MapServer/{Layer}/{Feature}/htmlPopup',
+          featureUrlTemplate: gaGlobalOptions.cachedMapUrl + '/rest/services/{Topic}/MapServer/{Layer}/{Feature}',
           active: false
         };
 
