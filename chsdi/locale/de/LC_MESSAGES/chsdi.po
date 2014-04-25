@@ -1347,7 +1347,7 @@ msgid "ch.bav.sachplan-infrastruktur-schiene_ausgangslage"
 msgstr "SIS Ausgangslage "
 
 msgid "ch.bav.sachplan-infrastruktur-schiene_kraft"
-msgstr "Sachplan Infrastruktur Schiene"
+msgstr "SP Infrastruktur Schiene"
 
 msgid "ch.bav.url"
 msgstr "http://www.bav.admin.ch/?lang=de"
@@ -1896,7 +1896,7 @@ msgid "ch.swisstopo.swissbuildings3d"
 msgstr "Vereinfachte 3D-Gebäude"
 
 msgid "ch.swisstopo.swissimage"
-msgstr "Luftbild"
+msgstr "SWISSIMAGE"
 
 msgid "ch.swisstopo.swisstlm3d-karte-farbe"
 msgstr "Karte swissTLM (farbig)"
