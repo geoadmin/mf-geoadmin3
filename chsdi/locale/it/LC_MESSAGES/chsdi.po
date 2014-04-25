@@ -1896,7 +1896,7 @@ msgid "ch.swisstopo.swissbuildings3d"
 msgstr "Gli edifici semplificati in 3D"
 
 msgid "ch.swisstopo.swissimage"
-msgstr "Veduta aerea"
+msgstr "SWISSIMAGE"
 
 msgid "ch.swisstopo.swisstlm3d-karte-farbe"
 msgstr "Carta swissTLM (colori)"
