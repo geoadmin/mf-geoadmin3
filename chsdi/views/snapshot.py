@@ -6,9 +6,11 @@ from pyramid.view import view_config
 from pyramid.response import Response
 import pyramid.httpexceptions as exc
 
+from chsdi.lib.helpers import remove_accents
+
 
 @view_config(route_name='snapshot')
-def home(request):
+def snapshot(request):
     querystring = ''
     remoteUrl = request.registry.settings['geoadminhost']
     install_directory = request.registry.settings['install_directory']
@@ -21,7 +23,7 @@ def home(request):
     try:
         content = subprocess.check_output(['phantomjs',
                                            install_directory + '/chsdi/templates/load_page_until.js',
-                                           'http://' + remoteUrl + '/?' + querystring,
+                                           'http://' + remoteUrl + '/?' + remove_accents(querystring),
                                            'seo-load-end',
                                            '10'])
 
