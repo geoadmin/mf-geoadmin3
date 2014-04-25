@@ -402,6 +402,124 @@ class wege_wildruhezonen_jagdbanngebiete(Base, Vector):
 register('ch.bafu.wege-wildruhezonen-jagdbanngebiete', wege_wildruhezonen_jagdbanngebiete)
 
 
+class oekom_abschnitte(Base, Vector):
+    __tablename__ = 'oekom_abschnitte'
+    __table_args__ = ({'schema': 'wasser', 'autoload': False})
+    __bodId__ = 'ch.bafu.oekomorphologie-f_abschnitte'
+    __template__ = 'templates/htmlpopup/oekom_abschnitte.mako'
+    __extended_info__ = True
+    id = Column('bgdi_id', Integer, primary_key=True)
+    abschnr = Column('abschnr', Text)
+    gsbreite = Column('gsbreite', Numeric)
+    breitenvar_de = Column('breitenvar_de', Text)
+    breitenvar_fr = Column('breitenvar_fr', Text)
+    sohlver_de = Column('sohlver_de', Text)
+    sohlver_fr = Column('sohlver_fr', Text)
+    lufbebre = Column('lufbebre', Numeric)
+    rufbebre = Column('rufbebre', Numeric)
+    oekomklasse_de = Column('oekomklasse_de', Text)
+    oekomklasse_fr = Column('oekomklasse_fr', Text)
+    bemerkung = Column('bemerkung', Text)
+    anfangsmass = Column('anfangsmass', Numeric)
+    endmass = Column('endmass', Numeric)
+    anfangsrechtswert = Column('anfangsrechtswert', Numeric)
+    anfangshochwert = Column('anfangshochwert', Numeric)
+    endrechtswert = Column('endrechtswert', Numeric)
+    endhochwert = Column('endhochwert', Numeric)
+    eindol_de = Column('eindol_de', Text)
+    eindol_fr = Column('eindol_fr', Text)
+    vnatabst_de = Column('vnatabst_de', Text)
+    vnatabst_fr = Column('vnatabst_fr', Text)
+    tiefenvar_de = Column('tiefenvar_de', Text)
+    tiefenvar_fr = Column('tiefenvar_fr', Text)
+    sohlmat = Column('sohlmat', Numeric)
+    lbukver_de = Column('lbukver_de', Text)
+    lbukver_fr = Column('lbukver_fr', Text)
+    rbukver_de = Column('rbukver_de', Text)
+    rbukver_fr = Column('rbukver_fr', Text)
+    lbukmat_de = Column('lbukmat_de', Text)
+    lbukmat_fr = Column('lbukmat_fr', Text)
+    rbukmat_de = Column('rbukmat_de', Text)
+    rbukmat_fr = Column('rbukmat_fr', Text)
+    luferber_de = Column('luferber_de', Text)
+    luferber_fr = Column('luferber_fr', Text)
+    ruferber_de = Column('ruferber_de', Text)
+    ruferber_fr = Column('ruferber_fr', Text)
+    lufbebew_de = Column('lufbebew_de', Text)
+    lufbebew_fr = Column('lufbebew_fr', Text)
+    rufbebew_de = Column('rufbebew_de', Text)
+    rufbebew_fr = Column('rufbebew_fr', Text)
+    bewalgen_de = Column('bewalgen_de', Text)
+    bewalgen_fr = Column('bewalgen_fr', Text)
+    bewmakro_de = Column('bewmakro_de', Text)
+    bewmakro_fr = Column('bewmakro_fr', Text)
+    totholz_de = Column('totholz_de', Text)
+    totholz_fr = Column('totholz_fr', Text)
+    notizen = Column('notizen', Text)
+    translid = Column('translid', Numeric)
+    datum = Column('datum', Text)
+    oekomklasse = Column('oekomklasse', Numeric)
+    sohlmat_de = Column('sohlmat_de', Text)
+    sohlmat_fr = Column('sohlmat_fr', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.oekomorphologie-f_abschnitte', oekom_abschnitte)
+
+
+class oekom_abstuerze(Base, Vector):
+    __tablename__ = 'oekom_abstuerze'
+    __table_args__ = ({'schema': 'wasser', 'autoload': False})
+    __bodId__ = 'ch.bafu.oekomorphologie-f_abstuerze'
+    __template__ = 'templates/htmlpopup/oekom_abstuerze.mako'
+    __extended_info__ = True
+    id = Column('bgdi_id', Integer, primary_key=True)
+    abstnr = Column('abstnr', Text)
+    absttyp_de = Column('absttyp_de', Text)
+    absttyp_fr = Column('absttyp_fr', Text)
+    abstmat_de = Column('abstmat_de', Text)
+    abstmat_fr = Column('abstmat_fr', Text)
+    absthoehe = Column('absthoehe', Numeric,)
+    bemerkung = Column('bemerkung', Text)
+    mass = Column('mass', Numeric,)
+    rechtswert = Column('rechtswert', Numeric)
+    hochwert = Column('hochwert', Numeric)
+    abschnr = Column('abschnr', Text)
+    notizen = Column('notizen', Text)
+    translid = Column('translid', Numeric)
+    loc_angle_geo = Column('loc_angle_geo', Numeric)
+    datum = Column('datum', Text)
+    absttyp = Column('absttyp', Numeric)
+    abstmat = Column('abstmat', Numeric)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.oekomorphologie-f_abstuerze', oekom_abstuerze)
+
+
+class oekom_bauwerke(Base, Vector):
+    __tablename__ = 'oekom_bauwerke'
+    __table_args__ = ({'schema': 'wasser', 'autoload': False})
+    __bodId__ = 'ch.bafu.oekomorphologie-f_bauwerke'
+    __template__ = 'templates/htmlpopup/oekom_bauwerke.mako'
+    __extended_info__ = True
+    id = Column('bgdi_id', Integer, primary_key=True)
+    bauwnr = Column('bauwnr', Text)
+    bauwtyp_de = Column('bauwtyp_de', Text)
+    bauwtyp_fr = Column('bauwtyp_fr', Text)
+    bauwhoehe = Column('bauwhoehe', Numeric)
+    mass = Column('mass', Numeric)
+    rechtswert = Column('rechtswert', Numeric)
+    hochwert = Column('hochwert', Numeric)
+    abschnr = Column('abschnr', Text)
+    bemerkung = Column('bemerkung', Text)
+    notizen = Column('notizen', Text)
+    translid = Column('translid', Numeric)
+    loc_angle_geo = Column('loc_angle_geo', Numeric)
+    datum = Column('datum', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.oekomorphologie-f_bauwerke', oekom_bauwerke)
+
+
 class steinbockkolonien(Base, Vector):
     __tablename__ = 'sb'
     __table_args__ = ({'schema': 'fauna', 'autoload': False})

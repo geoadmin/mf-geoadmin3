@@ -3317,6 +3317,162 @@ msgstr "Numéro du couloir"
 msgid "tt_ch.bafu.fauna-wildtierkorridor_national_zustand"
 msgstr "État"
 
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_abschnr"
+msgstr "Numéro du tronçon"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_anfangshochwert"
+msgstr "Début du tronçon, valeur élevée [m]"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_anfangsmass"
+msgstr "Début du tronçon [m]"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_anfangsrechtswert"
+msgstr "Début du tronçon, valeur à droite [m]"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_bemerkung"
+msgstr "Informations complémen-taires et remarques"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_bewalgen"
+msgstr "Peuplement d’algues"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_bewmakro"
+msgstr "Peuplement de macrophytes"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_breitenvar"
+msgstr "Variabilité de la largeur du lit mouillé"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_datum"
+msgstr "Date du relevé"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_eindol"
+msgstr "Mise sous terre"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_endhochwert"
+msgstr "Fin du tronçon, valeur élevée [m]"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_endmass"
+msgstr "Fin du tronçon [m]"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_endrechtswert"
+msgstr "Fin du tronçon, valeur à droite [m]"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_gsbreite"
+msgstr "Largeur moyenne du lit [m]"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_lbukmat"
+msgstr "Matériau du renforcement du pied de la berge gauche"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_lbukver"
+msgstr "Renforcement du pied de la berge gauche"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_lufbebew"
+msgstr "Nature des rives gauche"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_lufbebre"
+msgstr "Largeur moyenne des rives gauche [m]"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_luferber"
+msgstr "Classe rives gauche"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_notizen"
+msgstr "Notes sur le tronçon"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_oekomklasse"
+msgstr "Classe écomorphologie"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_rbukmat"
+msgstr "Matériau du renforcement du pied de la berge droit"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_rbukver"
+msgstr "Renforcement du pied de la berge droit"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_rufbebew"
+msgstr "Nature des rives droit"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_rufbebre"
+msgstr "Largeur moyenne des rives droit [m]"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_ruferber"
+msgstr "Classe rives droit"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_sohlmat"
+msgstr "Matériau de l’aménagement du lit"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_sohlver"
+msgstr "Aménagement du lit"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_tiefenvar"
+msgstr "Variabilité de la profondeur"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_totholz"
+msgstr "Bois mort"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_vnatabst"
+msgstr "Nombreux seuils naturels"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abstuerze_abschnr"
+msgstr "Numéro du tronçon"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abstuerze_absthoehe"
+msgstr "Hauteur du seuil [cm]"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abstuerze_abstmat"
+msgstr "Matériau du seuil"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abstuerze_abstnr"
+msgstr "Numéro du seuil"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abstuerze_absttyp"
+msgstr "Type de seuil"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abstuerze_bemerkung"
+msgstr "Informations complémentaires et remarques"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abstuerze_datum"
+msgstr "Date du relevé"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abstuerze_hochwert"
+msgstr "Localisation du seuil, valeur élevée [m]"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abstuerze_mass"
+msgstr "Localisation du seuil [m]"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abstuerze_notizen"
+msgstr "Notes sur le seuil"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abstuerze_rechtswert"
+msgstr "Localisation du seuil, valeur à droite [m]"
+
+msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_abschnr"
+msgstr "Numéro du tronçon"
+
+msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_bauwhoehe"
+msgstr "Hauteur de l’ouvrage [cm]"
+
+msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_bauwnr"
+msgstr "Numéro de l’ouvrage"
+
+msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_bauwtyp"
+msgstr "Type de l’ouvrage"
+
+msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_bemerkung"
+msgstr "Informations complémentaires et remarques"
+
+msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_datum"
+msgstr "Date du relevé"
+
+msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_hochwert"
+msgstr "Localisation de l’ouvrage, valeur élevée [m]"
+
+msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_mass"
+msgstr "Localisation de l’ouvrage [m]"
+
+msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_notizen"
+msgstr "Notes sur l’ouvrage"
+
+msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_rechtswert"
+msgstr "Localisation de l’ouvrage, valeur à droite [m]"
+
 msgid "tt_ch.bakom.leistung"
 msgstr "Puissance rayonnée (ERP)"
 

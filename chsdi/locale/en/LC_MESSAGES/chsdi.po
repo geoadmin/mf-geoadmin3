@@ -3318,6 +3318,162 @@ msgstr "Corridor number"
 msgid "tt_ch.bafu.fauna-wildtierkorridor_national_zustand"
 msgstr "Conservation status"
 
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_abschnr"
+msgstr "Abschnittnummer"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_anfangshochwert"
+msgstr "Beginn Gewässerabschnitt Hochwert [m]"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_anfangsmass"
+msgstr "Beginn Gewässerabschnitt [m]"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_anfangsrechtswert"
+msgstr "Beginn Gewässerabschnitt Rechtswert [m]"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_bemerkung"
+msgstr "Ergänzende Informationen und Bemerkungen"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_bewalgen"
+msgstr "Algenbewuchs im Bachbett"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_bewmakro"
+msgstr "Makrophytenbewuchs im Bachbett"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_breitenvar"
+msgstr "Variabilität der Wasserspiegelbreite"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_datum"
+msgstr "Erhebungsdatum"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_eindol"
+msgstr "Eindolung"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_endhochwert"
+msgstr "Ende Gewässerabschnitt Hochwert [m]"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_endmass"
+msgstr "Ende Gewässerabschnitt [m]"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_endrechtswert"
+msgstr "Ende Gewässerabschnitt Rechtswert [m]"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_gsbreite"
+msgstr "Mittlere Sohlenbreite [m]"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_lbukmat"
+msgstr "Material der Verbauung des Böschungsfusses links"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_lbukver"
+msgstr "Verbauung des Böschungsfusses links"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_lufbebew"
+msgstr "Bewuchs Uferbereich links"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_lufbebre"
+msgstr "Mittlere Breite des Uferbereiches links [m]"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_luferber"
+msgstr "Uferbereich Klassierung links "
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_notizen"
+msgstr "Bemerkungen zum Abschnitt"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_oekomklasse"
+msgstr "Ökomorphologische Klassierung"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_rbukmat"
+msgstr "Material der Verbauung des Böschungsfusses rechts"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_rbukver"
+msgstr "Verbauung des Böschungsfusses rechts"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_rufbebew"
+msgstr "Bewuchs Uferbereich rechts"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_rufbebre"
+msgstr "Mittlere Breite des Uferbereiches rechts [m]"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_ruferber"
+msgstr "Uferbereich Klassierung rechts"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_sohlmat"
+msgstr "Material der Sohlenverbauung"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_sohlver"
+msgstr "Sohlenverbauung"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_tiefenvar"
+msgstr "Variabilität der Wassertiefe"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_totholz"
+msgstr "Totholz im Bachbett"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_vnatabst"
+msgstr "Viele natürliche Abstürze"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abstuerze_abschnr"
+msgstr "Abschnittnummer"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abstuerze_absthoehe"
+msgstr "Absturzhöhe [cm]"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abstuerze_abstmat"
+msgstr "Absturzmaterial"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abstuerze_abstnr"
+msgstr "Absturznummer"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abstuerze_absttyp"
+msgstr "Absturztyp"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abstuerze_bemerkung"
+msgstr "Ergänzende Informationen und Bemerkungen"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abstuerze_datum"
+msgstr "Erhebungsdatum"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abstuerze_hochwert"
+msgstr "Absturzposition Hochwert [m]"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abstuerze_mass"
+msgstr "Absturzposition [m]"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abstuerze_notizen"
+msgstr "Bemerkungen zum Absturz"
+
+msgid "tt_ch.bafu.oekomorphologie-f_abstuerze_rechtswert"
+msgstr "Absturzposition Rechtswert [m]"
+
+msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_abschnr"
+msgstr "Abschnittnummer"
+
+msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_bauwhoehe"
+msgstr "Bauwerkhöhe"
+
+msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_bauwnr"
+msgstr "Bauwerknummer"
+
+msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_bauwtyp"
+msgstr "Bauwerktyp"
+
+msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_bemerkung"
+msgstr "Ergänzende Informationen und Bemerkungen"
+
+msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_datum"
+msgstr "Erhebungsdatum"
+
+msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_hochwert"
+msgstr "Absturzposition Hochwert [m]"
+
+msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_mass"
+msgstr "Bauwerkposition [m]"
+
+msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_notizen"
+msgstr "Bemerkungen zum Bauwerk"
+
+msgid "tt_ch.bafu.oekomorphologie-f_bauwerke_rechtswert"
+msgstr "Absturzposition Rechtswert [m]"
+
 msgid "tt_ch.bakom.leistung"
 msgstr "Radiated power (ERP)"
 
