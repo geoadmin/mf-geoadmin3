@@ -124,7 +124,28 @@
               });
             });
 
+            var removeNonExistantBodLayers = function() {
+              var removeLayers = [];
+              // We assemble the layers to remove because
+              // we shouldn't remove from the array that
+              // we are iterating over
+              scope.map.getLayers().forEach(function(olLayer) {
+                if (olLayer.bodId &&
+                    !olLayer.background &&
+                    !scope.isBodLayer(olLayer)) {
+                  removeLayers.push(olLayer);
+                }
+              });
+              removeLayers.forEach(function(olLayer) {
+                scope.removeLayerFromMap(olLayer);
+              });
+            };
+
             scope.$on('gaLayersChange', function(event, data) {
+              // We remove all bod layers from the map that
+              // don't have a layers definition
+              removeNonExistantBodLayers();
+
               scope.map.getLayers().forEach(function(olLayer) {
                 if (scope.isBodLayer(olLayer)) {
                   olLayer.label = gaLayers.getLayerProperty(olLayer.bodId,
