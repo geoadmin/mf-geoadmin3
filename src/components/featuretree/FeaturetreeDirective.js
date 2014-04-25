@@ -279,11 +279,10 @@
             var loadGeometry = function(feature, cb) {
               var featureUrl;
               if (!feature.geometry) {
-                featureUrl = scope.options.htmlUrlTemplate
+                featureUrl = scope.options.featureUrlTemplate
                              .replace('{Topic}', currentTopic)
                              .replace('{Layer}', feature.layer)
-                             .replace('{Feature}', feature.id)
-                             .replace('/htmlPopup', '');
+                             .replace('{Feature}', feature.id);
                 $http.get(featureUrl, {
                   timeout: canceler.promise,
                   params: {

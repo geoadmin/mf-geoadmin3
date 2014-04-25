@@ -189,7 +189,7 @@
             $scope.options = {
               tolerance: 10,
               identifyUrlTemplate: baseUrl + '/ech/MapServer/identify',
-              htmlUrlTemplate: baseUrl + '/ech/MapServer/{Layer}/{Feature}/htmlPopup'
+              featureUrlTemplate: baseUrl + '/ech/MapServer/{Layer}/{Feature}'
             };
         }]);
      
@@ -200,7 +200,7 @@
 
             $scope.options = {
               searchUrlTemplate: baseUrl + '/ech/SearchServer',
-              htmlUrlTemplate: baseUrl + '/ech/MapServer/{Layer}/{Feature}/htmlPopup',
+              featureUrlTemplate: baseUrl + '/ech/MapServer/{Layer}/{Feature}',
               active: false
             };
 
