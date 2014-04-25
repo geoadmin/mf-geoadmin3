@@ -326,8 +326,14 @@ msgstr "Nummer Geologischer Atlas"
 msgid "ausgabejahr"
 msgstr "Ausgabejahr"
 
+msgid "author"
+msgstr "Autor"
+
 msgid "autor"
 msgstr "Author"
+
+msgid "auxiliary_information"
+msgstr "Beschreibung des Inhaltes"
 
 msgid "bafu_NHVText"
 msgstr "OPN Status"
@@ -1743,6 +1749,27 @@ msgstr "Brick manufactures 1995"
 msgid "ch.swisstopo.geologie-geotope"
 msgstr "Swiss Geotopes"
 
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2"
+msgstr "Geologische Gutachten (10-21000km2)"
+
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-10x10km"
+msgstr "Geologische Gutachten (10x10km)"
+
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-1x1km"
+msgstr "Geologische Gutachten (1x1km)"
+
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2"
+msgstr "Geologische Gutachten (>21000km2)"
+
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-lt10km2"
+msgstr "Geologische Gutachten (0-10km2)"
+
+msgid "ch.swisstopo.geologie-gisgeol-linien"
+msgstr "Geologische Gutachten (Linien)"
+
+msgid "ch.swisstopo.geologie-gisgeol-punkte"
+msgstr "Geologische Gutachten (Punkte)"
+
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas"
 msgstr "Gravimetric Atlas"
 
@@ -2012,6 +2039,9 @@ msgstr "Inclination [°]"
 msgid "contour_totalintensitaet"
 msgstr "Total intensity [nT]"
 
+msgid "copy_avail"
+msgstr "Zugangsstufe "copy""
+
 msgid "ct"
 msgstr "Ct."
 
@@ -2042,6 +2072,9 @@ msgstr "http://www.geo.admin.ch/internet/geoportal/en/home/geoadmin/contact.html
 #. TODO
 msgid "district"
 msgstr "district"
+
+msgid "doccreation_date"
+msgstr "Dokumentsdatum"
 
 msgid "durationofeffect"
 msgstr "Duration of effect"
@@ -3117,6 +3150,9 @@ msgstr "PDF"
 msgid "pdf_dokument_1_2"
 msgstr "PDF 1 | 2"
 
+msgid "pdf_url"
+msgstr "PDF Download"
+
 msgid "perimeter_m"
 msgstr "Perimeter [m]"
 
@@ -3165,6 +3201,9 @@ msgstr "Data status"
 msgid "report problem"
 msgstr "Report problem"
 
+msgid "report_structure"
+msgstr "Inhalt/Umfang des Berichtes"
+
 msgid "richtungsgetrennt"
 msgstr "Richtungsgetrennt"
 
@@ -3194,6 +3233,9 @@ msgstr "Schonzeit"
 
 msgid "sektor"
 msgstr "Sector"
+
+msgid "sgd_nr"
+msgstr "InfoGeol-Nr."
 
 msgid "sheetname"
 msgstr "Sheet name"
@@ -4294,6 +4336,9 @@ msgstr "Validierungsdatum"
 
 msgid "viel_sub"
 msgstr "Historischer Verlauf mit viel Substanz"
+
+msgid "view_avail"
+msgstr "Zugangsstufe "view""
 
 msgid "waldanteil"
 msgstr "Waldanteil [%]"
