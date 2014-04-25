@@ -822,7 +822,9 @@
          */
         selected: function(layer) {
           return !layer.background &&
-                 !layer.preview;
+                 !layer.preview &&
+                 layer.type !== 'MEASURE' &&
+                 layer.type !== 'DRAW';
         },
         /**
          * Keep only time enabled layer

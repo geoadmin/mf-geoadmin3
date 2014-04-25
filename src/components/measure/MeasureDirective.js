@@ -48,7 +48,8 @@
   });
 
   module.directive('gaMeasure',
-    function($rootScope, $document, gaDebounce, gaDefinePropertiesForLayer) {
+    function($document, $rootScope, gaDebounce, gaDefinePropertiesForLayer,
+        gaLayerFilters) {
       return {
         restrict: 'A',
         templateUrl: function(element, attrs) {
@@ -67,12 +68,12 @@
 
           var layer = new ol.layer.Vector({
             type: 'MEASURE',
-            label: 'measure',
             source: new ol.source.Vector(),
             style: scope.options.styleFunction
           });
           gaDefinePropertiesForLayer(layer);
-          layer.preview = true;
+          scope.layers = scope.map.getLayers().getArray();
+          scope.layerFilter = gaLayerFilters.selected;
 
           // Creates the additional overlay to display azimuth circle
           var featuresOverlay = new ol.FeatureOverlay({
@@ -95,6 +96,11 @@
 
             // Add events
             deregister = [
+              // Move measure layer  on each changes in the list of layers
+              // in the layer manager.
+              scope.$watchCollection('layers | filter:layerFilter',
+                  moveLayerOnTop),
+
               drawArea.on('drawstart', function(evt) {
                 var nbPoint = 1;
                 var isSnapOnLastPoint = false;
@@ -205,7 +211,6 @@
 
               })
             ];
-
           };
 
 
@@ -220,7 +225,12 @@
             // Remove events
             if (deregister) {
               for (var i = deregister.length - 1; i >= 0; i--) {
-                deregister[i].src.unByKey(deregister[i]);
+                var elt = deregister[i];
+                if (elt instanceof Function) {
+                  elt();
+                } else {
+                  elt.src.unByKey(elt);
+                }
               }
             }
             bodyEl.removeClass(scope.options.waitClass);
@@ -297,6 +307,15 @@
               bodyEl.removeClass(scope.options.waitClass);
             }
           });
+
+          // Move the draw layer on top
+          var moveLayerOnTop = function() {
+            var idx = scope.layers.indexOf(layer);
+            if (idx != -1 && idx !== scope.layers.length - 1) {
+              scope.map.removeLayer(layer);
+              scope.map.addLayer(layer);
+            }
+          };
 
           // Listen Profile directive events
           var sketchFeatPoint = new ol.Feature(new ol.geom.Point([0, 0]));
