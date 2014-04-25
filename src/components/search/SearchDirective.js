@@ -249,6 +249,17 @@
               var FEATURES = 1;
               var LAYERS = 2;
 
+              //Determines if a featuresearch request should be triggered
+              //based on map state (have searchable layers) and query
+              var triggerFeatureSearch = function() {
+                 if (!gaGetCoordinate(map.getView().getProjection().getExtent(),
+                                      scope.query) &&
+                     scope.searchableLayers.length) {
+                   return true;
+                 }
+                 return false;
+              };
+
               var typeAheadDatasets = [
                 {
                   header: locationsHeaderTemplate,
@@ -317,15 +328,7 @@
                       scope.$apply(function() {
                         scope.layers = map.getLayers().getArray();
                       });
-                      if (!gaGetCoordinate(
-                          map.getView().getProjection().getExtent(),
-                          scope.query) &&
-                              scope.searchableLayers.length) {
-                        return true;
-                      } else {
-                        // Do not perform a query
-                        return false;
-                      }
+                      return triggerFeatureSearch();
                     },
                     replace: function(url, searchText) {
                       var queryText = '&searchText=' + searchText;
@@ -569,14 +572,20 @@
                   // At this point layers are not added to the map yet
                   var unregisterLayers = scope.$watchCollection('layers',
                       function(layers) {
-                    triggerSearch(FEATURES);
-                    triggerSearch(LAYERS);
+                    $timeout(function() {
+                      var maxCallbacks = 2 * typeAheadDatasets.length;
+                      if (!triggerFeatureSearch()) {
+                        maxCallbacks -= 1;
+                      }
+                      gaPermalinkSearch.activate(maxCallbacks);
+                      scope.query = searchParam;
+                      triggerSearch(LOCATIONS);
+                      triggerSearch(FEATURES);
+                      triggerSearch(LAYERS);
+                    }, 0);
                     unregisterLayers();
                   });
-                  gaPermalinkSearch.activate((2 * typeAheadDatasets.length));
-                  scope.query = searchParam;
-                  triggerSearch(LOCATIONS);
-                  unregister();
+                 unregister();
                 });
               }
 
