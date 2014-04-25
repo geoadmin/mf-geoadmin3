@@ -6,27 +6,28 @@
 
   var module = angular.module('ga_seo_directive', [
     'ga_map_service',
-    'ga_seo_service'
+    'ga_seo_service',
+    'pascalprecht.translate'
   ]);
 
   module.directive('gaSeo',
-      function($sce, $timeout, $interval, $q, gaSeoService, gaLayers) {
+      function($sce, $timeout, $interval, $q, $http, $translate,
+               gaSeoService, gaLayers) {
         return {
           restrict: 'A',
           replace: true,
           templateUrl: 'components/seo/partials/seo.html',
           scope: {
+            options: '=gaSeoOptions'
           },
           link: function(scope, element, attrs) {
-            var MIN_WAIT = 300;
+            var MIN_WAIT = 300,
+                currentTopic;
 
             scope.triggerPageEnd = false;
             scope.showPopup = false;
-            scope.htmls = [];
-
-            var addHtmlSnippet = function(htmlSnippet) {
-              scope.htmls.push($sce.trustAsHtml(htmlSnippet));
-            };
+            scope.layerMetadatas = [];
+            scope.featureMetadatas = [];
 
             var getWaitPromise = function(time) {
               var def = $q.defer();
@@ -43,7 +44,7 @@
                 var def = $q.defer();
                 gaLayers.getMetaDataOfLayer(layerId)
                     .success(function(data) {
-                      addHtmlSnippet(data);
+                      scope.layerMetadatas.push($sce.trustAsHtml(data));
                       def.resolve();
                     }).error(function() {
                       def.resolve();
@@ -131,12 +132,64 @@
               return def.promise;
             };
 
+            var permalinkFeatures = function() {
+              var def = $q.defer(),
+                  unregister;
+
+              unregister = scope.$on('gaPermalinkFeaturesAdd', function(evt,
+                                                                        data) {
+                var promises = [];
+
+                var getFeatureHtml = function(featureId, bodId) {
+                  var fDef = $q.defer();
+                  var htmlUrl = scope.options.htmlUrlTemplate
+                                .replace('{Topic}', currentTopic)
+                                .replace('{Layer}', bodId)
+                                .replace('{Feature}', featureId);
+                  $http.get(htmlUrl, {
+                    params: {
+                      lang: $translate.uses() // Left out other parameters as
+                                              // they are not relevant for SEO
+                                              // (cadastralWbebMap Links)
+                    }
+                  }).success(function(html) {
+                    scope.featureMetadatas.push($sce.trustAsHtml(html));
+                    fDef.resolve();
+                  }).error(function() {
+                    fDef.resolve();
+                  });
+                  return fDef.promise;
+                };
+
+                if (!angular.isDefined(currentTopic) ||
+                    data.count <= 0) {
+                  def.resolve();
+                } else {
+                  angular.forEach(data.featureIdsByBodId,
+                                  function(featureIds, bodId) {
+                    Array.prototype.push.apply(promises, $.map(featureIds,
+                        function(featureId) {
+                          return getFeatureHtml(featureId, bodId);
+                        }
+                    ));
+                  });
+                  $q.all(promises).then(function() {
+                    def.resolve();
+                  });
+                }
+                unregister();
+              });
+
+              return def.promise;
+            };
+
             var injectSnapshotData = function() {
               var promises = [];
 
               promises.push(onLayersChange());
               promises.push(onCatalogChange());
               promises.push(swissSearchParameter());
+              promises.push(permalinkFeatures());
 
               return $q.all(promises);
             };
@@ -152,6 +205,10 @@
                 scope.triggerPageEnd = true;
               });
            }
+
+           scope.$on('gaTopicChange', function(event, topic) {
+             currentTopic = topic.id;
+           });
          }
        };
       });

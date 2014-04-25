@@ -4,7 +4,14 @@
        ga-popup-options="{title:'seo title'}"
        ga-draggable=".ga-popup-title"
        id="seo-popup" >
-    <div ng-repeat="htmlsnippet in htmls">
+
+    <!-- Show all feature metadata -->
+    <div ng-repeat="htmlsnippet in featureMetadatas">
+      <div ng-bind-html="htmlsnippet"></div>
+    </div>
+
+    <!-- Show all layer metadata -->
+    <div ng-repeat="htmlsnippet in layerMetadatas">
       <div ng-bind-html="htmlsnippet"></div>
     </div>
   </div> <!-- end popup -->
