@@ -45,7 +45,7 @@ class Search(SearchValidation):
 
     @view_config(route_name='search', renderer='jsonp')
     def search(self):
-        self.sphinx.SetConnectTimeout(2.5)
+        self.sphinx.SetConnectTimeout(3.5)
         # create a quadindex if the bbox is defined
         if self.bbox is not None and self.typeInfo != 'layers':
             self._get_quad_index()
@@ -144,7 +144,6 @@ class Search(SearchValidation):
         if self.featureIndexes is None:
             # we need bounding box and layernames. FIXME: this should be error
             return 0
-
         self.sphinx.SetLimits(0, self.FEATURE_LIMIT)
         self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
         if self.bbox:
@@ -154,6 +153,20 @@ class Search(SearchValidation):
         else:
             self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, '@weight DESC')
 
+        timeFilter = self._get_time_filter()
+        if self.searchText:
+            searchdText = self._query_fields('@detail')
+        else:
+            searchdText = ''
+        self._add_feature_queries(searchdText, timeFilter)
+        try:
+            temp = self.sphinx.RunQueries()
+        except IOError:
+            raise exc.HTTPGatewayTimeout()
+        self.sphinx.ResetFilters()
+        return self._parse_feature_results(temp)
+
+    def _get_time_filter(self):
         timeFilter = []
         timeInterval = re.search(r'((\b\d{4})-(\d{4}\b))', ' '.join(self.searchText)) or False
         # search for year with getparameter timeInstant=2010
@@ -168,14 +181,7 @@ class Search(SearchValidation):
             self.searchText.remove(timeInterval.group(1))
             if min != max:
                 timeFilter = [start, stop]
-        searchdText = self._query_fields('@detail')
-        self._add_feature_queries(searchdText, timeFilter)
-        try:
-            temp = self.sphinx.RunQueries()
-        except IOError:
-            raise exc.HTTPGatewayTimeout()
-        self.sphinx.ResetFilters()
-        return self._parse_feature_results(temp)
+        return timeFilter
 
     def _get_geoanchor_from_bbox(self):
         centerX = (self.bbox[2] + self.bbox[0]) / 2
