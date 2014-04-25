@@ -15,7 +15,7 @@ class Search(SearchValidation):
 
     LIMIT = 50
     LAYER_LIMIT = 30
-    FEATURE_LIMIT = 10
+    FEATURE_LIMIT = 20
     FEATURE_GEO_LIMIT = 200
 
     def __init__(self, request):
