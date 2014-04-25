@@ -544,8 +544,10 @@ def _get_layers_config_for_params(params, query, model, layerIds=None):
     bgLayers = True
     if params.mapName != 'all':
         # per default we want to include background layers
+        # we also want to always include all 'ech' layers
         query = query.filter(or_(
             model.maps.ilike('%%%s%%' % params.mapName),
+            model.maps.ilike('%%%s%%' % 'ech'),  # ech whitelist hack
             model.background == bgLayers)
         )
     query = _filter_by_geodata_staging(
@@ -590,7 +592,10 @@ def _filter_by_map_name(query, ormColumn, mapName):
     ''' Applies a map/topic filter '''
     if mapName != 'all':
         return query.filter(
-            ormColumn.ilike('%%%s%%' % mapName)
+            or_(
+                ormColumn.ilike('%%%s%%' % mapName),
+                ormColumn.ilike('%%%s%%' % 'ech')  # ech whitelist hack
+            )
         )
     return query
 
