@@ -9,12 +9,15 @@
   max-height: @ga-popup-max-height;
   z-index: 2000;
 
+
+  /* !important is used to override (and so deactivate) draggable styles
+  applied */
   @media (max-width: @screen-tablet) {
     z-index: 1500;
-    left: 2%;
+    top: 2% !important;
+    left: 2% !important;
     right: 2%;
     bottom: 2%;
-    top: 2%;
     max-height: none;
     max-width: none;
     -webkit-overflow-scrolling: touch;
