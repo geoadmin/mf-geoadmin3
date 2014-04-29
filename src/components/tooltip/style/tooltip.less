@@ -20,15 +20,18 @@
     border-bottom-color: #c7c7c7;
   }
   
+
+  /* !important is used to override (and so deactivate) draggable styles
+  applied */
   @media (max-width: @screen-tablet) {
-    top: 89px;
+    top: @small-header-height !important;
     max-height: 300px;
   }
   
   @media (max-width: @screen-phone) {
-    top: 50%;
+    top: 50% !important;
+    left: 2% !important;
     right: 2%;
-    left: 2%;
     bottom: 2%;
     max-height: none;
     width: auto;
