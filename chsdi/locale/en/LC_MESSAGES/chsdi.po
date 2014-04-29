@@ -1091,6 +1091,15 @@ msgstr "Plant protection products"
 msgid "ch.bafu.naqua-grundwasser_voc"
 msgstr "Volatile Organic Compounds"
 
+msgid "ch.bafu.oekomorphologie-f_abschnitte"
+msgstr "Ecomorphology F – River reaches"
+
+msgid "ch.bafu.oekomorphologie-f_abstuerze"
+msgstr "Ecomorphology F – Drop structures"
+
+msgid "ch.bafu.oekomorphologie-f_bauwerke"
+msgstr "Ecomorphology F - Structures"
+
 msgid "ch.bafu.permafrost"
 msgstr "Potential permafrost distribution"
 
