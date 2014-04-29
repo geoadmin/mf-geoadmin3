@@ -211,6 +211,9 @@ msgstr ""
 msgid "ch.bafu.fischerei-nasenlaichplaetze"
 msgstr ""
 
+msgid "ch.swisstopo.geologie-generalkarte-ggk200"
+msgstr ""
+
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas"
 msgstr ""
 

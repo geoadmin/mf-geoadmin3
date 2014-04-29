@@ -573,6 +573,20 @@ class GridstandSwissimage(Base, Vector):
 register('ch.swisstopo.images-swissimage.metadata', GridstandSwissimage)
 
 
+class GeolGenKarteGGK200(Base, Vector):
+    __tablename__ = 'kv_ggk_pk'
+    __table_args__ = ({'schema': 'geol', 'autoload': False})
+    __template__ = 'templates/htmlpopup/generalkarte_ggk200.mako'
+    __bodId__ = 'ch.swisstopo.geologie-generalkarte-ggk200'
+    id = Column('gid', Integer, primary_key=True)
+    nr = Column('nr', Integer)
+    titel = Column('titel', Text)
+    url_legend = Column('url_legend', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-generalkarte-ggk200', GeolGenKarteGGK200)
+
+
 class GeolKarten500Metadata(Base, Vector):
     __tablename__ = 'gk500'
     __table_args__ = ({'schema': 'public', 'autoload': False})

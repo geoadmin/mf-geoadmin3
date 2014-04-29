@@ -1677,6 +1677,9 @@ msgstr "Geoid in ETRS89"
 msgid "ch.swisstopo.geologie-eiszeit-lgm-raster"
 msgstr "Last glacial maximum"
 
+msgid "ch.swisstopo.geologie-generalkarte-ggk200"
+msgstr "General Geological Map"
+
 msgid "ch.swisstopo.geologie-geodaesie-bouguer_anomalien"
 msgstr "Bouguer-Anomalies"
 

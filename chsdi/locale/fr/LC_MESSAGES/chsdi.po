@@ -1677,6 +1677,9 @@ msgstr "Géoïde en ETRS89"
 msgid "ch.swisstopo.geologie-eiszeit-lgm-raster"
 msgstr "Maximum glaciaire"
 
+msgid "ch.swisstopo.geologie-generalkarte-ggk200"
+msgstr "Carte géologique générale"
+
 msgid "ch.swisstopo.geologie-geodaesie-bouguer_anomalien"
 msgstr "Anomalies de Bouguer"
 
