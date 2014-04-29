@@ -24,7 +24,8 @@
         },
         link: function(scope, elt, attrs, controller) {
           scope.layers = scope.map.getLayers().getArray();
-          scope.layerFilter = gaLayerFilters.permanentLayersFilter;
+          // Use only layers in layer manager
+          scope.layerFilter = gaLayerFilters.selected;
           var draggableElt = elt.find('[ga-draggable]');
           var arrowsElt = elt.find('.ga-swipe-arrows');
           var layerLabelElt = elt.find('.ga-swipe-layer-label');
@@ -109,7 +110,7 @@
               scope.map.render();
             }
 
-            if (!scope.isActive || olLayers.length < 2) {
+            if (!scope.isActive || olLayers.length == 0) {
               elt.hide();
               return;
             }

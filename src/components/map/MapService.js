@@ -835,12 +835,6 @@
           return !layer.background &&
                  layer.timeEnabled &&
                  layer.visible;
-        },
-        /**
-         * Filters out preview layers.
-         */
-        permanentLayersFilter: function(layer) {
-          return !layer.preview;
         }
       };
     };
