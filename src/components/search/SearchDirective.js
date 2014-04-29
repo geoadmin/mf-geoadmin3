@@ -1,17 +1,19 @@
 (function() {
   goog.provide('ga_search_directive');
 
-  goog.require('ga_custom_overlay_service');
+  goog.require('ga_debounce_service');
   goog.require('ga_layer_metadata_popup_service');
   goog.require('ga_map_service');
+  goog.require('ga_marker_overlay_service');
   goog.require('ga_permalink');
   goog.require('ga_search_service');
   goog.require('ga_urlutils_service');
 
   var module = angular.module('ga_search_directive', [
-    'ga_custom_overlay_service',
+    'ga_debounce_service',
     'ga_layer_metadata_popup_service',
     'ga_map_service',
+    'ga_marker_overlay_service',
     'ga_permalink',
     'pascalprecht.translate',
     'ga_urlutils_service',
@@ -22,7 +24,7 @@
       function($compile, $translate, $timeout, $rootScope, $http, gaMapUtils,
         gaLayerMetadataPopup, gaPermalink, gaUrlUtils, gaGetCoordinate,
         gaBrowserSniffer, gaLayerFilters, gaKml, gaPreviewLayers, gaLayers,
-        gaPreviewFeatures, gaCustomOverlay, gaPermalinkSearch) {
+        gaPreviewFeatures, gaMarkerOverlay, gaPermalinkSearch, gaDebounce) {
           var currentTopic,
               footer = [
             '<div class="ga-search-footer clearfix">',
@@ -50,6 +52,7 @@
             '<i class="icon-envelope-alt"></i>',
             '</a>',
             '</div>'].join('');
+
           var geojsonParser = new ol.format.GeoJSON();
 
           function parseExtent(stringBox2D) {
@@ -90,10 +93,15 @@
             },
             templateUrl: 'components/search/partials/search.html',
             link: function(scope, element, attrs) {
-              var year;
+              var year, listenerMoveEnd;
               var map = scope.map;
               var options = scope.options;
               var selectedFeatures = {};
+              var originZoom = {
+                address: 10,
+                parcel: 10,
+                sn25: 8
+              };
 
               var footerTemplate = angular.element(footer);
               $compile(footerTemplate)(scope);
@@ -185,6 +193,21 @@
                 gaPreviewLayers.removeAll(map);
               };
 
+              var registerMove = function() {
+                listenerMoveEnd = map.on('moveend',
+                    gaDebounce.debounce(function() {
+                  var zoom = map.getView().getZoom();
+                  gaMarkerOverlay.setVisibility(zoom);
+                }, 200, false));
+              };
+
+              var unregisterMove = function() {
+                if (listenerMoveEnd) {
+                  listenerMoveEnd.src.unByKey(listenerMoveEnd);
+                  listenerMoveEnd = null;
+                }
+              };
+
               var selectFeature = function(layerId, featureId) {
                 loadGeometry(layerId, featureId, function(feature) {
                   $rootScope.$broadcast('gaTriggerTooltipRequest', {
@@ -197,27 +220,33 @@
                 });
               };
 
-              scope.addOverlay = function(extent) {
+              scope.addOverlay = function(extent, origin) {
                 if (gaBrowserSniffer.mobile) {
                   return;
                 }
-                gaCustomOverlay.add(map, extent);
+                if (originZoom.hasOwnProperty(origin)) {
+                  gaMarkerOverlay.add(map, extent, true);
+                } else {
+                  gaMarkerOverlay.add(map, extent);
+                }
               };
 
               scope.removeOverlay = function() {
                 if (gaBrowserSniffer.mobile) {
                   return;
                 }
-                gaCustomOverlay.removeAll(map);
+                gaMarkerOverlay.remove(map);
+                unregisterMove();
               };
 
               var getLocationTemplate = function(context) {
                 var attrs = context.attrs;
                 var label = getLocationLabel(attrs);
+                var origin = attrs.origin;
                 var extent = parseExtent(attrs.geom_st_box2d);
                 var template = '<div class="tt-search" ' +
                     'ng-mouseover="addOverlay([' +
-                    extent + '])" ' +
+                    extent + ']' + ',\'' + origin + '\')" ' +
                     'ng-mouseout="removeOverlay()">' +
                     label + '</div>';
                 return template;
@@ -226,13 +255,13 @@
               var getLocationLabel = function(attrs) {
                 var label = attrs.label;
                 if (attrs.origin == 'zipcode') {
-                  label = '<span>{{ "plz" | translate }} ' + label;
+                  label = '<span>' + $translate('plz') + ' ' + label;
                 } else if (attrs.origin == 'kantone') {
-                  label = '<span>{{ "ct" | translate }} ' + label;
+                  label = '<span>' + $translate('ct') + ' ' + label;
                 } else if (attrs.origin == 'district') {
-                  label = '<span>{{ "district" | translate }} ' + label;
+                  label = '<span>' + $translate('district') + ' ' + label;
                 } else if (attrs.origin == 'parcel') {
-                  label += ' <span>{{ "parcel" | translate }} ';
+                  label += ' <span>' + $translate('parcel') + ' ';
                 } else if (attrs.origin == 'feature') {
                   label = '<b>' +
                       gaLayers.getLayerProperty(attrs.layer, 'label') +
@@ -288,7 +317,7 @@
 
                       if (position) {
                         moveTo(map, 8, position);
-                        gaCustomOverlay.add(map, [position[0], position[1],
+                        gaMarkerOverlay.add(map, [position[0], position[1],
                             position[0], position[1]]);
                       }
                       return !position;
@@ -426,31 +455,28 @@
               taElt.typeahead(typeAheadDatasets)
                 .on('typeahead:selected', function(event, datum) {
                   var origin = datum.attrs.origin;
-                  gaCustomOverlay.removeAll(map);
+                  gaMarkerOverlay.remove(map);
                   scope.removePreviewLayer();
                   scope.searchFocused = false;
                   taElt.trigger('blur', [true]);
                   if (origin !== 'feature' && origin !== 'layer') {
+                    registerMove();
                     var extent = parseExtent(datum.attrs.geom_st_box2d);
-
-                    var originZoom = {
-                      address: 10,
-                      parcel: 10,
-                      sn25: 8
-                    };
 
                     if (originZoom.hasOwnProperty(origin)) {
                       var zoom = originZoom[origin];
                       var center = [(extent[0] + extent[2]) / 2,
                         (extent[1] + extent[3]) / 2];
                       moveTo(map, zoom, center);
+                      // Make sure the above origins are visible at all
+                      // zoom levels
+                      gaMarkerOverlay.add(map, extent, true);
                     } else {
                       zoomToExtent(map, extent);
+                      gaMarkerOverlay.add(map, extent);
                     }
-                    if (extent[0] === extent[2] &&
-                        extent[1] === extent[3]) {
-                      gaCustomOverlay.add(map, extent);
-                    }
+                  } else {
+                    unregisterMove();
                   }
                   if (origin === 'feature') {
                     var layerId = datum.attrs.layer;
@@ -520,7 +546,8 @@
                 $(taElt).val('');
                 $(taElt).data('ttView').inputView.setQuery('');
                 scope.query = '';
-                gaCustomOverlay.removeAll(map);
+                gaMarkerOverlay.remove(map);
+                unregisterMove();
                 viewDropDown.clearSuggestions();
                 scope.searchFocused = false;
               };

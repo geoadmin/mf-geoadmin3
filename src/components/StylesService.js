@@ -50,18 +50,10 @@
       })
     });
 
-    var defaultRectangleStyle = new ol.style.Style({
-      fill: new ol.style.Fill({
-        color: 'rgba(255, 0, 0, 0.0)'
-      }),
-      stroke: hlStroke
-    });
-
     var styles = {
       'select': selectStyle,
       'highlight': hlStyle,
-      'selectrectangle': srStyle,
-      'defaultrectangle': defaultRectangleStyle
+      'selectrectangle': srStyle
     };
 
     this.$get = function() {
