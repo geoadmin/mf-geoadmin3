@@ -1758,27 +1758,32 @@ msgstr "Mattonifici 1995"
 msgid "ch.swisstopo.geologie-geotope"
 msgstr "Geotopi svizzeri"
 
+#. TODO
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2"
-msgstr "Expertises géolog. (10-21000km2)"
-
-msgid "ch.swisstopo.geologie-gisgeol-flaechen-10x10km"
-msgstr "Expertises géologiques (10x10km)"
-
-msgid "ch.swisstopo.geologie-gisgeol-flaechen-1x1km"
-msgstr "Expertises géologiques (1x1km)"
+msgstr "ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2"
 
 #. TODO
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-10x10km"
+msgstr "ch.swisstopo.geologie-gisgeol-flaechen-10x10km"
+
+#. TODO
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-1x1km"
+msgstr "ch.swisstopo.geologie-gisgeol-flaechen-1x1km"
+
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2"
-msgstr "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2"
+msgstr "Expertises géologiques (>21000km2)"
 
+#. TODO
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-lt10km2"
-msgstr "Expertises géologiques (0-10km2)"
+msgstr "ch.swisstopo.geologie-gisgeol-flaechen-lt10km2"
 
+#. TODO
 msgid "ch.swisstopo.geologie-gisgeol-linien"
-msgstr "Expertises géologiques (lignes)"
+msgstr "ch.swisstopo.geologie-gisgeol-linien"
 
+#. TODO
 msgid "ch.swisstopo.geologie-gisgeol-punkte"
-msgstr "Expertises géologiques (points)"
+msgstr "ch.swisstopo.geologie-gisgeol-punkte"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas"
 msgstr "Atlante gravimetrico"
