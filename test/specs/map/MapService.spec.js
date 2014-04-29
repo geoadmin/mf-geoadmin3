@@ -104,6 +104,7 @@ describe('ga_map_service', function() {
         source: new ol.source.OSM()
       });
       layer.bodId = bodId;
+      layer.displayInLayerManager = true;
       map.addLayer(layer);
       return layer;
     };
@@ -123,6 +124,7 @@ describe('ga_map_service', function() {
           features: kmlFormat.readFeatures('<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:gx="http://www.google.com/kml/ext/2.2"></kml>')
         })
       });
+      layer.displayInLayerManager = true;
       map.addLayer(layer);
       return layer;
     };
@@ -140,6 +142,7 @@ describe('ga_map_service', function() {
         visible: false,
         source: source
       });
+      layer.displayInLayerManager = true;
       map.addLayer(layer);
       return layer;
     };

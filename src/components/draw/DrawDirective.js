@@ -4,11 +4,13 @@
   goog.require('ga_map_service');
 
   var module = angular.module('ga_draw_directive', [
+    'ga_map_service',
     'pascalprecht.translate'
   ]);
 
   module.directive('gaDraw',
-    function($rootScope, gaDefinePropertiesForLayer, $translate, $timeout) {
+    function($rootScope, $timeout, $translate, gaDefinePropertiesForLayer,
+        gaLayerFilters) {
       return {
         restrict: 'A',
         templateUrl: function(element, attrs) {
@@ -24,23 +26,15 @@
           var map = scope.map;
           var source = new ol.source.Vector();
           var layer = new ol.layer.Vector({
-            label: 'draw',
             source: source,
             visible: true,
             style: scope.options.styleFunction
           });
           gaDefinePropertiesForLayer(layer);
-          layer.preview = true;
+          layer.displayInLayerManager = false;
+          scope.layers = scope.map.getLayers().getArray();
+          scope.layerFilter = gaLayerFilters.selected;
 
-          // Focus on the first input.
-          var setFocus = function() {
-            $timeout(function() {
-              var inputs = $(elt).find('input, select');
-              if (inputs.length > 0) {
-                inputs[0].focus();
-              }
-            });
-          };
 
           // Activate the component: active a tool if one was active when draw
           // has been deactivated.
@@ -71,7 +65,13 @@
 
             if (map.getLayers().getArray().indexOf(layer) == -1) {
               map.addLayer(layer);
+              // Move draw layer  on each changes in the list of layers
+              // in the layer manager.
+              scope.$watchCollection('layers | filter:layerFilter',
+                  moveLayerOnTop);
             }
+
+            moveLayerOnTop();
 
             var tools = scope.options.tools;
             for (var i = 0, ii = tools.length; i < ii; i++) {
@@ -328,6 +328,28 @@
               scope.options.isDeleteActive = false;
             }
           });
+
+
+          // Utils
+
+          // Focus on the first input.
+          var setFocus = function() {
+            $timeout(function() {
+              var inputs = $(elt).find('input, select');
+              if (inputs.length > 0) {
+                inputs[0].focus();
+              }
+            });
+          };
+
+          // Move the draw layer on top
+          var moveLayerOnTop = function() {
+            var idx = scope.layers.indexOf(layer);
+            if (idx != -1 && idx !== scope.layers.length - 1) {
+              map.removeLayer(layer);
+              map.addLayer(layer);
+            }
+          };
 
         }
       };
