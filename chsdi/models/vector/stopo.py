@@ -574,14 +574,14 @@ register('ch.swisstopo.images-swissimage.metadata', GridstandSwissimage)
 
 
 class GeolGenKarteGGK200(Base, Vector):
-    __tablename__ = 'ggk200'
-    __table_args__ = ({'schema': 'public', 'autoload': False})
+    __tablename__ = 'kv_ggk_pk'
+    __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/generalkarte_ggk200.mako'
     __bodId__ = 'ch.swisstopo.geologie-generalkarte-ggk200'
-    id = Column('bgdi_id', Integer, primary_key=True)
-    ggk_nr = Column('ggk_nr', Text)
+    id = Column('gid', Integer, primary_key=True)
+    nr = Column('nr', Integer)
     titel = Column('titel', Text)
-    pdf_file = Column('pdf_file', Text)
+    url_legend = Column('url_legend', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-generalkarte-ggk200', GeolGenKarteGGK200)
