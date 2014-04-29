@@ -31,7 +31,13 @@ Geodata
 +--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | New    | `Geologische Gutachten (>21000km2) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-gt21000km2>`__ (ch.swisstopo.geologie-gisgeol-gt21000km2)                                               |
 +--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| New    | `General Geological Map <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-generalkarte-ggk200>`__ (ch.swisstopo.geologie-generalkarte-ggk200                                                         |
+| New    | `General Geological Map <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-generalkarte-ggk200>`__ (ch.swisstopo.geologie-generalkarte-ggk200)                                                        |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Ecomorphology F – River reaches <//map.geo.admin.ch/?layers=ch.bafu.oekomorphologie-f_abschnitte>`__ (ch.bafu.oekomorphologie-f_abschnitte)                                                         |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Ecomorphology F – Drop structures <//map.geo.admin.ch/?layers=ch.bafu.oekomorphologie-f_abstuerze>`__ (ch.bafu.oekomorphologie-f_abstuerze)                                                         |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Ecomorphology F – Structures <//map.geo.admin.ch/?layers=ch.bafu.oekomorphologie-f_bauwerke>`__ (ch.bafu.oekomorphologie-f_bauwerke)                                                                |
 +--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Update | `Hiking trails <//map.geo.admin.ch/?layers=ch.swisstopo.swisstlm3d-wanderwege>`__ (ch.swisstopo.swisstlm3d-wanderwege)                                                                               |
 +--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
