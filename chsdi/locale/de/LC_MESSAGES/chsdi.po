@@ -1091,6 +1091,15 @@ msgstr "Pflanzenschutzmittel"
 msgid "ch.bafu.naqua-grundwasser_voc"
 msgstr "Flüchtige org. Verbindungen"
 
+msgid "ch.bafu.oekomorphologie-f_abschnitte"
+msgstr "Ökomorphologie F - Abschnitte"
+
+msgid "ch.bafu.oekomorphologie-f_abstuerze"
+msgstr "Ökomorphologie F - Abstürze"
+
+msgid "ch.bafu.oekomorphologie-f_bauwerke"
+msgstr "Ökomorphologie F - Bauwerke"
+
 msgid "ch.bafu.permafrost"
 msgstr "Permafrosthinweiskarte"
 

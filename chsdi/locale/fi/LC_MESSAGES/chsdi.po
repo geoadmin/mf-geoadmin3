@@ -1091,6 +1091,15 @@ msgstr "Pflanzenschutzmittel"
 msgid "ch.bafu.naqua-grundwasser_voc"
 msgstr "Flüchtige org. Verbindungen"
 
+msgid "ch.bafu.oekomorphologie-f_abschnitte"
+msgstr "Abschnitte"
+
+msgid "ch.bafu.oekomorphologie-f_abstuerze"
+msgstr "Abstürze"
+
+msgid "ch.bafu.oekomorphologie-f_bauwerke"
+msgstr "Bauwerke"
+
 msgid "ch.bafu.permafrost"
 msgstr "Charta indicativa schelira permanenta"
 
@@ -1758,8 +1767,9 @@ msgstr "Geologische Gutachten (10x10km)"
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-1x1km"
 msgstr "Geologische Gutachten (1x1km)"
 
+#. TODO
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2"
-msgstr "Geologische Gutachten (>21000km2)"
+msgstr "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-lt10km2"
 msgstr "Geologische Gutachten (0-10km2)"

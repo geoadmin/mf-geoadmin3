@@ -4212,6 +4212,15 @@ msgstr ""
 msgid "tt_gsk_meta_formate"
 msgstr ""
 
+msgid "ch.bafu.oekomorphologie-f_abschnitte"
+msgstr ""
+
+msgid "ch.bafu.oekomorphologie-f_abstuerze"
+msgstr ""
+
+msgid "ch.bafu.oekomorphologie-f_bauwerke"
+msgstr ""
+
 msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_abschnr"
 msgstr ""
 

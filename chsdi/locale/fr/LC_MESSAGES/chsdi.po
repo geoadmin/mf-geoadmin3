@@ -333,7 +333,7 @@ msgid "autor"
 msgstr "Auteur"
 
 msgid "auxiliary_information"
-msgstr "Déscription du contenu"
+msgstr "Description du contenu"
 
 msgid "bafu_NHVText"
 msgstr "Statut OPN"
@@ -1090,6 +1090,15 @@ msgstr "Produits phytosanitaires"
 
 msgid "ch.bafu.naqua-grundwasser_voc"
 msgstr "Composés organiques volatils"
+
+msgid "ch.bafu.oekomorphologie-f_abschnitte"
+msgstr "Ecomorphologie R - Tronçons"
+
+msgid "ch.bafu.oekomorphologie-f_abstuerze"
+msgstr "Ecomorphologie R - Seuils"
+
+msgid "ch.bafu.oekomorphologie-f_bauwerke"
+msgstr "Ecomorphologie R – Ouvrages"
 
 msgid "ch.bafu.permafrost"
 msgstr "Carte indicative du Pergélisol"
@@ -2040,7 +2049,7 @@ msgid "contour_totalintensitaet"
 msgstr "Intensité totale [nT]"
 
 msgid "copy_avail"
-msgstr "Niveau d`accès "copy""
+msgstr "Niveau d'accès du "copy""
 
 msgid "ct"
 msgstr "Ct."
@@ -2073,7 +2082,7 @@ msgid "district"
 msgstr "district"
 
 msgid "doccreation_date"
-msgstr "Date du document"
+msgstr "Date de création du document"
 
 msgid "durationofeffect"
 msgstr "Durée de l'effet"

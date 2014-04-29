@@ -333,7 +333,7 @@ msgid "autor"
 msgstr "Autore"
 
 msgid "auxiliary_information"
-msgstr "Déscription du contenu"
+msgstr "Description du contenu"
 
 msgid "bafu_NHVText"
 msgstr "Stato OPN"
@@ -1091,6 +1091,15 @@ msgstr "Prodotti fitosanitari"
 msgid "ch.bafu.naqua-grundwasser_voc"
 msgstr "Composti organici volatili"
 
+msgid "ch.bafu.oekomorphologie-f_abschnitte"
+msgstr "Ecomorfologia livello R - Tratti"
+
+msgid "ch.bafu.oekomorphologie-f_abstuerze"
+msgstr "Ecomorfologia R – Opere di caduta"
+
+msgid "ch.bafu.oekomorphologie-f_bauwerke"
+msgstr "Ecomorfologia R – Costruzioni"
+
 msgid "ch.bafu.permafrost"
 msgstr "Cartina indicativa del permafrost"
 
@@ -1758,8 +1767,9 @@ msgstr "Expertises géologiques (10x10km)"
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-1x1km"
 msgstr "Expertises géologiques (1x1km)"
 
+#. TODO
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2"
-msgstr "Expertises géologiques (>21000km2)"
+msgstr "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-lt10km2"
 msgstr "Expertises géologiques (0-10km2)"
@@ -2040,7 +2050,7 @@ msgid "contour_totalintensitaet"
 msgstr "Intensità totale [nT]"
 
 msgid "copy_avail"
-msgstr "Niveau d`accès "copy""
+msgstr "Niveau d'accès du "copy""
 
 msgid "ct"
 msgstr "Ct."
@@ -2073,7 +2083,7 @@ msgid "district"
 msgstr "distretto"
 
 msgid "doccreation_date"
-msgstr "Date du document"
+msgstr "Date de création du document"
 
 msgid "durationofeffect"
 msgstr "Durata dell'effetto"
