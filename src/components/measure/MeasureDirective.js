@@ -67,11 +67,11 @@
           var styleFunction = scope.options.styleFunction;
 
           var layer = new ol.layer.Vector({
-            type: 'MEASURE',
             source: new ol.source.Vector(),
             style: scope.options.styleFunction
           });
           gaDefinePropertiesForLayer(layer);
+          layer.displayInLayerManager = false;
           scope.layers = scope.map.getLayers().getArray();
           scope.layerFilter = gaLayerFilters.selected;
 

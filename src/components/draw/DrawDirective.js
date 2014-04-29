@@ -26,12 +26,12 @@
           var map = scope.map;
           var source = new ol.source.Vector();
           var layer = new ol.layer.Vector({
-            type: 'DRAW',
             source: source,
             visible: true,
             style: scope.options.styleFunction
           });
           gaDefinePropertiesForLayer(layer);
+          layer.displayInLayerManager = false;
           scope.layers = scope.map.getLayers().getArray();
           scope.layerFilter = gaLayerFilters.selected;
 

@@ -163,6 +163,10 @@
             writable: true,
             value: false
           },
+          displayInLayerManager: {
+            writable: true,
+            value: true
+          },
           preview: {
             writable: true,
             value: false
@@ -302,6 +306,7 @@
           });
           gaDefinePropertiesForLayer(layer);
           layer.preview = options.preview;
+          layer.displayInLayerManager = !layer.preview;
           layer.label = options.label;
           return layer;
         };
@@ -815,16 +820,13 @@
       return {
         /**
          * Filters out background layers, preview
-         * layers.
+         * layers, draw, measure.
          * In other words, all layers that
          * were actively added by the user and that
          * appear in the layer manager
          */
         selected: function(layer) {
-          return !layer.background &&
-                 !layer.preview &&
-                 layer.type !== 'MEASURE' &&
-                 layer.type !== 'DRAW';
+          return layer.displayInLayerManager;
         },
         /**
          * Keep only time enabled layer
@@ -1075,6 +1077,7 @@
       // Define layer default properties
       gaDefinePropertiesForLayer(vector);
       vector.preview = true;
+      vector.displayInLayerManager = false;
 
       // TO DO: May be this method should be elsewher?
       var getFeatures = function(featureIdsByBodId) {
@@ -1321,6 +1324,7 @@
           }
 
           olPreviewLayer.preview = true;
+          olPreviewLayer.displayInLayerManager = false;
           olPreviewLayers[bodId] = olPreviewLayer;
           map.addLayer(olPreviewLayer);
 
@@ -1344,6 +1348,7 @@
           }
 
           olPreviewLayer.preview = true;
+          olPreviewLayer.displayInLayerManager = false;
           olPreviewLayers[getCapLayer.id] = olPreviewLayer;
           map.addLayer(olPreviewLayer);
 
