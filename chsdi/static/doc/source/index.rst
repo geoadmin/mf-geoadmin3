@@ -73,6 +73,7 @@ Services API
    :maxdepth: 1
 
    services/sdiservices
+   services/oerebservices
 
 Terms of use
 ************
