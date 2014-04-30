@@ -1,7 +1,6 @@
 @dropdown-background-color: #fff;
 @dropdown-link-color-hover-color: #fff;
 @dropdown-link-background-hover-color: #666;
-@suggestions-max-height: 200px;
 
 [ga-search] {
   position: relative;
@@ -42,17 +41,37 @@
     background-clip: padding-box;
   }
 
-  .tt-dataset-locations,
-  .tt-dataset-featuresearch,
-  .tt-dataset-layers {
-    
+  div.ga-search-1 {
     .tt-suggestions {
-      max-height: @suggestions-max-height;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      @media (max-height: 800px) {
-        max-height: 170px;
+      max-height: 525px;
+      @media (max-height: 680px) {
+        max-height: 435px;
       }
+      @media (max-height: 550px) {
+        max-height: 345px;
+      }
+      @media (max-height: 480px) {
+        max-height: 255px;
+      }
+    }
+  }
+  div.ga-search-2 {
+    .tt-suggestions {
+      max-height: 270px;
+      @media (max-height: 680px) {
+        max-height: 225px;
+      }
+      @media (max-height: 550px) {
+        max-height: 180px;
+      }
+      @media (max-height: 480px) {
+        max-height: 140px;
+      }
+    }
+  }
+  div.ga-search-3 {
+    .tt-suggestions {
+      max-height: 170px;
       @media (max-height: 680px) {
         max-height: 140px;
       }
@@ -62,12 +81,21 @@
       @media (max-height: 480px) {
         max-height: 80px;
       }
-      
+    }
+  }
+
+  .tt-dataset-locations,
+  .tt-dataset-featuresearch,
+  .tt-dataset-layers {
+    
+    .tt-suggestions {
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
       .tt-suggestion {
         display: block;
         background-color: #E6E6E6;
         margin-top: 1px;
-        
+
         &.tt-is-under-cursor {
           color: @dropdown-link-color-hover-color;
           background-color: @dropdown-link-background-hover-color;
@@ -76,13 +104,13 @@
             background-color: @dropdown-link-background-hover-color;
           }
         }
-        
+
         .tt-search {
           padding: 3px 20px;
         }
       }
     }
-    
+
     p {
       margin: 0;
     }
