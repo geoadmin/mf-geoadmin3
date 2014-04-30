@@ -7,12 +7,16 @@ API & applications
 `API <//api3.geo.admin.ch>`__
 -----------------------------------
 
--
+- New example <//api3.geo.admin.ch/examples/geoadmin_rectangle.html>
+- EGID removed from address layer
+- Minor bug fixes
 
 `MAP <//map.geo.admin.ch>`__
 -----------------------------------
 
--
+- Support swisssearch parameter in permalink
+- Add a correct native browser print
+- Minor bug fixes
 
 Geodata
 ********
