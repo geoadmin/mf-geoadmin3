@@ -93,7 +93,7 @@
             },
             templateUrl: 'components/search/partials/search.html',
             link: function(scope, element, attrs) {
-              var year, listenerMoveEnd;
+              var year, hasLocationResults, hasFeatureResults, listenerMoveEnd;
               var map = scope.map;
               var options = scope.options;
               var selectedFeatures = {};
@@ -360,9 +360,7 @@
                     },
                     filter: function(response) {
                       var results = response.results;
-                      scope.$apply(function() {
-                        scope.hasLocationResults = (results.length !== 0);
-                      });
+                      hasLocationResults = (results.length !== 0);
                       return $.map(results, function(val) {
                         val.inputVal = val.attrs.label
                             .replace('<b>', '').replace('</b>', '');
@@ -388,9 +386,7 @@
                         scope.layers = map.getLayers().getArray();
                       });
                       if (scope.searchableLayers.length === 0) {
-                        scope.$apply(function() {
-                          scope.hasFeatureResults = false;
-                        });
+                        hasFeatureResults = false;
                       }
                       return triggerFeatureSearch();
                     },
@@ -414,9 +410,7 @@
                     },
                     filter: function(response) {
                       var results = response.results;
-                      scope.$apply(function() {
-                        scope.hasFeatureResults = (results.length !== 0);
-                      });
+                      hasFeatureResults = (results.length !== 0);
                       return $.map(results, function(val) {
                         val.inputVal = val.attrs.label
                             .replace('<b>', '').replace('</b>', '');
@@ -575,8 +569,8 @@
 
               var setListCount = function() {
                 var counter = 0;
-                counter = !scope.hasLocationResults ? counter : counter + 1;
-                counter = !scope.hasFeatureResults ? counter : counter + 1;
+                counter = !hasLocationResults ? counter : counter + 1;
+                counter = !hasFeatureResults ? counter : counter + 1;
                 counter = !scope.hasLayerResults ? counter : counter + 1;
                 for (var cssClass in scope.nbOfSuggestionsLists) {
                   if (cssClass === 'ga-search-' + counter) {
