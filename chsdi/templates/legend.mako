@@ -3,7 +3,7 @@
 <%
   c = legend['layer']
   hasLegend = legend['hasLegend']
-  host = request.host_url + request.uscript_name
+  host = h.make_agnostic(request.host_url + request.uscript_name)
   lang = request.lang
   pdf_legends = ('ch.swisstopo.geologie-eiszeit-lgm-raster', 
                  'ch.swisstopo.geologie-geologische_karte',
