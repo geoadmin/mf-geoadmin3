@@ -208,6 +208,23 @@
                 }
               };
 
+              scope.addPreviewFeature = function(layerId, featureId) {
+                if (gaBrowserSniffer.mobile) {
+                  return;
+                }
+                loadGeometry(layerId, featureId, function(feature) {
+                  gaPreviewFeatures.highlight(map,
+                      geojsonParser.readFeature(feature));
+                });
+              };
+
+              scope.removePreviewFeature = function() {
+                if (gaBrowserSniffer.mobile) {
+                  return;
+                }
+                gaPreviewFeatures.clearHighlight();
+              };
+
               var selectFeature = function(layerId, featureId) {
                 loadGeometry(layerId, featureId, function(feature) {
                   $rootScope.$broadcast('gaTriggerTooltipRequest', {
@@ -248,6 +265,17 @@
                     'ng-mouseover="addOverlay([' +
                     extent + ']' + ',\'' + origin + '\')" ' +
                     'ng-mouseout="removeOverlay()">' +
+                    label + '</div>';
+                return template;
+              };
+
+              var getFeatureTemplate = function(context) {
+                var attrs = context.attrs;
+                var label = getLocationLabel(attrs);
+                var template = '<div class="tt-search" ' +
+                    'ng-mouseover="addPreviewFeature(\'' +
+                    attrs.layer + '\', \'' + attrs.feature_id + '\')"' +
+                    'ng-mouseout="removePreviewFeature()"' + ' >' +
                     label + '</div>';
                 return template;
               };
@@ -350,7 +378,7 @@
                   valueKey: 'inputVal',
                   limit: 30,
                   template: function(context) {
-                    return getLocationTemplate(context);
+                    return getFeatureTemplate(context);
                   },
                   remote: {
                     url: gaUrlUtils.append(options.searchUrl,
