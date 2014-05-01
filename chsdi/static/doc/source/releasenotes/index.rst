@@ -7,8 +7,7 @@ API & applications
 `API <//api3.geo.admin.ch>`__
 -----------------------------------
 
-- New example <//api3.geo.admin.ch/examples/geoadmin_rectangle.html>
-- EGID removed from address layer
+- `New example <//api3.geo.admin.ch/examples/geoadmin_rectangle.html>`__
 - Minor bug fixes
 
 `MAP <//map.geo.admin.ch>`__
@@ -25,15 +24,15 @@ Geodata
 +--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | New    | `Geologische Gutachten (Linien) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-linien>`__ (ch.swisstopo.geologie-gisgeol-linien)                                                          |
 +--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| New    | `Geologische Gutachten (1x1km) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-1x1km>`__ (ch.swisstopo.geologie-gisgeol-1x1km)                                                             |
+| New    | `Geologische Gutachten (1x1km) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-flaechen-1x1km>`__ (ch.swisstopo.geologie-gisgeol-flaechen-1x1km)                                           |
 +--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| New    | `Geologische Gutachten (0-10km2) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-lt10km2>`__ (ch.swisstopo.geologie-gisgeol-lt10km2)                                                       |
+| New    | `Geologische Gutachten (0-10km2) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-flaechen-lt10km2>`__ (ch.swisstopo.geologie-gisgeol-flaechen-lt10km2)                                     |
 +--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| New    | `Geologische Gutachten (10x10km) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-10x10km>`__ (ch.swisstopo.geologie-gisgeol-10x10km)                                                       |
+| New    | `Geologische Gutachten (10x10km) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-flaechen-10x10km>`__ (ch.swisstopo.geologie-gisgeol-flaechen-10x10km)                                     |
 +--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| New    | `Geologische Gutachten (10-21000km2) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-10to21000km2>`__ (ch.swisstopo.geologie-gisgeol-10to21000km2)                                         |
+| New    | `Geologische Gutachten (10-21000km2) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2>`__ (ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2)                       |
 +--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| New    | `Geologische Gutachten (>21000km2) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-gt21000km2>`__ (ch.swisstopo.geologie-gisgeol-gt21000km2)                                               |
+| New    | `Geologische Gutachten (>21000km2) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2>`__ (ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2)                             |
 +--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | New    | `General Geological Map <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-generalkarte-ggk200>`__ (ch.swisstopo.geologie-generalkarte-ggk200)                                                        |
 +--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
