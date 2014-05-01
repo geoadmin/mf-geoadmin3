@@ -8,6 +8,11 @@ import urllib2
 from pyramid.url import route_url
 from xml.dom import minidom
 import chsdi.lib.helpers as h
+import markupsafe
+
+def br(text):
+    return text.replace('\n', markupsafe.Markup('<br />'))
+
 
 def get_image_size(filename):
     width = 1
@@ -112,7 +117,7 @@ quickview_url = get_quickview_url(request, params)
 <tr>
   <th class="cell-left">${_('tt_lubis_bildorder')}</th>
   <td>
-    ${c['attributes']['contact']} 
+    ${c['attributes']['contact'] | br } 
     <br/> 
     ${c['attributes']['contact_email']} 
     <br/>
@@ -193,7 +198,7 @@ quickview_url = get_quickview_url(request, params)
 % if 'contact_web' in c['attributes']:
   <tr class="chsdi-no-print">
     <th class="cell-left">${_('tt_lubis_bildorder')}</th>
-    <td>${c['attributes']['contact']} <br /> ${c['attributes']['contact_email']} <br /><a href="${c['attributes']['contact_web']}" target="_blank">${c['attributes']['contact_web']}</a></td>
+    <td>${c['attributes']['contact'] | br } <br /> ${c['attributes']['contact_email']} <br /><a href="${c['attributes']['contact_web']}" target="_blank">${c['attributes']['contact_web']}</a></td>
   </tr>
 % endif
   </table>
