@@ -591,7 +591,6 @@
                   if (el) {
                     el = el.find('.tt-suggestions');
                     if (el) {
-                      $compile(el)(scope);
                       gaPermalinkSearch.feed(el);
                     }
                     el.scrollTop(0);
