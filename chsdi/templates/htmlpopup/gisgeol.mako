@@ -8,7 +8,7 @@
 <%def name="table_body(c,lang)">
     <% c['stable_id'] = False %>
     <tr><td class="cell-left">${_('sgd_nr')}</td><td>${c['attributes']['sgd_nr']}</td></tr>
-    <tr><td class="cell-left">${_('title')}</td><td>${c['attributes']['title']}</td></tr>
+    <tr><td class="cell-left">${_('title')}</td><td>${c['attributes']['title'] | br }</td></tr>
     <tr><td class="cell-left">${_('author')}</td><td>${c['attributes']['author']}</td></tr>
     <tr><td class="cell-left">${_('report_structure')}</td><td>${c['attributes']['report_structure']}</td></tr>
     <tr><td class="cell-left">${_('auxiliary_information')}</td><td>${c['attributes']['aux_info'] | br }</td></tr>
