@@ -43,7 +43,7 @@ class Alpenkonvention(Base, Vector):
 register('ch.are.alpenkonvention', Alpenkonvention)
 
 
-class AggloIsoStaedte(Base, Vector):
+class AggloIsoStaedteWithDate(Base, Vector):
     __tablename__ = 'agglomerationen_isolierte_staedte_2000'
     __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': False})
     __template__ = 'templates/htmlpopup/aggloisostaedte.mako'
@@ -55,7 +55,22 @@ class AggloIsoStaedte(Base, Vector):
     klasse_fr = Column('klasse_fr', Text)
     flaeche_ha = Column('flaeche_ha', Numeric)
 
-register('ch.are.agglomerationen_isolierte_staedte-2000', AggloIsoStaedte)
+register('ch.are.agglomerationen_isolierte_staedte-2000', AggloIsoStaedteWithDate)
+
+
+class AggloIsoStaedte(Base, Vector):
+    __tablename__ = 'agglomerationen_isolierte_staedte'
+    __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': False})
+    __template__ = 'templates/htmlpopup/aggloisostaedte.mako'
+    __bodId__ = 'ch.are.agglomerationen_isolierte_staedte'
+    id = Column('row_id', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+    name = Column('name', Text)
+    klasse_de = Column('klasse_de', Text)
+    klasse_fr = Column('klasse_fr', Text)
+    flaeche_ha = Column('flaeche_ha', Numeric)
+
+register('ch.are.agglomerationen_isolierte_staedte', AggloIsoStaedte)
 
 
 class GueteklasseOev(Base, Vector):
@@ -71,7 +86,7 @@ class GueteklasseOev(Base, Vector):
 register('ch.are.gueteklassen_oev', GueteklasseOev)
 
 
-class Bevoelkerungsdichte(Base, Vector):
+class BevoelkerungsdichteWithDate(Base, Vector):
     __tablename__ = 'bevoelkerungsdichte_vz00'
     __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': False})
     __template__ = 'templates/htmlpopup/bevoelkerungsdichte.mako'
@@ -81,10 +96,23 @@ class Bevoelkerungsdichte(Base, Vector):
     stand = Column('stand', Numeric)
     the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
 
-register('ch.are.bevoelkerungsdichte-vz00', Bevoelkerungsdichte)
+register('ch.are.bevoelkerungsdichte-vz00', BevoelkerungsdichteWithDate)
 
 
-class Beschaeftigtendichte(Base, Vector):
+class Bevoelkerungsdichte(Base, Vector):
+    __tablename__ = 'bevoelkerungsdichte'
+    __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': False})
+    __template__ = 'templates/htmlpopup/bevoelkerungsdichte.mako'
+    __bodId__ = 'ch.are.bevoelkerungsdichte'
+    id = Column('row_id', Integer, primary_key=True)
+    popt_ha = Column('popt_ha', Numeric)
+    stand = Column('stand', Numeric)
+    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+
+register('ch.are.bevoelkerungsdichte', Bevoelkerungsdichte)
+
+
+class BeschaeftigtendichteWithDate(Base, Vector):
     __tablename__ = 'beschaeftigtendichte_bz08'
     __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': False})
     __template__ = 'templates/htmlpopup/beschaeftigtendichte.mako'
@@ -94,7 +122,20 @@ class Beschaeftigtendichte(Base, Vector):
     stand = Column('stand', Numeric)
     the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
 
-register('ch.are.beschaeftigtendichte-bz08', Beschaeftigtendichte)
+register('ch.are.beschaeftigtendichte-bz08', BeschaeftigtendichteWithDate)
+
+
+class Beschaeftigtendichte(Base, Vector):
+    __tablename__ = 'beschaeftigtendichte'
+    __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': False})
+    __template__ = 'templates/htmlpopup/beschaeftigtendichte.mako'
+    __bodId__ = 'ch.are.beschaeftigtendichte'
+    id = Column('row_id', Integer, primary_key=True)
+    empt_ha = Column('empt_ha', Numeric)
+    stand = Column('stand', Numeric)
+    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+
+register('ch.are.beschaeftigtendichte', Beschaeftigtendichte)
 
 
 class Bauzonen(Base, Vector):
