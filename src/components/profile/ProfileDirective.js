@@ -48,6 +48,10 @@
               }
             });
 
+            scope.$on('$translateChangeEnd', function() {
+              profile.updateLabels();
+            });
+
             $rootScope.$on('gaProfileDataUpdated', function(ev, data) {
               profile.update(data);
               scope.unitX = profile.unitX;
