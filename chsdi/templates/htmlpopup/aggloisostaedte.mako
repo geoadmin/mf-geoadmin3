@@ -9,5 +9,9 @@
            <td>${c['attributes']['klasse_fr'] or '-'}</td>
       % endif
     </tr>
-    <tr><td class="cell-left">${_('flaeche_ha')}</td>    <td>${int(round(c['attributes']['flaeche_ha'])) or '-'}</td></tr>
+    % if c['attributes']['flaeche_ha']:
+        <tr><td class="cell-left">${_('flaeche_ha')}</td>    <td>${int(round(c['attributes']['flaeche_ha']))}</td></tr>
+    % else:
+        <tr><td class="cell-left">${_('flaeche_ha')}</td>    <td>-</td></tr>
+    % endif
 </%def>
