@@ -1,11 +1,7 @@
 (function() {
   goog.provide('ga_profile_service');
 
-  goog.require('ga_draggable_directive');
-
   var module = angular.module('ga_profile_service', [
-    'ga_draggable_directive',
-    'ga_popup',
     'pascalprecht.translate'
   ]);
 
