@@ -833,6 +833,9 @@ msgstr "Prati naturali:+; prati artificiali, cerealicoltura: +/-; pascolo bestia
 msgid "ch.are"
 msgstr "ARE"
 
+msgid "ch.are.agglomerationen_isolierte_staedte"
+msgstr "Agglomerati e cittá isolate"
+
 msgid "ch.are.agglomerationen_isolierte_staedte-2000"
 msgstr "Agglomerati e cittá isolate"
 
@@ -854,8 +857,14 @@ msgstr "Traffico viaggiatori 2008"
 msgid "ch.are.belastung-personenverkehr-strasse-2008"
 msgstr "Traffico viaggiatori 2008"
 
+msgid "ch.are.beschaeftigtendichte"
+msgstr "Densità di impieghi 2008"
+
 msgid "ch.are.beschaeftigtendichte-bz08"
 msgstr "Densità di impieghi 2008"
+
+msgid "ch.are.bevoelkerungsdichte"
+msgstr "Densità di popolazione 2000"
 
 msgid "ch.are.bevoelkerungsdichte-vz00"
 msgstr "Densità di popolazione 2000"
@@ -870,13 +879,19 @@ msgid "ch.are.gueteklassen_oev"
 msgstr "Classi di collegamento dei TP ARE"
 
 msgid "ch.are.landschaftstypen"
-msgstr "Typologie des paysages suisses"
+msgstr "Tipologia de paesaggi svizzeri"
+
+msgid "ch.are.reisezeit-miv"
+msgstr "Tempo di viaggio TIM 2005"
+
+msgid "ch.are.reisezeit-oev"
+msgstr "Tempo di viaggio con TP 2005"
 
 msgid "ch.are.reisezeit_miv-2005"
-msgstr "Temps de parcours en TIM vers un centre 2005"
+msgstr "Tempo di viaggio TIM 2005"
 
 msgid "ch.are.reisezeit_oev-2005"
-msgstr "Temps de parcours en TP 2005"
+msgstr "Tempo di viaggio con TP 2005"
 
 msgid "ch.are.url"
 msgstr "http://www.are.admin.ch/index.html?lang=it"
@@ -1446,13 +1461,13 @@ msgid "ch.bfs.arealstatistik-1997"
 msgstr "Statistica di superficie 1992/1997"
 
 msgid "ch.bfs.arealstatistik-bodenbedeckung"
-msgstr "Stat. di superficie 2004/09 NOLC04"
+msgstr "Stat. superficie 2004/09 NOLC04"
 
 msgid "ch.bfs.arealstatistik-bodenbedeckung-1985"
-msgstr "Stat. di superficie 1979/85 NOLC04"
+msgstr "Stat. superficie 1979/85 NOLC04"
 
 msgid "ch.bfs.arealstatistik-bodenbedeckung-1997"
-msgstr "Stat. di superficie 1992/97 NOLC04"
+msgstr "Stat. superficie 1992/97 NOLC04"
 
 msgid "ch.bfs.arealstatistik-bodennutzung"
 msgstr "Stat. superficie 2004/09 NOLU04"
@@ -1783,7 +1798,7 @@ msgid "ch.swisstopo.geologie-gisgeol-punkte"
 msgstr "Expertises géologiques (points)"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas"
-msgstr "Atlante gravimetrico"
+msgstr "Atlas gravimétrique"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas.metadata"
 msgstr "Divisione Atlante gravimetrico"

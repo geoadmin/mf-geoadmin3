@@ -412,6 +412,9 @@ msgstr ""
 msgid "ch.blw.gewaesseranschlusskarte"
 msgstr ""
 
+msgid "ch.are.bevoelkerungsdichte"
+msgstr ""
+
 msgid "ch.are.bevoelkerungsdichte-vz00"
 msgstr ""
 
@@ -592,6 +595,9 @@ msgstr ""
 msgid "ch.bafu.flora-schwingrasen"
 msgstr ""
 
+msgid "ch.are.beschaeftigtendichte"
+msgstr ""
+
 msgid "ch.are.beschaeftigtendichte-bz08"
 msgstr ""
 
@@ -608,6 +614,12 @@ msgid "ch.are.belastung-personenverkehr-strasse-2008"
 msgstr ""
 
 msgid "ch.are.gueteklassen_oev"
+msgstr ""
+
+msgid "ch.are.reisezeit-miv"
+msgstr ""
+
+msgid "ch.are.reisezeit-oev"
 msgstr ""
 
 msgid "ch.are.reisezeit_miv-2005"
@@ -644,6 +656,9 @@ msgid "ch.swisstopo.fixpunkte-hfp2"
 msgstr ""
 
 msgid "ch.swisstopo.fixpunkte-hoehe"
+msgstr ""
+
+msgid "ch.are.agglomerationen_isolierte_staedte"
 msgstr ""
 
 msgid "ch.are.agglomerationen_isolierte_staedte-2000"
