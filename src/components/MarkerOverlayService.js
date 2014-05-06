@@ -6,7 +6,7 @@
   module.provider('gaMarkerOverlay', function() {
 
     this.$get = function(gaStyleFactory) {
-      var overlay, bbox, center, isAlwaysVisible;
+      var overlay, bbox, isAlwaysVisible;
       var marker = $('<div></div>')
           .addClass('ga-crosshair')
           .addClass('marker');
@@ -16,11 +16,9 @@
             (bbox[3] - bbox[1]) <= 1;
       }
 
-      function addMarker(map, extent, visible) {
+      function addMarker(map, center, extent, visible) {
         bbox = extent;
         removeMarker(map);
-        center = [(extent[0] + extent[2]) / 2,
-            (extent[1] + extent[3]) / 2];
         overlay = new ol.Overlay({
           element: marker.get(0),
           position: center,

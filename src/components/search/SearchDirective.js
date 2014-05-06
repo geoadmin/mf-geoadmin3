@@ -208,23 +208,6 @@
                 }
               };
 
-              scope.addPreviewFeature = function(layerId, featureId) {
-                if (gaBrowserSniffer.mobile) {
-                  return;
-                }
-                loadGeometry(layerId, featureId, function(feature) {
-                  gaPreviewFeatures.highlight(map,
-                      geojsonParser.readFeature(feature));
-                });
-              };
-
-              scope.removePreviewFeature = function() {
-                if (gaBrowserSniffer.mobile) {
-                  return;
-                }
-                gaPreviewFeatures.clearHighlight();
-              };
-
               var selectFeature = function(layerId, featureId) {
                 loadGeometry(layerId, featureId, function(feature) {
                   $rootScope.$broadcast('gaTriggerTooltipRequest', {
@@ -237,14 +220,14 @@
                 });
               };
 
-              scope.addOverlay = function(extent, origin) {
+              scope.addOverlay = function(extent, center, origin) {
                 if (gaBrowserSniffer.mobile) {
                   return;
                 }
                 if (originZoom.hasOwnProperty(origin)) {
-                  gaMarkerOverlay.add(map, extent, true);
+                  gaMarkerOverlay.add(map, center, extent, true);
                 } else {
-                  gaMarkerOverlay.add(map, extent);
+                  gaMarkerOverlay.add(map, center, extent);
                 }
               };
 
@@ -261,10 +244,11 @@
                 var label = getLocationLabel(attrs);
                 var origin = attrs.origin;
                 var extent = parseExtent(attrs.geom_st_box2d);
+                var center = [attrs.y, attrs.x];
                 var template = '<div class="tt-search" ' +
                     'ng-mouseover="addOverlay([' +
-                    extent + ']' + ',\'' + origin + '\')" ' +
-                    'ng-mouseout="removeOverlay()">' +
+                    extent + ']' + ',[' + center + '],' + '\'' +
+                    origin + '\')" ' + 'ng-mouseout="removeOverlay()">' +
                     label + '</div>';
                 return template;
               };
@@ -272,10 +256,14 @@
               var getFeatureTemplate = function(context) {
                 var attrs = context.attrs;
                 var label = getLocationLabel(attrs);
+                var origin = attrs.origin;
+                var extent = parseExtent(attrs.geom_st_box2d);
+                var center = ol.proj.transform([attrs.lon, attrs.lat],
+                    'EPSG:4326', 'EPSG:21781');
                 var template = '<div class="tt-search" ' +
-                    'ng-mouseover="addPreviewFeature(\'' +
-                    attrs.layer + '\', \'' + attrs.feature_id + '\')"' +
-                    'ng-mouseout="removePreviewFeature()"' + ' >' +
+                    'ng-mouseover="addOverlay([' +
+                    extent + ']' + ',[' + center + '],' + '\'' +
+                    origin + '\')" ' + 'ng-mouseout="removeOverlay()">' +
                     label + '</div>';
                 return template;
               };
@@ -345,8 +333,9 @@
 
                       if (position) {
                         moveTo(map, 8, position);
-                        gaMarkerOverlay.add(map, [position[0], position[1],
-                            position[0], position[1]]);
+                        var center = [position[0], position[1]];
+                        var extent = [center, center];
+                        gaMarkerOverlay.add(map, extent);
                       }
                       return !position;
                     },
@@ -360,7 +349,6 @@
                     },
                     filter: function(response) {
                       var results = response.results;
-                      hasLocationResults = (results.length !== 0);
                       return $.map(results, function(val) {
                         val.inputVal = val.attrs.label
                             .replace('<b>', '').replace('</b>', '');
@@ -385,9 +373,6 @@
                       scope.$apply(function() {
                         scope.layers = map.getLayers().getArray();
                       });
-                      if (scope.searchableLayers.length === 0) {
-                        hasFeatureResults = false;
-                      }
                       return triggerFeatureSearch();
                     },
                     replace: function(url, searchText) {
@@ -410,7 +395,6 @@
                     },
                     filter: function(response) {
                       var results = response.results;
-                      hasFeatureResults = (results.length !== 0);
                       return $.map(results, function(val) {
                         val.inputVal = val.attrs.label
                             .replace('<b>', '').replace('</b>', '');
@@ -455,11 +439,6 @@
                     },
                     filter: function(response) {
                       var results = response.results;
-                      // hasLayerResults is used to control
-                      // the display of the footer
-                      scope.$apply(function() {
-                        scope.hasLayerResults = (results.length !== 0);
-                      });
                       return $.map(results, function(val) {
                         val.inputVal = val.attrs.label
                             .replace('<b>', '').replace('</b>', '');
@@ -495,18 +474,16 @@
                   if (origin !== 'feature' && origin !== 'layer') {
                     registerMove();
                     var extent = parseExtent(datum.attrs.geom_st_box2d);
-
+                    var center = [datum.attrs.y, datum.attrs.x];
                     if (originZoom.hasOwnProperty(origin)) {
                       var zoom = originZoom[origin];
-                      var center = [(extent[0] + extent[2]) / 2,
-                        (extent[1] + extent[3]) / 2];
                       moveTo(map, zoom, center);
                       // Make sure the above origins are visible at all
                       // zoom levels
-                      gaMarkerOverlay.add(map, extent, true);
+                      gaMarkerOverlay.add(map, center, extent, true);
                     } else {
                       zoomToExtent(map, extent);
-                      gaMarkerOverlay.add(map, extent);
+                      gaMarkerOverlay.add(map, center, extent);
                     }
                   } else {
                     unregisterMove();
@@ -548,6 +525,17 @@
               var renderSuggestions = viewDropDown.renderSuggestions;
               viewDropDown.renderSuggestions = function(dataset, suggestions,
                                                         invokeApply) {
+                if (dataset.name === 'locations') {
+                  hasLocationResults = (suggestions.length !== 0);
+                } else if (dataset.name === 'featuresearch') {
+                  hasFeatureResults = (suggestions.length !== 0);
+                } else if (dataset.name === 'layers') {
+                  // hasLayerResults is used to control
+                  // the display of the footer
+                  scope.$apply(function() {
+                    scope.hasLayerResults = (suggestions.length !== 0);
+                  });
+                }
                 renderSuggestions.apply(this, [dataset, suggestions]);
                 if (invokeApply !== false) {
                   var self = this;
