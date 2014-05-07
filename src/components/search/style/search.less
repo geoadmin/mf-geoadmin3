@@ -1,8 +1,6 @@
 @dropdown-background-color: #fff;
 @dropdown-link-color-hover-color: #fff;
 @dropdown-link-background-hover-color: #666;
-@dropdown-feature-background-color: #FF8000;
-@suggestions-max-height: 200px;
 
 [ga-search] {
   position: relative;
@@ -43,18 +41,43 @@
     background-clip: padding-box;
   }
 
-  .tt-dataset-locations, .tt-dataset-layers {
+  div.ga-search-1 {
+    .tt-suggestions {
+      max-height: 415px;
+      @media (max-height: 550px) {
+        max-height: 325px;
+      }
+    }
+  }
+  div.ga-search-2 {
+    .tt-suggestions {
+      max-height: 190px;
+      @media (max-height: 550px) {
+        max-height: 150px;
+      }
+    }
+  }
+  div.ga-search-3 {
+    .tt-suggestions {
+      max-height: 105px;
+      @media (max-height: 550px) {
+        max-height: 85px;
+      }
+    }
+  }
+
+  .tt-dataset-locations,
+  .tt-dataset-featuresearch,
+  .tt-dataset-layers {
     
     .tt-suggestions {
-      max-height: @suggestions-max-height;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      
       .tt-suggestion {
         display: block;
         background-color: #E6E6E6;
         margin-top: 1px;
-        
+
         &.tt-is-under-cursor {
           color: @dropdown-link-color-hover-color;
           background-color: @dropdown-link-background-hover-color;
@@ -63,17 +86,13 @@
             background-color: @dropdown-link-background-hover-color;
           }
         }
-        
+
         .tt-search {
           padding: 3px 20px;
         }
-        
-        .tt-feature {
-          background-color: @dropdown-feature-background-color;
-        }
       }
     }
-    
+
     p {
       margin: 0;
     }

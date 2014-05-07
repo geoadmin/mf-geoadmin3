@@ -589,7 +589,7 @@
             'type': 'Vector',
             'styles': {
               '1': {
-                'externalGraphic': $scope.options.crossUrl,
+                'externalGraphic': $scope.options.markerUrl,
                 'graphicWidth': 16,
                 'graphicHeight': 16
               }

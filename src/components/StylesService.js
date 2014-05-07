@@ -4,6 +4,7 @@
   var module = angular.module('ga_styles_service', []);
 
   module.provider('gaStyleFactory', function() {
+
     var selectStroke = new ol.style.Stroke({
       color: [255, 128, 0, 1],
       width: 3

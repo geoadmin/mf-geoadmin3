@@ -1,15 +1,19 @@
 (function() {
   goog.provide('ga_search_directive');
 
+  goog.require('ga_debounce_service');
   goog.require('ga_layer_metadata_popup_service');
   goog.require('ga_map_service');
+  goog.require('ga_marker_overlay_service');
   goog.require('ga_permalink');
   goog.require('ga_search_service');
   goog.require('ga_urlutils_service');
 
   var module = angular.module('ga_search_directive', [
+    'ga_debounce_service',
     'ga_layer_metadata_popup_service',
     'ga_map_service',
+    'ga_marker_overlay_service',
     'ga_permalink',
     'pascalprecht.translate',
     'ga_urlutils_service',
@@ -17,10 +21,10 @@
   ]);
 
   module.directive('gaSearch',
-      function($compile, $translate, $timeout, gaMapUtils, gaLayers,
+      function($compile, $translate, $timeout, $rootScope, $http, gaMapUtils,
         gaLayerMetadataPopup, gaPermalink, gaUrlUtils, gaGetCoordinate,
-        gaBrowserSniffer, gaLayerFilters, gaKml, gaPreviewLayers,
-        gaPermalinkSearch) {
+        gaBrowserSniffer, gaLayerFilters, gaKml, gaPreviewLayers, gaLayers,
+        gaPreviewFeatures, gaMarkerOverlay, gaPermalinkSearch, gaDebounce) {
           var currentTopic,
               footer = [
             '<div class="ga-search-footer clearfix">',
@@ -48,6 +52,8 @@
             '<i class="icon-envelope-alt"></i>',
             '</a>',
             '</div>'].join('');
+
+          var geojsonParser = new ol.format.GeoJSON();
 
           function parseExtent(stringBox2D) {
             var extent = stringBox2D.replace('BOX(', '')
@@ -87,9 +93,15 @@
             },
             templateUrl: 'components/search/partials/search.html',
             link: function(scope, element, attrs) {
-              var year;
+              var year, hasLocationResults, hasFeatureResults, listenerMoveEnd;
               var map = scope.map;
               var options = scope.options;
+              var selectedFeatures = {};
+              var originZoom = {
+                address: 10,
+                parcel: 10,
+                sn25: 8
+              };
 
               var footerTemplate = angular.element(footer);
               $compile(footerTemplate)(scope);
@@ -99,15 +111,41 @@
                   'translate>locations</div>');
               $compile(locationsHeaderTemplate)(scope);
 
+              var featureSearchHeaderTemplate = angular.element(
+                  '<div class="tt-header-locations" ' +
+                  'translate>items</div>');
+              $compile(featureSearchHeaderTemplate)(scope);
+
               var layerHeaderTemplate = angular.element(
                   '<div class="tt-header-mapinfos" ' +
                   'ng-show="hasLayerResults" translate>map_info</div>');
               $compile(layerHeaderTemplate)(scope);
+
+              var loadGeometry = function(layerId, featureId, cb) {
+                var key = layerId + featureId;
+                if (!selectedFeatures.hasOwnProperty(key)) {
+                  var featureUrl = options.featureUrl
+                               .replace('{Topic}', currentTopic)
+                               .replace('{Layer}', layerId)
+                               .replace('{Feature}', featureId);
+                  $http.get(featureUrl, {
+                    params: {
+                       geometryFormat: 'geojson'
+                    }
+                  }).success(function(result) {
+                    selectedFeatures[key] = result.feature;
+                    cb(result.feature);
+                  });
+                } else {
+                  $timeout(function() {
+                    cb(selectedFeatures[key]);
+                  }, 0);
+                }
+              };
+
               scope.query = '';
 
               scope.layers = map.getLayers().getArray();
-
-              scope.overlay = undefined;
 
               scope.getHref = function() {
                 // set those values only on mouseover
@@ -140,11 +178,11 @@
                 }
 
                 var layer = gaMapUtils.getMapOverlayForBodId(
-                    scope.map, bodId);
+                    map, bodId);
 
                 // Don't add preview layer if the layer is already on the map
                 if (!layer) {
-                  gaPreviewLayers.addBodLayer(scope.map, bodId);
+                  gaPreviewLayers.addBodLayer(map, bodId);
                 }
               };
 
@@ -152,38 +190,94 @@
                 if (gaBrowserSniffer.mobile) {
                   return;
                 }
-                gaPreviewLayers.removeAll(scope.map);
+                gaPreviewLayers.removeAll(map);
               };
 
-              scope.addCross = function(center) {
-                var cross = $('<div></div>')
-                  .addClass('ga-crosshair')
-                  .addClass('cross');
-                scope.removeCross();
-                scope.overlay = new ol.Overlay({
-                  element: cross.get(0),
-                  position: center,
-                  stopEvent: false
-                });
-                map.addOverlay(scope.overlay);
+              var registerMove = function() {
+                listenerMoveEnd = map.on('moveend',
+                    gaDebounce.debounce(function() {
+                  var zoom = map.getView().getZoom();
+                  gaMarkerOverlay.setVisibility(zoom);
+                }, 200, false));
               };
 
-              scope.removeCross = function() {
-                if (scope.overlay) {
-                  map.removeOverlay(scope.overlay);
+              var unregisterMove = function() {
+                if (listenerMoveEnd) {
+                  listenerMoveEnd.src.unByKey(listenerMoveEnd);
+                  listenerMoveEnd = null;
                 }
+              };
+
+              var selectFeature = function(layerId, featureId) {
+                loadGeometry(layerId, featureId, function(feature) {
+                  $rootScope.$broadcast('gaTriggerTooltipRequest', {
+                    features: [feature],
+                    onCloseCB: angular.noop
+                  });
+                  gaPreviewFeatures.zoom(map,
+                      geojsonParser.readFeature(feature));
+
+                });
+              };
+
+              scope.addOverlay = function(extent, center, origin) {
+                if (gaBrowserSniffer.mobile) {
+                  return;
+                }
+                if (originZoom.hasOwnProperty(origin)) {
+                  gaMarkerOverlay.add(map, center, extent, true);
+                } else {
+                  gaMarkerOverlay.add(map, center, extent);
+                }
+              };
+
+              scope.removeOverlay = function() {
+                if (gaBrowserSniffer.mobile) {
+                  return;
+                }
+                gaMarkerOverlay.remove(map);
+                unregisterMove();
+              };
+
+              var getLocationTemplate = function(context) {
+                var attrs = context.attrs;
+                var label = getLocationLabel(attrs);
+                var origin = attrs.origin;
+                var extent = parseExtent(attrs.geom_st_box2d);
+                var center = [attrs.y, attrs.x];
+                var template = '<div class="tt-search" ' +
+                    'ng-mouseover="addOverlay([' +
+                    extent + ']' + ',[' + center + '],' + '\'' +
+                    origin + '\')" ' + 'ng-mouseout="removeOverlay()">' +
+                    label + '</div>';
+                return template;
+              };
+
+              var getFeatureTemplate = function(context) {
+                var attrs = context.attrs;
+                var label = getLocationLabel(attrs);
+                var origin = attrs.origin;
+                var extent = parseExtent(attrs.geom_st_box2d);
+                var center = ol.proj.transform([attrs.lon, attrs.lat],
+                    'EPSG:4326', 'EPSG:21781');
+                var template = '<div class="tt-search" ' +
+                    'ng-mouseover="addOverlay([' +
+                    extent + ']' + ',[' + center + '],' + '\'' +
+                    origin + '\')" ' + 'ng-mouseout="removeOverlay()">' +
+                    label + '</div>';
+                return template;
               };
 
               var getLocationLabel = function(attrs) {
                 var label = attrs.label;
                 if (attrs.origin == 'zipcode') {
-                  label = '<span>{{ "plz" | translate }} ' + label;
+                  label = '<span>' + $translate('plz') + ' ' + label;
                 } else if (attrs.origin == 'kantone') {
-                  label = '<span>{{ "ct" | translate }} ' + label;
+                  label = '<span>' + $translate('ct') + ' ' + label;
                 } else if (attrs.origin == 'district') {
-                  label = '<span>{{ "district" | translate }} ' + label;
+                  label = '<span>' + $translate('district') + ' ' + label;
                 } else if (attrs.origin == 'parcel') {
-                  label += ' <span>{{ "parcel" | translate }} ';
+                  label += ' <span>' + $translate('parcel') + ' ';
                 } else if (attrs.origin == 'feature') {
                   label = '<b>' +
                       gaLayers.getLayerProperty(attrs.layer, 'label') +
@@ -196,7 +290,19 @@
               //These definitions here have to correspond to
               //the array that follows
               var LOCATIONS = 0;
-              var LAYERS = 1;
+              var FEATURES = 1;
+              var LAYERS = 2;
+
+              //Determines if a featuresearch request should be triggered
+              //based on map state (have searchable layers) and query
+              var triggerFeatureSearch = function() {
+                 if (!gaGetCoordinate(map.getView().getProjection().getExtent(),
+                                      scope.query) &&
+                     scope.searchableLayers.length) {
+                   return true;
+                 }
+                 return false;
+              };
 
               var typeAheadDatasets = [
                 {
@@ -206,38 +312,68 @@
                   valueKey: 'inputVal',
                   limit: 30,
                   template: function(context) {
-                    var label = getLocationLabel(context.attrs);
-                    var template = '<div class="tt-search';
-                    if (context.attrs.origin == 'feature') {
-                      template += ' tt-feature';
-                    }
-                    template += '">' + label + '</div>';
-                    return template;
+                    return getLocationTemplate(context);
                   },
                   remote: {
                     url: gaUrlUtils.append(options.searchUrl,
                         'type=locations'),
                     beforeSend: function(jqXhr, settings) {
-                       scope.$apply(function() {
-                          scope.layers = map.getLayers().getArray();
-                       });
-                       // Check url
-                       if (gaUrlUtils.isValid(scope.query)) {
-                         gaKml.addKmlToMapForUrl(map,
-                           scope.query, {
-                           attribution: gaUrlUtils.getHostname(scope.query)
-                         });
-                         return false;
-                       }
-                       var position =
-                         gaGetCoordinate(
-                           map.getView().getProjection().getExtent(),
-                           scope.query);
-                       if (position) {
-                         moveTo(map, 8, position);
-                         scope.addCross(position);
-                       }
-                       return !position;
+                      // Check url
+                      if (gaUrlUtils.isValid(scope.query)) {
+                        gaKml.addKmlToMapForUrl(map,
+                          scope.query, {
+                          attribution: gaUrlUtils.getHostname(scope.query)
+                        });
+                        return false;
+                      }
+                      var position =
+                        gaGetCoordinate(
+                          map.getView().getProjection().getExtent(),
+                          scope.query);
+
+                      if (position) {
+                        moveTo(map, 8, position);
+                        var center = [position[0], position[1]];
+                        var extent = [center, center];
+                        gaMarkerOverlay.add(map, extent);
+                      }
+                      return !position;
+                    },
+                    replace: function(url, searchText) {
+                      var queryText = '&searchText=' + searchText;
+                      var lang = '&lang=' + $translate.uses();
+                      url = options.applyTopicToUrl(url,
+                          currentTopic);
+                      url += queryText + lang;
+                      return url;
+                    },
+                    filter: function(response) {
+                      var results = response.results;
+                      return $.map(results, function(val) {
+                        val.inputVal = val.attrs.label
+                            .replace('<b>', '').replace('</b>', '');
+                        return val;
+                      });
+                    }
+                  }
+                },
+                {
+                  header: featureSearchHeaderTemplate,
+                  name: 'featuresearch',
+                  timeout: 20,
+                  valueKey: 'inputVal',
+                  limit: 30,
+                  template: function(context) {
+                    return getFeatureTemplate(context);
+                  },
+                  remote: {
+                    url: gaUrlUtils.append(options.searchUrl,
+                        'type=featuresearch'),
+                    beforeSend: function(jqXhr, settings) {
+                      scope.$apply(function() {
+                        scope.layers = map.getLayers().getArray();
+                      });
+                      return triggerFeatureSearch();
                     },
                     replace: function(url, searchText) {
                       var queryText = '&searchText=' + searchText;
@@ -252,16 +388,16 @@
                         timeInstant = '&timeInstant=' + year;
                       }
                       url = options.applyTopicToUrl(url,
-                                                   currentTopic);
+                          currentTopic);
                       url += queryText + searchableLayers + timeEnabled +
-                             bbox + lang + timeInstant;
+                          bbox + lang + timeInstant;
                       return url;
                     },
                     filter: function(response) {
                       var results = response.results;
                       return $.map(results, function(val) {
                         val.inputVal = val.attrs.label
-                          .replace('<b>', '').replace('</b>', '');
+                            .replace('<b>', '').replace('</b>', '');
                         return val;
                       });
                     }
@@ -297,17 +433,12 @@
                       var queryText = '&searchText=' + searchText;
                       var lang = '&lang=' + $translate.uses();
                       url = options.applyTopicToUrl(url,
-                                                   currentTopic);
+                          currentTopic);
                       url += queryText + lang;
                       return url;
                     },
                     filter: function(response) {
                       var results = response.results;
-                      // hasLaerResults is used to control
-                      // the display of the footer
-                      scope.$apply(function() {
-                        scope.hasLayerResults = (results.length !== 0);
-                      });
                       return $.map(results, function(val) {
                         val.inputVal = val.attrs.label
                             .replace('<b>', '').replace('</b>', '');
@@ -336,28 +467,31 @@
               taElt.typeahead(typeAheadDatasets)
                 .on('typeahead:selected', function(event, datum) {
                   var origin = datum.attrs.origin;
+                  gaMarkerOverlay.remove(map);
+                  scope.removePreviewLayer();
                   scope.searchFocused = false;
                   taElt.trigger('blur', [true]);
-                  if (angular.isDefined(datum.attrs.geom_st_box2d)) {
+                  if (origin !== 'feature' && origin !== 'layer') {
+                    registerMove();
                     var extent = parseExtent(datum.attrs.geom_st_box2d);
-
-                    var originZoom = {
-                      address: 10,
-                      parcel: 10,
-                      sn25: 8,
-                      feature: 7
-                    };
-
+                    var center = [datum.attrs.y, datum.attrs.x];
                     if (originZoom.hasOwnProperty(origin)) {
                       var zoom = originZoom[origin];
-                      var center = [(extent[0] + extent[2]) / 2,
-                        (extent[1] + extent[3]) / 2];
                       moveTo(map, zoom, center);
-                      scope.addCross(center);
+                      // Make sure the above origins are visible at all
+                      // zoom levels
+                      gaMarkerOverlay.add(map, center, extent, true);
                     } else {
                       zoomToExtent(map, extent);
-                      scope.removeCross();
+                      gaMarkerOverlay.add(map, center, extent);
                     }
+                  } else {
+                    unregisterMove();
+                  }
+                  if (origin === 'feature') {
+                    var layerId = datum.attrs.layer;
+                    var featureId = datum.attrs.feature_id;
+                    selectFeature(layerId, featureId);
                   }
                   if (origin === 'layer') {
                     scope.addLayer(datum.attrs.layer, false);
@@ -391,6 +525,17 @@
               var renderSuggestions = viewDropDown.renderSuggestions;
               viewDropDown.renderSuggestions = function(dataset, suggestions,
                                                         invokeApply) {
+                if (dataset.name === 'locations') {
+                  hasLocationResults = (suggestions.length !== 0);
+                } else if (dataset.name === 'featuresearch') {
+                  hasFeatureResults = (suggestions.length !== 0);
+                } else if (dataset.name === 'layers') {
+                  // hasLayerResults is used to control
+                  // the display of the footer
+                  scope.$apply(function() {
+                    scope.hasLayerResults = (suggestions.length !== 0);
+                  });
+                }
                 renderSuggestions.apply(this, [dataset, suggestions]);
                 if (invokeApply !== false) {
                   var self = this;
@@ -402,14 +547,38 @@
                 }
               };
 
+              // Adapt dynamically the list height according to the
+              // number of lists
+              scope.nbOfSuggestionsLists = {
+                'ga-search-1': false,
+                'ga-search-2': false,
+                'ga-search-3': false
+              };
+
+              var setListCount = function() {
+                var counter = 0;
+                counter = !hasLocationResults ? counter : counter + 1;
+                counter = !hasFeatureResults ? counter : counter + 1;
+                counter = !scope.hasLayerResults ? counter : counter + 1;
+                for (var cssClass in scope.nbOfSuggestionsLists) {
+                  if (cssClass === 'ga-search-' + counter) {
+                    scope.nbOfSuggestionsLists[cssClass] = true;
+                  } else {
+                    scope.nbOfSuggestionsLists[cssClass] = false;
+                  }
+                }
+              };
+
               viewDropDown.on('gaSuggestionsRendered', function(evt) {
                 var el;
                 if (viewDropDown.isVisible()) {
+                  setListCount();
                   el = element.find('.tt-dataset-' + evt.data.name);
+                  el.attr('ng-class', 'nbOfSuggestionsLists');
+                  $compile(el)(scope);
                   if (el) {
                     el = el.find('.tt-suggestions');
                     if (el) {
-                      $compile(el)(scope);
                       gaPermalinkSearch.feed(el);
                     }
                     el.scrollTop(0);
@@ -422,7 +591,8 @@
                 $(taElt).val('');
                 $(taElt).data('ttView').inputView.setQuery('');
                 scope.query = '';
-                scope.removeCross();
+                gaMarkerOverlay.remove(map);
+                unregisterMove();
                 viewDropDown.clearSuggestions();
                 scope.searchFocused = false;
               };
@@ -450,7 +620,7 @@
                 if (newYear !== year) {
                   year = newYear;
                   if (scope.query !== '') {
-                    triggerSearch(LOCATIONS);
+                    triggerSearch(FEATURES);
                   }
                 }
               });
@@ -466,15 +636,27 @@
               });
 
               //if search parameter specified, start it with a search parameter
-              var searchParam = gaPermalink.getParams()['swisssearch'];
+              var searchParam = gaPermalink.getParams().swisssearch;
               if (angular.isDefined(searchParam) &&
                   searchParam.length > 0) {
                 var unregister = scope.$on('gaLayersChange', function() {
-                  gaPermalinkSearch.activate((2 * typeAheadDatasets.length));
-                  scope.query = searchParam;
-                  triggerSearch(LOCATIONS);
-                  triggerSearch(LAYERS);
-                  unregister();
+                  // At this point layers are not added to the map yet
+                  var unregisterLayers = scope.$watchCollection('layers',
+                      function(layers) {
+                    $timeout(function() {
+                      var maxCallbacks = 2 * typeAheadDatasets.length;
+                      if (!triggerFeatureSearch()) {
+                        maxCallbacks -= 1;
+                      }
+                      gaPermalinkSearch.activate(maxCallbacks);
+                      scope.query = searchParam;
+                      triggerSearch(LOCATIONS);
+                      triggerSearch(FEATURES);
+                      triggerSearch(LAYERS);
+                    }, 0);
+                    unregisterLayers();
+                  });
+                 unregister();
                 });
               }
 
