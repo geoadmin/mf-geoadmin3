@@ -30,7 +30,7 @@
         var map = scope.map;
         var view = map.getView().getView2D();
         var accuracyFeature = new ol.Feature();
-        var positionFeature = new ol.Feature();
+        var positionFeature = new ol.Feature(new ol.geom.Point([0, 0]));
         var featuresOverlay = new ol.FeatureOverlay({
           features: [accuracyFeature, positionFeature],
           style: new ol.style.Style({
@@ -124,6 +124,13 @@
           geolocationZooming = false;
         };
 
+        var updatePositionFeature = function() {
+          if (geolocation.getPosition()) {
+            positionFeature.getGeometry().setCoordinates(
+               geolocation.getPosition());
+          }
+        };
+
         var updateAccuracyFeature = function() {
           if (geolocation.getPosition() && geolocation.getAccuracy()) {
             accuracyFeature.setGeometry(new ol.geom.Circle(
@@ -136,6 +143,7 @@
           btnElt.removeClass('ga-geolocation-error');
           btnElt.addClass('ga-geolocation-tracking');
           locate();
+          updatePositionFeature();
           updateAccuracyFeature();
         });
 
@@ -164,10 +172,6 @@
 
         // Geolocation control bindings
         geolocation.bindTo('projection', view);
-        positionFeature.bindTo('geometry', geolocation, 'position')
-            .transform(function() {}, function(coordinates) {
-          return coordinates ? new ol.geom.Point(coordinates) : null;
-        });
 
         // View events
         var updateUserTakesControl = function() {
