@@ -46,6 +46,14 @@ RewriteRule ^/${vars:apache_base_path}/wsgi/(static)/(.*)$  ${buildout:directory
 </LocationMatch>
 RewriteRule ^${apache_entry_path}(crossdomain.xml|clientaccesspolicy.xml) /${vars:apache_base_path}/wsgi/static/$1 [PT]
 
+# WMTS
+RewriteRule ^${apache_entry_path}1.0.0/WMTSCapabilities\.xml$ /${vars:apache_base_path}/wsgi/rest/services/all/1.0.0/WMTSCapabilities.xml [PT,NC,QSA,L]
+
+# Frozen Capabilities, for swissmaponline 
+RewriteCond %{QUERY_STRING} lang=(de|fr|it|en) [NC] 
+RewriteRule ^${apache_entry_path}1.0.0/WMTSCapabilities_v([0-9]{8})\.xml$ ${buildout:directory}/chsdi/static/capabilities/$1/WMTSCapabilities.%1.xml [NC,QSA,L]
+RewriteRule ^${apache_entry_path}1.0.0/WMTSCapabilities_v([0-9]{8})\.xml$ ${buildout:directory}/chsdi/static/capabilities/$1/WMTSCapabilities.de.xml [NC,QSA,L]
+
 RewriteRule ^${apache_entry_path}$ /${vars:apache_base_path}/wsgi/ [PT]
 
 # Proxy pass pointing on api.geo.admin.ch project
