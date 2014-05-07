@@ -833,6 +833,9 @@ msgstr "Naturfutterbau: +; Kunstfutterbau, Getreidebau: +/-; Grossviehweide: -"
 msgid "ch.are"
 msgstr "ARE"
 
+msgid "ch.are.agglomerationen_isolierte_staedte"
+msgstr "Aglomeraziuns e citads isoladas"
+
 msgid "ch.are.agglomerationen_isolierte_staedte-2000"
 msgstr "Aglomeraziuns e citads isoladas"
 
@@ -854,8 +857,14 @@ msgstr "Personenverkehr 2008"
 msgid "ch.are.belastung-personenverkehr-strasse-2008"
 msgstr "Jährliche Belastung des schweizerischen Strassennetzes 2008 (Personenverkehr)"
 
+msgid "ch.are.beschaeftigtendichte"
+msgstr "Beschäftigtendichte 2008"
+
 msgid "ch.are.beschaeftigtendichte-bz08"
 msgstr "Beschäftigtendichte 2008"
+
+msgid "ch.are.bevoelkerungsdichte"
+msgstr "Bevölkerungsdichte 2000"
 
 msgid "ch.are.bevoelkerungsdichte-vz00"
 msgstr "Bevölkerungsdichte 2000"
@@ -871,6 +880,12 @@ msgstr "ÖV-Güteklassen ARE"
 
 msgid "ch.are.landschaftstypen"
 msgstr "Landschaftstypologie Schweiz"
+
+msgid "ch.are.reisezeit-miv"
+msgstr "Reisezeit zu Zentren mit dem MIV 2005"
+
+msgid "ch.are.reisezeit-oev"
+msgstr "Reisezeit zu Zentren ÖV 2005"
 
 msgid "ch.are.reisezeit_miv-2005"
 msgstr "Reisezeit zu Zentren mit dem MIV 2005"
@@ -1437,13 +1452,13 @@ msgid "ch.bfs"
 msgstr "BFS"
 
 msgid "ch.bfs.arealstatistik"
-msgstr "Statistica da la surfatscha 2004/2009"
+msgstr "Arealstatistik 2004/2009"
 
 msgid "ch.bfs.arealstatistik-1985"
-msgstr "Statistica da la surfatscha 1979/1985"
+msgstr "Arealstatistik 1979/85 NOAS04"
 
 msgid "ch.bfs.arealstatistik-1997"
-msgstr "Statistica da la surfatscha 1992/1997"
+msgstr "Arealstatistik 1992/97 NOAS04"
 
 msgid "ch.bfs.arealstatistik-bodenbedeckung"
 msgstr "Arealstatistik 2004/09 NOLC04"
@@ -2023,8 +2038,9 @@ msgstr "ch.swisstopo.verschiebungsvektoren-tsp1"
 msgid "ch.swisstopo.verschiebungsvektoren-tsp2"
 msgstr "ch.swisstopo.verschiebungsvektoren-tsp2"
 
+#. TODO
 msgid "ch.swisstopo.zeitreihen"
-msgstr "Karten - Zeitreise"
+msgstr "ch.swisstopo.zeitreihen"
 
 msgid "ch.vbs"
 msgstr "VBS"

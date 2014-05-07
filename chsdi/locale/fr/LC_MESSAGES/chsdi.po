@@ -833,6 +833,9 @@ msgstr "Cultures fourragères naturelles:+; Cultures fourragères artificielles,
 msgid "ch.are"
 msgstr "ARE"
 
+msgid "ch.are.agglomerationen_isolierte_staedte"
+msgstr "Agglomérations et villes isolées"
+
 msgid "ch.are.agglomerationen_isolierte_staedte-2000"
 msgstr "Agglomérations et villes isolées"
 
@@ -854,8 +857,14 @@ msgstr "Trafic voyageurs 2008"
 msgid "ch.are.belastung-personenverkehr-strasse-2008"
 msgstr "Trafic voyageurs 2008"
 
+msgid "ch.are.beschaeftigtendichte"
+msgstr "Densité de l'emploi"
+
 msgid "ch.are.beschaeftigtendichte-bz08"
 msgstr "Densité de l`emploi 2008"
+
+msgid "ch.are.bevoelkerungsdichte"
+msgstr "Densité de population"
 
 msgid "ch.are.bevoelkerungsdichte-vz00"
 msgstr "Densité de population 2000"
@@ -871,6 +880,12 @@ msgstr "Qualité de desserte par TP ARE"
 
 msgid "ch.are.landschaftstypen"
 msgstr "Typologie des paysages suisses"
+
+msgid "ch.are.reisezeit-miv"
+msgstr "Temps de parcours en TIM"
+
+msgid "ch.are.reisezeit-oev"
+msgstr "Temps de parcours en TP"
 
 msgid "ch.are.reisezeit_miv-2005"
 msgstr "Temps de parcours en TIM 2005"
@@ -1440,7 +1455,7 @@ msgid "ch.bfs.arealstatistik"
 msgstr "Stat. superficie 2004/09 NOAS04"
 
 msgid "ch.bfs.arealstatistik-1985"
-msgstr "Stat. superficie 1979/85 NOAS04"
+msgstr "Stat. de la superficie 1979/85 NOAS04"
 
 msgid "ch.bfs.arealstatistik-1997"
 msgstr "Stat. superficie 1992/97 NOAS04"

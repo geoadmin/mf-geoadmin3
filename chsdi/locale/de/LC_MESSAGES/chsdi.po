@@ -833,6 +833,9 @@ msgstr "Naturfutterbau: +; Kunstfutterbau, Getreidebau: +/-; Grossviehweide: -"
 msgid "ch.are"
 msgstr "ARE"
 
+msgid "ch.are.agglomerationen_isolierte_staedte"
+msgstr "Agglomerationen und isolierte Städte"
+
 msgid "ch.are.agglomerationen_isolierte_staedte-2000"
 msgstr "Agglomerationen und isolierte Städte"
 
@@ -854,8 +857,14 @@ msgstr "Personenverkehr 2008"
 msgid "ch.are.belastung-personenverkehr-strasse-2008"
 msgstr "Personenverkehr 2008"
 
+msgid "ch.are.beschaeftigtendichte"
+msgstr "Beschäftigtendichte"
+
 msgid "ch.are.beschaeftigtendichte-bz08"
 msgstr "Beschäftigtendichte 2008"
+
+msgid "ch.are.bevoelkerungsdichte"
+msgstr "Bevölkerungsdichte"
 
 msgid "ch.are.bevoelkerungsdichte-vz00"
 msgstr "Bevölkerungsdichte 2000"
@@ -871,6 +880,12 @@ msgstr "ÖV-Güteklassen ARE"
 
 msgid "ch.are.landschaftstypen"
 msgstr "Landschaftstypologie Schweiz"
+
+msgid "ch.are.reisezeit-miv"
+msgstr "Reisezeit zu Zentren MIV"
+
+msgid "ch.are.reisezeit-oev"
+msgstr "Reisezeit zu Zentren ÖV"
 
 msgid "ch.are.reisezeit_miv-2005"
 msgstr "Reisezeit zu Zentren MIV 2005"

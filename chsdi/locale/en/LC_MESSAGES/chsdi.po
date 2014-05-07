@@ -833,6 +833,9 @@ msgstr "Naturfutterbau: +; Kunstfutterbau, Getreidebau: +/-; Grossviehweide: -"
 msgid "ch.are"
 msgstr "ARE"
 
+msgid "ch.are.agglomerationen_isolierte_staedte"
+msgstr "Agglomeration and isolated cities"
+
 msgid "ch.are.agglomerationen_isolierte_staedte-2000"
 msgstr "Agglomeration and isolated cities"
 
@@ -854,8 +857,14 @@ msgstr "Passenger traffic 2008"
 msgid "ch.are.belastung-personenverkehr-strasse-2008"
 msgstr "Passenger traffic 2008"
 
+msgid "ch.are.beschaeftigtendichte"
+msgstr "Density of employment 2008"
+
 msgid "ch.are.beschaeftigtendichte-bz08"
 msgstr "Density of employment 2008"
+
+msgid "ch.are.bevoelkerungsdichte"
+msgstr "Population density 2000"
 
 msgid "ch.are.bevoelkerungsdichte-vz00"
 msgstr "Population density 2000"
@@ -870,13 +879,19 @@ msgid "ch.are.gueteklassen_oev"
 msgstr "Public transport connection quality ARE"
 
 msgid "ch.are.landschaftstypen"
-msgstr "Landschaftstypologie Schweiz"
+msgstr "Landscape typolgy of Switzerland"
+
+msgid "ch.are.reisezeit-miv"
+msgstr "Time of travel IMT 2005"
+
+msgid "ch.are.reisezeit-oev"
+msgstr "Time of travel with PT 2005"
 
 msgid "ch.are.reisezeit_miv-2005"
-msgstr "Reisezeit zu Zentren mit dem MIV 2005"
+msgstr "Time of travel IMT 2005"
 
 msgid "ch.are.reisezeit_oev-2005"
-msgstr "Reisezeit zu Zentren ÖV 2005"
+msgstr "Time of travel with PT 2005"
 
 msgid "ch.are.url"
 msgstr "http://www.are.admin.ch/index.html?lang=en"
@@ -1389,10 +1404,10 @@ msgid "ch.bazl.projektierungszonen-flughafenanlagen"
 msgstr "Planning zones: Airports"
 
 msgid "ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung"
-msgstr "SPAI in consultation"
+msgstr "SAIP in consultation"
 
 msgid "ch.bazl.sachplan-infrastruktur-luftfahrt_kraft"
-msgstr "SP aeronautical infrastructure"
+msgstr "SP aviation infrastructure"
 
 msgid "ch.bazl.segelflugkarte"
 msgstr "Glider Chart"
@@ -1446,13 +1461,13 @@ msgid "ch.bfs.arealstatistik-1997"
 msgstr "Area statistics 1992/1997"
 
 msgid "ch.bfs.arealstatistik-bodenbedeckung"
-msgstr "Area statistics 2004/2009 NOLC04"
+msgstr "Arealstatistik 2004/09 NOLC04"
 
 msgid "ch.bfs.arealstatistik-bodenbedeckung-1985"
-msgstr "Area statistics 1979/85 NOLC04"
+msgstr "Arealstatistik 1979/85 NOLC04"
 
 msgid "ch.bfs.arealstatistik-bodenbedeckung-1997"
-msgstr "Area statistics 1992/97 NOLC04"
+msgstr "Arealstatistik 1992/97 NOLC04"
 
 msgid "ch.bfs.arealstatistik-bodennutzung"
 msgstr "Arealstatistik 2004/09 NOLU04"
@@ -1783,7 +1798,7 @@ msgid "ch.swisstopo.geologie-gisgeol-punkte"
 msgstr "Geologische Gutachten (Punkte)"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas"
-msgstr "Gravimetric Atlas"
+msgstr "Gravimetrischer Atlas"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas.metadata"
 msgstr "Division Gravimetric Atlas"
@@ -2022,7 +2037,7 @@ msgid "ch.swisstopo.verschiebungsvektoren-tsp2"
 msgstr "LV95 Displacement vectors TSP2"
 
 msgid "ch.swisstopo.zeitreihen"
-msgstr "Maps - Journey through time"
+msgstr "Maps - Journay through time"
 
 msgid "ch.vbs"
 msgstr "DDPS"
