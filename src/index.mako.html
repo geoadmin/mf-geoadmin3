@@ -100,7 +100,9 @@
        })();
       </script>
     <![endif]-->
-    <div ga-seo></div>
+    <div ng-controller="GaSeoController">
+      <div ga-seo ga-seo-options="options"></div>
+    </div>
     <div id="header" class="navbar navbar-fixed-top">
       <div id="logo" class="pull-left">
         <a ng-href="?topic={{topicId}}&lang={{langId}}">

@@ -1252,6 +1252,11 @@
             featureIdsCount = 0;
           };
 
+          $rootScope.$broadcast('gaPermalinkFeaturesAdd', {
+            featureIdsByBodId: featureIdsByBodId,
+            count: featureIdsCount
+          });
+
           if (featureIdsCount > 0) {
             gaPreviewFeatures.addBodFeatures(map, featureIdsByBodId,
                 removeParamsFromPL);

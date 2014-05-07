@@ -47,6 +47,7 @@
   goog.require('ga_feedback_controller');
   goog.require('ga_contextpopup_controller');
   goog.require('ga_search_controller');
+  goog.require('ga_seo_controller');
   goog.require('ga_timeselector_controller');
   goog.require('ga_tooltip_controller');
   goog.require('ga_featuretree_controller');
@@ -100,6 +101,7 @@
     'ga_feedback_controller',
     'ga_contextpopup_controller',
     'ga_search_controller',
+    'ga_seo_controller',
     'ga_timeselector_controller',
     'ga_tooltip_controller',
     'ngAnimate',
