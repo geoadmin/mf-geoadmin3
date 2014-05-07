@@ -30,6 +30,7 @@ def determinePreviewUrl(ebkey):
         response = None
         try:
             request = HeadRequest(url)
+            request.add_header('Referer', 'http://admin.ch')
             response = urllib2.urlopen(request)
 
         finally:
