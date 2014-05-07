@@ -30,6 +30,8 @@ requires = [
     'selenium',
     'regex',
     'pystache',
+    'lxml',
+    'OWSLib',
     ]
 
 setup(name='chsdi',

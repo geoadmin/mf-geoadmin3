@@ -1,0 +1,82 @@
+<wfs>
+	<minVersion>1.0.0</minVersion>
+	<!-- Sollte Version, bisher nicht genutzt -->
+	<currVersion>2.0.0</currVersion>
+	<XML>
+		<Encoding>UTF-8</Encoding>
+	</XML>
+	<Version num="1.0.0">
+		<MIME>application/vnd.ogc.wms_xml</MIME>
+		<MIME>application/vnd.ogc.gml</MIME>
+        <MIME>application/xml</MIME>
+		<MIME>text/xml</MIME>
+		<Exception>application/vnd.ogc.se_xml</Exception>
+		<Exception>application/vnd.ogc.se_inimage</Exception>
+		<Exception>application/vnd.ogc.se_blank</Exception>
+		<Exception>application/xml</Exception>
+        <Exception>text/xml</Exception>
+		<Schema>http://schemas.opengis.net/wfs/1.0.0/WFS-capabilities.xsd</Schema>
+		<Schema_local>schemas/wfs_1_0_0.xsd</Schema_local>
+		<OWS_Common>0</OWS_Common>
+	</Version>
+	<Version num="1.1.0">
+		<MIME>text/xml</MIME>
+		<MIME>application/xml</MIME>
+		<Schema>http://schemas.opengis.net/wfs/1.1.0/wfs.xsd</Schema>
+		<OWS_Common>1</OWS_Common>
+		<Schema_local>schemas/wfs_1_1_0.xsd</Schema_local>
+		<Exception>application/vnd.ogc.se_xml</Exception>
+		<Exception>text/xml</Exception>
+		<Exception>application/xml</Exception>
+	</Version>
+    <Version num="2.0.0">
+        <MIME>text/xml</MIME>
+        <MIME>application/xml</MIME>
+        <Schema>http://schemas.opengis.net/wfs/2.0/wfs.xsd</Schema>
+        <OWS_Common>1</OWS_Common>
+        <Schema_local>schemas/wfs_2_0_0.xsd</Schema_local>
+        <Exception>application/vnd.ogc.se_xml</Exception>
+        <Exception>text/xml</Exception>
+        <Exception>application/xml</Exception>
+    </Version>
+    <RefSys>
+		<CRS status="must" rili="CRS-01">EPSG:21781</CRS>
+		<CRS status="must" rili="CRS-02">EPSG:4326</CRS>
+		<CRS status="not" rili="CRS-03">EPSG:9814</CRS>
+		<CRS status="optional" dim="3D" rili="CRS-04">EPSG:5728</CRS>
+		<CRS status="optional" rili="CRS-05">EPSG:2056</CRS>
+		<CRS status="optional" rili="CRS-06">EPSG:4258</CRS>
+		<CRS status="optional" dim="3D" rili="CRS-07">EPSG:5729</CRS>
+		<!-- CRS-08 -->
+		<CRS status="optional" dim="3D" rili="CRS-08">EPSG:5730</CRS>
+		<CRS status="optional" rili="CRS-09">EPSG:21782</CRS>
+	</RefSys>
+	<Operations>
+		<GetCapabilities>
+			<MIME>text/xml</MIME>
+            <MIME>application/xml</MIME>
+			<WayToServiceTypeNode>WFS_Capabilities.ServiceIdentification.ServiceType</WayToServiceTypeNode>
+			<WayToServiceTypeNode>WFS_Capabilities.Service.Name</WayToServiceTypeNode>
+		</GetCapabilities>
+		<DescribeFeatureType>
+			<Encoding>UTF-8</Encoding>
+            <MIME>application/xml</MIME>
+			<MIME>text/xml</MIME>
+		</DescribeFeatureType>
+		<GetFeature>
+			<Encoding>UTF-8</Encoding>
+			<MIME>text/xml</MIME>
+            <MIME>application/xml</MIME>
+			<Formats>
+				<GML>
+					<FormatString>text/xml; subtype=gml/3.2.1</FormatString>
+					<FormatString>gml/3.2</FormatString>
+				</GML>
+				<Interlis>
+					<FormatString>interlis/2.3</FormatString>
+					<FormatString>ili1</FormatString>
+				</Interlis>
+			</Formats>
+		</GetFeature>
+	</Operations>
+</wfs>

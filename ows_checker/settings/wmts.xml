@@ -1,0 +1,138 @@
+<wmts>
+	<minVersion>1.0.0</minVersion>
+	<currVersion>1.0.0</currVersion>
+	<REST>
+		<GetCapabilities>WMTSCapabilities.xml</GetCapabilities>
+	</REST>
+	<XML>
+		<Encoding>UTF-8</Encoding>
+	</XML>
+	<Version num="1.0.0">
+		<MIME>application/xml</MIME>
+        <MIME>text/xml</MIME>
+		<!--<MIME>application/vnd.ogc.wms_xml</MIME>-->
+		<Exception>application/xml</Exception>
+        <Exception>text/xml</Exception>
+		<Schema></Schema>
+		<Schema_local></Schema_local>
+		<OWS_Common>1</OWS_Common>
+	</Version>
+	<Version num="1.0.1">
+		<MIME>application/xml</MIME>
+        <MIME>text/xml</MIME>
+		<!--<MIME>application/vnd.ogc.wms_xml</MIME>-->
+		<Exception>application/xml</Exception>
+        <Exception>text/xml</Exception>
+		<Schema></Schema>
+		<Schema_local></Schema_local>
+		<OWS_Common>1</OWS_Common>
+	</Version>
+	<RefSys>
+		<CRS status="must" rili="CRS-01">EPSG:21781</CRS>
+		<CRS status="optional" rili="CRS-02">EPSG:4326</CRS>
+		<CRS status="not" rili="CRS-03">EPSG:9814</CRS>
+        <CRS status="optional" dim="3D" rili="CRS-04">EPSG:5728</CRS>
+        <CRS status="optional" rili="CRS-05">EPSG:2056</CRS>
+        <CRS status="optional" rili="CRS-06">EPSG:4258</CRS>
+        <CRS status="optional" dim="3D" rili="CRS-07">EPSG:5729</CRS>
+        <CRS status="optional" dim="3D" rili="CRS-08">EPSG:5730</CRS>
+        <CRS status="optional" rili="CRS-09">EPSG:21782</CRS>
+        <!-- WMTS-04 / WMTS-06 -->
+		<CRS status="must" rili="WMTS-04">EPSG:21781</CRS>
+		<CRS status="optional" rili="WMTS-06">EPSG:4326</CRS>
+
+	</RefSys>
+    <TMS>
+        <Set crs="EPSG:21781">
+            <ScaleDenominator>14285750.5715</ScaleDenominator>
+            <ScaleDenominator>13392891.1608</ScaleDenominator>
+            <ScaleDenominator>12500031.7501</ScaleDenominator>
+            <ScaleDenominator>11607172.3393</ScaleDenominator>
+            <ScaleDenominator>10714312.9286</ScaleDenominator>
+            <ScaleDenominator>9821453.51791</ScaleDenominator>
+            <ScaleDenominator>8928594.10719</ScaleDenominator>
+            <ScaleDenominator>8035734.69647</ScaleDenominator>
+            <ScaleDenominator>7142875.28575</ScaleDenominator>
+            <ScaleDenominator>6250015.87503</ScaleDenominator>
+            <ScaleDenominator>5357156.46431</ScaleDenominator>
+            <ScaleDenominator>4464297.05359</ScaleDenominator>
+            <ScaleDenominator>3571437.64288</ScaleDenominator>
+            <ScaleDenominator>2678578.23216</ScaleDenominator>
+            <ScaleDenominator>2321434.46787</ScaleDenominator>
+            <ScaleDenominator>1785718.82144</ScaleDenominator>
+            <ScaleDenominator>892859.410719</ScaleDenominator>
+            <ScaleDenominator>357143.764288</ScaleDenominator>
+            <ScaleDenominator>178571.882144</ScaleDenominator>
+            <ScaleDenominator>71428.7528575</ScaleDenominator>
+            <ScaleDenominator>35714.3764288</ScaleDenominator>
+            <ScaleDenominator>17857.1882144</ScaleDenominator>
+            <ScaleDenominator>8928.59410719</ScaleDenominator>
+            <ScaleDenominator>7142.87528575</ScaleDenominator>
+            <ScaleDenominator>5357.15646431</ScaleDenominator>
+            <ScaleDenominator>3571.43764288</ScaleDenominator>
+            <ScaleDenominator>1785.71882144</ScaleDenominator>
+        </Set>
+        <!-- aus http://mdi.niedersachsen.de/geoserver/gwc/service/wmts?request=GetCapabilities&service=WMTS -->
+        <!-- Global -->
+        <Set crs="EPSG:4326">
+            <ScaleDenominator>5.0E8</ScaleDenominator>
+            <ScaleDenominator>2.5E8</ScaleDenominator>
+            <ScaleDenominator>1.0E8</ScaleDenominator>
+            <ScaleDenominator>5.0E7</ScaleDenominator>
+            <ScaleDenominator>2.5E7</ScaleDenominator>
+            <ScaleDenominator>1.0E7</ScaleDenominator>
+            <ScaleDenominator>5000000.0</ScaleDenominator>
+            <ScaleDenominator>2500000.0</ScaleDenominator>
+            <ScaleDenominator>1000000.0</ScaleDenominator>
+            <ScaleDenominator>500000.0</ScaleDenominator>
+            <ScaleDenominator>250000.0</ScaleDenominator>
+            <ScaleDenominator>100000.0</ScaleDenominator>
+            <ScaleDenominator>50000.0</ScaleDenominator>
+            <ScaleDenominator>25000.0</ScaleDenominator>
+            <ScaleDenominator>10000.0</ScaleDenominator>
+            <ScaleDenominator>5000.0</ScaleDenominator>
+            <ScaleDenominator>2500.0</ScaleDenominator>
+            <ScaleDenominator>1000.0</ScaleDenominator>
+            <ScaleDenominator>500.0</ScaleDenominator>
+            <ScaleDenominator>250.0</ScaleDenominator>
+            <ScaleDenominator>100.0</ScaleDenominator>
+        </Set>
+        <!--
+        <Set crs="EPSG:4326">
+            <ScaleDenominator>2.795411320143589E8</ScaleDenominator>
+            <ScaleDenominator>1.3977056600717944E8</ScaleDenominator>
+            <ScaleDenominator>6.988528300358972E7</ScaleDenominator>
+            <ScaleDenominator>3.494264150179486E7</ScaleDenominator>
+            <ScaleDenominator>1.747132075089743E7</ScaleDenominator>
+            <ScaleDenominator>8735660.375448715</ScaleDenominator>
+            <ScaleDenominator>4367830.1877243575</ScaleDenominator>
+            <ScaleDenominator>2183915.0938621787</ScaleDenominator>
+            <ScaleDenominator>1091957.5469310894</ScaleDenominator>
+            <ScaleDenominator>545978.7734655447</ScaleDenominator>
+            <ScaleDenominator>272989.38673277234</ScaleDenominator>
+            <ScaleDenominator>136494.69336638617</ScaleDenominator>
+            <ScaleDenominator>68247.34668319309</ScaleDenominator>
+            <ScaleDenominator>34123.67334159654</ScaleDenominator>
+            <ScaleDenominator>17061.83667079827</ScaleDenominator>
+            <ScaleDenominator>8530.918335399136</ScaleDenominator>
+            <ScaleDenominator>4265.459167699568</ScaleDenominator>
+            <ScaleDenominator>2132.729583849784</ScaleDenominator>
+            <ScaleDenominator>1066.364791924892</ScaleDenominator>
+            <ScaleDenominator>533.182395962446</ScaleDenominator>
+            <ScaleDenominator>266.591197981223</ScaleDenominator>
+            <ScaleDenominator>133.2955989906115</ScaleDenominator>
+        </Set>
+        -->
+    </TMS>
+	<Operations>
+		<GetTile>
+			<Format mime="image/png" />
+			<Format mime="image/jpeg" />
+		</GetTile>
+		<GetCapabilities>
+			<Encoding>UTF-8</Encoding>
+			<WayToServiceTypeNode>Capabilities.ServiceIdentification.ServiceType</WayToServiceTypeNode>
+			<!--WayToServiceTypeNode>Capabilities.ServiceIdentification.ServiceType</WayToServiceTypeNode -->
+		</GetCapabilities>
+	</Operations>
+</wmts>

@@ -1,0 +1,61 @@
+<wms>
+	<minVersion>1.1.1</minVersion>
+	<currVersion>1.3.0</currVersion>
+	<XML>
+		<Encoding>UTF-8</Encoding>
+		
+		<Root></Root>
+	</XML>
+	<Version num="1.1.1">
+		<MIME>application/vnd.ogc.wms_xml</MIME>
+		<MIME>application/vnd.ogc.gml</MIME>
+		<Exception>application/vnd.ogc.se_xml</Exception>
+		<Exception>application/vnd.ogc.se_inimage</Exception>
+		<Exception>application/vnd.ogc.se_blank</Exception>
+        <Exception>application/xml</Exception>
+        <Exception>text/xml</Exception>
+		<Schema>http://schemas.opengis.net/wms/1.1.1/WMS_MS_Capabilities.dtd</Schema>
+		<Schema_local>schemas/wms_1_1_1.dtd</Schema_local>
+		<OWS_Common>0</OWS_Common>
+        <SLD></SLD>
+	</Version>
+	<Version num="1.3.0">
+		<MIME>text/xml</MIME>
+        <MINE>application/xml</MINE>
+		<Exception>text/xml</Exception>
+		<Exception>application/xml</Exception>
+		<Exception>application/vnd.ogc.se_xml</Exception>
+		<Schema>http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd</Schema>
+		<Schema_local>schemas/wms_1_3_0.xsd</Schema_local>
+		<OWS_Common>0</OWS_Common>
+        <SLD>http://schemas.opengis.net/sld/1.1.0/sld_capabilities.xsd</SLD>
+	</Version>
+	<RefSys>
+		<CRS status="must" rili="CRS-01">EPSG:21781</CRS>
+		<CRS status="must" rili="CRS-02">EPSG:4326</CRS>
+		<CRS status="not" rili="CRS-03">EPSG:9814</CRS>
+        <CRS status="optional" dim="3D" rili="CRS-04">EPSG:5728</CRS>
+		<CRS status="optional" rili="CRS-05">EPSG:2056</CRS>
+		<CRS status="optional" rili="CRS-06">EPSG:4258</CRS>
+        <CRS status="optional" dim="3D" rili="CRS-07">EPSG:5729</CRS>
+        <!-- CRS-08 -->
+        <CRS status="optional" dim="3D" rili="CRS-08">EPSG:5730</CRS>
+		<CRS status="optional" rili="CRS-09">EPSG:21782</CRS>
+	</RefSys>
+	<Operations>
+		<GetMap>
+			<Format mime="image/png" />
+			<Format mime="image/jpeg" />
+		</GetMap>
+		<GetCapabilities>
+			<Encoding>UTF-8</Encoding>
+			<WayToServiceTypeNode>WMS_Capabilities.Service.Name</WayToServiceTypeNode>
+			<WayToServiceTypeNode>Capabilities.ServiceIdentification.ServiceType</WayToServiceTypeNode>
+			<WayToServiceTypeNode>WMT_MS_Capabilities.Service.Name</WayToServiceTypeNode>
+		</GetCapabilities>
+		<GetFeatureInfo>
+			<Encoding>UTF-8</Encoding>
+			<MIME>text/xml</MIME>
+		</GetFeatureInfo>
+	</Operations>
+</wms>

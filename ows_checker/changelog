@@ -1,0 +1,117 @@
+OBSOLETE
+
+Start of changelog: 2011-09-04
+
+== 2011-09-04 ==
+1) 	Neuer Parameter ssurl in der Python-Methode __init__ für die 
+	dienstspezifische (serverspezifische) URL zu einer XML-Datei
+	
+	ss.xml Version 0.1:
+	<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+	<ServerSettings>
+		<ServerCapabilities>
+			<Security> 
+				<SSL>0</SSL>
+				<SSLCertificate></SSLCertificate>
+				<SwissID></SwissID>
+				<HTTPSLogin>
+					<Username></Username>
+					<Password></Password>
+				</HTTPSLogin>
+			</Security>
+		</ServerCapabilities>
+		<WMS>
+			<Layers>
+				<Layer status="must">Layer1</Layer>
+				<Layer status="must">Layer2</Layer>
+				<Layer status="optional">Layer3</Layer>
+			</Layers>
+		</WMS>
+		<WMS>
+			<GetFeatureInfo>
+				<Feature fid="4441" layer="Layer1">
+					<Geometry>
+						<SRS>EPSG:xxxxx</SRS>
+						<WKT>POINT(1223.3 42331.5)</WKT>
+					</Geometry>
+					<AttributName1>Wert1</AttributName1>
+					<AttributName2>Wert2</AttributName2>
+					<AttributName3>Wert3</AttributName3>
+					<AttributName4>Wert4</AttributName4>
+				</Feature>
+				<Feature fid="4442" layer="Layer2">
+					<Geometry>
+						<SRS>EPSG:xxxxx</SRS>
+						<WKT>POINT(1223.3 42331.5)</WKT>
+					</Geometry>
+					<AttributName1>Wert1</AttributName1>
+					<AttributName2>Wert2</AttributName2>
+					<AttributName3>Wert3</AttributName3>
+					<AttributName4>Wert4</AttributName4>
+				</Feature>
+			</GetFeatureInfo>
+		</WMS>
+		<WFS>
+			<GetFeatureInfo>
+				<Feature fid="4444">
+					<Geometry>
+						<SRS>EPSG:xxxxx</SRS>
+						<WKT>POINT(1223.3 42331.5)</WKT>
+					</Geometry>
+					<AttributName1>Wert1</AttributName1>
+					<AttributName2>Wert2</AttributName2>
+					<AttributName3>Wert3</AttributName3>
+					<AttributName4>Wert4</AttributName4>
+				</Feature>
+				<Feature fid="4445">
+					<Geometry>
+						<SRS>EPSG:xxxxx</SRS>
+						<WKT>POINT(1223.3 42331.5)</WKT>
+					</Geometry>
+					<AttributName1>Wert1</AttributName1>
+					<AttributName2>Wert2</AttributName2>
+					<AttributName3>Wert3</AttributName3>
+					<AttributName4>Wert4</AttributName4>
+				</Feature>
+			</GetFeatureInfo>
+		</WFS>
+	</ServerSettings>
+
+2)	Methode base_SSXMLHandler liest die ssurl ein und stellt sie als objects_dict dar,
+	falls keine ssurl existiert, wird ein Fallback aus Defaultwerten verwendet
+3)	CRS-09 implementiert (in WMS, WFS, CSW, WCS, WMTS)
+4)	checkCRS angepasst: dynamischer range, 
+	True bei nicht vorhandenen optionalen SRS (Positiv-Resultat)
+5)	Bei WMS wird CRS-04,7 und 8 wie folgt gesetzt: WMS doesn't support 3D CRS
+6)	Versuche, falsche Benutzerangaben abzufangen (vor allem den Dienst):
+    - http://localhost:8080/geoserver/gwc/service/wmts?service=WMSS&request=GetCapabilities
+      antwortet als WMTS trotz service=WMSS !!!!
+	- Lösung mit einem base_ServiceHandler zu komplex, ggf auf URL schauen???
+
+== 2011-09-07 ==
+1)	Neue Funktion dict2list in _helpers
+2)	Rework an base_ServiceHandler, Tests waren soweit erfolgreich
+3)	Verbesserung des Fehlerhandlings bei base_error = True
+4)	checkFileHeader macht nun ein "in" anstatt eines "==" Vergleichs, dies unterstützt auch 
+	z.B. "text/xml gml1.0"
+5)	base_GetCapHandler bricht nun ab (base_error), falls die Datei nicht UTF-8 kodiert ist
+6)	base_GetCapHandler überprüft nun zusätzlich, ob das XML-Dokument einem ExceptionReport
+	entspricht
+7)	base_ServiceHandler überprüft nun auf fehlende WayToServiceTypeNode in Settings XML
+8)	Wird das root-Element in der GC-XML nicht gefunden, ist dies nun ein base_error
+9)	Neue WMS-Methode wms_SLD, derzeit nur Grundgerüst, wird wahrscheinlich in wms_GetMap
+	integriert
+10)	Verbesserung in wfs_CRS, wfs_GetFeature, wfs_ServiceMeta
+11) CRS-Unterstützung in WCS (wcs_CRS)? Wird nur WGS84BoundingBox unterstützt?
+12) Update der Settings XML bezüglich WayToServiceTypeNode
+
+== 2011-09-15 ==
+1) Überarbeitung language_GetCapHandler + Dokumentation
+2) wms_CRS unterstütz "CRS" und "SRS"
+
+== 2011-09-16
+3) Implementation CSW-01, CSW-02 (csw_AppProfile und csw_Meta)
+4) Implementation checkISO8601
+5) Update Doku zu wfs_CRS
+6) wfs_CRS unterstütz "CRS" und "SRS"
+7) Bugfixing
