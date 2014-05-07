@@ -49,7 +49,9 @@
             });
 
             scope.$on('$translateChangeEnd', function() {
-              profile.updateLabels();
+              if (angular.isDefined(profile)) {
+                profile.updateLabels();
+              }
             });
 
             $rootScope.$on('gaProfileDataUpdated', function(ev, data) {
