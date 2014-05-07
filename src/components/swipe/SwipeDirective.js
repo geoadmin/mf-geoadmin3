@@ -87,6 +87,12 @@
             return (draggableElt.offset().left + draggableElt.width() / 2) /
                 scope.map.getSize()[0];
           };
+
+          var calculateOffsetLeft = function() {
+            return scope.ratio * scope.map.getSize()[0] -
+                draggableElt.width() / 2;
+          };
+
           // Display swipe or not depends on the number of layers currently on
           // the map.
           var refreshComp = function(olLayers) {
@@ -141,6 +147,7 @@
           // Active the swipe adding events.
           var activate = function() {
             scope.ratio = scope.ratio || 0.5;
+            draggableElt.css({left: calculateOffsetLeft()});
             updatePermalink(scope.ratio);
             layersDeregisterFn = scope.$watchCollection(
                 'layers | filter:layerFilter', refreshComp);
@@ -166,7 +173,7 @@
           if (!angular.isDefined(scope.isActive) &&
              angular.isDefined(gaPermalink.getParams().swipe_ratio)) {
             scope.ratio = parseFloat(gaPermalink.getParams().swipe_ratio);
-            draggableElt.css({left: scope.map.getSize()[0] * scope.ratio});
+            draggableElt.css({left: calculateOffsetLeft()});
             fromPermalink = true;
             scope.isActive = true;
           }
@@ -200,7 +207,7 @@
           var requestRenderFrameDebounced = gaDebounce.debounce(
               requestRenderFrame, 200, false);
           scope.map.on('change:size', function(evt) {
-            draggableElt.css({left: scope.map.getSize()[0] * scope.ratio});
+            draggableElt.css({left: calculateOffsetLeft()});
             requestRenderFrameDebounced();
           });
 
