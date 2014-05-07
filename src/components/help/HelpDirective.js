@@ -74,7 +74,7 @@
               } else {
                 var ids = scope.helpIds.split(',');
 
-                var waitClass = 'metadata-popup-wait';
+                var waitClass = 'ga-metadata-popup-wait';
                 var bodyEl = angular.element($document[0].body);
                 bodyEl.addClass(waitClass);
 
@@ -83,8 +83,7 @@
                 var i, id;
                 for (i = 0; i < len; i++) {
 
-                  gaHelpService.get(ids[i])
-                  .then(function(res) {
+                  gaHelpService.get(ids[i]).then(function(res) {
                     resCount++;
                     if (resCount == len) {
                       bodyEl.removeClass(waitClass);

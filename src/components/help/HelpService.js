@@ -15,10 +15,8 @@
    */
   module.provider('gaHelpService', function() {
     this.$get = function($q, $http, $translate, $timeout) {
-      var help = new Help();
-      return help;
 
-      function Help() {
+      var Help = function() {
         //keeps cached versions of help snippets
         var registry = {};
         var url = 'https://www.googleapis.com/fusiontables/v1/query?' +
@@ -73,6 +71,8 @@
           return id + lang;
         };
       };
+
+      return new Help();
     };
   });
 })();
