@@ -5,6 +5,11 @@
        ga-draggable=".ga-popup-title"
        id="seo-popup" >
 
+    <!-- Show all locations derived from PL Y,X and zoom -->
+    <div ng-repeat="htmlsnippet in coordinateLocations">
+      <div ng-bind-html="htmlsnippet"></div>
+    </div>
+
     <!-- Show all feature metadata -->
     <div ng-repeat="htmlsnippet in featureMetadatas">
       <div ng-bind-html="htmlsnippet"></div>

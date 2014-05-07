@@ -19,10 +19,18 @@
    */
   module.provider('gaSeoService', function() {
     this.$get = function(gaPermalink) {
+      var isSnapshot = gaPermalink.getParams().snapshot == 'true';
       var layersAtStart = gaPermalink.getParams().layers ?
                           gaPermalink.getParams().layers.split(',') : [];
 
-      var isSnapshot = gaPermalink.getParams().snapshot == 'true';
+      var yxzoom = {
+        Y: gaPermalink.getParams().Y,
+        X: gaPermalink.getParams().X,
+        zoom: gaPermalink.getParams().zoom
+      };
+
+      //has to come after snapshot parameter is removed
+      var linkAtStart = gaPermalink.getHref();
 
       // We remove the snapshot parameter in order to not have it
       // anywhere in the page as part of the permalink inside the page.
@@ -30,12 +38,20 @@
       gaPermalink.deleteParam('snapshot');
 
       var SeoService = function() {
+        this.getLinkAtStart = function() {
+          return linkAtStart;
+        };
+
         this.isSnapshot = function() {
           return isSnapshot;
         };
 
         this.getLayers = function() {
           return layersAtStart;
+        };
+
+        this.getYXZoom = function() {
+          return yxzoom;
         };
       };
 
