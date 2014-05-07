@@ -26,6 +26,8 @@
           '<i class="icon-print ga-popup-print hidden-print" ' +
           'title="{{titlePrint}}" ' +
           'ng-if="options.showPrint" ng-click="print()"></i>' +
+          '<span title="{{titleHelp}}" ng-if="options.help" ' +
+          'ga-help="{{options.help}}"></span>' +
           '</h4>' +
           '<div class="popover-content ga-popup-content" ' +
           'ng-transclude>' +
@@ -36,6 +38,7 @@
           // Get the popup options
           scope.options = scope.optionsFunc();
           scope.titlePrint = $translate('print_action');
+          scope.titleHelp = $translate('help_label');
 
           if (!scope.options) {
             scope.options = {
@@ -47,6 +50,11 @@
           if (!angular.isDefined(scope.options.showPrint) ||
               gaBrowserSniffer.mobile) {
             scope.options.showPrint = false;
+          }
+          // Per default, no help button shown
+          if (!angular.isDefined(scope.options.help) ||
+              gaBrowserSniffer.mobile) {
+            scope.options.help = false;
           }
 
           // Move the popup to its original position, only used on desktop

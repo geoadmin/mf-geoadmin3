@@ -8,6 +8,7 @@
   goog.require('ga_contextpopup');
   goog.require('ga_importkml');
   goog.require('ga_importwms');
+  goog.require('ga_help');
   goog.require('ga_map');
   goog.require('ga_mouseposition');
   goog.require('ga_popup');
@@ -60,6 +61,7 @@
     'ga_contextpopup',
     'ga_importkml',
     'ga_importwms',
+    'ga_help',
     'ga_map',
     'ga_mouseposition',
     'ga_popup',

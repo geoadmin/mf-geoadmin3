@@ -113,8 +113,10 @@
       </div>
 % if device == 'desktop':
       <form class="navbar-form pull-right hidden-xs">
-        <div ga-background-layer-selector
-          ga-background-layer-selector-map="map"></div>
+        <div id="background-selection">
+          <div ga-background-layer-selector
+            ga-background-layer-selector-map="map"></div>
+        </div>
         <div id="toptools">
           <div ga-fullscreen ga-fullscreen-map="map"></div>&nbsp;&nbsp;
           <a href="#feedback" data-toggle="modal" translate>problem_announcement</a>&nbsp;&nbsp;
@@ -234,32 +236,44 @@
               <ul>
 
                 <li><!-- Import WMS -->
-                  <a href="" ng-click="importWmsPopupShown = !importWmsPopupShown">
+                  <a href="" ng-click="importWmsPopupShown = !importWmsPopupShown"
+                     data-original-title="{{'wmsimport_tooltip' | translate}}"
+                     class="ga-custom-tooltip" data-placement="bottom">
                     <span ng-class="{'selected': importWmsPopupShown}" translate>import_wms</span>
                   </a>
                 </li>
                 <li><!-- Import KML -->
-                  <a href=""  ng-click="importKmlPopupShown = !importKmlPopupShown">
+                  <a href=""  ng-click="importKmlPopupShown = !importKmlPopupShown"
+                     data-original-title="{{'kmlimport_tooltip' | translate}}"
+                     class="ga-custom-tooltip" data-placement="bottom">
                     <span ng-class="{'selected': importKmlPopupShown}" translate>import_kml</span>
                   </a>
                 </li>
                 <li><!-- Compare -->
-                  <a href=""  ng-click="isSwipeActive = !isSwipeActive">
+                  <a href=""  ng-click="isSwipeActive = !isSwipeActive"
+                     data-original-title="{{'swipe_tooltip' | translate}}"
+                     class="ga-custom-tooltip" data-placement="bottom">
                     <span ng-class="{'selected': isSwipeActive}" translate="{{(isSwipeActive) ? 'swipe_active' : 'swipe_inactive'}}"></span>
                   </a>
                 </li>
                 <li><!-- Measure -->
-                  <a href=""  ng-click="isMeasureActive = !isMeasureActive">
+                  <a href=""  ng-click="isMeasureActive = !isMeasureActive"
+                     data-original-title="{{'measure_tooltip' | translate}}"
+                     class="ga-custom-tooltip" data-placement="bottom">
                     <span  ng-class="{'selected': isMeasureActive}" translate>measure</span>
                   </a>
                 </li>
                 <li><!-- Draw -->
-                  <a href=""  ng-click="isDrawActive = !isDrawActive">
+                  <a href=""  ng-click="isDrawActive = !isDrawActive"
+                     data-original-title="{{'draw_tooltip' | translate}}"
+                     class="ga-custom-tooltip" data-placement="bottom">
                     <span  ng-class="{'selected': isDrawActive}" translate>draw</span>
                   </a>
                 </li>
                 <li><!-- Feature Tree -->
-                  <a href=""  ng-click="globals.isFeatureTreeActive = !globals.isFeatureTreeActive">
+                  <a href=""  ng-click="globals.isFeatureTreeActive = !globals.isFeatureTreeActive"
+                     data-original-title="{{'featuretree_tooltip' | translate}}"
+                     class="ga-custom-tooltip" data-placement="top">
                     <span  ng-class="{'selected': globals.isFeatureTreeActive}" translate>object_information</span>
                   </a>
                 </li>
@@ -287,6 +301,7 @@
             <i class="visible-collapsed icon-caret-right"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
             <span translate={{topicId}}></span>
+            <span ga-help="32,37,39"></span>
           </a>
           <div id="catalog" class="collapse"  ga-collapsible-observe="globals.catalogShown" ng-controller="GaCatalogtreeController">
 % if device == 'mobile':
@@ -306,6 +321,7 @@
             <i class="visible-collapsed icon-caret-right"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
             <span translate>layer_selection</span>
+            <span ga-help="34,35,36"></span>
           </a>
           <div id="selection"  ga-collapsible-observe="globals.selectionShown" class="${"in" if device == "desktop" else ""}">
             <div class="panel-body panel-body-wide" ga-layermanager ga-layermanager-map="map">
@@ -420,7 +436,7 @@
 
     <!-- Popup: Import WMS -->
     <div ga-popup="importWmsPopupShown"
-         ga-popup-options="{title:'import_wms'}"
+         ga-popup-options="{title:'import_wms', help:'63'}"
          ga-draggable=".ga-popup-title"
          id="import-wms-popup" >
       <div ng-controller="GaImportWmsController">
@@ -433,7 +449,7 @@
 
     <!-- Popup: Import KML -->
     <div ga-popup="importKmlPopupShown"
-         ga-popup-options="{title:'import_kml'}"
+         ga-popup-options="{title:'import_kml', help:'64'}"
          ga-draggable=".ga-popup-title"
          id="import-kml-popup" >
       <div ng-controller="GaImportKmlController">
@@ -592,6 +608,8 @@
           whitelist = whitelist.concat(gaGlobalOptions.whitelist);
           $sceDelegateProvider.resourceUrlWhitelist(whitelist);
         });
+
+        $('.ga-custom-tooltip').tooltip();
 
       })();
 
