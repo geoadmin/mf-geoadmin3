@@ -83,7 +83,9 @@ def main(global_config, **settings):
     config.add_route('height', '/rest/services/height')
     config.add_route('feedback', '/feedback')
 
-    # Service to create the iimage viewer
+    # Service to create the luftbilder viewer
+    config.add_route('luftbilder', '/luftbilder/viewer.html')
+    # We keep the route to the old name to not loose existing links
     config.add_route('iipimage', '/iipimage/viewer.html')
 
     # Service to create snapshot of map.geo.admin.ch

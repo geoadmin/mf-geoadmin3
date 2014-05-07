@@ -6,25 +6,27 @@ from pyramid.renderers import render_to_response
 import pyramid.httpexceptions as exc
 
 
+@view_config(route_name='luftbilder')
+# Keep old route to not loose old existing links
 @view_config(route_name='iipimage')
-def iipimage(request):
-    image = request.params.get('image')
+def luftbilder(request):
     width = request.params.get('width')
     height = request.params.get('height')
+    rotation = request.params.get('rotation')
     title = request.params.get('title')
     bildnummer = request.params.get('bildnummer')
     datenherr = request.params.get('datenherr')
     layer = request.params.get('layer')
 
-    if None in (image, width, height, title, bildnummer, layer):
+    if None in (width, height, title, bildnummer, layer):
         raise exc.HTTPBadRequest('Missing parameter(s)')
 
     return render_to_response(
-        'chsdi:templates/iipimage/viewer.mako',
+        'chsdi:templates/luftbilder/viewer.mako',
         {
-            'image': image,
             'width': width,
             'height': height,
+            'rotation': rotation,
             'title': title,
             'bildnummer': bildnummer,
             'datenherr': datenherr,
