@@ -639,6 +639,7 @@
               var searchParam = gaPermalink.getParams().swisssearch;
               if (angular.isDefined(searchParam) &&
                   searchParam.length > 0) {
+                gaPermalink.deleteParam('swisssearch');
                 var unregister = scope.$on('gaLayersChange', function() {
                   // At this point layers are not added to the map yet
                   var unregisterLayers = scope.$watchCollection('layers',
