@@ -50,10 +50,31 @@
       })
     });
 
+    var geolocationStyle = new ol.style.Style({
+      fill: new ol.style.Fill({
+        color: [255, 0, 0, 0.1]
+      }),
+      stroke: new ol.style.Stroke({
+        color: [255, 0, 0, 0.9],
+        width: 3
+      }),
+      image: new ol.style.Circle({
+        radius: 5,
+        fill: new ol.style.Fill({
+          color: [255, 0, 0, 0.9]
+        }),
+        stroke: new ol.style.Stroke({
+          color: [255, 0, 0, 1],
+          width: 3
+        })
+      })
+    });
+
     var styles = {
       'select': selectStyle,
       'highlight': hlStyle,
-      'selectrectangle': srStyle
+      'selectrectangle': srStyle,
+      'geolocation': geolocationStyle
     };
 
     this.$get = function() {
