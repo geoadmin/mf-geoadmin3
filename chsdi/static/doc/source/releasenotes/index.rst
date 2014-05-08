@@ -1,3 +1,44 @@
+Release 20140508 -  Thursday, May 8th 2014
+==========================================
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+-----------------------------------
+
+- LUBIS Viewer: Adding permalink coordinates X, Y, zoom and rotate for better sharing
+- Optimized sizes of images
+- Adding OWS Checker
+- Minor bug fixes
+
+`MAP <//map.geo.admin.ch>`__
+-----------------------------------
+
+- Separated Feature and Location search
+- Added location marker for search results
+- Added context sensitive help
+- Remove addressbar on modern iOS devices
+- Swipe Ratio Fix for Firefox and IE
+- Updating Geolocation point even after zoom or pan
+- Minor bug fixes
+
+Geodata
+********
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update  | `Time of travel with PT <//map.geo.admin.ch/?layers=ch.are.reisezeit-oev>`__ (ch.are.reisezeit-oev)                                                          |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update  | `Time of travel IMT <//map.geo.admin.ch/?layers=ch.are.reisezeit-miv>`__ (ch.are.reisezeit-miv)                                                              |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update  | `Public transport connection quality <//map.geo.admin.ch/?layers=ch.are.gueteklassen_oev>`__ (ch.are.gueteklassen_oev)                                       |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update  | `Density of employment <//map.geo.admin.ch/?layers=ch.are.beschaeftigtendichte>`__ (ch.are.beschaeftigtendichte)                                             |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update  | `Population density <//map.geo.admin.ch/?layers=ch.are.bevoelkerungsdichte>`__ (ch.are.bevoelkerungsdichte)                                                  |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update  | `Agglomeration and isolated cities <//map.geo.admin.ch/?layers=ch.are.agglomerationen_isolierte_staedte>`__ (ch.are.agglomerationen_isolierte_staedte)       |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
 Release 20140430 -  Wednesday, April 30th 2014
 ====================================================
 
