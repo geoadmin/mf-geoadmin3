@@ -878,6 +878,9 @@ msgstr "Tipologia dei comuni ARE"
 msgid "ch.are.gueteklassen_oev"
 msgstr "Classi di collegamento dei TP ARE"
 
+msgid "ch.are.kt"
+msgstr "ARE + cantone"
+
 msgid "ch.are.landschaftstypen"
 msgstr "Tipologia de paesaggi svizzeri"
 
@@ -922,6 +925,9 @@ msgstr "IVS Regionali e locali"
 
 msgid "ch.astra.ivs-reg_loc.sub"
 msgstr "IVS Regionali e locali"
+
+msgid "ch.astra.kt"
+msgstr "USTRA + cantone"
 
 msgid "ch.astra.strassenverkehrszaehlung_messstellen-regional_lokal"
 msgstr "Circolazione stradale (regionale)"
@@ -1069,6 +1075,9 @@ msgstr "Stazioni idrologiche"
 
 msgid "ch.bafu.hydrologie-wassertemperaturmessstationen"
 msgstr "Stazioni misurazione temperatura"
+
+msgid "ch.bafu.kt"
+msgstr "UFAM + cantone"
 
 msgid "ch.bafu.laerm-bahnlaerm_nacht"
 msgstr "Rumore ferroviario di notte"
@@ -1571,6 +1580,9 @@ msgstr "Clima - Visione d'insieme"
 msgid "ch.blw.klimaeignung-zwischenfruchtbau"
 msgstr "Clima - colture intercalari"
 
+msgid "ch.blw.kt"
+msgstr "UFAG + cantone"
+
 msgid "ch.blw.landwirtschaftliche-zonengrenzen"
 msgstr "Limiti delle zone agricole"
 
@@ -1617,11 +1629,17 @@ msgstr "CadastralWebMap"
 msgid "ch.kantone.ivs-reg_loc"
 msgstr "IVS Cantone di Berna"
 
+msgid "ch.kt"
+msgstr "cantone"
+
 msgid "ch.kt.bafu"
 msgstr "ct. [UFAM]"
 
 msgid "ch.kt.bafu.url"
 msgstr "http://www.bafu.admin.ch/index.html?lang=it"
+
+msgid "ch.lw"
+msgstr "FA"
 
 msgid "ch.swisstopo"
 msgstr "swisstopo"
@@ -1931,6 +1949,15 @@ msgstr "Divisione carta nazionale 1:500'000"
 msgid "ch.swisstopo.private"
 msgstr "swisstopo, prv."
 
+msgid "ch.swisstopo.scnat"
+msgstr "swisstopo, scnat"
+
+msgid "ch.swisstopo.sgpk"
+msgstr "swisstopo, sgpk"
+
+msgid "ch.swisstopo.sgtk"
+msgstr "swisstopo, sgtk"
+
 msgid "ch.swisstopo.swissalti3d-reliefschattierung"
 msgstr "swissALTI3D Hillshade"
 
@@ -2038,6 +2065,9 @@ msgstr "MN95 Vettori di spostamento PAT2"
 
 msgid "ch.swisstopo.zeitreihen"
 msgstr "Carte - Viaggio nel tempo"
+
+msgid "ch.tamedia"
+msgstr "tamedia"
 
 msgid "ch.vbs"
 msgstr "DDPS"

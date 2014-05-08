@@ -878,6 +878,9 @@ msgstr "Typology of municipalities ARE"
 msgid "ch.are.gueteklassen_oev"
 msgstr "Public transport connection quality ARE"
 
+msgid "ch.are.kt"
+msgstr "ARE + canton"
+
 msgid "ch.are.landschaftstypen"
 msgstr "Landscape typolgy of Switzerland"
 
@@ -922,6 +925,9 @@ msgstr "IHR regional & local"
 
 msgid "ch.astra.ivs-reg_loc.sub"
 msgstr "IHR regional & local"
+
+msgid "ch.astra.kt"
+msgstr "FEDRO + canton"
 
 msgid "ch.astra.strassenverkehrszaehlung_messstellen-regional_lokal"
 msgstr "Traffic counting locations local"
@@ -1069,6 +1075,9 @@ msgstr "Hydrological gauging stations"
 
 msgid "ch.bafu.hydrologie-wassertemperaturmessstationen"
 msgstr "Temperature monitoring stations"
+
+msgid "ch.bafu.kt"
+msgstr "FOEN + canton"
 
 msgid "ch.bafu.laerm-bahnlaerm_nacht"
 msgstr "Nighttime railway noise"
@@ -1571,6 +1580,9 @@ msgstr "Climate - overview"
 msgid "ch.blw.klimaeignung-zwischenfruchtbau"
 msgstr "Climate - catch crop"
 
+msgid "ch.blw.kt"
+msgstr "FOAG + canton"
+
 msgid "ch.blw.landwirtschaftliche-zonengrenzen"
 msgstr "Agricultural zones boundaries"
 
@@ -1617,11 +1629,17 @@ msgstr "CadastralWebMap"
 msgid "ch.kantone.ivs-reg_loc"
 msgstr " "
 
+msgid "ch.kt"
+msgstr "chantun"
+
 msgid "ch.kt.bafu"
 msgstr "ct. [FOEN]"
 
 msgid "ch.kt.bafu.url"
 msgstr "http://www.bafu.admin.ch/index.html?lang=en"
+
+msgid "ch.lw"
+msgstr "AF"
 
 msgid "ch.swisstopo"
 msgstr "swisstopo"
@@ -1931,6 +1949,15 @@ msgstr "Division National Map 1:500'000"
 msgid "ch.swisstopo.private"
 msgstr "swisstopo, prv."
 
+msgid "ch.swisstopo.scnat"
+msgstr "swisstopo, scnat"
+
+msgid "ch.swisstopo.sgpk"
+msgstr "swisstopo, sgpk"
+
+msgid "ch.swisstopo.sgtk"
+msgstr "swisstopo, sgtk"
+
 msgid "ch.swisstopo.swissalti3d-reliefschattierung"
 msgstr "swissALTI3D Hillshade"
 
@@ -2038,6 +2065,9 @@ msgstr "LV95 Displacement vectors TSP2"
 
 msgid "ch.swisstopo.zeitreihen"
 msgstr "Maps - Journay through time"
+
+msgid "ch.tamedia"
+msgstr "tamedia"
 
 msgid "ch.vbs"
 msgstr "DDPS"
