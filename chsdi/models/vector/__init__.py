@@ -16,18 +16,20 @@ from shapely.geometry import asShape
 
 
 def getScale(imageDisplay, mapExtent):
-    inchesPerMeter = 1.0 / 0.0254
+    metersPerInch = 0.0254
     imgPixelPerInch = imageDisplay[2]
+    imgPixelHeight = imageDisplay[1]
     imgPixelWidth = imageDisplay[0]
     bounds = mapExtent.bounds
 
     mapMeterWidth = abs(bounds[0] - bounds[2])
-    imgMeterWidth = (imgPixelWidth / imgPixelPerInch) * inchesPerMeter
+    mapMeterHeight = abs(bounds[1] - bounds[3])
+    imgMeterWidth = (imgPixelWidth / imgPixelPerInch) * metersPerInch
+    imgMeterHeight = (imgPixelHeight / imgPixelPerInch) * metersPerInch
 
-    resolution = imgMeterWidth / mapMeterWidth
-    scale = 1 / resolution
-
-    return scale
+    resolution = max((imgMeterWidth / mapMeterWidth, imgMeterHeight / mapMeterHeight))
+    scale = 1.0 / resolution
+    return int(scale)
 
 
 def getToleranceMeters(imageDisplay, mapExtent, tolerance):
