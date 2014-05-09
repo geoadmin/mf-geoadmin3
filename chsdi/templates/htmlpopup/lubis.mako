@@ -165,10 +165,12 @@ endif
 loader_url = h.make_agnostic(route_url('ga_api', request))
 preview_url = determinePreviewUrl(c['featureId'])
 scan = '-'
+filesize_mb = '-'
 toposhopscan = 'nein'
 filename = c['attributes']['filename']
 if filename:
     scan = 'True'
+    filesize_mb = c['attributes']['filesize_mb']
     toposhopscan = 'ja'
 endif
 orientierung = '-'
@@ -193,14 +195,16 @@ viewer_url = get_viewer_url(request, params)
 <body onload="init()">
   <table class="table-with-border kernkraftwerke-extended">
     <tr><th class="cell-left">${_('tt_lubis_ebkey')}</th>            <td>${c['featureId'] or '-'}</td></tr>
+    <tr><th class="cell-left">${_('tt_lubis_inventarnummer')}</th>   <td>${c['attributes']['inventarnummer'] or '-'}</td></tr>
     <tr><th class="cell-left">${_('tt_lubis_Flugdatum')}</th>        <td>${datum or '-'}</td></tr>
-    <tr><th class="cell-left">${_('tt_lubis_ort')}</th>              <td>${c['attributes']['ort'] or '-'}</td></tr>
+    <tr><th class="cell-left">${_('tt_lubis_flughoehe')}</th>        <td>${c['attributes']['flughoehe'] or '-'}</td></tr>
     <tr><th class="cell-left">${_('tt_lubis_massstab')}</th>         <td>1:${c['attributes']['massstab'] or '-'}</td></tr>
     <tr><th class="cell-left">${_('tt_lubis_y')}</th>                <td>${c['attributes']['x'] or '-'}</td></tr>
     <tr><th class="cell-left">${_('tt_lubis_x')}</th>                <td>${c['attributes']['y'] or '-'}</td></tr>
     <tr><th class="cell-left">${_('tt_lubis_Filmart')}</th>          <td>${c['attributes']['filmart'] or '-'}</td></tr>
     <tr><th class="cell-left">${_('tt_lubis_originalsize')}</th>     <td>${c['attributes']['originalsize'] or '-'}</td></tr>
     <tr><th class="cell-left">${_('tt_lubis_scan')}</th>             <td>${scan or '-'}</td></tr>
+    <tr><th class="cell-left">${_('tt_lubis_filesize_mb')}</th>      <td>${filesize_mb or '-'}</td></tr>
     <tr><th class="cell-left">${_('tt_lubis_orientierung')}</th>     <td>${orientierung or '-'}</td></tr>
 % if 'contact_web' not in c['attributes'] and c['attributes']['ort'] is not None:
   <tr class="chsdi-no-print">
