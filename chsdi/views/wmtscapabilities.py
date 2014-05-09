@@ -31,7 +31,10 @@ class WMTSCapabilites(MapNameValidation):
             .filter(self.models['GetCap']
                     .projekte.ilike('%%%s%%' % self.mapName)).all()
 
-        themes = self.request.db.query(self.models['GetCapThemes']).all()
+        if hasattr(self.models['GetCapThemes'], 'oberthema_id'):
+            themes = self.request.db.query(self.models['GetCapThemes']).order_by(self.models['GetCapThemes'].oberthema_id).all()
+        else:
+            themes = self.request.db.query(self.models['GetCapThemes']).all()
 
         metadata = self.request.db.query(self.models['ServiceMetadata'])\
             .filter(self.models['ServiceMetadata']

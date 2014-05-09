@@ -160,32 +160,32 @@
    <% counter_i = 0 %>
    % for theme in themes:
    ## Oberthema
-   % if not(pre_oberthema== theme.oberthema_id):
-       <Theme>
-                <ows:Title>${theme.inspire_oberthema_name|x,trim}</ows:Title>
-                <ows:Abstract>${theme.inspire_oberthema_abstract|x,trim}</ows:Abstract>
-                <ows:Identifier>${theme.oberthema_id|x,trim}</ows:Identifier>
-   % endif
-   ## Thema
-   <Theme>
-            <ows:Title>${theme.inspire_name|x,trim}</ows:Title>
-            <ows:Abstract>${theme.inspire_abstract|x,trim}</ows:Abstract>
-            <ows:Identifier>${theme.id|x,trim}</ows:Identifier>
-        ## Refs
-        <% layers = theme.fk_dataset_id.split(',')  %>
-        % for i in range(len(layers)):
-            <LayerRef>${layers[i]}</LayerRef>
-        % endfor
-      </Theme>
-      ## No overflow
-      % if counter_i < (len(themes) - 1):
-          <% counter_i = counter_i + 1 %>
-      % endif
-      ## End Oberthema
-      % if not(theme.oberthema_id == themes[counter_i].oberthema_id):
-          </Theme>
-      % endif
-      ## remember the precedent Oberthema
+       % if not(pre_oberthema== theme.oberthema_id):
+           <Theme>
+               <ows:Title>${theme.inspire_oberthema_name|x,trim}</ows:Title>
+               <ows:Abstract>${theme.inspire_oberthema_abstract|x,trim}</ows:Abstract>
+               <ows:Identifier>${theme.oberthema_id|x,trim}</ows:Identifier>
+       % endif
+       ## Second level Thema
+               <Theme>
+                   <ows:Title>${theme.inspire_name|x,trim}</ows:Title>
+                   <ows:Abstract>${theme.inspire_abstract|x,trim}</ows:Abstract>
+                   <ows:Identifier>${theme.id|x,trim}</ows:Identifier>
+                   ## Refs
+                   <% layers = theme.fk_dataset_id.split(',')  %>
+                   % for i in range(len(layers)):
+                       <LayerRef>${layers[i]}</LayerRef>
+                   % endfor
+               </Theme>
+       ## No overflow
+       % if counter_i < (len(themes) - 1):
+           <% counter_i = counter_i + 1 %>
+       % endif
+       ## End Oberthema if next oberthema is not the same as the current one
+       % if not(theme.oberthema_id == themes[counter_i].oberthema_id):
+           </Theme>
+       % endif
+       ## remember the precedent Oberthema
        <% pre_oberthema= theme.oberthema_id %>
     % endfor
     ## End main loop
