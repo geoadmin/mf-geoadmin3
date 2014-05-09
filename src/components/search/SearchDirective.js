@@ -335,7 +335,7 @@
                         moveTo(map, 8, position);
                         var center = [position[0], position[1]];
                         var extent = [center, center];
-                        gaMarkerOverlay.add(map, extent);
+                        gaMarkerOverlay.add(map, center, extent, true);
                       }
                       return !position;
                     },
@@ -639,6 +639,7 @@
               var searchParam = gaPermalink.getParams().swisssearch;
               if (angular.isDefined(searchParam) &&
                   searchParam.length > 0) {
+                gaPermalink.deleteParam('swisssearch');
                 var unregister = scope.$on('gaLayersChange', function() {
                   // At this point layers are not added to the map yet
                   var unregisterLayers = scope.$watchCollection('layers',
