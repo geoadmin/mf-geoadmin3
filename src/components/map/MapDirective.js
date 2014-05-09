@@ -29,9 +29,12 @@
             if (queryParams.Y !== undefined && queryParams.X !== undefined) {
               var eastings = parseFloat(queryParams.Y.replace(/,/g, '.'));
               var northings = parseFloat(queryParams.X.replace(/,/g, '.'));
-              view.setCenter([+eastings, +northings]);
+              if (isFinite(eastings) && isFinite(northings)) {
+                view.setCenter([eastings, northings]);
+              }
             }
-            if (queryParams.zoom !== undefined) {
+            if (queryParams.zoom !== undefined &&
+                isFinite(queryParams.zoom)) {
               view.setZoom(+queryParams.zoom);
             }
 
