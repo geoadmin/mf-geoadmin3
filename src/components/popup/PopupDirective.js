@@ -19,10 +19,14 @@
           optionsFunc: '&gaPopupOptions' // Options from directive
         },
         template:
-          '<h4 class="popover-title ga-popup-title">' +
+          '<h4 class="popover-title ga-popup-title" ' +
+          'ng-click="expand()">' +
           '<span translate>{{options.title}}</span>' +
-          '<button type="button" class="close" ng-click="close($event)">' +
-          '&times;</button>' +
+          '<i class="ga-popup-close hidden-print"' +
+          ' ng-click="close($event)">&times</i>' +
+          '<i class="icon-minus ga-popup-reduce hidden-print" ' +
+          'title="{{titleReduce}}" ' +
+          'ng-if="options.showReduce" ng-click="reduce($event)"></i>' +
           '<i class="icon-print ga-popup-print hidden-print" ' +
           'title="{{titlePrint}}" ' +
           'ng-if="options.showPrint" ng-click="print()"></i>' +
@@ -39,6 +43,9 @@
           scope.options = scope.optionsFunc();
           scope.titlePrint = $translate('print_action');
           scope.titleHelp = $translate('help_label');
+          scope.titleReduce = $translate('reduce_label');
+          scope.titleExpand = $translate('expand_label');
+          scope.isReduced = false;
 
           if (!scope.options) {
             scope.options = {
@@ -56,6 +63,12 @@
               gaBrowserSniffer.mobile) {
             scope.options.help = false;
           }
+          // Per default show the reduce function
+          if (!angular.isDefined(scope.options.showReduce) ||
+              gaBrowserSniffer.mobile) {
+            scope.options.showReduce = true;
+          }
+
 
           // Move the popup to its original position, only used on desktop
           scope.moveToOriginalPosition = function() {
@@ -78,6 +91,7 @@
                 } else {
                   element.hide();
                 }
+                scope.isReduced = false;
               });
 
           scope.print = scope.options.print ||
@@ -86,7 +100,20 @@
                 gaPrintService.htmlPrintout(contentEl.clone().html());
               });
 
+          scope.reduce = scope.options.reduce ||
+              (function(evt) {
+                evt.stopPropagation();
+                scope.isReduced = true;
+              });
+
+          // Expand only if necessary
+          scope.expand = scope.options.expand ||
+              (function() {
+                scope.isReduced = false;
+              });
+
           element.addClass('popover');
+
 
           // Move the popup to the correct position
           if (!gaBrowserSniffer.mobile) {
@@ -100,9 +127,21 @@
               if (newVal != oldVal) {
                 element.toggle(newVal);
                 scope.moveToOriginalPosition();
+                if (!newVal) {
+                  scope.isReduced = false;
+                }
               }
             }
           );
+
+          var header = element.find('h4');
+          scope.$watch('isReduced', function(newVal, oldVal) {
+            if (newVal != oldVal) {
+              element.toggleClass('ga-popup-reduced', scope.isReduced);
+              // Deactivate draggable directive
+              header.toggleClass('ga-draggable-zone', !scope.isReduced);
+            }
+          });
 
           $rootScope.$on('$translateChangeEnd', function() {
             scope.titlePrint = $translate('print_action');

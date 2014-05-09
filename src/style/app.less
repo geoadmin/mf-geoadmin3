@@ -795,14 +795,6 @@ ul.panel-body-wide {
 .ga-measure-wait, .ga-tooltip-wait, .ga-metadata-popup-wait, .ga-print-wait {
   cursor: wait;
 }
-@media (max-width: @screen-tablet) {
-  button.close {
-    font-size: 26px;
-    padding: 0 10px;
-    margin: -4px -14px;
-    display: inline-block;
-  }
-}
 
 // ****** LEGEND
 .ga-tooltip-metadata {
@@ -1040,6 +1032,10 @@ input[type=range] {
 // ***** DRAGGABLE ELEMENT
 .ga-draggable {
   -ms-touch-action: none;
+}
+
+.ga-draggable-zone {
+  cursor: move;
 }
 
 #tools .selected {
