@@ -21,6 +21,7 @@ class luftbilder_swisstopo_farbe(Base, Vector):
     the_geom = GeometryColumn('the_geom', Geometry(dimensions=2, srid=21781))
     the_geom_footprint = GeometryColumn('the_geom_footprint', Geometry(dimensions=2, srid=21781))
     filename = Column('filename', Text)
+    inventarnummer = Column('bildnummer', Integer)          # new
     bildnummer = Column('bildnummer', Integer)
     flugdatum = Column('flugdatum', Text)
     firma = Column('firma', Text)
@@ -30,8 +31,10 @@ class luftbilder_swisstopo_farbe(Base, Vector):
     originalsize = Column('originalsize', Text)
     x = Column('x', Integer)
     y = Column('y', Integer)
+    flughoehe = Column('flughoehe', Integer)                # new
     ort = Column('ort', Text)
     massstab = Column('massstab', Integer)
+    filesize_mb = Column('filesize_mb', Text)               # new
     bgdi_imagemode = Column('bgdi_imagemode', Text)
     image_height = Column('image_height', Integer)
     image_width = Column('image_width', Integer)
