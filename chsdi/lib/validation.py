@@ -19,6 +19,8 @@ class MapNameValidation(object):
         availableMaps.append('api')
         availableMaps.append('api-free')
         availableMaps.append('api-notfree')
+        availableMaps.append('swissmaponline')
+
         if mapName not in availableMaps:
             raise exc.HTTPBadRequest('The map you provided does not exist')
 
