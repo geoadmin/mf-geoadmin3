@@ -335,7 +335,7 @@
                         moveTo(map, 8, position);
                         var center = [position[0], position[1]];
                         var extent = [center, center];
-                        gaMarkerOverlay.add(map, extent);
+                        gaMarkerOverlay.add(map, center, extent, true);
                       }
                       return !position;
                     },
