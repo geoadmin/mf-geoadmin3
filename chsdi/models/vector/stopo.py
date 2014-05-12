@@ -250,8 +250,6 @@ class Vec200Landcover(Base, Vector):
     id = Column('gtdboid', Text, primary_key=True)
     objname1 = Column('objname1', Text)
     objval = Column('objval', Text)
-    ppi = Column('ppi', Text)
-    ppl = Column('ppl', Numeric)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.vec200-landcover', Vec200Landcover)
