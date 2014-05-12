@@ -2,12 +2,15 @@
   goog.provide('ga_geolocation_directive');
 
   goog.require('ga_permalink');
+  goog.require('ga_styles_service');
 
   var module = angular.module('ga_geolocation_directive', [
-    'ga_permalink'
+    'ga_permalink',
+    'ga_styles_service'
   ]);
 
-  module.directive('gaGeolocation', function($parse, $window, gaPermalink) {
+  module.directive('gaGeolocation', function($parse, $window,
+      gaPermalink, gaStyleFactory) {
     return {
       restrict: 'A',
       scope: {
@@ -33,25 +36,7 @@
         var positionFeature = new ol.Feature(new ol.geom.Point([0, 0]));
         var featuresOverlay = new ol.FeatureOverlay({
           features: [accuracyFeature, positionFeature],
-          style: new ol.style.Style({
-            fill: new ol.style.Fill({
-              color: [255, 0, 0, 0.1]
-            }),
-            stroke: new ol.style.Stroke({
-              color: [255, 0, 0, 0.9],
-              width: 3
-            }),
-            image: new ol.style.Circle({
-              radius: 5,
-              fill: new ol.style.Fill({
-                color: [255, 0, 0, 0.9]
-              }),
-              stroke: new ol.style.Stroke({
-                color: [255, 0, 0, 1],
-                width: 3
-              })
-            })
-          })
+          style: gaStyleFactory.getStyle('geolocation')
         });
         var geolocation = new ol.Geolocation({
           trackingOptions: {
