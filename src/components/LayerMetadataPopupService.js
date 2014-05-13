@@ -12,46 +12,46 @@
 
   module.provider('gaLayerMetadataPopup', function() {
     this.$get = function($document, $translate, gaPopup, gaLayers) {
-          // Keep track of existing popups
-          var popups = {};
-          var getCloseCallback = function(bodid) {
-            return function() {
-              popups[bodid] = undefined;
-            }
-          };
+      // Keep track of existing popups
+      var popups = {};
 
-          // This service acts as a toggle. Repeated calls with
-          // the same bodid will 'toggle' the popup with the
-          // meta information.
-          return function(bodid) {
-            var waitClass = 'ga-metadata-popup-wait';
-            var bodyEl = angular.element($document[0].body);
-            if (angular.isDefined(popups[bodid])) {
-              popups[bodid].close();
-            } else {
-              bodyEl.addClass(waitClass);
-              gaLayers.getMetaDataOfLayer(bodid)
-                .success(function(data) {
-                  bodyEl.removeClass(waitClass);
-                  popups[bodid] = gaPopup.create({
-                    title: $translate('metadata_window_title'),
-                    content: data,
-                    className: 'ga-tooltip-metadata',
-                    x: 400,
-                    y: 200,
-                    showPrint: true,
-                    onCloseCallback: getCloseCallback(bodid)
-                  });
-                  popups[bodid].open();
-              })
-              .error(function() {
-                bodyEl.removeClass(waitClass);
-                //FIXME: better error handling
-                var msg = 'Could not retrieve information for ' + bodid;
-                alert(msg);
+      // This service acts as a toggle. Repeated calls with
+      // the same bodid will 'toggle' the popup with the
+      // meta information.
+      return function(bodid) {
+        var waitClass = 'ga-metadata-popup-wait';
+        var bodyEl = angular.element($document[0].body);
+        if (popups[bodid] && popups[bodid].scope.toggle) {
+          popups[bodid].close();
+          popups[bodid].destroy();
+          popups[bodid] = undefined;
+        } else {
+          if (popups[bodid] && !popups[bodid].scope.toggle) {
+            popups[bodid].destroy();
+            popups[bodid] = undefined;
+          }
+          bodyEl.addClass(waitClass);
+          gaLayers.getMetaDataOfLayer(bodid)
+            .success(function(data) {
+              bodyEl.removeClass(waitClass);
+              popups[bodid] = gaPopup.create({
+                title: $translate('metadata_window_title'),
+                content: data,
+                className: 'ga-tooltip-metadata',
+                x: 400,
+                y: 200,
+                showPrint: true
               });
-            }
-          };
+              popups[bodid].open();
+            })
+            .error(function() {
+              bodyEl.removeClass(waitClass);
+              //FIXME: better error handling
+              var msg = 'Could not retrieve information for ' + bodid;
+              alert(msg);
+            });
+        }
+      };
     };
   });
 })();

@@ -18,12 +18,12 @@ describe('ga_popup_directive', function() {
     elt = elt.find('.ga-popup-close');
     expect(elt.length).to.be(1);
     
-    elt = element.find('.ga-popup-content[ng-transclude]');
+    elt = element.find('.ga-popup-content');
     expect(elt.length).to.be(1);
   });
   
   it('shows/closes the popup with scope property', inject(function($rootScope) {
-    expect(element.css('display')).to.be('');
+    expect(element.css('display')).to.be('none'); // hidden by default
 
     $rootScope.popupShown = true;
     $rootScope.$digest();
