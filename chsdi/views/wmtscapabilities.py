@@ -27,9 +27,11 @@ class WMTSCapabilites(MapNameValidation):
         onlineressource = "%s://wmts.geo.admin.ch" % scheme if request_uri\
             .find("1.0.0") else "%s://api.geo.admin.ch/wmts" % scheme
 
-        cap = self.request.db.query(self.models['GetCap'])\
-            .filter(self.models['GetCap']
-                    .projekte.ilike('%%%s%%' % self.mapName)).all()
+        layers_query = self.request.db.query(self.models['GetCap'])
+        if self.mapName != 'all':
+            layers_query = layers_query.filter(self.models['GetCap']
+                                               .projekte.ilike('%%%s%%' % self.mapName))
+        layers = layers_query.all()
 
         if hasattr(self.models['GetCapThemes'], 'oberthema_id'):
             themes = self.request.db.query(self.models['GetCapThemes']).order_by(self.models['GetCapThemes'].oberthema_id).all()
@@ -41,7 +43,7 @@ class WMTSCapabilites(MapNameValidation):
                     .pk_map_name.like('%wmts-bgdi%')).first()
 
         wmts = {
-            'layers': cap,
+            'layers': layers,
             'themes': themes,
             'metadata': metadata,
             'scheme': scheme,
