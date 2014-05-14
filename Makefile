@@ -118,7 +118,7 @@ prd/: $(SITEMAP_FILES)
 
 prd/robots.txt: scripts/robots.mako-dot-txt .build-artefacts/last-deploy-target
 	mkdir -p $(dir $@)
-	.build-artefacts/python-venv/bin/mako-render --var "version=$(VERSION)" --var "deploy_target=$(DEPLOY_TARGET)" $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "deploy_target=$(DEPLOY_TARGET)" $< > $@
 
 prd/lib/: src/lib/d3-3.3.1.min.js
 	mkdir -p $@
