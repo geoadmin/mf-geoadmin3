@@ -164,12 +164,11 @@ endif
 
 loader_url = h.make_agnostic(route_url('ga_api', request))
 preview_url = determinePreviewUrl(c['featureId'])
-scan = '-'
+
 filesize_mb = '-'
 toposhopscan = 'nein'
 filename = c['attributes']['filename']
 if filename:
-    scan = 'True'
     filesize_mb = c['attributes']['filesize_mb']
     toposhopscan = 'ja'
 endif
@@ -203,7 +202,6 @@ viewer_url = get_viewer_url(request, params)
     <tr><th class="cell-left">${_('tt_lubis_x')}</th>                <td>${c['attributes']['y'] or '-'}</td></tr>
     <tr><th class="cell-left">${_('tt_lubis_Filmart')}</th>          <td>${c['attributes']['filmart'] or '-'}</td></tr>
     <tr><th class="cell-left">${_('tt_lubis_originalsize')}</th>     <td>${c['attributes']['originalsize'] or '-'}</td></tr>
-    <tr><th class="cell-left">${_('tt_lubis_scan')}</th>             <td>${scan or '-'}</td></tr>
     <tr><th class="cell-left">${_('tt_lubis_filesize_mb')}</th>      <td>${filesize_mb or '-'}</td></tr>
     <tr><th class="cell-left">${_('tt_lubis_bildpfad')}</th>         <td>${filename or '-'}</td></tr>
     <tr><th class="cell-left">${_('tt_lubis_orientierung')}</th>     <td>${orientierung or '-'}</td></tr>
