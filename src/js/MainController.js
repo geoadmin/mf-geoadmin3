@@ -105,7 +105,12 @@ module.controller('GaMainController',
       });
 
       $rootScope.$on('$translateChangeEnd', function() {
+        var descriptionEl = $("meta[name=description]");
         $scope.langId = $translate.uses();
+        if (descriptionEl &&
+          descriptionEl.attr('content')) {
+          descriptionEl.attr('content', $translate('page_description'));
+        }
       });
 
       $rootScope.$on('gaTimeSelectorChange', function(event, year) {
