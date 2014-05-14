@@ -4439,3 +4439,33 @@ msgstr ""
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-lt10km2"
 msgstr ""
+
+msgid "ch.tamedia"
+msgstr ""
+
+msgid "ch.kt"
+msgstr ""
+
+msgid "ch.lw"
+msgstr ""
+
+msgid "ch.are.kt"
+msgstr ""
+
+msgid "ch.bafu.kt"
+msgstr ""
+
+msgid "ch.blw.kt"
+msgstr ""
+
+msgid "ch.astra.kt"
+msgstr ""
+
+msgid "ch.swisstopo.scnat"
+msgstr ""
+
+msgid "ch.swisstopo.sgpk"
+msgstr ""
+
+msgid "ch.swisstopo.sgtk"
+msgstr ""

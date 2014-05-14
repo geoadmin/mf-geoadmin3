@@ -878,6 +878,9 @@ msgstr "Typologie des communes ARE"
 msgid "ch.are.gueteklassen_oev"
 msgstr "Qualité de desserte par TP ARE"
 
+msgid "ch.are.kt"
+msgstr "ARE + canton"
+
 msgid "ch.are.landschaftstypen"
 msgstr "Typologie des paysages suisses"
 
@@ -922,6 +925,9 @@ msgstr "IVS Régional et local"
 
 msgid "ch.astra.ivs-reg_loc.sub"
 msgstr "IVS Régional et local"
+
+msgid "ch.astra.kt"
+msgstr "OFROU + canton"
 
 msgid "ch.astra.strassenverkehrszaehlung_messstellen-regional_lokal"
 msgstr "Circulation routière (régional)"
@@ -1069,6 +1075,9 @@ msgstr "Stations hydrométriques"
 
 msgid "ch.bafu.hydrologie-wassertemperaturmessstationen"
 msgstr "Stations de mesure Température eau"
+
+msgid "ch.bafu.kt"
+msgstr "OFEV + canton"
 
 msgid "ch.bafu.laerm-bahnlaerm_nacht"
 msgstr "Bruit ferroviaire la nuit"
@@ -1571,6 +1580,9 @@ msgstr "Climat - vue d'ensemble"
 msgid "ch.blw.klimaeignung-zwischenfruchtbau"
 msgstr "Climat - cultures dérobées"
 
+msgid "ch.blw.kt"
+msgstr "OFAG + canton"
+
 msgid "ch.blw.landwirtschaftliche-zonengrenzen"
 msgstr "Limites des zones agricoles"
 
@@ -1617,11 +1629,17 @@ msgstr "CadastralWebMap"
 msgid "ch.kantone.ivs-reg_loc"
 msgstr "IVS Canton de Berne"
 
+msgid "ch.kt"
+msgstr "cantons"
+
 msgid "ch.kt.bafu"
 msgstr "ct. [OFEV]"
 
 msgid "ch.kt.bafu.url"
 msgstr "http://www.bafu.admin.ch/index.html?lang=fr"
+
+msgid "ch.lw"
+msgstr "FA"
 
 msgid "ch.swisstopo"
 msgstr "swisstopo"
@@ -1931,6 +1949,15 @@ msgstr "Découpage carte nationale 1:500’000"
 msgid "ch.swisstopo.private"
 msgstr "swisstopo, prv"
 
+msgid "ch.swisstopo.scnat"
+msgstr "swisstopo, scnat"
+
+msgid "ch.swisstopo.sgpk"
+msgstr "swisstopo, sgpk"
+
+msgid "ch.swisstopo.sgtk"
+msgstr "swisstopo, sgtk"
+
 msgid "ch.swisstopo.swissalti3d-reliefschattierung"
 msgstr "swissALTI3D estompage du relief"
 
@@ -2038,6 +2065,9 @@ msgstr "MN95 Vecteurs de déformation PAT2"
 
 msgid "ch.swisstopo.zeitreihen"
 msgstr "Cartes - Voyage dans le temps"
+
+msgid "ch.tamedia"
+msgstr "tamedia"
 
 msgid "ch.vbs"
 msgstr "DDPS"

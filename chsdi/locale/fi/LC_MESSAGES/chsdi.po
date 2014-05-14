@@ -878,6 +878,9 @@ msgstr "Gemeindetypologie ARE"
 msgid "ch.are.gueteklassen_oev"
 msgstr "ÖV-Güteklassen ARE"
 
+msgid "ch.are.kt"
+msgstr "ARE + chantun"
+
 msgid "ch.are.landschaftstypen"
 msgstr "Landschaftstypologie Schweiz"
 
@@ -922,6 +925,9 @@ msgstr "IVS regiunal & local"
 
 msgid "ch.astra.ivs-reg_loc.sub"
 msgstr "IVS Regional und Lokal"
+
+msgid "ch.astra.kt"
+msgstr "ASTRA + chantun"
 
 msgid "ch.astra.strassenverkehrszaehlung_messstellen-regional_lokal"
 msgstr "Posts da quintar il traffic locals"
@@ -1069,6 +1075,9 @@ msgstr "Staziuns idrometricas"
 
 msgid "ch.bafu.hydrologie-wassertemperaturmessstationen"
 msgstr "Messstationen Wassertemperatur"
+
+msgid "ch.bafu.kt"
+msgstr "BAFU + chantun"
 
 msgid "ch.bafu.laerm-bahnlaerm_nacht"
 msgstr "Canera da viafier notg"
@@ -1571,6 +1580,9 @@ msgstr "Klimaeignungskarte Übersicht"
 msgid "ch.blw.klimaeignung-zwischenfruchtbau"
 msgstr "Klima - Zwischenfruchtbau"
 
+msgid "ch.blw.kt"
+msgstr "BLW + chantun"
+
 msgid "ch.blw.landwirtschaftliche-zonengrenzen"
 msgstr "Cunfin da zona agricultura"
 
@@ -1617,11 +1629,17 @@ msgstr "CadastralWebMap"
 msgid "ch.kantone.ivs-reg_loc"
 msgstr "IVS Kanton Bern"
 
+msgid "ch.kt"
+msgstr "Kantone"
+
 msgid "ch.kt.bafu"
 msgstr "Kt. [BAFU]"
 
 msgid "ch.kt.bafu.url"
 msgstr "http://www.bafu.admin.ch/index.html?lang=de"
+
+msgid "ch.lw"
+msgstr "LW"
 
 msgid "ch.swisstopo"
 msgstr "swisstopo"
@@ -1931,6 +1949,15 @@ msgstr "Divisiun charta naziunala 1:500'000"
 msgid "ch.swisstopo.private"
 msgstr "swisstopo, prv."
 
+msgid "ch.swisstopo.scnat"
+msgstr "swisstopo, scnat"
+
+msgid "ch.swisstopo.sgpk"
+msgstr "swisstopo, sgpk"
+
+msgid "ch.swisstopo.sgtk"
+msgstr "swisstopo, sgtk"
+
 msgid "ch.swisstopo.swissalti3d-reliefschattierung"
 msgstr "swissALTI3D charta da reliev"
 
@@ -2041,6 +2068,9 @@ msgstr "ch.swisstopo.verschiebungsvektoren-tsp2"
 #. TODO
 msgid "ch.swisstopo.zeitreihen"
 msgstr "ch.swisstopo.zeitreihen"
+
+msgid "ch.tamedia"
+msgstr "tamedia"
 
 msgid "ch.vbs"
 msgstr "VBS"
