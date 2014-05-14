@@ -90,6 +90,7 @@ class Search(SearchValidation):
             nb_address = 0
             for res in temp:
                 if res['attrs']['origin'] == 'address':
+                    res['attrs']['layerBodId'] = 'ch.bfs.gebaeude_wohnungs_register'
                     if nb_address < 20:
                         if not (self.varnish_authorized and self.returnGeometry):
                             if 'geom_st_box2d' in res['attrs'].keys():
@@ -97,6 +98,14 @@ class Search(SearchValidation):
                         self.results['results'].append(res)
                         nb_address += 1
                 else:
+                    if res['attrs']['origin'] == 'zipcode':
+                        res['attrs']['layerBodId'] = 'ch.swisstopo-vd.ortschaftenverzeichnis_plz'
+                    if res['attrs']['origin'] == 'gg25':
+                        res['attrs']['layerBodId'] = 'ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill'
+                    if res['attrs']['origin'] == 'district':
+                        res['attrs']['layerBodId'] = 'ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill'
+                    if res['attrs']['origin'] == 'kantone':
+                        res['attrs']['layerBodId'] = 'ch.swisstopo.swissboundaries3d-kanton-flaeche.fill'
                     self.results['results'].append(res)
             return len(temp)
         return 0
