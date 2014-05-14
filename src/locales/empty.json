@@ -217,5 +217,6 @@
   "swipe_tooltip": "",
   "measure_tooltip": "",
   "featuretree_tooltip": "",
-  "draw_tooltip": ""
+  "draw_tooltip": "",
+  "bg_luftbild": ""
 }

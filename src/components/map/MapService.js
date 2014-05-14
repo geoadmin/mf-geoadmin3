@@ -555,7 +555,13 @@
         this.getBackgroundLayers = function() {
           var self = this;
           return $.map(currentTopic.backgroundLayers, function(bodId) {
-            return {id: bodId, label: self.getLayerProperty(bodId, 'label')};
+            var retVal = {id: bodId,
+                          label: self.getLayerProperty(bodId, 'label')};
+            // In the background selector, we don't want the standard label
+            if (bodId == 'ch.swisstopo.swissimage') {
+              retVal.label = $translate('bg_luftbild');
+            }
+            return retVal;
           });
         };
 
