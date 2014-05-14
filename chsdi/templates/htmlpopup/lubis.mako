@@ -14,17 +14,17 @@ def br(text):
 
 
 def determinePreviewUrl(ebkey):
-    tileUrlBasePath = "http://aerialimages0.geo.admin.ch/tiles"
+    tileUrlBasePath = 'http://aerialimages0.geo.admin.ch/tiles'
 
     def getPreviewImageUrl(ebkey):
-        return tileUrlBasePath + "/" + ebkey + "/quickview.jpg"
+        return tileUrlBasePath + '/' + ebkey + '/quickview.jpg'
 
     def getZeroTileUrl(ebkey):
-        return tileUrlBasePath + "/" + ebkey + "/0/0/0.jpg"
+        return tileUrlBasePath + '/' + ebkey + '/0/0/0.jpg'
 
     class HeadRequest(urllib2.Request):
         def get_method(self):
-            return "HEAD"
+            return 'HEAD'
 
     def testForUrl(url):
         response = None
@@ -47,7 +47,7 @@ def determinePreviewUrl(ebkey):
     url = testForUrl(getPreviewImageUrl(ebkey))
     if url == "":
         url = testForUrl(getZeroTileUrl(ebkey))
-    return url
+    return h.make_agnostic(url)
 
 def date_to_str(datum):
     try:

@@ -6,7 +6,7 @@
         var height = parseInt(${height});
         var rotation= parseInt(${rotation if rotation is not None else 0}) * Math.PI / 180;
 
-        var url = 'http://aerialimages{curInstance}.geo.admin.ch/tiles/${ebkey}/';
+        var url = '//aerialimages{curInstance}.geo.admin.ch/tiles/${ebkey}/';
         var resolutions = [1]; // 1 is the min resolution of the pyramid (for all images)
         var curResolution = resolutions[0];
         var maxResolution = Math.max(width, height) / TILE_SIZE;
