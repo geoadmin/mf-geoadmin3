@@ -83,7 +83,7 @@ register('ch.kantone.cadastralwebmap-farbe', CadastralWebMap)
 
 
 class Vec200Terminal(Base, Vector):
-    __tablename__ = 'vec200_terminal_tiles'
+    __tablename__ = 'vec200_terminal'
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec200_terminal.mako'
     __bodId__ = 'ch.swisstopo.vec200-transportation-oeffentliche-verkehr'
@@ -105,7 +105,7 @@ class Vec200ShipKursschiff(Base, Vector):
 
 
 class Vec200Railway(Base, Vector):
-    __tablename__ = 'vec200_railway_tiles'
+    __tablename__ = 'vec200_railway'
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec200_railway.mako'
     __bodId__ = 'ch.swisstopo.vec200-transportation-oeffentliche-verkehr'
@@ -142,7 +142,7 @@ register('ch.swisstopo.treasurehunt', treasurehunt)
 
 
 class Vec200Trafficinfo(Base, Vector):
-    __tablename__ = 'vec200_trafficinfo_tiles'
+    __tablename__ = 'vec200_trafficinfo'
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec200_trafficinfo.mako'
     __bodId__ = 'ch.swisstopo.vec200-transportation-strassennetz'
@@ -165,7 +165,7 @@ class Vec200ShipAutofaehre(Base, Vector):
 
 
 class Vec200Road(Base, Vector):
-    __tablename__ = 'vec200_road_tiles'
+    __tablename__ = 'vec200_road'
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec200_road.mako'
     __bodId__ = 'ch.swisstopo.vec200-transportation-strassennetz'
@@ -177,7 +177,7 @@ class Vec200Road(Base, Vector):
 
 
 class Vec200Ramp(Base, Vector):
-    __tablename__ = 'vec200_ramp_tiles'
+    __tablename__ = 'vec200_ramp'
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec200_ramp.mako'
     __bodId__ = 'ch.swisstopo.vec200-transportation-strassennetz'
@@ -189,7 +189,7 @@ class Vec200Ramp(Base, Vector):
 
 
 class Vec200Customsoffice(Base, Vector):
-    __tablename__ = 'vec200_customsoffice_tiles'
+    __tablename__ = 'vec200_customsoffice'
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec200_customsoffice.mako'
     __bodId__ = 'ch.swisstopo.vec200-transportation-strassennetz'
