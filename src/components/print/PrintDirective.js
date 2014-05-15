@@ -590,8 +590,12 @@
             'styles': {
               '1': {
                 'externalGraphic': $scope.options.markerUrl,
-                'graphicWidth': 16,
-                'graphicHeight': 16
+                'graphicWidth': 30,
+                'graphicHeight': 40,
+                // the icon is not perfectly centered in the image
+                // these values must be the same in map.less
+                'graphicXOffset': -17,
+                'graphicYOffset': -40
               }
             },
             'styleProperty': '_gx_style',
