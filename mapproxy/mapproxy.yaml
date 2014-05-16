@@ -1,0 +1,140 @@
+services:
+  # comment out unneeded services
+  demo:
+  kml:
+  #tms:
+  wms:
+    srs: ['EPSG:4326', 'EPSG:21781', 'EPSG:4258', 'EPSG:900913']
+    image_formats: ['image/jpeg', 'image/png']
+    md:
+      # metadata used in capabilities documents
+      title: GeoAdmin MapProxy WMS
+      abstract: GeoAdmin geodata
+      online_resource: http://api.geo.admin.ch/mapproxy/service?
+      contact:
+        person: webgis@swisstopo.ch
+        organization: Bundesamt für Landestopografie swisstopo
+        address: Seftigenstrasse 264
+        city: Wabern
+        postcode: 3084
+        country: Schweiz
+        phone: +41 (0)31 / 963 21 11
+        fax: +41 (0)31 / 963 24
+        email: webgis@swisstopo.ch
+      access_constraints: 'License'
+      fees: 'This service cant be used without permission'
+
+layers:
+    - name: ch.swisstopo.swissimage
+      title: Luftbilder
+      sources: [swissimage]
+    - name: ch.swisstopo.pixelkarte-farbe
+      title: Landeskarte
+      sources: [pixelkarte-farbe]
+    - name: osm
+      title: OpenStreetMap
+      sources: [osm_cache]
+    - name: ch.swisstopo.swisstlm3d-karte
+      title: TLM
+      sources: [tlm] 
+
+caches:
+  swissimage:
+    grids: [swisstopo-swissimage]
+    sources: [swissimage-tiles]
+    format: image/jpeg
+    image:
+      resampling_method: bilinear
+    disable_storage: true
+  pixelkarte-farbe:
+    grids: [swisstopo-pixelkarte]
+    sources: [pixelkarte-farbe-tiles]
+    format: image/jpeg
+    disable_storage: true
+  osm_cache:
+    grids: [global_mercator_osm]
+    sources: [osm_tms]
+    disable_storage: true
+    concurrent_tile_creators: 4
+    watermark:
+      text: '@ OpenStreetMap contributors'
+      font_size: 14
+      opacity: 100
+      color: [0,0,0]
+  tlm:
+    grids: [swisstopo-tlm]
+    sources: [tlm-tiles]
+    format: image/jpeg
+    disable_storage: true 
+    image:
+      resampling_method: nearest
+
+sources:
+  swissimage-tiles:
+    type: tile
+    grid: swisstopo-swissimage
+    http:
+      headers:
+        Referer: http://www.geoportail.gouv.fr/
+    url: http://wmts3.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/20131107/21781/%(z)d/%(y)d/%(x)d.jpeg
+  pixelkarte-farbe-tiles:
+    type: tile
+    grid: swisstopo-pixelkarte
+    http:
+      headers:
+        Referer: http://www.geoportail.gouv.fr/
+    url: http://wmts3.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20140106/21781/%(z)d/%(y)d/%(x)d.jpeg
+  osm_tms:
+    type: tile
+    grid: global_mercator_osm
+    url: http://c.tile.openstreetmap.org/%(tms_path)s.png
+    coverage:
+      bbox: [420000,30000,900000,350000]
+      bbox_srs: EPSG:21781
+  tlm-tiles:
+    type: tile
+    grid: swisstopo-tlm
+    transparent: true
+    on_error:
+      other:
+        response: transparent
+        cache: false
+    http:
+      headers:
+        Referer: http://map.geo.admin.ch/
+    url: http://wmts3.geo.admin.ch/1.0.0/ch.swisstopo.swisstlm3d-karte-farbe/default/20130401/21781/%(z)d/%(y)d/%(x)d.png
+
+grids:
+  swisstopo-swissimage:
+    res: [4000,3750,3500,3250,3000,2750,2500,2250,2000,1750,1500,1250,1000,750,650,500,250,100,50,20,10,5,2.5,2,1.5,1,0.5,0.25]
+    bbox: [420000,30000,900000,350000]
+    bbox_srs: EPSG:21781
+    srs: EPSG:21781
+    origin: nw
+    stretch_factor: 1.0
+  swisstopo-pixelkarte:
+    res: [4000,3750,3500,3250,3000,2750,2500,2250,2000,1750,1500,1250,1000,750,650,500,250,100,50,20,10,5,2.5,2,1.5,1,0.5]
+    bbox: [420000,30000,900000,350000]
+    bbox_srs: EPSG:21781
+    srs: EPSG:21781
+    origin: nw
+    stretch_factor: 1.0
+  global_mercator_osm:
+    base: GLOBAL_MERCATOR
+    num_levels: 18
+    origin: nw
+  swisstopo-tlm:
+    res: [4000,3750,3500,3250,3000,2750,2500,2250,2000,1750,1500,1250,1000,750,650,500,250,100,50,20,10,5,2.5,2,1.5,1,0.5]
+    bbox: [420000,30000,900000,350000]
+    bbox_srs: EPSG:21781
+    srs: EPSG:21781
+    origin: nw
+    stretch_factor: 1.0
+
+globals:
+  cache:
+    # use parallel requests to the WMTS sources
+    concurrent_tile_creators: 32
+
+  image:
+      resampling_method: bicubic

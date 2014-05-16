@@ -1,0 +1,31 @@
+#
+# The Apache mod_wsgi configuration file for MapProxy.
+#
+
+RewriteEngine On
+ExpiresActive On
+
+# MapProxy access control
+
+RewriteRule ^${apache_entry_path}mapproxy(.*)$ /${vars:apache_base_path}/mapproxy/$1 [PT]
+
+WSGIDaemonProcess mf-chsdi3:${vars:apache_base_path}-mapproxy display-name=%{GROUP} user=${vars:modwsgi_user} processes=4
+
+# define the path to the WSGI app
+WSGIScriptAlias /${vars:apache_base_path}/mapproxy ${buildout:directory}/buildout/parts/mapproxy/wsgi
+
+<Location /${vars:apache_base_path}/mapproxy>
+    WSGIProcessGroup mf-chsdi3:${vars:apache_base_path}-mapproxy
+    WSGIApplicationGroup %{GLOBAL}
+
+    Order Deny,Allow
+    Allow from all
+
+    ExpiresActive On
+    ExpiresDefault "now plus 1 days"
+    Header set Cache-Control "public, max-age=86400"
+    Header unset Etag
+
+</Location>
+
+

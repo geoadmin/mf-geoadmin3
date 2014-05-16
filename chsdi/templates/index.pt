@@ -77,6 +77,8 @@
       <h2>Ogcproxy</h2>
           <a href="ogcproxy?url=http://wms.pcn.minambiente.it/ogc?map=/ms_ogc/WMS_v1.3/raster/IGM_100000.map&VERSION=1.3.0&SERVICE=WMS&REQUEST=GetCapabilities">Get
          Capabilities using ogcproxy</a>
+      <h2>MapProxy</h2>
+          <a href="mapproxy/demo">MapProxy demo</a>
 
       <h2>CatalogService (non ESRI)</h2>
           <a href="rest/services/blw/CatalogServer?callback=callback">Catalog for topic 'blw'</a>
