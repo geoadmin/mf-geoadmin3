@@ -63,9 +63,15 @@ loader_url = h.make_agnostic(route_url('ga_api', request))
           // 10 means that one pixel is 10m width and height
           // List of resolution of the WMTS layers:
           // 650, 500, 250, 100, 50, 20, 10, 5, 2.5, 2, 1, 0.5, 0.25, 0.1
-          resolution: 10,
+          resolution: 10
         })
       });
+      // set extent and zoom to extent
+      var x_coords = [${c['attributes']['toposhop_start_x']},${c['attributes']['toposhop_end_x']}]
+      var y_coords = [${c['attributes']['toposhop_start_y']},${c['attributes']['toposhop_end_y']}]
+      x_coords.sort()
+      y_coords.sort()
+      map.getView().fitExtent([x_coords[0],y_coords[0],x_coords[1],y_coords[1]],map.getSize())
 
       // Create a background layer
       var lyr1 = ga.layer.create('ch.swisstopo.pixelkarte-grau');
