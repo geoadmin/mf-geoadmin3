@@ -1,6 +1,6 @@
 <div>
   <div ng-class="{'ga-topic-active': topic.id == activeTopic}" ng-repeat="topic in topics" ng-click="setActiveTopic(topic.id)">
     <div translate>{{topic.label}}</div>
-    <img ng-src="{{topic.thumbnail}}" alt="" height="60" width="110">
+    <img ng-src="{{topic.thumbnail}}" alt="" height="60" width="110" draggable="false" >
   </div>
 </div>

@@ -208,19 +208,26 @@ input[type=text][readonly] {
   width: 320px;
   display: inline-block;
   background: white;
+  
   img:last-of-type {
     display: none;
+    width: 19px;
+    height: 19.5px;
   }
+  
   @media (max-width: @screen-tablet) {
     padding: 13px 0 0 13px;
     height: 50px;
+    
     img:last-of-type {
       display: inline;
     }
+    
     img:first-of-type {
       display: none;
     }
   }
+  
   @media (max-width: @screen-phone) {
     width: 44px;
   }
