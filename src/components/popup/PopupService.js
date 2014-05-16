@@ -15,7 +15,7 @@
 
         // Create the popup element with its content to the HTML page
         var element = angular.element(
-          '<div ga-popup="toggle"' +
+          '<div ga-popup="toggle" ' +
                'ga-popup-options="options" ' +
                'ga-draggable=".ga-popup-title">' +
                options.content +

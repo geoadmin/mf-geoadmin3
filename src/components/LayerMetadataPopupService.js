@@ -21,15 +21,14 @@
       return function(bodid) {
         var waitClass = 'ga-metadata-popup-wait';
         var bodyEl = angular.element($document[0].body);
-        if (popups[bodid] && popups[bodid].scope.toggle) {
-          popups[bodid].close();
-          popups[bodid].destroy();
-          popups[bodid] = undefined;
-        } else {
-          if (popups[bodid] && !popups[bodid].scope.toggle) {
-            popups[bodid].destroy();
-            popups[bodid] = undefined;
+        var popup = popups[bodid];
+        if (popup) { // if the popup already exist we toggle it
+          if (popup.scope.toggle) {
+            popups[bodid].close();
+          } else {
+            popups[bodid].open();
           }
+        } else {
           bodyEl.addClass(waitClass);
           gaLayers.getMetaDataOfLayer(bodid)
             .success(function(data) {

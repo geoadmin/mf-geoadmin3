@@ -70,6 +70,7 @@
               evt.stopPropagation();
               evt.preventDefault();
             }
+            scope.isReduced = false;
             scope.toggle = false;
           };
 
@@ -103,6 +104,12 @@
                   moveToOriginalPosition();
                 }
 
+                if (scope.isReduced) {
+                  scope.isReduced = false;
+                  scope.toggle = true;
+                  return;
+                }
+
                 element.toggle(newVal);
 
                 if (!newVal) {
@@ -119,6 +126,9 @@
               element.toggleClass('ga-popup-reduced', scope.isReduced);
               // Deactivate draggable directive
               header.toggleClass('ga-draggable-zone', !scope.isReduced);
+
+              // To keep a reference for the parent scope
+              scope.options.isReduced = scope.isReduced;
             }
           });
 

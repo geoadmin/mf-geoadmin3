@@ -16,7 +16,7 @@
             ng-mouseover="highlightFeature(feature)"
             ng-mouseleave="clearHighlight()"
             ng-click="onClick($event, feature)"
-            ng-class="{'selected': feature.selected}" 
+            ng-class="getCssSelected(feature)" 
             tabindex=1>
           <label class="ga-truncate-text">
             {{feature.label}}
