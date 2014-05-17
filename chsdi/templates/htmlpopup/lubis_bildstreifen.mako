@@ -2,12 +2,7 @@
 <%namespace name="lubis_map" file="../lubis_map.mako"/>
 
 <%!
-import datetime
-import urllib
-import urllib2
 from pyramid.url import route_url
-import chsdi.lib.helpers as h
-import markupsafe
 %>
 
 <%def name="table_body(c, lang)">
