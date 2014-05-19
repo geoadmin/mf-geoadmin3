@@ -1,5 +1,4 @@
 <%inherit file="base.mako"/>
-<%namespace name="lubis_map" file="../lubis_map.mako"/>
 
 <%!
 from pyramid.url import route_url
@@ -53,6 +52,7 @@ loader_url = h.make_agnostic(route_url('ga_api', request))
         // Define the div where the map is placed
         target: 'map',
         ol3Logo: false,
+        tooltip: false,
         view: new ol.View2D({
           // Define the default resolution
           // 10 means that one pixel is 10m width and height
