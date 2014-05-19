@@ -22,6 +22,8 @@
       var iosChrome = /CriOS/.test(ua);
       var webkit = /WebKit/.test(ua);
       var mac = /Mac/.test(platform);
+      var chrome = /Chrome/.test(ua);
+      var safari = !chrome && /Safari/.test(ua);
       var testSize = function(size) {
         var m = $window.matchMedia;
         return m && (m('(max-width: ' + size + 'px)').matches ||
@@ -92,6 +94,7 @@
         msie: msie,
         webkit: webkit,
         mac: mac,
+        safari: safari,
         ios: ios,
         iosChrome: iosChrome,
         touchDevice: touchDevice,

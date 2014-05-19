@@ -79,8 +79,20 @@ form {
 }
 
 .ga-full-screen {
-  .ga-swipe, [ga-popup], [ga-time-selector] {
-    z-index: 3000000000;
+  
+  #header {
+    background-color: transparent;
+    box-shadow: none;
+    
+    .pull-right > div {
+      display: none;
+    }
+  }
+  
+  &.ga-full-screen-no-inputs #search-container, 
+  #logo, #background-selection, 
+  #toptools, #pulldown, #footer {
+    display: none;
   }
 }
 
