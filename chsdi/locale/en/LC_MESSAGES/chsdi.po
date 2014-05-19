@@ -836,9 +836,6 @@ msgstr "ARE"
 msgid "ch.are.agglomerationen_isolierte_staedte"
 msgstr "Agglomeration and isolated cities"
 
-msgid "ch.are.agglomerationen_isolierte_staedte-2000"
-msgstr "Agglomeration and isolated cities"
-
 msgid "ch.are.alpenkonvention"
 msgstr "Alpine Convention"
 
@@ -860,13 +857,7 @@ msgstr "Passenger traffic 2008"
 msgid "ch.are.beschaeftigtendichte"
 msgstr "Density of employment 2008"
 
-msgid "ch.are.beschaeftigtendichte-bz08"
-msgstr "Density of employment 2008"
-
 msgid "ch.are.bevoelkerungsdichte"
-msgstr "Population density 2000"
-
-msgid "ch.are.bevoelkerungsdichte-vz00"
 msgstr "Population density 2000"
 
 msgid "ch.are.gemeindetyp-1990-9klassen"
@@ -888,12 +879,6 @@ msgid "ch.are.reisezeit-miv"
 msgstr "Time of travel IMT 2005"
 
 msgid "ch.are.reisezeit-oev"
-msgstr "Time of travel with PT 2005"
-
-msgid "ch.are.reisezeit_miv-2005"
-msgstr "Time of travel IMT 2005"
-
-msgid "ch.are.reisezeit_oev-2005"
 msgstr "Time of travel with PT 2005"
 
 msgid "ch.are.url"
@@ -4130,8 +4115,20 @@ msgstr "Resolution"
 msgid "tt_lubis_bildorder"
 msgstr "To order please contact directly:"
 
+msgid "tt_lubis_bildpfad"
+msgstr "Image path"
+
 msgid "tt_lubis_ebkey"
 msgstr "Picture number"
+
+msgid "tt_lubis_filesize_mb"
+msgstr "File size"
+
+msgid "tt_lubis_flughoehe"
+msgstr "Flying height"
+
+msgid "tt_lubis_inventarnummer"
+msgstr "Inventory number"
 
 msgid "tt_lubis_lineId"
 msgstr "Flying line"
@@ -4153,9 +4150,6 @@ msgstr "Dimensions of original image"
 
 msgid "tt_lubis_ort"
 msgstr "Place"
-
-msgid "tt_lubis_scan"
-msgstr "Scan"
 
 msgid "tt_lubis_x"
 msgstr "Centre coordinate X"
