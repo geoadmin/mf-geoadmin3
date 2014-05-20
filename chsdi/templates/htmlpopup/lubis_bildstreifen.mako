@@ -1,6 +1,11 @@
 <%inherit file="base.mako"/>
 
+<%!
+from pyramid.url import route_url
+%>
+
 <%def name="table_body(c, lang)">
+
 <% c['stable_id'] = True %>
     <tr><td class="cell-left">${_('tt_lubis_lineId')}</td>          <td>${c['featureId']}</td></tr>
     <tr><td class="cell-left">${_('tt_lubis_Flugdatum')}</td>       <td>${c['attributes']['flugdatum']}</td></tr>
@@ -13,6 +18,11 @@
 </%def>
 
 <%def name="extended_info(c, lang)">
+<%
+loader_url = h.make_agnostic(route_url('ga_api', request))
+%>
+<title>${_('tt_lubis_ebkey')}: ${c['featureId']}</title>
+<body onload="init()">
 
     <table class="table-with-border kernkraftwerke-extended">
         <tr><th class="cell-left">${_('tt_lubis_lineId')}</th>              <td>${c['featureId']}</td></tr>
@@ -29,4 +39,42 @@
         <tr><th class="cell-left">${_('tt_firmen_Link ')}</th>              <td><a href="mailto:geodata@swisstopo.ch?subject=${_('tt_firmen_Link ')} ebkey:${c['featureId']}">geodata@swisstopo.ch</a></td></tr>
 % endif
 </table>
+
+  <div class="chsdi-map-container table-with-border" >
+    <div id="map"></div>
+  </div>
+
+  <script type="text/javascript" src="${loader_url}"></script>
+  <script type="text/javascript">
+    function init() {
+      // Create a GeoAdmin Map
+      var map = new ga.Map({
+        // Define the div where the map is placed
+        target: 'map',
+        ol3Logo: false,
+        tooltip: false,
+        view: new ol.View2D({
+          // Define the default resolution
+          // 10 means that one pixel is 10m width and height
+          // List of resolution of the WMTS layers:
+          // 650, 500, 250, 100, 50, 20, 10, 5, 2.5, 2, 1, 0.5, 0.25, 0.1
+          resolution: 10
+        })
+      });
+      // Create a background layer
+      var lyr1 = ga.layer.create('ch.swisstopo.pixelkarte-grau');
+      // Create an overlay layer
+      var lyr2 = ga.layer.create('${c['layerBodId']}');
+
+      // Add the layers in the map
+      map.addLayer(lyr1);
+      map.addLayer(lyr2);
+
+      map.highlightFeature('${c['layerBodId']}', '${c['featureId']}');
+      map.recenterFeature('${c['layerBodId']}', '${c['featureId']}');
+    }
+  </script>
+
+</body>
+
 </%def>

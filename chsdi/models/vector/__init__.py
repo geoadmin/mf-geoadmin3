@@ -5,6 +5,7 @@ import datetime
 import decimal
 from shapely import wkb
 from shapely.geometry import asShape
+from shapely.geometry import box
 from sqlalchemy.orm.util import class_mapper
 from sqlalchemy.orm.properties import ColumnProperty
 from geoalchemy import Geometry, WKBSpatialElement, functions
@@ -84,15 +85,21 @@ class Vector(GeoInterface):
     @property
     def __geo_interface__(self):
         feature = self.__read__()
-        shape = None
+        extents = []
         try:
             shape = asShape(feature.geometry)
+            extents.append(shape.bounds)
+        except:
+            pass
+        try:
+            for geom in feature.geometry.geometries:
+                extents.append(asShape(geom).bounds)
         except:
             pass
         return geojson.Feature(
             id=self.id,
             geometry=feature.geometry,
-            bbox=shape.bounds if shape else None,
+            bbox=max(extents, key=extentArea) if extents else None,
             properties=feature.properties,
             # For ESRI
             layerBodId=self.__bodId__,
@@ -180,3 +187,7 @@ def esriRest2Shapely(geometry, geometryType):
         return asShape(geometry)
     except ValueError:
         return geometry
+
+def extentArea(i):
+   geom = box(i[0],i[1],i[2],i[3])
+   return geom.area    
