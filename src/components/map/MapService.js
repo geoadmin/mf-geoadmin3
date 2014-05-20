@@ -378,8 +378,13 @@
           options = options || {};
 
           // Replace all hrefs to prevent errors if image doesn't have
-          // CORS headers
-          kml = kml.replace(/<href>http/g , '<href>' + proxyUrl + 'http');
+          // CORS headers. Exception for google icons to keep the OL3 magic for
+          // anchor origin.
+          // Test regex here: http://regex101.com/r/bL5dF8
+          kml = kml.replace(
+            /<href>http(?!(s?):\/\/maps\.(?:google|gstatic)\.com)/g,
+            '<href>' + proxyUrl + 'http'
+          );
 
           // Create vector layer
           var features = kmlFormat.readFeatures(kml);
