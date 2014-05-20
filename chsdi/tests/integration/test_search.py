@@ -49,7 +49,7 @@ class TestSearchServiceView(TestsBase):
     def test_search_locations_prefix_sentence_match(self):
         resp = self.testapp.get('/rest/services/inspire/SearchServer', params={'searchText': 'lausann', 'type': 'locations'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'lausanne _vd_')
+        self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'lausanne vd')
         self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'gg25')
 
     def test_search_loactions_and_features(self):
@@ -65,7 +65,7 @@ class TestSearchServiceView(TestsBase):
     def test_search_lausanne(self):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'lausanne', 'type': 'locations'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'lausanne _vd_')
+        self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'lausanne vd')
 
     def test_search_wil(self):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'wil', 'type': 'locations'}, status=200)
