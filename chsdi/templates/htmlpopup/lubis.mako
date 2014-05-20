@@ -240,6 +240,7 @@ viewer_url = get_viewer_url(request, params)
         // Define the div where the map is placed
         target: 'map',
         ol3Logo: false,
+        tooltip: false,
         view: new ol.View2D({
           // Define the default resolution
           // 10 means that one pixel is 10m width and height
