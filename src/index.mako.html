@@ -106,8 +106,8 @@
     <div id="header" class="navbar navbar-fixed-top">
       <div id="logo" class="pull-left">
         <a ng-href="?topic={{topicId}}&lang={{langId}}">
-          <img ng-if="langId" ng-src="${versionslashed}img/logo.ch.{{langId}}.png" style="width: 246px; height: 89px" alt="big_logo"/>
-          <img src="${versionslashed}img/logo.ch.small.png" style="width: 19px; height: 19.5px" alt="small_logo"/>
+          <img ng-if="langId" ng-src="${versionslashed}img/logo.ch.{{langId}}.png" alt="big_logo" draggable="false"/>
+          <img src="${versionslashed}img/logo.ch.small.png" alt="small_logo" draggable="false"/>
         </a>
       </div>
       <div id="search-container" ng-controller="GaSearchController">

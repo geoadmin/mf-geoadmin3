@@ -25,10 +25,11 @@
   module.directive('gaHelp',
       function($document, gaHelpService, gaPopup) {
         var popupContent = '<div class="ga-help-content" ' +
-                              'ng-repeat="res in options.results">' +
-                                 '<h2 ng-bind="res[1]"></h2>' +
-                                 '<div ng-bind="res[2]"></div>' +
-                                 '<img ng-src="{{res[4]}}"/>' +
+                                'ng-repeat="res in options.results">' +
+                             '<h2 ng-bind="res[1]"></h2>' +
+                             '<div ng-bind="res[2]"></div>' +
+                             '<img ng-src="{{res[4]}}" ' +
+                                  'draggable="false"/>' +
                            '</div>';
 
         return {
