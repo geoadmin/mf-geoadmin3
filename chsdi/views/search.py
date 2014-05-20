@@ -100,11 +100,11 @@ class Search(SearchValidation):
                 else:
                     if res['attrs']['origin'] == 'zipcode':
                         res['attrs']['layerBodId'] = 'ch.swisstopo-vd.ortschaftenverzeichnis_plz'
-                    if res['attrs']['origin'] == 'gg25':
+                    elif res['attrs']['origin'] == 'gg25':
                         res['attrs']['layerBodId'] = 'ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill'
-                    if res['attrs']['origin'] == 'district':
+                    elif res['attrs']['origin'] == 'district':
                         res['attrs']['layerBodId'] = 'ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill'
-                    if res['attrs']['origin'] == 'kantone':
+                    elif res['attrs']['origin'] == 'kantone':
                         res['attrs']['layerBodId'] = 'ch.swisstopo.swissboundaries3d-kanton-flaeche.fill'
                     self.results['results'].append(res)
             return len(temp)
