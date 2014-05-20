@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html ng-app="ga" ng-controller="GaMainController">
   <head>
-    <!--[if !HTML5]>
+    <!--![if !HTML5]>
     <meta http-equiv="X-UA-Compatible" content="IE=9,IE=10,IE=edge,chrome=1"/>
     <![endif]-->
 % if device == 'desktop':
@@ -79,7 +79,7 @@
   </head>
 
   <body ng-class="[topicId, globals.searchFocused ? 'search-focused' : '', globals.touch ? 'touch' : '', globals.webkit ? 'webkit' : 'no-webkit']">
-    <!--[if IE]>
+    <!--![if IE]>
       <script>
        (function(){
        var msgDocumentMode = "";

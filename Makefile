@@ -135,12 +135,12 @@ prd/style/app.css: src/style/app.less src/style/print.less src/style/ga_bootstra
 prd/index.html: src/index.mako.html prd/lib/build.js prd/style/app.css .build-artefacts/python-venv/bin/mako-render .build-artefacts/python-venv/bin/htmlmin
 	mkdir -p $(dir $@)
 	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "mode=prod" --var "version=$(VERSION)" --var "versionslashed=$(VERSION)/" --var "user_env=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
-	.build-artefacts/python-venv/bin/htmlmin --keep-optional-attribute-quotes $@ $@
+	.build-artefacts/python-venv/bin/htmlmin --remove-comments --keep-optional-attribute-quotes $@ $@
 
 prd/mobile.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render .build-artefacts/python-venv/bin/htmlmin
 	mkdir -p $(dir $@)
 	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "mode=prod" --var "version=$(VERSION)" --var "versionslashed=$(VERSION)/" --var "user_env=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
-	.build-artefacts/python-venv/bin/htmlmin --keep-optional-attribute-quotes $@ $@
+	.build-artefacts/python-venv/bin/htmlmin --remove-comments --keep-optional-attribute-quotes $@ $@
 
 prd/img/: src/img/*
 	mkdir -p $@
