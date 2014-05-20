@@ -106,6 +106,7 @@ module.controller('GaMainController',
 
       $rootScope.$on('$translateChangeEnd', function() {
         $scope.langId = $translate.uses();
+        $('meta[name=description]').attr('content', $translate('page_description'));
       });
 
       $rootScope.$on('gaTimeSelectorChange', function(event, year) {
