@@ -2,8 +2,7 @@ User-agent: *
 
 % if deploy_target == 'prod':
 
-Disallow: /main/
-Disallow: /${version}
+Disallow: /*/
 Disallow: /info.json
 Disallow: /checker
 
