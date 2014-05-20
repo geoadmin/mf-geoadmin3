@@ -9,7 +9,6 @@ from shapely.geometry import box
 from sqlalchemy.orm.util import class_mapper
 from sqlalchemy.orm.properties import ColumnProperty
 from geoalchemy import Geometry, WKBSpatialElement, functions
-import pyramid.httpexceptions as exc
 
 import geojson
 from papyrus.geo_interface import GeoInterface
