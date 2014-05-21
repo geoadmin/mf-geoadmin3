@@ -69,7 +69,7 @@
               return gaLayerFilters.selected(l) &&
                      l.visible &&
                      gaLayers.getLayer(l.bodId) &&
-                     gaLayers.getLayerProperty(l.bodId, 'queryable');
+                     gaLayers.getLayerProperty(l.bodId, 'selectbyrectangle');
 
             };
 
