@@ -188,6 +188,7 @@ def esriRest2Shapely(geometry, geometryType):
     except ValueError:
         return geometry
 
+
 def extentArea(i):
-   geom = box(i[0],i[1],i[2],i[3])
-   return geom.area    
+    geom = box(i[0], i[1], i[2], i[3])
+    return geom.area
