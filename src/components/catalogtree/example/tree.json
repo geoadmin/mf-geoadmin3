@@ -18,7 +18,7 @@
                                     "label": "swissALTI3D Hillshade", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.swissalti3d-reliefschattierung", 
+                                    "layerBodId": "ch.swisstopo.swissalti3d-reliefschattierung", 
                                     "parentId": 130, 
                                     "path": "root/category_100/category_130/layer", 
                                     "id": 762003126
@@ -41,7 +41,7 @@
                                     "label": "Cantonal boundaries", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.swissboundaries3d-kanton-flaeche.fill", 
+                                    "layerBodId": "ch.swisstopo.swissboundaries3d-kanton-flaeche.fill", 
                                     "parentId": 140, 
                                     "path": "root/category_100/category_140/layer", 
                                     "id": 762003605

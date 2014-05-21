@@ -65,12 +65,12 @@
                 for (i = 0; i < newTree.children.length; i++) {
                   oldChild = oldTree.children[i];
                   newChild = newTree.children[i];
-                  // If no idBod, then it's a node (category)
-                  if (!angular.isDefined(oldChild.idBod)) {
+                  // If no layerBodId, then it's a node (category)
+                  if (!angular.isDefined(oldChild.layerBodId)) {
                     retainTreeState(newChild, oldChild);
                   } else {
-                    oldMap[oldChild.idBod] = oldChild;
-                    newMap[newChild.idBod] = newChild;
+                    oldMap[oldChild.layerBodId] = oldChild;
+                    newMap[newChild.layerBodId] = newChild;
                   }
                 }
                 angular.forEach(oldMap, function(value, key) {
@@ -124,7 +124,7 @@
               if (!assurePreselectedLayersLoaded(oldTree)) {
                 visitTree(newTree, function(leaf) {
                   leaf.selectedOpen = false;
-                  leaves[leaf.idBod] = leaf;
+                  leaves[leaf.layerBodId] = leaf;
                 }, angular.noop);
                 for (i = 0; i < layers.length; ++i) {
                   layer = layers[i];
@@ -208,7 +208,7 @@
 
         function updateSelectionInTree(root, layerBodIds) {
           visitTree(root, function(node) {
-            node.selectedOpen = layerBodIds.indexOf(node.idBod) >= 0;
+            node.selectedOpen = layerBodIds.indexOf(node.layerBodId) >= 0;
           }, angular.noop);
         }
 
