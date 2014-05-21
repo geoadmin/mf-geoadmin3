@@ -3,19 +3,22 @@ SRC_JS_FILES_FOR_COMPILER = $(shell sed -e ':a' -e 'N' -e '$$!ba' -e 's/\n/ --js
 SRC_COMPONENTS_LESS_FILES := $(shell find src/components -type f -name '*.less')
 SRC_COMPONENTS_PARTIALS_FILES = $(shell find src/components -type f -path '*/partials/*' -name '*.html')
 APACHE_BASE_DIRECTORY ?= $(CURDIR)
+LAST_APACHE_BASE_DIRECTORY := $(shell if [ -f .build-artefacts/last-apache-base-directory ]; then cat .build-artefacts/last-apache-base-directory 2> /dev/null; else echo '-none-'; fi)
 ifeq "$(CURDIR)" "/var/www/vhosts/mf-geoadmin3/private/geoadmin"
 	APACHE_BASE_PATH ?= "main"
 else
 	APACHE_BASE_PATH ?= $(shell id -un)
 endif
+LAST_APACHE_BASE_PATH := $(shell if [ -f .build-artefacts/last-apache-base-path ]; then cat .build-artefacts/last-apache-base-path 2> /dev/null; else echo '-none-'; fi)
 API_URL ?= //mf-chsdi3.dev.bgdi.ch
+LAST_API_URL := $(shell if [ -f .build-artefacts/last-api-url ]; then cat .build-artefacts/last-api-url 2> /dev/null; else echo '-none-'; fi)
 LESS_PARAMETERS ?= '-ru'
 VERSION := $(shell date '+%s')
 GIT_BRANCH := $(shell git rev-parse --symbolic-full-name --abbrev-ref HEAD)
 GIT_LAST_BRANCH := $(shell if [ -f .build-artefacts/last-git-branch ]; then cat .build-artefacts/last-git-branch 2> /dev/null; else echo 'dummy'; fi)
 DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branch
 DEPLOY_TARGET ?= 'dev'
-LAST_DEPLOY_TARGET := $(shell if [ -f .build-artefacts/last-deploy-target ]; then cat .build-artefacts/last-deploy-target 2> /dev/null; else echo 'dev'; fi)
+LAST_DEPLOY_TARGET := $(shell if [ -f .build-artefacts/last-deploy-target ]; then cat .build-artefacts/last-deploy-target 2> /dev/null; else echo '-none-'; fi)
 SITEMAP_FILES := $(shell find src -type f -name 'sitemap_*.xml')
 
 .PHONY: help
@@ -33,7 +36,6 @@ help:
 	@echo "- fixrights       Fix rights in common folder"
 	@echo "- all             All of the above (target to run prior to creating a PR)"
 	@echo "- clean           Remove generated files"
-	@echo "- cleanrc         Remove all rc_* dependent files"
 	@echo "- cleanall        Remove all the build artefacts"
 	@echo "- deploybranch    Deploys current branch to test (note: takes code from github)"
 	@echo "- deploybranchint Deploys current branch to test and int (note: takes code from github)"
@@ -43,9 +45,10 @@ help:
 	@echo
 	@echo "Variables:"
 	@echo
-	@echo "- API_URL Service URL (current value: $(API_URL))"
-	@echo "- APACHE_BASE_PATH Base path (current value: $(APACHE_BASE_PATH))"
-	@echo "- APACHE_BASE_DIRECTORY Base directory (current value: $(APACHE_BASE_DIRECTORY))"
+	@echo "- DEPLOY_TARGET Deploy target (build with: $(LAST_DEPLOY_TARGET), current value: $(DEPLOY_TARGET))"
+	@echo "- API_URL Service URL         (build with: $(LAST_API_URL), current value: $(API_URL))"
+	@echo "- APACHE_BASE_PATH Base path  (build with: $(LAST_APACHE_BASE_PATH), current value: $(APACHE_BASE_PATH))"
+	@echo "- APACHE_BASE_DIRECTORY       (build with: $(LAST_APACHE_BASE_DIRECTORY), current value: $(APACHE_BASE_DIRECTORY))"
 
 	@echo
 
@@ -89,7 +92,7 @@ deploybranchint: deploybranch
 	sudo -u deploy deploy -r deploy/deploy-branch.cfg int;
 
 .PHONY: preparebranch
-preparebranch: cleanrc rc_branch scripts/00-$(GIT_BRANCH).conf
+preparebranch: rc_branch scripts/00-$(GIT_BRANCH).conf
 
 .PHONY: updateol
 updateol: OL_JS = ol.js ol-simple.js ol-whitespace.js
@@ -132,12 +135,12 @@ prd/style/app.css: src/style/app.less src/style/print.less src/style/ga_bootstra
 	mkdir -p $(dir $@)
 	node_modules/.bin/lessc -ru --yui-compress $< $@
 
-prd/index.html: src/index.mako.html prd/lib/build.js prd/style/app.css .build-artefacts/python-venv/bin/mako-render .build-artefacts/python-venv/bin/htmlmin
+prd/index.html: src/index.mako.html prd/lib/build.js prd/style/app.css .build-artefacts/python-venv/bin/mako-render .build-artefacts/python-venv/bin/htmlmin .build-artefacts/last-api-url .build-artefacts/last-apache-base-path
 	mkdir -p $(dir $@)
 	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "mode=prod" --var "version=$(VERSION)" --var "versionslashed=$(VERSION)/" --var "user_env=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
 	.build-artefacts/python-venv/bin/htmlmin --remove-comments --keep-optional-attribute-quotes $@ $@
 
-prd/mobile.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render .build-artefacts/python-venv/bin/htmlmin
+prd/mobile.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render .build-artefacts/python-venv/bin/htmlmin .build-artefacts/last-api-url .build-artefacts/last-apache-base-path
 	mkdir -p $(dir $@)
 	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "mode=prod" --var "version=$(VERSION)" --var "versionslashed=$(VERSION)/" --var "user_env=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
 	.build-artefacts/python-venv/bin/htmlmin --remove-comments --keep-optional-attribute-quotes $@ $@
@@ -169,16 +172,16 @@ src/deps.js: $(SRC_JS_FILES) .build-artefacts/python-venv .build-artefacts/closu
 src/style/app.css: src/style/app.less src/style/print.less src/style/ga_bootstrap.less src/style/ga_variables.less $(SRC_COMPONENTS_LESS_FILES) node_modules .build-artefacts/bootstrap
 	node_modules/.bin/lessc $(LESS_PARAMETERS) $< $@
 
-src/index.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render
+src/index.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render .build-artefacts/last-api-url .build-artefacts/last-apache-base-path
 	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "version=" --var "versionslashed=" --var "user_env=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
 
-src/mobile.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render
+src/mobile.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render .build-artefacts/last-api-url .build-artefacts/last-apache-base-path
 	.build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "version=" --var "versionslashed=" --var "user_env=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
 
 src/TemplateCacheModule.js: src/TemplateCacheModule.mako.js $(SRC_COMPONENTS_PARTIALS_FILES) .build-artefacts/python-venv/bin/mako-render
 	.build-artefacts/python-venv/bin/mako-render --var "partials=$(subst src/,,$(SRC_COMPONENTS_PARTIALS_FILES))" --var "basedir=src" $< > $@
 
-apache/app.conf: apache/app.mako-dot-conf prd/lib/build.js prd/style/app.css .build-artefacts/python-venv/bin/mako-render
+apache/app.conf: apache/app.mako-dot-conf prd/lib/build.js prd/style/app.css .build-artefacts/python-venv/bin/mako-render .build-artefacts/last-api-url .build-artefacts/last-apache-base-path .build-artefacts/last-apache-base-directory
 	.build-artefacts/python-venv/bin/mako-render --var "apache_base_path=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" --var "apache_base_directory=$(APACHE_BASE_DIRECTORY)" $< > $@
 
 test/karma-conf-dev.js: test/karma-conf.mako.js .build-artefacts/python-venv/bin/mako-render
@@ -272,6 +275,18 @@ scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf .build-artefacts/
 	mkdir -p $(dir $@)
 	test $(GIT_BRANCH) != $(GIT_LAST_BRANCH) && echo $(GIT_BRANCH) > .build-artefacts/last-git-branch || :
 
+.build-artefacts/last-api-url::
+	mkdir -p $(dir $@)
+	test $(API_URL) != $(LAST_API_URL) && echo $(API_URL) > .build-artefacts/last-api-url || :
+
+.build-artefacts/last-apache-base-path::
+	mkdir -p $(dir $@)
+	test $(APACHE_BASE_PATH) != $(LAST_APACHE_BASE_PATH) && echo $(APACHE_BASE_PATH) > .build-artefacts/last-apache-base-path || :
+
+.build-artefacts/last-apache-base-directory::
+	mkdir -p $(dir $@)
+	test $(APACHE_BASE_DIRECTORY) != $(LAST_APACHE_BASE_DIRECTORY) && echo $(APACHE_BASE_DIRECTORY) > .build-artefacts/last-apache-base-directory || :
+
 .build-artefacts/last-deploy-target::
 	mkdir -p $(dir $@)
 	test $(DEPLOY_TARGET) != $(LAST_DEPLOY_TARGET) && echo $(DEPLOY_TARGET) > .build-artefacts/last-deploy-target || :
@@ -300,29 +315,13 @@ cleanall: clean
 	rm -rf .build-artefacts
 
 .PHONY: clean
-clean: cleanrc
+clean:
 	rm -f .build-artefacts/app.js
 	rm -f .build-artefacts/fastclick.min.js
 	rm -f .build-artefacts/js-files
-	rm -f .build-artefacts/lint.timestamp
-	rm -f .build-artefacts/last-git-branch
-	rm -f .build-artefacts/last-deploy-target
 	rm -rf .build-artefacts/annotated
 	rm -f src/deps.js
 	rm -f src/style/app.css
 	rm -f src/TemplateCacheModule.js
 	rm -rf prd
-
-.PHONY: cleanrc
-cleanrc:
-	rm -f src/index.html
-	rm -f src/mobile.html
-	rm -f prd/index.html
-	rm -f prd/mobile.html
-	rm -f prd/robots.txt
-	rm -f apache/app.conf
-	rm -f deploy/deploy-branch.cfg
-	rm -f scripts/00-*.conf
-	rm -f rc_branch
-
 
