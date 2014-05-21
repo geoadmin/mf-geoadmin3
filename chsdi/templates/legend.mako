@@ -25,11 +25,11 @@
                  'ch.swisstopo.pixelkarte-farbe-pk50.noscale',
                  'ch.swisstopo.pixelkarte-farbe-pk25.noscale',
                  'ch.swisstopo.geologie-geotechnik-mineralische_rohstoffe200')
-  if c['idBod'] in pdf_legends:
-      legend_url_pdf = host + '/static/images/legends/' + c['idBod'] + '_' + lang + '_big.pdf'
+  if c['layerBodId'] in pdf_legends:
+      legend_url_pdf = host + '/static/images/legends/' + c['layerBodId'] + '_' + lang + '_big.pdf'
   else:
       legend_url_pdf = False
-  legend_url = host + '/static/images/legends/' + c['idBod'] + '_' + lang + '.png'
+  legend_url = host + '/static/images/legends/' + c['layerBodId'] + '_' + lang + '.png'
   times = c['attributes']['dataStatus'] if 'dataStatus' in c['attributes'] else '-'
 %>
 <div class="legend-container">
