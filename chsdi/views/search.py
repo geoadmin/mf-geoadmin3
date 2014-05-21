@@ -89,7 +89,7 @@ class Search(SearchValidation):
         if temp is not None and len(temp) != 0:
             nb_address = 0
             for res in temp:
-                if res['attrs']['feature_id']:
+                if 'feature_id' in res['attrs'].keys():
                     res['attrs']['featureId'] = res['attrs']['feature_id']
                     res['attrs'].pop('feature_id', None)
                 if res['attrs']['origin'] == 'address':
