@@ -7,12 +7,21 @@ API & applications
 `API <//api3.geo.admin.ch>`__
 -----------------------------------
 
-- blabla
+- New API `searchbox example <//api3.geo.admin.ch/examples/geoadmin_search.html>`__
+- Fix api layers shown in FAQ
+- MapProxy migration from previous project 
+- Fixing issue in the WMTS GetCapabilities document (themes, legends)
+- API: new map creation parameter to activate/deactivate tooltip
+- Minor bug fixes
+
 
 `MAP <//map.geo.admin.ch>`__
 -----------------------------------
 
-- blabla
+- New fullscreen mode and search box
+- New location marker shown when entering coordinates
+- Update google closure library url
+- Minor bug fixes
 
 Geodata
 ********
