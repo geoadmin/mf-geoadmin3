@@ -41,12 +41,16 @@
             if (queryParams.crosshair !== undefined) {
               var crosshair = $('<div></div>')
                 .addClass('ga-crosshair')
-                .addClass(queryParams.crosshair);
+                .addClass(queryParams.crosshair),
+                unregister;
               map.addOverlay(new ol.Overlay({
                 element: crosshair.get(0),
                 position: view.getCenter()
               }));
-              gaPermalink.deleteParam('crosshair');
+              unregister = view.on('propertychange', function() {
+                gaPermalink.deleteParam('crosshair');
+                map.unByKey(unregister);
+              });
             }
 
             // Update permalink based on view states.
