@@ -65,9 +65,6 @@
                 1000, false));
             updatePermalink();
 
-            if (!gaBrowserSniffer.touchDevice) {
-              map.addControl(new ol.control.ZoomSlider());
-            }
             map.addControl(new ol.control.ZoomToExtent({tipLabel: ''}));
 
             map.setTarget(element[0]);
