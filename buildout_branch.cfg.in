@@ -1,0 +1,15 @@
+[buildout]
+extends = buildout_${vars:deploy_target}.cfg
+
+[vars]
+# apache
+apache_base_path = ${git_branch}
+api_url = //mf-chsdi3.${vars:deploy_target}.bgdi.ch/${git_branch}
+host = mf-chsdi3.${vars:deploy_target}.bgdi.ch
+# On the branch, adapt this to point to the correct mf-geoadmin instance
+geoadminhost = mf-geoadmin3.${vars:deploy_target}.bgdi.ch
+# dbhost is taken from parent
+
+[modwsgi]
+config-file = ${buildout:directory}/production.ini
+
