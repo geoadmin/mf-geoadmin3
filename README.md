@@ -98,3 +98,8 @@ Please only use integration url for external communication (including here on
 github), even though the exact same structure is also available on our test 
 instances.
 
+### Get correct link the API
+Per default, the API used in the **main** instance of mf-chsdi3. If you want
+to target a specific branch of mf-chsdi3, please adapt the `API_URL` variable
+in the `rc_branch.mako` file on **your branch**
+
