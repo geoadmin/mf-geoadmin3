@@ -112,6 +112,7 @@
             hitCount = 0,
             totalResults = 0,
             clickEl = undefined,
+            singleResult = false,
             maxRounds = 0;
 
        this.activate = function(numberOfResults) {
@@ -141,11 +142,16 @@
               active = false;
               if (totalResults == 1 &&
                   clickEl) {
+                singleResult = true;
                 clickEl.click();
               }
               $rootScope.$broadcast('gaSwisssearchDone');
             }
           }
+        };
+
+        this.singleResult = function() {
+          return singleResult;
         };
 
       };
