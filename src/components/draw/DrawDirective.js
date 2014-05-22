@@ -9,7 +9,7 @@
   ]);
 
   module.directive('gaDraw',
-    function($rootScope, $timeout, $translate, gaDefinePropertiesForLayer,
+    function($timeout, $translate, gaDefinePropertiesForLayer,
         gaLayerFilters) {
       return {
         restrict: 'A',
@@ -266,7 +266,6 @@
 
           // Watchers
           scope.$watch('isActive', function(active) {
-            $rootScope.isDrawActive = active;
             if (active) {
               activate();
             } else {

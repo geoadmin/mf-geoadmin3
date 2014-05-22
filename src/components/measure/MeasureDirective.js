@@ -292,7 +292,6 @@
 
           // Watchers
           scope.$watch('isActive', function(active) {
-            $rootScope.isMeasureActive = active;
             if (active) {
               activate();
             } else {

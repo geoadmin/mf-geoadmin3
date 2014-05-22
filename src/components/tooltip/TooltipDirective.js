@@ -16,7 +16,7 @@
   module.directive('gaTooltip',
       function($timeout, $document, $http, $q, $translate, $sce, gaPopup,
           gaLayers, gaBrowserSniffer, gaDefinePropertiesForLayer, gaMapClick,
-          $rootScope, gaPreviewFeatures, gaDebounce) {
+          gaPreviewFeatures, gaDebounce) {
         var waitclass = 'ga-tooltip-wait',
             bodyEl = angular.element($document[0].body),
             popupContent = '<div ng-repeat="htmlsnippet in options.htmls">' +
@@ -28,7 +28,8 @@
           restrict: 'A',
           scope: {
             map: '=gaTooltipMap',
-            options: '=gaTooltipOptions'
+            options: '=gaTooltipOptions',
+            isActive: '=gaTooltipActive'
           },
           link: function($scope, element, attrs) {
             var htmls = [],
@@ -76,7 +77,7 @@
 
             if (!gaBrowserSniffer.mobile) {
               $(map.getViewport()).on('mousemove', function(evt) {
-                if ($rootScope.isMeasureActive) {
+                if (!$scope.isActive) {
                   return;
                 }
                 updateCursorStyleDebounced(evt);
@@ -106,7 +107,7 @@
             }
 
             gaMapClick.listen(map, function(evt) {
-              if ($rootScope.isMeasureActive || $rootScope.isDrawActive) {
+              if (!$scope.isActive) {
                 return;
               }
               var size = map.getSize();
