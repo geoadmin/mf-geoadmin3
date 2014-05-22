@@ -1,0 +1,27 @@
+[DEFAULT]
+project = chsdi3
+
+[main]
+hookdir = %(here)s/hooks/
+
+[files]
+active = false
+
+[databases]
+active = false
+
+[code]
+#ignore = *.pyc, .svn
+dir = /var/www/vhosts/mf-chsdi3/private/branch/${git_branch}
+
+[apache]
+dest = /var/www/vhosts/mf-chsdi3/conf/00-${git_branch}.conf
+content = Include /var/www/vhosts/mf-chsdi3/private/branch/${git_branch}/apache/*.conf
+
+[remote_hosts]
+# mf0i
+int = ec2-54-217-13-187.eu-west-1.compute.amazonaws.com,
+      ec2-54-228-91-64.eu-west-1.compute.amazonaws.com
+
+# NO PROD FOR BRANCH
+

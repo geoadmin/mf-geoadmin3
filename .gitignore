@@ -24,3 +24,6 @@ chsdi/static/js/*.css
 deploy/hooks/pre-create-code
 node_modules
 MANIFEST
+buildout_branch.cfg
+deploy/deploy-branch.cfg
+deploy/conf/00-branch.conf
