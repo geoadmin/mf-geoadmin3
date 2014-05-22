@@ -167,11 +167,18 @@ input[type=text][readonly] {
 
 #search-container {
   width: 25%;
+  min-width: 250px;
   float: left;
   left: 1.6em;
   position: relative;
   margin-top: 29px;
   
+  [ga-help] {
+    position: absolute;
+    padding-left: 10px;
+    line-height: 30px;
+  }
+
   @media (max-width: @screen-tablet) {
     margin-top: 0;
     width: 260px;

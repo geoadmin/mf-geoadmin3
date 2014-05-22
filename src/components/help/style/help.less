@@ -1,23 +1,12 @@
-.ga-help {
-  font-size: 14px;
-  display: inline-block;
+[ga-help] {
+  display: inline-block; 
   cursor: pointer;
-  visibility: hidden;
+  font-size: 14px;
   opacity: 0.3;
   padding-left: 5px;
-
-  //don't display help button on small screens
-  @media (max-width: @screen-tablet) {
-    display: none;
+  
+  &:hover {
+    opacity: 1;
   }
-}
-
-.ga-help-hovered {
-  visibility: visible;
-}
-
-.ga-help:hover {
-  cursor: pointer;
-  opacity: 1;
 }
 
