@@ -139,11 +139,11 @@
         <div ga-attribution ga-attribution-map="map"></div>
       </div>
       <div ga-time-selector-bt 
-           ga-time-selector-bt-active="isTimeSelectorActive">
+           ga-time-selector-bt-active="globals.isTimeSelectorActive">
       </div> 
       <div ga-swipe 
            ga-swipe-map="map" 
-           ga-swipe-active="isSwipeActive"
+           ga-swipe-active="globals.isSwipeActive"
            style="display:none;">
       </div>
     </div> <!-- #map -->
@@ -176,13 +176,16 @@
     </div>
 
     <div ng-controller="GaTooltipController">
-      <div ga-tooltip ga-tooltip-map="map" ga-tooltip-options="options"></div>
+      <div ga-tooltip 
+           ga-tooltip-map="map" 
+           ga-tooltip-options="options"
+           ga-tooltip-active="!globals.isMeasureActive && !globals.isDrawActive"></div>
     </div>
 
     <div ng-controller="GaTimeSelectorController">
       <div ga-time-selector ga-time-selector-map="map"
            ga-time-selector-options="options"
-           ga-time-selector-active="isTimeSelectorActive" 
+           ga-time-selector-active="globals.isTimeSelectorActive" 
            style="display:none;">
       </div>
     </div>
@@ -234,38 +237,38 @@
               <ul>
 
                 <li><!-- Import WMS -->
-                  <a href="" ng-click="importWmsPopupShown = !importWmsPopupShown"
+                  <a href="" ng-click="globals.importWmsPopupShown = !globals.importWmsPopupShown"
                      data-original-title="{{'wmsimport_tooltip' | translate}}"
                      class="ga-custom-tooltip" data-placement="bottom">
-                    <span ng-class="{'selected': importWmsPopupShown}" translate>import_wms</span>
+                    <span ng-class="{'selected': globals.importWmsPopupShown}" translate>import_wms</span>
                   </a>
                 </li>
                 <li><!-- Import KML -->
-                  <a href=""  ng-click="importKmlPopupShown = !importKmlPopupShown"
+                  <a href=""  ng-click="globals.importKmlPopupShown = !globals.importKmlPopupShown"
                      data-original-title="{{'kmlimport_tooltip' | translate}}"
                      class="ga-custom-tooltip" data-placement="bottom">
-                    <span ng-class="{'selected': importKmlPopupShown}" translate>import_kml</span>
+                    <span ng-class="{'selected': globals.importKmlPopupShown}" translate>import_kml</span>
                   </a>
                 </li>
                 <li><!-- Compare -->
-                  <a href=""  ng-click="isSwipeActive = !isSwipeActive"
+                  <a href=""  ng-click="globals.isSwipeActive = !globals.isSwipeActive"
                      data-original-title="{{'swipe_tooltip' | translate}}"
                      class="ga-custom-tooltip" data-placement="bottom">
-                    <span ng-class="{'selected': isSwipeActive}" translate="{{(isSwipeActive) ? 'swipe_active' : 'swipe_inactive'}}"></span>
+                    <span ng-class="{'selected': globals.isSwipeActive}" translate>swipe</span>
                   </a>
                 </li>
                 <li><!-- Measure -->
-                  <a href=""  ng-click="isMeasureActive = !isMeasureActive"
+                  <a href=""  ng-click="globals.isMeasureActive = !globals.isMeasureActive;globals.isDrawActive = false;"
                      data-original-title="{{'measure_tooltip' | translate}}"
                      class="ga-custom-tooltip" data-placement="bottom">
-                    <span  ng-class="{'selected': isMeasureActive}" translate>measure</span>
+                    <span  ng-class="{'selected': globals.isMeasureActive}" translate>measure</span>
                   </a>
                 </li>
                 <li><!-- Draw -->
-                  <a href=""  ng-click="isDrawActive = !isDrawActive"
+                  <a href=""  ng-click="globals.isDrawActive = !globals.isDrawActive;globals.isMeasureActive = false;"
                      data-original-title="{{'draw_tooltip' | translate}}"
                      class="ga-custom-tooltip" data-placement="bottom">
-                    <span  ng-class="{'selected': isDrawActive}" translate>draw</span>
+                    <span  ng-class="{'selected': globals.isDrawActive}" translate>draw</span>
                   </a>
                 </li>
                 <li><!-- Feature Tree -->
@@ -433,7 +436,7 @@
     </div>
 
     <!-- Popup: Import WMS -->
-    <div ga-popup="importWmsPopupShown"
+    <div ga-popup="globals.importWmsPopupShown"
          ga-popup-options="{title:'import_wms', help:'63'}"
          ga-draggable=".ga-popup-title"
          id="import-wms-popup" >
@@ -446,7 +449,7 @@
     </div> <!-- end Import WMS -->
 
     <!-- Popup: Import KML -->
-    <div ga-popup="importKmlPopupShown"
+    <div ga-popup="globals.importKmlPopupShown"
          ga-popup-options="{title:'import_kml', help:'64'}"
          ga-draggable=".ga-popup-title"
          id="import-kml-popup" >
@@ -459,7 +462,7 @@
     </div><!-- end Import KML -->
    
     <!-- Popup: Measure -->
-    <div ga-popup="isMeasureActive"
+    <div ga-popup="globals.isMeasureActive"
          ga-popup-options="{title:'measure',showPrint:true}"
          ga-draggable=".ga-popup-title"
          id="measure-popup" >
@@ -467,34 +470,36 @@
         <div ga-measure 
              ga-measure-map="map" 
              ga-measure-options="options" 
-             ga-measure-active="isMeasureActive"></div>
+             ga-measure-active="globals.isMeasureActive"></div>
       </div>
     </div><!-- end Measure -->
  
     <!-- Popup: Draw -->
-    <div ga-popup="isDrawActive"
-      ga-popup-options="{title:'draw'}"
-      ga-draggable=".ga-popup-title"
-      id="draw-popup" >
+    <div ga-popup="globals.isDrawActive"
+         ga-popup-options="{title:'draw'}"
+         ga-draggable=".ga-popup-title"
+         id="draw-popup" >
       <div ng-controller="GaDrawController">
-        <div ga-draw ga-draw-map="map" ga-draw-options="options" ga-draw-active="isDrawActive"></div>
+        <div ga-draw ga-draw-map="map" 
+             ga-draw-options="options"
+             ga-draw-active="globals.isDrawActive"></div>
       </div>
     </div><!-- end Draw -->
 
     <!-- Popup: Feature Tree -->
     <div ng-controller="GaFeaturetreeController">
       <div ga-popup="globals.isFeatureTreeActive"
-         ga-popup-options="{title:'object_information', showPrint:true, print: print}"
-         ga-draggable=".ga-popup-title"
-         id="featuretree-popup">
-      <div ga-featuretree 
-        ga-featuretree-options="options" 
-        ga-featuretree-map="map"></div>
-	<div ng-show='printInProgress' class='ga-popup-print-in-progress'>
-	  {{printProgressPercentage}}%
+           ga-popup-options="{title:'object_information', showPrint:true, print: print}"
+           ga-draggable=".ga-popup-title"
+           id="featuretree-popup">
+        <div ga-featuretree 
+             ga-featuretree-options="options" 
+             ga-featuretree-map="map"></div>
+        <div ng-show='printInProgress' class='ga-popup-print-in-progress'>
+          {{printProgressPercentage}}%
         </div>
       </div>
-    </div>
+    </div><!-- end Feature Tree -->
 
 
     <div class="popover homescreen" ng-if="globals.homescreen" ng-class="[ globals.homescreen ? 'visible' : '', globals.tablet ? 'bottom' : 'top']">
