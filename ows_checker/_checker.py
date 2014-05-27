@@ -3869,7 +3869,7 @@ class OWSCheck(object):
                 elif ft.has_key("DefaultSRS"):
                     srs_all.append(ft.DefaultSRS.value)
                 if ft.has_key("OtherSRS"):
-                    if len(_ns(ft.OtherSRS)) > 1:
+                    if type(_ns(ft.OtherSRS)) is list and len(_ns(ft.OtherSRS)) > 1:
                         for x in range(len(_ns(ft.OtherSRS))):
                             srs_all.append(_ns(ft.OtherSRS)[x].value)
                     else:
