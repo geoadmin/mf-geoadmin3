@@ -364,7 +364,7 @@ class Catalog(Base):
 class OerebMetadata(Base):
     __tablename__ = 'oereb_interlis_metadata'
     __table_args__ = ({'schema': 're3', 'autoload': False})
-    layerBodId  = Column('layer_id', Text, primary_key=True)
+    layerBodId = Column('layer_id', Text, primary_key=True)
     header = Column('header', Text)
     footer = Column('footer', Text)
     data_created = Column('data_created', Text)
