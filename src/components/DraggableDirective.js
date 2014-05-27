@@ -34,11 +34,19 @@
           element.find(attr['gaDraggable']) :
           element;
 
+
       if (!dragZone || dragZone.length == 0) {
         dragZone = element;
       }
 
+      dragZone.addClass('ga-draggable-zone');
+
       dragZone.bind(eventKey.start, function(evt) {
+        // If the class has disappeared that means draggable is not allow
+        // temporarly.
+        if (!dragZone.hasClass('ga-draggable-zone')) {
+          return;
+        }
         var elt = $(evt.target);
 
         x = element.prop('offsetLeft');

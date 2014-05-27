@@ -217,5 +217,6 @@
   "measure_tooltip": "",
   "featuretree_tooltip": "",
   "draw_tooltip": "",
-  "bg_luftbild": ""
+  "bg_luftbild": "",
+  "reduce_label": ""
 }

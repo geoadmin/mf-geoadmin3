@@ -59,12 +59,26 @@
               var size = map.getSize();
               var mapExtent = map.getView().calculateExtent(size);
               initTooltip();
-              showFeatures(mapExtent, size, data.features);
-              onCloseCB = data.onCloseCB;
+
+              // We use $timeout to execute the showFeature when the
+              // popup is correctly closed.
+              $timeout(function() {
+                showFeatures(mapExtent, size, data.features);
+                onCloseCB = data.onCloseCB;
+              }, 0);
+
             });
 
             $scope.$on('gaTriggerTooltipInit', function(event) {
               initTooltip();
+            });
+
+            $scope.$on('gaTriggerTooltipInitOrUnreduce', function(event) {
+              if (popup && popup.scope.options.isReduced) {
+                popup.close();
+              } else {
+                initTooltip();
+              }
             });
 
             // Change cursor style on mouse move, only on desktop
@@ -93,8 +107,14 @@
               canceler = $q.defer();
               // htmls = [] would break the reference in the popup
               htmls.splice(0, htmls.length);
-              if (popup) {
+              if (popup && popup) {
                 popup.close();
+                $timeout(function() {
+                  if (popup) {
+                    popup.destroy();
+                  }
+                  popup = undefined;
+                },0);
               }
 
               // Clear the preview features
@@ -144,7 +164,6 @@
               });
               return featureFound;
             };
-
             // Find features for all type of layers
             function findFeatures(coordinate, size, mapExtent) {
               var identifyUrl = $scope.options.identifyUrlTemplate
@@ -306,16 +325,17 @@
                   popup = gaPopup.create({
                     className: 'ga-tooltip',
                     onCloseCallback: function() {
-                      onCloseCB();
+                      if (onCloseCB) {
+                        onCloseCB();
+                      }
                       onCloseCB = angular.noop;
                       gaPreviewFeatures.clear(map);
                     },
-                    destroyOnClose: false,
                     title: 'object_information',
                     content: popupContent,
                     htmls: htmls,
                     showPrint: true
-                  }, $scope);
+                  });
                 }
                 popup.open();
                 //always reposition element when newly opened

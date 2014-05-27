@@ -15,15 +15,15 @@ describe('ga_popup_directive', function() {
     var elt = element.find('.ga-popup-title');
     expect(elt.length).to.be(1);
     
-    elt = elt.find('.close');
+    elt = elt.find('.ga-popup-close');
     expect(elt.length).to.be(1);
     
-    elt = element.find('.ga-popup-content[ng-transclude]');
+    elt = element.find('.ga-popup-content');
     expect(elt.length).to.be(1);
   });
   
   it('shows/closes the popup with scope property', inject(function($rootScope) {
-    expect(element.css('display')).to.be('');
+    expect(element.css('display')).to.be('none'); // hidden by default
 
     $rootScope.popupShown = true;
     $rootScope.$digest();
@@ -39,7 +39,7 @@ describe('ga_popup_directive', function() {
     $rootScope.$digest();
     expect(element.css('display')).to.be('block');
     
-    element.find('.close').click();
+    element.find('.ga-popup-close').click();
     expect(element.css('display')).to.be('none');
     expect($rootScope.popupShown).to.be(false);
   }));

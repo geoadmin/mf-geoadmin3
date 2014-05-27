@@ -1,4 +1,5 @@
 @ga-popup-max-height: 400px;
+@ga-popup-reduced-height: 40px;
 
 [ga-popup] {
   display: none;
@@ -8,7 +9,45 @@
   min-height: 100px;
   max-height: @ga-popup-max-height;
   z-index: 2000;
+  
+  /* !important is used to override (and so deactivate) draggable styles
+  and specific popups styles */ 
+  &.ga-popup-reduced {
+    position: relative!important;
+    float: left!important;
+    height: unit(@ga-popup-reduced-height, px) !important;
+    min-height:  unit(@ga-popup-reduced-height, px) !important;
+    width: 190px!important;
+    min-width: 190px!important;
+    top: initial!important;
+    left: initial!important;
+    bottom: unit(@footer-height + @ga-popup-reduced-height, px);
+    right: initial!important;
+    top: auto!important; // for IE
+    left: auto!important; // for IE
+    right: auto!important; // for IE
+    z-index: 500;
+    .transition(bottom 1s ease);
+    
+    h4, i {
+      color: white;
+    }
 
+    h4 {
+      cursor: pointer;
+      background-color: red;
+    }
+
+    .ga-popup-print, .ga-help, .ga-popup-reduce {
+      display: none;
+    }
+
+    @media (max-width: @screen-tablet) {
+      width: 160px!important;
+      min-width: 160px!important;
+      bottom: unit(@ga-popup-reduced-height + 14, px);
+    }
+  }
 
   /* !important is used to override (and so deactivate) draggable styles
   applied */
@@ -44,30 +83,42 @@
       overflow-y: auto;
     }
   }
-
-  .ga-popup-print {
+  
+  .ga-popup-print, .ga-help, .ga-popup-reduce, .ga-popup-close {
     float: right;
     cursor: pointer;
-    margin-right: 8px;
-    margin-top: 2px;
-    visibility: visible;
     opacity: 0.3;
+    margin: 0px 0px 0px 8px;
+    padding: 0px;
+    border: none;
+    box-shadow: none;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: inherit;
+    visibility: visible;
 
     &:hover {
       opacity: 1;
     }
-  }
-
-  .ga-help {
-    float: right;
-    margin-right: 8px;
-    margin-top: 2px;
-    visibility: visible;
-    opacity: 0.3;
-    &:hover {
-      opacity: 1;
+     
+    @media (max-width: @screen-tablet) {
+      font-size: 18px;
     }
   }
+
+  .ga-popup-close {
+    font-size: 21px;
+    margin-left: 6px;
+     
+    @media (max-width: @screen-tablet) {
+      font-size: 24px;
+    }
+  }
+  
+  .ga-popup-reduce {
+    padding-top: 4px;
+  }
+
 
   .ga-popup-print-in-progress{
     float: right;

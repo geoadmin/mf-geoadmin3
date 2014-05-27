@@ -28,8 +28,9 @@
           replace: true,
           templateUrl: 'components/featuretree/partials/featuretree.html',
           scope: {
+            map: '=gaFeaturetreeMap',
             options: '=gaFeaturetreeOptions',
-            map: '=gaFeaturetreeMap'
+            isActive: '=gaFeaturetreeActive'
           },
           link: function(scope, element, attrs) {
             var currentYear;
@@ -37,15 +38,12 @@
             var timeoutPromise = null;
             var canceler = null;
             var map = scope.map;
-            var view = map.getView();
-            var viewport = $(map.getViewport());
-            var projection = view.getProjection();
             var parser = new ol.format.GeoJSON();
-            var tooltipShown = false;
+            var dragBoxStyle = gaStyleFactory.getStyle('selectrectangle');
             var selectionRecFeature = new ol.Feature();
             var selectionRecOverlay = new ol.FeatureOverlay({
               map: map,
-              style: gaStyleFactory.getStyle('selectrectangle')
+              style: dragBoxStyle
             });
 
             scope.dragBox = new ol.interaction.DragBox({
@@ -54,23 +52,17 @@
                 //recognized as mouseEvent on Mac by the google closure.
                 //We have to use the apple key on those devices
                 return evt.originalEvent.ctrlKey ||
-                       (gaBrowserSniffer.mac && evt.originalEvent.metaKey);
+                    (gaBrowserSniffer.mac && evt.originalEvent.metaKey);
               },
-              style: new ol.style.Style({
-                stroke: new ol.style.Stroke({
-                  color: 'blue',
-                  width: 3
-                })
-              })
+              style: dragBoxStyle
             });
             map.addInteraction(scope.dragBox);
 
             scope.layerFilter = function(l) {
               return gaLayerFilters.selected(l) &&
-                     l.visible &&
-                     gaLayers.getLayer(l.bodId) &&
-                     gaLayers.getLayerProperty(l.bodId, 'selectbyrectangle');
-
+                  l.visible &&
+                  gaLayers.getLayer(l.bodId) &&
+                  gaLayers.getLayerProperty(l.bodId, 'selectbyrectangle');
             };
 
             scope.noResults = function() {
@@ -188,7 +180,6 @@
                     feature = {
                       info: '',
                       geometry: null,
-                      selected: false,
                       id: result.attrs.feature_id || result.attrs.id,
                       layer: layerId,
                       label: result.attrs.label
@@ -266,7 +257,7 @@
             // updates. We don't use the permalink here because we want
             // to separate these concerns.
             var triggerChange = function() {
-              if (scope.options.active) {
+              if (scope.isActive) {
                 scope.tree = {};
                 cancel();
                 timeoutPromise = $timeout(function() {
@@ -310,6 +301,7 @@
             scope.highlightFeature = function(feature) {
               loadGeometry(feature, function() {
                 if (feature.geometry) {
+
                   gaPreviewFeatures.highlight(map,
                       parser.readFeature(feature.geometry));
                 }
@@ -322,16 +314,14 @@
 
             var selectAndTriggerTooltip = function(feature) {
               loadGeometry(feature, function() {
-                if (!feature.selected) {
-                  feature.selected = true;
+                if (!isFeatureSelected(feature)) {
+                  featureSelected = feature;
                   if (feature.geometry) {
-                    tooltipShown = true;
                     $rootScope.$broadcast('gaTriggerTooltipRequest', {
                       features: [feature.geometry],
                       onCloseCB: function() {
-                        tooltipShown = false;
-                        if (feature.selected) {
-                          feature.selected = false;
+                        if (isFeatureSelected(feature)) {
+                          featureSelected = null;
                         }
                       }
                     });
@@ -340,11 +330,18 @@
               });
             };
 
+            var featureSelected;
+            var isFeatureSelected = function(feature) {
+               return (feature === featureSelected);
+            };
+            scope.getCssSelected = function(feature) {
+               return isFeatureSelected(feature) ? 'selected' : '';
+            };
+
             var ignoreOneClick = false;
             var fromMouseDown = false;
-
             scope.onFocus = function(evt, feature) {
-              if (!feature.selected) {
+              if (!isFeatureSelected(feature)) {
                 if (fromMouseDown) {
                   ignoreOneClick = true;
                 }
@@ -361,8 +358,8 @@
               if (ignoreOneClick) {
                 ignoreOneClick = false;
               } else {
-                if (feature.selected) {
-                  $rootScope.$broadcast('gaTriggerTooltipInit');
+                if (isFeatureSelected(feature)) {
+                  $rootScope.$broadcast('gaTriggerTooltipInitOrUnreduce');
                 } else {
                   selectAndTriggerTooltip(feature);
                 }
@@ -375,6 +372,7 @@
               if (evt.keyCode == 38) {
                 if (evt.target &&
                     evt.target.previousElementSibling) {
+                  feature.selected = false;
                   $timeout(function() {
                     evt.target.previousElementSibling.focus();
                   }, 0);
@@ -384,6 +382,7 @@
               } else if (evt.keyCode == 40) {
                 if (evt.target &&
                     evt.target.nextElementSibling) {
+                  feature.selected = false;
                   $timeout(function() {
                     evt.target.nextElementSibling.focus();
                   }, 0);
@@ -410,22 +409,29 @@
               }
             };
 
+            // We consider this component is activated when a box is drawn
             var activate = function() {
               showSelectionRectangle();
               triggerChange();
             };
 
+            var deactivate = function() {
+               // Clean the displa in any case
+               $rootScope.$broadcast('gaTriggerTooltipInit');
+               scope.clearHighlight();
+               hideSelectionRectangle();
+            };
+
+
             // Watchers and scope events
-            scope.$watch('options.active', function(newVal, oldVal) {
+            scope.$watch('isActive', function(newVal, oldVal) {
               cancel();
-              if (newVal === true) {
-                activate();
-              } else {
-                if (tooltipShown) {
-                  $rootScope.$broadcast('gaTriggerTooltipInit');
+              if (newVal != oldVal) {
+                if (newVal) {
+                  activate();
+                } else {
+                  deactivate();
                 }
-                scope.clearHighlight();
-                hideSelectionRectangle();
               }
             });
 
@@ -442,18 +448,13 @@
 
             // Events on dragbox
             scope.dragBox.on('boxstart', function(evt) {
-              hideSelectionRectangle();
+              deactivate();
             });
 
             scope.dragBox.on('boxend', function(evt) {
               selectionRecFeature.setGeometry(scope.dragBox.getGeometry());
-              if (scope.options.active) {
-                activate();
-              } else {
-                scope.$apply(function() {
-                  $rootScope.$broadcast('gaTriggerFeatureTreeActivation');
-                });
-              }
+              scope.isActive = true;
+              activate();
             });
           }
         };

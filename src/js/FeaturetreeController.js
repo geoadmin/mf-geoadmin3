@@ -10,8 +10,7 @@
 
         $scope.options = {
           searchUrlTemplate: gaGlobalOptions.mapUrl + '/rest/services/{Topic}/SearchServer',
-          htmlUrlTemplate: gaGlobalOptions.cachedMapUrl + '/rest/services/{Topic}/MapServer/{Layer}/{Feature}/htmlPopup',
-          active: false
+          htmlUrlTemplate: gaGlobalOptions.cachedMapUrl + '/rest/services/{Topic}/MapServer/{Layer}/{Feature}/htmlPopup'
         };
 
         $scope.printInProgress = false;
@@ -68,7 +67,7 @@
           gaPrintService.htmlPrintout(printHtml);
         };
 
-       var countFeatures = function(featureTree) {
+        var countFeatures = function(featureTree) {
           var counter = 0;
           for (var layerName in featureTree) {
             counter += featureTree[layerName].features.length;
@@ -78,19 +77,13 @@
 
         $scope.$on('gaUpdateFeatureTree', function(event, tree) {
           featureTree = tree;
-        });
 
-        $scope.$on('gaTriggerFeatureTreeActivation', function() {
-          if (!$scope.globals.isFeatureTreeActive) {
-            $scope.globals.isFeatureTreeActive = true;
+          // Open popup when it's reduced
+          if ($scope.globals.isFeatureTreeActive  && $('#featuretree-popup').hasClass('ga-popup-reduced')) {
+            $scope.globals.isFeatureTreeActive = false;
           }
         });
 
-        $scope.$watch('globals.isFeatureTreeActive', function(newval, oldval) {
-          if (angular.isDefined(newval)) {
-            $scope.options.active = newval;
-          }
-        });
       }
   );
 })();
