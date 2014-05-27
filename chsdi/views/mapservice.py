@@ -136,12 +136,12 @@ def _identify_oereb(request):
     # At the moment only one layer at a time and no support of all
     if params.layers == 'all' or len(params.layers) > 1:
         raise exc.HTTPBadRequest('Please specify the id of the layer you want to query')
-    idBod = params.layers[0]
+    layerBodId = params.layers[0]
     query = params.request.db.query(OerebMetadata)
     layerMetadata = _get_layer(
         query,
         OerebMetadata,
-        idBod
+        layerBodId
     )
     header = layerMetadata.header
     footer = layerMetadata.footer
@@ -158,7 +158,7 @@ def _identify_oereb(request):
     header = insertTimestamps(header, comments)
 
     # Only relation 1 to 1 is needed at the moment
-    layerVectorModel = [[oereb_models_from_bodid(idBod)[0]]]
+    layerVectorModel = [[oereb_models_from_bodid(layerBodId)[0]]]
     features = []
     for feature in _get_features_for_extent(params, layerVectorModel):
         temp = feature.xmlData.split('##')
@@ -182,7 +182,7 @@ def _identify(request):
         query = params.request.db.query(model)
         layerIds = []
         for layer in _get_layers_metadata_for_params(params, query, model):
-            layerIds.append(layer['idBod'])
+            layerIds.append(layer['layerBodId'])
     else:
         layerIds = params.layers
     models = [
@@ -376,7 +376,7 @@ def _get_layer(query, model, layerId):
     an exception. This function can be used with
     both a layer config model or a layer metadata
     model. '''
-    query = query.filter(model.idBod == layerId)
+    query = query.filter(model.layerBodId == layerId)
 
     try:
         layer = query.one()
@@ -461,7 +461,7 @@ def metadata(request):
             query,
             [
                 model.fullTextSearch,
-                model.idBod,
+                model.layerBodId,
                 model.idGeoCat
             ],
             params.searchText
@@ -526,7 +526,7 @@ def legend(request):
 def _get_layer(query, model, layerId):
     ''' Returns exactly one result or raises
     raises an exception. '''
-    query = query.filter(model.idBod == layerId)
+    query = query.filter(model.layerBodId == layerId)
     try:
         layer = query.one()
     except NoResultFound:

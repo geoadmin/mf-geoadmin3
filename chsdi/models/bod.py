@@ -11,7 +11,7 @@ Base = bases['bod']
 
 class Bod(object):
     __dbname__ = 'bod'
-    idBod = Column('bod_layer_id', Text, primary_key=True)
+    layerBodId = Column('bod_layer_id', Text, primary_key=True)
     id = Column('bgdi_id', Text)
     idGeoCat = Column('geocat_uuid', Text)
     name = Column('kurzbezeichnung', Text)
@@ -37,7 +37,7 @@ class Bod(object):
     scaleLimit = Column('scale_limit', Text)
 
     def layerMetadata(self):
-        primaryAttr = ('id', 'idBod', 'idGeoCat', 'name', 'fullName')
+        primaryAttr = ('id', 'layerBodId', 'idGeoCat', 'name', 'fullName')
         meta = {'attributes': {}}
         for k in self.__dict__.keys():
             if k != '_sa_instance_state':
@@ -51,7 +51,7 @@ class Bod(object):
 class LayersConfig(Base):
     __tablename__ = 'view_layers_js'
     __table_args__ = ({'schema': 're3', 'autoload': False})
-    idBod = Column('layer_id', Text, primary_key=True)
+    layerBodId = Column('layer_id', Text, primary_key=True)
     attribution = Column('attribution', Text)
     background = Column('backgroundlayer', Boolean)
     hasLegend = Column('haslegend', Boolean)
@@ -84,7 +84,7 @@ class LayersConfig(Base):
             if not k.startswith("_") and \
                 self.__dict__[k] is not None and \
                     k not in ('maps', 'staging'):
-                if k == 'idBod':
+                if k == 'layerBodId':
                     config['label'] = translate(self.__dict__[k])
                 elif k == 'attribution':
                     config[k] = translate(self.__dict__[k])
@@ -110,7 +110,7 @@ class LayersConfig(Base):
         if 'attribution' in config:
             config['attributionUrl'] = translate(self.__dict__['attribution'] + '.url')
 
-        return {self.idBod: config}
+        return {self.layerBodId: config}
 
     def _getResolutionsFromMatrixSet(self, matrixSet):
         resolutions = [4000, 3750, 3500, 3250, 3000, 2750, 2500, 2250, 2000, 1750, 1500, 1250,
@@ -318,7 +318,7 @@ class Catalog(Base):
     parentId = Column('parent_id', Integer)
     topic = Column('topic', Text)
     category = Column('category', Text)
-    idBod = Column('bod_layer_id', Text)
+    layerBodId = Column('bod_layer_id', Text)
     nameDe = Column('name_de', Text)
     nameFr = Column('name_fr', Text)
     nameIt = Column('name_it', Text)
@@ -364,7 +364,7 @@ class Catalog(Base):
 class OerebMetadata(Base):
     __tablename__ = 'oereb_interlis_metadata'
     __table_args__ = ({'schema': 're3', 'autoload': False})
-    idBod = Column('layer_id', Text, primary_key=True)
+    layerBodId  = Column('layer_id', Text, primary_key=True)
     header = Column('header', Text)
     footer = Column('footer', Text)
     data_created = Column('data_created', Text)

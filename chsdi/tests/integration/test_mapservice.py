@@ -250,7 +250,7 @@ class TestMapServiceView(TestsBase):
         from sqlalchemy.orm import scoped_session, sessionmaker
         val = True
         DBSession = scoped_session(sessionmaker())
-        query = DBSession.query(distinct(LayersConfig.idBod)).filter(LayersConfig.queryable == val).filter(LayersConfig.staging == 'prod')
+        query = DBSession.query(distinct(LayersConfig.layerBodId)).filter(LayersConfig.queryable == val).filter(LayersConfig.staging == 'prod')
         # Get a list of all the queryable layers
         layers = [q[0] for q in query]
         DBSession.close()
