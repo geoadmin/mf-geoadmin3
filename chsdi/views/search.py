@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
+import re
+
 from pyramid.view import view_config
 import pyramid.httpexceptions as exc
 
-from chsdi.lib.validation import SearchValidation
+from chsdi.lib.validation.search import SearchValidation
 from chsdi.lib.helpers import format_search_text, transformCoordinate
 from chsdi.lib.sphinxapi import sphinxapi
 from chsdi.lib import mortonspacekey as msk
-
-import re
 
 
 class Search(SearchValidation):

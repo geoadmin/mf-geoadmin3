@@ -4,7 +4,7 @@ import math
 from pyramid.view import view_config
 
 from chsdi.lib.helpers import round
-from chsdi.lib.validation import ProfileValidation
+from chsdi.lib.validation.profile import ProfileValidation
 from chsdi.lib.raster.georaster import GeoRaster
 
 # cache of GeoRaster instances in function of the layer name
