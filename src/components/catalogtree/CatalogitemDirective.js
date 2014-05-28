@@ -36,13 +36,13 @@
                 return;
               }
               var layer = gaMapUtils.getMapOverlayForBodId(
-                  $scope.map, $scope.item.idBod);
+                  $scope.map, $scope.item.layerBodId);
 
               // Don't add preview layer if the layer is already on the map
               if (!layer) {
                 $scope.inPreviewMode = true;
                 $scope.item.errorLoading = (!gaPreviewLayers.addBodLayer(
-                    $scope.map, $scope.item.idBod));
+                    $scope.map, $scope.item.layerBodId));
               }
             };
 
@@ -63,7 +63,7 @@
               var item = $scope.item;
               var map = $scope.map;
               var layer = gaMapUtils.getMapOverlayForBodId(
-                  map, item.idBod);
+                  map, item.layerBodId);
               if (!angular.isDefined(layer)) {
                 gaCatalogtreeMapUtils.addLayer(map, item);
               } else {

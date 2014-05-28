@@ -18,7 +18,7 @@
                                     "label": "swissALTI3D Hillshade", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.swissalti3d-reliefschattierung", 
+                                    "layerBodId": "ch.swisstopo.swissalti3d-reliefschattierung", 
                                     "parentId": 130, 
                                     "path": "root/category_100/category_130/layer", 
                                     "id": 762003126
@@ -41,7 +41,7 @@
                                     "label": "Cantonal boundaries", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.swissboundaries3d-kanton-flaeche.fill", 
+                                    "layerBodId": "ch.swisstopo.swissboundaries3d-kanton-flaeche.fill", 
                                     "parentId": 140, 
                                     "path": "root/category_100/category_140/layer", 
                                     "id": 762003605
@@ -52,7 +52,7 @@
                                     "label": "District boundaries", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill", 
+                                    "layerBodId": "ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill", 
                                     "parentId": 140, 
                                     "path": "root/category_100/category_140/layer", 
                                     "id": 762003221
@@ -63,7 +63,7 @@
                                     "label": "Municipal boundaries", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill", 
+                                    "layerBodId": "ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill", 
                                     "parentId": 140, 
                                     "path": "root/category_100/category_140/layer", 
                                     "id": 762003220
@@ -74,7 +74,7 @@
                                     "label": "National boundaries", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.swissboundaries3d-land-flaeche.fill", 
+                                    "layerBodId": "ch.swisstopo.swissboundaries3d-land-flaeche.fill", 
                                     "parentId": 140, 
                                     "path": "root/category_100/category_140/layer", 
                                     "id": 762003172
@@ -85,7 +85,7 @@
                                     "label": "Protected Areas VECTOR200", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.vec200-adminboundaries-protectedarea", 
+                                    "layerBodId": "ch.swisstopo.vec200-adminboundaries-protectedarea", 
                                     "parentId": 140, 
                                     "path": "root/category_100/category_140/layer", 
                                     "id": 762003458
@@ -112,7 +112,7 @@
                                             "label": "Building zones Switzerland (harm.)", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.are.bauzonen", 
+                                            "layerBodId": "ch.are.bauzonen", 
                                             "parentId": 151, 
                                             "path": "root/category_100/category_150/category_151/layer", 
                                             "id": 762003219
@@ -123,7 +123,7 @@
                                             "label": "Cadastral surveying lots.", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo-vd.geometa-los", 
+                                            "layerBodId": "ch.swisstopo-vd.geometa-los", 
                                             "parentId": 151, 
                                             "path": "root/category_100/category_150/category_151/layer", 
                                             "id": 762003429
@@ -134,7 +134,7 @@
                                             "label": "Cadastral surveyor", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo-vd.geometa-nfgeom", 
+                                            "layerBodId": "ch.swisstopo-vd.geometa-nfgeom", 
                                             "parentId": 151, 
                                             "path": "root/category_100/category_150/category_151/layer", 
                                             "id": 762003508
@@ -145,7 +145,7 @@
                                             "label": "Information about Municipality", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo-vd.geometa-gemeinde", 
+                                            "layerBodId": "ch.swisstopo-vd.geometa-gemeinde", 
                                             "parentId": 151, 
                                             "path": "root/category_100/category_150/category_151/layer", 
                                             "id": 762003494
@@ -156,7 +156,7 @@
                                             "label": "Low distortion area", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo-vd.spannungsarme-gebiete", 
+                                            "layerBodId": "ch.swisstopo-vd.spannungsarme-gebiete", 
                                             "parentId": 151, 
                                             "path": "root/category_100/category_150/category_151/layer", 
                                             "id": 762003558
@@ -167,7 +167,7 @@
                                             "label": "SP Deep Geol. Repositories", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bfe.sachplan-geologie-tiefenlager", 
+                                            "layerBodId": "ch.bfe.sachplan-geologie-tiefenlager", 
                                             "parentId": 151, 
                                             "path": "root/category_100/category_150/category_151/layer", 
                                             "id": 762003372
@@ -178,7 +178,7 @@
                                             "label": "SP Deep Geol.Repositories: T.p.", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung", 
+                                            "layerBodId": "ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung", 
                                             "parentId": 151, 
                                             "path": "root/category_100/category_150/category_151/layer", 
                                             "id": 762003341
@@ -189,7 +189,7 @@
                                             "label": "SP aeronautical infrastructure", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bazl.sachplan-infrastruktur-luftfahrt_kraft", 
+                                            "layerBodId": "ch.bazl.sachplan-infrastruktur-luftfahrt_kraft", 
                                             "parentId": 151, 
                                             "path": "root/category_100/category_150/category_151/layer", 
                                             "id": 762003346
@@ -200,7 +200,7 @@
                                             "label": "SPAI in consultation", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung", 
+                                            "layerBodId": "ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung", 
                                             "parentId": 151, 
                                             "path": "root/category_100/category_150/category_151/layer", 
                                             "id": 762003389
@@ -211,7 +211,7 @@
                                             "label": "Status of cadastral surveying", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo-vd.geometa-standav", 
+                                            "layerBodId": "ch.swisstopo-vd.geometa-standav", 
                                             "parentId": 151, 
                                             "path": "root/category_100/category_150/category_151/layer", 
                                             "id": 762003694
@@ -222,7 +222,7 @@
                                             "label": "Typology of municipalities ARE", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.are.gemeindetypen", 
+                                            "layerBodId": "ch.are.gemeindetypen", 
                                             "parentId": 151, 
                                             "path": "root/category_100/category_150/category_151/layer", 
                                             "id": 762003410
@@ -233,7 +233,7 @@
                                             "label": "Alpine Convention", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.are.alpenkonvention", 
+                                            "layerBodId": "ch.are.alpenkonvention", 
                                             "parentId": 151, 
                                             "path": "root/category_100/category_150/category_151/layer", 
                                             "id": 762003135
@@ -244,7 +244,7 @@
                                             "label": "Agglomeration and isolated cities", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.are.agglomerationen_isolierte_staedte-2000", 
+                                            "layerBodId": "ch.are.agglomerationen_isolierte_staedte-2000", 
                                             "parentId": 151, 
                                             "path": "root/category_100/category_150/category_151/layer", 
                                             "id": 762003762
@@ -267,7 +267,7 @@
                                             "label": "CadastralWebMap", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.kantone.cadastralwebmap-farbe", 
+                                            "layerBodId": "ch.kantone.cadastralwebmap-farbe", 
                                             "parentId": 152, 
                                             "path": "root/category_100/category_150/category_152/layer", 
                                             "id": 762003701
@@ -278,7 +278,7 @@
                                             "label": "Land registry information", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo-vd.geometa-grundbuch", 
+                                            "layerBodId": "ch.swisstopo-vd.geometa-grundbuch", 
                                             "parentId": 152, 
                                             "path": "root/category_100/category_150/category_152/layer", 
                                             "id": 762003436
@@ -309,7 +309,7 @@
                                     "label": "Height control points HFP2", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.fixpunkte-hfp2", 
+                                    "layerBodId": "ch.swisstopo.fixpunkte-hfp2", 
                                     "parentId": 120, 
                                     "path": "root/category_100/category_120/layer", 
                                     "id": 762003616
@@ -320,7 +320,7 @@
                                     "label": "AGNES", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.fixpunkte-agnes", 
+                                    "layerBodId": "ch.swisstopo.fixpunkte-agnes", 
                                     "parentId": 120, 
                                     "path": "root/category_100/category_120/layer", 
                                     "id": 762003689
@@ -331,7 +331,7 @@
                                     "label": "Geoid in CH1903", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.geoidmodell-ch1903", 
+                                    "layerBodId": "ch.swisstopo.geoidmodell-ch1903", 
                                     "parentId": 120, 
                                     "path": "root/category_100/category_120/layer", 
                                     "id": 762003303
@@ -342,7 +342,7 @@
                                     "label": "Geoid in ETRS89", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.geoidmodell-etrs89", 
+                                    "layerBodId": "ch.swisstopo.geoidmodell-etrs89", 
                                     "parentId": 120, 
                                     "path": "root/category_100/category_120/layer", 
                                     "id": 762003300
@@ -353,7 +353,7 @@
                                     "label": "Height control points HFP1", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.fixpunkte-hfp1", 
+                                    "layerBodId": "ch.swisstopo.fixpunkte-hfp1", 
                                     "parentId": 120, 
                                     "path": "root/category_100/category_120/layer", 
                                     "id": 762003670
@@ -364,7 +364,7 @@
                                     "label": "LV95 Coordinate changes", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.koordinatenaenderung", 
+                                    "layerBodId": "ch.swisstopo.koordinatenaenderung", 
                                     "parentId": 120, 
                                     "path": "root/category_100/category_120/layer", 
                                     "id": 762003521
@@ -375,7 +375,7 @@
                                     "label": "LV95 Displacement vectors TSP1", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.verschiebungsvektoren-tsp1", 
+                                    "layerBodId": "ch.swisstopo.verschiebungsvektoren-tsp1", 
                                     "parentId": 120, 
                                     "path": "root/category_100/category_120/layer", 
                                     "id": 762003310
@@ -386,7 +386,7 @@
                                     "label": "LV95 Displacement vectors TSP2", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.verschiebungsvektoren-tsp2", 
+                                    "layerBodId": "ch.swisstopo.verschiebungsvektoren-tsp2", 
                                     "parentId": 120, 
                                     "path": "root/category_100/category_120/layer", 
                                     "id": 762003311
@@ -397,7 +397,7 @@
                                     "label": "LV95 Transformation accuracy", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.transformationsgenauigkeit", 
+                                    "layerBodId": "ch.swisstopo.transformationsgenauigkeit", 
                                     "parentId": 120, 
                                     "path": "root/category_100/category_120/layer", 
                                     "id": 762003639
@@ -408,7 +408,7 @@
                                     "label": "LV95 Triangular network", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.dreiecksvermaschung", 
+                                    "layerBodId": "ch.swisstopo.dreiecksvermaschung", 
                                     "parentId": 120, 
                                     "path": "root/category_100/category_120/layer", 
                                     "id": 762003785
@@ -419,7 +419,7 @@
                                     "label": "Names VECTOR200", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.vec200-names-namedlocation", 
+                                    "layerBodId": "ch.swisstopo.vec200-names-namedlocation", 
                                     "parentId": 120, 
                                     "path": "root/category_100/category_120/layer", 
                                     "id": 762003134
@@ -430,7 +430,7 @@
                                     "label": "Planimetric control points LFP1", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.fixpunkte-lfp1", 
+                                    "layerBodId": "ch.swisstopo.fixpunkte-lfp1", 
                                     "parentId": 120, 
                                     "path": "root/category_100/category_120/layer", 
                                     "id": 762003666
@@ -441,7 +441,7 @@
                                     "label": "Planimetric control points LFP2", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.fixpunkte-lfp2", 
+                                    "layerBodId": "ch.swisstopo.fixpunkte-lfp2", 
                                     "parentId": 120, 
                                     "path": "root/category_100/category_120/layer", 
                                     "id": 762003413
@@ -452,7 +452,7 @@
                                     "label": "Points of interest", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bazl.points-of-interest", 
+                                    "layerBodId": "ch.bazl.points-of-interest", 
                                     "parentId": 120, 
                                     "path": "root/category_100/category_120/layer", 
                                     "id": 762003757
@@ -463,7 +463,7 @@
                                     "label": "Register of Buildings and Dwellings", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bfs.gebaeude_wohnungs_register", 
+                                    "layerBodId": "ch.bfs.gebaeude_wohnungs_register", 
                                     "parentId": 120, 
                                     "path": "root/category_100/category_120/layer", 
                                     "id": 762003369
@@ -474,7 +474,7 @@
                                     "label": "ZIP and locations", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo-vd.ortschaftenverzeichnis_plz", 
+                                    "layerBodId": "ch.swisstopo-vd.ortschaftenverzeichnis_plz", 
                                     "parentId": 120, 
                                     "path": "root/category_100/category_120/layer", 
                                     "id": 762003703
@@ -497,7 +497,7 @@
                                     "label": "National Map 1:1 million", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.pixelkarte-farbe-pk1000.noscale", 
+                                    "layerBodId": "ch.swisstopo.pixelkarte-farbe-pk1000.noscale", 
                                     "orderKey": 0, 
                                     "parentId": 110, 
                                     "path": "root/category_100/category_110/layer", 
@@ -509,7 +509,7 @@
                                     "label": "National Map 1:500'000", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.pixelkarte-farbe-pk500.noscale", 
+                                    "layerBodId": "ch.swisstopo.pixelkarte-farbe-pk500.noscale", 
                                     "orderKey": 1, 
                                     "parentId": 110, 
                                     "path": "root/category_100/category_110/layer", 
@@ -521,7 +521,7 @@
                                     "label": "National Map 1:200'000", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.pixelkarte-farbe-pk200.noscale", 
+                                    "layerBodId": "ch.swisstopo.pixelkarte-farbe-pk200.noscale", 
                                     "orderKey": 2, 
                                     "parentId": 110, 
                                     "path": "root/category_100/category_110/layer", 
@@ -533,7 +533,7 @@
                                     "label": "National Map 1:100'000", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.pixelkarte-farbe-pk100.noscale", 
+                                    "layerBodId": "ch.swisstopo.pixelkarte-farbe-pk100.noscale", 
                                     "orderKey": 3, 
                                     "parentId": 110, 
                                     "path": "root/category_100/category_110/layer", 
@@ -545,7 +545,7 @@
                                     "label": "National Map 1:50'000", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.pixelkarte-farbe-pk50.noscale", 
+                                    "layerBodId": "ch.swisstopo.pixelkarte-farbe-pk50.noscale", 
                                     "orderKey": 4, 
                                     "parentId": 110, 
                                     "path": "root/category_100/category_110/layer", 
@@ -557,7 +557,7 @@
                                     "label": "National Map 1:25'000", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.pixelkarte-farbe-pk25.noscale", 
+                                    "layerBodId": "ch.swisstopo.pixelkarte-farbe-pk25.noscale", 
                                     "orderKey": 5, 
                                     "parentId": 110, 
                                     "path": "root/category_100/category_110/layer", 
@@ -569,7 +569,7 @@
                                     "label": "Division National Map 1:500'000", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.pixelkarte-pk500.metadata", 
+                                    "layerBodId": "ch.swisstopo.pixelkarte-pk500.metadata", 
                                     "orderKey": 6, 
                                     "parentId": 110, 
                                     "path": "root/category_100/category_110/layer", 
@@ -581,7 +581,7 @@
                                     "label": "Division National Map 1:200'000", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.pixelkarte-pk200.metadata", 
+                                    "layerBodId": "ch.swisstopo.pixelkarte-pk200.metadata", 
                                     "orderKey": 7, 
                                     "parentId": 110, 
                                     "path": "root/category_100/category_110/layer", 
@@ -593,7 +593,7 @@
                                     "label": "Division National Map 1:100'000", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.pixelkarte-pk100.metadata", 
+                                    "layerBodId": "ch.swisstopo.pixelkarte-pk100.metadata", 
                                     "orderKey": 8, 
                                     "parentId": 110, 
                                     "path": "root/category_100/category_110/layer", 
@@ -605,7 +605,7 @@
                                     "label": "Division National Map 1:50'000", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.pixelkarte-pk50.metadata", 
+                                    "layerBodId": "ch.swisstopo.pixelkarte-pk50.metadata", 
                                     "orderKey": 9, 
                                     "parentId": 110, 
                                     "path": "root/category_100/category_110/layer", 
@@ -617,7 +617,7 @@
                                     "label": "Division National Map 1:25'000", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.pixelkarte-pk25.metadata", 
+                                    "layerBodId": "ch.swisstopo.pixelkarte-pk25.metadata", 
                                     "orderKey": 10, 
                                     "parentId": 110, 
                                     "path": "root/category_100/category_110/layer", 
@@ -629,7 +629,7 @@
                                     "label": "Topo. landscape model (color)", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.swisstlm3d-karte-farbe", 
+                                    "layerBodId": "ch.swisstopo.swisstlm3d-karte-farbe", 
                                     "orderKey": 11, 
                                     "parentId": 110, 
                                     "path": "root/category_100/category_110/layer", 
@@ -641,7 +641,7 @@
                                     "label": "Topo. landscape model (grey)", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.swisstlm3d-karte-grau", 
+                                    "layerBodId": "ch.swisstopo.swisstlm3d-karte-grau", 
                                     "orderKey": 12, 
                                     "parentId": 110, 
                                     "path": "root/category_100/category_110/layer", 
@@ -653,7 +653,7 @@
                                     "label": "Dufour Map First edition", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.hiks-dufour", 
+                                    "layerBodId": "ch.swisstopo.hiks-dufour", 
                                     "orderKey": 13, 
                                     "parentId": 110, 
                                     "path": "root/category_100/category_110/layer", 
@@ -665,7 +665,7 @@
                                     "label": "Siegfried Map First edition", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.hiks-siegfried", 
+                                    "layerBodId": "ch.swisstopo.hiks-siegfried", 
                                     "orderKey": 14, 
                                     "parentId": 110, 
                                     "path": "root/category_100/category_110/layer", 
@@ -677,7 +677,7 @@
                                     "label": "hiking trails", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.swisstlm3d-wanderwege", 
+                                    "layerBodId": "ch.swisstopo.swisstlm3d-wanderwege", 
                                     "orderKey": 15, 
                                     "parentId": 110, 
                                     "path": "root/category_100/category_110/layer", 
@@ -689,7 +689,7 @@
                                     "label": "Single objects  VECTOR200", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.vec200-miscellaneous", 
+                                    "layerBodId": "ch.swisstopo.vec200-miscellaneous", 
                                     "orderKey": 16, 
                                     "parentId": 110, 
                                     "path": "root/category_100/category_110/layer", 
@@ -701,7 +701,7 @@
                                     "label": "Elevations VECTOR200", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.vec200-miscellaneous-geodpoint", 
+                                    "layerBodId": "ch.swisstopo.vec200-miscellaneous-geodpoint", 
                                     "orderKey": 17, 
                                     "parentId": 110, 
                                     "path": "root/category_100/category_110/layer", 
@@ -728,7 +728,7 @@
                                             "label": "Land cover VECTOR200", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.vec200-landcover", 
+                                            "layerBodId": "ch.swisstopo.vec200-landcover", 
                                             "parentId": 112, 
                                             "path": "root/category_100/category_110/category_112/layer", 
                                             "id": 762003830
@@ -739,7 +739,7 @@
                                             "label": "Area statistics 1992/1997", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bfs.arealstatistik-1997", 
+                                            "layerBodId": "ch.bfs.arealstatistik-1997", 
                                             "parentId": 112, 
                                             "path": "root/category_100/category_110/category_112/layer", 
                                             "id": 762003350
@@ -750,7 +750,7 @@
                                             "label": "Area statistics 1979/1985", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bfs.arealstatistik-1985", 
+                                            "layerBodId": "ch.bfs.arealstatistik-1985", 
                                             "parentId": 112, 
                                             "path": "root/category_100/category_110/category_112/layer", 
                                             "id": 762003353
@@ -761,7 +761,7 @@
                                             "label": "Simplified land occupancy", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bfs.arealstatistik-hintergrund", 
+                                            "layerBodId": "ch.bfs.arealstatistik-hintergrund", 
                                             "parentId": 112, 
                                             "path": "root/category_100/category_110/category_112/layer", 
                                             "id": 762003397
@@ -772,7 +772,7 @@
                                             "label": "Primary surfaces VECTOR25", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.vec25-primaerflaechen", 
+                                            "layerBodId": "ch.swisstopo.vec25-primaerflaechen", 
                                             "parentId": 112, 
                                             "path": "root/category_100/category_110/category_112/layer", 
                                             "id": 762003822
@@ -783,7 +783,7 @@
                                             "label": "Forested areas", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.vec200-landcover-wald", 
+                                            "layerBodId": "ch.swisstopo.vec200-landcover-wald", 
                                             "parentId": 112, 
                                             "path": "root/category_100/category_110/category_112/layer", 
                                             "id": 762003634
@@ -794,7 +794,7 @@
                                             "label": "Biogeographical regions", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.biogeographische_regionen", 
+                                            "layerBodId": "ch.bafu.biogeographische_regionen", 
                                             "parentId": 112, 
                                             "path": "root/category_100/category_110/category_112/layer", 
                                             "id": 762003748
@@ -805,7 +805,7 @@
                                             "label": "Mixture of forests 1990/1992", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bfs.arealstatistik-waldmischungsgrad", 
+                                            "layerBodId": "ch.bfs.arealstatistik-waldmischungsgrad", 
                                             "parentId": 112, 
                                             "path": "root/category_100/category_110/category_112/layer", 
                                             "id": 762003503
@@ -828,7 +828,7 @@
                                             "label": "Aerial images swisstopo", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.lubis-luftbilder", 
+                                            "layerBodId": "ch.swisstopo.lubis-luftbilder", 
                                             "parentId": 113, 
                                             "path": "root/category_100/category_110/category_113/layer", 
                                             "id": 762003620
@@ -839,7 +839,7 @@
                                             "label": "Aerial images privates", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.lubis-luftbilder-dritte-firmen", 
+                                            "layerBodId": "ch.swisstopo.lubis-luftbilder-dritte-firmen", 
                                             "parentId": 113, 
                                             "path": "root/category_100/category_110/category_113/layer", 
                                             "id": 762003643
@@ -850,7 +850,7 @@
                                             "label": "Aerial images cantons", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.lubis-luftbilder-dritte-kantone", 
+                                            "layerBodId": "ch.swisstopo.lubis-luftbilder-dritte-kantone", 
                                             "parentId": 113, 
                                             "path": "root/category_100/category_110/category_113/layer", 
                                             "id": 762003269
@@ -861,7 +861,7 @@
                                             "selectedOpen": false, 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.images-landsat25", 
+                                            "layerBodId": "ch.swisstopo.images-landsat25", 
                                             "path": "root/category_100/category_110/category_113/layer", 
                                             "id": 762003459
                                         }, 
@@ -871,7 +871,7 @@
                                             "label": "Tiling SWISSIMAGE", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.images-swissimage.metadata", 
+                                            "layerBodId": "ch.swisstopo.images-swissimage.metadata", 
                                             "parentId": 113, 
                                             "path": "root/category_100/category_110/category_113/layer", 
                                             "id": 762003344
@@ -882,7 +882,7 @@
                                             "label": "Image strips swisstopo", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.lubis-bildstreifen", 
+                                            "layerBodId": "ch.swisstopo.lubis-bildstreifen", 
                                             "parentId": 113, 
                                             "path": "root/category_100/category_110/category_113/layer", 
                                             "id": 762003282
@@ -925,7 +925,7 @@
                                     "label": "Building generalized VECTOR200", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.vec200-building", 
+                                    "layerBodId": "ch.swisstopo.vec200-building", 
                                     "parentId": 330, 
                                     "path": "root/category_300/category_330/layer", 
                                     "id": 762003287
@@ -936,7 +936,7 @@
                                     "label": "Buildings VECTOR25", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.vec25-gebaeude", 
+                                    "layerBodId": "ch.swisstopo.vec25-gebaeude", 
                                     "parentId": 330, 
                                     "path": "root/category_300/category_330/layer", 
                                     "id": 762003446
@@ -947,7 +947,7 @@
                                     "label": "Functional surfaces VECTOR25", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.vec25-anlagen", 
+                                    "layerBodId": "ch.swisstopo.vec25-anlagen", 
                                     "parentId": 330, 
                                     "path": "root/category_300/category_330/layer", 
                                     "id": 762003687
@@ -958,7 +958,7 @@
                                     "label": "Simplified 3D buildings", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.swissbuildings3d", 
+                                    "layerBodId": "ch.swisstopo.swissbuildings3d", 
                                     "parentId": 330, 
                                     "path": "root/category_300/category_330/layer", 
                                     "id": 762003399
@@ -969,7 +969,7 @@
                                     "label": "Single objects VECTOR25", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.vec25-einzelobjekte", 
+                                    "layerBodId": "ch.swisstopo.vec25-einzelobjekte", 
                                     "parentId": 330, 
                                     "path": "root/category_300/category_330/layer", 
                                     "id": 762003377
@@ -992,7 +992,7 @@
                                     "label": "Borreliosis regions at risk", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bag.zecken-lyme", 
+                                    "layerBodId": "ch.bag.zecken-lyme", 
                                     "parentId": 320, 
                                     "path": "root/category_300/category_320/layer", 
                                     "id": 762003525
@@ -1003,7 +1003,7 @@
                                     "label": "TBE: cluster", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bag.zecken-fsme-faelle", 
+                                    "layerBodId": "ch.bag.zecken-fsme-faelle", 
                                     "parentId": 320, 
                                     "path": "root/category_300/category_320/layer", 
                                     "id": 762003306
@@ -1014,7 +1014,7 @@
                                     "label": "TBE: recommendation of vaccination", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bag.zecken-fsme-impfung", 
+                                    "layerBodId": "ch.bag.zecken-fsme-impfung", 
                                     "parentId": 320, 
                                     "path": "root/category_300/category_320/layer", 
                                     "id": 762003308
@@ -1037,7 +1037,7 @@
                                     "label": "Besch\u00e4ftigtendichte 2008", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.are.beschaeftigtendichte-bz08", 
+                                    "layerBodId": "ch.are.beschaeftigtendichte-bz08", 
                                     "parentId": 310, 
                                     "path": "root/category_300/category_310/layer", 
                                     "id": 762003155
@@ -1048,7 +1048,7 @@
                                     "label": "Bev\u00f6lkerungsdichte 2000", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.are.bevoelkerungsdichte-vz00", 
+                                    "layerBodId": "ch.are.bevoelkerungsdichte-vz00", 
                                     "parentId": 310, 
                                     "path": "root/category_300/category_310/layer", 
                                     "id": 762003109
@@ -1059,7 +1059,7 @@
                                     "label": "Federal Inventory ISOS", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bak.bundesinventar-schuetzenswerte-ortsbilder", 
+                                    "layerBodId": "ch.bak.bundesinventar-schuetzenswerte-ortsbilder", 
                                     "parentId": 310, 
                                     "path": "root/category_300/category_310/layer", 
                                     "id": 762003157
@@ -1070,7 +1070,7 @@
                                     "label": "Protection of cultural property inventory", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.babs.kulturgueter", 
+                                    "layerBodId": "ch.babs.kulturgueter", 
                                     "parentId": 310, 
                                     "path": "root/category_300/category_310/layer", 
                                     "id": 762003197
@@ -1081,7 +1081,7 @@
                                     "label": "UNESCO World cultural heritage", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bak.schutzgebiete-unesco_weltkulturerbe", 
+                                    "layerBodId": "ch.bak.schutzgebiete-unesco_weltkulturerbe", 
                                     "parentId": 310, 
                                     "path": "root/category_300/category_310/layer", 
                                     "id": 762003610
@@ -1104,7 +1104,7 @@
                                     "label": "Agricultural zones boundaries", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.blw.landwirtschaftliche-zonengrenzen", 
+                                    "layerBodId": "ch.blw.landwirtschaftliche-zonengrenzen", 
                                     "parentId": 370, 
                                     "path": "root/category_300/category_370/layer", 
                                     "id": 762003551
@@ -1115,7 +1115,7 @@
                                     "label": "Alpine products", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.blw.alpprodukte", 
+                                    "layerBodId": "ch.blw.alpprodukte", 
                                     "parentId": 370, 
                                     "path": "root/category_300/category_370/layer", 
                                     "id": 762003249
@@ -1126,7 +1126,7 @@
                                     "label": "Demand for irrigation", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.blw.bewaesserungsbeduerftigkeit", 
+                                    "layerBodId": "ch.blw.bewaesserungsbeduerftigkeit", 
                                     "parentId": 370, 
                                     "path": "root/category_300/category_370/layer", 
                                     "id": 762003260
@@ -1137,7 +1137,7 @@
                                     "label": "Erosion risk 1", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.blw.erosion", 
+                                    "layerBodId": "ch.blw.erosion", 
                                     "parentId": 370, 
                                     "path": "root/category_300/category_370/layer", 
                                     "id": 762003453
@@ -1148,7 +1148,7 @@
                                     "label": "Erosion risk 2", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.blw.erosion-mit_bergzonen", 
+                                    "layerBodId": "ch.blw.erosion-mit_bergzonen", 
                                     "parentId": 370, 
                                     "path": "root/category_300/category_370/layer", 
                                     "id": 762003443
@@ -1159,7 +1159,7 @@
                                     "label": "Erosion risk quantitative", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.blw.erosion-quantitativ", 
+                                    "layerBodId": "ch.blw.erosion-quantitativ", 
                                     "parentId": 370, 
                                     "path": "root/category_300/category_370/layer", 
                                     "id": 762003337
@@ -1170,7 +1170,7 @@
                                     "label": "Feldblockkarte", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.blw.feldblockkarte", 
+                                    "layerBodId": "ch.blw.feldblockkarte", 
                                     "parentId": 370, 
                                     "path": "root/category_300/category_370/layer", 
                                     "id": 762003334
@@ -1181,7 +1181,7 @@
                                     "label": "Gew\u00e4sseranschluss", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.blw.gewaesseranschlusskarte", 
+                                    "layerBodId": "ch.blw.gewaesseranschlusskarte", 
                                     "parentId": 370, 
                                     "path": "root/category_300/category_370/layer", 
                                     "id": 777370642
@@ -1192,7 +1192,7 @@
                                     "label": "Gew\u00e4sseranschluss erweitert", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.blw.gewaesseranschlusskarte-direkt", 
+                                    "layerBodId": "ch.blw.gewaesseranschlusskarte-direkt", 
                                     "parentId": 370, 
                                     "path": "root/category_300/category_370/layer", 
                                     "id": 777371498
@@ -1203,7 +1203,7 @@
                                     "label": "Hillside and steep slopes situation", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.blw.hang_steillagen", 
+                                    "layerBodId": "ch.blw.hang_steillagen", 
                                     "parentId": 370, 
                                     "path": "root/category_300/category_370/layer", 
                                     "id": 762003615
@@ -1214,7 +1214,7 @@
                                     "label": "Mountain products", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.blw.bergprodukte", 
+                                    "layerBodId": "ch.blw.bergprodukte", 
                                     "parentId": 370, 
                                     "path": "root/category_300/category_370/layer", 
                                     "id": 762003259
@@ -1225,7 +1225,7 @@
                                     "label": "PDO cheese", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.blw.ursprungsbezeichnungen-kaese", 
+                                    "layerBodId": "ch.blw.ursprungsbezeichnungen-kaese", 
                                     "parentId": 370, 
                                     "path": "root/category_300/category_370/layer", 
                                     "id": 762003359
@@ -1236,7 +1236,7 @@
                                     "label": "PDO plant products", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.blw.ursprungsbezeichnungen-pflanzen", 
+                                    "layerBodId": "ch.blw.ursprungsbezeichnungen-pflanzen", 
                                     "parentId": 370, 
                                     "path": "root/category_300/category_370/layer", 
                                     "id": 762003356
@@ -1247,7 +1247,7 @@
                                     "label": "PDO spirits", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.blw.ursprungsbezeichnungen-spirituosen", 
+                                    "layerBodId": "ch.blw.ursprungsbezeichnungen-spirituosen", 
                                     "parentId": 370, 
                                     "path": "root/category_300/category_370/layer", 
                                     "id": 762003405
@@ -1258,7 +1258,7 @@
                                     "label": "PGI meat products", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.blw.ursprungsbezeichnungen-fleisch", 
+                                    "layerBodId": "ch.blw.ursprungsbezeichnungen-fleisch", 
                                     "parentId": 370, 
                                     "path": "root/category_300/category_370/layer", 
                                     "id": 762003407
@@ -1269,7 +1269,7 @@
                                     "label": "Viticulture in steep areas", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.blw.steil_terrassenlagen_rebbau", 
+                                    "layerBodId": "ch.blw.steil_terrassenlagen_rebbau", 
                                     "parentId": 370, 
                                     "path": "root/category_300/category_370/layer", 
                                     "id": 762003619
@@ -1292,7 +1292,7 @@
                                     "label": "Plans for Emergency protection", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.ensi.zonenplan-notfallschutz-kernanlagen", 
+                                    "layerBodId": "ch.ensi.zonenplan-notfallschutz-kernanlagen", 
                                     "parentId": 360, 
                                     "path": "root/category_300/category_360/layer", 
                                     "id": 762003549
@@ -1303,7 +1303,7 @@
                                     "label": "Territorial regions", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.vbs.territorialregionen", 
+                                    "layerBodId": "ch.vbs.territorialregionen", 
                                     "parentId": 360, 
                                     "path": "root/category_300/category_360/layer", 
                                     "id": 762003143
@@ -1330,7 +1330,7 @@
                                             "label": "Hydropower statistics", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bfe.statistik-wasserkraftanlagen", 
+                                            "layerBodId": "ch.bfe.statistik-wasserkraftanlagen", 
                                             "parentId": 351, 
                                             "path": "root/category_300/category_350/category_351/layer", 
                                             "id": 762003110
@@ -1341,7 +1341,7 @@
                                             "label": "Nuclear Power Plants", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bfe.kernkraftwerke", 
+                                            "layerBodId": "ch.bfe.kernkraftwerke", 
                                             "parentId": 351, 
                                             "path": "root/category_300/category_350/category_351/layer", 
                                             "id": 762003497
@@ -1352,7 +1352,7 @@
                                             "label": "Water power potential", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bfe.kleinwasserkraftpotentiale", 
+                                            "layerBodId": "ch.bfe.kleinwasserkraftpotentiale", 
                                             "parentId": 351, 
                                             "path": "root/category_300/category_350/category_351/layer", 
                                             "id": 762003233
@@ -1363,7 +1363,7 @@
                                             "label": "Abandonment of hydropower", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bfe.abgeltung-wasserkraftnutzung", 
+                                            "layerBodId": "ch.bfe.abgeltung-wasserkraftnutzung", 
                                             "parentId": 351, 
                                             "path": "root/category_300/category_350/category_351/layer", 
                                             "id": 762003720
@@ -1374,7 +1374,7 @@
                                             "label": "Dam", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bfe.stauanlagen-bundesaufsicht", 
+                                            "layerBodId": "ch.bfe.stauanlagen-bundesaufsicht", 
                                             "parentId": 351, 
                                             "path": "root/category_300/category_350/category_351/layer", 
                                             "id": 762003452
@@ -1385,7 +1385,7 @@
                                             "label": "Energy research", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bfe.energieforschung", 
+                                            "layerBodId": "ch.bfe.energieforschung", 
                                             "parentId": 351, 
                                             "path": "root/category_300/category_350/category_351/layer", 
                                             "id": 762003475
@@ -1419,7 +1419,7 @@
                                             "label": "3G antenna locations (UMTS)", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bakom.mobil-antennenstandorte-umts", 
+                                            "layerBodId": "ch.bakom.mobil-antennenstandorte-umts", 
                                             "parentId": 353, 
                                             "path": "root/category_300/category_350/category_353/layer", 
                                             "id": 762003590
@@ -1430,7 +1430,7 @@
                                             "label": "4G antenna locations (LTE)", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bakom.mobil-antennenstandorte-lte", 
+                                            "layerBodId": "ch.bakom.mobil-antennenstandorte-lte", 
                                             "parentId": 353, 
                                             "path": "root/category_300/category_350/category_353/layer", 
                                             "id": 762003289
@@ -1441,7 +1441,7 @@
                                             "label": "Availability HDTV fixed netw.", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bakom.verfuegbarkeit-hdtv", 
+                                            "layerBodId": "ch.bakom.verfuegbarkeit-hdtv", 
                                             "parentId": 353, 
                                             "path": "root/category_300/category_350/category_353/layer", 
                                             "id": 762003598
@@ -1452,7 +1452,7 @@
                                             "label": "Availability TV fixed network", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bakom.verfuegbarkeit-tv", 
+                                            "layerBodId": "ch.bakom.verfuegbarkeit-tv", 
                                             "parentId": 353, 
                                             "path": "root/category_300/category_350/category_353/layer", 
                                             "id": 762003591
@@ -1463,7 +1463,7 @@
                                             "label": "Coaxial cable", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bakom.anschlussart-koaxialkabel", 
+                                            "layerBodId": "ch.bakom.anschlussart-koaxialkabel", 
                                             "parentId": 353, 
                                             "path": "root/category_300/category_350/category_353/layer", 
                                             "id": 762003576
@@ -1474,7 +1474,7 @@
                                             "label": "Copper wire", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bakom.anschlussart-kupferdraht", 
+                                            "layerBodId": "ch.bakom.anschlussart-kupferdraht", 
                                             "parentId": 353, 
                                             "path": "root/category_300/category_350/category_353/layer", 
                                             "id": 762003573
@@ -1485,7 +1485,7 @@
                                             "label": "Download \u2265 1 Mbit/s", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bakom.downlink1", 
+                                            "layerBodId": "ch.bakom.downlink1", 
                                             "parentId": 353, 
                                             "path": "root/category_300/category_350/category_353/layer", 
                                             "id": 762003625
@@ -1496,7 +1496,7 @@
                                             "label": "Download \u2265 10 Mbit/s", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bakom.downlink10", 
+                                            "layerBodId": "ch.bakom.downlink10", 
                                             "parentId": 353, 
                                             "path": "root/category_300/category_350/category_353/layer", 
                                             "id": 762003594
@@ -1507,7 +1507,7 @@
                                             "label": "Download \u2265 100 Mbit/s", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bakom.downlink100", 
+                                            "layerBodId": "ch.bakom.downlink100", 
                                             "parentId": 353, 
                                             "path": "root/category_300/category_350/category_353/layer", 
                                             "id": 762003270
@@ -1518,7 +1518,7 @@
                                             "label": "Download \u2265 2 Mbit/s", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bakom.downlink2", 
+                                            "layerBodId": "ch.bakom.downlink2", 
                                             "parentId": 353, 
                                             "path": "root/category_300/category_350/category_353/layer", 
                                             "id": 762003579
@@ -1529,7 +1529,7 @@
                                             "label": "Download \u2265 20 Mbit/s", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bakom.downlink20", 
+                                            "layerBodId": "ch.bakom.downlink20", 
                                             "parentId": 353, 
                                             "path": "root/category_300/category_350/category_353/layer", 
                                             "id": 762003265
@@ -1540,7 +1540,7 @@
                                             "label": "Download \u2265 50 Mbit/s", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bakom.downlink50", 
+                                            "layerBodId": "ch.bakom.downlink50", 
                                             "parentId": 353, 
                                             "path": "root/category_300/category_350/category_353/layer", 
                                             "id": 762003630
@@ -1551,7 +1551,7 @@
                                             "label": "GSM antenna locations", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bakom.mobil-antennenstandorte-gsm", 
+                                            "layerBodId": "ch.bakom.mobil-antennenstandorte-gsm", 
                                             "parentId": 353, 
                                             "path": "root/category_300/category_350/category_353/layer", 
                                             "id": 762003693
@@ -1562,7 +1562,7 @@
                                             "label": "Number of connection providers", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bakom.anbieter-eigenes_festnetz", 
+                                            "layerBodId": "ch.bakom.anbieter-eigenes_festnetz", 
                                             "parentId": 353, 
                                             "path": "root/category_300/category_350/category_353/layer", 
                                             "id": 762003570
@@ -1573,7 +1573,7 @@
                                             "label": "Optical fibre", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bakom.anschlussart-glasfaser", 
+                                            "layerBodId": "ch.bakom.anschlussart-glasfaser", 
                                             "parentId": 353, 
                                             "path": "root/category_300/category_350/category_353/layer", 
                                             "id": 762003606
@@ -1584,7 +1584,7 @@
                                             "label": "Radio and TV broadcasters", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bakom.radio-fernsehsender", 
+                                            "layerBodId": "ch.bakom.radio-fernsehsender", 
                                             "parentId": 353, 
                                             "path": "root/category_300/category_350/category_353/layer", 
                                             "id": 762003213
@@ -1595,7 +1595,7 @@
                                             "label": "Radio coverage areas", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bakom.versorgungsgebiet-ukw", 
+                                            "layerBodId": "ch.bakom.versorgungsgebiet-ukw", 
                                             "parentId": 353, 
                                             "path": "root/category_300/category_350/category_353/layer", 
                                             "id": 762003534
@@ -1606,7 +1606,7 @@
                                             "label": "TV coverage areas", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bakom.versorgungsgebiet-tv", 
+                                            "layerBodId": "ch.bakom.versorgungsgebiet-tv", 
                                             "parentId": 353, 
                                             "path": "root/category_300/category_350/category_353/layer", 
                                             "id": 762003124
@@ -1617,7 +1617,7 @@
                                             "label": "Upload \u2265 1 Mbit/s", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bakom.uplink1", 
+                                            "layerBodId": "ch.bakom.uplink1", 
                                             "parentId": 353, 
                                             "path": "root/category_300/category_350/category_353/layer", 
                                             "id": 762003274
@@ -1628,7 +1628,7 @@
                                             "label": "Upload \u2265 10 Mbit/s", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bakom.uplink10", 
+                                            "layerBodId": "ch.bakom.uplink10", 
                                             "parentId": 353, 
                                             "path": "root/category_300/category_350/category_353/layer", 
                                             "id": 762003635
@@ -1639,7 +1639,7 @@
                                             "label": "Upload \u2265 100 Mbit/s", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bakom.uplink100", 
+                                            "layerBodId": "ch.bakom.uplink100", 
                                             "parentId": 353, 
                                             "path": "root/category_300/category_350/category_353/layer", 
                                             "id": 762003586
@@ -1650,7 +1650,7 @@
                                             "label": "Upload \u2265 2 Mbit/s", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bakom.uplink2", 
+                                            "layerBodId": "ch.bakom.uplink2", 
                                             "parentId": 353, 
                                             "path": "root/category_300/category_350/category_353/layer", 
                                             "id": 762003278
@@ -1661,7 +1661,7 @@
                                             "label": "Upload \u2265 50 Mbit/s", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bakom.uplink50", 
+                                            "layerBodId": "ch.bakom.uplink50", 
                                             "parentId": 353, 
                                             "path": "root/category_300/category_350/category_353/layer", 
                                             "id": 762003646
@@ -1672,7 +1672,7 @@
                                             "label": "Uploqe \u2265 20 Mbit/s", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bakom.uplink20", 
+                                            "layerBodId": "ch.bakom.uplink20", 
                                             "parentId": 353, 
                                             "path": "root/category_300/category_350/category_353/layer", 
                                             "id": 762003254
@@ -1703,7 +1703,7 @@
                                     "label": " ", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.kantone.ivs-reg_loc", 
+                                    "layerBodId": "ch.kantone.ivs-reg_loc", 
                                     "parentId": 340, 
                                     "path": "root/category_300/category_340/layer", 
                                     "id": 762003685
@@ -1714,7 +1714,7 @@
                                     "label": "Aeronautical Chart ICAO", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bazl.luftfahrtkarten-icao", 
+                                    "layerBodId": "ch.bazl.luftfahrtkarten-icao", 
                                     "parentId": 340, 
                                     "path": "root/category_300/category_340/layer", 
                                     "id": 762003659
@@ -1725,7 +1725,7 @@
                                     "label": "Air navigation obstacles", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bazl.luftfahrthindernis", 
+                                    "layerBodId": "ch.bazl.luftfahrthindernis", 
                                     "parentId": 340, 
                                     "path": "root/category_300/category_340/layer", 
                                     "id": 762003381
@@ -1736,7 +1736,7 @@
                                     "label": "Cant. routes for exceptional loads", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.astra.ausnahmetransportrouten", 
+                                    "layerBodId": "ch.astra.ausnahmetransportrouten", 
                                     "parentId": 340, 
                                     "path": "root/category_300/category_340/layer", 
                                     "id": 762003817
@@ -1747,7 +1747,7 @@
                                     "label": "Freight traffic 2008", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.are.belastung-gueterverkehr-bahn-2008", 
+                                    "layerBodId": "ch.are.belastung-gueterverkehr-bahn-2008", 
                                     "parentId": 340, 
                                     "path": "root/category_300/category_340/layer", 
                                     "id": 762003496
@@ -1758,7 +1758,7 @@
                                     "label": "Glider Chart", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bazl.segelflugkarte", 
+                                    "layerBodId": "ch.bazl.segelflugkarte", 
                                     "parentId": 340, 
                                     "path": "root/category_300/category_340/layer", 
                                     "id": 762003290
@@ -1769,7 +1769,7 @@
                                     "label": "Heliports/mountain landing sites", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bazl.heliports-gebirgslandeplaetze", 
+                                    "layerBodId": "ch.bazl.heliports-gebirgslandeplaetze", 
                                     "parentId": 340, 
                                     "path": "root/category_300/category_340/layer", 
                                     "id": 762003154
@@ -1780,7 +1780,7 @@
                                     "label": "IHR Boundaries", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.astra.ivs-nat_abgrenzungen", 
+                                    "layerBodId": "ch.astra.ivs-nat_abgrenzungen", 
                                     "parentId": 340, 
                                     "path": "root/category_300/category_340/layer", 
                                     "id": 762003286
@@ -1791,7 +1791,7 @@
                                     "label": "IHR Elements of landscape", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.astra.ivs-nat_wegbegleiter", 
+                                    "layerBodId": "ch.astra.ivs-nat_wegbegleiter", 
                                     "parentId": 340, 
                                     "path": "root/category_300/category_340/layer", 
                                     "id": 762003527
@@ -1802,7 +1802,7 @@
                                     "label": "IHR national", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.astra.ivs-nat", 
+                                    "layerBodId": "ch.astra.ivs-nat", 
                                     "parentId": 340, 
                                     "path": "root/category_300/category_340/layer", 
                                     "id": 762003144
@@ -1813,7 +1813,7 @@
                                     "label": "IHR national without substance", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.astra.ivs-nat-verlaeufe", 
+                                    "layerBodId": "ch.astra.ivs-nat-verlaeufe", 
                                     "parentId": 340, 
                                     "path": "root/category_300/category_340/layer", 
                                     "id": 762003651
@@ -1824,7 +1824,7 @@
                                     "label": "IHR regional & local", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.astra.ivs-reg_loc", 
+                                    "layerBodId": "ch.astra.ivs-reg_loc", 
                                     "parentId": 340, 
                                     "path": "root/category_300/category_340/layer", 
                                     "id": 762003210
@@ -1835,7 +1835,7 @@
                                     "label": "Inventory historical routes terrain map", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.astra.ivs-gelaendekarte", 
+                                    "layerBodId": "ch.astra.ivs-gelaendekarte", 
                                     "parentId": 340, 
                                     "path": "root/category_300/category_340/layer", 
                                     "id": 762003288
@@ -1846,7 +1846,7 @@
                                     "label": "J\u00e4hrliche Belastung des schweizerischen Strassennetzes 2008 (Personenverkehr)", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.are.belastung-personenverkehr-strasse-2008", 
+                                    "layerBodId": "ch.are.belastung-personenverkehr-strasse-2008", 
                                     "parentId": 340, 
                                     "path": "root/category_300/category_340/layer", 
                                     "id": 762003111
@@ -1857,7 +1857,7 @@
                                     "label": "Other traffic  VECTOR25", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.vec25-uebrigerverkehr", 
+                                    "layerBodId": "ch.swisstopo.vec25-uebrigerverkehr", 
                                     "parentId": 340, 
                                     "path": "root/category_300/category_340/layer", 
                                     "id": 762003747
@@ -1868,7 +1868,7 @@
                                     "label": "Passenger traffic 2008", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.are.belastung-personenverkehr-bahn-2008", 
+                                    "layerBodId": "ch.are.belastung-personenverkehr-bahn-2008", 
                                     "parentId": 340, 
                                     "path": "root/category_300/category_340/layer", 
                                     "id": 762003526
@@ -1879,7 +1879,7 @@
                                     "label": "Public transportation VECTOR200", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.vec200-transportation-oeffentliche-verkehr", 
+                                    "layerBodId": "ch.swisstopo.vec200-transportation-oeffentliche-verkehr", 
                                     "parentId": 340, 
                                     "path": "root/category_300/category_340/layer", 
                                     "id": 762003366
@@ -1890,7 +1890,7 @@
                                     "label": "Railway network VECTOR25", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.vec25-eisenbahnnetz", 
+                                    "layerBodId": "ch.swisstopo.vec25-eisenbahnnetz", 
                                     "parentId": 340, 
                                     "path": "root/category_300/category_340/layer", 
                                     "id": 762003150
@@ -1901,7 +1901,7 @@
                                     "label": "Reisezeit zu Zentren mit dem MIV 2005", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.are.reisezeit_miv-2005", 
+                                    "layerBodId": "ch.are.reisezeit_miv-2005", 
                                     "parentId": 340, 
                                     "path": "root/category_300/category_340/layer", 
                                     "id": 762003363
@@ -1912,7 +1912,7 @@
                                     "label": "Reisezeit zu Zentren \u00d6V 2005", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.are.reisezeit_oev-2005", 
+                                    "layerBodId": "ch.are.reisezeit_oev-2005", 
                                     "parentId": 340, 
                                     "path": "root/category_300/category_340/layer", 
                                     "id": 762003343
@@ -1923,7 +1923,7 @@
                                     "label": "Reserved zones: Airports", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bazl.projektierungszonen-flughafenanlagen", 
+                                    "layerBodId": "ch.bazl.projektierungszonen-flughafenanlagen", 
                                     "parentId": 340, 
                                     "path": "root/category_300/category_340/layer", 
                                     "id": 762003531
@@ -1934,7 +1934,7 @@
                                     "label": "Road network  VECTOR25", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.vec25-strassennetz", 
+                                    "layerBodId": "ch.swisstopo.vec25-strassennetz", 
                                     "parentId": 340, 
                                     "path": "root/category_300/category_340/layer", 
                                     "id": 762003103
@@ -1945,7 +1945,7 @@
                                     "label": "Road system VECTOR200", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.vec200-transportation-strassennetz", 
+                                    "layerBodId": "ch.swisstopo.vec200-transportation-strassennetz", 
                                     "parentId": 340, 
                                     "path": "root/category_300/category_340/layer", 
                                     "id": 762003379
@@ -1956,7 +1956,7 @@
                                     "label": "Schwerer G\u00fcterverkehr 2008", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.are.belastung-gueterverkehr-strasse-2008", 
+                                    "layerBodId": "ch.are.belastung-gueterverkehr-strasse-2008", 
                                     "parentId": 340, 
                                     "path": "root/category_300/category_340/layer", 
                                     "id": 762003128
@@ -1967,7 +1967,7 @@
                                     "label": "Traffic counting locations local", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.astra.strassenverkehrszaehlung_messstellen-regional_lokal", 
+                                    "layerBodId": "ch.astra.strassenverkehrszaehlung_messstellen-regional_lokal", 
                                     "parentId": 340, 
                                     "path": "root/category_300/category_340/layer", 
                                     "id": 762003375
@@ -1978,7 +1978,7 @@
                                     "label": "Traffic counting locations principal", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.astra.strassenverkehrszaehlung_messstellen-uebergeordnet", 
+                                    "layerBodId": "ch.astra.strassenverkehrszaehlung_messstellen-uebergeordnet", 
                                     "parentId": 340, 
                                     "path": "root/category_300/category_340/layer", 
                                     "id": 762003376
@@ -1989,7 +1989,7 @@
                                     "label": "\u00d6V-G\u00fcteklassen ARE", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.are.gueteklassen_oev", 
+                                    "layerBodId": "ch.are.gueteklassen_oev", 
                                     "parentId": 340, 
                                     "path": "root/category_300/category_340/layer", 
                                     "id": 762003430
@@ -2035,7 +2035,7 @@
                                     "label": "Air pollution: NABEL Stations", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bafu.nabelstationen", 
+                                    "layerBodId": "ch.bafu.nabelstationen", 
                                     "parentId": 250, 
                                     "path": "root/category_200/category_250/layer", 
                                     "id": 762003194
@@ -2046,7 +2046,7 @@
                                     "label": "Climate - catch crop", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.blw.klimaeignung-zwischenfruchtbau", 
+                                    "layerBodId": "ch.blw.klimaeignung-zwischenfruchtbau", 
                                     "parentId": 250, 
                                     "path": "root/category_200/category_250/layer", 
                                     "id": 762003263
@@ -2057,7 +2057,7 @@
                                     "label": "Climate - cereal crop", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.blw.klimaeignung-getreidebau", 
+                                    "layerBodId": "ch.blw.klimaeignung-getreidebau", 
                                     "parentId": 250, 
                                     "path": "root/category_200/category_250/layer", 
                                     "id": 762003261
@@ -2068,7 +2068,7 @@
                                     "label": "Climate - corn grain", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.blw.klimaeignung-koernermais", 
+                                    "layerBodId": "ch.blw.klimaeignung-koernermais", 
                                     "parentId": 250, 
                                     "path": "root/category_200/category_250/layer", 
                                     "id": 762003203
@@ -2079,7 +2079,7 @@
                                     "label": "Climate - cultivated land", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.blw.klimaeignung-kulturland", 
+                                    "layerBodId": "ch.blw.klimaeignung-kulturland", 
                                     "parentId": 250, 
                                     "path": "root/category_200/category_250/layer", 
                                     "id": 762003492
@@ -2090,7 +2090,7 @@
                                     "label": "Climate - forage crop", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.blw.klimaeignung-futterbau", 
+                                    "layerBodId": "ch.blw.klimaeignung-futterbau", 
                                     "parentId": 250, 
                                     "path": "root/category_200/category_250/layer", 
                                     "id": 762003603
@@ -2101,7 +2101,7 @@
                                     "label": "Climate - overview", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.blw.klimaeignung-typ", 
+                                    "layerBodId": "ch.blw.klimaeignung-typ", 
                                     "parentId": 250, 
                                     "path": "root/category_200/category_250/layer", 
                                     "id": 762003604
@@ -2112,7 +2112,7 @@
                                     "label": "Climate - potatoes", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.blw.klimaeignung-kartoffeln", 
+                                    "layerBodId": "ch.blw.klimaeignung-kartoffeln", 
                                     "parentId": 250, 
                                     "path": "root/category_200/category_250/layer", 
                                     "id": 762003583
@@ -2123,7 +2123,7 @@
                                     "label": "Climate - special crops", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.blw.klimaeignung-spezialkulturen", 
+                                    "layerBodId": "ch.blw.klimaeignung-spezialkulturen", 
                                     "parentId": 250, 
                                     "path": "root/category_200/category_250/layer", 
                                     "id": 762003262
@@ -2134,7 +2134,7 @@
                                     "label": "Rainfall", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.blw.niederschlagshaushalt", 
+                                    "layerBodId": "ch.blw.niederschlagshaushalt", 
                                     "parentId": 250, 
                                     "path": "root/category_200/category_250/layer", 
                                     "id": 762003584
@@ -2157,7 +2157,7 @@
                                     "label": "2km2 catchment areas", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bafu.wasser-teileinzugsgebiete_2", 
+                                    "layerBodId": "ch.bafu.wasser-teileinzugsgebiete_2", 
                                     "parentId": 240, 
                                     "path": "root/category_200/category_240/layer", 
                                     "id": 762003331
@@ -2168,7 +2168,7 @@
                                     "label": "40km2 catchment areas", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bafu.wasser-teileinzugsgebiete_40", 
+                                    "layerBodId": "ch.bafu.wasser-teileinzugsgebiete_40", 
                                     "parentId": 240, 
                                     "path": "root/category_200/category_240/layer", 
                                     "id": 762003323
@@ -2179,7 +2179,7 @@
                                     "label": "Area outlets", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bafu.wasser-gebietsauslaesse", 
+                                    "layerBodId": "ch.bafu.wasser-gebietsauslaesse", 
                                     "parentId": 240, 
                                     "path": "root/category_200/category_240/layer", 
                                     "id": 762003319
@@ -2190,7 +2190,7 @@
                                     "label": "Catchment", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bafu.wasser-entnahme", 
+                                    "layerBodId": "ch.bafu.wasser-entnahme", 
                                     "parentId": 240, 
                                     "path": "root/category_200/category_240/layer", 
                                     "id": 762003390
@@ -2201,7 +2201,7 @@
                                     "label": "Hydrological gauging stations", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bafu.hydrologie-hydromessstationen", 
+                                    "layerBodId": "ch.bafu.hydrologie-hydromessstationen", 
                                     "parentId": 240, 
                                     "path": "root/category_200/category_240/layer", 
                                     "id": 762003437
@@ -2212,7 +2212,7 @@
                                     "label": "Hydrological network VECTOR25", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.vec25-gewaessernetz", 
+                                    "layerBodId": "ch.swisstopo.vec25-gewaessernetz", 
                                     "parentId": 240, 
                                     "path": "root/category_200/category_240/layer", 
                                     "id": 762003717
@@ -2223,7 +2223,7 @@
                                     "label": "Hydrology VECTOR200", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.vec200-hydrography", 
+                                    "layerBodId": "ch.swisstopo.vec200-hydrography", 
                                     "parentId": 240, 
                                     "path": "root/category_200/category_240/layer", 
                                     "id": 762003394
@@ -2234,7 +2234,7 @@
                                     "label": "Receiving watercourses", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bafu.wasser-vorfluter", 
+                                    "layerBodId": "ch.bafu.wasser-vorfluter", 
                                     "parentId": 240, 
                                     "path": "root/category_200/category_240/layer", 
                                     "id": 762003326
@@ -2245,7 +2245,7 @@
                                     "label": "Return flows", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bafu.wasser-rueckgabe", 
+                                    "layerBodId": "ch.bafu.wasser-rueckgabe", 
                                     "parentId": 240, 
                                     "path": "root/category_200/category_240/layer", 
                                     "id": 762003114
@@ -2256,7 +2256,7 @@
                                     "label": "Supply", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bafu.wasser-leitungen", 
+                                    "layerBodId": "ch.bafu.wasser-leitungen", 
                                     "parentId": 240, 
                                     "path": "root/category_200/category_240/layer", 
                                     "id": 762003425
@@ -2267,7 +2267,7 @@
                                     "label": "Temperature monitoring stations", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bafu.hydrologie-wassertemperaturmessstationen", 
+                                    "layerBodId": "ch.bafu.hydrologie-wassertemperaturmessstationen", 
                                     "parentId": 240, 
                                     "path": "root/category_200/category_240/layer", 
                                     "id": 762003315
@@ -2278,7 +2278,7 @@
                                     "label": "Volatile Organic Compounds", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bafu.naqua-grundwasser_voc", 
+                                    "layerBodId": "ch.bafu.naqua-grundwasser_voc", 
                                     "parentId": 240, 
                                     "path": "root/category_200/category_240/layer", 
                                     "id": 762003662
@@ -2289,7 +2289,7 @@
                                     "label": "Water status monitoring stations", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bafu.hydrologie-gewaesserzustandsmessstationen", 
+                                    "layerBodId": "ch.bafu.hydrologie-gewaesserzustandsmessstationen", 
                                     "parentId": 240, 
                                     "path": "root/category_200/category_240/layer", 
                                     "id": 762003316
@@ -2323,7 +2323,7 @@
                                     "label": "Crayfish plague", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bafu.fischerei-krebspest", 
+                                    "layerBodId": "ch.bafu.fischerei-krebspest", 
                                     "parentId": 220, 
                                     "path": "root/category_200/category_220/layer", 
                                     "id": 762003758
@@ -2334,7 +2334,7 @@
                                     "label": "Dead wood (NFI)", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bafu.landesforstinventar-totholz", 
+                                    "layerBodId": "ch.bafu.landesforstinventar-totholz", 
                                     "parentId": 220, 
                                     "path": "root/category_200/category_220/layer", 
                                     "id": 762003169
@@ -2345,7 +2345,7 @@
                                     "label": "Hedges and trees  VECTOR25", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.swisstopo.vec25-heckenbaeume", 
+                                    "layerBodId": "ch.swisstopo.vec25-heckenbaeume", 
                                     "parentId": 220, 
                                     "path": "root/category_200/category_220/layer", 
                                     "id": 762003352
@@ -2356,7 +2356,7 @@
                                     "label": "Ibex colonies", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bafu.fauna-steinbockkolonien", 
+                                    "layerBodId": "ch.bafu.fauna-steinbockkolonien", 
                                     "parentId": 220, 
                                     "path": "root/category_200/category_220/layer", 
                                     "id": 762003772
@@ -2367,7 +2367,7 @@
                                     "label": "PKD (proliferative kidney disease)", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bafu.fischerei-proliferative_nierenkrankheit", 
+                                    "layerBodId": "ch.bafu.fischerei-proliferative_nierenkrankheit", 
                                     "parentId": 220, 
                                     "path": "root/category_200/category_220/layer", 
                                     "id": 762003730
@@ -2378,7 +2378,7 @@
                                     "label": "Percentage of forest area (NFI)", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bafu.landesforstinventar-waldanteil", 
+                                    "layerBodId": "ch.bafu.landesforstinventar-waldanteil", 
                                     "parentId": 220, 
                                     "path": "root/category_200/category_220/layer", 
                                     "id": 762003789
@@ -2389,7 +2389,7 @@
                                     "label": "Raster distribution maps", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bafu.flora-verbreitungskarten", 
+                                    "layerBodId": "ch.bafu.flora-verbreitungskarten", 
                                     "parentId": 220, 
                                     "path": "root/category_200/category_220/layer", 
                                     "id": 762003171
@@ -2400,7 +2400,7 @@
                                     "label": "Red list bryophytes", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bafu.moose", 
+                                    "layerBodId": "ch.bafu.moose", 
                                     "parentId": 220, 
                                     "path": "root/category_200/category_220/layer", 
                                     "id": 762003118
@@ -2411,7 +2411,7 @@
                                     "label": "Standing volume (NFI)", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bafu.holzvorrat", 
+                                    "layerBodId": "ch.bafu.holzvorrat", 
                                     "parentId": 220, 
                                     "path": "root/category_200/category_220/layer", 
                                     "id": 762003737
@@ -2422,7 +2422,7 @@
                                     "label": "Tree species (NFI)", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bafu.landesforstinventar-baumarten", 
+                                    "layerBodId": "ch.bafu.landesforstinventar-baumarten", 
                                     "parentId": 220, 
                                     "path": "root/category_200/category_220/layer", 
                                     "id": 762003102
@@ -2433,7 +2433,7 @@
                                     "label": "Welten&Sutter atlas", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bafu.flora-weltensutter_atlas", 
+                                    "layerBodId": "ch.bafu.flora-weltensutter_atlas", 
                                     "parentId": 220, 
                                     "path": "root/category_200/category_220/layer", 
                                     "id": 762003173
@@ -2444,7 +2444,7 @@
                                     "label": "Wood harvesting and mortality (NFI)", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bafu.holznutzung", 
+                                    "layerBodId": "ch.bafu.holznutzung", 
                                     "parentId": 220, 
                                     "path": "root/category_200/category_220/layer", 
                                     "id": 762003741
@@ -2455,7 +2455,7 @@
                                     "label": "Wood increment (NFI)", 
                                     "topic": "ech", 
                                     "depth": 3, 
-                                    "idBod": "ch.bafu.holzzuwachs", 
+                                    "layerBodId": "ch.bafu.holzzuwachs", 
                                     "parentId": 220, 
                                     "path": "root/category_200/category_220/layer", 
                                     "id": 762003131
@@ -2482,7 +2482,7 @@
                                             "label": "Biosphere reserves", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.schutzgebiete-biosphaerenreservate", 
+                                            "layerBodId": "ch.bafu.schutzgebiete-biosphaerenreservate", 
                                             "parentId": 261, 
                                             "path": "root/category_200/category_260/category_261/layer", 
                                             "id": 762003563
@@ -2493,7 +2493,7 @@
                                             "label": "Emissions Plan 2015", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bav.laerm-emissionplan_eisenbahn_2015", 
+                                            "layerBodId": "ch.bav.laerm-emissionplan_eisenbahn_2015", 
                                             "parentId": 261, 
                                             "path": "root/category_200/category_260/category_261/layer", 
                                             "id": 762003185
@@ -2504,7 +2504,7 @@
                                             "label": "Pollutant releases (SwissPRTR)", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.swissprtr", 
+                                            "layerBodId": "ch.bafu.swissprtr", 
                                             "parentId": 261, 
                                             "path": "root/category_200/category_260/category_261/layer", 
                                             "id": 762003548
@@ -2515,7 +2515,7 @@
                                             "label": "Polluted sites - pub. transp.", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bav.kataster-belasteter-standorte-oev", 
+                                            "layerBodId": "ch.bav.kataster-belasteter-standorte-oev", 
                                             "parentId": 261, 
                                             "path": "root/category_200/category_260/category_261/layer", 
                                             "id": 762003227
@@ -2526,7 +2526,7 @@
                                             "label": "Protected sites", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.schutzgebiete-luftfahrt", 
+                                            "layerBodId": "ch.bafu.schutzgebiete-luftfahrt", 
                                             "parentId": 261, 
                                             "path": "root/category_200/category_260/category_261/layer", 
                                             "id": 762003191
@@ -2537,7 +2537,7 @@
                                             "label": "Quiet area for aviation", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bazl.landschaftsruhezonen", 
+                                            "layerBodId": "ch.bazl.landschaftsruhezonen", 
                                             "parentId": 261, 
                                             "path": "root/category_200/category_260/category_261/layer", 
                                             "id": 762003204
@@ -2548,7 +2548,7 @@
                                             "label": "REN dry habitat", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.ren-trockenstandorte", 
+                                            "layerBodId": "ch.bafu.ren-trockenstandorte", 
                                             "parentId": 261, 
                                             "path": "root/category_200/category_260/category_261/layer", 
                                             "id": 762003777
@@ -2559,7 +2559,7 @@
                                             "label": "REN extensive agricultural area", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.ren-extensive_landwirtschaftsgebiete", 
+                                            "layerBodId": "ch.bafu.ren-extensive_landwirtschaftsgebiete", 
                                             "parentId": 261, 
                                             "path": "root/category_200/category_260/category_261/layer", 
                                             "id": 762003139
@@ -2570,7 +2570,7 @@
                                             "label": "REN forest", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.ren-wald", 
+                                            "layerBodId": "ch.bafu.ren-wald", 
                                             "parentId": 261, 
                                             "path": "root/category_200/category_260/category_261/layer", 
                                             "id": 762003796
@@ -2581,7 +2581,7 @@
                                             "label": "REN watercourses / lakes", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.ren-fliessgewaesser_seen", 
+                                            "layerBodId": "ch.bafu.ren-fliessgewaesser_seen", 
                                             "parentId": 261, 
                                             "path": "root/category_200/category_260/category_261/layer", 
                                             "id": 762003460
@@ -2592,7 +2592,7 @@
                                             "label": "REN wetland site", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.ren-feuchtgebiete", 
+                                            "layerBodId": "ch.bafu.ren-feuchtgebiete", 
                                             "parentId": 261, 
                                             "path": "root/category_200/category_260/category_261/layer", 
                                             "id": 762003781
@@ -2603,7 +2603,7 @@
                                             "label": "Railway noise (Lr_day)", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.laerm-bahnlaerm_tag", 
+                                            "layerBodId": "ch.bafu.laerm-bahnlaerm_tag", 
                                             "parentId": 261, 
                                             "path": "root/category_200/category_260/category_261/layer", 
                                             "id": 762003151
@@ -2614,7 +2614,7 @@
                                             "label": "Railway noise (Lr_night)", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.laerm-bahnlaerm_nacht", 
+                                            "layerBodId": "ch.bafu.laerm-bahnlaerm_nacht", 
                                             "parentId": 261, 
                                             "path": "root/category_200/category_260/category_261/layer", 
                                             "id": 762003819
@@ -2625,7 +2625,7 @@
                                             "label": "Road traffic noise (Lr_day)", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.laerm-strassenlaerm_tag", 
+                                            "layerBodId": "ch.bafu.laerm-strassenlaerm_tag", 
                                             "parentId": 261, 
                                             "path": "root/category_200/category_260/category_261/layer", 
                                             "id": 762003472
@@ -2636,7 +2636,7 @@
                                             "label": "Road traffic noise (Lr_night)", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.laerm-strassenlaerm_nacht", 
+                                            "layerBodId": "ch.bafu.laerm-strassenlaerm_nacht", 
                                             "parentId": 261, 
                                             "path": "root/category_200/category_260/category_261/layer", 
                                             "id": 762003713
@@ -2647,7 +2647,7 @@
                                             "label": "Wildlife sanctuary zones - no hunting areas", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.wildruhezonen-jagdbanngebiete", 
+                                            "layerBodId": "ch.bafu.wildruhezonen-jagdbanngebiete", 
                                             "parentId": 261, 
                                             "path": "root/category_200/category_260/category_261/layer", 
                                             "id": 762003707
@@ -2658,7 +2658,7 @@
                                             "label": "Wildlife sanctuary zones - no hunting areas", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.wrz-jagdbanngebiete_select", 
+                                            "layerBodId": "ch.bafu.wrz-jagdbanngebiete_select", 
                                             "parentId": 261, 
                                             "path": "root/category_200/category_260/category_261/layer", 
                                             "id": 762003493
@@ -2669,7 +2669,7 @@
                                             "label": "Wildlife sanctuary zones - portal", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.wrz-wildruhezonen_portal", 
+                                            "layerBodId": "ch.bafu.wrz-wildruhezonen_portal", 
                                             "parentId": 261, 
                                             "path": "root/category_200/category_260/category_261/layer", 
                                             "id": 762003163
@@ -2680,7 +2680,7 @@
                                             "label": "Wildlife sanctuary zones - tracks", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.wege-wildruhezonen-jagdbanngebiete", 
+                                            "layerBodId": "ch.bafu.wege-wildruhezonen-jagdbanngebiete", 
                                             "parentId": 261, 
                                             "path": "root/category_200/category_260/category_261/layer", 
                                             "id": 762003486
@@ -2691,7 +2691,7 @@
                                             "label": "Wildlife sanctuary zones Portal - tracks", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.wrz-wildruhezonen-jagdbanngebiete-wege-routen", 
+                                            "layerBodId": "ch.bafu.wrz-wildruhezonen-jagdbanngebiete-wege-routen", 
                                             "parentId": 261, 
                                             "path": "root/category_200/category_260/category_261/layer", 
                                             "id": 762003513
@@ -2714,7 +2714,7 @@
                                             "label": "Amphibians appendix 4", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.bundesinventare-amphibien_anhang4", 
+                                            "layerBodId": "ch.bafu.bundesinventare-amphibien_anhang4", 
                                             "parentId": 262, 
                                             "path": "root/category_200/category_260/category_262/layer", 
                                             "id": 762003431
@@ -2725,7 +2725,7 @@
                                             "label": "Amphibians shifting sites", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.bundesinventare-amphibien_wanderobjekte", 
+                                            "layerBodId": "ch.bafu.bundesinventare-amphibien_wanderobjekte", 
                                             "parentId": 262, 
                                             "path": "root/category_200/category_260/category_262/layer", 
                                             "id": 762003482
@@ -2736,7 +2736,7 @@
                                             "label": "Amphibians stationary objects", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.bundesinventare-amphibien", 
+                                            "layerBodId": "ch.bafu.bundesinventare-amphibien", 
                                             "parentId": 262, 
                                             "path": "root/category_200/category_260/category_262/layer", 
                                             "id": 762003751
@@ -2747,7 +2747,7 @@
                                             "label": "Dry grasslands (DGS)", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.bundesinventare-trockenwiesen_trockenweiden", 
+                                            "layerBodId": "ch.bafu.bundesinventare-trockenwiesen_trockenweiden", 
                                             "parentId": 262, 
                                             "path": "root/category_200/category_260/category_262/layer", 
                                             "id": 762003223
@@ -2758,7 +2758,7 @@
                                             "label": "Dry grasslands appendix 2", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhang2", 
+                                            "layerBodId": "ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhang2", 
                                             "parentId": 262, 
                                             "path": "root/category_200/category_260/category_262/layer", 
                                             "id": 762003478
@@ -2769,7 +2769,7 @@
                                             "label": "Emerald sites", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.schutzgebiete-smaragd", 
+                                            "layerBodId": "ch.bafu.schutzgebiete-smaragd", 
                                             "parentId": 262, 
                                             "path": "root/category_200/category_260/category_262/layer", 
                                             "id": 762003768
@@ -2780,7 +2780,7 @@
                                             "label": "Fens", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.bundesinventare-flachmoore", 
+                                            "layerBodId": "ch.bafu.bundesinventare-flachmoore", 
                                             "parentId": 262, 
                                             "path": "root/category_200/category_260/category_262/layer", 
                                             "id": 762003229
@@ -2791,7 +2791,7 @@
                                             "label": "Floodplains", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.bundesinventare-auen", 
+                                            "layerBodId": "ch.bafu.bundesinventare-auen", 
                                             "parentId": 262, 
                                             "path": "root/category_200/category_260/category_262/layer", 
                                             "id": 762003544
@@ -2802,7 +2802,7 @@
                                             "label": "Grayling: distribution area", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.fischerei-aeschen_verbreitungsgebiet", 
+                                            "layerBodId": "ch.bafu.fischerei-aeschen_verbreitungsgebiet", 
                                             "parentId": 262, 
                                             "path": "root/category_200/category_260/category_262/layer", 
                                             "id": 762003465
@@ -2813,7 +2813,7 @@
                                             "label": "Graylings: core areas", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.fischerei-aeschen_kernzonen", 
+                                            "layerBodId": "ch.bafu.fischerei-aeschen_kernzonen", 
                                             "parentId": 262, 
                                             "path": "root/category_200/category_260/category_262/layer", 
                                             "id": 762003419
@@ -2824,7 +2824,7 @@
                                             "label": "Graylings: larva habitats", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.fischerei-aeschen_larvenhabitate", 
+                                            "layerBodId": "ch.bafu.fischerei-aeschen_larvenhabitate", 
                                             "parentId": 262, 
                                             "path": "root/category_200/category_260/category_262/layer", 
                                             "id": 762003100
@@ -2835,7 +2835,7 @@
                                             "label": "Graylings: spawning grounds", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.fischerei-aeschen_laichplaetze", 
+                                            "layerBodId": "ch.bafu.fischerei-aeschen_laichplaetze", 
                                             "parentId": 262, 
                                             "path": "root/category_200/category_260/category_262/layer", 
                                             "id": 762003422
@@ -2846,7 +2846,7 @@
                                             "label": "ILNM", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.bundesinventare-bln", 
+                                            "layerBodId": "ch.bafu.bundesinventare-bln", 
                                             "parentId": 262, 
                                             "path": "root/category_200/category_260/category_262/layer", 
                                             "id": 762003536
@@ -2857,7 +2857,7 @@
                                             "label": "Interregional wildlife corridor", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.fauna-wildtierkorridor_national", 
+                                            "layerBodId": "ch.bafu.fauna-wildtierkorridor_national", 
                                             "parentId": 262, 
                                             "path": "root/category_200/category_260/category_262/layer", 
                                             "id": 762003677
@@ -2868,7 +2868,7 @@
                                             "label": "Landschaftstypologie Schweiz", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.are.landschaftstypen", 
+                                            "layerBodId": "ch.are.landschaftstypen", 
                                             "parentId": 262, 
                                             "path": "root/category_200/category_260/category_262/layer", 
                                             "id": 762003371
@@ -2879,7 +2879,7 @@
                                             "label": "Mire landscapes", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.bundesinventare-moorlandschaften", 
+                                            "layerBodId": "ch.bafu.bundesinventare-moorlandschaften", 
                                             "parentId": 262, 
                                             "path": "root/category_200/category_260/category_262/layer", 
                                             "id": 762003565
@@ -2890,7 +2890,7 @@
                                             "label": "Nase spawning grounds", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.fischerei-nasenlaichplaetze", 
+                                            "layerBodId": "ch.bafu.fischerei-nasenlaichplaetze", 
                                             "parentId": 262, 
                                             "path": "root/category_200/category_260/category_262/layer", 
                                             "id": 762003705
@@ -2901,7 +2901,7 @@
                                             "label": "Nitrates", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.naqua-grundwasser_nitrat", 
+                                            "layerBodId": "ch.bafu.naqua-grundwasser_nitrat", 
                                             "parentId": 262, 
                                             "path": "root/category_200/category_260/category_262/layer", 
                                             "id": 762003652
@@ -2912,7 +2912,7 @@
                                             "label": "Parks", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.schutzgebiete-paerke_nationaler_bedeutung", 
+                                            "layerBodId": "ch.bafu.schutzgebiete-paerke_nationaler_bedeutung", 
                                             "parentId": 262, 
                                             "path": "root/category_200/category_260/category_262/layer", 
                                             "id": 762003528
@@ -2923,7 +2923,7 @@
                                             "label": "Plant protection products", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.naqua-grundwasser_psm", 
+                                            "layerBodId": "ch.bafu.naqua-grundwasser_psm", 
                                             "parentId": 262, 
                                             "path": "root/category_200/category_260/category_262/layer", 
                                             "id": 762003655
@@ -2934,7 +2934,7 @@
                                             "label": "Quaking bogs", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.flora-schwingrasen", 
+                                            "layerBodId": "ch.bafu.flora-schwingrasen", 
                                             "parentId": 262, 
                                             "path": "root/category_200/category_260/category_262/layer", 
                                             "id": 762003832
@@ -2945,7 +2945,7 @@
                                             "label": "Raised bogs", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.bundesinventare-hochmoore", 
+                                            "layerBodId": "ch.bafu.bundesinventare-hochmoore", 
                                             "parentId": 262, 
                                             "path": "root/category_200/category_260/category_262/layer", 
                                             "id": 762003540
@@ -2956,7 +2956,7 @@
                                             "label": "Ramsar", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.schutzgebiete-ramsar", 
+                                            "layerBodId": "ch.bafu.schutzgebiete-ramsar", 
                                             "parentId": 262, 
                                             "path": "root/category_200/category_260/category_262/layer", 
                                             "id": 762003792
@@ -2967,7 +2967,7 @@
                                             "label": "Regional fens", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.bundesinventare-flachmoore_regional", 
+                                            "layerBodId": "ch.bafu.bundesinventare-flachmoore_regional", 
                                             "parentId": 262, 
                                             "path": "root/category_200/category_260/category_262/layer", 
                                             "id": 762003250
@@ -2978,7 +2978,7 @@
                                             "label": "Swiss National Park", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.schutzgebiete-schweizerischer_nationalpark", 
+                                            "layerBodId": "ch.bafu.schutzgebiete-schweizerischer_nationalpark", 
                                             "parentId": 262, 
                                             "path": "root/category_200/category_260/category_262/layer", 
                                             "id": 762003699
@@ -2989,7 +2989,7 @@
                                             "label": "Swiss game reserves", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.bundesinventare-jagdbanngebiete", 
+                                            "layerBodId": "ch.bafu.bundesinventare-jagdbanngebiete", 
                                             "parentId": 262, 
                                             "path": "root/category_200/category_260/category_262/layer", 
                                             "id": 762003488
@@ -3000,7 +3000,7 @@
                                             "label": "UNESCO World natural heritage", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.unesco-weltnaturerbe", 
+                                            "layerBodId": "ch.bafu.unesco-weltnaturerbe", 
                                             "parentId": 262, 
                                             "path": "root/category_200/category_260/category_262/layer", 
                                             "id": 762003246
@@ -3011,7 +3011,7 @@
                                             "label": "Water & migrant bird reserves", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.bundesinventare-vogelreservate", 
+                                            "layerBodId": "ch.bafu.bundesinventare-vogelreservate", 
                                             "parentId": 262, 
                                             "path": "root/category_200/category_260/category_262/layer", 
                                             "id": 762003509
@@ -3022,7 +3022,7 @@
                                             "label": "Wildlife network system", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.fauna-vernetzungsachsen_national", 
+                                            "layerBodId": "ch.bafu.fauna-vernetzungsachsen_national", 
                                             "parentId": 262, 
                                             "path": "root/category_200/category_260/category_262/layer", 
                                             "id": 762003674
@@ -3033,7 +3033,7 @@
                                             "label": "Wildlife sanctuary zones", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.schutzgebiete-wildruhezonen", 
+                                            "layerBodId": "ch.bafu.schutzgebiete-wildruhezonen", 
                                             "parentId": 262, 
                                             "path": "root/category_200/category_260/category_262/layer", 
                                             "id": 762003740
@@ -3068,7 +3068,7 @@
                                             "label": "Aeromagnetic", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-geophysik-aeromagnetische_karte_schweiz", 
+                                            "layerBodId": "ch.swisstopo.geologie-geophysik-aeromagnetische_karte_schweiz", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003519
@@ -3079,7 +3079,7 @@
                                             "label": "Aeromagnetic Plateau/Jura", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-geophysik-aeromagnetische_karte_jura", 
+                                            "layerBodId": "ch.swisstopo.geologie-geophysik-aeromagnetische_karte_jura", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003803
@@ -3090,7 +3090,7 @@
                                             "label": "Bouguer-Anomalies", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-geodaesie-bouguer_anomalien", 
+                                            "layerBodId": "ch.swisstopo.geologie-geodaesie-bouguer_anomalien", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003136
@@ -3101,7 +3101,7 @@
                                             "label": "Brick manufactures 1907", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-geotechnik-ziegeleien_1907", 
+                                            "layerBodId": "ch.swisstopo.geologie-geotechnik-ziegeleien_1907", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003702
@@ -3112,7 +3112,7 @@
                                             "label": "Brick manufactures 1965", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-geotechnik-ziegeleien_1965", 
+                                            "layerBodId": "ch.swisstopo.geologie-geotechnik-ziegeleien_1965", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003624
@@ -3123,7 +3123,7 @@
                                             "label": "Brick manufactures 1995", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-geotechnik-ziegeleien_1995", 
+                                            "layerBodId": "ch.swisstopo.geologie-geotechnik-ziegeleien_1995", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003629
@@ -3134,7 +3134,7 @@
                                             "label": "Cement industry 1965", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-geotechnik-zementindustrie_1965", 
+                                            "layerBodId": "ch.swisstopo.geologie-geotechnik-zementindustrie_1965", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003298
@@ -3145,7 +3145,7 @@
                                             "label": "Cement industry 1995", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-geotechnik-zementindustrie_1995", 
+                                            "layerBodId": "ch.swisstopo.geologie-geotechnik-zementindustrie_1995", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003299
@@ -3156,7 +3156,7 @@
                                             "label": "Classification of rocks", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-geotechnik-gk500-gesteinsklassierung", 
+                                            "layerBodId": "ch.swisstopo.geologie-geotechnik-gk500-gesteinsklassierung", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003293
@@ -3167,7 +3167,7 @@
                                             "label": "Division GeoMaps 500", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-geolkarten500.metadata", 
+                                            "layerBodId": "ch.swisstopo.geologie-geolkarten500.metadata", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003692
@@ -3178,7 +3178,7 @@
                                             "label": "Energetic raw materials", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-rohstoffe-kohlen_bitumen_erdgas", 
+                                            "layerBodId": "ch.swisstopo.geologie-rohstoffe-kohlen_bitumen_erdgas", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003602
@@ -3189,7 +3189,7 @@
                                             "label": "Geological Atlas 1:25 000", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-geologischer_atlas", 
+                                            "layerBodId": "ch.swisstopo.geologie-geologischer_atlas", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003285
@@ -3200,7 +3200,7 @@
                                             "label": "Geology 1:500 000", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-geologische_karte", 
+                                            "layerBodId": "ch.swisstopo.geologie-geologische_karte", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003650
@@ -3211,7 +3211,7 @@
                                             "label": "Geotechnical and rocks", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-geotechnik-gk200", 
+                                            "layerBodId": "ch.swisstopo.geologie-geotechnik-gk200", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003645
@@ -3222,7 +3222,7 @@
                                             "label": "Geothermal energy", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-geophysik-geothermie", 
+                                            "layerBodId": "ch.swisstopo.geologie-geophysik-geothermie", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003181
@@ -3233,7 +3233,7 @@
                                             "label": "Gravimetrischer Atlas", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-gravimetrischer_atlas", 
+                                            "layerBodId": "ch.swisstopo.geologie-gravimetrischer_atlas", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003129
@@ -3244,7 +3244,7 @@
                                             "label": "Groundwater resources", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen", 
+                                            "layerBodId": "ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003469
@@ -3255,7 +3255,7 @@
                                             "label": "Groundwater vulnerability", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-hydrogeologische_karte-grundwasservulnerabilitaet", 
+                                            "layerBodId": "ch.swisstopo.geologie-hydrogeologische_karte-grundwasservulnerabilitaet", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003811
@@ -3266,7 +3266,7 @@
                                             "label": "Historical monuments' rocks", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-geotechnik-steine_historische_bauwerke", 
+                                            "layerBodId": "ch.swisstopo.geologie-geotechnik-steine_historische_bauwerke", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003681
@@ -3277,7 +3277,7 @@
                                             "label": "Inclination", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-geophysik-inklination", 
+                                            "layerBodId": "ch.swisstopo.geologie-geophysik-inklination", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003471
@@ -3288,7 +3288,7 @@
                                             "label": "Industrial minerals", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-rohstoffe-industrieminerale", 
+                                            "layerBodId": "ch.swisstopo.geologie-rohstoffe-industrieminerale", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003258
@@ -3299,7 +3299,7 @@
                                             "label": "Isostatic anomalies", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-geodaesie-isostatische_anomalien", 
+                                            "layerBodId": "ch.swisstopo.geologie-geodaesie-isostatische_anomalien", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003099
@@ -3310,7 +3310,7 @@
                                             "label": "Last glacial maximum", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-eiszeit-lgm-raster", 
+                                            "layerBodId": "ch.swisstopo.geologie-eiszeit-lgm-raster", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003810
@@ -3321,7 +3321,7 @@
                                             "label": "Magnetic field strength", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-geophysik-totalintensitaet", 
+                                            "layerBodId": "ch.swisstopo.geologie-geophysik-totalintensitaet", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003468
@@ -3332,7 +3332,7 @@
                                             "label": "Main lithological groups", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-geotechnik-gk500-lithologie_hauptgruppen", 
+                                            "layerBodId": "ch.swisstopo.geologie-geotechnik-gk500-lithologie_hauptgruppen", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003644
@@ -3343,7 +3343,7 @@
                                             "label": "Mineral first resources", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-geotechnik-mineralische_rohstoffe200", 
+                                            "layerBodId": "ch.swisstopo.geologie-geotechnik-mineralische_rohstoffe200", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003601
@@ -3354,7 +3354,7 @@
                                             "label": "Mineralizations", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-rohstoffe-vererzungen", 
+                                            "layerBodId": "ch.swisstopo.geologie-rohstoffe-vererzungen", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003245
@@ -3365,7 +3365,7 @@
                                             "label": "Quarries 1915", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-geotechnik-steinbrueche_1915", 
+                                            "layerBodId": "ch.swisstopo.geologie-geotechnik-steinbrueche_1915", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003585
@@ -3376,7 +3376,7 @@
                                             "label": "Quarries 1965", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-geotechnik-steinbrueche_1965", 
+                                            "layerBodId": "ch.swisstopo.geologie-geotechnik-steinbrueche_1965", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003614
@@ -3387,7 +3387,7 @@
                                             "label": "Quarries 1980", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-geotechnik-steinbrueche_1980", 
+                                            "layerBodId": "ch.swisstopo.geologie-geotechnik-steinbrueche_1980", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003613
@@ -3398,7 +3398,7 @@
                                             "label": "Quarries 1995", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-geotechnik-steinbrueche_1995", 
+                                            "layerBodId": "ch.swisstopo.geologie-geotechnik-steinbrueche_1995", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003609
@@ -3409,7 +3409,7 @@
                                             "label": "Rocks origin", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-geotechnik-gk500-genese", 
+                                            "layerBodId": "ch.swisstopo.geologie-geotechnik-gk500-genese", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003695
@@ -3420,7 +3420,7 @@
                                             "label": "Swiss Geotopes", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-geotope", 
+                                            "layerBodId": "ch.swisstopo.geologie-geotope", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003403
@@ -3431,7 +3431,7 @@
                                             "label": "Tectonic 1:500 000", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.swisstopo.geologie-tektonische_karte", 
+                                            "layerBodId": "ch.swisstopo.geologie-tektonische_karte", 
                                             "parentId": 211, 
                                             "path": "root/category_200/category_210/category_211/layer", 
                                             "id": 762003294
@@ -3454,7 +3454,7 @@
                                             "label": "Aptitude: Crop types", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.blw.bodeneignung-kulturtyp", 
+                                            "layerBodId": "ch.blw.bodeneignung-kulturtyp", 
                                             "parentId": 212, 
                                             "path": "root/category_200/category_210/category_212/layer", 
                                             "id": 762003165
@@ -3465,7 +3465,7 @@
                                             "label": "Aptitude: Cropland", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.blw.bodeneignung-kulturland", 
+                                            "layerBodId": "ch.blw.bodeneignung-kulturland", 
                                             "parentId": 212, 
                                             "path": "root/category_200/category_210/category_212/layer", 
                                             "id": 762003264
@@ -3476,7 +3476,7 @@
                                             "label": "Gr\u00fcndigkeit", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.blw.bodeneignung-gruendigkeit", 
+                                            "layerBodId": "ch.blw.bodeneignung-gruendigkeit", 
                                             "parentId": 212, 
                                             "path": "root/category_200/category_210/category_212/layer", 
                                             "id": 762003550
@@ -3487,7 +3487,7 @@
                                             "label": "N\u00e4hrstoffspeicherverm\u00f6gen", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.blw.bodeneignung-naehrstoffspeichervermoegen", 
+                                            "layerBodId": "ch.blw.bodeneignung-naehrstoffspeichervermoegen", 
                                             "parentId": 212, 
                                             "path": "root/category_200/category_210/category_212/layer", 
                                             "id": 762003569
@@ -3498,7 +3498,7 @@
                                             "label": "Potential permafrost distribution", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.permafrost", 
+                                            "layerBodId": "ch.bafu.permafrost", 
                                             "parentId": 212, 
                                             "path": "root/category_200/category_210/category_212/layer", 
                                             "id": 762003764
@@ -3509,7 +3509,7 @@
                                             "label": "Skelettgehalt", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.blw.bodeneignung-skelettgehalt", 
+                                            "layerBodId": "ch.blw.bodeneignung-skelettgehalt", 
                                             "parentId": 212, 
                                             "path": "root/category_200/category_210/category_212/layer", 
                                             "id": 762003253
@@ -3520,7 +3520,7 @@
                                             "label": "Vern\u00e4ssung", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.blw.bodeneignung-vernaessung", 
+                                            "layerBodId": "ch.blw.bodeneignung-vernaessung", 
                                             "parentId": 212, 
                                             "path": "root/category_200/category_210/category_212/layer", 
                                             "id": 762003722
@@ -3531,7 +3531,7 @@
                                             "label": "Wasserdurchl\u00e4ssigkeit", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.blw.bodeneignung-wasserdurchlaessigkeit", 
+                                            "layerBodId": "ch.blw.bodeneignung-wasserdurchlaessigkeit", 
                                             "parentId": 212, 
                                             "path": "root/category_200/category_210/category_212/layer", 
                                             "id": 762003770
@@ -3542,7 +3542,7 @@
                                             "label": "Wasserspeicherverm\u00f6gen", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.blw.bodeneignung-wasserspeichervermoegen", 
+                                            "layerBodId": "ch.blw.bodeneignung-wasserspeichervermoegen", 
                                             "parentId": 212, 
                                             "path": "root/category_200/category_210/category_212/layer", 
                                             "id": 762003813
@@ -3565,7 +3565,7 @@
                                             "label": "Areas of flooding Aquaprotect 100", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.aquaprotect_100", 
+                                            "layerBodId": "ch.bafu.aquaprotect_100", 
                                             "parentId": 213, 
                                             "path": "root/category_200/category_210/category_213/layer", 
                                             "id": 762003235
@@ -3576,7 +3576,7 @@
                                             "label": "Areas of flooding Aquaprotect 250", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.aquaprotect_250", 
+                                            "layerBodId": "ch.bafu.aquaprotect_250", 
                                             "parentId": 213, 
                                             "path": "root/category_200/category_210/category_213/layer", 
                                             "id": 762003726
@@ -3587,7 +3587,7 @@
                                             "label": "Areas of flooding Aquaprotect 50", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.aquaprotect_050", 
+                                            "layerBodId": "ch.bafu.aquaprotect_050", 
                                             "parentId": 213, 
                                             "path": "root/category_200/category_210/category_213/layer", 
                                             "id": 762003732
@@ -3598,7 +3598,7 @@
                                             "label": "Areas of flooding Aquaprotect 500", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.aquaprotect_500", 
+                                            "layerBodId": "ch.bafu.aquaprotect_500", 
                                             "parentId": 213, 
                                             "path": "root/category_200/category_210/category_213/layer", 
                                             "id": 762003559
@@ -3609,7 +3609,7 @@
                                             "label": "Debris flow", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.silvaprotect-murgang", 
+                                            "layerBodId": "ch.bafu.silvaprotect-murgang", 
                                             "parentId": 213, 
                                             "path": "root/category_200/category_210/category_213/layer", 
                                             "id": 762003160
@@ -3620,7 +3620,7 @@
                                             "label": "Landslide", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.silvaprotect-hangmuren", 
+                                            "layerBodId": "ch.bafu.silvaprotect-hangmuren", 
                                             "parentId": 213, 
                                             "path": "root/category_200/category_210/category_213/layer", 
                                             "id": 762003175
@@ -3631,7 +3631,7 @@
                                             "label": "Lothar storm damage", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.waldschadenflaechen-lothar", 
+                                            "layerBodId": "ch.bafu.waldschadenflaechen-lothar", 
                                             "parentId": 213, 
                                             "path": "root/category_200/category_210/category_213/layer", 
                                             "id": 762003709
@@ -3642,7 +3642,7 @@
                                             "label": "Micro-zoning", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.gefahren-mikrozonierung", 
+                                            "layerBodId": "ch.bafu.gefahren-mikrozonierung", 
                                             "parentId": 213, 
                                             "path": "root/category_200/category_210/category_213/layer", 
                                             "id": 762003440
@@ -3653,7 +3653,7 @@
                                             "label": "Overbank sedimentation", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.silvaprotect-uebersarung", 
+                                            "layerBodId": "ch.bafu.silvaprotect-uebersarung", 
                                             "parentId": 213, 
                                             "path": "root/category_200/category_210/category_213/layer", 
                                             "id": 762003775
@@ -3664,7 +3664,7 @@
                                             "label": "Past earthquakes", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.gefahren-historische_erdbeben", 
+                                            "layerBodId": "ch.bafu.gefahren-historische_erdbeben", 
                                             "parentId": 213, 
                                             "path": "root/category_200/category_210/category_213/layer", 
                                             "id": 762003242
@@ -3675,7 +3675,7 @@
                                             "label": "Rockfall", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.silvaprotect-sturz", 
+                                            "layerBodId": "ch.bafu.silvaprotect-sturz", 
                                             "parentId": 213, 
                                             "path": "root/category_200/category_210/category_213/layer", 
                                             "id": 762003723
@@ -3686,7 +3686,7 @@
                                             "label": "Seismic risk zones", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.gefahren-gefaehrdungszonen", 
+                                            "layerBodId": "ch.bafu.gefahren-gefaehrdungszonen", 
                                             "parentId": 213, 
                                             "path": "root/category_200/category_210/category_213/layer", 
                                             "id": 762003218
@@ -3697,7 +3697,7 @@
                                             "label": "ShowMe cantons: avalanches", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.showme-kantone_lawinen", 
+                                            "layerBodId": "ch.bafu.showme-kantone_lawinen", 
                                             "parentId": 213, 
                                             "path": "root/category_200/category_210/category_213/layer", 
                                             "id": 762003166
@@ -3708,7 +3708,7 @@
                                             "label": "ShowMe cantons: floods", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.showme-kantone_hochwasser", 
+                                            "layerBodId": "ch.bafu.showme-kantone_hochwasser", 
                                             "parentId": 213, 
                                             "path": "root/category_200/category_210/category_213/layer", 
                                             "id": 762003500
@@ -3719,7 +3719,7 @@
                                             "label": "ShowMe cantons: landslides", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.showme-kantone_rutschungen", 
+                                            "layerBodId": "ch.bafu.showme-kantone_rutschungen", 
                                             "parentId": 213, 
                                             "path": "root/category_200/category_210/category_213/layer", 
                                             "id": 762003800
@@ -3730,7 +3730,7 @@
                                             "label": "ShowMe cantons: rockfall", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.showme-kantone_sturzprozesse", 
+                                            "layerBodId": "ch.bafu.showme-kantone_sturzprozesse", 
                                             "parentId": 213, 
                                             "path": "root/category_200/category_210/category_213/layer", 
                                             "id": 762003449
@@ -3741,7 +3741,7 @@
                                             "label": "ShowMe communes: avalanches", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.showme-gemeinden_lawinen", 
+                                            "layerBodId": "ch.bafu.showme-gemeinden_lawinen", 
                                             "parentId": 213, 
                                             "path": "root/category_200/category_210/category_213/layer", 
                                             "id": 762003505
@@ -3752,7 +3752,7 @@
                                             "label": "ShowMe communes: floods", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.showme-gemeinden_hochwasser", 
+                                            "layerBodId": "ch.bafu.showme-gemeinden_hochwasser", 
                                             "parentId": 213, 
                                             "path": "root/category_200/category_210/category_213/layer", 
                                             "id": 762003188
@@ -3763,7 +3763,7 @@
                                             "label": "ShowMe communes: landslides", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.showme-gemeinden_rutschungen", 
+                                            "layerBodId": "ch.bafu.showme-gemeinden_rutschungen", 
                                             "parentId": 213, 
                                             "path": "root/category_200/category_210/category_213/layer", 
                                             "id": 762003515
@@ -3774,7 +3774,7 @@
                                             "label": "ShowMe communes: rockfall", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.showme-gemeinden_sturzprozesse", 
+                                            "layerBodId": "ch.bafu.showme-gemeinden_sturzprozesse", 
                                             "parentId": 213, 
                                             "path": "root/category_200/category_210/category_213/layer", 
                                             "id": 762003106
@@ -3785,7 +3785,7 @@
                                             "label": "Snow avalanches", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.silvaprotect-lawinen", 
+                                            "layerBodId": "ch.bafu.silvaprotect-lawinen", 
                                             "parentId": 213, 
                                             "path": "root/category_200/category_210/category_213/layer", 
                                             "id": 762003806
@@ -3796,7 +3796,7 @@
                                             "label": "Spectral micro-zoning", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.gefahren-spektral", 
+                                            "layerBodId": "ch.bafu.gefahren-spektral", 
                                             "parentId": 213, 
                                             "path": "root/category_200/category_210/category_213/layer", 
                                             "id": 762003553
@@ -3807,7 +3807,7 @@
                                             "label": "Subsoil classes", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.gefahren-baugrundklassen", 
+                                            "layerBodId": "ch.bafu.gefahren-baugrundklassen", 
                                             "parentId": 213, 
                                             "path": "root/category_200/category_210/category_213/layer", 
                                             "id": 762003239
@@ -3818,7 +3818,7 @@
                                             "label": "Vivian storm damage", 
                                             "topic": "ech", 
                                             "depth": 4, 
-                                            "idBod": "ch.bafu.waldschadenflaechen-vivian", 
+                                            "layerBodId": "ch.bafu.waldschadenflaechen-vivian", 
                                             "parentId": 213, 
                                             "path": "root/category_200/category_210/category_213/layer", 
                                             "id": 762003200

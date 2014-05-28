@@ -20,21 +20,21 @@
          * it to the map.
          *
          * FIXME: we are super cautious here and display error messages
-         * when either the layer identified by item.idBod doesn't exist
+         * when either the layer identified by item.layerBodId doesn't exist
          * in the gaLayers service, or gaLayers cannot construct an ol
          * layer object for that layer.
          */
         addLayer: function(map, item) {
           var error = true;
-          if (angular.isDefined(gaLayers.getLayer(item.idBod))) {
-            var layer = gaLayers.getOlLayerById(item.idBod);
+          if (angular.isDefined(gaLayers.getLayer(item.layerBodId))) {
+            var layer = gaLayers.getOlLayerById(item.layerBodId);
             if (angular.isDefined(layer)) {
               error = false;
               map.addLayer(layer);
             }
           }
           if (error) {
-            alert('Layer not supported by gaLayers (' + item.idBod + ').');
+            alert('Layer not supported by gaLayers (' + item.layerBodId + ').');
             item.errorLoading = true;
           }
         }

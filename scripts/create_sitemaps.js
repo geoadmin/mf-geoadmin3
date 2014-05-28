@@ -100,7 +100,7 @@ var getUrlPathsForLayers = function(topic) {
       var ret = [];
       if (json.results && json.results.root) {
         visitTree(json.results.root, function(layer) {
-          ret.push('/?topic=' + topic + '&layers=' + layer.idBod);
+          ret.push('/?topic=' + topic + '&layers=' + layer.layerBodId);
         });
       }
       deferred.resolve(ret);
