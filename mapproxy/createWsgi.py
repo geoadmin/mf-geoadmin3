@@ -56,8 +56,3 @@ f=open(target, "wt")
 f.write(output)
 f.close()
 os.chmod(target, 0755)
-try:
-    geodata = grp.getgrnam('geodata')
-    os.chown(target, 2002, geodata.gr_gid)
-except KeyError:
-    print "Sorry. No group 'geodata'"
