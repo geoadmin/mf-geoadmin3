@@ -192,6 +192,10 @@ One layer, one search text and one attribute.
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | searchField (required)            | The name of the field to search (only one search field can be searched at a time).        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
+| contains (optional)               | If false, the operation searches for an exact match of the searchText string. An exact    |
+|                                   | match is case sensitive. Otherwise, it searches for a value that contains the searchText  |
+|                                   | string provided. This search is not case sensitive. The default is true.                  |
++-----------------------------------+-------------------------------------------------------------------------------------------+
 | lang (optional)                   | The language metadata. Possible values: de (default), fr, it, rm, en.                     |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | geometryFormat (optional)         | Default to ESRI geometry format. Possible values are: "esrijson" or "geojson".            |
@@ -204,8 +208,9 @@ One layer, one search text and one attribute.
 Examples
 ^^^^^^^^
 
-- Search for “Lavaux” in the field “bln_name” of the layer “ch.bafu.bundesinventare-bln”: `https://api3.geo.admin.ch/rest/services/api/MapServer/find?layer=ch.bafu.bundesinventare-bln&searchText=Lavaux&searchField=bln_name&returnGeometry=false  <../../../rest/services/api/MapServer/find?layer=ch.bafu.bundesinventare-bln&searchText=Lavaux&searchField=bln_name&returnGeometry=false>`_
-- Search for “1231641” in the field “egid” of the layer “ch.bfs.gebaeude_wohnungs_register”: `https://api3.geo.admin.ch/rest/services/api/MapServer/find?layer=ch.bfs.gebaeude_wohnungs_register&searchText=1231641&searchField=egid&returnGeometry=false <../../../rest/services/api/MapServer/find?layer=ch.bfs.gebaeude_wohnungs_register&searchText=1231641&searchField=egid&returnGeometry=false>`_
+- Search for “Lavaux” in the field “bln_name” of the layer “ch.bafu.bundesinventare-bln” (infix match): `https://api3.geo.admin.ch/rest/services/api/MapServer/find?layer=ch.bafu.bundesinventare-bln&searchText=Lavaux&searchField=bln_name&returnGeometry=false  <../../../rest/services/api/MapServer/find?layer=ch.bafu.bundesinventare-bln&searchText=Lavaux&searchField=bln_name&returnGeometry=false>`_
+- Search for “12316” in the field “egid” of the layer “ch.bfs.gebaeude_wohnungs_register” (infix match): `https://api3.geo.admin.ch/rest/services/api/MapServer/find?layer=ch.bfs.gebaeude_wohnungs_register&searchText=123164&searchField=egid&returnGeometry=false <../../../rest/services/api/MapServer/find?layer=ch.bfs.gebaeude_wohnungs_register&searchText=123164&searchField=egid&returnGeometry=false>`_
+- Search for “123164” in the field “egid” of the layer “ch.bfs.gebaeude_wohnungs_register” (exact match): `https://api3.geo.admin.ch/rest/services/api/MapServer/find?layer=ch.bfs.gebaeude_wohnungs_register&searchText=1231641&searchField=egid&returnGeometry=false&contains=false <../../../rest/services/api/MapServer/find?layer=ch.bfs.gebaeude_wohnungs_register&searchText=1231641&searchField=egid&returnGeometry=false&contains=false>`_
 
 .. _featureresource_description:
 
