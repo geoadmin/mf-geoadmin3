@@ -10,6 +10,7 @@
 apache/wsgi.conf
 apache/mapproxy.conf
 apache/tomcat-print.conf
+apache/mapproxy-current.conf
 buildout/bin/
 buildout/develop-eggs/
 buildout/old-eggs/
