@@ -22,6 +22,7 @@ class MapServiceValidation(MapNameValidation):
         self._layer = None
         self._searchText = None
         self._searchField = None
+        self._contains = None
         self.esriGeometryTypes = (
             'esriGeometryPoint',
             'esriGeometryPolyline',
@@ -72,6 +73,10 @@ class MapServiceValidation(MapNameValidation):
     @property
     def searchField(self):
         return self._searchField
+
+    @property
+    def contains(self):
+        return self._contains
 
     @geometry.setter
     def geometry(self, value):
@@ -170,3 +175,10 @@ class MapServiceValidation(MapNameValidation):
         if len(value.split(',')) > 1:
             raise HTTPBadRequest('You can provide only one searchField at a time')
         self._searchField = value
+
+    @contains.setter
+    def contains(self, value):
+        if value is None or value == 'true' or value == 'True':
+            self._contains = True
+        else:
+            self._contains = False

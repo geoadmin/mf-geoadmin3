@@ -8,6 +8,8 @@ from pyramid.response import Response
 import pyramid.httpexceptions as exc
 
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
+from sqlalchemy.sql.expression import cast
+from sqlalchemy import Text
 
 from chsdi.lib.validation.mapservice import MapServiceValidation
 from chsdi.lib.filters import full_text_search
@@ -66,6 +68,7 @@ def _get_find_params(request):
     params.layer = request.params.get('layer')
     params.searchText = request.params.get('searchText')
     params.searchField = request.params.get('searchField')
+    params.contains = request.params.get('contains')
     return params
 
 
@@ -336,6 +339,7 @@ def _get_features_for_extent(params, models, maxFeatures=None):
 
 
 def _find(request):
+    MaxFeatures = 50
     params = _get_find_params(request)
     if params.searchText is None:
         raise exc.HTTPBadRequest('Please provide a searchText')
@@ -349,11 +353,16 @@ def _find(request):
         if searchColumn is None:
             raise exc.HTTPBadRequest('Please provide an existing searchField')
         query = request.db.query(vectorModel)
-        query = full_text_search(
-            query,
-            [searchColumn],
-            params.searchText
-        ).limit(50)
+        if params.contains:
+            query = full_text_search(
+                query,
+                [searchColumn],
+                params.searchText
+            ).limit(MaxFeatures)
+        else:
+            query = query.filter(
+                cast(searchColumn, Text) == params.searchText
+            ).limit(MaxFeatures)
         for feature in query:
             f = _process_feature(feature, params)
             features.append(f)
