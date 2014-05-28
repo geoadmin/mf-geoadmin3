@@ -1,9 +1,19 @@
 # -*- coding: utf-8 -*-
 
 from chsdi.tests.integration import TestsBase
+from nose.plugins.capture import Capture
 
 
 class TestOwsChecker(TestsBase):
+
+    def setUp(self):
+        super(TestOwsChecker, self).setUp()
+        self.capture = Capture()
+        self.capture.begin()
+
+    def tearDown(self):
+        super(TestOwsChecker, self).tearDown()
+        del self.capture
 
     def test_bykvp_no_args(self):
         self.testapp.get('/owschecker/bykvp', status=400)
