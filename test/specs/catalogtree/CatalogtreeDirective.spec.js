@@ -35,9 +35,9 @@ describe('ga_catalogtree_directive', function() {
           root: {
             children: [{
               children: [{
-                idBod: 'foo'
+                layerBodId: 'foo'
               }, {
-                idBod: 'bar',
+                layerBodId: 'bar',
                 selectedOpen: true
               }]
             }]
