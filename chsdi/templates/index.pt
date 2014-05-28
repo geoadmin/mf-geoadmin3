@@ -75,15 +75,14 @@
           <a href='rest/services/all/MapServer/layersConfig'>Get the layers configuration for all topics</a> <br>
           
       <h2>Ogcproxy</h2>
-          <a href="ogcproxy?url=http://wms.pcn.minambiente.it/ogc?map=/ms_ogc/WMS_v1.3/raster/IGM_100000.map&VERSION=1.3.0&SERVICE=WMS&REQUEST=GetCapabilities">Get
-         Capabilities using ogcproxy</a>
+          <a href="ogcproxy?url=http%3A%2F%2Fmapserver1.gr.ch%2Fwms%2Fadmineinteilung%3FSERVICE%3DWMS%26REQUEST%3DGetCapabilities%26VERSION%3D1.3.0">Get Capabilities using ogcproxy</a>
       <h2>MapProxy</h2>
           <a href="mapproxy/demo">MapProxy demo</a>
 
       <h2>CatalogService (non ESRI)</h2>
           <a href="rest/services/blw/CatalogServer?callback=callback">Catalog for topic 'blw'</a>
       <h2>Lubis Viewer</h2>
-          <a href="/iipimage/viewer.html?image=CH261/1998/261NE155_3722.jp2&width=16434&height=16433&title=No%20de%20l'image&bildnummer=3722&datenherr=swisstopo&layer=Images%20aériennes%20swisstopo%20couleur">Link to Lubis full screen Viewer</a>
+          <a href="main/wsgi/luftbilder/viewer.html?layer=Images+aériennes+swisstopo+n+%2F+b&title=No+de+l%27image&height=5952&width=5954&bildnummer=19460400270631&datenherr=swisstopo&x=3770.73&y=3384.70&zoom=1&rotation=0">Link to Lubis full screen Viewer</a>
 
       <h2>Search</h2>
       <h3>Layers Search (type=layers)</h3>
