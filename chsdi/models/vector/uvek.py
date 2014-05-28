@@ -141,11 +141,27 @@ class ZAEHLSTELLENREGLOC(Base, Vector):
     __template__ = 'templates/htmlpopup/verkehrszaehlstellen.mako'
     __bodId__ = 'ch.astra.strassenverkehrszaehlung_messstellen-regional_lokal'
     __queryable_attributes__ = ['nr', 'zaehlstellen_bezeichnung']
+    __extended_info__ = True
     id = Column('nr', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     zaehlstellen_bezeichnung = Column('zaehlstellen_bezeichnung', Text)
+    uno_zaehlstelle = Column('uno_zaehlstelle', Text)
     zst_physisch_virtuell = Column('zst_physisch_virtuell', Text)
     messstellentyp = Column('messstellentyp', Text)
+    koordinate_ost = Column('koordinate_ost', Integer)
+    koordinate_nord = Column('koordinate_nord', Integer)
+    kanton = Column('kanton', Text)
+    swiss_10 = Column('swiss_10', Integer)
+    netz = Column('netz', Text)
+    status = Column('status', Text)
+    strasse = Column('strasse', Text)
+    richtung_1 = Column('richtung_1', Text)
+    richtung_2 = Column('richtung_2', Text)
+    inbetriebnahme = Column('inbetriebnahme', Text)
+    anzahl_fahrstreifen_tot = Column('anzahl_fahrstreifen_tot', Integer)
+    bulletins_sasvz = Column('bulletins_sasvz', Text)
+    ssvz_2005 = Column('ssvz_2005', Text)
+    jahresauswertung = Column('jahresauswertung', Text)
     bgdi_created = Column('bgdi_created', Text)
 
 register('ch.astra.strassenverkehrszaehlung_messstellen-regional_lokal', ZAEHLSTELLENREGLOC)
@@ -157,11 +173,27 @@ class ZAEHLSTELLENUEBER(Base, Vector):
     __template__ = 'templates/htmlpopup/verkehrszaehlstellen.mako'
     __bodId__ = 'ch.astra.strassenverkehrszaehlung_messstellen-uebergeordnet'
     __queryable_attributes__ = ['nr', 'zaehlstellen_bezeichnung']
+    __extended_info__ = True
     id = Column('nr', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     zaehlstellen_bezeichnung = Column('zaehlstellen_bezeichnung', Text)
+    uno_zaehlstelle = Column('uno_zaehlstelle', Text)
     zst_physisch_virtuell = Column('zst_physisch_virtuell', Text)
     messstellentyp = Column('messstellentyp', Text)
+    koordinate_ost = Column('koordinate_ost', Integer)
+    koordinate_nord = Column('koordinate_nord', Integer)
+    kanton = Column('kanton', Text)
+    swiss_10 = Column('swiss_10', Integer)
+    netz = Column('netz', Text)
+    status = Column('status', Text)
+    strasse = Column('strasse', Text)
+    richtung_1 = Column('richtung_1', Text)
+    richtung_2 = Column('richtung_2', Text)
+    inbetriebnahme = Column('inbetriebnahme', Text)
+    anzahl_fahrstreifen_tot = Column('anzahl_fahrstreifen_tot', Integer)
+    bulletins_sasvz = Column('bulletins_sasvz', Text)
+    ssvz_2005 = Column('ssvz_2005', Text)
+    jahresauswertung = Column('jahresauswertung', Text)
     bgdi_created = Column('bgdi_created', Text)
 
 register('ch.astra.strassenverkehrszaehlung_messstellen-uebergeordnet', ZAEHLSTELLENUEBER)
