@@ -36,10 +36,13 @@ def getScale(imageDisplay, mapExtent):
 def getToleranceMeters(imageDisplay, mapExtent, tolerance):
     bounds = mapExtent.bounds
     mapMeterWidth = abs(bounds[0] - bounds[2])
+    mapMeterHeight = abs(bounds[1] - bounds[3])
     imgPixelWidth = imageDisplay[0]
+    imgPixelHeight = imageDisplay[1]
 
-    if 0.0 not in (tolerance, imgPixelWidth, mapMeterWidth):
-        toleranceMeters = (mapMeterWidth / imgPixelWidth) * tolerance
+    # Test for null values
+    if all((tolerance, imgPixelWidth, mapMeterWidth, imgPixelHeight, mapMeterHeight)):
+        toleranceMeters = max(mapMeterWidth / imgPixelWidth, mapMeterHeight / imgPixelHeight) * tolerance
         return toleranceMeters
     return 0.0
 
