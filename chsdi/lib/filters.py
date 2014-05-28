@@ -20,10 +20,10 @@ def filter_by_geodata_staging(query, ormColumn, staging):
     staging '''
     return {
         'test': query,
-        'intergartion': query.filter(or_(
-                                     ormColumn == 'integration',
-                                     ormColumn == 'prod'
-                                     )),
+        'integration': query.filter(or_(
+                                    ormColumn == 'integration',
+                                    ormColumn == 'prod'
+                                    )),
         'prod': query.filter(ormColumn == staging)
     }[staging]
 
