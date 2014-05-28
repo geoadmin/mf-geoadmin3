@@ -26,7 +26,7 @@ class TestWmtsCapabilitiesView(TestsBase):
 
         for lang in ['de', 'fr']:
             f = tempfile.NamedTemporaryFile(mode='w+t', prefix='WMTSCapabilities-', suffix='-' + lang)
-            resp = self.testapp.get('/rest/services/inspire/1.0.0/WMTSCapabilities.xml', params={'lang': lang}, status=200)
+            resp = self.testapp.get('/rest/services/inspire/1.0.0/WMTSCapabilities.xml', params={'lang': lang, 'epsg': 4326}, status=200)
             f.write(resp.body)
             f.seek(0)
             retcode = subprocess.call(["xmllint", "--noout", "--nocatalogs", "--schema", schema_url, f.name])
