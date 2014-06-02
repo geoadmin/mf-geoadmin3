@@ -378,11 +378,13 @@
           options = options || {};
 
           // Replace all hrefs to prevent errors if image doesn't have
-          // CORS headers. Exception for google icons to keep the OL3 magic for
+          // CORS headers. Exception for google markers icons (lightblue.png,
+          // ltblue-dot.png, ltblu-pushpin.png, ...) to keep the OL3 magic for
           // anchor origin.
-          // Test regex here: http://regex101.com/r/bL5dF8
+          // Test regex here: http://regex101.com/r/tF3vM0
+          // List of google icons: http://www.lass.it/Web/viewer.aspx?id=4
           kml = kml.replace(
-            /<href>http(?!(s?):\/\/maps\.(?:google|gstatic)\.com)/g,
+            /<href>http(s?)(?!(s?):\/\/maps\.(?:google|gstatic)\.com.*(blue|green|orange|pink|purple|red|yellow|pushpin).*\.png)/g,
             '<href>' + proxyUrl + 'http'
           );
 
