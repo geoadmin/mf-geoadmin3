@@ -524,6 +524,9 @@
     };
 
     $scope.submit = function() {
+      if (!$scope.options.active) {
+        return;
+      }
       // http://mapfish.org/doc/print/protocol.html#print-pdf
       bodyEl.addClass(waitclass);
       var view = $scope.map.getView();
