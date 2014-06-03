@@ -24,6 +24,10 @@ perHostParallelFetches: 32
 connectionTimeout: 30000
 socketTimeout: 60000
 
+ignoreCapabilities: true
+maxPrintTimeBeforeWarningInSeconds: 120
+printTimeoutMinutes: 5
+
 #---------------------------------------
 # A4 landscape:
 #---------------------------------------
