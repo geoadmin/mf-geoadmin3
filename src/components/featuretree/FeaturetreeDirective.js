@@ -180,7 +180,7 @@
                     feature = {
                       info: '',
                       geometry: null,
-                      id: result.attrs.feature_id || result.attrs.id,
+                      id: result.attrs.featureId || result.attrs.id,
                       layer: layerId,
                       label: result.attrs.label
                     };
