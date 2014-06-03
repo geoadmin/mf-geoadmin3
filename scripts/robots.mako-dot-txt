@@ -2,8 +2,6 @@ User-agent: *
 
 % if deploy_target == 'prod':
 
-Disallow: /*/
-Disallow: /info.json
 Disallow: /checker
 
 Sitemap: http://map.geo.admin.ch/sitemap_index.xml
