@@ -69,6 +69,7 @@ class Search(SearchValidation):
             self.searchText = format_search_text(
                 self.request.params.get('searchText')
             )
+            self.sphinx.ResetFilters()
             self._feature_search()
             # swiss search
             self._swiss_search(self.LIMIT)
@@ -80,6 +81,7 @@ class Search(SearchValidation):
         self.sphinx.SetLimits(0, limit)
         self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
         self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, 'rank ASC, @weight DESC, num ASC')
+        self._detect_keywords()
         searchText = self._query_fields('@detail')
         try:
             temp = self.sphinx.Query(searchText, index='swisssearch')
@@ -254,6 +256,15 @@ class Search(SearchValidation):
         ))
 
         return finalQuery
+
+    def _detect_keywords(self):
+        if len(self.searchText) > 0:
+            PARCEL_KEYWORDS = ('parzelle', 'parcelle', 'parcella', 'parcel')
+            firstWord = self.searchText[0]
+            if firstWord in PARCEL_KEYWORDS:
+                # As one cannot apply filters on string attributes, we use the rank information
+                self.sphinx.SetFilter('rank', [10])
+                del self.searchText[0]
 
     def _add_feature_queries(self, queryText, timeFilter):
         i = 0
