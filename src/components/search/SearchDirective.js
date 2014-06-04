@@ -670,7 +670,7 @@
                       triggerSearch(LOCATIONS);
                       triggerSearch(FEATURES);
                       triggerSearch(LAYERS);
-                      //Remove swisssearch paramter when query text changes
+                      //Remove swisssearch parameter when query text changes
                       var unregWatch = scope.$watch('query', function(newval) {
                         if (newval != searchParam) {
                           gaPermalink.deleteParam('swisssearch');
