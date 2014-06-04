@@ -102,10 +102,10 @@ class LayersConfig(Base):
         if config['type'] == 'wms':
             if staging == 'test':
                 config['wmsUrl'] = make_agnostic(
-                    config['wmsUrl'].replace('wms.geo.admin.ch', 'wms-bgdi0t.bgdi.admin.ch'))
+                    config['wmsUrl'].replace('wms.geo.admin.ch', 'wms-bgdi.dev.bgdi.ch'))
             if staging == 'integration':
                 config['wmsUrl'] = make_agnostic(
-                    config['wmsUrl'].replace('wms.geo.admin.ch', 'wms-bgdi0i.bgdi.admin.ch'))
+                    config['wmsUrl'].replace('wms.geo.admin.ch', 'wms-bgdi.int.bgdi.ch'))
         # sublayers don't have attributions
         if 'attribution' in config:
             config['attributionUrl'] = translate(self.__dict__['attribution'] + '.url')
