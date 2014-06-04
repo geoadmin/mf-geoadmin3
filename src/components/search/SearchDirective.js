@@ -496,6 +496,24 @@
                   if (origin === 'layer') {
                     scope.addLayer(datum.attrs.layer, false);
                   }
+                  //Take care of swisssearch parameter
+                  var sP = gaPermalink.getParams().swisssearch;
+                  if (angular.isDefined(sP) &&
+                      sP.length > 0) {
+                    //If we end up here because swisssearch cause a single
+                    //click, we remove the swisssearch parameter on
+                    //move/zoom. Otherwise, we always remove it
+                    if (gaSwisssearch.singleResult()) {
+                      //attach to property change to remove
+                      var unregProp = map.getView().on('propertychange',
+                                                       function() {
+                        gaPermalink.deleteParam('swisssearch');
+                        map.getView().unByKey(unregProp);
+                      });
+                    } else {
+                      gaPermalink.deleteParam('swisssearch');
+                    }
+                  }
                 });
 
               scope.searchableLayersFilter = function(layer) {
@@ -635,11 +653,9 @@
                 taElt.trigger('blur');
               });
 
-              //if search parameter specified, start it with a search parameter
               var searchParam = gaPermalink.getParams().swisssearch;
               if (angular.isDefined(searchParam) &&
                   searchParam.length > 0) {
-                gaPermalink.deleteParam('swisssearch');
                 var unregister = scope.$on('gaLayersChange', function() {
                   // At this point layers are not added to the map yet
                   var unregisterLayers = scope.$watchCollection('layers',
@@ -654,6 +670,13 @@
                       triggerSearch(LOCATIONS);
                       triggerSearch(FEATURES);
                       triggerSearch(LAYERS);
+                      //Remove swisssearch parameter when query text changes
+                      var unregWatch = scope.$watch('query', function(newval) {
+                        if (newval != searchParam) {
+                          gaPermalink.deleteParam('swisssearch');
+                          unregWatch();
+                        }
+                      });
                     }, 0);
                     unregisterLayers();
                   });
