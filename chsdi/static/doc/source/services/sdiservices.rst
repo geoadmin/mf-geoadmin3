@@ -17,7 +17,9 @@ This service provides metadata for the available layers in the GeoAdmin API.
 URL
 ^^^
 
-https://api3.geo.admin.ch/rest/services/api/MapServer
+::
+
+  https://api3.geo.admin.ch/rest/services/api/MapServer
 
 Input Parameters
 ^^^^^^^^^^^^^^^^
@@ -52,7 +54,9 @@ h the find service
 URL
 ^^^
 
-https://api3.geo.admin.ch/rest/services/api/MapServer/{layerId}
+::
+
+  https://api3.geo.admin.ch/rest/services/api/MapServer/{layerId}
 
 Input Parameters
 ^^^^^^^^^^^^^^^^
@@ -80,7 +84,9 @@ With a layer ID (or technical name), this service can be used to retrieve a lege
 URL
 ^^^
 
-https://api3.geo.admin.ch/rest/services/api/MapServer/{layerID}/legend
+::
+
+  https://api3.geo.admin.ch/rest/services/api/MapServer/{layerID}/legend
 
 Input Parameters
 ^^^^^^^^^^^^^^^^
@@ -111,7 +117,9 @@ This service can be used to discover features at a specific location. Here is a 
 URL
 ^^^
 
-https://api3.geo.admin.ch/rest/services/api/MapServer/identify
+::
+
+  https://api3.geo.admin.ch/rest/services/api/MapServer/identify
 
 Input Parameters
 ^^^^^^^^^^^^^^^^
@@ -194,7 +202,9 @@ Here is a `complete list of layers <../../../api/faq/index.html#which-layers-hav
 URL
 ^^^
 
-https://api3.geo.admin.ch/rest/services/api/MapServer/find
+::
+
+  https://api3.geo.admin.ch/rest/services/api/MapServer/find
 
 Input Parameters
 ^^^^^^^^^^^^^^^^
@@ -230,13 +240,15 @@ Examples
 Feature Resource
 ----------------
 
-With an ID and a layer ID (technical name), this service can be used to retrieve a feature resource.
+With an ID (or several in a comma separated list) and a layer ID (technical name), this service can be used to retrieve a feature resource.
 Here is a `complete list of layers <../../../api/faq/index.html#which-layers-have-a-tooltip>`_ for which this service is available.
 
 URL
 ^^^
 
-https://api3.geo.admin.ch/rest/services/api/MapServer/{layerID}/{featureID}
+::
+
+  https://api3.geo.admin.ch/rest/services/api/MapServer/{layerID}/{featureID},{featureID}
 
 Input Parameters
 ^^^^^^^^^^^^^^^^
@@ -259,6 +271,7 @@ Example
 ^^^^^^^
 
 - Get the feature with the ID 342 belonging to ch.bafu.bundesinventare-bln: `https://api3.geo.admin.ch/rest/services/api/MapServer/ch.bafu.bundesinventare-bln/362 <../../../rest/services/api/MapServer/ch.bafu.bundesinventare-bln/362>`_
+- Get several features with IDs 342 and 341 belonging to ch.bafu.bundesinventar-bln: `https://api3.geo.admin.ch/rest/services/api/MapServer/ch.bafu.bundesinventare-bln/362,363 <../../../rest/services/api/MapServer/ch.bafu.bundesinventare-bln/362,363>`_
 
 .. _htmlpopup_description:
 
@@ -271,7 +284,9 @@ Here is a `complete list of layers <../../../api/faq/index.html#which-layers-hav
 URL
 ^^^
 
-https://api3.geo.admin.ch/rest/services/api/MapServer/{layerID}/{featureID}/htmlPopup
+::
+
+  https://api3.geo.admin.ch/rest/services/api/MapServer/{layerID}/{featureID}/htmlPopup
 
 Input Parameters
 ^^^^^^^^^^^^^^^^
@@ -301,7 +316,9 @@ The search service can be used to search for locations, layers or features.
 URL
 ^^^
 
-https://api3.geo.admin.ch/rest/services/api/SearchServer
+::
+
+  https://api3.geo.admin.ch/rest/services/api/SearchServer
 
 Description
 ^^^^^^^^^^^
@@ -455,7 +472,10 @@ See `Height models <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/pro
 
 URL
 ^^^
-https://api3.geo.admin.ch/rest/services/height
+
+::
+
+  https://api3.geo.admin.ch/rest/services/height
 
 Input Parameters
 ^^^^^^^^^^^^^^^^
@@ -490,8 +510,11 @@ See `Height models <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/pro
 
 URL
 ^^^
-https://api3.geo.admin.ch/rest/services/profile.json (for json format)
-https://api3.geo.admin.ch/rest/services/profile.csv  (for a csv)
+
+::
+
+  https://api3.geo.admin.ch/rest/services/profile.json (for json format)
+  https://api3.geo.admin.ch/rest/services/profile.csv  (for a csv)
 
 Input Parameters
 ^^^^^^^^^^^^^^^^
@@ -650,7 +673,10 @@ See the :doc:`OWSChecker Documentation <owschecker/index>` and the :doc:`OWSChec
 URL
 ^^^
 
-https://api3.geo.admin.ch/owschecker/bykvp OR https://api3.geo.admin.ch/owschecker/form
+::
+
+  https://api3.geo.admin.ch/owschecker/bykvp OR
+  https://api3.geo.admin.ch/owschecker/form
 
 Input parameters
 ^^^^^^^^^^^^^^^^

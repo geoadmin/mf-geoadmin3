@@ -50,7 +50,7 @@ def _get_features_params(request):
 def _get_feature_params(request):
     params = FeatureParams(request)
     params.layerId = request.matchdict.get('layerId')
-    params.featureIds = request.matchdict.get('featureId').split(',')
+    params.featureIds = request.matchdict.get('featureId')
     return params
 
 
@@ -242,11 +242,12 @@ def _get_feature_service(request):
 def _get_features(params, extended=False):
     ''' Returns exactly one feature or raises
     an excpetion '''
+    featureIds = params.featureIds.split(',')
     models = models_from_name(params.layerId)
     if models is None:
         raise exc.HTTPBadRequest('No Vector Table was found for %s' % params.layerId)
 
-    for featureId in params.featureIds:
+    for featureId in featureIds:
         # One layer can have several models
         for model in models:
             query = params.request.db.query(model)
