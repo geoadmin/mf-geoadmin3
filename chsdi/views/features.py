@@ -50,7 +50,7 @@ def _get_features_params(request):
 def _get_feature_params(request):
     params = FeatureParams(request)
     params.layerId = request.matchdict.get('layerId')
-    params.featureId = request.matchdict.get('featureId')
+    params.featureIds = request.matchdict.get('featureId').split(',')
     return params
 
 
@@ -104,7 +104,7 @@ def view_find_esrijson(request):
 def htmlpopup(request):
     params = _get_feature_params(request)
     params.returnGeometry = False
-    feature, vectorModel = _get_feature(params)
+    feature, vectorModel = next(_get_features(params))
 
     layerModel = get_bod_model(params.lang)
     layer = next(get_layers_metadata_for_params(
@@ -128,7 +128,7 @@ def htmlpopup(request):
 def extendedhtmlpopup(request):
     params = _get_feature_params(request)
     params.returnGeometry = False
-    feature, vectorModel = _get_feature(params)
+    feature, vectorModel = next(_get_features(params))
 
     layerModel = get_bod_model(params.lang)
     layer = next(get_layers_metadata_for_params(
@@ -231,37 +231,42 @@ def _identify(request):
 
 def _get_feature_service(request):
     params = _get_feature_params(request)
-    feature, vectorModel = _get_feature(params)
-    return feature
+    features = []
+    for feature, vectorModel in _get_features(params):
+        features.append(feature)
+    if len(features) == 1:
+        return features[0]
+    return features
 
 
-def _get_feature(params, extended=False):
+def _get_features(params, extended=False):
     ''' Returns exactly one feature or raises
     an excpetion '''
     models = models_from_name(params.layerId)
     if models is None:
         raise exc.HTTPBadRequest('No Vector Table was found for %s' % params.layerId)
 
-    # One layer can have several models
-    for model in models:
-        query = params.request.db.query(model)
-        query = query.filter(model.id == params.featureId)
-        try:
-            feature = query.one()
-        except NoResultFound:
-            feature = None
-        except MultipleResultsFound:
-            raise exc.HTTPInternalServerError('Multiple features found for the same id %s' % params.featureId)
+    for featureId in params.featureIds:
+        # One layer can have several models
+        for model in models:
+            query = params.request.db.query(model)
+            query = query.filter(model.id == featureId)
+            try:
+                feature = query.one()
+            except NoResultFound:
+                feature = None
+            except MultipleResultsFound:
+                raise exc.HTTPInternalServerError('Multiple features found for the same id %s' % featureId)
 
-        if feature is not None:
-            vectorModel = model
-            break
+            if feature is not None:
+                vectorModel = model
+                break
 
-    if feature is None:
-        raise exc.HTTPNotFound('No feature with id %s' % params.featureId)
-    feature = _process_feature(feature, params)
-    feature = {'feature': feature}
-    return feature, vectorModel
+        if feature is None:
+            raise exc.HTTPNotFound('No feature with id %s' % featureId)
+        feature = _process_feature(feature, params)
+        feature = {'feature': feature}
+        yield feature, vectorModel
 
 
 def _render_feature_template(vectorModel, feature, request, extended=False):
