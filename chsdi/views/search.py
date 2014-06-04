@@ -89,7 +89,7 @@ class Search(SearchValidation):
         if temp is not None and len(temp) != 0:
             nb_address = 0
             for res in temp:
-                if 'feature_id' in res['attrs'].keys():
+                if 'feature_id' in res['attrs']:
                     res['attrs']['featureId'] = res['attrs']['feature_id']
                     res['attrs'].pop('feature_id', None)
                 if res['attrs']['origin'] == 'address':
@@ -272,9 +272,13 @@ class Search(SearchValidation):
             if 'error' in results[i]:
                 if results[i]['error'] != '':
                     raise exc.HTTPNotFound(results[i]['error'])
-            if results[i] is not None:
+            if results[i] is not None and 'matches' in results[i]:
                 nb_match += len(results[i]['matches'])
                 # Add results to the list
+                for res in results[i]['matches']:
+                    if 'feature_id' in res['attrs']:
+                         res['attrs']['featureId'] = res['attrs']['feature_id']
+                         # res['attrs'].pop('feature_id', None)
                 self.results['results'] += results[i]['matches']
         return nb_match
 
