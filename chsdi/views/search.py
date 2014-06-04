@@ -259,10 +259,10 @@ class Search(SearchValidation):
         i = 0
         for index in self.featureIndexes:
             if timeFilter and self.timeEnabled is not None and self.timeEnabled[i]:
-                    if len(timeFilter) == 1:
-                        self.sphinx.SetFilter('year', timeFilter)
-                    elif len(timeFilter) == 2:
-                        self.sphinx.SetFilterRange('year', int(min(timeFilter)), int(max(timeFilter)))
+                if len(timeFilter) == 1:
+                    self.sphinx.SetFilter('year', timeFilter)
+                elif len(timeFilter) == 2:
+                    self.sphinx.SetFilterRange('year', int(min(timeFilter)), int(max(timeFilter)))
             i += 1
             self.sphinx.AddQuery(queryText, index=str(index))
 
@@ -277,8 +277,8 @@ class Search(SearchValidation):
                 # Add results to the list
                 for res in results[i]['matches']:
                     if 'feature_id' in res['attrs']:
-                         res['attrs']['featureId'] = res['attrs']['feature_id']
-                         # res['attrs'].pop('feature_id', None)
+                        res['attrs']['featureId'] = res['attrs']['feature_id']
+                        # res['attrs'].pop('feature_id', None)
                 self.results['results'] += results[i]['matches']
         return nb_match
 
