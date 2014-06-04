@@ -260,10 +260,14 @@ class Search(SearchValidation):
     def _detect_keywords(self):
         if len(self.searchText) > 0:
             PARCEL_KEYWORDS = ('parzelle', 'parcelle', 'parcella', 'parcel')
+            ADDRESS_KEYWORDS = ('addresse', 'adresse', 'indirizzo', 'address')
             firstWord = self.searchText[0]
             if firstWord in PARCEL_KEYWORDS:
                 # As one cannot apply filters on string attributes, we use the rank information
                 self.sphinx.SetFilter('rank', [10])
+                del self.searchText[0]
+            elif firstWord in ADDRESS_KEYWORDS:
+                self.sphinx.SetFilter('rank', [6])
                 del self.searchText[0]
 
     def _add_feature_queries(self, queryText, timeFilter):
