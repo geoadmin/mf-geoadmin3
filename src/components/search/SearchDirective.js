@@ -490,7 +490,7 @@
                   }
                   if (origin === 'feature') {
                     var layerId = datum.attrs.layer;
-                    var featureId = datum.attrs.feature_id;
+                    var featureId = datum.attrs.featureId;
                     selectFeature(layerId, featureId);
                   }
                   if (origin === 'layer') {
