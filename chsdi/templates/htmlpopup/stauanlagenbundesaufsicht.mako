@@ -22,7 +22,7 @@
         damtype = 'damtype_%s' % lang
     %>
     <h1>${_('tt_ch.bfe.stauanlagen-bundesaufsicht_stauanlage')} ${c['attributes']['facilityname']}</h1>
-    <table class="kernkraftwerke-extended">
+    <table class="table-with-border kernkraftwerke-extended">
         <tr>
             <th class="cell-left">${_('tt_ch.bfe.stauanlagen-bundesaufsicht_stauanlage')}</th>
             <td>${c['attributes']['facilityname']}</td>
@@ -40,7 +40,7 @@
             <td>${c['attributes']['startsupervision']}</td>
         </tr>
         <tr>
-            <td>&nbsp;</td>
+            <td colspan="2">&nbsp;</td>
         </tr>
         <tr>
             <th class="cell-left">${_('tt_ch.bfe.stauanlagen-bundesaufsicht_stauraum')}</th>
@@ -59,7 +59,7 @@
             <td>${c['attributes']['storagelevel']}</td>
         </tr>
         <tr>
-            <td>&nbsp;</td>
+            <td colspan="2">&nbsp;</td>
         </tr>
         <tr>
             <th class="cell-left">${_('tt_ch.bfe.stauanlagen-bundesaufsicht_sperre')}</th>
