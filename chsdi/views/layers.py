@@ -176,7 +176,7 @@ def get_layers_config_for_params(params, query, model, layerIds=None):
     if layerIds is not None:
         for layerId in layerIds:
             layer = get_layer(query, model, layerId)
-            yield layer.layerConfig(params.translate)
+            yield layer.layerConfig(params)
 
     for q in query:
-        yield q.layerConfig(params.translate)
+        yield q.layerConfig(params)
