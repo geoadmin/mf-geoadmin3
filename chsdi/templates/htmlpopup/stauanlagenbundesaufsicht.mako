@@ -48,15 +48,15 @@
         </tr>
         <tr>
             <th class="cell-left">${_('tt_ch.bfe.stauanlagen-bundesaufsicht_stauraumvolume')}</th>
-            <td>${c['attributes']['impoundmentvolume']}</td>
+            <td>${c['attributes']['impoundmentvolume']} 10<sup>6</sup> [m<sup>3</sup>]</td>
         </tr>
         <tr>
             <th class="cell-left">${_('tt_ch.bfe.stauanlagen-bundesaufsicht_stauzielskote')}</th>
-            <td>${c['attributes']['impoundmentlevel']}</td>
+            <td>${c['attributes']['impoundmentlevel']} [m]</td>
         </tr>
         <tr>
             <th class="cell-left">${_('tt_ch.bfe.stauanlagen-bundesaufsicht_stauhoehe')}</th>
-            <td>${c['attributes']['storagelevel']}</td>
+            <td>${c['attributes']['storagelevel']} [m]</td>
         </tr>
         <tr>
             <td colspan="2">&nbsp;</td>
@@ -67,15 +67,15 @@
         </tr>
         <tr>
             <th class="cell-left">${_('tt_ch.bfe.stauanlagen-bundesaufsicht_damheight')}</th>
-            <td>${c['attributes']['damheight']}</td>
+            <td>${c['attributes']['damheight']} [m]</td>
         </tr>
         <tr>
             <th class="cell-left">${_('tt_ch.bfe.stauanlagen-bundesaufsicht_crestlevel')}</th>
-            <td>${c['attributes']['crestlevel']}</td>
+            <td>${c['attributes']['crestlevel']} [m]</td>
         </tr>
         <tr>
             <th class="cell-left">${_('tt_ch.bfe.stauanlagen-bundesaufsicht_crestlength')}</th>
-            <td>${c['attributes']['crestlength']}</td>
+            <td>${c['attributes']['crestlength']} [m]</td>
         </tr>
         <tr>
             <th class="cell-left">${_('tt_ch.bfe.stauanlagen-bundesaufsicht_damtype')}</th>
