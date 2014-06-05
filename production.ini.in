@@ -40,6 +40,7 @@ data_path = /var/local/cartoweb/
 geodata_staging = ${geodata_staging}
 instanceid = ${apache_base_path}
 sphinxhost = ${sphinxhost}
+wmshost = ${wmshost}
 geoadminhost = ${geoadminhost}
 install_directory = ${buildout:directory}
 host = ${host}

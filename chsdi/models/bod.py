@@ -78,8 +78,11 @@ class LayersConfig(Base):
     wmsLayers = Column('wms_layers', Text)
     wmsUrl = Column('wms_url', Text)
 
-    def layerConfig(self, translate):
+    def layerConfig(self, params):
         config = {}
+        translate = params.translate
+        geodataStaging = params.geodataStaging
+        wmsHost = params.request.registry.settings['wmshost']
         for k in self.__dict__.keys():
             if not k.startswith("_") and \
                 self.__dict__[k] is not None and \
@@ -96,16 +99,13 @@ class LayersConfig(Base):
                 else:
                     config[k] = self.__dict__[k]
 
-        staging = self.__dict__['staging']
+        layerStaging = self.__dict__['staging']
         if config['type'] == 'wmts':
             del config['singleTile']
         if config['type'] == 'wms':
-            if staging == 'test':
+            if layerStaging != 'prod':
                 config['wmsUrl'] = make_agnostic(
-                    config['wmsUrl'].replace('wms.geo.admin.ch', 'wms-bgdi0t.bgdi.admin.ch'))
-            if staging == 'integration':
-                config['wmsUrl'] = make_agnostic(
-                    config['wmsUrl'].replace('wms.geo.admin.ch', 'wms-bgdi0i.bgdi.admin.ch'))
+                    config['wmsUrl'].replace('wms.geo.admin.ch', wmsHost))
         # sublayers don't have attributions
         if 'attribution' in config:
             config['attributionUrl'] = translate(self.__dict__['attribution'] + '.url')
