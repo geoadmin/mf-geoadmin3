@@ -589,7 +589,7 @@
 
         module.config(function(gaLayersProvider, gaGlobalOptions) {
           gaLayersProvider.wmtsGetTileUrlTemplate =
-              '//wmts{0-4}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
+              '//wmts{5-9}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
 
           gaLayersProvider.layersConfigUrlTemplate =
               gaGlobalOptions.cachedMapUrl + '/rest/services/{Topic}/MapServer/layersConfig?lang={Lang}';
