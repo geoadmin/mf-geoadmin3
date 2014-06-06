@@ -108,6 +108,9 @@
       </div>
       <div id="search-container" ng-controller="GaSearchController">
         <div ga-search ga-search-map="map" ga-search-options="options" ga-search-focused="globals.searchFocused"></div>
+% if device == 'desktop':
+        <span ga-help="24,31,25" ga-help-options="{showOnHover:true}"></span>
+% endif      
       </div>
 % if device == 'desktop':
       <form class="navbar-form pull-right hidden-xs">
@@ -302,7 +305,10 @@
             <i class="visible-collapsed icon-caret-right"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
             <span translate={{topicId}}></span>
-            <span ga-help="32,37,39"></span>
+% if device == 'desktop':
+            <span ga-help="32,37,39" ga-help-options="{showOnHover:true}"></span>
+% endif
+
           </a>
           <div id="catalog" class="collapse"  ga-collapsible-observe="globals.catalogShown" ng-controller="GaCatalogtreeController">
 % if device == 'mobile':
@@ -322,7 +328,9 @@
             <i class="visible-collapsed icon-caret-right"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
             <span translate>layer_selection</span>
-            <span ga-help="34,35,36"></span>
+% if device == 'desktop':
+            <span ga-help="34,35,36" ga-help-options="{showOnHover:true}"></span>
+% endif
           </a>
           <div id="selection"  ga-collapsible-observe="globals.selectionShown" class="${"in" if device == "desktop" else ""}">
             <div class="panel-body panel-body-wide" ga-layermanager ga-layermanager-map="map">

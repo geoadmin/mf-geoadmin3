@@ -35,7 +35,8 @@
         return {
           restrict: 'A',
           scope: {
-            helpIds: '@gaHelp'
+            helpIds: '@gaHelp',
+            optionsFunc: '&gaHelpOptions'
           },
           replace: true,
           templateUrl: 'components/help/partials/help.html',
@@ -43,20 +44,21 @@
             var popup;
             var results = [];
             var shown = false;
-            var parent = $(element).parent();
-            if (parent) {
-
-              parent.on('mouseover', function(evt) {
-                scope.$apply(function() {
-                  scope.hovered = true;
-                });
-              });
-
-              parent.on('mouseout', function(evt) {
-                scope.$apply(function() {
-                  scope.hovered = false;
-                });
-              });
+            scope.hovered = true;
+            scope.options = scope.optionsFunc();
+            if (scope.options && scope.options.showOnHover) {
+              scope.hovered = false;
+              $(element).parent()
+                  .on('mouseover', function(evt) {
+                    scope.$apply(function() {
+                      scope.hovered = true;
+                    });
+                  })
+                  .on('mouseout', function(evt) {
+                    scope.$apply(function() {
+                      scope.hovered = false;
+                    });
+                  });
             }
 
             scope.displayHelp = function(evt) {
