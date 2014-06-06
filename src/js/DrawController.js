@@ -42,9 +42,9 @@
             {name: 'yellow', fill: [255, 255, 0],   textStroke: black}
           ],
           iconSizes:[
-            {label:'24 px', value: [24, 24]},
-            {label:'36 px', value: [36, 36]},
-            {label:'48 px', value: [48, 48]}
+            {label:'24 px', value: [24, 24], scale: 0.5},
+            {label:'36 px', value: [36, 36], scale: 0.75},
+            {label:'48 px', value: [48, 48], scale: 1}
           ],
           icons: [
             
@@ -282,7 +282,8 @@
 
               icon = new ol.style.Icon({
                 src: $scope.getIconUrl($scope.options.icon),
-                size: $scope.options.iconSize.value
+                size: [48, 48],
+                scale: $scope.options.iconSize.scale
               });
               fill = undefined;
               stroke = undefined;

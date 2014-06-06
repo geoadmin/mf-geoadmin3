@@ -1,0 +1,4 @@
+goog.exportSymbol('ol.feature', ol.feature);
+goog.exportProperty(ol.feature, 'defaultStyleFunction',
+    ol.feature.defaultStyleFunction);
+

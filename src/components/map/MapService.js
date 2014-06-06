@@ -390,12 +390,16 @@
 
           // Create vector layer
           var features = kmlFormat.readFeatures(kml);
-          var transformFn = ol.proj.getTransform('EPSG:4326',
-              options.projection);
           for (var i = 0, ii = features.length; i < ii; i++) {
             var feature = features[i];
+            // Replace empty id by undefined
+            // If 2 features have their id empty, an assertion error
+            // occurs when we add them to the source
+            if (feature.getId() === '') {
+              feature.setId(undefined);
+            }
             if (feature.getGeometry()) {
-              feature.getGeometry().transform(transformFn);
+              feature.getGeometry().transform('EPSG:4326', options.projection);
             }
           }
           var attributions;

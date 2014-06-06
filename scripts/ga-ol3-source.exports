@@ -1,0 +1,2 @@
+goog.exportProperty(ol.source.Source.prototype, 'getExtent',
+    ol.source.Source.prototype.getExtent);

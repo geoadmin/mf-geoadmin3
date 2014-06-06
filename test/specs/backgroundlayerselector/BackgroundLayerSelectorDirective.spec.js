@@ -69,7 +69,7 @@ describe('ga_backgroundlayerselector_directive', function() {
       var layers = map.getLayers();
       var numLayers = layers.getLength();
       expect(numLayers).to.equal(1);
-      expect(layers.getAt(0)).to.be(layer1);
+      expect(layers.item(0)).to.be(layer1);
     });
   });
 
@@ -81,7 +81,7 @@ describe('ga_backgroundlayerselector_directive', function() {
       var layers = map.getLayers();
       var numLayers = layers.getLength();
       expect(numLayers).to.equal(1);
-      expect(layers.getAt(0)).to.be(layer2);
+      expect(layers.item(0)).to.be(layer2);
     });
   });
 
