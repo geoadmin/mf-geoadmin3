@@ -85,7 +85,7 @@ describe('ga_catalogtree_directive', function() {
     var layers = map.getLayers();
     var numLayers = layers.getLength();
     expect(numLayers).to.equal(1);
-    expect(layers.getAt(0).get('bodId')).to.equal('bar');
+    expect(layers.item(0).get('bodId')).to.equal('bar');
   });
 
   describe('layers already in the map', function() {
@@ -101,7 +101,7 @@ describe('ga_catalogtree_directive', function() {
       var layers = map.getLayers();
       var numLayers = layers.getLength();
       expect(numLayers).to.equal(1);
-      expect(layers.getAt(0).get('bodId')).to.equal('foo');
+      expect(layers.item(0).get('bodId')).to.equal('foo');
     });
   });
 

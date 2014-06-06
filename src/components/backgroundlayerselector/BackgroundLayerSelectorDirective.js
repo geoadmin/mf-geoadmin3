@@ -27,7 +27,7 @@
                 var layers = map.getLayers();
                 if (newVal == 'voidLayer') {
                   if (layers.getLength() > 0 &&
-                      layers.getAt(0).background === true) {
+                      layers.item(0).background === true) {
                     layers.removeAt(0);
                   }
                 } else if (gaLayers.getLayer(newVal)) {
