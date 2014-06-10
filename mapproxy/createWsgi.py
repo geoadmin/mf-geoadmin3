@@ -52,7 +52,10 @@ if not os.path.exists(location):
               os.mkdir(location)
 target=os.path.join(location, "wsgi")
 print target
-f=open(target, "wt")
-f.write(output)
-f.close()
-os.chmod(target, 0755)
+try:
+    f=open(target, "wt")
+    f.write(output)
+    f.close()
+    os.chmod(target, 0755)
+except:
+    pass
