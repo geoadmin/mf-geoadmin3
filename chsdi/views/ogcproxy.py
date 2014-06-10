@@ -1,3 +1,5 @@
+#-*- coding: utf-8 -*-
+
 import re
 from urlparse import urlparse
 from httplib2 import Http
