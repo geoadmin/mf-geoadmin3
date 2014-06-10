@@ -1,3 +1,44 @@
+Release 20140611 - Wednesday, June 11th 2014
+============================================
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+-----------------------------------
+
+- Address prefix search in `locations search <//api3.geo.admin.ch/services/sdiservices.html#response-syntax>`__
+- Support several ids in `feature service <//api3.geo.admin.ch/services/sdiservices.html#feature-resource>`__
+- Support "contains" parameter `find service <//api3.geo.admin.ch/services/sdiservices.html#find>`__
+- Documentation for `search radius and identify <//api3.geo.admin.ch/services/sdiservices.html#simulate-a-search-radius>`__
+- Minor bugfixes
+
+`MAP <//map.geo.admin.ch>`__
+-----------------------------------
+
+- Collapsible popups
+- Minor Bugfixes
+
+Geodata
+********
++--------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Hochmoore – Anhörung 2014 <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-hochmoore_anhoerung>`__ (ch.bafu.bundesinventare-hochmoore_anhoerung>)                               |
++--------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Auen – Anhörung 2014 <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-auen_anhoerung>`__ (ch.bafu.bundesinventare-auen_anhoerung)                                               |
++--------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Flachmoore Anhörung 2014 <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-flachmoore_anhoerung>`__ (ch.bafu.bundesinventare-flachmoore_anhoerung)                               |
++--------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Moorlandschaften – Anhörung 2014 <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-moorlandschaften_anhoerung>`__ (ch.bafu.bundesinventare-moorlandschaften_anhoerung)           |
++--------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `TWW – Anhörung 2014 <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhoerung>`__ (ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhoerung)  |
++--------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Amphibien Wanderobjekte 2014 <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-amphibien_wanderobjekte_anhoerung>`__ (ch.bafu.bundesinventare-amphibien_wanderobjekte_anhoerung) |
++--------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Amphibien – Anhörung 2014 <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-amphibien_anhoerung>`__ (ch.bafu.bundesinventare-amphibien_anhoerung)                                |
++--------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `LV95 Transformation accuracy <//map.geo.admin.ch/?layers=ch.swisstopo.transformationsgenauigkeit>`__ (ch.swisstopo.transformationsgenauigkeit)                                     |
++--------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
 Release 20140521 -  Thursday, May 21st 2014
 ===========================================
 
