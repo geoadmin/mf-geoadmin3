@@ -51,7 +51,8 @@
           <a href="/rest/services/ech/MapServer/ch.swisstopo.geologie-gravimetrischer_atlas.metadata">Returns all the attributes of the layer ch.swisstopo.geologie-gravimetrischer_atlas.metadata</a>
           <h3>Find</h3>
           <a href="rest/services/ech/MapServer/find?layer=ch.bafu.bundesinventare-bln&searchText=Lavaux&searchField=bln_name&returnGeometry=false">Find Lavaux in the field bln_name of the layer ch.bafu.bundesinventare-bln</a> <br>
-          <a href="/rest/services/ech/MapServer/find?layer=ch.are.agglomerationen_isolierte_staedte-2000&searchText=15105&searchField=flaeche_ha">Find 15105 in field flaeche_ha of layer ch.are.agglomerationen_isolierte_staedte-2000</a> <br>
+          <a href="/rest/services/ech/MapServer/find?layer=ch.are.agglomerationen_isolierte_staedte&searchText=15&searchField=flaeche_ha">Find 15 in field flaeche_ha of layer ch.are.agglomerationen_isolierte_staedte (pre-infix match)</a> <br>
+          <a href="/rest/services/ech/MapServer/find?layer=ch.bafu.bundesinventare-bln&searchText=1740.478&searchField=bln_fl&returnGeometry=false&contains=false">Find a exact match for 1740.478 in the field bln_fl</a>
           <h3>Varia</h3>
           <a href="rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362">Get Feature with id 362</a> <br>
           <a href="rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362/htmlPopup">Html Popup Ex 1</a> <br>

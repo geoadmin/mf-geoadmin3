@@ -140,6 +140,12 @@ class TestMapServiceView(TestsBase):
         params = {'layer': 'dummy', 'searchField': 'gdename', 'returnGeometry': 'false'}
         resp = self.testapp.get('/rest/services/all/MapServer/find', params=params, status=400)
 
+    def test_find_contains(self):
+        params = {'layer': 'ch.bfs.gebaeude_wohnungs_register', 'searchText': 'Islastrasse', 'searchField': 'strname1', 'returnGeometry': 'false', 'contains': 'false'}
+        resp = self.testapp.get('/rest/services/all/MapServer/find', params=params, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless(len(resp.json['results']) > 1)
+
     def test_feature_wrong_idlayer(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/toto/362', status=400)
         resp.mustcontain('No Vector Table was found for')
