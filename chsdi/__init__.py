@@ -84,7 +84,7 @@ def main(global_config, **settings):
     config.add_route('feedback', '/feedback')
     config.add_route('owschecker_bykvp', '/owschecker/bykvp')
     config.add_route('owschecker_form', '/owschecker/form')
-    config.add_route('qrcode', 'qrcode')
+    config.add_route('qrcodegenerator', '/qrcodegenerator')
 
     # Service to create the luftbilder viewer
     config.add_route('luftbilder', '/luftbilder/viewer.html')

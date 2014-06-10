@@ -8,7 +8,7 @@ from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.response import Response
 
 
-@view_config(route_name='qrcode')
+@view_config(route_name='qrcodegenerator')
 def qrcode(request):
 
     url = _check_url(
