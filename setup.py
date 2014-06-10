@@ -33,6 +33,7 @@ requires = [
     'lxml',
     'OWSLib',
     'MapProxy',
+    'qrcode',
     ]
 
 setup(name='chsdi',
