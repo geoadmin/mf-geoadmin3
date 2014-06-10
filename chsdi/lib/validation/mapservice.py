@@ -177,7 +177,7 @@ class MapServiceValidation(MapNameValidation):
         self._searchField = value
 
     @contains.setter
-    def contains(self, value)
+    def contains(self, value):
         if value is None or value.lower() == 'true':
             self._contains = True
         else:
