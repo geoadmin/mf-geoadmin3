@@ -439,7 +439,7 @@ Here is a list of possible origins and in ascending ranking order:
 - district (ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill)
 - kantone (ch.swisstopo.swissboundaries3d-kanton-flaeche.fill)
 - sn25 (ch.swisstopo.vec200-names-namedlocation)
-- address (ch.bfs.gebaeude_wohnungs_register)
+- address (ch.bfs.gebaeude_wohnungs_register with EGID or use prefix 'addresse', 'adresse', 'indirizzo', 'address' without EGID)
 - parcel (use prefix "parcel", "parzelle", "parcelle" or "parcella" in your requests to filter out other origins)
 
 The attribute "geom_st_box2d" is in CH1903 / LV03 (EPSG:21781) reference system and represents the bounding box of the associated geometry.
