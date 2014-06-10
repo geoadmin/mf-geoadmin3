@@ -215,6 +215,105 @@ class HM(Base, Vector):
 register('ch.bafu.bundesinventare-hochmoore', HM)
 
 
+class HMA(Base, Vector):
+    __tablename__ = 'hochmoore_anhoerung'
+    __table_args__ = ({'schema': 'bundinv', 'autoload': False})
+    __bodId__ = 'ch.bafu.bundesinventare-hochmoore_anhoerung'
+    __template__ = 'templates/htmlpopup/hochmoore_anhoerung.mako'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    obj_nr = Column('obj_nr', Text)
+    obj_name = Column('obj_name', Text)
+    tobj_type = Column('tobj_type', Text)
+    flaeche = Column('flaeche', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.bundesinventare-hochmoore_anhoerung', HMA)
+
+
+class TTA(Base, Vector):
+    __tablename__ = 'trockenwiesen_trockenweiden_anhoerung'
+    __table_args__ = ({'schema': 'bundinv', 'autoload': False})
+    __bodId__ = 'ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhoerung'
+    __template__ = 'templates/htmlpopup/trockenwiesen_trockenweiden_anhoerung.mako'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    obj_nr = Column('obj_nr', Text)
+    obj_name = Column('obj_name', Text)
+    flaeche = Column('flaeche', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhoerung', TTA)
+
+
+class MLA(Base, Vector):
+    __tablename__ = 'moorlandschaften_anhoerung'
+    __table_args__ = ({'schema': 'bundinv', 'autoload': False})
+    __bodId__ = 'ch.bafu.bundesinventare-moorlandschaften_anhoerung'
+    __template__ = 'templates/htmlpopup/moorlandschaften_anhoerung.mako'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    obj_nr = Column('obj_nr', Text)
+    obj_name = Column('obj_name', Text)
+    flaeche = Column('flaeche', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.bundesinventare-moorlandschaften_anhoerung', MLA)
+
+
+class FMA(Base, Vector):
+    __tablename__ = 'flachmoore_anhoerung'
+    __table_args__ = ({'schema': 'bundinv', 'autoload': False})
+    __bodId__ = 'ch.bafu.bundesinventare-flachmoore_anhoerung'
+    __template__ = 'templates/htmlpopup/flachmoore_anhoerung.mako'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    obj_nr = Column('obj_nr', Text)
+    obj_name = Column('obj_name', Text)
+    flaeche = Column('flaeche', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.bundesinventare-flachmoore_anhoerung', FMA)
+
+
+class AA(Base, Vector):
+    __tablename__ = 'auen_anhoerung'
+    __table_args__ = ({'schema': 'bundinv', 'autoload': False})
+    __bodId__ = 'ch.bafu.bundesinventare-auen_anhoerung'
+    __template__ = 'templates/htmlpopup/auen_anhoerung.mako'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    obj_nr = Column('obj_nr', Text)
+    obj_name = Column('obj_name', Text)
+    flaeche = Column('flaeche', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.bundesinventare-auen_anhoerung', AA)
+
+
+class AWA(Base, Vector):
+    __tablename__ = 'amphibien_wanderobjekte_anhoerung'
+    __table_args__ = ({'schema': 'bundinv', 'autoload': False})
+    __bodId__ = 'ch.bafu.bundesinventare-amphibien_wanderobjekte_anhoerung'
+    __template__ = 'templates/htmlpopup/amphibien_wanderobjekte_anhoerung.mako'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    obj_nr = Column('obj_nr', Text)
+    obj_name = Column('obj_name', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.bundesinventare-amphibien_wanderobjekte_anhoerung', AWA)
+
+
+class AMA(Base, Vector):
+    __tablename__ = 'amphibien_anhoerung'
+    __table_args__ = ({'schema': 'bundinv', 'autoload': False})
+    __bodId__ = 'ch.bafu.bundesinventare-amphibien_anhoerung'
+    __template__ = 'templates/htmlpopup/amphibien_anhoerung.mako'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    obj_nr = Column('obj_nr', Text)
+    obj_name = Column('obj_name', Text)
+    bereich = Column('bereich', Text)
+    flaeche = Column('flaeche', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.bundesinventare-amphibien_anhoerung', AMA)
+
+
 class JB(Base, Vector):
     __tablename__ = 'jb'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
