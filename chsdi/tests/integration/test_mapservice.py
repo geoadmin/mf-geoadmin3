@@ -169,6 +169,14 @@ class TestMapServiceView(TestsBase):
         self.failUnless('geometry' in resp.json['feature'])
         self.failUnless(resp.json['feature']['id'] == 362)
 
+    def test_several_features(self):
+        resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362,363', status=200)
+        self.failUnless(len(resp.json['features']) == 2)
+
+    def test_several_features_geojson(self):
+        resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362,363', params={'geometryFormat': 'geojson'}, status=200)
+        self.failUnless(len(resp.json['features']) == 2)
+
     def test_feature_with_callback(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362', params={'callback': 'cb'}, status=200)
         self.failUnless(resp.content_type == 'text/javascript')

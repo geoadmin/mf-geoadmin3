@@ -12,7 +12,6 @@ from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from chsdi.lib.validation.mapservice import MapServiceValidation
 from chsdi.lib.filters import full_text_search
 from chsdi.models import models_from_name, oereb_models_from_bodid
-from chsdi.models.vector import getScale
 from chsdi.models.bod import OerebMetadata, get_bod_model
 from chsdi.views.layers import get_layer, get_layers_metadata_for_params
 
@@ -49,15 +48,9 @@ def _get_features_params(request):
 
 # For feature, htmlPopup and extendedHtmlPopup services
 def _get_feature_params(request):
-    # TODO get rid of those parameters only used for cadastral
-    defaultExtent = '42000,30000,350000,900000'
-    defaultImageDisplay = '400,600,96'
     params = FeatureParams(request)
     params.layerId = request.matchdict.get('layerId')
-    params.featureId = request.matchdict.get('featureId')
-    params.mapExtent = request.params.get('mapExtent', defaultExtent)
-    params.imageDisplay = request.params.get('imageDisplay', defaultImageDisplay)
-    params.scale = getScale(params.imageDisplay, params.mapExtent)
+    params.featureIds = request.matchdict.get('featureId')
     return params
 
 
@@ -111,36 +104,21 @@ def view_find_esrijson(request):
 def htmlpopup(request):
     params = _get_feature_params(request)
     params.returnGeometry = False
-    models = models_from_name(params.layerId)
-    if models is None:
-        raise exc.HTTPBadRequest('No Vector Table was found for %s' % params.layerId)
-    feature, template, hasExtendedInfo = _get_feature(
-        params,
-        models,
-        params.layerId,
-        params.featureId
-    )
+    feature, vectorModel = next(_get_features(params))
 
-    modelLayer = get_bod_model(params.lang)
+    layerModel = get_bod_model(params.lang)
     layer = next(get_layers_metadata_for_params(
         params,
-        request.db.query(modelLayer),
-        modelLayer,
+        request.db.query(layerModel),
+        layerModel,
         layerIds=[params.layerId]
     ))
-
     feature.update({'attribution': layer.get('attributes')['dataOwner']})
     feature.update({'fullName': layer.get('fullName')})
-    feature.update({'bbox': params.mapExtent.bounds})
-    feature.update({'scale': params.scale})
     feature.update({'extended': False})
-    response = render_to_response(
-        template,
-        {
-            'feature': feature,
-            'hasExtendedInfo': hasExtendedInfo
-        },
-        request=request)
+
+    response = _render_feature_template(vectorModel, feature, request)
+
     if params.cbName is None:
         return response
     return response.body
@@ -150,34 +128,21 @@ def htmlpopup(request):
 def extendedhtmlpopup(request):
     params = _get_feature_params(request)
     params.returnGeometry = False
-    models = models_from_name(params.layerId)
-    if models is None:
-        raise exc.HTTPBadRequest('No Vector Table was found for %s' % params.layerId)
-    feature, template, hasExtendedInfo = _get_feature(
-        params,
-        models,
-        params.layerId,
-        params.featureId,
-        extended=True
-    )
+    feature, vectorModel = next(_get_features(params))
 
-    modelLayer = get_bod_model(params.lang)
+    layerModel = get_bod_model(params.lang)
     layer = next(get_layers_metadata_for_params(
         params,
-        request.db.query(modelLayer),
-        modelLayer,
+        request.db.query(layerModel),
+        layerModel,
         layerIds=[params.layerId]
     ))
     feature.update({'attribution': layer.get('attributes')['dataOwner']})
     feature.update({'fullName': layer.get('fullName')})
     feature.update({'extended': True})
-    response = render_to_response(
-        template,
-        {
-            'feature': feature,
-            'hasExtendedInfo': hasExtendedInfo
-        },
-        request=request)
+
+    response = _render_feature_template(vectorModel, feature, request, True)
+
     if params.cbName is None:
         return response
     return response.body
@@ -266,47 +231,56 @@ def _identify(request):
 
 def _get_feature_service(request):
     params = _get_feature_params(request)
-    models = models_from_name(params.layerId)
+    features = []
+    for feature, vectorModel in _get_features(params):
+        features.append(feature)
+    if len(features) == 1:
+        return features[0]
+    return features
 
+
+def _get_features(params, extended=False):
+    ''' Returns exactly one feature or raises
+    an excpetion '''
+    featureIds = params.featureIds.split(',')
+    models = models_from_name(params.layerId)
     if models is None:
         raise exc.HTTPBadRequest('No Vector Table was found for %s' % params.layerId)
 
-    feature, template, hasExtendedInfo = _get_feature(
-        params,
-        models,
-        params.layerId,
-        params.featureId
-    )
-    return feature
+    for featureId in featureIds:
+        # One layer can have several models
+        for model in models:
+            query = params.request.db.query(model)
+            query = query.filter(model.id == featureId)
+            try:
+                feature = query.one()
+            except NoResultFound:
+                feature = None
+            except MultipleResultsFound:
+                raise exc.HTTPInternalServerError('Multiple features found for the same id %s' % featureId)
+
+            if feature is not None:
+                vectorModel = model
+                break
+
+        if feature is None:
+            raise exc.HTTPNotFound('No feature with id %s' % featureId)
+        feature = _process_feature(feature, params)
+        feature = {'feature': feature}
+        yield feature, vectorModel
 
 
-def _get_feature(params, models, layerId, featureId, extended=False):
-    ''' Returns exactly one feature or raises
-    an excpetion '''
-    # One layer can have several models
-    for model in models:
-        query = params.request.db.query(model)
-        query = query.filter(model.id == featureId)
-        try:
-            feature = query.one()
-            template = 'chsdi:%s' % model.__template__
-        except NoResultFound:
-            feature = None
-        except MultipleResultsFound:
-            raise exc.HTTPInternalServerError('Multiple features found for the same id %s' % featureId)
-
-        if feature is not None:
-            template = 'chsdi:%s' % model.__template__
-            hasExtendedInfo = True if hasattr(model, '__extended_info__') else False
-            if extended and not hasExtendedInfo:
-                raise exc.HTTPNotFound('No extended info has been found for %s' % layerId)
-            break
-
-    if feature is None:
-        raise exc.HTTPNotFound('No feature with id %s' % featureId)
-    feature = _process_feature(feature, params)
-    feature = {'feature': feature}
-    return feature, template, hasExtendedInfo
+def _render_feature_template(vectorModel, feature, request, extended=False):
+    hasExtendedInfo = True if hasattr(vectorModel, '__extended_info__') else False
+    if extended and not hasExtendedInfo:
+        raise exc.HTTPNotFound('No extended info has been found for %s' % vectorModel.__bodId__)
+    return render_to_response(
+        'chsdi:%s' % vectorModel.__template__,
+        {
+            'feature': feature,
+            'hasExtendedInfo': hasExtendedInfo
+        },
+        request=request)
 
 
 def _get_features_for_extent(params, models, maxFeatures=None):
