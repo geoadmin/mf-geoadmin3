@@ -956,11 +956,20 @@ msgstr "Amphibians stationary objects"
 msgid "ch.bafu.bundesinventare-amphibien_anhang4"
 msgstr "Amphibians appendix 4"
 
+msgid "ch.bafu.bundesinventare-amphibien_anhoerung"
+msgstr "Amphibien - Anhörung 2014"
+
 msgid "ch.bafu.bundesinventare-amphibien_wanderobjekte"
 msgstr "Amphibians shifting sites"
 
+msgid "ch.bafu.bundesinventare-amphibien_wanderobjekte_anhoerung"
+msgstr "Amphibien Wanderobjekte 2014"
+
 msgid "ch.bafu.bundesinventare-auen"
 msgstr "Floodplains"
+
+msgid "ch.bafu.bundesinventare-auen_anhoerung"
+msgstr "Auen - Anhörung 2014"
 
 msgid "ch.bafu.bundesinventare-bln"
 msgstr "ILNM"
@@ -968,11 +977,17 @@ msgstr "ILNM"
 msgid "ch.bafu.bundesinventare-flachmoore"
 msgstr "Fens"
 
+msgid "ch.bafu.bundesinventare-flachmoore_anhoerung"
+msgstr "Flachmoore Anhörung 2014"
+
 msgid "ch.bafu.bundesinventare-flachmoore_regional"
 msgstr "Regional fens"
 
 msgid "ch.bafu.bundesinventare-hochmoore"
 msgstr "Raised bogs"
+
+msgid "ch.bafu.bundesinventare-hochmoore_anhoerung"
+msgstr "Hochmoore - Anhörung 2014"
 
 msgid "ch.bafu.bundesinventare-jagdbanngebiete"
 msgstr "Swiss game reserves"
@@ -980,11 +995,17 @@ msgstr "Swiss game reserves"
 msgid "ch.bafu.bundesinventare-moorlandschaften"
 msgstr "Mire landscapes"
 
+msgid "ch.bafu.bundesinventare-moorlandschaften_anhoerung"
+msgstr "Moorlandschaften - Anhörung 2014"
+
 msgid "ch.bafu.bundesinventare-trockenwiesen_trockenweiden"
 msgstr "Dry grasslands (DGS)"
 
 msgid "ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhang2"
 msgstr "Dry grasslands appendix 2"
+
+msgid "ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhoerung"
+msgstr "TWW - Anhörung 2014"
 
 msgid "ch.bafu.bundesinventare-vogelreservate"
 msgstr "Water & migrant bird reserves"
@@ -2184,6 +2205,9 @@ msgstr "Aerial photo, aera statistic 1992/97"
 msgid "flaeche_ha"
 msgstr "Area [ha]"
 
+msgid "flaeche_hm"
+msgstr "Fläche (ha)"
+
 msgid "flaeche_km2"
 msgstr "Area [km2]"
 
@@ -3146,6 +3170,12 @@ msgstr "Hauptnutzung"
 
 msgid "nutzungsart_verbindung"
 msgstr "Nutzungsart der Verbindung"
+
+msgid "obj_name"
+msgstr "Objektname"
+
+msgid "obj_nr"
+msgstr "Objektnumme"
 
 msgid "objektname"
 msgstr "Object name"

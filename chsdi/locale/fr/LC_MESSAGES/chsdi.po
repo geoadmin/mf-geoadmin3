@@ -956,11 +956,20 @@ msgstr "Batraciens objets fixes"
 msgid "ch.bafu.bundesinventare-amphibien_anhang4"
 msgstr "Batraciens sites de l’annexe 4"
 
+msgid "ch.bafu.bundesinventare-amphibien_anhoerung"
+msgstr "Batraciens consultation 2014"
+
 msgid "ch.bafu.bundesinventare-amphibien_wanderobjekte"
 msgstr "Batraciens objets itinérants"
 
+msgid "ch.bafu.bundesinventare-amphibien_wanderobjekte_anhoerung"
+msgstr "Batraciens objets itinérants 2014"
+
 msgid "ch.bafu.bundesinventare-auen"
 msgstr "Zones alluviales"
+
+msgid "ch.bafu.bundesinventare-auen_anhoerung"
+msgstr "Zones alluviales consultation 2014"
 
 msgid "ch.bafu.bundesinventare-bln"
 msgstr "IFP"
@@ -968,11 +977,17 @@ msgstr "IFP"
 msgid "ch.bafu.bundesinventare-flachmoore"
 msgstr "Bas-marais"
 
+msgid "ch.bafu.bundesinventare-flachmoore_anhoerung"
+msgstr "Bas-marais consultation 2014"
+
 msgid "ch.bafu.bundesinventare-flachmoore_regional"
 msgstr "Bas-marais régionaux"
 
 msgid "ch.bafu.bundesinventare-hochmoore"
 msgstr "Hauts-marais"
+
+msgid "ch.bafu.bundesinventare-hochmoore_anhoerung"
+msgstr "Hauts-marais consultation 2014"
 
 msgid "ch.bafu.bundesinventare-jagdbanngebiete"
 msgstr "Districts francs"
@@ -980,11 +995,17 @@ msgstr "Districts francs"
 msgid "ch.bafu.bundesinventare-moorlandschaften"
 msgstr "Sites marécageux"
 
+msgid "ch.bafu.bundesinventare-moorlandschaften_anhoerung"
+msgstr "Sites marécageux consultation 2014"
+
 msgid "ch.bafu.bundesinventare-trockenwiesen_trockenweiden"
 msgstr "Prairies et pâturages secs (PPS)"
 
 msgid "ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhang2"
 msgstr "PPS annexe 2"
+
+msgid "ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhoerung"
+msgstr "PPS consultation 2014"
 
 msgid "ch.bafu.bundesinventare-vogelreservate"
 msgstr "Réserves d'oiseaux d'eau"
@@ -2183,6 +2204,9 @@ msgstr "Vue aérienne pour la statistique de la superficie 1992/97 prise en"
 msgid "flaeche_ha"
 msgstr "Surface [ha]"
 
+msgid "flaeche_hm"
+msgstr "Surface  (ha)"
+
 msgid "flaeche_km2"
 msgstr "Surface [km2]"
 
@@ -3145,6 +3169,12 @@ msgstr "Type"
 
 msgid "nutzungsart_verbindung"
 msgstr "Usage de la connexion"
+
+msgid "obj_name"
+msgstr "Nom de l’objet"
+
+msgid "obj_nr"
+msgstr "Numéro de l‘objet"
 
 msgid "objektname"
 msgstr "Nom de l'objet"
