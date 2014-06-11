@@ -22,16 +22,24 @@
           '<h4 class="popover-title ga-popup-title" ' +
               'ng-click="expand($event)">' +
             '<span translate>{{options.title}}</span>' +
-            '<i class="ga-popup-close hidden-print" ' +
-               'ng-click="close($event)">&times</i>' +
-            '<i class="icon-minus ga-popup-reduce hidden-print" ' +
+            '<button ' +
+               'class="ga-popup-close hidden-print" ' +
+               'ng-click="close($event)">&times</button>' +
+            '<button ' +
+               'class="icon-minus ga-popup-reduce hidden-print" ' +
                'title="{{titleReduce}}" ' +
-               'ng-if="options.showReduce" ng-click="reduce($event)"></i>' +
-            '<i class="icon-print ga-popup-print hidden-print" ' +
+               'ng-if="options.showReduce" ' +
+               'ng-click="reduce($event)"></button>' +
+            '<button ' +
+               'class="icon-print ga-popup-print hidden-print" ' +
                'title="{{titlePrint}}" ' +
-               'ng-if="options.showPrint" ng-click="print()"></i>' +
-            '<span title="{{titleHelp}}" ng-if="options.help" ' +
-                  'ga-help="{{options.help}}"></span>' +
+               'ng-if="options.showPrint" ' +
+               'ng-click="print()"></button>' +
+            '<button ' +
+               'class="ga-popup-help hidden-print" ' +
+               'title="{{titleHelp}}" ' +
+               'ng-if="options.help" ' +
+               'ga-help="{{options.help}}"></button>' +
           '</h4>' +
           '<div class="popover-content ga-popup-content" ' +
                'ng-transclude>' +

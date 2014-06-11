@@ -29,7 +29,7 @@
     z-index: 500;
     .transition(bottom 1s ease);
     
-    h4, i {
+    h4, i, button {
       color: white;
     }
 
@@ -84,18 +84,21 @@
     }
   }
   
-  .ga-popup-print, [ga-help], .ga-popup-reduce, .ga-popup-close {
+  .ga-popup-print, .ga-popup-help, .ga-popup-reduce, .ga-popup-close {
     float: right;
     cursor: pointer;
     opacity: 0.3;
-    margin: 0px 0px 0px 8px;
+    margin: 0px 0px 0px 5px;
     padding: 0px;
     border: none;
     box-shadow: none;
     font-size: 14px;
+    font-style: normal;
     font-weight: bold;
     line-height: inherit;
     visibility: visible;
+    width: 18px;
+    background-color: transparent;
 
     &:hover {
       opacity: 1;
@@ -107,18 +110,18 @@
   }
 
   .ga-popup-close {
-    font-size: 21px;
-    margin-left: 6px;
-     
-    @media (max-width: @screen-tablet) {
-      font-size: 24px;
-    }
+    font-size: 26px;
+    margin-left: 3px;
   }
   
   .ga-popup-reduce {
     padding-top: 4px;
   }
 
+  .ga-popup-help {
+    width: 16px;
+    text-align: center;
+  }
 
   .ga-popup-print-in-progress{
     float: right;
