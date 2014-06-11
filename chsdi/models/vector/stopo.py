@@ -1421,3 +1421,139 @@ class gisgeol_flaechen_lt10km2(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-gisgeol-flaechen-lt10km2', gisgeol_flaechen_lt10km2)
+
+
+class geocover_line_aux(Base, Vector):
+    __tablename__ = 'view_geocover_line_aux'
+    __table_args__ = ({'schema': 'geol', 'autoload': False})
+    __template__ = 'templates/htmlpopup/geocover_line_aux.mako'
+    __bodId__ = 'ch.swisstopo.geologie-geocover'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    basisdatensatz = Column('basisdatensatz', Text)
+    description = Column('description', Text)
+    spec_description = Column('spec_description', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-geocover', geocover_line_aux)
+
+
+class geocover_point_hydro(Base, Vector):
+    __tablename__ = 'view_geocover_point_hydro'
+    __table_args__ = ({'schema': 'geol', 'autoload': False})
+    __template__ = 'templates/htmlpopup/geocover_point_hydro.mako'
+    __bodId__ = 'ch.swisstopo.geologie-geocover'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    basisdatensatz = Column('basisdatensatz', Text)
+    description = Column('description', Text)
+    spec_description = Column('spec_description', Text)
+    azimut = Column('azimut', Text)
+    depth = Column('depth', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-geocover', geocover_point_hydro)
+
+
+class geocover_point_geol(Base, Vector):
+    __tablename__ = 'view_geocover_point_geol'
+    __table_args__ = ({'schema': 'geol', 'autoload': False})
+    __template__ = 'templates/htmlpopup/geocover_point_hydro.mako'
+    __bodId__ = 'ch.swisstopo.geologie-geocover'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    basisdatensatz = Column('basisdatensatz', Text)
+    description = Column('description', Text)
+    spec_description = Column('spec_description', Text)
+    azimut = Column('azimut', Text)
+    depth = Column('depth', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-geocover', geocover_point_geol)
+
+
+class geocover_point_drill(Base, Vector):
+    __tablename__ = 'view_geocover_point_drill'
+    __table_args__ = ({'schema': 'geol', 'autoload': False})
+    __template__ = 'templates/htmlpopup/geocover_point_drill.mako'
+    __bodId__ = 'ch.swisstopo.geologie-geocover'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    basisdatensatz = Column('basisdatensatz', Text)
+    description = Column('description', Text)
+    spec_description = Column('spec_description', Text)
+    azimut = Column('azimut', Text)
+    depth_1 = Column('depth_1', Text)
+    description_1 = Column('description_1', Text)
+    depth_2 = Column('depth_2', Text)
+    description_2 = Column('description_2', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-geocover', geocover_point_drill)
+
+
+class geocover_point_info(Base, Vector):
+    __tablename__ = 'view_geocover_point_info'
+    __table_args__ = ({'schema': 'geol', 'autoload': False})
+    __template__ = 'templates/htmlpopup/geocover_point_info.mako'
+    __bodId__ = 'ch.swisstopo.geologie-geocover'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    basisdatensatz = Column('basisdatensatz', Text)
+    description = Column('description', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-geocover', geocover_point_info)
+
+
+class geocover_point_struct(Base, Vector):
+    __tablename__ = 'view_geocover_point_struct'
+    __table_args__ = ({'schema': 'geol', 'autoload': False})
+    __template__ = 'templates/htmlpopup/geocover_point_struct.mako'
+    __bodId__ = 'ch.swisstopo.geologie-geocover'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    basisdatensatz = Column('basisdatensatz', Text)
+    description = Column('description', Text)
+    spec_description = Column('spec_description', Text)
+    azimut = Column('azimut', Text)
+    dip = Column('dip', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-geocover', geocover_point_struct)
+
+
+class geocover_polygon_aux_1(Base, Vector):
+    __tablename__ = 'view_geocover_polygon_aux_1'
+    __table_args__ = ({'schema': 'geol', 'autoload': False})
+    __template__ = 'templates/htmlpopup/geocover_polygon.mako'
+    __bodId__ = 'ch.swisstopo.geologie-geocover'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    basisdatensatz = Column('basisdatensatz', Text)
+    description = Column('description', Text)
+    tecto = Column('tecto', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-geocover', geocover_polygon_aux_1)
+
+
+class geocover_polygon_aux_2(Base, Vector):
+    __tablename__ = 'view_geocover_polygon_aux_2'
+    __table_args__ = ({'schema': 'geol', 'autoload': False})
+    __template__ = 'templates/htmlpopup/geocover_polygon.mako'
+    __bodId__ = 'ch.swisstopo.geologie-geocover'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    basisdatensatz = Column('basisdatensatz', Text)
+    description = Column('description', Text)
+    tecto = Column('tecto', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-geocover', geocover_polygon_aux_2)
+
+
+class geocover_polygon_main(Base, Vector):
+    __tablename__ = 'view_geocover_polygon_main'
+    __table_args__ = ({'schema': 'geol', 'autoload': False})
+    __template__ = 'templates/htmlpopup/geocover_polygon.mako'
+    __bodId__ = 'ch.swisstopo.geologie-geocover'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    basisdatensatz = Column('basisdatensatz', Text)
+    description = Column('description', Text)
+    tecto = Column('tecto', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-geocover', geocover_polygon_main)
