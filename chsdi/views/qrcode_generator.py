@@ -27,12 +27,13 @@ def _make_qrcode_img(url):
     import qrcode
     # For a qrcode of 128px
     qr = qrcode.QRCode(
+        box_size=4,
         error_correction=qrcode.constants.ERROR_CORRECT_L,
-        box_size=3
+        border=3
     )
     try:
         qr.add_data(url)
-        qr.make(fit=True)
+        qr.make()
         output = StringIO.StringIO()
         img = qr.make_image()
         img.save(output)
