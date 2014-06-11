@@ -102,15 +102,15 @@
           without bbox, features within the bbox)</a> <br>
       <h4>Locations with features and time </h4>
           <a
-          href="rest/services/inspire/SearchServer?searchText=19810590048970&features=ch.swisstopo.lubis-luftbilder_farbe&type=locations&bbox=542200,206800,542200,206800&timeInstant=1981">Combined
+          href="rest/services/inspire/SearchServer?searchText=19810590048970&features=ch.swisstopo.lubis-luftbilder_farbe&type=locations&bbox=542200,206800,542200,206800&timeInstant=1981&timeEnabled=true">Combined
           search for locations *and* features in ch.swisstopo.lubis-luftbilder_farbe
           with time parameter (1 result)</a> <br>
           <a
-          href="rest/services/inspire/SearchServer?searchText=19810590048970&features=ch.swisstopo.lubis-luftbilder_farbe&type=locations&bbox=542200,206800,542200,206800&timeInstant=1953">Combined
+          href="rest/services/inspire/SearchServer?searchText=19810590048970&features=ch.swisstopo.lubis-luftbilder_farbe&type=locations&bbox=542200,206800,542200,206800&timeInstant=1953&timeEnabled=true">Combined
           search for locations *and* features in ch.swisstopo.lubis-luftbilder_farbe
           with time parameter (no  results)</a> <br>
           <a
-          href="rest/services/inspire/SearchServer?searchText=19&features=ch.swisstopo.lubis-luftbilder_farbe&type=locations&bbox=540000,140000,560000,160000&timeInstant=1990">Combined
+          href="rest/services/inspire/SearchServer?searchText=19&features=ch.swisstopo.lubis-luftbilder_farbe&type=locations&bbox=540000,140000,560000,160000&timeInstant=1990&timeEnabled=true">Combined
           search for locations *and* features in ch.swisstopo.lubis-luftbilder_farbe
           with time parameter (several  results)</a> <br>
       <h3>Feature search (type=featuresearch)</h3>
