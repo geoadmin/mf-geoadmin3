@@ -1,6 +1,9 @@
 #-*- coding: utf-8 -*-
 
-from urlparse import urlparse
+import httplib2
+import urllib
+import json
+import urlparse
 import StringIO
 
 from pyramid.view import view_config
@@ -14,6 +17,7 @@ def qrcode(request):
     url = _check_url(
         request.params.get('url')
     )
+    url = _shorten_url(url)
     img = _make_qrcode_img(url)
     response = Response(img, content_type='image/png')
     return response
@@ -22,7 +26,10 @@ def qrcode(request):
 def _make_qrcode_img(url):
     import qrcode
     # For a qrcode of 128px
-    qr = qrcode.QRCode(box_size=3)
+    qr = qrcode.QRCode(
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=3
+    )
     try:
         qr.add_data(url)
         qr.make(fit=True)
@@ -37,10 +44,24 @@ def _make_qrcode_img(url):
 def _check_url(url):
     if url is None:
         raise HTTPBadRequest('The parameter url is missing from the request')
-    hostname = urlparse(url).hostname
+    parsedUrl = urlparse.urlparse(url)
+    scheme = parsedUrl.scheme
+    hostname = parsedUrl.hostname
     if hostname is None:
         raise HTTPBadRequest('Could not determine the hostname')
     domain = ".".join(hostname.split(".")[-2:])
     if all(('admin.ch' not in domain, 'swisstopo.ch' not in domain, 'bgdi.ch' not in domain)):
         raise HTTPBadRequest('Shortener can only be used for admin.ch, swisstopo.ch and bgdi.ch domains')
-    return url
+    return scheme + '://' + hostname + '?' + urllib.quote(parsedUrl.query)
+
+
+def _shorten_url(url):
+    API2_SHORTEN_URL = 'http://api.geo.admin.ch/shorten.json?url=%s'
+    try:
+        h = httplib2.Http()
+        resp, content = h.request(API2_SHORTEN_URL % url, 'GET')
+        resp = json.loads(content)
+        url = resp['shorturl']
+        return url
+    except:
+        return url
