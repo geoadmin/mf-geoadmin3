@@ -22,7 +22,7 @@ API & applications
 Geodata
 ********
 +--------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Update | `Hochmoore – Anhörung 2014 <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-hochmoore_anhoerung>`__ (ch.bafu.bundesinventare-hochmoore_anhoerung>)                               |
+| Update | `Hochmoore – Anhörung 2014 <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-hochmoore_anhoerung>`__ (ch.bafu.bundesinventare-hochmoore_anhoerung)                               |
 +--------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Update | `Auen – Anhörung 2014 <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-auen_anhoerung>`__ (ch.bafu.bundesinventare-auen_anhoerung)                                               |
 +--------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
