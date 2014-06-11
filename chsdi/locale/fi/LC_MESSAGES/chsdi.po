@@ -956,11 +956,20 @@ msgstr "Amfibis object ferms"
 msgid "ch.bafu.bundesinventare-amphibien_anhang4"
 msgstr "Amphibien Anhang 4"
 
+msgid "ch.bafu.bundesinventare-amphibien_anhoerung"
+msgstr "Amphibien - Anhörung 2014"
+
 msgid "ch.bafu.bundesinventare-amphibien_wanderobjekte"
 msgstr "Amfibis object ambulant"
 
+msgid "ch.bafu.bundesinventare-amphibien_wanderobjekte_anhoerung"
+msgstr "Amphibien Wanderobjekte 2014"
+
 msgid "ch.bafu.bundesinventare-auen"
 msgstr "Ognas"
+
+msgid "ch.bafu.bundesinventare-auen_anhoerung"
+msgstr "Auen - Anhörung 2014"
 
 msgid "ch.bafu.bundesinventare-bln"
 msgstr "Inventari IFC"
@@ -968,11 +977,17 @@ msgstr "Inventari IFC"
 msgid "ch.bafu.bundesinventare-flachmoore"
 msgstr "Palids planivas"
 
+msgid "ch.bafu.bundesinventare-flachmoore_anhoerung"
+msgstr "Flachmoore Anhörung 2014"
+
 msgid "ch.bafu.bundesinventare-flachmoore_regional"
 msgstr "Flachmoore regional"
 
 msgid "ch.bafu.bundesinventare-hochmoore"
 msgstr "Palids autas"
+
+msgid "ch.bafu.bundesinventare-hochmoore_anhoerung"
+msgstr "Hochmoore - Anhörung 2014"
 
 msgid "ch.bafu.bundesinventare-jagdbanngebiete"
 msgstr "Territoris scumandads de la chatscha"
@@ -980,11 +995,17 @@ msgstr "Territoris scumandads de la chatscha"
 msgid "ch.bafu.bundesinventare-moorlandschaften"
 msgstr "Cuntradas da palì"
 
+msgid "ch.bafu.bundesinventare-moorlandschaften_anhoerung"
+msgstr "Moorlandschaften - Anhörung 2014"
+
 msgid "ch.bafu.bundesinventare-trockenwiesen_trockenweiden"
 msgstr "Trockenwiesen und -weiden"
 
 msgid "ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhang2"
 msgstr "TWW Anhang 2"
+
+msgid "ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhoerung"
+msgstr "TWW - Anhörung 2014"
 
 msgid "ch.bafu.bundesinventare-vogelreservate"
 msgstr "Reservats d'utschels: aua e migrants"
@@ -2186,6 +2207,9 @@ msgstr "Luftbild Arealstatistik 1992/97 von"
 msgid "flaeche_ha"
 msgstr "Fläche [ha]"
 
+msgid "flaeche_hm"
+msgstr "Fläche (ha)"
+
 msgid "flaeche_km2"
 msgstr "Fläche [km2]"
 
@@ -3148,6 +3172,12 @@ msgstr "Hauptnutzung"
 
 msgid "nutzungsart_verbindung"
 msgstr "Nutzungsart der Verbindung"
+
+msgid "obj_name"
+msgstr "Objektname"
+
+msgid "obj_nr"
+msgstr "Objektnummer"
 
 msgid "objektname"
 msgstr "Objektname"

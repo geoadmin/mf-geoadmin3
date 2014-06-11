@@ -1,6 +1,36 @@
 msgid "None"
 msgstr ""
 
+msgid "ch.bafu.bundesinventare-hochmoore_anhoerung"
+msgstr ""
+
+msgid "ch.bafu.bundesinventare-auen_anhoerung"
+msgstr ""
+
+msgid "ch.bafu.bundesinventare-flachmoore_anhoerung"
+msgstr ""
+
+msgid "ch.bafu.bundesinventare-moorlandschaften_anhoerung"
+msgstr ""
+
+msgid "ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhoerung"
+msgstr ""
+
+msgid "ch.bafu.bundesinventare-amphibien_wanderobjekte_anhoerung"
+msgstr ""
+
+msgid "ch.bafu.bundesinventare-amphibien_anhoerung"
+msgstr ""
+
+msgid "obj_nr"
+msgstr ""
+
+msgid "obj_name"
+msgstr ""
+
+msgid "flaeche_hm"
+msgstr ""
+
 msgid "ch.bfe.sachplan-geologie-tiefenlager"
 msgstr ""
 
