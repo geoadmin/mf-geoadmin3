@@ -22,6 +22,7 @@
     padding: 0;
     background-color: transparent;
     border: none;
+    display: block; /*without this, chrome add 3 pixels between zoomin/out buttons*/
   }
 
   .ol-dragbox {
@@ -35,6 +36,7 @@
   }
   
   .ol-zoom-out {
+    margin-top: unit(@control-btn-space, px);
     background-image: data-uri('zoomOut.png');
   }
 
@@ -44,7 +46,6 @@
 
   .ol-zoom {
     width: unit(@control-btn-size, px);
-    height: unit(@control-btn-size * 2 + @control-btn-space, px);
   }
 
   .ol-zoom, .ol-zoom-extent {
