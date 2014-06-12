@@ -30,5 +30,7 @@ beforeEach(function() {
         '{TileMatrix}/{TileRow}/{TileCol}.{Format}';
     gaLayersProvider.layersConfigUrlTemplate =
         'http://example.com/{Topic}?lang={Lang}';
+    gaLayersProvider.legendUrlTemplate =
+        'http://legendservice.com/{Topic}/{Layer}?lang={Lang}';
   });
 });
