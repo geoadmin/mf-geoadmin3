@@ -80,7 +80,7 @@ RewriteRule ^/${apache_base_path}/(print)(.*)$ /${vars:apache_base_path}/wsgi/$1
  
 # define a process group
 # WSGIDaemonProcess must be commented/removed when running the project on windows
-WSGIDaemonProcess mf-chsdi3:${vars:apache_base_path} display-name=%{GROUP} user=${vars:modwsgi_user}
+WSGIDaemonProcess mf-chsdi3:${vars:apache_base_path} display-name=%{GROUP} user=${vars:modwsgi_user} processes=${vars:wsgi_processes} threads=${vars:wsgi_threads}
 
 # define the path to the WSGI app
 WSGIScriptAlias /${vars:apache_base_path}/wsgi ${buildout:directory/buildout/parts/modwsgi/wsgi}
