@@ -137,15 +137,7 @@
                   // the future
                   if (result.attrs.geom_st_box2d) {
                     bbox = parseBoxString(result.attrs.geom_st_box2d);
-                    ext = ol.extent.boundingExtent([[bbox[0], bbox[1]],
-                                                       [bbox[2], bbox[3]]]);
-                    if (ol.extent.getArea(ext) <= 0) {
-                      if (!ol.extent.containsCoordinate(searchExtent,
-                                                        [ext[0], ext[1]])) {
-                        continue;
-                      }
-                    } else if (ol.extent.getIntersectionArea(searchExtent,
-                                                              ext) <= 0) {
+                    if (!ol.extent.intersects(searchExtent, bbox)) {
                       continue;
                     }
                   }
