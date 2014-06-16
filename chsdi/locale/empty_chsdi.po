@@ -4563,7 +4563,6 @@ msgstr ""
 msgid "ch.swisstopo.sgtk"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "ch.pronatura.waldreservate"
 msgstr ""
 
@@ -4598,7 +4597,8 @@ msgid "ch.pronatura"
 msgstr ""
 
 msgid "ch.pronatura.url"
-=======
+msgstr ""
+
 msgid "ch.swisstopo.geologie-geocover"
 msgstr ""
 

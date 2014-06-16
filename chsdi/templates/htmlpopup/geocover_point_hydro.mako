@@ -6,4 +6,4 @@
     <tr><td class="cell-left">${_('geocover_spec_description')}</td><td>${c['attributes']['spec_description'] or '-'}</td></tr>
     <tr><td class="cell-left">${_('geocover_azimut')}</td><td>${c['attributes']['azimut'] or '-'}</td></tr>
     <tr><td class="cell-left">${_('geocover_depth')}</td><td>${c['attributes']['depth'] or '-'}</td></tr>
-</%def> 
+</%def>
