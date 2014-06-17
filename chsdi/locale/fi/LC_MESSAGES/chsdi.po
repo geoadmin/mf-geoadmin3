@@ -359,6 +359,9 @@ msgstr "Name"
 msgid "band_1_2"
 msgstr "Volum 1 | 2"
 
+msgid "basis"
+msgstr "Grundlage(n)"
+
 msgid "bazlrechtstatus"
 msgstr "Status da dregt"
 
@@ -1719,6 +1722,9 @@ msgstr "Maximum da l'ultim temp da glatsch"
 msgid "ch.swisstopo.geologie-generalkarte-ggk200"
 msgstr "Geologische Generalkarte"
 
+msgid "ch.swisstopo.geologie-geocover.metadata"
+msgstr "Divisiun GeoCover"
+
 msgid "ch.swisstopo.geologie-geodaesie-bouguer_anomalien"
 msgstr "Anomalias da Bouguer"
 
@@ -2293,6 +2299,9 @@ msgstr "Zugeordnete GIN-Nummer"
 
 msgid "gmde"
 msgstr "BFS-Gemeindenummer (Stand 2006)"
+
+msgid "grat25"
+msgstr "Kartenblatt"
 
 msgid "grundadresse"
 msgstr "Adressa"
@@ -3004,6 +3013,9 @@ msgstr "Spezialbibliothek (Museen, Archive usw.) (Sammlung)"
 
 msgid "kultur863"
 msgstr "Private Bibliothek (Sammlung)"
+
+msgid "lab"
+msgstr "Bezeichnung"
 
 msgid "laenge_m"
 msgstr "Länge [m]"
@@ -4416,6 +4428,9 @@ msgstr "URL"
 
 msgid "validierungsdatum"
 msgstr "Validierungsdatum"
+
+msgid "vektorisierung_jahr"
+msgstr "Vektorisierung"
 
 msgid "viel_sub"
 msgstr "Historischer Verlauf mit viel Substanz"
