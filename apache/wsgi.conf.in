@@ -79,8 +79,8 @@ RewriteRule ^${apache_entry_path}reframe/lv03tolv95(.*)$ http://tc-geodesy.bgdi.
 RewriteRule ^/${apache_base_path}/(print)(.*)$ /${vars:apache_base_path}/wsgi/$1$2 [PT]
  
 # define a process group
-# WSGIDaemonProcess must be commented/removed when running the project on windows
-WSGIDaemonProcess mf-chsdi3:${vars:apache_base_path} display-name=%{GROUP} user=${vars:modwsgi_user}
+# WSGIDaemonProcess, default are 1 process and 15 threads
+WSGIDaemonProcess mf-chsdi3:${vars:apache_base_path} display-name=%{GROUP} user=${vars:modwsgi_user} threads=${vars:wsgi_threads}
 
 # define the path to the WSGI app
 WSGIScriptAlias /${vars:apache_base_path}/wsgi ${buildout:directory/buildout/parts/modwsgi/wsgi}
