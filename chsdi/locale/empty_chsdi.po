@@ -244,6 +244,9 @@ msgstr ""
 msgid "ch.swisstopo.geologie-generalkarte-ggk200"
 msgstr ""
 
+msgid "ch.swisstopo.geologie-geocover.metadata"
+msgstr ""
+
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas"
 msgstr ""
 
@@ -2462,6 +2465,18 @@ msgid "nffirmenname"
 msgstr ""
 
 msgid "geompdf_liste"
+msgstr ""
+
+msgid "lab"
+msgstr ""
+
+msgid "vektorisierung_jahr"
+msgstr ""
+
+msgid "basis"
+msgstr ""
+
+msgid "grat25"
 msgstr ""
 
 # are2 translations

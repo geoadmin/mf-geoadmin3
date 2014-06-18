@@ -359,6 +359,9 @@ msgstr "Nome"
 msgid "band_1_2"
 msgstr "Volume 1 | 2"
 
+msgid "basis"
+msgstr "Base(i)"
+
 msgid "bazlrechtstatus"
 msgstr "Status giuridico"
 
@@ -1719,6 +1722,9 @@ msgstr "Ultimo massimo glaciale"
 msgid "ch.swisstopo.geologie-generalkarte-ggk200"
 msgstr "Carta geologica generale"
 
+msgid "ch.swisstopo.geologie-geocover.metadata"
+msgstr "Divisione GeoCover"
+
 msgid "ch.swisstopo.geologie-geodaesie-bouguer_anomalien"
 msgstr "Anomalia di Bouguer"
 
@@ -2290,6 +2296,9 @@ msgstr "Numéro GIN attribué"
 
 msgid "gmde"
 msgstr "Numéro de commune OFS (état 2006)"
+
+msgid "grat25"
+msgstr "Carta nazionale"
 
 msgid "grundadresse"
 msgstr "Indirizzo"
@@ -3001,6 +3010,9 @@ msgstr "Biblioteca speciale (collezione)"
 
 msgid "kultur863"
 msgstr "Biblioteca privata (collezione)"
+
+msgid "lab"
+msgstr "Denominazione"
 
 msgid "laenge_m"
 msgstr "Lunghezza [m]"
@@ -4414,6 +4426,9 @@ msgstr "URL"
 
 msgid "validierungsdatum"
 msgstr "Date de validation"
+
+msgid "vektorisierung_jahr"
+msgstr "Vettorizzazione"
 
 msgid "viel_sub"
 msgstr "molta sostanza"

@@ -571,6 +571,22 @@ class GridstandSwissimage(Base, Vector):
 register('ch.swisstopo.images-swissimage.metadata', GridstandSwissimage)
 
 
+class GeolGeocoverMetadata(Base, Vector):
+    __tablename__ = 'kv_geocover'
+    __table_args__ = ({'schema': 'geol', 'autoload': False})
+    __template__ = 'templates/htmlpopup/geocover_metadata.mako'
+    __bodId__ = 'ch.swisstopo.geologie-geocover.metadata'
+    id = Column('gid', Integer, primary_key=True)
+    nr = Column('nr', Text)
+    titel = Column('titel', Text)
+    basis = Column('basis', Text)
+    vektorisierung_jahr = Column('vektorisierung_jahr', Integer)
+    grat25 = Column('grat25', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-geocover.metadata', GeolGeocoverMetadata)
+
+
 class GeolGenKarteGGK200(Base, Vector):
     __tablename__ = 'kv_ggk_pk'
     __table_args__ = ({'schema': 'geol', 'autoload': False})

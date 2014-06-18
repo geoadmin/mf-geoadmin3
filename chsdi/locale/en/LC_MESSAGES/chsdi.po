@@ -359,6 +359,9 @@ msgstr "Name"
 msgid "band_1_2"
 msgstr "Volume 1 | 2"
 
+msgid "basis"
+msgstr "Based on"
+
 msgid "bazlrechtstatus"
 msgstr "Legal status"
 
@@ -1719,6 +1722,9 @@ msgstr "Last glacial maximum"
 msgid "ch.swisstopo.geologie-generalkarte-ggk200"
 msgstr "General Geological Map"
 
+msgid "ch.swisstopo.geologie-geocover.metadata"
+msgstr "Division GeoCover"
+
 msgid "ch.swisstopo.geologie-geodaesie-bouguer_anomalien"
 msgstr "Bouguer-Anomalies"
 
@@ -2291,6 +2297,9 @@ msgstr "Zugeordnete GIN-Nummer"
 
 msgid "gmde"
 msgstr "BFS-City nummer (State 2006)"
+
+msgid "grat25"
+msgstr "National map"
 
 msgid "grundadresse"
 msgstr "Address"
@@ -3002,6 +3011,9 @@ msgstr "Spezialbibliothek (Museen, Archive usw.) (Sammlung)"
 
 msgid "kultur863"
 msgstr "Private Bibliothek (Sammlung)"
+
+msgid "lab"
+msgstr "Denomination"
 
 msgid "laenge_m"
 msgstr "Length [m]"
@@ -4414,6 +4426,9 @@ msgstr "URL"
 
 msgid "validierungsdatum"
 msgstr "Validierungsdatum"
+
+msgid "vektorisierung_jahr"
+msgstr "Vectorization"
 
 msgid "viel_sub"
 msgstr "Historischer Verlauf mit viel Substanz"
