@@ -11,9 +11,20 @@
   ]);
 
   module.provider('gaLayerMetadataPopup', function() {
-    this.$get = function($document, $translate, gaPopup, gaLayers) {
+    this.$get = function($document, $rootScope, $translate, gaPopup,
+        gaLayers) {
       // Keep track of existing popups
       var popups = {};
+
+      // On language change we destroy all the popups
+      $rootScope.$on('$translateChangeEnd', function(event) {
+        for (var i in popups) {
+          if (popups[i].scope) {
+            popups[i].destroy();
+            delete popups[i];
+          }
+        }
+      });
 
       // This service acts as a toggle. Repeated calls with
       // the same bodid will 'toggle' the popup with the
