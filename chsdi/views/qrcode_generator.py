@@ -46,14 +46,13 @@ def _check_url(url):
     if url is None:
         raise HTTPBadRequest('The parameter url is missing from the request')
     parsedUrl = urlparse.urlparse(url)
-    scheme = parsedUrl.scheme
     hostname = parsedUrl.hostname
     if hostname is None:
         raise HTTPBadRequest('Could not determine the hostname')
     domain = ".".join(hostname.split(".")[-2:])
     if all(('admin.ch' not in domain, 'swisstopo.ch' not in domain, 'bgdi.ch' not in domain)):
         raise HTTPBadRequest('Shortener can only be used for admin.ch, swisstopo.ch and bgdi.ch domains')
-    return scheme + '://' + hostname + '?' + urllib.quote(parsedUrl.query)
+    return urllib.quote(url)
 
 
 def _shorten_url(url):
