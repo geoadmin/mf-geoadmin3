@@ -3393,6 +3393,9 @@ msgstr "Toll"
 msgid "totholz"
 msgstr "Totholzvolumen [m3/ha]"
 
+msgid "treasure_hunt"
+msgstr "Bravo! Klicke hier um den nächsten Hinweis zu erhalten!"
+
 msgid "tt_anteil_ch"
 msgstr "Catchment areas percentage in Switzerland"
 

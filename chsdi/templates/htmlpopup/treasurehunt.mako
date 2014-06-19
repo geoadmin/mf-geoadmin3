@@ -1,30 +1,30 @@
 <%inherit file="base.mako"/>
 
-<%def name="table_body(c,lang)">
+<%def name="table_body(c, lang)">
+<%
+    lang = lang if lang != 'rm' in 'en' in 'it' else 'de'
+    title = 'title_%s' % lang
+    link = 'link_%s' % lang
+    information = 'info_%s' % lang
 
-% if lang =='fr':
-    <tr><td class="cell-left">${_('title')}</td><td>${c['attributes']['title_fr']}</td></tr>
-% elif lang =='it':
-    <tr><td class="cell-left">${_('title')}</td><td>${c['attributes']['title_it']}</td></tr>
-% else:
-    <tr><td class="cell-left">${_('title')}</td><td>${c['attributes']['title_de']}</td></tr>
-% endif
+%>
+    <tr><td class="cell-left">${_('title')}</td><td>${c['attributes'][title] or '-'|n}</td></tr>
+
 % if c['attributes']['type_coord'] =='info':
-	% if lang =='fr':
-	<tr><td class="cell-left">${_('information')}</td><td>${c['attributes']['info_fr'] or '-'}</td></tr>
-	% elif lang == 'it':
-	<tr><td class="cell-left">${_('information')}</td><td>${c['attributes']['info_it'] or '-'}</td></tr>
-	% else:
-	<tr><td class="cell-left">${_('information')}</td><td>${c['attributes']['info_de'] or '-'}</td></tr>
-	% endif
-% else:
-	% if lang =='fr':
-	<tr><td class="cell-left">${_('link')}</td><td><span>Bravo! Clique </span><a href="${c['attributes']['link_fr'] or '-'}" target="_parent">ici</a><span> afin de découvrir l'indice suivant!</span></td></tr>
-	% elif lang == 'it':
-	<tr><td class="cell-left">${_('link')}</td><td><span>Bravo! Clicca <a href="${c['attributes']['link_it'] or '-'}" target="_parent">qui</a><span> per trovare l'indizio successivo!</span></td></tr>
-	% else:
-	<tr><td class="cell-left">${_('link')}</td><td><span>Bravo! Klicke </span><a href="${c['attributes']['link_de'] or '-'}" target="_parent">hier</a><span> um den nächsten Hinweis zu erhalten!</span></td></tr>
-	% endif
+    <tr>
+    <td class="cell-left">${_('information')}</td><td>${c['attributes'][information] or '-'|n}</td>
+    </tr>
+% else:    
+    <tr>
+    <td class="cell-left">${_('link')}<td>
+    <a href="=${c['attributes'][link] or '-'|n}" target="_blank">${_('treasure_hunt')}</a></td>
+    </tr>
 % endif
+
+
+
 </%def>
 
+
+
+        
