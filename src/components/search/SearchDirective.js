@@ -550,9 +550,9 @@
                 } else if (dataset.name === 'layers') {
                   // hasLayerResults is used to control
                   // the display of the footer
-                  scope.$apply(function() {
+                  $timeout(function() {
                     scope.hasLayerResults = (suggestions.length !== 0);
-                  });
+                  }, 0);
                 }
                 renderSuggestions.apply(this, [dataset, suggestions]);
                 if (invokeApply !== false) {
@@ -590,7 +590,9 @@
               viewDropDown.on('gaSuggestionsRendered', function(evt) {
                 var el;
                 if (viewDropDown.isVisible()) {
-                  setListCount();
+                  $timeout(function() {
+                    setListCount();
+                  }, 0);
                   el = element.find('.tt-dataset-' + evt.data.name);
                   el.attr('ng-class', 'nbOfSuggestionsLists');
                   $compile(el)(scope);
