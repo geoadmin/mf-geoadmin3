@@ -876,7 +876,7 @@ msgid "ch.are.kt"
 msgstr "ARE + canton"
 
 msgid "ch.are.landschaftstypen"
-msgstr "Landscape typolgy of Switzerland"
+msgstr "Landscape typology of Switzerland"
 
 msgid "ch.are.reisezeit-miv"
 msgstr "Time of travel IMT 2005"
