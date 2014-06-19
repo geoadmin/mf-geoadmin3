@@ -28,7 +28,7 @@ Alias /${apache_base_path}/prod ${apache_base_directory}/prd
 </LocationMatch>
 
 RewriteCond %{QUERY_STRING} _escaped_fragment_=(.*)$
-RewriteRule ^/(index.html|mobile.html)(.*) http:${api_url}/snapshot [L,P]
+RewriteRule ^/(index.html|mobile.html)(.*) http:${api_url}/snapshot [NE,L,P]
 
 RewriteRule ^/(index.html|mobile.html|info.json|checker|robots.txt|sitemap_\w*\.xml)(.*) /var/www/vhosts/mf-geoadmin3/private/geoadmin/prd/$1
 RewriteRule ^/[0-9]+/(img|lib|style|rest|locales)(.*) /var/www/vhosts/mf-geoadmin3/private/geoadmin/prd/$1$2
