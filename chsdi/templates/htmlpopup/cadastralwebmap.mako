@@ -15,7 +15,7 @@
               self.mapExtent = request.params.get('mapExtent', defaultExtent)
               self.imageDisplay = request.params.get('imageDisplay', defaultImageDisplay)
       params = CadastralWebMapParams(request)
-      c['bbox'] = params.imageDisplay
+      c['bbox'] = params.mapExtent.bounds
       c['scale']  = getScale(params.imageDisplay, params.mapExtent)
     %>
     % if c['attributes']['ak'] in ['D','I','F','AUT']:
