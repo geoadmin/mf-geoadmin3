@@ -127,7 +127,7 @@ prd/lib/: src/lib/d3-3.3.1.min.js
 	mkdir -p $@
 	cp $^ $@
 
-prd/lib/build.js: src/lib/jquery-2.0.3.min.js src/lib/bootstrap-3.0.0.min.js src/lib/typeahead-0.9.3.min.js src/lib/angular-1.2.9.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/EPSG2056.js src/lib/EPSG32632.js src/lib/MGRS.min.js src/lib/ol.js src/lib/angular-animate-1.2.9.min.js src/lib/angular-translate-1.1.1.min.js src/lib/angular-translate-loader-static-files-0.1.5.min.js .build-artefacts/fastclick.min.js .build-artefacts/app.js
+prd/lib/build.js: src/lib/jquery-2.0.3.min.js src/lib/bootstrap-3.0.0.min.js src/lib/typeahead-0.9.3.min.js src/lib/angular-1.2.9.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/EPSG2056.js src/lib/EPSG32632.js .build-artefacts/MGRS.min.js src/lib/ol.js src/lib/angular-animate-1.2.9.min.js src/lib/angular-translate-1.1.1.min.js src/lib/angular-translate-loader-static-files-0.1.5.min.js .build-artefacts/fastclick.min.js .build-artefacts/app.js
 	mkdir -p $(dir $@)
 	cat $^ | sed 's/^\/\/[#,@] sourceMappingURL=.*//' > $@
 
@@ -193,9 +193,13 @@ test/karma-conf-prod.js: test/karma-conf.mako.js .build-artefacts/python-venv/bi
 node_modules: package.json
 	npm install
 
-# There's no distribution of a minified version of fastclick so we minify it
+# There's no distribution of a minified version of fastclick and MGRS so we minify it
 # ourselves as part of our build process.
 .build-artefacts/fastclick.min.js: src/lib/fastclick.js .build-artefacts/closure-compiler/compiler.jar
+	mkdir -p $(dir $@)
+	java -jar .build-artefacts/closure-compiler/compiler.jar $< --compilation_level SIMPLE_OPTIMIZATIONS --js_output_file $@
+
+.build-artefacts/MGRS.min.js: src/lib/MGRS.js .build-artefacts/closure-compiler/compiler.jar
 	mkdir -p $(dir $@)
 	java -jar .build-artefacts/closure-compiler/compiler.jar $< --compilation_level SIMPLE_OPTIMIZATIONS --js_output_file $@
 
@@ -318,6 +322,7 @@ cleanall: clean
 clean:
 	rm -f .build-artefacts/app.js
 	rm -f .build-artefacts/fastclick.min.js
+	rm -f .build-artefacts/MGRS.min.js
 	rm -f .build-artefacts/js-files
 	rm -rf .build-artefacts/annotated
 	rm -f src/deps.js
