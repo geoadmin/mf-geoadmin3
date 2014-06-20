@@ -74,6 +74,8 @@
                     'EPSG:21781', 'EPSG:4326');
                 var coord2056 = ol.proj.transform(coord21781,
                     'EPSG:21781', 'EPSG:2056');
+                var coordutm = ol.proj.transform(coord21781,
+                    'EPSG:21781', 'EPSG:32632');
 
                 // recenter on phones
                 if (gaBrowserSniffer.phone) {
@@ -88,6 +90,11 @@
                 scope.coord21781 = formatCoordinates(coord21781, 1);
                 scope.coord4326 = formatCoordinates(coord4326, 5, true);
                 scope.coord2056 = formatCoordinates(coord2056, 2) + ' *';
+                scope.coordutm = ol.coordinate.toStringXY(coordutm, 0).
+                  replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+                coord4326['lon'] = coord4326[0];
+                coord4326['lat'] = coord4326[1];
+                scope.coordmgrs = window.Proj4js.util.MGRS.forward(coord4326);
                 scope.altitude = '-';
 
                 // A digest cycle is necessary for $http requests to be

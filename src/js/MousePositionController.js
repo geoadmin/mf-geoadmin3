@@ -43,7 +43,7 @@
           format: function(coordinates) {
             coordinates['lon'] = coordinates[0];
             coordinates['lat'] = coordinates[1];
-            return window.Proj4js.util.MGRS.forward(coordinates);;
+            return window.Proj4js.util.MGRS.forward(coordinates);
           }
         }
         ];
