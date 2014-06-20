@@ -582,12 +582,13 @@
   
         
         var cacheAdd = '${version}' != '' ? '/' + '${version}' : '';
+        var pathname = location.pathname.replace(/(index.html)|(mobile.html)/g, '');
 
         module.constant('gaGlobalOptions', {
           apiUrl : location.protocol + '${api_url}',
           mapUrl : location.origin + '/${user_env}',
           cachedMapUrl: location.origin + '/${user_env}' + cacheAdd,
-          resourceUrl: location.origin + location.pathname + '${versionslashed}',
+          resourceUrl: location.origin + pathname + '${versionslashed}',
           ogcproxyUrl: location.origin + '/${user_env}' + '/ogcproxy?url=',
           whitelist: [
             'http://www.kmlvalidator.org/validate.htm'
