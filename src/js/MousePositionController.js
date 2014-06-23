@@ -13,9 +13,10 @@
                 replace(/\B(?=(\d{3})+(?!\d))/g, "'");
         };
 
-        var coordinatesFormatUTM = function(coordinates) {
-          return ol.coordinate.toStringXY(coordinates, 0).
+        var coordinatesFormatUTM = function(coordinates, zone) {
+          var coo = ol.coordinate.toStringXY(coordinates, 0).
               replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+          return coo + ' ' + zone;
         };
 
         $scope.mousePositionProjections = [{
@@ -34,9 +35,21 @@
                 ' (' + ol.coordinate.toStringXY(coordinates, 5) + ')';
           }
         }, {
-          value: 'EPSG:32632',
-          label: 'UTM zone 32N',
-          format: coordinatesFormatUTM
+          value: 'EPSG:4326',
+          label: 'UTM',
+          format: function(coordinates) {
+            if (coordinates[0] < 6 && coordinates [0] >= 0) {
+              var utm_31n = ol.proj.transform(coordinates,
+                    'EPSG:4326', 'EPSG:32631');
+              return coordinatesFormatUTM(utm_31n, '(zone 31N)');
+            } else if (coordinates[0] < 12 && coordinates [0] >= 6) {
+              var utm_32n = ol.proj.transform(coordinates,
+                    'EPSG:4326', 'EPSG:32632');
+              return coordinatesFormatUTM(utm_32n, '(zone 32N)');
+            } else {
+              return '-';
+            }
+          }
         }, {
           value: 'EPSG:4326',
           label: 'MGRS',
