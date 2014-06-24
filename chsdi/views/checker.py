@@ -3,6 +3,7 @@
 from pyramid.view import view_config
 from pyramid.response import Response
 
+
 class Checker(object):
 
     def __init__(self, request):
