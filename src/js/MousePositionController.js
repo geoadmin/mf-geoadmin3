@@ -14,9 +14,9 @@
         };
 
         var coordinatesFormatUTM = function(coordinates, zone) {
-          var coo = ol.coordinate.toStringXY(coordinates, 0).
-              replace(/\B(?=(\d{3})+(?!\d))/g, "'");
-          return coo + ' ' + zone;
+          var coord = ol.coordinate.toStringXY(coordinates, 0).
+            replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+          return coord + ' ' + zone;
         };
 
         $scope.mousePositionProjections = [{
@@ -40,11 +40,11 @@
           format: function(coordinates) {
             if (coordinates[0] < 6 && coordinates [0] >= 0) {
               var utm_31n = ol.proj.transform(coordinates,
-                    'EPSG:4326', 'EPSG:32631');
+                'EPSG:4326', 'EPSG:32631');
               return coordinatesFormatUTM(utm_31n, '(zone 31N)');
             } else if (coordinates[0] < 12 && coordinates [0] >= 6) {
               var utm_32n = ol.proj.transform(coordinates,
-                    'EPSG:4326', 'EPSG:32632');
+                'EPSG:4326', 'EPSG:32632');
               return coordinatesFormatUTM(utm_32n, '(zone 32N)');
             } else {
               return '-';
@@ -56,7 +56,8 @@
           format: function(coordinates) {
             coordinates['lon'] = coordinates[0];
             coordinates['lat'] = coordinates[1];
-            return window.Proj4js.util.MGRS.forward(coordinates);
+            return window.Proj4js.util.MGRS.forward(coordinates).
+              replace(/(.{5})/g,"$1 ");
           }
         }
         ];
