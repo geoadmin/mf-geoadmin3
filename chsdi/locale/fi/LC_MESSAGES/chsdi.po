@@ -3395,6 +3395,9 @@ msgstr "Strassenbenutzungsgebühr"
 msgid "totholz"
 msgstr "Totholzvolumen [m3/ha]"
 
+msgid "treasure_hunt"
+msgstr "Bravo! Klicke hier um den nächsten Hinweis zu erhalten!"
+
 msgid "tt_anteil_ch"
 msgstr "Flächenanteil in der Schweiz"
 

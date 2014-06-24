@@ -1,6 +1,9 @@
 msgid "None"
 msgstr ""
 
+msgid "treasure_hunt"
+msgstr ""
+
 msgid "ch.bafu.bundesinventare-hochmoore_anhoerung"
 msgstr ""
 

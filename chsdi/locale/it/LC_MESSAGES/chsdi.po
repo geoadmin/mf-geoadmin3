@@ -3392,6 +3392,9 @@ msgstr "Péage"
 msgid "totholz"
 msgstr "Volume total de bois mort [m3/ha]"
 
+msgid "treasure_hunt"
+msgstr "Bravo! Clicca qui per trovare l'indizio successivo!"
+
 msgid "tt_anteil_ch"
 msgstr "Percentuale della superficie in Svizzera"
 
