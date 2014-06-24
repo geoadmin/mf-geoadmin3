@@ -47,16 +47,16 @@
             <td>${c['attributes']['reservoirname']}</td>
         </tr>
         <tr>
-            <th class="cell-left">${_('tt_ch.bfe.stauanlagen-bundesaufsicht_stauraumvolume')}</th>
-            <td>${c['attributes']['impoundmentvolume']} 10<sup>6</sup> [m<sup>3</sup>]</td>
+            <th class="cell-left">${_('tt_ch.bfe.stauanlagen-bundesaufsicht_stauraumvolume')} [10<sup>6</sup> m<sup>3</sup>]</th>
+            <td>${c['attributes']['impoundmentvolume']}</td>
         </tr>
         <tr>
-            <th class="cell-left">${_('tt_ch.bfe.stauanlagen-bundesaufsicht_stauzielskote')}</th>
-            <td>${c['attributes']['impoundmentlevel']} [m]</td>
+            <th class="cell-left">${_('tt_ch.bfe.stauanlagen-bundesaufsicht_stauzielskote')} [m]</th>
+            <td>${c['attributes']['impoundmentlevel']}</td>
         </tr>
         <tr>
-            <th class="cell-left">${_('tt_ch.bfe.stauanlagen-bundesaufsicht_stauhoehe')}</th>
-            <td>${c['attributes']['storagelevel']} [m]</td>
+            <th class="cell-left">${_('tt_ch.bfe.stauanlagen-bundesaufsicht_stauhoehe')} [m]</th>
+            <td>${c['attributes']['storagelevel']}</td>
         </tr>
         <tr>
             <td colspan="2">&nbsp;</td>
@@ -66,16 +66,16 @@
             <td>${c['attributes']['damname']}</td>
         </tr>
         <tr>
-            <th class="cell-left">${_('tt_ch.bfe.stauanlagen-bundesaufsicht_damheight')}</th>
-            <td>${c['attributes']['damheight']} [m]</td>
+            <th class="cell-left">${_('tt_ch.bfe.stauanlagen-bundesaufsicht_damheight')} [m]</th>
+            <td>${c['attributes']['damheight']}</td>
         </tr>
         <tr>
-            <th class="cell-left">${_('tt_ch.bfe.stauanlagen-bundesaufsicht_crestlevel')}</th>
-            <td>${c['attributes']['crestlevel']} [m]</td>
+            <th class="cell-left">${_('tt_ch.bfe.stauanlagen-bundesaufsicht_crestlevel')} [m]</th>
+            <td>${c['attributes']['crestlevel']}</td>
         </tr>
         <tr>
-            <th class="cell-left">${_('tt_ch.bfe.stauanlagen-bundesaufsicht_crestlength')}</th>
-            <td>${c['attributes']['crestlength']} [m]</td>
+            <th class="cell-left">${_('tt_ch.bfe.stauanlagen-bundesaufsicht_crestlength')} [m]</th>
+            <td>${c['attributes']['crestlength']}</td>
         </tr>
         <tr>
             <th class="cell-left">${_('tt_ch.bfe.stauanlagen-bundesaufsicht_damtype')}</th>
