@@ -43,7 +43,7 @@ describe('ga_contextpopup_directive', function() {
     expect(tables.length).to.be(1);
 
     var tds = $(tables[0]).find('td');
-    expect(tds.length).to.be(11);
+    expect(tds.length).to.be(15);
   });
 
   describe('ga_contextpopup_directive handling of popupcontext', function() {
@@ -87,7 +87,7 @@ describe('ga_contextpopup_directive', function() {
 
       expect($(tds[1]).text()).to.be('661\'473.0, 188\'192.0');
       expect($(tds[3]).text()).to.be('2\'725\'984.40, 1\'180\'787.40');
-      expect($(tds[7]).text()).to.be('1233 [m]');
+      expect($(tds[11]).text()).to.be('1233 [m]');
     });
 
     describe('On device without contextmenu event', function() {
@@ -125,7 +125,7 @@ describe('ga_contextpopup_directive', function() {
 
         expect($(tds[1]).text()).to.be('661\'473.0, 188\'192.0');
         expect($(tds[3]).text()).to.be('2\'725\'984.40, 1\'180\'787.40');
-        expect($(tds[7]).text()).to.be('1233 [m]');
+        expect($(tds[11]).text()).to.be('1233 [m]');
       });
 
       it('touchend prevents handler from being called', function() {

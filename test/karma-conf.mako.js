@@ -24,6 +24,7 @@ files = [
   'lib/proj4js-compressed.js',
   'lib/EPSG21781.js',
   'lib/EPSG2056.js',
+  'lib/MGRS.js',
   '../test/closure-loader-globals.js',
   'lib/ol-whitespace.js',
   '../.build-artefacts/app-whitespace.js',

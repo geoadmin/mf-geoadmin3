@@ -51,6 +51,12 @@
                 return fCoord;
               };
 
+              var coordinatesFormatUTM = function(coordinates, zone) {
+                var coord = ol.coordinate.toStringXY(coordinates, 0).
+                  replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+                return coord + ' ' + zone;
+              };
+
               var handler = function(event) {
                 event.stopPropagation();
                 event.preventDefault();
@@ -88,6 +94,22 @@
                 scope.coord21781 = formatCoordinates(coord21781, 1);
                 scope.coord4326 = formatCoordinates(coord4326, 5, true);
                 scope.coord2056 = formatCoordinates(coord2056, 2) + ' *';
+                if (coord4326[0] < 6 && coord4326[0] >= 0) {
+                  var utm_31n = ol.proj.transform(coord4326,
+                    'EPSG:4326', 'EPSG:32631');
+                  scope.coordutm = coordinatesFormatUTM(utm_31n, '(zone 31N)');
+                } else if (coord4326[0] < 12 && coord4326[0] >= 6) {
+                  var utm_32n = ol.proj.transform(coord4326,
+                    'EPSG:4326', 'EPSG:32632');
+                  scope.coordutm = coordinatesFormatUTM(utm_32n, '(zone 32N)');
+                } else {
+                  return '-';
+                }
+
+                coord4326['lon'] = coord4326[0];
+                coord4326['lat'] = coord4326[1];
+                scope.coordmgrs = window.Proj4js.util.MGRS.forward(coord4326).
+                  replace(/(.{5})/g, '$1 ');
                 scope.altitude = '-';
 
                 // A digest cycle is necessary for $http requests to be
