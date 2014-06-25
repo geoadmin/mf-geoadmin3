@@ -588,17 +588,17 @@
         var center = overlay.getPosition();
         var offset = 5 * resolution;
         if (center) {
-          var cross = {
+          var marker = {
             'type': 'Vector',
             'styles': {
               '1': {
                 'externalGraphic': $scope.options.markerUrl,
-                'graphicWidth': 30,
-                'graphicHeight': 40,
+                'graphicWidth': 20,
+                'graphicHeight': 30,
                 // the icon is not perfectly centered in the image
                 // these values must be the same in map.less
-                'graphicXOffset': -17,
-                'graphicYOffset': -40
+                'graphicXOffset': -12,
+                'graphicYOffset': -30
               }
             },
             'styleProperty': '_gx_style',
@@ -618,7 +618,7 @@
             'name': 'drawing',
             'opacity': 1
           };
-          encLayers.push(cross);
+          encLayers.push(marker);
         }
       });
 
