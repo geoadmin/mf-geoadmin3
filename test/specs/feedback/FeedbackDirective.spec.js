@@ -3,6 +3,7 @@ describe('ga_feedback_directive', function() {
   var element,
       mockGetHref,
       gaPermalink,
+      encodeUriQuery,
       $httpBackend,
       $rootScope;
 
@@ -22,13 +23,14 @@ describe('ga_feedback_directive', function() {
              'ga-feedback-response="response">' +
         '</div>')
 
-    inject(function($injector, $compile) {
+    inject(function($injector, $compile, gaUrlUtils) {
       gaPermalink = $injector.get('gaPermalink');
       $httpBackend = $injector.get('$httpBackend');
       $rootScope = $injector.get('$rootScope');
       $rootScope.options = {
         feedbackUrl: 'http://feedback.com'
       };
+      encodeUriQuery = gaUrlUtils.encodeUriQuery;
 
       $rootScope.response = undefined;
       $compile(element)($rootScope);
@@ -58,16 +60,11 @@ describe('ga_feedback_directive', function() {
     $rootScope.$broadcast('gaPermalinkChange');
     $rootScope.$digest();
 
-    /*var expectedUrl = 'http://feedback.com?feedback=dummyFeedback' +
-        '&permalink=http:%2F%2Fpermalink.com' +
-        '&ua=Mozilla%2F5.0+(Unknown%3B+Linux+x86_64)+' +
-        'AppleWebKit%2F534.34+(KHTML,+like+Gecko)+' +
-        'PhantomJS%2F1.9.0+Safari%2F534.34';*/
-    var expectedUrl = encodeURIComponent(
-        $rootScope.permalinkUrl + '?' +
-        'feedback=dummyFeedback' +
-        
-    );
+    var url = $rootScope.options.feedbackUrl + '?';
+    var qs = 'feedback=dummyFeedback' +
+        '&permalink=' + encodeUriQuery(gaPermalink.getHref()) +
+        '&ua=' + encodeUriQuery(navigator.userAgent);
+    var expectedUrl = url + qs;
     $httpBackend.whenPOST(expectedUrl).respond('success');
     var button = element.find('button');
     expect(button.attr('type')).to.be('submit');
