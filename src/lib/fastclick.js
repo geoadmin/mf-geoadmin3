@@ -493,6 +493,11 @@ FastClick.prototype.onTouchEnd = function(event) {
 	'use strict';
 	var forElement, trackingClickStart, targetTagName, scrollParent, touch, targetElement = this.targetElement;
 
+	if (this.targetElement !== this.getTargetElementFromEventTarget(event.target)) {
+		this.trackingClick = false;
+		this.targetElement = null;
+	}
+
 	if (!this.trackingClick) {
 		return true;
 	}

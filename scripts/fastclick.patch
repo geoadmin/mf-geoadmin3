@@ -1,0 +1,16 @@
+diff --git a/lib/fastclick.js b/lib/fastclick.js
+index 4a6b8da..112486a 100644
+--- a/lib/fastclick.js
++++ b/lib/fastclick.js
+@@ -493,6 +493,11 @@ FastClick.prototype.onTouchEnd = function(event) {
+ 	'use strict';
+ 	var forElement, trackingClickStart, targetTagName, scrollParent, touch, targetElement = this.targetElement;
+ 
++	if (this.targetElement !== this.getTargetElementFromEventTarget(event.target)) {
++		this.trackingClick = false;
++		this.targetElement = null;
++	}
++
+ 	if (!this.trackingClick) {
+ 		return true;
+ 	}
