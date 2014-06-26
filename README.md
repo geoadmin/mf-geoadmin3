@@ -43,7 +43,7 @@ You can customize the build by creating an `rc` file that you source once. Ex:
     $ source rc_elemoine 
     $ make  
 
-For builds on test (rc_dev), integration (rc_ab) and production (rc_prod), you
+For builds on test (rc_dev), integration (rc_int) and production (rc_prod), you
 should source the corresponding `rc` file.
 
 On mf0t, create an Apache configuration file for your environment. Ex:
@@ -51,25 +51,29 @@ On mf0t, create an Apache configuration file for your environment. Ex:
     $ cat /var/www/vhosts/mf-geoadmin3/conf/00-elemoine.conf
     Include /home/elemoine/mf-geoadmin3/apache/*.conf 
 
+## Dependencies
+
+The GeoAdmin team development servers all contain the necessary dependencies
+to develop mf-geoadmin3. Even if developement of the project outside of the
+GeoAdmin infrastructure is not fully supported (e.g. you would need to
+setup your own web server with correct configurations), you should still
+be able to build the project on a different, Linux based infrastructure. For
+this to work, you need to make sure to install the following dependencies:
+
+    sudo apt-get install python-software-properties 
+    sudo add-apt-repository ppa:chris-lea/node.js 
+    sudo apt-get update
+    sudo apt-get install make gcc+ git unzip openjdk-6-jre openjdk-6-jdk g++
+    nodejs python-virtualenv
+    npm install phantomjs
+
 # Deploying project and branches
 
 ## Deploying the project (branch *master*)
 
-Update and build the project in the main directory of the vhost as
-describe above
+Use the geoadmin3 script found in this git repositry: https://github.com/geoadmin/deploy
 
-    $ cd /var/www/vhosts/mf-geoadmin3/private/geoadmin
-    $ git checkout master
-    $ git pull origin master
-    $ make all  && sudo apache2ctl graceful
-
-And test it.
-
-Deploy to the integration server (ab = Abnahme = integration):
-    
-    $ sudo -u deploy deploy -r deploy/deploy.cfg ab
-
-And test on http://mf-geoadmin3.int.bgdi.ch/
+Note: we should NOT manually adapt code in /var/www/vhosts/mf-geoadmin3 directory
 
 ## Deploying a branch
 
