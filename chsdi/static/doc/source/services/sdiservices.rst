@@ -365,6 +365,10 @@ Only RESTFul interface is available.
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | returnGeometry (optional)         | This parameter defines whether the geometry is returned or not. Default to "true".        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
+| origins (optional)                | A comma separated list of origins. Possible origins are:                                  |
+|                                   | zipcode,gg25,district,kantone,sn25,address,parcel                                         |
+|                                   | (A description of the origins can be found hereunder.)                                    |
++-----------------------------------+-------------------------------------------------------------------------------------------+
 | callback (optional)               | The name of the callback function.                                                        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 
@@ -447,6 +451,8 @@ Here is a list of possible origins and in ascending ranking order:
 - address (ch.bfs.gebaeude_wohnungs_register with EGID or use prefix 'addresse', 'adresse', 'indirizzo', 'address' without EGID)
 - parcel (use prefix "parcel", "parzelle", "parcelle" or "parcella" in your requests to filter out other origins)
 
+Prefix filtering cannot be combined with parameter "origins".
+
 The attribute "geom_st_box2d" is in CH1903 / LV03 (EPSG:21781) reference system and represents the bounding box of the associated geometry.
 The weight is dynamically computed according to the search text that is provided.
 
@@ -456,6 +462,7 @@ Examples
 
 - Search for locations matching the word “wabern”: `https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=wabern&type=locations <../../../rest/services/api/SearchServer?searchText=wabern&type=locations>`_
 - Search for locations and features matching the word “vd 446” (only features are filtered within the bbox are returned): `https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=vd%20446&features=ch.astra.ivs-reg_loc&type=locations&bbox=551306.5625,167918.328125,551754.125,168514.625 <../../../rest/services/api/SearchServer?searchText=vd%20446&features=ch.astra.ivs-reg_loc&type=locations&bbox=551306.5625,167918.328125,551754.125,168514.625>`_
+- Search for locations of type parcel and district (the origin): `https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=bern&origins=parcel,district&type=locations <../../../rest/services/api/SearchServer?searchText=bern&origins=parcel,district&type=locations>`_
 - Search for layers in French matching the word “géoïde” in their description: `https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=géoïde&type=layers&lang=fr <../../../rest/services/api/SearchServer?searchText=géoïde&type=layers&lang=fr>`_ 
 - Search for features matching word "433" in their description: `https://api3.geo.admin.ch/rest/services/api/SearchServer?features=ch.bafu.hydrologie-gewaesserzustandsmessstationen&type=featuresearch&searchText=433 <../../../rest/services/api/SearchServer?features=ch.bafu.hydrologie-gewaesserzustandsmessstationen&type=featuresearch&searchText=433>`_
 - Search only for features belonging to the layer “ch.astra.ivs-reg_loc” (only using a bbox, no search text): `https://api3.geo.admin.ch/rest/services/api/SearchServer?features=ch.astra.ivs-reg_loc&type=featureidentify&bbox=551306.5625,167918.328125,551754.125,168514.625 <../../../rest/services/api/SearchServer?features=ch.astra.ivs-reg_loc&type=featureidentify&bbox=551306.5625,167918.328125,551754.125,168514.625>`_
