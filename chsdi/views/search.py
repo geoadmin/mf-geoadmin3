@@ -35,6 +35,7 @@ class Search(SearchValidation):
         self.bbox = request.params.get('bbox')
         self.returnGeometry = request.params.get('returnGeometry', 'true').lower() == 'true'
         self.quadindex = None
+        self.origins = request.params.get('origins')
         self.featureIndexes = request.params.get('features')
         self.timeInstant = request.params.get('timeInstant')
         self.timeEnabled = request.params.get('timeEnabled')
@@ -83,7 +84,11 @@ class Search(SearchValidation):
         self.sphinx.SetLimits(0, limit)
         self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
         self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, 'rank ASC, @weight DESC, num ASC')
-        self._detect_keywords()
+        if self.origins is None:
+            self._detect_keywords()
+        else:
+            self._filter_locations_by_origins()
+
         searchText = self._query_fields('@detail')
         try:
             temp = self.sphinx.Query(searchText, index='swisssearch')
@@ -127,7 +132,7 @@ class Search(SearchValidation):
         searchText = ' '.join((
             self._query_fields('@(detail,layer)'),
             '& @topics (%s | ech)' % mapName,  # Filter by to topic if string not empty, ech whitelist hack
-            '& @staging prod'                            # Only layers in prod are searched
+            '& @staging prod'                  # Only layers in prod are searched
         ))
         try:
             temp = self.sphinx.Query(searchText, index=index_name)
@@ -259,6 +264,23 @@ class Search(SearchValidation):
 
         return finalQuery
 
+    def _origins_to_ranks(self, origins):
+        origin2Rank = {
+            'zipcode': 1,
+            'gg25': 2,
+            'district': 3,
+            'kantone': 4,
+            'sn25': 5,
+            'address': 6,
+            'parcel': 10
+        }
+        buildRanksList = lambda x: origin2Rank[x]
+        try:
+            ranks = map(buildRanksList, origins)
+        except KeyError:
+            raise exc.HTTPBadRequest('Bad value(s) in parameter origins')
+        return ranks
+
     def _detect_keywords(self):
         if len(self.searchText) > 0:
             PARCEL_KEYWORDS = ('parzelle', 'parcelle', 'parcella', 'parcel')
@@ -266,11 +288,15 @@ class Search(SearchValidation):
             firstWord = self.searchText[0].lower()
             if firstWord in PARCEL_KEYWORDS:
                 # As one cannot apply filters on string attributes, we use the rank information
-                self.sphinx.SetFilter('rank', [10])
+                self.sphinx.SetFilter('rank', self._origins_to_ranks['parcel'])
                 del self.searchText[0]
             elif firstWord in ADDRESS_KEYWORDS:
-                self.sphinx.SetFilter('rank', [6])
+                self.sphinx.SetFilter('rank', self._origins_to_ranks['address'])
                 del self.searchText[0]
+
+    def _filter_locations_by_origins(self):
+        ranks = self._origins_to_ranks(self.origins)
+        self.sphinx.SetFilter('rank', ranks)
 
     def _add_feature_queries(self, queryText, timeFilter):
         i = 0
