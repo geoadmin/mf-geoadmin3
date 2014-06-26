@@ -12,7 +12,7 @@
            'http://wms.geo.admin.ch/',
            'http://ogc.heig-vd.ch/mapserver/wms?',
            'http://www.wms.stadt-zuerich.ch/WMS-ZH-STZH-OGD/MapServer/WMSServer?',
-           'http://geo.gl.ch/wms/Public?',
+           'http://wms.geo.gl.ch/?',
            'http://mapserver1.gr.ch/wms/admineinteilung?',
            'http://mapserver1.gr.ch/wms/belastetestandorte?',
            'http://mapserver1.gr.ch/wms/beweidbareflaechen?',
