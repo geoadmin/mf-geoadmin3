@@ -477,7 +477,7 @@
    
     <!-- Popup: Measure -->
     <div ga-popup="globals.isMeasureActive"
-         ga-popup-options="{title:'measure',showPrint:true}"
+         ga-popup-options="{title:'measure',showPrint:true, help:'66'}"
          ga-draggable=".ga-popup-title"
          id="measure-popup" >
       <div ng-controller="GaMeasureController">
@@ -490,7 +490,7 @@
  
     <!-- Popup: Draw -->
     <div ga-popup="globals.isDrawActive"
-         ga-popup-options="{title:'draw'}"
+         ga-popup-options="{title:'draw', help:'67'}"
          ga-draggable=".ga-popup-title"
          id="draw-popup" >
       <div ng-controller="GaDrawController">
@@ -504,7 +504,7 @@
     <!-- Popup: Feature Tree -->
     <div ng-controller="GaFeaturetreeController">
       <div ga-popup="globals.isFeatureTreeActive"
-           ga-popup-options="{title:'object_information', showPrint:true, print: print}"
+           ga-popup-options="{title:'object_information', showPrint:true, print: print, help:'68'}"
            ga-draggable=".ga-popup-title"
            id="featuretree-popup">
         <div ga-featuretree 
