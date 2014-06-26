@@ -1,22 +1,21 @@
 describe('ga_feedback_directive', function() {
 
   var element,
-      mockGetHref,
       gaPermalink,
       encodeUriQuery,
       $httpBackend,
       $rootScope;
 
-  beforeEach(module(function($provide) {
-    mockGetHref = {
-      getHref: function() {
-        return 'http://permalink.com';
-      }
-    };
-    $provide.value('gaPermalink', mockGetHref);
-  }));
+  beforeEach(function() {
+    module(function($provide) {
+      var mockGetHref = {
+        getHref: function() {
+          return 'http://permalink.com';
+        }
+      };
+      $provide.value('gaPermalink', mockGetHref);
+    });
 
-  beforeEach(function () {
     element = angular.element(
         '<div ga-feedback ' +
              'ga-feedback-options="options" ' +
