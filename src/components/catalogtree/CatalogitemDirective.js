@@ -77,7 +77,7 @@
             };
 
             $scope.getLegend = function(ev, bodid) {
-              gaLayerMetadataPopup(bodid);
+              gaLayerMetadataPopup.toggle(bodid);
               ev.stopPropagation();
             };
           },
