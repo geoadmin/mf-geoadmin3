@@ -152,7 +152,7 @@ class TestSearchServiceView(TestsBase):
         self.failUnless(resp.json['results'][0]['attrs']['feature_id'] == '43543')
 
     def test_features_time(self):
-        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'locations', 'bbox': '542200,206800,542200,206800', 'timeInstant': '1981'}, status=200)
+        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'locations', 'bbox': '542199,206799,542201,206801', 'timeInstant': '1981'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'feature')
 
@@ -178,7 +178,8 @@ class TestSearchServiceView(TestsBase):
         self.failUnless(len(resp.json['results']) != 0)
 
     def test_featuressearch_geodist(self):
-        resp = self.testapp.get('/rest/services/all/SearchServer', params={'searchText': 'gen', 'features': 'ch.babs.kulturgueter', 'type': 'featuresearch', 'bbox': '688301,166874,688301,166874'})
+        resp = self.testapp.get('/rest/services/all/SearchServer', params={'searchText': 'gen', 'features': 'ch.babs.kulturgueter', 'type': 'featuresearch', 'bbox': '688290,166864,688309,166884'})
         self.failUnless(resp.content_type == 'application/json')
+        self.failUnless(len(resp.json['results']) == 1)
         self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'feature')
         self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'general-suworow-denkmal')

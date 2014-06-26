@@ -5,6 +5,8 @@ import re
 from pyramid.view import view_config
 import pyramid.httpexceptions as exc
 
+from shapely.geometry import box
+
 from chsdi.lib.validation.search import SearchValidation
 from chsdi.lib.helpers import format_search_text, transformCoordinate
 from chsdi.lib.sphinxapi import sphinxapi
@@ -282,20 +284,18 @@ class Search(SearchValidation):
             self.sphinx.AddQuery(queryText, index=str(index))
 
     def _parse_feature_results(self, results):
-        nb_match = 0
         for i in range(0, len(results)):
             if 'error' in results[i]:
                 if results[i]['error'] != '':
                     raise exc.HTTPNotFound(results[i]['error'])
             if results[i] is not None and 'matches' in results[i]:
-                nb_match += len(results[i]['matches'])
                 # Add results to the list
                 for res in results[i]['matches']:
                     if 'feature_id' in res['attrs']:
                         res['attrs']['featureId'] = res['attrs']['feature_id']
-                        # res['attrs'].pop('feature_id', None)
-                self.results['results'] += results[i]['matches']
-        return nb_match
+                    if not self.bbox or self._bbox_intersection(self.bbox, res['attrs']['geom_st_box2d']):
+                        self.results['results'].append(res)
+        return len(self.results['results'])
 
     def _get_quad_index(self):
         try:
@@ -308,3 +308,18 @@ class Search(SearchValidation):
             self.quadindex = quadindex if quadindex != '' else None
         except ValueError:
             self.quadindex = None
+
+    def _bbox_intersection(self, ref, result):
+        try:
+            refbox = box(ref[0], ref[1], ref[2], ref[3])
+            arr = result.replace('BOX(', '').replace(')', '')\
+                .replace(',', ' ').split(' ')
+            resbox = box(float(arr[0]), float(arr[1]),
+                         float(arr[2]), float(arr[3]))
+        except:
+            # We bail with True to be conservative and
+            # not exclude this geometry from the result
+            # set. Only happens if result does not
+            # have a bbox
+            return True
+        return refbox.intersects(resbox)
