@@ -310,7 +310,7 @@ scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf .build-artefacts/
 # 1.9 externs are sufficient for our usage.
 .build-artefacts/externs/jquery.js:
 	mkdir -p $(dir $@)
-	wget -O $(subst -1.9,,$@) https://raw.github.com/google/closure-compiler/master/contrib/externs/jquery-1.9.js
+	wget -O $(subst -1.9,,$@) https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/jquery-1.9.js
 	touch $@
 
 .PHONY: cleanall
