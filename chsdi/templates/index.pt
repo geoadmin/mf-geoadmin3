@@ -92,28 +92,26 @@
           <a href="rest/services/inspire/SearchServer?searchText=wand&type=layers">Search for layers only</a> <br>
           <a href="rest/services/inspire/SearchServer?searchText=bois&type=layers&lang=fr">Search for layers only (lang fr)</a> <br>
       <h3>Locations Search (type=locations)</h3>
-      <h4>Locations without features (no bounding box)</h4>
+      <h4>Locations (no bounding box)</h4>
           <a href="rest/services/inspire/SearchServer?searchText=wasser&type=locations">Search for 'Wasser' in SwissSearch in Inpsire</a> <br>
           <a
           href="rest/services/blw/SearchServer?searchText=wasser&type=locations">Search for 'Wasser' in SwissSearch in Blw</a> <br>
-      <h4>Locations with features (bounding box for features only)</h4>
+      <h3>Feature Search (type=featuresearch)</h3>
+      <h4>Features (bounding box for features only)</h4>
           <a href="rest/services/inspire/SearchServer?searchText=vd
-          446&features=ch.astra.ivs-reg_loc&type=locations&bbox=551306.5625,167918.328125,551754.125,168514.625">Combined search for locations *and* features in ch.astra.ivs-reg_loc (swisssearch
-          without bbox, features within the bbox)</a> <br>
-      <h4>Locations with features and time </h4>
+          446&features=ch.astra.ivs-reg_loc&type=featuresearch&bbox=551306.5625,167918.328125,551754.125,168514.625">Search for
+          features in ch.astra.ivs-reg_loc (without bbox, features within the bbox)</a> <br>
+      <h4>Features and time </h4>
           <a
-          href="rest/services/inspire/SearchServer?searchText=19810590048970&features=ch.swisstopo.lubis-luftbilder_farbe&type=locations&bbox=542200,206800,542200,206800&timeInstant=1981&timeEnabled=true">Combined
-          search for locations *and* features in ch.swisstopo.lubis-luftbilder_farbe
-          with time parameter (1 result)</a> <br>
+          href="rest/services/inspire/SearchServer?searchText=19810590048970&features=ch.swisstopo.lubis-luftbilder_farbe&type=featuresearch&bbox=542200,206800,542200,206800&timeInstant=1981&timeEnabled=true">Search for features
+          in ch.swisstopo.lubis-luftbilder_farbe with time parameter (1 result)</a> <br>
           <a
-          href="rest/services/inspire/SearchServer?searchText=19810590048970&features=ch.swisstopo.lubis-luftbilder_farbe&type=locations&bbox=542200,206800,542200,206800&timeInstant=1953&timeEnabled=true">Combined
-          search for locations *and* features in ch.swisstopo.lubis-luftbilder_farbe
-          with time parameter (no  results)</a> <br>
+          href="rest/services/inspire/SearchServer?searchText=19810590048970&features=ch.swisstopo.lubis-luftbilder_farbe&type=featuresearch&bbox=542200,206800,542200,206800&timeInstant=1953&timeEnabled=true">Search for features
+          in ch.swisstopo.lubis-luftbilder_farbe with time parameter (no  results)</a> <br>
           <a
-          href="rest/services/inspire/SearchServer?searchText=19&features=ch.swisstopo.lubis-luftbilder_farbe&type=locations&bbox=540000,140000,560000,160000&timeInstant=1990&timeEnabled=true">Combined
-          search for locations *and* features in ch.swisstopo.lubis-luftbilder_farbe
+          href="rest/services/inspire/SearchServer?searchText=19&features=ch.swisstopo.lubis-luftbilder_farbe&type=featuresearch&bbox=540000,140000,560000,160000&timeInstant=1990&timeEnabled=true">Search for features
+          in ch.swisstopo.lubis-luftbilder_farbe
           with time parameter (several  results)</a> <br>
-      <h3>Feature search (type=featuresearch)</h3>
           <a href="rest/services/inspire/SearchServer?features=ch.bafu.hydrologie-gewaesserzustandsmessstationen&type=featuresearch&searchText=4331">Search for features using that matches a given searchText in their search fields</a> <br>
       <h3>Feature identify (type=featureidentify) only bbox search, no search text)</h3>
           <a href="rest/services/inspire/SearchServer?features=ch.astra.ivs-reg_loc&type=featureidentify&bbox=551306.5625,167918.328125,551754.125,168514.625">Search for features in ch.astra.ivs-reg_loc (only features within the bbox)</a> <br>

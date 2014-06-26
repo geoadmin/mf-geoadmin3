@@ -72,16 +72,14 @@ class Search(SearchValidation):
             self.searchText = format_search_text(
                 self.request.params.get('searchText')
             )
-            self.sphinx.ResetFilters()
-            self._feature_search()
             # swiss search
-            self._swiss_search(self.LIMIT)
+            self._swiss_search()
         return self.results
 
-    def _swiss_search(self, limit):
+    def _swiss_search(self):
         if len(self.searchText) < 1:
-            return 0
-        self.sphinx.SetLimits(0, limit)
+            return
+        self.sphinx.SetLimits(0, self.LIMIT)
         self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
         self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, 'rank ASC, @weight DESC, num ASC')
         if self.origins is None:
@@ -119,8 +117,6 @@ class Search(SearchValidation):
                     elif res['attrs']['origin'] == 'kantone':
                         res['attrs']['layerBodId'] = 'ch.swisstopo.swissboundaries3d-kanton-flaeche.fill'
                     self.results['results'].append(res)
-            return len(temp)
-        return 0
 
     def _layer_search(self):
         # 10 features per layer are returned at max
@@ -141,8 +137,6 @@ class Search(SearchValidation):
         temp = temp['matches'] if temp is not None else temp
         if temp is not None and len(temp) != 0:
             self.results['results'] += temp
-            return len(temp)
-        return 0
 
     def _get_quadindex_string(self):
         ''' Recursive and inclusive search through
@@ -164,7 +158,7 @@ class Search(SearchValidation):
         # all features in given bounding box
         if self.featureIndexes is None:
             # we need bounding box and layernames. FIXME: this should be error
-            return 0
+            return
         self.sphinx.SetLimits(0, self.FEATURE_LIMIT)
         self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
         if self.bbox:
@@ -185,7 +179,7 @@ class Search(SearchValidation):
         except IOError:
             raise exc.HTTPGatewayTimeout()
         self.sphinx.ResetFilters()
-        return self._parse_feature_results(temp)
+        self._parse_feature_results(temp)
 
     def _get_time_filter(self):
         timeFilter = []
@@ -229,7 +223,7 @@ class Search(SearchValidation):
         geomFilter = self._get_quadindex_string()
         self._add_feature_queries(geomFilter, timeFilter)
         temp = self.sphinx.RunQueries()
-        return self._parse_feature_results(temp)
+        self._parse_feature_results(temp)
 
     def _query_fields(self, fields):
         exact_nondigit_prefix_digit = lambda x: ''.join((x, '*')) if x.isdigit() else x
@@ -321,7 +315,6 @@ class Search(SearchValidation):
                         res['attrs']['featureId'] = res['attrs']['feature_id']
                     if not self.bbox or self._bbox_intersection(self.bbox, res['attrs']['geom_st_box2d']):
                         self.results['results'].append(res)
-        return len(self.results['results'])
 
     def _get_quad_index(self):
         try:
