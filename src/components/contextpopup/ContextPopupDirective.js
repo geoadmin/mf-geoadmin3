@@ -197,7 +197,10 @@
                 }
               });
 
-              scope.hidePopover = function() {
+              scope.hidePopover = function(evt) {
+                if (evt) {
+                  evt.stopPropagation();
+                }
                 hidePopover();
               };
 
