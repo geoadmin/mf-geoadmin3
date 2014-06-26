@@ -91,7 +91,7 @@
             scope.displayLayerMetadata = function(e, layer) {
               var bodId = layer.bodId;
               if (gaLayers.getLayer(bodId)) {
-                gaLayerMetadataPopup(bodId);
+                gaLayerMetadataPopup.toggle(bodId);
               }
               e.preventDefault();
             };
