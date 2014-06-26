@@ -366,8 +366,8 @@
       })]
     });
 
-    this.$get = function($http, gaPopup, gaDefinePropertiesForLayer,
-        gaMapClick, gaMapUtils, gaGlobalOptions, $rootScope, $translate) {
+    this.$get = function($http, gaDefinePropertiesForLayer, gaMapClick,
+        gaMapUtils, gaGlobalOptions, $rootScope, $translate) {
       var Kml = function(proxyUrl) {
 
         /**
