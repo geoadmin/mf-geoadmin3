@@ -145,6 +145,20 @@ class TestSearchServiceView(TestsBase):
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless('geom_st_box2d' not in resp.json['results'][0]['attrs'].keys())
 
+    def test_search_one_origin(self):
+        params = {'searchText': 'vaud', 'type': 'locations', 'origins': 'gg25'}
+        resp = self.testapp.get('/rest/services/inspire/SearchServer', params=params, status=200)
+        self.failUnless(len(resp.json['results']) == 1)
+
+    def test_search_several_origins(self):
+        params = {'searchText': 'vaud', 'type': 'locations', 'origins': 'district,gg25'}
+        resp = self.testapp.get('/rest/services/inspire/SearchServer', params=params, status=200)
+        self.failUnless(len(resp.json['results']) == 3)
+
+    def test_search_bad_origin(self):
+        params = {'searchText': 'vaud', 'type': 'locations', 'origins': 'dummy'}
+        resp = self.testapp.get('/rest/services/inspire/SearchServer', params=params, status=400)
+
     def test_features_bbox(self):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'features': 'ch.astra.ivs-reg_loc', 'type': 'featureidentify', 'bbox': '551306.5625,167918.328125,551754.125,168514.625'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
