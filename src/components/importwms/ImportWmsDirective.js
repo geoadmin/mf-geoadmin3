@@ -11,7 +11,7 @@
   ]);
 
   module.controller('GaImportWmsDirectiveController',
-      function($scope, $http, $q, $log, $translate, gaUrlUtils,
+      function($scope, $http, $q, $translate, gaUrlUtils,
           gaWms, gaPreviewLayers) {
 
           // List of layers available in the GetCapabilities
@@ -268,7 +268,7 @@
   });
 
   module.directive('gaImportWms',
-      function($http, $log, $translate) {
+      function($http, $translate, $rootScope) {
           return {
             restrict: 'A',
             templateUrl: 'components/importwms/partials/importwms.html',
@@ -309,6 +309,9 @@
                 initSuggestions();
               });
 
+              $rootScope.$on('$translateChangeEnd', function() {
+                scope.handleFileUrl();
+              });
 
               // Fill the list of suggestions with all the data
               function initSuggestions() {
