@@ -7,7 +7,7 @@ from chsdi.lib.helpers import versioned
 mode = request.params.get('mode')
 lang = request.lang
 appUrl = request.application_url.replace('http:', request.scheme + ':')
-layersconfig = appUrl + versioned( '/rest/services/all/MapServer/layersConfig?lang=' + lang)
+layersconfig = appUrl + versioned( '/rest/services/api/MapServer/layersConfig?lang=' + lang)
 f = None
 try:
     f = urllib2.urlopen(layersconfig)
