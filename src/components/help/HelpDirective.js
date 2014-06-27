@@ -79,44 +79,63 @@
 
                 var waitClass = 'ga-metadata-popup-wait';
                 var bodyEl = angular.element($document[0].body);
-                bodyEl.addClass(waitClass);
 
-                var len = ids.length;
-                var resCount = 0;
-                var i, id;
-                for (i = 0; i < len; i++) {
+                //Create the popup
+                popup = gaPopup.create({
+                  className: 'ga-help-popup',
+                  destroyOnClose: false,
+                  title: 'help_label',
+                  content: popupContent, //contains data-binding to results
+                  results: results,
+                  showPrint: true,
+                  onCloseCallback: function() {
+                    shown = false;
+                  }
+                });
 
-                  gaHelpService.get(ids[i]).then(function(res) {
-                    resCount++;
-                    if (resCount == len) {
-                      bodyEl.removeClass(waitClass);
-                    }
-                    if (results.length === 0) {
-                      popup = gaPopup.create({
-                        className: 'ga-help-popup',
-                        destroyOnClose: false,
-                        title: 'help_label',
-                        content: popupContent,
-                        results: results,
-                        showPrint: true,
-                        onCloseCallback: function() {
-                          shown = false;
-                        }
-                      });
+                var updateContent = function(doOpen) {
+                  var resCount = 0,
+                      len = ids.length,
+                      i;
+
+                  var resultReceived = function() {
+                    if (resCount === 0 &&
+                        doOpen) {
                       popup.open();
                       shown = true;
                     }
-                    results.push(res.rows[0]);
-                  }, function() {
+
                     resCount++;
                     if (resCount == len) {
-                      bodyEl.removeClass(waitClass);
+                        bodyEl.removeClass(waitClass);
                     }
-                    //FIXME: better error handling
-                    var msg = 'No help found for id ' + ids[i];
-                    alert(msg);
-                  });
-                }
+                  };
+                  bodyEl.addClass(waitClass);
+                  for (i = 0; i < len; i++) {
+                    gaHelpService.get(ids[i]).then(function(res) {
+                      results.push(res.rows[0]);
+                      resultReceived();
+                    }, function() {
+                      resultReceived();
+                      //FIXME: better error handling
+                      var msg = 'No help found for id ' + ids[i];
+                      alert(msg);
+                    });
+                  }
+                };
+
+                updateContent(true);
+
+                //react on language change
+                scope.$on('$translateChangeEnd', function() {
+                  //Remove old content _without destroying the array_
+                  //The below is used because it's fastest and is
+                  //best supported across browsers
+                  while (results.length > 0) {
+                    results.pop();
+                  }
+                  updateContent(false);
+                });
               }
             };
           }
