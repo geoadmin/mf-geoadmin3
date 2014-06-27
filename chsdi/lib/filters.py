@@ -31,8 +31,11 @@ def filter_by_geodata_staging(query, ormColumn, staging):
 def filter_by_map_name(query, ormColumn, mapName):
     ''' Applies a map/topic filter '''
     if mapName != 'all':
-        return query.filter(or_(
-            ormColumn.ilike('%%%s%%' % mapName),
-            ormColumn.ilike('%%%s%%' % 'ech')  # ech whitelist hack
-        ))
+        clauses = [ormColumn.ilike('%%%s%%' % mapName)]
+        # we also want to always include all 'ech' layers (except for api's)
+        if (mapName != 'api-notfree' and
+                mapName != 'api-free' and
+                mapName != 'api'):
+            clauses.append(ormColumn.ilike('%%%s%%' % 'ech'))
+        return query.filter(or_(*clauses))
     return query
