@@ -69,33 +69,7 @@ Here is a list of all the freely accessible layers:
    <script type="text/javascript">
 
    function init() {
-        $.getJSON( "../../rest/services/api-notfree/MapServer/layersConfig", function( data ) {
-           var myInnerHtml_notfree =  "<br><table border=\"0\">";
-           var layers_notfree = data;
-           var counterNotFree = 1;
-           for (var layer in layers_notfree) {
-              if (!layers_notfree[layer].parentLayerId) {
-                  myInnerHtml_notfree += '<tr><td>' + counterNotFree + '</td><td><a href="http://map3.geo.admin.ch/?layers=' +
-                    layer + '" target="new"> ' + layer + '</a>&nbsp('+layers_notfree[layer].label+')</td></tr>';
-                  counterNotFree++;
-              }
-           }
-           document.getElementById("notfree").innerHTML=myInnerHtml_notfree;
-        });
-        $.getJSON( "../../rest/services/api-free/MapServer/layersConfig", function( data ) {
-           var myInnerHtml_free =  "<br><table border=\"0\">";
-           var layers_free = data;
-           var counterFree = 1;
-           for (var layer in layers_free) {
-              if (!layers_free[layer].parentLayerId) {
-                  myInnerHtml_free += '<tr><td>' + counterFree + '</td><td><a href="http://map3.geo.admin.ch/?layers=' +
-                    layer + '" target="new"> ' + layer + '</a>&nbsp('+layers_free[layer].label+')</td></tr>';
-                  counterFree++;
-              }
-           }
-           document.getElementById("free").innerHTML=myInnerHtml_free;
-        });
-        $.getJSON( "../../rest/services/api/MapServer/layersConfig", function( data ) {
+       $.getJSON( "../../rest/services/api/MapServer/layersConfig", function( data ) {
           var myInnerHtml_queryable = "<br><table border=\"0\">";
           var myInnerHtml_searchable =  "<br><table border=\"0\">";
           var layers_api = data;
@@ -117,6 +91,41 @@ Here is a list of all the freely accessible layers:
           }
           document.getElementById("queryable").innerHTML=myInnerHtml_queryable;
           document.getElementById("searchable").innerHTML=myInnerHtml_searchable;
+
+          //Now we get the not free layers. We have to use metadata service for
+          //this layersonfig service does not contain free/not-free designation
+          $.getJSON( "../../rest/services/api-notfree/MapServer", function( metadata ) {
+             var myInnerHtml_notfree =  "<br><table border=\"0\">";
+             var layers_notfree = metadata.layers;
+             var counterNotFree = 1;
+             for (var i = 0; i < layers_notfree.length; i++) {
+                var nflayer = layers_notfree[i];
+                if (layers_api[nflayer.layerBodId] &&
+                    !layers_api[nflayer.layerBodId].parentLayerId) {
+                    myInnerHtml_notfree += '<tr><td>' + counterNotFree + '</td><td><a href="http://map3.geo.admin.ch/?layers=' +
+                      nflayer.layerBodId + '" target="new"> ' + nflayer.layerBodId + '</a>&nbsp('+layers_api[nflayer.layerBodId].label+')</td></tr>';
+                    counterNotFree++;
+                }
+             }
+             document.getElementById("notfree").innerHTML=myInnerHtml_notfree;
+          });
+
+          $.getJSON( "../../rest/services/api-free/MapServer", function( metadata ) {
+             var myInnerHtml_free =  "<br><table border=\"0\">";
+             var layers_free = metadata.layers;
+             var counterFree = 1;
+             for (var i = 0; i < layers_free.length; i++) {
+                var flayer = layers_free[i];
+                if (layers_api[flayer.layerBodId] &&
+                   !layers_api[flayer.layerBodId].parentLayerId) {
+                    myInnerHtml_free += '<tr><td>' + counterFree + '</td><td><a href="http://map3.geo.admin.ch/?layers=' +
+                      flayer.layerBodId + '" target="new"> ' + flayer.layerBodId + '</a>&nbsp('+layers_api[flayer.layerBodId].label+')</td></tr>';
+                    counterFree++;
+                }
+             }
+             document.getElementById("free").innerHTML=myInnerHtml_free;
+          });
+
         });
 
    }
