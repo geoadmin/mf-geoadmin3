@@ -15,6 +15,7 @@ class SearchValidation(MapNameValidation):
         self._timeEnabled = None
         self._bbox = None
         self._returnGeometry = None
+        self._origins = None
 
     @property
     def searchText(self):
@@ -39,6 +40,10 @@ class SearchValidation(MapNameValidation):
     @property
     def returnGeometry(self):
         return self._returnGeometry
+
+    @property
+    def origins(self):
+        return self._origins
 
     @featureIndexes.setter
     def featureIndexes(self, value):
@@ -121,3 +126,8 @@ class SearchValidation(MapNameValidation):
             self._returnGeometry = False
         else:
             self._returnGeometry = True
+
+    @origins.setter
+    def origins(self, value):
+        if value is not None:
+            self._origins = value.split(',')

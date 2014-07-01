@@ -35,6 +35,7 @@ class Search(SearchValidation):
         self.bbox = request.params.get('bbox')
         self.returnGeometry = request.params.get('returnGeometry', 'true').lower() == 'true'
         self.quadindex = None
+        self.origins = request.params.get('origins')
         self.featureIndexes = request.params.get('features')
         self.timeInstant = request.params.get('timeInstant')
         self.timeEnabled = request.params.get('timeEnabled')
@@ -71,19 +72,21 @@ class Search(SearchValidation):
             self.searchText = format_search_text(
                 self.request.params.get('searchText')
             )
-            self.sphinx.ResetFilters()
-            self._feature_search()
             # swiss search
-            self._swiss_search(self.LIMIT)
+            self._swiss_search()
         return self.results
 
-    def _swiss_search(self, limit):
+    def _swiss_search(self):
         if len(self.searchText) < 1:
-            return 0
-        self.sphinx.SetLimits(0, limit)
+            return
+        self.sphinx.SetLimits(0, self.LIMIT)
         self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
         self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, 'rank ASC, @weight DESC, num ASC')
-        self._detect_keywords()
+        if self.origins is None:
+            self._detect_keywords()
+        else:
+            self._filter_locations_by_origins()
+
         searchText = self._query_fields('@detail')
         try:
             temp = self.sphinx.Query(searchText, index='swisssearch')
@@ -114,8 +117,6 @@ class Search(SearchValidation):
                     elif res['attrs']['origin'] == 'kantone':
                         res['attrs']['layerBodId'] = 'ch.swisstopo.swissboundaries3d-kanton-flaeche.fill'
                     self.results['results'].append(res)
-            return len(temp)
-        return 0
 
     def _layer_search(self):
         # 10 features per layer are returned at max
@@ -127,7 +128,7 @@ class Search(SearchValidation):
         searchText = ' '.join((
             self._query_fields('@(detail,layer)'),
             '& @topics (%s | ech)' % mapName,  # Filter by to topic if string not empty, ech whitelist hack
-            '& @staging prod'                            # Only layers in prod are searched
+            '& @staging prod'                  # Only layers in prod are searched
         ))
         try:
             temp = self.sphinx.Query(searchText, index=index_name)
@@ -136,8 +137,6 @@ class Search(SearchValidation):
         temp = temp['matches'] if temp is not None else temp
         if temp is not None and len(temp) != 0:
             self.results['results'] += temp
-            return len(temp)
-        return 0
 
     def _get_quadindex_string(self):
         ''' Recursive and inclusive search through
@@ -159,7 +158,7 @@ class Search(SearchValidation):
         # all features in given bounding box
         if self.featureIndexes is None:
             # we need bounding box and layernames. FIXME: this should be error
-            return 0
+            return
         self.sphinx.SetLimits(0, self.FEATURE_LIMIT)
         self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
         if self.bbox:
@@ -180,7 +179,7 @@ class Search(SearchValidation):
         except IOError:
             raise exc.HTTPGatewayTimeout()
         self.sphinx.ResetFilters()
-        return self._parse_feature_results(temp)
+        self._parse_feature_results(temp)
 
     def _get_time_filter(self):
         timeFilter = []
@@ -224,7 +223,7 @@ class Search(SearchValidation):
         geomFilter = self._get_quadindex_string()
         self._add_feature_queries(geomFilter, timeFilter)
         temp = self.sphinx.RunQueries()
-        return self._parse_feature_results(temp)
+        self._parse_feature_results(temp)
 
     def _query_fields(self, fields):
         exact_nondigit_prefix_digit = lambda x: ''.join((x, '*')) if x.isdigit() else x
@@ -259,6 +258,23 @@ class Search(SearchValidation):
 
         return finalQuery
 
+    def _origins_to_ranks(self, origins):
+        origin2Rank = {
+            'zipcode': 1,
+            'gg25': 2,
+            'district': 3,
+            'kantone': 4,
+            'sn25': 5,
+            'address': 6,
+            'parcel': 10
+        }
+        buildRanksList = lambda x: origin2Rank[x]
+        try:
+            ranks = map(buildRanksList, origins)
+        except KeyError:
+            raise exc.HTTPBadRequest('Bad value(s) in parameter origins')
+        return ranks
+
     def _detect_keywords(self):
         if len(self.searchText) > 0:
             PARCEL_KEYWORDS = ('parzelle', 'parcelle', 'parcella', 'parcel')
@@ -266,11 +282,15 @@ class Search(SearchValidation):
             firstWord = self.searchText[0].lower()
             if firstWord in PARCEL_KEYWORDS:
                 # As one cannot apply filters on string attributes, we use the rank information
-                self.sphinx.SetFilter('rank', [10])
+                self.sphinx.SetFilter('rank', self._origins_to_ranks['parcel'])
                 del self.searchText[0]
             elif firstWord in ADDRESS_KEYWORDS:
-                self.sphinx.SetFilter('rank', [6])
+                self.sphinx.SetFilter('rank', self._origins_to_ranks['address'])
                 del self.searchText[0]
+
+    def _filter_locations_by_origins(self):
+        ranks = self._origins_to_ranks(self.origins)
+        self.sphinx.SetFilter('rank', ranks)
 
     def _add_feature_queries(self, queryText, timeFilter):
         i = 0
@@ -295,7 +315,6 @@ class Search(SearchValidation):
                         res['attrs']['featureId'] = res['attrs']['feature_id']
                     if not self.bbox or self._bbox_intersection(self.bbox, res['attrs']['geom_st_box2d']):
                         self.results['results'].append(res)
-        return len(self.results['results'])
 
     def _get_quad_index(self):
         try:
