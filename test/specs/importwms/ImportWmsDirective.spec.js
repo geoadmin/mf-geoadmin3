@@ -130,7 +130,7 @@ describe('ga_importwms__directive', function() {
     it('adds/removes a preview layer to the map', inject(function($rootScope) {
       $rootScope.addPreviewLayer($rootScope.layers[0]);
       expect($rootScope.map.getLayers().getLength()).to.be(1);      
-      expect($rootScope.map.getLayers().getAt(0).preview).to.be(true);
+      expect($rootScope.map.getLayers().item(0).preview).to.be(true);
       $rootScope.removePreviewLayer();   
       expect($rootScope.map.getLayers().getLength()).to.be(0);
       expect($rootScope.layerHovered).to.be(null);
@@ -147,7 +147,7 @@ describe('ga_importwms__directive', function() {
       $rootScope.toggleLayerSelected($rootScope.layers[0]);
       $rootScope.addLayerSelected();
       expect($rootScope.map.getLayers().getLength()).to.be(1);      
-      expect($rootScope.map.getLayers().getAt(0).preview).to.be(undefined);
+      expect($rootScope.map.getLayers().item(0).preview).to.be(undefined);
     }));
 
     it('zooms on layer extent', inject(function($rootScope) {

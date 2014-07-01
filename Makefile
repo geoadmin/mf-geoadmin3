@@ -97,10 +97,18 @@ preparebranch: rc_branch scripts/00-$(GIT_BRANCH).conf
 .PHONY: updateol
 updateol: OL_JS = ol.js ol-simple.js ol-whitespace.js
 updateol: .build-artefacts/ol3 .build-artefacts/ol-requirements-installation.timestamp
-	rm -f .build-artefacts/ol3/src/ol/ga-ol3.exports
-	cd .build-artefacts/ol3; git checkout master; git fetch origin; git merge --ff origin/master; git show; cp ../../scripts/ga-ol3.exports src/ol/ga-ol3.exports; ../python-venv/bin/python build.py $(addprefix build/,$(OL_JS))
-	cd .build-artefacts/ol3; git reset --hard
-	cp $(addprefix .build-artefacts/ol3/build/,$(OL_JS)) src/lib/
+	cd .build-artefacts/ol3; \
+	git reset HEAD --hard; \
+	git checkout master; \
+	git fetch origin; \
+	git merge --ff origin/master; \
+	git show; \
+	cat ../../scripts/ga-ol3-feature.exports >> src/ol/feature.js; \
+	cat ../../scripts/ga-ol3-source.exports >> src/ol/source/source.js; \
+	npm install; \
+	../python-venv/bin/python build.py $(addprefix build/,$(OL_JS)); \
+	cd ../../; \
+	cp $(addprefix .build-artefacts/ol3/build/,$(OL_JS)) src/lib/; \
 
 .PHONY: fastclick
 fastclick: .build-artefacts/fastclick
