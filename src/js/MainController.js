@@ -2,10 +2,13 @@
   goog.provide('ga_main_controller');
 
   goog.require('ga_map');
+  goog.require('ga_networkstatus_service');
+
 
   var module = angular.module('ga_main_controller', [
     'pascalprecht.translate',
-    'ga_map'
+    'ga_map',
+    'ga_networkstatus_service'
   ]);
 
   function createMap() {
@@ -64,7 +67,7 @@
    */
 module.controller('GaMainController',
   function($scope, $rootScope, $translate, $timeout, $window,  gaPermalink,
-    gaBrowserSniffer, gaLayersPermalinkManager, 
+    gaBrowserSniffer, gaNetworkStatus, gaLayersPermalinkManager, 
     gaFeaturesPermalinkManager) {
      
       // Determines if the window has a height <= 550
@@ -124,8 +127,13 @@ module.controller('GaMainController',
         homescreen: false,
         tablet: gaBrowserSniffer.mobile && !gaBrowserSniffer.phone,
         touch: gaBrowserSniffer.touchDevice,
-        webkit: gaBrowserSniffer.webkit
+        webkit: gaBrowserSniffer.webkit,
+        offline: gaNetworkStatus.offline
       };
+
+      $rootScope.$on('gaNetworkStatusChange', function(evt, offline) {
+        $scope.globals.offline = offline;
+      });
 
       $timeout(function() {
         $scope.globals.homescreen = gaBrowserSniffer.ios &&

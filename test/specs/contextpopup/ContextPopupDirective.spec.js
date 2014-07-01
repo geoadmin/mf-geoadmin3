@@ -43,7 +43,7 @@ describe('ga_contextpopup_directive', function() {
     expect(tables.length).to.be(1);
 
     var tds = $(tables[0]).find('td');
-    expect(tds.length).to.be(15);
+    expect(tds.length).to.be(14);
   });
 
   describe('ga_contextpopup_directive handling of popupcontext', function() {

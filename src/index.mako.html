@@ -34,6 +34,7 @@
     <link rel="apple-touch-icon" sizes="76x76" href="${versionslashed}img/touch-icon-bund-76x76.png" />
     <link rel="apple-touch-icon" sizes="120x120" href="${versionslashed}img/touch-icon-bund-120x120.png" />
     <link rel="apple-touch-icon" sizes="152x152" href="${versionslashed}img/touch-icon-bund-152x152.png" />
+
     <!-- Description is translated 'by hand' in the MainController -->
     <meta name="description" content="map.geo.admin.ch is the mapping platform of the Swiss Confederation. Access federal geographical information, maps, data, services and metadata of Switzerland."/>
     <meta name="keywords" content="maps Switzerland, map viewer, Confederation, geodata, public platform, geographical information, geoportal, orthophotos, geolocation, geoinformation, Geodaten, Geoinformation, Bund, Plattform, Karte, Kartendienst, Kartenviewer"/>
@@ -75,7 +76,7 @@
     <link rel="shortcut icon" type="image/x-icon" href="${versionslashed}img/favicon.ico"/>
   </head>
 
-  <body ng-class="[topicId, globals.searchFocused ? 'search-focused' : '', globals.touch ? 'touch' : '', globals.webkit ? 'webkit' : 'no-webkit']">
+  <body ng-class="[topicId, globals.searchFocused ? 'search-focused' : '', globals.touch ? 'touch' : '', globals.webkit ? 'webkit' : 'no-webkit', globals.offline ? 'offline' : 'online']">
     <!-- The below conditional is ignored by >= IE10 and all other browsers -->
     <!--![if IE]>
       <script>
@@ -132,6 +133,7 @@
         </div>
       </form>
 % endif
+    <div class="alert alert-danger"><strong>Sorry buddy</strong>, it seems you're offline !!!!</div>
     </div> <!-- #header -->
 
     <div tabindex="1" ga-map ga-map-map="map">
@@ -198,9 +200,9 @@
       </div>
     </div>
 
-    <div id="pulldown" class="{{(globals.catalogShown && globals.selectionShown) ? 'selection-and-catalog-shown' : ''}}">
+    <div id="pulldown" ng-show="!globals.offline" class="{{(globals.catalogShown && globals.selectionShown) ? 'selection-and-catalog-shown' : ''}}">
       <div id="pulldown-content" class="panel-group content ${"in" if device == "desktop" else "collapse"}">
-        <div class="panel">
+        <div class="panel" ng-if="!globals.offline" >
           <a id="shareHeading" class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#share">
             <i class="visible-collapsed icon-caret-right spacer"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
@@ -215,7 +217,7 @@
         </div> <!-- .panel -->
 
 % if device == 'desktop':
-        <div class="panel">
+        <div class="panel" ng-if="!globals.offline" >
           <a id="printHeading" class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#print">
             <i class="visible-collapsed icon-caret-right spacer"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
@@ -230,7 +232,7 @@
           </div>
         </div>  <!-- .panel -->
 
-        <div class="panel">
+        <div class="panel" ng-if="!globals.offline"> 
 
           <a id="toolsHeading" class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#tools">
             <i class="visible-collapsed icon-caret-right spacer"></i>
@@ -298,7 +300,7 @@
         </div> <!-- .panel -->
 % endif
 
-        <div class="panel">
+        <div class="panel" ng-show="!globals.offline">
 % if device == 'desktop':
           <div class="theme-toggle">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -321,20 +323,19 @@
 % endif
 
           </a>
-          <div id="catalog" class="collapse"  ga-collapsible-observe="globals.catalogShown" ng-controller="GaCatalogtreeController">
+          <div id="catalog" class="collapse" ga-collapsible-observe="globals.catalogShown" ng-controller="GaCatalogtreeController">
 % if device == 'mobile':
             <label class="topic-container" ng-controller="GaTopicController">
               <span translate>change_topic</span>
               <div ga-topic ga-topic-ui="select" ga-topic-options="options" ga-topic-map="map"></div>
             </label>
 % endif
-            <div class="panel-body panel-body-wide accordion-inner-catalog"
-              ga-catalogtree ga-catalogtree-map="map" ga-catalogtree-options="options">
+            <div class="panel-body panel-body-wide accordion-inner-catalog" ng-if="!globals.offline" ga-catalogtree ga-catalogtree-map="map" ga-catalogtree-options="options">
             </div>
           </div>
         </div> <!-- .panel -->
 
-        <div class="panel">
+        <div class="panel" ng-if="!globals.offline">
           <a id="selectionHeading" class="panel-heading accordion-toggle light ${"collapsed" if device!= "desktop" else ""}" data-toggle="collapse" href="#selection">
             <i class="visible-collapsed icon-caret-right"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
@@ -404,7 +405,7 @@
     </div> <!-- #pulldown -->
 
     <!-- feedback dialog -->
-    <div ng-controller="GaFeedbackController" class="modal-container">
+    <div ng-if="!globals.offline" ng-controller="GaFeedbackController" class="modal-container">
       <div id="feedback" class="modal fade" tabindex="-1" role="dialog" ga-modal-show="feedbackModalShown">
         <div class="modal-dialog" ga-draggable=".modal-header">
           <div class="modal-content">
@@ -594,6 +595,7 @@
     </script>
 
 %endif
+
 % if device == 'mobile':
     <script>
       window.addEventListener('load', function() {
@@ -614,8 +616,6 @@
     <script>
       (function() {
         var module = angular.module('ga');
-  
-        
         var cacheAdd = '${version}' != '' ? '/' + '${version}' : '';
         var pathname = location.pathname.replace(/(index.html)|(mobile.html)/g, '');
 
