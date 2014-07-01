@@ -94,6 +94,13 @@ WSGIScriptAlias /${vars:apache_base_path}/wsgi ${buildout:directory/buildout/par
     WSGIApplicationGroup %{GLOBAL}
 </Location>
 
+# If URI has numbers at the start, we cache a year
+# This allows a client to create their own cache and
+# update at his discretion
+RewriteRule ^${apache_entry_path}[0-9]+/(.*)$ ${apache_entry_path}$1 [E=setyearcache:true]
+Header merge Cache-Control "public,max-age=31536001" env=setyearcache
+
+# Non cached access
 RewriteRule ^${apache_entry_path}(qrcodegenerator|owschecker|iipimage|luftbilder|search|index|genindex|examples|img|js|css|releasenotes|services|_sources|_static|api|rest/services|ogcproxy|testi18n|loader.js|snapshot|checker|checker_dev|static|print|dev|feedback)(.*)$ /${vars:apache_base_path}/wsgi/$1$2 [PT]
 
 
