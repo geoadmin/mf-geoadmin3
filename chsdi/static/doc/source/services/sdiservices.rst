@@ -338,11 +338,9 @@ The search service is separated in 3 different categories or types:
   * The ZIP codes
   * The addresses (!! the swiss cantons only allow websites of the federal governement to use the addresses search service !!)
   * The cadastral parcels
-  * And optionally features belonging to a specified layer. The search is here performed within the attribute information of a layer using a search text.
-  * **IMPORTANT** : if you want to search only in one or serveral fields described above, please use the feature search service.
 * The **layer search** wich enables the search of layers belonging to the GeoAdmin API.
-* The **feature search** which is used to search through features descriptions. Note: you can also specify a bounding box to filter the features. (`Searchable layer <../../../api/faq/index.html#which-layers-are-searchable>`_)
-* The **feature identify** which is designed to efficiently discover the features of a layer based on a geographic extent. (`Complete list <../../../api/faq/index.html#which-layers-have-a-tooltip>`_)
+* The **feature search** which is used to search through features descriptions. Note: you can also specify a bounding box to filter the features. (`Searchable layers <../../../api/faq/index.html#which-layers-are-searchable>`_)
+* The **feature identify** which is designed to efficiently discover the features of a layer based on a geographic extent. (`Identifiable layers <../../../api/faq/index.html#which-layers-have-a-tooltip>`_)
 
 Input parameters
 ^^^^^^^^^^^^^^^^
@@ -365,7 +363,7 @@ Only RESTFul interface is available.
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | origins (optional)                | A comma separated list of origins. Possible origins are:                                  |
 |                                   | zipcode,gg25,district,kantone,sn25,address,parcel                                         |
-|                                   | (A description of the origins can be found hereunder.)                                    |
+|                                   | A description of the origins can be found hereunder. Per default all origins are used.    |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | callback (optional)               | The name of the callback function.                                                        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
