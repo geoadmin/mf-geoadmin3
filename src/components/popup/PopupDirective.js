@@ -71,6 +71,20 @@
             scope.options.showReduce = true;
           }
 
+          // Set default x and y values on non mobile device if not defined
+          if (!gaBrowserSniffer.mobile && !scope.options.x &&
+              !scope.options.y) {
+            scope.options.x =
+                $(document.body).width() / 2 - element.width() / 2;
+            scope.options.y = 89; //89 is the default size of the header
+          }
+
+          if (!gaBrowserSniffer.mobile) {
+            element.css({
+              left: scope.options.x,
+              top: scope.options.y
+            });
+          }
 
           // Add close popup function
           scope.close = function(evt) {
@@ -108,9 +122,6 @@
               // so we make  a test if the popup is displayed or not
               if (newVal != oldVal ||
                 (newVal != (element.css('display') == 'block'))) {
-                if (!gaBrowserSniffer.mobile && newVal) {
-                  moveToOriginalPosition();
-                }
 
                 if (scope.isReduced) {
                   scope.isReduced = false;
@@ -154,16 +165,6 @@
               deregister[i]();
             }
           });
-
-          /* Utils  */
-          // Move the popup to its original position, only used on desktop
-          var moveToOriginalPosition = function() {
-            element.css({
-              left: scope.options.x ||
-                $(document.body).width() / 2 - element.width() / 2,
-              top: scope.options.y || 89 //89 is the default size of the header
-            });
-          };
 
           // Execute the custom close callback
           var onClose = function() {
