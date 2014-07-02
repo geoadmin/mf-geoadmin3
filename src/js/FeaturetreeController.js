@@ -9,8 +9,8 @@
         function($scope, gaGlobalOptions, gaPrintService, $http) {
 
         $scope.options = {
-          searchUrlTemplate: gaGlobalOptions.mapUrl + '/rest/services/{Topic}/SearchServer',
-          htmlUrlTemplate: gaGlobalOptions.cachedMapUrl + '/rest/services/{Topic}/MapServer/{Layer}/{Feature}/htmlPopup'
+          searchUrlTemplate: gaGlobalOptions.apiUrl + '/rest/services/{Topic}/SearchServer',
+          htmlUrlTemplate: gaGlobalOptions.cachedApiUrl + '/rest/services/{Topic}/MapServer/{Layer}/{Feature}/htmlPopup'
         };
 
         $scope.printInProgress = false;

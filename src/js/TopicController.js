@@ -8,7 +8,7 @@
           $scope.options = {
             defaultTopicId: 'ech',
             thumbnailUrlTemplate: gaGlobalOptions.resourceUrl + 'img/{Topic}.jpg',
-            url: gaGlobalOptions.cachedMapUrl + '/rest/services'
+            url: gaGlobalOptions.cachedApiUrl + '/rest/services'
           };
       });
 })();

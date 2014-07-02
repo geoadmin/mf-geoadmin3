@@ -7,7 +7,7 @@
       function($scope, gaGlobalOptions) {
         
         $scope.options = {
-          catalogUrlTemplate: gaGlobalOptions.cachedMapUrl +
+          catalogUrlTemplate: gaGlobalOptions.cachedApiUrl +
             '/rest/services/{Topic}/CatalogServer'
         };
 
