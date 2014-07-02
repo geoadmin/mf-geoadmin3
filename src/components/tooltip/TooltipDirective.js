@@ -107,13 +107,15 @@
               canceler = $q.defer();
               // htmls = [] would break the reference in the popup
               htmls.splice(0, htmls.length);
-              if (popup && popup) {
+              if (popup) {
                 popup.close();
                 $timeout(function() {
-                  if (popup) {
+                  // We destroy the popup only if it's still closed
+                  if (popup && popup.scope &&
+                      popup.scope.toggle === false) {
                     popup.destroy();
+                    popup = undefined;
                   }
-                  popup = undefined;
                 },0);
               }
 
