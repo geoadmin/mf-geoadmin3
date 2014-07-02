@@ -32,7 +32,7 @@
          //We resolve directly when we have it in cache already
           if (angular.isDefined(registry[key(id, lang)])) {
             $timeout(function() {
-              deferred.resolve(registry[id]);
+              deferred.resolve(registry[key(id, lang)]);
             }, 0);
           }
 
