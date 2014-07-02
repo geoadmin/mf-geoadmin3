@@ -33317,7 +33317,7 @@ ga.Tooltip.prototype.handleIdentifyResponse_ = function(response) {
     this.source_.addFeatures(this.createFeatures_(response))
   }
   for(var i = 0, ii = response["results"].length;i < ii;i++) {
-    var lang = window.GeoAdmin && window.GeoAdmin.lang ? window.GeoAdmin.lang : "de";
+    var lang = window["GeoAdmin"] && window["GeoAdmin"]["lang"] ? window["GeoAdmin"]["lang"] : "de";
     var jsonp = new goog.net.Jsonp(new goog.Uri(window["GeoAdmin"]["serviceUrl"] + "/rest/services/api/MapServer/" + response["results"][i]["layerBodId"] + "/" + response["results"][i]["featureId"] + "/" + "htmlPopup?lang\x3d" + lang), "callback");
     jsonp.send({}, goog.bind(this.handleHtmlpopupResponse_, this), goog.bind(this.handleHtmlpopupError_, this))
   }
@@ -34448,7 +34448,7 @@ ga.source.wmts = function(layer, options) {
   var tileGrid = new ol.tilegrid.WMTS({origin:[42E4, 35E4], resolutions:resolutions, matrixIds:goog.array.range(resolutions.length)});
   var extension = options.format || "png";
   var timestamp = options["timestamps"][0];
-  return new ol.source.WMTS(({crossOrigin:"anonymous", attributions:[ga.layer.getAttribution('\x3ca href\x3d"' + options["attributionUrl"] + '" target\x3d"new"\x3e' + options["attribution"] + "\x3c/a\x3e")], url:("http://wmts{0-4}.geo.admin.ch/1.0.0/{Layer}/default/" + timestamp + "/21781/" + "{TileMatrix}/{TileRow}/{TileCol}.").replace("http:", location.protocol) + extension, tileGrid:tileGrid, layer:options["serverLayerName"] ? options["serverLayerName"] : layer, requestEncoding:"REST"}))
+  return new ol.source.WMTS(({crossOrigin:"anonymous", attributions:[ga.layer.getAttribution('\x3ca href\x3d"' + options["attributionUrl"] + '" target\x3d"new"\x3e' + options["attribution"] + "\x3c/a\x3e")], url:("http://wmts{5-9}.geo.admin.ch/1.0.0/{Layer}/default/" + timestamp + "/21781/" + "{TileMatrix}/{TileRow}/{TileCol}.").replace("http:", location.protocol) + extension, tileGrid:tileGrid, layer:options["serverLayerName"] ? options["serverLayerName"] : layer, requestEncoding:"REST"}))
 };
 ga.source.wms = function(layer, options) {
   return new ol.source.TileWMS({crossOrigin:"anonymous", attributions:[ga.layer.getAttribution('\x3ca href\x3d"' + options["attributionUrl"] + '" target\x3d"new"\x3e' + options["attribution"] + "\x3c/a\x3e")], params:{"LAYERS":options["wmsLayers"] || layer}, url:options["wmsUrl"].split("?")[0].replace("http:", location.protocol)})
@@ -41170,7 +41170,6 @@ goog.exportProperty(ga.Map.prototype, "bindTo", ga.Map.prototype.bindTo);
 goog.exportProperty(ga.Map.prototype, "dispatchChangeEvent", ga.Map.prototype.dispatchChangeEvent);
 goog.exportProperty(ga.Map.prototype, "forEachFeatureAtPixel", ga.Map.prototype.forEachFeatureAtPixel);
 goog.exportProperty(ga.Map.prototype, "geocode", ga.Map.prototype.geocode);
-goog.exportProperty(ga.Map.prototype, "geocode", ga.Map.prototype.geocode);
 goog.exportProperty(ga.Map.prototype, "get", ga.Map.prototype.get);
 goog.exportProperty(ga.Map.prototype, "getControls", ga.Map.prototype.getControls);
 goog.exportProperty(ga.Map.prototype, "getCoordinateFromPixel", ga.Map.prototype.getCoordinateFromPixel);
@@ -41189,11 +41188,9 @@ goog.exportProperty(ga.Map.prototype, "getTarget", ga.Map.prototype.getTarget);
 goog.exportProperty(ga.Map.prototype, "getView", ga.Map.prototype.getView);
 goog.exportProperty(ga.Map.prototype, "getViewport", ga.Map.prototype.getViewport);
 goog.exportProperty(ga.Map.prototype, "highlightFeature", ga.Map.prototype.highlightFeature);
-goog.exportProperty(ga.Map.prototype, "highlightFeature", ga.Map.prototype.highlightFeature);
 goog.exportProperty(ga.Map.prototype, "notify", ga.Map.prototype.notify);
 goog.exportProperty(ga.Map.prototype, "on", ga.Map.prototype.on);
 goog.exportProperty(ga.Map.prototype, "once", ga.Map.prototype.once);
-goog.exportProperty(ga.Map.prototype, "recenterFeature", ga.Map.prototype.recenterFeature);
 goog.exportProperty(ga.Map.prototype, "recenterFeature", ga.Map.prototype.recenterFeature);
 goog.exportProperty(ga.Map.prototype, "removeControl", ga.Map.prototype.removeControl);
 goog.exportProperty(ga.Map.prototype, "removeInteraction", ga.Map.prototype.removeInteraction);
@@ -41338,6 +41335,7 @@ goog.exportProperty(ol.Geolocation.prototype, "unByKey", ol.Geolocation.prototyp
 goog.exportProperty(ol.Geolocation.prototype, "unbind", ol.Geolocation.prototype.unbind);
 goog.exportProperty(ol.Geolocation.prototype, "unbindAll", ol.Geolocation.prototype.unbindAll);
 goog.exportProperty(ol.ImageTile.prototype, "getImage", ol.ImageTile.prototype.getImage);
+goog.exportProperty(ol.ImageTile.prototype, "getTileCoord", ol.ImageTile.prototype.getTileCoord);
 goog.exportSymbol("ol.Kinetic", ol.Kinetic);
 goog.exportSymbol("ol.Map", ol.Map);
 goog.exportProperty(ol.Map.prototype, "addControl", ol.Map.prototype.addControl);
@@ -42702,6 +42700,14 @@ goog.exportProperty(ol.source.Tile.prototype, "once", ol.source.Tile.prototype.o
 goog.exportProperty(ol.source.Tile.prototype, "un", ol.source.Tile.prototype.un);
 goog.exportProperty(ol.source.Tile.prototype, "unByKey", ol.source.Tile.prototype.unByKey);
 goog.exportSymbol("ol.source.TileDebug", ol.source.TileDebug);
+goog.exportProperty(ol.source.TileDebug.prototype, "dispatchChangeEvent", ol.source.TileDebug.prototype.dispatchChangeEvent);
+goog.exportProperty(ol.source.TileDebug.prototype, "getRevision", ol.source.TileDebug.prototype.getRevision);
+goog.exportProperty(ol.source.TileDebug.prototype, "getState", ol.source.TileDebug.prototype.getState);
+goog.exportProperty(ol.source.TileDebug.prototype, "getTileGrid", ol.source.TileDebug.prototype.getTileGrid);
+goog.exportProperty(ol.source.TileDebug.prototype, "on", ol.source.TileDebug.prototype.on);
+goog.exportProperty(ol.source.TileDebug.prototype, "once", ol.source.TileDebug.prototype.once);
+goog.exportProperty(ol.source.TileDebug.prototype, "un", ol.source.TileDebug.prototype.un);
+goog.exportProperty(ol.source.TileDebug.prototype, "unByKey", ol.source.TileDebug.prototype.unByKey);
 goog.exportSymbol("ol.source.TileImage", ol.source.TileImage);
 goog.exportProperty(ol.source.TileImage.prototype, "dispatchChangeEvent", ol.source.TileImage.prototype.dispatchChangeEvent);
 goog.exportProperty(ol.source.TileImage.prototype, "getRevision", ol.source.TileImage.prototype.getRevision);
