@@ -49,6 +49,9 @@
       };
 
       Popup.prototype.close = function() {
+        var position = this.element.position();
+        this.scope.options.x = position.left;
+        this.scope.options.y = position.top;
         this.scope.toggle = false;
       };
 
