@@ -56,7 +56,7 @@ help:
 all: prod dev lint apache testdev testprod deploy/deploy-branch.cfg fixrights
 
 .PHONY: prod
-prod: prd/ prd/lib/ prd/lib/build.js prd/style/app.css prd/index.html prd/mobile.html prd/info.json prd/img/ prd/style/font-awesome-3.2.1/font/ prd/locales/ prd/checker prd/robots.txt
+prod: prd/ prd/lib/ prd/lib/build.js prd/style/app.css prd/index.html prd/mobile.html prd/img/ prd/style/font-awesome-3.2.1/font/ prd/locales/ prd/checker prd/robots.txt
 
 .PHONY: dev
 dev: src/deps.js src/style/app.css src/index.html src/mobile.html
@@ -171,11 +171,6 @@ prd/locales/: src/locales/*.json
 	cp $^ $@
 
 prd/checker: src/checker
-	mkdir -p $(dir $@)
-	cp $< $@
-
-# Temporary: the entire rule should go away eventually
-prd/info.json: src/info.json
 	mkdir -p $(dir $@)
 	cp $< $@
 
