@@ -16,7 +16,7 @@
    * See examples on how it can be used
    */
   module.directive('gaCatalogtree',
-      function($http, $translate, $rootScope, gaPermalink,
+      function($http, $translate, $rootScope, gaPermalink, gaMapUtils,
           gaCatalogtreeMapUtils, gaLayers, gaLayerFilters) {
 
         return {
@@ -88,7 +88,7 @@
             // just visit the tree leaves and set "selectedOpen" as
             // appropriate.
             var assurePreselectedLayersLoaded = function(oldTree) {
-              var i, olLayer, selectedLayers,
+              var i, olLayer, mapLayer, selectedLayers,
                   addDefaultLayersToMap = true,
                   map = scope.map,
                   layers = scope.layers;
@@ -105,6 +105,13 @@
                 for (i = selectedLayers.length - 1; i >= 0; i--) {
                   olLayer = gaLayers.getOlLayerById(selectedLayers[i]);
                   if (angular.isDefined(olLayer)) {
+                    //If it's already in the map, remove it and
+                    //add it to assure it's on top.
+                    mapLayer = gaMapUtils.getMapOverlayForBodId(map,
+                                                           selectedLayers[i]);
+                    if (angular.isDefined(mapLayer)) {
+                      map.removeLayer(mapLayer);
+                    }
                     map.addLayer(olLayer);
                   }
                 }
