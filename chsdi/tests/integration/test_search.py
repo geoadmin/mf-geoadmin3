@@ -152,6 +152,11 @@ class TestSearchServiceView(TestsBase):
         params = {'searchText': 'vaud', 'type': 'locations', 'origins': 'dummy'}
         resp = self.testapp.get('/rest/services/inspire/SearchServer', params=params, status=400)
 
+    def test_search_locations_prefix_parcel(self):
+        params = {'searchText': 'parcel val', 'type': 'locations'}
+        resp = self.testapp.get('/rest/services/inspire/SearchServer', params=params, status=200)
+        self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'parcel')
+
     def test_features_bbox(self):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'features': 'ch.astra.ivs-reg_loc', 'type': 'featureidentify', 'bbox': '551306.5625,167918.328125,551754.125,168514.625'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
