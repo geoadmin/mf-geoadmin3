@@ -5,25 +5,25 @@
   goog.require('ga_debounce_service');
   goog.require('ga_map_service');
   goog.require('ga_popup_service');
+  goog.require('ga_waitcursor_service');
 
   var module = angular.module('ga_tooltip_directive', [
     'ga_debounce_service',
     'ga_popup_service',
     'ga_map_service',
+    'ga_waitcursor_service',
     'pascalprecht.translate'
   ]);
 
   module.directive('gaTooltip',
-      function($timeout, $document, $http, $q, $translate, $sce, gaPopup,
+      function($timeout, $http, $q, $translate, $sce, gaPopup, gaWaitCursor,
           gaLayers, gaBrowserSniffer, gaDefinePropertiesForLayer, gaMapClick,
           gaPreviewFeatures, gaDebounce) {
-        var waitclass = 'ga-tooltip-wait',
-            bodyEl = angular.element($document[0].body),
-            popupContent = '<div ng-repeat="htmlsnippet in options.htmls">' +
-                              '<div ng-bind-html="htmlsnippet"></div>' +
-                              '<div class="ga-tooltip-separator" ' +
-                                'ng-show="!$last"></div>' +
-                            '</div>';
+        var popupContent = '<div ng-repeat="htmlsnippet in options.htmls">' +
+                            '<div ng-bind-html="htmlsnippet"></div>' +
+                            '<div class="ga-tooltip-separator" ' +
+                              'ng-show="!$last"></div>' +
+                           '</div>';
         return {
           restrict: 'A',
           scope: {
@@ -185,7 +185,7 @@
                 function incResponseCount() {
                   responseCount += 1;
                   if (responseCount == identifyCount) {
-                    bodyEl.removeClass(waitclass);
+                    gaWaitCursor.remove();
                   }
                 }
 
@@ -199,7 +199,7 @@
                 // order of execution.
                 $timeout(function() {
                   if (responseCount < identifyCount) {
-                    bodyEl.addClass(waitclass);
+                    gaWaitCursor.add();
                   }
                 }, 0);
 
@@ -309,10 +309,10 @@
                         imageDisplay: size[0] + ',' + size[1] + ',96'
                       }
                     }).success(function(html) {
-                      bodyEl.removeClass(waitclass);
+                      gaWaitCursor.remove();
                       showPopup(html);
                     }).error(function() {
-                      bodyEl.removeClass(waitclass);
+                      gaWaitCursor.remove();
                     });
                   }
                 });

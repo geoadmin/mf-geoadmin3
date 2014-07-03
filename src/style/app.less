@@ -24,6 +24,7 @@
 @import "../components/layermanager/style/layermanager.less";
 @import "../components/draw/style/draw.less";
 @import "../components/help/style/help.less";
+@import "../components/waitcursor/style/waitcursor.less";
 
 @header-height: 89;
 @footer-height: 26;
@@ -799,11 +800,6 @@ ul.panel-body-wide {
   text-align: left;
 }
 
-// ***** METADATA POPUP
-.ga-measure-wait, .ga-tooltip-wait, .ga-metadata-popup-wait, .ga-print-wait, .ga-search-wait {
-  cursor: wait;
-}
-
 // ****** LEGEND
 .ga-tooltip-metadata {
   .popover-content {
@@ -916,7 +912,7 @@ ul.panel-body-wide {
   }
 }
 
-.ga-tooltip-wait, .ga-metadata-popup-wait {
+.ga-wait-cursor {
   #loader {
     z-index: 5000;
 

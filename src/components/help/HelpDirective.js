@@ -2,9 +2,12 @@
   goog.provide('ga_help_directive');
 
   goog.require('ga_help_service');
+  goog.require('ga_waitcursor_service');
 
-  var module = angular.module('ga_help_directive',
-      ['ga_help_service']);
+  var module = angular.module('ga_help_directive', [
+    'ga_help_service',
+    'ga_waitcursor_service'
+  ]);
 
   /* Help Directive
    *
@@ -23,7 +26,7 @@
    * <span ga-help="12,13,14"></div>
   */
   module.directive('gaHelp',
-      function($document, gaHelpService, gaPopup) {
+      function(gaWaitCursor, gaHelpService, gaPopup) {
         var popupContent = '<div class="ga-help-content" ' +
                                 'ng-repeat="res in options.results">' +
                              '<h2 ng-bind="res[1]"></h2>' +
@@ -77,9 +80,6 @@
               } else {
                 var ids = scope.helpIds.split(',');
 
-                var waitClass = 'ga-metadata-popup-wait';
-                var bodyEl = angular.element($document[0].body);
-
                 //Create the popup
                 popup = gaPopup.create({
                   className: 'ga-help-popup',
@@ -107,10 +107,10 @@
 
                     resCount++;
                     if (resCount == len) {
-                        bodyEl.removeClass(waitClass);
+                      gaWaitCursor.remove();
                     }
                   };
-                  bodyEl.addClass(waitClass);
+                  gaWaitCursor.add();
                   for (i = 0; i < len; i++) {
                     gaHelpService.get(ids[i]).then(function(res) {
                       results.push(res.rows[0]);

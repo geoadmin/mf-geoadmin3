@@ -8,12 +8,10 @@
      'pascalprecht.translate']);
 
   module.controller('GaPrintDirectiveController', function($scope, $http,
-      $window, $translate, $document,
+      $window, $translate, gaWaitCursor,
       gaLayers, gaPermalink, gaBrowserSniffer) {
 
-    var waitclass = 'ga-print-wait';
-    var bodyEl = angular.element($document[0].body);
-    bodyEl.removeClass(waitclass);
+    gaWaitCursor.remove();
     var pdfLegendsToDownload = [];
     var pdfLegendString = '_big.pdf';
     var printRectangle;
@@ -528,7 +526,7 @@
         return;
       }
       // http://mapfish.org/doc/print/protocol.html#print-pdf
-      bodyEl.addClass(waitclass);
+      gaWaitCursor.add();
       var view = $scope.map.getView();
       var proj = view.getProjection();
       var lang = $translate.uses();
@@ -657,7 +655,7 @@
         var http = $http.post(that.capabilities.createURL + '?url=' +
             encodeURIComponent(that.capabilities.createURL), spec);
         http.success(function(data) {
-          bodyEl.removeClass(waitclass);
+          gaWaitCursor.remove();
           $scope.downloadUrl(data.getURL);
           //After standard print, download the pdf Legends
           //if there are any
@@ -666,10 +664,10 @@
           }
         });
         http.error(function() {
-          bodyEl.removeClass(waitclass);
+          gaWaitCursor.remove();
         });
       }).error(function() {
-        bodyEl.removeClass(waitclass);
+        gaWaitCursor.remove();
       });
     };
 
