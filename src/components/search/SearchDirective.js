@@ -8,6 +8,7 @@
   goog.require('ga_permalink');
   goog.require('ga_search_service');
   goog.require('ga_urlutils_service');
+  goog.require('ga_waitcursor_service');
 
   var module = angular.module('ga_search_directive', [
     'ga_debounce_service',
@@ -17,12 +18,13 @@
     'ga_permalink',
     'pascalprecht.translate',
     'ga_urlutils_service',
-    'ga_search_service'
+    'ga_search_service',
+    'ga_waitcursor_service'
   ]);
 
   module.directive('gaSearch',
-      function($compile, $translate, $timeout, $rootScope, $http, $document,
-        gaMapUtils, gaLayerMetadataPopup, gaPermalink, gaUrlUtils,
+      function($compile, $translate, $timeout, $rootScope, $http,
+        gaWaitCursor, gaMapUtils, gaLayerMetadataPopup, gaPermalink, gaUrlUtils,
         gaGetCoordinate, gaBrowserSniffer, gaLayerFilters, gaKml,
         gaPreviewLayers, gaLayers, gaPreviewFeatures, gaMarkerOverlay,
         gaSwisssearch, gaDebounce) {
@@ -52,8 +54,7 @@
             'body={{encodedPermalinkHref}}">',
             '<i class="icon-envelope-alt"></i>',
             '</a>',
-            '</div>'].join(''),
-            waitClass = 'ga-search-wait';
+            '</div>'].join('');
 
           var geojsonParser = new ol.format.GeoJSON();
 
@@ -104,7 +105,6 @@
                 parcel: 10,
                 sn25: 8
               };
-              var bodyEl = angular.element($document[0].body);
 
               var footerTemplate = angular.element(footer);
               $compile(footerTemplate)(scope);
@@ -147,15 +147,6 @@
               };
 
               scope.query = '';
-              scope.pendingRequests = 0;
-              scope.$watch('pendingRequests', function(newval) {
-                if (newval <= 0 ||
-                    scope.query === '') {
-                  bodyEl.removeClass(waitClass);
-                } else {
-                  bodyEl.addClass(waitClass);
-                }
-              });
 
               scope.layers = map.getLayers().getArray();
 
@@ -349,9 +340,11 @@
                         var extent = [center, center];
                         gaMarkerOverlay.add(map, center, extent, true);
                       } else {
-                        scope.$apply(function() {
-                          scope.pendingRequests++;
-                        });
+                        // Requests are not sent but before sent is invoked
+                        // anyway
+                        if (scope.query !== '') {
+                          gaWaitCursor.add();
+                        }
                       }
                       return !position;
                     },
@@ -392,9 +385,9 @@
                       if (!triggerFeatureSearch()) {
                         return false;
                       }
-                      scope.$apply(function() {
-                        scope.pendingRequests++;
-                      });
+                      if (scope.query !== '') {
+                        gaWaitCursor.add();
+                      }
                       return true;
                     },
                     replace: function(url, searchText) {
@@ -452,9 +445,9 @@
                             scope.query)) {
                         return false;
                       }
-                      scope.$apply(function() {
-                        scope.pendingRequests++;
-                      });
+                      if (scope.query !== '') {
+                        gaWaitCursor.add();
+                      }
                       return true;
                     },
                     replace: function(url, searchText) {
@@ -571,6 +564,7 @@
               var renderSuggestions = viewDropDown.renderSuggestions;
               viewDropDown.renderSuggestions = function(dataset, suggestions,
                                                         invokeApply) {
+                gaWaitCursor.remove();
                 if (dataset.name === 'locations') {
                   hasLocationResults = (suggestions.length !== 0);
                 } else if (dataset.name === 'featuresearch') {
@@ -631,9 +625,6 @@
                     }
                     el.scrollTop(0);
                   }
-                }
-                if (scope.pendingRequests > 0) {
-                  scope.pendingRequests--;
                 }
                 gaSwisssearch.check();
               });
