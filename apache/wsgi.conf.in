@@ -54,7 +54,7 @@ RewriteRule ^${apache_entry_path}robots.txt /${vars:apache_base_path}/wsgi/stati
 
 
 # WMTS
-RewriteRule ^${apache_entry_path}1.0.0/WMTSCapabilities\.xml$ /${vars:apache_base_path}/wsgi/rest/services/all/1.0.0/WMTSCapabilities.xml [PT,NC,QSA,L]
+RewriteRule ^${apache_entry_path}1.0.0/WMTSCapabilities\.xml$ /${vars:apache_base_path}/wsgi/rest/services/api/1.0.0/WMTSCapabilities.xml [PT,NC,QSA,L]
 
 # Frozen Capabilities, for swissmaponline 
 RewriteCond %{QUERY_STRING} lang=(de|fr|it|en) [NC] 
