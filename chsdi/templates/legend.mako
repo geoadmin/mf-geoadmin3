@@ -38,7 +38,7 @@
   <p class='bod-title'><span>${c['fullName'] or '-'}</span> (${c['attributes']['dataOwner'] or '-'})</p>
 % endif
 % if 'abstract' in c['attributes']:
-  <p class='legend-abstract'>${c['attributes']['abstract'] or '-'}</p>
+  <p class='legend-abstract'>${c['attributes']['abstract'] or '-'|n}</p>
 % endif
 </div>
 <div class="legend-footer">
