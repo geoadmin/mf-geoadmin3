@@ -15,41 +15,58 @@
   module.provider('gaLayerMetadataPopup', function() {
     this.$get = function(gaWaitCursor, $translate, $rootScope, $sce,
         gaPopup, gaLayers) {
-      var popupContent = '<div ng-bind-html=' +
-          '"options.results[options.bodid]"></div>';
+      var popupContent = '<div ng-bind-html="options.result.html"></div>';
 
       var LayerMetadataPopup = function() {
         var popups = {};
-        var results = {};
 
-        this.get = function(bodid) {
-          gaWaitCursor.add();
-          gaLayers.getMetaDataOfLayer(bodid)
-            .success(function(data) {
-              var popup = popups[bodid];
+        var create = function(bodid) {
+          var result = {html: ''},
+              popup;
+
+          // Called to update the content
+          var updateContent = function(init) {
+
+            var handleResult = function() {
               gaWaitCursor.remove();
-              results[bodid] = $sce.trustAsHtml(data);
-              if (!popup) {
-                popups[bodid] = gaPopup.create({
-                  title: $translate('metadata_window_title'),
-                  destroyOnClose: false,
-                  content: popupContent,
-                  bodid: bodid,
-                  results: results,
-                  className: 'ga-tooltip-metadata',
-                  x: 400,
-                  y: 200,
-                  showPrint: true
-                });
-                popups[bodid].open();
+              if (init) {
+                popup.open();
               }
-            })
-            .error(function() {
-              gaWaitCursor.remove();
-              //FIXME: better error handling
-              var msg = 'Could not retrieve information for ' + bodid;
-              alert(msg);
-            });
+            };
+
+            gaWaitCursor.add();
+            gaLayers.getMetaDataOfLayer(bodid)
+              .success(function(data) {
+                result.html = $sce.trustAsHtml(data);
+                handleResult();
+              })
+              .error(function() {
+                handleResult();
+                //FIXME: better error handling
+                var msg = 'Could not retrieve information for ' + bodid;
+                alert(msg);
+              });
+          };
+
+          //We assume popup does not exist yet
+          popup = gaPopup.create({
+            title: $translate('metadata_window_title'),
+            destroyOnClose: false,
+            content: popupContent,
+            result: result,
+            className: 'ga-tooltip-metadata',
+            x: 400,
+            y: 200,
+            showPrint: true
+          });
+          popups[bodid] = popup;
+
+          updateContent(true);
+
+          $rootScope.$on('$translateChangeEnd', function() {
+            updateContent(false);
+          });
+
         };
 
         this.toggle = function(bodid) {
@@ -61,34 +78,12 @@
               popup.open();
             }
           } else {
-            this.get(bodid);
+            create(bodid);
           }
-        };
-
-        this.refresh = function() {
-          var that = this;
-          var keys = [];
-          var n = 0;
-          for (var k in popups) keys.push(k);
-          var recursiveFetch = function(n) {
-            if (n < keys.length) {
-              var bodid = keys[n];
-              var popup = popups[bodid];
-              that.get(bodid);
-              recursiveFetch(n + 1);
-            }
-          };
-          recursiveFetch(0);
         };
       };
 
-      var metadataPopup = new LayerMetadataPopup();
-
-      $rootScope.$on('$translateChangeEnd', function() {
-        metadataPopup.refresh();
-      });
-
-      return metadataPopup;
+      return new LayerMetadataPopup();
     };
   });
 })();
