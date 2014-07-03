@@ -282,10 +282,10 @@ class Search(SearchValidation):
             firstWord = self.searchText[0].lower()
             if firstWord in PARCEL_KEYWORDS:
                 # As one cannot apply filters on string attributes, we use the rank information
-                self.sphinx.SetFilter('rank', self._origins_to_ranks['parcel'])
+                self.sphinx.SetFilter('rank', self._origins_to_ranks(['parcel']))
                 del self.searchText[0]
             elif firstWord in ADDRESS_KEYWORDS:
-                self.sphinx.SetFilter('rank', self._origins_to_ranks['address'])
+                self.sphinx.SetFilter('rank', self._origins_to_ranks(['address']))
                 del self.searchText[0]
 
     def _filter_locations_by_origins(self):
