@@ -103,13 +103,13 @@
           features in ch.astra.ivs-reg_loc (without bbox, features within the bbox)</a> <br>
       <h4>Features and time </h4>
           <a
-          href="rest/services/inspire/SearchServer?searchText=19810590048970&features=ch.swisstopo.lubis-luftbilder_farbe&type=featuresearch&bbox=542200,206800,542200,206800&timeInstant=1981&timeEnabled=true">Search for features
+          href="rest/services/inspire/SearchServer?searchText=19810590048970&features=ch.swisstopo.lubis-luftbilder_farbe&type=featuresearch&bbox=542199.5,206799.5,542200.5,206800.5&timeInstant=1981&timeEnabled=true">Search for features
           in ch.swisstopo.lubis-luftbilder_farbe with time parameter (1 result)</a> <br>
           <a
-          href="rest/services/inspire/SearchServer?searchText=19810590048970&features=ch.swisstopo.lubis-luftbilder_farbe&type=featuresearch&bbox=542200,206800,542200,206800&timeInstant=1953&timeEnabled=true">Search for features
+          href="rest/services/inspire/SearchServer?searchText=19810590048970&features=ch.swisstopo.lubis-luftbilder_farbe&type=featuresearch&bbox=542199.5,206799.5,542200.5,206800.5&timeInstant=1953&timeEnabled=true">Search for features
           in ch.swisstopo.lubis-luftbilder_farbe with time parameter (no  results)</a> <br>
           <a
-          href="rest/services/inspire/SearchServer?searchText=19&features=ch.swisstopo.lubis-luftbilder_farbe&type=featuresearch&bbox=540000,140000,560000,160000&timeInstant=1990&timeEnabled=true">Search for features
+          href="rest/services/inspire/SearchServer?searchText=19&features=ch.swisstopo.lubis-luftbilder_farbe&type=featuresearch&bbox=568465,187823,606865,201423&timeInstant=1998&timeEnabled=true">Search for features
           in ch.swisstopo.lubis-luftbilder_farbe
           with time parameter (several  results)</a> <br>
           <a href="rest/services/inspire/SearchServer?features=ch.bafu.hydrologie-gewaesserzustandsmessstationen&type=featuresearch&searchText=4331">Search for features using that matches a given searchText in their search fields</a> <br>
