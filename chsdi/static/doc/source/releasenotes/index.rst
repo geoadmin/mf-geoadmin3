@@ -1,3 +1,37 @@
+Release 20140709 - Wednesday, July 9th 2014
+============================================
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+-----------------------------------
+
+- Minor bug fixes
+
+`MAP <//map.geo.admin.ch>`__
+-----------------------------------
+
+- Minor bug fixes
+
+Geodata
+********
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Geologische Gutachten (Punkte) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-punkte>`__ (ch.swisstopo.geologie-gisgeol-punkte)                                                          |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Geologische Gutachten (Linien) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-linien>`__ (ch.swisstopo.geologie-gisgeol-linien)                                                          |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Geologische Gutachten (1x1km) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-flaechen-1x1km>`__ (ch.swisstopo.geologie-gisgeol-flaechen-1x1km)                                           |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Geologische Gutachten (0-10km2) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-flaechen-lt10km2>`__ (ch.swisstopo.geologie-gisgeol-flaechen-lt10km2)                                     |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Geologische Gutachten (10x10km) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-flaechen-10x10km>`__ (ch.swisstopo.geologie-gisgeol-flaechen-10x10km)                                     |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Geologische Gutachten (10-21000km2) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2>`__ (ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2)                       |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Geologische Gutachten (>21000km2) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2>`__ (ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2)                             |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
 Release 20140702 - Wednesday, July 2nd 2014
 ============================================
 
