@@ -25,34 +25,34 @@ No more than 50 features can be retrived per request.
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | Parameters                        | Description                                                                               |
 +===================================+===========================================================================================+
-| geometry (required)               | The geometry to identify on. The geometry is specified by the geometry type.              |
+| **geometry (required)**           | The geometry to identify on. The geometry is specified by the geometry type.              |
 |                                   | One can use both, the simple syntax (comma separated list) and the complex one            |
 |                                   | (`ESRI syntax for geometries                                                              |
 |                                   | <http://help.arcgis.com/en/arcgisserver/10.0/apis/rest/geometry.html>`_).                 |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
-| geometryType (required)           | The type of geometry to identify on. Possible values are:                                 |
+| **geometryType (required)**       | The type of geometry to identify on. Possible values are:                                 |
 |                                   | esriGeometryPoint or esriGeometryPolyline or esriGeometryPolygon or esriGeometryEnvelope. |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
-| layers (required)                 | The layer to perform the identify operation on. Only one layer can be requested at a time |
+| **layers (required)**             | The layer to perform the identify operation on. Only one layer can be requested at a time |
 |                                   | (notation: **all:{layerName}**).                                                          |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
-| mapExtent (required)              | The extent of the map (minx, miny, maxx, maxy).                                           |
+| **mapExtent (required)**          | The extent of the map (minx, miny, maxx, maxy).                                           |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
-| imageDisplay (required)           | The screen image display parameters (width, height and dpi) of the map.                   |
+| **imageDisplay (required)**       | The screen image display parameters (width, height and dpi) of the map.                   |
 |                                   | The mapExtent and the imageDisplay parameters are used by the server to calculate the     |
 |                                   | distance on the map to search based on the tolerance in screen pixels.                    |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
-| tolerance (required)              | The tolerance in pixels around the specified geometry. This parameter is used to create   |
+| **tolerance (required)**          | The tolerance in pixels around the specified geometry. This parameter is used to create   |
 |                                   | a buffer around the geometry. Therefore, a tolerance of 0 deactivates the buffer          |
 |                                   | creation.                                                                                 |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
-| returnGeometry (optional)         | This parameter defines whether the geometry is returned or not. Default to "true".        |
+| **returnGeometry (optional)**     | This parameter defines whether the geometry is returned or not. Default to "true".        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
-| geometryFormat (optional)         | Values: **interlis only for now!!**                                                       |
+| **geometryFormat (optional)**     | Values: **interlis only for now!!**                                                       |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
-| lang (optional)                   | The language (when available). Possible values: de (default), fr, it, rm, en.             |
+| **lang (optional)**               | The language (when available). Possible values: de (default), fr, it, rm, en.             |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
-| callback (optional)               | The name of the callback function.                                                        |
+| **callback (optional)**           | The name of the callback function.                                                        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 
 Examples
