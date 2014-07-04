@@ -12,7 +12,6 @@ Base = bases['bod']
 class Bod(object):
     __dbname__ = 'bod'
     layerBodId = Column('bod_layer_id', Text, primary_key=True)
-    id = Column('bgdi_id', Text)
     idGeoCat = Column('geocat_uuid', Text)
     name = Column('kurzbezeichnung', Text)
     fullName = Column('bezeichnung', Text)
@@ -32,18 +31,19 @@ class Bod(object):
     inspireUpperName = Column('inspire_oberthema_name', Text)
     inspireAbstract = Column('inspire_abstract', Text)
     inspireName = Column('inspire_name', Text)
-    bundCollectionNumber = Column('geobasisdatensatz_name', Text)
-    bundCollection = Column('fk_geobasisdaten_sammlung_bundesrecht', Text)
+    bundCollectionNumber = Column('fk_geobasisdaten_sammlung_bundesrecht', Text)
+    bundCollection = Column('geobasisdatensatz_name', Text)
     scaleLimit = Column('scale_limit', Text)
 
     def layerMetadata(self):
-        primaryAttr = ('id', 'layerBodId', 'idGeoCat', 'name', 'fullName')
+        primaryAttrs = ('layerBodId', 'idGeoCat', 'name', 'fullName')
+        excludedAttrs = ('staging', 'searchText')
         meta = {'attributes': {}}
         for k in self.__dict__.keys():
             if k != '_sa_instance_state':
-                if k in primaryAttr and self.__dict__[k] is not None:
+                if k in primaryAttrs and self.__dict__[k] is not None:
                     meta[k] = self.__dict__[k]
-                elif self.__dict__[k] is not None:
+                elif k not in excludedAttrs and self.__dict__[k] is not None:
                     meta['attributes'][k] = self.__dict__[k]
         return meta
 
