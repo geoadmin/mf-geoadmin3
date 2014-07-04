@@ -21,10 +21,11 @@
   ]);
 
   module.directive('gaSearch',
-      function($compile, $translate, $timeout, $rootScope, $http, gaMapUtils,
-        gaLayerMetadataPopup, gaPermalink, gaUrlUtils, gaGetCoordinate,
-        gaBrowserSniffer, gaLayerFilters, gaKml, gaPreviewLayers, gaLayers,
-        gaPreviewFeatures, gaMarkerOverlay, gaSwisssearch, gaDebounce) {
+      function($compile, $translate, $timeout, $rootScope, $http, $document,
+        gaMapUtils, gaLayerMetadataPopup, gaPermalink, gaUrlUtils,
+        gaGetCoordinate, gaBrowserSniffer, gaLayerFilters, gaKml,
+        gaPreviewLayers, gaLayers, gaPreviewFeatures, gaMarkerOverlay,
+        gaSwisssearch, gaDebounce) {
           var currentTopic,
               footer = [
             '<div class="ga-search-footer clearfix">',
@@ -51,7 +52,8 @@
             'body={{encodedPermalinkHref}}">',
             '<i class="icon-envelope-alt"></i>',
             '</a>',
-            '</div>'].join('');
+            '</div>'].join(''),
+            waitClass = 'ga-search-wait';
 
           var geojsonParser = new ol.format.GeoJSON();
 
@@ -102,6 +104,7 @@
                 parcel: 10,
                 sn25: 8
               };
+              var bodyEl = angular.element($document[0].body);
 
               var footerTemplate = angular.element(footer);
               $compile(footerTemplate)(scope);
@@ -144,6 +147,15 @@
               };
 
               scope.query = '';
+              scope.pendingRequests = 0;
+              scope.$watch('pendingRequests', function(newval) {
+                if (newval <= 0 ||
+                    scope.query === '') {
+                  bodyEl.removeClass(waitClass);
+                } else {
+                  bodyEl.addClass(waitClass);
+                }
+              });
 
               scope.layers = map.getLayers().getArray();
 
@@ -336,6 +348,10 @@
                         var center = [position[0], position[1]];
                         var extent = [center, center];
                         gaMarkerOverlay.add(map, center, extent, true);
+                      } else {
+                        scope.$apply(function() {
+                          scope.pendingRequests++;
+                        });
                       }
                       return !position;
                     },
@@ -373,7 +389,13 @@
                       scope.$apply(function() {
                         scope.layers = map.getLayers().getArray();
                       });
-                      return triggerFeatureSearch();
+                      if (!triggerFeatureSearch()) {
+                        return false;
+                      }
+                      scope.$apply(function() {
+                        scope.pendingRequests++;
+                      });
+                      return true;
                     },
                     replace: function(url, searchText) {
                       var queryText = '&searchText=' + searchText;
@@ -425,9 +447,15 @@
                   remote: {
                     url: options.searchUrl + 'type=layers',
                     beforeSend: function(jqXhr, settings) {
-                      return !gaGetCoordinate(
-                        map.getView().getProjection().getExtent(),
-                        scope.query);
+                      if (gaGetCoordinate(
+                            map.getView().getProjection().getExtent(),
+                            scope.query)) {
+                        return false;
+                      }
+                      scope.$apply(function() {
+                        scope.pendingRequests++;
+                      });
+                      return true;
                     },
                     replace: function(url, searchText) {
                       var queryText = '&searchText=' + searchText;
@@ -603,6 +631,9 @@
                     }
                     el.scrollTop(0);
                   }
+                }
+                if (scope.pendingRequests > 0) {
+                  scope.pendingRequests--;
                 }
                 gaSwisssearch.check();
               });
