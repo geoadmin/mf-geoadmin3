@@ -122,11 +122,11 @@ class Vector(GeoInterface):
 
     @classmethod
     def geometry_column(cls):
-        return cls.__table__.columns['the_geom']
+        return cls.__mapper__.columns['the_geom']
 
     def geometry_column_to_return(cls):
         geomColumnName = cls.__returnedGeometry__ if hasattr(cls, '__returnedGeometry__') else 'the_geom'
-        return cls.__table__.columns[geomColumnName]
+        return cls.__mapper__.columns[geomColumnName]
 
     @classmethod
     def primary_key_column(cls):
