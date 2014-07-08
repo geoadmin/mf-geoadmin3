@@ -461,7 +461,7 @@ URL
 Description
 ^^^^^^^^^^^
 
-The search service is separated in 3 different categories or types:
+The search service is separated in 4 various categories or types:
 
 * The **location search** which is composed of the following geocoded locations:
 
