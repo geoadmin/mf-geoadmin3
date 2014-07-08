@@ -129,13 +129,13 @@ Here is an example of response.
 
 Here is a description of the data one can find in the above response.
 
-- **layers:** a list of object litterals representing the layers
+- **layers**: a list of object litterals representing the layers
 
-  - **name:** the name of the layer (short name less than 30 characters)
-  - **fullName:** the layer's full name (not necessarly different from name)
-  - **idGeoCat:** the associated metadata id in `GeoCat  <http://www.geocat.ch/geonetwork/srv/eng/geocat>`_
-  - **layerBodId:** the technical name or BOD id
-- **attributes:** the metadata attributes associated to a given layer
+  - **name**: the name of the layer (short name less than 30 characters)
+  - **fullName**: the layer's full name (not necessarly different from name)
+  - **idGeoCat**: the associated metadata id in `GeoCat  <http://www.geocat.ch/geonetwork/srv/eng/geocat>`_
+  - **layerBodId**: the technical name or BOD id
+- **attributes**: the metadata attributes associated to a given layer
 
   - **wmsResource**: the WMS resource of the layer
   - **scaleLimit**: the scale at which the layer is valid
