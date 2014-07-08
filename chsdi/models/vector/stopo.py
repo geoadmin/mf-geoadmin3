@@ -1136,7 +1136,6 @@ class geometaStandAV(Base, Vector):
     quality = Column('quality', Text)
     frame = Column('frame', Text)
     the_geom = GeometryColumn('the_geom_gen50', Geometry(dimension=2, srid=21781))
-    not_used = GeometryColumn('the_geom', Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo-vd.geometa-standav', geometaStandAV)
 
@@ -1159,7 +1158,6 @@ class geometaLos(Base, Vector):
     frame = Column('frame', Text)
     bgdi_created = Column('bgdi_created', Text)
     the_geom = GeometryColumn('the_geom_gen50', Geometry(dimension=2, srid=21781))
-    not_used = GeometryColumn('the_geom', Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo-vd.geometa-los', geometaLos)
 
@@ -1181,7 +1179,6 @@ class geometaGemeinde(Base, Vector):
     abgabestelle = Column('abgabestelle', Text)
     bgdi_created = Column('bgdi_created', Text)
     the_geom = GeometryColumn('the_geom_gen50', Geometry(dimension=2, srid=21781))
-    not_used = GeometryColumn('the_geom', Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo-vd.geometa-gemeinde', geometaGemeinde)
 
@@ -1203,7 +1200,6 @@ class geometaGrundbuch(Base, Vector):
     email = Column('email', Text)
     bgdi_created = Column('bgdi_created', Text)
     the_geom = GeometryColumn('the_geom_gen50', Geometry(dimension=2, srid=21781))
-    not_used = GeometryColumn('the_geom', Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo-vd.geometa-grundbuch', geometaGrundbuch)
 
@@ -1221,7 +1217,6 @@ class geometaNfgeom(Base, Vector):
     email = Column('email', Text)
     bgdi_created = Column('bgdi_created', Text)
     the_geom = GeometryColumn('the_geom_gen50', Geometry(dimension=2, srid=21781))
-    not_used = GeometryColumn('the_geom', Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo-vd.geometa-nfgeom', geometaNfgeom)
 
