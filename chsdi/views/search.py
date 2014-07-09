@@ -68,7 +68,6 @@ class Search(SearchValidation):
             )
             self._feature_search()
         if self.typeInfo == 'locations':
-            # search all features with text and bounding box
             self.searchText = format_search_text(
                 self.request.params.get('searchText')
             )
@@ -94,22 +93,7 @@ class Search(SearchValidation):
             raise exc.HTTPGatewayTimeout()
         temp = temp['matches'] if temp is not None else temp
         if temp is not None and len(temp) != 0:
-            nb_address = 0
-            for res in temp:
-                origin = res['attrs']['origin']
-                res['attrs']['layerBodId'] = self._origin_to_layerbodid(origin)
-                if 'feature_id' in res['attrs']:
-                    res['attrs']['featureId'] = res['attrs']['feature_id']
-                    res['attrs'].pop('feature_id', None)
-                if origin == 'address':
-                    if nb_address < 20:
-                        if not (self.varnish_authorized and self.returnGeometry):
-                            if 'geom_st_box2d' in res['attrs']:
-                                del res['attrs']['geom_st_box2d']
-                        self.results['results'].append(res)
-                        nb_address += 1
-                else:
-                    self.results['results'].append(res)
+            self._parse_location_results(temp)
 
     def _layer_search(self):
         # 10 features per layer are returned at max
@@ -308,6 +292,24 @@ class Search(SearchValidation):
                     self.sphinx.SetFilterRange('year', int(min(timeFilter)), int(max(timeFilter)))
             i += 1
             self.sphinx.AddQuery(queryText, index=str(index))
+
+    def _parse_location_results(self, results):
+        nb_address = 0
+        for res in results:
+            origin = res['attrs']['origin']
+            res['attrs']['layerBodId'] = self._origin_to_layerbodid(origin)
+            if 'feature_id' in res['attrs']:
+                res['attrs']['featureId'] = res['attrs']['feature_id']
+                res['attrs'].pop('feature_id', None)
+            if origin == 'address':
+                if nb_address < 20:
+                    if not (self.varnish_authorized and self.returnGeometry):
+                        if 'geom_st_box2d' in res['attrs']:
+                            del res['attrs']['geom_st_box2d']
+                    self.results['results'].append(res)
+                    nb_address += 1
+            else:
+                self.results['results'].append(res)
 
     def _parse_feature_results(self, results):
         for i in range(0, len(results)):
