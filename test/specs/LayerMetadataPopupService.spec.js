@@ -28,7 +28,7 @@ describe('ga_layer_metadata_popup_service', function() {
 
     var expectedUrlLegend = 'http://legendservice.com/sometopic/somelayer?lang=somelang';
     $httpBackend.whenGET(expectedUrlLegend).respond('<div>Some raw html</div>');
-    gaLayerMetadataPopup('somelayer');
+    gaLayerMetadataPopup.toggle('somelayer');
     $rootScope.$digest();
     $httpBackend.flush();
 
@@ -36,9 +36,10 @@ describe('ga_layer_metadata_popup_service', function() {
     expect(popupLegend.length).to.be(1);
     expect(popupLegend.parents().length).to.be(2);
     expect(popupLegend.css('display')).to.be('block');
-    expect(popupLegend.find('.ga-popup-content').html()).to.be('<div class="ng-scope">Some raw html</div>');
+    var popupContent = '<div>Some raw html</div>';
+    expect(popupLegend.find('.ga-popup-content').html().indexOf(popupContent) > -1).to.be(true);
 
-    gaLayerMetadataPopup('somelayer');
+    gaLayerMetadataPopup.toggle('somelayer');
     $rootScope.$digest();
 
     // We don't create a new one because we have the same id
@@ -47,16 +48,31 @@ describe('ga_layer_metadata_popup_service', function() {
     expect(popupLegend.css('display')).to.be('none');
 
     //With a new url -> request and a new popup
-    gaLayerMetadataPopup('somelayer');
+    gaLayerMetadataPopup.toggle('somelayer');
     $rootScope.$digest();
 
     popupLegend = $('.ga-tooltip-metadata');
     expect(popupLegend.length).to.be(1);
     expect(popupLegend.css('display')).to.be('block');
 
-    var newExpectedUrlLegend = 'http://legendservice.com/sometopic/somenewlayer?lang=somelang';
-    $httpBackend.whenGET(newExpectedUrlLegend).respond('<div>Some new raw html</div>');
-    gaLayerMetadataPopup('somenewlayer');
+    expectedUrlLegend = 'http://legendservice.com/sometopic/somenewlayer?lang=somelang';
+    $httpBackend.whenGET(expectedUrlLegend).respond('<div>Some new raw html</div>');
+    gaLayerMetadataPopup.toggle('somenewlayer');
+    $rootScope.$digest();
+    $httpBackend.flush();
+
+    popupLegend = $('.ga-tooltip-metadata');
+    expect(popupLegend.length).to.be(2);
+
+    // 2 popups so far, on translation end -> 2 new requests
+    var expectedUrlLayersConfig = 'http://example.com/sometopic?lang=someotherlang';
+    $httpBackend.whenGET(expectedUrlLayersConfig).respond({});
+    $translate.uses('someotherlang');
+
+    expectedUrlLegend = 'http://legendservice.com/sometopic/somelayer?lang=someotherlang';
+    $httpBackend.whenGET(expectedUrlLegend).respond('<div>Some translated raw html</div>');
+    expectedUrlLegend = 'http://legendservice.com/sometopic/somenewlayer?lang=someotherlang';
+    $httpBackend.whenGET(expectedUrlLegend).respond('<div>Some translated new raw html</div>');
     $rootScope.$digest();
     $httpBackend.flush();
 
