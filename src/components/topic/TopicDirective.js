@@ -99,7 +99,7 @@
 
             $rootScope.$on('gaNetworkStatusChange', function(evt, offline) {
               // When page is loaded directly in  offline mode we use the
-              // default (ech) topic, so when we are pass in online mode
+              // default (ech) topic, so when we go back to online mode
               // we must reload the correct topic. The event reload the catalog
               // too.
               if (!offline) {

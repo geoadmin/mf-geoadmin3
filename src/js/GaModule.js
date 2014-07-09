@@ -11,6 +11,7 @@
   goog.require('ga_help');
   goog.require('ga_map');
   goog.require('ga_mouseposition');
+  goog.require('ga_offline');
   goog.require('ga_popup');
   goog.require('ga_share');
   goog.require('ga_scaleline');
@@ -67,6 +68,7 @@
     'ga_help',
     'ga_map',
     'ga_mouseposition',
+    'ga_offline',
     'ga_popup',
     'ga_share',
     'ga_scaleline',

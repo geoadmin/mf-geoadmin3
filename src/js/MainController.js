@@ -3,73 +3,71 @@
 
   goog.require('ga_map');
   goog.require('ga_networkstatus_service');
+  goog.require('ga_storage_service');
 
 
   var module = angular.module('ga_main_controller', [
     'pascalprecht.translate',
     'ga_map',
-    'ga_networkstatus_service'
+    'ga_networkstatus_service',
+    'ga_storage_service'
   ]);
-
-  function createMap() {
-    var swissExtent = [420000, 30000, 900000, 350000];
-    var swissProjection = ol.proj.configureProj4jsProjection({
-      code: 'EPSG:21781',
-      extent: swissExtent
-    });
-
-    var resolutions = [650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0, 2.5,
-      2.0, 1.0, 0.5, 0.25, 0.1];
- 
-    var map = new ol.Map({
-      controls: ol.control.defaults({
-        attribution: false,
-        rotate: false,
-        zoomOptions: {
-          zoomInLabel: '',
-          zoomOutLabel: '',
-          zoomInTipLabel: '',
-          zoomOutTipLabel: ''
-        }
-      }),
-      interactions: ol.interaction.defaults({
-        altShiftDragRotate: true,
-        touchRotate: false,
-        keyboard: false
-      }).extend([
-        new ol.interaction.DragZoom()
-      ]),
-      renderer: 'canvas',
-      view: new ol.View2D({
-        projection: swissProjection,
-        center: ol.extent.getCenter(swissExtent),
-        extent: swissExtent,
-        resolution: 500.0,
-        resolutions: resolutions
-      }),
-      ol3Logo: false
-    });
-   
-    var dragClass = 'ga-dragging';
-    var viewport = $(map.getViewport());
-    map.on('dragstart', function() {
-      viewport.addClass(dragClass);
-    });
-    map.on('dragend', function() {
-      viewport.removeClass(dragClass);
-    });
-
-    return map;
-  }
 
   /**
    * The application's main controller.
    */
-module.controller('GaMainController',
-  function($scope, $rootScope, $translate, $timeout, $window,  gaPermalink,
-    gaBrowserSniffer, gaNetworkStatus, gaLayersPermalinkManager, 
-    gaFeaturesPermalinkManager) {
-     
+  module.controller('GaMainController',
+    function($rootScope, $scope, $timeout, $translate, $window, gaBrowserSniffer,
+        gaFeaturesPermalinkManager, gaLayersPermalinkManager, gaMapUtils,
+        gaNetworkStatus, gaPermalink, gaStorage) {
+
+      var createMap = function() {
+        var swissProjection = ol.proj.configureProj4jsProjection({
+          code: 'EPSG:21781',
+          extent: gaMapUtils.swissExtent
+        });
+
+        var map = new ol.Map({
+          controls: ol.control.defaults({
+            attribution: false,
+            rotate: false,
+            zoomOptions: {
+              zoomInLabel: '',
+              zoomOutLabel: '',
+              zoomInTipLabel: '',
+              zoomOutTipLabel: ''
+            }
+          }),
+          interactions: ol.interaction.defaults({
+            altShiftDragRotate: true,
+            touchRotate: false,
+            keyboard: false
+          }).extend([
+            new ol.interaction.DragZoom()
+          ]),
+          renderer: 'canvas',
+          view: new ol.View2D({
+            projection: swissProjection,
+            center: ol.extent.getCenter(gaMapUtils.swissExtent),
+            extent: gaMapUtils.swissExtent,
+            resolution: 500.0,
+            resolutions: gaMapUtils.viewResolutions
+          }),
+          ol3Logo: false
+        });
+
+        var dragClass = 'ga-dragging';
+        var viewport = $(map.getViewport());
+        map.on('dragstart', function() {
+          viewport.addClass(dragClass);
+        });
+        map.on('dragend', function() {
+          viewport.removeClass(dragClass);
+        });
+
+        return map;
+      }
+
       // Determines if the window has a height <= 550
       var isWindowTooSmall = function() {
         return ($($window).height() <= 550);
@@ -77,7 +75,7 @@ module.controller('GaMainController',
 
       var mobile = (gaBrowserSniffer.mobile) ? 'false' : 'true',
         dismiss = 'none';
-
+  
       // The main controller creates the OpenLayers map object. The map object
       // is central, as most directives/components need a reference to it.
       $scope.map = createMap();
@@ -138,13 +136,13 @@ module.controller('GaMainController',
       $timeout(function() {
         $scope.globals.homescreen = gaBrowserSniffer.ios &&
           !gaBrowserSniffer.iosChrome &&
-          !($window.localStorage.getItem('homescreen') == dismiss) &&
+          !(gaStorage.getItem('homescreen') == dismiss) &&
           !$window.navigator.standalone;
         $scope.$watch('globals.homescreen', function(newVal) {
           if (newVal == true) {
             return;
           }
-          $window.localStorage.setItem('homescreen', dismiss);
+          gaStorage.setItem('homescreen', dismiss);
         });
       }, 2000);
      
@@ -203,12 +201,14 @@ module.controller('GaMainController',
         $('#selectionHeading').addClass('collapsed');
       });
 
-      // Browser downloaded a new app cache.
-      window.applicationCache.addEventListener('updateready', function(e) {
-        if (confirm($translate('appcache_update_available'))) {
-          window.location.reload();
-        }
-      });
+      // An appcache update is available.
+      if (window.applicationCache) { // IE9
+        window.applicationCache.addEventListener('updateready', function(e) {
+          if (confirm($translate('appcache_update_available'))) {
+            window.location.reload();
+          }
+        });
+      }
   });
-
 })();
+

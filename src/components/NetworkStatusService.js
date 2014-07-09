@@ -84,9 +84,11 @@
 
       // The manifest returns 404 or 410, the download failed,
       // or the manifest changed while the download was in progress.
-      window.applicationCache.addEventListener('error', function() {
-        net.check();
-      }, false);
+      if (window.applicationCache) { // IE9
+        window.applicationCache.addEventListener('error', function() {
+          net.check();
+        }, false);
+      }
 
       // airplane mode, works offline(firefox)
       window.addEventListener('offline', function() {

@@ -19,6 +19,13 @@
             return (!!url && url.length > 0 && URL_REGEXP.test(url));
         };
 
+        this.transformIfAgnostic = function(url) {
+          if (/^\/\//.test(url)) {
+            url = location.protocol + url;
+          }
+          return url;
+        };
+
         this.getHostname = function(str) {
           return decodeURIComponent(str).match(/:\/\/(.[^/]+)/)[1].toString();
         };

@@ -133,7 +133,7 @@
         </div>
       </form>
 % endif
-    <div class="alert alert-danger"><strong>Sorry buddy</strong>, it seems you're offline !!!!</div>
+    <div class="alert alert-danger" translate>offline_sorry</div>
     </div> <!-- #header -->
 
     <div tabindex="1" ga-map ga-map-map="map">
@@ -151,12 +151,17 @@
         </div> 
         <div ga-rotate ga-rotate-map="map"></div>
       </div>
+      <div ga-offline-bt></div>
       <div ga-swipe 
            ga-swipe-map="map" 
            ga-swipe-active="globals.isSwipeActive"
            style="display:none;">
       </div>
     </div> <!-- #map -->
+
+    <div ga-offline-selector
+         ga-offline-selector-map="map">
+    </div>
 
 
     <div id="footer" class="navbar navbar-fixed-bottom">
@@ -403,6 +408,9 @@
         </span>
       </button>
     </div> <!-- #pulldown -->
+
+    <!-- offline dialog -->
+    <div ga-offline-menu ga-offline-menu-map="map"></div>
 
     <!-- feedback dialog -->
     <div ng-if="!globals.offline" ng-controller="GaFeedbackController" class="modal-container">

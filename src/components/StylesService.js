@@ -69,12 +69,19 @@
         })
       })
     });
+    var offlineStyle = new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: [255, 0, 0, 0.9],
+        width: 3
+      })
+    });
 
     var styles = {
       'select': selectStyle,
       'highlight': hlStyle,
       'selectrectangle': srStyle,
-      'geolocation': geolocationStyle
+      'geolocation': geolocationStyle,
+      'offline': offlineStyle
     };
 
     this.$get = function() {

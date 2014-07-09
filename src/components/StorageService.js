@@ -23,7 +23,9 @@
    */
   module.provider('gaStorage', function() {
 
-    // Compress/decompress functions to utf-16, comes form ftlabs
+    // Compress/decompress functions to utf-16, comes form ftlabs:
+    // http://labs.ft.com/2012/06/text-re-encoding-for-optimising-storage-
+    // capacity-in-the-browser/
     // Reduce by 50% the size of base 64 string.
     var compress = function(s) {
       if (!s) {
@@ -56,60 +58,57 @@
     };
     var isInitialized = false;
 
-    this.$get = function(gaBrowserSniffer) {
+    this.$get = function($window, gaBrowserSniffer) {
       var Storage = function() {
 
         // Initialize the database config, needed when using webSQL to avoid ios
         // prompts when db becomes bigger.
-        // Returns true the db has been initialized false otherwise.
         this.init = function() {
           if (!isInitialized) {
-            window.localforage.config({
+            $window.localforage.config({
               name: 'map.geo.admin.ch',
               storeName: 'ga',
               size: 50 * 1024 * 1024, // Only use by webSQL
               version: (gaBrowserSniffer.msie) ? 1 : '1.0',
               description: 'Storage for map.geo.admin.ch'
             });
-            if (gaBrowserSniffer.mobile) {
-              window.localforage.setDriver('webSQLStorage');
+            // Firefox and IE don't manage webSQL.
+            if (gaBrowserSniffer.mobile && gaBrowserSniffer.webkit) {
+              $window.localforage.setDriver('webSQLStorage');
             }
             isInitialized = true;
-            return true;
           }
-          return false;
         };
 
         // Strings management
         this.getItem = function(key) {
-          return window.localStorage.getItem(key);
+          return $window.localStorage.getItem(key);
         };
         this.setItem = function(key, data) {
-          window.localStorage.setItem(key, data);
+          $window.localStorage.setItem(key, data);
         };
         this.removeItem = function(key) {
-          window.localStorage.removeItem(key);
+          $window.localStorage.removeItem(key);
         };
 
         // Tiles management
         // TODO: localforage can use promise but it doesn't seem to work for
         // now
         this.getTile = function(key, callback) {
-          if (!isInitialized) {return callback(null);}
-          window.localforage.getItem(key, function(compressedBase64) {
-            callback(decompress(compressedBase64));
+          if (!isInitialized) {
+            return callback(null);
+          }
+          $window.localforage.getItem(key, function(compressedDataURI) {
+            callback(decompress(compressedDataURI));
           });
         };
-        this.setTile = function(key, base64, callback) {
+        this.setTile = function(key, dataURI, callback) {
           this.init();
-          window.localforage.setItem(key, compress(base64), callback);
-        };
-        this.removeTile = function(key, callback) {
-          window.localforage.removeItem(key, callback);
+          $window.localforage.setItem(key, compress(dataURI), callback);
         };
         this.clearTiles = function(callback) {
           this.init();
-          window.localforage.clear(callback);
+          $window.localforage.clear(callback);
         };
       };
       return new Storage();
