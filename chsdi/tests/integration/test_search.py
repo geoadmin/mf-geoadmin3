@@ -5,6 +5,9 @@ from chsdi.tests.integration import TestsBase
 
 class TestSearchServiceView(TestsBase):
 
+    def test_no_type(self):
+        resp = self.testapp.get('/rest/services/inspire/SearchServer', params={'searchText': 'ga'}, status=400)
+
     def test_search_layers(self):
         resp = self.testapp.get('/rest/services/inspire/SearchServer', params={'searchText': 'wand', 'type': 'layers'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
@@ -157,6 +160,22 @@ class TestSearchServiceView(TestsBase):
         resp = self.testapp.get('/rest/services/inspire/SearchServer', params=params, status=200)
         self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'parcel')
 
+    def test_search_locations_with_bbox(self):
+        params = {'type': 'locations', 'searchText': 'buechli tegerfelden', 'bbox': '664126,268543,664126,268543'}
+        resp = self.testapp.get('/rest/services/inspire/SearchServer', params=params, status=200)
+        self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'buechli  5306 tegerfelden 4320 tegerfelden ch ag')
+        self.failUnless(len(resp.json['results']) == 1)
+
+    def test_search_locations_bbox_only(self):
+        params = {'type': 'locations', 'bbox': '664126,268543,664126,268543'}
+        resp = self.testapp.get('/rest/services/inspire/SearchServer', params=params, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless(len(resp.json['results']) > 1)
+
+    def test_search_locations_noparams(self):
+        params = {'type': 'locations'}
+        resp = self.testapp.get('/rest/services/inspire/SearchServer', params=params, status=400)
+
     def test_features_bbox(self):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'features': 'ch.astra.ivs-reg_loc', 'type': 'featureidentify', 'bbox': '551306.5625,167918.328125,551754.125,168514.625'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
@@ -185,7 +204,7 @@ class TestSearchServiceView(TestsBase):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'featuresearch', 'bbox': '542200,206800,542200,206800', 'timeInstant': '1952.00'}, status=400)
 
     def test_featuressearch_geodist(self):
-        resp = self.testapp.get('/rest/services/all/SearchServer', params={'searchText': 'gen', 'features': 'ch.babs.kulturgueter', 'type': 'featuresearch', 'bbox': '688290,166864,688309,166884'})
+        resp = self.testapp.get('/rest/services/all/SearchServer', params={'features': 'ch.babs.kulturgueter', 'type': 'featureidentify', 'bbox': '688290,166864,688309,166884'})
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(len(resp.json['results']) == 1)
         self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'feature')
