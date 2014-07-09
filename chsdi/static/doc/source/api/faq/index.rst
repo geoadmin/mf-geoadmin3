@@ -175,7 +175,7 @@ The parameters for the tiles are the following:
 
  * **Coordinate system**: EPSG:21781
 
-For practical information on how to use the tiles, see our description of the :ref:`wmts_description` service.
+For practical information on how to use the tiles, see our description of the `WMTS <../../services/sdiservices.html#wmts>`_ service.
 
 Where is the source code ?
 --------------------------
