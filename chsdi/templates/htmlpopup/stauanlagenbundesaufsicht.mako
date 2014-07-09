@@ -47,11 +47,11 @@
             <td>${c['attributes']['reservoirname']}</td>
         </tr>
         <tr>
-            <th class="cell-left">${_('tt_ch.bfe.stauanlagen-bundesaufsicht_stauraumvolume')} [10<sup>6</sup> m<sup>3</sup>]</th>
+            <th class="cell-left">${_('tt_ch.bfe.stauanlagen-bundesaufsicht_stauraumvolume')} [Mio m<sup>3</sup>]</th>
             <td>${c['attributes']['impoundmentvolume']}</td>
         </tr>
         <tr>
-            <th class="cell-left">${_('tt_ch.bfe.stauanlagen-bundesaufsicht_stauzielskote')} [m]</th>
+            <th class="cell-left">${_('tt_ch.bfe.stauanlagen-bundesaufsicht_stauzielskote')} [${_('abk_meter_ueber_meer')}]</th>
             <td>${c['attributes']['impoundmentlevel']}</td>
         </tr>
         <tr>
@@ -70,7 +70,7 @@
             <td>${c['attributes']['damheight']}</td>
         </tr>
         <tr>
-            <th class="cell-left">${_('tt_ch.bfe.stauanlagen-bundesaufsicht_crestlevel')} [m]</th>
+            <th class="cell-left">${_('tt_ch.bfe.stauanlagen-bundesaufsicht_crestlevel')} [${_('abk_meter_ueber_meer')}]</th>
             <td>${c['attributes']['crestlevel']}</td>
         </tr>
         <tr>
