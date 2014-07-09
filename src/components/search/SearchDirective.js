@@ -158,7 +158,7 @@
               };
 
               scope.getLegend = function(ev, bodId) {
-                gaLayerMetadataPopup(bodId);
+                gaLayerMetadataPopup.toggle(bodId);
                 ev.stopPropagation();
               };
 
