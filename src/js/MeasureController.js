@@ -2,16 +2,18 @@
   goog.provide('ga_measure_controller');
 
   goog.require('ga_urlutils_service');
+  goog.require('ga_waitcursor_service');
 
   var module = angular.module('ga_measure_controller', [
     'ga_urlutils_service',
+    'ga_waitcursor_service',
     'pascalprecht.translate'
   ]);
 
   module.controller('GaMeasureController',
-      function($scope, $translate, gaGlobalOptions, $http, $rootScope, gaUrlUtils, $document) {
+      function($scope, $translate, $http, $rootScope,
+          gaGlobalOptions, gaUrlUtils, gaWaitCursor) {
         $scope.options = {
-          waitClass: 'ga-measure-wait',
           isProfileActive: false,
           profileUrl: gaGlobalOptions.mapUrl + '/rest/services/profile.json',
           profileOptions: {
@@ -99,7 +101,6 @@
           }
         })();
         
-        var bodyEl = angular.element($document[0].body);
         var isProfileCreated = false;
         var createProfile = function(feature, callback) {
           var coordinates = feature.getGeometry().getCoordinates();
@@ -119,7 +120,7 @@
           http.error(function(data, status) {
             // Display an empty profile
             callback([{alts:{COMB: 0}, dist: 0}], status);
-            bodyEl.removeClass($scope.options.waitClass);
+            gaWaitCursor.remove();
           });;
         };
 
