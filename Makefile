@@ -128,6 +128,9 @@ updateol: .build-artefacts/ol3 .build-artefacts/ol-requirements-installation.tim
 	git show; \
 	cat ../../scripts/ga-ol3-feature.exports >> src/ol/feature.js; \
 	cat ../../scripts/ga-ol3-source.exports >> src/ol/source/source.js; \
+	cat ../../scripts/ga-ol3-tilecoord.exports >> src/ol/tilecoord.js; \
+	cat ../../scripts/ga-ol3-tilegrid.exports >> src/ol/tilegrid/tilegrid.js; \
+	cat ../../scripts/ga-ol3-tilerange.exports >> src/ol/tilerange.js; \
 	npm install; \
 	../python-venv/bin/python build.py $(addprefix build/,$(OL_JS)); \
 	cd ../../; \
@@ -161,7 +164,7 @@ prd/lib/: src/lib/d3-3.3.1.min.js src/lib/angularIE9CorsFix.js src/lib/jQuery.XD
 	mkdir -p $@
 	cp $^ $@
 
-prd/lib/build.js: src/lib/jquery-2.0.3.min.js src/lib/bootstrap-3.0.0.min.js src/lib/typeahead-0.9.3.min.js src/lib/angular-1.2.9.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/EPSG2056.js src/lib/EPSG32631.js src/lib/EPSG32632.js .build-artefacts/MGRS.min.js src/lib/ol.js src/lib/angular-animate-1.2.9.min.js src/lib/angular-translate-1.1.1.min.js src/lib/angular-translate-loader-static-files-0.1.5.min.js .build-artefacts/fastclick.min.js .build-artefacts/app.js
+prd/lib/build.js: src/lib/jquery-2.0.3.min.js src/lib/bootstrap-3.0.0.min.js src/lib/typeahead-0.9.3.min.js src/lib/angular-1.2.9.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/EPSG2056.js src/lib/EPSG32631.js src/lib/EPSG32632.js .build-artefacts/MGRS.min.js src/lib/ol.js src/lib/angular-animate-1.2.9.min.js src/lib/angular-translate-1.1.1.min.js src/lib/angular-translate-loader-static-files-0.1.5.min.js .build-artefacts/fastclick.min.js .build-artefacts/app.js 
 	mkdir -p $(dir $@)
 	cat $^ | sed 's/^\/\/[#,@] sourceMappingURL=.*//' > $@
 

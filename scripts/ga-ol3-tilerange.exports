@@ -1,0 +1,39 @@
+/**
+ * @return {number} Min X
+ */
+ol.TileRange.prototype.getMinX = function() {
+  return this.minX;
+}
+goog.exportProperty(ol.TileRange.prototype, 'getMinX',
+    ol.TileRange.prototype.getMinX);
+
+
+/**
+ * @return {number} Max X
+ */
+ol.TileRange.prototype.getMaxX = function() {
+  return this.maxX;
+}
+goog.exportProperty(ol.TileRange.prototype, 'getMaxX',
+    ol.TileRange.prototype.getMaxX);
+
+
+/**
+ * @return {number} Min Y
+ */
+ol.TileRange.prototype.getMinY = function() {
+  return this.minY;
+}
+goog.exportProperty(ol.TileRange.prototype, 'getMinY',
+    ol.TileRange.prototype.getMinY);
+
+
+/**
+ * @return {number} Max Y
+ */
+ol.TileRange.prototype.getMaxY = function() {
+  return this.maxY;
+}
+goog.exportProperty(ol.TileRange.prototype, 'getMaxY',
+    ol.TileRange.prototype.getMaxY);
+
