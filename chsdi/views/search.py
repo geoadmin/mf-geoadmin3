@@ -96,26 +96,19 @@ class Search(SearchValidation):
         if temp is not None and len(temp) != 0:
             nb_address = 0
             for res in temp:
+                origin = res['attrs']['origin']
+                res['attrs']['layerBodId'] = self._origin_to_layerbodid(origin)
                 if 'feature_id' in res['attrs']:
                     res['attrs']['featureId'] = res['attrs']['feature_id']
                     res['attrs'].pop('feature_id', None)
-                if res['attrs']['origin'] == 'address':
-                    res['attrs']['layerBodId'] = 'ch.bfs.gebaeude_wohnungs_register'
+                if origin == 'address':
                     if nb_address < 20:
                         if not (self.varnish_authorized and self.returnGeometry):
-                            if 'geom_st_box2d' in res['attrs'].keys():
+                            if 'geom_st_box2d' in res['attrs']:
                                 del res['attrs']['geom_st_box2d']
                         self.results['results'].append(res)
                         nb_address += 1
                 else:
-                    if res['attrs']['origin'] == 'zipcode':
-                        res['attrs']['layerBodId'] = 'ch.swisstopo-vd.ortschaftenverzeichnis_plz'
-                    elif res['attrs']['origin'] == 'gg25':
-                        res['attrs']['layerBodId'] = 'ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill'
-                    elif res['attrs']['origin'] == 'district':
-                        res['attrs']['layerBodId'] = 'ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill'
-                    elif res['attrs']['origin'] == 'kantone':
-                        res['attrs']['layerBodId'] = 'ch.swisstopo.swissboundaries3d-kanton-flaeche.fill'
                     self.results['results'].append(res)
 
     def _layer_search(self):
@@ -258,15 +251,28 @@ class Search(SearchValidation):
 
         return finalQuery
 
+    def _origin_to_layerbodid(self, origin):
+        origins2LayerBodId = {
+            'zipcode':    'ch.swisstopo-vd.ortschaftenverzeichnis_plz',
+            'gg25':       'ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill',
+            'district':   'ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill',
+            'kantone':    'ch.swisstopo.swissboundaries3d-kanton-flaeche.fill',
+            'address':    'ch.bfs.gebaeude_wohnungs_register'
+        }
+        if origin in origins2LayerBodId:
+            return origins2LayerBodId[origin]
+        else:
+            return ''
+
     def _origins_to_ranks(self, origins):
         origin2Rank = {
-            'zipcode': 1,
-            'gg25': 2,
-            'district': 3,
-            'kantone': 4,
-            'sn25': 5,
-            'address': 6,
-            'parcel': 10
+            'zipcode':    1,
+            'gg25':       2,
+            'district':   3,
+            'kantone':    4,
+            'sn25':       5,
+            'address':    6,
+            'parcel':     10
         }
         buildRanksList = lambda x: origin2Rank[x]
         try:
