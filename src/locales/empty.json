@@ -233,5 +233,8 @@
   "topic_inspire_tooltip": "",
   "topic_ech_tooltip": "",
   "bg_pixel_color": "",
-  "bg_pixel_grey": ""
+  "bg_pixel_grey": "",
+  "feedback_attachment": "",
+  "feedback_placeholder": "",
+  "feedback_unsupported_format": ""
 }
