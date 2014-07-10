@@ -359,6 +359,9 @@ msgstr "Nome"
 msgid "band_1_2"
 msgstr "Volume 1 | 2"
 
+msgid "basis"
+msgstr "Base(i)"
+
 msgid "bazlrechtstatus"
 msgstr "Status giuridico"
 
@@ -833,7 +836,7 @@ msgstr "Prati naturali:+; prati artificiali, cerealicoltura: +/-; pascolo bestia
 msgid "ch.are"
 msgstr "ARE"
 
-msgid "ch.are.agglomerationen_isolierte_staedte-2000"
+msgid "ch.are.agglomerationen_isolierte_staedte"
 msgstr "Agglomerati e cittá isolate"
 
 msgid "ch.are.alpenkonvention"
@@ -854,10 +857,10 @@ msgstr "Traffico viaggiatori 2008"
 msgid "ch.are.belastung-personenverkehr-strasse-2008"
 msgstr "Traffico viaggiatori 2008"
 
-msgid "ch.are.beschaeftigtendichte-bz08"
+msgid "ch.are.beschaeftigtendichte"
 msgstr "Densità di impieghi 2008"
 
-msgid "ch.are.bevoelkerungsdichte-vz00"
+msgid "ch.are.bevoelkerungsdichte"
 msgstr "Densità di popolazione 2000"
 
 msgid "ch.are.gemeindetyp-1990-9klassen"
@@ -869,14 +872,17 @@ msgstr "Tipologia dei comuni ARE"
 msgid "ch.are.gueteklassen_oev"
 msgstr "Classi di collegamento dei TP ARE"
 
+msgid "ch.are.kt"
+msgstr "ARE + cantone"
+
 msgid "ch.are.landschaftstypen"
-msgstr "Typologie des paysages suisses"
+msgstr "Tipologia de paesaggi svizzeri"
 
-msgid "ch.are.reisezeit_miv-2005"
-msgstr "Temps de parcours en TIM vers un centre 2005"
+msgid "ch.are.reisezeit-miv"
+msgstr "Tempo di viaggio TIM 2005"
 
-msgid "ch.are.reisezeit_oev-2005"
-msgstr "Temps de parcours en TP 2005"
+msgid "ch.are.reisezeit-oev"
+msgstr "Tempo di viaggio con TP 2005"
 
 msgid "ch.are.url"
 msgstr "http://www.are.admin.ch/index.html?lang=it"
@@ -907,6 +913,9 @@ msgstr "IVS Regionali e locali"
 
 msgid "ch.astra.ivs-reg_loc.sub"
 msgstr "IVS Regionali e locali"
+
+msgid "ch.astra.kt"
+msgstr "USTRA + cantone"
 
 msgid "ch.astra.strassenverkehrszaehlung_messstellen-regional_lokal"
 msgstr "Circolazione stradale (regionale)"
@@ -950,11 +959,20 @@ msgstr "Anfibi oggetti fissi"
 msgid "ch.bafu.bundesinventare-amphibien_anhang4"
 msgstr "Anfibi allegato 4"
 
+msgid "ch.bafu.bundesinventare-amphibien_anhoerung"
+msgstr "Batraciens consultation 2014"
+
 msgid "ch.bafu.bundesinventare-amphibien_wanderobjekte"
 msgstr "Anfibi oggetti mobili"
 
+msgid "ch.bafu.bundesinventare-amphibien_wanderobjekte_anhoerung"
+msgstr "Batraciens objets itinérants 2014"
+
 msgid "ch.bafu.bundesinventare-auen"
 msgstr "Zone golenali"
+
+msgid "ch.bafu.bundesinventare-auen_anhoerung"
+msgstr "Zones alluviales consultation 2014"
 
 msgid "ch.bafu.bundesinventare-bln"
 msgstr "IFP"
@@ -962,11 +980,17 @@ msgstr "IFP"
 msgid "ch.bafu.bundesinventare-flachmoore"
 msgstr "Paludi"
 
+msgid "ch.bafu.bundesinventare-flachmoore_anhoerung"
+msgstr "Bas-marais consultation 2014"
+
 msgid "ch.bafu.bundesinventare-flachmoore_regional"
 msgstr "Paludi regionali"
 
 msgid "ch.bafu.bundesinventare-hochmoore"
 msgstr "Torbiere alte"
+
+msgid "ch.bafu.bundesinventare-hochmoore_anhoerung"
+msgstr "Hauts-marais consultation 2014"
 
 msgid "ch.bafu.bundesinventare-jagdbanngebiete"
 msgstr "Bandite federali di caccia"
@@ -974,11 +998,17 @@ msgstr "Bandite federali di caccia"
 msgid "ch.bafu.bundesinventare-moorlandschaften"
 msgstr "Zone palustri"
 
+msgid "ch.bafu.bundesinventare-moorlandschaften_anhoerung"
+msgstr "Sites marécageux consultation 2014"
+
 msgid "ch.bafu.bundesinventare-trockenwiesen_trockenweiden"
 msgstr "Prati e pascoli secchi (PPS)"
 
 msgid "ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhang2"
 msgstr "PPS allegato 2"
+
+msgid "ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhoerung"
+msgstr "PPS consultation 2014"
 
 msgid "ch.bafu.bundesinventare-vogelreservate"
 msgstr "Riserve di uccelli acquatici"
@@ -1054,6 +1084,9 @@ msgstr "Stazioni idrologiche"
 
 msgid "ch.bafu.hydrologie-wassertemperaturmessstationen"
 msgstr "Stazioni misurazione temperatura"
+
+msgid "ch.bafu.kt"
+msgstr "UFAM + cantone"
 
 msgid "ch.bafu.laerm-bahnlaerm_nacht"
 msgstr "Rumore ferroviario di notte"
@@ -1446,13 +1479,13 @@ msgid "ch.bfs.arealstatistik-1997"
 msgstr "Statistica di superficie 1992/1997"
 
 msgid "ch.bfs.arealstatistik-bodenbedeckung"
-msgstr "Stat. di superficie 2004/09 NOLC04"
+msgstr "Stat. superficie 2004/09 NOLC04"
 
 msgid "ch.bfs.arealstatistik-bodenbedeckung-1985"
-msgstr "Stat. di superficie 1979/85 NOLC04"
+msgstr "Stat. superficie 1979/85 NOLC04"
 
 msgid "ch.bfs.arealstatistik-bodenbedeckung-1997"
-msgstr "Stat. di superficie 1992/97 NOLC04"
+msgstr "Stat. superficie 1992/97 NOLC04"
 
 msgid "ch.bfs.arealstatistik-bodennutzung"
 msgstr "Stat. superficie 2004/09 NOLU04"
@@ -1556,6 +1589,9 @@ msgstr "Clima - Visione d'insieme"
 msgid "ch.blw.klimaeignung-zwischenfruchtbau"
 msgstr "Clima - colture intercalari"
 
+msgid "ch.blw.kt"
+msgstr "UFAG + cantone"
+
 msgid "ch.blw.landwirtschaftliche-zonengrenzen"
 msgstr "Limiti delle zone agricole"
 
@@ -1602,11 +1638,17 @@ msgstr "CadastralWebMap"
 msgid "ch.kantone.ivs-reg_loc"
 msgstr "IVS Cantone di Berna"
 
+msgid "ch.kt"
+msgstr "cantone"
+
 msgid "ch.kt.bafu"
 msgstr "ct. [UFAM]"
 
 msgid "ch.kt.bafu.url"
 msgstr "http://www.bafu.admin.ch/index.html?lang=it"
+
+msgid "ch.lw"
+msgstr "FA"
 
 msgid "ch.swisstopo"
 msgstr "swisstopo"
@@ -1676,6 +1718,12 @@ msgstr "Geoide in ETRS89"
 
 msgid "ch.swisstopo.geologie-eiszeit-lgm-raster"
 msgstr "Ultimo massimo glaciale"
+
+msgid "ch.swisstopo.geologie-generalkarte-ggk200"
+msgstr "Carta geologica generale"
+
+msgid "ch.swisstopo.geologie-geocover.metadata"
+msgstr "Divisione GeoCover"
 
 msgid "ch.swisstopo.geologie-geodaesie-bouguer_anomalien"
 msgstr "Anomalia di Bouguer"
@@ -1780,7 +1828,7 @@ msgid "ch.swisstopo.geologie-gisgeol-punkte"
 msgstr "Expertises géologiques (points)"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas"
-msgstr "Atlante gravimetrico"
+msgstr "Atlas gravimétrique"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas.metadata"
 msgstr "Divisione Atlante gravimetrico"
@@ -1913,6 +1961,15 @@ msgstr "Divisione carta nazionale 1:500'000"
 msgid "ch.swisstopo.private"
 msgstr "swisstopo, prv."
 
+msgid "ch.swisstopo.scnat"
+msgstr "swisstopo, scnat"
+
+msgid "ch.swisstopo.sgpk"
+msgstr "swisstopo, sgpk"
+
+msgid "ch.swisstopo.sgtk"
+msgstr "swisstopo, sgtk"
+
 msgid "ch.swisstopo.swissalti3d-reliefschattierung"
 msgstr "swissALTI3D Hillshade"
 
@@ -2020,6 +2077,9 @@ msgstr "MN95 Vettori di spostamento PAT2"
 
 msgid "ch.swisstopo.zeitreihen"
 msgstr "Carte - Viaggio nel tempo"
+
+msgid "ch.tamedia"
+msgstr "tamedia"
 
 msgid "ch.vbs"
 msgstr "DDPS"
@@ -2150,6 +2210,9 @@ msgstr "Vue aérienne pour la statistique de la superficie 1992/97 prise en"
 msgid "flaeche_ha"
 msgstr "Superficie [ha]"
 
+msgid "flaeche_hm"
+msgstr "Surface  (ha)"
+
 msgid "flaeche_km2"
 msgstr "Surface [km2]"
 
@@ -2233,6 +2296,9 @@ msgstr "Numéro GIN attribué"
 
 msgid "gmde"
 msgstr "Numéro de commune OFS (état 2006)"
+
+msgid "grat25"
+msgstr "Carta nazionale"
 
 msgid "grundadresse"
 msgstr "Indirizzo"
@@ -2945,6 +3011,9 @@ msgstr "Biblioteca speciale (collezione)"
 msgid "kultur863"
 msgstr "Biblioteca privata (collezione)"
 
+msgid "lab"
+msgstr "Denominazione"
+
 msgid "laenge_m"
 msgstr "Lunghezza [m]"
 
@@ -3112,6 +3181,12 @@ msgstr "Tipo"
 
 msgid "nutzungsart_verbindung"
 msgstr "Usage de la connexion"
+
+msgid "obj_name"
+msgstr "Nom de l’objet"
+
+msgid "obj_nr"
+msgstr "Numéro de l‘objet"
 
 msgid "objektname"
 msgstr "Nome dell'oggetto"
@@ -3316,6 +3391,9 @@ msgstr "Péage"
 
 msgid "totholz"
 msgstr "Volume total de bois mort [m3/ha]"
+
+msgid "treasure_hunt"
+msgstr "Bravo! Clicca qui per trovare l'indizio successivo!"
 
 msgid "tt_anteil_ch"
 msgstr "Percentuale della superficie in Svizzera"
@@ -4082,8 +4160,20 @@ msgstr "Risoluzione"
 msgid "tt_lubis_bildorder"
 msgstr "Per questa ordinazione contattare direttamente:"
 
+msgid "tt_lubis_bildpfad"
+msgstr "Percorso/Link sull'immagine"
+
 msgid "tt_lubis_ebkey"
 msgstr "Numero immagine"
+
+msgid "tt_lubis_filesize_mb"
+msgstr "Dimensione del file"
+
+msgid "tt_lubis_flughoehe"
+msgstr "Altitudine di volo"
+
+msgid "tt_lubis_inventarnummer"
+msgstr "Numero dell'inventario"
 
 msgid "tt_lubis_lineId"
 msgstr "Linea di volo"
@@ -4105,9 +4195,6 @@ msgstr "Dimensione originale dell'immagine"
 
 msgid "tt_lubis_ort"
 msgstr "Località"
-
-msgid "tt_lubis_scan"
-msgstr "Scan"
 
 msgid "tt_lubis_x"
 msgstr "Coordinata centrale X"
@@ -4342,6 +4429,9 @@ msgstr "URL"
 
 msgid "validierungsdatum"
 msgstr "Date de validation"
+
+msgid "vektorisierung_jahr"
+msgstr "Vettorizzazione"
 
 msgid "viel_sub"
 msgstr "molta sostanza"

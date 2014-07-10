@@ -1,3 +1,5 @@
+#-*- coding: utf-8 -*-
+
 import re
 from urlparse import urlparse
 from httplib2 import Http
@@ -67,6 +69,7 @@ def ogcproxy(request):
         except Exception:
             raise HTTPNotAcceptable()
         content = data.encode('utf-8')
+        content = content.replace(m.group(1), 'utf-8')
 
     response = Response(content, status=resp.status,
                         headers={"Content-Type": ct})

@@ -1,0 +1,108 @@
+<!--[if HTML5]><![endif]-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <!--[if !HTML5]>
+    <meta http-equiv="X-UA-Compatible" content="IE=9,IE=10,IE=edge,chrome=1"/>
+    <![endif]-->    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">	
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+    <title>GeoAdmin API example: searchbox </title>
+    <style type="text/css">
+      .typeahead,
+      .tt-query,
+      .tt-hint {
+        width: 522px;
+        height: 18px;
+        font-size: 12px;
+        margin: 10px 0px 0px;
+        padding-left: 0.5em;
+        border: 1px solid #C1C1C1; 
+      } 
+
+      .typeahead {
+        background-color: #ffffff;
+      }
+
+      .typeahead:focus {
+        border: 1px solid #000;
+      }
+
+      .tt-hint {
+        color: #999
+      }
+
+      .tt-dropdown-menu {
+        width: 528px;
+        margin-top: 0px;
+        padding: 8px 0;
+        background-color: #fff;
+        border: 1px solid #ccc;
+      }
+
+      #search-container .tt-dropdown-menu {
+        max-height: 300px;
+        overflow-y: auto;
+      }
+
+      .tt-suggestion {
+        padding: 2px 8px;
+        font-size: 12px;
+        line-height: 18px;
+      }
+
+      .tt-suggestion.tt-cursor {
+        colro: #000;
+        background-color: lightgray;
+        cursor: pointer;
+      }
+
+      .tt-suggestion p {
+        margin: 0;
+      }
+
+      .marker {
+        width: 30px;
+        height: 40px;
+        margin-top: -40px;
+        margin-left: -15px;
+        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAoCAYAAADpE0oSAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6RkYzODI1RUVDQzZFMTFFM0JFQjhBMDhCMjI4RThGQzEiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RkYzODI1RUZDQzZFMTFFM0JFQjhBMDhCMjI4RThGQzEiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpGRjM4MjVFQ0NDNkUxMUUzQkVCOEEwOEIyMjhFOEZDMSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpGRjM4MjVFRENDNkUxMUUzQkVCOEEwOEIyMjhFOEZDMSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PqBtl6EAAAa8SURBVHjaxFhpTFRX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");
+      }
+      
+      .example {
+        width:531px;
+        height:55px;
+        margin-top: 10px;
+        background-color:#EEEEEE;
+        font-size:10px;padding: 0 0 0 0;
+      }
+
+    </style>
+  </head>
+  <body>
+    <h1>GeoAdmin API example: searchbox</h1>
+    <div id="map" style="width:100%;height:350px;"></div>
+    <div class="example" style=>
+      <b>Search examples:</b><br>
+      <b>Zip:</b> For «3007 in Bern» tap <i>3007</i><br>
+      <b>Address:</b> For «Rue de l'Evêché in Genf» tap <i>évêch</i><br>
+    </div>	
+    <div id="search-container">
+      <input class="typeahead" id="search" type="text" data-provide="typeahead"
+      placeholder="Search city, zip ...">
+    </div>
+    <br/>
+    <br/>
+    <br> This example shows to search locations, zips, adresses over the map.</br>
+    <a href="geoadmin_search.js">See the code </a> now jquery is used for the homelibrary js and not jquery.com.<br>
+    <script type="text/javascript" src="/static/js/jquery-2.0.3.min.js"></script>   
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-ajaxtransport-xdomainrequest/1.0.2/jquery.xdomainrequest.min.js"></script>
+    <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="//twitter.github.io/typeahead.js/releases/latest/typeahead.bundle.js"></script> 
+    <script type="text/javascript" src="../loader.js"></script>
+    <script type="text/javascript" src="geoadmin_search.js"></script>
+  </body>
+</html>
+

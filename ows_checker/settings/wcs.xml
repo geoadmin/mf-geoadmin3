@@ -1,0 +1,66 @@
+<wcs>
+	<minVersion>1.0.0</minVersion>
+	<!-- Sollte Version, bisher nicht genutzt -->
+	<currVersion>1.1.2</currVersion>
+	<XML>
+		<Encoding>UTF-8</Encoding>
+	</XML>
+	<Version num="1.0.0">
+		<MIME>text/xml</MIME>
+		<MIME>application/xml</MIME>
+		<OWS_Common>0</OWS_Common>
+		<Schema>http://schemas.opengis.net/wcs/1.0.0/wcsCapabilities.xsd</Schema>
+		<Schema_local>schemas/wcsCapabilities.xsd</Schema_local>
+		<Exception>application/vnd.ogc.se_xml</Exception>
+		<Exception>text/xml</Exception>
+		<Exception>application/xml</Exception>
+	</Version>
+	<Version num="1.1.0">
+		<MIME>text/xml</MIME>
+		<MIME>application/xml</MIME>
+		<OWS_Common>1</OWS_Common>
+		<Exception>text/xml</Exception>
+		<Exception>application/xml</Exception>
+		<Schema>http://schemas.opengis.net/wcs/1.1/wcsGetCapabilities.xsd</Schema>
+		<Schema_local>schemas/wcs_1_1.xsd</Schema_local>
+	</Version>
+	<Version num="1.1.1">
+		<MIME>text/xml</MIME>
+		<MIME>application/xml</MIME>
+		<OWS_Common>1</OWS_Common>
+		<Exception>text/xml</Exception>
+		<Exception>application/xml</Exception>
+	</Version>
+	<Version num="1.1.2">
+		<MIME>text/xml</MIME>
+		<MIME>application/xml</MIME>
+		<OWS_Common>1</OWS_Common>
+		<Exception>text/xml</Exception>
+		<Exception>application/xml</Exception>
+	</Version>
+	<Operations>
+		<GetCapabilities>
+			<Encoding>UTF-8</Encoding>
+			<WayToServiceTypeNode>Capabilities.ServiceIdentification.ServiceType</WayToServiceTypeNode>
+		</GetCapabilities>
+		<DescribeCoverage>
+			<Encoding>UTF-8</Encoding>
+		</DescribeCoverage>
+		<GetCoverage>
+			<Encoding>UTF-8</Encoding>
+		</GetCoverage>
+	</Operations>
+	<RefSys>
+		<CRS status="must" rili="CRS-01">EPSG:21781</CRS>
+		<CRS status="must" rili="CRS-02">EPSG:4326</CRS>
+		<CRS status="not" rili="CRS-03">EPSG:9814</CRS>
+		<CRS status="optional" dim="3D" rili="CRS-04">EPSG:5728</CRS>
+		<CRS status="optional" rili="CRS-05">EPSG:2056</CRS>
+		<CRS status="optional" rili="CRS-06">EPSG:4258</CRS>
+		
+		<CRS status="optional" dim="3D" rili="CRS-07">EPSG:5729</CRS>
+		<!-- CRS-08 -->
+		<CRS status="optional" dim="3D" rili="CRS-08">EPSG:5730</CRS>
+		<CRS status="optional" rili="CRS-09">EPSG:21782</CRS>
+	</RefSys>
+</wcs>

@@ -1,3 +1,285 @@
+Release 20140702 - Wednesday, July 2nd 2014
+============================================
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+-----------------------------------
+
+- Minor bug fixes
+
+`MAP <//map.geo.admin.ch>`__
+-----------------------------------
+
+- Minor bug fixes
+
+Geodata
+********
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Swissimage <//map.geo.admin.ch/?layers=ch.swisstopo.swissimage>`__ (ch.swisstopo.swissimage)                                                                                                           |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+Release 20140625 - Wednesday, June 25th 2014
+============================================
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+-----------------------------------
+
+- Minor bug fixes
+
+`MAP <//map.geo.admin.ch>`__
+-----------------------------------
+
+- Minor bug fixes
+
+Geodata
+********
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Upload >= 50 Mbit/s <//map3.geo.admin.ch/?layers=ch.bakom.uplink50>`__ (ch.bakom.uplink50)                                                                                                             |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Upload >= 20 Mbit/s <//map3.geo.admin.ch/?layers=ch.bakom.uplink20>`__ (ch.bakom.uplink20)                                                                                                             |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Upload >= 2 Mbit/s <//map3.geo.admin.ch/?layers=ch.bakom.uplink2>`__ (ch.bakom.uplink2)                                                                                                                |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Upload >= 100 Mbit/s <//map3.geo.admin.ch/?layers=ch.bakom.uplink100>`__ (ch.bakom.uplink100)                                                                                                          |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Upload >= 10 Mbit/s <//map3.geo.admin.ch/?layers=ch.bakom.uplink10>`__ (ch.bakom.uplink10)                                                                                                             |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Upload >= 1 Mbit/s <//map3.geo.admin.ch/?layers=ch.bakom.uplink1>`__ (ch.bakom.uplink1)                                                                                                                |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Availability TV fixed network <//map3.geo.admin.ch/?layers=ch.bakom.verfuegbarkeit-tv>`__ (ch.bakom.verfuegbarkeit-tv)                                                                                 |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Availability HDTV fixed netw. <//map3.geo.admin.ch/?layers=ch.bakom.verfuegbarkeit-hdtv>`__ (ch.bakom.verfuegbarkeit-hdtv)                                                                             |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Optical fibre <//map3.geo.admin.ch/?layers=ch.bakom.anschlussart-glasfaser>`__ (ch.bakom.anschlussart-glasfaser)                                                                                       |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Download >= 50 Mbit/s <//map3.geo.admin.ch/?layers=ch.bakom.downlink50>`__ (ch.bakom.downlink50)                                                                                                       |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Download >= 20 Mbit/s <//map3.geo.admin.ch/?layers=ch.bakom.downlink20>`__ (ch.bakom.downlink20)                                                                                                       |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Download >= 2 Mbit/s <//map3.geo.admin.ch/?layers=ch.bakom.downlink2>`__ (ch.bakom.downlink2)                                                                                                          |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Download >= 100 Mbit/s <//map3.geo.admin.ch/?layers=ch.bakom.downlink100>`__ (ch.bakom.downlink100)                                                                                                    |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Download >= 10 Mbit/s <//map3.geo.admin.ch/?layers=ch.bakom.downlink10>`__ (ch.bakom.downlink10)                                                                                                       |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Download >= 1 Mbit/s <//map3.geo.admin.ch/?layers=ch.bakom.downlink1>`__ (ch.bakom.downlink1)                                                                                                          |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Copper wire <//map3.geo.admin.ch/?layers=ch.bakom.anschlussart-kupferdraht>`__ (ch.bakom.anschlussart-kupferdraht)                                                                                     |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Coaxial cable <//map3.geo.admin.ch/?layers=ch.bakom.anschlussart-koaxialkabel>`__ (ch.bakom.anschlussart-koaxialkabel)                                                                                 |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Number of connection providers <//map3.geo.admin.ch/?layers=ch.bakom.anbieter-eigenes_festnetz>`__ (ch.bakom.anbieter-eigenes_festnetz)                                                                |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+Release 20140618 - Wednesday, June 18th 2014
+============================================
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+-----------------------------------
+
+- Minor bug fixes
+
+`MAP <//map.geo.admin.ch>`__
+-----------------------------------
+
+- Minor bug fixes
+
+Geodata
+********
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Division GeoCover <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-geocover.metadata>`__ (ch.swisstopo.geologie-geocover.metadata)                     |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Topographical landscape model <//map.geo.admin.ch/?layers=ch.swisstopo.swisstlm3d-karte-grau>`__ (ch.swisstopo.swisstlm3d-karte-grau)                   |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Topographical landscape model <//map.geo.admin.ch/?layers=ch.swisstopo.swisstlm3d-karte-farbe>`__ (ch.swisstopo.swisstlm3d-karte-farbe)                 |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+Release 20140611 - Wednesday, June 11th 2014
+============================================
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+-----------------------------------
+
+- Address prefix search in `locations search <//api3.geo.admin.ch/services/sdiservices.html#response-syntax>`__
+- Support several ids in `feature service <//api3.geo.admin.ch/services/sdiservices.html#feature-resource>`__
+- Support "contains" parameter `find service <//api3.geo.admin.ch/services/sdiservices.html#find>`__
+- Documentation for `search radius and identify <//api3.geo.admin.ch/services/sdiservices.html#simulate-a-search-radius>`__
+- Minor bugfixes
+
+`MAP <//map.geo.admin.ch>`__
+-----------------------------------
+
+- Collapsible popups
+- Minor bug fixes
+
+Geodata
+********
++--------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Hochmoore – Anhörung 2014 <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-hochmoore_anhoerung>`__ (ch.bafu.bundesinventare-hochmoore_anhoerung)                                |
++--------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Auen – Anhörung 2014 <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-auen_anhoerung>`__ (ch.bafu.bundesinventare-auen_anhoerung)                                               |
++--------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Flachmoore Anhörung 2014 <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-flachmoore_anhoerung>`__ (ch.bafu.bundesinventare-flachmoore_anhoerung)                               |
++--------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Moorlandschaften – Anhörung 2014 <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-moorlandschaften_anhoerung>`__ (ch.bafu.bundesinventare-moorlandschaften_anhoerung)           |
++--------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `TWW – Anhörung 2014 <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhoerung>`__ (ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhoerung)  |
++--------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Amphibien Wanderobjekte 2014 <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-amphibien_wanderobjekte_anhoerung>`__ (ch.bafu.bundesinventare-amphibien_wanderobjekte_anhoerung) |
++--------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Amphibien – Anhörung 2014 <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-amphibien_anhoerung>`__ (ch.bafu.bundesinventare-amphibien_anhoerung)                                |
++--------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `LV95 Transformation accuracy <//map.geo.admin.ch/?layers=ch.swisstopo.transformationsgenauigkeit>`__ (ch.swisstopo.transformationsgenauigkeit)                                     |
++--------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Landwirtschaftliche Zonengrenzen <////map.geo.admin.ch/?layers=ch.blw.landwirtschaftliche-zonengrenzen>`__ (ch.blw.landwirtschaftliche-zonengrenzen)                               |
++--------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+Release 20140521 -  Thursday, May 21st 2014
+===========================================
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+-----------------------------------
+
+- New API `searchbox example <//api3.geo.admin.ch/examples/geoadmin_search.html>`__
+- Fix api layers shown in FAQ
+- MapProxy migration from previous project 
+- Fixing issue in the WMTS GetCapabilities document (themes, legends)
+- API: new map creation parameter to activate/deactivate tooltip
+- Minor bug fixes
+
+
+`MAP <//map.geo.admin.ch>`__
+-----------------------------------
+
+- New fullscreen mode and search box
+- New location marker shown when entering coordinates
+- Update google closure library url
+- Minor bug fixes
+
+Geodata
+********
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Building generalized VECTOR200 <//map.geo.admin.ch/?layers=ch.swisstopo.vec200-building>`__ (ch.swisstopo.vec200-building)                                                        |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Elevations VECTOR200 <//map.geo.admin.ch/?layers=ch.swisstopo.vec200-miscellaneous-geodpoint>`__ (ch.swisstopo.vec200-miscellaneous-geodpoint)                                    |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Hydrology VECTOR200 <//map.geo.admin.ch/?layers=ch.swisstopo.vec200-hydrography>`__ (ch.swisstopo.vec200-hydrography)                                                             |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Land cover VECTOR200 <//map.geo.admin.ch/?layers=ch.swisstopo.vec200-landcover>`__ (ch.swisstopo.vec200-landcover)                                                                |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Names VECTOR200 <//map.geo.admin.ch/?layers=ch.swisstopo.vec200-names-namedlocation>`__ (ch.swisstopo.vec200-names-namedlocation)                                                 |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Public Transportation VECTOR200 <//map.geo.admin.ch/?layers=ch.swisstopo.vec200-transportation-oeffentliche-verkehr>`__ (ch.swisstopo.vec200-transportation-oeffentliche-verkehr) |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Road system VECTOR200 <//map.geo.admin.ch/?layers=ch.swisstopo.vec200-transportation-strassennetz>`__ (ch.swisstopo.vec200-transportation-strassennetz)                           |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Single objects VECTOR200 <//map.geo.admin.ch/?layers=ch.swisstopo.vec200-miscellaneous>`__ (ch.swisstopo.vec200-miscellaneous)                                                    |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Forested areas <//map.geo.admin.ch/?layers=ch.swisstopo.vec200-landcover-wald>`__ (ch.swisstopo.vec200-landcover-wald)                                                            |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+Release 20140508 -  Thursday, May 8th 2014
+==========================================
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+-----------------------------------
+
+- LUBIS Viewer: Adding permalink coordinates X, Y, zoom and rotate for better sharing
+- Optimized sizes of images
+- Adding OWS Checker
+- Minor bug fixes
+
+`MAP <//map.geo.admin.ch>`__
+-----------------------------------
+
+- Separated Feature and Location search
+- Added location marker for search results
+- Added context sensitive help
+- Remove addressbar on modern iOS devices
+- Swipe Ratio Fix for Firefox and IE
+- Updating Geolocation point even after zoom or pan
+- Minor bug fixes
+
+Geodata
+********
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update  | `Time of travel with PT <//map.geo.admin.ch/?layers=ch.are.reisezeit-oev>`__ (ch.are.reisezeit-oev)                                                          |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update  | `Time of travel IMT <//map.geo.admin.ch/?layers=ch.are.reisezeit-miv>`__ (ch.are.reisezeit-miv)                                                              |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update  | `Public transport connection quality <//map.geo.admin.ch/?layers=ch.are.gueteklassen_oev>`__ (ch.are.gueteklassen_oev)                                       |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update  | `Density of employment <//map.geo.admin.ch/?layers=ch.are.beschaeftigtendichte>`__ (ch.are.beschaeftigtendichte)                                             |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update  | `Population density <//map.geo.admin.ch/?layers=ch.are.bevoelkerungsdichte>`__ (ch.are.bevoelkerungsdichte)                                                  |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update  | `Agglomeration and isolated cities <//map.geo.admin.ch/?layers=ch.are.agglomerationen_isolierte_staedte>`__ (ch.are.agglomerationen_isolierte_staedte)       |
++--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+Release 20140430 -  Wednesday, April 30th 2014
+====================================================
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+-----------------------------------
+
+- `New example <//api3.geo.admin.ch/examples/geoadmin_rectangle.html>`__
+- Minor bug fixes
+
+`MAP <//map.geo.admin.ch>`__
+-----------------------------------
+
+- Support swisssearch parameter in permalink
+- Add a correct native browser print
+- Minor bug fixes
+
+Geodata
+********
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Geologische Gutachten (Punkte) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-punkte>`__ (ch.swisstopo.geologie-gisgeol-punkte)                                                          |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Geologische Gutachten (Linien) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-linien>`__ (ch.swisstopo.geologie-gisgeol-linien)                                                          |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Geologische Gutachten (1x1km) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-flaechen-1x1km>`__ (ch.swisstopo.geologie-gisgeol-flaechen-1x1km)                                           |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Geologische Gutachten (0-10km2) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-flaechen-lt10km2>`__ (ch.swisstopo.geologie-gisgeol-flaechen-lt10km2)                                     |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Geologische Gutachten (10x10km) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-flaechen-10x10km>`__ (ch.swisstopo.geologie-gisgeol-flaechen-10x10km)                                     |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Geologische Gutachten (10-21000km2) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2>`__ (ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2)                       |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Geologische Gutachten (>21000km2) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2>`__ (ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2)                             |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `General Geological Map <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-generalkarte-ggk200>`__ (ch.swisstopo.geologie-generalkarte-ggk200)                                                        |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Ecomorphology F – River reaches <//map.geo.admin.ch/?layers=ch.bafu.oekomorphologie-f_abschnitte>`__ (ch.bafu.oekomorphologie-f_abschnitte)                                                         |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Ecomorphology F – Drop structures <//map.geo.admin.ch/?layers=ch.bafu.oekomorphologie-f_abstuerze>`__ (ch.bafu.oekomorphologie-f_abstuerze)                                                         |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Ecomorphology F – Structures <//map.geo.admin.ch/?layers=ch.bafu.oekomorphologie-f_bauwerke>`__ (ch.bafu.oekomorphologie-f_bauwerke)                                                                |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Hiking trails <//map.geo.admin.ch/?layers=ch.swisstopo.swisstlm3d-wanderwege>`__ (ch.swisstopo.swisstlm3d-wanderwege)                                                                               |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
 Release 20140423 -  Wednesday, April 23th 2014
 ====================================================
 

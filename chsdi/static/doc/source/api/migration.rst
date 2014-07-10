@@ -35,7 +35,7 @@ As in previous version, the `API loader <http://api3.geo.admin.ch/loader.js>`_ l
 API Services
 ~~~~~~~~~~~~
 
-This guide references the correspondances between the old and new API.
+This guide references the correspondances between the old and new API. You'll find the documentation for our new services at `this page <../../services/sdiservices.html>`_.
 
 +-----------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------+
 | **Old API**                                                                             | **New API**                                                                                                       |
@@ -44,9 +44,9 @@ This guide references the correspondances between the old and new API.
 |                                                                                         |                                                                                                                   |
 | **URL:** *swisssearch/geocoding?query=maisonnex*                                        | **URL:** *rest/services/api/SearchServer?searchText=maisonnex&type=locations*                                     |
 +-----------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------+
-| **SwissSearch Reversegeocoding**                                                        | Not implemented yet!                                                                                              |
+| **SwissSearch Reversegeocoding**                                                        | `Identify <../../services/sdiservices.html#examples-of-reverse-geocoding>`_                                       |
 |                                                                                         |                                                                                                                   |
-| **URL:** *swissearch/reversegoecoding?easting=606163&northing=199965*                   |                                                                                                                   |
+| **URL:** *swissearch/reversegoecoding?easting=606163&northing=199965*                   | Please refer to the examples above.                                                                               |
 +-----------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------+
 | **Feature: [id]**                                                                       | `Feature Resource <../../services/sdiservices.html#feature-resource>`_                                            |
 |                                                                                         |                                                                                                                   |
@@ -96,3 +96,5 @@ This guide references the correspondances between the old and new API.
 |                                                                                         |                                                                                                                   |
 | **URL:** *http://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml*                          | **URL:** *http://api3.geo.admin.ch/rest/services/api/1.0.0/WMTSCapabilities.xml*                                  |
 +-----------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------+
+
+The API 3 also provide new features such as the `Find service <../../services/sdiservices.html#find>`_ or the `Feature search service <../../services/sdiservices.html#description>`_.

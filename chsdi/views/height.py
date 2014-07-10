@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from chsdi.lib.validation import HeightValidation
+from chsdi.lib.validation.height import HeightValidation
 from chsdi.lib.raster.georaster import GeoRaster
 
 from pyramid.view import view_config

@@ -57,12 +57,12 @@
             <Style>
                 <ows:Title>${layer.kurzbezeichnung|x,trim}</ows:Title>
                 <ows:Identifier>${layer.id|x,trim}</ows:Identifier>
-                                ## TODO relative path
-                <% legendName = "/var/www/vhosts/mf-chsdi/private/chsdi/chsdi/public/legend/" + layer.id + "_" + request.lang + ".png" %>
+                ## TODO relative path
+                <% legendName = "/var/www/vhosts/mf-chsdi3/private/chsdi/chsdi/static/images/legends/" + layer.id + "_" + request.lang + ".png" %>
                 <%! import os.path %> 
                 <% hasLegend = os.path.isfile(legendName) %>
                 % if hasLegend:
-                <LegendURL format="image/png" xlink:href="${scheme}://api.geo.admin.ch/legend/${layer.id|x,trim}_${request.lang|x,trim}.png" />
+                <LegendURL format="image/png" xlink:href="${scheme}://api3.geo.admin.ch/main/wsgi/static/images/legends/${layer.id|x,trim}_${request.lang|x,trim}.png" />
                 % endif
             </Style>
             <Format>image/${str(layer.arr_all_formats).split(',')[0]}</Format>
@@ -76,7 +76,7 @@
             <TileMatrixSetLink>
                 <TileMatrixSet>${str(layer.tile_matrix_set_id).split(',')[0]}_${str(layer.zoomlevel_max)|validate_tilematrixset}</TileMatrixSet>
             </TileMatrixSetLink>
-            <ResourceURL format="image/${str(layer.arr_all_formats).split(',')[0]}" resourceType="tile" template="${onlineressource}/1.0.0/${layer.id|x,trim}/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.${str(layer.arr_all_formats).split(',')[0]}"/>
+            <ResourceURL format="image/${str(layer.arr_all_formats).split(',')[0]}" resourceType="tile" template="${onlineressource}/1.0.0/${layer.id|x,trim}/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.${str(layer.arr_all_formats).split(',')[0]}"/>
       ## <ResourceURL format="application/gml+xml; version=3.1" resourceType="FeatureInfo" template="${onlineressource}/1.0.0/{Time}/${str(layer.tile_matrix_set_id).split(',')[0]}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml"/>
         </Layer>
   % endfor
@@ -160,32 +160,32 @@
    <% counter_i = 0 %>
    % for theme in themes:
    ## Oberthema
-   % if not(pre_oberthema== theme.oberthema_id):
-       <Theme>
-                <ows:Title>${theme.inspire_oberthema_name|x,trim}</ows:Title>
-                <ows:Abstract>${theme.inspire_oberthema_abstract|x,trim}</ows:Abstract>
-                <ows:Identifier>${theme.oberthema_id|x,trim}</ows:Identifier>
-   % endif
-   ## Thema
-   <Theme>
-            <ows:Title>${theme.inspire_name|x,trim}</ows:Title>
-            <ows:Abstract>${theme.inspire_abstract|x,trim}</ows:Abstract>
-            <ows:Identifier>${theme.id|x,trim}</ows:Identifier>
-        ## Refs
-        <% layers = theme.fk_dataset_id.split(',')  %>
-        % for i in range(len(layers)):
-            <LayerRef>${layers[i]}</LayerRef>
-        % endfor
-      </Theme>
-      ## No overflow
-      % if counter_i < (len(themes) - 1):
-          <% counter_i = counter_i + 1 %>
-      % endif
-      ## End Oberthema
-      % if not(theme.oberthema_id == themes[counter_i].oberthema_id):
-          </Theme>
-      % endif
-      ## remember the precedent Oberthema
+       % if not(pre_oberthema== theme.oberthema_id):
+           <Theme>
+               <ows:Title>${theme.inspire_oberthema_name|x,trim}</ows:Title>
+               <ows:Abstract>${theme.inspire_oberthema_abstract|x,trim}</ows:Abstract>
+               <ows:Identifier>${theme.oberthema_id|x,trim}</ows:Identifier>
+       % endif
+       ## Second level Thema
+               <Theme>
+                   <ows:Title>${theme.inspire_name|x,trim}</ows:Title>
+                   <ows:Abstract>${theme.inspire_abstract|x,trim}</ows:Abstract>
+                   <ows:Identifier>${theme.id|x,trim}</ows:Identifier>
+                   ## Refs
+                   <% layers = theme.fk_dataset_id.split(',')  %>
+                   % for i in range(len(layers)):
+                       <LayerRef>${layers[i]}</LayerRef>
+                   % endfor
+               </Theme>
+       ## No overflow
+       % if counter_i < (len(themes) - 1):
+           <% counter_i = counter_i + 1 %>
+       % endif
+       ## End Oberthema if next oberthema is not the same as the current one
+       % if not(theme.oberthema_id == themes[counter_i].oberthema_id):
+           </Theme>
+       % endif
+       ## remember the precedent Oberthema
        <% pre_oberthema= theme.oberthema_id %>
     % endfor
     ## End main loop

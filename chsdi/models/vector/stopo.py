@@ -49,6 +49,7 @@ class SwissboundariesGemeinde(Base, Vector):
     gemname = Column('gemname', Text)
     gemflaeche = Column('gemflaeche', Numeric)
     perimeter = Column('perimeter', Numeric)
+    kanton = Column('kanton', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill', SwissboundariesGemeinde)
@@ -83,7 +84,7 @@ register('ch.kantone.cadastralwebmap-farbe', CadastralWebMap)
 
 
 class Vec200Terminal(Base, Vector):
-    __tablename__ = 'vec200_terminal_tiles'
+    __tablename__ = 'vec200_terminal'
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec200_terminal.mako'
     __bodId__ = 'ch.swisstopo.vec200-transportation-oeffentliche-verkehr'
@@ -105,7 +106,7 @@ class Vec200ShipKursschiff(Base, Vector):
 
 
 class Vec200Railway(Base, Vector):
-    __tablename__ = 'vec200_railway_tiles'
+    __tablename__ = 'vec200_railway'
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec200_railway.mako'
     __bodId__ = 'ch.swisstopo.vec200-transportation-oeffentliche-verkehr'
@@ -142,7 +143,7 @@ register('ch.swisstopo.treasurehunt', treasurehunt)
 
 
 class Vec200Trafficinfo(Base, Vector):
-    __tablename__ = 'vec200_trafficinfo_tiles'
+    __tablename__ = 'vec200_trafficinfo'
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec200_trafficinfo.mako'
     __bodId__ = 'ch.swisstopo.vec200-transportation-strassennetz'
@@ -165,7 +166,7 @@ class Vec200ShipAutofaehre(Base, Vector):
 
 
 class Vec200Road(Base, Vector):
-    __tablename__ = 'vec200_road_tiles'
+    __tablename__ = 'vec200_road'
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec200_road.mako'
     __bodId__ = 'ch.swisstopo.vec200-transportation-strassennetz'
@@ -177,7 +178,7 @@ class Vec200Road(Base, Vector):
 
 
 class Vec200Ramp(Base, Vector):
-    __tablename__ = 'vec200_ramp_tiles'
+    __tablename__ = 'vec200_ramp'
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec200_ramp.mako'
     __bodId__ = 'ch.swisstopo.vec200-transportation-strassennetz'
@@ -189,7 +190,7 @@ class Vec200Ramp(Base, Vector):
 
 
 class Vec200Customsoffice(Base, Vector):
-    __tablename__ = 'vec200_customsoffice_tiles'
+    __tablename__ = 'vec200_customsoffice'
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec200_customsoffice.mako'
     __bodId__ = 'ch.swisstopo.vec200-transportation-strassennetz'
@@ -250,8 +251,6 @@ class Vec200Landcover(Base, Vector):
     id = Column('gtdboid', Text, primary_key=True)
     objname1 = Column('objname1', Text)
     objval = Column('objval', Text)
-    ppi = Column('ppi', Text)
-    ppl = Column('ppl', Numeric)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.vec200-landcover', Vec200Landcover)
@@ -571,6 +570,36 @@ class GridstandSwissimage(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.images-swissimage.metadata', GridstandSwissimage)
+
+
+class GeolGeocoverMetadata(Base, Vector):
+    __tablename__ = 'kv_geocover'
+    __table_args__ = ({'schema': 'geol', 'autoload': False})
+    __template__ = 'templates/htmlpopup/geocover_metadata.mako'
+    __bodId__ = 'ch.swisstopo.geologie-geocover.metadata'
+    id = Column('gid', Integer, primary_key=True)
+    nr = Column('nr', Text)
+    titel = Column('titel', Text)
+    basis = Column('basis', Text)
+    vektorisierung_jahr = Column('vektorisierung_jahr', Integer)
+    grat25 = Column('grat25', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-geocover.metadata', GeolGeocoverMetadata)
+
+
+class GeolGenKarteGGK200(Base, Vector):
+    __tablename__ = 'kv_ggk_pk'
+    __table_args__ = ({'schema': 'geol', 'autoload': False})
+    __template__ = 'templates/htmlpopup/generalkarte_ggk200.mako'
+    __bodId__ = 'ch.swisstopo.geologie-generalkarte-ggk200'
+    id = Column('gid', Integer, primary_key=True)
+    nr = Column('nr', Integer)
+    titel = Column('titel', Text)
+    url_legend = Column('url_legend', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-generalkarte-ggk200', GeolGenKarteGGK200)
 
 
 class GeolKarten500Metadata(Base, Vector):
@@ -1107,7 +1136,6 @@ class geometaStandAV(Base, Vector):
     quality = Column('quality', Text)
     frame = Column('frame', Text)
     the_geom = GeometryColumn('the_geom_gen50', Geometry(dimension=2, srid=21781))
-    not_used = GeometryColumn('the_geom', Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo-vd.geometa-standav', geometaStandAV)
 
@@ -1130,7 +1158,6 @@ class geometaLos(Base, Vector):
     frame = Column('frame', Text)
     bgdi_created = Column('bgdi_created', Text)
     the_geom = GeometryColumn('the_geom_gen50', Geometry(dimension=2, srid=21781))
-    not_used = GeometryColumn('the_geom', Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo-vd.geometa-los', geometaLos)
 
@@ -1152,7 +1179,6 @@ class geometaGemeinde(Base, Vector):
     abgabestelle = Column('abgabestelle', Text)
     bgdi_created = Column('bgdi_created', Text)
     the_geom = GeometryColumn('the_geom_gen50', Geometry(dimension=2, srid=21781))
-    not_used = GeometryColumn('the_geom', Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo-vd.geometa-gemeinde', geometaGemeinde)
 
@@ -1174,7 +1200,6 @@ class geometaGrundbuch(Base, Vector):
     email = Column('email', Text)
     bgdi_created = Column('bgdi_created', Text)
     the_geom = GeometryColumn('the_geom_gen50', Geometry(dimension=2, srid=21781))
-    not_used = GeometryColumn('the_geom', Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo-vd.geometa-grundbuch', geometaGrundbuch)
 
@@ -1192,7 +1217,6 @@ class geometaNfgeom(Base, Vector):
     email = Column('email', Text)
     bgdi_created = Column('bgdi_created', Text)
     the_geom = GeometryColumn('the_geom_gen50', Geometry(dimension=2, srid=21781))
-    not_used = GeometryColumn('the_geom', Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo-vd.geometa-nfgeom', geometaNfgeom)
 

@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 
+import re
+
 from pyramid.view import view_config
 import pyramid.httpexceptions as exc
 
-from chsdi.lib.validation import SearchValidation
+from shapely.geometry import box
+
+from chsdi.lib.validation.search import SearchValidation
 from chsdi.lib.helpers import format_search_text, transformCoordinate
 from chsdi.lib.sphinxapi import sphinxapi
 from chsdi.lib import mortonspacekey as msk
-
-import re
 
 
 class Search(SearchValidation):
@@ -33,6 +35,7 @@ class Search(SearchValidation):
         self.bbox = request.params.get('bbox')
         self.returnGeometry = request.params.get('returnGeometry', 'true').lower() == 'true'
         self.quadindex = None
+        self.origins = request.params.get('origins')
         self.featureIndexes = request.params.get('features')
         self.timeInstant = request.params.get('timeInstant')
         self.timeEnabled = request.params.get('timeEnabled')
@@ -45,7 +48,7 @@ class Search(SearchValidation):
 
     @view_config(route_name='search', renderer='jsonp')
     def search(self):
-        self.sphinx.SetConnectTimeout(3.5)
+        self.sphinx.SetConnectTimeout(10.0)
         # create a quadindex if the bbox is defined
         if self.bbox is not None and self.typeInfo != 'layers':
             self._get_quad_index()
@@ -69,17 +72,21 @@ class Search(SearchValidation):
             self.searchText = format_search_text(
                 self.request.params.get('searchText')
             )
-            self._feature_search()
             # swiss search
-            self._swiss_search(self.LIMIT)
+            self._swiss_search()
         return self.results
 
-    def _swiss_search(self, limit):
+    def _swiss_search(self):
         if len(self.searchText) < 1:
-            return 0
-        self.sphinx.SetLimits(0, limit)
+            return
+        self.sphinx.SetLimits(0, self.LIMIT)
         self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
         self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, 'rank ASC, @weight DESC, num ASC')
+        if self.origins is None:
+            self._detect_keywords()
+        else:
+            self._filter_locations_by_origins()
+
         searchText = self._query_fields('@detail')
         try:
             temp = self.sphinx.Query(searchText, index='swisssearch')
@@ -89,7 +96,11 @@ class Search(SearchValidation):
         if temp is not None and len(temp) != 0:
             nb_address = 0
             for res in temp:
+                if 'feature_id' in res['attrs']:
+                    res['attrs']['featureId'] = res['attrs']['feature_id']
+                    res['attrs'].pop('feature_id', None)
                 if res['attrs']['origin'] == 'address':
+                    res['attrs']['layerBodId'] = 'ch.bfs.gebaeude_wohnungs_register'
                     if nb_address < 20:
                         if not (self.varnish_authorized and self.returnGeometry):
                             if 'geom_st_box2d' in res['attrs'].keys():
@@ -97,9 +108,15 @@ class Search(SearchValidation):
                         self.results['results'].append(res)
                         nb_address += 1
                 else:
+                    if res['attrs']['origin'] == 'zipcode':
+                        res['attrs']['layerBodId'] = 'ch.swisstopo-vd.ortschaftenverzeichnis_plz'
+                    elif res['attrs']['origin'] == 'gg25':
+                        res['attrs']['layerBodId'] = 'ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill'
+                    elif res['attrs']['origin'] == 'district':
+                        res['attrs']['layerBodId'] = 'ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill'
+                    elif res['attrs']['origin'] == 'kantone':
+                        res['attrs']['layerBodId'] = 'ch.swisstopo.swissboundaries3d-kanton-flaeche.fill'
                     self.results['results'].append(res)
-            return len(temp)
-        return 0
 
     def _layer_search(self):
         # 10 features per layer are returned at max
@@ -111,7 +128,7 @@ class Search(SearchValidation):
         searchText = ' '.join((
             self._query_fields('@(detail,layer)'),
             '& @topics (%s | ech)' % mapName,  # Filter by to topic if string not empty, ech whitelist hack
-            '& @staging prod'                            # Only layers in prod are searched
+            '& @staging prod'                  # Only layers in prod are searched
         ))
         try:
             temp = self.sphinx.Query(searchText, index=index_name)
@@ -120,8 +137,6 @@ class Search(SearchValidation):
         temp = temp['matches'] if temp is not None else temp
         if temp is not None and len(temp) != 0:
             self.results['results'] += temp
-            return len(temp)
-        return 0
 
     def _get_quadindex_string(self):
         ''' Recursive and inclusive search through
@@ -143,7 +158,7 @@ class Search(SearchValidation):
         # all features in given bounding box
         if self.featureIndexes is None:
             # we need bounding box and layernames. FIXME: this should be error
-            return 0
+            return
         self.sphinx.SetLimits(0, self.FEATURE_LIMIT)
         self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
         if self.bbox:
@@ -164,7 +179,7 @@ class Search(SearchValidation):
         except IOError:
             raise exc.HTTPGatewayTimeout()
         self.sphinx.ResetFilters()
-        return self._parse_feature_results(temp)
+        self._parse_feature_results(temp)
 
     def _get_time_filter(self):
         timeFilter = []
@@ -208,7 +223,7 @@ class Search(SearchValidation):
         geomFilter = self._get_quadindex_string()
         self._add_feature_queries(geomFilter, timeFilter)
         temp = self.sphinx.RunQueries()
-        return self._parse_feature_results(temp)
+        self._parse_feature_results(temp)
 
     def _query_fields(self, fields):
         exact_nondigit_prefix_digit = lambda x: ''.join((x, '*')) if x.isdigit() else x
@@ -243,28 +258,63 @@ class Search(SearchValidation):
 
         return finalQuery
 
+    def _origins_to_ranks(self, origins):
+        origin2Rank = {
+            'zipcode': 1,
+            'gg25': 2,
+            'district': 3,
+            'kantone': 4,
+            'sn25': 5,
+            'address': 6,
+            'parcel': 10
+        }
+        buildRanksList = lambda x: origin2Rank[x]
+        try:
+            ranks = map(buildRanksList, origins)
+        except KeyError:
+            raise exc.HTTPBadRequest('Bad value(s) in parameter origins')
+        return ranks
+
+    def _detect_keywords(self):
+        if len(self.searchText) > 0:
+            PARCEL_KEYWORDS = ('parzelle', 'parcelle', 'parcella', 'parcel')
+            ADDRESS_KEYWORDS = ('addresse', 'adresse', 'indirizzo', 'address')
+            firstWord = self.searchText[0].lower()
+            if firstWord in PARCEL_KEYWORDS:
+                # As one cannot apply filters on string attributes, we use the rank information
+                self.sphinx.SetFilter('rank', self._origins_to_ranks(['parcel']))
+                del self.searchText[0]
+            elif firstWord in ADDRESS_KEYWORDS:
+                self.sphinx.SetFilter('rank', self._origins_to_ranks(['address']))
+                del self.searchText[0]
+
+    def _filter_locations_by_origins(self):
+        ranks = self._origins_to_ranks(self.origins)
+        self.sphinx.SetFilter('rank', ranks)
+
     def _add_feature_queries(self, queryText, timeFilter):
         i = 0
         for index in self.featureIndexes:
             if timeFilter and self.timeEnabled is not None and self.timeEnabled[i]:
-                    if len(timeFilter) == 1:
-                        self.sphinx.SetFilter('year', timeFilter)
-                    elif len(timeFilter) == 2:
-                        self.sphinx.SetFilterRange('year', int(min(timeFilter)), int(max(timeFilter)))
+                if len(timeFilter) == 1:
+                    self.sphinx.SetFilter('year', timeFilter)
+                elif len(timeFilter) == 2:
+                    self.sphinx.SetFilterRange('year', int(min(timeFilter)), int(max(timeFilter)))
             i += 1
             self.sphinx.AddQuery(queryText, index=str(index))
 
     def _parse_feature_results(self, results):
-        nb_match = 0
         for i in range(0, len(results)):
             if 'error' in results[i]:
                 if results[i]['error'] != '':
                     raise exc.HTTPNotFound(results[i]['error'])
-            if results[i] is not None:
-                nb_match += len(results[i]['matches'])
+            if results[i] is not None and 'matches' in results[i]:
                 # Add results to the list
-                self.results['results'] += results[i]['matches']
-        return nb_match
+                for res in results[i]['matches']:
+                    if 'feature_id' in res['attrs']:
+                        res['attrs']['featureId'] = res['attrs']['feature_id']
+                    if not self.bbox or self._bbox_intersection(self.bbox, res['attrs']['geom_st_box2d']):
+                        self.results['results'].append(res)
 
     def _get_quad_index(self):
         try:
@@ -277,3 +327,18 @@ class Search(SearchValidation):
             self.quadindex = quadindex if quadindex != '' else None
         except ValueError:
             self.quadindex = None
+
+    def _bbox_intersection(self, ref, result):
+        try:
+            refbox = box(ref[0], ref[1], ref[2], ref[3])
+            arr = result.replace('BOX(', '').replace(')', '')\
+                .replace(',', ' ').split(' ')
+            resbox = box(float(arr[0]), float(arr[1]),
+                         float(arr[2]), float(arr[3]))
+        except:
+            # We bail with True to be conservative and
+            # not exclude this geometry from the result
+            # set. Only happens if result does not
+            # have a bbox
+            return True
+        return refbox.intersects(resbox)

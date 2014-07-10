@@ -49,51 +49,44 @@ class TestSearchServiceView(TestsBase):
     def test_search_locations_prefix_sentence_match(self):
         resp = self.testapp.get('/rest/services/inspire/SearchServer', params={'searchText': 'lausann', 'type': 'locations'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'lausanne _vd_')
+        self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'lausanne vd')
         self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'gg25')
 
-    def test_search_loactions_and_features(self):
-        resp = self.testapp.get('/rest/services/inspire/SearchServer', params={'searchText': 'vd 446', 'type': 'locations', 'bbox': '551306.5625,167918.328125,551754.125,168514.625', 'features': 'ch.astra.ivs-reg_loc'}, status=200)
-        self.failUnless(resp.content_type == 'application/json')
-
-    def test_search_wrong_layername(self):
-        resp = self.testapp.get('/rest/services/inspire/SearchServer', params={'searchText': 'vd 446', 'type': 'locations', 'bbox': '551306.5625,167918.328125,551754.125,168514.625', 'features': 'lol'}, status=404)
-
-    def test_search_wrong_topic(self):
+    def test_search_locations_wrong_topic(self):
         resp = self.testapp.get('/rest/services/toto/SearchServer', params={'searchText': 'vd 446', 'type': 'locations', 'bbox': '551306.5625,167918.328125,551754.125,168514.625'}, status=400)
 
-    def test_search_lausanne(self):
+    def test_search_locations_lausanne(self):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'lausanne', 'type': 'locations'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'lausanne _vd_')
+        self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'lausanne vd')
 
-    def test_search_wil(self):
+    def test_search_locations_wil(self):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'wil', 'type': 'locations'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(resp.json['results'][0]['attrs']['detail'][:3] == 'wil')
 
-    def test_search_fontenay(self):
+    def test_search_locations_fontenay(self):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'fontenay 10 lausanne', 'type': 'locations'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'chemin de fontenay 10 1007 lausanne 5586 lausanne ch vd')
 
-    def test_wilenstrasse_wil(self):
+    def test_search_locations_wilenstrasse_wil(self):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'wilenstrasse wil', 'type': 'locations'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless('wilenstrasse' in resp.json['results'][0]['attrs']['detail'])
         self.failUnless('wil' in resp.json['results'][0]['attrs']['detail'])
 
-    def test_search_max_address(self):
+    def test_search_location_max_address(self):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'seftigenstrasse', 'type': 'locations'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(len(resp.json['results']) <= 20)
 
-    def test_search_no_geometry(self):
+    def test_search_locations_no_geometry(self):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'seftigenstrasse 264', 'type': 'locations', 'returnGeometry': 'false'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless('geom_st_box2d' not in resp.json['results'][0]['attrs'].keys())
 
-    def test_searchtext_apostrophe(self):
+    def test_locations_searchtext_apostrophe(self):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': 'av mont d\'or lausanne', 'type': 'locations'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'avenue du mont-d\'or 1 1007 lausanne 5586 lausanne ch vd')
@@ -145,6 +138,25 @@ class TestSearchServiceView(TestsBase):
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless('geom_st_box2d' not in resp.json['results'][0]['attrs'].keys())
 
+    def test_search_locations_one_origin(self):
+        params = {'searchText': 'vaud', 'type': 'locations', 'origins': 'gg25'}
+        resp = self.testapp.get('/rest/services/inspire/SearchServer', params=params, status=200)
+        self.failUnless(len(resp.json['results']) == 1)
+
+    def test_search_locations_several_origins(self):
+        params = {'searchText': 'vaud', 'type': 'locations', 'origins': 'district,gg25'}
+        resp = self.testapp.get('/rest/services/inspire/SearchServer', params=params, status=200)
+        self.failUnless(len(resp.json['results']) == 3)
+
+    def test_search_locations_bad_origin(self):
+        params = {'searchText': 'vaud', 'type': 'locations', 'origins': 'dummy'}
+        resp = self.testapp.get('/rest/services/inspire/SearchServer', params=params, status=400)
+
+    def test_search_locations_prefix_parcel(self):
+        params = {'searchText': 'parcel val', 'type': 'locations'}
+        resp = self.testapp.get('/rest/services/inspire/SearchServer', params=params, status=200)
+        self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'parcel')
+
     def test_features_bbox(self):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'features': 'ch.astra.ivs-reg_loc', 'type': 'featureidentify', 'bbox': '551306.5625,167918.328125,551754.125,168514.625'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
@@ -152,33 +164,29 @@ class TestSearchServiceView(TestsBase):
         self.failUnless(resp.json['results'][0]['attrs']['feature_id'] == '43543')
 
     def test_features_time(self):
-        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'locations', 'bbox': '542200,206800,542200,206800', 'timeInstant': '1981'}, status=200)
+        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'featuresearch', 'bbox': '542199,206799,542201,206801', 'timeInstant': '1981'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'feature')
 
     def test_features_timeInterval(self):
-        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '1993034 1990-2010', 'features': 'ch.swisstopo.fixpunkte-lfp1,ch.swisstopo.lubis-luftbilder_schwarzweiss,ch.swisstopo.lubis-luftbilder_farbe', 'timeEnabled': 'false,true,true', 'type': 'locations'}, status=200)
+        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '1993034 1990-2010', 'features': 'ch.swisstopo.fixpunkte-lfp1,ch.swisstopo.lubis-luftbilder_schwarzweiss,ch.swisstopo.lubis-luftbilder_farbe', 'timeEnabled': 'false,true,true', 'type': 'featuresearch'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'feature')
 
     def test_features_timeInterval_only(self):
-        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '1990-2010', 'features': 'ch.swisstopo.fixpunkte-lfp1,ch.swisstopo.lubis-luftbilder_schwarzweiss,ch.swisstopo.lubis-luftbilder_farbe', 'timeEnabled': 'false,true,true', 'type': 'locations'}, status=200)
+        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '1990-2010', 'features': 'ch.swisstopo.fixpunkte-lfp1,ch.swisstopo.lubis-luftbilder_schwarzweiss,ch.swisstopo.lubis-luftbilder_farbe', 'timeEnabled': 'false,true,true', 'type': 'featuresearch'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'feature')
 
     def test_features_wrong_time(self):
-        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'locations', 'bbox': '542200,206800,542200,206800', 'timeInstant': '19522'}, status=400)
+        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'featuresearch', 'bbox': '542200,206800,542200,206800', 'timeInstant': '19522'}, status=400)
 
     def test_features_wrong_time_2(self):
-        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'locations', 'bbox': '542200,206800,542200,206800', 'timeInstant': '1952.00'}, status=400)
-
-    def test_locationsearch_with_timeinstant(self):
-        resp = self.testapp.get('/rest/services/luftbilder/SearchServer', params={'type': 'locations', 'searchText': 'raron', 'features': 'ch.swisstopo.lubis-luftbilder_schwarzweiss,ch.swisstopo.lubis-luftbilder_farbe', 'timeEnable': 'true,true', 'bbox': '666045,170025,675645,174235', 'timeInstant': '2008'}, status=200)
-        self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(len(resp.json['results']) != 0)
+        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'featuresearch', 'bbox': '542200,206800,542200,206800', 'timeInstant': '1952.00'}, status=400)
 
     def test_featuressearch_geodist(self):
-        resp = self.testapp.get('/rest/services/all/SearchServer', params={'searchText': 'gen', 'features': 'ch.babs.kulturgueter', 'type': 'featuresearch', 'bbox': '688301,166874,688301,166874'})
+        resp = self.testapp.get('/rest/services/all/SearchServer', params={'searchText': 'gen', 'features': 'ch.babs.kulturgueter', 'type': 'featuresearch', 'bbox': '688290,166864,688309,166884'})
         self.failUnless(resp.content_type == 'application/json')
+        self.failUnless(len(resp.json['results']) == 1)
         self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'feature')
         self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'general-suworow-denkmal')

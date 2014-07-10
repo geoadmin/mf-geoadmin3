@@ -1,6 +1,39 @@
 msgid "None"
 msgstr ""
 
+msgid "treasure_hunt"
+msgstr ""
+
+msgid "ch.bafu.bundesinventare-hochmoore_anhoerung"
+msgstr ""
+
+msgid "ch.bafu.bundesinventare-auen_anhoerung"
+msgstr ""
+
+msgid "ch.bafu.bundesinventare-flachmoore_anhoerung"
+msgstr ""
+
+msgid "ch.bafu.bundesinventare-moorlandschaften_anhoerung"
+msgstr ""
+
+msgid "ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhoerung"
+msgstr ""
+
+msgid "ch.bafu.bundesinventare-amphibien_wanderobjekte_anhoerung"
+msgstr ""
+
+msgid "ch.bafu.bundesinventare-amphibien_anhoerung"
+msgstr ""
+
+msgid "obj_nr"
+msgstr ""
+
+msgid "obj_name"
+msgstr ""
+
+msgid "flaeche_hm"
+msgstr ""
+
 msgid "ch.bfe.sachplan-geologie-tiefenlager"
 msgstr ""
 
@@ -211,6 +244,12 @@ msgstr ""
 msgid "ch.bafu.fischerei-nasenlaichplaetze"
 msgstr ""
 
+msgid "ch.swisstopo.geologie-generalkarte-ggk200"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-geocover.metadata"
+msgstr ""
+
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas"
 msgstr ""
 
@@ -409,7 +448,7 @@ msgstr ""
 msgid "ch.blw.gewaesseranschlusskarte"
 msgstr ""
 
-msgid "ch.are.bevoelkerungsdichte-vz00"
+msgid "ch.are.bevoelkerungsdichte"
 msgstr ""
 
 msgid "ch.swisstopo.swissboundaries3d-land-flaeche.fill"
@@ -589,7 +628,7 @@ msgstr ""
 msgid "ch.bafu.flora-schwingrasen"
 msgstr ""
 
-msgid "ch.are.beschaeftigtendichte-bz08"
+msgid "ch.are.beschaeftigtendichte"
 msgstr ""
 
 msgid "ch.are.belastung-personenverkehr-bahn-2008"
@@ -607,10 +646,10 @@ msgstr ""
 msgid "ch.are.gueteklassen_oev"
 msgstr ""
 
-msgid "ch.are.reisezeit_miv-2005"
+msgid "ch.are.reisezeit-miv"
 msgstr ""
 
-msgid "ch.are.reisezeit_oev-2005"
+msgid "ch.are.reisezeit-oev"
 msgstr ""
 
 msgid "ch.swisstopo-vd.geometa-gemeinde"
@@ -643,7 +682,7 @@ msgstr ""
 msgid "ch.swisstopo.fixpunkte-hoehe"
 msgstr ""
 
-msgid "ch.are.agglomerationen_isolierte_staedte-2000"
+msgid "ch.are.agglomerationen_isolierte_staedte"
 msgstr ""
 
 msgid "ch.are.alpenkonvention"
@@ -2431,6 +2470,18 @@ msgstr ""
 msgid "geompdf_liste"
 msgstr ""
 
+msgid "lab"
+msgstr ""
+
+msgid "vektorisierung_jahr"
+msgstr ""
+
+msgid "basis"
+msgstr ""
+
+msgid "grat25"
+msgstr ""
+
 # are2 translations
 
 msgid "belastung_personen"
@@ -4092,9 +4143,6 @@ msgstr ""
 msgid "tt_lubis_originalsize"
 msgstr ""
 
-msgid "tt_lubis_scan"
-msgstr ""
-
 msgid "tt_lubis_lineId"
 msgstr ""
 
@@ -4132,6 +4180,18 @@ msgid "tt_lubis_y2"
 msgstr ""
 
 msgid "tt_lubis_linielaenge"
+msgstr ""
+
+msgid "tt_lubis_inventarnummer"
+msgstr ""
+
+msgid "tt_lubis_flughoehe"
+msgstr ""
+
+msgid "tt_lubis_filesize_mb"
+msgstr ""
+
+msgid "tt_lubis_bildpfad"
 msgstr ""
 
 msgid "ch.swisstopo.lubis-luftbilder_farbe"
@@ -4420,4 +4480,34 @@ msgid "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2"
 msgstr ""
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-lt10km2"
+msgstr ""
+
+msgid "ch.tamedia"
+msgstr ""
+
+msgid "ch.kt"
+msgstr ""
+
+msgid "ch.lw"
+msgstr ""
+
+msgid "ch.are.kt"
+msgstr ""
+
+msgid "ch.bafu.kt"
+msgstr ""
+
+msgid "ch.blw.kt"
+msgstr ""
+
+msgid "ch.astra.kt"
+msgstr ""
+
+msgid "ch.swisstopo.scnat"
+msgstr ""
+
+msgid "ch.swisstopo.sgpk"
+msgstr ""
+
+msgid "ch.swisstopo.sgtk"
 msgstr ""

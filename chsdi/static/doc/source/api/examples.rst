@@ -8,6 +8,7 @@ GeoAdmin Examples
 - `Map with KML file overlay <../examples/geoadmin_kml.html>`_
 - `Geocoder <../examples/geoadmin_geocoder.html>`_
 - `Rectangle selection <../examples/geoadmin_rectangle.html>`_
+- `Searchbox <../examples/geoadmin_search.html>`_
 
 OpenLayers Examples
 ~~~~~~~~~~~~~~~~~~~

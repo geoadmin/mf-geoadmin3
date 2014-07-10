@@ -46,10 +46,25 @@ RewriteRule ^/${vars:apache_base_path}/wsgi/(static)/(.*)$  ${buildout:directory
 </LocationMatch>
 RewriteRule ^${apache_entry_path}(crossdomain.xml|clientaccesspolicy.xml) /${vars:apache_base_path}/wsgi/static/$1 [PT]
 
+# Robots static files
+<LocationMatch "/${vars:apache_base_path}/wsgi/static/(robots.txt|robots_prod.txt)">
+    Header set Content-type "text/plain"
+</LocationMatch>
+RewriteRule ^${apache_entry_path}robots.txt /${vars:apache_base_path}/wsgi/static/${robots_file} [PT]
+
+
+# WMTS
+RewriteRule ^${apache_entry_path}1.0.0/WMTSCapabilities\.xml$ /${vars:apache_base_path}/wsgi/rest/services/api/1.0.0/WMTSCapabilities.xml [PT,NC,QSA,L]
+
+# Frozen Capabilities, for swissmaponline 
+RewriteCond %{QUERY_STRING} lang=(de|fr|it|en) [NC] 
+RewriteRule ^${apache_entry_path}1.0.0/WMTSCapabilities_v([0-9]{8})\.xml$ ${buildout:directory}/chsdi/static/capabilities/$1/WMTSCapabilities.%1.xml [NC,QSA,L]
+RewriteRule ^${apache_entry_path}1.0.0/WMTSCapabilities_v([0-9]{8})\.xml$ ${buildout:directory}/chsdi/static/capabilities/$1/WMTSCapabilities.de.xml [NC,QSA,L]
+
 RewriteRule ^${apache_entry_path}$ /${vars:apache_base_path}/wsgi/ [PT]
 
 # Proxy pass pointing on api.geo.admin.ch project
-RewriteRule ^${apache_entry_path}(qrcodegenerator|shorten|shorten.json)(.*)$ http://api.geo.admin.ch/$1$2 [P]
+RewriteRule ^${apache_entry_path}(shorten|shorten.json)(.*)$ http://api.geo.admin.ch/$1$2 [P]
 
 # Proxy pass for geodesy services
 RewriteRule ^${apache_entry_path}reframe/lv03tolv95(.*)$ http://tc-geodesy.bgdi.admin.ch/reframe/lv03tolv95$1 [P]
@@ -59,12 +74,13 @@ RewriteRule ^${apache_entry_path}reframe/lv03tolv95(.*)$ http://tc-geodesy.bgdi.
     Allow from all
 </Location>
 
+
 # Print
 RewriteRule ^/${apache_base_path}/(print)(.*)$ /${vars:apache_base_path}/wsgi/$1$2 [PT]
  
 # define a process group
-# WSGIDaemonProcess must be commented/removed when running the project on windows
-WSGIDaemonProcess mf-chsdi3:${vars:apache_base_path} display-name=%{GROUP} user=${vars:modwsgi_user}
+# WSGIDaemonProcess, default are 1 process and 15 threads
+WSGIDaemonProcess mf-chsdi3:${vars:apache_base_path} display-name=%{GROUP} user=${vars:modwsgi_user} threads=${vars:wsgi_threads}
 
 # define the path to the WSGI app
 WSGIScriptAlias /${vars:apache_base_path}/wsgi ${buildout:directory/buildout/parts/modwsgi/wsgi}
@@ -78,7 +94,14 @@ WSGIScriptAlias /${vars:apache_base_path}/wsgi ${buildout:directory/buildout/par
     WSGIApplicationGroup %{GLOBAL}
 </Location>
 
-RewriteRule ^${apache_entry_path}(iipimage|search|index|genindex|examples|img|js|css|releasenotes|services|_sources|_static|api|rest/services|ogcproxy|testi18n|loader.js|snapshot|checker|checker_dev|static|print|dev|feedback)(.*)$ /${vars:apache_base_path}/wsgi/$1$2 [PT]
+# If URI has numbers at the start, we cache a year
+# This allows a client to create their own cache and
+# update at his discretion
+RewriteRule ^${apache_entry_path}[0-9]+/(.*)$ ${apache_entry_path}$1 [E=setyearcache:true]
+Header merge Cache-Control "public,max-age=31536001" env=setyearcache
+
+# Non cached access
+RewriteRule ^${apache_entry_path}(qrcodegenerator|owschecker|iipimage|luftbilder|search|index|genindex|examples|img|js|css|releasenotes|services|_sources|_static|api|rest/services|ogcproxy|testi18n|loader.js|snapshot|checker|checker_dev|static|print|dev|feedback)(.*)$ /${vars:apache_base_path}/wsgi/$1$2 [PT]
 
 
 # Some services are not "free": control is done at varnish level

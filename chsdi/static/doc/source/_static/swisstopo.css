@@ -138,8 +138,8 @@ div.bodywrapper strong {
 
 table.docutils {
     margin: 5px 10px !important;
-    border-style: solid none solid;
-    border-width: 2px 0 2px;
+    border-style: solid;
+    border-width: 2px;
 }
 
 .ext-ie .geoadmin-catalog-tree .treelayericon-raster,
@@ -159,6 +159,13 @@ table.docutils th {
 }
 
 table.jqplot-table-legend, table.jqplot-cursor-legend {
-   top: 20px !important;
-   right: 20px !important;
+    top: 20px !important;
+    right: 20px !important;
+}
+
+hr {
+   margin-left: 0;
+   margin-right: 0;
+   margin-top: 1em;
+   border-color: gray;
 }

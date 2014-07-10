@@ -51,6 +51,30 @@ that points to your working directory. If all is well, you can reach your pages 
 
     http://mf-chsdi3.dev.bgdi.ch/<username>/
 
+# Deploying a branch
+
+Call the `.\deploybranch.sh` script **in your working directory** to deploy your current 
+branch to test (Use `.\deploybranch.sh int` to also deploy it to integration).
+The code for deployment, however, does not come from your working directory,
+but does get cloned (first time) or pulled (if done once) **directly from github**.
+So you'll likely use this command **after** you push your branch to github.
+
+The first time you use the command will take some time to execute.
+
+The code of the deployed branch is in a specific directory 
+`/var/www/vhosts/mf-geoadmin3/private/branch` on both test and integration.
+The command adds a branch specific configuration to
+`/var/www/vhosts/mf-geoadmin3/conf`. This way, the deployed branch
+behaves exactly the same as any user specific deploy.
+
+Sample path:
+http://mf-chsdi3.int.bgdi.ch/gjn_deploybranch/ (Don't forget the slash at the end)
+
+## Get correct back-link to geoadmin3
+Per default the back-link to geoadmin3 points to the main instance. If you
+want to change that, adapt the `geoadminhost` variable in the
+`buildout_branch.cfg.in` input file and commit it in *your branch*.
+
 # Python Code Styling
 
 We are currently using the PEP 8 convention for Python code.

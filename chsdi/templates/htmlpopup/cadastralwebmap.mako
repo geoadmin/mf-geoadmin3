@@ -4,6 +4,20 @@
 <%inherit file="base.mako"/>
 
 <%def name="table_body(c, lang)">
+    <%
+      from chsdi.models.vector import getScale
+      from chsdi.lib.validation.mapservice import MapServiceValidation
+      request = context.get('request')
+      defaultExtent = '42000,30000,350000,900000'
+      defaultImageDisplay = '400,600,96'
+      class CadastralWebMapParams(MapServiceValidation):
+          def __init__(self, request):
+              self.mapExtent = request.params.get('mapExtent', defaultExtent)
+              self.imageDisplay = request.params.get('imageDisplay', defaultImageDisplay)
+      params = CadastralWebMapParams(request)
+      c['bbox'] = params.mapExtent.bounds
+      c['scale']  = getScale(params.imageDisplay, params.mapExtent)
+    %>
     % if c['attributes']['ak'] in ['D','I','F','AUT']:
         <tr><td class="cell-left">${_('No info outside CH and FL')}</td><td></td></tr>
     % elif c['attributes']['ak'] == 'AG':

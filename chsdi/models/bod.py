@@ -11,8 +11,7 @@ Base = bases['bod']
 
 class Bod(object):
     __dbname__ = 'bod'
-    idBod = Column('bod_layer_id', Text, primary_key=True)
-    id = Column('bgdi_id', Text)
+    layerBodId = Column('bod_layer_id', Text, primary_key=True)
     idGeoCat = Column('geocat_uuid', Text)
     name = Column('kurzbezeichnung', Text)
     fullName = Column('bezeichnung', Text)
@@ -32,18 +31,19 @@ class Bod(object):
     inspireUpperName = Column('inspire_oberthema_name', Text)
     inspireAbstract = Column('inspire_abstract', Text)
     inspireName = Column('inspire_name', Text)
-    bundCollectionNumber = Column('geobasisdatensatz_name', Text)
-    bundCollection = Column('fk_geobasisdaten_sammlung_bundesrecht', Text)
+    bundCollectionNumber = Column('fk_geobasisdaten_sammlung_bundesrecht', Text)
+    bundCollection = Column('geobasisdatensatz_name', Text)
     scaleLimit = Column('scale_limit', Text)
 
     def layerMetadata(self):
-        primaryAttr = ('id', 'idBod', 'idGeoCat', 'name', 'fullName')
+        primaryAttrs = ('layerBodId', 'idGeoCat', 'name', 'fullName')
+        excludedAttrs = ('staging', 'searchText')
         meta = {'attributes': {}}
         for k in self.__dict__.keys():
             if k != '_sa_instance_state':
-                if k in primaryAttr and self.__dict__[k] is not None:
+                if k in primaryAttrs and self.__dict__[k] is not None:
                     meta[k] = self.__dict__[k]
-                elif self.__dict__[k] is not None:
+                elif k not in excludedAttrs and self.__dict__[k] is not None:
                     meta['attributes'][k] = self.__dict__[k]
         return meta
 
@@ -51,7 +51,7 @@ class Bod(object):
 class LayersConfig(Base):
     __tablename__ = 'view_layers_js'
     __table_args__ = ({'schema': 're3', 'autoload': False})
-    idBod = Column('layer_id', Text, primary_key=True)
+    layerBodId = Column('layer_id', Text, primary_key=True)
     attribution = Column('attribution', Text)
     background = Column('backgroundlayer', Boolean)
     hasLegend = Column('haslegend', Boolean)
@@ -65,6 +65,7 @@ class LayersConfig(Base):
     parentLayerId = Column('parentlayerid', Text)
     queryable = Column('queryable', Boolean)
     searchable = Column('searchable', Boolean)
+    selectbyrectangle = Column('selectbyrectangle', Boolean)
     serverLayerName = Column('server_layername', Text)
     singleTile = Column('singletile', Boolean)
     subLayersIds = Column('sublayersids', postgresql.ARRAY(Text))
@@ -72,18 +73,21 @@ class LayersConfig(Base):
     timeEnabled = Column('timeenabled', Boolean)
     timestamps = Column('timestamps', postgresql.ARRAY(Text))
     timeBehaviour = Column('time_behaviour', Text)
-    maps = Column('projects', Text)
+    maps = Column('topics', Text)
     staging = Column('staging', Text)
     wmsLayers = Column('wms_layers', Text)
     wmsUrl = Column('wms_url', Text)
 
-    def layerConfig(self, translate):
+    def layerConfig(self, params):
         config = {}
+        translate = params.translate
+        geodataStaging = params.geodataStaging
+        wmsHost = params.request.registry.settings['wmshost']
         for k in self.__dict__.keys():
             if not k.startswith("_") and \
                 self.__dict__[k] is not None and \
                     k not in ('maps', 'staging'):
-                if k == 'idBod':
+                if k == 'layerBodId':
                     config['label'] = translate(self.__dict__[k])
                 elif k == 'attribution':
                     config[k] = translate(self.__dict__[k])
@@ -95,21 +99,18 @@ class LayersConfig(Base):
                 else:
                     config[k] = self.__dict__[k]
 
-        staging = self.__dict__['staging']
+        layerStaging = self.__dict__['staging']
         if config['type'] == 'wmts':
             del config['singleTile']
         if config['type'] == 'wms':
-            if staging == 'test':
+            if layerStaging != 'prod':
                 config['wmsUrl'] = make_agnostic(
-                    config['wmsUrl'].replace('wms.geo.admin.ch', 'wms-bgdi0t.bgdi.admin.ch'))
-            if staging == 'integration':
-                config['wmsUrl'] = make_agnostic(
-                    config['wmsUrl'].replace('wms.geo.admin.ch', 'wms-bgdi0i.bgdi.admin.ch'))
+                    config['wmsUrl'].replace('wms.geo.admin.ch', wmsHost))
         # sublayers don't have attributions
         if 'attribution' in config:
             config['attributionUrl'] = translate(self.__dict__['attribution'] + '.url')
 
-        return {self.idBod: config}
+        return {self.layerBodId: config}
 
     def _getResolutionsFromMatrixSet(self, matrixSet):
         resolutions = [4000, 3750, 3500, 3250, 3000, 2750, 2500, 2250, 2000, 1750, 1500, 1250,
@@ -317,7 +318,7 @@ class Catalog(Base):
     parentId = Column('parent_id', Integer)
     topic = Column('topic', Text)
     category = Column('category', Text)
-    idBod = Column('bod_layer_id', Text)
+    layerBodId = Column('bod_layer_id', Text)
     nameDe = Column('name_de', Text)
     nameFr = Column('name_fr', Text)
     nameIt = Column('name_it', Text)
@@ -363,7 +364,7 @@ class Catalog(Base):
 class OerebMetadata(Base):
     __tablename__ = 'oereb_interlis_metadata'
     __table_args__ = ({'schema': 're3', 'autoload': False})
-    idBod = Column('layer_id', Text, primary_key=True)
+    layerBodId = Column('layer_id', Text, primary_key=True)
     header = Column('header', Text)
     footer = Column('footer', Text)
     data_created = Column('data_created', Text)

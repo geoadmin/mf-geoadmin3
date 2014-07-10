@@ -76,7 +76,7 @@ class TestMapServiceView(TestsBase):
         params = {'geometry': '600000,200000,631000,210000', 'geometryType': 'esriGeometryEnvelope', 'imageDisplay': '500,600,96', 'mapExtent': '548945.5,147956,549402,148103.5', 'tolerance': '1', 'layers': 'all:ch.swisstopo.lubis-luftbilder_farbe', 'geometryFormat': 'geojson'}
         resp = self.testapp.get('/rest/services/ech/MapServer/identify', params=params, status=200)
         self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(resp.json['results'][0]['geometry']['type'] == 'Polygon')
+        self.failUnless(resp.json['results'][0]['geometry']['type'] in ['Polygon', 'GeometryCollection'])
 
     def test_identify_no_geom(self):
         params = {'geometry': '630000,245000,645000,265000', 'geometryType': 'esriGeometryEnvelope', 'imageDisplay': '500,600,96', 'mapExtent': '545132,147068,550132,150568', 'tolerance': '1', 'layers': 'all', 'returnGeometry': 'false'}
@@ -140,6 +140,12 @@ class TestMapServiceView(TestsBase):
         params = {'layer': 'dummy', 'searchField': 'gdename', 'returnGeometry': 'false'}
         resp = self.testapp.get('/rest/services/all/MapServer/find', params=params, status=400)
 
+    def test_find_contains(self):
+        params = {'layer': 'ch.bfs.gebaeude_wohnungs_register', 'searchText': 'Islastrasse', 'searchField': 'strname1', 'returnGeometry': 'false', 'contains': 'false'}
+        resp = self.testapp.get('/rest/services/all/MapServer/find', params=params, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless(len(resp.json['results']) > 1)
+
     def test_feature_wrong_idlayer(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/toto/362', status=400)
         resp.mustcontain('No Vector Table was found for')
@@ -168,6 +174,14 @@ class TestMapServiceView(TestsBase):
         self.failUnless('properties' in resp.json['feature'])
         self.failUnless('geometry' in resp.json['feature'])
         self.failUnless(resp.json['feature']['id'] == 362)
+
+    def test_several_features(self):
+        resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362,363', status=200)
+        self.failUnless(len(resp.json['features']) == 2)
+
+    def test_several_features_geojson(self):
+        resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362,363', params={'geometryFormat': 'geojson'}, status=200)
+        self.failUnless(len(resp.json['features']) == 2)
 
     def test_feature_with_callback(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362', params={'callback': 'cb'}, status=200)
@@ -250,7 +264,7 @@ class TestMapServiceView(TestsBase):
         from sqlalchemy.orm import scoped_session, sessionmaker
         val = True
         DBSession = scoped_session(sessionmaker())
-        query = DBSession.query(distinct(LayersConfig.idBod)).filter(LayersConfig.queryable == val).filter(LayersConfig.staging == 'prod')
+        query = DBSession.query(distinct(LayersConfig.layerBodId)).filter(LayersConfig.queryable == val).filter(LayersConfig.staging == 'prod')
         # Get a list of all the queryable layers
         layers = [q[0] for q in query]
         DBSession.close()

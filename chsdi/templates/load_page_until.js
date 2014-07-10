@@ -20,6 +20,10 @@ var system = require('system');
 var errorMsg = 'error';
 var checkCompleteInterval;
 var maxTime = parseInt(system.args[3]) * 1000;
+//Set phantomJS Screen size according to
+//http://techcrunch.com/2012/04/11/move-over-1024x768-the-most-popular-screen-resolution-on-the-web-is-now-1366x768/
+var width = 1366;
+var height = 768;
 
 var checkComplete = function() {
 
@@ -47,6 +51,7 @@ if (system.args.length !== 4 || !maxTime || !page) {
   phantom.exit();
 } else {
   var startTime = new Date().getTime();
+  page.viewportSize = { width: width, height: height };
   page.open(system.args[1], function(status) {
     if (status !== 'success') {
       console.log(errorMsg);

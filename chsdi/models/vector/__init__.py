@@ -5,6 +5,7 @@ import datetime
 import decimal
 from shapely import wkb
 from shapely.geometry import asShape
+from shapely.geometry import box
 from sqlalchemy.orm.util import class_mapper
 from sqlalchemy.orm.properties import ColumnProperty
 from geoalchemy import Geometry, WKBSpatialElement, functions
@@ -16,27 +17,32 @@ from shapely.geometry import asShape
 
 
 def getScale(imageDisplay, mapExtent):
-    inchesPerMeter = 1.0 / 0.0254
+    metersPerInch = 0.0254
     imgPixelPerInch = imageDisplay[2]
+    imgPixelHeight = imageDisplay[1]
     imgPixelWidth = imageDisplay[0]
     bounds = mapExtent.bounds
 
     mapMeterWidth = abs(bounds[0] - bounds[2])
-    imgMeterWidth = (imgPixelWidth / imgPixelPerInch) * inchesPerMeter
+    mapMeterHeight = abs(bounds[1] - bounds[3])
+    imgMeterWidth = (imgPixelWidth / imgPixelPerInch) * metersPerInch
+    imgMeterHeight = (imgPixelHeight / imgPixelPerInch) * metersPerInch
 
-    resolution = imgMeterWidth / mapMeterWidth
-    scale = 1 / resolution
-
-    return scale
+    resolution = max((imgMeterWidth / mapMeterWidth, imgMeterHeight / mapMeterHeight))
+    scale = 1.0 / resolution
+    return int(scale)
 
 
 def getToleranceMeters(imageDisplay, mapExtent, tolerance):
     bounds = mapExtent.bounds
     mapMeterWidth = abs(bounds[0] - bounds[2])
+    mapMeterHeight = abs(bounds[1] - bounds[3])
     imgPixelWidth = imageDisplay[0]
+    imgPixelHeight = imageDisplay[1]
 
-    if 0.0 not in (tolerance, imgPixelWidth, mapMeterWidth):
-        toleranceMeters = (mapMeterWidth / imgPixelWidth) * tolerance
+    # Test for null values
+    if all((tolerance, imgPixelWidth, mapMeterWidth, imgPixelHeight, mapMeterHeight)):
+        toleranceMeters = max(mapMeterWidth / imgPixelWidth, mapMeterHeight / imgPixelHeight) * tolerance
         return toleranceMeters
     return 0.0
 
@@ -82,15 +88,21 @@ class Vector(GeoInterface):
     @property
     def __geo_interface__(self):
         feature = self.__read__()
-        shape = None
+        extents = []
         try:
             shape = asShape(feature.geometry)
+            extents.append(shape.bounds)
+        except:
+            pass
+        try:
+            for geom in feature.geometry.geometries:
+                extents.append(asShape(geom).bounds)
         except:
             pass
         return geojson.Feature(
             id=self.id,
             geometry=feature.geometry,
-            bbox=shape.bounds if shape else None,
+            bbox=max(extents, key=extentArea) if extents else None,
             properties=feature.properties,
             # For ESRI
             layerBodId=self.__bodId__,
@@ -110,11 +122,11 @@ class Vector(GeoInterface):
 
     @classmethod
     def geometry_column(cls):
-        return cls.__table__.columns['the_geom']
+        return cls.__mapper__.columns['the_geom']
 
     def geometry_column_to_return(cls):
         geomColumnName = cls.__returnedGeometry__ if hasattr(cls, '__returnedGeometry__') else 'the_geom'
-        return cls.__table__.columns[geomColumnName]
+        return cls.__mapper__.columns[geomColumnName]
 
     @classmethod
     def primary_key_column(cls):
@@ -178,3 +190,8 @@ def esriRest2Shapely(geometry, geometryType):
         return asShape(geometry)
     except ValueError:
         return geometry
+
+
+def extentArea(i):
+    geom = box(i[0], i[1], i[2], i[3])
+    return geom.area

@@ -1,34 +1,53 @@
 <%inherit file="base.mako"/>
-<%namespace name="iipimage" file="../iipimage.mako"/>
+<%namespace name="lubis_map" file="../lubis_map.mako"/>
 
 <%!
 import datetime
 import urllib
 import urllib2
 from pyramid.url import route_url
-from xml.dom import minidom
 import chsdi.lib.helpers as h
+import markupsafe
 
-def get_image_size(filename):
-    width = 1
-    height = 1
+def br(text):
+    return text.replace('\n', markupsafe.Markup('<br />'))
 
-    if filename:
-        metadata_file = None
+
+def determinePreviewUrl(ebkey):
+    tileUrlBasePath = 'http://aerialimages0.geo.admin.ch/tiles'
+
+    def getPreviewImageUrl(ebkey):
+        return tileUrlBasePath + '/' + ebkey + '/quickview.jpg'
+
+    def getZeroTileUrl(ebkey):
+        return tileUrlBasePath + '/' + ebkey + '/0/0/0.jpg'
+
+    class HeadRequest(urllib2.Request):
+        def get_method(self):
+            return 'HEAD'
+
+    def testForUrl(url):
+        response = None
         try:
-            metadata_file = urllib2.urlopen("https://web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?DeepZoom=" + filename + ".dzi", timeout = 3)
-            xmldoc = minidom.parse(metadata_file)
-            dimensions = xmldoc.getElementsByTagName('Size')
-            width = dimensions[0].getAttribute('Width')
-            height = dimensions[0].getAttribute('Height')
-        except: 
-            width = 1
-            height = 1
-        finally:
-            if metadata_file:
-                metadata_file.close()
+            request = HeadRequest(url)
+            request.add_header('Referer', 'http://admin.ch')
+            response = urllib2.urlopen(request)
 
-    return (width, height)
+        finally:
+            if response:
+                if response.getcode() != 200:
+                    url = ""
+                response.close()
+            else:
+                url = ""
+            return url
+
+
+    #testing these 2 url could be done more python like
+    url = testForUrl(getPreviewImageUrl(ebkey))
+    if url == "":
+        url = testForUrl(getZeroTileUrl(ebkey))
+    return h.make_agnostic(url)
 
 def date_to_str(datum):
     try:
@@ -36,17 +55,16 @@ def date_to_str(datum):
     except:
         return request.translate('None') + request.translate('Datenstand')
 
-def get_quickview_url(request, params):
+def get_viewer_url(request, params):
     f = {
-        'image': params[0],
-        'width': params[1],
-        'height': params[2],
-        'title': params[3].encode('utf8'),
-        'bildnummer': params[4],
-        'datenherr': params[5].encode('utf8'),
-        'layer': params[6].encode('utf8')
+        'width': params[0],
+        'height': params[1],
+        'title': params[2].encode('utf8'),
+        'bildnummer': params[3],
+        'datenherr': params[4].encode('utf8'),
+        'layer': params[5].encode('utf8')
     }
-    return h.make_agnostic(route_url('iipimage', request)) + '?' + urllib.urlencode(f)
+    return h.make_agnostic(route_url('luftbilder', request)) + '?' + urllib.urlencode(f)
 %>
 
 <%def name="table_body(c, lang)">
@@ -64,18 +82,17 @@ endif
 toposhopscan = 'nein'
 if c['attributes']['filename'] :
     toposhopscan = 'ja'
+preview_url = determinePreviewUrl(c['featureId'])
 
 datum = date_to_str(c['attributes']['flugdatum'])
-image_size = get_image_size(c['attributes']['filename'])
 params = (
-    c['attributes']['filename'], 
-    image_size[0], 
-    image_size[1], 
+    c['attributes']['image_width'] if 'image_width' in  c['attributes'] else 0,
+    c['attributes']['image_height'] if 'image_height' in c['attributes'] else 0,
     _('tt_lubis_ebkey'),
     c['featureId'],
     c['attributes']['firma'],
     c['fullName'])
-quickview_url = get_quickview_url(request, params)
+viewer_url = get_viewer_url(request, params)
 %>
 <tr>
   <td class="cell-left">${_('tt_lubis_ebkey')}</td>
@@ -89,11 +106,12 @@ quickview_url = get_quickview_url(request, params)
   <td class="cell-left">${_('tt_lubis_Filmart')}</td>
   <td>${c['attributes']['filmart'] or '-'}</td>
 </tr>
-% if image_size[1] > 1:
+
+% if preview_url != "":
 <tr>
   <td class="cell-left">${_('tt_lubis_Quickview')}</td>
   <td>
-    <a href="${quickview_url}" target="_blank"><img src="//web-iipimage.prod.bgdi.ch/iipimage/iipsrv.fcgi?FIF=${c['attributes']['filename']}&WID=150&CVT=jpeg" alt="quickview"></a>
+    <a href="${viewer_url}" target="_blank"><img src="${preview_url}" alt="quickview"></a>
   </td>
 </tr>
 % else:
@@ -102,6 +120,7 @@ quickview_url = get_quickview_url(request, params)
   <td>${_('tt_lubis_noQuickview')}</td>
 </tr>
 % endif
+
 % if 'contact_web' not in c['attributes'] and c['attributes']['ort'] is not None:
 <tr>
   <th class="cell-left">${_('link')} Toposhop</th>
@@ -112,7 +131,7 @@ quickview_url = get_quickview_url(request, params)
 <tr>
   <th class="cell-left">${_('tt_lubis_bildorder')}</th>
   <td>
-    ${c['attributes']['contact']} 
+    ${c['attributes']['contact'] | br } 
     <br/> 
     ${c['attributes']['contact_email']} 
     <br/>
@@ -144,45 +163,47 @@ else:
 endif
 
 loader_url = h.make_agnostic(route_url('ga_api', request))
-orientierung = '-'
-scan = '-'
+preview_url = determinePreviewUrl(c['featureId'])
+
+filesize_mb = '-'
 toposhopscan = 'nein'
 filename = c['attributes']['filename']
 if filename:
-    scan = 'True'
+    filesize_mb = c['attributes']['filesize_mb']
     toposhopscan = 'ja'
 endif
+orientierung = '-'
 if c['attributes']['orientierung']:
     orientierung = 'True'
 endif
 
 datum = date_to_str(c['attributes']['flugdatum'])
-image_size = get_image_size(c['attributes']['filename'])
-image_width =  image_size[0];
-image_height = image_size[1];
+image_width =  c['attributes']['image_width'] if 'image_width' in  c['attributes'] else 0
+image_height = c['attributes']['image_height'] if 'image_height' in c['attributes'] else 0
 
 params = (
-    filename, 
     image_width, 
     image_height, 
     _('tt_lubis_ebkey'),
-    c['attributes']['bildnummer'],
+    c['featureId'],
     c['attributes']['firma'],
     c['fullName'])
-quickview_url = get_quickview_url(request, params)
+viewer_url = get_viewer_url(request, params)
 %>
 <title>${_('tt_lubis_ebkey')}: ${c['featureId']}</title>
 <body onload="init()">
   <table class="table-with-border kernkraftwerke-extended">
     <tr><th class="cell-left">${_('tt_lubis_ebkey')}</th>            <td>${c['featureId'] or '-'}</td></tr>
+    <tr><th class="cell-left">${_('tt_lubis_inventarnummer')}</th>   <td>${c['attributes']['inventarnummer'] or '-'}</td></tr>
     <tr><th class="cell-left">${_('tt_lubis_Flugdatum')}</th>        <td>${datum or '-'}</td></tr>
-    <tr><th class="cell-left">${_('tt_lubis_ort')}</th>              <td>${c['attributes']['ort'] or '-'}</td></tr>
+    <tr><th class="cell-left">${_('tt_lubis_flughoehe')}</th>        <td>${c['attributes']['flughoehe'] or '-'}</td></tr>
     <tr><th class="cell-left">${_('tt_lubis_massstab')}</th>         <td>1:${c['attributes']['massstab'] or '-'}</td></tr>
     <tr><th class="cell-left">${_('tt_lubis_y')}</th>                <td>${c['attributes']['x'] or '-'}</td></tr>
     <tr><th class="cell-left">${_('tt_lubis_x')}</th>                <td>${c['attributes']['y'] or '-'}</td></tr>
     <tr><th class="cell-left">${_('tt_lubis_Filmart')}</th>          <td>${c['attributes']['filmart'] or '-'}</td></tr>
     <tr><th class="cell-left">${_('tt_lubis_originalsize')}</th>     <td>${c['attributes']['originalsize'] or '-'}</td></tr>
-    <tr><th class="cell-left">${_('tt_lubis_scan')}</th>             <td>${scan or '-'}</td></tr>
+    <tr><th class="cell-left">${_('tt_lubis_filesize_mb')}</th>      <td>${filesize_mb or '-'}</td></tr>
+    <tr><th class="cell-left">${_('tt_lubis_bildpfad')}</th>         <td>${filename or '-'}</td></tr>
     <tr><th class="cell-left">${_('tt_lubis_orientierung')}</th>     <td>${orientierung or '-'}</td></tr>
 % if 'contact_web' not in c['attributes'] and c['attributes']['ort'] is not None:
   <tr class="chsdi-no-print">
@@ -193,7 +214,7 @@ quickview_url = get_quickview_url(request, params)
 % if 'contact_web' in c['attributes']:
   <tr class="chsdi-no-print">
     <th class="cell-left">${_('tt_lubis_bildorder')}</th>
-    <td>${c['attributes']['contact']} <br /> ${c['attributes']['contact_email']} <br /><a href="${c['attributes']['contact_web']}" target="_blank">${c['attributes']['contact_web']}</a></td>
+    <td>${c['attributes']['contact'] | br } <br /> ${c['attributes']['contact_email']} <br /><a href="${c['attributes']['contact_web']}" target="_blank">${c['attributes']['contact_web']}</a></td>
   </tr>
 % endif
   </table>
@@ -201,12 +222,14 @@ quickview_url = get_quickview_url(request, params)
     <div id="map"></div>
   </div>
   <br>
-% if image_height > 1:
-  <span class="chsdi-no-print">${_('tt_luftbilderOL')}<a href="${quickview_url}" target="_blank" alt="Fullscreen">(fullscreen)</a></span>
+
+% if preview_url != "":
+  <span class="chsdi-no-print">${_('tt_luftbilderOL')}<a href="${viewer_url}" target="_blank" alt="Fullscreen">(fullscreen)</a></span>
   <div class="chsdi-map-container table-with-border">
-    <div id="zoomify"></div>
+    <div id="lubismap"></div>
   </div>
 % endif
+
   <script type="text/javascript" src="${loader_url}"></script>
   <script type="text/javascript">
     function init() {
@@ -215,6 +238,7 @@ quickview_url = get_quickview_url(request, params)
         // Define the div where the map is placed
         target: 'map',
         ol3Logo: false,
+        tooltip: false,
         view: new ol.View2D({
           // Define the default resolution
           // 10 means that one pixel is 10m width and height
@@ -238,10 +262,9 @@ quickview_url = get_quickview_url(request, params)
       map.highlightFeature('${c['layerBodId']}', '${c['featureId']}');
       map.recenterFeature('${c['layerBodId']}', '${c['featureId']}');
 
-
-% if image_width > 1:
-      ${iipimage.init_map(c['attributes']['filename'], image_width, image_height, 'zoomify')}
-% endif
+% if preview_url != "":
+      ${lubis_map.init_map(c['featureId'], image_width, image_height, 0, 'lubismap')}
+%endif
 
     }
   </script>
