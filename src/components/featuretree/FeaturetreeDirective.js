@@ -203,7 +203,7 @@
                   params = {
                     bbox: extent[0] + ',' + extent[1] +
                         ',' + extent[2] + ',' + extent[3],
-                    type: 'features',
+                    type: 'featureidentify',
                     features: layersToQuery.ids.join(','),
                     timeEnabled: layersToQuery.timeenabled.join(',')
                   };
