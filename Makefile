@@ -37,6 +37,9 @@ help:
 	@echo "- all             All of the above (target to run prior to creating a PR)"
 	@echo "- clean           Remove generated files"
 	@echo "- cleanall        Remove all the build artefacts"
+	@echo "- deploydev       Deploys current github master to dev. Specify CREATE_SNAPSHOT=true to create snapshot as well."
+	@echo "- deployint       Deploys snapshot specified with SNAPSHOT=xxx to int."
+	@echo "- deployprod      Deploys snapshot specified with SNAPSHOT=xxx to prod."
 	@echo "- deploybranch    Deploys current branch to test (note: takes code from github)"
 	@echo "- deploybranchint Deploys current branch to test and int (note: takes code from github)"
 	@echo "- updateol        Update ol.js, ol-simple.js and ol-whitespace.js"
@@ -74,6 +77,22 @@ testprod: prd/lib/build.js test/karma-conf-prod.js node_modules
 
 .PHONY: apache
 apache: apache/app.conf
+
+.PHONY: deploydev
+deploydev:
+	@ if test "$(SNAPSHOT)" = "true"; then \
+		./scripts/deploydev.sh -s; \
+	else \
+		./scripts/deploydev.sh; \
+  fi
+
+.PHONY: deployint
+deployint: guard-SNAPSHOT
+	./scripts/deploysnapshot.sh $(SNAPSHOT) int
+
+.PHONY: deployprod
+deployprod: guard-SNAPSHOT
+	./scripts/deploysnapshot.sh $(SNAPSHOT) prod
 
 .PHONY: deploybranch
 deploybranch: deploy/deploy-branch.cfg $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/config
@@ -127,6 +146,12 @@ fixrights:
 .PHONY: updatesitemaps
 updatesitemaps:
 	node scripts/create_sitemaps.js
+
+guard-%:
+	@ if test "${${*}}" = ""; then \
+  	echo "Environment variable $* not set. Add SNAPSHOT=xxx to your command."; \
+  	exit 1; \
+	fi
 
 prd/: $(SITEMAP_FILES)
 	mkdir -p $@
@@ -341,4 +366,5 @@ clean:
 	rm -f src/TemplateCacheModule.js
 	rm -f src/lib/fastclick.js
 	rm -rf prd
+
 

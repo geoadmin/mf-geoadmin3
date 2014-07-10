@@ -69,9 +69,25 @@ this to work, you need to make sure to install the following dependencies:
 
 # Deploying project and branches
 
-## Deploying the project (branch *master*)
+## Deploying the project to dev, int and prod
 
-Use the geoadmin3 script found in this git repositry: https://github.com/geoadmin/deploy
+Do the following **inside your working directory**:
+
+`make deploydev SNAPSHOT=true`
+
+This updates the source in /var/www...to the latest master branch from github,
+builds it from scratch, runs the tests and creates a snapshot. The snapshot directory
+will be shown when the script is done. *Note*: you can omit the `SNAPSHOT=true` parameter if
+you don't want to create a snapshot e.g. for intermediate releases on dev main.
+
+A snapshot (e.g. 201407031411) can be deployed to integration with:
+
+`make deployint SNAPSHOT=201407031411`
+
+This will do the corresponding thing for prod:
+
+`make deployprod SNAPSHOT=201407031411`
+
 
 Note: we should NOT manually adapt code in /var/www/vhosts/mf-geoadmin3 directory
 
