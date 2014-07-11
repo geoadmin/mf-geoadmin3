@@ -23,6 +23,8 @@ Add .pgpass to your environment
 Open .pgpass and Add
 
     pgcluster0t.bgdi.admin.ch:5432:*:${username}:${pass}
+    pgcluster0i.bgdi.admin.ch:5432:*:${username}:${pass}
+    pgcluster0.bgdi.admin.ch:5432:*:${username}:${pass}
 
 Make sure PGUSER and PGPASS is set in your .bashrc (for nosetests, potranslate and sphinx)
 
@@ -51,6 +53,33 @@ that points to your working directory. If all is well, you can reach your pages 
 
     http://mf-chsdi3.dev.bgdi.ch/<username>/
 
+# Deploying to dev, int and prod
+
+Do the following commands **inside your working directory**. Here's how a standard
+deploy process is done.
+
+`.\deploydev.sh -s`
+
+This updates the source in /var/www...to the latest master branch from github,
+creates a snapshot and runs nosetests against the test db. The snapshot directory
+will be shown when the script is done. *Note*: you can omit the `-s` parameter if
+you don't want to create a snapshot e.g. for intermediate releases on dev main.
+
+Once a snapshot has been created, you are able to deploy this snapshot to a
+desired target. For integration, do
+
+`.\deploysnapshot 201407031411 int`
+
+This will run the full nose tests **from inside the 201407031411 snapshot directory** against the integration db cluster. Only if these tests are successfull, the snapshot is deployed to the integration cluster.
+
+`.\deploysnapshot 201407031411 prod`
+
+This will do the corresponding thing for prod
+
+*Note*: older snapshots don't contain the nose_run.sh scripts. To use the above
+commands, you have to manually copy the nose_run.sh script into the snapshot code
+directory.
+
 # Deploying a branch
 
 Call the `.\deploybranch.sh` script **in your working directory** to deploy your current 
@@ -76,7 +105,10 @@ want to change that, adapt the `geoadminhost` variable in the
 `buildout_branch.cfg.in` input file and commit it in *your branch*.
 
 ## Run nosetests manual on different enviroments
-We are able to run our integration tests against different staging environments:
+We are able to run our integration tests against different staging environments
+
+**For this to work, you need to adapt your personal ~/.pgpass file. It has to
+include access information for all clusters (add pgcluster0i and pgcluster0)**
 
 To run against prod environment:
 `./nose_run.sh -p`
@@ -89,6 +121,8 @@ To run against dev/test environment:
 
 To run against your private environment:
 `./buildout/bin/nosetests`
+
+
 
 
 # Python Code Styling
