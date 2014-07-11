@@ -248,14 +248,43 @@ class TestMapServiceView(TestsBase):
         self.failUnless(resp.content_type == 'application/javascript')
 
     def test_all_legends(self):
-        import os
-        legendsPath = os.getcwd() + '/chsdi/static/images/legends/'
-        legendNames = os.listdir(legendsPath)
-        parseLegendNames = lambda x: x[:-7] if 'big' not in x else x[:-11]
-        layers = list(set(map(parseLegendNames, legendNames)))
+        from chsdi.models import models_from_name
+        from chsdi.models.bod import LayersConfig
+        from sqlalchemy import distinct
+        from sqlalchemy.orm import scoped_session, sessionmaker
+        # Get list of layers to test the legend service
+        DBSession = scoped_session(sessionmaker())
+        # Get a list of all layers in prod, exclude sub-layers
+        query = DBSession.query(distinct(LayersConfig.layerBodId)).filter(LayersConfig.staging == 'prod').filter(LayersConfig.parentLayerId == None)
+        layers = [q[0] for q in query]
+        DBSession.close()
+
         for layer in layers:
             for lang in ('de', 'fr', 'it', 'rm', 'en'):
                 self.testapp.get('/rest/services/all/MapServer/%s/legend' % layer, params={'callback': 'cb', 'lang': '%s' % lang}, status=200)
+
+    def test_all_legends_images(self):
+        import os
+        from chsdi.models import models_from_name
+        from chsdi.models.bod import LayersConfig
+        from sqlalchemy import distinct
+        from sqlalchemy.orm import scoped_session, sessionmaker
+        # Get list of layers from existing legend images
+        legendsPath = os.getcwd() + '/chsdi/static/images/legends/'
+        legendNames = os.listdir(legendsPath)
+        parseLegendNames = lambda x: x[:-4] if 'big' not in x else x[:-8]
+        legendImages = list(set(map(parseLegendNames, legendNames)))
+        # Get list of layers that should have image in prod, exclude sublayers 
+        DBSession = scoped_session(sessionmaker())
+        query = DBSession.query(distinct(LayersConfig.layerBodId)).filter(LayersConfig.staging == 'prod').filter(LayersConfig.parentLayerId == None).filter(LayersConfig.hasLegend == True)
+        # Get a list of all the queryable layers
+        layers = [q[0] for q in query]
+        DBSession.close()
+
+        for layer in layers:
+            for lang in ('de', 'fr', 'it', 'rm', 'en'):
+                # Failure here measn the layer.hasLegend == True, but there's not image
+                self.failUnless((layer + '_' + lang) in legendImages)
 
     def test_all_htmlpopups(self):
         from chsdi.models import models_from_name

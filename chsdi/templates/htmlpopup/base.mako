@@ -7,7 +7,6 @@
   c['scale'] = feature.get('scale')
   c['stable_id'] = False
   c['baseUrl'] = h.make_agnostic(''.join((protocol, '://', request.registry.settings['geoadminhost'])))
-  c['instanceId'] = request.registry.settings['instanceid']
   c['attribution'] = feature['attribution']
   c['fullName'] = feature['fullName']
   extended = feature['extended']
