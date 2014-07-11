@@ -18,9 +18,4 @@ SetEnvIf Request_URI "\.pdf$" PDF=pdf
 SetEnvIf User-Agent .*MSIE.* IE=ie
 Header set Content-Disposition "inline" env=IE
 Header set Content-Type "application/octet-stream" env=PDF
-# IE does not set referer for XDomain Requests, therefore
-# we set the Referer to Origin for requests from IE9
-SetEnvIf User-Agent ".*MSIE 9.*" IE9=ie9
-SetEnvIf Origin "(.*)" OriginRef=$1
-RequestHeader set Referer %{OriginRef}e env=IE9
 
