@@ -79,6 +79,7 @@
   </head>
 
   <body ng-class="[topicId, globals.searchFocused ? 'search-focused' : '', globals.touch ? 'touch' : '', globals.webkit ? 'webkit' : 'no-webkit']">
+    <!-- The below conditional is ignored by >= IE10 and all other browsers -->
     <!--![if IE]>
       <script>
        (function(){
@@ -94,6 +95,10 @@
          alert(msgDocumentMode + msgCompatibilityView + "DE: \334ber die 'F12' Taste k\366nnen Sie die Einstellungen auf 'Browsermodus:IE9' und 'Dokumentmodus:IE-9-Standards' setzen.\nFR: En appuyant sur F12, vous pouvez modifier l'affichage de compatibilit\351 en choisissant le mode navigateur IE9 et le mode de document normes IE9.\nIT: Premere F12 per modificare la Modalit\340 browser scegliendo poi 'Modalit\340 browser IE9' e 'Modalit\340 documento: IE9'.\nEN: Click on F12 and change the compatibility view mode and the document mode to 'Browser Mode:IE9' and 'Document Mode: IE9 standards'.");
        }
        })();
+      </script>
+      <script src="lib/angularIE9CorsFix.js"></script>
+      <script>
+        IE9Fix.call(this);
       </script>
     <![endif]-->
     <div ng-controller="GaSeoController">
@@ -537,8 +542,23 @@
 
 % if mode == "prod":
     <script src="${versionslashed}lib/build.js"></script>
+    <!-- For <= IE9, we load it explicitely as XDomain does not support
+         dynamic/lazy loading of javascript -->
+    <!--![if IE]>
+    <script src="${versionslashed}lib/d3-3.3.1.min.js"></script>
+    <script src="${versionslashed}lib/jQuery.XDomainRequest.js"></script>
+    <![endif]-->
 % else:
+    <!-- in source, we need to load it here because IE9 ignores it in
+         the comments for reasons unknown to me. In prod, it's only
+         loaded in IE9 -->
+    <script src="lib/angularIE9CorsFix.js"></script>
+    <script>
+      //This call only affects browser <= IE9
+      IE9Fix.call(this);
+    </script>
     <script src="lib/jquery-2.0.3.js"></script>
+    <script src="lib/jQuery.XDomainRequest.js"></script>
     <script src="lib/angular-1.2.9.js"></script>
     <script src="lib/angular-translate-1.1.1.js"></script>
     <script src="lib/angular-translate-loader-static-files-0.1.5.js"></script>
@@ -597,10 +617,9 @@
 
         module.constant('gaGlobalOptions', {
           apiUrl : location.protocol + '${api_url}',
-          mapUrl : location.origin + '/${user_env}',
-          cachedMapUrl: location.origin + '/${user_env}' + cacheAdd,
+          cachedApiUrl: location.protocol + '${api_url}' + cacheAdd,
           resourceUrl: location.origin + pathname + '${versionslashed}',
-          ogcproxyUrl: location.origin + '/${user_env}' + '/ogcproxy?url=',
+          ogcproxyUrl : location.protocol + '${api_url}' + '/ogcproxy?url=',
           whitelist: [
             'http://www.kmlvalidator.org/validate.htm'
           ]
@@ -618,15 +637,15 @@
               '//wmts{5-9}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
 
           gaLayersProvider.layersConfigUrlTemplate =
-              gaGlobalOptions.cachedMapUrl + '/rest/services/{Topic}/MapServer/layersConfig?lang={Lang}';
+              gaGlobalOptions.cachedApiUrl + '/rest/services/{Topic}/MapServer/layersConfig?lang={Lang}';
 
           gaLayersProvider.legendUrlTemplate =
-              gaGlobalOptions.cachedMapUrl + '/rest/services/{Topic}/MapServer/{Layer}/legend?lang={Lang}';
+              gaGlobalOptions.cachedApiUrl + '/rest/services/{Topic}/MapServer/{Layer}/legend?lang={Lang}';
         });
 
         module.config(function(gaPreviewFeaturesProvider, gaGlobalOptions) {
           gaPreviewFeaturesProvider.url =
-              gaGlobalOptions.cachedMapUrl + '/rest/services/all/MapServer/';
+              gaGlobalOptions.cachedApiUrl + '/rest/services/all/MapServer/';
         });
 
         module.config(function(gaProfileServiceProvider, gaGlobalOptions) {

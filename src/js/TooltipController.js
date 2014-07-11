@@ -8,8 +8,8 @@
 
         $scope.options = {
           tolerance: gaBrowserSniffer.touchDevice ? 15 : 5,
-          identifyUrlTemplate: gaGlobalOptions.mapUrl + '/rest/services/{Topic}/MapServer/identify',
-          htmlUrlTemplate: gaGlobalOptions.cachedMapUrl + '/rest/services/{Topic}/MapServer/{Layer}/{Feature}/htmlPopup'
+          identifyUrlTemplate: gaGlobalOptions.apiUrl + '/rest/services/{Topic}/MapServer/identify',
+          htmlUrlTemplate: gaGlobalOptions.cachedApiUrl + '/rest/services/{Topic}/MapServer/{Layer}/{Feature}/htmlPopup'
         };
       });
 })();

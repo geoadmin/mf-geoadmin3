@@ -15,7 +15,7 @@
           gaGlobalOptions, gaUrlUtils, gaWaitCursor) {
         $scope.options = {
           isProfileActive: false,
-          profileUrl: gaGlobalOptions.mapUrl + '/rest/services/profile.json',
+          profileUrl: gaGlobalOptions.apiUrl + '/rest/services/profile.json',
           profileOptions: {
               xLabel: 'profile_x_label',
               yLabel: 'profile_y_label',

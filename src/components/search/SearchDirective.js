@@ -58,11 +58,15 @@
 
           var geojsonParser = new ol.format.GeoJSON();
 
-          function parseExtent(stringBox2D) {
-            var extent = stringBox2D.replace('BOX(', '')
-              .replace(')', '').replace(',', ' ')
-              .split(' ');
-            return $.map(extent, parseFloat);
+          function parseExtent(stringBox2D, center) {
+            if (!angular.isDefined(stringBox2D)) {
+              return [center[0], center[1], center[0], center[1]];
+            } else {
+              var extent = stringBox2D.replace('BOX(', '')
+                .replace(')', '').replace(',', ' ')
+                .split(' ');
+              return $.map(extent, parseFloat);
+            }
           }
 
           function getBBoxParameters(map) {
@@ -246,8 +250,8 @@
                 var attrs = context.attrs;
                 var label = getLocationLabel(attrs);
                 var origin = attrs.origin;
-                var extent = parseExtent(attrs.geom_st_box2d);
                 var center = [attrs.y, attrs.x];
+                var extent = parseExtent(attrs.geom_st_box2d, center);
                 var template = '<div class="tt-search" ' +
                     'ng-mouseover="addOverlay([' +
                     extent + ']' + ',[' + center + '],' + '\'' +
@@ -260,9 +264,9 @@
                 var attrs = context.attrs;
                 var label = getLocationLabel(attrs);
                 var origin = attrs.origin;
-                var extent = parseExtent(attrs.geom_st_box2d);
                 var center = ol.proj.transform([attrs.lon, attrs.lat],
                     'EPSG:4326', 'EPSG:21781');
+                var extent = parseExtent(attrs.geom_st_box2d, center);
                 var template = '<div class="tt-search" ' +
                     'ng-mouseover="addOverlay([' +
                     extent + ']' + ',[' + center + '],' + '\'' +
@@ -494,8 +498,8 @@
                   taElt.trigger('blur', [true]);
                   if (origin !== 'feature' && origin !== 'layer') {
                     registerMove();
-                    var extent = parseExtent(datum.attrs.geom_st_box2d);
                     var center = [datum.attrs.y, datum.attrs.x];
+                    var extent = parseExtent(datum.attrs.geom_st_box2d, center);
                     if (originZoom.hasOwnProperty(origin)) {
                       var zoom = originZoom[origin];
                       moveTo(map, zoom, center);

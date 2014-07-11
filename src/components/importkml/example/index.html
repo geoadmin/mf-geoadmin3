@@ -81,8 +81,7 @@
         ]);
 
         module.constant('gaGlobalOptions', {
-          serviceUrl : 'http://mf-chsdi3.dev.bgdi.ch',
-          baseUrlPath: 'http://mf-geoadmin3.dev.bgdi.ch/main'
+          serviceUrl : 'http://mf-chsdi3.dev.bgdi.ch'
         });
 
         module.config(['gaLayersProvider', function(gaLayersProvider) {
@@ -134,7 +133,7 @@
           function($scope, gaGlobalOptions) {
             $scope.options = {
               maxFileSize: 20000000, //20mo
-              proxyUrl: gaGlobalOptions.baseUrlPath + '/ogcproxy?url=',
+              proxyUrl: gaGlobalOptions.serviceUrl + '/ogcproxy?url=',
               validationServiceUrl: 'http://www.kmlvalidator.org/validate.htm'
             };
         }]);        

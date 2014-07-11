@@ -136,7 +136,7 @@ prd/robots.txt: scripts/robots.mako-dot-txt .build-artefacts/last-deploy-target
 	mkdir -p $(dir $@)
 	.build-artefacts/python-venv/bin/mako-render --var "deploy_target=$(DEPLOY_TARGET)" $< > $@
 
-prd/lib/: src/lib/d3-3.3.1.min.js
+prd/lib/: src/lib/d3-3.3.1.min.js src/lib/angularIE9CorsFix.js src/lib/jQuery.XDomainRequest.js
 	mkdir -p $@
 	cp $^ $@
 
