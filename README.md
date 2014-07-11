@@ -75,6 +75,22 @@ Per default the back-link to geoadmin3 points to the main instance. If you
 want to change that, adapt the `geoadminhost` variable in the
 `buildout_branch.cfg.in` input file and commit it in *your branch*.
 
+## Run nosetests manual on different enviroments
+We are able to run our integration tests against different staging environments:
+
+To run against prod environment:
+`./nose_run.sh -p`
+
+To run against int environment:
+`./nose_run.sh -i`
+
+To run against dev/test environment:
+`./nose_run.sh`
+
+To run against your private environment:
+`./buildout/bin/nosetests`
+
+
 # Python Code Styling
 
 We are currently using the PEP 8 convention for Python code.
