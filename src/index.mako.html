@@ -382,7 +382,7 @@
       </div> <!-- #pulldown-content -->
 
 % if device == 'desktop':
-      <button type="button" data-toggle="collapse" data-target="#pulldown-content" class="toggle btn btn-default">
+      <button id="menu-button" type="button" data-toggle="collapse" data-target="#pulldown-content" class="toggle btn btn-default">
 % else:
       <button type="button" data-toggle="collapse" data-target="#pulldown-content" class="toggle btn btn-default collapsed">
 % endif
@@ -575,6 +575,15 @@
       window.addEventListener('load', function() {
         FastClick.attach(document.body);
       }, false);
+    </script>
+% else:
+    <script>
+      $(window).on('load', function() {
+        //If screen is smaller than 1024, we start with menu closed.
+        if ($(window).width() <= 1024) {
+          $('#menu-button').trigger('click');
+        }
+      });
     </script>
 % endif
 
