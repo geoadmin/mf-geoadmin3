@@ -254,8 +254,11 @@ class TestMapServiceView(TestsBase):
         from sqlalchemy.orm import scoped_session, sessionmaker
         # Get list of layers to test the legend service
         DBSession = scoped_session(sessionmaker())
+        # define the value to avoid pep troubles
+        valnone = None
         # Get a list of all layers in prod, exclude sub-layers
-        query = DBSession.query(distinct(LayersConfig.layerBodId)).filter(LayersConfig.staging == 'prod').filter(LayersConfig.parentLayerId == None)
+        query =
+        DBSession.query(distinct(LayersConfig.layerBodId)).filter(LayersConfig.staging == 'prod').filter(LayersConfig.parentLayerId == valnone)
         layers = [q[0] for q in query]
         DBSession.close()
 
@@ -274,9 +277,11 @@ class TestMapServiceView(TestsBase):
         legendNames = os.listdir(legendsPath)
         parseLegendNames = lambda x: x[:-4] if 'big' not in x else x[:-8]
         legendImages = list(set(map(parseLegendNames, legendNames)))
-        # Get list of layers that should have image in prod, exclude sublayers 
+        # Get list of layers that should have image in prod, exclude sublayers
         DBSession = scoped_session(sessionmaker())
-        query = DBSession.query(distinct(LayersConfig.layerBodId)).filter(LayersConfig.staging == 'prod').filter(LayersConfig.parentLayerId == None).filter(LayersConfig.hasLegend == True)
+        valnone = None
+        valtrue = True
+        query = DBSession.query(distinct(LayersConfig.layerBodId)).filter(LayersConfig.staging == 'prod').filter(LayersConfig.parentLayerId == valnone).filter(LayersConfig.hasLegend == valtrue)
         # Get a list of all the queryable layers
         layers = [q[0] for q in query]
         DBSession.close()
