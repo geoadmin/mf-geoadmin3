@@ -845,17 +845,29 @@ msgstr "Convention des Alpes"
 msgid "ch.are.bauzonen"
 msgstr "Zones à bâtir Suisse (harmonisées)"
 
+msgid "ch.are.belastung-gueterverkehr-bahn"
+msgstr "Trafic marchandises (ferroviaire)"
+
 msgid "ch.are.belastung-gueterverkehr-bahn-2008"
-msgstr "Trafic marchandises 2008"
+msgstr "Trafic marchandises (ferroviaire)"
+
+msgid "ch.are.belastung-gueterverkehr-strasse"
+msgstr "Trafic poids lourds (routier)"
 
 msgid "ch.are.belastung-gueterverkehr-strasse-2008"
-msgstr "Trafic marchandises poids lourds 2008"
+msgstr "Trafic poids lourds (routier)"
+
+msgid "ch.are.belastung-personenverkehr-bahn"
+msgstr "Trafic voyageurs (transport public)"
 
 msgid "ch.are.belastung-personenverkehr-bahn-2008"
-msgstr "Trafic voyageurs 2008"
+msgstr "Trafic voyageurs (transport public)"
+
+msgid "ch.are.belastung-personenverkehr-strasse"
+msgstr "Trafic voyageurs (routier)"
 
 msgid "ch.are.belastung-personenverkehr-strasse-2008"
-msgstr "Trafic voyageurs 2008"
+msgstr "Trafic voyageurs (routier)"
 
 msgid "ch.are.beschaeftigtendichte"
 msgstr "Densité de l'emploi"
@@ -1257,19 +1269,19 @@ msgid "ch.bafu.wasser-vorfluter"
 msgstr "Effluents des bassins versants"
 
 msgid "ch.bafu.wege-wildruhezonen-jagdbanngebiete"
-msgstr "Zones tranquillité portal - routes"
+msgstr "Chemins / itinéraires autorisés"
 
 msgid "ch.bafu.wildruhezonen-jagdbanngebiete"
-msgstr "Zones de tranquillité - portail"
+msgstr "Zones de tranquillité"
 
 msgid "ch.bafu.wrz-jagdbanngebiete_select"
-msgstr "Districts francs - select"
+msgstr "Sites de protection de la faune"
 
 msgid "ch.bafu.wrz-wildruhezonen-jagdbanngebiete-wege-routen"
-msgstr "Zones tranquillité portal - routes"
+msgstr "Chemins / itinéraires autorisés"
 
 msgid "ch.bafu.wrz-wildruhezonen_portal"
-msgstr "Zones de tranquillité - portail"
+msgstr "Zones de tranquillité"
 
 msgid "ch.bag"
 msgstr "OFSP"
