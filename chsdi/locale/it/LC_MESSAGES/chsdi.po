@@ -845,14 +845,26 @@ msgstr "Convenzione delle alpi"
 msgid "ch.are.bauzonen"
 msgstr "Zone edificabili Svizzera (armon.)"
 
+msgid "ch.are.belastung-gueterverkehr-bahn"
+msgstr "Traffico merci"
+
 msgid "ch.are.belastung-gueterverkehr-bahn-2008"
 msgstr "Traffico merci 2008"
+
+msgid "ch.are.belastung-gueterverkehr-strasse"
+msgstr "Traffico merci dai veicoli pesanti"
 
 msgid "ch.are.belastung-gueterverkehr-strasse-2008"
 msgstr "Traffico merci dai veicoli pesanti 2008"
 
+msgid "ch.are.belastung-personenverkehr-bahn"
+msgstr "Traffico viaggiatori"
+
 msgid "ch.are.belastung-personenverkehr-bahn-2008"
 msgstr "Traffico viaggiatori 2008"
+
+msgid "ch.are.belastung-personenverkehr-strasse"
+msgstr "Traffico viaggiatori"
 
 msgid "ch.are.belastung-personenverkehr-strasse-2008"
 msgstr "Traffico viaggiatori 2008"
@@ -1257,19 +1269,19 @@ msgid "ch.bafu.wasser-vorfluter"
 msgstr "Emissari dei bacini imbriferi"
 
 msgid "ch.bafu.wege-wildruhezonen-jagdbanngebiete"
-msgstr "Zone di tranquillitá Portale - strade"
+msgstr "Sentieri /itinerari autorizzati"
 
 msgid "ch.bafu.wildruhezonen-jagdbanngebiete"
-msgstr "Zone di tranquillitá - portale"
+msgstr "Zone di tranquillità"
 
 msgid "ch.bafu.wrz-jagdbanngebiete_select"
-msgstr "Zone di tranquillitá - bandite di caccia"
+msgstr "Siti di protezione della fauna selvatica"
 
 msgid "ch.bafu.wrz-wildruhezonen-jagdbanngebiete-wege-routen"
-msgstr "Zone di tranquillitá Portale - strade"
+msgstr "Sentieri /itinerari autorizzati"
 
 msgid "ch.bafu.wrz-wildruhezonen_portal"
-msgstr "Zone di tranquillitá - portale"
+msgstr "Zone di tranquillità"
 
 msgid "ch.bag"
 msgstr "UFSP"

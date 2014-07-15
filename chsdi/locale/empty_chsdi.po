@@ -286,6 +286,9 @@ msgstr ""
 msgid "ch.are.belastung-gueterverkehr-bahn-2008"
 msgstr ""
 
+msgid "ch.are.belastung-gueterverkehr-bahn"
+msgstr ""
+
 msgid "ch.bakom.uplink2"
 msgstr ""
 
@@ -634,13 +637,22 @@ msgstr ""
 msgid "ch.are.belastung-personenverkehr-bahn-2008"
 msgstr ""
 
+msgid "ch.are.belastung-personenverkehr-bahn"
+msgstr ""
+
 msgid "ch.are.bauzonen"
 msgstr ""
 
 msgid "ch.are.belastung-gueterverkehr-strasse-2008"
 msgstr ""
 
+msgid "ch.are.belastung-gueterverkehr-strasse"
+msgstr ""
+
 msgid "ch.are.belastung-personenverkehr-strasse-2008"
+msgstr ""
+
+msgid "ch.are.belastung-personenverkehr-strasse"
 msgstr ""
 
 msgid "ch.are.gueteklassen_oev"

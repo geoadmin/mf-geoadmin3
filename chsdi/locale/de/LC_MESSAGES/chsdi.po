@@ -845,17 +845,29 @@ msgstr "Alpenkonvention"
 msgid "ch.are.bauzonen"
 msgstr "Bauzonen Schweiz (harmonisiert)"
 
+msgid "ch.are.belastung-gueterverkehr-bahn"
+msgstr "Güterverkehr Schiene"
+
 msgid "ch.are.belastung-gueterverkehr-bahn-2008"
-msgstr "Güterverkehr 2008"
+msgstr "Güterverkehr Schiene"
+
+msgid "ch.are.belastung-gueterverkehr-strasse"
+msgstr "Güterverkehr Strasse"
 
 msgid "ch.are.belastung-gueterverkehr-strasse-2008"
-msgstr "Schwerer Güterverkehr 2008"
+msgstr "Güterverkehr Strasse"
+
+msgid "ch.are.belastung-personenverkehr-bahn"
+msgstr "Personenverkehr ÖV"
 
 msgid "ch.are.belastung-personenverkehr-bahn-2008"
-msgstr "Personenverkehr 2008"
+msgstr "Personenverkehr ÖV"
+
+msgid "ch.are.belastung-personenverkehr-strasse"
+msgstr "Personenverkehr Strasse"
 
 msgid "ch.are.belastung-personenverkehr-strasse-2008"
-msgstr "Personenverkehr 2008"
+msgstr "Personenverkehr Strasse"
 
 msgid "ch.are.beschaeftigtendichte"
 msgstr "Beschäftigtendichte"
@@ -1257,19 +1269,19 @@ msgid "ch.bafu.wasser-vorfluter"
 msgstr "Vorfluter"
 
 msgid "ch.bafu.wege-wildruhezonen-jagdbanngebiete"
-msgstr "WRZ Portal - Wege und Routen"
+msgstr "Erlaubte Wege und Routen"
 
 msgid "ch.bafu.wildruhezonen-jagdbanngebiete"
-msgstr "Wildruhezonen - Portal"
+msgstr "Wildruhezonen"
 
 msgid "ch.bafu.wrz-jagdbanngebiete_select"
-msgstr "Jagdbanngebiete - select"
+msgstr "Wildschutzgebiete"
 
 msgid "ch.bafu.wrz-wildruhezonen-jagdbanngebiete-wege-routen"
-msgstr "WRZ Portal - Wege und Routen"
+msgstr "Erlaubte Wege und Routen"
 
 msgid "ch.bafu.wrz-wildruhezonen_portal"
-msgstr "Wildruhezonen - Portal"
+msgstr "Wildruhezonen"
 
 msgid "ch.bag"
 msgstr "BAG"
