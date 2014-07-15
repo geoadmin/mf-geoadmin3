@@ -180,7 +180,7 @@ display:none !important;
       map2.addLayer(lyr); map2.addLayer(lyr2); map2.addLayer(lyr3);
     }
   </script>
-  <script type="text/javascript" src="http://api3.geo.admin.ch/loader.js"></script>
+  <script type="text/javascript" src="//api3.geo.admin.ch/loader.js"></script>
 </body>
 </%def>
 
