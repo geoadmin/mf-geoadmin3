@@ -60,7 +60,8 @@ def format_search_text(input_str):
 
 
 def remove_accents(input_str):
-    # TODO find a better way to treat those characters
+    if input_str is None:
+        return input_str
     input_str = input_str.replace(u'ü', u'ue')
     input_str = input_str.replace(u'Ü', u'ue')
     input_str = input_str.replace(u'ä', u'ae')
@@ -71,6 +72,8 @@ def remove_accents(input_str):
 
 
 def escape_sphinx_syntax(input_str):
+    if input_str is None:
+        return input_str
     input_str = input_str.replace('|', '\\|')
     input_str = input_str.replace('!', '\\!')
     input_str = input_str.replace('@', '\\@')

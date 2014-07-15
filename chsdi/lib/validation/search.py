@@ -16,6 +16,7 @@ class SearchValidation(MapNameValidation):
         self._bbox = None
         self._returnGeometry = None
         self._origins = None
+        self._typeInfo = None
 
     @property
     def searchText(self):
@@ -44,6 +45,10 @@ class SearchValidation(MapNameValidation):
     @property
     def origins(self):
         return self._origins
+
+    @property
+    def typeInfo(self):
+        return self._typeInfo
 
     @featureIndexes.setter
     def featureIndexes(self, value):
@@ -131,3 +136,12 @@ class SearchValidation(MapNameValidation):
     def origins(self, value):
         if value is not None:
             self._origins = value.split(',')
+
+    @typeInfo.setter
+    def typeInfo(self, value):
+        acceptedTypes = ['locations', 'layers', 'features', 'featureidentify', 'featuresearch']
+        if value is None:
+            raise HTTPBadRequest('Please provide a type parameter. Possible values are %s' % (', '.join(acceptedTypes)))
+        elif value not in acceptedTypes:
+            raise HTTPBadRequest('The type parameter you provided is not valid. Possible values are %s' % (', '.join(acceptedTypes)))
+        self._typeInfo = value

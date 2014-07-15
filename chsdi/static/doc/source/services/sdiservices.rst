@@ -482,24 +482,26 @@ Only RESTFul interface is available.
 
 **Location Search**
 
-+-----------------------------------+-------------------------------------------------------------------------------------------+
-| Parameters                        | Description                                                                               |
-+===================================+===========================================================================================+
-| **searchText (required)**         | The text to search for.                                                                   |
-+-----------------------------------+-------------------------------------------------------------------------------------------+
-| **type (required)**               | The type of performed search. Specify `locations` to perform a location search.           |
-+-----------------------------------+-------------------------------------------------------------------------------------------+
-| **bbox (optional)**               | A comma separated list of 4 coordinates representing the bounding box on which features   |
-|                                   | should be filtered (SRID: 21781).                                                         |
-+-----------------------------------+-------------------------------------------------------------------------------------------+
-| **returnGeometry (optional)**     | This parameter defines whether the geometry is returned or not. Default to "true".        |
-+-----------------------------------+-------------------------------------------------------------------------------------------+
-| **origins (optional)**            | A comma separated list of origins. Possible origins are:                                  |
-|                                   | zipcode,gg25,district,kantone,sn25,address,parcel                                         |
-|                                   | A description of the origins can be found hereunder. Per default all origins are used.    |
-+-----------------------------------+-------------------------------------------------------------------------------------------+
-| **callback (optional)**           | The name of the callback function.                                                        |
-+-----------------------------------+-------------------------------------------------------------------------------------------+
++-------------------------------------+-------------------------------------------------------------------------------------------+
+| Parameters                          | Description                                                                               |
++=====================================+===========================================================================================+
+| **searchText (required/optional)**  | Must be provided if the `bbox` is not. The text to search for.                            |
++-------------------------------------+-------------------------------------------------------------------------------------------+
+| **type (required)**                 | The type of performed search. Specify `locations` to perform a location search.           |
++-------------------------------------+-------------------------------------------------------------------------------------------+
+| **bbox (required/optional)**        | Must be provided if the `searchText` is not. A comma separated list of 4 coordinates      |
+|                                     | representing the bounding box on which features should be filtered (SRID: 21781). If      |
+|                                     | this parameter is defined, the ranking of the results is performed according to the       |
+|                                     | distance between the locations and the center of the bounding box.                        |
++-------------------------------------+-------------------------------------------------------------------------------------------+
+| **returnGeometry (optional)**       | This parameter defines whether the geometry is returned or not. Default to "true".        |
++-------------------------------------+-------------------------------------------------------------------------------------------+
+| **origins (optional)**              | A comma separated list of origins. Possible origins are:                                  |
+|                                     | zipcode,gg25,district,kantone,sn25,address,parcel                                         |
+|                                     | A description of the origins can be found hereunder. Per default all origins are used.    |
++-------------------------------------+-------------------------------------------------------------------------------------------+
+| **callback (optional)**             | The name of the callback function.                                                        |
++-------------------------------------+-------------------------------------------------------------------------------------------+
 
 **Layer Search**
 
@@ -606,6 +608,7 @@ Examples
 
 - Search for locations matching the word “wabern”: `https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=wabern&type=locations <../../../rest/services/api/SearchServer?searchText=wabern&type=locations>`_
 - Search for locations of type "parcel" and "district" (the origins): `https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=bern&origins=parcel,district&type=locations <../../../rest/services/api/SearchServer?searchText=bern&origins=parcel,district&type=locations>`_
+- Search for locations within a given map extent (the `bbox`): `https://api3.geo.admin.ch/rest/services/api/SearchServer?bbox=551306.5625,167918.328125,551754.125,168514.625&type=locations  <../../../rest/services/api/SearchServer?bbox=551306.5625,167918.328125,551754.125,168514.625&type=locations>`_
 - Search for layers in French matching the word “géoïde” in their description: `https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=géoïde&type=layers&lang=fr <../../../rest/services/api/SearchServer?searchText=géoïde&type=layers&lang=fr>`_ 
 - Search for features matching word "433" in their description: `https://api3.geo.admin.ch/rest/services/api/SearchServer?features=ch.bafu.hydrologie-gewaesserzustandsmessstationen&type=featuresearch&searchText=433 <../../../rest/services/api/SearchServer?features=ch.bafu.hydrologie-gewaesserzustandsmessstationen&type=featuresearch&searchText=433>`_
 - Search only for features belonging to the layer “ch.astra.ivs-reg_loc” (only using a bbox, no search text): `https://api3.geo.admin.ch/rest/services/api/SearchServer?features=ch.astra.ivs-reg_loc&type=featureidentify&bbox=551306.5625,167918.328125,551754.125,168514.625 <../../../rest/services/api/SearchServer?features=ch.astra.ivs-reg_loc&type=featureidentify&bbox=551306.5625,167918.328125,551754.125,168514.625>`_
