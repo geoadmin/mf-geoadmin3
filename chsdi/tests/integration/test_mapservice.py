@@ -257,8 +257,7 @@ class TestMapServiceView(TestsBase):
         # define the value to avoid pep troubles
         valnone = None
         # Get a list of all layers in prod, exclude sub-layers
-        query =
-        DBSession.query(distinct(LayersConfig.layerBodId)).filter(LayersConfig.staging == 'prod').filter(LayersConfig.parentLayerId == valnone)
+        query = DBSession.query(distinct(LayersConfig.layerBodId)).filter(LayersConfig.staging == 'prod').filter(LayersConfig.parentLayerId == valnone)
         layers = [q[0] for q in query]
         DBSession.close()
 
