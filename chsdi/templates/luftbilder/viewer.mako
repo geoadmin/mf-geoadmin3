@@ -2,13 +2,29 @@
 
 <%
   from pyramid.url import route_url
+  from urllib2 import urlopen
+  from json import loads
+
   c = context
+  topic = 'luftbilder'
   request = c.get('request')
   baseUrl = '//' + c.get('baseUrl')
   layerBodId = c.get('layer')
   featureId = c.get('bildnummer')
+  ## This is a HACK to ensure backward compatibility
+  if not layerBodId.startswith('ch.'):
+      templateURL = 'http:' + request.registry.settings['api_url'] + request.route_path('search', map=topic, _query={'type': 'featuresearch',
+          'features': 'ch.swisstopo.lubis-luftbilder_schwarzweiss,ch.swisstopo.lubis-luftbilder_farbe,ch.swisstopo.lubis-luftbilder-dritte-firmen,ch.swisstopo.lubis-luftbilder-dritte-kantone,ch.swisstopo.lubis-luftbilder_infrarot',
+          'searchText': featureId})
+      searchFile = None
+      try:
+          searchFile = urlopen(templateURL)
+          res = loads(searchFile.read())
+          layerBodId = res['results'][0]['attrs']['layer']
+      finally:
+          if searchFile:
+              searchFile.close()
   lang = c.get('lang') if c.get('lang') is not None else 'de'
-  topic = 'luftbilder'
   title = request.translate(layerBodId) if c.get('datenherr') is None else request.translate(layerBodId) + ' (' + c.get('datenherr') + ')'
   pageTitle = c.get('title') + ': ' + featureId
   title += ': ' + pageTitle
