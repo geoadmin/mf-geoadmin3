@@ -7,23 +7,30 @@ API & applications
 `API <//api3.geo.admin.ch>`__
 -----------------------------------
 
-- Minor bug fixes
+- Udpate documentation to include description of output parameters in services
+- Lubis tooltips and viewer now contains backlink to object in map
+- Add reverse geoconding on locations. Note: this service needs registering. `Read our terms <http://www.geo.admin.ch/internet/geoportal/de/home/services/geoservices/display_services/api_services/order_form.html>`__.
 
 `MAP <//map.geo.admin.ch>`__
 -----------------------------------
 
-- Minor bug fixes
+- Remember location of popups on close
+- Show wait cursor indicator during searches
+- Update popup contents on language change (Metadata and Help)
+- Close menu on start of application for smaller screens
 
 Geodata
 ********
 +--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| New    | `Freight traffic <//map.geo.admin.ch/?layers=ch.are.belastung-gueterverkehr-bahn>`__ (ch.are.belastung-gueterverkehr-bahn)                                                                           |
+| Update | `Agricultural zones boundaries <//map.geo.admin.ch/?layers=ch.blw.landwirtschaftliche-zonengrenzen>`__ (ch.blw.landwirtschaftliche-zonengrenzen)                                                     |
 +--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| New    | `Heavy goods traffic <//map.geo.admin.ch/?layers=ch.are.belastung-gueterverkehr-strasse>`__ (ch.are.belastung-gueterverkehr-strasse)                                                                 |
+| Update | `Freight traffic <//map.geo.admin.ch/?layers=ch.are.belastung-gueterverkehr-bahn>`__ (ch.are.belastung-gueterverkehr-bahn)                                                                           |
 +--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| New    | `Passenger traffic (public transport) <//map.geo.admin.ch/?layers=ch.are.belastung-personenverkehr-bahn>`__ (ch.are.belastung-personenverkehr-bahn)                                                  |
+| Update | `Heavy goods traffic <//map.geo.admin.ch/?layers=ch.are.belastung-gueterverkehr-strasse>`__ (ch.are.belastung-gueterverkehr-strasse)                                                                 |
 +--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| New    | `Passenger traffic <//map.geo.admin.ch/?layers=ch.are.belastung-personenverkehr-strasse>`__ (ch.are.belastung-personenverkehr-strasse)                                                               |
+| Update | `Passenger traffic (public transport) <//map.geo.admin.ch/?layers=ch.are.belastung-personenverkehr-bahn>`__ (ch.are.belastung-personenverkehr-bahn)                                                  |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Passenger traffic <//map.geo.admin.ch/?layers=ch.are.belastung-personenverkehr-strasse>`__ (ch.are.belastung-personenverkehr-strasse)                                                               |
 +--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Update | `Geologische Gutachten (Punkte) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-punkte>`__ (ch.swisstopo.geologie-gisgeol-punkte)                                                          |
 +--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
