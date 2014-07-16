@@ -5,7 +5,7 @@
 
   module.controller('GaPrintController',
     function($scope, gaGlobalOptions) {
-      var printPath = gaGlobalOptions.apiUrl + '/print'
+      var printPath = gaGlobalOptions.mapUrl + '/print'
       
       $scope.options = {
         printConfigUrl: printPath + '/info.json?url=' +
