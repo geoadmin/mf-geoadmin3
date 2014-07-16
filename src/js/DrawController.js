@@ -21,7 +21,6 @@
         // Defines directive options
         $scope.options = {
           translate: $translate, // For translation of ng-options
-          waitClass: 'ga-draw-wait',
           text: '',
           tools: [
             {id: 'point',   iconClass: 'icon-ga-point'},
