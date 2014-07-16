@@ -5,7 +5,7 @@
 
 # Stateful cookies
 <LocationMatch /${vars:apache_base_path}/(wsgi)?/print/>
-    Header set Set-Cookie "SRV=${hostname-digest}; path=${apache_entry_path}print/"
+    Header set Set-Cookie "SRV=${hostname-digest}; path=/${vars:apache_base_path}/print/"
 </LocationMatch>
 
 
