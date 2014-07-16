@@ -11,9 +11,10 @@
   baseUrl = '//' + c.get('baseUrl')
   layerBodId = c.get('layer')
   featureId = c.get('bildnummer')
+  displayLink = True
   ## This is a HACK to ensure backward compatibility
   if not layerBodId.startswith('ch.'):
-      templateURL = 'http:' + request.registry.settings['api_url'] + request.route_path('search', map=topic, _query={'type': 'featuresearch',
+      templateURL = 'http://' + request.registry.settings['host'] + request.route_path('search', map=topic, _query={'type': 'featuresearch',
           'features': 'ch.swisstopo.lubis-luftbilder_schwarzweiss,ch.swisstopo.lubis-luftbilder_farbe,ch.swisstopo.lubis-luftbilder-dritte-firmen,ch.swisstopo.lubis-luftbilder-dritte-kantone,ch.swisstopo.lubis-luftbilder_infrarot',
           'searchText': featureId})
       searchFile = None
@@ -21,6 +22,8 @@
           searchFile = urlopen(templateURL)
           res = loads(searchFile.read())
           layerBodId = res['results'][0]['attrs']['layer']
+      except:
+          displayLink = False
       finally:
           if searchFile:
               searchFile.close()
@@ -111,9 +114,11 @@
     </div>
     <div class="footer">
       <a class="pull-left" href="${_('disclaimer url')}" target="_blank">Copyright</a>
+  % if displayLink:
       <div class="pull-right">
         <a class="link-red" href="${''.join((baseUrl, '?', layerBodId, '=', str(featureId), '&lang=', lang, '&topic=', topic))}" target="new">${_('Link to object')}</a>
       </div>
+  % endif
     </div>
     <script type="text/javascript" src="${loaderUrl}"></script>
     <script type="text/javascript">
