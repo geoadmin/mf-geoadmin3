@@ -17,6 +17,8 @@ def luftbilder(request):
     bildnummer = request.params.get('bildnummer')
     datenherr = request.params.get('datenherr')
     layer = request.params.get('layer')
+    lang = request.params.get('lang')
+    baseUrl = request.registry.settings.get('geoadminhost')
 
     if None in (width, height, title, bildnummer, layer):
         raise exc.HTTPBadRequest('Missing parameter(s)')
@@ -30,7 +32,9 @@ def luftbilder(request):
             'title': title,
             'bildnummer': bildnummer,
             'datenherr': datenherr,
-            'layer': layer
+            'layer': layer,
+            'baseUrl': baseUrl,
+            'lang': lang
         },
         request=request
     )

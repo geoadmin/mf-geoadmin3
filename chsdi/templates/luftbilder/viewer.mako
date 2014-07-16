@@ -2,10 +2,31 @@
 
 <%
   from pyramid.url import route_url
+  from urllib2 import urlopen
+  from json import loads
+
   c = context
+  topic = 'luftbilder'
   request = c.get('request')
-  title = c.get('layer') if c.get('datenherr') is None else c.get('layer') + ' (' + c.get('datenherr') + ')'
-  pageTitle = c.get('title') + ': ' + c.get('bildnummer')
+  baseUrl = '//' + c.get('baseUrl')
+  layerBodId = c.get('layer')
+  featureId = c.get('bildnummer')
+  ## This is a HACK to ensure backward compatibility
+  if not layerBodId.startswith('ch.'):
+      templateURL = 'http:' + request.registry.settings['api_url'] + request.route_path('search', map=topic, _query={'type': 'featuresearch',
+          'features': 'ch.swisstopo.lubis-luftbilder_schwarzweiss,ch.swisstopo.lubis-luftbilder_farbe,ch.swisstopo.lubis-luftbilder-dritte-firmen,ch.swisstopo.lubis-luftbilder-dritte-kantone,ch.swisstopo.lubis-luftbilder_infrarot',
+          'searchText': featureId})
+      searchFile = None
+      try:
+          searchFile = urlopen(templateURL)
+          res = loads(searchFile.read())
+          layerBodId = res['results'][0]['attrs']['layer']
+      finally:
+          if searchFile:
+              searchFile.close()
+  lang = c.get('lang') if c.get('lang') is not None else 'de'
+  title = request.translate(layerBodId) if c.get('datenherr') is None else request.translate(layerBodId) + ' (' + c.get('datenherr') + ')'
+  pageTitle = c.get('title') + ': ' + featureId
   title += ': ' + pageTitle
   loaderUrl = h.make_agnostic(route_url('ga_api', request))
 %>
@@ -63,6 +84,9 @@
       .footer a {
         padding: 0px 10px;
       }
+      .link-red {
+        color: red;
+      }
       #lubismap {
         width: 100%;
         height: 100%;
@@ -87,6 +111,9 @@
     </div>
     <div class="footer">
       <a class="pull-left" href="${_('disclaimer url')}" target="_blank">Copyright</a>
+      <div class="pull-right">
+        <a class="link-red" href="${''.join((baseUrl, '?', layerBodId, '=', str(featureId), '&lang=', lang, '&topic=', topic))}" target="new">${_('Link to object')}</a>
+      </div>
     </div>
     <script type="text/javascript" src="${loaderUrl}"></script>
     <script type="text/javascript">

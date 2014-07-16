@@ -62,7 +62,8 @@ def get_viewer_url(request, params):
         'title': params[2].encode('utf8'),
         'bildnummer': params[3],
         'datenherr': params[4].encode('utf8'),
-        'layer': params[5].encode('utf8')
+        'layer': params[5].encode('utf8'),
+        'lang': params[6]
     }
     return h.make_agnostic(route_url('luftbilder', request)) + '?' + urllib.urlencode(f)
 %>
@@ -91,7 +92,8 @@ params = (
     _('tt_lubis_ebkey'),
     c['featureId'],
     c['attributes']['firma'],
-    c['fullName'])
+    c['layerBodId'],
+    lang)
 viewer_url = get_viewer_url(request, params)
 %>
 <tr>
@@ -154,6 +156,7 @@ viewer_url = get_viewer_url(request, params)
 
 <%def name="extended_info(c, lang)">
 <%
+c['stable_id'] = True
 if c['layerBodId'] == 'ch.swisstopo.lubis-luftbilder_farbe':
     imgtype = 1
 elif c['layerBodId'] == 'ch.swisstopo.lubis-luftbilder_infrarot':
@@ -187,7 +190,8 @@ params = (
     _('tt_lubis_ebkey'),
     c['featureId'],
     c['attributes']['firma'],
-    c['fullName'])
+    c['layerBodId'],
+    lang)
 viewer_url = get_viewer_url(request, params)
 %>
 <title>${_('tt_lubis_ebkey')}: ${c['featureId']}</title>
