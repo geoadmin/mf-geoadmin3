@@ -1,3 +1,52 @@
+Release 20140716 - Wednesday, July 16th 2014
+============================================
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+-----------------------------------
+
+- Udpate documentation to include description of output parameters in services
+- Lubis tooltips and viewer now contains backlink to object in map
+- Add reverse geoconding on locations. Note: this service needs registering. `Read our terms <http://www.geo.admin.ch/internet/geoportal/de/home/services/geoservices/display_services/api_services/order_form.html>`__.
+
+`MAP <//map.geo.admin.ch>`__
+-----------------------------------
+
+- Remember location of popups on close
+- Show wait cursor indicator during searches
+- Update popup contents on language change (Metadata and Help)
+- Close menu on start of application for smaller screens
+
+Geodata
+********
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Agricultural zones boundaries <//map.geo.admin.ch/?layers=ch.blw.landwirtschaftliche-zonengrenzen>`__ (ch.blw.landwirtschaftliche-zonengrenzen)                                                     |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Freight traffic <//map.geo.admin.ch/?layers=ch.are.belastung-gueterverkehr-bahn>`__ (ch.are.belastung-gueterverkehr-bahn)                                                                           |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Heavy goods traffic <//map.geo.admin.ch/?layers=ch.are.belastung-gueterverkehr-strasse>`__ (ch.are.belastung-gueterverkehr-strasse)                                                                 |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Passenger traffic (public transport) <//map.geo.admin.ch/?layers=ch.are.belastung-personenverkehr-bahn>`__ (ch.are.belastung-personenverkehr-bahn)                                                  |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Passenger traffic <//map.geo.admin.ch/?layers=ch.are.belastung-personenverkehr-strasse>`__ (ch.are.belastung-personenverkehr-strasse)                                                               |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Geologische Gutachten (Punkte) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-punkte>`__ (ch.swisstopo.geologie-gisgeol-punkte)                                                          |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Geologische Gutachten (Linien) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-linien>`__ (ch.swisstopo.geologie-gisgeol-linien)                                                          |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Geologische Gutachten (1x1km) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-flaechen-1x1km>`__ (ch.swisstopo.geologie-gisgeol-flaechen-1x1km)                                           |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Geologische Gutachten (0-10km2) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-flaechen-lt10km2>`__ (ch.swisstopo.geologie-gisgeol-flaechen-lt10km2)                                     |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Geologische Gutachten (10x10km) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-flaechen-10x10km>`__ (ch.swisstopo.geologie-gisgeol-flaechen-10x10km)                                     |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Geologische Gutachten (10-21000km2) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2>`__ (ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2)                       |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Geologische Gutachten (>21000km2) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2>`__ (ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2)                             |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
 Release 20140702 - Wednesday, July 2nd 2014
 ============================================
 
