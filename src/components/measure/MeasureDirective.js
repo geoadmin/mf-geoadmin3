@@ -3,10 +3,12 @@
 
   goog.require('ga_debounce_service');
   goog.require('ga_map_service');
+  goog.require('ga_waitcursor_service');
 
   var module = angular.module('ga_measure_directive', [
     'ga_debounce_service',
-    'ga_map_service'
+    'ga_map_service',
+    'ga_waitcursor_service'
   ]);
 
   module.filter('measure', function() {
@@ -49,7 +51,7 @@
 
   module.directive('gaMeasure',
     function($document, $rootScope, gaDebounce, gaDefinePropertiesForLayer,
-        gaLayerFilters) {
+        gaLayerFilters, gaWaitCursor) {
       return {
         restrict: 'A',
         templateUrl: function(element, attrs) {
@@ -61,7 +63,6 @@
           isActive: '=gaMeasureActive'
         },
         link: function(scope, elt, attrs, controller) {
-          var bodyEl = angular.element($document[0].body);
           var sketchFeatArea, sketchFeatDistance, sketchFeatAzimuth;
           var deregister, deregisterFeature;
           var styleFunction = scope.options.styleFunction;
@@ -205,7 +206,7 @@
 
                 // Update the profile
                 if (scope.options.isProfileActive) {
-                  bodyEl.addClass(scope.options.waitClass);
+                  gaWaitCursor.add();
                   updateProfileDebounced();
                 }
 
@@ -233,7 +234,7 @@
                 }
               }
             }
-            bodyEl.removeClass(scope.options.waitClass);
+            gaWaitCursor.remove();
           };
 
 
@@ -283,7 +284,7 @@
                      .getCoordinates().length >= 1) {
               scope.options.drawProfile(sketchFeatDistance);
             } else {
-              bodyEl.removeClass(scope.options.waitClass);
+              gaWaitCursor.remove();
             }
           };
           var updateProfileDebounced = gaDebounce.debounce(updateProfile, 500,
@@ -300,10 +301,10 @@
           });
           scope.$watch('options.isProfileActive', function(active) {
             if (active) {
-              bodyEl.addClass(scope.options.waitClass);
+              gaWaitCursor.add();
               updateProfileDebounced();
             } else {
-              bodyEl.removeClass(scope.options.waitClass);
+              gaWaitCursor.remove();
             }
           });
 
@@ -330,10 +331,10 @@
             featuresOverlay.removeFeature(sketchFeatPoint);
           });
           $rootScope.$on('gaProfileDataLoaded', function(ev, data) {
-            bodyEl.removeClass(scope.options.waitClass);
+            gaWaitCursor.remove();
           });
           $rootScope.$on('gaProfileDataUpdated', function(ev, data) {
-            bodyEl.removeClass(scope.options.waitClass);
+            gaWaitCursor.remove();
           });
 
         }
