@@ -616,6 +616,7 @@
         var pathname = location.pathname.replace(/(index.html)|(mobile.html)/g, '');
 
         module.constant('gaGlobalOptions', {
+          mapUrl : location.origin + '/${user_env}',
           apiUrl : location.protocol + '${api_url}',
           cachedApiUrl: location.protocol + '${api_url}' + cacheAdd,
           resourceUrl: location.origin + pathname + '${versionslashed}',
