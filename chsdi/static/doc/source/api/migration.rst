@@ -1,16 +1,28 @@
-Migration from API 2.0 guide
+.. raw:: html
+
+  <head>
+    <link href="../../_static/custom.css" rel="stylesheet" type="text/css" />
+  </head>
+
+.. _api_migration:
+
+API Migration Guide
 ============================
 
+.. _api_intro_migration:
+
 Introduction
-~~~~~~~~~~~~
+------------
 
 The new version of the JavaScript GeoAdmin API is based on `Openlayers 3 <http://ol3js.org/>`_ only. The previous version was based on OpenLayers 2 and ExtJS 3. The new JavaScript API aims to support the mapping part and doesn't provide any UI elements except the one provided by OpenLayers 3.
 You are therefore free to choose the JavaScript framework you want to use for the creation of UI elements.
 
 The new service GeoAdmin API is implemented according to the `GeoServices REST API specification <http://www.opengeospatial.org/standards/requests/89>`_
 
+.. _api_features_migration:
+
 Feature equivalence
-~~~~~~~~~~~~~~~~~~~
+-------------------
 
 GeoAdmin JavaScript API 3.0 has feature equivalence with GeoAdmin Light API 2.0.
 
@@ -25,15 +37,19 @@ Due to fact that OpenLayers 3 is the base library, the GeoAdmin JavaScript API 3
 - Map feature request (tooltip) 
 - All OpenLayers3 functions 
 
-For building advanced map applications which require more functions, access to the source code of map.geo.admin.ch is provided in in https://github.com/geoadmin/mf-geoadmin3 
+For building advanced map applications which require more functions, access to the source code of map.geo.admin.ch is provided on `Github <https://github.com/geoadmin/mf-geoadmin3>`_
+
+.. _api_loader_migration:
 
 API Loader
-~~~~~~~~~~
+----------
 
 As in previous version, the `API loader <http://api3.geo.admin.ch/loader.js>`_ loads all necessary CSS and JavaScript ressources. The loader is language dependent (?lang=fr parameter can be used, for example).
 
+.. _api_services_migration:
+
 API Services
-~~~~~~~~~~~~
+------------
 
 This guide references the correspondances between the old and new API. You'll find the documentation for our new services at `this page <../../services/sdiservices.html>`_.
 

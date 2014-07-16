@@ -1,3 +1,11 @@
+.. raw:: html
+
+  <head>
+    <link href="../../_static/custom.css" rel="stylesheet" type="text/css" />
+  </head>
+
+.. _checker_doc:
+
 eCH-0056 Checker user documentation
 ====================================
 
@@ -377,3 +385,4 @@ Server Settings file for WFS
 This file can be tested against the server: http://v2.suite.opengeo.org/geoserver/ows 
 
  .. note:: If you want to create your own server settings file, copy/paste the example file and change the information according to your service. For more details on this have a look at the API documentation: http://api3.geo.admin.ch/doc/build/owschecker/. Take into consideration that: 'Request' must be set to 'GetFeature' and 'OUTPUTFORMAT' to 'GML2'.
+ .. note:: If you want to create your own server settings file, copy/paste the example file and change the information according to your service. For more details on this have a look at the API documentation: http://api3.geo.admin.ch/main/wsgi/doc/build/owschecker/. Take into consideration that: 'Request' must be set to 'GetFeature' and 'OUTPUTFORMAT' to 'GML2'.

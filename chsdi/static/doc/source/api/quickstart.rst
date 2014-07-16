@@ -1,18 +1,22 @@
-Quick start
-===========
+.. raw:: html
 
-.. raw:: html 
+  <head>
+    <link href="../../_static/custom.css" rel="stylesheet" type="text/css" />
+  </head>
 
-    <div class="warning"i style="background-color: #ffffff; padding: 5px; border: 1px solid black;">
+API Quick start
+===============
 
-The GeoAdmin API and all GeoAdmin services can be used in both HTTP and HTTPS contexts. Though most layers are freely accessible, a `swisstopo web access <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/products/services/web_services/webaccess.html>`_ is required for some of them. For a list of all available layers and their accessibility please refer to the `FAQ <faq/index.html#which-layers-are-available>`_.
+.. note::
+
+  The GeoAdmin API and all GeoAdmin services can be used in both HTTP and HTTPS contexts. Though most layers are freely accessible, a `swisstopo web access <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/products/services/web_services/webaccess.html>`_ is required for some of them. For a list of all available layers and their accessibility please refer to the `FAQ <faq/index.html#which-layers-are-available>`_.
 
 .. raw:: html
 
     </div>
-    
+
 Put a map on a page
-~~~~~~~~~~~~~~~~~~~
+-------------------
 
 Below you'll find a complete working example. Create a new file, copy/paste the content below, and open it a browser:
 
@@ -48,7 +52,7 @@ Below you'll find a complete working example. Create a new file, copy/paste the 
   </html>
   
 Understanding what is going on
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+------------------------------
 
 To include a map in a web page you will need 3 things:
 
@@ -57,7 +61,7 @@ To include a map in a web page you will need 3 things:
 #. JavaScript to create a simple map with a layer
 
 Include the GeoAdmin JavaScript API
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------------------
 
 .. code-block:: html
 
@@ -66,7 +70,7 @@ Include the GeoAdmin JavaScript API
 The first part is to include the GeoAdmin API library. This loader will load all necessary JavaScript and CSS code. You can force the language (en, de, fr, it, rm) or let the navigator language be used.
 
 <div> to contain the map
-~~~~~~~~~~~~~~~~~~~~~~~~
+------------------------
 
 .. code-block:: html
 
@@ -84,7 +88,7 @@ The map in the application is contained in a <div> HTML element. Through this <d
   </style>
   
 JavaScript to create a simple map with a layer
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+----------------------------------------------
 
 .. code-block:: javascript
 
@@ -136,20 +140,4 @@ The next part of the Map object is the View. The view allow to specify the cente
 You will notice that the center specified is in swiss coordinate system (EPSG:21781). 
 
 (Quickstart adapted of the `OpenLayers 3 Quickstart <http://ol3js.org/en/master/doc/quickstart.html>`_)
-
-
-
-
-
-  
-
-  
-
-
-
-
-
-
-
-
 

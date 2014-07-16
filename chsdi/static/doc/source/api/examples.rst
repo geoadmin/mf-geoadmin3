@@ -1,8 +1,14 @@
+.. raw:: html
+
+  <head>
+    <link href="../../_static/custom.css" rel="stylesheet" type="text/css" />
+  </head>
+
 API Examples
 ============
 
 GeoAdmin Examples
-~~~~~~~~~~~~~~~~~
+-----------------
 
 - `GeoAdmin map with overlay layer <../examples/geoadmin_mapoverlay.html>`_
 - `Map with KML file overlay <../examples/geoadmin_kml.html>`_
@@ -12,7 +18,7 @@ GeoAdmin Examples
 - `Catalog <../examples/geoadmin_catalog.html>`_
 
 OpenLayers Examples
-~~~~~~~~~~~~~~~~~~~
+-------------------
 
 - `OpenLayers 3 Examples <http://ol3js.org/en/master/examples/>`_. All OpenLayers 3 examples are supposed to work with the GeoAdmin API. 
   
