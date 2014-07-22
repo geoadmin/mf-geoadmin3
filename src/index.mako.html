@@ -1,4 +1,11 @@
 # -*- coding: utf-8 -*-
+<%
+
+print_entry = '/' + user_env
+if 'main' in user_env:
+    print_entry = ''
+
+%>
 <!DOCTYPE html>
 <html ng-app="ga" ng-controller="GaMainController">
   <head>
@@ -616,7 +623,7 @@
         var pathname = location.pathname.replace(/(index.html)|(mobile.html)/g, '');
 
         module.constant('gaGlobalOptions', {
-          mapUrl : location.origin + '/${user_env}',
+          mapUrl : location.origin + '${print_entry}',
           apiUrl : location.protocol + '${api_url}',
           cachedApiUrl: location.protocol + '${api_url}' + cacheAdd,
           resourceUrl: location.origin + pathname + '${versionslashed}',
