@@ -7,6 +7,7 @@ README = open(os.path.join(here, 'README.md')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
 requires = [
+    'zc.buildout',
     'webtest',
     'pyramid',
     'pyramid_debugtoolbar',
