@@ -9,6 +9,7 @@ GeoAdmin Examples
 - `Geocoder <../examples/geoadmin_geocoder.html>`_
 - `Rectangle selection <../examples/geoadmin_rectangle.html>`_
 - `Searchbox <../examples/geoadmin_search.html>`_
+- `Catalog <../examples/geoadmin_catalog.html>`_
 
 OpenLayers Examples
 ~~~~~~~~~~~~~~~~~~~

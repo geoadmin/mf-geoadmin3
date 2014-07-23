@@ -9,213 +9,116 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-    <link rel="stylesheet/" type="text/css" href="https://dav0.bgdi.admin.ch/swisstopo/cadastre/cadastralinfo/cadastre.css">
     <title>GeoAdmin API example: catalog </title>
     <style type="text/css">
-      .checkbox-tree h1 {
-        list-style-type: none;
-        white-space: nowrap;
-        text-align: -webkit-match-parent;
-        font-weight: bold;
-        font-family: arial, tahoma, helvetica, sans-serif;
-        font-size: 14px;
-        font-style: normal;
-        color: black;
-        text-indent: 1em; 
-        padding: 1px 0 1px 0;
-        clear: left;
-        line-height: 18px;
-        cursor: pointer;
+      .catalog-container {
+        width: 350px;
+        border: 1px solid lightgray;
+        margin-top: 20px;
+        margin-left: 10px;
       }
-
+      .legend-btn {
+        display: inline;
+        border-radius: 50%;
+        background-color: black;
+        color: white;
+        font-size: 13px;
+        font-weight: bold;
+        font-family: serif;
+        border-width: 0px;
+        padding-left: 6px;
+        padding-right: 6px;
+        padding-top: 0px;
+        height: 16px;
+        margin-left: 10px;
+      }
+      .checkbox-tree {
+        background-color: red;
+        color: white;
+        padding: 5px;
+        font-weight: bold;
+        font-size: 14px;
+        text-indent: 1em; 
+        cursor: pointer;
+        display: block;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+      }
+      .checkbox-tree:hover {
+        color: white;
+        text-decoration: none;
+      }
       .modal-header {
-        margin: 0;
         padding-top: 8px;
         padding-right: 10px; 
         padding-left: 10px;
         padding-bottom: 8px;    
-        font-size: 12px;
-        font-weight: normal;
-        line-height: 18px;
         background-color: #f7f7f7;
-        border-bottom: 1px solid #ebebeb;
-        border-bottom-width: 1px;
-        border-bottom-style: solid;
-        border-bottom-color: rgb(235, 235, 235);
-        border-radius: 5px 5px 0 0;
         cursor: move;
       }
-
       .bod-title {
         color: red;
         padding-top: 8px;
-        padding-right: 8px;
         padding-left: 8px;
-        padding-bottom: 0px; 
         background-color: #eee;
-        margin-top: 0px;
-        margin-right: 0px;
         margin-bottom: 0px;
       }
-
       .legend-abstract {
         background-color: #eee;
         padding: 8px;
-        margin-top: 0px;
-        margin-right: 0px;
         margin-bottom: 0px;
       }
-
       .legend-footer {
         padding: 8px;
       } 
-
       .legend-footer span {
         font-weight: bold;
       }
-
-      .modal fade {
-        position: absolute;
-        left: 400px;
-        top: 200px;
-        display: block;
-        overflow-x: hidden;
-        overflow-y: hidden;
-        min-width: 200px;
-        max-width: 800px;
-        min-height: 100px;
-        max-height: 400px;
-        z-index: 2000;
-        padding: 1px;
-        text-align: left;
-        background-color: #fff;
-        background-clip: padding-box;
-        border-top-color: rgba(0, 0, 0, 0.2);
-        border-top-style: solid;
-        border-top-width: 1px;
-        border-radius: 6px;
-        -webkit-box-shadow: 0 5px 10px rgba(0,0,0,0.2);
-        box-shadow: 0 5px 10px rgba(0,0,0,0.2);
-        white-space: normal;
-      }
-
-      .modal-dialog {
-        border-top-color: rgba(0, 0, 0, 0.2);
-        border-top-style: solid;
-        border-top-width: 1px;
-        font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;
-        font-size: 12px;
-        line-height: 1.428571429;
-        color: #333;
-      }
-
       .modal-body {
         padding: 0px;
-        overflow-x: auto;
         overflow-y: auto;
-        max-width: inherit;
         max-height: 340px;
         font-size: 12px; 
       }
-
       .close {
         opacity: 1;
         font-size: 26px;
-        margin-left: 3px;
-        float: right;
-        cursor: pointer;
-        font-style: normal;
-        font-weight: bold;
         line-height: inherit;
-        visibility: visible;
         width: 18px;
         background-color: transparent;
       }
-
-      .ga-popup-print {
-        float: right;
-        cursor: pointer;
-        box-shadow: none;
-        font-size: 14px;
-        font-style: normal;
-        font-weight: bold;
-        line-height: inherit;
-        visibility: visible;
-        width: 18px;
-        background-color: transparent;
-        display: inline;
-        height: auto;
-        vertical-align: baseline;
-        background-image: none;
-        background-position-x: 0px;
-        background-position-y: 0px;
-        background-repeat: repeat;
-        font-family: FontAwesome;
-        text-decoration: inherit;
-        -webkit-font-smoothing: antialiased;
-      }
-
       .checkbox-inhalt {
         padding-left: 12px;
         padding-bottom: 12px;
+        display: block;
       }
-
       .checkbox-label {
         display: initial;
       }
-
-      .ga-popup-reduce {
-        float: right;
-        cursor: pointer;
-        box-shadow: none;
-        font-size: 14px;
-        font-style: normal;
-        font-weight: bold;
-        line-height: inherit;
-        visibility: visible;
-        width: 18px;
-        background-color: transparent;
-        display: inline;
-        height: auto;
-        vertical-align: baseline;
-        background-image: none;
-        background-position-x: 0px;
-        background-position-y: 0px;
-        background-repeat: repeat;
-        font-family: FontAwesome;
-        text-decoration: inherit;
-        -webkit-font-smoothing: antialiased;
-      }
-
     </style>
   </head>
   <body>
     <h1>GeoAdmin API example: catalog</h1>
     <div id="map" style="width=100%;height:350px;"></div>
-    <div class="checkbox-tree"><h1>Bundesinventare</h1></div>
-    <div class="checkbox-inhalt" id="inhalt"></div>  
- 
+    <div class="catalog-container">
+      <a class="checkbox-tree" unselectable="on">Bundesinventare</a>
+      <div class="checkbox-inhalt"></div>
+    </div>
     <!-- Modal -->
     <div class="modal fade" id="legend-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" hidden-print="true">
       <div class="modal-dialog"> 
-      <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="i" id="myModalLabel">Infobox</h4>
-      </div>
-      <div class="modal-body"><p class="bod-title"><span>Bundesinventar der Amphibienlaichgebiete von nationaler Bedeutung - Ortsfeste Objekte</span> (Bundesamt für Umwelt BAFU)</p><p class="legend-abstract">In der Schweiz leben heute 19 Amphibienarten - fast alle befinden sich auf der Roten Liste der gefährdeten Tierarten. Die Fläche der Feuchtgebiete als Lebensraum der Amphibien schrumpfte in den letzten 100 Jahren auf weniger als einen Zehntel zusammen. Die noch erhaltenen Lebensräume sollten deshalb gesichert werden. Als Laichgewässer bevorzugen die meisten Arten stehende Kleingewässer wie Tümpel und Weiher. Neben kleineren Tümpeln bis zu grossen Feuchtgebietskomplexen bilden Kies- und Lehmgruben einen wichtigen Anteil (rund ein Fünftel der Gesamtobjekte) des Inventars. Im Laufe der Nutzung haben sie sich zu schützenswerten naturnahen Standorten entwickelt. Die ortsfesten Objekte sind in zwei verschiedene Bereiche eingeteilt: Der Bereich A ist dem Naturschutz unterstellt. Der Bereich B umfasst den engeren Bereich der Landlebensräume und die Pufferzonen. Es sind meist land- und forstwirtschaftlich genutzte Flächen. Als viertes Bundesinventar gemäss Art. 18a NHG setzte der Bundesrat 2001 das Bundesinventar der Amphibienlaichgebiete mit 701 Objekten in Kraft, welches in den Jahren 2003 und 2007 mit zwei Ergänzungen komplettiert wurde und nun 824 (742 ortsfeste und 82 Wander-) Objekte umfasst.</p>
-      <div class="legend-footer">
-        <br>
-        <span>Legende</span><br>
-        <img src="//api3.geo.admin.ch/main/wsgi/static/images/legends/ch.bafu.bundesinventare-amphibien_wanderobjekte_de.png" alt="layer legend img"><br><br>
-        <span>Informationen</span><br>
-      </div>
-      </div>
-      </div>
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <h4 class="i" id="myModalLabel">Infobox</h4>
+          </div>
+          <div class="modal-body"></div>
+        </div>
       </div>
     </div>
-    <br> This example shows the change the layers in a catalog.</br>
-    <a href="geoadmin_catalog.js">See the code </a> now jquery is used for the homelibrary js and not jquery.com.<br>
+    <br> This example shows how to create a catalog using Bootstrap and JQuery.</br>
+    <a href="geoadmin_catalog.js">See the code</a><br>
     <script type="text/javascript" src="/static/js/jquery-2.0.3.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-ajaxtransport-xdomainrequest/1.0.2/jquery.xdomainrequest.min.js"></script>
     <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
@@ -223,4 +126,5 @@
     <script type="text/javascript" src="//code.jquery.com/jquery-latest.js"></script>
     <script type="text/javascript" src="geoadmin_catalog.js"></script>
   </body>
+
 </html>
