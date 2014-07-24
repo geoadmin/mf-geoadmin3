@@ -315,6 +315,14 @@ class Search(SearchValidation):
             i += 1
             self.sphinx.AddQuery(queryText, index=str(index))
 
+    def _parse_address(self, res):
+        if not (self.varnish_authorized and self.returnGeometry):
+            attrs2Del = ['x', 'y', 'lon', 'lat', 'geom_st_box2d', 'featureId']
+            popAtrrs = lambda x: res.pop(x) if x in res else x
+            map(popAtrrs, attrs2Del)
+            return res
+        return res
+
     def _parse_location_results(self, results):
         nb_address = 0
         for res in results:
@@ -329,9 +337,7 @@ class Search(SearchValidation):
             if origin == 'address':
                 if nb_address < 20:
                     if not self.bbox or self._bbox_intersection(self.bbox, res['attrs']['geom_st_box2d']):
-                        if not (self.varnish_authorized and self.returnGeometry):
-                            if 'geom_st_box2d' in res['attrs']:
-                                del res['attrs']['geom_st_box2d']
+                        res['attrs'] = self._parse_address(res['attrs'])
                         self.results['results'].append(res)
                         nb_address += 1
             else:
@@ -348,7 +354,8 @@ class Search(SearchValidation):
                 for res in results[i]['matches']:
                     if 'feature_id' in res['attrs']:
                         res['attrs']['featureId'] = res['attrs']['feature_id']
-                    if self.typeInfo == 'featuresearch' or not self.bbox or self._bbox_intersection(self.bbox, res['attrs']['geom_st_box2d']):
+                    if self.typeInfo == 'featuresearch' or not self.bbox or \
+                        self._bbox_intersection(self.bbox, res['attrs']['geom_st_box2d']):
                         self.results['results'].append(res)
 
     def _get_quad_index(self):
