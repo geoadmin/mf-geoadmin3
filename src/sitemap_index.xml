@@ -9,5 +9,8 @@
   <sitemap>
     <loc>http://map.geo.admin.ch/sitemap_layers.xml</loc>
   </sitemap>
+  <sitemap>
+    <loc>http://map.geo.admin.ch/sitemap_addresses.xml</loc>
+  </sitemap>
 </sitemapindex>
 
