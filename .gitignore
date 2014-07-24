@@ -12,6 +12,7 @@ apache/mapproxy.conf
 apache/tomcat-print.conf
 buildout/bin/
 buildout/develop-eggs/
+buildout/old-eggs/
 buildout/eggs/
 buildout/parts/
 chsdi.egg-info

@@ -122,8 +122,14 @@ To run against dev/test environment:
 To run against your private environment:
 `./buildout/bin/nosetests`
 
+# Clean project
+In order to reinitialize your project and remove unused eggs do the following commands:
+<pre>
+buildout/bin/buildout -c buildout_cleaner.cfg
+buildout/bin/buildout -c buildout_<username>.cfg
+</pre>
 
-
+`buildout_cleaner.cfg` will move all the unused eggs into `buildout/old-eggs/`, remove all the `*.mo` translation files, uninstall all the templates and remove all the `*.pyc` files.
 
 # Python Code Styling
 
