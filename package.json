@@ -14,11 +14,7 @@
     "karma": "0.8.5",
     "ng-annotate": "0.2.0",
     "browserstack": "1.0.1",
-    "browserstack-webdriver": "2.39.2",
-    "sitemap": "0.7.1",
-    "xml": "0.0.12",
-    "stream-to-json": "0.0.1",
-    "q": "1.0.0"
+    "browserstack-webdriver": "2.39.2"
   }
 }
 
