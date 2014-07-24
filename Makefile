@@ -37,7 +37,7 @@ help:
 	@echo "- all             All of the above (target to run prior to creating a PR)"
 	@echo "- clean           Remove generated files"
 	@echo "- cleanall        Remove all the build artefacts"
-	@echo "- deploydev       Deploys current github master to dev. Specify CREATE_SNAPSHOT=true to create snapshot as well."
+	@echo "- deploydev       Deploys current github master to dev. Specify SNAPSHOT=true to create snapshot as well."
 	@echo "- deployint       Deploys snapshot specified with SNAPSHOT=xxx to int."
 	@echo "- deployprod      Deploys snapshot specified with SNAPSHOT=xxx to prod."
 	@echo "- deploybranch    Deploys current branch to test (note: takes code from github)"
