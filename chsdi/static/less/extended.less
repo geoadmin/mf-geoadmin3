@@ -1,8 +1,14 @@
+html, body, div, span, p, 
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+dl, dt, dd, ol, ul, li,
+table, caption, tbody, tfoot, thead, tr, th, td {
+   font-size: 100%;
+   font: inherit;
+}
 @screen-tablet: 768px;
 
 .chsdi-htmlpopup-container {
   width: 580px; /* size for A4 print */ 
-  font-size: 11px;
   font-family: arial,helvetia,verdana;
   height: 100%;
   margin: auto;
@@ -83,11 +89,15 @@
       .image {
         vertical-align: top;
         width: 100%;
+        border-style: none;
       }
     }
     @media print {
       border: none;
     }
+  }
+  .htmlpopup-footer > a , div.thumbnail-container > div.thumbnail{
+      font-size: 75%;
   }
   h1 {
     vertical-align: middle;
@@ -149,4 +159,5 @@
       height: 100%;
     }
   }
+
 }
