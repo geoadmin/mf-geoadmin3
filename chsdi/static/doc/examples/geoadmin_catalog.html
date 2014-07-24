@@ -1,0 +1,130 @@
+<!--[if HTML5]><![endif]-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <!--[if !HTML5]>
+    <meta http-equiv="X-UA-Compatible" content="IE=9,IE=10,IE=edge,chrome=1"/>
+    <![endif]-->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+    <title>GeoAdmin API example: catalog </title>
+    <style type="text/css">
+      .catalog-container {
+        width: 350px;
+        border: 1px solid lightgray;
+        margin-top: 20px;
+        margin-left: 10px;
+      }
+      .legend-btn {
+        display: inline;
+        border-radius: 50%;
+        background-color: black;
+        color: white;
+        font-size: 13px;
+        font-weight: bold;
+        font-family: serif;
+        border-width: 0px;
+        padding-left: 6px;
+        padding-right: 6px;
+        padding-top: 0px;
+        height: 16px;
+        margin-left: 10px;
+      }
+      .checkbox-tree {
+        background-color: red;
+        color: white;
+        padding: 5px;
+        font-weight: bold;
+        font-size: 14px;
+        text-indent: 1em; 
+        cursor: pointer;
+        display: block;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+      }
+      .checkbox-tree:hover {
+        color: white;
+        text-decoration: none;
+      }
+      .modal-header {
+        padding-top: 8px;
+        padding-right: 10px; 
+        padding-left: 10px;
+        padding-bottom: 8px;    
+        background-color: #f7f7f7;
+        cursor: move;
+      }
+      .bod-title {
+        color: red;
+        padding-top: 8px;
+        padding-left: 8px;
+        background-color: #eee;
+        margin-bottom: 0px;
+      }
+      .legend-abstract {
+        background-color: #eee;
+        padding: 8px;
+        margin-bottom: 0px;
+      }
+      .legend-footer {
+        padding: 8px;
+      } 
+      .legend-footer span {
+        font-weight: bold;
+      }
+      .modal-body {
+        padding: 0px;
+        overflow-y: auto;
+        max-height: 340px;
+        font-size: 12px; 
+      }
+      .close {
+        opacity: 1;
+        font-size: 26px;
+        line-height: inherit;
+        width: 18px;
+        background-color: transparent;
+      }
+      .checkbox-inhalt {
+        padding-left: 12px;
+        padding-bottom: 12px;
+        display: block;
+      }
+      .checkbox-label {
+        display: initial;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>GeoAdmin API example: catalog</h1>
+    <div id="map" style="width=100%;height:350px;"></div>
+    <div class="catalog-container">
+      <a class="checkbox-tree" unselectable="on">Bundesinventare</a>
+      <div class="checkbox-inhalt"></div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="legend-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" hidden-print="true">
+      <div class="modal-dialog"> 
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <h4 class="i" id="myModalLabel">Infobox</h4>
+          </div>
+          <div class="modal-body"></div>
+        </div>
+      </div>
+    </div>
+    <br> This example shows how to create a catalog using Bootstrap and JQuery.</br>
+    <a href="geoadmin_catalog.js">See the code</a><br>
+    <script type="text/javascript" src="/static/js/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-ajaxtransport-xdomainrequest/1.0.2/jquery.xdomainrequest.min.js"></script>
+    <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="//api3.geo.admin.ch/loader.js"></script>
+    <script type="text/javascript" src="//code.jquery.com/jquery-latest.js"></script>
+    <script type="text/javascript" src="geoadmin_catalog.js"></script>
+  </body>
+
+</html>
