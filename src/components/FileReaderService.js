@@ -8,9 +8,10 @@
     this.$get = function($q) {
 
       var FileReaderUtils = function(scope) {
-        var reader;
+        var reader,
+            deferred;
 
-        var onLoad = function(deferred) {
+        var onLoad = function() {
           return function() {
             scope.$apply(function() {
               deferred.resolve(reader.result);
@@ -18,7 +19,7 @@
           };
         };
 
-        var onError = function(deferred) {
+        var onError = function() {
           return function() {
             scope.$apply(function() {
               deferred.reject(reader.result);
@@ -37,21 +38,25 @@
           };
         };
 
-        var initReader = function(deferred) {
+        var initReader = function() {
           reader = new FileReader();
-          reader.onload = onLoad(deferred);
-          reader.onerror = onError(deferred);
+          reader.onload = onLoad();
+          reader.onerror = onError();
           reader.onprogress = onProgress();
         };
 
         this.abort = function() {
           if (reader && reader.readyState == 1) {
+            scope.$apply(function() {
+              deferred.resolve();
+            });
             reader.abort();
           }
         };
 
         this.readAsText = function(file) {
-          var deferred = $q.defer();
+          this.abort();
+          deferred = $q.defer();
           initReader(deferred);
           reader.readAsText(file);
           return deferred.promise;

@@ -17,13 +17,13 @@
   module.controller('GaImportKmlDirectiveController',
       function($scope, $http, $q, $log, $translate, gaBrowserSniffer,
             gaLayers, gaKml, gaUrlUtils, gaFileReader) {
-        var fileReader;
         $scope.isIE9 = (gaBrowserSniffer.msie == 9);
         $scope.isIE = !isNaN(gaBrowserSniffer.msie);
         $scope.currentTab = ($scope.isIE9) ? 2 : 1;
         $scope.file = null;
         $scope.userMessage = '';
         $scope.progress = 0;
+        var fileReader = gaFileReader($scope);
 
         // Tabs management stuff
         $scope.activeTab = function(numTab) {
@@ -123,9 +123,10 @@
             $scope.progress = 0.1;
 
             // Read the file
-            fileReader = gaFileReader($scope);
             fileReader.readAsText($scope.file).then(function(result) {
-              handleReaderLoadEnd(result);
+              if (result) {
+                handleReaderLoadEnd(result);
+              }
             }, function() {
               handleReaderError();
             });
@@ -168,10 +169,8 @@
         $scope.cancel = function() {
           $scope.userMessage = $translate('operation_canceled');
           $scope.progress = 0;
-          if (fileReader) {
-            fileReader.abort();
-          }
-
+          // Kill file reading
+          fileReader.abort();
           // Kill $http request
           if ($scope.canceler) {
             $scope.canceler.resolve();
