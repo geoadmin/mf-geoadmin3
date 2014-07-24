@@ -8,6 +8,8 @@ var fs = require('fs'),
     Q = require('q'),
     xml = require('xml'),
     sm = require('sitemap');
+    pg = require('pg');
+    gzip = require('gzipme');
 
 var HOSTNAME = 'http://map.geo.admin.ch';
 var LANGUAGES = ['de', 'fr', 'it', 'rm', 'en'];
@@ -146,10 +148,117 @@ var createLayersSM = function(origin) {
   return deferred.promise;
 };
 
+//Creates sitemaps with all addresses
+var createAddressesSM = function(origin) {
+  var deferred = Q.defer();
+
+  if (process.env.PGUSER == undefined ||
+      process.env.PGPASS == undefined) {
+    console.log('Error creating addresses: Please specify PGUSER and PGPASS as env variables');
+    deferred.resolve();
+    return deferred.promise;
+  }
+  var conString = 'postgres://' + process.env.PGUSER + ':' + process.env.PGPASS +
+                  '@pgcluster0t.bgdi.admin.ch:5432/kogis';
+  var client = new pg.Client(conString);
+  //Max URLs per file: https://support.google.com/webmasters/answer/183668
+  var RESULTS_PER_FILE = 50000;
+  var QUERY_TEMPLATE = 'SELECT egid_edid, gkodx, gkody FROM bfs.adr ORDER BY id LIMIT ' +
+                       RESULTS_PER_FILE + ' OFFSET {offset}';
+  var query = QUERY_TEMPLATE;
+  console.log('Creating address indices. This might take a while...');
+
+  var exportSubset = function(offset, counter) {
+    var def = Q.defer();
+    query = QUERY_TEMPLATE.replace('{offset}', offset + '');
+    client.query(query, function(err, result) {
+      if(err) {
+        console.error('Error running query', err, query);
+        def.resolve({result: undefined});
+        return;
+      }
+      var templates = [];
+      result.rows.forEach(function(row) {
+        templates.push({
+          url: '/?ch.bfs.gebaeude_wohnungs_register=' + row.egid_edid +
+               '&X=' + row.gkody + '&Y=' + row.gkodx + '&zoom=9',
+          priority: 0.9
+        });
+      });
+
+      var sitemap = sm.createSitemap({
+        hostname: HOSTNAME,
+        urls: templates
+      });
+      var fileName = getFullPath(origin.name + '_' + counter);
+      fs.writeFileSync(fileName, sitemap.toString() + '\n\n');
+      gzip(fileName, false, 'best');
+      fs.unlink(fileName);
+
+      def.resolve({result: result});
+    });
+    return def.promise;
+  };
+
+  client.connect(function(err) {
+    if(err) {
+      console.error('Could not connect to postgres to create address sitemaps)', err);
+      deferred.resolve({result: false, origin: origin});
+      return;
+    }
+    //First we get total available records
+    client.query('SELECT COUNT(*) FROM bfs.adr', function(err, result) {
+      if (err) {
+        console.error('Could not count records to create address sitemaps)', err);
+        deferred.resolve({result: false, origin: origin});
+        client.end();
+        return;
+      }
+      var COUNT = parseInt(result.rows[0].count, 10);
+      var subPromises = [];
+      var counter = 0;
+      for (var i = 0; i <= COUNT; i += RESULTS_PER_FILE) {
+        subPromises.push(exportSubset(i + '', counter));
+        counter++;
+      }
+
+      Q.allSettled(subPromises).then(function(sProm) {
+        var file = fs.createWriteStream(getFullPath(origin.name));
+        var endMarker = '</sitemapindex>';
+        file.on('open', function(fd) {
+          var count = 0;
+          var indexRoot = xml.element({ _attr: {xmlns: 'http://www.sitemaps.org/schemas/sitemap/0.9'}});
+          var xmlstream = xml({ sitemapindex: indexRoot}, { stream: true, indent: '  ', declaration: {encoding: 'UTF-8'}});
+          xmlstream.on('data', function (chunk) {
+            file.write(chunk + '\n');
+            if (chunk == endMarker) {
+              file.write('\n');
+            }
+          });
+          sProm.forEach(function(prom) {
+            if (prom.value.result !== undefined) {
+              indexRoot.push({ sitemap: [{ loc: HOSTNAME + '/sitemap_' + origin.name + '_' + count + '.xml.gz'}] });
+              count += 1;
+            } else {
+              console.log('promise returned false');
+            }
+          });
+          client.end();
+          indexRoot.close();
+          deferred.resolve({result: true, origin: origin});
+        });
+      });
+    });
+  });
+
+  return deferred.promise;
+};
+
 var smList = [
   { name: 'base', fn: createBaseSM },
   { name: 'topics', fn: createTopicsSM },
-  { name: 'layers', fn: createLayersSM }
+  { name: 'layers', fn: createLayersSM },
+  { name: 'addresses', fn: createAddressesSM }
 ];
 
 var indexPromises = [];
