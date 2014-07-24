@@ -25,6 +25,11 @@
           <a href="loader.js">Link to api</a> <br>
           <a href="loader.js?lang=fr">Link to api in french</a> <br>
           <a href="loader.js?mode=debug">Link to api in debug mode</a> <br>
+      <h2 id="sitemap">Sitemap Service</h2>
+          <a href="sitemap?content=index">Index page</a> <br>
+          <a href="sitemap?content=base">Base page</a> <br>
+          <a href="sitemap?content=topics">Topics page</a> <br>
+          <a href="sitemap?content=layers">Layers page</a> <br>
       <h2 id="checkers">Checkers</h2>
           <a href="checker">Checker for home page</a> <br>
           <a href="checker_dev">Checker for dev page</a> <br> 
