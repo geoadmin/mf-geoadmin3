@@ -355,7 +355,7 @@ class Search(SearchValidation):
                     if 'feature_id' in res['attrs']:
                         res['attrs']['featureId'] = res['attrs']['feature_id']
                     if self.typeInfo == 'featuresearch' or not self.bbox or \
-                        self._bbox_intersection(self.bbox, res['attrs']['geom_st_box2d']):
+                            self._bbox_intersection(self.bbox, res['attrs']['geom_st_box2d']):
                         self.results['results'].append(res)
 
     def _get_quad_index(self):
