@@ -328,6 +328,7 @@ class Catalog(Base):
     selectedOpen = Column('selected_open', Boolean)
     path = Column('path', Text)
     depth = Column('depth', Integer)
+    staging = Column('staging', Text)
 
     def to_dict(self, lang):
 

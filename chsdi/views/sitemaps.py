@@ -10,6 +10,7 @@ from pyramid.request import Request
 
 from chsdi.models.bod import Catalog
 from chsdi.lib.validation.sitemaps import SiteMapValidation
+from chsdi.lib.filters import *
 
 __AMPERSAND__ = '&amp;'
 
@@ -21,6 +22,7 @@ class SiteMaps(SiteMapValidation):
         self.content = request.params.get('content')
         self.basename = 'sitemap'
         self.host = request.registry.settings['geoadminhost']
+        self.staging = request.registry.settings['geodata_staging']
         self.request = request
         self.langs = ['de', 'fr', 'it', 'rm', 'en']
 
@@ -82,6 +84,7 @@ def layers(params):
         query = (session.query(Catalog)
                  .filter(Catalog.topic.ilike('%%%s%%' % topic['id']))
                  .filter(Catalog.category.ilike('%%layer%%')))
+        query = filter_by_geodata_staging(query, Catalog.staging, params.staging)
         layerlinks = map(buildlink, query.all())
         paths.extend(toAllLanguages(topic['langs'].split(','), layerlinks, __AMPERSAND__, ''))
     session.close()
