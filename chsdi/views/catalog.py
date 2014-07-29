@@ -7,6 +7,7 @@ from pyramid.httpexceptions import HTTPNotFound
 from chsdi.models.bod import Catalog
 from chsdi.lib.validation import MapNameValidation
 from chsdi.lib.sqlalchemy_customs import remove_accents
+from chsdi.lib.filters import *
 
 
 class CatalogService(MapNameValidation):
@@ -16,15 +17,17 @@ class CatalogService(MapNameValidation):
         self.mapName = request.matchdict.get('map')  # The topic
         self.hasMap(request.db, self.mapName)
         self.request = request
+        self.staging = request.registry.settings['geodata_staging']
 
     @view_config(route_name='catalog', renderer='jsonp')
     def catalog(self):
         model = Catalog
-        rows = self.request.db.query(model)\
+        query = self.request.db.query(model)\
             .filter(model.topic.ilike('%%%s%%' % self.mapName))\
             .order_by(model.depth)\
             .order_by(model.orderKey)\
-            .order_by(remove_accents(model.get_name_from_lang(self.lang))).all()
+            .order_by(remove_accents(model.get_name_from_lang(self.lang)))
+        rows = filter_by_geodata_staging(query, model.staging, self.staging).all()
         if len(rows) == 0:
             raise HTTPNotFound('No catalog with id %s is available' % self.mapName)
 
