@@ -526,7 +526,7 @@ goog.addDependency("../build/exports.js", [], ["ga.Lang", "ga.Lang.msg", "ga.Lan
 "ol.webgl.Context"]);
 goog.addDependency("../src/ga/ga.js", ["ga"], []);
 goog.addDependency("../src/ga/lang.js", ["ga.Lang", "ga.Lang.msg"], ["ga.Lang.msg.en", "ga.Lang.msg.de", "ga.Lang.msg.fr", "ga.Lang.msg.it", "ga.Lang.msg.rm"]);
-goog.addDependency("../src/ga/layer/layer.js", ["ga.layer", "ga.source.wms", "ga.source.wmts"], ["goog.array", "ol.Attribution", "ol.layer.Group", "ol.layer.Tile", "ol.layer.Image", "ol.source.TileWMS", "ol.source.ImageWMS", "ol.source.WMTS", "ol.tilegrid.WMTS"]);
+goog.addDependency("../src/ga/layer/layer.js", ["ga.layer", "ga.source.wms", "ga.source.wmts"], ["goog.array", "goog.object", "ol.Attribution", "ol.layer.Group", "ol.layer.Tile", "ol.layer.Image", "ol.source.TileWMS", "ol.source.ImageWMS", "ol.source.WMTS", "ol.tilegrid.WMTS"]);
 goog.addDependency("../src/ga/locales/de.js", ["ga.Lang.msg.de"], []);
 goog.addDependency("../src/ga/locales/en.js", ["ga.Lang.msg.en"], []);
 goog.addDependency("../src/ga/locales/fr.js", ["ga.Lang.msg.fr"], []);
@@ -33249,6 +33249,7 @@ goog.require("ol.geom.MultiPolygon");
 goog.require("ol.geom.GeometryCollection");
 ga.Tooltip = function() {
   goog.base(this);
+  this.enabled_ = true;
   this.map_ = null;
   this.mapClickListenerKey_ = null;
   this.tooltipContentElement_ = null;
@@ -33298,7 +33299,7 @@ ga.Tooltip.prototype.handleClick_ = function(mapBrowserEvent) {
       layerList.push(layer.id)
     }
   }
-  if(layerList.length > 0) {
+  if(layerList.length > 0 && this.enabled_) {
     var payload = {"geometryType":"esriGeometryPoint", "geometry":coordinate[0] + "," + coordinate[1], "geometryFormat":"geojson", "imageDisplay":size[0] + "," + size[1] + ",96", "mapExtent":extent.join(","), "tolerance":10, "layers":"all:" + layerList.join(","), "lang":window["GeoAdmin"] && window["GeoAdmin"]["lang"] ? window["GeoAdmin"]["lang"] : "de"};
     jsonp.send(payload, goog.bind(this.handleIdentifyResponse_, this), goog.bind(this.handleIdentifyError_, this))
   }
@@ -33399,6 +33400,13 @@ ga.Tooltip.prototype.setMap = function(map) {
   }
   this.map_ = map
 };
+ga.Tooltip.prototype.enable = function() {
+  this.enabled_ = true
+};
+ga.Tooltip.prototype.disable = function() {
+  this.enabled_ = false;
+  this.hidePopup()
+};
 goog.provide("ga.Map");
 goog.require("goog.asserts");
 goog.require("goog.net.Jsonp");
@@ -33455,11 +33463,12 @@ ga.Map = function(options) {
   this.geocoderCrossElement_ = null;
   this.geocoderOverlay_ = null;
   this.createGeocoderDialog_();
+  this.gaTooltip_ = null;
   options.tooltip = goog.isDefAndNotNull(options.tooltip) ? options.tooltip : true;
   if(options.tooltip) {
-    var tooltip = new ga.Tooltip;
-    tooltip.setMap(this);
-    this.registerDisposable(tooltip)
+    this.gaTooltip_ = new ga.Tooltip;
+    this.gaTooltip_.setMap(this);
+    this.registerDisposable(this.gaTooltip_)
   }
 };
 goog.inherits(ga.Map, ol.Map);
@@ -33576,6 +33585,16 @@ ga.Map.prototype.addCross_ = function(center) {
 ga.Map.prototype.removeCross_ = function() {
   if(this.geocoderOverlay_) {
     this.removeOverlay(this.geocoderOverlay_)
+  }
+};
+ga.Map.prototype.enableTooltip = function() {
+  if(!goog.isNull(this.gaTooltip_)) {
+    this.gaTooltip_.enable()
+  }
+};
+ga.Map.prototype.disableTooltip = function() {
+  if(!goog.isNull(this.gaTooltip_)) {
+    this.gaTooltip_.disable()
   }
 };
 goog.provide("ol.TileUrlFunction");
@@ -34382,6 +34401,7 @@ goog.provide("ga.layer");
 goog.provide("ga.source.wms");
 goog.provide("ga.source.wmts");
 goog.require("goog.array");
+goog.require("goog.object");
 goog.require("ol.Attribution");
 goog.require("ol.layer.Group");
 goog.require("ol.layer.Tile");
@@ -34390,9 +34410,12 @@ goog.require("ol.source.TileWMS");
 goog.require("ol.source.ImageWMS");
 goog.require("ol.source.WMTS");
 goog.require("ol.tilegrid.WMTS");
-ga.layer.create = function(layer) {
+ga.layer.create = function(layer, options) {
   if(layer in ga.layer.layerConfig) {
     var layerConfig = ga.layer.layerConfig[layer];
+    if(options) {
+      goog.object.extend(layerConfig, options)
+    }
     layerConfig.type = layerConfig.type || "wmts";
     var olLayer;
     if(layerConfig.type == "aggregate") {
@@ -34447,11 +34470,11 @@ ga.source.wmts = function(layer, options) {
   var resolutions = options.resolutions ? options.resolutions : ga.layer.RESOLUTIONS;
   var tileGrid = new ol.tilegrid.WMTS({origin:[42E4, 35E4], resolutions:resolutions, matrixIds:goog.array.range(resolutions.length)});
   var extension = options.format || "png";
-  var timestamp = options["timestamps"][0];
+  var timestamp = options["timestamp"] ? options["timestamp"] : options["timestamps"][0];
   return new ol.source.WMTS(({crossOrigin:"anonymous", attributions:[ga.layer.getAttribution('\x3ca href\x3d"' + options["attributionUrl"] + '" target\x3d"new"\x3e' + options["attribution"] + "\x3c/a\x3e")], url:("http://wmts{5-9}.geo.admin.ch/1.0.0/{Layer}/default/" + timestamp + "/21781/" + "{TileMatrix}/{TileRow}/{TileCol}.").replace("http:", location.protocol) + extension, tileGrid:tileGrid, layer:options["serverLayerName"] ? options["serverLayerName"] : layer, requestEncoding:"REST"}))
 };
 ga.source.wms = function(layer, options) {
-  return new ol.source.TileWMS({crossOrigin:"anonymous", attributions:[ga.layer.getAttribution('\x3ca href\x3d"' + options["attributionUrl"] + '" target\x3d"new"\x3e' + options["attribution"] + "\x3c/a\x3e")], params:{"LAYERS":options["wmsLayers"] || layer}, url:options["wmsUrl"].split("?")[0].replace("http:", location.protocol)})
+  return new ol.source.TileWMS({crossOrigin:"anonymous", gutter:options["gutter"] || 0, attributions:[ga.layer.getAttribution('\x3ca href\x3d"' + options["attributionUrl"] + '" target\x3d"new"\x3e' + options["attribution"] + "\x3c/a\x3e")], params:{"LAYERS":options["wmsLayers"] || layer}, url:options["wmsUrl"].split("?")[0].replace("http:", location.protocol)})
 };
 ga.source.imageWms = function(layer, options) {
   return new ol.source.ImageWMS({crossOrigin:"anonymous", attributions:[ga.layer.getAttribution('\x3ca href\x3d"' + options["attributionUrl"] + '" target\x3d"new"\x3e' + options["attribution"] + "\x3c/a\x3e")], params:{"LAYERS":options["wmsLayers"] || layer}, ratio:1, url:options["wmsUrl"].split("?")[0].replace("http:", location.protocol)})
@@ -41167,7 +41190,9 @@ goog.exportProperty(ga.Map.prototype, "addLayer", ga.Map.prototype.addLayer);
 goog.exportProperty(ga.Map.prototype, "addOverlay", ga.Map.prototype.addOverlay);
 goog.exportProperty(ga.Map.prototype, "beforeRender", ga.Map.prototype.beforeRender);
 goog.exportProperty(ga.Map.prototype, "bindTo", ga.Map.prototype.bindTo);
+goog.exportProperty(ga.Map.prototype, "disableTooltip", ga.Map.prototype.disableTooltip);
 goog.exportProperty(ga.Map.prototype, "dispatchChangeEvent", ga.Map.prototype.dispatchChangeEvent);
+goog.exportProperty(ga.Map.prototype, "enableTooltip", ga.Map.prototype.enableTooltip);
 goog.exportProperty(ga.Map.prototype, "forEachFeatureAtPixel", ga.Map.prototype.forEachFeatureAtPixel);
 goog.exportProperty(ga.Map.prototype, "geocode", ga.Map.prototype.geocode);
 goog.exportProperty(ga.Map.prototype, "get", ga.Map.prototype.get);
