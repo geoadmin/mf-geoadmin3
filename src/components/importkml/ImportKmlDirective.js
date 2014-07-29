@@ -2,11 +2,13 @@
   goog.provide('ga_importkml_directive');
 
   goog.require('ga_browsersniffer_service');
+  goog.require('ga_filereader_service');
   goog.require('ga_map_service');
   goog.require('ga_urlutils_service');
 
   var module = angular.module('ga_importkml_directive', [
     'ga_browsersniffer_service',
+    'ga_filereader_service',
     'ga_map_service',
     'ga_urlutils_service',
     'pascalprecht.translate'
@@ -14,14 +16,14 @@
 
   module.controller('GaImportKmlDirectiveController',
       function($scope, $http, $q, $log, $translate, gaBrowserSniffer,
-            gaLayers, gaKml, gaUrlUtils) {
-
+            gaLayers, gaKml, gaUrlUtils, gaFileReader) {
         $scope.isIE9 = (gaBrowserSniffer.msie == 9);
         $scope.isIE = !isNaN(gaBrowserSniffer.msie);
         $scope.currentTab = ($scope.isIE9) ? 2 : 1;
         $scope.file = null;
         $scope.userMessage = '';
         $scope.progress = 0;
+        var fileReader = gaFileReader($scope);
 
         // Tabs management stuff
         $scope.activeTab = function(numTab) {
@@ -89,6 +91,28 @@
           }
         };
 
+        $scope.$on('gaFileProgress', function(evt, progress) {
+          $scope.$apply(function() {
+            $scope.progress = (progress.loaded / progress.total) * 80;
+          });
+        });
+
+        // Callback when FileReader has finished
+        var handleReaderLoadEnd = function(result) {
+          if (gaKml.isValidFileContent(result)) {
+            $scope.userMessage = $translate('read_succeeded');
+            $scope.fileContent = result;
+          } else {
+            handleReaderError();
+          }
+        };
+
+        // Callback when FileReader has failed
+        var handleReaderError = function() {
+          $scope.userMessage = $translate('read_failed');
+          $scope.progress = 0;
+        };
+
         // Handle a File (from a FileList),
         // works only with FileAPI
         $scope.handleFile = function() {
@@ -99,43 +123,15 @@
             $scope.progress = 0.1;
 
             // Read the file
-            $scope.fileReader = new FileReader();
-            $scope.fileReader.onprogress = $scope.handleReaderProgress;
-            $scope.fileReader.onload = $scope.handleReaderLoadEnd;
-            $scope.fileReader.onerror = $scope.handleReaderError;
-            $scope.fileReader.readAsText($scope.file);
-          }
-          $scope.isDropped = false;
-        };
-
-
-        // Callback when FileReader is processing
-        $scope.handleReaderProgress = function(evt) {
-          if (evt.lengthComputable) {
-            $scope.$apply(function() {
-              $scope.progress = (evt.loaded / evt.total) * 80;
+            fileReader.readAsText($scope.file).then(function(result) {
+              if (result) {
+                handleReaderLoadEnd(result);
+              }
+            }, function() {
+              handleReaderError();
             });
           }
-        };
-
-        // Callback when FileReader has finished
-        $scope.handleReaderLoadEnd = function(evt) {
-          $scope.$apply(function() {
-            if (gaKml.isValidFileContent(evt.target.result)) {
-              $scope.userMessage = $translate('read_succeeded');
-              $scope.fileContent = evt.target.result;
-            } else {
-              $scope.handleReaderError(evt);
-            }
-          });
-        };
-
-        // Callback when FileReader has failed
-        $scope.handleReaderError = function(evt) {
-          $scope.$apply(function() {
-            $scope.userMessage = $translate('read_failed');
-            $scope.progress = 0;
-          });
+          $scope.isDropped = false;
         };
 
         // Display the KML file content on the map
@@ -173,12 +169,8 @@
         $scope.cancel = function() {
           $scope.userMessage = $translate('operation_canceled');
           $scope.progress = 0;
-
-          // Abort file reader process
-          if ($scope.fileReader && $scope.fileReader.readyState == 1) {
-            $scope.fileReader.abort();
-          }
-
+          // Kill file reading
+          fileReader.abort();
           // Kill $http request
           if ($scope.canceler) {
             $scope.canceler.resolve();
