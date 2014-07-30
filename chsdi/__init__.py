@@ -76,7 +76,6 @@ def main(global_config, **settings):
     config.add_route('qrcodegenerator', '/qrcodegenerator')
     config.add_route('sitemap', '/sitemap')
     config.add_route('luftbilder', '/luftbilder/viewer.html')
-    config.add_route('snapshot', '/snapshot')
     config.add_route('checker', '/checker')
     config.add_route('checker_dev', '/checker_dev')
 

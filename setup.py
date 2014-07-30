@@ -28,7 +28,6 @@ requires = [
     'papyrus_ogcproxy>0.1',
     'pep8',
     'autopep8',
-    'selenium',
     'regex',
     'pystache',
     'lxml',
