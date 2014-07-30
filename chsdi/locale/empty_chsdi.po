@@ -1,6 +1,9 @@
 msgid "None"
 msgstr ""
 
+msgid "sss"
+msgstr ""
+
 msgid "treasure_hunt"
 msgstr ""
 
@@ -137,6 +140,9 @@ msgid "ch.bafu"
 msgstr ""
 
 msgid "ch.bafu.url"
+msgstr ""
+
+msgid "sss.url"
 msgstr ""
 
 msgid "ch.kt.bafu"
