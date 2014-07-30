@@ -107,25 +107,6 @@
   module.provider('gaSwisssearch', function() {
     this.$get = function($timeout, $rootScope) {
 
-      /*
-       * PhantomJS does not support the click event
-       * on an element. So we have to create
-       * the event ourselves and apply it to the
-       * element. This needs to be done for
-       * the snapshot service.
-       */
-      var clickElement = function(el) {
-        if (el.click) {
-          el.click();
-        } else if (document.createEvent) {
-          var evt = document.createEvent('MouseEvents');
-          evt.initMouseEvent('click', true, true, window,
-                             0, 0, 0, 0, 0, false, false,
-                            false, false, 0, null);
-          el.dispatchEvent(evt);
-        }
-      };
-
       var PermalinkSearch = function() {
         var active = false,
             hitCount = 0,
@@ -162,7 +143,7 @@
               if (totalResults == 1 &&
                   clickEl) {
                 singleResult = true;
-                clickElement(clickEl);
+                clickEl.click();
               }
               $rootScope.$broadcast('gaSwisssearchDone');
             }

@@ -339,8 +339,8 @@
               return $q.all(promises);
             };
 
-            // Just do something if we are in snapshot mode
-            if (gaSeoService.isSnapshot()) {
+            // Just do something if we are active
+            if (gaSeoService.isActive()) {
               //Show popup
               $timeout(function() {
                 scope.showPopup = true;
