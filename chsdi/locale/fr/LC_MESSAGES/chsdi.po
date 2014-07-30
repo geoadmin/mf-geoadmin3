@@ -1929,7 +1929,7 @@ msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss"
 msgstr "Images aér. swisstopo n/b"
 
 msgid "ch.swisstopo.pixelkarte-farbe"
-msgstr "Carte nationale 1:25'000 | CN25"
+msgstr "Cartes couleurs"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk100.noscale"
 msgstr "Carte nationale 1:100'000"
@@ -1950,7 +1950,7 @@ msgid "ch.swisstopo.pixelkarte-farbe-pk500.noscale"
 msgstr "Carte nationale 1:500'000"
 
 msgid "ch.swisstopo.pixelkarte-grau"
-msgstr "Carte nationale 1:25'000 | CN25"
+msgstr "Cartes noir & blanc"
 
 msgid "ch.swisstopo.pixelkarte-pk100.metadata"
 msgstr "Découpage carte nationale 1:100’000"

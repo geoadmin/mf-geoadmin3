@@ -1818,33 +1818,26 @@ msgstr "Brick manufactures 1995"
 msgid "ch.swisstopo.geologie-geotope"
 msgstr "Swiss geotopes"
 
-#. TODO
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2"
-msgstr "ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2"
+msgstr "Geologische Gutachten (10-21000km2)"
 
-#. TODO
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-10x10km"
-msgstr "ch.swisstopo.geologie-gisgeol-flaechen-10x10km"
+msgstr "Geologische Gutachten (10x10km)"
 
-#. TODO
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-1x1km"
-msgstr "ch.swisstopo.geologie-gisgeol-flaechen-1x1km"
+msgstr "Geologische Gutachten (1x1km)"
 
-#. TODO
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2"
-msgstr "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2"
+msgstr "Geologische Gutachten (>21000km2)"
 
-#. TODO
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-lt10km2"
-msgstr "ch.swisstopo.geologie-gisgeol-flaechen-lt10km2"
+msgstr "Geologische Gutachten (0-10km2)"
 
-#. TODO
 msgid "ch.swisstopo.geologie-gisgeol-linien"
-msgstr "ch.swisstopo.geologie-gisgeol-linien"
+msgstr "Geologische Gutachten (Linien)"
 
-#. TODO
 msgid "ch.swisstopo.geologie-gisgeol-punkte"
-msgstr "ch.swisstopo.geologie-gisgeol-punkte"
+msgstr "Geologische Gutachten (Punkte)"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas"
 msgstr "Gravimetric Atlas"
@@ -1936,7 +1929,7 @@ msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss"
 msgstr "Aerial Images swisstopo b/w"
 
 msgid "ch.swisstopo.pixelkarte-farbe"
-msgstr "National Map 1:25'000 | NM25"
+msgstr "Color map"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk100.noscale"
 msgstr "National Map 1:100'000"
@@ -1957,7 +1950,7 @@ msgid "ch.swisstopo.pixelkarte-farbe-pk500.noscale"
 msgstr "National Map 1:500'000"
 
 msgid "ch.swisstopo.pixelkarte-grau"
-msgstr "National Map 1:25'000 | NM25"
+msgstr "Grey map"
 
 msgid "ch.swisstopo.pixelkarte-pk100.metadata"
 msgstr "Division National Map 1:100'000"
