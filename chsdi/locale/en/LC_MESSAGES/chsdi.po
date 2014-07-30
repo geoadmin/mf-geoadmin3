@@ -846,25 +846,25 @@ msgid "ch.are.bauzonen"
 msgstr "Building zones Switzerland (harm.)"
 
 msgid "ch.are.belastung-gueterverkehr-bahn"
-msgstr "Freight traffic"
+msgstr "Freight traffic 2008"
 
 msgid "ch.are.belastung-gueterverkehr-bahn-2008"
 msgstr "Freight traffic 2008"
 
 msgid "ch.are.belastung-gueterverkehr-strasse"
-msgstr "Heavy goods traffic"
+msgstr "Heavy goods traffic 2008"
 
 msgid "ch.are.belastung-gueterverkehr-strasse-2008"
 msgstr "Heavy goods traffic 2008"
 
 msgid "ch.are.belastung-personenverkehr-bahn"
-msgstr "Passenger traffic"
+msgstr "Passenger traffic 2008"
 
 msgid "ch.are.belastung-personenverkehr-bahn-2008"
 msgstr "Passenger traffic 2008"
 
 msgid "ch.are.belastung-personenverkehr-strasse"
-msgstr "Passenger traffic"
+msgstr "Passenger traffic 2008"
 
 msgid "ch.are.belastung-personenverkehr-strasse-2008"
 msgstr "Passenger traffic 2008"
@@ -1191,7 +1191,7 @@ msgid "ch.bafu.schutzgebiete-smaragd"
 msgstr "Emerald sites"
 
 msgid "ch.bafu.schutzgebiete-wildruhezonen"
-msgstr "Wildlife sanctuary zones"
+msgstr "Wildlife reserves"
 
 msgid "ch.bafu.showme-gemeinden_hochwasser"
 msgstr "ShowMe communes: floods"
@@ -1401,13 +1401,13 @@ msgid "ch.bav.laerm-emissionplan_eisenbahn_2015"
 msgstr "Emissions Plan 2015"
 
 msgid "ch.bav.sachplan-infrastruktur-schiene_anhorung"
-msgstr "SIS Anhörung"
+msgstr "SIS consultation"
 
 msgid "ch.bav.sachplan-infrastruktur-schiene_ausgangslage"
-msgstr "SIS Ausgangslage"
+msgstr "SIS starting point"
 
 msgid "ch.bav.sachplan-infrastruktur-schiene_kraft"
-msgstr "SIS in Kraft"
+msgstr "SIS in force"
 
 msgid "ch.bav.url"
 msgstr "http://www.bav.admin.ch/?lang=en"
@@ -1431,7 +1431,7 @@ msgid "ch.bazl.points-of-interest"
 msgstr "Points of interest"
 
 msgid "ch.bazl.projektierungszonen-flughafenanlagen"
-msgstr "Planning zones: Airports"
+msgstr "Planning zones: airports"
 
 msgid "ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung"
 msgstr "SAIP in consultation"
@@ -1482,34 +1482,34 @@ msgid "ch.bfs"
 msgstr "FSO"
 
 msgid "ch.bfs.arealstatistik"
-msgstr "Area statistics 2004/2009"
+msgstr "Land use stat. 2004/09 NOAS04"
 
 msgid "ch.bfs.arealstatistik-1985"
-msgstr "Area statistics 1979/1985"
+msgstr "Land use stat. 1979/85 NOAS04"
 
 msgid "ch.bfs.arealstatistik-1997"
-msgstr "Area statistics 1992/1997"
+msgstr "Land use stat. 1992/97 NOAS04"
 
 msgid "ch.bfs.arealstatistik-bodenbedeckung"
-msgstr "Arealstatistik 2004/09 NOLC04"
+msgstr "Land use stat. 2004/09 NOLC04"
 
 msgid "ch.bfs.arealstatistik-bodenbedeckung-1985"
-msgstr "Arealstatistik 1979/85 NOLC04"
+msgstr "Land use stat. 1979/85 NOLC04"
 
 msgid "ch.bfs.arealstatistik-bodenbedeckung-1997"
-msgstr "Arealstatistik 1992/97 NOLC04"
+msgstr "Land use stat. 1992/97 NOLC04"
 
 msgid "ch.bfs.arealstatistik-bodennutzung"
-msgstr "Arealstatistik 2004/09 NOLU04"
+msgstr "Land use stat. 2004/09 NOLU04"
 
 msgid "ch.bfs.arealstatistik-bodennutzung-1985"
-msgstr "Arealstatistik 1979/85 NOLU04"
+msgstr "Land use stat. 1979/85 NOLU04"
 
 msgid "ch.bfs.arealstatistik-bodennutzung-1997"
-msgstr "Arealstatistik 1992/97 NOLU04"
+msgstr "Land use stat. 1992/97 NOLU04"
 
 msgid "ch.bfs.arealstatistik-hintergrund"
-msgstr "Simplified land occupancy"
+msgstr "Simplified land use"
 
 msgid "ch.bfs.arealstatistik-waldmischungsgrad"
 msgstr "Mixture of forests 1990/1992"
@@ -1533,7 +1533,7 @@ msgid "ch.blw.bewaesserungsbeduerftigkeit"
 msgstr "Demand for irrigation"
 
 msgid "ch.blw.bodeneignung-gruendigkeit"
-msgstr "Gründigkeit"
+msgstr "Root penetration depth"
 
 msgid "ch.blw.bodeneignung-kulturland"
 msgstr "Aptitude: Cropland"
@@ -1542,19 +1542,19 @@ msgid "ch.blw.bodeneignung-kulturtyp"
 msgstr "Aptitude: Crop types"
 
 msgid "ch.blw.bodeneignung-naehrstoffspeichervermoegen"
-msgstr "Nährstoffspeichervermögen"
+msgstr "Nutrient storage capacity"
 
 msgid "ch.blw.bodeneignung-skelettgehalt"
-msgstr "Skelettgehalt"
+msgstr "Stone content"
 
 msgid "ch.blw.bodeneignung-vernaessung"
-msgstr "Vernässung"
+msgstr "Waterlogging"
 
 msgid "ch.blw.bodeneignung-wasserdurchlaessigkeit"
-msgstr "Wasserdurchlässigkeit"
+msgstr "Permeability"
 
 msgid "ch.blw.bodeneignung-wasserspeichervermoegen"
-msgstr "Wasserspeichervermögen"
+msgstr "Water storage capacity"
 
 msgid "ch.blw.erosion"
 msgstr "Erosion risk 1"
@@ -1566,13 +1566,13 @@ msgid "ch.blw.erosion-quantitativ"
 msgstr "Erosion risk quantitative"
 
 msgid "ch.blw.feldblockkarte"
-msgstr "Feldblockkarte"
+msgstr "Field block map"
 
 msgid "ch.blw.gewaesseranschlusskarte"
-msgstr "Gewässeranschluss"
+msgstr "Water connection"
 
 msgid "ch.blw.gewaesseranschlusskarte-direkt"
-msgstr "Gewässeranschluss erweitert"
+msgstr "Water connection extended"
 
 msgid "ch.blw.hang_steillagen"
 msgstr "Hillside and steep slopes situation"
@@ -1738,7 +1738,7 @@ msgid "ch.swisstopo.geologie-geocover.metadata"
 msgstr "Division GeoCover"
 
 msgid "ch.swisstopo.geologie-geodaesie-bouguer_anomalien"
-msgstr "Bouguer-Anomalies"
+msgstr "Bouguer anomalies"
 
 msgid "ch.swisstopo.geologie-geodaesie-isostatische_anomalien"
 msgstr "Isostatic anomalies"
@@ -1747,16 +1747,16 @@ msgid "ch.swisstopo.geologie-geolkarten500.metadata"
 msgstr "Division GeoMaps 500"
 
 msgid "ch.swisstopo.geologie-geologische_karte"
-msgstr "Geology 1:500 000"
+msgstr "Geology 1:500000"
 
 msgid "ch.swisstopo.geologie-geologischer_atlas"
-msgstr "Geological Atlas 1:25 000"
+msgstr "Geological Atlas 1:25000"
 
 msgid "ch.swisstopo.geologie-geophysik-aeromagnetische_karte_jura"
-msgstr "Aeromagnetic Plateau/Jura"
+msgstr "Aeromagnetics Plateau/Jura"
 
 msgid "ch.swisstopo.geologie-geophysik-aeromagnetische_karte_schweiz"
-msgstr "Aeromagnetic"
+msgstr "Aeromagnetics"
 
 msgid "ch.swisstopo.geologie-geophysik-deklination"
 msgstr "Declination"
@@ -1771,10 +1771,10 @@ msgid "ch.swisstopo.geologie-geophysik-totalintensitaet"
 msgstr "Magnetic field strength"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk200"
-msgstr "Geotechnical and rocks"
+msgstr "Geotechnics and rocks"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk500-genese"
-msgstr "Rocks origin"
+msgstr "Origin of rocks"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk500-gesteinsklassierung"
 msgstr "Classification of rocks"
@@ -1798,7 +1798,7 @@ msgid "ch.swisstopo.geologie-geotechnik-steinbrueche_1995"
 msgstr "Quarries 1995"
 
 msgid "ch.swisstopo.geologie-geotechnik-steine_historische_bauwerke"
-msgstr "Historical monuments' rocks"
+msgstr "Historical building stones"
 
 msgid "ch.swisstopo.geologie-geotechnik-zementindustrie_1965"
 msgstr "Cement industry 1965"
@@ -1816,31 +1816,38 @@ msgid "ch.swisstopo.geologie-geotechnik-ziegeleien_1995"
 msgstr "Brick manufactures 1995"
 
 msgid "ch.swisstopo.geologie-geotope"
-msgstr "Swiss Geotopes"
+msgstr "Swiss geotopes"
 
+#. TODO
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2"
-msgstr "Geologische Gutachten (10-21000km2)"
+msgstr "ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2"
 
+#. TODO
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-10x10km"
-msgstr "Geologische Gutachten (10x10km)"
+msgstr "ch.swisstopo.geologie-gisgeol-flaechen-10x10km"
 
+#. TODO
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-1x1km"
-msgstr "Geologische Gutachten (1x1km)"
+msgstr "ch.swisstopo.geologie-gisgeol-flaechen-1x1km"
 
+#. TODO
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2"
-msgstr "Geologische Gutachten (>21000km2)"
+msgstr "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2"
 
+#. TODO
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-lt10km2"
-msgstr "Geologische Gutachten (0-10km2)"
+msgstr "ch.swisstopo.geologie-gisgeol-flaechen-lt10km2"
 
+#. TODO
 msgid "ch.swisstopo.geologie-gisgeol-linien"
-msgstr "Geologische Gutachten (Linien)"
+msgstr "ch.swisstopo.geologie-gisgeol-linien"
 
+#. TODO
 msgid "ch.swisstopo.geologie-gisgeol-punkte"
-msgstr "Geologische Gutachten (Punkte)"
+msgstr "ch.swisstopo.geologie-gisgeol-punkte"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas"
-msgstr "Gravimetrischer Atlas"
+msgstr "Gravimetric Atlas"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas.metadata"
 msgstr "Division Gravimetric Atlas"
@@ -1861,10 +1868,10 @@ msgid "ch.swisstopo.geologie-rohstoffe-vererzungen"
 msgstr "Mineralizations"
 
 msgid "ch.swisstopo.geologie-spezialkarten_schweiz.metadata"
-msgstr "Subdivision special geological maps"
+msgstr "Division Special Geological Maps"
 
 msgid "ch.swisstopo.geologie-tektonische_karte"
-msgstr "Tectonic 1:500 000"
+msgstr "Tectonics 1:500000"
 
 msgid "ch.swisstopo.gg25-bezirk-flaeche.fill"
 msgstr "District boundaries GG25"
@@ -1929,7 +1936,7 @@ msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss"
 msgstr "Aerial Images swisstopo b/w"
 
 msgid "ch.swisstopo.pixelkarte-farbe"
-msgstr "Color map"
+msgstr "National Map 1:25'000 | NM25"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk100.noscale"
 msgstr "National Map 1:100'000"
@@ -1941,7 +1948,7 @@ msgid "ch.swisstopo.pixelkarte-farbe-pk200.noscale"
 msgstr "National Map 1:200'000"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk25.noscale"
-msgstr "National Map 1:25'000"
+msgstr "National Map 1:25'000 | NM25"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk50.noscale"
 msgstr "National Map 1:50'000"
@@ -1950,7 +1957,7 @@ msgid "ch.swisstopo.pixelkarte-farbe-pk500.noscale"
 msgstr "National Map 1:500'000"
 
 msgid "ch.swisstopo.pixelkarte-grau"
-msgstr "Grey map"
+msgstr "National Map 1:25'000 | NM25"
 
 msgid "ch.swisstopo.pixelkarte-pk100.metadata"
 msgstr "Division National Map 1:100'000"

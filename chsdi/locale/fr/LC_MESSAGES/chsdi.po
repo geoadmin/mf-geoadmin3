@@ -1191,7 +1191,7 @@ msgid "ch.bafu.schutzgebiete-smaragd"
 msgstr "Emeraude"
 
 msgid "ch.bafu.schutzgebiete-wildruhezonen"
-msgstr "Zones de tranquillité"
+msgstr "Sites de protection de la faune"
 
 msgid "ch.bafu.showme-gemeinden_hochwasser"
 msgstr "ShowMe communes: crues"
@@ -1407,7 +1407,7 @@ msgid "ch.bav.sachplan-infrastruktur-schiene_ausgangslage"
 msgstr "SIS données de base"
 
 msgid "ch.bav.sachplan-infrastruktur-schiene_kraft"
-msgstr "PS infrastructure rail"
+msgstr "SIS en vigueur"
 
 msgid "ch.bav.url"
 msgstr "http://www.bav.admin.ch/?lang=fr"
@@ -1431,10 +1431,10 @@ msgid "ch.bazl.points-of-interest"
 msgstr "Points d'intérêt"
 
 msgid "ch.bazl.projektierungszonen-flughafenanlagen"
-msgstr "Zones réservées: Aéroports"
+msgstr "Zones réservées: aéroports"
 
 msgid "ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung"
-msgstr "PSIA Consultation"
+msgstr "PSIA consultation"
 
 msgid "ch.bazl.sachplan-infrastruktur-luftfahrt_kraft"
 msgstr "PS infrastructure aéronautique"
@@ -1929,7 +1929,7 @@ msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss"
 msgstr "Images aér. swisstopo n/b"
 
 msgid "ch.swisstopo.pixelkarte-farbe"
-msgstr "Cartes couleurs"
+msgstr "Carte nationale 1:25'000 | CN25"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk100.noscale"
 msgstr "Carte nationale 1:100'000"
@@ -1941,7 +1941,7 @@ msgid "ch.swisstopo.pixelkarte-farbe-pk200.noscale"
 msgstr "Carte nationale 1:200'000"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk25.noscale"
-msgstr "Carte nationale 1:25'000"
+msgstr "Carte nationale 1:25'000 | CN25"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk50.noscale"
 msgstr "Carte nationale 1:50'000"
@@ -1950,7 +1950,7 @@ msgid "ch.swisstopo.pixelkarte-farbe-pk500.noscale"
 msgstr "Carte nationale 1:500'000"
 
 msgid "ch.swisstopo.pixelkarte-grau"
-msgstr "Cartes noir & blanc"
+msgstr "Carte nationale 1:25'000 | CN25"
 
 msgid "ch.swisstopo.pixelkarte-pk100.metadata"
 msgstr "Découpage carte nationale 1:100’000"
