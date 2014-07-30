@@ -38,7 +38,7 @@ class TestSnapshotService(TestsBase):
         catalog_links = resp.html.find_all('a', class_='ga-catalogitem-entry')
         self.failUnless(catalog_links is not None)
         self.failUnless(len(catalog_links) > 1)
-        self.failUnless(catalog_links[0].get('title') == 'Trafic routier')
+        self.failUnless(catalog_links[0].get('title') == 'Charge de trafic')
 
     # Make sure layers parameter is taken into account
     def test_layers(self):
@@ -63,7 +63,7 @@ class TestSnapshotService(TestsBase):
                 if (sug.find('b') and sug.find('b').string.find(term) != -1):
                     return True
             return False
-        self.failUnless(hasTerm('Wasserloch'))
+        self.failUnless(hasTerm('Wassertobel'))
         self.failUnless(hasTerm('Hochwasser'))
 
      # Make sure feature in permalink is included
