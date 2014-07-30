@@ -942,7 +942,7 @@ msgid "ch.babs"
 msgstr "BABS"
 
 msgid "ch.babs.kulturgueter"
-msgstr "Kulturgüterschutz Inventar"
+msgstr "Kulturgüterschutzinventar"
 
 msgid "ch.babs.url"
 msgstr "http://www.bevoelkerungsschutz.admin.ch/internet/bs/de/home/das_babs.html"
@@ -1191,7 +1191,7 @@ msgid "ch.bafu.schutzgebiete-smaragd"
 msgstr "Smaragd"
 
 msgid "ch.bafu.schutzgebiete-wildruhezonen"
-msgstr "Wildruhezonen"
+msgstr "Wildschutzgebiete"
 
 msgid "ch.bafu.showme-gemeinden_hochwasser"
 msgstr "ShowMe Gemeinden: Hochwasser"
@@ -1398,7 +1398,7 @@ msgid "ch.bav.kataster-belasteter-standorte-oev"
 msgstr "Altlasten/belastete Standorte öV"
 
 msgid "ch.bav.laerm-emissionplan_eisenbahn_2015"
-msgstr "Emissionsplan Eisenbahn  2015"
+msgstr "Emissionsplan Eisenbahn 2015"
 
 msgid "ch.bav.sachplan-infrastruktur-schiene_anhorung"
 msgstr "SIS Anhörung"
@@ -1407,7 +1407,7 @@ msgid "ch.bav.sachplan-infrastruktur-schiene_ausgangslage"
 msgstr "SIS Ausgangslage "
 
 msgid "ch.bav.sachplan-infrastruktur-schiene_kraft"
-msgstr "SP Infrastruktur Schiene"
+msgstr "SIS in Kraft"
 
 msgid "ch.bav.url"
 msgstr "http://www.bav.admin.ch/?lang=de"
@@ -1771,7 +1771,7 @@ msgid "ch.swisstopo.geologie-geophysik-totalintensitaet"
 msgstr "Magnetfeldstärke"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk200"
-msgstr "Geotechnik Rohstoffe Gesteine"
+msgstr "Geotechnik und Gesteine"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk500-genese"
 msgstr "Entstehung der Gesteine"
@@ -1929,28 +1929,28 @@ msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss"
 msgstr "Luftbilder swisstopo s/w"
 
 msgid "ch.swisstopo.pixelkarte-farbe"
-msgstr "Karte farbig"
+msgstr "Landeskarte 1:25'000 | LK25"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk100.noscale"
-msgstr "Landeskarte 1:100'000"
+msgstr "Landeskarte 1:100'000 | LK100"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk1000.noscale"
-msgstr "Landeskarte 1:1 Mio."
+msgstr "Landeskarte 1:1 Mio. | LK1000"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk200.noscale"
-msgstr "Landeskarte 1:200'000"
+msgstr "Landeskarte 1:200'000 | LK200"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk25.noscale"
-msgstr "Landeskarte 1:25'000"
+msgstr "Landeskarte 1:25'000 | LK25"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk50.noscale"
-msgstr "Landeskarte 1:50'000"
+msgstr "Landeskarte 1:50'000 | LK50"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk500.noscale"
-msgstr "Landeskarte 1:500'000"
+msgstr "Landeskarte 1:500'000 | LK500"
 
 msgid "ch.swisstopo.pixelkarte-grau"
-msgstr "Karte SW"
+msgstr "Landeskarte 1:25'000 | LK25"
 
 msgid "ch.swisstopo.pixelkarte-pk100.metadata"
 msgstr "Einteilung Landeskarte 1:100'000"

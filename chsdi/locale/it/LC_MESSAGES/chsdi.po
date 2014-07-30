@@ -846,13 +846,13 @@ msgid "ch.are.bauzonen"
 msgstr "Zone edificabili Svizzera (armon.)"
 
 msgid "ch.are.belastung-gueterverkehr-bahn"
-msgstr "Traffico merci"
+msgstr "Traffico merci 2008"
 
 msgid "ch.are.belastung-gueterverkehr-bahn-2008"
 msgstr "Traffico merci 2008"
 
 msgid "ch.are.belastung-gueterverkehr-strasse"
-msgstr "Traffico merci dai veicoli pesanti"
+msgstr "Traffico merci dai veicoli pesanti 2008"
 
 msgid "ch.are.belastung-gueterverkehr-strasse-2008"
 msgstr "Traffico merci dai veicoli pesanti 2008"
@@ -864,7 +864,7 @@ msgid "ch.are.belastung-personenverkehr-bahn-2008"
 msgstr "Traffico viaggiatori 2008"
 
 msgid "ch.are.belastung-personenverkehr-strasse"
-msgstr "Traffico viaggiatori"
+msgstr "Traffico viaggiatori 2008"
 
 msgid "ch.are.belastung-personenverkehr-strasse-2008"
 msgstr "Traffico viaggiatori 2008"
@@ -1137,7 +1137,7 @@ msgid "ch.bafu.naqua-grundwasser_voc"
 msgstr "Composti organici volatili"
 
 msgid "ch.bafu.oekomorphologie-f_abschnitte"
-msgstr "Ecomorfologia livello R - Tratti"
+msgstr "Ecomorfologia R - Tratti"
 
 msgid "ch.bafu.oekomorphologie-f_abstuerze"
 msgstr "Ecomorfologia R – Opere di caduta"
@@ -1191,7 +1191,7 @@ msgid "ch.bafu.schutzgebiete-smaragd"
 msgstr "Zone Smeraldo"
 
 msgid "ch.bafu.schutzgebiete-wildruhezonen"
-msgstr "Zone di tranquillitá"
+msgstr "Siti di protezione della fauna selvatica"
 
 msgid "ch.bafu.showme-gemeinden_hochwasser"
 msgstr "ShowMe comuni: piene"
@@ -1407,7 +1407,7 @@ msgid "ch.bav.sachplan-infrastruktur-schiene_ausgangslage"
 msgstr "SIS statu quo"
 
 msgid "ch.bav.sachplan-infrastruktur-schiene_kraft"
-msgstr "PS infrastruttura ferroviaria"
+msgstr "SIS in vigore"
 
 msgid "ch.bav.url"
 msgstr "http://www.bav.admin.ch/?lang=it"
@@ -1431,10 +1431,10 @@ msgid "ch.bazl.points-of-interest"
 msgstr "Punti d'interesse"
 
 msgid "ch.bazl.projektierungszonen-flughafenanlagen"
-msgstr "Zone riservate: Aerodromi"
+msgstr "Zone riservate: aerodromi"
 
 msgid "ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung"
-msgstr "PSIA Consultazione"
+msgstr "PSIA consultazione"
 
 msgid "ch.bazl.sachplan-infrastruktur-luftfahrt_kraft"
 msgstr "PS infrastruttura aeronautica"
@@ -1482,31 +1482,31 @@ msgid "ch.bfs"
 msgstr "UST"
 
 msgid "ch.bfs.arealstatistik"
-msgstr "Statistica di superficie 2004/2009"
+msgstr "Stat. superficie 04/09 NOAS04"
 
 msgid "ch.bfs.arealstatistik-1985"
-msgstr "Statistica di superficie 1979/1985"
+msgstr "Stat. superficie 79/85"
 
 msgid "ch.bfs.arealstatistik-1997"
-msgstr "Statistica di superficie 1992/1997"
+msgstr "Stat. superficie 92/97 NOAS04"
 
 msgid "ch.bfs.arealstatistik-bodenbedeckung"
-msgstr "Stat. superficie 2004/09 NOLC04"
+msgstr "Stat. superficie 04/09 NOLC04"
 
 msgid "ch.bfs.arealstatistik-bodenbedeckung-1985"
-msgstr "Stat. superficie 1979/85 NOLC04"
+msgstr "Stat. superficie 79/85 NOLC04"
 
 msgid "ch.bfs.arealstatistik-bodenbedeckung-1997"
-msgstr "Stat. superficie 1992/97 NOLC04"
+msgstr "Stat. superficie 92/97 NOAS04"
 
 msgid "ch.bfs.arealstatistik-bodennutzung"
-msgstr "Stat. superficie 2004/09 NOLU04"
+msgstr "Stat. superficie 04/09 NOLU04"
 
 msgid "ch.bfs.arealstatistik-bodennutzung-1985"
-msgstr "Stat. superficie 1979/85 NOLU04"
+msgstr "Stat. superficie 79/85 NOAS04"
 
 msgid "ch.bfs.arealstatistik-bodennutzung-1997"
-msgstr "Stat. superficie 1992/97 NOLU04"
+msgstr "Stat. superficie 92/97 NOLU04"
 
 msgid "ch.bfs.arealstatistik-hintergrund"
 msgstr "Utilizzo semplificato del suolo"
@@ -1527,7 +1527,7 @@ msgid "ch.blw.alpprodukte"
 msgstr "Prodotti dell'alpe"
 
 msgid "ch.blw.bergprodukte"
-msgstr "Prodotti montagna"
+msgstr "Prodotti di montagna"
 
 msgid "ch.blw.bewaesserungsbeduerftigkeit"
 msgstr "Fabbisogno irriguo"
@@ -1536,13 +1536,13 @@ msgid "ch.blw.bodeneignung-gruendigkeit"
 msgstr "Profondità"
 
 msgid "ch.blw.bodeneignung-kulturland"
-msgstr "Idoneità: terre agricole"
+msgstr "Idoneità: Terreni coltivi"
 
 msgid "ch.blw.bodeneignung-kulturtyp"
 msgstr "Idoneità: Tipologie di colture"
 
 msgid "ch.blw.bodeneignung-naehrstoffspeichervermoegen"
-msgstr "Stoccaggio di nutrienti"
+msgstr "Stoccaggio di sostanze nutritive"
 
 msgid "ch.blw.bodeneignung-skelettgehalt"
 msgstr "Scheletro"
@@ -1572,34 +1572,34 @@ msgid "ch.blw.gewaesseranschlusskarte"
 msgstr "Superfici collegate ad acque"
 
 msgid "ch.blw.gewaesseranschlusskarte-direkt"
-msgstr "superfici collegate integrate"
+msgstr "Superfici collegate integrate"
 
 msgid "ch.blw.hang_steillagen"
 msgstr "Zone declive"
 
 msgid "ch.blw.klimaeignung-futterbau"
-msgstr "Clima - foraggicoltura"
+msgstr "Clima - Foraggicoltura"
 
 msgid "ch.blw.klimaeignung-getreidebau"
-msgstr "Clima - cerealicoltura"
+msgstr "Clima - Cerealicoltura"
 
 msgid "ch.blw.klimaeignung-kartoffeln"
-msgstr "Clima - patate"
+msgstr "Clima - Patate"
 
 msgid "ch.blw.klimaeignung-koernermais"
-msgstr "Clima - mais da granella"
+msgstr "Clima - Mais da granella"
 
 msgid "ch.blw.klimaeignung-kulturland"
-msgstr "Clima - terreni coltivi"
+msgstr "Clima - Terreni coltivi"
 
 msgid "ch.blw.klimaeignung-spezialkulturen"
-msgstr "Clima - colture speciali"
+msgstr "Clima - Colture speciali"
 
 msgid "ch.blw.klimaeignung-typ"
 msgstr "Clima - Visione d'insieme"
 
 msgid "ch.blw.klimaeignung-zwischenfruchtbau"
-msgstr "Clima - colture intercalari"
+msgstr "Clima - Colture intercalari"
 
 msgid "ch.blw.kt"
 msgstr "UFAG + cantone"
@@ -1617,7 +1617,7 @@ msgid "ch.blw.url"
 msgstr "http://www.blw.admin.ch/index.html?lang=it"
 
 msgid "ch.blw.ursprungsbezeichnungen-fleisch"
-msgstr "IGP Prodotto a base di carne"
+msgstr "IGP Prodotti carnei"
 
 msgid "ch.blw.ursprungsbezeichnungen-kaese"
 msgstr "DOP Formaggio"
@@ -1626,7 +1626,7 @@ msgid "ch.blw.ursprungsbezeichnungen-pflanzen"
 msgstr "DOP Prodotti vegetali"
 
 msgid "ch.blw.ursprungsbezeichnungen-spirituosen"
-msgstr "DOP distillati"
+msgstr "DOP Distillati"
 
 msgid "ch.ensi"
 msgstr "IFSN"
@@ -1818,26 +1818,33 @@ msgstr "Mattonifici 1995"
 msgid "ch.swisstopo.geologie-geotope"
 msgstr "Geotopi svizzeri"
 
+#. TODO
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2"
-msgstr "Expertises géolog. (10-21000km2)"
+msgstr "ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2"
 
+#. TODO
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-10x10km"
-msgstr "Expertises géologiques (10x10km)"
+msgstr "ch.swisstopo.geologie-gisgeol-flaechen-10x10km"
 
+#. TODO
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-1x1km"
-msgstr "Expertises géologiques (1x1km)"
+msgstr "ch.swisstopo.geologie-gisgeol-flaechen-1x1km"
 
+#. TODO
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2"
-msgstr "Expertises géologiques (>21000km2)"
+msgstr "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2"
 
+#. TODO
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-lt10km2"
-msgstr "Expertises géologiques (0-10km2)"
+msgstr "ch.swisstopo.geologie-gisgeol-flaechen-lt10km2"
 
+#. TODO
 msgid "ch.swisstopo.geologie-gisgeol-linien"
-msgstr "Expertises géologiques (lignes)"
+msgstr "ch.swisstopo.geologie-gisgeol-linien"
 
+#. TODO
 msgid "ch.swisstopo.geologie-gisgeol-punkte"
-msgstr "Expertises géologiques (points)"
+msgstr "ch.swisstopo.geologie-gisgeol-punkte"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas"
 msgstr "Atlas gravimétrique"
@@ -1929,7 +1936,7 @@ msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss"
 msgstr "Immagini aeree swisstopo b/n"
 
 msgid "ch.swisstopo.pixelkarte-farbe"
-msgstr "Carta a colori"
+msgstr "Carta nazionale 1:25'000 | CN25"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk100.noscale"
 msgstr "Carta nazionale 1:100'000"
@@ -1941,7 +1948,7 @@ msgid "ch.swisstopo.pixelkarte-farbe-pk200.noscale"
 msgstr "Carta nazionale 1:200'000"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk25.noscale"
-msgstr "Carta nazionale 1:25'000"
+msgstr "Carta nazionale 1:25'000 | CN25"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk50.noscale"
 msgstr "Carta nazionale 1:50'000"
@@ -1950,7 +1957,7 @@ msgid "ch.swisstopo.pixelkarte-farbe-pk500.noscale"
 msgstr "Carta nazionale 1:500'000"
 
 msgid "ch.swisstopo.pixelkarte-grau"
-msgstr "Carta bianca e nera"
+msgstr "Carta nazionale 1:25'000 | CN25"
 
 msgid "ch.swisstopo.pixelkarte-pk100.metadata"
 msgstr "Divisione carte nazionali 1:100'000"
