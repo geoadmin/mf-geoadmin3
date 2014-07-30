@@ -161,7 +161,7 @@ class TestSearchServiceView(TestsBase):
         self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'parcel')
 
     def test_search_locations_with_bbox(self):
-        params = {'type': 'locations', 'searchText': 'buechli tegerfelden', 'bbox': '664126,268543,664126,268543'}
+        params = {'type': 'locations', 'searchText': 'buechli tegerfelden', 'bbox': '664100,268443,664150,268643'}
         resp = self.testapp.get('/rest/services/inspire/SearchServer', params=params, status=200)
         self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'buechli  5306 tegerfelden 4320 tegerfelden ch ag')
         self.failUnless(len(resp.json['results']) == 1)
