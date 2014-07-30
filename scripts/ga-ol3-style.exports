@@ -1,0 +1,1 @@
+goog.exportSymbol('ol.style.defaultStyleFunction', ol.style.defaultStyleFunction);

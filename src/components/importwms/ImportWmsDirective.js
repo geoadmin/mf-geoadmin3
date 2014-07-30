@@ -147,7 +147,7 @@
           $scope.zoomOnLayerExtent = function(getCapLayer) {
             var layer = getCapLayer;
             var extent = layer.extent || getLayerExtentFromGetCap(layer);
-            var view2D = $scope.map.getView().getView2D();
+            var view = $scope.map.getView();
             var mapSize = $scope.map.getSize();
 
             // If a minScale is defined
@@ -169,16 +169,16 @@
                   layerExtentCenter[1] + height / 2
                 ];
 
-                var res = view2D.constrainResolution(
-                    view2D.getResolutionForExtent(extent, mapSize), 0, -1);
-                view2D.setCenter(layerExtentCenter);
-                view2D.setResolution(res);
+                var res = view.constrainResolution(
+                    view.getResolutionForExtent(extent, mapSize), 0, -1);
+                view.setCenter(layerExtentCenter);
+                view.setResolution(res);
                 return;
               }
             }
 
             if (extent) {
-              view2D.fitExtent(extent, mapSize);
+              view.fitExtent(extent, mapSize);
             }
          };
 
@@ -211,7 +211,7 @@
             //
             // 39.37 INCHES_PER_UNIT
             // 72 DOTS_PER_INCH
-            return $scope.map.getView().getView2D().
+            return $scope.map.getView().
                 getResolutionForExtent(extent, mapSize) * 39.37 * 72;
           }
 

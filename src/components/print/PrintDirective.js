@@ -72,8 +72,8 @@
     var handlePostCompose = function(evt) {
       var ctx = evt.context;
       var size = $scope.map.getSize();
-      var height = size[1] * ol.BrowserFeature.DEVICE_PIXEL_RATIO;
-      var width = size[0] * ol.BrowserFeature.DEVICE_PIXEL_RATIO;
+      var height = size[1] * ol.has.DEVICE_PIXEL_RATIO;
+      var width = size[0] * ol.has.DEVICE_PIXEL_RATIO;
 
       var minx, miny, maxx, maxy;
       minx = printRectangle[0], miny = printRectangle[1],
@@ -385,7 +385,7 @@
             };
             var styles = (hasLayerStyleFunction) ?
                 layer.getStyleFunction()(feature) :
-                ol.feature.defaultStyleFunction(feature);
+                ol.style.defaultStyleFunction(feature);
 
 
             var geometry = feature.getGeometry();
@@ -462,7 +462,7 @@
               type: 'WMTS',
               baseURL: location.protocol + '//wmts.geo.admin.ch',
               layer: config.serverLayerName,
-              maxExtent: source.getExtent(),
+              maxExtent: layer.getExtent(),
               tileOrigin: tileGrid.getOrigin(),
               tileSize: [tileGrid.getTileSize(), tileGrid.getTileSize()],
               resolutions: tileGrid.getResolutions(),
@@ -678,8 +678,8 @@
       var height = printRectangle[3] - printRectangle[1];
       var center = [bottomLeft[0] + width / 2, bottomLeft[1] + height / 2];
       // convert back to map display size
-      var mapPixelCenter = [center[0] / ol.BrowserFeature.DEVICE_PIXEL_RATIO,
-           center[1] / ol.BrowserFeature.DEVICE_PIXEL_RATIO];
+      var mapPixelCenter = [center[0] / ol.has.DEVICE_PIXEL_RATIO,
+           center[1] / ol.has.DEVICE_PIXEL_RATIO];
       return $scope.map.getCoordinateFromPixel(mapPixelCenter);
     };
 
@@ -722,12 +722,12 @@
       var view = $scope.map.getView();
       var resolution = view.getResolution();
       var w = size.width / POINTS_PER_INCH * MM_PER_INCHES / 1000.0 *
-          s / resolution * ol.BrowserFeature.DEVICE_PIXEL_RATIO;
+          s / resolution * ol.has.DEVICE_PIXEL_RATIO;
       var h = size.height / POINTS_PER_INCH * MM_PER_INCHES / 1000.0 *
-          s / resolution * ol.BrowserFeature.DEVICE_PIXEL_RATIO;
+          s / resolution * ol.has.DEVICE_PIXEL_RATIO;
       var mapSize = $scope.map.getSize();
-      var center = [mapSize[0] * ol.BrowserFeature.DEVICE_PIXEL_RATIO / 2 ,
-          mapSize[1] * ol.BrowserFeature.DEVICE_PIXEL_RATIO / 2];
+      var center = [mapSize[0] * ol.has.DEVICE_PIXEL_RATIO / 2 ,
+          mapSize[1] * ol.has.DEVICE_PIXEL_RATIO / 2];
 
       var minx, miny, maxx, maxy;
 

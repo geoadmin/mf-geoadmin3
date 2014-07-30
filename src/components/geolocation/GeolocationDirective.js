@@ -31,7 +31,7 @@
         // Defines if the geolocation control is zooming
         var geolocationZooming = false;
         var map = scope.map;
-        var view = map.getView().getView2D();
+        var view = map.getView();
         var accuracyFeature = new ol.Feature();
         var positionFeature = new ol.Feature(new ol.geom.Point([0, 0]));
         var featuresOverlay = new ol.FeatureOverlay({

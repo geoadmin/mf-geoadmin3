@@ -223,7 +223,7 @@
                           '</div>' +
                         '</div>';
                       feature.set('htmlpopup', htmlpopup);
-                      showFeatures(layerToQuery.getSource().getExtent(), size,
+                      showFeatures(layerToQuery.getExtent(), size,
                           [feature]);
                     }
                   } else {
