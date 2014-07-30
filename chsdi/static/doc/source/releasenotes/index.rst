@@ -1,3 +1,27 @@
+Release 20140730 - Wednesday, July 30th 2014
+============================================
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+-----------------------------------
+
+- In Search, sort feature results by geolocation
+- Add new example: `Catalog <//api3.geo.admin.ch/examples/geoadmin_catalog.html>`__
+- JavaScript API now has the possibility to disable tooltips on the maps in runtime.
+
+`MAP <//map.geo.admin.ch>`__
+-----------------------------------
+
+- Update sitemaps
+- New translations in Catalogs. Corresponds to GeoCat entries now.
+
+Geodata
+********
+
+No updates
+
 Release 20140716 - Wednesday, July 16th 2014
 ============================================
 
