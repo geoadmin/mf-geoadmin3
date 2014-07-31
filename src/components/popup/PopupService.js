@@ -10,12 +10,6 @@
   module.provider('gaPopup', function() {
 
     this.$get = function($compile, $rootScope) {
-      var zIndex = 2000;
-
-      var bringUpFront = function(el) {
-        zIndex += 1;
-        el.css('z-index', zIndex);
-      };
 
       var Popup = function(options) {
 
@@ -72,9 +66,6 @@
       return {
         create: function(options) {
           return new Popup(options);
-        },
-        bringUpFront: function(el) {
-          bringUpFront(el);
         }
       };
     };

@@ -2,19 +2,21 @@
   goog.provide('ga_popup_directive');
 
   goog.require('ga_browsersniffer_service');
-  goog.require('ga_popup_service');
   goog.require('ga_print_service');
 
   var module = angular.module('ga_popup_directive', [
     'ga_browsersniffer_service',
-    'ga_popup_service',
     'ga_print_service',
     'pascalprecht.translate'
   ]);
 
   module.directive('gaPopup',
-    function($rootScope, $translate, gaBrowserSniffer, gaPrintService,
-        gaPopup) {
+    function($rootScope, $translate, gaBrowserSniffer, gaPrintService) {
+      var zIndex = 2000;
+      var bringUpFront = function(el) {
+        zIndex += 1;
+        el.css('z-index', zIndex);
+      };
       return {
         restrict: 'A',
         transclude: true,
@@ -116,8 +118,8 @@
           scope.controlDisplay = function(evt) {
             evt.stopPropagation();
             // Controls the popup order
-            if (!scope.isReduced && scope.toggle) {
-              gaPopup.bringUpFront(element);
+            if (scope.toggle) {
+              bringUpFront(element);
             }
             scope.isReduced = false;
           };
@@ -125,7 +127,7 @@
           scope.bringUpFront = function(evt) {
             evt.stopPropagation();
             if (!scope.isReduced && scope.toggle) {
-              gaPopup.bringUpFront(element);
+              bringUpFront(element);
             }
           };
 
@@ -149,6 +151,8 @@
                 if (!newVal) {
                   scope.isReduced = false;
                   onClose();
+                } else if (newVal) {
+                  bringUpFront(element);
                 }
               }
             }
