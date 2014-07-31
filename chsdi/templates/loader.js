@@ -1,21 +1,13 @@
 # -*- coding: utf-8 -*-
 
 <%
-import urllib2
-import simplejson
 from chsdi.lib.helpers import versioned
-mode = request.params.get('mode')
-lang = request.lang
-appUrl = request.application_url.replace('http:', request.scheme + ':')
-layersconfig = appUrl + versioned( '/rest/services/api/MapServer/layersConfig?lang=' + lang)
-f = None
-try:
-    f = urllib2.urlopen(layersconfig)
-    data = simplejson.loads(f.read())
-finally:
-    if f:
-        f.close()
-layersconfig = """if (typeof window['GeoAdmin'] == 'undefined') window['GeoAdmin'] =  {}; window.GeoAdmin.getConfig  = function(){ return %s } """ % simplejson.dumps(data,separators=(',',':'))
+
+lang = pageargs['lang']
+mode = pageargs['mode']
+data = pageargs['data']
+
+layersconfig = """if (typeof window['GeoAdmin'] == 'undefined') window['GeoAdmin'] =  {}; window.GeoAdmin.getConfig  = function(){ return %s } """ % data
 defaultLang = """function getDefaultLang() { return "%s" } """ % request.lang
 %>
 (function() {
