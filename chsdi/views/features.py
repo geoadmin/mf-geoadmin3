@@ -9,7 +9,8 @@ import pyramid.httpexceptions as exc
 
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from sqlalchemy.sql.expression import cast
-from sqlalchemy import Text
+from sqlalchemy import Text, Integer, Boolean, Numeric, Date
+from geoalchemy import Geometry
 
 from chsdi.lib.validation.mapservice import MapServiceValidation
 from chsdi.lib.filters import full_text_search
@@ -332,16 +333,47 @@ def _find(request):
                 query,
                 [searchColumn],
                 params.searchText
-            ).limit(MaxFeatures)
+            )
         else:
-            query = query.filter(
-                cast(searchColumn, Text) == params.searchText
-            ).limit(MaxFeatures)
+            if isinstance(searchColumn.type, Date):
+                query = query.filter(
+                    cast(searchColumn, Date) == params.searchText
+                )
+            else:
+                searchText = _format_search_text(searchColumn.type, params.searchText)
+                query = query.filter(
+                    searchColumn == searchText
+                )
+        query = query.limit(MaxFeatures)
         for feature in query:
             f = _process_feature(feature, params)
             features.append(f)
 
     return {'results': features}
+
+
+def _format_search_text(columnType, searchText):
+    if isinstance(columnType, Text):
+        return searchText
+    elif isinstance(columnType, Boolean):
+        if searchText.lower() == 'true':
+            return True
+        elif searchText.lower() == 'false':
+            return False
+        else:
+            raise HTTPBadRequest('Please provide a boolean value (true/false)')
+    elif isinstance(columnType, Integer):
+        if searchText.isdigit():
+            return int(searchText)
+        else:
+            raise HTTPBadRequest('Please provide an integer')
+    elif isinstance(columnType, Numeric):
+        if re.match("^\d+?\.\d+?$", searchText) is not None:
+            return float(searchText)
+        else:
+            raise HTTPBadRequest('Please provide a float')
+    elif isinstance(columnType, Geometry):
+        raise HTTPBadRequst('Find operations cannot be performed on geometry columns')
 
 
 def _process_feature(feature, params):
