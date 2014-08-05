@@ -16,7 +16,7 @@ fi
 
 cd $CODE_DIR
 git checkout $GIT_BRANCH
-git fetch --all
+git fetch origin $GIT_BRANCH
 git reset --hard origin/$GIT_BRANCH
 # This creates the branch configuration
 buildout/bin/buildout -c buildout_dev.cfg
