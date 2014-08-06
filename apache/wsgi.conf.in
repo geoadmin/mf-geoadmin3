@@ -100,7 +100,7 @@ RewriteRule ^${apache_entry_path}[0-9]+/(.*)$ ${apache_entry_path}$1 [E=${vars:a
 Header merge Cache-Control "max-age=31536013, public" env=${vars:apache_base_path}setyearcache
 
 # Non cached access
-RewriteRule ^${apache_entry_path}(qrcodegenerator|owschecker|iipimage|luftbilder|search|index|genindex|examples|img|js|css|releasenotes|services|_sources|_static|api|rest/services|ogcproxy|testi18n|loader.js|snapshot|checker|checker_dev|static|print|dev|feedback|sitemap)(.*)$ /${vars:apache_base_path}/wsgi/$1$2 [PT]
+RewriteRule ^${apache_entry_path}(qrcodegenerator|owschecker|iipimage|luftbilder|search|index|genindex|examples|images|js|css|releasenotes|services|_sources|_static|api|rest/services|ogcproxy|testi18n|loader.js|snapshot|checker|checker_dev|static|print|dev|feedback|sitemap)(.*)$ /${vars:apache_base_path}/wsgi/$1$2 [PT]
 
 
 # Some services are not "free": control is done at varnish level
