@@ -8,7 +8,7 @@
 .. _rest_services:
 
 API REST Services
-=============
+=================
 
 Most services are implementing or are heavily inspired by `ESRI GeoServices REST Specification <http://www.esri.com/industries/landing-pages/geoservices/geoservices>`_
 or by the `Open Geospatial Consortium (OGC) <http://opengeospatial.org>`_.
