@@ -58,9 +58,9 @@ RewriteRule ^${entry_path}/sitemap_(.*)\.xml http:${api_url}/${version}/sitemap?
 RewriteCond %{QUERY_STRING} _escaped_fragment_=(.*)$
 RewriteRule ^${entry_path}/(index.html|mobile.html)(.*) http:${api_url}/snapshot [NE,L,P]
 
-# Print proxy definitions
-ProxyPassMatch ^${entry_path}/print/(.*) http:${api_url}/print/$1
-<LocationMatch ^${entry_path}/print>
+# Proxy definitions
+ProxyPassMatch ^${entry_path}/(ogcproxy|print)/(.*) http:${api_url}/$1/$2
+<LocationMatch ^${entry_path}/(ogcproxy|print)>
     Order allow,deny
     Allow from all
 </LocationMatch>
