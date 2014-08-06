@@ -568,9 +568,13 @@
           return $.map(currentTopic.backgroundLayers, function(bodId) {
             var retVal = {id: bodId,
                           label: self.getLayerProperty(bodId, 'label')};
-            // In the background selector, we don't want the standard label
+            // In the background selector, we don't want the standard labels
             if (bodId == 'ch.swisstopo.swissimage') {
               retVal.label = $translate('bg_luftbild');
+            } else if (bodId == 'ch.swisstopo.pixelkarte-farbe') {
+              retVal.label = $translate('bg_pixel_color');
+            } else if (bodId == 'ch.swisstopo.pixelkarte-grau') {
+              retVal.label = $translate('bg_pixel_grey');
             }
             return retVal;
           });
