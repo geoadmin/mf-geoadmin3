@@ -29,44 +29,41 @@ AddOutputFilterByType DEFLATE text/html text/plain text/xml
 WSGIPassAuthorization On
 
 # Static files with aggressive cache:
-RewriteRule ^${apache_entry_path}[0-9\/]*static/(.*)$  ${buildout:directory/chsdi/static/$1}
-
-# Entry for doc
-RewriteRule ^${apache_entry_path}?$  ${apache_entry_path}doc [R,QSA]
-RewriteRule ^${apache_entry_path}doc/examples(.*)$  ${buildout:directory}/chsdi/static/doc/examples$1 [S=1]
-RewriteRule ^${apache_entry_path}doc(.*)$  ${buildout:directory}/chsdi/static/doc/build/$1
+RewriteRule ^/${vars:apache_base_path}/wsgi/[0-9a-fA-F]*/(static)/(.*)$  ${buildout:directory/chsdi/$1/$2}
+RewriteRule ^/${vars:apache_base_path}/wsgi/(static)/(.*)$  ${buildout:directory/chsdi/$1/$2}
 
 <IfModule mod_headers.c>
   Header set X-UA-Compatible "IE=Edge"
 </IfModule>
 
-<LocationMatch "^${apache_entry_path}[0-9]+/static/">
+<LocationMatch "/${vars:apache_base_path}/wsgi/[0-9a-fA-F]*/(static)/">
     ExpiresDefault "now plus 1 year"
     Header merge Cache-Control "public"
     Header unset Etag
 </LocationMatch>
 
 # Static for cross domain flash/arcgis
-<LocationMatch "^${apache_entry_path}static/(crossdomain.xml|clientaccesspolicy.xml)">
+<LocationMatch "/${vars:apache_base_path}/wsgi/static/(crossdomain.xml|clientaccesspolicy.xml)">
     Header set Content-type "text/x-cross-domain-policy"
 </LocationMatch>
-RewriteRule ^${apache_entry_path}(crossdomain.xml|clientaccesspolicy.xml) ${apache_entry_path}static/$1 [PT]
+RewriteRule ^${apache_entry_path}(crossdomain.xml|clientaccesspolicy.xml) /${vars:apache_base_path}/wsgi/static/$1 [PT]
 
 # Robots static files
-<LocationMatch "^${apache_entry_path}static/(robots.txt|robots_prod.txt)">
+<LocationMatch "/${vars:apache_base_path}/wsgi/static/(robots.txt|robots_prod.txt)">
     Header set Content-type "text/plain"
 </LocationMatch>
-RewriteRule ^${apache_entry_path}robots.txt ${apache_entry_path}static/${robots_file} [PT]
+RewriteRule ^${apache_entry_path}robots.txt /${vars:apache_base_path}/wsgi/static/${robots_file} [PT]
 
 
 # WMTS
-RewriteRule ^${apache_entry_path}1.0.0/WMTSCapabilities\.xml$ ${apache_entry_path}rest/services/api/1.0.0/WMTSCapabilities.xml [PT,NC,QSA,L]
+RewriteRule ^${apache_entry_path}1.0.0/WMTSCapabilities\.xml$ /${vars:apache_base_path}/wsgi/rest/services/api/1.0.0/WMTSCapabilities.xml [PT,NC,QSA,L]
 
 # Frozen Capabilities, for swissmaponline 
 RewriteCond %{QUERY_STRING} lang=(de|fr|it|en) [NC] 
 RewriteRule ^${apache_entry_path}1.0.0/WMTSCapabilities_v([0-9]{8})\.xml$ ${buildout:directory}/chsdi/static/capabilities/$1/WMTSCapabilities.%1.xml [NC,QSA,L]
 RewriteRule ^${apache_entry_path}1.0.0/WMTSCapabilities_v([0-9]{8})\.xml$ ${buildout:directory}/chsdi/static/capabilities/$1/WMTSCapabilities.de.xml [NC,QSA,L]
 
+RewriteRule ^${apache_entry_path}$ /${vars:apache_base_path}/wsgi/ [PT]
 
 # Proxy pass pointing on api.geo.admin.ch project
 RewriteRule ^${apache_entry_path}(shorten|shorten.json)(.*)$ http://api.geo.admin.ch/$1$2 [P]
@@ -74,11 +71,10 @@ RewriteRule ^${apache_entry_path}(shorten|shorten.json)(.*)$ http://api.geo.admi
 # Proxy pass for geodesy services
 RewriteRule ^${apache_entry_path}reframe/lv03tolv95(.*)$ http://tc-geodesy.bgdi.admin.ch/reframe/lv03tolv95$1 [P]
 
-# If URI has numbers at the start, we cache a year
-# This allows a client to create their own cache and
-# update at his discretion
-RewriteRule ^${apache_entry_path}[0-9]+/(.*)$ ${apache_entry_path}$1 [PT,E=${vars:apache_base_path}setyearcache:true] 
-Header merge Cache-Control "max-age=31536013, public" env=${vars:apache_base_path}setyearcache
+<Location ${apache_entry_path}>
+    Order allow,deny
+    Allow from all
+</Location>
 
 
 # define a process group
@@ -86,34 +82,29 @@ Header merge Cache-Control "max-age=31536013, public" env=${vars:apache_base_pat
 WSGIDaemonProcess mf-chsdi3:${vars:apache_base_path} display-name=%{GROUP} user=${vars:modwsgi_user} threads=${vars:wsgi_threads}
 
 # define the path to the WSGI app
-WSGIScriptAlias ${apache_entry_path} ${buildout:directory}/buildout/parts/modwsgi/wsgi
+WSGIScriptAlias /${vars:apache_base_path}/wsgi ${buildout:directory/buildout/parts/modwsgi/wsgi}
 
 # assign the WSGI app instance the process group defined aboven, we put the WSGI
 # app instance in the global application group so it is always executed within
 # the main interpreter
-<LocationMatch ^${apache_entry_path}>
+<Location /${vars:apache_base_path}/wsgi>
     # WSGIProcessGroup must be commented/removed when running the project on windows
     WSGIProcessGroup mf-chsdi3:${vars:apache_base_path}
     WSGIApplicationGroup %{GLOBAL}
+</Location>
 
-    Order allow,deny
-    Allow from all
-</LocationMatch>
+# If URI has numbers at the start, we cache a year
+# This allows a client to create their own cache and
+# update at his discretion
+RewriteRule ^${apache_entry_path}[0-9]+/(.*)$ ${apache_entry_path}$1 [E=${vars:apache_base_path}setyearcache:true]
+Header merge Cache-Control "max-age=31536013, public" env=${vars:apache_base_path}setyearcache
 
-# We rewrite loader to versioned loader, which is cached
-RewriteRule ^${apache_entry_path}loader.js$ ${apache_entry_path}${app_version}/uncached_loader.js [P]
-<LocationMatch ^${apache_entry_path}loader.js>
-    Header unset Cache-Control
-    Header merge Cache-Control "no-cache"
-</LocationMatch>
-
-# Big & ugly regex to match everything that is handled by pylons (everything!) in this 'apache_entry_path'
-RewriteRule ^${apache_entry_path}[0-9\/]*(qrcodegenerator|owschecker|iipimage|luftbilder|search|index|genindex|examples|img|js|css|releasenotes|services|_sources|_static|api|rest/services|ogcproxy|testi18n|uncached_loader.js|loader.js|snapshot|checker|checker_dev|static|print|dev|feedback|sitemap|doc)(.*)$ ${apache_entry_path}$1$2 [PT]
-
+# Non cached access
+RewriteRule ^${apache_entry_path}(qrcodegenerator|owschecker|iipimage|luftbilder|search|index|genindex|examples|img|js|css|releasenotes|services|_sources|_static|api|rest/services|ogcproxy|testi18n|loader.js|snapshot|checker|checker_dev|static|print|dev|feedback|sitemap)(.*)$ /${vars:apache_base_path}/wsgi/$1$2 [PT]
 
 
 # Some services are not "free": control is done at varnish level
-<LocationMatch ^${apache_entry_path}rest/(height|profile)>
+<LocationMatch /${vars:apache_base_path}/wsgi/rest/(height|profile)>
    Order Deny,Allow
    Allow from all
 </LocationMatch>
