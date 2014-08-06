@@ -60,6 +60,7 @@
               scope.topics = result.data.topics;
               angular.forEach(scope.topics, function(value) {
                 value.label = value.id;
+                value.tooltip = 'topic_' + value.id + '_tooltip';
                 value.thumbnail =
                     options.thumbnailUrlTemplate.replace('{Topic}', value.id);
                 value.langs = extendLangs(value.langs);
@@ -87,6 +88,9 @@
                   }
                 }
               }
+              $('.ga-topic-item').tooltip({
+                placement: 'bottom'
+              });
             });
 
          }
