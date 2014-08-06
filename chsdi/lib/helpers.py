@@ -12,8 +12,9 @@ def versioned(path):
     if version is not None:
         agnosticPath = make_agnostic(path)
         # Only resources with wsgi are versioned
+        # WSGI has not clue what is done at apache level
         if '/wsgi' in agnosticPath:
-            return agnosticPath.replace('wsgi', 'wsgi/' + version)
+            return agnosticPath.replace('wsgi', version)
         return agnosticPath
     else:
         return path
