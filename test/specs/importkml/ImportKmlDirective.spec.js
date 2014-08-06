@@ -1,5 +1,5 @@
 describe('ga_importkml__directive', function() {
-  var scope, element, map, controller, urlTab, localFileTab, loadKmlBt, tabsContainer,
+  var scope, element, map, urlTab, localFileTab, loadKmlBt, tabsContainer,
       tabContents, formLocalFile, formUrl, inputFile, inputFileUrl, tabsLi;
   
   beforeEach(inject(function($injector, $rootScope, $compile) {
@@ -18,8 +18,6 @@ describe('ga_importkml__directive', function() {
       maxFileSize: 20000000,
       validationServiceUrl: 'http://www.kmlvalidator.org/validate.htm'
     };
-    controller = $injector.get('$controller')('GaImportKmlDirectiveController',
-        {'$scope': $rootScope});
     $compile(element)($rootScope);
 
     scope = element.scope();
