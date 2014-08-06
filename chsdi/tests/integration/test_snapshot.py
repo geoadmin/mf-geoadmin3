@@ -63,7 +63,7 @@ class TestSnapshotService(TestsBase):
                 if (sug.find('b') and sug.find('b').string.find(term) != -1):
                     return True
             return False
-        self.failUnless(hasTerm('Wassertobel'))
+        self.failUnless(hasTerm('Wasserloch'))
         self.failUnless(hasTerm('Hochwasser'))
 
      # Make sure feature in permalink is included
