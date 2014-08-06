@@ -218,5 +218,20 @@
   "featuretree_tooltip": "",
   "draw_tooltip": "",
   "bg_luftbild": "",
-  "reduce_label": ""
+  "reduce_label": "",
+  "topic_are_tooltip": "",
+  "topic_blw_tooltip": "",
+  "topic_bafu_tooltip": "",
+  "topic_swisstopo_tooltip": "",
+  "topic_kgs_tooltip": "",
+  "topic_funksender_tooltip": "",
+  "topic_nga_tooltip": "",
+  "topic_ivs_tooltip": "",
+  "topic_sachplan_tooltip": "",
+  "topic_geol_tooltip": "",
+  "topic_luftbilder_tooltip": "",
+  "topic_inspire_tooltip": "",
+  "topic_ech_tooltip": "",
+  "bg_pixel_color": "",
+  "bg_pixel_grey": ""
 }
