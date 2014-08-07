@@ -1,2 +1,2 @@
 export API_URL=//mf-chsdi3.dev.bgdi.ch/ltteo
-export APACHE_BASE_PATH=ltteo
+export APACHE_BASE_PATH=/ltteo
