@@ -17,6 +17,15 @@ table, caption, tbody, tfoot, thead, tr, th, td {
     background-color: #E9E9E9;
     padding: 7px;
     border: 1px solid #B0B0B0;
+    font-size: 80%;
+  }
+  .htmlpopup-footer {
+    display: inline-block;
+  }
+  .htmlpopup-header,
+  .htmlpopup-footer,
+  .htmlpopup-content {
+    width: 100%;
   }
   .htmlpopup-footer,
   .htmlpopup-content {
@@ -96,7 +105,8 @@ table, caption, tbody, tfoot, thead, tr, th, td {
       border: none;
     }
   }
-  .htmlpopup-footer > a , div.thumbnail-container > div.thumbnail{
+  .htmlpopup-footer,
+  div.thumbnail-container > div.thumbnail {
       font-size: 75%;
   }
   h1 {
@@ -137,6 +147,12 @@ table, caption, tbody, tfoot, thead, tr, th, td {
     font-size: 13px;
     padding: 5px;
   }
+  .blueimp-gallery > .play-pause {
+    background-image: url('../images/play-pause.svg') !important;
+  }
+  .blueimp-gallery .slides > .slide-loading {
+    background-image: url('../images/loading.gif') !important;
+  }
   @media (max-width: @screen-tablet) {
     width: 90%;
     margin-right: 5%;
@@ -159,5 +175,4 @@ table, caption, tbody, tfoot, thead, tr, th, td {
       height: 100%;
     }
   }
-
 }
