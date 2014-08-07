@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# set correct umask to assure proper rights after build
+umask 0002
+
 #bail out on any error
 set -o errexit
 
