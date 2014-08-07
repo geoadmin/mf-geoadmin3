@@ -16,7 +16,7 @@
    * See examples on how it can be used
    */
   module.directive('gaCatalogtree',
-      function($http, $translate, $rootScope, gaPermalink, gaMapUtils,
+      function($http, $q, $translate, $rootScope, gaPermalink, gaMapUtils,
           gaCatalogtreeMapUtils, gaLayers, gaLayerFilters) {
 
         return {
@@ -150,13 +150,14 @@
                 params: {
                   'lang': $translate.uses()
                 }
-              }).then(function success(response) {
+              }).then(function(response) {
                 var newTree = response.data.results.root;
                 var oldTree = scope.root;
                 scope.root = newTree;
                 return {oldTree: oldTree, newTree: newTree};
-              }, function error(response) {
+              }, function(reason) {
                 scope.root = undefined;
+                return $q.reject(reason);
               });
             };
 
