@@ -1929,7 +1929,7 @@ msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss"
 msgstr "Aerial Images swisstopo b/w"
 
 msgid "ch.swisstopo.pixelkarte-farbe"
-msgstr "Color map"
+msgstr "National Map 1:25'000 | NM25"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk100.noscale"
 msgstr "National Map 1:100'000"
@@ -1950,7 +1950,7 @@ msgid "ch.swisstopo.pixelkarte-farbe-pk500.noscale"
 msgstr "National Map 1:500'000"
 
 msgid "ch.swisstopo.pixelkarte-grau"
-msgstr "Grey map"
+msgstr "National Map 1:25'000 | NM25"
 
 msgid "ch.swisstopo.pixelkarte-pk100.metadata"
 msgstr "Division National Map 1:100'000"
@@ -3344,6 +3344,12 @@ msgstr "Link zu den vorhandenen Informationen"
 
 msgid "spectralzone"
 msgstr "Zone der seismischen spektralen Mikrozonierung"
+
+msgid "sss"
+msgstr "SED"
+
+msgid "sss.url"
+msgstr "http://www.seismo.ethz.ch/index_EN"
 
 msgid "stand"
 msgstr "Stand"

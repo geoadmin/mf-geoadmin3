@@ -1929,7 +1929,7 @@ msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss"
 msgstr "Immagini aeree swisstopo b/n"
 
 msgid "ch.swisstopo.pixelkarte-farbe"
-msgstr "Carta a colori"
+msgstr "Carta nazionale 1:25'000 | CN25"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk100.noscale"
 msgstr "Carta nazionale 1:100'000"
@@ -1950,7 +1950,7 @@ msgid "ch.swisstopo.pixelkarte-farbe-pk500.noscale"
 msgstr "Carta nazionale 1:500'000"
 
 msgid "ch.swisstopo.pixelkarte-grau"
-msgstr "Carta bianca e nera"
+msgstr "Carta nazionale 1:25'000 | CN25"
 
 msgid "ch.swisstopo.pixelkarte-pk100.metadata"
 msgstr "Divisione carte nazionali 1:100'000"
@@ -3343,6 +3343,12 @@ msgstr "Lien vers les informations disponibles"
 
 msgid "spectralzone"
 msgstr "Zone de microzonage sismique spectral"
+
+msgid "sss"
+msgstr "SED"
+
+msgid "sss.url"
+msgstr "http://www.seismo.ethz.ch/index_IT"
 
 msgid "stand"
 msgstr "Etat"

@@ -1929,7 +1929,7 @@ msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss"
 msgstr "Luftbilder swisstopo s/w"
 
 msgid "ch.swisstopo.pixelkarte-farbe"
-msgstr "Karte farbig"
+msgstr "Landeskarte 1:25'000 | LK25"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk100.noscale"
 msgstr "Landeskarte 1:100'000 | LK100"
@@ -1950,7 +1950,7 @@ msgid "ch.swisstopo.pixelkarte-farbe-pk500.noscale"
 msgstr "Landeskarte 1:500'000 | LK500"
 
 msgid "ch.swisstopo.pixelkarte-grau"
-msgstr "Karte SW
+msgstr "Landeskarte 1:25'000 | LK25"
 
 msgid "ch.swisstopo.pixelkarte-pk100.metadata"
 msgstr "Einteilung Landeskarte 1:100'000"
@@ -3343,6 +3343,12 @@ msgstr "Link zu den vorhandenen Informationen"
 
 msgid "spectralzone"
 msgstr "Zone der seismischen spektralen Mikrozonierung"
+
+msgid "sss"
+msgstr "SED"
+
+msgid "sss.url"
+msgstr "http://www.seismo.ethz.ch/index"
 
 msgid "stand"
 msgstr "Stand"
