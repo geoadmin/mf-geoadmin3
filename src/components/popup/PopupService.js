@@ -40,6 +40,7 @@
         this.scope.toggle = false;
         this.scope.options = options;
         this.element = $compile(element)(this.scope);
+
         // Attach popup to body element
         $(document.body).append(this.element);
       };

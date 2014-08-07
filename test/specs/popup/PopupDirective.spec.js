@@ -43,6 +43,22 @@ describe('ga_popup_directive', function() {
     expect(element.css('display')).to.be('none');
     expect($rootScope.popupShown).to.be(false);
   }));
+
+  it('increases z-index on click', inject(function($rootScope) {
+    $rootScope.popupShown = true;
+    $rootScope.$digest();
+    expect(element.css('display')).to.be('block');
+
+    element.find('.ga-popup-content').click();
+    var zIndex = parseInt(element.css('z-index'));
+    element.find('.ga-popup-content').click()
+    var newZIndex = parseInt(element.css('z-index'));
+    expect(newZIndex > zIndex).to.be(true);
+
+    element.find('.ga-popup-title').click();
+    var newestZIndex = parseInt(element.css('z-index'));
+    expect(newestZIndex > newZIndex).to.be(true);
+  }));
  
   it('displays the title available in options', inject(function($rootScope) {
     expect(element.find('.ga-popup-title > span').html()).to.be('Title popup');

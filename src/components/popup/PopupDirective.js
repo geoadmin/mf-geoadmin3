@@ -1,5 +1,6 @@
 (function() {
   goog.provide('ga_popup_directive');
+
   goog.require('ga_browsersniffer_service');
   goog.require('ga_print_service');
 
@@ -11,6 +12,11 @@
 
   module.directive('gaPopup',
     function($rootScope, $translate, gaBrowserSniffer, gaPrintService) {
+      var zIndex = 2000;
+      var bringUpFront = function(el) {
+        zIndex += 1;
+        el.css('z-index', zIndex);
+      };
       return {
         restrict: 'A',
         transclude: true,
@@ -20,7 +26,7 @@
         },
         template:
           '<h4 class="popover-title ga-popup-title" ' +
-              'ng-click="expand($event)">' +
+              'ng-click="controlDisplay($event)">' +
             '<span translate>{{options.title}}</span>' +
             '<button ' +
                'class="ga-popup-close hidden-print" ' +
@@ -42,6 +48,7 @@
                'ga-help="{{options.help}}"></button>' +
           '</h4>' +
           '<div class="popover-content ga-popup-content" ' +
+               'ng-click="bringUpFront($event)" ' +
                'ng-transclude>' +
           '</div>',
 
@@ -108,11 +115,21 @@
           };
 
           // Expand only if necessary
-          scope.expand = function(evt) {
+          scope.controlDisplay = function(evt) {
             evt.stopPropagation();
+            // Controls the popup order
+            if (scope.toggle) {
+              bringUpFront(element);
+            }
             scope.isReduced = false;
           };
 
+          scope.bringUpFront = function(evt) {
+            evt.stopPropagation();
+            if (!scope.isReduced && scope.toggle) {
+              bringUpFront(element);
+            }
+          };
 
           // Watch the shown property
           scope.$watch(
@@ -134,6 +151,8 @@
                 if (!newVal) {
                   scope.isReduced = false;
                   onClose();
+                } else if (newVal) {
+                  bringUpFront(element);
                 }
               }
             }
