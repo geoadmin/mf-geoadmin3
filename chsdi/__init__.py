@@ -31,12 +31,6 @@ def main(global_config, **settings):
     settings['app_version'] = app_version
     config = Configurator(settings=settings)
 
-    # ogcproxy
-    config.add_route('ogcproxy', '/ogcproxy')
-
-    # printproxy
-    config.add_route('printproxy', '/printproxy')
-
     # configure 'locale' dir as the translation dir for chsdi app
     config.add_translation_dirs('chsdi:locale/')
     config.add_subscriber(add_localizer, NewRequest)
@@ -55,16 +49,11 @@ def main(global_config, **settings):
     config.add_request_method(db, reify=True)
     initialize_sql(settings)
 
-    # Static config
-    config.add_route('home', '/')
+    # route definitions
+    config.add_route('ogcproxy', '/ogcproxy')
     config.add_route('dev', '/dev')
-    config.add_route('ga_api', '/loader.js')
+    config.add_route('ga_api', '/uncached_loader.js')
     config.add_route('testi18n', '/testi18n')
-    config.add_view(route_name='home', renderer='chsdi:static/doc/build/index.html', http_cache=3600)
-    config.add_view(route_name='dev', renderer='chsdi:templates/index.pt', http_cache=0)
-    config.add_view(route_name='testi18n', renderer='chsdi:templates/testi18n.mako', http_cache=0)
-
-    # Application specific
     config.add_route('topics', '/rest/services')
     config.add_route('mapservice', '/rest/services/{map}/MapServer')
     config.add_route('layersConfig', '/rest/services/{map}/MapServer/layersConfig')
@@ -86,27 +75,22 @@ def main(global_config, **settings):
     config.add_route('owschecker_form', '/owschecker/form')
     config.add_route('qrcodegenerator', '/qrcodegenerator')
     config.add_route('sitemap', '/sitemap')
-
-    # Service to create the luftbilder viewer
     config.add_route('luftbilder', '/luftbilder/viewer.html')
-    # We keep the route to the old name to not loose existing links
-    config.add_route('iipimage', '/iipimage/viewer.html')
-
-    # Service to create snapshot of map.geo.admin.ch
     config.add_route('snapshot', '/snapshot')
-
-    # Checker section
     config.add_route('checker', '/checker')
     config.add_route('checker_dev', '/checker_dev')
 
-    config.scan(ignore=['chsdi.tests', 'chsdi.models.bod', 'chsdi.models.vector'])  # required to find code decorated by view_config
+    # Some views for specific routes
+    config.add_view(route_name='dev', renderer='chsdi:templates/index.pt')
+    config.add_view(route_name='testi18n', renderer='chsdi:templates/testi18n.mako')
 
-    config.add_static_view('static', 'chsdi:static', cache_max_age=datetime.timedelta(days=365))
-    config.add_static_view('static/css', 'chsdi:static/css', cache_max_age=datetime.timedelta(days=365))
-    config.add_static_view('static/js', 'chsdi:static/js', cache_max_age=datetime.timedelta(days=365))
-    config.add_static_view('static/images', 'chsdi:static/images', cache_max_age=datetime.timedelta(days=365))
-    config.add_static_view('examples', 'chsdi:static/doc/examples', cache_max_age=datetime.timedelta(days=365))
-    # Static view for sphinx
-    config.add_static_view('/', 'chsdi:static/doc/build', cache_max_age=datetime.timedelta(days=365))
+    # static view definitions
+    config.add_static_view('static', 'chsdi:static')
+    config.add_static_view('images', 'chsdi:static/images')
+    config.add_static_view('examples', 'chsdi:static/doc/examples')
+    # keep this the last one
+    config.add_static_view('/', 'chsdi:static/doc/build')
 
+    # required to find code decorated by view_config
+    config.scan(ignore=['chsdi.tests', 'chsdi.models.bod', 'chsdi.models.vector'])
     return config.make_wsgi_app()

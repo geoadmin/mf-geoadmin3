@@ -7,8 +7,6 @@ import pyramid.httpexceptions as exc
 
 
 @view_config(route_name='luftbilder')
-# Keep old route to not loose old existing links
-@view_config(route_name='iipimage')
 def luftbilder(request):
     width = request.params.get('width')
     height = request.params.get('height')

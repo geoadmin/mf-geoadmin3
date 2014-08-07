@@ -6,6 +6,7 @@
 [app:main]
 use = egg:chsdi
 app_version = ${app_version}
+entry_path = ${apache_entry_path}
 available_languages = de fr it en rm
 
 pyramid.reload_templates = false

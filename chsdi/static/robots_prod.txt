@@ -1,5 +1,6 @@
 User-agent: *
 Disallow: /loader.js
+Disallow: /uncached_loader.js
 Disallow: /dev
 Disallow: /testi18n
 Disallow: /checker
