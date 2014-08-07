@@ -1,8 +1,9 @@
 mf-chsdi3
 =========
 
-next generation of api.geo.admin.ch
+next generation of api3.geo.admin.ch
 
+Jenkins Build Status: [![Jenkins Build Status](https://jenkins.dev.bgdi.ch/buildStatus/icon?job=chsdi3)](https://jenkins.dev.bgdi.ch/job/chsdi3/)
 
 # Getting started
 
