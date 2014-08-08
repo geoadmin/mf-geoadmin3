@@ -62,7 +62,7 @@
                 <%! import os.path %> 
                 <% hasLegend = os.path.isfile(legendName) %>
                 % if hasLegend:
-                <LegendURL format="image/png" xlink:href="${scheme}://api3.geo.admin.ch/main/wsgi/static/images/legends/${layer.id|x,trim}_${request.lang|x,trim}.png" />
+                <LegendURL format="image/png" xlink:href="${scheme}://api3.geo.admin.ch/static/images/legends/${layer.id|x,trim}_${request.lang|x,trim}.png" />
                 % endif
             </Style>
             <Format>image/${str(layer.arr_all_formats).split(',')[0]}</Format>

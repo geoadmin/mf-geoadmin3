@@ -70,7 +70,7 @@ Before the list of all checked rules a "Status" message returns the overall resu
 3.2 Web service
 ----------------
 The *eCH-0056 Checker* can be consumed as web service at the following address:
- * https://api3.geo.admin.ch/main/wsgi/owschecker/bykvp 
+ * https://api3.geo.admin.ch/owschecker/bykvp 
 
 using the following Key-Value parameters:
 
@@ -80,7 +80,7 @@ using the following Key-Value parameters:
  * *restful*: same specification as for "Service Restful-Only"
 
 Example: 
- * https://api3.geo.admin.ch/main/wsgi/owschecker/bykvp?base_url=http://wms.geo.admin.ch/&service=WMS  
+ * https://api3.geo.admin.ch/owschecker/bykvp?base_url=http://wms.geo.admin.ch/&service=WMS  
 
 4 eCH-0056 Rules 
 ******************
@@ -362,18 +362,18 @@ Annex A
 
 Server Settings file for WMS 
 -----------------------------
-`http://api3.geo.admin.ch/main/wsgi/demo/owschecker/ssurl/ssurl_wms.xml </main/wsgi/demo/owschecker/ssurl/ssurl_wms.xml>`_
+`http://api3.geo.admin.ch/demo/owschecker/ssurl/ssurl_wms.xml </demo/owschecker/ssurl/ssurl_wms.xml>`_
 
 This file can be tested against the server: http://lidarserver.com/sandiego 
 
- .. note:: If you want to create your own server settings file, copy/paste the example file and change the information according to your service. For more details on this have a look at the API documentation: http://api3.geo.admin.ch/main/wsgi/doc/build/owschecker/. Take into consideration that: 'Request' must be set to 'GetFeatureInfo', 'INFO_FORMAT' to 'text/xml' and 'EXCEPTIONS' to 'application/vnd.ogc.se_xml'.
+ .. note:: If you want to create your own server settings file, copy/paste the example file and change the information according to your service. For more details on this have a look at the API documentation: http://api3.geo.admin.ch/doc/build/owschecker/. Take into consideration that: 'Request' must be set to 'GetFeatureInfo', 'INFO_FORMAT' to 'text/xml' and 'EXCEPTIONS' to 'application/vnd.ogc.se_xml'.
 
 
 
 Server Settings file for WFS
 -----------------------------
-`http://api3.geo.admin.ch/main/wsgi/demo/owschecker/ssurl/ssurl_wfs.xml </main/wsgi/demo/owschecker/ssurl/ssurl_wfs.xml>`_
+`http://api3.geo.admin.ch/demo/owschecker/ssurl/ssurl_wfs.xml </demo/owschecker/ssurl/ssurl_wfs.xml>`_
 
 This file can be tested against the server: http://v2.suite.opengeo.org/geoserver/ows 
 
- .. note:: If you want to create your own server settings file, copy/paste the example file and change the information according to your service. For more details on this have a look at the API documentation: http://api3.geo.admin.ch/main/wsgi/doc/build/owschecker/. Take into consideration that: 'Request' must be set to 'GetFeature' and 'OUTPUTFORMAT' to 'GML2'.
+ .. note:: If you want to create your own server settings file, copy/paste the example file and change the information according to your service. For more details on this have a look at the API documentation: http://api3.geo.admin.ch/doc/build/owschecker/. Take into consideration that: 'Request' must be set to 'GetFeature' and 'OUTPUTFORMAT' to 'GML2'.

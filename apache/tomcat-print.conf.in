@@ -4,13 +4,12 @@
 </Proxy>
 
 # Stateful cookies
-<LocationMatch /${vars:apache_base_path}/(wsgi)?/print/>
-    Header set Set-Cookie "SRV=${hostname-digest}; path=/${vars:apache_base_path}/print/"
+<LocationMatch ${apache_entry_path}/print/>
+    Header set Set-Cookie "SRV=${hostname-digest}; path=${apache_entry_path}/print/"
 </LocationMatch>
 
-
-ProxyPass /${vars:apache_base_path}/wsgi/print/ ajp://localhost:8009/print-chsdi3-${vars:apache_base_path}/pdf/
-ProxyPassReverse /${vars:apache_base_path}/wsgi/print/ ajp://localhost:8009/print-chsdi3-${vars:apache_base_path}/pdf/
+ProxyPass ${apache_entry_path}/print/ ajp://localhost:8009/print-chsdi3-${vars:apache_base_path}/pdf/
+ProxyPassReverse ${apache_entry_path}/print/ ajp://localhost:8009/print-chsdi3-${vars:apache_base_path}/pdf/
 
 # Try to force IE to open the PDF in a new window
 # overriding what set by the print server

@@ -5,15 +5,21 @@ from pyramid.threadlocal import get_current_registry
 from pyramid.i18n import get_locale_name
 import unicodedata
 from urllib import quote
+from urlparse import urlparse, urlunparse
 
 
 def versioned(path):
     version = get_current_registry().settings['app_version']
+    entry_path = get_current_registry().settings['entry_path'] + '/'
     if version is not None:
         agnosticPath = make_agnostic(path)
-        # Only resources with wsgi are versioned
-        if '/wsgi' in agnosticPath:
-            return agnosticPath.replace('wsgi', 'wsgi/' + version)
+        parsedURL = urlparse(agnosticPath)
+        # we don't do version when behind pserve (at localhost)
+        if 'localhost:' not in parsedURL.netloc:
+            parts = parsedURL.path.split(entry_path, 1)
+            if len(parts) > 1:
+                parsedURL = parsedURL._replace(path=parts[0] + entry_path + version + '/' + parts[1])
+                agnosticPath = urlunparse(parsedURL)
         return agnosticPath
     else:
         return path

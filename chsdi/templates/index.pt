@@ -22,6 +22,10 @@
           <a href="testi18n?lang=toto">If not in available languages to de</a> <br>
       <h1 id="title">Services</h1>
       <h2 id="loaderjs">Loader js</h2>
+          <a href="uncached_loader.js">Link to api</a> <br>
+          <a href="uncached_loader.js?lang=fr">Link to api in french</a> <br>
+          <a href="uncached_loader.js?mode=debug">Link to api in debug mode</a> <br>
+      <h3>Apache only links (does not work with pserve)</h3>
           <a href="loader.js">Link to api</a> <br>
           <a href="loader.js?lang=fr">Link to api in french</a> <br>
           <a href="loader.js?mode=debug">Link to api in debug mode</a> <br>
