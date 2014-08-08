@@ -32,13 +32,13 @@ Use `make translate` to import directly translations from the googlespreadshhet.
 
 Variables have sensible default values for development. Anyhow, they can be set as make macros or envvars. For example:
 
-    $ make APACHE_BASE_PATH=elemoine apache 
-    $ APACHE_BASE_PATH=elemoine make 
+    $ make APACHE_BASE_PATH=/elemoine apache 
+    $ APACHE_BASE_PATH=/elemoine make 
 
 You can customize the build by creating an `rc` file that you source once. Ex:  
 
     $ cat rc_elemoine 
-    export APACHE_BASE_PATH=mypath
+    export APACHE_BASE_PATH=/mypath
     export APACHE_BASE_DIRECTORY=/home/elemoine/mf-geoadmin3
     export API_URL=//mf-chsdi.3dev.bgdi.ch
     export DEPLOY_TARGET=dev

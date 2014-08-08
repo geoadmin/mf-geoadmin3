@@ -1,2 +1,2 @@
 export API_URL=//mf-chsdi3.dev.bgdi.ch/ltmoc
-export APACHE_BASE_PATH=ltmoc
+export APACHE_BASE_PATH=/ltmoc

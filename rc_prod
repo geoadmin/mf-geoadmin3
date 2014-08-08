@@ -1,4 +1,2 @@
 export DEPLOY_TARGET=prod
 export API_URL=//api3.geo.admin.ch
-export APACHE_BASE_PATH=main
-

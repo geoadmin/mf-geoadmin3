@@ -1,14 +1,3 @@
-<%
-
-entry_path = '/' + apache_base_path
-base_directory = apache_base_directory
-
-if 'main' in apache_base_path:
-    entry_path = ''
-    base_directory = '/var/www/vhosts/mf-geoadmin3/private/geoadmin'
-
-%>
-
 RewriteEngine On
 ExpiresActive On
 
@@ -29,25 +18,25 @@ AddOutputFilterByType DEFLATE application/json
 </IfModule>
 
 # Redirect no-slash target to slashed version
-RedirectMatch ^${entry_path}$ ${entry_path}/
+RedirectMatch ^${apache_base_path}$ ${apache_base_path}/
 
-Alias ${entry_path}/src ${base_directory}/src
-Alias ${entry_path}/ ${base_directory}/prd/
+Alias ${apache_base_path}/src ${apache_base_directory}/src
+Alias ${apache_base_path}/ ${apache_base_directory}/prd/
 
 # Cached resources
-RewriteRule ^${entry_path}/[0-9]+/(img|lib|style|locales)(.*) ${base_directory}/prd/$1$2
-<LocationMatch ^${entry_path}/[0-9]+/>
+RewriteRule ^${apache_base_path}/[0-9]+/(img|lib|style|locales)(.*) ${apache_base_directory}/prd/$1$2
+<LocationMatch ^${apache_base_path}/[0-9]+/>
    ExpiresDefault "now plus 1 year"
    Header merge Cache-Control "public"
 </LocationMatch>
 
 # Sitemaps (we are using version here to get a cached version from backend)
-RewriteRule ^${entry_path}/sitemap_(.*)\.xml http:${api_url}/${version}/sitemap?content=$1 [P]
+RewriteRule ^${apache_base_path}/sitemap_(.*)\.xml http:${api_url}/${version}/sitemap?content=$1 [P]
 
 # We tell the public to not cache the response, even with
 # this, the versioned sitemap of the back-end _is_ cached
 # This assures that latest sitemaps is used after deploy
-<LocationMatch ^${entry_path}/sitemap_.*\.xml>
+<LocationMatch ^${apache_base_path}/sitemap_.*\.xml>
     Order allow,deny
     Allow from all
     Header unset Cache-Control
@@ -56,17 +45,17 @@ RewriteRule ^${entry_path}/sitemap_(.*)\.xml http:${api_url}/${version}/sitemap?
 
 # Snapshot definitions for search engines
 RewriteCond %{QUERY_STRING} _escaped_fragment_=(.*)$
-RewriteRule ^${entry_path}/(index.html|mobile.html)(.*) http:${api_url}/snapshot [NE,L,P]
+RewriteRule ^${apache_base_path}/(index.html|mobile.html)(.*) http:${api_url}/snapshot [NE,L,P]
 
 # Proxy definitions
-ProxyPassMatch ^${entry_path}/print/(.*) http:${api_url}/print/$1
-<LocationMatch ^${entry_path}/print>
+ProxyPassMatch ^${apache_base_path}/print/(.*) http:${api_url}/print/$1
+<LocationMatch ^${apache_base_path}/print>
     Order allow,deny
     Allow from all
 </LocationMatch>
 
 # Checker definitions (never cache)
-<Location ~ "${entry_path}/checker$">
+<Location ~ "${apache_base_path}/checker$">
     ExpiresDefault "access"
     Header merge Cache-Control "no-cache"
     Header unset ETag

@@ -1,2 +1,2 @@
 export API_URL=//mf-chsdi3.dev.bgdi.ch/ltclm
-export APACHE_BASE_PATH=ltclm
+export APACHE_BASE_PATH=/ltclm
