@@ -20,6 +20,7 @@
   goog.require('ga_translation');
   goog.require('ga_feedback');
   goog.require('ga_geolocation');
+  goog.require('ga_rotate');
   goog.require('ga_layermanager');
   goog.require('ga_tooltip');
   goog.require('ga_swipe');
@@ -91,6 +92,7 @@
     'ga_slider_directive',
     'ga_importkml_controller',
     'ga_geolocation',
+    'ga_rotate',
     'ga_importwms_controller',
     'ga_main_controller',
     'ga_catalogtree_controller',
