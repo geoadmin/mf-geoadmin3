@@ -22,7 +22,7 @@ fi
 cd $DEPLOYDIR
 
 # remove all local changes and get latest GITBRANCH from remote
-git fetch --all && git reset --hard && git checkout $GITBRANCH && git reset --hard origin/$GITBRANCH
+git fetch origin && git reset --hard && git checkout $GITBRANCH && git reset --hard origin/$GITBRANCH
 
 # build the project
 buildout/bin/buildout -c buildout_dev.cfg
