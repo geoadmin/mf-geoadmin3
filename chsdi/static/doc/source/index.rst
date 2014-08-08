@@ -6,13 +6,13 @@
 .. raw:: html
 
   <head>
-    <link href="../../_static/custom.css" rel="stylesheet" type="text/css" />
+    <link href="_static/custom.css" rel="stylesheet" type="text/css" />
   </head>
 
 
 .. raw:: html
 
-  <img src="../../_static/bg_header_logo.jpg" alt="bg_header_logo">
+  <img src="_static/bg_header_logo.jpg" alt="bg_header_logo">
 
 --------------------
 

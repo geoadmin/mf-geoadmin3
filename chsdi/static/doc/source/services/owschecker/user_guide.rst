@@ -1,7 +1,7 @@
 .. raw:: html
 
   <head>
-    <link href="../../_static/custom.css" rel="stylesheet" type="text/css" />
+    <link href="../_static/custom.css" rel="stylesheet" type="text/css" />
   </head>
 
 .. _checker_doc:
