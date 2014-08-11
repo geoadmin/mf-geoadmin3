@@ -10,7 +10,7 @@ from chsdi.lib.filters import filter_by_geodata_staging
 def topics(request):
     model = Topics
     geodataStaging = request.registry.settings['geodata_staging']
-    query = request.db.query(model).order_by(model.orderKey)
+    query = request.db.query(model).filter(model.showCatalog == True).order_by(model.orderKey)
     query = filter_by_geodata_staging(query, model.staging, geodataStaging)
     results = [{
         'id': q.id,
