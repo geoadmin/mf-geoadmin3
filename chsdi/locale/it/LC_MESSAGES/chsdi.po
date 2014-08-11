@@ -134,6 +134,9 @@ msgstr "Angolo in basso a sinistra"
 msgid "Lower right corner"
 msgstr "Angolo in basso a destra"
 
+msgid "MCPFE"
+msgstr "Tipo di superficie protetta"
+
 msgid "Man-made"
 msgstr "Artificielle"
 
@@ -193,6 +196,9 @@ msgstr "Circuit automobile"
 
 msgid "Ruine"
 msgstr "Ruine historique"
+
+msgid "SGNr"
+msgstr "Numero della riserva"
 
 msgid "Schloss"
 msgstr "Château"
@@ -1191,7 +1197,7 @@ msgid "ch.bafu.schutzgebiete-smaragd"
 msgstr "Zone Smeraldo"
 
 msgid "ch.bafu.schutzgebiete-wildruhezonen"
-msgstr "Siti di protezione della fauna selvatica"
+msgstr "Siti di prot. della fauna selvatica"
 
 msgid "ch.bafu.showme-gemeinden_hochwasser"
 msgstr "ShowMe comuni: piene"
@@ -1275,7 +1281,7 @@ msgid "ch.bafu.wildruhezonen-jagdbanngebiete"
 msgstr "Zone di tranquillità"
 
 msgid "ch.bafu.wrz-jagdbanngebiete_select"
-msgstr "Siti di protezione della fauna selvatica"
+msgstr "Siti di prot. della fauna selvatica"
 
 msgid "ch.bafu.wrz-wildruhezonen-jagdbanngebiete-wege-routen"
 msgstr "Sentieri /itinerari autorizzati"
@@ -4258,6 +4264,15 @@ msgstr "Provider"
 
 msgid "tt_program"
 msgstr "Programma"
+
+msgid "tt_pronatura_e1"
+msgstr "Nessun intervento attivo"
+
+msgid "tt_pronatura_e2"
+msgstr "Interventi minimi"
+
+msgid "tt_pronatura_e3"
+msgstr "Promozione delle biodiversità per mezzo di interventi specifici"
 
 msgid "tt_regimenr"
 msgstr "Numero del regime di scorrimento"

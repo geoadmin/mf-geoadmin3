@@ -134,6 +134,9 @@ msgstr "Coin en bas à gauche"
 msgid "Lower right corner"
 msgstr "Coin en bas à droite"
 
+msgid "MCPFE"
+msgstr "Type de l’aire protégé"
+
 msgid "Man-made"
 msgstr "Artificielle"
 
@@ -193,6 +196,9 @@ msgstr "Circuit automobile"
 
 msgid "Ruine"
 msgstr "Ruine historique"
+
+msgid "SGNr"
+msgstr "Numéro de la réserve"
 
 msgid "Schloss"
 msgstr "Château"
@@ -4258,6 +4264,15 @@ msgstr "Provider"
 
 msgid "tt_program"
 msgstr "Programme"
+
+msgid "tt_pronatura_e1"
+msgstr "Pas d’interventions actives"
+
+msgid "tt_pronatura_e2"
+msgstr "Interventions minimales"
+
+msgid "tt_pronatura_e3"
+msgstr "Promotion de la biodiversité par des interventions ciblées"
 
 msgid "tt_regimenr"
 msgstr "N° de régime d’écoulement"
