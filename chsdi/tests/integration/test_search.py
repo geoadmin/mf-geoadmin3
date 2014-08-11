@@ -160,6 +160,11 @@ class TestSearchServiceView(TestsBase):
         resp = self.testapp.get('/rest/services/inspire/SearchServer', params=params, status=200)
         self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'parcel')
 
+    def test_search_locations_parcel_keyword_only(self):
+        params = {'searchText': 'parzelle', 'type': 'locations'}
+        resp = self.testapp.get('/rest/services/inspire/SearchServer', params=params, status=200)
+        self.failUnless(len(resp.json['results']) == 0)
+
     def test_search_locations_with_bbox(self):
         params = {'type': 'locations', 'searchText': 'buechli tegerfelden', 'bbox': '664100,268443,664150,268643'}
         resp = self.testapp.get('/rest/services/inspire/SearchServer', params=params, status=200)
