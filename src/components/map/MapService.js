@@ -366,10 +366,48 @@
       })]
     });
 
+    // Ensure linear rings are closed
+    var closeLinearRing = function(linearRing) {
+      if (linearRing.getFirstCoordinate() != linearRing.getLastCoordinate()) {
+        var coords = linearRing.getCoordinates();
+        coords.push(linearRing.getFirstCoordinate());
+        linearRing.setCoordinates(coords);
+      }
+    };
+    var closePolygon = function(polygon) {
+      var coords = [];
+      var linearRings = polygon.getLinearRings();
+      for (var i = 0, ii = linearRings.length; i < ii; i++) {
+        closeLinearRing(linearRings[i]);
+        coords.push(linearRings[i].getCoordinates());
+      }
+      polygon.setCoordinates(coords);
+    };
+    var closeMultiPolygon = function(multiPolygon) {
+      var coords = [];
+      var polygons = multiPolygon.getPolygons();
+      for (var i = 0, ii = polygons.length; i < ii; i++) {
+        closePolygon(polygons[i]);
+        coords.push(polygons[i].getCoordinates());
+      }
+      multiPolygon.setCoordinates(coords);
+    };
+    var closeGeometries = function(geometries) {
+      for (var i = 0, ii = geometries.length; i < ii; i++) {
+        var geometry = geometries[i];
+        if (geometry instanceof ol.geom.MultiPolygon) {
+          closeMultiPolygon(geometry);
+        } else if (geometry instanceof ol.geom.Polygon) {
+          closePolygon(geometry);
+        } else if (geometry instanceof ol.geom.LinearRing) {
+          closeLinearRing(geometry);
+        }
+      }
+    };
+
     this.$get = function($http, gaDefinePropertiesForLayer, gaMapClick,
         gaMapUtils, gaGlobalOptions, $rootScope, $translate) {
       var Kml = function(proxyUrl) {
-
         /**
          * Create a KML layer from a KML string
          */
@@ -392,8 +430,14 @@
           var features = kmlFormat.readFeatures(kml);
           for (var i = 0, ii = features.length; i < ii; i++) {
             var feature = features[i];
-            // Replace empty id by undefined
-            // If 2 features have their id empty, an assertion error
+            // Ensure polygons are closed.
+            // Reason: print server failed when polygons are not closed.
+            var geometry = feature.getGeometry();
+            closeGeometries((geometry instanceof ol.geom.GeometryCollection) ?
+                geometry.getGeometries() : [geometry]);
+
+            // Replace empty id by undefined.
+            // Reason: If 2 features have their id empty, an assertion error
             // occurs when we add them to the source
             if (feature.getId() === '') {
               feature.setId(undefined);
