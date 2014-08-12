@@ -43,10 +43,6 @@ RewriteRule ^${apache_base_path}/sitemap_(.*)\.xml http:${api_url}/${version}/si
     Header merge Cache-Control "no-cache"
 </LocationMatch>
 
-# Snapshot definitions for search engines
-RewriteCond %{QUERY_STRING} _escaped_fragment_=(.*)$
-RewriteRule ^${apache_base_path}/(index.html|mobile.html)(.*) http:${api_url}/snapshot [NE,L,P]
-
 # Proxy definitions
 ProxyPassMatch ^${apache_base_path}/print/(.*) http:${api_url}/print/$1
 <LocationMatch ^${apache_base_path}/print>

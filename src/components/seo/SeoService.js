@@ -19,7 +19,7 @@
    */
   module.provider('gaSeoService', function() {
     this.$get = function(gaPermalink) {
-      var isSnapshot = gaPermalink.getParams().snapshot == 'true';
+      var isActive = gaPermalink.getParams()._escaped_fragment_ !== undefined;
       var layersAtStart = gaPermalink.getParams().layers ?
                           gaPermalink.getParams().layers.split(',') : [];
 
@@ -29,21 +29,21 @@
         zoom: gaPermalink.getParams().zoom
       };
 
-      //has to come after snapshot parameter is removed
-      var linkAtStart = gaPermalink.getHref();
-
-      // We remove the snapshot parameter in order to not have it
+     // We remove the _escaped_fragment_ parameter in order to not have it
       // anywhere in the page as part of the permalink inside the page.
-      // Snapshot state is available through the isSnapshot function.
-      gaPermalink.deleteParam('snapshot');
+      // State is available through the isActive function.
+      gaPermalink.deleteParam('_escaped_fragment_');
+
+      //has to come after _escaped_fragment_ parameter is removed
+      var linkAtStart = gaPermalink.getHref();
 
       var SeoService = function() {
         this.getLinkAtStart = function() {
           return linkAtStart;
         };
 
-        this.isSnapshot = function() {
-          return isSnapshot;
+        this.isActive = function() {
+          return isActive;
         };
 
         this.getLayers = function() {

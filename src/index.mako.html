@@ -36,14 +36,7 @@
     <script>
       (function(){
         var w = window, l = w.location, n = w.navigator, pathname, p = '${device}',
-          m = l.search.match(/(?:mobile=(true|false))/),
-          fromSnapshot = l.search.match(/(?:snapshot=true)/);
-
-        //We need this guard as it prevents constant re-loading when
-        //testing the snapshot service in the browser
-        if (fromSnapshot) {
-          return;
-        }
+          m = l.search.match(/(?:mobile=(true|false))/);
 
         if (!l.origin) { l.origin = l.protocol + "//" + l.hostname } // IE fix
 
