@@ -1,18 +1,31 @@
+.. raw:: html
+
+  <head>
+   <link href="../_static/custom.css" rel="stylesheet" type="text/css" />
+  </head>
+
+
+Release Notes
+=============
+.. _releasenotes:
+
+.. _releasenotes_20140730:
+
 Release 20140730 - Wednesday, July 30th 2014
-============================================
+--------------------------------------------
 
 API & applications
 ******************
 
 `API <//api3.geo.admin.ch>`__
------------------------------------
+'''''''''''''''''''''''''''''
 
 - In Search, sort feature results by geolocation
 - Add new example: `Catalog <//api3.geo.admin.ch/examples/geoadmin_catalog.html>`__
 - JavaScript API now has the possibility to disable tooltips on the maps in runtime.
 
 `MAP <//map.geo.admin.ch>`__
------------------------------------
+'''''''''''''''''''''''''''''
 
 - Update sitemaps
 - New translations in Catalogs. Corresponds to GeoCat entries now.
@@ -22,21 +35,23 @@ Geodata
 
 No updates
 
+.. _releasenotes_20140716:
+
 Release 20140716 - Wednesday, July 16th 2014
-============================================
+--------------------------------------------
 
 API & applications
 ******************
 
 `API <//api3.geo.admin.ch>`__
------------------------------------
+'''''''''''''''''''''''''''''
 
 - Udpate documentation to include description of output parameters in services
 - Lubis tooltips and viewer now contains backlink to object in map
 - Add reverse geoconding on locations. Note: this service needs registering. `Read our terms <http://www.geo.admin.ch/internet/geoportal/de/home/services/geoservices/display_services/api_services/order_form.html>`__.
 
 `MAP <//map.geo.admin.ch>`__
------------------------------------
+''''''''''''''''''''''''''''
 
 - Remember location of popups on close
 - Show wait cursor indicator during searches
@@ -44,7 +59,8 @@ API & applications
 - Close menu on start of application for smaller screens
 
 Geodata
-********
+*******
+
 +--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Update | `Agricultural zones boundaries <//map.geo.admin.ch/?layers=ch.blw.landwirtschaftliche-zonengrenzen>`__ (ch.blw.landwirtschaftliche-zonengrenzen)                                                     |
 +--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -71,20 +87,21 @@ Geodata
 | Update | `Geologische Gutachten (>21000km2) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2>`__ (ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2)                             |
 +--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
+.. _releasenotes_20140702:
+
 Release 20140702 - Wednesday, July 2nd 2014
-============================================
+-------------------------------------------
 
 API & applications
 ******************
 
 `API <//api3.geo.admin.ch>`__
------------------------------------
+'''''''''''''''''''''''''''''
 
 - Minor bug fixes
 
 `MAP <//map.geo.admin.ch>`__
------------------------------------
-
+''''''''''''''''''''''''''''
 - Minor bug fixes
 
 Geodata
@@ -94,18 +111,18 @@ Geodata
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 Release 20140625 - Wednesday, June 25th 2014
-============================================
+--------------------------------------------
 
 API & applications
 ******************
 
 `API <//api3.geo.admin.ch>`__
------------------------------------
+'''''''''''''''''''''''''''''
 
 - Minor bug fixes
 
 `MAP <//map.geo.admin.ch>`__
------------------------------------
+''''''''''''''''''''''''''''
 
 - Minor bug fixes
 
@@ -149,19 +166,21 @@ Geodata
 | Update | `Number of connection providers <//map3.geo.admin.ch/?layers=ch.bakom.anbieter-eigenes_festnetz>`__ (ch.bakom.anbieter-eigenes_festnetz)                                                                |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
+.. _releasenotes_20140618:
+
 Release 20140618 - Wednesday, June 18th 2014
-============================================
+--------------------------------------------
 
 API & applications
 ******************
 
 `API <//api3.geo.admin.ch>`__
------------------------------------
+'''''''''''''''''''''''''''''
 
 - Minor bug fixes
 
 `MAP <//map.geo.admin.ch>`__
------------------------------------
+''''''''''''''''''''''''''''
 
 - Minor bug fixes
 
@@ -176,13 +195,13 @@ Geodata
 +--------+----------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 Release 20140611 - Wednesday, June 11th 2014
-============================================
+--------------------------------------------
 
 API & applications
 ******************
 
 `API <//api3.geo.admin.ch>`__
------------------------------------
+'''''''''''''''''''''''''''''
 
 - Address prefix search in `locations search <//api3.geo.admin.ch/services/sdiservices.html#response-syntax>`__
 - Support several ids in `feature service <//api3.geo.admin.ch/services/sdiservices.html#feature-resource>`__
@@ -191,7 +210,7 @@ API & applications
 - Minor bugfixes
 
 `MAP <//map.geo.admin.ch>`__
------------------------------------
+''''''''''''''''''''''''''''
 
 - Collapsible popups
 - Minor bug fixes
@@ -218,14 +237,16 @@ Geodata
 | Update | `Landwirtschaftliche Zonengrenzen <////map.geo.admin.ch/?layers=ch.blw.landwirtschaftliche-zonengrenzen>`__ (ch.blw.landwirtschaftliche-zonengrenzen)                               |
 +--------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
+.. _releasenotes_20140521:
+
 Release 20140521 -  Thursday, May 21st 2014
-===========================================
+-------------------------------------------
 
 API & applications
 ******************
 
 `API <//api3.geo.admin.ch>`__
------------------------------------
+'''''''''''''''''''''''''''''
 
 - New API `searchbox example <//api3.geo.admin.ch/examples/geoadmin_search.html>`__
 - Fix api layers shown in FAQ
@@ -236,7 +257,7 @@ API & applications
 
 
 `MAP <//map.geo.admin.ch>`__
------------------------------------
+''''''''''''''''''''''''''''
 
 - New fullscreen mode and search box
 - New location marker shown when entering coordinates
@@ -265,14 +286,16 @@ Geodata
 | Update | `Forested areas <//map.geo.admin.ch/?layers=ch.swisstopo.vec200-landcover-wald>`__ (ch.swisstopo.vec200-landcover-wald)                                                            |
 +--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
+.. _releasenotes_20140508:
+
 Release 20140508 -  Thursday, May 8th 2014
-==========================================
+------------------------------------------
 
 API & applications
 ******************
 
 `API <//api3.geo.admin.ch>`__
------------------------------------
+'''''''''''''''''''''''''''''
 
 - LUBIS Viewer: Adding permalink coordinates X, Y, zoom and rotate for better sharing
 - Optimized sizes of images
@@ -280,7 +303,7 @@ API & applications
 - Minor bug fixes
 
 `MAP <//map.geo.admin.ch>`__
------------------------------------
+''''''''''''''''''''''''''''
 
 - Separated Feature and Location search
 - Added location marker for search results
@@ -306,20 +329,22 @@ Geodata
 | Update  | `Agglomeration and isolated cities <//map.geo.admin.ch/?layers=ch.are.agglomerationen_isolierte_staedte>`__ (ch.are.agglomerationen_isolierte_staedte)       |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
+.. _releasenotes_20140430:
+
 Release 20140430 -  Wednesday, April 30th 2014
-====================================================
+----------------------------------------------
 
 API & applications
 ******************
 
 `API <//api3.geo.admin.ch>`__
------------------------------------
+'''''''''''''''''''''''''''''
 
 - `New example <//api3.geo.admin.ch/examples/geoadmin_rectangle.html>`__
 - Minor bug fixes
 
 `MAP <//map.geo.admin.ch>`__
------------------------------------
+''''''''''''''''''''''''''''
 
 - Support swisssearch parameter in permalink
 - Add a correct native browser print
@@ -353,14 +378,16 @@ Geodata
 | Update | `Hiking trails <//map.geo.admin.ch/?layers=ch.swisstopo.swisstlm3d-wanderwege>`__ (ch.swisstopo.swisstlm3d-wanderwege)                                                                               |
 +--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
+.. _releasenotes_20140423:
+
 Release 20140423 -  Wednesday, April 23th 2014
-====================================================
+----------------------------------------------
 
 API & applications
 ******************
 
 `API <//api3.geo.admin.ch>`__
------------------------------------
+'''''''''''''''''''''''''''''
 
 - Search: allow queries with special characters (like "Biel/Bienne")
 - Search: heavily improved ranking of results
@@ -368,7 +395,7 @@ API & applications
 
 
 `MAP <//map.geo.admin.ch>`__
------------------------------------
+''''''''''''''''''''''''''''
 
 - Draw: you are now able to draw icons on the map
 - Import KML: improved performance for big kml files
@@ -400,21 +427,22 @@ Geodata
 | Update | `Typology of municipalities ARE <//map.geo.admin.ch/?layers=ch.are.gemeindetypen>`__ (ch.are.gemeindetypen)                                                                  |
 +---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
+.. _releasenotes_20140409:
 
 Release 20140409 -  Wednesday, April 9th 2014
-====================================================
+---------------------------------------------
 
 API & applications
 ******************
 
 `API <//api3.geo.admin.ch>`__
------------------------------------
+'''''''''''''''''''''''''''''
 
 - Improve search for parcels (language dependant keyword support)
 - Minor bug fixes
 
 `MAP <//map.geo.admin.ch>`__
------------------------------------
+''''''''''''''''''''''''''''
 
 - Added TimeSelector tool to support layers with a time dimension
 - Improved map interaction on some mobile devices
@@ -449,20 +477,21 @@ Geodata
 | New    | `Subdivision special geological maps <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-spezialkarten_schweiz.metadata>`__ (ch.swisstopo.geologie-spezialkarten_schweiz.metadata)                     |
 +--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
+.. _releasenotes_20140319:
 
 Release 20140319 -  Wednesday, March 19th 2014
-====================================================
+----------------------------------------------
 
 API & applications
 ******************
 
 `API <//api3.geo.admin.ch>`__
------------------------------------
+'''''''''''''''''''''''''''''
 
 - Minor bug fixes
 
 `MAP <//map.geo.admin.ch>`__
------------------------------------
+''''''''''''''''''''''''''''
 
 - Drawing tools!
 - Catalog layer entries are now sorted alphabetically
@@ -486,14 +515,17 @@ Geodata
 | Update | `Pollutant releases (SwissPRTR) <//map.geo.admin.ch/?layers=ch.bafu.swissprtr>`__ (ch.bafu.swissprtr)                                                                           |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
+.. _releasenotes_20140306:
+
 Release 20140306 -  Thursday, March 6th 2014
-====================================================
+--------------------------------------------
 
 API & applications
 ******************
 
 `API <//api3.geo.admin.ch>`__
------------------------------------
+'''''''''''''''''''''''''''''
+
 - Adding support for internationalization of the client side
 - Geo.admin.ch API RE3 is going out of beta
 
@@ -509,26 +541,29 @@ Geodata
 | Update | `Kulturgüterschutz Inventar <//map.geo.admin.ch/?layers=ch.babs.kulturgueter>`__ (ch.babs.kulturgueter)                                                                         |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
-
+.. _releasenotes_20140220:
 
 Release 20140220 -  Thursday, February 20th 2014
-====================================================
+------------------------------------------------
 
 API & applications
 ******************
 
 `API <//api3.geo.admin.ch>`__
------------------------------------
+'''''''''''''''''''''''''''''
+
 - Various minor improvements and glitches
 
 `map.geo.admin.ch <//map.geo.admin.ch>`__
---------------------------------------------------
+'''''''''''''''''''''''''''''''''''''''''
+
 - Add link to map in full screen
 - Various minor fixes and improvements
 
+.. _releasenotes_20140213:
 
 Release 20140213 -  Thursday, February 13th 2014
-====================================================
+------------------------------------------------
 
 Geodata
 ********
@@ -540,8 +575,10 @@ Geodata
 | New    | `Arealstatistik 1979/85 NOLU04 <//map.geo.admin.ch/?layers=ch.bfs.arealstatistik-bodennutzung-1985>`__ (ch.bfs.arealstatistik-bodennutzung-1985)                                |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
+.. _releasenotes_20140129:
+
 Release 20140129 -  Wednesday, January 29th 2014
-====================================================
+------------------------------------------------
 
 Geodata
 ********
@@ -553,9 +590,10 @@ Geodata
 | Update | `Agricultural zones boundaries <//map.geo.admin.ch/?layers=ch.blw.landwirtschaftliche-zonengrenzen>`__ (ch.blw.landwirtschaftliche-zonengrenzen)                                |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
+.. _releasenotes_20140115:
 
 Release 20140115 -  Wednesday, January 15th 2014
-====================================================
+------------------------------------------------
 
 Geodata
 ********
@@ -588,13 +626,15 @@ API & applications
 ******************
 
 `API <//api3.geo.admin.ch>`__
------------------------------------
+'''''''''''''''''''''''''''''
+
 - Documentation
 - Support of HTTPS
 - Various minor improvements and glitches
 
 `map3.geo.admin.ch <//map3.geo.admin.ch>`__
---------------------------------------------------
+'''''''''''''''''''''''''''''''''''''''''''
+
 - Fix KML features reprojection
 - Add WMS servers
 - Add measure tool
@@ -602,8 +642,10 @@ API & applications
 - Adding graticule option to print
 - Various minor fixes and improvements
 
+.. _releasenotes_20131218:
+
 Release 20131218 -  Wednesday, December 18th 2013
-====================================================
+-------------------------------------------------
 
 Geodata
 ********
@@ -657,7 +699,8 @@ API & applications
 ******************
 
 `API <//api3.geo.admin.ch>`__
------------------------------------
+'''''''''''''''''''''''''''''
+
 - Initial preview of the new GeoAdmin API
 - Documentation
 - Support of HTTPS
@@ -665,10 +708,9 @@ API & applications
 
 
 `map3.geo.admin.ch <//map3.geo.admin.ch>`__
---------------------------------------------------
+'''''''''''''''''''''''''''''''''''''''''''
+
 - Fix KML features reprojection
 - Add WMS servers
 - Adding graticule option to print
 - Various minor fixes and improvements
-
-

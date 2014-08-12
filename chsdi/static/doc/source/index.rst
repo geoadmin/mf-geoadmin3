@@ -3,6 +3,19 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+.. raw:: html
+
+  <head>
+    <link href="_static/custom.css" rel="stylesheet" type="text/css" />
+  </head>
+
+
+.. raw:: html
+
+  <img src="_static/bg_header_logo.jpg" alt="bg_header_logo">
+
+--------------------
+
 Welcome to GeoAdmin API's documentation!
 ========================================
 
@@ -19,9 +32,11 @@ Use the GeoAdmin API Forum to ask questions: http://groups.google.com/group/geoa
 
   <style>
     #map {
-      width: 600px;
+      width: 100%;
       height: 400px;
-      border: 1px solid black;
+      border: 1px;
+      border-style: solid;
+      border-color: #efefef;
     }
   </style>
   <body>
@@ -34,7 +49,7 @@ Use the GeoAdmin API Forum to ask questions: http://groups.google.com/group/geoa
         layers: [layer],
         view: new ol.View2D({
           resolution: 750,
-          center: [660000, 170000]
+          center: [670000, 180000]
         })
       });
     </script>
@@ -42,58 +57,40 @@ Use the GeoAdmin API Forum to ask questions: http://groups.google.com/group/geoa
   
 `Do you want to see the code? <api/quickstart.html>`_
 
-.. raw:: html 
-
-    <div class="warning"i style="background-color: #ffffff; padding: 5px; border: 1px solid black;">
-    <img src="_static/warning.png" style="float: left; margin: 10px;" />
-
-The GeoAdmin API and all GeoAdmin services can be used in both HTTP and HTTPS contexts. Though most layers are freely accessible, a `swisstopo web access <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/products/services/web_services/webaccess.html>`_ is required for some of them. For a list of all available layers and their accessibility please refer to the `FAQ <api/faq/index.html#which-layers-are-available>`_.
-
-.. raw:: html
-
-    </div>
+.. warning::
+    The GeoAdmin API and all GeoAdmin services can be used in both HTTP and HTTPS contexts. Though most layers are freely accessible, a `swisstopo web access <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/products/services/web_services/webaccess.html>`_ is required for some of them. For a list of all available layers and their accessibility please refer to the `FAQ <api/faq/index.html#which-layers-are-available>`_.
 
 
 API
-***
-
-JavaScript API
---------------
+===
 
 .. toctree::
    :maxdepth: 1
 
    api/quickstart
-   api/doc
-   api/faq/index
    api/examples
+   api/doc
+   services/sdiservices
+   api/faq/index
    api/migration
    
-Services API
-------------
+Release notes
+=============
 
 .. toctree::
-   :maxdepth: 1
-
-   services/sdiservices
-   services/oerebservices
+   :maxdepth: 1 
+ 
+   releasenotes/index
 
 Terms of use
-************
-
-The GeoAdmin API terms of use are accessible here: http://www.geo.admin.ch/internet/geoportal/de/home/services/geoservices/display_services/api_services/order_form.html
-
-Release Notes
-*************
+============
 
 .. toctree::
    :maxdepth: 1
+   :hidden:
 
-   releasenotes/index
-   
-Indices and tables
-==================
+   _static/terms_of_use
 
-* :ref:`genindex`
-* :ref:`search`
+.. note::
+    The GeoAdmin API terms of use are accessible here: `Terms of Use <http://www.geo.admin.ch/internet/geoportal/de/home/services/geoservices/display_services/api_services/order_form.html>`_
 
