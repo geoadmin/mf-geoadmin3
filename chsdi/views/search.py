@@ -109,11 +109,15 @@ class Search(SearchValidation):
             searchTextFinal = '(' + searchList[0] + ') & (' + searchList[1] + ')'
         elif len(searchList) == 1:
             searchTextFinal = searchList[0]
-        try:
-            temp = self.sphinx.Query(searchTextFinal, index='swisssearch')
-        except IOError:
-            raise exc.HTTPGatewayTimeout()
-        temp = temp['matches'] if temp is not None else temp
+
+        if len(searchList) != 0:
+            try:
+                temp = self.sphinx.Query(searchTextFinal, index='swisssearch')
+            except IOError:
+                raise exc.HTTPGatewayTimeout()
+            temp = temp['matches'] if temp is not None else temp
+        else:
+            temp = []
         if temp is not None and len(temp) != 0:
             self._parse_location_results(temp)
 
