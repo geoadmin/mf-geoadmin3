@@ -321,7 +321,7 @@ class Search(SearchValidation):
 
     def _parse_address(self, res):
         if not (self.varnish_authorized and self.returnGeometry):
-            attrs2Del = ['x', 'y', 'lon', 'lat', 'geom_st_box2d', 'featureId']
+            attrs2Del = ['x', 'y', 'lon', 'lat', 'geom_st_box2d']
             popAtrrs = lambda x: res.pop(x) if x in res else x
             map(popAtrrs, attrs2Del)
             return res
@@ -358,6 +358,8 @@ class Search(SearchValidation):
                 for res in results[i]['matches']:
                     if 'feature_id' in res['attrs']:
                         res['attrs']['featureId'] = res['attrs']['feature_id']
+                    if res['attrs']['layer'] == 'ch.bfs.gebaeude_wohnungs_register':
+                        res['attrs'] = self._parse_address(res['attrs'])
                     if self.typeInfo == 'featuresearch' or not self.bbox or \
                             self._bbox_intersection(self.bbox, res['attrs']['geom_st_box2d']):
                         self.results['results'].append(res)
