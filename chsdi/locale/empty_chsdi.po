@@ -4529,3 +4529,18 @@ msgstr ""
 
 msgid "ch.swisstopo.sgtk"
 msgstr ""
+
+msgid "tt_pronatura_e1"
+msgstr ""
+
+msgid "tt_pronatura_e2"
+msgstr ""
+
+msgid "tt_pronatura_e3"
+msgstr ""
+
+msgid "MCPFE"
+msgstr ""
+
+msgid "SGNr"
+msgstr ""

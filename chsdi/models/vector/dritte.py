@@ -40,3 +40,18 @@ class NOTFALLSCHUTZ(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.ensi.zonenplan-notfallschutz-kernanlagen', NOTFALLSCHUTZ)
+
+
+class PRONATURA(Base, Vector):
+    __tablename__ = 'waldreservate'
+    __table_args__ = ({'schema': 'pronatura', 'autoload': False})
+    __template__ = 'templates/htmlpopup/pronatura.mako'
+    __bodId__ = 'ch.pronatura.waldreservate'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    sg_nr = Column('sg_nr', Numeric)
+    name = Column('name', Text)
+    gisflaeche = Column('obj_gisflaeche', Numeric)
+    mcpfe = Column('mcpfe', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.pronatura.waldreservate', PRONATURA)

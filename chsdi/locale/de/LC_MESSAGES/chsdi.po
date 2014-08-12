@@ -134,6 +134,9 @@ msgstr "Ecke unten links"
 msgid "Lower right corner"
 msgstr "Ecke unten rechts"
 
+msgid "MCPFE"
+msgstr "Schutzflächentyp"
+
 msgid "Man-made"
 msgstr "Künstlich"
 
@@ -193,6 +196,9 @@ msgstr "Rennbahn"
 
 msgid "Ruine"
 msgstr "Historische Ruine"
+
+msgid "SGNr"
+msgstr "Reservatsnummer"
 
 msgid "Schloss"
 msgstr "Schloss"
@@ -4257,6 +4263,15 @@ msgstr "Provider"
 
 msgid "tt_program"
 msgstr "Programm"
+
+msgid "tt_pronatura_e1"
+msgstr "Keine aktiven Eingriffe"
+
+msgid "tt_pronatura_e2"
+msgstr "Minimale Eingriffe "
+
+msgid "tt_pronatura_e3"
+msgstr "Biodiversitätsförderung durch gezielte Eingriffe"
 
 msgid "tt_regimenr"
 msgstr "Abflussregimenummer"

@@ -134,6 +134,9 @@ msgstr "Lower left corner"
 msgid "Lower right corner"
 msgstr "Lower right corner"
 
+msgid "MCPFE"
+msgstr "Type of protected area"
+
 msgid "Man-made"
 msgstr "Künstlich"
 
@@ -193,6 +196,9 @@ msgstr "Rennbahn"
 
 msgid "Ruine"
 msgstr "Historische Ruine"
+
+msgid "SGNr"
+msgstr "Number oft he reserve"
 
 msgid "Schloss"
 msgstr "Schloss"
@@ -4258,6 +4264,15 @@ msgstr "Provider"
 
 msgid "tt_program"
 msgstr "Channel"
+
+msgid "tt_pronatura_e1"
+msgstr "No active intervention"
+
+msgid "tt_pronatura_e2"
+msgstr "Minimum Intervention"
+
+msgid "tt_pronatura_e3"
+msgstr "Conservation through active management"
 
 msgid "tt_regimenr"
 msgstr "River regime number"
