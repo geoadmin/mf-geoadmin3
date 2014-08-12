@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 
 import json
+import math
 from sqlalchemy.orm import scoped_session, sessionmaker
-
 from pyramid.view import view_config
-from pyramid.renderers import render_to_response
 from pyramid.httpexceptions import HTTPNotFound, HTTPInternalServerError
+from pyramid.renderers import render_to_response
 from pyramid.request import Request
 
-from chsdi.models.bod import Catalog
 from chsdi.lib.validation.sitemaps import SiteMapValidation
 from chsdi.lib.filters import *
 
-__AMPERSAND__ = '&amp;'
+from chsdi.models.vector.kogis import SitemapGebaeuderegister
+from chsdi.models.bod import Catalog
 
 
 class SiteMaps(SiteMapValidation):
@@ -26,6 +26,10 @@ class SiteMaps(SiteMapValidation):
         self.request = request
         self.langs = ['de', 'fr', 'it', 'rm', 'en']
 
+# Maximum number of urls allowed in multi-files
+__MAX_NUM_URLS__ = 5000
+__AMPERSAND__ = '&amp;'
+
 
 @view_config(route_name='sitemap')
 def sitemap(request):
@@ -34,7 +38,8 @@ def sitemap(request):
         'index': index,
         'base': base,
         'topics': topics,
-        'layers': layers
+        'layers': layers,
+        'addresses': addresses
     }
     if params.content not in funcs:
         raise HTTPNotFound('Missing function definition')
@@ -77,7 +82,7 @@ def topics(params):
 
 def layers(params):
     buildlink = lambda x: '?topic=' + topic['id'] + __AMPERSAND__ + 'layers=' + x.layerBodId
-    session = scoped_session(sessionmaker())
+    session = params.request.db
     paths = []
     topics = getTopics(params)
     for topic in topics:
@@ -87,7 +92,47 @@ def layers(params):
         query = filter_by_geodata_staging(query, Catalog.staging, params.staging)
         layerlinks = map(buildlink, query.all())
         paths.extend(toAllLanguages(topic['langs'].split(','), layerlinks, __AMPERSAND__, ''))
-    session.close()
+
+    return asXml(params, paths)
+
+
+def addresses(params):
+    # index file
+    if params.multi_part is None:
+        return address_index(params)
+    else:
+        return address_part(params)
+
+
+def address_index(params):
+    session = params.request.db
+    count = session.query(SitemapGebaeuderegister).count()
+    max_index = int(math.ceil(count / __MAX_NUM_URLS__))
+    names = lambda x: params.basename + '_addresses_' + str(x) + '.xml'
+    data = {
+        'host': params.host,
+        'sitemaps': map(names, range(max_index))
+    }
+    response = render_to_response(
+        'chsdi:templates/sitemapindex.mako',
+        data,
+        request=params.request)
+    response.content_type = 'application/xml'
+    return response
+
+
+def address_part(params):
+    session = params.request.db
+    query = (session.query(SitemapGebaeuderegister)
+             .order_by(SitemapGebaeuderegister.id)
+             .offset(params.multi_part)
+             .limit(__MAX_NUM_URLS__))
+    paths = []
+    for res in query.all():
+        paths.append('?' + res.__bodId__ + '=' + res.id + __AMPERSAND__ +
+                     'X=' + str(int(res.X)) + __AMPERSAND__ +
+                     'Y=' + str(int(res.Y)) + __AMPERSAND__ +
+                     'zoom=9')
     return asXml(params, paths)
 
 

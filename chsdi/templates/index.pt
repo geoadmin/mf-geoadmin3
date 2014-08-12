@@ -34,6 +34,8 @@
           <a href="sitemap?content=base">Base page</a> <br>
           <a href="sitemap?content=topics">Topics page</a> <br>
           <a href="sitemap?content=layers">Layers page</a> <br>
+          <a href="sitemap?content=addresses">Address index page</a> <br>
+          <a href="sitemap?content=addresses_33">Sample address index</a> <br>
       <h2 id="checkers">Checkers</h2>
           <a href="checker">Checker for home page</a> <br>
           <a href="checker_dev">Checker for dev page</a> <br> 
