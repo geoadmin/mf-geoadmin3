@@ -21,6 +21,7 @@
     var map = new ol.Map({
       controls: ol.control.defaults({
         attribution: false,
+        rotate: false,
         zoomOptions: {
           zoomInLabel: '',
           zoomOutLabel: '',
