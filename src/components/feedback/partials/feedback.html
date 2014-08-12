@@ -7,10 +7,23 @@
     <span translate>feedback_permalink</span>
     <a href="{{permalinkValue}}" target="_blank" translate>permalink</a>
   </p>
-  <p class="help-block">
-    <span translate>feedback_revision</span>
-    <a href="http://map.revision.admin.ch" target="_blank" translate>revision_service</a>
-  </p>
+  <div ng-show="!isIE9" class="help-block">
+    <span translate>feedback_attachment</span>
+    <div class="input-group-sm">
+      <!-- The real input -->
+      <input type="file" name="file" class="ga-feedback-real-file"/>
+      <!-- The fake input -->
+      <input class="form-control ga-feedback-fake-file" type="text"
+        value="{{(file.name) ? file.name + ', ' + file.size/1000 + ' ko' : ''}}"
+        placeholder="{{'feedback_placeholder' | translate}}" readonly/>
+      <span class="input-group-btn">
+        <button type="button" class="btn btn-default ga-feedback-browse-button">Browse</button>
+      </span>
+      <div ng-show="!isIE && showProgress" class="progress progress-striped active">
+        <div class="progress-bar" style="width: 100%;"></div>
+      </div>
+    </div>
+  </div>
   <div class="ga-feedback-footer">
     <button type="submit" class="pull-right btn btn-default" translate>send</button>
   </div>
