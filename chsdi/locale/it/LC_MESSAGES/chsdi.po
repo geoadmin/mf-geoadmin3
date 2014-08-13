@@ -326,6 +326,21 @@ msgstr "Data di approvazione"
 msgid "arch__hist__qualitaeten"
 msgstr "Qualità storico-arch."
 
+msgid "astra_unf_accday"
+msgstr "Giorno dell'incidente"
+
+msgid "astra_unf_acctype"
+msgstr "Tipo d'incidente"
+
+msgid "astra_unf_fsocommunecode"
+msgstr "N. UST Comune"
+
+msgid "astra_unf_roadtype"
+msgstr "Genere di strada"
+
+msgid "astra_unf_severity"
+msgstr "Categoria della gravità dell'incidente"
+
 msgid "atlassheetnumber"
 msgstr "Numéro du atlas géologique"
 
@@ -940,6 +955,21 @@ msgstr "Circolazione stradale (regionale)"
 
 msgid "ch.astra.strassenverkehrszaehlung_messstellen-uebergeordnet"
 msgstr "Circolazione stradale (principale)"
+
+msgid "ch.astra.unfaelle-personenschaeden_alle"
+msgstr "incidenti con danni personali"
+
+msgid "ch.astra.unfaelle-personenschaeden_fahrraeder"
+msgstr "incidenti che coinvol. biciclette"
+
+msgid "ch.astra.unfaelle-personenschaeden_fussgaenger"
+msgstr "incidenti che coinvol. pedoni"
+
+msgid "ch.astra.unfaelle-personenschaeden_getoetete"
+msgstr "incidenti mortali"
+
+msgid "ch.astra.unfaelle-personenschaeden_motorraeder"
+msgstr "incidenti che coinvol. motocicli"
 
 msgid "ch.astra.url"
 msgstr "http://www.astra.admin.ch/index.html?lang=it"
