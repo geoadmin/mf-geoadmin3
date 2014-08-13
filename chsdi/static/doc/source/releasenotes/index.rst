@@ -20,6 +20,7 @@ API & applications
 `API <//api3.geo.admin.ch>`__
 '''''''''''''''''''''''''''''
 
+- New and improved design of http://api.geo.admin.ch. It's now fully responsive.
 - API Loader is now cached which improves loading time significanctly
 - Find service improved performance when using exact matching
 - Small bug fixes
