@@ -1247,6 +1247,9 @@ msgstr "UNESCO World natural heritage"
 msgid "ch.bafu.url"
 msgstr "http://www.bafu.admin.ch/index.html?lang=en"
 
+msgid "ch.bafu.waldreservate"
+msgstr "Forest Reserves"
+
 msgid "ch.bafu.waldschadenflaechen-lothar"
 msgstr "Lothar storm damage"
 
@@ -4378,6 +4381,15 @@ msgstr "Town"
 
 msgid "tt_wald_natur"
 msgstr "Forest and semi natural areas"
+
+msgid "tt_waldreservate_1_1"
+msgstr "No active intervention"
+
+msgid "tt_waldreservate_1_2"
+msgstr "Minimum Intervention"
+
+msgid "tt_waldreservate_1_3"
+msgstr "Conservation through active management"
 
 msgid "tt_wasserflae"
 msgstr "Waterbodies"

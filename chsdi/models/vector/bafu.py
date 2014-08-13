@@ -1004,3 +1004,18 @@ class wildtier(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bafu.fauna-wildtierkorridor_national', wildtier)
+
+
+class waldreservate(Base, Vector):
+    __tablename__ = 'waldreservate'
+    __table_args__ = ({'schema': 'wald', 'autoload': False})
+    __template__ = 'templates/htmlpopup/bafu_waldreservate.mako'
+    __bodId__ = 'ch.bafu.waldreservate'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    objnummer = Column('objnummer', Text)
+    name = Column('name', Text)
+    gisflaeche = Column('obj_gisflaeche', Numeric)
+    mcpfe = Column('mcpfe_class', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.waldreservate', waldreservate)

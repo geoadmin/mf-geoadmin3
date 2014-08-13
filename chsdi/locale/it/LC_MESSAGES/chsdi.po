@@ -1247,6 +1247,9 @@ msgstr "UNESCO siti naturali"
 msgid "ch.bafu.url"
 msgstr "http://www.bafu.admin.ch/index.html?lang=it"
 
+msgid "ch.bafu.waldreservate"
+msgstr "Riserva forestali"
+
 msgid "ch.bafu.waldschadenflaechen-lothar"
 msgstr "Aree boschive danneggiate Lothar"
 
@@ -4378,6 +4381,15 @@ msgstr "Luogo"
 
 msgid "tt_wald_natur"
 msgstr "Foreste ed alter superfici naturali"
+
+msgid "tt_waldreservate_1_1"
+msgstr "Nessun intervento attivo"
+
+msgid "tt_waldreservate_1_2"
+msgstr "Interventi minimi"
+
+msgid "tt_waldreservate_1_3"
+msgstr "Promozione delle biodiversità per mezzo di interventi specifici"
 
 msgid "tt_wasserflae"
 msgstr "Superfici acquatiche"

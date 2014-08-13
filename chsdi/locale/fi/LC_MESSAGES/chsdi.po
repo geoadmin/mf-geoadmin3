@@ -1247,6 +1247,9 @@ msgstr "UNESCO Patrimoni natiral"
 msgid "ch.bafu.url"
 msgstr "http://www.bafu.admin.ch/index.html?lang=de"
 
+msgid "ch.bafu.waldreservate"
+msgstr "Waldreservate"
+
 msgid "ch.bafu.waldschadenflaechen-lothar"
 msgstr "Sturmschaden Lothar"
 
@@ -1281,7 +1284,7 @@ msgid "ch.bafu.wildruhezonen-jagdbanngebiete"
 msgstr "Zonas da paus per la selvaschina ? territoris scumandads per la chatscha"
 
 msgid "ch.bafu.wrz-jagdbanngebiete_select"
-msgstr "Wildschutzgebiete"
+msgstr "Zonas da paus per la selvaschina"
 
 msgid "ch.bafu.wrz-wildruhezonen-jagdbanngebiete-wege-routen"
 msgstr "Erlaubte Wege und Routen"
@@ -4377,6 +4380,15 @@ msgstr "Ort"
 
 msgid "tt_wald_natur"
 msgstr "Naturnahe Flächen, Wald"
+
+msgid "tt_waldreservate_1_1"
+msgstr "Keine aktiven Eingriffe"
+
+msgid "tt_waldreservate_1_2"
+msgstr "Minimale Eingriffe"
+
+msgid "tt_waldreservate_1_3"
+msgstr "Biodiversitätsförderung durch gezielte Eingriffe"
 
 msgid "tt_wasserflae"
 msgstr "Wasserflächen"
