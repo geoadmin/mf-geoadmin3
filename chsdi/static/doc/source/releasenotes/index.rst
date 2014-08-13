@@ -9,6 +9,36 @@ Release Notes
 =============
 .. _releasenotes:
 
+.. _releasenotes_20140813:
+
+Release 20140813 - Wednesday, August 130th 2014
+-----------------------------------------------
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+
+- API Loader is now cached which improves loading time significanctly
+- Find service improved performance when using exact matching
+- Small bug fixes
+
+`MAP <//map.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+
+- Last clicked popu now will stay on top of all other popups
+- Feedback now allows you to attach files to your message
+- Small bug fixes
+
+Geodata
+********
+
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Federal Inventory of Swiss heritage sites ISOS <//map.geo.admin.ch/?layers=ch.bak.bundesinventar-schuetzenswerte-ortsbilder>`__ (ch.bak.bundesinventar-schuetzenswerte-ortsbilder)                  |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+
 .. _releasenotes_20140730:
 
 Release 20140730 - Wednesday, July 30th 2014
