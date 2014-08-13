@@ -4530,6 +4530,9 @@ msgstr ""
 msgid "ch.swisstopo.sgtk"
 msgstr ""
 
+msgid "ch.pronatura.waldreservate"
+msgstr ""
+
 msgid "tt_pronatura_e1"
 msgstr ""
 
