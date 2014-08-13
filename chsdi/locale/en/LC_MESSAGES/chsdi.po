@@ -1671,6 +1671,9 @@ msgstr "http://www.bafu.admin.ch/index.html?lang=en"
 msgid "ch.lw"
 msgstr "AF"
 
+msgid "ch.pronatura.waldreservate"
+msgstr "Pro Natura forest reserves"
+
 msgid "ch.swisstopo"
 msgstr "swisstopo"
 
