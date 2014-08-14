@@ -4,6 +4,7 @@ User-agent: *
 
 Disallow: /checker
 
+Sitemap: http://map.geo.admin.ch/sitemap_addresses.xml
 Sitemap: http://map.geo.admin.ch/sitemap_index.xml
 
 % else:
