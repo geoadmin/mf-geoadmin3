@@ -27,6 +27,7 @@ help:
 	@echo "- lint            Run the linter"
 	@echo "- testdev         Run the JavaScript tests in dev mode"
 	@echo "- testprod        Run the JavaScript tests in prod mode"
+	@echo "- teste2e         Run browserstack tests"
 	@echo "- apache          Configure Apache (restart required)"
 	@echo "- fixrights       Fix rights in common folder"
 	@echo "- all             All of the above (target to run prior to creating a PR)"
@@ -69,6 +70,10 @@ testdev: .build-artefacts/app-whitespace.js test/karma-conf-dev.js node_modules
 .PHONY: testprod
 testprod: prd/lib/build.js test/karma-conf-prod.js node_modules
 	./node_modules/.bin/karma start test/karma-conf-prod.js --single-run
+
+.PHONY: teste2e
+teste2e: guard-BROWSERSTACK_TARGETURL guard-BROWSERSTACK_USER guard-BROWSERSTACK_KEY
+	node test/selenium/tests.js -t ${BROWSERSTACK_TARGETURL}
 
 .PHONY: apache
 apache: apache/app.conf
@@ -140,7 +145,7 @@ fixrights:
 
 guard-%:
 	@ if test "${${*}}" = ""; then \
-  	echo "Environment variable $* not set. Add SNAPSHOT=xxx to your command."; \
+  	echo "Environment variable $* not set. Add it to your command."; \
   	exit 1; \
 	fi
 

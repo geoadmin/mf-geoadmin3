@@ -1,5 +1,22 @@
-//we need webdriver in order to initiate the webdriver here.
 var webdriver = require('browserstack-webdriver');
+var cmd = require('commander');
+
+cmd.version('0.0.1')
+    .option('-t, --target <url>', 'The URL to run the tests against')
+    .parse(process.argv);
+
+if (!cmd.target || cmd.target.length <= 0) {
+    console.log('ERROR: no url provided. Use -t URL.', cmd.target);
+    return 2;
+}
+
+if (!process.env.BROWSERSTACK_USER ||
+    process.env.BROWSERSTACK_USER.length <= 0 ||
+    !process.env.BROWSERSTACK_KEY ||
+    process.env.BROWSERSTACK_KEY.length <= 0) {
+  console.log("ERROR: browserstack tests are aborting. You need to set BROWSERSTACK_USER and BROWSERSTACK_KEY in your environment!");
+  return 1;
+}
 
 //load the capabilities/browsers we want to test.
 var browsers = require('./browsers.js');
@@ -9,7 +26,6 @@ var basictest = require('./basic_test.js');
 
 //okay we will start the script!
 console.log("Starting Browserstack script!");
-console.log("Working on branch: "+process.env.CURRENT_BRANCH);
 
 //for every browser config we want to run all the tests
 browsers.capabilities.forEach(function(cap){
@@ -28,7 +44,7 @@ browsers.capabilities.forEach(function(cap){
 
   //run all the tests
   try{
-    basictest.runTest(cap, driver); 
+    basictest.runTest(cap, driver, cmd.target); 
   }catch(err){
     //we need this block for the finally, as we definitly want to quit the driver, otherwise it stays idle for ~2 min blocking the next testrun.
     throw err;
