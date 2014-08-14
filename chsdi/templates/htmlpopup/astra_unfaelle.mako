@@ -2,7 +2,7 @@
 
 <%def name="table_body(c, lang)">
 <%
-    lang = lang if lang != 'rm, en' else 'de'
+    lang = lang if lang not in ('rm', 'en') else 'de'
     accidenttype = 'accidenttype_%s' % lang
     accidentday = 'accidentday_%s' % lang
     severitycategory = 'severitycategory_%s' % lang
