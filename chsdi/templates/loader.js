@@ -32,6 +32,8 @@ document.write('<scr' + 'ipt type="text/javascript" src="' + "${h.versioned(requ
 document.write('<scr' + 'ipt type="text/javascript" src="' + "${h.versioned(request.static_url('chsdi:static/js/ga-whitespace.js'))}" + '"></scr' + 'ipt>');
 % elif mode == 'waf':
 document.write('<scr' + 'ipt type="text/javascript" src="' + "${h.versioned(request.static_url('chsdi:static/js/ga-waf.js'))}" + '"></scr' + 'ipt>');
+% elif mode == 'wafint':
+document.write('<scr' + 'ipt type="text/javascript" src="' + "${h.versioned(request.static_url('chsdi:static/js/ga-wafint.js'))}" + '"></scr' + 'ipt>');
 % else:
 document.write('<scr' + 'ipt type="text/javascript" src="' + "${h.versioned(request.static_url('chsdi:static/js/ga.js'))}" + '"></scr' + 'ipt>');
 % endif
