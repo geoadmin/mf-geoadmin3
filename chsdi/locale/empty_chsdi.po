@@ -2628,6 +2628,9 @@ msgstr ""
 msgid "tt_ch_bav_kataster_belasteter_standorte_oev_katasterauszug"
 msgstr ""
 
+msgid "tt_ch_bav_kataster_belasteter_standorte_oev_untersuchungsstand_2"
+msgstr ""
+
 msgid "abk_meter_ueber_meer"
 msgstr ""
 
