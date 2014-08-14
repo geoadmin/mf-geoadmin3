@@ -48,12 +48,10 @@ def sitemap(request):
 
 
 def index(params):
-    # We don't want to include a self-reference
-    filteredlist = filter(lambda x: x != 'index', params.contents)
     buildFileNames = lambda x: params.basename + '_' + x + '.xml'
     data = {
         'host': params.host,
-        'sitemaps': map(buildFileNames, filteredlist)
+        'sitemaps': map(buildFileNames, params.in_index)
     }
 
     response = render_to_response(
