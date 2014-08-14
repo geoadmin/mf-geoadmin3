@@ -17,7 +17,7 @@
 % else:    
     <tr>
     <td class="cell-left">${_('link')}<td>
-    <a href="${c['attributes'][link] or '-'|n}" target="_blank" >${_('treasure_hunt')}</a></td>
+    <a href="${c['attributes'][link] or '-'|n}" target="_parent">${_('treasure_hunt')}</a></td>
     </tr>
 % endif
 
