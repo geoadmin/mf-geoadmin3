@@ -130,25 +130,36 @@
       $translate) {
     return {
       restrict: 'A',
-      template: '<button ng-click="toggle($event)" ng-class="stateClass">' +
+      template: '<button ng-click="toggle($event)" ng-class="stateClass" ' +
+           'ng-mouseenter="onMouseEnter($event)" ' +
+           'ng-mouseleave="onMouseLeave($event)">' +
           '</button>',
       scope: {
         isActive: '=gaTimeSelectorBtActive'
       },
       link: function(scope, elt, attrs) {
 
+        // Show the tooltip on mouse enter
+        scope.onMouseEnter = function(event) {
+          elt.tooltip({
+            placement: 'left',
+            container: 'body',
+            title: function() {
+              return $translate('time_bt_enabled_tooltip');
+            }
+          });
+        };
+
+        // Hide the tooltip on mouse leave
+        scope.onMouseLeave = function(event) {
+          elt.tooltip('destroy');
+        };
+
         // Enable the button if it is disable
         var enable = function() {
           if (scope.isDisable) {
             scope.stateClass = 'ga-time-selector-enabled';
             scope.isDisable = false;
-            elt.tooltip('destroy');
-            elt.tooltip({
-              placement: 'left',
-              title: function() {
-                return $translate('time_bt_enabled_tooltip');
-              }
-            });
           }
         };
 
@@ -157,13 +168,6 @@
           scope.stateClass = '';
           scope.isDisable = true;
           scope.isActive = false;
-          elt.tooltip('destroy');
-          elt.tooltip({
-            placement: 'left',
-            title: function() {
-               return $translate('time_bt_disabled_tooltip');
-            }
-          });
         };
 
         // Events to force the state of the component from another directive
