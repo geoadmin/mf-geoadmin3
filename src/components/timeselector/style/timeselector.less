@@ -1,13 +1,13 @@
 [ga-time-selector-bt] {
   position: absolute;
-  top: 302px;
-  right: 7px;
+  top: unit(@header-height + @control-btns-top + @control-btn-next * 4, px);
+  right: unit(@control-btns-right, px);
   z-index: 1000;
   
   button {  
     display: none;
-    width: 44px;
-    height: 44px;
+    width: unit(@control-btn-size, px);
+    height: unit(@control-btn-size, px);
     text-align: center;
     cursor: pointer;
     text-decoration: none;
@@ -24,7 +24,7 @@
   }
 
   @media screen and (max-width: @screen-tablet) {
-    top: 260px;
+    top: unit(@small-header-height + @control-btns-top + @control-btn-next * 4, px);
   } 
 }
 

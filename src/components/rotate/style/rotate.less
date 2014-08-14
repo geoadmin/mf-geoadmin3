@@ -1,0 +1,23 @@
+[ga-rotate] {
+  position: absolute;
+  z-index: 1000;
+  top: unit(@header-height + @control-btns-top + @control-btn-next * 5, px);
+  right: unit(@control-btns-right, px);
+
+  button {
+    width: unit(@control-btn-size, px);
+    height: 0px;
+    background-image: data-uri('northarrow.png');
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 1s linear;
+    webkit-transition: opacity 1s linear; 
+    transition-delay: 0s;
+    webkit-transition-delay: 0s;
+  }
+ 
+  @media screen and (max-width: @screen-tablet) {
+    top: unit(@small-header-height + @control-btns-top + @control-btn-next * 5, px);
+  }
+}
+
