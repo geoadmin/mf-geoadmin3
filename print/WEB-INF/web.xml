@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>org.mapfish.print.metrics.MetricsRegistryContextListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>org.mapfish.print.metrics.HealthCheckRegistryContextListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>org.mapfish.print.metrics.MapfishPrintInstrumentedFilterContextListener</listener-class>
+    </listener>
+
+    <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath:mapfish-spring-application-context.xml,classpath:*-mapfish-spring-application-context-override.xml</param-value>
+  </context-param>
+
+
+    <filter>
+        <filter-name>instrumentedFilter</filter-name>
+        <filter-class>com.codahale.metrics.servlet.InstrumentedFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>instrumentedFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <servlet>
+        <servlet-name>metrics-servlet</servlet-name>
+        <servlet-class>com.codahale.metrics.servlets.AdminServlet</servlet-class>
+    </servlet>
+
+    <!-- single mapping to spring, this only works properly if the advanced dispatch filter is
+         active -->
+    <servlet-mapping>
+        <servlet-name>metrics-servlet</servlet-name>
+        <url-pattern>/metrics</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>metrics-servlet</servlet-name>
+        <url-pattern>/metrics/*</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
+    <servlet-name>mapfish.print</servlet-name>
+    <servlet-class>org.mapfish.print.servlet.MapPrinterServlet</servlet-class>
+    <init-param>
+      <param-name>config</param-name>
+      <param-value>config.yaml</param-value>
+    </init-param>
+    <init-param>
+      <param-name>tempdir</param-name>
+      <param-value>/var/cache/print</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>mapfish.print</servlet-name>
+    <url-pattern>/pdf/*</url-pattern>
+  </servlet-mapping>
+
+
+  <!-- ********************************************************* -->
+
+  <!-- What follows is an example on how having two set of       -->
+  <!-- configurations in one servlet                             -->
+
+  <!--servlet>
+    <servlet-name>mapfish.print2</servlet-name>
+    <servlet-class>org.mapfish.print.servlet.MapPrinterServlet</servlet-class>
+    <init-param>
+      <param-name>config</param-name>
+      <param-value>config2.yaml</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>mapfish.print2</servlet-name>
+    <url-pattern>/pdf2/*</url-pattern>
+  </servlet-mapping-->
+</web-app>
