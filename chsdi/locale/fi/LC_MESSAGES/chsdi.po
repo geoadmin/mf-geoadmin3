@@ -326,6 +326,21 @@ msgstr "Genehmigungsdatum"
 msgid "arch__hist__qualitaeten"
 msgstr "Qualitads istoricas-architectonicas"
 
+msgid "astra_unf_accday"
+msgstr "Unfalltag"
+
+msgid "astra_unf_acctype"
+msgstr "Unfalltyp"
+
+msgid "astra_unf_fsocommunecode"
+msgstr "BFS-Gemeinde-Nr."
+
+msgid "astra_unf_roadtype"
+msgstr "Strassenart"
+
+msgid "astra_unf_severity"
+msgstr "Unfallschwerekategorie"
+
 msgid "atlassheetnumber"
 msgstr "Nummer Geologischer Atlas"
 
@@ -940,6 +955,21 @@ msgstr "Dumbraziun traffic (regiunal)"
 
 msgid "ch.astra.strassenverkehrszaehlung_messstellen-uebergeordnet"
 msgstr "Dumbraziun traffic (surordinà)"
+
+msgid "ch.astra.unfaelle-personenschaeden_alle"
+msgstr "Unfälle mit Personenschaden"
+
+msgid "ch.astra.unfaelle-personenschaeden_fahrraeder"
+msgstr "Unfälle mit Fahrradbeteiligung"
+
+msgid "ch.astra.unfaelle-personenschaeden_fussgaenger"
+msgstr "Unfälle mit Fussgängerbeteiligung"
+
+msgid "ch.astra.unfaelle-personenschaeden_getoetete"
+msgstr "Unfälle mit Getöteten"
+
+msgid "ch.astra.unfaelle-personenschaeden_motorraeder"
+msgstr "Unfälle mit Motorradbeteiligung"
 
 msgid "ch.astra.url"
 msgstr "http://www.astra.admin.ch/index.html?lang=de"

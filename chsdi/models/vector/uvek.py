@@ -199,6 +199,131 @@ class ZAEHLSTELLENUEBER(Base, Vector):
 register('ch.astra.strassenverkehrszaehlung_messstellen-uebergeordnet', ZAEHLSTELLENUEBER)
 
 
+class unf_pers_alle(Base, Vector):
+    __tablename__ = 'unf_pers_full'
+    __table_args__ = ({'schema': 'astra', 'autoload': False})
+    __template__ = 'templates/htmlpopup/astra_unfaelle.mako'
+    __bodId__ = 'ch.astra.unfaelle-personenschaeden_alle'
+    id = Column('uuid', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    accidenttype_de = Column('accidenttype_de', Text)
+    accidenttype_fr = Column('accidenttype_fr', Text)
+    accidenttype_it = Column('accidenttype_it', Text)
+    accidentday_de = Column('accidentday_de', Text)
+    accidentday_fr = Column('accidentday_fr', Text)
+    accidentday_it = Column('accidentday_it', Text)
+    severitycategory_de = Column('severitycategory_de', Text)
+    severitycategory_fr = Column('severitycategory_fr', Text)
+    severitycategory_it = Column('severitycategory_it', Text)
+    roadtype_de = Column('roadtype_de', Text)
+    roadtype_fr = Column('roadtype_fr', Text)
+    roadtype_it = Column('roadtype_it', Text)
+    canton = Column('canton', Text)
+    fsocommunecode = Column('fsocommunecode', Text)
+
+register('ch.astra.unfaelle-personenschaeden_alle', unf_pers_alle)
+
+
+class unf_pers_casualties(Base, Vector):
+    __tablename__ = 'unf_pers_casualties'
+    __table_args__ = ({'schema': 'astra', 'autoload': False})
+    __template__ = 'templates/htmlpopup/astra_unfaelle.mako'
+    __bodId__ = 'ch.astra.unfaelle-personenschaeden_getoetete'
+    id = Column('uuid', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    accidenttype_de = Column('accidenttype_de', Text)
+    accidenttype_fr = Column('accidenttype_fr', Text)
+    accidenttype_it = Column('accidenttype_it', Text)
+    accidentday_de = Column('accidentday_de', Text)
+    accidentday_fr = Column('accidentday_fr', Text)
+    accidentday_it = Column('accidentday_it', Text)
+    severitycategory_de = Column('severitycategory_de', Text)
+    severitycategory_fr = Column('severitycategory_fr', Text)
+    severitycategory_it = Column('severitycategory_it', Text)
+    roadtype_de = Column('roadtype_de', Text)
+    roadtype_fr = Column('roadtype_fr', Text)
+    roadtype_it = Column('roadtype_it', Text)
+    canton = Column('canton', Text)
+    fsocommunecode = Column('fsocommunecode', Text)
+
+register('ch.astra.unfaelle-personenschaeden_getoetete', unf_pers_casualties)
+
+
+class unf_pers_fuss(Base, Vector):
+    __tablename__ = 'unf_pers_fuss'
+    __table_args__ = ({'schema': 'astra', 'autoload': False})
+    __template__ = 'templates/htmlpopup/astra_unfaelle.mako'
+    __bodId__ = 'ch.astra.unfaelle-personenschaeden_fussgaenger'
+    id = Column('uuid', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    accidenttype_de = Column('accidenttype_de', Text)
+    accidenttype_fr = Column('accidenttype_fr', Text)
+    accidenttype_it = Column('accidenttype_it', Text)
+    accidentday_de = Column('accidentday_de', Text)
+    accidentday_fr = Column('accidentday_fr', Text)
+    accidentday_it = Column('accidentday_it', Text)
+    severitycategory_de = Column('severitycategory_de', Text)
+    severitycategory_fr = Column('severitycategory_fr', Text)
+    severitycategory_it = Column('severitycategory_it', Text)
+    roadtype_de = Column('roadtype_de', Text)
+    roadtype_fr = Column('roadtype_fr', Text)
+    roadtype_it = Column('roadtype_it', Text)
+    canton = Column('canton', Text)
+    fsocommunecode = Column('fsocommunecode', Text)
+
+register('ch.astra.unfaelle-personenschaeden_fussgaenger', unf_pers_fuss)
+
+
+class unf_pers_moto(Base, Vector):
+    __tablename__ = 'unf_pers_moto'
+    __table_args__ = ({'schema': 'astra', 'autoload': False})
+    __template__ = 'templates/htmlpopup/astra_unfaelle.mako'
+    __bodId__ = 'ch.astra.unfaelle-personenschaeden_motorraeder'
+    id = Column('uuid', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    accidenttype_de = Column('accidenttype_de', Text)
+    accidenttype_fr = Column('accidenttype_fr', Text)
+    accidenttype_it = Column('accidenttype_it', Text)
+    accidentday_de = Column('accidentday_de', Text)
+    accidentday_fr = Column('accidentday_fr', Text)
+    accidentday_it = Column('accidentday_it', Text)
+    severitycategory_de = Column('severitycategory_de', Text)
+    severitycategory_fr = Column('severitycategory_fr', Text)
+    severitycategory_it = Column('severitycategory_it', Text)
+    roadtype_de = Column('roadtype_de', Text)
+    roadtype_fr = Column('roadtype_fr', Text)
+    roadtype_it = Column('roadtype_it', Text)
+    canton = Column('canton', Text)
+    fsocommunecode = Column('fsocommunecode', Text)
+
+register('ch.astra.unfaelle-personenschaeden_motorraeder', unf_pers_moto)
+
+
+class unf_pers_velo(Base, Vector):
+    __tablename__ = 'unf_pers_velo'
+    __table_args__ = ({'schema': 'astra', 'autoload': False})
+    __template__ = 'templates/htmlpopup/astra_unfaelle.mako'
+    __bodId__ = 'ch.astra.unfaelle-personenschaeden_fahrraeder'
+    id = Column('uuid', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    accidenttype_de = Column('accidenttype_de', Text)
+    accidenttype_fr = Column('accidenttype_fr', Text)
+    accidenttype_it = Column('accidenttype_it', Text)
+    accidentday_de = Column('accidentday_de', Text)
+    accidentday_fr = Column('accidentday_fr', Text)
+    accidentday_it = Column('accidentday_it', Text)
+    severitycategory_de = Column('severitycategory_de', Text)
+    severitycategory_fr = Column('severitycategory_fr', Text)
+    severitycategory_it = Column('severitycategory_it', Text)
+    roadtype_de = Column('roadtype_de', Text)
+    roadtype_fr = Column('roadtype_fr', Text)
+    roadtype_it = Column('roadtype_it', Text)
+    canton = Column('canton', Text)
+    fsocommunecode = Column('fsocommunecode', Text)
+
+register('ch.astra.unfaelle-personenschaeden_fahrraeder', unf_pers_velo)
+
+
 class KATASTERBELASTETERSTANDORTE(Base, Vector):
     __tablename__ = 'kataster_belasteter_standorte_oev'
     __table_args__ = ({'schema': 'bav', 'autoload': False})

@@ -7,6 +7,36 @@ msgstr ""
 msgid "treasure_hunt"
 msgstr ""
 
+msgid "ch.astra.unfaelle-personenschaeden_motorraeder"
+msgstr ""
+
+msgid "ch.astra.unfaelle-personenschaeden_fussgaenger"
+msgstr ""
+
+msgid "ch.astra.unfaelle-personenschaeden_fahrraeder"
+msgstr ""
+
+msgid "ch.astra.unfaelle-personenschaeden_getoetete"
+msgstr ""
+
+msgid "ch.astra.unfaelle-personenschaeden_alle"
+msgstr ""
+
+msgid "astra_unf_acctype"
+msgstr ""
+
+msgid "astra_unf_accday"
+msgstr ""
+
+msgid "astra_unf_severity"
+msgstr ""
+
+msgid "astra_unf_roadtype"
+msgstr ""
+
+msgid "astra_unf_fsocommunecode"
+msgstr ""
+
 msgid "ch.bafu.bundesinventare-hochmoore_anhoerung"
 msgstr ""
 
