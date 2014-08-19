@@ -1320,7 +1320,7 @@ msgid "ch.bafu.wrz-wildruhezonen-jagdbanngebiete-wege-routen"
 msgstr "Erlaubte Wege und Routen"
 
 msgid "ch.bafu.wrz-wildruhezonen_portal"
-msgstr "Wildruhezonen"
+msgstr "Zonas da paus per la selvaschina ? territoris scumandads per la chatscha"
 
 msgid "ch.bag"
 msgstr "BAG"
@@ -1700,6 +1700,12 @@ msgstr "http://www.bafu.admin.ch/index.html?lang=de"
 
 msgid "ch.lw"
 msgstr "LW"
+
+msgid "ch.pronatura"
+msgstr "Pronatura"
+
+msgid "ch.pronatura.url"
+msgstr "http://www.pronatura.ch/schutzgebiete"
 
 msgid "ch.pronatura.waldreservate"
 msgstr "Waldreservate Pro natura"
