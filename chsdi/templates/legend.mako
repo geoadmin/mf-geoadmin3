@@ -53,8 +53,8 @@
 % endif
   <span>${_('Information')}</span><br>
   <table>
-% if 'bundCollection' in c['attributes']:
-    <tr><td>${_('geobasisdatensatz')}</td> <td>${c['attributes']['bundCollection']}</td></tr>
+% if 'bundCollectionNumber' in c['attributes']:
+    <tr><td>${_('geobasisdatensatz')}</td> <td>${c['attributes']['bundCollectionNumber']}</td></tr>
 % endif
 % if 'scaleLimit' in c['attributes']:
     <tr><td>${_('Gueltiger Massstabsbereich')}</td> <td>${c['attributes']['scaleLimit']}</td></tr>
