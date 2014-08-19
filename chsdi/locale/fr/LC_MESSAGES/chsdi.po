@@ -3940,6 +3940,9 @@ msgstr "Type de site"
 msgid "tt_ch_bav_kataster_belasteter_standorte_oev_untersuchungsstand"
 msgstr "Phase d'investigation selon OSites"
 
+msgid "tt_ch_bav_kataster_belasteter_standorte_oev_untersuchungsstand_2"
+msgstr "Investigations terminées et mesures selon l’OSites"
+
 msgid "tt_document"
 msgstr "Autres informations"
 

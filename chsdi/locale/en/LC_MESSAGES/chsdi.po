@@ -3940,6 +3940,9 @@ msgstr "Standorttyp"
 msgid "tt_ch_bav_kataster_belasteter_standorte_oev_untersuchungsstand"
 msgstr "Untersuchungsstand gemäss AltIV"
 
+msgid "tt_ch_bav_kataster_belasteter_standorte_oev_untersuchungsstand_2"
+msgstr "Abgeschlossene Untersuchungen und Massnahmen gemäss AltlV"
+
 msgid "tt_document"
 msgstr "Weitere Informationen "
 
