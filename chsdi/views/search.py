@@ -128,9 +128,14 @@ class Search(SearchValidation):
         self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, '@weight DESC')
         index_name = 'layers_%s' % self.lang
         mapName = self.mapName if self.mapName != 'all' else ''
+        # Whitelist hack
+        if mapName in ('api', 'api-free', 'api-notfree'):
+            topicFilter = 'api'
+        else:
+            topicFilter = '(%s | ech)' % mapName
         searchText = ' '.join((
             self._query_fields('@(detail,layer)'),
-            '& @topics (%s | ech)' % mapName,  # Filter by to topic if string not empty, ech whitelist hack
+            '& @topics %s' % (topicFilter),  # Filter by to topic if string not empty, ech whitelist hack
             '& @staging prod'                  # Only layers in prod are searched
         ))
         try:
