@@ -7,13 +7,10 @@ class SiteMapValidation(object):
 
     def __init__(self):
         self._content = None
+        self._in_index = ['base', 'topics', 'layers']
         self._multi_sitemaps = ['addresses']
         self._multi_part = None
-        self._contents = [
-            'index',
-            'base',
-            'topics',
-            'layers'] + self._multi_sitemaps
+        self._contents = ['index'] + self._in_index + self._multi_sitemaps
 
     @property
     def content(self):
@@ -39,8 +36,8 @@ class SiteMapValidation(object):
         self._content = value
 
     @property
-    def contents(self):
-        return self._contents
+    def in_index(self):
+        return self._in_index
 
     @property
     def multi_part(self):

@@ -22,6 +22,7 @@ class TestSitemapView(TestsBase):
     def __init__(self, other):
         super(TestsBase, self).__init__(other)
         self.sitemaps_with_urls = ['base', 'topics', 'layers']
+        self.sitemaps_notin_index = ['index', 'addresses']
 
     def test_no_parameter_failure(self):
         resp = self.testapp.get('/sitemap', status=400)
@@ -41,6 +42,10 @@ class TestSitemapView(TestsBase):
         # contains all links
         for urlbase in self.sitemaps_with_urls:
             resp.mustcontain('sitemap_' + urlbase + '.xml')
+        # does not contain
+        for urlbase in self.sitemaps_notin_index:
+            self.failUnless('sitemap_' + urlbase + '.xml' not in resp.body)
+
         # contains correct domain
         self.failUnless(self.testapp.app.registry.settings.get('geoadminhost') in resp.body)
         # validate scheme
