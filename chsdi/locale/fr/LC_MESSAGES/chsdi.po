@@ -957,19 +957,19 @@ msgid "ch.astra.strassenverkehrszaehlung_messstellen-uebergeordnet"
 msgstr "Circulation routière (principal)"
 
 msgid "ch.astra.unfaelle-personenschaeden_alle"
-msgstr "accidents avec dommages corporels"
+msgstr "Accidents avec dommages corporels"
 
 msgid "ch.astra.unfaelle-personenschaeden_fahrraeder"
-msgstr "accidents avec la part. de vélos"
+msgstr "Accidents avec la part. de vélos"
 
 msgid "ch.astra.unfaelle-personenschaeden_fussgaenger"
-msgstr "accidents avec la part. de piétons"
+msgstr "Accidents avec la part. de piétons"
 
 msgid "ch.astra.unfaelle-personenschaeden_getoetete"
-msgstr "accidents mortels"
+msgstr "Accidents mortels"
 
 msgid "ch.astra.unfaelle-personenschaeden_motorraeder"
-msgstr "accidents avec la part. de motos"
+msgstr "Accidents avec la part. de motos"
 
 msgid "ch.astra.url"
 msgstr "http://www.astra.admin.ch/index.html?lang=fr"
@@ -1700,6 +1700,12 @@ msgstr "http://www.bafu.admin.ch/index.html?lang=fr"
 
 msgid "ch.lw"
 msgstr "FA"
+
+msgid "ch.pronatura"
+msgstr "Pronatura"
+
+msgid "ch.pronatura.url"
+msgstr "http://www.pronatura.ch/actuel"
 
 msgid "ch.pronatura.waldreservate"
 msgstr "Réserves forestières Pro Natura"
