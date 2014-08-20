@@ -44,7 +44,7 @@ The GeoAdmin API does support mobile devices.
 How to use the GeoAdmin API in a CMS ?
 ********************************************
 
-The link is here: ref: `Geoadmin API in CMS <../integrate_cms.html>`_
+The link is here: `Geoadmin API in CMS <../integrate_cms.html>`_
 
 Is there a forum or a mailing list ?
 ************************************
