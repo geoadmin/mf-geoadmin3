@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import simplejson
 from pyramid.view import view_config
 from pyramid.renderers import render_to_response
 from pyramid.request import Request
@@ -15,12 +16,13 @@ def loadjs(request):
     path = '/rest/services/api/MapServer/layersConfig?lang=' + lang
     subRequest = Request.blank(path)
     resp = request.invoke_subrequest(subRequest)
+    data = simplejson.loads(resp.body)
     response = render_to_response(
         'chsdi:templates/loader.js',
         {
             'lang': lang,
             'mode': mode,
-            'data': resp.body
+            'data': simplejson.dumps(data, separators=(',', ':'))
         },
         request=request
     )
