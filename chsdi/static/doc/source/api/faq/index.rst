@@ -106,7 +106,9 @@ Here is a list of all the freely accessible layers:
 
           //Now we get the not free layers. We have to use metadata service for
           //this layersonfig service does not contain free/not-free designation
-          $.getJSON( "../../rest/services/api-notfree/MapServer", function( metadata ) {
+          $.getJSON( "../../rest/services/api/MapServer",
+              { chargeable: 'true' },
+              function( metadata ) {
              var myInnerHtml_notfree =  "<br><table border=\"0\">";
              var layers_notfree = metadata.layers;
              var counterNotFree = 1;
@@ -122,7 +124,9 @@ Here is a list of all the freely accessible layers:
              document.getElementById("notfree").innerHTML=myInnerHtml_notfree;
           });
 
-          $.getJSON( "../../rest/services/api-free/MapServer", function( metadata ) {
+          $.getJSON( "../../rest/services/api/MapServer",
+              { chargeable: 'false' },
+              function( metadata ) {
              var myInnerHtml_free =  "<br><table border=\"0\">";
              var layers_free = metadata.layers;
              var counterFree = 1;

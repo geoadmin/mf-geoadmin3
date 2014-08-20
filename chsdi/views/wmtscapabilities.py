@@ -29,8 +29,7 @@ class WMTSCapabilites(MapNameValidation):
 
         layers_query = self.request.db.query(self.models['GetCap'])
         if self.mapName != 'all':
-            layers_query = layers_query.filter(self.models['GetCap']
-                                               .projekte.ilike('%%%s%%' % self.mapName))
+            layers_query = filter_by_map_name(query, self.models['GetCap'], self.mapName)
         layers = layers_query.all()
 
         if hasattr(self.models['GetCapThemes'], 'oberthema_id'):

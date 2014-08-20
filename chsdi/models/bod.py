@@ -15,7 +15,8 @@ class Bod(object):
     idGeoCat = Column('geocat_uuid', Text)
     name = Column('kurzbezeichnung', Text)
     fullName = Column('bezeichnung', Text)
-    maps = Column('projekte', Text)  # The topics
+    maps = Column('topics', Text)  # The topics
+    chargeable = Column('chargeable', Boolean)
     dataOwner = Column('datenherr', Text)
     abstract = Column('abstract', Text)
     dataStatus = Column('datenstand', Text)
@@ -37,7 +38,7 @@ class Bod(object):
 
     def layerMetadata(self):
         primaryAttrs = ('layerBodId', 'idGeoCat', 'name', 'fullName')
-        excludedAttrs = ('staging', 'searchText')
+        excludedAttrs = ('staging', 'searchText', 'chargeable')
         meta = {'attributes': {}}
         for k in self.__dict__.keys():
             if k != '_sa_instance_state':
@@ -74,6 +75,7 @@ class LayersConfig(Base):
     timestamps = Column('timestamps', postgresql.ARRAY(Text))
     timeBehaviour = Column('time_behaviour', Text)
     maps = Column('topics', Text)
+    chargeable = Column('chargeable', Boolean)
     staging = Column('staging', Text)
     wmsLayers = Column('wms_layers', Text)
     wmsUrl = Column('wms_url', Text)
@@ -166,6 +168,8 @@ class GetCap(object):
     wms_kontakt_name = Column('wms_kontakt_name', Text)
     zoomlevel_min = Column('zoomlevel_min', Integer)
     zoomlevel_max = Column('zoomlevel_max', Integer)
+    maps = Column('topics', Text)  # the topics
+    chargeable = Column('chargeable', Boolean)
 
 
 class GetCapFr(Base, GetCap):

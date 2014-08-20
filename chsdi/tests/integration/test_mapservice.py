@@ -3,6 +3,11 @@
 from chsdi.tests.integration import TestsBase
 
 
+def getLayers(query):
+    for q in query:
+        yield q[0]
+
+
 class TestMapServiceView(TestsBase):
 
     def test_metadata_no_parameters(self):
@@ -20,6 +25,14 @@ class TestMapServiceView(TestsBase):
     def test_metadata_with_callback(self):
         resp = self.testapp.get('/rest/services/blw/MapServer', params={'callback': 'cb'}, status=200)
         self.failUnless(resp.content_type == 'application/javascript')
+
+    def test_metadata_chargeable(self):
+        resp = self.testapp.get('/rest/services/blw/MapServer', params={'chargeable': 'true'}, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+
+    def test_metadata_chargeable(self):
+        resp = self.testapp.get('/rest/services/blw/MapServer', params={'chargeable': 'false'}, status=200)
+        self.failUnless(resp.content_type == 'application/json')
 
     def test_identify_no_parameters(self):
         self.testapp.get('/rest/services/ech/MapServer/identify', status=400)
@@ -283,12 +296,13 @@ class TestMapServiceView(TestsBase):
         valtrue = True
         # Get a list of all layers in prod, exclude sub-layers
         query = DBSession.query(distinct(LayersConfig.layerBodId)).filter(LayersConfig.staging == 'prod').filter(LayersConfig.parentLayerId == valnone).filter(LayersConfig.hasLegend == valtrue)
-        layers = [q[0] for q in query]
-        DBSession.close()
 
-        for layer in layers:
-            for lang in ('de', 'fr', 'it', 'rm', 'en'):
-                self.testapp.get('/rest/services/all/MapServer/%s/legend' % layer, params={'callback': 'cb', 'lang': '%s' % lang}, status=200)
+        try:
+            for layer in getLayers(query):
+                for lang in ('de', 'fr', 'it', 'rm', 'en'):
+                    self.testapp.get('/rest/services/all/MapServer/%s/legend' % layer, params={'callback': 'cb', 'lang': '%s' % lang}, status=200)
+        finally:
+            DBSession.close()
 
     def test_all_legends_images(self):
         import os
@@ -306,14 +320,13 @@ class TestMapServiceView(TestsBase):
         valnone = None
         valtrue = True
         query = DBSession.query(distinct(LayersConfig.layerBodId)).filter(LayersConfig.staging == 'prod').filter(LayersConfig.parentLayerId == valnone).filter(LayersConfig.hasLegend == valtrue)
-        # Get a list of all the queryable layers
-        layers = [q[0] for q in query]
-        DBSession.close()
 
-        for layer in layers:
-            for lang in ('de', 'fr', 'it', 'rm', 'en'):
-                # Failure here measn the layer.hasLegend == True, but there's not image
-                self.failUnless((layer + '_' + lang) in legendImages)
+        try:
+            for layer in getLayers(query):
+                for lang in ('de', 'fr', 'it', 'rm', 'en'):
+                    self.failUnless((layer + '_' + lang) in legendImages)
+        finally:
+            DBSession.close()
 
     def test_all_htmlpopups(self):
         from chsdi.models import models_from_name
@@ -323,25 +336,21 @@ class TestMapServiceView(TestsBase):
         val = True
         DBSession = scoped_session(sessionmaker())
         query = DBSession.query(distinct(LayersConfig.layerBodId)).filter(LayersConfig.queryable == val).filter(LayersConfig.staging == 'prod')
-        # Get a list of all the queryable layers
-        layers = [q[0] for q in query]
-        DBSession.close()
-        # Get a list of feature ids
         features = []
-        for layer in layers:
-            try:
-                model = models_from_name(layer)[0]
-                DBSession = scoped_session(sessionmaker())
-                query = DBSession.query(model.primary_key_column()).limit(1)
-                ID = [q[0] for q in query]
-                # If tables are empty ID is an empty list
-                if ID:
-                    features.append((layer, str(ID[0])))
-                DBSession.close()
-            except Exception as e:
-                print e
-            finally:
-                DBSession.close()
+        try:
+            for layer in getLayers(query):
+                try:
+                    FeatDBSession = scoped_session(sessionmaker())
+                    model = models_from_name(layer)[0]
+                    query = FeatDBSession.query(model.primary_key_column()).limit(1)
+                    ID = [q[0] for q in query]
+                    if ID:
+                        features.append((layer, str(ID[0])))
+                finally:
+                    FeatDBSession.close()
+        finally:
+            DBSession.close()
+
         for f in features:
             for lang in ('de', 'fr', 'it', 'rm', 'en'):
                 self.testapp.get('/rest/services/all/MapServer/%s/%s/htmlPopup' % (f[0], f[1]), params={'callback': 'cb', 'lang': '%s' % lang}, status=200)

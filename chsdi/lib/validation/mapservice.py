@@ -23,6 +23,7 @@ class MapServiceValidation(MapNameValidation):
         self._searchText = None
         self._searchField = None
         self._contains = None
+        self._chargeable = None
         self.esriGeometryTypes = (
             'esriGeometryPoint',
             'esriGeometryPolyline',
@@ -77,6 +78,10 @@ class MapServiceValidation(MapNameValidation):
     @property
     def contains(self):
         return self._contains
+
+    @property
+    def chargeable(self):
+        return self._chargeable
 
     @geometry.setter
     def geometry(self, value):
@@ -182,3 +187,11 @@ class MapServiceValidation(MapNameValidation):
             self._contains = True
         else:
             self._contains = False
+
+    @chargeable.setter
+    def chargeable(self, value):
+        if value is not None:
+            if value.lower() == 'true':
+                self._chargeable = True
+            elif value.lower() == 'false':
+                self._chargeable = False
