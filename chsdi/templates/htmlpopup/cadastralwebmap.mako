@@ -31,13 +31,13 @@
     % elif c['attributes']['ak'] == 'GE':
         <tr><td class="cell-left">${_('link to canton geoportal')}</td><td><a href="http://www.ge.ch" target="_blank">GE</a></td></tr>
     % elif c['attributes']['ak'] == 'GL':
-        <tr><td class="cell-left">${_('link to canton geoportal')}</td><td><a href="http://www.gl.ch" target="_blank">GL</a></td></tr>
+        <tr><td class="cell-left">${_('link to canton geoportal')}</td><td><a href="https://map.geo.gl.ch/Public?visibleLayers=CH-Rahmen,BBFlaechen_sw,projektierte%20BBFlaechen,Flaechenelemente_sw,Linienelemente,Punktelemente,Grundstuecke%20(Parzellen),Liegenschaftsnummern,Grenzpunkte,BB%20Namen,EO%20Namen,Grundbuecher,Hoheitsgrenzpunkte,Fixpunkte%20Kat%201%202%203,Flur-%20und%20Ortsnamen,Lokalisationen,Gebaeudeadressen" target="_blank">GL</a></td></tr>
     % elif c['attributes']['ak'] == 'JU':
         <tr><td class="cell-left">${_('link to canton geoportal')}</td><td><a href="http://mapfish.jura.ch/main/wsgi/theme/Cadastre?&map_x=${(c['bbox'][0] + c['bbox'][2])/2}&map_y=${(c['bbox'][1] + c['bbox'][3])/2}&map_zoom=11" target="_blank">JU</a></td></tr>
     % elif c['attributes']['ak'] == 'SH':   
        <tr><td class="cell-left">${_('link to canton geoportal')}</td><td><a href="http://www.gis.sh.ch/GIS_SH/?idp=1&uid=1&pwd=&map=10&lan=de&typ=3&bmurl=Nav@g@98@u@West@g@${c['bbox'][0]}@u@Nord@g@${c['bbox'][1]}@u@B@g@600" target="_blank">SH</a></td></tr>
     % elif c['attributes']['ak'] == 'SZ':
-        <tr><td class="cell-left">${_('link to canton geoportal')}</td><td><a href="http://www.sz.ch" target="_blank">SZ</a></td></tr>
+        <tr><td class="cell-left">${_('link to canton geoportal')}</td><td><a href="http://webmap.sz.ch/BM31_WebMap/BM3.asp" target="_blank">SZ</a></td></tr>
     % elif c['attributes']['ak'] == 'SO':
         <tr><td class="cell-left">${_('link to canton geoportal')}</td><td><a href="http://www.sogis1.so.ch/sogis/internet/pmapper/somap.php?karte=ortsplan&extent=${','.join(map(str,c['bbox']))}" target="_blank">SO</a></td></tr>
     % elif c['attributes']['ak'] == 'TI':
@@ -56,7 +56,7 @@
     % elif c['attributes']['ak'] == 'NW':
         <tr><td class="cell-left">${_('link to canton geoportal')}</td><td><a href="http://www.nw.ch" target="_blank">NW</a></td></tr>
     % elif c['attributes']['ak'] == 'UR':
-        <tr><td class="cell-left">${_('link to canton geoportal')}</td><td><a href="http://www.ur.ch" target="_blank">UR</a></td></tr>
+        <tr><td class="cell-left">${_('link to canton geoportal')}</td><td><a href="http://geo.ur.ch/" target="_blank">UR</a></td></tr>
     % elif c['attributes']['ak'] == 'GR':
         <tr><td class="cell-left">${_('link to canton geoportal')}</td><td><a href="http://geogr.mapserver.ch/shop" target="_blank">GR</a></td></tr>
     % elif c['attributes']['ak'] == 'AI':
