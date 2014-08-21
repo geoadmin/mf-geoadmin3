@@ -21,7 +21,7 @@
         value="{{(file.name) ? file.name + ', ' + file.size/1000 + ' ko' : ''}}"
         placeholder="{{'feedback_placeholder' | translate}}" readonly/>
       <span class="input-group-btn">
-        <button type="button" class="btn btn-default ga-feedback-browse-button">Browse</button>
+        <button type="button" class="btn btn-default ga-feedback-browse-button needsclick">Browse</button>
       </span>
       <div ng-show="!isIE && showProgress" class="progress progress-striped active">
         <div class="progress-bar" style="width: 100%;"></div>
