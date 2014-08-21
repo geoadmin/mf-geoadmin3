@@ -1,2 +1,3 @@
 export API_URL=//mf-chsdi3.dev.bgdi.ch/ltmom
 export APACHE_BASE_PATH=/ltmom
+export BROWSERSTACK_TARGETURL=http://mf-geoadmin3.dev.bgdi.ch/ltmom

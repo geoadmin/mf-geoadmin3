@@ -1,58 +1,39 @@
 // Input capabilities
-var capabilities = [{
-    'browser' : 'Chrome',
-    'browser_version' : '31.0',
-    'os' : 'Windows',
-    'os_version' : '7',
-    'resolution' : '1280x1024',
+//
+
+var os = function(obj, os, version, resolution) {
+  obj['os'] = os;
+  obj['os_version'] = version;
+  obj['resolution'] = resolution;
+};
+
+var browser = function(obj, browser, version) {
+  obj['browser'] = browser;
+  obj['browser_version'] = version;
+};
+
+var create = function(os, osver, res, browser, brover) {
+  return {
+    'os' : os,
+    'os_version' : osver,
+    'resolution' : res,
+    'browser' : browser,
+    'browser_version' : brover,
     'browserstack.user' : process.env.BROWSERSTACK_USER,
     'browserstack.key' : process.env.BROWSERSTACK_KEY
-  },
-  {
-    'browser' : 'IE',
-    'browser_version' : '9.0',
-    'os' : 'Windows',
-    'os_version' : '7',
-    'resolution' : '1280x1024',
-    'browserstack.user' : process.env.BROWSERSTACK_USER,
-    'browserstack.key' : process.env.BROWSERSTACK_KEY
-  },
-  {
-    'browser' : 'IE',
-    'browser_version' : '10.0',
-    'os' : 'Windows',
-    'os_version' : '7',
-    'resolution' : '1280x1024',
-    'browserstack.user' : process.env.BROWSERSTACK_USER,
-    'browserstack.key' : process.env.BROWSERSTACK_KEY
-  },
-  {
-    'browser' : 'IE',
-    'browser_version' : '11.0',
-    'os' : 'Windows',
-    'os_version' : '7',
-    'resolution' : '1280x1024',
-    'browserstack.user' : process.env.BROWSERSTACK_USER,
-    'browserstack.key' : process.env.BROWSERSTACK_KEY
-  },
-  {
-    'browser' : 'Firefox',
-    'browser_version' : '27.0',
-    'os' : 'Windows',
-    'os_version' : '7',
-    'resolution' : '1280x1024',
-    'browserstack.user' : process.env.BROWSERSTACK_USER,
-    'browserstack.key' : process.env.BROWSERSTACK_KEY
-  },
-  {
-    'browser' : 'Safari',
-    'browser_version' : '5.1',
-    'os' : 'Windows',
-    'os_version' : '7',
-    'resolution' : '1280x1024',
-    'browserstack.user' : process.env.BROWSERSTACK_USER,
-    'browserstack.key' : process.env.BROWSERSTACK_KEY
-  } 
+  };
+}
+
+var capabilities = [
+    create('Windows', '7', '1280x1024', 'Chrome', '33.0'),
+    create('Windows', '7', '1280x1024', 'Chrome', '34.0'),
+    create('Windows', '7', '1280x1024', 'Chrome', '35.0'),
+    create('Windows', '7', '1280x1024', 'IE', '9.0'),
+    create('Windows', '7', '1280x1024', 'IE', '10.0'),
+    create('Windows', '7', '1280x1024', 'IE', '11.0'),
+    create('Windows', '7', '1280x1024', 'Firefox', '28.0'),
+    create('Windows', '7', '1280x1024', 'Firefox', '29.0'),
+    create('Windows', '7', '1280x1024', 'Safari', '5.1')
 ]
 
 module.exports.capabilities = capabilities;

@@ -69,6 +69,46 @@ this to work, you need to make sure to install the following dependencies:
     nodejs python-virtualenv
     npm install phantomjs
 
+# Automated tests
+
+## Unit tests
+
+We use Karma to configure our unit tests and PhantomJS to run them in.  They
+are defined in `test/specs`. They are run as part of the standard build.
+
+Ideally, each component is fully tested with unit tests.
+
+## Crosser browser end-to-end tests with browserstack.com
+
+To run the e2e browserstack tests, a view things need to be set up in your 
+environment. You need to have the BROWSERSTACK_USER and BROWSERSTACK_KEY 
+variables set. As they are sesitive, they should not be accessible in public 
+(don't add them to github). Recommended way is via a protected file on your 
+system (readable only by you):
+    
+    echo "export BROWSERSTACK_USER=***" >> ~/.browserstack
+    echo "export BROWSERSTACK_KEY=***" >> ~/.browserstack
+    chmod 600 ~/.browserstack
+
+Then add `source ~/.browserstack` to your `.bashrc` file. The infos can be found
+here: https://www.browserstack.com/accounts/automate . Please use the credentials
+in our keypass file to log in.
+
+Run it using make:
+
+    make teste2e
+
+This uses the BROWSERSTACK_TARGET environment variable (part of rc_* files) to
+determine which URL to test.
+
+Run it manually:
+
+    node test/selenium/tests.js -t http://map.geo.admin.ch
+
+This runs it with the given target URL.
+
+These tests are not part of the normal build. They need to be launched manually.
+
 # Deploying project and branches
 
 ## Deploying the project to dev, int and prod
