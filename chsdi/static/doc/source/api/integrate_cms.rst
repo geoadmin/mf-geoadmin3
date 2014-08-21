@@ -14,9 +14,9 @@ Result:
 
 Procedure:
 ----------
-#. Open the web page, which to modify with CMS.( Example like: http://cmsr.*.admin.ch)
-#. Fill in the keyword and the user name 
-#. We can modify the map as follows:(Tip: It’s better to save the old Code in the Editor or Notepad, if the new Code not function, then we can put the old one)
+#. Open the web page you want to modify using the CMS.(Example insted of: http://cmsr.*.admin.ch)
+#. Enter you keyword and username 
+#. We can modify the map as follows:(Tip: It'better to save our old code in a text editor of your choice in case the new code doesn't work)
 
 Modify the map 
 --------------
@@ -34,27 +34,27 @@ Modify the map
  <script type="text/javascript" src="http://api3.geo.admin.ch/loader.js?mode=debug"></script>
 
 
-- Now, the map doesn’t exist. We must fill in the Java-Script-Part. For this, we have two possibilities: 
-#. Possibility one: To generate a new paragraph 
+- At this point the map doesn't exist yet. We must fill in the Javascript-Part. To do so, we have two possibilities: 
+#. First possibility: Generate a new paragraph 
 #. Open the side like: http://cmsr.*.admin.ch
-#. Possibly: Fill in the keyword and the user name
+#. Possibly: Fill in the keyword and the username
 #. Show the picture below: 
 
 .. image:: image/new_site.jpg
    
-4.1 Open the file, which is generated 
+4.1 Open the generated file 
 
 .. image:: image/open_new_file.jpg
 
-4.2 The window as follows is generated
+4.2 The window is generated as follows 
 
 .. image:: image/generated_page.jpg
 
-4.3 This window appear (show below). Fill in the HTML-Code (Java-script) and save with the „Save“ button. Now, we can’t see the map, we must do the point 3.1 (show above) in this script. 
+4.3 This window appears (see below). Insert the HTML code (Javascript) and save it. Now, we can’t see the map, we must do the point 3.1 (show above) in this script. 
 
 .. image:: image/fill_in_html.jpg
 
-5. Possibility two : We have already a map put in the old API generated. Now, we try this follows steps: 
+5. Second possibility: We have already a map put in the old API generated. Now, we try this follows steps: 
 
 .. image:: image/new_code_in_html.jpg
 
@@ -167,6 +167,5 @@ Modify the map
  </script>
 
 
-6. Is all OK? Solve the new generated map in Production:  
-
+6. Is everything alright? Publish the new map in production.  
 
