@@ -23,6 +23,15 @@
           gaMapClick, gaPreviewFeatures, gaLayerFilters,
           gaBrowserSniffer) {
 
+        var getTranslatedLabel = function(obj) {
+          var possibleKey = 'label_' + $translate.uses();
+          if (angular.isDefined(obj[possibleKey])) {
+            return obj[possibleKey];
+          } else {
+            return obj.label;
+          }
+        };
+
         return {
           restrict: 'A',
           replace: true,
@@ -174,7 +183,7 @@
                       geometry: null,
                       id: result.attrs.featureId || result.attrs.id,
                       layer: layerId,
-                      label: result.attrs.label
+                      label: getTranslatedLabel(result.attrs)
                     };
                   }
                   newNode.features.push(feature);
