@@ -80,7 +80,7 @@
 	"featuretree_tooltip": "Suchen Sie alle Objekte in einem Rechteck",
 	"feedback_attachment": "Datei hinzufügen",
 	"feedback_description": "Ihr Kommentar zum aktuellen Kartenausschnitt",
-	"feedback_error_message": "Problem",
+	"feedback_error_message": "Problem beim Versenden der Meldung. ",
 	"feedback_mail": "Ihre E-Mail Adresse (freiwillig)",
 	"feedback_permalink": "Der folgende Link wird übermittelt:",
 	"feedback_placeholder": "Fügen Sie eine .pdf, .zip, .jpg, .jpeg, .kml, .kmz oder .gpx Datei hinzu",
