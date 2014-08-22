@@ -2193,7 +2193,7 @@ msgid "descriptionText"
 msgstr "Descrizione"
 
 msgid "disclaimer title"
-msgstr "Copyright e dicariazione della protezione dei diritti d'autore"
+msgstr "Copyright e dichiarazione della protezione dei diritti d'autore"
 
 msgid "disclaimer url"
 msgstr "http://www.geo.admin.ch/internet/geoportal/it/home/geoadmin/contact.html#copyright"
