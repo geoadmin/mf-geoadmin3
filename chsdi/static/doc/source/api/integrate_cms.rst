@@ -16,7 +16,7 @@ Procedure:
 ----------
 #. Open the web page you want to modify using the CMS.(Example insted of: http://cmsr.*.admin.ch)
 #. Enter you keyword and username 
-#. We can modify the map as follows:(Tip: It'better to save our old code in a text editor of your choice in case the new code doesn't work)
+#. We can modify the map as follows: (Tip: It'better to save our old code in a text editor of your choice in case the new code doesn't work)
 
 Modify the map 
 --------------
