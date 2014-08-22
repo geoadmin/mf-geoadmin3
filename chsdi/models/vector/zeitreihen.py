@@ -81,6 +81,19 @@ class Zeitreihen_22(Base, Vector):
     years = Column('years', Integer)
     bv_nummer = Column('bv_nummer', Text)
 
+
+class DufourErst(Base, Vector):
+    __tablename__ = 'view_dufour_erstausgabe'
+    __table_args__ = ({'schema': 'public', 'autoload': False})
+    __template__ = 'templates/htmlpopup/dufour_erst.mako'
+    __bodId__ = 'ch.swisstopo.hiks-dufour'
+    id = Column('tilenumber', Text, primary_key=True)
+    kbbez = Column('kbbez', Text)
+    datenstand = Column('datenstand', Integer)
+    bv_nummer = Column('bv_nummer', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.hiks-dufour', DufourErst)
 register('ch.swisstopo.zeitreihen', Zeitreihen_15)
 register('ch.swisstopo.zeitreihen', Zeitreihen_20)
 register('ch.swisstopo.zeitreihen', Zeitreihen_21)
