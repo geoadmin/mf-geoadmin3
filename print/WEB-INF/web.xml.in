@@ -59,7 +59,7 @@
     </init-param>
     <init-param>
       <param-name>tempdir</param-name>
-      <param-value>/var/cache/print</param-value>
+      <param-value>${print_temp_dir}</param-value>
     </init-param>
   </servlet>
   <servlet-mapping>
