@@ -16,6 +16,7 @@ GeoAdmin Examples
 - `Rectangle selection <../examples/geoadmin_rectangle.html>`_
 - `Searchbox <../examples/geoadmin_search.html>`_
 - `Catalog <../examples/geoadmin_catalog.html>`_
+- `Localisation <../examples/geoadmin_localisation.html>`_
 
 OpenLayers Examples
 -------------------
