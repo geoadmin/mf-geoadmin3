@@ -11,10 +11,12 @@ var runTest = function(cap, driver, target){
   //Goto the travis deployed site.
   driver.get(target);
   //type in "Bern" into the search field.
-  driver.findElement(webdriver.By.xpath("//*[@type='search']")).sendKeys('Bern');
+  driver.findElement(webdriver.By.xpath("//*[@type='search']")).sendKeys('Bern').then(function() {
+    driver.sleep(3000);
+  });
   //Click on the field "Bern (BE)"
   driver.findElement(webdriver.By.xpath("//*[contains(text(), 'Bern (BE)')]")).click().then(function(){
-    driver.sleep(5000);
+    driver.sleep(3000);
     //The first test does not have to work on IE 9
     if(!(cap.browser == "IE" && cap.browser_version == "9.0")){
 
