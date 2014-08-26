@@ -8,9 +8,6 @@
       <div translate>{{tool.title}}</div>
     </button>
   </div>
-  <div class="ga-draw-instructions" ng-if="aToolIsActive()">
-    {{options.instructions | translate}}
-  </div>
 
   <div class="ga-draw-modify" ng-if="aToolIsActive()">
     <div ng-if="options.isTextActive || useTextStyle">
@@ -44,5 +41,18 @@
     <div ng-if="options.isModifyActive">
       <button class="btn btn-default" ng-click="deleteFeatures()" translate>draw_delete_selected_features</button>
     </div>
+
   </div>
+
+  <div ng-if="supportKmlExport">
+    <button class="btn btn-default pull-right"
+            ng-disabled="!canExport()"
+            ng-click="exportKml()"
+            translate>export_kml
+    </button>
+  </div>
+  <div class="pull-right" ng-if="!supportKmlExport" translate>
+    export_kml_notsupported
+  </div>
+
 </div>

@@ -262,6 +262,9 @@
   "offline_less_than_95": "",
   "offline_no_cacheable_layers": "",
   "offline_clear_db_error": "",
-  "appcache_update_available": ""
-
+  "appcache_update_available": "",
+  "attach_drawing_kml": "",
+  "export_kml": "",
+  "export_kml_notsupported": "",
+  "kml_no_text_elements": ""
 }

@@ -94,7 +94,7 @@
        }
        })();
       </script>
-      <script src="${versionslashed}lib/angularIE9CorsFix.js"></script>
+      <script src="${versionslashed}lib/IE9Fixes.js"></script>
       <script>
         IE9Fix.call(this);
       </script>
@@ -429,6 +429,7 @@
             </div>
             <div class="modal-body">
               <div ga-feedback
+                ga-feedback-map="map"
                 ga-feedback-options="options"
                 ga-feedback-response="response"></div>
             </div>
@@ -571,7 +572,7 @@
     <!-- in source, we need to load it here because IE9 ignores it in
          the comments for reasons unknown to me. In prod, it's only
          loaded in IE9 -->
-    <script src="lib/angularIE9CorsFix.js"></script>
+    <script src="lib/IE9Fixes.js"></script>
     <script>
       //This call only affects browser <= IE9
       IE9Fix.call(this);
@@ -592,7 +593,8 @@
     <script src="lib/EPSG32632.js"></script>
     <script src="lib/fastclick.js"></script>
     <script src="lib/localforage.js"></script>
- 
+    <script src="lib/filesaver.js"></script>
+
     <!-- Use Closure to load the application scripts -->
     <script>
       window.CLOSURE_NO_DEPS = true;

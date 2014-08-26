@@ -2,10 +2,12 @@
   goog.provide('ga_measure_directive');
 
   goog.require('ga_debounce_service');
+  goog.require('ga_export_kml_service');
   goog.require('ga_map_service');
 
   var module = angular.module('ga_measure_directive', [
     'ga_debounce_service',
+    'ga_export_kml_service',
     'ga_map_service'
   ]);
 
@@ -49,7 +51,7 @@
 
   module.directive('gaMeasure',
     function($document, $rootScope, gaDebounce, gaDefinePropertiesForLayer,
-        gaLayerFilters) {
+        gaLayerFilters, gaExportKml) {
       return {
         restrict: 'A',
         templateUrl: function(element, attrs) {
@@ -284,6 +286,16 @@
           var updateProfileDebounced = gaDebounce.debounce(updateProfile, 500,
               false);
 
+          scope.supportKmlExport = gaExportKml.canSave();
+
+          scope.exportKml = function() {
+            gaExportKml.createAndDownload(layer,
+                                          scope.map.getView().getProjection());
+          };
+
+          scope.canExport = function() {
+            return layer.getSource().getFeatures().length > 0;
+          };
 
           // Watchers
           scope.$watch('isActive', function(active) {
