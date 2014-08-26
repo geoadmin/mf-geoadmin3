@@ -5,5 +5,5 @@
     <tr><td class="cell-left">${_('tilenumber')}</td> <td>${c['featureId'] or '-'}</td></tr>
     <tr><td class="cell-left">${_('sheetname')}</td> <td>${c['attributes']['kbbez']}</td></tr>
     <tr><td class="cell-left">${_('Datenstand')}</td> <td>${int(round(c['attributes']['datenstand'])) or '-'}</td></tr>
-	  <tr><td class="cell-left">${_('alexandria')}</td> <td><a href="http://libraries.admin.ch/cgi-bin/gwalex/chameleon?function=INITREQ&SourceScreen=NOFUNC&skin=portal&search=FREEFORM&u1=0&t1=aw%3Abv80035759+%26+t%3A${c['attributes']['kbbez']|h,trim}&op1=AND&u2=0&t2=&op2=AND&u3=0&t3=&lng=de&conf=.%2Fchameleon.conf&pos=1&host=biblio.admin.ch+3606+DEFAULT&sortby=pubti&sortdirection=0" target="_blank">${c['attributes']['kbbez']|h,trim}</a></td></tr>
+    <tr><td class="cell-left">${_('alexandria')}</td> <td><a href="http://www.alexandria.ch/primo_library/libweb/action/dlSearch.do?institution=BIG&vid=ALEX&scope=default_scope&query=lsr07,contains,${c['attributes']['bv_nummer']}" target="_blank" >${c['attributes']['kbbez'] or '-'}</a></td>
 </%def>
