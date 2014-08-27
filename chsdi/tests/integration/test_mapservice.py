@@ -280,9 +280,9 @@ class TestMapServiceView(TestsBase):
         DBSession = scoped_session(sessionmaker())
         # define the value to avoid pep troubles
         valnone = None
-        valfalse = False
+        valtrue = True
         # Get a list of all layers in prod, exclude sub-layers
-        query = DBSession.query(distinct(LayersConfig.layerBodId)).filter(LayersConfig.staging == 'prod').filter(LayersConfig.parentLayerId == valnone).filter(LayersConfig.background == valfalse)
+        query = DBSession.query(distinct(LayersConfig.layerBodId)).filter(LayersConfig.staging == 'prod').filter(LayersConfig.parentLayerId == valnone).filter(LayersConfig.hasLegend == valtrue)
         layers = [q[0] for q in query]
         DBSession.close()
 
@@ -305,7 +305,7 @@ class TestMapServiceView(TestsBase):
         DBSession = scoped_session(sessionmaker())
         valnone = None
         valtrue = True
-        query = DBSession.query(distinct(LayersConfig.layerBodId)).filter(LayersConfig.staging == 'prod').filter(LayersConfig.parentLayerId == valnone).filter(LayersConfig.hasLegend == valtrue).filter(LayersConfig.background != valtrue)
+        query = DBSession.query(distinct(LayersConfig.layerBodId)).filter(LayersConfig.staging == 'prod').filter(LayersConfig.parentLayerId == valnone).filter(LayersConfig.hasLegend == valtrue)
         # Get a list of all the queryable layers
         layers = [q[0] for q in query]
         DBSession.close()
