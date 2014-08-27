@@ -20,13 +20,19 @@ API & applications
 `API <//api3.geo.admin.ch>`__
 '''''''''''''''''''''''''''''
 
+- New localisation API example
+- Added documentation specific to CMS integration of our API
+- Compress content of API loader for faster loading
 - Multiple bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_140820...r_140827>`__
 
 
 `MAP <//map.geo.admin.ch>`__
 '''''''''''''''''''''''''''''
 
+- Beautification of feedback window
 - Multiple bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_140820...r_140827>`__
 
 
 Geodata
@@ -50,12 +56,14 @@ API & applications
 '''''''''''''''''''''''''''''
 
 - Multiple bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_140814...r_140820>`__
 
 
 `MAP <//map.geo.admin.ch>`__
 '''''''''''''''''''''''''''''
 
 - Multiple bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_140813...r_140820>`__
 
 
 Geodata
@@ -85,6 +93,7 @@ API & applications
 - API Loader is now cached which improves loading time significanctly
 - Find service improved performance when using exact matching
 - Small bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_140730...r_140813>`__
 
 `MAP <//map.geo.admin.ch>`__
 '''''''''''''''''''''''''''''
@@ -92,6 +101,7 @@ API & applications
 - Last clicked popu now will stay on top of all other popups
 - Feedback now allows you to attach files to your message
 - Small bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_140730...r_140813>`__
 
 Geodata
 ********
@@ -115,12 +125,14 @@ API & applications
 - In Search, sort feature results by geolocation
 - Add new example: `Catalog <//api3.geo.admin.ch/examples/geoadmin_catalog.html>`__
 - JavaScript API now has the possibility to disable tooltips on the maps in runtime.
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_140717...r_140730>`__
 
 `MAP <//map.geo.admin.ch>`__
 '''''''''''''''''''''''''''''
 
 - Update sitemaps
 - New translations in Catalogs. Corresponds to GeoCat entries now.
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_140717...r_140730>`__
 
 Geodata
 ********
@@ -141,6 +153,7 @@ API & applications
 - Udpate documentation to include description of output parameters in services
 - Lubis tooltips and viewer now contains backlink to object in map
 - Add reverse geoconding on locations. Note: this service needs registering. `Read our terms <http://www.geo.admin.ch/internet/geoportal/de/home/services/geoservices/display_services/api_services/order_form.html>`__.
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/rel_140702...r_140717>`__
 
 `MAP <//map.geo.admin.ch>`__
 ''''''''''''''''''''''''''''
@@ -149,6 +162,7 @@ API & applications
 - Show wait cursor indicator during searches
 - Update popup contents on language change (Metadata and Help)
 - Close menu on start of application for smaller screens
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_140702...r_140717>`__
 
 Geodata
 *******
@@ -191,10 +205,12 @@ API & applications
 '''''''''''''''''''''''''''''
 
 - Minor bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_140625...r_140702>`__
 
 `MAP <//map.geo.admin.ch>`__
 ''''''''''''''''''''''''''''
 - Minor bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_140625...r_140702>`__
 
 Geodata
 ********
@@ -212,11 +228,13 @@ API & applications
 '''''''''''''''''''''''''''''
 
 - Minor bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r140618...r_140625>`__
 
 `MAP <//map.geo.admin.ch>`__
 ''''''''''''''''''''''''''''
 
 - Minor bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_140618...r_140625>`__
 
 Geodata
 ********
@@ -270,11 +288,13 @@ API & applications
 '''''''''''''''''''''''''''''
 
 - Minor bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_140611...r140618>`__
 
 `MAP <//map.geo.admin.ch>`__
 ''''''''''''''''''''''''''''
 
 - Minor bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_140612...r_140618>`__
 
 Geodata
 ********
