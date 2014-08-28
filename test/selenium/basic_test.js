@@ -9,7 +9,9 @@ var runTest = function(cap, driver, target){
   //We maximizse our window to be sure to be in full resolution
   driver.manage().window().maximize();
   //Goto the travis deployed site.
-  driver.get(target);
+  driver.get(target).then(function() {
+    driver.sleep(3000);
+  });
   //type in "Bern" into the search field.
   driver.findElement(webdriver.By.xpath("//*[@type='search']")).sendKeys('Bern').then(function() {
     driver.sleep(3000);
