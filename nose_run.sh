@@ -22,7 +22,7 @@ shift $((OPTIND-1))
 mv -f production.ini production.ini.bup
 mv -f development.ini development.ini.bup
 
-buildout/bin/buildout -c $conf_to_use install nosetest-ini && buildout/bin/nosetests
+buildout/bin/buildout -c $conf_to_use install nosetest-ini && buildout/bin/nosetests -e test_external_links
 
 rc=$?
 
