@@ -129,7 +129,7 @@ class Search(SearchValidation):
         index_name = 'layers_%s' % self.lang
         mapName = self.mapName if self.mapName != 'all' else ''
         # Whitelist hack
-        if mapName in ('api', 'api-free', 'api-notfree'):
+        if mapName in ('api'):
             topicFilter = 'api'
         else:
             topicFilter = '(%s | ech)' % mapName
