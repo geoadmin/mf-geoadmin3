@@ -35,8 +35,8 @@
           ('MSPointerEvent' in $window);
       var navigator = $window.navigator;
       var touchDevice = useTouchEvents ||
-          (('maxTouchPoints' in navigator) && navigator.maxTouchPoints > 0) ||
-          (('msMaxTouchPoints' in navigator) && navigator.msMaxTouchPoints > 0);
+          (('maxTouchPoints' in navigator) && navigator.maxTouchPoints > 1) ||
+          (('msMaxTouchPoints' in navigator) && navigator.msMaxTouchPoints > 1);
       var mobile = touchDevice && testSize(768);
       var p = gaPermalink.getParams();
       mobile = (mobile && p.mobile != 'false') || p.mobile == 'true';
