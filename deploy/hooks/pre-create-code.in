@@ -12,6 +12,6 @@ echo "running unit tests (wd: '$(pwd)')"
 
 buildout/bin/nosetests chsdi/tests/functional
 
-buildout/bin/nosetests # > /dev/null 2>&1
+buildout/bin/nosetests -e test_external_links # > /dev/null 2>&1
 
 exit $?
