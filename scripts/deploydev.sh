@@ -1,5 +1,7 @@
 #!/bin/bash
 
+T="$(date +%s)"
+
 #bail out on any error
 set -o errexit
 
@@ -40,4 +42,8 @@ if [ $CREATE_SNAPSHOT == 'true' ]; then
 else
   echo "NO Snapshot created. Specify '-s' parameter got create snapshot."
 fi
+
+T="$(($(date +%s)-T))"
+
+printf "Deploy time: %02d:%02d:%02d\n" "$((T/3600%24))" "$((T/60%60))" "$((T%60))"
 
