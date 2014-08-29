@@ -1,5 +1,7 @@
 #!/bin/bash
 
+T="$(date +%s)"
+
 # set correct umask to assure proper rights after build
 umask 0002
 
@@ -43,3 +45,6 @@ else
   echo "NO Snapshot created. Specify '-s' parameter got create snapshot."
 fi
 
+T="$(($(date +%s)-T))"
+
+printf "Deploy time: %02d:%02d:%02d\n" "$((T/3600%24))" "$((T/60%60))" "$((T%60))"
