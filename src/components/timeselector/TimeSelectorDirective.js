@@ -127,7 +127,7 @@
   );
 
   module.directive('gaTimeSelectorBt', function($rootScope, gaPermalink,
-      $translate) {
+      $translate, gaBrowserSniffer) {
     return {
       restrict: 'A',
       template: '<button ng-click="toggle($event)" ng-class="stateClass" ' +
@@ -141,13 +141,15 @@
 
         // Show the tooltip on mouse enter
         scope.onMouseEnter = function(event) {
-          elt.tooltip({
-            placement: 'left',
-            container: 'body',
-            title: function() {
-              return $translate('time_bt_enabled_tooltip');
-            }
-          });
+          if (!gaBrowserSniffer.mobile) {
+            elt.tooltip({
+              placement: 'left',
+              container: 'body',
+              title: function() {
+                return $translate('time_bt_enabled_tooltip');
+              }
+            });
+          }
         };
 
         // Hide the tooltip on mouse leave

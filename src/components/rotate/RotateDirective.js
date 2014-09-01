@@ -24,23 +24,13 @@
 
         var setButtonRotation = function(rotation) {
           var rotateString = 'rotate(' + rotation + 'deg)';
-          if (rotation == 0) {
-            scope.$apply(function() {
-              scope.stateClass = '';
-            });
-          } else {
-            scope.$apply(function() {
-              scope.stateClass = 'ga-rotate-enabled';
-            });
-          }
-          btnElt[0]['style']['-webkit-transform'] =
-            rotateString;
-          btnElt[0]['style']['-moz-transform'] =
-            rotateString;
-          btnElt[0]['style']['-ms-transform'] =
-            rotateString;
-          btnElt[0]['style']['transform'] =
-            rotateString;
+          scope.$apply(function() {
+            scope.stateClass = (rotation == 0) ? '' : 'ga-rotate-enabled';
+          });
+          btnElt.css('-webkit-transform', rotateString);
+          btnElt.css('-moz-transform', rotateString);
+          btnElt.css('-ms-transform', rotateString);
+          btnElt.css('transform', rotateString);
         };
 
         // Button is rotated according to map rotation
