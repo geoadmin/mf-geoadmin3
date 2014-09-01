@@ -2321,49 +2321,38 @@ msgstr "Cantone"
 msgid "geobasisdatensatz"
 msgstr "ID geodati di base"
 
-#. TODO
 msgid "geocover_azimut"
-msgstr "geocover_azimut"
+msgstr "Orientation"
 
-#. TODO
 msgid "geocover_basisdatensatz"
-msgstr "geocover_basisdatensatz"
+msgstr "Base des données"
 
-#. TODO
 msgid "geocover_depth"
-msgstr "geocover_depth"
+msgstr "Profondeur [m]"
 
-#. TODO
 msgid "geocover_depth_1"
-msgstr "geocover_depth_1"
+msgstr "Profondeur 1 [m]"
 
-#. TODO
 msgid "geocover_depth_2"
-msgstr "geocover_depth_2"
+msgstr "Profondeur 2 [m]"
 
-#. TODO
 msgid "geocover_description"
-msgstr "geocover_description"
+msgstr "Ojet"
 
-#. TODO
 msgid "geocover_description_1"
-msgstr "geocover_description_1"
+msgstr "Formation 1"
 
-#. TODO
 msgid "geocover_description_2"
-msgstr "geocover_description_2"
+msgstr "Formation 2"
 
-#. TODO
 msgid "geocover_dip"
-msgstr "geocover_dip"
+msgstr "Valeur du plongement"
 
-#. TODO
 msgid "geocover_spec_description"
-msgstr "geocover_spec_description"
+msgstr "Caractérisation"
 
-#. TODO
 msgid "geocover_tecto"
-msgstr "geocover_tecto"
+msgstr "Unité tectonique"
 
 msgid "geol_f"
 msgstr "Unità"
