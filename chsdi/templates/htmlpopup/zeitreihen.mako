@@ -22,6 +22,6 @@
     <td>${c['attributes']['release_year'] or '-'}</td></tr>
   <tr>
     <td class="cell-left">${_('blattbezeichnung')}</td>
-    <td><a target="_blank" href="http://opac.admin.ch/cgi-bin/gwalex/chameleon?function=INITREQ&SourceScreen=NOFUNC&skin=portal&search=FREEFORM&u1=0&t1=aw%3A${c['attributes']['bv_nummer']}&op1=AND&u2=0&t2=&op2=AND&u3=0&t3=&lng=de&conf=.%2Fchameleon.conf&pos=1&host=biblio.admin.ch+3606+DEFAULT&sortby=pubti&sortdirection=0">${c['attributes']['kbbez'] or '-'}</a></td>
+    <td><a target="_blank" href="http://www.alexandria.ch/primo_library/libweb/action/dlSearch.do?institution=BIG&vid=ALEX&scope=default_scope&query=lsr07,contains,${c['attributes']['bv_nummer']}">${c['attributes']['kbbez'] or '-'}</a></td>
   </tr>
 </%def>
