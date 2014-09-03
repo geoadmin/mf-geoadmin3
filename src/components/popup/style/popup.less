@@ -9,9 +9,9 @@
   min-height: 100px;
   max-height: @ga-popup-max-height;
   z-index: 2000;
-  
+
   /* !important is used to override (and so deactivate) draggable styles
-  and specific popups styles */ 
+  and specific popups styles */
   &.ga-popup-reduced {
     position: relative!important;
     float: left!important;
@@ -28,7 +28,7 @@
     right: auto!important; // for IE
     z-index: 500;
     .transition(bottom 1s ease);
-    
+
     h4, i, button {
       color: white;
     }
@@ -66,13 +66,13 @@
     position: fixed !important;
     overflow: hidden;
   }
-  
+
   .ga-popup-content {
     overflow: auto;
     max-width: inherit;
     max-height: (@ga-popup-max-height - 60);
     font-size: 12px;
-    
+
     @media (max-width: @screen-tablet) {
       position: absolute;
       top: 36px;
@@ -83,7 +83,7 @@
       overflow-y: auto;
     }
   }
-  
+
   .ga-popup-print, .ga-popup-help, .ga-popup-reduce, .ga-popup-close {
     float: right;
     cursor: pointer;
@@ -103,7 +103,7 @@
     &:hover {
       opacity: 1;
     }
-     
+
     @media (max-width: @screen-tablet) {
       font-size: 18px;
     }
