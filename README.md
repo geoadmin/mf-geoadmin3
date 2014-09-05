@@ -65,9 +65,16 @@ this to work, you need to make sure to install the following dependencies:
     sudo apt-get install python-software-properties 
     sudo add-apt-repository ppa:chris-lea/node.js 
     sudo apt-get update
-    sudo apt-get install make gcc+ git unzip openjdk-6-jre openjdk-6-jdk g++
-    nodejs python-virtualenv
+    sudo apt-get install make gcc+ git unzip openjdk-6-jre openjdk-6-jdk g++ npm python-virtualenv
     npm install phantomjs
+
+### Caveats
+
+You might get an error similar to:
+    /usr/bin/env: node: No such file or directory
+This can be fixed by running:
+    sudo ln -s /usr/bin/nodejs /usr/bin/node 
+    #see https://github.com/joyent/node/issues/3911
 
 # Automated tests
 
