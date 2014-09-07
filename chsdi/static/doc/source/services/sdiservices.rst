@@ -137,10 +137,10 @@ Here is an example of response.
 
 Here is a description of the data one can find in the above response.
 
-- **layers**: a list of object litterals representing the layers
+- **layers**: a list of object literals representing the layers
 
   - **name**: the name of the layer (short name less than 30 characters)
-  - **fullName**: the layer's full name (not necessarly different from name)
+  - **fullName**: the layer's full name (not necessarily different from name)
   - **idGeoCat**: the associated metadata id in `GeoCat  <http://www.geocat.ch/geonetwork/srv/eng/geocat>`_
   - **layerBodId**: the technical name or BOD id
 - **attributes**: the metadata attributes associated to a given layer
@@ -271,7 +271,7 @@ No more than 50 features can be retrieved per request.
 |                                   | esriGeometryPoint or esriGeometryPolyline or esriGeometryPolygon or esriGeometryEnvelope. |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | **layers (optional)**             | The layers to perform the identify operation on. Per default query all the layers in the  |
-|                                   | GeoAdmin API. Notation: all:"comma separated list of techincal layer names".              |
+|                                   | GeoAdmin API. Notation: all:"comma separated list of technical layer names".              |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | **mapExtent (required)**          | The extent of the map. (minx, miny, maxx, maxy).                                          |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
@@ -280,7 +280,7 @@ No more than 50 features can be retrieved per request.
 |                                   | the distance on the map to search based on the tolerance in screen pixels.                |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | **tolerance (required)**          | The tolerance in pixels around the specified geometry. This parameter is used to create   |
-|                                   | a buffer around the geometry. Therefore, a tolerance of 0 deactivatees the buffer         |
+|                                   | a buffer around the geometry. Therefore, a tolerance of 0 deactivates the buffer         |
 |                                   | creation.                                                                                 |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | **returnGeometry (optional)**     | This parameter defines whether the geometry is returned or not. Default to "true".        |
@@ -484,7 +484,7 @@ The search service is separated in 4 various categories or types:
   * All names as printed on the national map (`SwissNames <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/products/landscape/toponymy.html>`_)
   * The districts
   * The ZIP codes
-  * The addresses (!! the swiss cantons only allow websites of the federal governement to use the addresses search service !!)
+  * The addresses (!! the Swiss cantons only allow websites of the federal government to use the addresses search service !!)
   * The cadastral parcels
 * The **layer search** wich enables the search of layers belonging to the GeoAdmin API.
 * The **feature search** which is used to search through features descriptions. Note: you can also specify a bounding box to filter the features. (`Searchable layers <../../../api/faq/index.html#which-layers-are-searchable>`_)
@@ -852,7 +852,7 @@ or https://wmts1.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/201104
 OWSChecker: check conformity with ech-0056
 ------------------------------------------
 
-This service check the conformity of various OGC services with the swiss ech-0056 profile.
+This service check the conformity of various OGC services with the Swiss ech-0056 profile.
 See the :doc:`OWSChecker Documentation <owschecker/index>` and the :doc:`OWSChecker User Guide <owschecker/user_guide>` for more details.
 
 URL
@@ -888,7 +888,7 @@ A JSON file containing all the tests and their status OR an html page.
 Example
 *******
 
-- Check WMS with swiss ech-0056 profile (xml): `https://api3.geo.admin.ch/owschecker/bykvp?base_url=http%3A%2F%2Fwms.zh.ch%2Fupwms&service=WMS <../../../owschecker/bykvp?base_url=http%3A%2F%2Fwms.zh.ch%2Fupwms&service=WMS>`_ 
-- Check WMS with swiss ech-0056 profile (html): `https://api3.geo.admin.ch/owschecker/form?base_url=http%3A%2F%2Fwms.zh.ch%2Fupwms&service=WMS <../../../owschecker/form?base_url=http%3A%2F%2Fwms.zh.ch%2Fupwms&service=WMS>`_
-- Check WMTS with swiss ech-0056 profile (xml): `https://api3.geo.admin.ch/owschecker/bykvp?base_url=http%3A%2F%2Ftile1-sitn.ne.ch%2Fmapproxy%2Fservice&service=WMTS <../../../owschecker/bykvp?base_url=http%3A%2F%2Ftile1-sitn.ne.ch%2Fmapproxy%2Fservice&service=WMTS>`_
-- Check WMTS with swiss ech-0056 profile (html): `https://api3.geo.admin.ch/owschecker/form?base_url=http%3A%2F%2Ftile1-sitn.ne.ch%2Fmapproxy%2Fservice&service=WMTS <../../../owschecker/form?base_url=http%3A%2F%2Ftile1-sitn.ne.ch%2Fmapproxy%2Fservice&service=WMTS>`_
+- Check WMS with Swiss ech-0056 profile (xml): `https://api3.geo.admin.ch/owschecker/bykvp?base_url=http%3A%2F%2Fwms.zh.ch%2Fupwms&service=WMS <../../../owschecker/bykvp?base_url=http%3A%2F%2Fwms.zh.ch%2Fupwms&service=WMS>`_ 
+- Check WMS with Swiss ech-0056 profile (html): `https://api3.geo.admin.ch/owschecker/form?base_url=http%3A%2F%2Fwms.zh.ch%2Fupwms&service=WMS <../../../owschecker/form?base_url=http%3A%2F%2Fwms.zh.ch%2Fupwms&service=WMS>`_
+- Check WMTS with Swiss ech-0056 profile (xml): `https://api3.geo.admin.ch/owschecker/bykvp?base_url=http%3A%2F%2Ftile1-sitn.ne.ch%2Fmapproxy%2Fservice&service=WMTS <../../../owschecker/bykvp?base_url=http%3A%2F%2Ftile1-sitn.ne.ch%2Fmapproxy%2Fservice&service=WMTS>`_
+- Check WMTS with Swiss ech-0056 profile (html): `https://api3.geo.admin.ch/owschecker/form?base_url=http%3A%2F%2Ftile1-sitn.ne.ch%2Fmapproxy%2Fservice&service=WMTS <../../../owschecker/form?base_url=http%3A%2F%2Ftile1-sitn.ne.ch%2Fmapproxy%2Fservice&service=WMTS>`_

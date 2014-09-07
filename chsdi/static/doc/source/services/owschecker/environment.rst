@@ -28,7 +28,7 @@ Development
     * ``ssh -Av ckarrie@ssh0.bgdi.admin.ch``
     * ``ssh ckarrie@mf1t.bgdi.admin.ch``
 
-    or with seperate Identity File:
+    or with separate Identity File:
 
     .. note:: chmod 0600 to files first
 
