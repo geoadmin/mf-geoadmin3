@@ -9,6 +9,33 @@ Release Notes
 =============
 .. _releasenotes:
 
+.. _releasenotes_20140908:
+
+Release 20140908 - Monday, September 8th 2014
+-----------------------------------------------
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_140827...r_140908>`__
+
+`MAP <//map.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_140827...r_140908>`__
+
+Geodata
+********
+
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Geocover <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-geocover>`__ (ch.swisstopo.geologie-geocover)                                                                                            |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
 .. _releasenotes_20140827:
 
 Release 20140827 - Wednesday, August 27th 2014
