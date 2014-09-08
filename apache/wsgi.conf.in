@@ -108,3 +108,13 @@ WSGIScriptAliasMatch ^${apache_entry_path}/ ${buildout:directory/buildout/parts/
 
 # kml file downloads
 AliasMatch ^${apache_entry_path}/kml/(map\.geo\.admin\.ch_KML_\d+\.kml)$ ${print_temp_dir}/kml/$1
+
+# static downloads from zadara
+<Directory ${vars:zadara_dir}>
+    AllowOverride None
+    Order allow,deny
+    Allow from all
+</Directory>
+
+# Zadara downloads
+AliasMatch ^${apache_entry_path}/downloads/ch.(.*)$ ${vars:zadara_dir}ch.$1

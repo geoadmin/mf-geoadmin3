@@ -36,11 +36,14 @@ def make_agnostic(path):
         return path
 
 
-def make_api_url(request):
+def make_api_url(request, agnostic=False):
     base_path = request.registry.settings['apache_base_path']
     base_path = '' if base_path == 'main' else '/' + base_path
     host = request.host + base_path if 'localhost' not in request.host else request.host
-    return ''.join((request.scheme, '://', host))
+    if agnostic:
+        return ''.join(('//', host))
+    else:
+        return ''.join((request.scheme, '://', host))
 
 
 def check_url(url):
