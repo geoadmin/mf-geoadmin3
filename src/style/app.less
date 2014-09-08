@@ -2,6 +2,7 @@
 @import "font-awesome-3.2.1/less/font-awesome.less";
 @import "../components/map/style/map.less";
 @import "../components/geolocation/style/geolocation.less";
+@import "../components/rotate/style/rotate.less";
 @import "../components/print/style/print.less";
 @import "../components/scaleline/style/scaleline.less";
 @import "../components/attribution/style/attribution.less";
@@ -1054,5 +1055,16 @@ input[type=range] {
   cursor: pointer;
 }
 
-@import "print.less";
+// ***** Button group
+#buttongroup {
+  position: absolute;
+  top: unit(@header-height + @control-btns-top + @control-btn-next * 4 - @control-btn-space, px);
+  right: unit(@control-btns-right, px);
+  z-index: 1000;
 
+  @media screen and (max-width: @screen-tablet) {
+    top: unit(@small-header-height + @control-btns-top + @control-btn-next * 4 - @control-btn-space, px);
+  } 
+}
+
+@import "print.less";

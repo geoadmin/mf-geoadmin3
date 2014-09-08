@@ -1,13 +1,9 @@
 [ga-time-selector-bt] {
-  position: absolute;
-  top: 302px;
-  right: 7px;
-  z-index: 1000;
   
   button {  
     display: none;
-    width: 44px;
-    height: 44px;
+    width: unit(@control-btn-size, px);
+    height: unit(@control-btn-size, px);
     text-align: center;
     cursor: pointer;
     text-decoration: none;
@@ -15,17 +11,15 @@
     &.ga-time-selector-enabled {
       background: data-uri('time_black.png') no-repeat center center;
       display: block;
+      margin-top: unit(@control-btn-space, px);
     }
 
     &.ga-time-selector-active {
       background: data-uri('time_red.png') no-repeat center center;
       display: block;
+      margin-top: unit(@control-btn-space, px);
     }
   }
-
-  @media screen and (max-width: @screen-tablet) {
-    top: 260px;
-  } 
 }
 
 [ga-time-selector] {

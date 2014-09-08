@@ -217,7 +217,6 @@
 	"swisstopo_service_link_href": "http://www.swisstopo.admin.ch/internet/swisstopo/it/home.html",
 	"swisstopo_service_link_label": "www.swisstopo.admin.ch",
 	"third_party_data_warning": "Attenzione: questi dati provengono da terze parti. Il permalink usato fa riferimento probabilmente a dati di terze parti. Volete veramente caricare questi dati ?",
-	"time_bt_disabled_tooltip": "La visualizzazione storica dei dati è possibile solo con i layer storicizzati. Aggiungere un layer storicizzato per utilizzare questa funzione",
 	"time_bt_enabled_tooltip": "Questa funzione permette di attivare/disattivare la visualizzazione storica dei dati",
 	"title": "Titolo",
 	"tooltip": "Tooltip",
