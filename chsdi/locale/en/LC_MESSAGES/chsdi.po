@@ -1785,6 +1785,9 @@ msgstr "General Geological Map"
 msgid "ch.swisstopo.geologie-geocover.metadata"
 msgstr "Division GeoCover"
 
+msgid "ch.swisstopo.geologie-geocover"
+msgstr "ch.swisstopo.geologie-geocover"
+
 msgid "ch.swisstopo.geologie-geodaesie-bouguer_anomalien"
 msgstr "Bouguer anomalies"
 
@@ -2318,6 +2321,39 @@ msgstr "Canton"
 
 msgid "geobasisdatensatz"
 msgstr "Basic geodata ID"
+
+msgid "geocover_azimut"
+msgstr "Orientierung"
+
+msgid "geocover_basisdatensatz"
+msgstr "Datenbasis"
+
+msgid "geocover_depth"
+msgstr "Tiefe [m]"
+
+msgid "geocover_depth_1"
+msgstr "Tiefe 1 [m]"
+
+msgid "geocover_depth_2"
+msgstr "Tiefe 2 [m]"
+
+msgid "geocover_description"
+msgstr "Objekt"
+
+msgid "geocover_description_1"
+msgstr "Formation 1"
+
+msgid "geocover_description_2"
+msgstr "Formation 2"
+
+msgid "geocover_dip"
+msgstr "Einfallsswert"
+
+msgid "geocover_spec_description"
+msgstr "Spezifizerung"
+
+msgid "geocover_tecto"
+msgstr "Tektonische Einheit"
 
 msgid "geol_f"
 msgstr "Unit"

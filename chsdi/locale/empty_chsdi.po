@@ -4598,3 +4598,39 @@ msgstr ""
 
 msgid "ch.pronatura.url"
 msgstr ""
+
+msgid "ch.swisstopo.geologie-geocover"
+msgstr ""
+
+msgid "geocover_azimut"
+msgstr ""
+
+msgid "geocover_depth"
+msgstr ""
+
+msgid "geocover_depth_1"
+msgstr ""
+
+msgid "geocover_depth_2"
+msgstr ""
+
+msgid "geocover_description"
+msgstr ""
+
+msgid "geocover_description_1"
+msgstr ""
+
+msgid "geocover_description_2"
+msgstr ""
+
+msgid "geocover_dip"
+msgstr ""
+
+msgid "geocover_spec_description"
+msgstr ""
+
+msgid "geocover_tecto"
+msgstr ""
+
+msgid "geocover_basisdatensatz"
+msgstr ""
