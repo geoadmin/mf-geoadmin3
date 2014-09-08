@@ -280,7 +280,7 @@ No more than 50 features can be retrieved per request.
 |                                   | the distance on the map to search based on the tolerance in screen pixels.                |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | **tolerance (required)**          | The tolerance in pixels around the specified geometry. This parameter is used to create   |
-|                                   | a buffer around the geometry. Therefore, a tolerance of 0 deactivates the buffer         |
+|                                   | a buffer around the geometry. Therefore, a tolerance of 0 deactivates the buffer          |
 |                                   | creation.                                                                                 |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | **returnGeometry (optional)**     | This parameter defines whether the geometry is returned or not. Default to "true".        |
