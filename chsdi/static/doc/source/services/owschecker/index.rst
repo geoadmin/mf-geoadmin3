@@ -11,7 +11,7 @@ OWS Checker documentation
 
 Hi. This is the documentation of the OWS Checker.
 
-The first developement was done in the Bachelor Thesis `Konformitätsprüfung nach eCH-0056` by `Christian Karrie` and `Michel Würsten` in 2010 
+The first development was done in the Bachelor Thesis `Konformitätsprüfung nach eCH-0056` by `Christian Karrie` and `Michel Würsten` in 2010 
 at the `FHNW Nordwestschweiz <http://www.fhnw.ch>`_ and improved for production by a team of the `Institute of Geomatics Engineering <http://www.fhnw.ch/habg/ivgi/>`_ at 
 `University of Applied Sciences and Arts Northwestern Switzerland <http://www.fhnw.ch>`_ in 2012.
 

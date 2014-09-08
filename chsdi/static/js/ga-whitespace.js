@@ -1969,10 +1969,10 @@ ga.Lang.format = function(template, context, args) {
   };
   return template.replace(/\$\{([\w.]+?)\}/g, replacer)
 };
-ga.Lang.de = {"Geocoding results":"Geokodierung Ergebnisse", "Zoom in":"Zoom in", "Zoom out":"Zoom out", "Reset rotation":"Rotation zur\u00fccksetzen"};
+ga.Lang.de = {"Geocoding results":"Geokodierung Ergebnisse", "Zoom in":"Vergr\u00f6ssern", "Zoom out":"Verkleinern", "Reset rotation":"Rotation zur\u00fccksetzen"};
 ga.Lang.en = {"Geocoding results":"Geocoding results", "Zoom in":"Zoom in", "Zoom out":"Zoom out", "Reset rotation":"Reset rotation"};
-ga.Lang.fr = {"Geocoding results":"R\u00e9sultat du g\u00e9ocodage", "Zoom in":"Zoom in", "Zoom out":"Zoom out", "Reset rotation":"Annuler la rotation"};
-ga.Lang.it = {"Geocoding results":"Risultati geocoding", "Zoom in":"Zoom in", "Zoom out":"Zoom out", "Reset rotation":"Annullare la rotazione"};
+ga.Lang.fr = {"Geocoding results":"R\u00e9sultat du g\u00e9ocodage", "Zoom in":"Zoom avant", "Zoom out":"Zoom arri\u00e8re", "Reset rotation":"Annuler la rotation"};
+ga.Lang.it = {"Geocoding results":"Risultati geocoding", "Zoom in":"Zoom avanti", "Zoom out":"Zoom indietro", "Reset rotation":"Annullare la rotazione"};
 ga.Lang.rm = {"Geocoding results":"Rezultatele geocodare", "Zoom in":"Zoom in", "Zoom out":"Zoom out", "Reset rotation":"Rotaziun reinizialisar"};
 goog.provide("goog.debug.Error");
 goog.debug.Error = function(opt_msg) {

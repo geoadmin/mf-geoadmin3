@@ -110,7 +110,7 @@ The following line creates a GeoAdmin layer:
 
   var layer = ga.layer.create('ch.swisstopo.pixelkarte-farbe');
   
-The following line creates an OpenLayers Map object. It is preconfigured with the swiss coordinate system.
+The following line creates an OpenLayers Map object. It is preconfigured with the Swiss coordinate system.
 
 .. code-block:: javascript
 
@@ -137,7 +137,7 @@ The next part of the Map object is the View. The view allow to specify the cente
     center: [670000, 160000]
   })
   
-You will notice that the center specified is in swiss coordinate system (EPSG:21781). 
+You will notice that the center specified is in Swiss coordinate system (EPSG:21781). 
 
 (Quickstart adapted of the `OpenLayers 3 Quickstart <http://ol3js.org/en/master/doc/quickstart.html>`_)
 

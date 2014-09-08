@@ -80,7 +80,7 @@ Structure
 * Node ``minVersion``: Minimal supported Version of Service
 * Node ``currVersion``: Current highest supported Version of Service
 * Node ``XML``: GetCapabilities XML Definition
-    * Node ``Endcoding``: Encoding of GetCapabilities document, default value is ``UTF-8``
+    * Node ``Encoding``: Encoding of GetCapabilities document, default value is ``UTF-8``
 * Nodes ``Version``: Version dependent Settings, Version String given by Attribute ``num``.
     * Nodes ``MIME``: Supported MIME-Types
     * Nodes ``Exception``: Supported Exception MIME-Types

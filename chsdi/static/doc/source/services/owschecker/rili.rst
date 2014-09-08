@@ -528,7 +528,7 @@ Checked and set in
         * "MetadataURL in layer <layer> found, but with type <type>."
         * "No MetadataURL in layer <layer> found"
     * ``layer``: Name of Layer
-    * ``type``: ``type``-Attribute given for ``MetadaraURL``-Element
+    * ``type``: ``type``-Attribute given for ``MetadataURL``-Element
 
 
 .. _rili-wms-07:
