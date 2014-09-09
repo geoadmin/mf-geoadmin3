@@ -5,10 +5,11 @@
 
   module.controller('GaPrintController',
     function($scope, gaGlobalOptions) {
-      var printPath = gaGlobalOptions.apiUrl + '/print'
+      var printPath = gaGlobalOptions.apiUrl + '/print';
+      var printCachedPath = gaGlobalOptions.cachedApiUrl + '/print';
       
       $scope.options = {
-        printConfigUrl: printPath + '/info.json?url=' +
+        printConfigUrl: printCachedPath + '/info.json?url=' +
             encodeURIComponent(printPath),
         legendUrl: gaGlobalOptions.apiUrl + '/static/images/legends/',
         qrcodeUrl: gaGlobalOptions.apiUrl + '/qrcodegenerator?url=',
