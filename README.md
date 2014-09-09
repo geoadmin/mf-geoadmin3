@@ -131,6 +131,10 @@ In order to reinitialize your project and remove unused eggs do the following co
 
 `buildout_cleaner.cfg` will move all the unused eggs into `buildout/old-eggs/`, remove all the `*.mo` translation files, uninstall all the templates and remove all the `*.pyc` files.
 
+If buildout failed previously, you might need to bootstrap the project again, use the following command after the buildout cleaner:
+
+    python bootstrap.py --version 1.5.2 --distribute --download-base http://pypi.camptocamp.net/distribute-0.6.22_fix-issue-227/ --setup-source http://pypi.camptocamp.net/distribute-0.6.22_fix-issue-227/distribute_setup.py
+
 # Python Code Styling
 
 We are currently using the PEP 8 convention for Python code.
