@@ -25,6 +25,8 @@ class LayersParams(MapServiceValidation):
         self.cbName = request.params.get('callback')
         self.lang = request.lang
         self.searchText = request.params.get('searchText')
+        # Not to be published in doc
+        self.chargeable = request.params.get('chargeable')
         self.geodataStaging = request.registry.settings['geodata_staging']
 
         self.translate = request.translate
@@ -36,6 +38,7 @@ def metadata(request):
     params = LayersParams(request)
     model = get_bod_model(params.lang)
     query = params.request.db.query(model)
+    query = _filter_on_chargeable_attr(params, query, model)
     if params.searchText is not None:
         query = full_text_search(
             query,
@@ -116,6 +119,13 @@ def _has_legend(layerId, lang):
     return os.path.exists(imageFullPath)
 
 
+def _filter_on_chargeable_attr(params, query, model):
+    ''' Filter on chargeable parameter '''
+    if params.chargeable is not None:
+        return query.filter(model.chargeable == params.chargeable)
+    return query
+
+
 def get_layer(query, model, layerId):
     ''' Returns exactly one layer or raises
     an exception. This function can be used with
@@ -138,7 +148,7 @@ def get_layers_metadata_for_params(params, query, model, layerIds=None):
     layer metadata dictionaries. '''
     query = filter_by_map_name(
         query,
-        model.maps,
+        model,
         params.mapName
     )
     query = filter_by_geodata_staging(
@@ -159,16 +169,11 @@ def get_layers_config_for_params(params, query, model, layerIds=None):
     ''' Returns a generator function that yields
     layer config dictionaries. '''
     model = LayersConfig
-    bgLayers = True
-    if params.mapName != 'all':
-        clauses = [model.maps.ilike('%%%s%%' % params.mapName), model.background == bgLayers]
-        # we also want to always include all 'ech' layers (except for api's)
-        if (params.mapName != 'api-notfree' and
-                params.mapName != 'api-free' and
-                params.mapName != 'api'):
-            clauses.append(model.maps.ilike('%%%s%%' % 'ech'))
-        query = query.filter(or_(*clauses))
-
+    query = filter_by_map_name(
+        query,
+        model,
+        params.mapName
+    )
     query = filter_by_geodata_staging(
         query,
         model.staging,
