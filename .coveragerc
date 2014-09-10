@@ -1,0 +1,4 @@
+[run]
+source = chsdi
+omit =
+    chsdi/tests/*
