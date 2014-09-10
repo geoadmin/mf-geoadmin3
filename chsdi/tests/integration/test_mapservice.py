@@ -300,7 +300,9 @@ class TestMapServiceView(TestsBase):
         try:
             for layer in getLayers(query):
                 for lang in ('de', 'fr', 'it', 'rm', 'en'):
-                    self.testapp.get('/rest/services/all/MapServer/%s/legend' % layer, params={'callback': 'cb', 'lang': '%s' % lang}, status=200)
+                    link = '/rest/services/all/MapServer/' + layer + '/legend?callback=cb&lang=' + lang
+                    resp = self.testapp.get(link)
+                    self.failUnless(resp.status_int == 200, link)
         finally:
             DBSession.close()
 
@@ -324,7 +326,7 @@ class TestMapServiceView(TestsBase):
         try:
             for layer in getLayers(query):
                 for lang in ('de', 'fr', 'it', 'rm', 'en'):
-                    self.failUnless((layer + '_' + lang) in legendImages)
+                    self.failUnless((layer + '_' + lang) in legendImages, layer + lang)
         finally:
             DBSession.close()
 
@@ -353,7 +355,9 @@ class TestMapServiceView(TestsBase):
 
         for f in features:
             for lang in ('de', 'fr', 'it', 'rm', 'en'):
-                self.testapp.get('/rest/services/all/MapServer/%s/%s/htmlPopup' % (f[0], f[1]), params={'callback': 'cb', 'lang': '%s' % lang}, status=200)
+                link = '/rest/services/all/MapServer/' + f[0] + '/' + f[1] + '/htmlPopup?callback=cb&lang=' + lang
+                resp = self.testapp.get(link)
+                self.failUnless(resp.status_int == 200, link)
 
     def test_layersconfig_valid(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/layersConfig', status=200)
