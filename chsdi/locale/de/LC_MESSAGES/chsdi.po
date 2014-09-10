@@ -1782,11 +1782,11 @@ msgstr "Eiszeitliches Maximum"
 msgid "ch.swisstopo.geologie-generalkarte-ggk200"
 msgstr "Geologische Generalkarte"
 
-msgid "ch.swisstopo.geologie-geocover.metadata"
-msgstr "Einteilung GeoCover"
-
 msgid "ch.swisstopo.geologie-geocover"
 msgstr "GeoCover"
+
+msgid "ch.swisstopo.geologie-geocover.metadata"
+msgstr "Einteilung GeoCover"
 
 msgid "ch.swisstopo.geologie-geodaesie-bouguer_anomalien"
 msgstr "Bouguer-Anomalien"
@@ -2139,7 +2139,7 @@ msgid "ch.swisstopo.verschiebungsvektoren-tsp2"
 msgstr "LV95 Verschiebungsvektoren TSP2"
 
 msgid "ch.swisstopo.zeitreihen"
-msgstr "Karten - Zeitreise"
+msgstr "Zeitreise - Kartenwerke"
 
 msgid "ch.tamedia"
 msgstr "tamedia"

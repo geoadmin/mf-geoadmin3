@@ -1782,11 +1782,11 @@ msgstr "Last glacial maximum"
 msgid "ch.swisstopo.geologie-generalkarte-ggk200"
 msgstr "General Geological Map"
 
+msgid "ch.swisstopo.geologie-geocover"
+msgstr "GeoCover"
+
 msgid "ch.swisstopo.geologie-geocover.metadata"
 msgstr "Division GeoCover"
-
-msgid "ch.swisstopo.geologie-geocover"
-msgstr "ch.swisstopo.geologie-geocover"
 
 msgid "ch.swisstopo.geologie-geodaesie-bouguer_anomalien"
 msgstr "Bouguer anomalies"
@@ -2139,7 +2139,7 @@ msgid "ch.swisstopo.verschiebungsvektoren-tsp2"
 msgstr "LV95 Displacement vectors TSP2"
 
 msgid "ch.swisstopo.zeitreihen"
-msgstr "Maps - Journay through time"
+msgstr "Journey through time - Maps"
 
 msgid "ch.tamedia"
 msgstr "tamedia"
@@ -2221,7 +2221,7 @@ msgid "einwohner_ha"
 msgstr "Einwohner pro ha"
 
 msgid "einwohnerzahl"
-msgstr "Einwohnerzahl"
+msgstr "Number of inhabitants"
 
 msgid "einwohnerzahl_b"
 msgstr "Einwohnerzahl (Bandbreite, nur für Siedl.)"
@@ -2332,10 +2332,10 @@ msgid "geocover_depth"
 msgstr "Tiefe [m]"
 
 msgid "geocover_depth_1"
-msgstr "Tiefe 1 [m]"
+msgstr "Tiefe 1[m]"
 
 msgid "geocover_depth_2"
-msgstr "Tiefe 2 [m]"
+msgstr "Tiefe 2[m]"
 
 msgid "geocover_description"
 msgstr "Objekt"
@@ -2347,13 +2347,13 @@ msgid "geocover_description_2"
 msgstr "Formation 2"
 
 msgid "geocover_dip"
-msgstr "Einfallsswert"
+msgstr "Einfallswert"
 
 msgid "geocover_spec_description"
-msgstr "Spezifizerung"
+msgstr "Spezifizierung"
 
 msgid "geocover_tecto"
-msgstr "Tektonische Einheit"
+msgstr "Unité tectonique"
 
 msgid "geol_f"
 msgstr "Unit"

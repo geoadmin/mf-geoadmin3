@@ -1782,11 +1782,11 @@ msgstr "Maximum dal temp da glatsch"
 msgid "ch.swisstopo.geologie-generalkarte-ggk200"
 msgstr "Geologische Generalkarte"
 
+msgid "ch.swisstopo.geologie-geocover"
+msgstr "GeoCover"
+
 msgid "ch.swisstopo.geologie-geocover.metadata"
 msgstr "Divisiun GeoCover"
-
-msgid "ch.swisstopo.geologie-geocover"
-msgstr "ch.swisstopo.geologie-geocover"
 
 msgid "ch.swisstopo.geologie-geodaesie-bouguer_anomalien"
 msgstr "Anomalias da Bouguer"
@@ -2139,7 +2139,7 @@ msgid "ch.swisstopo.verschiebungsvektoren-tsp2"
 msgstr "MN95 Vecturs spustament PST2"
 
 msgid "ch.swisstopo.zeitreihen"
-msgstr "Karten - Zeitreise"
+msgstr "Zeitreise - Kartenwerke"
 
 msgid "ch.tamedia"
 msgstr "tamedia"
@@ -2331,10 +2331,10 @@ msgid "geocover_depth"
 msgstr "Tiefe [m]"
 
 msgid "geocover_depth_1"
-msgstr "Tiefe 1 [m]"
+msgstr "Tiefe 1[m]"
 
 msgid "geocover_depth_2"
-msgstr "Tiefe 2 [m]"
+msgstr "Tiefe 2[m]"
 
 msgid "geocover_description"
 msgstr "Objekt"
@@ -2346,13 +2346,13 @@ msgid "geocover_description_2"
 msgstr "Formation 2"
 
 msgid "geocover_dip"
-msgstr "Einfallsswert"
+msgstr "Einfallswert"
 
 msgid "geocover_spec_description"
-msgstr "Spezifizerung"
+msgstr "Spezifizierung"
 
 msgid "geocover_tecto"
-msgstr "Tektonische Einheit"
+msgstr "Unité tectonique"
 
 msgid "geol_f"
 msgstr "Einheit"
@@ -4652,7 +4652,7 @@ msgid "zugang"
 msgstr "Zugang"
 
 msgid "zusatzinfo"
-msgstr "Zusatzinformation"
+msgstr "infurmaziun supplementara"
 
 msgid "zusziff"
 msgstr "PLZ6"
