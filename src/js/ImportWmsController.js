@@ -11,7 +11,7 @@
          defaultWMSList: [
            'http://wms.geo.admin.ch/',
            'http://ogc.heig-vd.ch/mapserver/wms?',
-           'http://www.wms.stadt-zuerich.ch/WMS-ZH-STZH-OGD/MapServer/WMSServer?',
+           'http://www.gis.stadt-zuerich.ch/maps/services/wms/WMS-ZH-STZH-OGD/MapServer/WMSServer?',
            'http://wms.geo.gl.ch/?',
            'http://mapserver1.gr.ch/wms/admineinteilung?',
            'http://mapserver1.gr.ch/wms/belastetestandorte?',
