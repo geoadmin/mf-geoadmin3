@@ -1782,11 +1782,11 @@ msgstr "Ultimo massimo glaciale"
 msgid "ch.swisstopo.geologie-generalkarte-ggk200"
 msgstr "Carta geologica generale"
 
+msgid "ch.swisstopo.geologie-geocover"
+msgstr "GeoCover"
+
 msgid "ch.swisstopo.geologie-geocover.metadata"
 msgstr "Divisione GeoCover"
-
-msgid "ch.swisstopo.geologie-geocover"
-msgstr "ch.swisstopo.geologie-geocover"
 
 msgid "ch.swisstopo.geologie-geodaesie-bouguer_anomalien"
 msgstr "Anomalia di Bouguer"
@@ -2139,7 +2139,7 @@ msgid "ch.swisstopo.verschiebungsvektoren-tsp2"
 msgstr "MN95 Vettori di spostamento PAT2"
 
 msgid "ch.swisstopo.zeitreihen"
-msgstr "Carte - Viaggio nel tempo"
+msgstr "Viaggio nel tempo - Carte"
 
 msgid "ch.tamedia"
 msgstr "tamedia"
@@ -2220,7 +2220,7 @@ msgid "einwohner_ha"
 msgstr "Population par ha"
 
 msgid "einwohnerzahl"
-msgstr "Nombre d’habitants"
+msgstr "Numero di abitanti"
 
 msgid "einwohnerzahl_b"
 msgstr "Nombre d’habitants (fourchette, seulement pour Siedl)"
@@ -2331,13 +2331,13 @@ msgid "geocover_depth"
 msgstr "Profondeur [m]"
 
 msgid "geocover_depth_1"
-msgstr "Profondeur 1 [m]"
+msgstr "Profondeur 1[m]"
 
 msgid "geocover_depth_2"
-msgstr "Profondeur 2 [m]"
+msgstr "Profondeur 2[m]"
 
 msgid "geocover_description"
-msgstr "Ojet"
+msgstr "Objet"
 
 msgid "geocover_description_1"
 msgstr "Formation 1"
@@ -2352,7 +2352,7 @@ msgid "geocover_spec_description"
 msgstr "Caractérisation"
 
 msgid "geocover_tecto"
-msgstr "Unité tectonique"
+msgstr "Tekonische Einheit"
 
 msgid "geol_f"
 msgstr "Unità"

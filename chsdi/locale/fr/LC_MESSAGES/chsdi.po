@@ -1179,7 +1179,7 @@ msgid "ch.bafu.oekomorphologie-f_abstuerze"
 msgstr "Ecomorphologie R - Seuils"
 
 msgid "ch.bafu.oekomorphologie-f_bauwerke"
-msgstr "Ecomorphologie R - Ouvrages"
+msgstr "Ecomorphologie R – Ouvrages"
 
 msgid "ch.bafu.permafrost"
 msgstr "Carte indicative du Pergélisol"
@@ -1608,10 +1608,10 @@ msgid "ch.blw.feldblockkarte"
 msgstr "Carte de blocs de parcelles"
 
 msgid "ch.blw.gewaesseranschlusskarte"
-msgstr "Surface en connexion des eaux"
+msgstr "Surface en connection des eaux"
 
 msgid "ch.blw.gewaesseranschlusskarte-direkt"
-msgstr "Surface en connexion élargie"
+msgstr "Surface en connection élargie"
 
 msgid "ch.blw.hang_steillagen"
 msgstr "Terrains en pente"
@@ -1782,11 +1782,11 @@ msgstr "Maximum glaciaire"
 msgid "ch.swisstopo.geologie-generalkarte-ggk200"
 msgstr "Carte géologique générale"
 
-msgid "ch.swisstopo.geologie-geocover.metadata"
-msgstr "Découpage GeoCover"
-
 msgid "ch.swisstopo.geologie-geocover"
 msgstr "GeoCover"
+
+msgid "ch.swisstopo.geologie-geocover.metadata"
+msgstr "Découpage GeoCover"
 
 msgid "ch.swisstopo.geologie-geodaesie-bouguer_anomalien"
 msgstr "Anomalies de Bouguer"
@@ -2067,7 +2067,7 @@ msgid "ch.swisstopo.transformationsgenauigkeit"
 msgstr "MN95 Précision de transformation"
 
 msgid "ch.swisstopo.treasurehunt"
-msgstr "Carte-trésor"
+msgstr "Carte-tresor"
 
 msgid "ch.swisstopo.url"
 msgstr "http://www.swisstopo.admin.ch/internet/swisstopo/fr/home.html"
@@ -2139,7 +2139,7 @@ msgid "ch.swisstopo.verschiebungsvektoren-tsp2"
 msgstr "MN95 Vecteurs de déformation PAT2"
 
 msgid "ch.swisstopo.zeitreihen"
-msgstr "Cartes - Voyage dans le temps"
+msgstr "Voyage dans le temps - Cartes"
 
 msgid "ch.tamedia"
 msgstr "tamedia"
@@ -2229,7 +2229,7 @@ msgid "einwohnerzahl_s"
 msgstr "Nombre d’habitants (seulement pour Siedl.)"
 
 msgid "energiebedarf_motoren"
-msgstr "Besoin énergétique des moteurs"
+msgstr "Besoin énergetique des moteurs"
 
 msgid "ent_gew"
 msgstr "Cours d'eau"
@@ -2241,7 +2241,7 @@ msgid "est"
 msgstr "Est"
 
 msgid "et_fromatt"
-msgstr "Anomalies aéromagnét. Plateau/Jura [nT]"
+msgstr "Anomalies aéromagnet. Plateau/Jura [nT]"
 
 msgid "et_fromatt_anom"
 msgstr "Anomalies isostatiques [mGal]"
@@ -2508,7 +2508,7 @@ msgid "ivs_documentation"
 msgstr "Documentation"
 
 msgid "ivs_gis"
-msgstr "(Objet dans IVS-SIG)"
+msgstr "(Object dans IVS-SIG)"
 
 msgid "ivs_name_objektes"
 msgstr "Nom de l'objet IVS"
@@ -2631,7 +2631,7 @@ msgid "kultur1112"
 msgstr "baptistères"
 
 msgid "kultur1113"
-msgstr "résidences épiscopales, évêchés"
+msgstr "résidences épiscopales, évêches"
 
 msgid "kultur112"
 msgstr "couvents, monastères, abbayes, prieurés, chartreuses"
@@ -2868,7 +2868,7 @@ msgid "kultur311"
 msgstr "gares ferroviaires"
 
 msgid "kultur3111"
-msgstr "postes de triage, postes d'aiguillage, dépôts, remises"
+msgstr "postes de triage, postes d'aiguillage, dépots, remises"
 
 msgid "kultur3112"
 msgstr "voies ferrées"
@@ -3147,10 +3147,10 @@ msgid "leistung"
 msgstr "Puissance"
 
 msgid "leistungsaufnahme_pumpen"
-msgstr "Besoin énergétique des moteurs"
+msgstr "Besoin énergetique des moteurs"
 
 msgid "leistungsaufnahme_pumpen"
-msgstr "Besoin énergétique des moteurs"
+msgstr "Besoin énergetique des moteurs"
 
 msgid "length_km"
 msgstr "Longueur [km]"
@@ -3300,7 +3300,7 @@ msgid "offizielpktnummer"
 msgstr "Numéro officiel du point"
 
 msgid "optionaler_name"
-msgstr "Nom optionnel"
+msgstr "Nom optionel"
 
 msgid "org.epsg.grid_21781"
 msgstr "Coordonnées CH1903/MN03"
@@ -3333,7 +3333,7 @@ msgid "pdf_url"
 msgstr "Téléchargement PDF"
 
 msgid "perimeter_m"
-msgstr "Périmètre [m]"
+msgstr "Perimètre [m]"
 
 msgid "physischvirtuell"
 msgstr "Physique-virtuel"
@@ -3405,7 +3405,7 @@ msgid "safety_zone"
 msgstr "Désignation"
 
 msgid "schiffbarkeit"
-msgstr "Navigabilité du cours d’eau"
+msgstr "Naviguabilité du cours d’eau"
 
 msgid "schonzeit"
 msgstr "Période de fermeture de la chasse"
@@ -3507,7 +3507,7 @@ msgid "tt_bakom_strong"
 msgstr "Forte"
 
 msgid "tt_bakom_veryweak"
-msgstr "Très faible"
+msgstr "Trés faible"
 
 msgid "tt_bakom_weak"
 msgstr "Faible"
@@ -3561,7 +3561,7 @@ msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_anfangsrechtswert"
 msgstr "Début du tronçon, valeur à droite [m]"
 
 msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_bemerkung"
-msgstr "Informations complémentaires et remarques"
+msgstr "Informations complémen-taires et remarques"
 
 msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_bewalgen"
 msgstr "Peuplement d’algues"
@@ -4191,13 +4191,13 @@ msgid "tt_kkw_contruction"
 msgstr "Construction"
 
 msgid "tt_kkw_cooling_type"
-msgstr "Type de refroidissement"
+msgstr "Type de réfroidissement"
 
 msgid "tt_kkw_decontamination"
 msgstr "Phase de décontamination"
 
 msgid "tt_kkw_dismantling"
-msgstr "Phase de démantèlement"
+msgstr "Phase de démantelement"
 
 msgid "tt_kkw_enforcement_1"
 msgstr "Organe législateur 1"
@@ -4212,10 +4212,10 @@ msgid "tt_kkw_gemeinde"
 msgstr "Commune"
 
 msgid "tt_kkw_grosseloutput"
-msgstr "Puissance électrique brute"
+msgstr "Puissance éléctrique brute"
 
 msgid "tt_kkw_license"
-msgstr "Licence d'exercice"
+msgstr "Licence d'éxercice"
 
 msgid "tt_kkw_life_phase"
 msgstr "Phase de vie"
@@ -4224,7 +4224,7 @@ msgid "tt_kkw_name"
 msgstr "Nom"
 
 msgid "tt_kkw_neteloutput"
-msgstr "Puissance électrique nette"
+msgstr "Puissance éléctrique nette"
 
 msgid "tt_kkw_nominalthermaloutput"
 msgstr "Puissance thermique nominale"
@@ -4236,7 +4236,7 @@ msgid "tt_kkw_operator"
 msgstr "Opérateur"
 
 msgid "tt_kkw_owner"
-msgstr "Propriétaire"
+msgstr "Proprietaire"
 
 msgid "tt_kkw_reactor_name"
 msgstr "Réacteur"
@@ -4338,7 +4338,7 @@ msgid "tt_measure_2"
 msgstr "Adresse (’kilométrage d’eau’)"
 
 msgid "tt_mq_jahr"
-msgstr "Débit moyen modélisé annuel [m3/s]"
+msgstr "Débit moyen modelisé annuel [m3/s]"
 
 msgid "tt_ngamapping_provider"
 msgstr "Provider"
