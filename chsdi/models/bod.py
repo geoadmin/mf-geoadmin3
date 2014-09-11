@@ -155,6 +155,7 @@ class GetCap(object):
     sswmts = Column('sswmts', Integer)
     bod_layer_id = Column('bod_layer_id', Text)
     topics = Column('topics', Text)
+    staging = Column('staging', Text)
     bezeichnung = Column('bezeichnung', Text)
     kurzbezeichnung = Column('kurzbezeichnung', Text)
     abstract = Column('abstract', Text)
