@@ -306,7 +306,7 @@
                  }
                  return false;
               };
-
+              var selectedVal, searchTextUrl;
               var typeAheadDatasets = [
                 {
                   header: locationsHeaderTemplate,
@@ -321,6 +321,10 @@
                     url: gaUrlUtils.append(options.searchUrl,
                         'type=locations'),
                     beforeSend: function(jqXhr, settings) {
+                      // Prevent extra request from being sent on selection
+                      if (selectedVal === searchTextUrl) {
+                        return false;
+                      }
                       // Check url
                       if (gaUrlUtils.isValid(scope.query)) {
                         gaKml.addKmlToMapForUrl(map,
@@ -349,6 +353,7 @@
                       return !position;
                     },
                     replace: function(url, searchText) {
+                      searchTextUrl = decodeURIComponent(searchText);
                       var queryText = '&searchText=' + searchText;
                       var lang = '&lang=' + $translate.uses();
                       url = options.applyTopicToUrl(url,
@@ -379,6 +384,10 @@
                     url: gaUrlUtils.append(options.searchUrl,
                         'type=featuresearch'),
                     beforeSend: function(jqXhr, settings) {
+                      // Prevent extra request from being sent on selection
+                      if (selectedVal === searchTextUrl) {
+                        return false;
+                      }
                       scope.$apply(function() {
                         scope.layers = map.getLayers().getArray();
                       });
@@ -391,6 +400,7 @@
                       return true;
                     },
                     replace: function(url, searchText) {
+                      searchTextUrl = decodeURIComponent(searchText);
                       var queryText = '&searchText=' + searchText;
                       var bbox = '&bbox=' + getBBoxParameters(map);
                       var lang = '&lang=' + $translate.uses();
@@ -440,6 +450,10 @@
                   remote: {
                     url: options.searchUrl + 'type=layers',
                     beforeSend: function(jqXhr, settings) {
+                      // Prevent extra request from being sent on selection
+                      if (selectedVal === searchTextUrl) {
+                        return false;
+                      }
                       if (gaGetCoordinate(
                             map.getView().getProjection().getExtent(),
                             scope.query)) {
@@ -451,6 +465,7 @@
                       return true;
                     },
                     replace: function(url, searchText) {
+                      searchTextUrl = decodeURIComponent(searchText);
                       var queryText = '&searchText=' + searchText;
                       var lang = '&lang=' + $translate.uses();
                       url = options.applyTopicToUrl(url,
@@ -487,6 +502,8 @@
               });
               taElt.typeahead(typeAheadDatasets)
                 .on('typeahead:selected', function(event, datum) {
+                  selectedVal = datum.inputVal;
+
                   var origin = datum.attrs.origin;
                   gaMarkerOverlay.remove(map);
                   scope.removePreviewLayer();
