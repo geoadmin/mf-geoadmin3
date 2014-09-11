@@ -34,7 +34,7 @@ requires = [
     'OWSLib',
     'MapProxy',
     'qrcode',
-    'sphinx_rtd_theme',
+    'sphinx_rtd_theme==0.1.6-ga3',
     ]
 
 setup(name='chsdi',

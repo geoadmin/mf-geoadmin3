@@ -2,7 +2,7 @@
 
   <head>
     <link href="../_static/custom.css" rel="stylesheet" type="text/css" />
-   </head>
+  </head>
 
 API Doc
 =======
