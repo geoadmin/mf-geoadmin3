@@ -24,11 +24,18 @@ class WMTSCapabilites(MapNameValidation):
         scheme = self.request.headers.get(
             'X-Forwarded-Proto',
             self.request.scheme)
+        staging = self.request.registry.settings['geodata_staging']
+
         request_uri = self.request.environ.get("REQUEST_URI", "")
         onlineressource = "%s://wmts.geo.admin.ch" % scheme if request_uri\
             .find("1.0.0") else "%s://api.geo.admin.ch/wmts" % scheme
 
         layers_query = self.request.db.query(self.models['GetCap'])
+        layers_query = filter_by_geodata_staging(
+            layers_query,
+            self.models['GetCap'].staging,
+            staging
+        )
         if self.mapName != 'all':
             layers_query = filter_by_map_name(layers_query, self.models['GetCap'], self.mapName)
         layers = layers_query.all()
