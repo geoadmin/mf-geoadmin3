@@ -39,7 +39,7 @@
       #map {
         width: 720px;
         height: 400px;
-        top: 360px;
+        top: 25px;
         margin: 10px;
       }
       .twitter-typeahead {
@@ -112,7 +112,7 @@
             controls: ol.control.defaults({
               attribution: false
             }),
-            renderer: ol.RendererHint.CANVAS,
+            renderer: 'canvas',
             view: new ol.View2D({
               projection: swissProjection,
               center: ol.extent.getCenter(swissExtent),
@@ -131,7 +131,7 @@
             ['$scope', 'gaGlobalOptions',
               function($scope, gaGlobalOptions) {
                 $scope.options = {
-                  serviceUrl: gaGlobalOptions.serviceUrl +  '/rest/services/' +
+                  searchUrl: gaGlobalOptions.serviceUrl +  '/rest/services/' +
                       'inspire/SearchServer?',
                   applyTopicToUrl: function (url, topic) {
                     return url; 
