@@ -37,6 +37,13 @@ msgstr ""
 msgid "astra_unf_fsocommunecode"
 msgstr ""
 
+msgid "tt_ch_bazl_kataster_belasteter_standorte_zivflpl_standortnummer"
+msgstr ""
+
+msgid "tt_ch_bazl_kataster_belasteter_standorte_zivflpl_beurteilung"
+msgstr ""
+
+
 msgid "ch.bafu.bundesinventare-hochmoore_anhoerung"
 msgstr ""
 
@@ -116,6 +123,9 @@ msgid "energiebedarf_motoren"
 msgstr ""
 
 msgid "ch.bazl.sicherheitszonenplan"
+msgstr ""
+
+msgid "ch.bazl.kataster-belasteter-standorte-zivilflugplaetze"
 msgstr ""
 
 msgid "ch.swisstopo.hangneigung-ueber_30"
@@ -356,6 +366,9 @@ msgid "ch.bav.laerm-emissionplan_eisenbahn_2015"
 msgstr ""
 
 msgid "ch.bakom.downlink100"
+msgstr ""
+
+msgid "ch.bakom.downlink10"
 msgstr ""
 
 msgid "ch.astra.ivs-nat_wegbegleiter"

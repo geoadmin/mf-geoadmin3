@@ -1373,6 +1373,9 @@ msgstr "Fil de cuivre"
 msgid "ch.bakom.downlink1"
 msgstr "Liaison ≥ 1 Mbit/s descendante"
 
+msgid "ch.bakom.downlink10"
+msgstr "Liaison ≥10 Mbit/s descend."
+
 msgid "ch.bakom.downlink100"
 msgstr "Liaison ≥ 100 Mbit/s descend."
 
@@ -1456,6 +1459,9 @@ msgstr "OFAC"
 
 msgid "ch.bazl.heliports-gebirgslandeplaetze"
 msgstr "Héliports/places d'atterr. en mtgne"
+
+msgid "ch.bazl.kataster-belasteter-standorte-zivilflugplaetze"
+msgstr "Sites pollués aérodromes civils"
 
 msgid "ch.bazl.landschaftsruhezonen"
 msgstr "Zones de calme pour l'aviation"
@@ -3984,6 +3990,12 @@ msgstr "Phase d'investigation selon OSites"
 
 msgid "tt_ch_bav_kataster_belasteter_standorte_oev_untersuchungsstand_2"
 msgstr "Investigations terminées et mesures selon l’OSites"
+
+msgid "tt_ch_bazl_kataster_belasteter_standorte_zivflpl_beurteilung"
+msgstr "Evaluation de l'OFAC"
+
+msgid "tt_ch_bazl_kataster_belasteter_standorte_zivflpl_standortnummer"
+msgstr "No de site OFAC"
 
 msgid "tt_document"
 msgstr "Autres informations"

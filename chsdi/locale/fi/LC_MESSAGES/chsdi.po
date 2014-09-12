@@ -1373,6 +1373,9 @@ msgstr "Cabel d'arom"
 msgid "ch.bakom.downlink1"
 msgstr "Download ≥ 1 Mbit/s"
 
+msgid "ch.bakom.downlink10"
+msgstr "Download ≥ 10 Mbit/s"
+
 msgid "ch.bakom.downlink100"
 msgstr "Download ≥ 100 Mbit/s"
 
@@ -1456,6 +1459,9 @@ msgstr "UFAC"
 
 msgid "ch.bazl.heliports-gebirgslandeplaetze"
 msgstr "Heliports/Gebirgslandeplätze"
+
+msgid "ch.bazl.kataster-belasteter-standorte-zivilflugplaetze"
+msgstr "Lieus contamin. plazzas aviat. civ."
 
 msgid "ch.bazl.landschaftsruhezonen"
 msgstr "Landschaftsruhezonen Luftfahrt"
@@ -3983,6 +3989,12 @@ msgstr "Untersuchungsstand gemäss AltIV"
 
 msgid "tt_ch_bav_kataster_belasteter_standorte_oev_untersuchungsstand_2"
 msgstr "Abgeschlossene Untersuchungen und Massnahmen gemäss AltlV"
+
+msgid "tt_ch_bazl_kataster_belasteter_standorte_zivflpl_beurteilung"
+msgstr "Beurteilung BAZL"
+
+msgid "tt_ch_bazl_kataster_belasteter_standorte_zivflpl_standortnummer"
+msgstr "BAZL Standortnummer"
 
 msgid "tt_document"
 msgstr "Weitere Informationen "
