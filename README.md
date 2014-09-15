@@ -83,8 +83,8 @@ directory.
 
 # Deploying a branch
 
-Call the `.\deploybranch.sh` script **in your working directory** to deploy your current 
-branch to test (Use `.\deploybranch.sh int` to also deploy it to integration).
+Call the `./deploybranch.sh` script **in your working directory** to deploy your current
+branch to test (Use `./deploybranch.sh int` to also deploy it to integration).
 The code for deployment, however, does not come from your working directory,
 but does get cloned (first time) or pulled (if done once) **directly from github**.
 So you'll likely use this command **after** you push your branch to github.
