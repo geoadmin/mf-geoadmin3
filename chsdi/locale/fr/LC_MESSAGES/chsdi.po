@@ -311,6 +311,9 @@ msgstr "Données actuelles et historiques"
 msgid "alexandria"
 msgstr "Informations bibliographiques"
 
+msgid "anzahlaudits"
+msgstr "Nombre d’audits réussis"
+
 msgid "anzahlspuren"
 msgstr "Nombre de voies"
 
@@ -325,6 +328,15 @@ msgstr "Date de l'autorisation"
 
 msgid "arch__hist__qualitaeten"
 msgstr "Qualités hist.-arch."
+
+msgid "areal"
+msgstr "Site"
+
+msgid "areal_gemeinde"
+msgstr "Commune / ville dans laquelle il se situe"
+
+msgid "areal_watt"
+msgstr "Site 2000 watts"
 
 msgid "astra_unf_accday"
 msgstr "Jour de l'accident"
@@ -343,6 +355,9 @@ msgstr "Catégorie de gravité des accidents"
 
 msgid "atlassheetnumber"
 msgstr "Numéro du atlas géologique"
+
+msgid "auf_dem_weg_gemeinde"
+msgstr "Cité de l’énergie ouvrant la voie vers la société à 2000 watts"
 
 msgid "ausgabejahr"
 msgstr "Année de publication"
@@ -395,6 +410,9 @@ msgstr "Charge [Pers./an]"
 msgid "belastung_tonnen"
 msgstr "Charge [t/an]"
 
+msgid "berater"
+msgstr "Conseillère ou conseiller"
+
 msgid "bereich"
 msgstr "Site"
 
@@ -409,6 +427,15 @@ msgstr "Description"
 
 msgid "bestimmung"
 msgstr "Dispositions"
+
+msgid "bet_energiestaedte"
+msgstr "Cités de l’énergie participantes"
+
+msgid "bet_traegerverein"
+msgstr "Communes participantes membres de l’association"
+
+msgid "beteiligtegemeinden"
+msgstr "Communes participantes"
 
 msgid "betrgemeinde"
 msgstr "Communes concernées"
@@ -1496,6 +1523,18 @@ msgstr "Renonciation force hydraulique"
 msgid "ch.bfe.energieforschung"
 msgstr "Recherche énergétique"
 
+msgid "ch.bfe.energiestaedte"
+msgstr "Cités de l’énergie"
+
+msgid "ch.bfe.energiestaedte-2000watt-areale"
+msgstr "Sites 2000 watts"
+
+msgid "ch.bfe.energiestaedte-2000watt-aufdemweg"
+msgstr "Cité de l’énergie vers 2000 watts"
+
+msgid "ch.bfe.energiestaedte-energieregionen"
+msgstr "Régions-Energie"
+
 msgid "ch.bfe.kernkraftwerke"
 msgstr "Centrales nucléaires"
 
@@ -2231,6 +2270,12 @@ msgstr "Nombre d’habitants (seulement pour Siedl.)"
 msgid "energiebedarf_motoren"
 msgstr "Besoin énergétique des moteurs"
 
+msgid "energiestadtseit"
+msgstr "Cité de l’énergie depuis le"
+
+msgid "energiestadtweb"
+msgstr "Détails sur le site Internet des Cités de l’énergie"
+
 msgid "ent_gew"
 msgstr "Cours d'eau"
 
@@ -2251,6 +2296,9 @@ msgstr "Anomalies de Bouguer [mGal]"
 
 msgid "et_fromatt_ch"
 msgstr "Anomalies aéromagnétiques Suisse [nT]"
+
+msgid "faktenblatt"
+msgstr "Fiche informative"
 
 msgid "fassung"
 msgstr "Version"
@@ -2308,6 +2356,9 @@ msgstr "Géoportail cantonal"
 
 msgid "gemeinde"
 msgstr "Commune"
+
+msgid "gemeinde_stadt"
+msgstr "Commune / Cité"
 
 msgid "gemflaeche"
 msgstr "Surface de la commune (ha)"
@@ -3107,6 +3158,9 @@ msgstr "bibliothèque spéciale (collection)"
 msgid "kultur863"
 msgstr "bibliothèque privée (collection)"
 
+msgid "kurzerklaerung"
+msgstr "Brève description"
+
 msgid "lab"
 msgstr "Appellation"
 
@@ -3358,6 +3412,9 @@ msgstr "Protocole"
 
 msgid "publikationsjahr_1_2"
 msgstr "Année de publication 1 | 2"
+
+msgid "punktezahl"
+msgstr "Nombre de points"
 
 msgid "punktname"
 msgstr "Nom du point"

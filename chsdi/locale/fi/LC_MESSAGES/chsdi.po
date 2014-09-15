@@ -311,6 +311,10 @@ msgstr "Aktuelle und historische Daten"
 msgid "alexandria"
 msgstr "Indicaziuns bibliograficas"
 
+#. TODO
+msgid "anzahlaudits"
+msgstr "anzahlaudits"
+
 msgid "anzahlspuren"
 msgstr "Anzahl Spuren"
 
@@ -325,6 +329,16 @@ msgstr "Genehmigungsdatum"
 
 msgid "arch__hist__qualitaeten"
 msgstr "Qualitads istoricas-architectonicas"
+
+#. TODO
+msgid "areal"
+msgstr "areal"
+
+msgid "areal_gemeinde"
+msgstr "Befindet sich in Gemeinde / Stadt"
+
+msgid "areal_watt"
+msgstr "2000-Watt-Areal"
 
 msgid "astra_unf_accday"
 msgstr "Unfalltag"
@@ -343,6 +357,9 @@ msgstr "Unfallschwerekategorie"
 
 msgid "atlassheetnumber"
 msgstr "Nummer Geologischer Atlas"
+
+msgid "auf_dem_weg_gemeinde"
+msgstr "Energiestadt auf dem Weg in die 2000-Watt-Gesellschaft"
 
 msgid "ausgabejahr"
 msgstr "Ausgabejahr"
@@ -395,6 +412,9 @@ msgstr "Belastung [Pers./Jahr]"
 msgid "belastung_tonnen"
 msgstr "Belastung [t/Jahr]"
 
+msgid "berater"
+msgstr "Beraterin oder Berater"
+
 msgid "bereich"
 msgstr "Bereich"
 
@@ -409,6 +429,15 @@ msgstr "Beschreibung"
 
 msgid "bestimmung"
 msgstr "Bestimmungen"
+
+msgid "bet_energiestaedte"
+msgstr "Beteiligte Energiestädte"
+
+msgid "bet_traegerverein"
+msgstr "Beteiligte Mitglieder Trägerverein"
+
+msgid "beteiligtegemeinden"
+msgstr "Beteiligte Gemeinden"
 
 msgid "betrgemeinde"
 msgstr "Vischanca affectá"
@@ -1496,6 +1525,18 @@ msgstr "Renunzia a forza idraulica"
 msgid "ch.bfe.energieforschung"
 msgstr "Perscrutaziun d'energias"
 
+msgid "ch.bfe.energiestaedte"
+msgstr "Energiestädte"
+
+msgid "ch.bfe.energiestaedte-2000watt-areale"
+msgstr "2000-Watt-Areale"
+
+msgid "ch.bfe.energiestaedte-2000watt-aufdemweg"
+msgstr "Energiestädte auf dem Weg 2000-Watt"
+
+msgid "ch.bfe.energiestaedte-energieregionen"
+msgstr "Energie-Regionen"
+
 msgid "ch.bfe.kernkraftwerke"
 msgstr "Ovras nuclearas"
 
@@ -2231,6 +2272,12 @@ msgstr "Einwohnerzahl (nur für Siedl.)"
 msgid "energiebedarf_motoren"
 msgstr "Energiebedarf Motoren"
 
+msgid "energiestadtseit"
+msgstr "Energiestadt seit"
+
+msgid "energiestadtweb"
+msgstr "Details auf der Energiestadt-Website"
+
 msgid "ent_gew"
 msgstr "Fliessgewässer"
 
@@ -2251,6 +2298,9 @@ msgstr "Bouguer Anomalie [mGal]"
 
 msgid "et_fromatt_ch"
 msgstr "Aeromagnetische Anomalien Schweiz [nT]"
+
+msgid "faktenblatt"
+msgstr "Faktenblatt"
 
 msgid "fassung"
 msgstr "Versiun"
@@ -2308,6 +2358,9 @@ msgstr "Geportal chantunal"
 
 msgid "gemeinde"
 msgstr "Gemeinde"
+
+msgid "gemeinde_stadt"
+msgstr "Gemeinde / Stadt"
 
 msgid "gemflaeche"
 msgstr "Surfatscha da la vischnanca (ha)"
@@ -3107,6 +3160,9 @@ msgstr "Spezialbibliothek (Museen, Archive usw.) (Sammlung)"
 msgid "kultur863"
 msgstr "Private Bibliothek (Sammlung)"
 
+msgid "kurzerklaerung"
+msgstr "Kurzerklärung"
+
 msgid "lab"
 msgstr "Bezeichnung"
 
@@ -3358,6 +3414,9 @@ msgstr "Protokoll"
 
 msgid "publikationsjahr_1_2"
 msgstr "Onn da publicaziun 1 | 2"
+
+msgid "punktezahl"
+msgstr "Punktezahl"
 
 msgid "punktname"
 msgstr "Punktname"

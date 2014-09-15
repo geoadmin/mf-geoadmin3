@@ -934,6 +934,18 @@ msgstr ""
 msgid "ch.bfe.energieforschung"
 msgstr ""
 
+msgid "ch.bfe.energiestaedte"
+msgstr ""
+
+msgid "ch.bfe.energiestaedte-energieregionen"
+msgstr ""
+
+msgid "ch.bfe.energiestaedte-2000watt-areale"
+msgstr ""
+
+msgid "ch.bfe.energiestaedte-2000watt-aufdemweg"
+msgstr ""
+
 msgid "ch.bfe.statistik-wasserkraftanlagen"
 msgstr ""
 
@@ -2563,6 +2575,51 @@ msgid "nutzung"
 msgstr ""
 
 msgid "reisezeit_min"
+msgstr ""
+
+msgid "gemeinde_stadt"
+msgstr ""
+
+msgid "punktezahl"
+msgstr ""
+
+msgid "energiestadtseit"
+msgstr ""
+
+msgid "beteiligtegemeinden"
+msgstr ""
+
+msgid "anzahlaudits"
+msgstr ""
+
+msgid "berater"
+msgstr ""
+
+msgid "faktenblatt"
+msgstr ""
+
+msgid "energiestadtweb"
+msgstr ""
+
+msgid "kurzerklaerung"
+msgstr ""
+
+msgid "areal"
+msgstr ""
+
+msgid "areal_watt"
+msgstr ""
+
+msgid "areal_gemeinde"
+msgstr ""
+
+msgid "auf_dem_weg_gemeinde"
+msgstr ""
+
+msgid "bet_energiestaedte"
+msgstr ""
+
+msgid "bet_traegerverein"
 msgstr ""
 
 msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_name"
