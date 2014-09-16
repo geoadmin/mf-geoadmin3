@@ -6,16 +6,20 @@ RewriteEngine On
 ExpiresActive On
 
 # MapProxy access control
-
 RewriteRule ^${apache_entry_path}/1.0.0/WMTSCapabilities.EPSG.(\d+).xml ${apache_entry_path}/rest/services/api/1.0.0/WMTSCapabilities.xml?epsg=$1 [L,P]
 RewriteRule ^${apache_entry_path}/1.0.0/WMTSCapabilities.xml ${apache_entry_path}/rest/services/api/1.0.0/WMTSCapabilities.xml [L,P]
 
-
+# Mapping 'current' to actual 'timestamp'
 Include  ${buildout:directory}/apache/mapproxy-current.conf
+
+# IGN
+# For these layers, we use the entry cache ("*_source", not the reprojected one)
+RewriteCond %{QUERY_STRING} ^(.*)(ch.swisstopo.pixelkarte-farbe|ch.swisstopo.pixelkarte-grau|ch.swisstopo.swissimage)(.*)$
+RewriteRule ^${apache_entry_path}/mapproxy/server ^${apache_entry_path}/mapproxy/server?%1%2_source%3
 
 RewriteRule ^${apache_entry_path}/1.0.0/(.*)/default/(\d+)/(\d+)/(.*)   ${apache_entry_path}/mapproxy/wmts/1.0.0/$1/default/$2/epsg_$3/$4 [L,P]
 
-WSGIDaemonProcess mf-chsdi3:${vars:apache_base_path}-mapproxy display-name=%{GROUP} user=${vars:modwsgi_user} processes=4
+WSGIDaemonProcess mf-chsdi3:${vars:apache_base_path}-mapproxy display-name=%{GROUP} user=${vars:modwsgi_user} ${vars:mapproxy_wsgi_options}
 
 # define the path to the WSGI app
 WSGIScriptAliasMatch ^${apache_entry_path}/mapproxy ${buildout:directory}/buildout/parts/mapproxy/wsgi
@@ -27,22 +31,21 @@ WSGIScriptAliasMatch ^${apache_entry_path}/mapproxy ${buildout:directory}/buildo
     Order Deny,Allow
     Allow from all
 
-    ExpiresDefault "now plus 1 years"
-    Header set Cache-Control "public, max-age=29030400"
-    Header unset Etag
+    Header unset Cache-Control
+    Header merge Cache-Control "no-cache"
 </Directory>
 
 <Location ${apache_entry_path}/1.0.0>
     Order Deny,Allow
     Allow from all
-
-    ExpiresDefault "now plus 1 years"
-    Header set Cache-Control "public, max-age=29030400"
-    Header unset Etag
 </Location>
 
 # Cache for timestamp keyword 'default'
 <LocationMatch "default/default/(.*)(jpg|jpeg|png)$">
-    # One week
-    Header set Cache-Control "max-age=604800, public"
+    Header set Cache-Control "max-age=3600, public"
+</LocationMatch>
+
+# Cache for tiles, same as S3
+<LocationMatch "default/(\d+)/(.*)(jpg|jpeg|png)$">
+    Header set Cache-Control "max-age=315360000, public"
 </LocationMatch>

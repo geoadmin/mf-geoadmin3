@@ -9,7 +9,7 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-    <title>OL3 example: Pseudo-mercator projection</title>
+    <title>OL3 example: Pseudo-mercator projection (EPSG:3857)</title>
     <style>
         .ol-logo {
             display: none;
@@ -17,15 +17,11 @@
     </style>
   </head>
   <body>
-    <h1>OL3 example: Pseudo-mercator projection</h1>
-    <div id="map" style="width=100%;height:350px;"></div>
-    <div style="display: none;">
-      <!-- Popup -->
-      <div id="popup" title="KML"></div>
-    </div>
-    This examples shows how to use geo.admin.ch tiles in a map using the pseudo-mercator projection.<br>
-    <p>The gray backround layer comes from OSM (Mapnik b/w), while the 'Swiss geotope' are reprojected 
-    WMTS tiles from <a href='http://map.geo.admin.ch?layers=ch.swisstopo.geologie-geotope' target='_blank'>geo.admin.ch</a></p>
+    <h1>OL3 example: Pseudo-mercator projection (EPSG:3857)</h1>
+    <div id="map" style="width:100%; height:350px;"></div>
+    This examples shows how to use geo.admin.ch tiles in a map using the pseudo-mercator projection (<a href="http://epsg.io/3857" target="_blank">EPSG:3857</a>).<br>
+    <p>The 'Swissimage' layer are reprojected WMTS tiles from <a href='http://map.geo.admin.ch?bgLayer=ch.swisstopo.swissimage' target='_blank'>map.geo.admin.ch</a></p>
+    <p>See the documentation to find out which <a href="../services/sdiservices.html#other-projections" target="_blank" >projections are available</a>.</p>
     <a href="ol3_mercator.js">See the code</a><br>
      <script src="//code.jquery.com/jquery-1.10.1.min.js"></script>
      <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>

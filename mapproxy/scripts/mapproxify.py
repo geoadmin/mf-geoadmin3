@@ -33,24 +33,24 @@ basedir = os.path.dirname(os.path.abspath(os.path.join(os.path.abspath(__file__)
 config_uri = os.path.join(basedir, 'development.ini')
 settings = get_appsettings(config_uri)
 
+
 def getLayersConfigs():
 
     engine = engine_from_config(settings, 'sqlalchemy.bod.')
     DBSession = scoped_session(sessionmaker())
     DBSession.configure(bind=engine)
-    
-    
+
     models = get_wmts_models(LANG)
     layers_query = DBSession.query(models['GetCap'])
     layers_query = layers_query.filter(models['GetCap'].maps.ilike('%%%s%%' % 'api'))
     DBSession.close()
 
-    return  [q for q in layers_query.all()]
+    return [q for q in layers_query.all()]
 
 
 try:
     with open(os.path.abspath('mapproxy/templates/mapproxy.tpl')) as f:
-            mapproxy_config = yaml.load(f.read())
+        mapproxy_config = yaml.load(f.read())
 except EnvironmentError:
     print 'Critical error. Unable to open/read the mapproxy template file. Exit.'
     sys.exit(1)
@@ -59,6 +59,11 @@ except EnvironmentError:
 # Translation
 tr = support.Translations.load('chsdi/locale', locales=[LANG], domain='chsdi')
 
+for part in ['caches', 'sources']:
+    if mapproxy_config[part] is None:
+        mapproxy_config[part] = {}
+if mapproxy_config['layers'] is None:
+    mapproxy_config['layers'] = []
 
 for layersConfig in getLayersConfigs():
     if layersConfig and layersConfig.maps is not None:
@@ -81,7 +86,7 @@ for layersConfig in getLayersConfigs():
 
             grid_names = []
 
-            for matrix in ['4258', '4326','2056','3857']:
+            for matrix in ['4258', '4326', '2056', '3857']:
                 grid_name = "epsg_%s" % matrix
                 grid_names.append(grid_name)
 
@@ -91,7 +96,7 @@ for layersConfig in getLayersConfigs():
             # layer config: cache_out
             layer = {'name': layer_name, 'title': title, 'dimensions': dimensions, 'sources': [cache_name]}
 
-            cache = {"sources": [wmts_cache_name], "format": "image/%s" % image_format, "grids": grid_names, "disable_storage": True}
+            cache = {"sources": [wmts_cache_name], "format": "image/%s" % image_format, "grids": grid_names, "disable_storage": True, "meta_size": [1, 1], "meta_buffer": 0}
 
             mapproxy_config['layers'].append(layer)
             mapproxy_config['caches'][cache_name] = cache
@@ -100,9 +105,9 @@ for layersConfig in getLayersConfigs():
             wmts_url = "http://wmts6.geo.admin.ch/1.0.0/" + server_layer_name + "/default/" + current_timestamp + "/21781/%(z)d/%(y)d/%(x)d.%(format)s"
 
             wmts_source = {"url": wmts_url,
-                           "type": "tile", 
-                           "grid": "swisstopo-pixelkarte", 
-                           "transparent": True, 
+                           "type": "tile",
+                           "grid": "swisstopo-pixelkarte",
+                           "transparent": True,
                            "on_error": {
                                204: {
                                    "response": "transparent",
@@ -112,8 +117,8 @@ for layersConfig in getLayersConfigs():
                            "http": {
                                "headers": {
                                    "Referer": "http://mapproxy.geo.admin.ch"
-                                }
-                            },
+                               }
+                           },
                            "coverage": {"bbox": [420000, 30000, 900000, 350000], "bbox_srs": "EPSG:21781"}}
 
             wmts_cache = {"sources": [wmts_source_name], "format": "image/%s" % image_format, "grids": ["swisstopo-pixelkarte"], "disable_storage": True}
@@ -140,11 +145,12 @@ with open('mapproxy/mapproxy.yaml', 'w') as o:
 with open('apache/mapproxy-current.conf', 'w') as o:
     conf = ""
     apache_base_path = settings['entry_path']
-    apache_entry_point = '/' if apache_base_path == 'main' else  apache_base_path + '/'
+    apache_entry_point = '/' if apache_base_path == 'main' else apache_base_path + '/'
 
     rules_nr = len(current_timestamps)
-    tpl = "RewriteRule %s1.0.0/%s/default/default/(.*)   %s1.0.0/%s/default/%s/$1 [S=%d]\n"
+    tpl = "RewriteRule /(.*)1.0.0/%s/default/default/(.*)   /$11.0.0/%s/default/%s/$2 [S=%d]\n"
     for idx, lyr in enumerate(current_timestamps.keys()):
-        conf += tpl % (apache_entry_point, lyr, apache_entry_point, lyr, current_timestamps[lyr], rules_nr - idx - 1)
+        print idx, lyr
+        conf += tpl % (lyr, lyr, current_timestamps[lyr], rules_nr - idx - 1)
     o.write("# This is a generated file. Do not edit.\n\n")
     o.write(conf)

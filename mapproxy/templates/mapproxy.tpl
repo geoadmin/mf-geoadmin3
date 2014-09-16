@@ -10,7 +10,7 @@ services:
      restful_template: /1.0.0/{Layer}/default/{Time}/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.{Format}
 
   wms:
-    srs: ['EPSG:4326', 'EPSG:21781', 'EPSG:4258', 'EPSG:3857']
+    srs: ['EPSG:4326', 'EPSG:21781', 'EPSG:4258', 'EPSG:3857', 'EPSG:2056']
     image_formats: ['image/jpeg', 'image/png']
     md:
       # metadata used in capabilities documents
@@ -31,30 +31,10 @@ services:
       fees: 'This service cant be used without permission'
 
 layers:
-    - name: osm
-      title: OpenStreetMap
-      sources: [osm_cache]
 
 caches:
-  osm_cache:
-    grids: [global_mercator_osm]
-    sources: [osm_tms]
-    disable_storage: true
-    concurrent_tile_creators: 4
-    watermark:
-      text: '@ OpenStreetMap contributors'
-      font_size: 14
-      opacity: 100
-      color: [0,0,0]
 
 sources:
-  osm_tms:
-    type: tile
-    grid: global_mercator_osm
-    url: http://c.tile.openstreetmap.org/%(tms_path)s.png
-    coverage:
-      bbox: [420000,30000,900000,350000]
-      bbox_srs: EPSG:21781
 
 grids:
   swisstopo-swissimage:
@@ -97,7 +77,7 @@ grids:
     bbox_srs: EPSG:21781
     srs: EPSG:4326
     origin: nw
-    stretch_factor: 0.8
+    stretch_factor: 1.0
   #lowres_lv95:
   epsg_2056:
     res: [4000,3750,3500,3250,3000,2750,2500,2250,2000,1750,1500,1250,1000,750,650,500,250,100,50,20,10,5,2.5,2,1.5,1,0.5]
