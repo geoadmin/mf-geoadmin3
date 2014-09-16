@@ -499,6 +499,8 @@
               });
               taElt.on('typeahead:initialized', function() {
                 taElt.parent().find('.tt-dropdown-menu').append(footerTemplate);
+                taElt.parent().find('.tt-dropdown-menu').on('touchstart',
+                  function() { taElt.blur(); });
               });
               taElt.typeahead(typeAheadDatasets)
                 .on('typeahead:selected', function(event, datum) {
