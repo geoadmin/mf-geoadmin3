@@ -6,12 +6,14 @@ RewriteEngine On
 ExpiresActive On
 
 # MapProxy access control
-RewriteRule ^${apache_entry_path}1.0.0/WMTSCapabilities.xml ${apache_entry_path}rest/services/api/1.0.0/WMTSCapabilities.xml [L,P]
+
+RewriteRule ^${apache_entry_path}/1.0.0/WMTSCapabilities.EPSG.(\d+).xml ${apache_entry_path}/rest/services/api/1.0.0/WMTSCapabilities.xml?epsg=$1 [L,P]
+RewriteRule ^${apache_entry_path}/1.0.0/WMTSCapabilities.xml ${apache_entry_path}/rest/services/api/1.0.0/WMTSCapabilities.xml [L,P]
 
 
 Include  ${buildout:directory}/apache/mapproxy-current.conf
 
-RewriteRule ^${apache_entry_path}1.0.0/(.*)/default/(\d+)/(\d+)/(.*)   ${apache_entry_path}mapproxy/wmts/1.0.0/$1/default/$2/epsg_$3/$4 [L,P]
+RewriteRule ^${apache_entry_path}/1.0.0/(.*)/default/(\d+)/(\d+)/(.*)   ${apache_entry_path}/mapproxy/wmts/1.0.0/$1/default/$2/epsg_$3/$4 [L,P]
 
 WSGIDaemonProcess mf-chsdi3:${vars:apache_base_path}-mapproxy display-name=%{GROUP} user=${vars:modwsgi_user} processes=4
 
@@ -30,7 +32,7 @@ WSGIScriptAliasMatch ^${apache_entry_path}/mapproxy ${buildout:directory}/buildo
     Header unset Etag
 </Directory>
 
-<Location ${vars:apache_base_path}/1.0.0>
+<Location ${apache_entry_path}/1.0.0>
     Order Deny,Allow
     Allow from all
 

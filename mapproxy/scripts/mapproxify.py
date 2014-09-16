@@ -42,7 +42,7 @@ def getLayersConfigs():
     
     models = get_wmts_models(LANG)
     layers_query = DBSession.query(models['GetCap'])
-    layers_query = layers_query.filter(models['GetCap'].projekte.ilike('%%%s%%' % 'api'))
+    layers_query = layers_query.filter(models['GetCap'].maps.ilike('%%%s%%' % 'api'))
     DBSession.close()
 
     return  [q for q in layers_query.all()]
@@ -61,8 +61,8 @@ tr = support.Translations.load('chsdi/locale', locales=[LANG], domain='chsdi')
 
 
 for layersConfig in getLayersConfigs():
-    if layersConfig and layersConfig.projekte is not None:
-        if layersConfig.timestamp is not None and 'api' in layersConfig.projekte:
+    if layersConfig and layersConfig.maps is not None:
+        if layersConfig.timestamp is not None and 'api' in layersConfig.maps:
             print layersConfig.bod_layer_id
             bod_layer_id = layersConfig.bod_layer_id
             wmts_source_name = "%s_source" % bod_layer_id
@@ -139,8 +139,8 @@ with open('mapproxy/mapproxy.yaml', 'w') as o:
 # map wmts dimension's keyword 'default' with the actual default value
 with open('apache/mapproxy-current.conf', 'w') as o:
     conf = ""
-    apache_base_path = settings.get('instanceid')
-    apache_entry_point = '/' if apache_base_path == 'main' else '/' + apache_base_path + '/'
+    apache_base_path = settings['entry_path']
+    apache_entry_point = '/' if apache_base_path == 'main' else  apache_base_path + '/'
 
     rules_nr = len(current_timestamps)
     tpl = "RewriteRule %s1.0.0/%s/default/default/(.*)   %s1.0.0/%s/default/%s/$1 [S=%d]\n"

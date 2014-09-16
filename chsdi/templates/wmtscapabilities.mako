@@ -48,7 +48,7 @@
     <Contents>
   ## Main loop
    % for layer in layers:
-       ##% for epsg in ['21781','4326','4258', '3257','2056']:
+       ##% for epsg in ['21781','4326','4258', '3857','2056']:
         <Layer>
             <ows:Title>${layer.kurzbezeichnung|x,trim}</ows:Title>
             <ows:Abstract>${layer.abstract|x,trim}</ows:Abstract>
