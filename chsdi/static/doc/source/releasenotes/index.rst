@@ -9,6 +9,33 @@
 Release Notes
 =============
 
+.. _releasenotes_20140918:
+
+Release 20140918 - Thursday, September 18th 2014
+-----------------------------------------------
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_140908...r_140918>`__
+
+`MAP <//map.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_140908...r_140918>`__
+
+Geodata
+********
+
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Siegfried Map First edition <//map.geo.admin.ch/?layers=ch.swisstopo.hiks-siegfried>`__ (ch.swisstopo.hiks-siegfried)                                                                               |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
 .. _releasenotes_20140908:
 
 Release 20140908 - Monday, September 8th 2014

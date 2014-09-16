@@ -438,19 +438,6 @@ class Dreiecksvermaschung(Base, Vector):
 register('ch.swisstopo.dreiecksvermaschung', Dreiecksvermaschung)
 
 
-class SiegfriedErst(Base, Vector):
-    __tablename__ = 'view_gridstand_datenhaltung_siegfried_erst'
-    __table_args__ = ({'schema': 'datenstand', 'autoload': False})
-    __template__ = 'templates/htmlpopup/siegfried_erst.mako'
-    __bodId__ = 'ch.swisstopo.hiks-siegfried'
-    id = Column('tilenumber', Text, primary_key=True)
-    kbbez = Column('kbbez', Text)
-    datenstand = Column('datenstand', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-
-register('ch.swisstopo.hiks-siegfried', SiegfriedErst)
-
-
 class GridstandPk25(Base, Vector):
     __tablename__ = 'view_gridstand_datenhaltung_pk25_tilecache'
     __table_args__ = ({'schema': 'datenstand', 'autoload': False})

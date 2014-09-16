@@ -93,6 +93,20 @@ class DufourErst(Base, Vector):
     bv_nummer = Column('bv_nummer', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
+
+class SiegfriedErst(Base, Vector):
+    __tablename__ = 'view_siegfried_erstausgabe'
+    __table_args__ = ({'schema': 'public', 'autoload': False})
+    __template__ = 'templates/htmlpopup/siegfried_erst.mako'
+    __bodId__ = 'ch.swisstopo.hiks-siegfried'
+    id = Column('tilenumber', Text, primary_key=True)
+    kbbez = Column('kbbez', Text)
+    datenstand = Column('datenstand', Numeric)
+    bv_nummer = Column('bv_nummer', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+
+register('ch.swisstopo.hiks-siegfried', SiegfriedErst)
 register('ch.swisstopo.hiks-dufour', DufourErst)
 register('ch.swisstopo.zeitreihen', Zeitreihen_15)
 register('ch.swisstopo.zeitreihen', Zeitreihen_20)
