@@ -1,0 +1,3 @@
+export API_URL=//mf-chsdi3.dev.bgdi.ch/ltkan
+export APACHE_BASE_PATH=/ltkan
+export BROWSERSTACK_TARGETURL=http://mf-geoadmin3.dev.bgdi.ch/ltkan
