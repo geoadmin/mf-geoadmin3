@@ -20,12 +20,22 @@ var IE9Fix = function() {
   isXDomain = function(requestUrl) {
     // gjn: replaced the whole function.
     // original is still commented below
+    var getHostName = function(url) {
+      var l = window.document.createElement('a');
+      l.href = url;
+      return l.hostname
+        .replace('http://', '')
+        .replace('https://', '');
+    };
+
     var host = window.location.origin
         .replace('http://', '')
         .replace('https://', '');
 
-    //if host is found, then not XDomain
-    if (requestUrl.indexOf(host) > -1) {
+    var requestUrlHost = getHostName(requestUrl);
+
+    //if host are identical, then not XDomain
+    if (requestUrlHost === host) {
       return false;
     }
     //check for relative url
@@ -34,7 +44,7 @@ var IE9Fix = function() {
       return false;
     }
     return true;
-/*
+    /*
     if (requestUrl[0] === '/') {
       if (requestUrl.length === 1) {
         return false;
