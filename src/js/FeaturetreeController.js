@@ -6,7 +6,7 @@
   );
 
   module.controller('GaFeaturetreeController',
-        function($scope, gaGlobalOptions, gaPrintService, $http) {
+        function($scope, $timeout, gaGlobalOptions, gaPrintService, $http) {
 
         $scope.options = {
           searchUrlTemplate: gaGlobalOptions.apiUrl + '/rest/services/{Topic}/SearchServer',
@@ -64,7 +64,12 @@
           for (var layerName in printLayers) {
             printHtml += printLayers[layerName];
           }
-          gaPrintService.htmlPrintout(printHtml);
+          // This needs to be executed after the digest cycle
+          // otherwise the digest cycle is broken and makes an error
+          // when the next cycle begins.
+          $timeout(function() {
+            gaPrintService.htmlPrintout(printHtml);
+          }, 0);
         };
 
         var countFeatures = function(featureTree) {
