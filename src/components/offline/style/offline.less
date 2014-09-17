@@ -1,0 +1,115 @@
+[ga-offline-bt] {
+  position: absolute;
+  bottom: 51px;
+  right: 7px;
+  z-index: 1000;
+    
+  button {  
+    width: 44px;
+    height: 44px;
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none;
+    background: data-uri('offline_black.png') no-repeat center center;
+    transition: transform ease 1s;
+    transform: rotateY(360deg);
+    -webkit-transform: rotateY(-360deg);
+
+    &.ga-active {
+      background-image: data-uri('offline_red.png');
+      transform: rotateY(360deg);
+      -webkit-transform: rotateY(360deg);
+    }
+  }
+
+  @media screen and (max-width: @screen-tablet) {
+    bottom: 26px;
+  } 
+}
+
+[ga-offline-menu] {
+  
+  .modal-dialog {
+    width: 300px;
+    
+    @media screen and (max-width: @screen-phone) {
+      width: 280px;
+    }  
+  }  
+  
+  .modal-body button {
+    display: block;
+    width: 250px;
+    margin: 5px;
+  }
+}
+
+@circle-size: 200;
+@circle-size-px: unit(@circle-size, px);
+@circle-half-px: unit(@circle-size/2, px);
+@bt-width: 200;
+@bt-width-px: unit(@bt-width, px);
+@bt-half-px: unit(@bt-width/2, px);
+
+[ga-offline-selector] {
+
+  button {
+    width: @bt-width-px;
+
+    &.btn-danger {
+      width: 100%;
+    }
+  }
+
+  .ga-buttons {
+    position: absolute;
+    left: 50%;
+    bottom: 51px;
+    margin-left: -@bt-half-px;
+    width: unit(@bt-width, px);
+
+    @media screen and (max-width: @screen-tablet) {
+      bottom: 26px;
+    }
+  }
+
+  .ga-progress {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -@circle-half-px;
+    margin-top: -@circle-half-px;
+    width: @circle-size-px;
+    height: @circle-size-px;
+    color: white;
+    font: bold 2em Arial;
+    line-height: @circle-half-px;
+  }
+
+  .ga-progress-text {
+    position: absolute;
+    margin: 50px;
+    width: 50%;
+    height: 50%;
+    text-align: center;
+    border-radius: 50px;
+  }
+
+  .ga-progress-pie {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0.75;
+  } 
+  
+  .ga-progress-circle {
+    width: 100%;
+    height: 100%;
+    border: @circle-half-px solid #666;
+    border-radius: 50%;
+    position: absolute;
+    transition: transform ease 1s;
+  }
+
+}
+

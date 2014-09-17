@@ -3236,6 +3236,19 @@ ol.TileCoord.prototype.quadKey = function() {
 ol.TileCoord.prototype.toString = function() {
   return ol.TileCoord.getKeyZXY(this.z, this.x, this.y)
 };
+goog.exportSymbol("ol.TileCoord", ol.TileCoord);
+ol.TileCoord.prototype.getX = function() {
+  return this.x
+};
+goog.exportProperty(ol.TileCoord.prototype, "getX", ol.TileCoord.prototype.getX);
+ol.TileCoord.prototype.getY = function() {
+  return this.y
+};
+goog.exportProperty(ol.TileCoord.prototype, "getY", ol.TileCoord.prototype.getY);
+ol.TileCoord.prototype.getZ = function() {
+  return this.z
+};
+goog.exportProperty(ol.TileCoord.prototype, "getZ", ol.TileCoord.prototype.getZ);
 goog.provide("ol.TileRange");
 goog.require("goog.asserts");
 goog.require("ol.Size");
@@ -3306,6 +3319,22 @@ ol.TileRange.prototype.getWidth = function() {
 ol.TileRange.prototype.intersects = function(tileRange) {
   return this.minX <= tileRange.maxX && this.maxX >= tileRange.minX && this.minY <= tileRange.maxY && this.maxY >= tileRange.minY
 };
+ol.TileRange.prototype.getMinX = function() {
+  return this.minX
+};
+goog.exportProperty(ol.TileRange.prototype, "getMinX", ol.TileRange.prototype.getMinX);
+ol.TileRange.prototype.getMaxX = function() {
+  return this.maxX
+};
+goog.exportProperty(ol.TileRange.prototype, "getMaxX", ol.TileRange.prototype.getMaxX);
+ol.TileRange.prototype.getMinY = function() {
+  return this.minY
+};
+goog.exportProperty(ol.TileRange.prototype, "getMinY", ol.TileRange.prototype.getMinY);
+ol.TileRange.prototype.getMaxY = function() {
+  return this.maxY
+};
+goog.exportProperty(ol.TileRange.prototype, "getMaxY", ol.TileRange.prototype.getMaxY);
 goog.provide("ol.Attribution");
 goog.require("ol.TileRange");
 ol.Attribution = function(options) {
@@ -17672,6 +17701,8 @@ ol.tilegrid.createForProjection = function(projection, opt_maxZoom, opt_tileSize
   }
   return new ol.tilegrid.TileGrid({origin:goog.isNull(projectionExtent) ? [0, 0] : ol.extent.getBottomLeft(projectionExtent), resolutions:resolutions, tileSize:tileSize})
 };
+goog.exportProperty(ol.tilegrid.TileGrid.prototype, "getTileRangeForExtentAndZ", ol.tilegrid.TileGrid.prototype.getTileRangeForExtentAndZ);
+goog.exportProperty(ol.tilegrid.TileGrid.prototype, "getResolutions", ol.tilegrid.TileGrid.prototype.getResolutions);
 goog.provide("ol.source.Tile");
 goog.provide("ol.source.TileOptions");
 goog.require("goog.functions");
@@ -38010,49 +38041,13 @@ goog.exportProperty(ol.interaction.DragAndDropEvent.prototype, "features", ol.in
 goog.exportProperty(ol.interaction.DragAndDropEvent.prototype, "file", ol.interaction.DragAndDropEvent.prototype.file);
 goog.exportProperty(ol.interaction.DragAndDropEvent.prototype, "projection", ol.interaction.DragAndDropEvent.prototype.projection);
 goog.exportSymbol("ol.interaction.DragBox", ol.interaction.DragBox);
-goog.exportProperty(ol.interaction.DragBox.prototype, "dispatchChangeEvent", ol.interaction.DragBox.prototype.dispatchChangeEvent);
 goog.exportProperty(ol.interaction.DragBox.prototype, "getGeometry", ol.interaction.DragBox.prototype.getGeometry);
-goog.exportProperty(ol.interaction.DragBox.prototype, "getRevision", ol.interaction.DragBox.prototype.getRevision);
-goog.exportProperty(ol.interaction.DragBox.prototype, "on", ol.interaction.DragBox.prototype.on);
-goog.exportProperty(ol.interaction.DragBox.prototype, "once", ol.interaction.DragBox.prototype.once);
-goog.exportProperty(ol.interaction.DragBox.prototype, "un", ol.interaction.DragBox.prototype.un);
-goog.exportProperty(ol.interaction.DragBox.prototype, "unByKey", ol.interaction.DragBox.prototype.unByKey);
 goog.exportSymbol("ol.interaction.DragPan", ol.interaction.DragPan);
-goog.exportProperty(ol.interaction.DragPan.prototype, "dispatchChangeEvent", ol.interaction.DragPan.prototype.dispatchChangeEvent);
-goog.exportProperty(ol.interaction.DragPan.prototype, "getRevision", ol.interaction.DragPan.prototype.getRevision);
-goog.exportProperty(ol.interaction.DragPan.prototype, "on", ol.interaction.DragPan.prototype.on);
-goog.exportProperty(ol.interaction.DragPan.prototype, "once", ol.interaction.DragPan.prototype.once);
-goog.exportProperty(ol.interaction.DragPan.prototype, "un", ol.interaction.DragPan.prototype.un);
-goog.exportProperty(ol.interaction.DragPan.prototype, "unByKey", ol.interaction.DragPan.prototype.unByKey);
 goog.exportSymbol("ol.interaction.DragRotate", ol.interaction.DragRotate);
-goog.exportProperty(ol.interaction.DragRotate.prototype, "dispatchChangeEvent", ol.interaction.DragRotate.prototype.dispatchChangeEvent);
-goog.exportProperty(ol.interaction.DragRotate.prototype, "getRevision", ol.interaction.DragRotate.prototype.getRevision);
-goog.exportProperty(ol.interaction.DragRotate.prototype, "on", ol.interaction.DragRotate.prototype.on);
-goog.exportProperty(ol.interaction.DragRotate.prototype, "once", ol.interaction.DragRotate.prototype.once);
-goog.exportProperty(ol.interaction.DragRotate.prototype, "un", ol.interaction.DragRotate.prototype.un);
-goog.exportProperty(ol.interaction.DragRotate.prototype, "unByKey", ol.interaction.DragRotate.prototype.unByKey);
 goog.exportSymbol("ol.interaction.DragRotateAndZoom", ol.interaction.DragRotateAndZoom);
-goog.exportProperty(ol.interaction.DragRotateAndZoom.prototype, "dispatchChangeEvent", ol.interaction.DragRotateAndZoom.prototype.dispatchChangeEvent);
-goog.exportProperty(ol.interaction.DragRotateAndZoom.prototype, "getRevision", ol.interaction.DragRotateAndZoom.prototype.getRevision);
-goog.exportProperty(ol.interaction.DragRotateAndZoom.prototype, "on", ol.interaction.DragRotateAndZoom.prototype.on);
-goog.exportProperty(ol.interaction.DragRotateAndZoom.prototype, "once", ol.interaction.DragRotateAndZoom.prototype.once);
-goog.exportProperty(ol.interaction.DragRotateAndZoom.prototype, "un", ol.interaction.DragRotateAndZoom.prototype.un);
-goog.exportProperty(ol.interaction.DragRotateAndZoom.prototype, "unByKey", ol.interaction.DragRotateAndZoom.prototype.unByKey);
 goog.exportSymbol("ol.interaction.DragZoom", ol.interaction.DragZoom);
-goog.exportProperty(ol.interaction.DragZoom.prototype, "dispatchChangeEvent", ol.interaction.DragZoom.prototype.dispatchChangeEvent);
 goog.exportProperty(ol.interaction.DragZoom.prototype, "getGeometry", ol.interaction.DragZoom.prototype.getGeometry);
-goog.exportProperty(ol.interaction.DragZoom.prototype, "getRevision", ol.interaction.DragZoom.prototype.getRevision);
-goog.exportProperty(ol.interaction.DragZoom.prototype, "on", ol.interaction.DragZoom.prototype.on);
-goog.exportProperty(ol.interaction.DragZoom.prototype, "once", ol.interaction.DragZoom.prototype.once);
-goog.exportProperty(ol.interaction.DragZoom.prototype, "un", ol.interaction.DragZoom.prototype.un);
-goog.exportProperty(ol.interaction.DragZoom.prototype, "unByKey", ol.interaction.DragZoom.prototype.unByKey);
 goog.exportSymbol("ol.interaction.Draw", ol.interaction.Draw);
-goog.exportProperty(ol.interaction.Draw.prototype, "dispatchChangeEvent", ol.interaction.Draw.prototype.dispatchChangeEvent);
-goog.exportProperty(ol.interaction.Draw.prototype, "getRevision", ol.interaction.Draw.prototype.getRevision);
-goog.exportProperty(ol.interaction.Draw.prototype, "on", ol.interaction.Draw.prototype.on);
-goog.exportProperty(ol.interaction.Draw.prototype, "once", ol.interaction.Draw.prototype.once);
-goog.exportProperty(ol.interaction.Draw.prototype, "un", ol.interaction.Draw.prototype.un);
-goog.exportProperty(ol.interaction.Draw.prototype, "unByKey", ol.interaction.Draw.prototype.unByKey);
 goog.exportProperty(ol.interaction.Interaction.prototype, "dispatchChangeEvent", ol.interaction.Interaction.prototype.dispatchChangeEvent);
 goog.exportProperty(ol.interaction.Interaction.prototype, "getRevision", ol.interaction.Interaction.prototype.getRevision);
 goog.exportProperty(ol.interaction.Interaction.prototype, "on", ol.interaction.Interaction.prototype.on);
@@ -38074,12 +38069,6 @@ goog.exportProperty(ol.interaction.KeyboardZoom.prototype, "once", ol.interactio
 goog.exportProperty(ol.interaction.KeyboardZoom.prototype, "un", ol.interaction.KeyboardZoom.prototype.un);
 goog.exportProperty(ol.interaction.KeyboardZoom.prototype, "unByKey", ol.interaction.KeyboardZoom.prototype.unByKey);
 goog.exportSymbol("ol.interaction.Modify", ol.interaction.Modify);
-goog.exportProperty(ol.interaction.Modify.prototype, "dispatchChangeEvent", ol.interaction.Modify.prototype.dispatchChangeEvent);
-goog.exportProperty(ol.interaction.Modify.prototype, "getRevision", ol.interaction.Modify.prototype.getRevision);
-goog.exportProperty(ol.interaction.Modify.prototype, "on", ol.interaction.Modify.prototype.on);
-goog.exportProperty(ol.interaction.Modify.prototype, "once", ol.interaction.Modify.prototype.once);
-goog.exportProperty(ol.interaction.Modify.prototype, "un", ol.interaction.Modify.prototype.un);
-goog.exportProperty(ol.interaction.Modify.prototype, "unByKey", ol.interaction.Modify.prototype.unByKey);
 goog.exportSymbol("ol.interaction.MouseWheelZoom", ol.interaction.MouseWheelZoom);
 goog.exportProperty(ol.interaction.MouseWheelZoom.prototype, "dispatchChangeEvent", ol.interaction.MouseWheelZoom.prototype.dispatchChangeEvent);
 goog.exportProperty(ol.interaction.MouseWheelZoom.prototype, "getRevision", ol.interaction.MouseWheelZoom.prototype.getRevision);
@@ -38088,25 +38077,7 @@ goog.exportProperty(ol.interaction.MouseWheelZoom.prototype, "once", ol.interact
 goog.exportProperty(ol.interaction.MouseWheelZoom.prototype, "un", ol.interaction.MouseWheelZoom.prototype.un);
 goog.exportProperty(ol.interaction.MouseWheelZoom.prototype, "unByKey", ol.interaction.MouseWheelZoom.prototype.unByKey);
 goog.exportSymbol("ol.interaction.PinchRotate", ol.interaction.PinchRotate);
-goog.exportProperty(ol.interaction.PinchRotate.prototype, "dispatchChangeEvent", ol.interaction.PinchRotate.prototype.dispatchChangeEvent);
-goog.exportProperty(ol.interaction.PinchRotate.prototype, "getRevision", ol.interaction.PinchRotate.prototype.getRevision);
-goog.exportProperty(ol.interaction.PinchRotate.prototype, "on", ol.interaction.PinchRotate.prototype.on);
-goog.exportProperty(ol.interaction.PinchRotate.prototype, "once", ol.interaction.PinchRotate.prototype.once);
-goog.exportProperty(ol.interaction.PinchRotate.prototype, "un", ol.interaction.PinchRotate.prototype.un);
-goog.exportProperty(ol.interaction.PinchRotate.prototype, "unByKey", ol.interaction.PinchRotate.prototype.unByKey);
 goog.exportSymbol("ol.interaction.PinchZoom", ol.interaction.PinchZoom);
-goog.exportProperty(ol.interaction.PinchZoom.prototype, "dispatchChangeEvent", ol.interaction.PinchZoom.prototype.dispatchChangeEvent);
-goog.exportProperty(ol.interaction.PinchZoom.prototype, "getRevision", ol.interaction.PinchZoom.prototype.getRevision);
-goog.exportProperty(ol.interaction.PinchZoom.prototype, "on", ol.interaction.PinchZoom.prototype.on);
-goog.exportProperty(ol.interaction.PinchZoom.prototype, "once", ol.interaction.PinchZoom.prototype.once);
-goog.exportProperty(ol.interaction.PinchZoom.prototype, "un", ol.interaction.PinchZoom.prototype.un);
-goog.exportProperty(ol.interaction.PinchZoom.prototype, "unByKey", ol.interaction.PinchZoom.prototype.unByKey);
-goog.exportProperty(ol.interaction.Pointer.prototype, "dispatchChangeEvent", ol.interaction.Pointer.prototype.dispatchChangeEvent);
-goog.exportProperty(ol.interaction.Pointer.prototype, "getRevision", ol.interaction.Pointer.prototype.getRevision);
-goog.exportProperty(ol.interaction.Pointer.prototype, "on", ol.interaction.Pointer.prototype.on);
-goog.exportProperty(ol.interaction.Pointer.prototype, "once", ol.interaction.Pointer.prototype.once);
-goog.exportProperty(ol.interaction.Pointer.prototype, "un", ol.interaction.Pointer.prototype.un);
-goog.exportProperty(ol.interaction.Pointer.prototype, "unByKey", ol.interaction.Pointer.prototype.unByKey);
 goog.exportSymbol("ol.interaction.Select", ol.interaction.Select);
 goog.exportProperty(ol.interaction.Select.prototype, "dispatchChangeEvent", ol.interaction.Select.prototype.dispatchChangeEvent);
 goog.exportProperty(ol.interaction.Select.prototype, "getFeatures", ol.interaction.Select.prototype.getFeatures);

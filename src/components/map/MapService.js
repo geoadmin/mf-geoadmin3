@@ -1,48 +1,56 @@
 (function() {
   goog.provide('ga_map_service');
 
+  goog.require('ga_offline_service');
+  goog.require('ga_storage_service');
   goog.require('ga_styles_service');
   goog.require('ga_urlutils_service');
 
   var module = angular.module('ga_map_service', [
     'pascalprecht.translate',
+    'ga_offline_service',
+    'ga_storage_service',
     'ga_styles_service',
     'ga_urlutils_service'
   ]);
 
   module.provider('gaTileGrid', function() {
+    var origin = [420000, 350000];
+    var defaultResolutions = [4000, 3750, 3500, 3250, 3000, 2750, 2500, 2250,
+        2000, 1750, 1500, 1250, 1000, 750, 650, 500, 250, 100, 50, 20, 10, 5,
+        2.5, 2, 1.5, 1, 0.5];
+    var wmsResolutions = defaultResolutions.concat([0.25, 0.1]);
 
     function createTileGrid(resolutions, type) {
-      var origin = [420000, 350000];
-      var matrixIds = $.map(resolutions, function(r, i) { return i + ''; });
       if (type === 'wms') {
         return new ol.tilegrid.TileGrid({
           tileSize: 512,
           origin: origin,
-          resolutions: [4000, 3750, 3500, 3250, 3000, 2750, 2500, 2250,
-                        2000, 1750, 1500, 1250, 1000, 750, 650, 500, 250,
-                        100, 50, 20, 10, 5, 2.5, 2, 1.5, 1, 0.5, 0.25, 0.1]
-        });
-      } else {
-        return new ol.tilegrid.WMTS({
-          matrixIds: matrixIds,
-          origin: origin,
           resolutions: resolutions
         });
       }
+      return new ol.tilegrid.WMTS({
+          matrixIds: $.map(resolutions, function(r, i) { return i + ''; }),
+          origin: origin,
+          resolutions: resolutions
+      });
     }
-
-    function defaultTileGrid(type) {
-      return createTileGrid([4000, 3750, 3500, 3250, 3000, 2750, 2500, 2250,
-                             2000, 1750, 1500, 1250, 1000, 750, 650, 500, 250,
-                             100, 50, 20, 10, 5, 2.5, 2, 1.5, 1, 0.5], type);
-    };
 
     this.$get = function() {
       return {
-        get: function(resolutions, type) {
-          return resolutions ? createTileGrid(resolutions, type) :
-                               defaultTileGrid(type);
+        get: function(resolutions, minResolution, type) {
+          if (!resolutions) {
+            resolutions = (type == 'wms') ? wmsResolutions : defaultResolutions;
+          }
+          if (minResolution) { // we remove useless resolutions
+            for (var i = 0, ii = resolutions.length; i < ii; i++) {
+              if (resolutions[i] === i) {
+                resolutions = resolutions.splice(0, i + 1);
+                break;
+              }
+            }
+          }
+          return createTileGrid(resolutions, type);
         }
       };
     };
@@ -553,8 +561,9 @@
    */
   module.provider('gaLayers', function() {
 
-    this.$get = function($q, $http, $translate, $rootScope, gaMapUtils,
-          gaUrlUtils, gaTileGrid, gaDefinePropertiesForLayer) {
+    this.$get = function($http, $q, $rootScope, $translate, $window,
+        gaBrowserSniffer, gaDefinePropertiesForLayer, gaMapUtils,
+        gaNetworkStatus, gaStorage, gaTileGrid, gaUrlUtils) {
 
       var Layers = function(wmtsGetTileUrlTemplate,
           layersConfigUrlTemplate, legendUrlTemplate) {
@@ -579,6 +588,32 @@
               .replace('{Topic}', topic)
               .replace('{Layer}', layer)
               .replace('{Lang}', lang);
+        };
+
+        // Function to remove the blob url from memory.
+        var revokeBlob = function() {
+          $window.URL.revokeObjectURL(this.src);
+          this.removeEventListener('load', revokeBlob);
+        };
+
+        // The tile load function which loads tiles from local
+        // storage if they exist otherwise try to load the tiles normally.
+        var tileLoadFunction = function(imageTile, src) {
+          gaStorage.getTile(gaMapUtils.getTileKey(src), function(content) {
+            if (content && $window.URL && $window.atob) {
+              try {
+                var blob = gaMapUtils.dataURIToBlob(content);
+                imageTile.getImage().addEventListener('load', revokeBlob);
+                imageTile.getImage().src = $window.URL.createObjectURL(blob);
+              } catch (e) {
+                // INVALID_CHAR_ERROR on ie and ios, it's an encoding problem
+                // TODO: fix it
+                imageTile.getImage().src = content;
+              }
+            } else {
+              imageTile.getImage().src = (content) ? content : src;
+            }
+          });
         };
 
         /**
@@ -647,18 +682,21 @@
                 },
                 projection: 'EPSG:21781',
                 requestEncoding: 'REST',
-                tileGrid: gaTileGrid.get(layer.resolutions),
+                tileGrid: gaTileGrid.get(layer.resolutions,
+                    layer.minResolution),
+                tileLoadFunction: tileLoadFunction,
                 url: getWmtsGetTileUrl(layer.serverLayerName,
                   layer.format)
               });
             }
             olLayer = new ol.layer.Tile({
-              minResolution: layer.minResolution,
+              minResolution: gaNetworkStatus.offline ? null :
+                  layer.minResolution,
               maxResolution: layer.maxResolution,
               opacity: layer.opacity || 1,
               attribution: layer.attribution,
               source: olSource,
-              useInterimTilesOnError: false
+              useInterimTilesOnError: gaNetworkStatus.offline
             });
           } else if (layer.type == 'wms') {
             var wmsUrl = gaUrlUtils.remove(
@@ -695,7 +733,9 @@
                   params: wmsParams,
                   attributions: attributions,
                   gutter: layer.gutter || 0,
-                  tileGrid: gaTileGrid.get(layer.resolutions, 'wms')
+                  tileGrid: gaTileGrid.get(layer.resolutions,
+                      layer.minResolution, 'wms'),
+                  tileLoadFunction: tileLoadFunction
                 });
               }
               olLayer = new ol.layer.Tile({
@@ -843,7 +883,67 @@
   module.provider('gaMapUtils', function() {
     this.$get = function() {
       var attributions = {};
+      var resolutions = [650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0,
+          2.5, 2.0, 1.0, 0.5, 0.25, 0.1];
       return {
+        swissExtent: [420000, 30000, 900000, 350000],
+        viewResolutions: resolutions,
+        getViewResolutionForZoom: function(zoom) {
+          return resolutions[zoom];
+        },
+        // Example of a dataURI: 'data:image/png;base64,sdsdfdfsdfdf...'
+        dataURIToBlob: function(dataURI) {
+          var BASE64_MARKER = ';base64,';
+          var base64Index = dataURI.indexOf(BASE64_MARKER);
+          var base64 = dataURI.substring(base64Index + BASE64_MARKER.length);
+          var contentType = dataURI.substring(5, base64Index);
+          var raw = window.atob(base64);
+          var rawLength = raw.length;
+          var uInt8Array = new Uint8Array(rawLength);
+          for (var i = 0; i < rawLength; ++i) {
+            uInt8Array[i] = raw.charCodeAt(i);
+          }
+          return this.arrayBufferToBlob(uInt8Array.buffer, contentType);
+        },
+
+        // Advantage of the blob is we have easy access to the size and the
+        // type of the image, moreover in the future we could store it
+        // directly in indexedDB, no need of fileReader anymore.
+        // We could request a 'blob' instead of 'arraybuffer' response type
+        // but android browser needs arraybuffer.
+        arrayBufferToBlob: function(buffer, contentType) {
+          if (window.WebKitBlobBuilder) {
+            // BlobBuilder is deprecated, only used in Android Browser
+            var builder = new WebKitBlobBuilder();
+            builder.append(buffer);
+            return builder.getBlob(contentType);
+          } else {
+            return new Blob([buffer], {type: contentType});
+          }
+        },
+
+        /**
+         * Defines a unique identifier from a tileUrl.
+         * Use by offline to store in local storage.
+         */
+        getTileKey: function(tileUrl) {
+          return tileUrl.replace(/^\/\/wmts[0-9]/, '');
+        },
+        /**
+         * Search for a layer identified by bodId in the map and
+         * return it. undefined is returned if the map does not have
+         * such a layer.
+         */
+        getMapLayerForBodId: function(map, bodId) {
+          var layer;
+          map.getLayers().forEach(function(l) {
+            if (l.bodId == bodId && !l.preview) {
+              layer = l;
+            }
+          });
+          return layer;
+        },
+
         /**
          * Search for an overlay identified by bodId in the map and
          * return it. undefined is returned if the map does not have
@@ -900,6 +1000,12 @@
           return !layer.background &&
                  layer.timeEnabled &&
                  layer.visible;
+        },
+        /**
+         * Keep only background layers
+         */
+        background: function(layer) {
+          return layer.background;
         }
       };
     };

@@ -1,0 +1,17 @@
+<div ng-if="isDownloading" class="ga-progress"> 
+  <div class="ga-progress-pie"><!-- {{(percent <= 50) ? 'ga-progress-mask' : ''}}"-->
+    <div class="ga-progress-circle"></div> <!--ga-circle-left"></div-->
+    <!--div class="ga-progress-circle ga-circle-right"></div-->
+  </div>
+  <div class="ga-progress-text btn-danger">{{percent}}%</div>
+</div>
+
+<div class="ga-buttons">
+  <button ng-hide="isDownloading" class="btn btn-default"
+          ng-click="save()" 
+          translate>offline_save</button>
+  <button ng-show="isDownloading"class="btn btn-danger" 
+          ng-click="abort()" 
+          translate>offline_abort</button>
+</div>
+

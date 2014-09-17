@@ -1,0 +1,33 @@
+<div class="modal-container">
+  <div id="offline-menu" class="modal fade" ga-modal-show="isOfflineMenuActive" >
+     <div class="modal-dialog" ga-draggable=".modal-header">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title" translate>offline_modal_title</h4>
+        </div>
+        <div class="modal-body">
+          <span ng-show="!offline">
+            <button class="btn btn-default" 
+                    ng-show="!hasOfflineData"
+                    ng-click="openSelector()" 
+                    translate>offline_save_new_data</button>
+            <button class="btn btn-danger"
+                    ng-show="hasOfflineData"
+                    ng-click="abort()" 
+                    translate>offline_delete_data</button>
+          </span>
+          <span ng-show="hasOfflineData">
+            <button class="btn btn-default" 
+                    ng-click="toggleDataExtent()" 
+                    translate>offline_toggle_extent</button>
+            <button class="btn btn-default" 
+                    ng-click="zoom()" 
+                    translate>offline_zoom_extent</button>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

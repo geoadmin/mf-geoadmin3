@@ -1,0 +1,50 @@
+CACHE MANIFEST
+# Version ${version}
+<%
+ defaultLanguage = 'en'
+ languages = ('de', 'en', 'fr', 'it', 'rm')
+ topics = ('are', 'bafu', 'blw', 'dev', 'ech', 'funksender', 'geol', 'inspire', 'ivs', 'kgs', 'luftbilder', 'nga', 'sachplan', 'swisstopo', 'vu', 'wildruhezonen')
+%>
+CACHE:
+${version}/lib/build.js	
+${version}/style/app.css
+${version}/style/font-awesome-3.2.1/font/fontawesome-webfont.woff?v=3.2.1
+${version}/img/logo.ch.small.png
+${api_url}/${version}/rest/services
+
+# Use case: opens in offline then online.
+# In that case we need to have all languages, because we can't reload manually
+# files used by $translate.
+% for lang in languages:
+${version}/locales/${lang}.json
+% endfor
+
+NETWORK:
+#use by CatalogServer, checker, tiles
+*
+
+FALLBACK:
+
+# Logos images
+% for lang in languages:
+${version}/img/logo.ch.${lang}.png ${version}/img/logo.ch.${defaultLanguage}.png
+% endfor
+
+# Topic images
+% for topic in topics:
+${version}/img/${topic}.jpg ${version}/img/dev.jpg
+% endfor
+
+# Layers config
+% for topic in topics:
+${apache_base_path}/rest/services/${topic}/MapServer/layersConfig ${apache_base_path}/rest/services/ech/MapServer/layersConfig?lang=${defaultLanguage}
+% endfor
+
+# With Permalink
+${apache_base_path}/? index.html
+index.html? index.html
+mobile.html? mobile.html
+
+# Without permalink
+${apache_base_path}/ index.html
+

@@ -80,7 +80,8 @@
               var resolution = Math.max(
                 (extent[2] - extent[0]) / size[0],
                 (extent[3] - extent[1]) / size[1]);
-              resolution = view.constrainResolution(resolution, 0, 0);
+              resolution = Math.max(view.constrainResolution(resolution, 0, 0),
+                2.5);
               bounce = ol.animation.bounce({
                 duration: duration,
                 resolution: Math.max(view.getResolution(), dist / 1000,
@@ -97,12 +98,7 @@
               view.setCenter(dest);
               view.setResolution(resolution);
             } else if (!userTakesControl) {
-              bounce = ol.animation.bounce({
-                duration: duration,
-                resolution: Math.max(view.getResolution(), dist / 1000),
-                start: start
-              });
-              map.beforeRender(pan, bounce);
+              map.beforeRender(pan);
               view.setCenter(dest);
             }
           }

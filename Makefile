@@ -29,6 +29,7 @@ help:
 	@echo "- testprod        Run the JavaScript tests in prod mode"
 	@echo "- teste2e         Run browserstack tests"
 	@echo "- apache          Configure Apache (restart required)"
+	@echo "- appcache        Update appcache file"
 	@echo "- fixrights       Fix rights in common folder"
 	@echo "- all             All of the above (target to run prior to creating a PR)"
 	@echo "- clean           Remove generated files"
@@ -55,7 +56,7 @@ help:
 all: prod dev lint apache testdev testprod deploy/deploy-branch.cfg fixrights
 
 .PHONY: prod
-prod: prd/lib/ prd/lib/build.js prd/style/app.css prd/index.html prd/mobile.html prd/img/ prd/style/font-awesome-3.2.1/font/ prd/locales/ prd/checker prd/robots.txt
+prod: prd/lib/ prd/lib/build.js prd/style/app.css prd/geoadmin.appcache prd/index.html prd/mobile.html prd/img/ prd/style/font-awesome-3.2.1/font/ prd/locales/ prd/checker prd/robots.txt
 
 .PHONY: dev
 dev: src/deps.js src/style/app.css src/index.html src/mobile.html
@@ -77,6 +78,9 @@ teste2e: guard-BROWSERSTACK_TARGETURL guard-BROWSERSTACK_USER guard-BROWSERSTACK
 
 .PHONY: apache
 apache: apache/app.conf
+
+.PHONY: appcache
+appcache: cleanappcache prd/geoadmin.appcache prd/index.html prd/mobile.html
 
 .PHONY: deploydev
 deploydev:
@@ -124,6 +128,9 @@ updateol: .build-artefacts/ol3 .build-artefacts/ol-requirements-installation.tim
 	git show; \
 	cat ../../scripts/ga-ol3-feature.exports >> src/ol/feature.js; \
 	cat ../../scripts/ga-ol3-source.exports >> src/ol/source/source.js; \
+	cat ../../scripts/ga-ol3-tilecoord.exports >> src/ol/tilecoord.js; \
+	cat ../../scripts/ga-ol3-tilegrid.exports >> src/ol/tilegrid/tilegrid.js; \
+	cat ../../scripts/ga-ol3-tilerange.exports >> src/ol/tilerange.js; \
 	npm install; \
 	../python-venv/bin/python build.py $(addprefix build/,$(OL_JS)); \
 	cd ../../; \
@@ -157,7 +164,7 @@ prd/lib/: src/lib/d3-3.3.1.min.js src/lib/angularIE9CorsFix.js src/lib/jQuery.XD
 	mkdir -p $@
 	cp $^ $@
 
-prd/lib/build.js: fastclick src/lib/jquery-2.0.3.min.js src/lib/bootstrap-3.0.0.min.js src/lib/typeahead-0.9.3.min.js src/lib/angular-1.2.9.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/EPSG2056.js src/lib/EPSG32631.js src/lib/EPSG32632.js .build-artefacts/MGRS.min.js src/lib/ol.js src/lib/angular-animate-1.2.9.min.js src/lib/angular-translate-1.1.1.min.js src/lib/angular-translate-loader-static-files-0.1.5.min.js .build-artefacts/fastclick.min.js .build-artefacts/app.js
+prd/lib/build.js: src/lib/jquery-2.0.3.min.js src/lib/bootstrap-3.0.0.min.js src/lib/typeahead-0.9.3.min.js src/lib/angular-1.2.9.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/EPSG2056.js src/lib/EPSG32631.js src/lib/EPSG32632.js .build-artefacts/MGRS.min.js src/lib/ol.js src/lib/angular-animate-1.2.9.min.js src/lib/angular-translate-1.1.1.min.js src/lib/angular-translate-loader-static-files-0.1.5.min.js .build-artefacts/fastclick.min.js src/lib/localforage-0.9.1.min.js .build-artefacts/app.js 
 	mkdir -p $(dir $@)
 	cat $^ | sed 's/^\/\/[#,@] sourceMappingURL=.*//' > $@
 
@@ -165,7 +172,11 @@ prd/style/app.css: src/style/app.less src/style/print.less src/style/ga_bootstra
 	mkdir -p $(dir $@)
 	node_modules/.bin/lessc -ru --yui-compress $< $@
 
-prd/index.html: src/index.mako.html prd/lib/build.js prd/style/app.css .build-artefacts/python-venv/bin/mako-render .build-artefacts/python-venv/bin/htmlmin .build-artefacts/last-api-url .build-artefacts/last-apache-base-path
+prd/geoadmin.appcache: src/geoadmin.mako.appcache .build-artefacts/python-venv/bin/mako-render
+	mkdir -p $(dir $@);
+	.build-artefacts/python-venv/bin/mako-render --var "version=$(VERSION)" --var "apache_base_path=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
+
+prd/index.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render .build-artefacts/python-venv/bin/htmlmin .build-artefacts/last-api-url .build-artefacts/last-apache-base-path
 	mkdir -p $(dir $@)
 	.build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "mode=prod" --var "version=$(VERSION)" --var "versionslashed=$(VERSION)/" --var "apache_base_path=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
 	.build-artefacts/python-venv/bin/htmlmin --remove-comments --keep-optional-attribute-quotes $@ $@
@@ -220,9 +231,9 @@ node_modules: package.json
 
 # There's no distribution of a minified version of fastclick and MGRS so we minify it
 # ourselves as part of our build process.
-.build-artefacts/fastclick.min.js: src/lib/fastclick.js .build-artefacts/closure-compiler/compiler.jar
+.build-artefacts/fastclick.min.js: fastclick .build-artefacts/closure-compiler/compiler.jar
 	mkdir -p $(dir $@)
-	java -jar .build-artefacts/closure-compiler/compiler.jar $< --compilation_level SIMPLE_OPTIMIZATIONS --js_output_file $@
+	java -jar .build-artefacts/closure-compiler/compiler.jar src/lib/fastclick.js --compilation_level SIMPLE_OPTIMIZATIONS --js_output_file $@
 
 .build-artefacts/MGRS.min.js: src/lib/MGRS.js .build-artefacts/closure-compiler/compiler.jar
 	mkdir -p $(dir $@)
@@ -345,6 +356,13 @@ scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf .build-artefacts/
 cleanall: clean
 	rm -rf node_modules
 	rm -rf .build-artefacts
+
+
+.PHONY: cleanappcache
+cleanappcache: 
+	rm -f prd/geoadmin.appcache
+	rm -f prd/index.html
+	rm -f prd/mobile.html
 
 .PHONY: clean
 clean:

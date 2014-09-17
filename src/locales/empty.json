@@ -254,5 +254,13 @@
   "offline_zoom_extent": "",
   "offline_sorry": "",
   "offline_save_new_data": "",
-  "offline_user_warning": ""
+  "offline_save_warning": "",
+  "offline_abort_warning": "",
+  "offline_space_warning": "",
+  "offline_dl_succeed": "",
+  "offline_less_than_95": "",
+  "offline_no_cacheable_layers": "",
+  "offline_clear_db_error": "",
+  "appcache_update_available": ""
+
 }

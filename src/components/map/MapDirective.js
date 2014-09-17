@@ -3,17 +3,19 @@
 
   goog.require('ga_browsersniffer_service');
   goog.require('ga_debounce_service');
+  goog.require('ga_offline_service');
   goog.require('ga_permalink');
 
   var module = angular.module('ga_map_directive', [
     'ga_browsersniffer_service',
     'ga_debounce_service',
+    'ga_offline_service',
     'ga_permalink'
   ]);
 
   module.directive('gaMap',
-      function($window, $parse, $timeout, gaPermalink, gaBrowserSniffer,
-          gaLayers, gaDebounce) {
+      function($window, $parse, $rootScope, $timeout, gaPermalink,
+          gaBrowserSniffer, gaLayers, gaDebounce, gaOffline) {
         return {
           restrict: 'A',
           scope: {
@@ -103,6 +105,15 @@
                 }
               });
             }
+
+            $rootScope.$on('gaNetworkStatusChange', function(evt, offline) {
+              gaOffline.refreshLayers(map.getLayers().getArray(), offline);
+              if (offline) {
+                gaOffline.showExtent(map);
+              } else {
+                gaOffline.hideExtent();
+              }
+            });
           }
         };
       }

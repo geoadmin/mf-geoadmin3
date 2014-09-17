@@ -76,21 +76,35 @@
               scope.activeTopic = topicId;
             };
 
+            var find = function(id) {
+              for (var i = 0, len = scope.topics.length; i < len; i++) {
+                var topic = scope.topics[i];
+                if (topic.id == id) {
+                  return topic;
+                }
+              }
+            };
             scope.$watch('activeTopic', function(newVal) {
               if (newVal && scope.topics) {
-                var i, len = scope.topics.length;
-                for (i = 0; i < len; i++) {
-                  var topic = scope.topics[i];
-                  if (topic.id == newVal) {
-                    gaPermalink.updateParams({topic: newVal});
-                    $rootScope.$broadcast('gaTopicChange', topic);
-                    break;
-                  }
+                var topic = find(newVal);
+                if (topic) {
+                  gaPermalink.updateParams({topic: newVal});
+                  $rootScope.$broadcast('gaTopicChange', topic);
                 }
               }
               $('.ga-topic-item').tooltip({
                 placement: 'bottom'
               });
+            });
+
+            $rootScope.$on('gaNetworkStatusChange', function(evt, offline) {
+              // When page is loaded directly in  offline mode we use the
+              // default (ech) topic, so when we go back to online mode
+              // we must reload the correct topic. The event reload the catalog
+              // too.
+              if (!offline) {
+                $rootScope.$broadcast('gaTopicChange', find(scope.activeTopic));
+              }
             });
 
          }
