@@ -2,15 +2,13 @@
   goog.provide('ga_share_directive');
 
   goog.require('ga_permalink');
-  goog.require('ga_urlutils_service');
 
   var module = angular.module('ga_share_directive', [
-    'ga_permalink',
-    'ga_urlutils_service'
+    'ga_permalink'
   ]);
 
   module.directive('gaShare',
-      function($http, $window, gaPermalink, gaUrlUtils) {
+      function($http, $window, gaPermalink) {
           return {
             restrict: 'A',
             scope: {
@@ -18,8 +16,7 @@
             },
             templateUrl: 'components/share/partials/share.html',
             link: function(scope, element, attrs) {
-              var shortenUrl = gaUrlUtils.append(scope.options.shortenUrl,
-                  'cb=JSON_CALLBACK');
+              var shortenUrl = scope.options.shortenUrl;
               scope.qrcodegeneratorPath = scope.options.qrcodegeneratorPath;
 
               $('.ga-share-icon').tooltip({
@@ -58,7 +55,7 @@
               // Function to shorten url
               // Make an asynchronous request to url shortener
               scope.shortenUrl = function() {
-                $http.jsonp(shortenUrl, {
+                $http.get(shortenUrl, {
                   params: {
                     url: scope.permalinkValue
                   }

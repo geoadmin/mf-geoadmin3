@@ -624,7 +624,7 @@
         return parseInt(scale.value);
       });
       var that = this;
-      $http.jsonp($scope.options.shortenUrl, {
+      $http.get($scope.options.shortenUrl, {
         params: {
           url: gaPermalink.getHref()
         }

@@ -13,7 +13,7 @@
             encodeURIComponent(printPath),
         legendUrl: gaGlobalOptions.apiUrl + '/static/images/legends/',
         qrcodeUrl: gaGlobalOptions.apiUrl + '/qrcodegenerator?url=',
-        shortenUrl: gaGlobalOptions.apiUrl + '/shorten.json?cb=JSON_CALLBACK',
+        shortenUrl: gaGlobalOptions.apiUrl + '/shorten.json',
         markerUrl: gaGlobalOptions.resourceUrl + 'img/marker.png',
         heightMargin: $('#header').height(),
         widthMargin: $('#pulldown').width(),
