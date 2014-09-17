@@ -77,11 +77,12 @@
               map.removeLayer(layer);
             };
 
-            scope.moveLayer = function(layer, delta) {
+            scope.moveLayer = function(e, layer, delta) {
               var index = scope.layers.indexOf(layer);
               var layersCollection = scope.map.getLayers();
               layersCollection.removeAt(index);
               layersCollection.insertAt(index + delta, layer);
+              e.preventDefault();
             };
 
             scope.isBodLayer = function(layer) {

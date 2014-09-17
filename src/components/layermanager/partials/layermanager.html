@@ -17,9 +17,9 @@
       </label>
       <a href="#" class="ga-layer-info" ng-show="isBodLayer(layer)" ng-click="displayLayerMetadata($event, layer)"><i class="icon-info-sign"></i></a>
       <div class="ga-layer-ordering">
-        <a href="#" class="icon-arrow-up" ng-if="!$first" ng-click="moveLayer(layer, 1)"></a>
+        <a href="#" class="icon-arrow-up" ng-if="!$first" ng-click="moveLayer($event, layer, 1)"></a>
         <i class="icon-arrow-up" ng-if="$first"></i>
-        <a href="#" class="icon-arrow-down" ng-if="!$last" ng-click="moveLayer(layer, -1)"></a>
+        <a href="#" class="icon-arrow-down" ng-if="!$last" ng-click="moveLayer($event, layer, -1)"></a>
         <i class="icon-arrow-down" ng-if="$last"></i>
       </div>
     </span>
