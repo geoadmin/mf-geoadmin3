@@ -79,23 +79,23 @@
             // We can't call a map.updateSize() for these browsers(because it's
             // applied after the printing) so we resize
             // the map keeping the ratio currently display.
-            if ('onbeforeprint' in window) {
-              window.onbeforeprint = function() {
+            if ('onbeforeprint' in $window) {
+              $window.onbeforeprint = function() {
                 var size = map.getSize();
                 element.css({
                   width: '650px',
                   height: (650 * size[1] / size[0]) + 'px'
                 });
               };
-              window.onafterprint = function() {
+              $window.onafterprint = function() {
                 element.css({width: '100%', height: '100%'});
               };
             }
 
             // Chrome + Safari
             // These events are called twice on Chrome
-            if (window.matchMedia) {
-              window.matchMedia('print').addListener(function(mql) {
+            if ($window.matchMedia) {
+              $window.matchMedia('print').addListener(function(mql) {
                 if (mql.matches) { // onbeforeprint
                   map.updateSize();
                 } else { // onafterprint

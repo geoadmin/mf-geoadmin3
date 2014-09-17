@@ -883,7 +883,7 @@
    * Service provides map util functions.
    */
   module.provider('gaMapUtils', function() {
-    this.$get = function() {
+    this.$get = function($window) {
       var attributions = {};
       var resolutions = [650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0,
           2.5, 2.0, 1.0, 0.5, 0.25, 0.1];
@@ -899,7 +899,7 @@
           var base64Index = dataURI.indexOf(BASE64_MARKER);
           var base64 = dataURI.substring(base64Index + BASE64_MARKER.length);
           var contentType = dataURI.substring(5, base64Index);
-          var raw = window.atob(base64);
+          var raw = $window.atob(base64);
           var rawLength = raw.length;
           var uInt8Array = new Uint8Array(rawLength);
           for (var i = 0; i < rawLength; ++i) {
@@ -914,7 +914,7 @@
         // We could request a 'blob' instead of 'arraybuffer' response type
         // but android browser needs arraybuffer.
         arrayBufferToBlob: function(buffer, contentType) {
-          if (window.WebKitBlobBuilder) {
+          if ($window.WebKitBlobBuilder) {
             // BlobBuilder is deprecated, only used in Android Browser
             var builder = new WebKitBlobBuilder();
             builder.append(buffer);

@@ -35,7 +35,8 @@
   module.provider('gaNetworkStatus', function() {
     var count = 0;
     var promise;
-    this.$get = function($document, $rootScope, $timeout, gaGlobalOptions) {
+    this.$get = function($document, $rootScope, $timeout, $window,
+        gaGlobalOptions) {
       var NetworkStatusService = function() {
         var that = this;
         this.offline = !navigator.onLine;
@@ -84,20 +85,20 @@
 
       // The manifest returns 404 or 410, the download failed,
       // or the manifest changed while the download was in progress.
-      if (window.applicationCache) { // IE9
-        window.applicationCache.addEventListener('error', function() {
+      if ($window.applicationCache) { // IE9
+        $window.applicationCache.addEventListener('error', function() {
           net.check();
         }, false);
       }
 
       // airplane mode, works offline(firefox)
-      window.addEventListener('offline', function() {
+      $window.addEventListener('offline', function() {
         triggerChangeStatusEvent(true);
       });
 
       // online event doesn't means we have a internet connection, that means we
       // have possiby one (connected to a router ...)
-      window.addEventListener('online', function() {
+      $window.addEventListener('online', function() {
         net.check();
       });
 

@@ -6,7 +6,7 @@
   ]);
 
   module.controller('GaMousePositionController',
-      function($scope, $translate) {
+      function($scope, $translate, $window) {
         var coordinatesFormat = function(coordinates) {
           return $translate('coordinates_label') + ': ' +
               ol.coordinate.toStringXY(coordinates, 0).
@@ -56,8 +56,8 @@
           format: function(coordinates) {
             coordinates['lon'] = coordinates[0];
             coordinates['lat'] = coordinates[1];
-            return window.proj4.mgrs.forward(coordinates).
-              replace(/(.{5})/g, '$1 ');
+            return $window.proj4.mgrs.forward(coordinates).
+                replace(/(.{5})/g, '$1 ');
           }
         }
         ];

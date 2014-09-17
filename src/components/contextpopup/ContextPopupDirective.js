@@ -10,7 +10,7 @@
   ]);
 
   module.directive('gaContextPopup',
-      function($http, $q, $timeout, gaBrowserSniffer, gaNetworkStatus,
+      function($http, $q, $timeout, $window, gaBrowserSniffer, gaNetworkStatus,
           gaPermalink) {
         return {
           restrict: 'A',
@@ -109,8 +109,8 @@
 
               coord4326['lon'] = coord4326[0];
               coord4326['lat'] = coord4326[1];
-              scope.coordmgrs = window.proj4.mgrs.forward(coord4326).
-                replace(/(.{5})/g, '$1 ');
+              scope.coordmgrs = $window.proj4.mgrs.forward(coord4326).
+                  replace(/(.{5})/g, '$1 ');
               scope.altitude = '-';
 
               // A digest cycle is necessary for $http requests to be
