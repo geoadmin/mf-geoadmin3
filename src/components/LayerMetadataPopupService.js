@@ -3,18 +3,15 @@
 
   goog.require('ga_map_service');
   goog.require('ga_popup');
-  goog.require('ga_waitcursor_service');
 
   var module = angular.module('ga_layer_metadata_popup_service', [
     'ga_map_service',
     'ga_popup',
-    'ga_waitcursor_service',
     'pascalprecht.translate'
   ]);
 
   module.provider('gaLayerMetadataPopup', function() {
-    this.$get = function(gaWaitCursor, $translate, $rootScope, $sce,
-        gaPopup, gaLayers) {
+    this.$get = function($translate, $rootScope, $sce, gaPopup, gaLayers) {
       var popupContent = '<div ng-bind-html="options.result.html"></div>';
 
       var LayerMetadataPopup = function() {
@@ -28,13 +25,11 @@
           var updateContent = function(init) {
 
             var handleResult = function() {
-              gaWaitCursor.remove();
               if (init) {
                 popup.open();
               }
             };
 
-            gaWaitCursor.add();
             gaLayers.getMetaDataOfLayer(bodid)
               .success(function(data) {
                 result.html = $sce.trustAsHtml(data);

@@ -5,20 +5,18 @@
   goog.require('ga_debounce_service');
   goog.require('ga_map_service');
   goog.require('ga_popup_service');
-  goog.require('ga_waitcursor_service');
 
   var module = angular.module('ga_tooltip_directive', [
     'ga_debounce_service',
     'ga_popup_service',
     'ga_map_service',
-    'ga_waitcursor_service',
     'pascalprecht.translate'
   ]);
 
   module.directive('gaTooltip',
-      function($timeout, $http, $q, $translate, $sce, gaPopup, gaWaitCursor,
-          gaLayers, gaBrowserSniffer, gaDefinePropertiesForLayer, gaMapClick,
-          gaPreviewFeatures, gaDebounce) {
+      function($timeout, $http, $q, $translate, $sce, gaPopup, gaLayers,
+          gaBrowserSniffer, gaDefinePropertiesForLayer, gaMapClick, gaDebounce,
+          gaPreviewFeatures) {
         var popupContent = '<div ng-repeat="htmlsnippet in options.htmls">' +
                             '<div ng-bind-html="htmlsnippet"></div>' +
                             '<div class="ga-tooltip-separator" ' +
@@ -171,7 +169,6 @@
               var identifyUrl = $scope.options.identifyUrlTemplate
                                 .replace('{Topic}', currentTopic),
                   layersToQuery = getLayersToQuery(),
-                  responseCount = 0,
                   layerToQuery,
                   params,
                   identifyCount,
@@ -181,35 +178,12 @@
               var pixel = map.getPixelFromCoordinate(coordinate);
               identifyCount = layersToQuery.length;
               if (identifyCount) {
-
-                function incResponseCount() {
-                  responseCount += 1;
-                  if (responseCount == identifyCount) {
-                    gaWaitCursor.remove();
-                  }
-                }
-
-                // Show wait cursor
-                //
-                // The tricky part: without the $timeout, the call to
-                // canceler.resolve above may schedule the execution of the
-                // $http.get error callback, but the execution of the callback
-                // will happen after the call to `addClass`. So the class is
-                // added and then removed. With $timeout we force the right
-                // order of execution.
-                $timeout(function() {
-                  if (responseCount < identifyCount) {
-                    gaWaitCursor.add();
-                  }
-                }, 0);
-
                 for (i = 0; i < identifyCount; i++) {
                   layerToQuery = layersToQuery[i];
                   if (layerToQuery instanceof ol.layer.Vector ||
                       (layerToQuery instanceof ol.layer.Image &&
                       layerToQuery.getSource() instanceof
                         ol.source.ImageVector)) {
-                    incResponseCount();
                     var feature = findVectorFeature(pixel, layerToQuery);
                     if (feature) {
                       var htmlpopup =
@@ -251,12 +225,7 @@
                       timeout: canceler.promise,
                       params: params
                     }).success(function(features) {
-                      if (features.results.length == 0) {
-                        incResponseCount();
-                      }
                       showFeatures(mapExtent, size, features.results);
-                    }).error(function() {
-                      incResponseCount();
                     });
                   }
                 }
@@ -309,10 +278,7 @@
                         imageDisplay: size[0] + ',' + size[1] + ',96'
                       }
                     }).success(function(html) {
-                      gaWaitCursor.remove();
                       showPopup(html);
-                    }).error(function() {
-                      gaWaitCursor.remove();
                     });
                   }
                 });

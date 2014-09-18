@@ -2,15 +2,30 @@
   goog.provide('ga_networkstatus_service');
 
   goog.require('ga_browsersniffer_service');
+  goog.require('ga_waitcursor_service');
 
   var module = angular.module('ga_networkstatus_service', [
-    'ga_browsersniffer_service'
+    'ga_browsersniffer_service',
+    'ga_waitcursor_service'
   ]);
 
   module.factory('httpInterceptor', function($q, gaBrowserSniffer,
-      gaNetworkStatus) {
+      gaNetworkStatus, gaWaitCursor) {
     return {
+      request: function(config) {
+        gaWaitCursor.increment();
+        return config;
+      },
+      requestError: function(rejection) {
+        gaWaitCursor.decrement();
+        return $q.reject(rejection);
+      },
+      response: function(response) {
+        gaWaitCursor.decrement();
+        return response;
+      },
       responseError: function(rejection) {
+        gaWaitCursor.decrement();
         // status = 0 means the request has been aborted
         if (rejection.status != 0) {
           // In case an $http request failed we check if we are still connected.
