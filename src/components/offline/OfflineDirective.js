@@ -194,8 +194,8 @@
 
         var updateSize = function() {
           var size = scope.map.getSize();
-          width = size[0] * ol.BrowserFeature.DEVICE_PIXEL_RATIO;
-          height = size[1] * ol.BrowserFeature.DEVICE_PIXEL_RATIO;
+          width = size[0] * ol.has.DEVICE_PIXEL_RATIO;
+          height = size[1] * ol.has.DEVICE_PIXEL_RATIO;
         };
 
         // We need to calculate every corner to make it rotate
@@ -212,8 +212,8 @@
               extent[3]]);
           rectangle = [topLeft, topRight, bottomRight, bottomLeft];
           for (var i = 0; i < 4; i++) {
-             rectangle[i][0] *= ol.BrowserFeature.DEVICE_PIXEL_RATIO;
-             rectangle[i][1] *= ol.BrowserFeature.DEVICE_PIXEL_RATIO;
+             rectangle[i][0] *= ol.has.DEVICE_PIXEL_RATIO;
+             rectangle[i][1] *= ol.has.DEVICE_PIXEL_RATIO;
           }
         };
 

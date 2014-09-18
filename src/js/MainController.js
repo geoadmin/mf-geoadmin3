@@ -51,7 +51,7 @@
             resolution: 500.0,
             resolutions: gaMapUtils.viewResolutions
           }),
-          ol3Logo: false
+          logo: false
         });
 
         var dragClass = 'ga-dragging';
