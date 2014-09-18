@@ -903,6 +903,14 @@ ul.panel-body-wide {
 }
 
 // ***** MOBILE LOADER
+@-webkit-keyframes loader {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+@keyframes loader {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
 #loader {
   display: none;
   z-index: 0;
@@ -926,12 +934,17 @@ ul.panel-body-wide {
     opacity: 0;
   }
   @media (max-width: @screen-phone) {
-    width: 32px;
-    height: 32px;
-    line-height: 32px;
-    font-size: 20px;
-    left: 6px;
-    top: 8px;
+    transition: none;
+    top: 0;
+    left: 0;
+    height: 4px;
+    width: 0;
+    background: #F00;
+    -webkit-animation: loader 1s infinite;
+    animation: loader 1s infinite;
+    &:before {
+      content: normal;
+    }
   }
 }
 
