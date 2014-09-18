@@ -365,7 +365,7 @@
 
           // Store the extent saved
           var center = map.getView().getCenter();
-          extent = ol.extent.buffer(center.concat(center), 7500);
+          extent = ol.extent.buffer(center.concat(center), 5000);
 
           // We go through all the cacheable layers.
           var projection = map.getView().getView2D().getProjection();
