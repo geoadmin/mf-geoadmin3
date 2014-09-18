@@ -26,6 +26,9 @@ API & applications
 `MAP <//map.geo.admin.ch>`__
 '''''''''''''''''''''''''''''
 
+- BETA offline: possibility to store 1 or 2 layers locally for offline usage
+- Rotation button: appears when map is rotated in order to reset the rotation
+- Improve usability on mobile version
 - Bug fixes
 - `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_140908...r_140918>`__
 
