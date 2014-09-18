@@ -3,6 +3,7 @@
 from osgeo import osr, ogr
 from pyramid.threadlocal import get_current_registry
 from pyramid.i18n import get_locale_name
+from pyramid.httpexceptions import HTTPBadRequest
 import unicodedata
 from urllib import quote
 from urlparse import urlparse, urlunparse
@@ -32,6 +33,26 @@ def make_agnostic(path):
         return '//' + path
     else:
         return path
+
+
+def make_api_url(request):
+    base_path = request.registry.settings['apache_base_path']
+    base_path = '' if base_path == 'main' else '/' + base_path
+    host = request.host + base_path if 'localhost' not in request.host else request.host
+    return ''.join((request.scheme, '://', host))
+
+
+def check_url(url):
+    if url is None:
+        raise HTTPBadRequest('The parameter url is missing from the request')
+    parsedUrl = urlparse(url)
+    hostname = parsedUrl.hostname
+    if hostname is None:
+        raise HTTPBadRequest('Could not determine the hostname')
+    domain = ".".join(hostname.split(".")[-2:])
+    if all(('admin.ch' not in domain, 'swisstopo.ch' not in domain, 'bgdi.ch' not in domain)):
+        raise HTTPBadRequest('Shortener can only be used for admin.ch, swisstopo.ch and bgdi.ch domains')
+    return url
 
 
 def locale_negotiator(request):

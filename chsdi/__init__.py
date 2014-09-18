@@ -83,6 +83,10 @@ def main(global_config, **settings):
     config.add_view(route_name='dev', renderer='chsdi:templates/index.pt')
     config.add_view(route_name='testi18n', renderer='chsdi:templates/testi18n.mako')
 
+    # Shortener
+    config.add_route('shorten', '/shorten.json')
+    config.add_route('shorten_redirect', '/shorten/{id}')
+
     # static view definitions
     config.add_static_view('static', 'chsdi:static')
     config.add_static_view('images', 'chsdi:static/images')

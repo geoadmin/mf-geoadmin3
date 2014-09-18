@@ -32,6 +32,20 @@ Make sure PGUSER and PGPASS is set in your .bashrc (for nosetests, potranslate a
     export PGUSER=${username} // postgres user (won't be relevant soon)
     export PGPASS=${pass}
 
+Add .boto to your environment
+
+    cd
+    touch .boto
+    chmod 600 .boto
+
+Open .boto and Add (`/etc/boto.cfg` for main)
+
+    [Credentials]
+    aws_access_key_id = {keyid}
+    aws_secret_access_key = {accesskey}
+
+[Nagios Check](https://dashboard.prod.bgdi.ch/cgi-bin/nagios3/extinfo.cgi?type=2&host=ip-10-220-4-46.eu-west-1.compute.internal&service=DynamoDB+backup)
+
 Bootstrap your build environment:
 
     python bootstrap.py --version 1.5.2 --distribute --download-base http://pypi.camptocamp.net/distribute-0.6.22_fix-issue-227/ --setup-source http://pypi.camptocamp.net/distribute-0.6.22_fix-issue-227/distribute_setup.py
