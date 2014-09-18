@@ -39,8 +39,7 @@ var IE9Fix = function() {
       return false;
     }
     //check for relative url
-    if (requestUrl.indexOf('http://') < 0 &&
-        requestUrl.indexOf('https://') < 0 ) {
+    if (!/^https?:\/\//.test(requestUrl)) {
       return false;
     }
     return true;
