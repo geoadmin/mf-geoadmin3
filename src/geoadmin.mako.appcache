@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# Version ${version}
+# Version 201409081200
 <%
  defaultLanguage = 'en'
  languages = ('de', 'en', 'fr', 'it', 'rm')
