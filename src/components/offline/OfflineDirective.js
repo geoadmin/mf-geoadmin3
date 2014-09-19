@@ -244,6 +244,11 @@
           });
         });
 
+        scope.$on('gaOfflineError', function(evt) {
+          gaOffline.hideSelector();
+          gaOffline.abort();
+        });
+
         scope.$on('gaOfflineAbort', function(evt) {
           scope.$apply();
         });
