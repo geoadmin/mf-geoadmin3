@@ -27,6 +27,22 @@ class GravimetrischerAtlasMetadata (Base, Vector):
 register('ch.swisstopo.geologie-gravimetrischer_atlas.metadata', GravimetrischerAtlasMetadata)
 
 
+class GeolSpezialKartenMetadata (Base, Vector):
+    __tablename__ = 'kv_gsk_all'
+    __table_args__ = ({'schema': 'geol', 'autoload': False})
+    __template__ = 'templates/htmlpopup/gsk_metadata.mako'
+    __bodId__ = 'ch.swisstopo.geologie-spezialkarten_schweiz.metadata'
+    id = Column('nr', Integer, primary_key=True)
+    titel = Column('titel', Text)
+    jahr = Column('jahr', Numeric)
+    author = Column('author', Text)
+    format_kz = Column('format_kz', Text)
+    massstab = Column('massstab', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-spezialkarten_schweiz.metadata', GeolSpezialKartenMetadata)
+
+
 class SwissboundariesBezirk(Base, Vector):
     __tablename__ = 'swissboundaries_bezirke'
     __table_args__ = ({'schema': 'tlm', 'autoload': False})
