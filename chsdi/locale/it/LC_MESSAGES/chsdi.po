@@ -3260,6 +3260,9 @@ msgstr "PAT affini"
 msgid "nord"
 msgstr "Nord"
 
+msgid "notintoposhop"
+msgstr "Oggetto non disponibile"
+
 msgid "nr"
 msgstr "N°"
 

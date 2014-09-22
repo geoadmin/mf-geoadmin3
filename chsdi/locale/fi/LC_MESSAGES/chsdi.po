@@ -3260,6 +3260,9 @@ msgstr "Appartegnent  TSP"
 msgid "nord"
 msgstr "Nord"
 
+msgid "notintoposhop"
+msgstr "Object betg a disposiziun"
+
 msgid "nr"
 msgstr "Nr."
 
