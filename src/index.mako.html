@@ -362,7 +362,9 @@
 % endif
           </a>
           <div id="selection"  ga-collapsible-observe="globals.selectionShown" class="${"in" if device == "desktop" else ""}">
-            <div class="panel-body panel-body-wide" ga-layermanager ga-layermanager-map="map">
+            <div class="panel-body panel-body-wide" ga-layermanager
+            ga-layermanager-map="map"
+            ga-layermanager-options="{showTimestamps:!globals.isTimeSelectorActive}">
             </div>
           </div>
         </div> <!-- .panel -->

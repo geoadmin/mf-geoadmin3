@@ -144,6 +144,14 @@
               this.set('timeEnabled', val);
             }
           },
+          timestamps: {
+            get: function() {
+              return this.get('timestamps');
+            },
+            set: function(val) {
+              this.set('timestamps', val);
+            }
+          },
           time: {
             get: function() {
               if (this instanceof ol.layer.Layer) {
@@ -166,6 +174,7 @@
                     src instanceof ol.source.TileWMS) {
                   src.updateParams({'TIME': val});
                 }
+                this.set('time', val);
               }
             }
           },
@@ -679,7 +688,8 @@
               '" target="new">' +
               layer.attribution + '</a>')
           ];
-          var olSource = layer.olSource;
+          // We allow duplication of source for time enabled layers
+          var olSource = (layer.timeEnabled) ? null : layer.olSource;
           if (layer.type == 'wmts') {
             if (!olSource) {
               olSource = layer.olSource = new ol.source.WMTS({
@@ -775,6 +785,7 @@
             olLayer.bodId = bodId;
             olLayer.label = layer.label;
             olLayer.timeEnabled = layer.timeEnabled;
+            olLayer.timestamps = layer.timestamps;
           }
           return olLayer;
         };
@@ -1041,12 +1052,18 @@
       var layersOpacityParamValue = gaPermalink.getParams().layers_opacity;
       var layersVisibilityParamValue =
           gaPermalink.getParams().layers_visibility;
+      var layersTimestampParamValue =
+          gaPermalink.getParams().layers_timestamp;
+
 
       var layerSpecs = layersParamValue ? layersParamValue.split(',') : [];
       var layerOpacities = layersOpacityParamValue ?
           layersOpacityParamValue.split(',') : [];
       var layerVisibilities = layersVisibilityParamValue ?
           layersVisibilityParamValue.split(',') : [];
+      var layerTimestamps = layersTimestampParamValue ?
+          layersTimestampParamValue.split(',') : [];
+
 
       function isKmlLayer(layerSpec) {
         return (layerSpec && layerSpec.indexOf('KML||') === 0);
@@ -1105,6 +1122,24 @@
         }
       }
 
+      function updateLayersTimestampsParam(layers) {
+        var timestampTotal = '';
+        var timestampValues = $.map(layers, function(layer) {
+          var timestamp = layer.time;
+          timestampTotal += timestamp;
+          if (layer.timeEnabled && layer.time) {
+            return layer.time;
+          }
+          return '';
+        });
+        if (timestampTotal == '') {
+          gaPermalink.deleteParam('layers_timestamp');
+        } else {
+          gaPermalink.updateParams({
+            layers_timestamp: timestampValues.join(',')});
+        }
+      }
+
       return function(map) {
         var scope = $rootScope.$new();
         var deregFns = [];
@@ -1129,12 +1164,17 @@
             }, function() {
               updateLayersOpacityParam(layers);
             }));
-
             deregFns.push(scope.$watch(function() {
               return layer.visible;
             }, function() {
               updateLayersVisibilityParam(layers);
             }));
+            deregFns.push(scope.$watch(function() {
+              return layer.time;
+            }, function() {
+              updateLayersTimestampsParam(layers);
+            }));
+
           });
         });
 
@@ -1142,7 +1182,7 @@
 
           var allowThirdData = false;
           var confirmedOnce = false;
-
+          var hasTimeParam = gaPermalink.getParams().time;
           angular.forEach(layerSpecs, function(layerSpec, index) {
             var layer;
             var opacity = (index < layerOpacities.length) ?
@@ -1150,6 +1190,8 @@
             var visible = (index < layerVisibilities.length &&
                 layerVisibilities[index] == 'false') ?
                 false : true;
+            var timestamp = (index < layerTimestamps.length &&
+                layerTimestamps != '') ? layerTimestamps[index] : '';
 
             if (isKmlLayer(layerSpec) || isWmsLayer(layerSpec)) {
               var url = '';
@@ -1171,16 +1213,22 @@
               }
             }
 
-            if (gaLayers.getLayer(layerSpec)) {
+            var bodLayer = gaLayers.getLayer(layerSpec);
+            if (bodLayer) {
               // BOD layer.
-              // Do not consider BOD layers that are already in the map.
-              if (!gaMapUtils.getMapOverlayForBodId(map, layerSpec)) {
+              // Do not consider BOD layers that are already in the map,
+              // except foir timeEnabled layers
+              if (bodLayer.timeEnabled ||
+                  !gaMapUtils.getMapOverlayForBodId(map, layerSpec)) {
                 layer = gaLayers.getOlLayerById(layerSpec);
               }
               if (angular.isDefined(layer)) {
                 layer.setVisible(visible);
                 if (index < layerOpacities.length) {
                   layer.setOpacity(opacity);
+                }
+                if (!hasTimeParam && layer.timeEnabled) {
+                  layer.time = timestamp;
                 }
                 map.addLayer(layer);
               }
