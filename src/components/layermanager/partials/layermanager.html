@@ -1,13 +1,20 @@
 <ul>
   <li ng-if="!(filteredLayers = (layers | gaReverse | filter:layerFilter)).length" translate>no_layers_info</li>
-  <li ng-repeat="layer in filteredLayers" class="ga-layer-folded" ng-class="{'ga-layer-time-enabled': !!(layer.time)}">
-    <button type="button" ng-click="removeLayerFromMap(layer)" class="btn btn-primary btn-xs">&times;</button>
+  <li ng-repeat="layer in filteredLayers" class="ga-layer-folded" ng-class="{'ga-layer-time-enabled': layer.timeEnabled}">
+    <button type="button" ng-click="removeLayer(layer)" class="btn btn-primary btn-xs">&times;</button>
     <label class="ga-checkbox">
       <input type="checkbox" ng-model="layer.visible" />
       <span></span>
       {{layer.label}}
     </label>
-    <span ng-if="layer.timeEnabled" class="ga-layer-time-label">{{layer.time | gaTimeLabel:layer}}</span>
+    <div ng-if="layer.timeEnabled" class="ga-layer-time">
+      <label class="badge" tabindex="1" ng-click="displayTimestamps($event, layer)">
+        {{layer.time | gaTimeLabel:layer}}
+        <select ng-if="mobile"
+                ng-model="layer.time"
+                ng-options="(i | gaTimeLabel:layer) for i in layer.timestamps"></select>
+      </label>
+    </div>
     <span class="ga-layer-tools">
       <label class="ga-layer-transparency">
         <span translate>transparency</span>&nbsp;
@@ -15,8 +22,11 @@
         <select ng-model="layer.invertedOpacity" ng-if="!rangeSupported" ng-options="i.key as i.value for i in opacityValues">
         </select>
       </label>
-      <a href="#" class="ga-layer-info" ng-show="isBodLayer(layer)" ng-click="displayLayerMetadata($event, layer)"><i class="icon-info-sign"></i></a>
+      <a href="#" class="ga-layer-info" ng-show="isBodLayer(layer)" ng-click="displayLayerMetadata($event, layer)">
+        <i class="icon-info-sign"></i>
+      </a>
       <div class="ga-layer-ordering">
+        <a href="#" class="icon-copy" ng-if="layer.timeEnabled" ng-click="duplicateLayer($event, layer)"></a>
         <a href="#" class="icon-arrow-up" ng-if="!$first" ng-click="moveLayer($event, layer, 1)"></a>
         <i class="icon-arrow-up" ng-if="$first"></i>
         <a href="#" class="icon-arrow-down" ng-if="!$last" ng-click="moveLayer($event, layer, -1)"></a>
@@ -26,3 +36,4 @@
     <i class="icon-gear"></i>
   </li>
 </ul>
+

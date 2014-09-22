@@ -24,13 +24,13 @@
   /**
    * Filter to display a correct time label in all possible situations
    */
-  module.filter('gaTimeLabel', function() {
+  module.filter('gaTimeLabel', function($translate) {
     var maxYear = (new Date()).getFullYear();
     return function(input, layer) {
       // input values possible: 1978, '1978', '19783112', '99993112', undefined
       // if layer is WMTS:
       //   if timeselector not active:
-      //      '99993112' ==> ''
+      //      '99993112' ==> $translate('all');
       //   else :
       //      undefined ==> '-'
       //      '19783112' ==> '1978'
@@ -46,19 +46,56 @@
       if (angular.isString(input)) {
         yearNum = parseInt(input.substring(0, 4));
       }
-      return (yearNum <= maxYear) ? yearNum : '';
+      return (yearNum <= maxYear) ? yearNum : $translate('time_all');
     }
   });
 
   module.directive('gaLayermanager',
-      function(gaLayers, gaLayerMetadataPopup, gaBrowserSniffer,
-          gaLayerFilters) {
+      function($compile, $document, $timeout, $rootScope, $translate, $window,
+          gaBrowserSniffer, gaLayerFilters, gaLayerMetadataPopup, gaLayers) {
+
+        // Test if all layers have the same time property value.
+        var hasLayersSameTimee = function(olLayers) {
+          if (olLayers.length == 0) {
+            return false;
+          }
+          var year;
+          for (var i = 1, ii = olLayers.length; i < ii; i++) {
+            if (!olLayers[i].timeEnabled || !olLayers[i].time) {
+              continue;
+            }
+            if (!year) {
+              year = parseInt(olLayers[i].time.substr(0, 4));
+            }
+
+            if (year > new Date().getFullYear()) {
+              return false;
+            }
+
+            if (year != parseInt(olLayers[i].time.substr(0, 4))) {
+              return false;
+            }
+          }
+          return year;
+        };
+
+        // Save the current time values of layers
+        var savedTime = {};
+        var setSavedTime = function(olLayers) {
+          olLayers.forEach(function(olLayer) {
+            if (olLayer.timeEnabled) {
+              savedTime[olLayer.id] = olLayer.time;
+            }
+          });
+        };
+
         return {
           restrict: 'A',
           replace: true,
           templateUrl: 'components/layermanager/partials/layermanager.html',
           scope: {
-            map: '=gaLayermanagerMap'
+            map: '=gaLayermanagerMap',
+            options: '=gaLayermanagerOptions'
           },
           link: function(scope, element, attrs) {
             var map = scope.map;
@@ -68,33 +105,115 @@
             // array, but does not shallow watch the array items! The array
             // items are OpenLayers layers, we don't want Angular to shallow
             // watch them.
-
             scope.layers = map.getLayers().getArray();
-
             scope.layerFilter = gaLayerFilters.selected;
 
-            scope.removeLayerFromMap = function(layer) {
-              map.removeLayer(layer);
+            // On mobile we use a classic select box, on desktop a popover
+            scope.mobile = gaBrowserSniffer.mobile;
+            if (!gaBrowserSniffer.mobile) {
+              // Timestamps list template
+              var tpl =
+                '<div class="ga-layer-timestamps">' +
+                  '<div tabindex="1" ng-repeat="i in tmpLayer.timestamps" ' +
+                       'ng-click="setLayerTime(tmpLayer, i)" ' +
+                       'class="{{tmpLayer.time == i ? \'badge\' : \'\'}}">' +
+                    '{{i | gaTimeLabel:tmpLayer}}' +
+                  '</div>' +
+                '</div>';
+              var elt = $compile(tpl)(scope);
+
+              // Timestamps popover management
+              var popover;
+              var win = $($window);
+              var createPopover = function(target) {
+                popover = $(target).popover({
+                  container: element.parent(),
+                  content: elt,
+                  html: 'true',
+                  placement: function() {
+                    return (win.width() < 640) ? 'left' : 'right';
+                  },
+                  title: $translate('time_select_year'),
+                  trigger: 'manual'
+                });
+                popover.popover('show');
+                element.on('scroll', destroyPopover);
+                $document.on('click', destroyPopover);
+                win.on('resize', destroyPopover);
+              };
+              var destroyPopover = function(e) {
+                if (popover) {
+                  if (e) {
+                    var container = element.parent().find('.popover');
+                    if (container.is(e.target) ||
+                        container.has(e.target).length !== 0) {
+                      return;
+                    }
+                  }
+                  popover.popover('destroy');
+                  popover = undefined;
+                  element.unbind('scroll', destroyPopover);
+                  $document.unbind('click', destroyPopover);
+                  win.unbind('resize', destroyPopover);
+                }
+              };
+
+              // Simulate a select box with a popover
+              scope.displayTimestamps = function(evt, layer) {
+                if (popover && popover[0] === evt.target) {
+                  destroyPopover();
+                } else {
+                  destroyPopover();
+                  scope.tmpLayer = layer;
+                  // We use timeout otherwise the popover is bad centered.
+                  $timeout(function() {
+                    createPopover(evt.target);
+                  }, 100, false);
+                }
+                evt.preventDefault();
+                evt.stopPropagation();
+              };
+            }
+
+            var dupId = 0;
+            scope.duplicateLayer = function(evt, layer) {
+              var dupLayer = gaLayers.getOlLayerById(layer.bodId);
+              dupLayer.time = layer.time;
+              dupLayer.id = layer.id + '_' + dupId++;
+              var index = scope.layers.indexOf(layer);
+              map.getLayers().insertAt(index, dupLayer);
+              evt.preventDefault();
             };
 
-            scope.moveLayer = function(e, layer, delta) {
+            scope.moveLayer = function(evt, layer, delta) {
               var index = scope.layers.indexOf(layer);
-              var layersCollection = scope.map.getLayers();
+              var layersCollection = map.getLayers();
               layersCollection.removeAt(index);
               layersCollection.insertAt(index + delta, layer);
-              e.preventDefault();
+              evt.preventDefault();
+            };
+
+            scope.removeLayer = function(layer) {
+              map.removeLayer(layer);
             };
 
             scope.isBodLayer = function(layer) {
               return !!gaLayers.getLayer(layer.bodId);
             };
 
-            scope.displayLayerMetadata = function(e, layer) {
+            scope.displayLayerMetadata = function(evt, layer) {
               var bodId = layer.bodId;
               if (gaLayers.getLayer(bodId)) {
                 gaLayerMetadataPopup.toggle(bodId);
               }
-              e.preventDefault();
+              evt.preventDefault();
+            };
+
+            scope.setLayerTime = function(layer, time) {
+              layer.time = time;
+              setSavedTime(scope.layers);
+              var year = hasLayersSameTimee(scope.layers);
+              $rootScope.$broadcast('gaTimeSelectorToggle', !!(year), year);
             };
 
             scope.rangeSupported = gaBrowserSniffer.msie !== 9;
@@ -114,7 +233,8 @@
                 { key: '0.05' , value: '5%' }, { key: '0' , value: '0%' }
               ];
             }
-            // Toggle layer tools for mobiles
+
+            // Toggle layer tools for small screen
             element.on('click', '.icon-gear', function() {
               var li = $(this).closest('li');
               li.toggleClass('ga-layer-folded');
@@ -130,7 +250,7 @@
               // We assemble the layers to remove because
               // we shouldn't remove from the array that
               // we are iterating over
-              scope.map.getLayers().forEach(function(olLayer) {
+              map.getLayers().forEach(function(olLayer) {
                 if (olLayer.bodId &&
                     !olLayer.background &&
                     !scope.isBodLayer(olLayer)) {
@@ -138,21 +258,40 @@
                 }
               });
               removeLayers.forEach(function(olLayer) {
-                scope.removeLayerFromMap(olLayer);
+                scope.removeLayer(olLayer);
               });
             };
 
-            scope.$on('gaLayersChange', function(event, data) {
+            scope.$on('gaLayersChange', function(evt, data) {
               // We remove all bod layers from the map that
               // don't have a layers definition
               removeNonExistantBodLayers();
 
-              scope.map.getLayers().forEach(function(olLayer) {
+              map.getLayers().forEach(function(olLayer) {
                 if (scope.isBodLayer(olLayer)) {
                   olLayer.label = gaLayers.getLayerProperty(olLayer.bodId,
                       'label');
                 }
               });
+            });
+
+            // Callbacks used to save/retrieve user time values defined before
+            // activation/deactivation of TimeSelector.
+            scope.$on('gaTimeSelectorToggle', function(evt, active) {
+              if (active) {
+                setSavedTime(map.getLayers());
+              }
+            });
+            scope.$on('gaTimeSelectorChange', function(evt, year) {
+              // year=undefined means TimeSelector is deactivated
+              if (!angular.isDefined(year)) {
+                map.getLayers().forEach(function(olLayer, opt) {
+                  if (olLayer.timeEnabled && savedTime[olLayer.id]) {
+                    olLayer.time = savedTime[olLayer.id];
+                  }
+                });
+                savedTime = {};
+              }
             });
           }
         };
