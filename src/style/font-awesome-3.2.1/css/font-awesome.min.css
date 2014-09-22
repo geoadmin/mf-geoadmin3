@@ -65,6 +65,7 @@ a .icon-rotate-90:before,a .icon-rotate-180:before,a .icon-rotate-270:before,a .
 .icon-unchecked:before,.icon-check-empty:before{content:"\f096";}
 .icon-twitter:before{content:"\f099";}
 .icon-facebook:before{content:"\f09a";}
+.icon-copy:before{content:"\f0c5";}
 .icon-reorder:before{content:"\f0c9";}
 .icon-google-plus:before{content:"\f0d5";}
 .icon-caret-down:before{content:"\f0d7";}
