@@ -1,10 +1,13 @@
-CACHE MANIFEST
-# Version 201409231200
 <%
- defaultLanguage = 'en'
- languages = ('de', 'en', 'fr', 'it', 'rm')
- topics = ('are', 'bafu', 'blw', 'dev', 'ech', 'funksender', 'geol', 'inspire', 'ivs', 'kgs', 'luftbilder', 'nga', 'sachplan', 'swisstopo', 'vu', 'wildruhezonen')
-%>
+  defaultLanguage = 'en'
+  languages = ('de', 'en', 'fr', 'it', 'rm')
+  topics = ('are', 'bafu', 'blw', 'dev', 'ech', 'funksender', 'geol', 'inspire', 'ivs', 'kgs', 'luftbilder', 'nga', 'sachplan', 'swisstopo', 'vu', 'wildruhezonen')
+  appcache_version = commit_hash
+  if deploy_target == 'dev':
+      appcache_version = version
+%>CACHE MANIFEST
+# Version ${appcache_version}
+
 CACHE:
 ${version}/lib/build.js	
 ${version}/style/app.css

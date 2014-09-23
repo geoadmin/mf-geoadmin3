@@ -10,6 +10,7 @@ API_URL ?= //mf-chsdi3.dev.bgdi.ch
 LAST_API_URL := $(shell if [ -f .build-artefacts/last-api-url ]; then cat .build-artefacts/last-api-url 2> /dev/null; else echo '-none-'; fi)
 LESS_PARAMETERS ?= '-ru'
 VERSION := $(shell date '+%s')
+LAST_COMMIT_HASH = $(shell git log -n 1 --pretty=format:'%H')
 GIT_BRANCH := $(shell git rev-parse --symbolic-full-name --abbrev-ref HEAD)
 GIT_LAST_BRANCH := $(shell if [ -f .build-artefacts/last-git-branch ]; then cat .build-artefacts/last-git-branch 2> /dev/null; else echo 'dummy'; fi)
 DEPLOY_ROOT_DIR := /var/www/vhosts/mf-geoadmin3/private/branch
@@ -174,7 +175,7 @@ prd/style/app.css: src/style/app.less src/style/print.less src/style/ga_bootstra
 
 prd/geoadmin.appcache: src/geoadmin.mako.appcache .build-artefacts/python-venv/bin/mako-render
 	mkdir -p $(dir $@);
-	.build-artefacts/python-venv/bin/mako-render --var "version=$(VERSION)" --var "apache_base_path=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
+	.build-artefacts/python-venv/bin/mako-render --var "version=$(VERSION)" --var "commit_hash=$(LAST_COMMIT_HASH)" --var "deploy_target=$(DEPLOY_TARGET)" --var "apache_base_path=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
 
 prd/index.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render .build-artefacts/python-venv/bin/htmlmin .build-artefacts/last-api-url .build-artefacts/last-apache-base-path
 	mkdir -p $(dir $@)
