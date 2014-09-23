@@ -1,3 +1,6 @@
+# Will be managed in couchdb
+ServerAlias map.bafu.admin.ch
+
 RewriteEngine On
 ExpiresActive On
 
@@ -25,6 +28,13 @@ RedirectMatch ^${apache_base_path}$ ${apache_base_path}/
 
 Alias ${apache_base_path}/src ${apache_base_directory}/src
 Alias ${apache_base_path}/ ${apache_base_directory}/prd/
+
+# Redirect map.bafu.admin.ch auf topic=bafu
+RewriteCond %{HTTP_HOST}                   ^map.bafu.admin.ch$         [NC]
+RewriteCond %{QUERY_STRING}                ^$             [OR]
+RewriteCond %{QUERY_STRING}                !topic
+RewriteRule ^${apache_base_path}/(.*)      ^${apache_base_path}/$1?topic=bafu [QSA,R,NE,L]
+
 
 # Cached resources
 RewriteRule ^${apache_base_path}/[0-9]+/(img|lib|style|locales)(.*) ${apache_base_directory}/prd/$1$2
