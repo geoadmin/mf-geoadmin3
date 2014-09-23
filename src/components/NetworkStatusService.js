@@ -50,7 +50,7 @@
           }
           $.ajax({
             method: 'GET',
-            url: gaGlobalOptions.apiUrl + '/checker?_' + new Date().getTime(),
+            url: gaGlobalOptions.mapUrl + '/checker',
             timeout: 1000,
             success: function() {
               count = 0;
