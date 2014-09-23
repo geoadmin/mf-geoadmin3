@@ -204,9 +204,7 @@
       // An appcache update is available.
       if (window.applicationCache) { // IE9
         window.applicationCache.addEventListener('updateready', function(e) {
-          if (confirm($translate('appcache_update_available'))) {
-            window.location.reload();
-          }
+          window.location.reload();
         });
       }
   });
