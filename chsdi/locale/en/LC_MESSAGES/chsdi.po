@@ -3261,6 +3261,9 @@ msgstr "Associated TSP"
 msgid "nord"
 msgstr "North"
 
+msgid "notintoposhop"
+msgstr "Object not available"
+
 msgid "nr"
 msgstr "Nr."
 
