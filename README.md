@@ -73,7 +73,7 @@ that points to your working directory. If all is well, you can reach your pages 
 Do the following commands **inside your working directory**. Here's how a standard
 deploy process is done.
 
-`.\deploydev.sh -s`
+`./deploydev.sh -s`
 
 This updates the source in /var/www...to the latest master branch from github,
 creates a snapshot and runs nosetests against the test db. The snapshot directory
@@ -83,11 +83,11 @@ you don't want to create a snapshot e.g. for intermediate releases on dev main.
 Once a snapshot has been created, you are able to deploy this snapshot to a
 desired target. For integration, do
 
-`.\deploysnapshot 201407031411 int`
+`./deploysnapshot.sh 201407031411 int`
 
 This will run the full nose tests **from inside the 201407031411 snapshot directory** against the integration db cluster. Only if these tests are successfull, the snapshot is deployed to the integration cluster.
 
-`.\deploysnapshot 201407031411 prod`
+`./deploysnapshot.sh 201407031411 prod`
 
 This will do the corresponding thing for prod
 
