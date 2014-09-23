@@ -25,6 +25,7 @@ ${version}/locales/${lang}.json
 NETWORK:
 #use by CatalogServer, checker, tiles
 *
+checker #we need to specify the checker here to avoid the appcache callback to be apply
 
 FALLBACK:
 
