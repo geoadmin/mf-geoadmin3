@@ -85,4 +85,4 @@ def shorten_redirect(request):
         url = url_short.get('url')
     except Exception as e:
         raise exc.HTTPBadRequest('This short url doesn\'t exist: s.geo.admin.ch/%s Error is: %s' % (url_short, e))
-    raise exc.HTTPFound(location=url)
+    raise exc.HTTPMovedPermanently(location=url)
