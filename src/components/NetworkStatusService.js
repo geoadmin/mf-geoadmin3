@@ -23,7 +23,7 @@
    * Currently it watches every $http and $.ajax requests errors, if an error
    * occurs we wait 2 sec then we make an http request on the checker file of
    * chsdi (we don't use geoadmin checker only to avoid appcache fallback).
-   * If thei checker responds that means we are online, otherwise we make a
+   * If the checker responds that means we are online, otherwise we make a
    * 2nd request 2 sec later, if the 2nd requests failed that means we
    * are offline.
    *
@@ -102,8 +102,11 @@
       });
 
       // We catch every $.ajax request errors or (canceled request).
-      $document.ajaxError(function() {
-        net.check(2000);
+      $document.ajaxError(function(evt, jqxhr, settings, thrownError) {
+        // Filter out canceled requests
+        if (!/^(canceled|abort)$/.test(thrownError)) {
+          net.check(2000);
+        }
       });
 
       return net;
