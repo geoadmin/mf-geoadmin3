@@ -97,6 +97,11 @@
       gaFeaturesPermalinkManager($scope.map);
 
       $rootScope.$on('gaTopicChange', function(event, topic) {
+        // iOS 7 minimal-ui meta tag bug
+        if (gaBrowserSniffer.ios) {
+          $window.scrollTo(0, 0);
+        }
+
         $scope.topicId = topic.id;
         var showCatalog = topic.showCatalog ? 'show' : 'hide';
         if (gaBrowserSniffer.mobile ||
