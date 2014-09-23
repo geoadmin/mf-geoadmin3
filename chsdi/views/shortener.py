@@ -7,6 +7,7 @@ from urlparse import urlparse
 import time
 
 from boto.dynamodb2.table import Table
+from boto.dynamodb2 import connect_to_region
 from chsdi.models.clientdata_dynamodb import get_table
 from chsdi.lib.helpers import check_url, make_api_url
 
@@ -54,7 +55,7 @@ def shortener(request):
     else:
         # DynamoDB v2 high-level abstraction
         try:
-            table = Table('short_urls')
+            table = Table('shorturl', connection=connect_to_region('eu-west-1'))
         except Exception as e:
             raise exc.HTTPBadRequest('Error during connection %s' % e)
 
