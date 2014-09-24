@@ -1753,7 +1753,7 @@ msgid "ch.pronatura.url"
 msgstr "http://www.pronatura.ch/schutzgebiete"
 
 msgid "ch.pronatura.waldreservate"
-msgstr "Waldreservate Pro natura"
+msgstr "Waldreservate Pro Natura"
 
 msgid "ch.swisstopo"
 msgstr "swisstopo"

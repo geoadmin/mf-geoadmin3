@@ -311,9 +311,8 @@ msgstr "Aktuelle und historische Daten"
 msgid "alexandria"
 msgstr "Indicaziuns bibliograficas"
 
-#. TODO
 msgid "anzahlaudits"
-msgstr "anzahlaudits"
+msgstr "Anzahl erfolgreicher Audits"
 
 msgid "anzahlspuren"
 msgstr "Anzahl Spuren"
@@ -330,9 +329,8 @@ msgstr "Genehmigungsdatum"
 msgid "arch__hist__qualitaeten"
 msgstr "Qualitads istoricas-architectonicas"
 
-#. TODO
 msgid "areal"
-msgstr "areal"
+msgstr "Areal"
 
 msgid "areal_gemeinde"
 msgstr "Befindet sich in Gemeinde / Stadt"
@@ -1755,7 +1753,7 @@ msgid "ch.pronatura.url"
 msgstr "http://www.pronatura.ch/schutzgebiete"
 
 msgid "ch.pronatura.waldreservate"
-msgstr "Waldreservate Pro natura"
+msgstr "Waldreservate Pro Natura"
 
 msgid "ch.swisstopo"
 msgstr "swisstopo"
