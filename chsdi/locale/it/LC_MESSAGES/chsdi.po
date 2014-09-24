@@ -1400,6 +1400,9 @@ msgstr "Cavo in rame"
 msgid "ch.bakom.downlink1"
 msgstr "Download ≥ 1 Mbit/s"
 
+msgid "ch.bakom.downlink10"
+msgstr "Download ≥ 10 Mbit/s"
+
 msgid "ch.bakom.downlink100"
 msgstr "Download ≥100 Mbit/s"
 
@@ -1483,6 +1486,9 @@ msgstr "UFAC"
 
 msgid "ch.bazl.heliports-gebirgslandeplaetze"
 msgstr "Eliporti/aree d'atterr. in montagna"
+
+msgid "ch.bazl.kataster-belasteter-standorte-zivilflugplaetze"
+msgstr "Siti inquinati aeroporti civili"
 
 msgid "ch.bazl.landschaftsruhezonen"
 msgstr "Zone di calma per l'aviazione"
@@ -4044,6 +4050,12 @@ msgstr "Stato di avanzamento dei lavori OSiti"
 
 msgid "tt_ch_bav_kataster_belasteter_standorte_oev_untersuchungsstand_2"
 msgstr "Indagini concluse e misure secondo l’OSiti"
+
+msgid "tt_ch_bazl_kataster_belasteter_standorte_zivflpl_beurteilung"
+msgstr "Valutazione dell'UFAC"
+
+msgid "tt_ch_bazl_kataster_belasteter_standorte_zivflpl_standortnummer"
+msgstr "Numero UFAC del sito"
 
 msgid "tt_document"
 msgstr "Altre informazioni"

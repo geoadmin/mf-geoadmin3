@@ -1355,3 +1355,25 @@ class sis_planning_raster_k (Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bav.sachplan-infrastruktur-schiene_kraft', sis_planning_raster_k)
+
+
+class kbs_zivilflugpl(Base, Vector):
+    __tablename__ = 'kataster_belasteter_standorte_zivflpl'
+    __table_args__ = ({'schema': 'bazl', 'autoload': False})
+    __template__ = 'templates/htmlpopup/kataster_belasteter_standorte_zivflpl.mako'
+    __bodId__ = 'ch.bazl.kataster-belasteter-standorte-zivilflugplaetze'
+    id = Column('vflz_id', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    katasternummer = Column('katasternummer', Text)
+    standorttyp_de = Column('standorttyp_de', Text)
+    standorttyp_fr = Column('standorttyp_fr', Text)
+    standorttyp_it = Column('standorttyp_it', Text)
+    statusaltlv_de = Column('statusaltlv_de', Text)
+    statusaltlv_fr = Column('statusaltlv_fr', Text)
+    statusaltlv_it = Column('statusaltlv_it', Text)
+    untersuchungsstand_de = Column('untersuchungsstand_de', Text)
+    untersuchungsstand_fr = Column('untersuchungsstand_fr', Text)
+    untersuchungsstand_it = Column('untersuchungsstand_it', Text)
+    url = Column('url', Text)
+
+register('ch.bazl.kataster-belasteter-standorte-zivilflugplaetze', kbs_zivilflugpl)
