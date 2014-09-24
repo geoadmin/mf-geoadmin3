@@ -13,12 +13,13 @@
       gaPermalink, gaStyleFactory) {
     return {
       restrict: 'A',
+      replace: true,
       scope: {
         map: '=gaGeolocationMap'
       },
       templateUrl: 'components/geolocation/partials/geolocation.html',
       link: function(scope, element, attrs) {
-        var btnElt = $(element.children()[0]);
+        var btnElt = element;
 
         if (!('geolocation' in $window.navigator)) {
           btnElt.addClass('ga-geolocation-error');

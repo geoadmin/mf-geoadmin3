@@ -1,26 +1,14 @@
 [ga-geolocation] {
-  position: absolute;
-  z-index: 10;
-  top: unit(@header-height + @control-btns-top, px);
-  right: unit(@control-btns-right, px);
-
-  button {
-    width: unit(@control-btn-size, px);
-    height: unit(@control-btn-size, px);
-    background-image: data-uri('geolocation.png');
-    
-    &.ga-geolocation-error {
-      background-image: data-uri('geolocation_disabled.png');
-      cursor: default;
-    }
-    
-    &.ga-geolocation-tracking {
-      background-image: data-uri('geolocation_on.png');
-    }
+  display: block;
+  background-image: data-uri('geolocation.png');
+  
+  &.ga-geolocation-error {
+    background-image: data-uri('geolocation_disabled.png');
+    cursor: default;
   }
- 
-  @media screen and (max-width: @screen-tablet) {
-    top: unit(@small-header-height + @control-btns-top, px);
+  
+  &.ga-geolocation-tracking {
+    background-image: data-uri('geolocation_on.png');
   }
 }
 

@@ -2,7 +2,7 @@
   li {
     border-bottom: #e9e9e9 1px solid;
  
-    @media (max-width: @screen-tablet) {
+    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
       height: 3em;
       padding: 0;
       overflow: hidden;
@@ -29,7 +29,7 @@
     padding-top: .3em;
     padding-left: 2.2em;
   
-    @media (max-width: @screen-tablet) {
+    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
       height: inherit;
       margin-bottom: 0;
       padding-bottom: .3em;
@@ -55,7 +55,7 @@
       cursor: default;
     }
  
-    @media (max-width: @screen-tablet) {
+    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
       top: 0;
       height: 100%;
       font-size: 2.2em;
@@ -86,7 +86,7 @@
       background: linear-gradient(to bottom, #eeeeee 0%,#cccccc 100%);
     } 
  
-    @media (max-width: @screen-tablet) {
+    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
       width: 6em;
     }
   }
@@ -97,7 +97,7 @@
     button {
       position: absolute;
  
-      @media (min-width: @screen-tablet) {
+      @media (min-width: @screen-tablet), (min-height: @screen-sm-max-height) {
         /* critical css, makes alignement correct on all desktop browsers*/
         top: 3px;
         height: 25px;
@@ -108,7 +108,7 @@
       width: 100%;
       padding-right: 1.3em;
  
-      @media (max-width: @screen-tablet) {
+      @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
         padding-left: 2.8em;
         padding-right: 2.1em;
         white-space: nowrap;
@@ -122,7 +122,7 @@
       background-color: #000;
       line-height: 1em;
  
-      @media (max-width: @screen-tablet) {
+      @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
         color: inherit;
         background-color: transparent;
       }
@@ -144,7 +144,7 @@
         opacity: 0;
       }
  
-      @media (max-width: @screen-tablet) {
+      @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
         right: 2.7em;
         height: 1.7em;
         margin: 0.6em 0;
@@ -154,7 +154,7 @@
     .icon-info-sign {
       right: 0;
  
-      @media (max-width: @screen-tablet) {
+      @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
         display: none;
       }
     }
@@ -163,7 +163,7 @@
   .ga-layer-time-enabled .ga-layer-infos label {
     padding-right: 6em;
  
-    @media (max-width: @screen-tablet) {
+    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
       padding-right: 7.7em;
     }
   }
@@ -177,12 +177,12 @@
         display: inline-block;
       }
 
-      @media (max-width: @screen-tablet) {
+      @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
         padding-left: 0.3em;
       }
     }
  
-    @media (max-width: @screen-tablet) {
+    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
       position: absolute;
       height: 100%;
       width: 100%;
@@ -212,7 +212,7 @@
     .transition(all .35s ease);
     .rotate(0deg);
 
-    @media (max-width: @screen-tablet) {
+    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
       display: block;
     }
   }
@@ -227,20 +227,20 @@
       height: 100%;
     }
  
-    @media (max-width: @screen-tablet) {
+    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
       padding-right: 2.7em;
     }
 
     .icon-info-sign {
       display: none;
 
-      @media (max-width: @screen-tablet) {
+      @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
         display: inline;
       }
     }
   }
  
-  @media (max-width: @screen-tablet) {
+  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
     padding: 0 !important;
  
     .ga-layer-infos, ga-layer-tools {
@@ -264,7 +264,7 @@
 .ga-layer-timestamps {
   width: 250px;
  
-  @media (max-width: @screen-tablet) {
+  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
     width: 200px;
   }
  

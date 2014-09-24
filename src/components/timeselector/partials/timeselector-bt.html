@@ -1,6 +1,8 @@
-<button ng-hide="isDisable" 
-        ng-click="toggle($event)"
-        ng-class="{'ga-active': isActive}"
+<button ng-click="toggle($event)"
+        ng-class="{
+          'ga-time-selector-enabled': !isDisable,
+          'ga-time-selector-active': isActive
+        }"
         ng-mouseenter="onMouseEnter()"
         ng-mouseleave="onMouseLeave()">
 </button>

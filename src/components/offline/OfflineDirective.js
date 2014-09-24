@@ -73,6 +73,7 @@
   module.directive('gaOfflineBt', function(gaOffline) {
     return {
       restrict: 'A',
+      replace: true,
       templateUrl: 'components/offline/partials/offline-bt.html',
       controller: 'GaOfflineDirectiveController',
       link: function(scope, elt, attrs) {

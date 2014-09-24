@@ -1,15 +1,13 @@
 [ga-time-selector-bt] {
   display: none;
-  width: unit(@control-btn-size, px);
-  height: unit(@control-btn-size, px);
-  text-align: center;
-  cursor: pointer;
-  text-decoration: none;
-  margin-top: unit(@control-btn-space, px);
-  background: data-uri('time_black.png') no-repeat center center;
+  background: data-uri('time_black.png') center center no-repeat;
 
-  &.ga-active {
-    background: data-uri('time_red.png') no-repeat center center;
+  &.ga-time-selector-enabled {
+    display: block;
+  }
+ 
+  &.ga-time-selector-active {
+    background-image: data-uri('time_red.png');
   }
 }
 
@@ -28,12 +26,12 @@
   overflow: hidden;
   z-index: 1000;
 
-  @media screen and (max-width: @screen-tablet) {
+  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
     top: unit(@small-header-height + 7, px);/* Under the pulldown menu */   
     margin-left: 80px;
   }  
   
-  @media screen and (max-width: @screen-phone) {
+  @media (max-width: @screen-phone) {
     margin-left: -50px;
   } 
 
@@ -42,7 +40,7 @@
     width: 100px;
     top: 57px; 
      
-    @media (max-width: @screen-tablet) {
+    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
       display: inline-block;      
     }
   }
@@ -161,7 +159,7 @@
       }
     }
     
-    @media (max-width: @screen-tablet) {
+    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
       display: none;      
     }
   }

@@ -30,6 +30,7 @@
 @header-height: 89;
 @footer-height: 26;
 @small-header-height: 50;
+@screen-sm-max-height: 640px;
 @tooltip-bg: #999;
 @pulldown-width: 320;
 @control-btn-size: 44;
@@ -111,7 +112,7 @@ form {
     display: inline-block;
   }
 }
-@media (max-width: @screen-tablet) {
+@media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
   #copyrightsdata {
     bottom: 0;
   }
@@ -148,7 +149,7 @@ input[type=text][readonly] {
       display: inline-block;
     }
   }
-  @media (max-width: @screen-tablet) {
+  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
     h4 {
       display: none;
     }
@@ -193,7 +194,7 @@ input[type=text][readonly] {
     line-height: 30px;
   }
 
-  @media (max-width: @screen-tablet) {
+  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
     margin-top: 0;
     width: 260px;
     top: .7em;
@@ -250,7 +251,7 @@ input[type=text][readonly] {
     height: 19.5px;
   }
   
-  @media (max-width: @screen-tablet) {
+  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
     padding: 13px 0 0 13px;
     height: 50px;
     
@@ -272,6 +273,12 @@ input[type=text][readonly] {
   position: absolute;
   top: 0.2em;
   right: 2em;
+  
+  @media (max-height: @screen-sm-max-height) {
+    right: 12em;
+    top: 1em;
+  }
+
   & > div {
     display: inline-block;
   }
@@ -306,7 +313,7 @@ input[type=text][readonly] {
     margin-top: .4em;  
   }
 
-  @media (max-width: @screen-tablet) {
+  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
     background: transparent;
     padding-left: 2px;
     
@@ -366,7 +373,7 @@ a .ga-icon-separator {
   width: unit(@pulldown-width, px);
   z-index: 1000;
   top: unit(@header-height, px);
-  @media (max-width: @screen-tablet) {
+  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
     top: unit(@small-header-height, px);
   }
   @media (max-width: @screen-phone) {
@@ -461,7 +468,7 @@ a .ga-icon-separator {
     .pulldown-hover;
   }
   .panel > .accordion-toggle {
-    @media (max-width: @screen-tablet) {
+    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
       padding-top: 12px;
       padding-bottom: 12px;
     }
@@ -522,7 +529,6 @@ a .ga-icon-separator {
     width: 58px;
     margin-left: auto;
     position: absolute;
-    position: fixed;
     right: 0;
     top: 0;
     height: 40px;
@@ -593,16 +599,6 @@ a .ga-icon-separator {
   
   .panel-body {
     padding: 0px 4px;
-    
-    a {
-      display: inline;
-      line-height: 12px;
-      border: none;
-     
-      @media (max-width: @screen-tablet) {
-        line-height: 32px;
-      }
-    }
   }
 
   .popover-content {
@@ -635,7 +631,7 @@ a .ga-icon-separator {
   max-height: none;
   padding: 0px;
 
-  @media (max-width: @screen-tablet) {
+  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
     top: unit(@small-header-height, px);
   }
 }
@@ -678,7 +674,7 @@ a .ga-icon-separator {
 // ****** POPUP
 #import-wms-popup, #import-kml-popup, #measure-popup, #draw-popup,
 #featuretree-popup {
-  @media (max-width: @screen-tablet) {
+  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
     top: auto!important;
     height: 190px;
 
@@ -693,7 +689,7 @@ a .ga-icon-separator {
   max-height: none;
   display: none;
   
-  @media (max-width: @screen-tablet) {
+  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
     height: 435px;
   }
 
@@ -712,7 +708,7 @@ a .ga-icon-separator {
     overflow: visible;
   }
 
-  @media (max-width: @screen-tablet) {
+  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
     .ga-profile-inner {
       overflow: visible;
     }
@@ -720,7 +716,7 @@ a .ga-icon-separator {
 }
 
 #draw-popup {
-  @media (max-width: @screen-tablet) {
+  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
     .ga-icons, .ga-choose-icon {
       width: 100%;
       height: auto;
@@ -927,7 +923,7 @@ ul.panel-body-wide {
   display: none;
   z-index: 0;
 
-  @media (max-width: @screen-tablet) {
+  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
     .transition(opacity .20s ease);
     display: block;
     content: "\f021";
@@ -966,7 +962,7 @@ ul.panel-body-wide {
   #loader {
     z-index: 5000;
 
-    @media (max-width: @screen-tablet) {
+    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
       opacity: 1;
     }
   }
@@ -1108,15 +1104,84 @@ input[type=range] {
 }
 
 // ***** Button group
-#buttongroup {
+@bottom-static-bt: 51px;
+@bottom-static-bt-screen-sm: 26px;
+@right-col-1: @control-btn-size + @control-btn-space;
+@right-static-bt-col-1: unit(@right-col-1 + @control-btn-space, px);
+@right-static-bt-col-2: unit(@right-col-1 * 2 + @control-btn-space, px);
+@right-static-bt-col-3: unit(@right-col-1 * 3 + @control-btn-space, px);
+.static-bt-mixin(@bottom){
+  position: fixed;
+  right: @right-static-bt-col-1;  
+  bottom: @bottom;
+}
+
+#buttonGroup {
   position: absolute;
-  top: unit(@header-height + @control-btns-top + @control-btn-next * 4 - @control-btn-space, px);
+  top: unit(@header-height, px);
   right: unit(@control-btns-right, px);
   z-index: 1000;
-
-  @media screen and (max-width: @screen-tablet) {
-    top: unit(@small-header-height + @control-btns-top + @control-btn-next * 4 - @control-btn-space, px);
+  
+  > div {
+    display: block;
+  }
+  
+  > button { 
+    transition: right ease 1s;
+  }
+  
+  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+    top: unit(@small-header-height, px);
+  }
+   
+  [ga-offline-bt] {
+    .static-bt-mixin(@bottom-static-bt); 
+    right: inherit;
+     
+    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+      bottom: @bottom-static-bt-screen-sm;
+    }
   } 
+  
+  /* When the 3 optional buttons are displayed */
+  .ga-time-selector-enabled + .ga-rotate-enabled + [ga-offline-bt] {
+    
+    @media (max-height: 420px) {
+      right: @right-static-bt-col-1;
+    }  
+    
+    @media (max-height: 370px) {
+      right: @right-static-bt-col-2; 
+    }
+    
+    @media (max-height: 320px) {
+      right: @right-static-bt-col-3;  
+    }
+  }
+  
+  /* When only 2 optional buttons are displayed */
+  .ga-time-selector-enabled + .ga-rotate-enabled,
+  .ga-time-selector-enabled ~ [ga-offline-bt],
+  .ga-rotate-enabled + [ga-offline-bt] { 
+    
+    @media (max-height: 370px) {
+      .static-bt-mixin(@bottom-static-bt-screen-sm);
+    }
+    
+    @media (max-height: 320px) {
+       right: @right-static-bt-col-2;
+    }
+  }
+  
+  /* When only 1 optional button is displayed */
+  .ga-time-selector-enabled,
+  .ga-rotate-enabled,
+  [ga-offline-bt] {
+    
+    @media (max-height: 320px) {
+      .static-bt-mixin(@bottom-static-bt-screen-sm);
+    }
+  }
 }
 
 @import "print.less";

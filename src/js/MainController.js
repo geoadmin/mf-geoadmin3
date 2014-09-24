@@ -22,6 +22,7 @@
         gaNetworkStatus, gaPermalink, gaStorage) {
 
       var createMap = function() {
+        var toolbar = $('#zoomButtons')[0];
         var swissProjection = ol.proj.get('EPSG:21781');
         swissProjection.setExtent(gaMapUtils.swissExtent);
 
@@ -30,6 +31,7 @@
             attribution: false,
             rotate: false,
             zoomOptions: {
+              target: toolbar,
               zoomInLabel: '',
               zoomOutLabel: '',
               zoomInTipLabel: '',
@@ -53,6 +55,11 @@
           }),
           logo: false
         });
+
+        map.addControl(new ol.control.ZoomToExtent({
+          target: toolbar,
+          tipLabel: ''
+        }));
 
         var dragClass = 'ga-dragging';
         var viewport = $(map.getViewport());
