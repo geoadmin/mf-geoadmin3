@@ -6,7 +6,7 @@
   scheme = pageargs['scheme']
   onlineressource = pageargs['onlineressource']
   def validate_tilematrixset(id):
-      if int(id) in (18,20,21,22,26,27,28):
+      if int(id) in (18,20,21,22,25,26,27,28):
           return id
       return '26'
 %>
@@ -109,6 +109,18 @@
         <%include file="TileMatrixSet_20.mako"/>
         <%include file="TileMatrixSet_21.mako"/>
         <%include file="TileMatrixSet_22.mako"/>
+    </TileMatrixSet>
+    <TileMatrixSet>
+        <ows:Identifier>21781_25</ows:Identifier>
+        <ows:SupportedCRS>urn:ogc:def:crs:EPSG:21781</ows:SupportedCRS>
+        <%include file="TileMatrixSet.mako"/>
+        <%include file="TileMatrixSet_19.mako"/>
+        <%include file="TileMatrixSet_20.mako"/>
+        <%include file="TileMatrixSet_21.mako"/>
+        <%include file="TileMatrixSet_22.mako"/>
+        <%include file="TileMatrixSet_23.mako"/>
+        <%include file="TileMatrixSet_24.mako"/>
+        <%include file="TileMatrixSet_25.mako"/>
     </TileMatrixSet>
     <TileMatrixSet>
         <ows:Identifier>21781_26</ows:Identifier>
