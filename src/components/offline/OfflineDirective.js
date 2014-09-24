@@ -104,7 +104,8 @@
     };
   });
 
-  module.directive('gaOfflineSelector', function(gaOffline, gaStorage) {
+  module.directive('gaOfflineSelector', function($timeout, $window, gaOffline,
+      gaStorage) {
     return {
       restrict: 'A',
       templateUrl: 'components/offline/partials/offline-selector.html',
@@ -133,6 +134,7 @@
               refreshDisplay();
             })
           ];
+          $window.addEventListener('orientationchange', timeoutRefreshDisplay);
           refreshDisplay();
           elt.show();
           scope.percent = 0;
@@ -147,6 +149,8 @@
               deregister[i].src.unByKey(deregister[i]);
             }
           }
+          $window.removeEventListener('orientationchange',
+              timeoutRefreshDisplay);
           rectangle = [0, 0, 0, 0];
           scope.percent = 0;
           scope.map.render();
@@ -160,6 +164,11 @@
           updateSize();
           updateRectangle();
           scope.map.render();
+        };
+
+        // use to recenter the rectangle after an orientation change
+        var timeoutRefreshDisplay = function() {
+          $timeout(refreshDisplay, 500);
         };
 
         var handlePostCompose = function(evt) {
