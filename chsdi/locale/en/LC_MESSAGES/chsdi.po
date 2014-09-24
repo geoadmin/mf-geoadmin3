@@ -311,6 +311,9 @@ msgstr "Current and previous data"
 msgid "alexandria"
 msgstr "Bibliographical informations"
 
+msgid "anzahlaudits"
+msgstr "Number of successful audits"
+
 msgid "anzahlspuren"
 msgstr "Anzahl Spuren"
 
@@ -325,6 +328,15 @@ msgstr "Genehmigungsdatum"
 
 msgid "arch__hist__qualitaeten"
 msgstr "Hist. -arch. qualities"
+
+msgid "areal"
+msgstr "Area"
+
+msgid "areal_gemeinde"
+msgstr "Located in municipality / city"
+
+msgid "areal_watt"
+msgstr "2000-Watt area"
 
 msgid "astra_unf_accday"
 msgstr "Unfalltag"
@@ -343,6 +355,9 @@ msgstr "Unfallschwerekategorie"
 
 msgid "atlassheetnumber"
 msgstr "Nummer Geologischer Atlas"
+
+msgid "auf_dem_weg_gemeinde"
+msgstr "Energy City on the Path towards a 2000-Watt Society"
 
 msgid "ausgabejahr"
 msgstr "Ausgabejahr"
@@ -395,6 +410,9 @@ msgstr "Belastung [Pers./Jahr]"
 msgid "belastung_tonnen"
 msgstr "Belastung [t/Jahr]"
 
+msgid "berater"
+msgstr "Consultant"
+
 msgid "bereich"
 msgstr "Domain"
 
@@ -409,6 +427,15 @@ msgstr "Description"
 
 msgid "bestimmung"
 msgstr "Bestimmungen"
+
+msgid "bet_energiestaedte"
+msgstr "Participating energy cities"
+
+msgid "bet_traegerverein"
+msgstr "Participating municipalities affiliated to Energy City Association"
+
+msgid "beteiligtegemeinden"
+msgstr "Participating municipalities"
 
 msgid "betrgemeinde"
 msgstr "Concerned municipalities"
@@ -1496,6 +1523,18 @@ msgstr "Abandonment of hydropower"
 msgid "ch.bfe.energieforschung"
 msgstr "Energy research"
 
+msgid "ch.bfe.energiestaedte"
+msgstr "Energy cities"
+
+msgid "ch.bfe.energiestaedte-2000watt-areale"
+msgstr "2000-Watt Sites"
+
+msgid "ch.bfe.energiestaedte-2000watt-aufdemweg"
+msgstr "Energy Cities on the Path 2000-Watt"
+
+msgid "ch.bfe.energiestaedte-energieregionen"
+msgstr "Energy-Regions"
+
 msgid "ch.bfe.kernkraftwerke"
 msgstr "Nuclear Power Plants"
 
@@ -2232,6 +2271,12 @@ msgstr "Einwohnerzahl (nur für Siedl.)"
 msgid "energiebedarf_motoren"
 msgstr "Energy need of motors"
 
+msgid "energiestadtseit"
+msgstr "Energy City since"
+
+msgid "energiestadtweb"
+msgstr "Details on Energy City website"
+
 msgid "ent_gew"
 msgstr "River"
 
@@ -2252,6 +2297,9 @@ msgstr "Bouguer anomaly [mGal]"
 
 msgid "et_fromatt_ch"
 msgstr "Aeromagnetic anomalies Switzerland [nT]"
+
+msgid "faktenblatt"
+msgstr "Fact sheet"
 
 msgid "fassung"
 msgstr "Version"
@@ -2309,6 +2357,9 @@ msgstr "Cantonal geoportal"
 
 msgid "gemeinde"
 msgstr "City"
+
+msgid "gemeinde_stadt"
+msgstr "Municipality / city"
 
 msgid "gemflaeche"
 msgstr "Area of Municipality (ha)"
@@ -3108,6 +3159,9 @@ msgstr "Spezialbibliothek (Museen, Archive usw.) (Sammlung)"
 msgid "kultur863"
 msgstr "Private Bibliothek (Sammlung)"
 
+msgid "kurzerklaerung"
+msgstr "Brief introduction"
+
 msgid "lab"
 msgstr "Denomination"
 
@@ -3359,6 +3413,9 @@ msgstr "Protocol"
 
 msgid "publikationsjahr_1_2"
 msgstr "Year of publication 1 | 2"
+
+msgid "punktezahl"
+msgstr "Number of points"
 
 msgid "punktname"
 msgstr "Point name"

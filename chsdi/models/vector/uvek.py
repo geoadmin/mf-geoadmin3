@@ -363,6 +363,81 @@ class ABGELTUNGWASSERKRAFTNUTZUNG(Base, Vector):
 register('ch.bfe.abgeltung-wasserkraftnutzung', ABGELTUNGWASSERKRAFTNUTZUNG)
 
 
+class ENERGIESTAEDTE(Base, Vector):
+    __tablename__ = 'energiestaedte'
+    __table_args__ = ({'schema': 'bfe', 'autoload': False})
+    __template__ = 'templates/htmlpopup/energiestaedte.mako'
+    __bodId__ = 'ch.bfe.energiestaedte'
+    __extended_info__ = True
+    id = Column('bgdi_id', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    name = Column('name', Text)
+    punktezahl = Column('punktezahl', Numeric)
+    einwohner = Column('einwohner', Numeric)
+    energiestadtseit = Column('energiestadtseit', Text)
+    beteiligtegemeinde = Column('beteiligtegemeinde', Text)
+    anzahlaudits = Column('anzahlaudits', Numeric)
+    berater = Column('berater', Text)
+    linkberater = Column('linkberater', Text)
+    linkfaktenblatt = Column('linkfaktenblatt', Text)
+    linkenergiestadtweb = Column('linkenergiestadtweb', Text)
+
+register('ch.bfe.energiestaedte', ENERGIESTAEDTE)
+
+
+class ENERGIESTAEDTEREGIONEN(Base, Vector):
+    __tablename__ = 'energiestaedte_energieregionen'
+    __table_args__ = ({'schema': 'bfe', 'autoload': False})
+    __template__ = 'templates/htmlpopup/energiestaedte_energieregionen.mako'
+    __bodId__ = 'ch.bfe.energiestaedte-energieregionen'
+    __extended_info__ = True
+    id = Column('bgdi_id', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    name = Column('name', Text)
+    bet_energiestaedte = Column('bet_energiestaedte', Text)
+    bet_traegerverein = Column('bet_traegerverein', Text)
+    berater = Column('berater', Text)
+    linkberater = Column('linkberater', Text)
+
+register('ch.bfe.energiestaedte-energieregionen', ENERGIESTAEDTEREGIONEN)
+
+
+class ENERGIESTAEDTE2000WATTAREALE(Base, Vector):
+    __tablename__ = 'energiestaedte_2000watt_areale'
+    __table_args__ = ({'schema': 'bfe', 'autoload': False})
+    __template__ = 'templates/htmlpopup/energiestaedte_2000watt_areale.mako'
+    __bodId__ = 'ch.bfe.energiestaedte-2000watt-areale'
+    __extended_info__ = True
+    id = Column('bgdi_id', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    name = Column('name', Text)
+    gemeinde = Column('gemeinde', Text)
+    berater = Column('berater', Text)
+    linkberater = Column('linkberater', Text)
+    linkfaktenblatt_de = Column('linkfaktenblatt_de', Text)
+    linkfaktenblatt_fr = Column('linkfaktenblatt_fr', Text)
+    linkfaktenblatt_it = Column('linkfaktenblatt_it', Text)
+    linkfaktenblatt_en = Column('linkfaktenblatt_en', Text)
+
+register('ch.bfe.energiestaedte-2000watt-areale', ENERGIESTAEDTE2000WATTAREALE)
+
+
+class ENERGIESTAEDTE2000AUFDEMWEG(Base, Vector):
+    __tablename__ = 'energiestaedte_aufdemweg_2000watt'
+    __table_args__ = ({'schema': 'bfe', 'autoload': False})
+    __template__ = 'templates/htmlpopup/energiestaedte_2000watt_auf_dem_weg.mako'
+    __bodId__ = 'ch.bfe.energiestaedte-2000watt-aufdemweg'
+    __extended_info__ = True
+    id = Column('bgdi_id', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    name = Column('name', Text)
+    berater = Column('berater', Text)
+    linkberater = Column('linkberater', Text)
+    linkfaktenblatt = Column('linkfaktenblatt', Text)
+
+register('ch.bfe.energiestaedte-2000watt-aufdemweg', ENERGIESTAEDTE2000AUFDEMWEG)
+
+
 class ENERGIEFORSCHUNG(Base, Vector):
     __tablename__ = 'energieforschung'
     __table_args__ = ({'schema': 'bfe', 'autoload': False})
