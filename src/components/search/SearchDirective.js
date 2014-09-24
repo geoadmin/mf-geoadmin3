@@ -312,10 +312,12 @@
                 timeout: 20,
                 valueKey: 'inputVal',
                 limit: 30,
+                minLength: scope.options.minLength,
                 template: function(context) {
                   return getLocationTemplate(context);
                 },
                 remote: {
+                  rateLimitWait: scope.options.rateLimitWait,
                   url: gaUrlUtils.append(options.searchUrl,
                       'type=locations'),
                   beforeSend: function(jqXhr, settings) {
@@ -369,10 +371,12 @@
                 timeout: 20,
                 valueKey: 'inputVal',
                 limit: 30,
+                minLength: scope.options.minLength,
                 template: function(context) {
                   return getFeatureTemplate(context);
                 },
                 remote: {
+                  rateLimitWait: scope.options.rateLimitWait,
                   url: gaUrlUtils.append(options.searchUrl,
                       'type=featuresearch'),
                   beforeSend: function(jqXhr, settings) {
@@ -423,6 +427,7 @@
                 timeout: 20,
                 valueKey: 'inputVal',
                 limit: 20,
+                minLength: scope.options.minLength,
                 template: function(context) {
                   var template = '<div ng-show="hasLayerResults" ' +
                       'class="tt-search"' +
@@ -437,6 +442,7 @@
                   return template;
                 },
                 remote: {
+                  rateLimitWait: scope.options.rateLimitWait,
                   url: options.searchUrl + 'type=layers',
                   beforeSend: function(jqXhr, settings) {
                     // Prevent extra request from being sent on selection
@@ -562,13 +568,13 @@
               scope.timeEnabled = timeEnabled;
             });
 
-            var viewDropDown = $(taElt).data('ttView').dropdownView;
             // We have to create a small workaround to get the
             // a suggestionsRendered event that includes the
             // dataset
+            var viewDropDown = $(taElt).data('ttView').dropdownView;
             var renderSuggestions = viewDropDown.renderSuggestions;
-            viewDropDown.renderSuggestions = function(dataset, suggestions,
-                                                      invokeApply) {
+            var renderByDataset = function(context, dataset, suggestions,
+                invokeApply) {
               if (dataset.name === 'locations') {
                 hasLocationResults = (suggestions.length !== 0);
               } else if (dataset.name === 'featuresearch') {
@@ -580,14 +586,33 @@
                   scope.hasLayerResults = (suggestions.length !== 0);
                 }, 0);
               }
-              renderSuggestions.apply(this, [dataset, suggestions]);
+              renderSuggestions.apply(context, [dataset, suggestions]);
+
               if (invokeApply !== false) {
-                var self = this;
                 scope.$apply(function() {
-                  self.trigger('gaSuggestionsRendered', dataset);
+                  context.trigger('gaSuggestionsRendered', dataset);
                 });
               } else {
-                this.trigger('gaSuggestionsRendered', dataset);
+                context.trigger('gaSuggestionsRendered', dataset);
+              }
+            };
+            var immediate = (!scope.options.renderWait);
+            var renderLocations = gaDebounce.debounce(renderByDataset,
+                scope.options.renderWait, immediate);
+            var renderFeatures = gaDebounce.debounce(renderByDataset,
+                scope.options.renderWait, immediate);
+            var renderLayers = gaDebounce.debounce(renderByDataset,
+                scope.options.renderWait, immediate);
+            viewDropDown.renderSuggestions = function(dataset, suggestions,
+                invokeApply) {
+              // To avoid slow typing search we need to debounce the trigger of
+              // gaSuggestionRendered events
+              if (dataset.name === 'locations') {
+                renderLocations(this, dataset, suggestions, invokeApply);
+              } else if (dataset.name === 'featuresearch') {
+                renderFeatures(this, dataset, suggestions, invokeApply);
+              } else if (dataset.name === 'layers') {
+                renderLayers(this, dataset, suggestions, invokeApply);
               }
             };
 
