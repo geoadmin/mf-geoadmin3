@@ -142,16 +142,6 @@
                   scope.coord2056 = formatCoordinates(coord2056, 2);
                 });
 
-                $http.jsonp(lv03tolv95Url, {
-                  params: {
-                    easting: coord21781[0],
-                    northing: coord21781[1]
-                  }
-                }).success(function(response) {
-                  coord2056 = response.coordinates;
-                  scope.coord2056 = formatCoordinates(coord2056, 2);
-                });
-
               });
 
               updatePopupLinks();
