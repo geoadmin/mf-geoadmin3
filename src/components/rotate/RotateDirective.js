@@ -20,7 +20,7 @@
       link: function(scope, element, attrs) {
         var btnElt = $(element.children()[0]);
         var map = scope.map;
-        var view = map.getView().getView2D();
+        var view = map.getView();
 
         var setButtonRotation = function(rotation) {
           var rotateString = 'rotate(' + rotation + 'deg)';
@@ -36,8 +36,8 @@
         // Button is rotated according to map rotation
         map.on('postrender', function(mapEvent) {
           var frameState = mapEvent.frameState;
-          if (frameState && frameState.view2DState) {
-            var rotation = frameState.view2DState.rotation;
+          if (frameState && frameState.viewState) {
+            var rotation = frameState.viewState.rotation;
             setButtonRotation(rotation * 180 / Math.PI);
           }
         });

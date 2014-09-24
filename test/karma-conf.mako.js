@@ -24,9 +24,10 @@ files = [
   'lib/proj4js-compressed.js',
   'lib/EPSG21781.js',
   'lib/EPSG2056.js',
-  'lib/MGRS.js',
+  'lib/EPSG32631.js',
+  'lib/EPSG32632.js',
   '../test/closure-loader-globals.js',
-  'lib/ol-whitespace.js',
+  'lib/ol-debug.js',
   '../.build-artefacts/app-whitespace.js',
 % endif
   '../test/angular/angular-mocks.js',

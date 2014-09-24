@@ -11,7 +11,9 @@
       },
       link: function(scope, element, attrs) {
         var control = new ol.control.Attribution({
-          target: element[0]
+          label: '',
+          target: element[0],
+          tipLabel: ''
         });
         scope.map.addControl(control);
       }

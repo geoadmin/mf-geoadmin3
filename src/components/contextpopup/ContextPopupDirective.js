@@ -109,7 +109,7 @@
 
               coord4326['lon'] = coord4326[0];
               coord4326['lat'] = coord4326[1];
-              scope.coordmgrs = window.Proj4js.util.MGRS.forward(coord4326).
+              scope.coordmgrs = window.proj4.mgrs.forward(coord4326).
                 replace(/(.{5})/g, '$1 ');
               scope.altitude = '-';
 
@@ -133,6 +133,16 @@
                 });
 
                 $http.get(lv03tolv95Url, {
+                  params: {
+                    easting: coord21781[0],
+                    northing: coord21781[1]
+                  }
+                }).success(function(response) {
+                  coord2056 = response.coordinates;
+                  scope.coord2056 = formatCoordinates(coord2056, 2);
+                });
+
+                $http.jsonp(lv03tolv95Url, {
                   params: {
                     easting: coord21781[0],
                     northing: coord21781[1]

@@ -5,7 +5,7 @@ describe('ga_importkml__directive', function() {
   beforeEach(inject(function($injector, $rootScope, $compile) {
     map = new ol.Map({});
     map.setSize([600,300]);
-    map.getView().getView2D().fitExtent([-20000000, -20000000, 20000000, 20000000],
+    map.getView().fitExtent([-20000000, -20000000, 20000000, 20000000],
         map.getSize()); 
     
     element = angular.element(

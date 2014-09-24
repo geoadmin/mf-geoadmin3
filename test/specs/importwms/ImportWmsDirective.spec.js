@@ -4,7 +4,7 @@ describe('ga_importwms__directive', function() {
   beforeEach(inject(function($injector, $rootScope, $compile, $translate, gaGlobalOptions) {
     map = new ol.Map({});
     map.setSize([600,300]);
-    map.getView().getView2D().fitExtent([-20000000, -20000000, 20000000, 20000000], map.getSize()); 
+    map.getView().fitExtent([-20000000, -20000000, 20000000, 20000000], map.getSize()); 
     
     element = angular.element(
       '<div>' +
@@ -152,7 +152,7 @@ describe('ga_importwms__directive', function() {
 
     it('zooms on layer extent', inject(function($rootScope) {
       $rootScope.zoomOnLayerExtent($rootScope.layers[1]);
-      var i = $rootScope.map.getView().getView2D().calculateExtent($rootScope.map.getSize());
+      var i = $rootScope.map.getView().calculateExtent($rootScope.map.getSize());
       expect(i.toString()).to.be('-46795.47153769201,-203897.735768846,1420795.471537692,529897.735768846');
     }));
   });

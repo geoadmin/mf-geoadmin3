@@ -1,3 +1,0 @@
-@exportProperty ol.View2D.prototype.getResolutionForExtent
-@exportSymbol ol.feature
-@exportProperty ol.feature.defaultStyleFunction

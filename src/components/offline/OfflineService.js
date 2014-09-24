@@ -31,14 +31,10 @@
     // Get the magnitude of 3D vector from an origin.
     // Used to order tiles by the distance from the map center.
     var getMagnitude = function(a, origin) {
-      var aX = a.getX() + 0.5;
-      var aY = a.getY() + 0.5;
-      var aZ = a.getZ();
-      var oa = Math.sqrt(
-          Math.pow(aX - origin.x, 2) +
-          Math.pow(aY - origin.y, 2) +
-          Math.pow(aZ - origin.z, 2));
-      return oa;
+      return Math.sqrt(
+          Math.pow(a[1] + 0.5 - origin[1], 2) +
+          Math.pow(a[2] + 0.5 - origin[2], 2) +
+          Math.pow(a[0] - origin[0], 2));
     };
 
     // Defines if a layer is cacheable at a specific data zoom level.
@@ -368,7 +364,7 @@
           extent = ol.extent.buffer(center.concat(center), 5000);
 
           // We go through all the cacheable layers.
-          var projection = map.getView().getView2D().getProjection();
+          var projection = map.getView().getProjection();
           var queue = [];
           var layersIds = [];
           var layersOpacity = [];
@@ -402,21 +398,21 @@
               var tileExtent = (isBgLayer && zoom >= 0 && zoom <= 2) ?
                   gaMapUtils.swissExtent : extent;
               var tileRange = tileGrid.getTileRangeForExtentAndZ(tileExtent, z);
-              var centerTileCoord = {
-                x: (tileRange.getMinX() + tileRange.getMaxX()) / 2,
-                y: (tileRange.getMinY() + tileRange.getMaxY()) / 2,
-                z: z
-              };
+              var centerTileCoord = [
+                z,
+                (tileRange.getMinX() + tileRange.getMaxX()) / 2,
+                (tileRange.getMinY() + tileRange.getMaxY()) / 2
+              ];
 
               var queueByZ = [];
               for (var x = tileRange.getMinX(); x <= tileRange.getMaxX(); x++) {
                 for (var y = tileRange.getMinY(); y <= tileRange.getMaxY();
                     y++) {
-                  var tileCoord = new ol.TileCoord(z, x, y);
+                  var tileCoord = [z, x, y];
                   var tile = {
                     magnitude: getMagnitude(tileCoord, centerTileCoord),
                     url: tileUrlFunction(tileCoord,
-                        ol.BrowserFeature.DEVICE_PIXEL_RATIO, projection)
+                        ol.has.DEVICE_PIXEL_RATIO, projection)
                   };
                   queueByZ.push(tile);
                 }

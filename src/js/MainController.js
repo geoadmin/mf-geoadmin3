@@ -22,10 +22,8 @@
         gaNetworkStatus, gaPermalink, gaStorage) {
 
       var createMap = function() {
-        var swissProjection = ol.proj.configureProj4jsProjection({
-          code: 'EPSG:21781',
-          extent: gaMapUtils.swissExtent
-        });
+        var swissProjection = ol.proj.get('EPSG:21781');
+        swissProjection.setExtent(gaMapUtils.swissExtent);
 
         var map = new ol.Map({
           controls: ol.control.defaults({
@@ -46,14 +44,14 @@
             new ol.interaction.DragZoom()
           ]),
           renderer: 'canvas',
-          view: new ol.View2D({
+          view: new ol.View({
             projection: swissProjection,
             center: ol.extent.getCenter(gaMapUtils.swissExtent),
             extent: gaMapUtils.swissExtent,
             resolution: 500.0,
             resolutions: gaMapUtils.viewResolutions
           }),
-          ol3Logo: false
+          logo: false
         });
 
         var dragClass = 'ga-dragging';
