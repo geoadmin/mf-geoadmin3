@@ -72,10 +72,12 @@
               version: (gaBrowserSniffer.msie) ? 1 : '1.0',
               description: 'Storage for map.geo.admin.ch'
             });
-            // Firefox and IE don't manage webSQL.
-            if (gaBrowserSniffer.mobile && gaBrowserSniffer.webkit) {
-              $window.localforage.setDriver('webSQLStorage');
-            }
+            // IE > 10, Safari, Chrome, Opera, FF -> indexeddb
+            //
+            // Exceptions:
+            // Android default browser -> websql
+            // iOS Chrome, Opera -> websql
+            // iOS 7 Safari -> websql
             isInitialized = true;
           }
         };
