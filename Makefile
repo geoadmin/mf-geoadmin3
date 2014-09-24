@@ -173,7 +173,7 @@ prd/style/app.css: src/style/app.less src/style/print.less src/style/ga_bootstra
 	mkdir -p $(dir $@)
 	node_modules/.bin/lessc -ru --yui-compress $< $@
 
-prd/geoadmin.appcache: src/geoadmin.mako.appcache .build-artefacts/python-venv/bin/mako-render
+prd/geoadmin.appcache: src/geoadmin.mako.appcache prd/index.html prd/mobile.html .build-artefacts/python-venv/bin/mako-render
 	mkdir -p $(dir $@);
 	.build-artefacts/python-venv/bin/mako-render --var "version=$(VERSION)" --var "commit_hash=$(LAST_COMMIT_HASH)" --var "deploy_target=$(DEPLOY_TARGET)" --var "apache_base_path=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
 
