@@ -3,17 +3,15 @@
 
   goog.require('ga_networkstatus_service');
   goog.require('ga_permalink');
-  goog.require('ga_urlutils_service');
 
   var module = angular.module('ga_contextpopup_directive', [
     'ga_networkstatus_service',
-    'ga_permalink',
-    'ga_urlutils_service'
+    'ga_permalink'
   ]);
 
   module.directive('gaContextPopup',
       function($http, $q, $timeout, gaBrowserSniffer, gaNetworkStatus,
-          gaPermalink, gaUrlUtils) {
+          gaPermalink) {
         return {
           restrict: 'A',
           replace: true,
@@ -23,11 +21,9 @@
             options: '=gaContextPopupOptions'
           },
           link: function(scope, element, attrs) {
-            var heightUrl = gaUrlUtils.append(scope.options.heightUrl,
-                'callback=JSON_CALLBACK');
+            var heightUrl = scope.options.heightUrl;
             var qrcodeUrl = scope.options.qrcodeUrl;
-            var lv03tolv95Url = gaUrlUtils.append(scope.options.lv03tolv95Url,
-                'cb=JSON_CALLBACK');
+            var lv03tolv95Url = scope.options.lv03tolv95Url;
 
             // The popup content is updated (a) on contextmenu events,
             // and (b) when the permalink is updated.
@@ -126,7 +122,7 @@
               // digest cycle for us.
               scope.$apply(function() {
 
-                $http.jsonp(heightUrl, {
+                $http.get(heightUrl, {
                   params: {
                     easting: coord21781[0],
                     northing: coord21781[1],
@@ -136,7 +132,7 @@
                   scope.altitude = parseFloat(response.height);
                 });
 
-                $http.jsonp(lv03tolv95Url, {
+                $http.get(lv03tolv95Url, {
                   params: {
                     easting: coord21781[0],
                     northing: coord21781[1]

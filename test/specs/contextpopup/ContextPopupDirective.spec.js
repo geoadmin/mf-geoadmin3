@@ -52,10 +52,10 @@ describe('ga_contextpopup_directive', function() {
     var $timeout;
 
     var expectedHeightUrl = '//api.geo.admin.ch/height' +
-        '?callback=JSON_CALLBACK&easting=661473&elevation_model=COMB' +
+        '?easting=661473&elevation_model=COMB' +
         '&northing=188192';
     var expectedReframeUrl = '//api.example.com/reframe/' +
-        'lv03tolv95?cb=JSON_CALLBACK&easting=661473&northing=188192';
+        'lv03tolv95?easting=661473&northing=188192';
 
     beforeEach(inject(function($injector) {
       map.getEventPixel = function(event) { return [25, 50]; };
@@ -63,9 +63,9 @@ describe('ga_contextpopup_directive', function() {
         
       inject(function($injector) {
         $httpBackend = $injector.get('$httpBackend');
-        $httpBackend.when('JSONP', expectedHeightUrl).respond(
+        $httpBackend.when('GET', expectedHeightUrl).respond(
           {height: '1233'});
-        $httpBackend.when('JSONP', expectedReframeUrl).respond(
+        $httpBackend.when('GET', expectedReframeUrl).respond(
           {coordinates: [2725984.4037894635, 1180787.4007025931]});
 
         $timeout = $injector.get('$timeout');
@@ -77,8 +77,8 @@ describe('ga_contextpopup_directive', function() {
     });
 
     it('correctly handles map contextmenu events', function() {
-      $httpBackend.expectJSONP(expectedHeightUrl);
-      $httpBackend.expectJSONP(expectedReframeUrl);
+      $httpBackend.expectGET(expectedHeightUrl);
+      $httpBackend.expectGET(expectedReframeUrl);
       viewport.trigger($.Event("contextmenu", originalEvt));
       $httpBackend.flush();
 
@@ -110,8 +110,8 @@ describe('ga_contextpopup_directive', function() {
       }));
 
       it('correctly emulates contextmenu', function() {
-        $httpBackend.expectJSONP(expectedHeightUrl);
-        $httpBackend.expectJSONP(expectedReframeUrl);
+        $httpBackend.expectGET(expectedHeightUrl);
+        $httpBackend.expectGET(expectedReframeUrl);
         handlers.pointerdown(mapEvt);
 
         $timeout.flush();
