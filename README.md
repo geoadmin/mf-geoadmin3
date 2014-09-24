@@ -75,6 +75,10 @@ deploy process is done.
 
 `./deploydev.sh -s`
 
+Alternatively use the following command to create a snapshot from a branch (Only for emergency deploy)
+
+`./deploydev.sh -s somebranchname`
+
 This updates the source in /var/www...to the latest master branch from github,
 creates a snapshot and runs nosetests against the test db. The snapshot directory
 will be shown when the script is done. *Note*: you can omit the `-s` parameter if

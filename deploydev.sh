@@ -8,19 +8,21 @@ umask 0002
 #bail out on any error
 set -o errexit
 
-# adapt these for emergency deploy coming from branches
-GITBRANCH=master
-
 # set some variables
 DEPLOYDIR=/var/www/vhosts/mf-chsdi3/private/chsdi/
 SNAPSHOT=`date '+%Y%m%d%H%M'`
 SNAPSHOTDIR=/var/www/vhosts/mf-chsdi3/private/snapshots/$SNAPSHOT
 
 # parse parameter (if -n is specified, no snapshot will be created)
+GITBRANCH=master
 CREATE_SNAPSHOT='false'
 if [ "$1" == "-s" ]
 then
   CREATE_SNAPSHOT='true'
+  if [ -n "$2" ]
+  then
+    GITBRANCH=$2
+  fi
 fi
 
 # build latest 'master' version on dev
