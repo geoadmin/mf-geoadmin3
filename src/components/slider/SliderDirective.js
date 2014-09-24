@@ -195,7 +195,7 @@
     };
   });
 
-  module.directive('gaSlider', function($timeout, $sce, $document) {
+  module.directive('gaSlider', function($timeout, $sce, $document, $window) {
     return {
       restrict: 'A',
       scope: {
@@ -663,7 +663,7 @@
               });
             };
 
-            return window.addEventListener('resize', updateDOM);
+            return $window.addEventListener('resize', updateDOM);
           }
         };
       }

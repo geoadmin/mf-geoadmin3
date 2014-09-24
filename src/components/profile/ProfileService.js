@@ -7,7 +7,7 @@
 
   module.provider('gaProfileService', function() {
 
-    this.$get = function($timeout, $translate) {
+    this.$get = function($timeout, $translate, $window) {
 
       function ProfileChart(options, lazyLoadCB, d3LibUrl) {
         var marginHoriz = options.margin.left + options.margin.right;
@@ -18,13 +18,13 @@
         var d3, x, y;
 
         var onD3Loaded = function() {
-          d3 = window.d3;
+          d3 = $window.d3;
           x = d3.scale.linear().range([0, width]);
           y = d3.scale.linear().range([height, 0]);
           lazyLoadCB();
         };
 
-        if (!window.d3) {
+        if (!$window.d3) {
           $.getScript(d3LibUrl, onD3Loaded);
         } else {
           $timeout(onD3Loaded, 0);

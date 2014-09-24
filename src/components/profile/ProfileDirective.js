@@ -8,7 +8,7 @@
   ]);
 
   module.directive('gaProfile',
-      function($rootScope, $compile, gaProfileService) {
+      function($rootScope, $compile, $window, gaProfileService) {
         return {
           restrict: 'A',
           replace: true,
@@ -25,7 +25,7 @@
 
             $rootScope.$on('gaProfileDataLoaded', function(ev, data) {
               var loadData = function() {
-                var d3 = window.d3;
+                var d3 = $window.d3;
                 var profileEl = angular.element(
                     profile.create(data)
                 );
@@ -61,7 +61,7 @@
 
             function attachPathListeners(areaChartPath) {
               areaChartPath.on('mousemove', function() {
-                var d3 = window.d3;
+                var d3 = $window.d3;
                 var path = d3.select(areaChartPath[0][0]);
                 var pathEl = path.node();
                 if (angular.isDefined(pathEl.getTotalLength)) {
@@ -102,7 +102,7 @@
               });
 
               areaChartPath.on('mouseover', function(d) {
-                var d3 = window.d3;
+                var d3 = $window.d3;
                 var path = d3.select(areaChartPath[0][0]);
                 var pathEl = path.node();
                 if (angular.isDefined(pathEl.getTotalLength)) {
@@ -117,7 +117,7 @@
               });
 
               areaChartPath.on('mouseout', function(d) {
-                var d3 = window.d3;
+                var d3 = $window.d3;
                 var path = d3.select(areaChartPath[0][0]);
                 var pathEl = path.node();
                 if (angular.isDefined(pathEl.getTotalLength)) {

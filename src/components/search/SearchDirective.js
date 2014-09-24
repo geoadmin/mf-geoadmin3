@@ -23,7 +23,7 @@
   ]);
 
   module.directive('gaSearch',
-      function($compile, $translate, $timeout, $rootScope, $http,
+      function($compile, $translate, $timeout, $rootScope, $http, $window,
         gaWaitCursor, gaMapUtils, gaLayerMetadataPopup, gaPermalink, gaUrlUtils,
         gaGetCoordinate, gaBrowserSniffer, gaLayerFilters, gaKml,
         gaPreviewLayers, gaLayers, gaPreviewFeatures, gaMarkerOverlay,
@@ -699,7 +699,7 @@
               taElt.focus(function() {
                 $timeout(function() {
                   scope.searchFocused = true;
-                  window.scrollTo(0, 1);
+                  $window.scrollTo(0, 1);
                 });
               });
               taElt.on('search', function(e) {
