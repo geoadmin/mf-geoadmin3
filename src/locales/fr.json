@@ -172,7 +172,7 @@
 	"offline_no_cacheable_layers": "Aucune carte à sauvegarder.",
 	"offline_save": "Enregistrer carte BETA ",
 	"offline_save_new_data": "Sauvegarder une nouvelle carte",
-	"offline_save_warning": "- Vous allez télécharger ~50MB de carte (jusqu'à l'échelle 1:25'000) - Ne lockez pas votre appareil et ne quittez pas ce site durant le processus de téléchargement",
+	"offline_save_warning": "- Vous allez télécharger ~50MB de carte (jusqu'à l'échelle 1:25'000) - Ne lockez pas votre appareil et ne quittez pas ce site durant le processus de téléchargement. Désactivez le mode « privé »",
 	"offline_sorry": "Vous êtes actuellement offline. ",
 	"offline_space_warning": "Pas suffisament de place sur votre appareil, merci de libérer 50MB ou de ne sélectionner que 1 ou 2 couches.",
 	"offline_toggle_extent": "Afficher l'étendue",

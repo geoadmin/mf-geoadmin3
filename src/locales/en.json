@@ -172,7 +172,7 @@
 	"offline_no_cacheable_layers": "No maps selected for saving",
 	"offline_save": "Save map BETA ",
 	"offline_save_new_data": "Save new map",
-	"offline_save_warning": "- ~50MB of maps will be downloaded (until scale 1:25'000) - Don't lock your device or navigate away from this site during the download process",
+	"offline_save_warning": "- ~50MB of maps will be downloaded (until scale 1:25'000) - Don't lock your device or navigate away from this site during the download process. Deactivate \"private\" mode of your browser.",
 	"offline_sorry": "You are currently offline.",
 	"offline_space_warning": "Not enough space left on device, please free at least 50 MB on your device or try to select less layers (we recommend one or 2 layers).",
 	"offline_toggle_extent": "Show extent",

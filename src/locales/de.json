@@ -172,7 +172,7 @@
 	"offline_no_cacheable_layers": "Es wurden keine Karten zum speichern ausgewählt.",
 	"offline_save": "Karte Speichern BETA ",
 	"offline_save_new_data": "Neue Karte speichern ",
-	"offline_save_warning": "- ~50MB Kartenmaterial wird heruntergeladen werden (bis Massstab 1:25'000) - Sperren Sie nicht ihr Gerät und verlassen Sie nicht die Seite während des Abspeicherns",
+	"offline_save_warning": "- ~50MB Kartenmaterial wird heruntergeladen werden (bis Massstab 1:25'000) - Sperren Sie nicht ihr Gerät und verlassen Sie nicht die Seite während des Abspeicherns. \"Private\" mode des Browsers muss deaktiviert sein.",
 	"offline_sorry": "Sie sind im Moment offline",
 	"offline_space_warning": "Nicht genügend Speicherplatz vorhanden. Bitte geben sie ~50MB auf ihrem Gerät frei oder wählen Sie maximal 2 Kartenthemen",
 	"offline_toggle_extent": "Ausschnitt anzeigen",
