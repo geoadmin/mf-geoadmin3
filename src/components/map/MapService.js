@@ -692,6 +692,7 @@
               });
             }
             olLayer = new ol.layer.Tile({
+              extent: olSource.getProjection().getExtent(),
               minResolution: gaNetworkStatus.offline ? null :
                   layer.minResolution,
               maxResolution: layer.maxResolution,
