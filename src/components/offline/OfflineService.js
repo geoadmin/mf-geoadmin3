@@ -113,28 +113,30 @@
             progress = percent;
             $rootScope.$broadcast('gaOfflineProgress', progress);
           }
-
           // Download finished
           if (nbTilesCached + nbTilesFailed == nbTilesTotal) {
             isDownloading = false;
-            var percentCached = parseInt(nbTiles * 100 / nbTilesTotal, 10);
+            var percentCached = parseInt(nbTilesCached * 100 / nbTilesTotal,
+                10);
 
             if (percentCached <= 95) { // Download failed
+              $rootScope.$broadcast('gaOfflineError');
               $window.alert($translate('offline_less_than_95'));
-              $rootScope.$broadcast('gaOfflineError', progress);
 
             } else { // Download succeed
               gaStorage.setItem(extentKey, extent);
-              $window.alert($translate('offline_dl_succeed'));
               $rootScope.$broadcast('gaOfflineSuccess', progress);
+              $window.alert($translate('offline_dl_succeed'));
             }
           }
-
         }
       };
 
       // Tile saving error
       var onTileError = function(tileUrl, msg) {
+        if (isStorageFull) {
+          return;
+        }
         nbTilesFailed++;
         errorReport += '\nTile failed: ' + tileUrl + '\n Cause:' + msg;
         onDlProgress();
@@ -142,6 +144,9 @@
 
       // Tile saving success
       var onTileSuccess = function(size) {
+        if (isStorageFull) {
+          return;
+        }
         sizeCached += size;
         nbTilesCached++;
         onDlProgress();
@@ -149,20 +154,27 @@
 
       // Read xhr response
       var readResponse = function(tileUrl, response, type) {
+        if (isStorageFull) {
+          return;
+        }
         var blob = gaMapUtils.arrayBufferToBlob(response, type);
         // FileReader is strictly used to transform a blob to a base64 string
         var fileReader = new FileReader();
         fileReader.onload = function(evt) {
           gaStorage.setTile(gaMapUtils.getTileKey(tileUrl), evt.target.result,
               function(content, err) {
+                if (isStorageFull) {
+                  return;
+                }
                 if (err) {
                   if (err.code == err.QUOTA_ERR) {
-                    if (!isStorageFull) {
-                      alert($translate('offline_space_warning'));
-                      isStorageFull = true;
-                    }
+                    isStorageFull = true;
+                    alert($translate('offline_space_warning'));
+                    nbTilesFailed = nbTilesTotal - nbTilesCached;
+                    onDlProgress();
+                  } else {
+                    onTileError(tileUrl, 'Write db failed, code:' + err.code);
                   }
-                  onTileError(tileUrl, 'DB error ' + err.message);
                 } else {
                   onTileSuccess(blob.size);
                 }
@@ -467,15 +479,12 @@
             for (var j = cursor, jj = cursor + pool; j < jj &&
                 j < nbTilesTotal; j++) {
 
-              var tile = queue[j];
-              var tileUrl = gaUrlUtils.transformIfAgnostic(tile.url);
-
               if (isStorageFull) {
-                onTileError(tileUrl, 'Request doesn\'t send');
-                onLoadEnd(++requestsLoaded, j);
                 break;
               }
 
+              var tile = queue[j];
+              var tileUrl = gaUrlUtils.transformIfAgnostic(tile.url);
               var xhr = new XMLHttpRequest();
               xhr.tileUrl = tile.url;
               xhr.open('GET', tileUrl, true);
