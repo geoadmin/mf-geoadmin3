@@ -61,8 +61,8 @@
         }
 
         var onMobile = ((('ontouchstart' in w) ||
-            (('maxTouchPoints' in n) && n.maxTouchPoints > 0) ||
-            (('msMaxTouchPoints' in n) && n.msMaxTouchPoints > 0)) &&
+            (('maxTouchPoints' in n) && n.maxTouchPoints > 1) ||
+            (('msMaxTouchPoints' in n) && n.msMaxTouchPoints > 1)) &&
             (screen.width<=768 || screen.height<=768));
         if (m=='false' || (!onMobile && p=='mobile') ) {
           redirectToDesktop();
