@@ -11,8 +11,23 @@ Release Notes
 
 .. _releasenotes_20140925:
 
-Release 201400925 - Thursday, September 25th 2014
+Release 20140925 - Thursday, September 25th 2014
 -------------------------------------------------
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_140918_1...r_140925>`__
+
+`MAP <//map.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_140918_1...r_140925>`__
 
 Geodata
 ********
@@ -26,6 +41,12 @@ Geodata
 +--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | New    | `Energy-Regions <//map.geo.admin.ch/?layers=ch.bfe.energiestaedte-energieregionen>`__ (ch.bfe.energiestaedte-energieregionen)                                                                        |
 +--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+ 
+| New    | `Polluted sites civil aerodromes <//map.geo.admin.ch/?layers=ch.bazl.kataster-belasteter-standorte-zivilflugplaetze>`__ (ch.bazl.kataster-belasteter-standorte-zivilflugplaetze)                     |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Updated| `Hydropower statistics <//map.geo.admin.ch/?layers=ch.bfe.statistik-wasserkraftanlagen>`__ (ch.bfe.statistik-wasserkraftanlagen)                                                                     |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Updated| `Auen - Anhoerung 2014 <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-auen_anhoerung>`__ (ch.bafu.bundesinventare-auen_anhoerung)                                                               |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 .. _releasenotes_20140918:
 
@@ -39,7 +60,7 @@ API & applications
 '''''''''''''''''''''''''''''
 
 - Bug fixes
-- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_140908...r_140918>`__
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_140908...r_140918_1>`__
 
 `MAP <//map.geo.admin.ch>`__
 '''''''''''''''''''''''''''''
@@ -48,7 +69,7 @@ API & applications
 - Rotation button: appears when map is rotated in order to reset the rotation
 - Improve usability on mobile version
 - Bug fixes
-- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_140908...r_140918>`__
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_140908...r_140918_1>`__
 
 Geodata
 ********
