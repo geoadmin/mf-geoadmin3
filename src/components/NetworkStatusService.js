@@ -36,11 +36,17 @@
     var count = 0;
     var promise;
     this.$get = function($document, $rootScope, $timeout, $window,
-        gaGlobalOptions) {
+        gaGlobalOptions, gaBrowserSniffer) {
       var NetworkStatusService = function() {
         var that = this;
         this.offline = !navigator.onLine;
+        if (!gaBrowserSniffer.mobile) {
+          this.offline = false;
+        }
         this.check = function(timeout) {
+          if (!gaBrowserSniffer.mobile) {
+            return;
+          }
           if (promise) {
             $timeout.cancel([promise]);
           }
