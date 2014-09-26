@@ -42,10 +42,10 @@
     var promise;
     this.$get = function($document, $rootScope, $timeout, $window,
         gaBrowserSniffer, gaGlobalOptions) {
-      if (gaBrowserSniffer.mobile) {
+      if (!gaBrowserSniffer.mobile) {
         return {
           offline: false,
-          check: function(){}
+          check: function() {}
         };
       }
       var NetworkStatusService = function() {
