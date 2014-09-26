@@ -97,6 +97,10 @@ deploydev:
 		./scripts/deploydev.sh; \
   fi
 
+.PHONY: deploydemo
+deploydemo: guard-SNAPSHOT
+	./scripts/deploysnapshot.sh $(SNAPSHOT) demo
+
 .PHONY: deployint
 deployint: guard-SNAPSHOT
 	./scripts/deploysnapshot.sh $(SNAPSHOT) int
@@ -120,6 +124,11 @@ deploybranch: deploy/deploy-branch.cfg $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/con
 deploybranchint: deploybranch
 	cd $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH); \
 	sudo -u deploy deploy -r deploy/deploy-branch.cfg int;
+
+.PHONY: deploybranchdemo
+deploybranchdemo: deploybranch
+	cd $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH); \
+	sudo -u deploy deploy -r deploy/deploy-branch.cfg demo;
 
 .PHONY: preparebranch
 preparebranch: rc_branch scripts/00-$(GIT_BRANCH).conf
