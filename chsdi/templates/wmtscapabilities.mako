@@ -70,7 +70,6 @@
                 % endif
             </Style>
             <Format>image/${str(layer.arr_all_formats).split(',')[0]}</Format>
-            % if epsg == '21781':
             ## All dimensions
             <Dimension>
                 <ows:Identifier>Time</ows:Identifier>
@@ -82,19 +81,7 @@
             <TileMatrixSetLink>
                 <TileMatrixSet>${str(layer.tile_matrix_set_id).split(',')[0]}_${str(layer.zoomlevel_max)|validate_tilematrixset}</TileMatrixSet>
             </TileMatrixSetLink>
-            <ResourceURL format="image/${str(layer.arr_all_formats).split(',')[0]}" resourceType="tile" template="${onlineressource}1.0.0/${layer.id|x,trim}/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.${str(layer.arr_all_formats).split(',')[0]}"/>
-            % else:
-            ## Only the last dimension
-            <Dimension>
-                <ows:Identifier>Time</ows:Identifier>
-                <Default>${str(layer.timestamp).split(',')[0]}</Default>
-                <Value>${str(layer.timestamp).split(',')[0]}</Value>
-            </Dimension>
-            <TileMatrixSetLink>
-                <TileMatrixSet>${epsg}</TileMatrixSet>
-            </TileMatrixSetLink>
-            <ResourceURL format="image/${str(layer.arr_all_formats).split(',')[0]}" resourceType="tile" template="${onlineressource}1.0.0/${layer.id|x,trim}/default/{Time}/${epsg}/{TileMatrix}/{TileCol}/{TileRow}.${str(layer.arr_all_formats).split(',')[0]}"/>
-            % endif
+            <ResourceURL format="image/${str(layer.arr_all_formats).split(',')[0]}" resourceType="tile" template="${onlineressource}1.0.0/${layer.id|x,trim}/default/{Time}/${epsg}/{TileMatrix}/{TileRow}/{TileCol}.${str(layer.arr_all_formats).split(',')[0]}"/>
         </Layer>
         ##% endfor
   % endfor

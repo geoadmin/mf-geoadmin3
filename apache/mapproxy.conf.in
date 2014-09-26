@@ -9,15 +9,7 @@ ExpiresActive On
 RewriteRule ^${apache_entry_path}/1.0.0/WMTSCapabilities.EPSG.(\d+).xml ${apache_entry_path}/rest/services/api/1.0.0/WMTSCapabilities.xml?epsg=$1 [L,P]
 RewriteRule ^${apache_entry_path}/1.0.0/WMTSCapabilities.xml ${apache_entry_path}/rest/services/api/1.0.0/WMTSCapabilities.xml [L,P]
 
-# Mapping 'current' to actual 'timestamp'
-Include  ${buildout:directory}/apache/mapproxy-current.conf
-
-# IGN
-# For these layers, we use the entry cache ("*_source", not the reprojected one)
-RewriteCond %{QUERY_STRING} ^(.*)(ch.swisstopo.pixelkarte-farbe|ch.swisstopo.pixelkarte-grau|ch.swisstopo.swissimage)(.*)$
-RewriteRule ^${apache_entry_path}/mapproxy/server ^${apache_entry_path}/mapproxy/server?%1%2_source%3
-
-RewriteRule ^${apache_entry_path}/1.0.0/(.*)/default/(\d+)/(\d+)/(.*)   ${apache_entry_path}/mapproxy/wmts/1.0.0/$1/default/$2/epsg_$3/$4 [L,P]
+RewriteRule ^${apache_entry_path}/1.0.0/(.*)/default/(\d+)/(\d+)/(.*)   ${apache_entry_path}/mapproxy/wmts/1.0.0/$1_$2/default/$2/epsg_$3/$4 [L,P]
 
 WSGIDaemonProcess mf-chsdi3:${vars:apache_base_path}-mapproxy display-name=%{GROUP} user=${vars:modwsgi_user} ${vars:mapproxy_wsgi_options}
 

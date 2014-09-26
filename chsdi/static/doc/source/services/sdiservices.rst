@@ -867,10 +867,7 @@ Note:
 * Partly to a limitation of the WTMS 1.0.0 recomendation, each *projection* has its own *GetCapabilities* document.
 * You have to use the host `wmts{10-14}.geo.admin.ch`.
 * The same access restriction apply as above.
-* Only the latest available `timestamp` is accessible.
-* As the value of this `timestamp` is changing from time to time, and older
-  one are not available anymore, it is best to configure your web
-  application with the `GetCapabilities` of the projection of interest.
+* The same `timestamp` are available in all projection.
 
 Example
 *******
