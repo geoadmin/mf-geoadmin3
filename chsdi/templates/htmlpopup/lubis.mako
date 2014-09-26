@@ -227,7 +227,7 @@ viewer_url = get_viewer_url(request, params)
   </div>
   <br>
 
-% if preview_url != "":
+% if preview_url != "" and c['attributes']['image_width']:
   <span class="chsdi-no-print">${_('tt_luftbilderOL')}<a href="${viewer_url}" target="_blank" alt="Fullscreen">(fullscreen)</a></span>
   <div class="chsdi-map-container table-with-border">
     <div id="lubismap"></div>
@@ -266,7 +266,7 @@ viewer_url = get_viewer_url(request, params)
       map.highlightFeature('${c['layerBodId']}', '${c['featureId']}');
       map.recenterFeature('${c['layerBodId']}', '${c['featureId']}');
 
-% if preview_url != "":
+% if preview_url != "" and c['attributes']['image_width']:
       ${lubis_map.init_map(c['featureId'], image_width, image_height, 0, 'lubismap')}
 %endif
 
