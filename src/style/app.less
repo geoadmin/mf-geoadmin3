@@ -422,6 +422,7 @@ a .ga-icon-separator {
     @media (max-width: @screen-phone) {
       background-color: rgba(255,255,255,0.9);
       font-size: 14px;
+      max-height: 250px;
     }
     .panel-body {
       padding: 0;
@@ -431,12 +432,15 @@ a .ga-icon-separator {
   &.selection-and-catalog-shown {
     .panel-body {
       max-height: 250px;
-    
       @media (max-height: 800px) {
         max-height: 150px;
       }
+      @media (max-width: @screen-phone) {
+        max-height: 250px;
+      }
     }
   }
+
 }
 
 .pulldown-hover() {
