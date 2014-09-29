@@ -1,9 +1,14 @@
 (function() {
   goog.provide('ga_networkstatus_service');
 
-  var module = angular.module('ga_networkstatus_service', []);
+  goog.require('ga_browsersniffer_service');
 
-  module.factory('httpInterceptor', function($q, gaNetworkStatus) {
+  var module = angular.module('ga_networkstatus_service', [
+    'ga_browsersniffer_service'
+  ]);
+
+  module.factory('httpInterceptor', function($q, gaBrowserSniffer,
+      gaNetworkStatus) {
     return {
       responseError: function(rejection) {
         // In case an $http request failed we check if we are still connected.
@@ -36,7 +41,13 @@
     var count = 0;
     var promise;
     this.$get = function($document, $rootScope, $timeout, $window,
-        gaGlobalOptions) {
+        gaBrowserSniffer, gaGlobalOptions) {
+      if (!gaBrowserSniffer.mobile) {
+        return {
+          offline: false,
+          check: function() {}
+        };
+      }
       var NetworkStatusService = function() {
         var that = this;
         this.offline = !navigator.onLine;

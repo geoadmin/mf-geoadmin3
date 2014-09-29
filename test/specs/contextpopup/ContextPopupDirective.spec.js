@@ -12,6 +12,10 @@ describe('ga_contextpopup_directive', function() {
           menu: 'contextmenu'
         }
       });
+
+      $provide.value('gaNetworkStatus', {
+        offline: true
+      });
     });
     originalEvt = {originalEvent:{}}; 
     element = angular.element(
