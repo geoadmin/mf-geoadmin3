@@ -129,6 +129,7 @@
         tablet: gaBrowserSniffer.mobile && !gaBrowserSniffer.phone,
         touch: gaBrowserSniffer.touchDevice,
         webkit: gaBrowserSniffer.webkit,
+        ios: gaBrowserSniffer.ios,
         offline: gaNetworkStatus.offline
       };
 

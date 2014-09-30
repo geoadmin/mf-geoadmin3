@@ -19,6 +19,9 @@
         msie = +((/trident\/.*; rv:(\d+)/.exec(ua.toLowerCase()) || [])[1]);
       }
       var ios = /(iPhone|iPad)/.test(ua);
+      if (ios) {
+        ios = +/\((iPhone|iPad);.+OS (\d{1,2})_/.exec(ua)[2];
+      }
       var iosChrome = /CriOS/.test(ua);
       var webkit = /WebKit/.test(ua);
       var mac = /Mac/.test(platform);
@@ -91,11 +94,11 @@
       }
 
       return {
-        msie: msie,
+        msie: msie, // undefined or ie version number
         webkit: webkit,
         mac: mac,
         safari: safari,
-        ios: ios,
+        ios: ios, // false or iOS version number
         iosChrome: iosChrome,
         touchDevice: touchDevice,
         mobile: mobile,
