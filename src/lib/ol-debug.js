@@ -1,6 +1,6 @@
 // OpenLayers 3. See http://openlayers.org/
 // License: https://raw.githubusercontent.com/openlayers/ol3/master/LICENSE.md
-// Version: v3.0.0-96-g5416bad
+// Version: v3.0.0-128-g5f51fbc
 
 var CLOSURE_NO_DEPS = true;
 // Copyright 2006 The Closure Library Authors. All Rights Reserved.
@@ -12957,7 +12957,7 @@ ol.Object.capitalize = function(str) {
 ol.Object.getChangeEventType = function(key) {
   return ol.Object.changeEventTypeCache_.hasOwnProperty(key) ?
       ol.Object.changeEventTypeCache_[key] :
-      (ol.Object.changeEventTypeCache_[key] = 'change:' + key.toLowerCase());
+      (ol.Object.changeEventTypeCache_[key] = 'change:' + key);
 };
 
 
@@ -17380,6 +17380,7 @@ ol.extent.getIntersectionArea = function(extent1, extent2) {
  * @param {ol.Extent} extent2 Extent 2.
  * @param {ol.Extent=} opt_extent Optional extent to populate with intersection.
  * @return {ol.Extent} Intersecting extent.
+ * @api stable
  */
 ol.extent.getIntersection = function(extent1, extent2, opt_extent) {
   var intersection = goog.isDef(opt_extent) ?
@@ -17876,12 +17877,13 @@ ol.Sphere.prototype.midpoint = function(c1, c2) {
 
 
 /**
- * Returns the coordinate at the given distance and bearing from c.
+ * Returns the coordinate at the given distance and bearing from `c1`.
  *
- * @param {ol.Coordinate} c1 Coordinate.
- * @param {number} distance Distance.
- * @param {number} bearing Bearing.
- * @return {ol.Coordinate} Coordinate.
+ * @param {ol.Coordinate} c1 The origin point (`[lon, lat]` in degrees).
+ * @param {number} distance The great-circle distance between the origin
+ *     point and the target point.
+ * @param {number} bearing The bearing (in radians).
+ * @return {ol.Coordinate} The target point.
  */
 ol.Sphere.prototype.offset = function(c1, distance, bearing) {
   var lat1 = goog.math.toRadians(c1[1]);
@@ -31981,8 +31983,7 @@ ol.control.Attribution.prototype.insertLogos_ = function(frameState) {
         logoElement = image;
       } else {
         logoElement = goog.dom.createDom(goog.dom.TagName.A, {
-          'href': logoValue,
-          'target': '_blank'
+          'href': logoValue
         });
         logoElement.appendChild(image);
       }
@@ -39442,7 +39443,8 @@ goog.require('ol.style.Style');
  *
  * @constructor
  * @extends {ol.Object}
- * @fires change Triggered when the geometry or style of the feature changes.
+ * @fires change Triggered when the id, the geometry or the style of the
+ *     feature changes.
  * @param {ol.geom.Geometry|Object.<string, *>=} opt_geometryOrProperties
  *     You may pass a Geometry object directly, or an object literal
  *     containing properties.  If you pass an object literal, you may
@@ -43946,10 +43948,12 @@ ol.geom.Polygon.prototype.setFlatCoordinates =
 /**
  * Create an approximation of a circle on the surface of a sphere.
  * @param {ol.Sphere} sphere The sphere.
- * @param {ol.Coordinate} center Center.
- * @param {number} radius Radius.
- * @param {number=} opt_n Optional number of points.  Default is `32`.
- * @return {ol.geom.Polygon} Circle geometry.
+ * @param {ol.Coordinate} center Center (`[lon, lat]` in degrees).
+ * @param {number} radius The great-circle distance from the center to
+ *     the polygon vertices.
+ * @param {number=} opt_n Optional number of vertices for the resulting
+ *     polygon. Default is `32`.
+ * @return {ol.geom.Polygon} The "circular" polygon.
  * @api stable
  */
 ol.geom.Polygon.circular = function(sphere, center, radius, opt_n) {
@@ -48613,7 +48617,7 @@ ol.format.GML.readFlatCoordinatesFromNode_ = function(node, objectStack) {
  */
 ol.format.GML.readFlatPos_ = function(node, objectStack) {
   var s = ol.xml.getAllTextContent(node, false);
-  var re = /^\s*([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?)\s*/;
+  var re = /^\s*([+\-]?\d*\.?\d+(?:[eE][+\-]?\d+)?)\s*/;
   /** @type {Array.<number>} */
   var flatCoordinates = [];
   var m;
@@ -62917,6 +62921,7 @@ ol.format.WMSCapabilities.readLayer_ = function(node, objectStack) {
     if (goog.isDef(parentValue)) {
       var childValue = goog.object.setIfUndefined(layerObject, key, []);
       childValue = childValue.concat(parentValue);
+      goog.object.set(layerObject, key, childValue);
     }
   });
 
@@ -65155,8 +65160,23 @@ ol.interaction.Interaction = function() {
    */
   this.map_ = null;
 
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.active_ = true;
+
 };
 goog.inherits(ol.interaction.Interaction, ol.Observable);
+
+
+/**
+ * @return {boolean} `true` if the interaction is active, `false` otherwise.
+ * @api
+ */
+ol.interaction.Interaction.prototype.getActive = function() {
+  return this.active_;
+};
 
 
 /**
@@ -65176,6 +65196,16 @@ ol.interaction.Interaction.prototype.getMap = function() {
  */
 ol.interaction.Interaction.prototype.handleMapBrowserEvent =
     goog.abstractMethod;
+
+
+/**
+ * Activate or deactivate the interaction.
+ * @param {boolean} active Active.
+ * @api
+ */
+ol.interaction.Interaction.prototype.setActive = function(active) {
+  this.active_ = active;
+};
 
 
 /**
@@ -71790,7 +71820,7 @@ ol.interaction.DragBox.prototype.handlePointerDrag = function(mapBrowserEvent) {
 
 /**
  * Returns geometry of last drawn box.
- * @return {ol.geom.Geometry} Geometry.
+ * @return {ol.geom.Polygon} Geometry.
  * @api stable
  */
 ol.interaction.DragBox.prototype.getGeometry = function() {
@@ -75174,6 +75204,7 @@ ol.source.SourceOptions;
  * @extends {ol.Observable}
  * @fires change Triggered when the state of the source changes.
  * @param {ol.source.SourceOptions} options Source options.
+ * @api stable
  */
 ol.source.Source = function(options) {
 
@@ -75353,6 +75384,7 @@ ol.layer.LayerState;
  * @constructor
  * @extends {ol.Object}
  * @param {olx.layer.BaseOptions} options Layer options.
+ * @api stable
  */
 ol.layer.Base = function(options) {
 
@@ -90323,6 +90355,9 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
   if (this.dispatchEvent(mapBrowserEvent) !== false) {
     for (i = interactionsArray.length - 1; i >= 0; i--) {
       var interaction = interactionsArray[i];
+      if (!interaction.getActive()) {
+        continue;
+      }
       var cont = interaction.handleMapBrowserEvent(mapBrowserEvent);
       if (!cont) {
         break;
@@ -91760,6 +91795,14 @@ ol.source.VectorEventType = {
    * @api stable
    */
   ADDFEATURE: 'addfeature',
+
+  /**
+   * Triggered when a feature is updated.
+   * @event ol.source.VectorEvent#updatefeature
+   * @api
+   */
+  UPDATEFEATURE: 'updatefeature',
+
   /**
    * Triggered when a feature is removed from the source.
    * @event ol.source.VectorEvent#removefeature
@@ -92169,6 +92212,8 @@ ol.source.Vector.prototype.handleFeatureChange_ = function(event) {
     }
   }
   this.changed();
+  this.dispatchEvent(new ol.source.VectorEvent(
+      ol.source.VectorEventType.UPDATEFEATURE, feature));
 };
 
 
@@ -95955,7 +96000,7 @@ goog.inherits(ol.source.BingMaps, ol.source.TileImage);
  * @api
  */
 ol.source.BingMaps.TOS_ATTRIBUTION = new ol.Attribution({
-  html: '<a class="ol-attribution-bing-tos" target="_blank" ' +
+  html: '<a class="ol-attribution-bing-tos" ' +
       'href="http://www.microsoft.com/maps/product/terms.html">' +
       'Terms of Use</a>'
 });
@@ -100199,8 +100244,7 @@ goog.inherits(ol.source.MapQuest, ol.source.XYZ);
  * @type {ol.Attribution}
  */
 ol.source.MapQuest.TILE_ATTRIBUTION = new ol.Attribution({
-  html: 'Tiles Courtesy of ' +
-      '<a href="http://www.mapquest.com/" target="_blank">MapQuest</a>'
+  html: 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a>'
 });
 
 
@@ -102307,6 +102351,7 @@ goog.require('ol.interaction.DragRotate');
 goog.require('ol.interaction.DragRotateAndZoom');
 goog.require('ol.interaction.DragZoom');
 goog.require('ol.interaction.Draw');
+goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.KeyboardPan');
 goog.require('ol.interaction.KeyboardZoom');
 goog.require('ol.interaction.Modify');
@@ -102606,6 +102651,10 @@ goog.exportSymbol(
 goog.exportSymbol(
     'ol.extent.getHeight',
     ol.extent.getHeight);
+
+goog.exportSymbol(
+    'ol.extent.getIntersection',
+    ol.extent.getIntersection);
 
 goog.exportSymbol(
     'ol.extent.getSize',
@@ -103790,6 +103839,10 @@ goog.exportProperty(
     'readFeatures',
     ol.source.ServerVector.prototype.readFeatures);
 
+goog.exportSymbol(
+    'ol.source.Source',
+    ol.source.Source);
+
 goog.exportProperty(
     ol.source.Source.prototype,
     'getAttributions',
@@ -104190,6 +104243,10 @@ goog.exportProperty(
     'getSource',
     ol.layer.Layer.prototype.getSource);
 
+goog.exportSymbol(
+    'ol.layer.Base',
+    ol.layer.Base);
+
 goog.exportProperty(
     ol.layer.Base.prototype,
     'getBrightness',
@@ -104408,6 +104465,16 @@ goog.exportProperty(
 goog.exportSymbol(
     'ol.interaction.Draw',
     ol.interaction.Draw);
+
+goog.exportProperty(
+    ol.interaction.Interaction.prototype,
+    'getActive',
+    ol.interaction.Interaction.prototype.getActive);
+
+goog.exportProperty(
+    ol.interaction.Interaction.prototype,
+    'setActive',
+    ol.interaction.Interaction.prototype.setActive);
 
 goog.exportSymbol(
     'ol.interaction.defaults',
@@ -109580,6 +109647,16 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.interaction.DoubleClickZoom.prototype,
+    'getActive',
+    ol.interaction.DoubleClickZoom.prototype.getActive);
+
+goog.exportProperty(
+    ol.interaction.DoubleClickZoom.prototype,
+    'setActive',
+    ol.interaction.DoubleClickZoom.prototype.setActive);
+
+goog.exportProperty(
+    ol.interaction.DoubleClickZoom.prototype,
     'changed',
     ol.interaction.DoubleClickZoom.prototype.changed);
 
@@ -109607,6 +109684,16 @@ goog.exportProperty(
     ol.interaction.DoubleClickZoom.prototype,
     'unByKey',
     ol.interaction.DoubleClickZoom.prototype.unByKey);
+
+goog.exportProperty(
+    ol.interaction.DragAndDrop.prototype,
+    'getActive',
+    ol.interaction.DragAndDrop.prototype.getActive);
+
+goog.exportProperty(
+    ol.interaction.DragAndDrop.prototype,
+    'setActive',
+    ol.interaction.DragAndDrop.prototype.setActive);
 
 goog.exportProperty(
     ol.interaction.DragAndDrop.prototype,
@@ -109640,6 +109727,16 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.interaction.Pointer.prototype,
+    'getActive',
+    ol.interaction.Pointer.prototype.getActive);
+
+goog.exportProperty(
+    ol.interaction.Pointer.prototype,
+    'setActive',
+    ol.interaction.Pointer.prototype.setActive);
+
+goog.exportProperty(
+    ol.interaction.Pointer.prototype,
     'changed',
     ol.interaction.Pointer.prototype.changed);
 
@@ -109667,6 +109764,16 @@ goog.exportProperty(
     ol.interaction.Pointer.prototype,
     'unByKey',
     ol.interaction.Pointer.prototype.unByKey);
+
+goog.exportProperty(
+    ol.interaction.DragBox.prototype,
+    'getActive',
+    ol.interaction.DragBox.prototype.getActive);
+
+goog.exportProperty(
+    ol.interaction.DragBox.prototype,
+    'setActive',
+    ol.interaction.DragBox.prototype.setActive);
 
 goog.exportProperty(
     ol.interaction.DragBox.prototype,
@@ -109700,6 +109807,16 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.interaction.DragPan.prototype,
+    'getActive',
+    ol.interaction.DragPan.prototype.getActive);
+
+goog.exportProperty(
+    ol.interaction.DragPan.prototype,
+    'setActive',
+    ol.interaction.DragPan.prototype.setActive);
+
+goog.exportProperty(
+    ol.interaction.DragPan.prototype,
     'changed',
     ol.interaction.DragPan.prototype.changed);
 
@@ -109730,6 +109847,16 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.interaction.DragRotateAndZoom.prototype,
+    'getActive',
+    ol.interaction.DragRotateAndZoom.prototype.getActive);
+
+goog.exportProperty(
+    ol.interaction.DragRotateAndZoom.prototype,
+    'setActive',
+    ol.interaction.DragRotateAndZoom.prototype.setActive);
+
+goog.exportProperty(
+    ol.interaction.DragRotateAndZoom.prototype,
     'changed',
     ol.interaction.DragRotateAndZoom.prototype.changed);
 
@@ -109757,6 +109884,16 @@ goog.exportProperty(
     ol.interaction.DragRotateAndZoom.prototype,
     'unByKey',
     ol.interaction.DragRotateAndZoom.prototype.unByKey);
+
+goog.exportProperty(
+    ol.interaction.DragRotate.prototype,
+    'getActive',
+    ol.interaction.DragRotate.prototype.getActive);
+
+goog.exportProperty(
+    ol.interaction.DragRotate.prototype,
+    'setActive',
+    ol.interaction.DragRotate.prototype.setActive);
 
 goog.exportProperty(
     ol.interaction.DragRotate.prototype,
@@ -109795,6 +109932,16 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.interaction.DragZoom.prototype,
+    'getActive',
+    ol.interaction.DragZoom.prototype.getActive);
+
+goog.exportProperty(
+    ol.interaction.DragZoom.prototype,
+    'setActive',
+    ol.interaction.DragZoom.prototype.setActive);
+
+goog.exportProperty(
+    ol.interaction.DragZoom.prototype,
     'changed',
     ol.interaction.DragZoom.prototype.changed);
 
@@ -109822,6 +109969,16 @@ goog.exportProperty(
     ol.interaction.DragZoom.prototype,
     'unByKey',
     ol.interaction.DragZoom.prototype.unByKey);
+
+goog.exportProperty(
+    ol.interaction.Draw.prototype,
+    'getActive',
+    ol.interaction.Draw.prototype.getActive);
+
+goog.exportProperty(
+    ol.interaction.Draw.prototype,
+    'setActive',
+    ol.interaction.Draw.prototype.setActive);
 
 goog.exportProperty(
     ol.interaction.Draw.prototype,
@@ -109855,6 +110012,16 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.interaction.KeyboardPan.prototype,
+    'getActive',
+    ol.interaction.KeyboardPan.prototype.getActive);
+
+goog.exportProperty(
+    ol.interaction.KeyboardPan.prototype,
+    'setActive',
+    ol.interaction.KeyboardPan.prototype.setActive);
+
+goog.exportProperty(
+    ol.interaction.KeyboardPan.prototype,
     'changed',
     ol.interaction.KeyboardPan.prototype.changed);
 
@@ -109882,6 +110049,16 @@ goog.exportProperty(
     ol.interaction.KeyboardPan.prototype,
     'unByKey',
     ol.interaction.KeyboardPan.prototype.unByKey);
+
+goog.exportProperty(
+    ol.interaction.KeyboardZoom.prototype,
+    'getActive',
+    ol.interaction.KeyboardZoom.prototype.getActive);
+
+goog.exportProperty(
+    ol.interaction.KeyboardZoom.prototype,
+    'setActive',
+    ol.interaction.KeyboardZoom.prototype.setActive);
 
 goog.exportProperty(
     ol.interaction.KeyboardZoom.prototype,
@@ -109915,6 +110092,16 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.interaction.Modify.prototype,
+    'getActive',
+    ol.interaction.Modify.prototype.getActive);
+
+goog.exportProperty(
+    ol.interaction.Modify.prototype,
+    'setActive',
+    ol.interaction.Modify.prototype.setActive);
+
+goog.exportProperty(
+    ol.interaction.Modify.prototype,
     'changed',
     ol.interaction.Modify.prototype.changed);
 
@@ -109942,6 +110129,16 @@ goog.exportProperty(
     ol.interaction.Modify.prototype,
     'unByKey',
     ol.interaction.Modify.prototype.unByKey);
+
+goog.exportProperty(
+    ol.interaction.MouseWheelZoom.prototype,
+    'getActive',
+    ol.interaction.MouseWheelZoom.prototype.getActive);
+
+goog.exportProperty(
+    ol.interaction.MouseWheelZoom.prototype,
+    'setActive',
+    ol.interaction.MouseWheelZoom.prototype.setActive);
 
 goog.exportProperty(
     ol.interaction.MouseWheelZoom.prototype,
@@ -109975,6 +110172,16 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.interaction.PinchRotate.prototype,
+    'getActive',
+    ol.interaction.PinchRotate.prototype.getActive);
+
+goog.exportProperty(
+    ol.interaction.PinchRotate.prototype,
+    'setActive',
+    ol.interaction.PinchRotate.prototype.setActive);
+
+goog.exportProperty(
+    ol.interaction.PinchRotate.prototype,
     'changed',
     ol.interaction.PinchRotate.prototype.changed);
 
@@ -110005,6 +110212,16 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.interaction.PinchZoom.prototype,
+    'getActive',
+    ol.interaction.PinchZoom.prototype.getActive);
+
+goog.exportProperty(
+    ol.interaction.PinchZoom.prototype,
+    'setActive',
+    ol.interaction.PinchZoom.prototype.setActive);
+
+goog.exportProperty(
+    ol.interaction.PinchZoom.prototype,
     'changed',
     ol.interaction.PinchZoom.prototype.changed);
 
@@ -110032,6 +110249,16 @@ goog.exportProperty(
     ol.interaction.PinchZoom.prototype,
     'unByKey',
     ol.interaction.PinchZoom.prototype.unByKey);
+
+goog.exportProperty(
+    ol.interaction.Select.prototype,
+    'getActive',
+    ol.interaction.Select.prototype.getActive);
+
+goog.exportProperty(
+    ol.interaction.Select.prototype,
+    'setActive',
+    ol.interaction.Select.prototype.setActive);
 
 goog.exportProperty(
     ol.interaction.Select.prototype,
