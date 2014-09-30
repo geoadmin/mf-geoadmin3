@@ -3,12 +3,10 @@
 
   goog.require('ga_debounce_service');
   goog.require('ga_map_service');
-  goog.require('ga_waitcursor_service');
 
   var module = angular.module('ga_measure_directive', [
     'ga_debounce_service',
-    'ga_map_service',
-    'ga_waitcursor_service'
+    'ga_map_service'
   ]);
 
   module.filter('measure', function() {
@@ -51,7 +49,7 @@
 
   module.directive('gaMeasure',
     function($document, $rootScope, gaDebounce, gaDefinePropertiesForLayer,
-        gaLayerFilters, gaWaitCursor) {
+        gaLayerFilters) {
       return {
         restrict: 'A',
         templateUrl: function(element, attrs) {
@@ -206,7 +204,6 @@
 
                 // Update the profile
                 if (scope.options.isProfileActive) {
-                  gaWaitCursor.add();
                   updateProfileDebounced();
                 }
 
@@ -234,7 +231,6 @@
                 }
               }
             }
-            gaWaitCursor.remove();
           };
 
 
@@ -283,8 +279,6 @@
                  sketchFeatDistance.getGeometry()
                      .getCoordinates().length >= 1) {
               scope.options.drawProfile(sketchFeatDistance);
-            } else {
-              gaWaitCursor.remove();
             }
           };
           var updateProfileDebounced = gaDebounce.debounce(updateProfile, 500,
@@ -301,10 +295,7 @@
           });
           scope.$watch('options.isProfileActive', function(active) {
             if (active) {
-              gaWaitCursor.add();
               updateProfileDebounced();
-            } else {
-              gaWaitCursor.remove();
             }
           });
 
@@ -330,13 +321,6 @@
           $rootScope.$on('gaProfileMapPositionDeactivate', function(event) {
             featuresOverlay.removeFeature(sketchFeatPoint);
           });
-          $rootScope.$on('gaProfileDataLoaded', function(ev, data) {
-            gaWaitCursor.remove();
-          });
-          $rootScope.$on('gaProfileDataUpdated', function(ev, data) {
-            gaWaitCursor.remove();
-          });
-
         }
       };
     }

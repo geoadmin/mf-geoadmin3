@@ -2,17 +2,15 @@
   goog.provide('ga_measure_controller');
 
   goog.require('ga_urlutils_service');
-  goog.require('ga_waitcursor_service');
 
   var module = angular.module('ga_measure_controller', [
     'ga_urlutils_service',
-    'ga_waitcursor_service',
     'pascalprecht.translate'
   ]);
 
   module.controller('GaMeasureController',
-      function($scope, $translate, $http, $rootScope,
-          gaGlobalOptions, gaUrlUtils, gaWaitCursor) {
+      function($scope, $translate, $http, $rootScope, gaGlobalOptions,
+          gaUrlUtils) {
         $scope.options = {
           isProfileActive: false,
           profileUrl: gaGlobalOptions.apiUrl + '/rest/services/profile.json',
@@ -120,7 +118,6 @@
           http.error(function(data, status) {
             // Display an empty profile
             callback([{alts:{COMB: 0}, dist: 0}], status);
-            gaWaitCursor.remove();
           });;
         };
 

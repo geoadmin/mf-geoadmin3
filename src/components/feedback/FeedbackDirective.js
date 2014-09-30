@@ -3,12 +3,10 @@
 
   goog.require('ga_browsersniffer_service');
   goog.require('ga_permalink');
-  goog.require('ga_waitcursor_service');
 
   var module = angular.module('ga_feedback_directive', [
     'ga_browsersniffer_service',
     'ga_permalink',
-    'ga_waitcursor_service',
     'pascalprecht.translate'
   ]);
 
@@ -20,8 +18,7 @@
    * "response" scope property to "success" or "error".
    */
   module.directive('gaFeedback',
-      function($http, $translate, gaPermalink, gaWaitCursor,
-          gaBrowserSniffer) {
+      function($http, $translate, gaPermalink, gaBrowserSniffer) {
           return {
             restrict: 'A',
             replace: true,
@@ -124,14 +121,11 @@
                       'application/x-www-form-urlencoded'};
                 }
 
-                gaWaitCursor.add();
                 scope.showProgress = true;
                 $http(params).success(function(response) {
-                  gaWaitCursor.remove();
                   scope.showProgress = false;
                   scope.response = 'success';
                 }).error(function(response) {
-                  gaWaitCursor.remove();
                   scope.showProgress = false;
                   scope.response = 'error';
                 });

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 <!DOCTYPE html>
 <html ng-app="ga" ng-controller="GaMainController"
-% if device == 'mobile':
+% if device == 'mobile' and mode=='prod' :
  manifest="geoadmin.appcache"
 % endif
 >
@@ -557,7 +557,7 @@
     ## css animation doesnt work on pseudo element, let use this instead
     <i id="loader" class="icon-spin icon-refresh"></i>
 
-% if mode == "prod":
+% if mode == 'prod':
     <script src="${versionslashed}lib/build.js"></script>
     <!-- For <= IE9, we load it explicitely as XDomain does not support
          dynamic/lazy loading of javascript -->
