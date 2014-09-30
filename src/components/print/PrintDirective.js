@@ -376,17 +376,20 @@
           var encFeatures = [];
           var stylesDict = {};
           var styleId = 0;
-          var hasLayerStyleFunction = !!(layer.getStyleFunction &&
-              layer.getStyleFunction());
 
           angular.forEach(features, function(feature) {
             var encStyle = {
               id: styleId
             };
-            var styles = (hasLayerStyleFunction) ?
-                layer.getStyleFunction()(feature) :
-                ol.style.defaultStyleFunction(feature);
 
+            var styles;
+            if (feature.getStyleFunction()) {
+              styles = feature.getStyleFunction().call(feature);
+            } else if (layer.getStyleFunction()) {
+              styles = layer.getStyleFunction()(feature);
+            } else {
+              styles = ol.style.defaultStyleFunction(feature);
+            }
 
             var geometry = feature.getGeometry();
 
