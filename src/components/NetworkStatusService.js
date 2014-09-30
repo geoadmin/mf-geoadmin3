@@ -11,8 +11,11 @@
       gaNetworkStatus) {
     return {
       responseError: function(rejection) {
-        // In case an $http request failed we check if we are still connected.
-        gaNetworkStatus.check(2000);
+        // status = 0 means the request has been aborted
+        if (rejection.status != 0) {
+          // In case an $http request failed we check if we are still connected.
+          gaNetworkStatus.check(2000);
+        }
         return $q.reject(rejection);
       }
     };
