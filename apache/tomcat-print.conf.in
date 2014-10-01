@@ -15,8 +15,13 @@ AliasMatch ^${apache_entry_path}/print/([0-9]+\.pdf\.printout)$ ${print_temp_dir
   # Try to force IE to open the PDF in a new window
   # overriding what set by the print server
   SetEnvIf Request_URI "\.pdf$" PDF=pdf
-  SetEnvIf User-Agent .*MSIE.* IE=ie
+  SetEnvIf User-Agent .*MSIE.* IE=1
+  SetEnvIf User-Agent .*MSIE 10.* IE10=1
+
   Header set Content-Disposition "inline" env=IE
   Header set Content-Type "application/octet-stream" env=PDF
+
+  Header set Content-Type "application/pdf"  env=IE10
+  Header set Content-Disposition "attachment; filename=map.geo.admin.ch.pdf" env=IE10
 </LocationMatch>
 
