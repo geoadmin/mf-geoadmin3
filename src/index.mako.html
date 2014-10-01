@@ -211,7 +211,7 @@
 
     <div id="pulldown" ng-show="!globals.offline" class="{{(globals.catalogShown && globals.selectionShown) ? 'selection-and-catalog-shown' : ''}}">
       <div id="pulldown-content" class="panel-group content ${"in" if device == "desktop" else "collapse"}">
-        <div class="panel" ng-if="!globals.offline" >
+        <div class="panel">
           <a id="shareHeading" class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#share">
             <i class="visible-collapsed icon-caret-right spacer"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
@@ -226,7 +226,7 @@
         </div> <!-- .panel -->
 
 % if device == 'desktop':
-        <div class="panel" ng-if="!globals.offline" >
+        <div class="panel">
           <a id="printHeading" class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#print">
             <i class="visible-collapsed icon-caret-right spacer"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
@@ -241,7 +241,7 @@
           </div>
         </div>  <!-- .panel -->
 
-        <div class="panel" ng-if="!globals.offline"> 
+        <div class="panel"> 
 
           <a id="toolsHeading" class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#tools">
             <i class="visible-collapsed icon-caret-right spacer"></i>
@@ -309,7 +309,7 @@
         </div> <!-- .panel -->
 % endif
 
-        <div class="panel" ng-show="!globals.offline">
+        <div class="panel">
 % if device == 'desktop':
           <div class="theme-toggle">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -344,7 +344,7 @@
           </div>
         </div> <!-- .panel -->
 
-        <div class="panel" ng-if="!globals.offline">
+        <div class="panel">
           <a id="selectionHeading" class="panel-heading accordion-toggle light ${"collapsed" if device!= "desktop" else ""}" data-toggle="collapse" href="#selection">
             <i class="visible-collapsed icon-caret-right"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
