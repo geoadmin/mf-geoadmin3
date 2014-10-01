@@ -9,6 +9,28 @@
 Release Notes
 =============
 
+
+.. _releasenotes_20141001:
+
+Release 20141001 - Wednesday, October 1st 2014
+-------------------------------------------------
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+
+- Fix IE10 print download
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_140925...r_141001>`__
+
+`MAP <//map.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_140925...r_141001>`__
+
 .. _releasenotes_20140925:
 
 Release 20140925 - Thursday, September 25th 2014
