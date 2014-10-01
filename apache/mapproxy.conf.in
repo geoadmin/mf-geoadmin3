@@ -6,12 +6,8 @@ RewriteEngine On
 ExpiresActive On
 
 # MapProxy access control
-RewriteRule ^${apache_entry_path}/1.0.0/WMTSCapabilities.EPSG.(\d+).xml ${apache_entry_path}/rest/services/api/1.0.0/WMTSCapabilities.xml?epsg=$1 [L,P]
-RewriteRule ^${apache_entry_path}/1.0.0/WMTSCapabilities.xml ${apache_entry_path}/rest/services/api/1.0.0/WMTSCapabilities.xml [L,P]
 
-RewriteRule ^${apache_entry_path}/1.0.0/(.*)/default/(\d+)/(\d+)/(.*)   ${apache_entry_path}/mapproxy/wmts/1.0.0/$1_$2/default/$2/epsg_$3/$4 [L,P]
-
-WSGIDaemonProcess mf-chsdi3:${vars:apache_base_path}-mapproxy display-name=%{GROUP} user=${vars:modwsgi_user} ${vars:mapproxy_wsgi_options}
+WSGIDaemonProcess mf-chsdi3:${vars:apache_base_path}-mapproxy display-name=%{GROUP} user=${vars:modwsgi_user} processes=4
 
 # define the path to the WSGI app
 WSGIScriptAliasMatch ^${apache_entry_path}/mapproxy ${buildout:directory}/buildout/parts/mapproxy/wsgi
@@ -23,21 +19,11 @@ WSGIScriptAliasMatch ^${apache_entry_path}/mapproxy ${buildout:directory}/buildo
     Order Deny,Allow
     Allow from all
 
-    Header unset Cache-Control
-    Header merge Cache-Control "no-cache"
+    ExpiresActive On
+    ExpiresDefault "now plus 1 days"
+    Header set Cache-Control "public, max-age=86400"
+    Header unset Etag
+
 </Directory>
 
-<Location ${apache_entry_path}/1.0.0>
-    Order Deny,Allow
-    Allow from all
-</Location>
 
-# Cache for timestamp keyword 'default'
-<LocationMatch "default/default/(.*)(jpg|jpeg|png)$">
-    Header set Cache-Control "max-age=3600, public"
-</LocationMatch>
-
-# Cache for tiles, same as S3
-<LocationMatch "default/(\d+)/(.*)(jpg|jpeg|png)$">
-    Header set Cache-Control "max-age=315360000, public"
-</LocationMatch>

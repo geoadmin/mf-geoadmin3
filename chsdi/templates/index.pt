@@ -92,11 +92,7 @@
       <h2>Ogcproxy</h2>
           <a href="ogcproxy?url=http%3A%2F%2Fmapserver1.gr.ch%2Fwms%2Fadmineinteilung%3FSERVICE%3DWMS%26REQUEST%3DGetCapabilities%26VERSION%3D1.3.0">Get Capabilities using ogcproxy</a>
       <h2>MapProxy</h2>
-          <a href="mapproxy/demo">MapProxy demo</a><br>
-          <a href="rest/services/api/1.0.0/WMTSCapabilities.xml?epsg=4326">GetCapabilities for EPSG:4326 (raw service)</a><br />
-          <div style="display: block">
-          <img src="mapproxy/wmts/1.0.0/ch.swisstopo.swissimage/default/20140620/epsg_3857/10/529/360.jpeg" width="256" height="256">
-          </div>
+          <a href="mapproxy/demo">MapProxy demo</a>
 
       <h2>CatalogService (non ESRI)</h2>
           <a href="rest/services/blw/CatalogServer?callback=callback">Catalog for topic 'blw'</a>

@@ -17,8 +17,6 @@ class WMTSCapabilites(MapNameValidation):
         self.lang = request.lang
         self.models = get_wmts_models(self.lang)
         self.request = request
-        epsg = request.GET.get('epsg')
-        self.tileMatrixSet = epsg if epsg in ['21781', '4326', '2056', '4852', '3857'] else '21781'
 
     @view_config(route_name='wmtscapabilities', http_cache=0)
     def wmtscapabilities(self):
@@ -27,14 +25,10 @@ class WMTSCapabilites(MapNameValidation):
             'X-Forwarded-Proto',
             self.request.scheme)
         staging = self.request.registry.settings['geodata_staging']
-        host = self.request.headers.get(
-            'X-Forwarded-Host', self.request.host)
-        request_uri = self.request.environ.get("REQUEST_URI", "")
-        apache_base_path = self.request.registry.settings['entry_path']
-        apache_entry_point = '/' if apache_base_path == 'main' else apache_base_path
 
-        onlineressource = "%s://%s%s/" % (scheme, host, apache_entry_point) if self.tileMatrixSet != '21781'\
-            else "%s://wmts.geo.admin.ch" % scheme
+        request_uri = self.request.environ.get("REQUEST_URI", "")
+        onlineressource = "%s://wmts.geo.admin.ch" % scheme if request_uri\
+            .find("1.0.0") else "%s://api.geo.admin.ch/wmts" % scheme
 
         layers_query = self.request.db.query(self.models['GetCap'])
         layers_query = filter_by_geodata_staging(
@@ -60,8 +54,7 @@ class WMTSCapabilites(MapNameValidation):
             'themes': themes,
             'metadata': metadata,
             'scheme': scheme,
-            'onlineressource': onlineressource,
-            'tilematrixset': self.tileMatrixSet
+            'onlineressource': onlineressource
         }
         response = render_to_response(
             'chsdi:templates/wmtscapabilities.mako',

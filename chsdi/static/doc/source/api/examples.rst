@@ -17,7 +17,6 @@ GeoAdmin Examples
 - `Searchbox <../examples/geoadmin_search.html>`_
 - `Catalog <../examples/geoadmin_catalog.html>`_
 - `Localisation <../examples/geoadmin_localisation.html>`_
-- `Pseudo-Mercator projection <../examples/ol3_mercator.html>`_
 
 OpenLayers Examples
 -------------------
