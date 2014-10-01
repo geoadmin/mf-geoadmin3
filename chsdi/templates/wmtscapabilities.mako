@@ -5,9 +5,6 @@
   themes = pageargs['themes']
   scheme = pageargs['scheme']
   onlineressource = pageargs['onlineressource']
-  tilematrixset = pageargs['tilematrixset']
-  epsg = tilematrixset
-  TileMatrixSet_epsg = "TileMatrixSet_%s.mako" % epsg
   def validate_tilematrixset(id):
       if int(id) in (18,20,21,22,25,26,27,28):
           return id
@@ -21,7 +18,7 @@
         <ows:Operation name="GetCapabilities">
             <ows:DCP>
                 <ows:HTTP>
-                    <ows:Get xlink:href="${onlineressource}1.0.0/WMTSCapabilities.xml">
+                    <ows:Get xlink:href="${onlineressource}/1.0.0/WMTSCapabilities.xml">
                         <ows:Constraint name="GetEncoding">
                             <ows:AllowedValues>
                                 <ows:Value>REST</ows:Value>
@@ -34,7 +31,7 @@
         <ows:Operation name="GetTile">
             <ows:DCP>
                 <ows:HTTP>
-                    <ows:Get xlink:href="${onlineressource}">
+                    <ows:Get xlink:href="${onlineressource}/">
                         <ows:Constraint name="GetEncoding">
                             <ows:AllowedValues>
                                 <ows:Value>REST</ows:Value>
@@ -48,8 +45,7 @@
     <Contents>
   ## Main loop
    % for layer in layers:
-       ##% for epsg in ['21781','4326','4258', '3857','2056']:
-        <Layer>
+    <Layer>
             <ows:Title>${layer.kurzbezeichnung|x,trim}</ows:Title>
             <ows:Abstract>${layer.abstract|x,trim}</ows:Abstract>
             <ows:WGS84BoundingBox>
@@ -70,7 +66,6 @@
                 % endif
             </Style>
             <Format>image/${str(layer.arr_all_formats).split(',')[0]}</Format>
-            ## All dimensions
             <Dimension>
                 <ows:Identifier>Time</ows:Identifier>
                 <Default>${str(layer.timestamp).split(',')[0]}</Default>
@@ -81,12 +76,94 @@
             <TileMatrixSetLink>
                 <TileMatrixSet>${str(layer.tile_matrix_set_id).split(',')[0]}_${str(layer.zoomlevel_max)|validate_tilematrixset}</TileMatrixSet>
             </TileMatrixSetLink>
-            <ResourceURL format="image/${str(layer.arr_all_formats).split(',')[0]}" resourceType="tile" template="${onlineressource}1.0.0/${layer.id|x,trim}/default/{Time}/${epsg}/{TileMatrix}/{TileRow}/{TileCol}.${str(layer.arr_all_formats).split(',')[0]}"/>
+            <ResourceURL format="image/${str(layer.arr_all_formats).split(',')[0]}" resourceType="tile" template="${onlineressource}/1.0.0/${layer.id|x,trim}/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.${str(layer.arr_all_formats).split(',')[0]}"/>
+      ## <ResourceURL format="application/gml+xml; version=3.1" resourceType="FeatureInfo" template="${onlineressource}/1.0.0/{Time}/${str(layer.tile_matrix_set_id).split(',')[0]}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml"/>
         </Layer>
-        ##% endfor
   % endfor
   ## End main loop
-    <%include file="${TileMatrixSet_epsg}"/>
+    <TileMatrixSet>
+        <ows:Identifier>21781_18</ows:Identifier>
+        <ows:SupportedCRS>urn:ogc:def:crs:EPSG:21781</ows:SupportedCRS>
+        <%include file="TileMatrixSet.mako"/>
+    </TileMatrixSet>
+    <TileMatrixSet>
+        <ows:Identifier>21781_20</ows:Identifier>
+        <ows:SupportedCRS>urn:ogc:def:crs:EPSG:21781</ows:SupportedCRS>
+        <%include file="TileMatrixSet.mako"/>
+        <%include file="TileMatrixSet_19.mako"/>
+        <%include file="TileMatrixSet_20.mako"/>
+    </TileMatrixSet>
+    <TileMatrixSet>
+        <ows:Identifier>21781_21</ows:Identifier>
+        <ows:SupportedCRS>urn:ogc:def:crs:EPSG:21781</ows:SupportedCRS>
+        <%include file="TileMatrixSet.mako"/>
+        <%include file="TileMatrixSet_19.mako"/>
+        <%include file="TileMatrixSet_20.mako"/>
+        <%include file="TileMatrixSet_21.mako"/>
+    </TileMatrixSet>
+    <TileMatrixSet>
+        <ows:Identifier>21781_22</ows:Identifier>
+        <ows:SupportedCRS>urn:ogc:def:crs:EPSG:21781</ows:SupportedCRS>
+        <%include file="TileMatrixSet.mako"/>
+        <%include file="TileMatrixSet_19.mako"/>
+        <%include file="TileMatrixSet_20.mako"/>
+        <%include file="TileMatrixSet_21.mako"/>
+        <%include file="TileMatrixSet_22.mako"/>
+    </TileMatrixSet>
+    <TileMatrixSet>
+        <ows:Identifier>21781_25</ows:Identifier>
+        <ows:SupportedCRS>urn:ogc:def:crs:EPSG:21781</ows:SupportedCRS>
+        <%include file="TileMatrixSet.mako"/>
+        <%include file="TileMatrixSet_19.mako"/>
+        <%include file="TileMatrixSet_20.mako"/>
+        <%include file="TileMatrixSet_21.mako"/>
+        <%include file="TileMatrixSet_22.mako"/>
+        <%include file="TileMatrixSet_23.mako"/>
+        <%include file="TileMatrixSet_24.mako"/>
+        <%include file="TileMatrixSet_25.mako"/>
+    </TileMatrixSet>
+    <TileMatrixSet>
+        <ows:Identifier>21781_26</ows:Identifier>
+        <ows:SupportedCRS>urn:ogc:def:crs:EPSG:21781</ows:SupportedCRS>
+        <%include file="TileMatrixSet.mako"/>
+        <%include file="TileMatrixSet_19.mako"/>
+        <%include file="TileMatrixSet_20.mako"/>
+        <%include file="TileMatrixSet_21.mako"/>
+        <%include file="TileMatrixSet_22.mako"/>
+        <%include file="TileMatrixSet_23.mako"/>
+        <%include file="TileMatrixSet_24.mako"/>
+        <%include file="TileMatrixSet_25.mako"/>
+        <%include file="TileMatrixSet_26.mako"/>
+    </TileMatrixSet>
+    <TileMatrixSet>
+        <ows:Identifier>21781_27</ows:Identifier>
+        <ows:SupportedCRS>urn:ogc:def:crs:EPSG:21781</ows:SupportedCRS>
+        <%include file="TileMatrixSet.mako"/>
+        <%include file="TileMatrixSet_19.mako"/>
+        <%include file="TileMatrixSet_20.mako"/>
+        <%include file="TileMatrixSet_21.mako"/>
+        <%include file="TileMatrixSet_22.mako"/>
+        <%include file="TileMatrixSet_23.mako"/>
+        <%include file="TileMatrixSet_24.mako"/>
+        <%include file="TileMatrixSet_25.mako"/>
+        <%include file="TileMatrixSet_26.mako"/>
+        <%include file="TileMatrixSet_27.mako"/>
+    </TileMatrixSet>
+    <TileMatrixSet>
+        <ows:Identifier>21781_28</ows:Identifier>
+        <ows:SupportedCRS>urn:ogc:def:crs:EPSG:21781</ows:SupportedCRS>
+        <%include file="TileMatrixSet.mako"/>
+        <%include file="TileMatrixSet_19.mako"/>
+        <%include file="TileMatrixSet_20.mako"/>
+        <%include file="TileMatrixSet_21.mako"/>
+        <%include file="TileMatrixSet_22.mako"/>
+        <%include file="TileMatrixSet_23.mako"/>
+        <%include file="TileMatrixSet_24.mako"/>
+        <%include file="TileMatrixSet_25.mako"/>
+        <%include file="TileMatrixSet_26.mako"/>
+        <%include file="TileMatrixSet_27.mako"/>
+        <%include file="TileMatrixSet_28.mako"/>
+    </TileMatrixSet>
     </Contents>
     <Themes>
     ## Main loop for the themes
