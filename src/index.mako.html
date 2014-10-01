@@ -133,7 +133,9 @@
         </div>
       </form>
 % endif
-    <div class="alert alert-danger" translate>offline_sorry</div>
+      ## css animation doesnt work on pseudo element, let use this instead
+      <i id="loader" class="icon-spin icon-refresh"></i>
+      <div class="alert alert-danger" translate>offline_sorry</div>
     </div> <!-- #header -->
 
     <div tabindex="1" ga-map ga-map-map="map">
@@ -553,9 +555,6 @@
         </p>
       </div>
     </div>
-
-    ## css animation doesnt work on pseudo element, let use this instead
-    <i id="loader" class="icon-spin icon-refresh"></i>
 
 % if mode == 'prod':
     <script src="${versionslashed}lib/build.js"></script>
