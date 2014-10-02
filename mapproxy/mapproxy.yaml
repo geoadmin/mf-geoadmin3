@@ -9547,6 +9547,9 @@ globals:
     formats:
       image/png: {transparent: true}
     resampling_method: bicubic
+  srs:
+    axis_order_en: []
+    axis_order_ne: ['EPSG:4326', 'EPSG:21781', 'EPSG:4258', 'EPSG:3857', 'EPSG:2056']
 grids:
   epsg_2056:
     bbox: [420000, 30000, 900000, 350000]
@@ -11485,59 +11488,59 @@ layers:
       values: ['20140625']
   name: ch.bakom.downlink10_20140625
   sources: [ch.bakom.downlink10_20140625_cache_out]
-  title: ch.bakom.downlink10
+  title: "Download \u2265 10 Mbit/s"
 - dimensions: *id245
   name: ch.bakom.downlink10
   sources: [ch.bakom.downlink10_20140625_cache]
-  title: ch.bakom.downlink10
+  title: "Download \u2265 10 Mbit/s"
 - dimensions: *id245
   name: ch.bakom.downlink10_20140625_source
   sources: [ch.bakom.downlink10_20140625_cache]
-  title: ch.bakom.downlink10
+  title: "Download \u2265 10 Mbit/s"
 - dimensions: &id246
     Time:
       default: '20131212'
       values: ['20131212']
   name: ch.bakom.downlink10_20131212
   sources: [ch.bakom.downlink10_20131212_cache_out]
-  title: ch.bakom.downlink10
+  title: "Download \u2265 10 Mbit/s"
 - dimensions: *id246
   name: ch.bakom.downlink10_20131212_source
   sources: [ch.bakom.downlink10_20131212_cache]
-  title: ch.bakom.downlink10
+  title: "Download \u2265 10 Mbit/s"
 - dimensions: &id247
     Time:
       default: '20130901'
       values: ['20130901']
   name: ch.bakom.downlink10_20130901
   sources: [ch.bakom.downlink10_20130901_cache_out]
-  title: ch.bakom.downlink10
+  title: "Download \u2265 10 Mbit/s"
 - dimensions: *id247
   name: ch.bakom.downlink10_20130901_source
   sources: [ch.bakom.downlink10_20130901_cache]
-  title: ch.bakom.downlink10
+  title: "Download \u2265 10 Mbit/s"
 - dimensions: &id248
     Time:
       default: '20130601'
       values: ['20130601']
   name: ch.bakom.downlink10_20130601
   sources: [ch.bakom.downlink10_20130601_cache_out]
-  title: ch.bakom.downlink10
+  title: "Download \u2265 10 Mbit/s"
 - dimensions: *id248
   name: ch.bakom.downlink10_20130601_source
   sources: [ch.bakom.downlink10_20130601_cache]
-  title: ch.bakom.downlink10
+  title: "Download \u2265 10 Mbit/s"
 - dimensions: &id249
     Time:
       default: '20121222'
       values: ['20121222']
   name: ch.bakom.downlink10_20121222
   sources: [ch.bakom.downlink10_20121222_cache_out]
-  title: ch.bakom.downlink10
+  title: "Download \u2265 10 Mbit/s"
 - dimensions: *id249
   name: ch.bakom.downlink10_20121222_source
   sources: [ch.bakom.downlink10_20121222_cache]
-  title: ch.bakom.downlink10
+  title: "Download \u2265 10 Mbit/s"
 - dimensions: &id250
     Time:
       default: '20140625'

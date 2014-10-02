@@ -849,7 +849,7 @@ or https://wmts1.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/201104
 Other projections
 *****************
 
-Beside, the *LV03* projection, the same tiles are offered in four other *tilematrixsets/projection*.
+Beside, the **LV03** projection, the same tiles are offered in four other *tilematrixsets/projection*.
 These projections are:
 
 * Plate-Carrée WGS1984 (EPSG:4326)
@@ -864,14 +864,14 @@ These projections are:
 
 Note:
 
-* Partly to a limitation of the WTMS 1.0.0 recomendation, each *projection* has its own *GetCapabilities* document.
-* You have to use the host `wmts{10-14}.geo.admin.ch`.
-* The same access restriction apply as above.
-* The same `timestamp` are available in all projection.
+* Partly due to a limitation of the WTMS 1.0.0 recommendations, each *projection* has its own *GetCapabilities* document.
+* You have to use the hosts `wmts{10-14}.geo.admin.ch`.
+* The same access restrictions apply as above.
+* The same `timestamps` are available in all projection. New `timestamp` are added to the former ones.
 
 Example
 *******
-* At tile: `http://wmts10.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/default/3857/9/266/180.jpeg <../1.0.0/ch.swisstopo.pixelkarte-farbe/default/default/3857/9/266/180.jpeg>`_
+* At tile: `http://wmts10.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20140520/3857/9/266/180.jpeg <../1.0.0/ch.swisstopo.pixelkarte-farbe/default/20140520/3857/9/266/180.jpeg>`_
 * An OpenLayers3 application using the `pseudo-Mercator projection <../examples/ol3_mercator.html>`_ 
 
 

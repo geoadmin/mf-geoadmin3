@@ -18,7 +18,7 @@ var createLayer = function(timestamp) {
                  'internet/swisstopo/en/home.html">swisstopo</a>'
            })
          ],
-         url: qualifyURL('..') + '1.0.0/ch.swisstopo.pixelkarte-farbe/default/' +timestamp+'/3857/{z}/{x}/{y}.jpeg'
+         url: qualifyURL('..') + '1.0.0/ch.swisstopo.pixelkarte-farbe/default/' + timestamp + '/3857/{z}/{x}/{y}.jpeg'
        })
    });
 }

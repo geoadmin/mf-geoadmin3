@@ -97,3 +97,8 @@ globals:
          image/png:
              transparent: true
 
+  srs:
+    # for North/East ordering (default for geographic)
+    axis_order_ne:  ['EPSG:4326', 'EPSG:21781', 'EPSG:4258', 'EPSG:3857', 'EPSG:2056']
+    # for East/North ordering (default for projected)
+    axis_order_en: [] 

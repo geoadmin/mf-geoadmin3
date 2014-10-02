@@ -14,6 +14,14 @@ class TestWmtsCapabilitiesView(TestsBase):
         resp = self.testapp.get('/rest/services/toto/1.0.0/WMTSCapabilities.xml', status=400)
         resp.mustcontain('The map you provided does not exist')
 
+    def test_wrong_map_epsg_wmtscapabilities(self):
+        resp = self.testapp.get('/rest/services/bafu/1.0.0/WMTSCapabilities.xml?epsg=4326', status=404)
+        resp.mustcontain("EPSG:4326 only available for topic 'api'")
+
+    def test_wrong_epsg_wmtscapabilities(self):
+        resp = self.testapp.get('/rest/services/bafu/1.0.0/WMTSCapabilities.xml?epsg=9999', status=400)
+        resp.mustcontain("EPSG:9999 not found. Must be one of 21781, 4326, 2056, 4852, 3857")
+
     def test_validate_wmtscapabilities(self):
         import socket
         import subprocess
@@ -26,7 +34,7 @@ class TestWmtsCapabilitiesView(TestsBase):
 
         for lang in ['de', 'fr']:
             f = tempfile.NamedTemporaryFile(mode='w+t', prefix='WMTSCapabilities-', suffix='-' + lang)
-            resp = self.testapp.get('/rest/services/inspire/1.0.0/WMTSCapabilities.xml', params={'lang': lang, 'epsg': 4326}, status=200)
+            resp = self.testapp.get('/rest/services/api/1.0.0/WMTSCapabilities.xml', params={'lang': lang, 'epsg': 4326}, status=200)
             f.write(resp.body)
             f.seek(0)
             retcode = subprocess.call(["xmllint", "--noout", "--nocatalogs", "--schema", schema_url, f.name])

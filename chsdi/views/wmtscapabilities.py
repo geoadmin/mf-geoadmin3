@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from pyramid.view import view_config
+from pyramid.httpexceptions import HTTPBadRequest, HTTPNotFound
 
 from chsdi.models.bod import get_wmts_models
 from chsdi.lib.helpers import locale_negotiator
@@ -17,8 +18,14 @@ class WMTSCapabilites(MapNameValidation):
         self.lang = request.lang
         self.models = get_wmts_models(self.lang)
         self.request = request
-        epsg = request.GET.get('epsg')
-        self.tileMatrixSet = epsg if epsg in ['21781', '4326', '2056', '4852', '3857'] else '21781'
+        epsg = request.params.get('epsg', '21781')
+        available_epsg_codes = ['21781', '4326', '2056', '4852', '3857']
+        if epsg in available_epsg_codes:
+            if self.mapName != 'api' and epsg != '21781':
+                raise HTTPNotFound("EPSG:%s only available for topic 'api'" % epsg)
+            self.tileMatrixSet = epsg
+        else:
+            raise HTTPBadRequest('EPSG:%s not found. Must be one of %s' % (epsg, ", ".join(available_epsg_codes)))
 
     @view_config(route_name='wmtscapabilities', http_cache=0)
     def wmtscapabilities(self):

@@ -48,7 +48,6 @@
     <Contents>
   ## Main loop
    % for layer in layers:
-       ##% for epsg in ['21781','4326','4258', '3857','2056']:
         <Layer>
             <ows:Title>${layer.kurzbezeichnung|x,trim}</ows:Title>
             <ows:Abstract>${layer.abstract|x,trim}</ows:Abstract>
@@ -79,11 +78,19 @@
                 % endfor
             </Dimension>
             <TileMatrixSetLink>
-                <TileMatrixSet>${str(layer.tile_matrix_set_id).split(',')[0]}_${str(layer.zoomlevel_max)|validate_tilematrixset}</TileMatrixSet>
+                % if epsg == '21781':
+                    <TileMatrixSet>${str(layer.tile_matrix_set_id).split(',')[0]}_${str(layer.zoomlevel_max)|validate_tilematrixset}</TileMatrixSet>
+                % else:
+                    <TileMatrixSet>${epsg}</TileMatrixSet>
+                % endif
             </TileMatrixSetLink>
-            <ResourceURL format="image/${str(layer.arr_all_formats).split(',')[0]}" resourceType="tile" template="${onlineressource}1.0.0/${layer.id|x,trim}/default/{Time}/${epsg}/{TileMatrix}/{TileRow}/{TileCol}.${str(layer.arr_all_formats).split(',')[0]}"/>
+            ## axis order hack
+            % if epsg in ['21781', '2056']:
+                <ResourceURL format="image/${str(layer.arr_all_formats).split(',')[0]}" resourceType="tile" template="${onlineressource}1.0.0/${layer.id|x,trim}/default/{Time}/${epsg}/{TileMatrix}/{TileRow}/{TileCol}.${str(layer.arr_all_formats).split(',')[0]}"/>
+            % else:
+                <ResourceURL format="image/${str(layer.arr_all_formats).split(',')[0]}" resourceType="tile" template="${onlineressource}1.0.0/${layer.id|x,trim}/default/{Time}/${epsg}/{TileMatrix}/{TileCol}/{TileRow}.${str(layer.arr_all_formats).split(',')[0]}"/>
+            % endif
         </Layer>
-        ##% endfor
   % endfor
   ## End main loop
     <%include file="${TileMatrixSet_epsg}"/>

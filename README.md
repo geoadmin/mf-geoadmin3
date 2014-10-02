@@ -141,13 +141,13 @@ To run against dev/test environment:
 To run against your private environment:
 `./buildout/bin/nosetests`
 
-## Updating Mapproxy WMTS layers
-Mapproxy provides the same layers as WMTS service, but only for the last timestamp available. We have to regenerate
-`mapproxy/mapproxy.yaml` and `apache/mapproxy-current.conf` with the following command:
+## Updating Mapproxy WMTS service
+Mapproxy provides the same layers as the native WMTS for all available timestamps. When new layers and/or timestamps are added,
+we have to regenerate MapProxy config file `mapproxy/mapproxy.yaml` with the following command:
 
     buildout/bin/buildout -c buildout_dev.cfg install mapproxy-config
 
-Then, commit both `mapproxy/mapproxy.yaml` and `apache/mapproxy-current.conf`.
+Then, commit `mapproxy/mapproxy.yaml`.
 
 # Clean project
 In order to reinitialize your project and remove unused eggs do the following commands:
