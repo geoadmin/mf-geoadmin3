@@ -18,7 +18,7 @@ def feedback(self, request):
         val = val if val != '' else defaultValue
         return val
 
-    def mail(to, subject, text, attachement):
+    def mail(to, subject, text, attachement, kml):
         from email.MIMEMultipart import MIMEMultipart
         from email.MIMEBase import MIMEBase
         from email.MIMEText import MIMEText
@@ -47,6 +47,13 @@ def feedback(self, request):
             part.add_header('Content-Disposition', 'attachment; filename="%s"' % attachement.filename)
             msg.attach(part)
 
+        if kml is not None and kml is not '':
+            part = MIMEBase('application', 'vnd.google-earth.kml+xml')
+            part.set_payload(kml)
+            Encoders.encode_base64(part)
+            part.add_header('Content-Disposition', 'attachment; filename="Drawing.kml"')
+            msg.attach(part)
+
         mailServer = smtplib.SMTP('127.0.0.1', 25)
         mailServer.ehlo()
         mailServer.starttls()
@@ -61,13 +68,15 @@ def feedback(self, request):
     email = getParam('email', 'Anonymous')
     text = '%s just sent a feedback:\n %s. \nPermalink: %s. \n\nUser-Agent: %s'
     attachement = getParam('attachement', None)
+    kml = getParam('kml', None)
 
     try:
         mail(
             defaultRecipient,
             defaultSubject,
             text % (email, feedback, permalink, ua),
-            attachement
+            attachement,
+            kml
         )
     except SMTPException:
         raise HTTPInternalServerError()
