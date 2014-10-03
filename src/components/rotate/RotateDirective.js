@@ -34,12 +34,8 @@
         };
 
         // Button is rotated according to map rotation
-        map.on('postrender', function(mapEvent) {
-          var frameState = mapEvent.frameState;
-          if (frameState && frameState.viewState) {
-            var rotation = frameState.viewState.rotation;
-            setButtonRotation(rotation * 180 / Math.PI);
-          }
+        map.getView().on('change:rotation', function(evt) {
+          setButtonRotation(evt.target.getRotation() * 180 / Math.PI);
         });
 
         // Button event - map rotation is animated
