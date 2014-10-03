@@ -60,11 +60,11 @@
 
     this.$get = function($window, gaBrowserSniffer) {
       var Storage = function() {
-
         // Initialize the database config, needed when using webSQL to avoid ios
         // prompts when db becomes bigger.
         this.init = function() {
-          if (!isInitialized) {
+          if (!isInitialized && $window.localforage &&
+              gaBrowserSniffer.mobile) {
             $window.localforage.config({
               name: 'map.geo.admin.ch',
               storeName: 'ga',
@@ -100,8 +100,8 @@
           if (!isInitialized) {
             return callback(null);
           }
-          $window.localforage.getItem(key, function(compressedDataURI) {
-            callback(decompress(compressedDataURI));
+          $window.localforage.getItem(key, function(err, compressedDataURI) {
+            callback(err, decompress(compressedDataURI));
           });
         };
         this.setTile = function(key, dataURI, callback) {

@@ -162,7 +162,7 @@
         var fileReader = new FileReader();
         fileReader.onload = function(evt) {
           gaStorage.setTile(gaMapUtils.getTileKey(tileUrl), evt.target.result,
-              function(content, err) {
+              function(err, content) {
                 if (isStorageFull) {
                   return;
                 }
