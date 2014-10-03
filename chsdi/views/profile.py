@@ -5,10 +5,7 @@ from pyramid.view import view_config
 
 from chsdi.lib.helpers import round
 from chsdi.lib.validation.profile import ProfileValidation
-from chsdi.lib.raster.georaster import GeoRaster
-
-# cache of GeoRaster instances in function of the layer name
-_rasters = {}
+from chsdi.lib.raster.georaster import get_raster
 
 
 class Profile(ProfileValidation):
@@ -39,7 +36,7 @@ class Profile(ProfileValidation):
 
     def _compute_points(self):
         """Compute the alt=fct(dist) array and store it in c.points"""
-        rasters = [self._get_raster(layer) for layer in self.layers]
+        rasters = [get_raster(layer) for layer in self.layers]
 
         # Simplify input line with a tolerance of 2 m
         if self.nb_points < len(self.linestring.coords):
@@ -115,13 +112,6 @@ class Profile(ProfileValidation):
             prev_coord = coords[j]
         return profile
 
-    def _get_raster(self, layer):
-        result = _rasters.get(layer, None)
-        if not result:
-            result = GeoRaster(self._get_raster_files()[layer])
-            _rasters[layer] = result
-        return result
-
     def _dist(self, coord1, coord2):
         """Compute the distance between 2 points"""
         return math.sqrt(math.pow(coord1[0] - coord2[0], 2.0) +
@@ -160,19 +150,6 @@ class Profile(ProfileValidation):
                 result.append([coord[0], coord[1]])
             prev_coord = coord
         return result
-
-    def _get_raster_files(self):
-        """Returns the raster filename in function of its layer name"""
-        base_path = 'bund/swisstopo/'
-        return {
-            'DTM25': self.request.registry.settings[
-                'data_path'] + base_path + 'dhm25_25_matrix/mm0001.shp',
-            'DTM2': self.request.registry.settings[
-                'data_path'] + base_path + 'swissalti3d/2m/index.shp',
-            'COMB': self.request.registry.settings[
-                'data_path'] + base_path +
-            'swissalti3d/kombo_2m_dhm25/index.shp'
-        }
 
     def _filter_alt(self, alt):
         if alt is not None and alt > 0.0:
