@@ -85,7 +85,7 @@
               map.getTarget().style.cursor = (feature) ? 'pointer' : '';
             };
             var updateCursorStyleDebounced = gaDebounce.debounce(
-                updateCursorStyle, 10, false);
+                updateCursorStyle, 10, false, false);
 
             if (!gaBrowserSniffer.mobile) {
               $(map.getViewport()).on('mousemove', function(evt) {

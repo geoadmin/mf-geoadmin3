@@ -6,7 +6,7 @@
   module.provider('gaDebounce', function() {
     this.$get = function($timeout, $q) {
       var Debounce = function() {
-        this.debounce = function(func, wait, immediate) {
+        this.debounce = function(func, wait, immediate, invokeApply) {
           var timeout;
           var deferred = $q.defer();
           return function() {
@@ -22,7 +22,7 @@
             if (timeout) {
               $timeout.cancel(timeout);
             }
-            timeout = $timeout(later, wait);
+            timeout = $timeout(later, wait, invokeApply);
             if (callNow) {
               deferred.resolve(func.apply(context, args));
               deferred = $q.defer();
