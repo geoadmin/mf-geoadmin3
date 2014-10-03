@@ -1,3 +1,4 @@
+export KEEP_VERSION=false
 export DEPLOY_TARGET=dev
 export API_URL=//mf-chsdi3.dev.bgdi.ch
 export APACHE_BASE_PATH=
