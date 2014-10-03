@@ -749,9 +749,9 @@ GetCapabilities
 
 The GetCapabilites document provides informations about the service, along with layer description, both in german and french.
 
-http://api3.geo.admin.ch/rest/services/api/1.0.0/WMTSCapabilities.xml
+http://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml
 
-http://api3.geo.admin.ch/rest/services/api/1.0.0/WMTSCapabilities.xml?lang=fr
+http://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml?lang=fr
 
 Parameters
 **********
@@ -844,6 +844,38 @@ A tile.
 http://wmts1.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20110401/21781/20/58/70.jpeg
 
 or https://wmts1.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20110401/21781/20/58/70.jpeg
+
+
+Other projections
+*****************
+
+Beside, the **LV03** projection, the same tiles are offered in four other *tilematrixsets/projection*.
+These projections are:
+
+* Plate-Carrée WGS1984 (EPSG:4326)
+    `http://wmts10.geo.admin.ch/1.0.0/WMTSCapabilities.EPSG.4326.xml <../1.0.0/WMTSCapabilities.EPSG.4326.xml>`_
+* Plate-Carrée ETRS89 (EPSG:4258)
+    `http://wmts10.geo.admin.ch/1.0.0/WMTSCapabilities.EPSG.4258.xml <../1.0.0/WMTSCapabilities.EPSG.4258.xml>`_
+* LV95/CH1903+ (EPSG:2056)
+    `http://wmts10.geo.admin.ch/1.0.0/WMTSCapabilities.EPSG.2056.xml <../1.0.0/WMTSCapabilities.EPSG.2056.xml>`_ 
+* WGS84/Pseudo-Mercator (EPSG:3857, as used in OSM, Bing, Google Map)
+    `http://wmts10.geo.admin.ch/1.0.0/WMTSCapabilities.EPSG.3857.xml <../1.0.0/WMTSCapabilities.EPSG.3857.xml>`_
+
+
+Note:
+
+* Partly due to a limitation of the WTMS 1.0.0 recommendations, each *projection* has its own *GetCapabilities* document.
+* You have to use the hosts `wmts{10-14}.geo.admin.ch`.
+* The same access restrictions apply as above.
+* The same `timestamps` are available in all projection. New `timestamp` are added to the former ones.
+
+Example
+*******
+* At tile: `http://wmts10.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20140520/3857/9/266/180.jpeg <../1.0.0/ch.swisstopo.pixelkarte-farbe/default/20140520/3857/9/266/180.jpeg>`_
+* An OpenLayers3 application using the `pseudo-Mercator projection <../examples/ol3_mercator.html>`_ 
+
+
+
 
 .. _owschecker_description:
 

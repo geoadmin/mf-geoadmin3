@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from pyramid.view import view_config
+from pyramid.httpexceptions import HTTPBadRequest, HTTPNotFound
 
 from chsdi.models.bod import get_wmts_models
 from chsdi.lib.helpers import locale_negotiator
@@ -17,6 +18,14 @@ class WMTSCapabilites(MapNameValidation):
         self.lang = request.lang
         self.models = get_wmts_models(self.lang)
         self.request = request
+        epsg = request.params.get('epsg', '21781')
+        available_epsg_codes = ['21781', '4326', '2056', '4852', '3857']
+        if epsg in available_epsg_codes:
+            if self.mapName != 'api' and epsg != '21781':
+                raise HTTPNotFound("EPSG:%s only available for topic 'api'" % epsg)
+            self.tileMatrixSet = epsg
+        else:
+            raise HTTPBadRequest('EPSG:%s not found. Must be one of %s' % (epsg, ", ".join(available_epsg_codes)))
 
     @view_config(route_name='wmtscapabilities', http_cache=0)
     def wmtscapabilities(self):
@@ -25,10 +34,14 @@ class WMTSCapabilites(MapNameValidation):
             'X-Forwarded-Proto',
             self.request.scheme)
         staging = self.request.registry.settings['geodata_staging']
-
+        host = self.request.headers.get(
+            'X-Forwarded-Host', self.request.host)
         request_uri = self.request.environ.get("REQUEST_URI", "")
-        onlineressource = "%s://wmts.geo.admin.ch" % scheme if request_uri\
-            .find("1.0.0") else "%s://api.geo.admin.ch/wmts" % scheme
+        apache_base_path = self.request.registry.settings['entry_path']
+        apache_entry_point = '/' if apache_base_path == 'main' else apache_base_path
+
+        onlineressource = "%s://%s%s/" % (scheme, host, apache_entry_point) if self.tileMatrixSet != '21781'\
+            else "%s://wmts.geo.admin.ch" % scheme
 
         layers_query = self.request.db.query(self.models['GetCap'])
         layers_query = filter_by_geodata_staging(
@@ -54,7 +67,8 @@ class WMTSCapabilites(MapNameValidation):
             'themes': themes,
             'metadata': metadata,
             'scheme': scheme,
-            'onlineressource': onlineressource
+            'onlineressource': onlineressource,
+            'tilematrixset': self.tileMatrixSet
         }
         response = render_to_response(
             'chsdi:templates/wmtscapabilities.mako',
