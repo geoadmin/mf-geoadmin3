@@ -280,8 +280,10 @@
         var scale = imageStyle.getScale();
         literal.rotation = imageStyle.getRotation();
         if (size) {
-          literal.graphicWidth = size[0] * scale;
-          literal.graphicHeight = size[1] * scale;
+          // Print server doesn't handle correctly 0 values for the size
+          literal.graphicWidth = (size[0] * scale || 0.1);
+          literal.graphicHeight = (size[1] * scale || 0.1);
+
         }
         if (anchor) {
           literal.graphicXOffset = -anchor[0] * scale;
