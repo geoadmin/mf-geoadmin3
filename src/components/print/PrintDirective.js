@@ -124,7 +124,11 @@
     // Encode ol.Layer to a basic js object
     var encodeLayer = function(layer, proj) {
       var encLayer, encLegend;
-      var ext = proj.getExtent();
+      var minXY = $scope.map.getCoordinateFromPixel([printRectangle[0],
+          printRectangle[3]]);
+      var maxXY = $scope.map.getCoordinateFromPixel([printRectangle[2],
+          printRectangle[1]]);
+      var ext = minXY.concat(maxXY);
       var resolution = $scope.map.getView().getResolution();
 
       if (!(layer instanceof ol.layer.Group)) {
