@@ -656,7 +656,7 @@
               '//wmts{5-9}.geo.admin.ch/1.0.0/{Layer}/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
 
           gaLayersProvider.layersConfigUrlTemplate =
-              gaGlobalOptions.mapUrl + '/rest/services/{Topic}/MapServer/layersConfig?lang={Lang}';
+              gaGlobalOptions.cachedApiUrl + '/rest/services/all/MapServer/layersConfig?lang={Lang}';
 
           gaLayersProvider.legendUrlTemplate =
               gaGlobalOptions.cachedApiUrl + '/rest/services/{Topic}/MapServer/{Layer}/legend?lang={Lang}';
