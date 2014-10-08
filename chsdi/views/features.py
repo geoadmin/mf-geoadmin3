@@ -309,7 +309,15 @@ def _get_features_for_extent(params, models, maxFeatures=None):
                         raise exc.HTTPBadRequest('%s is not time enabled' % model.__bodId__)
                     query = query.filter(timeInstantColumn == params.timeInstant)
                 query = query.limit(maxFeatures) if maxFeatures is not None else query
+                counter = 0
+                bgdi_order = 0
                 for feature in query:
+                    counter = counter + 1
+                    if model.__bodId__ == 'ch.swisstopo.zeitreihen':
+                        if counter > 1:
+                            if bgdi_order < feature.bgdi_order:
+                                continue
+                        bgdi_order = feature.bgdi_order
                     yield feature
 
 

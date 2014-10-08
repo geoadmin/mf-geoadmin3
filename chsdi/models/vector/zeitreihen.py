@@ -26,6 +26,7 @@ class Zeitreihen_15(Base, Vector):
     release_year = Column('release_year', Integer)
     years = Column('years', Integer)
     bv_nummer = Column('bv_nummer', Text)
+    bgdi_order = Column('bgdi_order', Integer)
 
 
 class Zeitreihen_20(Base, Vector):
@@ -44,6 +45,7 @@ class Zeitreihen_20(Base, Vector):
     release_year = Column('release_year', Integer)
     years = Column('years', Integer)
     bv_nummer = Column('bv_nummer', Text)
+    bgdi_order = Column('bgdi_order', Integer)
 
 
 class Zeitreihen_21(Base, Vector):
@@ -62,6 +64,7 @@ class Zeitreihen_21(Base, Vector):
     release_year = Column('release_year', Integer)
     years = Column('years', Integer)
     bv_nummer = Column('bv_nummer', Text)
+    bgdi_order = Column('bgdi_order', Integer)
 
 
 class Zeitreihen_22(Base, Vector):
@@ -80,6 +83,7 @@ class Zeitreihen_22(Base, Vector):
     release_year = Column('release_year', Integer)
     years = Column('years', Integer)
     bv_nummer = Column('bv_nummer', Text)
+    bgdi_order = Column('bgdi_order', Integer)
 
 
 class DufourErst(Base, Vector):
