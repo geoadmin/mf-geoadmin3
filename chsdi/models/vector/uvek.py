@@ -372,6 +372,7 @@ class ENERGIESTAEDTE(Base, Vector):
     id = Column('bgdi_id', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     name = Column('name', Text)
+    bfsnr = Column('bfsnr', Integer)
     punktezahl = Column('punktezahl', Numeric)
     einwohner = Column('einwohner', Numeric)
     energiestadtseit = Column('energiestadtseit', Text)
