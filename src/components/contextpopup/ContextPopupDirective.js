@@ -96,13 +96,13 @@
               scope.coord4326 = formatCoordinates(coord4326, 5, true);
               scope.coord2056 = formatCoordinates(coord2056, 2) + ' *';
               if (coord4326[0] < 6 && coord4326[0] >= 0) {
-                var utm_31n = ol.proj.transform(coord4326,
+                var utm_31t = ol.proj.transform(coord4326,
                   'EPSG:4326', 'EPSG:32631');
-                scope.coordutm = coordinatesFormatUTM(utm_31n, '(zone 31N)');
+                scope.coordutm = coordinatesFormatUTM(utm_31t, '(zone 31T)');
               } else if (coord4326[0] < 12 && coord4326[0] >= 6) {
-                var utm_32n = ol.proj.transform(coord4326,
+                var utm_32t = ol.proj.transform(coord4326,
                   'EPSG:4326', 'EPSG:32632');
-                scope.coordutm = coordinatesFormatUTM(utm_32n, '(zone 32N)');
+                scope.coordutm = coordinatesFormatUTM(utm_32t, '(zone 32T)');
               } else {
                 return '-';
               }
