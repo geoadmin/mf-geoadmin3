@@ -40,8 +40,8 @@ class WMTSCapabilites(MapNameValidation):
         apache_base_path = self.request.registry.settings['apache_base_path']
         apache_entry_point = '/' if apache_base_path == 'main' else '/' + apache_base_path
 
-        onlineressource = "%s://%s%s/" % (scheme, host, apache_entry_point) if self.tileMatrixSet != '21781'\
-            else "%s://wmts.geo.admin.ch/" % scheme
+        # Default ressource
+        onlineressources = {'mapproxy': "%s://%s%s/" % (scheme, host, apache_entry_point), 's3': "%s://wmts.geo.admin.ch/" % scheme}
 
         layers_query = self.request.db.query(self.models['GetCap'])
         layers_query = filter_by_geodata_staging(
@@ -67,7 +67,7 @@ class WMTSCapabilites(MapNameValidation):
             'themes': themes,
             'metadata': metadata,
             'scheme': scheme,
-            'onlineressource': onlineressource,
+            'onlineressources': onlineressources,
             'tilematrixset': self.tileMatrixSet
         }
         response = render_to_response(

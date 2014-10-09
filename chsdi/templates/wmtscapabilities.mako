@@ -4,7 +4,7 @@
   metadata = pageargs['metadata']
   themes = pageargs['themes']
   scheme = pageargs['scheme']
-  onlineressource = pageargs['onlineressource']
+  onlineressources = pageargs['onlineressources']
   tilematrixset = pageargs['tilematrixset']
   epsg = tilematrixset
   TileMatrixSet_epsg = "TileMatrixSet_%s.mako" % epsg
@@ -21,7 +21,7 @@
         <ows:Operation name="GetCapabilities">
             <ows:DCP>
                 <ows:HTTP>
-                    <ows:Get xlink:href="${onlineressource}1.0.0/WMTSCapabilities.xml">
+                    <ows:Get xlink:href="${onlineressources['s3']}1.0.0/WMTSCapabilities.xml">
                         <ows:Constraint name="GetEncoding">
                             <ows:AllowedValues>
                                 <ows:Value>REST</ows:Value>
@@ -34,7 +34,7 @@
         <ows:Operation name="GetTile">
             <ows:DCP>
                 <ows:HTTP>
-                    <ows:Get xlink:href="${onlineressource}">
+                    <ows:Get xlink:href="${onlineressources['s3']}">
                         <ows:Constraint name="GetEncoding">
                             <ows:AllowedValues>
                                 <ows:Value>REST</ows:Value>
@@ -48,6 +48,13 @@
     <Contents>
   ## Main loop
    % for layer in layers:
+<%
+if layer.id == 'ch.kantone.cadastralwebmap-farbe':
+     layer.timestamp='current'
+     onlineressource = onlineressources['mapproxy']
+else:
+     onlineressource = onlineressources['s3']
+%>
         <Layer>
             <ows:Title>${layer.kurzbezeichnung|x,trim}</ows:Title>
             <ows:Abstract>${layer.abstract|x,trim}</ows:Abstract>
@@ -73,6 +80,9 @@
             <Dimension>
                 <ows:Identifier>Time</ows:Identifier>
                 <Default>${str(layer.timestamp).split(',')[0]}</Default>
+                % if layer.id == 'ch.kantone.cadastralwebmap-farbe':
+                <Current>true</Current>
+                % endif
                 % for timestamp in layer.timestamp.split(','):
                 <Value>${timestamp}</Value>
                 % endfor

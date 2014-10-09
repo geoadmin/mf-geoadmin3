@@ -43,7 +43,7 @@ def main(global_config, **settings):
     # renderers
     config.add_renderer('.html', mako_renderer_factory)
     config.add_renderer('.js', mako_renderer_factory)
-    config.add_renderer('jsonp', JSONP(param_name='callback', indent=None, separators=(',',':')))
+    config.add_renderer('jsonp', JSONP(param_name='callback', indent=None, separators=(',', ':')))
     config.add_renderer('geojson', GeoJSON(jsonp_param_name='callback'))
     config.add_renderer('esrijson', EsriJSON(jsonp_param_name='callback'))
     config.add_renderer('csv', CSVRenderer)
