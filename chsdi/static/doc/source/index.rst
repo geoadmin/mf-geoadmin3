@@ -7,6 +7,9 @@
 
   <head>
     <link href="_static/custom.css" rel="stylesheet" type="text/css" />
+    <link rel="apple-touch-icon" sizes="76x76" href="_static/touch-icon-bund-76x76.png"/> 
+    <link rel="apple-touch-icon" sizes="120x120" href="_static/touch-icon-bund-120x120.png"/>
+    <link rel="apple-touch-icon" sizes="152x152" href="_static/touch-icon-bund-152x152.png"/>
   </head>
 
 
