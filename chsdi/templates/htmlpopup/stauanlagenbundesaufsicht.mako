@@ -97,8 +97,8 @@
     </table>
     <div class="thumbnail-container">
         <div class="thumbnail">
-            <a href="https://dav0.bgdi.admin.ch/bfe_pub/images_stauanlagen/${c['attributes']['facility_stabil_id']}.jpg">
-            <img class="image" src="https://dav0.bgdi.admin.ch/bfe_pub/images_stauanlagen/${c['attributes']['facility_stabil_id']}.jpg" />
+            <a href="//dav0.bgdi.admin.ch/bfe_pub/images_stauanlagen/${c['attributes']['facility_stabil_id']}.jpg">
+            <img class="image" src="//dav0.bgdi.admin.ch/bfe_pub/images_stauanlagen/${c['attributes']['facility_stabil_id']}.jpg" />
             </a>
         </div>
     </div>
