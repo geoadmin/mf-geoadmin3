@@ -141,6 +141,12 @@ fastclick: .build-artefacts/fastclick
 	cd .build-artefacts/fastclick && git reset --hard && git apply ../../scripts/fastclick.patch;
 	cp .build-artefacts/fastclick/lib/fastclick.js src/lib/fastclick.js
 
+.PHONY: localforage
+localforage: .build-artefacts/localforage
+	cd .build-artefacts/localforage && git reset HEAD --hard
+	cp .build-artefacts/localforage/dist/localforage.js src/lib/localforage.js
+	cp .build-artefacts/localforage/dist/localforage.min.js src/lib/localforage.min.js
+
 .PHONY: translate
 translate: .build-artefacts/translate-requirements-installation.timestamp
 	.build-artefacts/python-venv/bin/python scripts/translation2js.py src/locales/
@@ -164,7 +170,7 @@ prd/lib/: src/lib/d3-3.3.1.min.js src/lib/angularIE9CorsFix.js src/lib/jQuery.XD
 	mkdir -p $@
 	cp $^ $@
 
-prd/lib/build.js: src/lib/jquery-2.0.3.min.js src/lib/bootstrap-3.0.0.min.js src/lib/typeahead-0.9.3.min.js src/lib/angular-1.2.9.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/EPSG2056.js src/lib/EPSG32631.js src/lib/EPSG32632.js src/lib/ol.js src/lib/angular-animate-1.2.9.min.js src/lib/angular-translate-1.1.1.min.js src/lib/angular-translate-loader-static-files-0.1.5.min.js .build-artefacts/fastclick.min.js src/lib/localforage-0.9.1.min.js .build-artefacts/app.js
+prd/lib/build.js: src/lib/jquery-2.0.3.min.js src/lib/bootstrap-3.0.0.min.js src/lib/typeahead-0.9.3.min.js src/lib/angular-1.2.9.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/EPSG2056.js src/lib/EPSG32631.js src/lib/EPSG32632.js src/lib/ol.js src/lib/angular-animate-1.2.9.min.js src/lib/angular-translate-1.1.1.min.js src/lib/angular-translate-loader-static-files-0.1.5.min.js .build-artefacts/fastclick.min.js src/lib/localforage.min.js .build-artefacts/app.js
 	mkdir -p $(dir $@)
 	cat $^ | sed 's/^\/\/[#,@] sourceMappingURL=.*//' > $@
 
@@ -335,10 +341,13 @@ scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf .build-artefacts/
 	git clone https://github.com/openlayers/ol3.git $@
 
 .build-artefacts/bootstrap:
-	git clone https://github.com/twbs/bootstrap.git $@ && cd .build-artefacts/bootstrap && git checkout v3.0.0
+	git clone https://github.com/twbs/bootstrap.git $@ && cd $@ && git checkout v3.0.0
 
 .build-artefacts/fastclick:
-	git clone https://github.com/ftlabs/fastclick.git $@ && cd .build-artefacts/fastclick && git checkout v1.0.0
+	git clone https://github.com/ftlabs/fastclick.git $@ && cd $@ && git checkout v1.0.0
+
+.build-artefacts/localforage:
+	git clone https://github.com/mozilla/localForage.git $@ && cd $@ && git checkout 1.0.1
 
 .build-artefacts/externs/angular.js:
 	mkdir -p $(dir $@)
@@ -373,7 +382,6 @@ clean:
 	rm -f src/deps.js
 	rm -f src/style/app.css
 	rm -f src/TemplateCacheModule.js
-	rm -f src/lib/fastclick.js
 	rm -rf prd
 
 

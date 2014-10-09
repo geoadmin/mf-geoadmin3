@@ -1,6 +1,6 @@
 /*!
     localForage -- Offline Storage, Improved
-    Version 0.9.1
+    Version 1.0.1
     http://mozilla.github.io/localForage
     (c) 2013-2014 Mozilla, Apache License 2.0
 */
@@ -698,9 +698,6 @@ requireModule('promise/polyfill').polyfill();
     var Promise = (typeof module !== 'undefined' && module.exports) ?
                   require('promise') : this.Promise;
 
-    var db = null;
-    var dbInfo = {};
-
     // Initialize IndexedDB; fall back to vendor-prefixed versions if needed.
     var indexedDB = indexedDB || this.indexedDB || this.webkitIndexedDB ||
                     this.mozIndexedDB || this.OIndexedDB ||
@@ -714,6 +711,11 @@ requireModule('promise/polyfill').polyfill();
     // Open the IndexedDB database (automatically creates one if one didn't
     // previously exist), using any options set in the config.
     function _initStorage(options) {
+        var _this = this;
+        var dbInfo = {
+            db: null
+        };
+
         if (options) {
             for (var i in options) {
                 dbInfo[i] = options[i];
@@ -730,7 +732,8 @@ requireModule('promise/polyfill').polyfill();
                 openreq.result.createObjectStore(dbInfo.storeName);
             };
             openreq.onsuccess = function() {
-                db = openreq.result;
+                dbInfo.db = openreq.result;
+                _this._dbInfo = dbInfo;
                 resolve();
             };
         });
@@ -738,9 +741,18 @@ requireModule('promise/polyfill').polyfill();
 
     function getItem(key, callback) {
         var _this = this;
-        return new Promise(function(resolve, reject) {
+
+        // Cast the key to a string, as that's all we can set as a key.
+        if (typeof key !== 'string') {
+            window.console.warn(key +
+                                ' used as a key, but it is not a string.');
+            key = String(key);
+        }
+
+        var promise = new Promise(function(resolve, reject) {
             _this.ready().then(function() {
-                var store = db.transaction(dbInfo.storeName, 'readonly')
+                var dbInfo = _this._dbInfo;
+                var store = dbInfo.db.transaction(dbInfo.storeName, 'readonly')
                               .objectStore(dbInfo.storeName);
                 var req = store.get(key);
 
@@ -750,29 +762,33 @@ requireModule('promise/polyfill').polyfill();
                         value = null;
                     }
 
-                    deferCallback(callback,value);
-
                     resolve(value);
                 };
 
                 req.onerror = function() {
-                    if (callback) {
-                        callback(null, req.error);
-                    }
-
                     reject(req.error);
                 };
-            }, function(err) {
-               reject(err) ;
-            });
+            })["catch"](reject);
         });
+
+        executeDeferedCallback(promise, callback);
+        return promise;
     }
 
     function setItem(key, value, callback) {
         var _this = this;
-        return new Promise(function(resolve, reject) {
+
+        // Cast the key to a string, as that's all we can set as a key.
+        if (typeof key !== 'string') {
+            window.console.warn(key +
+                                ' used as a key, but it is not a string.');
+            key = String(key);
+        }
+
+        var promise = new Promise(function(resolve, reject) {
             _this.ready().then(function() {
-                var store = db.transaction(dbInfo.storeName, 'readwrite')
+                var dbInfo = _this._dbInfo;
+                var store = dbInfo.db.transaction(dbInfo.storeName, 'readwrite')
                               .objectStore(dbInfo.storeName);
 
                 // The reason we don't _save_ null is because IE 10 does
@@ -795,50 +811,45 @@ requireModule('promise/polyfill').polyfill();
                         value = null;
                     }
 
-                    deferCallback(callback, value);
-
                     resolve(value);
                 };
                 req.onerror = function() {
-                    if (callback) {
-                        callback(null, req.error);
-                    }
-
                     reject(req.error);
                 };
-            }, function(err) {
-               reject(err) ;
-            });
+            })["catch"](reject);
         });
+
+        executeDeferedCallback(promise, callback);
+        return promise;
     }
 
     function removeItem(key, callback) {
         var _this = this;
-        return new Promise(function(resolve, reject) {
+
+        // Cast the key to a string, as that's all we can set as a key.
+        if (typeof key !== 'string') {
+            window.console.warn(key +
+                                ' used as a key, but it is not a string.');
+            key = String(key);
+        }
+
+        var promise = new Promise(function(resolve, reject) {
             _this.ready().then(function() {
-                var store = db.transaction(dbInfo.storeName, 'readwrite')
+                var dbInfo = _this._dbInfo;
+                var store = dbInfo.db.transaction(dbInfo.storeName, 'readwrite')
                               .objectStore(dbInfo.storeName);
 
-                // We use `['delete']` instead of `.delete` because IE 8 will
-                // throw a fit if it sees the reserved word "delete" in this
-                // scenario.
-                // See: https://github.com/mozilla/localForage/pull/67
-                //
-                // This can be removed once we no longer care about IE 8, for
-                // what that's worth.
-                var req = store['delete'](key);
+                // We use a Grunt task to make this safe for IE and some
+                // versions of Android (including those used by Cordova).
+                // Normally IE won't like `.delete()` and will insist on
+                // using `['delete']()`, but we have a build step that
+                // fixes this for us now.
+                var req = store["delete"](key);
                 req.onsuccess = function() {
-
-                    deferCallback(callback);
-
                     resolve();
                 };
 
                 req.onerror = function() {
-                    if (callback) {
-                        callback(req.error);
-                    }
-
                     reject(req.error);
                 };
 
@@ -848,90 +859,77 @@ requireModule('promise/polyfill').polyfill();
                 req.onabort = function(event) {
                     var error = event.target.error;
                     if (error === 'QuotaExceededError') {
-                        if (callback) {
-                            callback(error);
-                        }
-
                         reject(error);
                     }
                 };
-            }, function(err) {
-               reject(err) ;
-            });
+            })["catch"](reject);
         });
+
+        executeDeferedCallback(promise, callback);
+        return promise;
     }
 
     function clear(callback) {
         var _this = this;
-        return new Promise(function(resolve, reject) {
+
+        var promise = new Promise(function(resolve, reject) {
             _this.ready().then(function() {
-                var store = db.transaction(dbInfo.storeName, 'readwrite')
+                var dbInfo = _this._dbInfo;
+                var store = dbInfo.db.transaction(dbInfo.storeName, 'readwrite')
                               .objectStore(dbInfo.storeName);
                 var req = store.clear();
 
                 req.onsuccess = function() {
-                    deferCallback(callback);
-
                     resolve();
                 };
 
                 req.onerror = function() {
-                    if (callback) {
-                        callback(null, req.error);
-                    }
-
                     reject(req.error);
                 };
-            }, function(err) {
-               reject(err) ;
-            });
+            })["catch"](reject);
         });
+
+        executeDeferedCallback(promise, callback);
+        return promise;
     }
 
     function length(callback) {
         var _this = this;
-        return new Promise(function(resolve, reject) {
+
+        var promise = new Promise(function(resolve, reject) {
             _this.ready().then(function() {
-                var store = db.transaction(dbInfo.storeName, 'readonly')
+                var dbInfo = _this._dbInfo;
+                var store = dbInfo.db.transaction(dbInfo.storeName, 'readonly')
                               .objectStore(dbInfo.storeName);
                 var req = store.count();
 
                 req.onsuccess = function() {
-                    if (callback) {
-                        callback(req.result);
-                    }
-
                     resolve(req.result);
                 };
 
                 req.onerror = function() {
-                    if (callback) {
-                        callback(null, req.error);
-                    }
-
                     reject(req.error);
                 };
-            }, function(err) {
-               reject(err) ;
-            });
+            })["catch"](reject);
         });
+
+        executeCallback(promise, callback);
+        return promise;
     }
 
     function key(n, callback) {
         var _this = this;
-        return new Promise(function(resolve, reject) {
-            if (n < 0) {
-                if (callback) {
-                    callback(null);
-                }
 
+        var promise = new Promise(function(resolve, reject) {
+            if (n < 0) {
                 resolve(null);
 
                 return;
             }
 
             _this.ready().then(function() {
-                var store = db.transaction(dbInfo.storeName, 'readonly')
+                var dbInfo = _this._dbInfo;
+                var store = dbInfo.db.transaction(dbInfo.storeName, 'readonly')
                               .objectStore(dbInfo.storeName);
 
                 var advanced = false;
@@ -940,10 +938,6 @@ requireModule('promise/polyfill').polyfill();
                     var cursor = req.result;
                     if (!cursor) {
                         // this means there weren't enough keys
-                        if (callback) {
-                            callback(null);
-                        }
-
                         resolve(null);
 
                         return;
@@ -952,10 +946,6 @@ requireModule('promise/polyfill').polyfill();
                     if (n === 0) {
                         // We have the first key, return it if that's what they
                         // wanted.
-                        if (callback) {
-                            callback(cursor.key);
-                        }
-
                         resolve(cursor.key);
                     } else {
                         if (!advanced) {
@@ -965,34 +955,28 @@ requireModule('promise/polyfill').polyfill();
                             cursor.advance(n);
                         } else {
                             // When we get here, we've got the nth key.
-                            if (callback) {
-                                callback(cursor.key);
-                            }
-
                             resolve(cursor.key);
                         }
                     }
                 };
 
                 req.onerror = function() {
-                    if (callback) {
-                        callback(null, req.error);
-                    }
-
                     reject(req.error);
                 };
-            }, function(err) {
-               reject(err) ;
-            });
+            })["catch"](reject);
         });
+
+        executeCallback(promise, callback);
+        return promise;
     }
 
     function keys(callback) {
         var _this = this;
 
-        return new Promise(function(resolve, reject) {
+        var promise = new Promise(function(resolve, reject) {
             _this.ready().then(function() {
-                var store = db.transaction(dbInfo.storeName, 'readonly')
+                var dbInfo = _this._dbInfo;
+                var store = dbInfo.db.transaction(dbInfo.storeName, 'readonly')
                               .objectStore(dbInfo.storeName);
 
                 var req = store.openCursor();
@@ -1002,29 +986,42 @@ requireModule('promise/polyfill').polyfill();
                     var cursor = req.result;
 
                     if (!cursor) {
-                        if (callback) {
-                            callback(keys);
-                        }
-
                         resolve(keys);
                         return;
                     }
 
                     keys.push(cursor.key);
-                    cursor.continue();
+                    cursor["continue"]();
                 };
 
                 req.onerror = function() {
-                    if (callback) {
-                        callback(null, req.error);
-                    }
-
                     reject(req.error);
                 };
-            }, function(err) {
-               reject(err) ;
-            });
+            })["catch"](reject);
         });
+
+        executeCallback(promise, callback);
+        return promise;
+    }
+
+    function executeCallback(promise, callback) {
+        if (callback) {
+            promise.then(function(result) {
+                callback(null, result);
+            }, function(error) {
+                callback(error);
+            });
+        }
+    }
+
+    function executeDeferedCallback(promise, callback) {
+        if (callback) {
+            promise.then(function(result) {
+                deferCallback(callback, result);
+            }, function(error) {
+                callback(error);
+            });
+        }
     }
 
     // Under Chrome the callback is called before the changes (save, clear)
@@ -1032,10 +1029,10 @@ requireModule('promise/polyfill').polyfill();
     // call stack to be empty.
     // For more info : https://github.com/mozilla/localForage/issues/175
     // Pull request : https://github.com/mozilla/localForage/pull/178
-    function deferCallback(callback, value) {
+    function deferCallback(callback, result) {
         if (callback) {
             return setTimeout(function() {
-                return callback(value);
+                return callback(null, result);
             }, 0);
         }
     }
@@ -1061,7 +1058,7 @@ requireModule('promise/polyfill').polyfill();
     } else {
         this.asyncStorage = asyncStorage;
     }
-}).call(this);
+}).call(window);
 // If IndexedDB isn't available, we'll fall back to localStorage.
 // Note that this will have considerable performance and storage
 // side-effects (all data will be serialized on save and only data that
@@ -1069,8 +1066,6 @@ requireModule('promise/polyfill').polyfill();
 (function() {
     'use strict';
 
-    var keyPrefix = '';
-    var dbInfo = {};
     // Promises!
     var Promise = (typeof module !== 'undefined' && module.exports) ?
                   require('promise') : this.Promise;
@@ -1096,14 +1091,17 @@ requireModule('promise/polyfill').polyfill();
 
     // Config the localStorage backend, using options set in the config.
     function _initStorage(options) {
+        var _this = this;
+        var dbInfo = {};
         if (options) {
             for (var i in options) {
                 dbInfo[i] = options[i];
             }
         }
 
-        keyPrefix = dbInfo.name + '/';
+        dbInfo.keyPrefix = dbInfo.name + '/';
 
+        _this._dbInfo = dbInfo;
         return Promise.resolve();
     }
 
@@ -1129,17 +1127,24 @@ requireModule('promise/polyfill').polyfill();
     // the app's key/value store!
     function clear(callback) {
         var _this = this;
-        return new Promise(function(resolve) {
+        var promise = new Promise(function(resolve, reject) {
             _this.ready().then(function() {
-                localStorage.clear();
+                var keyPrefix = _this._dbInfo.keyPrefix;
 
-                if (callback) {
-                    callback();
+                for (var i = localStorage.length - 1; i >= 0; i--) {
+                    var key = localStorage.key(i);
+
+                    if (key.indexOf(keyPrefix) === 0) {
+                        localStorage.removeItem(key);
+                    }
                 }
 
                 resolve();
-            });
+            })["catch"](reject);
         });
+
+        executeCallback(promise, callback);
+        return promise;
     }
 
     // Retrieve an item from the store. Unlike the original async_storage
@@ -1147,10 +1152,19 @@ requireModule('promise/polyfill').polyfill();
     // is `undefined`, we pass that value to the callback function.
     function getItem(key, callback) {
         var _this = this;
-        return new Promise(function(resolve, reject) {
+
+        // Cast the key to a string, as that's all we can set as a key.
+        if (typeof key !== 'string') {
+            window.console.warn(key +
+                                ' used as a key, but it is not a string.');
+            key = String(key);
+        }
+
+        var promise = new Promise(function(resolve, reject) {
             _this.ready().then(function() {
                 try {
-                    var result = localStorage.getItem(keyPrefix + key);
+                    var dbInfo = _this._dbInfo;
+                    var result = localStorage.getItem(dbInfo.keyPrefix + key);
 
                     // If a result was found, parse it from the serialized
                     // string into a JS object. If result isn't truthy, the key
@@ -1160,27 +1174,23 @@ requireModule('promise/polyfill').polyfill();
                         result = _deserialize(result);
                     }
 
-                    if (callback) {
-                        callback(result);
-                    }
-
                     resolve(result);
                 } catch (e) {
-                    if (callback) {
-                        callback(null, e);
-                    }
-
                     reject(e);
                 }
-            });
+            })["catch"](reject);
         });
+
+        executeCallback(promise, callback);
+        return promise;
     }
 
     // Same as localStorage's key() method, except takes a callback.
     function key(n, callback) {
         var _this = this;
-        return new Promise(function(resolve) {
+        var promise = new Promise(function(resolve, reject) {
             _this.ready().then(function() {
+                var dbInfo = _this._dbInfo;
                 var result;
                 try {
                     result = localStorage.key(n);
@@ -1190,67 +1200,75 @@ requireModule('promise/polyfill').polyfill();
 
                 // Remove the prefix from the key, if a key is found.
                 if (result) {
-                    result = result.substring(keyPrefix.length);
+                    result = result.substring(dbInfo.keyPrefix.length);
                 }
 
-                if (callback) {
-                    callback(result);
-                }
                 resolve(result);
-            });
+            })["catch"](reject);
         });
+
+        executeCallback(promise, callback);
+        return promise;
     }
 
     function keys(callback) {
         var _this = this;
-        return new Promise(function(resolve) {
+        var promise = new Promise(function(resolve, reject) {
             _this.ready().then(function() {
+                var dbInfo = _this._dbInfo;
                 var length = localStorage.length;
                 var keys = [];
 
                 for (var i = 0; i < length; i++) {
-                    keys.push(localStorage.key(i).substring(keyPrefix.length));
-                }
-
-                if (callback) {
-                    callback(keys);
+                    keys.push(localStorage.key(i)
+                                          .substring(dbInfo.keyPrefix.length));
                 }
 
                 resolve(keys);
-            });
+            })["catch"](reject);
         });
+
+        executeCallback(promise, callback);
+        return promise;
     }
 
     // Supply the number of keys in the datastore to the callback function.
     function length(callback) {
         var _this = this;
-        return new Promise(function(resolve) {
+        var promise = new Promise(function(resolve, reject) {
             _this.ready().then(function() {
                 var result = localStorage.length;
 
-                if (callback) {
-                    callback(result);
-                }
-
                 resolve(result);
-            });
+            })["catch"](reject);
         });
+
+        executeCallback(promise, callback);
+        return promise;
     }
 
     // Remove an item from the store, nice and simple.
     function removeItem(key, callback) {
         var _this = this;
-        return new Promise(function(resolve) {
-            _this.ready().then(function() {
-                localStorage.removeItem(keyPrefix + key);
 
-                if (callback) {
-                    callback();
-                }
+        // Cast the key to a string, as that's all we can set as a key.
+        if (typeof key !== 'string') {
+            window.console.warn(key +
+                                ' used as a key, but it is not a string.');
+            key = String(key);
+        }
+
+        var promise = new Promise(function(resolve, reject) {
+            _this.ready().then(function() {
+                var dbInfo = _this._dbInfo;
+                localStorage.removeItem(dbInfo.keyPrefix + key);
 
                 resolve();
-            });
+            })["catch"](reject);
         });
+
+        executeCallback(promise, callback);
+        return promise;
     }
 
     // Deserialize data we've inserted into a value column/field. We place
@@ -1348,7 +1366,8 @@ requireModule('promise/polyfill').polyfill();
         //
         // TODO: See why those tests fail and use a better solution.
         if (value && (value.toString() === '[object ArrayBuffer]' ||
-                      value.buffer && value.buffer.toString() === '[object ArrayBuffer]')) {
+                      value.buffer &&
+                      value.buffer.toString() === '[object ArrayBuffer]')) {
             // Convert binary arrays to a string and prefix the string with
             // a special marker.
             var buffer;
@@ -1379,12 +1398,12 @@ requireModule('promise/polyfill').polyfill();
                 } else if (valueString === '[object Float64Array]') {
                     marker += TYPE_FLOAT64ARRAY;
                 } else {
-                    callback(new Error("Failed to get type for BinaryArray"));
+                    callback(new Error('Failed to get type for BinaryArray'));
                 }
             }
 
             callback(marker + _bufferToString(buffer));
-        } else if (valueString === "[object Blob]") {
+        } else if (valueString === '[object Blob]') {
             // Conver the blob to a binaryArray and then to a string.
             var fileReader = new FileReader();
 
@@ -1399,11 +1418,10 @@ requireModule('promise/polyfill').polyfill();
             try {
                 callback(JSON.stringify(value));
             } catch (e) {
-                if (this.console && this.console.error) {
-                    this.console.error("Couldn't convert value into a JSON string: ", value);
-                }
+                window.console.error("Couldn't convert value into a JSON " +
+                                     'string: ', value);
 
-                callback(null, e);
+                callback(e);
             }
         }
     }
@@ -1414,7 +1432,15 @@ requireModule('promise/polyfill').polyfill();
     // saved, or something like that.
     function setItem(key, value, callback) {
         var _this = this;
-        return new Promise(function(resolve, reject) {
+
+        // Cast the key to a string, as that's all we can set as a key.
+        if (typeof key !== 'string') {
+            window.console.warn(key +
+                                ' used as a key, but it is not a string.');
+            key = String(key);
+        }
+
+        var promise = new Promise(function(resolve, reject) {
             _this.ready().then(function() {
                 // Convert undefined values to null.
                 // https://github.com/mozilla/localForage/pull/42
@@ -1427,36 +1453,38 @@ requireModule('promise/polyfill').polyfill();
 
                 _serialize(value, function(value, error) {
                     if (error) {
-                        if (callback) {
-                            callback(null, error);
-                        }
-
                         reject(error);
                     } else {
                         try {
-                            localStorage.setItem(keyPrefix + key, value);
+                            var dbInfo = _this._dbInfo;
+                            localStorage.setItem(dbInfo.keyPrefix + key, value);
                         } catch (e) {
                             // localStorage capacity exceeded.
                             // TODO: Make this a specific error/event.
                             if (e.name === 'QuotaExceededError' ||
                                 e.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
-                                if (callback) {
-                                    callback(null, e);
-                                }
-
                                 reject(e);
                             }
-                        }
-
-                        if (callback) {
-                            callback(originalValue);
                         }
 
                         resolve(originalValue);
                     }
                 });
-            });
+            })["catch"](reject);
         });
+
+        executeCallback(promise, callback);
+        return promise;
+    }
+
+    function executeCallback(promise, callback) {
+        if (callback) {
+            promise.then(function(result) {
+                callback(null, result);
+            }, function(error) {
+                callback(error);
+            });
+        }
     }
 
     var localStorageWrapper = {
@@ -1481,7 +1509,7 @@ requireModule('promise/polyfill').polyfill();
     } else {
         this.localStorageWrapper = localStorageWrapper;
     }
-}).call(this);
+}).call(window);
 /*
  * Includes code from:
  *
@@ -1504,8 +1532,6 @@ requireModule('promise/polyfill').polyfill();
                   require('promise') : this.Promise;
 
     var openDatabase = this.openDatabase;
-    var db = null;
-    var dbInfo = {};
 
     var SERIALIZED_MARKER = '__lfsc__:';
     var SERIALIZED_MARKER_LENGTH = SERIALIZED_MARKER.length;
@@ -1522,7 +1548,8 @@ requireModule('promise/polyfill').polyfill();
     var TYPE_UINT32ARRAY = 'ui32';
     var TYPE_FLOAT32ARRAY = 'fl32';
     var TYPE_FLOAT64ARRAY = 'fl64';
-    var TYPE_SERIALIZED_MARKER_LENGTH = SERIALIZED_MARKER_LENGTH + TYPE_ARRAYBUFFER.length;
+    var TYPE_SERIALIZED_MARKER_LENGTH = SERIALIZED_MARKER_LENGTH +
+                                        TYPE_ARRAYBUFFER.length;
 
     // If WebSQL methods aren't available, we can stop now.
     if (!openDatabase) {
@@ -1533,41 +1560,62 @@ requireModule('promise/polyfill').polyfill();
     // previously exist), using any options set in the config.
     function _initStorage(options) {
         var _this = this;
+        var dbInfo = {
+            db: null
+        };
 
         if (options) {
             for (var i in options) {
-                dbInfo[i] = typeof(options[i]) !== 'string' ? options[i].toString() : options[i];
+                dbInfo[i] = typeof(options[i]) !== 'string' ?
+                            options[i].toString() : options[i];
             }
         }
 
-        return new Promise(function(resolve) {
+        return new Promise(function(resolve, reject) {
             // Open the database; the openDatabase API will automatically
             // create it for us if it doesn't exist.
             try {
-                db = openDatabase(dbInfo.name, dbInfo.version,
-                                  dbInfo.description, dbInfo.size);
+                dbInfo.db = openDatabase(dbInfo.name, String(dbInfo.version),
+                                         dbInfo.description, dbInfo.size);
             } catch (e) {
-                return _this.setDriver('localStorageWrapper').then(resolve);
+                return _this.setDriver("localStorageWrapper").then(function() {
+    return _this._initStorage(options);
+}).then(resolve)["catch"](reject);
             }
 
             // Create our key/value table if it doesn't exist.
-            db.transaction(function(t) {
+            dbInfo.db.transaction(function(t) {
                 t.executeSql('CREATE TABLE IF NOT EXISTS ' + dbInfo.storeName +
-                             ' (id INTEGER PRIMARY KEY, key unique, value)', [], function() {
+                             ' (id INTEGER PRIMARY KEY, key unique, value)', [],
+                             function() {
+                    _this._dbInfo = dbInfo;
                     resolve();
-                }, null);
+                }, function(t, error) {
+                    reject(error);
+                });
             });
         });
     }
 
     function getItem(key, callback) {
         var _this = this;
-        return new Promise(function(resolve, reject) {
+
+        // Cast the key to a string, as that's all we can set as a key.
+        if (typeof key !== 'string') {
+            window.console.warn(key +
+                                ' used as a key, but it is not a string.');
+            key = String(key);
+        }
+
+        var promise = new Promise(function(resolve, reject) {
             _this.ready().then(function() {
-                db.transaction(function(t) {
+                var dbInfo = _this._dbInfo;
+                dbInfo.db.transaction(function(t) {
                     t.executeSql('SELECT * FROM ' + dbInfo.storeName +
-                                 ' WHERE key = ? LIMIT 1', [key], function(t, results) {
-                        var result = results.rows.length ? results.rows.item(0).value : null;
+                                 ' WHERE key = ? LIMIT 1', [key],
+                                 function(t, results) {
+                        var result = results.rows.length ?
+                                     results.rows.item(0).value : null;
 
                         // Check to see if this is serialized content we need to
                         // unpack.
@@ -1575,26 +1623,30 @@ requireModule('promise/polyfill').polyfill();
                             result = _deserialize(result);
                         }
 
-                        if (callback) {
-                            callback(result);
-                        }
-
                         resolve(result);
                     }, function(t, error) {
-                        if (callback) {
-                            callback(null, error);
-                        }
 
                         reject(error);
                     });
                 });
-            });
+            })["catch"](reject);
         });
+
+        executeCallback(promise, callback);
+        return promise;
     }
 
     function setItem(key, value, callback) {
         var _this = this;
-        return new Promise(function(resolve, reject) {
+
+        // Cast the key to a string, as that's all we can set as a key.
+        if (typeof key !== 'string') {
+            window.console.warn(key +
+                                ' used as a key, but it is not a string.');
+            key = String(key);
+        }
+
+        var promise = new Promise(function(resolve, reject) {
             _this.ready().then(function() {
                 // The localStorage API doesn't return undefined values in an
                 // "expected" way, so undefined is always cast to null in all
@@ -1610,19 +1662,14 @@ requireModule('promise/polyfill').polyfill();
                     if (error) {
                         reject(error);
                     } else {
-                        db.transaction(function(t) {
-                            t.executeSql('INSERT OR REPLACE INTO ' + dbInfo.storeName +
-                                         ' (key, value) VALUES (?, ?)', [key, value], function() {
-                                if (callback) {
-                                    callback(originalValue);
-                                }
-
+                        var dbInfo = _this._dbInfo;
+                        dbInfo.db.transaction(function(t) {
+                            t.executeSql('INSERT OR REPLACE INTO ' +
+                                         dbInfo.storeName +
+                                         ' (key, value) VALUES (?, ?)',
+                                         [key, value], function() {
                                 resolve(originalValue);
                             }, function(t, error) {
-                                if (callback) {
-                                    callback(null, error);
-                                }
-
                                 reject(error);
                             });
                         }, function(sqlError) { // The transaction failed; check
@@ -1635,95 +1682,96 @@ requireModule('promise/polyfill').polyfill();
                                 // be called.
                                 //
                                 // TODO: Try to re-run the transaction.
-                                if (callback) {
-                                    callback(null, sqlError);
-                                }
-
                                 reject(sqlError);
                             }
                         });
                     }
                 });
-            });
+            })["catch"](reject);
         });
+
+        executeCallback(promise, callback);
+        return promise;
     }
 
     function removeItem(key, callback) {
         var _this = this;
-        return new Promise(function(resolve, reject) {
+
+        // Cast the key to a string, as that's all we can set as a key.
+        if (typeof key !== 'string') {
+            window.console.warn(key +
+                                ' used as a key, but it is not a string.');
+            key = String(key);
+        }
+
+        var promise = new Promise(function(resolve, reject) {
             _this.ready().then(function() {
-                db.transaction(function(t) {
+                var dbInfo = _this._dbInfo;
+                dbInfo.db.transaction(function(t) {
                     t.executeSql('DELETE FROM ' + dbInfo.storeName +
                                  ' WHERE key = ?', [key], function() {
-                        if (callback) {
-                            callback();
-                        }
 
                         resolve();
                     }, function(t, error) {
-                        if (callback) {
-                            callback(error);
-                        }
 
                         reject(error);
                     });
                 });
-            });
+            })["catch"](reject);
         });
+
+        executeCallback(promise, callback);
+        return promise;
     }
 
     // Deletes every item in the table.
     // TODO: Find out if this resets the AUTO_INCREMENT number.
     function clear(callback) {
         var _this = this;
-        return new Promise(function(resolve, reject) {
-            _this.ready().then(function() {
-                db.transaction(function(t) {
-                    t.executeSql('DELETE FROM ' + dbInfo.storeName, [], function() {
-                        if (callback) {
-                            callback();
-                        }
 
+        var promise = new Promise(function(resolve, reject) {
+            _this.ready().then(function() {
+                var dbInfo = _this._dbInfo;
+                dbInfo.db.transaction(function(t) {
+                    t.executeSql('DELETE FROM ' + dbInfo.storeName, [],
+                                 function() {
                         resolve();
                     }, function(t, error) {
-                        if (callback) {
-                            callback(error);
-                        }
-
                         reject(error);
                     });
                 });
-            });
+            })["catch"](reject);
         });
+
+        executeCallback(promise, callback);
+        return promise;
     }
 
     // Does a simple `COUNT(key)` to get the number of items stored in
     // localForage.
     function length(callback) {
         var _this = this;
-        return new Promise(function(resolve, reject) {
+
+        var promise = new Promise(function(resolve, reject) {
             _this.ready().then(function() {
-                db.transaction(function(t) {
+                var dbInfo = _this._dbInfo;
+                dbInfo.db.transaction(function(t) {
                     // Ahhh, SQL makes this one soooooo easy.
                     t.executeSql('SELECT COUNT(key) as c FROM ' +
                                  dbInfo.storeName, [], function(t, results) {
                         var result = results.rows.item(0).c;
 
-                        if (callback) {
-                            callback(result);
-                        }
-
                         resolve(result);
                     }, function(t, error) {
-                        if (callback) {
-                            callback(null, error);
-                        }
 
                         reject(error);
                     });
                 });
-            });
+            })["catch"](reject);
         });
+
+        executeCallback(promise, callback);
+        return promise;
     }
 
     // Return the key located at key index X; essentially gets the key from a
@@ -1735,59 +1783,54 @@ requireModule('promise/polyfill').polyfill();
     // TODO: Don't change ID on `setItem()`.
     function key(n, callback) {
         var _this = this;
-        return new Promise(function(resolve, reject) {
+
+        var promise = new Promise(function(resolve, reject) {
             _this.ready().then(function() {
-                db.transaction(function(t) {
+                var dbInfo = _this._dbInfo;
+                dbInfo.db.transaction(function(t) {
                     t.executeSql('SELECT key FROM ' + dbInfo.storeName +
-                                 ' WHERE id = ? LIMIT 1', [n + 1], function(t, results) {
-                        var result = results.rows.length ? results.rows.item(0).key : null;
-
-                        if (callback) {
-                            callback(result);
-                        }
-
+                                 ' WHERE id = ? LIMIT 1', [n + 1],
+                                 function(t, results) {
+                        var result = results.rows.length ?
+                                     results.rows.item(0).key : null;
                         resolve(result);
                     }, function(t, error) {
-                        if (callback) {
-                            callback(null, error);
-                        }
-
                         reject(error);
                     });
                 });
-            });
+            })["catch"](reject);
         });
+
+        executeCallback(promise, callback);
+        return promise;
     }
 
     function keys(callback) {
         var _this = this;
-        return new Promise(function(resolve, reject) {
+
+        var promise = new Promise(function(resolve, reject) {
             _this.ready().then(function() {
-                db.transaction(function(t) {
+                var dbInfo = _this._dbInfo;
+                dbInfo.db.transaction(function(t) {
                     t.executeSql('SELECT key FROM ' + dbInfo.storeName, [],
                                  function(t, results) {
-                        var length = results.rows.length;
                         var keys = [];
 
-                        for (var i = 0; i < length; i++) {
+                        for (var i = 0; i < results.rows.length; i++) {
                             keys.push(results.rows.item(i).key);
-                        }
-
-                        if (callback) {
-                            callback(keys);
                         }
 
                         resolve(keys);
                     }, function(t, error) {
-                        if (callback) {
-                            callback(null, error);
-                        }
 
                         reject(error);
                     });
                 });
-            });
+            })["catch"](reject);
         });
+
+        executeCallback(promise, callback);
+        return promise;
     }
 
     // Converts a buffer to a string to store, serialized, in the backend
@@ -1807,9 +1850,9 @@ requireModule('promise/polyfill').polyfill();
         }
 
         if ((bytes.length % 3) === 2) {
-            base64String = base64String.substring(0, base64String.length - 1) + "=";
+            base64String = base64String.substring(0, base64String.length - 1) + '=';
         } else if (bytes.length % 3 === 1) {
-            base64String = base64String.substring(0, base64String.length - 2) + "==";
+            base64String = base64String.substring(0, base64String.length - 2) + '==';
         }
 
         return base64String;
@@ -1827,7 +1870,8 @@ requireModule('promise/polyfill').polyfill();
         // If we haven't marked this string as being specially serialized (i.e.
         // something other than serialized JSON), we can just return it and be
         // done with it.
-        if (value.substring(0, SERIALIZED_MARKER_LENGTH) !== SERIALIZED_MARKER) {
+        if (value.substring(0,
+                            SERIALIZED_MARKER_LENGTH) !== SERIALIZED_MARKER) {
             return JSON.parse(value);
         }
 
@@ -1835,7 +1879,8 @@ requireModule('promise/polyfill').polyfill();
         // TypedArray. First we separate out the type of data we're dealing
         // with from the data itself.
         var serializedString = value.substring(TYPE_SERIALIZED_MARKER_LENGTH);
-        var type = value.substring(SERIALIZED_MARKER_LENGTH, TYPE_SERIALIZED_MARKER_LENGTH);
+        var type = value.substring(SERIALIZED_MARKER_LENGTH,
+                                   TYPE_SERIALIZED_MARKER_LENGTH);
 
         // Fill the string into a ArrayBuffer.
         var bufferLength = serializedString.length * 0.75;
@@ -1844,9 +1889,9 @@ requireModule('promise/polyfill').polyfill();
         var p = 0;
         var encoded1, encoded2, encoded3, encoded4;
 
-        if (serializedString[serializedString.length - 1] === "=") {
+        if (serializedString[serializedString.length - 1] === '=') {
             bufferLength--;
-            if (serializedString[serializedString.length - 2] === "=") {
+            if (serializedString[serializedString.length - 2] === '=') {
                 bufferLength--;
             }
         }
@@ -1910,7 +1955,8 @@ requireModule('promise/polyfill').polyfill();
         //
         // TODO: See why those tests fail and use a better solution.
         if (value && (value.toString() === '[object ArrayBuffer]' ||
-                      value.buffer && value.buffer.toString() === '[object ArrayBuffer]')) {
+                      value.buffer &&
+                      value.buffer.toString() === '[object ArrayBuffer]')) {
             // Convert binary arrays to a string and prefix the string with
             // a special marker.
             var buffer;
@@ -1941,12 +1987,12 @@ requireModule('promise/polyfill').polyfill();
                 } else if (valueString === '[object Float64Array]') {
                     marker += TYPE_FLOAT64ARRAY;
                 } else {
-                    callback(new Error("Failed to get type for BinaryArray"));
+                    callback(new Error('Failed to get type for BinaryArray'));
                 }
             }
 
             callback(marker + _bufferToString(buffer));
-        } else if (valueString === "[object Blob]") {
+        } else if (valueString === '[object Blob]') {
             // Conver the blob to a binaryArray and then to a string.
             var fileReader = new FileReader();
 
@@ -1961,12 +2007,21 @@ requireModule('promise/polyfill').polyfill();
             try {
                 callback(JSON.stringify(value));
             } catch (e) {
-                if (this.console && this.console.error) {
-                    this.console.error("Couldn't convert value into a JSON string: ", value);
-                }
+                window.console.error("Couldn't convert value into a JSON " +
+                                     'string: ', value);
 
                 callback(null, e);
             }
+        }
+    }
+
+    function executeCallback(promise, callback) {
+        if (callback) {
+            promise.then(function(result) {
+                callback(null, result);
+            }, function(error) {
+                callback(error);
+            });
         }
     }
 
@@ -1991,7 +2046,7 @@ requireModule('promise/polyfill').polyfill();
     } else {
         this.webSQLStorage = webSQLStorage;
     }
-}).call(this);
+}).call(window);
 (function() {
     'use strict';
 
@@ -1999,226 +2054,295 @@ requireModule('promise/polyfill').polyfill();
     var Promise = (typeof module !== 'undefined' && module.exports) ?
                   require('promise') : this.Promise;
 
-    // Avoid those magic constants!
-    var MODULE_TYPE_DEFINE = 1;
-    var MODULE_TYPE_EXPORT = 2;
-    var MODULE_TYPE_WINDOW = 3;
+    var DriverType = {
+        INDEXEDDB: 'asyncStorage',
+        LOCALSTORAGE: 'localStorageWrapper',
+        WEBSQL: 'webSQLStorage'
+    };
+
+    var DefaultDriverOrder = [
+        DriverType.INDEXEDDB,
+        DriverType.WEBSQL,
+        DriverType.LOCALSTORAGE
+    ];
+
+    var LibraryMethods = [
+        'clear',
+        'getItem',
+        'key',
+        'keys',
+        'length',
+        'removeItem',
+        'setItem'
+    ];
+
+    var ModuleType = {
+        DEFINE: 1,
+        EXPORT: 2,
+        WINDOW: 3
+    };
+
+    var DefaultConfig = {
+        description: '',
+        name: 'localforage',
+        // Default DB size is _JUST UNDER_ 5MB, as it's the highest size
+        // we can use without a prompt.
+        size: 4980736,
+        storeName: 'keyvaluepairs',
+        version: 1.0
+    };
 
     // Attaching to window (i.e. no module loader) is the assumed,
     // simple default.
-    var moduleType = MODULE_TYPE_WINDOW;
+    var moduleType = ModuleType.WINDOW;
 
     // Find out what kind of module setup we have; if none, we'll just attach
     // localForage to the main window.
     if (typeof define === 'function' && define.amd) {
-        moduleType = MODULE_TYPE_DEFINE;
+        moduleType = ModuleType.DEFINE;
     } else if (typeof module !== 'undefined' && module.exports) {
-        moduleType = MODULE_TYPE_EXPORT;
+        moduleType = ModuleType.EXPORT;
     }
 
-    // Initialize IndexedDB; fall back to vendor-prefixed versions if needed.
-    var indexedDB = indexedDB || this.indexedDB || this.webkitIndexedDB ||
-                    this.mozIndexedDB || this.OIndexedDB ||
-                    this.msIndexedDB;
-
-    var supportsIndexedDB = indexedDB &&
-                            typeof indexedDB.open === 'function' &&
-                            indexedDB.open('_localforage_spec_test', 1)
-                                     .onupgradeneeded === null;
-
-    // Check for WebSQL.
-    var openDatabase = this.openDatabase;
-
-    // Check for localStorage.
-    var supportsLocalStorage = (function() {
-        try {
-            return localStorage && typeof localStorage.setItem === 'function';
-        } catch (e) {
-            return false;
-        }
-    })();
-
-    // The actual localForage object that we expose as a module or via a
-    // global. It's extended by pulling in one of our other libraries.
-    var _this = this;
-    var localForage = {
-        INDEXEDDB: 'asyncStorage',
-        LOCALSTORAGE: 'localStorageWrapper',
-        WEBSQL: 'webSQLStorage',
-
-        _config: {
-            description: '',
-            name: 'localforage',
-            // Default DB size is _JUST UNDER_ 5MB, as it's the highest size
-            // we can use without a prompt.
-            size: 4980736,
-            storeName: 'keyvaluepairs',
-            version: 1.0
-        },
-
-        // Set any config values for localForage; can be called anytime before
-        // the first API call (e.g. `getItem`, `setItem`).
-        // We loop through options so we don't overwrite existing config
-        // values.
-        config: function(options) {
-            // If the options argument is an object, we use it to set values.
-            // Otherwise, we return either a specified config value or all
-            // config values.
-            if (typeof(options) === 'object') {
-                // If localforage is ready and fully initialized, we can't set
-                // any new configuration values. Instead, we return an error.
-                if (this._ready) {
-                    return new Error("Can't call config() after localforage " +
-                                     "has been used.");
-                }
-
-                for (var i in options) {
-                    this._config[i] = options[i];
-                }
-
-                return true;
-            } else if (typeof(options) === 'string') {
-                return this._config[options];
-            } else {
-                return this._config;
-            }
-        },
-
-        driver: function() {
-            return this._driver || null;
-        },
-
-        _ready: false,
-
-        _driverSet: null,
-
-        setDriver: function(driverName, callback, errorCallback) {
-            var self = this;
-
-            this._driverSet = new Promise(function(resolve, reject) {
-                if ((!supportsIndexedDB &&
-                     driverName === localForage.INDEXEDDB) ||
-                    (!openDatabase && driverName === localForage.WEBSQL) ||
-                    (!supportsLocalStorage &&
-                     driverName === localForage.LOCALSTORAGE)) {
-
-                    if (errorCallback) {
-                        errorCallback();
-                    }
-
-                    reject(localForage);
-
-                    return;
-                }
-
-                self._ready = null;
-
-                // We allow localForage to be declared as a module or as a
-                // library available without AMD/require.js.
-                if (moduleType === MODULE_TYPE_DEFINE) {
-                    require([driverName], function(lib) {
-                        self._extend(lib);
-
-                        if (callback) {
-                            callback();
-                        }
-                        resolve();
-                    });
-
-                    return;
-                } else if (moduleType === MODULE_TYPE_EXPORT) {
-                    // Making it browserify friendly
-                    var driver;
-                    switch (driverName) {
-                        case self.INDEXEDDB:
-                            driver = require('./drivers/indexeddb');
-                            break;
-                        case self.LOCALSTORAGE:
-                            driver = require('./drivers/localstorage');
-                            break;
-                        case self.WEBSQL:
-                            driver = require('./drivers/websql');
-                    }
-
-                    self._extend(driver);
-                } else {
-                    self._extend(_this[driverName]);
-                }
-
-                if (callback) {
-                    callback();
-                }
-
-                resolve();
-            });
-
-            return this._driverSet;
-        },
-
-        ready: function(callback) {
-            var ready = new Promise(function(resolve) {
-                localForage._driverSet.then(function() {
-                    if (localForage._ready === null) {
-                        localForage._ready = localForage._initStorage(
-                            localForage._config);
-                    }
-
-                    localForage._ready.then(resolve);
-                });
-            });
-
-            ready.then(callback, callback);
-
-            return ready;
-        },
-
-        _extend: function(libraryMethodsAndProperties) {
-            for (var i in libraryMethodsAndProperties) {
-                if (libraryMethodsAndProperties.hasOwnProperty(i)) {
-                    this[i] = libraryMethodsAndProperties[i];
-                }
-            }
-        }
-    };
-
-    // Select our storage library.
-    var storageLibrary;
     // Check to see if IndexedDB is available and if it is the latest
     // implementation; it's our preferred backend library. We use "_spec_test"
     // as the name of the database because it's not the one we'll operate on,
     // but it's useful to make sure its using the right spec.
     // See: https://github.com/mozilla/localForage/issues/128
-    if (supportsIndexedDB) {
-        storageLibrary = localForage.INDEXEDDB;
-    } else if (openDatabase) { // WebSQL is available, so we'll use that.
-        storageLibrary = localForage.WEBSQL;
-    } else if (supportsLocalStorage) { // If nothing else is available,
-                                       // we try to use localStorage.
-        storageLibrary = localForage.LOCALSTORAGE;
+    var driverSupport = (function(_this) {
+        // Initialize IndexedDB; fall back to vendor-prefixed versions
+        // if needed.
+        var indexedDB = indexedDB || _this.indexedDB || _this.webkitIndexedDB ||
+                        _this.mozIndexedDB || _this.OIndexedDB ||
+                        _this.msIndexedDB;
+
+        var result = {};
+
+        result[DriverType.WEBSQL] = !!_this.openDatabase;
+        result[DriverType.INDEXEDDB] = !!(function() {
+            try {
+                return (indexedDB &&
+                        typeof indexedDB.open === 'function' &&
+                        indexedDB.open('_localforage_spec_test', 1)
+                        .onupgradeneeded === null);
+            } catch (e) {
+                return false;
+            }
+        })();
+
+        result[DriverType.LOCALSTORAGE] = !!(function() {
+            try {
+                return (localStorage &&
+                        typeof localStorage.setItem === 'function');
+            } catch (e) {
+                return false;
+            }
+        })();
+
+        return result;
+    })(this);
+
+    function extend(/*...*/) {
+        for (var i = 1; i < arguments.length; i++) {
+            var arg = arguments[i];
+            if (arg) {
+                for (var key in arg) {
+                    if (arg.hasOwnProperty(key)) {
+                        arguments[0][key] = arg[key];
+                    }
+                }
+            }
+        }
+        return arguments[0];
     }
 
-    // If window.localForageConfig is set, use it for configuration.
-    if (this.localForageConfig) {
-        localForage.config = this.localForageConfig;
+    function callWhenReady(localForageInstance, libraryMethod) {
+        localForageInstance[libraryMethod] = function() {
+            var _args = arguments;
+            return localForageInstance.ready().then(function() {
+                return localForageInstance[libraryMethod].apply(localForageInstance, _args);
+            });
+        };
     }
 
-    // Set the (default) driver, or report the error.
-    if (storageLibrary) {
-        localForage.setDriver(storageLibrary);
-    } else {
-        localForage._ready = Promise.reject(
-            new Error('No available storage method found.'));
+    // The actual localForage object that we expose as a module or via a
+    // global. It's extended by pulling in one of our other libraries.
+    var _this = this;
+
+    function LocalForage(options) {
+        this._config = extend({}, DefaultConfig, options);
+        this._driverSet = null;
+        this._ready = false;
+        this._dbInfo = null;
+
+        // Add a stub for each driver API method that delays the call to the
+        // corresponding driver method until localForage is ready. These stubs
+        // will be replaced by the driver methods as soon as the driver is
+        // loaded, so there is no performance impact.
+        for (var i = 0; i < LibraryMethods.length; i++) {
+            callWhenReady(this, LibraryMethods[i]);
+        }
+
+        this.setDriver(DefaultDriverOrder);
     }
+
+    LocalForage.prototype.INDEXEDDB = DriverType.INDEXEDDB;
+    LocalForage.prototype.LOCALSTORAGE = DriverType.LOCALSTORAGE;
+    LocalForage.prototype.WEBSQL = DriverType.WEBSQL;
+
+    // Set any config values for localForage; can be called anytime before
+    // the first API call (e.g. `getItem`, `setItem`).
+    // We loop through options so we don't overwrite existing config
+    // values.
+    LocalForage.prototype.config = function(options) {
+        // If the options argument is an object, we use it to set values.
+        // Otherwise, we return either a specified config value or all
+        // config values.
+        if (typeof(options) === 'object') {
+            // If localforage is ready and fully initialized, we can't set
+            // any new configuration values. Instead, we return an error.
+            if (this._ready) {
+                return new Error("Can't call config() after localforage " +
+                                 'has been used.');
+            }
+
+            for (var i in options) {
+                if (i === 'storeName') {
+                    options[i] = options[i].replace(/\W/g, '_');
+                }
+
+                this._config[i] = options[i];
+            }
+
+            return true;
+        } else if (typeof(options) === 'string') {
+            return this._config[options];
+        } else {
+            return this._config;
+        }
+    };
+
+    LocalForage.prototype.driver = function() {
+        return this._driver || null;
+    };
+
+    LocalForage.prototype.ready = function(callback) {
+        var self = this;
+
+        var ready = new Promise(function(resolve, reject) {
+            self._driverSet.then(function() {
+                if (self._ready === null) {
+                    self._ready = self._initStorage(self._config);
+                }
+
+                self._ready.then(resolve, reject);
+            })["catch"](reject);
+        });
+
+        ready.then(callback, callback);
+        return ready;
+    };
+
+    LocalForage.prototype.setDriver = function(drivers, callback,
+                                               errorCallback) {
+        var self = this;
+
+        if (typeof drivers === 'string') {
+            drivers = [drivers];
+        }
+
+        this._driverSet = new Promise(function(resolve, reject) {
+            var driverName = self._getFirstSupportedDriver(drivers);
+
+            if (!driverName) {
+                var error = new Error('No available storage method found.');
+                self._driverSet = Promise.reject(error);
+
+                reject(error);
+
+                return;
+            }
+
+            self._dbInfo = null;
+            self._ready = null;
+
+            // We allow localForage to be declared as a module or as a
+            // library available without AMD/require.js.
+            if (moduleType === ModuleType.DEFINE) {
+                require([driverName], function(lib) {
+                    self._extend(lib);
+
+                    resolve();
+                });
+
+                return;
+            } else if (moduleType === ModuleType.EXPORT) {
+                // Making it browserify friendly
+                var driver;
+                switch (driverName) {
+                    case self.INDEXEDDB:
+                        driver = require('./drivers/indexeddb');
+                        break;
+                    case self.LOCALSTORAGE:
+                        driver = require('./drivers/localstorage');
+                        break;
+                    case self.WEBSQL:
+                        driver = require('./drivers/websql');
+                }
+
+                self._extend(driver);
+            } else {
+                self._extend(_this[driverName]);
+            }
+
+            resolve();
+        });
+
+        this._driverSet.then(callback, errorCallback);
+        return this._driverSet;
+    };
+
+    LocalForage.prototype.supports = function(driverName) {
+        return !!driverSupport[driverName];
+    };
+
+    LocalForage.prototype._extend = function(libraryMethodsAndProperties) {
+        extend(this, libraryMethodsAndProperties);
+    };
+
+    LocalForage.prototype._getFirstSupportedDriver = function(drivers) {
+        var isArray = Array.isArray || function(arg) {
+            return Object.prototype.toString.call(arg) === '[object Array]';
+        };
+
+        if (drivers && isArray(drivers)) {
+            for (var i = 0; i < drivers.length; i++) {
+                var driver = drivers[i];
+
+                if (this.supports(driver)) {
+                    return driver;
+                }
+            }
+        }
+
+        return null;
+    };
+
+    LocalForage.prototype.createInstance = function(options) {
+        return new LocalForage(options);
+    };
+
+    var localForage = new LocalForage();
 
     // We allow localForage to be declared as a module or as a library
     // available without AMD/require.js.
-    if (moduleType === MODULE_TYPE_DEFINE) {
-        define(function() {
+    if (moduleType === ModuleType.DEFINE) {
+        define('localforage', function() {
             return localForage;
         });
-    } else if (moduleType === MODULE_TYPE_EXPORT) {
+    } else if (moduleType === ModuleType.EXPORT) {
         module.exports = localForage;
     } else {
         this.localforage = localForage;
     }
-}).call(this);
+}).call(window);
