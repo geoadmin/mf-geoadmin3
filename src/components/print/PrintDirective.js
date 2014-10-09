@@ -124,7 +124,11 @@
     // Encode ol.Layer to a basic js object
     var encodeLayer = function(layer, proj) {
       var encLayer, encLegend;
-      var ext = proj.getExtent();
+      var minXY = $scope.map.getCoordinateFromPixel([printRectangle[0],
+          printRectangle[3]]);
+      var maxXY = $scope.map.getCoordinateFromPixel([printRectangle[2],
+          printRectangle[1]]);
+      var ext = minXY.concat(maxXY);
       var resolution = $scope.map.getView().getResolution();
 
       if (!(layer instanceof ol.layer.Group)) {
@@ -280,8 +284,10 @@
         var scale = imageStyle.getScale();
         literal.rotation = imageStyle.getRotation();
         if (size) {
-          literal.graphicWidth = size[0] * scale;
-          literal.graphicHeight = size[1] * scale;
+          // Print server doesn't handle correctly 0 values for the size
+          literal.graphicWidth = (size[0] * scale || 0.1);
+          literal.graphicHeight = (size[1] * scale || 0.1);
+
         }
         if (anchor) {
           literal.graphicXOffset = -anchor[0] * scale;
