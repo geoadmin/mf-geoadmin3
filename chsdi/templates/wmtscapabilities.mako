@@ -56,7 +56,7 @@
                 <ows:UpperCorner>11.47757 48.230651</ows:UpperCorner>
             </ows:WGS84BoundingBox>
             <ows:Identifier>${layer.id|x,trim}</ows:Identifier>
-            <ows:Metadata xlink:href="http://www.swisstopo.admin.ch/SITiled/world/AdminBoundaries/metadata.htm"/>
+            <ows:Metadata xlink:href="http://www.geocat.ch/geonetwork/srv/deu/metadata.show?uuid=${layer.idGeoCat}"/>
             <Style>
                 <ows:Title>${layer.kurzbezeichnung|x,trim}</ows:Title>
                 <ows:Identifier>${layer.id|x,trim}</ows:Identifier>
