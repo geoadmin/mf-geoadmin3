@@ -352,29 +352,6 @@
    * Manage KML layers
    */
   module.provider('gaKml', function() {
-    // Default style
-    var fill = new ol.style.Fill({
-      color: 'rgba(255,0,0,0.7)'
-    });
-    var stroke = new ol.style.Stroke({
-      color: 'rgb(255,0,0)',
-      width: 1.5
-    });
-
-    // Create the parser
-    var kmlFormat = new ol.format.KML({
-      extractStyles: true,
-      extractAttributes: true,
-      defaultStyle: [new ol.style.Style({
-        fill: fill,
-        stroke: stroke,
-        image: new ol.style.Circle({
-          radius: 7,
-          fill: fill,
-          stroke: stroke
-        })
-      })]
-    });
 
     // Ensure linear rings are closed
     var closeLinearRing = function(linearRing) {
@@ -416,7 +393,13 @@
     };
 
     this.$get = function($http, gaDefinePropertiesForLayer, gaMapClick,
-        gaMapUtils, gaGlobalOptions, $rootScope, $translate) {
+        gaMapUtils, gaGlobalOptions, $rootScope, $translate, gaStyleFactory) {
+      // Create the parser
+      var kmlFormat = new ol.format.KML({
+        extractStyles: true,
+        extractAttributes: true,
+        defaultStyle: [gaStyleFactory.getStyle('kml')]
+      });
       var Kml = function(proxyUrl) {
         /**
          * Create a KML layer from a KML string
@@ -455,6 +438,38 @@
             if (feature.getGeometry()) {
               feature.getGeometry().transform('EPSG:4326', options.projection);
             }
+
+            // if the feature has a name, display it only if it's a Point.
+            // TODO Handle GeometryCollection displaying name on the first Point
+            // geometry.
+            if (feature.get('name')) {
+              var geom = feature.getGeometry();
+              if (geom instanceof ol.geom.Point ||
+                  geom instanceof ol.geom.MultiPoint) {
+                // Clone and set Name
+                var styles = feature.getStyleFunction().call(feature);
+                var style = styles[0];
+                var image = style.getImage();
+                if (style.getText() && image && image.getScale() === 0) {
+                  image = gaStyleFactory.getStyle('transparentCircle');
+                }
+                styles = [new ol.style.Style({
+                  fill: style.getFill(),
+                  stroke: style.getStroke(),
+                  image: image,
+                  text: new ol.style.Text({
+                    font: gaStyleFactory.FONT,
+                    text: feature.get('name'),
+                    fill: style.getText().getFill(),
+                    stroke: gaStyleFactory.getTextStroke(
+                        style.getText().getFill().getColor()),
+                    scale: style.getText().getScale()
+                  }),
+                  zIndex: style.getZIndex()
+                })];
+                feature.setStyle(styles);
+              }
+            }
           }
           var attributions;
 
@@ -484,6 +499,7 @@
               source: layerOptions.source,
               attributions: attributions
             });
+
             olLayer = new ol.layer.Image(layerOptions);
           } else {
             olLayer = new ol.layer.Vector(layerOptions);

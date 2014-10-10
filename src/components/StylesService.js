@@ -4,6 +4,7 @@
   var module = angular.module('ga_styles_service', []);
 
   module.provider('gaStyleFactory', function() {
+    var DEFAULT_FONT = 'normal 16px Helvetica';
 
     var selectStroke = new ol.style.Stroke({
       color: [255, 128, 0, 1],
@@ -69,6 +70,7 @@
         })
       })
     });
+
     var offlineStyle = new ol.style.Style({
       stroke: new ol.style.Stroke({
         color: [255, 0, 0, 0.9],
@@ -76,16 +78,66 @@
       })
     });
 
+    // Default style for KML layer
+    var fill = new ol.style.Fill({
+      color: [255, 0, 0, 0.7]
+    });
+    var stroke = new ol.style.Stroke({
+      color: [255, 0, 0, 1],
+      width: 1.5
+    });
+    var kmlStyle = new ol.style.Style({
+      fill: fill,
+      stroke: stroke,
+      image: new ol.style.Circle({
+        radius: 7,
+        fill: fill,
+        stroke: stroke
+      }),
+      text: new ol.style.Text({
+        font: DEFAULT_FONT,
+        fill: fill,
+        stroke: new ol.style.Stroke({
+          color: [255, 255, 255, 1],
+          width: 3
+        })
+      })
+    });
+
+    var transparent = [0, 0, 0, 0];
+    var transparentCircle = new ol.style.Circle({
+      radius: 1,
+      fill: new ol.style.Fill({color: transparent}),
+      stroke: new ol.style.Stroke({color: transparent})
+    });
+
     var styles = {
       'select': selectStyle,
       'highlight': hlStyle,
       'selectrectangle': srStyle,
       'geolocation': geolocationStyle,
-      'offline': offlineStyle
+      'offline': offlineStyle,
+      'kml': kmlStyle,
+      'transparentCircle': transparentCircle
     };
 
     this.$get = function() {
       return {
+        // Rules for the z-index (useful for a correct selection):
+        // Sketch features (when modifying): 60
+        // Features selected: 50
+        // Point with Text: 40
+        // Point with Icon: 30
+        // Line: 20
+        // Polygon: 10
+        ZPOLYGON: 10,
+        ZLINE: 20,
+        ZICON: 30,
+        ZTEXT: 40,
+        ZSELECT: 50,
+        ZSKETCH: 60,
+        FONT: DEFAULT_FONT,
+
         getStyle: function(type) {
           return styles[type];
         },
@@ -93,7 +145,16 @@
           return function(feature, resolution) {
             return styles[feature.get('styleId')];
           };
+        },
+        // Defines a text stroke (white or black) depending on a text color
+        getTextStroke: function(olColor) {
+          var stroke = new ol.style.Stroke({
+            color: (olColor[1] >= 160) ? [0, 0, 0, 1] : [255, 255, 255, 1],
+            width: 3
+          });
+          return stroke;
         }
+
       };
     };
   });

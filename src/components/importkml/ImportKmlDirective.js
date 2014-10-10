@@ -214,7 +214,7 @@
               form.submit();
             });
 
-            // Use a local KML file features only available on browser
+            // Use a local KML file only available on browser
             // more recent than ie9
             if (!gaBrowserSniffer.msie || gaBrowserSniffer.msie > 9) {
 
