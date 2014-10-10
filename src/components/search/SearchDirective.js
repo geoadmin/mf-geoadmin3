@@ -140,7 +140,7 @@
               } else {
                 $timeout(function() {
                   cb(selectedFeatures[key]);
-                }, 0);
+                });
               }
             };
 
@@ -199,7 +199,7 @@
                   gaDebounce.debounce(function() {
                 var zoom = map.getView().getZoom();
                 gaMarkerOverlay.setVisibility(zoom);
-              }, 200, false));
+              }, 200, false, false));
             };
 
             var unregisterMove = function() {
@@ -584,7 +584,7 @@
                 // the display of the footer
                 $timeout(function() {
                   scope.hasLayerResults = (suggestions.length !== 0);
-                }, 0);
+                });
               }
               renderSuggestions.apply(context, [dataset, suggestions]);
 
@@ -641,9 +641,7 @@
             viewDropDown.on('gaSuggestionsRendered', function(evt) {
               var el;
               if (viewDropDown.isVisible()) {
-                $timeout(function() {
-                  setListCount();
-                }, 0);
+                $timeout(setListCount);
                 el = element.find('.tt-dataset-' + evt.data.name);
                 el.attr('ng-class', 'nbOfSuggestionsLists');
                 $compile(el)(scope);
@@ -730,7 +728,7 @@
                         unregWatch();
                       }
                     });
-                  }, 0);
+                  });
                   unregisterLayers();
                 });
                unregister();
