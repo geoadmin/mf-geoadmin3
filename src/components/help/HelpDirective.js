@@ -45,20 +45,14 @@
             var popup;
             var results = [];
             var shown = false;
-            scope.hovered = true;
             scope.options = scope.optionsFunc();
             if (scope.options && scope.options.showOnHover) {
-              scope.hovered = false;
               $(element).parent()
                   .on('mouseover', function(evt) {
-                    scope.$apply(function() {
-                      scope.hovered = true;
-                    });
+                    element.css('visibility', 'visible');
                   })
                   .on('mouseout', function(evt) {
-                    scope.$apply(function() {
-                      scope.hovered = false;
-                    });
+                    element.css('visibility', 'hidden');
                   });
             }
 
