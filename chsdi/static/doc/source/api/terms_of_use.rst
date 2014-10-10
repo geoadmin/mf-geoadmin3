@@ -3,7 +3,7 @@
 .. raw:: html
 
   <head>
-    <link href="custom.css" rel="stylesheet" type="text/css" />
+    <link href="../_static/custom.css" rel="stylesheet" type="text/css" />
   </head>
         
 

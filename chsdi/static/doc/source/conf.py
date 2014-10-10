@@ -95,6 +95,9 @@ pygments_style = 'sphinx'
 # A list of ignored prefixes for module index sorting.
 #modindex_common_prefix = []
 
+# The path to the JavaScript file to include in the HTML files in order to 
+# load MathJax. By default insecure http protocol is used. 
+mathjax_path = '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'
 
 # -- Options for HTML output ---------------------------------------------------
 
