@@ -100,6 +100,9 @@
           gaOffline.showExtent(scope.map);
           gaOffline.displayData(scope.map);
         };
+        scope.$watch(gaOffline.isExtentActive, function(val) {
+          scope.isExtentActive = val;
+        });
       }
     };
   });
