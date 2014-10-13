@@ -1142,6 +1142,15 @@ msgstr "Mikrozonierungen"
 msgid "ch.bafu.gefahren-spektral"
 msgstr "Spektrale Mikrozonierung"
 
+msgid "ch.bafu.gewaesserschutzbereiche"
+msgstr "Gewässerschutzbereiche"
+
+msgid "ch.bafu.grundwasserschutzareale"
+msgstr "Schutzareale"
+
+msgid "ch.bafu.grundwasserschutzzonen"
+msgstr "Schutzzonen"
+
 msgid "ch.bafu.holznutzung"
 msgstr "Explotaziun dal guaud e mortalitad (IFN)"
 

@@ -68,6 +68,15 @@ msgstr ""
 msgid "ch.bafu.bundesinventare-amphibien_anhoerung"
 msgstr ""
 
+msgid "ch.bafu.grundwasserschutzareale"
+msgstr ""
+
+msgid "ch.bafu.gewaesserschutzbereiche"
+msgstr ""
+
+msgid "ch.bafu.grundwasserschutzzonen"
+msgstr ""
+
 msgid "obj_nr"
 msgstr ""
 

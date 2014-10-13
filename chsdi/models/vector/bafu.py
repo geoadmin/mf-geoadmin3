@@ -65,6 +65,64 @@ class Temperaturmessnetz(Base, Vector):
 register('ch.bafu.hydrologie-wassertemperaturmessstationen', Temperaturmessnetz)
 
 
+class Grundwasserschutzareale (Base, Vector):
+    __tablename__ = 'grundwasserschutzareale'
+    __table_args__ = ({'schema': 'wasser', 'autoload': False})
+    __bodId__ = 'ch.bafu.grundwasserschutzareale'
+    __template__ = 'templates/htmlpopup/wasser_grundwasser.mako'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    kanton = Column('kanton', Text)
+    name = Column('name', Text)
+    typ_de = Column('typ_de', Text)
+    typ_fr = Column('typ_fr', Text)
+    typ_it = Column('typ_it', Text)
+    typ_en = Column('typ_en', Text)
+    status_de = Column('status_de', Text)
+    status_fr = Column('status_fr', Text)
+    status_it = Column('status_it', Text)
+    status_en = Column('status_en', Text)
+    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+
+register('ch.bafu.grundwasserschutzareale', Grundwasserschutzareale)
+
+
+class Grundwasserschutzzonen (Base, Vector):
+    __tablename__ = 'grundwasserschutzzonen'
+    __table_args__ = ({'schema': 'wasser', 'autoload': False})
+    __bodId__ = 'ch.bafu.grundwasserschutzzonen'
+    __template__ = 'templates/htmlpopup/wasser_grundwasser.mako'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    kanton = Column('kanton', Text)
+    name = Column('name', Text)
+    typ_de = Column('typ_de', Text)
+    typ_fr = Column('typ_fr', Text)
+    typ_it = Column('typ_it', Text)
+    typ_en = Column('typ_en', Text)
+    status_de = Column('status_de', Text)
+    status_fr = Column('status_fr', Text)
+    status_it = Column('status_it', Text)
+    status_en = Column('status_en', Text)
+    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+
+register('ch.bafu.grundwasserschutzzonen', Grundwasserschutzzonen)
+
+
+class Gewaesserschutzbereiche (Base, Vector):
+    __tablename__ = 'gewaesserschutzbereiche'
+    __table_args__ = ({'schema': 'wasser', 'autoload': False})
+    __bodId__ = 'ch.bafu.gewaesserschutzbereiche'
+    __template__ = 'templates/htmlpopup/wasser_schutzbereiche.mako'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    kanton = Column('kanton', Text)
+    typ_de = Column('typ_de', Text)
+    typ_fr = Column('typ_fr', Text)
+    typ_it = Column('typ_it', Text)
+    typ_en = Column('typ_en', Text)
+    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+
+register('ch.bafu.gewaesserschutzbereiche', Gewaesserschutzbereiche)
+
+
 class Vorfluter (Base, Vector):
     __tablename__ = 'vorfluter'
     __table_args__ = ({'schema': 'wasser', 'autoload': False})
