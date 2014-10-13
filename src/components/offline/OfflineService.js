@@ -41,11 +41,14 @@
     var isCacheableLayer = function(layer, z) {
       if (layer.getSource() instanceof ol.source.TileImage) {
         var resolutions = layer.getSource().getTileGrid().getResolutions();
+        var max = layer.getMaxResolution() || resolutions[0];
+        if (!z && max > minRes) {
+          return true;
+        }
         var min = layer.getMinResolution() ||
             resolutions[resolutions.length - 1];
-        var max = layer.getMaxResolution() || resolutions[0];
-        var res = z ? resolutions[z] : minRes;
-        if ((!max || max > res) && (!min || res >= min)) {
+        var curr = resolutions[z];
+        if (curr && max > curr && curr >= min) {
           return true;
         }
       }
