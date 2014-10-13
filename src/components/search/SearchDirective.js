@@ -232,8 +232,10 @@
               }
             };
 
-            scope.removeOverlay = function() {
-              if (gaBrowserSniffer.mobile) {
+            scope.removeOverlay = function(e) {
+              if (gaBrowserSniffer.mobile ||
+                // fix #1737: prevent unexpected call of mouseout evt.
+                e.target != e.relatedTarget) {
                 return;
               }
               gaMarkerOverlay.remove(map);
@@ -249,7 +251,7 @@
               var template = '<div class="tt-search" ' +
                   'ng-mouseover="addOverlay([' +
                   extent + ']' + ',[' + center + '],' + '\'' +
-                  origin + '\')" ' + 'ng-mouseout="removeOverlay()">' +
+                  origin + '\')" ' + 'ng-mouseout="removeOverlay($event)">' +
                   label + '</div>';
               return template;
             };
@@ -264,7 +266,7 @@
               var template = '<div class="tt-search" ' +
                   'ng-mouseover="addOverlay([' +
                   extent + ']' + ',[' + center + '],' + '\'' +
-                  origin + '\')" ' + 'ng-mouseout="removeOverlay()">' +
+                  origin + '\')" ' + 'ng-mouseout="removeOverlay($event)">' +
                   label + '</div>';
               return template;
             };
@@ -738,9 +740,7 @@
             if (!gaBrowserSniffer.mobile ||
                 (angular.isDefined(searchParam) &&
                 searchParam.length > 0)) {
-              $timeout(function() {
-                taElt.focus();
-              });
+              taElt.focus();
             }
           }
         };
