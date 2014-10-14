@@ -83,15 +83,31 @@
         };
 
         // Strings management
-        this.getItem = function(key) {
-          return $window.localStorage.getItem(key);
-        };
-        this.setItem = function(key, data) {
-          $window.localStorage.setItem(key, data);
-        };
-        this.removeItem = function(key) {
-          $window.localStorage.removeItem(key);
-        };
+        // LocalStorage creates a bug on IE >= 10 when security settings
+        // are tight and don't permit writing on specific files. We put
+        // it in try/catch to determine it here
+        // See: http://stackoverflow.com/questions/13102116/access-denied
+        var localStorageSupport = false;
+        try {
+          $window.localStorage.getItem('testkey');
+          localStorageSupport = true;
+        } catch (e) {}
+
+        if (localStorageSupport) {
+          this.getItem = function(key) {
+            return $window.localStorage.getItem(key);
+          };
+          this.setItem = function(key, data) {
+            return $window.localStorage.setItem(key, data);
+          };
+          this.removeItem = function(key) {
+            return $window.localStorage.removeItem(key);
+          };
+        } else {
+          this.getItem = function() {};
+          this.setItem = function() {};
+          this.removeTiem = function() {};
+        }
 
         // Tiles management
         // TODO: localforage can use promise but it doesn't seem to work for
