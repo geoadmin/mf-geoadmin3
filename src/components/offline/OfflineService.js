@@ -69,7 +69,6 @@
     };
 
     var extent;
-    var extentOnMap = false;
     var isDownloading;
     var isStorageFull;
     var nbTilesCached;
@@ -268,6 +267,10 @@
 
 
         // Extent saved stuff
+        var isExtentActive = false;
+        this.isExtentActive = function() {
+          return isExtentActive;
+        };
         this.showExtent = function(map) {
           var extent = gaStorage.getItem(extentKey);
           if (extent) {
@@ -279,15 +282,15 @@
               [extent[2], extent[1]]
               ]]);
             featureOverlay.setMap(map);
-            extentOnMap = true;
+            isExtentActive = true;
           }
         };
         this.hideExtent = function() {
           featureOverlay.setMap(null);
-          extentOnMap = false;
+          isExtentActive = false;
         };
         this.toggleExtent = function(map) {
-          if (extentOnMap) {
+          if (isExtentActive) {
             this.hideExtent();
           } else {
             this.showExtent(map);
@@ -367,7 +370,7 @@
           initDownloadStatus();
           gaStorage.removeItem(extentKey);
 
-          if (extentOnMap) {
+          if (isExtentActive) {
             this.hideExtent(map);
           }
 

@@ -7,23 +7,24 @@
           <h4 class="modal-title" translate>offline_modal_title</h4>
         </div>
         <div class="modal-body">
+          <span ng-show="hasOfflineData">
+            <button class="btn btn-danger" 
+                    ng-click="zoom()" 
+                    translate>offline_zoom_extent</button>
+            <button class="btn btn-default" 
+                    ng-click="toggleDataExtent()">
+              {{(isExtentActive ? 'offline_hide_extent' : 'offline_show_extent') | translate}}
+            </button>
+          </span>
           <span ng-show="!offline">
             <button class="btn btn-default" 
                     ng-show="!hasOfflineData"
                     ng-click="openSelector()" 
                     translate>offline_save_new_data</button>
-            <button class="btn btn-danger"
+            <button class="btn btn-default"
                     ng-show="hasOfflineData"
                     ng-click="abort()" 
                     translate>offline_delete_data</button>
-          </span>
-          <span ng-show="hasOfflineData">
-            <button class="btn btn-default" 
-                    ng-click="toggleDataExtent()" 
-                    translate>offline_toggle_extent</button>
-            <button class="btn btn-default" 
-                    ng-click="zoom()" 
-                    translate>offline_zoom_extent</button>
           </span>
         </div>
       </div>
