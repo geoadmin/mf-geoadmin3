@@ -262,6 +262,13 @@
   "offline_less_than_95": "",
   "offline_no_cacheable_layers": "",
   "offline_clear_db_error": "",
-  "appcache_update_available": ""
+  "appcache_update_available": "",
+  "airnavigationobstacles_help_link_href": "",
+  "airnavigationobstacles_service_link_label": "",
+  "airnavigationobstacles_service_link_href": "",
+  "airnavigationobstacles_download_link_label": "",
+  "airnavigationobstacles_download_link_href": "",
+  "topic_airnavigationobstacles_tooltip": "",
+  "airnavigationobstacles": ""
 
 }
