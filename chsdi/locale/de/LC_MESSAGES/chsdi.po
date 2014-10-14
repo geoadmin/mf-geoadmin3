@@ -2265,7 +2265,7 @@ msgid "einwohner_ha"
 msgstr "Einwohner pro ha"
 
 msgid "einwohnerzahl"
-msgstr "Einwohnerzahl"
+msgstr "Einwohner"
 
 msgid "einwohnerzahl_b"
 msgstr "Einwohnerzahl (Bandbreite, nur für Siedl.)"
@@ -2275,6 +2275,33 @@ msgstr "Einwohnerzahl (nur für Siedl.)"
 
 msgid "energiebedarf_motoren"
 msgstr "Energiebedarf Motoren"
+
+msgid "energiestadt_areal_kwa1"
+msgstr "In Planung"
+
+msgid "energiestadt_areal_kwa2"
+msgstr "In Betrieb"
+
+msgid "energiestadt_auf_dem_weg_kew1"
+msgstr "2000-Watt Konzept Phase 1"
+
+msgid "energiestadt_auf_dem_weg_kew2"
+msgstr "2000-Watt Konzept Phase 2"
+
+msgid "energiestadt_auf_dem_weg_kew3"
+msgstr "2000-Watt Pionier"
+
+msgid "energiestadt_auf_dem_weg_kew4"
+msgstr "2000-Watt Label"
+
+msgid "energiestadt_region_ker1"
+msgstr "Energie-Region Phase 1"
+
+msgid "energiestadt_region_ker2"
+msgstr "Energie-Region Phase 2"
+
+msgid "energiestadt_region_ker3"
+msgstr "Energie-Region Label"
 
 msgid "energiestadtseit"
 msgstr "Energiestadt seit"
