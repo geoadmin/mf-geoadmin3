@@ -11,7 +11,8 @@
   ]);
 
   module.controller('GaOfflineDirectiveController',
-    function($scope, $translate, gaBrowserSniffer, gaOffline, gaNetworkStatus) {
+    function($scope, $timeout, $translate, gaBrowserSniffer, gaOffline,
+        gaNetworkStatus) {
       $scope.isIE9 = (gaBrowserSniffer.msie == 9);
 
       // Initialize scope variables
@@ -36,14 +37,20 @@
 
       // Offline data management
       $scope.save = function() {
-        gaOffline.save($scope.map);
+        // Use $timeout fixes iOS8 homescreen bug(#1744).
+        $timeout(function() {
+          gaOffline.save($scope.map);
+        }, 0, false);
       };
 
       $scope.abort = function() {
-        if (confirm($translate('offline_abort_warning'))) {
-          gaOffline.abort();
-          gaOffline.hideExtent();
-        }
+        // Use $timeout fixes iOS8 homescreen bug(#1744).
+        $timeout(function() {
+          if (confirm($translate('offline_abort_warning'))) {
+            gaOffline.abort();
+            gaOffline.hideExtent();
+          }
+        }, 0, false);
       };
 
       $scope.toggleDataExtent = function() {
