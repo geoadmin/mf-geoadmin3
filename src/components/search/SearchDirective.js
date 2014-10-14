@@ -312,7 +312,7 @@
                 timeout: 20,
                 valueKey: 'inputVal',
                 limit: 30,
-                minLength: scope.options.minLength,
+                minLength: scope.options.locationsMinLength,
                 template: function(context) {
                   return getLocationTemplate(context);
                 },
@@ -371,7 +371,7 @@
                 timeout: 20,
                 valueKey: 'inputVal',
                 limit: 30,
-                minLength: scope.options.minLength,
+                minLength: scope.options.featuresMinLength,
                 template: function(context) {
                   return getFeatureTemplate(context);
                 },
@@ -427,7 +427,7 @@
                 timeout: 20,
                 valueKey: 'inputVal',
                 limit: 20,
-                minLength: scope.options.minLength,
+                minLength: scope.options.layersMinLength,
                 template: function(context) {
                   var template = '<div ng-show="hasLayerResults" ' +
                       'class="tt-search"' +
