@@ -8,9 +8,9 @@ ProxyPassMatch ${apache_entry_path}/print/(info|create)\.json$ ajp://localhost:8
 ProxyPassReverse ${apache_entry_path}/print/ ajp://localhost:8009/print-chsdi3-${vars:apache_base_path}/pdf/
 
 # Get resulting files directly from filesystem
-AliasMatch ^${apache_entry_path}/print/([0-9]+\.pdf\.printout)$ ${print_temp_dir}/mapfish-print$1
+AliasMatch ^${apache_entry_path}/print(proxy)?/([0-9]+\.pdf\.printout)$ ${print_temp_dir}/mapfish-print$2
 
-<LocationMatch ^${apache_entry_path}/print/([0-9]+\.pdf\.printout)$ >
+<LocationMatch ^${apache_entry_path}/print(proxy)?/([0-9]+\.pdf\.printout)$ >
   Header set Content-Disposition "attachment; filename=map.geo.admin.ch.pdf"
   # Try to force IE to open the PDF in a new window
   # overriding what set by the print server

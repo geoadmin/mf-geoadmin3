@@ -202,6 +202,25 @@ layouts:
               align: left
               text: |
                 Responsabilità: Nonostante si presti grande attenzione all’esattezza delle informazioni pubblicate su questo sito, le autorità federali declinano ogni responsabilità per la fedeltà, l’esattezza, l’attualità, l’affidabilità e la completezza di tali informazioni. Diritti d’autore: autorità della Confederazione Svizzera, anno 2007. http://www.disclaimer.admin.ch/basi_legali.html
+#---------------------------------------
+# G part: Timestamp
+#---------------------------------------
+        - !columns
+          absoluteY: 560
+          absoluteX: 20 
+          width: 160
+          height: 30
+          config:
+            borderWidth: 0.0
+          items:
+            - !text
+              condition: timestamp
+              fontSize: 36 
+              fontColor: red
+              align: center
+              text: |
+                ${timestamp}
+
 
 #-------------------------------------
 # Scalesbar
@@ -471,6 +490,25 @@ layouts:
               align: left
               text: |
                 Responsabilità: Nonostante si presti grande attenzione allâesattezza delle informazioni pubblicate su questo sito, le autorità federali declinano ogni responsabilità per la fedeltà, lâesattezza, lâattualità, lâaffidabilità e la completezza di tali informazioni. Diritti dâautore: autorità della Confederazione Svizzera, anno 2007. http://www.disclaimer.admin.ch/basi_legali.html
+
+#---------------------------------------
+# I part: Timestamp
+#---------------------------------------
+        - !columns
+          absoluteY: 820
+          absoluteX: 20 
+          width: 100
+          config:
+            borderWidth: 0.0
+          items:
+            - !text
+              condition: timestamp
+              fontSize: 36 
+              fontColor: red
+              align: center
+              vertAlign: middle
+              text: |
+                ${timestamp}
 
 #-------------------------------------
 # Scalesbar
