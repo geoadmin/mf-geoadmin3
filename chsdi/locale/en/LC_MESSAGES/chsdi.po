@@ -1142,6 +1142,15 @@ msgstr "Micro-zoning"
 msgid "ch.bafu.gefahren-spektral"
 msgstr "Spectral micro-zoning"
 
+msgid "ch.bafu.gewaesserschutzbereiche"
+msgstr "Water protection regions"
+
+msgid "ch.bafu.grundwasserschutzareale"
+msgstr "Protection areas"
+
+msgid "ch.bafu.grundwasserschutzzonen"
+msgstr "Protection zones"
+
 msgid "ch.bafu.holznutzung"
 msgstr "Wood harvesting and mortality (NFI)"
 

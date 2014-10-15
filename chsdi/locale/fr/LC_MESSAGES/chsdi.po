@@ -1142,6 +1142,15 @@ msgstr "Microzonages sismiques"
 msgid "ch.bafu.gefahren-spektral"
 msgstr "Microzonage spectral"
 
+msgid "ch.bafu.gewaesserschutzbereiche"
+msgstr "Secteurs de protection des eaux"
+
+msgid "ch.bafu.grundwasserschutzareale"
+msgstr "Périmètres de protection"
+
+msgid "ch.bafu.grundwasserschutzzonen"
+msgstr "Zones de protection"
+
 msgid "ch.bafu.holznutzung"
 msgstr "Exploitations de bois (IFN)"
 
