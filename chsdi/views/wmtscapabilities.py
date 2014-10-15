@@ -37,11 +37,11 @@ class WMTSCapabilites(MapNameValidation):
         host = self.request.headers.get(
             'X-Forwarded-Host', self.request.host)
         request_uri = self.request.environ.get("REQUEST_URI", "")
-        apache_base_path = self.request.registry.settings['entry_path']
-        apache_entry_point = '/' if apache_base_path == 'main' else apache_base_path
+        apache_base_path = self.request.registry.settings['apache_base_path']
+        apache_entry_point = '/' if apache_base_path == 'main' else '/' + apache_base_path
 
         onlineressource = "%s://%s%s/" % (scheme, host, apache_entry_point) if self.tileMatrixSet != '21781'\
-            else "%s://wmts.geo.admin.ch" % scheme
+            else "%s://wmts.geo.admin.ch/" % scheme
 
         layers_query = self.request.db.query(self.models['GetCap'])
         layers_query = filter_by_geodata_staging(
