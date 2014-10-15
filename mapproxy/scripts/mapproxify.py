@@ -120,8 +120,14 @@ for layersConfig in getLayersConfigs():
     
                 # layer config: cache_out
                 layer = {'name': layer_name, 'title': title, 'dimensions': dimensions, 'sources': [cache_name]}
-    
+
+
                 cache = {"sources": [wmts_cache_name], "format": "image/%s" % image_format, "grids": grid_names, "disable_storage": True, "meta_size": [1, 1], "meta_buffer": 0}
+
+                if '.swissimage' in wmts_cache_name:
+                    cache["image"] = {"resampling_method": "bilinear"}
+                elif '.swisstlm3d-karte' in wmts_cache_name:
+                    cache["image"] = {"resampling_method": "nearest"}
     
                 mapproxy_config['layers'].append(layer)
                 mapproxy_config['caches'][cache_name] = cache
@@ -147,6 +153,10 @@ for layersConfig in getLayersConfigs():
                                "coverage": {"bbox": [420000, 30000, 900000, 350000], "bbox_srs": "EPSG:21781"}}
     
                 wmts_cache = {"sources": [wmts_source_name], "format": "image/%s" % image_format, "grids": ["swisstopo-pixelkarte"], "disable_storage": True}
+
+                if '.swissimage' in wmts_cache_name:
+                    wmts_source["grid"] = "swisstopo-swissimage"
+                    wmts_cache["grids"] = ["swisstopo-swissimage"]
     
                 wmts_layer = {'name': wmts_source_name, 'title': title, 'dimensions': dimensions, 'sources': [wmts_cache_name]}
                 wmts_layer_current = {'name': wmts_source_name, 'title': title, 'dimensions': dimensions, 'sources': [wmts_cache_name]}

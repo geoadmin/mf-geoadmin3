@@ -8896,96 +8896,104 @@ caches:
   ch.swisstopo.swissimage_20110228_cache:
     disable_storage: true
     format: image/jpeg
-    grids: [swisstopo-pixelkarte]
+    grids: [swisstopo-swissimage]
     sources: [ch.swisstopo.swissimage_20110228_source]
   ch.swisstopo.swissimage_20110228_cache_out:
     disable_storage: true
     format: image/jpeg
     grids: &id086 [epsg_4258, epsg_4326, epsg_2056, epsg_3857]
+    image: {resampling_method: bilinear}
     meta_buffer: 0
     meta_size: [1, 1]
     sources: [ch.swisstopo.swissimage_20110228_cache]
   ch.swisstopo.swissimage_20110914_cache:
     disable_storage: true
     format: image/jpeg
-    grids: [swisstopo-pixelkarte]
+    grids: [swisstopo-swissimage]
     sources: [ch.swisstopo.swissimage_20110914_source]
   ch.swisstopo.swissimage_20110914_cache_out:
     disable_storage: true
     format: image/jpeg
     grids: *id086
+    image: {resampling_method: bilinear}
     meta_buffer: 0
     meta_size: [1, 1]
     sources: [ch.swisstopo.swissimage_20110914_cache]
   ch.swisstopo.swissimage_20120225_cache:
     disable_storage: true
     format: image/jpeg
-    grids: [swisstopo-pixelkarte]
+    grids: [swisstopo-swissimage]
     sources: [ch.swisstopo.swissimage_20120225_source]
   ch.swisstopo.swissimage_20120225_cache_out:
     disable_storage: true
     format: image/jpeg
     grids: *id086
+    image: {resampling_method: bilinear}
     meta_buffer: 0
     meta_size: [1, 1]
     sources: [ch.swisstopo.swissimage_20120225_cache]
   ch.swisstopo.swissimage_20120809_cache:
     disable_storage: true
     format: image/jpeg
-    grids: [swisstopo-pixelkarte]
+    grids: [swisstopo-swissimage]
     sources: [ch.swisstopo.swissimage_20120809_source]
   ch.swisstopo.swissimage_20120809_cache_out:
     disable_storage: true
     format: image/jpeg
     grids: *id086
+    image: {resampling_method: bilinear}
     meta_buffer: 0
     meta_size: [1, 1]
     sources: [ch.swisstopo.swissimage_20120809_cache]
   ch.swisstopo.swissimage_20130422_cache:
     disable_storage: true
     format: image/jpeg
-    grids: [swisstopo-pixelkarte]
+    grids: [swisstopo-swissimage]
     sources: [ch.swisstopo.swissimage_20130422_source]
   ch.swisstopo.swissimage_20130422_cache_out:
     disable_storage: true
     format: image/jpeg
     grids: *id086
+    image: {resampling_method: bilinear}
     meta_buffer: 0
     meta_size: [1, 1]
     sources: [ch.swisstopo.swissimage_20130422_cache]
   ch.swisstopo.swissimage_20130916_cache:
     disable_storage: true
     format: image/jpeg
-    grids: [swisstopo-pixelkarte]
+    grids: [swisstopo-swissimage]
     sources: [ch.swisstopo.swissimage_20130916_source]
   ch.swisstopo.swissimage_20130916_cache_out:
     disable_storage: true
     format: image/jpeg
     grids: *id086
+    image: {resampling_method: bilinear}
     meta_buffer: 0
     meta_size: [1, 1]
     sources: [ch.swisstopo.swissimage_20130916_cache]
   ch.swisstopo.swissimage_20131107_cache:
     disable_storage: true
     format: image/jpeg
-    grids: [swisstopo-pixelkarte]
+    grids: [swisstopo-swissimage]
     sources: [ch.swisstopo.swissimage_20131107_source]
   ch.swisstopo.swissimage_20131107_cache_out:
     disable_storage: true
     format: image/jpeg
     grids: *id086
+    image: {resampling_method: bilinear}
     meta_buffer: 0
     meta_size: [1, 1]
     sources: [ch.swisstopo.swissimage_20131107_cache]
   ch.swisstopo.swissimage_20140620_cache:
     disable_storage: true
     format: image/jpeg
-    grids: [swisstopo-pixelkarte]
+    grids: [swisstopo-swissimage]
     sources: [ch.swisstopo.swissimage_20140620_source]
   ch.swisstopo.swissimage_20140620_cache_out:
     disable_storage: true
     format: image/jpeg
     grids: *id086
+    image: {resampling_method: bilinear}
     meta_buffer: 0
     meta_size: [1, 1]
     sources: [ch.swisstopo.swissimage_20140620_cache]
@@ -8998,6 +9006,7 @@ caches:
     disable_storage: true
     format: image/png
     grids: [epsg_4258, epsg_4326, epsg_2056, epsg_3857]
+    image: {resampling_method: nearest}
     meta_buffer: 0
     meta_size: [1, 1]
     sources: [ch.swisstopo.swisstlm3d-karte-farbe_20140401_cache]
@@ -9010,6 +9019,7 @@ caches:
     disable_storage: true
     format: image/png
     grids: [epsg_4258, epsg_4326, epsg_2056, epsg_3857]
+    image: {resampling_method: nearest}
     meta_buffer: 0
     meta_size: [1, 1]
     sources: [ch.swisstopo.swisstlm3d-karte-grau_20140401_cache]
@@ -9553,6 +9563,16 @@ caches:
     meta_buffer: 0
     meta_size: [1, 1]
     sources: [ch.vbs.territorialregionen_20110501_cache]
+  osm_cache:
+    concurrent_tile_creators: 4
+    disable_storage: true
+    grids: [global_mercator_osm]
+    sources: [osm_tms]
+    watermark:
+      color: [0, 0, 0]
+      font_size: 14
+      opacity: 100
+      text: '@ OpenStreetMap contributors'
 globals:
   cache: {concurrent_tile_creators: 32}
   image:
@@ -9608,6 +9628,9 @@ grids:
     srs: EPSG:21781
     stretch_factor: 1.0
 layers:
+- name: osm
+  sources: [osm_cache]
+  title: OpenStreetMap
 - dimensions: &id099
     Time:
       default: '20140101'
@@ -28178,7 +28201,7 @@ sources:
     coverage:
       bbox: [420000, 30000, 900000, 350000]
       bbox_srs: EPSG:21781
-    grid: swisstopo-pixelkarte
+    grid: swisstopo-swissimage
     http:
       headers: {Referer: 'http://mapproxy.geo.admin.ch'}
     on_error:
@@ -28190,7 +28213,7 @@ sources:
     coverage:
       bbox: [420000, 30000, 900000, 350000]
       bbox_srs: EPSG:21781
-    grid: swisstopo-pixelkarte
+    grid: swisstopo-swissimage
     http:
       headers: {Referer: 'http://mapproxy.geo.admin.ch'}
     on_error:
@@ -28202,7 +28225,7 @@ sources:
     coverage:
       bbox: [420000, 30000, 900000, 350000]
       bbox_srs: EPSG:21781
-    grid: swisstopo-pixelkarte
+    grid: swisstopo-swissimage
     http:
       headers: {Referer: 'http://mapproxy.geo.admin.ch'}
     on_error:
@@ -28214,7 +28237,7 @@ sources:
     coverage:
       bbox: [420000, 30000, 900000, 350000]
       bbox_srs: EPSG:21781
-    grid: swisstopo-pixelkarte
+    grid: swisstopo-swissimage
     http:
       headers: {Referer: 'http://mapproxy.geo.admin.ch'}
     on_error:
@@ -28226,7 +28249,7 @@ sources:
     coverage:
       bbox: [420000, 30000, 900000, 350000]
       bbox_srs: EPSG:21781
-    grid: swisstopo-pixelkarte
+    grid: swisstopo-swissimage
     http:
       headers: {Referer: 'http://mapproxy.geo.admin.ch'}
     on_error:
@@ -28238,7 +28261,7 @@ sources:
     coverage:
       bbox: [420000, 30000, 900000, 350000]
       bbox_srs: EPSG:21781
-    grid: swisstopo-pixelkarte
+    grid: swisstopo-swissimage
     http:
       headers: {Referer: 'http://mapproxy.geo.admin.ch'}
     on_error:
@@ -28250,7 +28273,7 @@ sources:
     coverage:
       bbox: [420000, 30000, 900000, 350000]
       bbox_srs: EPSG:21781
-    grid: swisstopo-pixelkarte
+    grid: swisstopo-swissimage
     http:
       headers: {Referer: 'http://mapproxy.geo.admin.ch'}
     on_error:
@@ -28262,7 +28285,7 @@ sources:
     coverage:
       bbox: [420000, 30000, 900000, 350000]
       bbox_srs: EPSG:21781
-    grid: swisstopo-pixelkarte
+    grid: swisstopo-swissimage
     http:
       headers: {Referer: 'http://mapproxy.geo.admin.ch'}
     on_error:
@@ -28834,3 +28857,10 @@ sources:
     transparent: true
     type: tile
     url: http://wmts6.geo.admin.ch/1.0.0/ch.vbs.territorialregionen/default/20110501/21781/%(z)d/%(y)d/%(x)d.%(format)s
+  osm_tms:
+    coverage:
+      bbox: [420000, 30000, 900000, 350000]
+      bbox_srs: EPSG:21781
+    grid: global_mercator_osm
+    type: tile
+    url: http://c.tile.openstreetmap.org/%(tms_path)s.png
