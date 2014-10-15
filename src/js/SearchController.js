@@ -18,9 +18,9 @@
           applyTopicToUrl: function (url, topic) {
             return url.replace(topicPlaceHolder, topic);
           },
-          featuresMinLength: 1,
-          locationsMinLength: 2,
-          layersMinLength: 2,
+          featuresMinLength: (gaBrowserSniffer.mobile) ? 2 : 1,
+          locationsMinLength: (gaBrowserSniffer.mobile) ? 2 : 1,
+          layersMinLength: (gaBrowserSniffer.mobile) ? 2 : 1,
           rateLimitWait: (gaBrowserSniffer.mobile) ? 500 : 300,
           renderWait: (gaBrowserSniffer.mobile) ? 500 : 0
         };
