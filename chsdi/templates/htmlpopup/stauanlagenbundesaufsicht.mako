@@ -21,6 +21,19 @@
         lang = lang if lang != 'it' else 'fr'
         damtype = 'damtype_%s' % lang
     %>
+    <script>
+        $(document).ready(function(){
+            $('.thumbnail-container').on('click', function (event) {
+              event = event || window.event;
+                event.preventDefault();
+              var target = event.target || event.srcElement,
+                link = target.src ? target.parentNode : target,
+                options = {index: link, event: event},
+                links = this.getElementsByTagName('a');
+              blueimp.Gallery(links, options);
+            });
+        });
+    </script>
     <h1>${_('tt_ch.bfe.stauanlagen-bundesaufsicht_stauanlage')} ${c['attributes']['facilityname']}</h1>
     <table class="table-with-border kernkraftwerke-extended">
         <tr>
@@ -82,4 +95,11 @@
             <td>${c['attributes'][damtype]}</td>
         </tr>
     </table>
+    <div class="thumbnail-container">
+        <div class="thumbnail">
+            <a href="//dav0.bgdi.admin.ch/bfe_pub/images_stauanlagen/${c['attributes']['facility_stabil_id']}.jpg">
+            <img class="image" src="//dav0.bgdi.admin.ch/bfe_pub/images_stauanlagen/${c['attributes']['facility_stabil_id']}.jpg" />
+            </a>
+        </div>
+    </div>
 </%def>
