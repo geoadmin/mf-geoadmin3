@@ -171,6 +171,7 @@ class GetCap(object):
     zoomlevel_max = Column('zoomlevel_max', Integer)
     maps = Column('topics', Text)  # the topics
     chargeable = Column('chargeable', Boolean)
+    idGeoCat = Column('idgeocat', Text)
 
 
 class GetCapFr(Base, GetCap):
