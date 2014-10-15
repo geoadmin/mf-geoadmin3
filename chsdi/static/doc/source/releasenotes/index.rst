@@ -9,6 +9,45 @@
 Release Notes
 =============
 
+.. _releasenotes_20141015:
+
+Release 20141015 - Wednesday, October 15th 2014
+-----------------------------------------------
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+
+- Improve documentation
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_141001...r_141015>`__
+
+`MAP <//map.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+
+- Save drawings as KML file
+- Improved menu navigation on mobile devices
+- Use correct UTM definition for mouse coordinates
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_141001...r_141015>`__
+
+Geodata
+*******
+
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Udpate    | `Energy cities <//map.geo.admin.ch/?layers=ch.bfe.energiestaedte>`__ (ch.bfe.energiestaedte)                                                                                                      |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `2000-Watt Sites <//map.geo.admin.ch/?layers=ch.bfe.energiestaedte-2000watt-areale>`__ (ch.bfe.energiestaedte-2000watt-areale)                                                                    |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Energy Cities on the Path 2000-Watt <//map.geo.admin.ch/?layers=ch.bfe.energiestaedte-2000watt-aufdemweg>`__ (ch.bfe.energiestaedte-2000watt-aufdemweg)                                          |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Energy-Regions <//map.geo.admin.ch/?layers=ch.bfe.energiestaedte-energieregionen>`__ (ch.bfe.energiestaedte-energieregionen)                                                                     |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+ 
+| Update    | `Agnes <//map.geo.admin.ch/?layers=ch.swisstopo.fixpunkte-agnes>`__ (ch.swisstopo.fixpunkte-agnes)                                                                                                |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
 
 .. _releasenotes_20141001:
 
@@ -30,6 +69,7 @@ API & applications
 
 - Bug fixes
 - `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_140925...r_141001>`__
+
 
 .. _releasenotes_20140925:
 
