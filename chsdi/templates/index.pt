@@ -95,7 +95,7 @@
           <a href="mapproxy/demo">MapProxy demo</a><br>
           <a href="rest/services/api/1.0.0/WMTSCapabilities.xml?epsg=4326">GetCapabilities for EPSG:4326 (raw service)</a><br />
           <div style="display: block">
-          <img src="mapproxy/wmts/1.0.0/ch.swisstopo.swissimage/default/20140620/epsg_3857/10/529/360.jpeg" width="256" height="256">
+          <img src="../mapproxy/wmts/1.0.0/ch.swisstopo.pixelkarte-farbe_20120809/default/20120809/epsg_4258/9/3/2.jpeg" width="256" height="256">
           </div>
 
       <h2>CatalogService (non ESRI)</h2>
