@@ -11,6 +11,12 @@
     <span translate>feedback_revision</span>
     <a href="http://map.revision.admin.ch" target="_blank" translate>revision_service</a>
   </p>
+  <!-- Draw/kml -->
+  <div ng-if='canCreateKml()'>
+    <input type="checkbox" ng-model="options.attachKML"/>
+    <span translate>attach_drawing_kml</span>
+  </div>
+  <!-- Attachement -->
   <div ng-show="!isIE9" class="help-block">
     <span translate>feedback_attachment</span>
     <div class="input-group-sm">
@@ -28,6 +34,7 @@
       </div>
     </div>
   </div>
+  <!-- footer -->
   <div class="ga-feedback-footer">
     <button type="submit" class="pull-right btn btn-default" translate>send</button>
   </div>

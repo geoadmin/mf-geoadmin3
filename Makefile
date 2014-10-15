@@ -148,6 +148,11 @@ localforage: .build-artefacts/localforage
 	cp .build-artefacts/localforage/dist/localforage.js src/lib/localforage.js
 	cp .build-artefacts/localforage/dist/localforage.min.js src/lib/localforage.min.js
 
+.PHONY: filesaver
+filesaver: .build-artefacts/filesaver
+	cp .build-artefacts/filesaver/FileSaver.js src/lib/filesaver.js
+	cp .build-artefacts/filesaver/FileSaver.min.js src/lib/filesaver.min.js
+
 .PHONY: translate
 translate: .build-artefacts/translate-requirements-installation.timestamp
 	.build-artefacts/python-venv/bin/python scripts/translation2js.py src/locales/
@@ -167,11 +172,11 @@ prd/robots.txt: scripts/robots.mako-dot-txt .build-artefacts/last-deploy-target
 	mkdir -p $(dir $@)
 	.build-artefacts/python-venv/bin/mako-render --var "deploy_target=$(DEPLOY_TARGET)" $< > $@
 
-prd/lib/: src/lib/d3-3.3.1.min.js src/lib/angularIE9CorsFix.js src/lib/jQuery.XDomainRequest.js
+prd/lib/: src/lib/d3-3.3.1.min.js src/lib/IE9Fixes.js src/lib/jQuery.XDomainRequest.js
 	mkdir -p $@
 	cp $^ $@
 
-prd/lib/build.js: src/lib/jquery-2.0.3.min.js src/lib/bootstrap-3.0.0.min.js src/lib/typeahead-0.9.3.min.js src/lib/angular-1.2.9.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/EPSG2056.js src/lib/EPSG32631.js src/lib/EPSG32632.js src/lib/ol.js src/lib/angular-animate-1.2.9.min.js src/lib/angular-translate-1.1.1.min.js src/lib/angular-translate-loader-static-files-0.1.5.min.js src/lib/fastclick.min.js src/lib/localforage.min.js .build-artefacts/app.js
+prd/lib/build.js: src/lib/jquery-2.0.3.min.js src/lib/bootstrap-3.0.0.min.js src/lib/typeahead-0.9.3.min.js src/lib/angular-1.2.9.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/EPSG2056.js src/lib/EPSG32631.js src/lib/EPSG32632.js src/lib/ol.js src/lib/angular-animate-1.2.9.min.js src/lib/angular-translate-1.1.1.min.js src/lib/angular-translate-loader-static-files-0.1.5.min.js src/lib/fastclick.min.js src/lib/localforage.min.js src/lib/filesaver.min.js .build-artefacts/app.js
 	mkdir -p $(dir $@)
 	cat $^ | sed 's/^\/\/[#,@] sourceMappingURL=.*//' > $@
 
@@ -342,6 +347,9 @@ scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf .build-artefacts/
 
 .build-artefacts/localforage:
 	git clone https://github.com/mozilla/localForage.git $@ && cd $@ && git checkout 1.0.1
+
+.build-artefacts/filesaver:
+	git clone https://github.com/eligrey/FileSaver.js.git $@
 
 .build-artefacts/externs/angular.js:
 	mkdir -p $(dir $@)

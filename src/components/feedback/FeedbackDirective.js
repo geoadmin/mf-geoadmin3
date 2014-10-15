@@ -2,10 +2,12 @@
   goog.provide('ga_feedback_directive');
 
   goog.require('ga_browsersniffer_service');
+  goog.require('ga_export_kml_service');
   goog.require('ga_permalink');
 
   var module = angular.module('ga_feedback_directive', [
     'ga_browsersniffer_service',
+    'ga_export_kml_service',
     'ga_permalink',
     'pascalprecht.translate'
   ]);
@@ -18,13 +20,14 @@
    * "response" scope property to "success" or "error".
    */
   module.directive('gaFeedback',
-      function($http, $translate, gaPermalink, gaBrowserSniffer) {
+      function($http, $translate, gaPermalink, gaBrowserSniffer, gaExportKml) {
           return {
             restrict: 'A',
             replace: true,
             scope: {
               options: '=gaFeedbackOptions',
-              response: '=gaFeedbackResponse'
+              response: '=gaFeedbackResponse',
+              map: '=gaFeedbackMap'
             },
             templateUrl: 'components/feedback/partials/feedback.html',
             link: function(scope, element, attrs) {
@@ -45,7 +48,13 @@
                 }
               }
               function createFormData() {
-                var formData;
+                var formData,
+                    kml = '';
+                if (scope.options.attachKML &&
+                    scope.canCreateKml()) {
+                  kml = gaExportKml.create(drawingLayer,
+                                           scope.map.getView().getProjection());
+                }
                 // Not supported by IE9
                 if (!scope.isIE || gaBrowserSniffer.msie > 9) {
                     formData = new FormData();
@@ -54,6 +63,7 @@
                     formData.append('ua', navigator.userAgent);
                     formData.append('permalink', scope.permalinkValue);
                     formData.append('attachement', scope.file || '');
+                    formData.append('kml', kml);
                     return formData;
                 } else {
                     formData = {
@@ -61,17 +71,29 @@
                       feedback: scope.feedback,
                       ua: navigator.userAgent,
                       permalink: scope.permalinkValue,
-                      attachement: ''
+                      attachement: '',
+                      kml: kml
                     };
                     return $.param(formData);
                 }
               }
+              var drawingLayer = null;
               var method = 'POST';
               var feedbackUrl = scope.options.feedbackUrl;
               var elFileInpt = element.find('input[type=file]');
               scope.isIE9 = (gaBrowserSniffer.msie == 9);
               scope.isIE = !isNaN(gaBrowserSniffer.msie);
               scope.showProgress = false;
+              scope.options.attachKML = false;
+
+              scope.canCreateKml = function() {
+                if (!drawingLayer ||
+                    drawingLayer.getSource().
+                        getFeatures().length <= 0) {
+                  return false;
+                }
+                return true;
+              };
 
               if (!scope.isIE || gaBrowserSniffer.msie > 9) {
                 var triggerInputFileClick = function() {
@@ -103,6 +125,10 @@
               // Listen to permalink change events from the scope.
               scope.$on('gaPermalinkChange', function(event) {
                 scope.permalinkValue = gaPermalink.getHref();
+              });
+
+              scope.$on('gaDrawingLayer', function(event, data) {
+                drawingLayer = data;
               });
 
               scope.submit = function() {

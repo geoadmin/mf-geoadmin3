@@ -77,7 +77,7 @@
       // The main controller creates the OpenLayers map object. The map object
       // is central, as most directives/components need a reference to it.
       $scope.map = createMap();
-      
+
       // We add manually the keyboard interactions to have the possibility to
       // specify a condition
       var keyboardPan = new ol.interaction.KeyboardPan({
