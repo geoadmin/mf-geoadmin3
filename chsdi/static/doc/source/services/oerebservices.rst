@@ -16,9 +16,10 @@ The returned format is Interlis (XML).
 .. warning::
   This service is only available for the following layers:
 
+  - ch.bav.kataster-belasteter-standorte-oev.oereb
+  - ch.bazl.kataster-belasteter-standorte-zivilflugplaetze.oereb
   - ch.bazl.projektierungszonen-flughafenanlagen.oereb
   - ch.bazl.sicherheitszonenplan.oereb
-  - ch.bav.kataster-belasteter-standorte-oev.oereb 
 
 URL
 ***
