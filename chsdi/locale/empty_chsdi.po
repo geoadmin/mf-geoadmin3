@@ -2075,6 +2075,33 @@ msgstr ""
 msgid "kategorie"
 msgstr ""
 
+msgid "energiestadt_region_ker1"
+msgstr ""
+
+msgid "energiestadt_region_ker2"
+msgstr ""
+
+msgid "energiestadt_region_ker3"
+msgstr ""
+
+msgid "energiestadt_areal_kwa1"
+msgstr ""
+
+msgid "energiestadt_areal_kwa2"
+msgstr ""
+
+msgid "energiestadt_auf_dem_weg_kew1"
+msgstr ""
+
+msgid "energiestadt_auf_dem_weg_kew2"
+msgstr ""
+
+msgid "energiestadt_auf_dem_weg_kew3"
+msgstr ""
+
+msgid "energiestadt_auf_dem_weg_kew4"
+msgstr ""
+
 msgid "kantoncode"
 msgstr ""
 

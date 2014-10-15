@@ -25,7 +25,31 @@
       ${_('gemeinde_stadt')}
     </th>
     <td>
-      ${c['attributes']['name']}
+      ${c['attributes']['name'] or '-'}
+    </td>
+  </tr>
+  <tr>
+    <th class="cell-meta">
+      ${_('punktezahl')}
+    </th>
+    <td>
+      ${c['attributes']['punktezahl'] or '-'}
+    </td>
+  </tr>
+  <tr>
+    <th class="cell-meta">
+      ${_('einwohnerzahl')}
+    </th>
+    <td>
+      ${int(c['attributes']['einwohner']) or '-'}
+    </td>
+  </tr>
+  <tr>
+    <th class="cell-meta">
+      ${_('energiestadtseit')}
+    </th>
+    <td>
+      ${c['attributes']['energiestadtseit'] or '-'}
     </td>
   </tr>
   <tr>
@@ -88,7 +112,7 @@
   <tr>
   % if lang=='fr' :
     <td class="cell-meta" colspan="2"><p align="justify">
-Le label «Cité de l’énergie» atteste les perfor-mances des communes qui pratiquent et mettent en œuvre une politique énergétique exemplaire en matière de développement durable. Les Cités de l’énergie promeuvent les énergies renouvelables et une mobilité respectueuse de l’environnement et elles favorisent l’utilisation efficace des ressources. Pour obtenir ce label, une commune doit avoir décidé ou concrétisé au minimum 50% de la marge de manœuvre dont elle dispose en matière de politique énergétique (marge de manœuvre calculée sur la base du catalogue d’exigences correspondant). La plus haute distinction est le «European Energy Award®GOLD». Elle est octroyée aux Cités de l’énergie qui ont mis en œuvre au moins 75% des mesures du catalogue élaboré lors de la procédure de certification. Le GOLD Award récompense les Cités de l’énergie pour leur engagement en faveur d’un avenir énergétique durable. Il se fonde sur divers aspects de la politique énergétique communale: planification du développement et aménagement du territoire, bâtiments et installations communales, approvisionnement et gestion des déchets, mobilité, organisation interne, communication et coopération.
+Le label «Cité de l’énergie» atteste les performances des communes qui pratiquent et mettent en œuvre une politique énergétique exemplaire en matière de développement durable. Les Cités de l’énergie promeuvent les énergies renouvelables et une mobilité respectueuse de l’environnement et elles favorisent l’utilisation efficace des ressources. Pour obtenir le label «Cité de l’énergie», une commune doit avoir décidé ou concrétisé au minimum 50% de la marge de manœuvre dont elle dispose en matière de politique énergétique (marge de manœuvre calculée sur la base du catalogue d’exigences correspondant). La plus haute distinction pour les cités de l’énergie est le «European Energy Award®GOLD». Cette distinction est octroyée aux Cités de l’énergie qui ont mis en œuvre au moins 75% des mesures du catalogue élaboré lors de la procédure de certification. Le GOLD Award récompense les Cités de l’énergie pour leur engagement en faveur d’un avenir énergétique durable. Il se fonde sur divers aspects de la politique énergétique communale: planification du développement et aménagement du territoire, bâtiments et installations communales, approvisionnement et gestion des déchets, mobilité, organisation interne, communication et coopération.
     </p></td>
     </tr>
     <th class="cell-meta">
@@ -99,7 +123,7 @@ Le label «Cité de l’énergie» atteste les perfor-mances des communes qui pr
     </td>
   % elif lang=='it' :
     <td class="cell-meta" colspan="2"><p align="justify">
-Il label «Città dell’energia» è un riconoscimento per i Comuni che adottano e danno esempio di una politica energetica comunale sostenibile. Le Città dell’energia promuovono le energie rinnovabili insieme a una mobilità sostenibile e utilizzano in modo efficiente le risorse. Per ottenere il label «Città dell’energia», un Comune deve avere realizzato o pianificato almeno il 50 per cento delle misure di politica energetica che rientrano nel suo margine di manovra. La valutazione viene effettuata sulla base del catalogo di provvedimenti standardizzato specifico per il label. Il più alto riconoscimento è l'«European Energy Award®GOLD» che viene assegnato a quei Comuni che hanno attuato almeno il 75 per cento dei provvedimenti del catalogo allestito durante la procedura di certificazione. Il GOLD-Award premia l'impegno delle Città dell'energia a favore di un futuro energetico sostenibile. Il label si basa sulla valutazione della politica energetica comunale in materia di pianificazione di sviluppo e ordinamento del territorio, degli edifici e degli impianti comunali, dell'approvvigionamento e dello smaltimento, della mobilità, dell'organizzazione interna, nonché della comunicazione e della cooperazione. 
+Il label Città dell’energia è un riconoscimento per i Comuni che adottano e vivono una politica energetica comunale sostenibile. Le città dell’energia promuovono le energie rinnovabili, una mobilità sostenibile e utilizzano in modo efficiente le risorse. Per ottenere il riconoscimento i Comuni devono avere realizzato o deciso formalmente il 50 % delle misure possibili nell’ambito del proprio margine di manovra politico, scelte sulla base del Catalogo Città dell’energia standardizzato. Il massimo riconoscimento per le città dell’energia è l’«European Energy Award®GOLD», rilasciato solo alle città che hanno attuato almeno il 75 % delle misure definite nel catalogo stilato nell’ambito della procedura di certificazione. Con il GOLD-Award le città dell’energia coronano il proprio impegno per un futuro energetico sostenibile. Il riconoscimento è basato sulla valutazione della politica energetica comunale nei settori della pianificazione dello sviluppo, dell’ordinamento territoriale, degli edifici e degli impianti comunali, dei sistemi di approvvigionamento e di smaltimento, della mobilità, dell’organizzazione interna nonché della comunicazione e della cooperazione.
     </p></td>
     </tr>
     <th class="cell-meta">
@@ -110,7 +134,7 @@ Il label «Città dell’energia» è un riconoscimento per i Comuni che adottan
     </td>
   % elif lang=='en' :
     <td class="cell-meta" colspan="2"><p align="justify">
-The Energy City label is an instrument that is applied to certify municipalities that develop and implement a sustainable energy policy. Municipalities that have been awarded the Energy City label promote renewable energy and ecological mobility, and focus on the efficient use of resources. In order to qualify for the label, a municipality must have realised or adopted at least 50 percent of its room for action in the area of energy policy. Here the calculation is based on the Energy Cities catalogue. The European Energy Award®GOLD is the highest level of certification. This label is awarded to municipalities that have implemented at least 75 percent of the measures listed in the catalogue at the time of certification. Municipalities that qualify for this award demonstrate the highest level of commitment towards a sustainable energy future. The label is based on an assessment of municipal energy policy in the areas of development and spatial planning, municipal buildings and installations, supply and disposal, mobility, internal organisation, commu-nication and cooperation. 
+The Energy City label is used for certifying municipalities that develop and implement a sustainable energy policy. Municipalities that have been awarded this label promote renewable energy and ecological mobility, and focus on the efficient use of resources. In order to qualify for the label, a municipality must have realised or adopted at least 50 percent of its scope for action in the area of energy policy. Here the calculation is based on the Energy Cities catalogue. The European Energy Award®GOLD is the highest level of certification. This label is awarded to municipalities that have implemented at least 75 percent of the measures listed in the catalogue at the time of certification. Municipalities that qualify for this award demonstrate the highest level of commitment towards a sustainable energy future. The label is based on an assessment of municipal energy policy in the areas of development and spatial planning, municipal buildings and installations, supply and disposal, mobility, internal organisation, communication and cooperation.
      </p></td>
     </tr>
     <th class="cell-meta">
@@ -121,7 +145,7 @@ The Energy City label is an instrument that is applied to certify municipalities
     </td>
   % else :
     <td class="cell-meta" colspan="2"><p align="justify"> 
-Das Label Energiestadt ist ein Leistungsausweis für Gemeinden, die eine nachhaltige kommunale Energiepolitik vorleben und umsetzen. Energiestädte fördern erneuerbare Energien, umweltverträgliche Mobilität und setzen auf eine effiziente Nutzung der Ressourcen. Um das Label Energiestadt zu erreichen, muss eine Gemeinde mindestens 50% ihres energiepolitischen Handlungsspielraums, ermittelt anhand des Energiestadt-Katalogs, realisiert oder beschlossen haben. Die höchste Auszeichnung ist der «European Energy Award®GOLD». Diese Ehrung erhalten Energiestädte, die 75 Prozent oder mehr der Massnah-men des beim Zertifizierungsverfahren erstellten Katalogs umgesetzt haben. Mit dem GOLD-Award krönen Energiestädte ihr Engagement für eine nachhaltige Energiezukunft. Das Label beruht auf der Beurteilung der kommunalen Energiepolitik in Entwicklungsplanung und Raumordnung, kommunaler Gebäude und Anlagen, der Versorgung und Entsorgung, der Mobilität, der internen Organisation sowie von Kommunikation und Kooperation.
+Das Label Energiestadt ist ein Leistungsausweis für Gemeinden, die eine nachhaltige kommunale Energiepolitik vorleben und umsetzen. Energiestädte fördern erneuerbare Energien, umweltverträgliche Mobilität und setzen auf eine effiziente Nutzung der Ressourcen. Um das Label Energiestadt zu erreichen, muss eine Gemeinde mindestens 50% ihres energiepolitischen Handlungsspielraums, ermittelt anhand des Energiestadt-Katalogs, realisiert oder beschlossen haben. Die höchste Auszeichnung ist der «European Energy Award®GOLD». Diese Ehrung erhalten Energiestädte, die 75 Prozent oder mehr der Massnahmen des beim Zertifizierungsverfahren erstellten Katalogs umgesetzt haben. Mit dem GOLD-Award krönen Energiestädte ihr Engagement für eine nachhaltige Energiezukunft. Das Label beruht auf der Beurteilung der kommunalen Energiepolitik in Entwicklungsplanung und Raumordnung, kommunaler Gebäude und Anlagen, der Versorgung und Entsorgung, der Mobilität, der internen Organisation sowie von Kommunikation und Kooperation.
     </p></td>
     </tr>
     <th class="cell-meta">

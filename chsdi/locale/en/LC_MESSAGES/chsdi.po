@@ -2277,6 +2277,33 @@ msgstr "Einwohnerzahl (nur für Siedl.)"
 msgid "energiebedarf_motoren"
 msgstr "Energy need of motors"
 
+msgid "energiestadt_areal_kwa1"
+msgstr "Area in development"
+
+msgid "energiestadt_areal_kwa2"
+msgstr "Operative area"
+
+msgid "energiestadt_auf_dem_weg_kew1"
+msgstr "2000-Watt concept stage 1"
+
+msgid "energiestadt_auf_dem_weg_kew2"
+msgstr "2000-Watt concept stage 2"
+
+msgid "energiestadt_auf_dem_weg_kew3"
+msgstr "2000-Watt pioneer"
+
+msgid "energiestadt_auf_dem_weg_kew4"
+msgstr "2000-Watt label"
+
+msgid "energiestadt_region_ker1"
+msgstr "Energy-Region stage 1"
+
+msgid "energiestadt_region_ker2"
+msgstr "Energy-Region stage 2"
+
+msgid "energiestadt_region_ker3"
+msgstr "Energy-Region Label"
+
 msgid "energiestadtseit"
 msgstr "Energy City since"
 

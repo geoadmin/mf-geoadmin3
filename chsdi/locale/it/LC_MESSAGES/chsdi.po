@@ -2276,6 +2276,33 @@ msgstr "Nombre d’habitants (seulement pour Siedl.)"
 msgid "energiebedarf_motoren"
 msgstr "Fabbisogno energetico dei motori"
 
+msgid "energiestadt_areal_kwa1"
+msgstr "In fase di sviluppo"
+
+msgid "energiestadt_areal_kwa2"
+msgstr "Area operativa"
+
+msgid "energiestadt_auf_dem_weg_kew1"
+msgstr "Concetti 2000 Watt fase 1"
+
+msgid "energiestadt_auf_dem_weg_kew2"
+msgstr "Concetti 2000 Watt fase 2"
+
+msgid "energiestadt_auf_dem_weg_kew3"
+msgstr "Pionieri 2000 Watt"
+
+msgid "energiestadt_auf_dem_weg_kew4"
+msgstr "Label 2000 Watt"
+
+msgid "energiestadt_region_ker1"
+msgstr "Regione-Energia fase 1"
+
+msgid "energiestadt_region_ker2"
+msgstr "Regione-Energia fase 2"
+
+msgid "energiestadt_region_ker3"
+msgstr "Label Regione-Energia"
+
 msgid "energiestadtseit"
 msgstr "Città dell'energia dal/dall'"
 
