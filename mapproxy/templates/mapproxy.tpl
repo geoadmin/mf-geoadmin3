@@ -99,6 +99,6 @@ globals:
 
   srs:
     # for North/East ordering (default for geographic)
-    axis_order_ne:  ['EPSG:4326', 'EPSG:21781', 'EPSG:4258', 'EPSG:3857', 'EPSG:2056']
+    axis_order_ne:  ['EPSG:4326', 'EPSG:4258', 'EPSG:3857']
     # for East/North ordering (default for projected)
-    axis_order_en: [] 
+    axis_order_en: ['EPSG:21781', 'EPSG:2056'] 
