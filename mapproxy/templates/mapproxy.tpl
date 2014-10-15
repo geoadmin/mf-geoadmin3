@@ -31,10 +31,30 @@ services:
       fees: 'This service cant be used without permission'
 
 layers:
+  - name: osm
+    title: OpenStreetMap
+    sources: [osm_cache]
 
 caches:
+  osm_cache:
+    grids: [global_mercator_osm]
+    sources: [osm_tms]
+    disable_storage: true
+    concurrent_tile_creators: 4
+    watermark:
+      text: '@ OpenStreetMap contributors'
+      font_size: 14
+      opacity: 100
+      color: [0,0,0]
 
 sources:
+  osm_tms:
+    type: tile
+    grid: global_mercator_osm
+    url: http://c.tile.openstreetmap.org/%(tms_path)s.png
+    coverage:
+      bbox: [420000,30000,900000,350000]
+      bbox_srs: EPSG:21781
 
 grids:
   swisstopo-swissimage:
