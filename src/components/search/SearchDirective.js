@@ -140,7 +140,7 @@
               } else {
                 $timeout(function() {
                   cb(selectedFeatures[key]);
-                }, 0);
+                });
               }
             };
 
@@ -199,7 +199,7 @@
                   gaDebounce.debounce(function() {
                 var zoom = map.getView().getZoom();
                 gaMarkerOverlay.setVisibility(zoom);
-              }, 200, false));
+              }, 200, false, false));
             };
 
             var unregisterMove = function() {
@@ -232,8 +232,10 @@
               }
             };
 
-            scope.removeOverlay = function() {
-              if (gaBrowserSniffer.mobile) {
+            scope.removeOverlay = function(e) {
+              if (gaBrowserSniffer.mobile ||
+                // fix #1737: prevent unexpected call of mouseout evt.
+                e.target != e.relatedTarget) {
                 return;
               }
               gaMarkerOverlay.remove(map);
@@ -249,7 +251,7 @@
               var template = '<div class="tt-search" ' +
                   'ng-mouseover="addOverlay([' +
                   extent + ']' + ',[' + center + '],' + '\'' +
-                  origin + '\')" ' + 'ng-mouseout="removeOverlay()">' +
+                  origin + '\')" ' + 'ng-mouseout="removeOverlay($event)">' +
                   label + '</div>';
               return template;
             };
@@ -264,7 +266,7 @@
               var template = '<div class="tt-search" ' +
                   'ng-mouseover="addOverlay([' +
                   extent + ']' + ',[' + center + '],' + '\'' +
-                  origin + '\')" ' + 'ng-mouseout="removeOverlay()">' +
+                  origin + '\')" ' + 'ng-mouseout="removeOverlay($event)">' +
                   label + '</div>';
               return template;
             };
@@ -584,7 +586,7 @@
                 // the display of the footer
                 $timeout(function() {
                   scope.hasLayerResults = (suggestions.length !== 0);
-                }, 0);
+                });
               }
               renderSuggestions.apply(context, [dataset, suggestions]);
 
@@ -641,9 +643,7 @@
             viewDropDown.on('gaSuggestionsRendered', function(evt) {
               var el;
               if (viewDropDown.isVisible()) {
-                $timeout(function() {
-                  setListCount();
-                }, 0);
+                $timeout(setListCount);
                 el = element.find('.tt-dataset-' + evt.data.name);
                 el.attr('ng-class', 'nbOfSuggestionsLists');
                 $compile(el)(scope);
@@ -730,7 +730,7 @@
                         unregWatch();
                       }
                     });
-                  }, 0);
+                  });
                   unregisterLayers();
                 });
                unregister();
@@ -740,9 +740,7 @@
             if (!gaBrowserSniffer.mobile ||
                 (angular.isDefined(searchParam) &&
                 searchParam.length > 0)) {
-              $timeout(function() {
-                taElt.focus();
-              });
+              taElt.focus();
             }
           }
         };
