@@ -667,6 +667,10 @@
               unregisterMove();
               viewDropDown.clearSuggestions();
               scope.searchFocused = false;
+              // Display the placeholder
+              if (gaBrowserSniffer.msie == 9) {
+                $(taElt).blur();
+              }
             };
 
             scope.$on('gaTopicChange', function(event, topic) {

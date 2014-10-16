@@ -26,7 +26,7 @@
           return;
         }
 
-        var isPlaceHolderDisplayed;
+        var isPlaceHolderDisplayed = true;
 
         var displayPlaceholder = function(elt) {
             elt.val(elt.attr('placeholder'));
@@ -40,19 +40,16 @@
             isPlaceHolderDisplayed = false;
         };
 
-        $timeout(function() {
-          displayPlaceholder(elm);
-          elm.focus(function(evt) {
-            var elt = $(evt.target);
-            if (isPlaceHolderDisplayed) {
-              hidePlaceholder(elt);
-            }
-          }).blur(function(evt) {
-            var elt = $(evt.target);
-            if (elt.val() == '') {
-              displayPlaceholder(elt);
-            }
-          });
+        elm.focus(function(evt) {
+          var elt = $(evt.target);
+          if (isPlaceHolderDisplayed) {
+            hidePlaceholder(elt);
+          }
+        }).blur(function(evt) {
+          var elt = $(evt.target);
+          if (elt.val() == '') {
+            displayPlaceholder(elt);
+          }
         });
 
         attrs.$observe('placeholder', function() {
