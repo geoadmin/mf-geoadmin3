@@ -46,13 +46,6 @@ RewriteRule ^${apache_base_path}/sitemap_(.*)\.xml http:${api_url}/${version}/si
     Header merge Cache-Control "no-cache"
 </LocationMatch>
 
-# Proxy definitions
-ProxyPassMatch ^${apache_base_path}/([0-9/]*rest/services/[a-z]+/MapServer/layersConfig)(.*) http:${api_url}/$1$2
-<LocationMatch ^${apache_base_path}/([0-9/]*rest/services/[a-z]+/MapServer/layersConfig)>
-    Order allow,deny
-    Allow from all
-</LocationMatch>
-
 # Checker definitions (never cache)
 <Location ~ "${apache_base_path}/checker$">
     ExpiresDefault "access"

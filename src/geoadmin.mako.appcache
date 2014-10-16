@@ -11,6 +11,9 @@ ${version}/style/app.css
 ${version}/style/font-awesome-3.2.1/font/fontawesome-webfont.woff?v=3.2.1
 ${version}/img/logo.ch.small.png
 ${api_url}/${version}/rest/services
+% for lang in languages:
+${api_url}/${version}/rest/services/all/MapServer/layersConfig?lang=${lang}
+% endfor
 
 # Use case: opens in offline then online.
 # In that case we need to have all languages, because we can't reload manually
@@ -34,11 +37,6 @@ ${version}/img/logo.ch.${lang}.png ${version}/img/logo.ch.${defaultLanguage}.png
 # Topic images
 % for topic in topics:
 ${version}/img/${topic}.jpg ${version}/img/dev.jpg
-% endfor
-
-# Layers config
-% for topic in topics:
-${apache_base_path}/rest/services/${topic}/MapServer/layersConfig ${apache_base_path}/rest/services/ech/MapServer/layersConfig?lang=${defaultLanguage}
 % endfor
 
 # With Permalink
