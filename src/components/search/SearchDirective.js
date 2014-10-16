@@ -574,7 +574,7 @@
             // We have to create a small workaround to get the
             // a suggestionsRendered event that includes the
             // dataset
-            var viewDropDown = $(taElt).data('ttView').dropdownView;
+            var viewDropDown = taElt.data('ttView').dropdownView;
             var renderSuggestions = viewDropDown.renderSuggestions;
             var renderByDataset = function(context, dataset, suggestions,
                 invokeApply) {
@@ -660,16 +660,18 @@
             });
 
             scope.clearInput = function() {
-              $(taElt).val('');
-              $(taElt).data('ttView').inputView.setQuery('');
+              taElt.val('');
+              taElt.data('ttView').inputView.setQuery('');
               scope.query = '';
               gaMarkerOverlay.remove(map);
               unregisterMove();
               viewDropDown.clearSuggestions();
               scope.searchFocused = false;
               // Display the placeholder
-              if (gaBrowserSniffer.msie == 9) {
-                $(taElt).blur();
+              if (gaBrowserSniffer.msie < 10) {
+                $timeout(function() {
+                  taElt.trigger('blur');
+                }, 0, false);
               }
             };
 
@@ -679,7 +681,7 @@
 
             var triggerSearch = function(dataSetIndex) {
               if (scope.query !== '') {
-                var dataset = $(taElt).data('ttView').datasets[dataSetIndex];
+                var dataset = taElt.data('ttView').datasets[dataSetIndex];
                 dataset.getSuggestions(scope.query,
                     function(suggestions) {
                       viewDropDown.renderSuggestions(dataset, suggestions,
