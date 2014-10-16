@@ -234,8 +234,9 @@
 
             scope.removeOverlay = function(e) {
               if (gaBrowserSniffer.mobile ||
-                // fix #1737: prevent unexpected call of mouseout evt.
-                e.target != e.relatedTarget) {
+                  // HACK for #1737: prevent unexpected call of mouseout evt.
+                  (e.target != e.relatedTarget &&
+                  e.relatedTarget instanceof HTMLCanvasElement)) {
                 return;
               }
               gaMarkerOverlay.remove(map);
