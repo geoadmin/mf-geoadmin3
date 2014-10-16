@@ -33,7 +33,7 @@
           '<div class="ga-search-footer-right">',
           '<a class="ga-search-contact-icon" ',
           'title="{{\'contact_us\' | translate}}" ',
-          'ng-mouseover="getHref()" ',
+          'ng-mouseenter="getHref()" ',
           'ng-href="http://www.geo.admin.ch/',
           'internet/geoportal/{{lang}}/tools/contact.html" ',
           'target="_blank">',
@@ -47,7 +47,7 @@
           '</a>',
           '<a class="ga-search-contact-icon"',
           'title="{{\'email_us\' | translate}}" ',
-          'ng-mouseover="getHref()" ',
+          'ng-mouseenter="getHref()" ',
           'ng-href="mailto:webgis@swisstopo.ch?',
           'body={{encodedPermalinkHref}}">',
           '<i class="icon-envelope-alt"></i>',
@@ -149,7 +149,7 @@
             scope.layers = map.getLayers().getArray();
 
             scope.getHref = function() {
-              // set those values only on mouseover
+              // set those values only on mouseenter
               scope.encodedPermalinkHref =
               encodeURIComponent(gaPermalink.getHref());
               scope.lang = $translate.uses();
@@ -250,9 +250,9 @@
               var center = [attrs.y, attrs.x];
               var extent = parseExtent(attrs.geom_st_box2d);
               var template = '<div class="tt-search" ' +
-                  'ng-mouseover="addOverlay([' +
+                  'ng-mouseenter="addOverlay([' +
                   extent + ']' + ',[' + center + '],' + '\'' +
-                  origin + '\')" ' + 'ng-mouseout="removeOverlay($event)">' +
+                  origin + '\')" ' + 'ng-mouseleave="removeOverlay($event)">' +
                   label + '</div>';
               return template;
             };
@@ -265,9 +265,9 @@
                   'EPSG:4326', 'EPSG:21781');
               var extent = parseExtent(attrs.geom_st_box2d);
               var template = '<div class="tt-search" ' +
-                  'ng-mouseover="addOverlay([' +
+                  'ng-mouseenter="addOverlay([' +
                   extent + ']' + ',[' + center + '],' + '\'' +
-                  origin + '\')" ' + 'ng-mouseout="removeOverlay($event)">' +
+                  origin + '\')" ' + 'ng-mouseleave="removeOverlay($event)">' +
                   label + '</div>';
               return template;
             };
@@ -434,9 +434,9 @@
                 template: function(context) {
                   var template = '<div ng-show="hasLayerResults" ' +
                       'class="tt-search"' +
-                      'ng-mouseover="addPreviewLayer(\'' +
+                      'ng-mouseenter="addPreviewLayer(\'' +
                       context.attrs.layer + '\', true)" ' +
-                      'ng-mouseout="removePreviewLayer(\'' +
+                      'ng-mouseleave="removePreviewLayer(\'' +
                       context.attrs.layer + '\')"' +
                       '>' + context.attrs.label +
                       '<i ng-click="getLegend($event, \'' +
