@@ -78,8 +78,7 @@
 	"embed_map": "Allegare carta",
 	"error": "Errore",
 	"export_kml": "Salvare",
-	"export_kml_notsupported": "Il vostro browser non supporta la fununzione salva.
-Usare IE10, Firefox o Chrome.",
+	"export_kml_notsupported": "Il vostro browser non supporta la fununzione salva. Usare IE10, Firefox o Chrome.",
 	"facebook_tooltip": "Condivida la carta con i suoi amici",
 	"feature": "Oggetto",
 	"featuretree_tooltip": "Ricerca tutti gli oggetti in un rettangolo",

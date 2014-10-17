@@ -78,8 +78,7 @@
 	"embed_map": "Karte einbinden",
 	"error": "Fehler",
 	"export_kml": "Speichern",
-	"export_kml_notsupported": "Ihr Browser unterstützt die Speicherfunktion nicht.
-Benutzen Sie IE10, Firefox oder Chrome.",
+	"export_kml_notsupported": "Ihr Browser unterstützt die Speicherfunktion nicht. Benutzen Sie IE10, Firefox oder Chrome.",
 	"facebook_tooltip": "Teilen Sie diese Karten mit Ihren Freunden auf Facebook",
 	"feature": "Objekt",
 	"featuretree_tooltip": "Suchen Sie alle Objekte in einem Rechteck",
