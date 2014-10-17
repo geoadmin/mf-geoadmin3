@@ -4,6 +4,29 @@ import shputils
 from os.path import dirname
 from struct import unpack
 
+# cache of GeoRaster instances in function of the layer name
+_rasters = {}
+_rasterfiles = {}
+
+def get_raster(name):
+    global _rasters
+    result = _rasters.get(name, None)
+    if not result:
+        result = GeoRaster(_rasterfiles[name])
+        _rasters[name] = result
+    return result
+
+def init_rasterfiles(datapath, preloadtypes):
+    base_path = 'bund/swisstopo/'
+    global _rasterfiles
+    _rasterfiles = {
+        'DTM25': datapath + base_path + 'dhm25_25_matrix/mm0001.shp',
+        'DTM2': datapath + base_path + 'swissalti3d/2m/index.shp',
+        'COMB': datapath + base_path + 'swissalti3d/kombo_2m_dhm25/index.shp'
+    }
+    for pt in preloadtypes:
+        get_raster(pt)
+
 class Tile(object):
     def __init__(self, minX, minY, maxX, maxY, filename):
         self.minX=minX

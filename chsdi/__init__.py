@@ -11,6 +11,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from chsdi.renderers import EsriJSON, CSVRenderer
 from chsdi.models import initialize_sql
 from papyrus.renderers import GeoJSON
+from chsdi.lib.raster.georaster import init_rasterfiles
 
 
 def db(request):
@@ -30,6 +31,9 @@ def main(global_config, **settings):
     app_version = settings.get('app_version')
     settings['app_version'] = app_version
     config = Configurator(settings=settings)
+
+    # init raster files for height/profile and preload COMB file
+    init_rasterfiles(settings.get('data_path'), ['COMB'])
 
     # configure 'locale' dir as the translation dir for chsdi app
     config.add_translation_dirs('chsdi:locale/')
