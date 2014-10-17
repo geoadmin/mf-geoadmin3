@@ -1,29 +1,20 @@
 [ga-time-selector-bt] {
-  
-  button {  
-    display: none;
-    width: unit(@control-btn-size, px);
-    height: unit(@control-btn-size, px);
-    text-align: center;
-    cursor: pointer;
-    text-decoration: none;
-    
-    &.ga-time-selector-enabled {
-      background: data-uri('time_black.png') no-repeat center center;
-      display: block;
-      margin-top: unit(@control-btn-space, px);
-    }
+  display: none;
+  width: unit(@control-btn-size, px);
+  height: unit(@control-btn-size, px);
+  text-align: center;
+  cursor: pointer;
+  text-decoration: none;
+  margin-top: unit(@control-btn-space, px);
+  background: data-uri('time_black.png') no-repeat center center;
 
-    &.ga-time-selector-active {
-      background: data-uri('time_red.png') no-repeat center center;
-      display: block;
-      margin-top: unit(@control-btn-space, px);
-    }
+  &.ga-active {
+    background: data-uri('time_red.png') no-repeat center center;
   }
 }
 
 [ga-time-selector] {
-  display: block;
+  display: none;
   width: auto;
   height: auto;
   position: absolute;  
