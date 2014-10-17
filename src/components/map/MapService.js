@@ -1227,8 +1227,8 @@
                 if (index < layerOpacities.length) {
                   layer.setOpacity(opacity);
                 }
-                if (!hasTimeParam && layer.timeEnabled) {
-                  layer.time = timestamp;
+                if (layer.timeEnabled && (hasTimeParam || timestamp)) {
+                  layer.time = hasTimeParam || timestamp;
                 }
                 map.addLayer(layer);
               }

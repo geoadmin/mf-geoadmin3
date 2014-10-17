@@ -156,9 +156,7 @@
         <div ga-attribution ga-attribution-map="map"></div>
       </div>
       <div id='buttongroup'>
-        <div ga-time-selector-bt 
-           ga-time-selector-bt-active="globals.isTimeSelectorActive">
-        </div> 
+        <div ga-time-selector-bt ga-time-selector-map="map"></div> 
         <div ga-rotate ga-rotate-map="map"></div>
       </div>
 % if device == 'mobile':
@@ -211,9 +209,7 @@
 
     <div ng-controller="GaTimeSelectorController">
       <div ga-time-selector ga-time-selector-map="map"
-           ga-time-selector-options="options"
-           ga-time-selector-active="globals.isTimeSelectorActive" 
-           style="display:none;">
+           ga-time-selector-options="options">
       </div>
     </div>
 
@@ -362,9 +358,7 @@
 % endif
           </a>
           <div id="selection"  ga-collapsible-observe="globals.selectionShown" class="${"in" if device == "desktop" else ""}">
-            <div class="panel-body panel-body-wide" ga-layermanager
-            ga-layermanager-map="map"
-            ga-layermanager-options="{showTimestamps:!globals.isTimeSelectorActive}">
+            <div class="panel-body panel-body-wide" ga-layermanager ga-layermanager-map="map">
             </div>
           </div>
         </div> <!-- .panel -->

@@ -82,7 +82,7 @@
       // specify a condition
       var keyboardPan = new ol.interaction.KeyboardPan({
         condition: function() {
-          return (!$scope.globals.isTimeSelectorActive);
+          return (!$scope.time);
         }
       });
       $scope.map.addInteraction(keyboardPan);
