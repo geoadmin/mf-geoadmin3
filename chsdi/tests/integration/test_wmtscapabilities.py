@@ -22,6 +22,10 @@ class TestWmtsCapabilitiesView(TestsBase):
         resp = self.testapp.get('/rest/services/bafu/1.0.0/WMTSCapabilities.xml?epsg=9999', status=400)
         resp.mustcontain("EPSG:9999 not found. Must be one of 21781, 4326, 2056, 4852, 3857")
 
+    def test_contains_correct_tilelink(self):
+        resp = self.testapp.get('/rest/services/api/1.0.0/WMTSCapabilities.xml', status=200)
+        resp.mustcontain('<ResourceURL format="image/jpeg" resourceType="tile" template="http://wmts.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>')
+
     def test_validate_wmtscapabilities(self):
         import socket
         import subprocess
