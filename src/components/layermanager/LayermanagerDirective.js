@@ -55,7 +55,7 @@
           gaBrowserSniffer, gaLayerFilters, gaLayerMetadataPopup, gaLayers) {
 
         // Test if all layers have the same time property value.
-        var hasLayersSameTimee = function(olLayers) {
+        var hasLayersSameTime = function(olLayers) {
           if (olLayers.length == 0) {
             return false;
           }
@@ -94,8 +94,7 @@
           replace: true,
           templateUrl: 'components/layermanager/partials/layermanager.html',
           scope: {
-            map: '=gaLayermanagerMap',
-            options: '=gaLayermanagerOptions'
+            map: '=gaLayermanagerMap'
           },
           link: function(scope, element, attrs) {
             var map = scope.map;
@@ -212,7 +211,7 @@
             scope.setLayerTime = function(layer, time) {
               layer.time = time;
               setSavedTime(scope.layers);
-              var year = hasLayersSameTimee(scope.layers);
+              var year = hasLayersSameTime(scope.layers);
               $rootScope.$broadcast('gaTimeSelectorToggle', !!(year), year);
             };
 
@@ -245,28 +244,8 @@
               });
             });
 
-            var removeNonExistantBodLayers = function() {
-              var removeLayers = [];
-              // We assemble the layers to remove because
-              // we shouldn't remove from the array that
-              // we are iterating over
-              map.getLayers().forEach(function(olLayer) {
-                if (olLayer.bodId &&
-                    !olLayer.background &&
-                    !scope.isBodLayer(olLayer)) {
-                  removeLayers.push(olLayer);
-                }
-              });
-              removeLayers.forEach(function(olLayer) {
-                scope.removeLayer(olLayer);
-              });
-            };
-
+            // Change layers label when topic changes
             scope.$on('gaLayersChange', function(evt, data) {
-              // We remove all bod layers from the map that
-              // don't have a layers definition
-              removeNonExistantBodLayers();
-
               map.getLayers().forEach(function(olLayer) {
                 if (scope.isBodLayer(olLayer)) {
                   olLayer.label = gaLayers.getLayerProperty(olLayer.bodId,
