@@ -209,7 +209,9 @@
         };
 
         scope.setLayerTime = function(layer, time) {
-          layer.time = time;
+          if (time) {
+            layer.time = time;
+          }
           setSavedTime(scope.layers);
           var year = hasLayersSameTime(scope.layers);
           $rootScope.$broadcast('gaTimeSelectorToggle', !!(year), year);
