@@ -8,7 +8,8 @@
       {{layer.label}}
     </label>
     <div ng-if="layer.timeEnabled" class="ga-layer-time">
-      <label class="badge" tabindex="1" ng-click="displayTimestamps($event, layer)">{{layer.time | gaTimeLabel:layer}}
+      <label class="badge" tabindex="1" ng-class="isDefaultValue(layer.time)"
+             ng-click="displayTimestamps($event, layer)">{{layer.time | gaTimeLabel:layer}}
         <select ng-if="mobile"
                 ng-model="layer.time"
                 ng-change="setLayerTime(layer)"

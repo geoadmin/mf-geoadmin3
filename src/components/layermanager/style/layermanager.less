@@ -10,7 +10,7 @@
     width: 8em;
     display: inline;
   }
- 
+
   input[type=checkbox] {
     vertical-align: -5%;
   }
@@ -37,7 +37,6 @@
       background: linear-gradient(to bottom, #eeeeee 0%,#cccccc 100%);
     }
   }
-
   
   label {
     font-weight: normal;
@@ -122,20 +121,24 @@
     right: 1.4em;
     width: 4em;
     height: 1.6em;
-    color: red;
     
     label, select {
       position:absolute;
+      top: 0px;
       left: 0px;
       width: 100%;
       height: 100%;
-      padding: 0;
+      padding: 0px;
       margin: 0px;
       line-height: 1.6em;
     }
 
     select {
       opacity: 0;
+    }
+
+    .ga-black {
+      color: black;
     }
   }
  
@@ -263,7 +266,6 @@
   @media (max-width: @screen-phone) {
     .ga-layer-time {
       top: .6em;
-      right: 2em;
       width: 4.6em;
     }
     
@@ -277,23 +279,27 @@
 /* The popover is outside the layermanager */ 
 .ga-layer-timestamps {
   width: 250px;
-
+ 
   & div {
     width: 50px;
-    height:20px;
+    height: 20px;
     display: inline-block;
     border: 1px solid rgba(0, 0, 0, 0);
     text-align: center;
 
     &:not(.badge):hover {
       border: 1px solid #C6C6C6;
-      background-color: #EFEFEF;
+      background-color: #D3D3D3;
       cursor: pointer;
+      color: red;
     }
   }
-  
-  .badge {
-    font-weight: normal;
-  }
+}
+
+.ga-layer-timestamps .badge, [ga-layermanager] .badge {
+  background-color: #D3D3D3;
+  font-size: inherit;
+  font-weight: normal;
+  color: red;
 }
 
