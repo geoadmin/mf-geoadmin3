@@ -546,7 +546,7 @@
     <div class="popover homescreen" ng-if="globals.homescreen" ng-class="[
         globals.homescreen ? 'visible' : '', 
         globals.tablet ? 'bottom' : 'top',
-        globals.ios > 8 ? 'tr' : 'tl']">
+        globals.ios >= 8 ? 'tr' : 'tl']">
       <div class="arrow"></div>
       <h3 class="popover-title">
         <span translate>homescreen_title</span>
