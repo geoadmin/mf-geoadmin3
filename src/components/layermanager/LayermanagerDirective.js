@@ -123,10 +123,11 @@
 
           // Timestamps popover management
           var popover;
+          var parent = element.parent();
           var win = $($window);
           var createPopover = function(target) {
             popover = $(target).popover({
-              container: element.parent(),
+              container: parent,
               content: elt,
               html: 'true',
               placement: function() {
@@ -135,6 +136,7 @@
               title: $translate('time_select_year'),
               trigger: 'manual'
             });
+            popover.addClass('ga-layer-timestamps-popover');
             popover.popover('show');
             element.on('scroll', destroyPopover);
             $document.on('click', destroyPopover);

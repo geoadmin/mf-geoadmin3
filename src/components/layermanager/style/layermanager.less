@@ -279,7 +279,11 @@
 /* The popover is outside the layermanager */ 
 .ga-layer-timestamps {
   width: 250px;
- 
+  
+  @media (max-width: @screen-tablet) {
+    width: 200px;
+  }
+   
   & div {
     width: 50px;
     height: 20px;
