@@ -76,7 +76,15 @@
     <link rel="shortcut icon" type="image/x-icon" href="${versionslashed}img/favicon.ico"/>
   </head>
 
-  <body ng-class="[topicId, globals.searchFocused ? 'search-focused' : '', globals.touch ? 'touch' : '', globals.webkit ? 'webkit' : 'no-webkit', globals.offline ? 'offline' : 'online']">
+  <body class="{{topicId}}" 
+        ng-class="{
+          'search-focused': globals.searchFocused,
+          'touch': globals.touch, 
+          'webkit': globals.webkit, 
+          'no-webkit': !globals.webkit, 
+          'offline': golbals.offline,
+          'online': !globals.offline
+        }">
     <!-- The below conditional is ignored by >= IE10 and all other browsers -->
     <!--![if IE]>
       <script>
@@ -209,7 +217,7 @@
       </div>
     </div>
 
-    <div id="pulldown" ng-show="!globals.offline" class="{{(globals.catalogShown && globals.selectionShown) ? 'selection-and-catalog-shown' : ''}}">
+    <div id="pulldown" ng-show="!globals.offline" ng-class="{'selection-and-catalog-shown': (globals.catalogShown && globals.selectionShown)}">
       <div id="pulldown-content" class="panel-group content ${"in" if device == "desktop" else "collapse"}">
         <div class="panel">
           <a id="shareHeading" class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#share">
@@ -543,10 +551,13 @@
     </div><!-- end Feature Tree -->
 
 
-    <div class="popover homescreen" ng-if="globals.homescreen" ng-class="[
-        globals.homescreen ? 'visible' : '', 
-        globals.tablet ? 'bottom' : 'top',
-        globals.ios >= 8 ? 'tr' : 'tl']">
+    <div ng-if="globals.homescreen" class="popover homescreen"
+         ng-class="{
+           'visible': globals.homescreen, 
+           'bottom': globals.tablet,
+           'top': !globals.tablet,
+           'tr': (globals.ios >= 8)
+         }">
       <div class="arrow"></div>
       <h3 class="popover-title">
         <span translate>homescreen_title</span>

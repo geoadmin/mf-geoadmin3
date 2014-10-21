@@ -24,9 +24,10 @@
       <table class="table table-striped table-hover table-condensed">
         <tbody>
           <tr ng-repeat="layer in layers | orderBy:'Title':reverse"
-              class="
-              {{(layerSelected.Name == layer.Name) ? 'success ' : ''}}
-              {{(layerHovered.Name == layer.Name) ? 'pending ' : ''}}">
+              ng-class="{
+                'success': (layerSelected.Name == layer.Name),
+                'pending': (layerHovered.Name == layer.Name)
+              }">
             <td>
               <div class="icon-zoom-in" ng-click="zoomOnLayerExtent(layer)"></div>
             </td>
