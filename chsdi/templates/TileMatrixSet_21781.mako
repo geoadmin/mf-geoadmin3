@@ -28,6 +28,18 @@
         <%include file="TileMatrixSet_22.mako"/>
     </TileMatrixSet>
     <TileMatrixSet>
+        <ows:Identifier>21781_25</ows:Identifier>
+        <ows:SupportedCRS>urn:ogc:def:crs:EPSG:21781</ows:SupportedCRS>
+        <%include file="TileMatrixSet.mako"/>
+        <%include file="TileMatrixSet_19.mako"/>
+        <%include file="TileMatrixSet_20.mako"/>
+        <%include file="TileMatrixSet_21.mako"/>
+        <%include file="TileMatrixSet_22.mako"/>
+        <%include file="TileMatrixSet_23.mako"/>
+        <%include file="TileMatrixSet_24.mako"/>
+        <%include file="TileMatrixSet_25.mako"/>
+    </TileMatrixSet>
+    <TileMatrixSet>
         <ows:Identifier>21781_26</ows:Identifier>
         <ows:SupportedCRS>urn:ogc:def:crs:EPSG:21781</ows:SupportedCRS>
         <%include file="TileMatrixSet.mako"/>
