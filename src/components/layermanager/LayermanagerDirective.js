@@ -177,7 +177,10 @@
         }
 
         scope.isDefaultValue = function(timestamp) {
-          return (timestamp.substring(0, 4) === '9999') ? 'ga-black' : '';
+          if (timestamp && timestamp.length) {
+            return (timestamp.substring(0, 4) === '9999') ? 'ga-black' : '';
+          }
+          return (timestamp === 9999) ? 'ga-black' : '';
         };
         var dupId = 0;
         scope.duplicateLayer = function(evt, layer) {
