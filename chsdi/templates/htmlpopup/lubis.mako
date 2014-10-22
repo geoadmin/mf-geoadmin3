@@ -63,7 +63,8 @@ def get_viewer_url(request, params):
         'bildnummer': params[3],
         'datenherr': params[4].encode('utf8'),
         'layer': params[5].encode('utf8'),
-        'lang': params[6]
+        'lang': params[6],
+        'rotation': params[7]
     }
     return h.make_agnostic(route_url('luftbilder', request)) + '?' + urllib.urlencode(f)
 %>
@@ -93,7 +94,8 @@ params = (
     c['featureId'],
     c['attributes']['firma'],
     c['layerBodId'],
-    lang)
+    lang,
+    c['attributes']['rotation'] if 'rotation' in  c['attributes'] else 0)
 viewer_url = get_viewer_url(request, params)
 %>
 <tr>
@@ -183,6 +185,7 @@ endif
 datum = date_to_str(c['attributes']['flugdatum'])
 image_width =  c['attributes']['image_width'] if 'image_width' in  c['attributes'] else 0
 image_height = c['attributes']['image_height'] if 'image_height' in c['attributes'] else 0
+image_rotation = c['attributes']['rotation'] if 'rotation' in c['attributes'] else 0
 
 params = (
     image_width, 
@@ -191,7 +194,8 @@ params = (
     c['featureId'],
     c['attributes']['firma'],
     c['layerBodId'],
-    lang)
+    lang,
+    image_rotation)
 viewer_url = get_viewer_url(request, params)
 %>
 <title>${_('tt_lubis_ebkey')}: ${c['featureId']}</title>
@@ -267,7 +271,7 @@ viewer_url = get_viewer_url(request, params)
       map.recenterFeature('${c['layerBodId']}', '${c['featureId']}');
 
 % if preview_url != "" and c['attributes']['image_width']:
-      ${lubis_map.init_map(c['featureId'], image_width, image_height, 0, 'lubismap')}
+     ${lubis_map.init_map(c['featureId'], image_width, image_height, image_rotation, 'lubismap')}
 %endif
 
     }
