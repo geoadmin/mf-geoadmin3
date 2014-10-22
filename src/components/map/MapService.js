@@ -1182,7 +1182,6 @@
 
           var allowThirdData = false;
           var confirmedOnce = false;
-          var hasTimeParam = gaPermalink.getParams().time;
           angular.forEach(layerSpecs, function(layerSpec, index) {
             var layer;
             var opacity = (index < layerOpacities.length) ?
@@ -1227,8 +1226,8 @@
                 if (index < layerOpacities.length) {
                   layer.setOpacity(opacity);
                 }
-                if (layer.timeEnabled && (hasTimeParam || timestamp)) {
-                  layer.time = hasTimeParam || timestamp;
+                if (layer.timeEnabled && timestamp) {
+                  layer.time = timestamp;
                 }
                 map.addLayer(layer);
               }
