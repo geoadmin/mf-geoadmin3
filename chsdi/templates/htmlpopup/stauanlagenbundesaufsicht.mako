@@ -20,20 +20,19 @@
         lang = lang if lang in ('fr','it','en') else 'de'
         lang = lang if lang != 'it' else 'fr'
         damtype = 'damtype_%s' % lang
+
+        from urllib2 import urlopen
+        img_url = "http://dav0.bgdi.admin.ch/bfe_pub/images_stauanlagen/"+str(c['attributes']['facility_stabil_id'])+".jpg"
+        response = None
+        try:
+            response = urlopen(img_url)
+            image_exist = True
+        except:
+            image_exist = False
+        finally:
+            if response:
+                response.close()
     %>
-    <script>
-        $(document).ready(function(){
-            $('.thumbnail-container').on('click', function (event) {
-              event = event || window.event;
-                event.preventDefault();
-              var target = event.target || event.srcElement,
-                link = target.src ? target.parentNode : target,
-                options = {index: link, event: event},
-                links = this.getElementsByTagName('a');
-              blueimp.Gallery(links, options);
-            });
-        });
-    </script>
     <h1>${_('tt_ch.bfe.stauanlagen-bundesaufsicht_stauanlage')} ${c['attributes']['facilityname']}</h1>
     <table class="table-with-border kernkraftwerke-extended">
         <tr>
@@ -95,11 +94,11 @@
             <td>${c['attributes'][damtype]}</td>
         </tr>
     </table>
+    % if image_exist:
     <div class="thumbnail-container">
         <div class="thumbnail">
-            <a href="//dav0.bgdi.admin.ch/bfe_pub/images_stauanlagen/${c['attributes']['facility_stabil_id']}.jpg">
-            <img class="image" src="//dav0.bgdi.admin.ch/bfe_pub/images_stauanlagen/${c['attributes']['facility_stabil_id']}.jpg" />
-            </a>
+            <a href="${img_url}" target="_blank"><img class="image" src="${img_url}" /></a>
         </div>
     </div>
+    % endif
 </%def>
