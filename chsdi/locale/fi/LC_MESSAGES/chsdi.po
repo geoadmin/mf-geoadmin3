@@ -1128,7 +1128,7 @@ msgid "ch.bafu.flora-weltensutter_atlas"
 msgstr "Atlas Welten&Sutter"
 
 msgid "ch.bafu.gefahren-baugrundklassen"
-msgstr "Baugrundklassen"
+msgstr "Seismische Baugrundklassen"
 
 msgid "ch.bafu.gefahren-gefaehrdungszonen"
 msgstr "Zonas da periclitaziun da terratrembels"

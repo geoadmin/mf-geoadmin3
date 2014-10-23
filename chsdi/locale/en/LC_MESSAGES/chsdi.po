@@ -1128,13 +1128,13 @@ msgid "ch.bafu.flora-weltensutter_atlas"
 msgstr "Welten&Sutter atlas"
 
 msgid "ch.bafu.gefahren-baugrundklassen"
-msgstr "Subsoil classes"
+msgstr "Seismic subsoil classes"
 
 msgid "ch.bafu.gefahren-gefaehrdungszonen"
-msgstr "Seismic risk zones"
+msgstr "Seismic zones"
 
 msgid "ch.bafu.gefahren-historische_erdbeben"
-msgstr "Past earthquakes"
+msgstr "Historical earthquakes"
 
 msgid "ch.bafu.gefahren-mikrozonierung"
 msgstr "Micro-zoning"
