@@ -1,3 +1,4 @@
-<button ng-if="!isIE9"  class="{{(hasOfflineData && !isDownloading) ? 'ga-active' : ''}}" 
+<button ng-if="!isIE9" 
+        ng-class="{'ga-active': (hasOfflineData && !isDownloading)}" 
         ng-hide="offline && !hasOfflineData"
         ng-click="onClick($event)"></button>

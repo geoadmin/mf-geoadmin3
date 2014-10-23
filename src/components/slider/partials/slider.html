@@ -3,11 +3,13 @@
     <span ng-repeat="data in dataList | orderBy:'value':false" 
         ng-style="assignDivisionStyle($index)"
         id="{{data.value}}"
-        class="ga-slider-bar-division 
-          {{($first) ? 'ga-slider-first ' : ''}}
-          {{($last) ? 'ga-slider-last ' : ''}}
-          {{(data.minor) ? 'ga-slider-minor' : ''}} 
-          {{(data.major) ? 'ga-slider-major' : ''}}"
+        class="ga-slider-bar-division"
+        ng-class="{
+          'ga-slider-first': ($first),
+          'ga-slider-last': ($last),
+          'ga-slider-minor': data.minor, 
+          'ga-slider-major': data.major
+        }"
         title="{{($last) ? translate2({value:'slider_last_title'}) : data.value}}"> 
       <span class="ga-slider-bubble" >{{data.value}}</span>
       <span class="ga-slider-available" ng-show="data.available"></span>

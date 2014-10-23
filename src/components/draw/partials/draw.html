@@ -1,9 +1,9 @@
 <div>
   <div class="ga-draw-buttons">
     <button ng-repeat="tool in options.tools"
-      ng-click="toggleTool(tool)"
-      title="{{tool.description | translate}}"
-      class="{{tool.cssClass}} {{options[tool.activeKey] ? 'active' : ''}}">
+            ng-click="toggleTool(tool)"
+            title="{{tool.description | translate}}"
+            class="{{tool.cssClass}}" ng-class="{'active': options[tool.activeKey]}">
       <i class="{{tool.iconClass}}"></i>
       <div translate>{{tool.title}}</div>
     </button>
@@ -29,7 +29,7 @@
       <div>
         <label translate>modify_icon_label</label>: 
         <div class="ga-choose-icon ga-icon-size-{{options.iconSize.value[0]}}">
-          <img class="{{(options.icon == i) ? 'ga-selected' : ''}}" 
+          <img ng-class="{'ga-selected': (options.icon == i)}" 
                draggable="false" 
                ng-click="options.icon = i" 
                ng-repeat="i in options.icons" 
