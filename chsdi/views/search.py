@@ -39,6 +39,7 @@ class Search(SearchValidation):
         self.featureIndexes = request.params.get('features')
         self.timeInstant = request.params.get('timeInstant')
         self.timeEnabled = request.params.get('timeEnabled')
+        self.timeStamps = request.params.get('timeStamps')
         self.typeInfo = request.params.get('type')
         self.varnish_authorized = request.headers.get('X-Searchserver-Authorized', 'true').lower() == 'true'
 
@@ -190,11 +191,17 @@ class Search(SearchValidation):
         self._parse_feature_results(temp)
 
     def _get_time_filter(self):
-        timeFilter = []
+        self._check_timeparameters()
+        years = []
+        t = None
         timeInterval = re.search(r'((\b\d{4})-(\d{4}\b))', ' '.join(self.searchText)) or False
         # search for year with getparameter timeInstant=2010
         if self.timeInstant is not None:
-            timeFilter = [self.timeInstant]
+            years = [self.timeInstant]
+            t = 'instant'
+        elif self.timeStamps is not None:
+            years = self.timeStamps
+            t = 'layers'
         # search for year interval with searchText Pattern .*YYYY-YYYY.*
         elif timeInterval:
             numbers = [timeInterval.group(2), timeInterval.group(3)]
@@ -203,8 +210,17 @@ class Search(SearchValidation):
             # remove time intervall from searchtext
             self.searchText.remove(timeInterval.group(1))
             if min != max:
-                timeFilter = [start, stop]
-        return timeFilter
+                t = 'range'
+                years = [start, stop]
+        return {
+            'type': t,
+            'years': years
+        }
+
+    def _check_timeparameters(self):
+        if self.timeInstant is not None and self.timeStamps is not None:
+            raise exc.HTTPBadRequest('You are not allowed to mix timeStamps and timeInstant parameters')
+
 
     def _get_geoanchor_from_bbox(self):
         centerX = (self.bbox[2] + self.bbox[0]) / 2
@@ -213,7 +229,12 @@ class Search(SearchValidation):
         return transformCoordinate(wkt, 21781, 4326)
 
     def _feature_bbox_search(self):
-        timeFilter = []
+        self._check_timeparameters()
+        
+        timeFilter = {
+            'type': None,
+            'years': []
+        }
         if self.quadindex is None:
             raise exc.HTTPBadRequest('Please provide a bbox parameter')
 
@@ -223,7 +244,11 @@ class Search(SearchValidation):
         self.sphinx.SetLimits(0, self.FEATURE_GEO_LIMIT)
 
         if self.timeInstant is not None:
-            timeFilter = [self.timeInstant]
+            timeFilter['type'] = 'instant'
+            timeFilter['years'] = [self.timeInstant]
+        elif self.timeStamps is not None:
+            timeFilter['type'] = 'layers'
+            timeFilter['years'] = self.timeStamps
         geoAnchor = self._get_geoanchor_from_bbox()
         self.sphinx.SetGeoAnchor('lat', 'lon', geoAnchor.GetY(), geoAnchor.GetX())
         self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, '@geodist ASC')
@@ -316,11 +341,14 @@ class Search(SearchValidation):
     def _add_feature_queries(self, queryText, timeFilter):
         i = 0
         for index in self.featureIndexes:
+            self.sphinx.ResetFiltersOnly()
             if timeFilter and self.timeEnabled is not None and self.timeEnabled[i]:
-                if len(timeFilter) == 1:
-                    self.sphinx.SetFilter('year', timeFilter)
-                elif len(timeFilter) == 2:
-                    self.sphinx.SetFilterRange('year', int(min(timeFilter)), int(max(timeFilter)))
+                if timeFilter['type'] == 'instant':
+                    self.sphinx.SetFilter('year', timeFilter['years'])
+                elif timeFilter['type'] == 'layers' and timeFilter['years'][i] is not None:
+                    self.sphinx.SetFilter('year', [timeFilter['years'][i]])
+                elif timeFilter['type'] == 'range':
+                    self.sphinx.SetFilterRange('year', int(min(timeFilter['years'])), int(max(timeFilter['years'])))
             i += 1
             self.sphinx.AddQuery(queryText, index=str(index))
 

@@ -13,6 +13,7 @@ class SearchValidation(MapNameValidation):
         self._featureIndexes = None
         self._timeInstant = None
         self._timeEnabled = None
+        self._timeStamps = None
         self._bbox = None
         self._returnGeometry = None
         self._origins = None
@@ -37,6 +38,10 @@ class SearchValidation(MapNameValidation):
     @property
     def timeInstant(self):
         return self._timeInstant
+
+    @property
+    def timeStamps(self):
+        return self._timeStamps
 
     @property
     def returnGeometry(self):
@@ -66,15 +71,6 @@ class SearchValidation(MapNameValidation):
             )
             value = value.replace('.', '_')
             self._featureIndexes = value.split(',')
-
-    @timeEnabled.setter
-    def timeEnabled(self, value):
-        if value is not None and value != '':
-            values = value.split(',')
-            result = []
-            for val in values:
-                result.append(True if val.lower() in ['true', 't', '1'] else False)
-            self._timeEnabled = result
 
     @timeEnabled.setter
     def timeEnabled(self, value):
@@ -125,6 +121,24 @@ class SearchValidation(MapNameValidation):
         else:
             self._timeInstant = value
 
+    @timeStamps.setter
+    def timeStamps(self, value):
+        if value is not None and value != '':
+            values = value.split(',')
+            result = []
+            for val in values:
+                if len(val) != 4 and len(val) != 0:
+                    raise HTTPBadRequest('Only years (4 digits) or empty strings are supported in timeStamps parameter')
+                if len(val) == 0:
+                    result.append(None)
+                else:
+                    try:
+                        result.append(int(val))
+                    except ValueError:
+                        raise HTTPBadRequest('Please provide integers for timeStamps parameter')
+            self._timeStamps = result
+
+ 
     @returnGeometry.setter
     def returnGeometry(self, value):
         if value is False or value == 'false':
