@@ -98,13 +98,20 @@
             var getLayersToQuery = function() {
               var ids = [];
               var timeenabled = [];
+              var timestamps = [];
               scope.filteredLayers.forEach(function(l) {
+                var ts = '';
+                if (l.time && l.time.substr(0, 4) != '9999') {
+                  ts = l.time.substr(0, 4);
+                }
                 ids.push(l.bodId);
                 timeenabled.push(l.timeEnabled);
+                timestamps.push(ts);
               });
               return {
                 ids: ids,
-                timeenabled: timeenabled
+                timeenabled: timeenabled,
+                timestamps: timestamps
               };
             };
 
@@ -214,12 +221,9 @@
                         ',' + extent[2] + ',' + extent[3],
                     type: 'featureidentify',
                     features: layersToQuery.ids.join(','),
-                    timeEnabled: layersToQuery.timeenabled.join(',')
+                    timeEnabled: layersToQuery.timeenabled.join(','),
+                    timeStamps: layersToQuery.timestamps.join(',')
                   };
-              if (currentYear) {
-                params.timeInstant = currentYear;
-              }
-
               url = url.replace('{Topic}', currentTopic);
               return {
                 url: url,
