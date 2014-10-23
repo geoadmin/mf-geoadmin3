@@ -404,14 +404,12 @@
                         scope.searchableLayers.join(',');
                     var timeEnabled = '&timeEnabled=' +
                         scope.timeEnabled.join(',');
-                    var timeInstant = '';
-                    if (year) {
-                      timeInstant = '&timeInstant=' + year;
-                    }
+                    var timeStamps = '&timeStamps=' +
+                        scope.timeStamps.join(',');
                     url = options.applyTopicToUrl(url,
                         currentTopic);
                     url += queryText + searchableLayers + timeEnabled +
-                        bbox + lang + timeInstant;
+                        bbox + lang + timeStamps;
                     return url;
                   },
                   filter: function(response) {
@@ -561,14 +559,22 @@
 
             scope.$watchCollection('layers | filter:searchableLayersFilter',
                 function(layers) {
+              //TODO: this isn't updated when layers param (like 'time') changes
               var layerBodIds = [];
               var timeEnabled = [];
+              var timeStamps = [];
               angular.forEach(layers, function(layer) {
+                var ts = '';
+                if (layer.time && layer.time.substr(0, 4) != '9999') {
+                  ts = layer.time.substr(0, 4);
+                }
                 layerBodIds.push(layer.bodId);
                 timeEnabled.push(layer.timeEnabled);
+                timeStamps.push(ts);
               });
               scope.searchableLayers = layerBodIds;
               scope.timeEnabled = timeEnabled;
+              scope.timeStamps = timeStamps;
             });
 
             // We have to create a small workaround to get the
