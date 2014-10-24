@@ -88,8 +88,10 @@ class LayersConfig(Base):
         for k in self.__dict__.keys():
             if not k.startswith("_") and \
                 self.__dict__[k] is not None and \
-                    k not in ('maps', 'staging'):
-                if k == 'layerBodId':
+                    k not in ('staging'):
+                if k == 'maps':
+                    config['topics'] = self.__dict__[k]
+                elif k == 'layerBodId':
                     config['label'] = translate(self.__dict__[k])
                 elif k == 'attribution':
                     config[k] = translate(self.__dict__[k])
