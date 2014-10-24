@@ -7,8 +7,8 @@
     ['ga_browsersniffer_service',
      'pascalprecht.translate']);
 
-  module.controller('GaPrintDirectiveController', function($scope, $http,
-      $window, $translate, gaLayers, gaPermalink, gaBrowserSniffer) {
+  module.controller('GaPrintDirectiveController', function($rootScope, $scope,
+      $http, $window, $translate, gaLayers, gaPermalink, gaBrowserSniffer) {
 
     var pdfLegendsToDownload = [];
     var pdfLegendString = '_big.pdf';
@@ -18,6 +18,8 @@
     var MM_PER_INCHES = 25.4;
     var UNITS_RATIO = 39.37; // inches per meter
     var printConfigLoaded = false;
+    var currentTime = undefined;
+    var timeSelectorEnabled = false;
 
     // Get print config
     var updatePrintConfig = function() {
@@ -32,6 +34,7 @@
         $scope.scale = data.scales[5];
         $scope.options.legend = false;
         $scope.options.graticule = false;
+        $scope.options.movie = false;
       });
     };
 
@@ -118,6 +121,12 @@
     });
     $scope.$watch('layout', function() {
       updatePrintRectanglePixels($scope.scale);
+    });
+    $rootScope.$on('gaTimeSelectorChange', function(event, time) {
+      currentTime = time;
+    });
+    $rootScope.$on('gaTimeSelectorEnabled', function(event, enabled) {
+      timeSelectorEnabled = enabled;
     });
 
 
@@ -511,6 +520,18 @@
               params: {'TIME': source.getDimensions().Time},
               matrixSet: '21781'
           });
+          var multiPagesPrint = false;
+          if (config.timestamps) {
+              multiPagesPrint = !config.timestamps.some(function(ts) {
+                  return ts == '99991231';
+              });
+
+          }
+          // printing time series
+          if (config.timeEnabled && timeSelectorEnabled == undefined &&
+              currentTime == undefined && multiPagesPrint) {
+              enc['timestamps'] = config.timestamps;
+          }
 
           return enc;
         }
@@ -567,6 +588,9 @@
       var lang = $translate.use();
       var defaultPage = {};
       defaultPage['lang' + lang] = true;
+      if (currentTime) {
+          defaultPage['timestamp'] = currentTime;
+      }
       var qrcodeUrl = $scope.options.qrcodeUrl +
           encodeURIComponent(gaPermalink.getHref());
       var encLayers = [];
@@ -677,9 +701,12 @@
           legends: encLegends,
           enableLegends: (encLegends && encLegends.length > 0),
           qrcodeurl: qrcodeUrl,
+          movie: $scope.options.movie,
           pages: [
             angular.extend({
               center: getPrintRectangleCenterCoord(),
+              bbox: getPrintRectangleCoords(),
+              display: [that.layout.map.width, that.layout.map.height],
               // scale has to be one of the advertise by the print server
               scale: $scope.scale.value,
               dataOwner: '© ' + attributions.join(),
@@ -709,16 +736,28 @@
       }
     }
 
+    var getPrintRectangleCoords = function() {
+      // Framebuffer size!!
+      var displayCoords = printRectangle.map(function(c) {
+          return c / ol.has.DEVICE_PIXEL_RATIO});
+      var bottomLeft = $scope.map.
+                        getCoordinateFromPixel(displayCoords.slice(0, 2));
+      var topRight = $scope.map.
+                       getCoordinateFromPixel(displayCoords.slice(2, 4));
+      var coords = bottomLeft;
+      [].push.apply(coords, topRight);
+
+      return coords;
+    };
+
     var getPrintRectangleCenterCoord = function() {
       // Framebuffer size!!
-      var bottomLeft = printRectangle.slice(0, 2);
-      var width = printRectangle[2] - printRectangle[0];
-      var height = printRectangle[3] - printRectangle[1];
-      var center = [bottomLeft[0] + width / 2, bottomLeft[1] + height / 2];
-      // convert back to map display size
-      var mapPixelCenter = [center[0] / ol.has.DEVICE_PIXEL_RATIO,
-           center[1] / ol.has.DEVICE_PIXEL_RATIO];
-      return $scope.map.getCoordinateFromPixel(mapPixelCenter);
+      var rect = getPrintRectangleCoords();
+
+      var centerCoords = [rect[0] + (rect[2] - rect[0]) / 2.0,
+          rect[3] + (rect[1] - rect[3]) / 2.0];
+
+      return centerCoords;
     };
 
     var updatePrintRectanglePixels = function(scale) {
