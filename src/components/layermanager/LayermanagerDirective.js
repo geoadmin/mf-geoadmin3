@@ -89,6 +89,67 @@
       });
     };
 
+    // Timestamps list template
+    var tpl =
+      '<div class="ga-layer-timestamps">' +
+        '<div tabindex="1" ng-repeat="i in tmpLayer.timestamps" ' +
+             'ng-click="setLayerTime(tmpLayer, i)" ' +
+             'class="{{tmpLayer.time == i ? \'badge\' : \'\'}}">' +
+          '{{i | gaTimeLabel:tmpLayer}}' +
+        '</div>' +
+      '</div>';
+
+    // Create the popover
+    var popover, content, container, elementi, callback;
+    var win = $($window);
+    var createPopover = function(target, element, scope) {
+
+      // Lazy load
+      if (!container) {
+        container = element.parent();
+      }
+      if (!callback) {
+        callback = function(evt) {
+          destroyPopover(evt.target, element);
+        };
+      }
+
+      popover = $(target).popover({
+        container: container,
+        content: content,
+        html: 'true',
+        placement: function() {
+          return (win.width() < 640) ? 'left' : 'right';
+        },
+        title: $translate('time_select_year'),
+        trigger: 'manual'
+      });
+      popover.addClass('ga-layer-timestamps-popover');
+      popover.popover('show');
+      element.on('scroll', callback);
+      $document.on('click', callback);
+      win.on('resize', callback);
+    };
+
+    // Remove the popover
+    var destroyPopover = function(target, element) {
+      if (popover) {
+        if (target) {
+          var popoverElt = container.find('.popover');
+          if (popoverElt.is(target) ||
+              popoverElt.has(target).length !== 0) {
+            return;
+          }
+        }
+        popover.popover('destroy');
+        popover = undefined;
+        element.unbind('scroll', callback);
+        $document.unbind('click', callback);
+        win.unbind('resize', callback);
+      }
+    };
+
+
     return {
       restrict: 'A',
       replace: true,
@@ -98,6 +159,7 @@
       },
       link: function(scope, element, attrs) {
         var map = scope.map;
+        content = $compile(tpl)(scope);
 
         // The ngRepeat collection is the map's array of layers. ngRepeat
         // uses $watchCollection internally. $watchCollection watches the
@@ -106,69 +168,20 @@
         // watch them.
         scope.layers = map.getLayers().getArray();
         scope.layerFilter = gaLayerFilters.selected;
+        scope.mobile = gaBrowserSniffer.mobile;
 
         // On mobile we use a classic select box, on desktop a popover
-        scope.mobile = gaBrowserSniffer.mobile;
-        if (!gaBrowserSniffer.mobile) {
-          // Timestamps list template
-          var tpl =
-            '<div class="ga-layer-timestamps">' +
-              '<div tabindex="1" ng-repeat="i in tmpLayer.timestamps" ' +
-                   'ng-click="setLayerTime(tmpLayer, i)" ' +
-                   'class="{{tmpLayer.time == i ? \'badge\' : \'\'}}">' +
-                '{{i | gaTimeLabel:tmpLayer}}' +
-              '</div>' +
-            '</div>';
-          var elt = $compile(tpl)(scope);
-
-          // Timestamps popover management
-          var popover;
-          var parent = element.parent();
-          var win = $($window);
-          var createPopover = function(target) {
-            popover = $(target).popover({
-              container: parent,
-              content: elt,
-              html: 'true',
-              placement: function() {
-                return (win.width() < 640) ? 'left' : 'right';
-              },
-              title: $translate('time_select_year'),
-              trigger: 'manual'
-            });
-            popover.addClass('ga-layer-timestamps-popover');
-            popover.popover('show');
-            element.on('scroll', destroyPopover);
-            $document.on('click', destroyPopover);
-            win.on('resize', destroyPopover);
-          };
-          var destroyPopover = function(e) {
-            if (popover) {
-              if (e) {
-                var container = element.parent().find('.popover');
-                if (container.is(e.target) ||
-                    container.has(e.target).length !== 0) {
-                  return;
-                }
-              }
-              popover.popover('destroy');
-              popover = undefined;
-              element.unbind('scroll', destroyPopover);
-              $document.unbind('click', destroyPopover);
-              win.unbind('resize', destroyPopover);
-            }
-          };
-
+        if (!scope.mobile) {
           // Simulate a select box with a popover
           scope.displayTimestamps = function(evt, layer) {
             if (popover && popover[0] === evt.target) {
-              destroyPopover();
+              destroyPopover(evt.target, element);
             } else {
-              destroyPopover();
+              destroyPopover(evt.target, element);
               scope.tmpLayer = layer;
               // We use timeout otherwise the popover is bad centered.
               $timeout(function() {
-                createPopover(evt.target);
+                createPopover(evt.target, element, scope);
               }, 100, false);
             }
             evt.preventDefault();
@@ -182,6 +195,7 @@
           }
           return (timestamp === 9999) ? 'ga-black' : '';
         };
+
         var dupId = 0;
         scope.duplicateLayer = function(evt, layer) {
           var dupLayer = gaLayers.getOlLayerById(layer.bodId);
