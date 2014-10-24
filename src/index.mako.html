@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 <!DOCTYPE html>
 <html ng-app="ga" ng-controller="GaMainController"
+itemscope itemtype="http://schema.org/WebApplication"
 % if device == 'mobile' and mode=='prod' :
  manifest="geoadmin.appcache"
 % endif
@@ -14,30 +15,57 @@
 % else:
     <title>geo.admin.ch</title>
 % endif
-    <meta charset="utf-8">
+    <meta charset="utf-8"/>
     <!-- verification for google webmaster tools -->
-    <meta name="google-site-verification" content="ZAmW5d4_2X8xb5Yy_nYQbnTSe1EIeSqyhox9aXXwrws" />
+    <meta name="google-site-verification" content="ZAmW5d4_2X8xb5Yy_nYQbnTSe1EIeSqyhox9aXXwrws"/>
     <!-- verification for bing webmaster tools -->
-    <meta name="msvalidate.01" content="58E0E0B7DD4AB3D30EE315C695950E68" />
+    <meta name="msvalidate.01" content="58E0E0B7DD4AB3D30EE315C695950E68"/>
     <!-- verification for yandex webmaster tools -->
-    <meta name='yandex-verification' content='4795f82c05657028' />
+    <meta name='yandex-verification' content='4795f82c05657028'/>
     <!-- this tag enables the search bot forwarding to _escaped_fragment_= urls for SEO. It can be used instead of the ugly hasbang -->
-    <meta name="fragment" content="!" />
+    <meta name="fragment" content="!"/>
 
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, minimal-ui">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="msapplication-TileImage" content="${versionslashed}img/touch-icon-bund-144x144.png">
-    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, minimal-ui"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="msapplication-TileImage" content="${versionslashed}img/touch-icon-bund-144x144.png"/>
+    <meta name="msapplication-TileColor" content="#ffffff"/>
     <link rel="dns-prefetch" href="${api_url}"/>
 
-    <link rel="apple-touch-icon" sizes="76x76" href="${versionslashed}img/touch-icon-bund-76x76.png" />
-    <link rel="apple-touch-icon" sizes="120x120" href="${versionslashed}img/touch-icon-bund-120x120.png" />
-    <link rel="apple-touch-icon" sizes="152x152" href="${versionslashed}img/touch-icon-bund-152x152.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="${versionslashed}img/touch-icon-bund-76x76.png"/>
+    <link rel="apple-touch-icon" sizes="120x120" href="${versionslashed}img/touch-icon-bund-120x120.png"/>
+    <link rel="apple-touch-icon" sizes="152x152" href="${versionslashed}img/touch-icon-bund-152x152.png"/>
 
     <!-- Description is translated 'by hand' in the MainController -->
     <meta name="description" content="map.geo.admin.ch is the mapping platform of the Swiss Confederation. Access federal geographical information, maps, data, services and metadata of Switzerland."/>
     <meta name="keywords" content="maps Switzerland, map viewer, Confederation, geodata, public platform, geographical information, geoportal, orthophotos, geolocation, geoinformation, Geodaten, Geoinformation, Bund, Plattform, Karte, Kartendienst, Kartenviewer"/>
+    <meta name="news_keywords" content="Maps of Switzerland"/>
+
+    <!-- Open Graph metas SMO -->
+    <meta property="og:site_name" content="map.geo.admin.ch"/>
+    <meta property="og:title" content="Swiss Geoportal"/>
+    <meta property="og:description" content="map.geo.admin.ch is the mapping platform of the Swiss Confederation. Access federal geographical information, maps, data, services and metadata of Switzerland."/>
+    <meta property="og:type" content="WebApplication"/>
+    <meta property="og:url" content="http://map.geo.admin.ch"/>
+    <meta property="og:image" content="${versionslashed}img/logo_geoportal.png"/>
+    <meta property="og:locale" content="Bern"/>
+    
+    <!-- Twitter Card Infos -->
+    <meta name="twitter:card" content="summary"/>
+    <meta name="twitter:site" content="@swiss_geoportal"/>
+    <meta name="twitter:creator" content="@swiss_geoportal"/>
+    <meta name="twitter:title" content="map.geo.admin.ch"/>
+    <meta name="twitter:description" content="map.geo.admin.ch is the mapping platform of the Swiss Confederation. Access federal geographical information, maps, data, services and metadata of Switzerland."/>
+    <meta name="twitter:image" content="${versionslashed}img/logo_geoportal.png"/>
+    <meta name="twitter:url" content="http://map.geo.admin.ch"/>
+
+    <!-- Facebook Specific fb:admins and fb.appid -->
+
+    <!-- Google+ Specific Tags -->
+    <meta itemprop="name" content="map.geo.admin.ch"/>
+    <meta itemprop="description" content="map.geo.admin.ch is the mapping platform of the Swiss Confederation. Access federal geographical information, maps, data, services and metadata of Switzerland."/>
+    <meta itemprop="image" content="${versionslashed}img/logo_geoportal.png"/>
+
     <script>
       (function(){
         var w = window, l = w.location, n = w.navigator, pathname, p = '${device}',
@@ -72,7 +100,7 @@
       })();
     </script>
     
-    <link href="${versionslashed}style/app.css" rel="stylesheet">
+    <link href="${versionslashed}style/app.css" rel="stylesheet"/>
     <link rel="shortcut icon" type="image/x-icon" href="${versionslashed}img/favicon.ico"/>
   </head>
 

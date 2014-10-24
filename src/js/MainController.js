@@ -112,6 +112,9 @@
       $rootScope.$on('$translateChangeEnd', function() {
         $scope.langId = $translate.uses();
         $('meta[name=description]').attr('content', $translate('page_description'));
+        $('meta[property="og:description"]').attr('content', $translate('page_description'));
+        $('meta[name="twitter:description"]').attr('content', $translate('page_description'));
+        $('meta[itemprop="description"]').attr('content', $translate('page_description'));
       });
 
       $rootScope.$on('gaTimeSelectorChange', function(event, year) {
