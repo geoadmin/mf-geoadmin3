@@ -100,18 +100,20 @@
       '</div>';
 
     // Create the popover
-    var popover, content, container, elementi, callback;
+    var popover, content, container, callback, closeBt;
     var win = $($window);
     var createPopover = function(target, element, scope) {
 
       // Lazy load
       if (!container) {
         container = element.parent();
-      }
-      if (!callback) {
         callback = function(evt) {
           destroyPopover(evt.target, element);
         };
+        closeBt = $('<button class="close">&times;</button>').on('click',
+            function() {
+          destroyPopover(null, element);
+        });
       }
 
       popover = $(target).popover({
@@ -126,6 +128,7 @@
       });
       popover.addClass('ga-layer-timestamps-popover');
       popover.popover('show');
+      container.find('.popover-title').append(closeBt);
       element.on('scroll', callback);
       $document.on('click', callback);
       win.on('resize', callback);
