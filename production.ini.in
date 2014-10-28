@@ -47,6 +47,7 @@ install_directory = ${buildout:directory}
 host = ${host}
 apache_base_path = ${apache_base_path}
 address_search_referers = localhost,admin.ch,awk.ch,cadastre.ch,rspp.ch,rollstuhlparkplatz.ch,placehandicape.ch,parcheggiodisabili.chi,zh.ch
+print_temp_dir=${print_temp_dir}
 
 ###
 # wsgi server configuration

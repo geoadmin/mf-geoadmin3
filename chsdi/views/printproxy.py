@@ -20,12 +20,12 @@ from pyramid.httpexceptions import (HTTPForbidden, HTTPBadRequest,
                                     HTTPBadGateway, HTTPInternalServerError)
 from pyramid.response import Response, FileResponse
 
-
 import logging
 log = logging.getLogger(__name__)
 
+
 NUMBER_POOL_PROCESSES = 4
-PRINT_CACHE_DIR = '/var/cache/print'
+MAPFISH_FILE_PREFIX = 'mapfish-print'
 USE_MULTIPROCESS = True
 pdfs = []
 
@@ -33,13 +33,17 @@ pdfs = []
 def worker(job):
     ''' Print and dowload the indivialized PDFs'''
 
-    (idx, url, headers, timestamp, layers, tmp_spec) = job
+    timestamp = None
+    (idx, url, headers, timestamp, layers, tmp_spec, print_temp_dir) = job
 
     h = {'Referer': headers.get('Referer')}
     http = Http(disable_ssl_certificate_validation=True)
 
     for layer in layers:
-        tmp_spec['layers'][layer]['params']['TIME'] = str(timestamp)
+        try:
+            tmp_spec['layers'][layer]['params']['TIME'] = str(timestamp)
+        except:
+            continue
 
     log.debug('spec: %s', json.dumps(tmp_spec))
 
@@ -47,29 +51,23 @@ def worker(job):
                                  body=json.dumps(tmp_spec), headers=h)
 
     if int(resp.status) == 200:
-
+    # GetURL '141028163227.pdf.printout', file 'mapfish-print141028163227.pdf.printout'
+    # We only get the pdf name and rely on the fact that they are stored on Zadara
         try:
             pdf_url = json.loads(content)['getURL']
             log.debug('[Worker] pdf_url: %s', pdf_url)
             filename = os.path.basename(urlsplit(pdf_url).path)
-            localname = os.path.join(PRINT_CACHE_DIR, filename)
+            localname = os.path.join(print_temp_dir, MAPFISH_FILE_PREFIX + filename)
             pdfs.append((timestamp, localname))
         except:
             log.debug('[Worker] Failed timestamp: %s', timestamp)
 
             return (timestamp, None)
 
-        try:
-            CHUNK = 16 * 1024
-            req = urllib2.urlopen(pdf_url)
-            with open(localname, 'wb') as fp:
-                    shutil.copyfileobj(req, fp, CHUNK)
-        except:
-            return (timestamp, None)
-
         return (timestamp, localname)
     else:
         log.debug('[Worker] Failed get/generate PDF for: %s. Error: %s', timestamp, resp.status)
+        log.debug('[Worker] %s', content)
         return (timestamp, None)
 
 
@@ -95,14 +93,16 @@ class PrintProxy(object):
 
         params = urllib.urlencode(d)
         # old mf-chsdi api!
-        url = "http://api.geo.admin.ch/zeitreihen?%s" % params
+        api_url = self.request.registry.settings['api_url']
+        scheme = 'http'
+        url = scheme + ':' + api_url + '/rest/services/ech/MapServer/ch.swisstopo.zeitreihen/releases?%s' % params
 
         print params
 
         try:
             resp, content = http.request(url)
             if int(resp.status) == 200:
-                timestamps = json.loads(content)
+                timestamps = json.loads(content)['results']
         except:
             return timestamps
 
@@ -113,18 +113,21 @@ class PrintProxy(object):
         For instance (u'19971231', [1, 2]), (u'19981231', [0, 1, 2])  '''
 
         results = {}
-        lyrs = spec['layers']
+        lyrs = spec.get('layers', [])
         log.debug('[_get_timestamps] layers: %s', lyrs)
         for idx, lyr in enumerate(lyrs):
             if 'timestamps' in lyr.keys():
                 if lyr.get('layer') == 'ch.swisstopo.zeitreihen':
-                    page = spec['pages'][0]
-                    easting, northing = map(float, page['center'])
-                    scale = float(page['scale'])
-                    timestamps = self._zeitreiehen({'northing': int(northing), 'easting': int(easting),
-                                                    'scale': int(scale)})
-                else:
-                    timestamps = lyr['timestamps']
+                    try:
+                        page = spec['pages'][0]
+                        display = page['display']
+                        bbox = page['bbox']
+                        dpi = spec['dpi']
+                        imageDisplay = "%s,%s,%s" % (display[0], display[1], dpi)
+                        timestamps = self._zeitreiehen({'mapExtent': ",".join(map(str, bbox)), 'imageDisplay': imageDisplay})
+                        log.debug('[_get_timestamps] Zeitreichen %s', timestamps)
+                    except:
+                        timestamps = lyr['timestamps']
 
                 for ts in timestamps:
                     if len(timestamps) > 1 and ts.startswith('9999'):
@@ -156,8 +159,8 @@ class PrintProxy(object):
 
         try:
             unique_filename = datetime.datetime.now().strftime("%y%m%d%H%M%S")
-            filename = os.path.join(PRINT_CACHE_DIR, 'mapfish-print' + unique_filename + '.pdf.printout')
-            out = open(os.path.join(PRINT_CACHE_DIR, filename), 'wb')
+            filename = os.path.join(self.print_temp_dir, 'mapfish-print' + unique_filename + '.pdf.printout')
+            out = open(os.path.join(self.print_temp_dir, filename), 'wb')
             merger.write(out)
             log.info('[_merge_pdfs] Merged PDF written to: %s', filename)
         except:
@@ -168,6 +171,12 @@ class PrintProxy(object):
             merger.close()
 
         return unique_filename
+
+    def _isMultiPage(self, spec):
+        isMultiPage = False
+        if 'movie' in spec.keys():
+            isMultiPage = spec['movie']
+        return isMultiPage
 
     @view_config(route_name='print_info')
     def print_info(self):
@@ -205,7 +214,8 @@ class PrintProxy(object):
     def print_create(self):
 
         jobs = []
-        timestamps = []
+        all_timestamps = []
+        self.print_temp_dir = self.request.registry.settings['print_temp_dir']
         scheme = self.request.headers.get('X-Forwarded-Proto',
                                           self.request.scheme)
 
@@ -218,7 +228,7 @@ class PrintProxy(object):
         except:
             raise HTTPBadRequest()
 
-        layers = spec['layers']
+        layers = spec.get('layers', [])
         api_url = self.request.registry.settings['api_url']
 
         create_pdf_url = 'http:' + api_url + '/print/create.json'
@@ -230,11 +240,12 @@ class PrintProxy(object):
 
         http = Http(disable_ssl_certificate_validation=True)
 
-        all_timestamps = self._get_timestamps(spec)
-        log.debug('[print_create] Timestamps to process: %s', all_timestamps.keys())
+        if self._isMultiPage(spec):
+            all_timestamps = self._get_timestamps(spec)
+            log.debug('[print_create] Timestamps to process: %s', all_timestamps.keys())
 
         if len(all_timestamps) < 1:
-            job = (0, url, h, None, [], spec)
+            job = (0, url, h, None, [], spec, self.print_temp_dir)
             jobs.append(job)
         else:
             last_timestamp = all_timestamps.keys()[-1]
@@ -242,9 +253,13 @@ class PrintProxy(object):
             for idx, ts in enumerate(all_timestamps):
                 lyrs = all_timestamps[ts]
 
-                tmp_spec = copy.deepcopy(spec)  # spec.copy()
+                tmp_spec = copy.deepcopy(spec)
                 for lyr in lyrs:
-                    tmp_spec['layers'][lyr]['params']['TIME'] = str(ts)
+                    try:
+                        tmp_spec['layers'][lyr]['params']['TIME'] = str(ts)
+                    except KeyError:
+                        pass
+
                 if ts is not None:
                     tmp_spec['pages'][0]['timestamp'] = str(ts[0:4]) + "\n"
                 if 'legends' in tmp_spec.keys() and ts != last_timestamp:
@@ -253,7 +268,7 @@ class PrintProxy(object):
 
                 log.debug('[print_create] Processing timestamp: %s', ts)
 
-                job = (idx, url, h, ts, lyrs, tmp_spec)
+                job = (idx, url, h, ts, lyrs, tmp_spec, self.print_temp_dir)
 
                 jobs.append(job)
 
@@ -263,13 +278,18 @@ class PrintProxy(object):
             pool.close()
             try:
                 pool.join()
-            except:
                 pool.terminate()
-                pool.wait()
-                raise HTTPInternalServerError('Nasty error')
+            except Exception as e:
+                for i in reversed(range(len(pool._pool))):
+                    p = pool._pool[i]
+                    if p.exitcode is None:
+                        p.terminate()
+                    del pool._pool[i]
+                raise HTTPInternalServerError('Error while generating the partial PDF: %s', e)
         else:
+            pdfs = []
             for j in jobs:
-                worker(j)
+                pdfs.append(worker(j))
 
         log.debug('pdfs %s', pdfs)
         if len([i for i, v in enumerate(pdfs) if v[1] is None]) > 0:
