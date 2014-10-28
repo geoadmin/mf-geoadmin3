@@ -50,3 +50,30 @@ class TestWmtsCapabilitiesView(TestsBase):
         resp = self.testapp.get('/rest/services/inspire/1.0.0/WMTSCapabilities.xml', status=200)
         dom = xml.dom.minidom.parseString(resp.body)
         self.failUnless(resp.content_type == 'text/xml')
+
+    def test_tilematrixsets_are_defined(self):
+        import xml.etree.ElementTree as etree
+        resp = self.testapp.get('/rest/services/inspire/1.0.0/WMTSCapabilities.xml', status=200)
+
+        used_matrices = []
+        defined_matrices = []
+
+        root = etree.fromstring(resp.body)
+
+        # Get all used TileMatrixSet
+        layers = root.findall('.//{http://www.opengis.net/wmts/1.0}Layer')
+        for layer in layers:
+            tilematrixsets = layer.findall('.//{http://www.opengis.net/wmts/1.0}TileMatrixSetLink/*')
+            for tilematrixset in tilematrixsets:
+                s = tilematrixset.text
+                if s not in used_matrices:
+                    used_matrices.append(s)
+        # Get all TileMatrixSets which are defined
+        tilematrixsets = root.findall('.//{http://www.opengis.net/wmts/1.0}TileMatrixSet/{http://www.opengis.net/ows/1.1}Identifier')
+
+        for tilematrixset in tilematrixsets:
+            t = tilematrixset.text
+            if t not in defined_matrices:
+                defined_matrices.append(t)
+
+        self.assertTrue(set(used_matrices).issubset(defined_matrices))
