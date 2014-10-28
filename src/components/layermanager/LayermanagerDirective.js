@@ -40,7 +40,8 @@
       //   else
       //      1978  ==> '1978'
       if (!input) {
-        return (layer.getSource() instanceof ol.source.WMTS) ? '-' : '';
+        return (layer.getSource() instanceof ol.source.WMTS) ? '-' :
+            $translate('time_all');
       }
       var yearNum = input;
       if (angular.isString(input)) {
@@ -61,9 +62,14 @@
       }
       var year;
       for (var i = 1, ii = olLayers.length; i < ii; i++) {
-        if (!olLayers[i].timeEnabled || !olLayers[i].time) {
+        if (!olLayers[i].timeEnabled) {
           continue;
         }
+
+        if (!olLayers[i].time) {
+          return false;
+        }
+
         if (!year) {
           year = parseInt(olLayers[i].time.substr(0, 4));
         }
@@ -92,9 +98,13 @@
     // Timestamps list template
     var tpl =
       '<div class="ga-layer-timestamps">' +
+        '<div tabindex="1" ng-if="tmpLayer.type == \'wms\'" ' +
+             'ng-class="{badge: !tmpLayer.time}" ' +
+             'ng-click="setLayerTime(tmpLayer, null)" ' +
+             'translate>time_all</div> ' +
         '<div tabindex="1" ng-repeat="i in tmpLayer.timestamps" ' +
-             'ng-click="setLayerTime(tmpLayer, i)" ' +
-             'class="{{tmpLayer.time == i ? \'badge\' : \'\'}}">' +
+             'ng-class="{badge: (tmpLayer.time == i)}" ' +
+             'ng-click="setLayerTime(tmpLayer, i)">' +
           '{{i | gaTimeLabel:tmpLayer}}' +
         '</div>' +
       '</div>';
@@ -196,7 +206,7 @@
           if (timestamp && timestamp.length) {
             return (timestamp.substring(0, 4) === '9999') ? 'ga-black' : '';
           }
-          return (timestamp === 9999) ? 'ga-black' : '';
+          return (!timestamp || timestamp === 9999) ? 'ga-black' : '';
         };
 
         var dupId = 0;
@@ -234,7 +244,7 @@
         };
 
         scope.setLayerTime = function(layer, time) {
-          if (time) {
+          if (angular.isDefined(time)) {
             layer.time = time;
           }
           setSavedTime(scope.layers);

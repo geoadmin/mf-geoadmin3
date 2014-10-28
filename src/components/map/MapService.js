@@ -784,6 +784,7 @@
             gaDefinePropertiesForLayer(olLayer);
             olLayer.bodId = bodId;
             olLayer.label = layer.label;
+            olLayer.type = layer.type;
             olLayer.timeEnabled = layer.timeEnabled;
             olLayer.timestamps = layer.timestamps;
           }
