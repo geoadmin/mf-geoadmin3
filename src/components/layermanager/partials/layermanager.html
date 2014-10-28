@@ -20,8 +20,8 @@
     <span class="ga-layer-tools">
       <label class="ga-layer-transparency">
         <span translate>transparency</span>&nbsp;
-        <input type="range" min="0" max="1" step="0.05" value="1" ng-model="layer.invertedOpacity" ng-if="rangeSupported"/>
-        <select ng-model="layer.invertedOpacity" ng-if="!rangeSupported" ng-options="i.key as i.value for i in opacityValues">
+        <input  ng-if="useRange" type="range" min="0" max="1" step="0.05" value="1" ng-model="layer.invertedOpacity"/>
+        <select ng-if="!useRange"  ng-model="layer.invertedOpacity" ng-options="i.key as i.value for i in opacityValues">
         </select>
       </label>
       <a href="#" class="ga-layer-info" ng-show="isBodLayer(layer)" ng-click="displayLayerMetadata($event, layer)">

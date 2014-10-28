@@ -252,9 +252,10 @@
           $rootScope.$broadcast('gaTimeSelectorToggle', !!(year), year);
         };
 
-        scope.rangeSupported = gaBrowserSniffer.msie !== 9;
+        scope.useRange = (!gaBrowserSniffer.mobile && (!gaBrowserSniffer.msie ||
+            gaBrowserSniffer.msie > 9));
 
-        if (!scope.rangeSupported) {
+        if (!scope.useRange) {
           scope.opacityValues = [
             { key: '1' , value: '100%'},
             { key: '0.95' , value: '95%' }, { key: '0.9' , value: '90%' },
