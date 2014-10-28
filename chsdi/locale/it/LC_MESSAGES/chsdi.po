@@ -3491,6 +3491,12 @@ msgstr "A carregiate separate"
 msgid "rohstoff"
 msgstr "Materia prima"
 
+msgid "rotation key"
+msgstr "Utilizzare Alt + Shift + drag per ruotare l'immagine"
+
+msgid "rotation key apple"
+msgstr "Utilizzare \u2325 + Shift + drag per ruotare l'immagine"
+
 msgid "routentypid"
 msgstr "ID tipo di percorso per trasporti eccesionali"
 

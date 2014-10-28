@@ -86,9 +86,14 @@
         left: 0px;
         height: 30px;
         margin: 10px 0px;
+        text-align:center;
       }
       .footer a {
         padding: 0px 10px;
+      }
+      #messagectrl {
+        display: inline-block;
+        color: #5c5c5c;
       }
       .link-red {
         color: red;
@@ -106,6 +111,11 @@
           display: none;
         }
       }
+      @media screen and (max-width: 635px) {
+        #messagectrl {
+          display: none!important;
+        }
+      }
 
     </style>
     <link rel="shortcut icon" type="image/x-icon" href="${h.versioned(request.static_url('chsdi:static/images/favicon.ico'))}">
@@ -117,6 +127,16 @@
     </div>
     <div class="footer">
       <a class="pull-left" href="${_('disclaimer url')}" target="_blank">Copyright</a>
+      <div id="messagectrl"></div>
+      <script>
+        if ( !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+          if (navigator.platform.substr(0,3) == 'Mac') {
+            document.getElementById("messagectrl").innerHTML = "${_('rotation key apple')}";
+          } else {
+            document.getElementById("messagectrl").innerHTML = "${_('rotation key')}";
+          }
+        }
+      </script>
   % if displayLink:
       <div class="pull-right">
         <a class="link-red" href="${''.join((baseUrl, '?', layerBodId, '=', str(featureId), '&lang=', lang, '&topic=', topic))}" target="new">${_('Link to object')}</a>

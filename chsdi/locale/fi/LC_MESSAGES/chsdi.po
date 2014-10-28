@@ -3491,6 +3491,12 @@ msgstr "Richtungsgetrennt"
 msgid "rohstoff"
 msgstr "Materia prima"
 
+msgid "rotation key"
+msgstr "Benutzen Sie Alt + Umschalt + Ziehen um das Bild zu rotieren"
+
+msgid "rotation key apple"
+msgstr "Benutzen Sie \u2325 + Umschalt + Ziehen um das Bild zu rotieren"
+
 msgid "routentypid"
 msgstr "Routentyp ID für Ausnahmetransporte"
 
