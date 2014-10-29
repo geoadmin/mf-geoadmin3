@@ -15,8 +15,8 @@ class Zeitreihen_15(Base, Vector):
     __table_args__ = ({'schema': 'public', 'autoload': False})
     __template__ = 'templates/htmlpopup/zeitreihen.mako'
     __bodId__ = 'ch.swisstopo.zeitreihen'
-    __minscale__ = 100005
-    __maxscale__ = 5000000005
+    __minresolution__ = 10.05
+    __maxresolution__ = 500005
     __timeInstant__ = 'years'
     id = Column('bgdi_id', Text, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
@@ -34,8 +34,8 @@ class Zeitreihen_20(Base, Vector):
     __table_args__ = ({'schema': 'public', 'autoload': False})
     __template__ = 'templates/htmlpopup/zeitreihen.mako'
     __bodId__ = 'ch.swisstopo.zeitreihen'
-    __minscale__ = 50005
-    __maxscale__ = 100005
+    __minresolution__ = 5.05
+    __maxresolution__ = 10.05
     __timeInstant__ = 'years'
     id = Column('bgdi_id', Text, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
@@ -53,8 +53,8 @@ class Zeitreihen_21(Base, Vector):
     __table_args__ = ({'schema': 'public', 'autoload': False})
     __template__ = 'templates/htmlpopup/zeitreihen.mako'
     __bodId__ = 'ch.swisstopo.zeitreihen'
-    __minscale__ = 25005
-    __maxscale__ = 50005
+    __minresolution__ = 2.55
+    __maxresolution__ = 5.05
     __timeInstant__ = 'years'
     id = Column('bgdi_id', Text, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
@@ -72,8 +72,8 @@ class Zeitreihen_22(Base, Vector):
     __table_args__ = ({'schema': 'public', 'autoload': False})
     __template__ = 'templates/htmlpopup/zeitreihen.mako'
     __bodId__ = 'ch.swisstopo.zeitreihen'
-    __minscale__ = 0
-    __maxscale__ = 25005
+    __minresolution__ = 0
+    __maxresolution__ = 2.55
     __timeInstant__ = 'years'
     id = Column('bgdi_id', Text, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))

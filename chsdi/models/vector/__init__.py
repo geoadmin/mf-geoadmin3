@@ -16,21 +16,18 @@ from chsdi.esrigeojsonencoder import loads
 from shapely.geometry import asShape
 
 
-def getScale(imageDisplay, mapExtent):
-    metersPerInch = 0.0254
-    imgPixelPerInch = imageDisplay[2]
-    imgPixelHeight = imageDisplay[1]
-    imgPixelWidth = imageDisplay[0]
+def getResolution(imageDisplay, mapExtent):
     bounds = mapExtent.bounds
-
     mapMeterWidth = abs(bounds[0] - bounds[2])
     mapMeterHeight = abs(bounds[1] - bounds[3])
-    imgMeterWidth = (imgPixelWidth / imgPixelPerInch) * metersPerInch
-    imgMeterHeight = (imgPixelHeight / imgPixelPerInch) * metersPerInch
+    xRes = mapMeterWidth / imageDisplay[0]
+    yRes = mapMeterHeight / imageDisplay[1]
+    return max(xRes, yRes)
 
-    resolution = max((imgMeterWidth / mapMeterWidth, imgMeterHeight / mapMeterHeight))
-    scale = 1.0 / resolution
-    return int(scale)
+
+def getScale(imageDisplay, mapExtent):
+    resolution = getResolution(imageDisplay, mapExtent)
+    return resolution * 39.37 * imageDisplay[2]
 
 
 def getToleranceMeters(imageDisplay, mapExtent, tolerance):
@@ -50,6 +47,8 @@ def getToleranceMeters(imageDisplay, mapExtent, tolerance):
 class Vector(GeoInterface):
     __minscale__ = 0
     __maxscale__ = maxsize
+    __minresolution__ = 0
+    __maxresolution__ = maxsize
     attributes = {}
 
     # Overrides GeoInterface
@@ -140,11 +139,17 @@ class Vector(GeoInterface):
     def geom_filter(cls, geometry, geometryType, imageDisplay, mapExtent, tolerance):
         toleranceMeters = getToleranceMeters(imageDisplay, mapExtent, tolerance)
         scale = None
+        resolution = None
         minScale = cls.__minscale__ if hasattr(cls, '__minscale__') else None
         maxScale = cls.__maxscale__ if hasattr(cls, '__maxscale__') else None
+        minResolution = cls.__minresolution__ if hasattr(cls, '__minresolution__') else None
+        maxResolution = cls.__maxresolution__ if hasattr(cls, '__maxresolution__') else None
         if minScale is not None and maxScale is not None and toleranceMeters != 0.0:
             scale = getScale(imageDisplay, mapExtent)
-        if scale is None or (scale > cls.__minscale__ and scale <= cls.__maxscale__):
+        if minResolution is not None and maxResolution is not None and toleranceMeters != 0.0:
+            resolution = getResolution(imageDisplay, mapExtent)
+        if (scale is None or (scale > cls.__minscale__ and scale <= cls.__maxscale__)) and \
+           (resolution is None or (resolution > cls.__minresolution__ and resolution <= cls.__maxresolution__)):
             geom = esriRest2Shapely(geometry, geometryType)
             wkbGeometry = WKBSpatialElement(buffer(geom.wkb), 21781)
             geomColumn = cls.geometry_column()
