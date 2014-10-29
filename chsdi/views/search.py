@@ -40,7 +40,7 @@ class Search(SearchValidation):
         self.timeInstant = request.params.get('timeInstant')
         self.timeEnabled = request.params.get('timeEnabled')
         self.typeInfo = request.params.get('type')
-        self.varnish_authorized = request.headers.get('X-Searchserver-Authorized', 'true').lower() == 'true'
+        self.varnish_authorized = request.headers.get('X-SearchServer-Authorized', 'false').lower() == 'true'
 
         self.geodataStaging = request.registry.settings['geodata_staging']
         self.results = {'results': []}
