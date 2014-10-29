@@ -187,8 +187,23 @@ class TestSearchServiceView(TestsBase):
         self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'feature')
         self.failUnless(resp.json['results'][0]['attrs']['feature_id'] == '43543')
 
-    def test_features_time(self):
+    def test_features_timeinstant(self):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'featuresearch', 'bbox': '542199,206799,542201,206801', 'timeInstant': '1981'}, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'feature')
+
+    def test_features_timestamp(self):
+        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'featuresearch', 'bbox': '542199,206799,542201,206801', 'timeStamps': '1981'}, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'feature')
+
+    def test_features_empty_timestamp(self):
+        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'featuresearch', 'bbox': '542199,206799,542201,206801', 'timeStamps': ''}, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'feature')
+
+    def test_features_multiple_timestamps(self):
+        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '198', 'features': 'ch.swisstopo.lubis-luftbilder_farbe,ch.swisstopo.lubis-luftbilder_schwarzweiss', 'type': 'featuresearch', 'bbox': '542199,206799,542201,206801', 'timeStamps': '1986,1989', 'timeEnabled': 'true,true'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'feature')
 
@@ -207,6 +222,16 @@ class TestSearchServiceView(TestsBase):
 
     def test_features_wrong_time_2(self):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'featuresearch', 'bbox': '542200,206800,542200,206800', 'timeInstant': '1952.00'}, status=400)
+
+    def test_features_mix_timeinstant_timestamps(self):
+        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '19810590048970', 'features':
+        'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'featuresearch', 'bbox': '542200,206800,542200,206800', 'timeInstant': '1952', 'timeStamps': '1946'}, status=400)
+
+    def test_features_wrong_timestamps(self):
+        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'featuresearch', 'bbox': '542200,206800,542200,206800', 'timeStamps': '19522'}, status=400)
+
+    def test_features_wrong_timestamps_2(self):
+        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'featuresearch', 'bbox': '542200,206800,542200,206800', 'timeStamps': '1952.00'}, status=400)
 
     def test_featuressearch_geodist(self):
         resp = self.testapp.get('/rest/services/all/SearchServer', params={'features': 'ch.babs.kulturgueter', 'type': 'featureidentify', 'bbox': '688290,166864,688309,166884'})
