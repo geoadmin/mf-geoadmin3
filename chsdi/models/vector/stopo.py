@@ -1197,6 +1197,33 @@ class geometaNfgeom(Base, Vector):
 register('ch.swisstopo-vd.geometa-nfgeom', geometaNfgeom)
 
 
+class oerebkataster(Base, Vector):
+    __tablename__ = 'view_oereb_nfgeom'
+    __table_args__ = ({'schema': 'vd', 'autoload': False})
+    __template__ = 'templates/htmlpopup/oerebkataster.mako'
+    __bodId__ = 'ch.swisstopo-vd.stand-oerebkataster'
+    id = Column('gid', Integer, primary_key=True)
+    fid = Column('id', Integer)
+    gemeindename = Column('gemeindename', Text)
+    kanton = Column('kanton', Text)
+    oereb_status_de = Column('oereb_status_de', Text)
+    oereb_status_fr = Column('oereb_status_fr', Text)
+    oereb_status_it = Column('oereb_status_it', Text)
+    oereb_status_rm = Column('oereb_status_rm', Text)
+    oereb_status_en = Column('oereb_status_en', Text)
+    bfs_nr = Column('bfs_nr', Integer)
+    firmenname = Column('firmenname', Text)
+    adresszeile = Column('adresszeile', Text)
+    plz = Column('plz', Integer)
+    ort = Column('ort', Text)
+    telefon = Column('telefon', Text)
+    email = Column('email', Text)
+    url_oereb = Column('url_oereb', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo-vd.stand-oerebkataster', oerebkataster)
+
+
 class spannungsarmeGebiete(Base, Vector):
     __tablename__ = 'spannungsarme_gebiete'
     __table_args__ = ({'schema': 'vd', 'autoload': False})

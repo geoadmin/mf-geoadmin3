@@ -392,6 +392,9 @@ msgstr ""
 msgid "ch.swisstopo-vd.geometa-nfgeom"
 msgstr ""
 
+msgid "ch.swisstopo-vd.stand-oerebkataster"
+msgstr ""
+
 msgid "ch.blw.bodeneignung-vernaessung"
 msgstr ""
 
@@ -1419,6 +1422,18 @@ msgid "Lower right corner"
 msgstr ""
 
 msgid "Upper right corner"
+msgstr ""
+
+msgid "oereb_bool"
+msgstr ""
+
+msgid "oereb_firma"
+msgstr ""
+
+msgid "oereb_status"
+msgstr ""
+
+msgid "oereb_url"
 msgstr ""
 
 msgid "print"

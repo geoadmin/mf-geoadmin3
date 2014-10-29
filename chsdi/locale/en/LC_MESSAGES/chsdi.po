@@ -1791,6 +1791,9 @@ msgstr "ZIP and locations"
 msgid "ch.swisstopo-vd.spannungsarme-gebiete"
 msgstr "Low distortion area"
 
+msgid "ch.swisstopo-vd.stand-oerebkataster"
+msgstr "Availability of the PLR cadastre"
+
 msgid "ch.swisstopo-vd.url"
 msgstr "http://www.cadastre.ch"
 
@@ -3392,6 +3395,18 @@ msgstr "Object Nr."
 
 msgid "oeffentlich"
 msgstr "Öffentlich"
+
+msgid "oereb_bool"
+msgstr "ÖREB-Kataster"
+
+msgid "oereb_firma"
+msgstr "PLR Authority"
+
+msgid "oereb_status"
+msgstr "PLR State"
+
+msgid "oereb_url"
+msgstr "Cantonal geoportal"
 
 msgid "official object webpage"
 msgstr "Official object webpage"
