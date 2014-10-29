@@ -589,17 +589,26 @@ a .ga-icon-separator {
   }
 }
 // ****** SELECTION
-#selection .panel-body {
-  padding: 0px 4px;
+#selection {
+  
+  .panel-body {
+    padding: 0px 4px;
     
-  a {
-    display: inline;
-    line-height: 12px;
-    border: none;
+    a {
+      display: inline;
+      line-height: 12px;
+      border: none;
      
-    @media (max-width: @screen-tablet) {
-      line-height: 32px;
+      @media (max-width: @screen-tablet) {
+        line-height: 32px;
+      }
     }
+  }
+
+  .popover-content {
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 200px;
   }
 }
 

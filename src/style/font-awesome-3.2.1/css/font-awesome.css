@@ -453,6 +453,9 @@ a .icon-flip-vertical:before {
 .icon-facebook:before {
   content: "\f09a";
 }
+.icon-copy:before {
+  content: "\f0c5";
+}
 .icon-reorder:before {
   content: "\f0c9";
 }

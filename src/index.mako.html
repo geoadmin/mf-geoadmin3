@@ -184,9 +184,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         <div ga-attribution ga-attribution-map="map"></div>
       </div>
       <div id='buttongroup'>
-        <div ga-time-selector-bt 
-           ga-time-selector-bt-active="globals.isTimeSelectorActive">
-        </div> 
+        <div ga-time-selector-bt ga-time-selector-map="map"></div> 
         <div ga-rotate ga-rotate-map="map"></div>
       </div>
 % if device == 'mobile':
@@ -239,9 +237,7 @@ itemscope itemtype="http://schema.org/WebApplication"
 
     <div ng-controller="GaTimeSelectorController">
       <div ga-time-selector ga-time-selector-map="map"
-           ga-time-selector-options="options"
-           ga-time-selector-active="globals.isTimeSelectorActive" 
-           style="display:none;">
+           ga-time-selector-options="options">
       </div>
     </div>
 

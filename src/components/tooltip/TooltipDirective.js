@@ -149,6 +149,31 @@
               });
             });
 
+            // Test if the layer is a vector layer
+            function isVectorLayer(olLayer) {
+              return (olLayer instanceof ol.layer.Vector ||
+                  (olLayer instanceof ol.layer.Image &&
+                  olLayer.getSource() instanceof ol.source.ImageVector));
+            };
+
+            // Test if the layer is a queryable bod layer
+            function isQueryableBodLayer(olLayer) {
+              return (olLayer.bodId &&
+                  gaLayers.getLayerProperty(olLayer.bodId, 'queryable'));
+            };
+
+            // Get all the queryable layers
+            function getLayersToQuery() {
+              var layersToQuery = [];
+              map.getLayers().forEach(function(l) {
+                if (l.visible && !l.preview &&
+                    (isQueryableBodLayer(l) || isVectorLayer(l))) {
+                  layersToQuery.push(l);
+                }
+              });
+              return layersToQuery;
+            }
+
             // Find the first feature from a vector layer
             function findVectorFeature(pixel, vectorLayer) {
               var featureFound;
@@ -164,70 +189,57 @@
               });
               return featureFound;
             };
+
             // Find features for all type of layers
             function findFeatures(coordinate, size, mapExtent) {
               var identifyUrl = $scope.options.identifyUrlTemplate
-                                .replace('{Topic}', currentTopic),
+                  .replace('{Topic}', currentTopic),
                   layersToQuery = getLayersToQuery(),
-                  layerToQuery,
-                  params,
-                  identifyCount,
-                  i;
-
+                  pixel = map.getPixelFromCoordinate(coordinate);
               initTooltip();
-              var pixel = map.getPixelFromCoordinate(coordinate);
-              identifyCount = layersToQuery.length;
-              if (identifyCount) {
-                for (i = 0; i < identifyCount; i++) {
-                  layerToQuery = layersToQuery[i];
-                  if (layerToQuery instanceof ol.layer.Vector ||
-                      (layerToQuery instanceof ol.layer.Image &&
-                      layerToQuery.getSource() instanceof
-                        ol.source.ImageVector)) {
-                    var feature = findVectorFeature(pixel, layerToQuery);
-                    if (feature) {
-                      var htmlpopup =
-                        '<div class="htmlpopup-container">' +
-                          '<div class="htmlpopup-header">' +
-                            '<span>' + layerToQuery.label + ' &nbsp;</span>' +
-                            '(' + feature.get('name') + ')' +
-                          '</div>' +
-                          '<div class="htmlpopup-content">' +
-                            feature.get('description') +
-                          '</div>' +
-                        '</div>';
-                      feature.set('htmlpopup', htmlpopup);
-                      showFeatures(layerToQuery.getExtent(), size,
-                          [feature]);
-                    }
-                  } else {
-                    params = {
-                      geometryType: 'esriGeometryPoint',
-                      geometryFormat: 'geojson',
-                      geometry: coordinate[0] + ',' + coordinate[1],
-                      // FIXME: make sure we are passing the right dpi here.
-                      imageDisplay: size[0] + ',' + size[1] + ',96',
-                      mapExtent: mapExtent.join(','),
-                      tolerance: $scope.options.tolerance,
-                      layers: 'all:' + layerToQuery.id
-                    };
-                    /**
-                     * Layers with year well in the future have special meaning
-                     * (aggregateted years) and should not be queried as it
-                     * were a real year.
-                     */
-                    if (layerToQuery.year &&
-                        layerToQuery.year <= (new Date()).getFullYear()) {
-                      params.timeInstant = layerToQuery.year;
-                    }
-
-                    $http.get(identifyUrl, {
-                      timeout: canceler.promise,
-                      params: params
-                    }).success(function(features) {
-                      showFeatures(mapExtent, size, features.results);
-                    });
+              for (var i = 0, ii = layersToQuery.length; i < ii; i++) {
+                var layerToQuery = layersToQuery[i];
+                if (isVectorLayer(layerToQuery)) {
+                  var feature = findVectorFeature(pixel, layerToQuery);
+                  if (feature) {
+                    var htmlpopup =
+                      '<div class="htmlpopup-container">' +
+                        '<div class="htmlpopup-header">' +
+                          '<span>' + layerToQuery.label + ' &nbsp;</span>' +
+                          '(' + feature.get('name') + ')' +
+                        '</div>' +
+                        '<div class="htmlpopup-content">' +
+                          feature.get('description') +
+                        '</div>' +
+                      '</div>';
+                    feature.set('htmlpopup', htmlpopup);
+                    showFeatures(layerToQuery.getExtent(), size,
+                        [feature]);
                   }
+                } else { // queryable bod layers
+                  var params = {
+                    geometryType: 'esriGeometryPoint',
+                    geometryFormat: 'geojson',
+                    geometry: coordinate[0] + ',' + coordinate[1],
+                    // FIXME: make sure we are passing the right dpi here.
+                    imageDisplay: size[0] + ',' + size[1] + ',96',
+                    mapExtent: mapExtent.join(','),
+                    tolerance: $scope.options.tolerance,
+                    layers: 'all:' + layerToQuery.bodId
+                  };
+
+                  // Only timeEnabled layers use the timeInstant parameter
+                  if (layerToQuery.timeEnabled) {
+                    params.timeInstant = year ||
+                        yearFromString(layerToQuery.time);
+                  }
+
+                  $http.get(identifyUrl, {
+                    timeout: canceler.promise,
+                    params: params
+                  }).success(function(features) {
+                    showFeatures(mapExtent, size, features.results);
+                  });
                 }
               }
             }
@@ -319,59 +331,13 @@
               htmls.push($sce.trustAsHtml(html));
             }
 
-            function getLayersToQuery(layers) {
-              var layersToQuery = [];
-              map.getLayers().forEach(function(l) {
-                var bodId = l.bodId,
-                    layerToQuery,
-                    timestamps, timeBehaviour;
-                if ((l instanceof ol.layer.Vector ||
-                    (l instanceof ol.layer.Image &&
-                    l.getSource() instanceof ol.source.ImageVector)) &&
-                    !l.preview) {
-                  layerToQuery = l;
-                } else if (gaLayers.getLayer(bodId) &&
-                    gaLayers.getLayerProperty(bodId, 'queryable') &&
-                    l.visible &&
-                    layersToQuery.indexOf(bodId) < 0) {
-
-                  layerToQuery = {
-                    id: bodId
-                  };
-
-                  timestamps = getLayerTimestamps(bodId);
-                  if (angular.isDefined(timestamps)) {
-
-                    layerToQuery.year = year;
-
-                    //In case we don't have active year,
-                    //the timeBehaviour decide on what to do
-                    if (!angular.isDefined(layerToQuery.year) &&
-                        gaLayers.getLayerProperty(bodId, 'timeBehaviour') !==
-                            'all') {
-                        layerToQuery.year = yearFromString(timestamps[0]);
-                    }
-                  }
-                }
-
-                if (layerToQuery) {
-                  layersToQuery.push(layerToQuery);
-                }
-              });
-              return layersToQuery;
-            }
-
-            function getLayerTimestamps(id) {
-              var timestamps;
-              if (id && gaLayers.getLayer(id) &&
-                  gaLayers.getLayerProperty(id, 'timeEnabled')) {
-                timestamps = gaLayers.getLayerProperty(id, 'timestamps');
-              }
-              return timestamps;
-            }
-
             function yearFromString(timestamp) {
-              return parseInt(timestamp.substr(0, 4));
+              if (timestamp && timestamp.length) {
+                timestamp = parseInt(timestamp.substr(0, 4));
+                if (timestamp <= new Date().getFullYear()) {
+                  return timestamp;
+                }
+              }
             }
           }
         };

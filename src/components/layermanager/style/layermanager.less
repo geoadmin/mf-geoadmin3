@@ -1,31 +1,80 @@
 [ga-layermanager] {
-  
-  a {
-    display: inline;
-    border: none;
-    line-height: 12px;
+  li {
+    border-bottom: #e9e9e9 1px solid;
+ 
+    @media (max-width: @screen-tablet) {
+      height: 3em;
+      padding: 0;
+      overflow: hidden;
+    }
   }
-   
+
+  li, li > div {
+    position: relative;
+  }
+
   select {
-    width: 8em;
     display: inline;
+    width: 5.5em;
+    padding: 0;
   }
  
-  input[type=checkbox] {
-    vertical-align: -5%;
+  label, input, select, options {
+    cursor: pointer;
+  }
+
+  label {
+    margin-bottom: 7px;
+    font-weight: normal;
+    padding-top: .3em;
+    padding-left: 2.2em;
+  
+    @media (max-width: @screen-tablet) {
+      height: inherit;
+      margin-bottom: 0;
+      padding-bottom: .3em;
+      line-height: 2.4em;
+    }
+  }
+
+  button {
+    top: 0;
+    width: 16px;
+    height: 100%;
+    font-size: 1.2em;
+    background: transparent;
+    border: none;
+    padding: 0;
+ 
+    &:hover {
+      color: #666;
+    }
+
+    &.ga-disabled, &.ga-disabled:hover {
+      color: #CCC;
+      cursor: default;
+    }
+ 
+    @media (max-width: @screen-tablet) {
+      top: 0;
+      height: 100%;
+      font-size: 2.2em;
+      width: 1em;
+    }
   }
 
   input[type=range] {
-    width: 13em;
+    width: 10em;
     padding: 0px;
     height: 14px;
-     
+    vertical-align: middle;
+ 
     &::-ms-track {
       height: 4px;
       color: transparent;
       background: linear-gradient(to right, rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%);
     }
-    
+ 
     &::-ms-fill-lower, &::-ms-fill-upper {
       background: none;
     }
@@ -35,187 +84,105 @@
       border-radius: 5px;
       height: 12px;
       background: linear-gradient(to bottom, #eeeeee 0%,#cccccc 100%);
-    }
-  }
-   
-  label {
-    font-weight: normal;
-    padding-top: 3px;
-      
-    &:first-of-type {
-      width: 100%;
-      padding-left: 2.7em;
-      padding-right: 1.3em;
-    }
-    
-    &.ga-layer-transparency {
-      padding-left: 3em;
-      display: block;
-      font-size: 90%;
-      
-      input {
-        vertical-align: middle;
-      }
     } 
-  }
-  
-  label, input, a, i {
-    cursor: pointer;
-  }
-
-  li {
-    .panel-subtitle;
-    
-    height: auto;
-    line-height: 1.2em;
-    position: relative;
-    padding: .2em 0;
-    
-  }
-  
-  li:first-of-type {
-    .icon-arrow-up {
-      color: #ccc;
-      cursor: default;
+ 
+    @media (max-width: @screen-tablet) {
+      width: 6em;
     }
   }
-  
-  li:last-of-type {
-    border-bottom-width: 0;
-    
-    .icon-arrow-down {
-      color: #ccc;
-      cursor: default;
+ 
+  .ga-layer-infos {
+    width: 100%;
+ 
+    button {
+      position: absolute;
+ 
+      @media (min-width: @screen-tablet) {
+        /* critical css, makes alignement correct on all desktop browsers*/
+        top: 3px;
+        height: 25px;
+      }
     }
-  }
 
-  .btn-xs {
-    line-height: 1;
-    padding: 1px 3px 0;
-    margin: 0 .6em;
-    position: absolute;
-    left: 0;
-    height: 15px;
-    top: 5px;
-  }
-   
-  .ga-layer-time-label {
-    position: absolute;
-    top: .65em;
-    right: 16px;
-    color: red;
-  }
-
-  .ga-layer-info, .btn-xs {
-    margin-top: 3px;
-  }
-
-  .ga-layer-info, .ga-layer-ordering, .icon-gear {
-    position: absolute;
-    top: .5em;
-    right: 0;
-  }
-  
-  .icon-gear {
-    display: none;
-    .rotate(0deg);
-
-    &:hover {
-      opacity: 0.6;
-    }
-  }
-  
-  .ga-layer-ordering {
-    bottom: .6em;
-    top: auto;
-  }
-   
-  .ga-layer-time-enabled label:first-of-type {
-    padding-right: 3.7em;
-  }
-       
-  @media (max-width: @screen-tablet) {
-     
-    a, i {
-      font-size: 26px;
-      background-color: inherit;
-      border: none;
-      line-height: 1.5em;
-    }
-      
-    input[type=range] {
-      width: 7em;
-    }
-     
-    li {
-      height: 3em;
-      line-height: 2.5;
-      padding: 0;
-      overflow: hidden;
-      
-      label:first-of-type {
+    label {
+      width: 100%;
+      padding-right: 1.3em;
+ 
+      @media (max-width: @screen-tablet) {
+        padding-left: 2.8em;
         padding-right: 2.1em;
-        height: 35px;
         white-space: nowrap;
         overflow: hidden;
-        text-overflow: ellipsis; 
+        text-overflow: ellipsis;
       }
-      
-      &.ga-layer-time-enabled label:first-of-type {
-        padding-right: 4.7em; 
-      }
-    }
-    
-    label.ga-layer-transparency {
-      padding-left: 1em;
-    }
-    
-    .btn-xs {
-      top: 8px;
-      height: 20px;
-      font-size: 20px;
-      margin: 0 0 0 5px;
-      padding: 0 3px 0px;
-      line-height: 20px;
-      @media (max-width: @screen-tablet) {
-        top: 0;
-        height: 100%;
-        margin: 0;
-        border: 0;
-        background: white;
-        color: black;
-        width: 1.5em;
-      }
-    }
-    
-    .icon-gear {
-      display: inline;
-      .transition(all .35s ease);
-    }
-
-       
-    .ga-layer-time-label {
-      top: 0.2em;
-      right: 28px;
-    }
-       
-    .ga-layer-ordering {
-      right: 65px;
-    }
-    
-    .ga-layer-info {
-      right: 1.2em;
-    }
-    
-    .ga-layer-info, .btn-xs {
-      margin-top: 0px;
     }
  
-    .ga-layer-ordering, .ga-layer-info, .icon-gear {
-      top: 1px;
+    .ga-layer-remove {
+      color: #fff;
+      background-color: #000;
+      line-height: 1em;
+ 
+      @media (max-width: @screen-tablet) {
+        color: inherit;
+        background-color: transparent;
+      }
     }
 
-    .ga-layer-tools {
+    .ga-layer-time {
+      right: 1.7em;
+      width: 4em;
+
+      select {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        padding: 0px;
+        margin: 0px;
+        line-height: 1.6em;
+        opacity: 0;
+      }
+ 
+      @media (max-width: @screen-tablet) {
+        right: 2.7em;
+        height: 1.7em;
+        margin: 0.6em 0;
+      }
+    }
+ 
+    .icon-info-sign {
+      right: 0;
+ 
+      @media (max-width: @screen-tablet) {
+        display: none;
+      }
+    }
+  }
+ 
+  .ga-layer-time-enabled .ga-layer-infos label {
+    padding-right: 6em;
+ 
+    @media (max-width: @screen-tablet) {
+      padding-right: 7.7em;
+    }
+  }
+ 
+  .ga-layer-tools {
+ 
+    label {
+      font-size: 0.9em;
+
+      > * {
+        display: inline-block;
+      }
+
+      @media (max-width: @screen-tablet) {
+        padding-left: 0.3em;
+      }
+    }
+ 
+    @media (max-width: @screen-tablet) {
       position: absolute;
       height: 100%;
       width: 100%;
@@ -225,17 +192,109 @@
       border-left: 3px solid #666;
       .transition(margin-left .35s ease);
     }
-    
-    .ga-layer-folded {
-      
-      .ga-layer-tools {
-        margin-left:100%;
+  }
+ 
+  .ga-layer-time-enabled > .ga-layer-tools {
+ 
+    @media (max-width: 335px) {
+      label > div {
+        font-size: 0.8em;
+        width: 60px;
+        text-overflow: ellipsis;
       }
-      
+    }
+  }
+
+  .icon-gear {
+    display: none;
+    position: absolute;
+    right: 0;
+    .transition(all .35s ease);
+    .rotate(0deg);
+
+    @media (max-width: @screen-tablet) {
+      display: block;
+    }
+  }
+
+  .ga-layer-ordering {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+
+    button {
+      height: 100%;
+    }
+ 
+    @media (max-width: @screen-tablet) {
+      padding-right: 2.7em;
+    }
+
+    .icon-info-sign {
+      display: none;
+
+      @media (max-width: @screen-tablet) {
+        display: inline;
+      }
+    }
+  }
+ 
+  @media (max-width: @screen-tablet) {
+    padding: 0 !important;
+ 
+    .ga-layer-infos, ga-layer-tools {
+      height: 100%;
+    }
+ 
+    .ga-layer-folded {
+ 
+      .ga-layer-tools {
+        margin-left: 100%;
+      }
+ 
       .icon-gear {
         .rotate(360deg);
       }
     }
+  }
+}
+
+/* The popover is outside the layermanager */
+.ga-layer-timestamps {
+  width: 250px;
+ 
+  @media (max-width: @screen-tablet) {
+    width: 200px;
+  }
+ 
+  & div {
+    width: 50px;
+    height: 20px;
+    display: inline-block;
+    border: 1px solid rgba(0, 0, 0, 0);
+    text-align: center;
+
+    &:not(.badge):hover {
+      border: 1px solid #C6C6C6;
+      background-color: #D3D3D3;
+      cursor: pointer;
+      color: red;
+    }
+  }
+}
+
+.ga-layer-timestamps .badge, [ga-layermanager] .badge {
+  background-color: #D3D3D3;
+  font-size: inherit;
+  font-weight: normal;
+ 
+  &, &.ga-black, &.ga-black:hover {
+    color: #000;
+  }
+ 
+  &:not(.ga-black), &:not(.ga-black):hover {
+    color: #f00;
   }
 }
 

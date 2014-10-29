@@ -218,6 +218,11 @@ a [class*=" icon-"] {
 }
 
 
+.icon-copy {
+  @include ie7icon('&#xf0c5;');
+}
+
+
 .icon-reorder {
   @include ie7icon('&#xf0c9;');
 }
