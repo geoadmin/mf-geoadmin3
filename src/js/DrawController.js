@@ -2,21 +2,16 @@
   goog.provide('ga_draw_controller');
 
   var module = angular.module('ga_draw_controller', [
-    'pascalprecht.translate'
+    'pascalprecht.translate',
+    'ga_styles_service'
   ]);
 
   module.controller('GaDrawController',
-      function($scope, $translate, gaGlobalOptions) {
+      function($scope, $translate, gaGlobalOptions, gaStyleFactory) {
         
         // Defines static styles
         var white = [255, 255, 255];
         var black = [0, 0, 0];
-        var transparent = [0, 0, 0, 0];
-        var transparentCircle =  new ol.style.Circle({
-          radius: 1,
-          fill: new ol.style.Fill({color: transparent}),
-          stroke: new ol.style.Stroke({color: transparent})
-        }); 
 
         // Defines directive options
         $scope.options = {
@@ -31,14 +26,14 @@
             {id: 'delete',  iconClass: 'icon-ga-delete'}
           ],
           colors: [
-            {name: 'black',  fill: [0, 0, 0],       textStroke: white},
-            {name: 'blue',   fill: [0, 0, 255],     textStroke: white},
-            {name: 'gray',   fill: [128, 128, 128], textStroke: white},
-            {name: 'green',  fill: [0, 128, 0],     textStroke: white},
-            {name: 'orange', fill: [255, 165, 0],   textStroke: black},
-            {name: 'red',    fill: [255, 0, 0],     textStroke: white},
-            {name: 'white',  fill: [255, 255, 255], textStroke: black},
-            {name: 'yellow', fill: [255, 255, 0],   textStroke: black}
+            {name: 'black',  fill: [0, 0, 0]},
+            {name: 'blue',   fill: [0, 0, 255]},
+            {name: 'gray',   fill: [128, 128, 128]},
+            {name: 'green',  fill: [0, 128, 0]},
+            {name: 'orange', fill: [255, 165, 0]},
+            {name: 'red',    fill: [255, 0, 0]},
+            {name: 'white',  fill: [255, 255, 255]},
+            {name: 'yellow', fill: [255, 255, 0]}
           ],
           iconSizes:[
             {label:'24 px', value: [24, 24], scale: 0.5},
@@ -202,21 +197,7 @@
         $scope.getIconUrl = function(i) {
           return i.url;
         };
-        
-        // Rules for the z-index (useful for a correct selection):
-        // Sketch features (when modifying): 60
-        // Features selected: 50
-        // Point with Icon: 40
-        // Point with Text: 30
-        // Line: 20
-        // Polygon: 10
-        var ZPOLYGON = 10;
-        var ZLINE = 20;
-        var ZTEXT = 30;
-        var ZICON = 40;
-        var ZSELECT = 50;
-        var ZSKETCH = 60;
-
+       
         // Define layer style function
         $scope.options.styleFunction = (function() {
           return function(feature, resolution) {
@@ -225,7 +206,7 @@
                 feature.getStyleFunction()() !== null) {
               return feature.getStyleFunction()(resolution); 
             }
-            var zIndex = ZPOLYGON;
+            var zIndex = gaStyleFactory.ZPOLYGON;
 
             // Only update features with new colors if its style is null
             var text, icon;
@@ -245,7 +226,7 @@
             
             // Drawing line
             if ($scope.options.isLineActive) {
-              zIndex = ZLINE;
+              zIndex = gaStyleFactory.ZLINE;
             }
             
             // Drawing text
@@ -256,19 +237,16 @@
                 angular.isDefined($scope.options.text)) {
 
               text = new ol.style.Text({
-                font: 'normal 16px Helvetica',
+                font: gaStyleFactory.FONT,
                 text: $scope.options.text,
                 fill: new ol.style.Fill({
                   color: stroke.getColor()
                 }),
-                stroke: new ol.style.Stroke({
-                  color: color.textStroke.concat([1]),
-                  width: 3
-                })
+                stroke: gaStyleFactory.getTextStroke(stroke.getColor())
               });
               fill = undefined;
               stroke = undefined;
-              zIndex = ZTEXT;
+              zIndex = gaStyleFactory.ZTEXT;
             } 
             feature.set('useText', (!!text));
 
@@ -281,12 +259,11 @@
 
               icon = new ol.style.Icon({
                 src: $scope.getIconUrl($scope.options.icon),
-                size: [48, 48],
                 scale: $scope.options.iconSize.scale
               });
               fill = undefined;
               stroke = undefined;
-              zIndex = ZICON;
+              zIndex = gaStyleFactory.ZICON;
             } 
             feature.set('useIcon', (!!icon));
             
@@ -295,7 +272,8 @@
                 fill: fill,
                 stroke: stroke,
                 text: text,
-                image: icon || ((text) ? transparentCircle : sketchCircle),
+                image: icon || ((!text) ? sketchCircle :
+                    gaStyleFactory.getStyle('transparentCircle')),
                 zIndex: zIndex
               })
             ];
@@ -349,7 +327,7 @@
                 color: black.concat([1])
               })
             }), 
-            zIndex: ZSKETCH 
+            zIndex: gaStyleFactory.ZSKETCH 
           });
            
           return function(feature, resolution) {
@@ -378,7 +356,7 @@
                 stroke: stroke,
                 text: text,
                 image: (text) ? style.getImage() : defaultCircle,
-                zIndex: ZSELECT                
+                zIndex: gaStyleFactory.ZSELECT                
               })
             ];
           }

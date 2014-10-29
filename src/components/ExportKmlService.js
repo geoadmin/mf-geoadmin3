@@ -31,37 +31,41 @@
       var ExportKml = function() {
         this.create = function(layer, projection) {
           var kmlString,
-              exportFeatures = [],
-              hasText = false;
+              exportFeatures = [];
           layer.getSource().forEachFeature(function(f) {
-              //we don't support exports of text elements for now
-              if (!f.get('useText')) {
-                var clone = f.clone();
-                clone.setId(f.getId());
-                clone.getGeometry().transform(projection, 'EPSG:4326');
-                var styles;
-                if (clone.getStyleFunction()) {
-                  styles = clone.getStyleFunction()();
-                } else {
-                  styles = layer.getStyleFunction()(clone);
-                }
-                var newStyle = {
-                  fill: styles[0].getFill(),
-                  stroke: styles[0].getStroke(),
-                  text: styles[0].getText(),
-                  image: styles[0].getImage(),
-                  zIndex: styles[0].getZIndex()
-                };
-                if (newStyle.image instanceof ol.style.Circle) {
-                  newStyle.image = null;
-                }
-                var myStyle = new ol.style.Style(newStyle);
-                clone.setStyle(myStyle);
+            var clone = f.clone();
+            clone.setId(f.getId());
+            clone.getGeometry().transform(projection, 'EPSG:4326');
+            var styles;
+            if (clone.getStyleFunction()) {
+              styles = clone.getStyleFunction()();
+            } else {
+              styles = layer.getStyleFunction()(clone);
+            }
+            var newStyle = {
+              fill: styles[0].getFill(),
+              stroke: styles[0].getStroke(),
+              text: styles[0].getText(),
+              image: styles[0].getImage(),
+              zIndex: styles[0].getZIndex()
+            };
+            if (newStyle.image instanceof ol.style.Circle) {
+              newStyle.image = null;
+            }
 
-                exportFeatures.push(clone);
-              } else {
-                hasText = true;
-              }
+            // If only text is displayed we must specify an image style with
+            // scale=0
+            if (newStyle.text && !newStyle.image) {
+              newStyle.image = new ol.style.Icon({
+                src: 'noimage',
+                scale: 0
+              });
+            }
+
+            var myStyle = new ol.style.Style(newStyle);
+            clone.setStyle(myStyle);
+
+            exportFeatures.push(clone);
           });
 
           if (exportFeatures.length > 0) {
@@ -72,9 +76,9 @@
             if (!kmlString) {
               kmlString = new XMLSerializer().serializeToString(node);
             }
-          }
-          if (hasText) {
-            alert($translate('kml_no_text_elements'));
+            // Remove no image hack
+            kmlString = kmlString.
+                replace(/<Icon>\s*<href>noimage<\/href>\s*<\/Icon>/g, '');
           }
           return kmlString;
         };
