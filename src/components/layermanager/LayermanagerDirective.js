@@ -200,6 +200,8 @@
             evt.preventDefault();
             evt.stopPropagation();
           };
+        } else {
+          scope.displayTimestamps = function() {};
         }
 
         scope.isDefaultValue = function(timestamp) {
