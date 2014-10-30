@@ -9,9 +9,9 @@
 Release Notes
 =============
 
-.. _releasenotes_20141029:
+.. _releasenotes_20141030:
 
-Release 20141029 - Wednesday, October 29th 2014
+Release 201410i30 - Thursday, October 30th 2014
 -----------------------------------------------
 
 API & applications
@@ -33,49 +33,49 @@ Geodata
 *******
 
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| New    | `Groundwater protection zones <//map3.geo.admin.ch/?layers=ch.bafu.grundwasserschutzzonen>`__ (ch.bafu.grundwasserschutzzonen)                                                                          |
+| New    | `Groundwater protection zones <//map.geo.admin.ch/?layers=ch.bafu.grundwasserschutzzonen>`__ (ch.bafu.grundwasserschutzzonen)                                                                          |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| New    | `Water protection regions <//map3.geo.admin.ch/?layers=ch.bafu.gewaesserschutzbereiche>`__ (ch.bafu.gewaesserschutzbereiche)                                                                            |
+| New    | `Water protection regions <//map.geo.admin.ch/?layers=ch.bafu.gewaesserschutzbereiche>`__ (ch.bafu.gewaesserschutzbereiche)                                                                            |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| New    | `Groundwater protection areas <//map3.geo.admin.ch/?layers=ch.bafu.grundwasserschutzareale>`__ (ch.bafu.grundwasserschutzareale)                                                                        |
+| New    | `Groundwater protection areas <//map.geo.admin.ch/?layers=ch.bafu.grundwasserschutzareale>`__ (ch.bafu.grundwasserschutzareale)                                                                        |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Update | `Upload >= 50 Mbit/s <//map3.geo.admin.ch/?layers=ch.bakom.uplink50>`__ (ch.bakom.uplink50)                                                                                                             |
+| Update | `Upload >= 50 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.uplink50>`__ (ch.bakom.uplink50)                                                                                                             |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Update | `Upload >= 20 Mbit/s <//map3.geo.admin.ch/?layers=ch.bakom.uplink20>`__ (ch.bakom.uplink20)                                                                                                             |
+| Update | `Upload >= 20 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.uplink20>`__ (ch.bakom.uplink20)                                                                                                             |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Update | `Upload >= 2 Mbit/s <//map3.geo.admin.ch/?layers=ch.bakom.uplink2>`__ (ch.bakom.uplink2)                                                                                                                |
+| Update | `Upload >= 2 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.uplink2>`__ (ch.bakom.uplink2)                                                                                                                |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Update | `Upload >= 100 Mbit/s <//map3.geo.admin.ch/?layers=ch.bakom.uplink100>`__ (ch.bakom.uplink100)                                                                                                          |
+| Update | `Upload >= 100 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.uplink100>`__ (ch.bakom.uplink100)                                                                                                          |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Update | `Upload >= 10 Mbit/s <//map3.geo.admin.ch/?layers=ch.bakom.uplink10>`__ (ch.bakom.uplink10)                                                                                                             |
+| Update | `Upload >= 10 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.uplink10>`__ (ch.bakom.uplink10)                                                                                                             |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Update | `Upload >= 1 Mbit/s <//map3.geo.admin.ch/?layers=ch.bakom.uplink1>`__ (ch.bakom.uplink1)                                                                                                                |
+| Update | `Upload >= 1 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.uplink1>`__ (ch.bakom.uplink1)                                                                                                                |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Update | `Availability TV fixed network <//map3.geo.admin.ch/?layers=ch.bakom.verfuegbarkeit-tv>`__ (ch.bakom.verfuegbarkeit-tv)                                                                                 |
+| Update | `Availability TV fixed network <//map.geo.admin.ch/?layers=ch.bakom.verfuegbarkeit-tv>`__ (ch.bakom.verfuegbarkeit-tv)                                                                                 |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Update | `Availability HDTV fixed netw. <//map3.geo.admin.ch/?layers=ch.bakom.verfuegbarkeit-hdtv>`__ (ch.bakom.verfuegbarkeit-hdtv)                                                                             |
+| Update | `Availability HDTV fixed netw. <//map.geo.admin.ch/?layers=ch.bakom.verfuegbarkeit-hdtv>`__ (ch.bakom.verfuegbarkeit-hdtv)                                                                             |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Update | `Optical fibre <//map3.geo.admin.ch/?layers=ch.bakom.anschlussart-glasfaser>`__ (ch.bakom.anschlussart-glasfaser)                                                                                       |
+| Update | `Optical fibre <//map.geo.admin.ch/?layers=ch.bakom.anschlussart-glasfaser>`__ (ch.bakom.anschlussart-glasfaser)                                                                                       |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Update | `Download >= 50 Mbit/s <//map3.geo.admin.ch/?layers=ch.bakom.downlink50>`__ (ch.bakom.downlink50)                                                                                                       |
+| Update | `Download >= 50 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.downlink50>`__ (ch.bakom.downlink50)                                                                                                       |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Update | `Download >= 20 Mbit/s <//map3.geo.admin.ch/?layers=ch.bakom.downlink20>`__ (ch.bakom.downlink20)                                                                                                       |
+| Update | `Download >= 20 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.downlink20>`__ (ch.bakom.downlink20)                                                                                                       |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Update | `Download >= 2 Mbit/s <//map3.geo.admin.ch/?layers=ch.bakom.downlink2>`__ (ch.bakom.downlink2)                                                                                                          |
+| Update | `Download >= 2 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.downlink2>`__ (ch.bakom.downlink2)                                                                                                          |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Update | `Download >= 100 Mbit/s <//map3.geo.admin.ch/?layers=ch.bakom.downlink100>`__ (ch.bakom.downlink100)                                                                                                    |
+| Update | `Download >= 100 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.downlink100>`__ (ch.bakom.downlink100)                                                                                                    |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Update | `Download >= 10 Mbit/s <//map3.geo.admin.ch/?layers=ch.bakom.downlink10>`__ (ch.bakom.downlink10)                                                                                                       |
+| Update | `Download >= 10 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.downlink10>`__ (ch.bakom.downlink10)                                                                                                       |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Update | `Download >= 1 Mbit/s <//map3.geo.admin.ch/?layers=ch.bakom.downlink1>`__ (ch.bakom.downlink1)                                                                                                          |
+| Update | `Download >= 1 Mbit/s <//map.geo.admin.ch/?layers=ch.bakom.downlink1>`__ (ch.bakom.downlink1)                                                                                                          |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Update | `Copper wire <//map3.geo.admin.ch/?layers=ch.bakom.anschlussart-kupferdraht>`__ (ch.bakom.anschlussart-kupferdraht)                                                                                     |
+| Update | `Copper wire <//map.geo.admin.ch/?layers=ch.bakom.anschlussart-kupferdraht>`__ (ch.bakom.anschlussart-kupferdraht)                                                                                     |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Update | `Coaxial cable <//map3.geo.admin.ch/?layers=ch.bakom.anschlussart-koaxialkabel>`__ (ch.bakom.anschlussart-koaxialkabel)                                                                                 |
+| Update | `Coaxial cable <//map.geo.admin.ch/?layers=ch.bakom.anschlussart-koaxialkabel>`__ (ch.bakom.anschlussart-koaxialkabel)                                                                                 |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Update | `Number of connection providers <//map3.geo.admin.ch/?layers=ch.bakom.anbieter-eigenes_festnetz>`__ (ch.bakom.anbieter-eigenes_festnetz)                                                                |
+| Update | `Number of connection providers <//map.geo.admin.ch/?layers=ch.bakom.anbieter-eigenes_festnetz>`__ (ch.bakom.anbieter-eigenes_festnetz)                                                                |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Update | `Cant. routes for exceptional loads <//map3.geo.admin.ch/?layers=ch.astra.ausnahmetransportrouten>`__ (ch.astra.ausnahmetransportrouten)                                                                |
+| Update | `Cant. routes for exceptional loads <//map.geo.admin.ch/?layers=ch.astra.ausnahmetransportrouten>`__ (ch.astra.ausnahmetransportrouten)                                                                |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 
