@@ -145,7 +145,7 @@ def htmlpopup(request):
 @view_config(route_name='extendedHtmlPopup', renderer='jsonp')
 def extendedhtmlpopup(request):
     params = _get_feature_params(request)
-    params.returnGeometry = False
+    params.returnGeometry = True
     feature, vectorModel = next(_get_features(params))
 
     layerModel = get_bod_model(params.lang)
