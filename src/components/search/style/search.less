@@ -121,7 +121,7 @@
     height: 30px;
     line-height: 30px;
     
-    @media (max-width: @screen-tablet) {
+    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
       right: 0.2em;
       font-size: 24px;
     }
@@ -155,7 +155,7 @@
     }
   }
 
-  @media (max-width: @screen-tablet) {
+  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
   
     .tt-dropdown-menu, input {
       font-size: 13px;
@@ -194,3 +194,4 @@
     }
   }
 }
+

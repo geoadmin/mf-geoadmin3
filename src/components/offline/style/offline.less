@@ -1,30 +1,14 @@
 [ga-offline-bt] {
-  position: absolute;
-  bottom: 51px;
-  right: 7px;
-  z-index: 1000;
-    
-  button {  
-    width: 44px;
-    height: 44px;
-    text-align: center;
-    cursor: pointer;
-    text-decoration: none;
-    background: data-uri('offline_black.png') no-repeat center center;
-    transition: transform ease 1s;
+  background: data-uri('offline_black.png');
+  transition: all ease 1s;
+  transform: rotateY(360deg);
+  -webkit-transform: rotateY(-360deg);
+
+  &.ga-active {
+    background-image: data-uri('offline_red.png');
     transform: rotateY(360deg);
-    -webkit-transform: rotateY(-360deg);
-
-    &.ga-active {
-      background-image: data-uri('offline_red.png');
-      transform: rotateY(360deg);
-      -webkit-transform: rotateY(360deg);
-    }
+    -webkit-transform: rotateY(360deg);
   }
-
-  @media screen and (max-width: @screen-tablet) {
-    bottom: 26px;
-  } 
 }
 
 [ga-offline-menu] {
@@ -32,7 +16,7 @@
   .modal-dialog {
     width: 300px;
     
-    @media screen and (max-width: @screen-phone) {
+    @media (max-width: @screen-phone) {
       width: 280px;
     }  
   }  
@@ -64,12 +48,12 @@
   .ga-buttons {
     position: absolute;
     left: 50%;
-    bottom: 51px;
+    bottom: 49px;
     margin-left: -@bt-half-px;
     width: unit(@bt-width, px);
 
-    @media screen and (max-width: @screen-tablet) {
-      bottom: 26px;
+    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+      bottom: 21px;
     }
   }
 

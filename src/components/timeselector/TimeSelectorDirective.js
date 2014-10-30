@@ -31,7 +31,7 @@
       replace: true,
       templateUrl: 'components/timeselector/partials/timeselector-bt.html',
       scope: {
-        map: '=gaTimeSelectorMap'
+        map: '=gaTimeSelectorBtMap'
       },
       controller: 'GaTimeSelectorDirectiveController',
       link: function(scope, elt, attrs, controller) {
@@ -87,7 +87,7 @@
         // If there is one or more timeEnabled layer we display the button
         scope.$watchCollection('layers | filter:layerFilter',
             function(olLayers) {
-         if (olLayers.length == 0 && !scope.fromPermalink) {
+          if (olLayers.length == 0 && !scope.fromPermalink) {
             disable();
           } else {
             scope.fromPermalink = false;
@@ -173,6 +173,11 @@
             if (updateDatesAvailable(olLayers)) {
               scope.currentYear = magnetize(scope.currentYear,
                   scope.availableYears);
+            }
+            if (olLayers.length == 0 && !scope.fromPermalink) {
+              scope.isActive = false;
+            } else {
+              scope.fromPermalink = false;
             }
           });
 

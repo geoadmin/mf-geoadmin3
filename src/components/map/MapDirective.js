@@ -71,8 +71,6 @@
                 1000, false));
             updatePermalink();
 
-            map.addControl(new ol.control.ZoomToExtent({tipLabel: ''}));
-
             map.setTarget(element[0]);
 
             // IE + Firefox

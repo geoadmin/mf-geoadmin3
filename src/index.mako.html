@@ -175,7 +175,6 @@ itemscope itemtype="http://schema.org/WebApplication"
     </div> <!-- #header -->
 
     <div tabindex="1" ga-map ga-map-map="map">
-      <div ga-geolocation ga-geolocation-map="map"></div>
       <div id="copyrightsdata">
         <div>
           <span >&copy;&nbsp;</span>
@@ -183,13 +182,16 @@ itemscope itemtype="http://schema.org/WebApplication"
         </div>
         <div ga-attribution ga-attribution-map="map"></div>
       </div>
-      <div id='buttongroup'>
-        <div ga-time-selector-bt ga-time-selector-map="map"></div> 
+      
+      <div id='buttonGroup'>
+        <div ga-geolocation ga-geolocation-map="map"></div>
+        <div id="zoomButtons"></div>
+        <div ga-time-selector-bt ga-time-selector-bt-map="map"></div> 
         <div ga-rotate ga-rotate-map="map"></div>
+        % if device == 'mobile':
+          <div ga-offline-bt></div>
+        % endif
       </div>
-% if device == 'mobile':
-      <div ga-offline-bt></div>
-% endif
       <div ga-swipe 
            ga-swipe-map="map" 
            ga-swipe-active="globals.isSwipeActive"

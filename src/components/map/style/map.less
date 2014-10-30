@@ -1,16 +1,5 @@
 @control-btn-small-size: 18;
 
-.zoom-mixin(@top) {
-  
-  .ol-zoom {
-    top: unit(@top + @control-btns-top + @control-btn-next, px);
-  }
-  
-  .ol-zoom-extent {
-    top: unit(@top + @control-btns-top + @control-btn-next + @control-btn-size * 2 + @control-btn-space * 2, px);
-  }
-}
-
 [ga-map] {
   position: relative;
   width: 100%;
@@ -22,7 +11,9 @@
     padding: 0;
     background-color: transparent;
     border: none;
-    display: block; /*without this, chrome add 3 pixels between zoomin/out buttons*/
+    width: unit(@control-btn-size, px);
+    height: unit(@control-btn-size, px);
+    margin-top: unit(@control-btn-space, px);
   }
 
   .ol-dragbox {
@@ -30,38 +21,21 @@
     border: 1px solid #2E2F2F;
     background-color: rgba(255, 255, 255, 0.5);
   }
- 
+  
+  .ol-zoom-in, .ol-zoom-out, .ol-zoom-extent button  { 
+    display: block; /*without this, chrome add 3 pixels between zoomin/out buttons*/
+  }
+
   .ol-zoom-in {
     background-image: data-uri('zoomIn.png');
   }
   
   .ol-zoom-out {
-    margin-top: unit(@control-btn-space, px);
-    background-image: data-uri('zoomOut.png');
+   background-image: data-uri('zoomOut.png');
   }
 
   .ol-zoom-extent button {
     background-image: data-uri('zoomToFullExtent.png');
-  }
-
-  .ol-zoom {
-    width: unit(@control-btn-size, px);
-  }
-
-  .ol-zoom, .ol-zoom-extent {
-    position: absolute;
-    right: unit(@control-btns-right, px);
-  }
-
-  .ol-zoom-in, .ol-zoom-out, .ol-zoom-extent, .ol-zoom-extent button  {
-    width: unit(@control-btn-size, px);
-    height: unit(@control-btn-size, px);
-  }
-  
-  .zoom-mixin(@header-height);
-  
-  @media screen and (max-width: @screen-tablet) {
-    .zoom-mixin(@small-header-height);
   }
 
   .ga-crosshair {

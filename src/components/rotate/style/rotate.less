@@ -1,17 +1,8 @@
 [ga-rotate] {
+  display: none;
+  background-image: data-uri('northarrow.png');
 
-  button {
-    display: none;
-    width: unit(@control-btn-size, px);
-    height: unit(@control-btn-size, px);
-    background-image: data-uri('northarrow.png');
-    text-align: center;
-    cursor: pointer;
-    text-decoration: none;
-
-    &.ga-rotate-enabled {
-      display: block;
-      margin-top: unit(@control-btn-space, px);
-    }
+  &.ga-rotate-enabled {
+    display: block;
   }
 }
