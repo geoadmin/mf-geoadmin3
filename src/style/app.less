@@ -1126,7 +1126,17 @@ input[type=range] {
     display: block;
   }
   
-  > button { 
+  button {
+    padding: 0;
+    background-color: transparent;
+    border: none;
+    width: unit(@control-btn-size, px);
+    height: unit(@control-btn-size, px);
+    margin-top: unit(@control-btn-space, px);
+    transition: right ease 1s;
+  }
+
+  > button {
     transition: right ease 1s;
   }
   
