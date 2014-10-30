@@ -34,6 +34,16 @@ class FeatureParams(MapServiceValidation):
         self.translate = request.translate
         self.request = request
 
+# for releases requests
+def _get_releases_params(request):
+    params = FeatureParams(request)
+    params.imageDisplay = request.params.get('imageDisplay')
+    params.mapExtent = request.params.get('mapExtent')
+    # our intersection geometry is the full mapExtent passed
+    params.geometry = request.params.get('mapExtent')
+    params.geometryType = 'esriGeometryEnvelope'
+    params.layer = request.matchdict.get('layerId')
+    return params
 
 # For identify services
 def _get_features_params(request):
@@ -394,3 +404,28 @@ def _process_feature(feature, params):
         layerBodId = f.get('layerBodId')
         f['layerName'] = params.translate(layerBodId)
     return f
+
+@view_config(route_name='releases', renderer='geojson')
+def releases(request):
+    params = _get_releases_params(request)
+    models = models_from_name(params.layer)
+    if models is None:
+        raise exc.HTTPBadRequest('No Vector Table was found for %s' % params.layer)
+
+    #Default timestamp
+    timestamps = []
+
+    for f in _get_features_for_extent(params, [models]):
+        if hasattr(f, 'release_year') and f.release_year is not None:
+            timestamps.append(str(f.release_year))
+    if len(timestamps) > 0:
+        # remove duplicates
+        timestamps = list(set(timestamps))
+        # add day to have full timestamp
+        timestamps = [int(ts + '1231') for ts in timestamps]
+        timestamps.sort()
+        # transform back to string
+        timestamps = [str(ts) for ts in timestamps]
+
+    return {'results': timestamps}
+

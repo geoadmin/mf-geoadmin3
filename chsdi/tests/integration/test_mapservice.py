@@ -388,3 +388,34 @@ class TestMapServiceView(TestsBase):
 
     def test_features_attributes_wrong_layer(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/dummy', status=400)
+
+zlayer = 'ch.swisstopo.zeitreihen'
+class TestReleasesService(TestsBase):
+
+    def test_service(self):
+        params = {'imageDisplay': '500,600,96', 'mapExtent': '611399.9999999999,158650,690299.9999999999,198150'}
+        resp = self.testapp.get('/rest/services/all/MapServer/' + zlayer + '/releases', params=params, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless(len(resp.json['results']) == 46, len(resp.json['results']))
+
+    def test_missing_params(self):
+        params = {'mapExtent': '611399.9999999999,158650,690299.9999999999,198150'}
+        resp = self.testapp.get('/rest/services/all/MapServer/' + zlayer + '/releases', params=params, status=400)
+        params = {'imageDisplay': '500,600,96'}
+        resp = self.testapp.get('/rest/services/all/MapServer/' + zlayer + '/releases', params=params, status=400)
+
+    def test_layer_without_releases(self):
+        params = {'imageDisplay': '500,600,96', 'mapExtent': '611399.9999999999,158650,690299.9999999999,198150'}
+        resp = self.testapp.get('/rest/services/all/MapServer/ch.swisstopo.images-swissimage.metadata/releases', params=params, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless(len(resp.json['results']) == 0, len(resp.json['results']))
+
+
+
+    def test_unknown_layers(self):
+        params = {'imageDisplay': '500,600,96', 'mapExtent': '611399.9999999999,158650,690299.9999999999,198150'}
+        resp = self.testapp.get('/rest/services/all/MapServer/dummylayer/releases', params=params, status=400)
+
+
+    
+
