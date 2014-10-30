@@ -3197,7 +3197,7 @@ class OWSCheck(object):
         get_map_url = _ns(GetMap.DCPType.HTTP.Get.OnlineResource.href)
         formats = [_ns(f) for f in GetMap.Format]
 
-        minimum = 2
+        minimum = 1 # at least one
         supported = 0
         hints = ""
         results = []
@@ -3217,7 +3217,7 @@ class OWSCheck(object):
                     
             status = bool(supported >= minimum)
             if status:
-                results.append("All Image Formats supported")
+                results.append("At least one madatory Image Formats is supported")
             else:
                 results.append("Only %(supported)d of %(minimum)d Image Formats supported." % locals())
             results += formats
