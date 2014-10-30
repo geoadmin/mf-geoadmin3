@@ -1,20 +1,9 @@
-@control-btn-small-size: 18;
-
 [ga-map] {
   position: relative;
   width: 100%;
   height: 100%;
   background-color: #f9f9f9;
   background-image: data-uri('mapbg.png');
- 
-  button {
-    padding: 0;
-    background-color: transparent;
-    border: none;
-    width: unit(@control-btn-size, px);
-    height: unit(@control-btn-size, px);
-    margin-top: unit(@control-btn-space, px);
-  }
 
   .ol-dragbox {
     position:absolute;
@@ -31,7 +20,7 @@
   }
   
   .ol-zoom-out {
-   background-image: data-uri('zoomOut.png');
+    background-image: data-uri('zoomOut.png');
   }
 
   .ol-zoom-extent button {
