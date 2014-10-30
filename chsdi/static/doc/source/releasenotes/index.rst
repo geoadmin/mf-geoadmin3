@@ -11,7 +11,7 @@ Release Notes
 
 .. _releasenotes_20141030:
 
-Release 201410i30 - Thursday, October 30th 2014
+Release 20141030 - Thursday, October 30th 2014
 -----------------------------------------------
 
 API & applications
@@ -20,14 +20,17 @@ API & applications
 `API <//api3.geo.admin.ch>`__
 '''''''''''''''''''''''''''''
 
-- TODO
-- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_141001...r_141015>`__
+- Import/export KML text labels
+- Improves social media sharing
+- Improves responsive design with a small height screen 
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_141015...r_141030>`__
 
 `MAP <//map.geo.admin.ch>`__
 '''''''''''''''''''''''''''''
 
-- TODO
-- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_141001...r_141015>`__
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_141015...r_141030>`__
 
 Geodata
 *******
