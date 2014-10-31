@@ -4,6 +4,7 @@ from pyramid.httpexceptions import HTTPBadRequest
 
 from chsdi.lib.validation import MapNameValidation
 
+MAX_SPHINX_INDEX_LENGTH = 64
 
 class SearchValidation(MapNameValidation):
 
@@ -58,19 +59,8 @@ class SearchValidation(MapNameValidation):
     @featureIndexes.setter
     def featureIndexes(self, value):
         if value is not None and value != '':
-            # SphinxSearch does not support indices longer than 64
-            # characters, that's why we have to hardcode here to
-            # something below 64 (indices are prepared with this name)
-            value = value.replace(
-                'ch.swisstopo.geologie-hydrogeologische_karte-grundwasservulnerabilitaet',
-                'ch_swisstopo_geologie-hydro_karte-grundwasservul'
-            )
-            value = value.replace(
-                'ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen',
-                'ch_swisstopo_geologie-hydro_karte-grundwasservor'
-            )
             value = value.replace('.', '_')
-            self._featureIndexes = value.split(',')
+            self._featureIndexes = [idx[:MAX_SPHINX_INDEX_LENGTH] for idx in value.split(',')]
 
     @timeEnabled.setter
     def timeEnabled(self, value):
