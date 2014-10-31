@@ -3,9 +3,8 @@
 <%def name="table_body(c, lang)">
 
 <%
-    lang = 'fr' if lang in ('fr', 'it') else 'de'
+    lang = lang if lang in ('fr', 'it', 'en') else 'de'
     typ_text = 'typ_%s' % lang
-    status_text = 'status_%s' % lang
 %>
 
     <tr><td class="cell-left">${_('typ')}</td>  <td>${c['attributes'][typ_text] or '-'}</td></tr>
