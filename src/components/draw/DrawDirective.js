@@ -11,32 +11,58 @@
   ]);
 
   module.directive('gaDraw',
-    function($timeout, $translate, $window, $rootScope,
-        gaDefinePropertiesForLayer, gaLayerFilters, gaExportKml) {
+    function($timeout, $translate, $window, $rootScope, gaBrowserSniffer,
+        gaDefinePropertiesForLayer, gaDebounce, gaLayerFilters, gaExportKml) {
       return {
         restrict: 'A',
-        templateUrl: function(element, attrs) {
-          return 'components/draw/partials/draw.html';
-        },
+        templateUrl: 'components/draw/partials/draw.html',
         scope: {
           map: '=gaDrawMap',
           options: '=gaDrawOptions',
           isActive: '=gaDrawActive'
         },
-        link: function(scope, elt, attrs, controller) {
-          var draw, modify, select, deregister, sketchFeature, lastActiveTool;
+        link: function(scope, element, attrs, controller) {
+          var draw, deregister, lastActiveTool;
           var map = scope.map;
+          var viewport = $(map.getViewport());
           var source = new ol.source.Vector();
           var layer = new ol.layer.Vector({
             source: source,
-            visible: true,
-            style: scope.options.styleFunction
+            visible: true
           });
           gaDefinePropertiesForLayer(layer);
           layer.displayInLayerManager = false;
           scope.layers = scope.map.getLayers().getArray();
           scope.layerFilter = gaLayerFilters.selected;
 
+          // Add select interaction
+          var select = new ol.interaction.Select({
+            layers: [layer],
+            style: scope.options.selectStyleFunction
+          });
+          select.getFeatures().on('add', function(evt) {
+            // Apply the select style
+            var styles = scope.options.selectStyleFunction(evt.element);
+            evt.element.setStyle(styles);
+            updateUseStyles(evt);
+          });
+          select.getFeatures().on('remove', function(evt) {
+            // Remove the select style
+            var styles = evt.element.getStyle();
+            styles.pop();
+            evt.element.setStyle(styles);
+            updateUseStyles(evt);
+          });
+          select.setActive(false);
+          map.addInteraction(select);
+
+          // Add modify interaction
+          var modify = new ol.interaction.Modify({
+            features: select.getFeatures(),
+            style: scope.options.selectStyleFunction
+          });
+          modify.setActive(false);
+          map.addInteraction(modify);
 
           // Activate the component: active a tool if one was active when draw
           // has been deactivated.
@@ -60,7 +86,6 @@
             deactivateSelectInteraction();
             deactivateModifyInteraction();
           };
-
 
           // Deactivate other tools
           var activateTool = function(tool) {
@@ -102,16 +127,11 @@
               style: scope.options.drawStyleFunction
             });
 
-            deregister = [
-              draw.on('drawstart', function(evt) {
-                sketchFeature = evt.feature;
-              }),
-              draw.on('drawend', function(evt) {
-                // Set the definitve style of the feature
-                var style = layer.getStyleFunction()(sketchFeature);
-                sketchFeature.setStyle(style);
-              })
-            ];
+            deregister = draw.on('drawend', function(evt) {
+              // Set the definitve style of the feature
+              var styles = scope.options.styleFunction(evt.feature);
+              evt.feature.setStyle(styles);
+            });
 
             if (scope.isActive) {
               map.addInteraction(draw);
@@ -119,16 +139,13 @@
           };
 
           var deactivateDrawInteraction = function() {
-
             // Remove events
             if (deregister) {
-              for (var i = deregister.length - 1; i >= 0; i--) {
-                deregister[i].src.unByKey(deregister[i]);
-              }
+              deregister.src.unByKey(deregister);
               deregister = null;
             }
-
-            draw = deactivateInteraction(draw);
+            map.removeInteraction(draw);
+            draw = undefined;
           };
 
           // Set the select interaction
@@ -136,62 +153,48 @@
             deactivateDrawInteraction();
             deactivateSelectInteraction();
             deactivateModifyInteraction();
-
-            select = new ol.interaction.Select({
-              layer: layer,
-              style: scope.options.selectStyleFunction
-            });
-
             if (scope.isActive) {
-              map.addInteraction(select);
-              select.getFeatures().on('add', updateUseStyles);
-              select.getFeatures().on('remove', updateUseStyles);
+              select.setActive(true);
             }
           };
 
           var deactivateSelectInteraction = function() {
-            scope.useTextStyle = false;
-            scope.useIconStyle = false;
-            scope.useColorStyle = false;
-            select = deactivateInteraction(select);
+            // Clearing the features updates scope.useXXX properties
+            select.getFeatures().clear();
+            select.setActive(false);
           };
 
-          // Set the select interaction
+          // Set the modifiy interaction
           var activateModifyInteraction = function() {
             activateSelectInteraction();
 
-            modify = new ol.interaction.Modify({
-              features: select.getFeatures(),
-              style: scope.options.selectStyleFunction
-            });
-
             if (scope.isActive) {
-              map.addInteraction(modify);
+              modify.setActive(true);
+              if (!gaBrowserSniffer.mobile) {
+                viewport.on('mousemove', updateCursorStyleDebounced);
+              }
             }
           };
 
           var deactivateModifyInteraction = function() {
-            modify = deactivateInteraction(modify);
+            modify.setActive(false);
+            viewport.unbind('mousemove', updateCursorStyleDebounced);
           };
 
-          // Deactivate an interaction
-          var deactivateInteraction = function(interaction) {
-            if (interaction) {
-              map.removeInteraction(interaction);
-            }
-            return undefined;
-          };
 
           // Update selected feature with a new style
           var updateSelectedFeatures = function() {
-            if (select) {
+            if (select.getActive()) {
               var features = select.getFeatures();
               if (features) {
                 features.forEach(function(feature) {
-                  // Update the style function of the feature
+                  // Update the style of the feature with the current style
                   feature.setStyle(function() {return null;});
-                  var style = layer.getStyleFunction()(feature);
-                  feature.setStyle(style);
+                  var styles = scope.options.styleFunction(feature);
+                  feature.setStyle(styles);
+                  // then apply the select style
+                  styles = scope.options.selectStyleFunction(feature);
+                  feature.setStyle(styles);
                 });
               }
             }
@@ -214,7 +217,7 @@
               }
               useColorStyle = true;
             }
-            scope.$apply(function() {
+            scope.$evalAsync(function() {
               scope.useTextStyle = useTextStyle;
               scope.useIconStyle = useIconStyle;
               scope.useColorStyle = useColorStyle;
@@ -240,7 +243,6 @@
               // Deactivate all tools
               deactivate();
               lastActiveTool = undefined;
-
             } else {
               activateTool(tool);
             }
@@ -249,7 +251,7 @@
           // Delete selected features by the edit tool
           scope.deleteFeatures = function() {
             if (confirm($translate('confirm_remove_selected_features')) &&
-                select) {
+                select.getActive()) {
               var features = select.getFeatures();
               if (features) {
                 features.forEach(function(feature) {
@@ -343,11 +345,29 @@
 
 
           // Utils
+          // Find the first feature from a vector layer
+          var findDrawnFeature = function(pixel, vectorLayer) {
+              var featureFound;
+              map.forEachFeatureAtPixel(pixel, function(feature, olLayer) {
+                featureFound = feature;
+              }, this, function(olLayer) {
+                return (layer == olLayer);
+              });
+              return featureFound;
+            };
+
+          // Change cursor style on mouse move, only on desktop
+          var updateCursorStyle = function(evt) {
+            var feature = findDrawnFeature(map.getEventPixel(evt));
+            map.getTarget().style.cursor = (feature) ? 'pointer' : '';
+          };
+          var updateCursorStyleDebounced = gaDebounce.debounce(
+              updateCursorStyle, 10, false, false);
 
           // Focus on the first input.
           var setFocus = function() {
             $timeout(function() {
-              var inputs = $(elt).find('input, select');
+              var inputs = element.find('input, select');
               if (inputs.length > 0) {
                 inputs[0].focus();
               }
