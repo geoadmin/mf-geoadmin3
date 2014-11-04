@@ -139,6 +139,8 @@
 	"kmlimport_tooltip": "Agiuntar in unitad da datas externa KML",
 	"lang_chooser_label": "Lingua",
 	"last_available_year": "Last year",
+	"layer_invalid_no_crs": "WMS na sustegna betg la projecziun cartografica",
+	"layer_invalid_no_name": "Der Datensatz kann nicht angezeigt werden, da er keine Bezeichnung hat",
 	"layer_selection": "Selecziun",
 	"legend": "Legenda",
 	"link_bowl_crosshair": "Link cun cruschera",

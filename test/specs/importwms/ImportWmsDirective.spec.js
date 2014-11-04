@@ -1,5 +1,5 @@
-describe('ga_importwms__directive', function() {
-  var element, map, controller;
+describe('ga_importwms_directive', function() {
+  var element, scope, map;
    
   beforeEach(inject(function($injector, $rootScope, $compile, $translate, gaGlobalOptions) {
     map = new ol.Map({});
@@ -7,13 +7,12 @@ describe('ga_importwms__directive', function() {
     map.getView().fitExtent([-20000000, -20000000, 20000000, 20000000], map.getSize()); 
     
     element = angular.element(
-      '<div>' +
         '<div ga-import-wms ga-import-wms-map="map" ' +
              'ga-import-wms-options="options">' +
-        '</div>' +
-      '</div>');
-    $rootScope.map = map;
-    $rootScope.options = {
+        '</div>');
+    scope = $rootScope.$new();
+    scope.map = map;
+    scope.options = {
       proxyUrl: 'http://admin.ch/ogcproxy?url=',
       defaultGetCapParams: 'SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0',
       defaultWMSList: [
@@ -24,8 +23,9 @@ describe('ga_importwms__directive', function() {
          'http://mapserver1.gr.ch/wms/admineinteilung?'
       ] 
     };
-    controller = $injector.get('$controller')('GaImportWmsDirectiveController', {'$scope': $rootScope}) 
-    $compile(element)($rootScope);
+    $injector.get('$controller')('GaImportWmsDirectiveController', {'$scope': scope}); 
+    $injector.get('$controller')('GaImportWmsItemDirectiveController', {'$scope': scope}); 
+    $compile(element)(scope);
     $rootScope.$digest();
     $translate.uses('fr');
   }));
@@ -36,7 +36,8 @@ describe('ga_importwms__directive', function() {
     expect(form.find('.twitter-typeahead').length).to.be(1);
     expect(form.find('.ga-import-wms-open').length).to.be(1);    
     expect(form.find('.ga-import-wms-connect').length).to.be(1); 
-    expect(element.find('table').length).to.be(2); 
+    expect(element.find('.ga-import-wms-container').length).to.be(1); 
+    expect(element.find('.ga-import-wms-content').length).to.be(1);  
     expect(element.find('textarea').length).to.be(1); 
     expect(element.find('.ga-import-wms-add').length).to.be(1); 
     form.find('.ga-import-wms-open').click();
@@ -99,6 +100,19 @@ describe('ga_importwms__directive', function() {
                    '<Abstract>Abstract bar</Abstract>' +
                    '<CRS>EPSG:3857</CRS>' +
                    '<BoundingBox CRS="EPSG:3857" minx="317000" miny="-87000" maxx="1.057e+06" maxy="413000" />' +
+                   '<Layer queryable="1" opaque="0" cascaded="0">' +
+                     '<Name>bar</Name>' +
+                     '<Title>Title bar</Title>' +
+                     '<Abstract>Abstract bar</Abstract>' +
+                     '<CRS>EPSG:3857</CRS>' +
+                     '<BoundingBox CRS="EPSG:3857" minx="317000" miny="-87000" maxx="1.057e+06" maxy="413000" />' +
+                   '</Layer>' +
+                   '<Layer queryable="1" opaque="0" cascaded="0">' +
+                     '<Title>Layer not added beacause it has no name</Title>' +
+                     '<Abstract>Abstract bar2</Abstract>' +
+                     '<CRS>EPSG:3857</CRS>' +
+                     '<BoundingBox CRS="EPSG:21781" minx="317000" miny="-87000" maxx="1.057e+06" maxy="413000" />' +
+                   '</Layer>' +
                  '</Layer>' +
                  '<Layer queryable="1" opaque="0" cascaded="0">' +
                    '<Title>Layer not added beacause it has no name</Title>' +
@@ -111,8 +125,8 @@ describe('ga_importwms__directive', function() {
            '</WMS_Capabilities>'
       );
       $httpBackend.expectGET(expectedWmsGetCapAdminUrl);
-      $rootScope.fileUrl = $rootScope.options.defaultWMSList[0];
-      $rootScope.handleFileUrl(); 
+      scope.fileUrl = scope.options.defaultWMSList[0];
+      scope.handleFileUrl(); 
       $httpBackend.flush(); 
       $rootScope.$digest();
     }));
@@ -122,38 +136,39 @@ describe('ga_importwms__directive', function() {
       $httpBackend.verifyNoOutstandingRequest();
     });
 
-    it('uploads and parses successfully', inject(function($rootScope) {
-      expect($rootScope.userMessage).to.be('parse_succeeded');   
-      expect($rootScope.layers.length).to.be(2);    
+    it('uploads and parses successfully', inject(function() {
+      expect(scope.userMessage).to.be('parse_succeeded');   
+      expect(scope.layers.length).to.be(2); 
+      expect(scope.layers[1].Layer.length).to.be(1);
     }));
     
-    it('adds/removes a preview layer to the map', inject(function($rootScope) {
-      $rootScope.addPreviewLayer($rootScope.layers[0]);
-      expect($rootScope.map.getLayers().getLength()).to.be(1);      
-      expect($rootScope.map.getLayers().item(0).preview).to.be(true);
-      $rootScope.removePreviewLayer();   
-      expect($rootScope.map.getLayers().getLength()).to.be(0);
-      expect($rootScope.layerHovered).to.be(null);
-    }));
-    
-    it('selects/unselects a layer', inject(function($rootScope) {
-      $rootScope.toggleLayerSelected($rootScope.layers[0]);
-      expect($rootScope.layerSelected.Title).to.be('Title foo');
-      $rootScope.toggleLayerSelected($rootScope.layers[0]);
-      expect($rootScope.layerSelected).to.be(null);
-    }));
-    
-    it('adds a selected layer to the map', inject(function($rootScope) {
-      $rootScope.toggleLayerSelected($rootScope.layers[0]);
-      $rootScope.addLayerSelected();
-      expect($rootScope.map.getLayers().getLength()).to.be(1);      
-      expect($rootScope.map.getLayers().item(0).preview).to.be(undefined);
-    }));
+    describe('ga_importwms_item_directive', function() {
+      var evt = {
+        stopPropagation: function(){}
+      };
 
-    it('zooms on layer extent', inject(function($rootScope) {
-      $rootScope.zoomOnLayerExtent($rootScope.layers[1]);
-      var i = $rootScope.map.getView().calculateExtent($rootScope.map.getSize());
-      expect(i.toString()).to.be('-46795.47153769201,-203897.735768846,1420795.471537692,529897.735768846');
-    }));
+      it('adds/removes a preview layer to the map', inject(function() {
+        scope.addPreviewLayer(evt, scope.layers[0]);
+        expect(scope.map.getLayers().getLength()).to.be(1);      
+        expect(scope.map.getLayers().item(0).preview).to.be(true);
+        scope.removePreviewLayer(evt);   
+        expect(scope.map.getLayers().getLength()).to.be(0);
+        expect(scope.options.layerHovered).to.be(null);
+      }));
+      
+      it('selects/unselects a layer', inject(function() {
+        scope.toggleLayerSelected(evt, scope.layers[0]);
+        expect(scope.options.layerSelected.Title).to.be('Title foo');
+        scope.toggleLayerSelected(evt, scope.layers[0]);
+        expect(scope.options.layerSelected).to.be(null);
+      }));
+      
+      it('adds a selected layer to the map', inject(function() {
+        scope.toggleLayerSelected(evt, scope.layers[0]);
+        scope.addLayerSelected();
+        expect(scope.map.getLayers().getLength()).to.be(1);      
+        expect(scope.map.getLayers().item(0).preview).to.be(undefined);
+      }));
+    });
   });
 });

@@ -276,5 +276,7 @@
   "topic_aviation_tooltip": "",
   "aviation": "",
   "time_all": "",
-  "time_select_year": ""
+  "time_select_year": "",
+  "layer_invalid_no_name": "",
+  "layer_invalid_no_crs": ""
 }
