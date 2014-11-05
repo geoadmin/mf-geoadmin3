@@ -301,7 +301,9 @@ def _get_features_for_extent(params, models, maxFeatures=None):
             )
             # Can be None because of max and min scale
             if geomFilter is not None:
-                query = params.request.db.query(model).filter(geomFilter)
+                query = params.request.db.query(model)
+                query = query.order_by(model.bgdi_order) if hasattr(model, 'bgdi_order') else query
+                query = query.filter(geomFilter)
                 if params.timeInstant is not None:
                     try:
                         timeInstantColumn = model.time_instant_column()
