@@ -113,9 +113,16 @@ globals:
     concurrent_tile_creators: 32
   image:
       resampling_method: bicubic
+      # for 24bits PNG
+      paletted: false
       formats:
          image/png:
+             mode: RGBA 
              transparent: true
+         image/jpeg:
+             mode: RGB 
+             encoding_options:
+                 jpeg_quality: 88
 
   srs:
     # for North/East ordering (default for geographic)
