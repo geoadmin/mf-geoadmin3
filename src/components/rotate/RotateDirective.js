@@ -10,23 +10,17 @@
       scope: {
         map: '=gaRotateMap'
       },
-      template: '<button ng-class="stateClass"></button>',
+      template: '<button></button>',
       link: function(scope, element, attrs) {
         var map = scope.map;
         var view = map.getView();
-
         var setButtonRotation = function(rotation) {
-          if (rotation != scope.rotation) {
-            scope.$apply(function() {
-              scope.stateClass = (rotation == 0) ? '' : 'ga-rotate-enabled';
-            });
-          }
           var rotateString = 'rotate(' + rotation + 'deg)';
           element.css({
             'transform': rotateString,
             '-ms-transform': rotateString,
             '-webkit-transform': rotateString
-          });
+          }).toggleClass('ga-rotate-enabled', !(rotation == 0));
         };
 
         // Button is rotated according to map rotation
