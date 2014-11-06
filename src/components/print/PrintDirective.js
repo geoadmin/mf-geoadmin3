@@ -328,19 +328,29 @@
         literal.strokeOpacity = 0; // No Stroke
       }
 
-      if (textStyle) {
-        var fillColor = ol.color.asArray(textStyle.getFill().getColor());
-        var strokeColor = ol.color.asArray(textStyle.getStroke().getColor());
-        var fontValues = textStyle.getFont().split(' ');
-        literal.fontColor = toHexa(fillColor);
-        // Fonts managed by print server: COURIER, HELVETICA, TIMES_ROMAN
-        literal.fontFamily = fontValues[2].toUpperCase();
-        literal.fontSize = parseInt(fontValues[1]);
-        literal.fontWeight = fontValues[0];
+      if (textStyle && textStyle.getText()) {
         literal.label = textStyle.getText();
         literal.labelAlign = textStyle.getTextAlign();
-        literal.labelOutlineColor = toHexa(strokeColor);
-        literal.labelOutlineWidth = textStyle.getStroke().getWidth();
+
+        if (textStyle.getFill()) {
+          var fillColor = ol.color.asArray(textStyle.getFill().getColor());
+          literal.fontColor = toHexa(fillColor);
+        }
+
+        if (textStyle.getFont()) {
+          var fontValues = textStyle.getFont().split(' ');
+          // Fonts managed by print server: COURIER, HELVETICA, TIMES_ROMAN
+          literal.fontFamily = fontValues[2].toUpperCase();
+          literal.fontSize = parseInt(fontValues[1]);
+          literal.fontWeight = fontValues[0];
+        }
+
+        /* TO FIX: Not managed by the print server
+        if (textStyle.getStroke()) {
+          var strokeColor = ol.color.asArray(textStyle.getStroke().getColor());
+          literal.labelOutlineColor = toHexa(strokeColor);
+          literal.labelOutlineWidth = textStyle.getStroke().getWidth();
+        }*/
       }
 
       return literal;
