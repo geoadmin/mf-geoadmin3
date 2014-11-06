@@ -65,7 +65,11 @@
             var myStyle = new ol.style.Style(newStyle);
             clone.setStyle(myStyle);
 
-            exportFeatures.push(clone);
+            //We silently ignore Circle elements as they are not supported
+            //in kml
+            if (f.getGeometry().getType() !== 'Circle') {
+              exportFeatures.push(clone);
+            }
           });
 
           if (exportFeatures.length > 0) {
