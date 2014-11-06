@@ -131,6 +131,7 @@
               // Set the definitve style of the feature
               var styles = scope.options.styleFunction(evt.feature);
               evt.feature.setStyle(styles);
+              scope.$apply();
             });
 
             if (scope.isActive) {
