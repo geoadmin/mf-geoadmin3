@@ -2529,7 +2529,7 @@ msgid "hoehe_ueber_meer"
 msgstr "Altitude au-dessus du niveau de la mer [m]"
 
 msgid "holz_region"
-msgstr "Région"
+msgstr "Regione"
 
 msgid "holznuztung"
 msgstr "Exploitations [m3/ha/an]"
