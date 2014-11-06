@@ -4,7 +4,7 @@ from pyramid.httpexceptions import HTTPBadRequest
 
 from chsdi.lib.validation import MapNameValidation
 
-MAX_SPHINX_INDEX_LENGTH = 64
+MAX_SPHINX_INDEX_LENGTH = 63
 
 class SearchValidation(MapNameValidation):
 
