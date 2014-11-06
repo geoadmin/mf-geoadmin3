@@ -198,110 +198,102 @@
           return i.url;
         };
        
-        // Define layer style function
-        $scope.options.styleFunction = (function() {
-          return function(feature, resolution) {
-            
-            if (feature.getStyleFunction() &&
-                feature.getStyleFunction()() !== null) {
-              return feature.getStyleFunction()(resolution); 
-            }
-            var zIndex = gaStyleFactory.ZPOLYGON;
+        // Get the current style defined by inputs 
+        $scope.options.styleFunction = function(feature) {
+          var zIndex = gaStyleFactory.ZPOLYGON;
 
-            // Only update features with new colors if its style is null
-            var text, icon;
-            var color = $scope.options.color;
-            var fill = new ol.style.Fill({
-              color: color.fill.concat([0.4])
-            })
-            var stroke = new ol.style.Stroke({
-              color: color.fill.concat([1]),
-              width: 3
+          // Only update features with new colors if its style is null
+          var text, icon;
+          var color = $scope.options.color;
+          var fill = new ol.style.Fill({
+            color: color.fill.concat([0.4])
+          })
+          var stroke = new ol.style.Stroke({
+            color: color.fill.concat([1]),
+            width: 3
+          });
+          var sketchCircle = new ol.style.Circle({
+            radius: 4,
+            fill: fill,
+            stroke: stroke
+          });
+          
+          // Drawing line
+          if ($scope.options.isLineActive) {
+            zIndex = gaStyleFactory.ZLINE;
+          }
+          
+          // Drawing text
+          if (($scope.options.isTextActive ||
+              ($scope.options.isModifyActive &&
+                  feature.getGeometry() instanceof ol.geom.Point &&
+                  feature.get('useText'))) &&
+              angular.isDefined($scope.options.text)) {
+
+            text = new ol.style.Text({
+              font: gaStyleFactory.FONT,
+              text: $scope.options.text,
+              fill: new ol.style.Fill({
+                color: stroke.getColor()
+              }),
+              stroke: gaStyleFactory.getTextStroke(stroke.getColor())
             });
-            var sketchCircle = new ol.style.Circle({
-              radius: 4,
+            fill = undefined;
+            stroke = undefined;
+            zIndex = gaStyleFactory.ZTEXT;
+          } 
+          feature.set('useText', (!!text));
+
+          // Drawing icon
+          if (($scope.options.isPointActive ||
+              ($scope.options.isModifyActive &&
+                  feature.getGeometry() instanceof ol.geom.Point &&
+                  feature.get('useIcon'))) &&
+              angular.isDefined($scope.options.icon)) {
+
+            icon = new ol.style.Icon({
+              src: $scope.getIconUrl($scope.options.icon),
+              scale: $scope.options.iconSize.scale
+            });
+            fill = undefined;
+            stroke = undefined;
+            zIndex = gaStyleFactory.ZICON;
+          } 
+          feature.set('useIcon', (!!icon));
+          
+          var styles = [
+            new ol.style.Style({
               fill: fill,
-              stroke: stroke
-            });
-            
-            // Drawing line
-            if ($scope.options.isLineActive) {
-              zIndex = gaStyleFactory.ZLINE;
-            }
-            
-            // Drawing text
-            if (($scope.options.isTextActive ||
-                ($scope.options.isModifyActive &&
-                    feature.getGeometry() instanceof ol.geom.Point &&
-                    feature.get('useText'))) &&
-                angular.isDefined($scope.options.text)) {
+              stroke: stroke,
+              text: text,
+              image: icon || ((!text) ? sketchCircle :
+                  gaStyleFactory.getStyle('transparentCircle')),
+              zIndex: zIndex
+            })
+          ];
 
-              text = new ol.style.Text({
-                font: gaStyleFactory.FONT,
-                text: $scope.options.text,
-                fill: new ol.style.Fill({
-                  color: stroke.getColor()
-                }),
-                stroke: gaStyleFactory.getTextStroke(stroke.getColor())
-              });
-              fill = undefined;
-              stroke = undefined;
-              zIndex = gaStyleFactory.ZTEXT;
-            } 
-            feature.set('useText', (!!text));
-
-            // Drawing icon
-            if (($scope.options.isPointActive ||
-                ($scope.options.isModifyActive &&
-                    feature.getGeometry() instanceof ol.geom.Point &&
-                    feature.get('useIcon'))) &&
-                angular.isDefined($scope.options.icon)) {
-
-              icon = new ol.style.Icon({
-                src: $scope.getIconUrl($scope.options.icon),
-                scale: $scope.options.iconSize.scale
-              });
-              fill = undefined;
-              stroke = undefined;
-              zIndex = gaStyleFactory.ZICON;
-            } 
-            feature.set('useIcon', (!!icon));
-            
-            var styles = [
-              new ol.style.Style({
-                fill: fill,
-                stroke: stroke,
-                text: text,
-                image: icon || ((!text) ? sketchCircle :
-                    gaStyleFactory.getStyle('transparentCircle')),
-                zIndex: zIndex
-              })
-            ];
-
-            return styles;
-          };
-        })()
-
+          return styles;
+        };
+       
         $scope.options.drawStyleFunction = (function() {
+          var selectPolygonStyle = new ol.style.Style({
+            fill: new ol.style.Fill({
+              color: [255, 255, 255, 0.4]
+            }),
+            stroke: new ol.style.Stroke({
+              color: [255, 255, 255, 0],
+              width: 0
+            })
+          });
           return function(feature, resolution) {
             var styles;
             if (feature.getGeometry().getType() === 'Polygon') {
-              styles =  [
-                new ol.style.Style({
-                  fill: new ol.style.Fill({
-                    color: [255, 255, 255, 0.4]
-                  }),
-                  stroke: new ol.style.Stroke({
-                    color: [255, 255, 255, 0],
-                    width: 0
-                  })
-                })
-              ];
+              styles =  [selectPolygonStyle];
             } else {
               styles = $scope.options.styleFunction(feature, resolution);
             }
             return styles;
-          }
+          };
         })();
          
         $scope.options.selectStyleFunction = (function() {
