@@ -1128,10 +1128,10 @@ msgid "ch.bafu.flora-weltensutter_atlas"
 msgstr "Atlante Welten&Sutter"
 
 msgid "ch.bafu.gefahren-baugrundklassen"
-msgstr "Terreni di fondazione"
+msgstr "Classe dei terreni di fondazione"
 
 msgid "ch.bafu.gefahren-gefaehrdungszonen"
-msgstr "Zone di rischio sismico"
+msgstr "Zone sismiche"
 
 msgid "ch.bafu.gefahren-historische_erdbeben"
 msgstr "Terremoti storici"
