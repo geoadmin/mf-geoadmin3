@@ -117,6 +117,15 @@ class Search(SearchValidation):
             except IOError:
                 raise exc.HTTPGatewayTimeout()
             temp = temp['matches'] if temp is not None else temp
+
+            # if standard index did not find anything, use soundex/metaphon indices
+            # which should be more fuzzy in its results
+            if temp is None or len(temp) <= 0:
+                try:
+                    temp = self.sphinx.Query(searchTextFinal, index='swisssearch_fuzzy')
+                except IOError:
+                    raise exc.HTTPGatewayTimeout()
+                temp = temp['matches'] if temp is not None else temp
         else:
             temp = []
         if temp is not None and len(temp) != 0:
