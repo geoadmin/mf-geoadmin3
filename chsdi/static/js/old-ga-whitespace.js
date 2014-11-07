@@ -33443,7 +33443,7 @@ ga.Map = function(options) {
   options.view = view;
   options.ol3Logo = false;
   options.interactions = goog.isDef(options.interactions) ? options.interactions : ol.interaction.defaults();
-  options.controls = ol.control.defaults({zoomOptions:({zoomInTipLabel:ga.Lang.translate("Zoom in"), zoomOutTipLabel:ga.Lang.translate("Zoom out")}), rotateOptions:({tipLabel:ga.Lang.translate("Reset rotation")})});
+  options.controls = goog.isDef(options.controls) ? options.controls : ol.control.defaults({zoomOptions:({zoomInTipLabel:ga.Lang.translate("Zoom in"), zoomOutTipLabel:ga.Lang.translate("Zoom out")}), rotateOptions:({tipLabel:ga.Lang.translate("Reset rotation")})});
   goog.base(this, options);
   this.addControl(new ol.control.ScaleLine);
   this.serviceUrl = window["GeoAdmin"]["serviceUrl"];
