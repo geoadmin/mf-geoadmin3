@@ -148,7 +148,8 @@
                 attribution: ($scope.currentTab === 2) ?
                     gaUrlUtils.getHostname($scope.fileUrl) :
                     undefined,
-                useImageVector: gaKml.useImageVector($scope.fileSize)
+                useImageVector: gaKml.useImageVector($scope.fileSize),
+                zoomToExtent: true
               });
 
               $scope.userMessage = $translate('parse_succeeded');
