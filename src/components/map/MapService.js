@@ -499,7 +499,8 @@
             label: options.label || kmlFormat.readName(kml) || 'KML',
             opacity: options.opacity,
             visible: options.visible,
-            source: source
+            source: source,
+            extent: source.getExtent()
           };
 
           var olLayer;
@@ -528,6 +529,10 @@
             olMap.getLayers().insertAt(index, olLayer);
           } else {
             olMap.addLayer(olLayer);
+          }
+
+          if (options.zoomToExtent) {
+            olMap.getView().fitExtent(olLayer.getExtent(), olMap.getSize());
           }
         };
 

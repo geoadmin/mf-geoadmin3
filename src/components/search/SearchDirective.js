@@ -332,7 +332,8 @@
                     if (gaUrlUtils.isValid(scope.query)) {
                       gaKml.addKmlToMapForUrl(map,
                         scope.query, {
-                        attribution: gaUrlUtils.getHostname(scope.query)
+                        attribution: gaUrlUtils.getHostname(scope.query),
+                        zoomToExtent: true
                       });
                       return false;
                     }
