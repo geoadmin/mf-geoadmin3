@@ -252,6 +252,7 @@
           setSavedTime(scope.layers);
           var year = hasLayersSameTime(scope.layers);
           $rootScope.$broadcast('gaTimeSelectorToggle', !!(year), year);
+          destroyPopover(null, element);
         };
 
         scope.useRange = (!gaBrowserSniffer.mobile && (!gaBrowserSniffer.msie ||
