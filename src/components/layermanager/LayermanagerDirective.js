@@ -61,7 +61,7 @@
         return false;
       }
       var year;
-      for (var i = 1, ii = olLayers.length; i < ii; i++) {
+      for (var i = 0, ii = olLayers.length; i < ii; i++) {
         if (!olLayers[i].timeEnabled) {
           continue;
         }
@@ -162,6 +162,11 @@
       }
     };
 
+    var updateTimeSelectorStatus = function(layers, element) {
+      var year = hasLayersSameTime(layers);
+      $rootScope.$broadcast('gaTimeSelectorToggle', !!(year), year);
+      destroyPopover(null, element);
+    };
 
     return {
       restrict: 'A',
@@ -250,9 +255,7 @@
             layer.time = time;
           }
           setSavedTime(scope.layers);
-          var year = hasLayersSameTime(scope.layers);
-          $rootScope.$broadcast('gaTimeSelectorToggle', !!(year), year);
-          destroyPopover(null, element);
+          updateTimeSelectorStatus(scope.layers, element);
         };
 
         scope.useRange = (!gaBrowserSniffer.mobile && (!gaBrowserSniffer.msie ||
@@ -311,6 +314,11 @@
             });
             savedTime = {};
           }
+        });
+
+        scope.$watchCollection('layers | filter:layerFilter',
+            function(olLayers) {
+          updateTimeSelectorStatus(olLayers, element);
         });
       }
     };
