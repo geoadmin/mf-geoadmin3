@@ -9,4 +9,5 @@
     <tr><td class="cell-left">${_('geocover_description_1')}</td><td>${c['attributes']['description_1'] or '-'}</td></tr>
     <tr><td class="cell-left">${_('geocover_depth_2')}</td><td>${c['attributes']['depth_2'] or '-'}</td></tr>
     <tr><td class="cell-left">${_('geocover_description_2')}</td><td>${c['attributes']['description_2'] or '-'}</td></tr>
+    <tr><td class="cell-left"></td><td><a href="${c['attributes']['url_legend']}" target="_blank">${_('linkzurlegende')}</a></td></tr>
 </%def>

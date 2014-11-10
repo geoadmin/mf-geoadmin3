@@ -1557,6 +1557,7 @@ class ga25_line_aux(Base, Vector):
     basisdatensatz = Column('basisdatensatz', Text)
     description = Column('description', Text)
     spec_description = Column('spec_description', Text)
+    url_legend = Column('url_legende', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geologischer_atlas', ga25_line_aux)
@@ -1573,6 +1574,7 @@ class ga25_point_hydro(Base, Vector):
     spec_description = Column('spec_description', Text)
     azimut = Column('azimut', Text)
     depth = Column('depth', Text)
+    url_legend = Column('url_legende', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geologischer_atlas', ga25_point_hydro)
@@ -1589,6 +1591,7 @@ class ga25_point_geol(Base, Vector):
     spec_description = Column('spec_description', Text)
     azimut = Column('azimut', Text)
     depth = Column('depth', Text)
+    url_legend = Column('url_legende', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geologischer_atlas', ga25_point_geol)
@@ -1608,6 +1611,7 @@ class ga25_point_drill(Base, Vector):
     description_1 = Column('description_1', Text)
     depth_2 = Column('depth_2', Text)
     description_2 = Column('description_2', Text)
+    url_legend = Column('url_legende', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geologischer_atlas', ga25_point_drill)
@@ -1621,6 +1625,7 @@ class ga25_point_info(Base, Vector):
     id = Column('bgdi_id', Integer, primary_key=True)
     basisdatensatz = Column('basisdatensatz', Text)
     description = Column('description', Text)
+    url_legend = Column('url_legende', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geologischer_atlas', ga25_point_info)
@@ -1637,6 +1642,7 @@ class ga25_point_struct(Base, Vector):
     spec_description = Column('spec_description', Text)
     azimut = Column('azimut', Text)
     dip = Column('dip', Text)
+    url_legend = Column('url_legende', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geologischer_atlas', ga25_point_struct)
@@ -1651,6 +1657,7 @@ class ga25_polygon_aux_1(Base, Vector):
     basisdatensatz = Column('basisdatensatz', Text)
     description = Column('description', Text)
     tecto = Column('tecto', Text)
+    url_legend = Column('url_legende', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geologischer_atlas', ga25_polygon_aux_1)
@@ -1665,6 +1672,7 @@ class ga25_polygon_aux_2(Base, Vector):
     basisdatensatz = Column('basisdatensatz', Text)
     description = Column('description', Text)
     tecto = Column('tecto', Text)
+    url_legend = Column('url_legende', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geologischer_atlas', ga25_polygon_aux_2)
@@ -1679,6 +1687,7 @@ class ga25_polygon_main(Base, Vector):
     basisdatensatz = Column('basisdatensatz', Text)
     description = Column('description', Text)
     tecto = Column('tecto', Text)
+    url_legend = Column('url_legende', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geologischer_atlas', ga25_polygon_main)
