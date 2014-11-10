@@ -1108,7 +1108,9 @@
           }
         });
         if (layerSpecs.length > 0) {
-          gaPermalink.updateParams({layers: layerSpecs.join(',')});
+          gaPermalink.updateParams({
+            layers: layerSpecs.join(',')
+          });
         } else {
           gaPermalink.deleteParam('layers');
         }
@@ -1125,7 +1127,8 @@
           gaPermalink.deleteParam('layers_opacity');
         } else {
           gaPermalink.updateParams({
-            layers_opacity: opacityValues.join(',')});
+            layers_opacity: opacityValues.join(',')
+          });
         }
       }
 
@@ -1140,25 +1143,28 @@
           gaPermalink.deleteParam('layers_visibility');
         } else {
           gaPermalink.updateParams({
-            layers_visibility: visibilityValues.join(',')});
+            layers_visibility: visibilityValues.join(',')
+          });
         }
       }
 
       function updateLayersTimestampsParam(layers) {
-        var timestampTotal = '';
+        var timestampTotal = false;
         var timestampValues = $.map(layers, function(layer) {
-          var timestamp = layer.time;
-          timestampTotal += timestamp;
-          if (layer.timeEnabled && layer.time) {
-            return layer.time;
+          if (layer.timeEnabled) {
+            timestampTotal = true;
+            if (layer.time) {
+              return layer.time;
+            }
           }
           return '';
         });
-        if (timestampTotal == '') {
-          gaPermalink.deleteParam('layers_timestamp');
-        } else {
+        if (timestampTotal) {
           gaPermalink.updateParams({
-            layers_timestamp: timestampValues.join(',')});
+            layers_timestamp: timestampValues.join(',')
+          });
+        } else {
+          gaPermalink.deleteParam('layers_timestamp');
         }
       }
 
