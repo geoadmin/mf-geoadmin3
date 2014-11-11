@@ -53,6 +53,7 @@ def cmdline(argv=None):
 
     kw = dict([varsplit(var) for var in options.var])
     try:
+        #added .encode('utf-8', 'replace') to force utf-8
         print(template.render(**kw)).encode('utf-8', 'replace')
     except:
         _exit()
