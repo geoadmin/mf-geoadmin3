@@ -19,36 +19,33 @@
     padding: 0;
   }
  
-  label, input, select, options {
+  .ga-layer-infos label, input, select, options, button {
     cursor: pointer;
+
+    &:hover {
+      color: #666;
+    }
   }
 
   label {
-    margin-bottom: 7px;
+    padding: 4px 0px 4px 2.2em;
+    margin: 0;
     font-weight: normal;
-    padding-top: .3em;
-    padding-left: 2.2em;
-  
+
     @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
       height: inherit;
-      margin-bottom: 0;
-      padding-bottom: .3em;
       line-height: 2.4em;
     }
   }
 
   button {
     top: 0;
-    width: 16px;
+    width: 1.3em;
     height: 100%;
-    font-size: 1.2em;
+    font-size: 1.3em;
     background: transparent;
     border: none;
     padding: 0;
- 
-    &:hover {
-      color: #666;
-    }
 
     &.ga-disabled, &.ga-disabled:hover {
       color: #CCC;
@@ -93,14 +90,13 @@
  
   .ga-layer-infos {
     width: 100%;
- 
+
     button {
       position: absolute;
  
       @media (min-width: @screen-tablet) and (min-height: @screen-sm-max-height) {
         /* critical css, makes alignement correct on all desktop browsers*/
-        top: 3px;
-        height: 25px;
+        height: 30px;
       }
     }
 
@@ -116,21 +112,12 @@
         text-overflow: ellipsis;
       }
     }
- 
-    .ga-layer-remove {
-      color: #fff;
-      background-color: #000;
-      line-height: 1em;
- 
-      @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-        color: inherit;
-        background-color: transparent;
-      }
-    }
 
     .ga-layer-time {
+      top: 6px;
       right: 1.7em;
       width: 4em;
+      height: 17px;
 
       select {
         position: absolute;
@@ -145,6 +132,7 @@
       }
  
       @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+        top: 0px;
         right: 2.7em;
         height: 1.7em;
         margin: 0.6em 0;
@@ -194,7 +182,16 @@
     }
   }
  
-  .ga-layer-time-enabled > .ga-layer-tools {
+  .ga-layer-tools, .ga-layer-infos {
+    margin-bottom: 4px;
+
+    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+      height: 100%;
+      margin-bottom: 0;
+    }
+  }
+
+  .ga-layer-time-enabled .ga-layer-tools {
  
     @media (max-width: 335px) {
       label > div {
@@ -242,10 +239,6 @@
  
   @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
     padding: 0 !important;
- 
-    .ga-layer-infos, ga-layer-tools {
-      height: 100%;
-    }
  
     .ga-layer-folded {
  
