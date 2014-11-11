@@ -91,15 +91,17 @@
           var now = dateFormat(new Date());
           var saveAs = $window.saveAs;
           var filename = 'map.geo.admin.ch_KML_' + now + '.kml';
-          var charset = $document.characterSet;
+          var charset = $document.characterSet || 'UTF-8';
+          var type = 'application/vnd.google-earth.kml+xml';
+          type = type + ';charset=' + charset;
+
           if (!this.canSave()) {
             alert($translate('export_kml_notsupported'));
           } else {
             var kmlString = this.create(layer, projection);
             if (kmlString) {
               var blob = new Blob([kmlString],
-                                  {type: 'application/vnd.google-earth.kml+' +
-                                         'xml;charset=' + charset});
+                                  {type: type});
               saveAs(blob, filename);
             }
           }
