@@ -3271,6 +3271,12 @@ msgstr ""
 msgid "rohstoff"
 msgstr ""
 
+msgid "rotation key"
+msgstr ""
+
+msgid "rotation key apple"
+msgstr ""
+
 msgid "stoff"
 msgstr ""
 

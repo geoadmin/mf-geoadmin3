@@ -3491,6 +3491,12 @@ msgstr "Directions séparées"
 msgid "rohstoff"
 msgstr "Matières premières"
 
+msgid "rotation key"
+msgstr "Utilisez Alt + Shift + drag pour tourner l'image"
+
+msgid "rotation key apple"
+msgstr "Utilisez \u2325 + Shift + drag pour tourner l'image"
+
 msgid "routentypid"
 msgstr "Genre d'itinéraires pour convois exceptionnels"
 
