@@ -1108,7 +1108,9 @@
           }
         });
         if (layerSpecs.length > 0) {
-          gaPermalink.updateParams({layers: layerSpecs.join(',')});
+          gaPermalink.updateParams({
+            layers: layerSpecs.join(',')
+          });
         } else {
           gaPermalink.deleteParam('layers');
         }
@@ -1125,7 +1127,8 @@
           gaPermalink.deleteParam('layers_opacity');
         } else {
           gaPermalink.updateParams({
-            layers_opacity: opacityValues.join(',')});
+            layers_opacity: opacityValues.join(',')
+          });
         }
       }
 
@@ -1140,31 +1143,35 @@
           gaPermalink.deleteParam('layers_visibility');
         } else {
           gaPermalink.updateParams({
-            layers_visibility: visibilityValues.join(',')});
+            layers_visibility: visibilityValues.join(',')
+          });
         }
       }
 
       function updateLayersTimestampsParam(layers) {
-        var timestampTotal = '';
+        var timestampTotal = false;
         var timestampValues = $.map(layers, function(layer) {
-          var timestamp = layer.time;
-          timestampTotal += timestamp;
-          if (layer.timeEnabled && layer.time) {
-            return layer.time;
+          if (layer.timeEnabled) {
+            timestampTotal = true;
+            if (layer.time) {
+              return layer.time;
+            }
           }
           return '';
         });
-        if (timestampTotal == '') {
-          gaPermalink.deleteParam('layers_timestamp');
-        } else {
+        if (timestampTotal) {
           gaPermalink.updateParams({
-            layers_timestamp: timestampValues.join(',')});
+            layers_timestamp: timestampValues.join(',')
+          });
+        } else {
+          gaPermalink.deleteParam('layers_timestamp');
         }
       }
 
       return function(map) {
         var scope = $rootScope.$new();
         var deregFns = [];
+        var dupId = 0; // Use for duplicate layer
 
         scope.layers = map.getLayers().getArray();
 
@@ -1201,7 +1208,6 @@
         });
 
         var deregister = scope.$on('gaLayersChange', function() {
-
           var allowThirdData = false;
           var confirmedOnce = false;
           angular.forEach(layerSpecs, function(layerSpec, index) {
@@ -1238,10 +1244,16 @@
             if (bodLayer) {
               // BOD layer.
               // Do not consider BOD layers that are already in the map,
-              // except foir timeEnabled layers
-              if (bodLayer.timeEnabled ||
-                  !gaMapUtils.getMapOverlayForBodId(map, layerSpec)) {
+              // except for timeEnabled layers
+              var isOverlay = gaMapUtils.getMapOverlayForBodId(map, layerSpec);
+              if (bodLayer.timeEnabled || !isOverlay) {
                 layer = gaLayers.getOlLayerById(layerSpec);
+
+                // If the layer is already on the map when need to increment
+                // the id.
+                if (isOverlay) {
+                  layer.id += '_' + dupId++;
+                }
               }
               if (angular.isDefined(layer)) {
                 layer.setVisible(visible);
