@@ -259,6 +259,15 @@
   }
 }
 
+/* HACK for alignment in FF and IE */
+.no-webkit [ga-layermanager] .ga-layer-infos label {
+  margin-top: 1px;
+
+  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+    margin-top: -1px;
+  }
+}
+
 /* The popover is outside the layermanager */
 .ga-layer-timestamps {
   width: 250px;
