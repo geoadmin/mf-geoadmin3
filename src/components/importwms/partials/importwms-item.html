@@ -1,0 +1,18 @@
+<div class="ga-header-group" 
+     ng-class="{
+       'ga-odd': $odd,
+       'ga-invalid': layer.isInvalid,
+       'ga-selected': (options.layerSelected === layer)}"
+     ng-mouseenter="addPreviewLayer($event, layer)"
+     ng-mouseleave="removePreviewLayer($event)"
+     ng-click="toggleLayerSelected($event, layer)" >
+  <button class="icon-zoom-in" ng-disabled="!(layer.extent)"></button>
+  <button class="icon-plus" ng-hide="!(layer.Layer)"></button>
+  {{layer.Title}}
+</div>
+<ul class="ga-child-group" ng-if="!!(layer.Layer)">
+  <li ng-repeat="layer in layer.Layer | orderBy:'Title'">
+    <div ga-import-wms-item></div>
+  </li>
+</ul>
+ 

@@ -1,44 +1,26 @@
 <div>
-  <form>
+  <form ng-class="{'has-error': error}">
     <input type="url" name="url" autocomplete="off" placeholder="{{'choose_wms_url' | translate}}"
       ng-model="fileUrl" required class="form-control"/>
     <div class="ga-import-wms-open icon-collapse"></div>
     <button type="button" class="btn btn-default ga-import-wms-connect"
             ng-click="handleFileUrl()" translate>connect</button>
-    <div>{{wmsConstraintsMessage ? wmsConstraintsMessage : userMessage}}</div>
+    <div class="ga-message">{{userMessage}}</div>
   </form>
   <div class="ga-import-wms-container">
-    <table class="table-header table table-condensed">
-      <thead>
-        <tr>
-          <th></th>
-          <th ng-click="reverse = !reverse">
-            <span class="pull-left" translate>title</span>
-            <i class="pull-right icon-sort-by-alphabet" ng-hide="reverse"></i>
-            <i class="pull-right icon-sort-by-alphabet-alt" ng-show="reverse"></i>
-          </th>
-        </tr>
-      </thead>
-    </table>
+    <div class="ga-import-wms-header" ng-click="reverse = !reverse">
+      <label translate>title</label>
+      <button class="pull-right" ng-class="{
+        'icon-sort-by-alphabet': !reverse,
+        'icon-sort-by-alphabet-alt': reverse
+      }"></button>
+    </div>
     <div class="ga-import-wms-content">
-      <table class="table table-striped table-hover table-condensed">
-        <tbody>
-          <tr ng-repeat="layer in layers | orderBy:'Title':reverse"
-              ng-class="{
-                'success': (layerSelected.Name == layer.Name),
-                'pending': (layerHovered.Name == layer.Name)
-              }">
-            <td>
-              <div class="icon-zoom-in" ng-click="zoomOnLayerExtent(layer)"></div>
-            </td>
-            <td ng-mouseover="addPreviewLayer(layer)"
-                ng-mouseleave="removePreviewLayer()"
-                ng-click="toggleLayerSelected(layer)" >
-              {{layer.Title}}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <ul>
+        <li ng-repeat="layer in layers | orderBy:'Title':reverse">
+          <div ga-import-wms-item></div>
+        </li>
+      </ul>
     </div>
     <div class="modal-backdrop fade in" ng-show="progress > 0 && progress < 100">
       <div class="progress progress-striped active">
@@ -48,8 +30,8 @@
   </div>
   <div class="ga-import-wms-descr">
     <label translate>description</label>
-    <textarea  placeholder="{{'description_instructions' | translate}}" class="form-control" readonly>
-{{(layerSelected) ? layerSelected.Abstract : layerHovered.Abstract}}</textarea>
-    <button type="button" class="btn btn-default ga-import-wms-add" ng-click="addLayerSelected()" translate>add_layer</button>
+    <textarea  placeholder="{{'description_instructions' | translate}}" class="form-control" readonly>{{getAbstract()}}</textarea>
+    <button type="button" class="btn btn-default ga-import-wms-add"
+    ng-disabled="(options.layerSelected && options.layerSelected.isInvalid)" ng-click="addLayerSelected()" translate>add_layer</button>
   </div>
 </div>

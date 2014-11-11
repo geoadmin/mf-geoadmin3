@@ -11,11 +11,14 @@
   ]);
 
   module.controller('GaImportWmsDirectiveController',
-      function($scope, $http, $q, $translate, gaUrlUtils,
-          gaWms, gaPreviewLayers) {
+      function($scope, $http, $q, $translate, gaUrlUtils, gaWms) {
 
-          // List of layers available in the GetCapabilities
+          // List of layers available in the GetCapabilities.
+          // The layerXXXX properties use layer objects from the parsing of
+          // a  GetCapabilities file, not ol layer object.
           $scope.layers = [];
+          $scope.options.layerSelected = null; // the layer selected on click
+          $scope.options.layerHovered = null;
 
           // copy from ImportKml
           $scope.fileUrl = null;
@@ -40,6 +43,7 @@
               $scope.cancel();
 
               var proxyUrl = $scope.options.proxyUrl + encodeURIComponent(url);
+              $scope.error = false;
               $scope.userMessage = $translate('uploading_file');
               $scope.progress = 0.1;
               $scope.canceler = $q.defer();
@@ -51,11 +55,14 @@
                 $scope.displayFileContent(data);
               })
               .error(function(data, status, headers, config) {
+                $scope.error = true;
                 $scope.userMessage = $translate('upload_failed');
                 $scope.progress = 0;
                 $scope.layers = [];
-                $scope.wmsConstraintsMessage = '';
               });
+            } else {
+              $scope.error = true;
+              $scope.userMessage = $translate('drop_invalid_url');
             }
           };
 
@@ -64,18 +71,15 @@
           $scope.displayFileContent = function(data) {
             $scope.userMessage = $translate('parsing_file');
             $scope.progress = 80;
-
-            // The layerXXXX properties use layer objects from the parsing of
-            // a  GetCapabilities file, not ol layer object
             $scope.layers = [];
-            $scope.layerSelected = null; // the layer selected on user click
-            $scope.layerHovered = null; // the layer when mouse is over it
+            $scope.options.layerSelected = null;
+            $scope.options.layerHovered = null;
 
             try {
               var srsCode = $scope.map.getView().getProjection().getCode();
               var parser = new ol.format.WMSCapabilities();
               var result = parser.read(data);
-              $scope.wmsConstraintsMessage = (result.Service.MaxWidth) ?
+              $scope.userMessage = (result.Service.MaxWidth) ?
                   $translate('wms_max_size_allowed') + ' ' +
                     result.Service.MaxWidth +
                     ' * ' + result.Service.MaxHeight :
@@ -83,17 +87,15 @@
 
               if (result.Capability.Layer) {
                 $scope.layers = getChildLayers(result.Capability.Layer,
-                    srsCode);
-
-                // We remove the root layer node in the list
-                $scope.layers.shift();
+                    srsCode).Layer;
               }
 
               $scope.userMessage = $translate('parse_succeeded');
               $scope.progress += 20;
 
             } catch (e) {
-              $scope.userMessage = $translate('parse_failed') + e.message;
+              $scope.error = true;
+              $scope.userMessage = $translate('parse_failed') + ' ' + e.message;
               $scope.progress = 0;
             }
           };
@@ -108,79 +110,6 @@
               $scope.canceler.resolve();
             }
           };
-
-          // Add the selected layer to the map
-          $scope.addLayerSelected = function() {
-            if ($scope.layerSelected) {
-              var layerAdded = $scope.addLayer(
-                  $scope.layerSelected, /* isPreview */ false);
-
-              if (layerAdded) {
-                $scope.userMessage = $translate('add_wms_layer_succeeded');
-              }
-
-              alert($scope.userMessage);
-            }
-          };
-
-          // Add preview  dlayer to the map
-          $scope.addPreviewLayer = function(getCapLayer) {
-            $scope.layerHovered = getCapLayer;
-            gaPreviewLayers.addGetCapWMSLayer($scope.map, getCapLayer);
-          };
-
-          // Remove preview layer
-          $scope.removePreviewLayer = function() {
-            gaPreviewLayers.removeAll($scope.map);
-            $scope.layerHovered = null;
-          };
-
-          // Select the layer clicked
-          $scope.toggleLayerSelected = function(getCapLayer) {
-            $scope.layerSelected = ($scope.layerSelected &&
-                $scope.layerSelected.Name == getCapLayer.Name) ?
-                null :
-                getCapLayer;
-          };
-
-          // Zoom on layer extent
-          $scope.zoomOnLayerExtent = function(getCapLayer) {
-            var layer = getCapLayer;
-            var extent = layer.extent || getLayerExtentFromGetCap(layer);
-            var view = $scope.map.getView();
-            var mapSize = $scope.map.getSize();
-
-            // If a minScale is defined
-            if (layer.MaxScaleDenominator && extent) {
-
-              // We test if the layer extent specified in the
-              // getCapabilities fit the minScale value.
-              var layerExtentScale = getScaleFromExtent(extent, mapSize);
-
-              if (layerExtentScale > layer.MaxScaleDenominator) {
-                var layerExtentCenter = ol.extent.getCenter(extent);
-                var factor = layerExtentScale / layer.MaxScaleDenominator;
-                var width = ol.extent.getWidth(extent) / factor;
-                var height = ol.extent.getHeight(extent) / factor;
-                extent = [
-                  layerExtentCenter[0] - width / 2,
-                  layerExtentCenter[1] - height / 2,
-                  layerExtentCenter[0] + width / 2,
-                  layerExtentCenter[1] + height / 2
-                ];
-
-                var res = view.constrainResolution(
-                    view.getResolutionForExtent(extent, mapSize), 0, -1);
-                view.setCenter(layerExtentCenter);
-                view.setResolution(res);
-                return;
-              }
-            }
-
-            if (extent) {
-              view.fitExtent(extent, mapSize);
-            }
-         };
 
           // Add a layer from GetCapabilities object to the map
           $scope.addLayer = function(getCapLayer) {
@@ -201,22 +130,72 @@
             }
           };
 
-          /**** UTILS functions ****/
-          // from OL2
-          //TO FIX: utils function to get scale from an extent, should be
-          //elsewhere?
-          function getScaleFromExtent(extent, mapSize) {
-            // Constants get from OpenLayers 2, see:
-            // https://github.com/openlayers/openlayers/blob/master/lib/OpenLayers/Util.js
-            //
-            // 39.37 INCHES_PER_UNIT
-            // 72 DOTS_PER_INCH
-            return $scope.map.getView().
-                getResolutionForExtent(extent, mapSize) * 39.37 * 72;
-          }
+          // Add the selected layer to the map
+          $scope.addLayerSelected = function() {
+            if ($scope.options.layerSelected) {
+              var layerAdded = $scope.addLayer($scope.options.layerSelected,
+                  /* isPreview */ false);
+
+              if (layerAdded) {
+                $scope.userMessage = $translate('add_wms_layer_succeeded');
+              }
+
+              alert($scope.userMessage);
+            }
+          };
+
+          // Get the abstract to display in the text area
+          $scope.getAbstract = function() {
+            var l = $scope.options.layerSelected ||
+                $scope.options.layerHovered || {};
+            return ((l.isInvalid) ? $translate(l.Abstract) : l.Abstract) || '';
+          };
+
+          // Go through all layers, assign needed properties,
+          // and remove useless layers (no name or bad crs without childs)
+          var getChildLayers = function(layer, srsCode) {
+            // If the  WMS layer has no name or if it can't be
+            // displayed in the current SRS, we set it as invalid
+            if (!layer.Name) {
+              layer.isInvalid = true;
+              layer.Abstract = 'layer_invalid_no_name';
+            } else if (!layer.CRS ||
+                (layer.CRS.indexOf(srsCode.toUpperCase()) == -1 &&
+                layer.CRS.indexOf(srsCode.toLowerCase()) == -1)) {
+              layer.isInvalid = true;
+              layer.Abstract = 'layer_invalid_no_crs';
+            } else {
+              layer.wmsUrl = $scope.fileUrl;
+              layer.id = 'WMS||' + layer.wmsUrl + '||' + layer.Name;
+              layer.extent = getLayerExtentFromGetCap(layer);
+            }
+
+            // Go through the child to get valid layers
+            if (layer.Layer) {
+
+              for (var i = 0; i < layer.Layer.length; i++) {
+                var l = getChildLayers(layer.Layer[i], srsCode);
+                if (!l) {
+                  layer.Layer.splice(i, 1);
+                  i--;
+                }
+              }
+
+              // No valid child
+              if (layer.Layer.length == 0) {
+                layer.Layer = undefined;
+              }
+            }
+
+            if (layer.isInvalid && !layer.Layer) {
+              return undefined;
+            }
+
+            return layer;
+          };
 
           // Get the layer extent defines in the GetCapabilities
-          function getLayerExtentFromGetCap(getCapLayer) {
+          var getLayerExtentFromGetCap = function(getCapLayer) {
             var extent = null;
             var layer = getCapLayer;
             var srsCode = $scope.map.getView().getProjection().getCode();
@@ -241,30 +220,128 @@
             }
 
             return extent;
-          }
+          };
+  });
 
-          function getChildLayers(getCapLayer, srsCode) {
-            var layers = [];
-            // If the  WMS layer has no name or if it can't be
-            // displayed in the current SRS, we don't add it
-            // to the list
-            if (getCapLayer.Name && getCapLayer.CRS &&
-                (getCapLayer.CRS.indexOf(srsCode.toUpperCase()) != -1 ||
-                getCapLayer.CRS.indexOf(srsCode.toLowerCase()) != -1)) {
-              getCapLayer.wmsUrl = $scope.fileUrl;
-              getCapLayer.id = 'WMS||' + getCapLayer.wmsUrl + '||' +
-                getCapLayer.Name;
-              getCapLayer.extent = getLayerExtentFromGetCap(getCapLayer);
-              layers.push(getCapLayer);
-            }
-            if (getCapLayer.Layer) {
-              for (var i = 0, ii = getCapLayer.Layer.length; i < ii; i++) {
-                layers = layers.concat(getChildLayers(getCapLayer.Layer[i],
-                    srsCode));
-              }
-            }
-            return layers;
+  module.controller('GaImportWmsItemDirectiveController', function($scope,
+      $translate, gaPreviewLayers) {
+
+    // Add preview layer
+    $scope.addPreviewLayer = function(evt, getCapLayer) {
+      evt.stopPropagation();
+      $scope.options.layerHovered = getCapLayer;
+      if (getCapLayer.isInvalid) {
+        return;
+      }
+      gaPreviewLayers.addGetCapWMSLayer($scope.map, getCapLayer);
+    };
+
+    // Remove preview layer
+    $scope.removePreviewLayer = function(evt) {
+      evt.stopPropagation();
+      $scope.options.layerHovered = null;
+      gaPreviewLayers.removeAll($scope.map);
+    };
+
+    // Select the layer clicked
+    $scope.toggleLayerSelected = function(evt, getCapLayer) {
+      evt.stopPropagation();
+
+      $scope.options.layerSelected = ($scope.options.layerSelected &&
+          $scope.options.layerSelected.Name == getCapLayer.Name) ?
+          null : getCapLayer;
+    };
+  });
+
+  module.directive('gaImportWmsItem', function($compile) {
+
+    /**** UTILS functions ****/
+    // from OL2
+    //TO FIX: utils function to get scale from an extent, should be
+    //elsewhere?
+    var getScaleFromExtent = function(view, extent, mapSize) {
+      // Constants get from OpenLayers 2, see:
+      // https://github.com/openlayers/openlayers/blob/master/lib/OpenLayers/Util.js
+      //
+      // 39.37 INCHES_PER_UNIT
+      // 72 DOTS_PER_INCH
+      return view.getResolutionForExtent(extent, mapSize) *
+          39.37 * 72;
+    };
+
+    // Zoom to layer extent
+    var zoomToLayerExtent = function(layer, map) {
+      var extent = layer.extent;
+      var view = map.getView();
+      var mapSize = map.getSize();
+
+      // If a minScale is defined
+      if (layer.MaxScaleDenominator && extent) {
+
+        // We test if the layer extent specified in the
+        // getCapabilities fit the minScale value.
+        var layerExtentScale = getScaleFromExtent(view, extent, mapSize);
+
+        if (layerExtentScale > layer.MaxScaleDenominator) {
+          var layerExtentCenter = ol.extent.getCenter(extent);
+          var factor = layerExtentScale / layer.MaxScaleDenominator;
+          var width = ol.extent.getWidth(extent) / factor;
+          var height = ol.extent.getHeight(extent) / factor;
+          extent = [
+            layerExtentCenter[0] - width / 2,
+            layerExtentCenter[1] - height / 2,
+            layerExtentCenter[0] + width / 2,
+            layerExtentCenter[1] + height / 2
+          ];
+
+          var res = view.constrainResolution(
+              view.getResolutionForExtent(extent, mapSize), 0, -1);
+          view.setCenter(layerExtentCenter);
+          view.setResolution(res);
+          return;
+        }
+      }
+
+      if (extent) {
+        view.fitExtent(extent, mapSize);
+      }
+    };
+
+    return {
+      restrict: 'A',
+      templateUrl: 'components/importwms/partials/importwms-item.html',
+      controller: 'GaImportWmsItemDirectiveController',
+      compile: function(tEl, tAttr) {
+        var contents = tEl.contents().remove();
+        var compiledContent;
+        return function(scope, iEl, iAttr, controller) {
+          if (!compiledContent) {
+            compiledContent = $compile(contents);
           }
+          compiledContent(scope, function(clone, scope) {
+            iEl.append(clone);
+          });
+
+          var headerGroup = iEl.find('> .ga-header-group');
+          var toggleBt = headerGroup.find('.icon-plus');
+          var childGroup;
+
+          headerGroup.find('.icon-zoom-in').on('click', function(evt) {
+            evt.stopPropagation();
+            zoomToLayerExtent(scope.layer, scope.map);
+          });
+
+          toggleBt.on('click', function(evt) {
+            evt.stopPropagation();
+            toggleBt.toggleClass('icon-minus');
+            if (!childGroup) {
+              childGroup = iEl.find('> .ga-child-group');
+            }
+            childGroup.slideToggle();
+          });
+        };
+      }
+    };
   });
 
   module.directive('gaImportWms',
@@ -292,6 +369,7 @@
 
                 // When a WMS is selected in the list, start downloading the
                 // GetCapabilities
+                scope.error = false;
                 scope.fileUrl = datum.value;
                 scope.$apply(function() {
                   scope.handleFileUrl();
@@ -310,17 +388,19 @@
               });
 
               $rootScope.$on('$translateChangeEnd', function() {
-                scope.handleFileUrl();
+                if (scope.fileUrl) {
+                  scope.handleFileUrl();
+                }
               });
 
               // Fill the list of suggestions with all the data
-              function initSuggestions() {
+              var initSuggestions = function() {
                 var taView = $(taElt).data('ttView');
                 var dataset = taView.datasets[0];
                 dataset.getSuggestions('http', function(suggestions) {
                   taView.dropdownView.renderSuggestions(dataset, suggestions);
                 });
-              }
+              };
             }
           };
         }

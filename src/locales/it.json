@@ -139,6 +139,8 @@
 	"kmlimport_tooltip": "Importare dati KML esterni",
 	"lang_chooser_label": "Lingua",
 	"last_available_year": "Last year",
+	"layer_invalid_no_crs": "WMS: L'attuale proiezione della carta non è supportata",
+	"layer_invalid_no_name": "Il layer non può essere visualizzato perchè non ha nome",
 	"layer_selection": "Selezione",
 	"legend": "Legenda",
 	"link_bowl_crosshair": "Link con mirino",

@@ -139,6 +139,8 @@
 	"kmlimport_tooltip": "Importer des données KML externes",
 	"lang_chooser_label": "Langue",
 	"last_available_year": "Last year",
+	"layer_invalid_no_crs": "WMS  ne supporte pas la projection de la carte",
+	"layer_invalid_no_name": "La couche ne peut être affichée car elle n'a pas de nom.",
 	"layer_selection": "Sélection de couches",
 	"legend": "Légende",
 	"link_bowl_crosshair": "Lien avec marqueur",

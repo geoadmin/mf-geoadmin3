@@ -17,43 +17,7 @@
     width: 586px;
     padding-right: 20px;
   }
-
-  table {
-    width: 320px;
-    margin: 0px;
-    table-layout: fixed;
-
-    thead, tbody, tr {
-      width: 100%;
-    }
-
-    thead, th, td, tr {
-      height: 35px;
-    }
-
-    th, td {
-      width: 295px;
-      border-left: 1px solid #dddddd;
-    }
-
-    tbody > tr:first-child td { /* first-row of table content */
-      border-top: none;
-    }
-
-    tr > :first-child { /* first-col */
-      width: 25px;
-      border-left: none;
-    }
-
-    tr, .icon-zoom-in {
-      cursor: pointer;
-    }
-
-    tr.success {
-      cursor: default;
-    }
-  }
-
+ 
   textarea[readonly] {
     resize: none;
     width: 364px;
@@ -105,16 +69,33 @@
     border-collapse: separate;
     border-radius: 4px;
     z-index: 50;
-
-    th {
-      border-bottom: none;
+   
+    div[ng-click] {
+      cursor: pointer;
     }
-
-    th, td {
-      vertical-align: middle;
+      
+    button {
+      background: none;
+    }
+    
+    .icon-zoom-in, .icon-sort-by-alphabet, .icon-sort-by-alphabet-alt {
+      border: 1px solid transparent;
+      border-right: 1px solid #d3d3d3;
     }
   }
 
+  .ga-import-wms-header {
+    width: 100%;
+    height: 30px;
+    text-align: center;
+    font-weight: bold;
+    line-height: 2.5em;
+    
+    button {
+      width: 30px;
+      height: 100%;
+    }
+  }
   .ga-import-wms-content {
     width: 100%;
     height: 240px;
@@ -122,12 +103,55 @@
     overflow-y: auto;
     overflow-x: hidden;
     border-top: 1px solid #dddddd;
+ 
+    /* tree css */ 
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+     border-bottom: 1px solid #d3d3d3;
+    }
+
+    ul ul {
+      display: none;
+      padding-left: 2em;
+      border-top: 1px solid #d3d3d3;
+      
+      li {
+        border-left: 1px solid #d3d3d3;
+      }
+
+      :last-child {
+        border-bottom: none;
+      }
+    }
+      
+    .ga-header-group:hover {
+      background-color: #f5f5f5; 
+    }
+    
+    .ga-odd {
+      background-color: #f9f9f9;
+    }
+
+    .ga-selected, .ga-selected:hover {
+      cursor: default;
+      background-color: #dff0d8;
+      border-color: #d6e9c6; 
+    }
+      
+    
+    .ga-header-group {
+      padding: 5px 0;
+    }
   }
 
   .ga-import-wms-container, .ga-import-wms-descr {
     display: inline-block;
     position: relative;
-    margin: 20px 0px 0px 0px;
+    margin: 10px 0px 0px 0px;
   }
 
   .ga-import-wms-connect {
@@ -153,5 +177,31 @@
   .ga-import-wms-add {
     width: 100%;
     margin-top: 10px;
+  }
+
+  .ga-message {
+    margin-top: 10px;
+  }
+  
+  .ga-invalid {
+
+    > .icon-zoom-in:before {
+      visibility: hidden;
+    }
+
+    &.ga-selected, &.ga-selected:hover {
+      background-color: #f2dede;
+    }
+  }
+  
+  .has-error {
+    
+    input[type=url] {
+      background-color: #f2dede!important;
+    }
+
+    .ga-message {
+      color: red; 
+    }
   }
 }

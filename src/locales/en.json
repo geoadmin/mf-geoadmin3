@@ -139,6 +139,8 @@
 	"kmlimport_tooltip": "Import external KML data sources",
 	"lang_chooser_label": "Language",
 	"last_available_year": "Last year",
+	"layer_invalid_no_crs": "WMS does not support current map projection",
+	"layer_invalid_no_name": "The layer can't be displayed because it has no name. ",
 	"layer_selection": "Selection",
 	"legend": "Legend",
 	"link_bowl_crosshair": "Link with bowl crosshair",
