@@ -267,8 +267,9 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 	touch $@
 
 .build-artefacts/python-venv/bin/mako-render: .build-artefacts/python-venv
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "Mako==0.8.1"
+	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "Mako==1.0.0"
 	touch $@
+	cp scripts/cmd.py .build-artefacts/python-venv/local/lib/python2.7/site-packages/mako/cmd.py
 
 .build-artefacts/python-venv/bin/htmlmin: .build-artefacts/python-venv
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "htmlmin"
