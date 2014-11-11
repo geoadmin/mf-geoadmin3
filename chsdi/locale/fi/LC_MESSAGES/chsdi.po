@@ -1837,7 +1837,7 @@ msgid "ch.swisstopo.geologie-generalkarte-ggk200"
 msgstr "Geologische Generalkarte"
 
 msgid "ch.swisstopo.geologie-geocover"
-msgstr "GeoCover"
+msgstr "GeoCover - Geol. Vektordatensätze"
 
 msgid "ch.swisstopo.geologie-geocover.metadata"
 msgstr "Divisiun GeoCover"

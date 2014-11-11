@@ -1831,19 +1831,19 @@ msgid "ch.swisstopo.geoidmodell-etrs89"
 msgstr "Géoïde en ETRS89"
 
 msgid "ch.swisstopo.geologie-eiszeit-lgm-raster"
-msgstr "Maximum glaciaire"
+msgstr "Maximum glaciaire 500"
 
 msgid "ch.swisstopo.geologie-generalkarte-ggk200"
 msgstr "Carte géologique générale"
 
 msgid "ch.swisstopo.geologie-geocover"
-msgstr "GeoCover"
+msgstr "GeoCover - Données géol. vector."
 
 msgid "ch.swisstopo.geologie-geocover.metadata"
 msgstr "Découpage GeoCover"
 
 msgid "ch.swisstopo.geologie-geodaesie-bouguer_anomalien"
-msgstr "Anomalies de Bouguer"
+msgstr "Anomalies de Bouguer 500"
 
 msgid "ch.swisstopo.geologie-geodaesie-isostatische_anomalien"
 msgstr "Anomalies isostatiques"
@@ -1852,10 +1852,10 @@ msgid "ch.swisstopo.geologie-geolkarten500.metadata"
 msgstr "Découpage GéoCartes 500"
 
 msgid "ch.swisstopo.geologie-geologische_karte"
-msgstr "Géologie 1:500000"
+msgstr "Carte géologique 500"
 
 msgid "ch.swisstopo.geologie-geologischer_atlas"
-msgstr "Atlas géologique 1:25000"
+msgstr "Atlas géol. de la Suisse 1:25 000"
 
 msgid "ch.swisstopo.geologie-geophysik-aeromagnetische_karte_jura"
 msgstr "Aéromagnétique Plateau/Jura"
@@ -1945,16 +1945,16 @@ msgid "ch.swisstopo.geologie-gisgeol-punkte"
 msgstr "Expertises géologiques (points)"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas"
-msgstr "Atlas gravimétrique"
+msgstr "Atlas gravimétrique 1:100000"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas.metadata"
 msgstr "Découpage atlas gravimétrique"
 
 msgid "ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen"
-msgstr "Réservoirs aquifères"
+msgstr "Réservoirs aquifères 500"
 
 msgid "ch.swisstopo.geologie-hydrogeologische_karte-grundwasservulnerabilitaet"
-msgstr "Vulnérabilité des aquifères"
+msgstr "Vulnérabilité des aquifères 500"
 
 msgid "ch.swisstopo.geologie-rohstoffe-industrieminerale"
 msgstr "Minéraux industriels"
@@ -1969,7 +1969,7 @@ msgid "ch.swisstopo.geologie-spezialkarten_schweiz.metadata"
 msgstr "Découpage cartes géol. spéciales"
 
 msgid "ch.swisstopo.geologie-tektonische_karte"
-msgstr "Tectonique 1:500000"
+msgstr "Carte tectonique 500"
 
 msgid "ch.swisstopo.gg25-bezirk-flaeche.fill"
 msgstr "Limites de districts GG25"

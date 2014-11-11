@@ -1831,19 +1831,19 @@ msgid "ch.swisstopo.geoidmodell-etrs89"
 msgstr "Geoid in ETRS89"
 
 msgid "ch.swisstopo.geologie-eiszeit-lgm-raster"
-msgstr "Last glacial maximum"
+msgstr "Last glacial maximum 500"
 
 msgid "ch.swisstopo.geologie-generalkarte-ggk200"
 msgstr "General Geological Map"
 
 msgid "ch.swisstopo.geologie-geocover"
-msgstr "GeoCover"
+msgstr "GeoCover - Geological Vector Datasets"
 
 msgid "ch.swisstopo.geologie-geocover.metadata"
 msgstr "Division GeoCover"
 
 msgid "ch.swisstopo.geologie-geodaesie-bouguer_anomalien"
-msgstr "Bouguer anomalies"
+msgstr "Bouguer anomalies 500"
 
 msgid "ch.swisstopo.geologie-geodaesie-isostatische_anomalien"
 msgstr "Isostatic anomalies"
@@ -1852,10 +1852,10 @@ msgid "ch.swisstopo.geologie-geolkarten500.metadata"
 msgstr "Division GeoMaps 500"
 
 msgid "ch.swisstopo.geologie-geologische_karte"
-msgstr "Geology 1:500000"
+msgstr "Geological Map 500"
 
 msgid "ch.swisstopo.geologie-geologischer_atlas"
-msgstr "Geological Atlas 1:25000"
+msgstr "Geol. Atlas of Switzerland 1:25 000"
 
 msgid "ch.swisstopo.geologie-geophysik-aeromagnetische_karte_jura"
 msgstr "Aeromagnetics Plateau/Jura"
@@ -1945,16 +1945,16 @@ msgid "ch.swisstopo.geologie-gisgeol-punkte"
 msgstr "Geologische Gutachten (Punkte)"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas"
-msgstr "Gravimetric Atlas"
+msgstr "Gravimetric Atlas 1:100000"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas.metadata"
 msgstr "Division Gravimetric Atlas"
 
 msgid "ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen"
-msgstr "Groundwater resources"
+msgstr "Groundwater Resources 500"
 
 msgid "ch.swisstopo.geologie-hydrogeologische_karte-grundwasservulnerabilitaet"
-msgstr "Groundwater vulnerability"
+msgstr "Groundwater Vulnerability 500"
 
 msgid "ch.swisstopo.geologie-rohstoffe-industrieminerale"
 msgstr "Industrial minerals"
@@ -1969,7 +1969,7 @@ msgid "ch.swisstopo.geologie-spezialkarten_schweiz.metadata"
 msgstr "Division Special Geological Maps"
 
 msgid "ch.swisstopo.geologie-tektonische_karte"
-msgstr "Tectonics 1:500000"
+msgstr "Tectonic Map 500"
 
 msgid "ch.swisstopo.gg25-bezirk-flaeche.fill"
 msgstr "District boundaries GG25"
