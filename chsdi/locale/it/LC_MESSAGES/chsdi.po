@@ -1791,6 +1791,9 @@ msgstr "NPA e località"
 msgid "ch.swisstopo-vd.spannungsarme-gebiete"
 msgstr "Zone di tensioni trascurabili"
 
+msgid "ch.swisstopo-vd.stand-oerebkataster"
+msgstr "Disponibilità del Catasto RDPP"
+
 msgid "ch.swisstopo-vd.url"
 msgstr "http://www.cadastre.ch"
 
@@ -3391,6 +3394,18 @@ msgstr "Numero dell'oggetto"
 
 msgid "oeffentlich"
 msgstr "Pubblico"
+
+msgid "oereb_bool"
+msgstr "Cadastre RDPPF"
+
+msgid "oereb_firma"
+msgstr "Servizio RDPP"
+
+msgid "oereb_status"
+msgstr "Stato RDPP"
+
+msgid "oereb_url"
+msgstr "Geoportale cantonale"
 
 msgid "official object webpage"
 msgstr "Pagina ufficiale dell'oggetto"

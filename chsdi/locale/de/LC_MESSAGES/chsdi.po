@@ -1791,6 +1791,9 @@ msgstr "PLZ und Ortschaften"
 msgid "ch.swisstopo-vd.spannungsarme-gebiete"
 msgstr "Spannungsarme Gebiete"
 
+msgid "ch.swisstopo-vd.stand-oerebkataster"
+msgstr "Verfügbarkeit des ÖREB-Katasters"
+
 msgid "ch.swisstopo-vd.url"
 msgstr "http://www.cadastre.ch"
 
@@ -3391,6 +3394,18 @@ msgstr "Objektnr."
 
 msgid "oeffentlich"
 msgstr "Öffentlich"
+
+msgid "oereb_bool"
+msgstr "ÖREB-Kataster"
+
+msgid "oereb_firma"
+msgstr "ÖREB-Fachstelle"
+
+msgid "oereb_status"
+msgstr "Status ÖREB"
+
+msgid "oereb_url"
+msgstr "Kantonales geoportal"
 
 msgid "official object webpage"
 msgstr "Offizielle Objektseite"

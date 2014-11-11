@@ -1791,6 +1791,9 @@ msgstr "NPA et localités"
 msgid "ch.swisstopo-vd.spannungsarme-gebiete"
 msgstr "Zones de tensions négligeables"
 
+msgid "ch.swisstopo-vd.stand-oerebkataster"
+msgstr "Disponibilité du Cadastre RDPPF"
+
 msgid "ch.swisstopo-vd.url"
 msgstr "http://www.cadastre.ch"
 
@@ -3391,6 +3394,18 @@ msgstr "Numéro de l'objet"
 
 msgid "oeffentlich"
 msgstr "Public"
+
+msgid "oereb_bool"
+msgstr "Cadastre RDPPF"
+
+msgid "oereb_firma"
+msgstr "Service RDPPF"
+
+msgid "oereb_status"
+msgstr "Etat RDPPF"
+
+msgid "oereb_url"
+msgstr "Géoportail cantonal"
 
 msgid "official object webpage"
 msgstr "Page officielle de l'objet"
