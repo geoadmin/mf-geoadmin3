@@ -34,8 +34,40 @@ layers:
   - name: osm
     title: OpenStreetMap
     sources: [osm_cache]
+  - name: "ch.kantone.cadastralwebmap-farbe_wmts_current"
+    title: "CadastralWebMap"
+    sources: [ch.kantone.cadastralwebmap-farbe_wms_cache]
+    dimensions:
+       Time:
+          default: "current"
+          values: ["current"]
+
+sources:
+  osm_tms:
+    type: tile
+    grid: global_mercator_osm
+    url: http://c.tile.openstreetmap.org/%(tms_path)s.png
+    coverage:
+      bbox: [420000,30000,900000,350000]
+      bbox_srs: EPSG:21781
+  ch.kantone.cadastralwebmap-farbe_wms_source:
+    type: wms
+    req:
+      url: http://wms.cadastralwebmap.ch/WMS
+      layers: cm_wms
+  boundaries_source:
+    type: wms
+    req:
+      url: http://wms.geo.admin.ch
+      layers: ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill
 
 caches:
+  ch.kantone.cadastralwebmap-farbe_wms_cache:
+     disable_storage: true
+     format: image/png
+     meta_size: [1, 1]
+     grids: [epsg_21781, epsg_4258, epsg_4326, epsg_2056, epsg_3857]
+     sources: [ch.kantone.cadastralwebmap-farbe_wms_source]
   osm_cache:
     grids: [global_mercator_osm]
     sources: [osm_tms]
@@ -47,16 +79,15 @@ caches:
       opacity: 100
       color: [0,0,0]
 
-sources:
-  osm_tms:
-    type: tile
-    grid: global_mercator_osm
-    url: http://c.tile.openstreetmap.org/%(tms_path)s.png
-    coverage:
-      bbox: [420000,30000,900000,350000]
-      bbox_srs: EPSG:21781
 
 grids:
+  epsg_21781:
+    res: [4000,3750,3500,3250,3000,2750,2500,2250,2000,1750,1500,1250,1000,750,650,500,250,100,50,20,10,5,2.5,2,1.5,1,0.5,0.25,0.1]
+    bbox: [420000,30000,900000,350000]
+    bbox_srs: EPSG:21781
+    srs: EPSG:21781
+    origin: nw
+    stretch_factor: 1.0
   swisstopo-swissimage:
     res: [4000,3750,3500,3250,3000,2750,2500,2250,2000,1750,1500,1250,1000,750,650,500,250,100,50,20,10,5,2.5,2,1.5,1,0.5,0.25]
     bbox: [420000,30000,900000,350000]

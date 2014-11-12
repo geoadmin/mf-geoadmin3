@@ -230,7 +230,6 @@ class Search(SearchValidation):
         if self.timeInstant is not None and self.timeStamps is not None:
             raise exc.HTTPBadRequest('You are not allowed to mix timeStamps and timeInstant parameters')
 
-
     def _get_geoanchor_from_bbox(self):
         centerX = (self.bbox[2] + self.bbox[0]) / 2
         centerY = (self.bbox[3] + self.bbox[1]) / 2
@@ -239,7 +238,7 @@ class Search(SearchValidation):
 
     def _feature_bbox_search(self):
         self._check_timeparameters()
-        
+
         timeFilter = {
             'type': None,
             'years': []

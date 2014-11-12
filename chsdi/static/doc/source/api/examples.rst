@@ -18,6 +18,7 @@ GeoAdmin Examples
 - `Catalog <../examples/geoadmin_catalog.html>`_
 - `Localisation <../examples/geoadmin_localisation.html>`_
 - `Pseudo-Mercator projection <../examples/ol3_mercator.html>`_
+- `CadastralWebMap as WMTS <../examples/cadastralwebmap.html>`_
 
 OpenLayers Examples
 -------------------
