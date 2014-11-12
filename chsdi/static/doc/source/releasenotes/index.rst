@@ -35,8 +35,6 @@ Geodata
 *******
 
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| New    | `Availability of the PLR cadastre <//map.geo.admin.ch/?layers=ch.swisstopo-vd.stand-oerebkataster>`__ (ch.swisstopo-vd.stand-oerebkataster)                                                             |
-+--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Update | `Low distortion area <//map.geo.admin.ch/?layers=ch.swisstopo-vd.spannungsarme-gebiete>`__ (ch.swisstopo-vd.spannungsarme-gebiete)                                                                      |
 +--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Update | `Designated wildlife areas <//map.geo.admin.ch/?layers=ch.bafu.wrz-wildruhezonen_portal>`__ (ch.bafu.wrz-wildruhezonen_portal)                                                                          |
