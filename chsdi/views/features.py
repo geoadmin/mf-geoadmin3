@@ -35,6 +35,8 @@ class FeatureParams(MapServiceValidation):
         self.request = request
 
 # for releases requests
+
+
 def _get_releases_params(request):
     params = FeatureParams(request)
     params.imageDisplay = request.params.get('imageDisplay')
@@ -46,6 +48,8 @@ def _get_releases_params(request):
     return params
 
 # For identify services
+
+
 def _get_features_params(request):
     params = FeatureParams(request)
     params.searchText = request.params.get('searchText')
@@ -407,6 +411,7 @@ def _process_feature(feature, params):
         f['layerName'] = params.translate(layerBodId)
     return f
 
+
 @view_config(route_name='releases', renderer='geojson')
 def releases(request):
     params = _get_releases_params(request)
@@ -414,7 +419,7 @@ def releases(request):
     if models is None:
         raise exc.HTTPBadRequest('No Vector Table was found for %s' % params.layer)
 
-    #Default timestamp
+    # Default timestamp
     timestamps = []
 
     for f in _get_features_for_extent(params, [models]):
@@ -424,10 +429,8 @@ def releases(request):
         # remove duplicates
         timestamps = list(set(timestamps))
         # add day to have full timestamp
-        timestamps = [int(ts + '1231') for ts in timestamps]
-        timestamps.sort()
+        timestamps = sorted([int(ts + '1231') for ts in timestamps])
         # transform back to string
         timestamps = [str(ts) for ts in timestamps]
 
     return {'results': timestamps}
-

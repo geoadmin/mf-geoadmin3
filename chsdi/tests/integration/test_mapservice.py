@@ -390,6 +390,8 @@ class TestMapServiceView(TestsBase):
         resp = self.testapp.get('/rest/services/ech/MapServer/dummy', status=400)
 
 zlayer = 'ch.swisstopo.zeitreihen'
+
+
 class TestReleasesService(TestsBase):
 
     def test_service(self):
@@ -410,12 +412,6 @@ class TestReleasesService(TestsBase):
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(len(resp.json['results']) == 0, len(resp.json['results']))
 
-
-
     def test_unknown_layers(self):
         params = {'imageDisplay': '500,600,96', 'mapExtent': '611399.9999999999,158650,690299.9999999999,198150'}
         resp = self.testapp.get('/rest/services/all/MapServer/dummylayer/releases', params=params, status=400)
-
-
-    
-
