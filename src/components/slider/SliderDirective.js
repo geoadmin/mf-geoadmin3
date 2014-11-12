@@ -25,7 +25,11 @@
 (function() {
   goog.provide('ga_slider_directive');
 
-  var module = angular.module('ga_slider_directive', []);
+  goog.require('ga_debounce_service');
+
+  var module = angular.module('ga_slider_directive', [
+    'ga_debounce_service'
+  ]);
 
   var MODULE_NAME, SLIDER_TAG, angularize, bindHtml, gap,
   halfWidth, hide, inputEvents, module, offset, offsetLeft,
@@ -195,7 +199,8 @@
     };
   });
 
-  module.directive('gaSlider', function($timeout, $sce, $document, $window) {
+  module.directive('gaSlider', function($timeout, $sce, $document, $window,
+      gaDebounce) {
     return {
       restrict: 'A',
       scope: {
@@ -529,7 +534,8 @@
                     }
                   }
                   scope[ref] = newValue;
-                  return scope.$apply();
+                  scope.$digest();
+                  applyDebounced();
                 };
                 onStart = function(event) {
                   lastMouseOffsetLeft = getMouseOffsetLeft(event, element);
@@ -647,21 +653,26 @@
 
             // RE3: Handle arrows left and right key
             var onKeyboardEvent = function(event) {
-              scope.$apply(function() {
-                var value = scope.ngModel;
-                if (event.which == 37) {
-                  scope.ngModel = Math.max(previousValue(value,
-                      scope.dataList), scope.floor);
-                  event.preventDefault();
-                  event.stopPropagation();
-                } else if (event.which == 39) {
-                  scope.ngModel = Math.min(nextValue(value, scope.dataList),
-                      scope.ceiling);
-                  event.preventDefault();
-                  event.stopPropagation();
-                }
-              });
+              var value = scope.ngModel;
+              if (event.which == 37) {
+                scope.ngModel = Math.max(previousValue(value,
+                    scope.dataList), scope.floor);
+                event.preventDefault();
+                event.stopPropagation();
+              } else if (event.which == 39) {
+                scope.ngModel = Math.min(nextValue(value, scope.dataList),
+                    scope.ceiling);
+                event.preventDefault();
+                event.stopPropagation();
+              }
+              scope.$digest(); // We update the slider
+              applyDebounced(); // We update the entire application
             };
+
+            var applyDebounced = gaDebounce.debounce(function() {
+              scope.$apply();
+            }, 200, false, false);
+
 
             return $window.addEventListener('resize', updateDOM);
           }

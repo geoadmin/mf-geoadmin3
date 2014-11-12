@@ -252,12 +252,11 @@
 
           // Update value of measures from the sketch features
           var updateMeasures = function() {
-            scope.$apply(function() {
-              var coords = sketchFeatDistance.getGeometry().getCoordinates();
-              scope.distance = sketchFeatDistance.getGeometry().getLength();
-              scope.azimuth = calculateAzimuth(coords[0], coords[1]);
-              scope.surface = sketchFeatArea.getGeometry().getArea();
-            });
+            var coords = sketchFeatDistance.getGeometry().getCoordinates();
+            scope.distance = sketchFeatDistance.getGeometry().getLength();
+            scope.azimuth = calculateAzimuth(coords[0], coords[1]);
+            scope.surface = sketchFeatArea.getGeometry().getArea();
+            scope.$digest(); // Update this scope and its childrens
           };
 
           // Calulate the azimuth from 2 points
@@ -284,7 +283,7 @@
             }
           };
           var updateProfileDebounced = gaDebounce.debounce(updateProfile, 500,
-              false);
+              false, false);
 
           scope.supportKmlExport = gaExportKml.canSave();
 

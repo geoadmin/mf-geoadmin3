@@ -98,7 +98,7 @@
 
 
     this.$get = function($rootScope, $timeout, $translate, $window,
-        gaBrowserSniffer, gaDebounce, gaGlobalOptions, gaLayers, gaMapUtils,
+        gaBrowserSniffer, gaGlobalOptions, gaLayers, gaMapUtils,
         gaStorage, gaStyleFactory, gaUrlUtils) {
       minRes = gaMapUtils.getViewResolutionForZoom(maxZoom);
       featureOverlay.setStyle(gaStyleFactory.getStyle('offline'));
