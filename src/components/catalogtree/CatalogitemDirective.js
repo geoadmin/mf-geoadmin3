@@ -15,6 +15,19 @@
   module.directive('gaCatalogitem',
       function($compile, gaCatalogtreeMapUtils, gaMapUtils,
           gaLayers, gaLayerMetadataPopup, gaBrowserSniffer, gaPreviewLayers) {
+
+        // Don't add preview layer if the layer is already on the map
+        var addPreviewLayer = function(map, item) {
+          if (!item.selectedOpen) {
+            gaPreviewLayers.addBodLayer(map, item.layerBodId);
+          }
+        };
+
+        // Remove all preview layers
+        var removePreviewLayer = function(map) {
+          gaPreviewLayers.removeAll(map);
+        };
+
         return {
           restrict: 'A',
           replace: true,
@@ -26,59 +39,27 @@
             options: '=gaCatalogitemOptions'
           },
           controller: function($scope) {
-            $scope.isPreviewMode = false;
-
-            $scope.addPreviewLayer = function(evt) {
-              if (gaBrowserSniffer.mobile) {
-                if (evt) {
-                  evt.preventDefault();
-                }
-                return;
-              }
-              var layer = gaMapUtils.getMapOverlayForBodId(
-                  $scope.map, $scope.item.layerBodId);
-
-              // Don't add preview layer if the layer is already on the map
-              if (!layer) {
-                $scope.inPreviewMode = true;
-                $scope.item.errorLoading = (!gaPreviewLayers.addBodLayer(
-                    $scope.map, $scope.item.layerBodId));
-              }
-            };
-
-            $scope.removePreviewLayer = function(evt) {
-              if (gaBrowserSniffer.mobile) {
-                if (evt) {
-                  evt.preventDefault();
-                }
-                return;
-              }
-              gaPreviewLayers.removeAll($scope.map);
-              $scope.inPreviewMode = false;
-            };
 
             $scope.toggleLayer = function() {
-              // Avoid to have the same layer twice on the map
-              $scope.removePreviewLayer();
-              var item = $scope.item;
-              var map = $scope.map;
-              var layer = gaMapUtils.getMapOverlayForBodId(
-                  map, item.layerBodId);
-              if (!angular.isDefined(layer)) {
-                gaCatalogtreeMapUtils.addLayer(map, item);
+              removePreviewLayer($scope.map);
+              if ($scope.item.selectedOpen) {
+                gaCatalogtreeMapUtils.addLayer($scope.map, $scope.item);
               } else {
-                map.removeLayer(layer);
+                var layer = gaMapUtils.getMapOverlayForBodId(
+                    $scope.map, $scope.item.layerBodId);
+                $scope.map.removeLayer(layer);
               }
             };
 
-            $scope.toggle = function(ev) {
+            $scope.toggle = function(evt) {
               $scope.item.selectedOpen = !$scope.item.selectedOpen;
-              ev.preventDefault();
+              evt.preventDefault();
+              evt.stopPropagation();
             };
 
-            $scope.getLegend = function(ev, bodid) {
+            $scope.getLegend = function(evt, bodid) {
               gaLayerMetadataPopup.toggle(bodid);
-              ev.stopPropagation();
+              evt.stopPropagation();
             };
           },
 
@@ -89,9 +70,19 @@
               if (!compiledContent) {
                 compiledContent = $compile(contents);
               }
+
+              // Node
               if (angular.isDefined(scope.item.children)) {
                 scope.$watch('item.selectedOpen', function(value) {
                   controller.updatePermalink(scope.item.id, value);
+                });
+
+              // Leaf
+              } else if (!gaBrowserSniffer.mobile) {
+                iEl.on('mouseenter', function(evt) {
+                  addPreviewLayer(scope.map, scope.item);
+                }).on('mouseleave', function(evt) {
+                  removePreviewLayer(scope.map);
                 });
               }
               compiledContent(scope, function(clone, scope) {
