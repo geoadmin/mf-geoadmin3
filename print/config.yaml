@@ -206,17 +206,19 @@ layouts:
 # G part: Timestamp
 #---------------------------------------
         - !columns
-          absoluteY: 560
-          absoluteX: 20 
+          absoluteY: 575
+          absoluteX: 0 
           width: 160
-          height: 30
+          height: 40
           config:
             borderWidth: 0.0
           items:
             - !text
               condition: timestamp
-              fontSize: 36 
-              fontColor: red
+              fontSize: 12 
+              fontColor: black
+              backgroundColor: white
+              spacingAfter: 5
               align: center
               text: |
                 ${timestamp}
@@ -495,7 +497,7 @@ layouts:
 # I part: Timestamp
 #---------------------------------------
         - !columns
-          absoluteY: 820
+          absoluteY: 825
           absoluteX: 20 
           width: 100
           config:
@@ -503,8 +505,9 @@ layouts:
           items:
             - !text
               condition: timestamp
-              fontSize: 36 
-              fontColor: red
+              fontSize: 12 
+              fontColor: black
+              backgroundColor: white
               align: center
               vertAlign: middle
               text: |

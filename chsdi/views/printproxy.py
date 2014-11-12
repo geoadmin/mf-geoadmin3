@@ -27,7 +27,6 @@ log = logging.getLogger(__name__)
 NUMBER_POOL_PROCESSES = 4
 MAPFISH_FILE_PREFIX = 'mapfish-print'
 USE_MULTIPROCESS = True
-pdfs = []
 
 
 def worker(job):
@@ -58,7 +57,6 @@ def worker(job):
             log.debug('[Worker] pdf_url: %s', pdf_url)
             filename = os.path.basename(urlsplit(pdf_url).path)
             localname = os.path.join(print_temp_dir, MAPFISH_FILE_PREFIX + filename)
-            pdfs.append((timestamp, localname))
         except:
             log.debug('[Worker] Failed timestamp: %s', timestamp)
 
@@ -84,10 +82,9 @@ class PrintProxy(object):
 
     def _zeitreiehen(self, d):
         '''Returns the timestamps for a given scale and location for ch.swisstopo.zeitreiehen
-        http://api.geo.admin.ch/zeitreihen?scale=200000000000&easting=573600&northing=180900
         '''
 
-        timestamps = map(str, range(18441231, 20121231, 10000))
+        timestamps = []
 
         http = Http(disable_ssl_certificate_validation=True)
 
@@ -96,8 +93,6 @@ class PrintProxy(object):
         api_url = self.request.registry.settings['api_url']
         scheme = 'http'
         url = scheme + ':' + api_url + '/rest/services/ech/MapServer/ch.swisstopo.zeitreihen/releases?%s' % params
-
-        print params
 
         try:
             resp, content = http.request(url)
@@ -128,6 +123,8 @@ class PrintProxy(object):
                         log.debug('[_get_timestamps] Zeitreichen %s', timestamps)
                     except:
                         timestamps = lyr['timestamps']
+                else:
+                    timestamps = lyr['timestamps']
 
                 for ts in timestamps:
                     if len(timestamps) > 1 and ts.startswith('9999'):
@@ -188,7 +185,7 @@ class PrintProxy(object):
             return HTTPBadRequest("Missing parameter 'url'")
 
         api_url = self.request.registry.settings['api_url']
-        backend_info_json_url = scheme + ':' + api_url + '/print/info.json'
+        backend_info_json_url = scheme + ':' + api_url + '/printproxy/info.json'
         url = backend_info_json_url + '?url=' + urllib.quote_plus(backend_info_json_url)
 
         http = Http(disable_ssl_certificate_validation=True)
@@ -199,14 +196,16 @@ class PrintProxy(object):
         try:
             resp, content = http.request(url, method=self.request.method,
                                          body=self.request.body, headers=h)
-            info_json = content.replace("/print/", "/printproxy/")
+            info_json = content.replace("/printproxy/", "/print/")
         except:
             raise HTTPBadGateway()
 
-        if "content-type" in resp:
+        try:
             ct = resp["content-type"]
-        response = Response(info_json, status=resp.status,
-                            headers={"Content-Type": ct})
+            response = Response(info_json, status=resp.status,
+                                headers={"Content-Type": ct})
+        except:
+            raise HTTPInternalServerError()
 
         return response
 
@@ -231,7 +230,7 @@ class PrintProxy(object):
         layers = spec.get('layers', [])
         api_url = self.request.registry.settings['api_url']
 
-        create_pdf_url = 'http:' + api_url + '/print/create.json'
+        create_pdf_url = 'http:' + api_url + '/printproxy/create.json'
 
         url = create_pdf_url + '?url=' + urllib.quote_plus(create_pdf_url)
 
