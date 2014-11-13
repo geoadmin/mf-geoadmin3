@@ -26,8 +26,7 @@ describe('ga_feedback_directive', function() {
 
     element = angular.element(
         '<div ga-feedback ' +
-             'ga-feedback-options="options" ' +
-             'ga-feedback-response="response">' +
+             'ga-feedback-options="options">' +
         '</div>')
 
     inject(function($injector, gaUrlUtils) {
@@ -40,7 +39,6 @@ describe('ga_feedback_directive', function() {
       };
       encodeUriQuery = gaUrlUtils.encodeUriQuery;
 
-      $rootScope.response = undefined;
     });
   });
 
