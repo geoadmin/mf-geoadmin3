@@ -14,6 +14,13 @@ fi
 
 SNAPSHOTDIR=/var/www/vhosts/mf-geoadmin3/private/snapshots/$1
 
+# we assure that snapshot is re-build with new version
+cwd=$(pwd)
+cd $SNAPSHOTDIR/geoadmin/code/geoadmin
+KEEP_VERSION=false
+make all
+cd $cwd
+
 sudo -u deploy deploy -r deploy/deploy.cfg $2 $SNAPSHOTDIR
 
 T="$(($(date +%s)-T))"
