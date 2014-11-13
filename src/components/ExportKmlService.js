@@ -113,7 +113,9 @@
             isFileSaveSupported = !!new Blob;
           } catch (e) {
           }
-          return isFileSaveSupported && !gaBrowserSniffer.mobile;
+          return isFileSaveSupported &&
+                 !gaBrowserSniffer.mobile &&
+                 (isNaN(gaBrowserSniffer.msie) || gaBrowserSniffer.msie > 9);
         };
       };
 
