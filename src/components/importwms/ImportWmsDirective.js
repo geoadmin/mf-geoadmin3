@@ -17,6 +17,7 @@
           // The layerXXXX properties use layer objects from the parsing of
           // a  GetCapabilities file, not ol layer object.
           $scope.layers = [];
+          $scope.wmsVersion;
           $scope.options.layerSelected = null; // the layer selected on click
           $scope.options.layerHovered = null;
 
@@ -76,18 +77,19 @@
             $scope.options.layerHovered = null;
 
             try {
-              var srsCode = $scope.map.getView().getProjection().getCode();
-              var parser = new ol.format.WMSCapabilities();
-              var result = parser.read(data);
+              var result = new ol.format.WMSCapabilities().read(data);
+              $scope.wmsVersion = result.version;
               $scope.userMessage = (result.Service.MaxWidth) ?
                   $translate.instant('wms_max_size_allowed') + ' ' +
                     result.Service.MaxWidth +
-                    ' * ' + result.Service.MaxHeight :
-                  '';
+                    ' * ' + result.Service.MaxHeight : '';
 
               if (result.Capability.Layer) {
-                $scope.layers = getChildLayers(result.Capability.Layer,
-                    srsCode).Layer;
+                var root = getChildLayers(result.Capability.Layer,
+                    $scope.map.getView().getProjection().getCode());
+                if (root) {
+                  $scope.layers = root.Layer;
+                }
               }
 
               $scope.userMessage = $translate.instant('parse_succeeded');
@@ -116,7 +118,6 @@
           $scope.addLayer = function(getCapLayer) {
             if (getCapLayer) {
               try {
-                var layer = getCapLayer;
                 var olLayer = gaWms.getOlLayerFromGetCapLayer(getCapLayer);
                 if (olLayer) {
                   $scope.map.addLayer(olLayer);
@@ -154,21 +155,38 @@
                                     l.Abstract) || '';
           };
 
+          // Test if the layer can be displayed with a specific projection
+          var canUseProj = function(layer, projCode) {
+            var projCodeList = layer.CRS || layer.SRS;
+            return (projCodeList.indexOf(projCode.toUpperCase()) != -1 ||
+                projCodeList.indexOf(projCode.toLowerCase()) != -1);
+          };
+
           // Go through all layers, assign needed properties,
           // and remove useless layers (no name or bad crs without childs)
-          var getChildLayers = function(layer, srsCode) {
-            // If the  WMS layer has no name or if it can't be
-            // displayed in the current SRS, we set it as invalid
+          var getChildLayers = function(layer, projCode) {
+
+            // If projCode is undefined that means the parent layer can be
+            // displayed with the current map projection, since it's an herited
+            // property no need to test again.
+            if (projCode) {
+              if (!canUseProj(layer, projCode)) {
+                layer.isInvalid = true;
+                layer.Abstract = 'layer_invalid_no_crs';
+              } else {
+                projCode = undefined;
+              }
+            }
+
+            // If the WMS layer has no name, it can't be displayed
             if (!layer.Name) {
               layer.isInvalid = true;
               layer.Abstract = 'layer_invalid_no_name';
-            } else if (!layer.CRS ||
-                (layer.CRS.indexOf(srsCode.toUpperCase()) == -1 &&
-                layer.CRS.indexOf(srsCode.toLowerCase()) == -1)) {
-              layer.isInvalid = true;
-              layer.Abstract = 'layer_invalid_no_crs';
-            } else {
+            }
+
+            if (!layer.isInvalid) {
               layer.wmsUrl = $scope.fileUrl;
+              layer.wmsVersion = $scope.wmsVersion;
               layer.id = 'WMS||' + layer.wmsUrl + '||' + layer.Name;
               layer.extent = getLayerExtentFromGetCap(layer);
             }
@@ -177,7 +195,7 @@
             if (layer.Layer) {
 
               for (var i = 0; i < layer.Layer.length; i++) {
-                var l = getChildLayers(layer.Layer[i], srsCode);
+                var l = getChildLayers(layer.Layer[i], projCode);
                 if (!l) {
                   layer.Layer.splice(i, 1);
                   i--;
@@ -199,31 +217,24 @@
 
           // Get the layer extent defines in the GetCapabilities
           var getLayerExtentFromGetCap = function(getCapLayer) {
-            var extent = null;
             var layer = getCapLayer;
-            var srsCode = $scope.map.getView().getProjection().getCode();
+            var projCode = $scope.map.getView().getProjection().getCode();
 
             if (layer.BoundingBox) {
               for (var i = 0, ii = layer.BoundingBox.length; i < ii; i++) {
                 var bbox = layer.BoundingBox[i];
-                if (bbox.crs == srsCode.toUpperCase()) {
-                  extent = bbox.extent;
-                  break;
+                var code = bbox.crs || bbox.srs;
+                if (code.toUpperCase() == projCode.toUpperCase()) {
+                  return bbox.extent;
                 }
               }
             }
-
-            if (!extent && layer.EX_GeographicBoundingBox) {
-              var extent = layer.EX_GeographicBoundingBox;
-              var bottomLeft = ol.proj.transform(
-                  ol.extent.getBottomLeft(extent), 'EPSG:4326', srsCode);
-              var topRight = ol.proj.transform(
-                  ol.extent.getTopRight(extent), 'EPSG:4326', srsCode);
-              extent = bottomLeft.concat(topRight);
+            var extent = layer.EX_GeographicBoundingBox ||
+                layer.LatLonBoundingBox;
+            if (extent) {
+              return ol.proj.transformExtent(extent, 'EPSG:4326', projCode);
             }
-
-            return extent;
-          };
+         };
   });
 
   module.controller('GaImportWmsItemDirectiveController', function($scope,
@@ -374,10 +385,8 @@
                 // GetCapabilities
                 scope.error = false;
                 scope.fileUrl = datum.value;
-                scope.$apply(function() {
-                  scope.handleFileUrl();
-                });
-
+                scope.handleFileUrl();
+                scope.$digest();
                 // Re-initialize the list of suggestions
                 initSuggestions();
               });
