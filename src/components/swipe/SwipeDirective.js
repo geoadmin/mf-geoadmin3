@@ -56,9 +56,7 @@
             layerLabelElt.show();
           };
           var drag = function(evt) {
-            scope.$apply(function() {
-              scope.ratio = calculateRatio();
-            });
+            scope.ratio = calculateRatio();
             scope.map.render();
           };
           var dragEnd = function(evt) {
@@ -67,6 +65,7 @@
             $document.unbind(eventKey.move, drag);
             $document.unbind(eventKey.end, dragEnd);
             layerLabelElt.hide();
+            updatePermalinkDebounced(scope.ratio);
           };
 
           // Compose events
@@ -190,9 +189,6 @@
               deactivate();
             }
           });
-          scope.$watch('ratio', function(ratio) {
-            updatePermalinkDebounced(ratio);
-          });
 
           // Move swipe element on resize.
           // We use a debounce function because map.render() is
@@ -205,7 +201,7 @@
             }
           };
           var requestRenderFrameDebounced = gaDebounce.debounce(
-              requestRenderFrame, 200, false);
+              requestRenderFrame, 200, false, false);
           scope.map.on('change:size', function(evt) {
             draggableElt.css({left: calculateOffsetLeft()});
             requestRenderFrameDebounced();
@@ -221,7 +217,7 @@
             }
           };
           var updatePermalinkDebounced = gaDebounce.debounce(
-              updatePermalink, 200, false);
+              updatePermalink, 1000, false);
 
         }
       };

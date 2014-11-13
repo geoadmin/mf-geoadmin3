@@ -507,6 +507,7 @@ itemscope itemtype="http://schema.org/WebApplication"
       </div>
     </div>
 
+% if device == 'desktop':
     <!-- Popup: Import WMS -->
     <div ga-popup="globals.importWmsPopupShown"
          ga-popup-options="{title:'import_wms', help:'63'}"
@@ -558,6 +559,7 @@ itemscope itemtype="http://schema.org/WebApplication"
              ga-draw-active="globals.isDrawActive"></div>
       </div>
     </div><!-- end Draw -->
+% endif
 
     <!-- Popup: Feature Tree -->
     <div ng-controller="GaFeaturetreeController">
@@ -575,7 +577,7 @@ itemscope itemtype="http://schema.org/WebApplication"
       </div>
     </div><!-- end Feature Tree -->
 
-
+% if device == 'mobile':
     <div ng-if="globals.homescreen" class="popover homescreen"
          ng-class="{
            'visible': globals.homescreen, 
@@ -595,6 +597,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         </p>
       </div>
     </div>
+% endif
 
 % if mode == 'prod':
     <script src="${versionslashed}lib/build.js"></script>
@@ -646,7 +649,6 @@ itemscope itemtype="http://schema.org/WebApplication"
     <script>
       goog.require('ga');
     </script>
-
 % endif
 
 % if device == 'mobile':
@@ -721,6 +723,7 @@ itemscope itemtype="http://schema.org/WebApplication"
 
       })();
 
+% if device == 'mobile':
 ## Workaround for iOS 6.x bug: content shifted after orientation change
 ## As we can't use css fix ( see http://stackoverflow.com/a/12518946/29655 )
 ## we force a redraw on orientation change
@@ -735,6 +738,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           }, 0);
         });
       })();
+% endif
     </script>
   </body>
 </html>
