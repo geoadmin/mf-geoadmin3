@@ -1,8 +1,8 @@
 <ul>
-  <li ng-if="!(filteredLayers = (layers | gaReverse | filter:layerFilter)).length" translate>no_layers_info</li>
+  <li ng-if="!(filteredLayers = (layers | gaReverse | filter:layerFilter)).length" class="ga-no-layer" translate>no_layers_info</li>
   <li ng-repeat="layer in filteredLayers" class="ga-layer-folded" ng-class="{'ga-layer-time-enabled': layer.timeEnabled}">
     <div class="ga-layer-infos">
-      <button type="button" class="ga-layer-remove" ng-click="removeLayer(layer)">&times;</button>
+      <button class="icon-remove-sign" ng-click="removeLayer(layer)"></button>
       <label class="ga-checkbox">
         <input type="checkbox" ng-model="layer.visible" />
         <span></span>

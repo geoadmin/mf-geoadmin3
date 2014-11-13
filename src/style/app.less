@@ -187,6 +187,7 @@ input[type=text][readonly] {
   left: 1.6em;
   position: relative;
   margin-top: 29px;
+  z-index: 10; /* Put search on top of the form */
   
   [ga-help] {
     position: absolute;
@@ -1070,6 +1071,7 @@ input[type=range] {
     -ms-appearance: none;
     border: 0;
     background: white;
+    vertical-align: -1px;
     
     &:after {
       font-size: 14px;
