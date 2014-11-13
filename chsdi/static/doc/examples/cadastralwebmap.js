@@ -1,7 +1,7 @@
 function qualifyURL(url) {
   var a = document.createElement('a');
   a.href = url;
-  return a.cloneNode(false).href;
+  return  a.cloneNode(false).href.replace('api3', 'wmts10');
 }
 
 var attributions = [new ol.Attribution({

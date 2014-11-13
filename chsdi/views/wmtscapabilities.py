@@ -4,7 +4,7 @@ from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPBadRequest, HTTPNotFound
 
 from chsdi.models.bod import get_wmts_models
-from chsdi.lib.helpers import locale_negotiator
+from chsdi.lib.helpers import locale_negotiator, sanitize_url
 from chsdi.lib.validation import MapNameValidation
 from chsdi.lib.filters import *
 
@@ -36,12 +36,15 @@ class WMTSCapabilites(MapNameValidation):
         staging = self.request.registry.settings['geodata_staging']
         host = self.request.headers.get(
             'X-Forwarded-Host', self.request.host)
+        mapproxyHost = self.request.registry.settings['mapproxyhost']
         request_uri = self.request.environ.get("REQUEST_URI", "")
         apache_base_path = self.request.registry.settings['apache_base_path']
-        apache_entry_point = '/' if apache_base_path == 'main' else '/' + apache_base_path
+        apache_entry_point = '/' if (apache_base_path == 'main' or 'localhost' in host) else '/' + apache_base_path
 
         # Default ressource
-        onlineressources = {'mapproxy': "%s://%s%s/" % (scheme, host, apache_entry_point), 's3': "%s://wmts.geo.admin.ch/" % scheme}
+        s3_url = sanitize_url("%s://wmts.geo.admin.ch/" % scheme)
+        mapproxy_url = sanitize_url("%s://%s%s/" % (scheme, mapproxyHost, apache_entry_point))
+        onlineressources = {'mapproxy': mapproxy_url, 's3': s3_url}
 
         layers_query = self.request.db.query(self.models['GetCap'])
         layers_query = filter_by_geodata_staging(
@@ -52,7 +55,6 @@ class WMTSCapabilites(MapNameValidation):
         if self.mapName != 'all':
             layers_query = filter_by_map_name(layers_query, self.models['GetCap'], self.mapName)
         layers = layers_query.all()
-
         if hasattr(self.models['GetCapThemes'], 'oberthema_id'):
             themes = self.request.db.query(self.models['GetCapThemes']).order_by(self.models['GetCapThemes'].oberthema_id).all()
         else:

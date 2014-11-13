@@ -52,8 +52,11 @@
 if layer.id == 'ch.kantone.cadastralwebmap-farbe':
      layer.timestamp='current'
      onlineressource = onlineressources['mapproxy']
+elif epsg != '21781':
+     onlineressource = onlineressources['mapproxy']
 else:
      onlineressource = onlineressources['s3']
+
 %>
         <Layer>
             <ows:Title>${layer.kurzbezeichnung|x,trim}</ows:Title>
