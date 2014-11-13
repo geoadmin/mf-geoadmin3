@@ -452,7 +452,7 @@ itemscope itemtype="http://schema.org/WebApplication"
 % endif
 
     <!-- feedback dialog -->
-    <div ng-if="!globals.offline" ng-controller="GaFeedbackController" class="modal-container">
+    <div id="feedback-container" ng-if="!globals.offline" ng-controller="GaFeedbackController" class="modal-container">
       <div id="feedback" class="modal fade" tabindex="-1" role="dialog" ga-modal-show="feedbackModalShown">
         <div class="modal-dialog" ga-draggable=".modal-header">
           <div class="modal-content">
