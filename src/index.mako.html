@@ -596,6 +596,14 @@ itemscope itemtype="http://schema.org/WebApplication"
       </div>
     </div>
 
+% if device == 'desktop':
+  % if mode == 'prod':
+    <script src="${versionslashed}lib/blob.min.js"></script>
+  % else:
+    <script src="lib/blob.js"></script>
+  % endif
+% endif
+
 % if mode == 'prod':
     <script src="${versionslashed}lib/build.js"></script>
     <!-- For <= IE9, we load it explicitely as XDomain does not support
@@ -629,7 +637,6 @@ itemscope itemtype="http://schema.org/WebApplication"
     <script src="lib/EPSG32632.js"></script>
     <script src="lib/fastclick.js"></script>
     <script src="lib/localforage.js"></script>
-    <script src="lib/blob.js"></script>
     <script src="lib/filesaver.js"></script>
 
     <!-- Use Closure to load the application scripts -->
