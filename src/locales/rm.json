@@ -92,7 +92,7 @@
 	"feedback_description": "Rapport charta actual",
 	"feedback_error_message": "Problem: rapport na tramess cun success",
 	"feedback_mail": "Voss e-mail (facultativ)",
-	"feedback_permalink": "Trametter Link:",
+	"feedback_permalink": "Trametter Link: ",
 	"feedback_placeholder": "Agiuntai ina datoteca .pdf, .zip, .jpg, .jpeg, .kml, .kmz u .gpx",
 	"feedback_revision": "Annunazia detaglià concernent charta naziunala:",
 	"feedback_success_message": "Rapport tramess cun success",

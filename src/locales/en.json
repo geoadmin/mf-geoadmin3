@@ -92,7 +92,7 @@
 	"feedback_description": "Your feedback to the current map extent",
 	"feedback_error_message": "Problem: Your message could not be sent",
 	"feedback_mail": "Your Email (not mandatory)",
-	"feedback_permalink": "The following URL will be transferred:",
+	"feedback_permalink": "The following URL will be transferred: ",
 	"feedback_placeholder": "Attach a pdf, zip, jpg, jpeg, kml, kmz or gpx file",
 	"feedback_revision": "Reporting a detailed revision regarding the national map:",
 	"feedback_success_message": "Report sent successfully",

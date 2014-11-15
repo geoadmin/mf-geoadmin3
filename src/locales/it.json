@@ -92,7 +92,7 @@
 	"feedback_description": "Inserisca qui il suo commento",
 	"feedback_error_message": "Errore! Messaggio non trasmesso",
 	"feedback_mail": "La sua email (opzionale)",
-	"feedback_permalink": "Il seguente URL verrá inviato:",
+	"feedback_permalink": "Il seguente URL verrá inviato: ",
 	"feedback_placeholder": "Aggiungere un pdf, zip, jpeg, kml, kmz o gpx",
 	"feedback_revision": "Per una revisione dettagliata della carta nazionale:",
 	"feedback_success_message": "Il rapporto è stato inviato",

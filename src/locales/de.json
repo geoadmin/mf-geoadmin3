@@ -92,7 +92,7 @@
 	"feedback_description": "Ihr Kommentar zum aktuellen Kartenausschnitt",
 	"feedback_error_message": "Problem beim Versenden der Meldung. ",
 	"feedback_mail": "Ihre E-Mail Adresse (freiwillig)",
-	"feedback_permalink": "Der folgende Link wird übermittelt:",
+	"feedback_permalink": "Der folgende Link wird übermittelt: ",
 	"feedback_placeholder": "Fügen Sie eine .pdf, .zip, .jpg, .jpeg, .kml, .kmz oder .gpx Datei hinzu",
 	"feedback_revision": "Detaillierte Revisionsmeldung zum Landeskartenwerk:",
 	"feedback_success_message": "Bericht erfolgreich versendet",
