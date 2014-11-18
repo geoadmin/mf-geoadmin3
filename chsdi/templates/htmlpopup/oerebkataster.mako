@@ -35,7 +35,7 @@
        <td>-</td>     
       % endif
     </tr>
-    <tr><td class="cell-left">${_('oereb_url')}</td>
+    <tr><td class="cell-left">${_('gemdarstellung')}</td>
       % if c['attributes']['url_oereb'] == None:
        <td>-</td>
       % else:
