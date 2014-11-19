@@ -646,7 +646,11 @@ FastClick.prototype.onMouse = function(event) {
 	// Derive and check the target element to see whether the mouse event needs to be permitted;
 	// unless explicitly enabled, prevent non-touch click events from triggering actions,
 	// to prevent ghost/doubleclicks.
-	if (!this.needsClick(this.targetElement) || this.cancelNextClick) {
+	if (!this.needsClick(this.targetElement) || this.cancelNextClick
+    // HACK for 8 https://github.com/geoadmin/mf-geoadmin3/issues/1854
+    // On IOS 8.1 click on <label> 3 click events are triggered, this condition stop
+    // useless events
+    || (deviceIsIOS && this.targetElement && this.targetElement.nodeName == 'LABEL' && event.timeStamp == 0)) {
 
 		// Prevent any user-added listeners declared on FastClick element from being fired.
 		if (event.stopImmediatePropagation) {
