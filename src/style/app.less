@@ -927,21 +927,16 @@ ul.panel-body-wide {
   @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
     .transition(opacity .20s ease);
     display: block;
-    content: "\f021";
-    font-family: FontAwesome;
     position: fixed;
-    top: 2px;
-    left: 0;
-    font-size: 26px;
+    top: 10px;
+    left: 10px;
+    height: 30px;
+    font-size: 28px;
+    background-color: white;
     color: red;
-    width: 44px;
-    height: 44px;
-    line-height: 44px;
-    background: white;
-    text-align: center;
-    border-radius: 44px;
     opacity: 0;
   }
+
   @media (max-width: @screen-phone) {
     transition: none;
     top: 0;
@@ -949,8 +944,6 @@ ul.panel-body-wide {
     height: 4px;
     width: 0;
     background: #F00;
-    -webkit-animation: loader 1s infinite;
-    animation: loader 1s infinite;
     &:before {
       content: normal;
     }
@@ -965,6 +958,13 @@ ul.panel-body-wide {
 
     @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
       opacity: 1;
+      -webkit-animation: spin 2s infinite linear;
+      animation: spin 2s infinite linear;
+    }
+    
+    @media (max-width: @screen-phone) {
+      -webkit-animation: loader 1s infinite;
+      animation: loader 1s infinite;
     }
   }
 }
