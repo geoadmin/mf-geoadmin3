@@ -97,8 +97,8 @@ else:
                     <TileMatrixSet>${epsg}</TileMatrixSet>
                 % endif
             </TileMatrixSetLink>
-            ## axis order hack
-            % if epsg in ['21781', '2056']:
+            ## ACHTUNG: s3 tiles have a row/col order, mapproxy ones the standard col/row
+            % if epsg in ['21781', '2056'] and layer.id != 'ch.kantone.cadastralwebmap-farbe':
                 <ResourceURL format="image/${str(layer.arr_all_formats).split(',')[0]}" resourceType="tile" template="${onlineressource}1.0.0/${layer.id|x,trim}/default/{Time}/${epsg}/{TileMatrix}/{TileRow}/{TileCol}.${str(layer.arr_all_formats).split(',')[0]}"/>
             % else:
                 <ResourceURL format="image/${str(layer.arr_all_formats).split(',')[0]}" resourceType="tile" template="${onlineressource}1.0.0/${layer.id|x,trim}/default/{Time}/${epsg}/{TileMatrix}/{TileCol}/{TileRow}.${str(layer.arr_all_formats).split(',')[0]}"/>
