@@ -349,7 +349,7 @@ scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf .build-artefacts/
 	git clone https://github.com/twbs/bootstrap.git $@ && cd $@ && git checkout v3.0.0
 
 .build-artefacts/fastclick:
-	git clone https://github.com/ftlabs/fastclick.git $@ && cd $@ && git checkout v1.0.0
+	git clone https://github.com/ftlabs/fastclick.git $@ && cd $@ && git checkout v1.0.3
 
 .build-artefacts/localforage:
 	git clone https://github.com/mozilla/localForage.git $@ && cd $@ && git checkout 1.0.1

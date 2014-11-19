@@ -1,6 +1,5 @@
 /node_modules
 /src/deps.js
-/src/lib/fastclick.js
 /src/style/app.css
 /src/style/print.css
 /src/index.html
