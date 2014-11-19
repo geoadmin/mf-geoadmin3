@@ -152,7 +152,7 @@
                                 .replace('{Feature}', featureId);
                   $http.get(htmlUrl, {
                     params: {
-                      lang: $translate.uses() // Left out other parameters as
+                      lang: $translate.use() // Left out other parameters as
                                               // they are not relevant for SEO
                                               // (cadastralWbebMap Links)
                     }
@@ -283,7 +283,7 @@
 
                   $http.get(scope.options.identifyUrl, {
                     params: {
-                      lang: $translate.uses(),
+                      lang: $translate.use(),
                       geometryType: 'esriGeometryPoint',
                       geometryFormat: 'geojson',
                       geometry: east + ',' + north,

@@ -27,7 +27,7 @@ describe('ga_importwms_directive', function() {
     $injector.get('$controller')('GaImportWmsItemDirectiveController', {'$scope': scope}); 
     $compile(element)(scope);
     $rootScope.$digest();
-    $translate.uses('fr');
+    $translate.use('fr');
   }));
 
   it('verifies html elements', inject(function($rootScope) {

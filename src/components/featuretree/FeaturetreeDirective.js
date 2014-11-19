@@ -24,7 +24,7 @@
           gaBrowserSniffer) {
 
         var getTranslatedLabel = function(obj) {
-          var possibleKey = 'label_' + $translate.uses();
+          var possibleKey = 'label_' + $translate.use();
           if (angular.isDefined(obj[possibleKey])) {
             return obj[possibleKey];
           } else {
@@ -204,9 +204,9 @@
 
                   function getItemText(number) {
                     if (number <= 1) {
-                      return $translate('item');
+                      return $translate.instant('item');
                     }
-                    return $translate('items');
+                    return $translate.instant('items');
                   }
                 });
               }

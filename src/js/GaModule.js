@@ -110,7 +110,6 @@
     'ga_seo_controller',
     'ga_timeselector_controller',
     'ga_tooltip_controller',
-    'ngAnimate',
     'ga_featuretree_controller',
     'ga_measure_controller',
     'ga_draw_controller'

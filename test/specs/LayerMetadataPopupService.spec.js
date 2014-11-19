@@ -13,7 +13,7 @@ describe('ga_layer_metadata_popup_service', function() {
     var expectedUrlLayersConfig = 'http://example.com/sometopic?lang=somelang';
     $httpBackend.whenGET(expectedUrlLayersConfig).respond({});
 
-    $translate.uses('somelang');
+    $translate.use('somelang');
     $rootScope.$broadcast('gaTopicChange', { id: 'sometopic' });
     $rootScope.$digest();
   }));
@@ -67,7 +67,7 @@ describe('ga_layer_metadata_popup_service', function() {
     // 2 popups so far, on translation end -> 2 new requests
     var expectedUrlLayersConfig = 'http://example.com/sometopic?lang=someotherlang';
     $httpBackend.whenGET(expectedUrlLayersConfig).respond({});
-    $translate.uses('someotherlang');
+    $translate.use('someotherlang');
 
     expectedUrlLegend = 'http://legendservice.com/sometopic/somelayer?lang=someotherlang';
     $httpBackend.whenGET(expectedUrlLegend).respond('<div>Some translated raw html</div>');

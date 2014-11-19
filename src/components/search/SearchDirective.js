@@ -152,7 +152,7 @@
               // set those values only on mouseenter
               scope.encodedPermalinkHref =
               encodeURIComponent(gaPermalink.getHref());
-              scope.lang = $translate.uses();
+              scope.lang = $translate.use();
             };
 
             scope.getLegend = function(ev, bodId) {
@@ -275,13 +275,13 @@
             var getLocationLabel = function(attrs) {
               var label = attrs.label;
               if (attrs.origin == 'zipcode') {
-                label = '<span>' + $translate('plz') + ' ' + label;
+                label = '<span>' + $translate.instant('plz') + ' ' + label;
               } else if (attrs.origin == 'kantone') {
-                label = '<span>' + $translate('ct') + ' ' + label;
+                label = '<span>' + $translate.instant('ct') + ' ' + label;
               } else if (attrs.origin == 'district') {
-                label = '<span>' + $translate('district') + ' ' + label;
+                label = '<span>' + $translate.instant('district') + ' ' + label;
               } else if (attrs.origin == 'parcel') {
-                label += ' <span>' + $translate('parcel') + ' ';
+                label += ' <span>' + $translate.instant('parcel') + ' ';
               } else if (attrs.origin == 'feature') {
                 label = '<b>' +
                     gaLayers.getLayerProperty(attrs.layer, 'label') +
@@ -353,7 +353,7 @@
                   replace: function(url, searchText) {
                     searchTextUrl = decodeURIComponent(searchText);
                     var queryText = '&searchText=' + searchText;
-                    var lang = '&lang=' + $translate.uses();
+                    var lang = '&lang=' + $translate.use();
                     url = options.applyTopicToUrl(url,
                         currentTopic);
                     url += queryText + lang;
@@ -400,7 +400,7 @@
                     searchTextUrl = decodeURIComponent(searchText);
                     var queryText = '&searchText=' + searchText;
                     var bbox = '&bbox=' + getBBoxParameters(map);
-                    var lang = '&lang=' + $translate.uses();
+                    var lang = '&lang=' + $translate.use();
                     var searchableLayers = '&features=' +
                         scope.searchableLayers.join(',');
                     var timeEnabled = '&timeEnabled=' +
@@ -461,7 +461,7 @@
                   replace: function(url, searchText) {
                     searchTextUrl = decodeURIComponent(searchText);
                     var queryText = '&searchText=' + searchText;
-                    var lang = '&lang=' + $translate.uses();
+                    var lang = '&lang=' + $translate.use();
                     url = options.applyTopicToUrl(url,
                         currentTopic);
                     url += queryText + lang;

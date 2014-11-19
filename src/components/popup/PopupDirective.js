@@ -58,9 +58,9 @@
           scope.toggle = scope.toggle || false;
           scope.isReduced = false;
           scope.options = scope.optionsFunc() || {title: ''};
-          scope.titlePrint = $translate('print_action');
-          scope.titleHelp = $translate('help_label');
-          scope.titleReduce = $translate('reduce_label');
+          scope.titlePrint = $translate.instant('print_action');
+          scope.titleHelp = $translate.instant('help_label');
+          scope.titleReduce = $translate.instant('reduce_label');
 
           // Per default hide the print function
           if (!angular.isDefined(scope.options.showPrint) ||
@@ -172,9 +172,9 @@
 
           var deregister = [];
           deregister.push($rootScope.$on('$translateChangeEnd', function() {
-            scope.titlePrint = $translate('print_action');
-            scope.titleHelp = $translate('help_label');
-            scope.titleReduce = $translate('reduce_label');
+            scope.titlePrint = $translate.instant('print_action');
+            scope.titleHelp = $translate.instant('help_label');
+            scope.titleReduce = $translate.instant('reduce_label');
           }));
 
           // This scope can be destroyed manually by the gaPopupService

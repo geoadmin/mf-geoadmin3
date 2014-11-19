@@ -8,7 +8,7 @@
   module.controller('GaMousePositionController',
       function($scope, $translate, $window) {
         var coordinatesFormat = function(coordinates) {
-          return $translate('coordinates_label') + ': ' +
+          return $translate.instant('coordinates_label') + ': ' +
               ol.coordinate.toStringXY(coordinates, 0).
                 replace(/\B(?=(\d{3})+(?!\d))/g, "'");
         };

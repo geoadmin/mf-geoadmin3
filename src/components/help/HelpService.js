@@ -27,7 +27,7 @@
 
         //Returns a promise
         this.get = function(id) {
-          var lang = fixLang($translate.uses());
+          var lang = fixLang($translate.use());
           var deferred = $q.defer();
          //We resolve directly when we have it in cache already
           if (angular.isDefined(registry[key(id, lang)])) {

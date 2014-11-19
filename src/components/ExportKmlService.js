@@ -114,7 +114,7 @@
           type = type + ';charset=' + charset;
 
           if (!this.canSave()) {
-            alert($translate('export_kml_notsupported'));
+            alert($translate.instant('export_kml_notsupported'));
           } else {
             var kmlString = this.create(layer, projection);
             if (kmlString) {

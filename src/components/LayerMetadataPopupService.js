@@ -45,7 +45,7 @@
 
           //We assume popup does not exist yet
           popup = gaPopup.create({
-            title: $translate('metadata_window_title'),
+            title: $translate.instant('metadata_window_title'),
             destroyOnClose: false,
             content: popupContent,
             result: result,

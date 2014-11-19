@@ -285,7 +285,7 @@
                     $http.get(htmlUrl, {
                       timeout: canceler.promise,
                       params: {
-                        lang: $translate.uses(),
+                        lang: $translate.use(),
                         mapExtent: mapExtent.join(','),
                         imageDisplay: size[0] + ',' + size[1] + ',96'
                       }

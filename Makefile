@@ -181,7 +181,7 @@ prd/lib/: src/lib/d3-3.3.1.min.js src/lib/IE9Fixes.js src/lib/jQuery.XDomainRequ
 	mkdir -p $@
 	cp $^ $@
 
-prd/lib/build.js: src/lib/jquery-2.0.3.min.js src/lib/bootstrap-3.0.0.min.js src/lib/typeahead-0.9.3.min.js src/lib/angular-1.2.9.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/EPSG2056.js src/lib/EPSG32631.js src/lib/EPSG32632.js src/lib/ol.js src/lib/angular-animate-1.2.9.min.js src/lib/angular-translate-1.1.1.min.js src/lib/angular-translate-loader-static-files-0.1.5.min.js src/lib/fastclick.min.js src/lib/localforage.min.js src/lib/filesaver.min.js .build-artefacts/app.js
+prd/lib/build.js: src/lib/jquery-2.0.3.min.js src/lib/bootstrap-3.0.0.min.js src/lib/typeahead-0.9.3.min.js src/lib/angular-1.3.5.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/EPSG2056.js src/lib/EPSG32631.js src/lib/EPSG32632.js src/lib/ol.js src/lib/angular-translate-2.4.2.min.js src/lib/angular-translate-loader-static-files-2.4.2.min.js src/lib/fastclick.min.js src/lib/localforage.min.js src/lib/filesaver.min.js .build-artefacts/app.js
 	mkdir -p $(dir $@)
 	cat $^ | sed 's/^\/\/[#,@] sourceMappingURL=.*//' > $@
 
@@ -251,7 +251,7 @@ node_modules: package.json
 
 $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule.js): .build-artefacts/annotated/%.js: %.js node_modules
 	mkdir -p $(dir $@)
-	./node_modules/ng-annotate/ng-annotate -a $< > $@
+	./node_modules/.bin/ng-annotate -a $< > $@
 
 .build-artefacts/app-whitespace.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar
 	java -jar .build-artefacts/closure-compiler/compiler.jar  $(SRC_JS_FILES_FOR_COMPILER) --compilation_level WHITESPACE_ONLY --formatting PRETTY_PRINT --js_output_file $@
@@ -359,7 +359,7 @@ scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf .build-artefacts/
 
 .build-artefacts/externs/angular.js:
 	mkdir -p $(dir $@)
-	wget -O $@ https://raw.github.com/angular/angular.js/v1.2.9/closure/angular.js
+	wget -O $@ https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/angular-1.3.js
 	touch $@
 
 # Closure's contrib dir doesn't include externs for jQuery 2, but the jQuery

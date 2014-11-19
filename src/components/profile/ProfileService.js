@@ -187,8 +187,8 @@
               .attr('x', width / 2)
               .attr('y', height + options.margin.bottom - 2)
               .style('text-anchor', 'middle')
-              .text($translate(options.xLabel) + ' [' +
-                  $translate(that.unitX) + ']');
+              .text($translate.instant(options.xLabel) + ' [' +
+                  $translate.instant(that.unitX) + ']');
 
           group.append('text')
               .attr('class', 'ga-profile-label ga-profile-label-y')
@@ -196,7 +196,7 @@
               .attr('y', 0 - options.margin.left)
               .attr('x', 0 - height / 2 - 20)
               .attr('dy', '1em')
-              .text($translate(options.yLabel) + ' [m]');
+              .text($translate.instant(options.yLabel) + ' [m]');
 
            return element;
         };
@@ -204,10 +204,10 @@
         this.updateLabels = function() {
           var that = this;
           this.group.select('text.ga-profile-label-x')
-              .text($translate(options.xLabel) + ' [' +
-                  $translate(that.unitX) + ']');
+              .text($translate.instant(options.xLabel) + ' [' +
+                  $translate.instant(that.unitX) + ']');
           this.group.select('text.ga-profile-label-y')
-              .text($translate(options.yLabel) + ' [m]');
+              .text($translate.instant(options.yLabel) + ' [m]');
         };
 
         this.update = function(data) {

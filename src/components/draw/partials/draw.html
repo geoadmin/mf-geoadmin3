@@ -17,7 +17,7 @@
     </div>
     <div ng-if="options.isTextActive || options.isLineActive || options.isPolygonActive || useColorStyle">
       <label translate>modify_color_label</label>: 
-      <select ng-model="options.color" ng-options="options.translate(c.name) for c in options.colors">
+      <select ng-model="options.color" ng-options="options.translate.instant(c.name) for c in options.colors">
       </select>
     </div>
     <div class="ga-icons" ng-if="options.isPointActive || useIconStyle">

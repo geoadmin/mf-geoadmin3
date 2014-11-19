@@ -123,12 +123,12 @@
 
             if (percentCached <= 95) { // Download failed
               $rootScope.$broadcast('gaOfflineError');
-              $window.alert($translate('offline_less_than_95'));
+              $window.alert($translate.instant('offline_less_than_95'));
 
             } else { // Download succeed
               gaStorage.setItem(extentKey, extent);
               $rootScope.$broadcast('gaOfflineSuccess', progress);
-              $window.alert($translate('offline_dl_succeed'));
+              $window.alert($translate.instant('offline_dl_succeed'));
             }
           }
         }
@@ -171,7 +171,7 @@
                 if (err) {
                   if (err.code == err.QUOTA_ERR) {
                     isStorageFull = true;
-                    alert($translate('offline_space_warning'));
+                    alert($translate.instant('offline_space_warning'));
                     nbTilesFailed = nbTilesTotal - nbTilesCached;
                     onDlProgress();
                   } else {
@@ -345,7 +345,7 @@
           }
           gaStorage.clearTiles(function(err) {
             if (err) {
-              alert($translate('offline_clear_db_error'));
+              alert($translate.instant('offline_clear_db_error'));
             } else {
               initDownloadStatus();
               gaStorage.removeItem(extentKey);
@@ -362,11 +362,11 @@
           // Get the cacheable layers
           var layers = getCacheableLayers(map.getLayers().getArray());
           if (layers.length == 0) {
-            alert($translate('offline_no_cacheable_layers'));
+            alert($translate.instant('offline_no_cacheable_layers'));
             return;
           }
 
-          if (!confirm($translate('offline_save_warning'))) {
+          if (!confirm($translate.instant('offline_save_warning'))) {
             return;
           }
 

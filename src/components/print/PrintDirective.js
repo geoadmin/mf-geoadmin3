@@ -506,7 +506,7 @@
           enc.classes.push({
             name: '',
             icon: $scope.options.legendUrl +
-                layer.bodId + '_' + $translate.uses() + format
+                layer.bodId + '_' + $translate.use() + format
           });
           return enc;
         },
@@ -545,7 +545,7 @@
       // http://mapfish.org/doc/print/protocol.html#print-pdf
       var view = $scope.map.getView();
       var proj = view.getProjection();
-      var lang = $translate.uses();
+      var lang = $translate.use();
       var defaultPage = {};
       defaultPage['lang' + lang] = true;
       var qrcodeUrl = $scope.options.qrcodeUrl +

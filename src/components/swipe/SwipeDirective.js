@@ -181,7 +181,7 @@
           scope.$watch('isActive', function(active) {
             if (active) {
               if (!fromPermalink && scope.layers.length < 2) {
-                alert($translate('not_enough_layer_for_swipe'));
+                alert($translate.instant('not_enough_layer_for_swipe'));
               }
               activate();
               fromPermalink = false;
