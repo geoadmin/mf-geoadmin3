@@ -34,7 +34,7 @@ layers:
   - name: osm
     title: OpenStreetMap
     sources: [osm_cache]
-  - name: "ch.kantone.cadastralwebmap-farbe_wmts_current"
+  - name: "ch.kantone.cadastralwebmap-farbe_current"
     title: "CadastralWebMap"
     sources: [ch.kantone.cadastralwebmap-farbe_wms_cache]
     dimensions:

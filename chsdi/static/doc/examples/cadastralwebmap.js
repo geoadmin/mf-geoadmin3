@@ -39,7 +39,7 @@ var wmtsSource = function(layer, options) {
 
 
 var wmtsCadastre = new ol.layer.Tile({
-    source: wmtsSource('ch.kantone.cadastralwebmap-farbe_wmts',
+    source: wmtsSource('ch.kantone.cadastralwebmap-farbe',
         {
             timestamps: ['current'],
             format: 'png'
