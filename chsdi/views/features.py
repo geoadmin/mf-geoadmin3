@@ -35,6 +35,7 @@ class FeatureParams(MapServiceValidation):
         self.returnGeometry = request.params.get('returnGeometry')
         self.translate = request.translate
         self.request = request
+        self.varnish_authorized = request.headers.get('X-SearchServer-Authorized', 'false').lower() == 'true'
 
 # for releases requests
 
@@ -472,9 +473,17 @@ def _process_feature(feature, params):
     # TODO find a way to use translate directly in the model
     if params.returnGeometry:
         f = feature.__geo_interface__
+        # Filter out this layer individually, disregarding of the global returnGeometry
+        # setting
+        if not params.varnish_authorized:
+            if hasattr(params, 'layers') and feature.__bodId__ == 'ch.bfs.gebaeude_wohnungs_register':
+                f = feature.__interface__
+            if hasattr(params, 'layer') and params.layer == 'ch.bfs.gebaeude_wohnungs_register':
+                f = feature.__interface__
+            if hasattr(params, 'layerId') and params.layerId == 'ch.bfs.gebaeude_wohnungs_register':
+                f = feature.__interface__
     else:
         f = feature.__interface__
-
     if hasattr(f, 'extra'):
         layerBodId = f.extra['layerBodId']
         f.extra['layerName'] = params.translate(layerBodId)
