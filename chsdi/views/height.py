@@ -27,7 +27,7 @@ class Height(HeightValidation):
             self.layers = ['DTM25']
         self.request = request
 
-    @requires_authorization('X-SearchServer-Authorized')
+    @requires_authorization()
     @view_config(route_name='height', renderer='jsonp', http_cache=0)
     def height(self):
         rasters = [get_raster(layer) for layer in self.layers]

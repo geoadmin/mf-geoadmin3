@@ -4,7 +4,7 @@ from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPForbidden
 
 
-def requires_authorization(*role):
+def requires_authorization():
     def wrapper(f):
         @wraps(f)
         def wrapped(self, *args, **kwargs):

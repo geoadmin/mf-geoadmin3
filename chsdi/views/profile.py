@@ -25,13 +25,13 @@ class Profile(ProfileValidation):
         self.ma_offset = request.params.get('offset')
         self.request = request
 
-    @requires_authorization('X-SearchServer-Authorized')
+    @requires_authorization()
     @view_config(route_name='profile_json', renderer='jsonp', http_cache=0)
     def json(self):
         self.json = True
         return self._compute_points()
 
-    @requires_authorization('X-SearchServer-Authorized')
+    @requires_authorization()
     @view_config(route_name='profile_csv', renderer='csv', http_cache=0)
     def csv(self):
         self.json = False
