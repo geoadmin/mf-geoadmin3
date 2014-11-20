@@ -1416,3 +1416,30 @@ class kbs_zivilflugpl(Base, Vector):
     url = Column('url', Text)
 
 register('ch.bazl.kataster-belasteter-standorte-zivilflugplaetze', kbs_zivilflugpl)
+
+
+class laerm_emissionsplan_eisenbahn_tag(Base, Vector):
+    __tablename__ = 'laerm-emissionsplan_eisenbahn_tag'
+    __table_args__ = ({'schema': 'uvek', 'autoload': False})
+    __template__ = 'templates/htmlpopup/laerm_emissionsplan_eisenbahn_tag.mako'
+    __bodId__ = 'ch.bav.laerm_emissionsplan_eisenbahn_tag'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    lin_nr_dfa = Column('lin_nr_dfa', Numeric)
+    linienbeze = Column('linienbeze', Text)
+    von_abkz = Column('von_abkz', Text)
+    von_bpk_bp = Column('von_bpk_bp', Text)
+    bis_abkz = Column('bis_abkz', Text)
+    bis_bpk_bp = Column('bis_bpk_bp', Text)
+    von_m = Column('von_m', Numeric)
+    bis_m = Column('bis_m', Numeric)
+    lre_t = Column('lre_t', Numeric)
+    k1_t = Column('k1_t', Numeric)
+    fb1 = Column('fb1', Numeric)
+    grund1 = Column('grund1', Text)
+    fb2 = Column('fb2', Numeric)
+    grund2 = Column('grund2', Text)
+    typ_aender = Column('typ_aender', Text)
+    datum = Column('datum', Numeric)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.laerm-emissionsplan_eisenbahn_tag', laerm_emissionsplan_eisenbahn_tag)

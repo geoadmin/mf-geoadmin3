@@ -2054,6 +2054,30 @@ msgstr ""
 msgid "tt_emission_datum"
 msgstr ""
 
+msgid "tt_emission_nacht_tag_lin_nr_dfa"
+msgstr ""
+
+msgid "tt_emission_nacht_tag_linienbeze"
+msgstr ""
+
+msgid "tt_emission_nacht_tag_linienbeze"
+msgstr ""
+
+msgid "tt_emission_nacht_tag_linienbeze"
+msgstr ""
+
+msgid "tt_emission_nacht_tag_lre_t"
+msgstr ""
+
+msgid "tt_emission_nacht_tag_k1_t"
+msgstr ""
+
+msgid "tt_emission_nacht_tag_grund1"
+msgstr ""
+
+msgid "tt_emission_nacht_tag_grund2"
+msgstr ""
+
 msgid "id_arealstatistik_85"
 msgstr ""
 
