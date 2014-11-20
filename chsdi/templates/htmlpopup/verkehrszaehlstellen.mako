@@ -93,14 +93,14 @@ display:none !important;
 <br>
 <div class="table-with-border kernkraftwerke-extended">
 <h1>Z&auml;hlstellen - Verkehrsdaten</h1>
-% if c['attributes']['bulletins_sasvz'] is not None:
+% if c['attributes']['bulletins_sasvz']:
 <a style="color:red;" href="${c['attributes']['bulletins_sasvz']}" target="_blank">Monatsbulletin</a><br />
 % endif
 <a style="color:red;" href="http://www.portal-stat.admin.ch/sasvz/files/de/04.xml" target="_blank">Jahresbulletin</a><br />
-% if c['attributes']['ssvz_2005'] is not None:
+% if c['attributes']['ssvz_2005']:
 <a style="color:red;" href="${c['attributes']['ssvz_2005']}" target="_blank">SSVZ 2005 Bulletin</a><br />
 % endif
-% if c['attributes']['jahresauswertung'] is not None:
+% if c['attributes']['jahresauswertung']:
     <a style="color:red;" href="javascript:showhide('${c['featureId']}');">Jahresauswertungen (ein- u. ausblenden)</a><br />
 % endif
 </div>
