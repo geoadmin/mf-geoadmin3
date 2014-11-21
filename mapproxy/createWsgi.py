@@ -21,6 +21,24 @@ for path in reversed(syspaths):
 
 from paste.deploy import loadapp
 
+
+class Auth():
+
+    def __init__(self, app):
+        self._app = app
+
+    def __call__(self, environ, start_response):
+        if environ.get('HTTP_X_SEARCHSERVER_AUTHORIZED') == 'true':
+            return self._app(environ, start_response)
+        else:
+            return self._forbidden(environ, start_response)
+
+    def _forbidden(self, environ, start_response):
+        start_response('403 Forbidden',
+            [('Content-Type', 'text/plain')])
+        return [b'You must have a registered referer to use this service.']
+
+
 # If you want to debug, uncomment the following lines
 #from paste.script.util.logging_config import fileConfig
 #fileConfig(r'%(log_config)s', {'here': os.path.dirname(__file__)})
@@ -28,7 +46,7 @@ from paste.deploy import loadapp
 
 from mapproxy.wsgiapp import make_wsgi_app
 configfile="%(config)s"
-application = make_wsgi_app(configfile)
+application = Auth(make_wsgi_app(configfile))
 
 """
 

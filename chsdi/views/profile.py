@@ -6,6 +6,7 @@ from pyramid.view import view_config
 from chsdi.lib.helpers import round
 from chsdi.lib.validation.profile import ProfileValidation
 from chsdi.lib.raster.georaster import get_raster
+from chsdi.lib.decorators import requires_authorization
 
 
 class Profile(ProfileValidation):
@@ -24,11 +25,13 @@ class Profile(ProfileValidation):
         self.ma_offset = request.params.get('offset')
         self.request = request
 
+    @requires_authorization()
     @view_config(route_name='profile_json', renderer='jsonp', http_cache=0)
     def json(self):
         self.json = True
         return self._compute_points()
 
+    @requires_authorization()
     @view_config(route_name='profile_csv', renderer='csv', http_cache=0)
     def csv(self):
         self.json = False

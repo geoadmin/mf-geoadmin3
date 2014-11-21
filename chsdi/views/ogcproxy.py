@@ -9,6 +9,8 @@ from pyramid.view import view_config
 from pyramid.httpexceptions import (HTTPForbidden, HTTPBadRequest,
                                     HTTPBadGateway, HTTPNotAcceptable)
 from pyramid.response import Response
+from chsdi.lib.decorators import requires_authorization
+
 
 from StringIO import StringIO
 from urllib import urlopen
@@ -20,58 +22,64 @@ allowed_hosts = (
 )
 
 
-@view_config(route_name='ogcproxy')
-def ogcproxy(request):
+class OgcProxy:
 
-    url = request.params.get("url")
-    if url is None:
-        return HTTPBadRequest()
+    def __init__(self, request):
+        self.request = request
 
-    # check for full url
-    parsed_url = urlparse(url)
-    if not parsed_url.netloc or parsed_url.scheme not in ("http", "https"):
-        raise HTTPBadRequest()
+    @requires_authorization()
+    @view_config(route_name='ogcproxy')
+    def ogcproxy(self):
 
-    # forward request to target (without Host Header)
-    http = Http(disable_ssl_certificate_validation=True)
-    h = dict(request.headers)
-    h.pop("Host", h)
-    try:
-        resp, content = http.request(url, method=request.method,
-                                     body=request.body, headers=h)
-    except:
-        raise HTTPBadGateway()
+        url = self.request.params.get("url")
+        if url is None:
+            return HTTPBadRequest()
 
-    #  All content types are allowed
-    if "content-type" in resp:
-        ct = resp["content-type"]
-        if resp["content-type"] == "application/vnd.google-earth.kmz":
-            zipfile = None
-            try:
-                zipurl = urlopen(url)
-                zipfile = ZipFile(StringIO(zipurl.read()))
-                content = ''
-                for line in zipfile.open(zipfile.namelist()[0]).readlines():
-                    content = content + line
-                ct = 'application/vnd.google-earth.kml+xml'
-            except:
-                raise HTTPBadGateway()
-            finally:
-                if zipfile:
-                    zipurl.close()
-    else:
-        raise HTTPNotAcceptable()
+        # check for full url
+        parsed_url = urlparse(url)
+        if not parsed_url.netloc or parsed_url.scheme not in ("http", "https"):
+            raise HTTPBadRequest()
 
-    if content.find('encoding=') > 0:
-        m = re.search("encoding=\"(.*?)\\\"", content)
+        # forward request to target (without Host Header)
+        http = Http(disable_ssl_certificate_validation=True)
+        h = dict(self.request.headers)
+        h.pop("Host", h)
         try:
-            data = content.decode(m.group(1))
-        except Exception:
+            resp, content = http.request(url, method=self.request.method,
+                                         body=self.request.body, headers=h)
+        except:
+            raise HTTPBadGateway()
+
+        #  All content types are allowed
+        if "content-type" in resp:
+            ct = resp["content-type"]
+            if resp["content-type"] == "application/vnd.google-earth.kmz":
+                zipfile = None
+                try:
+                    zipurl = urlopen(url)
+                    zipfile = ZipFile(StringIO(zipurl.read()))
+                    content = ''
+                    for line in zipfile.open(zipfile.namelist()[0]).readlines():
+                        content = content + line
+                    ct = 'application/vnd.google-earth.kml+xml'
+                except:
+                    raise HTTPBadGateway()
+                finally:
+                    if zipfile:
+                        zipurl.close()
+        else:
             raise HTTPNotAcceptable()
-        content = data.encode('utf-8')
-        content = content.replace(m.group(1), 'utf-8')
 
-    response = Response(content, status=resp.status,
-                        headers={"Content-Type": ct})
+        if content.find('encoding=') > 0:
+            m = re.search("encoding=\"(.*?)\\\"", content)
+            try:
+                data = content.decode(m.group(1))
+            except Exception:
+                raise HTTPNotAcceptable()
+            content = data.encode('utf-8')
+            content = content.replace(m.group(1), 'utf-8')
 
-    return response
+        response = Response(content, status=resp.status,
+                            headers={"Content-Type": ct})
+
+        return response
