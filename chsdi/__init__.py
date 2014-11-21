@@ -85,6 +85,7 @@ def main(global_config, **settings):
     config.add_route('luftbilder', '/luftbilder/viewer.html')
     config.add_route('checker', '/checker')
     config.add_route('checker_dev', '/checker_dev')
+    config.add_route('downloadkml', '/downloadkml')
 
     # Some views for specific routes
     config.add_view(route_name='dev', renderer='chsdi:templates/index.pt')
