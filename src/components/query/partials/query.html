@@ -1,0 +1,74 @@
+<div class="ga-bbox-info" translate>inform_draw_rectangl_ctrl</div>
+<div ng-show="searchableLayers.length != 0">
+  <div class="form-group ga-queries-predefined" ng-show="queriesPredef.length > 0">
+    <label translate>query_choose</label> 
+    <select ng-model="queryPredef" 
+            ng-options="q.label group by q.layer.label for q in queriesPredef"
+            ng-change="applyQueryPredef(queryPredef)">
+      <option value="" selected translate>query_custom</option>
+    </select>
+  </div>
+  <div class="ga-query" 
+       ng-repeat="f in filters">
+    <div class="ga-header">
+      <label translate translate-values="{num: $index+1}">query_num</label>
+      <button class="ga-icon icon-remove-sign pull-right"
+              title="{{'query_remove' | translate}}" 
+              ng-show="filters.length > 1"
+              ng-click="onChange();remove($index)">
+      </button>
+      <button class="ga-icon icon-refresh pull-right"
+              title="{{'query_reset' | translate}}" 
+              ng-click="onChange();clear($index)">
+      </button>
+      <button class="ga-icon icon-copy pull-right" 
+              title="{{'query_duplicate' | translate}}" 
+              ng-show="filters.length < 2"
+              ng-click="onChange();duplicate($index)">
+      </button>
+    </div>
+    <div class="ga-inputs">
+      <select ng-model="f.layer"
+              ng-options="l.label for l in searchableLayers" 
+              ng-change="onChange();onChangeLayer($index, f)">
+        <option value="" selected disabled translate>query_layer</option>
+      </select>
+      <select class="ga-choose-attr"
+              ng-if="f.layer" 
+              ng-model="f.attribute" 
+              ng-options="a.label for a in f.layer.attributes"
+              ng-change="onChange();updateOp($index, f)">
+      </select>
+      <select class="ga-choose-op"
+              ng-if="f.attribute"
+              ng-model="f.operator"
+              ng-options="o for o in f.attribute.operators"
+              ng-change="onChange()">
+      </select>
+      <div ng-if="f.attribute" class="ga-attr"
+           ng-class="{'ga-more-values':(f.attribute.inputType == 'text')}"> 
+        <input class="ga-value"
+               type="text"
+               title="{{f.attribute.inputTitle}}" 
+               placeholder="{{f.attribute.inputPlaceholder}}" 
+               ng-if="f.attribute.inputType != date && !f.moreValues"
+               ng-model="f.value" data-date-format="YYYY-MM-DD" ng-change="onChange()">
+        </input>
+        <select class="ga-value"
+                ng-if="f.moreValues"
+                ng-model="f.value"
+                ng-options="v for v in f.moreValues" ng-change="onChange()" >
+        </select>
+        <button class="btn btn-default ga-more"
+                title="{{'query_more_values' | translate}}"
+                ng-class="{active: (f.moreValues)}"
+                ng-click="toggleAttributeValues($event, $index, f)">...</button>
+        <button ga-help="43"></button>
+      </div>
+    </div>
+   </div>
+   <button class="btn btn-default" 
+          ng-hide="!queryPredef && !filters[0].value"
+          ng-click="ssearchByAttribute()" translate>query_search</button>
+</div>
+

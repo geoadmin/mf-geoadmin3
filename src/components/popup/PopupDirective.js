@@ -53,7 +53,6 @@
           }
           // Bring thre popup to front on click on it.
           element.find('.popover-content').click(function(evt) {
-            evt.stopPropagation();
             if (!scope.isReduced && scope.toggle &&
                 element.css('z-index') != zIndex) {
               bringUpFront(element);

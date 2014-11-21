@@ -1,30 +1,25 @@
-<div>
-  <div ng-if="loading" translate>wait_data_loading</div>
-  <div ng-if="!loading && noResults()" translate>no_feature_results</div>
-  <div ng-if="!dragBox.getGeometry()" translate>inform_draw_rectangl_ctrl</div>
-  <ul>
-    <li ng-repeat="layer in tree">
-      <label ng-click="layer.open = !layer.open" class="ga-truncate-text">
-        <i ng-class="{'icon-minus': layer.open, 'icon-plus': !layer.open}"></i>
-        {{layer.label}}
-      </label>
-      <ul ng-if="layer.open" class="ga-feature">
-        <li ng-repeat="feature in layer.features"
-            ng-keydown="onKeyDown($event, feature)"
-            ng-focus="onFocus($event, feature)"
-            ng-mousedown="onMouseDown($event, feature)"
-            ng-mouseover="highlightFeature(feature)"
-            ng-mouseleave="clearHighlight()"
-            ng-click="onClick($event, feature)"
-            ng-class="getCssSelected(feature)" 
-            tabindex=1>
-          <label class="ga-truncate-text">
-            {{feature.label}}
-          </label>
-          <i ng-click="recenterToFeature($event, feature)" class="icon-zoom-in"></i>
-        </li>
-      </ul>
-    </li>
-  </ul>
-</div>
+<ul>
+  <li ng-repeat="layer in tree">
+    <label ng-click="layer.open = !layer.open" class="ga-truncate-text">
+      <i ng-class="{'icon-minus': layer.open, 'icon-plus': !layer.open}"></i>
+      {{layer.label}}
+    </label>
+    <ul ng-if="layer.open" class="ga-feature">
+      <li ng-repeat="feature in layer.features"
+          ng-keydown="onKeyDown($event, feature)"
+          ng-focus="onFocus($event, feature)"
+          ng-mousedown="onMouseDown($event, feature)"
+          ng-mouseenter="highlight(feature)"
+          ng-mouseleave="clearHighlight()"
+          ng-click="onClick($event, feature)"
+          ng-class="{'selected': isFeatureSelected(feature)}" 
+          tabindex=1>
+        <label class="ga-truncate-text">
+          {{feature.label}}
+        </label>
+        <i ng-if="feature.geojson" ng-click="zoom($event, feature)" class="icon-zoom-in"></i>
+      </li>
+    </ul>
+  </li>
+</ul>
 

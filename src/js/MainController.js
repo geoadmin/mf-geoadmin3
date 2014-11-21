@@ -108,12 +108,12 @@
         }
 
         $scope.topicId = topic.id;
-        var showCatalog = topic.showCatalog ? 'show' : 'hide';
+        var showCatalog = topic.showCatalog;
         if (gaBrowserSniffer.mobile ||
             isWindowTooSmall()) {
-          showCatalog = 'hide';
+          showCatalog = false;
         }
-        $rootScope.$broadcast('catalogCollapse', showCatalog);
+        $scope.globals.catalogShown = showCatalog;
       });
 
       $rootScope.$on('$translateChangeEnd', function() {
@@ -168,7 +168,11 @@
       
         $($window).on('resize', function() {
           if(isWindowTooSmall()) {
-            $rootScope.$broadcast('catalogCollapse', 'hide');
+            if ($scope.globals.catalogShown) {
+              $scope.$applyAsync(function() {
+                $scope.globals.catalogShown = false;
+              });
+            }
           }
         });
         
@@ -205,17 +209,6 @@
           }
         });
       }
-     
-      // When a menu of accordion (tools, share, print) is shown, the others
-      // panels (catalog and selection) are collapsed but their headings
-      // haven't the 'collapsed' css applied. So we force it.
-      $('#catalog').on('hidden.bs.collapse', function() {
-        $('#catalogHeading').addClass('collapsed');
-      });
-    
-      $('#selection').on('hidden.bs.collapse', function() {
-        $('#selectionHeading').addClass('collapsed');
-      });
 
       // An appcache update is available.
       if ($window.applicationCache) { // IE9

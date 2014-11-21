@@ -6,19 +6,24 @@
     this.$get = function($window) {
       var Print = function() {
 
-        this.htmlPrintout = function(body, head, onLoad) {
-          var windowPrint = $window.open('', '', 'height=400, width=600');
+        this.htmlPrintout = function(body, head, onLoad, options) {
+          var options = angular.isDefined(options) ?
+              options : 'height=400, width=600';
+          var windowPrint = $window.open('', '', options);
           windowPrint.document.write(buildHtml(body, head, onLoad));
           windowPrint.document.close();
         };
 
         var buildHtml = function(body, head, onLoad) {
-          window.printOnLoad = onLoad || function() {};
+          window.printOnLoad = onLoad || function(windowPrint) {
+            windowPrint.print();
+            windowPrint.close();
+          };
           var html = '';
           html += '<html><head>';
-          html += head || getStylesheetString();
-          html += '</head><body onload=\'window.opener.printOnLoad(window);' +
-              'window.print(); window.close();\'>';
+          html += head || '';
+          html += getStylesheetString();
+          html += '</head><body onload=\'window.opener.printOnLoad(window);\'>';
           html += body;
           html += '</body></html>';
           return html;

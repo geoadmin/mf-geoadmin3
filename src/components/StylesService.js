@@ -26,12 +26,12 @@
     });
 
     var hlStroke = new ol.style.Stroke({
-      color: [240, 0, 0, 1],
+      color: [255, 128, 0, 1],
       width: 6
     });
 
     var hlFill = new ol.style.Fill({
-      color: [255, 0, 0, 1]
+      color: [255, 128, 0, 1]
     });
 
     var hlStyle = new ol.style.Style({
