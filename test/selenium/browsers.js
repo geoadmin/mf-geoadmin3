@@ -34,7 +34,7 @@ var capabilities = [
     create('Windows', '7', '1280x1024', 'Chrome', '36.0'),
     create('Windows', '7', '1280x1024', 'IE', '9.0'),
     create('Windows', '7', '1280x1024', 'IE', '10.0'),
-    create('Windows', '7', '1280x1024', 'IE', '11.0'),
+//    create('Windows', '7', '1280x1024', 'IE', '11.0'),
     create('Windows', '7', '1280x1024', 'Firefox', '30.0'),
     create('Windows', '7', '1280x1024', 'Firefox', '31.0'),
     create('Windows', '7', '1280x1024', 'Safari', '5.1'),
