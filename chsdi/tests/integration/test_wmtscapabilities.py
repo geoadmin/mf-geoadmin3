@@ -24,7 +24,10 @@ class TestWmtsCapabilitiesView(TestsBase):
 
     def test_contains_correct_tilelink(self):
         resp = self.testapp.get('/rest/services/api/1.0.0/WMTSCapabilities.xml', status=200)
+        # native s3 tiles (always on wmts), row/col order
         resp.mustcontain('<ResourceURL format="image/jpeg" resourceType="tile" template="http://wmts.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>')
+        # mapproxy, host dependant, col/row order
+        resp.mustcontain('/1.0.0/ch.kantone.cadastralwebmap-farbe/default/{Time}/21781/{TileMatrix}/{TileCol}/{TileRow}.png"/>')
 
     def test_validate_wmtscapabilities(self):
         import socket

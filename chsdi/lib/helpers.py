@@ -6,7 +6,7 @@ from pyramid.i18n import get_locale_name
 from pyramid.httpexceptions import HTTPBadRequest
 import unicodedata
 from urllib import quote
-from urlparse import urlparse, urlunparse
+from urlparse import urlparse, urlunparse, urljoin
 
 
 def versioned(path):
@@ -53,6 +53,15 @@ def check_url(url):
     if all(('admin.ch' not in domain, 'swisstopo.ch' not in domain, 'bgdi.ch' not in domain)):
         raise HTTPBadRequest('Shortener can only be used for admin.ch, swisstopo.ch and bgdi.ch domains')
     return url
+
+
+def sanitize_url(url):
+    sanitized = url
+    try:
+        sanitized = urljoin(url, urlparse(url).path.replace('//', '/'))
+    except:
+        pass
+    return sanitized
 
 
 def locale_negotiator(request):
