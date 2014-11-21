@@ -151,8 +151,6 @@ class PrintProxy(object):
                     merger.append(fileobj=path)
                 except:
                     return None
-                finally:
-                    path.close()
 
         try:
             unique_filename = datetime.datetime.now().strftime("%y%m%d%H%M%S")
@@ -241,6 +239,7 @@ class PrintProxy(object):
 
         if self._isMultiPage(spec):
             all_timestamps = self._get_timestamps(spec)
+            log.debug('[print_create] Going multipages')
             log.debug('[print_create] Timestamps to process: %s', all_timestamps.keys())
 
         if len(all_timestamps) < 1:
