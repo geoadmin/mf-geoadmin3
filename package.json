@@ -14,8 +14,8 @@
     "karma": "0.8.5",
     "ng-annotate": "0.2.0",
     "commander": "2.2.0",
-    "browserstack": "1.0.1",
-    "browserstack-webdriver": "2.39.2"
+    "browserstack": "1.1.0",
+    "browserstack-webdriver": "2.41.1"
   }
 }
 
