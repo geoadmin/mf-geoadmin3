@@ -1433,9 +1433,6 @@ msgstr ""
 msgid "oereb_status"
 msgstr ""
 
-msgid "oereb_url"
-msgstr ""
-
 msgid "print"
 msgstr ""
 
