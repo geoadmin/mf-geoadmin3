@@ -366,6 +366,8 @@ class TestMapServiceView(TestsBase):
         self.failUnless('attribution' in resp.json['ch.swisstopo.pixelkarte-farbe'])
         self.failUnless('label' in resp.json['ch.swisstopo.pixelkarte-farbe'])
         self.failUnless('background' in resp.json['ch.swisstopo.pixelkarte-farbe'])
+        self.failUnless('topics' in resp.json['ch.swisstopo.pixelkarte-farbe_wmts'])
+        self.failUnless('topics' in resp.json['ch.swisstopo.pixelkarte-farbe'])
 
     def test_layersconfig_valid_topic_all(self):
         resp = self.testapp.get('/rest/services/all/MapServer/layersConfig', status=200)
