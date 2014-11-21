@@ -58,7 +58,8 @@
           move: 'mousemove',
           end: 'mouseup',
           over: 'mouseover',
-          out: 'mouseout'
+          out: 'mouseout',
+          menu: 'contextmenu'
         },
         touch: {
           start: 'touchstart',
@@ -70,22 +71,18 @@
           move: 'MSPointerMove',
           end: 'MSPointerUp',
           over: 'MSPointerOver',
-          out: 'MSPointerOut'
+          out: 'MSPointerOut',
+          menu: 'contextmenu'
         },
         pointer: {
           start: 'pointerdown',
           move: 'pointermove',
           end: 'pointerup',
           over: 'pointerover',
-          out: 'pointerout'
+          out: 'pointerout',
+          menu: 'contextmenu'
         }
       };
-
-      if ($window.oncontextmenu) {
-        events.mouse.menu = 'contextmenu';
-        events.msPointer.menu = 'contextmenu';
-        events.pointer.menu = 'contextmenu';
-      }
 
       var eventsKeys = events.mouse;
       if (usePointerEvents) {
