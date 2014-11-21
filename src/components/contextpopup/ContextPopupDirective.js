@@ -62,9 +62,9 @@
               event.stopPropagation();
               event.preventDefault();
 
-              //On Max, left-click with ctrlKey also fires
+              //On Mac, left-click with ctrlKey also fires
               //the 'contextmenu' event. But this conflicts
-              //with selectByRectangl feature (in featuretree
+              //with selectByRectangle feature (in featuretree
               //directive). So we bail out here if
               //ctrlKey is pressed
               if (event.ctrlKey) {
@@ -155,10 +155,7 @@
             };
 
 
-            if (gaBrowserSniffer.events.menu) {
-              // On surface tablet a 'contextmenu' event is triggered
-              // on long press.
-              // Listen to contextmenu events from the viewport.
+            if (!gaBrowserSniffer.mobile && gaBrowserSniffer.events.menu) {
               $(map.getViewport()).on(gaBrowserSniffer.events.menu, handler);
               element.on(gaBrowserSniffer.events.menu, 'a', function(e) {
                 e.stopPropagation();
