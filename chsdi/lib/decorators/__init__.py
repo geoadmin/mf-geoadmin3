@@ -12,7 +12,7 @@ def requires_authorization():
                 request = self.request
             else:
                 request = self
-            if request.headers.get('X-Searchserver-Authorized', '').lower() != 'true':
+            if request.headers.get('X-SearchServer-Authorized', '').lower() != 'true':
                 raise HTTPForbidden(detail='This service requires an authorization')
             else:
                 return f(self, *args, **kwargs)
