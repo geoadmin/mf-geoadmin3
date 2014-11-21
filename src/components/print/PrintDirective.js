@@ -20,6 +20,7 @@
     var printConfigLoaded = false;
     var currentTime = undefined;
     var timeSelectorEnabled = false;
+    var layersYears = [];
 
     // Get print config
     var updatePrintConfig = function() {
@@ -503,6 +504,9 @@
                 call(this, layer);
             var source = layer.getSource();
             var tileGrid = source.getTileGrid();
+            if (!config.background && layer.visible) {
+                layersYears.push(source.getDimensions().Time);
+            }
             angular.extend(enc, {
               type: 'WMTS',
               baseURL: location.protocol + '//wmts.geo.admin.ch',
@@ -588,9 +592,6 @@
       var lang = $translate.use();
       var defaultPage = {};
       defaultPage['lang' + lang] = true;
-      if (currentTime) {
-          defaultPage['timestamp'] = currentTime;
-      }
       var qrcodeUrl = $scope.options.qrcodeUrl +
           encodeURIComponent(gaPermalink.getHref());
       var encLayers = [];
@@ -598,6 +599,7 @@
       var attributions = [];
       var layers = this.map.getLayers();
       pdfLegendsToDownload = [];
+      layersYears = [];
 
       angular.forEach(layers, function(layer) {
         if (layer.visible) {
@@ -622,6 +624,16 @@
           }
         }
       });
+      if (layersYears) {
+        var years = layersYears.reduce(function(a, b) {
+          if (a.indexOf(b) < 0) a.push(b);
+            return a;
+           }, []);
+        var years = years.map(function(ts) {
+          return ts.length > 4 ? ts.slice(0, 4) : ts;
+        });
+        defaultPage['timestamp'] = years.join(',');
+      }
       if ($scope.options.graticule) {
         var graticule = {
           'baseURL': 'http://wms.geo.admin.ch/',
