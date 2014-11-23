@@ -97,6 +97,9 @@ def legend(request):
         return response
     return response.body
 
+def _find_type(model, colname):
+    if hasattr(model, '__table__') and colname in model.__table__.c:
+        return model.__table__.c[colname].type
 
 @view_config(route_name='featureAttributes', renderer='jsonp')
 def feature_attributes(request):
@@ -109,7 +112,12 @@ def feature_attributes(request):
     if models is None:
         raise exc.HTTPBadRequest('No Vector Table was found for %s' % layerId)
     attributes = models[0]().getAttributesKeys()
-    return attributes
+    fields = []
+    for attr in attributes:
+        field_type = _find_type(models[0](), attr)
+        fields.append({'name': attr, 'type': str(field_type), 'alias': params.translate(attr)})
+
+    return {'id': layerId, 'name': params.translate(layerId), 'fields': fields}
 
 
 def _has_legend(layerId, lang):
