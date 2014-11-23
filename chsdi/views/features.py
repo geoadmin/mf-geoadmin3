@@ -10,7 +10,10 @@ import pyramid.httpexceptions as exc
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from sqlalchemy.sql.expression import cast
 from sqlalchemy import Text, Integer, Boolean, Numeric, Date
-from geoalchemy import Geometry
+from sqlalchemy import text
+from geoalchemy import Geometry, WKBSpatialElement, functions
+from shapely.geometry import asShape
+
 
 from chsdi.lib.validation.mapservice import MapServiceValidation
 from chsdi.lib.filters import full_text_search
@@ -80,6 +83,12 @@ def _get_find_params(request):
     return params
 
 
+def _get_query_params(request):
+    params = FeatureParams(request)
+
+    return params
+
+
 @view_config(route_name='identify', request_param='geometryFormat=interlis')
 def identify_oereb(request):
     return _identify_oereb(request)
@@ -116,6 +125,11 @@ def view_find_geojson(request):
 @view_config(route_name='find', renderer='esrijson')
 def view_find_esrijson(request):
     return _find(request)
+
+
+@view_config(route_name='query', renderer='geojson')
+def view_query_geojson(request):
+    return _query(request)
 
 
 @view_config(route_name='htmlPopup', renderer='jsonp')
@@ -337,11 +351,48 @@ def _get_features_for_extent(params, models, maxFeatures=None):
                     yield feature
 
 
+def _query(request):
+    MaxFeatures = 50
+    geomFilter = None
+    features = []
+    params = _get_query_params(request)
+    geometry = request.params.get('geometry')
+    params.layerId = request.matchdict.get('layerId')
+    layerDefs = request.params.get('layerDefs')
+    where = request.params.get('where')
+    if where is None:
+        raise exc.HTTPBadRequest('No WHERE request found for %s' % params.layerId)
+    models = models_from_name(params.layerId)
+    if models is None:
+        raise exc.HTTPBadRequest('No Vector Table was found for %s' % params.layerId)
+    model = models[0]
+    if geometry:
+        from shapely.geometry import mapping, shape
+        import json
+        geom = shape(json.loads(geometry))
+        wkbGeometry = WKBSpatialElement(buffer(geom.wkb), 21781)
+        geomColumn = model.geometry_column()
+        geomFilter = functions.within_distance(geomColumn, wkbGeometry, 0)
+    query = request.db.query(model)
+
+    if geomFilter is not None:
+        query = query.filter(geomFilter)
+
+    query = query.filter(text(where))
+    query = query.limit(MaxFeatures)
+    for feature in query:
+            f = _process_feature(feature, params)
+            features.append(f)
+
+    return {'results': features}
+
+
 def _find(request):
     MaxFeatures = 50
     params = _get_find_params(request)
     if params.searchText is None:
         raise exc.HTTPBadRequest('Please provide a searchText')
+
     models = models_from_name(params.layer)
     features = []
     findColumn = lambda x: (x, x.get_column_by_name(params.searchField))

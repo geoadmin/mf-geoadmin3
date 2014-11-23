@@ -97,9 +97,11 @@ def legend(request):
         return response
     return response.body
 
+
 def _find_type(model, colname):
     if hasattr(model, '__table__') and colname in model.__table__.c:
         return model.__table__.c[colname].type
+
 
 @view_config(route_name='featureAttributes', renderer='jsonp')
 def feature_attributes(request):
