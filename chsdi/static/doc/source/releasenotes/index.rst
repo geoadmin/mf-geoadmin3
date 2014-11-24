@@ -36,7 +36,7 @@ Geodata
 *******
 
 +--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Update | `Federal Inventory of Raised and Transition Bogs of National Importance <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-hochmoore>`__ (ch.bafu.bundesinventare-hochmoore)                                                                        |
+| Update | `Federal Inventory of Raised and Transition Bogs of National Importance - Anhörung 2014 <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-hochmoore_anhoerung>`__ (ch.bafu.bundesinventare-hochmoore_anhoerung)                                    |
 +--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Update | `Bundesinventar der Flachmoore von nationaler Bedeutung - Anhörung 2014 <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-flachmoore_anhoerung>`__ (ch.bafu.bundesinventare-flachmoore_anhoerung)                                                  |
 +--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
