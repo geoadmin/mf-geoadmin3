@@ -36,6 +36,7 @@ requires = [
     'qrcode',
     'sphinx_rtd_theme==0.1.6-ga3',
     'boto',
+    'PyPDF2',
     ]
 
 setup(name='chsdi',
