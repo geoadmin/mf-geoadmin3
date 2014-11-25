@@ -1,41 +1,53 @@
-<form ng-submit="submit()">
-  <label translate>feedback_mail</label>
-  <input type="email" name="email" ng-model="email">
-  <label translate>feedback_description</label>
-  <textarea rows=3 name="feedback" ng-model="feedback" class="form-control" required></textarea>
-  <p class="help-block">
-    <span translate>feedback_permalink</span>
-    <a href="{{permalinkValue}}" target="_blank" translate>permalink</a>
-  </p>
-  <p class="help-block">
-    <span translate>feedback_revision</span>
-    <a href="http://map.revision.admin.ch" target="_blank" translate>revision_service</a>
-  </p>
-  <!-- Draw/kml -->
-  <div ng-if='canCreateKml()'>
-    <input type="checkbox" ng-model="options.attachKML"/>
-    <span translate>attach_drawing_kml</span>
+<div>
+  <div ng-if="success">
+    <h4 translate>success</h4>
+    <p translate>feedback_success_message</p>
   </div>
-  <!-- Attachement -->
-  <div ng-show="!isIE9" class="help-block">
-    <span translate>feedback_attachment</span>
-    <div class="input-group-sm">
-      <!-- The real input -->
-      <input type="file" name="file" class="ga-feedback-real-file"/>
-      <!-- The fake input -->
-      <input class="form-control ga-feedback-fake-file" type="text"
-        value="{{(file.name) ? file.name + ', ' + file.size/1000 + ' ko' : ''}}"
-        placeholder="{{'feedback_placeholder' | translate}}" readonly/>
-      <span class="input-group-btn">
-        <button type="button" class="btn btn-default ga-feedback-browse-button needsclick">Browse</button>
-      </span>
-      <div ng-show="!isIE && showProgress" class="progress progress-striped active">
-        <div class="progress-bar" style="width: 100%;"></div>
+  <div ng-if="failure">
+    <h4 translate>error</h4>
+    <p translate>feedback_error_message</p>
+  </div>
+  <!-- needs to be ng-show, otherwise we break the ng-model -->
+  <form ng-show="form" ng-submit="submit()">
+    <label translate>feedback_mail</label>
+    <input type="email" name="email" ng-model="email">
+    <label translate>feedback_description</label>
+    <textarea rows=3 name="feedback" ng-model="feedback" class="form-control" required></textarea>
+    <!-- permalink -->
+    <p class="help-block">
+      <span translate>feedback_permalink</span>
+      <a href="{{permalinkValue}}" target="_blank" translate> permalink</a>
+    </p>
+    <!-- kml-->
+    <p ng-if="!isMobile && !canCreateKml()" class="help-block">
+      <span translate>feedback_create_geometry</span>
+      <a href="" ng-click="activateDraw($event)" translate> draw</a>
+    </p>
+    <p ng-if="!isMobile && canCreateKml()" class="help-block">
+      <span translate>feedback_kml_attached</span>
+      <a href="" ng-click="activateDraw($event)" translate>feedback_modify_drawing</a>
+    </p>
+
+    <!-- Attachement -->
+    <div ng-show="!isIE9" class="help-block">
+      <div class="input-group-sm">
+        <!-- The real input -->
+        <input type="file" name="file" class="ga-feedback-real-file"/>
+        <!-- The fake input -->
+        <input class="form-control ga-feedback-fake-file" type="text"
+          value="{{(file.name) ? file.name + ', ' + file.size/1000 + ' ko' : ''}}"
+          placeholder="{{'feedback_placeholder' | translate}}" readonly/>
+        <span class="input-group-btn">
+          <button type="button" class="btn btn-default ga-feedback-browse-button needsclick">Browse</button>
+        </span>
+        <div ng-show="!isIE && showProgress" class="progress progress-striped active">
+          <div class="progress-bar" style="width: 100%;"></div>
+        </div>
       </div>
     </div>
-  </div>
-  <!-- footer -->
-  <div class="ga-feedback-footer">
-    <button type="submit" class="pull-right btn btn-default" translate>send</button>
-  </div>
-</form>
+    <!-- footer -->
+    <div class="ga-feedback-footer">
+      <button type="submit" class="pull-right btn btn-default" translate>send</button>
+    </div>
+  </form>
+</div>

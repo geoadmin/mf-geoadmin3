@@ -132,7 +132,6 @@
   "mobile_redirect": "",
   "desktop_redirect": "",
   "help_label": "",
-  "revision_service": "",
   "link_bowl_crosshair": "",
   "bg_chooser_label": "",
   "lang_chooser_label": "",
@@ -278,5 +277,8 @@
   "time_all": "",
   "time_select_year": "",
   "layer_invalid_no_name": "",
-  "layer_invalid_no_crs": ""
+  "layer_invalid_no_crs": "",
+  "feedback_create_geometry": "",
+  "feedback_kml_attached": "",
+  "feedback_modify_drawing": ""
 }

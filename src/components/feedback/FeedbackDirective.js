@@ -27,7 +27,8 @@
             scope: {
               options: '=gaFeedbackOptions',
               response: '=gaFeedbackResponse',
-              map: '=gaFeedbackMap'
+              map: '=gaFeedbackMap',
+              active: '=gaFeedbackActive'
             },
             templateUrl: 'components/feedback/partials/feedback.html',
             link: function(scope, element, attrs) {
@@ -50,8 +51,7 @@
               function createFormData() {
                 var formData,
                     kml = '';
-                if (scope.options.attachKML &&
-                    scope.canCreateKml()) {
+                if (scope.canCreateKml()) {
                   kml = gaExportKml.create(drawingLayer,
                                            scope.map.getView().getProjection());
                 }
@@ -83,8 +83,11 @@
               var elFileInpt = element.find('input[type=file]');
               scope.isIE9 = (gaBrowserSniffer.msie == 9);
               scope.isIE = !isNaN(gaBrowserSniffer.msie);
+              scope.isMobile = gaBrowserSniffer.mobile;
               scope.showProgress = false;
-              scope.options.attachKML = false;
+              scope.success = false;
+              scope.error = false;
+              scope.form = true;
 
               scope.canCreateKml = function() {
                 if (!drawingLayer ||
@@ -93,6 +96,11 @@
                   return false;
                 }
                 return true;
+              };
+
+              scope.activateDraw = function(evt) {
+                scope.options.activateDrawingDialog();
+                evt.stopPropagation();
               };
 
               if (!scope.isIE || gaBrowserSniffer.msie > 9) {
@@ -131,6 +139,12 @@
                 drawingLayer = data;
               });
 
+              scope.$watch('active', function(active) {
+                scope.form = true;
+                scope.error = false;
+                scope.success = false;
+              });
+
               scope.submit = function() {
                 var contentType;
                 var formData = createFormData();
@@ -150,10 +164,12 @@
                 scope.showProgress = true;
                 $http(params).success(function(response) {
                   scope.showProgress = false;
-                  scope.response = 'success';
+                  scope.success = true;
+                  scope.form = false;
                 }).error(function(response) {
                   scope.showProgress = false;
-                  scope.response = 'error';
+                  scope.error = true;
+                  scope.form = false;
                 });
 
               };
