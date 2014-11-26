@@ -29,7 +29,8 @@
   .ga-catalogitem-template {
     background-color: #fff;
 
-    .ga-catalogitem-selected, .ga-catalogitem-selected:hover {
+    .ga-catalogitem-selected, .ga-catalogitem-selected:hover,
+    .ga-catalogitem-selected button {
       color: #f00;
     }
   }
@@ -37,19 +38,13 @@
   .ga-catalogitem-leaf {
     position: relative;
 
-    i {
+    button {
       position: absolute;
+      top: 0;
       right: 0;
-      top: 0em;
-      line-height: 32px;
+      height: 100%;
+    }
 
-      @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-        font-size: 26px;
-      }
-    }
-    .icon-warning-sign {
-      right: 1em;
-    }
     i, label input {
       cursor: pointer;
     }
@@ -62,6 +57,7 @@
       font-weight: normal;
       width: 100%;
       cursor: pointer;
+      margin: 0;
     }
     input[type=checkbox] {
       margin-left: .5em;
@@ -79,10 +75,10 @@
     }
 
     label {
-      padding-right: 12px;
+      padding-right: 20px;
 
       @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-        padding-right: 26px;
+        padding-right: 2.2em;
       }
     }
   }
