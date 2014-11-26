@@ -9,6 +9,47 @@
 Release Notes
 =============
 
+.. _releasenotes_20141126:
+
+Release 20141126 - Wednesday, November 26th 2014
+-----------------------------------------------
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_141112...r_141126>`__
+
+`MAP <//map.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+
+- Possibility to attach drawing to feedback as kml
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_141112...r_141126>`__
+
+*****************
+
+Geodata
+*******
+
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Federal Inventory of Raised and Transition Bogs of National Importance <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-hochmoore>`__ (ch.bafu.bundesinventare-hochmoore)                                                                        |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Bundesinventar der Flachmoore von nationaler Bedeutung - Anhörung 2014 <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-flachmoore_anhoerung>`__ (ch.bafu.bundesinventare-flachmoore_anhoerung)                                                  |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Bundesinventar der Auengebiete von nationaler Bedeutung - Anhörung 2014 <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-auen_anhoerung>`__ (ch.bafu.bundesinventare-auen_anhoerung)                                                             |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Bundesinventar der Amphibienlaichgebiete von nationaler Bedeutung - Anhörung 2014 <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-amphibien_anhoerung>`__ (ch.bafu.bundesinventare-amphibien_anhoerung)                                         |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Bundesinventar der Amphibienlaichgebiete - Wanderobjekte - Anhörung 2014 <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-amphibien_wanderobjekte_anhoerung>`__ (ch.bafu.bundesinventare-amphibien_wanderobjekte_anhoerung)                      |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Bundesinventar der Trockenwiesen und -weiden von nationaler Bedeutung - Anhörung 2014 <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhoerung>`__ (ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhoerung) |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+
 .. _releasenotes_20141112:
 
 Release 20141112 - Thursday, November 12th 2014
