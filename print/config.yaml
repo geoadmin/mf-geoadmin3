@@ -1,5 +1,5 @@
 # allowed DPIs
-dpis: [150]
+dpis: [150, 100]
 
 #
 # the list of allowed hosts
