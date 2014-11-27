@@ -3422,6 +3422,9 @@ msgstr "Coordinate CH1903/MN03"
 msgid "org.epsg.grid_4326"
 msgstr "Coordinate WGS84"
 
+msgid "original_document_id"
+msgstr "Original-ID"
+
 msgid "originator"
 msgstr "Nome del richiedente"
 

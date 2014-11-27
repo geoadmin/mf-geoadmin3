@@ -3422,6 +3422,9 @@ msgstr "Koordinatennetz CH1903/LV03"
 msgid "org.epsg.grid_4326"
 msgstr "Koordinatennetz WGS84"
 
+msgid "original_document_id"
+msgstr "Original-ID"
+
 msgid "originator"
 msgstr "Name des Antragstellers"
 
