@@ -103,6 +103,12 @@
                 evt.stopPropagation();
               };
 
+              scope.resetFile = function(evt) {
+                scope.file = null;
+                evt.stopPropagation();
+                evt.preventDefault();
+              };
+
               if (!scope.isIE || gaBrowserSniffer.msie > 9) {
                 var triggerInputFileClick = function() {
                   elFileInpt.click();
@@ -114,6 +120,7 @@
                 element.find('input[type=text][readonly]').
                     click(triggerInputFileClick);
               }
+              scope.file = null;
 
               elFileInpt.bind('change', function(evt) {
                 var file = (evt.srcElement || evt.target).files[0];
@@ -153,6 +160,16 @@
                   url: feedbackUrl,
                   data: formData
                 };
+                var resetF = function() {
+                  scope.error = false;
+                  scope.success = false;
+                  scope.form = false;
+                  scope.showProgress = false;
+                  scope.file = null;
+                  scope.feedback = '';
+                };
+
+
                 if (!scope.isIE || gaBrowserSniffer.msie > 9) {
                   params.transformRequest = angular.identity;
                   params.headers = {'Content-Type': undefined};
@@ -163,13 +180,11 @@
 
                 scope.showProgress = true;
                 $http(params).success(function(response) {
-                  scope.showProgress = false;
+                  resetF();
                   scope.success = true;
-                  scope.form = false;
                 }).error(function(response) {
-                  scope.showProgress = false;
+                  resetF();
                   scope.error = true;
-                  scope.form = false;
                 });
 
               };

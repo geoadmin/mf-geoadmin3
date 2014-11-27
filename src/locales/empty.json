@@ -280,5 +280,6 @@
   "layer_invalid_no_crs": "",
   "feedback_create_geometry": "",
   "feedback_kml_attached": "",
-  "feedback_modify_drawing": ""
+  "feedback_modify_drawing": "",
+  "remove": ""
 }
