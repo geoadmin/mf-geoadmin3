@@ -1,6 +1,7 @@
 describe('ga_feedback_directive', function() {
 
-  var element,
+  var map,
+      element,
       gaPermalink,
       encodeUriQuery,
       $httpBackend,
@@ -26,20 +27,29 @@ describe('ga_feedback_directive', function() {
 
     element = angular.element(
         '<div ga-feedback ' +
-             'ga-feedback-options="options">' +
+             'ga-feedback-options="options"' +
+             'ga-feedback-map="map">' +
         '</div>')
 
     inject(function($injector, gaUrlUtils) {
+      map = new ol.Map({});
+      map.setSize([600,300]);
+      map.getView().fitExtent([-20000000, -20000000, 20000000, 20000000],
+          map.getSize());
       gaPermalink = $injector.get('gaPermalink');
       $httpBackend = $injector.get('$httpBackend');
       $rootScope = $injector.get('$rootScope');
+      $rootScope.map = map;
       $compile = $injector.get('$compile');
       $rootScope.options = {
-        feedbackUrl: 'http://feedback.com'
+        feedbackUrl: 'http://feedback.com',
+        showExport: false,
+        broadcastLayer: false
       };
       encodeUriQuery = gaUrlUtils.encodeUriQuery;
 
     });
+
   });
 
   afterEach(function () {

@@ -9,26 +9,22 @@
   </div>
   <!-- needs to be ng-show, otherwise we break the ng-model -->
   <form ng-show="form" ng-submit="submit()">
+    <!-- email address -->
     <label translate>feedback_mail</label>
     <input type="email" name="email" ng-model="email">
+    <!-- feedback text -->
     <label translate>feedback_description</label>
     <textarea rows=3 name="feedback" ng-model="feedback" class="form-control" required></textarea>
-    <!-- permalink -->
-    <p class="help-block">
-      <span translate>feedback_permalink</span>
-      <a href="{{permalinkValue}}" target="_blank" translate> permalink</a>
-    </p>
-    <!-- kml-->
-    <p ng-if="!isMobile && !canCreateKml()" class="help-block">
-      <span translate>feedback_create_geometry</span>
-      <a href="" ng-click="activateDraw($event)" translate> draw</a>
-    </p>
-    <p ng-if="!isMobile && canCreateKml()" class="help-block">
-      <span translate>feedback_kml_attached</span>
-      <a href="" ng-click="activateDraw($event)" translate>feedback_modify_drawing</a>
-    </p>
-
-    <!-- Attachement -->
+    <!-- drawing -->
+    <label ng-if="!isMobile" translate>feedback_drawing</label>
+    <div ng-if="!isMobile" ng-controller="GaDrawController">
+      <div ga-draw 
+           ga-draw-map="map" 
+           ga-draw-options="options"
+           ga-draw-active="showDraw"></div>
+    </div>
+    <!-- attachement -->
+    <label ng-show="!isIE9" translate>feedback_attachment</label>
     <div ng-show="!isIE9" class="help-block">
       <div class="input-group-sm">
         <!-- The real input -->
@@ -46,7 +42,14 @@
         </div>
       </div>
     </div>
-    <!-- footer -->
+ 
+    <!-- permalink -->
+    <p class="help-block">
+      <span translate>feedback_permalink</span>
+      <a href="{{permalinkValue}}" target="_blank" translate> permalink</a>
+    </p>
+
+   <!-- footer -->
     <div class="ga-feedback-footer">
       <button type="submit" class="pull-right btn btn-default" translate>send</button>
     </div>

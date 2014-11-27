@@ -26,7 +26,6 @@
             replace: true,
             scope: {
               options: '=gaFeedbackOptions',
-              response: '=gaFeedbackResponse',
               map: '=gaFeedbackMap',
               active: '=gaFeedbackActive'
             },
@@ -51,7 +50,7 @@
               function createFormData() {
                 var formData,
                     kml = '';
-                if (scope.canCreateKml()) {
+                if (canCreateKml()) {
                   kml = gaExportKml.create(drawingLayer,
                                            scope.map.getView().getProjection());
                 }
@@ -89,18 +88,13 @@
               scope.error = false;
               scope.form = true;
 
-              scope.canCreateKml = function() {
+              var canCreateKml = function() {
                 if (!drawingLayer ||
                     drawingLayer.getSource().
                         getFeatures().length <= 0) {
                   return false;
                 }
                 return true;
-              };
-
-              scope.activateDraw = function(evt) {
-                scope.options.activateDrawingDialog();
-                evt.stopPropagation();
               };
 
               scope.resetFile = function(evt) {
@@ -150,6 +144,10 @@
                 scope.form = true;
                 scope.error = false;
                 scope.success = false;
+                scope.showDraw = active;
+                if (drawingLayer) {
+                  drawingLayer.getSource().clear();
+                }
               });
 
               scope.submit = function() {

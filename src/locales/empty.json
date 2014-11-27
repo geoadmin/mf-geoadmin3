@@ -281,5 +281,6 @@
   "feedback_create_geometry": "",
   "feedback_kml_attached": "",
   "feedback_modify_drawing": "",
-  "remove": ""
+  "remove": "",
+  "feedback_drawing": ""
 }
