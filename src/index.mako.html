@@ -561,14 +561,6 @@ itemscope itemtype="http://schema.org/WebApplication"
     </div>
 % endif
 
-% if device == 'desktop':
-  % if mode == 'prod':
-    <script src="${versionslashed}lib/blob.min.js"></script>
-  % else:
-    <script src="lib/blob.js"></script>
-  % endif
-% endif
-
 % if mode == 'prod':
     <script src="${versionslashed}lib/build.js"></script>
     <!-- For <= IE9, we load it explicitely as XDomain does not support
@@ -670,6 +662,11 @@ itemscope itemtype="http://schema.org/WebApplication"
 
           gaLayersProvider.legendUrlTemplate =
               gaGlobalOptions.cachedApiUrl + '/rest/services/{Topic}/MapServer/{Layer}/legend?lang={Lang}';
+        });
+
+        module.config(function(gaExportKmlProvider, gaGlobalOptions) {
+          gaExportKmlProvider.downloadKmlUrl =
+              gaGlobalOptions.apiUrl + '/downloadkml';
         });
 
         module.config(function(gaPreviewFeaturesProvider, gaGlobalOptions) {
