@@ -381,7 +381,10 @@ def _query(request):
     query = query.filter(text(where))
     query = query.limit(MaxFeatures)
     for feature in query:
+            label_column = feature.__label__ if hasattr(feature, '__label__') else 'id'
             f = _process_feature(feature, params)
+            f.properties['label'] = f.properties.get(label_column, f.id)
+
             features.append(f)
 
     return {'results': features}

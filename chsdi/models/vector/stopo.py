@@ -75,6 +75,7 @@ class SwissboundariesGemeinde(Base, Vector):
     __table_args__ = ({'schema': 'tlm', 'autoload': False})
     __template__ = 'templates/htmlpopup/swissboundaries_gemeinde.mako'
     __bodId__ = 'ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill'
+    __label__ = 'gemeindename'
     id = Column('id', Integer, primary_key=True)
     gemname = Column('gemname', Text)
     gemflaeche = Column('gemflaeche', Numeric)
@@ -90,6 +91,7 @@ class SwissboundariesKanton(Base, Vector):
     __table_args__ = ({'schema': 'tlm', 'autoload': False})
     __template__ = 'templates/htmlpopup/swissboundaries_kanton.mako'
     __bodId__ = 'ch.swisstopo.swissboundaries3d-kanton-flaeche.fill'
+    __label__ = 'name'
     id = Column('kantonsnr', Integer, primary_key=True)
     ak = Column('ak', Text)
     name = Column('name', Text)
