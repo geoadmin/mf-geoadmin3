@@ -117,7 +117,7 @@ def feature_attributes(request):
     fields = []
     for attr in attributes:
         field_type = _find_type(models[0](), attr)
-        fields.append({'name': attr, 'type': str(field_type), 'alias': params.translate(attr)})
+        fields.append({'name': attr, 'type': str(field_type), 'alias': params.translate('tt_' + attr)})
 
     return {'id': layerId, 'name': params.translate(layerId), 'fields': fields}
 

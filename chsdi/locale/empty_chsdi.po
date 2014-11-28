@@ -4835,6 +4835,42 @@ msgid "geocover_tecto"
 msgstr ""
 
 msgid "geocover_basisdatensatz"
+msgstr "",
+
+msgid "tt_sanctiontext"
+msgstr "" 
+
+msgid "tt_lk100"
+msgstr ""
+
+msgid "tt_obstacletype"
+msgstr "" 
+
+msgid "tt_state"
+msgstr ""
+
+msgid "tt_maxheightagl"
+msgstr ""
+
+msgid "tt_topelevationamsl"
+msgstr "" 
+
+msgid "tt_totallength"
+msgstr ""
+
+msgid "tt_startofconstruction"
+msgstr ""
+
+msgid "tt_duration"
+msgstr ""
+
+msgid "tt_geomtype"
+msgstr "" 
+
+msgid "tt_registrationnumber"
+msgstr ""
+
+msgid "tt_abortionaccomplished"
 msgstr ""
 
 msgid "original_document_id"
