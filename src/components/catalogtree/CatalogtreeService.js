@@ -25,17 +25,11 @@
          * layer object for that layer.
          */
         addLayer: function(map, item) {
-          var error = true;
           if (angular.isDefined(gaLayers.getLayer(item.layerBodId))) {
             var layer = gaLayers.getOlLayerById(item.layerBodId);
             if (angular.isDefined(layer)) {
-              error = false;
               map.addLayer(layer);
             }
-          }
-          if (error) {
-            alert('Layer not supported by gaLayers (' + item.layerBodId + ').');
-            item.errorLoading = true;
           }
         }
       };
