@@ -7,8 +7,7 @@
       <span></span>
       {{item.label}}
     </label>
-    <i class="icon-warning-sign" ng-show="item.errorLoading"></i>
-    <i class="icon-info-sign" ng-click="getLegend($event, item.layerBodId)"></i>
+    <button class="ga-icon icon-info-sign" ng-click="getLegend($event, item.layerBodId)"></button>
   </div>
 
   <div ng-switch-default="" class="ga-catalogitem-node">

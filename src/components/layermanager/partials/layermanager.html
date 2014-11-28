@@ -2,7 +2,7 @@
   <li ng-if="!(filteredLayers = (layers | gaReverse | filter:layerFilter)).length" class="ga-no-layer" translate>no_layers_info</li>
   <li ng-repeat="layer in filteredLayers" class="ga-layer-folded" ng-class="{'ga-layer-time-enabled': layer.timeEnabled}">
     <div class="ga-layer-infos">
-      <button class="icon-remove-sign" ng-click="removeLayer(layer)"></button>
+      <button class="ga-icon icon-remove-sign" ng-click="removeLayer(layer)"></button>
       <label class="ga-checkbox">
         <input type="checkbox" ng-model="layer.visible" />
         <span></span>
@@ -16,7 +16,7 @@
                 ng-change="setLayerTime(layer)"
                 ng-options="(i | gaTimeLabel:layer) for i in layer.timestamps"></select>
       </button>
-      <button ng-if="isBodLayer(layer)" class="icon-info-sign"
+      <button ng-if="isBodLayer(layer)" class="ga-icon icon-info-sign"
               ng-click="displayLayerMetadata($event, layer)"></button>
     </div>
     <div class="ga-layer-tools">
@@ -27,19 +27,19 @@
         </select>
       </label>
       <div class="ga-layer-ordering">
-        <button ng-if="layer.timeEnabled" class="icon-copy"
+        <button ng-if="layer.timeEnabled" class="ga-icon icon-copy"
                 ng-click="duplicateLayer($event, layer)"></button>
-        <button ng-if="!$first" class="icon-arrow-up"
+        <button ng-if="!$first" class="ga-icon icon-arrow-up"
                 ng-click="moveLayer($event, layer, 1)"></button>
-        <button ng-if="$first" class="icon-arrow-up ga-disabled"></button>
-        <button ng-if="!$last" class="icon-arrow-down" 
+        <button ng-if="$first" class="ga-icon icon-arrow-up ga-disabled"></button>
+        <button ng-if="!$last" class="ga-icon icon-arrow-down" 
                 ng-click="moveLayer($event, layer, -1)"></button>
-        <button ng-if="$last" class="icon-arrow-down ga-disabled"></button>
-        <button ng-if="isBodLayer(layer)" class="icon-info-sign"
+        <button ng-if="$last" class="ga-icon icon-arrow-down ga-disabled"></button>
+        <button ng-if="isBodLayer(layer)" class="ga-icon icon-info-sign"
                 ng-click="displayLayerMetadata($event, layer)"></button>
       </div>
     </div>
-    <button class="icon-gear"></button>
+    <button class="ga-icon icon-gear"></button>
   </li>
 </ul>
 

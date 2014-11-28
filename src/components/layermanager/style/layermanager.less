@@ -40,23 +40,11 @@
 
   button {
     top: 0;
-    width: 1.3em;
     height: 100%;
-    font-size: 1.3em;
-    background: transparent;
-    border: none;
-    padding: 0;
-
-    &.ga-disabled, &.ga-disabled:hover {
-      color: #CCC;
-      cursor: default;
-    }
  
     @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
       top: 0;
       height: 100%;
-      font-size: 2.2em;
-      width: 1em;
     }
   }
 
@@ -93,11 +81,6 @@
 
     button {
       position: absolute;
- 
-      @media (min-width: @screen-tablet) and (min-height: @screen-sm-max-height) {
-        /* critical css, makes alignement correct on all desktop browsers*/
-        height: 30px;
-      }
     }
 
     label {
@@ -294,6 +277,7 @@
 
 .ga-layer-timestamps .badge, [ga-layermanager] .badge {
   background-color: #D3D3D3;
+  border: 0;
   font-size: inherit;
   font-weight: normal;
  

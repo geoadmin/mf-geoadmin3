@@ -75,7 +75,6 @@
                 }
                 angular.forEach(oldMap, function(value, key) {
                   newMap[key].selectedOpen = value.selectedOpen;
-                  newMap[key].errorLoading = value.errorLoading;
                 });
               }
             };
