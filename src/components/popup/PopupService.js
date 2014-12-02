@@ -17,7 +17,7 @@
         var element = angular.element(
           '<div ga-popup="toggle" ' +
                'ga-popup-options="options" ' +
-               'ga-draggable=".ga-popup-title">' +
+               'ga-draggable=".popover-title">' +
                options.content +
           '</div>'
         );

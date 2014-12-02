@@ -24,34 +24,7 @@
           toggle: '=gaPopup',
           optionsFunc: '&gaPopupOptions' // Options from directive
         },
-        template:
-          '<h4 class="popover-title ga-popup-title" ' +
-              'ng-click="controlDisplay($event)">' +
-            '<span translate>{{options.title}}</span>' +
-            '<button ' +
-               'class="ga-popup-close hidden-print" ' +
-               'ng-click="close($event)">&times</button>' +
-            '<button ' +
-               'class="icon-minus ga-popup-reduce hidden-print" ' +
-               'title="{{titleReduce}}" ' +
-               'ng-if="options.showReduce" ' +
-               'ng-click="reduce($event)"></button>' +
-            '<button ' +
-               'class="icon-print ga-popup-print hidden-print" ' +
-               'title="{{titlePrint}}" ' +
-               'ng-if="options.showPrint" ' +
-               'ng-click="print()"></button>' +
-            '<button ' +
-               'class="ga-popup-help hidden-print" ' +
-               'title="{{titleHelp}}" ' +
-               'ng-if="options.help" ' +
-               'ga-help="{{options.help}}"></button>' +
-          '</h4>' +
-          '<div class="popover-content ga-popup-content" ' +
-               'ng-click="bringUpFront($event)" ' +
-               'ng-transclude>' +
-          '</div>',
-
+        templateUrl: 'components/popup/partials/popup.html',
         link: function(scope, element, attrs) {
 
           // Initialize the popup properties
@@ -77,6 +50,13 @@
               gaBrowserSniffer.mobile) {
             scope.options.showReduce = true;
           }
+          // Bring thre popup to front on click on it.
+          element.find('.popover-content').click(function(evt) {
+            evt.stopPropagation();
+            if (!scope.isReduced && scope.toggle) {
+              bringUpFront(element);
+            }
+          });
 
           // Set default x and y values on non mobile device if not defined
           if (!gaBrowserSniffer.mobile && !scope.options.x &&
@@ -124,13 +104,6 @@
             scope.isReduced = false;
           };
 
-          scope.bringUpFront = function(evt) {
-            evt.stopPropagation();
-            if (!scope.isReduced && scope.toggle) {
-              bringUpFront(element);
-            }
-          };
-
           // Watch the shown property
           scope.$watch(
             'toggle',
@@ -158,7 +131,7 @@
             }
           );
 
-          var header = element.find('h4');
+          var header = element.find('.popover-title');
           scope.$watch('isReduced', function(newVal, oldVal) {
             if (newVal != oldVal) {
               element.toggleClass('ga-popup-reduced', scope.isReduced);
