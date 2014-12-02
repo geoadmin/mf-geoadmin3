@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import datetime
-from pyramid.mako_templating import renderer_factory as mako_renderer_factory
 from pyramid.config import Configurator
 from pyramid.events import BeforeRender, NewRequest
 from chsdi.subscribers import add_localizer, add_renderer_globals
@@ -31,6 +30,7 @@ def main(global_config, **settings):
     app_version = settings.get('app_version')
     settings['app_version'] = app_version
     config = Configurator(settings=settings)
+    config.include('pyramid_mako')
 
     # init raster files for height/profile and preload COMB file
     init_rasterfiles(settings.get('data_path'), ['COMB'])
@@ -41,8 +41,8 @@ def main(global_config, **settings):
     config.add_subscriber(add_renderer_globals, BeforeRender)
 
     # renderers
-    config.add_renderer('.html', mako_renderer_factory)
-    config.add_renderer('.js', mako_renderer_factory)
+    config.add_mako_renderer('.html')
+    config.add_mako_renderer('.js')
     config.add_renderer('jsonp', JSONP(param_name='callback', indent=None, separators=(',', ':')))
     config.add_renderer('geojson', GeoJSON(jsonp_param_name='callback'))
     config.add_renderer('esrijson', EsriJSON(jsonp_param_name='callback'))
@@ -88,7 +88,7 @@ def main(global_config, **settings):
     config.add_route('downloadkml', '/downloadkml')
 
     # Some views for specific routes
-    config.add_view(route_name='dev', renderer='chsdi:templates/index.pt')
+    config.add_view(route_name='dev', renderer='chsdi:templates/index.mako')
     config.add_view(route_name='testi18n', renderer='chsdi:templates/testi18n.mako')
 
     # Shortener
