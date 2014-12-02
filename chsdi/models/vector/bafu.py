@@ -2,7 +2,7 @@
 
 from sqlalchemy import Column, Text, Integer
 from sqlalchemy.types import Numeric
-from geoalchemy import GeometryColumn, Geometry
+from geoalchemy2.types import Geometry
 
 from chsdi.models import *
 from chsdi.models.vector import Vector
@@ -19,7 +19,8 @@ class AM_G(Base, Vector):
     __label__ = 'am_g_name'
     id = Column('am_g_obj', Integer, primary_key=True)
     am_g_name = Column('am_g_name', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.bundesinventare-amphibien_wanderobjekte', AM_G)
 
@@ -36,7 +37,8 @@ class AM_L(Base, Vector):
     am_l_fl = Column('am_l_fl', Text)
     am_l_berei = Column('am_l_berei', Text)
     am_l_gf = Column('am_l_gf', Text)
-    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.bundesinventare-amphibien', AM_L)
 
@@ -49,7 +51,8 @@ class LHG(Base, Vector):
     __label__ = 'lhg_name'
     id = Column('edv_nr4', Text, primary_key=True)
     lhg_name = Column('lhg_name', Text)
-    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.hydrologie-hydromessstationen', LHG)
 
@@ -64,7 +67,8 @@ class Temperaturmessnetz(Base, Vector):
     id = Column('nr', Integer, primary_key=True)
     url = Column('url', Text)
     name = Column('name', Text)
-    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.hydrologie-wassertemperaturmessstationen', Temperaturmessnetz)
 
@@ -86,7 +90,8 @@ class Grundwasserschutzareale (Base, Vector):
     status_fr = Column('status_fr', Text)
     status_it = Column('status_it', Text)
     status_en = Column('status_en', Text)
-    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.grundwasserschutzareale', Grundwasserschutzareale)
 
@@ -108,7 +113,8 @@ class Grundwasserschutzzonen (Base, Vector):
     status_fr = Column('status_fr', Text)
     status_it = Column('status_it', Text)
     status_en = Column('status_en', Text)
-    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.grundwasserschutzzonen', Grundwasserschutzzonen)
 
@@ -125,7 +131,8 @@ class Gewaesserschutzbereiche (Base, Vector):
     typ_fr = Column('typ_fr', Text)
     typ_it = Column('typ_it', Text)
     typ_en = Column('typ_en', Text)
-    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.gewaesserschutzbereiche', Gewaesserschutzbereiche)
 
@@ -144,7 +151,8 @@ class Vorfluter (Base, Vector):
     name = Column('name', Text)
     regimenr = Column('regimenr', Integer)
     regimetyp = Column('regimetyp', Text)
-    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.wasser-vorfluter', Vorfluter)
 
@@ -160,7 +168,8 @@ class Gewaesserzustandst (Base, Vector):
     name = Column('name', Text)
     nr = Column('nr', Numeric)
     gewaesser = Column('gewaesser', Text)
-    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.hydrologie-gewaesserzustandsmessstationen', Gewaesserzustandst)
 
@@ -187,7 +196,8 @@ class Teileinzugsgebiete2 (Base, Vector):
     flussgb_rm = Column('flussgb_rm', Text)
     typ2_en = Column('typ2_en', Text)
     flussgb_en = Column('flussgb_en', Text)
-    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.wasser-teileinzugsgebiete_2', Teileinzugsgebiete2)
 
@@ -201,7 +211,8 @@ class Teileinzugsgebiete40 (Base, Vector):
     id = Column('bgdi_id', Integer, primary_key=True)
     tezgnr40 = Column('tezgnr40', Integer)
     teilezgfla = Column('teilezgfla', Numeric)
-    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.wasser-teileinzugsgebiete_40', Teileinzugsgebiete40)
 
@@ -233,7 +244,8 @@ class Gebietsauslaesse (Base, Vector):
     bebautefl = Column('bebautefl', Text)
     landwirtsc = Column('landwirtsc', Text)
     wald_natur = Column('wald_natur', Text)
-    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.wasser-gebietsauslaesse', Gebietsauslaesse)
 
@@ -250,7 +262,8 @@ class AU(Base, Vector):
     au_obj = Column('au_obj', Integer)
     au_objtyp = Column('au_objtyp', Text)
     au_fl = Column('au_fl', Numeric)
-    the_geom = GeometryColumn(Geometry(dimensions=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.bundesinventare-auen', AU)
 
@@ -263,7 +276,8 @@ class BLN(Base, Vector):
     __template__ = 'templates/htmlpopup/bln.mako'
     __label__ = 'bln_name'
     id = Column('gid', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     bln_name = Column('bln_name', Text)
     bln_obj = Column('bln_obj', Integer)
     bln_fl = Column('bln_fl', Numeric)
@@ -283,7 +297,8 @@ class HM(Base, Vector):
     hm_typ = Column('hm_typ', Integer)
     hm_fl = Column('hm_fl', Numeric)
     hm_ke = Column('hm_ke', Integer)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.bundesinventare-hochmoore', HM)
 
@@ -299,7 +314,8 @@ class HMA(Base, Vector):
     obj_name = Column('obj_name', Text)
     tobj_type = Column('tobj_type', Text)
     flaeche = Column('flaeche', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.bundesinventare-hochmoore_anhoerung', HMA)
 
@@ -314,7 +330,8 @@ class TTA(Base, Vector):
     obj_nr = Column('obj_nr', Text)
     obj_name = Column('obj_name', Text)
     flaeche = Column('flaeche', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhoerung', TTA)
 
@@ -329,7 +346,8 @@ class MLA(Base, Vector):
     obj_nr = Column('obj_nr', Text)
     obj_name = Column('obj_name', Text)
     flaeche = Column('flaeche', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.bundesinventare-moorlandschaften_anhoerung', MLA)
 
@@ -344,7 +362,8 @@ class FMA(Base, Vector):
     obj_nr = Column('obj_nr', Text)
     obj_name = Column('obj_name', Text)
     flaeche = Column('flaeche', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.bundesinventare-flachmoore_anhoerung', FMA)
 
@@ -359,7 +378,8 @@ class AA(Base, Vector):
     obj_nr = Column('obj_nr', Text)
     obj_name = Column('obj_name', Text)
     flaeche = Column('flaeche', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.bundesinventare-auen_anhoerung', AA)
 
@@ -373,7 +393,8 @@ class AWA(Base, Vector):
     id = Column('bgdi_id', Integer, primary_key=True)
     obj_nr = Column('obj_nr', Text)
     obj_name = Column('obj_name', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.bundesinventare-amphibien_wanderobjekte_anhoerung', AWA)
 
@@ -389,7 +410,8 @@ class AMA(Base, Vector):
     obj_name = Column('obj_name', Text)
     bereich = Column('bereich', Text)
     flaeche = Column('flaeche', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.bundesinventare-amphibien_anhoerung', AMA)
 
@@ -402,7 +424,8 @@ class JB(Base, Vector):
     __template__ = 'templates/htmlpopup/jb.mako'
     __label__ = 'jb_name'  # Composite labels
     id = Column('gid', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     jb_name = Column('jb_name', Text)
     jb_obj = Column('jb_obj', Integer)
     jb_kat = Column('jb_kat', Text)
@@ -422,7 +445,8 @@ class ML(Base, Vector):
     ml_name = Column('ml_name', Text)
     ml_obj = Column('ml_obj', Integer)
     ml_fl = Column('ml_fl', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.bundesinventare-moorlandschaften', ML)
 
@@ -439,7 +463,8 @@ class WV(Base, Vector):
     wv_kat = Column('wv_kat', Text)
     wv_fl = Column('wv_fl', Numeric)
     wv_gf = Column('wv_gf', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.bundesinventare-vogelreservate', WV)
 
@@ -456,7 +481,8 @@ class wasserentnahmeAll(Base, Vector):
     kantoncode = Column('kantoncode', Text)
     ent_gew = Column('ent_gew', Text)
     link = Column('link', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.wasser-entnahme', wasserentnahmeAll)
 
@@ -471,7 +497,8 @@ class wasserleitungen(Base, Vector):
     kanton = Column('kanton', Text)
     kantoncode = Column('kantoncode', Text)
     rwknr = Column('rwknr', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.wasser-leitungen', wasserleitungen)
 
@@ -486,7 +513,8 @@ class wasserrueckgabe(Base, Vector):
     kanton = Column('kanton', Text)
     kantoncode = Column('kantoncode', Text)
     rwknr = Column('rwknr', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.wasser-rueckgabe', wasserrueckgabe)
 
@@ -501,7 +529,8 @@ class flachmoore(Base, Vector):
     fm_name = Column('fm_name', Text)
     fm_obj = Column('fm_obj', Text)
     fm_gf = Column('fm_gf', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.bundesinventare-flachmoore', flachmoore)
 
@@ -516,7 +545,8 @@ class flachmooreReg(Base, Vector):
     fmreg_name = Column('fmreg_name', Text)
     fmreg_obj = Column('fmreg_obj', Text)
     fmreg_gf = Column('fmreg_gf', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.bundesinventare-flachmoore_regional', flachmooreReg)
 
@@ -532,7 +562,8 @@ class schutzgebiete_aulav_auen(Base, Vector):
     key_name = Column('au_name', Text)
     key_version = Column('au_version', Text)
     typ = Column('typ', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.schutzgebiete-aulav_auen', schutzgebiete_aulav_auen)
 
@@ -545,7 +576,8 @@ class schutzgebiete_aulav_auen_general(Base, Vector):
     __minscale__ = 10001
     __maxscale__ = 5000000
     id = Column('bgdi_id', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.schutzgebiete-aulav_auen', schutzgebiete_aulav_auen_general)
 
@@ -561,7 +593,8 @@ class schutzgebiete_aulav_jagdbanngebiete(Base, Vector):
     key_name = Column('jb_name', Text)
     key_version = Column('jb_version', Text)
     typ = Column('typ', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.schutzgebiete-aulav_jagdbanngebiete', schutzgebiete_aulav_jagdbanngebiete)
 
@@ -574,7 +607,8 @@ class schutzgebiete_aulav_jagdbanngebiete_general(Base, Vector):
     __minscale__ = 10001
     __maxscale__ = 5000000
     id = Column('bgdi_id', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.schutzgebiete-aulav_jagdbanngebiete', schutzgebiete_aulav_jagdbanngebiete_general)
 
@@ -590,7 +624,8 @@ class schutzgebiete_aulav_moorlandschaften(Base, Vector):
     key_name = Column('ml_name', Text)
     key_version = Column('ml_version', Text)
     typ = Column('typ', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.schutzgebiete-aulav_moorlandschaften', schutzgebiete_aulav_moorlandschaften)
 
@@ -603,7 +638,8 @@ class schutzgebiete_aulav_moorlandschaften_general(Base, Vector):
     __minscale__ = 10001
     __maxscale__ = 5000000
     id = Column('bgdi_id', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.schutzgebiete-aulav_moorlandschaften', schutzgebiete_aulav_moorlandschaften_general)
 
@@ -624,7 +660,8 @@ class schutzgebiete_aulav_uebrige(Base, Vector):
     hm_name = Column('hm_name', Text)
     np_name = Column('np_name', Text)
     typ = Column('typ', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.schutzgebiete-aulav_uebrige', schutzgebiete_aulav_uebrige)
 
@@ -637,7 +674,8 @@ class schutzgebiete_aulav_uebrige_general(Base, Vector):
     __minscale__ = 10001
     __maxscale__ = 5000000
     id = Column('bgdi_id', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.schutzgebiete-aulav_uebrige', schutzgebiete_aulav_uebrige_general)
 
@@ -654,7 +692,8 @@ class paerke_nationaler_bedeutung(Base, Vector):
     park_statu = Column('park_statu', Text)
     park_fl = Column('park_fl', Numeric)
     park_gf = Column('park_gf', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.schutzgebiete-paerke_nationaler_bedeutung', paerke_nationaler_bedeutung)
 
@@ -670,7 +709,8 @@ class ramsar(Base, Vector):
     ra_obj = Column('ra_obj', Integer)
     ra_fl = Column('ra_fl', Text)
     ra_gf = Column('ra_gf', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.schutzgebiete-ramsar', ramsar)
 
@@ -693,7 +733,8 @@ class wildruhezonen_jagdbanngebiete(Base, Vector):
     zusatzinfo = Column('zusatzinfo', Text)
     bearbeitungsjahr = Column('bearbeitungsjahr', Text)
     kanton = Column('kanton', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.wildruhezonen-jagdbanngebiete', wildruhezonen_jagdbanngebiete)
 
@@ -709,7 +750,8 @@ class wege_wildruhezonen_jagdbanngebiete(Base, Vector):
     wrz_obj = Column('wrz_obj', Integer)
     length_km = Column('length_km', Numeric)
     weg_wrz_jb_version = Column('weg_wrz_jb_version', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.wege-wildruhezonen-jagdbanngebiete', wege_wildruhezonen_jagdbanngebiete)
 
@@ -774,7 +816,8 @@ class oekom_abschnitte(Base, Vector):
     oekomklasse = Column('oekomklasse', Numeric)
     sohlmat_de = Column('sohlmat_de', Text)
     sohlmat_fr = Column('sohlmat_fr', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.oekomorphologie-f_abschnitte', oekom_abschnitte)
 
@@ -804,7 +847,8 @@ class oekom_abstuerze(Base, Vector):
     datum = Column('datum', Text)
     absttyp = Column('absttyp', Numeric)
     abstmat = Column('abstmat', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.oekomorphologie-f_abstuerze', oekom_abstuerze)
 
@@ -830,7 +874,8 @@ class oekom_bauwerke(Base, Vector):
     translid = Column('translid', Numeric)
     loc_angle_geo = Column('loc_angle_geo', Numeric)
     datum = Column('datum', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.oekomorphologie-f_bauwerke', oekom_bauwerke)
 
@@ -847,7 +892,8 @@ class steinbockkolonien(Base, Vector):
     sb_kt = Column('sb_kt', Text)
     sb_fl = Column('sb_fl', Numeric)
     sb_gf = Column('sb_gf', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.fauna-steinbockkolonien', steinbockkolonien)
 
@@ -862,7 +908,8 @@ class SWISSPRTR(Base, Vector):
     betrieb = Column('betrieb', Text)
     ort = Column('ort', Text)
     jahr = Column('jahr', Integer)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.swissprtr', SWISSPRTR)
 
@@ -877,7 +924,8 @@ class HOLZVORRAT(Base, Vector):
     fid = Column('id', Integer)
     vorrat = Column('vorrat', Numeric)
     wireg_ = Column('wireg_', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.holzvorrat', HOLZVORRAT)
 
@@ -891,7 +939,8 @@ class HOLZZUWACHS(Base, Vector):
     id = Column('gid', Integer, primary_key=True)
     wirtschaftsregion = Column('wirtschaftsregion', Text)
     holzzuwachs = Column('holzzuwachs', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.holzzuwachs', HOLZZUWACHS)
 
@@ -905,7 +954,8 @@ class HOLZNUTZUNG(Base, Vector):
     id = Column('gid', Integer, primary_key=True)
     wireg_ = Column('wireg_', Text)
     nutzung = Column('nutzung', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.holznutzung', HOLZNUTZUNG)
 
@@ -922,7 +972,8 @@ class NABEL(Base, Vector):
     typ_fr = Column('typ_fr', Text)
     desc_de = Column('desc_de', Text)
     desc_fr = Column('desc_fr', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.nabelstationen', NABEL)
 
@@ -939,7 +990,8 @@ class krebspest(Base, Vector):
     art_lat = Column('art_lat', Text)
     jahr = Column('jahr', Text)
     ort = Column('ort', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.fischerei-krebspest', krebspest)
 
@@ -956,7 +1008,8 @@ class biogeoreg(Base, Vector):
     biogreg_r1 = Column('biogreg_r1', Text)
     biogreg_c6 = Column('biogreg_c6', Integer)
     biogreg_c1 = Column('biogreg_c1', Integer)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.biogeographische_regionen', biogeoreg)
 
@@ -971,7 +1024,8 @@ class smaragd(Base, Vector):
     em_name = Column('em_name', Text)
     em_obj = Column('em_obj', Numeric)
     em_gf = Column('em_gf', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.schutzgebiete-smaragd', smaragd)
 
@@ -988,7 +1042,8 @@ class biosphaerenreservate(Base, Vector):
     biores_gf = Column('biores_gf', Text)
     biores_nam = Column('biores_nam', Text)
     biores_obj = Column('biores_obj', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.schutzgebiete-biosphaerenreservate', biosphaerenreservate)
 
@@ -1006,7 +1061,8 @@ class moose(Base, Vector):
     standort = Column('standort', Text)
     rl_text = Column('rl_text', Text)
     nhv_text = Column('nhv_text', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.moose', moose)
 
@@ -1021,7 +1077,8 @@ class weltensutter(Base, Vector):
     nom = Column('nom', Text)
     no_surface = Column('no_surface', Numeric)
     ty_surface = Column('ty_surface', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.flora-weltensutter_atlas', weltensutter)
 
@@ -1037,7 +1094,8 @@ class baumarten(Base, Vector):
     anteil_lau = Column('anteil_lau', Numeric)
     anteil_nad = Column('anteil_nad', Numeric)
     vorrat = Column('vorrat', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.landesforstinventar-baumarten', baumarten)
 
@@ -1051,7 +1109,8 @@ class waldanteil(Base, Vector):
     id = Column('bgdi_id', Integer, primary_key=True)
     wirtschaft = Column('wirtschaft', Text)
     waldflaech = Column('waldflaech', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.landesforstinventar-waldanteil', waldanteil)
 
@@ -1065,7 +1124,8 @@ class totholz(Base, Vector):
     id = Column('bgdi_id', Integer, primary_key=True)
     wirtschaft = Column('wirtschaft', Text)
     totholzvol = Column('totholzvol', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.landesforstinventar-totholz', totholz)
 
@@ -1082,7 +1142,8 @@ class histerdbeben(Base, Vector):
     intensity = Column('intensity', Text)
     magnitude = Column('magnitude', Numeric)
     date_time = Column('date_time', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.gefahren-historische_erdbeben', histerdbeben)
 
@@ -1097,7 +1158,8 @@ class spektral(Base, Vector):
     fid = Column('id', Integer)
     spectral_3 = Column('spectral_3', Text)
     spectral_4 = Column('spectral_4', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.gefahren-spektral', spektral)
 
@@ -1114,7 +1176,8 @@ class trockenwiesenundweiden(Base, Vector):
     tww_gf = Column('tww_gf', Numeric)
     tww_obj = Column('tww_obj', Numeric)
     tww_tobj = Column('tww_tobj', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.bundesinventare-trockenwiesen_trockenweiden', trockenwiesenundweiden)
 
@@ -1129,7 +1192,8 @@ class trockenwiesenundweiden_anhang2(Base, Vector):
     tww_name = Column('tww_name', Text)
     tww_obj = Column('tww_obj', Numeric)
     tww_tobj = Column('tww_tobj', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhang2', trockenwiesenundweiden_anhang2)
 
@@ -1143,7 +1207,8 @@ class amphibien_anhang4(Base, Vector):
     id = Column('bgdi_id', Integer, primary_key=True)
     name = Column('name', Text)
     obnr = Column('obnr', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.bundesinventare-amphibien_anhang4', amphibien_anhang4)
 
@@ -1156,7 +1221,8 @@ class baugrundklassen(Base, Vector):
     __label__ = 'bgk'
     id = Column('_count', Integer, primary_key=True)
     bgk = Column('bgk', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.gefahren-baugrundklassen', baugrundklassen)
 
@@ -1187,7 +1253,8 @@ class emissionplan(Base, Vector):
     bis_bpk_bp = Column('bis_bpk_bp', Text)
     typ_aender = Column('typ_aender', Text)
     datum = Column('datum', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bav.laerm-emissionplan_eisenbahn_2015', emissionplan)
 
@@ -1207,7 +1274,8 @@ class wrzselect(Base, Vector):
     grundlage = Column('grundlage', Text)
     zusatzinformation = Column('zusatzinformation', Text)
     kanton = Column('kanton', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.wrz-jagdbanngebiete_select', wrzselect)
 
@@ -1228,7 +1296,8 @@ class wrzportal(Base, Vector):
     beschlussjahr = Column('beschlussjahr', Text)
     zusatzinformation = Column('zusatzinformation', Text)
     kanton = Column('kanton', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.wrz-wildruhezonen_portal', wrzportal)
 
@@ -1243,7 +1312,8 @@ class wildtier(Base, Vector):
     nr = Column('nr', Text)
     zusta_dt = Column('zusta_dt', Text)
     zusta_fr = Column('zusta_fr', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.fauna-wildtierkorridor_national', wildtier)
 
@@ -1259,7 +1329,8 @@ class waldreservate(Base, Vector):
     name = Column('name', Text)
     gisflaeche = Column('obj_gisflaeche', Numeric)
     mcpfe = Column('mcpfe_class', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.waldreservate', waldreservate)
 
@@ -1275,7 +1346,8 @@ class sturm_staudruck_30(Base, Vector):
     staudruck_50 = Column('staudruck_50', Text)
     staudruck_100 = Column('staudruck_100', Text)
     staudruck_300 = Column('staudruck_300', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.sturm-staudruck_30', sturm_staudruck_30)
 
@@ -1291,7 +1363,8 @@ class sturm_staudruck_50(Base, Vector):
     staudruck_50 = Column('staudruck_50', Text)
     staudruck_100 = Column('staudruck_100', Text)
     staudruck_300 = Column('staudruck_300', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.sturm-staudruck_50', sturm_staudruck_50)
 
@@ -1307,7 +1380,8 @@ class sturm_staudruck_100(Base, Vector):
     staudruck_50 = Column('staudruck_50', Text)
     staudruck_100 = Column('staudruck_100', Text)
     staudruck_300 = Column('staudruck_300', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.sturm-staudruck_100', sturm_staudruck_100)
 
@@ -1323,7 +1397,8 @@ class sturm_staudruck_300(Base, Vector):
     staudruck_50 = Column('staudruck_50', Text)
     staudruck_100 = Column('staudruck_100', Text)
     staudruck_300 = Column('staudruck_300', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.sturm-staudruck_300', sturm_staudruck_300)
 
@@ -1337,7 +1412,8 @@ class sturm_boeenspitzen_30(Base, Vector):
     id = Column('oid', Integer, primary_key=True)
     boenspitzen_kmh_30 = Column('boenspitzen_kmh_30', Text)
     boenspitzen_ms_30 = Column('boenspitzen_ms_30', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.sturm-boeenspitzen_30', sturm_boeenspitzen_30)
 
@@ -1351,7 +1427,8 @@ class sturm_boeenspitzen_50(Base, Vector):
     id = Column('oid', Integer, primary_key=True)
     boenspitzen_kmh_50 = Column('boenspitzen_kmh_50', Text)
     boenspitzen_ms_50 = Column('boenspitzen_ms_50', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.sturm-boeenspitzen_50', sturm_boeenspitzen_50)
 
@@ -1365,7 +1442,8 @@ class sturm_boeenspitzen_100(Base, Vector):
     id = Column('oid', Integer, primary_key=True)
     boenspitzen_kmh_100 = Column('boenspitzen_kmh_100', Text)
     boenspitzen_ms_100 = Column('boenspitzen_ms_100', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.sturm-boeenspitzen_100', sturm_boeenspitzen_100)
 
@@ -1379,6 +1457,7 @@ class sturm_boeenspitzen_300(Base, Vector):
     id = Column('oid', Integer, primary_key=True)
     boenspitzen_kmh_300 = Column('boenspitzen_kmh_300', Text)
     boenspitzen_ms_300 = Column('boenspitzen_ms_300', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bafu.sturm-boeenspitzen_300', sturm_boeenspitzen_300)

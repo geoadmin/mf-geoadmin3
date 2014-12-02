@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from sqlalchemy import Column, Text, Integer
-from geoalchemy import GeometryColumn, Geometry
+from geoalchemy2.types import Geometry
 from sqlalchemy.types import Numeric
 from chsdi.models import *
 from chsdi.models.vector import Vector
@@ -19,7 +19,8 @@ class Arealstatistik2009(Base, Vector):
     # specially big layer
     __label__ = 'id'
     id = Column('bgdi_id', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     fj85 = Column('fj85', Integer)
     fj97 = Column('fj97', Integer)
     fj09 = Column('fj09', Integer)
@@ -40,7 +41,8 @@ class Arealstatistik1985(Base, Vector):
     # specially big layer
     __label__ = 'id'
     id = Column('bgdi_id', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     fj85 = Column('fj85', Integer)
     fj97 = Column('fj97', Integer)
     fj09 = Column('fj09', Integer)
@@ -61,7 +63,8 @@ class Arealstatistik1997(Base, Vector):
     #specially big layer
     __label__ = 'id'
     id = Column('bgdi_id', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     fj85 = Column('fj85', Integer)
     fj97 = Column('fj97', Integer)
     fj09 = Column('fj09', Integer)
@@ -82,7 +85,8 @@ class ArealstatistikBodenbedeckung2009(Base, Vector):
     #specially big layer
     __label__ = 'id'
     id = Column('bgdi_id', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     fj85 = Column('fj85', Integer)
     fj97 = Column('fj97', Integer)
     fj09 = Column('fj09', Integer)
@@ -103,7 +107,8 @@ class ArealstatistikBodenbedeckung1997(Base, Vector):
     #specially big layer
     __label__ = 'id'
     id = Column('bgdi_id', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     fj85 = Column('fj85', Integer)
     fj97 = Column('fj97', Integer)
     fj09 = Column('fj09', Integer)
@@ -124,7 +129,8 @@ class ArealstatistikBodenbedeckung1985(Base, Vector):
     #specially big layer
     __label__ = 'id'
     id = Column('bgdi_id', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     fj85 = Column('fj85', Integer)
     fj97 = Column('fj97', Integer)
     fj09 = Column('fj09', Integer)
@@ -145,7 +151,8 @@ class ArealstatistikBodennutzung(Base, Vector):
     #specially big layer
     __label__ = 'id'
     id = Column('bgdi_id', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     fj85 = Column('fj85', Integer)
     fj97 = Column('fj97', Integer)
     fj09 = Column('fj09', Integer)
@@ -166,7 +173,8 @@ class ArealstatistikBodennutzung1997(Base, Vector):
     #specially big layer
     __label__ = 'id'
     id = Column('bgdi_id', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     fj85 = Column('fj85', Integer)
     fj97 = Column('fj97', Integer)
     fj09 = Column('fj09', Integer)
@@ -187,7 +195,8 @@ class ArealstatistikBodennutzung1985(Base, Vector):
     #specially big layer
     __label__ = 'id'
     id = Column('bgdi_id', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     fj85 = Column('fj85', Integer)
     fj97 = Column('fj97', Integer)
     fj09 = Column('fj09', Integer)
@@ -205,7 +214,8 @@ class fsme_faelle(Base, Vector):
     __bodId__ = 'ch.bag.zecken-fsme-faelle'
     __label__ = 'gemname'
     id = Column('bgdi_id', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     gemname = Column('gemname', Integer)
     bfsnr = Column('bfsnr', Integer)
     bezirksnr = Column('bezirksnr', Integer)
@@ -221,7 +231,8 @@ class fsme_impfung(Base, Vector):
     __bodId__ = 'ch.bag.zecken-fsme-impfung'
     __label__ = 'gemname'
     id = Column('bgdi_id', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     gemname = Column('gemname', Integer)
     bfsnr = Column('bfsnr', Integer)
     bezirksnr = Column('bezirksnr', Integer)

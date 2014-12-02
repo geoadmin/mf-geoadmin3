@@ -2,7 +2,7 @@
 
 from sqlalchemy import Column, Text, Integer
 from sqlalchemy.types import Numeric
-from geoalchemy import GeometryColumn, Geometry
+from geoalchemy2.types import Geometry
 
 from chsdi.models import *
 from chsdi.models.vector import Vector
@@ -24,7 +24,8 @@ class FEUERSTELLEN(Base, Vector):
     karte = Column('karte', Text)
     url = Column('url', Text)
     koordinate_lv03 = Column('koordinate_lv03', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.tamedia.schweizerfamilie-feuerstellen', FEUERSTELLEN)
 
@@ -39,7 +40,8 @@ class NOTFALLSCHUTZ(Base, Vector):
     name = Column('name', Text)
     zone = Column('zone', Text)
     sektor = Column('sektor', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.ensi.zonenplan-notfallschutz-kernanlagen', NOTFALLSCHUTZ)
 
@@ -55,6 +57,7 @@ class PRONATURA(Base, Vector):
     name = Column('name', Text)
     gisflaeche = Column('obj_gisflaeche', Numeric)
     mcpfe = Column('mcpfe', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.pronatura.waldreservate', PRONATURA)

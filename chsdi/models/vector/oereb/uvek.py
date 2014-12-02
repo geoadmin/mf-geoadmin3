@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
+
 from sqlalchemy import Column, Text
-from geoalchemy import GeometryColumn, Geometry
+from geoalchemy2.types import Geometry
 
 from chsdi.models import *
 from chsdi.models.vector import Vector
@@ -13,7 +15,8 @@ class Projektierungszonen_Oereb(Base, Vector):
     __table_args__ = ({'schema': 'bazl', 'autoload': False})
     __bodId__ = 'ch.bazl.projektierungszonen-flughafenanlagen.oereb'
     id = Column('stabil_id', Text, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     geomType = Column('geom_type', Text)
     xmlData = Column('xml_data', Text)
     bgdi_created = Column('bgdi_created', Text)
@@ -27,7 +30,8 @@ class Sichereitszonen_Oereb(Base, Vector):
     __table_args__ = ({'schema': 'bazl', 'autoload': False})
     __bodId__ = 'ch.bazl.sicherheitszonenplan.oereb'
     id = Column('stabil_id', Text, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     geomType = Column('geom_type', Text)
     xmlData = Column('xml_data', Text)
     bgdi_created = Column('bgdi_created', Text)
@@ -41,7 +45,8 @@ class Kataster_belasteten_standorte_oev_Oereb(Base, Vector):
     __table_args__ = ({'schema': 'bav', 'autoload': False})
     __bodId__ = 'ch.bav.kataster-belasteter-standorte-oev.oereb'
     id = Column('stabil_id', Text, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     geomType = Column('geom_type', Text)
     xmlData = Column('xml_data', Text)
     bgdi_created = Column('bgdi_created', Text)
@@ -55,7 +60,8 @@ class Kataster_belasteten_standorte_zivflpl_Oereb(Base, Vector):
     __table_args__ = ({'schema': 'bazl', 'autoload': False})
     __bodId__ = 'ch.bazl.kataster-belasteter-standorte-zivilflugplaetze.oereb'
     id = Column('stabil_id', Text, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     geomType = Column('geom_type', Text)
     xmlData = Column('xml_data', Text)
     bgdi_created = Column('bgdi_created', Text)

@@ -2,7 +2,7 @@
 
 from sqlalchemy import Column, Text, Integer
 from sqlalchemy.types import Numeric
-from geoalchemy import GeometryColumn, Geometry
+from geoalchemy2.types import Geometry
 
 from chsdi.models import *
 from chsdi.models.vector import Vector
@@ -23,7 +23,8 @@ class GravimetrischerAtlasMetadata (Base, Vector):
     autor = Column('autor', Text)
     formate_de = Column('formate_de', Text)
     formate_fr = Column('formate_fr', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-gravimetrischer_atlas.metadata', GravimetrischerAtlasMetadata)
 
@@ -40,7 +41,8 @@ class GeolSpezialKartenMetadata (Base, Vector):
     author = Column('author', Text)
     format_kz = Column('format_kz', Text)
     massstab = Column('massstab', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-spezialkarten_schweiz.metadata', GeolSpezialKartenMetadata)
 
@@ -54,7 +56,8 @@ class SkitourenkarteMetadata (Base, Vector):
     id = Column('lknr', Text, primary_key=True)
     name = Column('name', Text)
     legendecms2007 = Column('letzte_publikation', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.skitourenkarte-50.metadata', SkitourenkarteMetadata)
 
@@ -68,7 +71,8 @@ class SwissboundariesBezirk(Base, Vector):
     id = Column('id', Integer, primary_key=True)
     name = Column('name', Text)
     flaeche = Column('flaeche', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill', SwissboundariesBezirk)
 
@@ -84,7 +88,8 @@ class SwissboundariesGemeinde(Base, Vector):
     gemflaeche = Column('gemflaeche', Numeric)
     perimeter = Column('perimeter', Numeric)
     kanton = Column('kanton', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill', SwissboundariesGemeinde)
 
@@ -99,7 +104,8 @@ class SwissboundariesKanton(Base, Vector):
     ak = Column('ak', Text)
     name = Column('name', Text)
     flaeche = Column('flaeche', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.swissboundaries3d-kanton-flaeche.fill', SwissboundariesKanton)
 
@@ -114,7 +120,8 @@ class CadastralWebMap(Base, Vector):
     id = Column('gid', Integer, primary_key=True)
     kantonsnr = Column('kantonsnr', Integer)
     ak = Column('ak', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.kantone.cadastralwebmap-farbe', CadastralWebMap)
 
@@ -127,7 +134,8 @@ class Vec200Terminal(Base, Vector):
     __label__ = 'objval'
     id = Column('gtdboid', Text, primary_key=True)
     objval = Column('objval', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 
 class Vec200ShipKursschiff(Base, Vector):
@@ -141,7 +149,8 @@ class Vec200ShipKursschiff(Base, Vector):
     detn = Column('detn', Text)
     rsu = Column('rsu', Text)
     use = Column('use', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 
 class Vec200Railway(Base, Vector):
@@ -153,7 +162,8 @@ class Vec200Railway(Base, Vector):
     id = Column('gtdboid', Text, primary_key=True)
     objval = Column('objval', Text)
     construct = Column('construct', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.vec200-transportation-oeffentliche-verkehr', Vec200Terminal)
 register('ch.swisstopo.vec200-transportation-oeffentliche-verkehr', Vec200ShipKursschiff)
@@ -179,7 +189,8 @@ class treasurehunt(Base, Vector):
     link_fr = Column('link_fr', Text)
     link_it = Column('link_it', Text)
     type_coord = Column('type_coord', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.treasurehunt', treasurehunt)
 
@@ -193,7 +204,8 @@ class Vec200Trafficinfo(Base, Vector):
     id = Column('gtdboid', Text, primary_key=True)
     objname = Column('objname', Text)
     objval = Column('objval', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 
 class Vec200ShipAutofaehre(Base, Vector):
@@ -206,7 +218,8 @@ class Vec200ShipAutofaehre(Base, Vector):
     use = Column('use', Text)
     rsu = Column('rsu', Text)
     detn = Column('detn', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 
 class Vec200Road(Base, Vector):
@@ -219,7 +232,8 @@ class Vec200Road(Base, Vector):
     construct = Column('construct', Text)
     objval = Column('objval', Text)
     toll = Column('toll', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 
 class Vec200Ramp(Base, Vector):
@@ -232,7 +246,8 @@ class Vec200Ramp(Base, Vector):
     construct = Column('construct', Text)
     objval = Column('objval', Text)
     toll = Column('toll', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 
 class Vec200Customsoffice(Base, Vector):
@@ -243,7 +258,8 @@ class Vec200Customsoffice(Base, Vector):
     __label__ = 'ojbname'
     id = Column('gtdboid', Text, primary_key=True)
     objname = Column('objname', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.vec200-transportation-strassennetz', Vec200Trafficinfo)
 register('ch.swisstopo.vec200-transportation-strassennetz', Vec200ShipAutofaehre)
@@ -260,7 +276,8 @@ class Vec200Protectedarea(Base, Vector):
     __label__ = 'name'
     id = Column('gtdboid', Text, primary_key=True)
     name = Column('name', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.vec200-adminboundaries-protectedarea', Vec200Protectedarea)
 
@@ -275,7 +292,8 @@ class Vec200Flowingwater(Base, Vector):
     name = Column('name', Text)
     exs = Column('exs', Text)
     hoc = Column('hoc', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 
 class Vec200Stagnantwater(Base, Vector):
@@ -287,7 +305,8 @@ class Vec200Stagnantwater(Base, Vector):
     id = Column('gtdboid', Text, primary_key=True)
     name = Column('name', Text)
     seesph = Column('seesph', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.vec200-hydrography', Vec200Flowingwater)
 register('ch.swisstopo.vec200-hydrography', Vec200Stagnantwater)
@@ -302,7 +321,8 @@ class Vec200Landcover(Base, Vector):
     id = Column('gtdboid', Text, primary_key=True)
     objname1 = Column('objname1', Text)
     objval = Column('objval', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.vec200-landcover', Vec200Landcover)
 
@@ -316,7 +336,8 @@ class Vec200Builtupp(Base, Vector):
     id = Column('gtdboid', Text, primary_key=True)
     objname = Column('objname', Text)
     ppi = Column('ppi', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 
 class Vec200Poi(Base, Vector):
@@ -330,7 +351,8 @@ class Vec200Poi(Base, Vector):
     objval = Column('objval', Text)
     ppc = Column('ppc', Text)
     pro = Column('pro', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 
 class Vec200Supply(Base, Vector):
@@ -343,7 +365,8 @@ class Vec200Supply(Base, Vector):
     fco = Column('fco', Text)
     loc = Column('loc', Text)
     pro = Column('pro', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.vec200-miscellaneous', Vec200Builtupp)
 register('ch.swisstopo.vec200-miscellaneous', Vec200Poi)
@@ -361,7 +384,8 @@ class Vec200Namedlocation(Base, Vector):
     objname1 = Column('objname1', Text)
     objname2 = Column('objname2', Text)
     altitude = Column('altitude', Integer)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.vec200-names-namedlocation', Vec200Namedlocation)
 
@@ -374,7 +398,8 @@ class Vec25Strassennetz(Base, Vector):
     __label__ = 'id'
     id = Column('objectid', Integer, primary_key=True)
     length = Column('length', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.vec25-strassennetz', Vec25Strassennetz)
 
@@ -387,7 +412,8 @@ class Vec25Uebrige(Base, Vector):
     __label__ = 'length'
     id = Column('objectid', Integer, primary_key=True)
     length = Column('length', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.vec25-uebrigerverkehr', Vec25Uebrige)
 
@@ -401,7 +427,8 @@ class Vec25Anlagen(Base, Vector):
     id = Column('objectid', Integer, primary_key=True)
     area = Column('area', Numeric)
     perimeter = Column('perimeter', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.vec25-anlagen', Vec25Anlagen)
 
@@ -414,7 +441,8 @@ class Vec25Eisenbahnnetz(Base, Vector):
     __label__ = 'length'
     id = Column('objectid', Integer, primary_key=True)
     length = Column('length', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.vec25-eisenbahnnetz', Vec25Eisenbahnnetz)
 
@@ -428,7 +456,8 @@ class Vec25Gebaeude(Base, Vector):
     id = Column('objectid', Integer, primary_key=True)
     area = Column('area', Numeric)
     perimeter = Column('perimeter', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.vec25-gebaeude', Vec25Gebaeude)
 
@@ -444,7 +473,8 @@ class Vec25Gewaessernetz(Base, Vector):
     gewissnr = Column('gewissnr', Numeric)
     name = Column('name', Text)
     length = Column('length', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.vec25-gewaessernetz', Vec25Gewaessernetz)
 
@@ -458,7 +488,8 @@ class Vec25Primaerflaechen(Base, Vector):
     id = Column('objectid', Integer, primary_key=True)
     area = Column('area', Numeric)
     perimeter = Column('perimeter', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.vec25-primaerflaechen', Vec25Primaerflaechen)
 
@@ -471,7 +502,8 @@ class Vec25Einzelobjekte(Base, Vector):
     __label__ = 'length'
     id = Column('objectid', Integer, primary_key=True)
     length = Column('length', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.vec25-einzelobjekte', Vec25Einzelobjekte)
 
@@ -484,7 +516,8 @@ class Vec25Heckenbaeume(Base, Vector):
     __label__ = 'length'
     id = Column('objectid', Integer, primary_key=True)
     length = Column('length', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.vec25-heckenbaeume', Vec25Heckenbaeume)
 
@@ -499,7 +532,8 @@ class Dreiecksvermaschung(Base, Vector):
     nom = Column('nom', Text)
     num = Column('num', Text)
     type = Column('type', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.dreiecksvermaschung', Dreiecksvermaschung)
 
@@ -513,7 +547,8 @@ class GridstandPk25(Base, Vector):
     id = Column('kbnum', Text, primary_key=True)
     lk_name = Column('lk_name', Text)
     release = Column('release', Integer)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.pixelkarte-farbe-pk25.noscale', GridstandPk25)
 
@@ -533,7 +568,8 @@ class GridstandPk50(Base, Vector):
     id = Column('kbnum', Text, primary_key=True)
     lk_name = Column('lk_name', Text)
     release = Column('release', Integer)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.pixelkarte-farbe-pk50.noscale', GridstandPk50)
 
@@ -553,7 +589,8 @@ class GridstandPk100(Base, Vector):
     id = Column('kbnum', Text, primary_key=True)
     lk_name = Column('lk_name', Text)
     release = Column('release', Integer)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.pixelkarte-farbe-pk100.noscale', GridstandPk100)
 
@@ -573,7 +610,8 @@ class GridstandPk200(Base, Vector):
     id = Column('kbnum', Text, primary_key=True)
     lk_name = Column('lk_name', Text)
     release = Column('release', Integer)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.pixelkarte-farbe-pk200.noscale', GridstandPk200)
 
@@ -593,7 +631,8 @@ class GridstandPk500(Base, Vector):
     id = Column('kbnum', Text, primary_key=True)
     lk_name = Column('lk_name', Text)
     release = Column('release', Integer)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.pixelkarte-farbe-pk500.noscale', GridstandPk500)
 
@@ -613,7 +652,8 @@ class GridstandSwissimage(Base, Vector):
     id = Column('tilenumber', Text, primary_key=True)
     lk25_name = Column('lk25_name', Text)
     datenstand = Column('datenstand', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.images-swissimage.metadata', GridstandSwissimage)
 
@@ -630,7 +670,8 @@ class GeolGeocoverMetadata(Base, Vector):
     basis = Column('basis', Text)
     vektorisierung_jahr = Column('vektorisierung_jahr', Integer)
     grat25 = Column('grat25', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geocover.metadata', GeolGeocoverMetadata)
 
@@ -645,7 +686,8 @@ class GeolGenKarteGGK200(Base, Vector):
     nr = Column('nr', Integer)
     titel = Column('titel', Text)
     url_legend = Column('url_legend', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-generalkarte-ggk200', GeolGenKarteGGK200)
 
@@ -657,7 +699,8 @@ class GeolKarten500Metadata(Base, Vector):
     __bodId__ = 'ch.swisstopo.geologie-geolkarten500.metadata'
     __label__ = 'id'
     id = Column('bgdi_id', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geolkarten500.metadata', GeolKarten500Metadata)
 
@@ -673,7 +716,8 @@ class GeologischeKarteLine(Base, Vector):
     gid = Column('id', Integer)
     type_de = Column('type_de', Text)
     type_fr = Column('type_fr', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 
 class GeologischeKartePlg(Base, Vector):
@@ -685,7 +729,8 @@ class GeologischeKartePlg(Base, Vector):
     id = Column('id', Text, primary_key=True)
     leg_geol_d = Column('leg_geol_d', Text)
     leg_geol_f = Column('leg_geol_f', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geologische_karte', GeologischeKarteLine)
 register('ch.swisstopo.geologie-geologische_karte', GeologischeKartePlg)
@@ -700,7 +745,8 @@ class GeologieMineralischeRohstoffe200(Base, Vector):
     id = Column('bgdi_id', Integer, primary_key=True)
     legend = Column('legend', Text)
     area_name = Column('area_name', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geotechnik-mineralische_rohstoffe200', GeologieMineralischeRohstoffe200)
 
@@ -713,7 +759,8 @@ class GeologieGeotechnikGk200(Base, Vector):
     __label__ = 'file_name'
     id = Column('bgdi_id', Integer, primary_key=True)
     file_name = Column('file_name', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geotechnik-gk200', GeologieGeotechnikGk200)
 
@@ -732,7 +779,8 @@ class Gk500_Gensese (Base, Vector):
     genese_it = Column('genese_it', Text)
     genese_rm = Column('genese_rm', Text)
     bgdi_tooltip_color = Column('bgdi_tooltip_color', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geotechnik-gk500-genese', Gk500_Gensese)
 
@@ -752,7 +800,8 @@ class Gk500_Gesteinsklassierung (Base, Vector):
     gestkl_it = Column('gestkl_it', Text)
     gestkl_rm = Column('gestkl_rm', Text)
     bgdi_tooltip_color = Column('bgdi_tooltip_color', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geotechnik-gk500-gesteinsklassierung', Gk500_Gesteinsklassierung)
 
@@ -771,7 +820,8 @@ class Gk500_lithologie_hauptgruppen(Base, Vector):
     bgdi_tooltip_it = Column('bgdi_tooltip_it', Text)
     bgdi_tooltip_rm = Column('bgdi_tooltip_rm', Text)
     bgdi_tooltip_color = Column('bgdi_tooltip_color', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geotechnik-gk500-lithologie_hauptgruppen', Gk500_lithologie_hauptgruppen)
 
@@ -785,7 +835,8 @@ class GeologieGeotechnikSteinbrueche1915(Base, Vector):
     id = Column('id', Integer, primary_key=True)
     gesteinsgr = Column('gesteinsgr', Text)
     gestein = Column('gestein', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geotechnik-steinbrueche_1915', GeologieGeotechnikSteinbrueche1915)
 
@@ -799,7 +850,8 @@ class GeologieGeotechnikSteinbrueche1965(Base, Vector):
     id = Column('id', Integer, primary_key=True)
     gesteinsgr = Column('gesteinsgr', Text)
     gestein = Column('gestein', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geotechnik-steinbrueche_1965', GeologieGeotechnikSteinbrueche1965)
 
@@ -813,7 +865,8 @@ class GeologieGeotechnikSteinbrueche1980(Base, Vector):
     id = Column('id', Integer, primary_key=True)
     gesteinsgr = Column('gesteinsgr', Text)
     gestein = Column('gestein', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geotechnik-steinbrueche_1980', GeologieGeotechnikSteinbrueche1980)
 
@@ -827,7 +880,8 @@ class GeologieGeotechnikSteinbrueche1995(Base, Vector):
     id = Column('id', Integer, primary_key=True)
     gesteinsgr = Column('gesteinsgr', Text)
     gestein = Column('gestein', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geotechnik-steinbrueche_1995', GeologieGeotechnikSteinbrueche1995)
 
@@ -840,7 +894,8 @@ class GeologieGeotechnikZementindustrie1965(Base, Vector):
     __label__ = 'stoff'
     id = Column('id', Integer, primary_key=True)
     stoff = Column('stoff', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geotechnik-zementindustrie_1965', GeologieGeotechnikZementindustrie1965)
 
@@ -853,7 +908,8 @@ class GeologieGeotechnikZementindustrie1995(Base, Vector):
     __label__ = 'stoff'
     id = Column('id', Integer, primary_key=True)
     stoff = Column('stoff', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geotechnik-zementindustrie_1995', GeologieGeotechnikZementindustrie1995)
 
@@ -867,7 +923,8 @@ class GeologieGeotechnikZiegeleien1907(Base, Vector):
     __label__ = 'ziegelei_2'
     id = Column('id', Integer, primary_key=True)
     ziegelei_2 = Column('ziegelei_2', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geotechnik-ziegeleien_1907', GeologieGeotechnikZiegeleien1907)
 
@@ -881,7 +938,8 @@ class GeologieGeotechnikZiegeleien1965(Base, Vector):
     __label__ = 'ziegelei'
     id = Column('id', Integer, primary_key=True)
     ziegelei = Column('ziegelei', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geotechnik-ziegeleien_1965', GeologieGeotechnikZiegeleien1965)
 
@@ -896,7 +954,8 @@ class GeologieGeotechnikZiegeleien1995(Base, Vector):
     id = Column('id', Integer, primary_key=True)
     ziegeleien = Column('ziegeleien', Text)
     produkt = Column('produkt', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geotechnik-ziegeleien_1995', GeologieGeotechnikZiegeleien1995)
 
@@ -911,7 +970,8 @@ class GeologieHydroKarteGrundwasservorkommen(Base, Vector):
     id = Column('bgdi_id', Integer, primary_key=True)
     type_de = Column('type_de', Text)
     type_fr = Column('type_fr', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen', GeologieHydroKarteGrundwasservorkommen)
 
@@ -926,7 +986,8 @@ class GeologieHydroKarteGrundwasservulneabilitaet(Base, Vector):
     id = Column('bgdi_id', Integer, primary_key=True)
     type_de = Column('type_de', Text)
     type_fr = Column('type_fr', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-hydrogeologische_karte-grundwasservulnerabilitaet', GeologieHydroKarteGrundwasservulneabilitaet)
 
@@ -940,7 +1001,8 @@ class GeologieGeothermie(Base, Vector):
     id = Column('gid', Integer, primary_key=True)
     fid = Column('id', Integer)
     contour = Column('contour', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geophysik-geothermie', GeologieGeothermie)
 
@@ -953,7 +1015,8 @@ class Geologischer_Deklination(Base, Vector):
     __label__ = 'magne'
     id = Column('gid', Integer, primary_key=True)
     magne = Column('magne', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geophysik-deklination', Geologischer_Deklination)
 
@@ -966,7 +1029,8 @@ class Geologischer_Inklination(Base, Vector):
     __label__ = 'contour'
     id = Column('gid', Integer, primary_key=True)
     contour = Column('contour', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geophysik-inklination', Geologischer_Inklination)
 
@@ -980,7 +1044,8 @@ class Geologischer_Aeromagnetik_Jura(Base, Vector):
     id = Column('gid', Integer, primary_key=True)
     fid = Column('id', Integer)
     et_fromatt = Column('et_fromatt', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geophysik-aeromagnetische_karte_jura', Geologischer_Aeromagnetik_Jura)
 
@@ -994,7 +1059,8 @@ class Geologischer_Aeromagnetik_CH(Base, Vector):
     id = Column('gid', Integer, primary_key=True)
     fid = Column('id', Integer)
     et_fromatt = Column('et_fromatt', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geophysik-aeromagnetische_karte_schweiz', Geologischer_Aeromagnetik_CH)
 
@@ -1008,7 +1074,8 @@ class GeologieIsostatischeAnomalien(Base, Vector):
     id = Column('gid', Integer, primary_key=True)
     fid = Column('id', Integer)
     et_fromatt = Column('et_fromatt', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geodaesie-isostatische_anomalien', GeologieIsostatischeAnomalien)
 
@@ -1021,7 +1088,8 @@ class GeologieBouguerAnomalien(Base, Vector):
     __label__ = 'et_fromatt'
     id = Column('gid', Integer, primary_key=True)
     et_fromatt = Column('et_fromatt', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geodaesie-bouguer_anomalien', GeologieBouguerAnomalien)
 
@@ -1035,7 +1103,8 @@ class GeologieGeophysikTotalintensitaet(Base, Vector):
     id = Column('gid', Integer, primary_key=True)
     fid = Column('id', Integer)
     contour = Column('contour', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geophysik-totalintensitaet', GeologieGeophysikTotalintensitaet)
 
@@ -1050,7 +1119,8 @@ class GeologieRohstoffeIndustrieminerale(Base, Vector):
     id = Column('id', Integer, primary_key=True)
     rohstoff = Column('rohstoff', Text)
     name_ads = Column('name_ads', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-rohstoffe-industrieminerale', GeologieRohstoffeIndustrieminerale)
 
@@ -1065,7 +1135,8 @@ class GeologieRohstoffeKohlenBitumenErdgas(Base, Vector):
     id = Column('id', Integer, primary_key=True)
     rohstoff = Column('rohstoff', Text)
     name_ads = Column('name_ads', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-rohstoffe-kohlen_bitumen_erdgas', GeologieRohstoffeKohlenBitumenErdgas)
 
@@ -1080,7 +1151,8 @@ class GeologieRohstoffeVererzungen(Base, Vector):
     id = Column('id', Integer, primary_key=True)
     rohstoff = Column('rohstoff', Text)
     name_ads = Column('name_ads', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-rohstoffe-vererzungen', GeologieRohstoffeVererzungen)
 
@@ -1096,7 +1168,8 @@ class GeologieTektonischeKarteLine(Base, Vector):
     line_id = Column('line_id', Integer)
     type_de = Column('type_de', Text)
     type_fr = Column('type_fr', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 
 class GeologieTektonischeKartePoly(Base, Vector):
@@ -1110,7 +1183,8 @@ class GeologieTektonischeKartePoly(Base, Vector):
     t2_id = Column('t2_id', Integer)
     type_de = Column('type_de', Text)
     type_fr = Column('type_fr', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-tektonische_karte', GeologieTektonischeKarteLine)
 register('ch.swisstopo.geologie-tektonische_karte', GeologieTektonischeKartePoly)
@@ -1126,7 +1200,8 @@ class Swisstlm3dWanderwege(Base, Vector):
     hikingtype = Column('hikingtype', Text)
     bridgetype = Column('bridgetype', Text)
     tunneltype = Column('tunneltype', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.swisstlm3d-wanderwege', Swisstlm3dWanderwege)
 
@@ -1148,7 +1223,8 @@ class VerschiebungsvektorenTsp1(Base, Vector):
     de = Column('de', Numeric)
     dn = Column('dn', Numeric)
     fs = Column('fs', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.verschiebungsvektoren-tsp1', VerschiebungsvektorenTsp1)
 
@@ -1170,7 +1246,8 @@ class VerschiebungsvektorenTsp2(Base, Vector):
     de = Column('de', Numeric)
     dn = Column('dn', Numeric)
     fs = Column('fs', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.verschiebungsvektoren-tsp2', VerschiebungsvektorenTsp2)
 
@@ -1185,7 +1262,8 @@ class SwissmapOnlineWanderwege(Base, Vector):
     hikingtype = Column('hikingtype', Text)
     bridgetype = Column('bridgetype', Text)
     tunneltype = Column('tunneltype', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo-karto.wanderwege', SwissmapOnlineWanderwege)
 
@@ -1201,7 +1279,8 @@ class PLZOrtschaften(Base, Vector):
     zusziff = Column('zusziff', Text)
     langtext = Column('langtext', Text)
     bgdi_created = Column('bgdi_created', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo-vd.ortschaftenverzeichnis_plz', PLZOrtschaften)
 
@@ -1216,7 +1295,8 @@ class geometaStandAV(Base, Vector):
     fid = Column('id', Integer)
     quality = Column('quality', Text)
     frame = Column('frame', Text)
-    the_geom = GeometryColumn('the_geom_gen50', Geometry(dimension=2, srid=21781))
+    the_geom = Column('the_geom_gen50', Geometry(geometry_type='GEOMETRY',
+                                                 dimension=2, srid=21781))
 
 register('ch.swisstopo-vd.geometa-standav', geometaStandAV)
 
@@ -1239,7 +1319,8 @@ class geometaLos(Base, Vector):
     flaeche_vertrag = Column('flaeche_vertrag', Text)
     frame = Column('frame', Text)
     bgdi_created = Column('bgdi_created', Text)
-    the_geom = GeometryColumn('the_geom_gen50', Geometry(dimension=2, srid=21781))
+    the_geom = Column('the_geom_gen50', Geometry(geometry_type='GEOMETRY',
+                                                 dimension=2, srid=21781))
 
 register('ch.swisstopo-vd.geometa-los', geometaLos)
 
@@ -1261,7 +1342,8 @@ class geometaGemeinde(Base, Vector):
     pdf_liste = Column('pdf_liste', Text)
     abgabestelle = Column('abgabestelle', Text)
     bgdi_created = Column('bgdi_created', Text)
-    the_geom = GeometryColumn('the_geom_gen50', Geometry(dimension=2, srid=21781))
+    the_geom = Column('the_geom_gen50', Geometry(geometry_type='GEOMETRY',
+                                                 dimension=2, srid=21781))
 
 register('ch.swisstopo-vd.geometa-gemeinde', geometaGemeinde)
 
@@ -1283,7 +1365,8 @@ class geometaGrundbuch(Base, Vector):
     telefon = Column('telefon', Text)
     email = Column('email', Text)
     bgdi_created = Column('bgdi_created', Text)
-    the_geom = GeometryColumn('the_geom_gen50', Geometry(dimension=2, srid=21781))
+    the_geom = Column('the_geom_gen50', Geometry(geometry_type='GEOMETRY',
+                                                 dimension=2, srid=21781))
 
 register('ch.swisstopo-vd.geometa-grundbuch', geometaGrundbuch)
 
@@ -1301,7 +1384,8 @@ class geometaNfgeom(Base, Vector):
     telefon = Column('telefon', Text)
     email = Column('email', Text)
     bgdi_created = Column('bgdi_created', Text)
-    the_geom = GeometryColumn('the_geom_gen50', Geometry(dimension=2, srid=21781))
+    the_geom = Column('the_geom_gen50', Geometry(geometry_type='GEOMETRY',
+                                                 dimension=2, srid=21781))
 
 register('ch.swisstopo-vd.geometa-nfgeom', geometaNfgeom)
 
@@ -1329,7 +1413,8 @@ class oerebkataster(Base, Vector):
     telefon = Column('telefon', Text)
     email = Column('email', Text)
     url_oereb = Column('url_oereb', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo-vd.stand-oerebkataster', oerebkataster)
 
@@ -1343,7 +1428,8 @@ class spannungsarmeGebiete(Base, Vector):
     id = Column('identifier', Text, primary_key=True)
     sg_name = Column('sg_name', Text)
     vali_date = Column('vali_date', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.transformationsgenauigkeit', spannungsarmeGebiete)
 
@@ -1364,7 +1450,8 @@ class geologieGeotopePunkte(Base, Vector):
     nom = Column('nom', Text)
     fix_id = Column('fix_id', Text)
     nummer = Column('nummer', Integer)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 
 class geologieGeotopeFlaechen(Base, Vector):
@@ -1377,7 +1464,8 @@ class geologieGeotopeFlaechen(Base, Vector):
     nom = Column('nom', Text)
     fix_id = Column('fix_id', Text)
     nummer = Column('nummer', Integer)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geotope', geologieGeotopePunkte)
 register('ch.swisstopo.geologie-geotope', geologieGeotopeFlaechen)
@@ -1401,7 +1489,8 @@ class steine_hist_bauwerke(Base, Vector):
     hyperlink = Column('hyperlink', Text)
     abbauort = Column('abbauort', Text)
     bemerkung = Column('bemerkung', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geotechnik-steine_historische_bauwerke', steine_hist_bauwerke)
 
@@ -1424,7 +1513,8 @@ class gisgeol_punkte(Base, Vector):
     view_avail = Column('view_avail', Text)
     pdf_url = Column('pdf_url', Text)
     bgdi_data_status = Column('bgdi_data_status', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-gisgeol-punkte', gisgeol_punkte)
 
@@ -1447,7 +1537,8 @@ class gisgeol_linien(Base, Vector):
     view_avail = Column('view_avail', Text)
     pdf_url = Column('pdf_url', Text)
     bgdi_data_status = Column('bgdi_data_status', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-gisgeol-linien', gisgeol_linien)
 
@@ -1470,7 +1561,8 @@ class gisgeol_flaechen_1x1km(Base, Vector):
     view_avail = Column('view_avail', Text)
     pdf_url = Column('pdf_url', Text)
     bgdi_data_status = Column('bgdi_data_status', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-gisgeol-flaechen-1x1km', gisgeol_flaechen_1x1km)
 
@@ -1493,7 +1585,8 @@ class gisgeol_flaechen_10x10km(Base, Vector):
     view_avail = Column('view_avail', Text)
     pdf_url = Column('pdf_url', Text)
     bgdi_data_status = Column('bgdi_data_status', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-gisgeol-flaechen-10x10km', gisgeol_flaechen_10x10km)
 
@@ -1516,7 +1609,8 @@ class gisgeol_flaechen_10to21000km2(Base, Vector):
     view_avail = Column('view_avail', Text)
     pdf_url = Column('pdf_url', Text)
     bgdi_data_status = Column('bgdi_data_status', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2', gisgeol_flaechen_10to21000km2)
 
@@ -1539,7 +1633,8 @@ class gisgeol_flaechen_gt21000km2(Base, Vector):
     view_avail = Column('view_avail', Text)
     pdf_url = Column('pdf_url', Text)
     bgdi_data_status = Column('bgdi_data_status', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2', gisgeol_flaechen_gt21000km2)
 
@@ -1562,7 +1657,8 @@ class gisgeol_flaechen_lt10km2(Base, Vector):
     view_avail = Column('view_avail', Text)
     pdf_url = Column('pdf_url', Text)
     bgdi_data_status = Column('bgdi_data_status', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-gisgeol-flaechen-lt10km2', gisgeol_flaechen_lt10km2)
 
@@ -1577,7 +1673,8 @@ class geocover_line_aux(Base, Vector):
     basisdatensatz = Column('basisdatensatz', Text)
     description = Column('description', Text)
     spec_description = Column('spec_description', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geocover', geocover_line_aux)
 
@@ -1594,7 +1691,8 @@ class geocover_point_hydro(Base, Vector):
     spec_description = Column('spec_description', Text)
     azimut = Column('azimut', Text)
     depth = Column('depth', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geocover', geocover_point_hydro)
 
@@ -1611,7 +1709,8 @@ class geocover_point_geol(Base, Vector):
     spec_description = Column('spec_description', Text)
     azimut = Column('azimut', Text)
     depth = Column('depth', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geocover', geocover_point_geol)
 
@@ -1631,7 +1730,8 @@ class geocover_point_drill(Base, Vector):
     description_1 = Column('description_1', Text)
     depth_2 = Column('depth_2', Text)
     description_2 = Column('description_2', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geocover', geocover_point_drill)
 
@@ -1645,7 +1745,8 @@ class geocover_point_info(Base, Vector):
     id = Column('bgdi_id', Integer, primary_key=True)
     basisdatensatz = Column('basisdatensatz', Text)
     description = Column('description', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geocover', geocover_point_info)
 
@@ -1662,7 +1763,8 @@ class geocover_point_struct(Base, Vector):
     spec_description = Column('spec_description', Text)
     azimut = Column('azimut', Text)
     dip = Column('dip', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geocover', geocover_point_struct)
 
@@ -1677,7 +1779,8 @@ class geocover_polygon_aux_1(Base, Vector):
     basisdatensatz = Column('basisdatensatz', Text)
     description = Column('description', Text)
     tecto = Column('tecto', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geocover', geocover_polygon_aux_1)
 
@@ -1692,7 +1795,8 @@ class geocover_polygon_aux_2(Base, Vector):
     basisdatensatz = Column('basisdatensatz', Text)
     description = Column('description', Text)
     tecto = Column('tecto', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geocover', geocover_polygon_aux_2)
 
@@ -1707,7 +1811,8 @@ class geocover_polygon_main(Base, Vector):
     basisdatensatz = Column('basisdatensatz', Text)
     description = Column('description', Text)
     tecto = Column('tecto', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geocover', geocover_polygon_main)
 
@@ -1723,7 +1828,8 @@ class ga25_line_aux(Base, Vector):
     description = Column('description', Text)
     spec_description = Column('spec_description', Text)
     url_legend = Column('url_legende', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geologischer_atlas', ga25_line_aux)
 
@@ -1741,7 +1847,8 @@ class ga25_point_hydro(Base, Vector):
     azimut = Column('azimut', Text)
     depth = Column('depth', Text)
     url_legend = Column('url_legende', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geologischer_atlas', ga25_point_hydro)
 
@@ -1759,7 +1866,8 @@ class ga25_point_geol(Base, Vector):
     azimut = Column('azimut', Text)
     depth = Column('depth', Text)
     url_legend = Column('url_legende', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geologischer_atlas', ga25_point_geol)
 
@@ -1780,7 +1888,8 @@ class ga25_point_drill(Base, Vector):
     depth_2 = Column('depth_2', Text)
     description_2 = Column('description_2', Text)
     url_legend = Column('url_legende', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geologischer_atlas', ga25_point_drill)
 
@@ -1795,7 +1904,8 @@ class ga25_point_info(Base, Vector):
     basisdatensatz = Column('basisdatensatz', Text)
     description = Column('description', Text)
     url_legend = Column('url_legende', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geologischer_atlas', ga25_point_info)
 
@@ -1813,7 +1923,8 @@ class ga25_point_struct(Base, Vector):
     azimut = Column('azimut', Text)
     dip = Column('dip', Text)
     url_legend = Column('url_legende', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geologischer_atlas', ga25_point_struct)
 
@@ -1829,7 +1940,8 @@ class ga25_polygon_aux_1(Base, Vector):
     description = Column('description', Text)
     tecto = Column('tecto', Text)
     url_legend = Column('url_legende', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geologischer_atlas', ga25_polygon_aux_1)
 
@@ -1845,7 +1957,8 @@ class ga25_polygon_aux_2(Base, Vector):
     description = Column('description', Text)
     tecto = Column('tecto', Text)
     url_legend = Column('url_legende', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geologischer_atlas', ga25_polygon_aux_2)
 
@@ -1861,6 +1974,7 @@ class ga25_polygon_main(Base, Vector):
     description = Column('description', Text)
     tecto = Column('tecto', Text)
     url_legend = Column('url_legende', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geologischer_atlas', ga25_polygon_main)

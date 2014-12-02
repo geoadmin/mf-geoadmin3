@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from sqlalchemy import Column, Text, Integer, Date
-from geoalchemy import GeometryColumn, Geometry
+from geoalchemy2.types import Geometry
 from sqlalchemy.types import Numeric
 
 from chsdi.models import *
@@ -20,7 +20,8 @@ class SicherheitsZonenPlan (Base, Vector):
     __extended_info__ = True
     __label__ = 'id'
     id = Column('stabil_id', Text, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     zone = Column('zone', Text)
     zonetype_tid = Column('zonetype_tid', Text)
     type_id = Column('type_id', Text)
@@ -56,7 +57,8 @@ class IVS_NAT(Base, Vector):
     __queryable_attributes__ = ['ivs_slaname', 'ivs_nummer', 'ivs_signatur']
     __label__ = 'id'
     id = Column('nat_id', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     ivs_slaname = Column('ivs_slaname', Text)
     ivs_nummer = Column('ivs_nummer', Text)
     ivs_signatur = Column('ivs_signatur', Text)
@@ -81,7 +83,8 @@ class IVS_REG_LOC(Base, Vector):
     __queryable_attributes__ = ['ivs_slaname', 'ivs_nummer', 'ivs_signatur']
     __label__ = 'ivs_nummer'
     id = Column('reg_loc_id', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     ivs_slaname = Column('ivs_slaname', Text)
     ivs_nummer = Column('ivs_nummer', Text)
     ivs_signatur = Column('ivs_signatur', Text)
@@ -107,7 +110,8 @@ class KANTONE_REG_LOC(Base, Vector):
     __queryable_attributes__ = ['ivs_slaname', 'ivs_nummer', 'ivs_signatur']
     __label__ = 'ivs_nummer'
     id = Column('reg_loc_id', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     ivs_slaname = Column('ivs_slaname', Text)
     ivs_nummer = Column('ivs_nummer', Text)
     ivs_signatur = Column('ivs_signatur', Text)
@@ -130,7 +134,8 @@ class AUSNAHMETRANSPORTROUTEN(Base, Vector):
     __bodId__ = 'ch.astra.ausnahmetransportrouten'
     __label__ = 'id'
     id = Column('id', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     bgdi_id = Column('bgdi_id', Integer)
     ri_getrenn = Column('ri_getrenn', Text)
     anz_spuren = Column('anz_spuren', Integer)
@@ -149,7 +154,8 @@ class ZAEHLSTELLENREGLOC(Base, Vector):
     __extended_info__ = True
     __label__ = 'zaehlstellen_bezeichnung'
     id = Column('nr', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     zaehlstellen_bezeichnung = Column('zaehlstellen_bezeichnung', Text)
     uno_zaehlstelle = Column('uno_zaehlstelle', Text)
     zst_physisch_virtuell = Column('zst_physisch_virtuell', Text)
@@ -182,7 +188,8 @@ class ZAEHLSTELLENUEBER(Base, Vector):
     __extended_info__ = True
     __label__ = 'zaehlstellen_bezeichnung'
     id = Column('nr', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     zaehlstellen_bezeichnung = Column('zaehlstellen_bezeichnung', Text)
     uno_zaehlstelle = Column('uno_zaehlstelle', Text)
     zst_physisch_virtuell = Column('zst_physisch_virtuell', Text)
@@ -213,7 +220,8 @@ class unf_pers_alle(Base, Vector):
     __bodId__ = 'ch.astra.unfaelle-personenschaeden_alle'
     __label__ = 'id'
     id = Column('uuid', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     accidenttype_de = Column('accidenttype_de', Text)
     accidenttype_fr = Column('accidenttype_fr', Text)
     accidenttype_it = Column('accidenttype_it', Text)
@@ -240,7 +248,8 @@ class unf_pers_casualties(Base, Vector):
     # Translatable labels in fr, it
     __label__ = 'accidentday_de'
     id = Column('uuid', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     accidenttype_de = Column('accidenttype_de', Text)
     accidenttype_fr = Column('accidenttype_fr', Text)
     accidenttype_it = Column('accidenttype_it', Text)
@@ -267,7 +276,8 @@ class unf_pers_fuss(Base, Vector):
     # Translatable labels in fr, it
     __label__ = 'accidenttype_de'
     id = Column('uuid', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     accidenttype_de = Column('accidenttype_de', Text)
     accidenttype_fr = Column('accidenttype_fr', Text)
     accidenttype_it = Column('accidenttype_it', Text)
@@ -294,7 +304,8 @@ class unf_pers_moto(Base, Vector):
     # Translatable labels in fr, it
     __label__ = 'accidenttype_de'
     id = Column('uuid', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     accidenttype_de = Column('accidenttype_de', Text)
     accidenttype_fr = Column('accidenttype_fr', Text)
     accidenttype_it = Column('accidenttype_it', Text)
@@ -321,7 +332,8 @@ class unf_pers_velo(Base, Vector):
     # Translatable labels in fr,it
     __label__ = 'accidentday_de'
     id = Column('uuid', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     accidenttype_de = Column('accidenttype_de', Text)
     accidenttype_fr = Column('accidenttype_fr', Text)
     accidenttype_it = Column('accidenttype_it', Text)
@@ -347,7 +359,8 @@ class KATASTERBELASTETERSTANDORTE(Base, Vector):
     __bodId__ = 'ch.bav.kataster-belasteter-standorte-oev'
     __label__ = 'id'
     id = Column('vflz_id', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     katasternummer = Column('katasternummer', Text)
     standorttyp_de = Column('standorttyp_de', Text)
     standorttyp_fr = Column('standorttyp_fr', Text)
@@ -371,7 +384,8 @@ class ABGELTUNGWASSERKRAFTNUTZUNG(Base, Vector):
     __bodId__ = 'ch.bfe.abgeltung-wasserkraftnutzung'
     __label__ = 'name'
     id = Column('objectnumber', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     area = Column('area', Numeric)
     name = Column('name', Text)
     perimeter = Column('perimeter', Numeric)
@@ -389,7 +403,8 @@ class ENERGIESTAEDTE(Base, Vector):
     __extended_info__ = True
     __label__ = 'name'
     id = Column('bgdi_id', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     name = Column('name', Text)
     bfsnr = Column('bfsnr', Integer)
     punktezahl = Column('punktezahl', Numeric)
@@ -413,7 +428,8 @@ class ENERGIESTAEDTEREGIONEN(Base, Vector):
     __extended_info__ = True
     __label__ = 'name'
     id = Column('bgdi_id', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     name = Column('name', Text)
     kategorie = Column('kategorie', Text)
     bet_energiestaedte = Column('bet_energiestaedte', Text)
@@ -432,7 +448,8 @@ class ENERGIESTAEDTE2000WATTAREALE(Base, Vector):
     __extended_info__ = True
     __label__ = 'name'
     id = Column('bgdi_id', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     name = Column('name', Text)
     kategorie = Column('kategorie', Text)
     gemeinde = Column('gemeinde', Text)
@@ -454,7 +471,8 @@ class ENERGIESTAEDTE2000AUFDEMWEG(Base, Vector):
     __extended_info__ = True
     __label__ = 'name'
     id = Column('bgdi_id', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     name = Column('name', Text)
     kategorie = Column('kategorie', Text)
     berater = Column('berater', Text)
@@ -523,7 +541,8 @@ class ENERGIEFORSCHUNG(Base, Vector):
     ende = Column('ende', Text)
     plz = Column('plz', Text)
     kanton = Column('kanton', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bfe.energieforschung', ENERGIEFORSCHUNG)
 
@@ -536,7 +555,8 @@ class STATISTIKWASSERKRAFTANLAGEN(Base, Vector):
     __extended_info__ = True
     __label__ = 'name'
     id = Column('wastanumber', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     name = Column('name', Text)
     location = Column('location', Text)
     canton = Column('canton', Text)
@@ -564,7 +584,8 @@ class STAUANLAGENBUNDESAUFSICHT(Base, Vector):
     __extended_info__ = True
     __label__ = 'damname'
     id = Column('dam_stabil_id', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     damname = Column('damname', Text)
     damtype_fr = Column('damtype_fr', Text)
     damtype_en = Column('damtype_en', Text)
@@ -595,7 +616,8 @@ class kleinwasserkraftpotentiale(Base, Vector):
     __bodId__ = 'ch.bfe.kleinwasserkraftpotentiale'
     __label__ = 'gwlnr'
     id = Column('bgdi_id', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     kwprometer = Column('kwprometer', Numeric)
     laenge = Column('laenge', Numeric)
     gwlnr = Column('gwlnr', Text)
@@ -612,7 +634,8 @@ class bakomfernsehsender(Base, Vector):
     __queryable_attributes__ = ['name', 'code']
     __label__ = 'code'
     id = Column('id', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     name = Column('name', Text)
     code = Column('code', Text)
     power = Column('power', Text)
@@ -631,7 +654,8 @@ class bakomgsm(Base, Vector):
     __bodId__ = 'ch.bakom.mobil-antennenstandorte-gsm'
     __label__ = 'powercode'
     id = Column('id', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     powercode = Column('powercode', Text)
     bgdi_created = Column('bgdi_created', Text)
 
@@ -645,7 +669,8 @@ class bakomumts(Base, Vector):
     __bodId__ = 'ch.bakom.mobil-antennenstandorte-umts'
     __label__ = 'powercode'
     id = Column('id', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     powercode = Column('powercode', Text)
     bgdi_created = Column('bgdi_created', Text)
 
@@ -659,7 +684,8 @@ class bakomlte(Base, Vector):
     __bodId__ = 'ch.bakom.mobil-antennenstandorte-lte'
     __label__ = 'powercode'
     id = Column('id', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     powercode = Column('powercode', Text)
     bgdi_created = Column('bgdi_created', Text)
 
@@ -674,7 +700,8 @@ class bakomtv(Base, Vector):
     __queryable_attributes__ = ['prog']
     __label__ = 'prog'
     id = Column('gid', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     prog = Column('prog', Text)
 
 register('ch.bakom.versorgungsgebiet-tv', bakomtv)
@@ -688,7 +715,8 @@ class bakomukw(Base, Vector):
     __queryable_attributes__ = ['prog']
     __label__ = 'prog'
     id = Column('gid', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     prog = Column('prog', Text)
 
 register('ch.bakom.versorgungsgebiet-ukw', bakomukw)
@@ -701,7 +729,8 @@ class ProjFlughafenanlagen(Base, Vector):
     __bodId__ = 'ch.bazl.projektierungszonen-flughafenanlagen'
     __label__ = 'municipality'
     id = Column('stabil_id', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     zonekind_text_de = Column('zonekind_text_de', Text)
     zonekind_text_fr = Column('zonekind_text_fr', Text)
     zonekind_text_it = Column('zonekind_text_it', Text)
@@ -742,7 +771,8 @@ class Luftfahrthindernis(Base, Vector):
     startofconstruction = Column('startofconstruction', Date)
     duration = Column('duration', Text)
     geomtype = Column('geomtype', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     abortionaccomplished = Column('abortionaccomplished', Date)
     bgdi_created = Column('bgdi_created', Text)
 
@@ -775,7 +805,8 @@ class sgt_facilities(Base, Vector):
     bgdi_created = Column('bgdi_created', Text)
     __minscale__ = 80005
     __maxscale__ = 100000005
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bfe.sachplan-geologie-tiefenlager', sgt_facilities)
 
@@ -788,7 +819,8 @@ class sgt_planning(Base, Vector):
     # Translatable labels in fr, it
     __label__ = 'facname_de'
     id = Column('stabil_id', Text, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     facname_fr = Column('facname_fr', Text)
     facname_it = Column('facname_it', Text)
     facname_de = Column('facname_de', Text)
@@ -845,7 +877,8 @@ class sgt_planning_raster(Base, Vector):
     bgdi_created = Column('bgdi_created', Text)
     __maxscale__ = 20005
     __minscale__ = 1
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bfe.sachplan-geologie-tiefenlager', sgt_planning_raster)
 
@@ -876,7 +909,8 @@ class sgt_facilities_td(Base, Vector):
     bgdi_created = Column('bgdi_created', Text)
     __minscale__ = 80005
     __maxscale__ = 100000005
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung', sgt_facilities_td)
 
@@ -911,7 +945,8 @@ class sgt_planning_td(Base, Vector):
     bgdi_created = Column('bgdi_created', Text)
     __minscale__ = 20005
     __maxscale__ = 500005
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung', sgt_planning_td)
 
@@ -946,7 +981,8 @@ class sgt_planning_raster_td(Base, Vector):
     bgdi_created = Column('bgdi_created', Text)
     __maxscale__ = 20005
     __minscale__ = 1
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung', sgt_planning_raster_td)
 
@@ -977,7 +1013,8 @@ class sil_facilities_a(Base, Vector):
     objectname_fr = Column('objectname_fr', Text)
     objectname_it = Column('objectname_it', Text)
     bgdi_created = Column('bgdi_created', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung', sil_facilities_a)
 
@@ -1014,7 +1051,8 @@ class sil_planning_a(Base, Vector):
     bgdi_created = Column('bgdi_created', Text)
     __minscale__ = 20005
     __maxscale__ = 500005
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung', sil_planning_a)
 
@@ -1051,7 +1089,8 @@ class sil_planning_raster_a(Base, Vector):
     bgdi_created = Column('bgdi_created', Text)
     __maxscale__ = 20005
     __minscale__ = 1
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung', sil_planning_raster_a)
 
@@ -1082,7 +1121,8 @@ class sil_facilities_k(Base, Vector):
     objectname_fr = Column('objectname_fr', Text)
     objectname_it = Column('objectname_it', Text)
     bgdi_created = Column('bgdi_created', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bazl.sachplan-infrastruktur-luftfahrt_kraft', sil_facilities_k)
 
@@ -1119,7 +1159,8 @@ class sil_planning_k(Base, Vector):
     bgdi_created = Column('bgdi_created', Text)
     __minscale__ = 20005
     __maxscale__ = 500005
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bazl.sachplan-infrastruktur-luftfahrt_kraft', sil_planning_k)
 
@@ -1156,7 +1197,8 @@ class sil_planning_raster_k(Base, Vector):
     bgdi_created = Column('bgdi_created', Text)
     __maxscale__ = 20005
     __minscale__ = 1
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bazl.sachplan-infrastruktur-luftfahrt_kraft', sil_planning_raster_k)
 
@@ -1171,7 +1213,8 @@ class nga_anbieter (Base, Vector):
     alias = Column('alias', Text)
     fdaurl = Column('fdaurl', Text)
     nbofprovider = Column('nbofprovider', Integer)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bakom.anbieter-eigenes_festnetz', nga_anbieter)
 
@@ -1219,7 +1262,8 @@ class kernkraftwerke (Base, Vector):
     operation_phase = Column('operation_phase', Text)
     decontamination_phase = Column('decontamination_phase', Text)
     dismantling_phase = Column('dismantling_phase', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bfe.kernkraftwerke', kernkraftwerke)
 
@@ -1252,7 +1296,8 @@ class sis_facilities_a (Base, Vector):
     objname_fr = Column('objname_fr', Text)
     objname_it = Column('objname_it', Text)
     bgdi_created = Column('bgdi_created', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bav.sachplan-infrastruktur-schiene_anhorung', sis_facilities_a)
 
@@ -1291,7 +1336,8 @@ class sis_planning_a (Base, Vector):
     bgdi_created = Column('bgdi_created', Text)
     __minscale__ = 20005
     __maxscale__ = 500005
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bav.sachplan-infrastruktur-schiene_anhorung', sis_planning_a)
 
@@ -1317,7 +1363,8 @@ class sis_angaben (Base, Vector):
     valid_from = Column('valid_from', Text)
     doc_title = Column('doc_title', Text)
     bgdi_created = Column('bgdi_created', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bav.sachplan-infrastruktur-schiene_ausgangslage', sis_angaben)
 
@@ -1356,7 +1403,8 @@ class sis_planning_raster_a (Base, Vector):
     bgdi_created = Column('bgdi_created', Text)
     __maxscale__ = 20005
     __minscale__ = 1
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bav.sachplan-infrastruktur-schiene_anhorung', sis_planning_raster_a)
 
@@ -1389,7 +1437,8 @@ class sis_facilities_k (Base, Vector):
     objname_fr = Column('objname_fr', Text)
     objname_it = Column('objname_it', Text)
     bgdi_created = Column('bgdi_created', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bav.sachplan-infrastruktur-schiene_kraft', sis_facilities_k)
 
@@ -1427,7 +1476,8 @@ class sis_planning_k (Base, Vector):
     bgdi_created = Column('bgdi_created', Text)
     __minscale__ = 20005
     __maxscale__ = 500005
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bav.sachplan-infrastruktur-schiene_kraft', sis_planning_k)
 
@@ -1466,7 +1516,8 @@ class sis_planning_raster_k (Base, Vector):
     bgdi_created = Column('bgdi_created', Text)
     __maxscale__ = 20005
     __minscale__ = 1
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bav.sachplan-infrastruktur-schiene_kraft', sis_planning_raster_k)
 
@@ -1478,7 +1529,8 @@ class kbs_zivilflugpl(Base, Vector):
     __bodId__ = 'ch.bazl.kataster-belasteter-standorte-zivilflugplaetze'
     __label__ = 'katasternummer'
     id = Column('vflz_id', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     katasternummer = Column('katasternummer', Text)
     standorttyp_de = Column('standorttyp_de', Text)
     standorttyp_fr = Column('standorttyp_fr', Text)
@@ -1518,7 +1570,8 @@ class laerm_emissionsplan_eisenbahn_tag(Base, Vector):
     grund2 = Column('grund2', Text)
     typ_aender = Column('typ_aender', Text)
     datum = Column('datum', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bav.laerm-emissionsplan_eisenbahn_tag', laerm_emissionsplan_eisenbahn_tag)
 
@@ -1547,6 +1600,7 @@ class laerm_emissionsplan_eisenbahn_nacht(Base, Vector):
     grund2 = Column('grund2', Text)
     typ_aender = Column('typ_aender', Text)
     datum = Column('datum', Numeric)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 register('ch.bav.laerm-emissionsplan_eisenbahn_nacht', laerm_emissionsplan_eisenbahn_nacht)

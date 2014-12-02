@@ -6,9 +6,12 @@ import decimal
 from shapely import wkb
 from shapely.geometry import asShape
 from shapely.geometry import box
+from sqlalchemy.sql import func
 from sqlalchemy.orm.util import class_mapper
 from sqlalchemy.orm.properties import ColumnProperty
-from geoalchemy import Geometry, WKBSpatialElement, functions
+from geoalchemy2.types import Geometry
+from geoalchemy2.elements import WKBElement
+from geoalchemy2.shape import to_shape
 
 import geojson
 from papyrus.geo_interface import GeoInterface
@@ -68,8 +71,8 @@ class Vector(GeoInterface):
                 elif isinstance(col.type, Geometry) and col.name == self.geometry_column_to_return().name:
                     if hasattr(self, '_shape'):
                         geom = self._shape
-                    else:
-                        geom = wkb.loads(str(val.geom_wkb))
+                    elif val is not None:
+                        geom = to_shape(val)
                 elif not col.foreign_keys and not isinstance(col.type, Geometry):
                     properties[p.key] = val
 
@@ -156,9 +159,9 @@ class Vector(GeoInterface):
         if (scale is None or (scale > cls.__minscale__ and scale <= cls.__maxscale__)) and \
            (resolution is None or (resolution > cls.__minresolution__ and resolution <= cls.__maxresolution__)):
             geom = esriRest2Shapely(geometry, geometryType)
-            wkbGeometry = WKBSpatialElement(buffer(geom.wkb), 21781)
+            wkbGeometry = WKBElement(buffer(geom.wkb), 21781)
             geomColumn = cls.geometry_column()
-            geomFilter = functions.within_distance(geomColumn, wkbGeometry, toleranceMeters)
+            geomFilter = func.ST_DWITHIN(geomColumn, wkbGeometry, toleranceMeters)
             return geomFilter
         return None
 
