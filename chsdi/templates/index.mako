@@ -138,5 +138,7 @@
           <a href="rest/services/inspire/SearchServer?features=ch.bafu.hydrologie-gewaesserzustandsmessstationen&type=featuresearch&searchText=4331">Search for features using that matches a given searchText in their search fields</a> <br>
       <h3>Feature identify (type=featureidentify) only bbox search, no search text)</h3>
           <a href="rest/services/inspire/SearchServer?features=ch.astra.ivs-reg_loc&type=featureidentify&bbox=551306.5625,167918.328125,551754.125,168514.625">Search for features in ch.astra.ivs-reg_loc (only features within the bbox)</a> <br>
+      <h2>Query</h2>
+          <a href="rest/services/api/MapServer/ch.bazl.luftfahrthindernis/query?where=obstacletype=%27Antenna%27">Query for 'Antenna'</a> <br>
   </body>
 </html>

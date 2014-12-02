@@ -133,7 +133,7 @@ def feature_attributes(request):
             if row_nr == 0:
                 field_type = _find_type(models[0](), attr)
                 fields.append({'name': attr, 'type': str(field_type),
-                               'alias': params.translate('tt_' + attr),
+                               'alias': params.translate("%s.%s" % (layerId, attr)),
                                'values': set([])
                                })
             val = attrs[attr]

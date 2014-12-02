@@ -3887,11 +3887,18 @@ msgstr "Programmi"
 msgid "tt_ch.bazl.abortionaccomplished"
 msgstr "Durata dell'installazione"
 
+msgid "tt_ch.bazl.abortionaccomplished"
+msgstr "Durata dell'installazione"
+
 msgid "tt_ch.bazl.elevation"
 msgstr "Altezza massima AMSL [m]"
 
 msgid "tt_ch.bazl.geometriedaten"
 msgstr "Dati di geometria"
+
+#. TODO
+msgid "tt_ch.bazl.geomtype"
+msgstr "tt_ch.bazl.geomtype"
 
 msgid "tt_ch.bazl.hindernisart"
 msgstr "Tipo di ostacolo"
@@ -3899,23 +3906,61 @@ msgstr "Tipo di ostacolo"
 msgid "tt_ch.bazl.kartnummer"
 msgstr "Numero della carta [CN100]"
 
+#. TODO
+msgid "tt_ch.bazl.lk100"
+msgstr "tt_ch.bazl.lk100"
+
 msgid "tt_ch.bazl.markierung"
 msgstr "Marcatura / segnalazione lum."
 
 msgid "tt_ch.bazl.maxheight"
 msgstr "Altezza massima AGL [m]"
 
+#. TODO
+msgid "tt_ch.bazl.maxheightagl"
+msgstr "tt_ch.bazl.maxheightagl"
+
+#. TODO
+msgid "tt_ch.bazl.obstacletype"
+msgstr "tt_ch.bazl.obstacletype"
+
+#. TODO
+msgid "tt_ch.bazl.registrationnumber"
+msgstr "tt_ch.bazl.registrationnumber"
+
 msgid "tt_ch.bazl.registrationnummer"
 msgstr "Numero di registrazione"
 
+#. TODO
+msgid "tt_ch.bazl.sanctiontext"
+msgstr "tt_ch.bazl.sanctiontext"
+
 msgid "tt_ch.bazl.startofconstruction"
 msgstr "Inizio lavori"
+
+msgid "tt_ch.bazl.startofconstruction"
+msgstr "Inizio lavori"
+
+#. TODO
+msgid "tt_ch.bazl.state"
+msgstr "tt_ch.bazl.state"
+
+#. TODO
+msgid "tt_ch.bazl.topelevationamsl"
+msgstr "tt_ch.bazl.topelevationamsl"
+
+msgid "tt_ch.bazl.totallength"
+msgstr "Lunghezza totale [m]"
 
 msgid "tt_ch.bazl.totallength"
 msgstr "Lunghezza totale [m]"
 
 msgid "tt_ch.bazl_longtext"
 msgstr "Gli ostacoli possono contenere discrepanze per quanto riguarda la completezza, così come il monitoraggio delle loro posizioni e altezze."
+
+#. TODO
+msgid "tt_ch.bazld.uration"
+msgstr "tt_ch.bazld.uration"
 
 msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_area"
 msgstr "Surface [ha]"
