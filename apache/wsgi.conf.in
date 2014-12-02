@@ -105,3 +105,6 @@ WSGIScriptAliasMatch ^${apache_entry_path}/ ${buildout:directory/buildout/parts/
    Order Deny,Allow
    Allow from all
 </LocationMatch>
+
+# kml file downloads
+AliasMatch ^${apache_entry_path}/kml/(map\.geo\.admin\.ch_KML_\d+\.kml)$ ${print_temp_dir}/kml/$1
