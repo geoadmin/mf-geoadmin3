@@ -13,7 +13,16 @@
    *
    */
   module.provider('gaExportKml', function() {
-    this.$get = function($translate, $window, $document, gaBrowserSniffer) {
+    this.$get = function($translate, $window, $document, $http,
+                         gaBrowserSniffer) {
+
+      var downloadUrl = this.downloadKmlUrl;
+      var isBlobSupported = false;
+      try {
+        isBlobSupported = !!new Blob;
+      } catch (e) {
+      }
+
       var pp0 = function(s) {
         return s.length === 2 ? s : '0' + s;
       };
@@ -26,6 +35,15 @@
         var mm = d.getMinutes().toString();
         var ss = d.getSeconds().toString();
         return YYYY + pp0(MM) + pp0(DD) + pp0(hh) + pp0(mm) + pp0(ss);
+      };
+
+      var useDownloadService = function() {
+        if (gaBrowserSniffer.msie == 9 ||
+            gaBrowserSniffer.safari ||
+            !isBlobSupported) {
+          return true;
+        }
+        return false;
       };
 
       var ExportKml = function() {
@@ -100,22 +118,28 @@
           } else {
             var kmlString = this.create(layer, projection);
             if (kmlString) {
-              var blob = new Blob([kmlString],
-                                  {type: type});
-              saveAs(blob, filename);
+              if (useDownloadService()) {
+                $http.post(downloadUrl, {
+                  kml: kmlString,
+                  filename: filename
+                }).success(function(data) {
+                  if (gaBrowserSniffer.msie == 9) {
+                    $window.open(data.url);
+                  } else {
+                    $window.location = data.url;
+                  }
+                });
+              } else {
+                var blob = new Blob([kmlString],
+                                    {type: type});
+                saveAs(blob, filename);
+              }
             }
           }
         };
 
         this.canSave = function() {
-          var isFileSaveSupported = false;
-          try {
-            isFileSaveSupported = !!new Blob;
-          } catch (e) {
-          }
-          return isFileSaveSupported &&
-                 !gaBrowserSniffer.mobile &&
-                 (isNaN(gaBrowserSniffer.msie) || gaBrowserSniffer.msie > 9);
+          return !gaBrowserSniffer.mobile;
         };
       };
 
