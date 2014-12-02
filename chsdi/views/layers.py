@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import os
+import decimal
+import datetime
+
 
 from pyramid.view import view_config
 from pyramid.renderers import render_to_response
@@ -12,6 +15,9 @@ from chsdi.lib.validation.mapservice import MapServiceValidation
 from chsdi.models import models_from_name
 from chsdi.models.bod import LayersConfig, get_bod_model, computeHeader
 from chsdi.lib.filters import *
+
+
+MAX_ATTRIBUTES_VALUES = 5
 
 
 class LayersParams(MapServiceValidation):
@@ -114,10 +120,28 @@ def feature_attributes(request):
     if models is None:
         raise exc.HTTPBadRequest('No Vector Table was found for %s' % layerId)
     attributes = models[0]().getAttributesKeys()
+    query = params.request.db.query(models[0])
+    try:
+        results = query.limit(MAX_ATTRIBUTES_VALUES)
+    except:
+        raise exc.HTTPInternalServerError('Cannot get example values for  %s' % layerId)
+
     fields = []
-    for attr in attributes:
-        field_type = _find_type(models[0](), attr)
-        fields.append({'name': attr, 'type': str(field_type), 'alias': params.translate('tt_' + attr)})
+    for row_nr, row in enumerate(results):
+        for attr_nr, attr in enumerate(attributes):
+            attrs = row.getAttributes()
+            if row_nr == 0:
+                field_type = _find_type(models[0](), attr)
+                fields.append({'name': attr, 'type': str(field_type),
+                               'alias': params.translate('tt_' + attr),
+                               'values': set([])
+                               })
+            val = attrs[attr]
+            if isinstance(val, (decimal.Decimal, datetime.date, datetime.datetime)):
+                val = str(val)
+            tmp_values = set(fields[attr_nr]['values'])
+            tmp_values.add(val)
+            fields[attr_nr]['values'] = list(tmp_values)
 
     return {'id': layerId, 'name': params.translate(layerId), 'fields': fields}
 
