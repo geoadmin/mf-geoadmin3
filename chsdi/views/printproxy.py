@@ -219,8 +219,11 @@ class PrintProxy(object):
         if self.request.method == 'OPTIONS':
             return Response(status=200)
 
+        # IE is always URLEncoding the body
+        jsonstring = urllib2.unquote(self.request.body)
+
         try:
-            spec = json.loads(self.request.body)
+            spec = json.loads(jsonstring, encoding=self.request.charset)
 
         except:
             raise HTTPBadRequest()
