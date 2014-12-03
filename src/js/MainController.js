@@ -174,7 +174,7 @@
         
         // Hide a panel clicking on its heading    
         var hidePanel = function(id) {
-          if (!$('#' + id ).hasClass('collapse')) {
+          if ($('#' + id ).hasClass('in')) {
             $('#' + id + 'Heading').click();
           }
         }
