@@ -44,3 +44,15 @@ td {
   margin-bottom:40px;
   margin-top:40px;
 }
+
+.wy-table-responsive {
+  overflow: visible;
+}
+
+.wy-table-responsive table td {
+  white-space: normal;
+}
+
+.wy-table-responsive table th {
+  white-space:normal;
+}
