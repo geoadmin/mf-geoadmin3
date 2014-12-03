@@ -114,7 +114,7 @@ deploybranch: deploy/deploy-branch.cfg $(DEPLOY_ROOT_DIR)/$(GIT_BRANCH)/.git/con
 	git checkout $(GIT_BRANCH); \
 	make preparebranch; \
 	cp scripts/00-$(GIT_BRANCH).conf /var/www/vhosts/mf-geoadmin3/conf; \
-	bash -c "source rc_branch && make all";
+	bash -c "source rc_branch && make cleanall all";
 
 .PHONY: deploybranchint
 deploybranchint: deploybranch
