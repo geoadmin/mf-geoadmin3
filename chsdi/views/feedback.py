@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import cgi
+import json
+import datetime
 from pyramid.view import view_config
 
 from pyramid.httpexceptions import HTTPInternalServerError
@@ -18,7 +20,7 @@ def feedback(self, request):
         val = val if val != '' else defaultValue
         return val
 
-    def mail(to, subject, text, attachement, kml):
+    def mail(to, subject, text, attachement, kml, kmlfilename, jsonToAttach):
         from email.MIMEMultipart import MIMEMultipart
         from email.MIMEBase import MIMEBase
         from email.MIMEText import MIMEText
@@ -51,8 +53,15 @@ def feedback(self, request):
             part = MIMEBase('application', 'vnd.google-earth.kml+xml')
             part.set_payload(kml)
             Encoders.encode_base64(part)
-            part.add_header('Content-Disposition', 'attachment; filename="Drawing.kml"')
+            part.add_header('Content-Disposition', 'attachment; filename=' + kmlfilename)
             msg.attach(part)
+
+        # Attach meta information
+        part = MIMEBase('application', 'json')
+        part.set_payload(json.dumps(jsonToAttach))
+        Encoders.encode_base64(part)
+        part.add_header('Content-Disposition', 'attachment; filename="Meta.json"')
+        msg.attach(part)
 
         mailServer = smtplib.SMTP('127.0.0.1', 25)
         mailServer.ehlo()
@@ -69,6 +78,21 @@ def feedback(self, request):
     text = '%s just sent a feedback:\n %s. \nPermalink: %s. \n\nUser-Agent: %s'
     attachement = getParam('attachement', None)
     kml = getParam('kml', None)
+    now = datetime.datetime.now()
+    kmlfilename = 'Drawing-' + now.strftime('%Y%m%d%H%M%S') + '.kml'
+    attachfilename = ''
+    if isinstance(attachement, cgi.FieldStorage):
+        attachfilename = attachement.filename
+
+    jsonAtt = {
+        'emailAddress': email,
+        'body': feedback,
+        'permalink': permalink,
+        'kml': kmlfilename if (kml is not None and kml is not '') else '',
+        'attachement': attachfilename,
+        'userAgent': ua,
+        'date': now.strftime("%Y-%m-%d %H:%M")
+    }
 
     try:
         mail(
@@ -76,7 +100,9 @@ def feedback(self, request):
             defaultSubject,
             text % (email, feedback, permalink, ua),
             attachement,
-            kml
+            kml,
+            kmlfilename,
+            jsonAtt
         )
     except SMTPException:
         raise HTTPInternalServerError()
