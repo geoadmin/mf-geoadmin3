@@ -140,8 +140,10 @@
         touch: gaBrowserSniffer.touchDevice,
         webkit: gaBrowserSniffer.webkit,
         ios: gaBrowserSniffer.ios,
-        offline: gaNetworkStatus.offline
+        offline: gaNetworkStatus.offline,
+        feedbackPopupShown: /feedback/g.test(gaPermalink.getParams().widgets)
       };
+      gaPermalink.deleteParam('widgets');
 
       $rootScope.$on('gaNetworkStatusChange', function(evt, offline) {
         $scope.globals.offline = offline;
