@@ -172,3 +172,12 @@ Per default, the API used in the **main** instance of mf-chsdi3. If you want
 to target a specific branch of mf-chsdi3, please adapt the `API_URL` variable
 in the `rc_branch.mako` file on **your branch**
 
+# Flushing varnish
+
+You can flush varnish instances manually.
+
+    ./scripts/flushvarnish.sh varnihs_host_ip api_host
+
+Where `varnish_host_ip` is the ip of the varnish server and api_host is the hostname of the url you want to flush. e.g. mf-chsdi3.dev.bgdi.ch for dev and api3.geo.admin.ch for prod.
+
+
