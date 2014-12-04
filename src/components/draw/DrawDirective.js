@@ -35,6 +35,10 @@
           scope.layers = scope.map.getLayers().getArray();
           scope.layerFilter = gaLayerFilters.selected;
 
+          if (scope.options.broadcastLayer) {
+            $rootScope.$broadcast('gaDrawingLayer', layer);
+          }
+
           // Add select interaction
           var select = new ol.interaction.Select({
             layers: [layer],
@@ -67,7 +71,6 @@
           // Activate the component: active a tool if one was active when draw
           // has been deactivated.
           var activate = function() {
-            $rootScope.$broadcast('gaDrawingLayer', layer);
             if (lastActiveTool) {
               activateTool(lastActiveTool);
             }
@@ -239,7 +242,7 @@
 
 
           // Activate/deactivate a tool
-          scope.toggleTool = function(tool) {
+          scope.toggleTool = function(evt, tool) {
             if (scope.options[tool.activeKey]) {
               // Deactivate all tools
               deactivate();
@@ -247,10 +250,11 @@
             } else {
               activateTool(tool);
             }
+            evt.preventDefault();
           };
 
           // Delete selected features by the edit tool
-          scope.deleteFeatures = function() {
+          scope.deleteFeatures = function(evt) {
             if (confirm($translate.instant(
                           'confirm_remove_selected_features')) &&
                 select.getActive()) {
@@ -265,12 +269,14 @@
                 activateSelectInteraction();
               }
             }
+            evt.preventDefault();
           };
 
           scope.supportKmlExport = gaExportKml.canSave();
 
-          scope.exportKml = function() {
+          scope.exportKml = function(evt) {
             gaExportKml.createAndDownload(layer, map.getView().getProjection());
+            evt.preventDefault();
           };
 
           scope.canExport = function() {

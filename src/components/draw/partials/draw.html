@@ -1,7 +1,7 @@
 <div>
   <div class="ga-draw-buttons">
     <button ng-repeat="tool in options.tools"
-            ng-click="toggleTool(tool)"
+            ng-click="toggleTool($event, tool)"
             title="{{tool.description | translate}}"
             class="{{tool.cssClass}}" ng-class="{'active': options[tool.activeKey]}">
       <i class="{{tool.iconClass}}"></i>
@@ -39,20 +39,22 @@
     </div>
 
     <div ng-if="options.isModifyActive">
-      <button class="btn btn-default" ng-click="deleteFeatures()" translate>draw_delete_selected_features</button>
+      <button class="btn btn-default" ng-click="deleteFeatures($event)" translate>draw_delete_selected_features</button>
     </div>
 
   </div>
 
-  <div ng-if="supportKmlExport">
-    <button class="btn btn-default pull-right"
-            ng-disabled="!canExport()"
-            ng-click="exportKml()"
-            translate>export_kml
-    </button>
-  </div>
-  <div class="pull-right" ng-if="!supportKmlExport" translate>
-    export_kml_notsupported
+  <div ng-if="options.showExport">
+    <div ng-if="supportKmlExport">
+      <button class="btn btn-default pull-right"
+              ng-disabled="!canExport()"
+              ng-click="exportKml($event)"
+              translate>export_kml
+      </button>
+    </div>
+    <div class="pull-right" ng-if="!supportKmlExport" translate>
+      export_kml_notsupported
+    </div>
   </div>
 
 </div>

@@ -8,39 +8,53 @@
 
   module.controller('GaDrawController',
       function($scope, $translate, gaGlobalOptions, gaStyleFactory) {
-        
+
         // Defines static styles
         var white = [255, 255, 255];
         var black = [0, 0, 0];
 
+        $scope.options = $scope.options || {};
+
         // Defines directive options
-        $scope.options = {
-          translate: $translate, // For translation of ng-options
-          text: '',
-          tools: [
-            {id: 'point',   iconClass: 'icon-ga-point'},
-            {id: 'line',    iconClass: 'icon-ga-line'},
-            {id: 'polygon', iconClass: 'icon-ga-polygon'},
-            {id: 'text',    iconClass: 'icon-ga-text'},
-            {id: 'modify',  iconClass: 'icon-ga-edit'},
-            {id: 'delete',  iconClass: 'icon-ga-delete'}
-          ],
-          colors: [
-            {name: 'black',  fill: [0, 0, 0]},
-            {name: 'blue',   fill: [0, 0, 255]},
-            {name: 'gray',   fill: [128, 128, 128]},
-            {name: 'green',  fill: [0, 128, 0]},
-            {name: 'orange', fill: [255, 165, 0]},
-            {name: 'red',    fill: [255, 0, 0]},
-            {name: 'white',  fill: [255, 255, 255]},
-            {name: 'yellow', fill: [255, 255, 0]}
-          ],
-          iconSizes:[
-            {label:'24 px', value: [24, 24], scale: 0.5},
-            {label:'36 px', value: [36, 36], scale: 0.75},
-            {label:'48 px', value: [48, 48], scale: 1}
-          ],
-          icons: [
+        $scope.options.showExport =
+            angular.isDefined($scope.options.showExport) ?
+            $scope.options.showExport : true;
+
+        $scope.options.broadcastLayer =
+            angular.isDefined($scope.options.broadcastLayer) ?
+            $scope.options.broadcastLayer : false;
+
+        $scope.options.translate = $translate; // For translation of ng-options
+
+        $scope.options.text = '';
+
+        $scope.options.tools = [
+          {id: 'point',   iconClass: 'icon-ga-point'},
+          {id: 'line',    iconClass: 'icon-ga-line'},
+          {id: 'polygon', iconClass: 'icon-ga-polygon'},
+          {id: 'text',    iconClass: 'icon-ga-text'},
+          {id: 'modify',  iconClass: 'icon-ga-edit'},
+          {id: 'delete',  iconClass: 'icon-ga-delete'}
+        ];
+
+        $scope.options.colors = [
+          {name: 'black',  fill: [0, 0, 0]},
+          {name: 'blue',   fill: [0, 0, 255]},
+          {name: 'gray',   fill: [128, 128, 128]},
+          {name: 'green',  fill: [0, 128, 0]},
+          {name: 'orange', fill: [255, 165, 0]},
+          {name: 'red',    fill: [255, 0, 0]},
+          {name: 'white',  fill: [255, 255, 255]},
+          {name: 'yellow', fill: [255, 255, 0]}
+        ];
+
+        $scope.options.iconSizes = [
+          {label:'24 px', value: [24, 24], scale: 0.5},
+          {label:'36 px', value: [36, 36], scale: 0.75},
+          {label:'48 px', value: [48, 48], scale: 1}
+        ];
+
+        $scope.options.icons = [
             
             // Basics
             {id: 'circle'},
@@ -167,8 +181,7 @@
             {id: 'telephone'},
             {id: 'waste-basket'},
             {id: 'water'}
-          ]  
-        };
+        ];
         
         // Set default color
         $scope.options.color = $scope.options.colors[5];
