@@ -50,7 +50,7 @@
                 encodeURIComponent($scope.fileUrl);
             $scope.cancel();// Kill the current uploading
             $scope.fileContent = null;
-            $scope.userMessage = $translate('uploading_file');
+            $scope.userMessage = $translate.instant('uploading_file');
             $scope.progress = 0.1;
             $scope.canceler = $q.defer();
 
@@ -60,16 +60,16 @@
               var fileSize = headers('content-length');
               if (gaKml.isValidFileContent(data) &&
                   gaKml.isValidFileSize(fileSize)) {
-                $scope.userMessage = $translate('upload_succeeded');
+                $scope.userMessage = $translate.instant('upload_succeeded');
                 $scope.fileContent = data;
                 $scope.fileSize = fileSize;
               } else {
-                $scope.userMessage = $translate('upload_failed');
+                $scope.userMessage = $translate.instant('upload_failed');
                 $scope.progress = 0;
               }
             })
             .error(function(data, status, headers, config) {
-              $scope.userMessage = $translate('upload_failed');
+              $scope.userMessage = $translate.instant('upload_failed');
               $scope.progress = 0;
             });
           }
@@ -100,7 +100,7 @@
         // Callback when FileReader has finished
         var handleReaderLoadEnd = function(result) {
           if (gaKml.isValidFileContent(result)) {
-            $scope.userMessage = $translate('read_succeeded');
+            $scope.userMessage = $translate.instant('read_succeeded');
             $scope.fileContent = result;
           } else {
             handleReaderError();
@@ -109,7 +109,7 @@
 
         // Callback when FileReader has failed
         var handleReaderError = function() {
-          $scope.userMessage = $translate('read_failed');
+          $scope.userMessage = $translate.instant('read_failed');
           $scope.progress = 0;
         };
 
@@ -119,7 +119,7 @@
           if ($scope.file) {
             $scope.cancel();// Kill the current uploading
             $scope.fileContent = null;
-            $scope.userMessage = $translate('reading_file');
+            $scope.userMessage = $translate.instant('reading_file');
             $scope.progress = 0.1;
 
             // Read the file
@@ -137,7 +137,7 @@
         // Display the KML file content on the map
         $scope.displayFileContent = function() {
           if ($scope.fileContent) {
-            $scope.userMessage = $translate('parsing_file');
+            $scope.userMessage = $translate.instant('parsing_file');
             $scope.progress = 80;
 
             try {
@@ -152,11 +152,12 @@
                 zoomToExtent: true
               });
 
-              $scope.userMessage = $translate('parse_succeeded');
+              $scope.userMessage = $translate.instant('parse_succeeded');
               $scope.progress += 20;
 
             } catch (e) {
-              $scope.userMessage = $translate('parse_failed') + e.message;
+              $scope.userMessage = $translate.instant('parse_failed') +
+                                   e.message;
               $scope.progress = 0;
             }
           }
@@ -168,7 +169,7 @@
         };
 
         $scope.cancel = function() {
-          $scope.userMessage = $translate('operation_canceled');
+          $scope.userMessage = $translate.instant('operation_canceled');
           $scope.progress = 0;
           // Kill file reading
           fileReader.abort();
@@ -247,7 +248,7 @@
                   '</div>');
 
               // We use $compile only for the translation,
-              // $translate("drop_me_here") didn't work in prod mode
+              // $translate.instant("drop_me_here") didn't work in prod mode
               $compile(dropZone)(scope);
 
               var dragEnterZone = angular.element(document.body);
@@ -308,7 +309,7 @@
                     });
 
                   } else {
-                    alert($translate('drop_invalid_url') + text);
+                    alert($translate.instant('drop_invalid_url') + text);
                   }
 
                 } else {

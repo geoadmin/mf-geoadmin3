@@ -36,7 +36,7 @@
 
               // Use lang param only for admin.ch servers
               if (url.indexOf('admin.ch') > 0) {
-                url = gaUrlUtils.append(url, 'lang=' + $translate.uses());
+                url = gaUrlUtils.append(url, 'lang=' + $translate.use());
               }
 
               // Kill the current uploading
@@ -44,32 +44,32 @@
 
               var proxyUrl = $scope.options.proxyUrl + encodeURIComponent(url);
               $scope.error = false;
-              $scope.userMessage = $translate('uploading_file');
+              $scope.userMessage = $translate.instant('uploading_file');
               $scope.progress = 0.1;
               $scope.canceler = $q.defer();
 
               // Angularjs doesn't handle onprogress event
               $http.get(proxyUrl, {timeout: $scope.canceler.promise})
               .success(function(data, status, headers, config) {
-                $scope.userMessage = $translate('upload_succeeded');
+                $scope.userMessage = $translate.instant('upload_succeeded');
                 $scope.displayFileContent(data);
               })
               .error(function(data, status, headers, config) {
                 $scope.error = true;
-                $scope.userMessage = $translate('upload_failed');
+                $scope.userMessage = $translate.instant('upload_failed');
                 $scope.progress = 0;
                 $scope.layers = [];
               });
             } else {
               $scope.error = true;
-              $scope.userMessage = $translate('drop_invalid_url');
+              $scope.userMessage = $translate.instant('drop_invalid_url');
             }
           };
 
           // Display the list of layers available from the GetCapabilties in the
           // table
           $scope.displayFileContent = function(data) {
-            $scope.userMessage = $translate('parsing_file');
+            $scope.userMessage = $translate.instant('parsing_file');
             $scope.progress = 80;
             $scope.layers = [];
             $scope.options.layerSelected = null;
@@ -80,7 +80,7 @@
               var parser = new ol.format.WMSCapabilities();
               var result = parser.read(data);
               $scope.userMessage = (result.Service.MaxWidth) ?
-                  $translate('wms_max_size_allowed') + ' ' +
+                  $translate.instant('wms_max_size_allowed') + ' ' +
                     result.Service.MaxWidth +
                     ' * ' + result.Service.MaxHeight :
                   '';
@@ -90,19 +90,20 @@
                     srsCode).Layer;
               }
 
-              $scope.userMessage = $translate('parse_succeeded');
+              $scope.userMessage = $translate.instant('parse_succeeded');
               $scope.progress += 20;
 
             } catch (e) {
               $scope.error = true;
-              $scope.userMessage = $translate('parse_failed') + ' ' + e.message;
+              $scope.userMessage = $translate.instant('parse_failed') +
+                                   ' ' + e.message;
               $scope.progress = 0;
             }
           };
 
           // copy from ImportKml
           $scope.cancel = function() {
-            $scope.userMessage = $translate('operation_canceled');
+            $scope.userMessage = $translate.instant('operation_canceled');
             $scope.progress = 0;
 
             // Kill $http request
@@ -123,8 +124,8 @@
                 return olLayer;
 
               } catch (e) {
-                $scope.userMessage = $translate('add_wms_layer_failed') +
-                    e.message;
+                $scope.userMessage = $translate.instant(
+                                     'add_wms_layer_failed') + e.message;
                 return null;
               }
             }
@@ -137,7 +138,8 @@
                   /* isPreview */ false);
 
               if (layerAdded) {
-                $scope.userMessage = $translate('add_wms_layer_succeeded');
+                $scope.userMessage = $translate.instant(
+                                      'add_wms_layer_succeeded');
               }
 
               alert($scope.userMessage);
@@ -148,7 +150,8 @@
           $scope.getAbstract = function() {
             var l = $scope.options.layerSelected ||
                 $scope.options.layerHovered || {};
-            return ((l.isInvalid) ? $translate(l.Abstract) : l.Abstract) || '';
+            return ((l.isInvalid) ? $translate.instant(l.Abstract) :
+                                    l.Abstract) || '';
           };
 
           // Go through all layers, assign needed properties,

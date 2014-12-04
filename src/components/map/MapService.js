@@ -567,7 +567,7 @@
         // Test the validity of the file size
         this.isValidFileSize = function(fileSize) {
           if (fileSize > 20000000) { // 20mo
-            alert($translate('file_too_large'));
+            alert($translate.instant('file_too_large'));
             return false;
           }
           return true;
@@ -576,7 +576,7 @@
         // Test the validity of the file content
         this.isValidFileContent = function(fileContent) {
           if (!/<kml/.test(fileContent) || !/<\/kml>/.test(fileContent)) {
-            alert($translate('file_is_not_kml'));
+            alert($translate.instant('file_is_not_kml'));
             return false;
           }
           return true;
@@ -686,11 +686,11 @@
                           label: self.getLayerProperty(bodId, 'label')};
             // In the background selector, we don't want the standard labels
             if (bodId == 'ch.swisstopo.swissimage') {
-              retVal.label = $translate('bg_luftbild');
+              retVal.label = $translate.instant('bg_luftbild');
             } else if (bodId == 'ch.swisstopo.pixelkarte-farbe') {
-              retVal.label = $translate('bg_pixel_color');
+              retVal.label = $translate.instant('bg_pixel_color');
             } else if (bodId == 'ch.swisstopo.pixelkarte-grau') {
-              retVal.label = $translate('bg_pixel_grey');
+              retVal.label = $translate.instant('bg_pixel_grey');
             }
             return retVal;
           });
@@ -836,7 +836,7 @@
          * Returns a promise. Use accordingly
          */
         this.getMetaDataOfLayer = function(bodId) {
-          var url = getMetaDataUrl(currentTopic.id, bodId, $translate.uses());
+          var url = getMetaDataUrl(currentTopic.id, bodId, $translate.use());
           return $http.get(url);
         };
 
@@ -884,7 +884,7 @@
         $rootScope.$on('gaTopicChange', function(event, topic) {
           currentTopic = topic;
           // do nothing if there's no lang set
-          var currentLang = $translate.uses();
+          var currentLang = $translate.use();
           if (angular.isDefined(currentLang)) {
             var currentTopicId = topic.id;
             loadForTopic(currentTopicId, currentLang).then(function() {
@@ -900,7 +900,7 @@
             var currentTopicId = currentTopic.id;
             // Do not set labelsOnly to true if initial load
             var labelsOnly = angular.isDefined(layers);
-            loadForTopic(currentTopicId, $translate.uses()).then(function() {
+            loadForTopic(currentTopicId, $translate.use()).then(function() {
               $rootScope.$broadcast('gaLayersChange',
                   {labelsOnly: labelsOnly, topicId: currentTopicId});
             });
@@ -1231,7 +1231,7 @@
               if (!confirmedOnce &&
                   !/(admin|bgdi)\.ch$/.test(gaUrlUtils.getHostname(url))) {
                 allowThirdData =
-                  confirm($translate('third_party_data_warning'));
+                  confirm($translate.instant('third_party_data_warning'));
                 if (allowThirdData) {
                   confirmedOnce = true;
                 }

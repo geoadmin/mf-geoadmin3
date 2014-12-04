@@ -46,7 +46,7 @@
       $scope.abort = function() {
         // Use $timeout fixes iOS8 homescreen bug(#1744).
         $timeout(function() {
-          if (confirm($translate('offline_abort_warning'))) {
+          if (confirm($translate.instant('offline_abort_warning'))) {
             gaOffline.abort();
             gaOffline.hideExtent();
           }

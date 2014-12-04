@@ -11,17 +11,11 @@
       currentYear: -1, // User selected year
       years: [] //List of all possible years 1845 -> current year
     };
-    
-    // Format the text of the current year.
-    $scope.options.formatYear = function(value) {
-      return $sce.trustAsHtml('' + value);
-    };
 
     // Fill the years array. This array will be used to configure the
     // display of the slider (minor and major divisions ...)
     for (var i = $scope.options.maxYear; i >= $scope.options.minYear; i--) {
       var year = {
-        label: $scope.options.formatYear(i),
         value: i,
         available: false,
         minor: false,

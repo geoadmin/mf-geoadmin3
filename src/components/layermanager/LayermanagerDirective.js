@@ -30,7 +30,7 @@
       // input values possible: 1978, '1978', '19783112', '99993112', undefined
       // if layer is WMTS:
       //   if timeselector not active:
-      //      '99993112' ==> $translate('all');
+      //      '99993112' ==> $translate.instant('all');
       //   else :
       //      undefined ==> '-'
       //      '19783112' ==> '1978'
@@ -41,13 +41,13 @@
       //      1978  ==> '1978'
       if (!input) {
         return (layer.getSource() instanceof ol.source.WMTS) ? '-' :
-            $translate('time_all');
+            $translate.instant('time_all');
       }
       var yearNum = input;
       if (angular.isString(input)) {
         yearNum = parseInt(input.substring(0, 4));
       }
-      return (yearNum <= maxYear) ? yearNum : $translate('time_all');
+      return (yearNum <= maxYear) ? yearNum : $translate.instant('time_all');
     }
   });
 
@@ -133,7 +133,7 @@
         placement: function() {
           return (win.width() < 640) ? 'left' : 'right';
         },
-        title: $translate('time_select_year'),
+        title: $translate.instant('time_select_year'),
         trigger: 'manual'
       });
       popover.addClass('ga-layer-timestamps-popover');

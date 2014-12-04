@@ -69,7 +69,7 @@ var IE9Fix = function() {
 
       if (!isXDomain(url)) {
         this.implementation = new OriginalXMLHttpRequest;
-        this.implementation.onreadystatechange = function() {
+        this.implementation.onload = function() {
           var prop, _i, _len, _ref;
           if (_this.implementation.readyState === 4) {
             _ref = ['readyState', 'status', 'responseText'];
@@ -78,8 +78,8 @@ var IE9Fix = function() {
               _this[prop] = _this.implementation[prop];
             }
           }
-          if (_this.onreadystatechange) {
-            return _this.onreadystatechange();
+          if (_this.onload) {
+            return _this.onload();
           }
         };
         _ref = ['abort', 'getAllResponseHeaders', 'getResponseHeader', 'send', 'setRequestHeader'];
@@ -99,8 +99,8 @@ var IE9Fix = function() {
           _this.responseText = _this.implementation.responseText;
           _this.readyState = 4;
           _this.status = 200;
-          if (_this.onreadystatechange) {
-            return _this.onreadystatechange();
+          if (_this.onload) {
+            return _this.onload();
           }
         };
         // gjn fix (needs to be done)

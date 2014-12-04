@@ -27,7 +27,7 @@ describe('ga_map_service', function() {
         layers = $injector.get('gaLayers');
 
         $httpBackend.expectGET(expectedUrl);
-        $translate.uses('somelang');
+        $translate.use('somelang');
         $rootScope.$broadcast('gaTopicChange',
           {id: 'sometopic', backgroundLayers: ['bar']});
         $rootScope.$digest();

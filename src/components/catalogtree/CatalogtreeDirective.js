@@ -147,7 +147,7 @@
                   .replace('{Topic}', currentTopicId);
               return $http.get(url, {
                 params: {
-                  'lang': $translate.uses()
+                  'lang': $translate.use()
                 }
               }).then(function(response) {
                 var newTree = response.data.results.root;

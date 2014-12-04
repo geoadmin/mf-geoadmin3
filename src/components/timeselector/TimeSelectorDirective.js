@@ -66,7 +66,7 @@
               placement: 'left',
               container: 'body',
               title: function() {
-                return $translate('time_bt_enabled_tooltip');
+                return $translate.instant('time_bt_enabled_tooltip');
               }
             });
           }
@@ -101,16 +101,6 @@
   module.directive('gaTimeSelector',
     function($rootScope, gaBrowserSniffer, gaDebounce, gaLayerFilters, gaLayers,
         gaPermalink) {
-
-      // Tranform a year given by the select box or the slider component
-      // into a time parameter usable by layers
-      var transformYearToTimeStr = function(year) {
-        // The select box returns an object
-        if (year && typeof year === 'object') {
-          year = '' + year.value;
-        }
-        return year;
-      };
 
       // Magnetize a year to the closest available year
       var magnetize = function(currentYear, availableYears) {
@@ -147,7 +137,6 @@
 
       return {
         restrict: 'A',
-        replace: true,
         templateUrl: 'components/timeselector/partials/timeselector.html',
         scope: {
           map: '=gaTimeSelectorMap',
@@ -190,6 +179,7 @@
             }
           });
 
+          // currentYear is always an integer
           scope.$watch('currentYear', function(year) {
             if (scope.isActive) {
               applyNewYearDebounced(year);
@@ -200,7 +190,7 @@
 
           //Apply the year selected
           var applyNewYear = function(year) {
-            var newYear = transformYearToTimeStr(year);
+            var newYear = '' + year;
 
             // Only valid values are allowed: undefined, null or
             // minYear <= newYear <= maxYear
@@ -251,6 +241,8 @@
           // Initialize the state of the component
           scope.currentYear = (scope.fromPermalink) ? scope.permalinkValue :
               scope.options.maxYear;
+          elt.hide();
+
         }
       };
     }

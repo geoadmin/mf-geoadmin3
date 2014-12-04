@@ -17,7 +17,7 @@
             templateUrl: 'components/translation/partials/translation.html',
             link: function(scope, element, attrs) {
               scope.$watch('lang', function(value) {
-                $translate.uses(value).then(angular.noop, function(lang) {
+                $translate.use(value).then(angular.noop, function(lang) {
                   // failed to load lang from server, fallback to default code.
                   scope.lang = scope.options.fallbackCode;
                 });

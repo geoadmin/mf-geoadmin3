@@ -227,7 +227,7 @@
 
           // Delete all features of the layer
           var deleteAllFeatures = function() {
-            if (confirm($translate('confirm_remove_all_features'))) {
+            if (confirm($translate.instant('confirm_remove_all_features'))) {
               layer.getSource().clear();
             }
 
@@ -251,7 +251,8 @@
 
           // Delete selected features by the edit tool
           scope.deleteFeatures = function() {
-            if (confirm($translate('confirm_remove_selected_features')) &&
+            if (confirm($translate.instant(
+                          'confirm_remove_selected_features')) &&
                 select.getActive()) {
               var features = select.getFeatures();
               if (features) {

@@ -34,7 +34,7 @@
             link: function(scope, element, attrs) {
               function validateSize(fileSize) {
                 if (fileSize > 10000000) { // 10 Mo
-                  alert($translate('file_too_large') + ' (Max 10Mb)');
+                  alert($translate.instant('file_too_large') + ' (Max 10Mb)');
                   return false;
                 }
                 return true;
@@ -44,7 +44,7 @@
                 if (/(pdf|zip|png|jpeg|jpg|kml|kmz|gpx)$/.test(fileName)) {
                   return true;
                 } else {
-                  alert($translate('feedback_unsupported_format'));
+                  alert($translate.instant('feedback_unsupported_format'));
                   return false;
                 }
               }
