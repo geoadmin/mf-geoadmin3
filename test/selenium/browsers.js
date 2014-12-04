@@ -46,6 +46,6 @@ var capabilities = [
     create('Windows', '7', '1280x1024', 'Safari', '5.1'),
     create('OS X', 'lion', '1280x1024', 'Safari', '6.0'),
     create('OS X', 'mavericks', '1280x1024', 'Safari', '7.0')
-    ]
+];
 
 module.exports.capabilities = capabilities;

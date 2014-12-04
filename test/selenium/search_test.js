@@ -1,22 +1,16 @@
+// 02 Search test using browserstack
+
 var webdriver = require('browserstack-webdriver');
 var assert = require('assert');
 
 var QUERYSTRING_OF_BERN = "X=200393.28&Y=596671.16";
 
 var runTest = function(cap, driver, target){
-  var TIMEOUT = 20000;
-  driver.manage().timeouts().implicitlyWait(TIMEOUT);
-  //We maximizse our window to be sure to be in full resolution
-  driver.manage().window().maximize();
-  //Goto the travis deployed site.
-  driver.get(target + '/?lang=de');
-  //wait until topics related stuff is loaded. We know this when catalog is there
-  driver.findElement(webdriver.By.xpath("//a[contains(text(), 'Grundlagen und Planung')]"));
-  //type in "Bern" into the search field.
+  //Send "Bern" to the searchbar
   driver.findElement(webdriver.By.xpath("//*[@type='search']")).sendKeys('Bern');
   //Click on the field "Bern (BE)"
   driver.findElement(webdriver.By.xpath("//*[contains(text(), 'Bern (BE)')]")).click();
-  //We click on the "share" button
+  //We click on the "share" button that deploys the share menu
   driver.findElement(webdriver.By.xpath("//a[@id='shareHeading']")).click();
   //Any link with the adapted URL? (there should be many)
   driver.findElement(webdriver.By.xpath("//a[contains(@href, '" + QUERYSTRING_OF_BERN + "')]"));
@@ -31,7 +25,9 @@ var runTest = function(cap, driver, target){
   driver.findElement(webdriver.By.xpath("//*[@ng-model='permalinkValue']")).getAttribute("value").then(function(val){
       //The perma Link should point to Bern
       assert.ok(val.indexOf(QUERYSTRING_OF_BERN) > -1);
-  }); 
+  });
+  //We click on the "share" button what closes the share menu
+  driver.findElement(webdriver.By.xpath("//a[@id='shareHeading']")).click();
 }
 
 module.exports.runTest = runTest;

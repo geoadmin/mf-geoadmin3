@@ -22,7 +22,9 @@ if (!process.env.BROWSERSTACK_USER ||
 var browsers = require('./browsers.js');
 
 //load the tests.
-var basictest = require('./basic_test.js');
+var starttest = require('./start_test.js');
+var searchtest = require('./search_test.js');
+var printtest = require('./print_test.js');
 
 //okay we will start the script!
 console.log("Starting Browserstack script!");
@@ -39,17 +41,20 @@ browsers.capabilities.forEach(function(cap){
   //show a link for each browser + version for visual results.
   driver.getSession().then(function(sess){
     console.log("running test for: " + cap.browser + "(" + cap.browser_version + ") on " + cap.os + " " + cap.os_version);
-    console.log("  See more results or https://www.browserstack.com/automate/builds/d740ecfdd73f04d9c0a306c35d46de373047687d/sessions/"+sess.id_);
+    console.log("  See more results or https://www.browserstack.com/automate/builds/dddb1242fb9f3ffe297b057e6da2ea964b4caf1a/sessions/"+sess.id_);
   });
 
   //run all the tests
   try{
-    basictest.runTest(cap, driver, cmd.target); 
+    starttest.runTest(cap, driver, cmd.target);
+    searchtest.runTest(cap, driver, cmd.target);
+    printtest.runTest(cap, driver, cmd.target);
   }catch(err){
     //we need this block for the finally, as we definitly want to quit the driver, otherwise it stays idle for ~2 min blocking the next testrun.
     throw err;
-  }finally{
+    driver.quit();
+  }
+  finally{
     driver.quit();
   }
 });
-
