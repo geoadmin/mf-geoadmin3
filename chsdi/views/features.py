@@ -10,7 +10,7 @@ import pyramid.httpexceptions as exc
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from sqlalchemy.sql.expression import cast
 from sqlalchemy import Text, Integer, Boolean, Numeric, Date
-from sqlalchemy import text
+from sqlalchemy import text, distinct
 from geoalchemy import Geometry, WKBSpatialElement, functions
 from shapely.geometry import asShape
 
@@ -89,6 +89,14 @@ def _get_query_params(request):
     return params
 
 
+def _get_attributes_params(request):
+    params = FeatureParams(request)
+    params.layerId = request.matchdict.get('layerId')
+    params.attribute = request.matchdict.get('attribute')
+
+    return params
+
+
 @view_config(route_name='identify', request_param='geometryFormat=interlis')
 def identify_oereb(request):
     return _identify_oereb(request)
@@ -130,6 +138,11 @@ def view_find_esrijson(request):
 @view_config(route_name='query', renderer='geojson')
 def view_query_geojson(request):
     return _query(request)
+
+
+@view_config(route_name='attribute_values', renderer='geojson')
+def view_attribute_values_geojson(request):
+    return _attribute(request)
 
 
 @view_config(route_name='htmlPopup', renderer='jsonp')
@@ -351,6 +364,31 @@ def _get_features_for_extent(params, models, maxFeatures=None):
                     yield feature
 
 
+def _attribute(request):
+    MaxFeatures = 50
+    attributes_values = []
+    params = _get_attributes_params(request)
+
+    models = models_from_name(params.layerId)
+
+    if models is None:
+        raise exc.HTTPBadRequest('No Vector Table was found for %s' % params.layerId)
+    model = models[0]
+    attributes = model().getAttributesKeys()
+    if params.attribute not in attributes:
+        raise exc.HTTPBadRequest('''No attribute '%s' in layer '%s' was found''' % (params.attribute, params.layerId))
+
+    col = model.get_column_by_name(params.attribute)
+
+    query = request.db.query(col).distinct()
+    query = query.limit(MaxFeatures)
+    for attr in query:
+        if len(attr):
+            attributes_values.append(attr[0])
+
+    return {'values': sorted(attributes_values)}
+
+
 def _query(request):
     MaxFeatures = 50
     geomFilter = None
@@ -381,11 +419,11 @@ def _query(request):
     query = query.filter(text(where))
     query = query.limit(MaxFeatures)
     for feature in query:
-            label_column = feature.__label__ if hasattr(feature, '__label__') else 'id'
-            f = _process_feature(feature, params)
-            f.properties['label'] = f.properties.get(label_column, f.id)
+        label_column = feature.__label__ if hasattr(feature, '__label__') else 'id'
+        f = _process_feature(feature, params)
+        f.properties['label'] = f.properties.get(label_column, f.id)
 
-            features.append(f)
+        features.append(f)
 
     return {'results': features}
 
