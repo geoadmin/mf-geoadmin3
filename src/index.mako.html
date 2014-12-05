@@ -458,7 +458,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     <!-- Popup: Feedback -->
     <div ga-popup="globals.feedbackPopupShown"
          ga-popup-options="{title:'problem_announcement', help:'671'}"
-         ga-draggable=".ga-popup-title"
+         ga-draggable=".popover-title"
          id="feedback-popup" >
       <div ng-controller="GaFeedbackController">
         <div ga-feedback
@@ -473,7 +473,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     <!-- Popup: Import WMS -->
     <div ga-popup="globals.importWmsPopupShown"
          ga-popup-options="{title:'import_wms', help:'63'}"
-         ga-draggable=".ga-popup-title"
+         ga-draggable=".popover-title"
          id="import-wms-popup" >
       <div ng-controller="GaImportWmsController">
         <div ga-import-wms
@@ -486,7 +486,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     <!-- Popup: Import KML -->
     <div ga-popup="globals.importKmlPopupShown"
          ga-popup-options="{title:'import_kml', help:'64'}"
-         ga-draggable=".ga-popup-title"
+         ga-draggable=".popover-title"
          id="import-kml-popup" >
       <div ng-controller="GaImportKmlController">
         <div ga-import-kml
@@ -499,7 +499,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     <!-- Popup: Measure -->
     <div ga-popup="globals.isMeasureActive"
          ga-popup-options="{title:'measure',showPrint:true, help:'66'}"
-         ga-draggable=".ga-popup-title"
+         ga-draggable=".popover-title"
          id="measure-popup" >
       <div ng-controller="GaMeasureController">
         <div ga-measure 
@@ -512,7 +512,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     <!-- Popup: Draw -->
     <div ga-popup="globals.isDrawActive"
          ga-popup-options="{title:'draw', help:'67'}"
-         ga-draggable=".ga-popup-title"
+         ga-draggable=".popover-title"
          id="draw-popup" >
       <div ng-controller="GaDrawController">
         <div ga-draw 
@@ -527,7 +527,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     <div ng-controller="GaFeaturetreeController">
       <div ga-popup="globals.isFeatureTreeActive"
            ga-popup-options="{title:'object_information', showPrint:true, print: print, help:'68'}"
-           ga-draggable=".ga-popup-title"
+           ga-draggable=".popover-title"
            id="featuretree-popup">
         <div ga-featuretree 
              ga-featuretree-map="map"

@@ -10,6 +10,16 @@
   max-height: @ga-popup-max-height;
   z-index: 2000;
 
+  .popover-title {
+    position: relative;
+    padding: 0;
+  }
+
+  .ga-popup-title {
+    padding: 8px 0px 8px 14px;
+    cursor: inherit;
+  }
+
   /* !important is used to override (and so deactivate) draggable styles
   and specific popups styles */
   &.ga-popup-reduced {
@@ -29,16 +39,18 @@
     z-index: 500;
     .transition(bottom 1s ease);
 
-    h4, i, button {
-      color: white;
-    }
-
-    h4 {
+    .popover-title {
+      padding-right: 30px;
       cursor: pointer;
+      color: white;
       background-color: red;
+
+      &:active {
+       opacity: 0.3;
+      }
     }
 
-    .ga-popup-print, .ga-help, .ga-popup-reduce {
+    .icon-print, .icon-question-circle, .icon-minus {
       display: none;
     }
 
@@ -84,65 +96,61 @@
     }
   }
 
-  .ga-popup-print, .ga-popup-help, .ga-popup-reduce, .ga-popup-close {
-    float: right;
-    cursor: pointer;
-    opacity: 0.3;
-    margin: 0px 0px 0px 5px;
-    padding: 0px;
-    border: none;
-    box-shadow: none;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: bold;
-    line-height: inherit;
-    visibility: visible;
-    width: 18px;
-    background-color: transparent;
-
-    &:hover {
-      opacity: 1;
-    }
+  .ga-buttons {
+    position: absolute;
+    right: 8px;
+    top: 0px;
+    height: 100%;
 
     @media (max-width: @screen-tablet) {
-      font-size: 18px;
+      right: 0px;
     }
-  }
 
-  .ga-popup-close {
-    font-size: 26px;
-    margin-left: 3px;
-  }
-  .ga-popup-reduce {
-    padding-top: 4px;
-  }
-  @media (max-width: @screen-tablet) {
-    .ga-popup-close,
-    .ga-popup-print,
-    .ga-popup-reduce {
-      font-size: 26px;
-      margin-top: -.4em;
-      height: 1.4em;
-      width: 1.2em;
-      &:before {
+    button {
+      width: 18px;
+      height: inherit;
+      opacity: 0.3;
+      visibility: visible;
+      padding: 0;
+      margin: 0;
+      vertical-align: top;
+      color: inherit;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: bold;
+      line-height: inherit;
+      border: none;
+      box-shadow: none;
+      background: none;
+
+      &:hover {
+        opacity: 0.7;
+      }
+      &:active {
+        opacity: 1;
+      }
+
+      &.ga-popup-close {
+        font-size: 26px;
+      }
+
+      &.icon-minus {
+        padding-top: 7px;
+      }
+
+      @media (max-width: @screen-tablet) {
+        width: 30px;
         font-size: 18px;
+
+        &.ga-popup-close {
+          font-size: 30px;
+        }
+
+        &.icon-minus {
+          padding-top: 10px;
+        }
       }
     }
-    .ga-popup-print, .ga-popup-help, .ga-popup-reduce, .ga-popup-close {
-      margin-left: 0;
-    }
-    .popover-title {
-      padding-right: 0;
-    }
-  }
-
-  .ga-popup-help {
-    width: 16px;
-    text-align: center;
-  }
-
-  .ga-popup-print-in-progress{
-    float: right;
   }
 }
 
