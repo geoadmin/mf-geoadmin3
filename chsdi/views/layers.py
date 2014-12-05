@@ -16,7 +16,7 @@ from chsdi.models import models_from_name
 from chsdi.models.bod import LayersConfig, get_bod_model, computeHeader
 from chsdi.lib.filters import *
 
-
+SAMPLE_SIZE = 100
 MAX_ATTRIBUTES_VALUES = 5
 
 
@@ -122,7 +122,7 @@ def feature_attributes(request):
     attributes = models[0]().getAttributesKeys()
     query = params.request.db.query(models[0])
     try:
-        results = query.limit(MAX_ATTRIBUTES_VALUES)
+        results = query.limit(SAMPLE_SIZE)
     except:
         raise exc.HTTPInternalServerError('Cannot get example values for  %s' % layerId)
 
@@ -136,12 +136,13 @@ def feature_attributes(request):
                                'alias': params.translate("%s.%s" % (layerId, attr)),
                                'values': set([])
                                })
-            val = attrs[attr]
-            if isinstance(val, (decimal.Decimal, datetime.date, datetime.datetime)):
-                val = str(val)
-            tmp_values = set(fields[attr_nr]['values'])
-            tmp_values.add(val)
-            fields[attr_nr]['values'] = list(tmp_values)
+            if len(fields[attr_nr]['values']) < MAX_ATTRIBUTES_VALUES:
+                val = attrs[attr]
+                if isinstance(val, (decimal.Decimal, datetime.date, datetime.datetime)):
+                    val = str(val)
+                tmp_values = set(fields[attr_nr]['values'])
+                tmp_values.add(val)
+                fields[attr_nr]['values'] = list(tmp_values)
 
     return {'id': layerId, 'name': params.translate(layerId), 'fields': fields}
 
