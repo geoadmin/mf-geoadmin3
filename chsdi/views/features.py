@@ -8,7 +8,7 @@ from pyramid.response import Response
 import pyramid.httpexceptions as exc
 
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
-from sqlalchemy.sql.expression import cast
+from sqlalchemy.sql.expression import cast, func
 from sqlalchemy import Text, Integer, Boolean, Numeric, Date
 from sqlalchemy import text, distinct
 from geoalchemy import Geometry, WKBSpatialElement, functions
@@ -379,14 +379,20 @@ def _attribute(request):
         raise exc.HTTPBadRequest('''No attribute '%s' in layer '%s' was found''' % (params.attribute, params.layerId))
 
     col = model.get_column_by_name(params.attribute)
+    type = str(col.type)
 
-    query = request.db.query(col).distinct()
-    query = query.limit(MaxFeatures)
-    for attr in query:
-        if len(attr):
-            attributes_values.append(attr[0])
+    if type in ['DATE', 'INTEGER', 'NUMERIC']:
+        query = request.db.query(func.max(col).label('max'), func.min(col).label('min'))
+        res = query.one()
+        return {'values': [res.min, res.max]}
+    else:
+        query = request.db.query(col).distinct()
+        query = query.limit(MaxFeatures)
+        for attr in query:
+            if len(attr):
+                attributes_values.append(attr[0])
 
-    return {'values': sorted(attributes_values)}
+        return {'values': sorted(attributes_values)}
 
 
 def _query(request):
