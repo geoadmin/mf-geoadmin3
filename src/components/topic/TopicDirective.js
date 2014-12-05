@@ -11,7 +11,7 @@
   ]);
 
   module.directive('gaTopic',
-      function($rootScope, $http, gaPermalink, gaLayers) {
+      function($rootScope, $http, $translate, gaPermalink, gaLayers) {
         return {
           restrict: 'A',
           replace: true,
@@ -56,15 +56,22 @@
               return res;
             }
 
-            $http.get(options.url).then(function(result) {
-              scope.topics = result.data.topics;
+            function translateLabels() {
               angular.forEach(scope.topics, function(value) {
-                value.label = value.id;
+                value.label = $translate.instant(value.id);
+              });
+            }
+
+            $http.get(options.url).then(function(result) {
+              var topics = result.data.topics;
+              angular.forEach(topics, function(value) {
+                value.label = $translate.instant(value.id);
                 value.tooltip = 'topic_' + value.id + '_tooltip';
                 value.thumbnail =
                     options.thumbnailUrlTemplate.replace('{Topic}', value.id);
                 value.langs = extendLangs(value.langs);
               });
+              scope.topics = topics;
               initTopics();
             });
 
@@ -107,6 +114,14 @@
               }
             });
 
+            var firstLoad = true;
+            $rootScope.$on('$translateChangeEnd', function() {
+              if (!firstLoad) {
+                translateLabels();
+              } else {
+                firstLoad = false;
+              }
+            });
          }
        };
       });
