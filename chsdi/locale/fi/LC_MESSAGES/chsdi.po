@@ -1544,6 +1544,44 @@ msgstr "Landschaftsruhezonen Luftfahrt"
 msgid "ch.bazl.luftfahrthindernis"
 msgstr "Luftfahrthindernisse"
 
+#. TODO
+msgid "ch.bazl.luftfahrthindernis.abortionaccomplished"
+msgstr "ch.bazl.luftfahrthindernis.abortionaccomplished"
+
+msgid "ch.bazl.luftfahrthindernis.duration"
+msgstr "Duration of installation"
+
+#. TODO
+msgid "ch.bazl.luftfahrthindernis.geometriedaten"
+msgstr "ch.bazl.luftfahrthindernis.geometriedaten"
+
+msgid "ch.bazl.luftfahrthindernis.lk100"
+msgstr "Map number [NM100]"
+
+msgid "ch.bazl.luftfahrthindernis.maxheightagl"
+msgstr "Maximum height AGL [m]"
+
+msgid "ch.bazl.luftfahrthindernis.obstacletype"
+msgstr "Obstacle type"
+
+msgid "ch.bazl.luftfahrthindernis.registrationnumber"
+msgstr "Registration number"
+
+msgid "ch.bazl.luftfahrthindernis.sanctiontext"
+msgstr "Marking / navigation lights"
+
+msgid "ch.bazl.luftfahrthindernis.startofconstruction"
+msgstr "Start of construction"
+
+msgid "ch.bazl.luftfahrthindernis.state"
+msgstr "State"
+
+msgid "ch.bazl.luftfahrthindernis.topelevationamsl"
+msgstr "Maximum top elevation AMSL [m]"
+
+msgid "ch.bazl.luftfahrthindernis.totallength"
+msgstr "Total length [m]"
+
 msgid "ch.bazl.luftfahrtkarten-icao"
 msgstr "Charta d'aviatica OACI"
 
@@ -3884,83 +3922,17 @@ msgstr "Name"
 msgid "tt_ch.bakom.versorgungsgebiet_prog"
 msgstr "Programme"
 
-msgid "tt_ch.bazl.abortionaccomplished"
-msgstr "Anlagedauer"
-
-msgid "tt_ch.bazl.abortionaccomplished"
-msgstr "Anlagedauer"
-
-msgid "tt_ch.bazl.elevation"
-msgstr "Maximale Meereshöhe AMSL [m]"
-
-msgid "tt_ch.bazl.geometriedaten"
-msgstr "Geometriedaten"
-
-#. TODO
-msgid "tt_ch.bazl.geomtype"
-msgstr "tt_ch.bazl.geomtype"
-
 msgid "tt_ch.bazl.hindernisart"
 msgstr "Hindernisart"
 
 msgid "tt_ch.bazl.kartnummer"
 msgstr "Kartennummer [LK100]"
 
-#. TODO
-msgid "tt_ch.bazl.lk100"
-msgstr "tt_ch.bazl.lk100"
-
 msgid "tt_ch.bazl.markierung"
 msgstr "Markierung / Befeuerung"
 
-msgid "tt_ch.bazl.maxheight"
-msgstr "Maximale Höhe AGL [m]"
-
-#. TODO
-msgid "tt_ch.bazl.maxheightagl"
-msgstr "tt_ch.bazl.maxheightagl"
-
-#. TODO
-msgid "tt_ch.bazl.obstacletype"
-msgstr "tt_ch.bazl.obstacletype"
-
-#. TODO
-msgid "tt_ch.bazl.registrationnumber"
-msgstr "tt_ch.bazl.registrationnumber"
-
-msgid "tt_ch.bazl.registrationnummer"
-msgstr "Register-Nummer"
-
-#. TODO
-msgid "tt_ch.bazl.sanctiontext"
-msgstr "tt_ch.bazl.sanctiontext"
-
-msgid "tt_ch.bazl.startofconstruction"
-msgstr "Baubeginn"
-
-msgid "tt_ch.bazl.startofconstruction"
-msgstr "Baubeginn"
-
-#. TODO
-msgid "tt_ch.bazl.state"
-msgstr "tt_ch.bazl.state"
-
-#. TODO
-msgid "tt_ch.bazl.topelevationamsl"
-msgstr "tt_ch.bazl.topelevationamsl"
-
-msgid "tt_ch.bazl.totallength"
-msgstr "Gesamtlänge [m]"
-
-msgid "tt_ch.bazl.totallength"
-msgstr "Gesamtlänge [m]"
-
 msgid "tt_ch.bazl_longtext"
 msgstr "Die Luftfahrthindernisdaten können bezüglich der Vollständigkeit, der Nachführung sowie der Lage- und Höhenpositionen von Hindernissen Abweichungen enthalten."
-
-#. TODO
-msgid "tt_ch.bazld.uration"
-msgstr "tt_ch.bazld.uration"
 
 msgid "tt_ch.bfe.abgeltung-wasserkraftnutzung_area"
 msgstr "Fläche [ha]"
