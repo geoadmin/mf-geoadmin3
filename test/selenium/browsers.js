@@ -20,7 +20,8 @@ var create = function(os, osver, res, browser, brover) {
     'browser' : browser,
     'browser_version' : brover,
     'browserstack.user' : process.env.BROWSERSTACK_USER,
-    'browserstack.key' : process.env.BROWSERSTACK_KEY
+    'browserstack.key' : process.env.BROWSERSTACK_KEY,
+    'browserstack.bfcache' : '0'
   };
 }
 
