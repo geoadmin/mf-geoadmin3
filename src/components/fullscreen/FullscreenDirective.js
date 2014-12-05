@@ -17,7 +17,7 @@
         map: '=gaFullscreenMap'
       },
       template: "<a href='#' ng-if='fullscreenSupported' " +
-        "ng-click='click()' translate>full_screen</a>",
+        "ng-click='click()' translate translate-cloak>full_screen</a>",
       link: function(scope, element, attrs) {
         var fullScreenCssClass = 'ga-full-screen';
         var inputsForbidCssClass = 'ga-full-screen-no-inputs';
