@@ -16,6 +16,7 @@
       var bringUpFront = function(el) {
         zIndex += 1;
         el.css('z-index', zIndex);
+        $rootScope.$emit('gaPopupFocused', el);
       };
       return {
         restrict: 'A',
@@ -53,7 +54,8 @@
           // Bring thre popup to front on click on it.
           element.find('.popover-content').click(function(evt) {
             evt.stopPropagation();
-            if (!scope.isReduced && scope.toggle) {
+            if (!scope.isReduced && scope.toggle &&
+                element.css('z-index') != zIndex) {
               bringUpFront(element);
             }
           });
@@ -164,6 +166,14 @@
               scope.options.close();
             }
           };
+
+          $rootScope.$on('gaPopupFocused', function(evt, el) {
+            var isFocused = (el == element);
+            if (scope.hasFocus != isFocused) {
+              scope.$broadcast('gaPopupFocusChange', isFocused);
+              scope.hasFocus = isFocused;
+            }
+          });
 
           element.addClass('popover');
           element.css('display', 'none'); // hidden by default

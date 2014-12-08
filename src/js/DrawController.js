@@ -7,7 +7,11 @@
   ]);
 
   module.controller('GaDrawController',
-      function($scope, $translate, gaGlobalOptions, gaStyleFactory) {
+      function($rootScope, $scope, $translate, gaGlobalOptions, gaStyleFactory) {
+        
+        $scope.$on('gaPopupFocusChange', function(evt, isFocus) {
+          $scope.options.hasPopupFocus = isFocus;
+        });
 
         // Defines static styles
         var white = [255, 255, 255];
