@@ -292,9 +292,11 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 	mkdir -p .build-artefacts
 	virtualenv --no-site-packages $@
 
+## Check compatibility with ol3 https://github.com/openlayers/ol3/blob/master/closure-util.json
 .build-artefacts/closure-library:
 	mkdir -p .build-artefacts
 	git clone http://github.com/google/closure-library/ $@
+	cd $@ && git reset --hard fb35d5232edef340dd9a7c6e479556829d0fa452 && cd ../../
 
 .build-artefacts/closure-compiler/compiler.jar: .build-artefacts/closure-compiler/compiler-latest.zip
 	unzip $< -d .build-artefacts/closure-compiler
