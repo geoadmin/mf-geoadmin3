@@ -55,4 +55,7 @@ td {
 
 .wy-table-responsive table th {
   white-space:normal;
+
+.wy-side-nav-search {
+  padding-top: 25px;//adjust padding since searchbox removed
 }
