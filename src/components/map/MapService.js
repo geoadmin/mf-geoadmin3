@@ -332,7 +332,10 @@
 
         // Create an ol WMS layer from GetCapabilities informations
         this.getOlLayerFromGetCapLayer = function(getCapLayer) {
-          var wmsParams = {LAYERS: getCapLayer.Name};
+          var wmsParams = {
+            LAYERS: getCapLayer.Name,
+            VERSION: getCapLayer.wmsVersion
+          };
           var wmsOptions = {
             url: getCapLayer.wmsUrl,
             label: getCapLayer.Title,
