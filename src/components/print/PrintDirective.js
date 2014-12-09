@@ -27,7 +27,7 @@
 
         // default values:
         $scope.layout = data.layouts[0];
-        $scope.dpi = data.dpis[0];
+        $scope.dpi = data.dpis;
         $scope.scales = data.scales;
         $scope.scale = data.scales[5];
         $scope.options.legend = false;
@@ -671,7 +671,8 @@
           rotation: -((view.getRotation() * 180.0) / Math.PI),
           app: 'config',
           lang: lang,
-          dpi: that.dpi.value,
+          //use a function to get correct dpi according to layout (A4/A3)
+          dpi: getDpi(that.layout.name, that.dpi),
           layers: encLayers,
           legends: encLegends,
           enableLegends: (encLegends && encLegends.length > 0),
@@ -699,6 +700,14 @@
         });
       });
     };
+
+    function getDpi(layoutName, dpiConfig) {
+      if (/a4/i.test(layoutName) && dpiConfig.length > 1) {
+        return dpiConfig[1].value;
+      } else {
+        return dpiConfig[0].value;
+      }
+    }
 
     var getPrintRectangleCenterCoord = function() {
       // Framebuffer size!!
