@@ -693,6 +693,8 @@ class Luftfahrthindernis(Base, Vector):
     __bodId__ = 'ch.bazl.luftfahrthindernis'
     __extended_info__ = True
     __label__ = 'obstacletype'
+    __queryable_attributes__ = ['sanctiontext', 'registrationnumber', 'obstacletype', 'state', 'maxheightagl',
+                                'topelevationamsl', 'totallength', 'startofconstruction', 'duration', 'abortionaccomplished']
     id = Column('bgdi_id', Integer, primary_key=True)
     sanctiontext = Column('sanctiontext', Text)
     registrationnumber = Column('registrationnumber', Text)
@@ -706,7 +708,6 @@ class Luftfahrthindernis(Base, Vector):
     duration = Column('duration', Text)
     geomtype = Column('geomtype', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
-    registrationnumber = Column('registrationnumber', Text)
     abortionaccomplished = Column('abortionaccomplished', Date)
     bgdi_created = Column('bgdi_created', Text)
 

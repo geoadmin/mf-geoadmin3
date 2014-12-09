@@ -396,7 +396,7 @@ def _attribute(request):
 
 
 def _query(request):
-    MaxFeatures = 50
+    MaxFeatures = 200
     geomFilter = None
     features = []
     params = _get_query_params(request)

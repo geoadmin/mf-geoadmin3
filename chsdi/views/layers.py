@@ -119,7 +119,12 @@ def feature_attributes(request):
     # Models for the same layer have the same attributes
     if models is None:
         raise exc.HTTPBadRequest('No Vector Table was found for %s' % layerId)
-    attributes = models[0]().getAttributesKeys()
+    model = models[0]
+    attributes = model().getAttributesKeys()
+    if hasattr(model, '__queryable_attributes__'):
+        queryable_attributes = model.__queryable_attributes__
+        attributes = list(set(attributes) & set(queryable_attributes))
+
     query = params.request.db.query(models[0])
     try:
         results = query.limit(SAMPLE_SIZE)
