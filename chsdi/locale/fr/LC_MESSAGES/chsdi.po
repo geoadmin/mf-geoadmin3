@@ -3420,6 +3420,9 @@ msgstr "Coordonnées CH1903/MN03"
 msgid "org.epsg.grid_4326"
 msgstr "Réseau de coordonnées WGS84"
 
+msgid "original_document_id"
+msgstr "Original-ID"
+
 msgid "originator"
 msgstr "Nom du requérant"
 
