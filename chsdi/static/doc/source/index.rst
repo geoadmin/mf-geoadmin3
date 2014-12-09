@@ -16,7 +16,7 @@
 .. raw:: html
 
   <div id="logo">
-    <img src="_static/bg_header_logo.jpg" alt="bg_header_logo">
+    <img src="_static/bg_header_logo.png" alt="bg_header_logo">
   </div>
 
 --------------------
