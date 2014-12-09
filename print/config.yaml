@@ -1,5 +1,5 @@
 # allowed DPIs
-dpis: [150]
+dpis: [150, 100]
 
 #
 # the list of allowed hosts
@@ -589,7 +589,545 @@ layouts:
 ##---------------------------------------
         - !columns
           absoluteX: 22
-          absoluteY: 820 
+          absoluteY: 820
+          width: 551
+          condition: "enableLegends"
+          items:
+            - !legends
+              horizontalAlignment: left
+              inline: false
+              defaultScale: 0.5
+              maxHeight: 798
+              iconMaxHeight: 798
+              iconMaxWidth: 250
+              columnMargin: 5
+              classIndentation: 3
+              classSpace: 5
+              backgroundColor: white
+              layerFontSize: 9
+
+#---------------------------------------
+# A3 landscape:
+#---------------------------------------
+  3 A3 landscape:
+    mainPage:
+      rotation: true
+      pageSize: A3
+      landscape: true
+#---------------------------------------
+# Map & overviewmap
+#---------------------------------------
+      items:
+        - !map
+          width: 1150
+          height: 777
+
+#---------------------------------------
+# Logo
+#---------------------------------------
+        - !columns
+          absoluteX: 20
+          absoluteY: 45
+          width: 123
+          items:
+              - !image
+                   align: left
+                   maxWidth: 123
+                   maxHeight: 35
+                   url: "${configDir}/logo_ch.png"
+
+#---------------------------------------
+# North arrow
+#---------------------------------------
+        - !columns
+          absoluteY: 783
+          absoluteX: 1008
+          width: 150
+          items:
+            - !image
+              rotation: '${rotation}'
+              align: right
+              maxWidth: 30
+              maxHeight: 30
+              url: "${configDir}/north_arrow.png"
+
+#---------------------------------------
+# QRCode
+#---------------------------------------
+        - !columns
+          absoluteY: 108
+          absoluteX: 1107
+          width: 64
+          items:
+            - !image
+              align: right
+              maxWidth: 64
+              maxHeight: 64
+              url: "${qrcodeurl}"
+
+#---------------------------------------
+# E part: copyright
+#---------------------------------------
+        - !columns
+          absoluteY: 70
+          absoluteX: 25
+          width: 300
+          items:
+            - !text
+              condition: langde
+              fontSize: 7
+              align: left
+              text: |
+                ${dataOwner}
+            - !text
+              condition: langfr
+              fontSize: 7
+              align: left
+              text: |
+                ${dataOwner}
+            - !text
+              condition: langen
+              fontSize: 7
+              align: left
+              text: |
+                ${dataOwner}
+            - !text
+              condition: langrm
+              fontSize: 7
+              align: left
+              text: |
+                ${dataOwner}
+            - !text
+              condition: langit
+              fontSize: 7
+              align: left
+              text: |
+                ${dataOwner}
+
+#---------------------------------------
+# G part
+#---------------------------------------
+        - !columns
+          absoluteY: 45
+          absoluteX: 153
+          width: 675
+          items:
+            - !text
+              condition: langde
+              fontSize: 7
+              align: left
+              text: |
+                www.geo.admin.ch ist ein Portal zur Einsicht von geolokalisierten Informationen, Daten und Diensten, die von öffentlichen Einrichtungen zur Verfügung gestellt werden
+            - !text
+              condition: langfr
+              fontSize: 7
+              align: left
+              text: |
+                www.geo.admin.ch est un portail d'accès aux informations géolocalisées, données et services qui sont mis à disposition par l'administration fédérale
+            - !text
+              condition: langen
+              fontSize: 7
+              align: left
+              text: |
+                www.geo.admin.ch is a portal provided by the Federal Authorities of the Swiss Confederation to gain insight on publicly accessible geographical information, data and services
+            - !text
+              condition: langrm
+              fontSize: 7
+              align: left
+              text: |
+                www.geo.admin.ch è in portal d'access ad infurmaziuns geolocalisadas, a datas ed a servetschs che vegnan mess a disposiziun da l'administraziun federala
+            - !text
+              condition: langit
+              fontSize: 7
+              align: left
+              text: |
+                www.geo.admin.ch è una piattaforma pubblica accessibile per la ricerca di geo-informazioni, i dati e servizi.
+
+#---------------------------------------
+# H part: disclaimer
+#---------------------------------------
+        - !columns
+          absoluteY: 30
+          absoluteX: 153
+          width: 1023
+          items:
+            - !text
+              condition: langde
+              fontSize: 7
+              align: left
+              text: |
+                Haftung: Obwohl die Bundesbehörden mit aller Sorgfalt auf die Richtigkeit der veröffentlichten Informationen achten, kann hinsichtlich der inhaltlichen Richtigkeit, Genauigkeit, Aktualität, Zuverlässigkeit und Vollständigkeit dieser Informationen keine Gewährleistung übernommen werden.Copyright, Bundesbehörden der Schweizerischen Eidgenossenschaft, 2007. http://www.disclaimer.admin.ch
+            - !text
+              condition: langfr
+              fontSize: 7
+              align: left
+              text: |
+                Responsabilité: Malgré la grande attention qu’elles portent à la justesse des informations diffusées sur ce site, les autorités fédérales ne peuvent endosser aucune responsabilité quant à la fidélité, à l’exactitude, à l’actualité, à la fiabilité et à l’intégralité de ces informations. Droits d'auteur: autorités de la Confédération suisse, 2007. http://www.disclaimer.admin.ch/conditions_dutilisation.html
+            - !text
+              condition: langen
+              fontSize: 7
+              align: left
+              text: |
+                Limitation of liability. Although every care has been taken by the Federal Authorities to ensure the accuracy of the information published, no warranty can be given in respect of the accuracy, reliability, up-to-dateness or completeness of this information. Copyright, Swiss federal authorities, 2007. http://www.disclaimer.admin.ch/terms_and_conditions.html
+            - !text
+              condition: langrm
+              fontSize: 7
+              align: left
+              text: |
+                Responsabladad: Malgrà che las autoritads dattan bain adatg che las infurmaziuns publitgadas sin questa pagina d'internet sajan correctas, na pon ellas surpigliar nagina responsabladad per la correctadad dal cuntegn, per l'exactezza, per l'actualitad, per l'autenticitad e per la cumplettezza da talas infurmaziuns. Copyright: autoritads da la confederaziun svizra, 2007. http://www.disclaimer.admin.ch
+            - !text
+              condition: langit
+              fontSize: 7
+              align: left
+              text: |
+                Responsabilità: Nonostante si presti grande attenzione all’esattezza delle informazioni pubblicate su questo sito, le autorità federali declinano ogni responsabilità per la fedeltà, l’esattezza, l’attualità, l’affidabilità e la completezza di tali informazioni. Diritti d’autore: autorità della Confederazione Svizzera, anno 2007. http://www.disclaimer.admin.ch/basi_legali.html
+
+#-------------------------------------
+# Scalesbar
+#-------------------------------------
+        - !columns
+          absoluteY: 93
+          absoluteX: 974
+          width: 128
+          config:
+            borderWidth: 0.5
+          items:
+              - !text
+                fontSize: 43
+                text: ' '
+                backgroundColor: white
+        - !columns
+          absoluteY: 88
+          absoluteX: 977
+          width: 124
+          nbColumns: 1
+          items:
+            - !scalebar
+                type: line
+                units: m
+                color: black
+                align: center
+                vertAlign: top
+                fontSize: 8
+                maxSize: 128
+            - !text
+              condition: langde
+              fontSize: 7
+              align: center
+              text: |
+                Massstab 1: ${format %,d scale}
+                Gedruckt am ${now dd.MM.yyyy HH:mm}
+                ${shortLink}
+            - !text
+              condition: langfr
+              fontSize: 7
+              align: center
+              text: |
+                Echelle 1: ${format %,d scale}
+                Imprimé le ${now dd.MM.yyyy HH:mm}
+                ${shortLink}
+            - !text
+              condition: langen
+              fontSize: 7
+              align: center
+              text: |
+                Scale 1: ${format %,d scale}
+                Printed on ${now dd.MM.yyyy HH:mm}
+                ${shortLink}
+            - !text
+              condition: langrm
+              fontSize: 7
+              align: center
+              text: |
+                Scala 1: ${format %,d scale}
+                Stampà il(s) ${now dd.MM.yyyy HH:mm}
+                ${shortLink}
+            - !text
+              condition: langit
+              fontSize: 7
+              align: center
+              text: |
+                Scala 1: ${format %,d scale}
+                Stampato il ${now dd.MM.yyyy HH:mm}
+                ${shortLink}
+    lastPage:
+      landscape: true
+      items:
+
+##--------------------------------------
+## Legend
+##--------------------------------------
+        - !columns
+          absoluteX: 22
+          absoluteY: 575
+          width: 798
+          condition: "enableLegends"
+          items:
+            - !legends
+              horizontalAlignment: left
+              inline: false
+              defaultScale: 0.5
+              maxHeight: 420
+              iconMaxHeight: 420
+              columnMargin: 5
+              classIndentation: 3
+              classSpace: 5
+              backgroundColor: white
+              layerFontSize: 9
+
+#---------------------------------------
+# A3 portrait:
+#---------------------------------------
+  4 A3 portrait:
+    mainPage:
+      pageSize: A3
+      rotation: true
+
+#---------------------------------------
+# Map & overviewmap
+#---------------------------------------
+      items:
+        - !map
+          width: 802
+          height: 1108
+
+#---------------------------------------
+# Logo
+#---------------------------------------
+        - !columns
+          absoluteX: 20
+          absoluteY: 58
+          width: 123
+          items:
+              - !image
+                   align: left
+                   maxWidth: 123
+                   maxHeight: 35
+                   url: "${configDir}/logo_ch.png"
+
+#---------------------------------------
+# North arrow
+#---------------------------------------
+        - !columns
+          absoluteY: 1140
+          absoluteX: 660
+          width: 150
+          items:
+            - !image
+              rotation: '${rotation}'
+              align: right
+              maxWidth: 30
+              maxHeight: 30
+              url: "${configDir}/north_arrow.png"
+
+#---------------------------------------
+# QRCode
+#---------------------------------------
+        - !columns
+          absoluteY: 125
+          absoluteX: 759
+          width: 64
+          items:
+            - !image
+              align: right
+              maxWidth: 64
+              maxHeight: 64
+              url: "${qrcodeurl}"
+
+#---------------------------------------
+# E part: copyright
+#---------------------------------------
+        - !columns
+          absoluteY: 85
+          absoluteX: 30
+          width: 300
+          items:
+            - !text
+              condition: langde
+              fontSize: 7
+              align: left
+              text: |
+                ${dataOwner}
+            - !text
+              condition: langfr
+              fontSize: 7
+              align: left
+              text: |
+                ${dataOwner}
+            - !text
+              condition: langen
+              fontSize: 7
+              align: left
+              text: |
+                ${dataOwner}
+            - !text
+              condition: langrm
+              fontSize: 7
+              align: left
+              text: |
+                ${dataOwner}
+            - !text
+              condition: langit
+              fontSize: 7
+              align: left
+              text: |
+                ${dataOwner}
+
+#---------------------------------------
+# G part
+#---------------------------------------
+        - !columns
+          absoluteY: 58
+          absoluteX: 153
+          width: 405
+          items:
+            - !text
+              condition: langde
+              fontSize: 6
+              align: left
+              text: |
+                www.geo.admin.ch ist ein Portal zur Einsicht von geolokalisierten Informationen, Daten und Diensten, die von öffentlichen Einrichtungen zur Verfügung gestellt werden
+            - !text
+              condition: langfr
+              fontSize: 6
+              align: left
+              text: |
+                www.geo.admin.ch est un portail d'accès aux informations géolocalisées, données et services qui sont mis à disposition par l'administration fédérale
+            - !text
+              condition: langen
+              fontSize: 6
+              align: left
+              text: |
+                www.geo.admin.ch is a portal provided by the Federal Authorities of the Swiss Confederation to gain insight on publicly accessible geographical information, data and services
+            - !text
+              condition: langrm
+              fontSize: 6
+              align: left
+              text: |
+                www.geo.admin.ch è in portal d'access ad infurmaziuns geolocalisadas, a datas ed a servetschs che vegnan mess a disposiziun da l'administraziun federala
+            - !text
+              condition: langit
+              fontSize: 6
+              align: left
+              text: |
+                www.geo.admin.ch è una piattaforma pubblica accessibile per la ricerca di geo-informazioni, i dati e servizi.
+
+#---------------------------------------
+# H part: disclaimer
+#---------------------------------------
+        - !columns
+          absoluteY: 43
+          absoluteX: 153
+          width: 675
+          items:
+            - !text
+              condition: langde
+              fontSize: 6
+              align: left
+              text: |
+                Haftung: Obwohl die Bundesbehörden mit aller Sorgfalt auf die Richtigkeit der veröffentlichten Informationen achten, kann hinsichtlich der inhaltlichen Richtigkeit, Genauigkeit, Aktualität, Zuverlässigkeit und Vollständigkeit dieser Informationen keine Gewährleistung übernommen werden.Copyright, Bundesbehörden der Schweizerischen Eidgenossenschaft, 2007. http://www.disclaimer.admin.ch
+            - !text
+              condition: langfr
+              fontSize: 6
+              align: left
+              text: |
+                Responsabilité: Malgré la grande attention qu'elles portent à la justesse des informations diffusées sur ce site, les autorités fédérales ne peuvent endosser aucune responsabilité quant à la fidélité, à l'exactitude, à l'actualité, à la fiabilité et à l'intégralité de ces informations. Droits d'auteur: autorités de la Confédération suisse, 2007. http://www.disclaimer.admin.ch/conditions_dutilisation.html
+            - !text
+              condition: langen
+              fontSize: 6
+              align: left
+              text: |
+                Limitation of liability. Although every care has been taken by the Federal Authorities to ensure the accuracy of the information published, no warranty can be given in respect of the accuracy, reliability, up-to-dateness or completeness of this information. Copyright, Swiss federal authorities, 2007. http://www.disclaimer.admin.ch/terms_and_conditions.html
+            - !text
+              condition: langrm
+              fontSize: 6
+              align: left
+              text: |
+                Responsabladad: Malgrà che las autoritads dattan bain adatg che las infurmaziuns publitgadas sin questa pagina d'internet sajan correctas, na pon ellas surpigliar nagina responsabladad per la correctadad dal cuntegn, per l'exactezza, per l'actualitad, per l'autenticitad e per la cumplettezza da talas infurmaziuns. Copyright: autoritads da la confederaziun svizra, 2007. http://www.disclaimer.admin.ch
+            - !text
+              condition: langit
+              fontSize: 6
+              align: left
+              text: |
+                Responsabilità: Nonostante si presti grande attenzione allâesattezza delle informazioni pubblicate su questo sito, le autorità federali declinano ogni responsabilità per la fedeltà, lâesattezza, lâattualità, lâaffidabilità e la completezza di tali informazioni. Diritti dâautore: autorità della Confederazione Svizzera, anno 2007. http://www.disclaimer.admin.ch/basi_legali.html
+
+#-------------------------------------
+# Scalesbar
+#-------------------------------------
+        - !columns
+          absoluteY: 107
+          absoluteX: 626
+          width: 128
+          config:
+            borderWidth: 0.5
+          items:
+              - !text
+                fontSize: 43
+                text: ' '
+                backgroundColor: white
+        - !columns
+          absoluteY: 102
+          absoluteX: 629
+          width: 124
+          nbColumns: 1
+          items:
+            - !scalebar
+                type: line
+                units: m
+                color: black
+                align: center
+                fontSize: 8
+                maxSize: 128
+            - !text
+              condition: langde
+              fontSize: 7
+              align: center
+              text: |
+                Massstab 1: ${format %,d scale}
+                Gedruckt am ${now dd.MM.yyyy HH:mm}
+                ${shortLink}
+            - !text
+              condition: langfr
+              fontSize: 7
+              align: center
+              text: |
+                Echelle 1: ${format %,d scale}
+                Imprimé le ${now dd.MM.yyyy HH:mm}
+                ${shortLink}
+            - !text
+              condition: langen
+              fontSize: 7
+              align: center
+              text: |
+                Scale 1: ${format %,d scale}
+                Printed on ${now dd.MM.yyyy HH:mm}
+                ${shortLink}
+            - !text
+              condition: langrm
+              fontSize: 7
+              align: center
+              text: |
+                Scala 1: ${format %,d scale}
+                Stampà il(s) ${now dd.MM.yyyy HH:mm}
+                ${shortLink}
+            - !text
+              condition: langit
+              fontSize: 7
+              align: center
+              text: |
+                Scala 1: ${format %,d scale}
+                Stampato il ${now dd.MM.yyyy HH:mm}
+                ${shortLink}
+    lastPage:
+      landscape: false
+      items:
+
+##---------------------------------------
+## Legend
+##---------------------------------------
+        - !columns
+          absoluteX: 22
+          absoluteY: 820
           width: 551
           condition: "enableLegends"
           items:
