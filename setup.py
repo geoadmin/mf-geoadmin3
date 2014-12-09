@@ -9,6 +9,7 @@ CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 requires = [
     'zc.buildout',
     'webtest',
+    'pyramid_mako',
     'pyramid',
     'pyramid_debugtoolbar',
     'waitress',
