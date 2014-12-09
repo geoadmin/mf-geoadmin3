@@ -181,7 +181,7 @@ prd/lib/: src/lib/d3-3.3.1.min.js src/lib/IE9Fixes.js src/lib/jQuery.XDomainRequ
 	mkdir -p $@
 	cp $^ $@
 
-prd/lib/build.js: src/lib/jquery-2.0.3.min.js src/lib/bootstrap-3.0.0.min.js src/lib/typeahead-0.9.3.min.js src/lib/angular-1.3.5.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/EPSG2056.js src/lib/EPSG32631.js src/lib/EPSG32632.js src/lib/ol.js src/lib/angular-translate-2.4.2.min.js src/lib/angular-translate-loader-static-files-2.4.2.min.js src/lib/fastclick.min.js src/lib/localforage.min.js src/lib/filesaver.min.js .build-artefacts/app.js
+prd/lib/build.js: src/lib/jquery-2.0.3.min.js src/lib/bootstrap-3.3.1.min.js src/lib/typeahead-0.9.3.min.js src/lib/angular-1.3.5.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/EPSG2056.js src/lib/EPSG32631.js src/lib/EPSG32632.js src/lib/ol.js src/lib/angular-translate-2.4.2.min.js src/lib/angular-translate-loader-static-files-2.4.2.min.js src/lib/fastclick.min.js src/lib/localforage.min.js src/lib/filesaver.min.js .build-artefacts/app.js
 	mkdir -p $(dir $@)
 	cat $^ | sed 's/^\/\/[#,@] sourceMappingURL=.*//' > $@
 
@@ -348,7 +348,7 @@ scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf .build-artefacts/
 	git clone https://github.com/openlayers/ol3.git $@
 
 .build-artefacts/bootstrap:
-	git clone https://github.com/twbs/bootstrap.git $@ && cd $@ && git checkout v3.0.0
+	git clone https://github.com/twbs/bootstrap.git $@ && cd $@ && git checkout v3.3.1
 
 .build-artefacts/fastclick:
 	git clone https://github.com/ftlabs/fastclick.git $@ && cd $@ && git checkout v1.0.3
