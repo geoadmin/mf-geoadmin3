@@ -3405,9 +3405,7 @@ msgstr "PLR Authority"
 msgid "oereb_status"
 msgstr "PLR State"
 
-msgid "oereb_url"
-msgstr "Cantonal geoportal"
-
+#. TODO
 msgid "official object webpage"
 msgstr "Official object webpage"
 
@@ -4161,6 +4159,30 @@ msgstr "Lr,e (n)"
 
 msgid "tt_emission_lre_t"
 msgstr "Lr,e (t)"
+
+msgid "tt_emission_nacht_tag_grund1"
+msgstr "Begr. 1 (Schienentyp) "
+
+msgid "tt_emission_nacht_tag_grund2"
+msgstr "Begr. 2 (Brückentyp) "
+
+msgid "tt_emission_nacht_tag_k1_t"
+msgstr "K1 (t) "
+
+msgid "tt_emission_nacht_tag_lin_nr_dfa"
+msgstr "DfA-Linie "
+
+msgid "tt_emission_nacht_tag_linienbeze"
+msgstr "Linienbezeichnung"
+
+msgid "tt_emission_nacht_tag_linienbeze"
+msgstr "Linienbezeichnung"
+
+msgid "tt_emission_nacht_tag_linienbeze"
+msgstr "Linienbezeichnung"
+
+msgid "tt_emission_nacht_tag_lre_t"
+msgstr "Lr,e (t) "
 
 msgid "tt_emission_typ_aender"
 msgstr "Bemerkung"
