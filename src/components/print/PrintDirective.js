@@ -391,6 +391,25 @@
           var stylesDict = {};
           var styleId = 0;
 
+          // Sort features by geometry type
+          var newFeatures = [];
+          var polygons = [];
+          var lines = [];
+          var points = [];
+
+          angular.forEach(features, function(feature) {
+            var geotype = feature.getGeometry().getType();
+            if (/^(Polygon|MultiPolygon|Circle|GeometryCollection)$/.
+                test(geotype)) {
+              polygons.push(feature);
+            } else if (/^(LineString|MultiLineString)$/.test(geotype)) {
+              lines.push(feature);
+            } else {
+              points.push(feature);
+            }
+          });
+          features = newFeatures.concat(polygons, lines, points);
+
           angular.forEach(features, function(feature) {
             var encStyle = {
               id: styleId
@@ -408,7 +427,7 @@
             var geometry = feature.getGeometry();
 
             // Transform an ol.geom.Circle to a ol.geom.Polygon
-            if (geometry.getType() === 'Circle') {
+            if (/Circle/.test(geometry.getType())) {
               var polygon = circleToPolygon(geometry);
               feature = new ol.Feature(polygon);
             }
