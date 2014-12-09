@@ -1,7 +1,7 @@
 <div>
   <div class="ga-topic-item" ng-class="{'ga-topic-active': topic.id == activeTopic}" ng-repeat="topic in
   topics" ng-click="setActiveTopic(topic.id)" data-original-title="{{topic.tooltip | translate}}">
-    <div translate>{{topic.label}}</div>
+    <div>{{topic.label}}</div>
     <img ng-src="{{topic.thumbnail}}" alt="" height="60" width="110" draggable="false" >
   </div>
 </div>
