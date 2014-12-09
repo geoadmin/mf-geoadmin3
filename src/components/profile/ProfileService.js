@@ -19,8 +19,6 @@
 
         var onD3Loaded = function() {
           d3 = $window.d3;
-          x = d3.scale.linear().range([0, width]);
-          y = d3.scale.linear().range([height, 0]);
           lazyLoadCB();
         };
 
@@ -112,19 +110,22 @@
 
         this.create = function(data) {
           var that = this;
-          this.data = this.formatData(data);
 
+          x = d3.scale.linear().range([0, width]);
+          y = d3.scale.linear().range([height, 0]);
+
+          this.data = this.formatData(data);
           this.domain = getXYDomains(that.data);
           var axis = createAxis(this.domain);
           var element = document.createElement('DIV');
           element.className = 'ga-profile-inner';
 
-          var svg = d3.select(element).append('svg')
+          this.svg = d3.select(element).append('svg')
               .attr('width', width + marginHoriz)
               .attr('height', height + marginVert)
               .attr('class', 'ga-profile-svg');
 
-          var group = svg
+          var group = this.svg
             .append('g')
               .attr('class', 'ga-profile-group')
               .attr('transform', 'translate(' + options.margin.left +
@@ -168,14 +169,8 @@
 
           this.group = group;
 
-          var legend = group.append('g')
+          group.append('text')
               .attr('class', 'ga-profile-legend')
-              .attr('x', width - 65)
-              .attr('y', 10)
-              .attr('width', 100)
-              .attr('height', 100);
-
-          legend.append('text')
               .attr('x', width - 113)
               .attr('y', 11)
               .attr('width', 100)
@@ -210,33 +205,55 @@
               .text($translate.instant(options.yLabel) + ' [m]');
         };
 
-        this.update = function(data) {
+        this.update = function(data, size) {
           var that = this;
-          this.data = this.formatData(data);
-
+          var transitionTime = 1500;
+          if (size) {
+            transitionTime = 250;
+            width = size[0] - marginHoriz;
+            height = size[1] - marginVert;
+            x = d3.scale.linear().range([0, width]);
+            y = d3.scale.linear().range([height, 0]);
+            this.svg.transition().duration(transitionTime)
+              .attr('width', width + marginHoriz + 0)
+              .attr('height', height + marginVert)
+              .attr('class', 'ga-profile-svg');
+            this.group.select('text.ga-profile-label-x')
+              .transition().duration(transitionTime)
+                .attr('x', width / 2)
+                .attr('y', height + options.margin.bottom - 2)
+                .style('text-anchor', 'middle');
+            this.group.select('text.ga-profile-legend')
+              .transition().duration(transitionTime)
+                .attr('x', width - 113)
+                .attr('y', 11)
+                .text('swissALTI3D/DHM25');
+          } else {
+            this.data = this.formatData(data);
+          }
           this.domain = getXYDomains(that.data);
           var axis = createAxis(this.domain);
           var area = createArea(this.domain, 'cardinal');
           var path = this.group.select('.ga-profile-area');
           path.datum(that.data)
-            .transition().duration(1500)
+            .transition().duration(transitionTime)
               .attr('class', 'ga-profile-area')
               .attr('d', area);
 
           this.group.select('g.x')
-            .transition().duration(1500)
+            .transition().duration(transitionTime)
               .call(axis.X);
           this.group.select('g.y')
-            .transition().duration(1500)
+            .transition().duration(transitionTime)
               .call(axis.Y);
           this.group.select('g.ga-profile-grid-x')
-            .transition().duration(1500)
+            .transition().duration(transitionTime)
               .call(axis.X
                   .tickSize(-height, 0, 0)
                   .tickFormat('')
               );
           this.group.select('g.ga-profile-grid-y')
-            .transition().duration(1500)
+            .transition().duration(transitionTime)
               .call(axis.Y
                   .tickSize(-width, 0, 0)
                   .tickFormat('')

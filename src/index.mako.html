@@ -497,11 +497,10 @@ itemscope itemtype="http://schema.org/WebApplication"
     </div><!-- end Import KML -->
    
     <!-- Popup: Measure -->
-    <div ga-popup="globals.isMeasureActive"
-         ga-popup-options="{title:'measure',showPrint:true, help:'66'}"
-         ga-draggable=".popover-title"
-         id="measure-popup" >
-      <div ng-controller="GaMeasureController">
+    <div ng-controller="GaMeasureController">
+      <div ga-popup="globals.isMeasureActive"
+           ga-popup-options="{title:'measure',showPrint:true, print: print, help:'66', x:'auto', y:'auto'}"
+           id="measure-popup" >
         <div ga-measure 
              ga-measure-map="map" 
              ga-measure-options="options" 

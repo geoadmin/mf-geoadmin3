@@ -6,17 +6,19 @@
     this.$get = function($window) {
       var Print = function() {
 
-        this.htmlPrintout = function(body, head) {
+        this.htmlPrintout = function(body, head, onLoad) {
           var windowPrint = $window.open('', '', 'height=400, width=600');
-          windowPrint.document.write(buildHtml(body, head));
+          windowPrint.document.write(buildHtml(body, head, onLoad));
           windowPrint.document.close();
         };
 
-        var buildHtml = function(body, head) {
+        var buildHtml = function(body, head, onLoad) {
+          window.printOnLoad = onLoad;
           var html = '';
           html += '<html><head>';
-          html += (typeof head == 'undefined') ? getStylesheetString() : head;
-          html += '</head><body onload="window.print(); window.close();">';
+          html += head || getStylesheetString();
+          html += '</head><body onload=\'window.opener.printOnLoad(window);' +
+              'window.print(); window.close();\'>';
           html += body;
           html += '</body></html>';
           return html;
@@ -31,7 +33,6 @@
           return html;
         };
       };
-
       return new Print();
     };
   });

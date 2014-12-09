@@ -48,15 +48,20 @@
               }
             });
 
-            $rootScope.$on('$translateChangeEnd', function() {
-              if (angular.isDefined(profile)) {
+            $rootScope.$on('gaProfileDataUpdated', function(ev, data, size) {
+              if (size) {
+                profile.update(data, size);
+              } else {
+                profile.update(data);
                 profile.updateLabels();
               }
             });
 
-            $rootScope.$on('gaProfileDataUpdated', function(ev, data) {
-              profile.update(data);
-              profile.updateLabels();
+
+            $rootScope.$on('$translateChangeEnd', function() {
+              if (angular.isDefined(profile)) {
+                profile.updateLabels();
+              }
             });
 
             function attachPathListeners(areaChartPath) {

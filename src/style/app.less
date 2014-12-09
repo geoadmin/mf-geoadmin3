@@ -716,9 +716,19 @@ a .ga-icon-separator {
 }
 
 #measure-popup {
+  @media (max-width: @screen-tablet) {
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+  }
+
   max-width: none;
   max-height: none;
-  overflow: visible;
+  overflow: hidden;
+  bottom: 26px;
+  border-radius: 0;
+  background-clip: initial;
+  height: 300px;
 
   .ga-popup-content {
     max-height: inherit;
