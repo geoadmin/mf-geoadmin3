@@ -1,18 +1,29 @@
 # -*- coding: utf-8 -*-
 
 <%
-  c = feature['feature']
   protocol = request.scheme
-  c['bbox'] = feature.get('bbox')
-  c['scale'] = feature.get('scale')
+  lang = request.lang
+  topic = request.matchdict.get('map')
+
+  c = {}
+
+  if hasattr(feature['feature'], 'properties'):
+    c.update(feature['feature']);
+    c['attributes'] =  feature['feature'].properties
+    c['attributes'].update(feature['feature'].extra);
+    c['bbox'] =  feature['feature'].extra['bbox']
+
+  else:
+    c = feature['feature']
+    c['bbox'] = feature.get('bbox')
+    c['scale'] = feature.get('scale')
+  
   c['stable_id'] = False
   c['baseUrl'] = h.make_agnostic(''.join((protocol, '://', request.registry.settings['geoadminhost'])))
   c['attribution'] = feature['attribution']
   c['fullName'] = feature['fullName']
   extended = feature['extended']
-  lang = request.lang
-  topic = request.matchdict.get('map')
-%>
+ %>
 
 % if extended:
   <head>
