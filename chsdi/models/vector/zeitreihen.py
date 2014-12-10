@@ -116,3 +116,64 @@ register('ch.swisstopo.zeitreihen', Zeitreihen_15)
 register('ch.swisstopo.zeitreihen', Zeitreihen_20)
 register('ch.swisstopo.zeitreihen', Zeitreihen_21)
 register('ch.swisstopo.zeitreihen', Zeitreihen_22)
+
+
+class Zeitreihen_Metadata_15(Base, Vector):
+    # view in a schema
+    __tablename__ = 'meta_15'
+    __table_args__ = ({'schema': 'public', 'autoload': False})
+    __minresolution__ = 10.05
+    __maxresolution__ = 500005
+    __bodId__ = 'ch.swisstopo.zeitreihen_meta'
+
+    id = Column('gid', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    release_year = Column('release_year', Integer)
+    bgdi_order = Column('bgdi_order', Integer)
+
+
+class Zeitreihen_Metadata_20(Base, Vector):
+    # view in a schema
+    __tablename__ = 'meta_20'
+    __table_args__ = ({'schema': 'public', 'autoload': False})
+    __minresolution__ = 5.05
+    __maxresolution__ = 10.05
+    __bodId__ = 'ch.swisstopo.zeitreihen_meta'
+
+    id = Column('gid', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    release_year = Column('release_year', Integer)
+    bgdi_order = Column('bgdi_order', Integer)
+
+
+class Zeitreihen_Metadata_21(Base, Vector):
+    # view in a schema
+    __tablename__ = 'meta_21'
+    __table_args__ = ({'schema': 'public', 'autoload': False})
+    __minresolution__ = 2.55
+    __maxresolution__ = 5.05
+    __bodId__ = 'ch.swisstopo.zeitreihen_meta'
+
+    id = Column('gid', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    release_year = Column('release_year', Integer)
+    bgdi_order = Column('bgdi_order', Integer)
+
+
+class Zeitreihen_Metadata_22(Base, Vector):
+    # view in a schema
+    __tablename__ = 'meta_22'
+    __table_args__ = ({'schema': 'public', 'autoload': False})
+    __minresolution__ = 0
+    __maxresolution__ = 2.55
+    __bodId__ = 'ch.swisstopo.zeitreihen_meta'
+
+    id = Column('gid', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    release_year = Column('release_year', Integer)
+    bgdi_order = Column('bgdi_order', Integer)
+
+register('ch.swisstopo.zeitreihen_meta', Zeitreihen_Metadata_15)
+register('ch.swisstopo.zeitreihen_meta', Zeitreihen_Metadata_20)
+register('ch.swisstopo.zeitreihen_meta', Zeitreihen_Metadata_21)
+register('ch.swisstopo.zeitreihen_meta', Zeitreihen_Metadata_22)

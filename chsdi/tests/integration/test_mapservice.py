@@ -400,7 +400,7 @@ class TestReleasesService(TestsBase):
         params = {'imageDisplay': '500,600,96', 'mapExtent': '611399.9999999999,158650,690299.9999999999,198150'}
         resp = self.testapp.get('/rest/services/all/MapServer/' + zlayer + '/releases', params=params, status=200)
         self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(len(resp.json['results']) == 46, len(resp.json['results']))
+        self.failUnless(len(resp.json['results']) == 122, len(resp.json['results']))
 
     def test_missing_params(self):
         params = {'mapExtent': '611399.9999999999,158650,690299.9999999999,198150'}
@@ -410,9 +410,7 @@ class TestReleasesService(TestsBase):
 
     def test_layer_without_releases(self):
         params = {'imageDisplay': '500,600,96', 'mapExtent': '611399.9999999999,158650,690299.9999999999,198150'}
-        resp = self.testapp.get('/rest/services/all/MapServer/ch.swisstopo.images-swissimage.metadata/releases', params=params, status=200)
-        self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(len(resp.json['results']) == 0, len(resp.json['results']))
+        resp = self.testapp.get('/rest/services/all/MapServer/ch.swisstopo.images-swissimage.metadata/releases', params=params, status=400)
 
     def test_unknown_layers(self):
         params = {'imageDisplay': '500,600,96', 'mapExtent': '611399.9999999999,158650,690299.9999999999,198150'}
