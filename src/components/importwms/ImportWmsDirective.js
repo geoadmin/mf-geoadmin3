@@ -17,7 +17,6 @@
           // The layerXXXX properties use layer objects from the parsing of
           // a  GetCapabilities file, not ol layer object.
           $scope.layers = [];
-          $scope.wmsVersion;
           $scope.options.layerSelected = null; // the layer selected on click
           $scope.options.layerHovered = null;
 
@@ -78,7 +77,6 @@
 
             try {
               var result = new ol.format.WMSCapabilities().read(data);
-              $scope.wmsVersion = result.version;
               $scope.userMessage = (result.Service.MaxWidth) ?
                   $translate.instant('wms_max_size_allowed') + ' ' +
                     result.Service.MaxWidth +
@@ -86,7 +84,8 @@
 
               if (result.Capability.Layer) {
                 var root = getChildLayers(result.Capability.Layer,
-                    $scope.map.getView().getProjection().getCode());
+                    $scope.map.getView().getProjection().getCode(),
+                    result.version);
                 if (root) {
                   $scope.layers = root.Layer;
                 }
@@ -164,7 +163,7 @@
 
           // Go through all layers, assign needed properties,
           // and remove useless layers (no name or bad crs without childs)
-          var getChildLayers = function(layer, projCode) {
+          var getChildLayers = function(layer, projCode, wmsVersion) {
 
             // If projCode is undefined that means the parent layer can be
             // displayed with the current map projection, since it's an herited
@@ -186,7 +185,7 @@
 
             if (!layer.isInvalid) {
               layer.wmsUrl = $scope.fileUrl;
-              layer.wmsVersion = $scope.wmsVersion;
+              layer.wmsVersion = wmsVersion;
               layer.id = 'WMS||' + layer.wmsUrl + '||' + layer.Name;
               layer.extent = getLayerExtentFromGetCap(layer);
             }
@@ -195,7 +194,7 @@
             if (layer.Layer) {
 
               for (var i = 0; i < layer.Layer.length; i++) {
-                var l = getChildLayers(layer.Layer[i], projCode);
+                var l = getChildLayers(layer.Layer[i], projCode, wmsVersion);
                 if (!l) {
                   layer.Layer.splice(i, 1);
                   i--;
