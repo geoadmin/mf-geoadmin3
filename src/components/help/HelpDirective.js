@@ -24,7 +24,7 @@
    * <span ga-help="12,13,14"></div>
   */
   module.directive('gaHelp',
-      function(gaHelpService, gaPopup) {
+      function($rootScope, gaHelpService, gaPopup) {
         var popupContent = '<div class="ga-help-content" ' +
                                 'ng-repeat="res in options.results">' +
                              '<h2 ng-bind="res[1]"></h2>' +
@@ -115,7 +115,7 @@
                 updateContent(true);
 
                 //react on language change
-                scope.$on('$translateChangeEnd', function() {
+                $rootScope.$on('$translateChangeEnd', function() {
                   //Remove old content _without destroying the array_
                   //The below is used because it's fastest and is
                   //best supported across browsers
