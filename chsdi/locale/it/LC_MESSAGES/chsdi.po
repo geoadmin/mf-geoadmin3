@@ -1551,10 +1551,6 @@ msgstr "ch.bazl.luftfahrthindernis.abortionaccomplished"
 msgid "ch.bazl.luftfahrthindernis.duration"
 msgstr "Durata dell'installazione"
 
-#. TODO
-msgid "ch.bazl.luftfahrthindernis.geometriedaten"
-msgstr "ch.bazl.luftfahrthindernis.geometriedaten"
-
 msgid "ch.bazl.luftfahrthindernis.lk100"
 msgstr "Numero della carta [CN100]"
 
@@ -3922,6 +3918,15 @@ msgstr "Nome"
 msgid "tt_ch.bakom.versorgungsgebiet_prog"
 msgstr "Programmi"
 
+msgid "tt_ch.bazl.abortionaccomplished"
+msgstr "Durata dell'installazione"
+
+msgid "tt_ch.bazl.elevation"
+msgstr "Altezza massima AMSL [m]"
+
+msgid "tt_ch.bazl.geometriedaten"
+msgstr "Dati di geometria"
+
 msgid "tt_ch.bazl.hindernisart"
 msgstr "Tipo di ostacolo"
 
@@ -3930,6 +3935,18 @@ msgstr "Numero della carta [CN100]"
 
 msgid "tt_ch.bazl.markierung"
 msgstr "Marcatura / segnalazione lum."
+
+msgid "tt_ch.bazl.maxheight"
+msgstr "Altezza massima AGL [m]"
+
+msgid "tt_ch.bazl.registrationnummer"
+msgstr "Numero di registrazione"
+
+msgid "tt_ch.bazl.startofconstruction"
+msgstr "Inizio lavori"
+
+msgid "tt_ch.bazl.totallength"
+msgstr "Lunghezza totale [m]"
 
 msgid "tt_ch.bazl_longtext"
 msgstr "Gli ostacoli possono contenere discrepanze per quanto riguarda la completezza, così come il monitoraggio delle loro posizioni e altezze."

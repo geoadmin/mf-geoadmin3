@@ -1551,10 +1551,6 @@ msgstr "ch.bazl.luftfahrthindernis.abortionaccomplished"
 msgid "ch.bazl.luftfahrthindernis.duration"
 msgstr "Durée d'installation"
 
-#. TODO
-msgid "ch.bazl.luftfahrthindernis.geometriedaten"
-msgstr "ch.bazl.luftfahrthindernis.geometriedaten"
-
 msgid "ch.bazl.luftfahrthindernis.lk100"
 msgstr "Numéro de la carte [CN100]"
 
@@ -3922,6 +3918,15 @@ msgstr "Nom"
 msgid "tt_ch.bakom.versorgungsgebiet_prog"
 msgstr "Programmes"
 
+msgid "tt_ch.bazl.abortionaccomplished"
+msgstr "Durée d'installation"
+
+msgid "tt_ch.bazl.elevation"
+msgstr "Altitude maximale AMSL [m]"
+
+msgid "tt_ch.bazl.geometriedaten"
+msgstr "Données géométriques"
+
 msgid "tt_ch.bazl.hindernisart"
 msgstr "Genre d'obstacle"
 
@@ -3930,6 +3935,18 @@ msgstr "Numéro de la carte [CN100]"
 
 msgid "tt_ch.bazl.markierung"
 msgstr "Marquage / balisage lum."
+
+msgid "tt_ch.bazl.maxheight"
+msgstr "Hauteur maximale AGL [m]"
+
+msgid "tt_ch.bazl.registrationnummer"
+msgstr "Numéro du registre"
+
+msgid "tt_ch.bazl.startofconstruction"
+msgstr "Début des travaux"
+
+msgid "tt_ch.bazl.totallength"
+msgstr "Longueur totale [m]"
 
 msgid "tt_ch.bazl_longtext"
 msgstr "Les données d'obstacles peuvent présenter des divergences au niveau de l'intégralité, de l'actualisation et de la situation géographique."

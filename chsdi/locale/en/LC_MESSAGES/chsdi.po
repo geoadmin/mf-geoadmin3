@@ -1553,10 +1553,6 @@ msgid "ch.bazl.luftfahrthindernis.duration"
 msgstr "ch.bazl.luftfahrthindernis.duration"
 
 #. TODO
-msgid "ch.bazl.luftfahrthindernis.geometriedaten"
-msgstr "ch.bazl.luftfahrthindernis.geometriedaten"
-
-#. TODO
 msgid "ch.bazl.luftfahrthindernis.lk100"
 msgstr "ch.bazl.luftfahrthindernis.lk100"
 
@@ -3933,6 +3929,15 @@ msgstr "Name"
 msgid "tt_ch.bakom.versorgungsgebiet_prog"
 msgstr "Channels"
 
+msgid "tt_ch.bazl.abortionaccomplished"
+msgstr "Duration of installation"
+
+msgid "tt_ch.bazl.elevation"
+msgstr "Maximum top elevation AMSL [m]"
+
+msgid "tt_ch.bazl.geometriedaten"
+msgstr "Geometry data"
+
 msgid "tt_ch.bazl.hindernisart"
 msgstr "Obstacle type"
 
@@ -3941,6 +3946,18 @@ msgstr "Map number [NM100]"
 
 msgid "tt_ch.bazl.markierung"
 msgstr "Marking / navigation lights"
+
+msgid "tt_ch.bazl.maxheight"
+msgstr "Maximum height AGL [m]"
+
+msgid "tt_ch.bazl.registrationnummer"
+msgstr "Registration number"
+
+msgid "tt_ch.bazl.startofconstruction"
+msgstr "Start of construction"
+
+msgid "tt_ch.bazl.totallength"
+msgstr "Total length [m]"
 
 msgid "tt_ch.bazl_longtext"
 msgstr "The aviation obstacle data may include deviations regarding it's completeness, up-to-date map maintenance as well as regarding the bearing- and hight positions of obstalces."

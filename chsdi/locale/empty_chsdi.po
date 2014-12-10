@@ -1688,7 +1688,25 @@ msgstr ""
 msgid "tt_wrz_select_kanton"
 msgstr ""
 
-msgid "ch.bazl.luftfahrthindernis.geometriedaten"
+msgid "tt_ch.bazl.totallength"
+msgstr ""
+
+msgid "tt_ch.bazl.elevation"
+msgstr ""
+
+msgid "tt_ch.bazl.maxheight"
+msgstr ""
+
+msgid "tt_ch.bazl.geometriedaten"
+msgstr ""
+
+msgid "tt_ch.bazl.abortionaccomplished"
+msgstr ""
+
+msgid "tt_ch.bazl.startofconstruction"
+msgstr ""
+
+msgid "tt_ch.bazl.registrationnummer"
 msgstr ""
 
 msgid "tt_sachplan-infrastruktur-schiene_aus_anlage"
@@ -4819,14 +4837,17 @@ msgstr ""
 msgid "geocover_basisdatensatz"
 msgstr ""
 
+msgid "original_document_id"
+msgstr ""
+
 msgid "ch.bazl.luftfahrthindernis.sanctiontext"
-msgstr "" 
+msgstr ""
 
 msgid "ch.bazl.luftfahrthindernis.lk100"
 msgstr ""
 
 msgid "ch.bazl.luftfahrthindernis.obstacletype"
-msgstr "" 
+msgstr ""
 
 msgid "ch.bazl.luftfahrthindernis.state"
 msgstr ""
@@ -4835,7 +4856,7 @@ msgid "ch.bazl.luftfahrthindernis.maxheightagl"
 msgstr ""
 
 msgid "ch.bazl.luftfahrthindernis.topelevationamsl"
-msgstr "" 
+msgstr ""
 
 msgid "ch.bazl.luftfahrthindernis.totallength"
 msgstr ""
@@ -4852,5 +4873,3 @@ msgstr ""
 msgid "ch.bazl.luftfahrthindernis.abortionaccomplished"
 msgstr ""
 
-msgid "original_document_id"
-msgstr ""

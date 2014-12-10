@@ -1550,10 +1550,6 @@ msgstr "Abbruch ausgeführt"
 msgid "ch.bazl.luftfahrthindernis.duration"
 msgstr "Anlagedauer"
 
-#. TODO
-msgid "ch.bazl.luftfahrthindernis.geometriedaten"
-msgstr "ch.bazl.luftfahrthindernis.geometriedaten"
-
 msgid "ch.bazl.luftfahrthindernis.lk100"
 msgstr "Kartennummer [LK100]"
 
@@ -3921,6 +3917,15 @@ msgstr "Name"
 msgid "tt_ch.bakom.versorgungsgebiet_prog"
 msgstr "Programme"
 
+msgid "tt_ch.bazl.abortionaccomplished"
+msgstr "Anlagedauer"
+
+msgid "tt_ch.bazl.elevation"
+msgstr "Maximale Meereshöhe AMSL [m]"
+
+msgid "tt_ch.bazl.geometriedaten"
+msgstr "Geometriedaten"
+
 msgid "tt_ch.bazl.hindernisart"
 msgstr "Hindernisart"
 
@@ -3929,6 +3934,18 @@ msgstr "Kartennummer [LK100]"
 
 msgid "tt_ch.bazl.markierung"
 msgstr "Markierung / Befeuerung"
+
+msgid "tt_ch.bazl.maxheight"
+msgstr "Maximale Höhe AGL [m]"
+
+msgid "tt_ch.bazl.registrationnummer"
+msgstr "Register-Nummer"
+
+msgid "tt_ch.bazl.startofconstruction"
+msgstr "Baubeginn"
+
+msgid "tt_ch.bazl.totallength"
+msgstr "Gesamtlänge [m]"
 
 msgid "tt_ch.bazl_longtext"
 msgstr "Die Luftfahrthindernisdaten können bezüglich der Vollständigkeit, der Nachführung sowie der Lage- und Höhenpositionen von Hindernissen Abweichungen enthalten."
