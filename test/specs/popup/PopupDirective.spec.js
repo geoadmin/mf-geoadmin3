@@ -57,15 +57,24 @@ describe('ga_popup_directive', function() {
     expect($rootScope.popupShown).to.be(false);
   }));
 
-  it('increases z-index on click', inject(function($rootScope) {
+  it('increases z-index on click', inject(function($rootScope, $compile) {
+    var element2 = angular.element(
+        '<div ga-popup="popup2Shown" ga-popup-options="{title:\'Title popup2\'}"></div>');
+    $compile(element2)($rootScope);
     $rootScope.popupShown = true;
+    $rootScope.popup2Shown = true;
     $rootScope.$digest();
     expect(element.css('display')).to.be('block');
 
     element.find('.ga-popup-content').click();
     var zIndex = parseInt(element.css('z-index'));
+    //click on same element does not change z-index
     element.find('.ga-popup-content').click();
-    var newZIndex = parseInt(element.css('z-index'));
+    var zIndex2 = parseInt(element.css('z-index'));
+    expect(zIndex2 == zIndex).to.be(true);
+    //clicking on other popup changes z-index
+    element2.find('.ga-popup-content').click();
+    var newZIndex = parseInt(element2.css('z-index'));
     expect(newZIndex > zIndex).to.be(true);
 
     element.find('.ga-popup-title').click();

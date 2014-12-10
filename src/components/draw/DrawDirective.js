@@ -137,9 +137,7 @@
               scope.$apply();
             });
 
-            if (scope.isActive) {
-              map.addInteraction(draw);
-            }
+            map.addInteraction(draw);
           };
 
           var deactivateDrawInteraction = function() {
@@ -157,9 +155,7 @@
             deactivateDrawInteraction();
             deactivateSelectInteraction();
             deactivateModifyInteraction();
-            if (scope.isActive) {
-              select.setActive(true);
-            }
+            select.setActive(true);
           };
 
           var deactivateSelectInteraction = function() {
@@ -172,11 +168,9 @@
           var activateModifyInteraction = function() {
             activateSelectInteraction();
 
-            if (scope.isActive) {
-              modify.setActive(true);
-              if (!gaBrowserSniffer.mobile) {
-                viewport.on('mousemove', updateCursorStyleDebounced);
-              }
+            modify.setActive(true);
+            if (!gaBrowserSniffer.mobile) {
+              viewport.on('mousemove', updateCursorStyleDebounced);
             }
           };
 
