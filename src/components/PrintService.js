@@ -13,7 +13,7 @@
         };
 
         var buildHtml = function(body, head, onLoad) {
-          window.printOnLoad = onLoad;
+          window.printOnLoad = onLoad || function() {};
           var html = '';
           html += '<html><head>';
           html += head || getStylesheetString();
