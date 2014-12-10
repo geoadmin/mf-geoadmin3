@@ -7,10 +7,9 @@
     'ga_urlutils_service',
     'pascalprecht.translate'
   ]);
-
   module.controller('GaMeasureController',
-      function($scope, $translate, $http, $rootScope, gaGlobalOptions,
-          gaUrlUtils) {
+      function($scope, $translate, $http, $rootScope, $window, gaBrowserSniffer,
+          gaGlobalOptions, gaUrlUtils, gaPrintService, $timeout) {
         $scope.options = {
           isProfileActive: false,
           profileUrl: gaGlobalOptions.apiUrl + '/rest/services/profile.json',
@@ -23,8 +22,7 @@
                 bottom: 40,
                 left: 60
               },
-              width: 600,
-              height: 350,
+              height: 250,
               elevationModel: 'COMB'
           },
           styleFunction: (function() {
@@ -99,6 +97,7 @@
           }
         })();
         
+        var win = $($window);
         var isProfileCreated = false;
         var createProfile = function(feature, callback) {
           var coordinates = feature.getGeometry().getCoordinates();
@@ -111,7 +110,11 @@
           if (!callback) {
             callback = function(data, status) {
               isProfileCreated = true;
-              $rootScope.$broadcast('gaProfileDataLoaded', data);
+              // Profile width is dynamic, so before the first loading we must 
+              // set the good value.
+              // 32 is the padding and margin of the popup.
+              $scope.options.profileOptions.width = win.width() - $('[ga-measure]').width() - 32;
+              $rootScope.$emit('gaProfileDataLoaded', data);
             };
           }
           http.success(callback);
@@ -123,17 +126,57 @@
 
         var updateProfile = function(feature) {
           createProfile(feature, function(data, status) {
-            $rootScope.$broadcast('gaProfileDataUpdated', data);
+            $rootScope.$emit('gaProfileDataUpdated', data);
           });
         };
 
-       $scope.options.drawProfile = function(feature) {
-         if (!isProfileCreated) {
-           createProfile(feature);
-         } else {
-           updateProfile(feature);
-         }
-       }
+        $scope.options.drawProfile = function(feature) {
+          if (!isProfileCreated) {
+            createProfile(feature);
+          } else {
+            updateProfile(feature);
+          }
+        }
 
+        var panel;
+        var panelBt;
+        win.on('resize', function() {
+          if (isProfileCreated) {
+            if (!panel) {
+              panel = $('.ga-measure-panel');
+              panelBt =  $('.ga-measure-buttons-panel');
+            }
+            // 69 padding and margins 
+            $scope.options.profileOptions.width = win.width() - panel.width() -
+                panelBt.width() - 69;
+            $rootScope.$emit('gaProfileDataUpdated', null, [
+              $scope.options.profileOptions.width,
+              $scope.options.profileOptions.height
+            ]);
+          }
+        });
+
+        // Allow to print dynamic profile from measure popup
+        $scope.print = function() {
+          var contentEl = $('#measure-popup .ga-popup-content');
+          var onLoad = function(printWindow) {
+            var profile = $(printWindow.document).find('[ga-profile]');
+            // HACK IE, for some obscure reason an A4 page in IE is not
+            // 600 pixels width so calculation of the scale is not optimal.
+            var b = (gaBrowserSniffer.msie) ? 1000 : 600;
+            // Same IE mistery here, a js error occurs using jQuery width() function.
+            var a = parseInt(profile.find('svg').attr('width'), 10);
+            var scale = b / a;
+            profile.css({
+              position: 'absolute',
+              left: (-(a - a * scale) / 2) + 'px',
+              top: '200px',
+              transform: 'scale(' + scale + ')'
+            });
+          }
+          $timeout(function() {
+            gaPrintService.htmlPrintout(contentEl.clone().html(), undefined, onLoad);
+          }, 0, false);
+        }; 
       });
 })();
