@@ -697,7 +697,7 @@
               }
             };
 
-            scope.$on('$translateChangeEnd', function() {
+            $rootScope.$on('$translateChangeEnd', function() {
               if (angular.isDefined(currentTopic)) {
                 triggerSearch(LAYERS);
               }

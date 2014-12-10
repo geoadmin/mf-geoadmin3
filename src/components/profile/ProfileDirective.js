@@ -48,7 +48,7 @@
               }
             });
 
-            scope.$on('$translateChangeEnd', function() {
+            $rootScope.$on('$translateChangeEnd', function() {
               if (angular.isDefined(profile)) {
                 profile.updateLabels();
               }
