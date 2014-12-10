@@ -5,6 +5,7 @@
 .btn [class^="icon-"].icon-large,.btn [class*=" icon-"].icon-large{margin-top:-0.5em;}
 a [class^="icon-"],a [class*=" icon-"]{cursor:pointer;}
 .icon-search{*zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf002;');}
+.icon-remove{*zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf00d;');}
 .icon-zoom-in{*zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf00e;');}
 .icon-gear{*zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf013;');}
 .icon-cog{*zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf013;');}

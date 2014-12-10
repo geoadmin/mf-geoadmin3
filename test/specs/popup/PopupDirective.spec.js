@@ -18,7 +18,7 @@ describe('ga_popup_directive', function() {
     var title = elt.find('.ga-popup-title');
     expect(title.length).to.be(1);
 
-    var close = elt.find('.ga-popup-close');
+    var close = elt.find('.icon-remove');
     expect(close.length).to.be(1);
 
     var reduce = elt.find('.icon-minus');
@@ -52,7 +52,7 @@ describe('ga_popup_directive', function() {
     $rootScope.$digest();
     expect(element.css('display')).to.be('block');
 
-    element.find('.ga-popup-close').click();
+    element.find('.icon-remove').click();
     expect(element.css('display')).to.be('none');
     expect($rootScope.popupShown).to.be(false);
   }));
