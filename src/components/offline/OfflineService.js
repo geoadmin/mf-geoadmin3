@@ -391,7 +391,7 @@
             var layer = layers[i];
             layersIds.push(layer.id);
             layersOpacity.push(layer.invertedOpacity);
-            var parentLayerId = gaLayers.getLayerProperty(layer.id,
+            var parentLayerId = gaLayers.getLayerProperty(layer.bodId,
                 'parentLayerId');
             var isBgLayer = (parentLayerId) ?
                 gaMapUtils.getMapLayerForBodId(map, parentLayerId).background :
