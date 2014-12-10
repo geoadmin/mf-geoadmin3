@@ -35,6 +35,13 @@ sudo apache2ctl graceful
 
 echo "Deployed branch $GITBRANCH to dev main."
 
+echo "Flushing varnishes"
+for VARNISHHOST in ${VARNISH_HOSTS[@]}
+do
+  ./scripts/flushvarnish.sh $VARNISHHOST "${API_URL////}"
+  echo "Flushed varnish at: ${VARNISHHOST}"
+done
+
 # create a snapshot
 if [ $CREATE_SNAPSHOT == 'true' ]; then
   sudo -u deploy deploy -c deploy/deploy.cfg $SNAPSHOTDIR

@@ -3,3 +3,4 @@ export DEPLOY_TARGET=int
 export API_URL=//mf-chsdi3.int.bgdi.ch
 export APACHE_BASE_PATH=
 export BROWSERSTACK_TARGETURL=http://mf-geoadmin3.int.bgdi.ch
+export VARNISH_HOSTS=(ip-10-220-6-55.eu-west-1.compute.internal)
