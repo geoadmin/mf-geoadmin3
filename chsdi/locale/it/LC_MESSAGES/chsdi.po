@@ -3404,7 +3404,6 @@ msgstr "Servizio RDPP"
 msgid "oereb_status"
 msgstr "Stato RDPP"
 
-#. TODO
 msgid "official object webpage"
 msgstr "Pagina ufficiale dell'oggetto"
 
@@ -4169,6 +4168,9 @@ msgstr "Motivo 1 (tipo di rotaia)"
 msgid "tt_emission_nacht_tag_grund2"
 msgstr "Motivo 2 (tipo di ponte)"
 
+msgid "tt_emission_nacht_tag_k1_n"
+msgstr "K1 (n) "
+
 msgid "tt_emission_nacht_tag_k1_t"
 msgstr "K1 (d) "
 
@@ -4183,6 +4185,9 @@ msgstr "Designazione di linea"
 
 msgid "tt_emission_nacht_tag_linienbeze"
 msgstr "Designazione di linea"
+
+msgid "tt_emission_nacht_tag_lre_n"
+msgstr "Lr,e (n) "
 
 msgid "tt_emission_nacht_tag_lre_t"
 msgstr "Lr,e (d) "

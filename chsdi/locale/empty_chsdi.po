@@ -2066,7 +2066,13 @@ msgstr ""
 msgid "tt_emission_nacht_tag_lre_t"
 msgstr ""
 
+msgid "tt_emission_nacht_tag_lre_n"
+msgstr ""
+
 msgid "tt_emission_nacht_tag_k1_t"
+msgstr ""
+
+msgid "tt_emission_nacht_tag_k1_n"
 msgstr ""
 
 msgid "tt_emission_nacht_tag_grund1"
