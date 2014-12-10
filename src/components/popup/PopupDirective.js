@@ -13,9 +13,15 @@
   module.directive('gaPopup',
     function($rootScope, $translate, gaBrowserSniffer, gaPrintService) {
       var zIndex = 2000;
-      var bringUpFront = function(el) {
+      var bringUpFront = function(el, scope) {
         zIndex += 1;
         el.css('z-index', zIndex);
+        // First we broadcast only the elements under
+        // the popup the new zIndex of their parent
+        scope.$broadcast('gaPopupSetZIndex', zIndex);
+        // Then we broadcast to everybody else that
+        // a new popup took over the reign
+        $rootScope.$broadcast('gaPopupZIndex', zIndex);
       };
       return {
         restrict: 'A',
@@ -54,7 +60,7 @@
           element.find('.popover-content').click(function(evt) {
             evt.stopPropagation();
             if (!scope.isReduced && scope.toggle) {
-              bringUpFront(element);
+              bringUpFront(element, scope);
             }
           });
 
@@ -99,7 +105,7 @@
             evt.stopPropagation();
             // Controls the popup order
             if (scope.toggle) {
-              bringUpFront(element);
+              bringUpFront(element, scope);
             }
             scope.isReduced = false;
           };
@@ -125,7 +131,7 @@
                   scope.isReduced = false;
                   onClose();
                 } else if (newVal) {
-                  bringUpFront(element);
+                  bringUpFront(element, scope);
                 }
               }
             }

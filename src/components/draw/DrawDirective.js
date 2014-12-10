@@ -22,7 +22,7 @@
           isActive: '=gaDrawActive'
         },
         link: function(scope, element, attrs, controller) {
-          var draw, deregister, lastActiveTool;
+          var draw, deregister, lastActiveTool, zIndex;
           var map = scope.map;
           var viewport = $(map.getViewport());
           var source = new ol.source.Vector();
@@ -88,6 +88,12 @@
             deactivateDrawInteraction();
             deactivateSelectInteraction();
             deactivateModifyInteraction();
+          };
+
+          var deactivateTool = function() {
+            // Deactivate all tools
+            deactivate();
+            lastActiveTool = undefined;
           };
 
           // Deactivate other tools
@@ -240,13 +246,10 @@
             }
           };
 
-
           // Activate/deactivate a tool
           scope.toggleTool = function(evt, tool) {
             if (scope.options[tool.activeKey]) {
-              // Deactivate all tools
-              deactivate();
-              lastActiveTool = undefined;
+              deactivateTool();
             } else {
               activateTool(tool);
             }
@@ -286,6 +289,17 @@
           scope.aToolIsActive = function() {
             return !!lastActiveTool;
           };
+
+          scope.$on('gaPopupSetZIndex', function(evt, value) {
+            zIndex = value;
+          });
+
+          scope.$on('gaPopupZIndex', function(evt, value) {
+            if (scope.isActive &&
+                zIndex != value) {
+              deactivateTool();
+            }
+          });
 
           // Watchers
           scope.$watch('isActive', function(active) {
