@@ -83,6 +83,11 @@ a [class*=" icon-"] {
 }
 
 
+.icon-remove {
+  @include ie7icon('&#xf00d;');
+}
+
+
 .icon-zoom-in {
   @include ie7icon('&#xf00e;');
 }
