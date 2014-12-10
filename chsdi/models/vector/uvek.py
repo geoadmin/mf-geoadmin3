@@ -692,7 +692,7 @@ class Luftfahrthindernis(Base, Vector):
     __template__ = 'templates/htmlpopup/luftfahrthindernisse.mako'
     __bodId__ = 'ch.bazl.luftfahrthindernis'
     __extended_info__ = True
-    __label__ = 'obstacletype'
+    __label__ = 'registrationnumber'
     __queryable_attributes__ = ['sanctiontext', 'registrationnumber', 'obstacletype', 'state', 'maxheightagl',
                                 'topelevationamsl', 'totallength', 'startofconstruction', 'duration', 'abortionaccomplished']
     id = Column('bgdi_id', Integer, primary_key=True)
