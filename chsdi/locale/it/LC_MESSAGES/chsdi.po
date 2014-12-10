@@ -330,7 +330,7 @@ msgid "arch__hist__qualitaeten"
 msgstr "Qualità storico-arch."
 
 msgid "areal"
-msgstr "Srea"
+msgstr "Area"
 
 msgid "areal_gemeinde"
 msgstr "Si trova nel Comune / nella città"
@@ -1248,7 +1248,7 @@ msgid "ch.bafu.schutzgebiete-biosphaerenreservate"
 msgstr "Riserve di biosfera"
 
 msgid "ch.bafu.schutzgebiete-luftfahrt"
-msgstr "Siti protetti"
+msgstr "Zone protette MIL"
 
 msgid "ch.bafu.schutzgebiete-paerke_nationaler_bedeutung"
 msgstr "Parchi"
@@ -1542,13 +1542,13 @@ msgid "ch.bfe.energiestaedte"
 msgstr "Città dell’energia"
 
 msgid "ch.bfe.energiestaedte-2000watt-areale"
-msgstr "Aree a 2000 Watt"
+msgstr "Aree 2000 Watt"
 
 msgid "ch.bfe.energiestaedte-2000watt-aufdemweg"
 msgstr "Città dell’energia verso 2000 Watt"
 
 msgid "ch.bfe.energiestaedte-energieregionen"
-msgstr "Regione-Energia"
+msgstr "Regioni-Energia"
 
 msgid "ch.bfe.kernkraftwerke"
 msgstr "Centrali nucleari"
@@ -2089,6 +2089,9 @@ msgstr "swisstopo, sgpk"
 
 msgid "ch.swisstopo.sgtk"
 msgstr "swisstopo, sgtk"
+
+msgid "ch.swisstopo.skitourenkarte-50.metadata"
+msgstr "Divisione carta scialpinistica"
 
 msgid "ch.swisstopo.swissalti3d-reliefschattierung"
 msgstr "swissALTI3D Hillshade"
@@ -2650,6 +2653,9 @@ msgstr "Cantone"
 
 msgid "kantoncode"
 msgstr "Code cantonal"
+
+msgid "kartenbezug"
+msgstr "Distribuzione delle carte"
 
 msgid "kartenblattname"
 msgstr "Nom de feuille"
@@ -3404,7 +3410,6 @@ msgstr "Servizio RDPP"
 msgid "oereb_status"
 msgstr "Stato RDPP"
 
-#. TODO
 msgid "official object webpage"
 msgstr "Pagina ufficiale dell'oggetto"
 
@@ -3472,7 +3477,7 @@ msgid "publikationsjahr_1_2"
 msgstr "Anno di pubblicazione 1 | 2"
 
 msgid "punktezahl"
-msgstr "Punteggio realizzato"
+msgstr "Punteggio realizzato (%)"
 
 msgid "punktname"
 msgstr "Nom du point"

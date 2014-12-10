@@ -1548,7 +1548,7 @@ msgid "ch.bfe.energiestaedte-2000watt-aufdemweg"
 msgstr "Energiestädte auf dem Weg 2000-Watt"
 
 msgid "ch.bfe.energiestaedte-energieregionen"
-msgstr "Energie-Regionen"
+msgstr "Energie-Region"
 
 msgid "ch.bfe.kernkraftwerke"
 msgstr "Ovras nuclearas"
@@ -2089,6 +2089,9 @@ msgstr "swisstopo, sgpk"
 
 msgid "ch.swisstopo.sgtk"
 msgstr "swisstopo, sgtk"
+
+msgid "ch.swisstopo.skitourenkarte-50.metadata"
+msgstr "Einteilung Skitourenkarte"
 
 msgid "ch.swisstopo.swissalti3d-reliefschattierung"
 msgstr "swissALTI3D sumbriva reliev"
@@ -2650,6 +2653,9 @@ msgstr "Chantun"
 
 msgid "kantoncode"
 msgstr "Kantonaler Code"
+
+msgid "kartenbezug"
+msgstr "Kartenbezug"
 
 msgid "kartenblattname"
 msgstr "Kartenblattname"
@@ -3404,7 +3410,6 @@ msgstr "ÖREB-Fachstelle"
 msgid "oereb_status"
 msgstr "Status ÖREB"
 
-#. TODO
 msgid "official object webpage"
 msgstr "Offizielle Objectseite"
 
@@ -3472,7 +3477,7 @@ msgid "publikationsjahr_1_2"
 msgstr "Onn da publicaziun 1 | 2"
 
 msgid "punktezahl"
-msgstr "Punktezahl"
+msgstr "Punktezahl (%)"
 
 msgid "punktname"
 msgstr "Punktname"

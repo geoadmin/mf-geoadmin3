@@ -1248,7 +1248,7 @@ msgid "ch.bafu.schutzgebiete-biosphaerenreservate"
 msgstr "Biosphere reserves"
 
 msgid "ch.bafu.schutzgebiete-luftfahrt"
-msgstr "Protected sites"
+msgstr "Protected areas MIL"
 
 msgid "ch.bafu.schutzgebiete-paerke_nationaler_bedeutung"
 msgstr "Parks"
@@ -2090,6 +2090,9 @@ msgstr "swisstopo, sgpk"
 msgid "ch.swisstopo.sgtk"
 msgstr "swisstopo, sgtk"
 
+msgid "ch.swisstopo.skitourenkarte-50.metadata"
+msgstr "Division Ski Tour Map"
+
 msgid "ch.swisstopo.swissalti3d-reliefschattierung"
 msgstr "swissALTI3D Hillshade"
 
@@ -2651,6 +2654,9 @@ msgstr "Canton"
 
 msgid "kantoncode"
 msgstr "Canton Code"
+
+msgid "kartenbezug"
+msgstr "Order maps"
 
 msgid "kartenblattname"
 msgstr "Kartenblattname"
@@ -3405,7 +3411,6 @@ msgstr "PLR Authority"
 msgid "oereb_status"
 msgstr "PLR State"
 
-#. TODO
 msgid "official object webpage"
 msgstr "Official object webpage"
 
@@ -3473,7 +3478,7 @@ msgid "publikationsjahr_1_2"
 msgstr "Year of publication 1 | 2"
 
 msgid "punktezahl"
-msgstr "Number of points"
+msgstr "Number of points (%)"
 
 msgid "punktname"
 msgstr "Point name"

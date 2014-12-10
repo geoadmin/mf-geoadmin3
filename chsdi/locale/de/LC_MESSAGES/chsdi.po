@@ -1248,7 +1248,7 @@ msgid "ch.bafu.schutzgebiete-biosphaerenreservate"
 msgstr "Biosphärenreservate"
 
 msgid "ch.bafu.schutzgebiete-luftfahrt"
-msgstr "Schutzgebiete"
+msgstr "Schutzgebiete MIL"
 
 msgid "ch.bafu.schutzgebiete-paerke_nationaler_bedeutung"
 msgstr "Pärke"
@@ -1548,7 +1548,7 @@ msgid "ch.bfe.energiestaedte-2000watt-aufdemweg"
 msgstr "Energiestädte auf dem Weg 2000-Watt"
 
 msgid "ch.bfe.energiestaedte-energieregionen"
-msgstr "Energie-Regionen"
+msgstr "Energie-Region"
 
 msgid "ch.bfe.kernkraftwerke"
 msgstr "Kernkraftwerke"
@@ -2089,6 +2089,9 @@ msgstr "swisstopo, sgpk"
 
 msgid "ch.swisstopo.sgtk"
 msgstr "swisstopo, sgtk"
+
+msgid "ch.swisstopo.skitourenkarte-50.metadata"
+msgstr "Einteilung Skitourenkarte"
 
 msgid "ch.swisstopo.swissalti3d-reliefschattierung"
 msgstr "swissALTI3D Reliefschattierung"
@@ -2650,6 +2653,9 @@ msgstr "Kanton"
 
 msgid "kantoncode"
 msgstr "Kantonaler Code"
+
+msgid "kartenbezug"
+msgstr "Kartenbezug"
 
 msgid "kartenblattname"
 msgstr "Kartenblattname"
@@ -3404,7 +3410,6 @@ msgstr "ÖREB-Fachstelle"
 msgid "oereb_status"
 msgstr "Status ÖREB"
 
-#. TODO
 msgid "official object webpage"
 msgstr "Offizielle Objektseite"
 
@@ -3472,7 +3477,7 @@ msgid "publikationsjahr_1_2"
 msgstr "Publikationsjahr 1 | 2"
 
 msgid "punktezahl"
-msgstr "Punktezahl"
+msgstr "Punktezahl (%)"
 
 msgid "punktname"
 msgstr "Punktname"

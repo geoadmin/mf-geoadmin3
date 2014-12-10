@@ -1215,7 +1215,7 @@ msgid "ch.bafu.oekomorphologie-f_abstuerze"
 msgstr "Ecomorphologie R - Seuils"
 
 msgid "ch.bafu.oekomorphologie-f_bauwerke"
-msgstr "Ecomorphologie R - Ouvrages"
+msgstr "Ecomorphologie R – Ouvrages"
 
 msgid "ch.bafu.permafrost"
 msgstr "Carte indicative du Pergélisol"
@@ -1248,7 +1248,7 @@ msgid "ch.bafu.schutzgebiete-biosphaerenreservate"
 msgstr "Réserves de biosphère"
 
 msgid "ch.bafu.schutzgebiete-luftfahrt"
-msgstr "Sites protégés"
+msgstr "Zones protégées MIL"
 
 msgid "ch.bafu.schutzgebiete-paerke_nationaler_bedeutung"
 msgstr "Parcs"
@@ -1545,10 +1545,10 @@ msgid "ch.bfe.energiestaedte-2000watt-areale"
 msgstr "Sites 2000 watts"
 
 msgid "ch.bfe.energiestaedte-2000watt-aufdemweg"
-msgstr "Cité de l’énergie vers 2000 watts"
+msgstr "Cités de l’énergie vers 2000 watts"
 
 msgid "ch.bfe.energiestaedte-energieregionen"
-msgstr "Régions-Energie"
+msgstr "Région-Energie"
 
 msgid "ch.bfe.kernkraftwerke"
 msgstr "Centrales nucléaires"
@@ -2089,6 +2089,9 @@ msgstr "swisstopo, sgpk"
 
 msgid "ch.swisstopo.sgtk"
 msgstr "swisstopo, sgtk"
+
+msgid "ch.swisstopo.skitourenkarte-50.metadata"
+msgstr "Découpage carte de randonnées à ski"
 
 msgid "ch.swisstopo.swissalti3d-reliefschattierung"
 msgstr "swissALTI3D estompage du relief"
@@ -2650,6 +2653,9 @@ msgstr "Canton"
 
 msgid "kantoncode"
 msgstr "Code cantonal"
+
+msgid "kartenbezug"
+msgstr "Distribution des cartes"
 
 msgid "kartenblattname"
 msgstr "Nom de feuille"
@@ -3404,7 +3410,6 @@ msgstr "Service RDPPF"
 msgid "oereb_status"
 msgstr "Etat RDPPF"
 
-#. TODO
 msgid "official object webpage"
 msgstr "Page officielle de l'objet"
 
@@ -3472,7 +3477,7 @@ msgid "publikationsjahr_1_2"
 msgstr "Année de publication 1 | 2"
 
 msgid "punktezahl"
-msgstr "Nombre de points"
+msgstr "Nombre de points (%)"
 
 msgid "punktname"
 msgstr "Nom du point"
