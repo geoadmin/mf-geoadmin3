@@ -1077,3 +1077,115 @@ class waldreservate(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.bafu.waldreservate', waldreservate)
+
+
+class sturm_staudruck_30(Base, Vector):
+    __tablename__ = 'data_staudruck'
+    __table_args__ = ({'schema': 'diverse', 'autoload': False})
+    __bodId__ = 'ch.bafu.sturm-staudruck_30'
+    __template__ = 'templates/htmlpopup/sturm_staudruck.mako'
+    id = Column('oid', Integer, primary_key=True)
+    staudruck_30 = Column('staudruck_30', Text)
+    staudruck_50 = Column('staudruck_50', Text)
+    staudruck_100 = Column('staudruck_100', Text)
+    staudruck_300 = Column('staudruck_300', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.sturm-staudruck_30', sturm_staudruck_30)
+
+
+class sturm_staudruck_50(Base, Vector):
+    __tablename__ = 'data_staudruck'
+    __table_args__ = ({'schema': 'diverse', 'autoload': False, 'extend_existing': True})
+    __bodId__ = 'ch.bafu.sturm-staudruck_50'
+    __template__ = 'templates/htmlpopup/sturm_staudruck.mako'
+    id = Column('oid', Integer, primary_key=True)
+    staudruck_30 = Column('staudruck_30', Text)
+    staudruck_50 = Column('staudruck_50', Text)
+    staudruck_100 = Column('staudruck_100', Text)
+    staudruck_300 = Column('staudruck_300', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.sturm-staudruck_50', sturm_staudruck_50)
+
+
+class sturm_staudruck_100(Base, Vector):
+    __tablename__ = 'data_staudruck'
+    __table_args__ = ({'schema': 'diverse', 'autoload': False, 'extend_existing': True})
+    __bodId__ = 'ch.bafu.sturm-staudruck_100'
+    __template__ = 'templates/htmlpopup/sturm_staudruck.mako'
+    id = Column('oid', Integer, primary_key=True)
+    staudruck_30 = Column('staudruck_30', Text)
+    staudruck_50 = Column('staudruck_50', Text)
+    staudruck_100 = Column('staudruck_100', Text)
+    staudruck_300 = Column('staudruck_300', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.sturm-staudruck_100', sturm_staudruck_100)
+
+
+class sturm_staudruck_300(Base, Vector):
+    __tablename__ = 'data_staudruck'
+    __table_args__ = ({'schema': 'diverse', 'autoload': False, 'extend_existing': True})
+    __bodId__ = 'ch.bafu.sturm-staudruck_300'
+    __template__ = 'templates/htmlpopup/sturm_staudruck.mako'
+    id = Column('oid', Integer, primary_key=True)
+    staudruck_30 = Column('staudruck_30', Text)
+    staudruck_50 = Column('staudruck_50', Text)
+    staudruck_100 = Column('staudruck_100', Text)
+    staudruck_300 = Column('staudruck_300', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.sturm-staudruck_300', sturm_staudruck_300)
+
+
+class sturm_boeenspitzen_30(Base, Vector):
+    __tablename__ = 'data_boeenspitzen'
+    __table_args__ = ({'schema': 'diverse', 'autoload': False})
+    __bodId__ = 'ch.bafu.sturm-boeenspitzen_30'
+    __template__ = 'templates/htmlpopup/sturm_boeenspitzen.mako'
+    id = Column('oid', Integer, primary_key=True)
+    boenspitzen_kmh_30 = Column('boenspitzen_kmh_30', Text)
+    boenspitzen_ms_30 = Column('boenspitzen_ms_30', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.sturm-boeenspitzen_30', sturm_boeenspitzen_30)
+
+
+class sturm_boeenspitzen_50(Base, Vector):
+    __tablename__ = 'data_boeenspitzen'
+    __table_args__ = ({'schema': 'diverse', 'autoload': False, 'extend_existing': True})
+    __bodId__ = 'ch.bafu.sturm-boeenspitzen_50'
+    __template__ = 'templates/htmlpopup/sturm_boeenspitzen.mako'
+    id = Column('oid', Integer, primary_key=True)
+    boenspitzen_kmh_50 = Column('boenspitzen_kmh_50', Text)
+    boenspitzen_ms_50 = Column('boenspitzen_ms_50', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.sturm-boeenspitzen_50', sturm_boeenspitzen_50)
+
+
+class sturm_boeenspitzen_100(Base, Vector):
+    __tablename__ = 'data_boeenspitzen'
+    __table_args__ = ({'schema': 'diverse', 'autoload': False, 'extend_existing': True})
+    __bodId__ = 'ch.bafu.sturm-boeenspitzen_100'
+    __template__ = 'templates/htmlpopup/sturm_boeenspitzen.mako'
+    id = Column('oid', Integer, primary_key=True)
+    boenspitzen_kmh_100 = Column('boenspitzen_kmh_100', Text)
+    boenspitzen_ms_100 = Column('boenspitzen_ms_100', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.sturm-boeenspitzen_100', sturm_boeenspitzen_100)
+
+
+class sturm_boeenspitzen_300(Base, Vector):
+    __tablename__ = 'data_boeenspitzen'
+    __table_args__ = ({'schema': 'diverse', 'autoload': False, 'extend_existing': True})
+    __bodId__ = 'ch.bafu.sturm-boeenspitzen_300'
+    __template__ = 'templates/htmlpopup/sturm_boeenspitzen.mako'
+    id = Column('oid', Integer, primary_key=True)
+    boenspitzen_kmh_300 = Column('boenspitzen_kmh_300', Text)
+    boenspitzen_ms_300 = Column('boenspitzen_ms_300', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.sturm-boeenspitzen_300', sturm_boeenspitzen_300)

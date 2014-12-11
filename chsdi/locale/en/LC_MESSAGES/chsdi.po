@@ -32,6 +32,12 @@ msgstr "Bauernhof"
 msgid "Berghuette"
 msgstr "Berghütte"
 
+msgid "Boeenspitzen_kmh"
+msgstr "Gusts [km/h]"
+
+msgid "Boeenspitzen_ms"
+msgstr "Gusts [m/s]"
+
 msgid "Bounding Box - Coordinates"
 msgstr "Bounding Box - Coordinate"
 
@@ -232,6 +238,9 @@ msgstr "Stadion"
 
 msgid "Stadtzentr"
 msgstr "Zentren grösserer Städte"
+
+msgid "Staudruck"
+msgstr "Dynamic Pressure [N/m²]"
 
 msgid "Stausee"
 msgstr "Stausee"
@@ -1303,6 +1312,30 @@ msgstr "Rockfall"
 
 msgid "ch.bafu.silvaprotect-uebersarung"
 msgstr "Overbank sedimentation"
+
+msgid "ch.bafu.sturm-boeenspitzen_100"
+msgstr "Windstorm Gusts 100"
+
+msgid "ch.bafu.sturm-boeenspitzen_30"
+msgstr "Windstorm Gusts 30"
+
+msgid "ch.bafu.sturm-boeenspitzen_300"
+msgstr "Windstorm Gusts 300"
+
+msgid "ch.bafu.sturm-boeenspitzen_50"
+msgstr "Windstorm Gusts 50"
+
+msgid "ch.bafu.sturm-staudruck_100"
+msgstr "Windstorm Dynamic Pressure 100"
+
+msgid "ch.bafu.sturm-staudruck_30"
+msgstr "Windstorm Dynamic Pressure 30"
+
+msgid "ch.bafu.sturm-staudruck_300"
+msgstr "Windstorm Dynamic Pressure 300"
+
+msgid "ch.bafu.sturm-staudruck_50"
+msgstr "Windstorm Dynamic Pressure 50"
 
 msgid "ch.bafu.swissprtr"
 msgstr "Pollutant releases (SwissPRTR)"

@@ -32,6 +32,12 @@ msgstr "Ferme"
 msgid "Berghuette"
 msgstr "Cabane de montagne"
 
+msgid "Boeenspitzen_kmh"
+msgstr "Raffiche [km/h]"
+
+msgid "Boeenspitzen_ms"
+msgstr "Raffiche [m/s]"
+
 msgid "Bounding Box - Coordinates"
 msgstr "Bounding Box - Coordinate"
 
@@ -232,6 +238,9 @@ msgstr "Stade"
 
 msgid "Stadtzentr"
 msgstr "Centre de grande ville"
+
+msgid "Staudruck"
+msgstr "Pressione dinamica [N/m²]"
 
 msgid "Stausee"
 msgstr "Lac de barrage"
@@ -1303,6 +1312,30 @@ msgstr "Caduta di massi"
 
 msgid "ch.bafu.silvaprotect-uebersarung"
 msgstr "Alluvionamento da sedimento"
+
+msgid "ch.bafu.sturm-boeenspitzen_100"
+msgstr "Tempesta raffiche 100"
+
+msgid "ch.bafu.sturm-boeenspitzen_30"
+msgstr "Tempesta raffiche 30"
+
+msgid "ch.bafu.sturm-boeenspitzen_300"
+msgstr "Tempesta raffiche 300"
+
+msgid "ch.bafu.sturm-boeenspitzen_50"
+msgstr "Tempesta raffiche 50"
+
+msgid "ch.bafu.sturm-staudruck_100"
+msgstr "Tempesta pressione dinamica 100"
+
+msgid "ch.bafu.sturm-staudruck_30"
+msgstr "Tempesta pressione dinamica 30"
+
+msgid "ch.bafu.sturm-staudruck_300"
+msgstr "Tempesta pressione dinamica 300"
+
+msgid "ch.bafu.sturm-staudruck_50"
+msgstr "Tempesta pressione dinamica 50"
 
 msgid "ch.bafu.swissprtr"
 msgstr "Emissioni di inquinanti (SwissPRTR)"

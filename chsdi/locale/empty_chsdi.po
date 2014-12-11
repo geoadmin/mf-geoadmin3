@@ -68,6 +68,39 @@ msgstr ""
 msgid "ch.bafu.bundesinventare-amphibien_anhoerung"
 msgstr ""
 
+msgid "Staudruck"
+msgstr ""
+
+msgid "Boeenspitzen_kmh"
+msgstr ""
+
+msgid "Boeenspitzen_ms"
+msgstr ""
+
+msgid "ch.bafu.sturm-staudruck_30"
+msgstr ""
+
+msgid "ch.bafu.sturm-staudruck_50"
+msgstr ""
+
+msgid "ch.bafu.sturm-staudruck_100"
+msgstr ""
+
+msgid "ch.bafu.sturm-staudruck_300"
+msgstr ""
+
+msgid "ch.bafu.sturm-boeenspitzen_30"
+msgstr ""
+
+msgid "ch.bafu.sturm-boeenspitzen_50"
+msgstr ""
+
+msgid "ch.bafu.sturm-boeenspitzen_100"
+msgstr ""
+
+msgid "ch.bafu.sturm-boeenspitzen_300"
+msgstr ""
+
 msgid "ch.bafu.grundwasserschutzareale"
 msgstr ""
 
