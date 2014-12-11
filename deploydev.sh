@@ -31,7 +31,10 @@ cd $DEPLOYDIR
 # remove all local changes and get latest GITBRANCH from remote
 git fetch origin && git reset --hard && git checkout $GITBRANCH && git reset --hard origin/$GITBRANCH
 
-# build the project
+# bootstrap the project to be on the safe side
+python bootstrap.py --version 1.5.2 --distribute --download-base http://pypi.camptocamp.net/distribute-0.6.22_fix-issue-227/ --setup-source http://pypi.camptocamp.net/distribute-0.6.22_fix-issue-227/distribute_setup.py
+# clean and build the project
+buildout/bin/buildout -c buildout_cleaner.cfg
 buildout/bin/buildout -c buildout_dev.cfg
 
 # restart apache
