@@ -10,7 +10,7 @@ class TestCatalogService(TestsBase):
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless('root' in resp.json['results'])
         self.failUnless('children' in resp.json['results']['root'])
-        self.failUnless('selectedOpen' in resp.json['results']['root'])
+        self.failUnless('selectedOpen' in resp.json['results']['root']['children'][0])
         self.failUnless('category' in resp.json['results']['root'])
 
     def test_catalog_with_callback(self):
