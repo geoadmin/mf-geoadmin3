@@ -8,7 +8,8 @@
      'pascalprecht.translate']);
 
   module.controller('GaPrintDirectiveController', function($rootScope, $scope,
-      $http, $window, $translate, gaLayers, gaPermalink, gaBrowserSniffer) {
+      $http, $window, $translate, $timeout,
+      gaLayers, gaPermalink, gaBrowserSniffer, gaWaitCursor) {
 
     var pdfLegendsToDownload = [];
     var pdfLegendString = '_big.pdf';
@@ -17,10 +18,16 @@
     var POINTS_PER_INCH = 72; //PostScript points 1/72"
     var MM_PER_INCHES = 25.4;
     var UNITS_RATIO = 39.37; // inches per meter
+    var POLL_INTERVAL = 2500; //interval for multi-page prints (ms)
+    var POLL_MAX_TIME = 600000; //ms (10 minutes)
     var printConfigLoaded = false;
     var currentTime = undefined;
     var timeSelectorEnabled = false;
     var layersYears = [];
+
+    $scope.options.multiprint = false;
+    $scope.options.movie = false;
+    $scope.options.printing = false;
 
     // Get print config
     var updatePrintConfig = function() {
@@ -35,7 +42,6 @@
         $scope.scale = data.scales[5];
         $scope.options.legend = false;
         $scope.options.graticule = false;
-        $scope.options.movie = false;
       });
     };
 
@@ -580,12 +586,19 @@
       } else {
         $window.location = url;
       }
+      //After standard print, download the pdf Legends
+      //if there are any
+      for (var i = 0; i < pdfLegendsToDownload.length; i++) {
+        $window.open(pdfLegendsToDownload[i]);
+      }
+      $scope.options.printing = false;
     };
 
     $scope.submit = function() {
       if (!$scope.options.active) {
         return;
       }
+      $scope.options.printing = true;
       // http://mapfish.org/doc/print/protocol.html#print-pdf
       var view = $scope.map.getView();
       var proj = view.getProjection();
@@ -700,6 +713,7 @@
           url: gaPermalink.getHref()
         }
       }).success(function(response) {
+        var movieprint = $scope.options.movie && $scope.options.multiprint;
         var spec = {
           layout: that.layout.name,
           srs: proj.getCode(),
@@ -713,7 +727,7 @@
           legends: encLegends,
           enableLegends: (encLegends && encLegends.length > 0),
           qrcodeurl: qrcodeUrl,
-          movie: $scope.options.movie,
+          movie: movieprint,
           pages: [
             angular.extend({
               center: getPrintRectangleCenterCoord(),
@@ -727,16 +741,51 @@
             }, defaultPage)
           ]
         };
-        var http = $http.post(that.capabilities.createURL + '?url=' +
-            encodeURIComponent(that.capabilities.createURL), spec);
+
+        var startPollTime;
+        var pollMulti = function(url) {
+          $timeout(function() {
+            var http = $http.get(url);
+            http.success(function(data) {
+              if (!data.getURL) {
+                var now = new Date();
+                //We abort if we waited too long
+                if (now - startPollTime < POLL_MAX_TIME) {
+                  pollMulti(url);
+                } else {
+                  $scope.options.printing = false;
+                }
+              } else {
+                $scope.downloadUrl(data.getURL);
+              }
+            }).error(function() {
+              $scope.options.printing = false;
+            });
+          }, POLL_INTERVAL);
+        };
+
+        var printUrl = that.capabilities.createURL;
+        //When movie is on, we use printmulti
+        if (movieprint) {
+          printUrl = printUrl.replace('/print/', '/printmulti/');
+        }
+        var http = $http.post(printUrl + '?url=' +
+            encodeURIComponent(printUrl), spec);
         http.success(function(data) {
-          $scope.downloadUrl(data.getURL);
-          //After standard print, download the pdf Legends
-          //if there are any
-          for (var i = 0; i < pdfLegendsToDownload.length; i++) {
-            $window.open(pdfLegendsToDownload[i]);
+          if (movieprint) {
+            //start polling process
+            var pollUrl = $scope.options.printPath + 'progress?id=' +
+                data.idToCheck;
+            startPollTime = new Date();
+            pollMulti(pollUrl);
+          } else {
+            $scope.downloadUrl(data.getURL);
           }
+        }).error(function() {
+          $scope.options.printing = false;
         });
+      }).error(function() {
+        $scope.options.printing = false;
       });
     };
 
@@ -827,6 +876,14 @@
       return [minx, miny, maxx, maxy];
     };
 
+    $scope.layers = $scope.map.getLayers().getArray();
+    $scope.layerFilter = function(layer) {
+      return layer.bodId == 'ch.swisstopo.zeitreihen';
+    };
+    $scope.$watchCollection('layers | filter:layerFilter', function(lrs) {
+      $scope.options.multiprint = (lrs.length == 1);
+    });
+
     $scope.$watch('options.active', function(newVal, oldVal) {
       if (newVal === true) {
         activate();
@@ -834,6 +891,18 @@
         deactivate();
       }
     });
+
+    // Because of the polling mechanisms, we can't rely on the
+    // waitcursor from the NetworkStatusService. Multi-page
+    // print might be underway without pending http request.
+    $scope.$watch('options.printing', function(newVal, oldVal) {
+      if (newVal === true) {
+        gaWaitCursor.increment();
+      } else {
+        gaWaitCursor.decrement();
+      }
+    });
+
 
   });
 

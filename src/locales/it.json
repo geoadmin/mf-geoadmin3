@@ -208,6 +208,7 @@
 	"print_action": "Stampare",
 	"print_layout": "Orientamento",
 	"print_scale": "Scala",
+	"print_underway_message": "Translation is missing",
 	"problem_announcement": "Segnala un problema",
 	"profile_title": "Profilo",
 	"profile_x_label": "Distanza",

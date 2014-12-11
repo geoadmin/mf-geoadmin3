@@ -208,6 +208,7 @@
 	"print_action": "Print",
 	"print_layout": "Orientation",
 	"print_scale": "Scale",
+	"print_underway_message": "We ask you for your patience. A multi-page print is underway, which can be time consuming.",
 	"problem_announcement": "Report problem",
 	"profile_title": "Profile",
 	"profile_x_label": "Distance",
