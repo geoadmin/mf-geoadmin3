@@ -12,7 +12,7 @@ Release Notes
 .. _releasenotes_20141126:
 
 Release 20141126 - Wednesday, November 26th 2014
------------------------------------------------
+------------------------------------------------
 
 API & applications
 ******************
@@ -29,8 +29,6 @@ API & applications
 - Possibility to attach drawing to feedback as kml
 - Bug fixes
 - `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_141112...r_141126>`__
-
-*****************
 
 Geodata
 *******
