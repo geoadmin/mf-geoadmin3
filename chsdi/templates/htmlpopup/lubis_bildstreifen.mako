@@ -20,7 +20,6 @@ from pyramid.url import route_url
 <%def name="extended_info(c, lang)">
 <%
 c['stable_id'] = True
-loader_url = h.make_agnostic(route_url('ga_api', request))
 %>
 <title>${_('tt_lubis_ebkey')}: ${c['featureId']}</title>
 <body onload="init()">
@@ -44,8 +43,6 @@ loader_url = h.make_agnostic(route_url('ga_api', request))
   <div class="chsdi-map-container table-with-border" >
     <div id="map"></div>
   </div>
-
-  <script type="text/javascript" src="${loader_url}"></script>
   <script type="text/javascript">
     function init() {
       // Create a GeoAdmin Map

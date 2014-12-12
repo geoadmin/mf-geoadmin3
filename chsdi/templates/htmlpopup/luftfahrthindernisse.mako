@@ -1,4 +1,7 @@
 <%inherit file="base.mako"/>
+<%!
+from pyramid.url import route_url
+%>
 
 <%def name="table_body(c,lang)">
 <%
@@ -9,16 +12,16 @@
   else:
     sanctiontext = attr['sanctiontext']
 %>
-    <tr><td class="cell-left">${_('tt_ch.bazl.registrationnummer')}</td>      <td>${c['attributes']['registrationnumber']}</td></tr>
-    <tr><td class="cell-left">${_('tt_ch.bazl.kartnummer')}</td>              <td>${c['attributes']['lk100']}</td></tr>
-    <tr><td class="cell-left">${_('tt_ch.bazl.hindernisart')}</td>            <td>${c['attributes']['obstacletype']}</td></tr>
-    <tr><td class="cell-left">${_('status')}</td>                             <td>${c['attributes']['state']}</td></tr>
-    <tr><td class="cell-left">${_('tt_ch.bazl.maxheight')}</td>               <td>${c['attributes']['maxheightagl']}</td></tr>
-    <tr><td class="cell-left">${_('tt_ch.bazl.elevation')}</td>               <td>${c['attributes']['topelevationamsl']}</td></tr>
-    <tr><td class="cell-left">${_('tt_ch.bazl.totallength')}</td>             <td>${c['attributes']['totallength']}</td></tr>
-    <tr><td class="cell-left">${_('tt_ch.bazl.startofconstruction')}</td>     <td>${c['attributes']['startofconstruction'] or '-'}</td></tr>
-    <tr><td class="cell-left">${_('tt_ch.bazl.abortionaccomplished')}</td>    <td>${c['attributes']['duration'] or '-'}</td></tr>
-    <tr><td class="cell-left">${_('tt_ch.bazl.markierung')}</td>              <td>${sanctiontext}</td></tr>
+<tr><td class="cell-left">${_('tt_ch.bazl.registrationnummer')}</td>      <td>${c['attributes']['registrationnumber']}</td></tr>
+<tr><td class="cell-left">${_('tt_ch.bazl.kartnummer')}</td>              <td>${c['attributes']['lk100']}</td></tr>
+<tr><td class="cell-left">${_('tt_ch.bazl.hindernisart')}</td>            <td>${c['attributes']['obstacletype']}</td></tr>
+<tr><td class="cell-left">${_('status')}</td>                             <td>${c['attributes']['state']}</td></tr>
+<tr><td class="cell-left">${_('tt_ch.bazl.maxheight')}</td>               <td>${c['attributes']['maxheightagl']}</td></tr>
+<tr><td class="cell-left">${_('tt_ch.bazl.elevation')}</td>               <td>${c['attributes']['topelevationamsl']}</td></tr>
+<tr><td class="cell-left">${_('tt_ch.bazl.totallength')}</td>             <td>${c['attributes']['totallength']}</td></tr>
+<tr><td class="cell-left">${_('tt_ch.bazl.startofconstruction')}</td>     <td>${c['attributes']['startofconstruction'] or '-'}</td></tr>
+<tr><td class="cell-left">${_('tt_ch.bazl.abortionaccomplished')}</td>    <td>${c['attributes']['duration'] or '-'}</td></tr>
+<tr><td class="cell-left">${_('tt_ch.bazl.markierung')}</td>              <td>${sanctiontext}</td></tr>
 </%def>
 
 <%def name="extended_info(c, lang)">
@@ -45,10 +48,8 @@
     sanctiontext = attr['sanctiontext']
   
   id = attr['featureId']
+  geometry = c['geometry']
 %>
-  <title>Luftfahrthindernisse</title>
-  <script type="text/javascript" src="//api3.geo.admin.ch/loader.js"></script>
-<body>
 <div class="zsborder">
   <table border="0px" cellspacing="0px" cellpadding="2px" width="100%">
     <tr>
@@ -133,94 +134,76 @@
 <div class="chsdi-map-container table-with-border" style="width: 100%; height: 400px;">
   <div id="map${id}"></div>
 </div>
+<div style="font-size:12px; text-align:justify;">${_('tt_ch.bazl_longtext')} <br>${_('date')}: ${datenstand}</div>
+<script type="text/javascript">
+  function init${id}() {
+    var map = new ga.Map({
+      target: 'map${id}',
+      layers: [
+        ga.layer.create('ch.swisstopo.pixelkarte-grau'),
+        new ol.layer.Image({
+           source: new ol.source.ImageWMS({
+             params:{'LAYERS':'org.epsg.grid_21781,org.epsg.grid_4326,ch.bazl.luftfahrthindernis'},
+             ratio: 1,
+             url: '${wms_url}'
+           })
+        })
+      ],
+      view: new ol.View2D({
+        resolution: 10,
+        center : [(${c['bbox'][0]}+${c['bbox'][2]})/2,(${c['bbox'][1]}+${c['bbox'][3]})/2]
+      }),
+      ol3Logo: false,
+      tooltip: false,
+      controls: ol.control.defaults({
+        zoom: false,
+        attribution: false
+      }),  
+      interactions: ol.interaction.defaults({
+        doubleClickZoom: false,
+        dragPan: false,
+        mouseWheelZoom: false
+      })
+    });
+    var geomJson;
 
-  <script type="text/javascript">
-    function showhide (id) {
-       var e = document.getElementById(id);
-       if(e.style.display == 'block')
-          e.style.display = 'none';
-       else
-          e.style.display = 'block';
+    // TO FIX: Sometimes the parsing fails
+    // ex: http://mf-chsdi3.dev.bgdi.ch/ltteo/rest/services/all/MapServer/ch.bazl.luftfahrthindernis/7316/extendedHtmlPopup 
+    try {
+      geomJson = JSON.parse("${geometry['coordinates']}".replace(/\(/g,'[').replace(/\)/g,']'));
+    } catch(e) {
     }
-    function init${id}() {
-      // Create a GeoAdmin Map
-      var map = new ga.Map({
-      // Define the div where the map is placed
-        target: 'map${id}',
-        ol3Logo: false,
-        tooltip: false,
-        view: new ol.View2D({
-          // Define the default resolution
-          // 10 means that one pixel is 10m width and height
-          // 650, 500, 250, 100, 50, 20, 10, 5, 2.5, 2, 1, 0.5, 0.25, 0.1
-          resolution: 10,
-          center : [(${c['bbox'][0]}+${c['bbox'][2]})/2,(${c['bbox'][1]}+${c['bbox'][3]})/2]
-
-        }),
-        controls: ol.control.defaults({zoom: false,attribution: false}),  
-        interactions: ol.interaction.defaults({doubleClickZoom: false, dragPan: false, mouseWheelZoom: false})
+    if (geomJson) {
+      var feat = {
+        "type": "Feature",
+        "geometry": {
+          "type": "${geometry['type']}",
+          "coordinates": geomJson
+        }
+      };
+      var parser = new ol.format.GeoJSON();
+      var vectorSource = new ol.source.Vector({
+        projection: map.getView().getProjection(),
+        features: parser.readFeatures(feat)
       });
-
-      var lyr1 = ga.layer.create('ch.swisstopo.pixelkarte-grau');
-      var lyr2 = ga.layer.create('org.epsg.grid_21781');
-      var lyr3 = ga.layer.create('org.epsg.grid_4326');
-      var lyr4 = ga.layer.create('ch.bazl.luftfahrthindernis');
-
-      map.addLayer(lyr1); 
-      //map.addLayer(lyr2); 
-      //map.addLayer(lyr3);
-      //map.addLayer(lyr4);    
-      
-      var source2 = new ol.source.ImageWMS({
-        params: {
-          'LAYERS': 'org.epsg.grid_21781'
-        },
-        ratio: 1,
-        url: '${wms_url}'
+      var vector = new ol.layer.Vector({
+        opacity: 0.75,
+        source: vectorSource,
+        style: function(feature, resolution) {
+          return [new ol.style.Style({
+            fill: new ol.style.Fill({color: '#ffff00'}),
+            stroke: new ol.style.Stroke({color: '#ff8000', width: 3}),
+            image: new ol.style.Circle({
+              radius: 10,
+              fill: new ol.style.Fill({color:'#ffff00'}),
+              stroke: new ol.style.Stroke({color: '#ff8000', width: 3})
+            })
+          })];
+        }
       });
-
-      var layer2 = new ol.layer.Image({
-        source: source2
-      });
-      map.addLayer(layer2);
-
-      var source3 = new ol.source.ImageWMS({
-        params: {
-          'LAYERS': 'org.epsg.grid_4326'
-        },
-        ratio: 1,
-        url: '${wms_url}'
-      });
-
-      var layer3 = new ol.layer.Image({
-        source: source3
-      });
-      map.addLayer(layer3);
-
-      var source4 = new ol.source.ImageWMS({
-        params: {
-          'LAYERS': 'ch.bazl.luftfahrthindernis'
-        },
-        ratio: 1,
-        url: '${wms_url}'
-      });
-
-      var layer4 = new ol.layer.Image({
-        source: source4
-      });
-      map.addLayer(layer4);
-
-
-      map.highlightFeature('ch.bazl.luftfahrthindernis', '${c['featureId']}');
-
-    } 
-    init${id}();
-  </script>
-  <style>
-    .ol-zoom {
-      display: none;
+      map.addLayer(vector);
     }
-  </style>
-  <div style="font-size:12px; text-align:justify;">${_('tt_ch.bazl_longtext')} <br>${_('date')}: ${datenstand}</div>
-</body>
+  }
+  $(document).ready(init${id});
+</script>
 </%def>
