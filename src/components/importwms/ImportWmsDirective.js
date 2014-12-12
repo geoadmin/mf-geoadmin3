@@ -157,7 +157,11 @@
           // Test if the layer can be displayed with a specific projection
           var canUseProj = function(layer, projCode) {
             var projCodeList = layer.CRS || layer.SRS;
-            return (projCodeList.indexOf(projCode.toUpperCase()) != -1 ||
+            // If no proj code list available we assume the layer can be
+            // displayed, used for wms 1.1.1 until the PR
+            // https://github.com/openlayers/ol3/pull/2944 is finished.
+            return (!projCodeList ||
+                projCodeList.indexOf(projCode.toUpperCase()) != -1 ||
                 projCodeList.indexOf(projCode.toLowerCase()) != -1);
           };
 
@@ -223,7 +227,7 @@
               for (var i = 0, ii = layer.BoundingBox.length; i < ii; i++) {
                 var bbox = layer.BoundingBox[i];
                 var code = bbox.crs || bbox.srs;
-                if (code.toUpperCase() == projCode.toUpperCase()) {
+                if (code && code.toUpperCase() == projCode.toUpperCase()) {
                   return bbox.extent;
                 }
               }
