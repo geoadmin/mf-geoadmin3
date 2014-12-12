@@ -43,9 +43,12 @@
     sanctiontext = '-'
   else:
     sanctiontext = attr['sanctiontext']
+  
+  id = attr['featureId']
 %>
-<title>Luftfahrthindernisse</title>
-<body onload="init()">
+  <title>Luftfahrthindernisse</title>
+  <script type="text/javascript" src="//api3.geo.admin.ch/loader.js"></script>
+<body>
 <div class="zsborder">
   <table border="0px" cellspacing="0px" cellpadding="2px" width="100%">
     <tr>
@@ -128,7 +131,7 @@
   </table>
 </div>
 <div class="chsdi-map-container table-with-border" style="width: 100%; height: 400px;">
-  <div id="map"></div>
+  <div id="map${id}"></div>
 </div>
 
   <script type="text/javascript">
@@ -139,11 +142,11 @@
        else
           e.style.display = 'block';
     }
-    function init() {
+    function init${id}() {
       // Create a GeoAdmin Map
       var map = new ga.Map({
       // Define the div where the map is placed
-        target: 'map',
+        target: 'map${id}',
         ol3Logo: false,
         tooltip: false,
         view: new ol.View2D({
@@ -210,14 +213,14 @@
 
       map.highlightFeature('ch.bazl.luftfahrthindernis', '${c['featureId']}');
 
-    }
+    } 
+    init${id}();
   </script>
   <style>
     .ol-zoom {
       display: none;
     }
   </style>
-  <script type="text/javascript" src="//api3.geo.admin.ch/loader.js"></script>
   <div style="font-size:12px; text-align:justify;">${_('tt_ch.bazl_longtext')} <br>${_('date')}: ${datenstand}</div>
 </body>
 </%def>

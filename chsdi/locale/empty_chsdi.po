@@ -2051,16 +2051,22 @@ msgstr ""
 msgid "tt_emission_datum"
 msgstr ""
 
+msgid "ch.bav.laerm-emissionsplan_eisenbahn_tag"
+msgstr ""
+
+msgid "ch.bav.laerm-emissionsplan_eisenbahn_nacht"
+msgstr ""
+
 msgid "tt_emission_nacht_tag_lin_nr_dfa"
 msgstr ""
 
 msgid "tt_emission_nacht_tag_linienbeze"
 msgstr ""
 
-msgid "tt_emission_nacht_tag_linienbeze"
+msgid "tt_emission_nacht_tag_von_m"
 msgstr ""
 
-msgid "tt_emission_nacht_tag_linienbeze"
+msgid "tt_emission_nacht_tag_bis_m"
 msgstr ""
 
 msgid "tt_emission_nacht_tag_lre_t"
