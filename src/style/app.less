@@ -85,20 +85,24 @@ button.ga-icon {
     opacity: 1;
   }
 
-  &:hover {
-    opacity: 0.7
-  }
-
-  &:active {
-    opacity: 0.3;
-  }
-
   @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
     font-size: 2.2em;
     width: 1em;
   }
 }
- 
+
+button.ga-btn, .ol-control button {
+  &:hover {
+    opacity: 0.7;
+  }
+
+  &:active {
+    transform: scale(1.2);
+    -ms-transform: scale(1.2);
+    -webkit-transform: scale(1.2);
+  }
+}
+
 .ga-truncate-text {
   text-overflow: ellipsis;
   overflow: hidden;
@@ -1155,11 +1159,11 @@ input[type=range] {
   top: unit(@header-height, px);
   right: unit(@control-btns-right, px);
   z-index: 1000;
-  
+
   > div {
     display: block;
   }
-  
+ 
   button {
     padding: 0;
     background-color: transparent;
