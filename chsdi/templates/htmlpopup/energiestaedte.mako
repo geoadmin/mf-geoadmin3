@@ -33,7 +33,7 @@
       ${_('punktezahl')}
     </th>
     <td>
-      ${c['attributes']['punktezahl'] or '-'}
+      ${round(c['attributes']['punktezahl'],2) or '-'}
     </td>
   </tr>
   <tr>
