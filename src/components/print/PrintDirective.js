@@ -18,16 +18,16 @@
     var POINTS_PER_INCH = 72; //PostScript points 1/72"
     var MM_PER_INCHES = 25.4;
     var UNITS_RATIO = 39.37; // inches per meter
-    var POLL_INTERVAL = 2500; //interval for multi-page prints (ms)
+    var POLL_INTERVAL = 2000; //interval for multi-page prints (ms)
     var POLL_MAX_TIME = 600000; //ms (10 minutes)
     var printConfigLoaded = false;
     var currentTime = undefined;
-    var timeSelectorEnabled = false;
     var layersYears = [];
 
     $scope.options.multiprint = false;
     $scope.options.movie = false;
     $scope.options.printing = false;
+    $scope.options.progress = '';
 
     // Get print config
     var updatePrintConfig = function() {
@@ -132,10 +132,6 @@
     $rootScope.$on('gaTimeSelectorChange', function(event, time) {
       currentTime = time;
     });
-    $rootScope.$on('gaTimeSelectorEnabled', function(event, enabled) {
-      timeSelectorEnabled = enabled;
-    });
-
 
     // Encode ol.Layer to a basic js object
     var encodeLayer = function(layer, proj) {
@@ -511,7 +507,7 @@
             var source = layer.getSource();
             var tileGrid = source.getTileGrid();
             if (!config.background && layer.visible) {
-                layersYears.push(source.getDimensions().Time);
+              layersYears.push(layer.time);
             }
             angular.extend(enc, {
               type: 'WMTS',
@@ -532,15 +528,14 @@
           });
           var multiPagesPrint = false;
           if (config.timestamps) {
-              multiPagesPrint = !config.timestamps.some(function(ts) {
-                  return ts == '99991231';
-              });
-
+            multiPagesPrint = !config.timestamps.some(function(ts) {
+              return ts == '99991231';
+            });
           }
           // printing time series
-          if (config.timeEnabled && timeSelectorEnabled == undefined &&
-              currentTime == undefined && multiPagesPrint) {
-              enc['timestamps'] = config.timestamps;
+          if (config.timeEnabled && currentTime == undefined &&
+              multiPagesPrint) {
+            enc['timestamps'] = config.timestamps;
           }
 
           return enc;
@@ -599,6 +594,7 @@
         return;
       }
       $scope.options.printing = true;
+      $scope.options.progress = '';
       // http://mapfish.org/doc/print/protocol.html#print-pdf
       var view = $scope.map.getView();
       var proj = view.getProjection();
@@ -639,9 +635,11 @@
       });
       if (layersYears) {
         var years = layersYears.reduce(function(a, b) {
-          if (a.indexOf(b) < 0) a.push(b);
-            return a;
-           }, []);
+          if (a.indexOf(b) < 0) {
+            a.push(b);
+          }
+          return a;
+        }, []);
         var years = years.map(function(ts) {
           return ts.length > 4 ? ts.slice(0, 4) : ts;
         });
@@ -743,11 +741,32 @@
         };
 
         var startPollTime;
+        var pollErrors;
         var pollMulti = function(url) {
           $timeout(function() {
             var http = $http.get(url);
             http.success(function(data) {
               if (!data.getURL) {
+                // Write progress using the following logic
+                // First 60% is pdf page creationg
+                // 60-70% is merging of pdf
+                // 70-100% is writing of resulting pdf
+                if (data.filesize) {
+                  var written = data.written || 0;
+                  $scope.options.progress =
+                      (70 + Math.floor(written * 30 / data.filesize)) +
+                      '%';
+                } else if (data.total) {
+                  if (angular.isDefined(data.merged)) {
+                    $scope.options.progress =
+                        (60 + Math.floor(data.done * 10 / data.total)) +
+                        '%';
+                  } else if (angular.isDefined(data.done)) {
+                    $scope.options.progress =
+                        Math.floor(data.done * 60 / data.total) + '%';
+                  }
+                }
+
                 var now = new Date();
                 //We abort if we waited too long
                 if (now - startPollTime < POLL_MAX_TIME) {
@@ -759,9 +778,14 @@
                 $scope.downloadUrl(data.getURL);
               }
             }).error(function() {
-              $scope.options.printing = false;
+              pollErrors += 1;
+              if (pollErrors > 2) {
+                $scope.options.printing = false;
+              } else {
+                pollMulti(url);
+              }
             });
-          }, POLL_INTERVAL);
+          }, POLL_INTERVAL, false);
         };
 
         var printUrl = that.capabilities.createURL;
@@ -777,6 +801,7 @@
             var pollUrl = $scope.options.printPath + 'progress?id=' +
                 data.idToCheck;
             startPollTime = new Date();
+            pollErrors = 0;
             pollMulti(pollUrl);
           } else {
             $scope.downloadUrl(data.getURL);
