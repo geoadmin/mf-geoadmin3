@@ -67,6 +67,23 @@ def _get_extent_around_center(display, bbox, center, pixels):
     ]
 
 
+def _increment_info(l, filename):
+    l.acquire()
+    try:
+        with open(filename, 'r') as infile:
+            data = json.load(infile)
+
+        data['done'] = data['done'] + 1
+
+        with open(filename, 'w+') as outfile:
+            json.dump(data, outfile)
+    except:
+        pass
+
+    finally:
+        l.release()
+
+
 def _get_timestamps(spec, api_url):
     '''Returns the layers indices to be printed for each timestamp
     For instance (u'19971231', [1, 2]), (u'19981231', [0, 1, 2])  '''
@@ -115,7 +132,7 @@ def worker(job):
     ''' Print and dowload the indivialized PDFs'''
 
     timestamp = None
-    (idx, url, headers, timestamp, layers, tmp_spec, print_temp_dir) = job
+    (idx, url, headers, timestamp, layers, tmp_spec, print_temp_dir, infofile, lock) = job
 
     h = {'Referer': headers.get('Referer')}
     http = Http(disable_ssl_certificate_validation=True)
@@ -143,18 +160,19 @@ def worker(job):
             log.debug('[Worker] Failed timestamp: %s', timestamp)
 
             return (timestamp, None)
-
+        _increment_info(lock, infofile)
         return (timestamp, localname)
     else:
         log.debug('[Worker] Failed get/generate PDF for: %s. Error: %s', timestamp, resp.status)
         log.debug('[Worker] %s', content)
         return (timestamp, None)
 
+
 # Function to be used on process to create all
 # pdfs and merge them
-
-
 def create_and_merge(info):
+
+    lock = multiprocessing.Manager().Lock()
 
     (spec, print_temp_dir, scheme, api_url, headers, unique_filename) = info
 
@@ -164,23 +182,41 @@ def create_and_merge(info):
             isMultiPage = spec['movie']
         return isMultiPage
 
-    def _merge_pdfs(pdfs):
+    def _merge_pdfs(pdfs, infofile):
         '''Merge individual pdfs into a big one'''
+        '''We assume this happens in one process'''
 
+        with open(infofile, 'r') as data_file:
+            info_json = json.load(data_file)
+
+        info_json['merged'] = 0
+
+        def write_info():
+            with open(infofile, 'w+') as outfile:
+                json.dump(info_json, outfile)
+
+        log.info('[_merge_pdfs] Starting merge')
         merger = PdfFileMerger()
+        expected_file_size = 0
         for pdf in sorted(pdfs, key=lambda x: x[0]):
 
             ts, localname = pdf
             if localname is not None:
-                log.debug('[_merge_pdfs] Appending: %s', ts)
                 try:
                     path = open(localname, 'rb')
+                    expected_file_size += os.path.getsize(localname)
                     merger.append(fileobj=path)
+                    info_json['merged'] += 1
+                    write_info()
                 except:
                     return None
 
         try:
+            info_json['filesize'] = expected_file_size
+            info_json['written'] = 0
+            write_info()
             filename = create_pdf_path(print_temp_dir, unique_filename)
+            log.info('[_merge_pdfs] Writing file.')
             out = open(filename, 'wb')
             merger.write(out)
             log.info('[_merge_pdfs] Merged PDF written to: %s', filename)
@@ -200,6 +236,7 @@ def create_and_merge(info):
     create_pdf_url = 'http:' + api_url + '/print/create.json'
 
     url = create_pdf_url + '?url=' + urllib.quote_plus(create_pdf_url)
+    infofile = create_info_file(print_temp_dir, unique_filename)
 
     if _isMultiPage(spec):
         all_timestamps = _get_timestamps(spec, api_url)
@@ -230,9 +267,12 @@ def create_and_merge(info):
 
             log.debug('[print_create] Processing timestamp: %s', ts)
 
-            job = (idx, url, headers, ts, lyrs, tmp_spec, print_temp_dir)
+            job = (idx, url, headers, ts, lyrs, tmp_spec, print_temp_dir, infofile, lock)
 
             jobs.append(job)
+
+    with open(infofile, 'w+') as outfile:
+        json.dump({'status': 'ongoing', 'done': 0, 'total': len(jobs)}, outfile)
 
     if USE_MULTIPROCESS:
         pool = multiprocessing.Pool(NUMBER_POOL_PROCESSES)
@@ -253,18 +293,19 @@ def create_and_merge(info):
         pdfs = []
         for j in jobs:
             pdfs.append(worker(j))
+            _increment_info(lock, infofile)
 
     log.debug('pdfs %s', pdfs)
     if len([i for i, v in enumerate(pdfs) if v[1] is None]) > 0:
         log.error('One or more partial PDF is missing. Cannot merge PDF')
         return 2
 
-    if _merge_pdfs(pdfs) is False:
+    if _merge_pdfs(pdfs, infofile) is False:
         log.error('Something went wrong while merging PDFs')
         return 3
 
     pdf_download_url = scheme + ':' + api_url + '/print/-multi' + unique_filename + '.pdf.printout'
-    with open(create_info_file(print_temp_dir, unique_filename), 'w+') as outfile:
+    with open(infofile, 'w+') as outfile:
         json.dump({'status': 'done', 'getURL': pdf_download_url}, outfile)
 
     log.info('[create_pdf] PDF ready to download: %s', pdf_download_url)
@@ -305,12 +346,17 @@ class PrintMulti(object):
         print_temp_dir = self.request.registry.settings['print_temp_dir']
         fileid = self.request.params.get('id')
         filename = create_info_file(print_temp_dir, fileid)
+        pdffile = create_pdf_path(print_temp_dir, fileid)
 
         if not os.path.isfile(filename):
             raise HTTPBadRequest()
 
-        with open(filename) as data_file:
+        with open(filename, 'r') as data_file:
             data = json.load(data_file)
+
+        # When file is written, get current size
+        if os.path.isfile(pdffile):
+            data['written'] = os.path.getsize(pdffile)
 
         return data
 
@@ -346,12 +392,12 @@ class PrintMulti(object):
         headers.pop("Host", headers)
         unique_filename = datetime.datetime.now().strftime("%y%m%d%H%M%S") + str(random.randint(1000, 9999))
 
-        info = (spec, print_temp_dir, scheme, api_url, headers, unique_filename)
-        p = multiprocessing.Process(target=create_and_merge, args=(info,))
-        p.start()
         with open(create_info_file(print_temp_dir, unique_filename), 'w+') as outfile:
             json.dump({'status': 'ongoing'}, outfile)
 
+        info = (spec, print_temp_dir, scheme, api_url, headers, unique_filename)
+        p = multiprocessing.Process(target=create_and_merge, args=(info,))
+        p.start()
         response = {'idToCheck': unique_filename}
 
         return response
