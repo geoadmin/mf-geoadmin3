@@ -17,6 +17,17 @@ d.createElement(s),e=d.getElementsByTagName(s)[0];z.set=function(o){z.set.
 _.push(o)};z._=[];z.set._=[];$.async=!0;$.setAttribute('charset','utf-8');
 $.src='//v2.zopim.com/?2dl0IDa5Pix3PokxwwrN0pOhNwOR2c1Q';z.t=+new Date;$.
 type='text/javascript';e.parentNode.insertBefore($,e)})(document,'script');
+$zopim(function() {
+ $zopim.livechat.setOnStatus(chatstatus);
+ function chatstatus(status) {
+  if(status=='offline') {
+    $zopim.livechat.hideAll();
+  } else if(status=='online') {
+    $zopim.livechat.button.show();
+    $zopim.livechat.button.setPosition('bm');
+  }
+ }
+});
 </script>
 <!--End of Zopim Live Chat Script-->
 % if device == 'desktop':
