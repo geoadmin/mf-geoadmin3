@@ -13,6 +13,10 @@
     position: relative;
   }
 
+  button[disabled]:before {
+    visibility: hidden;
+  }
+
   input[name=url], .tt-dropdown-menu {
     width: 586px;
     padding-right: 20px;
@@ -184,10 +188,6 @@
   }
   
   .ga-invalid {
-
-    > .icon-zoom-in:before {
-      visibility: hidden;
-    }
 
     &.ga-selected, &.ga-selected:hover {
       background-color: #f2dede;
