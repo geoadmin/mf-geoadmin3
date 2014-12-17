@@ -1250,6 +1250,18 @@ msgstr "REN Zone di foresta>1000m"
 msgid "ch.bafu.ren-wald_unter_1000_meter"
 msgstr "REN Zone di foresta<1000m"
 
+msgid "ch.bafu.schutzgebiete-aulav_auen"
+msgstr "Zone golenali OAEs"
+
+msgid "ch.bafu.schutzgebiete-aulav_jagdbanngebiete"
+msgstr "Bandite federali OAEs"
+
+msgid "ch.bafu.schutzgebiete-aulav_moorlandschaften"
+msgstr "Zone palustri OAEs"
+
+msgid "ch.bafu.schutzgebiete-aulav_uebrige"
+msgstr "Altre zone protette OAEs"
+
 msgid "ch.bafu.schutzgebiete-biosphaerenreservate"
 msgstr "Riserve di biosfera"
 
@@ -3700,6 +3712,30 @@ msgstr "Bravo! Clicca qui per trovare l'indizio successivo!"
 
 msgid "tt_anteil_ch"
 msgstr "Percentuale della superficie in Svizzera"
+
+msgid "tt_bafu_aulav_fm_typ"
+msgstr "Palude"
+
+msgid "tt_bafu_aulav_general_part_1"
+msgstr "Sono considerati zone protette ai sensi dell’ordinanza sugli atterraggi esterni (OAEs, RS 748.132.3), i parchi nazionali, le torbiere alte e le torbiere di transizione, le riserve d’uccelli acquatici e migratori, le paludi, le zone golenali e le bandite federali (art. 19 OAEs) e le zone palustri di importanza nazionale (art. 32 lett. h OAEs)"
+
+msgid "tt_bafu_aulav_general_part_2"
+msgstr "Gli atterraggi esterni (intesi come decollo o atterraggio, carico o scarico di persone o cose al di fuori di un aerodromo o voli effettuati al di sotto delle quote minime fissate, a seconda del caso, a 150 m o a 300 m AGL) effettuati con aeromobili civili con occupanti sono per principio vietati nelle zone protette."
+
+msgid "tt_bafu_aulav_general_part_3"
+msgstr "Nelle pubblicazioni aeronautiche sono definite quattro categorie sulla base di restrizioni e oneri specifici legati agli atterraggi esterni: 1. Bandite federali, 2. Zone palustri 3. Zone golenali 4. Altre zone protette (torbiere alte e torbiere di transizione, paludi, riserve d’uccelli acquatici e migratori, parchi nazionali)."
+
+msgid "tt_bafu_aulav_general_part_4"
+msgstr "Ogni categoria di zona protetta è suddivisa in due livelli di generalizzazione: nelle immagini in piccola scala, ai fini di una migliore leggibilità le zone protette sono rappresentate in una forma generalizzata e inversamente proporzionale alla superficie con una zona tampone da 1 m a 80 m. Nelle immagini in grande scala, i perimetri delle zone protette sono rappresentate secondo la loro dimensione legale."
+
+msgid "tt_bafu_aulav_hm_typ"
+msgstr "Torbiera alte e tobiera di transsizione"
+
+msgid "tt_bafu_aulav_nat_park_typ"
+msgstr "Parco nazionale"
+
+msgid "tt_bafu_aulav_wv_typ"
+msgstr "Riserva d'uccelli acquatici e migratori"
 
 msgid "tt_bakom_middle"
 msgstr "Media"

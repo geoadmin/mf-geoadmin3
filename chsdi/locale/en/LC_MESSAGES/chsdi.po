@@ -1250,6 +1250,18 @@ msgstr "REN forest zones>1000m"
 msgid "ch.bafu.ren-wald_unter_1000_meter"
 msgstr "REN forest zones<1000m"
 
+msgid "ch.bafu.schutzgebiete-aulav_auen"
+msgstr "Floodplains AuLaV"
+
+msgid "ch.bafu.schutzgebiete-aulav_jagdbanngebiete"
+msgstr "Game reserves AuLaV"
+
+msgid "ch.bafu.schutzgebiete-aulav_moorlandschaften"
+msgstr "Mirelandscapes AuLaV"
+
+msgid "ch.bafu.schutzgebiete-aulav_uebrige"
+msgstr "Other protected areas AuLaV"
+
 msgid "ch.bafu.schutzgebiete-biosphaerenreservate"
 msgstr "Biosphere reserves"
 
@@ -3711,6 +3723,30 @@ msgstr "Bravo! Klicke hier um den nächsten Hinweis zu erhalten!"
 
 msgid "tt_anteil_ch"
 msgstr "Catchment areas percentage in Switzerland"
+
+msgid "tt_bafu_aulav_fm_typ"
+msgstr "Fen"
+
+msgid "tt_bafu_aulav_general_part_1"
+msgstr "Under Art. 19 of the Off-Airport Landing Ordinance (AuLaV; SR 748.132.3), protected areas comprise national parks, raised and transition bogs, water and migratory bird reserves, fens, floodplains, federal game reserves, and mire landscapes of national importance in accordance with Art. 32h."
+
+msgid "tt_bafu_aulav_general_part_2"
+msgstr "Off-airport landings (taking off or landing, and picking up or setting down cargo or persons outside airfields, or flying below the minimum altitude of 150/300 m/AGL) is basically prohibited for manned aircraft on protected areas."
+
+msgid "tt_bafu_aulav_general_part_3"
+msgstr "Based on the specific restrictions and conditions that apply to off-airport landings, a distinction is made in air navigation publications between 4 categories: 1. Game reserves 2. Mire landscapes 3. Floodplains 4. Other protected areas (raised and transition bogs, fens, water and migratory bird reserves, national parks)."
+
+msgid "tt_bafu_aulav_general_part_4"
+msgstr "Each category of protected area is divided into two generalisation levels: in small-scale views, the protected areas are displayed for readability in generalised form and inversely proportional to area, with a lateral buffer of between 1 and 80 m. In the large-scale views, the perimeters of the protected site are displayed in the legally valid dimensions."
+
+msgid "tt_bafu_aulav_hm_typ"
+msgstr "Raised and transition bog"
+
+msgid "tt_bafu_aulav_nat_park_typ"
+msgstr "National park"
+
+msgid "tt_bafu_aulav_wv_typ"
+msgstr "Water and migratory bird reserve"
 
 msgid "tt_bakom_middle"
 msgstr "Medium"

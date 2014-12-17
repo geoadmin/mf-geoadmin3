@@ -1250,6 +1250,18 @@ msgstr "REN  Wald>1000m"
 msgid "ch.bafu.ren-wald_unter_1000_meter"
 msgstr "REN  Wald<1000m"
 
+msgid "ch.bafu.schutzgebiete-aulav_auen"
+msgstr "Auengebiete AuLaV"
+
+msgid "ch.bafu.schutzgebiete-aulav_jagdbanngebiete"
+msgstr "Jagdbanngebiete AuLaV"
+
+msgid "ch.bafu.schutzgebiete-aulav_moorlandschaften"
+msgstr "Moorlandschaften AuLaV"
+
+msgid "ch.bafu.schutzgebiete-aulav_uebrige"
+msgstr "Übrige Schutzgebiete AuLaV"
+
 msgid "ch.bafu.schutzgebiete-biosphaerenreservate"
 msgstr "Biosphärenreservate"
 
@@ -3700,6 +3712,30 @@ msgstr "Bravo! Klicke hier um den nächsten Hinweis zu erhalten!"
 
 msgid "tt_anteil_ch"
 msgstr "Flächenanteil in der Schweiz"
+
+msgid "tt_bafu_aulav_fm_typ"
+msgstr "Flachmoor"
+
+msgid "tt_bafu_aulav_general_part_1"
+msgstr "Die Schutzgebiete beinhalten gemäss Art. 19 der Aussenlandeverordnung (AuLaV; SR 748.132.3) Nationalparks, Hoch- und Übergangsmoore, Wasser- und Zugvogelreservate, Flachmoore, Auengebiete und Eidgenössische Jagdbanngebiete sowie gemäss Art. 32h die Moorlandschaften von nationaler Bedeutung."
+
+msgid "tt_bafu_aulav_general_part_2"
+msgstr "Aussenlandungen (das Abfliegen oder Landen sowie das Aufnehmen oder Absetzen von Sachen oder Personen ausserhalb von Flugplätzen; resp. das Unterschreiten der Minimumüberflughöhen von 150/300 m/AGL) sind für zivile, bemannte Luftfahrtzeuge in Schutzgebieten grundsätzlich verboten."
+
+msgid "tt_bafu_aulav_general_part_3"
+msgstr "Auf Grund spezifischer Einschränkungen und Auflagen für Aussenlandungen werden in Luftfahrtpublikationen 4 Kategorien unterschieden: 1. Jagdbanngebiete 2. Moorlandschaften 3. Auengebiete 4. Übrige Schutzgebiete (Hoch- und Übergangsmoore, Flachmoore, Wasser- und Zugvogelreservate, Nationalpark)."
+
+msgid "tt_bafu_aulav_general_part_4"
+msgstr "Jede Kategorie von Schutzgebieten ist in zwei Generalisierungsstufen unterteilt: In kleinmassstäblichen Ansichten werden die Schutzgebiete hinsichtlich Lesbarkeit in generalisierter Form und umgekehrt proportional zur Fläche mit einem lateralen Puffer zwischen 1 bis 80 m dargestellt. In den grossmassstäblichen Ansichten sind die Schutzgebietsperimeter in der rechtlich gültigen Ausdehnung dargestellt."
+
+msgid "tt_bafu_aulav_hm_typ"
+msgstr "Hochmoorund Übergagngsmoor"
+
+msgid "tt_bafu_aulav_nat_park_typ"
+msgstr "Nationalpark"
+
+msgid "tt_bafu_aulav_wv_typ"
+msgstr "Wasser- und Zugvogelreservat"
 
 msgid "tt_bakom_middle"
 msgstr "Mittel"
