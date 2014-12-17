@@ -233,7 +233,8 @@
             // pointerup with the exact same coordinates of the pointerdown
             // event. to avoid a 'false' touchmove event to be dispatched,
             // we test if the pointer effectively moved.
-            if (down && (evt.clientX != down.clientX ||
+            if (down && (!gaBrowserSniffer.msie ||
+                evt.clientX != down.clientX ||
                 evt.clientY != down.clientY)) {
               moving = true;
             }
