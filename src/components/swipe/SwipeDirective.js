@@ -25,7 +25,7 @@
         link: function(scope, elt, attrs, controller) {
           scope.layers = scope.map.getLayers().getArray();
           // Use only layers in layer manager
-          scope.layerFilter = gaLayerFilters.selected;
+          scope.layerFilter = gaLayerFilters.selectedAndVisible;
           var draggableElt = elt.find('[ga-draggable]');
           var arrowsElt = elt.find('.ga-swipe-arrows');
           var layerLabelElt = elt.find('.ga-swipe-layer-label');
@@ -117,6 +117,7 @@
 
             if (!scope.isActive || olLayers.length == 0) {
               elt.hide();
+              updatePermalink();
               return;
             }
 
@@ -140,14 +141,15 @@
               ];
             }
             elt.show();
+            updatePermalink(scope.ratio);
             scope.map.render();
           };
 
           // Active the swipe adding events.
           var activate = function() {
             scope.ratio = scope.ratio || 0.5;
-            draggableElt.css({left: calculateOffsetLeft()});
             updatePermalink(scope.ratio);
+            draggableElt.css({left: calculateOffsetLeft()});
             layersDeregisterFn = scope.$watchCollection(
                 'layers | filter:layerFilter', refreshComp);
             elt.on(eventKey.start, dragStart);
@@ -161,14 +163,13 @@
             if (layersDeregisterFn) {
               layersDeregisterFn();
             }
-            updatePermalink();
           };
 
           // Boolean determining if the swipe is activated from the permalink
           // parameter
           var fromPermalink = false;
 
-          // Initalize component with permalink paraneter
+          // Initalize component with permalink parameter
           if (!angular.isDefined(scope.isActive) &&
              angular.isDefined(gaPermalink.getParams().swipe_ratio)) {
             scope.ratio = parseFloat(gaPermalink.getParams().swipe_ratio);

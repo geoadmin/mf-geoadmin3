@@ -1037,6 +1037,11 @@
         selected: function(layer) {
           return layer.displayInLayerManager;
         },
+
+        selectedAndVisible: function(layer) {
+          return layer.displayInLayerManager && layer.visible;
+        },
+
         /**
          * Keep only time enabled layer
          */
