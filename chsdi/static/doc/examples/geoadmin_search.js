@@ -9,8 +9,8 @@ var map = new ga.Map({
     ga.layer.create ('ch.swisstopo.pixelkarte-farbe')
   ],
    
-  // Create a 2D view
-  view: new ol.View2D({
+  // Create a view
+  view: new ol.View({
 
     // 500 means that one pixel is 500m width and height
     // List of resolution of the WMTS layers:

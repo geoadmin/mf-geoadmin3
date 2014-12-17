@@ -42,7 +42,7 @@ Below you'll find a complete working example. Create a new file, copy/paste the 
         var map = new ga.Map({
           target: 'map',
           layers: [layer],
-          view: new ol.View2D({
+          view: new ol.View({
             resolution: 500,
             center: [670000, 160000]
           })
@@ -96,7 +96,7 @@ JavaScript to create a simple map with a layer
     var map = new ga.Map({
       target: 'map',
       layers: [layer],
-      view: new ol.View2D({
+      view: new ol.View({
         resolution: 500,
         center: [670000, 160000]
       })
@@ -128,11 +128,11 @@ The layers: [ ... ] array is used to define the list of layers available in the 
 
   layers: [layer],
 
-The next part of the Map object is the View. The view allow to specify the center, resolution, and rotation of the map. Right now, only View2D is supported, but other views should be available at some point. The simplest way to define a view is to define a center point and a resolution. The GeoAdmin API supports the following resolution: 650, 500, 250, 100, 50, 20, 10, 5, 2.5, 2, 1, 0.5, 0.25, 0.1 but intermediate resolutions can be used without problems. The resolution corresponds to the real size (on the earth) of one pixel. 
+The next part of the Map object is the View. The view allow to specify the center, resolution, and rotation of the map. Right now, only 2D View is supported, but other views should be available at some point. The simplest way to define a view is to define a center point and a resolution. The GeoAdmin API supports the following resolution: 650, 500, 250, 100, 50, 20, 10, 5, 2.5, 2, 1, 0.5, 0.25, 0.1 but intermediate resolutions can be used without problems. The resolution corresponds to the real size (on the earth) of one pixel. 
 
 .. code-block:: javascript
 
-  view: new ol.View2D({
+  view: new ol.View({
     resolution: 500,
     center: [670000, 160000]
   })

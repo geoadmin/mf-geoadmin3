@@ -105,8 +105,8 @@ Modify the map
  var map = new ga.Map({
  <!--// Define the div where the map is placed-->
   target: 'map', 
- <!--// Create a 2D view-->
-    view: new ol.View2D({
+ <!--// Create a view-->
+    view: new ol.View({
  <!--// 10 means that one pixel is 10m width and height-->
  <!--// List of resolution of the WMTS layers:-->
  <!--// 650, 500, 250, 100, 50, 20, 10, 5, 2.5, 2, 1, 0.5, 0.25, 0.1-->

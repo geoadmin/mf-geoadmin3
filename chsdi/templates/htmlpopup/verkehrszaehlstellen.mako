@@ -140,7 +140,7 @@ display:none !important;
       // Define the div where the map is placed
           target: 'map',
           ol3Logo: false,
-          view: new ol.View2D({
+          view: new ol.View({
           // Define the default resolution
           // 10 means that one pixel is 10m width and height
           // List of resolution of the WMTS layers:
@@ -164,7 +164,7 @@ display:none !important;
       // Define the div where the map is placed
          target: 'map2',
          // Create a 2D view
-         view: new ol.View2D({
+         view: new ol.View({
          // Define the default resolution
          // 10 means that one pixel is 10m width and height
          // List of resolution of the WMTS layers:

@@ -52,7 +52,7 @@ Use the GeoAdmin API Forum to ask questions: http://groups.google.com/group/geoa
       var map = new ga.Map({
         target: 'map',
         layers: [layer],
-        view: new ol.View2D({
+        view: new ol.View({
           resolution: 750,
           center: [680000, 180000]
         })
