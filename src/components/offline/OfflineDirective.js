@@ -220,8 +220,8 @@
 
         // We need to calculate every corner to make it rotate
         var updateRectangle = function(scale) {
-          var center = scope.map.getView().getCenter();
-          var extent = ol.extent.buffer(center.concat(center), 5000);
+          var extent = gaOffline.calculateExtentToSave(
+              scope.map.getView().getCenter());
           var topLeft = scope.map.getPixelFromCoordinate([extent[0],
               extent[3]]);
           var topRight = scope.map.getPixelFromCoordinate([extent[0],

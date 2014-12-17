@@ -196,6 +196,10 @@
           return !!(gaStorage.getItem(extentKey));
         };
 
+        this.calculateExtentToSave = function(center) {
+          return ol.extent.buffer(center.concat(center), 5000);
+        };
+
         this.refreshLayers = function(layers, useClientZoom, force) {
           var layersIds = gaStorage.getItem(layersKey);
           for (var i = 0, ii = layers.length; i < ii; i++) {
@@ -378,8 +382,7 @@
           }
 
           // Store the extent saved
-          var center = map.getView().getCenter();
-          extent = ol.extent.buffer(center.concat(center), 5000);
+          extent = this.calculateExtentToSave(map.getView().getCenter());
 
           // We go through all the cacheable layers.
           var projection = map.getView().getProjection();
