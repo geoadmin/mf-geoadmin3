@@ -32,6 +32,12 @@ msgstr "Bauernhof"
 msgid "Berghuette"
 msgstr "Berghütte"
 
+msgid "Boeenspitzen_kmh"
+msgstr "Böenspitzen [km/h]"
+
+msgid "Boeenspitzen_ms"
+msgstr "Böenspitzen [m/s]"
+
 msgid "Bounding Box - Coordinates"
 msgstr "Bounding Box - Koordinaten"
 
@@ -232,6 +238,9 @@ msgstr "Stadion"
 
 msgid "Stadtzentr"
 msgstr "Zentren grösserer Städte"
+
+msgid "Staudruck"
+msgstr "Staudruck [N/m²]"
 
 msgid "Stausee"
 msgstr "Stausee"
@@ -1303,6 +1312,30 @@ msgstr "Sturz"
 
 msgid "ch.bafu.silvaprotect-uebersarung"
 msgstr "Übersarung"
+
+msgid "ch.bafu.sturm-boeenspitzen_100"
+msgstr "Sturmgefährdung Böenspitzen 100"
+
+msgid "ch.bafu.sturm-boeenspitzen_30"
+msgstr "Sturmgefährdung Böenspitzen 30"
+
+msgid "ch.bafu.sturm-boeenspitzen_300"
+msgstr "Sturmgefährdung Böenspitzen 300"
+
+msgid "ch.bafu.sturm-boeenspitzen_50"
+msgstr "Sturmgefährdung Böenspitzen 50"
+
+msgid "ch.bafu.sturm-staudruck_100"
+msgstr "Sturmgefährdung Staudruck 100"
+
+msgid "ch.bafu.sturm-staudruck_30"
+msgstr "Sturmgefährdung Staudruck 30"
+
+msgid "ch.bafu.sturm-staudruck_300"
+msgstr "Sturmgefährdung Staudruck 300"
+
+msgid "ch.bafu.sturm-staudruck_50"
+msgstr "Sturmgefährdung Staudruck 50"
 
 msgid "ch.bafu.swissprtr"
 msgstr "Schadstoff-Freisetzungen (SwissPRTR)"
