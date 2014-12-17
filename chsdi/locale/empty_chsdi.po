@@ -1229,6 +1229,9 @@ msgstr ""
 msgid "ch.swisstopo.pixelkarte-pk500.metadata"
 msgstr ""
 
+msgid "ch.swisstopo.skitourenkarte-50.metadata"
+msgstr ""
+
 msgid "ch.swisstopo.swissalti3d-reliefschattierung"
 msgstr ""
 
@@ -1329,6 +1332,9 @@ msgid "messstandort_name"
 msgstr ""
 
 msgid "gewaesser"
+msgstr ""
+
+msgid "kartenbezug"
 msgstr ""
 
 msgid "tt_ezgnr"

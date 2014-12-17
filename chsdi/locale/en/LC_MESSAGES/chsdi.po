@@ -2096,6 +2096,9 @@ msgstr "swisstopo, sgpk"
 msgid "ch.swisstopo.sgtk"
 msgstr "swisstopo, sgtk"
 
+msgid "ch.swisstopo.skitourenkarte-50.metadata"
+msgstr "Division Ski Tour Map"
+
 msgid "ch.swisstopo.swissalti3d-reliefschattierung"
 msgstr "swissALTI3D Hillshade"
 
@@ -2657,6 +2660,9 @@ msgstr "Canton"
 
 msgid "kantoncode"
 msgstr "Canton Code"
+
+msgid "kartenbezug"
+msgstr "Order maps"
 
 msgid "kartenblattname"
 msgstr "Kartenblattname"

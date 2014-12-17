@@ -2096,6 +2096,9 @@ msgstr "swisstopo, sgpk"
 msgid "ch.swisstopo.sgtk"
 msgstr "swisstopo, sgtk"
 
+msgid "ch.swisstopo.skitourenkarte-50.metadata"
+msgstr "Découpage carte de randonnées à ski"
+
 msgid "ch.swisstopo.swissalti3d-reliefschattierung"
 msgstr "swissALTI3D estompage du relief"
 
@@ -2656,6 +2659,9 @@ msgstr "Canton"
 
 msgid "kantoncode"
 msgstr "Code cantonal"
+
+msgid "kartenbezug"
+msgstr "Distribution des cartes"
 
 msgid "kartenblattname"
 msgstr "Nom de feuille"
