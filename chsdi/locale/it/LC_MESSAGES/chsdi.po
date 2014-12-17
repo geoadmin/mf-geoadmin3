@@ -1248,7 +1248,7 @@ msgid "ch.bafu.schutzgebiete-biosphaerenreservate"
 msgstr "Riserve di biosfera"
 
 msgid "ch.bafu.schutzgebiete-luftfahrt"
-msgstr "Siti protetti"
+msgstr "Zone protette MIL"
 
 msgid "ch.bafu.schutzgebiete-paerke_nationaler_bedeutung"
 msgstr "Parchi"
@@ -3477,7 +3477,7 @@ msgid "publikationsjahr_1_2"
 msgstr "Anno di pubblicazione 1 | 2"
 
 msgid "punktezahl"
-msgstr "Punteggio realizzato"
+msgstr "Punteggio realizzato (%)"
 
 msgid "punktname"
 msgstr "Nom du point"

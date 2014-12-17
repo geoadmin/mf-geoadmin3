@@ -3477,7 +3477,7 @@ msgid "publikationsjahr_1_2"
 msgstr "Onn da publicaziun 1 | 2"
 
 msgid "punktezahl"
-msgstr "Punktezahl"
+msgstr "Punktezahl (%)"
 
 msgid "punktname"
 msgstr "Punktname"
