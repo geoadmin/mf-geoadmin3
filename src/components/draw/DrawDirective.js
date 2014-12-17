@@ -266,8 +266,6 @@
             evt.preventDefault();
           };
 
-          scope.supportKmlExport = gaExportKml.canSave();
-
           scope.exportKml = function(evt) {
             gaExportKml.createAndDownload(layer, map.getView().getProjection());
             evt.preventDefault();

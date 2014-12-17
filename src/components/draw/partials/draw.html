@@ -38,23 +38,14 @@
       </div>
     </div>
 
-    <div ng-if="options.isModifyActive">
-      <button class="btn btn-default" ng-click="deleteFeatures($event)" translate>draw_delete_selected_features</button>
-    </div>
-
-  </div>
-
-  <div ng-if="options.showExport">
-    <div ng-if="supportKmlExport">
-      <button class="btn btn-default pull-right"
+    <div class="ga-draw-interaction-btns pull-right" role="group">
+      <button ng-if="options.isModifyActive" class="btn btn-default" ng-click="deleteFeatures($event)" translate>draw_delete_selected_features</button>
+      <button class="btn btn-default"
+              ng-if="options.showExport"
               ng-disabled="!canExport()"
               ng-click="exportKml($event)"
               translate>export_kml
       </button>
     </div>
-    <div class="pull-right" ng-if="!supportKmlExport" translate>
-      export_kml_notsupported
-    </div>
   </div>
-
 </div>
