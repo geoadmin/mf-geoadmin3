@@ -24,6 +24,6 @@ int = ip-10-220-6-155.eu-west-1.compute.internal,
       ip-10-220-5-202.eu-west-1.compute.internal
 
 # demo
-demo = ip-10-220-5-46.eu-west-1.compute.internal
+demo = ip-10-220-5-16.eu-west-1.compute.internal
 # NO PROD FOR BRANCH
 
