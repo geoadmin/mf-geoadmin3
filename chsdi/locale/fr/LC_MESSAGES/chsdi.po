@@ -1215,7 +1215,7 @@ msgid "ch.bafu.oekomorphologie-f_abstuerze"
 msgstr "Ecomorphologie R - Seuils"
 
 msgid "ch.bafu.oekomorphologie-f_bauwerke"
-msgstr "Ecomorphologie R - Ouvrages"
+msgstr "Ecomorphologie R – Ouvrages"
 
 msgid "ch.bafu.permafrost"
 msgstr "Carte indicative du Pergélisol"
@@ -1248,7 +1248,7 @@ msgid "ch.bafu.schutzgebiete-biosphaerenreservate"
 msgstr "Réserves de biosphère"
 
 msgid "ch.bafu.schutzgebiete-luftfahrt"
-msgstr "Sites protégés"
+msgstr "Zones protégées MIL"
 
 msgid "ch.bafu.schutzgebiete-paerke_nationaler_bedeutung"
 msgstr "Parcs"
@@ -1478,6 +1478,12 @@ msgstr "Sites pollués transports publics"
 msgid "ch.bav.laerm-emissionplan_eisenbahn_2015"
 msgstr "Plan des émissions en 2015"
 
+msgid "ch.bav.laerm-emissionsplan_eisenbahn_nacht"
+msgstr "Rép. émissions sonores ferr. 2015 N"
+
+msgid "ch.bav.laerm-emissionsplan_eisenbahn_tag"
+msgstr "Rép. émissions sonores ferr. 2015 J"
+
 msgid "ch.bav.sachplan-infrastruktur-schiene_anhorung"
 msgstr "SIS consultation"
 
@@ -1545,10 +1551,10 @@ msgid "ch.bfe.energiestaedte-2000watt-areale"
 msgstr "Sites 2000 watts"
 
 msgid "ch.bfe.energiestaedte-2000watt-aufdemweg"
-msgstr "Cité de l’énergie vers 2000 watts"
+msgstr "Cités de l’énergie vers 2000 watts"
 
 msgid "ch.bfe.energiestaedte-energieregionen"
-msgstr "Régions-Energie"
+msgstr "Région-Energie"
 
 msgid "ch.bfe.kernkraftwerke"
 msgstr "Centrales nucléaires"
@@ -1662,10 +1668,10 @@ msgid "ch.blw.feldblockkarte"
 msgstr "Carte de blocs de parcelles"
 
 msgid "ch.blw.gewaesseranschlusskarte"
-msgstr "Surface en connexion des eaux"
+msgstr "Surface en connection des eaux"
 
 msgid "ch.blw.gewaesseranschlusskarte-direkt"
-msgstr "Surface en connexion élargie"
+msgstr "Surface en connection élargie"
 
 msgid "ch.blw.hang_steillagen"
 msgstr "Terrains en pente"
@@ -3404,7 +3410,6 @@ msgstr "Service RDPPF"
 msgid "oereb_status"
 msgstr "Etat RDPPF"
 
-#. TODO
 msgid "official object webpage"
 msgstr "Page officielle de l'objet"
 
@@ -3472,7 +3477,7 @@ msgid "publikationsjahr_1_2"
 msgstr "Année de publication 1 | 2"
 
 msgid "punktezahl"
-msgstr "Nombre de points"
+msgstr "Nombre de points (%)"
 
 msgid "punktname"
 msgstr "Nom du point"
@@ -4163,11 +4168,17 @@ msgstr "Lr,e (n)"
 msgid "tt_emission_lre_t"
 msgstr "Lr,e (t)"
 
+msgid "tt_emission_nacht_tag_bis_m"
+msgstr "Fin (m) "
+
 msgid "tt_emission_nacht_tag_grund1"
 msgstr "Motif 1 (type de rail) "
 
 msgid "tt_emission_nacht_tag_grund2"
 msgstr "Motif 2 (type de pont) "
+
+msgid "tt_emission_nacht_tag_k1_n"
+msgstr "K1 (n) "
 
 msgid "tt_emission_nacht_tag_k1_t"
 msgstr "K1 (j) "
@@ -4178,14 +4189,14 @@ msgstr "Ligne DfA"
 msgid "tt_emission_nacht_tag_linienbeze"
 msgstr "Désignation de ligne"
 
-msgid "tt_emission_nacht_tag_linienbeze"
-msgstr "Désignation de ligne"
-
-msgid "tt_emission_nacht_tag_linienbeze"
-msgstr "Désignation de ligne"
+msgid "tt_emission_nacht_tag_lre_n"
+msgstr "Lr,e (n) "
 
 msgid "tt_emission_nacht_tag_lre_t"
 msgstr "Lr,e (j) "
+
+msgid "tt_emission_nacht_tag_von_m"
+msgstr "Début (m) "
 
 msgid "tt_emission_typ_aender"
 msgstr "Remarque"

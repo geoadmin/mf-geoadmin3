@@ -1248,7 +1248,7 @@ msgid "ch.bafu.schutzgebiete-biosphaerenreservate"
 msgstr "Biosphere reserves"
 
 msgid "ch.bafu.schutzgebiete-luftfahrt"
-msgstr "Protected sites"
+msgstr "Protected areas MIL"
 
 msgid "ch.bafu.schutzgebiete-paerke_nationaler_bedeutung"
 msgstr "Parks"
@@ -1477,6 +1477,12 @@ msgstr "Polluted sites - pub. transp."
 
 msgid "ch.bav.laerm-emissionplan_eisenbahn_2015"
 msgstr "Emissions Plan 2015"
+
+msgid "ch.bav.laerm-emissionsplan_eisenbahn_nacht"
+msgstr "Emissionsplan Eisenbahnlärm 2015 N"
+
+msgid "ch.bav.laerm-emissionsplan_eisenbahn_tag"
+msgstr "Emissionsplan Eisenbahnlärm 2015 T"
 
 msgid "ch.bav.sachplan-infrastruktur-schiene_anhorung"
 msgstr "SIS consultation"
@@ -3405,7 +3411,6 @@ msgstr "PLR Authority"
 msgid "oereb_status"
 msgstr "PLR State"
 
-#. TODO
 msgid "official object webpage"
 msgstr "Official object webpage"
 
@@ -3473,7 +3478,7 @@ msgid "publikationsjahr_1_2"
 msgstr "Year of publication 1 | 2"
 
 msgid "punktezahl"
-msgstr "Number of points"
+msgstr "Number of points (%)"
 
 msgid "punktname"
 msgstr "Point name"
@@ -4163,11 +4168,17 @@ msgstr "Lr,e (n)"
 msgid "tt_emission_lre_t"
 msgstr "Lr,e (t)"
 
+msgid "tt_emission_nacht_tag_bis_m"
+msgstr "Bis m"
+
 msgid "tt_emission_nacht_tag_grund1"
 msgstr "Begr. 1 (Schienentyp) "
 
 msgid "tt_emission_nacht_tag_grund2"
 msgstr "Begr. 2 (Brückentyp) "
+
+msgid "tt_emission_nacht_tag_k1_n"
+msgstr "K1 (n) "
 
 msgid "tt_emission_nacht_tag_k1_t"
 msgstr "K1 (t) "
@@ -4178,14 +4189,14 @@ msgstr "DfA-Linie "
 msgid "tt_emission_nacht_tag_linienbeze"
 msgstr "Linienbezeichnung"
 
-msgid "tt_emission_nacht_tag_linienbeze"
-msgstr "Linienbezeichnung"
-
-msgid "tt_emission_nacht_tag_linienbeze"
-msgstr "Linienbezeichnung"
+msgid "tt_emission_nacht_tag_lre_n"
+msgstr "Lr,e (n) "
 
 msgid "tt_emission_nacht_tag_lre_t"
 msgstr "Lr,e (t) "
+
+msgid "tt_emission_nacht_tag_von_m"
+msgstr "Von m"
 
 msgid "tt_emission_typ_aender"
 msgstr "Bemerkung"

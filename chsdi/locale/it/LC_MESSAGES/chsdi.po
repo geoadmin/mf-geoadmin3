@@ -330,7 +330,7 @@ msgid "arch__hist__qualitaeten"
 msgstr "Qualità storico-arch."
 
 msgid "areal"
-msgstr "Srea"
+msgstr "Area"
 
 msgid "areal_gemeinde"
 msgstr "Si trova nel Comune / nella città"
@@ -1248,7 +1248,7 @@ msgid "ch.bafu.schutzgebiete-biosphaerenreservate"
 msgstr "Riserve di biosfera"
 
 msgid "ch.bafu.schutzgebiete-luftfahrt"
-msgstr "Siti protetti"
+msgstr "Zone protette MIL"
 
 msgid "ch.bafu.schutzgebiete-paerke_nationaler_bedeutung"
 msgstr "Parchi"
@@ -1478,6 +1478,12 @@ msgstr "Siti inquinati trasporti pubbl."
 msgid "ch.bav.laerm-emissionplan_eisenbahn_2015"
 msgstr "Piano delle emissioni 2015"
 
+msgid "ch.bav.laerm-emissionsplan_eisenbahn_nacht"
+msgstr "Piano emissioni foniche ferr 2015 N"
+
+msgid "ch.bav.laerm-emissionsplan_eisenbahn_tag"
+msgstr "Piano emissioni foniche ferr 2015 G"
+
 msgid "ch.bav.sachplan-infrastruktur-schiene_anhorung"
 msgstr "SIS consultazione"
 
@@ -1542,13 +1548,13 @@ msgid "ch.bfe.energiestaedte"
 msgstr "Città dell’energia"
 
 msgid "ch.bfe.energiestaedte-2000watt-areale"
-msgstr "Aree a 2000 Watt"
+msgstr "Aree 2000 Watt"
 
 msgid "ch.bfe.energiestaedte-2000watt-aufdemweg"
 msgstr "Città dell’energia verso 2000 Watt"
 
 msgid "ch.bfe.energiestaedte-energieregionen"
-msgstr "Regione-Energia"
+msgstr "Regioni-Energia"
 
 msgid "ch.bfe.kernkraftwerke"
 msgstr "Centrali nucleari"
@@ -3404,7 +3410,6 @@ msgstr "Servizio RDPP"
 msgid "oereb_status"
 msgstr "Stato RDPP"
 
-#. TODO
 msgid "official object webpage"
 msgstr "Pagina ufficiale dell'oggetto"
 
@@ -3472,7 +3477,7 @@ msgid "publikationsjahr_1_2"
 msgstr "Anno di pubblicazione 1 | 2"
 
 msgid "punktezahl"
-msgstr "Punteggio realizzato"
+msgstr "Punteggio realizzato (%)"
 
 msgid "punktname"
 msgstr "Nom du point"
@@ -4163,11 +4168,17 @@ msgstr "Lr,e (n)"
 msgid "tt_emission_lre_t"
 msgstr "Lr,e (t)"
 
+msgid "tt_emission_nacht_tag_bis_m"
+msgstr "Fine (m) "
+
 msgid "tt_emission_nacht_tag_grund1"
 msgstr "Motivo 1 (tipo di rotaia)"
 
 msgid "tt_emission_nacht_tag_grund2"
 msgstr "Motivo 2 (tipo di ponte)"
+
+msgid "tt_emission_nacht_tag_k1_n"
+msgstr "K1 (n) "
 
 msgid "tt_emission_nacht_tag_k1_t"
 msgstr "K1 (d) "
@@ -4178,14 +4189,14 @@ msgstr "Linea DfA"
 msgid "tt_emission_nacht_tag_linienbeze"
 msgstr "Designazione di linea"
 
-msgid "tt_emission_nacht_tag_linienbeze"
-msgstr "Designazione di linea"
-
-msgid "tt_emission_nacht_tag_linienbeze"
-msgstr "Designazione di linea"
+msgid "tt_emission_nacht_tag_lre_n"
+msgstr "Lr,e (n) "
 
 msgid "tt_emission_nacht_tag_lre_t"
 msgstr "Lr,e (d) "
+
+msgid "tt_emission_nacht_tag_von_m"
+msgstr "Inizio (m)"
 
 msgid "tt_emission_typ_aender"
 msgstr "Remarque"
