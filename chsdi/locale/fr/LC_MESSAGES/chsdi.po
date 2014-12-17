@@ -1668,10 +1668,10 @@ msgid "ch.blw.feldblockkarte"
 msgstr "Carte de blocs de parcelles"
 
 msgid "ch.blw.gewaesseranschlusskarte"
-msgstr "Surface en connection des eaux"
+msgstr "Surface en connexion des eaux"
 
 msgid "ch.blw.gewaesseranschlusskarte-direkt"
-msgstr "Surface en connection élargie"
+msgstr "Surface en connexion élargie"
 
 msgid "ch.blw.hang_steillagen"
 msgstr "Terrains en pente"
