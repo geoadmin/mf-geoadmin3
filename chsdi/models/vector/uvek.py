@@ -693,8 +693,8 @@ class Luftfahrthindernis(Base, Vector):
     __bodId__ = 'ch.bazl.luftfahrthindernis'
     __extended_info__ = True
     __label__ = 'registrationnumber'
-    __queryable_attributes__ = ['sanctiontext', 'registrationnumber', 'obstacletype', 'state', 'maxheightagl',
-                                'topelevationamsl', 'totallength', 'startofconstruction', 'duration', 'abortionaccomplished']
+    __queryable_attributes__ = ['registrationnumber', 'state', 'maxheightagl',
+                                'topelevationamsl', 'totallength', 'startofconstruction', 'abortionaccomplished']
     id = Column('bgdi_id', Integer, primary_key=True)
     sanctiontext = Column('sanctiontext', Text)
     registrationnumber = Column('registrationnumber', Text)
