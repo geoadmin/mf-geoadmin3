@@ -8,7 +8,13 @@
   ]);
 
   module.controller('GaFeaturetreeController', function($http, $scope,
-      $timeout, $translate, gaGlobalOptions, gaPrintService) {
+      $timeout, $translate, $window, gaGlobalOptions, gaPrintService) {
+    
+    // List of layers using an extendHtmlPoup for the print instead of htmlPopup   
+    var extended = {
+      'ch.bazl.luftfahrthindernis' : true
+    };
+
     $scope.options = {
       msUrl: gaGlobalOptions.cachedApiUrl + '/rest/services/all/MapServer',
       features: [], // List of features
@@ -19,19 +25,36 @@
     $scope.$watch('options.features.length', function() {
       $scope.options.featuresShown = ($scope.options.features.length > 0);
     });
+    
 
+    // Print popup stuff
+    var featureTree, winPrint, useNewTab;
     $scope.printInProgress = false;
     $scope.printProgressPercentage = 0;
-    var featureTree;
-    var  useException = false;   
-    var exceptions = {
-      'ch.bazl.luftfahrthindernis': 'htmlPopup' //extendedHtmlPopup
-    };
     $scope.print = function() {
+
       var printElementsTotal = $scope.options.features.length;
       if (printElementsTotal == 0) {
         return;
       }
+
+      // We determine if need to open the popup in a new tab (extended tooltip)
+      // or a new window (default)
+      useNewTab = false;
+      for (var layerBodId in featureTree) {
+        if (extended[layerBodId]) {
+          useNewTab = true;
+          break;
+        }
+      }
+      if (winPrint) {
+        winPrint.close();
+      }
+      if (useNewTab) {
+        // Code needed to open in a new tab on Chrome
+        winPrint =  window.open('','printout');
+      }
+
       var lang = $translate.use();
       var printElementsLoaded = 0;
       var printLayers = [];
@@ -64,14 +87,11 @@
           head: null,
           body: ''
         };
-        if (!useException) {
-          useException = false; //!!(exceptions[bodId]);
-        }
         var layer = featureTree[bodId];
         var layerUrl = $scope.options.msUrl + '/' + bodId;
         for (var i in layer.features) {
           $http.get(layerUrl + '/' + layer.features[i].id + '/' +
-              (exceptions[bodId] || 'htmlPopup'), {
+              (extended[bodId] ? 'extendedHtmlPopup' : 'htmlPopup'), {
             lang: lang
           }).success(function(data, status, headers, config) {
             printElementLoaded(data, bodId);
@@ -95,13 +115,8 @@
         }
         body += printLayers[bodId].body;
       }
-
-      var options;
-      if (useException) {
-        options = 'menubar=yes,toolbar=yes,titlebar=yes,status=yes,scrollbars=yes,' +
-            'resizable=yes,width=600,height=850';
-      }
-      gaPrintService.htmlPrintout(body, head || undefined, undefined, options);
+      gaPrintService.htmlPrintout(body, head || undefined,
+          (useNewTab) ? function(){} : undefined);
     };
     
     var ftPopup = $('#featuretree-popup');
