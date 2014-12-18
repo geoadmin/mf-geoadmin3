@@ -190,7 +190,7 @@
 
           //Apply the year selected
           var applyNewYear = function(year) {
-            var newYear = '' + year;
+            var newYear = (year) ? '' + year : year;
 
             // Only valid values are allowed: undefined, null or
             // minYear <= newYear <= maxYear
