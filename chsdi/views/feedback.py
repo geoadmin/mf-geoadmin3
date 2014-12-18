@@ -37,7 +37,14 @@ def feedback(self, request):
             MIMEText(unicodedata.normalize('NFKD',
                                            unicode(text)).encode('ascii',
                                                                  'ignore')))
-        # Handle attachements
+        # Attach meta information
+        part = MIMEBase('application', 'json')
+        part.set_payload(json.dumps(jsonToAttach))
+        Encoders.encode_base64(part)
+        part.add_header('Content-Disposition', 'attachment; filename="Meta.json"')
+        msg.attach(part)
+
+        # Attach file if there
         if isinstance(attachement, cgi.FieldStorage):
             types = attachement.type.split('/')
             if len(types) != 2:
@@ -49,19 +56,13 @@ def feedback(self, request):
             part.add_header('Content-Disposition', 'attachment; filename="%s"' % attachement.filename)
             msg.attach(part)
 
+        # Attach kml if there
         if kml is not None and kml is not '':
             part = MIMEBase('application', 'vnd.google-earth.kml+xml')
             part.set_payload(kml)
             Encoders.encode_base64(part)
             part.add_header('Content-Disposition', 'attachment; filename=' + kmlfilename)
             msg.attach(part)
-
-        # Attach meta information
-        part = MIMEBase('application', 'json')
-        part.set_payload(json.dumps(jsonToAttach))
-        Encoders.encode_base64(part)
-        part.add_header('Content-Disposition', 'attachment; filename="Meta.json"')
-        msg.attach(part)
 
         mailServer = smtplib.SMTP('127.0.0.1', 25)
         mailServer.ehlo()
