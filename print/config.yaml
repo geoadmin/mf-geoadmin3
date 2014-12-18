@@ -36,7 +36,7 @@ layouts:
       pageSize: A4
       landscape: true
 #---------------------------------------
-# Map & overviewmap
+# Map
 #---------------------------------------
       items:
         - !map
@@ -87,7 +87,7 @@ layouts:
               url: "${qrcodeurl}"
 
 #---------------------------------------
-# E part: copyright
+# Copyright
 #---------------------------------------
         - !columns
           absoluteY: 70
@@ -126,7 +126,7 @@ layouts:
                 ${dataOwner}
 
 #---------------------------------------
-# G part
+# Description
 #---------------------------------------
         - !columns
           absoluteY: 45
@@ -165,7 +165,7 @@ layouts:
                 www.geo.admin.ch è una piattaforma pubblica accessibile per la ricerca di geo-informazioni, i dati e servizi.
 
 #---------------------------------------
-# H part: disclaimer
+# Disclaimer
 #---------------------------------------
         - !columns
           absoluteY: 30
@@ -203,27 +203,31 @@ layouts:
               text: |
                 Responsabilità: Nonostante si presti grande attenzione all’esattezza delle informazioni pubblicate su questo sito, le autorità federali declinano ogni responsabilità per la fedeltà, l’esattezza, l’attualità, l’affidabilità e la completezza di tali informazioni. Diritti d’autore: autorità della Confederazione Svizzera, anno 2007. http://www.disclaimer.admin.ch/basi_legali.html
 #---------------------------------------
-# G part: Timestamp
+# Timestamp
 #---------------------------------------
         - !columns
-          absoluteY: 575
-          absoluteX: 0 
-          width: 160
-          height: 40
-          config:
-            borderWidth: 0.0
+          absoluteY: 69
+          absoluteX: 480 
+          width: 140
+          nbColumns: 1
           items:
             - !text
               condition: timestamp
-              fontSize: 12 
+              fontSize: 14 
               fontColor: black
               backgroundColor: white
-              spacingAfter: 5
               align: center
               text: |
                 ${timestamp}
-
-
+            - !text
+              condition: timestamp
+              fontSize: 2 
+              fontColor: white
+              backgroundColor: white
+              align: center
+              text: |
+                empty text
+                 
 #-------------------------------------
 # Scalesbar
 #-------------------------------------
@@ -326,7 +330,7 @@ layouts:
       rotation: true
 
 #---------------------------------------
-# Map & overviewmap
+# Map
 #---------------------------------------
       items:
         - !map
@@ -377,7 +381,7 @@ layouts:
               url: "${qrcodeurl}"
 
 #---------------------------------------
-# E part: copyright
+# Copyright
 #---------------------------------------
         - !columns
           absoluteY: 85
@@ -416,7 +420,7 @@ layouts:
                 ${dataOwner}
 
 #---------------------------------------
-# G part
+# Description
 #---------------------------------------
         - !columns
           absoluteY: 58
@@ -455,7 +459,7 @@ layouts:
                 www.geo.admin.ch è una piattaforma pubblica accessibile per la ricerca di geo-informazioni, i dati e servizi.
 
 #---------------------------------------
-# H part: disclaimer
+# Disclaimer
 #---------------------------------------
         - !columns
           absoluteY: 43
@@ -494,24 +498,30 @@ layouts:
                 Responsabilità: Nonostante si presti grande attenzione allâesattezza delle informazioni pubblicate su questo sito, le autorità federali declinano ogni responsabilità per la fedeltà, lâesattezza, lâattualità, lâaffidabilità e la completezza di tali informazioni. Diritti dâautore: autorità della Confederazione Svizzera, anno 2007. http://www.disclaimer.admin.ch/basi_legali.html
 
 #---------------------------------------
-# I part: Timestamp
+# Timestamp
 #---------------------------------------
         - !columns
-          absoluteY: 825
-          absoluteX: 20 
-          width: 100
-          config:
-            borderWidth: 0.0
+          absoluteY: 81
+          absoluteX: 232
+          width: 140
+          nbColumns: 1
           items:
             - !text
               condition: timestamp
-              fontSize: 12 
+              fontSize: 14 
               fontColor: black
               backgroundColor: white
               align: center
-              vertAlign: middle
               text: |
                 ${timestamp}
+            - !text
+              condition: timestamp
+              fontSize: 2 
+              fontColor: white
+              backgroundColor: white
+              align: center
+              text: |
+                empty text
 
 #-------------------------------------
 # Scalesbar
@@ -615,7 +625,7 @@ layouts:
       pageSize: A3
       landscape: true
 #---------------------------------------
-# Map & overviewmap
+# Map
 #---------------------------------------
       items:
         - !map
@@ -666,7 +676,7 @@ layouts:
               url: "${qrcodeurl}"
 
 #---------------------------------------
-# E part: copyright
+# Copyright
 #---------------------------------------
         - !columns
           absoluteY: 70
@@ -705,7 +715,7 @@ layouts:
                 ${dataOwner}
 
 #---------------------------------------
-# G part
+# Description
 #---------------------------------------
         - !columns
           absoluteY: 45
@@ -744,7 +754,7 @@ layouts:
                 www.geo.admin.ch è una piattaforma pubblica accessibile per la ricerca di geo-informazioni, i dati e servizi.
 
 #---------------------------------------
-# H part: disclaimer
+# Disclaimer
 #---------------------------------------
         - !columns
           absoluteY: 30
@@ -781,6 +791,32 @@ layouts:
               align: left
               text: |
                 Responsabilità: Nonostante si presti grande attenzione all’esattezza delle informazioni pubblicate su questo sito, le autorità federali declinano ogni responsabilità per la fedeltà, l’esattezza, l’attualità, l’affidabilità e la completezza di tali informazioni. Diritti d’autore: autorità della Confederazione Svizzera, anno 2007. http://www.disclaimer.admin.ch/basi_legali.html
+
+#---------------------------------------
+# Timestamp
+#---------------------------------------
+        - !columns
+          absoluteY: 67
+          absoluteX: 828 
+          width: 140
+          nbColumns: 1
+          items:
+            - !text
+              condition: timestamp
+              fontSize: 14 
+              fontColor: black
+              backgroundColor: white
+              align: center
+              text: |
+                ${timestamp}
+            - !text
+              condition: timestamp
+              fontSize: 2 
+              fontColor: white
+              backgroundColor: white
+              align: center
+              text: |
+                empty text
 
 #-------------------------------------
 # Scalesbar
@@ -884,7 +920,7 @@ layouts:
       rotation: true
 
 #---------------------------------------
-# Map & overviewmap
+# Map
 #---------------------------------------
       items:
         - !map
@@ -935,7 +971,7 @@ layouts:
               url: "${qrcodeurl}"
 
 #---------------------------------------
-# E part: copyright
+# Copyright
 #---------------------------------------
         - !columns
           absoluteY: 85
@@ -974,7 +1010,7 @@ layouts:
                 ${dataOwner}
 
 #---------------------------------------
-# G part
+# Description
 #---------------------------------------
         - !columns
           absoluteY: 58
@@ -1013,7 +1049,7 @@ layouts:
                 www.geo.admin.ch è una piattaforma pubblica accessibile per la ricerca di geo-informazioni, i dati e servizi.
 
 #---------------------------------------
-# H part: disclaimer
+# Disclaimer
 #---------------------------------------
         - !columns
           absoluteY: 43
@@ -1050,6 +1086,32 @@ layouts:
               align: left
               text: |
                 Responsabilità: Nonostante si presti grande attenzione allâesattezza delle informazioni pubblicate su questo sito, le autorità federali declinano ogni responsabilità per la fedeltà, lâesattezza, lâattualità, lâaffidabilità e la completezza di tali informazioni. Diritti dâautore: autorità della Confederazione Svizzera, anno 2007. http://www.disclaimer.admin.ch/basi_legali.html
+
+#---------------------------------------
+# Timestamp
+#---------------------------------------
+        - !columns
+          absoluteY: 81
+          absoluteX: 480
+          width: 140
+          nbColumns: 1
+          items:
+            - !text
+              condition: timestamp
+              fontSize: 14
+              fontColor: black
+              backgroundColor: white
+              align: center
+              text: |
+                ${timestamp}
+            - !text
+              condition: timestamp
+              fontSize: 2
+              fontColor: white
+              backgroundColor: white
+              align: center
+              text: |
+                empty text
 
 #-------------------------------------
 # Scalesbar
