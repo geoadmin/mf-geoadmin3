@@ -11,7 +11,7 @@
   ]);
 
   module.directive('gaTopic',
-      function($rootScope, $http, $translate, gaPermalink, gaLayers) {
+      function($rootScope, $http, $q, gaPermalink, gaLayers) {
         return {
           restrict: 'A',
           replace: true,
@@ -56,24 +56,25 @@
               return res;
             }
 
-            function translateLabels() {
-              angular.forEach(scope.topics, function(value) {
-                value.label = $translate.instant(value.id);
-              });
-            }
-
-            $http.get(options.url).then(function(result) {
-              var topics = result.data.topics;
-              angular.forEach(topics, function(value) {
-                value.label = $translate.instant(value.id);
-                value.tooltip = 'topic_' + value.id + '_tooltip';
-                value.thumbnail =
-                    options.thumbnailUrlTemplate.replace('{Topic}', value.id);
-                value.langs = extendLangs(value.langs);
-              });
-              scope.topics = topics;
-              initTopics();
-            });
+            var loadTopics = function(url) {
+              var deferred = $q.defer();
+              $http.get(url).
+                success(function(data) {
+                  var topics = data.topics;
+                  angular.forEach(topics, function(value) {
+                    value.tooltip = 'topic_' + value.id + '_tooltip';
+                    value.thumbnail =
+                        options.thumbnailUrlTemplate.
+                            replace('{Topic}', value.id);
+                    value.langs = extendLangs(value.langs);
+                  });
+                  deferred.resolve(topics);
+                }).
+                error(function() {
+                  deferred.reject();
+                });
+              return deferred.promise;
+            };
 
             // Because ng-repeat creates a new scope for each item in the
             // collection we can't use ng-click="activeTopic = topic" in
@@ -114,12 +115,14 @@
               }
             });
 
-            var firstLoad = true;
             $rootScope.$on('$translateChangeEnd', function() {
-              if (!firstLoad) {
-                translateLabels();
-              } else {
-                firstLoad = false;
+              if (!scope.topics) {
+                loadTopics(options.url).then(
+                  function(topics) {
+                    scope.topics = topics;
+                    initTopics();
+                  }
+                );
               }
             });
          }
