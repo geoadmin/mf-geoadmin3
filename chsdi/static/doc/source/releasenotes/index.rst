@@ -29,7 +29,7 @@ API & applications
 - Drawing integrated into feedback tool
 - UI improvements on dialogs
 - WMS import list updated
-- Support prin on A3
+- Support print on A3
 - Support saving of KML in IE9 and naming of file in Safari
 - Fixed print that contained kml
 - Support LV95 in permalink paramater
