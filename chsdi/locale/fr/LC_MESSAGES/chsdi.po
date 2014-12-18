@@ -3713,26 +3713,26 @@ msgstr "Bravo! Clique ici afin de découvrir l'indice suivant!"
 msgid "tt_anteil_ch"
 msgstr "Pourcentage du b.v. en Suisse"
 
+msgid "tt_bafu_aulav_auen_general"
+msgstr "Les atterrissages en campagne sont interdits dans les zones alluviales sous réserve des art. 19, al. 3 et 28 OSAC. L’interdiction ne s’applique pas aux vols ayant pour but la prévention des dangers naturels et la construction ou l’entretien de constructions et installations d’intérêt public. Elle ne s’applique pas non plus aux vols effectués sur mandat des autorités cantonales compétentes ni aux vols effectués pour la construction ou l’entretien de constructions et d’installations d’intérêt public qui ont été autorisées par ces mêmes autorités."
+
 msgid "tt_bafu_aulav_fm_typ"
 msgstr "Bas-marais"
-
-msgid "tt_bafu_aulav_general_part_1"
-msgstr "Sont réputées zones protégées aux termes de l’ordonnance sur les atterrissages en campagne (OSAC; RS 748.132.3), les parcs nationaux, les hauts-marais et les marais de transition, les réserves d’oiseaux d’eau et migrateurs, les bas-marais, les zones alluviales et les districts francs fédéraux (art. 19 OSAC) et les sites marécageux d’importance nationale (art. 32, let. h OSAC)."
-
-msgid "tt_bafu_aulav_general_part_2"
-msgstr "Les atterrissages en campagne (entendus comme le fait de décoller ou d’atterrir en dehors des aérodromes et de prendre ou de déposer des personnes ou des choses sans que l’aéronef ne touche le sol ou le fait de voler au-dessous des hauteurs minimales de vol fixées suivant le cas à 150 m ou à 300 m AGL) au moyen d’aéronefs civils avec occupants sont en principe interdits dans les zones protégées."
-
-msgid "tt_bafu_aulav_general_part_3"
-msgstr "Quatre catégories sont définies dans la publication d’information aéronautique sur la base des restrictions et charges spécifiques liées aux atterrissages en campagne: 1. Districts francs 2. Sites marécageux 3. Zones alluviales 4. Autres zones protégées (haut-marais et marais de transition, bas-marais, réserves d’oiseaux d’eau et migrateurs, parcs nationaux)."
-
-msgid "tt_bafu_aulav_general_part_4"
-msgstr "Chaque catégorie de zone protégée est subdivisée en deux niveaux de généralisation: dans les vues à petite échelle et par souci de lisibilité, les zones protégées sont représentées sous une forme généralisée et inversement proportionnelle à la surface avec une zone tampon de 1 m à 80 m. Dans les vues à grande échelle, les périmètres des zones protégées sont représentés selon leur dimension légale."
 
 msgid "tt_bafu_aulav_hm_typ"
 msgstr "Haut-marais"
 
+msgid "tt_bafu_aulav_jagdbanngebiete_general"
+msgstr "Les atterrissages en campagne sont interdits dans les districts francs sous réserve des art. 19, al.3, 28 et 46, al. 4 OSAC. L’interdiction ne s’applique pas aux vols effectués pour les besoins de la sylviculture et de l’agriculture, pour la prévention des dangers naturels, pour le ravitaillement des cabanes accessibles au public et pour la construction ou l’entretien de constructions et installations d’intérêt public. Pour les autres types de vols à des fins de travail, l’interdiction s’étend uniquement du 1er novembre au 31 juillet. L’interdiction ne s’applique pas non plus aux vols effectués sur mandat des autorités cantonales compétentes ni aux vols effectués pour la construction ou l’entretien de constructions et d’installations d’intérêt public qui ont été autorisées par ces mêmes autorités. Les atterrissages en campagne et les vols stationnaires sont en outre admis dans les districts francs fédéraux dans le cadre de vols d’instruction."
+
+msgid "tt_bafu_aulav_moorlandschaften_general"
+msgstr "Conformément à l’art. 32, let. h, les atterrissages en campagne dans le cadre de vols non commerciaux ne sont pas admis dans les sites marécageux."
+
 msgid "tt_bafu_aulav_nat_park_typ"
 msgstr "Parc nationa"
+
+msgid "tt_bafu_aulav_uebrige_general"
+msgstr "Les atterrissages en campagne sont interdits dans les zones protégées sous réserve des art. 19, al. 3 et 28 OSAC."
 
 msgid "tt_bafu_aulav_wv_typ"
 msgstr "Réserve d'oiseaux d'eau et migrateurs"

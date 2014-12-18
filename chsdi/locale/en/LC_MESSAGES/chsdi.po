@@ -3724,26 +3724,26 @@ msgstr "Bravo! Klicke hier um den nächsten Hinweis zu erhalten!"
 msgid "tt_anteil_ch"
 msgstr "Catchment areas percentage in Switzerland"
 
+msgid "tt_bafu_aulav_auen_general"
+msgstr "Off-airport landings on floodplains are not permitted, subject to Art. 19 para. 3 and Art. 28. Off-airport landings in order to prevent natural hazards, for the construction or maintenance of buildings and installations in the public interest, off-airport landings on behalf of the competent cantonal authorities, and off-airport landings authorised by such authorities for the construction of maintenance of buildings and installations are permitted."
+
 msgid "tt_bafu_aulav_fm_typ"
 msgstr "Fen"
-
-msgid "tt_bafu_aulav_general_part_1"
-msgstr "Under Art. 19 of the Off-Airport Landing Ordinance (AuLaV; SR 748.132.3), protected areas comprise national parks, raised and transition bogs, water and migratory bird reserves, fens, floodplains, federal game reserves, and mire landscapes of national importance in accordance with Art. 32h."
-
-msgid "tt_bafu_aulav_general_part_2"
-msgstr "Off-airport landings (taking off or landing, and picking up or setting down cargo or persons outside airfields, or flying below the minimum altitude of 150/300 m/AGL) is basically prohibited for manned aircraft on protected areas."
-
-msgid "tt_bafu_aulav_general_part_3"
-msgstr "Based on the specific restrictions and conditions that apply to off-airport landings, a distinction is made in air navigation publications between 4 categories: 1. Game reserves 2. Mire landscapes 3. Floodplains 4. Other protected areas (raised and transition bogs, fens, water and migratory bird reserves, national parks)."
-
-msgid "tt_bafu_aulav_general_part_4"
-msgstr "Each category of protected area is divided into two generalisation levels: in small-scale views, the protected areas are displayed for readability in generalised form and inversely proportional to area, with a lateral buffer of between 1 and 80 m. In the large-scale views, the perimeters of the protected site are displayed in the legally valid dimensions."
 
 msgid "tt_bafu_aulav_hm_typ"
 msgstr "Raised and transition bog"
 
+msgid "tt_bafu_aulav_jagdbanngebiete_general"
+msgstr "Off-airport landings in game reserves are not permitted, subject to Art. 19 para. 3, Art. 28 and Art. 46 para. 4. Off-airport landings in order to prevent natural hazards, for forestry and agricultural purposes, for provisioning publicly-accessible cabins, and for the construction or maintenance of buildings and installations in the public interest, off-airport landings and hovering on training flights, off-airport landings on behalf of the competent cantonal authorities, and off-airport landings authorised by such authorities for the construction of maintenance of buildings and installations are permitted. For flights for other work purposes, the ban applies only from 1 November to 31 July."
+
+msgid "tt_bafu_aulav_moorlandschaften_general"
+msgstr "Off-airport landings on mire landscapes are not permitted under Art 32 h when on non-commercial flights."
+
 msgid "tt_bafu_aulav_nat_park_typ"
 msgstr "National park"
+
+msgid "tt_bafu_aulav_uebrige_general"
+msgstr "Off-airport landings on other protected areas are not permitted, subject to Art. 19 para. 3 Art. 28."
 
 msgid "tt_bafu_aulav_wv_typ"
 msgstr "Water and migratory bird reserve"

@@ -4897,14 +4897,14 @@ msgstr ""
 msgid "tt_bafu_aulav_nat_park_typ"
 msgstr ""
 
-msgid "tt_bafu_aulav_general_part_1"
+msgid "tt_bafu_aulav_auen_general"
 msgstr ""
 
-msgid "tt_bafu_aulav_general_part_2"
+msgid "tt_bafu_aulav_jagdbanngebiete_general"
 msgstr ""
 
-msgid "tt_bafu_aulav_general_part_3"
+msgid "tt_bafu_aulav_moorlandschaften_general"
 msgstr ""
 
-msgid "tt_bafu_aulav_general_part_4"
+msgid "tt_bafu_aulav_uebrige_general"
 msgstr ""

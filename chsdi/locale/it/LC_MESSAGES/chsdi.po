@@ -3713,26 +3713,26 @@ msgstr "Bravo! Clicca qui per trovare l'indizio successivo!"
 msgid "tt_anteil_ch"
 msgstr "Percentuale della superficie in Svizzera"
 
+msgid "tt_bafu_aulav_auen_general"
+msgstr "Gli atterraggi esterni sono vietati nelle zone golenali su riserva dell’articolo 19 capoverso 3 e dell’articolo 28 OAEs. Il divieto non si applica ai voli finalizzati alla protezione contro i pericoli naturali e alla costruzione o alla manutenzione di edifici e impianti di interesse pubblico. Non si applica nemmeno ai voli effettuati su mandato delle autorità cantonali competenti né a quelli effettuati per la costruzione o la manutenzione di costruzioni e impianti di interesse pubblico autorizzati dalle autorità medesime."
+
 msgid "tt_bafu_aulav_fm_typ"
 msgstr "Palude"
-
-msgid "tt_bafu_aulav_general_part_1"
-msgstr "Sono considerati zone protette ai sensi dell’ordinanza sugli atterraggi esterni (OAEs, RS 748.132.3), i parchi nazionali, le torbiere alte e le torbiere di transizione, le riserve d’uccelli acquatici e migratori, le paludi, le zone golenali e le bandite federali (art. 19 OAEs) e le zone palustri di importanza nazionale (art. 32 lett. h OAEs)"
-
-msgid "tt_bafu_aulav_general_part_2"
-msgstr "Gli atterraggi esterni (intesi come decollo o atterraggio, carico o scarico di persone o cose al di fuori di un aerodromo o voli effettuati al di sotto delle quote minime fissate, a seconda del caso, a 150 m o a 300 m AGL) effettuati con aeromobili civili con occupanti sono per principio vietati nelle zone protette."
-
-msgid "tt_bafu_aulav_general_part_3"
-msgstr "Nelle pubblicazioni aeronautiche sono definite quattro categorie sulla base di restrizioni e oneri specifici legati agli atterraggi esterni: 1. Bandite federali, 2. Zone palustri 3. Zone golenali 4. Altre zone protette (torbiere alte e torbiere di transizione, paludi, riserve d’uccelli acquatici e migratori, parchi nazionali)."
-
-msgid "tt_bafu_aulav_general_part_4"
-msgstr "Ogni categoria di zona protetta è suddivisa in due livelli di generalizzazione: nelle immagini in piccola scala, ai fini di una migliore leggibilità le zone protette sono rappresentate in una forma generalizzata e inversamente proporzionale alla superficie con una zona tampone da 1 m a 80 m. Nelle immagini in grande scala, i perimetri delle zone protette sono rappresentate secondo la loro dimensione legale."
 
 msgid "tt_bafu_aulav_hm_typ"
 msgstr "Torbiera alte e tobiera di transsizione"
 
+msgid "tt_bafu_aulav_jagdbanngebiete_general"
+msgstr "Gli atterraggi esterni sono vietati nelle bandite federali su riserva degli articoli 19 capoverso 3, 28 e 46 capoverso 4 OAEs. Il divieto non si applica ai voli finalizzati alla protezione contro i pericoli naturali all’economia forestale e all’agricoltura, all’approvvigionamento di capanne accessibili al pubblico, alla costruzione o alla manutenzione di edifici e impianti di interesse pubblico. Il divieto non si applica nemmeno ai voli effettuati su mandato delle autorità cantonali competenti né a quelli effettuati per la costruzione o la manutenzione di edifici e impianti di interesse pubblico autorizzati dalle autorità medesime. Gli atterraggi esterni e i voli stazionari sono inoltre ammessi nelle bandite federali nel quadro di voli d’istruzione. Ai voli effettuati per altri scopi di lavoro si applica il divieto soltanto dal 1° novembre al 31 luglio."
+
+msgid "tt_bafu_aulav_moorlandschaften_general"
+msgstr "Conformemente all’articolo 32 lettera h, sono vietati nelle zone palustri gli atterraggi esterni nell’ambito di voli non commerciali."
+
 msgid "tt_bafu_aulav_nat_park_typ"
 msgstr "Parco nazionale"
+
+msgid "tt_bafu_aulav_uebrige_general"
+msgstr "Gli atterraggi esterni sono vietati nelle zone protette su riserva dell’articolo 19 capoverso 3 e dell’articolo 28 OAEs."
 
 msgid "tt_bafu_aulav_wv_typ"
 msgstr "Riserva d'uccelli acquatici e migratori"

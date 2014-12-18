@@ -521,6 +521,127 @@ class flachmooreReg(Base, Vector):
 register('ch.bafu.bundesinventare-flachmoore_regional', flachmooreReg)
 
 
+class schutzgebiete_aulav_auen(Base, Vector):
+    __tablename__ = 'auengebiete'
+    __table_args__ = ({'schema': 'schutzge', 'autoload': False})
+    __bodId__ = 'ch.bafu.schutzgebiete-aulav_auen'
+    __template__ = 'templates/htmlpopup/bafu_schutzge_aulav_std.mako'
+    __maxscale__ = 10000
+    id = Column('bgdi_id', Integer, primary_key=True)
+    key_obj = Column('au_obj', Numeric)
+    key_name = Column('au_name', Text)
+    key_version = Column('au_version', Text)
+    typ = Column('typ', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.schutzgebiete-aulav_auen', schutzgebiete_aulav_auen)
+
+
+class schutzgebiete_aulav_auen_general(Base, Vector):
+    __tablename__ = 'auengebiete_general'
+    __table_args__ = ({'schema': 'schutzge', 'autoload': False})
+    __bodId__ = 'ch.bafu.schutzgebiete-aulav_auen'
+    __template__ = 'templates/htmlpopup/bafu_schutzge_aulav_auen_general.mako'
+    __minscale__ = 10001
+    __maxscale__ = 5000000
+    id = Column('bgdi_id', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.schutzgebiete-aulav_auen', schutzgebiete_aulav_auen_general)
+
+
+class schutzgebiete_aulav_jagdbanngebiete(Base, Vector):
+    __tablename__ = 'jagdbanngebiete'
+    __table_args__ = ({'schema': 'schutzge', 'autoload': False})
+    __bodId__ = 'ch.bafu.schutzgebiete-aulav_jagdbanngebiete'
+    __template__ = 'templates/htmlpopup/bafu_schutzge_aulav_std.mako'
+    __maxscale__ = 10000
+    id = Column('bgdi_id', Integer, primary_key=True)
+    key_obj = Column('jb_obj', Numeric)
+    key_name = Column('jb_name', Text)
+    key_version = Column('jb_version', Text)
+    typ = Column('typ', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.schutzgebiete-aulav_jagdbanngebiete', schutzgebiete_aulav_jagdbanngebiete)
+
+
+class schutzgebiete_aulav_jagdbanngebiete_general(Base, Vector):
+    __tablename__ = 'jagdbanngebiete_general'
+    __table_args__ = ({'schema': 'schutzge', 'autoload': False})
+    __bodId__ = 'ch.bafu.schutzgebiete-aulav_jagdbanngebiete'
+    __template__ = 'templates/htmlpopup/bafu_schutzge_aulav_jagdbanngebiete_general.mako'
+    __minscale__ = 10001
+    __maxscale__ = 5000000
+    id = Column('bgdi_id', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.schutzgebiete-aulav_jagdbanngebiete', schutzgebiete_aulav_jagdbanngebiete_general)
+
+
+class schutzgebiete_aulav_moorlandschaften(Base, Vector):
+    __tablename__ = 'moorlandschaften'
+    __table_args__ = ({'schema': 'schutzge', 'autoload': False})
+    __bodId__ = 'ch.bafu.schutzgebiete-aulav_moorlandschaften'
+    __template__ = 'templates/htmlpopup/bafu_schutzge_aulav_std.mako'
+    __maxscale__ = 10000
+    id = Column('bgdi_id', Integer, primary_key=True)
+    key_obj = Column('ml_obj', Numeric)
+    key_name = Column('ml_name', Text)
+    key_version = Column('ml_version', Text)
+    typ = Column('typ', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.schutzgebiete-aulav_moorlandschaften', schutzgebiete_aulav_moorlandschaften)
+
+
+class schutzgebiete_aulav_moorlandschaften_general(Base, Vector):
+    __tablename__ = 'moorlandschaften_general'
+    __table_args__ = ({'schema': 'schutzge', 'autoload': False})
+    __bodId__ = 'ch.bafu.schutzgebiete-aulav_moorlandschaften'
+    __template__ = 'templates/htmlpopup/bafu_schutzge_aulav_moorlandschaften_general.mako'
+    __minscale__ = 10001
+    __maxscale__ = 5000000
+    id = Column('bgdi_id', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.schutzgebiete-aulav_moorlandschaften', schutzgebiete_aulav_moorlandschaften_general)
+
+
+class schutzgebiete_aulav_uebrige(Base, Vector):
+    __tablename__ = 'uebrige_gebiete'
+    __table_args__ = ({'schema': 'schutzge', 'autoload': False})
+    __bodId__ = 'ch.bafu.schutzgebiete-aulav_uebrige'
+    __template__ = 'templates/htmlpopup/bafu_schutzge_aulav_uebrige.mako'
+    __maxscale__ = 10000
+    id = Column('bgdi_id', Integer, primary_key=True)
+    wv_obj = Column('wv_obj', Numeric)
+    wv_name = Column('wv_name', Text)
+    nat_park = Column('nat_park', Numeric)
+    fm_obj = Column('fm_obj', Numeric)
+    fm_name = Column('fm_name', Text)
+    hm_obj = Column('hm_obj', Numeric)
+    hm_name = Column('hm_name', Text)
+    np_name = Column('np_name', Text)
+    typ = Column('typ', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.schutzgebiete-aulav_uebrige', schutzgebiete_aulav_uebrige)
+
+
+class schutzgebiete_aulav_uebrige_general(Base, Vector):
+    __tablename__ = 'uebrige_gebiete_general'
+    __table_args__ = ({'schema': 'schutzge', 'autoload': False})
+    __bodId__ = 'ch.bafu.schutzgebiete-aulav_uebrige'
+    __template__ = 'templates/htmlpopup/bafu_schutzge_aulav_uebrige_general.mako'
+    __minscale__ = 10001
+    __maxscale__ = 5000000
+    id = Column('bgdi_id', Integer, primary_key=True)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.bafu.schutzgebiete-aulav_uebrige', schutzgebiete_aulav_uebrige_general)
+
+
 class paerke_nationaler_bedeutung(Base, Vector):
     __tablename__ = 'paerke_nationaler_bedeutung'
     __table_args__ = ({'schema': 'schutzge', 'autoload': False})
