@@ -1544,9 +1544,8 @@ msgstr "Sanctuaries for silence: aviation"
 msgid "ch.bazl.luftfahrthindernis"
 msgstr "Air navigation obstacles"
 
-#. TODO
 msgid "ch.bazl.luftfahrthindernis.abortionaccomplished"
-msgstr "ch.bazl.luftfahrthindernis.abortionaccomplished"
+msgstr "Duration of installation"
 
 #. TODO
 msgid "ch.bazl.luftfahrthindernis.duration"

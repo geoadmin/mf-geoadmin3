@@ -1544,9 +1544,8 @@ msgstr "Zone di calma per l'aviazione"
 msgid "ch.bazl.luftfahrthindernis"
 msgstr "Ostacoli alla navigazione aerea"
 
-#. TODO
 msgid "ch.bazl.luftfahrthindernis.abortionaccomplished"
-msgstr "ch.bazl.luftfahrthindernis.abortionaccomplished"
+msgstr "Durata dell'installazione"
 
 msgid "ch.bazl.luftfahrthindernis.duration"
 msgstr "Durata dell'installazione"
