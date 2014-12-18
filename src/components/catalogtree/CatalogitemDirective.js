@@ -14,7 +14,7 @@
    */
   module.directive('gaCatalogitem',
       function($compile, gaCatalogtreeMapUtils, gaMapUtils,
-          gaLayers, gaLayerMetadataPopup, gaBrowserSniffer, gaPreviewLayers) {
+          gaLayerMetadataPopup, gaBrowserSniffer, gaPreviewLayers) {
 
         // Don't add preview layer if the layer is already on the map
         var addPreviewLayer = function(map, item) {

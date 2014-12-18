@@ -4,6 +4,7 @@
   goog.require('ga_networkstatus_service');
   goog.require('ga_offline_service');
   goog.require('ga_storage_service');
+  goog.require('ga_styles_from_literals_service');
   goog.require('ga_styles_service');
   goog.require('ga_urlutils_service');
 
@@ -12,6 +13,7 @@
     'ga_networkstatus_service',
     'ga_offline_service',
     'ga_storage_service',
+    'ga_styles_from_literals_service',
     'ga_styles_service',
     'ga_urlutils_service'
   ]);
@@ -189,6 +191,14 @@
           preview: {
             writable: true,
             value: false
+          },
+          geojsonUrl: {
+            writable: true,
+            value: null
+          },
+          updateDelay: {
+            writable: true,
+            value: null
           }
         });
       };
@@ -659,7 +669,8 @@
 
     this.$get = function($http, $q, $rootScope, $translate, $window,
         gaBrowserSniffer, gaDefinePropertiesForLayer, gaMapUtils,
-        gaNetworkStatus, gaStorage, gaTileGrid, gaUrlUtils) {
+        gaNetworkStatus, gaStorage, gaTileGrid, gaUrlUtils,
+        gaStylesFromLiterals, gaGlobalOptions) {
 
       var Layers = function(wmtsGetTileUrlTemplate,
           layersConfigUrlTemplate, legendUrlTemplate) {
@@ -717,6 +728,7 @@
             imageTile.getImage().src = src;
           }
         };
+
 
         /**
          * Load layers for a given topic and language. Return a promise.
@@ -881,6 +893,40 @@
               attribution: layer.attribution,
               layers: subLayers
             });
+          } else if (layer.type == 'geojson') {
+            // cannot request resources over https in S3
+            var fullUrl = gaGlobalOptions.ogcproxyUrl + layer.geojsonUrl;
+            var olSource = new ol.source.GeoJSON();
+            olLayer = new ol.layer.Vector({
+              source: olSource
+            });
+            var setLayerSource = function() {
+              var geojsonFormat = new ol.format.GeoJSON();
+              $http.get(fullUrl, {
+                cache: false
+              }).success(function(data) {
+                olSource.clear();
+                olSource.addFeatures(
+                  geojsonFormat.readFeatures(data)
+                );
+              });
+            };
+            var setLayerStyle = function() {
+              // IE doesn't understand agnostic URLs
+              $http.get(location.protocol + layer.styleUrl, {
+                cache: true
+              }).success(function(data) {
+                var olStyleForVector = gaStylesFromLiterals(data);
+                olLayer.setStyle(function(feature) {
+                  return [olStyleForVector.getFeatureStyle(feature)];
+                });
+              });
+              // Handle error
+            };
+            setLayerStyle();
+            if (!layer.updateDelay) {
+              setLayerSource();
+            }
           }
           if (angular.isDefined(olLayer)) {
             gaDefinePropertiesForLayer(olLayer);
@@ -889,6 +935,8 @@
             olLayer.type = layer.type;
             olLayer.timeEnabled = layer.timeEnabled;
             olLayer.timestamps = layer.timestamps;
+            olLayer.geojsonUrl = layer.geojsonUrl;
+            olLayer.updateDelay = layer.updateDelay;
           }
           return olLayer;
         };
@@ -978,7 +1026,7 @@
           }
         });
 
-        $rootScope.$on('$translateChangeEnd', function(event) {
+        $rootScope.$on('$translateChangeEnd', function() {
           // do nothing if there's no topic set
           if (angular.isDefined(currentTopic)) {
             var currentTopicId = currentTopic.id;
@@ -1226,7 +1274,97 @@
          */
         background: function(layer) {
           return layer.background;
+        },
+        /**
+         * "Real-time" layers (only geojson layers for now)
+         */
+        realtime: function(layer) {
+          return layer.updateDelay != null;
         }
+      };
+    };
+  });
+
+  module.provider('gaRealtimeLayersManager', function() {
+    this.$get = function($rootScope, $http, $timeout,
+        gaLayerFilters, gaMapUtils, gaGlobalOptions) {
+
+      var timers = [];
+      var realTimeLayersId = [];
+      var geojsonFormat = new ol.format.GeoJSON();
+
+      function setLayerSource(layer) {
+        var fullUrl = gaGlobalOptions.ogcproxyUrl + layer.geojsonUrl;
+        var olSource = layer.getSource();
+        $http.get(fullUrl, {
+          cache: false
+        }).success(function(data) {
+          olSource.clear();
+          olSource.addFeatures(
+            geojsonFormat.readFeatures(data)
+          );
+          var layerIdIndex = realTimeLayersId.indexOf(layer.bodId);
+          if (layerIdIndex != -1 && !layer.preview) {
+            $timeout.cancel(timers.splice(layerIdIndex, 1));
+            timers.push(setLayerUpdateInterval(layer));
+            if (data.timestamp) {
+              $rootScope.$broadcast('gaNewLayerTimestamp', data.timestamp);
+            }
+          }
+        });
+      }
+      // updateDeplay should be higher than the time
+      // needed to upload the geojson file
+      function setLayerUpdateInterval(layer) {
+        return $timeout(function() {
+          setLayerSource(layer);
+        }, layer.updateDelay);
+      }
+
+      return function(map) {
+        var scope = $rootScope.$new();
+        scope.layers = map.getLayers().getArray();
+        scope.layerFilter = gaLayerFilters.realtime;
+
+        scope.$watchCollection('layers | filter:layerFilter',
+            function(newLayers, oldLayers) {
+          // Layer Removed
+          for (var i = 0; i < oldLayers.length; i++) {
+            var bodId = oldLayers[i].bodId;
+            var oldLayerIdIndex = realTimeLayersId.indexOf(bodId);
+            if (oldLayerIdIndex != -1 &&
+                !gaMapUtils.getMapLayerForBodId(map, bodId)) {
+              realTimeLayersId.splice(oldLayerIdIndex, 1);
+              $timeout.cancel(timers.splice(oldLayerIdIndex, 1));
+              if (realTimeLayersId.length == 0) {
+                $rootScope.$broadcast('gaNewLayerTimestamp', '');
+              }
+            }
+          }
+          // Layer Added
+          for (var i = 0; i < newLayers.length; i++) {
+            var bodId = newLayers[i].bodId;
+            var newLayerIdIndex = realTimeLayersId.indexOf(bodId);
+            if (newLayerIdIndex == -1) {
+              if (!newLayers[i].preview) {
+                realTimeLayersId.push(bodId);
+              }
+              setLayerSource(newLayers[i]);
+            }
+          }
+        });
+
+        // Update geojson source on language change
+        $rootScope.$on('$translateChangeEnd', function(evt) {
+          for (var i = 0; i < realTimeLayersId.length; i++) {
+            var bodId = realTimeLayersId[i];
+            var olLayer = gaMapUtils.getMapLayerForBodId(map, bodId);
+            var olSource = olLayer.getSource();
+            var indexLayerId = realTimeLayersId.indexOf(bodId);
+            $timeout.cancel(timers.splice(indexLayerId, 1));
+            setLayerSource(olLayer);
+          }
+        });
       };
     };
   });
@@ -1804,6 +1942,9 @@
           var layers = map.getLayers().getArray();
           for (var i = 0; i < layers.length; i++) {
             if (layers[i].preview && !(layers[i] instanceof ol.layer.Vector)) {
+              map.removeLayer(layers[i]);
+              i--;
+            } else if (layers[i].preview && layers[i].type == 'geojson') {
               map.removeLayer(layers[i]);
               i--;
             }
