@@ -11,7 +11,7 @@
   ]);
 
   module.directive('gaTopic',
-      function($rootScope, $http, $translate, gaPermalink, gaLayers) {
+      function($rootScope, $http, gaPermalink, gaLayers) {
         return {
           restrict: 'A',
           replace: true,
@@ -56,22 +56,14 @@
               return res;
             }
 
-            function translateLabels() {
-              angular.forEach(scope.topics, function(value) {
-                value.label = $translate.instant(value.id);
-              });
-            }
-
             $http.get(options.url).then(function(result) {
-              var topics = result.data.topics;
-              angular.forEach(topics, function(value) {
-                value.label = $translate.instant(value.id);
+              scope.topics = result.data.topics;
+              angular.forEach(scope.topics, function(value) {
                 value.tooltip = 'topic_' + value.id + '_tooltip';
                 value.thumbnail =
                     options.thumbnailUrlTemplate.replace('{Topic}', value.id);
                 value.langs = extendLangs(value.langs);
               });
-              scope.topics = topics;
               initTopics();
             });
 
@@ -111,15 +103,6 @@
               // too.
               if (!offline) {
                 $rootScope.$broadcast('gaTopicChange', find(scope.activeTopic));
-              }
-            });
-
-            var firstLoad = true;
-            $rootScope.$on('$translateChangeEnd', function() {
-              if (!firstLoad) {
-                translateLabels();
-              } else {
-                firstLoad = false;
               }
             });
          }
