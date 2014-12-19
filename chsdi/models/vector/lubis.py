@@ -17,6 +17,8 @@ class luftbilder_swisstopo_farbe(Base, Vector):
     __returnedGeometry__ = 'the_geom_footprint'
     __timeInstant__ = 'bgdi_flugjahr'
     __extended_info__ = True
+    # Composite labels
+    __label__ = 'flugdatum'
     id = Column('ebkey', Text, primary_key=True)
     the_geom = GeometryColumn('the_geom', Geometry(dimensions=2, srid=21781))
     the_geom_footprint = GeometryColumn('the_geom_footprint', Geometry(dimensions=2, srid=21781))
@@ -51,6 +53,8 @@ class luftbilder_swisstopo_ir(Base, Vector):
     __returnedGeometry__ = 'the_geom_footprint'
     __timeInstant__ = 'bgdi_flugjahr'
     __extended_info__ = True
+    # Composite labels
+    __label__ = 'flugdatum'
     id = Column('ebkey', Text, primary_key=True)
     the_geom = GeometryColumn('the_geom', Geometry(dimensions=2, srid=21781))
     the_geom_footprint = GeometryColumn('the_geom_footprint', Geometry(dimensions=2, srid=21781))
@@ -85,6 +89,8 @@ class luftbilder_swisstopo_sw(Base, Vector):
     __returnedGeometry__ = 'the_geom_footprint'
     __timeInstant__ = 'bgdi_flugjahr'
     __extended_info__ = True
+    # Composite labels
+    __label__ = 'flugdatum'
     id = Column('ebkey', Text, primary_key=True)
     the_geom = GeometryColumn('the_geom', Geometry(dimensions=2, srid=21781))
     the_geom_footprint = GeometryColumn('the_geom_footprint', Geometry(dimensions=2, srid=21781))
@@ -119,6 +125,8 @@ class luftbilder_dritte_firmen(Base, Vector):
     __returnedGeometry__ = 'the_geom_footprint'
     __timeInstant__ = 'bgdi_flugjahr'
     __extended_info__ = True
+    # Composite labels
+    __label__ = 'flugdatum'
     id = Column('ebkey', Text, primary_key=True)
     the_geom = GeometryColumn('the_geom', Geometry(dimensions=2, srid=21781))
     the_geom_footprint = GeometryColumn('the_geom_footprint', Geometry(dimensions=2, srid=21781))
@@ -153,6 +161,8 @@ class luftbilder_dritte_kantone(Base, Vector):
     __returnedGeometry__ = 'the_geom_footprint'
     __timeInstant__ = 'bgdi_flugjahr'
     __extended_info__ = True
+    # Composite labels
+    __label__ = 'flugdatum'
     id = Column('ebkey', Text, primary_key=True)
     the_geom = GeometryColumn('the_geom', Geometry(dimensions=2, srid=21781))
     the_geom_footprint = GeometryColumn('the_geom_footprint', Geometry(dimensions=2, srid=21781))
@@ -187,6 +197,8 @@ class bildstreifen(Base, Vector):
     __returnedGeometry__ = 'the_geom_footprint'
     __timeInstant__ = 'bgdi_flugjahr'
     __extended_info__ = True
+    # Composite labels
+    __label__ = 'flugdatum'
     id = Column('bildstreifen_nr', Text, primary_key=True)
     the_geom = GeometryColumn('the_geom', Geometry(dimensions=2, srid=21781))
     the_geom_footprint = GeometryColumn('the_geom_footprint', Geometry(dimensions=2, srid=21781))
