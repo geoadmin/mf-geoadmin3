@@ -166,14 +166,36 @@
       }, 0, false);
     };
 
-    // Launch a search only with a geometry
+    // Search by geometry using the search server
+    /*$scope.searchByGeometry = function() {
+      $scope.loading = true;
+      $scope.queryType = 0;
+
+      if ($scope.geometry) {
+        var geom = $scope.geometry.getExtent();
+        var features = [];
+        gaQuery.getLayersFeaturesByBbox($scope,
+            $scope.searchableLayers,
+            geom
+        ).then(function(layerFeatures) {
+          features = features.concat(layerFeatures);
+          $scope.options.features = features;
+          $scope.loading = false;
+        },function(reason) {
+          $scope.options.features = [];
+          $scope.loading = false;
+        });
+      } else {
+        $scope.loading = false;
+      }
+    };*/
+
+    // Search by geometry using feature identify servioce
     $scope.searchByGeometry = function() {
       $scope.loading = true;
       $scope.queryType = 0;
 
       if ($scope.geometry) {
-        //var where = 'ST_DWithin(the_geom, ST_MakeEnvelope(' +
-        //    $scope.geometry.getExtent().join(',') + ', 21781), 0)';
         var imgDisplay = $scope.map.getSize().concat([96]).join(',');
         var mapExtent = $scope.map.getView().calculateExtent(
             $scope.map.getSize()).join(',');
@@ -195,9 +217,6 @@
                     geometryFormat: 'geojson',
                     lang: lang,
                     timeInstant: layer.time
-                    //where: where,
-                    //time: layer.time
-                    //,geom: geojson.writeGeometry($scope.geometry)
                   }
               ).then(function(layerFeatures) {
                 features = features.concat(layerFeatures);
@@ -215,8 +234,83 @@
       }
     };
 
-    // Launch a complex search with custom filters
+    // Search by attributes using feature identify service
     $scope.searchByAttributes = function() {
+      $scope.queryType = 1;
+      $scope.loading = true;
+
+      var features = [];
+      var params = getParamsByLayer($scope.filters);
+      if (params.length == 0) {
+        $scope.options.features = [];
+        $scope.loading = false;
+        return;
+      }
+      var imgDisplay = $scope.map.getSize().concat([96]).join(',');
+      var mapExtent = $scope.map.getView().calculateExtent(
+          $scope.map.getSize()).join(',');
+      var geom = $scope.geometry.getExtent().join(',');
+      var lang = $translate.use();
+
+      angular.forEach(
+          params,
+          function(paramsByLayer) {
+            paramsByLayer.params.geometryFormat = 'geojson';
+            paramsByLayer.params.lang = lang;
+            paramsByLayer.params.timeInstant = paramsByLayer.time;
+
+            gaQuery.getLayerIdentifyFeatures(
+                $scope,
+                paramsByLayer.bodId,
+                paramsByLayer.params
+            ).then(function(layerFeatures) {
+              features = features.concat(layerFeatures);
+              $scope.options.features = features;
+              $scope.loading = false;
+            },function(reason) {
+              $scope.options.features = [];
+              $scope.loading = false;
+            });
+          }
+      );
+    };
+
+    // Search by geometry with layer query service
+    /*$scope.searchByGeometry = function() {
+      $scope.loading = true;
+      $scope.queryType = 0;
+      if ($scope.geometry) {
+        var where = 'ST_DWithin(the_geom, ST_MakeEnvelope(' +
+            $scope.geometry.getExtent().join(',') + ', 21781), 0)';
+        var features = [];
+        angular.forEach(
+            $scope.searchableLayers,
+            function(layer) {
+              gaQuery.getLayerFeatures(
+                  $scope,
+                  layer.bodId,
+                  {
+                    where: where,
+                    time: layer.time
+                    //,geom: geojson.writeGeometry($scope.geometry)
+                  }
+              ).then(function(layerFeatures) {
+                features = features.concat(layerFeatures);
+                $scope.options.features = features;
+                $scope.loading = false;
+              },function(reason) {
+                $scope.options.features = [];
+                $scope.loading = false;
+              });
+            }
+        );
+      } else {
+        $scope.loading = false;
+      }
+    };*/
+
+    // Search by attribute with layer query service
+    /*$scope.searchByAttributes = function() {
       $scope.queryType = 1;
       $scope.loading = true;
 
@@ -244,7 +338,7 @@
             });
           }
       );
-    };
+    };*/
 
     // Launch a search according to the active tab
     $scope.search = function() {
