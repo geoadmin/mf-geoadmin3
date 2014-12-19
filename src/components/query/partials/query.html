@@ -12,16 +12,16 @@
        ng-repeat="f in filters">
     <div class="ga-header">
       <label translate translate-values="{num: $index+1}">query_num</label>
-      <button class="ga-icon icon-remove-sign pull-right"
+      <button class="ga-icon ga-btn icon-remove-sign pull-right"
               title="{{'query_remove' | translate}}" 
               ng-show="filters.length > 1"
               ng-click="onChange();remove($index)">
       </button>
-      <button class="ga-icon icon-refresh pull-right"
+      <button class="ga-icon ga-btn icon-refresh pull-right"
               title="{{'query_reset' | translate}}" 
               ng-click="onChange();clear($index)">
       </button>
-      <button class="ga-icon icon-copy pull-right" 
+      <button class="ga-icon ga-btn icon-copy pull-right" 
               title="{{'query_duplicate' | translate}}" 
               ng-show="filters.length < 2"
               ng-click="onChange();duplicate($index)">
@@ -68,7 +68,7 @@
     </div>
    </div>
    <button class="btn btn-default" 
-          ng-hide="!queryPredef && !filters[0].value"
+          ng-disabled="!filters[0].value"
           ng-click="searchByAttributes()" translate>query_search</button>
 </div>
 
