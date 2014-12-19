@@ -16,7 +16,7 @@
       gaMapUtils, gaStorage) {
     var geojson = new ol.format.GeoJSON();
     var stored;
-    $scope.queryType;
+    $scope.queryType = 1; // Filter attributes
     $scope.searchableLayers = [];
     $scope.queriesPredef = [];
     $scope.filters = [];
