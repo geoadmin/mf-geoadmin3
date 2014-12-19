@@ -107,6 +107,13 @@
         angular.forEach(queryPredef.filters, function(filter) {
           this.push(clone(filter));
         }, $scope.filters);
+
+        // Update input value after the filters are displayed
+        $timeout(function() {
+          for (var i = 0; i < $scope.filters.length; i++) {
+            $scope.updateInputValue(i, $scope.filters[i])
+          }
+        }, 0, false);
       }
     };
 
@@ -388,7 +395,7 @@
           if (data) {
             data.destroy();
           }
-          if (filter.attribute.inputType == 'date') {
+          if (filter.attribute && filter.attribute.inputType == 'date') {
             input.datetimepicker({
               pickDate: true,
               pickTime: false,
