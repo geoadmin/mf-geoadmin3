@@ -210,44 +210,44 @@
         var canceler;
         var bboxDebounced = gaDebounce.debounce(function(scope, layers,
             extent) {
-              if (canceler) {
-                canceler.resolve();
-              }
-              var deferred = $q.defer();
-              canceler = $q.defer();
-              $http.get(searchUrl, {
-                params: getParams(layers, extent),
-                timeout: canceler.promise,
-                cache: true
-              }).success(function(data) {
+          if (canceler) {
+            canceler.resolve();
+          }
+          var deferred = $q.defer();
+          canceler = $q.defer();
+          $http.get(searchUrl, {
+            params: getParams(layers, extent),
+            timeout: canceler.promise,
+            cache: true
+          }).success(function(data) {
 
-                for (var i = 0; i < data.results.length; i++) {
-                  var result = data.results[i];
-                  // The feature search using sphinxsearch uses quadindex
-                  // to filter results based on their bounding boxes. This is
-                  // in order to make the search extremely fast even for a large
-                  // number of features. The downside is that we will have false
-                  // positives in the results (features which are outside of
-                  // the searched box). Here, we filter out those false
-                  // positives based on the bounding box of the feature. Note
-                  // that we could refine this by using the exact geometry in
-                  // the future
-                  if (result.attrs && result.attrs.geom_st_box2d) {
-                    var bbox = parseBoxString(result.attrs.geom_st_box2d);
-                    if (!ol.extent.intersects(extent, bbox)) {
-                      data.results.splice(i, 1);
-                      i--;
-                    }
-                  }
+            for (var i = 0; i < data.results.length; i++) {
+              var result = data.results[i];
+              // The feature search using sphinxsearch uses quadindex
+              // to filter results based on their bounding boxes. This is
+              // in order to make the search extremely fast even for a large
+              // number of features. The downside is that we will have false
+              // positives in the results (features which are outside of
+              // the searched box). Here, we filter out those false
+              // positives based on the bounding box of the feature. Note
+              // that we could refine this by using the exact geometry in
+              // the future
+              if (result.attrs && result.attrs.geom_st_box2d) {
+                var bbox = parseBoxString(result.attrs.geom_st_box2d);
+                if (!ol.extent.intersects(extent, bbox)) {
+                  data.results.splice(i, 1);
+                  i--;
                 }
-                deferred.resolve(data.results);
-              }).error(function(data, status, headers, config) {
-                $log.error('Request failed');
-                $log.debug(config);
-                deferred.reject(status);
-              });
-              return deferred.promise;
-            }, 200, false, false);
+              }
+            }
+            deferred.resolve(data.results);
+          }).error(function(data, status, headers, config) {
+            $log.error('Request failed');
+            $log.debug(config);
+            deferred.reject(status);
+          });
+          return deferred.promise;
+        }, 200, false, false);
         this.getLayersFeaturesByBbox = bboxDebounced;
       };
       var query = new Query();
@@ -255,7 +255,6 @@
       query.dpUrl = this.dpUrl;
       return query;
     };
-
   });
 })();
 
