@@ -184,16 +184,20 @@ class Vector(GeoInterface):
         for column in self._get_attributes_columns():
             ormColumnName = self.__mapper__.get_property_by_column(column).key
             attribute = getattr(self, ormColumnName)
-            if isinstance(attribute, decimal.Decimal):
-                attributes[ormColumnName] = attribute.__float__()
-            elif isinstance(attribute, datetime.datetime):
-                attributes[ormColumnName] = attribute.strftime("%d.%m.%Y")
-            else:
-                attributes[ormColumnName] = attribute
+            attributes[ormColumnName] = formatAttribute(attribute)
 
         labelMappedColumnName = self.__mapper__.get_property_by_column(self.label_column()).key
-        attributes['label'] = str(getattr(self, labelMappedColumnName))
+        attributes['label'] = formatAttribute(getattr(self, labelMappedColumnName))
         return attributes
+
+
+def formatAttribute(attribute):
+    if isinstance(attribute, decimal.Decimal):
+        return attribute.__float__()
+    elif isinstance(attribute, datetime.datetime):
+        return attribute.strftime("%d.%m.%Y")
+    else:
+        return attribute
 
 
 def esriRest2Shapely(geometry, geometryType):
