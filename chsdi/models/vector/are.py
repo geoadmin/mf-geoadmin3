@@ -80,7 +80,7 @@ class Bevoelkerungsdichte(Base, Vector):
     __table_args__ = ({'schema': 'siedlung_landschaft', 'autoload': False})
     __template__ = 'templates/htmlpopup/bevoelkerungsdichte.mako'
     __bodId__ = 'ch.are.bevoelkerungsdichte'
-    __label__ = 'popt_ha' # Composite labels
+    __label__ = 'popt_ha'  # Composite labels
     id = Column('row_id', Integer, primary_key=True)
     popt_ha = Column('popt_ha', Numeric)
     stand = Column('stand', Numeric)

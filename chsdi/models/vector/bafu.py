@@ -74,7 +74,7 @@ class Grundwasserschutzareale (Base, Vector):
     __table_args__ = ({'schema': 'wasser', 'autoload': False})
     __bodId__ = 'ch.bafu.grundwasserschutzareale'
     __template__ = 'templates/htmlpopup/wasser_grundwasser.mako'
-    __label__ = 'typ_de' # Translatable labels in de fr it en
+    __label__ = 'typ_de'  # Translatable labels in de fr it en
     id = Column('bgdi_id', Integer, primary_key=True)
     kanton = Column('kanton', Text)
     name = Column('name', Text)
@@ -96,7 +96,7 @@ class Grundwasserschutzzonen (Base, Vector):
     __table_args__ = ({'schema': 'wasser', 'autoload': False})
     __bodId__ = 'ch.bafu.grundwasserschutzzonen'
     __template__ = 'templates/htmlpopup/wasser_grundwasser.mako'
-    __label__ = 'typ_de' # Translatable labels in de fr it en
+    __label__ = 'typ_de'  # Translatable labels in de fr it en
     id = Column('bgdi_id', Integer, primary_key=True)
     kanton = Column('kanton', Text)
     name = Column('name', Text)
@@ -118,7 +118,7 @@ class Gewaesserschutzbereiche (Base, Vector):
     __table_args__ = ({'schema': 'wasser', 'autoload': False})
     __bodId__ = 'ch.bafu.gewaesserschutzbereiche'
     __template__ = 'templates/htmlpopup/wasser_schutzbereiche.mako'
-    __label__ = 'typ_de' # Translatable labels in de fr it en
+    __label__ = 'typ_de'  # Translatable labels in de fr it en
     id = Column('bgdi_id', Integer, primary_key=True)
     kanton = Column('kanton', Text)
     typ_de = Column('typ_de', Text)
@@ -400,7 +400,7 @@ class JB(Base, Vector):
     __bodId__ = 'ch.bafu.bundesinventare-jagdbanngebiete'
     __queryable_attributes__ = ['jb_name']
     __template__ = 'templates/htmlpopup/jb.mako'
-    __label__ = 'jb_name' # Composite labels
+    __label__ = 'jb_name'  # Composite labels
     id = Column('gid', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     jb_name = Column('jb_name', Text)
