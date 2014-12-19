@@ -86,7 +86,7 @@
         gaGlobalOptions) {
       var searchUrl = gaGlobalOptions.apiUrl +
           '/rest/services/all/SearchServer';
-      var layerUrl = gaGlobalOptions.apiUrl + '/rest/services/api/MapServer/';
+      var layerUrl = gaGlobalOptions.apiUrl + '/rest/services/all/MapServer/';
       var moment;
       // List of predefined queries by layer
       if (!moment) {
