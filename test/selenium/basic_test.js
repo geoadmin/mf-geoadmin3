@@ -1,7 +1,7 @@
 var webdriver = require('browserstack-webdriver');
 var assert = require('assert');
 
-var QUERYSTRING_OF_BERN = "X=200393.27&Y=596671.16";
+var QUERYSTRING_OF_BERN = "X=200393.28&Y=596671.16";
 
 var runTest = function(cap, driver, target){
   var TIMEOUT = 20000;
