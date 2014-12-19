@@ -1412,7 +1412,7 @@ class gisgeol_punkte(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/gisgeol.mako'
     __bodId__ = 'ch.swisstopo.geologie-gisgeol-punkte'
-    __label__ = 'objekt'
+    __label__ = 'title'
     id = Column('gid', Integer, primary_key=True)
     sgd_nr = Column('sgd_nr', Integer)
     title = Column('title', Text)

@@ -383,7 +383,7 @@ class AMA(Base, Vector):
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
     __bodId__ = 'ch.bafu.bundesinventare-amphibien_anhoerung'
     __template__ = 'templates/htmlpopup/amphibien_anhoerung.mako'
-    __label__ = obj_name
+    __label__ = 'obj_name'
     id = Column('bgdi_id', Integer, primary_key=True)
     obj_nr = Column('obj_nr', Text)
     obj_name = Column('obj_name', Text)
