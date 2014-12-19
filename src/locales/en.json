@@ -216,6 +216,7 @@
 	"profile_x_label": "Distance",
 	"profile_y_label": "Elevation",
 	"qrcode_tooltip": "Create a QRCode and open this map on your mobile device",
+	"queries": "BETA Filters",
 	"query": "Filter",
 	"query_choose": "Select filter:",
 	"query_custom": "Custom filter",

@@ -216,6 +216,7 @@
 	"profile_x_label": "Distance",
 	"profile_y_label": "Altitude",
 	"qrcode_tooltip": "Créer un QRCode et ouvrir cette carte depuis votre appareil mobile",
+	"queries": "BETA Filtres",
 	"query": "Filtre",
 	"query_choose": "Sélectionner un filtre:",
 	"query_custom": "Filtre personnalisé",
