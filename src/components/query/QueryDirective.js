@@ -44,7 +44,9 @@
         if (!paramsByLayer[filter.layer.bodId]) {
           paramsByLayer[filter.layer.bodId] = {
             bodId: filter.layer.bodId,
-            params: {}
+            params: {
+              time: filter.layer.time
+            }
           };
           list.push(paramsByLayer[filter.layer.bodId]);
         }
@@ -173,7 +175,8 @@
                   $scope,
                   layer.bodId,
                   {
-                    where: where
+                    where: where,
+                    time: layer.time
                     //,geom: geojson.writeGeometry($scope.geometry)
                   }
               ).then(function(layerFeatures) {
