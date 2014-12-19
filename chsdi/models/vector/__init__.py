@@ -136,6 +136,10 @@ class Vector(GeoInterface):
         return getattr(cls, cls.__timeInstant__)
 
     @classmethod
+    def label_column(cls):
+        return cls.__mapper__.columns[cls.__label__] if hasattr(cls, '__label__') else cls.__mapper__.primary_key[0]
+
+    @classmethod
     def geom_filter(cls, geometry, geometryType, imageDisplay, mapExtent, tolerance):
         toleranceMeters = getToleranceMeters(imageDisplay, mapExtent, tolerance)
         scale = None
@@ -186,6 +190,9 @@ class Vector(GeoInterface):
                 attributes[ormColumnName] = attribute.strftime("%d.%m.%Y")
             else:
                 attributes[ormColumnName] = attribute
+
+        labelMappedColumnName = self.__mapper__.get_property_by_column(self.label_column()).key
+        attributes['label'] = str(getattr(self, labelMappedColumnName))
         return attributes
 
 
