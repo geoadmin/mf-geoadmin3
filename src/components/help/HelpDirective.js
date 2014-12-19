@@ -24,12 +24,12 @@
    * <span ga-help="12,13,14"></div>
   */
   module.directive('gaHelp',
-      function($rootScope, gaHelpService, gaPopup) {
+      function($rootScope, $sce, gaHelpService, gaPopup) {
         var popupContent = '<div class="ga-help-content" ' +
                                 'ng-repeat="res in options.results">' +
-                             '<h2 ng-bind="res[1]"></h2>' +
-                             '<div ng-bind="res[2]"></div>' +
-                             '<img ng-src="{{res[4]}}" ' +
+                             '<h2 ng-bind-html="res[0]"></h2>' +
+                             '<div ng-bind-html="res[1]"></div>' +
+                             '<img ng-src="{{res[2]}}" ' +
                                   'draggable="false"/>' +
                            '</div>';
 
@@ -101,7 +101,11 @@
                   };
                   for (i = 0; i < len; i++) {
                     gaHelpService.get(ids[i]).then(function(res) {
-                      results.push(res.rows[0]);
+                      results.push([
+                        $sce.trustAsHtml(res.rows[0][1]),
+                        $sce.trustAsHtml(res.rows[0][2]),
+                        res.rows[0][4]
+                      ]);
                       resultReceived();
                     }, function() {
                       resultReceived();
