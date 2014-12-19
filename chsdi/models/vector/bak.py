@@ -16,6 +16,7 @@ class ISOS(Base, Vector):
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/isos.mako'
     __bodId__ = 'ch.bak.bundesinventar-schuetzenswerte-ortsbilder'
+    __label__ = 'ortsbildname'
     id = Column('gid', Integer, primary_key=True)
     ortsbildname = Column('ortsbildname', Text)
     kanton = Column('kanton', Text)
@@ -40,6 +41,7 @@ class UNESCO(Base, Vector):
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/unesco_bak.mako'
     __bodId__ = 'ch.bak.schutzgebiete-unesco_weltkulturerbe'
+    __label__ = 'bgdi_name'
     id = Column('bgdi_id', Integer, primary_key=True)
     bgdi_name = Column('bgdi_name', Text)
     bgdi_surface = Column('bgdi_surface', Text)

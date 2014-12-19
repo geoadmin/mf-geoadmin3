@@ -16,6 +16,8 @@ class Arealstatistik2009(Base, Vector):
     __bodId__ = 'ch.bfs.arealstatistik'
     # __minscale__ = 5001
     __maxscale__ = 50000
+    # specially big layer
+    __label__ = 'id'
     id = Column('bgdi_id', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     fj85 = Column('fj85', Integer)
@@ -35,6 +37,8 @@ class Arealstatistik1985(Base, Vector):
     __bodId__ = 'ch.bfs.arealstatistik-1985'
     # __minscale__ = 5001
     __maxscale__ = 50000
+    # specially big layer
+    __label__ = 'id'
     id = Column('bgdi_id', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     fj85 = Column('fj85', Integer)
@@ -54,6 +58,8 @@ class Arealstatistik1997(Base, Vector):
     __bodId__ = 'ch.bfs.arealstatistik-1997'
     #__minscale__ = 5001
     __maxscale__ = 50000
+    #specially big layer
+    __label__ = 'id'
     id = Column('bgdi_id', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     fj85 = Column('fj85', Integer)
@@ -73,6 +79,8 @@ class ArealstatistikBodenbedeckung2009(Base, Vector):
     __bodId__ = 'ch.bfs.arealstatistik-bodenbedeckung'
     #__minscale__ = 5001
     __maxscale__ = 50000
+    #specially big layer
+    __label__ = 'id'
     id = Column('bgdi_id', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     fj85 = Column('fj85', Integer)
@@ -92,6 +100,8 @@ class ArealstatistikBodenbedeckung1997(Base, Vector):
     __bodId__ = 'ch.bfs.arealstatistik-bodenbedeckung-1997'
     #__minscale__ = 5001
     __maxscale__ = 50000
+    #specially big layer
+    __label__ = 'id'
     id = Column('bgdi_id', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     fj85 = Column('fj85', Integer)
@@ -111,6 +121,8 @@ class ArealstatistikBodenbedeckung1985(Base, Vector):
     __bodId__ = 'ch.bfs.arealstatistik-bodenbedeckung-1985'
     #__minscale__ = 5001
     __maxscale__ = 50000
+    #specially big layer
+    __label__ = 'id'
     id = Column('bgdi_id', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     fj85 = Column('fj85', Integer)
@@ -130,6 +142,8 @@ class ArealstatistikBodennutzung(Base, Vector):
     __bodId__ = 'ch.bfs.arealstatistik-bodennutzung'
     #__minscale__ = 5001
     __maxscale__ = 50000
+    #specially big layer
+    __label__ = 'id'
     id = Column('bgdi_id', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     fj85 = Column('fj85', Integer)
@@ -149,6 +163,8 @@ class ArealstatistikBodennutzung1997(Base, Vector):
     __bodId__ = 'ch.bfs.arealstatistik-bodennutzung-1997'
     #__minscale__ = 5001
     __maxscale__ = 50000
+    #specially big layer
+    __label__ = 'id'
     id = Column('bgdi_id', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     fj85 = Column('fj85', Integer)
@@ -168,6 +184,8 @@ class ArealstatistikBodennutzung1985(Base, Vector):
     __bodId__ = 'ch.bfs.arealstatistik-bodennutzung-1985'
     #__minscale__ = 5001
     __maxscale__ = 50000
+    #specially big layer
+    __label__ = 'id'
     id = Column('bgdi_id', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     fj85 = Column('fj85', Integer)
@@ -185,6 +203,7 @@ class fsme_faelle(Base, Vector):
     __table_args__ = ({'schema': 'bag', 'autoload': False})
     __template__ = 'templates/htmlpopup/fsme.mako'
     __bodId__ = 'ch.bag.zecken-fsme-faelle'
+    __label__ = 'gemname'
     id = Column('bgdi_id', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     gemname = Column('gemname', Integer)
@@ -200,6 +219,7 @@ class fsme_impfung(Base, Vector):
     __table_args__ = ({'schema': 'bag', 'autoload': False})
     __template__ = 'templates/htmlpopup/fsme.mako'
     __bodId__ = 'ch.bag.zecken-fsme-impfung'
+    __label__ = 'gemname'
     id = Column('bgdi_id', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     gemname = Column('gemname', Integer)

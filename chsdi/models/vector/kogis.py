@@ -18,6 +18,8 @@ class Gebaeuderegister(Base, Vector):
     __bodId__ = 'ch.bfs.gebaeude_wohnungs_register'
     # __minscale__ = 5001
     # due to https://redmine.bgdi.admin.ch/issues/3146 ltmoc  __maxscale__ = 25000
+    # Composite labels
+    __label__ = 'strname1'
     id = Column('egid_edid', Text, primary_key=True)
     egid = Column('egid', Integer)
     strname1 = Column('strname1', Text)
@@ -42,6 +44,7 @@ class AGNES(Base, Vector):
     __table_args__ = ({'schema': 'fpds', 'autoload': False})
     __template__ = 'templates/htmlpopup/agnes.mako'
     __bodId__ = 'ch.swisstopo.fixpunkte-agnes'
+    __label__ = 'id'
     id = Column('no', Text, primary_key=True)
     url = Column('url', Text)
     bgdi_id = Column('bgdi_id', Integer)
@@ -56,6 +59,7 @@ class FIXPUNKTE_LFP1(Base, Vector):
     __template__ = 'templates/htmlpopup/fixpunkte.mako'
     #__queryable_attributes__ = ['pointid', 'nummer']
     __bodId__ = 'ch.swisstopo.fixpunkte-lfp1'
+    __label__ = 'id'
     id = Column('pointid', Text, primary_key=True)
     punktname = Column('punktname', Text)
     nummer = Column('nummer', Text)
@@ -80,6 +84,7 @@ class FIXPUNKTE_LFP2(Base, Vector):
     __template__ = 'templates/htmlpopup/fixpunkte.mako'
     #__queryable_attributes__ = ['pointid', 'nummer']
     __bodId__ = 'ch.swisstopo.fixpunkte-lfp2'
+    __label__ = 'id'
     id = Column('pointid', Text, primary_key=True)
     nbident = Column('nbident', Text)
     punktname = Column('punktname', Text)
@@ -104,6 +109,7 @@ class FIXPUNKTE_HFP1(Base, Vector):
     __template__ = 'templates/htmlpopup/fixpunkte.mako'
     #__queryable_attributes__ = ['pointid', 'nummer', 'bgdi_label']
     __bodId__ = 'ch.swisstopo.fixpunkte-hfp1'
+    __label__ = 'id'
     id = Column('pointid', Text, primary_key=True)
     nbident = Column('nbident', Text)
     punktname = Column('punktname', Text)
@@ -128,6 +134,7 @@ class FIXPUNKTE_HFP2(Base, Vector):
     __template__ = 'templates/htmlpopup/fixpunkte.mako'
     #__queryable_attributes__ = ['pointid', 'nummer']
     __bodId__ = 'ch.swisstopo.fixpunkte-hfp2'
+    __label__ = 'id'
     id = Column('pointid', Text, primary_key=True)
     nbident = Column('nbident', Text)
     punktname = Column('punktname', Text)
