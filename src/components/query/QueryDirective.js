@@ -21,6 +21,12 @@
     $scope.queriesPredef = [];
     $scope.filters = [];
 
+    // return the year of the timestamp
+    var getYear = function(time) {
+      return (time && time.substr(0, 4) != '9999') ?
+          time.substr(0, 4) : undefined;
+    };
+
     var getEmptyFilter = function() {
       return {
         layer: null,
@@ -45,7 +51,7 @@
           paramsByLayer[filter.layer.bodId] = {
             bodId: filter.layer.bodId,
             params: {
-              time: filter.layer.time
+              time: getYear(filter.layer.time)
             }
           };
           list.push(paramsByLayer[filter.layer.bodId]);
@@ -216,7 +222,7 @@
                     tolerance: 0,
                     geometryFormat: 'geojson',
                     lang: lang,
-                    timeInstant: layer.time
+                    timeInstant: getYear(layer.time)
                   }
               ).then(function(layerFeatures) {
                 features = features.concat(layerFeatures);
@@ -257,7 +263,7 @@
           function(paramsByLayer) {
             paramsByLayer.params.geometryFormat = 'geojson';
             paramsByLayer.params.lang = lang;
-            paramsByLayer.params.timeInstant = paramsByLayer.time;
+            paramsByLayer.params.timeInstant = getYear(paramsByLayer.time);
 
             gaQuery.getLayerIdentifyFeatures(
                 $scope,
@@ -291,7 +297,7 @@
                   layer.bodId,
                   {
                     where: where,
-                    time: layer.time
+                    time: getYear(layer.time)
                     //,geom: geojson.writeGeometry($scope.geometry)
                   }
               ).then(function(layerFeatures) {
