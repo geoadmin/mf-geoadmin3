@@ -252,12 +252,7 @@
         $scope.loading = false;
         return;
       }
-      var imgDisplay = $scope.map.getSize().concat([96]).join(',');
-      var mapExtent = $scope.map.getView().calculateExtent(
-          $scope.map.getSize()).join(',');
-      var geom = $scope.geometry.getExtent().join(',');
       var lang = $translate.use();
-
       angular.forEach(
           params,
           function(paramsByLayer) {
@@ -482,15 +477,15 @@
           boxOverlay.setMap(null);
         };
         var activate = function() {
-
           if (!$.datetimepicker) {
-            $.getScript(gaQuery.dpUrl);
-
-            // On first activation we set the predefQueries as default.
-            if (scope.queriesPredef.length > 0) {
-              scope.queryPredef = scope.queriesPredef[0];
-              scope.applyQueryPredef(scope.queryPredef);
-            }
+            $.getScript(gaQuery.dpUrl, function() {
+              // On first activation we set the predefQueries as default.
+              if (scope.queriesPredef.length > 0) {
+                scope.queryPredef = scope.queriesPredef[0];
+                scope.applyQueryPredef(scope.queryPredef);
+                scope.$digest();
+              }
+            });
           }
 
           if (scope.queryType == 0) {
