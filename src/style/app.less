@@ -1048,9 +1048,11 @@ ul.panel-body-wide {
 
   #loader {
     z-index: 5000;
+    opacity: 1;
+  }
 
+  .ga-loader {
     @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-      opacity: 1;
       -webkit-animation: spin 2s infinite linear;
       animation: spin 2s infinite linear;
     }

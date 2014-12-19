@@ -66,9 +66,12 @@
         <button ga-help="43"></button>
       </div>
     </div>
-   </div>
-   <button class="btn btn-default" 
-          ng-disabled="!filters[0].value"
-          ng-click="searchByAttributes()" translate>query_search</button>
+  </div>
+  <button class="btn btn-default" 
+          ng-disabled="loading || !filters[0].value"
+          ng-click="searchByAttributes()">
+    <i ng-class="{'ga-loader icon-refresh': loading}"></i>
+    <span translate>query_search<span>
+  </button>
 </div>
 
