@@ -77,6 +77,7 @@ class Vector(GeoInterface):
             for k in self.__add_properties__:
                 properties[k] = getattr(self, k)
 
+        properties = self.insertLabel(properties)
         return geojson.Feature(id=id, geometry=geom, properties=properties)
 
     @property
@@ -185,7 +186,9 @@ class Vector(GeoInterface):
             ormColumnName = self.__mapper__.get_property_by_column(column).key
             attribute = getattr(self, ormColumnName)
             attributes[ormColumnName] = formatAttribute(attribute)
+        return self.insertLabel(attributes)
 
+    def insertLabel(self, attributes):
         labelMappedColumnName = self.__mapper__.get_property_by_column(self.label_column()).key
         attributes['label'] = formatAttribute(getattr(self, labelMappedColumnName))
         return attributes
