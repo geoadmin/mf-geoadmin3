@@ -59,7 +59,7 @@ class Temperaturmessnetz(Base, Vector):
     __table_args__ = ({'schema': 'hydrologie', 'autoload': False})
     __bodId__ = 'ch.bafu.hydrologie-wassertemperaturmessstationen'
     __template__ = 'templates/htmlpopup/temperaturmessnetz.mako'
-    #__queryable_attributes__ = ['nr', 'name']
+    __queryable_attributes__ = ['nr', 'name']
     __label__ = 'name'
     id = Column('nr', Integer, primary_key=True)
     url = Column('url', Text)
@@ -155,7 +155,7 @@ class Gewaesserzustandst (Base, Vector):
     __bodId__ = 'ch.bafu.hydrologie-gewaesserzustandsmessstationen'
     __template__ = 'templates/htmlpopup/gewaesserzustandsmessstationen.mako'
     __label__ = 'name'
-    #__queryable_attributes__ = ['nr', 'name', 'gewaesser']
+    __queryable_attributes__ = ['nr', 'name', 'gewaesser']
     id = Column('bgdi_id', Integer, primary_key=True)
     name = Column('name', Text)
     nr = Column('nr', Numeric)
@@ -244,7 +244,7 @@ class AU(Base, Vector):
     __bodId__ = 'ch.bafu.bundesinventare-auen'
     __template__ = 'templates/htmlpopup/auen.mako'
     __label__ = 'au_name'
-    #__queryable_attributes__ = ['au_obj', 'au_name']
+    __queryable_attributes__ = ['au_obj', 'au_name']
     id = Column('gid', Integer, primary_key=True)
     au_name = Column('au_name', Text)
     au_obj = Column('au_obj', Integer)
@@ -259,7 +259,7 @@ class BLN(Base, Vector):
     __tablename__ = 'bln'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
     __bodId__ = 'ch.bafu.bundesinventare-bln'
-    #__queryable_attributes__ = ['bln_name']
+    __queryable_attributes__ = ['bln_name']
     __template__ = 'templates/htmlpopup/bln.mako'
     __label__ = 'bln_name'
     id = Column('gid', Integer, primary_key=True)
@@ -398,7 +398,7 @@ class JB(Base, Vector):
     __tablename__ = 'jb'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
     __bodId__ = 'ch.bafu.bundesinventare-jagdbanngebiete'
-    #__queryable_attributes__ = ['jb_name']
+    __queryable_attributes__ = ['jb_name']
     __template__ = 'templates/htmlpopup/jb.mako'
     __label__ = 'jb_name' # Composite labels
     id = Column('gid', Integer, primary_key=True)
