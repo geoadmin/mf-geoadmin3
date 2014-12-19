@@ -86,7 +86,7 @@
         gaGlobalOptions) {
       var searchUrl = gaGlobalOptions.apiUrl +
           '/rest/services/all/SearchServer';
-      var layerUrl = gaGlobalOptions.apiUrl + '/rest/services/all/MapServer/';
+      var msUrl = gaGlobalOptions.apiUrl + '/rest/services/all/MapServer/';
       var moment;
       // List of predefined queries by layer
       if (!moment) {
@@ -126,7 +126,7 @@
         // Use ESRI layer service
         this.getLayerAttributes = function(scope, layer) {
           var deferred = $q.defer();
-          $http.get(layerUrl + layer.bodId, {
+          $http.get(msUrl + layer.bodId, {
             params: {
               lang: $translate.use()
             },
@@ -175,10 +175,28 @@
           return deferred.promise;
         };
 
+        // Use ESRI dentify service
+        this.getLayerIdentifyFeatures = function(scope, bodId, params) {
+          var deferred = $q.defer();
+          params = params || {};
+          params.layers = 'all:' + bodId;
+          $http.get(msUrl + '/identify', {
+            params: params,
+            cache: true
+          }).success(function(data) {
+            deferred.resolve(data.results);
+          }).error(function(data, status, headers, config) {
+            $log.error('Request failed');
+            $log.debug(config);
+            deferred.reject(status);
+          });
+          return deferred.promise;
+        };
+
         // Use ESRI query service
         this.getLayerFeatures = function(scope, bodId, params) {
           var deferred = $q.defer();
-          $http.get(layerUrl + bodId + '/query', {
+          $http.get(msUrl + bodId + '/query', {
             params: params,
             cache: true
           }).success(function(data) {
@@ -194,7 +212,7 @@
         // Use custom attribute service
         this.getAttributeValues = function(scope, bodId, attrName, params) {
           var deferred = $q.defer();
-          $http.get(layerUrl + bodId + '/attributes/' + attrName, {
+          $http.get(msUrl + bodId + '/attributes/' + attrName, {
             cache: true
           }).success(function(data) {
             deferred.resolve(data.values);

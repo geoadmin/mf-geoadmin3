@@ -111,7 +111,7 @@
         // Update input value after the filters are displayed
         $timeout(function() {
           for (var i = 0; i < $scope.filters.length; i++) {
-            $scope.updateInputValue(i, $scope.filters[i])
+            $scope.updateInputValue(i, $scope.filters[i]);
           }
         }, 0, false);
       }
@@ -172,18 +172,31 @@
       $scope.queryType = 0;
 
       if ($scope.geometry) {
-        var where = 'ST_DWithin(the_geom, ST_MakeEnvelope(' +
-            $scope.geometry.getExtent().join(',') + ', 21781), 0)';
+        //var where = 'ST_DWithin(the_geom, ST_MakeEnvelope(' +
+        //    $scope.geometry.getExtent().join(',') + ', 21781), 0)';
+        var imgDisplay = $scope.map.getSize().concat([96]).join(',');
+        var mapExtent = $scope.map.getView().calculateExtent(
+            $scope.map.getSize()).join(',');
+        var geom = $scope.geometry.getExtent().join(',');
+        var lang = $translate.use();
         var features = [];
         angular.forEach(
             $scope.searchableLayers,
             function(layer) {
-              gaQuery.getLayerFeatures(
+              gaQuery.getLayerIdentifyFeatures(
                   $scope,
                   layer.bodId,
                   {
-                    where: where,
-                    time: layer.time
+                    geometry: geom,
+                    geometryType: 'esriGeometryEnvelope',
+                    mapExtent: mapExtent,
+                    imageDisplay: imgDisplay,
+                    tolerance: 0,
+                    geometryFormat: 'geojson',
+                    lang: lang,
+                    timeInstant: layer.time
+                    //where: where,
+                    //time: layer.time
                     //,geom: geojson.writeGeometry($scope.geometry)
                   }
               ).then(function(layerFeatures) {
