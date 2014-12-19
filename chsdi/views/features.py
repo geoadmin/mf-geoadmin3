@@ -348,11 +348,8 @@ def _get_features_for_filters(params, models, maxFeatures=None, where=None):
                     query = query.filter(geomFilter)
 
             # Filter by time instant
-            if params.timeInstant is not None:
-                try:
-                    timeInstantColumn = model.time_instant_column()
-                except AttributeError:
-                    raise exc.HTTPBadRequest('%s is not time enabled' % model.__bodId__)
+            if params.timeInstant is not None and hasattr(model, '__timeInstant__'):
+                timeInstantColumn = model.time_instant_column()
                 query = query.filter(timeInstantColumn == params.timeInstant)
 
             # Add limit
