@@ -54,6 +54,7 @@
               } else {
                 profile.update(data);
                 profile.updateLabels();
+                scope.unitX = profile.unitX;
               }
             });
 
