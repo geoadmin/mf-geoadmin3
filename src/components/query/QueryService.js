@@ -180,7 +180,7 @@
           var deferred = $q.defer();
           params = params || {};
           params.layers = 'all:' + bodId;
-          $http.get(msUrl + '/identify', {
+          $http.get(msUrl + 'identify', {
             params: params,
             cache: true
           }).success(function(data) {
