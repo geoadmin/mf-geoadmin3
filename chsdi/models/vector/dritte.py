@@ -16,6 +16,7 @@ class FEUERSTELLEN(Base, Vector):
     __table_args__ = ({'schema': 'tamedia', 'autoload': False})
     __template__ = 'templates/htmlpopup/swissmap_online_feuerstellen.mako'
     __bodId__ = 'ch.tamedia.schweizerfamilie-feuerstellen'
+    __label__ = 'gemeinde'
     id = Column('nr', Integer, primary_key=True)
     gemeinde = Column('gemeinde', Text)
     ort = Column('ort', Text)
@@ -33,6 +34,7 @@ class NOTFALLSCHUTZ(Base, Vector):
     __table_args__ = ({'schema': 'ensi', 'autoload': False})
     __template__ = 'templates/htmlpopup/zonenplan_kernanlagen.mako'
     __bodId__ = 'ch.ensi.zonenplan-notfallschutz-kernanlagen'
+    __label__ = 'name'
     id = Column('nr', Integer, primary_key=True)
     name = Column('name', Text)
     zone = Column('zone', Text)
@@ -47,6 +49,7 @@ class PRONATURA(Base, Vector):
     __table_args__ = ({'schema': 'pronatura', 'autoload': False})
     __template__ = 'templates/htmlpopup/pronatura.mako'
     __bodId__ = 'ch.pronatura.waldreservate'
+    __label__ = 'name'
     id = Column('bgdi_id', Integer, primary_key=True)
     sg_nr = Column('sg_nr', Numeric)
     name = Column('name', Text)

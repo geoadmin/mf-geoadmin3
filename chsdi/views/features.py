@@ -55,6 +55,8 @@ def _get_releases_params(request):
 
 def _get_features_params(request):
     params = FeatureParams(request)
+    # where must come first order matters, see MapServiceValidation
+    params.where = request.params.get('where')
     params.searchText = request.params.get('searchText')
     params.geometry = request.params.get('geometry')
     params.geometryType = request.params.get('geometryType')
@@ -80,12 +82,6 @@ def _get_find_params(request):
     params.searchText = request.params.get('searchText')
     params.searchField = request.params.get('searchField')
     params.contains = request.params.get('contains')
-    return params
-
-
-def _get_query_params(request):
-    params = FeatureParams(request)
-
     return params
 
 
@@ -135,14 +131,9 @@ def view_find_esrijson(request):
     return _find(request)
 
 
-@view_config(route_name='query', renderer='geojson')
-def view_query_geojson(request):
-    return _query(request)
-
-
 @view_config(route_name='attribute_values', renderer='geojson')
 def view_attribute_values_geojson(request):
-    return _attribute(request)
+    return _attributes(request)
 
 
 @view_config(route_name='htmlPopup', renderer='jsonp')
@@ -230,7 +221,7 @@ def _identify_oereb(request):
     # Only relation 1 to 1 is needed at the moment
     layerVectorModel = [[oereb_models_from_bodid(layerBodId)[0]]]
     features = []
-    for feature in _get_features_for_extent(params, layerVectorModel):
+    for feature in _get_features_for_filters(params, layerVectorModel):
         temp = feature.xmlData.split('##')
         for fragment in temp:
             if fragment not in features:
@@ -247,6 +238,7 @@ def _identify_oereb(request):
 
 def _identify(request):
     params = _get_features_params(request)
+
     if params.layers == 'all':
         model = get_bod_model(params.lang)
         query = params.request.db.query(model)
@@ -263,9 +255,9 @@ def _identify(request):
     if models is None:
         raise exc.HTTPBadRequest('No GeoTable was found for %s' % ' '.join(layerIds))
 
-    maxFeatures = 50
+    maxFeatures = 200
     features = []
-    for feature in _get_features_for_extent(params, models, maxFeatures=maxFeatures):
+    for feature in _get_features_for_filters(params, models, maxFeatures=maxFeatures, where=params.where):
         f = _process_feature(feature, params)
         features.append(f)
         if len(features) > maxFeatures:
@@ -328,43 +320,61 @@ def _render_feature_template(vectorModel, feature, request, extended=False):
         request=request)
 
 
-def _get_features_for_extent(params, models, maxFeatures=None):
+def _get_features_for_filters(params, models, maxFeatures=None, where=None):
     ''' Returns a generator function that yields
     a feature. '''
     for vectorLayer in models:
         for model in vectorLayer:
-            geomFilter = model.geom_filter(
-                params.geometry,
-                params.geometryType,
-                params.imageDisplay,
-                params.mapExtent,
-                params.tolerance
-            )
-            # Can be None because of max and min scale
-            if geomFilter is not None:
-                query = params.request.db.query(model)
-                query = query.order_by(model.bgdi_order) if hasattr(model, 'bgdi_order') else query
-                query = query.filter(geomFilter)
-                if params.timeInstant is not None:
-                    try:
-                        timeInstantColumn = model.time_instant_column()
-                    except AttributeError:
-                        raise exc.HTTPBadRequest('%s is not time enabled' % model.__bodId__)
-                    query = query.filter(timeInstantColumn == params.timeInstant)
-                query = query.limit(maxFeatures) if maxFeatures is not None else query
-                counter = 0
-                bgdi_order = 0
-                for feature in query:
-                    counter = counter + 1
-                    if model.__bodId__ == 'ch.swisstopo.zeitreihen':
+            query = params.request.db.query(model)
+
+            # Filter by sql query
+            # Only one filter = one layer
+            if where is not None:
+                query = query.filter(text(where))
+
+            # Filter by bbox
+            if params.geometry is not None:
+                geomFilter = model.geom_filter(
+                    params.geometry,
+                    params.geometryType,
+                    params.imageDisplay,
+                    params.mapExtent,
+                    params.tolerance
+                )
+                # Can be None because of max and min scale
+                if geomFilter is not None:
+                    ## TODO Remove code specific clauses
+                    query = query.order_by(model.bgdi_order) if hasattr(model, 'bgdi_order') else query
+                    query = query.filter(geomFilter)
+
+            # Filter by time instant
+            if params.timeInstant is not None and hasattr(model, '__timeInstant__'):
+                timeInstantColumn = model.time_instant_column()
+                query = query.filter(timeInstantColumn == params.timeInstant)
+
+            # Add limit
+            query = query.limit(maxFeatures) if maxFeatures is not None else query
+
+            # We need either where or geomFilter (geomFilter especially for zeitreihen layer)
+            # This probably needs refactoring...
+            if where is not None or geomFilter is not None:
+                # TODO remove layer specific code
+                if model.__bodId__ == 'ch.swisstopo.zeitreihen':
+                    counter = 0
+                    bgdi_order = 0
+                    for feature in query:
+                        counter += 1
                         if counter > 1:
                             if bgdi_order < feature.bgdi_order:
                                 continue
                         bgdi_order = feature.bgdi_order
-                    yield feature
+                        yield feature
+                else:
+                    for feature in query:
+                        yield feature
 
 
-def _attribute(request):
+def _attributes(request):
     MaxFeatures = 50
     attributes_values = []
     params = _get_attributes_params(request)
@@ -393,45 +403,6 @@ def _attribute(request):
                 attributes_values.append(attr[0])
 
         return {'values': sorted(attributes_values)}
-
-
-def _query(request):
-    MaxFeatures = 200
-    geomFilter = None
-    features = []
-    params = _get_query_params(request)
-    geometry = request.params.get('geometry')
-    params.layerId = request.matchdict.get('layerId')
-    layerDefs = request.params.get('layerDefs')
-    where = request.params.get('where')
-    if where is None:
-        raise exc.HTTPBadRequest('No WHERE request found for %s' % params.layerId)
-    models = models_from_name(params.layerId)
-    if models is None:
-        raise exc.HTTPBadRequest('No Vector Table was found for %s' % params.layerId)
-    model = models[0]
-    if geometry:
-        from shapely.geometry import mapping, shape
-        import json
-        geom = shape(json.loads(geometry))
-        wkbGeometry = WKBSpatialElement(buffer(geom.wkb), 21781)
-        geomColumn = model.geometry_column()
-        geomFilter = functions.within_distance(geomColumn, wkbGeometry, 0)
-    query = request.db.query(model)
-
-    if geomFilter is not None:
-        query = query.filter(geomFilter)
-
-    query = query.filter(text(where))
-    query = query.limit(MaxFeatures)
-    for feature in query:
-        label_column = feature.__label__ if hasattr(feature, '__label__') else 'id'
-        f = _process_feature(feature, params)
-        f.properties['label'] = f.properties.get(label_column, f.id)
-
-        features.append(f)
-
-    return {'results': features}
 
 
 def _find(request):
@@ -520,7 +491,7 @@ def releases(request):
     # Default timestamp
     timestamps = []
 
-    for f in _get_features_for_extent(params, [models]):
+    for f in _get_features_for_filters(params, [models]):
         if hasattr(f, 'release_year') and f.release_year is not None:
             timestamps.append(str(f.release_year))
     if len(timestamps) > 0:

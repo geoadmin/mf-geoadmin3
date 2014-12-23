@@ -77,6 +77,7 @@ class Vector(GeoInterface):
             for k in self.__add_properties__:
                 properties[k] = getattr(self, k)
 
+        properties = self.insertLabel(properties)
         return geojson.Feature(id=id, geometry=geom, properties=properties)
 
     @property
@@ -136,6 +137,10 @@ class Vector(GeoInterface):
         return getattr(cls, cls.__timeInstant__)
 
     @classmethod
+    def label_column(cls):
+        return cls.__mapper__.columns[cls.__label__] if hasattr(cls, '__label__') else cls.__mapper__.primary_key[0]
+
+    @classmethod
     def geom_filter(cls, geometry, geometryType, imageDisplay, mapExtent, tolerance):
         toleranceMeters = getToleranceMeters(imageDisplay, mapExtent, tolerance)
         scale = None
@@ -180,13 +185,22 @@ class Vector(GeoInterface):
         for column in self._get_attributes_columns():
             ormColumnName = self.__mapper__.get_property_by_column(column).key
             attribute = getattr(self, ormColumnName)
-            if isinstance(attribute, decimal.Decimal):
-                attributes[ormColumnName] = attribute.__float__()
-            elif isinstance(attribute, datetime.datetime):
-                attributes[ormColumnName] = attribute.strftime("%d.%m.%Y")
-            else:
-                attributes[ormColumnName] = attribute
+            attributes[ormColumnName] = formatAttribute(attribute)
+        return self.insertLabel(attributes)
+
+    def insertLabel(self, attributes):
+        labelMappedColumnName = self.__mapper__.get_property_by_column(self.label_column()).key
+        attributes['label'] = formatAttribute(getattr(self, labelMappedColumnName))
         return attributes
+
+
+def formatAttribute(attribute):
+    if isinstance(attribute, decimal.Decimal):
+        return attribute.__float__()
+    elif isinstance(attribute, datetime.datetime):
+        return attribute.strftime("%d.%m.%Y")
+    else:
+        return attribute
 
 
 def esriRest2Shapely(geometry, geometryType):

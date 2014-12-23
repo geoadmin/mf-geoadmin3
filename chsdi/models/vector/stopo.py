@@ -16,6 +16,7 @@ class GravimetrischerAtlasMetadata (Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/gravimetrischer_atlas_metadata.mako'
     __bodId__ = 'ch.swisstopo.geologie-gravimetrischer_atlas.metadata'
+    __label__ = 'titel'
     id = Column('nr', Integer, primary_key=True)
     titel = Column('titel', Text)
     jahr = Column('jahr', Numeric)
@@ -32,6 +33,7 @@ class GeolSpezialKartenMetadata (Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/gsk_metadata.mako'
     __bodId__ = 'ch.swisstopo.geologie-spezialkarten_schweiz.metadata'
+    __label__ = 'id'
     id = Column('nr', Integer, primary_key=True)
     titel = Column('titel', Text)
     jahr = Column('jahr', Numeric)
@@ -48,6 +50,7 @@ class SkitourenkarteMetadata (Base, Vector):
     __table_args__ = ({'schema': 'datenstand', 'autoload': False})
     __template__ = 'templates/htmlpopup/skitouren_metadata.mako'
     __bodId__ = 'ch.swisstopo.skitourenkarte-50.metadata'
+    __label__ = 'lknr'
     id = Column('oid', Integer, primary_key=True)
     lknr = Column('lknr', Text)
     name = Column('name', Text)
@@ -62,6 +65,7 @@ class SwissboundariesBezirk(Base, Vector):
     __table_args__ = ({'schema': 'tlm', 'autoload': False})
     __template__ = 'templates/htmlpopup/swissboundaries_bezirk.mako'
     __bodId__ = 'ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill'
+    __label__ = 'name'
     id = Column('id', Integer, primary_key=True)
     name = Column('name', Text)
     flaeche = Column('flaeche', Numeric)
@@ -75,7 +79,7 @@ class SwissboundariesGemeinde(Base, Vector):
     __table_args__ = ({'schema': 'tlm', 'autoload': False})
     __template__ = 'templates/htmlpopup/swissboundaries_gemeinde.mako'
     __bodId__ = 'ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill'
-    __label__ = 'gemeindename'
+    __label__ = 'gemname'
     id = Column('id', Integer, primary_key=True)
     gemname = Column('gemname', Text)
     gemflaeche = Column('gemflaeche', Numeric)
@@ -107,6 +111,7 @@ class CadastralWebMap(Base, Vector):
     __template__ = 'templates/htmlpopup/cadastralwebmap.mako'
     __bodId__ = 'ch.kantone.cadastralwebmap-farbe'
     __displayFieldName__ = 'kantonsnr'
+    __label__ = 'ak'
     id = Column('gid', Integer, primary_key=True)
     kantonsnr = Column('kantonsnr', Integer)
     ak = Column('ak', Text)
@@ -120,6 +125,7 @@ class Vec200Terminal(Base, Vector):
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec200_terminal.mako'
     __bodId__ = 'ch.swisstopo.vec200-transportation-oeffentliche-verkehr'
+    __label__ = 'objval'
     id = Column('gtdboid', Text, primary_key=True)
     objval = Column('objval', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
@@ -130,7 +136,9 @@ class Vec200ShipKursschiff(Base, Vector):
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec200_ship_kursschiff_linie.mako'
     __bodId__ = 'ch.swisstopo.vec200-transportation-oeffentliche-verkehr'
+    __label__ = 'objval'
     id = Column('gtdboid', Text, primary_key=True)
+    objval = Column('objval', Text)
     detn = Column('detn', Text)
     rsu = Column('rsu', Text)
     use = Column('use', Text)
@@ -142,6 +150,7 @@ class Vec200Railway(Base, Vector):
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec200_railway.mako'
     __bodId__ = 'ch.swisstopo.vec200-transportation-oeffentliche-verkehr'
+    __label__ = 'objval'
     id = Column('gtdboid', Text, primary_key=True)
     objval = Column('objval', Text)
     construct = Column('construct', Text)
@@ -158,6 +167,8 @@ class treasurehunt(Base, Vector):
     __template__ = 'templates/htmlpopup/treasurehunt.mako'
     __maxscale__ = 2505
     __bodId__ = 'ch.swisstopo.treasurehunt'
+    # Translatable labels in fr,it
+    __label__ = 'title_de'
     id = Column('bgdi_id', Integer, primary_key=True)
     title_de = Column('title_de', Text)
     title_fr = Column('title_fr', Text)
@@ -179,6 +190,7 @@ class Vec200Trafficinfo(Base, Vector):
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec200_trafficinfo.mako'
     __bodId__ = 'ch.swisstopo.vec200-transportation-strassennetz'
+    __label__ = 'objname'
     id = Column('gtdboid', Text, primary_key=True)
     objname = Column('objname', Text)
     objval = Column('objval', Text)
@@ -190,6 +202,7 @@ class Vec200ShipAutofaehre(Base, Vector):
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec200_ship_autofaehre.mako'
     __bodId__ = 'ch.swisstopo.vec200-transportation-strassennetz'
+    __label__ = 'detn'
     id = Column('gtdboid', Text, primary_key=True)
     use = Column('use', Text)
     rsu = Column('rsu', Text)
@@ -202,6 +215,7 @@ class Vec200Road(Base, Vector):
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec200_road.mako'
     __bodId__ = 'ch.swisstopo.vec200-transportation-strassennetz'
+    __label__ = 'objval'
     id = Column('gtdboid', Text, primary_key=True)
     construct = Column('construct', Text)
     objval = Column('objval', Text)
@@ -214,6 +228,7 @@ class Vec200Ramp(Base, Vector):
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec200_ramp.mako'
     __bodId__ = 'ch.swisstopo.vec200-transportation-strassennetz'
+    __label__ = 'objval'
     id = Column('gtdboid', Text, primary_key=True)
     construct = Column('construct', Text)
     objval = Column('objval', Text)
@@ -226,6 +241,7 @@ class Vec200Customsoffice(Base, Vector):
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec200_customsoffice.mako'
     __bodId__ = 'ch.swisstopo.vec200-transportation-strassennetz'
+    __label__ = 'ojbname'
     id = Column('gtdboid', Text, primary_key=True)
     objname = Column('objname', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
@@ -242,6 +258,7 @@ class Vec200Protectedarea(Base, Vector):
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec200_protectedarea.mako'
     __bodId__ = 'ch.swisstopo.vec200-adminboundaries-protectedarea'
+    __label__ = 'name'
     id = Column('gtdboid', Text, primary_key=True)
     name = Column('name', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
@@ -254,6 +271,7 @@ class Vec200Flowingwater(Base, Vector):
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec200_flowingwater.mako'
     __bodId__ = 'ch.swisstopo.vec200-hydrography'
+    __label__ = 'name'
     id = Column('gtdboid', Text, primary_key=True)
     name = Column('name', Text)
     exs = Column('exs', Text)
@@ -266,6 +284,7 @@ class Vec200Stagnantwater(Base, Vector):
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec200_stagnantwater.mako'
     __bodId__ = 'ch.swisstopo.vec200-hydrography'
+    __label__ = 'name'
     id = Column('gtdboid', Text, primary_key=True)
     name = Column('name', Text)
     seesph = Column('seesph', Numeric)
@@ -280,6 +299,7 @@ class Vec200Landcover(Base, Vector):
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec200_landcover.mako'
     __bodId__ = 'ch.swisstopo.vec200-landcover'
+    __label__ = 'objname1'
     id = Column('gtdboid', Text, primary_key=True)
     objname1 = Column('objname1', Text)
     objval = Column('objval', Text)
@@ -293,6 +313,7 @@ class Vec200Builtupp(Base, Vector):
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec200_builtupp.mako'
     __bodId__ = 'ch.swisstopo.vec200-miscellaneous'
+    __label__ = 'objname'
     id = Column('gtdboid', Text, primary_key=True)
     objname = Column('objname', Text)
     ppi = Column('ppi', Text)
@@ -304,6 +325,7 @@ class Vec200Poi(Base, Vector):
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec200_poi.mako'
     __bodId__ = 'ch.swisstopo.vec200-miscellaneous'
+    __label__ = 'objname'
     id = Column('gtdboid', Text, primary_key=True)
     objname = Column('objname', Text)
     objval = Column('objval', Text)
@@ -317,6 +339,7 @@ class Vec200Supply(Base, Vector):
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec200_supply.mako'
     __bodId__ = 'ch.swisstopo.vec200-miscellaneous'
+    __label__ = 'fco'
     id = Column('gtdboid', Text, primary_key=True)
     fco = Column('fco', Text)
     loc = Column('loc', Text)
@@ -333,6 +356,8 @@ class Vec200Namedlocation(Base, Vector):
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec200_namedlocation.mako'
     __bodId__ = 'ch.swisstopo.vec200-names-namedlocation'
+     # Composite labels coalesce(objname1,'')||' '||coalesce(objname2,'')
+    __label__ = 'objname1'
     id = Column('gtdboid', Text, primary_key=True)
     objname1 = Column('objname1', Text)
     objname2 = Column('objname2', Text)
@@ -347,6 +372,7 @@ class Vec25Strassennetz(Base, Vector):
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec25_strassennetz.mako'
     __bodId__ = 'ch.swisstopo.vec25-strassennetz'
+    __label__ = 'id'
     id = Column('objectid', Integer, primary_key=True)
     length = Column('length', Numeric)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
@@ -359,6 +385,7 @@ class Vec25Uebrige(Base, Vector):
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec25_uebrigeverk.mako'
     __bodId__ = 'ch.swisstopo.vec25-uebrigerverkehr'
+    __label__ = 'length'
     id = Column('objectid', Integer, primary_key=True)
     length = Column('length', Numeric)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
@@ -371,6 +398,7 @@ class Vec25Anlagen(Base, Vector):
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec25_anlagen.mako'
     __bodId__ = 'ch.swisstopo.vec25-anlagen'
+    __label__ = 'area'
     id = Column('objectid', Integer, primary_key=True)
     area = Column('area', Numeric)
     perimeter = Column('perimeter', Numeric)
@@ -384,6 +412,7 @@ class Vec25Eisenbahnnetz(Base, Vector):
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec25_eisenbahnnetz.mako'
     __bodId__ = 'ch.swisstopo.vec25-eisenbahnnetz'
+    __label__ = 'length'
     id = Column('objectid', Integer, primary_key=True)
     length = Column('length', Numeric)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
@@ -396,6 +425,7 @@ class Vec25Gebaeude(Base, Vector):
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec25_gebaeude.mako'
     __bodId__ = 'ch.swisstopo.vec25-gebaeude'
+    __label__ = 'area'
     id = Column('objectid', Integer, primary_key=True)
     area = Column('area', Numeric)
     perimeter = Column('perimeter', Numeric)
@@ -409,6 +439,7 @@ class Vec25Gewaessernetz(Base, Vector):
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec25_gewaessernetz.mako'
     __bodId__ = 'ch.swisstopo.vec25-gewaessernetz'
+    __label__ = 'name'
     id = Column('objectid', Integer, primary_key=True)
     objectval = Column('objectval', Text)
     gewissnr = Column('gewissnr', Numeric)
@@ -424,6 +455,7 @@ class Vec25Primaerflaechen(Base, Vector):
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec25_primaerflaechen.mako'
     __bodId__ = 'ch.swisstopo.vec25-primaerflaechen'
+    __label__ = 'area'
     id = Column('objectid', Integer, primary_key=True)
     area = Column('area', Numeric)
     perimeter = Column('perimeter', Numeric)
@@ -437,6 +469,7 @@ class Vec25Einzelobjekte(Base, Vector):
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec25_einzelobjekte.mako'
     __bodId__ = 'ch.swisstopo.vec25-einzelobjekte'
+    __label__ = 'length'
     id = Column('objectid', Integer, primary_key=True)
     length = Column('length', Numeric)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
@@ -449,6 +482,7 @@ class Vec25Heckenbaeume(Base, Vector):
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/vec25_heckenbaeume.mako'
     __bodId__ = 'ch.swisstopo.vec25-heckenbaeume'
+    __label__ = 'length'
     id = Column('objectid', Integer, primary_key=True)
     length = Column('length', Numeric)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
@@ -461,6 +495,7 @@ class Dreiecksvermaschung(Base, Vector):
     __table_args__ = ({'schema': 'geodaesie', 'autoload': False})
     __template__ = 'templates/htmlpopup/dreiecksvermaschung.mako'
     __bodId__ = 'ch.swisstopo.dreiecksvermaschung'
+    __label__ = 'nom'
     id = Column('bgdi_id', Integer, primary_key=True)
     nom = Column('nom', Text)
     num = Column('num', Text)
@@ -475,6 +510,7 @@ class GridstandPk25(Base, Vector):
     __table_args__ = ({'schema': 'datenstand', 'autoload': False})
     __template__ = 'templates/htmlpopup/pk25_metadata.mako'
     __bodId__ = 'ch.swisstopo.pixelkarte-farbe-pk25.noscale'
+    __label__ = 'lk_name'
     id = Column('kbnum', Text, primary_key=True)
     lk_name = Column('lk_name', Text)
     release = Column('release', Integer)
@@ -494,6 +530,7 @@ class GridstandPk50(Base, Vector):
     __table_args__ = ({'schema': 'datenstand', 'autoload': False})
     __template__ = 'templates/htmlpopup/pk50_metadata.mako'
     __bodId__ = 'ch.swisstopo.pixelkarte-farbe-pk50.noscale'
+    __label__ = 'lk_name'
     id = Column('kbnum', Text, primary_key=True)
     lk_name = Column('lk_name', Text)
     release = Column('release', Integer)
@@ -513,6 +550,7 @@ class GridstandPk100(Base, Vector):
     __table_args__ = ({'schema': 'datenstand', 'autoload': False})
     __template__ = 'templates/htmlpopup/pk100_metadata.mako'
     __bodId__ = 'ch.swisstopo.pixelkarte-farbe-pk100.noscale'
+    __label__ = 'lk_name'
     id = Column('kbnum', Text, primary_key=True)
     lk_name = Column('lk_name', Text)
     release = Column('release', Integer)
@@ -532,6 +570,7 @@ class GridstandPk200(Base, Vector):
     __table_args__ = ({'schema': 'datenstand', 'autoload': False})
     __template__ = 'templates/htmlpopup/pk200_metadata.mako'
     __bodId__ = 'ch.swisstopo.pixelkarte-farbe-pk200.noscale'
+    __label__ = 'lk_name'
     id = Column('kbnum', Text, primary_key=True)
     lk_name = Column('lk_name', Text)
     release = Column('release', Integer)
@@ -551,6 +590,7 @@ class GridstandPk500(Base, Vector):
     __table_args__ = ({'schema': 'datenstand', 'autoload': False})
     __template__ = 'templates/htmlpopup/pk500_metadata.mako'
     __bodId__ = 'ch.swisstopo.pixelkarte-farbe-pk500.noscale'
+    __label__ = 'lk_name'
     id = Column('kbnum', Text, primary_key=True)
     lk_name = Column('lk_name', Text)
     release = Column('release', Integer)
@@ -570,6 +610,7 @@ class GridstandSwissimage(Base, Vector):
     __table_args__ = ({'schema': 'datenstand', 'autoload': False})
     __template__ = 'templates/htmlpopup/images_metadata.mako'
     __bodId__ = 'ch.swisstopo.images-swissimage.metadata'
+    __label__ = 'lk25_name'
     id = Column('tilenumber', Text, primary_key=True)
     lk25_name = Column('lk25_name', Text)
     datenstand = Column('datenstand', Text)
@@ -583,6 +624,7 @@ class GeolGeocoverMetadata(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/geocover_metadata.mako'
     __bodId__ = 'ch.swisstopo.geologie-geocover.metadata'
+    __label__ = 'nr'
     id = Column('gid', Integer, primary_key=True)
     nr = Column('nr', Text)
     titel = Column('titel', Text)
@@ -599,6 +641,7 @@ class GeolGenKarteGGK200(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/generalkarte_ggk200.mako'
     __bodId__ = 'ch.swisstopo.geologie-generalkarte-ggk200'
+    __label__ = 'titel'
     id = Column('gid', Integer, primary_key=True)
     nr = Column('nr', Integer)
     titel = Column('titel', Text)
@@ -613,6 +656,7 @@ class GeolKarten500Metadata(Base, Vector):
     __table_args__ = ({'schema': 'public', 'autoload': False})
     __template__ = 'templates/htmlpopup/geolkarten500_metadata.mako'
     __bodId__ = 'ch.swisstopo.geologie-geolkarten500.metadata'
+    __label__ = 'id'
     id = Column('bgdi_id', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
@@ -624,6 +668,8 @@ class GeologischeKarteLine(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/geologische_karte_line.mako'
     __bodId__ = 'ch.swisstopo.geologie-geologische_karte'
+    # Translatable labels in fr
+    __label__ = 'type_de'
     id = Column('fid', Text, primary_key=True)
     gid = Column('id', Integer)
     type_de = Column('type_de', Text)
@@ -636,6 +682,7 @@ class GeologischeKartePlg(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/geologische_karte_plg.mako'
     __bodId__ = 'ch.swisstopo.geologie-geologische_karte'
+    __label__ = 'leg_geol_d'
     id = Column('id', Text, primary_key=True)
     leg_geol_d = Column('leg_geol_d', Text)
     leg_geol_f = Column('leg_geol_f', Text)
@@ -650,6 +697,7 @@ class GeologieMineralischeRohstoffe200(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/geotechnik_mineralische_rohstoffe200.mako'
     __bodId__ = 'ch.swisstopo.geologie-geotechnik-mineralische_rohstoffe200'
+    __label__ = 'area_name'
     id = Column('bgdi_id', Integer, primary_key=True)
     legend = Column('legend', Text)
     area_name = Column('area_name', Text)
@@ -663,6 +711,7 @@ class GeologieGeotechnikGk200(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/geotechnik_gk200.mako'
     __bodId__ = 'ch.swisstopo.geologie-geotechnik-gk200'
+    __label__ = 'file_name'
     id = Column('bgdi_id', Integer, primary_key=True)
     file_name = Column('file_name', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
@@ -675,6 +724,8 @@ class Gk500_Gensese (Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/gk500-genese.mako'
     __bodId__ = 'ch.swisstopo.geologie-geotechnik-gk500-genese'
+    # Translatable labels in fr, it, rm, it
+    __label__ = 'genese_de'
     id = Column('bgdi_id', Integer, primary_key=True)
     genese_de = Column('genese_de', Text)
     genese_fr = Column('genese_fr', Text)
@@ -692,7 +743,10 @@ class Gk500_Gesteinsklassierung (Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/gk500-gesteinsklassierung.mako'
     __bodId__ = 'ch.swisstopo.geologie-geotechnik-gk500-gesteinsklassierung'
+    __label__ = 'gestkl_de'
     id = Column('bgdi_id', Integer, primary_key=True)
+    # Translatable labels in fr, it, rm, it
+    __label__ = 'gestkl_de'
     gestkl_de = Column('gestkl_de', Text)
     gestkl_fr = Column('gestkl_fr', Text)
     gestkl_en = Column('gestkl_en', Text)
@@ -709,6 +763,8 @@ class Gk500_lithologie_hauptgruppen(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/lithologie_hauptgruppen.mako'
     __bodId__ = 'ch.swisstopo.geologie-geotechnik-gk500-lithologie_hauptgruppen'
+    # Translatable labels in fr, it, rm, it
+    __label__ = 'bgdi_tooltip_de'
     id = Column('bgdi_id', Integer, primary_key=True)
     bgdi_tooltip_de = Column('bgdi_tooltip_de', Text)
     bgdi_tooltip_fr = Column('bgdi_tooltip_fr', Text)
@@ -726,6 +782,7 @@ class GeologieGeotechnikSteinbrueche1915(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/steinbrueche_1915.mako'
     __bodId__ = 'ch.swisstopo.geologie-geotechnik-steinbrueche_1915'
+    __label__ = 'gesteinsgr'
     id = Column('id', Integer, primary_key=True)
     gesteinsgr = Column('gesteinsgr', Text)
     gestein = Column('gestein', Text)
@@ -739,6 +796,7 @@ class GeologieGeotechnikSteinbrueche1965(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/steinbrueche_1965.mako'
     __bodId__ = 'ch.swisstopo.geologie-geotechnik-steinbrueche_1965'
+    __label__ = 'gesteinsgr'
     id = Column('id', Integer, primary_key=True)
     gesteinsgr = Column('gesteinsgr', Text)
     gestein = Column('gestein', Text)
@@ -752,6 +810,7 @@ class GeologieGeotechnikSteinbrueche1980(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/steinbrueche_1980.mako'
     __bodId__ = 'ch.swisstopo.geologie-geotechnik-steinbrueche_1980'
+    __label__ = 'gesteinsgr'
     id = Column('id', Integer, primary_key=True)
     gesteinsgr = Column('gesteinsgr', Text)
     gestein = Column('gestein', Text)
@@ -765,6 +824,7 @@ class GeologieGeotechnikSteinbrueche1995(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/steinbrueche_1995.mako'
     __bodId__ = 'ch.swisstopo.geologie-geotechnik-steinbrueche_1995'
+    __label__ = 'gesteinsgr'
     id = Column('id', Integer, primary_key=True)
     gesteinsgr = Column('gesteinsgr', Text)
     gestein = Column('gestein', Text)
@@ -778,6 +838,7 @@ class GeologieGeotechnikZementindustrie1965(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/zementindustrie_1965.mako'
     __bodId__ = 'ch.swisstopo.geologie-geotechnik-zementindustrie_1965'
+    __label__ = 'stoff'
     id = Column('id', Integer, primary_key=True)
     stoff = Column('stoff', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
@@ -790,6 +851,7 @@ class GeologieGeotechnikZementindustrie1995(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False, 'extend_existing': True})
     __template__ = 'templates/htmlpopup/zementindustrie_1995.mako'
     __bodId__ = 'ch.swisstopo.geologie-geotechnik-zementindustrie_1995'
+    __label__ = 'stoff'
     id = Column('id', Integer, primary_key=True)
     stoff = Column('stoff', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
@@ -801,8 +863,9 @@ class GeologieGeotechnikZiegeleien1907(Base, Vector):
     __tablename__ = 'geotechnik_ziegeleien_1907'
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/ziegeleien_1907.mako'
-    #__queryable_attributes__ = ['ziegelei_2']
+    __queryable_attributes__ = ['ziegelei_2']
     __bodId__ = 'ch.swisstopo.geologie-geotechnik-ziegeleien_1907'
+    __label__ = 'ziegelei_2'
     id = Column('id', Integer, primary_key=True)
     ziegelei_2 = Column('ziegelei_2', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
@@ -814,8 +877,9 @@ class GeologieGeotechnikZiegeleien1965(Base, Vector):
     __tablename__ = 'geotechnik_ziegeleien_1965'
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/ziegeleien_1965.mako'
-    #__queryable_attributes__ = ['ziegelei']
+    __queryable_attributes__ = ['ziegelei']
     __bodId__ = 'ch.swisstopo.geologie-geotechnik-ziegeleien_1965'
+    __label__ = 'ziegelei'
     id = Column('id', Integer, primary_key=True)
     ziegelei = Column('ziegelei', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
@@ -827,8 +891,9 @@ class GeologieGeotechnikZiegeleien1995(Base, Vector):
     __tablename__ = 'geotechnik_ziegeleien_1995'
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/ziegeleien_1995.mako'
-    #__queryable_attributes__ = ['ziegeleien']
+    __queryable_attributes__ = ['ziegeleien']
     __bodId__ = 'ch.swisstopo.geologie-geotechnik-ziegeleien_1995'
+    __label__ = 'ziegeleien'
     id = Column('id', Integer, primary_key=True)
     ziegeleien = Column('ziegeleien', Text)
     produkt = Column('produkt', Text)
@@ -842,6 +907,8 @@ class GeologieHydroKarteGrundwasservorkommen(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/grundwasservorkommen.mako'
     __bodId__ = 'ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen'
+    # Translatable labels in fr
+    __label__ = 'type_de'
     id = Column('bgdi_id', Integer, primary_key=True)
     type_de = Column('type_de', Text)
     type_fr = Column('type_fr', Text)
@@ -855,6 +922,8 @@ class GeologieHydroKarteGrundwasservulneabilitaet(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/grundwasservulnerabilitaet.mako'
     __bodId__ = 'ch.swisstopo.geologie-hydrogeologische_karte-grundwasservulnerabilitaet'
+    # Translatable labels in fr
+    __label__ = 'type_de'
     id = Column('bgdi_id', Integer, primary_key=True)
     type_de = Column('type_de', Text)
     type_fr = Column('type_fr', Text)
@@ -868,6 +937,7 @@ class GeologieGeothermie(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/geothermie.mako'
     __bodId__ = 'ch.swisstopo.geologie-geophysik-geothermie'
+    __label__ = 'contour'
     id = Column('gid', Integer, primary_key=True)
     fid = Column('id', Integer)
     contour = Column('contour', Numeric)
@@ -881,6 +951,7 @@ class Geologischer_Deklination(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/deklination.mako'
     __bodId__ = 'ch.swisstopo.geologie-geophysik-deklination'
+    __label__ = 'magne'
     id = Column('gid', Integer, primary_key=True)
     magne = Column('magne', Numeric)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
@@ -893,6 +964,7 @@ class Geologischer_Inklination(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/inklination.mako'
     __bodId__ = 'ch.swisstopo.geologie-geophysik-inklination'
+    __label__ = 'contour'
     id = Column('gid', Integer, primary_key=True)
     contour = Column('contour', Numeric)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
@@ -905,6 +977,7 @@ class Geologischer_Aeromagnetik_Jura(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/aeromagnetik_jura.mako'
     __bodId__ = 'ch.swisstopo.geologie-geophysik-aeromagnetische_karte_jura'
+    __label__ = 'et_fromatt'
     id = Column('gid', Integer, primary_key=True)
     fid = Column('id', Integer)
     et_fromatt = Column('et_fromatt', Numeric)
@@ -918,6 +991,7 @@ class Geologischer_Aeromagnetik_CH(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/aeromagnetik_schweiz.mako'
     __bodId__ = 'ch.swisstopo.geologie-geophysik-aeromagnetische_karte_schweiz'
+    __label__ = 'fid'
     id = Column('gid', Integer, primary_key=True)
     fid = Column('id', Integer)
     et_fromatt = Column('et_fromatt', Numeric)
@@ -931,6 +1005,7 @@ class GeologieIsostatischeAnomalien(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/isostatische_anomalien.mako'
     __bodId__ = 'ch.swisstopo.geologie-geodaesie-isostatische_anomalien'
+    __label__ = 'et_fromatt'
     id = Column('gid', Integer, primary_key=True)
     fid = Column('id', Integer)
     et_fromatt = Column('et_fromatt', Numeric)
@@ -944,6 +1019,7 @@ class GeologieBouguerAnomalien(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/bouguer_anomalien.mako'
     __bodId__ = 'ch.swisstopo.geologie-geodaesie-bouguer_anomalien'
+    __label__ = 'et_fromatt'
     id = Column('gid', Integer, primary_key=True)
     et_fromatt = Column('et_fromatt', Numeric)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
@@ -956,6 +1032,7 @@ class GeologieGeophysikTotalintensitaet(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/totalintensitaet.mako'
     __bodId__ = 'ch.swisstopo.geologie-geophysik-totalintensitaet'
+    __label__ = 'contour'
     id = Column('gid', Integer, primary_key=True)
     fid = Column('id', Integer)
     contour = Column('contour', Numeric)
@@ -968,8 +1045,9 @@ class GeologieRohstoffeIndustrieminerale(Base, Vector):
     __tablename__ = 'rohstoffe_industrieminerale'
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/rohstoffe_industrieminerale.mako'
-    #__queryable_attributes__ = ['name_ads']
+    __queryable_attributes__ = ['name_ads']
     __bodId__ = 'ch.swisstopo.geologie-rohstoffe-industrieminerale'
+    __label__ = 'name_ads'
     id = Column('id', Integer, primary_key=True)
     rohstoff = Column('rohstoff', Text)
     name_ads = Column('name_ads', Text)
@@ -982,8 +1060,9 @@ class GeologieRohstoffeKohlenBitumenErdgas(Base, Vector):
     __tablename__ = 'rohstoffe_kohlen_bitumen_erdgas'
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/rohstoffe_kohlen_bitumen_erdgas.mako'
-    #__queryable_attributes__ = ['name_ads']
+    __queryable_attributes__ = ['name_ads']
     __bodId__ = 'ch.swisstopo.geologie-rohstoffe-kohlen_bitumen_erdgas'
+    __label__ = 'name_ads'
     id = Column('id', Integer, primary_key=True)
     rohstoff = Column('rohstoff', Text)
     name_ads = Column('name_ads', Text)
@@ -996,8 +1075,9 @@ class GeologieRohstoffeVererzungen(Base, Vector):
     __tablename__ = 'rohstoffe_vererzungen'
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/rohstoffe_vererzungen.mako'
-    #__queryable_attributes__ = ['name_ads']
+    __queryable_attributes__ = ['name_ads']
     __bodId__ = 'ch.swisstopo.geologie-rohstoffe-vererzungen'
+    __label__ = 'name_ads'
     id = Column('id', Integer, primary_key=True)
     rohstoff = Column('rohstoff', Text)
     name_ads = Column('name_ads', Text)
@@ -1011,6 +1091,8 @@ class GeologieTektonischeKarteLine(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/tektonische_karte_line.mako'
     __bodId__ = 'ch.swisstopo.geologie-tektonische_karte'
+    # Translatable labels in fr
+    __label__ = 'type_de'
     id = Column('fid', Integer, primary_key=True)
     line_id = Column('line_id', Integer)
     type_de = Column('type_de', Text)
@@ -1023,6 +1105,8 @@ class GeologieTektonischeKartePoly(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/tektonische_karte_poly.mako'
     __bodId__ = 'ch.swisstopo.geologie-tektonische_karte'
+    # Translatable labels in fr
+    __label__ = 'type_de'
     id = Column('fid', Integer, primary_key=True)
     t2_id = Column('t2_id', Integer)
     type_de = Column('type_de', Text)
@@ -1038,6 +1122,7 @@ class Swisstlm3dWanderwege(Base, Vector):
     __table_args__ = ({'schema': 'karto', 'autoload': False})
     __template__ = 'templates/htmlpopup/swissmap_online_wanderwege.mako'
     __bodId__ = 'ch.swisstopo.swisstlm3d-wanderwege'
+    __label__ = 'id'
     id = Column('nr', Integer, primary_key=True)
     hikingtype = Column('hikingtype', Text)
     bridgetype = Column('bridgetype', Text)
@@ -1051,8 +1136,9 @@ class VerschiebungsvektorenTsp1(Base, Vector):
     __tablename__ = 'verschiebungsvektoren_tsp1'
     __table_args__ = ({'schema': 'geodaesie', 'autoload': False})
     __template__ = 'templates/htmlpopup/verschiebungsvektoren_tps1.mako'
-    #__queryable_attributes__ = ['name']
+    __queryable_attributes__ = ['name']
     __bodId__ = 'ch.swisstopo.verschiebungsvektoren-tsp1'
+    __label__ = 'name'
     id = Column('id', Integer, primary_key=True)
     name = Column('name', Text)
     type = Column('type', Text)
@@ -1072,8 +1158,9 @@ class VerschiebungsvektorenTsp2(Base, Vector):
     __tablename__ = 'verschiebungsvektoren_tsp2'
     __table_args__ = ({'schema': 'geodaesie', 'autoload': False})
     __template__ = 'templates/htmlpopup/verschiebungsvektoren_tps2.mako'
-    #__queryable_attributes__ = ['name']
+    __queryable_attributes__ = ['name']
     __bodId__ = 'ch.swisstopo.verschiebungsvektoren-tsp2'
+    __label__ = 'name'
     id = Column('id', Integer, primary_key=True)
     name = Column('name', Text)
     type = Column('type', Text)
@@ -1094,6 +1181,7 @@ class SwissmapOnlineWanderwege(Base, Vector):
     __table_args__ = ({'schema': 'karto', 'autoload': False, 'extend_existing': True})
     __template__ = 'templates/htmlpopup/swissmap_online_wanderwege.mako'
     __bodId__ = 'ch.swisstopo-karto.wanderwege'
+    __label__ = 'id'
     id = Column('nr', Integer, primary_key=True)
     hikingtype = Column('hikingtype', Text)
     bridgetype = Column('bridgetype', Text)
@@ -1108,6 +1196,7 @@ class PLZOrtschaften(Base, Vector):
     __table_args__ = ({'schema': 'vd', 'autoload': False})
     __template__ = 'templates/htmlpopup/gabmo_plz.mako'
     __bodId__ = 'ch.swisstopo-vd.ortschaftenverzeichnis_plz'
+    __label__ = 'plz'
     id = Column('os_uuid', Text, primary_key=True)
     plz = Column('plz', Integer)
     zusziff = Column('zusziff', Text)
@@ -1123,6 +1212,7 @@ class geometaStandAV(Base, Vector):
     __table_args__ = ({'schema': 'vd', 'autoload': False})
     __template__ = 'templates/htmlpopup/standav.mako'
     __bodId__ = 'ch.swisstopo-vd.geometa-standav'
+    __label__ = 'frame'
     id = Column('gid', Integer, primary_key=True)
     fid = Column('id', Integer)
     quality = Column('quality', Text)
@@ -1137,6 +1227,7 @@ class geometaLos(Base, Vector):
     __table_args__ = ({'schema': 'vd', 'autoload': False})
     __template__ = 'templates/htmlpopup/los.mako'
     __bodId__ = 'ch.swisstopo-vd.geometa-los'
+    __label__ = 'operatsname'
     id = Column('gid', Integer, primary_key=True)
     fid = Column('id', Integer)
     neu_id = Column('neu_id', Text)
@@ -1161,6 +1252,7 @@ class geometaGemeinde(Base, Vector):
     __table_args__ = ({'schema': 'vd', 'autoload': False})
     __template__ = 'templates/htmlpopup/gemeinde.mako'
     __bodId__ = 'ch.swisstopo-vd.geometa-gemeinde'
+    __label__ = 'gemeindename'
     id = Column('gid', Integer, primary_key=True)
     fid = Column('id', Integer)
     gemeindename = Column('gemeindename', Text)
@@ -1180,6 +1272,7 @@ class geometaGrundbuch(Base, Vector):
     __table_args__ = ({'schema': 'vd', 'autoload': False})
     __template__ = 'templates/htmlpopup/grundbuch.mako'
     __bodId__ = 'ch.swisstopo-vd.geometa-grundbuch'
+    __label__ = 'ortsteil_grundbuch'
     id = Column('gid', Integer, primary_key=True)
     fid = Column('id', Integer)
     ortsteil_grundbuch = Column('ortsteil_grundbuch', Text)
@@ -1201,6 +1294,7 @@ class geometaNfgeom(Base, Vector):
     __table_args__ = ({'schema': 'vd', 'autoload': False})
     __template__ = 'templates/htmlpopup/nfgeom.mako'
     __bodId__ = 'ch.swisstopo-vd.geometa-nfgeom'
+    __label__ = 'name'
     id = Column('gid', Integer, primary_key=True)
     name = Column('name', Text)
     firmenname = Column('firmenname', Text)
@@ -1218,6 +1312,7 @@ class oerebkataster(Base, Vector):
     __table_args__ = ({'schema': 'vd', 'autoload': False})
     __template__ = 'templates/htmlpopup/oerebkataster.mako'
     __bodId__ = 'ch.swisstopo-vd.stand-oerebkataster'
+    __label__ = 'gemeindename'
     id = Column('gid', Integer, primary_key=True)
     fid = Column('id', Integer)
     gemeindename = Column('gemeindename', Text)
@@ -1245,6 +1340,7 @@ class spannungsarmeGebiete(Base, Vector):
     __table_args__ = ({'schema': 'vd', 'autoload': False})
     __template__ = 'templates/htmlpopup/spannungsarme_gebiete.mako'
     __bodId__ = 'ch.swisstopo.transformationsgenauigkeit'
+    __label__ = 'sg_name'
     id = Column('identifier', Text, primary_key=True)
     sg_name = Column('sg_name', Text)
     vali_date = Column('vali_date', Text)
@@ -1264,6 +1360,7 @@ class geologieGeotopePunkte(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/geotope.mako'
     __bodId__ = 'ch.swisstopo.geologie-geotope'
+    __label__ = 'nom'
     id = Column('objectid', Integer, primary_key=True)
     nom = Column('nom', Text)
     fix_id = Column('fix_id', Text)
@@ -1276,6 +1373,7 @@ class geologieGeotopeFlaechen(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/geotope.mako'
     __bodId__ = 'ch.swisstopo.geologie-geotope'
+    __label__ = 'nom'
     id = Column('objectid', Integer, primary_key=True)
     nom = Column('nom', Text)
     fix_id = Column('fix_id', Text)
@@ -1292,6 +1390,7 @@ class steine_hist_bauwerke(Base, Vector):
     __template__ = 'templates/htmlpopup/geol_steine_hist_bauwerke.mako'
     __bodId__ = 'ch.swisstopo.geologie-geotechnik-steine_historische_bauwerke'
     __extended_info__ = True
+    __label__ = 'objekt'
     id = Column('bgdi_id', Integer, primary_key=True)
     objekt = Column('objekt', Text)
     obtyp = Column('obtyp', Text)
@@ -1313,6 +1412,7 @@ class gisgeol_punkte(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/gisgeol.mako'
     __bodId__ = 'ch.swisstopo.geologie-gisgeol-punkte'
+    __label__ = 'title'
     id = Column('gid', Integer, primary_key=True)
     sgd_nr = Column('sgd_nr', Integer)
     title = Column('title', Text)
@@ -1335,6 +1435,7 @@ class gisgeol_linien(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/gisgeol.mako'
     __bodId__ = 'ch.swisstopo.geologie-gisgeol-linien'
+    __label__ = 'sgd_nr'
     id = Column('gid', Integer, primary_key=True)
     sgd_nr = Column('sgd_nr', Integer)
     title = Column('title', Text)
@@ -1357,6 +1458,7 @@ class gisgeol_flaechen_1x1km(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/gisgeol.mako'
     __bodId__ = 'ch.swisstopo.geologie-gisgeol-flaechen-1x1km'
+    __label__ = 'sgd_nr'
     id = Column('gid', Integer, primary_key=True)
     sgd_nr = Column('sgd_nr', Integer)
     title = Column('title', Text)
@@ -1379,6 +1481,7 @@ class gisgeol_flaechen_10x10km(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/gisgeol.mako'
     __bodId__ = 'ch.swisstopo.geologie-gisgeol-flaechen-10x10km'
+    __label__ = 'sgd_nr'
     id = Column('gid', Integer, primary_key=True)
     sgd_nr = Column('sgd_nr', Integer)
     title = Column('title', Text)
@@ -1401,6 +1504,7 @@ class gisgeol_flaechen_10to21000km2(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/gisgeol.mako'
     __bodId__ = 'ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2'
+    __label__ = 'sgd_nr'
     id = Column('gid', Integer, primary_key=True)
     sgd_nr = Column('sgd_nr', Integer)
     title = Column('title', Text)
@@ -1423,6 +1527,7 @@ class gisgeol_flaechen_gt21000km2(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/gisgeol.mako'
     __bodId__ = 'ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2'
+    __label__ = 'sgd_nr'
     id = Column('gid', Integer, primary_key=True)
     sgd_nr = Column('sgd_nr', Integer)
     title = Column('title', Text)
@@ -1445,6 +1550,7 @@ class gisgeol_flaechen_lt10km2(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/gisgeol.mako'
     __bodId__ = 'ch.swisstopo.geologie-gisgeol-flaechen-lt10km2'
+    __label__ = 'sgd_nr'
     id = Column('gid', Integer, primary_key=True)
     sgd_nr = Column('sgd_nr', Integer)
     title = Column('title', Text)
@@ -1467,6 +1573,7 @@ class geocover_line_aux(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/geocover_line_aux.mako'
     __bodId__ = 'ch.swisstopo.geologie-geocover'
+    __label__ = 'description'
     id = Column('bgdi_id', Integer, primary_key=True)
     basisdatensatz = Column('basisdatensatz', Text)
     description = Column('description', Text)
@@ -1481,6 +1588,7 @@ class geocover_point_hydro(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/geocover_point_hydro.mako'
     __bodId__ = 'ch.swisstopo.geologie-geocover'
+    __label__ = 'description'
     id = Column('bgdi_id', Integer, primary_key=True)
     basisdatensatz = Column('basisdatensatz', Text)
     description = Column('description', Text)
@@ -1497,6 +1605,7 @@ class geocover_point_geol(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/geocover_point_hydro.mako'
     __bodId__ = 'ch.swisstopo.geologie-geocover'
+    __label__ = 'description'
     id = Column('bgdi_id', Integer, primary_key=True)
     basisdatensatz = Column('basisdatensatz', Text)
     description = Column('description', Text)
@@ -1513,6 +1622,7 @@ class geocover_point_drill(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/geocover_point_drill.mako'
     __bodId__ = 'ch.swisstopo.geologie-geocover'
+    __label__ = 'description'
     id = Column('bgdi_id', Integer, primary_key=True)
     basisdatensatz = Column('basisdatensatz', Text)
     description = Column('description', Text)
@@ -1532,6 +1642,7 @@ class geocover_point_info(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/geocover_point_info.mako'
     __bodId__ = 'ch.swisstopo.geologie-geocover'
+    __label__ = 'description'
     id = Column('bgdi_id', Integer, primary_key=True)
     basisdatensatz = Column('basisdatensatz', Text)
     description = Column('description', Text)
@@ -1545,6 +1656,7 @@ class geocover_point_struct(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/geocover_point_struct.mako'
     __bodId__ = 'ch.swisstopo.geologie-geocover'
+    __label__ = 'description'
     id = Column('bgdi_id', Integer, primary_key=True)
     basisdatensatz = Column('basisdatensatz', Text)
     description = Column('description', Text)
@@ -1561,6 +1673,7 @@ class geocover_polygon_aux_1(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/geocover_polygon.mako'
     __bodId__ = 'ch.swisstopo.geologie-geocover'
+    __label__ = 'description'
     id = Column('bgdi_id', Integer, primary_key=True)
     basisdatensatz = Column('basisdatensatz', Text)
     description = Column('description', Text)
@@ -1575,6 +1688,7 @@ class geocover_polygon_aux_2(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/geocover_polygon.mako'
     __bodId__ = 'ch.swisstopo.geologie-geocover'
+    __label__ = 'description'
     id = Column('bgdi_id', Integer, primary_key=True)
     basisdatensatz = Column('basisdatensatz', Text)
     description = Column('description', Text)
@@ -1589,6 +1703,7 @@ class geocover_polygon_main(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/geocover_polygon.mako'
     __bodId__ = 'ch.swisstopo.geologie-geocover'
+    __label__ = 'description'
     id = Column('bgdi_id', Integer, primary_key=True)
     basisdatensatz = Column('basisdatensatz', Text)
     description = Column('description', Text)
@@ -1603,6 +1718,7 @@ class ga25_line_aux(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/ga25_line_aux.mako'
     __bodId__ = 'ch.swisstopo.geologie-geologischer_atlas'
+    __label__ = 'description'
     id = Column('bgdi_id', Integer, primary_key=True)
     basisdatensatz = Column('basisdatensatz', Text)
     description = Column('description', Text)
@@ -1618,6 +1734,7 @@ class ga25_point_hydro(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/ga25_point_hydro.mako'
     __bodId__ = 'ch.swisstopo.geologie-geologischer_atlas'
+    __label__ = 'description'
     id = Column('bgdi_id', Integer, primary_key=True)
     basisdatensatz = Column('basisdatensatz', Text)
     description = Column('description', Text)
@@ -1635,6 +1752,7 @@ class ga25_point_geol(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/ga25_point_hydro.mako'
     __bodId__ = 'ch.swisstopo.geologie-geologischer_atlas'
+    __label__ = 'description'
     id = Column('bgdi_id', Integer, primary_key=True)
     basisdatensatz = Column('basisdatensatz', Text)
     description = Column('description', Text)
@@ -1652,6 +1770,7 @@ class ga25_point_drill(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/ga25_point_drill.mako'
     __bodId__ = 'ch.swisstopo.geologie-geologischer_atlas'
+    __label__ = 'description'
     id = Column('bgdi_id', Integer, primary_key=True)
     basisdatensatz = Column('basisdatensatz', Text)
     description = Column('description', Text)
@@ -1672,6 +1791,7 @@ class ga25_point_info(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/ga25_point_info.mako'
     __bodId__ = 'ch.swisstopo.geologie-geologischer_atlas'
+    __label__ = 'description'
     id = Column('bgdi_id', Integer, primary_key=True)
     basisdatensatz = Column('basisdatensatz', Text)
     description = Column('description', Text)
@@ -1686,6 +1806,7 @@ class ga25_point_struct(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/ga25_point_struct.mako'
     __bodId__ = 'ch.swisstopo.geologie-geologischer_atlas'
+    __label__ = 'description'
     id = Column('bgdi_id', Integer, primary_key=True)
     basisdatensatz = Column('basisdatensatz', Text)
     description = Column('description', Text)
