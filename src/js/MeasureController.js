@@ -146,9 +146,9 @@
               panel = $('.ga-measure-panel');
               panelBt =  $('.ga-measure-buttons-panel');
             }
-            // 69 padding and margins 
+            // 62 padding and margins 
             $scope.options.profileOptions.width = win.width() - panel.width() -
-                panelBt.width() - 69;
+                panelBt.width() - 62;
             $rootScope.$emit('gaProfileDataUpdated', null, [
               $scope.options.profileOptions.width,
               $scope.options.profileOptions.height
