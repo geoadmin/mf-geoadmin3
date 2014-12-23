@@ -487,6 +487,9 @@
           var attributions;
 
           if (options.attribution) {
+            //Insure attribution on map is same as printed
+            options.attribution = gaMapUtils.getAttribution(
+                options.attribution).getHTML();
             attributions = [
               gaMapUtils.getAttribution(options.attribution)
             ];
@@ -504,7 +507,9 @@
             opacity: options.opacity,
             visible: options.visible,
             source: source,
-            extent: source.getExtent()
+            extent: source.getExtent(),
+            //Only needed for print
+            attribution: options.attribution
           };
 
           var olLayer;
