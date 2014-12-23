@@ -7,8 +7,9 @@
     ['ga_browsersniffer_service',
      'pascalprecht.translate']);
 
-  module.controller('GaPrintDirectiveController', function($scope, $http,
-      $window, $translate, gaLayers, gaPermalink, gaBrowserSniffer) {
+  module.controller('GaPrintDirectiveController', function($rootScope, $scope,
+      $http, $window, $translate, $timeout,
+      gaLayers, gaPermalink, gaBrowserSniffer, gaWaitCursor) {
 
     var pdfLegendsToDownload = [];
     var pdfLegendString = '_big.pdf';
@@ -17,7 +18,16 @@
     var POINTS_PER_INCH = 72; //PostScript points 1/72"
     var MM_PER_INCHES = 25.4;
     var UNITS_RATIO = 39.37; // inches per meter
+    var POLL_INTERVAL = 2000; //interval for multi-page prints (ms)
+    var POLL_MAX_TIME = 600000; //ms (10 minutes)
     var printConfigLoaded = false;
+    var currentTime = undefined;
+    var layersYears = [];
+
+    $scope.options.multiprint = false;
+    $scope.options.movie = false;
+    $scope.options.printing = false;
+    $scope.options.progress = '';
 
     // Get print config
     var updatePrintConfig = function() {
@@ -119,7 +129,9 @@
     $scope.$watch('layout', function() {
       updatePrintRectanglePixels($scope.scale);
     });
-
+    $rootScope.$on('gaTimeSelectorChange', function(event, time) {
+      currentTime = time;
+    });
 
     // Encode ol.Layer to a basic js object
     var encodeLayer = function(layer, proj) {
@@ -494,6 +506,9 @@
                 call(this, layer);
             var source = layer.getSource();
             var tileGrid = source.getTileGrid();
+            if (!config.background && layer.visible) {
+              layersYears.push(layer.time);
+            }
             angular.extend(enc, {
               type: 'WMTS',
               baseURL: location.protocol + '//wmts.geo.admin.ch',
@@ -511,6 +526,17 @@
               params: {'TIME': source.getDimensions().Time},
               matrixSet: '21781'
           });
+          var multiPagesPrint = false;
+          if (config.timestamps) {
+            multiPagesPrint = !config.timestamps.some(function(ts) {
+              return ts == '99991231';
+            });
+          }
+          // printing time series
+          if (config.timeEnabled && currentTime == undefined &&
+              multiPagesPrint) {
+            enc['timestamps'] = config.timestamps;
+          }
 
           return enc;
         }
@@ -555,12 +581,20 @@
       } else {
         $window.location = url;
       }
+      //After standard print, download the pdf Legends
+      //if there are any
+      for (var i = 0; i < pdfLegendsToDownload.length; i++) {
+        $window.open(pdfLegendsToDownload[i]);
+      }
+      $scope.options.printing = false;
     };
 
     $scope.submit = function() {
       if (!$scope.options.active) {
         return;
       }
+      $scope.options.printing = true;
+      $scope.options.progress = '';
       // http://mapfish.org/doc/print/protocol.html#print-pdf
       var view = $scope.map.getView();
       var proj = view.getProjection();
@@ -574,6 +608,7 @@
       var attributions = [];
       var layers = this.map.getLayers();
       pdfLegendsToDownload = [];
+      layersYears = [];
 
       angular.forEach(layers, function(layer) {
         if (layer.visible) {
@@ -598,6 +633,18 @@
           }
         }
       });
+      if (layersYears) {
+        var years = layersYears.reduce(function(a, b) {
+          if (a.indexOf(b) < 0) {
+            a.push(b);
+          }
+          return a;
+        }, []);
+        var years = years.map(function(ts) {
+          return ts.length > 4 ? ts.slice(0, 4) : ts;
+        });
+        defaultPage['timestamp'] = years.join(',');
+      }
       if ($scope.options.graticule) {
         var graticule = {
           'baseURL': 'http://wms.geo.admin.ch/',
@@ -664,6 +711,7 @@
           url: gaPermalink.getHref()
         }
       }).success(function(response) {
+        var movieprint = $scope.options.movie && $scope.options.multiprint;
         var spec = {
           layout: that.layout.name,
           srs: proj.getCode(),
@@ -677,9 +725,12 @@
           legends: encLegends,
           enableLegends: (encLegends && encLegends.length > 0),
           qrcodeurl: qrcodeUrl,
+          movie: movieprint,
           pages: [
             angular.extend({
               center: getPrintRectangleCenterCoord(),
+              bbox: getPrintRectangleCoords(),
+              display: [that.layout.map.width, that.layout.map.height],
               // scale has to be one of the advertise by the print server
               scale: $scope.scale.value,
               dataOwner: '© ' + attributions.join(),
@@ -688,16 +739,78 @@
             }, defaultPage)
           ]
         };
-        var http = $http.post(that.capabilities.createURL + '?url=' +
-            encodeURIComponent(that.capabilities.createURL), spec);
+
+        var startPollTime;
+        var pollErrors;
+        var pollMulti = function(url) {
+          $timeout(function() {
+            var http = $http.get(url);
+            http.success(function(data) {
+              if (!data.getURL) {
+                // Write progress using the following logic
+                // First 60% is pdf page creationg
+                // 60-70% is merging of pdf
+                // 70-100% is writing of resulting pdf
+                if (data.filesize) {
+                  var written = data.written || 0;
+                  $scope.options.progress =
+                      (70 + Math.floor(written * 30 / data.filesize)) +
+                      '%';
+                } else if (data.total) {
+                  if (angular.isDefined(data.merged)) {
+                    $scope.options.progress =
+                        (60 + Math.floor(data.done * 10 / data.total)) +
+                        '%';
+                  } else if (angular.isDefined(data.done)) {
+                    $scope.options.progress =
+                        Math.floor(data.done * 60 / data.total) + '%';
+                  }
+                }
+
+                var now = new Date();
+                //We abort if we waited too long
+                if (now - startPollTime < POLL_MAX_TIME) {
+                  pollMulti(url);
+                } else {
+                  $scope.options.printing = false;
+                }
+              } else {
+                $scope.downloadUrl(data.getURL);
+              }
+            }).error(function() {
+              pollErrors += 1;
+              if (pollErrors > 2) {
+                $scope.options.printing = false;
+              } else {
+                pollMulti(url);
+              }
+            });
+          }, POLL_INTERVAL, false);
+        };
+
+        var printUrl = that.capabilities.createURL;
+        //When movie is on, we use printmulti
+        if (movieprint) {
+          printUrl = printUrl.replace('/print/', '/printmulti/');
+        }
+        var http = $http.post(printUrl + '?url=' +
+            encodeURIComponent(printUrl), spec);
         http.success(function(data) {
-          $scope.downloadUrl(data.getURL);
-          //After standard print, download the pdf Legends
-          //if there are any
-          for (var i = 0; i < pdfLegendsToDownload.length; i++) {
-            $window.open(pdfLegendsToDownload[i]);
+          if (movieprint) {
+            //start polling process
+            var pollUrl = $scope.options.printPath + 'progress?id=' +
+                data.idToCheck;
+            startPollTime = new Date();
+            pollErrors = 0;
+            pollMulti(pollUrl);
+          } else {
+            $scope.downloadUrl(data.getURL);
           }
+        }).error(function() {
+          $scope.options.printing = false;
         });
+      }).error(function() {
+        $scope.options.printing = false;
       });
     };
 
@@ -709,16 +822,28 @@
       }
     }
 
+    var getPrintRectangleCoords = function() {
+      // Framebuffer size!!
+      var displayCoords = printRectangle.map(function(c) {
+          return c / ol.has.DEVICE_PIXEL_RATIO});
+      var bottomLeft = $scope.map.
+                        getCoordinateFromPixel(displayCoords.slice(0, 2));
+      var topRight = $scope.map.
+                       getCoordinateFromPixel(displayCoords.slice(2, 4));
+      var coords = bottomLeft;
+      [].push.apply(coords, topRight);
+
+      return coords;
+    };
+
     var getPrintRectangleCenterCoord = function() {
       // Framebuffer size!!
-      var bottomLeft = printRectangle.slice(0, 2);
-      var width = printRectangle[2] - printRectangle[0];
-      var height = printRectangle[3] - printRectangle[1];
-      var center = [bottomLeft[0] + width / 2, bottomLeft[1] + height / 2];
-      // convert back to map display size
-      var mapPixelCenter = [center[0] / ol.has.DEVICE_PIXEL_RATIO,
-           center[1] / ol.has.DEVICE_PIXEL_RATIO];
-      return $scope.map.getCoordinateFromPixel(mapPixelCenter);
+      var rect = getPrintRectangleCoords();
+
+      var centerCoords = [rect[0] + (rect[2] - rect[0]) / 2.0,
+          rect[3] + (rect[1] - rect[3]) / 2.0];
+
+      return centerCoords;
     };
 
     var updatePrintRectanglePixels = function(scale) {
@@ -776,6 +901,14 @@
       return [minx, miny, maxx, maxy];
     };
 
+    $scope.layers = $scope.map.getLayers().getArray();
+    $scope.layerFilter = function(layer) {
+      return layer.bodId == 'ch.swisstopo.zeitreihen';
+    };
+    $scope.$watchCollection('layers | filter:layerFilter', function(lrs) {
+      $scope.options.multiprint = (lrs.length == 1);
+    });
+
     $scope.$watch('options.active', function(newVal, oldVal) {
       if (newVal === true) {
         activate();
@@ -783,6 +916,18 @@
         deactivate();
       }
     });
+
+    // Because of the polling mechanisms, we can't rely on the
+    // waitcursor from the NetworkStatusService. Multi-page
+    // print might be underway without pending http request.
+    $scope.$watch('options.printing', function(newVal, oldVal) {
+      if (newVal === true) {
+        gaWaitCursor.increment();
+      } else {
+        gaWaitCursor.decrement();
+      }
+    });
+
 
   });
 

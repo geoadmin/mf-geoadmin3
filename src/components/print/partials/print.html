@@ -29,5 +29,16 @@
       </div>
     </div>
   </div>
-  <button type="submit" class="btn btn-default col-xs-12" accesskey="p" ng-click="submit()" translate>print_action</button>
+  <div class="form-group" ng-if="options.multiprint">
+    <div class="col-xs-12">
+      <div class="checkbox">
+        <label class="ga-checkbox" >
+          <input ng-model="options.movie" type="checkbox"/>
+          <span translate>movie</span>
+        </label>
+      </div>
+    </div>
+  </div>
+  <div class="ga-print-progress" ng-if="options.printing && options.progress != ''">{{options.progress}}</div>
+  <button type="submit" class="btn btn-default col-xs-12" accesskey="p" ng-disabled="options.printing" ng-click="submit()" translate>print_action</button>
 </form>

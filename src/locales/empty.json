@@ -280,5 +280,7 @@
   "feedback_kml_attached": "",
   "feedback_modify_drawing": "",
   "remove": "",
-  "feedback_drawing": ""
+  "feedback_drawing": "",
+  "movie": "",
+  "print_underway_message": ""
 }
