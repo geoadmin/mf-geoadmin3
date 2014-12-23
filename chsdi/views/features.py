@@ -355,20 +355,23 @@ def _get_features_for_filters(params, models, maxFeatures=None, where=None):
             # Add limit
             query = query.limit(maxFeatures) if maxFeatures is not None else query
 
-            # TODO remove layer specific code
-            if model.__bodId__ == 'ch.swisstopo.zeitreihen':
-                counter = 0
-                bgdi_order = 0
-                for feature in query:
-                    counter += 1
-                    if counter > 1:
-                        if bgdi_order < feature.bgdi_order:
-                            continue
-                    bgdi_order = feature.bgdi_order
-                    yield feature
-            else:
-                for feature in query:
-                    yield feature
+            # We need either where or geomFilter (geomFilter especially for zeitreihen layer)
+            # This probably needs refactoring...
+            if where is not None or geomFilter is not None:
+                # TODO remove layer specific code
+                if model.__bodId__ == 'ch.swisstopo.zeitreihen':
+                    counter = 0
+                    bgdi_order = 0
+                    for feature in query:
+                        counter += 1
+                        if counter > 1:
+                            if bgdi_order < feature.bgdi_order:
+                                continue
+                        bgdi_order = feature.bgdi_order
+                        yield feature
+                else:
+                    for feature in query:
+                        yield feature
 
 
 def _attributes(request):
