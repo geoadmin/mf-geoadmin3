@@ -69,7 +69,9 @@
           <a href="/rest/services/ech/MapServer/find?layer=ch.bafu.bundesinventare-bln&searchText=1740.478&searchField=bln_fl&returnGeometry=false&contains=false">Find a exact match for 1740.478 in the field bln_fl</a>
           <h3>Releases Service</h3>
           <a href="rest/services/ech/MapServer/ch.swisstopo.zeitreihen/releases?mapExtent=611399.9999999999,158650,690299.9999999999,198150&imageDisplay=500,500,96">Zeitreihen Layer</a> <br>
-          <a href="rest/services/ech/MapServer/ch.swisstopo.images-swissimage.metadata/releases?mapExtent=611399.9999999999,158650,690299.9999999999,198150&imageDisplay=500,500,96">Layer without releases</a> <br>
+          <a
+          href="rest/services/ech/MapServer/ch.swisstopo.zeitreihen/releases?mapExtent=647570.722,187429.722,653229.277,183690.277&imageDisplay=800,530,96">Zeitreihen
+          Layer2</a> <br>
 
           <h3>Varia</h3>
           <a href="rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362">Get Feature with id 362</a> <br>

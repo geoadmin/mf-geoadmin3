@@ -2,7 +2,7 @@
 
 
 HOST=http://localhost:9001
-PRINT=print
+PRINT=printmulti
 
 
 if [ -z "$1" ]

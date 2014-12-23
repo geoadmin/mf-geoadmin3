@@ -415,7 +415,11 @@ def _process_feature(feature, params):
 @view_config(route_name='releases', renderer='geojson')
 def releases(request):
     params = _get_releases_params(request)
-    models = models_from_name(params.layer)
+    # For this sevice, we have to use different models based
+    # on specially sorted views. We add the _meta part to the given
+    # layer name
+    # Note that only zeitreihen is currently supported for this service
+    models = models_from_name(params.layer + '_meta')
     if models is None:
         raise exc.HTTPBadRequest('No Vector Table was found for %s' % params.layer)
 
@@ -424,7 +428,8 @@ def releases(request):
 
     for f in _get_features_for_extent(params, [models]):
         if hasattr(f, 'release_year') and f.release_year is not None:
-            timestamps.append(str(f.release_year))
+            for x in f.release_year:
+                timestamps.append(str(x))
     if len(timestamps) > 0:
         # remove duplicates
         timestamps = list(set(timestamps))

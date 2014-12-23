@@ -2,38 +2,30 @@
 
 import unittest
 import json
-from chsdi.views.printproxy import PrintProxy
+from chsdi.views.printmulti import _get_timestamps
 
 
-class Test_PrintProxy(unittest.TestCase):
-
-    def _callFUT(self):
-        request = None
-        proxy = PrintProxy(request)
-        return proxy
+class Test_PrintMulti(unittest.TestCase):
 
     def test_proxy_no_timestamps(self):
-        proxy = self._callFUT()
         spec = {"layers": [{}]}
 
-        res = proxy._get_timestamps(spec)
+        res = _get_timestamps(spec, '')
 
         self.assertTrue(len(res) < 1)
 
     def test_proxy_one_timestamps(self):
-        proxy = self._callFUT()
         spec = {"layers": [{"timestamps": ["2000", "2005", "2010"]}]}
 
-        res = proxy._get_timestamps(spec)
+        res = _get_timestamps(spec, '')
 
         self.assertTrue(len(res) == 3)
 
     def test_proxy_many_timestamps(self):
-        proxy = self._callFUT()
         spec = {"layers": [{"timestamps": ["2000", "2005", "2010"]},
                {"timestamps": ["1990", "2000", "2007"]}]}
 
-        res = proxy._get_timestamps(spec)
+        res = _get_timestamps(spec, '')
 
         self.assertTrue(len(res) == 5)
         self.assertEqual(res['2000'], [0, 1])
