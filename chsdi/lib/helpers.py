@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import re
 from osgeo import osr, ogr
 from pyramid.threadlocal import get_current_registry
 from pyramid.i18n import get_locale_name
@@ -127,6 +128,36 @@ def escape_sphinx_syntax(input_str):
     input_str = input_str.replace('$', '\\$')
     input_str = input_str.replace('"', '\"')
     return input_str
+
+
+def format_query(model, value):
+    def escapeSQL(value):
+        if u'ilike' in value:
+            match = re.search(r'(.*)(%.*%)(.*)', value)
+            where = u''.join((
+                match.group(1).replace(u'\'', u'E\''),
+                match.group(2).replace(u'\'', u'\\\''),
+                match.group(3)
+            ))
+            return where
+        return value
+
+    def replacePropByColumnName(model, values):
+        res = []
+        for val in values:
+            prop = val.split(' ')[0]
+            columnName = model.get_column_by_name(prop).name.__str__()
+            val = val.replace(prop, columnName)
+            res.append(val)
+        return res
+
+    try:
+        values = map(escapeSQL, value.split(' and '))
+        values = replacePropByColumnName(model, values)
+        where = u' and '.join(values)
+    except:
+        return None
+    return where
 
 
 def quoting(text):
