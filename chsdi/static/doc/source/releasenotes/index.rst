@@ -9,6 +9,25 @@
 Release Notes
 =============
 
+.. _releasenotes_20141223:
+
+Release 20141223 - Tuesday, December 23th 2014
+----------------------------------------------
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_141218...r_141223>`__
+
+`MAP <//map.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+
+- BETA: new query tool in object information window
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_141218...r_141223>`__
+
 .. _releasenotes_20141218:
 
 Release 20141218 - Thursday, December 18th 2014
