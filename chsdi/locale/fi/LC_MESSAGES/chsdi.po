@@ -1544,6 +1544,40 @@ msgstr "Landschaftsruhezonen Luftfahrt"
 msgid "ch.bazl.luftfahrthindernis"
 msgstr "Luftfahrthindernisse"
 
+#. TODO
+msgid "ch.bazl.luftfahrthindernis.abortionaccomplished"
+msgstr "ch.bazl.luftfahrthindernis.abortionaccomplished"
+
+msgid "ch.bazl.luftfahrthindernis.duration"
+msgstr "Duration of installation"
+
+msgid "ch.bazl.luftfahrthindernis.lk100"
+msgstr "Map number [NM100]"
+
+msgid "ch.bazl.luftfahrthindernis.maxheightagl"
+msgstr "Maximum height AGL [m]"
+
+msgid "ch.bazl.luftfahrthindernis.obstacletype"
+msgstr "Obstacle type"
+
+msgid "ch.bazl.luftfahrthindernis.registrationnumber"
+msgstr "Registration number"
+
+msgid "ch.bazl.luftfahrthindernis.sanctiontext"
+msgstr "Marking / navigation lights"
+
+msgid "ch.bazl.luftfahrthindernis.startofconstruction"
+msgstr "Start of construction"
+
+msgid "ch.bazl.luftfahrthindernis.state"
+msgstr "State"
+
+msgid "ch.bazl.luftfahrthindernis.topelevationamsl"
+msgstr "Maximum top elevation AMSL [m]"
+
+msgid "ch.bazl.luftfahrthindernis.totallength"
+msgstr "Total length [m]"
+
 msgid "ch.bazl.luftfahrtkarten-icao"
 msgstr "Charta d'aviatica OACI"
 

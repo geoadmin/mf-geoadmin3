@@ -4839,3 +4839,37 @@ msgstr ""
 
 msgid "original_document_id"
 msgstr ""
+
+msgid "ch.bazl.luftfahrthindernis.sanctiontext"
+msgstr ""
+
+msgid "ch.bazl.luftfahrthindernis.lk100"
+msgstr ""
+
+msgid "ch.bazl.luftfahrthindernis.obstacletype"
+msgstr ""
+
+msgid "ch.bazl.luftfahrthindernis.state"
+msgstr ""
+
+msgid "ch.bazl.luftfahrthindernis.maxheightagl"
+msgstr ""
+
+msgid "ch.bazl.luftfahrthindernis.topelevationamsl"
+msgstr ""
+
+msgid "ch.bazl.luftfahrthindernis.totallength"
+msgstr ""
+
+msgid "ch.bazl.luftfahrthindernis.startofconstruction"
+msgstr ""
+
+msgid "ch.bazl.luftfahrthindernis.duration"
+msgstr ""
+
+msgid "ch.bazl.luftfahrthindernis.registrationnumber"
+msgstr ""
+
+msgid "ch.bazl.luftfahrthindernis.abortionaccomplished"
+msgstr ""
+

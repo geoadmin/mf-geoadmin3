@@ -66,6 +66,7 @@ def main(global_config, **settings):
     config.add_route('catalog', '/rest/services/{map}/CatalogServer')
     config.add_route('identify', '/rest/services/{map}/MapServer/identify')
     config.add_route('find', '/rest/services/{map}/MapServer/find')
+    config.add_route('attribute_values', '/rest/services/{map}/MapServer/{layerId}/attributes/{attribute}')
     config.add_route('legend', '/rest/services/{map}/MapServer/{layerId}/legend')
     config.add_route('releases', '/rest/services/{map}/MapServer/{layerId}/releases')
     config.add_route('featureAttributes', '/rest/services/{map}/MapServer/{layerId}')

@@ -61,6 +61,10 @@
           <a href="rest/services/ech/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=630000,245000,645000,265000&imageDisplay=500,350,96&mapExtent=545132.87362333,147068.69380758,550132.87362333,150568.69380758&tolerance=1&layers=all&callback=cb">Identify - example with callback</a> <br>
           <a href="/rest/services/ech/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=630000,245000,645000,265000&imageDisplay=500,600,96&mapExtent=545132.87362333,147068.69380758,550132.87362333,150568.69380758&tolerance=1&layers=all&returnGeometry=false">Identify - without geometry</a> <br>
           <a href="/rest/services/api/MapServer/identify?geometry=618953,170093&geometryType=esriGeometryPoint&imageDisplay=1920,576,96&layers=all:ch.bav.kataster-belasteter-standorte-oev.oereb&mapExtent=671164.31244,253770,690364.31244,259530&tolerance=5&geometryFormat=interlis">Identify - geometryFormat=interlis on Oereb layers</a>
+          <h3>Indentify: with query</h3>
+          <a href="/rest/services/api/MapServer/identify?geometryType=esriGeometryEnvelope&geometry=502722.0065086734,36344.074765040714,745822.0065086735,253444.07476504074&imageDisplay=0,0,0&mapExtent=0,0,0,0&tolerance=0&layers=all:ch.bazl.luftfahrthindernis&returnGeometry=true&geometryFormat=geojson&where=obstacletype=%27Antenna%27">Query 'ch.bazl.luftfahrthindernis' for 'Antenna' with a bbox</a> <br>
+          <a href="/rest/services/api/MapServer/identify?layers=all:ch.bazl.luftfahrthindernis&returnGeometry=true&geometryFormat=geojson&where=obstacletype=%27Antenna%27">Query 'ch.bazl.luftfahrthindernis' for 'Antenna'</a> <br>
+          <a href="rest/services/api/MapServer/ch.bazl.luftfahrthindernis/attributes/obstacletype">Get some values for attribute 'obstacletype'</a> <br>
           <h3>Get the attributes of layer</h3>
           <a href="/rest/services/ech/MapServer/ch.swisstopo.geologie-gravimetrischer_atlas.metadata">Returns all the attributes of the layer ch.swisstopo.geologie-gravimetrischer_atlas.metadata</a>
           <h3>Find</h3>
@@ -140,5 +144,12 @@
           <a href="rest/services/inspire/SearchServer?features=ch.bafu.hydrologie-gewaesserzustandsmessstationen&type=featuresearch&searchText=4331">Search for features using that matches a given searchText in their search fields</a> <br>
       <h3>Feature identify (type=featureidentify) only bbox search, no search text)</h3>
           <a href="rest/services/inspire/SearchServer?features=ch.astra.ivs-reg_loc&type=featureidentify&bbox=551306.5625,167918.328125,551754.125,168514.625">Search for features in ch.astra.ivs-reg_loc (only features within the bbox)</a> <br>
+      <h2>Attributes values</h2>
+      <a href="rest/services/api/MapServer/ch.bazl.luftfahrthindernis/attributes/obstacletype">Possible values for attribute 'obstacletype' of layer 'ch.bazl.luftfahrthindernis'</a><br />
+      <a href="rest/services/api/MapServer/ch.bazl.luftfahrthindernis/attributes/startofconstruction">Possible values for attribute 'startofconstruction' of layer 'ch.bazl.luftfahrthindernis'</a><br />
+      <h2>Attributes description</h2>
+      <a href="rest/services/api/MapServer/ch.bazl.luftfahrthindernis">Attributes of layer 'ch.bazl.luftfahrthindernis'</a><br />
+      <br/>
+      <br/>
   </body>
 </html>

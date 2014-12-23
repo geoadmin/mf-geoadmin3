@@ -167,7 +167,6 @@ else:
     imgtype = 0
 endif
 
-loader_url = h.make_agnostic(route_url('ga_api', request))
 preview_url = determinePreviewUrl(c['featureId'])
 
 filesize_mb = '-'
@@ -238,7 +237,6 @@ viewer_url = get_viewer_url(request, params)
   </div>
 % endif
 
-  <script type="text/javascript" src="${loader_url}"></script>
   <script type="text/javascript">
     function init() {
       // Create a GeoAdmin Map

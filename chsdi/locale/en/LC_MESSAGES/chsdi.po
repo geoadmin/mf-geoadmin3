@@ -1544,6 +1544,49 @@ msgstr "Sanctuaries for silence: aviation"
 msgid "ch.bazl.luftfahrthindernis"
 msgstr "Air navigation obstacles"
 
+msgid "ch.bazl.luftfahrthindernis.abortionaccomplished"
+msgstr "Duration of installation"
+
+#. TODO
+msgid "ch.bazl.luftfahrthindernis.duration"
+msgstr "ch.bazl.luftfahrthindernis.duration"
+
+#. TODO
+msgid "ch.bazl.luftfahrthindernis.lk100"
+msgstr "ch.bazl.luftfahrthindernis.lk100"
+
+#. TODO
+msgid "ch.bazl.luftfahrthindernis.maxheightagl"
+msgstr "ch.bazl.luftfahrthindernis.maxheightagl"
+
+#. TODO
+msgid "ch.bazl.luftfahrthindernis.obstacletype"
+msgstr "ch.bazl.luftfahrthindernis.obstacletype"
+
+#. TODO
+msgid "ch.bazl.luftfahrthindernis.registrationnumber"
+msgstr "ch.bazl.luftfahrthindernis.registrationnumber"
+
+#. TODO
+msgid "ch.bazl.luftfahrthindernis.sanctiontext"
+msgstr "ch.bazl.luftfahrthindernis.sanctiontext"
+
+#. TODO
+msgid "ch.bazl.luftfahrthindernis.startofconstruction"
+msgstr "ch.bazl.luftfahrthindernis.startofconstruction"
+
+#. TODO
+msgid "ch.bazl.luftfahrthindernis.state"
+msgstr "ch.bazl.luftfahrthindernis.state"
+
+#. TODO
+msgid "ch.bazl.luftfahrthindernis.topelevationamsl"
+msgstr "ch.bazl.luftfahrthindernis.topelevationamsl"
+
+#. TODO
+msgid "ch.bazl.luftfahrthindernis.totallength"
+msgstr "ch.bazl.luftfahrthindernis.totallength"
+
 msgid "ch.bazl.luftfahrtkarten-icao"
 msgstr "Aeronautical Chart ICAO"
 

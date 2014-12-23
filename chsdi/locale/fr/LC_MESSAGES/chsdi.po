@@ -1544,6 +1544,39 @@ msgstr "Zones de calme pour l'aviation"
 msgid "ch.bazl.luftfahrthindernis"
 msgstr "Obstacles à la navigation aérienne"
 
+msgid "ch.bazl.luftfahrthindernis.abortionaccomplished"
+msgstr "Durée d'installation"
+
+msgid "ch.bazl.luftfahrthindernis.duration"
+msgstr "Durée d'installation"
+
+msgid "ch.bazl.luftfahrthindernis.lk100"
+msgstr "Numéro de la carte [CN100]"
+
+msgid "ch.bazl.luftfahrthindernis.maxheightagl"
+msgstr "Hauteur maximale AGL [m"
+
+msgid "ch.bazl.luftfahrthindernis.obstacletype"
+msgstr "Genre d'obstacle"
+
+msgid "ch.bazl.luftfahrthindernis.registrationnumber"
+msgstr "Numéro du registre"
+
+msgid "ch.bazl.luftfahrthindernis.sanctiontext"
+msgstr "Marquage / balisage lum."
+
+msgid "ch.bazl.luftfahrthindernis.startofconstruction"
+msgstr "Début des travaux"
+
+msgid "ch.bazl.luftfahrthindernis.state"
+msgstr "Statut"
+
+msgid "ch.bazl.luftfahrthindernis.topelevationamsl"
+msgstr "Altitude maximale AMSL [m]"
+
+msgid "ch.bazl.luftfahrthindernis.totallength"
+msgstr "Longueur totale [m]"
+
 msgid "ch.bazl.luftfahrtkarten-icao"
 msgstr "Carte aéronautique OACI"
 
@@ -1701,10 +1734,10 @@ msgid "ch.blw.feldblockkarte"
 msgstr "Carte de blocs de parcelles"
 
 msgid "ch.blw.gewaesseranschlusskarte"
-msgstr "Surface en connection des eaux"
+msgstr "Surface en connexion des eaux"
 
 msgid "ch.blw.gewaesseranschlusskarte-direkt"
-msgstr "Surface en connection élargie"
+msgstr "Surface en connexion élargie"
 
 msgid "ch.blw.hang_steillagen"
 msgstr "Terrains en pente"

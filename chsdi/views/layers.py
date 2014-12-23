@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import os
+import decimal
+import datetime
+
 
 from pyramid.view import view_config
 from pyramid.renderers import render_to_response
@@ -12,6 +15,9 @@ from chsdi.lib.validation.mapservice import MapServiceValidation
 from chsdi.models import models_from_name
 from chsdi.models.bod import LayersConfig, get_bod_model, computeHeader
 from chsdi.lib.filters import *
+
+SAMPLE_SIZE = 100
+MAX_ATTRIBUTES_VALUES = 5
 
 
 class LayersParams(MapServiceValidation):
@@ -98,6 +104,11 @@ def legend(request):
     return response.body
 
 
+def _find_type(model, colname):
+    if hasattr(model, '__table__') and colname in model.__table__.c:
+        return model.__table__.c[colname].type
+
+
 @view_config(route_name='featureAttributes', renderer='jsonp')
 def feature_attributes(request):
     ''' This service is used to expose the
@@ -108,8 +119,37 @@ def feature_attributes(request):
     # Models for the same layer have the same attributes
     if models is None:
         raise exc.HTTPBadRequest('No Vector Table was found for %s' % layerId)
-    attributes = models[0]().getAttributesKeys()
-    return attributes
+    model = models[0]
+    attributes = model().getAttributesKeys()
+    if hasattr(model, '__queryable_attributes__'):
+        queryable_attributes = model.__queryable_attributes__
+        attributes = list(set(attributes) & set(queryable_attributes))
+
+    query = params.request.db.query(models[0])
+    try:
+        results = query.limit(SAMPLE_SIZE)
+    except:
+        raise exc.HTTPInternalServerError('Cannot get example values for  %s' % layerId)
+
+    fields = []
+    for row_nr, row in enumerate(results):
+        for attr_nr, attr in enumerate(attributes):
+            attrs = row.getAttributes()
+            if row_nr == 0:
+                field_type = _find_type(models[0](), attr)
+                fields.append({'name': attr, 'type': str(field_type),
+                               'alias': params.translate("%s.%s" % (layerId, attr)),
+                               'values': set([])
+                               })
+            if len(fields[attr_nr]['values']) < MAX_ATTRIBUTES_VALUES:
+                val = attrs[attr]
+                if isinstance(val, (decimal.Decimal, datetime.date, datetime.datetime)):
+                    val = str(val)
+                tmp_values = set(fields[attr_nr]['values'])
+                tmp_values.add(val)
+                fields[attr_nr]['values'] = list(tmp_values)
+
+    return {'id': layerId, 'name': params.translate(layerId), 'fields': fields}
 
 
 def _has_legend(layerId, lang):

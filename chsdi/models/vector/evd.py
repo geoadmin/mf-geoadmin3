@@ -15,6 +15,7 @@ class BODENEIGNUNG(Base, Vector):
     __template__ = 'templates/htmlpopup/bodeneignung-kulurtyp.mako'
     __bodId__ = 'ch.blw.bodeneignung-kulturtyp'
     #__queryable_attributes__ = ['farbe']
+    __label__ = 'symb_color'
     id = Column('bgdi_id', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     farbe = Column('farbe', Integer)

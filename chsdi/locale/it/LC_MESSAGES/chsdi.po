@@ -1544,6 +1544,39 @@ msgstr "Zone di calma per l'aviazione"
 msgid "ch.bazl.luftfahrthindernis"
 msgstr "Ostacoli alla navigazione aerea"
 
+msgid "ch.bazl.luftfahrthindernis.abortionaccomplished"
+msgstr "Durata dell'installazione"
+
+msgid "ch.bazl.luftfahrthindernis.duration"
+msgstr "Durata dell'installazione"
+
+msgid "ch.bazl.luftfahrthindernis.lk100"
+msgstr "Numero della carta [CN100]"
+
+msgid "ch.bazl.luftfahrthindernis.maxheightagl"
+msgstr "Altezza massima AGL [m]"
+
+msgid "ch.bazl.luftfahrthindernis.obstacletype"
+msgstr "Tipo di ostacolo"
+
+msgid "ch.bazl.luftfahrthindernis.registrationnumber"
+msgstr "Numero di registrazione"
+
+msgid "ch.bazl.luftfahrthindernis.sanctiontext"
+msgstr "Marcatura / segnalazione lum."
+
+msgid "ch.bazl.luftfahrthindernis.startofconstruction"
+msgstr "Inizio lavori"
+
+msgid "ch.bazl.luftfahrthindernis.state"
+msgstr "Stato"
+
+msgid "ch.bazl.luftfahrthindernis.topelevationamsl"
+msgstr "Altezza massima AMSL [m]"
+
+msgid "ch.bazl.luftfahrthindernis.totallength"
+msgstr "Lunghezza totale [m]"
+
 msgid "ch.bazl.luftfahrtkarten-icao"
 msgstr "Carta aeronautica OACI"
 

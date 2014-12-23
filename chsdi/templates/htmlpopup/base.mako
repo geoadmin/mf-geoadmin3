@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+<%!
+  from pyramid.url import route_url
+  import chsdi.lib.helpers as h
+%>
 <%
   protocol = request.scheme
   lang = request.lang
@@ -23,30 +27,33 @@
   c['attribution'] = feature['attribution']
   c['fullName'] = feature['fullName']
   extended = feature['extended']
+  loader_url = h.make_agnostic(route_url('ga_api', request))
  %>
 
 % if extended:
-  <head>
-  <link rel="apple-touch-icon" sizes="76x76" href="${h.versioned(request.static_url('chsdi:static/images/touch-icon-bund-76x76.png'))}"/>
-  <link rel="apple-touch-icon" sizes="120x120" href="${h.versioned(request.static_url('chsdi:static/images/touch-icon-bund-120x120.png'))}"/>
-  <link rel="apple-touch-icon" sizes="152x152" href="${h.versioned(request.static_url('chsdi:static/images/touch-icon-bund-152x152.png'))}"/>
+<head>
   <!--[if !HTML5]>
   <meta http-equiv="X-UA-Compatible" content="IE=9,IE=10,IE=edge,chrome=1"/>
   <![endif]-->
   <title>${c['fullName']}</title> 
   <meta name="viewport" content="initial-scale=1.0"/>
+  <link rel="shortcut icon" type="image/x-icon" href="${h.versioned(request.static_url('chsdi:static/images/favicon.ico'))}">
+  <link rel="apple-touch-icon" sizes="76x76" href="${h.versioned(request.static_url('chsdi:static/images/touch-icon-bund-76x76.png'))}"/>
+  <link rel="apple-touch-icon" sizes="120x120" href="${h.versioned(request.static_url('chsdi:static/images/touch-icon-bund-120x120.png'))}"/>
+  <link rel="apple-touch-icon" sizes="152x152" href="${h.versioned(request.static_url('chsdi:static/images/touch-icon-bund-152x152.png'))}"/>
   <link rel="stylesheet" type="text/css" href="${h.versioned(request.static_url('chsdi:static/css/extended.min.css'))}"/>
   <link rel="stylesheet" type="text/css" href="${h.versioned(request.static_url('chsdi:static/css/blueimp-gallery-2.11.0.min.css'))}"/>
   <script src="${h.versioned(request.static_url('chsdi:static/js/jquery-2.0.3.min.js'))}"></script>
   <script src="${h.versioned(request.static_url('chsdi:static/js/blueimp-gallery-2.11.5.min.js'))}"></script>
-  <link rel="shortcut icon" type="image/x-icon" href="${h.versioned(request.static_url('chsdi:static/images/favicon.ico'))}">
-  </head>
+  <script type="text/javascript" src="${loader_url}"></script>
+</head>
 % endif
 
 % if extended:
-<div class="chsdi-htmlpopup-container">
+<body>
+  <div class="chsdi-htmlpopup-container">
 % else:
-<div class="htmlpopup-container">
+  <div class="htmlpopup-container">
 % endif
   <div class="htmlpopup-header">
     <span>${c['fullName']}</span> (${c['attribution']})
@@ -100,3 +107,6 @@
   </div>
   % endif
 </div>
+% if extended:
+</body>
+% endif
