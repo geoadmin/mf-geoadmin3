@@ -281,6 +281,19 @@
   "feedback_modify_drawing": "",
   "remove": "",
   "feedback_drawing": "",
+  "print_underway_message": "",
   "movie": "",
-  "print_underway_message": ""
+  "queries": "",
+  "query": "",
+  "query_num": "",
+  "query_choose": "",
+  "query_custom": "",
+  "query_remove": "",
+  "query_reset": "",
+  "query_duplicate": "",
+  "query_search": "",
+  "query_layer": "",
+  "query_more_values": "",
+  "obstacle_started_last_2_weeks": "",
+  "obstacle_deleted_last_2_weeks": ""
 }

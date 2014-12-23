@@ -107,7 +107,7 @@
                     //If it's already in the map, remove it and
                     //add it to assure it's on top.
                     mapLayer = gaMapUtils.getMapOverlayForBodId(map,
-                                                           selectedLayers[i]);
+                        selectedLayers[i]);
                     if (angular.isDefined(mapLayer)) {
                       map.removeLayer(mapLayer);
                     }

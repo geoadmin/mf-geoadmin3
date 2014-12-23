@@ -171,7 +171,7 @@ itemscope itemtype="http://schema.org/WebApplication"
       </form>
 % endif
       ## css animation doesnt work on pseudo element, let use this instead
-      <i id="loader" class="icon-refresh"></i>
+      <i id="loader" class="ga-loader icon-refresh"></i>
       <div class="alert alert-danger" translate translate-cloak>offline_sorry</div>
     </div> <!-- #header -->
 
@@ -528,14 +528,43 @@ itemscope itemtype="http://schema.org/WebApplication"
            ga-popup-options="{title:'object_information', showPrint:true, print: print, help:'68'}"
            ga-draggable=".popover-title"
            id="featuretree-popup">
-        <div ga-featuretree 
-             ga-featuretree-map="map"
-             ga-featuretree-options="options" 
-             ga-featuretree-active="globals.isFeatureTreeActive"></div>
-        <div ng-show='printInProgress' class='ga-popup-print-in-progress'>
-	        {{printProgressPercentage}}%
+        <div class="panel-group" id="accordion">
+          <div class="panel panel-default">
+            <a class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+              <span translate>queries</span>
+            </a>
+            <div id="collapseOne" class="panel-collapse collapse in">
+              <div class="panel-body"
+                   ga-query
+                   ga-query-map="map"
+                   ga-query-options="options"
+                   ga-query-active="globals.isFeatureTreeActive">
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default" ga-collapsible-trigger="(result.length > 0)">
+            <a class="panel-heading collapsed" id="headingTwo" data-toggle="collapse"
+            data-parent="#accordion" href="#collapseTwo"
+            ga-collapsible-show="options.featuresShown">
+              <span translate>items</span> ({{options.features.length}})
+              <div ng-show='printInProgress' class='pull-right'>{{printProgressPercentage}}%</div>
+            </a>
+            <div id="collapseTwo"
+                 class="panel-collapse collapse"
+                 ng-switch="options.features.length">
+              <div ng-switch-when="0" class="panel-body">
+                <div class="ga-no-result" translate>no_feature_results</div>
+              </div>
+              <div ng-switch-default
+                   ga-featuretree 
+                   ga-featuretree-map="map"
+                   ga-featuretree-options="options" 
+                   ga-featuretree-active="globals.isFeatureTreeActive">
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+              </div>
     </div><!-- end Feature Tree -->
 
 % if device == 'mobile':
@@ -565,6 +594,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     <!-- For <= IE9, we load it explicitely as XDomain does not support
          dynamic/lazy loading of javascript -->
     <!--![if IE]>
+    <script src="${versionslashed}lib/bootstrap-datetimepicker.min.js"></script>
     <script src="${versionslashed}lib/d3-3.3.1.min.js"></script>
     <script src="${versionslashed}lib/jQuery.XDomainRequest.js"></script>
     <![endif]-->
@@ -593,6 +623,9 @@ itemscope itemtype="http://schema.org/WebApplication"
     <script src="lib/fastclick.js"></script>
     <script src="lib/localforage.js"></script>
     <script src="lib/filesaver.js"></script>
+    <script src="lib/moment-with-customlocales.js"></script>
+
+
 
     <!-- Use Closure to load the application scripts -->
     <script>
@@ -677,7 +710,12 @@ itemscope itemtype="http://schema.org/WebApplication"
           gaProfileServiceProvider.d3libUrl =
               gaGlobalOptions.resourceUrl + 'lib/d3-3.3.1.min.js';
         });
- 
+        
+        module.config(function(gaQueryProvider, gaGlobalOptions) {
+          gaQueryProvider.dpUrl = gaGlobalOptions.resourceUrl +
+              'lib/bootstrap-datetimepicker.min.js';
+        });
+
         module.config(function($sceDelegateProvider, gaGlobalOptions) {
           var whitelist = $sceDelegateProvider.resourceUrlWhitelist();
           whitelist = whitelist.concat(gaGlobalOptions.whitelist);

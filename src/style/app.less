@@ -1,5 +1,6 @@
 @import "ga_bootstrap.less";
 @import "font-awesome-3.2.1/less/font-awesome.less";
+@import "bootstrap-datetimepicker.less";
 @import "../components/map/style/map.less";
 @import "../components/geolocation/style/geolocation.less";
 @import "../components/rotate/style/rotate.less";
@@ -26,6 +27,8 @@
 @import "../components/draw/style/draw.less";
 @import "../components/help/style/help.less";
 @import "../components/offline/style/offline.less";
+@import "../components/query/style/query.less";
+
 
 @header-height: 89;
 @footer-height: 26;
@@ -114,6 +117,14 @@ button.ga-btn, .ol-control button {
   }
 }
 
+.ga-no-result {
+  width: 100%;
+  color: lightgray;
+  font-weight: bold;
+  font-size: 2em;
+  text-align: center;
+}
+
 .ga-full-screen {
   
   #header {
@@ -166,6 +177,46 @@ select, input[type=text], input[type=email], input[type=search] {
 input[type=text][readonly] {
   cursor: default;
 }
+
+// ***** TABS 
+.nav-tabs {
+  
+  .active {
+    cursor: default;
+  }
+
+  a {
+    text-decoration: none;
+  }
+}
+
+.nav > li > a {
+  cursor: pointer;
+  padding: 0px 10px;
+  color: white !important;
+  background-color: black;
+
+  &:hover, &:focus {
+    background-color: darkgray;
+  }
+}
+
+.nav-tabs {
+  border: none;
+}
+
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover,
+.nav-tabs > li.active > a:focus {
+  color: white !important;
+  background-color: red;
+  border: 1px solid transparent;
+}
+
+.tab-content {
+  margin: 5px 0px 0px 0px;
+}
+
 
 // ***** HEADER
 #header {
@@ -695,6 +746,9 @@ a .ga-icon-separator {
 // ****** POPUP
 #import-wms-popup, #import-kml-popup, #measure-popup, #draw-popup,
 #featuretree-popup {
+  .panel-heading {
+    display: block;
+  }
   @media (max-width: @screen-tablet) {
     top: auto!important;
     height: 190px;
@@ -994,9 +1048,11 @@ ul.panel-body-wide {
 
   #loader {
     z-index: 5000;
+    opacity: 1;
+  }
 
+  .ga-loader {
     @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-      opacity: 1;
       -webkit-animation: spin 2s infinite linear;
       animation: spin 2s infinite linear;
     }

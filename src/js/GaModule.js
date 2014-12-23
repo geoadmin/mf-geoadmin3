@@ -30,6 +30,7 @@
   goog.require('ga_profile');
   goog.require('ga_seo');
   goog.require('ga_draw');
+  goog.require('ga_query');
   goog.require('ga_modal_directive');
   goog.require('ga_draggable_directive');
   goog.require('ga_placeholder_directive');
@@ -56,7 +57,8 @@
   goog.require('ga_featuretree_controller');
   goog.require('ga_measure_controller');
   goog.require('ga_draw_controller');
-
+  goog.require('ga_query_controller');
+ 
 
   var module = angular.module('ga', [
     'ga_attribution',
@@ -87,6 +89,7 @@
     'ga_waitcursor_service',
     'ga_seo',
     'ga_draw',
+    'ga_query',
     'ga_modal_directive',
     'ga_draggable_directive',
     'ga_placeholder_directive',
@@ -112,7 +115,8 @@
     'ga_tooltip_controller',
     'ga_featuretree_controller',
     'ga_measure_controller',
-    'ga_draw_controller'
+    'ga_draw_controller',
+    'ga_query_controller'
   ]);
 
 })();

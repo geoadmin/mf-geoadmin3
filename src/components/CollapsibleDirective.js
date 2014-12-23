@@ -3,6 +3,41 @@
 
   var module = angular.module('ga_collapsible_directive', []);
 
+  module.directive('gaCollapsibleShow', function() {
+    var toggleElt = function(element, show) {
+      if (angular.isDefined(show) && show == element.hasClass('collapsed')) {
+        element.trigger('click');
+      }
+    };
+    return {
+      restrict: 'A',
+      scope: {
+        show: '=gaCollapsibleShow'
+      },
+      link: function(scope, element, attrs) {
+        scope.$watch('show', function(show) {
+          toggleElt(element, show);
+        });
+
+        $(attrs.href).on('shown.bs.collapse', function() {
+          element.removeClass('collapsed');
+          scope.$applyAsync(function() {
+            scope.show = true;
+          });
+        });
+
+        $(attrs.href).on('hidden.bs.collapse', function() {
+          element.addClass('collapsed');
+          scope.$applyAsync(function() {
+            scope.show = false;
+          });
+        });
+
+        toggleElt(element, scope.show);
+      }
+    };
+  });
+
   /**
    * Manipulates a bootstrap collapsible element with Javascript
    * All other bootstrap collapse attributes remain the same (target,
