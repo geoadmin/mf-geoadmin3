@@ -1066,6 +1066,15 @@
                  gaLayers.getLayerProperty(layer.bodId, 'selectbyrectangle');
         },
         /**
+         * Searchable layers
+         */
+        searchable: function(layer) {
+          return layer.displayInLayerManager &&
+                 layer.visible &&
+                 layer.bodId &&
+                 gaLayers.getLayerProperty(layer.bodId, 'searchable');
+        },
+        /**
          * Keep only background layers
          */
         background: function(layer) {
