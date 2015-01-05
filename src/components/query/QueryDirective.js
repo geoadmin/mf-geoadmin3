@@ -374,6 +374,13 @@
                 });
               });
             });
+
+            // Apply a predefined query if exist
+            if ($scope.queryPredef &&
+                $scope.queryPredef.id == query.id &&
+                $scope.queryPredef.layer == layer) {
+              $scope.applyQueryPredef($scope.queryPredef);
+            }
           });
           predef = predef.concat(queries);
         }
