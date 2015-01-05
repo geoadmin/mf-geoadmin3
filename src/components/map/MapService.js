@@ -875,6 +875,9 @@
                 'timeBehaviour');
             yearStr = (timeBehaviour === 'all' || timestamps.length == 0) ?
                 undefined : timestamps[0];
+            if (bodId == 'ch.swisstopo.zeitreihen') {
+              yearStr = '18641231';
+            }
           }
 
           for (var i = 0, ii = timestamps.length; i < ii; i++) {
