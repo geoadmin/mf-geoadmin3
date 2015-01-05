@@ -201,9 +201,14 @@
 
     // Search by geometry using feature identify servioce
     $scope.searchByGeometry = function() {
-      $scope.loading = true;
       $scope.queryType = 0;
 
+      if ($scope.selectByRectangleLayers.length == 0) {
+        $scope.options.features = [];
+        return;
+      }
+
+      $scope.loading = true;
       if ($scope.geometry) {
         var imgDisplay = $scope.map.getSize().concat([96]).join(',');
         var mapExtent = $scope.map.getView().calculateExtent(
@@ -359,7 +364,9 @@
     $scope.$watchCollection('layers | filter:selectByRectangleFilter',
         function(layers) {
       $scope.selectByRectangleLayers = layers;
-      $scope.search();
+      if ($scope.isActive) {
+        $scope.search();
+      }
     });
 
     $scope.searchableFilter = gaLayerFilters.searchable;
@@ -406,7 +413,9 @@
         }
       }
 
-      $scope.search();
+      if ($scope.isActive) {
+        $scope.search();
+      }
     });
 
     $rootScope.$on('$translateChangeEnd', function(evt) {
@@ -502,6 +511,9 @@
           if (scope.queryType == 0) {
             showBox();
           }
+
+          // Re-launch the search in case the list of layers has changed
+          scope.search();
         };
         var deactivate = function() {
           hideBox();
