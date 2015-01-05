@@ -1250,6 +1250,18 @@ msgstr "REN  Guaud>1000m"
 msgid "ch.bafu.ren-wald_unter_1000_meter"
 msgstr "REN  Guaud<1000m"
 
+msgid "ch.bafu.schutzgebiete-aulav_auen"
+msgstr "Territoris da protecziun"
+
+msgid "ch.bafu.schutzgebiete-aulav_jagdbanngebiete"
+msgstr "Territoris da protecziun"
+
+msgid "ch.bafu.schutzgebiete-aulav_moorlandschaften"
+msgstr "Territoris da protecziun"
+
+msgid "ch.bafu.schutzgebiete-aulav_uebrige"
+msgstr "Territoris da protecziun"
+
 msgid "ch.bafu.schutzgebiete-biosphaerenreservate"
 msgstr "Biosphärenreservate"
 
@@ -3701,6 +3713,30 @@ msgstr "Bravo! Klicke hier um den nächsten Hinweis zu erhalten!"
 
 msgid "tt_anteil_ch"
 msgstr "Flächenanteil in der Schweiz"
+
+msgid "tt_bafu_aulav_auen_general"
+msgstr "Aussenlandungen in Auengebieten sind unter Vorbehalt von Art. 19 Abs. 3 sowie Art. 28 nicht zulässig. Aussenlandungen für die Abwehr von Naturgefahren, für den Bau oder den Unterhalt von Bauten und Anlagen im öffentlichen Interesse und Aussenlandungen im Auftrag der zuständigen kantonalen Behörden sowie von diesen Behörden bewilligte Aussenlandungen für den Bau oder Unterhalt von Bauten und Anlagen sind zulässig."
+
+msgid "tt_bafu_aulav_fm_typ"
+msgstr "Flachmoor"
+
+msgid "tt_bafu_aulav_hm_typ"
+msgstr "Hochmoorund Übergagngsmoor"
+
+msgid "tt_bafu_aulav_jagdbanngebiete_general"
+msgstr "Aussenlandungen in Jagdbanngebieten sind unter Vorbehalt von Art. 19 Abs. 3, Art. 28 sowie Art. 46 Abs. 4 nicht zulässig. Aussenlandungen für die Abwehr von Naturgefahren, die Wald- und Landwirtschaft, die Versorgung öffentlich zugänglicher Hütten, für den Bau oder den Unterhalt von Bauten und Anlagen im öffentlichen Interesse,  Aussenlandungen und Schwebeflüge bei Ausbildungsflügen sowie Aussenlandungen im Auftrag der zuständigen kantonalen Behörden und von diesen Behördn bewilligte Aussenlandungen für den Bau oder Unterhalt von Bauten und Anlagen sind zulässig. Für Flüge zu anderen Arbeitszwecken gilt das Verbot nur vom 1. November bis zum 31. Juli."
+
+msgid "tt_bafu_aulav_moorlandschaften_general"
+msgstr "Aussenlandungen in Moorlandschaften sind gemäss Art 32 h für nichtgewerbsmässigen Flüge nicht zulässig."
+
+msgid "tt_bafu_aulav_nat_park_typ"
+msgstr "Nationalpark"
+
+msgid "tt_bafu_aulav_uebrige_general"
+msgstr "Aussenlandungen in den übrigen Schutzgebieten sind unter Vorbehalt von Art. 19 Abs. 3 sowie Art. 28 nicht zulässig."
+
+msgid "tt_bafu_aulav_wv_typ"
+msgstr "Wasser- und Zugvogelreservat"
 
 msgid "tt_bakom_middle"
 msgstr "Mittel"

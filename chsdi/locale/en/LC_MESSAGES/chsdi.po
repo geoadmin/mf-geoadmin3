@@ -1250,6 +1250,18 @@ msgstr "REN forest zones>1000m"
 msgid "ch.bafu.ren-wald_unter_1000_meter"
 msgstr "REN forest zones<1000m"
 
+msgid "ch.bafu.schutzgebiete-aulav_auen"
+msgstr "Floodplains AuLaV"
+
+msgid "ch.bafu.schutzgebiete-aulav_jagdbanngebiete"
+msgstr "Game reserves AuLaV"
+
+msgid "ch.bafu.schutzgebiete-aulav_moorlandschaften"
+msgstr "Mirelandscapes AuLaV"
+
+msgid "ch.bafu.schutzgebiete-aulav_uebrige"
+msgstr "Other protected areas AuLaV"
+
 msgid "ch.bafu.schutzgebiete-biosphaerenreservate"
 msgstr "Biosphere reserves"
 
@@ -3711,6 +3723,30 @@ msgstr "Bravo! Klicke hier um den nächsten Hinweis zu erhalten!"
 
 msgid "tt_anteil_ch"
 msgstr "Catchment areas percentage in Switzerland"
+
+msgid "tt_bafu_aulav_auen_general"
+msgstr "Off-airport landings on floodplains are not permitted, subject to Art. 19 para. 3 and Art. 28. Off-airport landings in order to prevent natural hazards, for the construction or maintenance of buildings and installations in the public interest, off-airport landings on behalf of the competent cantonal authorities, and off-airport landings authorised by such authorities for the construction of maintenance of buildings and installations are permitted."
+
+msgid "tt_bafu_aulav_fm_typ"
+msgstr "Fen"
+
+msgid "tt_bafu_aulav_hm_typ"
+msgstr "Raised and transition bog"
+
+msgid "tt_bafu_aulav_jagdbanngebiete_general"
+msgstr "Off-airport landings in game reserves are not permitted, subject to Art. 19 para. 3, Art. 28 and Art. 46 para. 4. Off-airport landings in order to prevent natural hazards, for forestry and agricultural purposes, for provisioning publicly-accessible cabins, and for the construction or maintenance of buildings and installations in the public interest, off-airport landings and hovering on training flights, off-airport landings on behalf of the competent cantonal authorities, and off-airport landings authorised by such authorities for the construction of maintenance of buildings and installations are permitted. For flights for other work purposes, the ban applies only from 1 November to 31 July."
+
+msgid "tt_bafu_aulav_moorlandschaften_general"
+msgstr "Off-airport landings on mire landscapes are not permitted under Art 32 h when on non-commercial flights."
+
+msgid "tt_bafu_aulav_nat_park_typ"
+msgstr "National park"
+
+msgid "tt_bafu_aulav_uebrige_general"
+msgstr "Off-airport landings on other protected areas are not permitted, subject to Art. 19 para. 3 Art. 28."
+
+msgid "tt_bafu_aulav_wv_typ"
+msgstr "Water and migratory bird reserve"
 
 msgid "tt_bakom_middle"
 msgstr "Medium"

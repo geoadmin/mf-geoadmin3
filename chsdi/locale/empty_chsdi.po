@@ -443,6 +443,18 @@ msgstr ""
 msgid "ch.blw.alpprodukte"
 msgstr ""
 
+msgid "ch.bafu.schutzgebiete-aulav_auen"
+msgstr ""
+
+msgid "ch.bafu.schutzgebiete-aulav_jagdbanngebiete"
+msgstr ""
+
+msgid "ch.bafu.schutzgebiete-aulav_moorlandschaften"
+msgstr ""
+
+msgid "ch.bafu.schutzgebiete-aulav_uebrige"
+msgstr ""
+
 msgid "ch.bafu.schutzgebiete-luftfahrt"
 msgstr ""
 
@@ -4873,3 +4885,26 @@ msgstr ""
 msgid "ch.bazl.luftfahrthindernis.abortionaccomplished"
 msgstr ""
 
+msgid "tt_bafu_aulav_fm_typ"
+msgstr ""
+
+msgid "tt_bafu_aulav_hm_typ"
+msgstr ""
+
+msgid "tt_bafu_aulav_wv_typ"
+msgstr ""
+
+msgid "tt_bafu_aulav_nat_park_typ"
+msgstr ""
+
+msgid "tt_bafu_aulav_auen_general"
+msgstr ""
+
+msgid "tt_bafu_aulav_jagdbanngebiete_general"
+msgstr ""
+
+msgid "tt_bafu_aulav_moorlandschaften_general"
+msgstr ""
+
+msgid "tt_bafu_aulav_uebrige_general"
+msgstr ""

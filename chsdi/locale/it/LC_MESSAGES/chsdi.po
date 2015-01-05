@@ -1250,6 +1250,18 @@ msgstr "REN Zone di foresta>1000m"
 msgid "ch.bafu.ren-wald_unter_1000_meter"
 msgstr "REN Zone di foresta<1000m"
 
+msgid "ch.bafu.schutzgebiete-aulav_auen"
+msgstr "Zone golenali OAEs"
+
+msgid "ch.bafu.schutzgebiete-aulav_jagdbanngebiete"
+msgstr "Bandite federali OAEs"
+
+msgid "ch.bafu.schutzgebiete-aulav_moorlandschaften"
+msgstr "Zone palustri OAEs"
+
+msgid "ch.bafu.schutzgebiete-aulav_uebrige"
+msgstr "Altre zone protette OAEs"
+
 msgid "ch.bafu.schutzgebiete-biosphaerenreservate"
 msgstr "Riserve di biosfera"
 
@@ -3700,6 +3712,30 @@ msgstr "Bravo! Clicca qui per trovare l'indizio successivo!"
 
 msgid "tt_anteil_ch"
 msgstr "Percentuale della superficie in Svizzera"
+
+msgid "tt_bafu_aulav_auen_general"
+msgstr "Gli atterraggi esterni sono vietati nelle zone golenali su riserva dell’articolo 19 capoverso 3 e dell’articolo 28 OAEs. Il divieto non si applica ai voli finalizzati alla protezione contro i pericoli naturali e alla costruzione o alla manutenzione di edifici e impianti di interesse pubblico. Non si applica nemmeno ai voli effettuati su mandato delle autorità cantonali competenti né a quelli effettuati per la costruzione o la manutenzione di costruzioni e impianti di interesse pubblico autorizzati dalle autorità medesime."
+
+msgid "tt_bafu_aulav_fm_typ"
+msgstr "Palude"
+
+msgid "tt_bafu_aulav_hm_typ"
+msgstr "Torbiera alte e tobiera di transsizione"
+
+msgid "tt_bafu_aulav_jagdbanngebiete_general"
+msgstr "Gli atterraggi esterni sono vietati nelle bandite federali su riserva degli articoli 19 capoverso 3, 28 e 46 capoverso 4 OAEs. Il divieto non si applica ai voli finalizzati alla protezione contro i pericoli naturali all’economia forestale e all’agricoltura, all’approvvigionamento di capanne accessibili al pubblico, alla costruzione o alla manutenzione di edifici e impianti di interesse pubblico. Il divieto non si applica nemmeno ai voli effettuati su mandato delle autorità cantonali competenti né a quelli effettuati per la costruzione o la manutenzione di edifici e impianti di interesse pubblico autorizzati dalle autorità medesime. Gli atterraggi esterni e i voli stazionari sono inoltre ammessi nelle bandite federali nel quadro di voli d’istruzione. Ai voli effettuati per altri scopi di lavoro si applica il divieto soltanto dal 1° novembre al 31 luglio."
+
+msgid "tt_bafu_aulav_moorlandschaften_general"
+msgstr "Conformemente all’articolo 32 lettera h, sono vietati nelle zone palustri gli atterraggi esterni nell’ambito di voli non commerciali."
+
+msgid "tt_bafu_aulav_nat_park_typ"
+msgstr "Parco nazionale"
+
+msgid "tt_bafu_aulav_uebrige_general"
+msgstr "Gli atterraggi esterni sono vietati nelle zone protette su riserva dell’articolo 19 capoverso 3 e dell’articolo 28 OAEs."
+
+msgid "tt_bafu_aulav_wv_typ"
+msgstr "Riserva d'uccelli acquatici e migratori"
 
 msgid "tt_bakom_middle"
 msgstr "Media"

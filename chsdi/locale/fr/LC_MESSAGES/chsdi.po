@@ -1250,6 +1250,18 @@ msgstr "REN  Zones forestières>1000m"
 msgid "ch.bafu.ren-wald_unter_1000_meter"
 msgstr "REN  Zones forestières<1000m"
 
+msgid "ch.bafu.schutzgebiete-aulav_auen"
+msgstr "Zones alluviales OSAC"
+
+msgid "ch.bafu.schutzgebiete-aulav_jagdbanngebiete"
+msgstr "Districts francs OSAC"
+
+msgid "ch.bafu.schutzgebiete-aulav_moorlandschaften"
+msgstr "Sites marécageux OSAC"
+
+msgid "ch.bafu.schutzgebiete-aulav_uebrige"
+msgstr "Autres zones protégées OSAC"
+
 msgid "ch.bafu.schutzgebiete-biosphaerenreservate"
 msgstr "Réserves de biosphère"
 
@@ -3700,6 +3712,30 @@ msgstr "Bravo! Clique ici afin de découvrir l'indice suivant!"
 
 msgid "tt_anteil_ch"
 msgstr "Pourcentage du b.v. en Suisse"
+
+msgid "tt_bafu_aulav_auen_general"
+msgstr "Les atterrissages en campagne sont interdits dans les zones alluviales sous réserve des art. 19, al. 3 et 28 OSAC. L’interdiction ne s’applique pas aux vols ayant pour but la prévention des dangers naturels et la construction ou l’entretien de constructions et installations d’intérêt public. Elle ne s’applique pas non plus aux vols effectués sur mandat des autorités cantonales compétentes ni aux vols effectués pour la construction ou l’entretien de constructions et d’installations d’intérêt public qui ont été autorisées par ces mêmes autorités."
+
+msgid "tt_bafu_aulav_fm_typ"
+msgstr "Bas-marais"
+
+msgid "tt_bafu_aulav_hm_typ"
+msgstr "Haut-marais"
+
+msgid "tt_bafu_aulav_jagdbanngebiete_general"
+msgstr "Les atterrissages en campagne sont interdits dans les districts francs sous réserve des art. 19, al.3, 28 et 46, al. 4 OSAC. L’interdiction ne s’applique pas aux vols effectués pour les besoins de la sylviculture et de l’agriculture, pour la prévention des dangers naturels, pour le ravitaillement des cabanes accessibles au public et pour la construction ou l’entretien de constructions et installations d’intérêt public. Pour les autres types de vols à des fins de travail, l’interdiction s’étend uniquement du 1er novembre au 31 juillet. L’interdiction ne s’applique pas non plus aux vols effectués sur mandat des autorités cantonales compétentes ni aux vols effectués pour la construction ou l’entretien de constructions et d’installations d’intérêt public qui ont été autorisées par ces mêmes autorités. Les atterrissages en campagne et les vols stationnaires sont en outre admis dans les districts francs fédéraux dans le cadre de vols d’instruction."
+
+msgid "tt_bafu_aulav_moorlandschaften_general"
+msgstr "Conformément à l’art. 32, let. h, les atterrissages en campagne dans le cadre de vols non commerciaux ne sont pas admis dans les sites marécageux."
+
+msgid "tt_bafu_aulav_nat_park_typ"
+msgstr "Parc nationa"
+
+msgid "tt_bafu_aulav_uebrige_general"
+msgstr "Les atterrissages en campagne sont interdits dans les zones protégées sous réserve des art. 19, al. 3 et 28 OSAC."
+
+msgid "tt_bafu_aulav_wv_typ"
+msgstr "Réserve d'oiseaux d'eau et migrateurs"
 
 msgid "tt_bakom_middle"
 msgstr "Moyenne"
