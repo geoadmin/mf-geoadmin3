@@ -35,12 +35,18 @@
 
     // Others numeric types
     attrInfos.BIGINTEGER = attrInfos.SMALLINTEGER = attrInfos.INTEGER =
+        attrInfos.BIGINT = attrInfos.SMALLINT = attrInfos.INT =
+        attrInfos.DOUBLE = attrInfos['DOUBLE PRECISION'] =
         attrInfos.FLOAT = attrInfos.DECIMAL = attrInfos.INTERVAL =
         attrInfos.NUMERIC;
 
     // Others string types
     attrInfos.TEXT = attrInfos.UNICODE = attrInfos.UNICODETEXT =
         attrInfos.ENUM = attrInfos.STRING;
+
+    // Others dates types
+    attrInfos.TIMESTAMP = attrInfos['TIMESTAMP WITHOUT TIME ZONE'] =
+        attrInfos.DATE;
 
     // Parse bbox string
     var parseBoxString = function(stringBox2D) {
@@ -142,14 +148,18 @@
                 layer.attributes[i].label = label;
                 continue;
               }
+
+              // Set STRING as default field type.
+              var type = attrInfos[field.type] || attrInfos.STRING;
+
               attr.push({
                 name: field.name,
                 label: label,
                 type: field.type,
-                inputType: attrInfos[field.type].inputType,
+                inputType: type.inputType,
                 inputPlaceholder: attrValuesToString(field, 30),
                 inputTitle: attrValuesToString(field),
-                operators: attrInfos[field.type].operators,
+                operators: type.operators,
                 transformToLiteral: function(value) {
                   if (value && this.inputType != 'number' &&
                       this.inputType != 'checkbox') {
