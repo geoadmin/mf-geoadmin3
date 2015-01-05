@@ -18,6 +18,7 @@
     var stored;
     $scope.queryType = 1; // Filter attributes
     $scope.searchableLayers = [];
+    $scope.selectByRectangleLayers = [];
     $scope.queriesPredef = [];
     $scope.filters = [];
 
@@ -181,7 +182,7 @@
         var geom = $scope.geometry.getExtent();
         var features = [];
         gaQuery.getLayersFeaturesByBbox($scope,
-            $scope.searchableLayers,
+            $scope.selectByRectangleLayers,
             geom
         ).then(function(layerFeatures) {
           features = features.concat(layerFeatures);
@@ -209,7 +210,7 @@
         var lang = $translate.use();
         var features = [];
         angular.forEach(
-            $scope.searchableLayers,
+            $scope.selectByRectangleLayers,
             function(layer) {
               gaQuery.getLayerIdentifyFeatures(
                   $scope,
@@ -285,7 +286,7 @@
             $scope.geometry.getExtent().join(',') + ', 21781), 0)';
         var features = [];
         angular.forEach(
-            $scope.searchableLayers,
+            $scope.selectByRectangleLayers,
             function(layer) {
               gaQuery.getLayerFeatures(
                   $scope,
@@ -352,8 +353,16 @@
 
     // Watcher/listener
     $scope.layers = $scope.map.getLayers().getArray();
-    $scope.layerFilter = gaLayerFilters.selectByRectangle;
-    $scope.$watchCollection('layers | filter:layerFilter', function(layers) {
+    $scope.selectByRectangleFilter = gaLayerFilters.selectByRectangle;
+    $scope.$watchCollection('layers | filter:selectByRectangleFilter',
+        function(layers) {
+      $scope.selectByRectangleLayers = layers;
+      $scope.search();
+    });
+
+    $scope.searchableFilter = gaLayerFilters.searchable;
+    $scope.$watchCollection('layers | filter:searchableFilter',
+        function(layers) {
       $scope.searchableLayers = layers;
 
       // Load new list of predefines queries and queryable attributes
@@ -461,7 +470,7 @@
             scope.isActive = true;
             boxFeature.setGeometry(evt.target.getGeometry());
             scope.geometry = boxFeature.getGeometry();
-            if (scope.searchableLayers.length == 0) {
+            if (scope.selectByRectangleLayers.length == 0) {
               scope.$apply();
             } else {
               scope.searchByGeometry();

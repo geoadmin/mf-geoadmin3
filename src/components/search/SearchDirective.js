@@ -550,13 +550,7 @@
                 }
               });
 
-            scope.searchableLayersFilter = function(layer) {
-              var layerBodId = layer.bodId;
-              return gaLayerFilters.selected(layer) &&
-                     layer.visible &&
-                     angular.isDefined(layerBodId) &&
-                     gaLayers.getLayerProperty(layerBodId, 'searchable');
-            };
+            scope.searchableLayersFilter = gaLayerFilters.searchable;
 
             scope.$watchCollection('layers | filter:searchableLayersFilter',
                 function(layers) {
