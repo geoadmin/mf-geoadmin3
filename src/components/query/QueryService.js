@@ -121,6 +121,11 @@ goog.provide('ga_query_service');
               // Set STRING as default field type.
               var type = attrInfos[field.type] || attrInfos.STRING;
 
+              // Transform null value to 'null' string
+              if (field.values && field.values[0] === null) {
+                field.values[0] = 'null';
+              }
+
               attr.push({
                 name: field.name,
                 label: label,
@@ -178,6 +183,12 @@ goog.provide('ga_query_service');
           $http.get(msUrl + bodId + '/attributes/' + attrName, {
             cache: true
           }).success(function(data) {
+
+            // Transform null value to 'null' string
+            if (data.values && data.values[0] === null) {
+              data.values[0] = 'null';
+            }
+
             deferred.resolve(data.values);
           }).error(function(data, status, headers, config) {
             $log.error('Request failed');

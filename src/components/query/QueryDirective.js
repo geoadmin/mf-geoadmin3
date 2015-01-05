@@ -59,10 +59,23 @@ goog.require('ga_storage_service');
         }
         var params = paramsByLayer[filter.layer.bodId].params;
         var operator = $scope.selectedQueryOperator.value;
+
         // Where condition
         var where = (params.where) ? params.where + ' ' + operator + ' ' : '';
-        where += filter.attribute.name + ' ' + filter.operator + ' ' +
-            filter.attribute.transformToLiteral(filter.value);
+        where += filter.attribute.name + ' ';
+
+        // Manage 'null' value
+        if (/^null$/i.test(filter.value)) {
+          where += 'is ';
+          if (/^(!=|<|>|not ilike)$/i.test(filter.operator)) {
+            where += 'not ';
+          }
+          where += 'null';
+        } else {
+          where += filter.operator + ' ' +
+              filter.attribute.transformToLiteral(filter.value);
+        }
+
         params.where = where;
       });
       return list;
