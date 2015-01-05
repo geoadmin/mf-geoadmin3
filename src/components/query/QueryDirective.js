@@ -90,8 +90,10 @@
       $scope.updateInputValue(idx, filter);
     };
 
+    // When the list or value of filters change
     $scope.onChange = function() {
       $scope.queryPredef = null;
+      $scope.options.features = [];
     };
 
     // Load attributes of the selected layer in the select box
