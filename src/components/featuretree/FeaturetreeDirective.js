@@ -93,7 +93,17 @@
 
             var updateTree = function(features) {
               gaPreviewFeatures.clearHighlight();
+              gaPreviewFeatures.clear(map);
               var res = features, tree = {};
+
+              var drawFeature = function(f) {
+                loadGeojson(scope, f).then(function() {
+                  if (f.geojson) {
+                    gaPreviewFeatures.add(map,
+                        parser.readFeature(f.geojson));
+                  }
+                });
+              };
 
               if (features) {
                 for (var i = 0, li = res.length; i < li; i++) {
@@ -137,6 +147,8 @@
                   feature.label = getTranslatedLabel((result.attrs ||
                       result.properties));
                   newNode.features.push(feature);
+
+                  drawFeature(feature);
                 }
               }
               //assure that label contains number of items
