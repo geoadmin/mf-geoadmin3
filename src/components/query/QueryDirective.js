@@ -144,13 +144,11 @@
     // Clear a filter
     $scope.clear = function(idx) {
       $scope.filters[idx] = getEmptyFilter();
-      $scope.search();
     };
 
     // Remove a filter
     $scope.remove = function(idx) {
       $scope.filters.splice(idx, 1);
-      $scope.search();
     };
 
     // Get all valuse for an attribute (only min/max for date and number)
