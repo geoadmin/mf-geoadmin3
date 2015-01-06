@@ -1556,39 +1556,38 @@ msgstr "Landschaftsruhezonen Luftfahrt"
 msgid "ch.bazl.luftfahrthindernis"
 msgstr "Luftfahrthindernisse"
 
-#. TODO
 msgid "ch.bazl.luftfahrthindernis.abortionaccomplished"
-msgstr "ch.bazl.luftfahrthindernis.abortionaccomplished"
+msgstr "Abbruch ausgeführt"
 
 msgid "ch.bazl.luftfahrthindernis.duration"
-msgstr "Duration of installation"
+msgstr "Anlagedauer"
 
 msgid "ch.bazl.luftfahrthindernis.lk100"
-msgstr "Map number [NM100]"
+msgstr "Kartennummer [LK100]"
 
 msgid "ch.bazl.luftfahrthindernis.maxheightagl"
-msgstr "Maximum height AGL [m]"
+msgstr "Maximale Höhe AGL [m]"
 
 msgid "ch.bazl.luftfahrthindernis.obstacletype"
-msgstr "Obstacle type"
+msgstr "Hindernisart"
 
 msgid "ch.bazl.luftfahrthindernis.registrationnumber"
-msgstr "Registration number"
+msgstr "Register-Nummer"
 
 msgid "ch.bazl.luftfahrthindernis.sanctiontext"
-msgstr "Marking / navigation lights"
+msgstr "Markierung / Befeuerung"
 
 msgid "ch.bazl.luftfahrthindernis.startofconstruction"
-msgstr "Start of construction"
+msgstr "Baubeginn"
 
 msgid "ch.bazl.luftfahrthindernis.state"
-msgstr "State"
+msgstr "Status"
 
 msgid "ch.bazl.luftfahrthindernis.topelevationamsl"
-msgstr "Maximum top elevation AMSL [m]"
+msgstr "Maximale Meereshöhe AMSL [m]"
 
 msgid "ch.bazl.luftfahrthindernis.totallength"
-msgstr "Total length [m]"
+msgstr "Gesamtlänge [m]"
 
 msgid "ch.bazl.luftfahrtkarten-icao"
 msgstr "Charta d'aviatica OACI"
@@ -1633,7 +1632,7 @@ msgid "ch.bfe.energiestaedte-2000watt-aufdemweg"
 msgstr "Energiestädte auf dem Weg 2000-Watt"
 
 msgid "ch.bfe.energiestaedte-energieregionen"
-msgstr "Energie-Region"
+msgstr "Energie-Regionen"
 
 msgid "ch.bfe.kernkraftwerke"
 msgstr "Ovras nuclearas"
