@@ -1559,45 +1559,35 @@ msgstr "Air navigation obstacles"
 msgid "ch.bazl.luftfahrthindernis.abortionaccomplished"
 msgstr "Duration of installation"
 
-#. TODO
 msgid "ch.bazl.luftfahrthindernis.duration"
-msgstr "ch.bazl.luftfahrthindernis.duration"
+msgstr "Duration of installation"
 
-#. TODO
 msgid "ch.bazl.luftfahrthindernis.lk100"
-msgstr "ch.bazl.luftfahrthindernis.lk100"
+msgstr "Map number [NM100]"
 
-#. TODO
 msgid "ch.bazl.luftfahrthindernis.maxheightagl"
-msgstr "ch.bazl.luftfahrthindernis.maxheightagl"
+msgstr "Maximum height AGL [m]"
 
-#. TODO
 msgid "ch.bazl.luftfahrthindernis.obstacletype"
-msgstr "ch.bazl.luftfahrthindernis.obstacletype"
+msgstr "Obstacle type"
 
-#. TODO
 msgid "ch.bazl.luftfahrthindernis.registrationnumber"
-msgstr "ch.bazl.luftfahrthindernis.registrationnumber"
+msgstr "Registration number"
 
-#. TODO
 msgid "ch.bazl.luftfahrthindernis.sanctiontext"
-msgstr "ch.bazl.luftfahrthindernis.sanctiontext"
+msgstr "Marking / navigation lights"
 
-#. TODO
 msgid "ch.bazl.luftfahrthindernis.startofconstruction"
-msgstr "ch.bazl.luftfahrthindernis.startofconstruction"
+msgstr "Start of construction"
 
-#. TODO
 msgid "ch.bazl.luftfahrthindernis.state"
-msgstr "ch.bazl.luftfahrthindernis.state"
+msgstr "State"
 
-#. TODO
 msgid "ch.bazl.luftfahrthindernis.topelevationamsl"
-msgstr "ch.bazl.luftfahrthindernis.topelevationamsl"
+msgstr "Maximum top elevation AMSL [m]"
 
-#. TODO
 msgid "ch.bazl.luftfahrthindernis.totallength"
-msgstr "ch.bazl.luftfahrthindernis.totallength"
+msgstr "Total length [m]"
 
 msgid "ch.bazl.luftfahrtkarten-icao"
 msgstr "Aeronautical Chart ICAO"

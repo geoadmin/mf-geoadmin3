@@ -1632,7 +1632,7 @@ msgid "ch.bfe.energiestaedte-2000watt-aufdemweg"
 msgstr "Cités de l’énergie vers 2000 watts"
 
 msgid "ch.bfe.energiestaedte-energieregionen"
-msgstr "Région-Energie"
+msgstr "Régions-Energie"
 
 msgid "ch.bfe.kernkraftwerke"
 msgstr "Centrales nucléaires"
