@@ -92,7 +92,9 @@
         for (var i in layer.features) {
           $http.get(layerUrl + '/' + layer.features[i].id + '/' +
               (extended[bodId] ? 'extendedHtmlPopup' : 'htmlPopup'), {
-            lang: lang
+            params: {
+              lang: lang
+            }
           }).success(function(data, status, headers, config) {
             printElementLoaded(data, bodId);
           }).error(function(data, status, headers, config) {
