@@ -58,10 +58,7 @@
         //we only support certain languages
         function fixLang(langa) {
           var l = langa;
-          if (langa == 'it') {
-            l = 'fr';
-          } else if (langa == 'en' ||
-                     langa == 'rm') {
+          if (langa == 'rm') {
             l = 'de';
           }
           return l;
