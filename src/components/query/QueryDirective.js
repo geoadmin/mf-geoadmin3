@@ -531,6 +531,12 @@
           if (data) {
             data.destroy();
           }
+          if (filter.value && gaBrowserSniffer.msie <= 9) {
+            // We manually set then trigger a change event to update correctly
+            // the placeholder directive
+            input.val(filter.value);
+            input.change();
+          }
           if (filter.attribute && filter.attribute.inputType == 'date') {
             input.datetimepicker({
               pickDate: true,

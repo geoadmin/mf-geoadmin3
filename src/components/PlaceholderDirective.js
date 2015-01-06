@@ -50,6 +50,12 @@
           if (elt.val() == '') {
             displayPlaceholder(elt);
           }
+        }).change(function(evt) {
+          var elt = $(evt.target);
+          if (elt.val() != elt.attr('placeholder')) {
+            elt.css('color', 'inherit');
+            isPlaceHolderDisplayed = false;
+          }
         });
 
         attrs.$observe('placeholder', function() {
