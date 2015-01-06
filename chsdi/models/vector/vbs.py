@@ -16,7 +16,7 @@ class Kulturgueter(Base, Vector):
     __queryable_attributes__ = ['zkob']
     __bodId__ = 'ch.babs.kulturgueter'
     __extended_info__ = True
-    __label__ = 'id'
+    __label__ = 'zkob'
     id = Column('kgs_nr', Integer, primary_key=True)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
     zkob = Column('zkob', Text)
