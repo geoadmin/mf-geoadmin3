@@ -9,6 +9,49 @@
 Release Notes
 =============
 
+.. _releasenotes_20150107:
+
+Release 20150107 - Wednesday, January 7th 2015
+----------------------------------------------
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_141223...r_150107>`__
+
+`MAP <//map.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+
+- New topic aviation
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_141223...r_150107>`__
+
+
+Geodata
+*******
+
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Journey through time - Maps <//map.geo.admin.ch/?layers=ch.swisstopo.zeitreihen>`__ (ch.swisstopo.zeitreihen)                                       |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Floodplains AuLaV <//map.geo.admin.ch/?layers=ch.bafu.schutzgebiete-aulav_auen>`__ (ch.bafu.schutzgebiete-aulav_auen)                               |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Game reserves AuLaV <//map.geo.admin.ch/?layers=ch.bafu.schutzgebiete-aulav_jagdbanngebiete>`__ (ch.bafu.schutzgebiete-aulav_jagdbanngebiete)       |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Mirelandscapes AuLaV <//map.geo.admin.ch/?layers=ch.bafu.schutzgebiete-aulav_moorlandschaften>`__ (ch.bafu.schutzgebiete-aulav_moorlandschaften)    |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Other protected areas AuLaV <//map.geo.admin.ch/?layers=ch.bafu.schutzgebiete-aulav_uebrige>`__ (ch.bafu.schutzgebiete-aulav_uebrige)               |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Protected areas MIL <//map.geo.admin.ch/?layers=ch.bafu.schutzgebiete-luftfahrt>`__ (ch.bafu.schutzgebiete-luftfahrt)                               |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Air navigation obstacles <//map.geo.admin.ch/?layers=ch.bazl.luftfahrthindernis>`__ (ch.bazl.luftfahrthindernis)                                    |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Points of interest <//map.geo.admin.ch/?layers=ch.bazl.points-of-interest>`__ (ch.bazl.points-of-interest)                                          |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------+
+
 .. _releasenotes_20141223:
 
 Release 20141223 - Tuesday, December 23th 2014
