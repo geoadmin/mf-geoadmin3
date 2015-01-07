@@ -343,7 +343,7 @@ def _get_features_for_filters(params, models, maxFeatures=None, where=None):
                 )
                 # Can be None because of max and min scale
                 if geomFilter is not None:
-                    ## TODO Remove code specific clauses
+                    # TODO Remove code specific clauses
                     query = query.order_by(model.bgdi_order) if hasattr(model, 'bgdi_order') else query
                     query = query.filter(geomFilter)
 
@@ -472,9 +472,9 @@ def _format_search_text(columnType, searchText):
 def _process_feature(feature, params):
     # TODO find a way to use translate directly in the model
     if params.returnGeometry:
-      f = feature.__geo_interface__
+        f = feature.__geo_interface__
     else:
-      f = feature.__interface__
+        f = feature.__interface__
 
     if hasattr(f, 'extra'):
         layerBodId = f.extra['layerBodId']
