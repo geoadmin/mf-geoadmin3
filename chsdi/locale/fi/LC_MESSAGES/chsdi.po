@@ -140,9 +140,6 @@ msgstr "Ecke unten links"
 msgid "Lower right corner"
 msgstr "Ecke unten rechts"
 
-msgid "MCPFE"
-msgstr "Schutzflächentyp"
-
 msgid "Man-made"
 msgstr "Künstlich"
 
@@ -202,9 +199,6 @@ msgstr "Rennbahn"
 
 msgid "Ruine"
 msgstr "Historische Ruine"
-
-msgid "SGNr"
-msgstr "Reservatsnummer"
 
 msgid "Schloss"
 msgstr "Schloss"
@@ -1360,6 +1354,27 @@ msgstr "http://www.bafu.admin.ch/index.html?lang=de"
 
 msgid "ch.bafu.waldreservate"
 msgstr "Waldreservate"
+
+msgid "ch.bafu.waldreservate.gisflaeche"
+msgstr "Fläche [ha]"
+
+msgid "ch.bafu.waldreservate.mcpfe"
+msgstr "Schutzflächentyp"
+
+msgid "ch.bafu.waldreservate.name"
+msgstr "Num"
+
+msgid "ch.bafu.waldreservate.objnummer"
+msgstr "Reservatsnummer"
+
+msgid "ch.bafu.waldreservate.waldreservate_1_1"
+msgstr "Keine aktiven Eingriffe"
+
+msgid "ch.bafu.waldreservate.waldreservate_1_2"
+msgstr "Minimale Eingriffe"
+
+msgid "ch.bafu.waldreservate.waldreservate_1_3"
+msgstr "Biodiversitätsförderung durch gezielte Eingriffe"
 
 msgid "ch.bafu.waldschadenflaechen-lothar"
 msgstr "Sturmschaden Lothar"
@@ -4731,15 +4746,6 @@ msgstr "Ort"
 
 msgid "tt_wald_natur"
 msgstr "Naturnahe Flächen, Wald"
-
-msgid "tt_waldreservate_1_1"
-msgstr "Keine aktiven Eingriffe"
-
-msgid "tt_waldreservate_1_2"
-msgstr "Minimale Eingriffe"
-
-msgid "tt_waldreservate_1_3"
-msgstr "Biodiversitätsförderung durch gezielte Eingriffe"
 
 msgid "tt_wasserflae"
 msgstr "Wasserflächen"
