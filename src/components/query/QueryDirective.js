@@ -531,7 +531,7 @@
           if (data) {
             data.destroy();
           }
-          if (filter.value && gaBrowserSniffer.msie <= 9) {
+          if (gaBrowserSniffer.msie <= 9 && filter.value) {
             // We manually set then trigger a change event to update correctly
             // the placeholder directive
             input.val(filter.value);
