@@ -91,6 +91,11 @@ class TestMapServiceView(TestsBase):
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(resp.json['results'][0]['geometry']['type'] in ['Polygon', 'GeometryCollection'])
 
+    def test_identify_gen50_geom(self):
+        params = {'geometryType': 'esriGeometryPoint', 'returnGeometry': 'false', 'layers': 'all:ch.swisstopo-vd.geometa-gemeinde', 'geometry': '561289,185240', 'mapExtent': '561156.75,185155,561421.25,185325', 'imageDisplay': '529,340,96', 'tolerance': '5'}
+        resp = self.testapp.get('/rest/services/ech/MapServer/identify', params=params, status=200)
+        self.failUnless(len(resp.json['results']) != 0)
+
     def test_identify_no_geom(self):
         params = {'geometry': '630000,245000,645000,265000', 'geometryType': 'esriGeometryEnvelope', 'imageDisplay': '500,600,96', 'mapExtent': '545132,147068,550132,150568', 'tolerance': '1', 'layers': 'all', 'returnGeometry': 'false'}
         resp = self.testapp.get('/rest/services/ech/MapServer/identify', params=params, status=200)
