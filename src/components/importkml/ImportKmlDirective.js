@@ -244,8 +244,15 @@
               // Register drag'n'drop events on <body>
               var dropZone = angular.element(
                   '<div class="ga-import-kml-drop-zone">' +
-                  '  <div>{{"drop_me_here" | translate}}</div>' +
+                  '  <div translate>drop_me_here</div>' +
                   '</div>');
+
+              // Hide the drop zone on click, used when for some reasons unknown
+              // the element stays displayed. See:
+              // https://github.com/geoadmin/mf-geoadmin3/issues/1908
+              dropZone.click(function() {
+                this.style.display = 'none';
+              });
 
               // We use $compile only for the translation,
               // $translate.instant("drop_me_here") didn't work in prod mode
