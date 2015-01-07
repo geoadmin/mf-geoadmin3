@@ -512,6 +512,9 @@
             attribution: options.attribution
           };
 
+          // Be sure to remove all html tags
+          layerOptions.label = $('<p>' + layerOptions.label + '<p>').text();
+
           var olLayer;
           if (options.useImageVector === true) {
             layerOptions.source = new ol.source.ImageVector({
