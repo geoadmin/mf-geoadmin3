@@ -120,6 +120,26 @@ class TestMapServiceView(TestsBase):
         params = {'geometry': '618953,170093', 'geometryType': 'esriGeometryPoint', 'imageDisplay': '1920,576,96', 'layers': 'all:    ch.bav.kataster-belasteter-standorte-oev.oereb,ch.bazl.sicherheitszonenplan.oereb', 'mapExtent': '671164.31244,253770,690364.31244,259530', 'tolerance': '5', 'geometryFormat': 'interlis'}
         resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=400)
 
+    def test_identify_query_time(self):
+        params = {'geometryFormat': 'geojson', 'layers': 'all:ch.bazl.luftfahrthindernis', 'where': 'abortionaccomplished>\'2014-12-01\''}
+        resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+
+    def test_identify_query_number(self):
+        params = {'geometryFormat': 'geojson', 'layers': 'all:ch.bazl.luftfahrthindernis', 'where': 'maxheightagl>210'}
+        resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+
+    def test_identify_query_text(self):
+        params = {'geometryFormat': 'geojson', 'layers': 'all:ch.bazl.luftfahrthindernis', 'where': 'state ilike \'a\''}
+        resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+
+    def test_identify_query_and_bbox(self):
+        params = {'geometryType': 'esriGeometryEnvelope', 'geometry': '502722,36344,745822,253444', 'imageDisplay': '0,0,0', 'mapExtent': '0,0,0,0', 'tolerance': '0', 'layers': 'all:ch.bazl.luftfahrthindernis', 'where': 'obstacletype=\'Antenna\''}
+        resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+
     def test_find_scan(self):
         params = {'layer': 'ch.bfs.gebaeude_wohnungs_register', 'searchField': 'egid', 'searchText': '1231641'}
         resp = self.testapp.get('/rest/services/all/MapServer/find', params=params, status=200)
