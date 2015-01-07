@@ -471,7 +471,11 @@ def _format_search_text(columnType, searchText):
 
 def _process_feature(feature, params):
     # TODO find a way to use translate directly in the model
-    f = feature.__geo_interface__ if params.returnGeometry else feature.__interface__
+    if params.returnGeometry:
+      f = feature.__geo_interface__
+    else:
+      f = feature.__interface__
+
     if hasattr(f, 'extra'):
         layerBodId = f.extra['layerBodId']
         f.extra['layerName'] = params.translate(layerBodId)

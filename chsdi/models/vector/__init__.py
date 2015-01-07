@@ -169,12 +169,12 @@ class Vector(GeoInterface):
         return None
 
     def getOrmColumnsNames(self):
-        primaryKeyColumn = self.primary_key_column()
-        geomColumn = self.geometry_column()
-        geomColumnToReturn = self.geometry_column_to_return()
+        primaryKeyColumn = self.__mapper__.get_property_by_column(self.primary_key_column()).key
+        geomColumnKey = self.__mapper__.get_property_by_column(self.geometry_column()).key
+        geomColumnToReturnKey = self.__mapper__.get_property_by_column(self.geometry_column_to_return()).key
         for column in self.__mapper__.columns:
             ormColumnName = self.__mapper__.get_property_by_column(column).key
-            if ormColumnName not in (primaryKeyColumn.key, geomColumn.key, geomColumnToReturn.key):
+            if ormColumnName not in (primaryKeyColumn, geomColumnKey, geomColumnToReturnKey):
                 yield ormColumnName
 
     def getAttributesKeys(self):
