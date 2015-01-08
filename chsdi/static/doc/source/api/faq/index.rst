@@ -112,6 +112,9 @@ Here is a list of all the freely accessible layers:
              var myInnerHtml_notfree =  "<br><table border=\"0\">";
              var layers_notfree = metadata.layers;
              var counterNotFree = 1;
+             layers_notfree.push({'layerBodId': 'ch.swisstopo.pixelkarte-grau'});
+             layers_notfree.push({'layerBodId': 'ch.swisstopo.pixelkarte-farbe'});
+             layers_notfree.push({'layerBodId': 'ch.swisstopo.swissimage'});
              for (var i = 0; i < layers_notfree.length; i++) {
                 var nflayer = layers_notfree[i];
                 if (layers_api[nflayer.layerBodId] &&
