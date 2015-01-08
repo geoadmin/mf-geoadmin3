@@ -506,7 +506,7 @@
                 call(this, layer);
             var source = layer.getSource();
             var tileGrid = source.getTileGrid();
-            if (!config.background && layer.visible) {
+            if (!config.background && layer.visible && config.timeEnabled) {
               layersYears.push(layer.time);
             }
             angular.extend(enc, {
@@ -643,7 +643,9 @@
         var years = years.map(function(ts) {
           return ts.length > 4 ? ts.slice(0, 4) : ts;
         });
-        defaultPage['timestamp'] = years.join(',');
+        if (currentTime != undefined) {
+            defaultPage['timestamp'] = years.join(',');
+        }
       }
       if ($scope.options.graticule) {
         var graticule = {
