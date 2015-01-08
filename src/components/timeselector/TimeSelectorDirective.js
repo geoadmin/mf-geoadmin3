@@ -36,6 +36,14 @@
       controller: 'GaTimeSelectorDirectiveController',
       link: function(scope, elt, attrs, controller) {
 
+        // Deactivate user form submission with Enter key
+        elt.keypress(function(evt) {
+          var charCode = evt.charCode || evt.keyCode;
+          if (charCode == 13) { //Enter key's keycode
+            return false;
+          }
+        });
+
         // Enable the button if it is disable
         var enable = function() {
           if (scope.isDisable) {
