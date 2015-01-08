@@ -643,9 +643,7 @@
         var years = years.map(function(ts) {
           return ts.length > 4 ? ts.slice(0, 4) : ts;
         });
-        if (currentTime != undefined) {
-            defaultPage['timestamp'] = years.join(',');
-        }
+        defaultPage['timestamp'] = years.join(',');
       }
       if ($scope.options.graticule) {
         var graticule = {
