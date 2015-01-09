@@ -65,7 +65,7 @@
           color: [255, 0, 0, 0.9]
         }),
         stroke: new ol.style.Stroke({
-          color: [255, 0, 0, 1],
+          color: [255, 255, 255, 1],
           width: 3
         })
       })
@@ -121,7 +121,29 @@
       'transparentCircle': transparentCircle
     };
 
-    this.$get = function() {
+    this.$get = function(gaGlobalOptions) {
+
+      var imgPath = gaGlobalOptions.resourceUrl + 'img/';
+      var headingStyle = new ol.style.Style({
+        image: new ol.style.Icon({
+          rotateWithView: true,
+          src: imgPath + 'geolocation_heading_marker.png'
+        })
+      });
+
+      var geolocationStyleFunction = function(feature, res) {
+        var rotation = feature.get('rotation');
+        if (angular.isDefined(rotation)) {
+          headingStyle.getImage().setRotation(rotation);
+          return [headingStyle];
+        }
+        return [geolocationStyle];
+      };
+
+      var stylesFunction = {
+        'geolocation': geolocationStyleFunction
+      };
+
       return {
         // Rules for the z-index (useful for a correct selection):
         // Sketch features (when modifying): 60
@@ -142,8 +164,8 @@
           return styles[type];
         },
         getStyleFunction: function(type) {
-          return function(feature, resolution) {
-            return styles[feature.get('styleId')];
+          return stylesFunction[type] || function(feature, resolution) {
+            return styles[type];
           };
         },
         // Defines a text stroke (white or black) depending on a text color
