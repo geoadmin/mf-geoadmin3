@@ -550,12 +550,11 @@ itemscope itemtype="http://schema.org/WebApplication"
               <div ng-show='printInProgress' class='pull-right'>{{printProgressPercentage}}%</div>
             </a>
             <div id="collapseTwo"
-                 class="panel-collapse collapse"
-                 ng-switch="options.features.length">
-              <div ng-switch-when="0" class="panel-body">
+                 class="panel-collapse collapse">
+              <div ng-show="options.features.length == 0" class="panel-body">
                 <div class="ga-no-result" translate>no_feature_results</div>
               </div>
-              <div ng-switch-default
+              <div ng-show="options.features.length > 0"
                    ga-featuretree 
                    ga-featuretree-map="map"
                    ga-featuretree-options="options" 
