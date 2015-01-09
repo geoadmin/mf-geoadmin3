@@ -67,6 +67,9 @@
               // Unless the gaLayersChange event has labelsOnly set to
               // true, in which case we don't change the current background
               // layer.
+              //
+              // Specific use case when we go offline to online, in this use
+              // case we want to keep the current bg layer.
 
               var currentLayer;
               if (firstLayerChangeEvent) {
@@ -76,9 +79,10 @@
               if (!currentLayer && !data.labelsOnly) {
                 currentLayer = backgroundLayers[0].id;
               }
-              if (currentLayer) {
+              if (currentLayer && !isOfflineToOnline) {
                 scope.currentLayer = currentLayer;
               }
+              isOfflineToOnline = false;
             });
 
             scope.$watch('currentLayer', function(newVal, oldVal) {
@@ -99,6 +103,13 @@
                   scope.map.removeLayer(arr[arr.length - 1]);
                 }
               });
+
+            // We must know when the app goes from offline to online.
+            var isOfflineToOnline = false;
+            scope.$on('gaNetworkStatusChange', function(evt, offline) {
+              isOfflineToOnline = !offline;
+            });
+
           }
         };
       });
