@@ -16,11 +16,11 @@
 
   module.controller('GaTimeSelectorDirectiveController',
     function($scope, gaLayers, gaLayerFilters, gaPermalink, gaBrowserSniffer) {
+      $scope.isActive = false;
       $scope.layers = $scope.map.getLayers().getArray();
       $scope.layerFilter = gaLayerFilters.timeEnabledLayersFilter;
       $scope.permalinkValue = parseFloat(gaPermalink.getParams().time);
       $scope.fromPermalink = !isNaN($scope.permalinkValue);
-      $scope.isActive = $scope.fromPermalink;
     }
   );
 
@@ -107,8 +107,8 @@
   });
 
   module.directive('gaTimeSelector',
-    function($rootScope, gaBrowserSniffer, gaDebounce, gaLayerFilters, gaLayers,
-        gaPermalink) {
+    function($rootScope, $timeout, gaBrowserSniffer, gaDebounce,
+        gaLayerFilters, gaLayers, gaPermalink) {
 
       // Magnetize a year to the closest available year
       var magnetize = function(currentYear, availableYears) {
@@ -171,17 +171,26 @@
               scope.currentYear = magnetize(scope.currentYear,
                   scope.availableYears);
             }
-            if (olLayers.length == 0 && !scope.fromPermalink) {
+            if (olLayers.length == 0) {
               scope.isActive = false;
-            } else {
-              scope.fromPermalink = false;
             }
           });
 
-          scope.$watch('isActive', function(active) {
-            if (angular.isDefined(active)) {
-              applyNewYear((active ? scope.currentYear : undefined));
+          scope.$watch('isActive', function(active, old) {
+            if (angular.isDefined(active) && active != old) {
+              applyNewYearDebounced((active ? scope.currentYear : undefined));
               elt.toggle(active);
+              if (scope.fromPermalink) {
+                // HACK to fix:
+                // https://github.com/geoadmin/mf-geoadmin3/issues/2054
+                // The html is correct but value is not displayed
+                $timeout(function() {
+                  elt.find('select option[selected]').
+                      attr('selected', 'selected');
+                }, 0, false);
+                scope.fromPermalink = false;
+              }
+
             } else {
               elt.hide();
             }
