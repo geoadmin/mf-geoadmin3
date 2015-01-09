@@ -40,7 +40,7 @@
               }
 
               function validateFormat(fileName) {
-                if (/(pdf|zip|png|jpeg|jpg|kml|kmz|gpx)$/.test(fileName)) {
+                if (/(pdf|zip|png|jpeg|jpg|kml|kmz|gpx)$/gi.test(fileName)) {
                   return true;
                 } else {
                   alert($translate.instant('feedback_unsupported_format'));
