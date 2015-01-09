@@ -91,19 +91,26 @@
             var fromMouseDown = false;
             scope.tree = {};
 
+            var drawFeature = function(f) {
+              loadGeojson(scope, f).then(function() {
+                if (f.geojson) {
+                  gaPreviewFeatures.add(map,
+                      parser.readFeature(f.geojson));
+                }
+              });
+            };
+
+            // Draw the current results
+            var drawFeatures = function() {
+              for (var i = 0, ii = scope.features.length; i < ii; i++) {
+                drawFeature(scope.features[i]);
+              }
+            };
+
             var updateTree = function(features) {
               gaPreviewFeatures.clearHighlight();
               gaPreviewFeatures.clear(map);
               var res = features, tree = {};
-
-              var drawFeature = function(f) {
-                loadGeojson(scope, f).then(function() {
-                  if (f.geojson) {
-                    gaPreviewFeatures.add(map,
-                        parser.readFeature(f.geojson));
-                  }
-                });
-              };
 
               if (features) {
                 for (var i = 0, li = res.length; i < li; i++) {
@@ -172,6 +179,7 @@
                     onCloseCB: function() {
                       if (scope.isFeatureSelected(feature)) {
                         featureSelected = null;
+                        drawFeatures();
                       }
                     }
                   });
