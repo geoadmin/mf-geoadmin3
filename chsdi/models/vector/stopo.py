@@ -1817,3 +1817,51 @@ class ga25_point_struct(Base, Vector):
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
 
 register('ch.swisstopo.geologie-geologischer_atlas', ga25_point_struct)
+
+
+class ga25_polygon_aux_1(Base, Vector):
+    __tablename__ = 'view_ga25_polygon_aux_1'
+    __table_args__ = ({'schema': 'geol', 'autoload': False})
+    __template__ = 'templates/htmlpopup/ga25_polygon.mako'
+    __bodId__ = 'ch.swisstopo.geologie-geologischer_atlas'
+    __label__ = 'description'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    basisdatensatz = Column('basisdatensatz', Text)
+    description = Column('description', Text)
+    tecto = Column('tecto', Text)
+    url_legend = Column('url_legende', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-geologischer_atlas', ga25_polygon_aux_1)
+
+
+class ga25_polygon_aux_2(Base, Vector):
+    __tablename__ = 'view_ga25_polygon_aux_2'
+    __table_args__ = ({'schema': 'geol', 'autoload': False})
+    __template__ = 'templates/htmlpopup/ga25_polygon.mako'
+    __bodId__ = 'ch.swisstopo.geologie-geologischer_atlas'
+    __label__ = 'description'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    basisdatensatz = Column('basisdatensatz', Text)
+    description = Column('description', Text)
+    tecto = Column('tecto', Text)
+    url_legend = Column('url_legende', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-geologischer_atlas', ga25_polygon_aux_2)
+
+
+class ga25_polygon_main(Base, Vector):
+    __tablename__ = 'view_ga25_polygon_main'
+    __table_args__ = ({'schema': 'geol', 'autoload': False})
+    __template__ = 'templates/htmlpopup/ga25_polygon.mako'
+    __bodId__ = 'ch.swisstopo.geologie-geologischer_atlas'
+    __label__ = 'description'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    basisdatensatz = Column('basisdatensatz', Text)
+    description = Column('description', Text)
+    tecto = Column('tecto', Text)
+    url_legend = Column('url_legende', Text)
+    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+
+register('ch.swisstopo.geologie-geologischer_atlas', ga25_polygon_main)
