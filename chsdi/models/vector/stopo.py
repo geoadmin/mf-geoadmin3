@@ -50,9 +50,8 @@ class SkitourenkarteMetadata (Base, Vector):
     __table_args__ = ({'schema': 'datenstand', 'autoload': False})
     __template__ = 'templates/htmlpopup/skitouren_metadata.mako'
     __bodId__ = 'ch.swisstopo.skitourenkarte-50.metadata'
-    __label__ = 'lknr'
-    id = Column('oid', Integer, primary_key=True)
-    lknr = Column('lknr', Text)
+    __label__ = 'id'
+    id = Column('lknr', Text, primary_key=True)
     name = Column('name', Text)
     legendecms2007 = Column('letzte_publikation', Text)
     the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))

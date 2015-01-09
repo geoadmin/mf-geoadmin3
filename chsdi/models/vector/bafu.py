@@ -1270,7 +1270,7 @@ class sturm_staudruck_30(Base, Vector):
     __bodId__ = 'ch.bafu.sturm-staudruck_30'
     __template__ = 'templates/htmlpopup/sturm_staudruck.mako'
     __label__ = 'id'
-    id = Column('oid', Integer, primary_key=True)
+    id = Column('bgdi_id', Integer, primary_key=True)
     staudruck_30 = Column('staudruck_30', Text)
     staudruck_50 = Column('staudruck_50', Text)
     staudruck_100 = Column('staudruck_100', Text)
@@ -1286,7 +1286,7 @@ class sturm_staudruck_50(Base, Vector):
     __bodId__ = 'ch.bafu.sturm-staudruck_50'
     __template__ = 'templates/htmlpopup/sturm_staudruck.mako'
     __label__ = 'id'
-    id = Column('oid', Integer, primary_key=True)
+    id = Column('bgdi_id', Integer, primary_key=True)
     staudruck_30 = Column('staudruck_30', Text)
     staudruck_50 = Column('staudruck_50', Text)
     staudruck_100 = Column('staudruck_100', Text)
@@ -1302,7 +1302,7 @@ class sturm_staudruck_100(Base, Vector):
     __bodId__ = 'ch.bafu.sturm-staudruck_100'
     __template__ = 'templates/htmlpopup/sturm_staudruck.mako'
     __label__ = 'id'
-    id = Column('oid', Integer, primary_key=True)
+    id = Column('bgdi_id', Integer, primary_key=True)
     staudruck_30 = Column('staudruck_30', Text)
     staudruck_50 = Column('staudruck_50', Text)
     staudruck_100 = Column('staudruck_100', Text)
@@ -1318,7 +1318,7 @@ class sturm_staudruck_300(Base, Vector):
     __bodId__ = 'ch.bafu.sturm-staudruck_300'
     __template__ = 'templates/htmlpopup/sturm_staudruck.mako'
     __label__ = 'id'
-    id = Column('oid', Integer, primary_key=True)
+    id = Column('bgdi_id', Integer, primary_key=True)
     staudruck_30 = Column('staudruck_30', Text)
     staudruck_50 = Column('staudruck_50', Text)
     staudruck_100 = Column('staudruck_100', Text)
