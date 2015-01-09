@@ -29,6 +29,7 @@
                                 'ng-repeat="res in options.results">' +
                              '<h2 ng-bind-html="res[0]"></h2>' +
                              '<div ng-bind-html="res[1]"></div>' +
+                             '<br>' +
                              '<img ng-src="{{res[2]}}" ' +
                                   'draggable="false"/>' +
                            '</div>';
