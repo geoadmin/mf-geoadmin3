@@ -4,13 +4,16 @@
 import os.path
 import urllib
 import json
+import re
 import copy
 import datetime
 import time
 import shutil
 import multiprocessing
 import random
-from urlparse import urlsplit
+from urlparse import urlparse, parse_qs, parse_qsl, urlsplit, urlunparse
+from urllib import urlencode, quote_plus, unquote_plus
+
 from httplib2 import Http
 from collections import OrderedDict
 
@@ -117,6 +120,52 @@ def _get_timestamps(spec, api_url):
                     results[ts] = [idx]
 
     return OrderedDict(sorted(results.items(), key=lambda t: t[0]))
+
+
+def _qrcodeurlparse(raw_url):
+    ''' Parse an qrcodegenerator ready link '''
+
+    pattern = re.compile(ur'(https?:\/\/.*)\?url=(.*)')
+
+    m = re.search(pattern, raw_url)
+
+    try:
+        (qrcode_service_url, qs) = m.groups()
+
+        rawurl_to_shorten = unquote_plus(qs)
+        scheme, netloc, path, params, query, fragment = urlparse(rawurl_to_shorten)
+        map_url = urlunparse((scheme, netloc, path, None, None, None))
+        parsed_params = parse_qs(query)
+        params = dict([(key, ','.join(parsed_params[key])) for key in parsed_params.keys() if isinstance(parsed_params[key], list)])
+        log.debug('map params=%s', params)
+
+        return (qrcode_service_url, map_url, params)
+    except:
+        return False
+
+
+def _qrcodeurlunparse(url_tuple):
+    (qrcode_service_url, map_url, params) = url_tuple
+
+    quoted_map_url = quote_plus(map_url + "?url=" + unquote_plus(urlencode(params)))
+
+    return qrcode_service_url + "?url=" + quoted_map_url
+
+
+def _shorten(url, api_url='http://api3.geo.admin.ch'):
+    ''' Shorten a possibly long url '''
+
+    http = Http(disable_ssl_certificate_validation=True)
+
+    shorten_url = api_url + '/shorten.json?url=%s' % quote_plus(url)
+
+    try:
+        resp, content = http.request(shorten_url)
+        if int(resp.status) == 200:
+            shorturl = json.loads(content)['shorturl']
+            return shorturl
+    except:
+        return url
 
 
 def create_pdf_path(print_temp_dir, unique_filename):
@@ -267,7 +316,28 @@ def create_and_merge(info):
                     pass
 
             if ts is not None:
+                qrcodeurl = spec['qrcodeurl']
                 tmp_spec['pages'][0]['timestamp'] = str(ts[0:4]) + "\n"
+
+                ''' Adapteds the qrcode url and shortlink to match the timestamp
+                    on every page of the PDF document'''
+
+                parsed_qrcode_url = _qrcodeurlparse(qrcodeurl)
+                if parsed_qrcode_url:
+                    (qrcode_service_url, map_url, map_params) = parsed_qrcode_url
+                    if 'time' in map_params:
+                        map_params['time'] = ts[0:4]
+                    if 'layers_timestamp' in map_params:
+                        map_params['layers_timestamp'] = ts
+
+                    time_updated_qrcodeurl = _qrcodeurlunparse((qrcode_service_url, map_url, map_params))
+                    shortlink = _shorten(map_url + "?" + urlencode(map_params))
+
+                    tmp_spec['qrcodeurl'] = time_updated_qrcodeurl
+                    tmp_spec['pages'][0]['shortLink'] = shortlink
+                    log.debug('[print_create] QRcodeURL: %s', time_updated_qrcodeurl)
+                    log.debug('[print_create] shortLink: %s', shortlink)
+
             if 'legends' in tmp_spec.keys() and ts != last_timestamp:
                 del tmp_spec['legends']
                 tmp_spec['enableLegends'] = False

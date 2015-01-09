@@ -22,7 +22,7 @@ echo "Using server" $HOST
 urlEncoded=$(python -c "import urllib; print urllib.quote('''${HOST}/${PRINT}''')")
 
 
-json=$(time curl   --max-time 600  --header "Content-Type:application/json; charset=UTF-8" --header "Referer: http://map.geo.admin.ch" --data @${SPECFILE} -X POST "${HOST}/${PRINT}/create.json?url=${urlEncoded}")
+json=$(time curl   --max-time 600  --header "X-SearchServer-Authorized: true" --header "Content-Type:application/json; charset=UTF-8" --header "Referer: http://map.geo.admin.ch" --data @${SPECFILE} -X POST "${HOST}/${PRINT}/create.json?url=${urlEncoded}")
 
 echo "JSON="  ${json}
 
