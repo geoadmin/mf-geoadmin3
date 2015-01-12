@@ -115,7 +115,6 @@
         }
         $scope.globals.catalogShown = showCatalog;
       });
-
       $rootScope.$on('$translateChangeEnd', function() {
         $scope.langId = $translate.use();
         $('meta[name=description]').attr('content', $translate.instant('page_description'));

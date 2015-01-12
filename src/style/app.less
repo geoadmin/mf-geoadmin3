@@ -1012,9 +1012,15 @@ ul.panel-body-wide {
   0% { width: 0%; }
   100% { width: 100%; }
 }
+.ga-spin() {
+  -webkit-animation: spin 2s infinite linear;
+  animation: spin 2s infinite linear;
+}
+
 #loader {
   display: none;
-  z-index: 0;
+  z-index: 1050; /* on top of the map but not on popup */
+  opacity: 0;
 
   @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
     .transition(opacity .20s ease);
@@ -1027,41 +1033,31 @@ ul.panel-body-wide {
     font-size: 28px;
     background-color: white;
     color: red;
-    opacity: 0;
+    opacity: 1;
+    .ga-spin();
   }
 
   @media (max-width: @screen-phone) {
-    transition: none;
     top: 0;
     left: 0;
     height: 4px;
-    width: 0;
     background: #F00;
+    -webkit-animation: loader 1s infinite;
+    animation: loader 1s infinite;
     &:before {
       content: normal;
     }
   }
 }
+.offline #loader, .online:not(.ga-wait-cursor) #loader {
+  display: none;
+  opacity: 0;
+  -webkit-animation: none;
+  animtaion: none;
+}
 
 .online.ga-wait-cursor {
   cursor: wait;
-
-  #loader {
-    z-index: 5000;
-    opacity: 1;
-  }
-
-  .ga-loader {
-    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-      -webkit-animation: spin 2s infinite linear;
-      animation: spin 2s infinite linear;
-    }
-    
-    @media (max-width: @screen-phone) {
-      -webkit-animation: loader 1s infinite;
-      animation: loader 1s infinite;
-    }
-  }
 }
 
 .homescreen {
