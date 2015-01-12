@@ -1,11 +1,12 @@
 @ga-popup-max-height: 400px;
 @ga-popup-reduced-height: 40px;
+@ga-popup-max-width: 620px;
 
 [ga-popup] {
   display: none;
   overflow: hidden;
   min-width: 200px;
-  max-width: 600px;
+  max-width: @ga-popup-max-width;
   min-height: 100px;
   max-height: @ga-popup-max-height;
   z-index: 2000;
