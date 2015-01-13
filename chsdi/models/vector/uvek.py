@@ -145,7 +145,7 @@ class ZAEHLSTELLENREGLOC(Base, Vector):
     __table_args__ = ({'schema': 'astra', 'autoload': False})
     __template__ = 'templates/htmlpopup/verkehrszaehlstellen.mako'
     __bodId__ = 'ch.astra.strassenverkehrszaehlung_messstellen-regional_lokal'
-    __queryable_attributes__ = ['nr', 'zaehlstellen_bezeichnung']
+    __queryable_attributes__ = ['id', 'zaehlstellen_bezeichnung']
     __extended_info__ = True
     __label__ = 'zaehlstellen_bezeichnung'
     id = Column('nr', Integer, primary_key=True)
@@ -178,7 +178,7 @@ class ZAEHLSTELLENUEBER(Base, Vector):
     __table_args__ = ({'schema': 'astra', 'autoload': False})
     __template__ = 'templates/htmlpopup/verkehrszaehlstellen.mako'
     __bodId__ = 'ch.astra.strassenverkehrszaehlung_messstellen-uebergeordnet'
-    __queryable_attributes__ = ['nr', 'zaehlstellen_bezeichnung']
+    __queryable_attributes__ = ['id', 'zaehlstellen_bezeichnung']
     __extended_info__ = True
     __label__ = 'zaehlstellen_bezeichnung'
     id = Column('nr', Integer, primary_key=True)

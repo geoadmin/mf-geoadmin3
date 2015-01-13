@@ -134,7 +134,7 @@ def feature_attributes(request):
     fields = []
     for row_nr, row in enumerate(results):
         for attr_nr, attr in enumerate(attributes):
-            attrs = row.getAttributes()
+            attrs = row.getAttributes(excludePkey=False)
             if row_nr == 0:
                 field_type = _find_type(models[0](), attr)
                 fields.append({'name': attr, 'type': str(field_type),

@@ -168,22 +168,27 @@ class Vector(GeoInterface):
             return cls.__mapper__.columns.get(columnName)
         return None
 
-    def getOrmColumnsNames(self):
+    def getOrmColumnsNames(self, excludePkey=True):
         primaryKeyColumn = self.__mapper__.get_property_by_column(self.primary_key_column()).key
         geomColumnKey = self.__mapper__.get_property_by_column(self.geometry_column()).key
         geomColumnToReturnKey = self.__mapper__.get_property_by_column(self.geometry_column_to_return()).key
+        if excludePkey:
+            keysToExclude = (primaryKeyColumn, geomColumnKey, geomColumnToReturnKey)
+        else:
+            keysToExclude = (geomColumnKey, geomColumnToReturnKey)
+
         for column in self.__mapper__.columns:
             ormColumnName = self.__mapper__.get_property_by_column(column).key
-            if ormColumnName not in (primaryKeyColumn, geomColumnKey, geomColumnToReturnKey):
+            if ormColumnName not in keysToExclude:
                 yield ormColumnName
 
     def getAttributesKeys(self):
-        attributes = [columnName for columnName in self.getOrmColumnsNames()]
+        attributes = [columnName for columnName in self.getOrmColumnsNames(excludePkey=False)]
         return attributes
 
-    def getAttributes(self):
+    def getAttributes(self, excludePkey=True):
         attributes = {}
-        for ormColumnName in self.getOrmColumnsNames():
+        for ormColumnName in self.getOrmColumnsNames(excludePkey=excludePkey):
             attribute = getattr(self, ormColumnName)
             attributes[ormColumnName] = formatAttribute(attribute)
         return self.insertLabel(attributes)
