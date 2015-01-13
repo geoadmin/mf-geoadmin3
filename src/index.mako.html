@@ -530,10 +530,10 @@ itemscope itemtype="http://schema.org/WebApplication"
            id="featuretree-popup">
         <div class="panel-group" id="accordion">
           <div class="panel panel-default">
-            <a class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+            <a class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#accordion-query">
               <span translate>queries</span>
             </a>
-            <div id="collapseOne" class="panel-collapse collapse in">
+            <div id="accordion-query" class="panel-collapse collapse in">
               <div class="panel-body"
                    ga-query
                    ga-query-map="map"
@@ -542,20 +542,18 @@ itemscope itemtype="http://schema.org/WebApplication"
               </div>
             </div>
           </div>
-          <div class="panel panel-default" ga-collapsible-trigger="(result.length > 0)">
-            <a class="panel-heading collapsed" id="headingTwo" data-toggle="collapse"
-            data-parent="#accordion" href="#collapseTwo"
-            ga-collapsible-show="options.featuresShown">
+          <div class="panel panel-default">
+            <a class="panel-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#accordion-tree"
+               ga-collapsible-show="options.featuresShown">
               <span translate>items</span> ({{options.features.length}})
               <div ng-show='printInProgress' class='pull-right'>{{printProgressPercentage}}%</div>
             </a>
-            <div id="collapseTwo"
-                 class="panel-collapse collapse"
-                 ng-switch="options.features.length">
-              <div ng-switch-when="0" class="panel-body">
+            <div id="accordion-tree"
+                 class="panel-collapse collapse">
+              <div ng-show="options.features.length == 0" class="panel-body">
                 <div class="ga-no-result" translate>no_feature_results</div>
               </div>
-              <div ng-switch-default
+              <div ng-show="options.features.length > 0"
                    ga-featuretree 
                    ga-featuretree-map="map"
                    ga-featuretree-options="options" 
