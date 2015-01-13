@@ -37,40 +37,6 @@
           Math.pow(a[0] - origin[0], 2));
     };
 
-    // Defines if a layer is cacheable at a specific data zoom level.
-    var isCacheableLayer = function(layer, z) {
-      if (layer.getSource() instanceof ol.source.TileImage) {
-        var resolutions = layer.getSource().getTileGrid().getResolutions();
-        var max = layer.getMaxResolution() || resolutions[0];
-        if (!z && max > minRes) {
-          return true;
-        }
-        var min = layer.getMinResolution() ||
-            resolutions[resolutions.length - 1];
-        var curr = resolutions[z];
-        if (curr && max > curr && curr >= min) {
-          return true;
-        }
-      }
-      return false;
-    };
-
-
-    // Get cacheable layers of a map.
-    var getCacheableLayers = function(layers) {
-      var cache = [];
-      for (var i = 0, ii = layers.length; i < ii; i++) {
-        var layer = layers[i];
-        if (layer instanceof ol.layer.Group) {
-          cache = cache.concat(
-              getCacheableLayers(layer.getLayers().getArray()));
-        } else if (isCacheableLayer(layer)) {
-          cache.push(layer);
-        }
-      }
-      return cache;
-    };
-
     var extent;
     var isDownloading;
     var isStorageFull;
@@ -97,9 +63,54 @@
     initDownloadStatus();
 
 
-    this.$get = function($rootScope, $timeout, $translate, $window,
+    this.$get = function($http, $rootScope, $timeout, $translate, $window,
         gaBrowserSniffer, gaGlobalOptions, gaLayers, gaMapUtils,
         gaStorage, gaStyleFactory, gaUrlUtils) {
+
+      // Defines if a layer is cacheable at a specific data zoom level.
+      var isCacheableLayer = function(layer, z) {
+        if (layer.getSource() instanceof ol.source.TileImage) {
+          var resolutions = layer.getSource().getTileGrid().getResolutions();
+          var max = layer.getMaxResolution() || resolutions[0];
+          if (!z && max > minRes) {
+            return true;
+          }
+          var min = layer.getMinResolution() ||
+              resolutions[resolutions.length - 1];
+          var curr = resolutions[z];
+          if (curr && max > curr && curr >= min) {
+            return true;
+          }
+        } else if (gaMapUtils.isKmlLayer(layer)) {
+          if (layer instanceof ol.layer.Image) {
+            alert($translate.instant('offline_kml_too_big') + ': ' +
+                layer.label);
+          } else {
+            return true;
+          }
+        } else {
+          alert($translate.instant('offline_bad_layer_type') + ': ' +
+              layer.label);
+        }
+        return false;
+      };
+
+
+      // Get cacheable layers of a map.
+      var getCacheableLayers = function(layers) {
+        var cache = [];
+        for (var i = 0, ii = layers.length; i < ii; i++) {
+          var layer = layers[i];
+          if (layer instanceof ol.layer.Group) {
+            cache = cache.concat(
+                getCacheableLayers(layer.getLayers().getArray()));
+          } else if (isCacheableLayer(layer)) {
+            cache.push(layer);
+          }
+        }
+        return cache;
+      };
+
       minRes = gaMapUtils.getViewResolutionForZoom(maxZoom);
       featureOverlay.setStyle(gaStyleFactory.getStyle('offline'));
 
@@ -191,7 +202,7 @@
         fileReader.readAsDataURL(blob);
       };
 
-      var Offline = function() {
+      var Offline = function(proxyUrl) {
         this.hasData = function(map) {
           return !!(gaStorage.getItem(extentKey));
         };
@@ -204,6 +215,9 @@
           var layersIds = gaStorage.getItem(layersKey);
           for (var i = 0, ii = layers.length; i < ii; i++) {
             var layer = layers[i];
+            if (gaMapUtils.isKmlLayer(layer)) {
+              continue;
+            }
             if (layer instanceof ol.layer.Group) {
              var hasCachedLayer = false;
              layer.getLayers().forEach(function(item) {
@@ -321,22 +335,24 @@
           var bg = gaStorage.getItem(bgKey).split(',');
 
           for (var i = 0, ii = layersIds.length; i < ii; i++) {
-            var bodId = gaLayers.getLayerProperty(layersIds[i],
-                'parentLayerId') || layersIds[i];
-            var olLayer = gaMapUtils.getMapLayerForBodId(map, bodId);
-            if (!olLayer) {
-              olLayer = gaLayers.getOlLayerById(bodId);
-              if (olLayer) {
-                olLayer.background = (bg[i] === 'true');
-                map.addLayer(olLayer);
-              } else {
-                // TODO: The layer doesn't exist
-                continue;
+            var bodLayer = gaLayers.getLayer(layersIds[i]);
+            if (bodLayer) {
+              var bodId = bodLayer.parentLayerId || bodLayer.bodId;
+              var olLayer = gaMapUtils.getMapLayerForBodId(map, bodId);
+              if (!olLayer) {
+                olLayer = gaLayers.getOlLayerById(bodId);
+                if (olLayer) {
+                  olLayer.background = (bg[i] === 'true');
+                  map.addLayer(olLayer);
+                } else {
+                  // TODO: The layer doesn't exist
+                  continue;
+                }
               }
-            }
-            if (olLayer) {
-              olLayer.visible = true;
-              olLayer.invertedOpacity = opacity[i];
+              if (olLayer) {
+                olLayer.visible = true;
+                olLayer.invertedOpacity = opacity[i];
+              }
             }
           }
         };
@@ -348,11 +364,21 @@
           for (var j = 0, jj = requests.length; j < jj; j++) {
             requests[j].abort();
           }
+
+          // Clear tiles database
           gaStorage.clearTiles(function(err) {
+
             if (err) {
               alert($translate.instant('offline_clear_db_error'));
             } else {
               initDownloadStatus();
+
+              // Remove specific property of layers (currently only KML layers)
+              var layersId = gaStorage.getItem(layersKey).split(',');
+              for (var j = 0, jj = layersId.length; j < jj; j++) {
+                gaStorage.removeItem(layersId[j]);
+              }
+
               gaStorage.removeItem(extentKey);
               gaStorage.removeItem(layersKey);
               gaStorage.removeItem(opacityKey);
@@ -395,6 +421,20 @@
             var layer = layers[i];
             layersIds.push(layer.id);
             layersOpacity.push(layer.invertedOpacity);
+
+            // if the layer is a KML
+            if (gaMapUtils.isKmlLayer(layer) &&
+                /^https?:\/\//.test(layer.url)) {
+              $http.get(proxyUrl + encodeURIComponent(layer.url))
+                .success(function(data) {
+                  gaStorage.setItem(layer.id, data);
+                });
+              layersBg.push(false);
+              continue;
+            }
+
+            // if it's a tiled layer (WMTS or WMS) prepare the list of tiles to
+            // download
             var parentLayerId = gaLayers.getLayerProperty(layer.bodId,
                 'parentLayerId');
             var isBgLayer = (parentLayerId) ?
@@ -457,6 +497,13 @@
           gaStorage.setItem(layersKey, layersIds.join(','));
           gaStorage.setItem(opacityKey, layersOpacity.join(','));
           gaStorage.setItem(bgKey, layersBg.join(','));
+
+          // Nothing to save or only KML layers
+          if (queue.length == 0) {
+            alert($translate.instant('offline_no_cacheable_layers'));
+            this.abort();
+            return;
+          }
 
           // On mobile we simulate synchronous tile downloading, because when
           // saving multilayers and/or layers with big size tile, browser is
@@ -552,7 +599,7 @@
           gaStorage.init();
         }
       };
-      return new Offline();
+      return new Offline(gaGlobalOptions.ogcproxyUrl);
     };
   });
 })();
