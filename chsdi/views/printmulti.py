@@ -3,7 +3,6 @@
 
 import os.path
 import urllib
-import urllib2
 import json
 import copy
 import datetime
@@ -372,7 +371,7 @@ class PrintMulti(object):
         multiprocessing.active_children()
 
         # IE is always URLEncoding the body
-        jsonstring = urllib2.unquote(self.request.body)
+        jsonstring = urllib.unquote_plus(self.request.body)
 
         try:
             spec = json.loads(jsonstring, encoding=self.request.charset)
