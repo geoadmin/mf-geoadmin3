@@ -59,23 +59,23 @@ else:
 
 %>
         <Layer>
-            <ows:Title>${layer.kurzbezeichnung|x,trim}</ows:Title>
-            <ows:Abstract>${layer.abstract|x,trim}</ows:Abstract>
+            <ows:Title>${layer.kurzbezeichnung|n,x,trim}</ows:Title>
+            <ows:Abstract>${layer.abstract|n,x,trim}</ows:Abstract>
             <ows:WGS84BoundingBox>
                 <ows:LowerCorner>5.140242 45.398181</ows:LowerCorner>
                 <ows:UpperCorner>11.47757 48.230651</ows:UpperCorner>
             </ows:WGS84BoundingBox>
-            <ows:Identifier>${layer.id|x,trim}</ows:Identifier>
+            <ows:Identifier>${layer.id|n,x,trim}</ows:Identifier>
             <ows:Metadata xlink:href="http://www.geocat.ch/geonetwork/srv/deu/metadata.show?uuid=${layer.idGeoCat}"/>
             <Style>
-                <ows:Title>${layer.kurzbezeichnung|x,trim}</ows:Title>
-                <ows:Identifier>${layer.id|x,trim}</ows:Identifier>
+                <ows:Title>${layer.kurzbezeichnung|n,x,trim}</ows:Title>
+                <ows:Identifier>${layer.id|n,x,trim}</ows:Identifier>
                 ## TODO relative path
                 <% legendName = "/var/www/vhosts/mf-chsdi3/private/chsdi/chsdi/static/images/legends/" + layer.id + "_" + request.lang + ".png" %>
                 <%! import os.path %> 
                 <% hasLegend = os.path.isfile(legendName) %>
                 % if hasLegend:
-                <LegendURL format="image/png" xlink:href="${scheme}://api3.geo.admin.ch/static/images/legends/${layer.id|x,trim}_${request.lang|x,trim}.png" />
+                <LegendURL format="image/png" xlink:href="${scheme}://api3.geo.admin.ch/static/images/legends/${layer.id|n,x,trim}_${request.lang|n,x,trim}.png" />
                 % endif
             </Style>
             <Format>image/${str(layer.arr_all_formats).split(',')[0]}</Format>
@@ -99,10 +99,10 @@ else:
             </TileMatrixSetLink>
             ## ACHTUNG: s3 tiles have a row/col order, mapproxy ones the standard col/row
             % if epsg in ['21781'] and layer.id != 'ch.kantone.cadastralwebmap-farbe':
-                <ResourceURL format="image/${str(layer.arr_all_formats).split(',')[0]}" resourceType="tile" template="${onlineressource}1.0.0/${layer.id|x,trim}/default/{Time}/${epsg}/{TileMatrix}/{TileRow}/{TileCol}.${str(layer.arr_all_formats).split(',')[0]}"/>
+                <ResourceURL format="image/${str(layer.arr_all_formats).split(',')[0]}" resourceType="tile" template="${onlineressource}1.0.0/${layer.id|n,x,trim}/default/{Time}/${epsg}/{TileMatrix}/{TileRow}/{TileCol}.${str(layer.arr_all_formats).split(',')[0]}"/>
             % else:
             ## Maproxy order
-                <ResourceURL format="image/${str(layer.arr_all_formats).split(',')[0]}" resourceType="tile" template="${onlineressource}1.0.0/${layer.id|x,trim}/default/{Time}/${epsg}/{TileMatrix}/{TileCol}/{TileRow}.${str(layer.arr_all_formats).split(',')[0]}"/>
+                <ResourceURL format="image/${str(layer.arr_all_formats).split(',')[0]}" resourceType="tile" template="${onlineressource}1.0.0/${layer.id|n,x,trim}/default/{Time}/${epsg}/{TileMatrix}/{TileCol}/{TileRow}.${str(layer.arr_all_formats).split(',')[0]}"/>
             % endif
         </Layer>
   % endfor
@@ -118,15 +118,15 @@ else:
    ## Oberthema
        % if not(pre_oberthema== theme.oberthema_id):
            <Theme>
-               <ows:Title>${theme.inspire_oberthema_name|x,trim}</ows:Title>
-               <ows:Abstract>${theme.inspire_oberthema_abstract|x,trim}</ows:Abstract>
-               <ows:Identifier>${theme.oberthema_id|x,trim}</ows:Identifier>
+               <ows:Title>${theme.inspire_oberthema_name|n,x,trim}</ows:Title>
+               <ows:Abstract>${theme.inspire_oberthema_abstract|n,x,trim}</ows:Abstract>
+               <ows:Identifier>${theme.oberthema_id|n,x,trim}</ows:Identifier>
        % endif
        ## Second level Thema
                <Theme>
-                   <ows:Title>${theme.inspire_name|x,trim}</ows:Title>
-                   <ows:Abstract>${theme.inspire_abstract|x,trim}</ows:Abstract>
-                   <ows:Identifier>${theme.id|x,trim}</ows:Identifier>
+                   <ows:Title>${theme.inspire_name|n,x,trim}</ows:Title>
+                   <ows:Abstract>${theme.inspire_abstract|n,x,trim}</ows:Abstract>
+                   <ows:Identifier>${theme.id|n,x,trim}</ows:Identifier>
                    ## Refs
                    <% layers = theme.fk_dataset_id.split(',')  %>
                    % for i in range(len(layers)):
