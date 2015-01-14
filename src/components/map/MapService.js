@@ -1399,8 +1399,11 @@
     this.$get = function($rootScope, $q, $http, gaDefinePropertiesForLayer,
         gaStyleFactory) {
       var url = this.url;
-      var selectStyle = gaStyleFactory.getStyle('select');
-      var highlightStyle = gaStyleFactory.getStyle('highlight');
+      var slctFeatStyleFunc =
+          gaStyleFactory.getFeatureStyleFunction('select');
+      var hlFeatStyleFunc =
+          gaStyleFactory.getFeatureStyleFunction('highlight');
+
 
       // Define layer default properties
       gaDefinePropertiesForLayer(vector);
@@ -1483,7 +1486,7 @@
 
         // Add a feature.
         this.add = function(map, feature) {
-          feature.setStyle(selectStyle);
+          feature.setStyle(slctFeatStyleFunc);
           source.addFeature(feature);
           updateLayer(map);
         };
@@ -1533,7 +1536,7 @@
           this.clearHighlight();
           // We clone the feature to avoid duplicate features with same ids
           highlightedFeature = new ol.Feature(feature.getGeometry());
-          highlightedFeature.setStyle(highlightStyle);
+          highlightedFeature.setStyle(hlFeatStyleFunc);
           source.addFeature(highlightedFeature);
           updateLayer(map);
         };

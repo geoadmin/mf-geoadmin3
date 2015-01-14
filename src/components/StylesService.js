@@ -1,7 +1,11 @@
 (function() {
   goog.provide('ga_styles_service');
+  goog.require('ga_geometry_service');
 
-  var module = angular.module('ga_styles_service', []);
+
+  var module = angular.module('ga_styles_service', [
+    'ga_geometry_service'
+  ]);
 
   module.provider('gaStyleFactory', function() {
     var DEFAULT_FONT = 'normal 16px Helvetica';
@@ -121,7 +125,38 @@
       'transparentCircle': transparentCircle
     };
 
-    this.$get = function() {
+
+    this.$get = function(gaGeom) {
+      var getGeom = function(feature, res) {
+        var geom = feature.getGeometry();
+        var extent = geom.getExtent();
+        var max = Math.max(extent[2] - extent[0], extent[3] - extent[1]);
+        if (max / res < 38) {
+          if (!feature.get('centroid')) {
+            feature.set('centroid', gaGeom.centroid(geom));
+          }
+          // OL will use this feature property to display the custom geometry
+          return 'centroid';
+        }
+        return null; // OL will display the feature's geometry
+      };
+
+      // Defines feature style functions
+      var slctFeatStyleFunc = function(res) {
+        selectStyle.setGeometry(getGeom(this, res));
+        return [selectStyle];
+      };
+
+      var hlFeatStyleFunc = function(res) {
+        hlStyle.setGeometry(getGeom(this, res));
+        return [hlStyle];
+      };
+
+      var featStyleFunctions = {
+        'select': slctFeatStyleFunc,
+        'highlight': hlFeatStyleFunc
+      };
+
       return {
         // Rules for the z-index (useful for a correct selection):
         // Sketch features (when modifying): 60
@@ -141,11 +176,13 @@
         getStyle: function(type) {
           return styles[type];
         },
-        getStyleFunction: function(type) {
-          return function(feature, resolution) {
-            return styles[feature.get('styleId')];
+
+        getFeatureStyleFunction: function(type) {
+          return featStyleFunctions[type] || function(resolution) {
+            return styles[type];
           };
         },
+
         // Defines a text stroke (white or black) depending on a text color
         getTextStroke: function(olColor) {
           var stroke = new ol.style.Stroke({
