@@ -1,4 +1,4 @@
-#-*- utf-8 -*-
+# -*- coding: utf-8 -*-
 
 from pyramid.httpexceptions import HTTPBadRequest
 

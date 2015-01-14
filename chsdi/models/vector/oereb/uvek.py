@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from sqlalchemy import Column, Text
 from geoalchemy import GeometryColumn, Geometry
 

@@ -1,4 +1,4 @@
-#-*- utf-8 -*-
+# -*- coding: utf-8 -*-
 
 from pyramid.view import view_config
 import pyramid.httpexceptions as exc
