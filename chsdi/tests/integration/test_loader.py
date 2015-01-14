@@ -49,4 +49,3 @@ class TestLoaderJs(TestsBase):
         resp.mustcontain('proj4.js')
         resp.mustcontain('EPSG21781.js')
         resp.mustcontain('EPSG2056.js')
-
