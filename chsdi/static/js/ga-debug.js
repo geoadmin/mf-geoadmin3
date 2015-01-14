@@ -1,6 +1,6 @@
 // OpenLayers 3. See http://openlayers.org/
 // License: https://raw.githubusercontent.com/openlayers/ol3/master/LICENSE.md
-// Version: v3.0.0-beta.5-1590-g5b4444f
+// Version: r3.0.0-alpha.4-5827-gfc8cac1
 
 var CLOSURE_NO_DEPS = true;
 // Copyright 2006 The Closure Library Authors. All Rights Reserved.
@@ -97510,13 +97510,16 @@ ga.Map = function(options) {
   options.view = view;
   options.logo = false;
   options.interactions = goog.isDef(options.interactions) ? options.interactions : ol.interaction.defaults();
-  options.controls = ol.control.defaults({
+  options.controls = goog.isDef(options.controls) ? options.controls : ol.control.defaults({
     zoomOptions: /** @type {olx.control.ZoomOptions} */ ({
       zoomInTipLabel: ga.Lang.translate('Zoom in'),
       zoomOutTipLabel: ga.Lang.translate('Zoom out')
     }),
     rotateOptions: /** @type {olx.control.RotateOptions} */ ({
       tipLabel: ga.Lang.translate('Reset rotation')
+    }),
+    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+      collapsible: false
     })
   });
 

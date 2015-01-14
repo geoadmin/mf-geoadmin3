@@ -51,7 +51,7 @@ c['stable_id'] = True
         target: 'map',
         ol3Logo: false,
         tooltip: false,
-        view: new ol.View2D({
+        view: new ol.View({
           // Define the default resolution
           // 10 means that one pixel is 10m width and height
           // List of resolution of the WMTS layers:

@@ -71,7 +71,7 @@ var wmsCadastre = new ol.layer.Tile({
  var map_left = new ga.Map({
     target: 'map-left',
     layers: [wmtsCadastre],
-    view: new ol.View2D({
+    view: new ol.View({
       resolution: 1.0,
      center: [502160, 125800]
     })

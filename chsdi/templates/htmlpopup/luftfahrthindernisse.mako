@@ -149,7 +149,7 @@ from pyramid.url import route_url
            })
         })
       ],
-      view: new ol.View2D({
+      view: new ol.View({
         resolution: 10,
         center : [(${c['bbox'][0]}+${c['bbox'][2]})/2,(${c['bbox'][1]}+${c['bbox'][3]})/2]
       }),

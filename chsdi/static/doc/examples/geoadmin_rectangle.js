@@ -9,7 +9,7 @@ var map = new ga.Map({
     ga.layer.create('ch.swisstopo.pixelkarte-farbe-pk200.noscale'),
     ga.layer.create('ch.swisstopo.pixelkarte-farbe-pk500.noscale')
   ],
-  view: new ol.View2D({
+  view: new ol.View({
     resolution: 500,
     center: [660500, 186000],
     zoom: 2    

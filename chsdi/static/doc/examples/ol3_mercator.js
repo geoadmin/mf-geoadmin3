@@ -28,7 +28,7 @@ var map_left = new ol.Map({
     createLayer(20111206)
   ],
   target: 'map-left',
-  view: new ol.View2D({
+  view: new ol.View({
     maxZoom: 17,
     center: [902568.5270415349, 5969980.338127118],
     zoom: 15,

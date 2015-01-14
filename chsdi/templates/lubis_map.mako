@@ -10,6 +10,7 @@
         var resolutions = [1]; // 1 is the min resolution of the pyramid (for all images)
         var curResolution = resolutions[0];
         var maxResolution = Math.max(width, height) / TILE_SIZE;
+        
         while (curResolution < maxResolution) {
           curResolution *= 2;
           resolutions.unshift(curResolution);
@@ -26,7 +27,7 @@
                   resolutions: resolutions
                 }),
                 tileUrlFunction: function(tileCoord, pixelRatio, projection) {
-                  var coords = tileCoord.getZXY();
+                  var coords = tileCoord;
                   if (coords[0] < 0 || coords[1] < 0 || coords[2] < 0) {
                     return undefined;
                   }
@@ -36,7 +37,7 @@
                   }
 
                   curInstance = (++curInstance > MAX_INSTANCES) ? 0 : curInstance;
-                  return url.replace('{curInstance}', curInstance) + tileCoord.toString() + ".jpg";
+                  return url.replace('{curInstance}', curInstance) + tileCoord.join('/') + ".jpg";
                 }
               })
             })
@@ -45,7 +46,7 @@
           renderer: 'canvas',
           target: ${target},
           ol3Logo: false,
-          view: new ol.View2D({
+          view: new ol.View({
             projection: new ol.proj.Projection({
               code: 'PIXELS',
               units: 'pixels',

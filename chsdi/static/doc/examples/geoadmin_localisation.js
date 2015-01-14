@@ -4,8 +4,8 @@ var map = new ga.Map({
 <!--// Define the div where the map is placed-->
   target: 'map',
 
-<!--// Create a 2D view-->
-  view: new ol.View2D({
+<!--// Create a view-->
+  view: new ol.View({
 
 <!--// 10 means that one pixel is 10m width and height-->
 <!--// List of resolution of the WMTS layers:-->
