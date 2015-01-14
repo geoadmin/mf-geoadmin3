@@ -48,7 +48,10 @@
 % if legend_url_pdf:
   <a href="${legend_url_pdf}" target="_blank"><img src="${legend_url}"></img></a><br> 
 % else:
-  <img src=${legend_url} alt="layer legend img"/><br><br>
+  <div class="img-container">
+    <img src=${legend_url} alt="layer legend img"/>
+  </div>
+  <br><br>
 % endif
 % endif
   <span>${_('Information')}</span><br>
