@@ -9,6 +9,41 @@
 Release Notes
 =============
 
+.. _releasenotes_20150114:
+
+Release 20150114 - Wednesday, January 14th 2015
+----------------------------------------------
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+
+- Update GeoAdmin API to be based on OpenLayers v3.0.0-beta.5-1590
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_150107...r_150114>`__
+
+`MAP <//map.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_150107...r_150114>`__
+
+
+Geodata
+*******
+
++-----------+------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Designated wildlife areas <//map.geo.admin.ch/?layers=ch.bafu.wrz-wildruhezonen_portal>`__ (ch.bafu.wrz-wildruhezonen_portal)                       |
++-----------+------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Wildlife reserves <//map.geo.admin.ch/?layers=ch.bafu.wrz-jagdbanngebiete_select>`__ (ch.bafu.wrz-jagdbanngebiete_select)                           |
++-----------+------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `LV95 Transformation accuracy <//map.geo.admin.ch/?layers=ch.swisstopo.transformationsgenauigkeit>`__ (ch.swisstopo.transformationsgenauigkeit)      |
++-----------+------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+
+
 .. _releasenotes_20150107:
 
 Release 20150107 - Wednesday, January 7th 2015
