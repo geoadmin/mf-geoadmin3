@@ -172,3 +172,32 @@ You can find more information about our code styling here:
 You can find additional information about autopep8 here:
 
     https://pypi.python.org/pypi/autopep8/
+
+*Add a pre-commit hook*
+
+1. Create a pre-commit file
+
+  ```bash
+touch .git/hooks/pre-commit
+  ```
+
+2. Copy/paste the following script
+
+  ```bash
+#!/bin/bash
+
+./buildout/bin/buildout -c buildout_dev.cfg install validate-py
+if [[ $? != 0 ]];
+then
+  echo "$(tput setaf 1) Nothing has been commited because of styling issues, please fix it according to the comments above $(tput sgr0)"
+  exit 1
+fi
+  ```
+
+3. Make this it executable
+
+  ```bash
+chmod +x .git/hooks/pre-commit
+  ```
+
+Now commits will be aborted if styling is not respected
