@@ -377,34 +377,40 @@ def _get_features_for_filters(params, models, maxFeatures=None, where=None):
 
 
 def _attributes(request):
-    MaxFeatures = 50
-    attributes_values = []
+    ''' This service exposes preview values based on a layer Id
+    and an attribute name (mapped in the model) '''
+    MAX_ATTR_VALUES = 50
+    attributesValues = []
     params = _get_attributes_params(request)
 
     models = models_from_name(params.layerId)
 
     if models is None:
         raise exc.HTTPBadRequest('No Vector Table was found for %s' % params.layerId)
-    model = models[0]
-    attributes = model().getAttributesKeys()
-    if params.attribute not in attributes:
-        raise exc.HTTPBadRequest('''No attribute '%s' in layer '%s' was found''' % (params.attribute, params.layerId))
 
-    col = model.get_column_by_name(params.attribute)
-    type = str(col.type)
+    # Check that the attribute provided is found at least in one model
+    modelToQuery = None
+    for model in models:
+        attributes = model().getAttributesKeys()
+        if params.attribute in attributes:
+            modelToQuery = model
+            break
+    if modelToQuery is None:
+        raise exc.HTTPBadRequest('No attribute %s was found for %s' % (params.attribute, params.layerId))
 
-    if type in ['DATE', 'INTEGER', 'NUMERIC']:
+    col = modelToQuery.get_column_by_name(params.attribute)
+    colType = str(col.type)
+    if colType in ['DATE', 'INTEGER', 'NUMERIC']:
         query = request.db.query(func.max(col).label('max'), func.min(col).label('min'))
         res = query.one()
         return {'values': [res.min, res.max]}
     else:
-        query = request.db.query(col).distinct()
-        query = query.limit(MaxFeatures)
+        query = request.db.query(col).distinct().order_by(col)
+        query = query.limit(MAX_ATTR_VALUES)
         for attr in query:
             if len(attr):
-                attributes_values.append(attr[0])
-
-        return {'values': sorted(attributes_values)}
+                attributesValues.append(attr[0])
+        return {'values': sorted(attributesValues)}
 
 
 def _find(request):
@@ -463,7 +469,7 @@ def _format_search_text(columnType, searchText):
         else:
             raise HTTPBadRequest('Please provide an integer')
     elif isinstance(columnType, Numeric):
-        if re.match("^\d+?\.\d+?$", searchText) is not None:
+        if re.match('^\d+?\.\d+?$', searchText) is not None:
             return float(searchText)
         else:
             raise HTTPBadRequest('Please provide a float')
