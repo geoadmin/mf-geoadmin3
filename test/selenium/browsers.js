@@ -21,7 +21,8 @@ var create = function(os, osver, res, browser, brover) {
     'browser_version' : brover,
     'browserstack.user' : process.env.BROWSERSTACK_USER,
     'browserstack.key' : process.env.BROWSERSTACK_KEY,
-    'browserstack.bfcache' : '0'
+    'browserstack.bfcache' : '0',
+    'browserstack.debug' : false // switch this to true to debug (visual logs) 
   };
 }
 
@@ -39,13 +40,14 @@ var capabilities = [
     create('Windows', '7', '1280x1024', 'IE', '10.0'),
     create('Windows', '7', '1280x1024', 'IE', '11.0'),
     create('Windows', '8.1', '1280x1024', 'IE', '11.0'),
-    create('Windows', '7', '1280x1024', 'Firefox', '30.0'),
     create('Windows', '7', '1280x1024', 'Firefox', '31.0'),
     create('Windows', '7', '1280x1024', 'Firefox', '32.0'),
-    create('Windows', '8.1', '1280x1024', 'Firefox', '32.0'),
+    create('Windows', '7', '1280x1024', 'Firefox', '33.0'),
+    create('Windows', '8.1', '1280x1024', 'Firefox', '33.0'),
     create('Windows', '7', '1280x1024', 'Safari', '5.1'),
     create('OS X', 'lion', '1280x1024', 'Safari', '6.0'),
-    create('OS X', 'mavericks', '1280x1024', 'Safari', '7.0')
+    create('OS X', 'mavericks', '1280x1024', 'Safari', '7.0'),
+    create('OS X', 'yosemite', '1280x1024', 'Safari','8.0')
 ];
 
 module.exports.capabilities = capabilities;

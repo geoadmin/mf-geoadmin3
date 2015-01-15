@@ -27,7 +27,6 @@ var runTest = function(cap, driver, target){
       assert.ok(val.indexOf(QUERYSTRING_OF_BERN) > -1);
   });
   //We click on the "share" button what closes the share menu
-  driver.findElement(webdriver.By.xpath("//a[@id='shareHeading']")).click();
 }
 
 module.exports.runTest = runTest;
