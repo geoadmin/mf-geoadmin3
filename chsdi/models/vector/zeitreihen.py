@@ -2,7 +2,7 @@
 
 from sqlalchemy import Column, Text, Integer
 from sqlalchemy.types import Numeric
-from geoalchemy import GeometryColumn, Geometry
+from geoalchemy2.types import Geometry
 
 from chsdi.models import *
 from chsdi.models.vector import Vector
@@ -20,7 +20,8 @@ class Zeitreihen_15(Base, Vector):
     __timeInstant__ = 'years'
     __label__ = 'release_year'
     id = Column('bgdi_id', Text, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     kbbez = Column('kbbez', Text)
     produkt = Column('produkt', Text)
     kbnum = Column('kbnum', Text)
@@ -40,7 +41,8 @@ class Zeitreihen_20(Base, Vector):
     __timeInstant__ = 'years'
     __label__ = 'release_year'
     id = Column('bgdi_id', Text, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     kbbez = Column('kbbez', Text)
     produkt = Column('produkt', Text)
     kbnum = Column('kbnum', Text)
@@ -60,7 +62,8 @@ class Zeitreihen_21(Base, Vector):
     __timeInstant__ = 'years'
     __label__ = 'release_year'
     id = Column('bgdi_id', Text, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     kbbez = Column('kbbez', Text)
     produkt = Column('produkt', Text)
     kbnum = Column('kbnum', Text)
@@ -80,7 +83,8 @@ class Zeitreihen_22(Base, Vector):
     __timeInstant__ = 'years'
     __label__ = 'release_year'
     id = Column('bgdi_id', Text, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     kbbez = Column('kbbez', Text)
     produkt = Column('produkt', Text)
     kbnum = Column('kbnum', Text)
@@ -100,7 +104,8 @@ class DufourErst(Base, Vector):
     kbbez = Column('kbbez', Text)
     datenstand = Column('datenstand', Integer)
     bv_nummer = Column('bv_nummer', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 
 class SiegfriedErst(Base, Vector):
@@ -113,7 +118,8 @@ class SiegfriedErst(Base, Vector):
     kbbez = Column('kbbez', Text)
     datenstand = Column('datenstand', Numeric)
     bv_nummer = Column('bv_nummer', Text)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
 
 
 register('ch.swisstopo.hiks-siegfried', SiegfriedErst)
@@ -133,7 +139,8 @@ class Zeitreihen_Metadata_15(Base, Vector):
     __bodId__ = 'ch.swisstopo.zeitreihen_meta'
 
     id = Column('gid', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     release_year = Column('release_year', Integer)
     bgdi_order = Column('bgdi_order', Integer)
 
@@ -147,7 +154,8 @@ class Zeitreihen_Metadata_20(Base, Vector):
     __bodId__ = 'ch.swisstopo.zeitreihen_meta'
 
     id = Column('gid', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     release_year = Column('release_year', Integer)
     bgdi_order = Column('bgdi_order', Integer)
 
@@ -161,7 +169,8 @@ class Zeitreihen_Metadata_21(Base, Vector):
     __bodId__ = 'ch.swisstopo.zeitreihen_meta'
 
     id = Column('gid', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     release_year = Column('release_year', Integer)
     bgdi_order = Column('bgdi_order', Integer)
 
@@ -175,7 +184,8 @@ class Zeitreihen_Metadata_22(Base, Vector):
     __bodId__ = 'ch.swisstopo.zeitreihen_meta'
 
     id = Column('gid', Integer, primary_key=True)
-    the_geom = GeometryColumn(Geometry(dimension=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
     release_year = Column('release_year', Integer)
     bgdi_order = Column('bgdi_order', Integer)
 

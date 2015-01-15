@@ -11,9 +11,8 @@ from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from sqlalchemy.sql.expression import cast, func
 from sqlalchemy import Text, Integer, Boolean, Numeric, Date
 from sqlalchemy import text, distinct
-from geoalchemy import Geometry, WKBSpatialElement, functions
+from geoalchemy2.types import Geometry
 from shapely.geometry import asShape
-
 
 from chsdi.lib.validation.mapservice import MapServiceValidation
 from chsdi.lib.filters import full_text_search

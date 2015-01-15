@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from sqlalchemy import Column, Text, Integer, Boolean, Numeric
-from geoalchemy import GeometryColumn, Geometry
+from geoalchemy2.types import Geometry
 
 from chsdi.models import *
 from chsdi.models.vector import Vector
@@ -20,8 +20,10 @@ class luftbilder_swisstopo_farbe(Base, Vector):
     # Composite labels
     __label__ = 'flugdatum'
     id = Column('ebkey', Text, primary_key=True)
-    the_geom = GeometryColumn('the_geom', Geometry(dimensions=2, srid=21781))
-    the_geom_footprint = GeometryColumn('the_geom_footprint', Geometry(dimensions=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+    the_geom_footprint = Column('the_geom_footprint', Geometry(geometry_type='GEOMETRY',
+                                                               dimension=2, srid=21781))
     filename = Column('filename', Text)
     inventarnummer = Column('inventarnummer', Integer)
     bildnummer = Column('bildnummer', Integer)
@@ -56,8 +58,10 @@ class luftbilder_swisstopo_ir(Base, Vector):
     # Composite labels
     __label__ = 'flugdatum'
     id = Column('ebkey', Text, primary_key=True)
-    the_geom = GeometryColumn('the_geom', Geometry(dimensions=2, srid=21781))
-    the_geom_footprint = GeometryColumn('the_geom_footprint', Geometry(dimensions=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+    the_geom_footprint = Column('the_geom_footprint', Geometry(geometry_type='GEOMETRY',
+                                                               dimension=2, srid=21781))
     filename = Column('filename', Text)
     inventarnummer = Column('inventarnummer', Integer)
     bildnummer = Column('bildnummer', Integer)
@@ -92,8 +96,10 @@ class luftbilder_swisstopo_sw(Base, Vector):
     # Composite labels
     __label__ = 'flugdatum'
     id = Column('ebkey', Text, primary_key=True)
-    the_geom = GeometryColumn('the_geom', Geometry(dimensions=2, srid=21781))
-    the_geom_footprint = GeometryColumn('the_geom_footprint', Geometry(dimensions=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+    the_geom_footprint = Column('the_geom_footprint', Geometry(geometry_type='GEOMETRY',
+                                                               dimension=2, srid=21781))
     filename = Column('filename', Text)
     inventarnummer = Column('inventarnummer', Integer)
     bildnummer = Column('bildnummer', Integer)
@@ -128,8 +134,10 @@ class luftbilder_dritte_firmen(Base, Vector):
     # Composite labels
     __label__ = 'flugdatum'
     id = Column('ebkey', Text, primary_key=True)
-    the_geom = GeometryColumn('the_geom', Geometry(dimensions=2, srid=21781))
-    the_geom_footprint = GeometryColumn('the_geom_footprint', Geometry(dimensions=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+    the_geom_footprint = Column('the_geom_footprint', Geometry(geometry_type='GEOMETRY',
+                                                               dimension=2, srid=21781))
     filename = Column('filename', Text)
     inventarnummer = Column('inventarnummer', Integer)
     bildnummer = Column('bildnummer', Integer)
@@ -164,8 +172,10 @@ class luftbilder_dritte_kantone(Base, Vector):
     # Composite labels
     __label__ = 'flugdatum'
     id = Column('ebkey', Text, primary_key=True)
-    the_geom = GeometryColumn('the_geom', Geometry(dimensions=2, srid=21781))
-    the_geom_footprint = GeometryColumn('the_geom_footprint', Geometry(dimensions=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+    the_geom_footprint = Column('the_geom_footprint', Geometry(geometry_type='GEOMETRY',
+                                                               dimension=2, srid=21781))
     filename = Column('filename', Text)
     inventarnummer = Column('inventarnummer', Integer)
     bildnummer = Column('bildnummer', Integer)
@@ -200,8 +210,10 @@ class bildstreifen(Base, Vector):
     # Composite labels
     __label__ = 'flugdatum'
     id = Column('bildstreifen_nr', Text, primary_key=True)
-    the_geom = GeometryColumn('the_geom', Geometry(dimensions=2, srid=21781))
-    the_geom_footprint = GeometryColumn('the_geom_footprint', Geometry(dimensions=2, srid=21781))
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+    the_geom_footprint = Column('the_geom_footprint', Geometry(geometry_type='GEOMETRY',
+                                                               dimension=2, srid=21781))
     flugdatum = Column('flugdatum', Text)
     firma = Column('firma', Text)
     filmart = Column('filmart', Text)
@@ -216,4 +228,5 @@ class bildstreifen(Base, Vector):
     toposhop_end_x = Column('toposhop_end_x', Integer)
     toposhop_end_y = Column('toposhop_end_y', Integer)
     toposhop_date = Column('toposhop_date', Text)
+
 register('ch.swisstopo.lubis-bildstreifen', bildstreifen)

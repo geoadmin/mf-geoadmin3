@@ -3,7 +3,7 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import engine_from_config
 
-from geoalchemy import Geometry
+from geoalchemy2.types import Geometry
 
 dbs = ['bod', 'bafu', 'uvek', 'search', 'stopo', 'evd', 'edi', 'are', 'dritte', 'kogis', 'zeitreihen', 'vbs', 'bak', 'lubis']
 
