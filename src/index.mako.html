@@ -137,7 +137,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     <div ng-controller="GaSeoController">
       <div ga-seo ga-seo-options="options" ga-seo-map="map"></div>
     </div>
-    <div id="header" class="navbar navbar-fixed-top">
+    <div ng-cloak translate-cloak id="header" class="navbar navbar-fixed-top">
       <div id="logo" class="pull-left">
         <a ng-href="?topic={{topicId}}&lang={{langId}}">
           <img ng-if="langId" ng-src="${versionslashed}img/logo.ch.{{langId}}.png" alt="big_logo" draggable="false"/>
@@ -157,12 +157,12 @@ itemscope itemtype="http://schema.org/WebApplication"
             ga-background-layer-selector-map="map"></div>
         </div>
         <div id="toptools">
-          <div ga-fullscreen ga-fullscreen-map="map" translate-cloak></div>&nbsp;&nbsp;
+          <div ga-fullscreen ga-fullscreen-map="map"></div>&nbsp;&nbsp;
           <a href="" ng-click="globals.feedbackPopupShown = !globals.feedbackPopupShown">
-            <span ng-class="{'selected': globals.feedbackPopupShown}" translate translate-cloak>problem_announcement</span>
+            <span ng-class="{'selected': globals.feedbackPopupShown}" translate>problem_announcement</span>
           </a>&nbsp;&nbsp;
-          <a target="_blank" ng-href="{{topicId + '_help_link_href' | translate}}" translate translate-cloak>help_label</a>&nbsp;&nbsp;
-          <a ng-href="{{deviceSwitcherHref}}" translate translate-cloak>mobile_redirect</a>&nbsp;&nbsp;
+          <a target="_blank" ng-href="{{topicId + '_help_link_href' | translate}}" translate>help_label</a>&nbsp;&nbsp;
+          <a ng-href="{{deviceSwitcherHref}}" translate>mobile_redirect</a>&nbsp;&nbsp;
           <div ng-controller="GaTranslationController">
             <div ga-translation-selector
               ga-translation-selector-options="options"></div>
@@ -171,15 +171,14 @@ itemscope itemtype="http://schema.org/WebApplication"
       </form>
 % endif
       ## css animation doesnt work on pseudo element, let use this instead
-      <i id="loader" class="ga-loader icon-refresh"></i>
-      <div class="alert alert-danger" translate translate-cloak>offline_sorry</div>
+      <div class="alert alert-danger" translate>offline_sorry</div>
     </div> <!-- #header -->
-
+    <i id="loader" class="icon-refresh"></i>
     <div tabindex="1" ga-map ga-map-map="map">
-      <div id="copyrightsdata">
+      <div ng-cloak translate-cloak id="copyrightsdata">
         <div>
           <span >&copy;&nbsp;</span>
-          <span translate translate-cloak>data</span>
+          <span translate>data</span>
         </div>
         <div ga-attribution ga-attribution-map="map"></div>
       </div>
@@ -205,7 +204,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     </div>
 % endif
 
-    <div id="footer" class="navbar navbar-fixed-bottom">
+    <div ng-cloak translate-cloak id="footer" class="navbar navbar-fixed-bottom">
       <div  class="pull-left" ga-scale-line ga-scale-line-map="map"></div>
 % if device == 'desktop':
       <div id="mouseposition" class="pull-left hidden-xs" ng-controller="GaMousePositionController">
@@ -218,11 +217,11 @@ itemscope itemtype="http://schema.org/WebApplication"
       </div>
 % endif
       <div class="pull-right">
-        <a target="_blank" ng-href="http://www.geo.admin.ch/internet/geoportal/{{langId}}/home/geoadmin/contact.html#copyright" translate translate-cloak>copyright_label</a>
+        <a target="_blank" ng-href="http://www.geo.admin.ch/internet/geoportal/{{langId}}/home/geoadmin/contact.html#copyright" translate>copyright_label</a>
       </div>
 % if device == 'desktop':
       <div class="pull-right">
-        <a target="_blank" ng-href="{{topicId + '_service_link_href' | translate}}" ng-cloak translate-cloak>{{topicId + '_service_link_label' | translate}}</a>
+        <a target="_blank" ng-href="{{topicId + '_service_link_href' | translate}}">{{topicId + '_service_link_label' | translate}}</a>
       </div>
 % endif
     </div><!-- #footer -->
@@ -244,14 +243,14 @@ itemscope itemtype="http://schema.org/WebApplication"
       </div>
     </div>
 
-    <div id="pulldown" ng-show="!globals.offline" ng-class="{'selection-and-catalog-shown': (globals.catalogShown && globals.selectionShown)}">
+    <div ng-cloak translate-cloak id="pulldown" ng-show="!globals.offline" ng-class="{'selection-and-catalog-shown': (globals.catalogShown && globals.selectionShown)}">
       <div id="pulldown-content" class="content ${"in" if device == "desktop" else "collapse"}">
         <div class="panel">
           <a id="shareHeading" class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#share">
             <i class="visible-collapsed icon-caret-right spacer"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
             <i class="icon-share"></i>
-            <span translate translate-cloak>share</span>
+            <span translate>share</span>
           </a>
           <div id="share" class="panel-collapse collapse">
             <div class="panel-body" ng-controller="GaShareController">
@@ -266,7 +265,7 @@ itemscope itemtype="http://schema.org/WebApplication"
             <i class="visible-collapsed icon-caret-right spacer"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
             <i class="icon-print"></i>
-            <span translate translate-cloak>print</span>
+            <span translate>print</span>
           </a>
           <div id="print" class="panel-collapse collapse">
             <div class="panel-body" ng-controller="GaPrintController">
@@ -282,7 +281,7 @@ itemscope itemtype="http://schema.org/WebApplication"
             <i class="visible-collapsed icon-caret-right spacer"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
             <i class="icon-ga-mapfunction"></i>
-            <span translate translate-cloak>map_tools</span>
+            <span translate>map_tools</span>
           </a>
 
           <div id="tools" class="collapse">
@@ -348,7 +347,7 @@ itemscope itemtype="http://schema.org/WebApplication"
 % if device == 'desktop':
           <div class="theme-toggle">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-              <span translate translate-cloak>choose_theme</span>
+              <span translate>choose_theme</span>
               <i class="icon-chevron-sign-right"></i>
             </a>
             <div class="dropdown-menu" ng-controller="GaTopicController">
@@ -361,7 +360,7 @@ itemscope itemtype="http://schema.org/WebApplication"
              ga-collapsible-show="globals.catalogShown">
             <i class="visible-collapsed icon-caret-right"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
-            <span ng-cloak>{{topicId | translate}}</span>
+            <span translate="{{topicId}}"></span>
 % if device == 'desktop':
             <span ga-help="32,37,39" ga-help-options="{showOnHover:true}"></span>
 % endif
@@ -383,7 +382,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           <a id="selectionHeading" class="panel-heading accordion-toggle light ${"collapsed" if device!= "desktop" else ""}" data-toggle="collapse" href="#selection">
             <i class="visible-collapsed icon-caret-right"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
-            <span translate translate-cloak>layer_selection</span>
+            <span translate>layer_selection</span>
 % if device == 'desktop':
             <span ga-help="34,35,36" ga-help-options="{showOnHover:true}"></span>
 % endif
@@ -424,7 +423,7 @@ itemscope itemtype="http://schema.org/WebApplication"
               </div>
               <hr>
               <p>
-                <a target="_blank" ng-href="{{topicId + '_service_link_href' | translate}}" ng-cloak>{{topicId + '_service_link_label' | translate}}</a>
+                <a target="_blank" ng-href="{{topicId + '_service_link_href' | translate}}">{{topicId + '_service_link_label' | translate}}</a>
                 <br>
                 <a target="_blank" ng-href="http://www.geo.admin.ch/internet/geoportal/{{langId}}/home/geoadmin/contact.html#copyright" translate>copyright_label</a>
               </p>
@@ -440,13 +439,13 @@ itemscope itemtype="http://schema.org/WebApplication"
       <button type="button" data-toggle="collapse" data-target="#pulldown-content" class="toggle btn btn-default collapsed">
 % endif
         <span class="hidden-collapsed">
-          <i class="icon-caret-up"></i> <span translate translate-cloak>close_menu</span>
+          <i class="icon-caret-up"></i> <span translate>close_menu</span>
           <span class="phone-toggle">&times;</span>
         </span>
         <span class="visible-collapsed">
           <i class="icon-reorder"></i>
           <i class="icon-caret-down"></i>
-          <span translate translate-cloak>open_menu</span>
+          <span translate>open_menu</span>
         </span>
       </button>
     </div> <!-- #pulldown -->
