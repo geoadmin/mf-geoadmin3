@@ -288,8 +288,27 @@
           });
         });
 
+        var removeNonTopicLayers = function(topicId) {
+          // Assemble first to not remove from the iterated over array
+          var layersToRemove = [];
+          scope.map.getLayers().forEach(function(olLayer) {
+            var l = gaLayers.getLayer(olLayer.bodId);
+            var regex = new RegExp('(^|,)(ech|' + topicId + ')(,|$)', 'g');
+            if (l &&
+                l.topics &&
+                !regex.test(l.topics) &&
+                !olLayer.background) {
+              layersToRemove.push(olLayer);
+            }
+          });
+          layersToRemove.forEach(function(olLayer) {
+            scope.removeLayer(olLayer);
+          });
+        };
         // Change layers label when topic changes
         scope.$on('gaLayersChange', function(evt, data) {
+          removeNonTopicLayers(data.topicId);
+
           map.getLayers().forEach(function(olLayer) {
             if (scope.isBodLayer(olLayer)) {
               olLayer.label = gaLayers.getLayerProperty(olLayer.bodId, 'label');
