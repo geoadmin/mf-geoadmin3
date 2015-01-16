@@ -20,6 +20,8 @@ from chsdi.models import models_from_name, oereb_models_from_bodid
 from chsdi.models.bod import OerebMetadata, get_bod_model
 from chsdi.views.layers import get_layer, get_layers_metadata_for_params
 
+PROTECTED_GEOMETRY_LAYERS = ['ch.bfs.gebaeude_wohnungs_register']
+
 
 # For several features
 class FeatureParams(MapServiceValidation):
@@ -35,6 +37,7 @@ class FeatureParams(MapServiceValidation):
         self.returnGeometry = request.params.get('returnGeometry')
         self.translate = request.translate
         self.request = request
+        self.varnish_authorized = request.headers.get('X-SearchServer-Authorized', 'false').lower() == 'true'
 
 # for releases requests
 
@@ -472,9 +475,17 @@ def _process_feature(feature, params):
     # TODO find a way to use translate directly in the model
     if params.returnGeometry:
         f = feature.__geo_interface__
+        # Filter out this layer individually, disregarding of the global returnGeometry
+        # setting
+        if not params.varnish_authorized:
+            if hasattr(params, 'layers') and feature.__bodId__ in PROTECTED_GEOMETRY_LAYERS:
+                f = feature.__interface__
+            if hasattr(params, 'layer') and params.layer in PROTECTED_GEOMETRY_LAYERS:
+                f = feature.__interface__
+            if hasattr(params, 'layerId') and params.layerId in PROTECTED_GEOMETRY_LAYERS:
+                f = feature.__interface__
     else:
         f = feature.__interface__
-
     if hasattr(f, 'extra'):
         layerBodId = f.extra['layerBodId']
         f.extra['layerName'] = params.translate(layerBodId)
