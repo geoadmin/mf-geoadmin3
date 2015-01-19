@@ -2,6 +2,11 @@
 
 <%def name="table_body(c, lang)">
 <%
+    name = c['layerBodId'] + '.' + 'plname_%' % lang
+    doc_title = c['layerBodId'] + '.' + 'doc_title'
+%>
+
+<%
 import datetime
 lang = lang if lang in ('fr','it') else 'de'
 plname = 'plname_%s' % lang
@@ -17,7 +22,7 @@ if c['attributes']['validuntil']:
 endif
 %>
     <tr>
-      <td class="cell-left">${_('tt_sachplan_planning_name')}</td>
+      <td class="cell-left">${_(name)}</td>
       <td>${c['attributes'][plname]}</td>
     </tr>
     <tr>
@@ -46,7 +51,7 @@ endif
     </tr>
 % if 'doc_web' in c['attributes']:
     <tr>
-      <td class="cell-left">${_('tt_sachplan_weitereinfo')}</td>
+      <td class="cell-left">${_(doc_title)}</td>
       <td><a href="${c['attributes']['doc_web'] or '-'}" target="_blank">${c['attributes']['doc_title'] or '-'}</a></td></tr>
 % else:
     <tr>

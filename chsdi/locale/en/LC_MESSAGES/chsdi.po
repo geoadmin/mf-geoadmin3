@@ -965,6 +965,24 @@ msgstr "IHR national"
 msgid "ch.astra.ivs-nat-verlaeufe"
 msgstr "IHR national without substance"
 
+msgid "ch.astra.ivs-nat-verlaeufe.ivs_nummer"
+msgstr "IVS-Objekt"
+
+msgid "ch.astra.ivs-nat-verlaeufe.ivs_signatur"
+msgstr "Substance"
+
+msgid "ch.astra.ivs-nat-verlaeufe.ivs_slaname"
+msgstr "Route"
+
+msgid "ch.astra.ivs-nat.ivs_nummer"
+msgstr "IVS-Objekt"
+
+msgid "ch.astra.ivs-nat.ivs_signatur"
+msgstr "Substance"
+
+msgid "ch.astra.ivs-nat.ivs_slaname"
+msgstr "Route"
+
 msgid "ch.astra.ivs-nat_abgrenzungen"
 msgstr "IHR Boundaries"
 
@@ -973,6 +991,15 @@ msgstr "IHR Elements of landscape"
 
 msgid "ch.astra.ivs-reg_loc"
 msgstr "IHR regional & local"
+
+msgid "ch.astra.ivs-reg_loc.ivs_nummer"
+msgstr "IVS-Objekt"
+
+msgid "ch.astra.ivs-reg_loc.ivs_signatur"
+msgstr "Substance"
+
+msgid "ch.astra.ivs-reg_loc.ivs_slaname"
+msgstr "Route"
 
 msgid "ch.astra.ivs-reg_loc.sub"
 msgstr "IHR regional & local"
@@ -983,8 +1010,20 @@ msgstr "FEDRO + canton"
 msgid "ch.astra.strassenverkehrszaehlung_messstellen-regional_lokal"
 msgstr "Traffic counting locations local"
 
+msgid "ch.astra.strassenverkehrszaehlung_messstellen-regional_lokal.id"
+msgstr "Number"
+
+msgid "ch.astra.strassenverkehrszaehlung_messstellen-regional_lokal.zaehlstellen_bezeichnung"
+msgstr "Zählstelle"
+
 msgid "ch.astra.strassenverkehrszaehlung_messstellen-uebergeordnet"
 msgstr "Traffic counting locations principal"
+
+msgid "ch.astra.strassenverkehrszaehlung_messstellen-uebergeordnet.id"
+msgstr "Number"
+
+msgid "ch.astra.strassenverkehrszaehlung_messstellen-uebergeordnet.zaehlstellen_bezeichnung"
+msgstr "Zählstelle"
 
 msgid "ch.astra.unfaelle-personenschaeden_alle"
 msgstr "Unfälle mit Personenschaden"
@@ -1009,6 +1048,9 @@ msgstr "UFPP"
 
 msgid "ch.babs.kulturgueter"
 msgstr "Protection of cultural property inventory"
+
+msgid "ch.babs.kulturgueter.zkob"
+msgstr "Description"
 
 msgid "ch.babs.url"
 msgstr "http://www.bevoelkerungsschutz.admin.ch/internet/bs/en/home/das_babs.html"
@@ -1166,11 +1208,26 @@ msgstr "Wood increment (NFI)"
 msgid "ch.bafu.hydrologie-gewaesserzustandsmessstationen"
 msgstr "Water status monitoring stations"
 
+msgid "ch.bafu.hydrologie-gewaesserzustandsmessstationen.gewaesser"
+msgstr "Waterbody name"
+
+msgid "ch.bafu.hydrologie-gewaesserzustandsmessstationen.name"
+msgstr "Name Messstandort"
+
+msgid "ch.bafu.hydrologie-gewaesserzustandsmessstationen.nr"
+msgstr "Station number"
+
 msgid "ch.bafu.hydrologie-hydromessstationen"
 msgstr "Hydrological gauging stations"
 
 msgid "ch.bafu.hydrologie-wassertemperaturmessstationen"
 msgstr "Temperature monitoring stations"
+
+msgid "ch.bafu.hydrologie-wassertemperaturmessstationen.id"
+msgstr "Station number"
+
+msgid "ch.bafu.hydrologie-wassertemperaturmessstationen.name"
+msgstr "Station name"
 
 msgid "ch.bafu.kt"
 msgstr "FOEN + canton"
@@ -1499,6 +1556,12 @@ msgstr "3G antenna locations (UMTS)"
 msgid "ch.bakom.radio-fernsehsender"
 msgstr "Radio and TV broadcasters"
 
+msgid "ch.bakom.radio-fernsehsender.code"
+msgstr "Code"
+
+msgid "ch.bakom.radio-fernsehsender.name"
+msgstr "Name"
+
 msgid "ch.bakom.uplink1"
 msgstr "Upload ≥ 1 Mbit/s"
 
@@ -1526,14 +1589,23 @@ msgstr "Availability TV fixed network"
 msgid "ch.bakom.versorgungsgebiet-tv"
 msgstr "TV coverage areas"
 
+msgid "ch.bakom.versorgungsgebiet-tv.prog"
+msgstr "Channels"
+
 msgid "ch.bakom.versorgungsgebiet-ukw"
 msgstr "Radio coverage areas"
+
+msgid "ch.bakom.versorgungsgebiet-ukw.prog"
+msgstr "Channels"
 
 msgid "ch.bav"
 msgstr "FOT"
 
 msgid "ch.bav.kataster-belasteter-standorte-oev"
 msgstr "Polluted sites - pub. transp."
+
+msgid "ch.bav.kataster-belasteter-standorte-oev.katasternummer"
+msgstr "BAV Standortnummer"
 
 msgid "ch.bav.laerm-emissionplan_eisenbahn_2015"
 msgstr "Emissions Plan 2015"
@@ -1547,11 +1619,66 @@ msgstr "Emissionsplan Eisenbahnlärm 2015 T"
 msgid "ch.bav.sachplan-infrastruktur-schiene_anhorung"
 msgstr "SIS consultation"
 
+msgid "ch.bav.sachplan-infrastruktur-schiene_anhorung.doc_title"
+msgstr "More information"
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_anhorung.facname_de"
+msgstr "Facility"
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_anhorung.facname_fr"
+msgstr "Facility"
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_anhorung.facname_it"
+msgstr "Facility"
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_anhorung.plname_de"
+msgstr "Measure"
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_anhorung.plname_fr"
+msgstr "Measure"
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_anhorung.plname_it"
+msgstr "Measure"
+
 msgid "ch.bav.sachplan-infrastruktur-schiene_ausgangslage"
 msgstr "SIS starting point"
 
+msgid "ch.bav.sachplan-infrastruktur-schiene_ausgangslage.description_de"
+msgstr "Description"
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_ausgangslage.description_fr"
+msgstr "Description"
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_ausgangslage.description_it"
+msgstr "Description"
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_ausgangslage.name"
+msgstr "Facility name"
+
 msgid "ch.bav.sachplan-infrastruktur-schiene_kraft"
 msgstr "SIS in force"
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_kraft.doc_title"
+msgstr "More information"
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_kraft.facname_de"
+msgstr "Facility"
+
+#. TODO
+msgid "ch.bav.sachplan-infrastruktur-schiene_kraft.facname_fr"
+msgstr "ch.bav.sachplan-infrastruktur-schiene_kraft.facname_fr"
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_kraft.facname_it"
+msgstr "Facility"
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_kraft.plname_de"
+msgstr "Measure"
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_kraft.plname_fr"
+msgstr "Measure"
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_kraft.plname_it"
+msgstr "Measure"
 
 msgid "ch.bav.url"
 msgstr "http://www.bav.admin.ch/?lang=en"
@@ -1564,6 +1691,9 @@ msgstr "Heliports/mountain landing sites"
 
 msgid "ch.bazl.kataster-belasteter-standorte-zivilflugplaetze"
 msgstr "Polluted sites civil aerodromes"
+
+msgid "ch.bazl.kataster-belasteter-standorte-zivilflugplaetze.katasternummer"
+msgstr "BAZL Standortnummer"
 
 msgid "ch.bazl.landschaftsruhezonen"
 msgstr "Sanctuaries for silence: aviation"
@@ -1643,11 +1773,26 @@ msgstr "Energy cities"
 msgid "ch.bfe.energiestaedte-2000watt-areale"
 msgstr "2000-Watt Sites"
 
+msgid "ch.bfe.energiestaedte-2000watt-areale.name"
+msgstr "Area"
+
+msgid "ch.bfe.energiestaedte-2000watt-areale.name_watt"
+msgstr "2000-Watt area"
+
 msgid "ch.bfe.energiestaedte-2000watt-aufdemweg"
 msgstr "Energy Cities on the Path 2000-Watt"
 
+msgid "ch.bfe.energiestaedte-2000watt-aufdemweg.name"
+msgstr "Municipality / city"
+
 msgid "ch.bfe.energiestaedte-energieregionen"
 msgstr "Energy-Regions"
+
+msgid "ch.bfe.energiestaedte-energieregionen.name"
+msgstr "Energy-Regions"
+
+msgid "ch.bfe.energiestaedte.name"
+msgstr "Municipality / city"
 
 msgid "ch.bfe.kernkraftwerke"
 msgstr "Nuclear Power Plants"
@@ -1708,6 +1853,24 @@ msgstr "Mixture of forests 1990/1992"
 
 msgid "ch.bfs.gebaeude_wohnungs_register"
 msgstr "Register of Buildings and Dwellings"
+
+msgid "ch.bfs.gebaeude_wohnungs_register.deinr"
+msgstr "Nr."
+
+msgid "ch.bfs.gebaeude_wohnungs_register.egid"
+msgstr "EGID"
+
+msgid "ch.bfs.gebaeude_wohnungs_register.gdename"
+msgstr "City"
+
+msgid "ch.bfs.gebaeude_wohnungs_register.plz4"
+msgstr "Zip"
+
+msgid "ch.bfs.gebaeude_wohnungs_register.plzname"
+msgstr "Location"
+
+msgid "ch.bfs.gebaeude_wohnungs_register.strname1"
+msgstr "Street"
 
 msgid "ch.bfs.url"
 msgstr "http://www.bfs.admin.ch/bfs/portal/en/index.html"
@@ -1863,6 +2026,27 @@ msgstr "http://www.pronatura.ch/79"
 msgid "ch.pronatura.waldreservate"
 msgstr "Pro Natura forest reserves"
 
+msgid "ch.pronatura.waldreservate.gisflaeche"
+msgstr "Area [ha]"
+
+msgid "ch.pronatura.waldreservate.mcpfe"
+msgstr "Type of protected area"
+
+msgid "ch.pronatura.waldreservate.name"
+msgstr "Name"
+
+msgid "ch.pronatura.waldreservate.sg_nr"
+msgstr "Number oft he reserve"
+
+msgid "ch.pronatura.waldreservate.tt_pronatura_e1"
+msgstr "No active intervention"
+
+msgid "ch.pronatura.waldreservate.tt_pronatura_e2"
+msgstr "Minimum Intervention"
+
+msgid "ch.pronatura.waldreservate.tt_pronatura_e3"
+msgstr "Conservation through active management"
+
 msgid "ch.swisstopo"
 msgstr "swisstopo"
 
@@ -1887,6 +2071,9 @@ msgstr "Status of cadastral surveying"
 msgid "ch.swisstopo-vd.ortschaftenverzeichnis_plz"
 msgstr "ZIP and locations"
 
+msgid "ch.swisstopo-vd.ortschaftenverzeichnis_plz.plz"
+msgstr "Zip"
+
 msgid "ch.swisstopo-vd.spannungsarme-gebiete"
 msgstr "Low distortion area"
 
@@ -1908,8 +2095,17 @@ msgstr "Height control points HFP1"
 msgid "ch.swisstopo.fixpunkte-hfp1"
 msgstr "Height control points HFP1"
 
+msgid "ch.swisstopo.fixpunkte-hfp1.bgdi_label"
+msgstr "Identifiant"
+
+msgid "ch.swisstopo.fixpunkte-hfp1.id"
+msgstr "Number"
+
 msgid "ch.swisstopo.fixpunkte-hfp2"
 msgstr "Height control points HFP2"
+
+msgid "ch.swisstopo.fixpunkte-hfp2.id"
+msgstr "Number"
 
 msgid "ch.swisstopo.fixpunkte-hoehe"
 msgstr "Vertical control point"
@@ -1923,8 +2119,14 @@ msgstr "Horizontal control points"
 msgid "ch.swisstopo.fixpunkte-lfp1"
 msgstr "Planimetric control points LFP1"
 
+msgid "ch.swisstopo.fixpunkte-lfp1.id"
+msgstr "Number"
+
 msgid "ch.swisstopo.fixpunkte-lfp2"
 msgstr "Planimetric control points LFP2"
+
+msgid "ch.swisstopo.fixpunkte-lfp2.id"
+msgstr "Number"
 
 msgid "ch.swisstopo.geoidmodell-ch1903"
 msgstr "Geoid in CH1903"
@@ -2016,11 +2218,20 @@ msgstr "Cement industry 1995"
 msgid "ch.swisstopo.geologie-geotechnik-ziegeleien_1907"
 msgstr "Brick manufactures 1907"
 
+msgid "ch.swisstopo.geologie-geotechnik-ziegeleien_1907.ziegelei_2"
+msgstr "Name of brick manufacture"
+
 msgid "ch.swisstopo.geologie-geotechnik-ziegeleien_1965"
 msgstr "Brick manufactures 1965"
 
+msgid "ch.swisstopo.geologie-geotechnik-ziegeleien_1965.ziegelei"
+msgstr "Name of brick manufacture"
+
 msgid "ch.swisstopo.geologie-geotechnik-ziegeleien_1995"
 msgstr "Brick manufactures 1995"
+
+msgid "ch.swisstopo.geologie-geotechnik-ziegeleien_1995.ziegeleien"
+msgstr "Name of brick manufacture"
 
 msgid "ch.swisstopo.geologie-geotope"
 msgstr "Swiss geotopes"
@@ -2028,29 +2239,56 @@ msgstr "Swiss geotopes"
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2"
 msgstr "Geologische Gutachten (10-21000km2)"
 
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2.sgd_nr"
+msgstr "InfoGeol-Nr."
+
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-10x10km"
 msgstr "Geologische Gutachten (10x10km)"
+
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-10x10km.sgd_nr"
+msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-1x1km"
 msgstr "Geologische Gutachten (1x1km)"
 
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-1x1km.sgd_nr"
+msgstr "InfoGeol-Nr."
+
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2"
 msgstr "Geologische Gutachten (>21000km2)"
+
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2.sgd_nr"
+msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-lt10km2"
 msgstr "Geologische Gutachten (0-10km2)"
 
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-lt10km2.sgd_nr"
+msgstr "InfoGeol-Nr."
+
 msgid "ch.swisstopo.geologie-gisgeol-linien"
 msgstr "Geologische Gutachten (Linien)"
 
+msgid "ch.swisstopo.geologie-gisgeol-linien.sgd_nr"
+msgstr "InfoGeol-Nr."
+
 msgid "ch.swisstopo.geologie-gisgeol-punkte"
 msgstr "Geologische Gutachten (Punkte)"
+
+msgid "ch.swisstopo.geologie-gisgeol-punkte.sgd_nr"
+msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas"
 msgstr "Gravimetric Atlas 1:100000"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas.metadata"
 msgstr "Division Gravimetric Atlas"
+
+msgid "ch.swisstopo.geologie-gravimetrischer_atlas.metadata.id"
+msgstr "Nr."
+
+msgid "ch.swisstopo.geologie-gravimetrischer_atlas.metadata.titel"
+msgstr "Title"
 
 msgid "ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen"
 msgstr "Groundwater Resources 500"
@@ -2061,11 +2299,20 @@ msgstr "Groundwater Vulnerability 500"
 msgid "ch.swisstopo.geologie-rohstoffe-industrieminerale"
 msgstr "Industrial minerals"
 
+msgid "ch.swisstopo.geologie-rohstoffe-industrieminerale.name_ads"
+msgstr "Site"
+
 msgid "ch.swisstopo.geologie-rohstoffe-kohlen_bitumen_erdgas"
 msgstr "Energetic raw materials"
 
+msgid "ch.swisstopo.geologie-rohstoffe-kohlen_bitumen_erdgas.name_ads"
+msgstr "Site"
+
 msgid "ch.swisstopo.geologie-rohstoffe-vererzungen"
 msgstr "Mineralizations"
+
+msgid "ch.swisstopo.geologie-rohstoffe-vererzungen.name_ads"
+msgstr "Site"
 
 msgid "ch.swisstopo.geologie-spezialkarten_schweiz.metadata"
 msgstr "Division Special Geological Maps"
@@ -2120,6 +2367,9 @@ msgstr "http://www.swisstopo.admin.ch/internet/swisstopo/en/home/swisstopo/org/c
 msgid "ch.swisstopo.lubis-bildstreifen"
 msgstr "Image strips swisstopo"
 
+msgid "ch.swisstopo.lubis-bildstreifen.id"
+msgstr "Flying line"
+
 msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen"
 msgstr "Aerial images privates"
 
@@ -2129,8 +2379,20 @@ msgstr "Aerial images cantons"
 msgid "ch.swisstopo.lubis-luftbilder_farbe"
 msgstr "Aerial Images swisstopo color"
 
+msgid "ch.swisstopo.lubis-luftbilder_farbe.id"
+msgstr "Picture number"
+
+msgid "ch.swisstopo.lubis-luftbilder_farbe.ort"
+msgstr "Location"
+
 msgid "ch.swisstopo.lubis-luftbilder_infrarot"
 msgstr "Aerial Images swisstopo IR"
+
+msgid "ch.swisstopo.lubis-luftbilder_infrarot.id"
+msgstr "Picture number"
+
+msgid "ch.swisstopo.lubis-luftbilder_infrarot.ort"
+msgstr "Location"
 
 msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss"
 msgstr "Aerial Images swisstopo b/w"
@@ -2198,11 +2460,26 @@ msgstr "swissALTI3D Hillshade"
 msgid "ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill"
 msgstr "District boundaries"
 
+msgid "ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill.name"
+msgstr "Name"
+
 msgid "ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill"
 msgstr "Municipal boundaries"
 
+msgid "ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill.gemname"
+msgstr "Name"
+
+msgid "ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill.id"
+msgstr "BFS-Nummer"
+
 msgid "ch.swisstopo.swissboundaries3d-kanton-flaeche.fill"
 msgstr "Cantonal boundaries"
+
+msgid "ch.swisstopo.swissboundaries3d-kanton-flaeche.fill.id"
+msgstr "Canton number according to FSO"
+
+msgid "ch.swisstopo.swissboundaries3d-kanton-flaeche.fill.name"
+msgstr "Name"
 
 msgid "ch.swisstopo.swissboundaries3d-land-flaeche.fill"
 msgstr "National boundaries"

@@ -7,7 +7,7 @@ from pyramid.url import route_url
 <%def name="table_body(c, lang)">
 
 <% c['stable_id'] = True %>
-    <tr><td class="cell-left">${_('tt_lubis_lineId')}</td>          <td>${c['featureId']}</td></tr>
+    <tr><td class="cell-left">${_('ch.swisstopo.lubis-bildstreifen.id')}</td>          <td>${c['featureId']}</td></tr>
     <tr><td class="cell-left">${_('tt_lubis_Flugdatum')}</td>       <td>${c['attributes']['flugdatum']}</td></tr>
     <tr><td class="cell-left">${_('tt_lubis_auflosung')}</td>       <td>${c['attributes']['resolution']}</td></tr>
 % if   c['attributes']['gsd'] == 0.25 or c['attributes']['gsd'] == 0.5:

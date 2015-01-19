@@ -2,7 +2,7 @@
 
 <%def name="table_body(c, lang)">
 <tr>
-  <td class="cell-left">${_('areal')}</td>
+  <td class="cell-left">${_('ch.bfe.energiestaedte-2000watt-areale.name')}</td>
   <td>${c['attributes']['name'] or '-'}</td>
 </tr>
 <tr>
@@ -26,7 +26,7 @@
 <table class="table-with-border kernkraftwerke-extended" cellpadding="5">
   <tr>
     <th class="cell-meta">
-      ${_('areal_watt')}
+      ${_('ch.bfe.energiestaedte-2000watt-areale.name_watt')}
     </th>
     <td>
       ${c['attributes']['name']}

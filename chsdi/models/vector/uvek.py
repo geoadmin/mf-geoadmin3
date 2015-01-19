@@ -357,6 +357,7 @@ class KATASTERBELASTETERSTANDORTE(Base, Vector):
     __table_args__ = ({'schema': 'bav', 'autoload': False})
     __template__ = 'templates/htmlpopup/kataster_belasteter_standorte_oev.mako'
     __bodId__ = 'ch.bav.kataster-belasteter-standorte-oev'
+    __queryable_attributes__ = ['katasternummer']
     __label__ = 'id'
     id = Column('vflz_id', Integer, primary_key=True)
     the_geom = Column(Geometry(geometry_type='GEOMETRY',
@@ -401,6 +402,7 @@ class ENERGIESTAEDTE(Base, Vector):
     __template__ = 'templates/htmlpopup/energiestaedte.mako'
     __bodId__ = 'ch.bfe.energiestaedte'
     __extended_info__ = True
+    __queryable_attributes__ = ['name']
     __label__ = 'name'
     id = Column('bgdi_id', Integer, primary_key=True)
     the_geom = Column(Geometry(geometry_type='GEOMETRY',
@@ -426,6 +428,7 @@ class ENERGIESTAEDTEREGIONEN(Base, Vector):
     __template__ = 'templates/htmlpopup/energiestaedte_energieregionen.mako'
     __bodId__ = 'ch.bfe.energiestaedte-energieregionen'
     __extended_info__ = True
+    __queryable_attributes__ = ['name']
     __label__ = 'name'
     id = Column('bgdi_id', Integer, primary_key=True)
     the_geom = Column(Geometry(geometry_type='GEOMETRY',
@@ -446,6 +449,7 @@ class ENERGIESTAEDTE2000WATTAREALE(Base, Vector):
     __template__ = 'templates/htmlpopup/energiestaedte_2000watt_areale.mako'
     __bodId__ = 'ch.bfe.energiestaedte-2000watt-areale'
     __extended_info__ = True
+    __queryable_attributes__ = ['name']
     __label__ = 'name'
     id = Column('bgdi_id', Integer, primary_key=True)
     the_geom = Column(Geometry(geometry_type='GEOMETRY',
@@ -469,6 +473,7 @@ class ENERGIESTAEDTE2000AUFDEMWEG(Base, Vector):
     __template__ = 'templates/htmlpopup/energiestaedte_2000watt_auf_dem_weg.mako'
     __bodId__ = 'ch.bfe.energiestaedte-2000watt-aufdemweg'
     __extended_info__ = True
+    __queryable_attributes__ = ['name']
     __label__ = 'name'
     id = Column('bgdi_id', Integer, primary_key=True)
     the_geom = Column(Geometry(geometry_type='GEOMETRY',
@@ -1347,7 +1352,7 @@ class sis_angaben (Base, Vector):
     __table_args__ = ({'schema': 'bav', 'autoload': False})
     __template__ = 'templates/htmlpopup/sis_angaben.mako'
     __bodId__ = 'ch.bav.sachplan-infrastruktur-schiene_ausgangslage'
-    __queryable_attributes__ = ['name', 'description_de', 'description_fr', 'description_it', 'description_en']
+    __queryable_attributes__ = ['name', 'description_fr', 'description_it', 'description_de']
     __label__ = 'name'
     id = Column('anlage_id', Text, primary_key=True)
     name = Column('name', Text)
@@ -1527,6 +1532,7 @@ class kbs_zivilflugpl(Base, Vector):
     __table_args__ = ({'schema': 'bazl', 'autoload': False})
     __template__ = 'templates/htmlpopup/kataster_belasteter_standorte_zivflpl.mako'
     __bodId__ = 'ch.bazl.kataster-belasteter-standorte-zivilflugplaetze'
+    __queryable_attributes__ = ['katasternummer']
     __label__ = 'katasternummer'
     id = Column('vflz_id', Integer, primary_key=True)
     the_geom = Column(Geometry(geometry_type='GEOMETRY',

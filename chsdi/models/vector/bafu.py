@@ -62,7 +62,7 @@ class Temperaturmessnetz(Base, Vector):
     __table_args__ = ({'schema': 'hydrologie', 'autoload': False})
     __bodId__ = 'ch.bafu.hydrologie-wassertemperaturmessstationen'
     __template__ = 'templates/htmlpopup/temperaturmessnetz.mako'
-    __queryable_attributes__ = ['nr', 'name']
+    __queryable_attributes__ = ['id', 'name']
     __label__ = 'name'
     id = Column('nr', Integer, primary_key=True)
     url = Column('url', Text)

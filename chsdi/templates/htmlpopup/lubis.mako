@@ -70,6 +70,9 @@ def get_viewer_url(request, params):
 %>
 
 <%def name="table_body(c, lang)">
+<%
+   tt_lubis_ebkey = c['layerBodId'] + '.' + 'id'
+%>
 <% lang = lang if lang in ('fr','it','en') else 'de' %>
 <% c['stable_id'] = True %>
 <%
@@ -99,7 +102,7 @@ params = (
 viewer_url = get_viewer_url(request, params)
 %>
 <tr>
-  <td class="cell-left">${_('tt_lubis_ebkey')}</td>
+  <td class="cell-left">${_(tt_lubis_ebkey)}</td>
   <td>${c['featureId'] or '-'}</td>
 </tr>
 <tr>

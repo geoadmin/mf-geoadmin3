@@ -2,7 +2,7 @@
 
 <%def name="table_body(c, lang)">
 <tr>
-  <td class="cell-left">${_('ch.bfe.energiestaedte-energieregionen')}</td>
+  <td class="cell-left">${_('ch.bfe.energiestaedte-energieregionen.name')}</td>
   <td>${c['attributes']['name'] or '-'}</td>
 </tr>
 <tr>

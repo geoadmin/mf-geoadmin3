@@ -4,7 +4,7 @@
 
 <%def name="table_body(c, lang)">
     <% c['stable_id'] = True %>
-    <tr><td class="cell-left">${_('beschreibung')}</td>   <td>${c['attributes']['zkob']}</td></tr>
+    <tr><td class="cell-left">${_('ch.babs.kulturgueter.zkob')}</td>   <td>${c['attributes']['zkob']}</td></tr>
     <tr><td class="cell-left">${_('y')}</td>              <td>${int(round(c['attributes']['x'],0)) or '-'}</td></tr>
     <tr><td class="cell-left">${_('x')}</td>              <td>${int(round(c['attributes']['y'],0)) or '-'}</td></tr>
     <tr><td class="cell-left">${_('gemeinde')}</td>       <td>${c['attributes']['gemeinde'] or '-'}</td></tr>

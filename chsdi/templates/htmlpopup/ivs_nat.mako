@@ -3,8 +3,14 @@
 <%inherit file="base.mako"/>
 
 <%def name="table_body(c, lang)">
-    <tr><td class="cell-left">${_('ivs_objekt')}</td><td>${c['attributes']['ivs_nummer']}</td></tr>
-    <tr><td class="cell-left">${_('ivs_signatur')}</td>
+<%
+    ivs_objekt = c['layerBodId'] + '.' + 'ivs_nummer'
+    ivs_signatur = c['layerBodId'] + '.' + 'ivs_signatur'
+    ivs_slaname = c['layerBodId'] + '.' + 'ivs_slaname'
+    
+%>
+    <tr><td class="cell-left">${_(ivs_objekt)}</td><td>${c['attributes']['ivs_nummer']}</td></tr>
+    <tr><td class="cell-left">${_(ivs_signatur)}</td>
 % if lang =='fr':
     <td>${c['attributes']['ivs_signatur_fr']}</td></tr>
 % elif lang == 'it':
@@ -22,7 +28,7 @@
 % elif c['attributes']['ivs_slabedeutung'] =='1':
     <tr><td class="cell-left">${_('ivs_slabedeutung')}</td><td>${_('lokal')}</td></tr>
 % endif
-    <tr><td class="cell-left">${_('ivs_slaname')}</td><td>${c['attributes']['ivs_slaname']}</td></tr> 
+    <tr><td class="cell-left">${_(ivs_slaname)}</td><td>${c['attributes']['ivs_slaname']}</td></tr> 
     <tr><td class="cell-left">${_('ivs_documentation')}</td>
 <%
     from urllib2 import urlopen

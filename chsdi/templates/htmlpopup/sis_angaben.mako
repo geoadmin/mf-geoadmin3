@@ -1,6 +1,10 @@
 <%inherit file="base.mako"/>
 
 <%def name="table_body(c, lang)">
+<%
+    beschreibung = c['layerBodId'] + '.' + 'description_%' % lang
+    name = c['layerBodId'] + '.' + 'name'
+%>
 <% 
     import datetime
     lang = lang if lang in ('fr','it','de') else 'de'
@@ -10,8 +14,8 @@
     datefrom = datetime.datetime.strptime(c['attributes']['valid_from'].strip(), "%Y%m%d").strftime("%d.%m.%Y")
 
 %>
-    <tr><td class="cell-left">${_('tt_sachplan-infrastruktur-schiene_aus_anlage')}</td>         <td>${c['attributes']['name']}</td></tr>
-    <tr><td class="cell-left">${_('tt_ch.bfe.energieforschung_beschreibung')}</td>              <td>${c['attributes'][description] or '-'}</td></tr>
+    <tr><td class="cell-left">${_(name)}</td>         <td>${c['attributes']['name']}</td></tr>
+    <tr><td class="cell-left">${_(beschreibung)}</td>              <td>${c['attributes'][description] or '-'}</td></tr>
     <tr><td class="cell-left">${_('tt_sachplan-infrastruktur-schiene_aus_anlageart')}</td>      <td>${c['attributes'][facility_kind] or '-'}</td></tr>
     <tr><td class="cell-left">${_('tt_ch.bfe.energieforschung_projektstatus')}</td>             <td>${c['attributes'][facility_status] or '-'}</td></tr>
     <tr><td class="cell-left">${_('tt_sachplan-infrastruktur-schiene_aus_validform')}</td>      <td>${datefrom or '-'}</td></tr>
