@@ -23,7 +23,6 @@ from pyramid.url import route_url
 <tr><td class="cell-left">${_('tt_ch.bazl.abortionaccomplished')}</td>    <td>${c['attributes']['duration'] or '-'}</td></tr>
 <tr><td class="cell-left">${_('tt_ch.bazl.markierung')}</td>              <td>${sanctiontext}</td></tr>
 </%def>
-
 <%def name="extended_info(c, lang)">
 <%
   c['last'] = False
@@ -49,7 +48,20 @@ from pyramid.url import route_url
   
   id = attr['featureId']
   geometry = c['geometry']
+
 %>
+<style type="text/css">
+  /*  Smartphones portrait (320px) et landscape (480px) */
+  td {
+    padding-left: 200px;
+    text-align: left;
+  }
+  @media (max-width: 480px) {
+    td {
+      padding-left: 20px;
+    }
+  }
+</style>
 <div class="zsborder">
   <table border="0px" cellspacing="0px" cellpadding="2px" width="100%">
     <tr>
@@ -57,10 +69,10 @@ from pyramid.url import route_url
       <td width="50%">&nbsp;</td>
     </tr>
     <tr>
-      <td class="cell-left" colspan="2">
-        <div style="float: left; font-weight: bold; font-size: 14px;">${_('tt_ch.bazl.registrationnummer')}: ${attr['registrationnumber']}</div>
+      <th class="cell-left" colspan="2" style="background-color: #FFFFFF;">
+        <div style="float: left; text-align: left; font-weight: bold; font-size: 14px;">${_('tt_ch.bazl.registrationnummer')}: ${attr['registrationnumber']}</div>
         <div style="float: right; text-align: right; padding-right: 16px;">${_('tt_ch.bazl.hindernisart')}: ${attr['obstacletype']}</div>
-      </td>
+      </th>
     </tr>
      <tr>
      <td></td>
@@ -69,25 +81,25 @@ from pyramid.url import route_url
       <th style="text-align:left" colspan="2">${_('status')}: ${attr['state']}</th>
     </tr>
     <tr>
-      <td class="cell-meta-one" style="padding-left: 200px" colspan="2">${_('tt_ch.bazl.startofconstruction')}: ${startofconstruction or '-'}</td>
+      <td class="cell-meta-one" colspan="2">${_('tt_ch.bazl.startofconstruction')}: ${startofconstruction or '-'}</td>
     </tr>
     <tr>
-      <td class="cell-meta-one" style="padding-left: 200px" colspan="2">${_('tt_ch.bazl.abortionaccomplished')}: ${attr['duration'] or '-'}</td>
+      <td class="cell-meta-one" colspan="2">${_('tt_ch.bazl.abortionaccomplished')}: ${attr['duration'] or '-'}</td>
     </tr>
     <tr>
-      <td class="cell-meta-one" style="padding-left: 200px" colspan="2">${_('tt_bazl_abortion')}: ${abortionaccomplished}</td>
+      <td class="cell-meta-one" colspan="2">${_('tt_bazl_abortion')}: ${abortionaccomplished}</td>
     </tr>
     <tr bgcolor="#EFEFEF">
       <th style="text-align:left" colspan="2">${_('tt_ch.bazl.geometriedaten')}:</th>
     </tr>
     <tr>
-      <td class="cell-meta-one" style="padding-left: 200px" colspan="2">${_('tt_ch.bazl.maxheight')}: ${attr['maxheightagl']}</td></tr>
+      <td class="cell-meta-one" colspan="2">${_('tt_ch.bazl.maxheight')}: ${attr['maxheightagl']}</td></tr>
     </tr>
     <tr>
-      <td class="cell-meta-one" style="padding-left: 200px" colspan="2">${_('tt_ch.bazl.elevation')}: ${attr['topelevationamsl']}</td>
+      <td class="cell-meta-one" colspan="2">${_('tt_ch.bazl.elevation')}: ${attr['topelevationamsl']}</td>
     </tr>
     <tr>
-      <td class="cell-meta-one" style="padding-left: 200px" colspan="2">${_('tt_ch.bazl.totallength')}: ${attr['totallength']}</td>
+      <td class="cell-meta-one" colspan="2">${_('tt_ch.bazl.totallength')}: ${attr['totallength']}</td>
     </tr>
 
 % if bbox == True and attr['geomtype'] != 'line':
@@ -95,16 +107,16 @@ from pyramid.url import route_url
       <th style="text-align:left" colspan="2">${_('Bounding Box - Coordinates')} [CH1903]:</th>
     </tr>
     <tr>
-      <td class="cell-meta-one" style="padding-left: 200px" colspan="2">${_('est')}=${c['bbox'][0]}    ${_('nord')}=${c['bbox'][1]}</td>
+      <td class="cell-meta-one" colspan="2">${_('est')}=${c['bbox'][0]}    ${_('nord')}=${c['bbox'][1]}</td>
     </tr>
     <tr>
-      <td class="cell-meta-one" style="padding-left: 200px" colspan="2">${_('est')}=${c['bbox'][0]}    ${_('nord')}=${c['bbox'][3]}</td>
+      <td class="cell-meta-one" colspan="2">${_('est')}=${c['bbox'][0]}    ${_('nord')}=${c['bbox'][3]}</td>
     </tr>
     <tr>
-      <td class="cell-meta-one" style="padding-left: 200px" colspan="2">${_('est')}=${c['bbox'][2]}    ${_('nord')}=${c['bbox'][1]}</td>
+      <td class="cell-meta-one" colspan="2">${_('est')}=${c['bbox'][2]}    ${_('nord')}=${c['bbox'][1]}</td>
     </tr>
     <tr>
-      <td class="cell-meta-one" style="padding-left: 200px" colspan="2">${_('est')}=${c['bbox'][2]}    ${_('nord')}=${c['bbox'][3]}</td>
+      <td class="cell-meta-one" colspan="2">${_('est')}=${c['bbox'][2]}    ${_('nord')}=${c['bbox'][3]}</td>
     </tr>
 
 % else:
@@ -112,11 +124,11 @@ from pyramid.url import route_url
       <th style="text-align:left" colspan="2">${_('Coordinates')} [CH1903]:</th>
     </tr>
     <tr>
-      <td class="cell-meta-one" style="padding-left: 200px" colspan="2">${_('est')}=${c['bbox'][0]}    ${_('nord')}=${c['bbox'][1]}</td>
+      <td class="cell-meta-one" colspan="2">${_('est')}=${c['bbox'][0]}    ${_('nord')}=${c['bbox'][1]}</td>
     </tr>
   % if attr['geomtype'] == 'line':
       <tr>
-        <td class="cell-meta-one" style="padding-left: 200px" colspan="2">${_('est')}=${c['bbox'][2]}    ${_('nord')}=${c['bbox'][3]}</td>
+        <td class="cell-meta-one" colspan="2">${_('est')}=${c['bbox'][2]}    ${_('nord')}=${c['bbox'][3]}</td>
       </tr>
   % endif
 % endif
@@ -124,7 +136,7 @@ from pyramid.url import route_url
       <th style="text-align:left" colspan="2">${_('tt_ch.bazl.markierung')}:</th>
     </tr>
     <tr>
-      <td class="cell-meta-one" style="padding-left: 200px" colspan="2">${sanctiontext}</td>
+      <td class="cell-meta-one" colspan="2">${sanctiontext}</td>
     </tr>
     <tr bgcolor="#EFEFEF">
       <th style="text-align:left" colspan="2">${_('tt_ch.bazl.kartnummer')}: ${attr['lk100']}</th>
