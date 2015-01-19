@@ -49,7 +49,6 @@ c['stable_id'] = True
       var map = new ga.Map({
         // Define the div where the map is placed
         target: 'map',
-        ol3Logo: false,
         tooltip: false,
         view: new ol.View({
           // Define the default resolution
