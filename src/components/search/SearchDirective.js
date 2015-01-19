@@ -748,7 +748,9 @@
             if (!gaBrowserSniffer.mobile ||
                 (angular.isDefined(searchParam) &&
                 searchParam.length > 0)) {
-              taElt.focus();
+              // According to jquery doc (http://api.jquery.com/focus/)
+              // we should use triggerHandler when an element if hidden
+              taElt.triggerHandler('focus');
             }
           }
         };
