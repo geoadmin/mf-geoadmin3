@@ -213,6 +213,10 @@ from pyramid.url import route_url
         }
       });
       map.addLayer(vector);
+
+      map.getView().fitGeometry(vectorSource.getFeatures()[0].getGeometry(), map.getSize(), {
+        minResolution: 10
+      });
     }
   }
   $(document).ready(init${id});
