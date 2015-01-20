@@ -233,6 +233,7 @@
               }
               // Allow client zoom on all layer when offline
               layer.setUseInterimTilesOnError(useClientZoom);
+              layer.setPreload(useClientZoom ? gaMapUtils.preload : 0);
             }
           }
         };
