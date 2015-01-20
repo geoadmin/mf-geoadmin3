@@ -876,12 +876,12 @@
           }
 
           if (!angular.isDefined(yearStr)) {
-            var timeBehaviour = this.getLayerProperty(bodId,
-                'timeBehaviour');
-            yearStr = (timeBehaviour === 'all' || timestamps.length == 0) ?
-                undefined : timestamps[0];
-            if (bodId == 'ch.swisstopo.zeitreihen') {
-              yearStr = '18641231';
+            var timeBehaviour = this.getLayerProperty(bodId, 'timeBehaviour');
+            //check if specific 4/6/8 digit timestamp is specified
+            if (/^\d{4}$|^\d{6}$|^\d{8}$/.test(timeBehaviour)) {
+                yearStr = timeBehaviour;
+            } else if (timeBehaviour !== 'all' && timestamps.length) {
+                yearStr = timestamps[0];
             }
           }
 
