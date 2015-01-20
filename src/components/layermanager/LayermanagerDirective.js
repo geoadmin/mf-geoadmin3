@@ -62,12 +62,8 @@
       }
       var year;
       for (var i = 0, ii = olLayers.length; i < ii; i++) {
-        if (!olLayers[i].timeEnabled) {
+        if (!olLayers[i].timeEnabled || !olLayers[i].time) {
           continue;
-        }
-
-        if (!olLayers[i].time) {
-          return false;
         }
 
         if (!year) {
