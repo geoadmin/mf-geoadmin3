@@ -139,7 +139,6 @@ display:none !important;
       var map = new ga.Map({
       // Define the div where the map is placed
           target: 'map',
-          ol3Logo: false,
           view: new ol.View({
           // Define the default resolution
           // 10 means that one pixel is 10m width and height

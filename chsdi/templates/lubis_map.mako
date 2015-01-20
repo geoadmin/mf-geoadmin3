@@ -45,7 +45,7 @@
           controls: ol.control.defaults().extend([new ol.control.FullScreen()]),
           renderer: 'canvas',
           target: ${target},
-          ol3Logo: false,
+          logo: false,
           view: new ol.View({
             projection: new ol.proj.Projection({
               code: 'PIXELS',
