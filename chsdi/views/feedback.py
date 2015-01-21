@@ -35,7 +35,7 @@ def feedback(self, request):
 
         msg.attach(
             MIMEText(unicodedata.normalize('NFKD',
-                                           unicode(text)).encode('ascii',
+                                           unicode(text)).encode('UTF-8',
                                                                  'ignore')))
         # Attach meta information
         part = MIMEBase('application', 'json')
@@ -76,7 +76,7 @@ def feedback(self, request):
     permalink = getParam('permalink', 'No permalink provided')
     feedback = getParam('feedback', 'No feedback provided')
     email = getParam('email', 'Anonymous')
-    text = '%s just sent a feedback:\n %s. \nPermalink: %s. \n\nUser-Agent: %s'
+    text = u'%s just sent a feedback:\n %s. \nPermalink: %s. \n\nUser-Agent: %s'
     attachement = getParam('attachement', None)
     kml = getParam('kml', None)
     now = datetime.datetime.now()
