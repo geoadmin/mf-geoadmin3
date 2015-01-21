@@ -16,6 +16,7 @@ class GravimetrischerAtlasMetadata (Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/gravimetrischer_atlas_metadata.mako'
     __bodId__ = 'ch.swisstopo.geologie-gravimetrischer_atlas.metadata'
+    __queryable_attributes__ = ['id', 'titel']
     __label__ = 'titel'
     id = Column('nr', Integer, primary_key=True)
     titel = Column('titel', Text)
@@ -67,6 +68,7 @@ class SwissboundariesBezirk(Base, Vector):
     __table_args__ = ({'schema': 'tlm', 'autoload': False})
     __template__ = 'templates/htmlpopup/swissboundaries_bezirk.mako'
     __bodId__ = 'ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill'
+    __queryable_attributes__ = ['name']
     __label__ = 'name'
     id = Column('id', Integer, primary_key=True)
     name = Column('name', Text)
@@ -82,6 +84,7 @@ class SwissboundariesGemeinde(Base, Vector):
     __table_args__ = ({'schema': 'tlm', 'autoload': False})
     __template__ = 'templates/htmlpopup/swissboundaries_gemeinde.mako'
     __bodId__ = 'ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill'
+    __queryable_attributes__ = ['gemname', 'id']
     __label__ = 'gemname'
     id = Column('id', Integer, primary_key=True)
     gemname = Column('gemname', Text)
@@ -99,6 +102,7 @@ class SwissboundariesKanton(Base, Vector):
     __table_args__ = ({'schema': 'tlm', 'autoload': False})
     __template__ = 'templates/htmlpopup/swissboundaries_kanton.mako'
     __bodId__ = 'ch.swisstopo.swissboundaries3d-kanton-flaeche.fill'
+    __queryable_attributes__ = ['name', 'id']
     __label__ = 'name'
     id = Column('kantonsnr', Integer, primary_key=True)
     ak = Column('ak', Text)
@@ -1273,6 +1277,7 @@ class PLZOrtschaften(Base, Vector):
     __table_args__ = ({'schema': 'vd', 'autoload': False})
     __template__ = 'templates/htmlpopup/gabmo_plz.mako'
     __bodId__ = 'ch.swisstopo-vd.ortschaftenverzeichnis_plz'
+    __queryable_attributes__ = ['plz']
     __label__ = 'plz'
     id = Column('os_uuid', Text, primary_key=True)
     plz = Column('plz', Integer)
@@ -1500,6 +1505,7 @@ class gisgeol_punkte(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/gisgeol.mako'
     __bodId__ = 'ch.swisstopo.geologie-gisgeol-punkte'
+    __queryable_attributes__ = ['sgd_nr']
     __label__ = 'title'
     id = Column('gid', Integer, primary_key=True)
     sgd_nr = Column('sgd_nr', Integer)
@@ -1524,6 +1530,7 @@ class gisgeol_linien(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/gisgeol.mako'
     __bodId__ = 'ch.swisstopo.geologie-gisgeol-linien'
+    __queryable_attributes__ = ['sgd_nr']
     __label__ = 'sgd_nr'
     id = Column('gid', Integer, primary_key=True)
     sgd_nr = Column('sgd_nr', Integer)
@@ -1548,6 +1555,7 @@ class gisgeol_flaechen_1x1km(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/gisgeol.mako'
     __bodId__ = 'ch.swisstopo.geologie-gisgeol-flaechen-1x1km'
+    __queryable_attributes__ = ['sgd_nr']
     __label__ = 'sgd_nr'
     id = Column('gid', Integer, primary_key=True)
     sgd_nr = Column('sgd_nr', Integer)
@@ -1572,6 +1580,7 @@ class gisgeol_flaechen_10x10km(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/gisgeol.mako'
     __bodId__ = 'ch.swisstopo.geologie-gisgeol-flaechen-10x10km'
+    __queryable_attributes__ = ['sgd_nr']
     __label__ = 'sgd_nr'
     id = Column('gid', Integer, primary_key=True)
     sgd_nr = Column('sgd_nr', Integer)
@@ -1596,6 +1605,7 @@ class gisgeol_flaechen_10to21000km2(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/gisgeol.mako'
     __bodId__ = 'ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2'
+    __queryable_attributes__ = ['sgd_nr']
     __label__ = 'sgd_nr'
     id = Column('gid', Integer, primary_key=True)
     sgd_nr = Column('sgd_nr', Integer)
@@ -1620,6 +1630,7 @@ class gisgeol_flaechen_gt21000km2(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/gisgeol.mako'
     __bodId__ = 'ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2'
+    __queryable_attributes__ = ['sgd_nr']
     __label__ = 'sgd_nr'
     id = Column('gid', Integer, primary_key=True)
     sgd_nr = Column('sgd_nr', Integer)
@@ -1644,6 +1655,7 @@ class gisgeol_flaechen_lt10km2(Base, Vector):
     __table_args__ = ({'schema': 'geol', 'autoload': False})
     __template__ = 'templates/htmlpopup/gisgeol.mako'
     __bodId__ = 'ch.swisstopo.geologie-gisgeol-flaechen-lt10km2'
+    __queryable_attributes__ = ['sgd_nr']
     __label__ = 'sgd_nr'
     id = Column('gid', Integer, primary_key=True)
     sgd_nr = Column('sgd_nr', Integer)

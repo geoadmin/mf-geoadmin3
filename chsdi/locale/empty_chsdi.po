@@ -1,3 +1,279 @@
+msgid "ch.pronatura.waldreservate.gisflaeche"
+msgstr ""
+
+msgid "ch.pronatura.waldreservate.name"
+msgstr ""
+
+msgid "ch.pronatura.waldreservate.sg_nr"
+msgstr ""
+
+msgid "ch.pronatura.waldreservate.mcpfe"
+msgstr ""
+
+msgid "ch.pronatura.waldreservate.tt_pronatura_e1"
+msgstr ""
+
+msgid "ch.pronatura.waldreservate.tt_pronatura_e2"
+msgstr ""
+
+msgid "ch.pronatura.waldreservate.tt_pronatura_e3"
+msgstr ""
+
+msgid "ch.bfs.gebaeude_wohnungs_register.deinr"
+msgstr ""
+
+msgid "ch.bfs.gebaeude_wohnungs_register.egid"
+msgstr ""
+
+msgid "ch.bfs.gebaeude_wohnungs_register.gdename"
+msgstr ""
+
+msgid "ch.bfs.gebaeude_wohnungs_register.plz4"
+msgstr ""
+
+msgid "ch.bfs.gebaeude_wohnungs_register.plzname"
+msgstr ""
+
+msgid "ch.bfs.gebaeude_wohnungs_register.strname1"
+msgstr ""
+
+msgid "ch.bfe.energiestaedte-energieregionen.name"
+msgstr ""
+
+msgid "ch.bfe.energiestaedte-2000watt-aufdemweg.name"
+msgstr ""
+
+msgid "ch.bfe.energiestaedte-2000watt-areale.name_watt"
+msgstr ""
+
+msgid "ch.bfe.energiestaedte-2000watt-areale.name"
+msgstr ""
+
+msgid "ch.bfe.energiestaedte.name"
+msgstr ""
+
+msgid "ch.astra.ivs-nat-verlaeufe.ivs_slaname"
+msgstr ""
+
+msgid "ch.astra.ivs-nat-verlaeufe.ivs_nummer"
+msgstr ""
+
+msgid "ch.astra.ivs-nat-verlaeufe.ivs_signatur"
+msgstr ""
+
+msgid "ch.astra.ivs-nat.ivs_slaname"
+msgstr ""
+
+msgid "ch.astra.ivs-nat.ivs_nummer"
+msgstr ""
+
+msgid "ch.astra.ivs-nat.ivs_signatur"
+msgstr ""
+
+msgid "ch.swisstopo.fixpunkte-hfp1.bgdi_label"
+msgstr ""
+
+msgid "ch.swisstopo.lubis-luftbilder_infrarot.id"
+msgstr ""
+
+msgid "ch.swisstopo.lubis-luftbilder_infrarot.ort"
+msgstr ""
+
+msgid "ch.swisstopo.lubis-luftbilder_farbe.id"
+msgstr ""
+
+msgid "ch.swisstopo.lubis-luftbilder_farbe.ort"
+msgstr ""
+
+msgid "ch.swisstopo.lubis-bildstreifen.id"
+msgstr ""
+
+msgid "ch.swisstopo.swissboundaries3d-kanton-flaeche.fill.id"
+msgstr ""
+
+msgid "ch.swisstopo.swissboundaries3d-kanton-flaeche.fill.name"
+msgstr ""
+
+msgid "ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill.gemname"
+msgstr ""
+
+msgid "ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill.id"
+msgstr ""
+
+msgid "ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill.name"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-rohstoffe-vererzungen.name_ads"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-rohstoffe-kohlen_bitumen_erdgas.name_ads"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-rohstoffe-industrieminerale.name_ads"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-gravimetrischer_atlas.metadata.id"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-gravimetrischer_atlas.metadata.titel"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-gisgeol-punkte.sgd_nr"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-gisgeol-linien.sgd_nr"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-lt10km2.sgd_nr"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2.sgd_nr"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-1x1km.sgd_nr"
+msgstr "" 
+
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-10x10km.sgd_nr"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2.sgd_nr"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-geotechnik-ziegeleien_1995.ziegeleien"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-geotechnik-ziegeleien_1965.ziegelei"
+msgstr ""
+
+msgid "ch.swisstopo.geologie-geotechnik-ziegeleien_1907.ziegelei_2"
+msgstr ""
+
+msgid "ch.swisstopo.fixpunkte-lfp2.id"
+msgstr ""
+
+msgid "ch.swisstopo.fixpunkte-lfp1.id"
+msgstr ""
+
+msgid "ch.swisstopo.fixpunkte-hfp2.id"
+msgstr ""
+
+msgid "ch.swisstopo.fixpunkte-hfp1.id"
+msgstr ""
+
+msgid "ch.swisstopo-vd.ortschaftenverzeichnis_plz.plz"
+msgstr ""
+
+msgid "ch.astra.ivs-reg_loc.ivs_slaname"
+msgstr ""
+
+msgid "ch.astra.ivs-reg_loc.ivs_nummer"
+msgstr ""
+
+msgid "ch.astra.ivs-reg_loc.ivs_signatur"
+msgstr ""
+
+msgid "ch.astra.strassenverkehrszaehlung_messstellen-regional_lokal.zaehlstellen_bezeichnung"
+msgstr ""
+
+msgid "ch.astra.strassenverkehrszaehlung_messstellen-regional_lokal.id"
+msgstr ""
+
+msgid "ch.astra.strassenverkehrszaehlung_messstellen-uebergeordnet.zaehlstellen_bezeichnung"
+msgstr ""
+
+msgid "ch.astra.strassenverkehrszaehlung_messstellen-uebergeordnet.id"
+msgstr ""
+
+msgid "ch.babs.kulturgueter.zkob"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-gewaesserzustandsmessstationen.name"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-gewaesserzustandsmessstationen.nr"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-gewaesserzustandsmessstationen.gewaesser"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-wassertemperaturmessstationen.name"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-wassertemperaturmessstationen.id"
+msgstr ""
+
+msgid "ch.bakom.radio-fernsehsender.name"
+msgstr ""
+
+msgid "ch.bakom.radio-fernsehsender.code"
+msgstr ""
+
+msgid "ch.bakom.versorgungsgebiet-tv.prog"
+msgstr ""
+
+msgid "ch.bakom.versorgungsgebiet-ukw.prog"
+msgstr ""
+
+msgid "ch.bav.kataster-belasteter-standorte-oev.katasternummer"
+msgstr ""
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_anhorung.facname_de"
+msgstr ""
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_anhorung.facname_fr"
+msgstr ""
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_anhorung.facname_it"
+msgstr ""
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_anhorung.doc_title"
+msgstr ""
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_anhorung.plname_de"
+msgstr ""
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_anhorung.plname_fr"
+msgstr ""
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_anhorung.plname_it"
+msgstr ""
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_kraft.facname_de"
+msgstr ""
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_kraft.facname_fr"
+msgstr ""
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_kraft.facname_it"
+msgstr ""
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_kraft.doc_title"
+msgstr ""
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_kraft.plname_de"
+msgstr ""
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_kraft.plname_fr"
+msgstr ""
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_kraft.plname_it"
+msgstr ""
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_ausgangslage.name"
+msgstr ""
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_ausgangslage.description_de"
+msgstr ""
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_ausgangslage.description_fr"
+msgstr ""
+
+msgid "ch.bav.sachplan-infrastruktur-schiene_ausgangslage.description_it"
+msgstr ""
+
+msgid "ch.bazl.kataster-belasteter-standorte-zivilflugplaetze.katasternummer"
+msgstr ""
+
 msgid "None"
 msgstr ""
 
@@ -45,7 +321,6 @@ msgstr ""
 
 msgid "tt_ch_bazl_kataster_belasteter_standorte_zivflpl_beurteilung"
 msgstr ""
-
 
 msgid "ch.bafu.bundesinventare-hochmoore_anhoerung"
 msgstr ""

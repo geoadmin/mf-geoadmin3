@@ -15,7 +15,7 @@
 
 %>
 
-    <tr><td class="cell-left">${_('tt_ch_bazl_kataster_belasteter_standorte_zivflpl_standortnummer')}</td>                        <td>${c['attributes']['katasternummer'] or '-'}</td></tr>
+    <tr><td class="cell-left">${_('ch.bazl.kataster-belasteter-standorte-zivilflugplaetze.katasternummer')}</td>                        <td>${c['attributes']['katasternummer'] or '-'}</td></tr>
     <tr><td class="cell-left">${_('tt_ch_bav_kataster_belasteter_standorte_oev_standorttyp')}</td>                           <td>${c['attributes'][standorttyp] or '-'}</td></tr>
     <tr><td class="cell-left">${_('tt_ch_bazl_kataster_belasteter_standorte_zivflpl_beurteilung')}</td>                           <td>${c['attributes'][statusaltlv] or '-'}</td></tr>
     <tr><td class="cell-left" valign="top">${_('tt_ch_bav_kataster_belasteter_standorte_oev_untersuchungsstand_2')}</td>     <td>${_(str_output)|n}</td></tr> 

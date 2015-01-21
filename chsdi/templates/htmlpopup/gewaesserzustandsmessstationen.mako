@@ -2,9 +2,9 @@
 
 <%def name="table_body(c, lang)">
 
-    <tr><td class="cell-left">${_('messstandort_name')}</td>    <td>${c['attributes']['name'] or '-'}</td></tr>
-    <tr><td>${_('gewaesser')}</td>   <td>${c['attributes']['gewaesser'] or '-'}</td></tr>
-    <tr><td>${_('wassertemp_nr')}</td>   <td>${c['attributes']['nr'] or '-'()}</td></tr>
+    <tr><td class="cell-left">${_('ch.bafu.hydrologie-gewaesserzustandsmessstationen.name')}</td>    <td>${c['attributes']['name'] or '-'}</td></tr>
+    <tr><td>${_('ch.bafu.hydrologie-gewaesserzustandsmessstationen.gewaesser')}</td>   <td>${c['attributes']['gewaesser'] or '-'}</td></tr>
+    <tr><td>${_('ch.bafu.hydrologie-gewaesserzustandsmessstationen.nr')}</td>   <td>${c['attributes']['nr'] or '-'()}</td></tr>
 
 </%def>
 

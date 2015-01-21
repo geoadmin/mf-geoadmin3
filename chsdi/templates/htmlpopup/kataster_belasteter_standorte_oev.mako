@@ -15,7 +15,7 @@
 
 %>
 
-    <tr><td class="cell-left">${_('tt_ch_bav_kataster_belasteter_standorte_oev_standortnummer')}</td>           <td>${c['attributes']['katasternummer'] or '-'}</td></tr>
+    <tr><td class="cell-left">${_('ch.bav.kataster-belasteter-standorte-oev.katasternummer')}</td>           <td>${c['attributes']['katasternummer'] or '-'}</td></tr>
     <tr><td class="cell-left">${_('tt_ch_bav_kataster_belasteter_standorte_oev_standorttyp')}</td>              <td>${c['attributes'][standorttyp] or '-'}</td></tr>
     <tr><td class="cell-left">${_('tt_ch_bav_kataster_belasteter_standorte_oev_beurteilung')}</td>              <td>${c['attributes'][statusaltlv] or '-'}</td></tr>
     <tr><td class="cell-left" valign="top">${_('tt_ch_bav_kataster_belasteter_standorte_oev_untersuchungsstand_2')}</td>     <td>${_(str_output)|n}</td></tr> 

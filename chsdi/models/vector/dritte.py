@@ -51,6 +51,7 @@ class PRONATURA(Base, Vector):
     __table_args__ = ({'schema': 'pronatura', 'autoload': False})
     __template__ = 'templates/htmlpopup/pronatura.mako'
     __bodId__ = 'ch.pronatura.waldreservate'
+    __queryable_attributes__ = ['name', 'sg_nr', 'gisflaeche', 'mcpfe']
     __label__ = 'name'
     id = Column('bgdi_id', Integer, primary_key=True)
     sg_nr = Column('sg_nr', Numeric)

@@ -14,6 +14,7 @@ class luftbilder_swisstopo_farbe(Base, Vector):
     __table_args__ = ({'schema': 'public', 'autoload': False})
     __template__ = 'templates/htmlpopup/lubis.mako'
     __bodId__ = 'ch.swisstopo.lubis-luftbilder_farbe'
+    __queryable_attributes__ = ['id', 'ort']
     __returnedGeometry__ = 'the_geom_footprint'
     __timeInstant__ = 'bgdi_flugjahr'
     __extended_info__ = True
@@ -53,6 +54,7 @@ class luftbilder_swisstopo_ir(Base, Vector):
     __template__ = 'templates/htmlpopup/lubis.mako'
     __bodId__ = 'ch.swisstopo.lubis-luftbilder_infrarot'
     __returnedGeometry__ = 'the_geom_footprint'
+    __queryable_attributes__ = ['id', 'ort']
     __timeInstant__ = 'bgdi_flugjahr'
     __extended_info__ = True
     # Composite labels
@@ -204,6 +206,7 @@ class bildstreifen(Base, Vector):
     __table_args__ = ({'schema': 'ads40', 'autoload': False})
     __template__ = 'templates/htmlpopup/lubis_bildstreifen.mako'
     __bodId__ = 'ch.swisstopo.lubis-bildstreifen'
+    __queryable_attributes__ = ['id']
     __returnedGeometry__ = 'the_geom_footprint'
     __timeInstant__ = 'bgdi_flugjahr'
     __extended_info__ = True

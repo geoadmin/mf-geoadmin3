@@ -6,6 +6,9 @@
 %>
 
 <%def name="table_body(c,lang)">
+<%
+    sgd_nr = c['layerBodId'] + '.' + 'sgd_nr'
+%>
     <% c['stable_id'] = False %>
     <tr><td class="cell-left">${_('sgd_nr')}</td><td>${c['attributes']['sgd_nr']}</td></tr>
     <tr><td class="cell-left">${_('original_document_id')}</td><td>${c['attributes']['orig_id']}</td></tr>
