@@ -140,9 +140,6 @@ msgstr "Angolo in basso a sinistra"
 msgid "Lower right corner"
 msgstr "Angolo in basso a destra"
 
-msgid "MCPFE"
-msgstr "Tipo di superficie protetta"
-
 msgid "Man-made"
 msgstr "Artificielle"
 
@@ -202,9 +199,6 @@ msgstr "Circuit automobile"
 
 msgid "Ruine"
 msgstr "Ruine historique"
-
-msgid "SGNr"
-msgstr "Numero della riserva"
 
 msgid "Schloss"
 msgstr "Château"
@@ -1360,6 +1354,27 @@ msgstr "http://www.bafu.admin.ch/index.html?lang=it"
 
 msgid "ch.bafu.waldreservate"
 msgstr "Riserva forestali"
+
+msgid "ch.bafu.waldreservate.gisflaeche"
+msgstr "Superficie [ha]"
+
+msgid "ch.bafu.waldreservate.mcpfe"
+msgstr "Tipo di superficie protetta"
+
+msgid "ch.bafu.waldreservate.name"
+msgstr "Nome"
+
+msgid "ch.bafu.waldreservate.objnummer"
+msgstr "Numero della riserva"
+
+msgid "ch.bafu.waldreservate.waldreservate_1_1"
+msgstr "Nessun intervento attivo"
+
+msgid "ch.bafu.waldreservate.waldreservate_1_2"
+msgstr "Interventi minimi"
+
+msgid "ch.bafu.waldreservate.waldreservate_1_3"
+msgstr "Promozione delle biodiversità per mezzo di interventi specifici"
 
 msgid "ch.bafu.waldschadenflaechen-lothar"
 msgstr "Aree boschive danneggiate Lothar"
@@ -4732,15 +4747,6 @@ msgstr "Luogo"
 
 msgid "tt_wald_natur"
 msgstr "Foreste ed alter superfici naturali"
-
-msgid "tt_waldreservate_1_1"
-msgstr "Nessun intervento attivo"
-
-msgid "tt_waldreservate_1_2"
-msgstr "Interventi minimi"
-
-msgid "tt_waldreservate_1_3"
-msgstr "Promozione delle biodiversità per mezzo di interventi specifici"
 
 msgid "tt_wasserflae"
 msgstr "Superfici acquatiche"

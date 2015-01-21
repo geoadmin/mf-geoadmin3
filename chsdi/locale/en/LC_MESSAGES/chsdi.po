@@ -140,9 +140,6 @@ msgstr "Lower left corner"
 msgid "Lower right corner"
 msgstr "Lower right corner"
 
-msgid "MCPFE"
-msgstr "Type of protected area"
-
 msgid "Man-made"
 msgstr "Künstlich"
 
@@ -202,9 +199,6 @@ msgstr "Rennbahn"
 
 msgid "Ruine"
 msgstr "Historische Ruine"
-
-msgid "SGNr"
-msgstr "Number oft he reserve"
 
 msgid "Schloss"
 msgstr "Schloss"
@@ -1360,6 +1354,27 @@ msgstr "http://www.bafu.admin.ch/index.html?lang=en"
 
 msgid "ch.bafu.waldreservate"
 msgstr "Forest Reserves"
+
+msgid "ch.bafu.waldreservate.gisflaeche"
+msgstr "Area [ha]"
+
+msgid "ch.bafu.waldreservate.mcpfe"
+msgstr "Type of protected area"
+
+msgid "ch.bafu.waldreservate.name"
+msgstr "Name"
+
+msgid "ch.bafu.waldreservate.objnummer"
+msgstr "Number oft he reserve"
+
+msgid "ch.bafu.waldreservate.waldreservate_1_1"
+msgstr "No active intervention"
+
+msgid "ch.bafu.waldreservate.waldreservate_1_2"
+msgstr "Minimum Intervention"
+
+msgid "ch.bafu.waldreservate.waldreservate_1_3"
+msgstr "Conservation through active management"
 
 msgid "ch.bafu.waldschadenflaechen-lothar"
 msgstr "Lothar storm damage"
@@ -4732,15 +4747,6 @@ msgstr "Town"
 
 msgid "tt_wald_natur"
 msgstr "Forest and semi natural areas"
-
-msgid "tt_waldreservate_1_1"
-msgstr "No active intervention"
-
-msgid "tt_waldreservate_1_2"
-msgstr "Minimum Intervention"
-
-msgid "tt_waldreservate_1_3"
-msgstr "Conservation through active management"
 
 msgid "tt_wasserflae"
 msgstr "Waterbodies"

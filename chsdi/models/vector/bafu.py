@@ -1324,6 +1324,7 @@ class waldreservate(Base, Vector):
     __template__ = 'templates/htmlpopup/bafu_waldreservate.mako'
     __bodId__ = 'ch.bafu.waldreservate'
     __label__ = 'name'
+    __queryable_attributes__ = ['objnummer', 'name', 'gisflaeche', 'mcpfe']
     id = Column('bgdi_id', Integer, primary_key=True)
     objnummer = Column('objnummer', Text)
     name = Column('name', Text)
