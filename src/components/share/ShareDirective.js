@@ -1,14 +1,16 @@
 (function() {
   goog.provide('ga_share_directive');
 
+  goog.require('ga_browsersniffer_service');
   goog.require('ga_permalink');
 
   var module = angular.module('ga_share_directive', [
+    'ga_browsersniffer_service',
     'ga_permalink'
   ]);
 
   module.directive('gaShare',
-      function($http, $window, gaPermalink) {
+      function($http, $window, gaPermalink, gaBrowserSniffer) {
           return {
             restrict: 'A',
             scope: {
@@ -19,9 +21,11 @@
               var shortenUrl = scope.options.shortenUrl;
               scope.qrcodegeneratorPath = scope.options.qrcodegeneratorPath;
 
-              $('.ga-share-icon').tooltip({
-                placement: 'bottom'
-              });
+              if (!gaBrowserSniffer.mobile) {
+                $('.ga-share-icon').tooltip({
+                  placement: 'bottom'
+                });
+              }
               $('.ga-share-permalink input').on({
                 focus: function() {
                   this.setSelectionRange(0, 9999);
