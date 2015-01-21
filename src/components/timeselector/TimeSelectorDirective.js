@@ -16,11 +16,11 @@
 
   module.controller('GaTimeSelectorDirectiveController',
     function($scope, gaLayers, gaLayerFilters, gaPermalink, gaBrowserSniffer) {
-      $scope.isActive = false;
       $scope.layers = $scope.map.getLayers().getArray();
       $scope.layerFilter = gaLayerFilters.timeEnabledLayersFilter;
       $scope.permalinkValue = parseFloat(gaPermalink.getParams().time);
       $scope.fromPermalink = !isNaN($scope.permalinkValue);
+      $scope.isActive = $scope.fromPermalink;
     }
   );
 
@@ -171,14 +171,16 @@
               scope.currentYear = magnetize(scope.currentYear,
                   scope.availableYears);
             }
-            if (olLayers.length == 0) {
+            if (olLayers.length == 0 && !scope.fromPermalink) {
               scope.isActive = false;
+            } else {
+              scope.fromPermalink = false;
             }
           });
 
           scope.$watch('isActive', function(active, old) {
-            if (angular.isDefined(active) && active != old) {
-              applyNewYearDebounced((active ? scope.currentYear : undefined));
+            if (angular.isDefined(active)) {
+              applyNewYear((active ? scope.currentYear : undefined));
               elt.toggle(active);
               if (scope.fromPermalink) {
                 // HACK to fix:
