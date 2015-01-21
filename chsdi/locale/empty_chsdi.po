@@ -88,6 +88,54 @@ msgstr ""
 msgid "ch.swisstopo.lubis-bildstreifen.id"
 msgstr ""
 
+msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss.id"
+msgstr ""
+
+msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss.ort"
+msgstr ""
+
+msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss.filmart"
+msgstr ""
+
+msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss.bgdi_flugjahr"
+msgstr ""
+
+msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen.id"
+msgstr ""
+
+msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen.ort"
+msgstr ""
+
+msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen.filmart"
+msgstr ""
+
+msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen.bgdi_flugjahr"
+msgstr ""
+
+msgid "ch.swisstopo.lubis-luftbilder-dritte-kantone.id"
+msgstr ""
+
+msgid "ch.swisstopo.lubis-luftbilder-dritte-kantone.ort"
+msgstr ""
+
+msgid "ch.swisstopo.lubis-luftbilder-dritte-kantone.filmart"
+msgstr ""
+
+msgid "ch.swisstopo.lubis-luftbilder-dritte-kantone.bgdi_flugjahr"
+msgstr ""
+
+msgid "ch.swisstopo.vec200-names-namedlocation.objname1"
+msgstr ""
+
+msgid "ch.swisstopo.verschiebungsvektoren-tsp2.name"
+msgstr ""
+
+msgid "ch.swisstopo.verschiebungsvektoren-tsp1.name"
+msgstr ""
+
+msgid "ch.swisstopo.swissboundaries3d-kanton-flaeche.fill.ak"
+msgstr ""
+
 msgid "ch.swisstopo.swissboundaries3d-kanton-flaeche.fill.id"
 msgstr ""
 

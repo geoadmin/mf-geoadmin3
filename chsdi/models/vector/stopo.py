@@ -104,6 +104,7 @@ class SwissboundariesKanton(Base, Vector):
     __bodId__ = 'ch.swisstopo.swissboundaries3d-kanton-flaeche.fill'
     __queryable_attributes__ = ['name', 'id']
     __label__ = 'name'
+    __queryable_attributes__ = ['id', 'ak']
     id = Column('kantonsnr', Integer, primary_key=True)
     ak = Column('ak', Text)
     name = Column('name', Text)
@@ -119,7 +120,6 @@ class CadastralWebMap(Base, Vector):
     __table_args__ = ({'autoload': False})
     __template__ = 'templates/htmlpopup/cadastralwebmap.mako'
     __bodId__ = 'ch.kantone.cadastralwebmap-farbe'
-    __displayFieldName__ = 'kantonsnr'
     __label__ = 'ak'
     id = Column('gid', Integer, primary_key=True)
     kantonsnr = Column('kantonsnr', Integer)
@@ -384,6 +384,7 @@ class Vec200Namedlocation(Base, Vector):
     __bodId__ = 'ch.swisstopo.vec200-names-namedlocation'
      # Composite labels coalesce(objname1,'')||' '||coalesce(objname2,'')
     __label__ = 'objname1'
+    __queryable_attributes__ = ['objname1', 'id']
     id = Column('gtdboid', Text, primary_key=True)
     objname1 = Column('objname1', Text)
     objname2 = Column('objname2', Text)
@@ -1237,7 +1238,7 @@ class VerschiebungsvektorenTsp2(Base, Vector):
     __tablename__ = 'verschiebungsvektoren_tsp2'
     __table_args__ = ({'schema': 'geodaesie', 'autoload': False})
     __template__ = 'templates/htmlpopup/verschiebungsvektoren_tps2.mako'
-    __queryable_attributes__ = ['name']
+    __queryable_attributes__ = ['name', 'id']
     __bodId__ = 'ch.swisstopo.verschiebungsvektoren-tsp2'
     __label__ = 'name'
     id = Column('id', Integer, primary_key=True)

@@ -2372,8 +2372,32 @@ msgstr "Linea di volo"
 msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen"
 msgstr "Immagini aeree privati"
 
+msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen.bgdi_flugjahr"
+msgstr "Anno volo"
+
+msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen.filmart"
+msgstr "Emulsione"
+
+msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen.id"
+msgstr "Numero immagine"
+
+msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen.ort"
+msgstr "Luogo"
+
 msgid "ch.swisstopo.lubis-luftbilder-dritte-kantone"
 msgstr "Immagini aeree dei cantoni"
+
+msgid "ch.swisstopo.lubis-luftbilder-dritte-kantone.bgdi_flugjahr"
+msgstr "Anno volo"
+
+msgid "ch.swisstopo.lubis-luftbilder-dritte-kantone.filmart"
+msgstr "Emulsione"
+
+msgid "ch.swisstopo.lubis-luftbilder-dritte-kantone.id"
+msgstr "Numero immagine"
+
+msgid "ch.swisstopo.lubis-luftbilder-dritte-kantone.ort"
+msgstr "Luogo"
 
 msgid "ch.swisstopo.lubis-luftbilder_farbe"
 msgstr "Immagini aer. swisstopo colori"
@@ -2395,6 +2419,18 @@ msgstr "Località"
 
 msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss"
 msgstr "Immagini aeree swisstopo b/n"
+
+msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss.bgdi_flugjahr"
+msgstr "Anno volo"
+
+msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss.filmart"
+msgstr "Emulsione"
+
+msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss.id"
+msgstr "Numero immagine"
+
+msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss.ort"
+msgstr "Luogo"
 
 msgid "ch.swisstopo.pixelkarte-farbe"
 msgstr "Carta nazionale 1:25'000 | CN25"
@@ -2474,6 +2510,9 @@ msgstr "Numéro OFS"
 msgid "ch.swisstopo.swissboundaries3d-kanton-flaeche.fill"
 msgstr "Frontiere cantonali"
 
+msgid "ch.swisstopo.swissboundaries3d-kanton-flaeche.fill.ak"
+msgstr "Abréviation"
+
 msgid "ch.swisstopo.swissboundaries3d-kanton-flaeche.fill.id"
 msgstr "Numero di cantone secondo UST"
 
@@ -2531,6 +2570,9 @@ msgstr "Altitudini VECTOR200"
 msgid "ch.swisstopo.vec200-names-namedlocation"
 msgstr "Nomi VECTOR200"
 
+msgid "ch.swisstopo.vec200-names-namedlocation.objname1"
+msgstr "Nom dans la 1ère langue"
+
 msgid "ch.swisstopo.vec200-transportation-oeffentliche-verkehr"
 msgstr "Trasporti pubblici VECTOR200"
 
@@ -2570,8 +2612,14 @@ msgstr "Sentieri VECTROR25"
 msgid "ch.swisstopo.verschiebungsvektoren-tsp1"
 msgstr "MN95 Vettori di spostamento PAT1"
 
+msgid "ch.swisstopo.verschiebungsvektoren-tsp1.name"
+msgstr "Numero ufficiale di punto"
+
 msgid "ch.swisstopo.verschiebungsvektoren-tsp2"
 msgstr "MN95 Vettori di spostamento PAT2"
+
+msgid "ch.swisstopo.verschiebungsvektoren-tsp2.name"
+msgstr "Numero ufficiale di punto"
 
 msgid "ch.swisstopo.zeitreihen"
 msgstr "Viaggio nel tempo - Carte"
