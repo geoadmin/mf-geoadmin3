@@ -2,11 +2,9 @@
 
 <%def name="table_body(c, lang)">
 <%
-    beschreibung = c['layerBodId'] + '.' + 'description_%' % lang
-    name = c['layerBodId'] + '.' + 'name'
-%>
-<% 
     import datetime
+    beschreibung = c['layerBodId'] + '.' + 'description_%s' % lang
+    name = c['layerBodId'] + '.' + 'name'
     lang = lang if lang in ('fr','it','de') else 'de'
     description = 'description_%s' % lang
     facility_kind = 'fackind_text_%s' % lang
