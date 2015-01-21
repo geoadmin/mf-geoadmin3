@@ -39,13 +39,32 @@
   .btn-default{
     width: 100%;
   }
- 
+  
+  &.panel-body {
+    padding: 10px 5px;
+  }
+
+  .well {
+    padding: 5px 15px 5px 5px; 
+    
+    label {
+      cursor: pointer;
+    }
+
+    .ga-query {
+      padding-left: 10px;
+    }
+  } 
+  .collapsed .icon-caret-down:before {
+    transform: rotate(-90deg);
+  }
   .ga-bbox-info {
     text-align: justify;
     margin-bottom: 10px;
   }
   
   .ga-query {
+    margin-top: 10px;
     margin-bottom: 10px;
   }
   
@@ -65,9 +84,7 @@
     display: inline-block;
     width: 68%;
   }
-  .ga-choose-attr, .ga-value {
-    /*margin-right: 5px;*/
-  }
+  
   .ga-choose-op, .ga-more {
     display: inline-block;
     width: 30%;
