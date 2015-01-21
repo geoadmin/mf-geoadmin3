@@ -283,7 +283,7 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 
 .build-artefacts/translate-requirements-installation.timestamp: .build-artefacts/python-venv
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "PyYAML==3.10"
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "gspread==0.1.0"
+	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "gspread==0.2.2"
 	touch $@
 
 .build-artefacts/ol-requirements-installation.timestamp: .build-artefacts/python-venv
