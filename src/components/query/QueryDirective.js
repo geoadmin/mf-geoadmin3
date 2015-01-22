@@ -52,18 +52,12 @@
           paramsByLayer[filter.layer.bodId] = {
             bodId: filter.layer.bodId,
             params: {
-              time: getYear(filter.layer.time)
+              timeInstant: getYear(filter.layer.time)
             }
           };
           list.push(paramsByLayer[filter.layer.bodId]);
         }
         var params = paramsByLayer[filter.layer.bodId].params;
-
-        // Geometry condition
-        if (geometry) {
-          params.geometry = geojson.writeGeometry(geometry);
-        }
-
         // Where condition
         var where = (params.where) ? params.where + ' and ' : '';
         where += filter.attribute.name + ' ' + filter.operator + ' ' +
@@ -197,6 +191,20 @@
       }
     };*/
 
+    var getGeometryParams = function() {
+      var imgDisplay = $scope.map.getSize().concat([96]).join(',');
+      var mapExtent = $scope.map.getView().calculateExtent(
+          $scope.map.getSize()).join(',');
+      var geom = $scope.geometry.getExtent().join(',');
+      return {
+        geometry: geom,
+        geometryType: 'esriGeometryEnvelope',
+        mapExtent: mapExtent,
+        imageDisplay: imgDisplay,
+        tolerance: 0
+      };
+    };
+
     // Search by geometry using feature identify servioce
     $scope.searchByGeometry = function() {
       $scope.queryType = 0;
@@ -208,28 +216,21 @@
 
       $scope.loading = true;
       if ($scope.geometry) {
-        var imgDisplay = $scope.map.getSize().concat([96]).join(',');
-        var mapExtent = $scope.map.getView().calculateExtent(
-            $scope.map.getSize()).join(',');
-        var geom = $scope.geometry.getExtent().join(',');
-        var lang = $translate.use();
         var features = [];
+        var common = angular.extend({
+          lang: $translate.use(),
+          geometryFormat: 'geojson'
+        }, getGeometryParams());
+
         angular.forEach(
             $scope.selectByRectangleLayers,
             function(layer) {
               gaQuery.getLayerIdentifyFeatures(
                   $scope,
                   layer.bodId,
-                  {
-                    geometry: geom,
-                    geometryType: 'esriGeometryEnvelope',
-                    mapExtent: mapExtent,
-                    imageDisplay: imgDisplay,
-                    tolerance: 0,
-                    geometryFormat: 'geojson',
-                    lang: lang,
+                  angular.extend({
                     timeInstant: getYear(layer.time)
-                  }
+                  }, common)
               ).then(function(layerFeatures) {
                 features = features.concat(layerFeatures);
                 $scope.options.features = features;
@@ -254,22 +255,35 @@
       var features = [];
       var params = getParamsByLayer($scope.filters);
       if (params.length == 0) {
+        if ($scope.useBbox) {
+          $scope.searchByGeometry();
+        }
         $scope.options.features = [];
         $scope.loading = false;
         return;
       }
-      var lang = $translate.use();
+
+      var common = {
+        lang: $translate.use(),
+        geometryFormat: 'geojson'
+      };
+
+      if (!$scope.useBbox) {
+        $scope.geometry = null;
+        $scope.hideBox();
+      } else {
+        // here $scope.geometry can't be null
+        $scope.showBox();
+        angular.extend(common, getGeometryParams());
+      }
+
       angular.forEach(
           params,
           function(paramsByLayer) {
-            paramsByLayer.params.geometryFormat = 'geojson';
-            paramsByLayer.params.lang = lang;
-            paramsByLayer.params.timeInstant = getYear(paramsByLayer.time);
-
             gaQuery.getLayerIdentifyFeatures(
                 $scope,
                 paramsByLayer.bodId,
-                paramsByLayer.params
+                angular.extend(paramsByLayer.params, common)
             ).then(function(layerFeatures) {
               features = features.concat(layerFeatures);
               $scope.options.features = features;
@@ -480,25 +494,37 @@
           });
           scope.map.addInteraction(dragBox);
           dragBox.on('boxstart', function(evt) {
-            boxFeature.setGeometry(null);
+            scope.resetGeometry();
           });
           dragBox.on('boxend', function(evt) {
-            scope.isActive = true;
             boxFeature.setGeometry(evt.target.getGeometry());
             scope.geometry = boxFeature.getGeometry();
+            scope.useBbox = true;
+
             if (scope.selectByRectangleLayers.length == 0) {
+              scope.isActive = true;
               scope.$apply();
             } else {
-              scope.searchByGeometry();
+              if (scope.isActive && scope.queryType == 1 &&
+                  scope.filters[0].value) {
+                scope.searchByAttributes();
+              } else {
+                scope.searchByGeometry();
+              }
+              scope.isActive = true;
             }
           });
         }
 
         // Activate/Deactivate
-        var showBox = function() {
+        scope.resetGeometry = function() {
+          boxFeature.setGeometry(null);
+        };
+
+        scope.showBox = function() {
           boxOverlay.setMap(scope.map);
         };
-        var hideBox = function() {
+        scope.hideBox = function() {
           boxOverlay.setMap(null);
         };
         var activate = function() {
@@ -514,14 +540,14 @@
           }
 
           if (scope.queryType == 0) {
-            showBox();
+            scope.showBox();
           }
 
           // Re-launch the search in case the list of layers has changed
           scope.search();
         };
         var deactivate = function() {
-          hideBox();
+          scope.hideBox();
         };
 
         // Display an input date or a text depending on the attribute
@@ -560,11 +586,10 @@
         scope.$watch('queryType', function(newVal, oldVal) {
           if (newVal != oldVal) {
             if (newVal == 0) {
-              showBox();
+              scope.showBox();
               scope.queryPredef = null;
               scope.applyQueryPredef(null);
-            } else {
-              hideBox();
+              scope.useBbox = true;
             }
             scope.search();
           }

@@ -73,9 +73,14 @@
       </div>
     </div>
   </div>
-  <div class="ga-bbox-info" translate>inform_draw_rectangl_ctrl</div>
+  <div ng-hide="geometry" class="ga-bbox-info" translate>inform_draw_rectangl_ctrl</div>
+  <label ng-show="geometry" class="ga-checkbox">
+    <input type="checkbox" ng-model="useBbox"/>
+    <span></span>
+    <span translate>query_with_bbox</span>
+  </label>
   <button class="btn btn-default" 
-          ng-disabled="loading || !filters[0].value"
+          ng-disabled="loading || (!filters[0].value && !useBbox) "
           ng-click="searchByAttributes()">
     <i ng-class="{'icon-refresh': loading}"></i>
     <span translate>query_search<span>
