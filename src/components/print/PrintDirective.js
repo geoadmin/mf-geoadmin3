@@ -27,6 +27,7 @@
     $scope.options.multiprint = false;
     $scope.options.movie = false;
     $scope.options.printing = false;
+    $scope.options.printsuccess = false;
     $scope.options.progress = '';
 
     // Get print config
@@ -576,6 +577,7 @@
     };
 
     $scope.downloadUrl = function(url) {
+      $scope.options.printsuccess = true;
       if (gaBrowserSniffer.msie == 9) {
         $window.open(url);
       } else {
@@ -593,6 +595,7 @@
       if (!$scope.options.active) {
         return;
       }
+      $scope.options.printsuccess = false;
       $scope.options.printing = true;
       $scope.options.progress = '';
       // http://mapfish.org/doc/print/protocol.html#print-pdf

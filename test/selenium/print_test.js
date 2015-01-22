@@ -9,6 +9,8 @@ var runTest = function(cap, driver, target) {
   driver.findElement(webdriver.By.xpath("//a[@id='printHeading' and @aria-expanded='true']"));
   // Try Print
   driver.findElement(webdriver.By.xpath("//button[contains(text(), 'Drucken')]")).click();
+  // Is it success?
+  driver.findElement(webdriver.By.xpath("//span[@ng-if='options.printsuccess']"));
 }
 
 module.exports.runTest = runTest;
