@@ -174,7 +174,6 @@
               transform: 'scale(' + scale + ')'
             });
             printWindow.print();
-            printWindow.close();
           }
           $timeout(function() {
             gaPrintService.htmlPrintout(contentEl.clone().html(), undefined, onLoad);
