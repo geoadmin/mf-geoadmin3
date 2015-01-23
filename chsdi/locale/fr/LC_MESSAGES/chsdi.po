@@ -1128,7 +1128,7 @@ msgid "ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhang2"
 msgstr "PPS annexe 2"
 
 msgid "ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhoerung"
-msgstr "PPS consultation 2014"
+msgstr "PPS consultation 2015"
 
 msgid "ch.bafu.bundesinventare-vogelreservate"
 msgstr "Réserves d'oiseaux d'eau"
@@ -2372,8 +2372,32 @@ msgstr "Ligne aérienne"
 msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen"
 msgstr "Images aériennes de privés"
 
+msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen.bgdi_flugjahr"
+msgstr "Année de vol"
+
+msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen.filmart"
+msgstr "Emulsion"
+
+msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen.id"
+msgstr "No de l'image"
+
+msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen.ort"
+msgstr "Lieu"
+
 msgid "ch.swisstopo.lubis-luftbilder-dritte-kantone"
 msgstr "Images aériennes de cantons"
+
+msgid "ch.swisstopo.lubis-luftbilder-dritte-kantone.bgdi_flugjahr"
+msgstr "Année de vol"
+
+msgid "ch.swisstopo.lubis-luftbilder-dritte-kantone.filmart"
+msgstr "Emulsion"
+
+msgid "ch.swisstopo.lubis-luftbilder-dritte-kantone.id"
+msgstr "No de l'image"
+
+msgid "ch.swisstopo.lubis-luftbilder-dritte-kantone.ort"
+msgstr "Lieu"
 
 msgid "ch.swisstopo.lubis-luftbilder_farbe"
 msgstr "Images aér. swisstopo couleur"
@@ -2395,6 +2419,18 @@ msgstr "Localité"
 
 msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss"
 msgstr "Images aér. swisstopo n/b"
+
+msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss.bgdi_flugjahr"
+msgstr "Année de vol"
+
+msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss.filmart"
+msgstr "Emulsion"
+
+msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss.id"
+msgstr "No de l'image"
+
+msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss.ort"
+msgstr "Lieu"
 
 msgid "ch.swisstopo.pixelkarte-farbe"
 msgstr "Carte nationale 1:25'000 | CN25"
@@ -2474,6 +2510,9 @@ msgstr "Numéro OFS"
 msgid "ch.swisstopo.swissboundaries3d-kanton-flaeche.fill"
 msgstr "Limites cantonales"
 
+msgid "ch.swisstopo.swissboundaries3d-kanton-flaeche.fill.ak"
+msgstr "Abréviation"
+
 msgid "ch.swisstopo.swissboundaries3d-kanton-flaeche.fill.id"
 msgstr "Numéro de canton selon OFS"
 
@@ -2531,6 +2570,9 @@ msgstr "Cotes d'altitude VECTOR200"
 msgid "ch.swisstopo.vec200-names-namedlocation"
 msgstr "Noms VECTOR200"
 
+msgid "ch.swisstopo.vec200-names-namedlocation.objname1"
+msgstr "Nom dans la 1ère langue"
+
 msgid "ch.swisstopo.vec200-transportation-oeffentliche-verkehr"
 msgstr "Transports publics VECTOR200"
 
@@ -2570,8 +2612,14 @@ msgstr "Chemins de randonnée VECTOR25"
 msgid "ch.swisstopo.verschiebungsvektoren-tsp1"
 msgstr "MN95 Vecteurs de déformation PAT1"
 
+msgid "ch.swisstopo.verschiebungsvektoren-tsp1.name"
+msgstr "Numéro officiel du point"
+
 msgid "ch.swisstopo.verschiebungsvektoren-tsp2"
 msgstr "MN95 Vecteurs de déformation PAT2"
+
+msgid "ch.swisstopo.verschiebungsvektoren-tsp2.name"
+msgstr "Numéro officiel du point"
 
 msgid "ch.swisstopo.zeitreihen"
 msgstr "Voyage dans le temps - Cartes"

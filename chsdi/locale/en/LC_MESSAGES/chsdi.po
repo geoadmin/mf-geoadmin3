@@ -2373,8 +2373,32 @@ msgstr "Flying line"
 msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen"
 msgstr "Aerial images privates"
 
+msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen.bgdi_flugjahr"
+msgstr "Flight year"
+
+msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen.filmart"
+msgstr "Film type"
+
+msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen.id"
+msgstr "Picture number"
+
+msgid "ch.swisstopo.lubis-luftbilder-dritte-firmen.ort"
+msgstr "Town"
+
 msgid "ch.swisstopo.lubis-luftbilder-dritte-kantone"
 msgstr "Aerial images cantons"
+
+msgid "ch.swisstopo.lubis-luftbilder-dritte-kantone.bgdi_flugjahr"
+msgstr "Flight year"
+
+msgid "ch.swisstopo.lubis-luftbilder-dritte-kantone.filmart"
+msgstr "Film type"
+
+msgid "ch.swisstopo.lubis-luftbilder-dritte-kantone.id"
+msgstr "Picture number"
+
+msgid "ch.swisstopo.lubis-luftbilder-dritte-kantone.ort"
+msgstr "Town"
 
 msgid "ch.swisstopo.lubis-luftbilder_farbe"
 msgstr "Aerial Images swisstopo color"
@@ -2396,6 +2420,18 @@ msgstr "Location"
 
 msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss"
 msgstr "Aerial Images swisstopo b/w"
+
+msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss.bgdi_flugjahr"
+msgstr "Flight year"
+
+msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss.filmart"
+msgstr "Film type"
+
+msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss.id"
+msgstr "Picture number"
+
+msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss.ort"
+msgstr "Town"
 
 msgid "ch.swisstopo.pixelkarte-farbe"
 msgstr "National Map 1:25'000 | NM25"
@@ -2475,6 +2511,9 @@ msgstr "BFS-Nummer"
 msgid "ch.swisstopo.swissboundaries3d-kanton-flaeche.fill"
 msgstr "Cantonal boundaries"
 
+msgid "ch.swisstopo.swissboundaries3d-kanton-flaeche.fill.ak"
+msgstr "Abkürzung"
+
 msgid "ch.swisstopo.swissboundaries3d-kanton-flaeche.fill.id"
 msgstr "Canton number according to FSO"
 
@@ -2532,6 +2571,9 @@ msgstr "Elevations VECTOR200"
 msgid "ch.swisstopo.vec200-names-namedlocation"
 msgstr "Names VECTOR200"
 
+msgid "ch.swisstopo.vec200-names-namedlocation.objname1"
+msgstr "Name in der 1. Sprache"
+
 msgid "ch.swisstopo.vec200-transportation-oeffentliche-verkehr"
 msgstr "Public transportation VECTOR200"
 
@@ -2571,8 +2613,14 @@ msgstr "Hiking trails  VECTOR25"
 msgid "ch.swisstopo.verschiebungsvektoren-tsp1"
 msgstr "LV95 Displacement vectors TSP1"
 
+msgid "ch.swisstopo.verschiebungsvektoren-tsp1.name"
+msgstr "Official point  number"
+
 msgid "ch.swisstopo.verschiebungsvektoren-tsp2"
 msgstr "LV95 Displacement vectors TSP2"
+
+msgid "ch.swisstopo.verschiebungsvektoren-tsp2.name"
+msgstr "Official point  number"
 
 msgid "ch.swisstopo.zeitreihen"
 msgstr "Journey through time - Maps"

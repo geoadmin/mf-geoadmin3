@@ -93,7 +93,7 @@ datum = date_to_str(c['attributes']['flugdatum'])
 params = (
     c['attributes']['image_width'] if 'image_width' in  c['attributes'] else 0,
     c['attributes']['image_height'] if 'image_height' in c['attributes'] else 0,
-    _('tt_lubis_ebkey'),
+    _('ch.swisstopo.lubis-luftbilder-dritte-kantone.ebkey'),
     c['featureId'],
     c['attributes']['firma'],
     c['layerBodId'],

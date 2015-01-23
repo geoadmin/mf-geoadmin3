@@ -97,6 +97,7 @@ class luftbilder_swisstopo_sw(Base, Vector):
     __extended_info__ = True
     # Composite labels
     __label__ = 'flugdatum'
+    __queryable_attributes__ = ['id', 'ort', 'filmart', 'bgdi_flugjahr']
     id = Column('ebkey', Text, primary_key=True)
     the_geom = Column(Geometry(geometry_type='GEOMETRY',
                                dimension=2, srid=21781))
@@ -135,6 +136,7 @@ class luftbilder_dritte_firmen(Base, Vector):
     __extended_info__ = True
     # Composite labels
     __label__ = 'flugdatum'
+    __queryable_attributes__ = ['id', 'ort', 'filmart', 'bgdi_flugjahr']
     id = Column('ebkey', Text, primary_key=True)
     the_geom = Column(Geometry(geometry_type='GEOMETRY',
                                dimension=2, srid=21781))
@@ -173,6 +175,7 @@ class luftbilder_dritte_kantone(Base, Vector):
     __extended_info__ = True
     # Composite labels
     __label__ = 'flugdatum'
+    __queryable_attributes__ = ['id', 'ort', 'filmart', 'bgdi_flugjahr']
     id = Column('ebkey', Text, primary_key=True)
     the_geom = Column(Geometry(geometry_type='GEOMETRY',
                                dimension=2, srid=21781))
