@@ -1217,7 +1217,8 @@ class VerschiebungsvektorenTsp1(Base, Vector):
     __queryable_attributes__ = ['name']
     __bodId__ = 'ch.swisstopo.verschiebungsvektoren-tsp1'
     __label__ = 'name'
-    id = Column('id', Integer, primary_key=True)
+    id = Column('bgdi_id', Integer, primary_key=True)
+    fid = Column('id', Integer)
     name = Column('name', Text)
     type = Column('type', Text)
     e_lv03 = Column('e_lv03', Numeric)
@@ -1240,7 +1241,8 @@ class VerschiebungsvektorenTsp2(Base, Vector):
     __queryable_attributes__ = ['name']
     __bodId__ = 'ch.swisstopo.verschiebungsvektoren-tsp2'
     __label__ = 'name'
-    id = Column('id', Integer, primary_key=True)
+    id = Column('bgdi_id', Integer, primary_key=True)
+    fid = Column('id', Integer)
     name = Column('name', Text)
     type = Column('type', Text)
     e_lv03 = Column('e_lv03', Numeric)
