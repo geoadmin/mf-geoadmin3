@@ -63,10 +63,10 @@
                     ng-model="f.value"
                     ng-options="v for v in f.moreValues" ng-change="onChange()" >
             </select>
-            <button class="btn btn-default ga-more"
+            <button class="btn btn-default ga-more icon-remove"
                     title="{{'query_more_values' | translate}}"
                     ng-class="{active: (f.moreValues)}"
-                    ng-click="toggleAttributeValues($event, $index, f)">...</button>
+                    ng-click="toggleAttributeValues($event, $index, f)"></button>
             <button ga-help="44"></button>
           </div>
         </div>

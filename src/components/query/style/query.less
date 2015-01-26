@@ -12,7 +12,7 @@
   }
 
   input, select {
-    vertical-align: middle; /* important to make buttons and input aligned */
+    vertical-align: top; /* important to make buttons and input aligned */
   }
  
   /* copy/paste from the input bootstrap default style */ 
@@ -93,6 +93,10 @@
 
   .ga-more {
     display: none;
+
+    &:not(.active):before {
+      content: '...';
+    }
   }
 
   .ga-more-values {
