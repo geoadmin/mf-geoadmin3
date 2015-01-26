@@ -32,7 +32,7 @@
           label: 'WGS 84 (lat/lon)',
           format: function(coordinates) {
             return ol.coordinate.toStringHDMS(coordinates) +
-                ' (' + ol.coordinate.toStringXY(coordinates, 5) + ')';
+                ' (' + ol.coordinate.format(coordinates, '{y}, {x}', 5) + ')';
           }
         }, {
           value: 'EPSG:4326',
