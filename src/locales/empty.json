@@ -294,6 +294,7 @@
   "query_layer": "",
   "query_conditions": "",
   "query_more_values": "",
+  "query_with_bbox": "",
   "obstacle_started_last_2_weeks": "",
   "obstacle_deleted_last_2_weeks": "",
   "no_searchable_layer": ""
