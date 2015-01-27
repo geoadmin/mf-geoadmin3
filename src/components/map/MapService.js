@@ -1660,7 +1660,7 @@
         this.removeAll = function(map) {
           var layers = map.getLayers().getArray();
           for (var i = 0; i < layers.length; i++) {
-            if (layers[i].preview) {
+            if (layers[i].preview && !(layers[i] instanceof ol.layer.Vector)) {
               map.removeLayer(layers[i]);
               i--;
             }
