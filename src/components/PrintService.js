@@ -26,8 +26,10 @@
         this.htmlPrintout = function(body, head, onLoad) {
           $window.printOnLoad = onLoad || function(windowPrint) {
             windowPrint.print();
-            windowPrint.close();
           };
+          if (windowPrint) {
+            windowPrint.close();
+          }
           windowPrint = $window.open('', 'printout', 'height=400, width=600');
           windowPrint.document.write(buildHtml(body, head));
           windowPrint.document.close();
