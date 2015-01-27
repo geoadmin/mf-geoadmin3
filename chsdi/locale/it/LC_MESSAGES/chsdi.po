@@ -1080,19 +1080,19 @@ msgid "ch.bafu.bundesinventare-amphibien_anhang4"
 msgstr "Anfibi allegato 4"
 
 msgid "ch.bafu.bundesinventare-amphibien_anhoerung"
-msgstr "Batraciens consultation 2014"
+msgstr "Batraciens consultation 2015"
 
 msgid "ch.bafu.bundesinventare-amphibien_wanderobjekte"
 msgstr "Anfibi oggetti mobili"
 
 msgid "ch.bafu.bundesinventare-amphibien_wanderobjekte_anhoerung"
-msgstr "Batraciens objets itinérants 2014"
+msgstr "Batraciens objets itinérants 2015"
 
 msgid "ch.bafu.bundesinventare-auen"
 msgstr "Zone golenali"
 
 msgid "ch.bafu.bundesinventare-auen_anhoerung"
-msgstr "Zones alluviales consultation 2014"
+msgstr "Zones alluviales consultation 2015"
 
 msgid "ch.bafu.bundesinventare-bln"
 msgstr "IFP"
@@ -1101,7 +1101,7 @@ msgid "ch.bafu.bundesinventare-flachmoore"
 msgstr "Paludi"
 
 msgid "ch.bafu.bundesinventare-flachmoore_anhoerung"
-msgstr "Bas-marais consultation 2014"
+msgstr "Bas-marais consultation 2015"
 
 msgid "ch.bafu.bundesinventare-flachmoore_regional"
 msgstr "Paludi regionali"
@@ -1110,7 +1110,7 @@ msgid "ch.bafu.bundesinventare-hochmoore"
 msgstr "Torbiere alte"
 
 msgid "ch.bafu.bundesinventare-hochmoore_anhoerung"
-msgstr "Hauts-marais consultation 2014"
+msgstr "Hauts-marais consultation 2015"
 
 msgid "ch.bafu.bundesinventare-jagdbanngebiete"
 msgstr "Bandite federali di caccia"
@@ -1119,7 +1119,7 @@ msgid "ch.bafu.bundesinventare-moorlandschaften"
 msgstr "Zone palustri"
 
 msgid "ch.bafu.bundesinventare-moorlandschaften_anhoerung"
-msgstr "Sites marécageux consultation 2014"
+msgstr "Sites marécageux consultation 2015"
 
 msgid "ch.bafu.bundesinventare-trockenwiesen_trockenweiden"
 msgstr "Prati e pascoli secchi (PPS)"
@@ -1128,7 +1128,7 @@ msgid "ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhang2"
 msgstr "PPS allegato 2"
 
 msgid "ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhoerung"
-msgstr "PPS consultation 2014"
+msgstr "PPS consultation 2015"
 
 msgid "ch.bafu.bundesinventare-vogelreservate"
 msgstr "Riserve di uccelli acquatici"

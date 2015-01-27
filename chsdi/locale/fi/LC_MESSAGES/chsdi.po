@@ -1080,19 +1080,19 @@ msgid "ch.bafu.bundesinventare-amphibien_anhang4"
 msgstr "Amphibien Anhang 4"
 
 msgid "ch.bafu.bundesinventare-amphibien_anhoerung"
-msgstr "Amphibien - Anhörung 2014"
+msgstr "Amphibien - Anhörung 2015"
 
 msgid "ch.bafu.bundesinventare-amphibien_wanderobjekte"
 msgstr "Amfibis, objects movibels"
 
 msgid "ch.bafu.bundesinventare-amphibien_wanderobjekte_anhoerung"
-msgstr "Amphibien Wanderobjekte 2014"
+msgstr "Amphibien Wanderobjekte 2015"
 
 msgid "ch.bafu.bundesinventare-auen"
 msgstr "Zonas umidas"
 
 msgid "ch.bafu.bundesinventare-auen_anhoerung"
-msgstr "Auen - Anhörung 2014"
+msgstr "Auen - Anhörung 2015"
 
 msgid "ch.bafu.bundesinventare-bln"
 msgstr "IFC"
@@ -1101,7 +1101,7 @@ msgid "ch.bafu.bundesinventare-flachmoore"
 msgstr "Palids planivas"
 
 msgid "ch.bafu.bundesinventare-flachmoore_anhoerung"
-msgstr "Flachmoore Anhörung 2014"
+msgstr "Flachmoore Anhörung 2015"
 
 msgid "ch.bafu.bundesinventare-flachmoore_regional"
 msgstr "Flachmoore regional"
@@ -1110,7 +1110,7 @@ msgid "ch.bafu.bundesinventare-hochmoore"
 msgstr "Palids autas"
 
 msgid "ch.bafu.bundesinventare-hochmoore_anhoerung"
-msgstr "Hochmoore - Anhörung 2014"
+msgstr "Hochmoore - Anhörung 2015"
 
 msgid "ch.bafu.bundesinventare-jagdbanngebiete"
 msgstr "Asils da selvaschina"
@@ -1119,7 +1119,7 @@ msgid "ch.bafu.bundesinventare-moorlandschaften"
 msgstr "Cuntradas da palì"
 
 msgid "ch.bafu.bundesinventare-moorlandschaften_anhoerung"
-msgstr "Moorlandschaften - Anhörung 2014"
+msgstr "Moorlandschaften - Anhörung 2015"
 
 msgid "ch.bafu.bundesinventare-trockenwiesen_trockenweiden"
 msgstr "Pastgiras e prads sitgs (PPS)"
