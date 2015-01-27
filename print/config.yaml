@@ -183,7 +183,7 @@ layouts:
               fontSize: 7
               align: left
               text: |
-                Responsabilité: Malgré la grande attention qu’elles portent à la justesse des informations diffusées sur ce site, les autorités fédérales ne peuvent endosser aucune responsabilité quant à la fidélité, à l’exactitude, à l’actualité, à la fiabilité et à l’intégralité de ces informations. Droits d'auteur: autorités de la Confédération suisse, 2007. http://www.disclaimer.admin.ch/conditions_dutilisation.html
+                Responsabilité: Malgré la grande attention qu’elles portent à la justesse des informations diffusées sur ce site, les autorités fédérales ne peuvent endosser aucune responsabilité quant à la fidélité, à l’exactitude, à l’actualité, à la fiabilité et à l’intégralité de ces informations. Droits d'auteur: autorités de la Confédération suisse, 2007. http://www.disclaimer.admin.ch/informations_juridiques.html
             - !text
               condition: langen
               fontSize: 7
