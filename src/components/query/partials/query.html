@@ -1,3 +1,11 @@
+<div ng-if="selectByRectangleLayers.length == 0 && searchableLayers.length == 0">
+  <div class="ga-no-result" translate>no_searchable_layer</div>
+</div>
+
+<div ng-if="selectByRectangleLayers.length != 0 && searchableLayers.length == 0">
+  <div class="ga-bbox-info" translate>inform_draw_rectangl_ctrl</div>
+</div>
+
 <div ng-show="searchableLayers.length != 0">
   <div class="form-group ga-queries-predefined" ng-show="queriesPredef.length > 0">
     <label translate>query_choose</label> 
@@ -73,9 +81,8 @@
       </div>
     </div>
   </div>
-  <div ng-hide="geometry" class="ga-bbox-info" translate>inform_draw_rectangl_ctrl</div>
-  <label ng-show="geometry" class="ga-checkbox"
-  title="{{'inform_draw_rectangl_ctrl' | translate}}">
+  <div ng-if="!geometry" class="ga-bbox-info" translate>inform_draw_rectangl_ctrl</div>
+  <label ng-show="geometry" class="ga-checkbox" title="{{'inform_draw_rectangl_ctrl' | translate}}">
     <input type="checkbox" ng-model="useBbox" ng-change="onChangeUseBbox()" />
     <span></span>
     <span translate>query_with_bbox</span>

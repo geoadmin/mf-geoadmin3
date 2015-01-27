@@ -295,5 +295,6 @@
   "query_conditions": "",
   "query_more_values": "",
   "obstacle_started_last_2_weeks": "",
-  "obstacle_deleted_last_2_weeks": ""
+  "obstacle_deleted_last_2_weeks": "",
+  "no_searchable_layer": ""
 }
