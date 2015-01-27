@@ -167,6 +167,15 @@
       }, 0, false);
     };
 
+    // When the user click on the query bbox checkbox
+    $scope.onChangeUseBbox = function() {
+      if ($scope.useBbox) {
+        $scope.showBox();
+      } else {
+        $scope.hideBox();
+      }
+    };
+
     // Search by geometry using the search server
     /*$scope.searchByGeometry = function() {
       $scope.loading = true;
@@ -268,10 +277,7 @@
         geometryFormat: 'geojson'
       };
 
-      if (!$scope.useBbox) {
-        $scope.geometry = null;
-        $scope.hideBox();
-      } else {
+      if ($scope.useBbox) {
         // here $scope.geometry can't be null
         $scope.showBox();
         angular.extend(common, getGeometryParams());

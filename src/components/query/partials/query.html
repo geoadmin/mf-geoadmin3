@@ -74,8 +74,9 @@
     </div>
   </div>
   <div ng-hide="geometry" class="ga-bbox-info" translate>inform_draw_rectangl_ctrl</div>
-  <label ng-show="geometry" class="ga-checkbox">
-    <input type="checkbox" ng-model="useBbox"/>
+  <label ng-show="geometry" class="ga-checkbox"
+  title="{{'inform_draw_rectangl_ctrl' | translate}}">
+    <input type="checkbox" ng-model="useBbox" ng-change="onChangeUseBbox()" />
     <span></span>
     <span translate>query_with_bbox</span>
   </label>
