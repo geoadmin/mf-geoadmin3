@@ -54,6 +54,9 @@
     <style>
       body {
         margin: 10px;
+        color: #333;
+        font-size: 12px;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
       }
       .pull-right {
         float: right;
@@ -63,13 +66,14 @@
       }
       .header {
         height: 30px;
+        line-height: 30px;
         margin: 10px 0px;
         font-size: 14px;
         font-weight: bold;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        background-color:#EFEFEF;
+        background-color:#e9e9e9;
       }
       .wrapper {
         position: absolute;
@@ -93,7 +97,6 @@
       }
       #messagectrl {
         display: inline-block;
-        color: #5c5c5c;
       }
       .link-red {
         color: red;
@@ -101,6 +104,7 @@
       #lubismap {
         width: 100%;
         height: 100%;
+        font-size: 16px;
       }
       @media print { /* Used by Chrome */
         #lubismap, .wrapper {
