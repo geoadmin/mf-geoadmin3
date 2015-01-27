@@ -9,6 +9,35 @@
 Release Notes
 =============
 
+.. _releasenotes_20150128:
+
+Release 20150128 - Wednesday, January 28th 2015
+----------------------------------------------
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_150114...r_150128>`__
+
+`MAP <//map.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_150114...r_150128>`__
+
+
+Geodata
+*******
+
++-----------+------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `swissALTI3D Hillshade <//map.geo.admin.ch/?layers=ch.swisstopo.swissalti3d-reliefschattierung>`__ (ch.swisstopo.swissalti3d-reliefschattierung)     |
++-----------+------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+
 .. _releasenotes_20150114:
 
 Release 20150114 - Wednesday, January 14th 2015
