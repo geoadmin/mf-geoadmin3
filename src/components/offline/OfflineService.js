@@ -89,8 +89,7 @@
             return true;
           }
         } else {
-          alert($translate.instant('offline_bad_layer_type') + ': ' +
-              layer.label);
+          // TODO: inform the user about which layer can't be saved in the help
         }
         return false;
       };
