@@ -465,6 +465,8 @@
               feature.getGeometry().transform('EPSG:4326', options.projection);
             }
             var geom = feature.getGeometry();
+            var styles = feature.getStyleFunction().call(feature);
+            var style = styles[0];
 
             // if the feature is a Point and we are offline, we use default kml
             // style.
@@ -472,10 +474,7 @@
             // create a correct text style.
             // TODO Handle GeometryCollection displaying name on the first Point
             // geometry.
-            if (geom instanceof ol.geom.Point ||
-                geom instanceof ol.geom.MultiPoint) {
-              var styles = feature.getStyleFunction().call(feature);
-              var style = styles[0];
+            if (style) {
               var image = style.getImage();
               var text = null;
 
@@ -483,7 +482,9 @@
                 image = gaStyleFactory.getStyle('kml').getImage();
               }
 
-              if (feature.get('name') && style.getText()) {
+              if (feature.get('name') && style.getText() &&
+                  (geom instanceof ol.geom.Point ||
+                  geom instanceof ol.geom.MultiPoint)) {
                 if (image && image.getScale() == 0) {
                   // transparentCircle is used to allow selection
                   image = gaStyleFactory.getStyle('transparentCircle');
