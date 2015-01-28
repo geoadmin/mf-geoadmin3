@@ -91,7 +91,13 @@
           });
 
           if (exportFeatures.length > 0) {
-            kmlString = new ol.format.KML().writeFeatures(exportFeatures);
+            var node = new ol.format.KML().writeFeatures(exportFeatures);
+            kmlString = node.outerHtml;
+            //Some browser don't support the node.outerHtml property. For
+            //thos browsers, we need to serialize differently.
+            if (!kmlString) {
+              kmlString = new XMLSerializer().serializeToString(node);
+            }
             // Remove no image hack
             kmlString = kmlString.
                 replace(/<Icon>\s*<href>noimage<\/href>\s*<\/Icon>/g, '');
