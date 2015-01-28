@@ -26,6 +26,8 @@ API & applications
 `MAP <//map.geo.admin.ch>`__
 '''''''''''''''''''''''''''''
 
+- Improved query tool
+- Offline mode now supports http[s] included kml files
 - Bug fixes
 - `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_150114...r_150128>`__
 
@@ -33,9 +35,13 @@ API & applications
 Geodata
 *******
 
-+-----------+------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Update    | `swissALTI3D Hillshade <//map.geo.admin.ch/?layers=ch.swisstopo.swissalti3d-reliefschattierung>`__ (ch.swisstopo.swissalti3d-reliefschattierung)     |
-+-----------+------------------------------------------------------------------------------------------------------------------------------------------------------+
++-----------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `swissALTI3D Hillshade <//map.geo.admin.ch/?layers=ch.swisstopo.swissalti3d-reliefschattierung>`__ (ch.swisstopo.swissalti3d-reliefschattierung)                                   |
++-----------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Protection of cultural property inventory <//map.geo.admin.ch/?layers=ch.babs.kulturgueter>`__ (ch.babs.kulturgueter)                                                             |
++-----------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `TWW - Anhörung 2014 <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhoerung>`__ (ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhoerung) |
++-----------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 
 .. _releasenotes_20150114:
