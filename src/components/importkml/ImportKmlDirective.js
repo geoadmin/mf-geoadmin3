@@ -46,8 +46,6 @@
         // Handle fileURL
         $scope.handleFileUrl = function() {
           if ($scope.fileUrl) {
-            var proxyUrl = gaKml.proxyUrl +
-                encodeURIComponent($scope.fileUrl);
             $scope.cancel();// Kill the current uploading
             $scope.fileContent = null;
             $scope.userMessage = $translate.instant('uploading_file');
@@ -55,8 +53,11 @@
             $scope.canceler = $q.defer();
 
             // Angularjs doesn't handle onprogress event
-            $http.get(proxyUrl, {timeout: $scope.canceler.promise})
-            .success(function(data, status, headers, config) {
+            $http.get($scope.options.proxyUrl +
+                encodeURIComponent($scope.fileUrl), {
+              cache: true,
+              timeout: $scope.canceler.promise
+            }).success(function(data, status, headers, config) {
               var fileSize = headers('content-length');
               if (gaKml.isValidFileContent(data) &&
                   gaKml.isValidFileSize(fileSize)) {
@@ -144,7 +145,7 @@
               // Add the layer
               gaKml.addKmlToMap($scope.map, $scope.fileContent, {
                 url: ($scope.currentTab === 2) ? $scope.fileUrl :
-                    undefined,
+                    $scope.file.name,
                 attribution: ($scope.currentTab === 2) ?
                     gaUrlUtils.getHostname($scope.fileUrl) :
                     undefined,

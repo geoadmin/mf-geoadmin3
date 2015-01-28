@@ -260,6 +260,8 @@
   "offline_less_than_95": "",
   "offline_no_cacheable_layers": "",
   "offline_clear_db_error": "",
+  "offline_kml_too_big": "",
+  "offline_bad_layer_type": "",
   "appcache_update_available": "",
   "attach_drawing_kml": "",
   "export_kml": "",
