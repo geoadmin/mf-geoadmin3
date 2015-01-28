@@ -1175,7 +1175,7 @@
         var layerSpecs = $.map(layers, function(layer) {
           if (layer.bodId) {
             return layer.bodId;
-          } else if (layer.type === 'KML' && layer.url) {
+          } else if (layer.type === 'KML' && /^https?:\/\//.test(layer.url)) {
             return layer.type + '||' + layer.url;
           } else if (layer.type === 'WMS') {
             return [layer.type, layer.label, layer.url,
