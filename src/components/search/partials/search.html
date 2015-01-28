@@ -1,4 +1,42 @@
 <form class="pull-left">
-  <input class="input-small" type="search" placeholder="{{'search_placeholder' | translate}}" ng-model="query" autocapitalize="none" autocomplete="off" autocorrect="off">
-  <i class="icon-remove-sign ng-hide" ng-click="clearInput()" ng-hide="query==''"></i>
+  <span class="ga-search-input-container">
+    <input class="input-small ga-search-input" type="search"
+    placeholder="{{'search_placeholder' | translate}}" ng-model="query"
+    autocapitalize="none" autocomplete="off" autocorrect="off"
+    ng-keyup="key($event)"
+    ng-blur="lostFocus($event)"
+    ng-focus="onFocus()">
+    <span class="ga-search-dropdown" ng-show="restat.sets()">
+      <!-- footer -->
+      <div class="ga-search-footer clearfix">
+        <div class="ga-search-footer-left"></div>
+        <div class="ga-search-footer-right">
+          <a class="ga-search-contact-icon" title="{{'contact_us' | translate}}" ng-href="http://www.geo.admin.ch/internet/geoportal/{{lang}}/tools/contact.html" target="_blank">
+            <i class="icon-phone"></i>
+          </a>
+          <a class="ga-search-contact-icon" title="{{'follow_us' | translate}}" href="https://twitter.com/swiss_geoportal" target="_blank">
+            <i class="icon-twitter"></i>
+          </a>
+          <a class="ga-search-contact-icon" title="{{'email_us' | translate}}"
+          ng-mouseenter="updateHref()" ng-href="mailto:webgis@swisstopo.ch?body={{encodedPermalinkHref}}">
+            <i class="icon-envelope-alt"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- locations -->
+      <div ng-class="'ga-search-' + restat.sets()">
+        <div ga-search-locations ga-search-locations-options="childoptions" ga-search-locations-map="map"></div>
+      </div>
+      <!-- features -->
+      <div ng-class="'ga-search-' + restat.sets()">
+        <div ga-search-features ga-search-features-options="childoptions" ga-search-features-map="map"></div>
+      </div>
+      <!-- layers -->
+      <div ng-class="'ga-search-' + restat.sets()">
+        <div ga-search-layers ga-search-layers-options="childoptions" ga-search-layers-map="map"></div>
+      </div>
+    </span> <!-- dropdown -->
+  </span> <!-- input container -->
+  <i class="icon-remove-sign ng-hide" ng-click="clearInput()" ng-mousedown="preClear($event)" ng-hide="query==''"></i>
 </form>

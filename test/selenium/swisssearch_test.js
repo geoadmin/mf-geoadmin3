@@ -8,8 +8,8 @@ var QUERYSTRING_MOOS = "X=128630.00&Y=627650.00";
 var runTest = function(cap, driver, target){
   //swissearch parameter with multiple results
   driver.get(target + '/?swisssearch=raron&lang=de');
-  driver.findElement(webdriver.By.xpath("//*[contains(text(), 'Raron (VS)')]"));
-  driver.findElement(webdriver.By.xpath("//*[contains(text(), 'Flugfeld Raron')]")).click();
+  driver.findElement(webdriver.By.xpath("//*[contains(text(), 'Raron')]"));
+  driver.findElement(webdriver.By.xpath("//*[contains(text(), 'Flugfeld')]")).click();
   driver.findElement(webdriver.By.xpath("//a[contains(@href, '" + QUERYSTRING_OF_RARON + "')]"));
   //parameter should disappear when selection is done
   driver.findElement(webdriver.By.xpath("//input[@ng-model='permalinkValue']")).getAttribute("value").then(function(val) {

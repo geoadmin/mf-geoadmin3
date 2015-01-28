@@ -1063,6 +1063,16 @@
         // Test if a layer is a KML layer
         isKmlLayer: function(olLayer) {
           return olLayer.type == 'KML';
+        },
+        moveTo: function(map, zoom, center) {
+          var view = map.getView();
+          view.setZoom(zoom);
+          view.setCenter(center);
+        },
+        zoomToExtent: function(map, extent) {
+          var size = map.getSize();
+          var view = map.getView();
+          view.fitExtent(extent, size);
         }
       };
     };

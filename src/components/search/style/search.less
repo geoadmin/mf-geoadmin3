@@ -1,12 +1,21 @@
 @dropdown-background-color: #fff;
 @dropdown-link-color-hover-color: #fff;
 @dropdown-link-background-hover-color: #666;
+//@highlight-color: rgba(102, 102, 102, 0.5); //Bund Dark grey
+@highlight-color: rgba(255, 128, 0, 0.3); //Bund Orange
+//@highlight-color: tgba(254, 251, 6, 0.5); //Bund Yellow
 
 [ga-search] {
   position: relative;
   width: 100%;
 
-  .twitter-typeahead {
+  form {
+    position: relative;
+    width: 100%;
+  }
+
+  .ga-search-input-container {
+    display: inline-block;
     width: 100%;
     position: relative;
     
@@ -22,13 +31,14 @@
     }
   }
 
-  .tt-query {
+  .ga-search-input {
     background: white !important;
     padding-left: 2em;
     padding-right: 2.5em;
   }
 
-  .tt-dropdown-menu {
+  .ga-search-dropdown {
+    display: block;
     width: 100%;
     font-size: 11px;
     min-width: 160px;
@@ -41,24 +51,28 @@
     background-clip: padding-box;
   }
 
-  div.ga-search-1 {
-    .tt-suggestions {
+  .ga-search-results {
+    display: block;
+  }
+
+  .ga-search-1 {
+    .ga-search-results {
       max-height: 415px;
       @media (max-height: 550px) {
         max-height: 325px;
       }
     }
   }
-  div.ga-search-2 {
-    .tt-suggestions {
+  .ga-search-2 {
+    .ga-search-results {
       max-height: 190px;
       @media (max-height: 550px) {
         max-height: 150px;
       }
     }
   }
-  div.ga-search-3 {
-    .tt-suggestions {
+  .ga-search-3 {
+    .ga-search-results {
       max-height: 105px;
       @media (max-height: 550px) {
         max-height: 85px;
@@ -66,29 +80,29 @@
     }
   }
 
-  .tt-dataset-locations,
-  .tt-dataset-featuresearch,
-  .tt-dataset-layers {
+  .ga-search-results-container {
     
-    .tt-suggestions {
+    .ga-search-results {
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      .tt-suggestion {
+      .ga-search-result {
         display: block;
         background-color: #E6E6E6;
         margin-top: 1px;
 
-        &.tt-is-under-cursor {
+        &:hover {
           color: @dropdown-link-color-hover-color;
           background-color: @dropdown-link-background-hover-color;
           border-top: 1px;
-          .tt-feature {
-            background-color: @dropdown-link-background-hover-color;
-          }
+          cursor: pointer;
         }
 
-        .tt-search {
+        .ga-search-item {
           padding: 3px 20px;
+        }
+
+        .ga-search-highlight {
+          background-color: @highlight-color;
         }
       }
     }
@@ -98,11 +112,7 @@
     }
   }
   
-  .tt-dataset-layers {
-    display: block !important;
-  }
-  
-  .tt-header-locations, .tt-header-mapinfos {
+  .ga-search-results-header {
     padding-top: 5px;
     padding-bottom: 5px;
     padding-left: 20px;
@@ -110,7 +120,13 @@
   
   .icon-info-sign {
     float: right;
-    padding-top: 2px;
+    margin-top: -15px;
+    margin-right: 15px;
+
+    @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
+      margin-top: 0px;
+      margin-right: 5px;
+    }
   }
   
   .icon-remove-sign {
@@ -157,22 +173,22 @@
 
   @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
   
-    .tt-dropdown-menu, input {
+    .ga-search-dropdown, input {
       font-size: 13px;
     }
     
-    .tt-header-locations, .tt-header-mapinfos {
+    .ga-search-results-header {
       padding: 5px 10px;
     }
     
-    .tt-dataset-locations, .tt-dataset-layers {
+    .ga-search-results-container {
       
-      .tt-suggestions {
+      .ga-search-results {
         
-        .tt-suggestion {
+        .ga-search-result {
           position: relative;
           
-          .tt-search {
+          .ga-search-item {
             padding: 5px 20px;
           }
         }
