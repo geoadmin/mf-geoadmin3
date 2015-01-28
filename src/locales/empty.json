@@ -284,7 +284,6 @@
   "print_underway_message": "",
   "movie": "",
   "queries": "",
-  "query": "",
   "query_num": "",
   "query_choose": "",
   "query_custom": "",
@@ -293,7 +292,10 @@
   "query_duplicate": "",
   "query_search": "",
   "query_layer": "",
+  "query_conditions": "",
   "query_more_values": "",
+  "query_with_bbox": "",
   "obstacle_started_last_2_weeks": "",
-  "obstacle_deleted_last_2_weeks": ""
+  "obstacle_deleted_last_2_weeks": "",
+  "no_searchable_layer": ""
 }

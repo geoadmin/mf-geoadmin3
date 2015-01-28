@@ -179,7 +179,9 @@
                     onCloseCB: function() {
                       if (scope.isFeatureSelected(feature)) {
                         featureSelected = null;
-                        drawFeatures();
+                        if (scope.isActive) {
+                          drawFeatures();
+                        }
                       }
                     }
                   });

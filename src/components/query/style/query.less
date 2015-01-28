@@ -7,12 +7,12 @@
     margin-top: 5px;
   }
   
-  input {
+  input:not([type=checkbox]) {
     width: 100%;
   }
 
   input, select {
-    vertical-align: middle; /* important to make buttons and input aligned */
+    vertical-align: top; /* important to make buttons and input aligned */
   }
  
   /* copy/paste from the input bootstrap default style */ 
@@ -39,13 +39,36 @@
   .btn-default{
     width: 100%;
   }
- 
+  
+  &.panel-body {
+    padding: 10px 5px;
+  }
+
+  .well {
+    padding: 5px 15px 5px 5px;
+    margin-bottom: 10px;
+    
+    > label {
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .ga-query {
+      padding-left: 10px;
+    }
+  } 
+
+  .collapsed .icon-caret-down:before {
+    transform: rotate(-90deg);
+  }
+
   .ga-bbox-info {
     text-align: justify;
     margin-bottom: 10px;
   }
   
   .ga-query {
+    margin-top: 10px;
     margin-bottom: 10px;
   }
   
@@ -65,9 +88,7 @@
     display: inline-block;
     width: 68%;
   }
-  .ga-choose-attr, .ga-value {
-    /*margin-right: 5px;*/
-  }
+  
   .ga-choose-op, .ga-more {
     display: inline-block;
     width: 30%;
@@ -75,6 +96,10 @@
 
   .ga-more {
     display: none;
+
+    &:not(.active):before {
+      content: '...';
+    }
   }
 
   .ga-more-values {
@@ -88,6 +113,15 @@
       display: inline-block;
       width: 16%;
       height: 30px;
+    }
+  }
+
+  .ga-checkbox {
+    width: 100%;
+    font-weight: normal;
+
+    input[type=checkbox] {
+      margin-right: 5px;
     }
   }
 }
