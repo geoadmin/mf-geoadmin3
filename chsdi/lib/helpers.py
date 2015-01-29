@@ -133,10 +133,12 @@ def escape_sphinx_syntax(input_str):
 def format_query(model, value):
     def escapeSQL(value):
         if u'ilike' in value:
-            match = re.search(r'(.*)(%.*%)(.*)', value)
+            match = re.search(r'(.*ilike .*)(%.*%)(.*)', value)
             where = u''.join((
                 match.group(1).replace(u'\'', u'E\''),
-                match.group(2).replace(u'\'', u'\\\''),
+                match.group(2).replace(u'\\', u'\\\\')
+                              .replace(u'\'', u'\\\'')
+                              .replace(u'_', u'\\_'),
                 match.group(3)
             ))
             return where

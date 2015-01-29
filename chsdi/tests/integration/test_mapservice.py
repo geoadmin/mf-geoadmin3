@@ -145,6 +145,11 @@ class TestMapServiceView(TestsBase):
         resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=200)
         self.failUnless(resp.content_type == 'application/json')
 
+    def test_identify_query_escape_quote(self):
+        params = {'geometryFormat': 'geojson', 'lang': 'en', 'layers': 'all:ch.bafu.hydrologie-wassertemperaturmessstationen', 'time': '2013', 'where': 'name ilike \'%Broye-Payerne, Caserne d\'aviation%\''}
+        resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+
     def test_find_scan(self):
         params = {'layer': 'ch.bfs.gebaeude_wohnungs_register', 'searchField': 'egid', 'searchText': '1231641'}
         resp = self.testapp.get('/rest/services/all/MapServer/find', params=params, status=200)
