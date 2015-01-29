@@ -1060,10 +1060,6 @@
             return a;
           }
         },
-        // Test if a layer is a KML layer
-        isKmlLayer: function(olLayer) {
-          return olLayer.type == 'KML';
-        },
         moveTo: function(map, zoom, center) {
           var view = map.getView();
           view.setZoom(zoom);
@@ -1073,7 +1069,35 @@
           var size = map.getSize();
           var view = map.getView();
           view.fitExtent(extent, size);
+        },
+
+        // Test if a layer is a KML layer added by the ImportKML tool or
+        // permalink
+        // @param olLayerOrId  An ol layer or an id of a layer
+        isKmlLayer: function(olLayerOrId) {
+          if (typeof olLayerOrId === 'string') {
+            return /^KML\|\|/.test(olLayerOrId);
+          }
+          return olLayerOrId.type == 'KML';
+        },
+
+        // Test if a layer is a KML layer added by dnd
+        // @param olLayer  An ol layer
+        isLocalKmlLayer: function(olLayer) {
+          return this.isKmlLayer(olLayer) && !/^https?:\/\//.test(olLayer.url);
+        },
+
+        // Test if a layer is an external WMS layer added by th ImportWMS tool
+        // or permalink
+        // @param olLayerOrId  An ol layer or an id of a layer
+        isExternalWmsLayer: function(olLayerOrId) {
+          if (typeof olLayerOrId === 'string') {
+            return /^WMS\|\|/.test(olLayerOrId) &&
+                olLayerOrId.split('||').length == 4;
+          }
+          return olLayerOrId.type == 'WMS';
         }
+
       };
     };
   });
@@ -1083,7 +1107,7 @@
    * layers in the map
    */
   module.provider('gaLayerFilters', function() {
-    this.$get = function(gaLayers) {
+    this.$get = function(gaLayers, gaMapUtils) {
       return {
         /**
          * Filters out background layers, preview
@@ -1098,6 +1122,11 @@
 
         selectedAndVisible: function(layer) {
           return layer.displayInLayerManager && layer.visible;
+        },
+
+        permalinked: function(layer) {
+          return layer.displayInLayerManager &&
+              !gaMapUtils.isLocalKmlLayer(layer);
         },
 
         /**
@@ -1170,28 +1199,11 @@
       var layerTimestamps = layersTimestampParamValue ?
           layersTimestampParamValue.split(',') : [];
 
-
-      function isKmlLayer(layerSpec) {
-        return (layerSpec && layerSpec.indexOf('KML||') === 0);
-      }
-
-      function isWmsLayer(layerSpec) {
-        return (layerSpec && layerSpec.indexOf('WMS||') === 0) &&
-            layerSpec.split('||').length === 4;
-      }
-
       function updateLayersParam(layers) {
-        var layerSpecs = $.map(layers, function(layer) {
-          if (layer.bodId) {
-            return layer.bodId;
-          } else if (layer.type === 'KML' && /^https?:\/\//.test(layer.url)) {
-            return layer.type + '||' + layer.url;
-          } else if (layer.type === 'WMS') {
-            return [layer.type, layer.label, layer.url,
-                layer.getSource().getParams().LAYERS].join('||');
-          }
-        });
-        if (layerSpecs.length > 0) {
+        if (layers.length) {
+          var layerSpecs = $.map(layers, function(layer) {
+            return layer.bodId || layer.id;
+          });
           gaPermalink.updateParams({
             layers: layerSpecs.join(',')
           });
@@ -1259,7 +1271,7 @@
         // We must reorder layer when async layer are added
         var mustReorder = false;
         scope.layers = map.getLayers().getArray();
-        scope.layerFilter = gaLayerFilters.selected;
+        scope.layerFilter = gaLayerFilters.permalinked;
         scope.$watchCollection('layers | filter:layerFilter',
             function(layers) {
 
@@ -1305,12 +1317,12 @@
             var timestamp = (index < layerTimestamps.length &&
                 layerTimestamps != '') ? layerTimestamps[index] : '';
 
-            if (isKmlLayer(layerSpec) || isWmsLayer(layerSpec)) {
+            if (gaMapUtils.isKmlLayer(layerSpec) ||
+                gaMapUtils.isExternalWmsLayer(layerSpec)) {
               var url = '';
-              if (isKmlLayer(layerSpec)) {
+              if (gaMapUtils.isKmlLayer(layerSpec)) {
                 url = layerSpec.replace('KML||', '');
-              }
-              if (isWmsLayer(layerSpec)) {
+              } else if (gaMapUtils.isExternalWmsLayer(layerSpec)) {
                 url = layerSpec.split('||')[2];
               }
               if (!confirmedOnce &&
@@ -1351,7 +1363,7 @@
                 map.addLayer(layer);
               }
 
-            } else if (allowThirdData && isKmlLayer(layerSpec)) {
+            } else if (allowThirdData && gaMapUtils.isKmlLayer(layerSpec)) {
               // KML layer
               try {
                 gaKml.addKmlToMapForUrl(map, url,
@@ -1366,7 +1378,8 @@
                 // Adding KML layer failed, native alert, log message?
               }
 
-            } else if (allowThirdData && isWmsLayer(layerSpec)) {
+            } else if (allowThirdData &&
+                gaMapUtils.isExternalWmsLayer(layerSpec)) {
               // External WMS layer
               var infos = layerSpec.split('||');
               try {
@@ -1743,6 +1756,5 @@
       return new PreviewLayers();
     };
   });
-
-
 })();
+
