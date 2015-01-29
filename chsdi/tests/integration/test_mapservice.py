@@ -409,12 +409,21 @@ class TestMapServiceView(TestsBase):
     def test_layersconfig_wrong_map(self):
         resp = self.testapp.get('/rest/services/foo/MapServer/layersConfig', status=400)
 
-    def test_features_attributes(self):
+    def test_layer_attributes(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln', status=200)
         self.failUnless(resp.content_type == 'application/json')
 
-    def test_features_attributes_wrong_layer(self):
+    def test_layer_attributes_wrong_layer(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/dummy', status=400)
+
+    def test_layer_attributes_multi_models(self):
+        resp = self.testapp.get('/rest/services/api/MapServer/ch.bav.sachplan-infrastruktur-schiene_kraft', status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        self.failUnless(len(resp.json['fields']) > 4)
+
+    def test_features_attributes_multi_models(self):
+        resp = self.testapp.get('/rest/services/api/MapServer/ch.bav.sachplan-infrastruktur-schiene_kraft/attributes/plname_de', status=200)
+        self.failUnless(resp.content_type == 'application/json')
 
 zlayer = 'ch.swisstopo.zeitreihen'
 
