@@ -104,9 +104,9 @@ def legend(request):
     return response.body
 
 
-def _find_type(model, colname):
-    if hasattr(model, '__table__') and colname in model.__table__.c:
-        return model.__table__.c[colname].type
+def _find_type(model, colProp):
+    if hasattr(model, '__table__') and hasattr(model, colProp):
+        return model.get_column_by_name(colProp).type
 
 
 def _get_models_attributes_keys(models):
