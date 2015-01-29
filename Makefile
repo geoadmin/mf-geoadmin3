@@ -302,7 +302,7 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 .build-artefacts/closure-library:
 	mkdir -p .build-artefacts
 	git clone http://github.com/google/closure-library/ $@
-	cd $@ && git reset --hard fb35d5232edef340dd9a7c6e479556829d0fa452 && cd ../../
+	cd $@ && git reset --hard 0011afd534469ba111786fe68300a634e08a4d80 && cd ../../
 
 .build-artefacts/closure-compiler/compiler.jar: .build-artefacts/closure-compiler/compiler-latest.zip
 	unzip $< -d .build-artefacts/closure-compiler
