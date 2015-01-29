@@ -40,7 +40,7 @@ Geodata
 +-----------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Update    | `Protection of cultural property inventory <//map.geo.admin.ch/?layers=ch.babs.kulturgueter>`__ (ch.babs.kulturgueter)                                                             |
 +-----------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Update    | `TWW - Anhörung 2014 <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhoerung>`__ (ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhoerung) |
+| Update    | `TWW - Anhörung 2015 <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhoerung>`__ (ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhoerung) |
 +-----------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 
