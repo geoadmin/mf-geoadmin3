@@ -109,6 +109,20 @@ def _find_type(model, colname):
         return model.__table__.c[colname].type
 
 
+def _get_models_attributes_keys(models):
+    allAttributes = []
+    for model in models:
+        if hasattr(model, '__queryable_attributes__'):
+            attributes = model.__queryable_attributes__
+        else:
+            # Maybe this should be removed since only searchable layers
+            # have attributes that can be queried
+            attributes = model().getAttributesKeys(excludePkey=False)
+        allAttributes = allAttributes + attributes
+    return list(set(allAttributes))
+
+
+# Could be moved in features.py as it accesses vector models
 @view_config(route_name='featureAttributes', renderer='jsonp')
 def feature_attributes(request):
     ''' This service is used to expose the
@@ -119,35 +133,42 @@ def feature_attributes(request):
     # Models for the same layer have the same attributes
     if models is None:
         raise exc.HTTPBadRequest('No Vector Table was found for %s' % layerId)
-    model = models[0]
-    attributes = model().getAttributesKeys()
-    if hasattr(model, '__queryable_attributes__'):
-        queryable_attributes = model.__queryable_attributes__
-        attributes = list(set(attributes) & set(queryable_attributes))
 
-    query = params.request.db.query(models[0])
-    try:
-        results = query.limit(SAMPLE_SIZE)
-    except:
-        raise exc.HTTPInternalServerError('Cannot get example values for  %s' % layerId)
-
+    # Take into account all models and remove duplicated keys
+    attributes = _get_models_attributes_keys(models)
+    trackAttributesNames = []
     fields = []
-    for row_nr, row in enumerate(results):
-        for attr_nr, attr in enumerate(attributes):
-            attrs = row.getAttributes(excludePkey=False)
-            if row_nr == 0:
-                field_type = _find_type(models[0](), attr)
-                fields.append({'name': attr, 'type': str(field_type),
-                               'alias': params.translate("%s.%s" % (layerId, attr)),
-                               'values': set([])
-                               })
-            if len(fields[attr_nr]['values']) < MAX_ATTRIBUTES_VALUES:
-                val = attrs[attr]
-                if isinstance(val, (decimal.Decimal, datetime.date, datetime.datetime)):
-                    val = str(val)
-                tmp_values = set(fields[attr_nr]['values'])
-                tmp_values.add(val)
-                fields[attr_nr]['values'] = list(tmp_values)
+
+    def insertValueAt(field, attrName, value):
+        if field['name'] == attrName:
+            if len(field['values']) < MAX_ATTRIBUTES_VALUES and \
+               value not in field['values']:
+                field['values'].append(value)
+                field['values'].sort()
+        return field
+
+    for model in models:
+        query = params.request.db.query(model)
+        query = query.limit(SAMPLE_SIZE)
+
+        for rowIndex, row in enumerate(query):
+            # attrName as defined in the model
+            for attrIndex, attrName in enumerate(attributes):
+                featureAttrs = row.getAttributes(excludePkey=False)
+                if attrName not in trackAttributesNames and \
+                   attrName in featureAttrs:
+                    fieldType = _find_type(model(), attrName)
+                    fields.append({'name': attrName, 'type': str(fieldType),
+                                   'alias': params.translate("%s.%s" % (layerId, attrName)),
+                                   'values': []
+                                   })
+                    trackAttributesNames.append(attrName)
+                if attrName in featureAttrs:
+                    for fieldsIndex, field in enumerate(fields):
+                        value = featureAttrs[attrName]
+                        if isinstance(value, (decimal.Decimal, datetime.date, datetime.datetime)):
+                            value = str(value)
+                        fields[fieldsIndex] = insertValueAt(field, attrName, value)
 
     return {'id': layerId, 'name': params.translate(layerId), 'fields': fields}
 
