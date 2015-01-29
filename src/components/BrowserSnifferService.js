@@ -18,9 +18,9 @@
       if (isNaN(msie)) {
         msie = +((/trident\/.*; rv:(\d+)/.exec(ua.toLowerCase()) || [])[1]);
       }
-      var ios = /(iPhone|iPad)/.test(ua);
+      var ios = /(iPhone|iPad|iPod)/.test(ua);
       if (ios) {
-        ios = +/\((iPhone|iPad);.+OS (\d{1,2})_/.exec(ua)[2];
+        ios = +/\((iPhone|iPad|iPod).+OS (\d{1,2})_/.exec(ua)[2];
       }
       var iosChrome = /CriOS/.test(ua);
       var webkit = /WebKit/.test(ua);
