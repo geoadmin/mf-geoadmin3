@@ -474,7 +474,8 @@
             // create a correct text style.
             // TODO Handle GeometryCollection displaying name on the first Point
             // geometry.
-            if (style) {
+            if (style && (geom instanceof ol.geom.Point ||
+                geom instanceof ol.geom.MultiPoint)) {
               var image = style.getImage();
               var text = null;
 
@@ -482,9 +483,7 @@
                 image = gaStyleFactory.getStyle('kml').getImage();
               }
 
-              if (feature.get('name') && style.getText() &&
-                  (geom instanceof ol.geom.Point ||
-                  geom instanceof ol.geom.MultiPoint)) {
+              if (feature.get('name') && style.getText()) {
                 if (image && image.getScale() == 0) {
                   // transparentCircle is used to allow selection
                   image = gaStyleFactory.getStyle('transparentCircle');
