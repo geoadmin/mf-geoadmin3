@@ -1,4 +1,5 @@
 {
+	"abort": "Annullar",
 	"add_layer": "Agiuntar Layer",
 	"add_wms_layer_failed": "Sbagl tar il chargiar de la WMS layer",
 	"add_wms_layer_succeeded": "Chargià con success il WMS Layer",
@@ -180,7 +181,6 @@
 	"object_information": "Objekt infurmaziun",
 	"obstacle_deleted_last_2_weeks": "Gelöschte Hindernisse letzte 2 Wochen",
 	"obstacle_started_last_2_weeks": "Aktivierte Hindernisse letzte 2 Wochen",
-	"offline_abort": "Annullar",
 	"offline_abort_warning": "Vulais Vus propi stizzar tut ils chartas?",
 	"offline_bad_layer_type": "Einer der Datensätze kann nicht für den Offline-Gebrauch gespeichert werden.",
 	"offline_clear_db_error": "Errur cun stizzar las chartas memorisadas. Per plaschair empruvais anc ina giada.",
