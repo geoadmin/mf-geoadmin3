@@ -31,6 +31,12 @@ then
     sudo -u deploy deploy -r deploy/deploy-branch.cfg int;
 fi
 
+if [ $1 -a $1 == 'demo' ];
+then
+    sudo -u deploy deploy -r deploy/deploy-branch.cfg demo;
+fi
+
+
 T="$(($(date +%s)-T))"
 
 printf "Deploy time: %02d:%02d:%02d\n" "$((T/3600%24))" "$((T/60%60))" "$((T%60))"

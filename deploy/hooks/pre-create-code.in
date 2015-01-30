@@ -6,12 +6,17 @@ CODE_DIR=$2
 
 export PGUSER='${vars:modwsgi_user}'
 
-cd $CODE_DIR
+if [ $TARGET != 'demo' ];
+then
 
-echo "running unit tests (wd: '$(pwd)')"
+   cd $CODE_DIR
 
-buildout/bin/nosetests chsdi/tests/functional
+   echo "running unit tests (wd: '$(pwd)')"
 
-buildout/bin/nosetests -e test_external_links # > /dev/null 2>&1
+   buildout/bin/nosetests chsdi/tests/functional
+
+   buildout/bin/nosetests -e test_external_links # > /dev/null 2>&1
+
+fi
 
 exit $?

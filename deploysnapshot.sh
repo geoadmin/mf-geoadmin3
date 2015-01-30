@@ -6,7 +6,7 @@ T="$(date +%s)"
 set -o errexit
 
 # Check if snapshot parameter is supplied and there are 2 parameters
-if [ "$2" != "int" ] && [ "$2" != "prod" ]
+if [ "$2" != "int" ] && [ "$2" != "prod" ] && [ "$2" != "demo" ]
 then
   echo "Error: Please specify 1) snapshot directoy and 2) target."
   exit 1

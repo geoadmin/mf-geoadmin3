@@ -68,7 +68,7 @@ that points to your working directory. If all is well, you can reach your pages 
 
     http://mf-chsdi3.dev.bgdi.ch/<username>/
 
-# Deploying to dev, int and prod
+# Deploying to dev, int, prod and demo
 
 Do the following commands **inside your working directory**. Here's how a standard
 deploy process is done.
@@ -94,6 +94,8 @@ This will run the full nose tests **from inside the 201407031411 snapshot direct
 `./deploysnapshot.sh 201407031411 prod`
 
 This will do the corresponding thing for prod
+The same is valid for demo too:
+`.\deploysnapshot 201407031411 demo
 
 *Note*: older snapshots don't contain the nose_run.sh scripts. To use the above
 commands, you have to manually copy the nose_run.sh script into the snapshot code
@@ -114,6 +116,7 @@ The code of the deployed branch is in a specific directory
 The command adds a branch specific configuration to
 `/var/www/vhosts/mf-geoadmin3/conf`. This way, the deployed branch
 behaves exactly the same as any user specific deploy.
+A deploy to a "demo" instance is possible too (simply use ./deploybranch.sh demo).
 
 Sample path:
 http://mf-chsdi3.int.bgdi.ch/gjn_deploybranch/ (Don't forget the slash at the end)
