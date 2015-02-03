@@ -14,7 +14,7 @@ var createLayer = function(timestamp) {
        source: new ol.source.OSM({
          attributions: [
            new ol.Attribution({
-             html: '&copy; <a href="http://www.swisstopo.admin.ch/' +
+             html: '<a target="new" href="http://www.swisstopo.admin.ch/' +
                  'internet/swisstopo/en/home.html">swisstopo</a>'
            })
          ],
@@ -24,6 +24,12 @@ var createLayer = function(timestamp) {
 }
 
 var map_left = new ol.Map({
+  logo: false,
+  controls: ol.control.defaults({
+    attributionOptions: {
+      collapsible: false
+    }
+  }),
   layers: [
     createLayer(20111206)
   ],
@@ -37,6 +43,12 @@ var map_left = new ol.Map({
 });
 
 var map_right = new ol.Map({
+  logo: false,
+  controls: ol.control.defaults({
+    attributionOptions: {
+      collapsible: false
+    }
+  }),
   layers: [
     createLayer(20140520)
   ],
