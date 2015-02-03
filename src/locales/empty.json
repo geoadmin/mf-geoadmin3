@@ -245,7 +245,6 @@
   "vu_service_link_label": "",
   "vu_service_link_href": "",
   "offline_save": "",
-  "offline_abort": "",
   "offline_modal_title": "",
   "offline_delete_data": "",
   "offline_show_extent": "",
@@ -299,5 +298,7 @@
   "query_with_bbox": "",
   "obstacle_started_last_2_weeks": "",
   "obstacle_deleted_last_2_weeks": "",
-  "no_searchable_layer": ""
+  "no_searchable_layer": "",
+  "gewiss": "",
+  "mgdi": ""
 }
