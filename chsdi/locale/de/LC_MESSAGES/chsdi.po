@@ -1172,6 +1172,9 @@ msgstr "Raster Verbreitungskarten"
 msgid "ch.bafu.flora-weltensutter_atlas"
 msgstr "Atlas Welten&Sutter"
 
+msgid "ch.bafu.flussordnungszahlen-strahler"
+msgstr "Flussordnung"
+
 msgid "ch.bafu.gefahren-baugrundklassen"
 msgstr "Seismische Baugrundklassen"
 
@@ -4566,6 +4569,9 @@ msgstr "Beurteilung BAZL"
 msgid "tt_ch_bazl_kataster_belasteter_standorte_zivflpl_standortnummer"
 msgstr "BAZL Standortnummer"
 
+msgid "tt_dist_source"
+msgstr "Länge bis zur Quelle"
+
 msgid "tt_document"
 msgstr "Weitere Informationen "
 
@@ -5064,6 +5070,9 @@ msgstr "Referenz"
 
 msgid "tt_source"
 msgstr "Quelle der Daten"
+
+msgid "tt_strahler"
+msgstr "Strahlerordnung"
 
 msgid "tt_swissprtr_detaildaten"
 msgstr "Details Betrieb"

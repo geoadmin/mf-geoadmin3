@@ -1172,6 +1172,9 @@ msgstr "Raster cartine di diffusione"
 msgid "ch.bafu.flora-weltensutter_atlas"
 msgstr "Atlante Welten&Sutter"
 
+msgid "ch.bafu.flussordnungszahlen-strahler"
+msgstr "Numerazione dei segmenti fluviali"
+
 msgid "ch.bafu.gefahren-baugrundklassen"
 msgstr "Classe dei terreni di fondazione"
 
@@ -4567,6 +4570,9 @@ msgstr "Valutazione dell'UFAC"
 msgid "tt_ch_bazl_kataster_belasteter_standorte_zivflpl_standortnummer"
 msgstr "Numero UFAC del sito"
 
+msgid "tt_dist_source"
+msgstr "Longueur jusqu’à la source"
+
 msgid "tt_document"
 msgstr "Altre informazioni"
 
@@ -5065,6 +5071,9 @@ msgstr "Referenza"
 
 msgid "tt_source"
 msgstr "Fonte dei dati"
+
+msgid "tt_strahler"
+msgstr "Nombre de Strahler"
 
 msgid "tt_swissprtr_detaildaten"
 msgstr "Informazioni dettagliate sul complesso/azienda"

@@ -1172,6 +1172,9 @@ msgstr "Raster distribution maps"
 msgid "ch.bafu.flora-weltensutter_atlas"
 msgstr "Welten&Sutter atlas"
 
+msgid "ch.bafu.flussordnungszahlen-strahler"
+msgstr "Stream order"
+
 msgid "ch.bafu.gefahren-baugrundklassen"
 msgstr "Seismic subsoil classes"
 
@@ -4568,6 +4571,9 @@ msgstr "Beurteilung BAZL"
 msgid "tt_ch_bazl_kataster_belasteter_standorte_zivflpl_standortnummer"
 msgstr "BAZL Standortnummer"
 
+msgid "tt_dist_source"
+msgstr "Länge bis zur Quelle"
+
 msgid "tt_document"
 msgstr "Weitere Informationen "
 
@@ -5066,6 +5072,9 @@ msgstr "Reference"
 
 msgid "tt_source"
 msgstr "Data source"
+
+msgid "tt_strahler"
+msgstr "Strahlerordnung"
 
 msgid "tt_swissprtr_detaildaten"
 msgstr "Facility details"
