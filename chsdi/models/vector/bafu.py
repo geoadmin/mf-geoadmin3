@@ -86,6 +86,7 @@ class Grundwasserschutzareale (Base, Vector):
     typ_fr = Column('typ_fr', Text)
     typ_it = Column('typ_it', Text)
     typ_en = Column('typ_en', Text)
+    source = Column('source', Text)
     status_de = Column('status_de', Text)
     status_fr = Column('status_fr', Text)
     status_it = Column('status_it', Text)
@@ -109,6 +110,7 @@ class Grundwasserschutzzonen (Base, Vector):
     typ_fr = Column('typ_fr', Text)
     typ_it = Column('typ_it', Text)
     typ_en = Column('typ_en', Text)
+    source = Column('source', Text)
     status_de = Column('status_de', Text)
     status_fr = Column('status_fr', Text)
     status_it = Column('status_it', Text)
@@ -131,6 +133,7 @@ class Gewaesserschutzbereiche (Base, Vector):
     typ_fr = Column('typ_fr', Text)
     typ_it = Column('typ_it', Text)
     typ_en = Column('typ_en', Text)
+    source = Column('source', Text)
     the_geom = Column(Geometry(geometry_type='GEOMETRY',
                                dimension=2, srid=21781))
 
