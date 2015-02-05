@@ -15,6 +15,7 @@ from geoalchemy2.types import Geometry
 from shapely.geometry import asShape
 
 from chsdi.lib.validation.mapservice import MapServiceValidation
+from chsdi.lib.helpers import format_query
 from chsdi.lib.filters import full_text_search
 from chsdi.models import models_from_name, oereb_models_from_bodid
 from chsdi.models.bod import OerebMetadata, get_bod_model
@@ -332,8 +333,12 @@ def _get_features_for_filters(params, models, maxFeatures=None, where=None):
             # Filter by sql query
             # Only one filter = one layer
             if where is not None:
-                query = query.filter(text(where))
-
+                txt = format_query(model, where)
+                if txt is None:
+                    raise exc.HTTPBadRequest('The where clause is not valid.')
+                query = query.filter(text(
+                    txt
+                ))
             # Filter by bbox
             if params.geometry is not None:
                 geomFilter = model.geom_filter(

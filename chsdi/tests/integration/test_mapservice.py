@@ -126,22 +126,27 @@ class TestMapServiceView(TestsBase):
         resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=400)
 
     def test_identify_query_time(self):
-        params = {'geometryFormat': 'geojson', 'layers': 'all:ch.bazl.luftfahrthindernis', 'where': 'abortionaccomplished>\'2014-12-01\''}
+        params = {'geometryFormat': 'geojson', 'layers': 'all:ch.bazl.luftfahrthindernis', 'where': 'abortionaccomplished > \'2014-12-01\''}
         resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=200)
         self.failUnless(resp.content_type == 'application/json')
 
     def test_identify_query_number(self):
-        params = {'geometryFormat': 'geojson', 'layers': 'all:ch.bazl.luftfahrthindernis', 'where': 'maxheightagl>210'}
+        params = {'geometryFormat': 'geojson', 'layers': 'all:ch.bazl.luftfahrthindernis', 'where': 'maxheightagl > 210'}
         resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=200)
         self.failUnless(resp.content_type == 'application/json')
 
     def test_identify_query_text(self):
-        params = {'geometryFormat': 'geojson', 'layers': 'all:ch.bazl.luftfahrthindernis', 'where': 'state ilike \'a\''}
+        params = {'geometryFormat': 'geojson', 'layers': 'all:ch.bazl.luftfahrthindernis', 'where': 'state ilike \'%a%\''}
         resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=200)
         self.failUnless(resp.content_type == 'application/json')
 
     def test_identify_query_and_bbox(self):
-        params = {'geometryType': 'esriGeometryEnvelope', 'geometry': '502722,36344,745822,253444', 'imageDisplay': '0,0,0', 'mapExtent': '0,0,0,0', 'tolerance': '0', 'layers': 'all:ch.bazl.luftfahrthindernis', 'where': 'obstacletype=\'Antenna\''}
+        params = {'geometryType': 'esriGeometryEnvelope', 'geometry': '502722,36344,745822,253444', 'imageDisplay': '0,0,0', 'mapExtent': '0,0,0,0', 'tolerance': '0', 'layers': 'all:ch.bazl.luftfahrthindernis', 'where': 'obstacletype = \'Antenna\''}
+        resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+
+    def test_identify_query_escape_quote(self):
+        params = {'geometryFormat': 'geojson', 'lang': 'en', 'layers': 'all:ch.bafu.hydrologie-wassertemperaturmessstationen', 'time': '2013', 'where': 'name ilike \'%Broye-Payerne, Caserne d\'aviation%\''}
         resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=200)
         self.failUnless(resp.content_type == 'application/json')
 

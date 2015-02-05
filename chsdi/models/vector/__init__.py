@@ -212,7 +212,6 @@ def formatAttribute(attribute):
 
 
 def esriRest2Shapely(geometry, geometryType):
-
     try:
         return asShape(geometry)
     except ValueError:

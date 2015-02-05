@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import re
 from osgeo import osr, ogr
 from pyramid.threadlocal import get_current_registry
 from pyramid.i18n import get_locale_name
@@ -127,6 +128,48 @@ def escape_sphinx_syntax(input_str):
     input_str = input_str.replace('$', '\\$')
     input_str = input_str.replace('"', '\"')
     return input_str
+
+
+def format_query(model, value):
+    '''
+        Supported operators on numerical or date values are "=, !=, >=, <=, > and <"
+        Supported operators for text are "ilike and not ilike"
+    '''
+    def escapeSQL(value):
+        if u'ilike' in value:
+            match = re.search(r'([a-z]+\s)(ilike|not ilike)(\s\'%)(.*)(%\')', value)
+            where = u''.join((
+                match.group(1).replace(u'\'', u'E\''),
+                match.group(2),
+                match.group(3),
+                match.group(4).replace(u'\\', u'\\\\')
+                              .replace(u'\'', u'\\\'')
+                              .replace(u'_', u'\\_'),
+                match.group(5)
+            ))
+            return where
+        return value
+
+    def replacePropByColumnName(model, values):
+        res = []
+        for val in values:
+            prop = val.split(' ')[0]
+            columnName = model.get_column_by_name(prop).name.__str__()
+            val = val.replace(prop, columnName)
+            res.append(val)
+        return res
+
+    extractMatches = lambda x: x[0] if x[0] != '' else x[1]
+    regEx = r'(\w+\s(?:ilike|not ilike)\s(?:\'%)[^\'%]+(?:%\'))|(\w+\s(?:=|\!=|>=|<=|>|<)\s[^\s]+)'
+
+    try:
+        values = map(extractMatches, re.findall(regEx, value))
+        values = map(escapeSQL, values)
+        values = replacePropByColumnName(model, values)
+        where = u' and '.join(values)
+    except:
+        return None
+    return where
 
 
 def quoting(text):
