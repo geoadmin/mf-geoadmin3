@@ -1246,11 +1246,10 @@
         var scope = $rootScope.$new();
         var deregFns = [];
         var dupId = 0; // Use for duplicate layer
-
+        // We must reorder layer when async layer are added
+        var mustReorder = false;
         scope.layers = map.getLayers().getArray();
-
         scope.layerFilter = gaLayerFilters.selected;
-
         scope.$watchCollection('layers | filter:layerFilter',
             function(layers) {
 
@@ -1284,6 +1283,8 @@
         var deregister = scope.$on('gaLayersChange', function() {
           var allowThirdData = false;
           var confirmedOnce = false;
+          var nbLayersToAdd = layerSpecs.length;
+
           angular.forEach(layerSpecs, function(layerSpec, index) {
             var layer;
             var opacity = (index < layerOpacities.length) ?
@@ -1350,6 +1351,7 @@
                     attribution: gaUrlUtils.getHostname(url)
                   },
                   index + 1);
+                mustReorder = true;
               } catch (e) {
                 // Adding KML layer failed, native alert, log message?
               }
@@ -1376,6 +1378,33 @@
             }
           });
           deregister();
+
+          // When an async layer is added we must reorder correctly the layers.
+          if (mustReorder) {
+            var deregister2 = scope.$watchCollection(
+                'layers | filter:layerFilter', function(layers) {
+              if (layers.length == nbLayersToAdd) {
+                deregister2();
+                var hasBg = false;
+                for (var i = 0, ii = map.getLayers().getLength(); i < ii; i++) {
+                  var layer = map.getLayers().item(i);
+                  var idx = layerSpecs.indexOf(layer.id);
+                  if (i == 0 && layer.background == true) {
+                    hasBg = true;
+                  }
+                  if (hasBg) {
+                    idx = idx + 1;
+                  }
+                  if (i != idx) {
+                    map.getLayers().remove(layer);
+                    map.getLayers().insertAt(idx, layer);
+                    i = (i < idx) ? i : idx;
+                  }
+                }
+              }
+            });
+          }
+
         });
       };
     };
