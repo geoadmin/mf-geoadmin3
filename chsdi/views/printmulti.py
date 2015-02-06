@@ -127,14 +127,15 @@ def create_info_file(print_temp_dir, unique_filename):
     return os.path.join(print_temp_dir, MAPFISH_MULTI_FILE_PREFIX + unique_filename + '.json')
 
 
+def create_cancel_file(print_temp_dir, unique_filename):
+    return os.path.join(print_temp_dir, MAPFISH_MULTI_FILE_PREFIX + unique_filename + '.cancel')
+
+
 def worker(job):
     ''' Print and dowload the indivialized PDFs'''
 
     timestamp = None
-    (idx, url, headers, timestamp, layers, tmp_spec, print_temp_dir, infofile, lock) = job
-
-    h = {'Referer': headers.get('Referer')}
-    http = Http(disable_ssl_certificate_validation=True)
+    (idx, url, headers, timestamp, layers, tmp_spec, print_temp_dir, infofile, cancelfile, lock) = job
 
     for layer in layers:
         try:
@@ -144,6 +145,12 @@ def worker(job):
 
     log.debug('spec: %s', json.dumps(tmp_spec))
 
+    # Before launching print request, check if process is canceled
+    if os.path.isfile(cancelfile):
+        return (timestamp, None)
+
+    h = {'Referer': headers.get('Referer')}
+    http = Http(disable_ssl_certificate_validation=True)
     resp, content = http.request(url, method='POST',
                                  body=json.dumps(tmp_spec), headers=h)
 
@@ -236,6 +243,7 @@ def create_and_merge(info):
 
     url = create_pdf_url + '?url=' + urllib.quote_plus(create_pdf_url)
     infofile = create_info_file(print_temp_dir, unique_filename)
+    cancelfile = create_cancel_file(print_temp_dir, unique_filename)
 
     if _isMultiPage(spec):
         all_timestamps = _get_timestamps(spec, api_url)
@@ -266,7 +274,7 @@ def create_and_merge(info):
 
             log.debug('[print_create] Processing timestamp: %s', ts)
 
-            job = (idx, url, headers, ts, lyrs, tmp_spec, print_temp_dir, infofile, lock)
+            job = (idx, url, headers, ts, lyrs, tmp_spec, print_temp_dir, infofile, cancelfile, lock)
 
             jobs.append(job)
 
@@ -293,6 +301,11 @@ def create_and_merge(info):
         for j in jobs:
             pdfs.append(worker(j))
             _increment_info(lock, infofile)
+
+    # Check if canceled, then we don't merge pdf's
+    # We don't/can't cancel the merge process itself
+    if os.path.isfile(cancelfile):
+        return 0
 
     log.debug('pdfs %s', pdfs)
     if len([i for i, v in enumerate(pdfs) if v[1] is None]) > 0:
@@ -340,6 +353,20 @@ class PrintMulti(object):
         self.request = request
 
     @requires_authorization()
+    @view_config(route_name='print_cancel', renderer='jsonp')
+    def print_cancel(self):
+        print_temp_dir = self.request.registry.settings['print_temp_dir']
+        fileid = self.request.params.get('id')
+        cancelfile = create_cancel_file(print_temp_dir, fileid)
+        with open(cancelfile, 'a+'):
+            pass
+
+        if not os.path.isfile(cancelfile):
+            raise exc.HTTPInternalServerError('Could not create cancel file with given id')
+
+        return Response(status=200)
+
+    @requires_authorization()
     @view_config(route_name='print_progress', renderer='jsonp')
     def print_progress(self):
         print_temp_dir = self.request.registry.settings['print_temp_dir']
@@ -366,7 +393,7 @@ class PrintMulti(object):
         if self.request.method == 'OPTIONS':
             return Response(status=200)
 
-       # delete all child processes that have already terminated
+        # delete all child processes that have already terminated
         # but are <defunct>. This is a side_effect of the below function
         multiprocessing.active_children()
 
