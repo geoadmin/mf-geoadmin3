@@ -41,7 +41,7 @@
     % elif c['attributes']['ak'] == 'SO':
         <tr><td class="cell-left">${_('link to canton geoportal')}</td><td><a href="http://www.sogis1.so.ch/sogis/internet/pmapper/somap.php?karte=ortsplan&extent=${','.join(map(str,c['bbox']))}" target="_blank">SO</a></td></tr>
     % elif c['attributes']['ak'] == 'TI':
-        <tr><td class="cell-left">${_('link to canton geoportal')}</td><td><a href="http://www4.ti.ch/tich/home/" target="_blank">TI</a></td></tr>
+        <tr><td class="cell-left">${_('link to canton geoportal')}</td><td><a href="http://www.sitmap.ti.ch/index.php?ct=mue" target="_blank">TI</a></td></tr>
     % elif c['attributes']['ak'] == 'VD':
         <tr><td class="cell-left">${_('link to canton geoportal')}</td><td><a href="http://www.geo.vd.ch/theme/cadastre_thm?map_x=${(c['bbox'][0] + c['bbox'][2])/2}&map_y=${(c['bbox'][1] + c['bbox'][3])/2}&map_zoom=10" target="_blank">VD</a></td></tr>
     % elif c['attributes']['ak'] == 'TG':
