@@ -23,9 +23,9 @@ Add .pgpass to your environment
 
 Open .pgpass and Add
 
-    pgcluster0t.bgdi.admin.ch:5432:*:${username}:${pass}
-    pgcluster0i.bgdi.admin.ch:5432:*:${username}:${pass}
-    pgcluster0.bgdi.admin.ch:5432:*:${username}:${pass}
+    pgcluster.dev.bgdi.ch:5432:*:${username}:${pass}
+    pgcluster.int.bgdi.ch:5432:*:${username}:${pass}
+    pgcluster.prod.bgdi.ch:5432:*:${username}:${pass}
 
 Make sure PGUSER and PGPASS is set in your .bashrc (for nosetests, potranslate and sphinx)
 
