@@ -58,6 +58,7 @@
 
         map.addControl(new ol.control.ZoomToExtent({
           target: toolbar,
+          label: '',
           tipLabel: ''
         }));
 
