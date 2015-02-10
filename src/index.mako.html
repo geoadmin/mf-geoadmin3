@@ -599,15 +599,13 @@ itemscope itemtype="http://schema.org/WebApplication"
            'tr': (globals.ios >= 8)
          }">
       <div class="arrow"></div>
-      <h3 class="popover-title">
+      <div class="popover-title">
         <span translate>homescreen_title</span>
-        <button type="button" class="close" ng-click="globals.homescreen=false">&times;</button>
-      </h3>
+        <button type="button" class="ga-icon ga-btn icon-remove" ng-click="globals.homescreen=false"></button>
+      </div>
       <div class="popover-content">
-        <p>
-          <i class=icon-share></i>&nbsp;
-          <span translate>homescreen_content</span>
-        </p>
+        <i class=icon-share></i>&nbsp;
+        <span translate>homescreen_content</span>
       </div>
     </div>
 % endif

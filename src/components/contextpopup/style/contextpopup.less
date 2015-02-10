@@ -1,5 +1,5 @@
 @context-popup-width: 300;
-
+@qrcode-size: 124px;
 [ga-context-popup] {
   left: unit(-@context-popup-width/2, px);
   width: unit(@context-popup-width, px);
@@ -9,5 +9,10 @@
   
   table {
     width: 100%;
+  }
+
+  .ga-qrcode {
+    width: @qrcode-size;
+    height: @qrcode-size;
   }
 }
