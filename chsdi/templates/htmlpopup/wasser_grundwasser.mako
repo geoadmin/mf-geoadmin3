@@ -12,6 +12,7 @@
     <tr><td class="cell-left">${_('status')}</td>                                               <td>${c['attributes'][status_text] or '-'}</td></tr>
     <tr><td class="cell-left">${_('gemkanton')}</td>                                            <td>${c['attributes']['kanton'] or '-'}</td></tr>
     <tr><td class="cell-left">${_('name')}</td>                                                 <td>${c['attributes']['name'] or '-'}</td></tr>
+    <tr><td class="cell-left">${_('tt_source')}</td>                                            <td>${c['attributes']['source'] or '-'}</td></tr>
 
 </%def>
 

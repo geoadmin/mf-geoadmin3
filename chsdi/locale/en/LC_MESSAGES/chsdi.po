@@ -5064,6 +5064,9 @@ msgstr "Site"
 msgid "tt_shb_ref"
 msgstr "Reference"
 
+msgid "tt_source"
+msgstr "Data source"
+
 msgid "tt_swissprtr_detaildaten"
 msgstr "Facility details"
 

@@ -5062,6 +5062,9 @@ msgstr "Ort"
 msgid "tt_shb_ref"
 msgstr "Referenz"
 
+msgid "tt_source"
+msgstr "Quelle der Daten"
+
 msgid "tt_swissprtr_detaildaten"
 msgstr "Details Betrieb"
 
