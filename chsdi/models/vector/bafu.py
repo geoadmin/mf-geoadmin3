@@ -73,6 +73,22 @@ class Temperaturmessnetz(Base, Vector):
 register('ch.bafu.hydrologie-wassertemperaturmessstationen', Temperaturmessnetz)
 
 
+class Flussordnungszahlen_strahler(Base, Vector):
+    __tablename__ = 'flussordnungszahlen'
+    __table_args__ = ({'schema': 'diverse', 'autoload': False})
+    __bodId__ = 'ch.bafu.flussordnungszahlen-strahler'
+    __template__ = 'templates/htmlpopup/flussordnungszahlen.mako'
+    __label__ = 'arc_id'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    arc_id = Column('arc_id', Integer)
+    floz = Column('floz', Integer)
+    main_len = Column('main_len', Numeric)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.bafu.flussordnungszahlen-strahler', Flussordnungszahlen_strahler)
+
+
 class Grundwasserschutzareale (Base, Vector):
     __tablename__ = 'grundwasserschutzareale'
     __table_args__ = ({'schema': 'wasser', 'autoload': False})

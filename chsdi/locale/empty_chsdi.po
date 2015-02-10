@@ -5240,3 +5240,12 @@ msgstr ""
 
 msgid "tt_source"
 msgstr ""
+
+msgid "ch.bafu.flussordnungszahlen-strahler"
+msgstr ""
+ 
+msgid "tt_strahler"
+msgstr ""
+
+msgid "tt_dist_source"
+msgstr ""

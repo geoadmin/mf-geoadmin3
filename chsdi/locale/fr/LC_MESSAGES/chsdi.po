@@ -1172,6 +1172,9 @@ msgstr "Grille des cartes de distribution"
 msgid "ch.bafu.flora-weltensutter_atlas"
 msgstr "Atlas Welten&Sutter"
 
+msgid "ch.bafu.flussordnungszahlen-strahler"
+msgstr "Ordre des cours d’eau"
+
 msgid "ch.bafu.gefahren-baugrundklassen"
 msgstr "Classes de sols de fondation"
 
@@ -4567,6 +4570,9 @@ msgstr "Evaluation de l'OFAC"
 msgid "tt_ch_bazl_kataster_belasteter_standorte_zivflpl_standortnummer"
 msgstr "No de site OFAC"
 
+msgid "tt_dist_source"
+msgstr "Longueur jusqu’à la source"
+
 msgid "tt_document"
 msgstr "Autres informations"
 
@@ -5065,6 +5071,9 @@ msgstr "Référence"
 
 msgid "tt_source"
 msgstr "Source des données"
+
+msgid "tt_strahler"
+msgstr "Nombre de Strahler"
 
 msgid "tt_swissprtr_detaildaten"
 msgstr "Détails de l’établissement"
