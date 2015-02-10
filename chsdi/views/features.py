@@ -68,6 +68,7 @@ def _get_features_params(request):
     params.tolerance = request.params.get('tolerance')
     params.layers = request.params.get('layers', 'all')
     params.timeInstant = request.params.get('timeInstant')
+    params.offset = request.params.get('offset')
     return params
 
 
@@ -258,7 +259,7 @@ def _identify(request):
     if models is None:
         raise exc.HTTPBadRequest('No GeoTable was found for %s' % ' '.join(layerIds))
 
-    maxFeatures = 200
+    maxFeatures = 201
     features = []
     for feature in _get_features_for_filters(params, models, maxFeatures=maxFeatures, where=params.where):
         f = _process_feature(feature, params)
@@ -361,6 +362,10 @@ def _get_features_for_filters(params, models, maxFeatures=None, where=None):
 
             # Add limit
             query = query.limit(maxFeatures) if maxFeatures is not None else query
+
+            # Add offset
+            if params.offset is not None:
+                query = query.offset(params.offset)
 
             # We need either where or geomFilter (geomFilter especially for zeitreihen layer)
             # This probably needs refactoring...

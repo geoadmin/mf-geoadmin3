@@ -26,6 +26,7 @@ class MapServiceValidation(MapNameValidation):
         self._searchField = None
         self._contains = None
         self._chargeable = None
+        self._offset = None
         self.esriGeometryTypes = (
             'esriGeometryPoint',
             'esriGeometryPolyline',
@@ -89,6 +90,9 @@ class MapServiceValidation(MapNameValidation):
     def chargeable(self):
         return self._chargeable
 
+    @property
+    def offset(self):
+        return self._offset
 
     @where.setter
     def where(self, value):
@@ -222,3 +226,11 @@ class MapServiceValidation(MapNameValidation):
                 self._chargeable = True
             elif value.lower() == 'false':
                 self._chargeable = False
+
+    @offset.setter
+    def offset(self, value):
+        if value is not None:
+            if not value.isdigit():
+                raise HTTPBadRequest('Please provide an integer as an offset parameter')
+            else:
+                self._offset = int(value)

@@ -80,56 +80,66 @@ class TestMapServiceView(TestsBase):
         self.failUnless(resp.content_type == 'application/json')
 
     def test_identify_valid_with_callback(self):
-        params = {'geometry': '548945.5,147956,549402,148103.5', 'geometryType': 'esriGeometryEnvelope', 'imageDisplay': '500,600,96', 'mapExtent': '548945.5,147956,549402,148103.5', 'tolerance': '1', 'layers': 'all', 'callback': 'cb'}
+        params = {'geometry': '548945.5,147956,549402,148103.5', 'geometryType': 'esriGeometryEnvelope', 'imageDisplay': '500,600,96', 'mapExtent': '548945.5,147956,549402,148103.5', 'tolerance': '1', 'layers': 'all',
+                  'callback': 'cb'}
         resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=200)
         self.failUnless(resp.content_type == 'text/javascript')
         resp.mustcontain('cb({')
 
     def test_identify_with_geojson(self):
-        params = {'geometry': '600000,200000,631000,210000', 'geometryType': 'esriGeometryEnvelope', 'imageDisplay': '500,600,96', 'mapExtent': '548945.5,147956,549402,148103.5', 'tolerance': '1', 'layers': 'all:ch.bafu.bundesinventare-bln', 'geometryFormat': 'geojson'}
+        params = {'geometry': '600000,200000,631000,210000', 'geometryType': 'esriGeometryEnvelope', 'imageDisplay': '500,600,96', 'mapExtent': '548945.5,147956,549402,148103.5', 'tolerance': '1',
+                  'layers': 'all:ch.bafu.bundesinventare-bln', 'geometryFormat': 'geojson'}
         resp = self.testapp.get('/rest/services/ech/MapServer/identify', params=params, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless('properties' in resp.json['results'][0])
         self.failUnless('geometry' in resp.json['results'][0])
 
     def test_identify_with_geojson_returned_geometry(self):
-        params = {'geometry': '600000,200000,631000,210000', 'geometryType': 'esriGeometryEnvelope', 'imageDisplay': '500,600,96', 'mapExtent': '548945.5,147956,549402,148103.5', 'tolerance': '1', 'layers': 'all:ch.swisstopo.lubis-luftbilder_farbe', 'geometryFormat': 'geojson'}
+        params = {'geometry': '600000,200000,631000,210000', 'geometryType': 'esriGeometryEnvelope', 'imageDisplay': '500,600,96', 'mapExtent': '548945.5,147956,549402,148103.5', 'tolerance': '1',
+                  'layers': 'all:ch.swisstopo.lubis-luftbilder_farbe', 'geometryFormat': 'geojson'}
         resp = self.testapp.get('/rest/services/ech/MapServer/identify', params=params, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(resp.json['results'][0]['geometry']['type'] in ['Polygon', 'GeometryCollection'])
 
     def test_identify_gen50_geom(self):
-        params = {'geometryType': 'esriGeometryPoint', 'returnGeometry': 'false', 'layers': 'all:ch.swisstopo-vd.geometa-gemeinde', 'geometry': '561289,185240', 'mapExtent': '561156.75,185155,561421.25,185325', 'imageDisplay': '529,340,96', 'tolerance': '5'}
+        params = {'geometryType': 'esriGeometryPoint', 'returnGeometry': 'false', 'layers': 'all:ch.swisstopo-vd.geometa-gemeinde', 'geometry': '561289,185240', 'mapExtent': '561156.75,185155,561421.25,185325',
+                  'imageDisplay': '529,340,96', 'tolerance': '5'}
         resp = self.testapp.get('/rest/services/ech/MapServer/identify', params=params, status=200)
         self.failUnless(len(resp.json['results']) != 0)
 
     def test_identify_no_geom(self):
-        params = {'geometry': '630000,245000,645000,265000', 'geometryType': 'esriGeometryEnvelope', 'imageDisplay': '500,600,96', 'mapExtent': '545132,147068,550132,150568', 'tolerance': '1', 'layers': 'all', 'returnGeometry': 'false'}
+        params = {'geometry': '630000,245000,645000,265000', 'geometryType': 'esriGeometryEnvelope', 'imageDisplay': '500,600,96', 'mapExtent': '545132,147068,550132,150568', 'tolerance': '1', 'layers': 'all',
+                  'returnGeometry': 'false'}
         resp = self.testapp.get('/rest/services/ech/MapServer/identify', params=params, status=200)
         self.failUnless(resp.content_type == 'application/json')
         self.failUnless(('geometry' not in resp.json['results'][0]))
         self.failUnless(('geometryType' not in resp.json['results'][0]))
 
     def test_identify_timeinstant(self):
-        params = {'geometryType': 'esriGeometryPoint', 'geometry': '630853.809670509,170647.93120352627', 'geometryFormat': 'geojson', 'imageDisplay': '1920,734,96', 'mapExtent': '134253,-21102,1382253,455997', 'tolerance': '5', 'layers': 'all:ch.swisstopo.zeitreihen', 'timeInstant': '1936'}
+        params = {'geometryType': 'esriGeometryPoint', 'geometry': '630853.809670509,170647.93120352627', 'geometryFormat': 'geojson', 'imageDisplay': '1920,734,96', 'mapExtent': '134253,-21102,1382253,455997',
+                  'tolerance': '5', 'layers': 'all:ch.swisstopo.zeitreihen', 'timeInstant': '1936'}
         resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=200)
         self.failUnless(resp.content_type == 'application/json')
 
     def test_identify_wrong_timeinstant(self):
-        params = {'geometryType': 'esriGeometryPoint', 'geometry': '630853.809670509,170647.93120352627', 'geometryFormat': 'geojson', 'imageDisplay': '1920,734,96', 'mapExtent': '134253,-21102,1382253,455997', 'tolerance': '5', 'layers': 'all:ch.swisstopo.zeitreihen', 'timeInstant': '19366'}
+        params = {'geometryType': 'esriGeometryPoint', 'geometry': '630853.809670509,170647.93120352627', 'geometryFormat': 'geojson', 'imageDisplay': '1920,734,96', 'mapExtent': '134253,-21102,1382253,455997', 'tolerance': '5',
+                  'layers': 'all:ch.swisstopo.zeitreihen', 'timeInstant': '19366'}
         resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=400)
 
     def test_identify_timeinstant_nottimeenabled_layer(self):
-        params = {'geometryType': 'esriGeometryPoint', 'geometry': '630853.809670509,170647.93120352627', 'geometryFormat': 'geojson', 'imageDisplay': '1920,734,96', 'mapExtent': '134253,-21102,1382253,455997', 'tolerance': '5', 'layers': 'all:ch.bafu.bundesinventare-bln', 'timeInstant': '1936'}
+        params = {'geometryType': 'esriGeometryPoint', 'geometry': '630853.809670509,170647.93120352627', 'geometryFormat': 'geojson', 'imageDisplay': '1920,734,96', 'mapExtent': '134253,-21102,1382253,455997', 'tolerance': '5',
+                  'layers': 'all:ch.bafu.bundesinventare-bln', 'timeInstant': '1936'}
         resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=200)
 
     def test_identify_oereb(self):
-        params = {'geometry': '618953,170093', 'geometryType': 'esriGeometryPoint', 'imageDisplay': '1920,576,96', 'layers': 'all:ch.bav.kataster-belasteter-standorte-oev.oereb', 'mapExtent': '671164.31244,253770,690364.31244,259530', 'tolerance': '5', 'geometryFormat': 'interlis'}
+        params = {'geometry': '618953,170093', 'geometryType': 'esriGeometryPoint', 'imageDisplay': '1920,576,96', 'layers': 'all:ch.bav.kataster-belasteter-standorte-oev.oereb',
+                  'mapExtent': '671164.31244,253770,690364.31244,259530', 'tolerance': '5', 'geometryFormat': 'interlis'}
         resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=200)
         self.failUnless(resp.content_type == 'text/xml')
 
     def test_identify_oereb_several_layers(self):
-        params = {'geometry': '618953,170093', 'geometryType': 'esriGeometryPoint', 'imageDisplay': '1920,576,96', 'layers': 'all:    ch.bav.kataster-belasteter-standorte-oev.oereb,ch.bazl.sicherheitszonenplan.oereb', 'mapExtent': '671164.31244,253770,690364.31244,259530', 'tolerance': '5', 'geometryFormat': 'interlis'}
+        params = {'geometry': '618953,170093', 'geometryType': 'esriGeometryPoint', 'imageDisplay': '1920,576,96', 'layers': 'all:ch.bav.kataster-belasteter-standorte-oev.oereb,ch.bazl.sicherheitszonenplan.oereb',
+                  'mapExtent': '671164.31244,253770,690364.31244,259530', 'tolerance': '5', 'geometryFormat': 'interlis'}
         resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=400)
 
     def test_identify_query_time(self):
@@ -148,7 +158,8 @@ class TestMapServiceView(TestsBase):
         self.failUnless(resp.content_type == 'application/json')
 
     def test_identify_query_and_bbox(self):
-        params = {'geometryType': 'esriGeometryEnvelope', 'geometry': '502722,36344,745822,253444', 'imageDisplay': '0,0,0', 'mapExtent': '0,0,0,0', 'tolerance': '0', 'layers': 'all:ch.bazl.luftfahrthindernis', 'where': 'obstacletype = \'Antenna\''}
+        params = {'geometryType': 'esriGeometryEnvelope', 'geometry': '502722,36344,745822,253444', 'imageDisplay': '0,0,0', 'mapExtent': '0,0,0,0', 'tolerance': '0',
+                  'layers': 'all:ch.bazl.luftfahrthindernis', 'where': 'obstacletype = \'Antenna\''}
         resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=200)
         self.failUnless(resp.content_type == 'application/json')
 
@@ -156,6 +167,36 @@ class TestMapServiceView(TestsBase):
         params = {'geometryFormat': 'geojson', 'lang': 'en', 'layers': 'all:ch.bafu.hydrologie-wassertemperaturmessstationen', 'time': '2013', 'where': 'name ilike \'%Broye-Payerne, Caserne d\'aviation%\''}
         resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=200)
         self.failUnless(resp.content_type == 'application/json')
+
+    def test_identify_query_offset(self):
+        params = {'layers': 'all:ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill', 'returnGeometry': 'false', 'timeInstant': '2015', 'where': 'gemname ilike \'%a%\''}
+        resp1 = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=200)
+        params.update({'offset': '2'})
+        resp2 = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=200)
+        self.failUnless(resp1.json['results'][2]['featureId'] == resp2.json['results'][0]['featureId'])
+        self.failUnless(resp1.json['results'][5]['featureId'] == resp2.json['results'][3]['featureId'])
+        params.update({'offset': '5'})
+        resp3 = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=200)
+        self.failUnless(resp2.json['results'][3]['featureId'] == resp3.json['results'][0]['featureId'])
+        self.failUnless(resp1.json['results'][5]['featureId'] == resp3.json['results'][0]['featureId'])
+
+    def test_identify_bbox_offset(self):
+        params = {'layers': 'all:ch.bazl.luftfahrthindernis', 'timeInstant': '2015', 'geometryFormat': 'geojson', 'geometryType': 'esriGeometryEnvelope', 'geometry': '573788,93220,750288,192720',
+                  'imageDisplay': '1920,778,96', 'mapExtent': '107788,-5279,1067788,383720', 'tolerance': '0'}
+        resp1 = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=200)
+        params.update({'offset': '2'})
+        resp2 = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=200)
+        self.failUnless(resp1.json['results'][2]['featureId'] == resp2.json['results'][0]['featureId'])
+        self.failUnless(resp1.json['results'][5]['featureId'] == resp2.json['results'][3]['featureId'])
+        params.update({'offset': '4'})
+        resp3 = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=200)
+        self.failUnless(resp2.json['results'][2]['featureId'] == resp3.json['results'][0]['featureId'])
+        self.failUnless(resp1.json['results'][4]['featureId'] == resp3.json['results'][0]['featureId'])
+
+    def test_identify_query_wrong_offset(self):
+        params = {'layers': 'all:ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill', 'timeInstant': '2015', 'where': 'gemname ilike \'%aven%\'', 'offset': '12.1'}
+        resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=400)
+        resp.mustcontain('provide an integer')
 
     def test_find_scan(self):
         params = {'layer': 'ch.bfs.gebaeude_wohnungs_register', 'searchField': 'egid', 'searchText': '1231641'}
