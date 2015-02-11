@@ -162,7 +162,7 @@ Here is a description of the data one can find in the above response.
   - **bundCollectionName**: the collection name
   - **inspireUpperName**: the name of the `INSPIRE <http://www.geo.admin.ch/internet/geoportal/en/home/geoadmin/mission/inspire.html>`_ category (first level)
   - **urlApplication**: the application where this layer is published
-- **tileInfo**: WMTS general information in json format. Note that this section is always identical and is not tied to a particular "map" like in ESRI specifications.
+  - **tileInfo**: WMTS general information in json format. Note that this section is always identical and is not tied to a particular "map" like in ESRI specifications.
 
 
 Examples
@@ -833,8 +833,14 @@ Resolution [m]   Zoomlevel Map zoom  Tile width m Tiles X  Tiles Y    Tiles     
 **Notes**
 
 #. The zoom level 24 (resolution 1.5m) has been generated, but is not currently used in the API.
-#. The zoom levels 27 and 28 (resolution 0.25m and 0.1m) are only available for a few layers, e.g. swissimage or cadastral web map. For the others layers it is only a client zoom (tiles are stretched).
+#. The zoom levels 27 and 28 (resolution 0.25m and 0.1m) are only available for a few layers, 
+   e.g. swissimage or cadastral web map. For the others layers it is only a client zoom (tiles are stretched).
 #. You **have** to use the `<ResourceURL>` to construct the `GetTile` request. 
+#. **Axis order**: EPSG:21781 native WMTS tiles (*pregenerated* and stored in S3) use the
+   non-standard **row/col** order, while the Mapproxy reprojected ones (all other projections)
+   use the usual **col/row** order. The exception being *ch.kantone.cadastralwebmap-farbe* which always use
+   the **col/row** order.
+   However, most desktop GIS allow you to use the advertized order or to override it.
 
 Result
 ******

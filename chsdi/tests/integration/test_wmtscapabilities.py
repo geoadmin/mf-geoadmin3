@@ -39,16 +39,17 @@ class TestWmtsCapabilitiesView(TestsBase):
         schema_url = os.path.join(os.path.dirname(__file__), "wmts/1.0/wmtsGetCapabilities_response.xsd")
         os.environ['XML_CATALOG_FILES'] = os.path.join(os.path.dirname(__file__), "xml/catalog")
 
-        for lang in ['de', 'fr']:
-            f = tempfile.NamedTemporaryFile(mode='w+t', prefix='WMTSCapabilities-', suffix='-' + lang)
-            resp = self.testapp.get('/rest/services/api/1.0.0/WMTSCapabilities.xml', params={'lang': lang, 'epsg': 4326}, status=200)
-            f.write(resp.body)
-            f.seek(0)
-            retcode = subprocess.call(["xmllint", "--noout", "--nocatalogs", "--schema", schema_url, f.name])
-            f.close()
-            self.failUnless(retcode == 0)
+        for lang in ['de', 'fr', 'it', 'en']:
+            for epsg in [4326, 4258, 2056, 3857]:
+                f = tempfile.NamedTemporaryFile(mode='w+t', prefix='WMTSCapabilities-', suffix='-%s-%s' % (lang, epsg))
+                resp = self.testapp.get('/rest/services/api/1.0.0/WMTSCapabilities.xml', params={'lang': lang, 'epsg': epsg}, status=200)
+                f.write(resp.body)
+                f.seek(0)
+                retcode = subprocess.call(["xmllint", "--noout", "--nocatalogs", "--schema", schema_url, f.name])
+                f.close()
+                self.failUnless(retcode == 0)
 
-    def test_gettile_wmtscapavilities(self):
+    def test_gettile_wmtscapabilities(self):
         import xml
         resp = self.testapp.get('/rest/services/inspire/1.0.0/WMTSCapabilities.xml', status=200)
         dom = xml.dom.minidom.parseString(resp.body)
