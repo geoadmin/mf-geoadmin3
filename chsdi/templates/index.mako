@@ -104,6 +104,9 @@
       <h2>MapProxy</h2>
           <a href="mapproxy/demo">MapProxy demo</a><br>
           <a href="rest/services/api/1.0.0/WMTSCapabilities.xml?epsg=4326">GetCapabilities for EPSG:4326 (raw service)</a><br />
+          <a href="rest/services/api/1.0.0/WMTSCapabilities.xml?epsg=4258">GetCapabilities for EPSG:4258 (raw service)</a><br />
+          <a href="rest/services/api/1.0.0/WMTSCapabilities.xml?epsg=2056">GetCapabilities for EPSG:2056 (raw service)</a><br />
+          <a href="rest/services/api/1.0.0/WMTSCapabilities.xml?epsg=3857">GetCapabilities for EPSG:3857 (raw service)</a><br />
           <div style="display: block">
           <img src="../mapproxy/wmts/1.0.0/ch.swisstopo.pixelkarte-farbe_20120809/default/20120809/epsg_4258/9/3/2.jpeg" width="256" height="256">
           </div>
