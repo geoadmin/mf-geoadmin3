@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#-*- coding: utf-8 -*-
 
 from chsdi.tests.integration import TestsBase
 
@@ -40,7 +40,7 @@ class TestWmtsCapabilitiesView(TestsBase):
         os.environ['XML_CATALOG_FILES'] = os.path.join(os.path.dirname(__file__), "xml/catalog")
 
         for lang in ['de', 'fr', 'it', 'en']:
-            for epsg in [4326, 4258, 2056, 3857]:
+            for epsg in [4326, 4852, 2056, 3857]:
                 f = tempfile.NamedTemporaryFile(mode='w+t', prefix='WMTSCapabilities-', suffix='-%s-%s' % (lang, epsg))
                 resp = self.testapp.get('/rest/services/api/1.0.0/WMTSCapabilities.xml', params={'lang': lang, 'epsg': epsg}, status=200)
                 f.write(resp.body)

@@ -860,8 +860,8 @@ These projections are:
 
 * Plate-Carrée WGS1984 (EPSG:4326)
     `http://wmts10.geo.admin.ch/1.0.0/WMTSCapabilities.EPSG.4326.xml <../1.0.0/WMTSCapabilities.EPSG.4326.xml>`_
-* Plate-Carrée ETRS89 (EPSG:4258)
-    `http://wmts10.geo.admin.ch/1.0.0/WMTSCapabilities.EPSG.4258.xml <../1.0.0/WMTSCapabilities.EPSG.4258.xml>`_
+* Plate-Carrée ETRS89 (EPSG:4852)
+    `http://wmts10.geo.admin.ch/1.0.0/WMTSCapabilities.EPSG.4852.xml <../1.0.0/WMTSCapabilities.EPSG.4852.xml>`_
 * LV95/CH1903+ (EPSG:2056)
     `http://wmts10.geo.admin.ch/1.0.0/WMTSCapabilities.EPSG.2056.xml <../1.0.0/WMTSCapabilities.EPSG.2056.xml>`_ 
 * WGS84/Pseudo-Mercator (EPSG:3857, as used in OSM, Bing, Google Map)

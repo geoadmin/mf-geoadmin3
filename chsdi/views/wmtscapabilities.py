@@ -19,7 +19,7 @@ class WMTSCapabilites(MapNameValidation):
         self.models = get_wmts_models(self.lang)
         self.request = request
         epsg = request.params.get('epsg', '21781')
-        available_epsg_codes = ['21781', '4326', '2056', '4258', '3857']
+        available_epsg_codes = ['21781', '4326', '2056', '4852', '3857']
         if epsg in available_epsg_codes:
             if self.mapName != 'api' and epsg != '21781':
                 raise HTTPNotFound("EPSG:%s only available for topic 'api'" % epsg)
