@@ -1220,6 +1220,9 @@ msgstr "Name Messstandort"
 msgid "ch.bafu.hydrologie-gewaesserzustandsmessstationen.nr"
 msgstr "Stationsnummer"
 
+msgid "ch.bafu.hydrologie-hintergrundkarte"
+msgstr "Hintergrundkarte hydrol. Daten"
+
 msgid "ch.bafu.hydrologie-hydromessstationen"
 msgstr "Hydrologische Messstationen"
 
