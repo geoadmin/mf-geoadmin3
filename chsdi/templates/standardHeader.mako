@@ -1,5 +1,6 @@
+<%page args="epsg"/>
 <ows:ServiceIdentification>
-        <ows:Title>Federal Geodata Infrastructure of Switzerland</ows:Title>
+        <ows:Title>Federal Geodata Infrastructure of Switzerland (EPSG:${epsg})</ows:Title>
         <ows:Abstract>Some Geodata are subject to license and fees</ows:Abstract>
         <ows:Keywords>
             <ows:Keyword>FGDI</ows:Keyword>

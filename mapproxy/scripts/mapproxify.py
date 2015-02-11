@@ -51,6 +51,11 @@ DEBUG = False
 LANG = 'de'
 STAGING = 'prod'
 
+EPSG_CODES = ['4258',  # ETRS89 (source: epsg-registry.org, but many WMTS client use 4852)
+              '4326',  # WGS1984
+              '2056',  # LV95
+              '3857']  # Pseudo-Mercator Webmapping
+
 current_timestamps = {}
 
 
@@ -126,7 +131,7 @@ for idx, layersConfig in enumerate(getLayersConfigs()):
                 dimensions = {'Time': {'default': timestamp, 'values': [timestamp]}}
 
                 # layer config: cache_out
-                layer = {'name': layer_name, 'title': title, 'dimensions': dimensions, 'sources': [cache_name]}
+                layer = {'name': layer_name, 'title': "%s (%s)" % (title, timestamp), 'dimensions': dimensions, 'sources': [cache_name]}
 
                 cache = {"sources": [wmts_cache_name], "format": "image/%s" % image_format, "grids": grid_names, "disable_storage": True, "meta_size": [1, 1], "meta_buffer": 0}
 
@@ -164,11 +169,12 @@ for idx, layersConfig in enumerate(getLayersConfigs()):
                     wmts_source["grid"] = "swisstopo-swissimage"
                     wmts_cache["grids"] = ["swisstopo-swissimage"]
 
-                wmts_layer = {'name': wmts_source_name, 'title': title, 'dimensions': dimensions, 'sources': [wmts_cache_name]}
-                wmts_layer_current = {'name': wmts_source_name, 'title': title, 'dimensions': dimensions, 'sources': [wmts_cache_name]}
+                layer_title = "%s (%s, source)" % (title, timestamp)
+                wmts_layer = {'name': wmts_source_name, 'title': layer_title, 'dimensions': dimensions, 'sources': [wmts_cache_name]}
+                wmts_layer_current = {'name': wmts_source_name, 'title': "%s ('alias')" % title, 'dimensions': dimensions, 'sources': [wmts_cache_name]}
 
                 if timestamp == current_timestamp:
-                    layer_current = {'name': bod_layer_id, 'title': title, 'dimensions': dimensions, 'sources': [wmts_cache_name]}
+                    layer_current = {'name': bod_layer_id, 'title': "%s ('current')" % title, 'dimensions': dimensions, 'sources': [wmts_cache_name]}
                     mapproxy_config['layers'].append(layer_current)
 
                 if DEBUG:

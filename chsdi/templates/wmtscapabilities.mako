@@ -6,17 +6,18 @@
   scheme = pageargs['scheme']
   onlineressources = pageargs['onlineressources']
   tilematrixset = pageargs['tilematrixset']
+  tmsDefs = pageargs['tilematrixsetDefs']
   epsg = tilematrixset
   TileMatrixSet_epsg = "TileMatrixSet_%s.mako" % epsg
   def validate_tilematrixset(id):
-      if int(id) in (17,18,19,20,21,22,25,24,26,27,28):
+      if int(id) in (17,18,19,20,21,22,23,24,25,26,27,28):
           return id
       return '26'
+  def pad(num):
+      return str(num).zfill(2)
 %>
 <Capabilities xmlns="http://www.opengis.net/wmts/1.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd" version="1.0.0">
-    <!-- Revision: $Rev$ -->
-   <%include file="standardHeader.mako"/>
-
+<%include file="standardHeader.mako" args="epsg=epsg"/>
    <ows:OperationsMetadata>
         <ows:Operation name="GetCapabilities">
             <ows:DCP>
@@ -62,8 +63,8 @@ else:
             <ows:Title>${layer.kurzbezeichnung|n,x,trim}</ows:Title>
             <ows:Abstract>${layer.abstract|n,x,trim}</ows:Abstract>
             <ows:WGS84BoundingBox>
-                <ows:LowerCorner>5.140242 45.398181</ows:LowerCorner>
-                <ows:UpperCorner>11.47757 48.230651</ows:UpperCorner>
+                <ows:LowerCorner>5.01392695792 45.3560013393</ows:LowerCorner>
+                <ows:UpperCorner>11.477436313 48.2972999575</ows:UpperCorner>
             </ows:WGS84BoundingBox>
             <ows:Identifier>${layer.id|n,x,trim}</ows:Identifier>
             <ows:Metadata xlink:href="http://www.geocat.ch/geonetwork/srv/deu/metadata.show?uuid=${layer.idGeoCat}"/>
@@ -94,7 +95,7 @@ else:
                 % if epsg == '21781':
                     <TileMatrixSet>${str(layer.tile_matrix_set_id).split(',')[0]}_${str(layer.zoomlevel_max)|validate_tilematrixset}</TileMatrixSet>
                 % else:
-                    <TileMatrixSet>${epsg}</TileMatrixSet>
+                    <TileMatrixSet>${epsg}_${str(layer.zoomlevel_max)}</TileMatrixSet>
                 % endif
             </TileMatrixSetLink>
             ## ACHTUNG: s3 tiles have a row/col order, mapproxy ones the standard col/row
@@ -102,12 +103,32 @@ else:
                 <ResourceURL format="image/${str(layer.arr_all_formats).split(',')[0]}" resourceType="tile" template="${onlineressource}1.0.0/${layer.id|n,x,trim}/default/{Time}/${epsg}/{TileMatrix}/{TileRow}/{TileCol}.${str(layer.arr_all_formats).split(',')[0]}"/>
             % else:
             ## Maproxy order
-                <ResourceURL format="image/${str(layer.arr_all_formats).split(',')[0]}" resourceType="tile" template="${onlineressource}1.0.0/${layer.id|n,x,trim}/default/{Time}/${epsg}/{TileMatrix}/{TileCol}/{TileRow}.${str(layer.arr_all_formats).split(',')[0]}"/>
+            <ResourceURL format="image/${str(layer.arr_all_formats).split(',')[0]}" resourceType="tile" template="${onlineressource}1.0.0/${layer.id|n,x,trim}/default/{Time}/${epsg}/{TileMatrix}/{TileCol}/{TileRow}.${str(layer.arr_all_formats).split(',')[0]}"/>
             % endif
         </Layer>
   % endfor
   ## End main loop
-    <%include file="${TileMatrixSet_epsg}"/>
+    % if epsg in ['2056']:
+    %     for zoom in range(17,29):
+          <TileMatrixSet>
+              <ows:Identifier>2056_${zoom}</ows:Identifier>
+              <ows:SupportedCRS>EPSG:${epsg}</ows:SupportedCRS>
+    %         for z in range(zoom + 1):
+               <TileMatrix>
+                   <ows:Identifier>${z|pad}</ows:Identifier>
+                   <ScaleDenominator>${tmsDefs[z][3]}</ScaleDenominator>
+                   <TopLeftCorner>2420000.0 1350000.0</TopLeftCorner>
+                   <TileWidth>256</TileWidth>
+                   <TileHeight>256</TileHeight>
+                   <MatrixWidth>${tmsDefs[z][1]}</MatrixWidth>
+                   <MatrixHeight>${tmsDefs[z][2]}</MatrixHeight>
+               </TileMatrix>
+    %         endfor
+          </TileMatrixSet>
+    %     endfor
+    % else:
+        <%include file="${TileMatrixSet_epsg}"/>
+    % endif
     </Contents>
     <Themes>
     ## Main loop for the themes

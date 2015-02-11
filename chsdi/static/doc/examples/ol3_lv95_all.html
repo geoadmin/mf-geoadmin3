@@ -1,0 +1,45 @@
+<!--[if HTML5]><![endif]-->
+<!DOCTYPE html>
+  <head>
+    <!--[if !HTML5]>
+    <meta http-equiv="X-UA-Compatible" content="IE=9,IE=10,IE=edge,chrome=1"/>
+    <![endif]-->    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+    <title>Displaying all layers available in WMTS LV95 (EPSG:2056)</title>
+    <style>
+         #mouse-position {height: 20px; width: 100%}
+    </style>
+  </head>
+  <body>
+
+  <div class="container">
+    <h1>Displaying all layers available in WMTS LV95 (EPSG:2056)</h1>
+      <div class="row">
+        <div class="col-md-12">
+          <div id="map" style="width:100%; height:550px;"></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div id="layers" ></div>
+        </div>
+      </div>
+     <div class="row">
+        <div class="col-md-12">
+          This examples displays all layers available as WMTS LV95 (<a href="http://epsg.io/2056" target="_blank">EPSG:2056</a>).<br>
+          <p>The WMTS tiles are reframed <em>on-the-fly</em> using <a href="http://mapproxy.org">MapProxy</a> and the NTv2 <a href="http://www.swisstopo.admin.ch/internet/swisstopo/en/home/topics/survey/lv95/lv03-lv95/chenyx06.html"> CHENyx06 triangular transformation network </a>. Hence the accuracy is well beyond the resolution of the displayed layers. Without this you would see in region like the south Ticino and the Poschiavo area, a shift up to 1.5 meters between the old and the new frame. See <a href="http://map.geo.admin.ch/?layers=ch.swisstopo.koordinatenaenderung&layers_opacity=0.75&lang=en" target="_blank">LV95 Coordinate changes</a> for some background informations.</p>
+          <p>Have a look at what <a href="../services/sdiservices.html#other-projections" target="_blank" >projections are available</a>.</p>
+          <a href="ol3_lv95_all.js">See the code</a><br>
+        </div>
+    </div> 
+   </div>
+    <script src="/static/js/jquery-2.0.3.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+    <script src="../uncached_loader.js" type="text/javascript"></script> 
+    <script src="ol3_lv95_all.js" type="text/javascript"></script>
+  </body>
+</html>
+    

@@ -734,6 +734,7 @@ For detailed information, see `WMTS OGC standard <http://www.opengeospatial.org/
 In order to have access to the WMTS, you require a `swisstopo web access - WMTS documentation <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/products/services/web_services/webaccess.html>`_, 
 despite the fact that most layers are free to use. See :ref:`available_layers` for a list of all available layers.
 
+
 URL
 ***
 
@@ -832,6 +833,8 @@ Resolution [m]   Zoomlevel Map zoom  Tile width m Tiles X  Tiles Y    Tiles     
 
 **Notes**
 
+#. The projection for the tiles is **LV03** (EPSG:21781). Other projection are supported, see further down.
+#. The tiles are pregenerated and stored in a way it supports a heavy load (many hundreds requests per second)
 #. The zoom level 24 (resolution 1.5m) has been generated, but is not currently used in the API.
 #. The zoom levels 27 and 28 (resolution 0.25m and 0.1m) are only available for a few layers, 
    e.g. swissimage or cadastral web map. For the others layers it is only a client zoom (tiles are stretched).
@@ -840,7 +843,7 @@ Resolution [m]   Zoomlevel Map zoom  Tile width m Tiles X  Tiles Y    Tiles     
    non-standard **row/col** order, while the Mapproxy reprojected ones (all other projections)
    use the usual **col/row** order. The exception being *ch.kantone.cadastralwebmap-farbe* which always use
    the **col/row** order.
-   However, most desktop GIS allow you to use the advertized order or to override it.
+   However, most desktop GIS allow you to either use the advertized order or to override it.
 
 Result
 ******
@@ -852,16 +855,17 @@ http://wmts1.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20110401/2
 or https://wmts1.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20110401/21781/20/58/70.jpeg
 
 
+
 Other projections
-*****************
+-----------------
 
 Beside, the **LV03** projection, the same tiles are offered in four other *tilematrixsets/projection*.
 These projections are:
 
 * Plate-Carrée WGS1984 (EPSG:4326)
     `http://wmts10.geo.admin.ch/1.0.0/WMTSCapabilities.EPSG.4326.xml <../1.0.0/WMTSCapabilities.EPSG.4326.xml>`_
-* Plate-Carrée ETRS89 (EPSG:4852)
-    `http://wmts10.geo.admin.ch/1.0.0/WMTSCapabilities.EPSG.4852.xml <../1.0.0/WMTSCapabilities.EPSG.4852.xml>`_
+* Plate-Carrée ETRS89 (EPSG:4258)
+    `http://wmts10.geo.admin.ch/1.0.0/WMTSCapabilities.EPSG.4258.xml <../1.0.0/WMTSCapabilities.EPSG.4258.xml>`_
 * LV95/CH1903+ (EPSG:2056)
     `http://wmts10.geo.admin.ch/1.0.0/WMTSCapabilities.EPSG.2056.xml <../1.0.0/WMTSCapabilities.EPSG.2056.xml>`_ 
 * WGS84/Pseudo-Mercator (EPSG:3857, as used in OSM, Bing, Google Map)
@@ -871,14 +875,28 @@ These projections are:
 Note:
 
 * Partly due to a limitation of the WTMS 1.0.0 recommendations, each *projection* has its own *GetCapabilities* document.
-* You have to use the hosts `wmts{10-14}.geo.admin.ch`.
+* You have to use the hosts `wmts{10-14}.geo.admin.ch`. This is done to avoid parsind every requests to determine which are
+  using native tiles and which are using reporjected tiles.
 * The same access restrictions apply as above.
 * The same `timestamps` are available in all projection. New `timestamp` are added to the former ones.
+* Some older WMTS client do not support `EPSG:4258 <http://www.epsg-registry.org/export.htm?wkt=urn:ogc:def:crs:EPSG::4258>`_ 
+  and use mistakenly *EPSG:4852*.
+* Reprojected tiles are generated *on-the-fly* with `MapProxy <http://mapproxy.org>`_. If you plan to heavily use this service, please
+  inform us in advance.
+* *MapProxy* uses the `Proj.4 <http://trac.osgeo.org/proj/>`_ library internaly to transform between datum, except for the reframe from  
+  **LV03/MN03** tiles which is *NTv2* grid based (`CHENyx06 <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/products/software/products/chenyx06.html>`_)
+* Source for these reprojected tiles are the *native* **LV03/MN03** one. The only exception beeing *ch.kantone.cadastralwebmap-farbe* using a WMS service as its source.
+* Note all layer are available at all scales. You have to check for which **tileMatrixSets** a particuliar layer is defined. Your WMTS client may either stretch the
+  tiles from the last available level or display nothing.
 
 Example
 *******
 * At tile: `http://wmts10.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20140520/3857/9/266/180.jpeg <../1.0.0/ch.swisstopo.pixelkarte-farbe/default/20140520/3857/9/266/180.jpeg>`_
+.. image:: http://wmts10.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20140520/3857/9/266/180.jpeg 
 * An OpenLayers3 application using the `pseudo-Mercator projection <../examples/ol3_mercator.html>`_ 
+* An OpenLayers3 example showing the `Cadastralwebmap as WMTS <../examples/cadastralwebmap.html>`_ 
+* Switzerland is now adopting the new `LV95 frame <../examples/ol3_lv95.html>`_. 
+* All `available layers as WMTS <../examples/ol3_lv95_all.html>`_. 
 
 
 

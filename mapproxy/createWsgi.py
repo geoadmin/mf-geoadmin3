@@ -21,6 +21,20 @@ for path in reversed(syspaths):
 
 
 from paste.deploy import loadapp
+from webob import Request
+
+class NoContentMiddleware(object):
+    "Turns 'The requested tile is outside the bounding box of the tile map' error into no 204 No Content"
+    def __init__(self, app):
+        self.app = app
+    def __call__(self, environ, start_response):
+        req = Request(environ)
+        resp = req.get_response(self.app)
+        if resp.status_code == 400 and resp.content_type == 'text/xml':
+            resp.status = 204  # No content
+
+        return resp(environ, start_response)
+
 
 
 # If you want to debug, uncomment the following lines
@@ -31,6 +45,9 @@ from paste.deploy import loadapp
 from mapproxy.wsgiapp import make_wsgi_app
 configfile="%(config)s"
 application = make_wsgi_app(configfile)
+
+# Comment, if you want to deactivate the NoContentMiddleware
+application = NoContentMiddleware(application)
 
 """
 
