@@ -245,6 +245,7 @@
   "vu_service_link_label": "",
   "vu_service_link_href": "",
   "offline_save": "",
+  "offline_abort": "",
   "offline_modal_title": "",
   "offline_delete_data": "",
   "offline_show_extent": "",

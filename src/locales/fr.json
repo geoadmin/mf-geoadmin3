@@ -180,6 +180,7 @@
 	"object_information": "Information objet",
 	"obstacle_deleted_last_2_weeks": "Obstacles supprimés ces 2 dernières semaines",
 	"obstacle_started_last_2_weeks": "Obstacles activés ces 2 dernières semaines",
+	"offline_abort": "Annuler",
 	"offline_abort_warning": "Voulez-vous vraiment supprimer tous les cartes?",
 	"offline_bad_layer_type": "Une couche a un type invalide. Elle ne peut être sauvegardée pour un usage hors-ligne.",
 	"offline_clear_db_error": "Erreur lors de la suppression de la base de données. Réessayez.",
