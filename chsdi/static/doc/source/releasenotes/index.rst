@@ -9,6 +9,78 @@
 Release Notes
 =============
 
+.. _releasenotes_20150211:
+
+Release 20150211 - Wednesday, February 11th 2015
+------------------------------------------------
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+- Update API version of OL3 to `v3.2.0 <https://github.com/openlayers/ol3/releases/tag/v3.2.0>`__
+- Query tool improvement
+- Base Python libraries update 
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_150128...r_150211>`__
+
+`MAP <//map.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+- Better iPod support
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_150128...r_150211>`__
+
+
+Geodata
+*******
+
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New       | `Stream order <//map.geo.admin.ch/?layers=ch.bafu.flussordnungszahlen-strahler>`__ (ch.bafu.flussordnungszahlen-strahler)                                                        |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `National Map 1:500'000 <//map.geo.admin.ch/?layers=ch.swisstopo.pixelkarte-farbe-pk500.noscale>`__ (ch.swisstopo.pixelkarte-farbe-pk500.noscale)                                |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `National Map 1:200'000 <//map.geo.admin.ch/?layers=ch.swisstopo.pixelkarte-farbe-pk200.noscale>`__ (ch.swisstopo.pixelkarte-farbe-pk200.noscale)                                |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `National Map 1:100'000 <//map.geo.admin.ch/?layers=ch.swisstopo.pixelkarte-farbe-pk100.noscale>`__ (ch.swisstopo.pixelkarte-farbe-pk100.noscale)                                |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `National Map 1:50'000 <//map.geo.admin.ch/?layers=ch.swisstopo.pixelkarte-farbe-pk50.noscale>`__ (ch.swisstopo.pixelkarte-farbe-pk50.noscale)                                   |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `National Map 1:25'000 <//map.geo.admin.ch/?layers=ch.swisstopo.pixelkarte-farbe-pk25.noscale>`__ (ch.swisstopo.pixelkarte-farbe-pk25.noscale)                                   |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Color Map <//s.geo.admin.ch/9760998>`__ (ch.swisstopo.pixelkarte-farbe)                                                                                                         |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Grey Map <//s.geo.admin.ch/929a8e1>`__ (ch.swisstopo.pixelkarte-grau)                                                                                                           |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Aerial Images swisstopo color <//map.geo.admin.ch/?layers=ch.swisstopo.lubis-luftbilder_farbe>`__ (ch.swisstopo.lubis-luftbilder_farbe)                                         |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Aerial Images swisstopo b / w <//map.geo.admin.ch/?layers=ch.swisstopo.lubis-luftbilder_schwarzweiss>`__ (ch.swisstopo.lubis-luftbilder_schwarzweiss)                           |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Aerial Images swisstopo infrared <//map.geo.admin.ch/?layers=ch.swisstopo.lubis-luftbilder_infrarot>`__ (ch.swisstopo.lubis-luftbilder_infrarot)                                |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `National boundaries <//map.geo.admin.ch/?layers=ch.swisstopo.swissboundaries3d-land-flaeche.fill>`__ (ch.swisstopo.swissboundaries3d-land-flaeche.fill)                         |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Cantonal boundaries <//map.geo.admin.ch/?layers=ch.swisstopo.swissboundaries3d-kanton-flaeche.fill>`__ (ch.swisstopo.swissboundaries3d-kanton-flaeche.fill)                     |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `District boundaries <//map.geo.admin.ch/?layers=ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill>`__ (ch.swisstopo.swissboundaries3d-bezirk-flaeche.fill)                     |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Municipal boundaries <//map.geo.admin.ch/?layers=ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill>`__ (ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill)                |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `SAIP in consultation <//map.geo.admin.ch/?layers=ch.bazl.sachplan-infrastruktur-luftfahrt_kraft>`__ (ch.bazl.sachplan-infrastruktur-luftfahrt_kraft)                            |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `SP aviation infrastructure <//map.geo.admin.ch/?layers=ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung>`__ (ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung)                |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Temperature monitoring stations <//s.geo.admin.ch/62a2b60afa>`__ (ch.bafu.hydrologie-wassertemperaturmessstationen)                                                             |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Protection areas <//s.geo.admin.ch/62a2b791e7>`__ (ch.bafu.grundwasserschutzareale)                                                                                             |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Protection zones <//s.geo.admin.ch/62a2c2e63a>`__ (ch.bafu.grundwasserschutzzonen)                                                                                              |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Water protection regions <//s.geo.admin.ch/62a2c387f5>`__ (ch.bafu.gewaesserschutzbereiche)                                                                                     |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+
+
 .. _releasenotes_20150128:
 
 Release 20150128 - Wednesday, January 28th 2015
