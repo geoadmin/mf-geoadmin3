@@ -1571,7 +1571,7 @@
         // extent.
         this.zoom = function(map, feature) {
           var extent = getMinimalExtent((feature) ?
-              feature.getGeometry().getExtent() : vector.getExtent());
+              feature.getGeometry().getExtent() : source.getExtent());
           map.getView().fitExtent(extent, map.getSize());
         };
       };
