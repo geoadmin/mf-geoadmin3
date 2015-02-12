@@ -21,7 +21,7 @@
     $scope.selectByRectangleLayers = [];
     $scope.queriesPredef = [];
     $scope.filters = [];
-
+    $scope.featuresByLayer = {};
     // return the year of the timestamp
     var getYear = function(time) {
       return (time && time.substr(0, 4) != '9999') ?
@@ -87,7 +87,7 @@
     // When the list or value of filters change
     $scope.onChange = function() {
       $scope.queryPredef = null;
-      $scope.options.features = [];
+      $scope.featuresByLayer = {};
     };
 
     // Load attributes of the selected layer in the select box
@@ -176,30 +176,6 @@
       }
     };
 
-    // Search by geometry using the search server
-    /*$scope.searchByGeometry = function() {
-      $scope.loading = true;
-      $scope.queryType = 0;
-
-      if ($scope.geometry) {
-        var geom = $scope.geometry.getExtent();
-        var features = [];
-        gaQuery.getLayersFeaturesByBbox($scope,
-            $scope.selectByRectangleLayers,
-            geom
-        ).then(function(layerFeatures) {
-          features = features.concat(layerFeatures);
-          $scope.options.features = features;
-          $scope.loading = false;
-        },function(reason) {
-          $scope.options.features = [];
-          $scope.loading = false;
-        });
-      } else {
-        $scope.loading = false;
-      }
-    };*/
-
     var getGeometryParams = function() {
       var imgDisplay = $scope.map.getSize().concat([96]).join(',');
       var mapExtent = $scope.map.getView().calculateExtent(
@@ -210,71 +186,100 @@
         geometryType: 'esriGeometryEnvelope',
         mapExtent: mapExtent,
         imageDisplay: imgDisplay,
-        tolerance: 0
+        tolerance: 5
       };
     };
 
+    // Search callbacks
+    var onSearchSuccess = function(layerFeatures, layerBodId, offset) {
+      var featuresByLayer = $scope.featuresByLayer[layerBodId] ||
+          {features: []};
+      var features = (offset) ? featuresByLayer.features : [];
+
+      // If there is 201 results that means there is more results to
+      // display
+      featuresByLayer.hasMoreResults = (layerFeatures.length >
+          $scope.options.max);
+      featuresByLayer.offset = offset || 0;
+      if (featuresByLayer.hasMoreResults) {
+        layerFeatures.pop(); // We remove the feature 201
+      }
+      featuresByLayer.features = features.concat(layerFeatures);
+      $scope.featuresByLayer[layerBodId] = featuresByLayer;
+      $scope.loading = false;
+      $scope.$emit('gaQueryResultsUpdated', $scope.featuresByLayer);
+    };
+
+    var resetResults = function(reason, layerBodId) {
+      if (layerBodId) {
+        $scope.featuresByLayer[layerBodId] = undefined;
+      } else {
+        $scope.featuresByLayer = {};
+      }
+      $scope.loading = false;
+      $scope.$emit('gaQueryResultsUpdated', $scope.featuresByLayer);
+    };
+
     // Search by geometry using feature identify servioce
-    $scope.searchByGeometry = function() {
+    $scope.searchByGeometry = function(layerBodId, offset) {
       $scope.queryType = 0;
 
       if ($scope.selectByRectangleLayers.length == 0) {
-        $scope.options.features = [];
+        resetResults();
         return;
       }
 
       $scope.loading = true;
       if ($scope.geometry) {
-        var features = [];
         var common = angular.extend({
           lang: $translate.use(),
-          geometryFormat: 'geojson'
+          geometryFormat: 'geojson',
+          offset: offset
         }, getGeometryParams());
 
-        angular.forEach(
-            $scope.selectByRectangleLayers,
-            function(layer) {
-              gaQuery.getLayerIdentifyFeatures(
-                  $scope,
-                  layer.bodId,
-                  angular.extend({
-                    timeInstant: getYear(layer.time)
-                  }, common)
-              ).then(function(layerFeatures) {
-                features = features.concat(layerFeatures);
-                $scope.options.features = features;
-                $scope.loading = false;
-              },function(reason) {
-                $scope.options.features = [];
-                $scope.loading = false;
-              });
-            }
-        );
-
+        var layersRequested = $scope.selectByRectangleLayers;
+        if (layerBodId) {
+          layersRequested = [
+            gaMapUtils.getMapOverlayForBodId($scope.map, layerBodId)
+          ];
+        }
+        angular.forEach(layersRequested, function(layer) {
+          gaQuery.getLayerIdentifyFeatures(
+              $scope,
+              layer.bodId,
+              angular.extend({
+                timeInstant: getYear(layer.time)
+              }, common)
+          ).then(function(layerFeatures) {
+            onSearchSuccess(layerFeatures, layer.bodId, offset);
+          }, function(reason) {
+            resetResults(reason, layer.bodId);
+          });
+        });
       } else {
         $scope.loading = false;
       }
     };
 
     // Search by attributes using feature identify service
-    $scope.searchByAttributes = function() {
+    $scope.searchByAttributes = function(layerBodId, offset) {
       $scope.queryType = 1;
       $scope.loading = true;
 
-      var features = [];
       var params = getParamsByLayer($scope.filters);
       if (params.length == 0) {
         if ($scope.useBbox) {
           $scope.searchByGeometry();
+        } else {
+          resetResults();
         }
-        $scope.options.features = [];
-        $scope.loading = false;
         return;
       }
 
       var common = {
         lang: $translate.use(),
-        geometryFormat: 'geojson'
+        geometryFormat: 'geojson',
+        offset: offset
       };
 
       if ($scope.useBbox) {
@@ -283,98 +288,32 @@
         angular.extend(common, getGeometryParams());
       }
 
-      angular.forEach(
-          params,
-          function(paramsByLayer) {
-            gaQuery.getLayerIdentifyFeatures(
-                $scope,
-                paramsByLayer.bodId,
-                angular.extend(paramsByLayer.params, common)
-            ).then(function(layerFeatures) {
-              features = features.concat(layerFeatures);
-              $scope.options.features = features;
-              $scope.loading = false;
-            },function(reason) {
-              $scope.options.features = [];
-              $scope.loading = false;
-            });
-          }
-      );
+      angular.forEach(params, function(paramsByLayer) {
+        if (layerBodId && layerBodId != paramsByLayer.bodId) {
+          $scope.loading = false;
+          return;
+        }
+        gaQuery.getLayerIdentifyFeatures(
+            $scope,
+            paramsByLayer.bodId,
+            angular.extend(paramsByLayer.params, common)
+        ).then(function(layerFeatures) {
+          onSearchSuccess(layerFeatures, paramsByLayer.bodId, offset);
+        }, function(reason) {
+          resetResults(reason, paramsByLayer.bodId);
+        });
+      });
     };
-
-    // Search by geometry with layer query service
-    /*$scope.searchByGeometry = function() {
-      $scope.loading = true;
-      $scope.queryType = 0;
-      if ($scope.geometry) {
-        var where = 'ST_DWithin(the_geom, ST_MakeEnvelope(' +
-            $scope.geometry.getExtent().join(',') + ', 21781), 0)';
-        var features = [];
-        angular.forEach(
-            $scope.selectByRectangleLayers,
-            function(layer) {
-              gaQuery.getLayerFeatures(
-                  $scope,
-                  layer.bodId,
-                  {
-                    where: where,
-                    time: getYear(layer.time)
-                    //,geom: geojson.writeGeometry($scope.geometry)
-                  }
-              ).then(function(layerFeatures) {
-                features = features.concat(layerFeatures);
-                $scope.options.features = features;
-                $scope.loading = false;
-              },function(reason) {
-                $scope.options.features = [];
-                $scope.loading = false;
-              });
-            }
-        );
-      } else {
-        $scope.loading = false;
-      }
-    };*/
-
-    // Search by attribute with layer query service
-    /*$scope.searchByAttributes = function() {
-      $scope.queryType = 1;
-      $scope.loading = true;
-
-      var features = [];
-      var params = getParamsByLayer($scope.filters);
-      if (params.length == 0) {
-        $scope.options.features = [];
-        $scope.loading = false;
-        return;
-      }
-      angular.forEach(
-          params,
-          function(paramsByLayer) {
-            gaQuery.getLayerFeatures(
-                $scope,
-                paramsByLayer.bodId,
-                paramsByLayer.params
-            ).then(function(layerFeatures) {
-              features = features.concat(layerFeatures);
-              $scope.options.features = features;
-              $scope.loading = false;
-            },function(reason) {
-              $scope.options.features = [];
-              $scope.loading = false;
-            });
-          }
-      );
-    };*/
 
     // Launch a search according to the active tab
-    $scope.search = function() {
+    $scope.search = function(layerBodId, offset) {
       if ($scope.queryType == 0) {
-        $scope.searchByGeometry();
+        $scope.searchByGeometry(layerBodId, offset);
       } else {
-        $scope.searchByAttributes();
+        $scope.searchByAttributes(layerBodId, offset);
       }
     };
+
 
     // Watcher/listener
     $scope.layers = $scope.map.getLayers().getArray();
@@ -453,6 +392,9 @@
       }
     });
 
+    $scope.$on('gaQueryMore', function(evt, layerId, offset) {
+      $scope.search(layerId, offset);
+    });
     $scope.$on('gaLayersChange', function(evt, labelsOnly) {
       if (labelsOnly) {
         // We refresh the labels here because the layer's label is not updated

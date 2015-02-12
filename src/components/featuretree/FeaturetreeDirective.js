@@ -107,66 +107,52 @@
               }
             };
 
-            var updateTree = function(features) {
+            /**
+             * The tree represent a list of features grouped by layer
+             */
+            var updateTree = function(tree) {
               gaPreviewFeatures.clearHighlight();
               gaPreviewFeatures.clear(map);
-              var res = features, tree = {};
+              var newTree = {};
 
-              if (features) {
-                for (var i = 0, li = res.length; i < li; i++) {
-                  var result = res[i];
-                  var layerBodId = result.layerBodId || result.attrs.layer;
-                  var featureId = result.id || result.attrs.id;
-                  var newNode = tree[layerBodId];
-                  var oldNode = scope.tree[layerBodId];
-                  var feature = undefined;
+              angular.forEach(tree, function(layerNode, layerBodId) {
+                var oldNode = scope.tree[layerBodId];
+                var newNode = {
+                  label: gaLayers.getLayer(layerBodId).label +
+                     ' (' + ((layerNode.hasMoreResults) ? '+' : '') +
+                     layerNode.features.length + ' ' +
+                     getItemText(layerNode.features.length) + ')',
+                  hasMoreResults: layerNode.hasMoreResults,
+                  offset: layerNode.offset,
+                  open: oldNode ? oldNode.open : true,
+                  features: []
+                };
+                newTree[layerBodId] = newNode;
 
-                  if (!angular.isDefined(newNode)) {
-                    newNode = {
-                      label: '',
-                      features: [],
-                      open: oldNode ? oldNode.open : true
-                    };
-                    tree[layerBodId] = newNode;
-                  }
-
+                for (var i = 0, ii = layerNode.features.length; i < ii; i++) {
+                  var feature = layerNode.features[i];
                   //look if feature exists already. We do this
                   //to avoid loading the same feature again and
                   //to preserve state (selected)
                   if (oldNode) {
-                    for (var j = 0, lj = oldNode.features.length; j < lj; j++) {
+                    for (var j = 0, jj = oldNode.features.length; j < jj; j++) {
                       var oldFeature = oldNode.features[j];
-                      if (oldFeature.id === featureId) {
+                      if (oldFeature.id === feature.id) {
                         feature = oldFeature;
                         break;
                       }
                     }
                   }
 
-                  if (!angular.isDefined(feature)) {
-                    feature = {
-                      id: featureId,
-                      layerBodId: layerBodId,
-                      geojson: (result.type == 'Feature' && result.geometry) ?
-                          result : null
-                    };
-                  }
-                  feature.label = getTranslatedLabel((result.attrs ||
-                      result.properties));
+                  feature.geojson = (feature.type == 'Feature' &&
+                      feature.geometry) ? feature : null;
+                  feature.label = getTranslatedLabel(feature.properties);
                   newNode.features.push(feature);
-
                   drawFeature(feature);
                 }
-              }
-              //assure that label contains number of items
-              angular.forEach(tree, function(value, key) {
-                var l = gaLayers.getLayer(key).label +
-                        ' (' + value.features.length + ' ' +
-                        getItemText(value.features.length) + ')';
-                value.label = l;
               });
-              scope.tree = tree;
-              scope.$emit('gaUpdateFeatureTree', tree);
+              scope.tree = newTree;
+              scope.$emit('gaUpdateFeatureTree', scope.tree);
             };
 
             // Selects a feature and displays the htm popup corresponding
@@ -249,6 +235,11 @@
               gaPreviewFeatures.zoom(map, parser.readFeature(feature.geojson));
             };
 
+            scope.more = function(evt, layer) {
+              evt.stopPropagation();
+              scope.$emit('gaGetMoreFeatureTree', layer);
+            };
+
 
             // Watchers and scope events
             scope.$watch('isActive', function(newVal, oldVal) {
@@ -260,17 +251,16 @@
               }
             });
 
-            /* A list of features can be pass via the options object */
-            scope.$watch('options.features', function(features) {
-              scope.features = features;
-              updateTree(scope.features);
-            });
-
             // When language change
             scope.$on('gaLayersChange', function(evt, labelsOnly) {
               if (labelsOnly) {
-                updateTree(scope.features);
+                updateTree(scope.tree);
               }
+            });
+
+            // When another directive calls for an update
+            scope.$on('gaNewFeatureTree', function(evt, tree) {
+              updateTree(tree);
             });
 
           }

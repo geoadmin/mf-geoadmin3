@@ -17,15 +17,37 @@
 
     $scope.options = {
       msUrl: gaGlobalOptions.cachedApiUrl + '/rest/services/all/MapServer',
-      features: [], // List of features
-      featuresShown: false
+      featuresShown: false,
+      hasMoreResults: false,
+      nbFeatures: 0,
+      max: 200
     };
     
-    // Collapse/Expand the features tree accordion when results change 
-    $scope.$watch('options.features.length', function() {
-      $scope.options.featuresShown = ($scope.options.features.length > 0);
+    $scope.getItemText = function() {
+      return '(' + (($scope.options.hasMoreResults) ? '+' : '') +
+          $scope.options.nbFeatures + ')';
+
+    };
+    // When the results of query tool are updated, we collapse/expand the
+    // features tree accordion, then we update the feature tree
+    $scope.$on('gaQueryResultsUpdated', function(evt, featuresByLayer) {
+      evt.stopPropagation();
+      var show = false, nbFeatures = 0, hasMoreResults = false;
+      angular.forEach(featuresByLayer, function(layer) {
+        if (layer.features && layer.features.length > 0) {
+          show = true;
+          hasMoreResults = (hasMoreResults || layer.hasMoreResults);
+          nbFeatures += layer.features.length;
+        }
+        
+      });
+      $scope.options.nbFeatures = nbFeatures;
+      $scope.options.featuresShown = show;
+      $scope.options.hasMoreResults = hasMoreResults;
+      $scope.$broadcast('gaNewFeatureTree', featuresByLayer);
     });
     
+ 
 
     // Print popup stuff
     var featureTree, winPrint, useNewTab;
@@ -33,7 +55,7 @@
     $scope.printProgressPercentage = 0;
     $scope.print = function() {
 
-      var printElementsTotal = $scope.options.features.length;
+      var printElementsTotal = $scope.options.nbFeatures;
       if (printElementsTotal == 0) {
         return;
       }
@@ -133,5 +155,11 @@
 
       evt.stopPropagation();
     });
+
+    $scope.$on('gaGetMoreFeatureTree', function(evt, layer) {
+      $scope.$broadcast('gaQueryMore', layer.bodId, layer.offset + $scope.options.max);
+      evt.stopPropagation();
+    });
+
   });
 })();
