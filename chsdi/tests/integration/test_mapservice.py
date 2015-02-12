@@ -418,13 +418,36 @@ class TestMapServiceView(TestsBase):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln', status=200)
         self.failUnless(resp.content_type == 'application/json')
 
+    def test_layer_attributes_lang_specific(self):
+        lang = 'de'
+        path = '/rest/services/all/MapServer/ch.bav.sachplan-infrastruktur-schiene_ausgangslage'
+        params = {'lang': lang}
+        resp = self.testapp.get(path, params=params, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+        fields = resp.json['fields']
+        langSpecFields = []
+        for field in fields:
+            if field['name'].endswith('_%s' % lang):
+                langSpecFields.append(field)
+        self.failUnless(len(langSpecFields) > 0)
+        langNotAvailable = 'rm'
+        params = {'lang': langNotAvailable}
+        resp = self.testapp.get(path, params=params, status=200)
+        fields = resp.json['fields']
+        langSpecFields = []
+        # Check fallback lang
+        for field in fields:
+            if field['name'].endswith('_%s' % lang):
+                langSpecFields.append(field)
+        self.failUnless(len(langSpecFields) > 0)
+
     def test_layer_attributes_wrong_layer(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/dummy', status=400)
 
     def test_layer_attributes_multi_models(self):
         resp = self.testapp.get('/rest/services/api/MapServer/ch.bav.sachplan-infrastruktur-schiene_kraft', status=200)
         self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(len(resp.json['fields']) > 4)
+        self.failUnless(len(resp.json['fields']) == 3)
 
     def test_features_attributes_multi_models(self):
         resp = self.testapp.get('/rest/services/api/MapServer/ch.bav.sachplan-infrastruktur-schiene_kraft/attributes/plname_de', status=200)

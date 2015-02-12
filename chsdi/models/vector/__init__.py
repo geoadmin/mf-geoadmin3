@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from sys import maxsize
+import re
 import datetime
 import decimal
+from pyramid.threadlocal import get_current_registry
 from shapely import wkb
 from shapely.geometry import asShape
 from shapely.geometry import box
@@ -171,6 +173,32 @@ class Vector(GeoInterface):
             return cls.__mapper__.columns.get(columnName)
         return None
 
+    # Based on a naming convention
+    @classmethod
+    def get_queryable_attributes_keys(cls, lang):
+        queryableAttributes = []
+        if hasattr(cls, '__queryable_attributes__'):
+            settings = get_current_registry().settings
+            availableLangs = settings['available_languages'].replace(' ', '|')
+            for attr in cls.__queryable_attributes__:
+                match = re.search(r'(_(%s))$' % availableLangs, attr)
+                if match is not None:
+                    # Lang specific attr
+                    suffix = '_%s' % lang
+                    suffixAttr = match.groups()[0]
+                    fallbackMatch = getFallbackLangMatch(
+                        cls.__queryable_attributes__,
+                        suffix,
+                        attr,
+                        suffixAttr
+                    )
+                    if fallbackMatch not in queryableAttributes:
+                        queryableAttributes.append(fallbackMatch)
+                else:
+                    # Not based on lang
+                    queryableAttributes.append(attr)
+        return queryableAttributes
+
     def getOrmColumnsNames(self, excludePkey=True):
         primaryKeyColumn = self.__mapper__.get_property_by_column(self.primary_key_column()).key
         geomColumnKey = self.__mapper__.get_property_by_column(self.geometry_column()).key
@@ -221,3 +249,25 @@ def esriRest2Shapely(geometry, geometryType):
 def extentArea(i):
     geom = box(i[0], i[1], i[2], i[3])
     return geom.area
+
+
+def getFallbackLangMatch(queryableAttrs, suffix, attr, suffixAttr):
+    # de and fr at least are defined
+    def replaceLast(sourceString, replaceWhat, replaceWith):
+        head, sep, tail = sourceString.rpartition(replaceWhat)
+        return head + replaceWith + tail
+
+    attrToMatch = replaceLast(attr, suffixAttr, suffix)
+    if attrToMatch in queryableAttrs:
+        return attrToMatch
+    else:
+        if suffix in ('_rm', '_en'):
+            suffix = '_de'
+            attrToMatch = replaceLast(attr, suffixAttr, suffix)
+            if attrToMatch in queryableAttrs:
+                return attrToMatch
+        elif suffix == '_it':
+            suffix = '_fr'
+            attrToMatch = replaceLast(attr, suffixAttr, suffix)
+            if attrToMatch in queryableAttrs:
+                return attrToMatch
