@@ -18,7 +18,6 @@ class Search(SearchValidation):
     LIMIT = 50
     LAYER_LIMIT = 30
     FEATURE_LIMIT = 20
-    FEATURE_GEO_LIMIT = 200
 
     def __init__(self, request):
         super(Search, self).__init__()
@@ -60,9 +59,6 @@ class Search(SearchValidation):
                 self.request.params.get('searchText')
             )
             self._layer_search()
-        elif self.typeInfo in ('features', 'featureidentify'):
-            # search all features within bounding box
-            self._feature_bbox_search()
         elif self.typeInfo == 'featuresearch':
             # search all features using searchText
             self.searchText = format_search_text(
@@ -238,36 +234,6 @@ class Search(SearchValidation):
         centerY = (self.bbox[3] + self.bbox[1]) / 2
         wkt = 'POINT(%s %s)' % (centerX, centerY)
         return transformCoordinate(wkt, 21781, 4326)
-
-    def _feature_bbox_search(self):
-        self._check_timeparameters()
-
-        timeFilter = {
-            'type': None,
-            'years': []
-        }
-        if self.quadindex is None:
-            raise exc.HTTPBadRequest('Please provide a bbox parameter')
-
-        if self.featureIndexes is None:
-            raise exc.HTTPBadRequest('Please provide a parameter features')
-        featureGeoLimit = self.limit if self.limit and self.limit <= self.FEATURE_GEO_LIMIT else self.FEATURE_GEO_LIMIT
-        self.sphinx.SetLimits(0, featureGeoLimit)
-
-        if self.timeInstant is not None:
-            timeFilter['type'] = 'instant'
-            timeFilter['years'] = [self.timeInstant]
-        elif self.timeStamps is not None:
-            timeFilter['type'] = 'layers'
-            timeFilter['years'] = self.timeStamps
-        geoAnchor = self._get_geoanchor_from_bbox()
-        self.sphinx.SetGeoAnchor('lat', 'lon', geoAnchor.GetY(), geoAnchor.GetX())
-        self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, '@geodist ASC')
-
-        geomFilter = self._get_quadindex_string()
-        self._add_feature_queries(geomFilter, timeFilter)
-        temp = self.sphinx.RunQueries()
-        self._parse_feature_results(temp)
 
     def _query_fields(self, fields):
         exact_nondigit_prefix_digit = lambda x: ''.join((x, '*')) if x.isdigit() else x

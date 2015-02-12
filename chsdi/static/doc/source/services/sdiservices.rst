@@ -484,7 +484,7 @@ URL
 Description
 ***********
 
-The search service is separated in 4 various categories or types:
+The search service is separated in 3 various categories or types:
 
 * The **location search** which is composed of the following geocoded locations:
 
@@ -496,7 +496,6 @@ The search service is separated in 4 various categories or types:
   * The cadastral parcels
 * The **layer search** wich enables the search of layers belonging to the GeoAdmin API.
 * The **feature search** which is used to search through features descriptions. Note: you can also specify a bounding box to filter the features. (`Searchable layers <../../../api/faq/index.html#which-layers-are-searchable>`_)
-* The **feature identify** which is designed to efficiently discover the features of a layer based on a geographic extent. (`Identifiable layers <../../../api/faq/index.html#which-layers-have-a-tooltip>`_)
 
 Input parameters
 ****************
@@ -563,23 +562,6 @@ Only RESTFul interface is available.
 | **callback (optional)**           | The name of the callback function.                                                        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 
-**Feature Identify**
-
-+-----------------------------------+-------------------------------------------------------------------------------------------+
-| Parameters                        | Description                                                                               |
-+===================================+===========================================================================================+
-| **type (required)**               | The type of performed search. Specify `featureidentify` to perform a feature search.      |
-+-----------------------------------+-------------------------------------------------------------------------------------------+
-| **bbox (optional)**               | A comma separated list of 4 coordinates representing the bounding box on which features   |
-|                                   | should be filtered (SRID: 21781).                                                         |
-+-----------------------------------+-------------------------------------------------------------------------------------------+
-| **features (optional)**           | A comma separated list of technical layer names.                                          |
-+-----------------------------------+-------------------------------------------------------------------------------------------+
-| **limit (optional)**              | The maximum number of results to retrive per request (Max and default limit=200)          |
-+-----------------------------------+-------------------------------------------------------------------------------------------+
-| **callback (optional)**           | The name of the callback function.                                                        |
-+-----------------------------------+-------------------------------------------------------------------------------------------+
-
 Response syntax
 ***************
 
@@ -642,7 +624,6 @@ Examples
 - Search for locations within a given map extent (the `bbox`): `https://api3.geo.admin.ch/rest/services/api/SearchServer?bbox=551306.5625,167918.328125,551754.125,168514.625&type=locations  <../../../rest/services/api/SearchServer?bbox=551306.5625,167918.328125,551754.125,168514.625&type=locations>`_
 - Search for layers in French matching the word “géoïde” in their description: `https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=géoïde&type=layers&lang=fr <../../../rest/services/api/SearchServer?searchText=géoïde&type=layers&lang=fr>`_ 
 - Search for features matching word "433" in their description: `https://api3.geo.admin.ch/rest/services/api/SearchServer?features=ch.bafu.hydrologie-gewaesserzustandsmessstationen&type=featuresearch&searchText=433 <../../../rest/services/api/SearchServer?features=ch.bafu.hydrologie-gewaesserzustandsmessstationen&type=featuresearch&searchText=433>`_
-- Search only for features belonging to the layer “ch.astra.ivs-reg_loc” (only using a bbox, no search text): `https://api3.geo.admin.ch/rest/services/api/SearchServer?features=ch.astra.ivs-reg_loc&type=featureidentify&bbox=551306.5625,167918.328125,551754.125,168514.625 <../../../rest/services/api/SearchServer?features=ch.astra.ivs-reg_loc&type=featureidentify&bbox=551306.5625,167918.328125,551754.125,168514.625>`_
 
 Example of feature search usage with other services
 ***************************************************

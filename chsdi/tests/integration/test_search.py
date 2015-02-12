@@ -183,12 +183,6 @@ class TestSearchServiceView(TestsBase):
         params = {'type': 'locations'}
         self.testapp.get('/rest/services/inspire/SearchServer', params=params, status=400)
 
-    def test_features_bbox(self):
-        resp = self.testapp.get('/rest/services/ech/SearchServer', params={'features': 'ch.astra.ivs-reg_loc', 'type': 'featureidentify', 'bbox': '551306.5625,167918.328125,551754.125,168514.625'}, status=200)
-        self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'feature')
-        self.failUnless(resp.json['results'][0]['attrs']['feature_id'] == '43543')
-
     def test_features_timeinstant(self):
         resp = self.testapp.get('/rest/services/ech/SearchServer', params={'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'featuresearch', 'bbox': '542199,206799,542201,206801', 'timeInstant': '1981'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
@@ -238,13 +232,6 @@ class TestSearchServiceView(TestsBase):
     def test_features_wrong_timestamps_2(self):
         params = {'searchText': '19810590048970', 'features': 'ch.swisstopo.lubis-luftbilder_farbe', 'type': 'featuresearch', 'bbox': '542200,206800,542200,206800', 'timeStamps': '1952.00'}
         self.testapp.get('/rest/services/ech/SearchServer', params=params, status=400)
-
-    def test_featuressearch_geodist(self):
-        resp = self.testapp.get('/rest/services/all/SearchServer', params={'features': 'ch.babs.kulturgueter', 'type': 'featureidentify', 'bbox': '688290,166864,688309,166884'})
-        self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(len(resp.json['results']) == 1)
-        self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'feature')
-        self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'general-suworow-denkmal')
 
     def test_locations_search_limit(self):
         params = {'searchText': 'chalais', 'type': 'locations', 'limit': '1'}
