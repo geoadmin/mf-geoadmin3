@@ -12,9 +12,10 @@ import markupsafe
 def br(text):
     return text.replace('\n', markupsafe.Markup('<br />'))
 
+tileUrlBasePath = 'http://aerialimages0.geo.admin.ch/tiles'
+
 
 def determinePreviewUrl(ebkey):
-    tileUrlBasePath = 'http://aerialimages0.geo.admin.ch/tiles'
 
     def getPreviewImageUrl(ebkey):
         return tileUrlBasePath + '/' + ebkey + '/quickview.jpg'
@@ -49,6 +50,30 @@ def determinePreviewUrl(ebkey):
         url = testForUrl(getZeroTileUrl(ebkey))
     return h.make_agnostic(url)
 
+
+def imagesize_from_metafile(ebkey):
+    import xml.etree.ElementTree as etree
+    width = None
+    height = None
+    metaurl = tileUrlBasePath + '/' + ebkey + '/tilemapresource.xml'
+    response = None
+    try:
+        request = urllib2.Request(metaurl)
+        request.add_header('Referer', 'http://admin.ch')
+        response = urllib2.urlopen(request)
+        if response.getcode() == 200:
+            xml = etree.parse(response).getroot()
+            bb = xml.find('BoundingBox')
+            if bb != None:
+                width = abs(int(float(bb.get('maxy'))) - int(float(bb.get('miny'))))
+                height = abs(int(float(bb.get('maxx'))) - int(float(bb.get('minx'))))
+    finally:
+        if response:
+            response.close()
+
+    return (width, height)
+
+
 def date_to_str(datum):
     try:
         return datetime.datetime.strptime(datum.strip(), "%Y%m%d").strftime("%d-%m-%Y")
@@ -67,15 +92,16 @@ def get_viewer_url(request, params):
         'rotation': params[7]
     }
     return h.make_agnostic(route_url('luftbilder', request)) + '?' + urllib.urlencode(f)
+
 %>
 
 <%def name="table_body(c, lang)">
 <%
-   tt_lubis_ebkey = c['layerBodId'] + '.' + 'id'
-%>
-<% lang = lang if lang in ('fr','it','en') else 'de' %>
-<% c['stable_id'] = True %>
-<%
+
+tt_lubis_ebkey = c['layerBodId'] + '.' + 'id'
+lang = lang if lang in ('fr','it','en') else 'de'
+c['stable_id'] = True
+
 if c['layerBodId'] == 'ch.swisstopo.lubis-luftbilder_farbe':
     imgtype = 1
 elif c['layerBodId'] == 'ch.swisstopo.lubis-luftbilder_infrarot':
@@ -89,10 +115,18 @@ if c['attributes']['filename'] :
     toposhopscan = 'ja'
 preview_url = determinePreviewUrl(c['featureId'])
 
+image_width = c['attributes']['image_width'] if 'image_width' in  c['attributes'] else None
+image_height = c['attributes']['image_height'] if 'image_height' in c['attributes'] else None
+
+if image_width == None or image_height == None:
+  wh = imagesize_from_metafile(c['featureId'])
+  image_width = wh[0]
+  image_height = wh[1]
+
 datum = date_to_str(c['attributes']['flugdatum'])
 params = (
-    c['attributes']['image_width'] if 'image_width' in  c['attributes'] else 0,
-    c['attributes']['image_height'] if 'image_height' in c['attributes'] else 0,
+    image_width,
+    image_height,
     _('ch.swisstopo.lubis-luftbilder-dritte-kantone.ebkey'),
     c['featureId'],
     c['attributes']['firma'],
@@ -114,7 +148,7 @@ viewer_url = get_viewer_url(request, params)
   <td>${c['attributes']['filmart'] or '-'}</td>
 </tr>
 
-% if preview_url != "":
+% if preview_url != "" and image_width != None:
 <tr>
   <td class="cell-left">${_('tt_lubis_Quickview')}</td>
   <td>
@@ -185,9 +219,14 @@ if c['attributes']['orientierung']:
 endif
 
 datum = date_to_str(c['attributes']['flugdatum'])
-image_width =  c['attributes']['image_width'] if 'image_width' in  c['attributes'] else 0
-image_height = c['attributes']['image_height'] if 'image_height' in c['attributes'] else 0
+image_width =  c['attributes']['image_width'] if 'image_width' in  c['attributes'] else None
+image_height = c['attributes']['image_height'] if 'image_height' in c['attributes'] else None
 image_rotation = c['attributes']['rotation'] if 'rotation' in c['attributes'] else 0
+
+if image_width == None or image_height == None:
+  wh = imagesize_from_metafile(c['featureId'])
+  image_width = wh[0]
+  image_height = wh[1]
 
 params = (
     image_width, 
@@ -233,7 +272,7 @@ viewer_url = get_viewer_url(request, params)
   </div>
   <br>
 
-% if preview_url != "" and c['attributes']['image_width']:
+% if preview_url != "" and image_width != None:
   <span class="chsdi-no-print">${_('tt_luftbilderOL')}<a href="${viewer_url}" target="_blank" alt="Fullscreen">(fullscreen)</a></span>
   <div class="chsdi-map-container table-with-border">
     <div id="lubismap"></div>
@@ -270,7 +309,7 @@ viewer_url = get_viewer_url(request, params)
       map.highlightFeature('${c['layerBodId']}', '${c['featureId']}');
       map.recenterFeature('${c['layerBodId']}', '${c['featureId']}');
 
-% if preview_url != "" and c['attributes']['image_width']:
+% if preview_url != "" and image_width != None:
      ${lubis_map.init_map(c['featureId'], image_width, image_height, image_rotation, 'lubismap')}
 %endif
 
