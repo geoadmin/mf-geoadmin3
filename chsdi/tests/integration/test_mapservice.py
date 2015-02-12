@@ -62,6 +62,13 @@ class TestMapServiceView(TestsBase):
         resp = self.testapp.get('/rest/services/ech/MapServer/identify', params=params, status=400)
         resp.mustcontain('Please provide the parameter tolerance')
 
+    def test_identify_zero_tolerance_and_scale(self):
+        params = {'geometry': '681999,251083,682146,251190', 'geometryFormat': 'geojson', 'geometryType': 'esriGeometryEnvelope',
+                  'imageDisplay': '1920,452,96', 'layers': 'all:ch.bazl.sachplan-infrastruktur-luftfahrt_kraft',
+                  'mapExtent': '679364.12,250588.34,684164.12,251718.34', 'tolerance': '0'}
+        resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=200)
+        self.failUnless(len(resp.json['results']) == 1)
+
     def test_identify_valid(self):
         params = {'geometry': '548945.5,147956,549402,148103.5', 'geometryType': 'esriGeometryEnvelope', 'imageDisplay': '500,600,96', 'mapExtent': '548945.5,147956,549402,148103.5', 'tolerance': '1', 'layers': 'all'}
         resp = self.testapp.get('/rest/services/ech/MapServer/identify', params=params, status=200)
