@@ -152,9 +152,9 @@ class Vector(GeoInterface):
         maxScale = cls.__maxscale__ if hasattr(cls, '__maxscale__') else None
         minResolution = cls.__minresolution__ if hasattr(cls, '__minresolution__') else None
         maxResolution = cls.__maxresolution__ if hasattr(cls, '__maxresolution__') else None
-        if minScale is not None and maxScale is not None and toleranceMeters != 0.0:
+        if None not in (minScale, maxScale) and all(val != 0.0 for val in imageDisplay) and mapExtent.area != 0.0:
             scale = getScale(imageDisplay, mapExtent)
-        if minResolution is not None and maxResolution is not None and toleranceMeters != 0.0:
+        if None not in (minResolution, maxResolution) and all(val != 0.0 for val in imageDisplay) and mapExtent.area != 0.0:
             resolution = getResolution(imageDisplay, mapExtent)
         if (scale is None or (scale > cls.__minscale__ and scale <= cls.__maxscale__)) and \
            (resolution is None or (resolution > cls.__minresolution__ and resolution <= cls.__maxresolution__)):
