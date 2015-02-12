@@ -401,6 +401,12 @@ msgstr "Volume 1 | 2"
 msgid "basis"
 msgstr "Based on"
 
+msgid "baujahr"
+msgstr "Year of construction"
+
+msgid "baujahr_de_fr"
+msgstr "Baujahr"
+
 msgid "bazlrechtstatus"
 msgstr "Legal status"
 
@@ -1827,6 +1833,9 @@ msgstr "Dam"
 msgid "ch.bfe.url"
 msgstr "http://www.bfe.admin.ch/index.html?lang=en"
 
+msgid "ch.bfe.windenergieanlagen"
+msgstr "Wind energy plants"
+
 msgid "ch.bfs"
 msgstr "FSO"
 
@@ -2728,6 +2737,9 @@ msgstr "Einwohnerzahl (Bandbreite, nur für Siedl.)"
 msgid "einwohnerzahl_s"
 msgstr "Einwohnerzahl (nur für Siedl.)"
 
+msgid "elevation"
+msgstr "Elevation"
+
 msgid "energiebedarf_motoren"
 msgstr "Energy need of motors"
 
@@ -2962,6 +2974,9 @@ msgstr "Help"
 msgid "help url"
 msgstr "http://www.geo.admin.ch/internet/geoportal/en/commons/help/viewer_help.html"
 
+msgid "hersteller"
+msgstr "Hersteller"
+
 msgid "hide column"
 msgstr "Close Topics"
 
@@ -3033,6 +3048,9 @@ msgstr "Identificator"
 
 msgid "information"
 msgstr "Infomation"
+
+msgid "installierteleistung"
+msgstr "Installierte Leistung"
 
 msgid "intern"
 msgstr "Intern"
@@ -3751,6 +3769,9 @@ msgstr "Name Messstandort"
 msgid "messstellentyp"
 msgstr "Messstellentyp"
 
+msgid "modell"
+msgstr "Modell"
+
 msgid "modif_validfrom"
 msgstr "Date of enactment"
 
@@ -3759,6 +3780,9 @@ msgstr "Betroffene Gemeinden"
 
 msgid "nabeltyp"
 msgstr "Lage"
+
+msgid "nabenhoehe"
+msgstr "Nabenhöhe"
 
 msgid "nachweisjahr"
 msgstr "Nachweisjahr"
@@ -3907,6 +3931,12 @@ msgstr "Print"
 msgid "produkt"
 msgstr "Product"
 
+msgid "produktion"
+msgstr "Produktion"
+
+msgid "produktionsdaten"
+msgstr "Produktionsdaten"
+
 msgid "produktionserwartung"
 msgstr "Expected production"
 
@@ -3957,6 +3987,9 @@ msgstr "Use Alt + Shift + drag to rotate the image"
 
 msgid "rotation key apple"
 msgstr "Use \u2325 + Shift + drag to rotate the image"
+
+msgid "rotordurchmesser"
+msgstr "Rotordurchmesser"
 
 msgid "routentypid"
 msgstr "Routentyp ID für Ausnahmetransporte"
@@ -4017,6 +4050,9 @@ msgstr "Status"
 
 msgid "status_fp"
 msgstr "Official name (when existing)"
+
+msgid "statut"
+msgstr "Status"
 
 msgid "stoff"
 msgstr "Production"
@@ -5220,11 +5256,26 @@ msgstr "Current and historical"
 msgid "wassertemperatur"
 msgstr "Water temperature °C"
 
+msgid "website"
+msgstr "Website"
+
 msgid "wenig_sub"
 msgstr "Historischer Verlauf"
 
 msgid "werte"
 msgstr "Verfügbare Werte"
+
+msgid "windenergieangaben"
+msgstr "Angaben Windenergieanlage"
+
+msgid "windenergieanlage"
+msgstr "Wind energy plant"
+
+msgid "windenergiebetreiber"
+msgstr "Betreiber"
+
+msgid "windturbinenangaben"
+msgstr "Angaben Windturbine(n)"
 
 msgid "wj_bearbeitungsjahr"
 msgstr "Bearbeitungsjahr"

@@ -401,6 +401,12 @@ msgstr "Volum 1 | 2"
 msgid "basis"
 msgstr "Grundlage(n)"
 
+msgid "baujahr"
+msgstr "Baujahr"
+
+msgid "baujahr_de_fr"
+msgstr "Baujahr"
+
 msgid "bazlrechtstatus"
 msgstr "Status da dregt"
 
@@ -1826,6 +1832,9 @@ msgstr "Stabiliments d'accumulaziun"
 msgid "ch.bfe.url"
 msgstr "http://www.bfe.admin.ch/index.html?lang=de"
 
+msgid "ch.bfe.windenergieanlagen"
+msgstr "Windenergieanlagen"
+
 msgid "ch.bfs"
 msgstr "BFS"
 
@@ -2726,6 +2735,9 @@ msgstr "Einwohnerzahl (Bandbreite, nur für Siedl.)"
 msgid "einwohnerzahl_s"
 msgstr "Einwohnerzahl (nur für Siedl.)"
 
+msgid "elevation"
+msgstr "Autezza"
+
 msgid "energiebedarf_motoren"
 msgstr "Energiebedarf Motoren"
 
@@ -2960,6 +2972,9 @@ msgstr "Agid"
 msgid "help url"
 msgstr "http://www.geo.admin.ch/internet/geoportal/rm/commons/help/viewer_help.html"
 
+msgid "hersteller"
+msgstr "Hersteller"
+
 msgid "hide column"
 msgstr "Zuppentar ils temas"
 
@@ -3031,6 +3046,9 @@ msgstr "Identifikator"
 
 msgid "information"
 msgstr "Infomation"
+
+msgid "installierteleistung"
+msgstr "Installierte Leistung"
 
 msgid "intern"
 msgstr "Intern"
@@ -3749,6 +3767,9 @@ msgstr "Name of trial spot"
 msgid "messstellentyp"
 msgstr "Messstellentyp"
 
+msgid "modell"
+msgstr "Modell"
+
 msgid "modif_validfrom"
 msgstr "Data da conclus"
 
@@ -3757,6 +3778,9 @@ msgstr "Betroffene Gemeinden"
 
 msgid "nabeltyp"
 msgstr "Lage"
+
+msgid "nabenhoehe"
+msgstr "Nabenhöhe"
 
 msgid "nachweisjahr"
 msgstr "Nachweisjahr"
@@ -3905,6 +3929,12 @@ msgstr "Stampar"
 msgid "produkt"
 msgstr "Produkt"
 
+msgid "produktion"
+msgstr "Produktion"
+
+msgid "produktionsdaten"
+msgstr "Produktionsdaten"
+
 msgid "produktionserwartung"
 msgstr "Produktionserwartung"
 
@@ -3955,6 +3985,9 @@ msgstr "Benutzen Sie Alt + Umschalt + Ziehen um das Bild zu rotieren"
 
 msgid "rotation key apple"
 msgstr "Benutzen Sie \u2325 + Umschalt + Ziehen um das Bild zu rotieren"
+
+msgid "rotordurchmesser"
+msgstr "Rotordurchmesser"
 
 msgid "routentypid"
 msgstr "Routentyp ID für Ausnahmetransporte"
@@ -4014,6 +4047,9 @@ msgid "status"
 msgstr "Status"
 
 msgid "status_fp"
+msgstr "Status"
+
+msgid "statut"
 msgstr "Status"
 
 msgid "stoff"
@@ -5218,11 +5254,26 @@ msgstr "Aktuelle und historische Daten"
 msgid "wassertemperatur"
 msgstr "Temperatura da l'aua °C"
 
+msgid "website"
+msgstr "Website"
+
 msgid "wenig_sub"
 msgstr "Historischer Verlauf"
 
 msgid "werte"
 msgstr "Verfügbare Werte"
+
+msgid "windenergieangaben"
+msgstr "Angaben Windenergieanlage"
+
+msgid "windenergieanlage"
+msgstr "Windenergieanlage"
+
+msgid "windenergiebetreiber"
+msgstr "Betreiber"
+
+msgid "windturbinenangaben"
+msgstr "Angaben Windturbine(n)"
 
 msgid "wj_bearbeitungsjahr"
 msgstr "Bearbeitungsjahr"
