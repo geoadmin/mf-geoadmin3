@@ -166,9 +166,9 @@ class Vector(GeoInterface):
         return None
 
     @classmethod
-    def get_column_by_name(cls, columnName):
-        if columnName in cls.__mapper__.columns:
-            return cls.__mapper__.columns.get(columnName)
+    def get_column_by_property_name(cls, columnPropName):
+        if columnPropName in cls.__mapper__.columns:
+            return cls.__mapper__.columns.get(columnPropName)
         return None
 
     def getOrmColumnsNames(self, excludePkey=True):

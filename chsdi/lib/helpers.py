@@ -154,7 +154,7 @@ def format_query(model, value):
         res = []
         for val in values:
             prop = val.split(' ')[0]
-            columnName = model.get_column_by_name(prop).name.__str__()
+            columnName = model.get_column_by_property_name(prop).name.__str__()
             val = val.replace(prop, columnName)
             res.append(val)
         return res
