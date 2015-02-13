@@ -67,6 +67,8 @@ def imagesize_from_metafile(ebkey):
             if bb != None:
                 width = abs(int(float(bb.get('maxy'))) - int(float(bb.get('miny'))))
                 height = abs(int(float(bb.get('maxx'))) - int(float(bb.get('minx'))))
+    except:
+        pass
     finally:
         if response:
             response.close()
