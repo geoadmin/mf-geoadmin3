@@ -2,7 +2,7 @@
 
 <%def name="table_body(c, lang)">
 <%
-    name = c['layerBodId'] + '.' + 'plname_%' % lang
+    name = c['layerBodId'] + '.' + 'plname_%s' % lang
     doc_title = c['layerBodId'] + '.' + 'doc_title'
 %>
 
