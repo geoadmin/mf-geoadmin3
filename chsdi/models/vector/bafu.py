@@ -75,7 +75,7 @@ register('ch.bafu.hydrologie-wassertemperaturmessstationen', Temperaturmessnetz)
 
 class Flussordnungszahlen_strahler(Base, Vector):
     __tablename__ = 'flussordnungszahlen'
-    __table_args__ = ({'schema': 'diverse', 'autoload': False})
+    __table_args__ = ({'schema': 'wasser', 'autoload': False})
     __bodId__ = 'ch.bafu.flussordnungszahlen-strahler'
     __template__ = 'templates/htmlpopup/flussordnungszahlen.mako'
     __label__ = 'arc_id'
