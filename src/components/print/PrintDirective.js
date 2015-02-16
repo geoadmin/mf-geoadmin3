@@ -446,6 +446,9 @@
             }
 
             var encJSON = format.writeFeature(feature);
+            if (encJSON) {
+              encJSON = angular.fromJson(encJSON);
+            }
             if (!encJSON.properties) {
               encJSON.properties = {};
 
