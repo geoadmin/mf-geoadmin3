@@ -28,6 +28,9 @@ VARNISH_FLUSH_FILE=rc_int
 if [ "$2" == "prod" ]
 then
   VARNISH_FLUSH_FILE=rc_prod
+elif [ "$2" == "demo" ]
+then
+  VARNISH_FLUSH_FILE=rc_demo
 fi
 
 echo "Flushing varnishes"
