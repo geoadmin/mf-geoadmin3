@@ -40,8 +40,10 @@ class CatalogService(MapNameValidation):
 
         def getListIndexFromPath(list_nodes, category):
             for i, node in enumerate(list_nodes):
-                if node['category'] == category:
-                    return i
+                if 'category' in node:
+                    if node['category'] == category:
+                        return i
+            return None
 
         def cleanNode(node):
             # Remove useless info
@@ -83,24 +85,43 @@ class CatalogService(MapNameValidation):
         # The children property must contain an array of nodes
         for i in range(0, len(nodes_all)):
             for node in nodes_all[i]:
-                path = node['path'].split('/')
-                root = path[0]
+                if 'path' in node:
+                    path = node['path'].split('/')
+                    if len(path) > 0:
+                        root = path[0]
+                else:
+                    return nodes_final
                 node = cleanNode(node)
                 if i == 0:
                     nodes_final[root] = node
                 elif i == 1:
                     nodes_final[root]['children'].append(node)
                 elif i == 2:
-                    idx = getListIndexFromPath(nodes_final[path[0]]['children'], path[1])
-                    nodes_final[root]['children'][idx]['children'].append(node)
+                    if len(path) >= 1:
+                        idx = getListIndexFromPath(nodes_final[path[0]]['children'], path[1])
+                        if idx is not None:
+                            try:
+                                nodes_final[root]['children'][idx]['children'].append(node)
+                            except:
+                                pass
                 elif i == 3:
-                    idx_1 = getListIndexFromPath(nodes_final[path[0]]['children'], path[1])
-                    idx_2 = getListIndexFromPath(nodes_final[path[0]]['children'][idx_1]['children'], path[2])
-                    nodes_final[root]['children'][idx_1]['children'][idx_2]['children'].append(node)
+                    if len(path) >= 2:
+                        idx_1 = getListIndexFromPath(nodes_final[path[0]]['children'], path[1])
+                        idx_2 = getListIndexFromPath(nodes_final[path[0]]['children'][idx_1]['children'], path[2])
+                        if idx_1 is not None and idx_2 is not None:
+                            try:
+                                nodes_final[root]['children'][idx_1]['children'][idx_2]['children'].append(node)
+                            except:
+                                pass
                 elif i == 4:
-                    idx_1 = getListIndexFromPath(nodes_final[path[0]]['children'], path[1])
-                    idx_2 = getListIndexFromPath(nodes_final[path[0]]['children'][idx_1]['children'], path[2])
-                    idx_3 = getListIndexFromPath(nodes_final[path[0]]['children'][idx_1]['children'][idx_2]['children'], path[3])
-                    nodes_final[root]['children'][idx_1]['children'][idx_2]['children'][idx_3]['children'].append(node)
+                    if len(path) >= 3:
+                        idx_1 = getListIndexFromPath(nodes_final[path[0]]['children'], path[1])
+                        idx_2 = getListIndexFromPath(nodes_final[path[0]]['children'][idx_1]['children'], path[2])
+                        idx_3 = getListIndexFromPath(nodes_final[path[0]]['children'][idx_1]['children'][idx_2]['children'], path[3])
+                        if idx_1 is not None and idx_2 is not None and idx_3 is not None:
+                            try:
+                                nodes_final[root]['children'][idx_1]['children'][idx_2]['children'][idx_3]['children'].append(node)
+                            except:
+                                pass
 
         return nodes_final
