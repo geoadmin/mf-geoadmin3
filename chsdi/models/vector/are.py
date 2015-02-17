@@ -41,7 +41,7 @@ class Alpenkonvention(Base, Vector):
     __label__ = 'stand'
     id = Column('row_id', Integer, primary_key=True)
     the_geom = Column(Geometry(geometry_type='GEOMETRY',
-                               dimension=2, srid=21781))
+                               dimension=3, srid=21781))
     flaeche_ha = Column('flaeche_ha', Numeric)
     stand = Column('stand', Numeric)
 
