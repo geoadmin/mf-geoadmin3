@@ -21,6 +21,8 @@ allowed_hosts = (
     # list allowed hosts here (no port limiting)
 )
 
+DEFAULT_ENCODING = 'utf-8'
+
 
 class OgcProxy:
 
@@ -72,12 +74,14 @@ class OgcProxy:
 
         if content.find('encoding=') > 0:
             m = re.search("encoding=\"(.*?)\\\"", content)
-            try:
-                data = content.decode(m.group(1))
-            except Exception:
-                raise HTTPNotAcceptable()
-            content = data.encode('utf-8')
-            content = content.replace(m.group(1), 'utf-8')
+            doc_encoding = m.group(1)
+            if doc_encoding.lower() != DEFAULT_ENCODING:
+                try:
+                    data = content.decode(doc_encoding, "replace")
+                except Exception:
+                    raise HTTPNotAcceptable("Cannot decode requested content from advertized encoding: %s into unicode." % doc_encoding)
+                content = data.encode(DEFAULT_ENCODING)
+                content = content.replace(doc_encoding, DEFAULT_ENCODING)
 
         response = Response(content, status=resp.status,
                             headers={"Content-Type": ct})
