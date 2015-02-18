@@ -445,7 +445,7 @@
               feature = new ol.Feature(polygon);
             }
 
-            var encJSON = format.writeFeature(feature);
+            var encJSON = format.writeFeatureObject(feature);
             if (!encJSON.properties) {
               encJSON.properties = {};
 
