@@ -5249,3 +5249,6 @@ msgstr ""
 
 msgid "tt_ch.bafu.flussordnungszahlen-strahler.dist_source"
 msgstr ""
+
+msgid "ch.swisstopo-vd.ortschaftenverzeichnis_plz.langtext"
+msgstr ""

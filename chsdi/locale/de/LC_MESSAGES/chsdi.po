@@ -2073,6 +2073,9 @@ msgstr "Stand der amtlichen Vermessung"
 msgid "ch.swisstopo-vd.ortschaftenverzeichnis_plz"
 msgstr "PLZ und Ortschaften"
 
+msgid "ch.swisstopo-vd.ortschaftenverzeichnis_plz.langtext"
+msgstr "Ortschaft"
+
 msgid "ch.swisstopo-vd.ortschaftenverzeichnis_plz.plz"
 msgstr "PLZ"
 

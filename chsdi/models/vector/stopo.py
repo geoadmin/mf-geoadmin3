@@ -1280,7 +1280,7 @@ class PLZOrtschaften(Base, Vector):
     __table_args__ = ({'schema': 'vd', 'autoload': False})
     __template__ = 'templates/htmlpopup/gabmo_plz.mako'
     __bodId__ = 'ch.swisstopo-vd.ortschaftenverzeichnis_plz'
-    __queryable_attributes__ = ['plz']
+    __queryable_attributes__ = ['plz', 'langtext']
     __label__ = 'plz'
     id = Column('os_uuid', Text, primary_key=True)
     plz = Column('plz', Integer)

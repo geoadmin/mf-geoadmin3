@@ -2073,6 +2073,9 @@ msgstr "Etat de la mensuration officielle"
 msgid "ch.swisstopo-vd.ortschaftenverzeichnis_plz"
 msgstr "NPA et localités"
 
+msgid "ch.swisstopo-vd.ortschaftenverzeichnis_plz.langtext"
+msgstr "Localité"
+
 msgid "ch.swisstopo-vd.ortschaftenverzeichnis_plz.plz"
 msgstr "NPA"
 
