@@ -8,8 +8,8 @@
      'pascalprecht.translate']);
 
   module.controller('GaPrintDirectiveController', function($rootScope, $scope,
-      $http, $window, $translate, $timeout,
-      gaLayers, gaPermalink, gaBrowserSniffer, gaWaitCursor) {
+      $http, $q, $window, $translate, $timeout, gaLayers, gaPermalink,
+      gaBrowserSniffer, gaWaitCursor) {
 
     var pdfLegendsToDownload = [];
     var pdfLegendString = '_big.pdf';
@@ -23,7 +23,8 @@
     var printConfigLoaded = false;
     var currentTime = undefined;
     var layersYears = [];
-
+    var canceller;
+    var currentMultiPrintId;
     $scope.options.multiprint = false;
     $scope.options.movie = false;
     $scope.options.printing = false;
@@ -32,8 +33,10 @@
 
     // Get print config
     var updatePrintConfig = function() {
-      var http = $http.get($scope.options.printConfigUrl);
-      http.success(function(data) {
+      canceller = $q.defer();
+      var http = $http.get($scope.options.printConfigUrl, {
+        timeout: canceller.promise
+      }).success(function(data) {
         $scope.capabilities = data;
 
         // default values:
@@ -591,6 +594,27 @@
       $scope.options.printing = false;
     };
 
+    // Abort the print process
+    var pollMultiPromise; // Promise of the last $timeout called
+    $scope.abort = function() {
+      $scope.options.printing = false;
+      // Abort the current $http request
+      if (canceller) {
+        canceller.resolve();
+      }
+      // Abort the current $timeout
+      if (pollMultiPromise) {
+        $timeout.cancel(pollMultiPromise);
+      }
+      // Tell the server to cancel the print process
+      if (currentMultiPrintId) {
+        $http.get($scope.options.printPath + 'cancel?id=' +
+          currentMultiPrintId);
+        currentMultiPrintId = null;
+      }
+    };
+
+    // Start the print process
     $scope.submit = function() {
       if (!$scope.options.active) {
         return;
@@ -613,6 +637,7 @@
       pdfLegendsToDownload = [];
       layersYears = [];
 
+      // Transform layers to literal
       angular.forEach(layers, function(layer) {
         if (layer.visible) {
           var attribution = layer.attribution;
@@ -648,6 +673,8 @@
         });
         defaultPage['timestamp'] = years.join(',');
       }
+
+      // Transform graticule to literal
       if ($scope.options.graticule) {
         var graticule = {
           'baseURL': 'http://wms.geo.admin.ch/',
@@ -663,6 +690,8 @@
         };
         encLayers.push(graticule);
       }
+
+      // Transform overlays to literal
       // FIXME this is a temporary solution
       var overlays = $scope.map.getOverlays();
       var resolution = $scope.map.getView().getResolution();
@@ -705,25 +734,34 @@
         }
       });
 
-      var scales = this.scales.map(function(scale) {
-        return parseInt(scale.value);
-      });
-      var that = this;
-      $http.get($scope.options.shortenUrl, {
+
+      // Get the short link
+      var shortLink;
+      canceller = $q.defer();
+      var promise = $http.get($scope.options.shortenUrl, {
+        timeout: canceller.promise,
         params: {
           url: gaPermalink.getHref()
         }
       }).success(function(response) {
+        shortLink = response.shorturl.replace('/shorten', '');
+      });
+
+      // Build the complete json then send it to the print server
+      promise.then(function() {
+        if (!$scope.options.printing) {
+          return;
+        }
         var movieprint = $scope.options.movie && $scope.options.multiprint;
         var spec = {
-          layout: that.layout.name,
+          layout: $scope.layout.name,
           srs: proj.getCode(),
           units: proj.getUnits() || 'm',
           rotation: -((view.getRotation() * 180.0) / Math.PI),
           app: 'config',
           lang: lang,
           //use a function to get correct dpi according to layout (A4/A3)
-          dpi: getDpi(that.layout.name, that.dpi),
+          dpi: getDpi($scope.layout.name, $scope.dpi),
           layers: encLayers,
           legends: encLegends,
           enableLegends: (encLegends && encLegends.length > 0),
@@ -733,22 +771,29 @@
             angular.extend({
               center: getPrintRectangleCenterCoord(),
               bbox: getPrintRectangleCoords(),
-              display: [that.layout.map.width, that.layout.map.height],
+              display: [$scope.layout.map.width, $scope.layout.map.height],
               // scale has to be one of the advertise by the print server
               scale: $scope.scale.value,
               dataOwner: '© ' + attributions.join(),
-              shortLink: response.shorturl.replace('/shorten', ''),
+              shortLink: shortLink || '',
               rotation: -((view.getRotation() * 180.0) / Math.PI)
             }, defaultPage)
           ]
         };
-
         var startPollTime;
         var pollErrors;
         var pollMulti = function(url) {
-          $timeout(function() {
-            var http = $http.get(url);
-            http.success(function(data) {
+          pollMultiPromise = $timeout(function() {
+            if (!$scope.options.printing) {
+              return;
+            }
+            canceller = $q.defer();
+            var http = $http.get(url, {
+               timeout: canceller.promise
+            }).success(function(data) {
+              if (!$scope.options.printing) {
+                return;
+              }
               if (!data.getURL) {
                 // Write progress using the following logic
                 // First 60% is pdf page creationg
@@ -781,6 +826,10 @@
                 $scope.downloadUrl(data.getURL);
               }
             }).error(function() {
+              if ($scope.options.printing == false) {
+                pollErrors = 0;
+                return;
+              }
               pollErrors += 1;
               if (pollErrors > 2) {
                 $scope.options.printing = false;
@@ -791,18 +840,21 @@
           }, POLL_INTERVAL, false);
         };
 
-        var printUrl = that.capabilities.createURL;
+        var printUrl = $scope.capabilities.createURL;
         //When movie is on, we use printmulti
         if (movieprint) {
           printUrl = printUrl.replace('/print/', '/printmulti/');
         }
-        var http = $http.post(printUrl + '?url=' +
-            encodeURIComponent(printUrl), spec);
-        http.success(function(data) {
+        canceller = $q.defer();
+        var http = $http.post(printUrl + '?url=' + encodeURIComponent(printUrl),
+          spec, {
+          timeout: canceller.promise
+        }).success(function(data) {
           if (movieprint) {
             //start polling process
             var pollUrl = $scope.options.printPath + 'progress?id=' +
                 data.idToCheck;
+            currentMultiPrintId = data.idToCheck;
             startPollTime = new Date();
             pollErrors = 0;
             pollMulti(pollUrl);
@@ -812,18 +864,16 @@
         }).error(function() {
           $scope.options.printing = false;
         });
-      }).error(function() {
-        $scope.options.printing = false;
       });
     };
 
-    function getDpi(layoutName, dpiConfig) {
+    var getDpi = function(layoutName, dpiConfig) {
       if (/a4/i.test(layoutName) && dpiConfig.length > 1) {
         return dpiConfig[1].value;
       } else {
         return dpiConfig[0].value;
       }
-    }
+    };
 
     var getPrintRectangleCoords = function() {
       // Framebuffer size!!
@@ -935,13 +985,12 @@
   });
 
   module.directive('gaPrint',
-    function($http, $log, $translate) {
+    function() {
       return {
         restrict: 'A',
         templateUrl: 'components/print/partials/print.html',
         controller: 'GaPrintDirectiveController',
-        link: function(scope, elt, attrs, controller) {
-        }
+        link: function(scope, elt, attrs, controller) {}
       };
     }
   );
