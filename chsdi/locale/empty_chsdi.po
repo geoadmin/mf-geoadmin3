@@ -5244,8 +5244,8 @@ msgstr ""
 msgid "ch.bafu.flussordnungszahlen-strahler"
 msgstr ""
  
-msgid "tt_strahler"
+msgid "tt_ch.bafu.flussordnungszahlen-strahler.strahler"
 msgstr ""
 
-msgid "tt_dist_source"
+msgid "tt_ch.bafu.flussordnungszahlen-strahler.dist_source"
 msgstr ""

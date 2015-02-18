@@ -4127,6 +4127,12 @@ msgstr "Korridor Nummer"
 msgid "tt_ch.bafu.fauna-wildtierkorridor_national_zustand"
 msgstr "Zustand"
 
+msgid "tt_ch.bafu.flussordnungszahlen-strahler.dist_source"
+msgstr "Länge bis zur Quelle [m]"
+
+msgid "tt_ch.bafu.flussordnungszahlen-strahler.strahler"
+msgstr "Strahlerordnung"
+
 msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_abschnr"
 msgstr "Abschnittnummer"
 
@@ -4568,9 +4574,6 @@ msgstr "Beurteilung BAZL"
 
 msgid "tt_ch_bazl_kataster_belasteter_standorte_zivflpl_standortnummer"
 msgstr "BAZL Standortnummer"
-
-msgid "tt_dist_source"
-msgstr "Länge bis zur Quelle"
 
 msgid "tt_document"
 msgstr "Weitere Informationen "
@@ -5070,9 +5073,6 @@ msgstr "Referenz"
 
 msgid "tt_source"
 msgstr "Quelle der Daten"
-
-msgid "tt_strahler"
-msgstr "Strahlerordnung"
 
 msgid "tt_swissprtr_detaildaten"
 msgstr "Details Betrieb"

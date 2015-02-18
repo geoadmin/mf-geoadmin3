@@ -4127,6 +4127,12 @@ msgstr "Numéro du couloir"
 msgid "tt_ch.bafu.fauna-wildtierkorridor_national_zustand"
 msgstr "État"
 
+msgid "tt_ch.bafu.flussordnungszahlen-strahler.dist_source"
+msgstr "Longueur jusqu’à la source [m]"
+
+msgid "tt_ch.bafu.flussordnungszahlen-strahler.strahler"
+msgstr "Nombre de Strahler"
+
 msgid "tt_ch.bafu.oekomorphologie-f_abschnitte_abschnr"
 msgstr "Numéro du tronçon"
 
@@ -4569,9 +4575,6 @@ msgstr "Evaluation de l'OFAC"
 
 msgid "tt_ch_bazl_kataster_belasteter_standorte_zivflpl_standortnummer"
 msgstr "No de site OFAC"
-
-msgid "tt_dist_source"
-msgstr "Longueur jusqu’à la source"
 
 msgid "tt_document"
 msgstr "Autres informations"
@@ -5071,9 +5074,6 @@ msgstr "Référence"
 
 msgid "tt_source"
 msgstr "Source des données"
-
-msgid "tt_strahler"
-msgstr "Nombre de Strahler"
 
 msgid "tt_swissprtr_detaildaten"
 msgstr "Détails de l’établissement"
