@@ -2074,6 +2074,9 @@ msgstr "Status of cadastral surveying"
 msgid "ch.swisstopo-vd.ortschaftenverzeichnis_plz"
 msgstr "ZIP and locations"
 
+msgid "ch.swisstopo-vd.ortschaftenverzeichnis_plz.langtext"
+msgstr "Location"
+
 msgid "ch.swisstopo-vd.ortschaftenverzeichnis_plz.plz"
 msgstr "Zip"
 

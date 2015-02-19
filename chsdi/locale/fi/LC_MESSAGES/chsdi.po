@@ -2073,6 +2073,9 @@ msgstr "Stadi mesiraziun uffiziala"
 msgid "ch.swisstopo-vd.ortschaftenverzeichnis_plz"
 msgstr "NPVischnancas"
 
+msgid "ch.swisstopo-vd.ortschaftenverzeichnis_plz.langtext"
+msgstr "Vischnancas"
+
 msgid "ch.swisstopo-vd.ortschaftenverzeichnis_plz.plz"
 msgstr "PLZ"
 
