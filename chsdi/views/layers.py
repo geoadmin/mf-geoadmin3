@@ -109,11 +109,11 @@ def _find_type(model, colProp):
         return model.get_column_by_property_name(colProp).type
 
 
-def _get_models_attributes_keys(models):
+def _get_models_attributes_keys(models, lang):
     allAttributes = []
     for model in models:
         if hasattr(model, '__queryable_attributes__'):
-            attributes = model.__queryable_attributes__
+            attributes = model.get_queryable_attributes_keys(lang)
         else:
             # Maybe this should be removed since only searchable layers
             # have attributes that can be queried
@@ -135,7 +135,7 @@ def feature_attributes(request):
         raise exc.HTTPBadRequest('No Vector Table was found for %s' % layerId)
 
     # Take into account all models and remove duplicated keys
-    attributes = _get_models_attributes_keys(models)
+    attributes = _get_models_attributes_keys(models, params.lang)
     trackAttributesNames = []
     fields = []
 
