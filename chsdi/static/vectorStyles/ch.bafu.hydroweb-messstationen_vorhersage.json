@@ -1,0 +1,36 @@
+{
+  "type": "unique",
+  "property": "vorhersage-class",
+  "values": [
+    {
+      "geomType": "point",
+      "value": 0,
+      "vectorOptions": {
+        "type": "circle",
+        "radius": 8,
+        "fill": {
+          "color": "#808080"
+        },
+        "stroke": {
+          "color": "#FFFFFF",
+          "width": 1
+        }
+      }
+    }, {
+      "geomType": "point",
+      "value": 1,
+      "vectorOptions": {
+        "type": "triangle",
+        "radius": 12,
+        "rotation": 1.0471975511965976,
+        "fill": {
+          "color": "#808080"
+        },
+        "stroke": {
+          "color": "#FFFFFF",
+          "width": 1
+        }
+      }
+    }
+  ]
+}

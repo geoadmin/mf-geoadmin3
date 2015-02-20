@@ -100,6 +100,7 @@ def main(global_config, **settings):
     config.add_static_view('static', 'chsdi:static')
     config.add_static_view('images', 'chsdi:static/images')
     config.add_static_view('examples', 'chsdi:static/doc/examples')
+    config.add_static_view('vectorStyles', 'chsdi:static/vectorStyles')
     # keep this the last one
     config.add_static_view('/', 'chsdi:static/doc/build')
 

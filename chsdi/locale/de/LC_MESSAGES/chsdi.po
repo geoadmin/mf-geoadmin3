@@ -1241,6 +1241,27 @@ msgstr "Stationsnummer"
 msgid "ch.bafu.hydrologie-wassertemperaturmessstationen.name"
 msgstr "Stationsname"
 
+msgid "ch.bafu.hydroweb-messstationen_gefahren"
+msgstr "Hochwasser Gefahrenstufen"
+
+msgid "ch.bafu.hydroweb-messstationen_grundwasser"
+msgstr "Messnetz NAQUA"
+
+msgid "ch.bafu.hydroweb-messstationen_temperatur"
+msgstr "Wassertemperatur der Flüsse"
+
+msgid "ch.bafu.hydroweb-messstationen_vorhersage"
+msgstr "Hydrol. Stationen Vorhersagen"
+
+msgid "ch.bafu.hydroweb-messstationen_zustand"
+msgstr "Lage Fliessgewässer und Seen"
+
+msgid "ch.bafu.hydroweb-warnkarte_national"
+msgstr "Warnkarte nationale Gewässer"
+
+msgid "ch.bafu.hydroweb-warnkarte_regional"
+msgstr "Warnkarte regionale Flüsse"
+
 msgid "ch.bafu.kt"
 msgstr "BAFU + Kanton"
 

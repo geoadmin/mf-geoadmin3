@@ -1,3 +1,24 @@
+msgid "ch.bafu.hydroweb-messstationen_gefahren"
+msgstr ""
+
+msgid "ch.bafu.hydroweb-warnkarte_national"
+msgstr ""
+
+msgid "ch.bafu.hydroweb-messstationen_zustand"
+msgstr ""
+
+msgid "ch.bafu.hydroweb-warnkarte_regional"
+msgstr ""
+
+msgid "ch.bafu.hydroweb-messstationen_grundwasser"
+msgstr ""
+
+msgid "ch.bafu.hydroweb-messstationen_vorhersage"
+msgstr ""
+
+msgid "ch.bafu.hydroweb-messstationen_temperatur"
+msgstr ""
+
 msgid "ch.bav.sachplan-infrastruktur-schifffahrt_anhoerung"
 msgstr ""
 

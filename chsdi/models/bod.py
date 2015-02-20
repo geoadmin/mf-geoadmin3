@@ -79,13 +79,20 @@ class LayersConfig(Base):
     staging = Column('staging', Text)
     wmsLayers = Column('wms_layers', Text)
     wmsUrl = Column('wms_url', Text)
+    updateDelay = Column('geojson_update_delay', Integer)
+    geojsonUrlde = Column('geojson_url_de', Text)
+    geojsonUrlfr = Column('geojson_url_fr', Text)
+    geojsonUrlit = Column('geojson_url_it', Text)
+    geojsonUrlrm = Column('geojson_url_rm', Text)
+    geojsonUrlen = Column('geojson_url_en', Text)
 
     def layerConfig(self, params):
         config = {}
         translate = params.translate
+        excludedAttrs = ('geojsonUrlde', 'geojsonUrlfr', 'geojsonUrlit', 'geojsonUrlrm', 'geojsonUrlen')
         wmsHost = params.request.registry.settings['wmshost']
         for k in self.__dict__.keys():
-            if not k.startswith("_") and \
+            if not k.startswith("_") and k not in excludedAttrs and \
                 self.__dict__[k] is not None and \
                     k not in ('staging'):
                 if k == 'maps':
@@ -105,15 +112,23 @@ class LayersConfig(Base):
         layerStaging = self.__dict__['staging']
         if config['type'] == 'wmts':
             del config['singleTile']
-        if config['type'] == 'wms':
+        elif config['type'] == 'wms':
             if layerStaging != 'prod':
                 config['wmsUrl'] = make_agnostic(
                     config['wmsUrl'].replace('wms.geo.admin.ch', wmsHost))
+        elif config['type'] == 'geojson':
+            config['styleUrl'] = make_agnostic(
+                params.request.static_url('chsdi:static/vectorStyles/' + self.layerBodId + '.json'))
+            config['geojsonUrl'] = self._getGeoJsonUrl(params.lang)
         # sublayers don't have attributions
         if 'attribution' in config:
             config['attributionUrl'] = translate(self.__dict__['attribution'] + '.url')
 
         return {self.layerBodId: config}
+
+    # All fields point to en for now
+    def _getGeoJsonUrl(self, lang):
+        return self.__dict__['geojsonUrl%s' % lang]
 
     def _getResolutionsFromMatrixSet(self, matrixSet):
         resolutions = [4000, 3750, 3500, 3250, 3000, 2750, 2500, 2250, 2000, 1750, 1500, 1250,

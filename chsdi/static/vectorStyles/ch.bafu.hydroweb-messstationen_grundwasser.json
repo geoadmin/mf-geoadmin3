@@ -1,0 +1,51 @@
+{
+  "type": "unique",
+  "property": "grundwasser-class",
+  "values": [
+    {
+      "geomType": "point",
+      "value": 2,
+      "vectorOptions": {
+        "type": "circle",
+        "radius": 8,
+        "fill": {
+          "color": "#808080"
+        },
+        "stroke": {
+          "color": "#FFFFFF",
+          "width": 1
+        }
+      }
+    }, {
+      "geomType": "point",
+      "value": 1,
+      "vectorOptions": {
+        "type": "triangle",
+        "radius": 12,
+        "rotation": 1.0471975511965976,
+        "fill": {
+          "color": "#808080"
+        },
+        "stroke": {
+          "color": "#FFFFFF",
+          "width": 1
+        }
+      }
+    }, {
+      "geomType": "point",
+      "value": 3,
+      "vectorOptions": {
+        "type": "square",
+        "radius": 10,
+        "rotation": 0.7853981633974483,
+        "fill": {
+          "color": "#808080"
+        },
+        "stroke": {
+          "color": "#FFFFFF",
+          "width": 1
+        }
+      }
+    }
+  ]
+}

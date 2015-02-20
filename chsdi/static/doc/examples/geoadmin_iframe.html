@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!--[if !HTML5]>
+    <meta http-equiv="X-UA-Compatible" content="IE=9,IE=10,IE=edge,chrome=1"/>
+    <![endif]-->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">	
+    <title>GeoAdmin Iframe example</title>
+      <style type="text/css">
+      iframe {
+        width:100%;
+        height:350px;
+      } 
+      .element {
+        background-color: white;
+        padding-left: 8px;
+        padding-bottom: 8px;
+        padding-top: 8px; 
+        width: 220px;
+        color: #555;
+        font: 11px tahoma,arial,verdana,sans-serif;
+      }
+      .title {
+        margin-top: -4px;
+        font-weight: bold;
+      }
+      </style>
+  </head>
+  <body>
+    <h1>GeoAdmin Iframe example</h1>
+    <iframe src="http://map.geo.admin.ch/embed.html?X=187027.34&Y=650640.77&zoom=2&lang=fr&topic=dev&bgLayer=ch.swisstopo.pixelkarte-grau&catalogNodes=9900&layers=ch.bafu.hydroweb-messstationen_gefahren,ch.bafu.hydroweb-warnkarte_regional" name="IframeGeoadmin"></iframe>
+    <br> This example shows how to retrieve the layer id and the feature id outside the iframe when selecting a feature in the map.</br>
+    <a href="geoadmin_iframe.js">See the code </a> now jquery is used for the homelibrary js and not jquery.com.<br>
+    <br>
+    <table>
+      <tr>
+        <th>Layer ID</th>
+        <td class="layer-id"></td>
+      </tr>
+      <tr>
+        <th>Feature ID</th>
+        <td class="feature-id"></td>
+      </tr>
+    </table>
+    <script type="text/javascript" src="/static/js/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-ajaxtransport-xdomainrequest/1.0.2/jquery.xdomainrequest.min.js"></script>
+    <script type="text/javascript" src="../uncached_loader.js"></script>
+    <script type="text/javascript" src="geoadmin_iframe.js"></script>
+  </body>
+</html>
+
