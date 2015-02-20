@@ -50,7 +50,7 @@ class TERRITORIALREGIONEN(Base, Vector):
     __label__ = 'name'
     id = Column('terreg_nr', Integer, primary_key=True)
     the_geom = Column(Geometry(geometry_type='GEOMETRY',
-                               dimension=2, srid=21781))
+                               dimension=3, srid=21781))
     name = Column('name', Text)
 
 register('ch.vbs.territorialregionen', TERRITORIALREGIONEN)

@@ -15,7 +15,7 @@ requires = [
     'waitress',
     'psycopg2',
     'SQLAlchemy',
-    'geoalchemy2',
+    'geoalchemy2==0.2.4-ga3',
     'transaction',
     'pyramid_tm',
     'papyrus',
