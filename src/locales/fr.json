@@ -210,6 +210,7 @@
 	"paste_url": "Coller URL",
 	"permalink": "Permalien",
 	"plz": "NPA",
+	"popup_blocked": "Le navigateur empêche l'ouverture d'une nouvelle fenêtre. Veuillez vérifier les paramètres de sécurité de votre navigateur.",
 	"position": "Position",
 	"print": "Impression",
 	"print_action": "Imprimer",

@@ -210,6 +210,7 @@
 	"paste_url": "Paste URL",
 	"permalink": "Permalink",
 	"plz": "ZIP",
+	"popup_blocked": "Your browser does block pop-up windows. Please check your browser settings.",
 	"position": "Position",
 	"print": "Print",
 	"print_action": "Print",
