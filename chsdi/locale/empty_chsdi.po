@@ -1,3 +1,6 @@
+msgid "ch.bafu.hydrologie-hintergrundkarte"
+msgstr ""
+
 msgid "ch.pronatura.waldreservate.gisflaeche"
 msgstr ""
 

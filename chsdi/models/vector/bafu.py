@@ -11,6 +11,19 @@ from chsdi.models.vector import Vector
 Base = bases['bafu']
 
 
+class Hintergrundkarte(Base, Vector):
+    __tablename__ = 'hydrologie_hintergrundkarte'
+    __table_args__ = ({'schema': 'public', 'autoload': False})
+    __bodId__ = 'ch.bafu.hydrologie-hintergrundkarte'
+    __label__ = 'bgdi_id'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    name = Column('name', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.bafu.hydrologie-hintergrundkarte', Hintergrundkarte)
+
+
 class AM_G(Base, Vector):
     __tablename__ = 'am_g'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
