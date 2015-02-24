@@ -22,7 +22,7 @@
   var regexpCoordinate = new RegExp(
     '([\\d\\.\']+)[\\s,]+([\\d\\.\']+)');
 
-  module.provider('gaGetCoordinate', function() {
+  module.provider('gaSearchGetCoordinate', function() {
     this.$get = function() {
       return function(extent, query) {
         var position;
@@ -100,65 +100,61 @@
         return valid ?
           [Math.round(position[0] * 1000) / 1000,
           Math.round(position[1] * 1000) / 1000] : undefined;
-        };
       };
-    });
-
-  module.provider('gaSwisssearch', function() {
-    this.$get = function($timeout, $rootScope) {
-
-      var PermalinkSearch = function() {
-        var active = false,
-            hitCount = 0,
-            totalResults = 0,
-            clickEl = undefined,
-            singleResult = false,
-            maxRounds = 0;
-
-       this.activate = function(numberOfResults) {
-          active = true;
-          hitCount = 0;
-          totalResults = 0;
-          clickEl = undefined;
-          maxRounds = numberOfResults;
-          $rootScope.$broadcast('gaSwisssearchActivated');
-        };
-
-        this.feed = function(el) {
-          if (!active) {
-            return;
-          }
-          el = el.find('.tt-suggestion');
-          totalResults += el.length;
-          if (el.length > 0) {
-            clickEl = el[0];
-          }
-        };
-
-        this.check = function() {
-          if (active) {
-            hitCount += 1;
-            if (hitCount >= maxRounds) {
-              active = false;
-              if (totalResults == 1 &&
-                  clickEl) {
-                singleResult = true;
-                clickEl.click();
-              }
-              $rootScope.$broadcast('gaSwisssearchDone');
-            }
-          }
-        };
-
-        this.singleResult = function() {
-          return singleResult;
-        };
-
-      };
-
-      return new PermalinkSearch();
     };
   });
+
+  module.provider('gaSearchLabels', function() {
+
+    var preIndicator = '-------------------------------';
+    var postIndicator = '________________________________';
+    var preHighlight = '<span class="ga-search-highlight">';
+    var postHighlight = '</span>';
+
+    var highlightWord = function(str, word) {
+      if (!(!!word.length)) {
+        return str;
+      }
+      var patt = new RegExp(word, 'ig');
+      var splits = str.split(patt);
+      var res = '';
+      var i = 0;
+      var olen = 0;
+      var wlen = word.length;
+      for (; i < splits.length - 1; i++) {
+        res += splits[i];
+        olen += splits[i].length;
+        res += preIndicator +
+               str.substring(olen, olen + wlen) +
+               postIndicator;
+        olen += wlen;
+      }
+      res += splits[i];
+      return res;
+    };
+
+
+    this.$get = function() {
+      return {
+        highlight: function(str, wordstring) {
+          var words = wordstring.split(' ');
+          var res = str;
+          angular.forEach(words, function(w) {
+            res = highlightWord(res, w);
+          });
+          var pre = new RegExp(preIndicator, 'g');
+          var post = new RegExp(postIndicator, 'g');
+          return res.replace(pre, preHighlight)
+                    .replace(post, postHighlight);
+        },
+        cleanLabel: function(str) {
+          return str.replace(/(<b>|<\/b>)/gi, '');
+        }
+      };
+    };
+  });
+
+
 
 })();
 

@@ -1,0 +1,29 @@
+<div class="ga-search-results-container ng-hide" ng-hide="!results.length">
+
+  <span ng-if="type === 'locations'">
+    <div class="ga-search-results-header" translate>locations</div>
+  </span>
+  <span ng-if="type === 'featuresearch'">
+    <div class="ga-search-results-header" translate>item</div>
+  </span>
+  <span ng-if="type === 'layers'">
+    <div class="ga-search-results-header" translate>map_info</div>
+  </span>
+
+  <span class="ga-search-results">
+    <div class="ga-search-result" ng-repeat="res in results">
+      <div class="ga-search-item"
+          ng-mouseenter="preview(res)"
+          ng-mouseleave="removePreview($event, res)"
+          ng-click="select(res)"
+          ng-bind-html="prepareLabel(res.attrs)">
+      </div>
+      <i class="icon-info-sign"
+         ng-if="type === 'layers'"
+         ng-mouseenter="preview(res)"
+         ng-mouseleave="removePreview($event, res)"
+         ng-click="getLegend($event, res.attrs.layer)"></i>
+    </div>
+  </span>
+
+</div>

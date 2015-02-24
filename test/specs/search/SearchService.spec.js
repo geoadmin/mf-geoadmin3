@@ -1,11 +1,11 @@
-describe('ga_search_service', function() {
+describe('ga_search_getcoordinate_service', function() {
 
   var extent = [420000, 30000, 900000, 350000];
   var getCoordinate;
 
   beforeEach(function() {
     inject(function($injector) {
-      getCoordinate = $injector.get('gaGetCoordinate');
+      getCoordinate = $injector.get('gaSearchGetCoordinate');
     });
   });
 
@@ -41,4 +41,53 @@ describe('ga_search_service', function() {
     expect(getCoordinate(extent,'10° W 50° S')).to.be(undefined);
     expect(getCoordinate(extent,'10° E 50° S')).to.be(undefined);
   });
+});
+
+describe('ga_search_labels_highlight', function() {
+
+  var labelsService;
+
+  beforeEach(function() {
+    inject(function($injector) {
+      labelsService = $injector.get('gaSearchLabels');
+    });
+  });
+
+  it('Empty Strings', function() {
+    var testString = '';
+    var res = labelsService.highlight('', 'something');
+    expect(res).to.eql('');
+    res = labelsService.highlight('tt aa ww', '');
+    expect(res).to.eql('tt aa ww');
+  });
+
+  it('Special words', function() {
+    var testString = 'Das ist ein Span und class teststring';
+    var res = labelsService.highlight(testString, 'span');
+    expect(res).to.eql('Das ist ein <span class="ga-search-highlight">Span</span> und class teststring');
+    var res = labelsService.highlight(testString, 'Class');
+    expect(res).to.eql('Das ist ein Span und <span class="ga-search-highlight">class</span> teststring');
+  });
+
+  it('Single Replacement', function() {
+    var testString = 'Das ist ein Test, um <b>fettes</b> zu';
+    var cl = 'ga-search-highlight';
+    var res = labelsService.highlight(testString,'ist',cl);
+    expect(res).to.eql('Das <span class="' + cl + '">ist</span> ein Test, um <b>fettes</b> zu');
+    res = labelsService.highlight(testString,'test',cl);
+    expect(res).to.eql('Das ist ein <span class="' + cl + '">Test</span>, um <b>fettes</b> zu');
+  });
+
+  it('Multi Replacement', function() {
+    var testString = 'Das da ist das';
+    var res = labelsService.highlight(testString, 'das');
+    expect(res).to.eql('<span class="ga-search-highlight">Das</span> da ist <span class="ga-search-highlight">das</span>');
+  });
+
+  it('Multiple Words', function() {
+    var testString = 'Wollen wir das heute?';
+    var res = labelsService.highlight(testString, 'wir heute');
+    expect(res).to.eql('Wollen <span class="ga-search-highlight">wir</span> das <span class="ga-search-highlight">heute</span>?');
+  });
+
 });
