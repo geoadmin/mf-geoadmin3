@@ -81,8 +81,20 @@
 
             // Change cursor style on mouse move, only on desktop
             var updateCursorStyle = function(evt) {
-              var feature = findVectorFeature(map.getEventPixel(evt));
-              map.getTarget().style.cursor = (feature) ? 'pointer' : '';
+              var feature, pixel = map.getEventPixel(evt);
+              var hasQueryableLayer = map.forEachLayerAtPixel(pixel,
+                  function() {
+                    return true;
+                  },
+                  undefined,
+                  function(layer) {
+                    return isQueryableBodLayer(layer);
+                  });
+              if (!hasQueryableLayer) {
+                feature = findVectorFeature(pixel);
+              }
+              map.getTarget().style.cursor = (hasQueryableLayer || feature) ?
+                  'pointer' : '';
             };
             var updateCursorStyleDebounced = gaDebounce.debounce(
                 updateCursorStyle, 10, false, false);
