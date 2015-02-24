@@ -9,7 +9,7 @@
   epsg = tilematrixset
   TileMatrixSet_epsg = "TileMatrixSet_%s.mako" % epsg
   def validate_tilematrixset(id):
-      if int(id) in (18,20,21,22,25,26,27,28):
+      if int(id) in (17,18,19,20,21,22,25,24,26,27,28):
           return id
       return '26'
 %>
