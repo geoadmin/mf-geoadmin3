@@ -1,0 +1,6 @@
+export KEEP_VERSION=false
+export DEPLOY_TARGET=ci
+export API_URL=//mf-chsdi3.ci.bgdi.ch
+export APACHE_BASE_PATH=
+export BROWSERSTACK_TARGETURL=http://mf-geoadmin3.ci.bgdi.ch
+export VARNISH_HOSTS=()
