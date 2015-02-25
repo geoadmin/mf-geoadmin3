@@ -1055,45 +1055,28 @@ ul.panel-body-wide {
 
 #loader {
   display: none;
+  position: fixed;
   z-index: 1050; /* on top of the map but not on popup */
-  opacity: 0;
+  top: 0;
+  left: 0;
+  height: 4px;
+  background: #F00;
 
-  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-    .transition(opacity .20s ease);
-    display: block;
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    height: 30px;
-    line-height: 30px; /* Safari */
-    font-size: 28px;
-    background-color: white;
-    color: red;
-    opacity: 1;
-    .ga-spin();
+  &:before {
+    content: normal;
   }
-
-  @media (max-width: @screen-phone) {
-    top: 0;
-    left: 0;
-    height: 4px;
-    background: #F00;
-    -webkit-animation: loader 1s infinite;
-    animation: loader 1s infinite;
-    &:before {
-      content: normal;
-    }
-  }
-}
-.offline #loader, .online:not(.ga-wait-cursor) #loader {
-  display: none;
-  opacity: 0;
-  -webkit-animation: none;
-  animtaion: none;
 }
 
 .online.ga-wait-cursor {
   cursor: wait;
+
+  @media (max-width: @screen-tablet) {
+    #loader {
+      display: block;
+      -webkit-animation: loader 1s infinite;
+      animation: loader 1s infinite;
+    }
+  }
 }
 
 .homescreen {
