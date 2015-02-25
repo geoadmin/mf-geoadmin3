@@ -1,4 +1,76 @@
 describe('ga_map_service', function() {
+  var map;
+
+  var addLayerToMap = function(bodId) {
+    var layer = new ol.layer.Tile({
+      source: new ol.source.OSM()
+    });
+    layer.bodId = bodId;
+    layer.displayInLayerManager = true;
+    map.addLayer(layer);
+    return layer;
+  };
+
+  var addLocalKmlLayerToMap = function() {
+    var kmlFormat = new ol.format.KML({
+      extractStyles: true,
+      extractAttributes: true
+    });
+    var layer = new ol.layer.Vector({
+      id: 'KML||documents/kml/bar.kml',
+      url: 'documents/kml/bar.kml',
+      type: 'KML',
+      label: 'KML',
+      opacity: 0.1,
+      visible: false,
+      source: new ol.source.Vector({
+        features: kmlFormat.readFeatures('<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:gx="http://www.google.com/kml/ext/2.2"></kml>')
+      })
+    });
+    layer.displayInLayerManager = true;
+    map.addLayer(layer);
+    return layer;
+  };
+
+  var addKmlLayerToMap = function() {
+    var kmlFormat = new ol.format.KML({
+      extractStyles: true,
+      extractAttributes: true
+    });
+    var layer = new ol.layer.Vector({
+      id: 'KML||http://foo.ch/bar.kml',
+      url: 'http://foo.ch/bar.kml',
+      type: 'KML',
+      label: 'KML',
+      opacity: 0.1,
+      visible: false,
+      source: new ol.source.Vector({
+        features: kmlFormat.readFeatures('<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:gx="http://www.google.com/kml/ext/2.2"></kml>')
+      })
+    });
+    layer.displayInLayerManager = true;
+    map.addLayer(layer);
+    return layer;
+  };
+
+  var addExternalWmsLayerToMap = function() {
+    var source = new ol.source.ImageWMS({
+      params: {LAYERS: 'ch.wms.name'},
+      url: 'http://foo.ch/wms',
+    });
+    var layer = new ol.layer.Image({
+      id: 'WMS||The wms layer||http://foo.ch/wms||ch.wms.name',
+      url: 'http://foo.ch/wms',
+      type: 'WMS',
+      label: 'The wms layer',
+      opacity: 0.4,
+      visible: false,
+      source: source
+    });
+    layer.displayInLayerManager = true;
+    map.addLayer(layer);
+    return layer;
+  };
 
   describe('gaLayers', function() {
     var layers, $httpBackend;
@@ -97,55 +169,7 @@ describe('ga_map_service', function() {
   });
 
   describe('gaLayersPermalinkManager', function() {
-    var map, manager, permalink;
-
-    var addLayerToMap = function(bodId) {
-      var layer = new ol.layer.Tile({
-        source: new ol.source.OSM()
-      });
-      layer.bodId = bodId;
-      layer.displayInLayerManager = true;
-      map.addLayer(layer);
-      return layer;
-    };
-
-    var addKmlLayerToMap = function() {
-      var kmlFormat = new ol.format.KML({
-        extractStyles: true,
-        extractAttributes: true
-      }); 
-      var layer = new ol.layer.Vector({
-        url: 'http://foo.ch/bar.kml',
-        type: 'KML',
-        label: 'KML',
-        opacity: 0.1,
-        visible: false,
-        source: new ol.source.Vector({
-          features: kmlFormat.readFeatures('<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:gx="http://www.google.com/kml/ext/2.2"></kml>')
-        })
-      });
-      layer.displayInLayerManager = true;
-      map.addLayer(layer);
-      return layer;
-    };
-    
-    var addExternalWmsLayerToMap = function() {
-      var source = new ol.source.ImageWMS({
-        params: {LAYERS: 'ch.wms.name'},
-        url: 'http://foo.ch/wms',
-      });
-      var layer = new ol.layer.Image({
-        url: 'http://foo.ch/wms',
-        type: 'WMS',
-        label: 'The wms layer',
-        opacity: 0.4,
-        visible: false,
-        source: source
-      });
-      layer.displayInLayerManager = true;
-      map.addLayer(layer);
-      return layer;
-    };
+    var manager, permalink;
 
     beforeEach(function() {
       map = new ol.Map({});
@@ -206,6 +230,49 @@ describe('ga_map_service', function() {
         $rootScope.$digest();
         expect(permalink.getParams().layers).to.be(undefined);
 
+      }));
+    });
+
+    describe('add/remove local KML layer', function() {
+      it('changes permalink', inject(function($rootScope, gaDefinePropertiesForLayer) {
+        var kmlLayer;
+        expect(permalink.getParams().layers).to.be(undefined);
+        // Local KML layer (add by dnd) is not added to permalink
+        kmlLayer = addLocalKmlLayerToMap();
+        gaDefinePropertiesForLayer(kmlLayer);
+        $rootScope.$digest();
+        expect(permalink.getParams().layers).to.eql(undefined);
+        map.removeLayer(kmlLayer);
+        $rootScope.$digest();
+        expect(permalink.getParams().layers).to.be(undefined);
+      }));
+    });
+
+    describe('add/remove external KML layer', function() {
+      it('changes permalink', inject(function($rootScope, gaDefinePropertiesForLayer) {
+        var kmlLayer;
+        expect(permalink.getParams().layers).to.be(undefined);
+        kmlLayer = addKmlLayerToMap();
+        gaDefinePropertiesForLayer(kmlLayer);
+        $rootScope.$digest();
+        expect(permalink.getParams().layers).to.eql('KML||http://foo.ch/bar.kml');
+        map.removeLayer(kmlLayer);
+        $rootScope.$digest();
+        expect(permalink.getParams().layers).to.be(undefined);
+      }));
+    });
+
+    describe('add/remove external WMS layer', function() {
+      it('changes permalink', inject(function($rootScope, gaDefinePropertiesForLayer) {
+        var wmsLayer;
+        expect(permalink.getParams().layers).to.be(undefined);
+        wmsLayer = addExternalWmsLayerToMap();
+        gaDefinePropertiesForLayer(wmsLayer);
+        $rootScope.$digest();
+        expect(permalink.getParams().layers).to.eql('WMS||The wms layer||http://foo.ch/wms||ch.wms.name');
+        map.removeLayer(wmsLayer);
+        $rootScope.$digest();
+        expect(permalink.getParams().layers).to.be(undefined);
       }));
     });
 
@@ -314,5 +381,170 @@ describe('ga_map_service', function() {
       expect(gaKml.isValidFileContent(null)).to.be(false);
       expect(gaKml.isValidFileContent(212334)).to.be(false);
     });
+  });
+
+  describe('gaMapUtils', function() {
+    var gaMapUtils, map;
+
+    var addLayerToMap = function(bodId) {
+      var layer = new ol.layer.Tile();
+      map.addLayer(layer);
+      return layer;
+    };
+
+    beforeEach(function() {
+      map = new ol.Map({});
+
+      inject(function($injector) {
+        gaMapUtils = $injector.get('gaMapUtils');
+      });
+    });
+
+    it('tests constants', function() {
+      expect(gaMapUtils.preload).to.eql(6);
+      expect(gaMapUtils.swissExtent).to.eql([420000, 30000, 900000, 350000]);
+      expect(gaMapUtils.viewResolutions).to.eql([650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0,
+          2.5, 2.0, 1.0, 0.5, 0.25, 0.1]);
+    });
+
+    it('tests getViewResolutionForZoom', function() {
+      expect(gaMapUtils.getViewResolutionForZoom(10)).to.eql(1);
+    });
+
+    it('tests getTileKey', function() {
+      var tileUrl = "//wmts5.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20140520/21781/18/15/20.jpeg";
+      expect(gaMapUtils.getTileKey(tileUrl)).to.eql(".geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20140520/21781/18/15/20.jpeg");
+    });
+
+    it('tests getMapLayerForBodId', inject(function(gaDefinePropertiesForLayer) {
+       var foundLayer;
+       var nonBodLayer = addLayerToMap();
+       gaDefinePropertiesForLayer(nonBodLayer);
+       foundLayer = gaMapUtils.getMapLayerForBodId(map, 'ch.bod.layer');
+       expect(foundLayer).to.eql(undefined);
+
+       var prevLayer = addLayerToMap();
+       gaDefinePropertiesForLayer(prevLayer);
+       prevLayer.bodId = 'ch.bod.layer';
+       prevLayer.preview = true;
+       foundLayer = gaMapUtils.getMapLayerForBodId(map, 'ch.bod.layer');
+       expect(foundLayer).to.eql(undefined);
+
+       var bgLayer = addLayerToMap();
+       gaDefinePropertiesForLayer(bgLayer);
+       bgLayer.bodId = 'ch.bod.layer';
+       bgLayer.background = true;
+       foundLayer = gaMapUtils.getMapLayerForBodId(map, 'ch.bod.layer');
+       expect(foundLayer).to.eql(bgLayer);
+
+       var bodLayer = addLayerToMap();
+       gaDefinePropertiesForLayer(bodLayer);
+       bodLayer.bodId = 'ch.bod.layer';
+       foundLayer = gaMapUtils.getMapLayerForBodId(map, 'ch.bod.layer');
+       expect(foundLayer).to.eql(bodLayer);
+
+    }));
+
+    it('tests getMapOverlayForBodId', inject(function(gaDefinePropertiesForLayer) {
+       var foundLayer;
+       var nonBodLayer = addLayerToMap();
+       gaDefinePropertiesForLayer(nonBodLayer);
+       foundLayer = gaMapUtils.getMapOverlayForBodId(map, 'ch.bod.layer');
+       expect(foundLayer).to.eql(undefined);
+
+       var prevLayer = addLayerToMap();
+       gaDefinePropertiesForLayer(prevLayer);
+       prevLayer.bodId = 'ch.bod.layer';
+       prevLayer.preview = true;
+       foundLayer = gaMapUtils.getMapOverlayForBodId(map, 'ch.bod.layer');
+       expect(foundLayer).to.eql(undefined);
+
+       var bgLayer = addLayerToMap();
+       gaDefinePropertiesForLayer(bgLayer);
+       bgLayer.bodId = 'ch.bod.layer';
+       bgLayer.background = true;
+       foundLayer = gaMapUtils.getMapOverlayForBodId(map, 'ch.bod.layer');
+       expect(foundLayer).to.eql(undefined);
+
+       var bodLayer = addLayerToMap();
+       gaDefinePropertiesForLayer(bodLayer);
+       bodLayer.bodId = 'ch.bod.layer';
+       foundLayer = gaMapUtils.getMapOverlayForBodId(map, 'ch.bod.layer');
+       expect(foundLayer).to.eql(bodLayer);
+    }));
+
+    it('tests getAttribution', function() {
+      var text = '<img src="text.png"></img>@company 2015';
+      var olAttr = gaMapUtils.getAttribution(text);
+      expect(olAttr).to.be.an(ol.Attribution);
+      expect(olAttr.getHTML()).to.eql(text);
+      var olAttr2 = gaMapUtils.getAttribution(text);
+      expect(olAttr2).to.be.an(ol.Attribution);
+      expect(olAttr2).to.eql(olAttr);
+    });
+
+    it('tests isKmlLayer', inject(function(gaDefinePropertiesForLayer) {
+      // with a layer id
+      expect(gaMapUtils.isKmlLayer('ch.bod.layer')).to.eql(false);
+      expect(gaMapUtils.isKmlLayer('WMS||aa||aa||aa')).to.eql(false);
+      expect(gaMapUtils.isKmlLayer('KML||test/local/foo.kml')).to.eql(true);
+      expect(gaMapUtils.isKmlLayer('KML||http://test:com/foo.kml')).to.eql(true);
+      expect(gaMapUtils.isKmlLayer('KML||https://test:com/foo.kml')).to.eql(true);
+
+      // with an ol.layer
+      var layer = addLayerToMap();
+      gaDefinePropertiesForLayer(layer);
+      expect(gaMapUtils.isKmlLayer(layer)).to.eql(false);
+      layer = addExternalWmsLayerToMap();
+      gaDefinePropertiesForLayer(layer);
+      expect(gaMapUtils.isKmlLayer(layer)).to.eql(false);
+      layer = addKmlLayerToMap();
+      gaDefinePropertiesForLayer(layer);
+      expect(gaMapUtils.isKmlLayer(layer)).to.eql(true);
+      layer = addLocalKmlLayerToMap();
+      gaDefinePropertiesForLayer(layer);
+      expect(gaMapUtils.isKmlLayer(layer)).to.eql(true);
+    }));
+    
+    it('tests isLocalKmlLayer', inject(function(gaDefinePropertiesForLayer) {
+
+      // with an ol.layer
+      var layer = addLayerToMap();
+      gaDefinePropertiesForLayer(layer);
+      expect(gaMapUtils.isLocalKmlLayer(layer)).to.eql(false);
+      layer = addExternalWmsLayerToMap();
+      gaDefinePropertiesForLayer(layer);
+      expect(gaMapUtils.isLocalKmlLayer(layer)).to.eql(false);
+      layer = addKmlLayerToMap();
+      gaDefinePropertiesForLayer(layer);
+      expect(gaMapUtils.isLocalKmlLayer(layer)).to.eql(false);
+      layer = addLocalKmlLayerToMap();
+      gaDefinePropertiesForLayer(layer);
+      expect(gaMapUtils.isLocalKmlLayer(layer)).to.eql(true);
+    }));
+
+    it('tests isExternalWmsLayer', inject(function(gaDefinePropertiesForLayer) {
+      // with a layer id
+      expect(gaMapUtils.isExternalWmsLayer('ch.bod.layer')).to.eql(false);
+      expect(gaMapUtils.isExternalWmsLayer('WMS||aa')).to.eql(false);
+      expect(gaMapUtils.isExternalWmsLayer('WMS||aa||aa')).to.eql(false);
+      expect(gaMapUtils.isExternalWmsLayer('WMS||aa||aa||aa')).to.eql(true);
+      expect(gaMapUtils.isExternalWmsLayer('KML||test/local/foo.kml')).to.eql(false);
+      expect(gaMapUtils.isExternalWmsLayer('KML||http://test:com/foo.kml')).to.eql(false);
+
+      // with an ol.layer
+      var layer = addLayerToMap();
+      gaDefinePropertiesForLayer(layer);
+      expect(gaMapUtils.isExternalWmsLayer(layer)).to.eql(false);
+      layer = addExternalWmsLayerToMap();
+      gaDefinePropertiesForLayer(layer);
+      expect(gaMapUtils.isExternalWmsLayer(layer)).to.eql(true);
+      layer = addKmlLayerToMap();
+      gaDefinePropertiesForLayer(layer);
+      expect(gaMapUtils.isExternalWmsLayer(layer)).to.eql(false);
+      layer = addLocalKmlLayerToMap();
+      gaDefinePropertiesForLayer(layer);
+      expect(gaMapUtils.isExternalWmsLayer(layer)).to.eql(false);
+    }));
   });
 });
