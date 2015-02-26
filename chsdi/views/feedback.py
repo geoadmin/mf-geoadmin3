@@ -36,7 +36,8 @@ def feedback(self, request):
         msg.attach(
             MIMEText(unicodedata.normalize('NFKD',
                                            unicode(text)).encode('UTF-8',
-                                                                 'ignore')))
+                                                                 'ignore'),
+                     _charset='utf-8'))
         # Attach meta information
         part = MIMEBase('application', 'json')
         part.set_payload(json.dumps(jsonToAttach))
