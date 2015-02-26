@@ -22,7 +22,7 @@
                 bottom: 40,
                 left: 60
               },
-              height: 250,
+              height: 188,
               elevationModel: 'COMB'
           },
           styleFunction: (function() {
@@ -143,12 +143,10 @@
         win.on('resize', function() {
           if (isProfileCreated) {
             if (!panel) {
-              panel = $('.ga-measure-panel');
-              panelBt =  $('.ga-measure-buttons-panel');
+              panel = $('.ga-measure-panel-group');
             }
-            // 62 padding and margins 
-            $scope.options.profileOptions.width = win.width() - panel.width() -
-                panelBt.width() - 62;
+            // 47 padding and margins
+            $scope.options.profileOptions.width = win.width() - panel.width() - 47;
             $rootScope.$emit('gaProfileDataUpdated', null, [
               $scope.options.profileOptions.width,
               $scope.options.profileOptions.height
