@@ -5,7 +5,7 @@
       {{layer.label}}
     </label>
     <ul ng-if="layer.open" class="ga-feature">
-      <li ng-repeat="feature in layer.features"
+      <li ng-repeat="feature in layer.features track by $index"
           ng-keydown="onKeyDown($event, feature)"
           ng-focus="onFocus($event, feature)"
           ng-mousedown="onMouseDown($event, feature)"
@@ -17,7 +17,10 @@
         <label class="ga-truncate-text">
           {{feature.label}}
         </label>
-        <i ng-if="feature.geojson" ng-click="zoom($event, feature)" class="icon-zoom-in"></i>
+        <i ng-if="feature.geometry" ng-click="zoom($event, feature)" class="icon-zoom-in"></i>
+      </li>
+      <li ng-if="layer.hasMoreResults">
+        <button class="btn btn-default" ng-click="more($event, layer)" translate>show_more_results</button>
       </li>
     </ul>
   </li>
