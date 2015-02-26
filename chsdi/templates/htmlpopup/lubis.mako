@@ -119,11 +119,15 @@ preview_url = determinePreviewUrl(c['featureId'])
 
 image_width = c['attributes']['image_width'] if 'image_width' in  c['attributes'] else None
 image_height = c['attributes']['image_height'] if 'image_height' in c['attributes'] else None
+image_rotation = c['attributes']['rotation'] if 'rotation' in c['attributes'] else None
 
-if image_width == None or image_height == None:
+if image_width is None or image_height is None:
   wh = imagesize_from_metafile(c['featureId'])
   image_width = wh[0]
   image_height = wh[1]
+
+if image_rotation is None:
+  image_rotation = 0
 
 datum = date_to_str(c['attributes']['flugdatum'])
 params = (
@@ -134,7 +138,7 @@ params = (
     c['attributes']['firma'],
     c['layerBodId'],
     lang,
-    c['attributes']['rotation'] if 'rotation' in  c['attributes'] else 0)
+    image_rotation)
 viewer_url = get_viewer_url(request, params)
 %>
 <tr>
@@ -223,12 +227,15 @@ endif
 datum = date_to_str(c['attributes']['flugdatum'])
 image_width =  c['attributes']['image_width'] if 'image_width' in  c['attributes'] else None
 image_height = c['attributes']['image_height'] if 'image_height' in c['attributes'] else None
-image_rotation = c['attributes']['rotation'] if 'rotation' in c['attributes'] else 0
+image_rotation = c['attributes']['rotation'] if 'rotation' in c['attributes'] else None
 
-if image_width == None or image_height == None:
+if image_width is None or image_height is None:
   wh = imagesize_from_metafile(c['featureId'])
   image_width = wh[0]
   image_height = wh[1]
+
+if image_rotation is None:
+  image_rotation = 0
 
 params = (
     image_width, 

@@ -4,7 +4,7 @@
         var curInstance = MAX_INSTANCES;
         var width = parseInt(${width});
         var height = parseInt(${height});
-        var rotation= parseInt(${rotation if rotation is not None else 0}) * Math.PI / 180;
+        var rotation= parseInt(${rotation if rotation != 'None' and rotation is not None else 0}) * Math.PI / 180;
 
         var url = '//aerialimages{curInstance}.geo.admin.ch/tiles/${ebkey}/';
         var resolutions = [1]; // 1 is the min resolution of the pyramid (for all images)
