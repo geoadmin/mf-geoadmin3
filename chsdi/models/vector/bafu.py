@@ -15,7 +15,7 @@ class Hintergrundkarte(Base, Vector):
     __tablename__ = 'hydrologie_hintergrundkarte'
     __table_args__ = ({'schema': 'hydrologie', 'autoload': False})
     __bodId__ = 'ch.bafu.hydrologie-hintergrundkarte'
-    __label__ = 'bgdi_id'
+    __label__ = 'name'
     id = Column('bgdi_id', Integer, primary_key=True)
     name = Column('name', Text)
     the_geom = Column(Geometry(geometry_type='GEOMETRY',
