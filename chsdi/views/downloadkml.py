@@ -8,7 +8,7 @@ import os
 import errno
 import sys
 import time
-import urllib2
+import urllib
 from pyramid.view import view_config
 from pyramid.response import Response
 from pyramid.httpexceptions import (HTTPBadRequest, HTTPInternalServerError)
@@ -52,7 +52,7 @@ class DownloadKML:
             return Response(status=200)
 
         # IE is always URLEncoding the body
-        jsonstring = urllib2.unquote(self.request.body)
+        jsonstring = urllib.unquote_plus(self.request.body)
 
         try:
             spec = json.loads(jsonstring, encoding=self.request.charset)
