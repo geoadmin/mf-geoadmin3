@@ -102,6 +102,8 @@
       // Activate the "features" permalink manager for the map.
       gaFeaturesPermalinkManager($scope.map);
 
+      var initWithPrint = /print/g.test(gaPermalink.getParams().widgets);
+
       $rootScope.$on('gaTopicChange', function(event, topic) {
         // iOS 7 minimal-ui meta tag bug
         if (gaBrowserSniffer.ios) {
@@ -114,7 +116,10 @@
             isWindowTooSmall()) {
           showCatalog = false;
         }
-        $scope.globals.catalogShown = showCatalog;
+        if (!initWithPrint) {
+          $scope.globals.catalogShown = showCatalog;
+        }
+        initWithPrint = false;
       });
       $rootScope.$on('$translateChangeEnd', function() {
         $scope.langId = $translate.use();
@@ -141,8 +146,10 @@
         webkit: gaBrowserSniffer.webkit,
         ios: gaBrowserSniffer.ios,
         offline: gaNetworkStatus.offline,
-        feedbackPopupShown: /feedback/g.test(gaPermalink.getParams().widgets)
+        feedbackPopupShown: /feedback/g.test(gaPermalink.getParams().widgets),
+        printShown: initWithPrint
       };
+
       gaPermalink.deleteParam('widgets');
 
       $rootScope.$on('gaNetworkStatusChange', function(evt, offline) {
