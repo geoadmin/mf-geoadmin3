@@ -218,14 +218,6 @@ describe('ga_browsersniffer_service', function() {
         expectNotWebkit();
         expectOperaOrFF();
       });
-      
-      it(' on min-iPad iOS 8.1.3', function() {
-        win.navigator.userAgent = "Mozilla/5.0 (iPad; CPU OS 8_1_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) OPiOS/9.2.0.88656 Mobile/12B466 Safari/9537.53";
-        snif = injector.get('gaBrowserSniffer');
-        expectIOS(8);
-        expectWebkit();
-        expectOperaOrFF();
-      });
     });
 
     describe('Opera', function() {
