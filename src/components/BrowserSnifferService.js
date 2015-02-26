@@ -11,7 +11,6 @@
     // holds major version number for IE or NaN for real browsers
     this.$get = function($window, gaPermalink) {
       var ua = $window.navigator.userAgent;
-      var platform = $window.navigator.platform;
       //For IE, we are using angular approach
       //https://github.com/angular/angular.js/blob/e415e916e85040fe62c801092be698ab06c1d11c/src/Angular.js#L157
       var msie = +((/msie (\d+)/.exec(ua.toLowerCase()) || [])[1]);
@@ -25,11 +24,12 @@
       if (ios) {
         ios = +((/\((iPhone|iPad|iPod).+OS (\d{1,2})_/.exec(ua) || [])[2]);
       }
-      var iosChrome = ios && /CriOS/.test(ua);
+      var mac = !msie && /\(Mac/.test(ua);
       var webkit = !msie && /WebKit/.test(ua);
-      var mac = !msie && /Mac/.test(platform);
-      var chrome = !msie && /Chrome/.test(ua);
-      var safari = !msie && !chrome && /Safari/.test(ua);
+      var opera = !msie && /(OPiOS|OPR)\//.test(ua);
+      var chrome = !msie && !opera && /(CriOS|Chrome)\//.test(ua);
+      var safari = !msie && !opera && !chrome && /Safari/.test(ua);
+      var iosChrome = ios && chrome;
       var testSize = function(size) {
         var m = $window.matchMedia;
         return m && (m('(max-width: ' + size + 'px)').matches ||
