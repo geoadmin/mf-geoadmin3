@@ -405,19 +405,114 @@
       }
     };
 
-    this.$get = function($http, gaDefinePropertiesForLayer, gaMapClick,
-        gaMapUtils, gaGlobalOptions, $rootScope, $translate, gaStyleFactory,
-        gaStorage, gaNetworkStatus) {
+    this.$get = function($http, $q, $rootScope, $timeout, $translate,
+        gaDefinePropertiesForLayer, gaGlobalOptions, gaMapClick, gaMapUtils,
+        gaNetworkStatus, gaStorage, gaStyleFactory, gaUrlUtils) {
+
       // Create the parser
       var kmlFormat = new ol.format.KML({
         extractStyles: true,
         extractAttributes: true,
         defaultStyle: [gaStyleFactory.getStyle('kml')]
       });
-      var Kml = function(proxyUrl) {
-        /**
-         * Create a KML layer from a KML string
-         */
+
+      // Read a kml string then return a list of features.
+      var readFeatures = function(kml) {
+        // Replace all hrefs to prevent errors if image doesn't have
+        // CORS headers. Exception for google markers icons (lightblue.png,
+        // ltblue-dot.png, ltblu-pushpin.png, ...) to keep the OL3 magic for
+        // anchor origin.
+        // Test regex here: http://regex101.com/r/tF3vM0
+        // List of google icons: http://www.lass.it/Web/viewer.aspx?id=4
+        kml = kml.replace(
+          /<href>http(s?)(?!(s?):\/\/maps\.(?:google|gstatic)\.com.*(blue|green|orange|pink|purple|red|yellow|pushpin).*\.png)/g,
+          '<href>' + gaGlobalOptions.ogcproxyUrl + 'http'
+        );
+
+        var all = [];
+        var features = kmlFormat.readFeatures(kml);
+        var networkLinks = kmlFormat.readNetworkLinks(kml);
+        if (networkLinks.length) {
+          angular.forEach(networkLinks, function(networkLink) {
+            if (gaUrlUtils.isValid(networkLink.href)) {
+              all.push($http.get(networkLink.href).success(function(data) {
+                return readFeatures(data).then(function(newFeatures) {
+                  features = features.concat(newFeatures);
+                });
+              }));
+            }
+          });
+        }
+        return $q.all(all).then(function() {
+          return features;
+        });
+      };
+
+      // Sanitize the feature's properties (id, geometry, style).
+      var sanitizeFeature = function(feature, projection) {
+        // Ensure polygons are closed.
+        // Reason: print server failed when polygons are not closed.
+        var geometry = feature.getGeometry();
+        closeGeometries((geometry instanceof ol.geom.GeometryCollection) ?
+            geometry.getGeometries() : [geometry]);
+
+        // Replace empty id by undefined.
+        // Reason: If 2 features have their id empty, an assertion error
+        // occurs when we add them to the source
+        if (feature.getId() === '') {
+          feature.setId(undefined);
+        }
+        if (feature.getGeometry()) {
+          feature.getGeometry().transform('EPSG:4326', projection);
+        }
+        var geom = feature.getGeometry();
+        var styles = feature.getStyleFunction().call(feature);
+        var style = styles[0];
+
+        // if the feature is a Point and we are offline, we use default kml
+        // style.
+        // if the feature is a Point and has a name with a text style, we
+        // create a correct text style.
+        // TODO Handle GeometryCollection displaying name on the first Point
+        // geometry.
+        if (style && (geom instanceof ol.geom.Point ||
+            geom instanceof ol.geom.MultiPoint)) {
+          var image = style.getImage();
+          var text = null;
+
+          if (gaNetworkStatus.offline) {
+            image = gaStyleFactory.getStyle('kml').getImage();
+          }
+
+          if (feature.get('name') && style.getText()) {
+            if (image && image.getScale() == 0) {
+              // transparentCircle is used to allow selection
+              image = gaStyleFactory.getStyle('transparentCircle');
+            }
+            text = new ol.style.Text({
+              font: gaStyleFactory.FONT,
+              text: feature.get('name'),
+              fill: style.getText().getFill(),
+              stroke: gaStyleFactory.getTextStroke(
+                  style.getText().getFill().getColor()),
+              scale: style.getText().getScale()
+            });
+          }
+
+          styles = [new ol.style.Style({
+            fill: style.getFill(),
+            stroke: style.getStroke(),
+            image: image,
+            text: text,
+            zIndex: style.getZIndex()
+          })];
+          feature.setStyle(styles);
+        }
+      };
+
+      var Kml = function() {
+
+        // Create a vector layer from a kml string.
         var createKmlLayer = function(kml, options) {
           options = options || {};
           options.id = 'KML||' + options.url;
@@ -434,141 +529,71 @@
             return;
           }
 
-          // Replace all hrefs to prevent errors if image doesn't have
-          // CORS headers. Exception for google markers icons (lightblue.png,
-          // ltblue-dot.png, ltblu-pushpin.png, ...) to keep the OL3 magic for
-          // anchor origin.
-          // Test regex here: http://regex101.com/r/tF3vM0
-          // List of google icons: http://www.lass.it/Web/viewer.aspx?id=4
-          kml = kml.replace(
-            /<href>http(s?)(?!(s?):\/\/maps\.(?:google|gstatic)\.com.*(blue|green|orange|pink|purple|red|yellow|pushpin).*\.png)/g,
-            '<href>' + proxyUrl + 'http'
-          );
-
-          // Create vector layer
-          var features = kmlFormat.readFeatures(kml);
-          for (var i = 0, ii = features.length; i < ii; i++) {
-            var feature = features[i];
-            // Ensure polygons are closed.
-            // Reason: print server failed when polygons are not closed.
-            var geometry = feature.getGeometry();
-            closeGeometries((geometry instanceof ol.geom.GeometryCollection) ?
-                geometry.getGeometries() : [geometry]);
-
-            // Replace empty id by undefined.
-            // Reason: If 2 features have their id empty, an assertion error
-            // occurs when we add them to the source
-            if (feature.getId() === '') {
-              feature.setId(undefined);
+          // Read features available in a kml string, then create an ol layer.
+          return readFeatures(kml).then(function(features) {
+            for (var i = 0, ii = features.length; i < ii; i++) {
+              sanitizeFeature(features[i], options.projection);
             }
-            if (feature.getGeometry()) {
-              feature.getGeometry().transform('EPSG:4326', options.projection);
+            var attributions;
+            if (options.attribution) {
+              //Insure attribution on map is same as printed
+              options.attribution = gaMapUtils.getAttribution(
+                  options.attribution).getHTML();
+              attributions = [
+                gaMapUtils.getAttribution(options.attribution)
+              ];
             }
-            var geom = feature.getGeometry();
-            var styles = feature.getStyleFunction().call(feature);
-            var style = styles[0];
-
-            // if the feature is a Point and we are offline, we use default kml
-            // style.
-            // if the feature is a Point and has a name with a text style, we
-            // create a correct text style.
-            // TODO Handle GeometryCollection displaying name on the first Point
-            // geometry.
-            if (style && (geom instanceof ol.geom.Point ||
-                geom instanceof ol.geom.MultiPoint)) {
-              var image = style.getImage();
-              var text = null;
-
-              if (gaNetworkStatus.offline) {
-                image = gaStyleFactory.getStyle('kml').getImage();
-              }
-
-              if (feature.get('name') && style.getText()) {
-                if (image && image.getScale() == 0) {
-                  // transparentCircle is used to allow selection
-                  image = gaStyleFactory.getStyle('transparentCircle');
-                }
-                text = new ol.style.Text({
-                  font: gaStyleFactory.FONT,
-                  text: feature.get('name'),
-                  fill: style.getText().getFill(),
-                  stroke: gaStyleFactory.getTextStroke(
-                      style.getText().getFill().getColor()),
-                  scale: style.getText().getScale()
-                });
-              }
-
-              styles = [new ol.style.Style({
-                fill: style.getFill(),
-                stroke: style.getStroke(),
-                image: image,
-                text: text,
-                zIndex: style.getZIndex()
-              })];
-              feature.setStyle(styles);
-            }
-          }
-          var attributions;
-
-          if (options.attribution) {
-            //Insure attribution on map is same as printed
-            options.attribution = gaMapUtils.getAttribution(
-                options.attribution).getHTML();
-            attributions = [
-              gaMapUtils.getAttribution(options.attribution)
-            ];
-          }
-          var source = new ol.source.Vector({
-            features: features,
-            attributions: attributions
-          });
-          var layerOptions = {
-            id: options.id,
-            url: options.url,
-            type: 'KML',
-            label: options.label || kmlFormat.readName(kml) || 'KML',
-            opacity: options.opacity,
-            visible: options.visible,
-            source: source,
-            extent: source.getExtent(),
-            //Only needed for print
-            attribution: options.attribution
-          };
-
-          // Be sure to remove all html tags
-          layerOptions.label = $('<p>' + layerOptions.label + '<p>').text();
-
-          var olLayer;
-          if (options.useImageVector === true) {
-            layerOptions.source = new ol.source.ImageVector({
-              source: layerOptions.source,
+            var source = new ol.source.Vector({
+              features: features,
               attributions: attributions
             });
+            var layerOptions = {
+              id: options.id,
+              url: options.url,
+              type: 'KML',
+              label: options.label || kmlFormat.readName(kml) || 'KML',
+              opacity: options.opacity,
+              visible: options.visible,
+              source: source,
+              extent: source.getExtent(),
+              //Only needed for print
+              attribution: options.attribution
+            };
 
-            olLayer = new ol.layer.Image(layerOptions);
-          } else {
-            olLayer = new ol.layer.Vector(layerOptions);
-          }
-          gaDefinePropertiesForLayer(olLayer);
-          return olLayer;
+            // Be sure to remove all html tags
+            layerOptions.label = $('<p>' + layerOptions.label + '<p>').text();
+
+            var olLayer;
+            if (options.useImageVector === true) {
+              layerOptions.source = new ol.source.ImageVector({
+                source: layerOptions.source,
+                attributions: attributions
+              });
+
+              olLayer = new ol.layer.Image(layerOptions);
+            } else {
+              olLayer = new ol.layer.Vector(layerOptions);
+            }
+            gaDefinePropertiesForLayer(olLayer);
+            return olLayer;
+          });
         };
 
-        /**
-         * Add an ol layer to the map and add specific event
-         */
+        // Add an ol layer to the map
         var addKmlLayer = function(olMap, data, options, index) {
           options.projection = olMap.getView().getProjection();
-          var olLayer = createKmlLayer(data, options);
-          if (olLayer) {
-            if (index) {
-              olMap.getLayers().insertAt(index, olLayer);
-            } else {
-              olMap.addLayer(olLayer);
+          createKmlLayer(data, options).then(function(olLayer) {
+            if (olLayer) {
+              if (index) {
+                olMap.getLayers().insertAt(index, olLayer);
+              } else {
+                olMap.addLayer(olLayer);
+              }
+              if (options.zoomToExtent) {
+                olMap.getView().fitExtent(olLayer.getExtent(), olMap.getSize());
+              }
             }
-            if (options.zoomToExtent) {
-              olMap.getView().fitExtent(olLayer.getExtent(), olMap.getSize());
-            }
-          }
+          });
         };
 
         this.addKmlToMap = function(map, data, layerOptions, index) {
@@ -582,7 +607,7 @@
           if (gaNetworkStatus.offline) {
             addKmlLayer(map, null, layerOptions, index);
           } else {
-            $http.get(proxyUrl + encodeURIComponent(url), {
+            $http.get(gaGlobalOptions.ogcproxyUrl + encodeURIComponent(url), {
               cache: true
             }).success(function(data, status, headers, config) {
               var fileSize = headers('content-length');
@@ -622,10 +647,8 @@
           }
           return true;
         };
-
-        this.proxyUrl = proxyUrl;
       };
-      return new Kml(gaGlobalOptions.ogcproxyUrl);
+      return new Kml();
     };
   });
 
