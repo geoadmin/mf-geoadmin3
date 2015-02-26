@@ -18,15 +18,18 @@
       if (isNaN(msie)) {
         msie = +((/trident\/.*; rv:(\d+)/.exec(ua.toLowerCase()) || [])[1]);
       }
-      var ios = /(iPhone|iPad|iPod)/.test(ua);
-      if (ios) {
-        ios = +/\((iPhone|iPad|iPod).+OS (\d{1,2})_/.exec(ua)[2];
+      if (isNaN(msie)) {
+        msie = false;
       }
-      var iosChrome = /CriOS/.test(ua);
-      var webkit = /WebKit/.test(ua);
-      var mac = /Mac/.test(platform);
-      var chrome = /Chrome/.test(ua);
-      var safari = !chrome && /Safari/.test(ua);
+      var ios = !msie && /(iPhone|iPad|iPod)/.test(ua);
+      if (ios) {
+        ios = +((/\((iPhone|iPad|iPod).+OS (\d{1,2})_/.exec(ua) || [])[2]);
+      }
+      var iosChrome = ios && /CriOS/.test(ua);
+      var webkit = !msie && /WebKit/.test(ua);
+      var mac = !msie && /Mac/.test(platform);
+      var chrome = !msie && /Chrome/.test(ua);
+      var safari = !msie && !chrome && /Safari/.test(ua);
       var testSize = function(size) {
         var m = $window.matchMedia;
         return m && (m('(max-width: ' + size + 'px)').matches ||
@@ -94,7 +97,7 @@
       }
 
       return {
-        msie: msie, // undefined or ie version number
+        msie: msie, // false or ie version number
         webkit: webkit,
         mac: mac,
         safari: safari,
