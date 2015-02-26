@@ -2,7 +2,6 @@
 
 import os
 import glob
-from pyramid.threadlocal import get_current_registry
 
 from chsdi.lib.helpers import make_api_url
 
@@ -16,7 +15,7 @@ def hbytes(num):
 
 
 def find_files(request, layerBodId, prefixFileName):
-    settings = get_current_registry().settings
+    settings = request.registry.settings
     downloadFolder = ''.join((settings['zadara_dir'], layerBodId))
     prefixWildCard = '%s*' % prefixFileName
     for filePath in glob.glob('/'.join((downloadFolder, prefixWildCard))):
