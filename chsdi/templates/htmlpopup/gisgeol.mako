@@ -7,7 +7,7 @@
 
     c['stable_id'] = False
     sgd_nr = c['layerBodId'] + '.' + 'sgd_nr'
-    files = [fileObject for fileObject in find_files(request, 'ch.swisstopo.geologie-gisgeol', c['attributes']['sgd_nr'])]
+    files = [fileObject for fileObject in find_files(request, 'ch.swisstopo.geologie-gisgeol', str(c['attributes']['sgd_nr'])+'.pdf')]
 
     def br(text):
         return text.replace('\n', markupsafe.Markup('<br />'))

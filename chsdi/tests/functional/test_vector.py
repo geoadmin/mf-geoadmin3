@@ -2,8 +2,6 @@
 
 import unittest
 
-from pyramid import testing
-
 from chsdi.models.vector import getFallbackLangMatch
 
 
