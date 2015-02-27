@@ -19,8 +19,7 @@ class Test_ZadaraHelpers(unittest.TestCase):
         request.registry.settings['zadara_dir'] = '/var/local/cartoweb/downloads/'
         layerBodId = 'ch.swisstopo.geologie-gisgeol'
         fileName = os.listdir(request.registry.settings['zadara_dir'] + layerBodId)[0]
-        prefixFileName = fileName.split('.pdf')[0]
-        for f in find_files(request, layerBodId, prefixFileName):
+        for f in find_files(request, layerBodId, fileName):
             self.failUnless('name' in f)
             self.failUnless('size' in f)
             self.failUnless('url' in f)

@@ -14,11 +14,10 @@ def hbytes(num):
     return "%3.1f %s" % (num, 'TB')
 
 
-def find_files(request, layerBodId, prefixFileName):
+def find_files(request, layerBodId, FilePattern):
     settings = request.registry.settings
     downloadFolder = ''.join((settings['zadara_dir'], layerBodId))
-    prefixWildCard = '%s*' % prefixFileName
-    for filePath in glob.glob('/'.join((downloadFolder, prefixWildCard))):
+    for filePath in glob.glob('/'.join((downloadFolder, FilePattern))):
         fileName = os.path.basename(filePath)
         fileSize = os.path.getsize(filePath)
         fileApiUrl = ''.join((make_api_url(request, True), '/downloads/', layerBodId, '/', fileName))
