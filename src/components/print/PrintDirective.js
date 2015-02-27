@@ -39,6 +39,10 @@
       }).success(function(data) {
         $scope.capabilities = data;
 
+        angular.forEach($scope.capabilities.layouts, function(lay) {
+          lay.stripped = lay.name.substr(2);
+        });
+
         // default values:
         $scope.layout = data.layouts[0];
         $scope.dpi = data.dpis;
