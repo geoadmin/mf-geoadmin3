@@ -1534,7 +1534,7 @@ class gisgeol_linien(Base, Vector):
     __template__ = 'templates/htmlpopup/gisgeol.mako'
     __bodId__ = 'ch.swisstopo.geologie-gisgeol-linien'
     __queryable_attributes__ = ['sgd_nr']
-    __label__ = 'sgd_nr'
+    __label__ = 'title'
     id = Column('gid', Integer, primary_key=True)
     sgd_nr = Column('sgd_nr', Integer)
     title = Column('title', Text)
@@ -1559,7 +1559,7 @@ class gisgeol_flaechen_1x1km(Base, Vector):
     __template__ = 'templates/htmlpopup/gisgeol.mako'
     __bodId__ = 'ch.swisstopo.geologie-gisgeol-flaechen-1x1km'
     __queryable_attributes__ = ['sgd_nr']
-    __label__ = 'sgd_nr'
+    __label__ = 'title'
     id = Column('gid', Integer, primary_key=True)
     sgd_nr = Column('sgd_nr', Integer)
     title = Column('title', Text)
@@ -1584,7 +1584,7 @@ class gisgeol_flaechen_10x10km(Base, Vector):
     __template__ = 'templates/htmlpopup/gisgeol.mako'
     __bodId__ = 'ch.swisstopo.geologie-gisgeol-flaechen-10x10km'
     __queryable_attributes__ = ['sgd_nr']
-    __label__ = 'sgd_nr'
+    __label__ = 'title'
     id = Column('gid', Integer, primary_key=True)
     sgd_nr = Column('sgd_nr', Integer)
     title = Column('title', Text)
@@ -1609,7 +1609,7 @@ class gisgeol_flaechen_10to21000km2(Base, Vector):
     __template__ = 'templates/htmlpopup/gisgeol.mako'
     __bodId__ = 'ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2'
     __queryable_attributes__ = ['sgd_nr']
-    __label__ = 'sgd_nr'
+    __label__ = 'title'
     id = Column('gid', Integer, primary_key=True)
     sgd_nr = Column('sgd_nr', Integer)
     title = Column('title', Text)
@@ -1634,7 +1634,7 @@ class gisgeol_flaechen_gt21000km2(Base, Vector):
     __template__ = 'templates/htmlpopup/gisgeol.mako'
     __bodId__ = 'ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2'
     __queryable_attributes__ = ['sgd_nr']
-    __label__ = 'sgd_nr'
+    __label__ = 'title'
     id = Column('gid', Integer, primary_key=True)
     sgd_nr = Column('sgd_nr', Integer)
     title = Column('title', Text)
@@ -1659,7 +1659,7 @@ class gisgeol_flaechen_lt10km2(Base, Vector):
     __template__ = 'templates/htmlpopup/gisgeol.mako'
     __bodId__ = 'ch.swisstopo.geologie-gisgeol-flaechen-lt10km2'
     __queryable_attributes__ = ['sgd_nr']
-    __label__ = 'sgd_nr'
+    __label__ = 'title'
     id = Column('gid', Integer, primary_key=True)
     sgd_nr = Column('sgd_nr', Integer)
     title = Column('title', Text)
