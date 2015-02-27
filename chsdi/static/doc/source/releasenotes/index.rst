@@ -9,6 +9,68 @@
 Release Notes
 =============
 
+.. _releasenotes_20150304:
+
+Release 20150304 - Wednesday, March 4th 2015
+------------------------------------------------
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+- Official support for tilematrix sets 17, 19 and 24 (WMTS services)
+- WMTS GetCapabilities document now supports special characters in layer description and title
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_150211...r_150304>`__
+
+`MAP <//map.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+- Improved search on mobile devices (keyboard handling)
+- KML file can now include NetworkLink tags.
+- Fixed application for Windows 8.1/IE11 on mobile devices (Most recent Lumia devices)
+- Object Information window is now capable of showing more than 200 results
+- Feature in permalink now zooms to specified feature again
+- Fixed error resulting in broken viewer for Lubis pictures
+- It is now possible to cancel the print
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_150211...r_150304>`__
+
+
+Geodata
+*******
+
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New       | `Background map hydrol. data <//map.geo.admin.ch/?layers=ch.bafu.hydrologie-hintergrundkarte>`__ (ch.bafu.hydrologie-hintergrundkarte)                                           |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Glider Chart <//map.geo.admin.ch/?layers=ch.bazl.segelflugkarte>`__ (ch.bazl.segelflugkarte)                                                                                    |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Aeronautical Chart ICAO <//map.geo.admin.ch/?layers=ch.bazl.luftfahrtkarten-icao>`__ (ch.bazl.luftfahrtkarten-icao)                                                             |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Geologische Gutachten (Punkte) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-punkte>`__ (ch.swisstopo.geologie-gisgeol-punkte)                                      |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Geologische Gutachten (Linien) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-linien>`__ (ch.swisstopo.geologie-gisgeol-linien)                                      |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Geologische Gutachten (1x1km) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-flaechen-1x1km>`__ (ch.swisstopo.geologie-gisgeol-flaechen-1x1km)                       |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Geologische Gutachten (0-10km2) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-flaechen-lt10km2>`__ (ch.swisstopo.geologie-gisgeol-flaechen-lt10km2)                 |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Geologische Gutachten (10x10km) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-flaechen-10x10km>`__ (ch.swisstopo.geologie-gisgeol-flaechen-10x10km)                 |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Geologische Gutachten (10-21000km2) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2>`__ (ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2)   |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Geologische Gutachten (>21000km2) <//map.geo.admin.ch/?layers=ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2>`__ (ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2)         |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Mire landscapes <//map.geo.admin.ch/?layers=ch.bafu.bundesinventare-moorlandschaften>`__ (ch.bafu.bundesinventare-moorlandschaften)                                             |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Cant. routes for exceptional loads <//map.geo.admin.ch/?layers=ch.astra.ausnahmetransportrouten>`__ (ch.astra.ausnahmetransportrouten)                                          |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Public transport connection quality ARE <//map.geo.admin.ch/?layers=ch.are.gueteklassen_oev>`__ (ch.are.gueteklassen_oev)                                                       |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Pollutant releases (SwissPRTR) <//map.geo.admin.ch/?layers=ch.bafu.swissprtr>`__ (ch.bafu.swissprtr)                                                                            |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+
 .. _releasenotes_20150211:
 
 Release 20150211 - Wednesday, February 11th 2015
