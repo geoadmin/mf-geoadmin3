@@ -22,9 +22,9 @@ class luftbilder_swisstopo_farbe(Base, Vector):
     __label__ = 'flugdatum'
     id = Column('ebkey', Text, primary_key=True)
     the_geom = Column(Geometry(geometry_type='GEOMETRY',
-                               dimension=2, srid=21781))
+                               dimension=3, srid=21781))
     the_geom_footprint = Column('the_geom_footprint', Geometry(geometry_type='GEOMETRY',
-                                                               dimension=2, srid=21781))
+                                                               dimension=3, srid=21781))
     filename = Column('filename', Text)
     inventarnummer = Column('inventarnummer', Integer)
     bildnummer = Column('bildnummer', Integer)
@@ -61,9 +61,9 @@ class luftbilder_swisstopo_ir(Base, Vector):
     __label__ = 'flugdatum'
     id = Column('ebkey', Text, primary_key=True)
     the_geom = Column(Geometry(geometry_type='GEOMETRY',
-                               dimension=2, srid=21781))
+                               dimension=3, srid=21781))
     the_geom_footprint = Column('the_geom_footprint', Geometry(geometry_type='GEOMETRY',
-                                                               dimension=2, srid=21781))
+                                                               dimension=3, srid=21781))
     filename = Column('filename', Text)
     inventarnummer = Column('inventarnummer', Integer)
     bildnummer = Column('bildnummer', Integer)
@@ -100,9 +100,9 @@ class luftbilder_swisstopo_sw(Base, Vector):
     __queryable_attributes__ = ['id', 'ort', 'filmart', 'bgdi_flugjahr']
     id = Column('ebkey', Text, primary_key=True)
     the_geom = Column(Geometry(geometry_type='GEOMETRY',
-                               dimension=2, srid=21781))
+                               dimension=3, srid=21781))
     the_geom_footprint = Column('the_geom_footprint', Geometry(geometry_type='GEOMETRY',
-                                                               dimension=2, srid=21781))
+                                                               dimension=3, srid=21781))
     filename = Column('filename', Text)
     inventarnummer = Column('inventarnummer', Integer)
     bildnummer = Column('bildnummer', Integer)
@@ -217,9 +217,9 @@ class bildstreifen(Base, Vector):
     __label__ = 'flugdatum'
     id = Column('bildstreifen_nr', Text, primary_key=True)
     the_geom = Column(Geometry(geometry_type='GEOMETRY',
-                               dimension=2, srid=21781))
+                               dimension=3, srid=21781))
     the_geom_footprint = Column('the_geom_footprint', Geometry(geometry_type='GEOMETRY',
-                                                               dimension=2, srid=21781))
+                                                               dimension=3, srid=21781))
     flugdatum = Column('flugdatum', Text)
     firma = Column('firma', Text)
     filmart = Column('filmart', Text)
