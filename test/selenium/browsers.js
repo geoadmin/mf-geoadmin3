@@ -43,8 +43,7 @@ var capabilities = [
     create('Windows', '7', '1280x1024', 'Firefox', '31.0'),
     create('Windows', '7', '1280x1024', 'Firefox', '32.0'),
     create('Windows', '7', '1280x1024', 'Firefox', '33.0'),
-    create('Windows', '8.1', '1280x1024', 'Firefox', '33.0'),
-    create('Windows', '7', '1280x1024', 'Safari', '5.1')
+    create('Windows', '8.1', '1280x1024', 'Firefox', '33.0')
 ];
 
 module.exports.capabilities = capabilities;
