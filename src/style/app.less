@@ -163,9 +163,7 @@ button.ga-btn, .ol-control button {
   & > div {
     display: inline-block;
   }
-}
-@media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-  #copyrightsdata {
+  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
     bottom: 0;
   }
 }
@@ -1222,10 +1220,17 @@ input[type=range] {
 @right-static-bt-col-1: unit(@right-col-1 + @control-btn-space, px);
 @right-static-bt-col-2: unit(@right-col-1 * 2 + @control-btn-space, px);
 @right-static-bt-col-3: unit(@right-col-1 * 3 + @control-btn-space, px);
+
 .static-bt-mixin(@bottom){
   position: fixed;
   right: @right-static-bt-col-1;  
   bottom: @bottom;
+}
+
+.no-static-bt-mixin(){
+  position: relative;
+  right: none;  
+  bottom: none;
 }
 
 #buttonGroup {
@@ -1264,7 +1269,9 @@ input[type=range] {
       bottom: @bottom-static-bt-screen-sm;
     }
   } 
-  
+}  
+
+body:not(.embed) {
   /* When the 3 optional buttons are displayed */
   .ga-time-selector-enabled + .ga-rotate-enabled + [ga-offline-bt] {
     
@@ -1314,6 +1321,75 @@ input[type=range] {
     max-height: 740px;
   }
 
+}
+
+.embed, .ga-full-screen {
+  #buttonGroup {
+    top: 0px;
+  }
+}
+
+.embed {
+  #bigMapLink {
+    position: absolute;
+    z-index: 1000;
+    top: 5px;
+    left: 5px;
+     
+    > div {
+      position: relative;
+      margin-bottom: 5px;
+      padding: 5px; 
+      .box-shadow(rgba(0, 0, 0, .29) 0px 1px 4px -1px);
+      border-radius: 4px; 
+      background-color: white;
+      font-weight: bold;
+      
+      &:last-child {
+        position: absolute;
+        text-decoration: inherit;
+      }
+      
+      img {
+        height: 15px;
+      }
+    }
+  }
+  
+  #buttonGroup {
+    top: 0px;
+    right: 5px;
+    button {
+      margin-top: 5px;
+    }
+  }
+
+  [ga-time-selector] {
+    display: none!important;
+  }
+
+  [ga-scale-line], #copyrightsdata {
+    position: absolute;
+    bottom: 0;
+    z-index: 1000;
+  }
+  
+  #copyrightsdata {
+    max-width: ~"calc(100% - 160px)";
+  }
+  
+  [ga-scale-line] {
+    bottom: 2px;
+    left: 2px;
+    width: auto;
+    height: 15px;
+    margin: 0;
+    font-size: 11px;
+  }  
+  
+  .ol-scale-line-inner {
+    background: rgba(255,255,255,.7);
+  }
 }
 
 @import "print.less";
