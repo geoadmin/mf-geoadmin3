@@ -6,7 +6,7 @@ CODE_DIR=$2
 
 export PGUSER='${vars:modwsgi_user}'
 
-if [ $TARGET != 'demo' ];
+if [ -z $TARGET ] || [ $TARGET != 'demo' ];
 then
 
    cd $CODE_DIR
