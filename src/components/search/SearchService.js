@@ -108,13 +108,17 @@
 
     var preIndicator = '-------------------------------';
     var postIndicator = '________________________________';
+    var boldOpen = '*****************************';
+    var boldClose = '############################';
     var preHighlight = '<span class="ga-search-highlight">';
     var postHighlight = '</span>';
 
-    var highlightWord = function(str, word) {
+    var highlightWord = function(strIn, word) {
       if (!(!!word.length)) {
-        return str;
+        return strIn;
       }
+      var str = strIn.replace(/<b>/gi, boldOpen)
+                     .replace(/<\/b>/gi, boldClose);
       var patt = new RegExp(word, 'ig');
       var splits = str.split(patt);
       var res = '';
@@ -130,7 +134,8 @@
         olen += wlen;
       }
       res += splits[i];
-      return res;
+      return res.replace(boldOpen, '<b>')
+                .replace(boldClose, '</b>');
     };
 
 

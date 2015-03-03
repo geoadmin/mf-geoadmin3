@@ -90,4 +90,18 @@ describe('ga_search_labels_highlight', function() {
     expect(res).to.eql('Wollen <span class="ga-search-highlight">wir</span> das <span class="ga-search-highlight">heute</span>?');
   });
 
+  it('Do Not highlight bold tags', function() {
+    var testString = 'Was <b> ist das bloss </b> oder';
+    var res = labelsService.highlight(testString, 'b');
+    expect(res).to.eql('Was <b> ist das <span class="ga-search-highlight">b</span>loss </b> oder');
+    res = labelsService.highlight(testString, '<b');
+    expect(res).to.eql('Was <b> ist das bloss </b> oder');
+    res = labelsService.highlight(testString, '<b>');
+    expect(res).to.eql('Was <b> ist das bloss </b> oder');
+    res = labelsService.highlight(testString, '/b');
+    expect(res).to.eql('Was <b> ist das bloss </b> oder');
+    res = labelsService.highlight(testString, '</b>');
+    expect(res).to.eql('Was <b> ist das bloss </b> oder');
+  });
+
 });
