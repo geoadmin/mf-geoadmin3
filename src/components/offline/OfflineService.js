@@ -239,7 +239,7 @@
               // a min resolution between the max zoom level and the max client
               // zoom level
               var origMinRes = gaLayers.getLayer(layer.id).minResolution;
-              if (!useClientZoom && origMinRes) {
+              if (!useClientZoom) {
                 layer.setMinResolution(origMinRes);
               } else if (useClientZoom && minRes >= origMinRes) {
                 layer.setMinResolution(undefined);

@@ -10,7 +10,9 @@
   ]);
 
   module.factory('httpInterceptor', function($q, gaBrowserSniffer,
-      gaNetworkStatus, gaWaitCursor) {
+      gaDebounce, gaNetworkStatus, gaWaitCursor) {
+    var checkDebounced = gaDebounce.debounce(gaNetworkStatus.check, 2000, false,
+        false);
     return {
       request: function(config) {
         gaWaitCursor.increment();
@@ -26,11 +28,7 @@
       },
       responseError: function(rejection) {
         gaWaitCursor.decrement();
-        // status = 0 means the request has been aborted
-        if (rejection.status != 0) {
-          // In case an $http request failed we check if we are still connected.
-          gaNetworkStatus.check(2000);
-        }
+        checkDebounced();
         return $q.reject(rejection);
       }
     };
