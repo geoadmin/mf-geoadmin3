@@ -788,7 +788,8 @@
                     layer.minResolution),
                 tileLoadFunction: tileLoadFunction,
                 url: getWmtsGetTileUrl(layer.serverLayerName,
-                  layer.format)
+                  layer.format),
+                crossOrigin: 'anonymous'
               });
             }
             olLayer = new ol.layer.Tile({
@@ -820,6 +821,7 @@
                   url: wmsUrl,
                   params: wmsParams,
                   attributions: attributions,
+                  crossOrigin: 'anonymous',
                   ratio: 1
                 });
               }
@@ -837,6 +839,7 @@
                   params: wmsParams,
                   attributions: attributions,
                   gutter: layer.gutter || 0,
+                  crossOrigin: 'anonymous',
                   tileGrid: gaTileGrid.get(layer.resolutions,
                       layer.minResolution, 'wms'),
                   tileLoadFunction: tileLoadFunction
