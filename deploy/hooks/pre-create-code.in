@@ -15,7 +15,7 @@ then
 
    buildout/bin/nosetests chsdi/tests/functional
 
-   buildout/bin/nosetests -e test_external_links # > /dev/null 2>&1
+   buildout/bin/nosetests -I test_links.py -I mapproxy/test_wmtscapabilities.py -I test_wmtsgettile.py -I test_varnish.py # > /dev/null 2>&1
 
 fi
 
