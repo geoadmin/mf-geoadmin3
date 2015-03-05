@@ -22,7 +22,7 @@ shift $((OPTIND-1))
 mv -f production.ini production.ini.bup
 mv -f development.ini development.ini.bup
 
-buildout/bin/buildout -c $conf_to_use install nosetest-ini && buildout/bin/nosetests -e test_external_links
+buildout/bin/buildout -c $conf_to_use install nosetest-ini && buildout/bin/nosetests -I test_links.py -I mapproxy/test_wmtscapabilities.py -I test_wmtsgettile.py -I test_varnish.py
 
 rc=$?
 
