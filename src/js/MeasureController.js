@@ -23,7 +23,8 @@
                 left: 60
               },
               height: 250,
-              elevationModel: 'COMB'
+              elevationModel: 'COMB',
+              nb_points: 50
           },
           styleFunction: (function() {
             var styles = {};
@@ -105,7 +106,8 @@
               angular.toJson(coordinates) + '}'; 
           var template = $scope.options.profileUrl + '?geom=' +
                gaUrlUtils.encodeUriQuery(wkt) + '&elevation_models=' +
-              $scope.options.profileOptions.elevationModel;
+              $scope.options.profileOptions.elevationModel + '&nb_points=' +
+              $scope.options.profileOptions.nb_points;
           var http = $http.get(template);
           if (!callback) {
             callback = function(data, status) {
