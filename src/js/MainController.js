@@ -135,7 +135,7 @@
 
       // Create switch device url
       var switchToMobile = '' + !(gaBrowserSniffer.mobile || gaBrowserSniffer.embed);
-      $scope.host = {url: $window.location.host}; // only embed 
+      $scope.host = {url: $window.location.host}; // only use in embed.html 
       $scope.deviceSwitcherHref = gaPermalink.getHref({ mobile: switchToMobile });
       $rootScope.$on('gaPermalinkChange', function() {
         $scope.deviceSwitcherHref = gaPermalink.getHref({ mobile: switchToMobile });
