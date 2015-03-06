@@ -32,18 +32,18 @@ var create = function(os, osver, res, browser, brover) {
 // https://www.browserstack.com/list-of-browsers-and-platforms?product=automate
 
 var capabilities = [
-    create('Windows', '7', '1280x1024', 'Chrome', '36.0'),
     create('Windows', '7', '1280x1024', 'Chrome', '37.0'),
     create('Windows', '7', '1280x1024', 'Chrome', '38.0'),
-    create('Windows', '8.1', '1280x1024', 'Chrome', '38.0'),
+    create('Windows', '7', '1280x1024', 'Chrome', '39.0'),
+    create('Windows', '8.1', '1280x1024', 'Chrome', '39.0'),
     create('Windows', '7', '1280x1024', 'IE', '9.0'),
     create('Windows', '7', '1280x1024', 'IE', '10.0'),
     create('Windows', '7', '1280x1024', 'IE', '11.0'),
     create('Windows', '8.1', '1280x1024', 'IE', '11.0'),
-    create('Windows', '7', '1280x1024', 'Firefox', '31.0'),
-    create('Windows', '7', '1280x1024', 'Firefox', '32.0'),
     create('Windows', '7', '1280x1024', 'Firefox', '33.0'),
-    create('Windows', '8.1', '1280x1024', 'Firefox', '33.0')
+    create('Windows', '7', '1280x1024', 'Firefox', '34.0'),
+    create('Windows', '7', '1280x1024', 'Firefox', '35.0'),
+    create('Windows', '8.1', '1280x1024', 'Firefox', '35.0')
 ];
 
 module.exports.capabilities = capabilities;
