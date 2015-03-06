@@ -2,7 +2,6 @@ import sys
 import os
 import random
 from unittest import TestCase
-from testconfig import config as tc
 
 
 import requests
@@ -22,15 +21,20 @@ class TestVarnish(TestCase):
         return random.randrange(20140101, 20141001)
 
     def setUp(self):
-        os.environ["http_proxy"] = tc['vars']['http_proxy']
+        from pyramid.paster import get_app
+        app = get_app('development.ini')
+
         try:
-            self.api_url = "http:" + tc['vars']['api_url']
-            self.mapproxy_url = "http://" + tc['vars']['mapproxyhost']
+            os.environ["http_proxy"] = app.registry.settings['http_proxy']
+            self.api_url = "http:" + app.registry.settings['api_url']
+            apache_base_path = app.registry.settings['apache_base_path']
+            self.mapproxy_url = "http://" + app.registry.settings['mapproxyhost'] + ('/' + apache_base_path if apache_base_path != 'main' else '')
         except KeyError as e:
-            self.api_url = os.getenv('conf_to_use', "http://api3.geo.admin.ch")
+            raise Exception
 
     def tearDown(self):
-        del os.environ["http_proxy"]
+        if "http_proxy" in os.environ:
+            del os.environ["http_proxy"]
 
     def has_geometric_attributes(self, attrs):
         geometric_attrs = ['x', 'y', 'lon', 'lat', 'geom_st_box2d']

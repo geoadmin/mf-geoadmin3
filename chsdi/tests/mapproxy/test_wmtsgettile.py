@@ -4,14 +4,16 @@ import sys
 import os
 import random
 import requests
-from testconfig import config as tc
 
+from pyramid.paster import get_app
 
 EPSGS = [21781, 2056, 3857, 4326, 4258]
 
+app = get_app('development.ini')
 
 try:
-    base_url = "http:" + tc['vars']['mapproxy_url']
+    apache_base_path = app.registry.settings['apache_base_path']
+    base_url = "http://" + app.registry.settings['mapproxyhost'] + '/' + apache_base_path if apache_base_path != '/' else ''
 except KeyError as e:
     base_url = 'http://wmts10.geo.admin.ch'
 
@@ -55,8 +57,10 @@ def get_tile():
     param_list = []
 
     for epsg in EPSGS:
-        resp = requests.get(base_url + '/rest/services/api/1.0.0/WMTSCapabilities.xml', params={'epsg': epsg, '_id': hash()},
+        capabilities_name = "WMTSCapabilities.EPSG.%d.xml" % epsg if epsg != 21781 else "WMTSCapabilities.xml"
+        resp = requests.get(base_url + '/1.0.0/%s' % capabilities_name, params={'_id': hash()},
                             headers=get_headers())
+
         root = etree.fromstring(resp.content)
         layers = root.findall('.//{http://www.opengis.net/wmts/1.0}Layer')
         for layer in layers:

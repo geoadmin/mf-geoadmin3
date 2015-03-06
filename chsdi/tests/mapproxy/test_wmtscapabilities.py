@@ -4,7 +4,8 @@ import sys
 import os
 import random
 from unittest import TestCase
-from testconfig import config as tc
+
+import requests
 
 
 BAD_REFERER = 'http://foo.ch'
@@ -22,56 +23,18 @@ TILES_IDX = {3857: [(7, 67, 45), (10, 533, 360)],
              }
 
 
-class TestWmtsCapabilitiesView(TestCase):
-
-    def setUp(self):
-        try:
-            self.url = "http:" + tc['vars']['mapproxy_url']
-        except KeyError as e:
-            self.url = os.getenv('conf_to_use', "http://api3.geo.admin.ch")
-
-    def hash(self, bits=96):
-        assert bits % 8 == 0
-        return os.urandom(bits / 8).encode('hex')
-
-    def get_headers(self):
-        return {'referer': 'http://unittest.geo.admin.ch'}
-
-    def test_axis_order(self):
-        from urlparse import urlparse
-        import xml.etree.ElementTree as etree
-
-        for epsg in EPSGS:
-            resp = requests.get(self.url + '/rest/services/api/1.0.0/WMTSCapabilities.xml', params={'epsg': epsg, '_id': self.hash()},
-                                headers=self.get_headers())
-
-            print resp.encoding
-
-            root = etree.fromstring(resp.content)
-            layers = root.findall('.//{http://www.opengis.net/wmts/1.0}Layer')
-            for layer in layers:
-                bodid = layer.find('./{http://www.opengis.net/ows/1.1}Identifier').text
-                resourceurls = layer.findall('.//{http://www.opengis.net/wmts/1.0}ResourceURL')
-                for resourceurl in resourceurls:
-                    tpl = resourceurl.attrib['template']
-                    tpl_parsed = urlparse(tpl)
-                    pth = tpl_parsed.path
-                    col_idx = pth.find('{TileCol}')
-                    row_idx = pth.find('{TileRow}')
-                    is_normal_order = col_idx < row_idx if col_idx > 0 else None
-                    if epsg == 21781 and bodid != 'ch.kantone.cadastralwebmap-farbe':
-                        self.assertFalse(is_normal_order)
-                    else:
-                        self.assertTrue(is_normal_order)
-
-
 class TestWmtsGetTileAuth():
 
     def __init__(self):
+        from pyramid.paster import get_app
+        self.app = get_app('development.ini')
         try:
-            self.url = "http:" + tc['vars']['mapproxy_url']
+            os.environ["http_proxy"] = self.app.registry.settings['http_proxy']
+            apache_base_path = self.app.registry.settings['apache_base_path']
+            self.mapproxy_url = "http://" + self.app.registry.settings['mapproxyhost'] + '/' + apache_base_path if apache_base_path != '/' else ''
         except KeyError as e:
-            self.url = os.getenv('conf_to_use', "http://api3.geo.admin.ch")
+            raise Exception
+
         self.paths = ['/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20130903/3857/7/67/45.jpeg',
                       '/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20140520/2056/17/5/6.jpeg',
                       '/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20130903/4258/10/6/4.jpeg',
@@ -91,22 +54,22 @@ class TestWmtsGetTileAuth():
         assert int(resp.status_code) == code
 
     def test_bad_referer_get_capabilties(self):
-        self.check_status_code(self.url + '/rest/services/api/1.0.0/WMTSCapabilities.xml', BAD_REFERER, 403)
+        self.check_status_code(self.mapproxy_url + '/1.0.0/WMTSCapabilities.xml', BAD_REFERER, 403)
 
     def test_bad_referer_get_tile(self):
         for path in self.paths:
-            yield self.check_status_code, self.url + path, BAD_REFERER, 403
+            yield self.check_status_code, self.mapproxy_url + path, BAD_REFERER, 403
 
     def test_no_referer_get_capabilties(self):
-        self.check_status_code(self.url + '/rest/services/api/1.0.0/WMTSCapabilities.xml', None, 403)
+        self.check_status_code(self.mapproxy_url + '/1.0.0/WMTSCapabilities.xml', None, 403)
 
     def test_no_referer_get_tile(self):
         for path in self.paths:
-            yield self.check_status_code, self.url + path, None, 403
+            yield self.check_status_code, self.mapproxy_url + path, None, 403
 
     def test_good_referer_get_capabilties(self):
-        self.check_status_code(self.url + '/rest/services/api/1.0.0/WMTSCapabilities.xml', GOOD_REFERER, 200)
+        self.check_status_code(self.mapproxy_url + '/1.0.0/WMTSCapabilities.xml', GOOD_REFERER, 200)
 
     def test_good_referer_get_tile(self):
         for path in self.paths:
-            yield self.check_status_code, self.url + path, GOOD_REFERER, 200
+            yield self.check_status_code, self.mapproxy_url + path, GOOD_REFERER, 200

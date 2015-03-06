@@ -2,6 +2,8 @@
 
 from chsdi.tests.integration import TestsBase
 
+EPSGS = [21781, 4326, 4258, 2056, 3857]
+
 
 class TestWmtsCapabilitiesView(TestsBase):
 
@@ -20,7 +22,7 @@ class TestWmtsCapabilitiesView(TestsBase):
 
     def test_wrong_epsg_wmtscapabilities(self):
         resp = self.testapp.get('/rest/services/bafu/1.0.0/WMTSCapabilities.xml?epsg=9999', status=400)
-        resp.mustcontain("EPSG:9999 not found. Must be one of 21781, 4326, 2056, 4852, 3857")
+        resp.mustcontain("EPSG:9999 not found. Must be one of 21781, 4326, 2056, 4258, 3857")
 
     def test_contains_correct_tilelink(self):
         resp = self.testapp.get('/rest/services/api/1.0.0/WMTSCapabilities.xml', status=200)
@@ -40,7 +42,7 @@ class TestWmtsCapabilitiesView(TestsBase):
         os.environ['XML_CATALOG_FILES'] = os.path.join(os.path.dirname(__file__), "xml/catalog")
 
         for lang in ['de', 'fr', 'it', 'en']:
-            for epsg in [4326, 4852, 2056, 3857]:
+            for epsg in [4326, 4258, 2056, 3857]:
                 f = tempfile.NamedTemporaryFile(mode='w+t', prefix='WMTSCapabilities-', suffix='-%s-%s' % (lang, epsg))
                 resp = self.testapp.get('/rest/services/api/1.0.0/WMTSCapabilities.xml', params={'lang': lang, 'epsg': epsg}, status=200)
                 f.write(resp.body)
@@ -81,3 +83,27 @@ class TestWmtsCapabilitiesView(TestsBase):
                 defined_matrices.append(t)
 
         self.assertTrue(set(used_matrices).issubset(defined_matrices))
+
+    def test_axis_order(self):
+        from urlparse import urlparse
+        import xml.etree.ElementTree as etree
+
+        for epsg in EPSGS:
+            resp = self.testapp.get('/rest/services/api/1.0.0/WMTSCapabilities.xml', params={'epsg': epsg}, status=200)
+
+            root = etree.fromstring(resp.body)
+            layers = root.findall('.//{http://www.opengis.net/wmts/1.0}Layer')
+            for layer in layers:
+                bodid = layer.find('./{http://www.opengis.net/ows/1.1}Identifier').text
+                resourceurls = layer.findall('.//{http://www.opengis.net/wmts/1.0}ResourceURL')
+                for resourceurl in resourceurls:
+                    tpl = resourceurl.attrib['template']
+                    tpl_parsed = urlparse(tpl)
+                    pth = tpl_parsed.path
+                    col_idx = pth.find('{TileCol}')
+                    row_idx = pth.find('{TileRow}')
+                    is_normal_order = col_idx < row_idx if col_idx > 0 else None
+                    if epsg == 21781 and bodid != 'ch.kantone.cadastralwebmap-farbe':
+                        self.assertFalse(is_normal_order)
+                    else:
+                        self.assertTrue(is_normal_order)
