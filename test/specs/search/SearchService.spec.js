@@ -13,8 +13,24 @@ describe('ga_search_getcoordinate_service', function() {
     expect(getCoordinate(extent,'600000 200000')).to.eql([600000,200000]);
   });
 
+  it('separated by comma', function() {
+    expect(getCoordinate(extent,'600000,200000')).to.eql([600000,200000]);
+  });
+
+  it('containing apostrphoe CH1903 coordinate', function() {
+    expect(getCoordinate(extent,'600\'000.12 200\'000.23')).to.eql([600000.12,200000.23]);
+  });
+ 
   it('supports CH1903+ coordinate', function() {
     expect(getCoordinate(extent,'2600000 1200000')).to.eql([600000,200000]);
+  });
+
+  it('old school CH1903 coordinate', function() {
+    expect(getCoordinate(extent,'600 123 200 345')).to.eql([600123,200345]);
+  });
+
+  it('old school CH1903+ coordinate', function() {
+    expect(getCoordinate(extent,'2600 987.2 1200 556.5')).to.eql([600987.2,200556.5]);
   });
 
   it('supports latitude and longitude as decimal', function() {
