@@ -105,12 +105,12 @@ itemscope itemtype="http://schema.org/WebApplication"
         }
 
         var redirectToMobile = function() {
-          pathname = !/(index|embed).html/.test(l.pathname) ?
-            l.pathname + 'mobile.html' : l.pathname.replace(/(index|embed).html/, 'mobile.html');
+          pathname = !/(index|embed)\.html$/.test(l.pathname) ?
+            l.pathname + 'mobile.html' : l.pathname.replace(/(index|embed)\.html$/, 'mobile.html');
           l.href = l.origin + pathname + l.search;
         }
         var redirectToDesktop = function() {
-          l.href = l.origin + l.pathname.replace(/(mobile|embed).html/, 'index.html') + l.search;
+          l.href = l.origin + l.pathname.replace(/(mobile|embed)\.html$/, 'index.html') + l.search;
         }
 
         var onMobile = ((('ontouchstart' in w) ||
@@ -711,7 +711,7 @@ itemscope itemtype="http://schema.org/WebApplication"
       (function() {
         var module = angular.module('ga');
         var cacheAdd = '${version}' != '' ? '/' + '${version}' : '';
-        var pathname = location.pathname.replace(/(index.html)|(mobile.html)/g, '');
+        var pathname = location.pathname.replace(/(index|mobile|embed)\.html$/g, '');
 
         module.constant('gaGlobalOptions', {
           mapUrl : location.origin + '${apache_base_path}',

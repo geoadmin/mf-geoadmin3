@@ -44,7 +44,7 @@
           (('maxTouchPoints' in navigator) && navigator.maxTouchPoints > 1) ||
           (('msMaxTouchPoints' in navigator) && navigator.msMaxTouchPoints > 1);
       var mobile = touchDevice && testSize(768);
-      var embed = /\/embed.html/.test($window.location.pathname);
+      var embed = /\/embed\.html$/.test($window.location.pathname);
       var p = gaPermalink.getParams();
       mobile = !embed && ((mobile && p.mobile != 'false') ||
           p.mobile == 'true');
