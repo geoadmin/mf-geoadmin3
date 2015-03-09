@@ -73,7 +73,8 @@ describe('ga_browsersniffer_service', function() {
           },
           location: {
             port: '',
-            search: ''
+            search: '',
+            pathname: ''
           }
         });
     });
@@ -83,7 +84,46 @@ describe('ga_browsersniffer_service', function() {
       injector = $injector;
     });
   });
- 
+  
+  it('detects it\'s not the embed page', function() {
+    win.location.pathname = 'http://geoadmin.ch/embed/src/';
+    snif = injector.get('gaBrowserSniffer');
+    expect(snif.embed).to.be.eql(false);
+    expect(snif.mobile).to.be.eql(false);
+    
+    win.location.pathname = 'http://geoadmin.ch/embed';
+    snif = injector.get('gaBrowserSniffer');
+    expect(snif.embed).to.be.eql(false);
+    expect(snif.mobile).to.be.eql(false);
+    
+    win.location.pathname = 'http://geoadmin.ch/index.html';
+    snif = injector.get('gaBrowserSniffer');
+    expect(snif.embed).to.be.eql(false);
+    expect(snif.mobile).to.be.eql(false);
+  
+    win.location.pathname = 'http://geoadmin.ch/mobile.html';
+    snif = injector.get('gaBrowserSniffer');
+    expect(snif.embed).to.be.eql(false);
+    expect(snif.mobile).to.be.eql(false);
+  });
+  
+  it('detects the embed page', function() {
+    win.location.pathname = 'http://geoadmin.ch/embed/src/embed.html';
+    snif = injector.get('gaBrowserSniffer');
+    expect(snif.embed).to.be.eql(true);
+    expect(snif.mobile).to.be.eql(false);
+    
+    win.location.pathname = 'http://geoadmin.ch/embed/embed.html';
+    snif = injector.get('gaBrowserSniffer');
+    expect(snif.embed).to.be.eql(true);
+    expect(snif.mobile).to.be.eql(false);
+   
+    win.location.pathname = 'http://geoadmin.ch/embed.html';
+    snif = injector.get('gaBrowserSniffer');
+    expect(snif.embed).to.be.eql(true);
+    expect(snif.mobile).to.be.eql(false);
+  });
+
   describe('detects browser:', function() {
     
     describe('IE 9', function() {
