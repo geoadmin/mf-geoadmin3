@@ -226,7 +226,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           <img src="${versionslashed}img/logo.ch.small.png" alt="small_logo" draggable="false"/>
           <span translate-values="{{host}}" translate>view_on_mapgeoadminch</span>
         </div>
-        <div>{{time}}</div>
+        <div ng-show="time">{{time}}</div>
       </a>
       <div ga-scale-line ga-scale-line-map="map"></div>
   % endif
