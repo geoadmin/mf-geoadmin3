@@ -20,7 +20,8 @@
     DMSEast, 'g');
   var regexpDMSDegree = new RegExp(DMSDegree, 'g');
   var regexpCoordinate = new RegExp(
-    '([\\d\\.\']+)[\\s,]+([\\d\\.\']+)');
+    '([\\d\\.\']+)[\\s,]+([\\d\\.\']+)' +
+    '([\\s,]+([\\d\\.\']+)[\\s,]+([\\d\\.\']+))?');
 
   module.provider('gaSearchGetCoordinate', function() {
     this.$get = function() {
@@ -67,11 +68,18 @@
           }
         }
 
-        var match =
-          query.match(regexpCoordinate);
+        var match = query.match(regexpCoordinate);
         if (match && !valid) {
           var left = parseFloat(match[1].replace('\'', ''));
           var right = parseFloat(match[2].replace('\'', ''));
+          //Old school entries like '600 000 200 000'
+          if (match[3] != null) {
+            left = parseFloat(match[1].replace('\'', '') +
+                              match[2].replace('\'', ''));
+            right = parseFloat(match[4].replace('\'', '') +
+                               match[5].replace('\'', ''));
+          }
+
           var position =
             [left > right ? left : right,
               right < left ? right : left];
