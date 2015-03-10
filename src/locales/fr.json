@@ -289,6 +289,7 @@
 	"upload_failed": "Erreur de chargement!",
 	"upload_succeeded": "Chargement OK!",
 	"uploading_file": "Chargement du fichier...",
+	"view_on_mapgeoadminch": "Voir sur {{url}}",
 	"void_layer": "Fond blanc",
 	"vu": "Accidents de la route",
 	"vu_help_link_href": "http://help.geo.admin.ch/?lang=fr",

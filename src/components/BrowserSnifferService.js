@@ -44,8 +44,10 @@
           (('maxTouchPoints' in navigator) && navigator.maxTouchPoints > 1) ||
           (('msMaxTouchPoints' in navigator) && navigator.msMaxTouchPoints > 1);
       var mobile = touchDevice && testSize(768);
+      var embed = /\/embed\.html$/.test($window.location.pathname);
       var p = gaPermalink.getParams();
-      mobile = (mobile && p.mobile != 'false') || p.mobile == 'true';
+      mobile = !embed && ((mobile && p.mobile != 'false') ||
+          p.mobile == 'true');
 
       if (msie > 9) {
         // IE10/IE11 don’t fire `input` event. Angular rely on it.
@@ -107,6 +109,7 @@
         mobile: mobile,
         phone: mobile && testSize(480),
         events: eventsKeys,
+        embed: embed,
         isInFrame: ($window.location != $window.parent.location)
       };
     };

@@ -65,10 +65,10 @@ help:
 all: prod dev lint apache testdev testprod deploy/deploy-branch.cfg fixrights
 
 .PHONY: prod
-prod: prd/lib/ prd/lib/build.js prd/style/app.css prd/geoadmin.appcache prd/index.html prd/mobile.html prd/img/ prd/style/font-awesome-3.2.1/font/ prd/locales/ prd/checker prd/robots.txt
+prod: prd/lib/ prd/lib/build.js prd/style/app.css prd/geoadmin.appcache prd/index.html prd/mobile.html prd/embed.html prd/img/ prd/style/font-awesome-3.2.1/font/ prd/locales/ prd/checker prd/robots.txt
 
 .PHONY: dev
-dev: src/deps.js src/style/app.css src/index.html src/mobile.html
+dev: src/deps.js src/style/app.css src/index.html src/mobile.html src/embed.html
 
 .PHONY: lint
 lint: .build-artefacts/lint.timestamp
@@ -89,7 +89,7 @@ teste2e: guard-BROWSERSTACK_TARGETURL guard-BROWSERSTACK_USER guard-BROWSERSTACK
 apache: apache/app.conf
 
 .PHONY: appcache
-appcache: cleanappcache prd/geoadmin.appcache prd/index.html prd/mobile.html
+appcache: cleanappcache prd/geoadmin.appcache prd/index.html prd/mobile.html prd/embed.html
 
 .PHONY: deploydev
 deploydev:
@@ -220,6 +220,11 @@ prd/mobile.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-rende
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "mode=prod" --var "version=$(VERSION)" --var "versionslashed=$(VERSION)/" --var "apache_base_path=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/htmlmin --remove-comments --keep-optional-attribute-quotes $@ $@
 
+prd/embed.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render .build-artefacts/python-venv/bin/htmlmin .build-artefacts/last-api-url .build-artefacts/last-apache-base-path .build-artefacts/last-version
+	mkdir -p $(dir $@)
+	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "device=embed" --var "mode=prod" --var "version=$(VERSION)" --var "versionslashed=$(VERSION)/" --var "apache_base_path=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
+	${PYTHON_CMD} .build-artefacts/python-venv/bin/htmlmin --remove-comments --keep-optional-attribute-quotes $@ $@
+
 prd/img/: src/img/*
 	mkdir -p $@
 	cp -R $^ $@
@@ -247,6 +252,9 @@ src/index.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render
 
 src/mobile.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render .build-artefacts/last-api-url .build-artefacts/last-apache-base-path
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "version=" --var "versionslashed=" --var "apache_base_path=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
+
+src/embed.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render .build-artefacts/last-api-url .build-artefacts/last-apache-base-path
+	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "device=embed" --var "version=" --var "versionslashed=" --var "apache_base_path=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
 
 src/TemplateCacheModule.js: src/TemplateCacheModule.mako.js $(SRC_COMPONENTS_PARTIALS_FILES) .build-artefacts/python-venv/bin/mako-render
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "partials=$(subst src/,,$(SRC_COMPONENTS_PARTIALS_FILES))" --var "basedir=src" $< > $@
@@ -403,6 +411,7 @@ cleanappcache:
 	rm -f prd/geoadmin.appcache
 	rm -f prd/index.html
 	rm -f prd/mobile.html
+	rm -f prd/embed.html
 
 .PHONY: clean
 clean:

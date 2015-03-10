@@ -105,12 +105,12 @@ itemscope itemtype="http://schema.org/WebApplication"
         }
 
         var redirectToMobile = function() {
-          pathname = (l.pathname.indexOf('index')==-1) ?
-            l.pathname + 'mobile.html' : l.pathname.replace(/index/, 'mobile');
+          pathname = !/(index|embed)\.html$/.test(l.pathname) ?
+            l.pathname + 'mobile.html' : l.pathname.replace(/(index|embed)\.html$/, 'mobile.html');
           l.href = l.origin + pathname + l.search;
         }
         var redirectToDesktop = function() {
-          l.href = l.origin + l.pathname.replace(/mobile/, 'index') + l.search;
+          l.href = l.origin + l.pathname.replace(/(mobile|embed)\.html$/, 'index.html') + l.search;
         }
 
         var onMobile = ((('ontouchstart' in w) ||
@@ -136,7 +136,8 @@ itemscope itemtype="http://schema.org/WebApplication"
           'webkit': globals.webkit, 
           'no-webkit': !globals.webkit, 
           'offline': globals.offline,
-          'online': !globals.offline
+          'online': !globals.offline,
+          'embed': globals.embed
         }">
     <!-- The below conditional is ignored by >= IE10 and all other browsers -->
     <!--![if IE]>
@@ -163,6 +164,18 @@ itemscope itemtype="http://schema.org/WebApplication"
     <div ng-controller="GaSeoController">
       <div ga-seo ga-seo-options="options" ga-seo-map="map"></div>
     </div>
+% if device == 'embed':
+    <div style="display: none;">
+      <div class="topic-container" ng-controller="GaTopicController">
+        <div ga-topic ga-topic-ui="select" ga-topic-options="options" ga-topic-map="map"></div>
+      </div>
+      <div ng-controller="GaTranslationController">
+        <div ga-translation-selector ga-translation-selector-options="options"></div>
+      </div>
+      <div ga-background-layer-selector ga-background-layer-selector-map="map"></div>
+    </div>
+% endif
+% if device != 'embed':
     <div ng-cloak translate-cloak id="header" class="navbar navbar-fixed-top">
       <div id="logo" class="pull-left">
         <a ng-href="?topic={{topicId}}&lang={{langId}}">
@@ -172,15 +185,14 @@ itemscope itemtype="http://schema.org/WebApplication"
       </div>
       <div id="search-container" ng-controller="GaSearchController">
         <div ga-search ga-search-map="map" ga-search-options="options" ga-search-focused="globals.searchFocused"></div>
-% if device == 'desktop':
+  % if device == 'desktop':
         <span ga-help="24,31,25" ga-help-options="{showOnHover:true}"></span>
-% endif      
+  % endif      
       </div>
-% if device == 'desktop':
+  % if device == 'desktop':
       <div class="navbar-form pull-right hidden-xs">
         <div id="background-selection">
-          <div ga-background-layer-selector
-            ga-background-layer-selector-map="map"></div>
+          <div ga-background-layer-selector ga-background-layer-selector-map="map"></div>
         </div>
         <div id="toptools">
           <div ga-fullscreen ga-fullscreen-map="map"></div>&nbsp;&nbsp;
@@ -190,15 +202,15 @@ itemscope itemtype="http://schema.org/WebApplication"
           <a target="_blank" ng-href="{{topicId + '_help_link_href' | translate}}" translate>help_label</a>&nbsp;&nbsp;
           <a ng-href="{{deviceSwitcherHref}}" translate>mobile_redirect</a>&nbsp;&nbsp;
           <div ng-controller="GaTranslationController">
-            <div ga-translation-selector
-              ga-translation-selector-options="options"></div>
+            <div ga-translation-selector ga-translation-selector-options="options"></div>
           </div>
         </div>
       </div>
-% endif
+  % endif
       ## css animation doesnt work on pseudo element, let use this instead
       <div class="alert alert-danger" translate>offline_sorry</div>
     </div> <!-- #header -->
+% endif
     <div id="loader"></div>
     <div tabindex="1" ga-map ga-map-map="map">
       <div ng-cloak translate-cloak id="copyrightsdata">
@@ -208,15 +220,29 @@ itemscope itemtype="http://schema.org/WebApplication"
         </div>
         <div ga-attribution ga-attribution-map="map"></div>
       </div>
-      
+  % if device == 'embed':
+      <a ng-cloak translate-cloak id="bigMapLink" target="_blank" ng-href="{{deviceSwitcherHref}}">
+        <div>
+          <img src="${versionslashed}img/logo.ch.small.png" alt="small_logo" draggable="false"/>
+          <span translate-values="{{host}}" translate>view_on_mapgeoadminch</span>
+        </div>
+        <div ng-show="time">{{time}}</div>
+      </a>
+      <div ga-scale-line ga-scale-line-map="map"></div>
+  % endif
+
       <div id='buttonGroup'>
+  % if device != 'embed':
         <div ga-geolocation ga-geolocation-map="map"></div>
+  % endif
         <div id="zoomButtons"></div>
+  % if device != 'embed':
         <div ga-time-selector-bt ga-time-selector-bt-map="map"></div> 
+  % endif
         <div ga-rotate ga-rotate-map="map"></div>
-        % if device == 'mobile':
-          <div ga-offline-bt></div>
-        % endif
+  % if device == 'mobile':
+        <div ga-offline-bt></div>
+  % endif
       </div>
       <div ga-swipe 
            ga-swipe-map="map" 
@@ -230,9 +256,10 @@ itemscope itemtype="http://schema.org/WebApplication"
     </div>
 % endif
 
+% if device != 'embed':
     <div ng-cloak translate-cloak id="footer" class="navbar navbar-fixed-bottom">
       <div  class="pull-left" ga-scale-line ga-scale-line-map="map"></div>
-% if device == 'desktop':
+  % if device == 'desktop':
       <div id="mouseposition" class="pull-left hidden-xs" ng-controller="GaMousePositionController">
         <select ng-model="options.projection"
                 ng-options="p.label for p in mousePositionProjections">
@@ -241,34 +268,33 @@ itemscope itemtype="http://schema.org/WebApplication"
              ga-mouse-position-map="map"
              ga-mouse-position-options="options"></div>
       </div>
-% endif
-      <div class="pull-right">
+  % endif
+     <div class="pull-right">
         <a target="_blank" ng-href="http://www.geo.admin.ch/internet/geoportal/{{langId}}/home/geoadmin/contact.html#copyright" translate>copyright_label</a>
       </div>
-% if device == 'desktop':
+  % if device == 'desktop':
       <div class="pull-right">
         <a target="_blank" ng-href="{{topicId + '_service_link_href' | translate}}">{{topicId + '_service_link_label' | translate}}</a>
       </div>
-% endif
+  % endif
     </div><!-- #footer -->
 
     <div ng-controller="GaContextPopupController">
       <div ga-context-popup ga-context-popup-map="map" ga-context-popup-options="options"></div>
     </div>
-
+% endif
+    <div ng-controller="GaTimeSelectorController">
+      <div ga-time-selector ga-time-selector-map="map"
+           ga-time-selector-options="options">
+      </div>
+    </div>
     <div ng-controller="GaTooltipController">
       <div ga-tooltip 
            ga-tooltip-map="map" 
            ga-tooltip-options="options"
            ga-tooltip-active="!globals.isMeasureActive && !globals.isDrawActive"></div>
     </div>
-
-    <div ng-controller="GaTimeSelectorController">
-      <div ga-time-selector ga-time-selector-map="map"
-           ga-time-selector-options="options">
-      </div>
-    </div>
-
+% if device != 'embed':
     <div ng-cloak translate-cloak id="pulldown" ng-show="!globals.offline" ng-class="{'selection-and-catalog-shown': (globals.catalogShown && globals.selectionShown)}">
       <div id="pulldown-content" class="content ${"in" if device == "desktop" else "collapse"}">
         <div class="panel">
@@ -285,7 +311,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           </div>
         </div> <!-- .panel -->
 
-% if device == 'desktop':
+  % if device == 'desktop':
         <div class="panel">
           <a id="printHeading" class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#print"
              ga-collapsible-show="globals.printShown">
@@ -368,10 +394,10 @@ itemscope itemtype="http://schema.org/WebApplication"
             </div>
           </div>
         </div> <!-- .panel -->
-% endif
+  % endif
 
         <div class="panel">
-% if device == 'desktop':
+  % if device == 'desktop':
           <div class="theme-toggle">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
               <span translate>choose_theme</span>
@@ -381,7 +407,7 @@ itemscope itemtype="http://schema.org/WebApplication"
               <div ga-topic ga-topic-ui="list" ga-topic-options="options" ga-topic-map="map"></div>
             </div>
           </div>
-% endif
+  % endif
           <a id="catalogHeading" class="panel-heading accordion-toggle light collapsed"
              data-toggle="collapse" href="#catalog"
              ga-collapsible-show="globals.catalogShown">
@@ -394,12 +420,12 @@ itemscope itemtype="http://schema.org/WebApplication"
 
           </a>
           <div id="catalog" class="collapse" ng-controller="GaCatalogtreeController">
-% if device == 'mobile':
+  % if device == 'mobile':
             <label class="topic-container" ng-controller="GaTopicController">
               <span translate>change_topic</span>
               <div ga-topic ga-topic-ui="select" ga-topic-options="options" ga-topic-map="map"></div>
             </label>
-% endif
+  % endif
             <div class="panel-body panel-body-wide accordion-inner-catalog" ng-if="!globals.offline" ga-catalogtree ga-catalogtree-map="map" ga-catalogtree-options="options">
             </div>
           </div>
@@ -420,7 +446,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           </div>
         </div> <!-- .panel -->
 
-% if device == 'mobile':
+  % if device == 'mobile':
         <div class="panel">
           <a class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#settings">
             <i class="visible-collapsed icon-caret-right spacer"></i>
@@ -457,14 +483,13 @@ itemscope itemtype="http://schema.org/WebApplication"
             </div>
           </div>
         </div> <!-- .panel -->
-% endif
+  % endif
       </div> <!-- #pulldown-content -->
-
-% if device == 'desktop':
+  % if device == 'desktop':
       <button id="menu-button" type="button" data-toggle="collapse" data-target="#pulldown-content" class="toggle btn btn-default">
-% else:
+  % elif device == 'mobile':
       <button type="button" data-toggle="collapse" data-target="#pulldown-content" class="toggle btn btn-default collapsed">
-% endif
+  % endif
         <span class="hidden-collapsed">
           <i class="icon-caret-up"></i> <span translate>close_menu</span>
           <span class="phone-toggle">&times;</span>
@@ -477,10 +502,10 @@ itemscope itemtype="http://schema.org/WebApplication"
       </button>
     </div> <!-- #pulldown -->
 
-% if device == 'mobile':
+  % if device == 'mobile':
     <!-- offline dialog -->
     <div ga-offline-menu ga-offline-menu-map="map"></div>
-% endif
+  % endif
     <!-- Popup: Feedback -->
     <div ga-popup="globals.feedbackPopupShown"
          ga-popup-options="{title:'problem_announcement', help:'70'}"
@@ -495,7 +520,7 @@ itemscope itemtype="http://schema.org/WebApplication"
       </div>
     </div> <!-- end Feedback -->
 
-% if device == 'desktop':
+  % if device == 'desktop':
     <!-- Popup: Import WMS -->
     <div ga-popup="globals.importWmsPopupShown"
          ga-popup-options="{title:'import_wms', help:'62'}"
@@ -546,8 +571,7 @@ itemscope itemtype="http://schema.org/WebApplication"
              ga-draw-active="globals.isDrawActive && options.hasPopupFocus"></div>
       </div>
     </div><!-- end Draw -->
-% endif
-
+  % endif
     <!-- Popup: Feature Tree -->
     <div ng-controller="GaFeaturetreeController">
       <div ga-popup="globals.isFeatureTreeActive"
@@ -588,10 +612,10 @@ itemscope itemtype="http://schema.org/WebApplication"
             </div>
           </div>
         </div>
-              </div>
+      </div>
     </div><!-- end Feature Tree -->
 
-% if device == 'mobile':
+  % if device == 'mobile':
     <div ng-if="globals.homescreen" class="popover homescreen"
          ng-class="{
            'visible': globals.homescreen, 
@@ -609,6 +633,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         <span translate>homescreen_content</span>
       </div>
     </div>
+  % endif
 % endif
 
 % if mode == 'prod':
@@ -686,7 +711,7 @@ itemscope itemtype="http://schema.org/WebApplication"
       (function() {
         var module = angular.module('ga');
         var cacheAdd = '${version}' != '' ? '/' + '${version}' : '';
-        var pathname = location.pathname.replace(/(index.html)|(mobile.html)/g, '');
+        var pathname = location.pathname.replace(/(index|mobile|embed)\.html$/g, '');
 
         module.constant('gaGlobalOptions', {
           mapUrl : location.origin + '${apache_base_path}',

@@ -55,12 +55,14 @@
           }),
           logo: false
         });
-
-        map.addControl(new ol.control.ZoomToExtent({
-          target: toolbar,
-          label: '',
-          tipLabel: ''
-        }));
+        
+        if (!gaBrowserSniffer.embed) {
+          map.addControl(new ol.control.ZoomToExtent({
+            target: toolbar,
+            label: '',
+            tipLabel: ''
+          }));
+        }
 
         var dragClass = 'ga-dragging';
         var viewport = $(map.getViewport());
@@ -78,9 +80,7 @@
       var isWindowTooSmall = function() {
         return ($($window).height() <= 550);
       };
-
-      var mobile = (gaBrowserSniffer.mobile) ? 'false' : 'true',
-        dismiss = 'none';
+      var dismiss = 'none';
   
       // The main controller creates the OpenLayers map object. The map object
       // is central, as most directives/components need a reference to it.
@@ -133,9 +133,12 @@
         $scope.time = year;
       });
 
-      $scope.deviceSwitcherHref = gaPermalink.getHref({ mobile: mobile });
+      // Create switch device url
+      var switchToMobile = '' + !(gaBrowserSniffer.mobile || gaBrowserSniffer.embed);
+      $scope.host = {url: $window.location.host}; // only use in embed.html 
+      $scope.deviceSwitcherHref = gaPermalink.getHref({ mobile: switchToMobile });
       $rootScope.$on('gaPermalinkChange', function() {
-        $scope.deviceSwitcherHref = gaPermalink.getHref({ mobile: mobile });
+        $scope.deviceSwitcherHref = gaPermalink.getHref({ mobile: switchToMobile });
       });
 
       $scope.globals = {
@@ -147,7 +150,8 @@
         ios: gaBrowserSniffer.ios,
         offline: gaNetworkStatus.offline,
         feedbackPopupShown: /feedback/g.test(gaPermalink.getParams().widgets),
-        printShown: initWithPrint
+        printShown: initWithPrint,
+        embed: gaBrowserSniffer.embed
       };
 
       gaPermalink.deleteParam('widgets');
