@@ -26,6 +26,7 @@
       </button>
       <button ng-click="options.isProfileActive = !options.isProfileActive"
       class="btn btn-default ga-measure-profile-bt ga-measure-button pull-right"
+      ng-show="!isEmptyDrawing"
       data-loading-text="{{'wait_data_loading' |translate}}">
         {{(options.isProfileActive ? 'hide_profile' : 'display_profile') | translate}}
       </button>
