@@ -12,7 +12,8 @@
 
   module.directive('gaDraw',
     function($timeout, $translate, $window, $rootScope, gaBrowserSniffer,
-        gaDefinePropertiesForLayer, gaDebounce, gaLayerFilters, gaExportKml) {
+        gaDefinePropertiesForLayer, gaDebounce, gaLayerFilters, gaExportKml,
+        gaMapUtils) {
       return {
         restrict: 'A',
         templateUrl: 'components/draw/partials/draw.html',
@@ -96,13 +97,14 @@
 
             if (map.getLayers().getArray().indexOf(layer) == -1) {
               map.addLayer(layer);
-              // Move draw layer  on each changes in the list of layers
+              // Move draw layer on each changes in the list of layers
               // in the layer manager.
-              scope.$watchCollection('layers | filter:layerFilter',
-                  moveLayerOnTop);
+              scope.$watchCollection('layers | filter:layerFilter', function() {
+                gaMapUtils.moveLayerOnTop(map, layer);
+              });
             }
 
-            moveLayerOnTop();
+            gaMapUtils.moveLayerOnTop(map, layer);
 
             var tools = scope.options.tools;
             for (var i = 0, ii = tools.length; i < ii; i++) {
@@ -373,16 +375,6 @@
               }
             });
           };
-
-          // Move the draw layer on top
-          var moveLayerOnTop = function() {
-            var idx = scope.layers.indexOf(layer);
-            if (idx != -1 && idx !== scope.layers.length - 1) {
-              map.removeLayer(layer);
-              map.addLayer(layer);
-            }
-          };
-
         }
       };
     }

@@ -546,5 +546,21 @@ describe('ga_map_service', function() {
       gaDefinePropertiesForLayer(layer);
       expect(gaMapUtils.isExternalWmsLayer(layer)).to.eql(false);
     }));
+
+    it('tests moveLayerOnTop', inject(function(gaDefinePropertiesForLayer) {
+      var firstLayerAdded = addLayerToMap();
+      var secondLayerAdded = addLayerToMap();
+      var thirdLayerAdded = addLayerToMap();
+
+      gaMapUtils.moveLayerOnTop(map, firstLayerAdded);
+      expect(firstLayerAdded).to.eql(map.getLayers().getArray()[2]);
+      expect(thirdLayerAdded).to.eql(map.getLayers().getArray()[1]);
+      expect(secondLayerAdded).to.eql(map.getLayers().getArray()[0]);
+
+      gaMapUtils.moveLayerOnTop(map, secondLayerAdded);
+      expect(secondLayerAdded).to.eql(map.getLayers().getArray()[2]);
+      expect(firstLayerAdded).to.eql(map.getLayers().getArray()[1]);
+      expect(thirdLayerAdded).to.eql(map.getLayers().getArray()[0]);
+    }));
   });
 });
