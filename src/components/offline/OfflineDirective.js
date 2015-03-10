@@ -157,7 +157,7 @@
         var deactivate = function() {
           if (deregister) {
             for (var i = 0; i < deregister.length; i++) {
-              deregister[i].src.unByKey(deregister[i]);
+              ol.Observable.unByKey(deregister[i]);
             }
           }
           $window.removeEventListener('orientationchange',
