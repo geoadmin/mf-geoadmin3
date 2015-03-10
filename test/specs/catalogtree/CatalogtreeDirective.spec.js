@@ -21,8 +21,7 @@ describe('ga_catalogtree_directive', function() {
         },
         getOlLayerById: function(bodId) {
           return new ol.layer.Tile({
-            bodId: bodId,
-            source: new ol.source.OSM()
+            bodId: bodId
           });
         }
       });

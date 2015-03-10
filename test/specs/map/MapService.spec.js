@@ -2,9 +2,7 @@ describe('ga_map_service', function() {
   var map;
 
   var addLayerToMap = function(bodId) {
-    var layer = new ol.layer.Tile({
-      source: new ol.source.OSM()
-    });
+    var layer = new ol.layer.Tile();
     layer.bodId = bodId;
     layer.displayInLayerManager = true;
     map.addLayer(layer);
