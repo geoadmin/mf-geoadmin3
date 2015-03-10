@@ -1,17 +1,6 @@
 # -*- coding: utf-8 -*-
 
 <%inherit file="base.mako"/>
-<%!
-def translist (jahresauswert):
-    firstlist = jahresauswert.split(',')
-    find_this = ".pdf"
-    secondlist = []
-    for i in firstlist:
-        values = i.split('>');
-        if len(values) == 2 and find_this in values[1]:
-          secondlist.append(values);
-    return secondlist
-%>
 <%def name="table_body(c, lang)">
 <%
     zaehlstelle = c['layerBodId'] + '.' + 'zaehlstellen_bezeichnung'
@@ -19,11 +8,10 @@ def translist (jahresauswert):
 %>
 <% c['stable_id'] = True %>
   <table class="table-with-border kernkraftwerke-extended">
-    <tr><td class="cell-left">${_(nummer)}</td>             <td>${c['featureId']}</td></tr>
-	<tr><td class="cell-left">${_(zaehlstelle)}</td>        <td>${c['attributes']['zaehlstellen_bezeichnung']}</td></tr>
-    <tr><td class="cell-left">${_('physischvirtuell')}</td>   <td>${c['attributes']['zst_physisch_virtuell'] or '-'}</td></tr>
-	<tr><td class="cell-left">${_('messstellentyp')}</td>     <td>${c['attributes']['messstellentyp'] or '-'}</td></tr>
-	<tr><td class="cell-left">${_('intern')}</td>             <td><a href="http://doc.vde.admin.ch/out/intern/${c['featureId'] or '-'}.html" target="_blank">${_('linkzurbeschreibung')}</a></td></tr>
+    <tr><td class="cell-left">${_(nummer)}</td>                 <td>${c['featureId']}</td></tr>
+    <tr><td class="cell-left">${_(zaehlstelle)}</td>            <td>${c['attributes']['zaehlstellen_bezeichnung']}</td></tr>
+    <tr><td class="cell-left">${_('physischvirtuell')}</td>     <td>${c['attributes']['zst_physisch_virtuell'] or '-'}</td></tr>
+    <tr><td class="cell-left">${_('messstellentyp')}</td>       <td>${c['attributes']['messstellentyp'] or '-'}</td></tr>
 </%def>
 
 <%def name="extended_info(c, lang)">
@@ -92,44 +80,19 @@ display:none !important;
     ></tr>
 </table>
 </div>
-<p>Um zus&auml;tzliche Informationen &uuml;ber Z&auml;hlstellen zu erhalten, kontaktieren Sie bitte <br />Herr Nicolas Latuske (031 322 94 21) oder Herrn Martin Schmid (031 325 41 06)</p>
+<p>Um zus&auml;tzliche Informationen &uuml;ber Z&auml;hlstellen zu erhalten, kontaktieren Sie bitte <a href="mailto:verkehrsdaten@astra.admin.ch">verkehrsdaten@astra.admin.ch</a></p>
 </div>
-<br>
-<div class="table-with-border kernkraftwerke-extended">
-<h1>Z&auml;hlstellen - Verkehrsdaten</h1>
-% if c['attributes']['bulletins_sasvz']:
-<a style="color:red;" href="${c['attributes']['bulletins_sasvz']}" target="_blank">Monatsbulletin</a><br />
-% endif
-<a style="color:red;" href="http://www.portal-stat.admin.ch/sasvz/files/de/04.xml" target="_blank">Jahresbulletin</a><br />
-% if c['attributes']['ssvz_2005']:
-<a style="color:red;" href="${c['attributes']['ssvz_2005']}" target="_blank">SSVZ 2005 Bulletin</a><br />
-% endif
-% if c['attributes']['jahresauswertung']:
-    <a style="color:red;" href="javascript:showhide('${c['featureId']}');">Jahresauswertungen (ein- u. ausblenden)</a><br />
-% endif
-</div>
-<br>
-<div class="table-with-border kernkraftwerke-extended" id="${c['featureId']}" style="display:none;">
-<h1>Jahresauswertungen</h1>
- <tr>
-% for a in translist(c['attributes']['jahresauswertung']):
-   % if a[1] != None:
-       <a style="color:red;" href="${a[1]}" target="_blank">Jahresauswertung ${a[0]}</a>
-       <br/>
-   % endif
-% endfor
- </tr>
-</div>
+<br />
 
 <div class="chsdi-map-container table-with-border">
  <div id="map"></div>
 </div>
-  <br>
+  <br />
 <div class="chsdi-map-container table-with-border"> 
  <div id="map2"></div>
 </div>
 </div>
-  <br>
+  <br />
   <script type="text/javascript">
     function showhide (id) {
        var e = document.getElementById(id);
