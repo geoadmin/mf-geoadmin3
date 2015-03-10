@@ -69,7 +69,7 @@
     % elif c['attributes']['ak'] == 'ZG':
         <tr><td class="cell-left">${_('link to canton geoportal')}</td><td><a href="http://www.zugmap.ch/zugmap/?idp=1&uid=1&pwd=&map=1&lan=de&typ=3&bmurl=Nav@g@22@u@West@g@${(c['bbox'][0] + c['bbox'][2])/2}@u@Nord@g@${(c['bbox'][1] + c['bbox'][3])/2}@u@B@g@${c['scale']}&dat=fs@g@0:371167b2bf7dfc4b,c7bfc487a7a729d3,9d1d191f82fb57e3,1fb440cdc612de80,4119ae2a85acc4b5,b7b8c26dbec351a9!!" target="_blank">ZG</a></td></tr>
     % elif c['attributes']['ak'] == 'SG':
-        <tr><td class="cell-left">${_('link to canton geoportal')}</td><td><a href="http://www.sg.ch/" target="_blank">AG</a></td></tr>
+        <tr><td class="cell-left">${_('link to canton geoportal')}</td><td><a href="http://www.sg.ch/" target="_blank">SG</a></td></tr>
     % elif c['attributes']['ak'] == 'VS':
         <tr><td class="cell-left">${_('link to canton geoportal')}</td><td><a href="http://www.sit-valais.ch/fr/mo-c.html" target="_blnk">VS</a></td></br>
     % elif c['attributes']['ak'] == 'FL':
