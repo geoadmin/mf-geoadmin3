@@ -1122,8 +1122,16 @@
                 olLayerOrId.split('||').length == 4;
           }
           return olLayerOrId.type == 'WMS';
-        }
+        },
 
+        moveLayerOnTop: function(map, olLayer) {
+          var olLayers = map.getLayers().getArray();
+          var idx = olLayers.indexOf(olLayer);
+          if (idx != -1 && idx !== olLayers.length - 1) {
+            map.removeLayer(olLayer);
+            map.addLayer(olLayer);
+          }
+        }
       };
     };
   });

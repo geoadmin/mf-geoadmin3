@@ -51,7 +51,7 @@
 
   module.directive('gaMeasure',
     function($document, $rootScope, gaDebounce, gaDefinePropertiesForLayer,
-        gaLayerFilters, gaExportKml) {
+        gaLayerFilters, gaExportKml, gaMapUtils) {
       return {
         restrict: 'A',
         templateUrl: function(element, attrs) {
@@ -99,8 +99,9 @@
             deregister = [
               // Move measure layer  on each changes in the list of layers
               // in the layer manager.
-              scope.$watchCollection('layers | filter:layerFilter',
-                  moveLayerOnTop),
+              scope.$watchCollection('layers | filter:layerFilter', function() {
+                gaMapUtils.moveLayerOnTop(scope.map, layer);
+              }),
 
               drawArea.on('drawstart', function(evt) {
                 var nbPoint = 1;
@@ -309,15 +310,6 @@
               updateProfileDebounced();
             }
           });
-
-          // Move the draw layer on top
-          var moveLayerOnTop = function() {
-            var idx = scope.layers.indexOf(layer);
-            if (idx != -1 && idx !== scope.layers.length - 1) {
-              scope.map.removeLayer(layer);
-              scope.map.addLayer(layer);
-            }
-          };
 
           // Listen Profile directive events
           var sketchFeatPoint = new ol.Feature(new ol.geom.Point([0, 0]));
