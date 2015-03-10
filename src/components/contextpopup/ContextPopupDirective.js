@@ -129,7 +129,7 @@
                     elevation_model: 'COMB'
                   }
                 }).success(function(response) {
-                  scope.altitude = parseFloat(response.height);
+                  scope.altitude = parseInt(response.height);
                 });
 
                 $http.get(lv03tolv95Url, {
