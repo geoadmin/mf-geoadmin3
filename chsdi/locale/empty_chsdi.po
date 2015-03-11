@@ -1,3 +1,9 @@
+msgid "ch.bav.sachplan-infrastruktur-schifffahrt_anhoerung"
+msgstr ""
+
+msgid "ch.bav.sachplan-infrastruktur-schifffahrt_ausgangslage"
+msgstr ""
+
 msgid "ch.bafu.hydrologie-hintergrundkarte"
 msgstr ""
 
