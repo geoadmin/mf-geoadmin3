@@ -192,7 +192,7 @@
   );
 
   module.directive('gaImportKml',
-      function($log, $compile, $translate, gaBrowserSniffer,
+      function($log, $compile, $document, $translate, gaBrowserSniffer,
           gaUrlUtils) {
         return {
           restrict: 'A',
@@ -247,6 +247,10 @@
                   '<div class="ga-import-kml-drop-zone">' +
                   '  <div translate>drop_me_here</div>' +
                   '</div>');
+
+              // Block drag of all elements by default to avoid unwanted display
+              // of dropzone.
+              $document.on('dragstart', function() {return false;});
 
               // Hide the drop zone on click, used when for some reasons unknown
               // the element stays displayed. See:

@@ -4,7 +4,11 @@
   height: 100%;
   background-color: #f9f9f9;
   background-image: data-uri('mapbg.png');
-
+  
+  .ol-viewport .ol-unselectable {
+    .ga-user-select(none);
+  }
+  
   .ol-dragbox {
     position:absolute;
     border: 1px solid #2E2F2F;
