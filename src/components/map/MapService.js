@@ -1483,7 +1483,7 @@
     });
 
     this.$get = function($rootScope, $q, $http, gaDefinePropertiesForLayer,
-        gaStyleFactory) {
+        gaStyleFactory, gaMapUtils) {
       var url = this.url;
       var selectStyle = gaStyleFactory.getStyle('select');
       var highlightStyle = gaStyleFactory.getStyle('highlight');
@@ -1519,14 +1519,6 @@
         }
       };
 
-      // Move layer on top
-      var moveToTop = function(map) {
-        if (map.getLayers().getArray().indexOf(vector) != -1) {
-          map.removeLayer(vector);
-          map.addLayer(vector);
-        }
-      };
-
       // Remove features associated with a layer.
       var removeFromLayer = function(layer) {
         var features = source.getFeatures();
@@ -1550,7 +1542,7 @@
           // Add event for automatically put the vector layer on top.
           listenerKeyAdd = map.getLayers().on('add', function(event) {
             if (event.element != vector) {
-              moveToTop(map);
+              gaMapUtils.moveLayerOnTop(map, vector);
             }
           });
 
@@ -1561,7 +1553,7 @@
           });
 
         } else {
-          moveToTop(map);
+          gaMapUtils.moveLayerOnTop(map, vector);
         }
       };
 
