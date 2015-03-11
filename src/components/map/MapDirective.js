@@ -58,7 +58,7 @@
               }));
               unregister = view.on('propertychange', function() {
                 gaPermalink.deleteParam('crosshair');
-                map.unByKey(unregister);
+                ol.Observable.unByKey(unregister);
               });
             }
 

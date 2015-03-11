@@ -101,13 +101,13 @@
               if (scope.layer instanceof ol.layer.Group) {
                 scope.layer.getLayers().forEach(function(olLayer, idx, arr) {
                   var i = idx * 2;
-                  olLayer.unByKey(layerListenerKeys[i]);
-                  olLayer.unByKey(layerListenerKeys[i + 1]);
+                  ol.Observable.unByKey(layerListenerKeys[i]);
+                  ol.Observable.unByKey(layerListenerKeys[i + 1]);
                 });
 
               } else {
                 for (var i = 0, ii = layerListenerKeys.length; i < ii; i++) {
-                  scope.layer.unByKey(layerListenerKeys[i]);
+                  ol.Observable.unByKey(layerListenerKeys[i]);
                 }
               }
               layerListenerKeys = [];

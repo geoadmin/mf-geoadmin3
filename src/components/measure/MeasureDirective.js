@@ -203,7 +203,7 @@
                 featuresOverlay.getFeatures().clear();
 
                 // Unregister the change event
-                sketchFeatArea.unByKey(deregisterFeature);
+                ol.Observable.unByKey(deregisterFeature);
 
                 // Update the profile
                 if (scope.options.isProfileActive) {
@@ -230,7 +230,7 @@
                 if (elt instanceof Function) {
                   elt();
                 } else {
-                  elt.src.unByKey(elt);
+                  ol.Observable.unByKey(elt);
                 }
               }
             }

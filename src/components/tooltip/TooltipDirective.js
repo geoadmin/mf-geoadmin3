@@ -134,7 +134,7 @@
 
               // Remove the remove layer listener if exist
               if (listenerKey) {
-                map.getLayers().unByKey(listenerKey);
+                ol.Observable.unByKey(listenerKey);
               }
             }
 

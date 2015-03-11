@@ -1541,8 +1541,8 @@
       // Add/remove/move to top the vector layer.
       var updateLayer = function(map) {
         if (source.getFeatures().length == 0) {
-          map.getLayers().unByKey(listenerKeyRemove);
-          map.getLayers().unByKey(listenerKeyAdd);
+          ol.Observable.unByKey(listenerKeyRemove);
+          ol.Observable.unByKey(listenerKeyAdd);
           map.removeLayer(vector);
         } else if (map.getLayers().getArray().indexOf(vector) == -1) {
           map.addLayer(vector);
@@ -1691,7 +1691,7 @@
               if (featureIdsCount == 0 && listenerKey) {
                 // Unlisten the remove event when there is no more features
                 // (from permalink) displayed.
-                map.getLayers().unByKey(listenerKey);
+                ol.Observable.unByKey(listenerKey);
               }
             });
           }
