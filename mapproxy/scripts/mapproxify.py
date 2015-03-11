@@ -44,10 +44,12 @@ from pyramid.paster import get_appsettings
 
 from chsdi.models.bod import LayersConfig
 from chsdi.models.bod import get_wmts_models
+from chsdi.lib.filters import filter_by_geodata_staging
 
 
 DEBUG = False
 LANG = 'de'
+STAGING = 'prod'
 
 current_timestamps = {}
 
@@ -66,6 +68,11 @@ def getLayersConfigs():
     models = get_wmts_models(LANG)
     layers_query = DBSession.query(models['GetCap'])
     layers_query = layers_query.filter(models['GetCap'].maps.ilike('%%%s%%' % 'api'))
+    layers_query = filter_by_geodata_staging(
+        layers_query,
+        models['GetCap'].staging,
+        STAGING
+    )
     DBSession.close()
 
     return [q for q in layers_query.all()]
@@ -88,10 +95,10 @@ for part in ['caches', 'sources']:
 if mapproxy_config['layers'] is None:
     mapproxy_config['layers'] = []
 
-for layersConfig in getLayersConfigs():
+for idx, layersConfig in enumerate(getLayersConfigs()):
     if layersConfig and layersConfig.maps is not None:
         if layersConfig.timestamp is not None and 'api' in layersConfig.maps:
-            print layersConfig.bod_layer_id
+            print idx, layersConfig.bod_layer_id
             bod_layer_id = layersConfig.bod_layer_id
 
             timestamps = layersConfig.timestamp.split(',')

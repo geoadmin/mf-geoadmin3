@@ -144,6 +144,9 @@ To run against dev/test environment:
 To run against your private environment:
 `./buildout/bin/nosetests`
 
+To execute all tests, including _mapproxy_ and _varnish_ ones, which are deactivated by default:
+`.//nose_run.sh -a`
+
 ## Updating Mapproxy WMTS service
 Mapproxy provides the same layers as the native WMTS for all available timestamps. When new layers and/or timestamps are added,
 we have to regenerate MapProxy config file `mapproxy/mapproxy.yaml` with the following command:
