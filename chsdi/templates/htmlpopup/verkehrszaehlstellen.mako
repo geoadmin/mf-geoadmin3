@@ -7,7 +7,6 @@
     nummer = c['layerBodId'] + '.' + 'id'
 %>
 <% c['stable_id'] = True %>
-  <table class="table-with-border kernkraftwerke-extended">
     <tr><td class="cell-left">${_(nummer)}</td>                 <td>${c['featureId']}</td></tr>
     <tr><td class="cell-left">${_(zaehlstelle)}</td>            <td>${c['attributes']['zaehlstellen_bezeichnung']}</td></tr>
     <tr><td class="cell-left">${_('physischvirtuell')}</td>     <td>${c['attributes']['zst_physisch_virtuell'] or '-'}</td></tr>
@@ -22,8 +21,7 @@ display:none !important;
 </style>
 <title>Verkehrszaehlstellen</title> 
 <body onload="init()">
-<div class="zsborder">
-<table border="0px" cellpadding="0px" cellspacing="2px" width="100%">
+  <table class="table-with-border kernkraftwerke-extended">
     <tr>
         <td width="25%">&nbsp;</td>
         <td width="20%">&nbsp;</td>
@@ -43,56 +41,53 @@ display:none !important;
         <td>${c['attributes']['richtung_1'] or '-'}</td>
     </tr>
     <tr>
-        <th>Kanton</th>
+        <th class="cell-left">Kanton</th>
         <td>${c['attributes']['kanton'] or '-'}</td>
-        <th>Richtung 2</th>
+        <th class="cell-left">Richtung 2</th>
         <td>${c['attributes']['richtung_2'] or '-'}</td>
     </tr>
     <tr>
-        <th>Swiss 10</th>
+        <th class="cell-left">Swiss 10</th>
         <td>${c['attributes']['swiss_10'] or '-'}</td>
-        <th>Netz</th>
+        <th class="cell-left">Netz</th>
         <td>${c['attributes']['netz'] or '-'}</td>
     </tr>
     <tr>
-        <th>Status</th>
+        <th class="cell-left">Status</th>
         <td>${c['attributes']['status'] or '-'}</td>
-        <th>Strasse</th>
+        <th class="cell-left">Strasse</th>
         <td>${c['attributes']['strasse'] or '-'}</td>
     </tr>
     <tr>
-        <th>Anwendung</th>
+        <th class="cell-left">Anwendung</th>
         <td>${c['attributes']['messstellentyp'] or '-'}</td>
-        <th>Koordinate OST</th>
+        <th class="cell-left">Koordinate OST</th>
         <td>${c['attributes']['koordinate_ost'] or '-'}</td>
     </tr>
     <tr>
-        <th>Art</th>
+        <th class="cell-left">Art</th>
         <td>${c['attributes']['zst_physisch_virtuell'] or '-'}</td>
-        <th>Koordinate NORD</th>
+        <th class="cell-left">Koordinate NORD</th>
         <td>${c['attributes']['koordinate_nord'] or '-'}</td>
     </tr>
     <tr>
-        <th>Anzahl Fahrstreifen</th>
+        <th class="cell-left">Anzahl Fahrstreifen</th>
         <td>${c['attributes']['anzahl_fahrstreifen_tot'] or '-'}</td>
-        <th>Inbetriebnahme</th>
-        <td>${c['attributes']['inbetriebnahme'] or '-'}</td
-    ></tr>
+        <th class="cell-left">Inbetriebnahme</th>
+        <td>${c['attributes']['inbetriebnahme'] or '-'}</td>
+    </tr>
 </table>
-</div>
 <p>Um zus&auml;tzliche Informationen &uuml;ber Z&auml;hlstellen zu erhalten, kontaktieren Sie bitte <a href="mailto:verkehrsdaten@astra.admin.ch">verkehrsdaten@astra.admin.ch</a></p>
-</div>
 <br />
 
 <div class="chsdi-map-container table-with-border">
  <div id="map"></div>
 </div>
-  <br />
+<br />
 <div class="chsdi-map-container table-with-border"> 
  <div id="map2"></div>
 </div>
-</div>
-  <br />
+<br />
   <script type="text/javascript">
     function showhide (id) {
        var e = document.getElementById(id);
@@ -146,7 +141,5 @@ display:none !important;
       map2.addLayer(lyr); map2.addLayer(lyr2); map2.addLayer(lyr3);
     }
   </script>
-  <script type="text/javascript" src="//api3.geo.admin.ch/loader.js"></script>
 </body>
 </%def>
-
