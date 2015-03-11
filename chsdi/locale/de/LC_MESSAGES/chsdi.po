@@ -1685,6 +1685,12 @@ msgstr "Planerische Massnahme"
 msgid "ch.bav.sachplan-infrastruktur-schiene_kraft.plname_it"
 msgstr "Planerische Massnahme"
 
+msgid "ch.bav.sachplan-infrastruktur-schifffahrt_anhoerung"
+msgstr "SIF Anhörung"
+
+msgid "ch.bav.sachplan-infrastruktur-schifffahrt_ausgangslage"
+msgstr "SIF Ausgangslage"
+
 msgid "ch.bav.url"
 msgstr "http://www.bav.admin.ch/?lang=de"
 

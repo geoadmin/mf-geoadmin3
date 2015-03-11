@@ -1685,6 +1685,12 @@ msgstr "Misura"
 msgid "ch.bav.sachplan-infrastruktur-schiene_kraft.plname_it"
 msgstr "Misura"
 
+msgid "ch.bav.sachplan-infrastruktur-schifffahrt_anhoerung"
+msgstr "SIF consultazione"
+
+msgid "ch.bav.sachplan-infrastruktur-schifffahrt_ausgangslage"
+msgstr "SIF statu quo"
+
 msgid "ch.bav.url"
 msgstr "http://www.bav.admin.ch/?lang=it"
 
