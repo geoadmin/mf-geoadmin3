@@ -717,6 +717,12 @@
       var resolution = $scope.map.getView().getResolution();
 
       overlays.forEach(function(overlay) {
+        var elt = overlay.getElement();
+        // We print only overlay added by the MarkerOverlayService
+        // or by crosshair permalink
+        if ($(elt).hasClass('popover')) {
+          return;
+        }
         var center = overlay.getPosition();
         var offset = 5 * resolution;
         if (center) {
