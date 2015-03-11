@@ -49,6 +49,24 @@
             return base + '?' + gaUrlUtils.toKeyValue(newParams);
           };
 
+          this.getEmbedHref = function(p) {
+            var newParams = angular.extend({}, params);
+            if (angular.isDefined(p)) {
+              angular.extend(newParams, p);
+            }
+            if (angular.isDefined(newParams.mobile)) {
+              delete newParams.mobile;
+            }
+            var baseEmbed = base.replace(/(index|mobile)\.html$/, 'embed.html');
+            if (!/embed\.html$/.test(baseEmbed)) {
+              if (!/\/$/.test(baseEmbed)) {
+                baseEmbed += '/';
+              }
+              baseEmbed += 'embed.html';
+            }
+            return baseEmbed + '?' + gaUrlUtils.toKeyValue(newParams);
+          };
+
           this.getParams = function() {
             return params;
           };

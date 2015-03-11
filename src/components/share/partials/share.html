@@ -35,5 +35,60 @@
   <span class="input-group-btn">
     <button class="btn btn-default" ng-disabled="urlShortened"
             ng-click="shortenUrl()" translate>shorten_url</button>
-    </span>
+  </span>
 </div>
+
+<div class="ga-share-embed">
+  <label>
+    <span translate>embed_map</span>:
+  </label>
+  <div class="input-group input-group-sm">
+    <input type="text" class="form-control"
+           value="<iframe src='{{embedValue}}' width='400' height='300' frameborder='0' style='border:0'></iframe>"
+           ng-click="selectOnClick($event)">
+    </input>
+    <span class="input-group-btn">
+      <button class="pull-right btn btn-default btn-xs"
+              data-toggle="modal"
+              data-target="#gaEmbedModal" 
+              translate>show_more_options</button>
+    </span>
+  </div>
+  <div translate>share_disclaimer</div>  
+</div>
+      
+<div class="modal fade" id="gaEmbedModal">
+  <div class="modal-dialog" ng-style="contentWidth">
+    <div class="modal-content" ng-style="contentWidth">
+      <div class="modal-header">
+         <h4 translate>embed_map</h4>
+         <button class="ga-icon ga-btn icon-remove" data-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="ga-inputs">
+        <select ng-model="iframeSize" ng-options="size.value as size.label |
+        translate for
+        size in options.iframeSizes">
+        </select>
+        <div class="form-inline" ng-show="!iframeSize">
+          <input type="text" ng-model="iframeWidth" />
+          <label>X</label>
+          <input type="text" ng-model="iframeHeight" />
+          <a href="" translate>share_preview</a>
+        </div>
+        <input type="text" class="form-control ga-embed-input" ng-click="selectOnClick($event)"
+           value="<iframe src='{{embedValue}}' width='{{iframeWidth}}' height='{{iframeHeight}}' frameborder='0' style='border:0'></iframe>"></input>
+        </div>
+        <iframe ng-if="loadIframe"
+                ng-show="iframeSize"
+                ng-src="{{embedValue}}" 
+                width="{{iframeWidth}}"
+                height="{{iframeHeight}}"
+                frameborder="0">
+        </iframe>
+        <div translate>share_disclaimer</div>  
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -9,7 +9,20 @@
           shortenUrl: gaGlobalOptions.apiUrl
               + '/shorten.json',
           qrcodegeneratorPath: gaGlobalOptions.apiUrl
-              + '/qrcodegenerator'
+              + '/qrcodegenerator',
+          iframeSizes: [{
+            label: 'small_size',
+            value: [400, 300]
+          }, {
+            label: 'medium_size',
+            value: [600, 450]
+          }, {
+            label: 'big_size',
+            value: [800, 600]
+          }, {
+            label: 'custom_size',
+            value: undefined
+          }]
         };
       });
 

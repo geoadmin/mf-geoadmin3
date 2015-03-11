@@ -147,10 +147,15 @@ button.ga-btn, .ol-control button {
   #header {
     background-color: transparent;
     box-shadow: none;
-    
+    width: 550px;
+
     .pull-right > div {
       display: none;
     }
+  }
+
+  #search-container {
+    width: 80%;
   }
   
   &.ga-full-screen-no-inputs #search-container, 
@@ -472,7 +477,7 @@ a .ga-icon-separator {
   position: absolute;
   left: 0;
   width: unit(@pulldown-width, px);
-  z-index: 1000;
+  z-index: 1040;
   top: unit(@header-height, px);
   @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
     top: unit(@small-header-height, px);
