@@ -9,6 +9,36 @@
 Release Notes
 =============
 
+.. _releasenotes_20150312:
+
+Release 20150312 - Thursday, March 12th 2015
+------------------------------------------------
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_150304...r_150312>`__
+
+`MAP <//map.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+- New embed page optimized for display in iframe
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_150304...r_150312>`__
+
+
+Geodata
+*******
+
++-----------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Traffic counting locations principal <//s.geo.admin.ch/63386dcd8e>`__ (ch.astra.strassenverkehrszaehlung_messstellen-uebergeordnet)                                           |
++-----------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Traffic counting locations local <//s.geo.admin.ch/63386b9324>`__ (ch.astra.strassenverkehrszaehlung_messstellen-regional_lokal)                                              |
++-----------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+
 .. _releasenotes_20150304:
 
 Release 20150304 - Wednesday, March 4th 2015
