@@ -116,7 +116,7 @@
                   scope.loadIframe = false;
                 });
                 // TODO: remove this hack and find something cleaner
-                pulldown.css('z-index', 'inherit');
+                pulldown.css('z-index', '');
               });
 
               // Display a preview window
