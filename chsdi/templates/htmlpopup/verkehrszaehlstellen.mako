@@ -16,11 +16,6 @@
 <%def name="extended_info(c, lang)">
 <title>Verkehrszaehlstellen</title> 
 <body onload="init()">
-<style type="text/css">
-.htmlpopup-footer{
-display:none !important;
-}
-</style>
   <table class="table-with-border kernkraftwerke-extended">
     <tr>
         <td width="25%">&nbsp;</td>
