@@ -56,7 +56,7 @@ describe('ga_permalink_service', function() {
   });
 
   describe('correctly creates embed url', function() {
-    var win, embedUrl = 'https://some-hostname:443/some/path/embed.html?some=key&value=pairs';
+    var win, embedUrl = '//some-hostname:443/some/path/embed.html?some=key&value=pairs';
     
     beforeEach(function() {
       inject(function($injector) {

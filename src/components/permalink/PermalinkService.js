@@ -57,7 +57,8 @@
             if (angular.isDefined(newParams.mobile)) {
               delete newParams.mobile;
             }
-            var baseEmbed = base.replace(/(index|mobile)\.html$/, 'embed.html');
+            var baseEmbed = base.replace(/^https?:/, '').
+                replace(/(index|mobile)\.html$/, 'embed.html');
             if (!/embed\.html$/.test(baseEmbed)) {
               if (!/\/$/.test(baseEmbed)) {
                 baseEmbed += '/';
