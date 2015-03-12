@@ -101,7 +101,11 @@
               scope.homescreen = $window.navigator.standalone;
 
               // Load the content of iframe only when necessary
-              element.find('.modal').on('shown.bs.modal', function() {
+              var pulldown = $('#pulldown');
+              element.find('.modal').on('show.bs.modal', function() {
+                // TODO: remove this hack and find something cleaner
+                pulldown.css('z-index', 1040);
+              }).on('shown.bs.modal', function() {
                 $(this).find('select').focus();
                 scope.$apply(function() {
                   scope.loadIframe = true;
@@ -111,6 +115,8 @@
                 scope.$apply(function() {
                   scope.loadIframe = false;
                 });
+                // TODO: remove this hack and find something cleaner
+                pulldown.css('z-index', 'inherit');
               });
 
               // Display a preview window

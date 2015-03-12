@@ -82,7 +82,9 @@
             // Change cursor style on mouse move, only on desktop
             var updateCursorStyle = function(evt) {
               var feature, pixel = map.getEventPixel(evt);
-              var hasQueryableLayer = map.forEachLayerAtPixel(pixel,
+              var hasQueryableLayer = false;
+              if (!gaBrowserSniffer.msie || gaBrowserSniffer.msie > 10) {
+                hasQueryableLayer = map.forEachLayerAtPixel(pixel,
                   function() {
                     return true;
                   },
@@ -90,6 +92,7 @@
                   function(layer) {
                     return isQueryableBodLayer(layer);
                   });
+              }
               if (!hasQueryableLayer) {
                 feature = findVectorFeature(pixel);
               }
