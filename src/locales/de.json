@@ -296,7 +296,7 @@
 	"upload_failed": "Fehler beim Hochladen!",
 	"upload_succeeded": "Upload OK!",
 	"uploading_file": "Datei wird hochgeladen...",
-	"view_on_mapgeoadminch": "In {{ur}} ansehen",
+	"view_on_mapgeoadminch": "In {{url}} ansehen",
 	"void_layer": "kein Hintergrund",
 	"vu": "Verkehrsunfälle",
 	"vu_help_link_href": "http://help.geo.admin.ch/",
