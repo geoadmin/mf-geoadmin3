@@ -4,6 +4,8 @@ var RESOLUTIONS = [
 ];
 
 var extent = [2420000, 130000, 2900000, 1350000];
+var projection = ol.proj.get('EPSG:2056');
+projection.setExtent(extent);
 
 
 var lang = getUrlParameter('lang') || 'en';
@@ -39,14 +41,14 @@ for (var i = 0; i < RESOLUTIONS.length; i++) {
 
 
 var cadastralCfg = {
-    "attribution": "Mensuration officielle suisse / FL",
-    "timestamps": ["current"],
-    "background": false,
-    "format": "png",
-    "serverLayerName": "ch.kantone.cadastralwebmap-farbe",
-    "label": "CadastralWebMap",
-    "hasLegend": true,
-    "type": "wmts",
+    attribution: "Mensuration officielle suisse / FL",
+    timestamps: ["current"],
+    background: false,
+    format: "png",
+    serverLayerName: "ch.kantone.cadastralwebmap-farbe",
+    label: "CadastralWebMap",
+    hasLegend: true,
+    type: "wmts"
 };
 
 $.ajax({
@@ -94,6 +96,7 @@ var wmtsSource = function(layer, options) {
             timestamp + '/2056/' +
             '{TileMatrix}/{TileCol}/{TileRow}.').replace('http:', location.protocol) + extension,
         tileGrid: tileGrid,
+        projection: projection,
         layer: options['serverLayerName'] ? options['serverLayerName'] : layer,
         requestEncoding: 'REST'
     }));
@@ -109,7 +112,7 @@ var baseConfig = {
         "20151231"
     ],
     "label": "ch.swisstopo.pixelkarte-farbe_grau",
-    "type": "wmts",
+    "type": "wmts"
 };
 
 
@@ -167,7 +170,7 @@ var map = new ol.Map({
     view: new ol.View({
         center: [2600000, 1200000],
         resolutions: RESOLUTIONS,
-        projection: 'EPSG:3857',
+        projection: projection,
         resolution: 250,
     })
 });

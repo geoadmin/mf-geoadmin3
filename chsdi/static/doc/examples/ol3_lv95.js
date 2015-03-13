@@ -4,6 +4,9 @@ var RESOLUTIONS = [
 ];
 
 var extent = [2420000, 130000, 2900000, 1350000];
+var projection = ol.proj.get('EPSG:2056');
+projection.setExtent(extent);
+
 
 function qualifyURL(url) {
     var a = document.createElement('a');
@@ -35,6 +38,7 @@ var wmtsSource = function(layer, options) {
             timestamp + '/2056/' +
             '{TileMatrix}/{TileCol}/{TileRow}.').replace('http:', location.protocol) + extension,
         tileGrid: tileGrid,
+        projection: projection,
         layer: options['serverLayerName'] ? options['serverLayerName'] : layer,
         requestEncoding: 'REST'
     }));
@@ -106,7 +110,7 @@ var map = new ol.Map({
     ]),
     view: new ol.View({
         center: [2720000, 1095000],
-        //projection: 'EPSG:3857',
-        resolution: 100,
+        projection: projection,
+        resolution: 100
     })
 });

@@ -739,20 +739,20 @@ URL
 ***
 
 - http://wmts.geo.admin.ch or  https://wmts.geo.admin.ch
-- http://wmts0.geo.admin.ch or https://wmts0.geo.admin.ch
-- http://wmts1.geo.admin.ch or https://wmts1.geo.admin.ch
-- http://wmts2.geo.admin.ch or https://wmts2.geo.admin.ch
-- http://wmts3.geo.admin.ch or https://wmts3.geo.admin.ch
-- http://wmts4.geo.admin.ch or https://wmts4.geo.admin.ch
+- http://wmts5.geo.admin.ch or https://wmts5.geo.admin.ch
+- http://wmts6.geo.admin.ch or https://wmts6.geo.admin.ch
+- http://wmts7.geo.admin.ch or https://wmts7.geo.admin.ch
+- http://wmts8.geo.admin.ch or https://wmts8.geo.admin.ch
+- http://wmts9.geo.admin.ch or https://wmts9.geo.admin.ch
 
 GetCapabilities
 ***************
 
 The GetCapabilites document provides informations about the service, along with layer description, both in german and french.
 
-http://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml
+`http://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml <../1.0.0/WMTSCapabilities.xml>`_ 
 
-http://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml?lang=fr
+`http://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml?lang=fr <../1.0.0/WMTSCapabilities.xml?lang=fr>`_ 
 
 Parameters
 **********
@@ -772,7 +772,7 @@ with the following parameters:
 Parameter              Example                         Explanation
 ===================    =============================   ==========================================================================
 Protocol               http ou https                   
-ServerName             wmts[0-4].geo.admin.ch
+ServerName             wmts[5-9].geo.admin.ch
 Version                1.0.0                           WMTS protocol version
 Layername              ch.bfs.arealstatistik-1997      See the WMTS `GetCapabilities <//wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml>`_ document.
 StyleName              default                         mostly constant
@@ -850,9 +850,9 @@ Result
 
 A tile.
 
-http://wmts1.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20110401/21781/20/58/70.jpeg
+http://wmts6.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20110401/21781/20/58/70.jpeg
 
-or https://wmts1.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20110401/21781/20/58/70.jpeg
+or https://wmts6.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20110401/21781/20/58/70.jpeg
 
 
 
@@ -863,19 +863,19 @@ Beside, the **LV03** projection, the same tiles are offered in four other *tilem
 These projections are:
 
 * Plate-Carrée WGS1984 (EPSG:4326)
-    `http://wmts10.geo.admin.ch/1.0.0/WMTSCapabilities.EPSG.4326.xml <../1.0.0/WMTSCapabilities.EPSG.4326.xml>`_
+    `http://wmts10.geo.admin.ch/EPSG/4326/1.0.0/WMTSCapabilities.xml <../EPSG/4326/1.0.0/WMTSCapabilities.xml>`_
 * Plate-Carrée ETRS89 (EPSG:4258)
-    `http://wmts10.geo.admin.ch/1.0.0/WMTSCapabilities.EPSG.4258.xml <../1.0.0/WMTSCapabilities.EPSG.4258.xml>`_
+    `http://wmts10.geo.admin.ch/EPSG/4258/1.0.0/WMTSCapabilities.xml <../EPSG/4258/1.0.0/WMTSCapabilities.xml>`_
 * LV95/CH1903+ (EPSG:2056)
-    `http://wmts10.geo.admin.ch/1.0.0/WMTSCapabilities.EPSG.2056.xml <../1.0.0/WMTSCapabilities.EPSG.2056.xml>`_ 
+    `http://wmts10.geo.admin.ch/EPSG/2056/1.0.0/WMTSCapabilities.xml <../EPSG/2056/1.0.0/WMTSCapabilities.xml>`_ 
 * WGS84/Pseudo-Mercator (EPSG:3857, as used in OSM, Bing, Google Map)
-    `http://wmts10.geo.admin.ch/1.0.0/WMTSCapabilities.EPSG.3857.xml <../1.0.0/WMTSCapabilities.EPSG.3857.xml>`_
+    `http://wmts10.geo.admin.ch/1.0.0/EPSG/3857/WMTSCapabilities.xml <../EPSG/3857/1.0.0/WMTSCapabilities.xml>`_
 
 
 Note:
 
 * Partly due to a limitation of the WTMS 1.0.0 recommendations, each *projection* has its own *GetCapabilities* document.
-* You have to use the hosts `wmts{10-14}.geo.admin.ch`. This is done to avoid parsind every requests to determine which are
+* You have to use the hosts `wmts{10-14}.geo.admin.ch`. This is done to avoid parsing every requests to determine which are
   using native tiles and which are using reporjected tiles.
 * The same access restrictions apply as above.
 * The same `timestamps` are available in all projection. New `timestamp` are added to the former ones.
@@ -885,8 +885,8 @@ Note:
   inform us in advance.
 * *MapProxy* uses the `Proj.4 <http://trac.osgeo.org/proj/>`_ library internaly to transform between datum, except for the reframe from  
   **LV03/MN03** tiles which is *NTv2* grid based (`CHENyx06 <http://www.swisstopo.admin.ch/internet/swisstopo/en/home/products/software/products/chenyx06.html>`_)
-* Source for these reprojected tiles are the *native* **LV03/MN03** one. The only exception beeing *ch.kantone.cadastralwebmap-farbe* using a WMS service as its source.
-* Note all layer are available at all scales. You have to check for which **tileMatrixSets** a particuliar layer is defined. Your WMTS client may either stretch the
+* Source for these reprojected tiles are the *native* **LV03/MN03** ones. The only exception is *ch.kantone.cadastralwebmap-farbe* that uses a WMS service as its source.
+* Note that all layers are available at all scales. You have to check for which **tileMatrixSets** a particuliar layer is defined. Your WMTS client may either stretch the
   tiles from the last available level or display nothing.
 
 Example

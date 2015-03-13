@@ -51,6 +51,8 @@ DEBUG = False
 LANG = 'de'
 STAGING = 'prod'
 
+total_timestamps = 0
+
 EPSG_CODES = ['4258',  # ETRS89 (source: epsg-registry.org, but many WMTS client use 4852)
               '4326',  # WGS1984
               '2056',  # LV95
@@ -107,6 +109,7 @@ for idx, layersConfig in enumerate(getLayersConfigs()):
             bod_layer_id = layersConfig.bod_layer_id
 
             timestamps = layersConfig.timestamp.split(',')
+            total_timestamps += len(timestamps)
             current_timestamp = timestamps[0]
             image_format = layersConfig.arr_all_formats.split(',')[0]
             server_layer_name = bod_layer_id
@@ -183,6 +186,9 @@ for idx, layersConfig in enumerate(getLayersConfigs()):
                 mapproxy_config['layers'].append(wmts_layer)
                 mapproxy_config['caches'][wmts_cache_name] = wmts_cache
                 mapproxy_config['sources'][wmts_source_name] = wmts_source
+
+print "=============="
+print "Layers: %d, timestamps: %d" % (idx + 1, total_timestamps)
 
 if DEBUG:
     print json.dumps(mapproxy_config, sort_keys=False, indent=4)
