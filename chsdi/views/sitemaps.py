@@ -28,7 +28,6 @@ class SiteMaps(SiteMapValidation):
 
 # Maximum number of urls allowed in multi-files
 __MAX_NUM_URLS__ = 5000
-__AMPERSAND__ = '&amp;'
 
 
 @view_config(route_name='sitemap')
@@ -73,13 +72,13 @@ def topics(params):
     for topic in topics:
         langs = topic['langs'].split(',')
         pathstart = '?topic=' + topic['id']
-        paths.extend(toAllLanguages(langs, [pathstart], __AMPERSAND__, ''))
+        paths.extend(toAllLanguages(langs, [pathstart], '&', ''))
 
     return asXml(params, paths)
 
 
 def layers(params):
-    buildlink = lambda x: '?topic=' + topic['id'] + __AMPERSAND__ + 'layers=' + x.layerBodId
+    buildlink = lambda x: '?topic=' + topic['id'] + '&layers=' + x.layerBodId
     session = params.request.db
     paths = []
     topics = getTopics(params)
@@ -89,7 +88,7 @@ def layers(params):
                  .filter(Catalog.category.ilike('%%layer%%')))
         query = filter_by_geodata_staging(query, Catalog.staging, params.staging)
         layerlinks = map(buildlink, query.all())
-        paths.extend(toAllLanguages(topic['langs'].split(','), layerlinks, __AMPERSAND__, ''))
+        paths.extend(toAllLanguages(topic['langs'].split(','), layerlinks, '&', ''))
 
     return asXml(params, paths)
 
@@ -127,10 +126,10 @@ def address_part(params):
              .limit(__MAX_NUM_URLS__))
     paths = []
     for res in query.all():
-        paths.append('?' + res.__bodId__ + '=' + res.id + __AMPERSAND__ +
-                     'X=' + str(int(res.X)) + __AMPERSAND__ +
-                     'Y=' + str(int(res.Y)) + __AMPERSAND__ +
-                     'zoom=9')
+        paths.append('?' + res.__bodId__ + '=' + res.id +
+                     '&X=' + str(int(res.X)) +
+                     '&Y=' + str(int(res.Y)) +
+                     '&zoom=9')
     return asXml(params, paths)
 
 
