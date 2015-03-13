@@ -704,7 +704,8 @@
                   imageTile.getImage().addEventListener('load', revokeBlob);
                   imageTile.getImage().src = $window.URL.createObjectURL(blob);
                 } catch (e) {
-                  // INVALID_CHAR_ERROR on ie and ios, it's an encoding problem
+                  // INVALID_CHAR_ERROR on ie and ios(only jpeg), it's an
+                  // encoding problem.
                   // TODO: fix it
                   imageTile.getImage().src = content;
                 }
@@ -773,6 +774,17 @@
               '" target="new">' +
               layer.attribution + '</a>')
           ];
+
+          var crossOrigin = 'anonymous';
+          // For some obscure reasons, on iOS, displaying a base 64 image
+          // in a tile with an existing crossOrigin attribute generates
+          // CORS errors.
+          // Currently crossOrigin definition is only used for mouse cursor
+          // detection on desktop in TooltipDirective.
+          if (gaBrowserSniffer.ios) {
+            crossOrigin = undefined;
+          }
+
           // We allow duplication of source for time enabled layers
           var olSource = (layer.timeEnabled) ? null : layer.olSource;
           if (layer.type == 'wmts') {
@@ -789,7 +801,7 @@
                 tileLoadFunction: tileLoadFunction,
                 url: getWmtsGetTileUrl(layer.serverLayerName,
                   layer.format),
-                crossOrigin: 'anonymous'
+                crossOrigin: crossOrigin
               });
             }
             olLayer = new ol.layer.Tile({
@@ -821,7 +833,7 @@
                   url: wmsUrl,
                   params: wmsParams,
                   attributions: attributions,
-                  crossOrigin: 'anonymous',
+                  crossOrigin: crossOrigin,
                   ratio: 1
                 });
               }
@@ -839,7 +851,7 @@
                   params: wmsParams,
                   attributions: attributions,
                   gutter: layer.gutter || 0,
-                  crossOrigin: 'anonymous',
+                  crossOrigin: crossOrigin,
                   tileGrid: gaTileGrid.get(layer.resolutions,
                       layer.minResolution, 'wms'),
                   tileLoadFunction: tileLoadFunction
