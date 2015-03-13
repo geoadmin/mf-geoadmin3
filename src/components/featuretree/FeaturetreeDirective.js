@@ -148,7 +148,9 @@
                       feature.geometry) ? feature : null;
                   feature.label = getTranslatedLabel(feature.properties);
                   newNode.features.push(feature);
-                  drawFeature(feature);
+                  if (scope.isActive) {
+                    drawFeature(feature);
+                  }
                 }
               });
               scope.tree = newTree;
