@@ -117,7 +117,7 @@ def _get_models_attributes_keys(models, lang):
         else:
             # Maybe this should be removed since only searchable layers
             # have attributes that can be queried
-            attributes = model().getAttributesKeys(excludePkey=False)
+            attributes = model().getAttributesKeys()
         allAttributes = allAttributes + attributes
     return list(set(allAttributes))
 
