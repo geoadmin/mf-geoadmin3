@@ -87,6 +87,7 @@
             style: scope.options.drawStyleFunction
           });
 
+
           // Activate the component: add listeners, last features drawn and draw
           // interaction.
           var activate = function() {
@@ -94,6 +95,14 @@
             scope.map.addLayer(layer);
             scope.map.addInteraction(drawArea);
             featuresOverlay.setMap(scope.map);
+
+            // Controls the display of the show profile button
+            var nbDrawnFeatures = layer.getSource().getFeatures().length;
+            if (nbDrawnFeatures > 0) {
+              scope.isEmptyDrawing = false;
+            } else {
+              scope.isEmptyDrawing = true;
+            }
 
             // Add events
             deregister = [
@@ -106,7 +115,9 @@
               drawArea.on('drawstart', function(evt) {
                 var nbPoint = 1;
                 var isSnapOnLastPoint = false;
-
+                scope.$apply(function() {
+                  scope.isEmptyDrawing = true;
+                });
                 // Clear the layer
                 layer.getSource().clear();
 
@@ -134,6 +145,16 @@
                     if (nbPoint != lineCoords.length) {
                       // A point is added
                       nbPoint++;
+                      // Controls the display of the show profile button
+                      if (nbPoint < 3 && !scope.isEmptyDrawing) {
+                        scope.$apply(function() {
+                          scope.isEmptyDrawing = true;
+                        });
+                      } else if (nbPoint >= 3 && scope.isEmptyDrawing) {
+                        scope.$apply(function() {
+                          scope.isEmptyDrawing = false;
+                        });
+                      }
 
                       // Update the profile
                       if (scope.options.isProfileActive) {
@@ -182,7 +203,6 @@
               }),
 
               drawArea.on('drawend', function(evt) {
-
                 if (!isFinishOnFirstPoint) {
                   // The sketchFeatureArea is automatically closed by the draw
                   // interaction even if the user has finished drawing on the
