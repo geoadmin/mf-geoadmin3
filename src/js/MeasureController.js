@@ -8,8 +8,8 @@
     'pascalprecht.translate'
   ]);
   module.controller('GaMeasureController',
-      function($scope, $translate, $http, $rootScope, $window, gaBrowserSniffer,
-          gaGlobalOptions, gaUrlUtils, gaPrintService, $timeout) {
+      function($scope, $translate, $q, $http, $rootScope, $window, $timeout,
+          gaBrowserSniffer, gaGlobalOptions, gaUrlUtils, gaPrintService) {
         $scope.options = {
           isProfileActive: false,
           profileUrl: gaGlobalOptions.apiUrl + '/rest/services/profile.json',
@@ -96,45 +96,60 @@
             }
           }
         })();
+
+        var canceler;
+        var cancel = function() {
+          if (canceler !== undefined) {
+            canceler.resolve();
+            canceler = undefined;
+          }
+        };
         
         var win = $($window);
         var isProfileCreated = false;
-        var createProfile = function(feature, callback) {
+        var getProfile = function(feature, callback) {
           var coordinates = feature.getGeometry().getCoordinates();
           var wkt = '{"type":"LineString","coordinates":' +
-              angular.toJson(coordinates) + '}'; 
-          var template = $scope.options.profileUrl + '?geom=' +
-               gaUrlUtils.encodeUriQuery(wkt) + '&elevation_models=' +
-              $scope.options.profileOptions.elevationModel;
-          var http = $http.get(template);
-          if (!callback) {
-            callback = function(data, status) {
-              isProfileCreated = true;
-              // Profile width is dynamic, so before the first loading we must 
-              // set the good value.
-              // 32 is the padding and margin of the popup.
-              $scope.options.profileOptions.width = win.width() - $('[ga-measure]').width() - 32;
-              $rootScope.$emit('gaProfileDataLoaded', data);
-            };
-          }
-          http.success(callback);
-          http.error(function(data, status) {
-            // Display an empty profile
-            callback([{alts:{COMB: 0}, dist: 0}], status);
-          });;
+                    angular.toJson(coordinates) + '}'; 
+          var url = $scope.options.profileUrl + '?geom=' +
+                    gaUrlUtils.encodeUriQuery(wkt) + '&elevation_models=' +
+                    $scope.options.profileOptions.elevationModel;
+
+          //cancel old request
+          cancel();
+          canceler = $q.defer();
+
+          $http.get(url, {
+            cache: true,
+            timeout: canceler.promise
+          }).success(callback)
+            .error(function(data, status) {
+              // If request is canceled, statuscode is 0 and we don't announce it
+              if (status !== 0) {
+                // Display an empty profile
+                callback([{alts:{COMB: 0}, dist: 0}], status);
+              }
+            });
         };
 
-        var updateProfile = function(feature) {
-          createProfile(feature, function(data, status) {
-            $rootScope.$emit('gaProfileDataUpdated', data);
-          });
+       var createProfile = function(data, status) {
+          isProfileCreated = true;
+          // Profile width is dynamic, so before the first loading we must 
+          // set the good value.
+          // 32 is the padding and margin of the popup.
+          $scope.options.profileOptions.width = win.width() - $('[ga-measure]').width() - 32;
+          $rootScope.$emit('gaProfileDataLoaded', data);
+        };
+
+        var updateProfile = function(data, status) {
+          $rootScope.$emit('gaProfileDataUpdated', data);
         };
 
         $scope.options.drawProfile = function(feature) {
           if (!isProfileCreated) {
-            createProfile(feature);
+            getProfile(feature, createProfile);
           } else {
-            updateProfile(feature);
+            getProfile(feature, updateProfile);
           }
         }
 
