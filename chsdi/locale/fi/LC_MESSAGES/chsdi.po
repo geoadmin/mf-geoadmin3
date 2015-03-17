@@ -4826,7 +4826,7 @@ msgid "tt_kkw_cooling_type"
 msgstr "Kühlsystem"
 
 msgid "tt_kkw_decontamination"
-msgstr "Dekontamination"
+msgstr "Stilllegung"
 
 msgid "tt_kkw_dismantling"
 msgstr "Rückbau"

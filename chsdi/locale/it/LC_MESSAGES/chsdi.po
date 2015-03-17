@@ -4827,7 +4827,7 @@ msgid "tt_kkw_cooling_type"
 msgstr "Tipo di raffreddamento"
 
 msgid "tt_kkw_decontamination"
-msgstr "Fase di decontaminazione"
+msgstr "Disattivazione"
 
 msgid "tt_kkw_dismantling"
 msgstr "Fase di smantellamento"

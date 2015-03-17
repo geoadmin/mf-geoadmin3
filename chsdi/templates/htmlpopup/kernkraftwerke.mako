@@ -67,10 +67,8 @@
         <tr><th class="cell-left">${_('tt_kkw_grosseloutput')}</th>      <td>${gross_el_output[reactor_i]} MWe</td></tr>
         <tr><th class="cell-left">${_('tt_kkw_neteloutput')}</th>      <td>${net_el_output[reactor_i]} MWe</td></tr>
         <tr><th class="cell-left">${_('tt_kkw_contruction')}</th>      <td>${construction_phase[reactor_i]}</td></tr>
-        <tr><th class="cell-left">${_('tt_kkw_commissioning')}</th>      <td>${commissioning_phase[reactor_i]}</td></tr>
         <tr><th class="cell-left">${_('tt_kkw_operation')}</th>      <td>${operation_phase[reactor_i]}</td></tr>
         <tr><th class="cell-left">${_('tt_kkw_decontamination')}</th>      <td>${decontamination_phase[reactor_i]}</td></tr>
-        <tr><th class="cell-left">${_('tt_kkw_dismantling')}</th>      <td>${dismantling_phase[reactor_i]}</td></tr>
     % endfor
     </table>
     <div class="thumbnail-container">
@@ -78,7 +76,7 @@
             <a href="https://dav0.bgdi.admin.ch/bfe_pub/images_kkw/plant${c['featureId']}.jpg">
                 <img class="image" src="https://dav0.bgdi.admin.ch/bfe_pub/images_kkw/plant${c['featureId']}.jpg" />
             </a>
-            221	Bild copyright ENSI
+            Bild copyright ENSI
         </div>
     </div>
     <div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls">
