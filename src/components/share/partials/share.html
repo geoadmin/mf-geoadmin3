@@ -64,23 +64,21 @@
          <h4 class="modal-title" translate>embed_map</h4>
          <button class="ga-icon ga-btn icon-remove" data-dismiss="modal"></button>
       </div>
-      <div class="modal-body">
-        <div class="ga-inputs">
-        <select ng-model="iframeSize" ng-options="size.value as size.label |
-        translate for
-        size in options.iframeSizes">
-        </select>
-        <div class="form-inline" ng-show="!iframeSize">
-          <input type="text" ng-model="iframeWidth" />
-          <label>X</label>
-          <input type="text" ng-model="iframeHeight" />
-          <a href="" translate>share_preview</a>
-        </div>
-        <input type="text" class="form-control ga-embed-input" ng-click="selectOnClick($event)"
-           value="<iframe src='{{embedValue}}' width='{{iframeWidth}}' height='{{iframeHeight}}' frameborder='0' style='border:0'></iframe>"></input>
+      <div class="modal-body" ng-class="{'ga-user-size': !iframeSize}">
+        <div>
+          <select ng-model="iframeSize" ng-options="size.value as size.label | translate for size in options.iframeSizes">
+          </select>
+          <div class="form-inline">
+            <input type="text" ng-model="iframeWidth" />
+            <label>X</label>
+            <input type="text" ng-model="iframeHeight" />
+            <a href="" translate>share_preview</a>
+          </div>
+          <input type="text" class="form-control ga-embed-input"
+                 value="<iframe src='{{embedValue}}' width='{{iframeWidth}}' height='{{iframeHeight}}' frameborder='0' style='border:0'></iframe>"
+                 ng-click="selectOnClick($event)"></input>
         </div>
         <iframe ng-if="loadIframe"
-                ng-show="iframeSize"
                 ng-src="{{embedValue}}" 
                 width="{{iframeWidth}}"
                 height="{{iframeHeight}}"

@@ -85,7 +85,7 @@
                   scope.iframeHeight = scope.iframeSize[1];
                   scope.contentWidth = {
                     width: scope.iframeWidth + 40 + 'px',
-                    height: scope.iframeHeight + 200 + 'px'
+                    height: scope.iframeHeight + 170 + 'px'
                   };
                 } else {
                   scope.contentWidth = {
@@ -110,7 +110,6 @@
                 scope.$apply(function() {
                   scope.loadIframe = true;
                 });
-
               }).on('hidden.bs.modal', function() {
                 scope.$apply(function() {
                   scope.loadIframe = false;
