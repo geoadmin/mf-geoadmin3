@@ -125,7 +125,10 @@
                 if (previewWindow) {
                   previewWindow.close();
                 }
-                previewWindow = window.open(scope.embedValue, '_blank',
+                // The name of this window is used in embed.html to makes a
+                // difference between the preview window and an embed page
+                // not used in an iFrame.
+                previewWindow = window.open(scope.embedValue, 'embed',
                     'width=' + scope.iframeWidth +
                     ', height=' + scope.iframeHeight);
               });
