@@ -95,4 +95,46 @@ describe('ga_permalink_service', function() {
       expect(permalink.getEmbedHref()).to.be(embedUrl);
     });
   });
+  
+  describe('correctly creates main url', function() {
+    var win, url = '//some-hostname:443/some/path/?some=key&value=pairs';
+    
+    beforeEach(function() {
+      inject(function($injector) {
+        win = $injector.get('$window');
+      });
+    });
+
+    it('without / at the end', function() {
+      expect(permalink.getMainHref()).to.be(url);
+    });
+    it('with / at the end', function() {
+      win.location.pathname += '/';
+      expect(permalink.getMainHref()).to.be(url);
+    });
+    it('with index.html at the end', function() {
+      win.location.pathname += '/index.html';
+      expect(permalink.getMainHref()).to.be(url);
+    });
+    it('with mobile.html at the end', function() {
+      win.location.pathname += '/mobile.html';
+      expect(permalink.getMainHref()).to.be(url);
+    });
+    it('with embed.html at the end', function() {
+      win.location.pathname += '/embed.html';
+      expect(permalink.getMainHref()).to.be(url);
+    }); 
+    it('with mobile param defined', function() {
+      win.location.pathname += '/embed.html';
+      permalink.updateParams({mobile: false});
+      expect(permalink.getMainHref()).to.be(url);
+      permalink.updateParams({mobile: 'true'});
+      expect(permalink.getMainHref()).to.be(url);
+      permalink.updateParams({mobile: ''});
+      expect(permalink.getMainHref()).to.be(url);
+      permalink.updateParams({mobile: null});
+      expect(permalink.getMainHref()).to.be(url);
+    });
+  });
+
 });

@@ -68,6 +68,12 @@
             return baseEmbed + '?' + gaUrlUtils.toKeyValue(newParams);
           };
 
+          // The main href is the embed permalink but without the name of
+          // the html page.
+          this.getMainHref = function(p) {
+            return this.getEmbedHref(p).replace(/\/embed\.html\?/, '/?');
+          };
+
           this.getParams = function() {
             return params;
           };
