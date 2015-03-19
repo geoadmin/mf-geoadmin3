@@ -86,7 +86,7 @@
           },
           link: function(scope, element, attrs) {
             var map = scope.map;
-            var featureSelected;
+            var featureSelected, features;
             var ignoreOneClick = false;
             var fromMouseDown = false;
             scope.tree = {};
@@ -102,8 +102,8 @@
 
             // Draw the current results
             var drawFeatures = function() {
-              for (var i = 0, ii = scope.features.length; i < ii; i++) {
-                drawFeature(scope.features[i]);
+              for (var i = 0, ii = features.length; i < ii; i++) {
+                drawFeature(features[i]);
               }
             };
 
@@ -114,6 +114,7 @@
               gaPreviewFeatures.clearHighlight();
               gaPreviewFeatures.clear(map);
               var newTree = {};
+              features = [];
 
               angular.forEach(tree, function(layerNode, layerBodId) {
                 var oldNode = scope.tree[layerBodId];
@@ -148,6 +149,7 @@
                       feature.geometry) ? feature : null;
                   feature.label = getTranslatedLabel(feature.properties);
                   newNode.features.push(feature);
+                  features.push(feature);
                   if (scope.isActive) {
                     drawFeature(feature);
                   }
