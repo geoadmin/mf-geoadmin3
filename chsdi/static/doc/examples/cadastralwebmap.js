@@ -59,7 +59,7 @@ var mapLeft = new ga.Map({
 
 var mapRight = new ga.Map({
   target: 'map-right',
-  layers: [wmsCadastre],
+  layers: [wmsCadastre]
 });
 
 mapRight.bindTo('view', mapLeft);
