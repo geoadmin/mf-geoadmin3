@@ -62,6 +62,18 @@ class TestMapServiceView(TestsBase):
         resp = self.testapp.get('/rest/services/ech/MapServer/identify', params=params, status=400)
         resp.mustcontain('Please provide the parameter tolerance')
 
+    def test_identify_polyline(self):
+        params = {'geometry': '{"paths":[[[595000,245000],[670000,255000],[680000,260000],[690000,255000],[685000,240000],[675000,245000]]]}', 'geometryType': 'esriGeometryPolyline', 'imageDisplay': '500,600,96',
+                  'mapExtent': '548945.5,147956,549402,148103.5', 'tolerance': '0', 'layers': 'all:ch.bazl.sachplan-infrastruktur-luftfahrt_kraft'}
+        resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+
+    def test_identify_polygon(self):
+        params = {'geometry': '{"rings":[[[675000,245000],[670000,255000],[680000,260000],[690000,255000],[685000,240000],[675000,245000]]]}', 'geometryType': 'esriGeometryPolygon', 'imageDisplay': '500,600,96',
+                  'mapExtent': '548945.5,147956,549402,148103.5', 'tolerance': '0', 'layers': 'all:ch.bafu.bundesinventare-bln'}
+        resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=200)
+        self.failUnless(resp.content_type == 'application/json')
+
     def test_identify_zero_tolerance_and_scale(self):
         params = {'geometry': '681999,251083,682146,251190', 'geometryFormat': 'geojson', 'geometryType': 'esriGeometryEnvelope',
                   'imageDisplay': '1920,452,96', 'layers': 'all:ch.bazl.sachplan-infrastruktur-luftfahrt_kraft',
