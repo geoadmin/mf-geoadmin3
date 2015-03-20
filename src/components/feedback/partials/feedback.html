@@ -21,32 +21,32 @@
       <div ga-draw 
            ga-draw-map="map" 
            ga-draw-options="options"
-           ga-draw-active="showDraw && options.hasPopupFocus"></div>
+           ga-draw-active="showDraw"></div>
     </div>
     <!-- attachement -->
     <label ng-show="!isIE9" translate>feedback_attachment</label>
-    <div ng-show="!isIE9" class="help-block">
-      <div class="input-group-sm">
+    <div ng-show="!isIE9">
+      <div class="input-group input-group-sm">
         <!-- The real input -->
-        <input type="file" name="file" class="ga-feedback-real-file"/>
+        <input type="file" name="file"/>
         <!-- The fake input -->
-        <input class="form-control ga-feedback-fake-file" type="text"
+        <input class="form-control" type="text"
           value="{{(file.name) ? file.name + ', ' + file.size/1000 + ' ko' : ''}}"
           placeholder="{{'feedback_placeholder' | translate}}" readonly/>
         <span class="input-group-btn">
           <button ng-show="file" ng-click="resetFile($event)" type="button" class="btn btn-default" translate>remove</button>
           <button ng-show="!file" type="button" class="btn btn-default ga-feedback-browse-button needsclick">Browse</button>
         </span>
-        <div ng-show="!isIE && showProgress" class="progress progress-striped active">
-          <div class="progress-bar" style="width: 100%;"></div>
-        </div>
+      </div>
+      <div ng-show="!isIE && showProgress" class="progress progress-striped active">
+        <div class="progress-bar" style="width: 100%;"></div>
       </div>
     </div>
  
     <!-- permalink -->
-    <p class="help-block">
+    <p>
       <span translate>feedback_permalink</span>
-      <a href="{{permalinkValue}}" target="_blank" translate> permalink</a>
+      <a href="{{permalinkValue}}" target="_blank" translate>permalink</a>
     </p>
 
    <!-- footer -->

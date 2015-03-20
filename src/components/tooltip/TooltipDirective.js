@@ -83,10 +83,10 @@ goog.require('ga_styles_service');
 
             // Change cursor style on mouse move, only on desktop
             var updateCursorStyle = function(evt) {
-              var feature, pixel = map.getEventPixel(evt);
+              var feature;
               var hasQueryableLayer = false;
               if (!gaBrowserSniffer.msie || gaBrowserSniffer.msie > 10) {
-                hasQueryableLayer = map.forEachLayerAtPixel(pixel,
+                hasQueryableLayer = map.forEachLayerAtPixel(evt.pixel,
                   function() {
                     return true;
                   },
@@ -96,7 +96,7 @@ goog.require('ga_styles_service');
                   });
               }
               if (!hasQueryableLayer) {
-                feature = findVectorFeature(pixel);
+                feature = findVectorFeature(evt.pixel);
               }
               map.getTarget().style.cursor = (hasQueryableLayer || feature) ?
                   'pointer' : '';
@@ -105,7 +105,7 @@ goog.require('ga_styles_service');
                 updateCursorStyle, 10, false, false);
 
             if (!gaBrowserSniffer.mobile) {
-              $(map.getViewport()).on('mousemove', function(evt) {
+              map.on('pointermove', function(evt) {
                 if (!$scope.isActive) {
                   return;
                 }
@@ -164,6 +164,13 @@ goog.require('ga_styles_service');
               $scope.$apply(function() {
                 findFeatures(coordinate, size, mapExtent);
               });
+            });
+
+            $scope.$watch('isActive', function(active) {
+              if (!active) {
+                // Remove the highlighted feature when we deactivate the tooltip
+                initTooltip();
+              }
             });
 
             // Test if the layer is a vector layer

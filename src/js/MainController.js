@@ -17,9 +17,9 @@ goog.require('ga_storage_service');
    * The application's main controller.
    */
   module.controller('GaMainController',
-    function($rootScope, $scope, $timeout, $translate, $window, gaBrowserSniffer,
+    function($rootScope, $scope, $timeout, $translate, $window, $document, gaBrowserSniffer,
         gaFeaturesPermalinkManager, gaLayersPermalinkManager, gaMapUtils,
-        gaRealtimeLayersManager, gaNetworkStatus, gaPermalink, gaStorage) {
+        gaRealtimeLayersManager, gaNetworkStatus, gaPermalink, gaStorage, gaHistory) {
 
       var createMap = function() {
         var toolbar = $('#zoomButtons')[0];
@@ -98,7 +98,8 @@ goog.require('ga_storage_service');
 
       var initWithPrint = /print/g.test(gaPermalink.getParams().widgets);
       var initWithFeedback = /feedback/g.test(gaPermalink.getParams().widgets);
-
+      var initWithDraw = /draw/g.test(gaPermalink.getParams().widgets) || !!(gaPermalink.getParams().adminId);
+      
       gaPermalink.deleteParam('widgets');
 
       $rootScope.$on('gaTopicChange', function(event, topic) {
@@ -121,7 +122,10 @@ goog.require('ga_storage_service');
           $scope.globals.feedbackPopupShown = initWithFeedback;
         }
         initWithFeedback = false;
-
+        if (initWithDraw) {
+          $scope.globals.isDrawActive = initWithDraw;
+        }
+        initWithDraw = false;
       });
       $rootScope.$on('$translateChangeEnd', function() {
         $scope.langId = $translate.use();
@@ -154,12 +158,23 @@ goog.require('ga_storage_service');
         webkit: gaBrowserSniffer.webkit,
         ios: gaBrowserSniffer.ios,
         offline: gaNetworkStatus.offline,
-        feedbackPopupShown: false,
-        printShown: initWithPrint,
         embed: gaBrowserSniffer.embed,
-        isShareActive: false
+        feedbackPopupShown: false,
+        printShown: false,
+        isShareActive: false,
+        isDrawActive: false,
+        isFeatureTree: false,
+        isSwipeActive: false
       };
 
+      // Deactivate all tools when draw is opening
+      $scope.$watch('globals.isDrawActive', function(active) {
+        if (active) {
+          $scope.globals.feedbackPopupShown = false;
+          $scope.globals.isFeatureTreeActive = false;
+          $scope.globals.isSwipeActive = false;
+        }
+      });
       $rootScope.$on('gaNetworkStatusChange', function(evt, offline) {
         $scope.globals.offline = offline;
       });
@@ -180,7 +195,43 @@ goog.require('ga_storage_service');
       // Try to manage the menu correctly when height is too small,
       // only on desktop.
       if (!gaBrowserSniffer.mobile) {
-      
+        
+
+        // Exit Draw mode when pressing ESC or BAckspace button
+        $document.keydown(function(evt) {
+          if (evt.which == 8) {
+            if (!/^(input|textarea)$/i.test(evt.target.tagName)) {
+              evt.preventDefault();
+            } else {
+              return;
+            }
+          }
+          if ((evt.which == 8 || evt.which == 27) &&
+            $scope.globals.isDrawActive) {
+            $scope.globals.isDrawActive = false;
+            $scope.$digest();
+          }
+        });
+
+        // Browser back button management
+        $scope.$watch('globals.isDrawActive', function(isActive) {
+          if (isActive && gaHistory) {
+            gaHistory.replaceState({
+              isDrawActive: false
+            }, '', gaPermalink.getHref());
+            
+            gaHistory.pushState(null, '', gaPermalink.getHref());
+          }
+        });
+        $window.onpopstate = function(evt) {
+          // When we go to full screen evt.state is null
+          if (evt.state && evt.state.isDrawActive === false) {
+            $scope.globals.isDrawActive = false;
+            gaPermalink.refresh();
+            $scope.$digest();
+          }
+        };
+
         $($window).on('resize', function() {
           if(isWindowTooSmall()) {
             if ($scope.globals.catalogShown) {
@@ -224,7 +275,7 @@ goog.require('ga_storage_service');
           }
         });
       }
-
+      
       // An appcache update is available.
       if ($window.applicationCache) { // IE9
         $window.applicationCache.addEventListener('updateready', function(e) {

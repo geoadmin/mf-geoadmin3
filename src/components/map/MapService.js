@@ -1,5 +1,6 @@
 goog.provide('ga_map_service');
 
+goog.require('ga_measure_service');
 goog.require('ga_networkstatus_service');
 goog.require('ga_offline_service');
 goog.require('ga_storage_service');
@@ -15,7 +16,8 @@ goog.require('ga_urlutils_service');
     'ga_storage_service',
     'ga_styles_from_literals_service',
     'ga_styles_service',
-    'ga_urlutils_service'
+    'ga_urlutils_service',
+    'ga_measure_service'
   ]);
 
   module.provider('gaTileGrid', function() {
@@ -87,7 +89,12 @@ goog.require('ga_urlutils_service');
               return this.getVisible();
             },
             set: function(val) {
-              this.setVisible(val);
+              // apply the value only if it has changed
+              // otherwise the change:visible event is triggered when it's
+              // unseless
+              if (val != this.getVisible()) {
+                this.setVisible(val);
+              }
             }
           },
           invertedOpacity: {
@@ -433,7 +440,7 @@ goog.require('ga_urlutils_service');
 
     this.$get = function($http, $q, $rootScope, $timeout, $translate,
         gaDefinePropertiesForLayer, gaGlobalOptions, gaMapClick, gaMapUtils,
-        gaNetworkStatus, gaStorage, gaStyleFactory, gaUrlUtils) {
+        gaNetworkStatus, gaStorage, gaStyleFactory, gaUrlUtils, gaMeasure) {
 
       // Create the parser
       var kmlFormat = new ol.format.KML({
@@ -445,20 +452,20 @@ goog.require('ga_urlutils_service');
       // Read a kml string then return a list of features.
       var readFeatures = function(kml) {
         // Replace all hrefs to prevent errors if image doesn't have
-        // CORS headers. Exception for *admin.ch, *.bgdi.ch and google markers
-        // icons (lightblue.png, ltblue-dot.png, ltblu-pushpin.png, ...) to
-        // keep the OL3 magic for anchor origin.
+        // CORS headers. Exception for *.geo.admin.ch, *.bgdi.ch and google
+        // markers icons (lightblue.png, ltblue-dot.png, ltblu-pushpin.png, ...)
+        // to keep the OL3 magic for anchor origin.
         // Test regex here: http://regex101.com/r/tF3vM0/3
         // List of google icons: http://www.lass.it/Web/viewer.aspx?id=4
         kml = kml.replace(
-          /<href>http(?!(s?):\/\/(maps\.(?:google|gstatic)\.com.*(blue|green|orange|pink|purple|red|yellow|pushpin).*\.png|.*(bgdi|admin)\.ch))/g,
+          /<href>http(?!(s?):\/\/(maps\.(?:google|gstatic)\.com.*(blue|green|orange|pink|purple|red|yellow|pushpin).*\.png|.*(bgdi|geo.admin)\.ch))/g,
           '<href>' + gaGlobalOptions.ogcproxyUrl + 'http'
         );
 
-        // Replace all http hrefs from *.admin.ch or *.bgdi.ch by https
+        // Replace all http hrefs from *.geo.admin.ch or *.bgdi.ch by https
         // Test regex here: http://regex101.com/r/fY7wB3/3
         kml = kml.replace(
-          /<href>http(?!(s))(?=:\/\/(.*(bgdi|admin)\.ch))/g,
+          /<href>http(?!(s))(?=:\/\/(.*(bgdi|geo.admin)\.ch))/g,
           '<href>https'
         );
 
@@ -517,6 +524,7 @@ goog.require('ga_urlutils_service');
             image = gaStyleFactory.getStyle('kml').getImage();
           }
 
+          // If the feature has name we display it on the map as Google does
           if (feature.get('name') && style.getText()) {
             if (image && image.getScale() == 0) {
               // transparentCircle is used to allow selection
@@ -541,6 +549,29 @@ goog.require('ga_urlutils_service');
           })];
           feature.setStyle(styles);
         }
+        if (feature.getId()) {
+          var split = feature.getId().split('_');
+          if (split.length == 2) {
+            feature.set('type', split[0]);
+          }
+        }
+
+        // Apply the good style (with azimuth drawn) for measure feature
+        if (style && /^measure/.test(feature.getId())) {
+          feature.setStyle(gaStyleFactory.getFeatureStyleFunction('measure'));
+        // Remove image and text styles for polygons and lines
+        } else if (!(geom instanceof ol.geom.Point ||
+            geom instanceof ol.geom.MultiPoint ||
+            geom instanceof ol.geom.GeometryCollection)) {
+          styles = [new ol.style.Style({
+            fill: style.getFill(),
+            stroke: style.getStroke(),
+            image: null,
+            text: null,
+            zIndex: style.getZIndex()
+          })];
+          feature.setStyle(styles);
+        }
       };
 
       var Kml = function() {
@@ -559,7 +590,9 @@ goog.require('ga_urlutils_service');
               kml = offlineData;
             }
           } else if (!kml) {
-            return;
+            var deferred = $q.defer();
+            deferred.reject('No KML data found');
+            return deferred.promise;
           }
 
           // Read features available in a kml string, then create an ol layer.
@@ -625,6 +658,21 @@ goog.require('ga_urlutils_service');
               } else {
                 olMap.addLayer(olLayer);
               }
+
+              // If the layer can contain measure features, we register some
+              // events to add/remove correctly the overlays
+              if (gaMapUtils.isStoredKmlLayer(olLayer)) {
+                if (olLayer.getVisible()) {
+                  angular.forEach(olLayer.getSource().getFeatures(),
+                      function(feature) {
+                    if (/^measure/.test(feature.getId())) {
+                      gaMeasure.addOverlays(olMap, olLayer, feature);
+                    }
+                  });
+                }
+                gaMeasure.registerOverlaysEvents(olMap, olLayer);
+              }
+
               if (options.zoomToExtent) {
                 olMap.getView().fitExtent(olLayer.getExtent(), olMap.getSize());
               }

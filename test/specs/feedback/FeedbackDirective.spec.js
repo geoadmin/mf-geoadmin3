@@ -67,8 +67,7 @@ describe('ga_feedback_directive', function() {
     compileEl($rootScope, $compile, element);
     $rootScope.$broadcast('gaPermalinkChange');
     $rootScope.$digest();
-    var helpBlocks = element.find('.help-block');
-    expect(helpBlocks.find('[href]').attr('href')).to.be('http://permalink.com');
+    expect(element.find('p a[href]').attr('href')).to.be('http://permalink.com');
     expect(element.find('input[type=email]').length).to.be(1);
     expect(element.find('textarea').length).to.be(1);
     expect(element.find('button[type=submit]').length).to.be(1);
@@ -103,7 +102,7 @@ describe('ga_feedback_directive', function() {
       expect(element.find('input[type=email]').length).to.be(1);
       expect(element.find('textarea').length).to.be(1);
       expect(element.find('button[type=submit]').length).to.be(1);
-      expect(element.find('div.help-block').attr('class').split(' ')[1]).to.be('ng-hide');
+      expect(element.find('div[ng-show="!isIE9"]').attr('class')).to.be('ng-hide');
       expect(element.find('div.progress').attr('class').split(' ')[3]).to.be('ng-hide');
     });
   });
