@@ -222,7 +222,7 @@
               scope.contextPermalink = contextPermalink;
 
               scope.crosshairPermalink = gaPermalink.getHref(
-                  angular.extend({crosshair: 'bowl'}, p));
+                  angular.extend({crosshair: 'marker'}, p));
 
               if (!gaBrowserSniffer.mobile) {
                 scope.qrcodeUrl = qrcodeUrl +
