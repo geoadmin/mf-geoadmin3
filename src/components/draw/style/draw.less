@@ -1,5 +1,7 @@
 [ga-draw] {
-
+  height: 44px;
+  width: 250px;
+  
   .ga-draw-disclaimer a {
     color: red;
     text-decoration: none;
@@ -9,31 +11,46 @@
     }
   }
 
-  .ga-draw-buttons {
-    position: relative;
+  .ga-draw-modify {
     width: 350px;
-    padding: 0px 0px 5px;
-    
-    button {
-      width: 54px;
-      height: 80px;
-      margin: 0px 2px;
+  }
+
+  .ga-draw-buttons {
+    position: absolute;
+    width: 290px;
+
+    .btn-group {
+      position: relative;
+      display: inline-block;
+    }
+    button.ga {
+      font-size: 40px;
+      height: 44px;
+      width: 44px;
       padding: 0px;
-      border: none;
-      background: none;
-      
-      &:hover {
-        opacity: 0.6;
-      }
+      margin: 0px;
 
-      i {
-        font-size: 54px;
+      & + ul {
+        padding-right: 2px;
+        li {
+          display: inline-block;
+          width: auto;
+          margin-left: 2px;
+        }
       }
+    }
+    button.dropdown-toggle {
+     padding-right: 5px;
+     width: auto;
+    }
 
-      div {
-        text-align: center;
-        text-overflow: ellipsis;
-        overflow: hidden;
+    .ga-more {
+      position: absolute;
+      right: 0px;
+      bottom: 0px;
+
+      li .btn {
+        text-align: left;
       }
     }
 
@@ -41,70 +58,68 @@
       color: red;
     }
   }
-
-  .ga-draw-instructions {
-    padding: 10px 0px;
-  }
+}  
+.ga-draw-modify {
+  position: relative;
+  min-width: 250px;
+  max-width: 300px;
   
-  .ga-draw-modify {
-    display: inline-block;
-    width: 100%;
-    padding: 5px 0px;
-    border-top: 1px solid #e9e9e9;
+  .popover-content {
+    overflow:  auto;
+    max-height: 150px;
+  
+    label, span {
+      vertical-align: top;
+    }
 
-    input, select, label {
+    span, input, select, textarea {
       display: inline-block;
-      margin: 5px 0px;
     }
 
-    button {
-      margin: 5px 0px 0px 0px;
+    input, select, textarea {
+      font-weight: normal;
+      width: 160px;
     }
 
-    input, select {
-      width: 100px;
-      margin-left: 10px;
-    }
+    span {
+     width: 85px;
+     padding-top: 5px;
+     text-align: left;
+    } 
+    .ga-icons {
+      height: 140px;
+      overflow: hidden;
 
-    label {
-     width: 140px;
-     text-align: right;
-    }
-  }
-  
-  .ga-icons {
-    height: 140px;
-    overflow: hidden;
+      .ga-choose-icon {
+        width: 340px;
+        height: 72px;
+        overflow-y: auto; 
+      }
 
-    .ga-choose-icon {
-      width: 340px;
-      height: 72px;
-      overflow-y: auto; 
-    }
+      .ga-icon-size-24 img {
+        width: 24px;
+      }
 
-    .ga-icon-size-24 img {
-      width: 24px;
-    }
+      .ga-icon-size-36 img {
+        width: 36px;
+      }
 
-    .ga-icon-size-36 img {
-      width: 36px;
-    }
-
-    .ga-icon-size-48 img {
-      width: 48px;
-    }
-    
-    img {
-      cursor: pointer;
-    }
-    
-    img:hover {
-      background-color: #e9e9e9;
-    }
-    
-    .ga-selected, .ga-selected:hover {
-      background-color: darkgray;
-      cursor: default;
+      .ga-icon-size-48 img {
+        width: 48px;
+      }
+      
+      img {
+        cursor: pointer;
+      }
+      
+      img:hover {
+        background-color: #e9e9e9;
+      }
+      
+      .ga-selected, .ga-selected:hover {
+        background-color: darkgray;
+        cursor: default;
+      }
     }
   }
 
@@ -117,3 +132,4 @@
     }
   }
 }
+
