@@ -308,5 +308,12 @@
   "share_less": "",
   "share_more": "",
   "copy_url": "",
-  "copy_success": ""
+  "copy_success": "",
+  "modify_description": "",
+  "draw_description_placeholder": "",
+  "draw_marker": "",
+  "draw_annotation": "",
+  "draw_linepolygon": "",
+  "draw_freehand": "",
+  "draw_measure": ""
 }
