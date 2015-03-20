@@ -670,6 +670,14 @@ itemscope itemtype="http://schema.org/WebApplication"
         FastClick.attach(document.body);
       }, false);
     </script>
+% elif device == 'embed':
+    <script>
+      window.addEventListener('load', function() {
+        if (window.name !== "embed" && window.location == window.parent.location) {
+          document.body.innerHTML = "The map.geo.admin.ch embed page must be used in an iframe."
+        }
+      }, false);
+    </script>
 % else:
     <script>
       $(window).on('load', function() {
