@@ -19,6 +19,7 @@ GeoAdmin Examples
 - `Localisation <../examples/geoadmin_localisation.html>`_
 - `Pseudo-Mercator projection <../examples/ol3_mercator.html>`_
 - `CadastralWebMap as WMTS <../examples/cadastralwebmap.html>`_
+- `Embedded map <../examples/embedmap.html>`_
 
 OpenLayers Examples
 -------------------
