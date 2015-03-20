@@ -29,12 +29,12 @@
       <div class="ga-layer-ordering">
         <button ng-if="layer.timeEnabled" class="ga-icon ga-btn icon-copy"
                 ng-click="duplicateLayer($event, layer)"></button>
-        <button ng-if="!$first" class="ga-icon ga-btn icon-arrow-up"
+        <button class="ga-icon ga-btn icon-arrow-up"
+                ng-disabled="$first"
                 ng-click="moveLayer($event, layer, 1)"></button>
-        <button ng-if="$first" class="ga-icon ga-btn icon-arrow-up ga-disabled"></button>
-        <button ng-if="!$last" class="ga-icon ga-btn icon-arrow-down"
+        <button class="ga-icon ga-btn icon-arrow-down"
+                ng-disabled="$last"
                 ng-click="moveLayer($event, layer, -1)"></button>
-        <button ng-if="$last" class="ga-icon ga-btn icon-arrow-down ga-disabled"></button>
         <button ng-if="isBodLayer(layer)" class="ga-icon ga-btn icon-info-sign"
                 ng-click="displayLayerMetadata($event, layer)"></button>
       </div>
