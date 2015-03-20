@@ -267,7 +267,8 @@ No more than 50 features can be retrieved per request.
 | **geometry (required)**           | The geometry to identify on. The geometry is specified by the geometry type.              |
 |                                   | This parameter is specified as a separated list of coordinates. The simple syntax (comma  |
 |                                   | separated list of coordinates) and the complex one can be used. (`ESRI syntax for         |
-|                                   | geometries <http://help.arcgis.com/en/arcgisserver/10.0/apis/rest/geometry.html>`_)       |
+|                                   | geometries                                                                                |
+|                                   | <http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#//02r3000000n1000000>`_)  |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | **geometryType (required)**       | The type of geometry to identify on. Possible values are:                                 |
 |                                   | esriGeometryPoint or esriGeometryPolyline or esriGeometryPolygon or esriGeometryEnvelope. |
@@ -287,7 +288,8 @@ No more than 50 features can be retrieved per request.
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | **returnGeometry (optional)**     | This parameter defines whether the geometry is returned or not. Default to "true".        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
-| **geometryFormat (optional)**     | Default to ESRI geometry format. Possible values are: "esrijson" or "geojson".            |
+| **geometryFormat (optional)**     | Returned geometry format.                                                                 |
+|                                   | Default to ESRI geometry format. Possible values are: "esrijson" or "geojson".            |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | **lang (optional)**               | The language (when available). Possible values: de (default), fr, it, rm, en.             |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
@@ -372,7 +374,8 @@ One layer, one search text and one attribute.
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | **lang (optional)**               | The language metadata. Possible values: de (default), fr, it, rm, en.                     |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
-| **geometryFormat (optional)**     | Default to ESRI geometry format. Possible values are: "esrijson" or "geojson".            |
+| **geometryFormat (optional)**     | Returned geometry format.                                                                 |
+|                                   | Default to ESRI geometry format. Possible values are: "esrijson" or "geojson".            |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | **returnGeometry (optional)**     | This parameter defines whether the geometry is returned or not. Default to "true".        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
@@ -413,7 +416,8 @@ RESTFul interface is available.
 +===================================+===========================================================================================+
 | **lang (optional)**               | The language metadata. Possible values: de (default), fr, it, rm, en.                     |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
-| **geometryFormat (optional)**     | Default to ESRI geometry format. Possible values are: "esrijson" or "geojson".            |
+| **geometryFormat (optional)**     | Returned geometry format.                                                                 |
+|                                   | Default to ESRI geometry format. Possible values are: "esrijson" or "geojson".            |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | **returnGeometry (optional)**     | This parameter defines whether the geometry is returned or not. Default to "true".        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
