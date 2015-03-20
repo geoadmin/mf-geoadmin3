@@ -1,3 +1,4 @@
+<!-- Revision: $Rev$ -->
 <ows:ServiceIdentification>
         <ows:Title>Federal Geodata Infrastructure of Switzerland</ows:Title>
         <ows:Abstract>Some Geodata are subject to license and fees</ows:Abstract>

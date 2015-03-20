@@ -102,11 +102,23 @@
       <h2>Ogcproxy</h2>
           <a href="ogcproxy?url=http%3A%2F%2Fmapserver1.gr.ch%2Fwms%2Fadmineinteilung%3FSERVICE%3DWMS%26REQUEST%3DGetCapabilities%26VERSION%3D1.3.0">Get Capabilities using ogcproxy</a>
       <h2>MapProxy</h2>
+          <h3>Mapproxy sevices</h3>
           <a href="mapproxy/demo">MapProxy demo</a><br>
-          <a href="rest/services/api/1.0.0/WMTSCapabilities.xml?epsg=4326">GetCapabilities for EPSG:4326 (raw service)</a><br />
-          <a href="rest/services/api/1.0.0/WMTSCapabilities.xml?epsg=4258">GetCapabilities for EPSG:4258 (raw service)</a><br />
-          <a href="rest/services/api/1.0.0/WMTSCapabilities.xml?epsg=2056">GetCapabilities for EPSG:2056 (raw service)</a><br />
-          <a href="rest/services/api/1.0.0/WMTSCapabilities.xml?epsg=3857">GetCapabilities for EPSG:3857 (raw service)</a><br />
+          <a href="mapproxy/wmts/1.0.0/WMTSCapabilities.xml">MapProxy WMS</a><br>
+          <a href="mapproxy/wmts/1.0.0/WMTSCapabilities.xml">MapProxy WMTS</a><br>
+          
+          <h3>Raw GetCapabilities (Pyramid pur)</h3>
+          <a href="rest/services/api/1.0.0/WMTSCapabilities.xml">GetCapabilities for EPSG:21781</a><br />
+          <a href="rest/services/api/1.0.0/WMTSCapabilities.xml?epsg=4326">GetCapabilities for EPSG:4326</a><br />
+          <a href="rest/services/api/1.0.0/WMTSCapabilities.xml?epsg=4258">GetCapabilities for EPSG:4258</a><br />
+          <a href="rest/services/api/1.0.0/WMTSCapabilities.xml?epsg=2056">GetCapabilities for EPSG:2056</a><br />
+          <a href="rest/services/api/1.0.0/WMTSCapabilities.xml?epsg=3857">GetCapabilities for EPSG:3857</a><br />
+          <h3>GetCapabilities via apache (don't test with 'localhost')</h3>
+          <a href="1.0.0/WMTSCapabilities.xml">GetCapabilities for EPSG:21781</a><br />
+          <a href="1.0.0/WMTSCapabilities.EPSG.4326.xml">GetCapabilities for EPSG:4326</a><br />
+          <a href="1.0.0/WMTSCapabilities.EPSG.4258.xml">GetCapabilities for EPSG:4258</a><br />
+          <a href="1.0.0/WMTSCapabilities.EPSG.2056.xml">GetCapabilities for EPSG:2056</a><br />
+          <a href="1.0.0/WMTSCapabilities.EPSG.3857.xml">GetCapabilities for EPSG:3857</a><br />
           <div style="display: block">
           <img src="../mapproxy/wmts/1.0.0/ch.swisstopo.pixelkarte-farbe_20120809/default/20120809/epsg_4258/9/3/2.jpeg" width="256" height="256">
           </div>

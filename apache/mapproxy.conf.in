@@ -8,6 +8,9 @@ ExpiresActive On
 # MapProxy access control
 RewriteRule ^${apache_entry_path}/1.0.0/WMTSCapabilities.EPSG.(\d+).xml ${apache_entry_path}/rest/services/api/1.0.0/WMTSCapabilities.xml?epsg=$1 [L,PT]
 RewriteRule ^${apache_entry_path}/1.0.0/WMTSCapabilities.xml ${apache_entry_path}/rest/services/api/1.0.0/WMTSCapabilities.xml [L,PT]
+# Better ArcGis support
+RewriteRule ^${apache_entry_path}/EPSG/(\d+)/1.0.0/WMTSCapabilities.xml ${apache_entry_path}/rest/services/api/1.0.0/WMTSCapabilities.xml?epsg=$1 [L,PT]
+RewriteRule ^${apache_entry_path}/EPSG/(\d+)/(de|fr|it|rm|en)/1.0.0/WMTSCapabilities.xml ${apache_entry_path}/rest/services/api/1.0.0/WMTSCapabilities.xml?epsg=$1&lang=$2 [L,PT]
 
 RewriteRule ^${apache_entry_path}/1.0.0/(.*)/default/(\d+|current|default)/(\d+)/(.*)   ${apache_entry_path}/mapproxy/wmts/1.0.0/$1_$2/default/$2/epsg_$3/$4 [L,PT]
 
