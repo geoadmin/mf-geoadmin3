@@ -199,7 +199,7 @@ prd/lib/: src/lib/d3-3.3.1.min.js src/lib/bootstrap-datetimepicker.min.js  src/l
 	mkdir -p $@
 	cp $^ $@
 
-prd/lib/build.js: src/lib/jquery-2.0.3.min.js src/lib/bootstrap-3.3.1.min.js src/lib/moment-with-customlocales.min.js src/lib/typeahead-0.9.3.min.js src/lib/angular-1.3.5.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/EPSG2056.js src/lib/EPSG32631.js src/lib/EPSG32632.js src/lib/ol.js src/lib/angular-translate-2.4.2.min.js src/lib/angular-translate-loader-static-files-2.4.2.min.js src/lib/fastclick.min.js src/lib/localforage.min.js src/lib/filesaver.min.js .build-artefacts/app.js
+prd/lib/build.js: src/lib/jquery-2.0.3.min.js src/lib/bootstrap-3.3.1.min.js src/lib/moment-with-customlocales.min.js src/lib/typeahead-0.9.3.min.js src/lib/angular-1.3.5.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/EPSG2056.js src/lib/EPSG32631.js src/lib/EPSG32632.js src/lib/ol.js src/lib/angular-translate-2.6.1.min.js src/lib/angular-translate-loader-static-files-2.6.1.min.js src/lib/fastclick.min.js src/lib/localforage.min.js src/lib/filesaver.min.js .build-artefacts/app.js
 	mkdir -p $(dir $@)
 	cat $^ | sed 's/^\/\/[#,@] sourceMappingURL=.*//' > $@
 
