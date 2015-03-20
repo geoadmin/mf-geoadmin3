@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from pyramid.view import view_config
-from pyramid.renderers import render_to_response
 from pyramid.httpexceptions import HTTPNotFound
 
 from chsdi.models.bod import Catalog
 from chsdi.lib.validation import MapNameValidation
 from chsdi.lib.sqlalchemy_customs import remove_accents
-from chsdi.lib.filters import *
+from chsdi.lib.filters import filter_by_geodata_staging
 
 
 class CatalogService(MapNameValidation):
@@ -59,7 +58,6 @@ class CatalogService(MapNameValidation):
         nodes_final = {}
 
         for row in rows:
-            pid = row.parentId or 'root'
             depth = row.depth
 
             if current_depth == depth:

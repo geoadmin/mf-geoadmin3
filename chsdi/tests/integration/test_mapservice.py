@@ -26,11 +26,11 @@ class TestMapServiceView(TestsBase):
         resp = self.testapp.get('/rest/services/blw/MapServer', params={'callback': 'cb'}, status=200)
         self.failUnless(resp.content_type == 'application/javascript')
 
-    def test_metadata_chargeable(self):
+    def test_metadata_chargeable_true(self):
         resp = self.testapp.get('/rest/services/blw/MapServer', params={'chargeable': 'true'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
 
-    def test_metadata_chargeable(self):
+    def test_metadata_chargeable_false(self):
         resp = self.testapp.get('/rest/services/blw/MapServer', params={'chargeable': 'false'}, status=200)
         self.failUnless(resp.content_type == 'application/json')
 
@@ -124,12 +124,12 @@ class TestMapServiceView(TestsBase):
     def test_identify_wrong_timeinstant(self):
         params = {'geometryType': 'esriGeometryPoint', 'geometry': '630853.809670509,170647.93120352627', 'geometryFormat': 'geojson', 'imageDisplay': '1920,734,96', 'mapExtent': '134253,-21102,1382253,455997', 'tolerance': '5',
                   'layers': 'all:ch.swisstopo.zeitreihen', 'timeInstant': '19366'}
-        resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=400)
+        self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=400)
 
     def test_identify_timeinstant_nottimeenabled_layer(self):
         params = {'geometryType': 'esriGeometryPoint', 'geometry': '630853.809670509,170647.93120352627', 'geometryFormat': 'geojson', 'imageDisplay': '1920,734,96', 'mapExtent': '134253,-21102,1382253,455997', 'tolerance': '5',
                   'layers': 'all:ch.bafu.bundesinventare-bln', 'timeInstant': '1936'}
-        resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=200)
+        self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=200)
 
     def test_identify_oereb(self):
         params = {'geometry': '618953,170093', 'geometryType': 'esriGeometryPoint', 'imageDisplay': '1920,576,96', 'layers': 'all:ch.bav.kataster-belasteter-standorte-oev.oereb',
@@ -140,7 +140,7 @@ class TestMapServiceView(TestsBase):
     def test_identify_oereb_several_layers(self):
         params = {'geometry': '618953,170093', 'geometryType': 'esriGeometryPoint', 'imageDisplay': '1920,576,96', 'layers': 'all:ch.bav.kataster-belasteter-standorte-oev.oereb,ch.bazl.sicherheitszonenplan.oereb',
                   'mapExtent': '671164.31244,253770,690364.31244,259530', 'tolerance': '5', 'geometryFormat': 'interlis'}
-        resp = self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=400)
+        self.testapp.get('/rest/services/all/MapServer/identify', params=params, status=400)
 
     def test_identify_query_time(self):
         params = {'geometryFormat': 'geojson', 'layers': 'all:ch.bazl.luftfahrthindernis', 'where': 'abortionaccomplished > \'2014-12-01\''}
@@ -245,15 +245,15 @@ class TestMapServiceView(TestsBase):
 
     def test_find_wrong_searchfield(self):
         params = {'layer': 'ch.are.bauzonen', 'searchField': 'toto', 'searchText': '4262', 'returnGeometry': 'false'}
-        resp = self.testapp.get('/rest/services/all/MapServer/find', params=params, status=400)
+        self.testapp.get('/rest/services/all/MapServer/find', params=params, status=400)
 
     def test_find_nosearchtext(self):
         params = {'layer': 'ch.are.bauzonen', 'searchField': 'toto', 'returnGeometry': 'false'}
-        resp = self.testapp.get('/rest/services/all/MapServer/find', params=params, status=400)
+        self.testapp.get('/rest/services/all/MapServer/find', params=params, status=400)
 
     def test_find_wrong_layer(self):
         params = {'layer': 'dummy', 'searchField': 'gdename', 'returnGeometry': 'false'}
-        resp = self.testapp.get('/rest/services/all/MapServer/find', params=params, status=400)
+        self.testapp.get('/rest/services/all/MapServer/find', params=params, status=400)
 
     def test_find_contains(self):
         params = {'layer': 'ch.bfs.gebaeude_wohnungs_register', 'searchText': 'Islastrasse', 'searchField': 'strname1', 'returnGeometry': 'false', 'contains': 'false'}
@@ -323,7 +323,7 @@ class TestMapServiceView(TestsBase):
         self.failUnless(resp.content_type == 'application/javascript')
 
     def test_htmlpopup_missing_feature(self):
-        resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/1/htmlPopup', status=404)
+        self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/1/htmlPopup', status=404)
 
     def test_extendedhtmlpopup_valid(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bakom.radio-fernsehsender/11/extendedHtmlPopup', status=200)
@@ -343,7 +343,7 @@ class TestMapServiceView(TestsBase):
         self.failUnless(resp.content_type == 'application/javascript')
 
     def test_extendedhtmlpopup_noinfo(self):
-        resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362/extendedHtmlPopup', status=404)
+        self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/362/extendedHtmlPopup', status=404)
 
     def test_legend_valid(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/legend', status=200)
@@ -356,14 +356,13 @@ class TestMapServiceView(TestsBase):
         resp.mustcontain('<div class="legend-header">')
 
     def test_legend_wrong_layer_id(self):
-        resp = self.testapp.get('/rest/services/ech/MapServer/dummylayer/legend', status=404)
+        self.testapp.get('/rest/services/ech/MapServer/dummylayer/legend', status=404)
 
     def test_legend_valid_with_callback(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln/legend', params={'callback': 'cb'}, status=200)
         self.failUnless(resp.content_type == 'application/javascript')
 
     def test_all_legends(self):
-        from chsdi.models import models_from_name
         from chsdi.models.bod import LayersConfig
         from sqlalchemy import distinct
         from sqlalchemy.orm import scoped_session, sessionmaker
@@ -386,7 +385,6 @@ class TestMapServiceView(TestsBase):
 
     def test_all_legends_images(self):
         import os
-        from chsdi.models import models_from_name
         from chsdi.models.bod import LayersConfig
         from sqlalchemy import distinct
         from sqlalchemy.orm import scoped_session, sessionmaker
@@ -460,7 +458,7 @@ class TestMapServiceView(TestsBase):
         self.failUnless(resp.content_type == 'application/javascript')
 
     def test_layersconfig_wrong_map(self):
-        resp = self.testapp.get('/rest/services/foo/MapServer/layersConfig', status=400)
+        self.testapp.get('/rest/services/foo/MapServer/layersConfig', status=400)
 
     def test_layer_attributes(self):
         resp = self.testapp.get('/rest/services/ech/MapServer/ch.bafu.bundesinventare-bln', status=200)
@@ -490,7 +488,7 @@ class TestMapServiceView(TestsBase):
         self.failUnless(len(langSpecFields) > 0)
 
     def test_layer_attributes_wrong_layer(self):
-        resp = self.testapp.get('/rest/services/ech/MapServer/dummy', status=400)
+        self.testapp.get('/rest/services/ech/MapServer/dummy', status=400)
 
     def test_layer_attributes_multi_models(self):
         resp = self.testapp.get('/rest/services/api/MapServer/ch.bav.sachplan-infrastruktur-schiene_kraft', status=200)
@@ -565,14 +563,14 @@ class TestReleasesService(TestsBase):
 
     def test_missing_params(self):
         params = {'mapExtent': '611399.9999999999,158650,690299.9999999999,198150'}
-        resp = self.testapp.get('/rest/services/all/MapServer/' + zlayer + '/releases', params=params, status=400)
+        self.testapp.get('/rest/services/all/MapServer/' + zlayer + '/releases', params=params, status=400)
         params = {'imageDisplay': '500,600,96'}
-        resp = self.testapp.get('/rest/services/all/MapServer/' + zlayer + '/releases', params=params, status=400)
+        self.testapp.get('/rest/services/all/MapServer/' + zlayer + '/releases', params=params, status=400)
 
     def test_layer_without_releases(self):
         params = {'imageDisplay': '500,600,96', 'mapExtent': '611399.9999999999,158650,690299.9999999999,198150'}
-        resp = self.testapp.get('/rest/services/all/MapServer/ch.swisstopo.images-swissimage.metadata/releases', params=params, status=400)
+        self.testapp.get('/rest/services/all/MapServer/ch.swisstopo.images-swissimage.metadata/releases', params=params, status=400)
 
     def test_unknown_layers(self):
         params = {'imageDisplay': '500,600,96', 'mapExtent': '611399.9999999999,158650,690299.9999999999,198150'}
-        resp = self.testapp.get('/rest/services/all/MapServer/dummylayer/releases', params=params, status=400)
+        self.testapp.get('/rest/services/all/MapServer/dummylayer/releases', params=params, status=400)

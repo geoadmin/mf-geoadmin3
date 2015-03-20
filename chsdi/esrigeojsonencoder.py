@@ -111,7 +111,7 @@ class EsriGeoJSONEncoder(GeoJSONEncoder):
 
                 paths = coordinates
                 mapPointList = (lambda s, x, y: (x, y))
-                ret['paths'] = [[mapPointList(21781, *xy) for xy in path] for path in paths]
+                ret['paths'] = [[mapPointList(21781, *xy) for xy in p] for p in paths]
                 ret['type'] = 'esriGeometryPolyline'
 
                 return self._cleanup(ret)

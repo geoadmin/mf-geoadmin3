@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import sys
 import os.path
 import glob
-import grp
 
 WRAPPER_TEMPLATE = """\
 # This is a generated file. It will be overwritten by the next buildout command.

@@ -18,7 +18,7 @@ class TestProfileView(TestsBase):
         self.failUnless(resp.json[0]['northing'] == 206550)
 
     def test_profile_no_headers(self):
-        resp = self.testapp.get('/rest/services/profile.json', params={'geom': '{"type":"LineString","coordinates":[[550050,206550],[556950,204150],[561050,207950]]}'}, status=403)
+        self.testapp.get('/rest/services/profile.json', params={'geom': '{"type":"LineString","coordinates":[[550050,206550],[556950,204150],[561050,207950]]}'}, status=403)
 
     def test_profile_json_2_models(self):
         params = {'geom': '{"type":"LineString","coordinates":[[550050,206550],[556950,204150],[561050,207950]]}', 'elevation_models': 'DTM25,DTM2'}

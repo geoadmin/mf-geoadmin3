@@ -6,8 +6,7 @@ from httplib2 import Http
 
 from pyramid.view import view_config
 
-from pyramid.httpexceptions import (HTTPForbidden, HTTPBadRequest,
-                                    HTTPBadGateway, HTTPNotAcceptable)
+from pyramid.httpexceptions import HTTPBadRequest, HTTPBadGateway, HTTPNotAcceptable
 from pyramid.response import Response
 from chsdi.lib.decorators import requires_authorization
 

@@ -19,4 +19,4 @@ class TestLuftbilder(TestsBase):
         self.failUnless(resp.content_type == 'text/html')
 
     def test_luftbilder_fail(self):
-        resp = self.testapp.get('/luftbilder/viewer.html', status=400)
+        self.testapp.get('/luftbilder/viewer.html', status=400)

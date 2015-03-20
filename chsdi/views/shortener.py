@@ -3,7 +3,6 @@
 from pyramid.view import view_config
 import pyramid.httpexceptions as exc
 
-from urlparse import urlparse
 import time
 
 from boto.dynamodb2.table import Table

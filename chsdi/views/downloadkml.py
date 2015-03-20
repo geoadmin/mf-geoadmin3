@@ -6,7 +6,6 @@ from chsdi.lib.decorators import requires_authorization
 import json
 import os
 import errno
-import sys
 import time
 import urllib
 from pyramid.view import view_config
@@ -56,7 +55,7 @@ class DownloadKML:
 
         try:
             spec = json.loads(jsonstring, encoding=self.request.charset)
-        except Exception as e:
+        except Exception:
             raise HTTPBadRequest()
 
         kml = spec.get('kml')

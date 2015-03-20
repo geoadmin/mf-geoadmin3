@@ -52,9 +52,7 @@ class TestWmtsCapabilitiesView(TestsBase):
                 self.failUnless(retcode == 0)
 
     def test_gettile_wmtscapabilities(self):
-        import xml
         resp = self.testapp.get('/rest/services/inspire/1.0.0/WMTSCapabilities.xml', status=200)
-        dom = xml.dom.minidom.parseString(resp.body)
         self.failUnless(resp.content_type == 'text/xml')
 
     def test_tilematrixsets_are_defined(self):

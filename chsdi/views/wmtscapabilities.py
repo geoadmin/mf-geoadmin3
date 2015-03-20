@@ -4,9 +4,9 @@ from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPBadRequest, HTTPNotFound
 
 from chsdi.models.bod import get_wmts_models
-from chsdi.lib.helpers import locale_negotiator, sanitize_url
+from chsdi.lib.helpers import sanitize_url
 from chsdi.lib.validation import MapNameValidation
-from chsdi.lib.filters import *
+from chsdi.lib.filters import filter_by_geodata_staging, filter_by_map_name
 
 
 class WMTSCapabilites(MapNameValidation):
@@ -37,7 +37,6 @@ class WMTSCapabilites(MapNameValidation):
         host = self.request.headers.get(
             'X-Forwarded-Host', self.request.host)
         mapproxyHost = self.request.registry.settings['mapproxyhost']
-        request_uri = self.request.environ.get("REQUEST_URI", "")
         apache_base_path = self.request.registry.settings['apache_base_path']
         apache_entry_point = '/' if (apache_base_path == 'main' or 'localhost' in host) else '/' + apache_base_path
 

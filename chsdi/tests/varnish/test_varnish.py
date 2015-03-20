@@ -1,4 +1,5 @@
-import sys
+# -*- coding: utf-8 -*-
+
 import os
 import random
 from unittest import TestCase
@@ -30,7 +31,7 @@ class TestVarnish(TestCase):
             apache_base_path = app.registry.settings['apache_base_path']
             self.mapproxy_url = "http://" + app.registry.settings['mapproxyhost'] + ('/' + apache_base_path if apache_base_path != 'main' else '')
         except KeyError as e:
-            raise Exception
+            raise e
 
     def tearDown(self):
         if "http_proxy" in os.environ:

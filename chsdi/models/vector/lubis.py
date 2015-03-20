@@ -3,7 +3,7 @@
 from sqlalchemy import Column, Text, Integer, Boolean, Numeric
 from geoalchemy2.types import Geometry
 
-from chsdi.models import *
+from chsdi.models import register, bases
 from chsdi.models.vector import Vector
 
 Base = bases['lubis']

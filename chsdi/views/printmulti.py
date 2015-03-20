@@ -8,10 +8,9 @@ import re
 import copy
 import datetime
 import time
-import shutil
 import multiprocessing
 import random
-from urlparse import urlparse, parse_qs, parse_qsl, urlsplit, urlunparse
+from urlparse import urlparse, parse_qs, urlsplit, urlunparse
 from urllib import urlencode, quote_plus, unquote_plus
 
 from httplib2 import Http
@@ -20,9 +19,8 @@ from collections import OrderedDict
 from PyPDF2 import PdfFileMerger
 
 from pyramid.view import view_config
-from pyramid.httpexceptions import (HTTPForbidden, HTTPBadRequest,
-                                    HTTPBadGateway, HTTPInternalServerError)
-from pyramid.response import Response, FileResponse
+from pyramid.httpexceptions import HTTPBadRequest, HTTPInternalServerError
+from pyramid.response import Response
 from chsdi.lib.decorators import requires_authorization
 
 import logging
@@ -286,7 +284,6 @@ def create_and_merge(info):
 
     jobs = []
     all_timestamps = []
-    layers = spec.get('layers', [])
 
     create_pdf_url = 'http:' + api_url + '/print/create.json'
 
@@ -432,7 +429,7 @@ class PrintMulti(object):
             pass
 
         if not os.path.isfile(cancelfile):
-            raise exc.HTTPInternalServerError('Could not create cancel file with given id')
+            raise HTTPInternalServerError('Could not create cancel file with given id')
 
         return Response(status=200)
 

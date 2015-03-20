@@ -15,7 +15,7 @@ class TestHeightView(TestsBase):
         self.failUnless(resp.json['height'] == '560.2')
 
     def test_height_no_header(self):
-        resp = self.testapp.get('/rest/services/height', params={'easting': '600000', 'northing': '200000'}, status=403)
+        self.testapp.get('/rest/services/height', params={'easting': '600000', 'northing': '200000'}, status=403)
 
     def test_height_valid_with_lonlat(self):
         resp = self.testapp.get('/rest/services/height', params={'lon': '600000.1', 'lat': '200000.1'}, headers=self.headers, status=200)

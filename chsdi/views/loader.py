@@ -4,7 +4,6 @@ import simplejson
 from pyramid.view import view_config
 from pyramid.renderers import render_to_response
 from pyramid.request import Request
-from chsdi.lib.helpers import versioned
 
 
 @view_config(route_name='ga_api', renderer='json')

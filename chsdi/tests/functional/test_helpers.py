@@ -4,7 +4,7 @@ import unittest
 
 from pyramid import testing
 
-from chsdi.lib.helpers import *
+from chsdi.lib.helpers import make_agnostic, make_api_url, check_url, transformCoordinate
 
 
 class Test_Helpers(unittest.TestCase):
@@ -16,12 +16,12 @@ class Test_Helpers(unittest.TestCase):
         self.failUnless(agnostic_link.startswith('//'))
 
         url_2 = 'https://foo.com'
-        agnostic_link_2 = make_agnostic(url)
+        agnostic_link_2 = make_agnostic(url_2)
         self.failUnless(not agnostic_link_2.startswith('https://'))
         self.failUnless(agnostic_link_2.startswith('//'))
 
         url_3 = '//foo.com'
-        agnostic_link_3 = make_agnostic(url)
+        agnostic_link_3 = make_agnostic(url_3)
         self.assertEqual(url_3, agnostic_link_3)
 
     def test_make_api_url(self):

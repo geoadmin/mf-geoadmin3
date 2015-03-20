@@ -1,16 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import os.path
-from lxml import etree
 
-from urlparse import urlparse
 from pyramid.view import view_config
 from pyramid.renderers import render, render_to_response
 
-from pyramid.httpexceptions import (HTTPForbidden, HTTPBadRequest,
-                                    HTTPBadGateway, HTTPNotAcceptable)
-from pyramid.response import Response
-from owslib.wms import WebMapService
+from pyramid.httpexceptions import HTTPBadRequest
 import ows_checker._checker
 
 
