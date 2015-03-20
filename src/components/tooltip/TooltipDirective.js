@@ -221,12 +221,16 @@
                       '<div class="htmlpopup-container">' +
                         '<div class="htmlpopup-header">' +
                           '<span>' + layerToQuery.label + ' &nbsp;</span>' +
-                          '(' + feature.get('name') + ')' +
+                          '{{name}}' +
                         '</div>' +
                         '<div class="htmlpopup-content">' +
-                          feature.get('description') +
+                          '{{descr}}' +
                         '</div>' +
                       '</div>';
+                    var name = feature.get('name');
+                    htmlpopup = htmlpopup.
+                        replace('{{descr}}', feature.get('description') || '').
+                        replace('{{name}}', (name) ? '(' + name + ')' : '');
                     feature.set('htmlpopup', htmlpopup);
                     showFeatures(layerToQuery.getExtent(), size,
                         [feature]);
