@@ -32,6 +32,8 @@
 
         $scope.options.text = '';
 
+        $scope.options.description = '';
+
         $scope.options.tools = [
           {id: 'point',   iconClass: 'icon-ga-point'},
           {id: 'line',    iconClass: 'icon-ga-line'},
@@ -278,6 +280,10 @@
           } 
           feature.set('useIcon', (!!icon));
           
+          if ($scope.options.description) {
+            feature.set('description', $scope.options.description);
+          }
+
           var styles = [
             new ol.style.Style({
               fill: fill,
