@@ -659,7 +659,8 @@
 
       // Transform layers to literal
       angular.forEach(layers, function(layer) {
-        if (layer.visible) {
+        if (layer.visible && (!layer.timeEnabled ||
+            angular.isDefined(layer.time))) {
           var attribution = layer.attribution;
           if (attribution !== undefined &&
               attributions.indexOf(attribution) == -1) {
