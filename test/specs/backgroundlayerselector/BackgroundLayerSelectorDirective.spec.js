@@ -6,13 +6,9 @@ describe('ga_backgroundlayerselector_directive', function() {
 
     map = new ol.Map({});
 
-    layer1 = new ol.layer.Tile({
-      source: new ol.source.OSM()
-    });
+    layer1 = new ol.layer.Tile();
 
-    layer2 = new ol.layer.Tile({
-      source: new ol.source.OSM()
-    });
+    layer2 = new ol.layer.Tile();
 
     module(function($provide) {
       $provide.value('gaLayers', {
@@ -109,8 +105,7 @@ describe('ga_backgroundlayerselector_directive', function() {
       expect(numLayers).to.equal(0);
 
       // add an overlay
-      layers.push(
-          new ol.layer.Tile({source: new ol.source.OSM()}));
+      layers.push(new ol.layer.Tile());
       numLayers = layers.getLength();
       expect(numLayers).to.equal(1);
 

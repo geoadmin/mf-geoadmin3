@@ -148,9 +148,10 @@ updateol: .build-artefacts/ol3 .build-artefacts/ol-requirements-installation.tim
 	cat ../../scripts/ga-ol3-tilegrid.exports >> src/ol/tilegrid/tilegrid.js; \
 	cat ../../scripts/ga-ol3-tilerange.exports >> src/ol/tilerange.js; \
 	npm install; \
-	../python-venv/bin/python build.py build; \
-	cd ../../; \
-	cp $(addprefix .build-artefacts/ol3/build/,$(OL_JS)) src/lib/; \
+	node tasks/build.js config/ol-debug.json build/ol-debug.js; \
+	node tasks/build.js ../../scripts/ol-geoadmin.json build/ol.js; \
+  cd ../../; \
+	cp $(addprefix .build-artefacts/ol3/build/,$(OL_JS)) src/lib/;
 
 .PHONY: fastclick
 fastclick: .build-artefacts/fastclick .build-artefacts/closure-compiler/compiler.jar
