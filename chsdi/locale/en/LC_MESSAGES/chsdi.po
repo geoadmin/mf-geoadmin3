@@ -1047,7 +1047,7 @@ msgid "ch.babs"
 msgstr "UFPP"
 
 msgid "ch.babs.kulturgueter"
-msgstr "Protection of cultural property inventory"
+msgstr "PCP Inventory"
 
 msgid "ch.babs.kulturgueter.zkob"
 msgstr "Description"
@@ -1662,7 +1662,7 @@ msgid "ch.bav.sachplan-infrastruktur-schiene_ausgangslage.name"
 msgstr "Facility name"
 
 msgid "ch.bav.sachplan-infrastruktur-schiene_kraft"
-msgstr "SIS in force"
+msgstr "SP rail infrastructure"
 
 msgid "ch.bav.sachplan-infrastruktur-schiene_kraft.doc_title"
 msgstr "More information"
@@ -1759,7 +1759,7 @@ msgid "ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung"
 msgstr "SAIP in consultation"
 
 msgid "ch.bazl.sachplan-infrastruktur-luftfahrt_kraft"
-msgstr "SP aviation infrastructure"
+msgstr "SP Aviation infrastructure"
 
 msgid "ch.bazl.segelflugkarte"
 msgstr "Glider Chart"
@@ -2449,7 +2449,7 @@ msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss.ort"
 msgstr "Town"
 
 msgid "ch.swisstopo.pixelkarte-farbe"
-msgstr "National Map 1:25'000 | NM25"
+msgstr "National Map 1:25'000-1:1 Mio color"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk100.noscale"
 msgstr "National Map 1:100'000"
@@ -2470,7 +2470,7 @@ msgid "ch.swisstopo.pixelkarte-farbe-pk500.noscale"
 msgstr "National Map 1:500'000"
 
 msgid "ch.swisstopo.pixelkarte-grau"
-msgstr "National Map 1:25'000 | NM25"
+msgstr "National Map 1:25'000-1:1 Mio grey"
 
 msgid "ch.swisstopo.pixelkarte-pk100.metadata"
 msgstr "Division National Map 1:100'000"

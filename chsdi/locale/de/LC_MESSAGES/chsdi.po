@@ -1047,7 +1047,7 @@ msgid "ch.babs"
 msgstr "BABS"
 
 msgid "ch.babs.kulturgueter"
-msgstr "Kulturgüterschutzinventar"
+msgstr "KGS Inventar"
 
 msgid "ch.babs.kulturgueter.zkob"
 msgstr "Beschreibung"
@@ -1662,7 +1662,7 @@ msgid "ch.bav.sachplan-infrastruktur-schiene_ausgangslage.name"
 msgstr "Anlage"
 
 msgid "ch.bav.sachplan-infrastruktur-schiene_kraft"
-msgstr "SIS in Kraft"
+msgstr "SP Infrastruktur Schiene"
 
 msgid "ch.bav.sachplan-infrastruktur-schiene_kraft.doc_title"
 msgstr "Weitere Informationen"
@@ -2448,7 +2448,7 @@ msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss.ort"
 msgstr "Ort"
 
 msgid "ch.swisstopo.pixelkarte-farbe"
-msgstr "Landeskarte 1:25'000 | LK25"
+msgstr "Landeskarte 1:25'000-1:1 Mio. farbe"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk100.noscale"
 msgstr "Landeskarte 1:100'000 | LK100"
@@ -2469,7 +2469,7 @@ msgid "ch.swisstopo.pixelkarte-farbe-pk500.noscale"
 msgstr "Landeskarte 1:500'000 | LK500"
 
 msgid "ch.swisstopo.pixelkarte-grau"
-msgstr "Landeskarte 1:25'000 | LK25"
+msgstr "Landeskarte 1:25'000-1:1 Mio. grau"
 
 msgid "ch.swisstopo.pixelkarte-pk100.metadata"
 msgstr "Einteilung Landeskarte 1:100'000"
