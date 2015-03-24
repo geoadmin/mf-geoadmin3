@@ -80,19 +80,15 @@
               };
               // Set iframe size variables
               scope.$watch('iframeSize', function() {
+                var maxWidth = 840;
                 if (scope.iframeSize) {
                   scope.iframeWidth = scope.iframeSize[0];
                   scope.iframeHeight = scope.iframeSize[1];
-                  scope.contentWidth = {
-                    width: scope.iframeWidth + 40 + 'px',
-                    height: scope.iframeHeight + 200 + 'px'
-                  };
-                } else {
-                  scope.contentWidth = {
-                    width: '600px',
-                    height: 'auto'
-                  };
+                  maxWidth = scope.iframeWidth + 40;
                 }
+                scope.contentWidth = {
+                  'max-width': maxWidth + 'px'
+                };
               });
 
               scope.iframeSize = scope.options.iframeSizes[0].value;
@@ -110,7 +106,6 @@
                 scope.$apply(function() {
                   scope.loadIframe = true;
                 });
-
               }).on('hidden.bs.modal', function() {
                 scope.$apply(function() {
                   scope.loadIframe = false;
