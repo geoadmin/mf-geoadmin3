@@ -128,7 +128,6 @@ class Test_QuadTree(unittest.TestCase):
 
     def _test_compare_with_bbox(self, bbox):
         quadtree = self._callFUT()
-        box = msk.BBox(420000, 30000, 900000, 510000)
         ref = quadtree._single_points_all(bbox)
         self.assertEqual(ref, quadtree._single_points_dia1(bbox))
         self.assertEqual(ref, quadtree._single_points_dia2(bbox))

@@ -83,7 +83,6 @@ class LayersConfig(Base):
     def layerConfig(self, params):
         config = {}
         translate = params.translate
-        geodataStaging = params.geodataStaging
         wmsHost = params.request.registry.settings['wmshost']
         for k in self.__dict__.keys():
             if not k.startswith("_") and \

@@ -39,6 +39,7 @@ requires = [
     'boto',
     'PyPDF2',
     'requests',
+    'pyflakes',
     ]
 
 setup(name='chsdi',

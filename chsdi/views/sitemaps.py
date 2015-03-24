@@ -2,14 +2,13 @@
 
 import json
 import math
-from sqlalchemy.orm import scoped_session, sessionmaker
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPNotFound, HTTPInternalServerError
 from pyramid.renderers import render_to_response
 from pyramid.request import Request
 
 from chsdi.lib.validation.sitemaps import SiteMapValidation
-from chsdi.lib.filters import *
+from chsdi.lib.filters import filter_by_geodata_staging
 
 from chsdi.models.vector.kogis import SitemapGebaeuderegister
 from chsdi.models.bod import Catalog

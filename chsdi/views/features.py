@@ -10,9 +10,8 @@ import pyramid.httpexceptions as exc
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from sqlalchemy.sql.expression import cast, func
 from sqlalchemy import Text, Integer, Boolean, Numeric, Date
-from sqlalchemy import text, distinct
+from sqlalchemy import text
 from geoalchemy2.types import Geometry
-from shapely.geometry import asShape
 
 from chsdi.lib.validation.mapservice import MapServiceValidation
 from chsdi.lib.helpers import format_query
@@ -472,19 +471,19 @@ def _format_search_text(columnType, searchText):
         elif searchText.lower() == 'false':
             return False
         else:
-            raise HTTPBadRequest('Please provide a boolean value (true/false)')
+            raise exc.HTTPBadRequest('Please provide a boolean value (true/false)')
     elif isinstance(columnType, Integer):
         if searchText.isdigit():
             return int(searchText)
         else:
-            raise HTTPBadRequest('Please provide an integer')
+            raise exc.HTTPBadRequest('Please provide an integer')
     elif isinstance(columnType, Numeric):
         if re.match('^\d+?\.\d+?$', searchText) is not None:
             return float(searchText)
         else:
-            raise HTTPBadRequest('Please provide a float')
+            raise exc.HTTPBadRequest('Please provide a float')
     elif isinstance(columnType, Geometry):
-        raise HTTPBadRequst('Find operations cannot be performed on geometry columns')
+        raise exc.HTTPBadRequest('Find operations cannot be performed on geometry columns')
 
 
 def _process_feature(feature, params):

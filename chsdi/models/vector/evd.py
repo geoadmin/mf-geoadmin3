@@ -2,8 +2,8 @@
 
 from sqlalchemy import Column, Text, Integer
 from geoalchemy2.types import Geometry
-from sqlalchemy.types import Numeric
-from chsdi.models import *
+
+from chsdi.models import register, bases
 from chsdi.models.vector import Vector
 
 Base = bases['evd']

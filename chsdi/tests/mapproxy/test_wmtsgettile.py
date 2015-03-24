@@ -1,8 +1,6 @@
 #-*- coding: utf-8 -*-
 
-import sys
 import os
-import random
 import requests
 
 from pyramid.paster import get_app
@@ -44,7 +42,6 @@ def test_generator():
 
 
 def get_tile():
-    import urllib2
     from urlparse import urlparse, urlunparse
     import xml.etree.ElementTree as etree
 
@@ -64,7 +61,6 @@ def get_tile():
         root = etree.fromstring(resp.content)
         layers = root.findall('.//{http://www.opengis.net/wmts/1.0}Layer')
         for layer in layers:
-            bodid = layer.find('./{http://www.opengis.net/ows/1.1}Identifier').text
             resourceurls = layer.findall('.//{http://www.opengis.net/wmts/1.0}ResourceURL')
             for resourceurl in resourceurls:
                 tpl = resourceurl.attrib['template']

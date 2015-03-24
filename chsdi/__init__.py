@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import datetime
 from pyramid.config import Configurator
 from pyramid.events import BeforeRender, NewRequest
 from chsdi.subscribers import add_localizer, add_renderer_globals

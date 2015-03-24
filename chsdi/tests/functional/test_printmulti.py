@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-import json
 from chsdi.views.printmulti import _get_timestamps
 
 

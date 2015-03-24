@@ -35,14 +35,13 @@ import sys
 import yaml
 import json
 
-from babel import support, Locale
+from babel import support
 
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy import engine_from_config
 
 from pyramid.paster import get_appsettings
 
-from chsdi.models.bod import LayersConfig
 from chsdi.models.bod import get_wmts_models
 from chsdi.lib.filters import filter_by_geodata_staging
 

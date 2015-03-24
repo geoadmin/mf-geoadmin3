@@ -1,9 +1,6 @@
 #-*- coding: utf-8 -*-
 
-import sys
 import os
-import random
-from unittest import TestCase
 
 import requests
 
@@ -33,7 +30,7 @@ class TestWmtsGetTileAuth():
             apache_base_path = self.app.registry.settings['apache_base_path']
             self.mapproxy_url = "http://" + self.app.registry.settings['mapproxyhost'] + '/' + apache_base_path if apache_base_path != '/' else ''
         except KeyError as e:
-            raise Exception
+            raise e
 
         self.paths = ['/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20130903/3857/7/67/45.jpeg',
                       '/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20140520/2056/17/5/6.jpeg',

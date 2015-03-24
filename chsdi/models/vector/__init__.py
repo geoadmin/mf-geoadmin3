@@ -5,7 +5,6 @@ import re
 import datetime
 import decimal
 from pyramid.threadlocal import get_current_registry
-from shapely import wkb
 from shapely.geometry import asShape
 from shapely.geometry import box
 from sqlalchemy.sql import func
@@ -17,8 +16,6 @@ from geoalchemy2.shape import to_shape
 
 import geojson
 from papyrus.geo_interface import GeoInterface
-from chsdi.esrigeojsonencoder import loads
-from shapely.geometry import asShape
 
 
 def getResolution(imageDisplay, mapExtent):

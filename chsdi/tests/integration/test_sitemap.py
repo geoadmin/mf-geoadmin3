@@ -95,11 +95,11 @@ class TestSitemapView(TestsBase):
 
     def test_bad_multi_files(self):
         # multipart (after _) must be integer
-        resp = self.testapp.get('/sitemap?content=addresses_other', status=400)
+        self.testapp.get('/sitemap?content=addresses_other', status=400)
         # mutiipart can't be empty
-        resp = self.testapp.get('/sitemap?content=addresses_', status=400)
+        self.testapp.get('/sitemap?content=addresses_', status=400)
         # multipart muast be >= 0
-        resp = self.testapp.get('/sitemap?content=addresses_-1', status=400)
+        self.testapp.get('/sitemap?content=addresses_-1', status=400)
 
     def test_addresses_index_file(self):
         resp = self.testapp.get('/sitemap?content=addresses', status=200)

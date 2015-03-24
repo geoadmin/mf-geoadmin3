@@ -6,8 +6,6 @@ from pyramid import testing
 from webtest import TestApp
 from mapproxy.wsgiapp import make_wsgi_app
 
-from owslib.wmts import WebMapTileService
-
 
 current = os.path.dirname(__file__)
 config_uri = current.replace('chsdi/tests/integration', 'mapproxy/mapproxy.yaml')
