@@ -82,6 +82,11 @@ form {
   cursor: move;
 }
 
+/* This allow the display of not-allowed cursor on hover */
+.btn[disabled] {
+  pointer-events: auto;
+}
+
 button.ga-icon {
   width: 1.3em;
   margin: 0;
@@ -91,9 +96,9 @@ button.ga-icon {
   font-size: 1.3em;
   line-height: 1em; /* Critical css for alignment */
  
-  &.ga-disabled, &.ga-disabled:hover, &.ga-disabled:active {
+  &[disabled] {
     color: #CCC;
-    cursor: default;
+    cursor: not-allowed;
     opacity: 1;
   }
 
@@ -104,7 +109,7 @@ button.ga-icon {
 }
 
 button.ga-btn, .ol-control button {
-  &:hover {
+  &:hover:not[disabled] {
     opacity: 0.7;
   }
 
