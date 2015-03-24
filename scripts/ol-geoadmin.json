@@ -13,6 +13,7 @@
     "ol.ImageTile#getImage",
     "ol.Map",
     "ol.Map#*",
+    "ol.MapBrowserEvent#*",
     "ol.Observable.unByKey",
     "ol.Overlay",
     "ol.Overlay#*",
