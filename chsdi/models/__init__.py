@@ -4,7 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import engine_from_config
 
 
-dbs = ['bod', 'bafu', 'uvek', 'search', 'stopo', 'evd', 'edi', 'are', 'dritte', 'kogis', 'zeitreihen', 'vbs', 'bak', 'lubis']
+dbs = ['are', 'bafu', 'bak', 'bod', 'dritte', 'edi', 'evd', 'kogis', 'stopo', 'uvek', 'vbs', 'zeitreihen', 'lubis']
 
 engines = {}
 bases = {}

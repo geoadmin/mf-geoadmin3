@@ -18,21 +18,19 @@ pyramid.default_locale_name = de
 pyramid.includes = pyramid_tm
 
 # SQLAlchemy database URL
-sqlalchemy.are.url = postgresql://${vars:dbhost}:${vars:dbport}/are
-sqlalchemy.bafu.url = postgresql://${vars:dbhost}:${vars:dbport}/bafu
-sqlalchemy.bak.url = postgresql://${vars:dbhost}:${vars:dbport}/bak
-sqlalchemy.bod.url = postgresql://${vars:dbhost}:${vars:dbport}/bod
-sqlalchemy.dritte.url = postgresql://${vars:dbhost}:${vars:dbport}/dritte
-sqlalchemy.edi.url = postgresql://${vars:dbhost}:${vars:dbport}/edi
-sqlalchemy.evd.url = postgresql://${vars:dbhost}:${vars:dbport}/evd
-sqlalchemy.ivs2b.url = postgresql://${vars:dbhost}:${vars:dbport}/ivs2b
-sqlalchemy.kogis.url = postgresql://${vars:dbhost}:${vars:dbport}/kogis
-sqlalchemy.search.url = postgresql://${vars:dbhost}:${vars:dbport}/search
-sqlalchemy.stopo.url = postgresql://${vars:dbhost}:${vars:dbport}/stopo
-sqlalchemy.uvek.url = postgresql://${vars:dbhost}:${vars:dbport}/uvek
-sqlalchemy.vbs.url = postgresql://${vars:dbhost}:${vars:dbport}/vbs
-sqlalchemy.zeitreihen.url = postgresql://${vars:dbhost}:${vars:dbport}/zeitreihen
-sqlalchemy.lubis.url = postgresql://${vars:dbhost}:${vars:dbport}/lubis
+sqlalchemy.are.url = postgresql://${vars:dbhost}:${vars:dbport}/are_${vars:db_staging}
+sqlalchemy.bafu.url = postgresql://${vars:dbhost}:${vars:dbport}/bafu_${vars:db_staging}
+sqlalchemy.bak.url = postgresql://${vars:dbhost}:${vars:dbport}/bak_${vars:db_staging}
+sqlalchemy.bod.url = postgresql://${vars:dbhost}:${vars:dbport}/bod_${vars:db_staging}
+sqlalchemy.dritte.url = postgresql://${vars:dbhost}:${vars:dbport}/dritte_${vars:db_staging}
+sqlalchemy.edi.url = postgresql://${vars:dbhost}:${vars:dbport}/edi_${vars:db_staging}
+sqlalchemy.evd.url = postgresql://${vars:dbhost}:${vars:dbport}/evd_${vars:db_staging}
+sqlalchemy.kogis.url = postgresql://${vars:dbhost}:${vars:dbport}/kogis_${vars:db_staging}
+sqlalchemy.stopo.url = postgresql://${vars:dbhost}:${vars:dbport}/stopo_${vars:db_staging}
+sqlalchemy.uvek.url = postgresql://${vars:dbhost}:${vars:dbport}/uvek_${vars:db_staging}
+sqlalchemy.vbs.url = postgresql://${vars:dbhost}:${vars:dbport}/vbs_${vars:db_staging}
+sqlalchemy.zeitreihen.url = postgresql://${vars:dbhost}:${vars:dbport}/zeitreihen_${vars:db_staging}
+sqlalchemy.lubis.url = postgresql://${vars:dbhost}:${vars:dbport}/lubis_${vars:db_staging}
 
 # Mako specific
 mako.directories = chsdi:templates
