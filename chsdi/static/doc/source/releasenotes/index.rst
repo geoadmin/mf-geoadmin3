@@ -9,6 +9,48 @@
 Release Notes
 =============
 
+.. _releasenotes_20150325:
+
+Release 20150312 - Thursday, March 25th 2015
+------------------------------------------------
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+- Improving profile service
+- Improving WMTS service (EPSG:2056)
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_150312...r_150325>`__
+
+`MAP <//map.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+- Improving draw, profile, print and embed functions
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_150312...r_150325>`__
+
+
+Geodata
+*******
+
++-----------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Unfälle mit Personenschaden <//map.geo.admin.ch/?layers=ch.astra.unfaelle-personenschaeden_alle>`__ (ch.astra.unfaelle-personenschaeden_alle)                                 |
++-----------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Unfälle mit Fahrradbeteiligung <//map.geo.admin.ch/?layers=ch.astra.unfaelle-personenschaeden_fahrraeder>`__ (ch.astra.unfaelle-personenschaeden_fahrraeder)                  |
++-----------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Unfälle mit Fussgängerbeteiligung <//map.geo.admin.ch/?layers=ch.astra.unfaelle-personenschaeden_fussgaenger>`__ (ch.astra.unfaelle-personenschaeden_fussgaenger)             |
++-----------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Unfälle mit Getöteten <//map.geo.admin.ch/?layers=ch.astra.unfaelle-personenschaeden_getoetete>`__ (ch.astra.unfaelle-personenschaeden_getoetete)                             |
++-----------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `Unfälle mit Motorradbeteiligung <//map.geo.admin.ch/?layers=ch.astra.unfaelle-personenschaeden_motorraeder>`__ (ch.astra.unfaelle-personenschaeden_motorraeder)               |
++-----------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `TBE: cluster <//map.geo.admin.ch/?layers=ch.bag.zecken-fsme-faelle>`__ (ch.bag.zecken-fsme-faelle)                                                                            |
++-----------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update    | `TBE: recommendation of vaccination <//map.geo.admin.ch/?layers=ch.bag.zecken-fsme-impfung>`__ (ch.bag.zecken-fsme-impfung)                                                    |
++-----------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+
 .. _releasenotes_20150312:
 
 Release 20150312 - Thursday, March 12th 2015
