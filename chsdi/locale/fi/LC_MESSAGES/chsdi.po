@@ -1047,7 +1047,7 @@ msgid "ch.babs"
 msgstr "BABS"
 
 msgid "ch.babs.kulturgueter"
-msgstr "Inventari dals bains culturals"
+msgstr "Inventari PBC"
 
 msgid "ch.babs.kulturgueter.zkob"
 msgstr "Beschreibung"
@@ -1662,7 +1662,7 @@ msgid "ch.bav.sachplan-infrastruktur-schiene_ausgangslage.name"
 msgstr "Anlage"
 
 msgid "ch.bav.sachplan-infrastruktur-schiene_kraft"
-msgstr "SIS en vigur"
+msgstr "PS Infrastructura da la viafier"
 
 msgid "ch.bav.sachplan-infrastruktur-schiene_kraft.doc_title"
 msgstr "Weitere Informationen"
@@ -1758,7 +1758,7 @@ msgid "ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung"
 msgstr "PSIA audiziun"
 
 msgid "ch.bazl.sachplan-infrastruktur-luftfahrt_kraft"
-msgstr "PS infrastructura aviatica"
+msgstr "PS Infrastructura aviatica"
 
 msgid "ch.bazl.segelflugkarte"
 msgstr "Charta da sgol senza motor"
@@ -2448,7 +2448,7 @@ msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss.ort"
 msgstr "Ort"
 
 msgid "ch.swisstopo.pixelkarte-farbe"
-msgstr "Charta naziunala 1:25'000"
+msgstr "Charta naziunala 1:25'000-1:1 Mio. en colur"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk100.noscale"
 msgstr "Charta naziunala 1:100'000"
@@ -2469,7 +2469,7 @@ msgid "ch.swisstopo.pixelkarte-farbe-pk500.noscale"
 msgstr "Charta naziunala 1:500'000"
 
 msgid "ch.swisstopo.pixelkarte-grau"
-msgstr "Charta naziunala 1:25'000"
+msgstr "Charta naziunala 1:25'000-1:1 Mio. en alv e nair"
 
 msgid "ch.swisstopo.pixelkarte-pk100.metadata"
 msgstr "Divisiun charta naziunala 1:100'000"

@@ -1047,7 +1047,7 @@ msgid "ch.babs"
 msgstr "FOCP"
 
 msgid "ch.babs.kulturgueter"
-msgstr "Inventario dei beni culturali"
+msgstr "Inventario PBC"
 
 msgid "ch.babs.kulturgueter.zkob"
 msgstr "Description"
@@ -1662,7 +1662,7 @@ msgid "ch.bav.sachplan-infrastruktur-schiene_ausgangslage.name"
 msgstr "Nome di progetto"
 
 msgid "ch.bav.sachplan-infrastruktur-schiene_kraft"
-msgstr "SIS in vigore"
+msgstr "PS infrastruttura ferroviaria"
 
 msgid "ch.bav.sachplan-infrastruktur-schiene_kraft.doc_title"
 msgstr "Informazioni supplementari"
@@ -1758,7 +1758,7 @@ msgid "ch.bazl.sachplan-infrastruktur-luftfahrt_anhorung"
 msgstr "PSIA consultazione"
 
 msgid "ch.bazl.sachplan-infrastruktur-luftfahrt_kraft"
-msgstr "PS infrastruttura aeronautica"
+msgstr "PS Infrastruttura aeronautica"
 
 msgid "ch.bazl.segelflugkarte"
 msgstr "Carta volo a vela"
@@ -2448,7 +2448,7 @@ msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss.ort"
 msgstr "Luogo"
 
 msgid "ch.swisstopo.pixelkarte-farbe"
-msgstr "Carta nazionale 1:25'000 | CN25"
+msgstr "Carta nazionale 1:25'000-1:1 Mio. a colori"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk100.noscale"
 msgstr "Carta nazionale 1:100'000"
@@ -2469,7 +2469,7 @@ msgid "ch.swisstopo.pixelkarte-farbe-pk500.noscale"
 msgstr "Carta nazionale 1:500'000"
 
 msgid "ch.swisstopo.pixelkarte-grau"
-msgstr "Carta nazionale 1:25'000 | CN25"
+msgstr "Carta nazionale 1:25'000-1:1 Mio. bianca e nera"
 
 msgid "ch.swisstopo.pixelkarte-pk100.metadata"
 msgstr "Divisione carte nazionali 1:100'000"
