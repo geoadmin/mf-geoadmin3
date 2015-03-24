@@ -155,7 +155,6 @@ updateol: .build-artefacts/ol3 .build-artefacts/ol-requirements-installation.tim
 
 .PHONY: fastclick
 fastclick: .build-artefacts/fastclick .build-artefacts/closure-compiler/compiler.jar
-	cd .build-artefacts/fastclick && git reset --hard && git apply ../../scripts/fastclick.patch;
 	cp .build-artefacts/fastclick/lib/fastclick.js src/lib/fastclick.js
 	java -jar .build-artefacts/closure-compiler/compiler.jar src/lib/fastclick.js --compilation_level SIMPLE_OPTIMIZATIONS --js_output_file  src/lib/fastclick.min.js
 
@@ -377,7 +376,7 @@ scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf .build-artefacts/
 	git clone https://github.com/twbs/bootstrap.git $@ && cd $@ && git checkout v3.3.1
 
 .build-artefacts/fastclick:
-	git clone https://github.com/ftlabs/fastclick.git $@ && cd $@ && git checkout v1.0.3
+	git clone https://github.com/ftlabs/fastclick.git $@ && cd $@ && git checkout v1.0.6
 
 .build-artefacts/localforage:
 	git clone https://github.com/mozilla/localForage.git $@ && cd $@ && git checkout 1.0.1
