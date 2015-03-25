@@ -11,7 +11,7 @@ Release Notes
 
 .. _releasenotes_20150325:
 
-Release 20150312 - Thursday, March 25th 2015
+Release 20150325 - Wednesday, March 25th 2015
 ------------------------------------------------
 
 API & applications
