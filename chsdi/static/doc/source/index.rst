@@ -78,7 +78,6 @@ API
    api/doc
    services/sdiservices
    api/faq/index
-   api/migration
    api/status
    
 Release notes
