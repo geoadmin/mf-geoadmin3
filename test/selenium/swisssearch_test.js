@@ -1,3 +1,4 @@
+// Swisssearch Test Using Browserstack
 
 var webdriver = require('browserstack-webdriver');
 var assert = require('assert');

@@ -1,4 +1,4 @@
-// 02 Search test using browserstack
+// Search test using browserstack
 
 var webdriver = require('browserstack-webdriver');
 var assert = require('assert');

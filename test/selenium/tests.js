@@ -22,10 +22,11 @@ if (!process.env.BROWSERSTACK_USER ||
 var browsers = require('./browsers.js');
 
 //load the tests.
-var starttest = require('./start_test.js');
-var searchtest = require('./search_test.js');
-var swisssearchtest = require('./swisssearch_test.js');
-var printtest = require('./print_test.js');
+var startTest = require('./start_test.js');
+var searchTest = require('./search_test.js');
+var swisssearchTest = require('./swisssearch_test.js');
+var printTest = require('./print_test.js');
+var mobileTest = require('./mobile_test.js');
 
 //okay we will start the script!
 console.log("Starting Browserstack script!");
@@ -47,13 +48,14 @@ browsers.capabilities.forEach(function(cap){
 
   //run all the tests
   try{
-    starttest.runTest(cap, driver, cmd.target);
-    searchtest.runTest(cap, driver, cmd.target);
-    swisssearchtest.runTest(cap, driver, cmd.target);
+    startTest.runTest(cap, driver, cmd.target);
+    searchTest.runTest(cap, driver, cmd.target);
+    swisssearchTest.runTest(cap, driver, cmd.target);
+    mobileTest.runTest(cap, driver, cmd.target);
 
     //Keep the print test last, as this results in a downloadpdf command,
     //which leaves the page in a browser dependant state
-    printtest.runTest(cap, driver, cmd.target);
+    printTest.runTest(cap, driver, cmd.target);
   }catch(err){
     //we need this block for the finally, as we definitly want to quit the driver, otherwise it stays idle for ~2 min blocking the next testrun.
     throw err;
