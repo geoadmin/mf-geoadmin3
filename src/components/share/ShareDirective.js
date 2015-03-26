@@ -20,6 +20,7 @@
             link: function(scope, element, attrs) {
               var shortenUrl = scope.options.shortenUrl;
               scope.qrcodegeneratorPath = scope.options.qrcodegeneratorPath;
+              scope.mobile = gaBrowserSniffer.mobile;
 
               if (!gaBrowserSniffer.mobile) {
                 $('.ga-share-icon').tooltip({
@@ -74,9 +75,6 @@
               // Select the input field on click in order to allow copy/paste
               scope.selectOnClick = function(e) {
                 e.target.select();
-              };
-              scope.showMoreOptions = function() {
-                scope.loadIframe = true;
               };
               // Set iframe size variables
               scope.$watch('iframeSize', function() {
