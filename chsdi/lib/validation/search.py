@@ -19,6 +19,7 @@ class SearchValidation(MapNameValidation):
         self._returnGeometry = None
         self._origins = None
         self._typeInfo = None
+        self._limit = None
 
     @property
     def searchText(self):
@@ -55,6 +56,10 @@ class SearchValidation(MapNameValidation):
     @property
     def typeInfo(self):
         return self._typeInfo
+
+    @property
+    def limit(self):
+        return self._limit
 
     @featureIndexes.setter
     def featureIndexes(self, value):
@@ -104,9 +109,9 @@ class SearchValidation(MapNameValidation):
         if value is not None:
             if len(value) != 4:
                 raise HTTPBadRequest('Only years are supported as timeInstant parameter')
-            try:
+            if value.isdigit():
                 self._timeInstant = int(value)
-            except ValueError:
+            else:
                 raise HTTPBadRequest('Please provide an integer for the parameter timeInstant')
         else:
             self._timeInstant = value
@@ -122,9 +127,9 @@ class SearchValidation(MapNameValidation):
                 if len(val) == 0:
                     result.append(None)
                 else:
-                    try:
+                    if val.isdigit():
                         result.append(int(val))
-                    except ValueError:
+                    else:
                         raise HTTPBadRequest('Please provide integers for timeStamps parameter')
             self._timeStamps = result
 
@@ -149,3 +154,11 @@ class SearchValidation(MapNameValidation):
         elif value not in acceptedTypes:
             raise HTTPBadRequest('The type parameter you provided is not valid. Possible values are %s' % (', '.join(acceptedTypes)))
         self._typeInfo = value
+
+    @limit.setter
+    def limit(self, value):
+        if value is not None:
+            if value.isdigit():
+                self._limit = int(value)
+            else:
+              raise HTTPBadRequest('The limit parameter should be an integer')

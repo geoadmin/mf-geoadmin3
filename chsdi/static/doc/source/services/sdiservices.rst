@@ -523,6 +523,8 @@ Only RESTFul interface is available.
 |                                     | zipcode,gg25,district,kantone,sn25,address,parcel                                         |
 |                                     | A description of the origins can be found hereunder. Per default all origins are used.    |
 +-------------------------------------+-------------------------------------------------------------------------------------------+
+| **limit (optional)**                | The maximum number of results to retrive per request (Max and default limit=50)           |
++-------------------------------------+-------------------------------------------------------------------------------------------+
 | **callback (optional)**             | The name of the callback function.                                                        |
 +-------------------------------------+-------------------------------------------------------------------------------------------+
 
@@ -536,6 +538,8 @@ Only RESTFul interface is available.
 | **type (required)**               | The type of performed search. Specify `layers` to perform a layer search.                 |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | **lang (optional)**               | The language metadata. Possible values: de (default), fr, it, rm, en.                     |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| **limit (optional)**              | The maximum number of results to retrive per request (Max and default limit=30)           |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | **callback (optional)**           | The name of the callback function.                                                        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
@@ -554,6 +558,8 @@ Only RESTFul interface is available.
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | **features (required)**           | A comma separated list of technical layer names.                                          |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
+| **limit (optional)**              | The maximum number of results to retrive per request (Max and default limit=20)           |
++-----------------------------------+-------------------------------------------------------------------------------------------+
 | **callback (optional)**           | The name of the callback function.                                                        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 
@@ -568,6 +574,8 @@ Only RESTFul interface is available.
 |                                   | should be filtered (SRID: 21781).                                                         |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | **features (optional)**           | A comma separated list of technical layer names.                                          |
++-----------------------------------+-------------------------------------------------------------------------------------------+
+| **limit (optional)**              | The maximum number of results to retrive per request (Max and default limit=200)          |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | **callback (optional)**           | The name of the callback function.                                                        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
