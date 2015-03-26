@@ -68,9 +68,9 @@ class ProfileValidation(object):
         if value is None:
             self._nb_points = 200
         else:
-            try:
+            if value.isdigit():
                 self._nb_points = int(value)
-            except ValueError:
+            else:
                 raise HTTPBadRequest("Please provide a numerical value for the parameter 'NbPoints'/'nb_points'")
 
 
@@ -79,7 +79,7 @@ class ProfileValidation(object):
         if value is None:
             self._ma_offset = 3
         else:
-            try:
+            if value.isdigit():
                 self._ma_offset = int(value)
-            except ValueError:
+            else:
                 raise HTTPBadRequest("Please provide a numerical value for the parameter 'offset'")

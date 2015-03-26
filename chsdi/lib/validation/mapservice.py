@@ -176,9 +176,9 @@ class MapServiceValidation(MapNameValidation):
         if value is not None:
             if len(value) != 4:
                 raise HTTPBadRequest('Only years are supported as timeInstant parameter')
-            try:
+            if value.isdigit():
                 self._timeInstant = int(value)
-            except ValueError:
+            else:
                 raise HTTPBadRequest('Please provide an integer for the parameter timeInstant')
         else:
             self._timeInstant = value
