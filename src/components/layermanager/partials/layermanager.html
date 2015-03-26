@@ -8,14 +8,16 @@
         <span></span>
         {{layer.label}}
       </label>
-      <button ng-if="layer.timeEnabled" class="ga-layer-time ga-btn badge" tabindex="1"
-             ng-class="isDefaultValue(layer.time)"
-             ng-click="displayTimestamps($event, layer)">{{layer.time | gaTimeLabel:layer}}
+      <div class="ga-layer-time" ng-if="layer.timeEnabled">
+        <button class="ga-btn badge" tabindex="1"
+                ng-class="isDefaultValue(layer.time)"
+                ng-click="displayTimestamps($event, layer)">{{layer.time | gaTimeLabel:layer}}
+        </button>
         <select ng-if="mobile"
                 ng-model="layer.time"
                 ng-change="setLayerTime(layer)"
                 ng-options="(i | gaTimeLabel:layer) for i in layer.timestamps"></select>
-      </button>
+      </div>
       <button ng-if="isBodLayer(layer)" class="ga-icon ga-btn icon-info-sign"
               ng-click="displayLayerMetadata($event, layer)"></button>
     </div>
