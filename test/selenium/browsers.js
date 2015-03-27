@@ -62,7 +62,7 @@ var mobileCapabilities = [
     createMobile('android', 'ANDROID', 'Google Nexus'),
     createMobile('android', 'ANDROID', 'Google Nexus 4'),
     createMobile('android', 'ANDROID', 'Google Nexus 5'),
-    createMobile('android', 'ANDROID', 'Google Nexus 6')
+//    createMobile('android', 'ANDROID', 'Google Nexus 6')
 ];
 
 module.exports.capabilities = capabilities;
