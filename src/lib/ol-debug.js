@@ -1,6 +1,6 @@
 // OpenLayers 3. See http://openlayers.org/
 // License: https://raw.githubusercontent.com/openlayers/ol3/master/LICENSE.md
-// Version: v3.3.0-29-gb26bea8
+// Version: v3.4.0
 
 (function (root, factory) {
   if (typeof define === "function" && define.amd) {
@@ -8200,12 +8200,6 @@ goog.provide('ol');
  * @define {boolean} Assume touch.  Default is `false`.
  */
 ol.ASSUME_TOUCH = false;
-
-
-/**
- * @define {boolean} Replace unused entries with NaNs.
- */
-ol.BUFFER_REPLACE_UNUSED_ENTRIES_WITH_NANS = goog.DEBUG;
 
 
 /**
@@ -18741,10 +18735,52 @@ ol.proj.Projection = function(options) {
   this.global_ = goog.isDef(options.global) ? options.global : false;
 
   /**
+  * @private
+  * @type {function(number, ol.Coordinate):number}
+  */
+  this.getPointResolutionFunc_ = goog.isDef(options.getPointResolution) ?
+      options.getPointResolution : this.getPointResolution_;
+
+  /**
    * @private
    * @type {ol.tilegrid.TileGrid}
    */
   this.defaultTileGrid_ = null;
+
+  if (ol.ENABLE_PROJ4JS && typeof proj4 == 'function') {
+    var code = options.code;
+    var def = proj4.defs(code);
+    if (goog.isDef(def)) {
+      if (goog.isDef(def.axis) && !goog.isDef(options.axisOrientation)) {
+        this.axisOrientation_ = def.axis;
+      }
+      if (!goog.isDef(options.units)) {
+        var units = def.units;
+        if (!goog.isDef(units)) {
+          if (goog.isDef(def.to_meter)) {
+            units = def.to_meter.toString();
+            ol.proj.METERS_PER_UNIT[units] = def.to_meter;
+          }
+        }
+        this.units_ = units;
+      }
+      var projections = ol.proj.projections_;
+      var currentCode, currentDef, currentProj, proj4Transform;
+      for (currentCode in projections) {
+        currentDef = proj4.defs(currentCode);
+        if (goog.isDef(currentDef)) {
+          currentProj = ol.proj.get(currentCode);
+          if (currentDef === def) {
+            ol.proj.addEquivalentProjections([currentProj, this]);
+          } else {
+            proj4Transform = proj4(currentCode, code);
+            ol.proj.addCoordinateTransforms(currentProj, this,
+                proj4Transform.forward, proj4Transform.inverse);
+          }
+        }
+      }
+    }
+  }
 
 };
 
@@ -18826,6 +18862,16 @@ ol.proj.Projection.prototype.isGlobal = function() {
 
 
 /**
+* Set if the projection is a global projection which spans the whole world
+* @param {boolean} global Whether the projection is global.
+* @api stable
+*/
+ol.proj.Projection.prototype.setGlobal = function(global) {
+  this.global_ = global;
+};
+
+
+/**
  * @return {ol.tilegrid.TileGrid} The default tile grid.
  */
 ol.proj.Projection.prototype.getDefaultTileGrid = function() {
@@ -18863,16 +18909,29 @@ ol.proj.Projection.prototype.setWorldExtent = function(worldExtent) {
 
 
 /**
- * Get the resolution of the point in degrees. For projections with degrees as
- * the unit this will simply return the provided resolution. For other
- * projections the point resolution is estimated by transforming the center
- * pixel to EPSG:4326, measuring its width and height on the normal sphere,
- * and taking the average of the width and height.
- * @param {number} resolution Resolution.
- * @param {ol.Coordinate} point Point.
- * @return {number} Point resolution.
- */
-ol.proj.Projection.prototype.getPointResolution = function(resolution, point) {
+* Set the getPointResolution function for this projection.
+* @param {function(number, ol.Coordinate):number} func Function
+* @api
+*/
+ol.proj.Projection.prototype.setGetPointResolution = function(func) {
+  this.getPointResolutionFunc_ = func;
+};
+
+
+/**
+* Default version.
+* Get the resolution of the point in degrees or distance units.
+* For projections with degrees as the unit this will simply return the
+* provided resolution. For other projections the point resolution is
+* estimated by transforming the 'point' pixel to EPSG:4326,
+* measuring its width and height on the normal sphere,
+* and taking the average of the width and height.
+* @param {number} resolution Nominal resolution in projection units.
+* @param {ol.Coordinate} point Point to find adjusted resolution at.
+* @return {number} Point resolution at point in projection units.
+* @private
+*/
+ol.proj.Projection.prototype.getPointResolution_ = function(resolution, point) {
   var units = this.getUnits();
   if (units == ol.proj.Units.DEGREES) {
     return resolution;
@@ -18900,6 +18959,26 @@ ol.proj.Projection.prototype.getPointResolution = function(resolution, point) {
     }
     return pointResolution;
   }
+};
+
+
+/**
+ * Get the resolution of the point in degrees or distance units.
+ * For projections with degrees as the unit this will simply return the
+ * provided resolution. The default for other projections is to estimate
+ * the point resolution by transforming the 'point' pixel to EPSG:4326,
+ * measuring its width and height on the normal sphere,
+ * and taking the average of the width and height.
+ * An alternative implementation may be given when constructing a
+ * projection. For many local projections,
+ * such a custom function will return the resolution unchanged.
+ * @param {number} resolution Resolution in projection units.
+ * @param {ol.Coordinate} point Point.
+ * @return {number} Point resolution in projection units.
+ * @api
+ */
+ol.proj.Projection.prototype.getPointResolution = function(resolution, point) {
+  return this.getPointResolutionFunc_(resolution, point);
 };
 
 
@@ -18961,7 +19040,8 @@ ol.proj.addEquivalentTransforms =
 
 
 /**
- * Add a Projection object to the list of supported projections.
+ * Add a Projection object to the list of supported projections that can be
+ * looked up by their code.
  *
  * @param {ol.proj.Projection} projection Projection instance.
  * @api stable
@@ -19131,43 +19211,11 @@ ol.proj.get = function(projectionLike) {
     projection = projectionLike;
   } else if (goog.isString(projectionLike)) {
     var code = projectionLike;
-    var projections = ol.proj.projections_;
-    projection = projections[code];
+    projection = ol.proj.projections_[code];
     if (ol.ENABLE_PROJ4JS && !goog.isDef(projection) &&
-        typeof proj4 == 'function') {
-      var def = proj4.defs(code);
-      if (goog.isDef(def)) {
-        var units = def.units;
-        if (!goog.isDef(units)) {
-          if (goog.isDef(def.to_meter)) {
-            units = def.to_meter.toString();
-            ol.proj.METERS_PER_UNIT[units] = def.to_meter;
-          }
-        }
-        projection = new ol.proj.Projection({
-          code: code,
-          units: units,
-          axisOrientation: def.axis
-        });
-        ol.proj.addProjection(projection);
-        var currentCode, currentDef, currentProj, proj4Transform;
-        for (currentCode in projections) {
-          currentDef = proj4.defs(currentCode);
-          if (goog.isDef(currentDef)) {
-            currentProj = ol.proj.get(currentCode);
-            if (currentDef === def) {
-              ol.proj.addEquivalentProjections([currentProj, projection]);
-            } else {
-              proj4Transform = proj4(currentCode, code);
-              ol.proj.addCoordinateTransforms(currentProj, projection,
-                  proj4Transform.forward, proj4Transform.inverse);
-            }
-          }
-        }
-      } else {
-        goog.asserts.assert(goog.isDef(projection));
-        projection = null;
-      }
+        typeof proj4 == 'function' && goog.isDef(proj4.defs(code))) {
+      projection = new ol.proj.Projection({code: code});
+      ol.proj.addProjection(projection);
     }
   } else {
     projection = null;
@@ -20416,6 +20464,7 @@ goog.provide('ol.tilecoord');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('goog.math');
 
 
 /**
@@ -20549,6 +20598,38 @@ ol.tilecoord.quadKey = function(tileCoord) {
  */
 ol.tilecoord.toString = function(tileCoord) {
   return ol.tilecoord.getKeyZXY(tileCoord[0], tileCoord[1], tileCoord[2]);
+};
+
+
+/**
+ * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
+ * @param {ol.proj.Projection} projection Projection.
+ * @return {ol.TileCoord} Tile coordinate.
+ */
+ol.tilecoord.wrapX = function(tileCoord, tileGrid, projection) {
+  var z = tileCoord[0];
+  var x = tileCoord[1];
+  var tileRange = tileGrid.getTileRange(z, projection);
+  if (x < tileRange.minX || x > tileRange.maxX) {
+    x = goog.math.modulo(x, tileRange.getWidth());
+    return [z, x, tileCoord[2]];
+  }
+  return tileCoord;
+};
+
+
+/**
+ * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
+ * @param {ol.proj.Projection} projection Projection.
+ * @return {ol.TileCoord} Tile coordinate.
+ */
+ol.tilecoord.clipX = function(tileCoord, tileGrid, projection) {
+  var z = tileCoord[0];
+  var x = tileCoord[1];
+  var tileRange = tileGrid.getTileRange(z, projection);
+  return (x < tileRange.minX || x > tileRange.maxX) ? null : tileCoord;
 };
 
 goog.provide('ol.TileRange');
@@ -20777,6 +20858,8 @@ goog.exportProperty(ol.TileRange.prototype, 'getMaxY',
 
 goog.provide('ol.Attribution');
 
+goog.require('goog.asserts');
+goog.require('goog.math');
 goog.require('ol.TileRange');
 
 
@@ -20831,21 +20914,42 @@ ol.Attribution.prototype.getHTML = function() {
 
 /**
  * @param {Object.<string, ol.TileRange>} tileRanges Tile ranges.
+ * @param {!ol.tilegrid.TileGrid} tileGrid Tile grid.
+ * @param {!ol.proj.Projection} projection Projection.
  * @return {boolean} Intersects any tile range.
  */
-ol.Attribution.prototype.intersectsAnyTileRange = function(tileRanges) {
+ol.Attribution.prototype.intersectsAnyTileRange =
+    function(tileRanges, tileGrid, projection) {
   if (goog.isNull(this.tileRanges_)) {
     return true;
   }
-  var i, ii, tileRange, z;
-  for (z in tileRanges) {
-    if (!(z in this.tileRanges_)) {
+  var i, ii, tileRange, zKey;
+  for (zKey in tileRanges) {
+    if (!(zKey in this.tileRanges_)) {
       continue;
     }
-    tileRange = tileRanges[z];
-    for (i = 0, ii = this.tileRanges_[z].length; i < ii; ++i) {
-      if (this.tileRanges_[z][i].intersects(tileRange)) {
+    tileRange = tileRanges[zKey];
+    var testTileRange;
+    for (i = 0, ii = this.tileRanges_[zKey].length; i < ii; ++i) {
+      testTileRange = this.tileRanges_[zKey][i];
+      if (testTileRange.intersects(tileRange)) {
         return true;
+      }
+      var extentTileRange = tileGrid.getTileRange(
+          parseInt(zKey, 10), projection);
+      var width = extentTileRange.getWidth();
+      if (tileRange.minX < extentTileRange.minX ||
+          tileRange.maxX > extentTileRange.maxX) {
+        if (testTileRange.intersects(new ol.TileRange(
+            goog.math.modulo(tileRange.minX, width),
+            goog.math.modulo(tileRange.maxX, width),
+            tileRange.minY, tileRange.maxY))) {
+          return true;
+        }
+        if (tileRange.getWidth() > width &&
+            testTileRange.intersects(extentTileRange)) {
+          return true;
+        }
       }
     }
   }
@@ -33851,10 +33955,1476 @@ ol.css.CLASS_UNSUPPORTED = 'ol-unsupported';
  */
 ol.css.CLASS_CONTROL = 'ol-control';
 
+goog.provide('ol.structs.LRUCache');
+
+goog.require('goog.asserts');
+goog.require('goog.object');
+
+
+
+/**
+ * Implements a Least-Recently-Used cache where the keys do not conflict with
+ * Object's properties (e.g. 'hasOwnProperty' is not allowed as a key). Expiring
+ * items from the cache is the responsibility of the user.
+ * @constructor
+ * @struct
+ * @template T
+ */
+ol.structs.LRUCache = function() {
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.count_ = 0;
+
+  /**
+   * @private
+   * @type {Object.<string, ol.structs.LRUCacheEntry>}
+   */
+  this.entries_ = {};
+
+  /**
+   * @private
+   * @type {?ol.structs.LRUCacheEntry}
+   */
+  this.oldest_ = null;
+
+  /**
+   * @private
+   * @type {?ol.structs.LRUCacheEntry}
+   */
+  this.newest_ = null;
+
+};
+
+
+/**
+ * FIXME empty description for jsdoc
+ */
+ol.structs.LRUCache.prototype.assertValid = function() {
+  if (this.count_ === 0) {
+    goog.asserts.assert(goog.object.isEmpty(this.entries_));
+    goog.asserts.assert(goog.isNull(this.oldest_));
+    goog.asserts.assert(goog.isNull(this.newest_));
+  } else {
+    goog.asserts.assert(goog.object.getCount(this.entries_) == this.count_);
+    goog.asserts.assert(!goog.isNull(this.oldest_));
+    goog.asserts.assert(goog.isNull(this.oldest_.older));
+    goog.asserts.assert(!goog.isNull(this.newest_));
+    goog.asserts.assert(goog.isNull(this.newest_.newer));
+    var i, entry;
+    var older = null;
+    i = 0;
+    for (entry = this.oldest_; !goog.isNull(entry); entry = entry.newer) {
+      goog.asserts.assert(entry.older === older);
+      older = entry;
+      ++i;
+    }
+    goog.asserts.assert(i == this.count_);
+    var newer = null;
+    i = 0;
+    for (entry = this.newest_; !goog.isNull(entry); entry = entry.older) {
+      goog.asserts.assert(entry.newer === newer);
+      newer = entry;
+      ++i;
+    }
+    goog.asserts.assert(i == this.count_);
+  }
+};
+
+
+/**
+ * FIXME empty description for jsdoc
+ */
+ol.structs.LRUCache.prototype.clear = function() {
+  this.count_ = 0;
+  this.entries_ = {};
+  this.oldest_ = null;
+  this.newest_ = null;
+};
+
+
+/**
+ * @param {string} key Key.
+ * @return {boolean} Contains key.
+ */
+ol.structs.LRUCache.prototype.containsKey = function(key) {
+  return this.entries_.hasOwnProperty(key);
+};
+
+
+/**
+ * @param {function(this: S, T, string, ol.structs.LRUCache): ?} f The function
+ *     to call for every entry from the oldest to the newer. This function takes
+ *     3 arguments (the entry value, the entry key and the LRUCache object).
+ *     The return value is ignored.
+ * @param {S=} opt_this The object to use as `this` in `f`.
+ * @template S
+ */
+ol.structs.LRUCache.prototype.forEach = function(f, opt_this) {
+  var entry = this.oldest_;
+  while (!goog.isNull(entry)) {
+    f.call(opt_this, entry.value_, entry.key_, this);
+    entry = entry.newer;
+  }
+};
+
+
+/**
+ * @param {string} key Key.
+ * @return {T} Value.
+ */
+ol.structs.LRUCache.prototype.get = function(key) {
+  var entry = this.entries_[key];
+  goog.asserts.assert(goog.isDef(entry));
+  if (entry === this.newest_) {
+    return entry.value_;
+  } else if (entry === this.oldest_) {
+    this.oldest_ = this.oldest_.newer;
+    this.oldest_.older = null;
+  } else {
+    entry.newer.older = entry.older;
+    entry.older.newer = entry.newer;
+  }
+  entry.newer = null;
+  entry.older = this.newest_;
+  this.newest_.newer = entry;
+  this.newest_ = entry;
+  return entry.value_;
+};
+
+
+/**
+ * @return {number} Count.
+ */
+ol.structs.LRUCache.prototype.getCount = function() {
+  return this.count_;
+};
+
+
+/**
+ * @return {Array.<string>} Keys.
+ */
+ol.structs.LRUCache.prototype.getKeys = function() {
+  var keys = new Array(this.count_);
+  var i = 0;
+  var entry;
+  for (entry = this.newest_; !goog.isNull(entry); entry = entry.older) {
+    keys[i++] = entry.key_;
+  }
+  goog.asserts.assert(i == this.count_);
+  return keys;
+};
+
+
+/**
+ * @return {Array.<T>} Values.
+ */
+ol.structs.LRUCache.prototype.getValues = function() {
+  var values = new Array(this.count_);
+  var i = 0;
+  var entry;
+  for (entry = this.newest_; !goog.isNull(entry); entry = entry.older) {
+    values[i++] = entry.value_;
+  }
+  goog.asserts.assert(i == this.count_);
+  return values;
+};
+
+
+/**
+ * @return {T} Last value.
+ */
+ol.structs.LRUCache.prototype.peekLast = function() {
+  goog.asserts.assert(!goog.isNull(this.oldest_));
+  return this.oldest_.value_;
+};
+
+
+/**
+ * @return {string} Last key.
+ */
+ol.structs.LRUCache.prototype.peekLastKey = function() {
+  goog.asserts.assert(!goog.isNull(this.oldest_));
+  return this.oldest_.key_;
+};
+
+
+/**
+ * @return {T} value Value.
+ */
+ol.structs.LRUCache.prototype.pop = function() {
+  goog.asserts.assert(!goog.isNull(this.oldest_));
+  goog.asserts.assert(!goog.isNull(this.newest_));
+  var entry = this.oldest_;
+  goog.asserts.assert(entry.key_ in this.entries_);
+  delete this.entries_[entry.key_];
+  if (!goog.isNull(entry.newer)) {
+    entry.newer.older = null;
+  }
+  this.oldest_ = entry.newer;
+  if (goog.isNull(this.oldest_)) {
+    this.newest_ = null;
+  }
+  --this.count_;
+  return entry.value_;
+};
+
+
+/**
+ * @param {string} key Key.
+ * @param {T} value Value.
+ */
+ol.structs.LRUCache.prototype.set = function(key, value) {
+  goog.asserts.assert(!(key in {}));
+  goog.asserts.assert(!(key in this.entries_));
+  var entry = {
+    key_: key,
+    newer: null,
+    older: this.newest_,
+    value_: value
+  };
+  if (goog.isNull(this.newest_)) {
+    this.oldest_ = entry;
+  } else {
+    this.newest_.newer = entry;
+  }
+  this.newest_ = entry;
+  this.entries_[key] = entry;
+  ++this.count_;
+};
+
+
+/**
+ * @typedef {{key_: string,
+ *            newer: ol.structs.LRUCacheEntry,
+ *            older: ol.structs.LRUCacheEntry,
+ *            value_: *}}
+ */
+ol.structs.LRUCacheEntry;
+
+goog.provide('ol.TileCache');
+
+goog.require('ol');
+goog.require('ol.TileRange');
+goog.require('ol.structs.LRUCache');
+goog.require('ol.tilecoord');
+
+
+
+/**
+ * @constructor
+ * @extends {ol.structs.LRUCache.<ol.Tile>}
+ * @param {number=} opt_highWaterMark High water mark.
+ * @struct
+ */
+ol.TileCache = function(opt_highWaterMark) {
+
+  goog.base(this);
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.highWaterMark_ = goog.isDef(opt_highWaterMark) ?
+      opt_highWaterMark : ol.DEFAULT_TILE_CACHE_HIGH_WATER_MARK;
+
+};
+goog.inherits(ol.TileCache, ol.structs.LRUCache);
+
+
+/**
+ * @return {boolean} Can expire cache.
+ */
+ol.TileCache.prototype.canExpireCache = function() {
+  return this.getCount() > this.highWaterMark_;
+};
+
+
+/**
+ * @param {Object.<string, ol.TileRange>} usedTiles Used tiles.
+ */
+ol.TileCache.prototype.expireCache = function(usedTiles) {
+  var tile, zKey;
+  while (this.canExpireCache()) {
+    tile = /** @type {ol.Tile} */ (this.peekLast());
+    zKey = tile.tileCoord[0].toString();
+    if (zKey in usedTiles && usedTiles[zKey].contains(tile.tileCoord)) {
+      break;
+    } else {
+      this.pop().dispose();
+    }
+  }
+};
+
+
+/**
+ * Remove a tile range from the cache, e.g. to invalidate tiles.
+ * @param {ol.TileRange} tileRange The tile range to prune.
+ */
+ol.TileCache.prototype.pruneTileRange = function(tileRange) {
+  var i = this.getCount(),
+      key;
+  while (i--) {
+    key = this.peekLastKey();
+    if (tileRange.contains(ol.tilecoord.createFromString(key))) {
+      this.pop().dispose();
+    } else {
+      this.get(key);
+    }
+  }
+};
+
+goog.provide('ol.Tile');
+goog.provide('ol.TileState');
+
+goog.require('goog.events');
+goog.require('goog.events.EventTarget');
+goog.require('goog.events.EventType');
+goog.require('ol.TileCoord');
+
+
+/**
+ * @enum {number}
+ */
+ol.TileState = {
+  IDLE: 0,
+  LOADING: 1,
+  LOADED: 2,
+  ERROR: 3,
+  EMPTY: 4
+};
+
+
+
+/**
+ * @classdesc
+ * Base class for tiles.
+ *
+ * @constructor
+ * @extends {goog.events.EventTarget}
+ * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @param {ol.TileState} state State.
+ */
+ol.Tile = function(tileCoord, state) {
+
+  goog.base(this);
+
+  /**
+   * @type {ol.TileCoord}
+   */
+  this.tileCoord = tileCoord;
+
+  /**
+   * @protected
+   * @type {ol.TileState}
+   */
+  this.state = state;
+
+};
+goog.inherits(ol.Tile, goog.events.EventTarget);
+
+
+/**
+ * @protected
+ */
+ol.Tile.prototype.changed = function() {
+  this.dispatchEvent(goog.events.EventType.CHANGE);
+};
+
+
+/**
+ * @function
+ * @param {Object=} opt_context Object.
+ * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
+ */
+ol.Tile.prototype.getImage = goog.abstractMethod;
+
+
+/**
+ * @return {string} Key.
+ */
+ol.Tile.prototype.getKey = function() {
+  return goog.getUid(this).toString();
+};
+
+
+/**
+ * @return {ol.TileCoord}
+ * @api
+ */
+ol.Tile.prototype.getTileCoord = function() {
+  return this.tileCoord;
+};
+
+
+/**
+ * @return {ol.TileState} State.
+ */
+ol.Tile.prototype.getState = function() {
+  return this.state;
+};
+
+
+/**
+ * FIXME empty description for jsdoc
+ */
+ol.Tile.prototype.load = goog.abstractMethod;
+
+goog.provide('ol.source.Source');
+goog.provide('ol.source.State');
+
+goog.require('goog.events.EventType');
+goog.require('ol.Attribution');
+goog.require('ol.Object');
+goog.require('ol.proj');
+
+
+/**
+ * State of the source, one of 'undefined', 'loading', 'ready' or 'error'.
+ * @enum {string}
+ * @api
+ */
+ol.source.State = {
+  UNDEFINED: 'undefined',
+  LOADING: 'loading',
+  READY: 'ready',
+  ERROR: 'error'
+};
+
+
+/**
+ * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
+ *            logo: (string|olx.LogoOptions|undefined),
+ *            projection: ol.proj.ProjectionLike,
+ *            state: (ol.source.State|undefined)}}
+ */
+ol.source.SourceOptions;
+
+
+
+/**
+ * @classdesc
+ * Abstract base class; normally only used for creating subclasses and not
+ * instantiated in apps.
+ * Base class for {@link ol.layer.Layer} sources.
+ *
+ * @constructor
+ * @extends {ol.Object}
+ * @fires change Triggered when the state of the source changes.
+ * @param {ol.source.SourceOptions} options Source options.
+ * @api stable
+ */
+ol.source.Source = function(options) {
+
+  goog.base(this);
+
+  /**
+   * @private
+   * @type {ol.proj.Projection}
+   */
+  this.projection_ = ol.proj.get(options.projection);
+
+  /**
+   * @private
+   * @type {Array.<ol.Attribution>}
+   */
+  this.attributions_ = goog.isDef(options.attributions) ?
+      options.attributions : null;
+
+  /**
+   * @private
+   * @type {string|olx.LogoOptions|undefined}
+   */
+  this.logo_ = options.logo;
+
+  /**
+   * @private
+   * @type {ol.source.State}
+   */
+  this.state_ = goog.isDef(options.state) ?
+      options.state : ol.source.State.READY;
+
+};
+goog.inherits(ol.source.Source, ol.Object);
+
+
+/**
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {number} resolution Resolution.
+ * @param {number} rotation Rotation.
+ * @param {Object.<string, boolean>} skippedFeatureUids Skipped feature uids.
+ * @param {function(ol.Feature): T} callback Feature callback.
+ * @return {T|undefined} Callback result.
+ * @template T
+ */
+ol.source.Source.prototype.forEachFeatureAtCoordinate =
+    goog.nullFunction;
+
+
+/**
+ * @return {Array.<ol.Attribution>} Attributions.
+ * @api stable
+ */
+ol.source.Source.prototype.getAttributions = function() {
+  return this.attributions_;
+};
+
+
+/**
+ * @return {string|olx.LogoOptions|undefined} Logo.
+ * @api stable
+ */
+ol.source.Source.prototype.getLogo = function() {
+  return this.logo_;
+};
+
+
+/**
+ * @return {ol.proj.Projection} Projection.
+ * @api
+ */
+ol.source.Source.prototype.getProjection = function() {
+  return this.projection_;
+};
+
+
+/**
+ * @return {Array.<number>|undefined} Resolutions.
+ */
+ol.source.Source.prototype.getResolutions = goog.abstractMethod;
+
+
+/**
+ * @return {ol.source.State} State.
+ * @api
+ */
+ol.source.Source.prototype.getState = function() {
+  return this.state_;
+};
+
+
+/**
+ * @param {Array.<ol.Attribution>} attributions Attributions.
+ */
+ol.source.Source.prototype.setAttributions = function(attributions) {
+  this.attributions_ = attributions;
+};
+
+
+/**
+ * @param {string|olx.LogoOptions|undefined} logo Logo.
+ */
+ol.source.Source.prototype.setLogo = function(logo) {
+  this.logo_ = logo;
+};
+
+
+/**
+ * @param {ol.source.State} state State.
+ * @protected
+ */
+ol.source.Source.prototype.setState = function(state) {
+  this.state_ = state;
+  this.changed();
+};
+
+
+/**
+ * @param {ol.proj.Projection} projection Projetion.
+ */
+ol.source.Source.prototype.setProjection = function(projection) {
+  this.projection_ = projection;
+};
+
+goog.provide('ol.tilegrid.TileGrid');
+
+goog.require('goog.array');
+goog.require('goog.asserts');
+goog.require('goog.functions');
+goog.require('goog.math');
+goog.require('ol');
+goog.require('ol.Coordinate');
+goog.require('ol.TileCoord');
+goog.require('ol.TileRange');
+goog.require('ol.array');
+goog.require('ol.extent');
+goog.require('ol.extent.Corner');
+goog.require('ol.proj');
+goog.require('ol.proj.METERS_PER_UNIT');
+goog.require('ol.proj.Projection');
+goog.require('ol.proj.Units');
+goog.require('ol.tilecoord');
+
+
+
+/**
+ * @classdesc
+ * Base class for setting the grid pattern for sources accessing tiled-image
+ * servers.
+ *
+ * @constructor
+ * @param {olx.tilegrid.TileGridOptions} options Tile grid options.
+ * @struct
+ * @api stable
+ */
+ol.tilegrid.TileGrid = function(options) {
+
+  /**
+   * @protected
+   * @type {number}
+   */
+  this.minZoom = goog.isDef(options.minZoom) ? options.minZoom : 0;
+
+  /**
+   * @private
+   * @type {!Array.<number>}
+   */
+  this.resolutions_ = options.resolutions;
+  goog.asserts.assert(goog.array.isSorted(this.resolutions_, function(a, b) {
+    return b - a;
+  }, true));
+
+  /**
+   * @protected
+   * @type {number}
+   */
+  this.maxZoom = this.resolutions_.length - 1;
+
+  /**
+   * @private
+   * @type {ol.Coordinate}
+   */
+  this.origin_ = goog.isDef(options.origin) ? options.origin : null;
+
+  /**
+   * @private
+   * @type {Array.<ol.Coordinate>}
+   */
+  this.origins_ = null;
+  if (goog.isDef(options.origins)) {
+    this.origins_ = options.origins;
+    goog.asserts.assert(this.origins_.length == this.resolutions_.length);
+  }
+  goog.asserts.assert(
+      (goog.isNull(this.origin_) && !goog.isNull(this.origins_)) ||
+      (!goog.isNull(this.origin_) && goog.isNull(this.origins_)));
+
+  /**
+   * @private
+   * @type {Array.<number>}
+   */
+  this.tileSizes_ = null;
+  if (goog.isDef(options.tileSizes)) {
+    this.tileSizes_ = options.tileSizes;
+    goog.asserts.assert(this.tileSizes_.length == this.resolutions_.length);
+  }
+
+  /**
+   * @private
+   * @type {number|undefined}
+   */
+  this.tileSize_ = goog.isDef(options.tileSize) ?
+      options.tileSize :
+      goog.isNull(this.tileSizes_) ? ol.DEFAULT_TILE_SIZE : undefined;
+  goog.asserts.assert(
+      (!goog.isDef(this.tileSize_) && !goog.isNull(this.tileSizes_)) ||
+      (goog.isDef(this.tileSize_) && goog.isNull(this.tileSizes_)));
+
+  /**
+   * @private
+   * @type {Array.<number>}
+   */
+  this.widths_ = null;
+  if (goog.isDef(options.widths)) {
+    this.widths_ = options.widths;
+    goog.asserts.assert(this.widths_.length == this.resolutions_.length);
+  }
+
+};
+
+
+/**
+ * @private
+ * @type {ol.TileCoord}
+ */
+ol.tilegrid.TileGrid.tmpTileCoord_ = [0, 0, 0];
+
+
+/**
+ * Returns the identity function. May be overridden in subclasses.
+ * @param {{extent: (ol.Extent|undefined)}=} opt_options Options.
+ * @return {function(ol.TileCoord, ol.proj.Projection, ol.TileCoord=):
+ *     ol.TileCoord} Tile coordinate transform.
+ */
+ol.tilegrid.TileGrid.prototype.createTileCoordTransform =
+    function(opt_options) {
+  return goog.functions.identity;
+};
+
+
+/**
+ * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @param {function(this: T, number, ol.TileRange): boolean} callback Callback.
+ * @param {T=} opt_this The object to use as `this` in `callback`.
+ * @param {ol.TileRange=} opt_tileRange Temporary ol.TileRange object.
+ * @param {ol.Extent=} opt_extent Temporary ol.Extent object.
+ * @return {boolean} Callback succeeded.
+ * @template T
+ */
+ol.tilegrid.TileGrid.prototype.forEachTileCoordParentTileRange =
+    function(tileCoord, callback, opt_this, opt_tileRange, opt_extent) {
+  var tileCoordExtent = this.getTileCoordExtent(tileCoord, opt_extent);
+  var z = tileCoord[0] - 1;
+  while (z >= this.minZoom) {
+    if (callback.call(opt_this, z,
+        this.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange))) {
+      return true;
+    }
+    --z;
+  }
+  return false;
+};
+
+
+/**
+ * @return {number} Max zoom.
+ * @api
+ */
+ol.tilegrid.TileGrid.prototype.getMaxZoom = function() {
+  return this.maxZoom;
+};
+
+
+/**
+ * @return {number} Min zoom.
+ * @api
+ */
+ol.tilegrid.TileGrid.prototype.getMinZoom = function() {
+  return this.minZoom;
+};
+
+
+/**
+ * @param {number} z Z.
+ * @return {ol.Coordinate} Origin.
+ * @api stable
+ */
+ol.tilegrid.TileGrid.prototype.getOrigin = function(z) {
+  if (!goog.isNull(this.origin_)) {
+    return this.origin_;
+  } else {
+    goog.asserts.assert(!goog.isNull(this.origins_));
+    goog.asserts.assert(this.minZoom <= z && z <= this.maxZoom);
+    return this.origins_[z];
+  }
+};
+
+
+/**
+ * @param {number} z Z.
+ * @return {number} Resolution.
+ * @api stable
+ */
+ol.tilegrid.TileGrid.prototype.getResolution = function(z) {
+  goog.asserts.assert(this.minZoom <= z && z <= this.maxZoom);
+  return this.resolutions_[z];
+};
+
+
+/**
+ * @return {Array.<number>} Resolutions.
+ * @api stable
+ */
+ol.tilegrid.TileGrid.prototype.getResolutions = function() {
+  return this.resolutions_;
+};
+
+
+/**
+ * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @param {ol.TileRange=} opt_tileRange Temporary ol.TileRange object.
+ * @param {ol.Extent=} opt_extent Temporary ol.Extent object.
+ * @return {ol.TileRange} Tile range.
+ */
+ol.tilegrid.TileGrid.prototype.getTileCoordChildTileRange =
+    function(tileCoord, opt_tileRange, opt_extent) {
+  if (tileCoord[0] < this.maxZoom) {
+    var tileCoordExtent = this.getTileCoordExtent(tileCoord, opt_extent);
+    return this.getTileRangeForExtentAndZ(
+        tileCoordExtent, tileCoord[0] + 1, opt_tileRange);
+  } else {
+    return null;
+  }
+};
+
+
+/**
+ * @param {number} z Z.
+ * @param {ol.TileRange} tileRange Tile range.
+ * @param {ol.Extent=} opt_extent Temporary ol.Extent object.
+ * @return {ol.Extent} Extent.
+ */
+ol.tilegrid.TileGrid.prototype.getTileRangeExtent =
+    function(z, tileRange, opt_extent) {
+  var origin = this.getOrigin(z);
+  var resolution = this.getResolution(z);
+  var tileSize = this.getTileSize(z);
+  var minX = origin[0] + tileRange.minX * tileSize * resolution;
+  var maxX = origin[0] + (tileRange.maxX + 1) * tileSize * resolution;
+  var minY = origin[1] + tileRange.minY * tileSize * resolution;
+  var maxY = origin[1] + (tileRange.maxY + 1) * tileSize * resolution;
+  return ol.extent.createOrUpdate(minX, minY, maxX, maxY, opt_extent);
+};
+
+
+/**
+ * @param {ol.Extent} extent Extent.
+ * @param {number} resolution Resolution.
+ * @param {ol.TileRange=} opt_tileRange Temporary tile range object.
+ * @return {ol.TileRange} Tile range.
+ */
+ol.tilegrid.TileGrid.prototype.getTileRangeForExtentAndResolution =
+    function(extent, resolution, opt_tileRange) {
+  var tileCoord = ol.tilegrid.TileGrid.tmpTileCoord_;
+  this.getTileCoordForXYAndResolution_(
+      extent[0], extent[1], resolution, false, tileCoord);
+  var minX = tileCoord[1];
+  var minY = tileCoord[2];
+  this.getTileCoordForXYAndResolution_(
+      extent[2], extent[3], resolution, true, tileCoord);
+  return ol.TileRange.createOrUpdate(
+      minX, tileCoord[1], minY, tileCoord[2], opt_tileRange);
+};
+
+
+/**
+ * @param {ol.Extent} extent Extent.
+ * @param {number} z Z.
+ * @param {ol.TileRange=} opt_tileRange Temporary tile range object.
+ * @return {ol.TileRange} Tile range.
+ */
+ol.tilegrid.TileGrid.prototype.getTileRangeForExtentAndZ =
+    function(extent, z, opt_tileRange) {
+  var resolution = this.getResolution(z);
+  return this.getTileRangeForExtentAndResolution(
+      extent, resolution, opt_tileRange);
+};
+
+
+/**
+ * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @return {ol.Coordinate} Tile center.
+ */
+ol.tilegrid.TileGrid.prototype.getTileCoordCenter = function(tileCoord) {
+  var origin = this.getOrigin(tileCoord[0]);
+  var resolution = this.getResolution(tileCoord[0]);
+  var tileSize = this.getTileSize(tileCoord[0]);
+  return [
+    origin[0] + (tileCoord[1] + 0.5) * tileSize * resolution,
+    origin[1] + (tileCoord[2] + 0.5) * tileSize * resolution
+  ];
+};
+
+
+/**
+ * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @param {ol.Extent=} opt_extent Temporary extent object.
+ * @return {ol.Extent} Extent.
+ */
+ol.tilegrid.TileGrid.prototype.getTileCoordExtent =
+    function(tileCoord, opt_extent) {
+  var origin = this.getOrigin(tileCoord[0]);
+  var resolution = this.getResolution(tileCoord[0]);
+  var tileSize = this.getTileSize(tileCoord[0]);
+  var minX = origin[0] + tileCoord[1] * tileSize * resolution;
+  var minY = origin[1] + tileCoord[2] * tileSize * resolution;
+  var maxX = minX + tileSize * resolution;
+  var maxY = minY + tileSize * resolution;
+  return ol.extent.createOrUpdate(minX, minY, maxX, maxY, opt_extent);
+};
+
+
+/**
+ * Get the tile coordinate for the given map coordinate and resolution.  This
+ * method considers that coordinates that intersect tile boundaries should be
+ * assigned the higher tile coordinate.
+ *
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {number} resolution Resolution.
+ * @param {ol.TileCoord=} opt_tileCoord Destination ol.TileCoord object.
+ * @return {ol.TileCoord} Tile coordinate.
+ * @api
+ */
+ol.tilegrid.TileGrid.prototype.getTileCoordForCoordAndResolution = function(
+    coordinate, resolution, opt_tileCoord) {
+  return this.getTileCoordForXYAndResolution_(
+      coordinate[0], coordinate[1], resolution, false, opt_tileCoord);
+};
+
+
+/**
+ * @param {number} x X.
+ * @param {number} y Y.
+ * @param {number} resolution Resolution.
+ * @param {boolean} reverseIntersectionPolicy Instead of letting edge
+ *     intersections go to the higher tile coordinate, let edge intersections
+ *     go to the lower tile coordinate.
+ * @param {ol.TileCoord=} opt_tileCoord Temporary ol.TileCoord object.
+ * @return {ol.TileCoord} Tile coordinate.
+ * @private
+ */
+ol.tilegrid.TileGrid.prototype.getTileCoordForXYAndResolution_ = function(
+    x, y, resolution, reverseIntersectionPolicy, opt_tileCoord) {
+  var z = this.getZForResolution(resolution);
+  var scale = resolution / this.getResolution(z);
+  var origin = this.getOrigin(z);
+  var tileSize = this.getTileSize(z);
+
+  var tileCoordX = scale * (x - origin[0]) / (resolution * tileSize);
+  var tileCoordY = scale * (y - origin[1]) / (resolution * tileSize);
+
+  if (reverseIntersectionPolicy) {
+    tileCoordX = Math.ceil(tileCoordX) - 1;
+    tileCoordY = Math.ceil(tileCoordY) - 1;
+  } else {
+    tileCoordX = Math.floor(tileCoordX);
+    tileCoordY = Math.floor(tileCoordY);
+  }
+
+  return ol.tilecoord.createOrUpdate(z, tileCoordX, tileCoordY, opt_tileCoord);
+};
+
+
+/**
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {number} z Z.
+ * @param {ol.TileCoord=} opt_tileCoord Destination ol.TileCoord object.
+ * @return {ol.TileCoord} Tile coordinate.
+ * @api
+ */
+ol.tilegrid.TileGrid.prototype.getTileCoordForCoordAndZ =
+    function(coordinate, z, opt_tileCoord) {
+  var resolution = this.getResolution(z);
+  return this.getTileCoordForXYAndResolution_(
+      coordinate[0], coordinate[1], resolution, false, opt_tileCoord);
+};
+
+
+/**
+ * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @return {number} Tile resolution.
+ */
+ol.tilegrid.TileGrid.prototype.getTileCoordResolution = function(tileCoord) {
+  goog.asserts.assert(
+      this.minZoom <= tileCoord[0] && tileCoord[0] <= this.maxZoom);
+  return this.resolutions_[tileCoord[0]];
+};
+
+
+/**
+ * @param {number} z Zoom level.
+ * @param {ol.proj.Projection} projection Projection.
+ * @param {ol.TileRange=} opt_tileRange Tile range.
+ * @return {ol.TileRange} Tile range.
+ */
+ol.tilegrid.TileGrid.prototype.getTileRange =
+    function(z, projection, opt_tileRange) {
+  var projectionExtentTileRange = this.getTileRangeForExtentAndZ(
+      ol.tilegrid.extentFromProjection(projection), z);
+  var width = this.getWidth(z);
+  if (!goog.isDef(width)) {
+    width = projectionExtentTileRange.getWidth();
+  }
+  return ol.TileRange.createOrUpdate(
+      0, width - 1, 0, projectionExtentTileRange.getHeight(), opt_tileRange);
+};
+
+
+/**
+ * @param {number} z Z.
+ * @return {number} Tile size.
+ * @api stable
+ */
+ol.tilegrid.TileGrid.prototype.getTileSize = function(z) {
+  if (goog.isDef(this.tileSize_)) {
+    return this.tileSize_;
+  } else {
+    goog.asserts.assert(!goog.isNull(this.tileSizes_));
+    goog.asserts.assert(this.minZoom <= z && z <= this.maxZoom);
+    return this.tileSizes_[z];
+  }
+};
+
+
+/**
+ * @param {number} z Zoom level.
+ * @return {number|undefined} Width for the specified zoom level or `undefined`
+ *     if unknown.
+ */
+ol.tilegrid.TileGrid.prototype.getWidth = function(z) {
+  if (!goog.isNull(this.widths_)) {
+    goog.asserts.assert(this.minZoom <= z && z <= this.maxZoom);
+    return this.widths_[z];
+  }
+};
+
+
+/**
+ * @param {number} resolution Resolution.
+ * @return {number} Z.
+ */
+ol.tilegrid.TileGrid.prototype.getZForResolution = function(resolution) {
+  var z = ol.array.linearFindNearest(this.resolutions_, resolution, 0);
+  return goog.math.clamp(z, this.minZoom, this.maxZoom);
+};
+
+
+/**
+ * @param {number} z Zoom level.
+ * @param {ol.proj.Projection} projection Projection.
+ * @return {boolean} Whether the tile grid is defined for the whole globe when
+ *     used with the provided `projection` at zoom level `z`.
+ */
+ol.tilegrid.TileGrid.prototype.isGlobal = function(z, projection) {
+  var width = this.getWidth(z);
+  if (goog.isDef(width)) {
+    var projTileGrid = ol.tilegrid.getForProjection(projection);
+    var projExtent = projection.getExtent();
+    return this.getTileSize(z) * width ==
+        projTileGrid.getTileSize(z) *
+        projTileGrid.getTileRangeForExtentAndZ(projExtent, z).getWidth();
+  } else {
+    return projection.isGlobal();
+  }
+};
+
+
+/**
+ * @param {ol.proj.Projection} projection Projection.
+ * @return {ol.tilegrid.TileGrid} Default tile grid for the passed projection.
+ */
+ol.tilegrid.getForProjection = function(projection) {
+  var tileGrid = projection.getDefaultTileGrid();
+  if (goog.isNull(tileGrid)) {
+    tileGrid = ol.tilegrid.createForProjection(projection);
+    projection.setDefaultTileGrid(tileGrid);
+  }
+  return tileGrid;
+};
+
+
+/**
+ * @param {ol.Extent} extent Extent.
+ * @param {number=} opt_maxZoom Maximum zoom level (default is
+ *     ol.DEFAULT_MAX_ZOOM).
+ * @param {number=} opt_tileSize Tile size (default uses ol.DEFAULT_TILE_SIZE).
+ * @param {ol.extent.Corner=} opt_corner Extent corner (default is
+ *     ol.extent.Corner.BOTTOM_LEFT).
+ * @return {ol.tilegrid.TileGrid} TileGrid instance.
+ */
+ol.tilegrid.createForExtent =
+    function(extent, opt_maxZoom, opt_tileSize, opt_corner) {
+  var tileSize = goog.isDef(opt_tileSize) ?
+      opt_tileSize : ol.DEFAULT_TILE_SIZE;
+
+  var corner = goog.isDef(opt_corner) ?
+      opt_corner : ol.extent.Corner.BOTTOM_LEFT;
+
+  var resolutions = ol.tilegrid.resolutionsFromExtent(
+      extent, opt_maxZoom, tileSize);
+
+  var widths = new Array(resolutions.length);
+  var extentWidth = ol.extent.getWidth(extent);
+  for (var z = resolutions.length - 1; z >= 0; --z) {
+    widths[z] = extentWidth / tileSize / resolutions[z];
+  }
+
+  return new ol.tilegrid.TileGrid({
+    origin: ol.extent.getCorner(extent, corner),
+    resolutions: resolutions,
+    tileSize: tileSize,
+    widths: widths
+  });
+};
+
+
+/**
+ * Create a resolutions array from an extent.  A zoom factor of 2 is assumed.
+ * @param {ol.Extent} extent Extent.
+ * @param {number=} opt_maxZoom Maximum zoom level (default is
+ *     ol.DEFAULT_MAX_ZOOM).
+ * @param {number=} opt_tileSize Tile size (default uses ol.DEFAULT_TILE_SIZE).
+ * @return {!Array.<number>} Resolutions array.
+ */
+ol.tilegrid.resolutionsFromExtent =
+    function(extent, opt_maxZoom, opt_tileSize) {
+  var maxZoom = goog.isDef(opt_maxZoom) ?
+      opt_maxZoom : ol.DEFAULT_MAX_ZOOM;
+
+  var height = ol.extent.getHeight(extent);
+  var width = ol.extent.getWidth(extent);
+
+  var tileSize = goog.isDef(opt_tileSize) ?
+      opt_tileSize : ol.DEFAULT_TILE_SIZE;
+  var maxResolution = Math.max(
+      width / tileSize, height / tileSize);
+
+  var length = maxZoom + 1;
+  var resolutions = new Array(length);
+  for (var z = 0; z < length; ++z) {
+    resolutions[z] = maxResolution / Math.pow(2, z);
+  }
+  return resolutions;
+};
+
+
+/**
+ * @param {ol.proj.ProjectionLike} projection Projection.
+ * @param {number=} opt_maxZoom Maximum zoom level (default is
+ *     ol.DEFAULT_MAX_ZOOM).
+ * @param {number=} opt_tileSize Tile size (default uses ol.DEFAULT_TILE_SIZE).
+ * @param {ol.extent.Corner=} opt_corner Extent corner (default is
+ *     ol.extent.Corner.BOTTOM_LEFT).
+ * @return {ol.tilegrid.TileGrid} TileGrid instance.
+ */
+ol.tilegrid.createForProjection =
+    function(projection, opt_maxZoom, opt_tileSize, opt_corner) {
+  var extent = ol.tilegrid.extentFromProjection(projection);
+  return ol.tilegrid.createForExtent(
+      extent, opt_maxZoom, opt_tileSize, opt_corner);
+};
+
+
+/**
+ * Generate a tile grid extent from a projection.  If the projection has an
+ * extent, it is used.  If not, a global extent is assumed.
+ * @param {ol.proj.ProjectionLike} projection Projection.
+ * @return {ol.Extent} Extent.
+ */
+ol.tilegrid.extentFromProjection = function(projection) {
+  projection = ol.proj.get(projection);
+  var extent = projection.getExtent();
+  if (goog.isNull(extent)) {
+    var half = 180 * ol.proj.METERS_PER_UNIT[ol.proj.Units.DEGREES] /
+        projection.getMetersPerUnit();
+    extent = ol.extent.createOrUpdate(-half, -half, half, half);
+  }
+  return extent;
+};
+goog.exportProperty(ol.tilegrid.TileGrid.prototype, 'getTileRangeForExtentAndZ',
+    ol.tilegrid.TileGrid.prototype.getTileRangeForExtentAndZ);
+goog.exportProperty(ol.tilegrid.TileGrid.prototype, 'getResolutions',
+    ol.tilegrid.TileGrid.prototype.getResolutions);
+
+
+goog.provide('ol.source.Tile');
+goog.provide('ol.source.TileOptions');
+
+goog.require('goog.events.Event');
+goog.require('ol.Attribution');
+goog.require('ol.Extent');
+goog.require('ol.TileCache');
+goog.require('ol.TileRange');
+goog.require('ol.TileState');
+goog.require('ol.source.Source');
+goog.require('ol.tilecoord');
+goog.require('ol.tilegrid.TileGrid');
+
+
+/**
+ * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
+ *            extent: (ol.Extent|undefined),
+ *            logo: (string|olx.LogoOptions|undefined),
+ *            opaque: (boolean|undefined),
+ *            tilePixelRatio: (number|undefined),
+ *            projection: ol.proj.ProjectionLike,
+ *            state: (ol.source.State|undefined),
+ *            tileGrid: (ol.tilegrid.TileGrid|undefined),
+ *            wrapX: (boolean|undefined)}}
+ */
+ol.source.TileOptions;
+
+
+
+/**
+ * @classdesc
+ * Abstract base class; normally only used for creating subclasses and not
+ * instantiated in apps.
+ * Base class for sources providing images divided into a tile grid.
+ *
+ * @constructor
+ * @extends {ol.source.Source}
+ * @param {ol.source.TileOptions} options Tile source options.
+ * @api
+ */
+ol.source.Tile = function(options) {
+
+  goog.base(this, {
+    attributions: options.attributions,
+    extent: options.extent,
+    logo: options.logo,
+    projection: options.projection,
+    state: options.state
+  });
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.opaque_ = goog.isDef(options.opaque) ? options.opaque : false;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.tilePixelRatio_ = goog.isDef(options.tilePixelRatio) ?
+      options.tilePixelRatio : 1;
+
+  /**
+   * @protected
+   * @type {ol.tilegrid.TileGrid}
+   */
+  this.tileGrid = goog.isDef(options.tileGrid) ? options.tileGrid : null;
+
+  /**
+   * @protected
+   * @type {ol.TileCache}
+   */
+  this.tileCache = new ol.TileCache();
+
+  /**
+   * @private
+   * @type {boolean|undefined}
+   */
+  this.wrapX_ = options.wrapX;
+
+};
+goog.inherits(ol.source.Tile, ol.source.Source);
+
+
+/**
+ * @return {boolean} Can expire cache.
+ */
+ol.source.Tile.prototype.canExpireCache = function() {
+  return this.tileCache.canExpireCache();
+};
+
+
+/**
+ * @param {Object.<string, ol.TileRange>} usedTiles Used tiles.
+ */
+ol.source.Tile.prototype.expireCache = function(usedTiles) {
+  this.tileCache.expireCache(usedTiles);
+};
+
+
+/**
+ * @param {number} z Zoom level.
+ * @param {ol.TileRange} tileRange Tile range.
+ * @param {function(ol.Tile):(boolean|undefined)} callback Called with each
+ *     loaded tile.  If the callback returns `false`, the tile will not be
+ *     considered loaded.
+ * @return {boolean} The tile range is fully covered with loaded tiles.
+ */
+ol.source.Tile.prototype.forEachLoadedTile = function(z, tileRange, callback) {
+  var covered = true;
+  var tile, tileCoordKey, loaded;
+  for (var x = tileRange.minX; x <= tileRange.maxX; ++x) {
+    for (var y = tileRange.minY; y <= tileRange.maxY; ++y) {
+      tileCoordKey = this.getKeyZXY(z, x, y);
+      loaded = false;
+      if (this.tileCache.containsKey(tileCoordKey)) {
+        tile = /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
+        loaded = tile.getState() === ol.TileState.LOADED;
+        if (loaded) {
+          loaded = (callback(tile) !== false);
+        }
+      }
+      if (!loaded) {
+        covered = false;
+      }
+    }
+  }
+  return covered;
+};
+
+
+/**
+ * @return {number} Gutter.
+ */
+ol.source.Tile.prototype.getGutter = function() {
+  return 0;
+};
+
+
+/**
+ * @param {number} z Z.
+ * @param {number} x X.
+ * @param {number} y Y.
+ * @return {string} Key.
+ * @protected
+ */
+ol.source.Tile.prototype.getKeyZXY = ol.tilecoord.getKeyZXY;
+
+
+/**
+ * @return {boolean} Opaque.
+ */
+ol.source.Tile.prototype.getOpaque = function() {
+  return this.opaque_;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.source.Tile.prototype.getResolutions = function() {
+  return this.tileGrid.getResolutions();
+};
+
+
+/**
+ * @param {number} z Tile coordinate z.
+ * @param {number} x Tile coordinate x.
+ * @param {number} y Tile coordinate y.
+ * @param {number} pixelRatio Pixel ratio.
+ * @param {ol.proj.Projection=} opt_projection Projection.
+ * @return {!ol.Tile} Tile.
+ */
+ol.source.Tile.prototype.getTile = goog.abstractMethod;
+
+
+/**
+ * @return {ol.tilegrid.TileGrid} Tile grid.
+ * @api stable
+ */
+ol.source.Tile.prototype.getTileGrid = function() {
+  return this.tileGrid;
+};
+
+
+/**
+ * @param {ol.proj.Projection} projection Projection.
+ * @return {ol.tilegrid.TileGrid} Tile grid.
+ */
+ol.source.Tile.prototype.getTileGridForProjection = function(projection) {
+  if (goog.isNull(this.tileGrid)) {
+    return ol.tilegrid.getForProjection(projection);
+  } else {
+    return this.tileGrid;
+  }
+};
+
+
+/**
+ * @param {number} z Z.
+ * @param {number} pixelRatio Pixel ratio.
+ * @param {ol.proj.Projection} projection Projection.
+ * @return {number} Tile size.
+ */
+ol.source.Tile.prototype.getTilePixelSize =
+    function(z, pixelRatio, projection) {
+  var tileGrid = this.getTileGridForProjection(projection);
+  return tileGrid.getTileSize(z) * this.tilePixelRatio_;
+};
+
+
+/**
+ * Handles x-axis wrapping. When `this.wrapX_` is undefined or the projection
+ * is not a global projection, `tileCoord` will be returned unaltered. When
+ * `this.wrapX_` is true, the tile coordinate will be wrapped horizontally.
+ * When `this.wrapX_` is `false`, `null` will be returned for tiles that are
+ * outside the projection extent.
+ * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @param {ol.proj.Projection=} opt_projection Projection.
+ * @return {ol.TileCoord} Tile coordinate.
+ */
+ol.source.Tile.prototype.getWrapXTileCoord =
+    function(tileCoord, opt_projection) {
+  var projection = goog.isDef(opt_projection) ?
+      opt_projection : this.getProjection();
+  var tileGrid = this.getTileGridForProjection(projection);
+  if (goog.isDef(this.wrapX_) && tileGrid.isGlobal(tileCoord[0], projection)) {
+    return this.wrapX_ ?
+        ol.tilecoord.wrapX(tileCoord, tileGrid, projection) :
+        ol.tilecoord.clipX(tileCoord, tileGrid, projection);
+  } else {
+    return tileCoord;
+  }
+};
+
+
+/**
+ * Marks a tile coord as being used, without triggering a load.
+ * @param {number} z Tile coordinate z.
+ * @param {number} x Tile coordinate x.
+ * @param {number} y Tile coordinate y.
+ */
+ol.source.Tile.prototype.useTile = goog.nullFunction;
+
+
+
+/**
+ * @classdesc
+ * Events emitted by {@link ol.source.Tile} instances are instances of this
+ * type.
+ *
+ * @constructor
+ * @extends {goog.events.Event}
+ * @implements {oli.source.TileEvent}
+ * @param {string} type Type.
+ * @param {ol.Tile} tile The tile.
+ */
+ol.source.TileEvent = function(type, tile) {
+
+  goog.base(this, type);
+
+  /**
+   * The tile related to the event.
+   * @type {ol.Tile}
+   * @api
+   */
+  this.tile = tile;
+
+};
+goog.inherits(ol.source.TileEvent, goog.events.Event);
+
+
+/**
+ * @enum {string}
+ */
+ol.source.TileEventType = {
+
+  /**
+   * Triggered when a tile starts loading.
+   * @event ol.source.TileEvent#tileloadstart
+   * @api
+   */
+  TILELOADSTART: 'tileloadstart',
+
+  /**
+   * Triggered when a tile finishes loading.
+   * @event ol.source.TileEvent#tileloadend
+   * @api
+   */
+  TILELOADEND: 'tileloadend',
+
+  /**
+   * Triggered if tile loading results in an error.
+   * @event ol.source.TileEvent#tileloaderror
+   * @api
+   */
+  TILELOADERROR: 'tileloaderror'
+
+};
+
 // FIXME handle date line wrap
 
 goog.provide('ol.control.Attribution');
 
+goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
@@ -33865,6 +35435,7 @@ goog.require('goog.style');
 goog.require('ol.Attribution');
 goog.require('ol.control.Control');
 goog.require('ol.css');
+goog.require('ol.source.Tile');
 
 
 
@@ -34011,11 +35582,14 @@ goog.inherits(ol.control.Attribution, ol.control.Control);
 ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
   var i, ii, j, jj, tileRanges, source, sourceAttribution,
       sourceAttributionKey, sourceAttributions, sourceKey;
+  var intersectsTileRange;
   var layerStatesArray = frameState.layerStatesArray;
   /** @type {Object.<string, ol.Attribution>} */
   var attributions = goog.object.clone(frameState.attributions);
   /** @type {Object.<string, ol.Attribution>} */
   var hiddenAttributions = {};
+  var projection = frameState.viewState.projection;
+  goog.asserts.assert(!goog.isNull(projection));
   for (i = 0, ii = layerStatesArray.length; i < ii; i++) {
     source = layerStatesArray[i].layer.getSource();
     if (goog.isNull(source)) {
@@ -34033,14 +35607,21 @@ ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
         continue;
       }
       tileRanges = frameState.usedTiles[sourceKey];
-      if (goog.isDef(tileRanges) &&
-          sourceAttribution.intersectsAnyTileRange(tileRanges)) {
+      if (goog.isDef(tileRanges)) {
+        goog.asserts.assertInstanceof(source, ol.source.Tile);
+        var tileGrid = source.getTileGridForProjection(projection);
+        goog.asserts.assert(!goog.isNull(tileGrid));
+        intersectsTileRange = sourceAttribution.intersectsAnyTileRange(
+            tileRanges, tileGrid, projection);
+      } else {
+        intersectsTileRange = false;
+      }
+      if (intersectsTileRange) {
         if (sourceAttributionKey in hiddenAttributions) {
           delete hiddenAttributions[sourceAttributionKey];
         }
         attributions[sourceAttributionKey] = sourceAttribution;
-      }
-      else {
+      } else {
         hiddenAttributions[sourceAttributionKey] = sourceAttribution;
       }
     }
@@ -34753,6 +36334,7 @@ goog.provide('ol.control.FullScreen');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.dom.classlist');
 goog.require('goog.dom.fullscreen');
 goog.require('goog.dom.fullscreen.EventType');
 goog.require('goog.events');
@@ -34888,10 +36470,15 @@ ol.control.FullScreen.prototype.handleFullScreen_ = function() {
  * @private
  */
 ol.control.FullScreen.prototype.handleFullScreenChange_ = function() {
+  var opened = this.cssClassName_ + '-true';
+  var closed = this.cssClassName_ + '-false';
+  var button = goog.dom.getFirstElementChild(this.element);
   var map = this.getMap();
   if (goog.dom.fullscreen.isFullScreen()) {
+    goog.dom.classlist.swap(button, closed, opened);
     goog.dom.replaceNode(this.labelActiveNode_, this.labelNode_);
   } else {
+    goog.dom.classlist.swap(button, opened, closed);
     goog.dom.replaceNode(this.labelNode_, this.labelActiveNode_);
   }
   if (!goog.isNull(map)) {
@@ -45199,172 +46786,6 @@ ol.MapBrowserEvent.EventType = {
   POINTERCANCEL: 'pointercancel'
 };
 
-goog.provide('ol.source.Source');
-goog.provide('ol.source.State');
-
-goog.require('goog.events.EventType');
-goog.require('ol.Attribution');
-goog.require('ol.Object');
-goog.require('ol.proj');
-
-
-/**
- * State of the source, one of 'undefined', 'loading', 'ready' or 'error'.
- * @enum {string}
- * @api
- */
-ol.source.State = {
-  UNDEFINED: 'undefined',
-  LOADING: 'loading',
-  READY: 'ready',
-  ERROR: 'error'
-};
-
-
-/**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *            logo: (string|olx.LogoOptions|undefined),
- *            projection: ol.proj.ProjectionLike,
- *            state: (ol.source.State|undefined)}}
- */
-ol.source.SourceOptions;
-
-
-
-/**
- * @classdesc
- * Abstract base class; normally only used for creating subclasses and not
- * instantiated in apps.
- * Base class for {@link ol.layer.Layer} sources.
- *
- * @constructor
- * @extends {ol.Object}
- * @fires change Triggered when the state of the source changes.
- * @param {ol.source.SourceOptions} options Source options.
- * @api stable
- */
-ol.source.Source = function(options) {
-
-  goog.base(this);
-
-  /**
-   * @private
-   * @type {ol.proj.Projection}
-   */
-  this.projection_ = ol.proj.get(options.projection);
-
-  /**
-   * @private
-   * @type {Array.<ol.Attribution>}
-   */
-  this.attributions_ = goog.isDef(options.attributions) ?
-      options.attributions : null;
-
-  /**
-   * @private
-   * @type {string|olx.LogoOptions|undefined}
-   */
-  this.logo_ = options.logo;
-
-  /**
-   * @private
-   * @type {ol.source.State}
-   */
-  this.state_ = goog.isDef(options.state) ?
-      options.state : ol.source.State.READY;
-
-};
-goog.inherits(ol.source.Source, ol.Object);
-
-
-/**
- * @param {ol.Coordinate} coordinate Coordinate.
- * @param {number} resolution Resolution.
- * @param {number} rotation Rotation.
- * @param {Object.<string, boolean>} skippedFeatureUids Skipped feature uids.
- * @param {function(ol.Feature): T} callback Feature callback.
- * @return {T|undefined} Callback result.
- * @template T
- */
-ol.source.Source.prototype.forEachFeatureAtCoordinate =
-    goog.nullFunction;
-
-
-/**
- * @return {Array.<ol.Attribution>} Attributions.
- * @api stable
- */
-ol.source.Source.prototype.getAttributions = function() {
-  return this.attributions_;
-};
-
-
-/**
- * @return {string|olx.LogoOptions|undefined} Logo.
- * @api stable
- */
-ol.source.Source.prototype.getLogo = function() {
-  return this.logo_;
-};
-
-
-/**
- * @return {ol.proj.Projection} Projection.
- * @api
- */
-ol.source.Source.prototype.getProjection = function() {
-  return this.projection_;
-};
-
-
-/**
- * @return {Array.<number>|undefined} Resolutions.
- */
-ol.source.Source.prototype.getResolutions = goog.abstractMethod;
-
-
-/**
- * @return {ol.source.State} State.
- * @api
- */
-ol.source.Source.prototype.getState = function() {
-  return this.state_;
-};
-
-
-/**
- * @param {Array.<ol.Attribution>} attributions Attributions.
- */
-ol.source.Source.prototype.setAttributions = function(attributions) {
-  this.attributions_ = attributions;
-};
-
-
-/**
- * @param {string|olx.LogoOptions|undefined} logo Logo.
- */
-ol.source.Source.prototype.setLogo = function(logo) {
-  this.logo_ = logo;
-};
-
-
-/**
- * @param {ol.source.State} state State.
- * @protected
- */
-ol.source.Source.prototype.setState = function(state) {
-  this.state_ = state;
-  this.changed();
-};
-
-
-/**
- * @param {ol.proj.Projection} projection Projetion.
- */
-ol.source.Source.prototype.setProjection = function(projection) {
-  this.projection_ = projection;
-};
-
 goog.provide('ol.layer.Base');
 goog.provide('ol.layer.LayerProperty');
 goog.provide('ol.layer.LayerState');
@@ -46068,1201 +47489,6 @@ ol.ImageBase.prototype.getState = function() {
  */
 ol.ImageBase.prototype.load = goog.abstractMethod;
 
-goog.provide('ol.Tile');
-goog.provide('ol.TileState');
-
-goog.require('goog.events');
-goog.require('goog.events.EventTarget');
-goog.require('goog.events.EventType');
-goog.require('ol.TileCoord');
-
-
-/**
- * @enum {number}
- */
-ol.TileState = {
-  IDLE: 0,
-  LOADING: 1,
-  LOADED: 2,
-  ERROR: 3,
-  EMPTY: 4
-};
-
-
-
-/**
- * @classdesc
- * Base class for tiles.
- *
- * @constructor
- * @extends {goog.events.EventTarget}
- * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @param {ol.TileState} state State.
- */
-ol.Tile = function(tileCoord, state) {
-
-  goog.base(this);
-
-  /**
-   * @type {ol.TileCoord}
-   */
-  this.tileCoord = tileCoord;
-
-  /**
-   * @protected
-   * @type {ol.TileState}
-   */
-  this.state = state;
-
-};
-goog.inherits(ol.Tile, goog.events.EventTarget);
-
-
-/**
- * @protected
- */
-ol.Tile.prototype.changed = function() {
-  this.dispatchEvent(goog.events.EventType.CHANGE);
-};
-
-
-/**
- * @function
- * @param {Object=} opt_context Object.
- * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
- */
-ol.Tile.prototype.getImage = goog.abstractMethod;
-
-
-/**
- * @return {string} Key.
- */
-ol.Tile.prototype.getKey = function() {
-  return goog.getUid(this).toString();
-};
-
-
-/**
- * @return {ol.TileCoord}
- * @api
- */
-ol.Tile.prototype.getTileCoord = function() {
-  return this.tileCoord;
-};
-
-
-/**
- * @return {ol.TileState} State.
- */
-ol.Tile.prototype.getState = function() {
-  return this.state;
-};
-
-
-/**
- * FIXME empty description for jsdoc
- */
-ol.Tile.prototype.load = goog.abstractMethod;
-
-goog.provide('ol.structs.LRUCache');
-
-goog.require('goog.asserts');
-goog.require('goog.object');
-
-
-
-/**
- * Implements a Least-Recently-Used cache where the keys do not conflict with
- * Object's properties (e.g. 'hasOwnProperty' is not allowed as a key). Expiring
- * items from the cache is the responsibility of the user.
- * @constructor
- * @struct
- * @template T
- */
-ol.structs.LRUCache = function() {
-
-  /**
-   * @private
-   * @type {number}
-   */
-  this.count_ = 0;
-
-  /**
-   * @private
-   * @type {Object.<string, ol.structs.LRUCacheEntry>}
-   */
-  this.entries_ = {};
-
-  /**
-   * @private
-   * @type {?ol.structs.LRUCacheEntry}
-   */
-  this.oldest_ = null;
-
-  /**
-   * @private
-   * @type {?ol.structs.LRUCacheEntry}
-   */
-  this.newest_ = null;
-
-};
-
-
-/**
- * FIXME empty description for jsdoc
- */
-ol.structs.LRUCache.prototype.assertValid = function() {
-  if (this.count_ === 0) {
-    goog.asserts.assert(goog.object.isEmpty(this.entries_));
-    goog.asserts.assert(goog.isNull(this.oldest_));
-    goog.asserts.assert(goog.isNull(this.newest_));
-  } else {
-    goog.asserts.assert(goog.object.getCount(this.entries_) == this.count_);
-    goog.asserts.assert(!goog.isNull(this.oldest_));
-    goog.asserts.assert(goog.isNull(this.oldest_.older));
-    goog.asserts.assert(!goog.isNull(this.newest_));
-    goog.asserts.assert(goog.isNull(this.newest_.newer));
-    var i, entry;
-    var older = null;
-    i = 0;
-    for (entry = this.oldest_; !goog.isNull(entry); entry = entry.newer) {
-      goog.asserts.assert(entry.older === older);
-      older = entry;
-      ++i;
-    }
-    goog.asserts.assert(i == this.count_);
-    var newer = null;
-    i = 0;
-    for (entry = this.newest_; !goog.isNull(entry); entry = entry.older) {
-      goog.asserts.assert(entry.newer === newer);
-      newer = entry;
-      ++i;
-    }
-    goog.asserts.assert(i == this.count_);
-  }
-};
-
-
-/**
- * FIXME empty description for jsdoc
- */
-ol.structs.LRUCache.prototype.clear = function() {
-  this.count_ = 0;
-  this.entries_ = {};
-  this.oldest_ = null;
-  this.newest_ = null;
-};
-
-
-/**
- * @param {string} key Key.
- * @return {boolean} Contains key.
- */
-ol.structs.LRUCache.prototype.containsKey = function(key) {
-  return this.entries_.hasOwnProperty(key);
-};
-
-
-/**
- * @param {function(this: S, T, string, ol.structs.LRUCache): ?} f The function
- *     to call for every entry from the oldest to the newer. This function takes
- *     3 arguments (the entry value, the entry key and the LRUCache object).
- *     The return value is ignored.
- * @param {S=} opt_this The object to use as `this` in `f`.
- * @template S
- */
-ol.structs.LRUCache.prototype.forEach = function(f, opt_this) {
-  var entry = this.oldest_;
-  while (!goog.isNull(entry)) {
-    f.call(opt_this, entry.value_, entry.key_, this);
-    entry = entry.newer;
-  }
-};
-
-
-/**
- * @param {string} key Key.
- * @return {T} Value.
- */
-ol.structs.LRUCache.prototype.get = function(key) {
-  var entry = this.entries_[key];
-  goog.asserts.assert(goog.isDef(entry));
-  if (entry === this.newest_) {
-    return entry.value_;
-  } else if (entry === this.oldest_) {
-    this.oldest_ = this.oldest_.newer;
-    this.oldest_.older = null;
-  } else {
-    entry.newer.older = entry.older;
-    entry.older.newer = entry.newer;
-  }
-  entry.newer = null;
-  entry.older = this.newest_;
-  this.newest_.newer = entry;
-  this.newest_ = entry;
-  return entry.value_;
-};
-
-
-/**
- * @return {number} Count.
- */
-ol.structs.LRUCache.prototype.getCount = function() {
-  return this.count_;
-};
-
-
-/**
- * @return {Array.<string>} Keys.
- */
-ol.structs.LRUCache.prototype.getKeys = function() {
-  var keys = new Array(this.count_);
-  var i = 0;
-  var entry;
-  for (entry = this.newest_; !goog.isNull(entry); entry = entry.older) {
-    keys[i++] = entry.key_;
-  }
-  goog.asserts.assert(i == this.count_);
-  return keys;
-};
-
-
-/**
- * @return {Array.<T>} Values.
- */
-ol.structs.LRUCache.prototype.getValues = function() {
-  var values = new Array(this.count_);
-  var i = 0;
-  var entry;
-  for (entry = this.newest_; !goog.isNull(entry); entry = entry.older) {
-    values[i++] = entry.value_;
-  }
-  goog.asserts.assert(i == this.count_);
-  return values;
-};
-
-
-/**
- * @return {T} Last value.
- */
-ol.structs.LRUCache.prototype.peekLast = function() {
-  goog.asserts.assert(!goog.isNull(this.oldest_));
-  return this.oldest_.value_;
-};
-
-
-/**
- * @return {string} Last key.
- */
-ol.structs.LRUCache.prototype.peekLastKey = function() {
-  goog.asserts.assert(!goog.isNull(this.oldest_));
-  return this.oldest_.key_;
-};
-
-
-/**
- * @return {T} value Value.
- */
-ol.structs.LRUCache.prototype.pop = function() {
-  goog.asserts.assert(!goog.isNull(this.oldest_));
-  goog.asserts.assert(!goog.isNull(this.newest_));
-  var entry = this.oldest_;
-  goog.asserts.assert(entry.key_ in this.entries_);
-  delete this.entries_[entry.key_];
-  if (!goog.isNull(entry.newer)) {
-    entry.newer.older = null;
-  }
-  this.oldest_ = entry.newer;
-  if (goog.isNull(this.oldest_)) {
-    this.newest_ = null;
-  }
-  --this.count_;
-  return entry.value_;
-};
-
-
-/**
- * @param {string} key Key.
- * @param {T} value Value.
- */
-ol.structs.LRUCache.prototype.set = function(key, value) {
-  goog.asserts.assert(!(key in {}));
-  goog.asserts.assert(!(key in this.entries_));
-  var entry = {
-    key_: key,
-    newer: null,
-    older: this.newest_,
-    value_: value
-  };
-  if (goog.isNull(this.newest_)) {
-    this.oldest_ = entry;
-  } else {
-    this.newest_.newer = entry;
-  }
-  this.newest_ = entry;
-  this.entries_[key] = entry;
-  ++this.count_;
-};
-
-
-/**
- * @typedef {{key_: string,
- *            newer: ol.structs.LRUCacheEntry,
- *            older: ol.structs.LRUCacheEntry,
- *            value_: *}}
- */
-ol.structs.LRUCacheEntry;
-
-goog.provide('ol.TileCache');
-
-goog.require('ol');
-goog.require('ol.TileRange');
-goog.require('ol.structs.LRUCache');
-goog.require('ol.tilecoord');
-
-
-
-/**
- * @constructor
- * @extends {ol.structs.LRUCache.<ol.Tile>}
- * @param {number=} opt_highWaterMark High water mark.
- * @struct
- */
-ol.TileCache = function(opt_highWaterMark) {
-
-  goog.base(this);
-
-  /**
-   * @private
-   * @type {number}
-   */
-  this.highWaterMark_ = goog.isDef(opt_highWaterMark) ?
-      opt_highWaterMark : ol.DEFAULT_TILE_CACHE_HIGH_WATER_MARK;
-
-};
-goog.inherits(ol.TileCache, ol.structs.LRUCache);
-
-
-/**
- * @return {boolean} Can expire cache.
- */
-ol.TileCache.prototype.canExpireCache = function() {
-  return this.getCount() > this.highWaterMark_;
-};
-
-
-/**
- * @param {Object.<string, ol.TileRange>} usedTiles Used tiles.
- */
-ol.TileCache.prototype.expireCache = function(usedTiles) {
-  var tile, zKey;
-  while (this.canExpireCache()) {
-    tile = /** @type {ol.Tile} */ (this.peekLast());
-    zKey = tile.tileCoord[0].toString();
-    if (zKey in usedTiles && usedTiles[zKey].contains(tile.tileCoord)) {
-      break;
-    } else {
-      this.pop().dispose();
-    }
-  }
-};
-
-
-/**
- * Remove a tile range from the cache, e.g. to invalidate tiles.
- * @param {ol.TileRange} tileRange The tile range to prune.
- */
-ol.TileCache.prototype.pruneTileRange = function(tileRange) {
-  var i = this.getCount(),
-      key;
-  while (i--) {
-    key = this.peekLastKey();
-    if (tileRange.contains(ol.tilecoord.createFromString(key))) {
-      this.pop().dispose();
-    } else {
-      this.get(key);
-    }
-  }
-};
-
-goog.provide('ol.tilegrid.TileGrid');
-
-goog.require('goog.array');
-goog.require('goog.asserts');
-goog.require('goog.functions');
-goog.require('ol');
-goog.require('ol.Coordinate');
-goog.require('ol.TileCoord');
-goog.require('ol.TileRange');
-goog.require('ol.array');
-goog.require('ol.extent');
-goog.require('ol.extent.Corner');
-goog.require('ol.proj');
-goog.require('ol.proj.METERS_PER_UNIT');
-goog.require('ol.proj.Projection');
-goog.require('ol.proj.Units');
-goog.require('ol.tilecoord');
-
-
-
-/**
- * @classdesc
- * Base class for setting the grid pattern for sources accessing tiled-image
- * servers.
- *
- * @constructor
- * @param {olx.tilegrid.TileGridOptions} options Tile grid options.
- * @struct
- * @api stable
- */
-ol.tilegrid.TileGrid = function(options) {
-
-  /**
-   * @protected
-   * @type {number}
-   */
-  this.minZoom = goog.isDef(options.minZoom) ? options.minZoom : 0;
-
-  /**
-   * @private
-   * @type {!Array.<number>}
-   */
-  this.resolutions_ = options.resolutions;
-  goog.asserts.assert(goog.array.isSorted(this.resolutions_, function(a, b) {
-    return b - a;
-  }, true));
-
-  /**
-   * @protected
-   * @type {number}
-   */
-  this.maxZoom = this.resolutions_.length - 1;
-
-  /**
-   * @private
-   * @type {ol.Coordinate}
-   */
-  this.origin_ = goog.isDef(options.origin) ? options.origin : null;
-
-  /**
-   * @private
-   * @type {Array.<ol.Coordinate>}
-   */
-  this.origins_ = null;
-  if (goog.isDef(options.origins)) {
-    this.origins_ = options.origins;
-    goog.asserts.assert(this.origins_.length == this.maxZoom + 1);
-  }
-  goog.asserts.assert(
-      (goog.isNull(this.origin_) && !goog.isNull(this.origins_)) ||
-      (!goog.isNull(this.origin_) && goog.isNull(this.origins_)));
-
-  /**
-   * @private
-   * @type {Array.<number>}
-   */
-  this.tileSizes_ = null;
-  if (goog.isDef(options.tileSizes)) {
-    this.tileSizes_ = options.tileSizes;
-    goog.asserts.assert(this.tileSizes_.length == this.maxZoom + 1);
-  }
-
-  /**
-   * @private
-   * @type {number|undefined}
-   */
-  this.tileSize_ = goog.isDef(options.tileSize) ?
-      options.tileSize :
-      goog.isNull(this.tileSizes_) ? ol.DEFAULT_TILE_SIZE : undefined;
-  goog.asserts.assert(
-      (!goog.isDef(this.tileSize_) && !goog.isNull(this.tileSizes_)) ||
-      (goog.isDef(this.tileSize_) && goog.isNull(this.tileSizes_)));
-
-};
-
-
-/**
- * @private
- * @type {ol.TileCoord}
- */
-ol.tilegrid.TileGrid.tmpTileCoord_ = [0, 0, 0];
-
-
-/**
- * Returns the identity function. May be overridden in subclasses.
- * @param {{extent: (ol.Extent|undefined),
- *          wrapX: (boolean|undefined)}=} opt_options Options.
- * @return {function(ol.TileCoord, ol.proj.Projection, ol.TileCoord=):
- *     ol.TileCoord} Tile coordinate transform.
- */
-ol.tilegrid.TileGrid.prototype.createTileCoordTransform =
-    function(opt_options) {
-  return goog.functions.identity;
-};
-
-
-/**
- * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @param {function(this: T, number, ol.TileRange): boolean} callback Callback.
- * @param {T=} opt_this The object to use as `this` in `callback`.
- * @param {ol.TileRange=} opt_tileRange Temporary ol.TileRange object.
- * @param {ol.Extent=} opt_extent Temporary ol.Extent object.
- * @return {boolean} Callback succeeded.
- * @template T
- */
-ol.tilegrid.TileGrid.prototype.forEachTileCoordParentTileRange =
-    function(tileCoord, callback, opt_this, opt_tileRange, opt_extent) {
-  var tileCoordExtent = this.getTileCoordExtent(tileCoord, opt_extent);
-  var z = tileCoord[0] - 1;
-  while (z >= this.minZoom) {
-    if (callback.call(opt_this, z,
-        this.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange))) {
-      return true;
-    }
-    --z;
-  }
-  return false;
-};
-
-
-/**
- * @return {number} Max zoom.
- * @api
- */
-ol.tilegrid.TileGrid.prototype.getMaxZoom = function() {
-  return this.maxZoom;
-};
-
-
-/**
- * @return {number} Min zoom.
- * @api
- */
-ol.tilegrid.TileGrid.prototype.getMinZoom = function() {
-  return this.minZoom;
-};
-
-
-/**
- * @param {number} z Z.
- * @return {ol.Coordinate} Origin.
- * @api stable
- */
-ol.tilegrid.TileGrid.prototype.getOrigin = function(z) {
-  if (!goog.isNull(this.origin_)) {
-    return this.origin_;
-  } else {
-    goog.asserts.assert(!goog.isNull(this.origins_));
-    goog.asserts.assert(this.minZoom <= z && z <= this.maxZoom);
-    return this.origins_[z];
-  }
-};
-
-
-/**
- * @param {number} z Z.
- * @return {number} Resolution.
- * @api stable
- */
-ol.tilegrid.TileGrid.prototype.getResolution = function(z) {
-  goog.asserts.assert(this.minZoom <= z && z <= this.maxZoom);
-  return this.resolutions_[z];
-};
-
-
-/**
- * @return {Array.<number>} Resolutions.
- * @api stable
- */
-ol.tilegrid.TileGrid.prototype.getResolutions = function() {
-  return this.resolutions_;
-};
-
-
-/**
- * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @param {ol.TileRange=} opt_tileRange Temporary ol.TileRange object.
- * @param {ol.Extent=} opt_extent Temporary ol.Extent object.
- * @return {ol.TileRange} Tile range.
- */
-ol.tilegrid.TileGrid.prototype.getTileCoordChildTileRange =
-    function(tileCoord, opt_tileRange, opt_extent) {
-  if (tileCoord[0] < this.maxZoom) {
-    var tileCoordExtent = this.getTileCoordExtent(tileCoord, opt_extent);
-    return this.getTileRangeForExtentAndZ(
-        tileCoordExtent, tileCoord[0] + 1, opt_tileRange);
-  } else {
-    return null;
-  }
-};
-
-
-/**
- * @param {number} z Z.
- * @param {ol.TileRange} tileRange Tile range.
- * @param {ol.Extent=} opt_extent Temporary ol.Extent object.
- * @return {ol.Extent} Extent.
- */
-ol.tilegrid.TileGrid.prototype.getTileRangeExtent =
-    function(z, tileRange, opt_extent) {
-  var origin = this.getOrigin(z);
-  var resolution = this.getResolution(z);
-  var tileSize = this.getTileSize(z);
-  var minX = origin[0] + tileRange.minX * tileSize * resolution;
-  var maxX = origin[0] + (tileRange.maxX + 1) * tileSize * resolution;
-  var minY = origin[1] + tileRange.minY * tileSize * resolution;
-  var maxY = origin[1] + (tileRange.maxY + 1) * tileSize * resolution;
-  return ol.extent.createOrUpdate(minX, minY, maxX, maxY, opt_extent);
-};
-
-
-/**
- * @param {ol.Extent} extent Extent.
- * @param {number} resolution Resolution.
- * @param {ol.TileRange=} opt_tileRange Temporary tile range object.
- * @return {ol.TileRange} Tile range.
- */
-ol.tilegrid.TileGrid.prototype.getTileRangeForExtentAndResolution =
-    function(extent, resolution, opt_tileRange) {
-  var tileCoord = ol.tilegrid.TileGrid.tmpTileCoord_;
-  this.getTileCoordForXYAndResolution_(
-      extent[0], extent[1], resolution, false, tileCoord);
-  var minX = tileCoord[1];
-  var minY = tileCoord[2];
-  this.getTileCoordForXYAndResolution_(
-      extent[2], extent[3], resolution, true, tileCoord);
-  return ol.TileRange.createOrUpdate(
-      minX, tileCoord[1], minY, tileCoord[2], opt_tileRange);
-};
-
-
-/**
- * @param {ol.Extent} extent Extent.
- * @param {number} z Z.
- * @param {ol.TileRange=} opt_tileRange Temporary tile range object.
- * @return {ol.TileRange} Tile range.
- */
-ol.tilegrid.TileGrid.prototype.getTileRangeForExtentAndZ =
-    function(extent, z, opt_tileRange) {
-  var resolution = this.getResolution(z);
-  return this.getTileRangeForExtentAndResolution(
-      extent, resolution, opt_tileRange);
-};
-
-
-/**
- * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @return {ol.Coordinate} Tile center.
- */
-ol.tilegrid.TileGrid.prototype.getTileCoordCenter = function(tileCoord) {
-  var origin = this.getOrigin(tileCoord[0]);
-  var resolution = this.getResolution(tileCoord[0]);
-  var tileSize = this.getTileSize(tileCoord[0]);
-  return [
-    origin[0] + (tileCoord[1] + 0.5) * tileSize * resolution,
-    origin[1] + (tileCoord[2] + 0.5) * tileSize * resolution
-  ];
-};
-
-
-/**
- * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @param {ol.Extent=} opt_extent Temporary extent object.
- * @return {ol.Extent} Extent.
- */
-ol.tilegrid.TileGrid.prototype.getTileCoordExtent =
-    function(tileCoord, opt_extent) {
-  var origin = this.getOrigin(tileCoord[0]);
-  var resolution = this.getResolution(tileCoord[0]);
-  var tileSize = this.getTileSize(tileCoord[0]);
-  var minX = origin[0] + tileCoord[1] * tileSize * resolution;
-  var minY = origin[1] + tileCoord[2] * tileSize * resolution;
-  var maxX = minX + tileSize * resolution;
-  var maxY = minY + tileSize * resolution;
-  return ol.extent.createOrUpdate(minX, minY, maxX, maxY, opt_extent);
-};
-
-
-/**
- * Get the tile coordinate for the given map coordinate and resolution.  This
- * method considers that coordinates that intersect tile boundaries should be
- * assigned the higher tile coordinate.
- *
- * @param {ol.Coordinate} coordinate Coordinate.
- * @param {number} resolution Resolution.
- * @param {ol.TileCoord=} opt_tileCoord Destination ol.TileCoord object.
- * @return {ol.TileCoord} Tile coordinate.
- * @api
- */
-ol.tilegrid.TileGrid.prototype.getTileCoordForCoordAndResolution = function(
-    coordinate, resolution, opt_tileCoord) {
-  return this.getTileCoordForXYAndResolution_(
-      coordinate[0], coordinate[1], resolution, false, opt_tileCoord);
-};
-
-
-/**
- * @param {number} x X.
- * @param {number} y Y.
- * @param {number} resolution Resolution.
- * @param {boolean} reverseIntersectionPolicy Instead of letting edge
- *     intersections go to the higher tile coordinate, let edge intersections
- *     go to the lower tile coordinate.
- * @param {ol.TileCoord=} opt_tileCoord Temporary ol.TileCoord object.
- * @return {ol.TileCoord} Tile coordinate.
- * @private
- */
-ol.tilegrid.TileGrid.prototype.getTileCoordForXYAndResolution_ = function(
-    x, y, resolution, reverseIntersectionPolicy, opt_tileCoord) {
-  var z = this.getZForResolution(resolution);
-  var scale = resolution / this.getResolution(z);
-  var origin = this.getOrigin(z);
-  var tileSize = this.getTileSize(z);
-
-  var tileCoordX = scale * (x - origin[0]) / (resolution * tileSize);
-  var tileCoordY = scale * (y - origin[1]) / (resolution * tileSize);
-
-  if (reverseIntersectionPolicy) {
-    tileCoordX = Math.ceil(tileCoordX) - 1;
-    tileCoordY = Math.ceil(tileCoordY) - 1;
-  } else {
-    tileCoordX = Math.floor(tileCoordX);
-    tileCoordY = Math.floor(tileCoordY);
-  }
-
-  return ol.tilecoord.createOrUpdate(z, tileCoordX, tileCoordY, opt_tileCoord);
-};
-
-
-/**
- * @param {ol.Coordinate} coordinate Coordinate.
- * @param {number} z Z.
- * @param {ol.TileCoord=} opt_tileCoord Destination ol.TileCoord object.
- * @return {ol.TileCoord} Tile coordinate.
- * @api
- */
-ol.tilegrid.TileGrid.prototype.getTileCoordForCoordAndZ =
-    function(coordinate, z, opt_tileCoord) {
-  var resolution = this.getResolution(z);
-  return this.getTileCoordForXYAndResolution_(
-      coordinate[0], coordinate[1], resolution, false, opt_tileCoord);
-};
-
-
-/**
- * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @return {number} Tile resolution.
- */
-ol.tilegrid.TileGrid.prototype.getTileCoordResolution = function(tileCoord) {
-  goog.asserts.assert(
-      this.minZoom <= tileCoord[0] && tileCoord[0] <= this.maxZoom);
-  return this.resolutions_[tileCoord[0]];
-};
-
-
-/**
- * @param {number} z Z.
- * @return {number} Tile size.
- * @api stable
- */
-ol.tilegrid.TileGrid.prototype.getTileSize = function(z) {
-  if (goog.isDef(this.tileSize_)) {
-    return this.tileSize_;
-  } else {
-    goog.asserts.assert(!goog.isNull(this.tileSizes_));
-    goog.asserts.assert(this.minZoom <= z && z <= this.maxZoom);
-    return this.tileSizes_[z];
-  }
-};
-
-
-/**
- * @param {number} resolution Resolution.
- * @return {number} Z.
- */
-ol.tilegrid.TileGrid.prototype.getZForResolution = function(resolution) {
-  return ol.array.linearFindNearest(this.resolutions_, resolution, 0);
-};
-
-
-/**
- * @param {ol.proj.Projection} projection Projection.
- * @return {ol.tilegrid.TileGrid} Default tile grid for the passed projection.
- */
-ol.tilegrid.getForProjection = function(projection) {
-  var tileGrid = projection.getDefaultTileGrid();
-  if (goog.isNull(tileGrid)) {
-    tileGrid = ol.tilegrid.createForProjection(projection);
-    projection.setDefaultTileGrid(tileGrid);
-  }
-  return tileGrid;
-};
-
-
-/**
- * @param {ol.Extent} extent Extent.
- * @param {number=} opt_maxZoom Maximum zoom level (default is
- *     ol.DEFAULT_MAX_ZOOM).
- * @param {number=} opt_tileSize Tile size (default uses ol.DEFAULT_TILE_SIZE).
- * @param {ol.extent.Corner=} opt_corner Extent corner (default is
- *     ol.extent.Corner.BOTTOM_LEFT).
- * @return {ol.tilegrid.TileGrid} TileGrid instance.
- */
-ol.tilegrid.createForExtent =
-    function(extent, opt_maxZoom, opt_tileSize, opt_corner) {
-  var tileSize = goog.isDef(opt_tileSize) ?
-      opt_tileSize : ol.DEFAULT_TILE_SIZE;
-
-  var corner = goog.isDef(opt_corner) ?
-      opt_corner : ol.extent.Corner.BOTTOM_LEFT;
-
-  var resolutions = ol.tilegrid.resolutionsFromExtent(
-      extent, opt_maxZoom, tileSize);
-
-  return new ol.tilegrid.TileGrid({
-    origin: ol.extent.getCorner(extent, corner),
-    resolutions: resolutions,
-    tileSize: tileSize
-  });
-};
-
-
-/**
- * Create a resolutions array from an extent.  A zoom factor of 2 is assumed.
- * @param {ol.Extent} extent Extent.
- * @param {number=} opt_maxZoom Maximum zoom level (default is
- *     ol.DEFAULT_MAX_ZOOM).
- * @param {number=} opt_tileSize Tile size (default uses ol.DEFAULT_TILE_SIZE).
- * @return {!Array.<number>} Resolutions array.
- */
-ol.tilegrid.resolutionsFromExtent =
-    function(extent, opt_maxZoom, opt_tileSize) {
-  var maxZoom = goog.isDef(opt_maxZoom) ?
-      opt_maxZoom : ol.DEFAULT_MAX_ZOOM;
-
-  var height = ol.extent.getHeight(extent);
-  var width = ol.extent.getWidth(extent);
-
-  var tileSize = goog.isDef(opt_tileSize) ?
-      opt_tileSize : ol.DEFAULT_TILE_SIZE;
-  var maxResolution = Math.max(
-      width / tileSize, height / tileSize);
-
-  var length = maxZoom + 1;
-  var resolutions = new Array(length);
-  for (var z = 0; z < length; ++z) {
-    resolutions[z] = maxResolution / Math.pow(2, z);
-  }
-  return resolutions;
-};
-
-
-/**
- * @param {ol.proj.ProjectionLike} projection Projection.
- * @param {number=} opt_maxZoom Maximum zoom level (default is
- *     ol.DEFAULT_MAX_ZOOM).
- * @param {number=} opt_tileSize Tile size (default uses ol.DEFAULT_TILE_SIZE).
- * @param {ol.extent.Corner=} opt_corner Extent corner (default is
- *     ol.extent.Corner.BOTTOM_LEFT).
- * @return {ol.tilegrid.TileGrid} TileGrid instance.
- */
-ol.tilegrid.createForProjection =
-    function(projection, opt_maxZoom, opt_tileSize, opt_corner) {
-  var extent = ol.tilegrid.extentFromProjection(projection);
-  return ol.tilegrid.createForExtent(
-      extent, opt_maxZoom, opt_tileSize, opt_corner);
-};
-
-
-/**
- * Generate a tile grid extent from a projection.  If the projection has an
- * extent, it is used.  If not, a global extent is assumed.
- * @param {ol.proj.ProjectionLike} projection Projection.
- * @return {ol.Extent} Extent.
- */
-ol.tilegrid.extentFromProjection = function(projection) {
-  projection = ol.proj.get(projection);
-  var extent = projection.getExtent();
-  if (goog.isNull(extent)) {
-    var half = 180 * ol.proj.METERS_PER_UNIT[ol.proj.Units.DEGREES] /
-        projection.getMetersPerUnit();
-    extent = ol.extent.createOrUpdate(-half, -half, half, half);
-  }
-  return extent;
-};
-goog.exportProperty(ol.tilegrid.TileGrid.prototype, 'getTileRangeForExtentAndZ',
-    ol.tilegrid.TileGrid.prototype.getTileRangeForExtentAndZ);
-
-
-goog.provide('ol.source.Tile');
-goog.provide('ol.source.TileOptions');
-
-goog.require('goog.events.Event');
-goog.require('ol.Attribution');
-goog.require('ol.Extent');
-goog.require('ol.TileCache');
-goog.require('ol.TileRange');
-goog.require('ol.TileState');
-goog.require('ol.source.Source');
-goog.require('ol.tilecoord');
-goog.require('ol.tilegrid.TileGrid');
-
-
-/**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *            extent: (ol.Extent|undefined),
- *            logo: (string|olx.LogoOptions|undefined),
- *            opaque: (boolean|undefined),
- *            tilePixelRatio: (number|undefined),
- *            projection: ol.proj.ProjectionLike,
- *            state: (ol.source.State|undefined),
- *            tileGrid: (ol.tilegrid.TileGrid|undefined)}}
- */
-ol.source.TileOptions;
-
-
-
-/**
- * @classdesc
- * Abstract base class; normally only used for creating subclasses and not
- * instantiated in apps.
- * Base class for sources providing images divided into a tile grid.
- *
- * @constructor
- * @extends {ol.source.Source}
- * @param {ol.source.TileOptions} options Tile source options.
- * @api
- */
-ol.source.Tile = function(options) {
-
-  goog.base(this, {
-    attributions: options.attributions,
-    extent: options.extent,
-    logo: options.logo,
-    projection: options.projection,
-    state: options.state
-  });
-
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.opaque_ = goog.isDef(options.opaque) ? options.opaque : false;
-
-  /**
-   * @private
-   * @type {number}
-   */
-  this.tilePixelRatio_ = goog.isDef(options.tilePixelRatio) ?
-      options.tilePixelRatio : 1;
-
-  /**
-   * @protected
-   * @type {ol.tilegrid.TileGrid}
-   */
-  this.tileGrid = goog.isDef(options.tileGrid) ? options.tileGrid : null;
-
-  /**
-   * @protected
-   * @type {ol.TileCache}
-   */
-  this.tileCache = new ol.TileCache();
-
-};
-goog.inherits(ol.source.Tile, ol.source.Source);
-
-
-/**
- * @return {boolean} Can expire cache.
- */
-ol.source.Tile.prototype.canExpireCache = function() {
-  return this.tileCache.canExpireCache();
-};
-
-
-/**
- * @param {Object.<string, ol.TileRange>} usedTiles Used tiles.
- */
-ol.source.Tile.prototype.expireCache = function(usedTiles) {
-  this.tileCache.expireCache(usedTiles);
-};
-
-
-/**
- * @param {number} z Zoom level.
- * @param {ol.TileRange} tileRange Tile range.
- * @param {function(ol.Tile):(boolean|undefined)} callback Called with each
- *     loaded tile.  If the callback returns `false`, the tile will not be
- *     considered loaded.
- * @return {boolean} The tile range is fully covered with loaded tiles.
- */
-ol.source.Tile.prototype.forEachLoadedTile = function(z, tileRange, callback) {
-  var covered = true;
-  var tile, tileCoordKey, loaded;
-  for (var x = tileRange.minX; x <= tileRange.maxX; ++x) {
-    for (var y = tileRange.minY; y <= tileRange.maxY; ++y) {
-      tileCoordKey = this.getKeyZXY(z, x, y);
-      loaded = false;
-      if (this.tileCache.containsKey(tileCoordKey)) {
-        tile = /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
-        loaded = tile.getState() === ol.TileState.LOADED;
-        if (loaded) {
-          loaded = (callback(tile) !== false);
-        }
-      }
-      if (!loaded) {
-        covered = false;
-      }
-    }
-  }
-  return covered;
-};
-
-
-/**
- * @return {number} Gutter.
- */
-ol.source.Tile.prototype.getGutter = function() {
-  return 0;
-};
-
-
-/**
- * @param {number} z Z.
- * @param {number} x X.
- * @param {number} y Y.
- * @return {string} Key.
- * @protected
- */
-ol.source.Tile.prototype.getKeyZXY = ol.tilecoord.getKeyZXY;
-
-
-/**
- * @return {boolean} Opaque.
- */
-ol.source.Tile.prototype.getOpaque = function() {
-  return this.opaque_;
-};
-
-
-/**
- * @inheritDoc
- */
-ol.source.Tile.prototype.getResolutions = function() {
-  return this.tileGrid.getResolutions();
-};
-
-
-/**
- * @param {number} z Tile coordinate z.
- * @param {number} x Tile coordinate x.
- * @param {number} y Tile coordinate y.
- * @param {number} pixelRatio Pixel ratio.
- * @param {ol.proj.Projection=} opt_projection Projection.
- * @return {!ol.Tile} Tile.
- */
-ol.source.Tile.prototype.getTile = goog.abstractMethod;
-
-
-/**
- * @return {ol.tilegrid.TileGrid} Tile grid.
- * @api stable
- */
-ol.source.Tile.prototype.getTileGrid = function() {
-  return this.tileGrid;
-};
-
-
-/**
- * @param {ol.proj.Projection} projection Projection.
- * @return {ol.tilegrid.TileGrid} Tile grid.
- */
-ol.source.Tile.prototype.getTileGridForProjection = function(projection) {
-  if (goog.isNull(this.tileGrid)) {
-    return ol.tilegrid.getForProjection(projection);
-  } else {
-    return this.tileGrid;
-  }
-};
-
-
-/**
- * @param {number} z Z.
- * @param {number} pixelRatio Pixel ratio.
- * @param {ol.proj.Projection} projection Projection.
- * @return {number} Tile size.
- */
-ol.source.Tile.prototype.getTilePixelSize =
-    function(z, pixelRatio, projection) {
-  var tileGrid = this.getTileGridForProjection(projection);
-  return tileGrid.getTileSize(z) * this.tilePixelRatio_;
-};
-
-
-/**
- * Marks a tile coord as being used, without triggering a load.
- * @param {number} z Tile coordinate z.
- * @param {number} x Tile coordinate x.
- * @param {number} y Tile coordinate y.
- */
-ol.source.Tile.prototype.useTile = goog.nullFunction;
-
-
-
-/**
- * @classdesc
- * Events emitted by {@link ol.source.Tile} instances are instances of this
- * type.
- *
- * @constructor
- * @extends {goog.events.Event}
- * @implements {oli.source.TileEvent}
- * @param {string} type Type.
- * @param {ol.Tile} tile The tile.
- */
-ol.source.TileEvent = function(type, tile) {
-
-  goog.base(this, type);
-
-  /**
-   * The tile related to the event.
-   * @type {ol.Tile}
-   * @api
-   */
-  this.tile = tile;
-
-};
-goog.inherits(ol.source.TileEvent, goog.events.Event);
-
-
-/**
- * @enum {string}
- */
-ol.source.TileEventType = {
-
-  /**
-   * Triggered when a tile starts loading.
-   * @event ol.source.TileEvent#tileloadstart
-   * @api
-   */
-  TILELOADSTART: 'tileloadstart',
-
-  /**
-   * Triggered when a tile finishes loading.
-   * @event ol.source.TileEvent#tileloadend
-   * @api
-   */
-  TILELOADEND: 'tileloadend',
-
-  /**
-   * Triggered if tile loading results in an error.
-   * @event ol.source.TileEvent#tileloaderror
-   * @api
-   */
-  TILELOADERROR: 'tileloaderror'
-
-};
-
 goog.provide('ol.vec.Mat4');
 
 goog.require('goog.vec.Mat4');
@@ -47348,7 +47574,6 @@ ol.vec.Mat4.multVec2 = function(mat, vec, resultVec) {
 
 goog.provide('ol.renderer.Layer');
 
-goog.require('goog.Disposable');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
@@ -47499,7 +47724,7 @@ ol.renderer.Layer.prototype.loadImage = function(image) {
     // listener (a noop if the listener was already registered)
     goog.asserts.assert(imageState == ol.ImageState.IDLE ||
         imageState == ol.ImageState.LOADING);
-    goog.events.listenOnce(image, goog.events.EventType.CHANGE,
+    goog.events.listen(image, goog.events.EventType.CHANGE,
         this.handleImageChange_, false, this);
   }
   if (imageState == ol.ImageState.IDLE) {
@@ -50179,13 +50404,10 @@ ol.interaction.Pointer.handleEvent = function(mapBrowserEvent) {
   var stopEvent = false;
   this.updateTrackedPointers_(mapBrowserEvent);
   if (this.handlingDownUpSequence) {
-    if (mapBrowserEvent.type ==
-        ol.MapBrowserEvent.EventType.POINTERDRAG) {
+    if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERDRAG) {
       this.handleDragEvent_(mapBrowserEvent);
-    } else if (mapBrowserEvent.type ==
-        ol.MapBrowserEvent.EventType.POINTERUP) {
-      this.handlingDownUpSequence =
-          this.handleUpEvent_(mapBrowserEvent);
+    } else if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERUP) {
+      this.handlingDownUpSequence = this.handleUpEvent_(mapBrowserEvent);
     }
   }
   if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERDOWN) {
@@ -50882,10 +51104,9 @@ ol.geom.SimpleGeometry.getLayoutForStride_ = function(stride) {
 
 /**
  * @param {ol.geom.GeometryLayout} layout Layout.
- * @private
  * @return {number} Stride.
  */
-ol.geom.SimpleGeometry.getStrideForLayout_ = function(layout) {
+ol.geom.SimpleGeometry.getStrideForLayout = function(layout) {
   if (layout == ol.geom.GeometryLayout.XY) {
     return 2;
   } else if (layout == ol.geom.GeometryLayout.XYZ) {
@@ -51018,7 +51239,7 @@ ol.geom.SimpleGeometry.prototype.getStride = function() {
  */
 ol.geom.SimpleGeometry.prototype.setFlatCoordinatesInternal =
     function(layout, flatCoordinates) {
-  this.stride = ol.geom.SimpleGeometry.getStrideForLayout_(layout);
+  this.stride = ol.geom.SimpleGeometry.getStrideForLayout(layout);
   this.layout = layout;
   this.flatCoordinates = flatCoordinates;
 };
@@ -51035,7 +51256,7 @@ ol.geom.SimpleGeometry.prototype.setLayout =
   /** @type {number} */
   var stride;
   if (goog.isDef(layout)) {
-    stride = ol.geom.SimpleGeometry.getStrideForLayout_(layout);
+    stride = ol.geom.SimpleGeometry.getStrideForLayout(layout);
   } else {
     var i;
     for (i = 0; i < nesting; ++i) {
@@ -52609,20 +52830,22 @@ goog.provide('ol.geom.flat.segments');
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
- * @param {function(ol.Coordinate, ol.Coordinate): T} callback Function
+ * @param {function(this: S, ol.Coordinate, ol.Coordinate): T} callback Function
  *     called for each segment.
+ * @param {S=} opt_this The object to be used as the value of 'this'
+ *     within callback.
  * @return {T|boolean} Value.
- * @template T
+ * @template T,S
  */
 ol.geom.flat.segments.forEach =
-    function(flatCoordinates, offset, end, stride, callback) {
+    function(flatCoordinates, offset, end, stride, callback, opt_this) {
   var point1 = [flatCoordinates[offset], flatCoordinates[offset + 1]];
   var point2 = [];
   var ret;
   for (; (offset + stride) < end; offset += stride) {
     point2[0] = flatCoordinates[offset + stride];
     point2[1] = flatCoordinates[offset + stride + 1];
-    ret = callback(point1, point2);
+    ret = callback.call(opt_this, point1, point2);
     if (ret) {
       return ret;
     }
@@ -52841,22 +53064,34 @@ ol.geom.flat.orient.linearRingIsClockwise =
 
 
 /**
+ * Determines if linear rings are oriented.  By default, left-hand orientation
+ * is tested (first ring must be clockwise, remaining rings counter-clockwise).
+ * To test for right-hand orientation, use the `opt_right` argument.
+ *
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
- * @param {Array.<number>} ends Ends.
+ * @param {Array.<number>} ends Array of end indexes.
  * @param {number} stride Stride.
- * @return {boolean} `true` if all rings are correctly oriented, `false`
- *     otherwise.
+ * @param {boolean=} opt_right Test for right-hand orientation
+ *     (counter-clockwise exterior ring and clockwise interior rings).
+ * @return {boolean} Rings are correctly oriented.
  */
 ol.geom.flat.orient.linearRingsAreOriented =
-    function(flatCoordinates, offset, ends, stride) {
+    function(flatCoordinates, offset, ends, stride, opt_right) {
+  var right = goog.isDef(opt_right) ? opt_right : false;
   var i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
     var end = ends[i];
     var isClockwise = ol.geom.flat.orient.linearRingIsClockwise(
         flatCoordinates, offset, end, stride);
-    if (i === 0 ? !isClockwise : isClockwise) {
-      return false;
+    if (i === 0) {
+      if ((right && isClockwise) || (!right && !isClockwise)) {
+        return false;
+      }
+    } else {
+      if ((right && !isClockwise) || (!right && isClockwise)) {
+        return false;
+      }
     }
     offset = end;
   }
@@ -52865,19 +53100,24 @@ ol.geom.flat.orient.linearRingsAreOriented =
 
 
 /**
+ * Determines if linear rings are oriented.  By default, left-hand orientation
+ * is tested (first ring must be clockwise, remaining rings counter-clockwise).
+ * To test for right-hand orientation, use the `opt_right` argument.
+ *
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
- * @param {Array.<Array.<number>>} endss Endss.
+ * @param {Array.<Array.<number>>} endss Array of array of end indexes.
  * @param {number} stride Stride.
- * @return {boolean} `true` if all rings are correctly oriented, `false`
- *     otherwise.
+ * @param {boolean=} opt_right Test for right-hand orientation
+ *     (counter-clockwise exterior ring and clockwise interior rings).
+ * @return {boolean} Rings are correctly oriented.
  */
-ol.geom.flat.linearRingssAreOriented =
-    function(flatCoordinates, offset, endss, stride) {
+ol.geom.flat.orient.linearRingssAreOriented =
+    function(flatCoordinates, offset, endss, stride, opt_right) {
   var i, ii;
   for (i = 0, ii = endss.length; i < ii; ++i) {
     if (!ol.geom.flat.orient.linearRingsAreOriented(
-        flatCoordinates, offset, endss[i], stride)) {
+        flatCoordinates, offset, endss[i], stride, opt_right)) {
       return false;
     }
   }
@@ -52886,20 +53126,29 @@ ol.geom.flat.linearRingssAreOriented =
 
 
 /**
+ * Orient coordinates in a flat array of linear rings.  By default, rings
+ * are oriented following the left-hand rule (clockwise for exterior and
+ * counter-clockwise for interior rings).  To orient according to the
+ * right-hand rule, use the `opt_right` argument.
+ *
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {Array.<number>} ends Ends.
  * @param {number} stride Stride.
+ * @param {boolean=} opt_right Follow the right-hand rule for orientation.
  * @return {number} End.
  */
 ol.geom.flat.orient.orientLinearRings =
-    function(flatCoordinates, offset, ends, stride) {
+    function(flatCoordinates, offset, ends, stride, opt_right) {
+  var right = goog.isDef(opt_right) ? opt_right : false;
   var i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
     var end = ends[i];
     var isClockwise = ol.geom.flat.orient.linearRingIsClockwise(
         flatCoordinates, offset, end, stride);
-    var reverse = i === 0 ? !isClockwise : isClockwise;
+    var reverse = i === 0 ?
+        (right && isClockwise) || (!right && !isClockwise) :
+        (right && !isClockwise) || (!right && isClockwise);
     if (reverse) {
       ol.geom.flat.reverse.coordinates(flatCoordinates, offset, end, stride);
     }
@@ -52910,18 +53159,24 @@ ol.geom.flat.orient.orientLinearRings =
 
 
 /**
+ * Orient coordinates in a flat array of linear rings.  By default, rings
+ * are oriented following the left-hand rule (clockwise for exterior and
+ * counter-clockwise for interior rings).  To orient according to the
+ * right-hand rule, use the `opt_right` argument.
+ *
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
- * @param {Array.<Array.<number>>} endss Endss.
+ * @param {Array.<Array.<number>>} endss Array of array of end indexes.
  * @param {number} stride Stride.
+ * @param {boolean=} opt_right Follow the right-hand rule for orientation.
  * @return {number} End.
  */
 ol.geom.flat.orient.orientLinearRingss =
-    function(flatCoordinates, offset, endss, stride) {
+    function(flatCoordinates, offset, endss, stride, opt_right) {
   var i, ii;
   for (i = 0, ii = endss.length; i < ii; ++i) {
     offset = ol.geom.flat.orient.orientLinearRings(
-        flatCoordinates, offset, endss[i], stride);
+        flatCoordinates, offset, endss[i], stride, opt_right);
   }
   return offset;
 };
@@ -53079,12 +53334,30 @@ ol.geom.Polygon.prototype.getArea = function() {
 
 
 /**
+ * Get the coordinate array for this geometry.  This array has the structure
+ * of a GeoJSON coordinate array for polygons.
+ *
+ * @param {boolean=} opt_right Orient coordinates according to the right-hand
+ *     rule (counter-clockwise for exterior and clockwise for interior rings).
+ *     If `false`, coordinates will be oriented according to the left-hand rule
+ *     (clockwise for exterior and counter-clockwise for interior rings).
+ *     By default, coordinate orientation will depend on how the geometry was
+ *     constructed.
  * @return {Array.<Array.<ol.Coordinate>>} Coordinates.
  * @api stable
  */
-ol.geom.Polygon.prototype.getCoordinates = function() {
+ol.geom.Polygon.prototype.getCoordinates = function(opt_right) {
+  var flatCoordinates;
+  if (goog.isDef(opt_right)) {
+    flatCoordinates = this.getOrientedFlatCoordinates().slice();
+    ol.geom.flat.orient.orientLinearRings(
+        flatCoordinates, 0, this.ends_, this.stride, opt_right);
+  } else {
+    flatCoordinates = this.flatCoordinates;
+  }
+
   return ol.geom.flat.inflate.coordinatess(
-      this.flatCoordinates, 0, this.ends_, this.stride);
+      flatCoordinates, 0, this.ends_, this.stride);
 };
 
 
@@ -55751,6 +56024,12 @@ ol.style.createDefaultEditingStyles = function() {
   ];
   styles[ol.geom.GeometryType.MULTI_LINE_STRING] =
       styles[ol.geom.GeometryType.LINE_STRING];
+
+  styles[ol.geom.GeometryType.CIRCLE] =
+      styles[ol.geom.GeometryType.POLYGON].concat(
+          styles[ol.geom.GeometryType.LINE_STRING]
+      );
+
 
   styles[ol.geom.GeometryType.POINT] = [
     new ol.style.Style({
@@ -61585,6 +61864,7 @@ goog.require('ol.geom.flat.inflate');
 goog.require('ol.geom.flat.interpolate');
 goog.require('ol.geom.flat.intersectsextent');
 goog.require('ol.geom.flat.length');
+goog.require('ol.geom.flat.segments');
 goog.require('ol.geom.flat.simplify');
 
 
@@ -61678,6 +61958,25 @@ ol.geom.LineString.prototype.closestPointXY =
   return ol.geom.flat.closest.getClosestPoint(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
       this.maxDelta_, false, x, y, closestPoint, minSquaredDistance);
+};
+
+
+/**
+ * Iterate over each segment, calling the provided callback.
+ * If the callback returns a truthy value the function returns that
+ * value immediately. Otherwise the function returns `false`.
+ *
+ * @param {function(this: S, ol.Coordinate, ol.Coordinate): T} callback Function
+ *     called for each segment.
+ * @param {S=} opt_this The object to be used as the value of 'this'
+ *     within callback.
+ * @return {T|boolean} Value.
+ * @template T,S
+ * @api
+ */
+ol.geom.LineString.prototype.forEachSegment = function(callback, opt_this) {
+  return ol.geom.flat.segments.forEach(this.flatCoordinates, 0,
+      this.flatCoordinates.length, this.stride, callback, opt_this);
 };
 
 
@@ -62513,12 +62812,30 @@ ol.geom.MultiPolygon.prototype.getArea = function() {
 
 
 /**
+ * Get the coordinate array for this geometry.  This array has the structure
+ * of a GeoJSON coordinate array for multi-polygons.
+ *
+ * @param {boolean=} opt_right Orient coordinates according to the right-hand
+ *     rule (counter-clockwise for exterior and clockwise for interior rings).
+ *     If `false`, coordinates will be oriented according to the left-hand rule
+ *     (clockwise for exterior and counter-clockwise for interior rings).
+ *     By default, coordinate orientation will depend on how the geometry was
+ *     constructed.
  * @return {Array.<Array.<Array.<ol.Coordinate>>>} Coordinates.
  * @api stable
  */
-ol.geom.MultiPolygon.prototype.getCoordinates = function() {
+ol.geom.MultiPolygon.prototype.getCoordinates = function(opt_right) {
+  var flatCoordinates;
+  if (goog.isDef(opt_right)) {
+    flatCoordinates = this.getOrientedFlatCoordinates().slice();
+    ol.geom.flat.orient.orientLinearRingss(
+        flatCoordinates, 0, this.endss_, this.stride, opt_right);
+  } else {
+    flatCoordinates = this.flatCoordinates;
+  }
+
   return ol.geom.flat.inflate.coordinatesss(
-      this.flatCoordinates, 0, this.endss_, this.stride);
+      flatCoordinates, 0, this.endss_, this.stride);
 };
 
 
@@ -62564,7 +62881,7 @@ ol.geom.MultiPolygon.prototype.getInteriorPoints = function() {
 ol.geom.MultiPolygon.prototype.getOrientedFlatCoordinates = function() {
   if (this.orientedRevision_ != this.getRevision()) {
     var flatCoordinates = this.flatCoordinates;
-    if (ol.geom.flat.linearRingssAreOriented(
+    if (ol.geom.flat.orient.linearRingssAreOriented(
         flatCoordinates, 0, this.endss_, this.stride)) {
       this.orientedFlatCoordinates_ = flatCoordinates;
     } else {
@@ -63145,8 +63462,10 @@ goog.provide('ol.source.Image');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('goog.events.Event');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
+goog.require('ol.ImageState');
 goog.require('ol.array');
 goog.require('ol.source.Source');
 
@@ -63234,6 +63553,33 @@ ol.source.Image.prototype.getImage = goog.abstractMethod;
 
 
 /**
+ * Handle image change events.
+ * @param {goog.events.Event} event Event.
+ * @protected
+ */
+ol.source.Image.prototype.handleImageChange = function(event) {
+  var image = /** @type {ol.Image} */ (event.target);
+  switch (image.getState()) {
+    case ol.ImageState.LOADING:
+      this.dispatchEvent(
+          new ol.source.ImageEvent(ol.source.ImageEventType.IMAGELOADSTART,
+              image));
+      break;
+    case ol.ImageState.LOADED:
+      this.dispatchEvent(
+          new ol.source.ImageEvent(ol.source.ImageEventType.IMAGELOADEND,
+              image));
+      break;
+    case ol.ImageState.ERROR:
+      this.dispatchEvent(
+          new ol.source.ImageEvent(ol.source.ImageEventType.IMAGELOADERROR,
+              image));
+      break;
+  }
+};
+
+
+/**
  * Default image load function for image sources that use ol.Image image
  * instances.
  * @param {ol.Image} image Image.
@@ -63241,6 +63587,62 @@ ol.source.Image.prototype.getImage = goog.abstractMethod;
  */
 ol.source.Image.defaultImageLoadFunction = function(image, src) {
   image.getImage().src = src;
+};
+
+
+
+/**
+ * @classdesc
+ * Events emitted by {@link ol.source.Image} instances are instances of this
+ * type.
+ *
+ * @constructor
+ * @extends {goog.events.Event}
+ * @implements {oli.source.ImageEvent}
+ * @param {string} type Type.
+ * @param {ol.Image} image The image.
+ */
+ol.source.ImageEvent = function(type, image) {
+
+  goog.base(this, type);
+
+  /**
+   * The image related to the event.
+   * @type {ol.Image}
+   * @api
+   */
+  this.image = image;
+
+};
+goog.inherits(ol.source.ImageEvent, goog.events.Event);
+
+
+/**
+ * @enum {string}
+ */
+ol.source.ImageEventType = {
+
+  /**
+   * Triggered when an image starts loading.
+   * @event ol.source.ImageEvent#imageloadstart
+   * @api
+   */
+  IMAGELOADSTART: 'imageloadstart',
+
+  /**
+   * Triggered when an image finishes loading.
+   * @event ol.source.ImageEvent#imageloadend
+   * @api
+   */
+  IMAGELOADEND: 'imageloadend',
+
+  /**
+   * Triggered if image loading results in an error.
+   * @event ol.source.ImageEvent#imageloaderror
+   * @api
+   */
+  IMAGELOADERROR: 'imageloaderror'
+
 };
 
 goog.provide('ol.source.ImageCanvas');
@@ -82426,7 +82828,8 @@ ol.format.Feature.prototype.adaptOptions = function(options) {
     updatedOptions = {
       featureProjection: options.featureProjection,
       dataProjection: goog.isDefAndNotNull(options.dataProjection) ?
-          options.dataProjection : this.defaultDataProjection
+          options.dataProjection : this.defaultDataProjection,
+      rightHanded: options.rightHanded
     };
   }
   return updatedOptions;
@@ -83385,7 +83788,8 @@ ol.format.GeoJSON.writeGeometry_ = function(geometry, opt_options) {
   var geometryWriter = ol.format.GeoJSON.GEOMETRY_WRITERS_[geometry.getType()];
   goog.asserts.assert(goog.isDef(geometryWriter));
   return geometryWriter(/** @type {ol.geom.Geometry} */ (
-      ol.format.Feature.transformWithOptions(geometry, true, opt_options)));
+      ol.format.Feature.transformWithOptions(geometry, true, opt_options)),
+      opt_options);
 };
 
 
@@ -83424,10 +83828,11 @@ ol.format.GeoJSON.writeGeometryCollectionGeometry_ = function(
 
 /**
  * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
  * @private
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
-ol.format.GeoJSON.writeLineStringGeometry_ = function(geometry) {
+ol.format.GeoJSON.writeLineStringGeometry_ = function(geometry, opt_options) {
   goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
   return /** @type {GeoJSONGeometry} */ ({
     'type': 'LineString',
@@ -83438,10 +83843,12 @@ ol.format.GeoJSON.writeLineStringGeometry_ = function(geometry) {
 
 /**
  * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
  * @private
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
-ol.format.GeoJSON.writeMultiLineStringGeometry_ = function(geometry) {
+ol.format.GeoJSON.writeMultiLineStringGeometry_ =
+    function(geometry, opt_options) {
   goog.asserts.assertInstanceof(geometry, ol.geom.MultiLineString);
   goog.asserts.assert(
       geometry.getType() == ol.geom.GeometryType.MULTI_LINE_STRING);
@@ -83454,10 +83861,11 @@ ol.format.GeoJSON.writeMultiLineStringGeometry_ = function(geometry) {
 
 /**
  * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
  * @private
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
-ol.format.GeoJSON.writeMultiPointGeometry_ = function(geometry) {
+ol.format.GeoJSON.writeMultiPointGeometry_ = function(geometry, opt_options) {
   goog.asserts.assertInstanceof(geometry, ol.geom.MultiPoint);
   return /** @type {GeoJSONGeometry} */ ({
     'type': 'MultiPoint',
@@ -83468,24 +83876,30 @@ ol.format.GeoJSON.writeMultiPointGeometry_ = function(geometry) {
 
 /**
  * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
  * @private
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
-ol.format.GeoJSON.writeMultiPolygonGeometry_ = function(geometry) {
+ol.format.GeoJSON.writeMultiPolygonGeometry_ = function(geometry, opt_options) {
   goog.asserts.assertInstanceof(geometry, ol.geom.MultiPolygon);
+  var right;
+  if (goog.isDef(opt_options)) {
+    right = opt_options.rightHanded;
+  }
   return /** @type {GeoJSONGeometry} */ ({
     'type': 'MultiPolygon',
-    'coordinates': geometry.getCoordinates()
+    'coordinates': geometry.getCoordinates(right)
   });
 };
 
 
 /**
  * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
  * @private
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
-ol.format.GeoJSON.writePointGeometry_ = function(geometry) {
+ol.format.GeoJSON.writePointGeometry_ = function(geometry, opt_options) {
   goog.asserts.assertInstanceof(geometry, ol.geom.Point);
   return /** @type {GeoJSONGeometry} */ ({
     'type': 'Point',
@@ -83496,14 +83910,19 @@ ol.format.GeoJSON.writePointGeometry_ = function(geometry) {
 
 /**
  * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
  * @private
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
-ol.format.GeoJSON.writePolygonGeometry_ = function(geometry) {
+ol.format.GeoJSON.writePolygonGeometry_ = function(geometry, opt_options) {
   goog.asserts.assertInstanceof(geometry, ol.geom.Polygon);
+  var right;
+  if (goog.isDef(opt_options)) {
+    right = opt_options.rightHanded;
+  }
   return /** @type {GeoJSONGeometry} */ ({
     'type': 'Polygon',
-    'coordinates': geometry.getCoordinates()
+    'coordinates': geometry.getCoordinates(right)
   });
 };
 
@@ -83527,7 +83946,7 @@ ol.format.GeoJSON.GEOMETRY_READERS_ = {
 /**
  * @const
  * @private
- * @type {Object.<string, function(ol.geom.Geometry): (GeoJSONGeometry|GeoJSONGeometryCollection)>}
+ * @type {Object.<string, function(ol.geom.Geometry, olx.format.WriteOptions=): (GeoJSONGeometry|GeoJSONGeometryCollection)>}
  */
 ol.format.GeoJSON.GEOMETRY_WRITERS_ = {
   'Point': ol.format.GeoJSON.writePointGeometry_,
@@ -83689,7 +84108,7 @@ ol.format.GeoJSON.prototype.readProjectionFromObject = function(object) {
  *
  * @function
  * @param {ol.Feature} feature Feature.
- * @param {olx.format.WriteOptions} options Write options.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {string} GeoJSON.
  * @api stable
  */
@@ -83723,6 +84142,8 @@ ol.format.GeoJSON.prototype.writeFeatureObject = function(
   goog.object.remove(properties, feature.getGeometryName());
   if (!goog.object.isEmpty(properties)) {
     object['properties'] = properties;
+  } else {
+    object['properties'] = null;
   }
   return object;
 };
@@ -83733,7 +84154,7 @@ ol.format.GeoJSON.prototype.writeFeatureObject = function(
  *
  * @function
  * @param {Array.<ol.Feature>} features Features.
- * @param {olx.format.WriteOptions} options Write options.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {string} GeoJSON.
  * @api stable
  */
@@ -83768,7 +84189,7 @@ ol.format.GeoJSON.prototype.writeFeaturesObject =
  *
  * @function
  * @param {ol.geom.Geometry} geometry Geometry.
- * @param {olx.format.WriteOptions} options Write options.
+ * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {string} GeoJSON.
  * @api stable
  */
@@ -95218,6 +95639,7 @@ goog.require('ol.Feature');
 goog.require('ol.format.Feature');
 goog.require('ol.format.TextFeature');
 goog.require('ol.geom.LineString');
+goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.flat.flip');
 goog.require('ol.geom.flat.inflate');
 goog.require('ol.proj');
@@ -95251,6 +95673,13 @@ ol.format.Polyline = function(opt_options) {
    * @type {number}
    */
   this.factor_ = goog.isDef(options.factor) ? options.factor : 1e5;
+
+  /**
+   * @private
+   * @type {ol.geom.GeometryLayout}
+   */
+  this.geometryLayout_ = goog.isDef(options.geometryLayout) ?
+      options.geometryLayout : ol.geom.GeometryLayout.XY;
 };
 goog.inherits(ol.format.Polyline, ol.format.TextFeature);
 
@@ -95529,15 +95958,17 @@ ol.format.Polyline.prototype.readGeometry;
  */
 ol.format.Polyline.prototype.readGeometryFromText =
     function(text, opt_options) {
-  var flatCoordinates = ol.format.Polyline.decodeDeltas(text, 2, this.factor_);
+  var stride = ol.geom.SimpleGeometry.getStrideForLayout(this.geometryLayout_);
+  var flatCoordinates = ol.format.Polyline.decodeDeltas(
+      text, stride, this.factor_);
   ol.geom.flat.flip.flipXY(
-      flatCoordinates, 0, flatCoordinates.length, 2, flatCoordinates);
+      flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
   var coordinates = ol.geom.flat.inflate.coordinates(
-      flatCoordinates, 0, flatCoordinates.length, 2);
+      flatCoordinates, 0, flatCoordinates.length, stride);
 
   return /** @type {ol.geom.Geometry} */ (
       ol.format.Feature.transformWithOptions(
-          new ol.geom.LineString(coordinates), false,
+          new ol.geom.LineString(coordinates, this.geometryLayout_), false,
           this.adaptOptions(opt_options)));
 };
 
@@ -100185,6 +100616,7 @@ ol.Image.prototype.handleImageLoad_ = function() {
 ol.Image.prototype.load = function() {
   if (this.state == ol.ImageState.IDLE) {
     this.state = ol.ImageState.LOADING;
+    this.changed();
     goog.asserts.assert(goog.isNull(this.imageListenerKeys_));
     this.imageListenerKeys_ = [
       goog.events.listenOnce(this.image_, goog.events.EventType.ERROR,
@@ -100312,7 +100744,9 @@ goog.inherits(ol.ImageTile, ol.Tile);
  * @inheritDoc
  */
 ol.ImageTile.prototype.disposeInternal = function() {
-  this.unlistenImage_();
+  if (this.state == ol.TileState.LOADING) {
+    this.unlistenImage_();
+  }
   goog.base(this, 'disposeInternal');
 };
 
@@ -104200,6 +104634,7 @@ goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.Object');
 goog.require('ol.events.condition');
+goog.require('ol.geom.Circle');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
@@ -104477,6 +104912,8 @@ ol.interaction.Draw.handleUpEvent_ = function(event) {
     if (goog.isNull(this.finishCoordinate_)) {
       this.startDrawing_(event);
     } else if (this.mode_ === ol.interaction.DrawMode.POINT ||
+        this.mode_ === ol.interaction.DrawMode.CIRCLE &&
+            !goog.isNull(this.finishCoordinate_) ||
         this.atFinish_(event)) {
       this.finishDrawing();
     } else {
@@ -104585,6 +105022,10 @@ ol.interaction.Draw.prototype.startDrawing_ = function(event) {
             start.slice()]));
       this.sketchPolygonCoords_ = [[start.slice(), start.slice()]];
       geometry = new ol.geom.Polygon(this.sketchPolygonCoords_);
+    } else if (this.mode_ === ol.interaction.DrawMode.CIRCLE) {
+      geometry = new ol.geom.Circle(start.slice(), 0);
+      this.sketchLine_ = new ol.Feature(new ol.geom.LineString([start.slice(),
+            start.slice()]));
     }
   }
   goog.asserts.assert(goog.isDef(geometry));
@@ -104607,7 +105048,7 @@ ol.interaction.Draw.prototype.startDrawing_ = function(event) {
 ol.interaction.Draw.prototype.modifyDrawing_ = function(event) {
   var coordinate = event.coordinate;
   var geometry = this.sketchFeature_.getGeometry();
-  var coordinates, last;
+  var coordinates, last, sketchLineGeom;
   if (this.mode_ === ol.interaction.DrawMode.POINT) {
     goog.asserts.assertInstanceof(geometry, ol.geom.Point);
     last = geometry.getCoordinates();
@@ -104621,6 +105062,9 @@ ol.interaction.Draw.prototype.modifyDrawing_ = function(event) {
     } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
       goog.asserts.assertInstanceof(geometry, ol.geom.Polygon);
       coordinates = this.sketchPolygonCoords_[0];
+    } else if (this.mode_ === ol.interaction.DrawMode.CIRCLE) {
+      goog.asserts.assertInstanceof(geometry, ol.geom.Circle);
+      coordinates = geometry.getCenter();
     }
     if (this.atFinish_(event)) {
       // snap to finish
@@ -104636,11 +105080,17 @@ ol.interaction.Draw.prototype.modifyDrawing_ = function(event) {
       goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
       geometry.setCoordinates(coordinates);
     } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
-      var sketchLineGeom = this.sketchLine_.getGeometry();
+      sketchLineGeom = this.sketchLine_.getGeometry();
       goog.asserts.assertInstanceof(sketchLineGeom, ol.geom.LineString);
       sketchLineGeom.setCoordinates(coordinates);
       goog.asserts.assertInstanceof(geometry, ol.geom.Polygon);
       geometry.setCoordinates(this.sketchPolygonCoords_);
+    } else if (this.mode_ === ol.interaction.DrawMode.CIRCLE) {
+      goog.asserts.assertInstanceof(geometry, ol.geom.Circle);
+      sketchLineGeom = this.sketchLine_.getGeometry();
+      goog.asserts.assertInstanceof(sketchLineGeom, ol.geom.LineString);
+      sketchLineGeom.setCoordinates([geometry.getCenter(), coordinate]);
+      geometry.setRadius(sketchLineGeom.getLength());
     }
   }
   this.updateSketchFeatures_();
@@ -104744,7 +105194,7 @@ ol.interaction.Draw.prototype.shouldStopEvent = goog.functions.FALSE;
 
 
 /**
- * Redraw the skecth features.
+ * Redraw the sketch features.
  * @private
  */
 ol.interaction.Draw.prototype.updateSketchFeatures_ = function() {
@@ -104793,6 +105243,8 @@ ol.interaction.Draw.getMode_ = function(type) {
   } else if (type === ol.geom.GeometryType.POLYGON ||
       type === ol.geom.GeometryType.MULTI_POLYGON) {
     mode = ol.interaction.DrawMode.POLYGON;
+  } else if (type === ol.geom.GeometryType.CIRCLE) {
+    mode = ol.interaction.DrawMode.CIRCLE;
   }
   goog.asserts.assert(goog.isDef(mode));
   return mode;
@@ -104807,7 +105259,8 @@ ol.interaction.Draw.getMode_ = function(type) {
 ol.interaction.DrawMode = {
   POINT: 'Point',
   LINE_STRING: 'LineString',
-  POLYGON: 'Polygon'
+  POLYGON: 'Polygon',
+  CIRCLE: 'Circle'
 };
 
 goog.provide('ol.interaction.Modify');
@@ -105204,6 +105657,17 @@ ol.interaction.Modify.prototype.createOrUpdateVertexFeature_ =
 
 
 /**
+ * @param {ol.interaction.SegmentDataType} a
+ * @param {ol.interaction.SegmentDataType} b
+ * @return {number}
+ * @private
+ */
+ol.interaction.Modify.compareIndexes_ = function(a, b) {
+  return a.index - b.index;
+};
+
+
+/**
  * @param {ol.MapBrowserPointerEvent} evt Event.
  * @return {boolean} Start drag sequence?
  * @this {ol.interaction.Modify}
@@ -105215,18 +105679,44 @@ ol.interaction.Modify.handleDownEvent_ = function(evt) {
   var vertexFeature = this.vertexFeature_;
   if (!goog.isNull(vertexFeature)) {
     var insertVertices = [];
-    var geometry =  /** @type {ol.geom.Point} */ (vertexFeature.getGeometry());
+    var geometry = /** @type {ol.geom.Point} */ (vertexFeature.getGeometry());
     var vertex = geometry.getCoordinates();
     var vertexExtent = ol.extent.boundingExtent([vertex]);
     var segmentDataMatches = this.rBush_.getInExtent(vertexExtent);
+    var componentSegments = {};
+    segmentDataMatches.sort(ol.interaction.Modify.compareIndexes_);
     for (var i = 0, ii = segmentDataMatches.length; i < ii; ++i) {
       var segmentDataMatch = segmentDataMatches[i];
       var segment = segmentDataMatch.segment;
-      if (ol.coordinate.equals(segment[0], vertex)) {
+      var uid = goog.getUid(segmentDataMatch.feature);
+      var depth = segmentDataMatch.depth;
+      if (depth) {
+        uid += '-' + depth.join('-'); // separate feature components
+      }
+      if (!componentSegments[uid]) {
+        componentSegments[uid] = new Array(2);
+      }
+      if (ol.coordinate.equals(segment[0], vertex) &&
+          !componentSegments[uid][0]) {
         this.dragSegments_.push([segmentDataMatch, 0]);
-      } else if (ol.coordinate.equals(segment[1], vertex)) {
+        componentSegments[uid][0] = segmentDataMatch;
+      } else if (ol.coordinate.equals(segment[1], vertex) &&
+          !componentSegments[uid][1]) {
+
+        // prevent dragging closed linestrings by the connecting node
+        if ((segmentDataMatch.geometry.getType() ===
+            ol.geom.GeometryType.LINE_STRING ||
+            segmentDataMatch.geometry.getType() ===
+            ol.geom.GeometryType.MULTI_LINE_STRING) &&
+            componentSegments[uid][0] &&
+            componentSegments[uid][0].index === 0) {
+          continue;
+        }
+
         this.dragSegments_.push([segmentDataMatch, 1]);
-      } else if (goog.getUid(segment) in this.vertexSegments_) {
+        componentSegments[uid][1] = segmentDataMatch;
+      } else if (goog.getUid(segment) in this.vertexSegments_ &&
+          (!componentSegments[uid][0] && !componentSegments[uid][1])) {
         insertVertices.push([segmentDataMatch, vertex]);
       }
     }
@@ -105286,8 +105776,8 @@ ol.interaction.Modify.handleDragEvent_ = function(evt) {
     }
 
     geometry.setCoordinates(coordinates);
-    this.createOrUpdateVertexFeature_(vertex);
   }
+  this.createOrUpdateVertexFeature_(vertex);
 };
 
 
@@ -105317,10 +105807,11 @@ ol.interaction.Modify.handleUpEvent_ = function(evt) {
 ol.interaction.Modify.handleEvent = function(mapBrowserEvent) {
   var handled;
   if (!mapBrowserEvent.map.getView().getHints()[ol.ViewHint.INTERACTING] &&
-      mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERMOVE) {
+      mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERMOVE &&
+      !this.handlingDownUpSequence) {
     this.handlePointerMove_(mapBrowserEvent);
   }
-  if (!goog.isNull(this.vertexFeature_) && this.snappedToVertex_ &&
+  if (!goog.isNull(this.vertexFeature_) &&
       this.deleteCondition_(mapBrowserEvent)) {
     var geometry = this.vertexFeature_.getGeometry();
     goog.asserts.assertInstanceof(geometry, ol.geom.Point);
@@ -105486,15 +105977,18 @@ ol.interaction.Modify.prototype.insertVertex_ = function(segmentData, vertex) {
 ol.interaction.Modify.prototype.removeVertex_ = function() {
   var dragSegments = this.dragSegments_;
   var segmentsByFeature = {};
-  var deleted = false;
   var component, coordinates, dragSegment, geometry, i, index, left;
-  var newIndex, newSegment, right, segmentData, uid;
+  var newIndex, newSegment, right, segmentData, uid, deleted;
   for (i = dragSegments.length - 1; i >= 0; --i) {
     dragSegment = dragSegments[i];
     segmentData = dragSegment[0];
     geometry = segmentData.geometry;
     coordinates = geometry.getCoordinates();
     uid = goog.getUid(segmentData.feature);
+    if (segmentData.depth) {
+      // separate feature components
+      uid += '-' + segmentData.depth.join('-');
+    }
     left = right = index = undefined;
     if (dragSegment[1] === 0) {
       right = segmentData;
@@ -105568,7 +106062,7 @@ ol.interaction.Modify.prototype.removeVertex_ = function() {
       }
     }
   }
-  return deleted;
+  return true;
 };
 
 
@@ -107193,7 +107687,8 @@ ol.source.TileImage = function(options) {
     state: goog.isDef(options.state) ?
         /** @type {ol.source.State} */ (options.state) : undefined,
     tileGrid: options.tileGrid,
-    tilePixelRatio: options.tilePixelRatio
+    tilePixelRatio: options.tilePixelRatio,
+    wrapX: options.wrapX
   });
 
   /**
@@ -107250,7 +107745,9 @@ ol.source.TileImage.prototype.getTile =
   } else {
     goog.asserts.assert(projection);
     var tileCoord = [z, x, y];
-    var tileUrl = this.tileUrlFunction(tileCoord, pixelRatio, projection);
+    var urlTileCoord = this.getWrapXTileCoord(tileCoord, projection);
+    var tileUrl = goog.isNull(urlTileCoord) ? undefined :
+        this.tileUrlFunction(urlTileCoord, pixelRatio, projection);
     var tile = new this.tileClass(
         tileCoord,
         goog.isDef(tileUrl) ? ol.TileState.IDLE : ol.TileState.EMPTY,
@@ -107392,7 +107889,6 @@ ol.tilegrid.XYZ.prototype.createTileCoordTransform = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
   var minZ = this.minZoom;
   var maxZ = this.maxZoom;
-  var wrapX = goog.isDef(options.wrapX) ? options.wrapX : true;
   /** @type {Array.<ol.TileRange>} */
   var tileRangeByZ = null;
   if (goog.isDef(options.extent)) {
@@ -107420,11 +107916,6 @@ ol.tilegrid.XYZ.prototype.createTileCoordTransform = function(opt_options) {
         }
         var n = Math.pow(2, z);
         var x = tileCoord[1];
-        if (wrapX) {
-          x = goog.math.modulo(x, n);
-        } else if (x < 0 || n <= x) {
-          return null;
-        }
         var y = tileCoord[2];
         if (y < -n || -1 < y) {
           return null;
@@ -107510,7 +108001,8 @@ ol.source.BingMaps = function(options) {
     opaque: true,
     projection: ol.proj.get('EPSG:3857'),
     state: ol.source.State.LOADING,
-    tileLoadFunction: options.tileLoadFunction
+    tileLoadFunction: options.tileLoadFunction,
+    wrapX: goog.isDef(options.wrapX) ? options.wrapX : true
   });
 
   /**
@@ -107524,12 +108016,6 @@ ol.source.BingMaps = function(options) {
    * @type {number}
    */
   this.maxZoom_ = goog.isDef(options.maxZoom) ? options.maxZoom : -1;
-
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.wrapX_ = goog.isDef(options.wrapX) ? options.wrapX : true;
 
   var protocol = ol.IS_HTTPS ? 'https:' : 'http:';
   var uri = new goog.Uri(
@@ -107594,7 +108080,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
 
   var culture = this.culture_;
   this.tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
-      tileGrid.createTileCoordTransform({wrapX: this.wrapX_}),
+      tileGrid.createTileCoordTransform(),
       ol.TileUrlFunction.createFromTileUrlFunctions(
           goog.array.map(
               resource.imageUrlSubdomains,
@@ -110501,6 +110987,8 @@ goog.inherits(ol.source.IGC, ol.source.StaticVector);
 
 goog.provide('ol.source.ImageMapGuide');
 
+goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('goog.uri.utils');
 goog.require('ol.Image');
@@ -110516,6 +111004,7 @@ goog.require('ol.source.Image');
  * Source for images from Mapguide servers
  *
  * @constructor
+ * @fires ol.source.ImageEvent
  * @extends {ol.source.Image}
  * @param {olx.source.ImageMapGuideOptions} options Options.
  * @api stable
@@ -110651,6 +111140,8 @@ ol.source.ImageMapGuide.prototype.getImage =
     image = new ol.Image(extent, resolution, pixelRatio,
         this.getAttributions(), imageUrl, this.crossOrigin_,
         this.imageLoadFunction_);
+    goog.events.listen(image, goog.events.EventType.CHANGE,
+        this.handleImageChange, false, this);
   } else {
     image = null;
   }
@@ -110834,6 +111325,8 @@ ol.source.wms.ServerType = {
 goog.provide('ol.source.ImageWMS');
 
 goog.require('goog.asserts');
+goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.uri.utils');
@@ -110853,6 +111346,7 @@ goog.require('ol.source.wms.ServerType');
  * Source for WMS servers providing single, untiled images.
  *
  * @constructor
+ * @fires ol.source.ImageEvent
  * @extends {ol.source.Image}
  * @param {olx.source.ImageWMSOptions=} opt_options Options.
  * @api stable
@@ -111078,6 +111572,9 @@ ol.source.ImageWMS.prototype.getImage =
 
   this.renderedRevision_ = this.getRevision();
 
+  goog.events.listen(this.image_, goog.events.EventType.CHANGE,
+      this.handleImageChange, false, this);
+
   return this.image_;
 
 };
@@ -111281,16 +111778,15 @@ ol.source.XYZ = function(options) {
     tileGrid: tileGrid,
     tileLoadFunction: options.tileLoadFunction,
     tilePixelRatio: options.tilePixelRatio,
-    tileUrlFunction: ol.TileUrlFunction.nullTileUrlFunction
+    tileUrlFunction: ol.TileUrlFunction.nullTileUrlFunction,
+    wrapX: goog.isDef(options.wrapX) ? options.wrapX : true
   });
 
   /**
    * @private
    * @type {ol.TileCoordTransformType}
    */
-  this.tileCoordTransform_ = tileGrid.createTileCoordTransform({
-    wrapX: options.wrapX
-  });
+  this.tileCoordTransform_ = tileGrid.createTileCoordTransform();
 
   if (goog.isDef(options.tileUrlFunction)) {
     this.setTileUrlFunction(options.tileUrlFunction);
@@ -111832,7 +112328,8 @@ ol.source.TileArcGISRest = function(opt_options) {
     projection: options.projection,
     tileGrid: options.tileGrid,
     tileLoadFunction: options.tileLoadFunction,
-    tileUrlFunction: goog.bind(this.tileUrlFunction_, this)
+    tileUrlFunction: goog.bind(this.tileUrlFunction_, this),
+    wrapX: goog.isDef(options.wrapX) ? options.wrapX : true
   });
 
   var urls = options.urls;
@@ -112172,14 +112669,9 @@ ol.source.TileJSON = function(options) {
     crossOrigin: options.crossOrigin,
     projection: ol.proj.get('EPSG:3857'),
     state: ol.source.State.LOADING,
-    tileLoadFunction: options.tileLoadFunction
+    tileLoadFunction: options.tileLoadFunction,
+    wrapX: goog.isDef(options.wrapX) ? options.wrapX : true
   });
-
-  /**
-   * @type {boolean|undefined}
-   * @private
-   */
-  this.wrapX_ = options.wrapX;
 
   var request = new goog.net.Jsonp(options.url);
   request.send(undefined, goog.bind(this.handleTileJSONResponse, this));
@@ -112217,10 +112709,7 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function(tileJSON) {
   this.tileGrid = tileGrid;
 
   this.tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
-      tileGrid.createTileCoordTransform({
-        extent: extent,
-        wrapX: this.wrapX_
-      }),
+      tileGrid.createTileCoordTransform({extent: extent}),
       ol.TileUrlFunction.createFromTemplates(tileJSON.tiles));
 
   if (goog.isDef(tileJSON.attribution) &&
@@ -112992,7 +113481,8 @@ ol.source.TileWMS = function(opt_options) {
     projection: options.projection,
     tileGrid: options.tileGrid,
     tileLoadFunction: options.tileLoadFunction,
-    tileUrlFunction: goog.bind(this.tileUrlFunction_, this)
+    tileUrlFunction: goog.bind(this.tileUrlFunction_, this),
+    wrapX: options.wrapX
   });
 
   var urls = options.urls;
@@ -113437,7 +113927,8 @@ ol.tilegrid.WMTS = function(options) {
     origins: options.origins,
     resolutions: options.resolutions,
     tileSize: options.tileSize,
-    tileSizes: options.tileSizes
+    tileSizes: options.tileSizes,
+    widths: options.widths
   });
 
 };
@@ -113480,6 +113971,8 @@ ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet =
   var origins = [];
   /** @type {!Array.<number>} */
   var tileSizes = [];
+  /** @type {!Array.<number>} */
+  var widths = [];
 
   var supportedCRSPropName = 'SupportedCRS';
   var matrixIdsPropName = 'TileMatrix';
@@ -113515,13 +114008,15 @@ ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet =
         var tileHeight = elt[tileHeightPropName];
         goog.asserts.assert(tileWidth == tileHeight);
         tileSizes.push(tileWidth);
+        widths.push(elt['MatrixWidth']);
       });
 
   return new ol.tilegrid.WMTS({
     origins: origins,
     resolutions: resolutions,
     matrixIds: matrixIds,
-    tileSizes: tileSizes
+    tileSizes: tileSizes,
+    widths: widths
   });
 };
 
@@ -113530,7 +114025,6 @@ goog.provide('ol.source.WMTSRequestEncoding');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.math');
 goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.uri.utils');
@@ -113697,7 +114191,6 @@ ol.source.WMTS = function(options) {
   }
 
   var tmpExtent = ol.extent.createEmpty();
-  var tmpTileCoord = [0, 0, 0];
   tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
       /**
        * @param {ol.TileCoord} tileCoord Tile coordinate.
@@ -113715,16 +114208,6 @@ ol.source.WMTS = function(options) {
         var tileExtent = tileGrid.getTileCoordExtent(tileCoord, tmpExtent);
         var extent = projection.getExtent();
 
-        if (!goog.isNull(extent) && projection.isGlobal()) {
-          var numCols = Math.ceil(
-              ol.extent.getWidth(extent) /
-              ol.extent.getWidth(tileExtent));
-          x = goog.math.modulo(x, numCols);
-          tmpTileCoord[0] = tileCoord[0];
-          tmpTileCoord[1] = x;
-          tmpTileCoord[2] = tileCoord[2];
-          tileExtent = tileGrid.getTileCoordExtent(tmpTileCoord, tmpExtent);
-        }
         if (!ol.extent.intersects(tileExtent, extent) ||
             ol.extent.touches(tileExtent, extent)) {
           return null;
@@ -113742,7 +114225,8 @@ ol.source.WMTS = function(options) {
     tileGrid: tileGrid,
     tileLoadFunction: options.tileLoadFunction,
     tilePixelRatio: options.tilePixelRatio,
-    tileUrlFunction: tileUrlFunction
+    tileUrlFunction: tileUrlFunction,
+    wrapX: goog.isDef(options.wrapX) ? options.wrapX : false
   });
 
 };
@@ -113875,7 +114359,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   goog.asserts.assert(!goog.isNull(l));
 
   goog.asserts.assert(l['TileMatrixSetLink'].length > 0);
-  var idx, matrixSet;
+  var idx, matrixSet, wrapX;
   if (l['TileMatrixSetLink'].length > 1) {
     idx = goog.array.findIndex(l['TileMatrixSetLink'],
         function(elt, index, array) {
@@ -113898,6 +114382,13 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
       (l['TileMatrixSetLink'][idx]['TileMatrixSet']);
 
   goog.asserts.assert(!goog.isNull(matrixSet));
+
+  var wgs84BoundingBox = l['WGS84BoundingBox'];
+  if (goog.isDef(wgs84BoundingBox)) {
+    var wgs84ProjectionExtent = ol.proj.get('EPSG:4326').getExtent();
+    wrapX = (wgs84BoundingBox[0] == wgs84ProjectionExtent[0] &&
+        wgs84BoundingBox[2] == wgs84ProjectionExtent[2]);
+  }
 
   var format = /** @type {string} */ (l['Format'][0]);
   if (goog.isDef(config['format'])) {
@@ -113990,7 +114481,8 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
     requestEncoding: requestEncoding,
     tileGrid: tileGrid,
     style: style,
-    dimensions: dimensions
+    dimensions: dimensions,
+    wrapX: wrapX
   };
 
   /* jshint +W069 */
@@ -117091,6 +117583,11 @@ goog.exportSymbol(
     ol.source.Image,
     OPENLAYERS);
 
+goog.exportProperty(
+    ol.source.ImageEvent.prototype,
+    'image',
+    ol.source.ImageEvent.prototype.image);
+
 goog.exportSymbol(
     'ol.source.ImageStatic',
     ol.source.ImageStatic,
@@ -117723,6 +118220,11 @@ goog.exportProperty(
 
 goog.exportProperty(
     ol.proj.Projection.prototype,
+    'setGlobal',
+    ol.proj.Projection.prototype.setGlobal);
+
+goog.exportProperty(
+    ol.proj.Projection.prototype,
     'setExtent',
     ol.proj.Projection.prototype.setExtent);
 
@@ -117730,6 +118232,16 @@ goog.exportProperty(
     ol.proj.Projection.prototype,
     'setWorldExtent',
     ol.proj.Projection.prototype.setWorldExtent);
+
+goog.exportProperty(
+    ol.proj.Projection.prototype,
+    'setGetPointResolution',
+    ol.proj.Projection.prototype.setGetPointResolution);
+
+goog.exportProperty(
+    ol.proj.Projection.prototype,
+    'getPointResolution',
+    ol.proj.Projection.prototype.getPointResolution);
 
 goog.exportSymbol(
     'ol.proj.addEquivalentProjections',
@@ -118365,6 +118877,11 @@ goog.exportProperty(
     ol.geom.LineString.prototype,
     'clone',
     ol.geom.LineString.prototype.clone);
+
+goog.exportProperty(
+    ol.geom.LineString.prototype,
+    'forEachSegment',
+    ol.geom.LineString.prototype.forEachSegment);
 
 goog.exportProperty(
     ol.geom.LineString.prototype,
