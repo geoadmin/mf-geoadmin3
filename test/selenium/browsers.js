@@ -24,7 +24,19 @@ var create = function(os, osver, res, browser, brover) {
     'browserstack.bfcache' : '0',
     'browserstack.debug' : false // switch this to true to debug (visual logs) 
   };
-}
+};
+
+var createMobile = function(browserName, platform, device) {
+  return {
+    'browserName' : browserName,
+    'platform' : platform,
+    'device' : device,
+    'browserstack.user' : process.env.BROWSERSTACK_USER,
+    'browserstack.key' : process.env.BROWSERSTACK_KEY,
+    'browserstack.bfcache' : '0',
+    'browserstack.debug' : false // switch this to true to debug (visual logs)
+  };
+};
 
 // Capabilities are available on :
 // https://www.browserstack.com/automate/capabilities
@@ -46,4 +58,12 @@ var capabilities = [
     create('Windows', '8.1', '1280x1024', 'Firefox', '35.0')
 ];
 
+var mobileCapabilities = [
+    createMobile('android', 'ANDROID', 'Google Nexus'),
+    createMobile('android', 'ANDROID', 'Google Nexus 4'),
+    createMobile('android', 'ANDROID', 'Google Nexus 5')
+//    createMobile('android', 'ANDROID', 'Google Nexus 6')
+];
+
 module.exports.capabilities = capabilities;
+module.exports.mobileCapabilities = mobileCapabilities;
