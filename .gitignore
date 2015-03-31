@@ -14,6 +14,8 @@
 /deploy/deploy-branch.cfg
 /src/locales/*.csv
 /scripts/00-*.conf
+/src/lib/angular.js
+/src/lib/angular.min.js
 rc_branch
 # FIXME
 # The following are developer-specific and should probably be in the
