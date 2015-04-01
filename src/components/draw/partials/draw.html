@@ -1,14 +1,22 @@
 <div>
   <div class="ga-draw-buttons">
     <div class="btn-group">
-      <button title="{{pointTool.description | translate}}"
-              class="ga btn btn-default {{pointTool.iconClass}}"
-              ng-click="toggleTool($event, pointTool)"
-              ng-class="{'active': options[pointTool.activeKey]}">
+      <button class="btn btn-default dropdown-toggle icon-ga-point"
+              data-toggle="dropdown" aria-expanded="false"><span class="caret"></span>
       </button>
+      <ul class="dropdown-menu" role="menu"
+          ng-click="toggleTool($event, pointTool)">
+        <li ng-repeat="i in options.icons">
+          <img class="btn btn-default" 
+               draggable="false" 
+               ng-click="options.icon = i" 
+               ng-src="{{i.url}}" />
+        </li>
+      </ul>
+
     </div>
     <div class="btn-group">
-      <button type="button" class="ga btn btn-default dropdown-toggle icon-ga-edit"
+      <button class="btn btn-default dropdown-toggle icon-ga-edit"
               data-toggle="dropdown" aria-expanded="false"><span class="caret"></span>
       </button>
       <ul class="dropdown-menu" role="menu">
@@ -22,7 +30,7 @@
       </ul>
     </div>
     <div class="ga-more pull-right">
-      <button type="button" class="btn btn-default dropdown-toggle"
+      <button class="btn btn-default dropdown-toggle"
               data-toggle="dropdown" aria-expanded="false">More...<span class="caret"></span>
       </button>
       <ul class="dropdown-menu" role="menu">

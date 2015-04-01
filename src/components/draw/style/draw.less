@@ -22,28 +22,39 @@
     .btn-group {
       position: relative;
       display: inline-block;
-    }
-    button.ga {
-      font-size: 40px;
-      height: 44px;
-      width: 44px;
-      padding: 0px;
-      margin: 0px;
-
-      & + ul {
-        padding-right: 2px;
-        li {
-          display: inline-block;
-          width: auto;
-          margin-left: 2px;
+      
+      .btn-default {
+        font-size: 40px;
+        height: 44px;
+        width: 44px;
+        padding: 0px;
+        margin: 0px;
+        
+        & + ul {
+          padding-right: 2px;
+          li {
+            display: inline-block;
+            width: auto;
+            margin-left: 2px;
+          }
         }
       }
+       
+      > .dropdown-toggle {
+        padding-right: 5px;
+        width: auto;
+      }
     }
-    button.dropdown-toggle {
-     padding-right: 5px;
-     width: auto;
+    
+    .dropdown-menu {
+      max-height: 320px;
+      overflow: auto;
     }
 
+    .icon-ga-point + .dropdown-menu {
+      width: 252px;
+    }
+   
     .ga-more {
       position: absolute;
       right: 0px;
@@ -58,7 +69,8 @@
       color: red;
     }
   }
-}  
+}
+ 
 .ga-draw-modify {
   position: relative;
   min-width: 250px;
