@@ -877,7 +877,7 @@ These projections are:
 * LV95/CH1903+ (EPSG:2056)
     `http://wmts10.geo.admin.ch/EPSG/2056/1.0.0/WMTSCapabilities.xml <../EPSG/2056/1.0.0/WMTSCapabilities.xml>`_ 
 * WGS84/Pseudo-Mercator (EPSG:3857, as used in OSM, Bing, Google Map)
-    `http://wmts10.geo.admin.ch/1.0.0/EPSG/3857/WMTSCapabilities.xml <../EPSG/3857/1.0.0/WMTSCapabilities.xml>`_
+    `http://wmts10.geo.admin.ch/EPSG/3857/1.0.0/WMTSCapabilities.xml <../EPSG/3857/1.0.0/WMTSCapabilities.xml>`_
 
 
 Note:
