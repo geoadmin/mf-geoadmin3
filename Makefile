@@ -135,14 +135,11 @@ deploybranchdemo: deploybranch
 .PHONY: preparebranch
 preparebranch: rc_branch scripts/00-$(GIT_BRANCH).conf
 
-.PHONY: updateol
-updateol: OL_JS = ol.js ol-debug.js
-updateol: .build-artefacts/ol3 .build-artefacts/ol-requirements-installation.timestamp
+.PHONY: ol
+ol: OL_JS = ol.js ol-debug.js
+ol: scripts/ol-geoadmin.json .build-artefacts/ol3 .build-artefacts/ol-requirements-installation.timestamp
 	cd .build-artefacts/ol3; \
 	git reset HEAD --hard; \
-	git checkout master; \
-	git fetch origin; \
-	git merge --ff origin/master; \
 	git show; \
 	cat ../../scripts/ga-ol3-style.exports >> src/ol/style/style.js; \
 	cat ../../scripts/ga-ol3-tilegrid.exports >> src/ol/tilegrid/tilegrid.js; \
@@ -370,7 +367,7 @@ scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf .build-artefacts/
 	test $(DEPLOY_TARGET) != $(LAST_DEPLOY_TARGET) && echo $(DEPLOY_TARGET) > .build-artefacts/last-deploy-target || :
 
 .build-artefacts/ol3:
-	git clone https://github.com/openlayers/ol3.git $@
+	git clone https://github.com/openlayers/ol3.git $@ && cd $@ && git checkout v3.4.0
 
 .build-artefacts/bootstrap:
 	git clone https://github.com/twbs/bootstrap.git $@ && cd $@ && git checkout v3.3.1

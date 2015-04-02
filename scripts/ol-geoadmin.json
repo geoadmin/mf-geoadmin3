@@ -33,6 +33,7 @@
     "ol.control.ZoomToExtent",
     "ol.control.ZoomToExtent#*",
     "ol.control.defaults",
+    "ol.coordinate.format",
     "ol.coordinate.toStringHDMS",
     "ol.coordinate.toStringXY",
     "ol.easing.easeOut",
