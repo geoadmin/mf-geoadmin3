@@ -25,8 +25,10 @@ var browsers = require('./browsers.js');
 var startTest = require('./start_test.js');
 var searchTest = require('./search_test.js');
 var swisssearchTest = require('./swisssearch_test.js');
-var printTest = require('./print_test.js');
+var kmlTest = require('./kml_test.js');
+var wmsTest = require('./wms_test.js');
 var mobileTest = require('./mobile_test.js');
+var printTest = require('./print_test.js');
 
 //okay we will start the script!
 console.log("Starting Browserstack script!");
@@ -54,7 +56,9 @@ browsers.capabilities.forEach(function(cap){
       searchTest.runTest(cap, driver, cmd.target);
       swisssearchTest.runTest(cap, driver, cmd.target);
       mobileTest.runTest(cap, driver, cmd.target);
-
+      kmlTest.runTest(cap, driver, cmd.target);
+      wmsTest.runTest(cap, driver, cmd.target);
+      
       //Keep the print test last, as this results in a downloadpdf command,
       //which leaves the page in a browser dependant state
       printTest.runTest(cap, driver, cmd.target);
