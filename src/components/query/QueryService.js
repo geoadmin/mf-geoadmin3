@@ -48,35 +48,6 @@
     attrInfos.TIMESTAMP = attrInfos['TIMESTAMP WITHOUT TIME ZONE'] =
         attrInfos.DATE;
 
-    // Parse bbox string
-    var parseBoxString = function(stringBox2D) {
-      var extent = stringBox2D.replace('BOX(', '')
-        .replace(')', '').replace(',', ' ')
-        .split(' ');
-      return $.map(extent, parseFloat);
-    };
-
-    // Get parameters for a featureidentify request
-    var getParams = function(layers, extent) {
-      var ids = [], timeenabled = [], timestamps = [];
-      layers.forEach(function(l) {
-        var ts = '';
-        if (l.time && l.time.substr(0, 4) != '9999') {
-          ts = l.time.substr(0, 4);
-        }
-        ids.push(l.bodId);
-        timeenabled.push(l.timeEnabled);
-        timestamps.push(ts);
-      });
-      return {
-        type: 'featureidentify',
-        features: ids.join(','),
-        timeEnabled: timeenabled.join(','),
-        timeStamps: timestamps.join(','),
-        bbox: extent.join(',')
-      };
-    };
-
     // Create the placeholder and the title of the input
     var attrValuesToString = function(attr, limit) {
       var possibleValues = attr.values.join(', ');
@@ -88,10 +59,8 @@
     };
 
 
-    this.$get = function($http, $log, $q, $translate, $window, gaDebounce,
-        gaGlobalOptions) {
-      var searchUrl = gaGlobalOptions.apiUrl +
-          '/rest/services/all/SearchServer';
+    this.$get = function($http, $log, $q, $translate, $window,
+                         gaGlobalOptions) {
       var msUrl = gaGlobalOptions.apiUrl + '/rest/services/all/MapServer/';
       var moment;
       // List of predefined queries by layer
@@ -203,22 +172,6 @@
           return deferred.promise;
         };
 
-        // Use ESRI query service
-        this.getLayerFeatures = function(scope, bodId, params) {
-          var deferred = $q.defer();
-          $http.get(msUrl + bodId + '/query', {
-            params: params,
-            cache: true
-          }).success(function(data) {
-            deferred.resolve(data.results);
-          }).error(function(data, status, headers, config) {
-            $log.error('Request failed');
-            $log.debug(config);
-            deferred.reject(status);
-          });
-          return deferred.promise;
-        };
-
         // Use custom attribute service
         this.getAttributeValues = function(scope, bodId, attrName, params) {
           var deferred = $q.defer();
@@ -234,49 +187,6 @@
           return deferred.promise;
         };
 
-        // Use featureidentify service
-        var canceler;
-        var bboxDebounced = gaDebounce.debounce(function(scope, layers,
-            extent) {
-          if (canceler) {
-            canceler.resolve();
-          }
-          var deferred = $q.defer();
-          canceler = $q.defer();
-          $http.get(searchUrl, {
-            params: getParams(layers, extent),
-            timeout: canceler.promise,
-            cache: true
-          }).success(function(data) {
-
-            for (var i = 0; i < data.results.length; i++) {
-              var result = data.results[i];
-              // The feature search using sphinxsearch uses quadindex
-              // to filter results based on their bounding boxes. This is
-              // in order to make the search extremely fast even for a large
-              // number of features. The downside is that we will have false
-              // positives in the results (features which are outside of
-              // the searched box). Here, we filter out those false
-              // positives based on the bounding box of the feature. Note
-              // that we could refine this by using the exact geometry in
-              // the future
-              if (result.attrs && result.attrs.geom_st_box2d) {
-                var bbox = parseBoxString(result.attrs.geom_st_box2d);
-                if (!ol.extent.intersects(extent, bbox)) {
-                  data.results.splice(i, 1);
-                  i--;
-                }
-              }
-            }
-            deferred.resolve(data.results);
-          }).error(function(data, status, headers, config) {
-            $log.error('Request failed');
-            $log.debug(config);
-            deferred.reject(status);
-          });
-          return deferred.promise;
-        }, 200, false, false);
-        this.getLayersFeaturesByBbox = bboxDebounced;
       };
       var query = new Query();
       query.momentUrl = this.momentUrl;
