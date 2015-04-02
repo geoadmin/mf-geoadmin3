@@ -1,8 +1,10 @@
-// 03 Print test using browserstack
+// Print test using browserstack
 
 var webdriver = require('browserstack-webdriver');
 
 var runTest = function(cap, driver, target) {
+  //We maximize our window to be sure to be in full resolution
+  driver.manage().window().maximize();
   // Goto the travis deployed site.
   driver.get(target + '/?lang=de');
   //wait until topics related stuff is loaded. We know this when catalog is there
