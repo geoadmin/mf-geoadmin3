@@ -27,9 +27,9 @@ class SiteMapValidation(object):
         if len(clist) > 2:
             raise HTTPBadRequest('Malformed content parameter')
         if len(clist) == 2:
-            try:
+            if clist[1].isdigit():
                 self._multi_part = int(clist[1])
-            except:
+            else:
                 raise HTTPBadRequest('Content parameter should have integer index value')
             if self._multi_part < 0:
                 raise HTTPBadRequest('Content parameter should have integer greater zero')
