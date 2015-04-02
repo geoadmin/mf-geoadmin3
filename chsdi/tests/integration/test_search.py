@@ -245,3 +245,12 @@ class TestSearchServiceView(TestsBase):
         self.failUnless(len(resp.json['results']) == 1)
         self.failUnless(resp.json['results'][0]['attrs']['origin'] == 'feature')
         self.failUnless(resp.json['results'][0]['attrs']['detail'] == 'general-suworow-denkmal')
+
+    def test_locations_search_limit(self):
+        params = {'searchText': 'chalais', 'type': 'locations', 'limit': '1'}
+        resp = self.testapp.get('/rest/services/ech/SearchServer', params=params, status=200)
+        self.failUnless(len(resp.json['results']) == 1)
+
+    def test_locations_search_wrong_limit(self):
+        params = {'searchText': 'chalais', 'type': 'locations', 'limit': '5.5'}
+        self.testapp.get('/rest/services/ech/SearchServer', params=params, status=400)

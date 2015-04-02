@@ -41,6 +41,7 @@ class Search(SearchValidation):
         self.timeEnabled = request.params.get('timeEnabled')
         self.timeStamps = request.params.get('timeStamps')
         self.typeInfo = request.params.get('type')
+        self.limit = request.params.get('limit')
         self.varnish_authorized = request.headers.get('X-SearchServer-Authorized', 'false').lower() == 'true'
 
         self.geodataStaging = request.registry.settings['geodata_staging']
@@ -79,8 +80,8 @@ class Search(SearchValidation):
     def _swiss_search(self):
         if len(self.searchText) < 1 and self.bbox is None:
             raise exc.HTTPBadRequest('You must at least provide a bbox or a searchText parameter')
-
-        self.sphinx.SetLimits(0, self.LIMIT)
+        limit = self.limit if self.limit and self.limit <= self.LIMIT else self.LIMIT
+        self.sphinx.SetLimits(0, limit)
 
         # Define ranking mode
         if self.bbox is not None:
@@ -133,7 +134,8 @@ class Search(SearchValidation):
 
     def _layer_search(self):
         # 10 features per layer are returned at max
-        self.sphinx.SetLimits(0, self.LAYER_LIMIT)
+        layerLimit = self.limit if self.limit and self.limit <= self.LAYER_LIMIT else self.LAYER_LIMIT
+        self.sphinx.SetLimits(0, layerLimit)
         self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
         self.sphinx.SetSortMode(sphinxapi.SPH_SORT_EXTENDED, '@weight DESC')
         index_name = 'layers_%s' % self.lang
@@ -177,7 +179,8 @@ class Search(SearchValidation):
         if self.featureIndexes is None:
             # we need bounding box and layernames. FIXME: this should be error
             return
-        self.sphinx.SetLimits(0, self.FEATURE_LIMIT)
+        featureLimit = self.limit if self.limit and self.limit <= self.FEAUTRE_LIMIT else self.FEATURE_LIMIT
+        self.sphinx.SetLimits(0, featureLimit)
         self.sphinx.SetRankingMode(sphinxapi.SPH_RANK_WORDCOUNT)
         if self.bbox:
             geoAnchor = self._get_geoanchor_from_bbox()
@@ -248,8 +251,8 @@ class Search(SearchValidation):
 
         if self.featureIndexes is None:
             raise exc.HTTPBadRequest('Please provide a parameter features')
-
-        self.sphinx.SetLimits(0, self.FEATURE_GEO_LIMIT)
+        featureGeoLimit = self.limit if self.limit and self.limit <= self.FEATURE_GEO_LIMIT else self.FEATURE_GEO_LIMIT
+        self.sphinx.SetLimits(0, featureGeoLimit)
 
         if self.timeInstant is not None:
             timeFilter['type'] = 'instant'
