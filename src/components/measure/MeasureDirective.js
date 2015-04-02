@@ -162,6 +162,12 @@
                       }
 
                     } else {
+                      // Update the profile
+                      if (scope.options.isProfileActive) {
+                        updateProfileDebounced();
+                      }
+
+
                       // We update features and measures
                       var lastPoint = lineCoords[lineCoords.length - 1];
                       var lastPoint2 = lineCoords[lineCoords.length - 2];
