@@ -571,7 +571,7 @@ class TestReleasesService(TestsBase):
         params = {'imageDisplay': '500,600,96', 'mapExtent': '611399.9999999999,158650,690299.9999999999,198150'}
         resp = self.testapp.get('/rest/services/all/MapServer/' + zlayer + '/releases', params=params, status=200)
         self.failUnless(resp.content_type == 'application/json')
-        self.failUnless(len(resp.json['results']) == 122, len(resp.json['results']))
+        self.failUnless(len(resp.json['results']) == 123, len(resp.json['results']))
 
     def test_missing_params(self):
         params = {'mapExtent': '611399.9999999999,158650,690299.9999999999,198150'}
