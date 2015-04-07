@@ -5,6 +5,7 @@ from pyramid.httpexceptions import HTTPBadRequest
 from chsdi.lib.validation import MapNameValidation
 
 MAX_SPHINX_INDEX_LENGTH = 63
+MAX_SEARCH_TERMS = 10
 
 class SearchValidation(MapNameValidation):
 
@@ -83,6 +84,8 @@ class SearchValidation(MapNameValidation):
         searchTextList = value.split(' ')
         # Remove empty strings
         searchTextList = filter(None, searchTextList)
+        if len(searchTextList) > MAX_SEARCH_TERMS:
+            raise HTTPBadRequest("The searchText parameter can not contain more than 10 words")
         self._searchText = searchTextList
 
     @bbox.setter

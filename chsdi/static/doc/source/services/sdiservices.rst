@@ -508,7 +508,7 @@ Only RESTFul interface is available.
 +-------------------------------------+-------------------------------------------------------------------------------------------+
 | Parameters                          | Description                                                                               |
 +=====================================+===========================================================================================+
-| **searchText (required/optional)**  | Must be provided if the `bbox` is not. The text to search for.                            |
+| **searchText (required/optional)**  | Must be provided if the `bbox` is not. The text to search for. Maximum of 10 words.       |
 +-------------------------------------+-------------------------------------------------------------------------------------------+
 | **type (required)**                 | The type of performed search. Specify `locations` to perform a location search.           |
 +-------------------------------------+-------------------------------------------------------------------------------------------+
@@ -533,7 +533,7 @@ Only RESTFul interface is available.
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | Parameters                        | Description                                                                               |
 +===================================+===========================================================================================+
-| **searchText (required)**         | The text to search for.                                                                   |
+| **searchText (required)**         | The text to search for. Maximum of 10 words allowed.                                      |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | **type (required)**               | The type of performed search. Specify `layers` to perform a layer search.                 |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
@@ -549,7 +549,7 @@ Only RESTFul interface is available.
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | Parameters                        | Description                                                                               |
 +===================================+===========================================================================================+
-| **searchText (required)**         | The text to search for (in features detail field).                                        |
+| **searchText (required)**         | The text to search for (in features detail field). Maximum of 10 words allowed.           |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
 | **type (required)**               | The type of performed search. Specify `featuresearch` to perform a feature search.        |
 +-----------------------------------+-------------------------------------------------------------------------------------------+
