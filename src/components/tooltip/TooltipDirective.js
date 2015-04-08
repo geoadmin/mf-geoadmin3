@@ -173,8 +173,13 @@
 
             // Test if the layer is a queryable bod layer
             function isQueryableBodLayer(olLayer) {
-              return (olLayer.bodId &&
-                  gaLayers.getLayerProperty(olLayer.bodId, 'queryable'));
+              var bodId = olLayer.bodId;
+              if (bodId) {
+                bodId = gaLayers.getLayerProperty(bodId, 'parentLayerId') ||
+                    bodId;
+              }
+              return (bodId &&
+                  gaLayers.getLayerProperty(bodId, 'queryable'));
             };
 
             // Get all the queryable layers
