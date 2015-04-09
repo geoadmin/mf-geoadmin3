@@ -76,6 +76,16 @@ This can be fixed by running:
     sudo ln -s /usr/bin/nodejs /usr/bin/node 
     #see https://github.com/joyent/node/issues/3911
 
+### Update to the last OpenLayers Version
+
+Use `make ol` to update the `ol.js` and `ol-debug.js` files.
+
+Add the correct version tag
+
+https://github.com/geoadmin/mf-geoadmin3/blob/master/Makefile#L370
+
+Remember to update the API and API doc at the same time to keep coherency.
+
 # Automated tests
 
 ## Unit tests
