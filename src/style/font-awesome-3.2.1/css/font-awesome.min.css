@@ -41,6 +41,7 @@ a .icon-stack,a .icon-spin{display:inline-block;text-decoration:none;}
 .icon-flip-vertical:before{-webkit-transform:scale(1, -1);-moz-transform:scale(1, -1);-ms-transform:scale(1, -1);-o-transform:scale(1, -1);transform:scale(1, -1);}
 a .icon-rotate-90:before,a .icon-rotate-180:before,a .icon-rotate-270:before,a .icon-flip-horizontal:before,a .icon-flip-vertical:before{display:inline-block;}
 .icon-search:before{content:"\f002";}
+.icon-user:before{content:"\f007";}
 .icon-remove:before{content:"\f00d";}
 .icon-zoom-in:before{content:"\f00e";}
 .icon-gear:before{content:"\f013";}
@@ -50,6 +51,8 @@ a .icon-rotate-90:before,a .icon-rotate-180:before,a .icon-rotate-270:before,a .
 .icon-print:before{content:"\f02f";}
 .icon-share:before{content:"\f045";}
 .icon-check:before{content:"\f046";}
+.icon-play:before{content:"\f04b";}
+.icon-stop:before{content:"\f04d";}
 .icon-remove-sign:before{content:"\f057";}
 .icon-question-sign:before{content:"\f059";}
 .icon-question-circle:before{content:"\f059";}

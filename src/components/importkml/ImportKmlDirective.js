@@ -147,7 +147,7 @@
                 url: ($scope.currentTab === 2) ? $scope.fileUrl :
                     $scope.file.name,
                 attribution: ($scope.currentTab === 2) ?
-                    gaUrlUtils.getHostname($scope.fileUrl) :
+                    $scope.fileUrl :
                     undefined,
                 useImageVector: gaKml.useImageVector($scope.fileSize),
                 zoomToExtent: true

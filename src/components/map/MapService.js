@@ -188,6 +188,10 @@
             writable: true,
             value: true
           },
+          useThirdPartyData: {
+            writable: true,
+            value: false
+          },
           preview: {
             writable: true,
             value: false
@@ -314,6 +318,9 @@
             attributions = [
               gaMapUtils.getAttribution(options.attribution)
             ];
+            if (gaUrlUtils.isValid(options.attribution)) {
+              options.attribution = gaUrlUtils.getHostname(options.attribution);
+            }
           }
 
           var source = new ol.source.ImageWMS({
@@ -337,6 +344,7 @@
           gaDefinePropertiesForLayer(layer);
           layer.preview = options.preview;
           layer.displayInLayerManager = !layer.preview;
+          layer.useThirdPartyData = true;
           layer.label = options.label;
           return layer;
         };
@@ -351,7 +359,7 @@
             url: getCapLayer.wmsUrl,
             label: getCapLayer.Title,
             extent: getCapLayer.extent,
-            attribution: gaUrlUtils.getHostname(getCapLayer.wmsUrl)
+            attribution: getCapLayer.wmsUrl
           };
           return createWmsLayer(wmsParams, wmsOptions);
         };
@@ -546,12 +554,13 @@
             }
             var attributions;
             if (options.attribution) {
-              //Insure attribution on map is same as printed
-              options.attribution = gaMapUtils.getAttribution(
-                  options.attribution).getHTML();
               attributions = [
                 gaMapUtils.getAttribution(options.attribution)
               ];
+              if (gaUrlUtils.isValid(options.attribution)) {
+                options.attribution =
+                    gaUrlUtils.getHostname(options.attribution);
+              }
             }
             var source = new ol.source.Vector({
               features: features,
@@ -585,6 +594,7 @@
               olLayer = new ol.layer.Vector(layerOptions);
             }
             gaDefinePropertiesForLayer(olLayer);
+            olLayer.useThirdPartyData = true;
             return olLayer;
           });
         };
@@ -1054,7 +1064,7 @@
    * Service provides map util functions.
    */
   module.provider('gaMapUtils', function() {
-    this.$get = function($window, gaGlobalOptions) {
+    this.$get = function($window, gaGlobalOptions, gaUrlUtils) {
       var attributions = {};
       var resolutions = [650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0,
           2.5, 2.0, 1.0, 0.5, 0.25, 0.1];
@@ -1139,6 +1149,13 @@
          */
         getAttribution: function(text) {
           var key = text;
+          // If the attribution text is simply an url, we display the hostname
+          // and if the url point to a 3 party data we display the text in red
+          // with a warning.
+          if (gaUrlUtils.isValid(text)) {
+            key = gaUrlUtils.getHostname(text);
+            text = '<span class="ga-warning-tooltip">' + key + '</span>';
+          }
           if (key in attributions) {
             return attributions[key];
           } else {
@@ -1147,6 +1164,7 @@
             return a;
           }
         },
+
         moveTo: function(map, zoom, center) {
           var view = map.getView();
           view.setZoom(zoom);
@@ -1507,8 +1525,6 @@
         });
 
         var deregister = $rootScope.$on('gaLayersChange', function() {
-          var allowThirdData = false;
-          var confirmedOnce = false;
           var nbLayersToAdd = layerSpecs.length;
 
           angular.forEach(layerSpecs, function(layerSpec, index) {
@@ -1520,26 +1536,6 @@
                 false : true;
             var timestamp = (index < layerTimestamps.length &&
                 layerTimestamps != '') ? layerTimestamps[index] : '';
-
-            if (gaMapUtils.isKmlLayer(layerSpec) ||
-                gaMapUtils.isExternalWmsLayer(layerSpec)) {
-              var url = '';
-              if (gaMapUtils.isKmlLayer(layerSpec)) {
-                url = layerSpec.replace('KML||', '');
-              } else if (gaMapUtils.isExternalWmsLayer(layerSpec)) {
-                url = layerSpec.split('||')[2];
-              }
-              if (!confirmedOnce &&
-                  !/(admin|bgdi)\.ch$/.test(gaUrlUtils.getHostname(url))) {
-                allowThirdData =
-                  confirm($translate.instant('third_party_data_warning'));
-                if (allowThirdData) {
-                  confirmedOnce = true;
-                }
-              } else {
-                allowThirdData = true;
-              }
-            }
 
             var bodLayer = gaLayers.getLayer(layerSpec);
             if (bodLayer) {
@@ -1567,14 +1563,16 @@
                 map.addLayer(layer);
               }
 
-            } else if (allowThirdData && gaMapUtils.isKmlLayer(layerSpec)) {
+            } else if (gaMapUtils.isKmlLayer(layerSpec)) {
+
               // KML layer
+              var url = layerSpec.replace('KML||', '');
               try {
                 gaKml.addKmlToMapForUrl(map, url,
                   {
                     opacity: opacity,
                     visible: visible,
-                    attribution: gaUrlUtils.getHostname(url)
+                    attribution: url
                   },
                   index + 1);
                 mustReorder = true;
@@ -1582,8 +1580,8 @@
                 // Adding KML layer failed, native alert, log message?
               }
 
-            } else if (allowThirdData &&
-                gaMapUtils.isExternalWmsLayer(layerSpec)) {
+            } else if (gaMapUtils.isExternalWmsLayer(layerSpec)) {
+
               // External WMS layer
               var infos = layerSpec.split('||');
               try {
@@ -1592,11 +1590,11 @@
                     LAYERS: infos[3]
                   },
                   {
-                    url: url,
+                    url: infos[2],
                     label: infos[1],
                     opacity: opacity,
                     visible: visible,
-                    attribution: gaUrlUtils.getHostname(infos[2])
+                    attribution: infos[2]
                   },
                   index + 1);
               } catch (e) {

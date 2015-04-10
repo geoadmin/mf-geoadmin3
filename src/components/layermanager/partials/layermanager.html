@@ -1,6 +1,10 @@
 <ul>
   <li ng-if="!(filteredLayers = (layers | gaReverse | filter:layerFilter)).length" class="ga-no-layer" translate>no_layers_info</li>
-  <li ng-repeat="layer in filteredLayers" class="ga-layer-folded" ng-class="{'ga-layer-time-enabled': layer.timeEnabled}">
+  <li ng-repeat="layer in filteredLayers" class="ga-layer-folded"
+      ng-class="{
+        'ga-layer-time-enabled': layer.timeEnabled,
+        'ga-layer-warning': layer.useThirdPartyData
+      }">
     <div class="ga-layer-infos">
       <button class="ga-icon ga-btn icon-remove-sign" ng-click="removeLayer(layer)"></button>
       <label class="ga-checkbox">
@@ -18,6 +22,8 @@
                 ng-change="setLayerTime(layer)"
                 ng-options="(i | gaTimeLabel:layer) for i in layer.timestamps"></select>
       </div>
+      <button class="ga-icon ga-btn icon-user"
+              ng-click="showWarning(layer)"></button>
       <button ng-if="isBodLayer(layer)" class="ga-icon ga-btn icon-info-sign"
               ng-click="displayLayerMetadata($event, layer)"></button>
     </div>

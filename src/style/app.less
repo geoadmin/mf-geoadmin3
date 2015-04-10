@@ -83,6 +83,30 @@ form {
   cursor: move;
 }
 
+.ga-red-tooltip {
+  opacity: 1;
+
+  .tooltip-inner {
+    background-color: #ed1c24;
+  }
+
+  &.top .tooltip-arrow {
+    border-top-color: #ed1c24;
+  }
+
+  &.right .tooltip-arrow {
+    border-right-color: #ed1c24;
+  }
+
+  &.bottom .tooltip-arrow {
+    border-bottom-color: #ed1c24;
+  }
+
+  &.left .tooltip-arrow {
+    border-left-color: #ed1c24;
+  }
+}
+
 /* This allow the display of not-allowed cursor on hover */
 .btn[disabled] {
   pointer-events: auto;
