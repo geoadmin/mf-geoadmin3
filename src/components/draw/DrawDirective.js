@@ -200,23 +200,53 @@
             }
           };
 
-          // Determines which styles are used by selected fetures
+
+          // Determines which styles are used by selected features
           var updateUseStyles = function(evt) {
             var features = select.getFeatures().getArray();
             var useTextStyle = false;
             var useIconStyle = false;
             var useColorStyle = false;
+            // if there is only one feature selected we update the inputs with
+            // the current feature style
+            var unique = (features.length == 1);
 
             for (var i = 0, ii = features.length; i < ii; i++) {
               var styles = features[i].getStyleFunction()();
               if (styles[0].getImage() instanceof ol.style.Icon) {
                 useIconStyle = true;
+
+                // Update html inputs.
+                scope.options.icon = (unique) ?
+                    findIcon(styles[0].getImage()) : scope.options.icon[0];
+                scope.options.iconSize = (unique) ?
+                    findIconSize(styles[0].getImage()) :
+                    scope.options.iconSizes[0];
                 continue;
+
               } else if (styles[0].getText()) {
                 useTextStyle = true;
+
+                // Update html inputs
+                scope.options.text = (unique) ?
+                    styles[0].getText().getText() : '';
+                scope.options.color = (unique) ?
+                    findColor(styles[0].getText().getFill().getColor()) :
+                    scope.options.colors[0];
+
+              } else {
+
+                // Update html inputs
+                scope.options.color = (unique) ?
+                    findColor(styles[0].getStroke().getColor()) :
+                    scope.options.colors[0];
               }
               useColorStyle = true;
             }
+
+            scope.options.description = (unique) ?
+                features[0].get('description') : '';
+
             scope.$evalAsync(function() {
               scope.useTextStyle = useTextStyle;
               scope.useIconStyle = useIconStyle;
@@ -290,24 +320,9 @@
             }
           });
 
-          scope.$watch('options.iconSize', function(active) {
-            if (scope.options.isModifyActive) {
-              updateSelectedFeatures();
-            }
-          });
-
-          scope.$watch('options.icon', function(active) {
-            if (scope.options.isModifyActive) {
-              updateSelectedFeatures();
-            }
-          });
-
-          scope.$watch('options.color', function(active) {
-            if (scope.options.isModifyActive) {
-              updateSelectedFeatures();
-            }
-          });
-          scope.$watch('options.text', function(active) {
+          scope.$watchGroup(['options.iconSize', 'options.icon',
+              'options.color', 'options.text', 'options.description'],
+              function() {
             if (scope.options.isModifyActive) {
               updateSelectedFeatures();
             }
@@ -345,8 +360,44 @@
             }
           });
 
+          $rootScope.$on('$translateChangeEnd', function() {
+            layer.label = $translate.instant('draw');
+          });
 
           // Utils
+
+          // Find the corresponding style
+          var findIcon = function(olIcon) {
+            var id = olIcon.getSrc();
+            for (var i = 0; i < scope.options.icons.length; i++) {
+              var regex = new RegExp('/' + scope.options.icons[i].id + '-24');
+              if (regex.test(id)) {
+                return scope.options.icons[i];
+              }
+            }
+            return scope.options.iconSizes[0];
+          };
+
+          var findIconSize = function(olIcon) {
+            var scale = olIcon.getScale();
+            for (var i = 0; i < scope.options.iconSizes.length; i++) {
+              if (scale == scope.options.iconSizes[i].scale) {
+                return scope.options.iconSizes[i];
+              }
+            }
+            return scope.options.iconSizes[0];
+          };
+
+          var findColor = function(olColor) {
+            var rgb = ol.color.asString(olColor.slice(0, 3));
+            for (var i = 0; i < scope.options.colors.length; i++) {
+              if (rgb == ol.color.asString(scope.options.colors[i].fill)) {
+                return scope.options.colors[i];
+              }
+            }
+            return scope.options.colors[0];
+          };
+
           // Find the first feature from a vector layer
           var findDrawnFeature = function(pixel, vectorLayer) {
               var featureFound;
