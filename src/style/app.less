@@ -1283,9 +1283,14 @@ input[type=range] {
       bottom: @bottom-static-bt-screen-sm;
     }
   } 
-}  
+}
 
 body:not(.embed) {
+  /* Map rotated with device heading has its own rotation button */
+  .ga-geolocation-northarrow ~ .ga-rotate-enabled {
+    display: none;
+  }
+
   /* When the 3 optional buttons are displayed */
   .ga-time-selector-enabled + .ga-rotate-enabled + [ga-offline-bt] {
     

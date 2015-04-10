@@ -3,7 +3,7 @@
 
   var module = angular.module('ga_rotate_directive', []);
 
-  module.directive('gaRotate', function() {
+  module.directive('gaRotate', function(gaMapUtils) {
     return {
       restrict: 'A',
       replace: true,
@@ -31,12 +31,7 @@
         // Button event - map rotation is animated
         element.bind('click', function(e) {
           e.preventDefault();
-          map.beforeRender(ol.animation.rotate({
-            rotation: view.getRotation(),
-            duration: 1000,
-            easing: ol.easing.easeOut
-          }));
-          view.setRotation(0);
+          gaMapUtils.resetMapToNorth(map, view);
         });
       }
     };
