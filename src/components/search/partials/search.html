@@ -3,7 +3,7 @@
     <input class="input-small ga-search-input" type="search"
     placeholder="{{'search_placeholder' | translate}}" ng-model="query"
     autocapitalize="none" autocomplete="off" autocorrect="off"
-    ng-keyup="key($event)"
+    ng-keydown="keydown($event)"
     ng-blur="lostFocus($event)"
     ng-focus="onFocus()">
     <span class="ga-search-dropdown" ng-show="restat.sets()">

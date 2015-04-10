@@ -54,6 +54,110 @@
     }
   };
 
+  var tabStarts = [
+    100000,
+    200000,
+    300000
+  ];
+
+  var nextTabGroup = function(val) {
+    for (var i = 0; i < tabStarts.length - 1; i++) {
+      if (val >= tabStarts[i] &&
+          val < tabStarts[i + 1]) {
+        return tabStarts[i + 1];
+      }
+    }
+    return undefined;
+  };
+
+  var prevTabGroup = function(val) {
+    for (var i = tabStarts.length - 1; i > 0; i--) {
+      if (val >= tabStarts[i]) {
+        return tabStarts[i - 1];
+      }
+    }
+    return undefined;
+  };
+
+  var focusElement = function(el, evt) {
+    evt.preventDefault();
+    el[0].focus();
+  };
+
+  var elExists = function(el) {
+    if (el.length === 1 &&
+        el[0].className.indexOf('ga-search-result') > -1) {
+      return true;
+    }
+    return false;
+  };
+
+  var focusToElement = function(next, step, evt) {
+    var newEl = undefined;
+    if (next) {
+      newEl = $(evt.target).nextAll('.ga-search-result').first();
+    } else {
+      newEl = $(evt.target).prevAll('.ga-search-result').first();
+    }
+    if (elExists(newEl)) {
+      var existingEl = newEl;
+      step -= 1;
+      while (step > 0 && elExists(newEl)) {
+        existingEl = newEl;
+        step -= 1;
+        if (next) {
+          newEl = newEl.nextAll('.ga-search-result').first();
+        } else {
+          newEl = newEl.prevAll('.ga-search-result').first();
+        }
+      }
+      focusElement(existingEl, evt);
+    } else {
+      focusToCategory(next, evt);
+    }
+  };
+
+  var focusToCategory = function(next, evt) {
+    var el = $(evt.target);
+    if (el.length && el[0] && el[0].attributes && el[0].attributes.tabindex) {
+      var jumpGroup;
+      if (next) {
+        jumpGroup = nextTabGroup(el[0].attributes.tabindex.value);
+        while (jumpGroup) {
+          var newEl = $('[tabindex=' + jumpGroup + ']');
+          if (elExists(newEl)) {
+            focusElement(newEl, evt);
+            break;
+          }
+          jumpGroup = nextTabGroup(jumpGroup);
+        }
+      } else {
+        jumpGroup = prevTabGroup(el[0].attributes.tabindex.value);
+        while (jumpGroup) {
+          var newEl = $('[tabindex=' + jumpGroup + ']');
+          if (elExists(newEl)) {
+            var existingEl = newEl;
+            //Go to last element of category
+            while (elExists(newEl)) {
+              existingEl = newEl;
+              jumpGroup += 1;
+              newEl = $('[tabindex=' + jumpGroup + ']');
+            }
+            focusElement(existingEl, evt);
+            return;
+          }
+          jumpGroup = prevTabGroup(jumpGroup);
+        }
+        //Nothing found, so jump back to input (ignore bad design...)
+        var newEl = $('.ga-search-input');
+        if (newEl.length === 1 &&
+            newEl[0].className.indexOf('ga-search-input') > -1) {
+          focusElement(newEl, evt);
+        }
+      }
+    }
+  };
+
   var module = angular.module('ga_search_type_directives', [
     'ga_browsersniffer_service',
     'ga_debounce_service',
@@ -125,6 +229,22 @@
         return url;
       };
 
+      $scope.keydown = function(evt, res) {
+        if (evt.keyCode == 13) {
+          //Enter key
+          $scope.select(res);
+        } else if (evt.keyCode == 9) {
+          //Tab key
+          focusToCategory(!evt.shiftKey, evt);
+        } else if (evt.keyCode == 40 || evt.keyCode == 34) {
+          //Down Arrow or PageDown key
+          focusToElement(true, evt.keyCode == 40 ? 1 : 5, evt);
+        } else if (evt.keyCode == 38 || evt.keyCode == 33) {
+          //Up Arrow or PageUp key
+          focusToElement(false, evt.keyCode == 38 ? 1 : 5, evt);
+        }
+      };
+
       $scope.preview = function(res) {
         if (gaBrowserSniffer.mobile) {
           return;
@@ -175,6 +295,7 @@
           controller: 'GaSearchTypesController',
           link: function($scope, element, attrs) {
             $scope.type = 'locations';
+            $scope.tabstart = tabStarts[0];
 
             $scope.select = function(res) {
               unregisterMove();
@@ -259,6 +380,7 @@
             var timeStamps = [];
 
             $scope.type = 'featuresearch';
+            $scope.tabstart = tabStarts[1];
 
             $scope.doSearch = function() {
               return searchableLayers.length > 0;
@@ -345,6 +467,7 @@
           controller: 'GaSearchTypesController',
           link: function($scope, element, attrs) {
             $scope.type = 'layers';
+            $scope.tabstart = tabStarts[2];
 
             $scope.preview = function(res) {
               if (gaBrowserSniffer.mobile) {

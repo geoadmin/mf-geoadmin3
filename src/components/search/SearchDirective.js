@@ -226,13 +226,25 @@
           link: function($scope, element, attrs) {
             $scope.input = element.find('input');
 
-            $scope.key = function(evt) {
+            $scope.keydown = function(evt) {
+              //Enter key
               if (evt.keyCode == 13) {
                 if (evt.target && evt.target.blur) {
                   evt.target.blur();
                 }
               }
+              //Down Arrow, Tab Or PageDown
+              if (evt.keyCode == 9 || evt.keyCode == 40 || evt.keyCode == 34) {
+                //focus to first result
+                var firstRes = $(element).find('.ga-search-result').first();
+                if (firstRes.length === 1 &&
+                    firstRes[0].className.indexOf('ga-search-result') > -1) {
+                  evt.preventDefault();
+                  firstRes.focus();
+                }
+              }
             };
+
             // Result set announces their results (put here because we need
             // element)
             $scope.childoptions.announceResults = function(type, nr) {

@@ -1,9 +1,8 @@
 @dropdown-background-color: #fff;
 @dropdown-link-color-hover-color: #fff;
-@dropdown-link-background-hover-color: #666;
-//@highlight-color: rgba(102, 102, 102, 0.5); //Bund Dark grey
+@dropdown-link-background-hover-color: #999;
+@dropdown-link-background-focus-color: #666;
 @highlight-color: rgba(255, 128, 0, 0.3); //Bund Orange
-//@highlight-color: tgba(254, 251, 6, 0.5); //Bund Yellow
 
 [ga-search] {
   position: relative;
@@ -90,10 +89,17 @@
         background-color: #E6E6E6;
         margin-top: 1px;
 
-        &:hover {
+        &:hover, &:focus {
           color: @dropdown-link-color-hover-color;
-          background-color: @dropdown-link-background-hover-color;
           border-top: 1px;
+        }
+
+        &:focus {
+          background-color: @dropdown-link-background-focus-color;
+        }
+
+        &:hover {
+          background-color: @dropdown-link-background-hover-color;
           cursor: pointer;
         }
 
