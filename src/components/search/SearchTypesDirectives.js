@@ -183,7 +183,7 @@
 
   module.controller('GaSearchTypesController',
     function($scope, $http, $q, $sce, gaUrlUtils, gaSearchLabels,
-             gaBrowserSniffer, gaMarkerOverlay) {
+             gaBrowserSniffer, gaMarkerOverlay, gaDebounce) {
 
       var canceler;
 
@@ -195,7 +195,7 @@
         }
       };
 
-      var triggerSearch = function() {
+      var triggerSearch = gaDebounce.debounce(function() {
         if (!$scope.doSearch()) {
           $scope.options.announceResults($scope.type, 0);
           return;
@@ -219,7 +219,8 @@
             $scope.options.announceResults($scope.type, 0);
           }
         });
-      };
+      }, 133, false, false);
+      // 133 filters out 'stuck key' events while staying responsive
 
       $scope.doSearch = function() {
         return true;
