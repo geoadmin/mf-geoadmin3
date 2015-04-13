@@ -897,25 +897,25 @@ msgid "ch.are.bauzonen"
 msgstr "Zone edificabili Svizzera (armon.)"
 
 msgid "ch.are.belastung-gueterverkehr-bahn"
-msgstr "Traffico merci 2008"
+msgstr ""
 
 msgid "ch.are.belastung-gueterverkehr-bahn-2008"
 msgstr "Traffico merci 2008"
 
 msgid "ch.are.belastung-gueterverkehr-strasse"
-msgstr "Traffico merci dai veicoli pesanti 2008"
+msgstr ""
 
 msgid "ch.are.belastung-gueterverkehr-strasse-2008"
 msgstr "Traffico merci dai veicoli pesanti 2008"
 
 msgid "ch.are.belastung-personenverkehr-bahn"
-msgstr "Traffico viaggiatori"
+msgstr ""
 
 msgid "ch.are.belastung-personenverkehr-bahn-2008"
 msgstr "Traffico viaggiatori 2008"
 
 msgid "ch.are.belastung-personenverkehr-strasse"
-msgstr "Traffico viaggiatori 2008"
+msgstr ""
 
 msgid "ch.are.belastung-personenverkehr-strasse-2008"
 msgstr "Traffico viaggiatori 2008"
@@ -1812,7 +1812,7 @@ msgid "ch.bfe.kleinwasserkraftpotentiale"
 msgstr "Potenz. piccole centr. idraul."
 
 msgid "ch.bfe.sachplan-geologie-tiefenlager"
-msgstr "PS depositi strati geol. profondi"
+msgstr "PS Depositi strati geol. profondi"
 
 msgid "ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung"
 msgstr "PS depositi strati geol.prof.: p.t."
@@ -2149,64 +2149,64 @@ msgid "ch.swisstopo.geoidmodell-etrs89"
 msgstr "Geoide in ETRS89"
 
 msgid "ch.swisstopo.geologie-eiszeit-lgm-raster"
-msgstr "Ultimo massimo glaciale 500"
+msgstr "Ultimo mass. glaciale (carta) 500"
 
 msgid "ch.swisstopo.geologie-generalkarte-ggk200"
-msgstr "Carta geologica generale"
+msgstr "Carta geol. generale 200"
 
 msgid "ch.swisstopo.geologie-geocover"
-msgstr "GeoCover - Dati geol. vettoriali"
+msgstr "GeoCover - dati vettoriali"
 
 msgid "ch.swisstopo.geologie-geocover.metadata"
-msgstr "Divisione GeoCover"
+msgstr "Divisione GeoCover / AG25"
 
 msgid "ch.swisstopo.geologie-geodaesie-bouguer_anomalien"
 msgstr "Anomalia di Bouguer 500"
 
 msgid "ch.swisstopo.geologie-geodaesie-isostatische_anomalien"
-msgstr "Anomalie isostatiche"
+msgstr "Anomalie isostatiche 500"
 
 msgid "ch.swisstopo.geologie-geolkarten500.metadata"
 msgstr "Suddivisione GeoCarte 500"
 
 msgid "ch.swisstopo.geologie-geologische_karte"
-msgstr "Carta geologica 500"
+msgstr "Geologia 500"
 
 msgid "ch.swisstopo.geologie-geologischer_atlas"
-msgstr "Atlante geol. della Svizz. 1:25 000"
+msgstr "Atlante geologico AG25"
 
 msgid "ch.swisstopo.geologie-geophysik-aeromagnetische_karte_jura"
-msgstr "Aeromagnetismo Altipiano/Giura"
+msgstr "Aeromagnetismo Altipiano/Giura 500"
 
 msgid "ch.swisstopo.geologie-geophysik-aeromagnetische_karte_schweiz"
-msgstr "Aeromagnetismo"
+msgstr "Aeromagnetismo 500"
 
 msgid "ch.swisstopo.geologie-geophysik-deklination"
-msgstr "Declinazione"
+msgstr "Declinazione 500"
 
 msgid "ch.swisstopo.geologie-geophysik-geothermie"
-msgstr "Geotermia"
+msgstr "Densità di flusso termico 500"
 
 msgid "ch.swisstopo.geologie-geophysik-inklination"
-msgstr "Inclinazione"
+msgstr "Inclinazione 500"
 
 msgid "ch.swisstopo.geologie-geophysik-totalintensitaet"
-msgstr "Intensità campo magnetico"
+msgstr "Intensità campo magnetico 500"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk200"
-msgstr "Geotecnica e rocce"
+msgstr "Carta geotecnica 200"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk500-genese"
-msgstr "Origine delle rocce"
+msgstr "Origine delle rocce 500"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk500-gesteinsklassierung"
-msgstr "Classificazione delle rocce"
+msgstr "Classificazione delle rocce 500"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk500-lithologie_hauptgruppen"
-msgstr "Gruppi litologici principali"
+msgstr "Lithologia (gruppi principali) 500"
 
 msgid "ch.swisstopo.geologie-geotechnik-mineralische_rohstoffe200"
-msgstr "Materie prime minerali"
+msgstr "Materie prime minerali 200"
 
 msgid "ch.swisstopo.geologie-geotechnik-steinbrueche_1915"
 msgstr "Cave 1915"
@@ -2257,46 +2257,46 @@ msgid "ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2.sgd_nr"
 msgstr "N° InfoGeol"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-10x10km"
-msgstr "Expertises géologiques (10x10km)"
+msgstr "Documents géol. (10x10km)"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-10x10km.sgd_nr"
 msgstr "N° InfoGeol"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-1x1km"
-msgstr "Expertises géologiques (1x1km)"
+msgstr "Documents géol. (1x1km)"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-1x1km.sgd_nr"
 msgstr "N° InfoGeol"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2"
-msgstr "Expertises géologiques (>21000km2)"
+msgstr "Documents géol. (>21000km2)"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2.sgd_nr"
 msgstr "N° InfoGeol"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-lt10km2"
-msgstr "Expertises géologiques (0-10km2)"
+msgstr "Documents géol. (0-10km2)"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-lt10km2.sgd_nr"
 msgstr "N° InfoGeol"
 
 msgid "ch.swisstopo.geologie-gisgeol-linien"
-msgstr "Expertises géologiques (lignes)"
+msgstr "Documents géol. (lignes)"
 
 msgid "ch.swisstopo.geologie-gisgeol-linien.sgd_nr"
 msgstr "N° InfoGeol"
 
 msgid "ch.swisstopo.geologie-gisgeol-punkte"
-msgstr "Expertises géologiques (points)"
+msgstr "Documents géol. (points)"
 
 msgid "ch.swisstopo.geologie-gisgeol-punkte.sgd_nr"
 msgstr "N° InfoGeol"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas"
-msgstr "Atlante gravimetrico 1:100000"
+msgstr "Atlante gravimetrico 100"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas.metadata"
-msgstr "Divisione Atlante gravimetrico"
+msgstr "Divisione Atlante gravim. 100"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas.metadata.id"
 msgstr "N°"
@@ -2332,7 +2332,7 @@ msgid "ch.swisstopo.geologie-spezialkarten_schweiz.metadata"
 msgstr "Divisione carte geologiche speciali"
 
 msgid "ch.swisstopo.geologie-tektonische_karte"
-msgstr "Carta tettonica 500"
+msgstr "Tettonica 500"
 
 msgid "ch.swisstopo.gg25-bezirk-flaeche.fill"
 msgstr "Limiti di distretto GG25"
@@ -2448,28 +2448,28 @@ msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss.ort"
 msgstr "Luogo"
 
 msgid "ch.swisstopo.pixelkarte-farbe"
-msgstr "Carta nazionale 1:25'000-1:1 Mio. a colori"
+msgstr "Carta nazionale 1:25'000 | CN25"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk100.noscale"
-msgstr "Carta nazionale 1:100'000"
+msgstr "Carta nazionale 1:100'000 | CN100"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk1000.noscale"
 msgstr "Carta nazionale 1:1 milione"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk200.noscale"
-msgstr "Carta nazionale 1:200'000"
+msgstr "Carta nazionale 1:200'000 | CN200"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk25.noscale"
 msgstr "Carta nazionale 1:25'000 | CN25"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk50.noscale"
-msgstr "Carta nazionale 1:50'000"
+msgstr "Carta nazionale 1:50'000 | CN50"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk500.noscale"
-msgstr "Carta nazionale 1:500'000"
+msgstr "Carta nazionale 1:500'000 | CN500"
 
 msgid "ch.swisstopo.pixelkarte-grau"
-msgstr "Carta nazionale 1:25'000-1:1 Mio. bianca e nera"
+msgstr "Carta nazionale 1:25'000 | CN25"
 
 msgid "ch.swisstopo.pixelkarte-pk100.metadata"
 msgstr "Divisione carte nazionali 1:100'000"
@@ -2562,7 +2562,7 @@ msgid "ch.swisstopo.url"
 msgstr "http://www.swisstopo.admin.ch/internet/swisstopo/it/home.html"
 
 msgid "ch.swisstopo.vec200-adminboundaries-protectedarea"
-msgstr "Sitti protetti VECTOR200"
+msgstr "Siti protetti VECTOR200"
 
 msgid "ch.swisstopo.vec200-building"
 msgstr "Edifici gen. VECTOR200"
