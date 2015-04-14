@@ -35115,8 +35115,6 @@ ol.tilegrid.extentFromProjection = function(projection) {
 };
 goog.exportProperty(ol.tilegrid.TileGrid.prototype, 'getTileRangeForExtentAndZ',
     ol.tilegrid.TileGrid.prototype.getTileRangeForExtentAndZ);
-goog.exportProperty(ol.tilegrid.TileGrid.prototype, 'getResolutions',
-    ol.tilegrid.TileGrid.prototype.getResolutions);
 
 
 goog.provide('ol.source.Tile');
