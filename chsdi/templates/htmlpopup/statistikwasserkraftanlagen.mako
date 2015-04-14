@@ -59,12 +59,6 @@
 %>
 <table>
   <tr>
-    <td class="cell-meta-one" colspan="2"><h1>${_('wasserkraftanlagen')}&nbsp;${c['attributes']['name']}</h1></td>
-  </tr>
-  <tr>
-    <td class="cell-meta-one" colspan="2">&nbsp;</td>
-  </tr>
-  <tr>
     <td class="cell-meta-one" colspan="2"><strong>${_('zentrale')}</strong></td>
   </tr>
   <tr>
