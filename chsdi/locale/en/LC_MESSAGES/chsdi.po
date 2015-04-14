@@ -897,25 +897,25 @@ msgid "ch.are.bauzonen"
 msgstr "Building zones Switzerland (harm.)"
 
 msgid "ch.are.belastung-gueterverkehr-bahn"
-msgstr "Freight traffic 2008"
+msgstr ""
 
 msgid "ch.are.belastung-gueterverkehr-bahn-2008"
 msgstr "Freight traffic 2008"
 
 msgid "ch.are.belastung-gueterverkehr-strasse"
-msgstr "Heavy goods traffic 2008"
+msgstr ""
 
 msgid "ch.are.belastung-gueterverkehr-strasse-2008"
 msgstr "Heavy goods traffic 2008"
 
 msgid "ch.are.belastung-personenverkehr-bahn"
-msgstr "Passenger traffic 2008"
+msgstr ""
 
 msgid "ch.are.belastung-personenverkehr-bahn-2008"
 msgstr "Passenger traffic 2008"
 
 msgid "ch.are.belastung-personenverkehr-strasse"
-msgstr "Passenger traffic 2008"
+msgstr ""
 
 msgid "ch.are.belastung-personenverkehr-strasse-2008"
 msgstr "Passenger traffic 2008"
@@ -2150,64 +2150,64 @@ msgid "ch.swisstopo.geoidmodell-etrs89"
 msgstr "Geoid in ETRS89"
 
 msgid "ch.swisstopo.geologie-eiszeit-lgm-raster"
-msgstr "Last glacial maximum 500"
+msgstr "Last glacial maximum (map) 500"
 
 msgid "ch.swisstopo.geologie-generalkarte-ggk200"
-msgstr "General Geological Map"
+msgstr "General Geol. Map 200"
 
 msgid "ch.swisstopo.geologie-geocover"
-msgstr "GeoCover - Geological Vector Datasets"
+msgstr "GeoCover - Vector Datasets"
 
 msgid "ch.swisstopo.geologie-geocover.metadata"
-msgstr "Division GeoCover"
+msgstr "Division GeoCover / GA25"
 
 msgid "ch.swisstopo.geologie-geodaesie-bouguer_anomalien"
 msgstr "Bouguer anomalies 500"
 
 msgid "ch.swisstopo.geologie-geodaesie-isostatische_anomalien"
-msgstr "Isostatic anomalies"
+msgstr "Isostatic anomalies 500"
 
 msgid "ch.swisstopo.geologie-geolkarten500.metadata"
 msgstr "Division GeoMaps 500"
 
 msgid "ch.swisstopo.geologie-geologische_karte"
-msgstr "Geological Map 500"
+msgstr "Geology 500"
 
 msgid "ch.swisstopo.geologie-geologischer_atlas"
-msgstr "Geol. Atlas of Switzerland 1:25 000"
+msgstr "Geological Atlas GA25"
 
 msgid "ch.swisstopo.geologie-geophysik-aeromagnetische_karte_jura"
-msgstr "Aeromagnetics Plateau/Jura"
+msgstr "Aeromagnetics Plateau/Jura 500"
 
 msgid "ch.swisstopo.geologie-geophysik-aeromagnetische_karte_schweiz"
-msgstr "Aeromagnetics"
+msgstr "Aeromagnetics 500"
 
 msgid "ch.swisstopo.geologie-geophysik-deklination"
-msgstr "Declination"
+msgstr "Declination 500"
 
 msgid "ch.swisstopo.geologie-geophysik-geothermie"
-msgstr "Geothermal energy"
+msgstr "The Heat Flux 500"
 
 msgid "ch.swisstopo.geologie-geophysik-inklination"
-msgstr "Inclination"
+msgstr "Inclination 500"
 
 msgid "ch.swisstopo.geologie-geophysik-totalintensitaet"
-msgstr "Magnetic field strength"
+msgstr "Magnetic field strength 500"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk200"
-msgstr "Geotechnics and rocks"
+msgstr "Geotechnical Map 200"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk500-genese"
-msgstr "Origin of rocks"
+msgstr "Origin of rocks 500"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk500-gesteinsklassierung"
-msgstr "Classification of rocks"
+msgstr "Classification of rocks 500"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk500-lithologie_hauptgruppen"
-msgstr "Main lithological groups"
+msgstr "Lithology (Main Groups) 500"
 
 msgid "ch.swisstopo.geologie-geotechnik-mineralische_rohstoffe200"
-msgstr "Mineral resources"
+msgstr "Mineral resources 200"
 
 msgid "ch.swisstopo.geologie-geotechnik-steinbrueche_1915"
 msgstr "Quarries 1915"
@@ -2258,46 +2258,46 @@ msgid "ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2.sgd_nr"
 msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-10x10km"
-msgstr "Geologische Gutachten (10x10km)"
+msgstr "Geol. Dokumente (10x10km)"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-10x10km.sgd_nr"
 msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-1x1km"
-msgstr "Geologische Gutachten (1x1km)"
+msgstr "Geol. Dokumente (1x1km)"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-1x1km.sgd_nr"
 msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2"
-msgstr "Geologische Gutachten (>21000km2)"
+msgstr "Geol. Dokumente (>21000km2)"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2.sgd_nr"
 msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-lt10km2"
-msgstr "Geologische Gutachten (0-10km2)"
+msgstr "Geol. Dokumente (0-10km2)"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-lt10km2.sgd_nr"
 msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gisgeol-linien"
-msgstr "Geologische Gutachten (Linien)"
+msgstr "Geol. Dokumente (Linien)"
 
 msgid "ch.swisstopo.geologie-gisgeol-linien.sgd_nr"
 msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gisgeol-punkte"
-msgstr "Geologische Gutachten (Punkte)"
+msgstr "Geol. Dokumente (Punkte)"
 
 msgid "ch.swisstopo.geologie-gisgeol-punkte.sgd_nr"
 msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas"
-msgstr "Gravimetric Atlas 1:100000"
+msgstr "Gravimetric Atlas 100"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas.metadata"
-msgstr "Division Gravimetric Atlas"
+msgstr "Division Gravimetric Atlas 100"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas.metadata.id"
 msgstr "Nr."
@@ -2333,7 +2333,7 @@ msgid "ch.swisstopo.geologie-spezialkarten_schweiz.metadata"
 msgstr "Division Special Geological Maps"
 
 msgid "ch.swisstopo.geologie-tektonische_karte"
-msgstr "Tectonic Map 500"
+msgstr "Tectonics 500"
 
 msgid "ch.swisstopo.gg25-bezirk-flaeche.fill"
 msgstr "District boundaries GG25"
@@ -2449,7 +2449,7 @@ msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss.ort"
 msgstr "Town"
 
 msgid "ch.swisstopo.pixelkarte-farbe"
-msgstr "National Map 1:25'000-1:1 Mio color"
+msgstr "National Map 1:25'000"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk100.noscale"
 msgstr "National Map 1:100'000"
@@ -2461,7 +2461,7 @@ msgid "ch.swisstopo.pixelkarte-farbe-pk200.noscale"
 msgstr "National Map 1:200'000"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk25.noscale"
-msgstr "National Map 1:25'000 | NM25"
+msgstr "National Map 1:25'000"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk50.noscale"
 msgstr "National Map 1:50'000"
@@ -2470,7 +2470,7 @@ msgid "ch.swisstopo.pixelkarte-farbe-pk500.noscale"
 msgstr "National Map 1:500'000"
 
 msgid "ch.swisstopo.pixelkarte-grau"
-msgstr "National Map 1:25'000-1:1 Mio grey"
+msgstr "National Map 1:25'000"
 
 msgid "ch.swisstopo.pixelkarte-pk100.metadata"
 msgstr "Division National Map 1:100'000"

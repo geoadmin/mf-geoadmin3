@@ -2149,64 +2149,64 @@ msgid "ch.swisstopo.geoidmodell-etrs89"
 msgstr "Geoidmodell in ETRS89"
 
 msgid "ch.swisstopo.geologie-eiszeit-lgm-raster"
-msgstr "Eiszeitliches Maximum 500"
+msgstr "Letzteiszeitl. Max. (Karte) 500"
 
 msgid "ch.swisstopo.geologie-generalkarte-ggk200"
-msgstr "Geologische Generalkarte"
+msgstr "Geol. Generalkarte 200"
 
 msgid "ch.swisstopo.geologie-geocover"
-msgstr "GeoCover - Geol. Vektordatensätze"
+msgstr "GeoCover - Vektordaten"
 
 msgid "ch.swisstopo.geologie-geocover.metadata"
-msgstr "Einteilung GeoCover"
+msgstr "Einteilung GeoCover / GA25"
 
 msgid "ch.swisstopo.geologie-geodaesie-bouguer_anomalien"
 msgstr "Bouguer-Anomalien 500"
 
 msgid "ch.swisstopo.geologie-geodaesie-isostatische_anomalien"
-msgstr "Isostatische Anomalien"
+msgstr "Isostatische Anomalien 500"
 
 msgid "ch.swisstopo.geologie-geolkarten500.metadata"
 msgstr "Blatteinteilung GeoKarten 500"
 
 msgid "ch.swisstopo.geologie-geologische_karte"
-msgstr "Geologische Karte 500"
+msgstr "Geologie 500"
 
 msgid "ch.swisstopo.geologie-geologischer_atlas"
-msgstr "Geol. Atlas der Schweiz 1:25000"
+msgstr "Geologischer Atlas GA25"
 
 msgid "ch.swisstopo.geologie-geophysik-aeromagnetische_karte_jura"
-msgstr "Aeromagnetik Voralpen/Jura"
+msgstr "Aeromagnetik Mittelland/Jura 500"
 
 msgid "ch.swisstopo.geologie-geophysik-aeromagnetische_karte_schweiz"
-msgstr "Aeromagnetik"
+msgstr "Aeromagnetik 500"
 
 msgid "ch.swisstopo.geologie-geophysik-deklination"
-msgstr "Deklination"
+msgstr "Deklination 500"
 
 msgid "ch.swisstopo.geologie-geophysik-geothermie"
-msgstr "Geothermie"
+msgstr "Wärmestromdichte 500"
 
 msgid "ch.swisstopo.geologie-geophysik-inklination"
-msgstr "Inklination"
+msgstr "Inklination 500"
 
 msgid "ch.swisstopo.geologie-geophysik-totalintensitaet"
-msgstr "Magnetfeldstärke"
+msgstr "Magnetfeldstärke 500"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk200"
-msgstr "Geotechnik und Gesteine"
+msgstr "Geotechnische Karte 200"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk500-genese"
-msgstr "Entstehung der Gesteine"
+msgstr "Entstehung der Gesteine 500"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk500-gesteinsklassierung"
-msgstr "Gesteinklassierung"
+msgstr "Gesteinsklassen 500"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk500-lithologie_hauptgruppen"
-msgstr "Lithologie-Hauptgruppen"
+msgstr "Lithologie (Hauptgruppen) 500"
 
 msgid "ch.swisstopo.geologie-geotechnik-mineralische_rohstoffe200"
-msgstr "Mineralische Rohstoffe"
+msgstr "Mineralische Rohstoffe 200"
 
 msgid "ch.swisstopo.geologie-geotechnik-steinbrueche_1915"
 msgstr "Steinbrüche 1915"
@@ -2221,7 +2221,7 @@ msgid "ch.swisstopo.geologie-geotechnik-steinbrueche_1995"
 msgstr "Steinbrüche 1995"
 
 msgid "ch.swisstopo.geologie-geotechnik-steine_historische_bauwerke"
-msgstr "Steine an historischen Bauwerken"
+msgstr "Steine an hist. Bauwerken"
 
 msgid "ch.swisstopo.geologie-geotechnik-zementindustrie_1965"
 msgstr "Zementindustrie 1965"
@@ -2257,46 +2257,46 @@ msgid "ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2.sgd_nr"
 msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-10x10km"
-msgstr "Geologische Gutachten (10x10km)"
+msgstr "Geol. Dokumente (10x10km)"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-10x10km.sgd_nr"
 msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-1x1km"
-msgstr "Geologische Gutachten (1x1km)"
+msgstr "Geol. Dokumente (1x1km)"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-1x1km.sgd_nr"
 msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2"
-msgstr "Geologische Gutachten (>21000km2)"
+msgstr "Geol. Dokumente (>21000km2)"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2.sgd_nr"
 msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-lt10km2"
-msgstr "Geologische Gutachten (0-10km2)"
+msgstr "Geol. Dokumente (0-10km2)"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-lt10km2.sgd_nr"
 msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gisgeol-linien"
-msgstr "Geologische Gutachten (Linien)"
+msgstr "Geol. Dokumente (Linien)"
 
 msgid "ch.swisstopo.geologie-gisgeol-linien.sgd_nr"
 msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gisgeol-punkte"
-msgstr "Geologische Gutachten (Punkte)"
+msgstr "Geol. Dokumente (Punkte)"
 
 msgid "ch.swisstopo.geologie-gisgeol-punkte.sgd_nr"
 msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas"
-msgstr "Gravimetrischer Atlas 1:100000"
+msgstr "Gravimetrischer Atlas 100"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas.metadata"
-msgstr "Einteilung gravimetrischer Atlas"
+msgstr "Einteilung gravim. Atlas 100"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas.metadata.id"
 msgstr "Nr."
@@ -2332,7 +2332,7 @@ msgid "ch.swisstopo.geologie-spezialkarten_schweiz.metadata"
 msgstr "Einteilung geol. Spezialkarten"
 
 msgid "ch.swisstopo.geologie-tektonische_karte"
-msgstr "Tektonische Karte 500"
+msgstr "Tektonik 500"
 
 msgid "ch.swisstopo.gg25-bezirk-flaeche.fill"
 msgstr "Bezirksgrenzen GG25"
@@ -2448,7 +2448,7 @@ msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss.ort"
 msgstr "Ort"
 
 msgid "ch.swisstopo.pixelkarte-farbe"
-msgstr "Landeskarte 1:25'000-1:1 Mio. farbe"
+msgstr "Landeskarte 1:25'000 | LK25"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk100.noscale"
 msgstr "Landeskarte 1:100'000 | LK100"
@@ -2469,7 +2469,7 @@ msgid "ch.swisstopo.pixelkarte-farbe-pk500.noscale"
 msgstr "Landeskarte 1:500'000 | LK500"
 
 msgid "ch.swisstopo.pixelkarte-grau"
-msgstr "Landeskarte 1:25'000-1:1 Mio. grau"
+msgstr "Landeskarte 1:25'000 | LK25"
 
 msgid "ch.swisstopo.pixelkarte-pk100.metadata"
 msgstr "Einteilung Landeskarte 1:100'000"
@@ -4464,10 +4464,10 @@ msgid "tt_ch.bfe.statistik-wasserkraftanlagen_canton"
 msgstr "Standortkanton"
 
 msgid "tt_ch.bfe.statistik-wasserkraftanlagen_endofoperation"
-msgstr "Stillegung"
+msgstr "Stilllegung"
 
 msgid "tt_ch.bfe.statistik-wasserkraftanlagen_endofoperation"
-msgstr "Stillegung"
+msgstr "Stilllegung"
 
 msgid "tt_ch.bfe.statistik-wasserkraftanlagen_hydropowerplantoperationalstatus_de"
 msgstr "Operativer Status"

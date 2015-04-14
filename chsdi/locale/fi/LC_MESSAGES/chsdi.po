@@ -2149,64 +2149,64 @@ msgid "ch.swisstopo.geoidmodell-etrs89"
 msgstr "Geoid en ETRS89"
 
 msgid "ch.swisstopo.geologie-eiszeit-lgm-raster"
-msgstr "Maximum dal temp da glatsch"
+msgstr "Maximum dal temp da glatsch 500"
 
 msgid "ch.swisstopo.geologie-generalkarte-ggk200"
-msgstr "Geologische Generalkarte"
+msgstr "Geol. Generalkarte 200"
 
 msgid "ch.swisstopo.geologie-geocover"
-msgstr "GeoCover - Geol. Vektordatensätze"
+msgstr "GeoCover - Vektordaten"
 
 msgid "ch.swisstopo.geologie-geocover.metadata"
-msgstr "Divisiun GeoCover"
+msgstr "Divisiun GeoCover / AG25"
 
 msgid "ch.swisstopo.geologie-geodaesie-bouguer_anomalien"
 msgstr "Anomalias da Bouguer"
 
 msgid "ch.swisstopo.geologie-geodaesie-isostatische_anomalien"
-msgstr "Anomalias isostaticas"
+msgstr "Anomalias isostaticas 500"
 
 msgid "ch.swisstopo.geologie-geolkarten500.metadata"
 msgstr "Divisiun GeoChartas 500"
 
 msgid "ch.swisstopo.geologie-geologische_karte"
-msgstr "Geologia 1:500000"
+msgstr "Geologia 500"
 
 msgid "ch.swisstopo.geologie-geologischer_atlas"
-msgstr "Atlas geologic 1:25000"
+msgstr "Atlas geologic AG25"
 
 msgid "ch.swisstopo.geologie-geophysik-aeromagnetische_karte_jura"
-msgstr "Eromagnetica Prealps/Giura"
+msgstr "Eromagnetica Prealps/Giura 500"
 
 msgid "ch.swisstopo.geologie-geophysik-aeromagnetische_karte_schweiz"
-msgstr "Eromagnetica"
+msgstr "Eromagnetica 500"
 
 msgid "ch.swisstopo.geologie-geophysik-deklination"
-msgstr "Declinaziun"
+msgstr "Declinaziun 500"
 
 msgid "ch.swisstopo.geologie-geophysik-geothermie"
-msgstr "Geotermia"
+msgstr "Geotermia 500"
 
 msgid "ch.swisstopo.geologie-geophysik-inklination"
-msgstr "Inclinaziun"
+msgstr "Inclinaziun 500"
 
 msgid "ch.swisstopo.geologie-geophysik-totalintensitaet"
-msgstr "Intensitad dal champ magnetic"
+msgstr "Intensitad dal champ magnetic 500"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk200"
-msgstr "Geotecnica e crappa"
+msgstr "Charta geotecnica 200"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk500-genese"
-msgstr "Origin da la crappa"
+msgstr "Origin da la crappa 500"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk500-gesteinsklassierung"
-msgstr "Classificaziun da la crappa"
+msgstr "Classificaziun da la crappa 500"
 
 msgid "ch.swisstopo.geologie-geotechnik-gk500-lithologie_hauptgruppen"
-msgstr "Gruppas litologicas principalas"
+msgstr "Gruppas litologicas principalas 500"
 
 msgid "ch.swisstopo.geologie-geotechnik-mineralische_rohstoffe200"
-msgstr "Materias primas mineralas"
+msgstr "Materias primas mineralas 200"
 
 msgid "ch.swisstopo.geologie-geotechnik-steinbrueche_1915"
 msgstr "Crapperas 1915"
@@ -2257,46 +2257,46 @@ msgid "ch.swisstopo.geologie-gisgeol-flaechen-10to21000km2.sgd_nr"
 msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-10x10km"
-msgstr "Geologische Gutachten (10x10km)"
+msgstr "Geol. Dokumente (10x10km)"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-10x10km.sgd_nr"
 msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-1x1km"
-msgstr "Geologische Gutachten (1x1km)"
+msgstr "Geol. Dokumente (1x1km)"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-1x1km.sgd_nr"
 msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2"
-msgstr "Geologische Gutachten (>21000km2)"
+msgstr "Geol. Dokumente (>21000km2)"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-gt21000km2.sgd_nr"
 msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-lt10km2"
-msgstr "Geologische Gutachten (0-10km2)"
+msgstr "Geol. Dokumente (0-10km2)"
 
 msgid "ch.swisstopo.geologie-gisgeol-flaechen-lt10km2.sgd_nr"
 msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gisgeol-linien"
-msgstr "Geologische Gutachten (Linien)"
+msgstr "Geol. Dokumente (Linien)"
 
 msgid "ch.swisstopo.geologie-gisgeol-linien.sgd_nr"
 msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gisgeol-punkte"
-msgstr "Geologische Gutachten (Punkte)"
+msgstr "Geol. Dokumente (Punkte)"
 
 msgid "ch.swisstopo.geologie-gisgeol-punkte.sgd_nr"
 msgstr "InfoGeol-Nr."
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas"
-msgstr "Atlas gravimetric"
+msgstr "Atlas gravimetric 100"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas.metadata"
-msgstr "Divisiun Atlas gravimetric"
+msgstr "Divisiun Atlas gravimetric 100"
 
 msgid "ch.swisstopo.geologie-gravimetrischer_atlas.metadata.id"
 msgstr "Nr."
@@ -2332,7 +2332,7 @@ msgid "ch.swisstopo.geologie-spezialkarten_schweiz.metadata"
 msgstr "Divisiun chartas geol. spez."
 
 msgid "ch.swisstopo.geologie-tektonische_karte"
-msgstr "Tectonica 1:500000"
+msgstr "Tectonica 500"
 
 msgid "ch.swisstopo.gg25-bezirk-flaeche.fill"
 msgstr "Cunfins districtuals GG25"
@@ -2448,28 +2448,28 @@ msgid "ch.swisstopo.lubis-luftbilder_schwarzweiss.ort"
 msgstr "Ort"
 
 msgid "ch.swisstopo.pixelkarte-farbe"
-msgstr "Charta naziunala 1:25'000-1:1 Mio. en colur"
+msgstr "Charta naziunala 1:25'000 | CN25"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk100.noscale"
-msgstr "Charta naziunala 1:100'000"
+msgstr "Charta naziunala 1:100'000 | CN100"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk1000.noscale"
 msgstr "Charta naziunala 1:1 milliun"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk200.noscale"
-msgstr "Charta naziunala 1:200'000"
+msgstr "Charta naziunala 1:200'000 | CN200"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk25.noscale"
-msgstr "Charta naziunala 1:25'000"
+msgstr "Charta naziunala 1:25'000 | CN25"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk50.noscale"
-msgstr "Charta naziunala 1:50'000"
+msgstr "Charta naziunala 1:50'000 | CN50"
 
 msgid "ch.swisstopo.pixelkarte-farbe-pk500.noscale"
-msgstr "Charta naziunala 1:500'000"
+msgstr "Charta naziunala 1:500'000 | CN500"
 
 msgid "ch.swisstopo.pixelkarte-grau"
-msgstr "Charta naziunala 1:25'000-1:1 Mio. en alv e nair"
+msgstr "Charta naziunala 1:25'000 | CN25"
 
 msgid "ch.swisstopo.pixelkarte-pk100.metadata"
 msgstr "Divisiun charta naziunala 1:100'000"
@@ -4464,10 +4464,10 @@ msgid "tt_ch.bfe.statistik-wasserkraftanlagen_canton"
 msgstr "Standortkanton"
 
 msgid "tt_ch.bfe.statistik-wasserkraftanlagen_endofoperation"
-msgstr "Stillegung"
+msgstr "Stilllegung"
 
 msgid "tt_ch.bfe.statistik-wasserkraftanlagen_endofoperation"
-msgstr "Stillegung"
+msgstr "Stilllegung"
 
 msgid "tt_ch.bfe.statistik-wasserkraftanlagen_hydropowerplantoperationalstatus_de"
 msgstr "Operativer Status"
