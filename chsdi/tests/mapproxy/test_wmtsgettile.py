@@ -26,7 +26,6 @@ def get_headers():
 
 
 def check_status_code(path):
-    print path
     if not path.startswith('http'):
         url = base_url + path
     else:
