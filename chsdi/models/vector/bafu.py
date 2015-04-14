@@ -1259,38 +1259,6 @@ class baugrundklassen(Base, Vector):
 register('ch.bafu.gefahren-baugrundklassen', baugrundklassen)
 
 
-class emissionplan(Base, Vector):
-    __tablename__ = 'laerm_emplan_bahn_2015'
-    __table_args__ = ({'schema': 'diverse', 'autoload': False})
-    __bodId__ = 'ch.bav.laerm-emissionplan_eisenbahn_2015'
-    __template__ = 'templates/htmlpopup/emissionplan.mako'
-    __extended_info__ = True
-    __label__ = 'id'
-    id = Column('id', Integer, primary_key=True)
-    lin_nr_dfa = Column('lin_nr_dfa', Numeric)
-    von_m = Column('von_m', Numeric)
-    bis_m = Column('bis_m', Numeric)
-    lre_t = Column('lre_t', Numeric)
-    lre_n = Column('lre_n', Numeric)
-    k1_t = Column('k1_t', Numeric)
-    k1_n = Column('k1_n', Numeric)
-    fb1 = Column('fb1', Numeric)
-    fb2 = Column('fb2', Numeric)
-    grund1 = Column('grund1', Text)
-    grund2 = Column('grund2', Text)
-    linienbeze = Column('linienbeze', Text)
-    von_abkz = Column('von_abkz', Text)
-    von_bpk_bp = Column('von_bpk_bp', Text)
-    bis_abkz = Column('bis_abkz', Text)
-    bis_bpk_bp = Column('bis_bpk_bp', Text)
-    typ_aender = Column('typ_aender', Text)
-    datum = Column('datum', Text)
-    the_geom = Column(Geometry(geometry_type='GEOMETRY',
-                               dimension=2, srid=21781))
-
-register('ch.bav.laerm-emissionplan_eisenbahn_2015', emissionplan)
-
-
 class wrzselect(Base, Vector):
     __tablename__ = 'jgd_select'
     __table_args__ = ({'schema': 'wrzportal', 'autoload': False})

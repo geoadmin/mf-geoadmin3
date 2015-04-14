@@ -1613,9 +1613,6 @@ msgstr "Sites pollués transports publics"
 msgid "ch.bav.kataster-belasteter-standorte-oev.katasternummer"
 msgstr "No de site OFT"
 
-msgid "ch.bav.laerm-emissionplan_eisenbahn_2015"
-msgstr "Plan des émissions en 2015"
-
 msgid "ch.bav.laerm-emissionsplan_eisenbahn_nacht"
 msgstr "Rép. émissions sonores ferr. 2015 N"
 

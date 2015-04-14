@@ -739,9 +739,6 @@ msgstr ""
 msgid "ch.blw.klimaeignung-typ"
 msgstr ""
 
-msgid "ch.bav.laerm-emissionplan_eisenbahn_2015"
-msgstr ""
-
 msgid "ch.bakom.downlink100"
 msgstr ""
 

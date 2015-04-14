@@ -1613,9 +1613,6 @@ msgstr "Contaminaziun traffic public"
 msgid "ch.bav.kataster-belasteter-standorte-oev.katasternummer"
 msgstr "BAV Standortnummer"
 
-msgid "ch.bav.laerm-emissionplan_eisenbahn_2015"
-msgstr "Plan d'emissiuns viafiers 2015"
-
 msgid "ch.bav.laerm-emissionsplan_eisenbahn_nacht"
 msgstr "Emissionsplan Eisenbahnlärm 2015 N"
 
