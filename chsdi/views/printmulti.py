@@ -145,7 +145,11 @@ def _qrcodeurlparse(raw_url):
 def _qrcodeurlunparse(url_tuple):
     (qrcode_service_url, map_url, params) = url_tuple
 
-    quoted_map_url = quote_plus(map_url + "?url=" + unquote_plus(urlencode(params)))
+    try:
+        str_params = dict(map(lambda x: (x[0], unicode(x[1]).encode('utf-8')), params.items()))
+    except UnicodeDecodeError:
+        str_params = params
+    quoted_map_url = quote_plus(map_url + "?url=" + unquote_plus(urlencode(str_params)))
 
     return qrcode_service_url + "?url=" + quoted_map_url
 
