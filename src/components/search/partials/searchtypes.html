@@ -1,5 +1,4 @@
 <div class="ga-search-results-container ng-hide" ng-hide="!results.length">
-
   <span ng-if="type === 'locations'">
     <div class="ga-search-results-header" translate>locations</div>
   </span>
@@ -11,21 +10,19 @@
   </span>
 
   <span class="ga-search-results">
-    <div class="ga-search-result" tabindex="{{tabstart + i}}" ng-repeat="(i, res) in results"
-          ng-keydown="keydown($event, res)"
-          ng-focus="preview(res)"
-          ng-blur="removePreview($event, res)"
-          >
+    <div class="ga-search-result" tabindex="{{tabstart + i}}"
+         ng-repeat="(i, res) in results"
+         ng-keydown="keydown($event, res)"
+         ng-focus="preview(res)"
+         ng-blur="out()"
+         ng-click="click(res)"
+         ng-mouseenter="preview(res)"
+         ng-mouseleave="out()">
       <div class="ga-search-item"
-          ng-mouseenter="preview(res)"
-          ng-mouseleave="removePreview($event, res)"
-          ng-click="select(res)"
-          ng-bind-html="prepareLabel(res.attrs)">
+           ng-bind-html="prepareLabel(res.attrs)">
       </div>
       <i class="icon-info-sign"
          ng-if="type === 'layers'"
-         ng-mouseenter="preview(res)"
-         ng-mouseleave="removePreview($event, res)"
          ng-click="getLegend($event, res.attrs.layer)"></i>
     </div>
   </span>

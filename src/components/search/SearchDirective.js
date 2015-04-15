@@ -66,7 +66,7 @@
   module.controller('GaSearchDirectiveController',
     function($scope, $rootScope, $translate, $sce, $timeout, gaPermalink,
              gaUrlUtils, gaSearchGetCoordinate, gaMapUtils, gaMarkerOverlay,
-             gaKml) {
+             gaKml, gaPreviewLayers) {
       var blockQuery = false;
       var restat = new ResultStats();
       $scope.restat = restat;
@@ -106,6 +106,7 @@
       $scope.clearInput = function() {
         restat.reset();
         gaMarkerOverlay.remove($scope.map);
+        gaPreviewLayers.removeAll($scope.map);
         $scope.query = '';
         $scope.childoptions.query = '';
         $scope.input.blur();
