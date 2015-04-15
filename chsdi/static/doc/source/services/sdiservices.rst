@@ -889,7 +889,9 @@ Note:
 Example
 *******
 * At tile: `http://wmts10.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20140520/3857/9/266/180.jpeg <../1.0.0/ch.swisstopo.pixelkarte-farbe/default/20140520/3857/9/266/180.jpeg>`_
-.. image:: http://wmts10.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20140520/3857/9/266/180.jpeg 
+
+.. image:: http://wmts10.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/20140520/3857/9/266/180.jpeg
+
 * An OpenLayers3 application using the `pseudo-Mercator projection <../examples/ol3_mercator.html>`_ 
 * An OpenLayers3 example showing the `Cadastralwebmap as WMTS <../examples/cadastralwebmap.html>`_ 
 * Switzerland is now adopting the new `LV95 frame <../examples/ol3_lv95.html>`_. 
