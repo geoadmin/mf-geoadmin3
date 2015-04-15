@@ -106,7 +106,7 @@
         } else {
           this.getItem = function() {};
           this.setItem = function() {};
-          this.removeTiem = function() {};
+          this.removeItem = function() {};
         }
 
         // Tiles management
