@@ -259,7 +259,7 @@
       };
 
       $scope.out = function(evt) {
-        if (gaBrowserSniffer.mobile || !blockEvent) {
+        if (!blockEvent) {
           $scope.removePreview();
         }
       };
@@ -272,6 +272,9 @@
       };
 
       $scope.removePreview = function() {
+        if (gaBrowserSniffer.mobile) {
+          return;
+        }
         removeOverlay(gaMarkerOverlay, $scope.map);
       };
 
