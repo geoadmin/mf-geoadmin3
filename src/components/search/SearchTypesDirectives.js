@@ -185,6 +185,10 @@
     function($scope, $http, $q, $sce, gaUrlUtils, gaSearchLabels,
              gaBrowserSniffer, gaMarkerOverlay, gaDebounce) {
 
+      // This value is used to block blur/mouseleave event, when a value
+      // is selected. See #2284. It's reinitialized when a new search is
+      // triggered.
+      var blockEvent = false;
       var canceler;
 
       var cancel = function() {
@@ -233,6 +237,8 @@
       $scope.keydown = function(evt, res) {
         if (evt.keyCode == 13) {
           //Enter key
+          $scope.removePreview();
+          blockEvent = true;
           $scope.select(res);
         } else if (evt.keyCode == 9) {
           //Tab key
@@ -246,6 +252,18 @@
         }
       };
 
+      $scope.click = function(res) {
+        $scope.removePreview();
+        blockEvent = true;
+        $scope.select(res);
+      };
+
+      $scope.out = function(evt) {
+        if (gaBrowserSniffer.mobile || !blockEvent) {
+          $scope.removePreview();
+        }
+      };
+
       $scope.preview = function(res) {
         if (gaBrowserSniffer.mobile) {
           return;
@@ -253,15 +271,7 @@
         addOverlay(gaMarkerOverlay, $scope.map, res);
       };
 
-      $scope.removePreview = function(evt, res) {
-        if (gaBrowserSniffer.mobile ||
-            // HACK for #1737: prevent unexpected call of mouseout evt.
-            // TODO: maybe this hack is not needed anymore with
-            // angular only search
-            (evt.target != evt.relatedTarget &&
-            evt.relatedTarget instanceof HTMLCanvasElement)) {
-          return;
-        }
+      $scope.removePreview = function() {
         removeOverlay(gaMarkerOverlay, $scope.map);
       };
 
@@ -274,6 +284,7 @@
         //cancel old requests
         cancel();
         if (newval != '') {
+          blockEvent = false;
           triggerSearch();
         } else {
           unregisterMove();
@@ -300,7 +311,6 @@
 
             $scope.select = function(res) {
               unregisterMove();
-              removeOverlay(gaMarkerOverlay, $scope.map);
               if (originToZoomLevel.hasOwnProperty(res.attrs.origin)) {
                 gaMapUtils.moveTo($scope.map,
                                   originToZoomLevel[res.attrs.origin],
@@ -484,9 +494,6 @@
             };
 
             $scope.removePreview = function() {
-              if (gaBrowserSniffer.mobile) {
-                return;
-              }
               gaPreviewLayers.removeAll($scope.map);
             };
 
