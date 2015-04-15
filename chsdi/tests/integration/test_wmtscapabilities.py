@@ -38,7 +38,7 @@ class TestWmtsCapabilitiesView(TestsBase):
         import os
         if socket.gethostname() == 'bgdimf01t':
             self.fail("Cannot run this test on 'bgdimf0t'. Sorry.")
-        schema_url = os.path.join(os.path.dirname(__file__), "wmts/1.0/wmtsGetCapabilities_response.xsd")
+        schema_url = os.path.join(os.path.dirname(__file__), "wmts/1.0.1/wmtsGetCapabilities_response.xsd")
         os.environ['XML_CATALOG_FILES'] = os.path.join(os.path.dirname(__file__), "xml/catalog")
 
         for lang in ['de', 'fr', 'it', 'en']:
