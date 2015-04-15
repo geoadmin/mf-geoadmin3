@@ -9,6 +9,35 @@
 Release Notes
 =============
 
+.. _releasenotes_20150415:
+
+Release 20150415 - Wednesday, April 15th 2015
+------------------------------------------------
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+- Upgrade API to OpenLayers v3.4.0
+- Adding print at 1:300'000 scale
+- Limiting the number of words in search
+- Removing `SearchServer` **type=featureidentify** service
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_150325...r_150415>`__
+
+`MAP <//map.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+- Displaying position and heading on mobile
+- Upgrading to OpenLayers v3.4.0
+- Adding keyboard navigation in search result
+- Improving support for HTTPS
+- Better handling of `queryable` parameter in LayerGroup
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_150325...r_150415>`__
+
+
+
 .. _releasenotes_20150325:
 
 Release 20150325 - Wednesday, March 25th 2015
