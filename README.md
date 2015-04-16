@@ -3,9 +3,7 @@ mf-geoadmin3
 
 next generation map.geo.admin.ch
 
-Jenkins build status: [![Jenkins Build Status](https://jenkins.dev.bgdi.ch/buildStatus/icon?job=geoadmin3)](https://jenkins.dev.bgdi.ch/job/geoadmin3/)
-
-Travis build status: [![Jenkins Build Status](https://travis-ci.org/geoadmin/mf-geoadmin3.png?branch=master)](https://travis-ci.org/geoadmin/mf-geoadmin3)
+Jenkins build status: [![Jenkins Build Status](https://jenkins.ci.bgdi.ch/buildStatus/icon?job=geoadmin3)](https://jenkins.dev.bgdi.ch/job/geoadmin3/)
 
 # Getting started
 
