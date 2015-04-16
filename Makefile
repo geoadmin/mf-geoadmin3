@@ -81,11 +81,11 @@ lint: .build-artefacts/lint.timestamp
 
 .PHONY: testdev
 testdev: .build-artefacts/app-whitespace.js test/karma-conf-dev.js node_modules
-	./node_modules/karma/bin/karma start test/karma-conf-dev.js --single-run
+	PHANTOMJS_BIN="node_modules/.bin/phantomjs" ./node_modules/.bin/karma start test/karma-conf-dev.js --single-run
 
 .PHONY: testprod
 testprod: prd/lib/build.js test/karma-conf-prod.js node_modules
-	./node_modules/karma/bin/karma start test/karma-conf-prod.js --single-run
+	PHANTOMJS_BIN="node_modules/.bin/phantomjs" ./node_modules/.bin/karma start test/karma-conf-prod.js --single-run
 
 .PHONY: teste2e
 teste2e: guard-BROWSERSTACK_TARGETURL guard-BROWSERSTACK_USER guard-BROWSERSTACK_KEY
@@ -306,6 +306,9 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 .build-artefacts/python-venv/bin/mako-render: .build-artefacts/python-venv
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "Mako==1.0.0"
 	touch $@
+	@ if [[ ! -e .build-artefacts/python-venv/local ]]; then \
+	    ln -s . .build-artefacts/python-venv/local; \
+	fi
 	cp scripts/cmd.py .build-artefacts/python-venv/local/lib/python2.7/site-packages/mako/cmd.py
 
 .build-artefacts/python-venv/bin/htmlmin: .build-artefacts/python-venv
