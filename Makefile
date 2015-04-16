@@ -62,7 +62,7 @@ help:
 	@echo
 
 .PHONY: all
-all: prod dev lint apache testdev testprod deploy/deploy-branch.cfg fixrights
+all: lint dev prod apache testdev testprod deploy/deploy-branch.cfg fixrights
 
 .PHONY: prod
 prod: prd/lib/ prd/lib/build.js prd/style/app.css prd/geoadmin.appcache prd/index.html prd/mobile.html prd/embed.html prd/img/ prd/style/font-awesome-3.2.1/font/ prd/locales/ prd/checker prd/robots.txt
@@ -195,7 +195,7 @@ prd/lib/: src/lib/d3-3.3.1.min.js src/lib/bootstrap-datetimepicker.min.js  src/l
 	mkdir -p $@
 	cp $^ $@
 
-prd/lib/build.js: src/lib/jquery-2.0.3.min.js src/lib/bootstrap-3.3.1.min.js src/lib/moment-with-customlocales.min.js src/lib/typeahead-0.9.3.min.js src/lib/angular-1.3.5.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/EPSG2056.js src/lib/EPSG32631.js src/lib/EPSG32632.js src/lib/ol.js src/lib/angular-translate-2.4.2.min.js src/lib/angular-translate-loader-static-files-2.4.2.min.js src/lib/fastclick.min.js src/lib/localforage.min.js src/lib/filesaver.min.js .build-artefacts/app.js
+prd/lib/build.js: src/lib/jquery-2.0.3.min.js src/lib/bootstrap-3.3.1.min.js src/lib/moment-with-customlocales.min.js src/lib/typeahead-0.9.3.min.js src/lib/angular.min.js src/lib/proj4js-compressed.js src/lib/EPSG21781.js src/lib/EPSG2056.js src/lib/EPSG32631.js src/lib/EPSG32632.js src/lib/ol.js src/lib/angular-translate.min.js src/lib/angular-translate-loader-static-files.min.js src/lib/fastclick.min.js src/lib/localforage.min.js src/lib/filesaver.min.js .build-artefacts/app.js
 	mkdir -p $(dir $@)
 	cat $^ | sed 's/^\/\/[#,@] sourceMappingURL=.*//' > $@
 
@@ -265,8 +265,16 @@ test/karma-conf-dev.js: test/karma-conf.mako.js .build-artefacts/python-venv/bin
 test/karma-conf-prod.js: test/karma-conf.mako.js .build-artefacts/python-venv/bin/mako-render
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "mode=prod" $< > $@
 
+node_modules: ANGULAR_JS = angular.js angular.min.js
+node_modules: ANGULAR_TRANSLATE_JS = angular-translate.js angular-translate.min.js 
+node_modules: ANGULAR_TRANSLATE_LOADER_JS = angular-translate-loader-static-files.js angular-translate-loader-static-files.min.js 
 node_modules: package.json
 	npm install
+	cp $(addprefix node_modules/angular/,$(ANGULAR_JS)) src/lib/;
+	cp $(addprefix node_modules/angular-translate/dist/,$(ANGULAR_TRANSLATE_JS)) src/lib/;
+	cp $(addprefix node_modules/angular-translate/dist/angular-translate-loader-static-files/,$(ANGULAR_TRANSLATE_LOADER_JS)) src/lib/;
+
+
 .build-artefacts/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar .build-artefacts/externs/angular.js .build-artefacts/externs/jquery.js
 	mkdir -p $(dir $@)
 	java -jar .build-artefacts/closure-compiler/compiler.jar $(SRC_JS_FILES_FOR_COMPILER) --compilation_level SIMPLE_OPTIMIZATIONS --jscomp_error checkVars --externs externs/ol.js --externs .build-artefacts/externs/angular.js --externs .build-artefacts/externs/jquery.js --js_output_file $@
