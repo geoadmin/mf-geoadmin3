@@ -1,85 +1,107 @@
 #-*- coding: utf-8 -*-
 
-import os
+from chsdi.tests.mapproxy import MapProxyTestsBase
+
 import requests
+import random
 
-from pyramid.paster import get_app
+# Official URLS we support
+WMTS_URLS = [
+    'wmts.geo.admin.ch',
+    'wmts5.geo.admin.ch',
+    'wmts6.geo.admin.ch',
+    'wmts7.geo.admin.ch',
+    'wmts8.geo.admin.ch',
+    'wmts9.geo.admin.ch'
+]
 
-EPSGS = [21781, 2056, 3857, 4326, 4258]
-
-app = get_app('development.ini')
-
-try:
-    apache_base_path = app.registry.settings['apache_base_path']
-    base_url = "http://" + app.registry.settings['mapproxyhost'] + '/' + apache_base_path if apache_base_path != '/' else ''
-except KeyError as e:
-    base_url = 'http://wmts10.geo.admin.ch'
-
-
-def hash(bits=96):
-    assert bits % 8 == 0
-    return os.urandom(bits / 8).encode('hex')
-
-
-def get_headers():
-    return {'User-Agent': 'WMTS Unit Tester v0.0.1', 'Referer': 'http://unittest.geo.admin.ch'}
+MAPPROXY_URLS = [
+    'wmts10.geo.admin.ch',
+    'wmts11.geo.admin.ch',
+    'wmts12.geo.admin.ch',
+    'wmts13.geo.admin.ch',
+    'wmts14.geo.admin.ch',
+]
 
 
-def check_status_code(path):
-    if not path.startswith('http'):
-        url = base_url + path
-    else:
-        url = path.replace('http://wmts10.geo.admin.ch', base_url)
-    resp = requests.get(url, headers=get_headers())
-    assert resp.status_code in [200, 204, 304]
+def rotateUrl(url):
+    return url.replace(WMTS_URLS[0], WMTS_URLS[random.randint(0, len(WMTS_URLS) - 1)]).replace(MAPPROXY_URLS[0], MAPPROXY_URLS[random.randint(0, len(MAPPROXY_URLS) - 1)])
+
+HEADER_RESULTS = [{
+    'Results': [200, 204, 304],
+    'Header': {'User-Agent': 'WMTS Unit Tester v0.0.1', 'Referer': 'http://unittest.geo.admin.ch'}
+}, {
+    'Results': [403],
+    'Header': {'User-Agent': 'WMTS Unit Tester v0.0.1'}
+}, {
+    'Results': [403],
+    'Header': {'User-Agent': 'WMTS Unit Tester v0.0.1', 'Referer': 'http://foonogood.ch'}
+}
+]
 
 
-def test_generator():
-    param_list = get_tile()
-    for params in param_list:
-        yield check_status_code, params[0]
+def get_header():
+    return HEADER_RESULTS[random.randint(0, len(HEADER_RESULTS) - 1)]
 
 
-def get_tile():
-    from urlparse import urlparse, urlunparse
-    import xml.etree.ElementTree as etree
+class TestWmtsGetTile(MapProxyTestsBase):
 
-    tiles = {3857: [(7, 67, 45), (10, 533, 360)],
-             21781: [(17, 5, 6), (18, 11, 13)],
-             2056: [(17, 5, 6), (18, 11, 13)],
-             4326: [(18, 55, 30), (15, 2, 2)],
-             4258: [(18, 55, 30), (15, 2, 2)]
-             }
-    param_list = []
+    def check_status_code(self, path):
+        if not path.startswith('http'):
+            url = self.mapproxy_url + path
+        else:
+            url = path.replace('http://wmts10.geo.admin.ch', self.mapproxy_url)
+        url = rotateUrl(url)
+        h = get_header()
+        resp = requests.get(url, headers=h['Header'])
+        checkcode = resp.status_code in h['Results']
+        self.failUnless(checkcode, 'Called Url: ' + url + ' [returned with ' + str(resp.status_code) + ']')
 
-    for epsg in EPSGS:
-        capabilities_name = "WMTSCapabilities.EPSG.%d.xml" % epsg if epsg != 21781 else "WMTSCapabilities.xml"
-        resp = requests.get(base_url + '/1.0.0/%s' % capabilities_name, params={'_id': hash()},
-                            headers=get_headers())
+    def test_generator(self):
+        param_list = self.get_tile()
+        for params in param_list:
+            self.check_status_code(params[0])
 
-        root = etree.fromstring(resp.content)
-        layers = root.findall('.//{http://www.opengis.net/wmts/1.0}Layer')
-        for layer in layers:
-            resourceurls = layer.findall('.//{http://www.opengis.net/wmts/1.0}ResourceURL')
-            for resourceurl in resourceurls:
-                tpl = resourceurl.attrib['template']
-                tpl_parsed = urlparse(tpl)
-                pth = tpl_parsed.path
+    def get_tile(self):
+        from urlparse import urlparse, urlunparse
+        import xml.etree.ElementTree as etree
 
-                dim = layer.find('.//{http://www.opengis.net/wmts/1.0}Dimension')
-                times = dim.findall('./{http://www.opengis.net/wmts/1.0}Value')
+        tiles = {3857: [(7, 67, 45), (10, 533, 360)],
+                 21781: [(17, 5, 6), (18, 11, 13)],
+                 2056: [(17, 5, 6), (18, 11, 13)],
+                 4326: [(18, 55, 30), (15, 2, 2)],
+                 4258: [(18, 55, 30), (15, 2, 2)]
+                 }
+        param_list = []
 
-                tiles_proj = tiles[epsg]
+        for epsg in self.EPSGS:
+            capabilities_name = "WMTSCapabilities.EPSG.%d.xml" % epsg if epsg != 21781 else "WMTSCapabilities.xml"
+            resp = requests.get(self.mapproxy_url + '/1.0.0/%s' % capabilities_name, params={'_id': self.hash()},
+                                headers=HEADER_RESULTS[0]['Header'])
 
-                for tile in tiles_proj:
-                    zoom, col, row = tile
-                    for time in times:
-                        t = time.text
-                        try:
-                            pth2 = pth.replace('{TileCol}', str(col)).replace('{TileRow}', str(row)).replace('{TileMatrix}', str(zoom)).replace('{Time}', str(t))
-                        except:
-                            print 'Cannot replace in template %s' % pth
-                        url = urlunparse((tpl_parsed.scheme, tpl_parsed.netloc, pth2, '', '', ''))
-                        param_list.append((url,))
+            root = etree.fromstring(resp.content)
+            layers = root.findall('.//{http://www.opengis.net/wmts/1.0}Layer')
+            for layer in layers:
+                resourceurls = layer.findall('.//{http://www.opengis.net/wmts/1.0}ResourceURL')
+                for resourceurl in resourceurls:
+                    tpl = resourceurl.attrib['template']
+                    tpl_parsed = urlparse(tpl)
+                    pth = tpl_parsed.path
 
-    return param_list
+                    dim = layer.find('.//{http://www.opengis.net/wmts/1.0}Dimension')
+                    times = dim.findall('./{http://www.opengis.net/wmts/1.0}Value')
+
+                    tiles_proj = tiles[epsg]
+
+                    for tile in tiles_proj:
+                        zoom, col, row = tile
+                        for time in times:
+                            t = time.text
+                            try:
+                                pth2 = pth.replace('{TileCol}', str(col)).replace('{TileRow}', str(row)).replace('{TileMatrix}', str(zoom)).replace('{Time}', str(t))
+                            except:
+                                print 'Cannot replace in template %s' % pth
+                            url = urlunparse((tpl_parsed.scheme, tpl_parsed.netloc, pth2, '', '', ''))
+                            param_list.append((url,))
+
+        return param_list
