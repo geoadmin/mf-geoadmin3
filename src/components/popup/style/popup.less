@@ -1,6 +1,7 @@
 @ga-popup-max-height: 440px;
 @ga-popup-reduced-height: 40px;
 @ga-popup-max-width: 620px;
+@ga-popup-resize: both;
 
 [ga-popup] {
   display: none;
@@ -9,6 +10,7 @@
   max-width: @ga-popup-max-width;
   min-height: 100px;
   max-height: @ga-popup-max-height;
+  resize: @ga-popup-resize;
   z-index: 2000;
 
   .popover-title {
