@@ -1,6 +1,8 @@
 {
   "search_help": "",
   "share": "",
+  "share_link": "",
+  "share_link_tooltip": "",
   "print": "",
   "map_tools": "",
   "choose_theme": "",
@@ -10,7 +12,6 @@
   "open_menu": "",
   "position": "",
   "elevation": "",
-  "shorten_url": "",
   "print_layout": "",
   "print_scale": "",
   "legend": "",
@@ -300,5 +301,9 @@
   "share_preview": "",
   "share_file_disclaimer": "",
   "share_file_link_title_admin": "",
-  "share_file_link_descr_admin": ""
+  "share_file_link_descr_admin": "",
+  "share_less": "",
+  "share_more": "",
+  "copy_url": "",
+  "copy_success": ""
 }

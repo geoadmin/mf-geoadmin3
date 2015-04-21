@@ -283,7 +283,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     <div ng-cloak translate-cloak id="pulldown" ng-show="!globals.offline" ng-class="{'selection-and-catalog-shown': (globals.catalogShown && globals.selectionShown)}">
       <div id="pulldown-content" class="content ${"in" if device == "desktop" else "collapse"}">
         <div class="panel">
-          <a id="shareHeading" class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#share">
+          <a id="shareHeading" class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#share" ga-collapsible-show="globals.isShareActive">
             <i class="visible-collapsed icon-caret-right spacer"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
             <i class="icon-share"></i>
@@ -291,7 +291,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           </a>
           <div id="share" class="panel-collapse collapse">
             <div class="panel-body" ng-controller="GaShareController">
-              <div ga-share ga-share-options="options"></div>
+              <div ga-share ga-share-options="options" ga-share-active="globals.isShareActive"></div>
             </div>
           </div>
         </div> <!-- .panel -->
