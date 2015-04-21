@@ -157,12 +157,6 @@ fastclick: .build-artefacts/fastclick .build-artefacts/closure-compiler/compiler
 	cp .build-artefacts/fastclick/lib/fastclick.js src/lib/fastclick.js
 	java -jar .build-artefacts/closure-compiler/compiler.jar src/lib/fastclick.js --compilation_level SIMPLE_OPTIMIZATIONS --js_output_file  src/lib/fastclick.min.js
 
-.PHONY: localforage
-localforage: .build-artefacts/localforage
-	cd .build-artefacts/localforage && git reset HEAD --hard
-	cp .build-artefacts/localforage/dist/localforage.js src/lib/localforage.js
-	cp .build-artefacts/localforage/dist/localforage.min.js src/lib/localforage.min.js
-
 .PHONY: filesaver
 filesaver: .build-artefacts/filesaver
 	cp .build-artefacts/filesaver/FileSaver.js src/lib/filesaver.js
@@ -270,11 +264,13 @@ test/karma-conf-prod.js: test/karma-conf.mako.js .build-artefacts/python-venv/bi
 node_modules: ANGULAR_JS = angular.js angular.min.js
 node_modules: ANGULAR_TRANSLATE_JS = angular-translate.js angular-translate.min.js 
 node_modules: ANGULAR_TRANSLATE_LOADER_JS = angular-translate-loader-static-files.js angular-translate-loader-static-files.min.js 
+node_modules: LOCALFORAGE = localforage.js localforage.min.js
 node_modules: package.json
 	npm install
 	cp $(addprefix node_modules/angular/,$(ANGULAR_JS)) src/lib/;
 	cp $(addprefix node_modules/angular-translate/dist/,$(ANGULAR_TRANSLATE_JS)) src/lib/;
 	cp $(addprefix node_modules/angular-translate/dist/angular-translate-loader-static-files/,$(ANGULAR_TRANSLATE_LOADER_JS)) src/lib/;
+	cp $(addprefix node_modules/localforage/dist/,$(LOCALFORAGE)) src/lib;
 
 
 .build-artefacts/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar .build-artefacts/externs/angular.js .build-artefacts/externs/jquery.js
@@ -384,9 +380,6 @@ scripts/00-$(GIT_BRANCH).conf: scripts/00-branch.mako-dot-conf .build-artefacts/
 
 .build-artefacts/fastclick:
 	git clone https://github.com/ftlabs/fastclick.git $@ && cd $@ && git checkout v1.0.6
-
-.build-artefacts/localforage:
-	git clone https://github.com/mozilla/localForage.git $@ && cd $@ && git checkout 1.0.1
 
 .build-artefacts/filesaver:
 	git clone https://github.com/eligrey/FileSaver.js.git $@
