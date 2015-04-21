@@ -61,6 +61,9 @@ msgstr ""
 msgid "ch.bfe.energiestaedte.name"
 msgstr ""
 
+msgid "ch.bfe.windenergieanlagen"
+msgstr ""
+
 msgid "ch.astra.ivs-nat-verlaeufe.ivs_slaname"
 msgstr ""
 
@@ -557,6 +560,48 @@ msgid "ch.bafu"
 msgstr ""
 
 msgid "ch.bafu.url"
+msgstr ""
+
+msgid "windenergieangaben"
+msgstr ""
+
+msgid "windenergiebetreiber"
+msgstr ""
+
+msgid "website"
+msgstr ""
+
+msgid "installierteleistung"
+msgstr ""
+
+msgid "produktion"
+msgstr ""
+
+msgid "produktionsdaten"
+msgstr ""
+
+msgid "windturbinenangaben"
+msgstr ""
+
+msgid "hersteller"
+msgstr ""
+
+msgid "modell"
+msgstr ""
+
+msgid "baujahr"
+msgstr ""
+
+msgid "baujahr_de_fr"
+msgstr ""
+
+msgid "rotordurchmesser"
+msgstr ""
+
+msgid "nabenhoehe"
+msgstr ""
+
+msgid "windenergieanlage"
 msgstr ""
 
 msgid "sss.url"
@@ -2248,6 +2293,9 @@ msgstr ""
 msgid "hide column"
 msgstr ""
 
+msgid "elevation"
+msgstr ""
+
 msgid "pdf"
 msgstr ""
 
@@ -2642,6 +2690,9 @@ msgid "punktname"
 msgstr ""
 
 msgid "status"
+msgstr ""
+
+msgid "statut"
 msgstr ""
 
 msgid "fp_Y03_X03"

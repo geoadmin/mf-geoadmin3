@@ -401,6 +401,12 @@ msgstr "Volume 1 | 2"
 msgid "basis"
 msgstr "Base(s)"
 
+msgid "baujahr"
+msgstr "Année de construction"
+
+msgid "baujahr_de_fr"
+msgstr "Année de construction"
+
 msgid "bazlrechtstatus"
 msgstr "Statut juridique"
 
@@ -1826,6 +1832,9 @@ msgstr "Ouvrages d’accumulation"
 msgid "ch.bfe.url"
 msgstr "http://www.bfe.admin.ch/index.html?lang=fr"
 
+msgid "ch.bfe.windenergieanlagen"
+msgstr "Installations éoliennes"
+
 msgid "ch.bfs"
 msgstr "OFS"
 
@@ -2726,6 +2735,9 @@ msgstr "Nombre d’habitants (fourchette, seulement pour Siedl)"
 msgid "einwohnerzahl_s"
 msgstr "Nombre d’habitants (seulement pour Siedl.)"
 
+msgid "elevation"
+msgstr "Altitude"
+
 msgid "energiebedarf_motoren"
 msgstr "Besoin énergétique des moteurs"
 
@@ -2960,6 +2972,9 @@ msgstr "Aide"
 msgid "help url"
 msgstr "http://www.geo.admin.ch/internet/geoportal/fr/commons/help/viewer_help.html"
 
+msgid "hersteller"
+msgstr "Fabricant"
+
 msgid "hide column"
 msgstr "Faire disparaître le gestionnaire de couches"
 
@@ -3031,6 +3046,9 @@ msgstr "Identifiant"
 
 msgid "information"
 msgstr "Information"
+
+msgid "installierteleistung"
+msgstr "Puissance installée"
 
 msgid "intern"
 msgstr "Interne"
@@ -3749,6 +3767,9 @@ msgstr "Nom du site d’essai"
 msgid "messstellentyp"
 msgstr "Type"
 
+msgid "modell"
+msgstr "Modèle"
+
 msgid "modif_validfrom"
 msgstr "Date de l'arrêt"
 
@@ -3757,6 +3778,9 @@ msgstr "Communes concernées"
 
 msgid "nabeltyp"
 msgstr "Emplacement"
+
+msgid "nabenhoehe"
+msgstr "Hauteur du moyeu"
 
 msgid "nachweisjahr"
 msgstr "Année du prélèvement"
@@ -3905,6 +3929,12 @@ msgstr "Impression"
 msgid "produkt"
 msgstr "Produit"
 
+msgid "produktion"
+msgstr "Production"
+
+msgid "produktionsdaten"
+msgstr "Données de production"
+
 msgid "produktionserwartung"
 msgstr "Production attendue"
 
@@ -3955,6 +3985,9 @@ msgstr "Utilisez Alt + Shift + drag pour tourner l'image"
 
 msgid "rotation key apple"
 msgstr "Utilisez \u2325 + Shift + drag pour tourner l'image"
+
+msgid "rotordurchmesser"
+msgstr "Diamètre du rotor"
 
 msgid "routentypid"
 msgstr "Genre d'itinéraires pour convois exceptionnels"
@@ -4015,6 +4048,9 @@ msgstr "Statut"
 
 msgid "status_fp"
 msgstr "Nom officiel (si existant)"
+
+msgid "statut"
+msgstr "Statut"
 
 msgid "stoff"
 msgstr "Production"
@@ -5219,11 +5255,26 @@ msgstr "Donnée actuelles et historiques"
 msgid "wassertemperatur"
 msgstr "Température de l'eau °C"
 
+msgid "website"
+msgstr "Site Internet"
+
 msgid "wenig_sub"
 msgstr "Tracé historique"
 
 msgid "werte"
 msgstr "Valeurs disponibles"
+
+msgid "windenergieangaben"
+msgstr "Données des installations éoliennes"
+
+msgid "windenergieanlage"
+msgstr "Installation éolienne"
+
+msgid "windenergiebetreiber"
+msgstr "Exploitant"
+
+msgid "windturbinenangaben"
+msgstr "Données des éoliennes"
 
 msgid "wj_bearbeitungsjahr"
 msgstr "Année du traitement"

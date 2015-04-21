@@ -630,6 +630,69 @@ class kleinwasserkraftpotentiale(Base, Vector):
 register('ch.bfe.kleinwasserkraftpotentiale', kleinwasserkraftpotentiale)
 
 
+class WindenergieanlagenFacility(Base, Vector):
+    __tablename__ = 'view_windenergieanlagen_facility'
+    __table_args__ = ({'schema': 'bfe', 'autoload': False})
+    __template__ = 'templates/htmlpopup/windenergieanlagen_facility.mako'
+    __bodId__ = 'ch.bfe.windenergieanlagen'
+    __extended_info__ = True
+    __queryable_attributes__ = ['fac_name']
+    __label__ = 'fac_name'
+    id = Column('fac_id', Text, primary_key=True)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY', dimension=2, srid=21781))
+    fac_name = Column('fac_name', Text)
+    fac_type_de = Column('fac_type_de', Text)
+    fac_type_fr = Column('fac_type_fr', Text)
+    fac_type_it = Column('fac_type_it', Text)
+    fac_operator = Column('fac_operator', Text)
+    fac_website = Column('fac_website', Text)
+    fac_power = Column('fac_power', Text)
+    fac_xml_prod = Column('fac_xml_prod', Text)
+    fac_initial = Column('fac_initial', Text)
+    fac_y = Column('fac_y', Integer)
+    fac_x = Column('fac_x', Integer)
+    turbines = Column('turbines', Text)
+    __minscale__ = 100005
+    __maxscale__ = 100000005
+
+register('ch.bfe.windenergieanlagen', WindenergieanlagenFacility)
+
+
+class WindenergieanlagenTurbine(Base, Vector):
+    __tablename__ = 'view_windenergieanlagen_turbine'
+    __table_args__ = ({'schema': 'bfe', 'autoload': False})
+    __template__ = 'templates/htmlpopup/windenergieanlagen_turbine.mako'
+    __bodId__ = 'ch.bfe.windenergieanlagen'
+    __extended_info__ = True
+    __queryable_attributes__ = ['fac_name']
+    __label__ = 'tur_year'
+    id = Column('tur_id', Text, primary_key=True)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY', dimension=2, srid=21781))
+    fac_name = Column('fac_name', Text)
+    fac_type_de = Column('fac_type_de', Text)
+    fac_type_fr = Column('fac_type_fr', Text)
+    fac_type_it = Column('fac_type_it', Text)
+    fac_operator = Column('fac_operator', Text)
+    fac_website = Column('fac_website', Text)
+    fac_power = Column('fac_power', Text)
+    fac_xml_prod = Column('fac_xml_prod', Text)
+    fac_initial = Column('fac_initial', Text)
+    tur_y = Column('tur_y', Integer)
+    tur_x = Column('tur_x', Integer)
+    turbines = Column('turbines', Text)
+    tur_manufacturer = Column('tur_manufacturer', Text)
+    tur_model = Column('tur_model', Text)
+    tur_diameter = Column('tur_diameter', Text)
+    tur_hubheight = Column('tur_hubheight', Text)
+    tur_power = Column('tur_power', Text)
+    tur_altitude = Column('tur_altitude', Text)
+    tur_year = Column('tur_year', Numeric)
+    __minscale__ = 1
+    __maxscale__ = 100005
+
+register('ch.bfe.windenergieanlagen', WindenergieanlagenTurbine)
+
+
 class bakomfernsehsender(Base, Vector):
     __tablename__ = 'nisdb_bro_tooltip'
     __table_args__ = ({'schema': 'bakom', 'autoload': False})
