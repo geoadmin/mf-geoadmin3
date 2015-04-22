@@ -107,6 +107,12 @@ WSGIScriptAliasMatch ^${apache_entry_path}/ ${buildout:directory/buildout/parts/
    Allow from all
 </LocationMatch>
 
+# Static for cross domain flash/arcgis
+<LocationMatch ^${apache_entry_path}/files>
+   Header unset Access-Control-Allow-Methods
+   Header always set Access-Control-Allow-Methods "POST, GET, DELETE, OPTIONS"
+</LocationMatch>
+
 # kml file downloads
 AliasMatch ^${apache_entry_path}/kml/(map\.geo\.admin\.ch_KML_\d+\.kml)$ ${print_temp_dir}/kml/$1
 
