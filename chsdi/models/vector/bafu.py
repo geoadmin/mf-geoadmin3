@@ -376,6 +376,174 @@ class Temperaturmessnetz(Base, Vector):
 register('ch.bafu.hydrologie-wassertemperaturmessstationen', Temperaturmessnetz)
 
 
+class Klaeranlagen_q347(Base, Vector):
+    __tablename__ = 'klaeranlagen'
+    __table_args__ = ({'schema': 'wasser', 'autoload': False, 'extend_existing': True})
+    __bodId__ = 'ch.bafu.gewaesserschutz-klaeranlagen_anteilq347'
+    __template__ = 'templates/htmlpopup/klaeranlagen.mako'
+    __extended_info__ = True
+    __queryable_attributes__ = ['nummer', 'name', 'ort', 'name_vorfluter', 'gewiss_nr', 'reinigungstyp', 'abw_tagesmittel', 'abw_tagesspitze', 'spitzenbelastung_regen', 'rohabwasser_tag', 'frischschlamm_tag', 'stabilisierter_schlamm_tag', 'bsb5anteil', 'bsb5absolut', 'csbanteil', 'csbabsolut', 'docanteil', 'docabsolut', 'nh4_nanteil', 'nh4_nabsolut', 'nh4_n_ganzjaehrig', 'nanteil', 'nabsolut', 'n_abwassertemperatur', 'gesamtpanteil', 'gesamtpabsolut', 'gesamt_ungel_stoffe_absolut', 'andere_stoffe', 'kanton', 'vsa_kategorie', 'ausbaugroesse_egw', 'anzahl_nat_einwohner', 'jahr_nat_einwohner', 'abwasseranteil_q347', 'gwlnr']
+    __label__ = 'name'
+    id = Column('nummer', Integer, primary_key=True)
+    name = Column('name', Text)
+    rechtswert = Column('rechtswert', Integer)
+    hochwert = Column('hochwert', Integer)
+    hoehe = Column('hoehe', Integer)
+    adresse = Column('adresse', Text)
+    plz = Column('plz', Integer)
+    ort = Column('ort', Text)
+    tel_nr = Column('tel_nr', Text)
+    vorfluterbez = Column('vorfluterbez', Text)
+    name_vorfluter = Column('name_vorfluter', Text)
+    gewiss_nr = Column('gewiss_nr', Integer)
+    reinigungstyp = Column('reinigungstyp', Text)
+    abw_tagesmittel = Column('abw_tagesmittel', Integer)
+    abw_tagesspitze = Column('abw_tagesspitze', Integer)
+    spitzenbelastung_regen = Column('spitzenbelastung_regen', Integer)
+    rohabwasser_tag = Column('rohabwasser_tag', Integer)
+    frischschlamm_tag = Column('frischschlamm_tag', Integer)
+    stabilisierter_schlamm_tag = Column('stabilisierter_schlamm_tag', Integer)
+    bsb5anteil = Column('bsb5anteil', Integer)
+    bsb5absolut = Column('bsb5absolut', Integer)
+    csbanteil = Column('csbanteil', Integer)
+    csbabsolut = Column('csbabsolut', Integer)
+    docanteil = Column('docanteil', Integer)
+    docabsolut = Column('docabsolut', Integer)
+    nh4_nanteil = Column('nh4_nanteil', Integer)
+    nh4_nabsolut = Column('nh4_nabsolut', Integer)
+    nh4_n_ganzjaehrig = Column('nh4_n_ganzjaehrig', Text)
+    nanteil = Column('nanteil', Integer)
+    nabsolut = Column('nabsolut', Integer)
+    n_abwassertemperatur = Column('n_abwassertemperatur', Integer)
+    gesamtpanteil = Column('gesamtpanteil', Integer)
+    gesamtpabsolut = Column('gesamtpabsolut', Numeric)
+    gesamt_ungel_stoffe_absolut = Column('gesamt_ungel_stoffe_absolut', Integer)
+    andere_stoffe = Column('andere_stoffe', Text)
+    kanton = Column('kanton', Text)
+    vsa_kategorie = Column('vsa_kategorie', Text)
+    ausbaugroesse_egw = Column('ausbaugroesse_egw', Integer)
+    anzahl_nat_einwohner = Column('anzahl_nat_einwohner', Integer)
+    jahr_nat_einwohner = Column('jahr_nat_einwohner', Integer)
+    abwasseranteil_q347 = Column('abwasseranteil_q347', Numeric)
+    gwlnr = Column('gwlnr', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.bafu.gewaesserschutz-klaeranlagen_anteilq347', Klaeranlagen_q347)
+
+
+class Reinigungstyp(Base, Vector):
+    __tablename__ = 'klaeranlagen'
+    __table_args__ = ({'schema': 'wasser', 'autoload': False, 'extend_existing': True})
+    __bodId__ = 'ch.bafu.gewaesserschutz-klaeranlagen_reinigungstyp'
+    __template__ = 'templates/htmlpopup/klaeranlagen.mako'
+    __extended_info__ = True
+    __queryable_attributes__ = ['nummer', 'name', 'ort', 'name_vorfluter', 'gewiss_nr', 'reinigungstyp', 'abw_tagesmittel', 'abw_tagesspitze', 'spitzenbelastung_regen', 'rohabwasser_tag', 'frischschlamm_tag', 'stabilisierter_schlamm_tag', 'bsb5anteil', 'bsb5absolut', 'csbanteil', 'csbabsolut', 'docanteil', 'docabsolut', 'nh4_nanteil', 'nh4_nabsolut', 'nh4_n_ganzjaehrig', 'nanteil', 'nabsolut', 'n_abwassertemperatur', 'gesamtpanteil', 'gesamtpabsolut', 'gesamt_ungel_stoffe_absolut', 'andere_stoffe', 'kanton', 'vsa_kategorie', 'ausbaugroesse_egw', 'anzahl_nat_einwohner', 'jahr_nat_einwohner', 'abwasseranteil_q347', 'gwlnr']
+    __label__ = 'name'
+    id = Column('nummer', Integer, primary_key=True)
+    name = Column('name', Text)
+    rechtswert = Column('rechtswert', Integer)
+    hochwert = Column('hochwert', Integer)
+    hoehe = Column('hoehe', Integer)
+    adresse = Column('adresse', Text)
+    plz = Column('plz', Integer)
+    ort = Column('ort', Text)
+    tel_nr = Column('tel_nr', Text)
+    vorfluterbez = Column('vorfluterbez', Text)
+    name_vorfluter = Column('name_vorfluter', Text)
+    gewiss_nr = Column('gewiss_nr', Integer)
+    reinigungstyp = Column('reinigungstyp', Text)
+    abw_tagesmittel = Column('abw_tagesmittel', Integer)
+    abw_tagesspitze = Column('abw_tagesspitze', Integer)
+    spitzenbelastung_regen = Column('spitzenbelastung_regen', Integer)
+    rohabwasser_tag = Column('rohabwasser_tag', Integer)
+    frischschlamm_tag = Column('frischschlamm_tag', Integer)
+    stabilisierter_schlamm_tag = Column('stabilisierter_schlamm_tag', Integer)
+    bsb5anteil = Column('bsb5anteil', Integer)
+    bsb5absolut = Column('bsb5absolut', Integer)
+    csbanteil = Column('csbanteil', Integer)
+    csbabsolut = Column('csbabsolut', Integer)
+    docanteil = Column('docanteil', Integer)
+    docabsolut = Column('docabsolut', Integer)
+    nh4_nanteil = Column('nh4_nanteil', Integer)
+    nh4_nabsolut = Column('nh4_nabsolut', Integer)
+    nh4_n_ganzjaehrig = Column('nh4_n_ganzjaehrig', Text)
+    nanteil = Column('nanteil', Integer)
+    nabsolut = Column('nabsolut', Integer)
+    n_abwassertemperatur = Column('n_abwassertemperatur', Integer)
+    gesamtpanteil = Column('gesamtpanteil', Integer)
+    gesamtpabsolut = Column('gesamtpabsolut', Numeric)
+    gesamt_ungel_stoffe_absolut = Column('gesamt_ungel_stoffe_absolut', Integer)
+    andere_stoffe = Column('andere_stoffe', Text)
+    kanton = Column('kanton', Text)
+    vsa_kategorie = Column('vsa_kategorie', Text)
+    ausbaugroesse_egw = Column('ausbaugroesse_egw', Integer)
+    anzahl_nat_einwohner = Column('anzahl_nat_einwohner', Integer)
+    jahr_nat_einwohner = Column('jahr_nat_einwohner', Integer)
+    abwasseranteil_q347 = Column('abwasseranteil_q347', Numeric)
+    gwlnr = Column('gwlnr', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.bafu.gewaesserschutz-klaeranlagen_reinigungstyp', Reinigungstyp)
+
+
+class Klaeranlagen_ausbaugroesse(Base, Vector):
+    __tablename__ = 'klaeranlagen'
+    __table_args__ = ({'schema': 'wasser', 'autoload': False, 'extend_existing': True})
+    __bodId__ = 'ch.bafu.gewaesserschutz-klaeranlagen_ausbaugroesse'
+    __template__ = 'templates/htmlpopup/klaeranlagen.mako'
+    __extended_info__ = True
+    __queryable_attributes__ = ['nummer', 'name', 'ort', 'name_vorfluter', 'gewiss_nr', 'reinigungstyp', 'abw_tagesmittel', 'abw_tagesspitze', 'spitzenbelastung_regen', 'rohabwasser_tag', 'frischschlamm_tag', 'stabilisierter_schlamm_tag', 'bsb5anteil', 'bsb5absolut', 'csbanteil', 'csbabsolut', 'docanteil', 'docabsolut', 'nh4_nanteil', 'nh4_nabsolut', 'nh4_n_ganzjaehrig', 'nanteil', 'nabsolut', 'n_abwassertemperatur', 'gesamtpanteil', 'gesamtpabsolut', 'gesamt_ungel_stoffe_absolut', 'andere_stoffe', 'kanton', 'vsa_kategorie', 'ausbaugroesse_egw', 'anzahl_nat_einwohner', 'jahr_nat_einwohner', 'abwasseranteil_q347', 'gwlnr']
+    __label__ = 'name'
+    id = Column('nummer', Integer, primary_key=True)
+    name = Column('name', Text)
+    rechtswert = Column('rechtswert', Integer)
+    hochwert = Column('hochwert', Integer)
+    hoehe = Column('hoehe', Integer)
+    adresse = Column('adresse', Text)
+    plz = Column('plz', Integer)
+    ort = Column('ort', Text)
+    tel_nr = Column('tel_nr', Text)
+    vorfluterbez = Column('vorfluterbez', Text)
+    name_vorfluter = Column('name_vorfluter', Text)
+    gewiss_nr = Column('gewiss_nr', Integer)
+    reinigungstyp = Column('reinigungstyp', Text)
+    abw_tagesmittel = Column('abw_tagesmittel', Integer)
+    abw_tagesspitze = Column('abw_tagesspitze', Integer)
+    spitzenbelastung_regen = Column('spitzenbelastung_regen', Integer)
+    rohabwasser_tag = Column('rohabwasser_tag', Integer)
+    frischschlamm_tag = Column('frischschlamm_tag', Integer)
+    stabilisierter_schlamm_tag = Column('stabilisierter_schlamm_tag', Integer)
+    bsb5anteil = Column('bsb5anteil', Integer)
+    bsb5absolut = Column('bsb5absolut', Integer)
+    csbanteil = Column('csbanteil', Integer)
+    csbabsolut = Column('csbabsolut', Integer)
+    docanteil = Column('docanteil', Integer)
+    docabsolut = Column('docabsolut', Integer)
+    nh4_nanteil = Column('nh4_nanteil', Integer)
+    nh4_nabsolut = Column('nh4_nabsolut', Integer)
+    nh4_n_ganzjaehrig = Column('nh4_n_ganzjaehrig', Text)
+    nanteil = Column('nanteil', Integer)
+    nabsolut = Column('nabsolut', Integer)
+    n_abwassertemperatur = Column('n_abwassertemperatur', Integer)
+    gesamtpanteil = Column('gesamtpanteil', Integer)
+    gesamtpabsolut = Column('gesamtpabsolut', Numeric)
+    gesamt_ungel_stoffe_absolut = Column('gesamt_ungel_stoffe_absolut', Integer)
+    andere_stoffe = Column('andere_stoffe', Text)
+    kanton = Column('kanton', Text)
+    vsa_kategorie = Column('vsa_kategorie', Text)
+    ausbaugroesse_egw = Column('ausbaugroesse_egw', Integer)
+    anzahl_nat_einwohner = Column('anzahl_nat_einwohner', Integer)
+    jahr_nat_einwohner = Column('jahr_nat_einwohner', Integer)
+    abwasseranteil_q347 = Column('abwasseranteil_q347', Numeric)
+    gwlnr = Column('gwlnr', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.bafu.gewaesserschutz-klaeranlagen_ausbaugroesse', Klaeranlagen_ausbaugroesse)
+
+
 class Flussordnungszahlen_strahler(Base, Vector):
     __tablename__ = 'flussordnungszahlen'
     __table_args__ = ({'schema': 'wasser', 'autoload': False})

@@ -1244,6 +1244,24 @@ msgstr "Link"
 msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.yearbw"
 msgstr "Jahr"
 
+msgid "ch.bafu.gewaesserschutz-klaeranlagen_anteilq347"
+msgstr "ARA-DB - Abwasserant. an Q347"
+
+msgid "ch.bafu.gewaesserschutz-klaeranlagen_anteilq347"
+msgstr "ARA-DB - Abwasserant. an Q347"
+
+msgid "ch.bafu.gewaesserschutz-klaeranlagen_ausbaugroesse"
+msgstr "ARA-DB - Ausbaugrösse (EGW)"
+
+msgid "ch.bafu.gewaesserschutz-klaeranlagen_ausbaugroesse"
+msgstr "ARA-DB - Ausbaugrösse (EGW)"
+
+msgid "ch.bafu.gewaesserschutz-klaeranlagen_reinigungstyp"
+msgstr "ARA-DB - Reinigungstyp"
+
+msgid "ch.bafu.gewaesserschutz-klaeranlagen_reinigungstyp"
+msgstr "ARA-DB - Reinigungstyp"
+
 msgid "ch.bafu.gewaesserschutzbereiche"
 msgstr "Gewässerschutzbereiche"
 
@@ -2984,6 +3002,132 @@ msgstr "Territorialregionen"
 msgid "ch.vbs.url"
 msgstr "http://www.vbs.admin.ch/internet/vbs/de/home.html"
 
+msgid "ch_bafu_gee-kla.abw_tagesmittel"
+msgstr "Q24 (m3/d)"
+
+msgid "ch_bafu_gee-kla.abw_tagesspitze"
+msgstr "QTW (l/s)"
+
+msgid "ch_bafu_gee-kla.abwasseranteil_q347"
+msgstr "Prozentanteil Abwasser im Vorfluter bei Niedrigwasser"
+
+msgid "ch_bafu_gee-kla.adresse"
+msgstr "Adresse"
+
+msgid "ch_bafu_gee-kla.andere_stoffe"
+msgstr "And. Stoffe"
+
+msgid "ch_bafu_gee-kla.anzahl_nat_einwohner"
+msgstr "Anzahl angeschlossene Einwohner"
+
+msgid "ch_bafu_gee-kla.ausbaugroesse_egw"
+msgstr "Ausbaugrösse (EGW)"
+
+msgid "ch_bafu_gee-kla.bsb5absolut"
+msgstr "BSB5-Abfl-konz. (mg/l)"
+
+msgid "ch_bafu_gee-kla.bsb5anteil"
+msgstr "BSB5-Elimin. (%)"
+
+msgid "ch_bafu_gee-kla.csbabsolut"
+msgstr "CSB-Abfl.-konz."
+
+msgid "ch_bafu_gee-kla.csbanteil"
+msgstr "CSB-Elimin."
+
+msgid "ch_bafu_gee-kla.docabsolut"
+msgstr "DOC-Abfl.-konz."
+
+msgid "ch_bafu_gee-kla.docanteil"
+msgstr "DOC-Elimin."
+
+msgid "ch_bafu_gee-kla.frischschlamm_tag"
+msgstr "Frischschlamm (kg/d)"
+
+msgid "ch_bafu_gee-kla.gesamt_ungel_stoffe_absolut"
+msgstr "ungelöste Stoffe (mg/l)"
+
+msgid "ch_bafu_gee-kla.gesamtpabsolut"
+msgstr "P-Abfl.-konz."
+
+msgid "ch_bafu_gee-kla.gesamtpanteil"
+msgstr "P-Elimin."
+
+msgid "ch_bafu_gee-kla.gewiss_nr"
+msgstr "GEWISS-Nr"
+
+msgid "ch_bafu_gee-kla.gwlnr"
+msgstr "Gewässerlaufnummer des Vorfluters"
+
+msgid "ch_bafu_gee-kla.hochwert"
+msgstr "Y"
+
+msgid "ch_bafu_gee-kla.hoehe"
+msgstr "Höhe"
+
+msgid "ch_bafu_gee-kla.jahr_nat_einwohner"
+msgstr "Erhebungsjahr der angeschlossenen Einwohner"
+
+msgid "ch_bafu_gee-kla.kanton"
+msgstr "Kanton"
+
+msgid "ch_bafu_gee-kla.n_abwassertemperatur"
+msgstr "N-Abw.-Temp."
+
+msgid "ch_bafu_gee-kla.nabsolut"
+msgstr "N-Abfl.-konz"
+
+msgid "ch_bafu_gee-kla.name"
+msgstr "ARA-Name"
+
+msgid "ch_bafu_gee-kla.name_vorfluter"
+msgstr "Vorflutername"
+
+msgid "ch_bafu_gee-kla.nanteil"
+msgstr "N-Elimin."
+
+msgid "ch_bafu_gee-kla.nh4_n_ganzjaehrig"
+msgstr "NH4-N ganzjährig"
+
+msgid "ch_bafu_gee-kla.nh4_nabsolut"
+msgstr "NH4-N-Abfl.-konz."
+
+msgid "ch_bafu_gee-kla.nh4_nanteil"
+msgstr "NH4-N-Elimin."
+
+msgid "ch_bafu_gee-kla.nummer"
+msgstr "ARA-Nr"
+
+msgid "ch_bafu_gee-kla.ort"
+msgstr "Ort"
+
+msgid "ch_bafu_gee-kla.plz"
+msgstr "PLZ"
+
+msgid "ch_bafu_gee-kla.rechtswert"
+msgstr "X"
+
+msgid "ch_bafu_gee-kla.reinigungstyp"
+msgstr "Reinigungstyp"
+
+msgid "ch_bafu_gee-kla.rohabwasser_tag"
+msgstr "BSB5 Rohabw. (kg/d)"
+
+msgid "ch_bafu_gee-kla.spitzenbelastung_regen"
+msgstr "QRW (l/s)"
+
+msgid "ch_bafu_gee-kla.stabilisierter_schlamm_tag"
+msgstr "stabil. Schlamm (kg/d)"
+
+msgid "ch_bafu_gee-kla.tel_nr"
+msgstr "Tel-Nr"
+
+msgid "ch_bafu_gee-kla.vorfluterbez"
+msgstr "Vorflutertyp"
+
+msgid "ch_bafu_gee-kla.vsa_kategorie"
+msgstr "Reinigungstyp (VSA-Kategorie)"
+
 msgid "ch_bafu_hydrologie_niedrigwasserstatistik.Anz_Jahre"
 msgstr "Anzahl Jahre"
 
@@ -4527,7 +4671,7 @@ msgid "rotation key apple"
 msgstr "Benutzen Sie \u2325 + Umschalt + Ziehen um das Bild zu rotieren"
 
 msgid "rotordurchmesser"
-msgstr "Rotor- Durchmesser"
+msgstr "Rotor- durchmesser"
 
 msgid "routentypid"
 msgstr "Routentyp ID für Ausnahmetransporte"

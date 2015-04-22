@@ -5837,3 +5837,147 @@ msgstr ""
 
 msgid "ch.bafu.hydrologie-niedrigwasserstatistik"
 msgstr ""
+
+msgid "ch.bafu.gewaesserschutz-klaeranlagen_anteilq347"
+msgstr ""
+
+msgid "ch.bafu.gewaesserschutz-klaeranlagen_ausbaugroesse"
+msgstr ""
+
+msgid "ch.bafu.gewaesserschutz-klaeranlagen_reinigungstyp"
+msgstr ""
+
+msgid "ch.bafu.gewaesserschutz-klaeranlagen_anteilq347"
+msgstr ""                                                                                                                                                                      
+
+msgid "ch.bafu.gewaesserschutz-klaeranlagen_ausbaugroesse"
+msgstr ""
+
+msgid "ch.bafu.gewaesserschutz-klaeranlagen_reinigungstyp"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.nummer"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.name"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.rechtswert"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.hochwert"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.hoehe"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.adresse"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.plz"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.ort"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.tel_nr"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.vorfluterbez"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.name_vorfluter"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.gewiss_nr"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.reinigungstyp"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.abw_tagesmittel"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.abw_tagesspitze"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.spitzenbelastung_regen"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.rohabwasser_tag"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.frischschlamm_tag"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.stabilisierter_schlamm_tag"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.bsb5anteil"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.bsb5absolut"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.csbanteil"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.csbabsolut"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.docanteil"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.docabsolut"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.nh4_nanteil"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.nh4_nabsolut"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.nh4_n_ganzjaehrig"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.nanteil"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.nabsolut"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.n_abwassertemperatur"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.gesamtpanteil"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.gesamtpabsolut"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.gesamt_ungel_stoffe_absolut"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.andere_stoffe"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.kanton"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.vsa_kategorie"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.ausbaugroesse_egw"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.anzahl_nat_einwohner"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.jahr_nat_einwohner"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.abwasseranteil_q347"
+msgstr ""
+
+msgid "ch_bafu_gee-kla.gwlnr"
+msgstr ""
