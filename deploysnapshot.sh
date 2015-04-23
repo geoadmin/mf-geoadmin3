@@ -20,16 +20,21 @@ cwd=$(pwd)
 cd $SNAPSHOTDIR/chsdi3/code/chsdi3
 
 # Run nose tests with target cluster db
-if [ "$2" == "int" ]
+if [ -z $3 ] || [ $3 != "notests" ]
 then
-  echo "Running nose tests with integration cluster in $SNAPSHOTDIR"
-  ./nose_run.sh -i
-fi
+    if [ "$2" == "int" ]
+    then
+      echo "Running nose tests with integration cluster in $SNAPSHOTDIR"
+      ./nose_run.sh -i
+    fi
 
-if [ "$2" == "prod" ]
-then
-  echo "Running nose tests with production cluster in $SNAPSHOTDIR"
-  ./nose_run.sh -p
+    if [ "$2" == "prod" ]
+    then
+      echo "Running nose tests with production cluster in $SNAPSHOTDIR"
+      ./nose_run.sh -p
+    fi
+else
+    echo "You have disabled nosetests!"
 fi
 
 # back to working directory for the deploy command

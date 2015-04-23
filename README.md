@@ -89,17 +89,20 @@ desired target. For integration, do
 
 `./deploysnapshot.sh 201407031411 int`
 
-This will run the full nose tests **from inside the 201407031411 snapshot directory** against the integration db cluster. Only if these tests are successfull, the snapshot is deployed to the integration cluster.
+This will run the full nose tests **from inside the 201407031411 snapshot directory** against the **integration db cluster**. Only if these tests are successfull, the snapshot is deployed to the integration cluster.
 
 `./deploysnapshot.sh 201407031411 prod`
 
-This will do the corresponding thing for prod
+This will do the corresponding thing for prod (tests will be run **against prod backends**)
 The same is valid for demo too:
 `.\deploysnapshot 201407031411 demo
 
-*Note*: older snapshots don't contain the nose_run.sh scripts. To use the above
-commands, you have to manually copy the nose_run.sh script into the snapshot code
-directory.
+You can disable the running of the nosetests against the target backends by adding
+`notests` parameter to the snapshot command. This is handy in an emergency (when
+deploying an old known-to-work snapshot) or when you have to re-deploy
+a snapshot that you know has passed the tests for the given backend.
+
+Use `notests` parameter with care, as it removes a level of tests.
 
 # Deploying a branch
 
