@@ -35,6 +35,7 @@
           scope.titlePrint = $translate.instant('print_action');
           scope.titleHelp = $translate.instant('help_label');
           scope.titleReduce = $translate.instant('reduce_label');
+          scope.titleClose = $translate.instant('close');
 
           // Per default hide the print function
           if (!angular.isDefined(scope.options.showPrint) ||
@@ -149,6 +150,7 @@
             scope.titlePrint = $translate.instant('print_action');
             scope.titleHelp = $translate.instant('help_label');
             scope.titleReduce = $translate.instant('reduce_label');
+            scope.titleClose = $translate.instant('close');
           }));
 
           // This scope can be destroyed manually by the gaPopupService
