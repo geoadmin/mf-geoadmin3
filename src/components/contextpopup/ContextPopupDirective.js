@@ -6,12 +6,13 @@
 
   var module = angular.module('ga_contextpopup_directive', [
     'ga_networkstatus_service',
-    'ga_permalink'
+    'ga_permalink',
+    'pascalprecht.translate'
   ]);
 
   module.directive('gaContextPopup',
-      function($http, $q, $timeout, $window, gaBrowserSniffer, gaNetworkStatus,
-          gaPermalink) {
+      function($rootScope, $http, $translate, $q, $timeout, $window,
+          gaBrowserSniffer, gaNetworkStatus, gaPermalink) {
         return {
           restrict: 'A',
           replace: true,
@@ -24,6 +25,8 @@
             var heightUrl = scope.options.heightUrl;
             var qrcodeUrl = scope.options.qrcodeUrl;
             var lv03tolv95Url = scope.options.lv03tolv95Url;
+
+            scope.titleClose = $translate.instant('close');
 
             // The popup content is updated (a) on contextmenu events,
             // and (b) when the permalink is updated.
@@ -188,6 +191,11 @@
                 }
               });
             }
+
+            $rootScope.$on('$translateChangeEnd', function() {
+              scope.titleClose = $translate.instant('close');
+            });
+
             // Listen to permalink change events from the scope.
             scope.$on('gaPermalinkChange', function(event) {
               if (angular.isDefined(coord21781) && popoverShown) {
