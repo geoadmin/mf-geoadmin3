@@ -1619,9 +1619,6 @@ msgstr "Siti inquinati trasporti pubbl."
 msgid "ch.bav.kataster-belasteter-standorte-oev.katasternummer"
 msgstr "Numero UFT del sito"
 
-msgid "ch.bav.laerm-emissionplan_eisenbahn_2015"
-msgstr "Piano delle emissioni 2015"
-
 msgid "ch.bav.laerm-emissionsplan_eisenbahn_nacht"
 msgstr "Piano emissioni foniche ferr 2015 N"
 
@@ -4633,9 +4630,6 @@ msgstr "à (abrév.)"
 msgid "tt_emission_bis_bpk_bp"
 msgstr "à"
 
-msgid "tt_emission_bis_m"
-msgstr "Fin tronçon (m)"
-
 msgid "tt_emission_datum"
 msgstr "Année"
 
@@ -4644,33 +4638,6 @@ msgstr "F1"
 
 msgid "tt_emission_fb2"
 msgstr "F2"
-
-msgid "tt_emission_grund1"
-msgstr "Motif (voie)"
-
-msgid "tt_emission_grund2"
-msgstr "Motif (pont)"
-
-msgid "tt_emission_k1_n"
-msgstr "K1 (n)"
-
-msgid "tt_emission_k1_t"
-msgstr "K1 (t)"
-
-msgid "tt_emission_kursbuchfe"
-msgstr "Num. indicateur officiel"
-
-msgid "tt_emission_lin_nr_dfa"
-msgstr "Num. ligne BD installations fixes"
-
-msgid "tt_emission_linienbeze"
-msgstr "Désignation"
-
-msgid "tt_emission_lre_n"
-msgstr "Lr,e (n)"
-
-msgid "tt_emission_lre_t"
-msgstr "Lr,e (t)"
 
 msgid "tt_emission_nacht_tag_bis_m"
 msgstr "Fine (m) "
@@ -4710,9 +4677,6 @@ msgstr "de (abrév.)"
 
 msgid "tt_emission_von_bpk_bp"
 msgstr "de"
-
-msgid "tt_emission_von_m"
-msgstr "Début tronçon (m)"
 
 msgid "tt_endmeasure"
 msgstr "Indirizzo d’arrivo (chilometraggio dell’acqua)"

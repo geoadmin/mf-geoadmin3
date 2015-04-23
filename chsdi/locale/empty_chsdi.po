@@ -784,9 +784,6 @@ msgstr ""
 msgid "ch.blw.klimaeignung-typ"
 msgstr ""
 
-msgid "ch.bav.laerm-emissionplan_eisenbahn_2015"
-msgstr ""
-
 msgid "ch.bakom.downlink100"
 msgstr ""
 
@@ -2425,12 +2422,6 @@ msgstr ""
 msgid "fj97"
 msgstr ""
 
-msgid "tt_emission_lin_nr_dfa"
-msgstr ""
-
-msgid "tt_emission_linienbeze"
-msgstr ""
-
 msgid "tt_emission_von_abkz"
 msgstr ""
 
@@ -2443,37 +2434,10 @@ msgstr ""
 msgid "tt_emission_bis_bpk_bp"
 msgstr ""
 
-msgid "tt_emission_von_m"
-msgstr ""
-
-msgid "tt_emission_bis_m"
-msgstr ""
-
-msgid "tt_emission_lre_t"
-msgstr ""
-
-msgid "tt_emission_lre_n"
-msgstr ""
-
-msgid "tt_emission_k1_t"
-msgstr ""
-
-msgid "tt_emission_k1_n"
-msgstr ""
-
 msgid "tt_emission_fb1"
 msgstr ""
 
-msgid "tt_emission_grund1"
-msgstr ""
-
 msgid "tt_emission_fb2"
-msgstr ""
-
-msgid "tt_emission_grund2"
-msgstr ""
-
-msgid "tt_emission_kursbuchfe"
 msgstr ""
 
 msgid "tt_emission_typ_aender"
