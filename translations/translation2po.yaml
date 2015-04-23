@@ -1,4 +1,4 @@
 langs: [de,fr,en,it,rm]
-dsn: dbname='bod' port=5432 user='www-data' host='pgcluster.dev.bgdi.ch'
+dsn: dbname='bod_dev' port=5432 user='www-data' host='pg.bgdi.ch'
 sql: select * from translations order by msg_id
 emptyFilename: empty_chsdi.po
