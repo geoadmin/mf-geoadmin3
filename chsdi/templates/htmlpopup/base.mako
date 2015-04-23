@@ -70,7 +70,7 @@
         <tr>
           <td class="cell-left"></td>
           <td>
-            <a href="${h.make_agnostic(request.route_url('extendedHtmlPopup', map=topic, layerId=c['layerBodId'], featureId=str(c['featureId'])))}?lang=${lang}" target="_blank">${_('zusatzinfo')}<img src="${h.versioned(request.static_url('chsdi:static/images/ico_extern.gif'))}" /></a>
+            <a href="${h.make_agnostic(request.route_url('extendedHtmlPopup', map=topic, layerId=c['layerBodId'], featureId=str(c['featureId'])))}?lang=${lang}" target="_blank">${_('zusatzinfo')}&nbsp;<img src="${h.versioned(request.static_url('chsdi:static/images/ico_extern.gif'))}" /></a>
           </td>
         </tr>
         % endif
@@ -94,7 +94,7 @@
     </a>
     <div class="float-right">
       % if c['stable_id'] is True:
-      <a class="link-red" href="${''.join((c['baseUrl'], '?', c['layerBodId'], '=', str(c['featureId']), '&lang=', lang, '&topic=', topic))}" target="new">
+      <a class="link" href="${''.join((c['baseUrl'], '?', c['layerBodId'], '=', str(c['featureId']), '&lang=', lang, '&topic=', topic))}" target="new">
         ${_('Link to object')}
       </a>
       &nbsp;|&nbsp;
