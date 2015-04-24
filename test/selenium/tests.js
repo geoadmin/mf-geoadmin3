@@ -49,13 +49,16 @@ browsers.capabilities.forEach(function(cap){
   //run all the tests
   try{
     startTest.runTest(cap, driver, cmd.target);
-    searchTest.runTest(cap, driver, cmd.target);
-    swisssearchTest.runTest(cap, driver, cmd.target);
-    mobileTest.runTest(cap, driver, cmd.target);
+    //we don't run all these tests for IE9. Very unstable on BS
+    if(!(cap.browser == "IE" && cap.browser_version == "9.0")) {
+      searchTest.runTest(cap, driver, cmd.target);
+      swisssearchTest.runTest(cap, driver, cmd.target);
+      mobileTest.runTest(cap, driver, cmd.target);
 
-    //Keep the print test last, as this results in a downloadpdf command,
-    //which leaves the page in a browser dependant state
-    printTest.runTest(cap, driver, cmd.target);
+      //Keep the print test last, as this results in a downloadpdf command,
+      //which leaves the page in a browser dependant state
+      printTest.runTest(cap, driver, cmd.target);
+    }
   }catch(err){
     //we need this block for the finally, as we definitly want to quit the driver, otherwise it stays idle for ~2 min blocking the next testrun.
     throw err;
