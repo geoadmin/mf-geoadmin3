@@ -799,12 +799,7 @@ a .ga-icon-separator {
 }
 
 #measure-popup {
-  @media (max-width: @screen-tablet) {
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-  }
-
+  
   max-width: none;
   max-height: none;
   overflow: hidden;
@@ -812,10 +807,20 @@ a .ga-icon-separator {
   border-radius: 0;
   background-clip: initial;
   height: 240px;
-
+  
+  &.ga-profile-active {
+    right: 0px;
+  }
+  
   .ga-popup-content {
     max-height: inherit;
     overflow: visible;
+  }
+  
+  @media (max-width: @screen-tablet) {
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
   }
 
   @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {

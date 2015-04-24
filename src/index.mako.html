@@ -528,9 +528,10 @@ itemscope itemtype="http://schema.org/WebApplication"
     <!-- Popup: Measure -->
     <div ng-controller="GaMeasureController">
       <div ga-popup="globals.isMeasureActive"
-           ga-popup-options="{title:'measure',showPrint:true, print: print, help:'66', x:'auto', y:'auto'}"
-           id="measure-popup" >
-        <div ga-measure 
+           ga-popup-options="{title:'measure',showPrint:true, print: print, help:'66', x: 0, y:'auto'}"
+           id="measure-popup"
+           ng-class="{'ga-profile-active': options.isProfileActive}">
+        <div ga-measure="options.feature" 
              ga-measure-map="map" 
              ga-measure-options="options" 
              ga-measure-active="globals.isMeasureActive"></div>
@@ -740,9 +741,11 @@ itemscope itemtype="http://schema.org/WebApplication"
               gaGlobalOptions.cachedApiUrl + '/rest/services/all/MapServer/';
         });
 
-        module.config(function(gaProfileServiceProvider, gaGlobalOptions) {
-          gaProfileServiceProvider.d3libUrl =
+        module.config(function(gaProfileProvider, gaGlobalOptions) {
+          gaProfileProvider.d3libUrl =
               gaGlobalOptions.resourceUrl + 'lib/d3-3.3.1.min.js';
+          gaProfileProvider.profileUrl =
+              gaGlobalOptions.apiUrl + '/rest/services/profile.json';
         });
         
         module.config(function(gaQueryProvider, gaGlobalOptions) {

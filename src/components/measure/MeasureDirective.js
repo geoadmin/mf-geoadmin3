@@ -131,10 +131,7 @@
                     new ol.geom.Circle(firstPoint, 0));
                 featuresOverlay.addFeature(sketchFeatAzimuth);
 
-                // Update the profile
-                if (scope.options.isProfileActive) {
-                  updateProfileDebounced();
-                }
+                scope.feature = sketchFeatDistance;
 
                 deregisterFeature = sketchFeatArea.on('change',
                   function(evt) {
@@ -156,18 +153,7 @@
                         });
                       }
 
-                      // Update the profile
-                      if (scope.options.isProfileActive) {
-                        updateProfileDebounced();
-                      }
-
                     } else {
-                      // Update the profile
-                      if (scope.options.isProfileActive) {
-                        updateProfileDebounced();
-                      }
-
-
                       // We update features and measures
                       var lastPoint = lineCoords[lineCoords.length - 1];
                       var lastPoint2 = lineCoords[lineCoords.length - 2];
@@ -230,12 +216,6 @@
 
                 // Unregister the change event
                 ol.Observable.unByKey(deregisterFeature);
-
-                // Update the profile
-                if (scope.options.isProfileActive) {
-                  updateProfileDebounced();
-                }
-
               })
             ];
           };
@@ -299,19 +279,6 @@
             return (360 + (factor * rad * 180 / Math.PI)) % 360;
           };
 
-          // Update profile functions
-          var updateProfile = function() {
-            if (scope.options.isProfileActive &&
-                 sketchFeatDistance &&
-                 sketchFeatDistance.getGeometry() &&
-                 sketchFeatDistance.getGeometry()
-                     .getCoordinates().length >= 1) {
-              scope.options.drawProfile(sketchFeatDistance);
-            }
-          };
-          var updateProfileDebounced = gaDebounce.debounce(updateProfile, 500,
-              false, false);
-
           scope.supportKmlExport = gaExportKml.canSave();
 
           scope.exportKml = function() {
@@ -329,11 +296,6 @@
               activate();
             } else {
               deactivate();
-            }
-          });
-          scope.$watch('options.isProfileActive', function(active) {
-            if (active) {
-              updateProfileDebounced();
             }
           });
 
