@@ -42,7 +42,7 @@ def feedback(self, request):
         part = MIMEBase('application', 'json')
         part.set_payload(json.dumps(jsonToAttach))
         Encoders.encode_base64(part)
-        part.add_header('Content-Disposition', 'attachment; filename="Meta.json"')
+        part.add_header('Content-Disposition', 'attachment; filename=' + jsonfilename)
         msg.attach(part)
 
         # Attach file if there
@@ -77,11 +77,14 @@ def feedback(self, request):
     permalink = getParam('permalink', 'No permalink provided')
     feedback = getParam('feedback', 'No feedback provided')
     email = getParam('email', 'Anonymous')
-    text = u'%s just sent a feedback:\n %s. \nPermalink: %s. \n\nUser-Agent: %s'
+    text = u'%s sent a feedback:\n %s. \nPermalink: %s. \n\nUser-Agent: %s'
     attachement = getParam('attachement', None)
     kml = getParam('kml', None)
     now = datetime.datetime.now()
-    kmlfilename = 'Drawing-' + now.strftime('%Y%m%d%H%M%S') + '.kml'
+    timeID = now.strftime('%Y%m%d%H%M%S%f')[0:16]
+    defaultSubject = defaultSubject + ' ID : ' + timeID
+    kmlfilename = 'Drawing-' + timeID + '.kml'
+    jsonfilename = 'Meta-' + timeID + '.json'
     attachfilename = ''
     if isinstance(attachement, cgi.FieldStorage):
         attachfilename = attachement.filename
@@ -93,7 +96,7 @@ def feedback(self, request):
         'kml': kmlfilename if (kml is not None and kml is not '') else '',
         'attachement': attachfilename,
         'userAgent': ua,
-        'date': now.strftime("%Y-%m-%d %H:%M")
+        'ID': timeID
     }
 
     try:
