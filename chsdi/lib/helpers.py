@@ -46,7 +46,7 @@ def make_api_url(request, agnostic=False):
         return ''.join((request.scheme, '://', host))
 
 
-def check_url(url):
+def check_url(url, config):
     if url is None:
         raise HTTPBadRequest('The parameter url is missing from the request')
     parsedUrl = urlparse(url)
@@ -54,7 +54,9 @@ def check_url(url):
     if hostname is None:
         raise HTTPBadRequest('Could not determine the hostname')
     domain = ".".join(hostname.split(".")[-2:])
-    if all(('admin.ch' not in domain, 'swisstopo.ch' not in domain, 'bgdi.ch' not in domain)):
+    allowed_hosts = config['shortener.allowed_hosts'] if 'shortener.allowed_hosts' in config else ''
+    allowed_domains = config['shortener.allowed_domains'] if 'shortener.allowed_domains' in config else ''
+    if domain not in allowed_domains and hostname not in allowed_hosts:
         raise HTTPBadRequest('Shortener can only be used for admin.ch, swisstopo.ch and bgdi.ch domains')
     return url
 
