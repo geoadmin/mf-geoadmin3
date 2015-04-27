@@ -6,7 +6,7 @@
 <!--[if gt IE 9]><html class="ng-csp ie"><![endif]-->
 <!--[if !IE]><!--><html class="ng-csp"><!--<![endif]-->
 
-	<head data-requesttoken="cd3b35f0fd122283583f">
+	<head data-requesttoken="fc68550bdd15565fc002">
 		<title>
 		SWITCHdrive		</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -112,7 +112,7 @@
 						</p>
 						<form method="post" name="login">
 							<fieldset>
-								<input type="hidden" name="redirect_url" value="%2Findex.php%2Fapps%2Ffiles%2Fajax%2Fdownload.php%3Fdir%3D%252Fconf_logo" />																								<p id="message" class="hidden">
+								<input type="hidden" name="redirect_url" value="%2Findex.php%2Fapps%2Ffiles%2Fajax%2Fdownload.php%3Fdir%3D%252Fconf_logo%252F" />																								<p id="message" class="hidden">
 									<img class="float-spinner" src="/themes/switch/core/img/loading-dark.gif"/>
 									<span id="messageText"></span>
 									<!-- the following div ensures that the spinner is always inside the #message div -->
@@ -138,7 +138,7 @@
 																		<input type="checkbox" name="remember_login" value="1" id="remember_login" />
 									<label for="remember_login">remember</label>
 																<input type="hidden" name="timezone-offset" id="timezone-offset"/>
-		<input type="hidden" name="requesttoken" value="cd3b35f0fd122283583f" />
+		<input type="hidden" name="requesttoken" value="fc68550bdd15565fc002" />
 		<input type="submit" id="submit" class="login primary" value="Log in" disabled="disabled"/>
 							</fieldset>
 						</form>
