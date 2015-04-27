@@ -112,6 +112,14 @@
               this.set('bodId', val);
             }
           },
+          adminId: {
+            get: function() {
+              return this.get('adminId') || this.bodId;
+            },
+            set: function(val) {
+              this.set('adminId', val);
+            }
+          },
           label: {
             get: function() {
               return this.get('label');
@@ -425,7 +433,7 @@
         // Test regex here: http://regex101.com/r/tF3vM0
         // List of google icons: http://www.lass.it/Web/viewer.aspx?id=4
         kml = kml.replace(
-          /<href>http(s?)(?!(s?):\/\/maps\.(?:google|gstatic)\.com.*(blue|green|orange|pink|purple|red|yellow|pushpin).*\.png)/g,
+          /<href>http(?!(s?):\/\/(maps\.(?:google|gstatic)\.com.*(blue|green|orange|pink|purple|red|yellow|pushpin).*\.png|.*(bgdi|admin)\.ch))/g,
           '<href>' + gaGlobalOptions.ogcproxyUrl + 'http'
         );
 
@@ -549,6 +557,7 @@
             });
             var layerOptions = {
               id: options.id,
+              adminId: options.adminId,
               url: options.url,
               type: 'KML',
               label: options.label || kmlFormat.readName(kml) || 'KML',
@@ -1125,6 +1134,17 @@
           return this.isKmlLayer(olLayer) && !/^https?:\/\//.test(olLayer.url);
         },
 
+        // Test if a KML comes from our s3 storage
+        // @param olLayer  An ol layer or an id of a layer
+        isStoredKmlLayer: function(olLayerOrId) {
+          var id = olLayerOrId;
+          if (id instanceof ol.layer.Layer) {
+            id = olLayerOrId.id;
+          }
+          var regex = /https?:\/\/public\..*(\.admin\.ch|\.bgdi\.ch)\/.*/;
+          return this.isKmlLayer(olLayerOrId) && regex.test(id);
+        },
+
         // Test if a layer is an external WMS layer added by th ImportWMS tool
         // or permalink
         // @param olLayerOrId  An ol layer or an id of a layer
@@ -1246,7 +1266,7 @@
   module.provider('gaLayersPermalinkManager', function() {
 
     this.$get = function($rootScope, gaLayers, gaPermalink, $translate, $http,
-        gaKml, gaMapUtils, gaWms, gaLayerFilters, gaUrlUtils) {
+        gaKml, gaMapUtils, gaWms, gaLayerFilters, gaUrlUtils, gaFileStorage) {
 
       var layersParamValue = gaPermalink.getParams().layers;
       var layersOpacityParamValue = gaPermalink.getParams().layers_opacity;
@@ -1348,6 +1368,13 @@
           deregFns.length = 0;
 
           angular.forEach(layers, function(layer) {
+            if (gaMapUtils.isStoredKmlLayer(layer)) {
+              deregFns.push(scope.$watch(function() {
+                return layer.id;
+              }, function() {
+                updateLayersParam(layers);
+              }));
+            }
             deregFns.push(scope.$watch(function() {
               return layer.getOpacity();
             }, function() {
@@ -1493,6 +1520,21 @@
             });
           }
 
+          // Add a modifiable KML layer
+          var adminId = gaPermalink.getParams().adminId;
+          if (adminId) {
+            gaFileStorage.getFileUrlFromAdminId(adminId).then(function(url) {
+              try {
+                gaKml.addKmlToMapForUrl(map, url, {
+                  adminId: adminId,
+                  attribution: gaUrlUtils.getHostname(url)
+                });
+                gaPermalink.deleteParam('adminId');
+              } catch (e) {
+                // Adding KML layer failed, native alert, log message?
+              }
+            });
+          }
         });
       };
     };

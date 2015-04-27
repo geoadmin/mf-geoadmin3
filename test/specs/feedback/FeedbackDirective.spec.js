@@ -18,7 +18,13 @@ describe('ga_feedback_directive', function() {
       var mockGetHref = {
         getHref: function() {
           return 'http://permalink.com';
+        },
+        getParams: function() {
+          return {
+            'param1': 'value1'
+          };
         }
+
       };
       $provide.value('gaPermalink', mockGetHref);
       var mockBrowserSniffer = {};

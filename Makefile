@@ -8,6 +8,7 @@ APACHE_BASE_PATH ?= /$(shell id -un)
 LAST_APACHE_BASE_PATH := $(shell if [ -f .build-artefacts/last-apache-base-path ]; then cat .build-artefacts/last-apache-base-path 2> /dev/null; else echo '-none-'; fi)
 API_URL ?= //mf-chsdi3.dev.bgdi.ch
 LAST_API_URL := $(shell if [ -f .build-artefacts/last-api-url ]; then cat .build-artefacts/last-api-url 2> /dev/null; else echo '-none-'; fi)
+PUBLIC_URL ?= //public.dev.bgdi.ch
 LESS_PARAMETERS ?= '-ru'
 KEEP_VERSION ?= 'false'
 LAST_VERSION := $(shell if [ -f .build-artefacts/last-version ]; then cat .build-artefacts/last-version 2> /dev/null; else echo '-none-'; fi)
@@ -201,21 +202,21 @@ prd/style/app.css: src/style/app.less src/style/print.less src/style/ga_bootstra
 
 prd/geoadmin.appcache: src/geoadmin.mako.appcache .build-artefacts/python-venv/bin/mako-render .build-artefacts/last-version
 	mkdir -p $(dir $@);
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "version=$(VERSION)" --var "deploy_target=$(DEPLOY_TARGET)" --var "apache_base_path=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
+	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "version=$(VERSION)" --var "deploy_target=$(DEPLOY_TARGET)" --var "apache_base_path=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" --var "public_url=$(PUBLIC_URL)" $< > $@
 
 prd/index.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render .build-artefacts/python-venv/bin/htmlmin .build-artefacts/last-api-url .build-artefacts/last-apache-base-path .build-artefacts/last-version
 	mkdir -p $(dir $@)
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "mode=prod" --var "version=$(VERSION)" --var "versionslashed=$(VERSION)/" --var "apache_base_path=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
+	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "mode=prod" --var "version=$(VERSION)" --var "versionslashed=$(VERSION)/" --var "apache_base_path=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" --var "public_url=$(PUBLIC_URL)" $< > $@
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/htmlmin --remove-comments --keep-optional-attribute-quotes $@ $@
 
 prd/mobile.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render .build-artefacts/python-venv/bin/htmlmin .build-artefacts/last-api-url .build-artefacts/last-apache-base-path .build-artefacts/last-version
 	mkdir -p $(dir $@)
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "mode=prod" --var "version=$(VERSION)" --var "versionslashed=$(VERSION)/" --var "apache_base_path=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
+	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "mode=prod" --var "version=$(VERSION)" --var "versionslashed=$(VERSION)/" --var "apache_base_path=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" --var "public_url=$(PUBLIC_URL)" $< > $@
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/htmlmin --remove-comments --keep-optional-attribute-quotes $@ $@
 
 prd/embed.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render .build-artefacts/python-venv/bin/htmlmin .build-artefacts/last-api-url .build-artefacts/last-apache-base-path .build-artefacts/last-version
 	mkdir -p $(dir $@)
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "device=embed" --var "mode=prod" --var "version=$(VERSION)" --var "versionslashed=$(VERSION)/" --var "apache_base_path=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
+	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "device=embed" --var "mode=prod" --var "version=$(VERSION)" --var "versionslashed=$(VERSION)/" --var "apache_base_path=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" --var "public_url=$(PUBLIC_URL)" $< > $@
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/htmlmin --remove-comments --keep-optional-attribute-quotes $@ $@
 
 prd/img/: src/img/*
@@ -241,19 +242,19 @@ src/style/app.css: src/style/app.less src/style/print.less src/style/ga_bootstra
 	node_modules/.bin/lessc $(LESS_PARAMETERS) $< $@
 
 src/index.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render .build-artefacts/last-api-url .build-artefacts/last-apache-base-path
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "version=" --var "versionslashed=" --var "apache_base_path=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
+	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "version=" --var "versionslashed=" --var "apache_base_path=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" --var "public_url=$(PUBLIC_URL)" $< > $@
 
 src/mobile.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render .build-artefacts/last-api-url .build-artefacts/last-apache-base-path
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "version=" --var "versionslashed=" --var "apache_base_path=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
+	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "version=" --var "versionslashed=" --var "apache_base_path=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)"  --var "public_url=$(PUBLIC_URL)" $< > $@
 
 src/embed.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render .build-artefacts/last-api-url .build-artefacts/last-apache-base-path
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "device=embed" --var "version=" --var "versionslashed=" --var "apache_base_path=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
+	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "device=embed" --var "version=" --var "versionslashed=" --var "apache_base_path=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)"  --var "public_url=$(PUBLIC_URL)" $< > $@
 
 src/TemplateCacheModule.js: src/TemplateCacheModule.mako.js $(SRC_COMPONENTS_PARTIALS_FILES) .build-artefacts/python-venv/bin/mako-render
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "partials=$(subst src/,,$(SRC_COMPONENTS_PARTIALS_FILES))" --var "basedir=src" $< > $@
 
 apache/app.conf: apache/app.mako-dot-conf .build-artefacts/python-venv/bin/mako-render .build-artefacts/last-api-url .build-artefacts/last-apache-base-path .build-artefacts/last-apache-base-directory .build-artefacts/last-version
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "apache_base_path=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" --var "apache_base_directory=$(APACHE_BASE_DIRECTORY)" --var "version=$(VERSION)" $< > $@
+	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "apache_base_path=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" --var "public_url=$(PUBLIC_URL)" --var "apache_base_directory=$(APACHE_BASE_DIRECTORY)" --var "version=$(VERSION)" $< > $@
 
 test/karma-conf-dev.js: test/karma-conf.mako.js .build-artefacts/python-venv/bin/mako-render
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render $< > $@

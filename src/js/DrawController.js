@@ -18,6 +18,8 @@
         var black = [0, 0, 0];
 
         $scope.options = $scope.options || {};
+        $scope.options.shortenUrl = gaGlobalOptions.apiUrl
+              + '/shorten.json',
 
         // Defines directive options
         $scope.options.showExport =
@@ -25,8 +27,10 @@
             $scope.options.showExport : true;
 
         $scope.options.broadcastLayer =
-            angular.isDefined($scope.options.broadcastLayer) ?
-            $scope.options.broadcastLayer : false;
+            $scope.options.broadcastLayer || false;
+         
+        $scope.options.useTemporaryLayer =
+            $scope.options.useTemporaryLayer || false;
 
         $scope.options.translate = $translate; // For translation of ng-options
 
@@ -341,10 +345,10 @@
            
           return function(feature, resolution) {
             if (!feature.getStyleFunction() ||
-                feature.getStyleFunction()()=== null) {
+                !feature.getStyleFunction().call(feature, resolution)) {
               return [vertexStyle];
             }
-            var styles = feature.getStyleFunction()(resolution);
+            var styles = feature.getStyleFunction().call(feature, resolution);
             var style = styles[0];
             var text = style.getText();
             if (text) {

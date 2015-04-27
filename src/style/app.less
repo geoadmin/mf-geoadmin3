@@ -799,7 +799,6 @@ a .ga-icon-separator {
 }
 
 #measure-popup {
-  
   max-width: none;
   max-height: none;
   overflow: hidden;
@@ -831,6 +830,12 @@ a .ga-icon-separator {
 }
 
 #draw-popup {
+  max-width: 385px;
+
+  @media (max-width: @screen-tablet) {
+    max-width: none;
+  } 
+
   @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
     .ga-icons, .ga-choose-icon {
       width: 100%;

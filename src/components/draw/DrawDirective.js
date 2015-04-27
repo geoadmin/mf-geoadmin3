@@ -2,18 +2,48 @@
   goog.provide('ga_draw_directive');
 
   goog.require('ga_export_kml_service');
+  goog.require('ga_file_storage_service');
   goog.require('ga_map_service');
 
   var module = angular.module('ga_draw_directive', [
     'ga_export_kml_service',
+    'ga_file_storage_service',
     'ga_map_service',
     'pascalprecht.translate'
   ]);
 
+  /**
+   * This directive add a toolbar to draw feature on a map.
+   * Options:
+   *
+   *   - broadcastLayer : send the current layer drawn through the rootScope
+   *                      with the event 'gaDrawingLayer'.
+   *   - showExport: show the export button which allow to download a KML file.
+   *   - useTemporaryLayer: force to use a new layer which will not be saved
+   *                        automatically on s3.
+   *
+   */
   module.directive('gaDraw',
     function($timeout, $translate, $window, $rootScope, gaBrowserSniffer,
-        gaDefinePropertiesForLayer, gaDebounce, gaLayerFilters, gaExportKml,
-        gaMapUtils) {
+        gaDefinePropertiesForLayer, gaDebounce, gaFileStorage, gaLayerFilters,
+        gaExportKml, gaMapUtils, gaPermalink, $http, $q, gaUrlUtils) {
+
+      var createDefaultLayer = function(useTemporaryLayer) {
+        var dfltLayer = new ol.layer.Vector({
+          source: new ol.source.Vector(),
+          visible: true
+        });
+        gaDefinePropertiesForLayer(dfltLayer);
+
+        if (useTemporaryLayer) {
+          dfltLayer.displayInLayerManager = false;
+        }
+
+        dfltLayer.label = 'Drawing';
+        dfltLayer.type = 'KML';
+        return dfltLayer;
+      };
+
       return {
         restrict: 'A',
         templateUrl: 'components/draw/partials/draw.html',
@@ -23,26 +53,21 @@
           isActive: '=gaDrawActive'
         },
         link: function(scope, element, attrs, controller) {
-          var draw, deregister, lastActiveTool;
+          var layer, draw, lastActiveTool;
+          var unLayerRemove, unDrawEnd, unChangeFeature;
+          var useTemporaryLayer = scope.options.useTemporaryLayer || false;
           var map = scope.map;
           var viewport = $(map.getViewport());
-          var source = new ol.source.Vector();
-          var layer = new ol.layer.Vector({
-            source: source,
-            visible: true
-          });
-          gaDefinePropertiesForLayer(layer);
-          layer.displayInLayerManager = false;
           scope.layers = scope.map.getLayers().getArray();
           scope.layerFilter = gaLayerFilters.selected;
 
-          if (scope.options.broadcastLayer) {
-            $rootScope.$broadcast('gaDrawingLayer', layer);
-          }
-
           // Add select interaction
           var select = new ol.interaction.Select({
-            layers: [layer],
+            layers: function(item) {
+              if (item === layer) {
+                return true;
+              }
+            },
             style: scope.options.selectStyleFunction
           });
           select.getFeatures().on('add', function(evt) {
@@ -69,16 +94,65 @@
           modify.setActive(false);
           map.addInteraction(modify);
 
+          var defineLayerToModify = function() {
+            // Set the layer to modify if exist otherwise use an empty layer
+            layer = createDefaultLayer(useTemporaryLayer);
+            if (!useTemporaryLayer) {
+              scope.adminShortenUrl = undefined;
+              map.getLayers().forEach(function(item) {
+                if (gaMapUtils.isStoredKmlLayer(item)) {
+                  layer = item;
+                }
+              });
+              unChangeFeature = layer.getSource().on('changefeature',
+                  saveDebounced);
+            }
+
+            if (scope.options.broadcastLayer) {
+              $rootScope.$broadcast('gaDrawingLayer', layer);
+            }
+          };
+          var updateShortenUrl = function(adminId) {
+            $http.get(scope.options.shortenUrl, {
+              params: {
+                url: gaPermalink.getHref().replace(
+                    gaUrlUtils.encodeUriQuery(layer.id, true), '') +
+                    '&adminId=' + adminId
+              }
+            }).success(function(data) {
+              scope.adminShortenUrl = data.shorturl;
+            });
+          };
+
           // Activate the component: active a tool if one was active when draw
           // has been deactivated.
           var activate = function() {
+            defineLayerToModify();
+
+            if (layer.adminId) {
+              updateShortenUrl(layer.adminId);
+            }
+
             if (lastActiveTool) {
               activateTool(lastActiveTool);
             }
+
+            unLayerRemove = map.getLayers().on('remove', function(evt) {
+              if (evt.element === layer) {
+                defineLayerToModify();
+              }
+            });
           };
 
           // Deactivate the component: remove layer and interactions.
           var deactivate = function() {
+
+            if (unChangeFeature) {
+              ol.Observable.unByKey(unChangeFeature);
+              unChangeFeature = undefined;
+            }
+
+            ol.Observable.unByKey(unLayerRemove);
 
             // Deactivate the tool
             if (lastActiveTool) {
@@ -97,11 +171,6 @@
 
             if (map.getLayers().getArray().indexOf(layer) == -1) {
               map.addLayer(layer);
-              // Move draw layer on each changes in the list of layers
-              // in the layer manager.
-              scope.$watchCollection('layers | filter:layerFilter', function() {
-                gaMapUtils.moveLayerOnTop(map, layer);
-              });
             }
 
             gaMapUtils.moveLayerOnTop(map, layer);
@@ -128,11 +197,11 @@
 
             draw = new ol.interaction.Draw({
               type: type,
-              source: source,
+              source: layer.getSource(),
               style: scope.options.drawStyleFunction
             });
 
-            deregister = draw.on('drawend', function(evt) {
+            unDrawEnd = draw.on('drawend', function(evt) {
               // Set the definitve style of the feature
               var styles = scope.options.styleFunction(evt.feature);
               evt.feature.setStyle(styles);
@@ -144,9 +213,9 @@
 
           var deactivateDrawInteraction = function() {
             // Remove events
-            if (deregister) {
-              deregister.src.unByKey(deregister);
-              deregister = null;
+            if (unDrawEnd) {
+              ol.Observable.unByKey(unDrawEnd);
+              unDrawEnd = undefined;
             }
             map.removeInteraction(draw);
             draw = undefined;
@@ -209,13 +278,17 @@
 
             for (var i = 0, ii = features.length; i < ii; i++) {
               var styles = features[i].getStyleFunction()();
-              if (styles[0].getImage() instanceof ol.style.Icon) {
+              if ((features[i].getGeometry() instanceof ol.geom.Point ||
+                  features[i].getGeometry() instanceof ol.geom.MultiPoint) &&
+                  styles[0].getImage() instanceof ol.style.Icon) {
                 useIconStyle = true;
+                features[i].set('useIcon', useIconStyle);
                 continue;
-              } else if (styles[0].getText()) {
+              } else if (styles[0].getText() && styles[0].getText().getText()) {
                 useTextStyle = true;
               }
               useColorStyle = true;
+              features[i].set('useText', useTextStyle);
             }
             scope.$evalAsync(function() {
               scope.useTextStyle = useTextStyle;
@@ -228,6 +301,11 @@
           var deleteAllFeatures = function() {
             if (confirm($translate.instant('confirm_remove_all_features'))) {
               layer.getSource().clear();
+              if (layer.adminId) {
+                gaFileStorage.del(layer.adminId);
+              }
+              map.removeLayer(layer);
+              defineLayerToModify();
             }
 
             // We reactivate the lastActiveTool
@@ -274,7 +352,7 @@
           };
 
           scope.canExport = function() {
-            return source.getFeatures().length > 0;
+            return (layer) ? layer.getSource().getFeatures().length > 0 : false;
           };
 
           scope.aToolIsActive = function() {
@@ -344,6 +422,30 @@
               scope.options.isDeleteActive = false;
             }
           });
+
+          // create/update the file on s3
+          var save = function() {
+            var kmlString = gaExportKml.create(layer,
+                map.getView().getProjection());
+            var id = layer.adminId ||
+                gaFileStorage.getFileIdFromFileUrl(layer.url);
+            gaFileStorage.save(id, kmlString,
+                'application/vnd.google-earth.kml+xml').then(function(data) {
+              // If a file has been created we set the correct id to the layer
+              if (data.adminId && data.adminId != layer.adminId) {
+                layer.adminId = data.adminId;
+                layer.url = data.fileUrl;
+                layer.id = 'KML||' + layer.url;
+              }
+
+              if (!scope.adminShortenUrl) {
+                $timeout(function() {
+                  updateShortenUrl(layer.adminId);
+                }, 0, false);
+               }
+            });
+          };
+          var saveDebounced = gaDebounce.debounce(save, 133, false, false);
 
 
           // Utils
