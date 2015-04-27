@@ -51,6 +51,27 @@ describe('ga_map_service', function() {
     return layer;
   };
 
+  var addStoredKmlLayerToMap = function() {
+    var kmlFormat = new ol.format.KML({
+      extractStyles: true,
+      extractAttributes: true
+    });
+    var layer = new ol.layer.Vector({
+      id: 'KML||http://public.geo.admin.ch/nciusdhfjsbnduvishfjknl',
+      url: 'http://public.geo.admin.ch/nciusdhfjsbnduvishfjknl',
+      type: 'KML',
+      label: 'nciusdhfjsbnduvishfjknl',
+      opacity: 0.1,
+      visible: false,
+      source: new ol.source.Vector({
+        features: kmlFormat.readFeatures('<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:gx="http://www.google.com/kml/ext/2.2"></kml>')
+      })
+    });
+    layer.displayInLayerManager = true;
+    map.addLayer(layer);
+    return layer;
+  };
+
   var addExternalWmsLayerToMap = function() {
     var source = new ol.source.ImageWMS({
       params: {LAYERS: 'ch.wms.name'},
@@ -502,6 +523,9 @@ describe('ga_map_service', function() {
       layer = addLocalKmlLayerToMap();
       gaDefinePropertiesForLayer(layer);
       expect(gaMapUtils.isKmlLayer(layer)).to.eql(true);
+      layer = addStoredKmlLayerToMap();
+      gaDefinePropertiesForLayer(layer);
+      expect(gaMapUtils.isKmlLayer(layer)).to.eql(true);
     }));
     
     it('tests isLocalKmlLayer', inject(function(gaDefinePropertiesForLayer) {
@@ -519,6 +543,30 @@ describe('ga_map_service', function() {
       layer = addLocalKmlLayerToMap();
       gaDefinePropertiesForLayer(layer);
       expect(gaMapUtils.isLocalKmlLayer(layer)).to.eql(true);
+      layer = addStoredKmlLayerToMap();
+      gaDefinePropertiesForLayer(layer);
+      expect(gaMapUtils.isLocalKmlLayer(layer)).to.eql(false);
+
+    }));
+
+    it('tests isStoredKmlLayer', inject(function(gaDefinePropertiesForLayer) {
+
+      // with an ol.layer
+      var layer = addLayerToMap();
+      gaDefinePropertiesForLayer(layer);
+      expect(gaMapUtils.isStoredKmlLayer(layer)).to.eql(false);
+      layer = addExternalWmsLayerToMap();
+      gaDefinePropertiesForLayer(layer);
+      expect(gaMapUtils.isStoredKmlLayer(layer)).to.eql(false);
+      layer = addKmlLayerToMap();
+      gaDefinePropertiesForLayer(layer);
+      expect(gaMapUtils.isStoredKmlLayer(layer)).to.eql(false);
+      layer = addLocalKmlLayerToMap();
+      gaDefinePropertiesForLayer(layer);
+      expect(gaMapUtils.isStoredKmlLayer(layer)).to.eql(false);
+      layer = addStoredKmlLayerToMap();
+      gaDefinePropertiesForLayer(layer);
+      expect(gaMapUtils.isStoredKmlLayer(layer)).to.eql(true);
     }));
 
     it('tests isExternalWmsLayer', inject(function(gaDefinePropertiesForLayer) {
@@ -543,7 +591,10 @@ describe('ga_map_service', function() {
       layer = addLocalKmlLayerToMap();
       gaDefinePropertiesForLayer(layer);
       expect(gaMapUtils.isExternalWmsLayer(layer)).to.eql(false);
-    }));
+      layer = addStoredKmlLayerToMap();
+      gaDefinePropertiesForLayer(layer);
+      expect(gaMapUtils.isExternalWmsLayer(layer)).to.eql(false);
+     }));
 
     it('tests moveLayerOnTop', inject(function(gaDefinePropertiesForLayer) {
       var firstLayerAdded = addLayerToMap();

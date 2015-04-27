@@ -56,9 +56,9 @@
             clone.getGeometry().transform(projection, 'EPSG:4326');
             var styles;
             if (clone.getStyleFunction()) {
-              styles = clone.getStyleFunction()();
+              styles = clone.getStyleFunction().call(clone);
             } else {
-              styles = layer.getStyleFunction()(clone);
+              styles = layer.getStyleFunction().call(layer, clone);
             }
             var newStyle = {
               fill: styles[0].getFill(),
@@ -91,10 +91,21 @@
           });
 
           if (exportFeatures.length > 0) {
+            if (exportFeatures.length == 1) {
+              //force the add of a <Document> node
+              exportFeatures.push(new ol.Feature());
+            }
             kmlString = new ol.format.KML().writeFeatures(exportFeatures);
             // Remove no image hack
             kmlString = kmlString.
                 replace(/<Icon>\s*<href>noimage<\/href>\s*<\/Icon>/g, '');
+
+            // Add KML document name
+            if (layer.label) {
+              kmlString = kmlString.replace(/<Document>/, '<Document><name>' +
+                  layer.label + '</name>');
+            }
+
           }
           return kmlString;
         };

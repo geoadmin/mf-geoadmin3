@@ -705,6 +705,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         module.constant('gaGlobalOptions', {
           mapUrl : location.origin + '${apache_base_path}',
           apiUrl : location.protocol + '${api_url}',
+          publicUrl : location.protocol + '${public_url}',
           cachedApiUrl: location.protocol + '${api_url}' + cacheAdd,
           resourceUrl: location.origin + pathname + '${versionslashed}',
           ogcproxyUrl : location.protocol + '${api_url}' + '/ogcproxy?url=',
@@ -740,6 +741,11 @@ itemscope itemtype="http://schema.org/WebApplication"
         module.config(function(gaExportKmlProvider, gaGlobalOptions) {
           gaExportKmlProvider.downloadKmlUrl =
               gaGlobalOptions.apiUrl + '/downloadkml';
+        });
+
+        module.config(function(gaFileStorageProvider, gaGlobalOptions) {
+          gaFileStorageProvider.fileStorageUrl = gaGlobalOptions.apiUrl + '/files';
+          gaFileStorageProvider.publicUrl = gaGlobalOptions.publicUrl;
         });
 
         module.config(function(gaPreviewFeaturesProvider, gaGlobalOptions) {
