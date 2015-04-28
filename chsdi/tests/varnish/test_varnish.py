@@ -2,13 +2,11 @@
 
 import os
 import random
-from unittest import TestCase
-
-
 import requests
+from chsdi.tests.integration import TestsBase
 
 
-class TestVarnish(TestCase):
+class TestVarnish(TestsBase):
 
     ''' Testing the Varnish 'security' configuration. As some settings are IP address dependant,
         we use an external HTTP Proxy to make the queries.
@@ -22,20 +20,21 @@ class TestVarnish(TestCase):
         return random.randrange(20140101, 20141001)
 
     def setUp(self):
-        from pyramid.paster import get_app
-        app = get_app('development.ini')
+        super(TestVarnish, self).setUp()
+        self.registry = self.testapp.app.registry
 
         try:
-            os.environ["http_proxy"] = app.registry.settings['http_proxy']
-            self.api_url = "http:" + app.registry.settings['api_url']
-            apache_base_path = app.registry.settings['apache_base_path']
-            self.mapproxy_url = "http://" + app.registry.settings['mapproxyhost'] + ('/' + apache_base_path if apache_base_path != 'main' else '')
+            os.environ["http_proxy"] = self.registry.settings['http_proxy']
+            self.api_url = "http:" + self.registry.settings['api_url']
+            apache_base_path = self.registry.settings['apache_base_path']
+            self.mapproxy_url = "http://" + self.registry.settings['mapproxyhost'] + ('/' + apache_base_path if apache_base_path != 'main' else '')
         except KeyError as e:
             raise e
 
     def tearDown(self):
         if "http_proxy" in os.environ:
             del os.environ["http_proxy"]
+        super(TestVarnish, self).tearDown()
 
     def has_geometric_attributes(self, attrs):
         geometric_attrs = ['x', 'y', 'lon', 'lat', 'geom_st_box2d']
