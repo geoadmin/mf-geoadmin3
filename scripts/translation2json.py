@@ -27,12 +27,14 @@ def main():
         csv_reader = csv.DictReader(csv_file, delimiter=',', quotechar='"')
         translations = {lang: {} for lang in csv_reader.fieldnames if lang != 'key'}
         for row in csv_reader:
-            key = row['key']
+            json_key = row['key']
             for lang, traduction in [(key, value) for key, value in row.items() if key != 'key']:
-                translations[lang][key] = traduction
+                translations[lang][json_key] = traduction
     for lang in translations:
         with open(join(json_folder, lang + '.json'), 'w') as json_file:
-            json.dump(translations[lang], json_file, sort_keys=True, indent=4, ensure_ascii=False)
+            # "separators=(',', ': ')" is required to avoid a trailing whitespace in python < 3.4
+            json.dump(translations[lang], json_file, sort_keys=True, indent=4, ensure_ascii=False,
+                        separators=(',', ': '))
 
 
 if __name__ == '__main__':
