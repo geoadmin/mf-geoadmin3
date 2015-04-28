@@ -295,5 +295,8 @@
   "big_size": "",
   "custom_size": "",
   "share_disclaimer": "",
-  "share_preview": ""
+  "share_preview": "",
+  "share_file_disclaimer": "",
+  "share_file_link_title_admin": "",
+  "share_file_link_descr_admin": ""
 }
