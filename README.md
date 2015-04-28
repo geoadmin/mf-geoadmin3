@@ -122,7 +122,7 @@ determine which URL to test.
 
 Run it manually:
 
-    node test/selenium/tests.js -t http://map.geo.admin.ch
+    node test/selenium/tests.js -t https://map.geo.admin.ch
 
 This runs it with the given target URL.
 
@@ -173,7 +173,7 @@ The command adds a branch specific configuration to
 behaves exactly the same as any user specific deploy.
 
 Sample path:
-http://mf-geoadmin3.int.bgdi.ch/dev_bottombar/prod
+https://mf-geoadmin3.int.bgdi.ch/dev_bottombar/prod
 
 Please only use integration url for external communication (including here on 
 github), even though the exact same structure is also available on our test 

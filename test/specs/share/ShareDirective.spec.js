@@ -9,7 +9,7 @@ describe('ga_share_directive', function() {
 
     inject(function($rootScope, $compile) {
       $rootScope.options = {
-        serviceUrl: 'http://api.geo.admin.ch',
+        serviceUrl: 'https://api.geo.admin.ch',
         iframeSizes: [{
           label: 'small_size',
           value: [1, 1]

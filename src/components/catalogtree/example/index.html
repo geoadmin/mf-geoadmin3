@@ -104,14 +104,14 @@
 
         module.config(['gaLayersProvider', function(gaLayersProvider) {
            gaLayersProvider.wmtsGetTileUrlTemplate =
-               'http://wmts{0-4}.geo.admin.ch/1.0.0/{Layer}/default/' +
+               'https://wmts{0-4}.geo.admin.ch/1.0.0/{Layer}/default/' +
                '{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
 
            gaLayersProvider.layersConfigUrlTemplate =
-               'http://mf-chsdi3.dev.bgdi.ch/rest/services/all/MapServer/layersConfig' +
+               'https://mf-chsdi3.dev.bgdi.ch/rest/services/all/MapServer/layersConfig' +
                '?lang={Lang}';
            gaLayersProvider.legendUrlTemplate =
-               'http://mf-chsdi3.dev.bgdi.ch/rest/services/{Topic}/MapServer/{Layer}/legend' +
+               'https://mf-chsdi3.dev.bgdi.ch/rest/services/{Topic}/MapServer/{Layer}/legend' +
                '?lang={Lang}';
         }]);
 
@@ -170,7 +170,7 @@
         module.controller('CatalogTreeController', ['$rootScope', '$scope', '$http', 'gaLayers',
         function($rootScope, $scope, $http, gaLayers) {
 
-            var baseUrl = 'http://mf-chsdi3.dev.bgdi.ch/rest/services';
+            var baseUrl = 'https://mf-chsdi3.dev.bgdi.ch/rest/services';
             $scope.options = {
               catalogUrlTemplate: baseUrl + '/{Topic}/CatalogServer'
             };

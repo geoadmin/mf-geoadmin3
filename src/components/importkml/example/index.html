@@ -81,16 +81,16 @@
         ]);
 
         module.constant('gaGlobalOptions', {
-          serviceUrl : 'http://mf-chsdi3.dev.bgdi.ch'
+          serviceUrl : 'https://mf-chsdi3.dev.bgdi.ch'
         });
 
         module.config(['gaLayersProvider', function(gaLayersProvider) {
           gaLayersProvider.wmtsGetTileUrlTemplate =
-              'http://wmts{0-4}.geo.admin.ch/1.0.0/{Layer}/default/' +
+              'https://wmts{0-4}.geo.admin.ch/1.0.0/{Layer}/default/' +
               '{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
 
           gaLayersProvider.layersConfigUrlTemplate =
-              'http://mf-chsdi3.dev.bgdi.ch/rest/services/all/MapServer/layersConfig' +
+              'https://mf-chsdi3.dev.bgdi.ch/rest/services/all/MapServer/layersConfig' +
               '?lang={Lang}';
         }]);
 

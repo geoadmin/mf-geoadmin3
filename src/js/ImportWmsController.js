@@ -9,7 +9,7 @@
          proxyUrl: gaGlobalOptions.ogcproxyUrl,
          defaultGetCapParams: 'SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0',
          defaultWMSList: [
-           'http://wms.geo.admin.ch/',
+           'https://wms.geo.admin.ch/',
            'http://ogc.heig-vd.ch/mapserver/wms?',
            'http://www.gis.stadt-zuerich.ch/maps/services/wms/WMS-ZH-STZH-OGD/MapServer/WMSServer?',
            'http://wms.geo.gl.ch/?',
