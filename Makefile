@@ -203,20 +203,35 @@ prd/geoadmin.appcache: src/geoadmin.mako.appcache .build-artefacts/python-venv/b
 	mkdir -p $(dir $@);
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "version=$(VERSION)" --var "deploy_target=$(DEPLOY_TARGET)" --var "apache_base_path=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
 
-prd/index.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render .build-artefacts/python-venv/bin/htmlmin .build-artefacts/last-api-url .build-artefacts/last-apache-base-path .build-artefacts/last-version
+prd/index.html: src/index.mako.html \
+	    .build-artefacts/python-venv/bin/mako-render \
+	    node_modules \
+	    .build-artefacts/last-api-url \
+	    .build-artefacts/last-apache-base-path \
+	    .build-artefacts/last-version
 	mkdir -p $(dir $@)
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "device=desktop" --var "mode=prod" --var "version=$(VERSION)" --var "versionslashed=$(VERSION)/" --var "apache_base_path=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/htmlmin --remove-comments --keep-optional-attribute-quotes $@ $@
+	./node_modules/html-minifier/cli.js --remove-comments $@ $@
 
-prd/mobile.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render .build-artefacts/python-venv/bin/htmlmin .build-artefacts/last-api-url .build-artefacts/last-apache-base-path .build-artefacts/last-version
+prd/mobile.html: src/index.mako.html \
+	    .build-artefacts/python-venv/bin/mako-render \
+	    node_modules \
+	    .build-artefacts/last-api-url \
+	    .build-artefacts/last-apache-base-path \
+	    .build-artefacts/last-version
 	mkdir -p $(dir $@)
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "device=mobile" --var "mode=prod" --var "version=$(VERSION)" --var "versionslashed=$(VERSION)/" --var "apache_base_path=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/htmlmin --remove-comments --keep-optional-attribute-quotes $@ $@
+	./node_modules/html-minifier/cli.js --remove-comments $@ $@
 
-prd/embed.html: src/index.mako.html .build-artefacts/python-venv/bin/mako-render .build-artefacts/python-venv/bin/htmlmin .build-artefacts/last-api-url .build-artefacts/last-apache-base-path .build-artefacts/last-version
+prd/embed.html: src/index.mako.html \
+	    .build-artefacts/python-venv/bin/mako-render \
+	    node_modules \
+	    .build-artefacts/last-api-url \
+	    .build-artefacts/last-apache-base-path \
+	    .build-artefacts/last-version
 	mkdir -p $(dir $@)
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/mako-render --var "device=embed" --var "mode=prod" --var "version=$(VERSION)" --var "versionslashed=$(VERSION)/" --var "apache_base_path=$(APACHE_BASE_PATH)" --var "api_url=$(API_URL)" $< > $@
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/htmlmin --remove-comments --keep-optional-attribute-quotes $@ $@
+	./node_modules/html-minifier/cli.js --remove-comments $@ $@
 
 prd/img/: src/img/*
 	mkdir -p $@
@@ -273,7 +288,10 @@ node_modules: package.json
 	cp $(addprefix node_modules/localforage/dist/,$(LOCALFORAGE)) src/lib;
 
 
-.build-artefacts/app.js: .build-artefacts/js-files .build-artefacts/closure-compiler/compiler.jar .build-artefacts/externs/angular.js .build-artefacts/externs/jquery.js
+.build-artefacts/app.js: .build-artefacts/js-files \
+	    .build-artefacts/closure-compiler/compiler.jar \
+	    .build-artefacts/externs/angular.js \
+	    .build-artefacts/externs/jquery.js
 	mkdir -p $(dir $@)
 	java -jar .build-artefacts/closure-compiler/compiler.jar $(SRC_JS_FILES_FOR_COMPILER) --compilation_level SIMPLE_OPTIMIZATIONS --jscomp_error checkVars --externs externs/ol.js --externs .build-artefacts/externs/angular.js --externs .build-artefacts/externs/jquery.js --js_output_file $@
 
@@ -298,10 +316,6 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "Mako==1.0.0"
 	touch $@
 	cp scripts/cmd.py .build-artefacts/python-venv/local/lib/python2.7/site-packages/mako/cmd.py
-
-.build-artefacts/python-venv/bin/htmlmin: .build-artefacts/python-venv
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "htmlmin"
-	touch $@
 
 .build-artefacts/translate-requirements-installation.timestamp: .build-artefacts/python-venv
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "PyYAML==3.10"

@@ -7,7 +7,7 @@ itemscope itemtype="http://schema.org/WebApplication"
 % endif
 >
   <head>
-    <!--![if !HTML5]>
+    <!--[if !HTML5]>
     <meta http-equiv="X-UA-Compatible" content="IE=9,IE=10,IE=edge,chrome=1"/>
     <![endif]-->
 % if device == 'desktop':
@@ -118,7 +118,7 @@ itemscope itemtype="http://schema.org/WebApplication"
           'embed': globals.embed
         }">
     <!-- The below conditional is ignored by >= IE10 and all other browsers -->
-    <!--![if IE]>
+    <!--[if IE]>
       <script>
        (function(){
        var msgDocumentMode = "";
@@ -618,7 +618,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     <script src="${versionslashed}lib/build.js"></script>
     <!-- For <= IE9, we load it explicitely as XDomain does not support
          dynamic/lazy loading of javascript -->
-    <!--![if IE]>
+    <!--[if IE]>
     <script src="${versionslashed}lib/bootstrap-datetimepicker.min.js"></script>
     <script src="${versionslashed}lib/d3-3.3.1.min.js"></script>
     <script src="${versionslashed}lib/jQuery.XDomainRequest.js"></script>
