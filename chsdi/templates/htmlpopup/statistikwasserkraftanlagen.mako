@@ -100,19 +100,19 @@
   </tr>
   <tr>
     <td class="cell-meta">${_('leistung')}</td>
-    <td class="cell-meta">${c['attributes']['leistung'] or '-'}&nbsp;MW</td>
+    <td class="cell-meta">${round(c['attributes']['leistung'],2) or '-'}&nbsp;MW</td>
   </tr>
   <tr>
     <td class="cell-meta">${_('produktionserwartung')}</td>
-    <td class="cell-meta">${c['attributes']['produktionserwartung'] or '-'}&nbsp;GWh</td>
+    <td class="cell-meta">${round(c['attributes']['produktionserwartung'],2) or '-'}&nbsp;GWh</td>
   </tr>
   <tr>
     <td class="cell-meta">${_('leistungsaufnahme_pumpen')}</td>
-    <td class="cell-meta">${c['attributes']['leistungsaufnahme_pumpen'] or '-'}&nbsp;MW</td>
+    <td class="cell-meta">${round(c['attributes']['leistungsaufnahme_pumpen'],2) or '-'}&nbsp;MW</td>
   </tr>
   <tr>
     <td class="cell-meta">${_('energiebedarf_motoren')}</td>
-    <td class="cell-meta">${c['attributes']['energiebedarf_motore'] or '-'}&nbsp;GWh</td>
+    <td class="cell-meta">${round(c['attributes']['energiebedarf_motore'],2) or '-'}&nbsp;GWh</td>
   </tr>
   <tr>
     <td class="cell-meta-one" colspan="2">&nbsp;</td>
