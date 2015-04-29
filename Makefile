@@ -154,7 +154,7 @@ preparebranch: rc_branch scripts/00-$(GIT_BRANCH).conf
 
 .PHONY: ol
 ol: OL_JS = ol.js ol-debug.js
-ol: scripts/ol-geoadmin.json .build-artefacts/ol3 .build-artefacts/ol-requirements-installation.timestamp
+ol: scripts/ol-geoadmin.json .build-artefacts/ol3
 	cd .build-artefacts/ol3; \
 	git reset HEAD --hard; \
 	git checkout $(OL3_VERSION); \
@@ -500,10 +500,6 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "oauth2client==1.4.11"
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "gspread==0.2.5"
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "pyopenssl==0.15.1"
-	touch $@
-
-.build-artefacts/ol-requirements-installation.timestamp: .build-artefacts/python-venv
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "regex"
 	touch $@
 
 .build-artefacts/python-venv/bin/gjslint: .build-artefacts/python-venv
