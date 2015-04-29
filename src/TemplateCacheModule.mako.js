@@ -8,10 +8,14 @@
 <%
   import re
   import os
+  import sys
   _partials = {}
   for p in partials.split(' '):
-      f = file(os.path.join(basedir, p))
-      content = unicode(f.read().decode('utf8'))
+      f = open(os.path.join(basedir, p), 'r')
+      if sys.version_info[0] <= 2:
+          content = unicode(f.read().decode('utf8'))
+      else:
+          content = f.read()
       content = re.sub(r'>\s*<' , '><', content)
       content = re.sub(r'\s\s+', ' ', content)
       content = re.sub(r'\n', '', content)
