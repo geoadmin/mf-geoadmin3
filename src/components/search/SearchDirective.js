@@ -180,7 +180,8 @@ goog.require('ga_translation_service');
       //Init swisssearch parameter handling
       var searchParam = gaPermalink.getParams().swisssearch;
       if (angular.isDefined(searchParam) &&
-          searchParam.length > 0) {
+          searchParam.length > 0 &&
+          !$scope.options.blockSwisssearch) {
         gaLayers.loadConfig().then(function() {
           // At this point layers are not added to the map yet
           $scope.map.getLayers().once('add', function() {
@@ -202,7 +203,6 @@ goog.require('ga_translation_service');
           });
         });
       }
-
     }
   );
 

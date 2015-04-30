@@ -443,9 +443,13 @@ itemscope itemtype="http://schema.org/WebApplication"
             <span ga-help="34,35,36" ga-help-options="{showOnHover:true}"></span>
 % endif
           </a>
-          <div id="selection" class="collapse in"
-               ga-collapsible-observe="globals.selectionShown">
-            <div class="panel-body panel-body-wide" ga-layermanager ga-layermanager-map="map">
+          <div ng-controller="GaSearchController">
+            <div id="selection" class="collapse in"
+                 ga-collapsible-observe="globals.selectionShown">
+              <div class="panel-body panel-body-wide"
+                   ga-layerselector ga-layerselector-map="map"
+                   ga-layerselector-options="options">
+              </div>
             </div>
           </div>
         </div> <!-- .panel -->
