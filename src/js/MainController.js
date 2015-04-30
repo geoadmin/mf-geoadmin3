@@ -127,6 +127,7 @@
         $('meta[property="og:description"]').attr('content', $translate.instant('page_description'));
         $('meta[name="twitter:description"]').attr('content', $translate.instant('page_description'));
         $('meta[itemprop="description"]').attr('content', $translate.instant('page_description'));
+        $('meta[name="application-name"]').attr('content', $translate.instant('page_title'));
       });
 
       $rootScope.$on('gaTimeSelectorChange', function(event, year) {
