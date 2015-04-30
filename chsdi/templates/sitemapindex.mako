@@ -6,7 +6,7 @@
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   % for sm in sitemaps:
   <sitemap>
-    <loc>http://${host}/${sm}</loc>
+    <loc>https://${host}/${sm}</loc>
   </sitemap>
   % endfor
 </sitemapindex>

@@ -5,7 +5,7 @@
 %>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   % for l in list:
-  <url> <loc>http://${host}/${l|n,x,trim}</loc> <changefreq>weekly</changefreq> </url>
+  <url> <loc>https://${host}/${l|n,x,trim}</loc> <changefreq>weekly</changefreq> </url>
   % endfor
 </urlset>
 
