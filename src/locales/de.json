@@ -205,6 +205,7 @@
 	"position": "Position",
 	"print": "Drucken",
 	"print_action": "Drucken",
+	"print_pdf_action": "Erstelle PDF für Druck",
 	"print_layout": "Orientierung",
 	"print_scale": "Massstab",
 	"print_underway_message": "Wir bitten Sie um Geduld. Ein mehrseitiger Druck wird erstellt, dies nimmt einige Zeit in Anspruch.",

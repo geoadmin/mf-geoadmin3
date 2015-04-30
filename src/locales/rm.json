@@ -205,6 +205,7 @@
 	"position": "Posiziun",
 	"print": "Stampar",
 	"print_action": "Stampar",
+	"print_pdf_action": "Creais PDF per stampa",
 	"print_layout": "Layout",
 	"print_scale": "Scala",
 	"print_underway_message": "Wir bitten Sie um Geduld. Ein mehrseitiger Druck wird erstellt, dies nimmt einige Zeit in Anspruch.",
