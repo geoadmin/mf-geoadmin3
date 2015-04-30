@@ -80,7 +80,11 @@ Use `make ol` to update the `ol.js` and `ol-debug.js` files.
 
 Add the correct version tag
 
-https://github.com/geoadmin/mf-geoadmin3/blob/master/Makefile#L370
+https://github.com/geoadmin/mf-geoadmin3/blob/master/Makefile#20
+
+You can also use an argument to test a new version of ol3, for instance you can do:
+
+    make OL3_VERSION="632205d902f8dcc1f03eb1dd1736d26a1b3ac2a3" ol
 
 Remember to update the API and API doc at the same time to keep coherency.
 
