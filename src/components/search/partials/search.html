@@ -5,7 +5,8 @@
     autocapitalize="none" autocomplete="off" autocorrect="off"
     ng-keydown="keydown($event)"
     ng-blur="lostFocus($event)"
-    ng-focus="onFocus()">
+    ng-focus="onFocus()"
+    ng-disabled="!childoptions.currentTopic">
     <span class="ga-search-dropdown" ng-show="restat.sets()">
       <!-- footer -->
       <div class="ga-search-footer clearfix">
