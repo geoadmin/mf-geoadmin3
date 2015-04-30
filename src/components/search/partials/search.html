@@ -10,11 +10,11 @@
     ng-disabled="!childoptions.currentTopic">
     <span class="ga-search-dropdown" ng-show="restat.sets()">
       <!-- locations -->
-      <div ng-class="'ga-search-' + restat.sets()">
+      <div ng-class="'ga-search-' + restat.sets()" ng-if="!options.layersOnly">
         <div ga-search-locations ga-search-locations-options="childoptions" ga-search-locations-map="map"></div>
       </div>
       <!-- features -->
-      <div ng-class="'ga-search-' + restat.sets()">
+      <div ng-class="'ga-search-' + restat.sets()" ng-if="!options.layersOnly">
         <div ga-search-features ga-search-features-options="childoptions" ga-search-features-map="map"></div>
       </div>
       <!-- layers -->
