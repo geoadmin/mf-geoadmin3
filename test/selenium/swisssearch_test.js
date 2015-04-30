@@ -23,8 +23,8 @@ var runTest = function(cap, driver, target){
   driver.get(target + '/?swisssearch=wasser&lang=de');
   //wait until topics related stuff is loaded. We know this when catalog is there
   driver.findElement(webdriver.By.xpath("//a[contains(text(), 'Grundlagen und Planung')]"));
-  driver.findElement(webdriver.By.xpath("//*[contains(text(), 'Standorte')]"));
-  driver.findElement(webdriver.By.xpath("//*[contains(text(), 'Karten')]"));
+  driver.findElement(webdriver.By.xpath("//*[contains(text(), 'Gehe nach')]"));
+  driver.findElement(webdriver.By.xpath("//*[contains(text(), 'Karte hinzufügen')]"));
   driver.findElement(webdriver.By.xpath("//i[@ng-click='clearInput()']")).click();
   //parameter should disappear when selection is done
   driver.findElement(webdriver.By.xpath("//input[@ng-model='permalinkValue']")).getAttribute("value").then(function(val) {
