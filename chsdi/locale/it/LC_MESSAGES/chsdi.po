@@ -1229,6 +1229,69 @@ msgstr "Numero della stazione"
 msgid "ch.bafu.hydrologie-hintergrundkarte"
 msgstr "Carta base dati idrologici"
 
+msgid "ch.bafu.hydrologie-hochwasserstatistik"
+msgstr "HQSTAT Hautes eaux"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.coordX"
+msgstr "Coordonnée X"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.coordY"
+msgstr "Coordonnée Y"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.dimension"
+msgstr "Dimension"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.einzugsgebietsflaeche"
+msgstr "Surface du bassin versant [km2]"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.hq10"
+msgstr "HQ10"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.hq100"
+msgstr "HQ100"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.hq2"
+msgstr "HQ2"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.hq30"
+msgstr "HQ30"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.hq300"
+msgstr "HQ300"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.hq5"
+msgstr "HQ5"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.hq50"
+msgstr "HQ50"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.kenn_nr"
+msgstr "Numéro"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.mittlerehoehe"
+msgstr "Altitude moyenne [m s.m.]"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.name"
+msgstr "Nom de la station"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.regimename"
+msgstr "Régime d'écoulement"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.statj_anf"
+msgstr "Début de période"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.statj_end"
+msgstr "Fin de période"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.statj_tot"
+msgstr "Nombre d'années"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.url"
+msgstr "Lien en français"
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.urlhq"
+msgstr "Probabilité des crues"
+
 msgid "ch.bafu.hydrologie-hydromessstationen"
 msgstr "Stazioni idrologiche"
 

@@ -1595,3 +1595,39 @@ class sturm_boeenspitzen_300(Base, Vector):
                                dimension=2, srid=21781))
 
 register('ch.bafu.sturm-boeenspitzen_300', sturm_boeenspitzen_300)
+
+
+class Hochwasserstatistik(Base, Vector):
+    __tablename__ = 'hochwasserstatistik'
+    __table_args__ = ({'schema': 'hydrologie', 'autoload': False})
+    __bodId__ = 'ch.bafu.hydrologie-hochwasserstatistik'
+    __template__ = 'templates/htmlpopup/hochwasserstatistik.mako'
+    __queryable_attributes__ = ['name', 'einzugsgebietsflaeche', 'dimension', 'kenn_nr', 'statj_anf', 'statj_end', 'statj_tot', 'hq2', 'hq5', 'hq10', 'hq30', 'hq50', 'hq100', 'hq300', 'mittlerehoehe', 'regimename']
+    __extended_info__ = True
+    __label__ = 'id'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    name = Column('name', Text)
+    x_koord = Column('x_koord', Integer)
+    y_koord = Column('y_koord', Integer)
+    einzugsgebietsflaeche = Column('einzugsgebietsflaeche', Numeric)
+    dimension = Column('dimension', Text)
+    kenn_nr = Column('kenn_nr', Integer)
+    statj_anf = Column('statj_anf', Integer)
+    statj_end = Column('statj_end', Integer)
+    statj_tot = Column('statj_tot', Integer)
+    hq2 = Column('hq2', Numeric)
+    hq5 = Column('hq5', Numeric)
+    hq10 = Column('hq10', Numeric)
+    hq30 = Column('hq30', Numeric)
+    hq50 = Column('hq50', Numeric)
+    hq100 = Column('hq100', Numeric)
+    hq300 = Column('hq300', Numeric)
+    mittlerehoehe = Column('mittlerehoehe', Numeric)
+    regimename = Column('regimename', Text)
+    url_fr = Column('url_fr', Text)
+    url_de = Column('url_de', Text)
+    urlhqpdf = Column('urlhqpdf', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.bafu.hydrologie-hochwasserstatistik', Hochwasserstatistik)
