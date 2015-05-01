@@ -180,6 +180,7 @@ button.ga-btn, .ol-control button {
     background-color: transparent;
     box-shadow: none;
     width: 550px;
+    margin-bottom: 0px;
 
     .pull-right > div {
       display: none;
@@ -201,6 +202,50 @@ button.ga-btn, .ol-control button {
   #toptools, #pulldown, #footer {
     display: none;
   }
+}
+
+.ga-draw-active {
+  
+  #header {
+    top: unit(-@header-height, px);
+  }
+
+  #pulldown, #buttonGroup {
+    top: 0px;
+  }
+  
+  #drawActiveWarning {
+    top: 15px;
+    animation: blink ease 1s 5;
+  }
+  
+  #drawActiveBack {
+    display: block;
+  }
+}
+@keyframes blink {
+  0% {opacity: 1}
+  50% {opacity: 0.2}
+  100% {opacity: 1}
+}
+#drawHeading {
+  position: relative;
+  .btn {
+    position: absolute;
+    right: 5px;
+    top: 3px;
+  }
+}
+#drawActiveWarning {
+  position: absolute;
+  z-index: 2000;
+  top: -100px;
+  right: 0px;
+  left: 0px;
+  width: 500px;
+  margin: auto;
+  transition: top 1s ease;
+  .box-shadow(6px 6px 12px rgba(0, 0, 0, 0.175));
 }
 
 #copyrightsdata {
@@ -282,8 +327,13 @@ input[type=text][readonly] {
   height: unit(@header-height, px);
   padding: 0 .4em 0 0;
   margin-right: 0px; // Fix a long story bug of bootstrap  https://github.com/twbs/bootstrap/issues/10225
+  margin-bottom: 0px;
   background-color: rgba(255, 255, 255, 0.9);
+  top: 0px;
+  transition: 1s ease;
+  transition-property: top, height;
   .box-shadow(6px 6px 12px rgba(0, 0, 0, 0.175));
+
   .pull-right {
     margin: 34px 1.6em 0 0;
     padding: 0;
@@ -512,21 +562,28 @@ a .ga-icon-separator {
   width: unit(@pulldown-width, px);
   z-index: 1000;
   top: unit(@header-height, px);
+  transition:1s ease;
+  transition-property: top, height;
+   
   @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
     top: unit(@small-header-height, px);
   }
+  
   @media (max-width: @screen-phone) {
     width: 100%;
     height: 0;
     top: 0;
     z-index: 1100;
   }
+  
   .hidden-collapsed {
     display: inline;
   }
+  
   .visible-collapsed {
     display: none;
   }
+  
   .collapsed {
     .hidden-collapsed {
       display: none;
@@ -1290,7 +1347,9 @@ input[type=range] {
   top: unit(@header-height, px);
   right: unit(@control-btns-right, px);
   z-index: 1000;
-
+  transition: 1s ease;
+  transition-property: top;
+  
   > div {
     display: block;
   }

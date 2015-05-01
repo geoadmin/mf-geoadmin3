@@ -115,7 +115,8 @@ itemscope itemtype="http://schema.org/WebApplication"
           'no-webkit': !globals.webkit, 
           'offline': globals.offline,
           'online': !globals.offline,
-          'embed': globals.embed
+          'embed': globals.embed,
+          'ga-draw-active': globals.isDrawActive
         }">
     <!-- The below conditional is ignored by >= IE10 and all other browsers -->
     <!--![if IE]>
@@ -184,6 +185,12 @@ itemscope itemtype="http://schema.org/WebApplication"
       ## css animation doesnt work on pseudo element, let use this instead
       <div class="alert alert-danger" translate>offline_sorry</div>
     </div> <!-- #header -->
+    <div id="drawActiveWarning"
+         class="btn btn-danger"
+         ng-click="globals.isDrawActive = false">
+         <div>Warning!! You're in editing mode</div>
+         <div>&lt;-- click here to go back</div>
+    </div>
 % endif
     <div id="loader"></div>
     <div tabindex="1" ga-map ga-map-map="map">
@@ -282,6 +289,7 @@ itemscope itemtype="http://schema.org/WebApplication"
     <div ng-cloak translate-cloak id="pulldown" ng-show="!globals.offline" ng-class="{'selection-and-catalog-shown': (globals.catalogShown && globals.selectionShown)}">
       <div id="pulldown-content" class="content ${"in" if device == "desktop" else "collapse"}">
        
+        <!-- Share -->
         <div class="panel">
           <a id="shareHeading" class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#share" ga-collapsible-show="globals.isShareActive">
             <i class="visible-collapsed icon-caret-right spacer"></i>
@@ -295,26 +303,9 @@ itemscope itemtype="http://schema.org/WebApplication"
             </div>
           </div>
         </div> <!-- .panel -->
- 
-        <!-- Draw-->
-        <div class="panel">
-          <a id="drawHeading" class="panel-heading accordion-toggle collapsed"
-             data-toggle="collapse" data-parent="#pulldown-content" href="#draw"
-             ga-collapsible-show="globals.isDrawActive">
-            <span translate>draw</span>
-          </a>
-          <div id="draw" class="panel-collapse collapse">
-            <div class="panel-body" ng-controller="GaDrawController">
-              <div ga-draw 
-                   ga-draw-map="map" 
-                   ga-draw-options="options"
-                   ga-draw-active="globals.isDrawActive">
-              </div>
-            </div>
-          </div>
-        </div> <!-- .panel -->
 
   % if device == 'desktop':
+        <!-- Print -->
         <div class="panel">
           <a id="printHeading" class="panel-heading accordion-toggle collapsed"
              data-toggle="collapse" data-parent="#pulldown-content" href="#print"
@@ -331,21 +322,43 @@ itemscope itemtype="http://schema.org/WebApplication"
 
           </div>
         </div>  <!-- .panel -->
+ 
+        <!-- Draw -->
+        <div class="panel">
+          <a id="drawHeading" class="panel-heading accordion-toggle collapsed
+          ga-"
+             data-toggle="collapse" data-parent="#pulldown-content" href="#draw"
+             ga-collapsible-show="globals.isDrawActive">
+            <span translate>draw</span>
+            <div class="btn btn-danger" ng-show="globals.isDrawActive">
+              &lt; GO BACK
+            </div>
 
+          </a>
+          <div id="draw" class="panel-collapse collapse">
+            <div class="panel-body" ng-controller="GaDrawController">
+              <div ga-draw 
+                   ga-draw-map="map" 
+                   ga-draw-options="options"
+                   ga-draw-active="globals.isDrawActive">
+              </div>
+            </div>
+          </div>
+        </div> <!-- .panel -->
+        
+        <!-- Tools -->
         <div class="panel"> 
-
-          <a id="toolsHeading" class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#tools">
+          <a id="toolsHeading" class="panel-heading accordion-toggle collapsed"
+             data-toggle="collapse" data-parent="#pulldown-content" href="#tools"
+             ng-hide="globals.isDrawActive">
             <i class="visible-collapsed icon-caret-right spacer"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
             <i class="icon-ga-mapfunction"></i>
             <span translate>map_tools</span>
           </a>
-
           <div id="tools" class="collapse">
             <div class="panel-body panel-body-wide panel-cursor">
-
               <ul>
-
                 <li><!-- Import WMS -->
                   <a href="" ng-click="globals.importWmsPopupShown = !globals.importWmsPopupShown"
                      data-original-title="{{'wmsimport_tooltip' | translate}}"
@@ -378,6 +391,7 @@ itemscope itemtype="http://schema.org/WebApplication"
                      accesskey="m">
                     <span  ng-class="{'selected': globals.isMeasureActive}"
                            translate>measure</span>
+                  </a>
                 </li>
                 <li><!-- Feature Tree -->
                   <a href=""  ng-click="globals.isFeatureTreeActive = !globals.isFeatureTreeActive"
@@ -392,8 +406,9 @@ itemscope itemtype="http://schema.org/WebApplication"
           </div>
         </div> <!-- .panel -->
   % endif
-        <div class="panel">
-  
+
+        <!-- Catalog -->
+        <div class="panel" ng-hide="globals.isDrawActive">
   % if device == 'desktop':
           <div class="theme-toggle">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -430,7 +445,8 @@ itemscope itemtype="http://schema.org/WebApplication"
           </div>
         </div> <!-- .panel -->
 
-        <div class="panel">
+        <!-- Selection -->
+        <div class="panel" ng-hide="globals.isDrawActive">
           <a id="selectionHeading" class="panel-heading accordion-toggle light ${"collapsed" if device!= "desktop" else ""}" data-toggle="collapse" href="#selection">
             <i class="visible-collapsed icon-caret-right"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
