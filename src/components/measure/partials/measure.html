@@ -2,18 +2,8 @@
   <div class="ga-measure-panel">
     <div class="ga-measure-text">
       <div class="hidden-print ga-measure-info ga-measure-instruction" translate>measure_instruction</div>
-      <div class="ga-measure-info">
-        <p class="pull-left">{{'distance_label' | translate}}: </p>
-        <p class="pull-right">{{distance | measure}}</p>
-      </div>
-      <div class="ga-measure-info">
-        <p class="pull-left">{{'surface_label' | translate}}: </p>
-        <p class="pull-right">{{surface | measure:'area':['km&sup2', ' m&sup2']}}</p>
-      </div>
-      <div class="ga-measure-info">
-        <p class="pull-left">{{'azimuth_label' | translate}}: </p>
-        <p class="pull-right">{{azimuth | number:2}} &deg</p>
-      </div>
+      <div ga-measure-infos="feature"
+           ga-measure-infos-options="{showLineStringArea:true}"></div>
     </div>
   </div>
   <div class="ga-measure-buttons-panel" class="hidden-print">

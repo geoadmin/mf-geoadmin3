@@ -49,6 +49,73 @@ goog.require('ga_map_service');
     };
   });
 
+  module.directive('gaMeasureInfos', function(gaDebounce) {
+    // Calulate the azimuth from 2 points
+    var calculateAzimuth = function(pt1, pt2) {
+      if (!pt1 || !pt2) {
+        return undefined;
+      }
+      var x = pt2[0] - pt1[0];
+      var y = pt2[1] - pt1[1];
+      var rad = Math.acos(y / Math.sqrt(x * x + y * y));
+      var factor = x > 0 ? 1 : -1;
+      return (360 + (factor * rad * 180 / Math.PI)) % 360;
+    };
+
+    return {
+      restrict: 'A',
+      templateUrl: function(element, attrs) {
+        return 'components/measure/partials/measure-infos.html';
+      },
+      scope: {
+        feature: '=gaMeasureInfos',
+        options: '=gaMeasureInfosOptions'
+      },
+      link: function(scope, elt) {
+        scope.options = scope.options || {};
+        var deregisterKey;
+        var update = function(feature) {
+          var geom = feature.getGeometry();
+          if (!geom instanceof ol.geom.LineString &&
+              !geom instanceof ol.geom.Polygon) {
+            return;
+          }
+          if (geom instanceof ol.geom.LineString) {
+            var coords = geom.getCoordinates();
+            scope.distance = geom.getLength();
+            scope.azimuth = calculateAzimuth(coords[0], coords[1]);
+
+            if (scope.options.showLineStringArea) {
+              var geom = new ol.geom.Polygon([coords]);
+              scope.surface = geom.getArea();
+            }
+          } else if (geom instanceof ol.geom.Polygon) {
+            var coords = geom.getLinearRing(0).getCoordinates();
+            scope.distance = new ol.geom.LineString(coords).getLength();
+            scope.azimuth = calculateAzimuth(coords[0], coords[1]);
+            scope.surface = geom.getArea();
+          }
+          //scope.$digest();
+        };
+        var useFeature = function(newFeature) {
+          if (deregisterKey) {
+            ol.Observable.unByKey(deregisterKey);
+            deregisterKey = undefined;
+          }
+          if (newFeature) {
+            deregisterKey = newFeature.on('change', function(evt) {
+              scope.$applyAsync(function() {
+                update(evt.target);
+              });
+            });
+            newFeature.changed();
+          }
+        };
+        scope.$watch('feature', useFeature);
+      }
+    };
+  });
+
   module.directive('gaMeasure',
     function($document, $rootScope, gaDebounce, gaDefinePropertiesForLayer,
         gaLayerFilters, gaExportKml, gaMapUtils) {
@@ -179,8 +246,6 @@ goog.require('ga_map_service');
                       sketchFeatDistance.getGeometry()
                           .setCoordinates(lineCoords);
 
-                      updateMeasures();
-
                       if (!isSnapOnFirstPoint) {
                         if (lineCoords.length == 2) {
                           sketchFeatAzimuth.getGeometry()
@@ -207,9 +272,6 @@ goog.require('ga_map_service');
 
                 // Update the layer
                 updateLayer(isFinishOnFirstPoint);
-
-                // Update measures
-                updateMeasures();
 
                 // Clear the additional overlay
                 featuresOverlay.getFeatures().clear();
@@ -255,15 +317,6 @@ goog.require('ga_map_service');
               layer.getSource().addFeature(isFinishOnFirstPoint ?
                   sketchFeatArea : sketchFeatDistance);
             }
-          };
-
-          // Update value of measures from the sketch features
-          var updateMeasures = function() {
-            var coords = sketchFeatDistance.getGeometry().getCoordinates();
-            scope.distance = sketchFeatDistance.getGeometry().getLength();
-            scope.azimuth = calculateAzimuth(coords[0], coords[1]);
-            scope.surface = sketchFeatArea.getGeometry().getArea();
-            scope.$digest(); // Update this scope and its childrens
           };
 
           // Calulate the azimuth from 2 points
