@@ -13,7 +13,6 @@
                ng-src="{{i.url}}" />
         </li>
       </ul>
-
     </div>
     <div class="btn-group">
       <button class="btn btn-default dropdown-toggle icon-ga-edit"
@@ -48,28 +47,18 @@
       </ul>
     </div>
   </div>
-  <!--div class="ga-draw-interaction-btns" role="group">
-      <button class="btn btn-default pull-right"
-              disabled
-              translate>share</button>
-      <button class="btn btn-default pull-right"
-              ng-disabled="!canExport()"
-              ng-click="deleteAllFeatures()"
-              translate>draw_delete_all</button>
-      <button class="btn btn-default pull-right"
-              ng-disabled="!canExport()"
-              ng-click="exportKml($event)"
-              translate>export_kml</button>
-  </div-->
 
-
-  <div class="ga-draw-modify popover top" style="display:none;">
-    <div class="arrow"></div>
-    <div class="popover-title">
-      <span translate>feature_properties</span>
-      <button class="ga-icon ga-btn icon-remove" ng-click="hide()"></button>
-    </div>
-    <div class="popover-content">
+  <div class="ga-draw-popup"
+       ga-popup="popupToggle"
+       ga-popup-options="options.popupOptions"
+       ng-class="{'ga-profile-active': options.isProfileActive}">
+    <ul class="nav nav-tabs" role="tablist">
+      <li><a href="" ng-click="options.isProfileActive=false;isMeasureActive=false;isPropsActive=true;">Properties</a></li>
+      <li><a href="" ng-click="options.isProfileActive=true;isMeasureActive=false;isPropsActive=false;">Profile</a></li>
+      <li><a href=""
+      ng-click="options.isProfileActive=false;isMeasureActive=true;isPropsActive=false;">Measure</a></li>
+    </ul>
+    <div ng-if="isPropsActive" class="ga-draw-modify">
       <label>
         <span>{{'modify_text_label' | translate}}:</span> 
         <input type="text" class="form-control"
@@ -110,6 +99,12 @@
         </label>
       </div>
     </div>
+    <div ng-if="isMeasureActive"
+         ga-measure-infos="feature"
+         ga-measure-infos-options="options.measureOptions"></div>
+    <div ng-if="options.isProfileActive"
+         ga-profile="feature" 
+         ga-profile-options="options.profileOptions"></div>
   </div>
   <div class="ga-draw-disclaimer" ng-if="!options.useTemporaryLayer" translate>share_file_disclaimer</div>
   <div class="ga-draw-interaction-share" ng-if="adminShortenUrl">

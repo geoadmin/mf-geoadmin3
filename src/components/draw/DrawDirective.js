@@ -89,6 +89,8 @@ goog.require('ga_map_service');
           var useTemporaryLayer = scope.options.useTemporaryLayer || false;
           var map = scope.map;
           var viewport = $(map.getViewport());
+          scope.isPropsActive = true;
+          scope.options.isProfileActive = false;
           scope.pointTool = scope.options.tools[0];
           scope.complexTools = [
             scope.options.tools[1],
@@ -108,20 +110,11 @@ goog.require('ga_map_service');
           });
           var propsToggle = function(feature) {
             if (feature) {
-              if (!overlay.getElement()) {
-                overlay.setElement(props[0]);
-              }
-              props.show();
-              var coord, geom = feature.getGeometry();
-              if (geom instanceof ol.geom.Polygon) {
-                coord = geom.getInteriorPoint().getCoordinates();
-              } else {
-                coord = geom.getLastCoordinate();
-              }
-              overlay.setPosition(coord);
+              scope.feature = feature;
+              scope.popupToggle = true;
             } else {
-              props.hide();
-              overlay.setPosition(undefined);
+              scope.feature = undefined;
+              scope.popupToggle = false;
             }
           };
           select.getFeatures().on('add', function(evt) {
@@ -211,7 +204,7 @@ goog.require('ga_map_service');
                 gaMapUtils.moveLayerOnTop(map, layer);
               });
             }
-            map.addOverlay(overlay);
+            //map.addOverlay(overlay);
             activateSelectInteraction();
           };
 
@@ -233,7 +226,7 @@ goog.require('ga_map_service');
             // Remove interactions
             deactivateDrawInteraction();
             deactivateSelectInteraction();
-            map.removeOverlay(overlay);
+            //map.removeOverlay(overlay);
           };
 
           // Deactivate other tools
@@ -415,11 +408,6 @@ goog.require('ga_map_service');
 
           scope.aToolIsActive = function() {
             return !!lastActiveTool;
-          };
-
-          // hide the overlay with close button
-          scope.hide = function() {
-            overlay.setPosition(undefined);
           };
 
           // Watchers

@@ -884,51 +884,18 @@ a .ga-icon-separator {
 }
 
 #measure-popup {
-  max-width: none;
-  max-height: none;
-  overflow: hidden;
-  bottom: 26px;
-  border-radius: 0;
-  background-clip: initial;
-  height: 240px;
-  
   &.ga-profile-active {
     right: 0px;
   }
   
   .ga-popup-content {
-    max-height: inherit;
     overflow: visible;
-  }
-  
-  @media (max-width: @screen-tablet) {
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
   }
 
   @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
     .ga-profile-inner {
       overflow: visible;
     }
-  }
-}
-
-#draw-popup {
-  max-width: 385px;
-
-  @media (max-width: @screen-tablet) {
-    max-width: none;
-  } 
-
-  @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
-    .ga-icons, .ga-choose-icon {
-      width: 100%;
-      height: auto;
-    }
-  }
-  .popover-title, .popover-content {
-    width: auto;
   }
 }
 

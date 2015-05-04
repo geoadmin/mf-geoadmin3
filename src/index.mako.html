@@ -563,7 +563,8 @@ itemscope itemtype="http://schema.org/WebApplication"
     <!-- Popup: Measure -->
     <div ng-controller="GaMeasureController">
       <div ga-popup="globals.isMeasureActive"
-           ga-popup-options="{title:'measure',showPrint:true, print: print, help:'66', x: 0, y:'auto'}"
+           ga-popup-options="{title:'measure',showPrint:true, print: print,
+           help:'66', x: 0, y:'auto', position: 'bottom-left'}"
            id="measure-popup"
            ng-class="{'ga-profile-active': options.isProfileActive}">
         <div ga-measure="options.feature" 
