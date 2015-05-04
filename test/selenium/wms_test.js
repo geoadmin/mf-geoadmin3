@@ -41,6 +41,14 @@ var runTest = function(cap, driver, target) {
       assert.ok(url.indexOf(QUERYSTRING_WMS) > -1);
     });
   }
+
+  // Go to the WMS layer page
+  driver.get(target + '/?lang=de&layers=' + QUERYSTRING_WMS);
+  // Check if the page is loaded
+  driver.findElement(webdriver.By.xpath("//a[contains(text(), 'Grundlagen und Planung')]"));
+  // Check if the WMS Layer is loaded
+  driver.findElement(webdriver.By.xpath("//*[@id='selection']//*[contains(text(), 'AGNES')]"));
+
 }
 
 module.exports.runTest = runTest;
