@@ -319,19 +319,6 @@ goog.require('ga_map_service');
             }
           };
 
-          // Calulate the azimuth from 2 points
-          var calculateAzimuth = function(pt1, pt2) {
-            if (!pt1 || !pt2) {
-              return undefined;
-            }
-
-            var x = pt2[0] - pt1[0];
-            var y = pt2[1] - pt1[1];
-            var rad = Math.acos(y / Math.sqrt(x * x + y * y));
-            var factor = x > 0 ? 1 : -1;
-            return (360 + (factor * rad * 180 / Math.PI)) % 360;
-          };
-
           scope.supportKmlExport = gaExportKml.canSave();
 
           scope.exportKml = function() {
@@ -350,20 +337,6 @@ goog.require('ga_map_service');
             } else {
               deactivate();
             }
-          });
-
-          // Listen Profile directive events
-          var sketchFeatPoint = new ol.Feature(new ol.geom.Point([0, 0]));
-          $rootScope.$on('gaProfileMapPositionActivate',
-            function(event, coords) {
-              featuresOverlay.addFeature(sketchFeatPoint);
-          });
-          $rootScope.$on('gaProfileMapPositionUpdated',
-            function(event, coords) {
-              sketchFeatPoint.getGeometry().setCoordinates(coords);
-          });
-          $rootScope.$on('gaProfileMapPositionDeactivate', function(event) {
-            featuresOverlay.removeFeature(sketchFeatPoint);
           });
         }
       };
