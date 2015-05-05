@@ -5276,3 +5276,45 @@ msgstr ""
 
 msgid "ch.swisstopo-vd.ortschaftenverzeichnis_plz.langtext"
 msgstr ""
+
+msgid "tt_ch.bazl.laermbelastungskataster.registername"
+msgstr ""
+
+msgid "tt_ch.bazl.laermbelastungskataster.editor"
+msgstr ""
+
+msgid "tt_ch.bazl.laermbelastungskataster.validfrom"
+msgstr ""
+
+msgid "tt_ch.bazl.laermbelastungskataster.exposuretype"
+msgstr ""
+
+msgid "tt_ch.bazl.laermbelastungskataster.level_db"
+msgstr ""
+
+msgid "tt_ch.bazl.laermbelastungskataster.documentlink"
+msgstr ""
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_erste-nachtstunde"
+msgstr ""
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_helikopter"
+msgstr ""
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_helikopter-maximalpegel"
+msgstr ""
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_klein-grossflugzeuge"
+msgstr ""
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_kleinluftfahrzeuge"
+msgstr ""
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_letzte-nachtstunde"
+msgstr ""
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_militaer-gesamt"
+msgstr ""
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_zweite-nachtstunde"
+msgstr ""

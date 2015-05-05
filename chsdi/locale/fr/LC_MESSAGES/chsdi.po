@@ -1709,6 +1709,30 @@ msgstr "Sites pollués aérodromes civils"
 msgid "ch.bazl.kataster-belasteter-standorte-zivilflugplaetze.katasternummer"
 msgstr "No de site OFAC"
 
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_erste-nachtstunde"
+msgstr "Exposition bruit 1ère heure nuit"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_helikopter"
+msgstr "Exposition bruit hélicoptères Lr"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_helikopter-maximalpegel"
+msgstr "Exposition bruit hélicoptères Lmax"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_klein-grossflugzeuge"
+msgstr "Exp. bruit petits / grands avions"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_kleinluftfahrzeuge"
+msgstr "Exposition bruit petits aéronefs"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_letzte-nachtstunde"
+msgstr "Exposition bruit dern. heure nuit"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_militaer-gesamt"
+msgstr "Exp. bruit aérodrome milit. (tot.)"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_zweite-nachtstunde"
+msgstr "Exposition bruit 2e heure nuit"
+
 msgid "ch.bazl.landschaftsruhezonen"
 msgstr "Zones de calme pour l'aviation"
 
@@ -1944,7 +1968,7 @@ msgid "ch.blw.gewaesseranschlusskarte"
 msgstr "Surface en connexion des eaux"
 
 msgid "ch.blw.gewaesseranschlusskarte-direkt"
-msgstr "Surface en connexion élargie"
+msgstr "Surface en connection élargie"
 
 msgid "ch.blw.hang_steillagen"
 msgstr "Terrains en pente"
@@ -1995,7 +2019,7 @@ msgid "ch.blw.ursprungsbezeichnungen-kaese"
 msgstr "AOP fromage"
 
 msgid "ch.blw.ursprungsbezeichnungen-pflanzen"
-msgstr "AOP produits végétaux"
+msgstr "AOP Produits végétaux"
 
 msgid "ch.blw.ursprungsbezeichnungen-spirituosen"
 msgstr "AOP spiritueux"
@@ -4360,6 +4384,24 @@ msgstr "Genre d'obstacle"
 
 msgid "tt_ch.bazl.kartnummer"
 msgstr "Numéro de la carte [CN100]"
+
+msgid "tt_ch.bazl.laermbelastungskataster.documentlink"
+msgstr "Description détaillée "
+
+msgid "tt_ch.bazl.laermbelastungskataster.editor"
+msgstr "Editeur (autorité compétente)"
+
+msgid "tt_ch.bazl.laermbelastungskataster.exposuretype"
+msgstr "Type d’exposition au bruit"
+
+msgid "tt_ch.bazl.laermbelastungskataster.level_db"
+msgstr "Niveau d’évaluation dB(A)"
+
+msgid "tt_ch.bazl.laermbelastungskataster.registername"
+msgstr "Désignation du cadastre"
+
+msgid "tt_ch.bazl.laermbelastungskataster.validfrom"
+msgstr "Date de publication"
 
 msgid "tt_ch.bazl.markierung"
 msgstr "Marquage / balisage lum."

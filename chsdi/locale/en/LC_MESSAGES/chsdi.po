@@ -903,25 +903,25 @@ msgid "ch.are.bauzonen"
 msgstr "Building zones Switzerland (harm.)"
 
 msgid "ch.are.belastung-gueterverkehr-bahn"
-msgstr ""
+msgstr "Güterverkehr Schiene"
 
 msgid "ch.are.belastung-gueterverkehr-bahn-2008"
 msgstr "Freight traffic 2008"
 
 msgid "ch.are.belastung-gueterverkehr-strasse"
-msgstr ""
+msgstr "Güterverkehr Strasse"
 
 msgid "ch.are.belastung-gueterverkehr-strasse-2008"
 msgstr "Heavy goods traffic 2008"
 
 msgid "ch.are.belastung-personenverkehr-bahn"
-msgstr ""
+msgstr "Personenverkehr ÖV"
 
 msgid "ch.are.belastung-personenverkehr-bahn-2008"
 msgstr "Passenger traffic 2008"
 
 msgid "ch.are.belastung-personenverkehr-strasse"
-msgstr ""
+msgstr "Personenverkehr Strasse"
 
 msgid "ch.are.belastung-personenverkehr-strasse-2008"
 msgstr "Passenger traffic 2008"
@@ -1709,6 +1709,30 @@ msgstr "Polluted sites civil aerodromes"
 
 msgid "ch.bazl.kataster-belasteter-standorte-zivilflugplaetze.katasternummer"
 msgstr "BAZL Standortnummer"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_erste-nachtstunde"
+msgstr "Noise exp. 1st night hour"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_helikopter"
+msgstr "Noise exp. helicopters Lr"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_helikopter-maximalpegel"
+msgstr "Noise exp. helicopters Lmax"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_klein-grossflugzeuge"
+msgstr "Noise exp. light / large aircrafts"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_kleinluftfahrzeuge"
+msgstr "Noise exp. light aircrafts"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_letzte-nachtstunde"
+msgstr "Noise exp. last night hour"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_militaer-gesamt"
+msgstr "Noise exp. milit. aerodr. (tot.)"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_zweite-nachtstunde"
+msgstr "Noise exp. 2nd night hour"
 
 msgid "ch.bazl.landschaftsruhezonen"
 msgstr "Sanctuaries for silence: aviation"
@@ -4362,6 +4386,24 @@ msgstr "Obstacle type"
 
 msgid "tt_ch.bazl.kartnummer"
 msgstr "Map number [NM100]"
+
+msgid "tt_ch.bazl.laermbelastungskataster.documentlink"
+msgstr "Detaillierte Beschreibung "
+
+msgid "tt_ch.bazl.laermbelastungskataster.editor"
+msgstr "Herausgeber (zuständige Behörde)"
+
+msgid "tt_ch.bazl.laermbelastungskataster.exposuretype"
+msgstr "Lärmbelastungstyp"
+
+msgid "tt_ch.bazl.laermbelastungskataster.level_db"
+msgstr "Beurteilungspegel dB(A)"
+
+msgid "tt_ch.bazl.laermbelastungskataster.registername"
+msgstr "Bezeichnung des Katasters"
+
+msgid "tt_ch.bazl.laermbelastungskataster.validfrom"
+msgstr "Publikationsdatum"
 
 msgid "tt_ch.bazl.markierung"
 msgstr "Marking / navigation lights"
