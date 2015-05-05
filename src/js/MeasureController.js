@@ -12,7 +12,6 @@
           gaBrowserSniffer, gaGlobalOptions, gaUrlUtils, gaPrintService) {
         $scope.options = {
           isProfileActive: false,
-          profileUrl: gaGlobalOptions.apiUrl + '/rest/services/profile.json',
           profileOptions: {
               xLabel: 'profile_x_label',
               yLabel: 'profile_y_label',
@@ -96,79 +95,7 @@
             }
           }
         })();
-
-        var canceler;
-        var cancel = function() {
-          if (canceler !== undefined) {
-            canceler.resolve();
-            canceler = undefined;
-          }
-        };
         
-        var win = $($window);
-        var isProfileCreated = false;
-        var getProfile = function(feature, callback) {
-          var coordinates = feature.getGeometry().getCoordinates();
-          var wkt = '{"type":"LineString","coordinates":' +
-                    angular.toJson(coordinates) + '}'; 
-          var url = $scope.options.profileUrl + '?geom=' +
-                    gaUrlUtils.encodeUriQuery(wkt) + '&elevation_models=' +
-                    $scope.options.profileOptions.elevationModel;
-
-          //cancel old request
-          cancel();
-          canceler = $q.defer();
-
-          $http.get(url, {
-            cache: true,
-            timeout: canceler.promise
-          }).success(callback)
-            .error(function(data, status) {
-              // If request is canceled, statuscode is 0 and we don't announce it
-              if (status !== 0) {
-                // Display an empty profile
-                callback([{alts:{COMB: 0}, dist: 0}], status);
-              }
-            });
-        };
-
-       var createProfile = function(data, status) {
-          isProfileCreated = true;
-          // Profile width is dynamic, so before the first loading we must 
-          // set the good value.
-          // 32 is the padding and margin of the popup.
-          $scope.options.profileOptions.width = win.width() - $('[ga-measure]').width() - 32;
-          $rootScope.$emit('gaProfileDataLoaded', data);
-        };
-
-        var updateProfile = function(data, status) {
-          $rootScope.$emit('gaProfileDataUpdated', data);
-        };
-
-        $scope.options.drawProfile = function(feature) {
-          if (!isProfileCreated) {
-            getProfile(feature, createProfile);
-          } else {
-            getProfile(feature, updateProfile);
-          }
-        }
-
-        var panel;
-        var panelBt;
-        win.on('resize', function() {
-          if (isProfileCreated) {
-            if (!panel) {
-              panel = $('.ga-measure-panel-group');
-            }
-            // 47 padding and margins
-            $scope.options.profileOptions.width = win.width() - panel.width() - 47;
-            $rootScope.$emit('gaProfileDataUpdated', null, [
-              $scope.options.profileOptions.width,
-              $scope.options.profileOptions.height
-            ]);
-          }
-        });
-
         // Allow to print dynamic profile from measure popup
         $scope.print = function() {
           var contentEl = $('#measure-popup .ga-popup-content');

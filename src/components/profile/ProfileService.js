@@ -1,77 +1,70 @@
 (function() {
   goog.provide('ga_profile_service');
 
+  goog.require('ga_urlutils_service');
+
   var module = angular.module('ga_profile_service', [
+    'ga_urlutils_service',
     'pascalprecht.translate'
   ]);
 
-  module.provider('gaProfileService', function() {
+  module.provider('gaProfile', function() {
+    var d3;
 
-    this.$get = function($timeout, $translate, $window) {
+    // Utils functions
+    var createArea = function(domain, height, elevationModel) {
+      return d3.svg.area().x(function(d) {
+        return domain.X(d.dist);
+      }).y0(height).y1(function(d) {
+        return domain.Y(d.alts[elevationModel]);
+      });
+    };
 
-      function ProfileChart(options, lazyLoadCB, d3LibUrl) {
+    var createAxis = function(domain) {
+      return {
+        X: d3.svg.axis().scale(domain.X).orient('bottom'),
+        Y: d3.svg.axis().scale(domain.Y).orient('left')
+      };
+    };
+
+    var getXYDomains = function(x, y, elevationModel, data) {
+      x.domain(d3.extent(data, function(d) {
+        return d.dist || 0;
+      }));
+      var yMin = d3.min(data, function(d) {
+        return d.alts[elevationModel];
+      });
+      var yMax = d3.max(data, function(d) {
+        return d.alts[elevationModel];
+      });
+      var decile = (yMax - yMin) / 10;
+      yMin = yMin - decile > 0 ? yMin - decile : 0;
+      y.domain([yMin, yMax + decile]);
+      return {
+        X: x,
+        Y: y
+      };
+    };
+
+    this.$get = function($q, $http, $timeout, $translate, $window, gaUrlUtils) {
+
+      var d3LibUrl = this.d3libUrl;
+      var profileUrl = this.profileUrl;
+
+      function ProfileChart(options) {
         var marginHoriz = options.margin.left + options.margin.right;
         var marginVert = options.margin.top + options.margin.bottom;
         var elevationModel = options.elevationModel || 'DTM25';
         var width = options.width - marginHoriz;
         var height = options.height - marginVert;
-        var d3, x, y;
 
-        var onD3Loaded = function() {
-          d3 = $window.d3;
-          lazyLoadCB();
-        };
-
-        if (!$window.d3) {
-          $.getScript(d3LibUrl, onD3Loaded);
-        } else {
-          $timeout(onD3Loaded, 0);
-        }
-
-        var createArea = function(domain) {
-          var x = domain.X;
-          var y = domain.Y;
-          var area = d3.svg.area()
-              .x(function(d) {
-                return x(d.dist);
-              })
-              .y0(height)
-              .y1(function(d) {
-                return y(d.alts[elevationModel]);
-              });
-          return area;
-        };
-
-        var createAxis = function(domain) {
-          var xAxis = d3.svg.axis()
-              .scale(domain.X)
-              .orient('bottom');
-          var yAxis = d3.svg.axis()
-              .scale(domain.Y)
-              .orient('left');
-          return {
-            X: xAxis,
-            Y: yAxis
-          };
-        };
-
-        var getXYDomains = function(data) {
-          x.domain(d3.extent(data, function(d) {
-            return d.dist || 0;
-          }));
-          var yMin = d3.min(data, function(d) {
-            return d.alts[elevationModel];
-          });
-          var yMax = d3.max(data, function(d) {
-            return d.alts[elevationModel];
-          });
-          var decile = (yMax - yMin) / 10;
-          yMin = yMin - decile > 0 ? yMin - decile : 0;
-          y.domain([yMin, yMax + decile]);
-          return {
-            X: x,
-            Y: y
-          };
+        // Cancel requests stuff
+        var canceler;
+        var cancel = function() {
+          if (canceler !== undefined) {
+            canceler.resolve();
+            canceler = undefined;
+          }
         };
 
         this.findMapCoordinates = function(searchDist) {
@@ -108,14 +101,39 @@
           return data;
         };
 
+        this.get = function(feature, callback) {
+          var coordinates = feature.getGeometry().getCoordinates();
+          var wkt = '{"type":"LineString","coordinates":' +
+                    angular.toJson(coordinates) + '}';
+          var url = profileUrl + '?geom=' +
+                    gaUrlUtils.encodeUriQuery(wkt) + '&elevation_models=' +
+                    elevationModel;
+
+          //cancel old request
+          cancel();
+          canceler = $q.defer();
+
+          $http.get(url, {
+            cache: true,
+            timeout: canceler.promise
+          }).success(callback)
+            .error(function(data, status) {
+              // If request is canceled, statuscode is 0 and we don't announce
+              // it
+              if (status !== 0) {
+                // Display an empty profile
+                callback([{alts: {COMB: 0}, dist: 0}], status);
+              }
+            });
+        };
+
         this.create = function(data) {
           var that = this;
-
-          x = d3.scale.linear().range([0, width]);
-          y = d3.scale.linear().range([height, 0]);
+          var x = d3.scale.linear().range([0, width]);
+          var y = d3.scale.linear().range([height, 0]);
 
           this.data = this.formatData(data);
-          this.domain = getXYDomains(that.data);
+          this.domain = getXYDomains(x, y, elevationModel, that.data);
           var axis = createAxis(this.domain);
           var element = document.createElement('DIV');
           element.className = 'ga-profile-inner';
@@ -131,7 +149,7 @@
               .attr('transform', 'translate(' + options.margin.left +
                   ', ' + options.margin.top + ')');
 
-          var area = createArea(this.domain);
+          var area = createArea(this.domain, height, elevationModel);
 
           group.append('g')
               .attr('class', 'x axis')
@@ -212,8 +230,6 @@
             transitionTime = 250;
             width = size[0] - marginHoriz;
             height = size[1] - marginVert;
-            x = d3.scale.linear().range([0, width]);
-            y = d3.scale.linear().range([height, 0]);
             this.svg.transition().duration(transitionTime)
               .attr('width', width + marginHoriz + 0)
               .attr('height', height + marginVert)
@@ -231,9 +247,11 @@
           } else {
             this.data = this.formatData(data);
           }
-          this.domain = getXYDomains(that.data);
+          var x = d3.scale.linear().range([0, width]);
+          var y = d3.scale.linear().range([height, 0]);
+          this.domain = getXYDomains(x, y, elevationModel, that.data);
           var axis = createAxis(this.domain);
-          var area = createArea(this.domain, 'cardinal');
+          var area = createArea(this.domain, height, elevationModel);
           var path = this.group.select('.ga-profile-area');
           path.datum(that.data)
             .transition().duration(transitionTime)
@@ -260,10 +278,18 @@
               );
         };
       }
-
-      var d3LibUrl = this.d3libUrl;
       return function(options, lazyLoadCB) {
-        return new ProfileChart(options, lazyLoadCB, d3LibUrl);
+        // Lazy load of D3 library
+        var onD3Loaded = function() {
+          d3 = $window.d3;
+          lazyLoadCB();
+        };
+        if (!$window.d3) {
+          $.getScript(d3LibUrl, onD3Loaded);
+        } else {
+          $timeout(onD3Loaded, 0);
+        }
+        return new ProfileChart(options);
       };
     };
   });

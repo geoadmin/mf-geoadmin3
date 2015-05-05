@@ -8,23 +8,25 @@
   ]);
 
   module.directive('gaProfile',
-      function($rootScope, $compile, $window, gaProfileService) {
+      function($rootScope, $compile, $window, gaDebounce, gaProfile) {
         return {
           restrict: 'A',
           replace: true,
           templateUrl: 'components/profile/partials/profile.html',
           scope: {
+            feature: '=gaProfile',
             options: '=gaProfileOptions'
           },
           link: function(scope, element, attrs) {
-            var profile;
+            var profile, deregisterKey, isProfileCreated;
             var options = scope.options;
             var tooltipEl = element.find('.ga-profile-tooltip');
             scope.coordinates = [0, 0];
             scope.unitX = '';
 
-            $rootScope.$on('gaProfileDataLoaded', function(ev, data) {
-              var loadData = function() {
+            var create = function(feature) {
+              profile.get(feature, function(data) {
+                isProfileCreated = true;
                 var d3 = $window.d3;
                 var profileEl = angular.element(
                     profile.create(data)
@@ -39,24 +41,59 @@
                 }
                 var areaChartPath = d3.select('.ga-profile-area');
                 attachPathListeners(areaChartPath);
-              };
+              });
+            };
 
-              if (!angular.isDefined(profile)) {
-                profile = gaProfileService(options, loadData);
-              } else {
-                loadData();
-              }
-            });
-
-            $rootScope.$on('gaProfileDataUpdated', function(ev, data, size) {
-              if (size) {
-                profile.update(data, size);
-              } else {
+            var update = function(feature) {
+              profile.get(feature, function(data) {
                 profile.update(data);
                 profile.updateLabels();
                 scope.unitX = profile.unitX;
+              });
+            };
+            var updateDebounced = gaDebounce.debounce(update, 133, false,
+                false);
+
+            var updateSize = function(size) {
+              profile.update(null, size);
+            };
+            var updateSizeDebounced = gaDebounce.debounce(updateSize, 133,
+                false, false);
+
+
+            $($window).on('resize', function() {
+              if (isProfileCreated) {
+                updateSizeDebounced([
+                  element.width(),
+                  element.height()
+                ]);
               }
             });
+
+            var useFeature = function(newFeature) {
+              if (deregisterKey) {
+                ol.Observable.unByKey(deregisterKey);
+                deregisterKey = undefined;
+              }
+              if (newFeature) {
+                deregisterKey = newFeature.on('change', function(evt) {
+                  if (!angular.isDefined(profile)) {
+                    // we use applyAsync to wait the profile element to be
+                    // displayed
+                    scope.$applyAsync(function() {
+                      options.width = element.width();
+                      profile = gaProfile(options, function() {
+                        create(evt.target);
+                      });
+                    });
+                  } else if (isProfileCreated) {
+                    updateDebounced(evt.target);
+                  }
+                });
+                newFeature.changed();
+              }
+            };
+            scope.$watch('feature', useFeature);
 
 
             $rootScope.$on('$translateChangeEnd', function() {
