@@ -698,7 +698,7 @@
       // Transform graticule to literal
       if ($scope.options.graticule) {
         var graticule = {
-          'baseURL': 'http://wms.geo.admin.ch/',
+          'baseURL': 'https://wms.geo.admin.ch/',
           'opacity': 1,
           'singleTile': true,
           'type': 'WMS',

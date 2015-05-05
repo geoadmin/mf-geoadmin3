@@ -127,14 +127,14 @@
 
          module.config(['gaLayersProvider', function(gaLayersProvider) {
            gaLayersProvider.wmtsGetTileUrlTemplate =
-               'http://wmts{0-4}.geo.admin.ch/1.0.0/{Layer}/default/' +
+               'https://wmts{0-4}.geo.admin.ch/1.0.0/{Layer}/default/' +
                '{Time}/21781/{TileMatrix}/{TileRow}/{TileCol}.{Format}';
 
            gaLayersProvider.layersConfigUrlTemplate =
-               'http://mf-chsdi3.dev.bgdi.ch/rest/services/all/MapServer/layersConfig' +
+               'https://mf-chsdi3.dev.bgdi.ch/rest/services/all/MapServer/layersConfig' +
                '?lang={Lang}';
            gaLayersProvider.legendUrlTemplate =
-               'http://mf-chsdi3.dev.bgdi.ch/rest/services/{Topic}/MapServer/{Layer}/legend' +
+               'https://mf-chsdi3.dev.bgdi.ch/rest/services/{Topic}/MapServer/{Layer}/legend' +
                '?lang={Lang}';
         }]);
 
@@ -194,7 +194,7 @@
         module.controller('FeatureTreeController', ['$scope',
           function($scope) {
 
-            var baseUrl = 'http://mf-geoadmin3.dev.bgdi.ch/main//rest/services';
+            var baseUrl = 'https://mf-geoadmin3.dev.bgdi.ch/main//rest/services';
 
             $scope.options = {
               msUrl: baseUrl + '/ech/MapServer',

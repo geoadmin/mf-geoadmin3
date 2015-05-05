@@ -2,5 +2,5 @@ export KEEP_VERSION=true
 export DEPLOY_TARGET=prod
 export API_URL=//api3.geo.admin.ch
 export APACHE_BASE_PATH=
-export BROWSERSTACK_TARGETURL=http://map.geo.admin.ch
+export BROWSERSTACK_TARGETURL=https://map.geo.admin.ch
 export VARNISH_HOSTS=(ip-10-220-5-136.eu-west-1.compute.internal ip-10-220-6-61.eu-west-1.compute.internal)
