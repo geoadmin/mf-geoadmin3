@@ -22,39 +22,30 @@
     .btn-group {
       position: relative;
       display: inline-block;
-      
-      .btn-default {
-        font-size: 40px;
-        height: 44px;
-        width: 44px;
-        padding: 0px;
-        margin: 0px;
+
+      > ul li {
+        display: block;
+        margin: 2px 5px;
         
-        & + ul {
-          padding-right: 2px;
-          
-          li {
-            cursor: pointer;
-            display: block;
-            width: auto;
-            margin-left: 5px;
-          }
+        button {
+          width: 100%;
         }
       }
        
       > .dropdown-toggle {
-        padding-right: 5px;
+        font-size: 40px;
+        height: 44px;
         width: auto;
+        padding: 0px;
+        margin: 0px;
+        padding-right: 5px;
       }
     }
     
     .dropdown-menu {
+      width: 255px;
       max-height: 320px;
       overflow: auto;
-    }
-
-    .icon-ga-point + .dropdown-menu {
-      width: 252px;
     }
    
     .ga-more {
