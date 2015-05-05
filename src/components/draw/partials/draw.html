@@ -4,13 +4,13 @@
       <button class="btn btn-default dropdown-toggle icon-ga-point"
               data-toggle="dropdown" aria-expanded="false"><span class="caret"></span>
       </button>
-      <ul class="dropdown-menu" role="menu"
-          ng-click="toggleTool($event, pointTool)">
-        <li ng-repeat="i in options.icons">
-          <img class="btn btn-default" 
-               draggable="false" 
-               ng-click="options.icon = i" 
-               ng-src="{{i.url}}" />
+      <ul class="dropdown-menu">
+        <li ng-repeat="tool in pointTools"
+            ng-click="toggleTool($event, tool)"
+            ng-class="{'active': options[tool.activeKey]}"
+            class="{{tool.cssClass}}"
+            translate>
+          {{tool.title}}
         </li>
       </ul>
     </div>
@@ -18,13 +18,13 @@
       <button class="btn btn-default dropdown-toggle icon-ga-edit"
               data-toggle="dropdown" aria-expanded="false"><span class="caret"></span>
       </button>
-      <ul class="dropdown-menu" role="menu">
-        <li ng-repeat="tool in complexTools">
-          <button title="{{tool.description | translate}}"
-                  class="ga btn btn-default {{tool.iconClass}}"
-                  ng-click="toggleTool($event, tool)"
-                  ng-class="{'active': options[tool.activeKey]}">
-          </button>
+      <ul class="dropdown-menu">
+        <li ng-repeat="tool in complexTools"
+            ng-click="toggleTool($event, tool)"
+            ng-class="{'active': options[tool.activeKey]}"
+            class="{{tool.cssClass}}"
+            translate>
+          {{tool.title}}
         </li>
       </ul>
     </div>
@@ -73,13 +73,13 @@
                   ng-model="options.description"/>
       </label>
 
-      <label ng-if="options.isLineActive || options.isPolygonActive || useColorStyle">
+      <label ng-if="useColorStyle">
         <span>{{'modify_color_label' | translate}}:</span> 
         <select class="form-control"
                 ng-model="options.color" ng-options="options.translate.instant(c.name) for c in options.colors"></select>
       </label>
 
-      <div class="ga-icons" ng-if="options.isPointActive || useIconStyle">
+      <div class="ga-icons" ng-if="useIconStyle">
         <label>
           <span>{{'modify_icon_size_label' | translate}}:</span> 
           <select class="form-control"

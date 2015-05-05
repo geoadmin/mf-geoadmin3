@@ -91,10 +91,14 @@ goog.require('ga_map_service');
           var viewport = $(map.getViewport());
           scope.isPropsActive = true;
           scope.options.isProfileActive = false;
-          scope.pointTool = scope.options.tools[0];
+          scope.pointTools = [
+            scope.options.tools[0],
+            scope.options.tools[1]
+          ];
           scope.complexTools = [
-            scope.options.tools[1],
-            scope.options.tools[2]
+            scope.options.tools[2],
+            scope.options.tools[3],
+            scope.options.tools[4]
           ];
           scope.layers = scope.map.getLayers().getArray();
           scope.layerFilter = gaLayerFilters.selected;
@@ -243,6 +247,7 @@ goog.require('ga_map_service');
             for (var i = 0, ii = tools.length; i < ii; i++) {
               scope.options[tools[i].activeKey] = (tools[i].id == tool.id);
             }
+            activateDrawInteraction(lastActiveTool);
           };
 
           var deactivateTool = function(tool) {
@@ -251,19 +256,15 @@ goog.require('ga_map_service');
 
           // Set the draw interaction with the good geometry
           var deregDrawStart, deregDrawEnd;
-          var activateDrawInteraction = function(type) {
+          var activateDrawInteraction = function(tool) {
             deactivateSelectInteraction();
             deactivateDrawInteraction();
-
-            draw = new ol.interaction.Draw({
-              type: type,
-              source: layer.getSource(),
-              style: scope.options.drawStyleFunction
-            });
+            tool.drawOptions.source = source;
+            draw = new ol.interaction.Draw(tool.drawOptions);
 
             unDrawEnd = draw.on('drawend', function(evt) {
               // Set the definitve style of the feature
-              var styles = scope.options.styleFunction(evt.feature);
+              var styles = tool.style(evt.feature);
               evt.feature.setStyle(styles);
               scope.$apply();
               deactivateDrawInteraction();
@@ -320,8 +321,7 @@ goog.require('ga_map_service');
               if (features) {
                 features.forEach(function(feature) {
                   // Update the style of the feature with the current style
-                  feature.setStyle(function() {return null;});
-                  var styles = scope.options.styleFunction(feature);
+                  var styles = scope.options.updateStyle(feature);
                   feature.setStyle(styles);
                   // then apply the select style
                   styles = scope.options.selectStyleFunction(feature);
@@ -349,17 +349,21 @@ goog.require('ga_map_service');
                 scope.options.iconSize = findIconSize(featStyle.getImage(),
                     scope.options.iconSizes);
               }
-              if (featStyle.getText()) {
-                scope.options.name = featStyle.getText().getText();
-                //scope.options.textSize
-                //scope.options.textColor
-              }
               if (featStyle.getStroke()) {
                 useColorStyle = true;
                 scope.options.color = findColor(
                     featStyle.getStroke().getColor(), scope.options.colors);
 
               }
+              if (featStyle.getText()) {
+                useColorStyle = true;
+                scope.options.name = featStyle.getText().getText();
+                //scope.options.textSize
+                //scope.options.textColor
+                scope.options.color = findColor(
+                featStyle.getText().getFill().getColor(), scope.options.colors);
+              }
+
               scope.options.name = feature.get('name') || '';
               scope.options.description = feature.get('description') || '';
 
@@ -425,6 +429,7 @@ goog.require('ga_map_service');
             updateSelectedFeatures();
           });
 
+<<<<<<< HEAD
           scope.$watchGroup(['options.isPointActive', 'options.isLineActive',
               'options.isPolygonActive'], function(values) {
             if (values[0]) {
@@ -460,6 +465,8 @@ goog.require('ga_map_service');
           };
           var saveDebounced = gaDebounce.debounce(save, 133, false, false);
           
+=======
+>>>>>>> Add new tools
           $rootScope.$on('$translateChangeEnd', function() {
             layer.label = $translate.instant('draw');
           });
@@ -478,16 +485,6 @@ goog.require('ga_map_service');
           };
           var updateCursorStyleDebounced = gaDebounce.debounce(
               updateCursorStyle, 10, false, false);
-
-          // Focus on the first input.
-          /*var setFocus = function() {
-            $timeout(function() {
-              var inputs = element.find('input, select');
-              if (inputs.length > 0) {
-                inputs[0].focus();
-              }
-            });
-          };*/
         }
       };
     }
