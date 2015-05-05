@@ -43,37 +43,37 @@ goog.require('ga_map_service');
         dfltLayer.type = 'KML';
         return dfltLayer;
       };
-        // Find the corresponding style
-        var findIcon = function(olIcon, icons) {
-          var id = olIcon.getSrc();
-          for (var i = 0; i < icons.length; i++) {
-            var regex = new RegExp('/' + icons[i].id + '-24');
-            if (regex.test(id)) {
-              return icons[i];
-            }
+      // Find the corresponding style
+      var findIcon = function(olIcon, icons) {
+        var id = olIcon.getSrc();
+        for (var i = 0; i < icons.length; i++) {
+          var regex = new RegExp('/' + icons[i].id + '-24');
+          if (regex.test(id)) {
+            return icons[i];
           }
-          return icons[0];
-        };
+        }
+        return icons[0];
+      };
 
-        var findIconSize = function(olIcon, iconSizes) {
-          var scale = olIcon.getScale();
-          for (var i = 0; i < iconSizes.length; i++) {
-            if (scale == iconSizes[i].scale) {
-              return iconSizes[i];
-            }
+      var findIconSize = function(olIcon, iconSizes) {
+        var scale = olIcon.getScale();
+        for (var i = 0; i < iconSizes.length; i++) {
+          if (scale == iconSizes[i].scale) {
+            return iconSizes[i];
           }
-          return iconSizes[0];
-        };
+        }
+        return iconSizes[0];
+      };
 
-        var findColor = function(olColor, colors) {
-          var rgb = ol.color.asString(olColor.slice(0, 3));
-          for (var i = 0; i < colors.length; i++) {
-            if (rgb == ol.color.asString(colors[i].fill)) {
-              return colors[i];
-            }
+      var findColor = function(olColor, colors) {
+        var rgb = ol.color.asString(olColor.slice(0, 3));
+        for (var i = 0; i < colors.length; i++) {
+          if (rgb == ol.color.asString(colors[i].fill)) {
+            return colors[i];
           }
-          return colors[0];
-        };
+        }
+        return colors[0];
+      };
 
       return {
         restrict: 'A',
