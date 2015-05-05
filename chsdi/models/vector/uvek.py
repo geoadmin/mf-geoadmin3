@@ -218,7 +218,7 @@ class unf_pers_alle(Base, Vector):
     __table_args__ = ({'schema': 'astra', 'autoload': False})
     __template__ = 'templates/htmlpopup/astra_unfaelle.mako'
     __bodId__ = 'ch.astra.unfaelle-personenschaeden_alle'
-    __label__ = 'id'
+    __label__ = 'accidenttype_de'
     id = Column('uuid', Integer, primary_key=True)
     the_geom = Column(Geometry(geometry_type='GEOMETRY',
                                dimension=2, srid=21781))
