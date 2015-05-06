@@ -81,7 +81,8 @@
               var feedbackUrl = scope.options.feedbackUrl;
               var elFileInpt = element.find('input[type=file]');
               scope.isIE9 = (gaBrowserSniffer.msie == 9);
-              scope.isIE = !isNaN(gaBrowserSniffer.msie);
+              // msie is either false or a number
+              scope.isIE = gaBrowserSniffer.msie ? true : false;
               scope.isMobile = gaBrowserSniffer.mobile;
               scope.showProgress = false;
               scope.success = false;
