@@ -3,15 +3,14 @@
 var webdriver = require('browserstack-webdriver');
 
 var runTest = function(cap, driver, target) {
-  if (cap.browser == 'chrome' && cap.browser_version == '37') {
+  if (cap.browser == 'IE' && cap.browser_version == '10.0') {
     //We maximize our window to be sure to be in full resolution
     driver.manage().window().maximize();
     // Goto the travis deployed site.
-    driver.get(target + '/?lang=de');
+    driver.get(target + '/?lang=de&widgets=feedback');
     //wait until topics related stuff is loaded. We know this when catalog is there
     driver.findElement(webdriver.By.xpath("//a[contains(text(), 'Grundlagen und Planung')]"));
-    // Click on "Problem melden"
-    driver.findElement(webdriver.By.xpath("//*[@id='toptools']//span[contains(text(),'Problem melden')]")).click();
+
     // Is the feeback popup open?
     driver.findElement(webdriver.By.xpath("//*[@id='feedback-popup']//div[contains(text(),'Problem melden')]"));
     // Click on input field
@@ -21,7 +20,20 @@ var runTest = function(cap, driver, target) {
     // Click on feedback field
     driver.findElement(webdriver.By.xpath("//*[@id='feedback-popup']//textarea[@name='feedback']")).click();
     // Write down your feedback
-    driver.findElement(webdriver.By.xpath("//*[@id='feedback-popup']//textarea[@name='feedback']")).sendKeys('This is just an automated test, please do not panic!');
+    driver.findElement(webdriver.By.xpath("//*[@id='feedback-popup']//textarea[@name='feedback']")).sendKeys('This is just an automated test, Don\'t panic, just move this message to the Automated Tests Folder!');
+    // Send the feedback
+    driver.findElement(webdriver.By.xpath("//*[@id='feedback-popup']//button[@type='submit']")).click();
+    // Check if the feed back has been sent
+    driver.findElement(webdriver.By.xpath("//*[@id='feedback-popup']//p[contains(text(),'Bericht erfolgreich versendet')]"));
+    // Close popup
+    driver.findElement(webdriver.By.xpath("//*[@id='feedback-popup']//button[@title='Schliessen']")).click();
+
+    // Check map.revision.admin.ch
+    driver.get('http://map.revision.admin.ch/?lang=de');
+    // Check if feedback popup is activated
+    driver.findElement(webdriver.By.xpath("//*[@id='feedback-popup']//div[contains(text(),'Problem melden')]"));
+    // Close popup
+    driver.findElement(webdriver.By.xpath("//*[@id='feedback-popup']//button[@ng-click='close($event)']")).click();
   }
 }
 
