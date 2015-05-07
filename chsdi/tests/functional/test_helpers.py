@@ -47,25 +47,26 @@ class Test_Helpers(unittest.TestCase):
     def test_check_url(self):
         from pyramid.httpexceptions import HTTPBadRequest
         url = None
+        config = {'shortener.allowed_hosts': 'admin.ch,swisstopo.ch,bgdi.ch'}
         try:
-            check_url(url)
+            check_url(url, config)
         except Exception as e:
             self.failUnless(isinstance(e, HTTPBadRequest))
 
         url = 'dummy'
         try:
-            check_url(url)
+            check_url(url, config)
         except Exception as e:
             self.failUnless(isinstance(e, HTTPBadRequest))
 
         url = 'http://dummy.com'
         try:
-            check_url(url)
+            check_url(url, config)
         except Exception as e:
             self.failUnless(isinstance(e, HTTPBadRequest))
 
         url = 'http://admin.ch'
-        self.assertEqual(url, check_url(url))
+        self.assertEqual(url, check_url(url, config))
 
     def test_transformCoordinate(self):
         from osgeo.ogr import Geometry
