@@ -57,7 +57,7 @@ def check_url(url, config):
     allowed_hosts = config['shortener.allowed_hosts'] if 'shortener.allowed_hosts' in config else ''
     allowed_domains = config['shortener.allowed_domains'] if 'shortener.allowed_domains' in config else ''
     if domain not in allowed_domains and hostname not in allowed_hosts:
-        raise HTTPBadRequest('Shortener can only be used for admin.ch, swisstopo.ch and bgdi.ch domains')
+        raise HTTPBadRequest('Shortener can only be used for %s domains or %s hosts.' % (allowed_domains, allowed_hosts))
     return url
 
 
