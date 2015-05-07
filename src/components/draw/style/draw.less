@@ -22,13 +22,18 @@
     .btn-group {
       position: relative;
       display: inline-block;
-
+      
+      .dropdown-menu {
+        width: 255px;
+      }
+       
       > ul li {
         display: block;
         margin: 2px 5px;
         
         button {
           width: 100%;
+          text-align: left;
         }
       }
        
@@ -43,7 +48,6 @@
     }
     
     .dropdown-menu {
-      width: 255px;
       max-height: 320px;
       overflow: auto;
     }

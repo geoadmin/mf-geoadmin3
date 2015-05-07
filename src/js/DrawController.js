@@ -385,6 +385,26 @@ goog.provide('ga_draw_controller');
           return styles;
         };
 
+        // Draw freehand 
+        var freehandDrawStyleFunc = function(feature) {
+          var zIndex = gaStyleFactory.ZLINE;
+          var stroke = new ol.style.Stroke({
+            color: [255, 255, 0, 0.7],
+            width: 6
+          });
+          
+          feature.set('name', $scope.options.name);
+          feature.set('description', $scope.options.description);
+          var styles = [
+            new ol.style.Style({
+              stroke: stroke,
+              zIndex: zIndex
+            })
+          ];
+
+          return styles;
+        };
+
         // Draw a dashed line or polygon 
         var measureDrawStyleFunc = function(feature) {
           var zIndex = gaStyleFactory.ZPOLYGON;
@@ -424,7 +444,7 @@ goog.provide('ga_draw_controller');
             var styles;
             if (feature.getGeometry().getType() === 'Polygon') {
               styles =  [sketchPolygon];
-            }else if (feature.getGeometry().getType() === 'Point') {
+            } else if (feature.getGeometry().getType() === 'Point') {
               var color = $scope.options.color;
               var fill = new ol.style.Fill({
                 color: color.fill.concat([0.4])
@@ -534,9 +554,9 @@ goog.provide('ga_draw_controller');
             type: 'LineString',
             condition: ol.events.condition.shiftKeyOnly,
             freehandCondition: ol.events.condition.noModifierKeys,
-            style: generateDrawStyleFunc(linepolygonDrawStyleFunc)
+            style: generateDrawStyleFunc(freehandDrawStyleFunc)
           },
-          style: linepolygonDrawStyleFunc
+          style: freehandDrawStyleFunc
         }, {
           id: 'measure',
           drawOptions: {

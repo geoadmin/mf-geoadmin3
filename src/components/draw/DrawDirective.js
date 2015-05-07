@@ -259,18 +259,74 @@ goog.require('ga_map_service');
           var activateDrawInteraction = function(tool) {
             deactivateSelectInteraction();
             deactivateDrawInteraction();
-            tool.drawOptions.source = source;
             draw = new ol.interaction.Draw(tool.drawOptions);
+            var isFinishOnFirstPoint, deregFeatureChange;
+            deregDrawStart = draw.on('drawstart', function(evt) {
+              var nbPoint = 1;
+              var isSnapOnLastPoint = false;
+
+              deregFeatureChange = evt.feature.on('change', function(evt) {
+                var geom = evt.target.getGeometry();
+                if (geom instanceof ol.geom.Polygon) {
+                  var lineCoords = geom.getCoordinates()[0];
+                  if (nbPoint != lineCoords.length) {
+                    // A point is added
+                    nbPoint++;
+                  } else {
+                    var firstPoint = lineCoords[0];
+
+                    // We update features and measures
+                    var lastPoint = lineCoords[lineCoords.length - 1];
+                    var lastPoint2 = lineCoords[lineCoords.length - 2];
+
+                    var isSnapOnFirstPoint = (lastPoint[0] == firstPoint[0] &&
+                        lastPoint[1] == firstPoint[1]);
+
+                    // When the last change event is triggered the polygon is
+                    // closed so isSnapOnFirstPoint is true. We need to know
+                    // if on the change event just before, the snap on last
+                    // point was active.
+                    isFinishOnFirstPoint = (!isSnapOnLastPoint &&
+                        isSnapOnFirstPoint);
+
+                    isSnapOnLastPoint = (lastPoint[0] == lastPoint2[0] &&
+                        lastPoint[1] == lastPoint2[1]);
+
+                    if (isSnapOnLastPoint) {
+                      // In that case the 2 last points of the coordinates
+                      // array are identical, so we remove the useless one.
+                      lineCoords.pop();
+                    }
+                  }
+                }
+              });
+            });
 
             unDrawEnd = draw.on('drawend', function(evt) {
+              var featureToAdd = evt.feature;
+              var geom = featureToAdd.getGeometry();
+              if (geom instanceof ol.geom.Polygon && !isFinishOnFirstPoint) {
+                // The sketchFeatureArea is automatically closed by the draw
+                // interaction even if the user has finished drawing on the
+                // last point. So we remove the useless coordinates.
+                var lineCoords = featureToAdd.getGeometry().getCoordinates()[0];
+                lineCoords.pop();
+                featureToAdd = new ol.Feature(
+                    new ol.geom.LineString(lineCoords));
+              }
+
+              // Unregister the change event
+              ol.Observable.unByKey(deregFeatureChange);
+
               // Set the definitve style of the feature
-              var styles = tool.style(evt.feature);
-              evt.feature.setStyle(styles);
+              source.addFeature(featureToAdd);
+              var styles = tool.style(featureToAdd);
+              featureToAdd.setStyle(styles);
               scope.$apply();
               deactivateDrawInteraction();
               deactivateTool(lastActiveTool);
               activateSelectInteraction();
-              select.getFeatures().push(evt.feature);
+              select.getFeatures().push(featureToAdd);
             });
             map.addInteraction(draw);
           };
@@ -429,18 +485,6 @@ goog.require('ga_map_service');
             updateSelectedFeatures();
           });
 
-<<<<<<< HEAD
-          scope.$watchGroup(['options.isPointActive', 'options.isLineActive',
-              'options.isPolygonActive'], function(values) {
-            if (values[0]) {
-              activateDrawInteraction('Point');
-            } else if (values[1]) {
-              activateDrawInteraction('LineString');
-            } else if (values[2]) {
-              activateDrawInteraction('Polygon');
-            }
-          });
-
           // create/update the file on s3
           var save = function() {
             var kmlString = gaExportKml.create(layer,
@@ -465,8 +509,6 @@ goog.require('ga_map_service');
           };
           var saveDebounced = gaDebounce.debounce(save, 133, false, false);
           
-=======
->>>>>>> Add new tools
           $rootScope.$on('$translateChangeEnd', function() {
             layer.label = $translate.instant('draw');
           });
