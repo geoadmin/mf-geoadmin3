@@ -1418,7 +1418,8 @@
                 url = layerSpec.split('||')[2];
               }
               if (!confirmedOnce &&
-                  !/(admin|bgdi)\.ch$/.test(gaUrlUtils.getHostname(url))) {
+                  (gaMapUtils.isStoredKmlLayer(layerSpec) ||
+                  !/(admin|bgdi)\.ch$/.test(gaUrlUtils.getHostname(url)))) {
                 allowThirdData =
                   confirm($translate.instant('third_party_data_warning'));
                 if (allowThirdData) {
