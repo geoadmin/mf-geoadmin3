@@ -31,7 +31,7 @@
           if (!fileUrl) {
             return;
           }
-          return fileUrl.replace(getPublicUrl(), '');
+          return fileUrl.replace(getPublicUrl() + '/', '');
         };
 
         // Get the accessible url of the file from an adminId
