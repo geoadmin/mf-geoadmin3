@@ -129,6 +129,15 @@ class Search(SearchValidation):
             self._parse_location_results(temp)
 
     def _layer_search(self):
+
+        def staging_filter(staging):
+            ret = '@staging prod'
+            if staging == 'integration' or staging == 'test':
+                ret += ' | @staging integration'
+                if staging == 'test':
+                    ret += ' | @staging test'
+            return ret
+
         # 10 features per layer are returned at max
         layerLimit = self.limit if self.limit and self.limit <= self.LAYER_LIMIT else self.LAYER_LIMIT
         self.sphinx.SetLimits(0, layerLimit)
@@ -144,7 +153,7 @@ class Search(SearchValidation):
         searchText = ' '.join((
             self._query_fields('@(detail,layer)'),
             '& @topics %s' % (topicFilter),  # Filter by to topic if string not empty, ech whitelist hack
-            '& @staging prod'                  # Only layers in prod are searched
+            '& %s' % (staging_filter(self.geodataStaging))  # Only layers in correct staging are searched
         ))
         try:
             temp = self.sphinx.Query(searchText, index=index_name)
