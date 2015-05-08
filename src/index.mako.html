@@ -150,7 +150,6 @@ itemscope itemtype="http://schema.org/WebApplication"
       <div ng-controller="GaTranslationController">
         <div ga-translation-selector ga-translation-selector-options="options"></div>
       </div>
-      <div ga-background-layer-selector ga-background-layer-selector-map="map"></div>
     </div>
 % endif
 % if device != 'embed':
@@ -169,9 +168,6 @@ itemscope itemtype="http://schema.org/WebApplication"
       </div>
   % if device == 'desktop':
       <div class="navbar-form pull-right hidden-xs">
-        <div id="background-selection">
-          <div ga-background-layer-selector ga-background-layer-selector-map="map"></div>
-        </div>
         <div id="toptools">
           <div ga-fullscreen ga-fullscreen-map="map"></div>&nbsp;&nbsp;
           <a href="" ng-click="globals.feedbackPopupShown = !globals.feedbackPopupShown">
@@ -265,6 +261,8 @@ itemscope itemtype="http://schema.org/WebApplication"
       <div ga-time-selector ga-time-selector-map="map"
            ga-time-selector-options="options">
       </div>
+    </div>
+    <div ga-layer-selector ga-layer-selector-map="map">
     </div>
     <div ng-controller="GaTooltipController">
       <div ga-tooltip 
@@ -446,10 +444,6 @@ itemscope itemtype="http://schema.org/WebApplication"
                 <label ng-controller="GaTranslationController">
                   <span translate>lang_chooser_label</span>
                   <div ga-translation-selector ga-translation-selector-options="options"></div>
-                </label>
-                <label>
-                  <span translate>bg_chooser_label</span>
-                  <div ga-background-layer-selector ga-background-layer-selector-map="map"></div>
                 </label>
               </div>
               <hr>

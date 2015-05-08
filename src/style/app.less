@@ -20,6 +20,7 @@
 @import "../components/tooltip/style/tooltip.less";
 @import "../components/slider/style/slider.less";
 @import "../components/timeselector/style/timeselector.less";
+@import "../components/layerselector/style/layerselector.less";
 @import "../components/swipe/style/swipe.less";
 @import "../components/featuretree/style/featuretree.less";
 @import "../components/measure/style/measure.less";
@@ -384,11 +385,6 @@ input[type=text][readonly] {
   position: absolute;
   top: 0.2em;
   right: 2em;
-  
-  @media (max-height: @screen-sm-max-height) {
-    right: 12em;
-    top: 1em;
-  }
 
   & > div {
     display: inline-block;

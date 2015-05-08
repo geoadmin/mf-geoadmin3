@@ -1,0 +1,6 @@
+<div ng-repeat="layer in backgroundLayers">
+  <div ng-click="onClick($event)" ng-show="!isLayerSelectorClosed || $first" class="ga-bg-layer-default {{'ga-bg-layer-' + $index}} {{getClass(layer)}}">
+    <div ng-class="'ga-bg-layer-text'" ng-show="!isLayerSelectorClosed">{{layer.label | translate}}</div>
+    <div ng-class="'ga-bg-info-text'" ng-show="isLayerSelectorClosed" translate>bg_chooser_label</div>
+  </div>
+</div>
