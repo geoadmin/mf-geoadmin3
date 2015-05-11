@@ -15,7 +15,8 @@ ExpiresActive on
 # Enabling CORS
 Header set Access-Control-Allow-Origin "*"
 Header always set Access-Control-Allow-Methods "POST, GET, OPTIONS"
-Header always set Access-Control-Allow-Headers "X-Requested-With, content-type"
+Header always set Access-Control-Allow-Headers "x-requested-with, Content-Type, origin, authorization, accept, client-security-token"
+
 
 AddOutputFilterByType DEFLATE text/css
 AddOutputFilterByType DEFLATE application/x-javascript application/javascript application/json application/xml
