@@ -51,8 +51,8 @@ address_search_referers = localhost,admin.ch,awk.ch,cadastre.ch,rspp.ch,rollstuh
 print_temp_dir=${print_temp_dir}
 http_proxy = ${http_proxy}
 
-shortener.allowed_hosts = ${shortener_allowed_hosts}
-shortener.allowed_domains = ${shortener_allowed_domains}
+shortener.allowed_hosts = ${shortener.allowed_hosts}
+shortener.allowed_domains = ${shortener.allowed_domains}
 
 ###
 # wsgi server configuration
