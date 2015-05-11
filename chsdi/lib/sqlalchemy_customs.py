@@ -35,6 +35,8 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 """
+
+
 class remove_accents(FunctionElement):
     name = "remove_accents"
 
