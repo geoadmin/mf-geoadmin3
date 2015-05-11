@@ -45,7 +45,7 @@ def _get_url_short(table, url):
 @view_config(route_name='shorten', renderer='jsonp')
 def shortener(request):
     url = check_url(
-        request.params.get('url')
+        request.params.get('url'), request.registry.settings
     )
     if len(url) >= 2046:
         # we only accept URL shorter or equal to 2046 characters

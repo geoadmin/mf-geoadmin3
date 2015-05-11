@@ -15,7 +15,7 @@ from chsdi.lib.helpers import check_url, make_api_url, quoting
 def qrcode(request):
 
     url = quoting(check_url(
-        request.params.get('url')
+        request.params.get('url'), request.registry.settings
     ))
     url = _shorten_url(request, url)
     img = _make_qrcode_img(url)
