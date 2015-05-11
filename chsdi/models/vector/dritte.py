@@ -62,3 +62,31 @@ class PRONATURA(Base, Vector):
                                dimension=2, srid=21781))
 
 register('ch.pronatura.waldreservate', PRONATURA)
+
+
+class Aeromagnetische_karte_1500(Base, Vector):
+    __tablename__ = 'am_1500'
+    __table_args__ = ({'schema': 'nagra', 'autoload': False})
+    __template__ = 'templates/htmlpopup/aeromagnetische_karte.mako'
+    __bodId__ = 'ch.nagra.aeromagnetische-karte_1500'
+    __label__ = 'id'
+    id = Column('et_id', Integer, primary_key=True)
+    et_fromatt_1500 = Column('et_fromatt_1500', Numeric)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.nagra.aeromagnetische-karte_1500', Aeromagnetische_karte_1500)
+
+
+class Aeromagnetische_karte_1100(Base, Vector):
+    __tablename__ = 'am_1100'
+    __table_args__ = ({'schema': 'nagra', 'autoload': False})
+    __template__ = 'templates/htmlpopup/aeromagnetische_karte.mako'
+    __bodId__ = 'ch.nagra.aeromagnetische-karte_1100'
+    __label__ = 'id'
+    id = Column('et_id', Integer, primary_key=True)
+    et_fromatt_1100 = Column('et_fromatt_1100', Numeric)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.nagra.aeromagnetische-karte_1100', Aeromagnetische_karte_1100)
