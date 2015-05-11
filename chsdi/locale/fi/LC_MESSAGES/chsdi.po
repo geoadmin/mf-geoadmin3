@@ -1701,7 +1701,7 @@ msgid "ch.bazl"
 msgstr "UFAC"
 
 msgid "ch.bazl.heliports-gebirgslandeplaetze"
-msgstr "Heliports/Gebirgslandeplätze"
+msgstr "Heliports/pl. atterrament muntogna"
 
 msgid "ch.bazl.kataster-belasteter-standorte-zivilflugplaetze"
 msgstr "Lieus contamin. plazzas aviat. civ."
@@ -1709,11 +1709,35 @@ msgstr "Lieus contamin. plazzas aviat. civ."
 msgid "ch.bazl.kataster-belasteter-standorte-zivilflugplaetze.katasternummer"
 msgstr "BAZL Standortnummer"
 
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_erste-nachtstunde"
+msgstr "Grevezza da canera 1. ura da notg"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_helikopter"
+msgstr "Grevezza da canera helicopters Lr"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_helikopter-maximalpegel"
+msgstr "Grevezza da canera helicopters Lmax"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_klein-grossflugzeuge"
+msgstr "Grevezza da canera aviuns pi. e gr."
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_kleinluftfahrzeuge"
+msgstr "Grevezza da canera aviuns pitschens"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_letzte-nachtstunde"
+msgstr "Grevezza da canera ultima ura notg"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_militaer-gesamt"
+msgstr "Grev. canera aviatica mil. (tut.)"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_zweite-nachtstunde"
+msgstr "Grevezza da canera 2. ura da notg"
+
 msgid "ch.bazl.landschaftsruhezonen"
 msgstr "Landschaftsruhezonen Luftfahrt"
 
 msgid "ch.bazl.luftfahrthindernis"
-msgstr "Luftfahrthindernisse"
+msgstr "Impediments per l'aviatica"
 
 msgid "ch.bazl.luftfahrthindernis.abortionaccomplished"
 msgstr "Abbruch ausgeführt"
@@ -1752,7 +1776,7 @@ msgid "ch.bazl.luftfahrtkarten-icao"
 msgstr "Charta d'aviatica OACI"
 
 msgid "ch.bazl.points-of-interest"
-msgstr "Points of Interest"
+msgstr "Puncts interessants"
 
 msgid "ch.bazl.projektierungszonen-flughafenanlagen"
 msgstr "Zonas da projectaziun: eroports"
@@ -4360,6 +4384,24 @@ msgstr "Hindernisart"
 
 msgid "tt_ch.bazl.kartnummer"
 msgstr "Kartennummer [LK100]"
+
+msgid "tt_ch.bazl.laermbelastungskataster.documentlink"
+msgstr "Detaillierte Beschreibung "
+
+msgid "tt_ch.bazl.laermbelastungskataster.editor"
+msgstr "Herausgeber (zuständige Behörde)"
+
+msgid "tt_ch.bazl.laermbelastungskataster.exposuretype"
+msgstr "Lärmbelastungstyp"
+
+msgid "tt_ch.bazl.laermbelastungskataster.level_db"
+msgstr "Beurteilungspegel dB(A)"
+
+msgid "tt_ch.bazl.laermbelastungskataster.registername"
+msgstr "Bezeichnung des Katasters"
+
+msgid "tt_ch.bazl.laermbelastungskataster.validfrom"
+msgstr "Publikationsdatum"
 
 msgid "tt_ch.bazl.markierung"
 msgstr "Markierung / Befeuerung"

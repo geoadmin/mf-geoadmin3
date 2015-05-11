@@ -1709,6 +1709,30 @@ msgstr "Belastete Standorte Zivilflugplätze"
 msgid "ch.bazl.kataster-belasteter-standorte-zivilflugplaetze.katasternummer"
 msgstr "BAZL Standortnummer"
 
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_erste-nachtstunde"
+msgstr "Lärmbelastung 1. Nachtstunde"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_helikopter"
+msgstr "Lärmbelastung Helikopter Lr"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_helikopter-maximalpegel"
+msgstr "Lärmbelastung Helikopter Lmax"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_klein-grossflugzeuge"
+msgstr "Lärmbelast. Klein- / Grossflugzeuge"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_kleinluftfahrzeuge"
+msgstr "Lärmbelastung Kleinluftfahrzeuge"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_letzte-nachtstunde"
+msgstr "Lärmbelastung letzte Nachtstunde"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_militaer-gesamt"
+msgstr "Lärmbelast. Militärflugpl. (gesamt)"
+
+msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_zweite-nachtstunde"
+msgstr "Lärmbelastung 2. Nachtstunde"
+
 msgid "ch.bazl.landschaftsruhezonen"
 msgstr "Landschaftsruhezonen Luftfahrt"
 
@@ -4360,6 +4384,24 @@ msgstr "Hindernisart"
 
 msgid "tt_ch.bazl.kartnummer"
 msgstr "Kartennummer [LK100]"
+
+msgid "tt_ch.bazl.laermbelastungskataster.documentlink"
+msgstr "Detaillierte Beschreibung "
+
+msgid "tt_ch.bazl.laermbelastungskataster.editor"
+msgstr "Herausgeber (zuständige Behörde)"
+
+msgid "tt_ch.bazl.laermbelastungskataster.exposuretype"
+msgstr "Lärmbelastungstyp"
+
+msgid "tt_ch.bazl.laermbelastungskataster.level_db"
+msgstr "Beurteilungspegel dB(A)"
+
+msgid "tt_ch.bazl.laermbelastungskataster.registername"
+msgstr "Bezeichnung des Katasters"
+
+msgid "tt_ch.bazl.laermbelastungskataster.validfrom"
+msgstr "Publikationsdatum"
 
 msgid "tt_ch.bazl.markierung"
 msgstr "Markierung / Befeuerung"

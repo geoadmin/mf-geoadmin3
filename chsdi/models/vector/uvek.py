@@ -1809,3 +1809,155 @@ class sif_ausgangslage (Base, Vector):
                                dimension=2, srid=21781))
 
 register('ch.bav.sachplan-infrastruktur-schifffahrt_ausgangslage', sif_ausgangslage)
+
+
+class bazl_laerm_erste_nachtstunde (Base, Vector):
+    __tablename__ = 'laermbelastungskataster_zivilflugplaetze_erste_nachtstunde'
+    __table_args__ = ({'schema': 'bazl', 'autoload': False})
+    __template__ = 'templates/htmlpopup/bazl_laerm.mako'
+    __bodId__ = 'ch.bazl.laermbelastungskataster-zivilflugplaetze_erste-nachtstunde'
+    __label__ = 'exposurecurve_level_db'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    noisepollutionregister_registername = Column('noisepollutionregister_registername', Text)
+    noisepollutionregister_editor = Column('noisepollutionregister_editor', Text)
+    noisepollutionregister_validity_validfrom = Column('bgdi_validfrom', Text)
+    exposuregroup_exposuretype = Column('exposuregroup_exposuretype', Text)
+    exposurecurve_level_db = Column('exposurecurve_level_db', Text)
+    noisepollutionregister_documentlink = Column('noisepollutionregister_documentlink', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.bazl.laermbelastungskataster-zivilflugplaetze_erste-nachtstunde', bazl_laerm_erste_nachtstunde)
+
+
+class bazl_laerm_helikopter_maximalpegel (Base, Vector):
+    __tablename__ = 'laermbelastungskataster_zivilflugplaetze_helikopter_maxpegel'
+    __table_args__ = ({'schema': 'bazl', 'autoload': False})
+    __template__ = 'templates/htmlpopup/bazl_laerm.mako'
+    __bodId__ = 'ch.bazl.laermbelastungskataster-zivilflugplaetze_helikopter-maximalpegel'
+    __label__ = 'exposurecurve_level_db'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    noisepollutionregister_registername = Column('noisepollutionregister_registername', Text)
+    noisepollutionregister_editor = Column('noisepollutionregister_editor', Text)
+    noisepollutionregister_validity_validfrom = Column('bgdi_validfrom', Text)
+    exposuregroup_exposuretype = Column('exposuregroup_exposuretype', Text)
+    exposurecurve_level_db = Column('exposurecurve_level_db', Text)
+    noisepollutionregister_documentlink = Column('noisepollutionregister_documentlink', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.bazl.laermbelastungskataster-zivilflugplaetze_helikopter-maximalpegel', bazl_laerm_helikopter_maximalpegel)
+
+
+class bazl_laerm_helikopter (Base, Vector):
+    __tablename__ = 'laermbelastungskataster_zivilflugplaetze_helikopter'
+    __table_args__ = ({'schema': 'bazl', 'autoload': False})
+    __template__ = 'templates/htmlpopup/bazl_laerm.mako'
+    __bodId__ = 'ch.bazl.laermbelastungskataster-zivilflugplaetze_helikopter'
+    __label__ = 'exposurecurve_level_db'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    noisepollutionregister_registername = Column('noisepollutionregister_registername', Text)
+    noisepollutionregister_editor = Column('noisepollutionregister_editor', Text)
+    noisepollutionregister_validity_validfrom = Column('bgdi_validfrom', Text)
+    exposuregroup_exposuretype = Column('exposuregroup_exposuretype', Text)
+    exposurecurve_level_db = Column('exposurecurve_level_db', Text)
+    noisepollutionregister_documentlink = Column('noisepollutionregister_documentlink', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.bazl.laermbelastungskataster-zivilflugplaetze_helikopter', bazl_laerm_helikopter)
+
+
+class bazl_laerm_klein_grossflugzeuge (Base, Vector):
+    __tablename__ = 'laermbelastungskataster_zivilflugplaetze_klein_grossflugzeuge'
+    __table_args__ = ({'schema': 'bazl', 'autoload': False})
+    __template__ = 'templates/htmlpopup/bazl_laerm.mako'
+    __bodId__ = 'ch.bazl.laermbelastungskataster-zivilflugplaetze_klein-grossflugzeuge'
+    __label__ = 'exposurecurve_level_db'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    noisepollutionregister_registername = Column('noisepollutionregister_registername', Text)
+    noisepollutionregister_editor = Column('noisepollutionregister_editor', Text)
+    noisepollutionregister_validity_validfrom = Column('bgdi_validfrom', Text)
+    exposuregroup_exposuretype = Column('exposuregroup_exposuretype', Text)
+    exposurecurve_level_db = Column('exposurecurve_level_db', Text)
+    noisepollutionregister_documentlink = Column('noisepollutionregister_documentlink', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.bazl.laermbelastungskataster-zivilflugplaetze_klein-grossflugzeuge', bazl_laerm_klein_grossflugzeuge)
+
+
+class bazl_laerm_kleinluftfahrzeuge (Base, Vector):
+    __tablename__ = 'laermbelastungskataster_zivilflugplaetze_kleinluftfahrzeuge'
+    __table_args__ = ({'schema': 'bazl', 'autoload': False})
+    __template__ = 'templates/htmlpopup/bazl_laerm.mako'
+    __bodId__ = 'ch.bazl.laermbelastungskataster-zivilflugplaetze_kleinluftfahrzeuge'
+    __label__ = 'exposurecurve_level_db'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    noisepollutionregister_registername = Column('noisepollutionregister_registername', Text)
+    noisepollutionregister_editor = Column('noisepollutionregister_editor', Text)
+    noisepollutionregister_validity_validfrom = Column('bgdi_validfrom', Text)
+    exposuregroup_exposuretype = Column('exposuregroup_exposuretype', Text)
+    exposurecurve_level_db = Column('exposurecurve_level_db', Text)
+    noisepollutionregister_documentlink = Column('noisepollutionregister_documentlink', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.bazl.laermbelastungskataster-zivilflugplaetze_kleinluftfahrzeuge', bazl_laerm_kleinluftfahrzeuge)
+
+
+class bazl_laerm_letzte_nachtstunde (Base, Vector):
+    __tablename__ = 'laermbelastungskataster_zivilflugplaetze_letzte_nachtstunde'
+    __table_args__ = ({'schema': 'bazl', 'autoload': False})
+    __template__ = 'templates/htmlpopup/bazl_laerm.mako'
+    __bodId__ = 'ch.bazl.laermbelastungskataster-zivilflugplaetze_letzte-nachtstunde'
+    __label__ = 'exposurecurve_level_db'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    noisepollutionregister_registername = Column('noisepollutionregister_registername', Text)
+    noisepollutionregister_editor = Column('noisepollutionregister_editor', Text)
+    noisepollutionregister_validity_validfrom = Column('bgdi_validfrom', Text)
+    exposuregroup_exposuretype = Column('exposuregroup_exposuretype', Text)
+    exposurecurve_level_db = Column('exposurecurve_level_db', Text)
+    noisepollutionregister_documentlink = Column('noisepollutionregister_documentlink', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.bazl.laermbelastungskataster-zivilflugplaetze_letzte-nachtstunde', bazl_laerm_letzte_nachtstunde)
+
+
+class bazl_laerm_militaer_gesamt (Base, Vector):
+    __tablename__ = 'laermbelastungskataster_zivilflugplaetze_militaer_gesamt'
+    __table_args__ = ({'schema': 'bazl', 'autoload': False})
+    __template__ = 'templates/htmlpopup/bazl_laerm.mako'
+    __bodId__ = 'ch.bazl.laermbelastungskataster-zivilflugplaetze_militaer-gesamt'
+    __label__ = 'exposurecurve_level_db'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    noisepollutionregister_registername = Column('noisepollutionregister_registername', Text)
+    noisepollutionregister_editor = Column('noisepollutionregister_editor', Text)
+    noisepollutionregister_validity_validfrom = Column('bgdi_validfrom', Text)
+    exposuregroup_exposuretype = Column('exposuregroup_exposuretype', Text)
+    exposurecurve_level_db = Column('exposurecurve_level_db', Text)
+    noisepollutionregister_documentlink = Column('noisepollutionregister_documentlink', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.bazl.laermbelastungskataster-zivilflugplaetze_militaer-gesamt', bazl_laerm_militaer_gesamt)
+
+
+class bazl_laerm_zweite_nachtstunde (Base, Vector):
+    __tablename__ = 'laermbelastungskataster_zivilflugplaetze_zweite_nachtstunde'
+    __table_args__ = ({'schema': 'bazl', 'autoload': False})
+    __template__ = 'templates/htmlpopup/bazl_laerm.mako'
+    __bodId__ = 'ch.bazl.laermbelastungskataster-zivilflugplaetze_zweite-nachtstunde'
+    __label__ = 'exposurecurve_level_db'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    noisepollutionregister_registername = Column('noisepollutionregister_registername', Text)
+    noisepollutionregister_editor = Column('noisepollutionregister_editor', Text)
+    noisepollutionregister_validity_validfrom = Column('bgdi_validfrom', Text)
+    exposuregroup_exposuretype = Column('exposuregroup_exposuretype', Text)
+    exposurecurve_level_db = Column('exposurecurve_level_db', Text)
+    noisepollutionregister_documentlink = Column('noisepollutionregister_documentlink', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.bazl.laermbelastungskataster-zivilflugplaetze_zweite-nachtstunde', bazl_laerm_zweite_nachtstunde)
