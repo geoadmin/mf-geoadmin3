@@ -1,0 +1,85 @@
+{
+  "type": "unique",
+  "property": "style-class",
+  "values": [
+    {
+      "geomType": "point",
+      "value": 0,
+      "vectorOptions": {
+        "type": "circle",
+        "radius": 8,
+        "fill": {
+          "color": "#FF4500"
+        },
+        "stroke": {
+          "color": "#FFFFFF",
+          "width": 1
+        }
+      }
+    },
+    {
+      "geomType": "point",
+      "value": 1,
+      "vectorOptions": {
+        "type": "star",
+        "radius1": 25,
+        "radius2": 12,
+        "fill": {
+          "color": "#c0c0c0"
+        },
+        "stroke": {
+          "color": "#FFFFFF",
+          "width": 1
+        }
+      }
+    },
+    {
+      "geomType": "line",
+      "value": 0,
+      "vectorOptions": {
+        "stroke": {
+          "color": "#996633",
+          "width": 6
+        }
+      }
+    },
+    {
+      "geomType": "line",
+      "value": 1,
+      "vectorOptions": {
+        "stroke": {
+          "color": "#FF9900",
+          "width": 3
+        }
+      }
+    },
+    {
+      "geomType": "polygon",
+      "value": 0,
+      "vectorOptions": {
+        "fill": {
+          "color": "#CCFF66",
+          "opacity": 0.8
+        },
+        "stroke": {
+          "color": "#FFFFFF",
+          "width": 5
+        }
+      }
+    },
+    {
+      "geomType": "polygon",
+      "value": 1,
+      "vectorOptions": {
+        "fill": {
+          "color": "#009FCF",
+          "opacity": 0.8
+        },
+        "stroke": {
+          "color": "#FFFFFF",
+          "width": 3
+        }
+      }
+    }
+  ]
+}
