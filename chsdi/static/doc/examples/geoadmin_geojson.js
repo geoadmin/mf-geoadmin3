@@ -66,7 +66,7 @@ var setLayerStyle = function() {
     type: 'GET',
     url: getUrl('style-url'),
     success: function(data) {
-      var olStyleForVector = ga.StylesFromLiterals(data);
+      var olStyleForVector = new ga.style.StylesFromLiterals(data);
       vectorLayer.setStyle(function(feature) {
         return [olStyleForVector.getFeatureStyle(feature)];
       });
@@ -127,7 +127,7 @@ var applyGeojsonEditor = function() {
     map.removeLayer(vectorLayer);
   }
   var data = JSON.parse($('#editor').val());
-  var olStyleForVector = ga.StylesFromLiterals(data);
+  var olStyleForVector = new ga.style.StylesFromLiterals(data);
   vectorLayer.setStyle(function(feature) {
     return [olStyleForVector.getFeatureStyle(feature)];
   });
