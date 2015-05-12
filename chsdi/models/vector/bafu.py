@@ -11,6 +11,139 @@ from chsdi.models.vector import Vector
 Base = bases['bafu']
 
 
+class Niedrigwasserstatistik(Base, Vector):
+    __tablename__ = 'niedrigwasserstatistik'
+    __table_args__ = ({'schema': 'hydrologie', 'autoload': False})
+    __bodId__ = 'ch.bafu.hydrologie-niedrigwasserstatistik'
+    __template__ = 'templates/htmlpopup/niedrigwasserstatistik.mako'
+    __extended_info__ = True
+    __label__ = 'name'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    kennnr = Column('kennnr', Numeric)
+    name = Column('name', Text)
+    gebflaeche = Column('gebflaeche', Numeric)
+    coord_x = Column('coord_x', Numeric)
+    coord_y = Column('coord_y', Numeric)
+    beginn = Column('beginn', Numeric)
+    ende = Column('ende', Numeric)
+    beeinflussung = Column('beeinflussung', Text)
+    genauigkeit = Column('genauigkeit', Text)
+    anz_jahre = Column('anz_jahre', Integer)
+    nm1q100 = Column('nm1q100', Numeric)
+    nm1q50 = Column('nm1q50', Numeric)
+    nm1q20 = Column('nm1q20', Numeric)
+    nm1q10 = Column('nm1q10', Numeric)
+    nm1q5 = Column('nm1q5', Numeric)
+    nm1q2 = Column('nm1q2', Numeric)
+    nm7q100 = Column('nm7q100', Numeric)
+    nm7q50 = Column('nm7q50', Numeric)
+    nm7q20 = Column('nm7q20', Numeric)
+    nm7q10 = Column('nm7q10', Numeric)
+    nm7q5 = Column('nm7q5', Numeric)
+    nm7q2 = Column('nm7q2', Numeric)
+    nm14q100 = Column('nm14q100', Numeric)
+    nm14q50 = Column('nm14q50', Numeric)
+    nm14q20 = Column('nm14q20', Numeric)
+    nm14q10 = Column('nm14q10', Numeric)
+    nm14q5 = Column('nm14q5', Numeric)
+    nm14q2 = Column('nm14q2', Numeric)
+    nm30q100 = Column('nm30q100', Numeric)
+    nm30q50 = Column('nm30q50', Numeric)
+    nm30q20 = Column('nm30q20', Numeric)
+    nm30q10 = Column('nm30q10', Numeric)
+    nm30q5 = Column('nm30q5', Numeric)
+    nm30q2 = Column('nm30q2', Numeric)
+    hyperlink_de = Column('hyperlink_d', Text)
+    hyperlink_fr = Column('hyperlink_f', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.bafu.hydrologie-niedrigwasserstatistik', Niedrigwasserstatistik)
+
+
+class Typ_fliessgewaesser(Base, Vector):
+    __tablename__ = 'typ_fliessgewaesser'
+    __table_args__ = ({'schema': 'hydrologie', 'autoload': False})
+    __bodId__ = 'ch.bafu.typisierung-fliessgewaesser'
+    __template__ = 'templates/htmlpopup/fliessgewaesser_typ.mako'
+    __extended_info__ = True
+    __label__ = 'objectid_gwn25'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    gewaessertyp = Column('gewaessertyp', Integer)
+    grosserfluss = Column('grosserfluss', Text)
+    objectid_gwn25 = Column('objectid_gwn25', Integer)
+    biogeo = Column('biogeo', Text)
+    hoehe = Column('hoehe', Text)
+    abfluss = Column('abfluss', Text)
+    gefaelle = Column('gefaelle', Text)
+    geo = Column('geo', Text)
+    code = Column('code', Integer)
+    objectid_gwn25 = Column('objectid_gwn25', Integer)
+    aehnlichkeit = Column('aehnlichkeit', Integer)
+    shape_length = Column('shape_length', Numeric)
+    url_portraits = Column('url_portraits', Text)
+    url_uebersicht_de = Column('url_uebersicht_de', Text)
+    url_uebersicht_fr = Column('url_uebersicht_fr', Text)
+    name = Column('name', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.bafu.typisierung-fliessgewaesser', Typ_fliessgewaesser)
+
+
+class Wasser_Vermessungsstrecken(Base, Vector):
+    __tablename__ = 'vermessungsstrecken'
+    __table_args__ = ({'schema': 'wasser', 'autoload': False})
+    __bodId__ = 'ch.bafu.wasserbau-vermessungsstrecken'
+    __template__ = 'templates/htmlpopup/vermessungsstrecken.mako'
+    __extended_info__ = True
+    __label__ = 'bezeichnung'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    bezeichnung = Column('bezeichnung', Text)
+    routeid = Column('routeid', Integer)
+    gewaessernummer = Column('gewaessernummer', Text)
+    bemerkung = Column('bemerkung', Text)
+    anfangsmass = Column('anfangsmass', Numeric)
+    endmass = Column('endmass', Numeric)
+    streckenid = Column('streckenid', Integer)
+    bezeichnung = Column('bezeichnung', Text)
+    laenge_km = Column('laenge_km', Numeric)
+    anzahl_profile = Column('anzahl_profile', Integer)
+    aufnahme_intervall = Column('aufnahme_intervall', Integer)
+    aufnahme_letzte = Column('aufnahme_letzte', Integer)
+    gwlnr = Column('gwlnr', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.bafu.wasserbau-vermessungsstrecken', Wasser_Vermessungsstrecken)
+
+
+class Hydro_q347(Base, Vector):
+    __tablename__ = 'hydro_q347'
+    __table_args__ = ({'schema': 'hydrologie', 'autoload': False})
+    __bodId__ = 'ch.bafu.hydrologie-q347'
+    __template__ = 'templates/htmlpopup/hydro_q347.mako'
+    __extended_info__ = True
+    __label__ = 'gewaesser'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    gewaesser = Column('gewaesser', Text)
+    bilanzid = Column('bilanzid', Text)
+    id_q347 = Column('id', Integer)
+    basisid = Column('basisid', Text)
+    lhg = Column('lhg', Text)
+    gewaesser = Column('gewaesser', Text)
+    flaeche = Column('flaeche', Numeric)
+    q_84_93 = Column('q_84_93', Numeric)
+    qp = Column('qp', Numeric)
+    p = Column('p', Text)
+    qmod = Column('qmod', Numeric)
+    bemerkung = Column('bemerkung', Text)
+    symbolisierung = Column('symbolisierung', Integer)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+register('ch.bafu.hydrologie-q347', Hydro_q347)
+
+
 class Hintergrundkarte(Base, Vector):
     __tablename__ = 'hydrologie_hintergrundkarte'
     __table_args__ = ({'schema': 'hydrologie', 'autoload': False})

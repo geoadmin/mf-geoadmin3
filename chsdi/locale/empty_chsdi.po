@@ -5318,3 +5318,231 @@ msgstr ""
 
 msgid "ch.bazl.laermbelastungskataster-zivilflugplaetze_zweite-nachtstunde"
 msgstr ""
+
+msgid "ch_bafu_typisierung_fliessgewaesser.objectid_gwn25"
+msgstr ""
+
+msgid "ch_bafu_typisierung_fliessgewaesser.grosserfluss"
+msgstr ""
+
+msgid "ch_bafu_typisierung_fliessgewaesser.biogeo"
+msgstr ""
+
+msgid "ch_bafu_typisierung_fliessgewaesser.hoehe"
+msgstr ""
+
+msgid "ch_bafu_typisierung_fliessgewaesser.abfluss"
+msgstr ""
+
+msgid "ch_bafu_typisierung_fliessgewaesser.gefaelle"
+msgstr ""
+
+msgid "ch_bafu_typisierung_fliessgewaesser.geo"
+msgstr ""
+
+msgid "ch_bafu_typisierung_fliessgewaesser.code"
+msgstr ""
+
+msgid "ch_bafu_typisierung_fliessgewaesser.name"
+msgstr ""
+
+msgid "ch_bafu_typisierung_fliessgewaesser.gewaessertyp"
+msgstr ""
+
+msgid "ch_bafu_typisierung_fliessgewaesser.aehnlichkeit"
+msgstr ""
+
+msgid "ch_bafu_typisierung_fliessgewaesser.shape_length"
+msgstr ""
+
+msgid "ch_bafu_typisierung_fliessgewaesser.url_portraits"
+msgstr ""
+
+msgid "ch_bafu_typisierung_fliessgewaesser.url_uebersicht"
+msgstr ""
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.routeid"
+msgstr ""
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.gewaessernummer"
+msgstr ""
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.bemerkung"
+msgstr ""
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.anfangsmass"
+msgstr ""
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.endmass"
+msgstr ""
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.streckenid"
+msgstr ""
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.bezeichnung"
+msgstr ""
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.laenge_km"
+msgstr ""
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.anzahl_profile"
+msgstr ""
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.aufnahme_intervall"
+msgstr ""
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.aufnahme_letzte"
+msgstr ""
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.gwlnr"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_q347.BilanzID"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_q347.ID"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_q347.BasisID"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_q347.lhg"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_q347.gewaesser"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_q347.flaeche"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_q347.Q_84_93"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_q347.QP"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_q347.P"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_q347.Qmod"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_q347.bemerkung"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.KennNr"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NAME"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.KOORDX"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.KOORDY"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.GEBFLAECHE"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.Beginn"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.Ende"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.Beeinflussung"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.Genauigkeit"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.Anz_Jahre"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q100"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q50"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q20"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q10"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q5"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q2"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q100"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q50"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q20"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q10"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q5"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q2"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q100"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q50"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q20"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q10"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q5"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q2"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q100"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q50"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q20"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q10"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q5"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q2"
+msgstr ""
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.hyperlink"
+msgstr ""
+
+msgid "ch.bafu.typisierung-fliessgewaesser"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-q347"
+msgstr ""
+
+msgid "ch.bafu.wasserbau-vermessungsstrecken"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-niedrigwasserstatistik"
+msgstr ""

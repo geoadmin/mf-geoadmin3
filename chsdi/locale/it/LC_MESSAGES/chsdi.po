@@ -1232,6 +1232,12 @@ msgstr "Carta base dati idrologici"
 msgid "ch.bafu.hydrologie-hydromessstationen"
 msgstr "Stazioni idrologiche"
 
+msgid "ch.bafu.hydrologie-niedrigwasserstatistik"
+msgstr "NQSTAT Basses eaux"
+
+msgid "ch.bafu.hydrologie-q347"
+msgstr "Q347"
+
 msgid "ch.bafu.hydrologie-wassertemperaturmessstationen"
 msgstr "Stazioni misurazione temperatura"
 
@@ -1415,6 +1421,9 @@ msgstr "Tempesta pressione dinamica 50"
 msgid "ch.bafu.swissprtr"
 msgstr "Emissioni di inquinanti (SwissPRTR)"
 
+msgid "ch.bafu.typisierung-fliessgewaesser"
+msgstr "Tipizzazione dei corsi d’acqua"
+
 msgid "ch.bafu.unesco-weltnaturerbe"
 msgstr "UNESCO siti naturali"
 
@@ -1471,6 +1480,9 @@ msgstr "Bacini imbriferi 40 km2"
 
 msgid "ch.bafu.wasser-vorfluter"
 msgstr "Emissari dei bacini imbriferi"
+
+msgid "ch.bafu.wasserbau-vermessungsstrecken"
+msgstr "Tronçon mesuré"
 
 msgid "ch.bafu.wege-wildruhezonen-jagdbanngebiete"
 msgstr "Sentieri /itinerari autorizzati"
@@ -2680,6 +2692,222 @@ msgstr "Regioni territoriali"
 
 msgid "ch.vbs.url"
 msgstr "http://www.vbs.admin.ch/internet/vbs/it/home.html"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.Anz_Jahre"
+msgstr "Nombre d´années"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.Beeinflussung"
+msgstr "Influences NQ"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.Beginn"
+msgstr "Début de période"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.Ende"
+msgstr "Fin de période"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.GEBFLAECHE"
+msgstr "Surface du bassin versant [km2]"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.Genauigkeit"
+msgstr "Précision NQ"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.KOORDX"
+msgstr "Coordonnée X"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.KOORDY"
+msgstr "Coordonnée Y"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.KennNr"
+msgstr "Numéro"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NAME"
+msgstr "Nom de la station"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q10"
+msgstr "NM14Q10"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q100"
+msgstr "NM14Q100"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q2"
+msgstr "NM14Q2"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q20"
+msgstr "NM14Q20"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q5"
+msgstr "NM14Q5"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q50"
+msgstr "NM14Q50"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q10"
+msgstr "NM1Q10"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q100"
+msgstr "NM1Q100"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q2"
+msgstr "NM1Q2"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q20"
+msgstr "NM1Q20"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q5"
+msgstr "NM1Q5"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q50"
+msgstr "NM1Q50"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q10"
+msgstr "NM30Q10"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q100"
+msgstr "NM30Q100"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q2"
+msgstr "NM30Q2"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q20"
+msgstr "NM30Q20"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q5"
+msgstr "NM30Q5"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q50"
+msgstr "NM30Q50"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q10"
+msgstr "NM7Q10"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q100"
+msgstr "NM7Q100"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q2"
+msgstr "NM7Q2"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q20"
+msgstr "NM7Q20"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q5"
+msgstr "NM7Q5"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q50"
+msgstr "NM7Q50"
+
+msgid "ch_bafu_hydrologie_niedrigwasserstatistik.hyperlink"
+msgstr "Lien en français"
+
+msgid "ch_bafu_hydrologie_q347.BasisID"
+msgstr "Nr. bassin de base"
+
+msgid "ch_bafu_hydrologie_q347.BilanzID"
+msgstr "Nr. bassin du bilan"
+
+msgid "ch_bafu_hydrologie_q347.ID"
+msgstr "ID"
+
+msgid "ch_bafu_hydrologie_q347.P"
+msgstr "Période de mesure P"
+
+msgid "ch_bafu_hydrologie_q347.QP"
+msgstr "Q347 (P) [l/s]"
+
+msgid "ch_bafu_hydrologie_q347.Q_84_93"
+msgstr "Q347 (1984-93) [l/s]"
+
+msgid "ch_bafu_hydrologie_q347.Qmod"
+msgstr "Q347 (modèle) [l/s]"
+
+msgid "ch_bafu_hydrologie_q347.bemerkung"
+msgstr "Remarques"
+
+msgid "ch_bafu_hydrologie_q347.flaeche"
+msgstr "Surface [km2]"
+
+msgid "ch_bafu_hydrologie_q347.gewaesser"
+msgstr "Nom"
+
+msgid "ch_bafu_hydrologie_q347.lhg"
+msgstr "Nr. HADES 5.1"
+
+msgid "ch_bafu_typisierung_fliessgewaesser.abfluss"
+msgstr "Débit"
+
+msgid "ch_bafu_typisierung_fliessgewaesser.aehnlichkeit"
+msgstr "attribué à"
+
+msgid "ch_bafu_typisierung_fliessgewaesser.biogeo"
+msgstr "Région biogéographique"
+
+msgid "ch_bafu_typisierung_fliessgewaesser.code"
+msgstr "Combinaison de caractéristiques"
+
+msgid "ch_bafu_typisierung_fliessgewaesser.gefaelle"
+msgstr "Pente"
+
+msgid "ch_bafu_typisierung_fliessgewaesser.geo"
+msgstr "Géologie"
+
+msgid "ch_bafu_typisierung_fliessgewaesser.gewaessertyp"
+msgstr "Type de cours d´eau"
+
+msgid "ch_bafu_typisierung_fliessgewaesser.grosserfluss"
+msgstr "grand cours d´eau"
+
+msgid "ch_bafu_typisierung_fliessgewaesser.hoehe"
+msgstr "Altitude"
+
+msgid "ch_bafu_typisierung_fliessgewaesser.name"
+msgstr "Nom du type de cours d´eau"
+
+msgid "ch_bafu_typisierung_fliessgewaesser.objectid_gwn25"
+msgstr "ID du réseau hydrographique"
+
+msgid "ch_bafu_typisierung_fliessgewaesser.shape_length"
+msgstr "Longueur du tronçon"
+
+msgid "ch_bafu_typisierung_fliessgewaesser.url_portraits"
+msgstr "Lien vers le portrait du type"
+
+msgid "ch_bafu_typisierung_fliessgewaesser.url_uebersicht"
+msgstr "Lien vers la vue d´ensemble"
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.anfangsmass"
+msgstr "Mesure_début"
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.anzahl_profile"
+msgstr "Nombre_profils"
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.aufnahme_intervall"
+msgstr "Interval_levé"
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.aufnahme_letzte"
+msgstr "Dernier_levé"
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.bemerkung"
+msgstr "Remarque"
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.bezeichnung"
+msgstr "Déscription"
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.endmass"
+msgstr "Mesure_fin"
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.gewaessernummer"
+msgstr "No_cours_d_eau"
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.gwlnr"
+msgstr "Numéro du cours d´eau"
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.laenge_km"
+msgstr "Longitude_KM"
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.routeid"
+msgstr "Route_ID"
+
+msgid "ch_bafu_wasserbau_vermessungsstrecken.streckenid"
+msgstr "Tronçon_ID"
 
 msgid "city_name"
 msgstr "Nom de la localité"
