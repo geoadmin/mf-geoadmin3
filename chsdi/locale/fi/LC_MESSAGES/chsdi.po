@@ -1514,6 +1514,111 @@ msgstr "Sturz"
 msgid "ch.bafu.silvaprotect-uebersarung"
 msgstr "Übersarung"
 
+msgid "ch.bafu.strukturguete-hochrhein_linkesufer"
+msgstr "Strukturgüte Linkes Ufer"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesufer.datenherkunft"
+msgstr "BUWAL/LfU Karlsruhe"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesufer.lufer"
+msgstr "linkes Ufer"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesufer.lumfeld"
+msgstr "linkes Umfeld"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesufer.rufer"
+msgstr "rechtes Ufer"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesufer.rumfeld"
+msgstr "rechtes Umfeld"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesufer.sohle"
+msgstr "Sohle"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesumfeld"
+msgstr "Strukturgüte Linkes Umfeld"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesumfeld.datenherkunft"
+msgstr "BUWAL/LfU Karlsruhe"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesumfeld.lufer"
+msgstr "linkes Ufer"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesumfeld.lumfeld"
+msgstr "linkes Umfeld"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesumfeld.rufer"
+msgstr "rechtes Ufer"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesumfeld.rumfeld"
+msgstr "rechtes Umfeld"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesumfeld.sohle"
+msgstr "Sohle"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesufer"
+msgstr "Strukturgüte Rechtes Ufer"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesufer.datenherkunft"
+msgstr "BUWAL/LfU Karlsruhe"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesufer.lufer"
+msgstr "linkes Ufer"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesufer.lumfeld"
+msgstr "linkes Umfeld"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesufer.rufer"
+msgstr "rechtes Ufer"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesufer.rumfeld"
+msgstr "rechtes Umfeld"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesufer.sohle"
+msgstr "Sohle"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesumfeld"
+msgstr "Strukturgüte Rechtes Umfeld"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesumfeld.datenherkunft"
+msgstr "BUWAL/LfU Karlsruhe"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesumfeld.lufer"
+msgstr "linkes Ufer"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesumfeld.lumfeld"
+msgstr "linkes Umfeld"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesumfeld.rufer"
+msgstr "rechtes Ufer"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesumfeld.rumfeld"
+msgstr "rechtes Umfeld"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesumfeld.sohle"
+msgstr "Sohle"
+
+msgid "ch.bafu.strukturguete-hochrhein_sohle"
+msgstr "Strukturgüte Sohle"
+
+msgid "ch.bafu.strukturguete-hochrhein_sohle.datenherkunft"
+msgstr "BUWAL/LfU Karlsruhe"
+
+msgid "ch.bafu.strukturguete-hochrhein_sohle.lufer"
+msgstr "linkes Ufer"
+
+msgid "ch.bafu.strukturguete-hochrhein_sohle.lumfeld"
+msgstr "linkes Umfeld"
+
+msgid "ch.bafu.strukturguete-hochrhein_sohle.rufer"
+msgstr "rechtes Ufer"
+
+msgid "ch.bafu.strukturguete-hochrhein_sohle.rumfeld"
+msgstr "rechtes Umfeld"
+
+msgid "ch.bafu.strukturguete-hochrhein_sohle.sohle"
+msgstr "Sohle"
+
 msgid "ch.bafu.sturm-boeenspitzen_100"
 msgstr "Sturmgefährdung Böenspitzen 100"
 

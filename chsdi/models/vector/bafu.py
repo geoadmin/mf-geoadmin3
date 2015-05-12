@@ -184,6 +184,106 @@ class Hintergrundkarte(Base, Vector):
 register('ch.bafu.hydrologie-hintergrundkarte', Hintergrundkarte)
 
 
+class Strukturguete_hochrhein_linkesufer(Base, Vector):
+    __tablename__ = 'strukturguete_hochrhein'
+    __table_args__ = ({'schema': 'wasser', 'autoload': False})
+    __bodId__ = 'ch.bafu.strukturguete-hochrhein_linkesufer'
+    __template__ = 'templates/htmlpopup/strukturguete_hochrhein.mako'
+    __queryable_attributes__ = ['lumfeld', 'rumfeld', 'lufer', 'rufer', 'sohle']
+    __label__ = 'id'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    datenherkunft = Column('datenherkunft', Text)
+    lumfeld = Column('l_umfeld', Integer)
+    rumfeld = Column('r_umfeld', Integer)
+    lufer = Column('l_ufer', Integer)
+    rufer = Column('r_ufer', Integer)
+    sohle = Column('sohle', Integer)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.bafu.strukturguete-hochrhein_linkesufer', Strukturguete_hochrhein_linkesufer)
+
+
+class Strukturguete_hochrhein_linkesumfeld(Base, Vector):
+    __tablename__ = 'strukturguete_hochrhein'
+    __table_args__ = ({'schema': 'wasser', 'autoload': False, 'extend_existing': True})
+    __bodId__ = 'ch.bafu.strukturguete-hochrhein_linkesumfeld'
+    __template__ = 'templates/htmlpopup/strukturguete_hochrhein.mako'
+    __queryable_attributes__ = ['lumfeld', 'rumfeld', 'lufer', 'rufer', 'sohle']
+    __label__ = 'id'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    datenherkunft = Column('datenherkunft', Text)
+    lumfeld = Column('l_umfeld', Integer)
+    rumfeld = Column('r_umfeld', Integer)
+    lufer = Column('l_ufer', Integer)
+    rufer = Column('r_ufer', Integer)
+    sohle = Column('sohle', Integer)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.bafu.strukturguete-hochrhein_linkesumfeld', Strukturguete_hochrhein_linkesumfeld)
+
+
+class Strukturguete_hochrhein_rechtesumfeld(Base, Vector):
+    __tablename__ = 'strukturguete_hochrhein'
+    __table_args__ = ({'schema': 'wasser', 'autoload': False, 'extend_existing': True})
+    __bodId__ = 'ch.bafu.strukturguete-hochrhein_rechtesumfeld'
+    __template__ = 'templates/htmlpopup/strukturguete_hochrhein.mako'
+    __queryable_attributes__ = ['lumfeld', 'rumfeld', 'lufer', 'rufer', 'sohle']
+    __label__ = 'id'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    datenherkunft = Column('datenherkunft', Text)
+    lumfeld = Column('l_umfeld', Integer)
+    rumfeld = Column('r_umfeld', Integer)
+    lufer = Column('l_ufer', Integer)
+    rufer = Column('r_ufer', Integer)
+    sohle = Column('sohle', Integer)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.bafu.strukturguete-hochrhein_rechtesumfeld', Strukturguete_hochrhein_rechtesumfeld)
+
+
+class Strukturguete_hochrhein_rechtesufer(Base, Vector):
+    __tablename__ = 'strukturguete_hochrhein'
+    __table_args__ = ({'schema': 'wasser', 'autoload': False, 'extend_existing': True})
+    __bodId__ = 'ch.bafu.strukturguete-hochrhein_rechtesufer'
+    __template__ = 'templates/htmlpopup/strukturguete_hochrhein.mako'
+    __queryable_attributes__ = ['lumfeld', 'rumfeld', 'lufer', 'rufer', 'sohle']
+    __label__ = 'id'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    datenherkunft = Column('datenherkunft', Text)
+    lumfeld = Column('l_umfeld', Integer)
+    rumfeld = Column('r_umfeld', Integer)
+    lufer = Column('l_ufer', Integer)
+    rufer = Column('r_ufer', Integer)
+    sohle = Column('sohle', Integer)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.bafu.strukturguete-hochrhein_rechtesufer', Strukturguete_hochrhein_rechtesufer)
+
+
+class Strukturguete_hochrhein_sohle(Base, Vector):
+    __tablename__ = 'strukturguete_hochrhein'
+    __table_args__ = ({'schema': 'wasser', 'autoload': False, 'extend_existing': True})
+    __bodId__ = 'ch.bafu.strukturguete-hochrhein_sohle'
+    __template__ = 'templates/htmlpopup/strukturguete_hochrhein.mako'
+    __queryable_attributes__ = ['lumfeld', 'rumfeld', 'lufer', 'rufer', 'sohle']
+    __label__ = 'id'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    datenherkunft = Column('datenherkunft', Text)
+    lumfeld = Column('l_umfeld', Integer)
+    rumfeld = Column('r_umfeld', Integer)
+    lufer = Column('l_ufer', Integer)
+    rufer = Column('r_ufer', Integer)
+    sohle = Column('sohle', Integer)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.bafu.strukturguete-hochrhein_sohle', Strukturguete_hochrhein_sohle)
+
+
 class AM_G(Base, Vector):
     __tablename__ = 'am_g'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})
