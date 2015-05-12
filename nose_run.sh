@@ -7,7 +7,7 @@ OPTIND=1         # Reset in case getopts has been used previously in the shell.
 
 conf_to_use="buildout_nose_dev.cfg"
 
-nosetests_options="-I test_links.py -I mapproxy/test_wmtscapabilities.py -I test_wmtsgettile.py -I test_varnish.py"
+nosetests_options="-I test_file_storage.py -I test_links.py -I mapproxy/test_wmtscapabilities.py -I test_wmtsgettile.py -I test_varnish.py"
 
 while getopts "ipa" opt; do
   case "$opt" in
