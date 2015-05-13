@@ -46,13 +46,6 @@ RedirectMatch ^${apache_entry_path}$ ${apache_entry_path}/
 RewriteRule ^${apache_entry_path}/[0-9]+/(.*)$ ${apache_entry_path}/$1 [E=${vars:apache_base_path}setyearcache:true,PT]
 Header merge Cache-Control "max-age=31536013, public" env=${vars:apache_base_path}setyearcache
 
-# We rewrite loader to versioned loader, which is cached
-RewriteRule ^${apache_entry_path}/loader.js$ ${apache_entry_path}/${app_version}/uncached_loader.js [P]
-<LocationMatch ^${apache_entry_path}/loader.js>
-    Header unset Cache-Control
-    Header merge Cache-Control "no-cache"
-</LocationMatch>
-
 # Static for cross domain flash/arcgis
 RewriteRule ^${apache_entry_path}/(crossdomain.xml|clientaccesspolicy.xml) ${apache_entry_path}/static/$1 [PT]
 <LocationMatch ^${apache_entry_path}/static/(crossdomain.xml|clientaccesspolicy.xml)>

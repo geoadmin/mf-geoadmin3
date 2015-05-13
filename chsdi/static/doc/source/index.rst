@@ -46,7 +46,7 @@ Use the GeoAdmin API Forum to ask questions: http://groups.google.com/group/geoa
   </style>
   <body>
     <div id="map"></div>
-    <script type="text/javascript" src="uncached_loader.js"></script>
+    <script type="text/javascript" src="loader.js"></script>
     <script type="text/javascript">
       var layer = ga.layer.create('ch.swisstopo.pixelkarte-farbe');
       var map = new ga.Map({
