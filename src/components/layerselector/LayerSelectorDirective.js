@@ -82,20 +82,12 @@
             isOfflineToOnline = false;
           });
 
-          scope.onClick = function(evt) {
+          scope.onClick = function(layerId) {
             if (scope.isLayerSelectorClosed) {
               scope.isLayerSelectorClosed = false;
             } else {
               scope.isLayerSelectorClosed = true;
-              if ($(evt.target).hasClass('ga-swissimage')) {
-                setCurrentLayer('ch.swisstopo.swissimage');
-              } else if ($(evt.target).hasClass('ga-pixelkarte-farbe')) {
-                setCurrentLayer('ch.swisstopo.pixelkarte-farbe');
-              } else if ($(evt.target).hasClass('ga-pixelkarte-grau')) {
-                setCurrentLayer('ch.swisstopo.pixelkarte-grau');
-              } else if ($(evt.target).hasClass('ga-voidLayer')) {
-                setCurrentLayer('voidLayer');
-              }
+              setCurrentLayer(layerId);
             }
           };
 
