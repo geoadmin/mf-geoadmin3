@@ -114,23 +114,33 @@
             return 'ga-' + splitLayer[splitLayer.length - 1];
           };
 
-          // swissimage or pixelmap-color are always in the two first positions
           scope.reorderBgLayer = function(layerid) {
-            var swisimageObj, pixelmapObj;
-            // Workaround because ng-repeat doesn't like duplicated value
-            if (scope.backgroundLayers[0].id === 'ch.swisstopo.swissimage') {
-              swisimageObj = scope.backgroundLayers[0];
-              pixelmapObj = scope.backgroundLayers[1];
-            } else {
-              swisimageObj = scope.backgroundLayers[1];
-              pixelmapObj = scope.backgroundLayers[0];
+            var counter = 0;
+            var provBackgroundLayers = new Array(4);
+            for (var layer in scope.backgroundLayers) {
+              if (layerid == scope.backgroundLayers[layer].id) {
+                provBackgroundLayers[0] = scope.backgroundLayers[layer];
+              } else {
+                counter = counter + 1;
+                if (scope.backgroundLayers[layer].id ==
+                  'ch.swisstopo.swissimage') {
+                  provBackgroundLayers[counter] = scope.backgroundLayers[layer];
+                }
+                if (scope.backgroundLayers[layer].id ==
+                  'ch.swisstopo.pixelkarte-farbe') {
+                  provBackgroundLayers[counter] = scope.backgroundLayers[layer];
+                }
+                if (scope.backgroundLayers[layer].id ==
+                  'ch.swisstopo.pixelkarte-grau') {
+                  provBackgroundLayers[counter] = scope.backgroundLayers[layer];
+                }
+                if (scope.backgroundLayers[layer].id == 'voidLayer') {
+                  provBackgroundLayers[counter] = scope.backgroundLayers[layer];
+                }
+              }
             }
-            if (layerid == 'ch.swisstopo.swissimage') {
-              scope.backgroundLayers[0] = pixelmapObj;
-              scope.backgroundLayers[1] = swisimageObj;
-            } else {
-              scope.backgroundLayers[0] = swisimageObj;
-              scope.backgroundLayers[1] = pixelmapObj;
+            for (var i = 0; i < provBackgroundLayers.length; i++) {
+              scope.backgroundLayers[i] = provBackgroundLayers[i];
             }
           };
         }
