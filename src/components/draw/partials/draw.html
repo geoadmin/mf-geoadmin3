@@ -43,7 +43,7 @@
               translate>draw_delete_selected_features</button>
     </div>
   </div>
-  <div translate>share_file_disclaimer</div>
+  <div ng-if="!options.useTemporaryLayer" translate>share_file_disclaimer</div>
   <div class="ga-draw-interaction-share" ng-if="adminShortenUrl">
     <div><b translate>share_file_link_title_admin</b>:</div>
     <span translate>share_file_link_descr_admin</span>&nbsp;<a target="_blank" href="{{adminShortenUrl}}">{{adminShortenUrl}}</a>
