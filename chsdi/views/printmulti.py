@@ -2,6 +2,8 @@
 
 
 import os.path
+import traceback
+import sys
 import urllib
 import json
 import re
@@ -215,6 +217,9 @@ def worker(job):
             localname = os.path.join(print_temp_dir, MAPFISH_FILE_PREFIX + filename)
         except:
             log.debug('[Worker] Failed timestamp: %s', timestamp)
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            log.debug("*** Traceback:/n" + traceback.print_tb(exc_traceback, limit=1, file=sys.stdout))
+            log.debug("*** Exception:/n" + traceback.print_exception(exc_type, exc_value, exc_traceback, limit=2, file=sys.stdout))
 
             return (timestamp, None)
         _increment_info(lock, infofile)
@@ -230,7 +235,6 @@ def worker(job):
 def create_and_merge(info):
 
     lock = multiprocessing.Manager().Lock()
-
     (spec, print_temp_dir, scheme, api_url, headers, unique_filename) = info
 
     def _isMultiPage(spec):
@@ -366,6 +370,9 @@ def create_and_merge(info):
                     p.terminate()
                 del pool._pool[i]
             log.error('Error while generating the partial PDF: %s', e)
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            log.debug("*** Traceback:/n" + traceback.print_tb(exc_traceback, limit=1, file=sys.stdout))
+            log.debug("*** Exception:/n" + traceback.print_exception(exc_type, exc_value, exc_traceback, limit=2, file=sys.stdout))
             return 1
     else:
         pdfs = []
@@ -416,7 +423,7 @@ class PrintMulti(object):
 
     ''' Print proxy to the MapFish Print Server to deal with time series
 
-    If at least a layer hast an attributes 'timestamps' holding an array
+    If at least a layer has an attribute 'timestamps' holding an array
     of timestamps to print, one page per timestamp will be generated and
     merged.'''
 
@@ -460,7 +467,6 @@ class PrintMulti(object):
     @requires_authorization()
     @view_config(route_name='print_create', renderer='jsonp')
     def print_create(self):
-
         if self.request.method == 'OPTIONS':
             return Response(status=200)
 
@@ -473,9 +479,12 @@ class PrintMulti(object):
 
         try:
             spec = json.loads(jsonstring, encoding=self.request.charset)
-
         except:
-            raise HTTPBadRequest()
+            log.debug('JSON content could not be parsed')
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            log.debug("*** Traceback:/n" + traceback.print_tb(exc_traceback, limit=1, file=sys.stdout))
+            log.debug("*** Exception:/n" + traceback.print_exception(exc_type, exc_value, exc_traceback, limit=2, file=sys.stdout))
+            raise HTTPBadRequest('JSON content could not be parsed')
 
         print_temp_dir = self.request.registry.settings['print_temp_dir']
 
