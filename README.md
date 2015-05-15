@@ -64,7 +64,6 @@ this to work, you need to make sure to install the following dependencies:
     sudo add-apt-repository ppa:chris-lea/node.js 
     sudo apt-get update
     sudo apt-get install make gcc+ git unzip openjdk-6-jre openjdk-6-jdk g++ npm python-virtualenv
-    npm install phantomjs
 
 ### Caveats
 
