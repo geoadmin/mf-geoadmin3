@@ -4,7 +4,8 @@ beforeEach(function() {
   // defined.
   module(function($provide) {
     $provide.constant('gaGlobalOptions', {
-      version: '123456'
+      version: '123456',
+      defaultExtent: [420000, 30000, 900000, 350000]
     });
   });
 

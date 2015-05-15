@@ -1006,14 +1006,15 @@
    * Service provides map util functions.
    */
   module.provider('gaMapUtils', function() {
-    this.$get = function($window) {
+    this.$get = function($window, gaGlobalOptions) {
       var attributions = {};
       var resolutions = [650.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0,
           2.5, 2.0, 1.0, 0.5, 0.25, 0.1];
       return {
         preload: 6, //Number of upper zoom to preload when offline
-        swissExtent: [420000, 30000, 900000, 350000],
+        defaultExtent: gaGlobalOptions.defaultExtent,
         viewResolutions: resolutions,
+        defaultResolution: gaGlobalOptions.defaultResolution,
         getViewResolutionForZoom: function(zoom) {
           return resolutions[zoom];
         },

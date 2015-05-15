@@ -6,7 +6,7 @@
   module.controller('GaTopicController',
       function($scope, gaGlobalOptions) {
           $scope.options = {
-            defaultTopicId: 'ech',
+            defaultTopicId: gaGlobalOptions.defaultTopicId,
             thumbnailUrlTemplate: gaGlobalOptions.resourceUrl + 'img/{Topic}.jpg',
             url: gaGlobalOptions.cachedApiUrl + '/rest/services'
           };

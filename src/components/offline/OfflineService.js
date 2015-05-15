@@ -457,7 +457,7 @@
 
 
               var tileExtent = (isBgLayer && zoom >= 0 && zoom <= 2) ?
-                  gaMapUtils.swissExtent : extent;
+                  gaMapUtils.defaultExtent : extent;
               var tileRange = tileGrid.getTileRangeForExtentAndZ(tileExtent, z);
               var centerTileCoord = [
                 z,

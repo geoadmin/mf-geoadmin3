@@ -24,7 +24,7 @@
       var createMap = function() {
         var toolbar = $('#zoomButtons')[0];
         var swissProjection = ol.proj.get('EPSG:21781');
-        swissProjection.setExtent(gaMapUtils.swissExtent);
+        swissProjection.setExtent(gaMapUtils.defaultExtent);
 
         var map = new ol.Map({
           controls: ol.control.defaults({
@@ -48,9 +48,9 @@
           renderer: 'canvas',
           view: new ol.View({
             projection: swissProjection,
-            center: ol.extent.getCenter(gaMapUtils.swissExtent),
-            extent: gaMapUtils.swissExtent,
-            resolution: 500.0,
+            center: ol.extent.getCenter(gaMapUtils.defaultExtent),
+            extent: gaMapUtils.defaultExtent,
+            resolution: gaMapUtils.defaultResolution,
             resolutions: gaMapUtils.viewResolutions
           }),
           logo: false
