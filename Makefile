@@ -20,7 +20,7 @@ LAST_DEPLOY_TARGET := $(shell if [ -f .build-artefacts/last-deploy-target ]; the
 OL3_VERSION ?= tags/v3.4.0
 DEFAULT_TOPIC_ID ?= ech
 TRANSLATION_FALLBACK_CODE ?= de
-DEFAULT_EXTENT ?= '[485869.5728, 76443.1884, 837076.5648, 299941.7864]'
+DEFAULT_EXTENT ?= '[420000, 30000, 900000, 350000]'
 DEFAULT_RESOLUTION ?= 500.0
 
 ## Python interpreter can't have space in path name
