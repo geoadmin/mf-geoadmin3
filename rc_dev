@@ -4,7 +4,3 @@ export API_URL=//mf-chsdi3.dev.bgdi.ch
 export APACHE_BASE_PATH=
 export BROWSERSTACK_TARGETURL=https://mf-geoadmin3.dev.bgdi.ch
 export VARNISH_HOSTS=()
-export DEFAULT_TOPIC_ID=ech
-export TRANSLATION_FALLBACK_CODE=de
-export DEFAULT_EXTENT='[485869.5728, 76443.1884, 837076.5648, 299941.7864]'
-export DEFAULT_RESOLUTION=500.0
