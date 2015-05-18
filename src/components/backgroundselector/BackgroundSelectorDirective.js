@@ -1,25 +1,26 @@
 (function() {
-  goog.provide('ga_layerselector_directive');
+  goog.provide('ga_backgroundselector_directive');
 
   goog.require('ga_map');
   goog.require('ga_permalink');
 
-  var module = angular.module('ga_layerselector_directive', [
+  var module = angular.module('ga_backgroundselector_directive', [
     'ga_map',
     'ga_permalink',
     'pascalprecht.translate'
   ]);
 
-  module.directive('gaLayerSelector',
+  module.directive('gaBackgroundSelector',
     function($document, gaPermalink, gaLayers, gaLayerFilters) {
       return {
         restrict: 'A',
-        templateUrl: 'components/layerselector/partials/layerselector.html',
+        templateUrl:
+            'components/backgroundselector/partials/backgroundselector.html',
         scope: {
-          map: '=gaLayerSelectorMap'
+          map: '=gaBackgroundSelectorMap'
         },
         link: function(scope, elt, attrs) {
-          scope.isLayerSelectorClosed = true;
+          scope.isBackgroundSelectorClosed = true;
           var map = scope.map;
           var firstLayerChangeEvent = true;
           var isOfflineToOnline = false;
@@ -83,10 +84,10 @@
           });
 
           scope.onClick = function(layerId) {
-            if (scope.isLayerSelectorClosed) {
-              scope.isLayerSelectorClosed = false;
+            if (scope.isBackgroundSelectorClosed) {
+              scope.isBackgroundSelectorClosed = false;
             } else {
-              scope.isLayerSelectorClosed = true;
+              scope.isBackgroundSelectorClosed = true;
               setCurrentLayer(layerId);
             }
           };

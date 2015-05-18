@@ -17,7 +17,7 @@
   goog.require('ga_search');
   goog.require('ga_topic');
   goog.require('ga_timeselector');
-  goog.require('ga_layerselector');
+  goog.require('ga_backgroundselector');
   goog.require('ga_translation');
   goog.require('ga_feedback');
   goog.require('ga_geolocation');
@@ -76,7 +76,7 @@
     'ga_search',
     'ga_topic',
     'ga_timeselector',
-    'ga_layerselector',
+    'ga_backgroundselector',
     'ga_translation',
     'ga_feedback',
     'ga_layermanager',
