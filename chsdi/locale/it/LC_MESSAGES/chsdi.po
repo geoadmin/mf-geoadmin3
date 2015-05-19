@@ -1241,6 +1241,27 @@ msgstr "Numero della stazione"
 msgid "ch.bafu.hydrologie-wassertemperaturmessstationen.name"
 msgstr "Nome della stazione"
 
+msgid "ch.bafu.hydroweb-messstationen_gefahren"
+msgstr "Niveaux de danger de crues"
+
+msgid "ch.bafu.hydroweb-messstationen_grundwasser"
+msgstr "Rete di misurazione NAQUA"
+
+msgid "ch.bafu.hydroweb-messstationen_temperatur"
+msgstr "Temperature dei fiumi"
+
+msgid "ch.bafu.hydroweb-messstationen_vorhersage"
+msgstr "Stationi previsione hydrologico"
+
+msgid "ch.bafu.hydroweb-messstationen_zustand"
+msgstr "Situation des niveaux d’eau"
+
+msgid "ch.bafu.hydroweb-warnkarte_national"
+msgstr "Carta di vigilanza piene"
+
+msgid "ch.bafu.hydroweb-warnkarte_regional"
+msgstr "Carte vigilance régionales"
+
 msgid "ch.bafu.kt"
 msgstr "UFAM + cantone"
 

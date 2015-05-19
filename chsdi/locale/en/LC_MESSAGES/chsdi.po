@@ -1241,6 +1241,27 @@ msgstr "Station number"
 msgid "ch.bafu.hydrologie-wassertemperaturmessstationen.name"
 msgstr "Station name"
 
+msgid "ch.bafu.hydroweb-messstationen_gefahren"
+msgstr "Hochwasser Gefahrenstufen"
+
+msgid "ch.bafu.hydroweb-messstationen_grundwasser"
+msgstr "NAQUA monitoring network"
+
+msgid "ch.bafu.hydroweb-messstationen_temperatur"
+msgstr "Water temperature rivers"
+
+msgid "ch.bafu.hydroweb-messstationen_vorhersage"
+msgstr "Stations hydrological forecasts"
+
+msgid "ch.bafu.hydroweb-messstationen_zustand"
+msgstr "Lage Fliessgewässer und Seen"
+
+msgid "ch.bafu.hydroweb-warnkarte_national"
+msgstr "Flood alert map"
+
+msgid "ch.bafu.hydroweb-warnkarte_regional"
+msgstr "Flood alert small catchments"
+
 msgid "ch.bafu.kt"
 msgstr "FOEN + canton"
 

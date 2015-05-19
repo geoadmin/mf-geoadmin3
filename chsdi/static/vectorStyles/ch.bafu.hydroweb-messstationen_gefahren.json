@@ -1,0 +1,91 @@
+{
+  "type": "unique",
+  "property": "ws-class",
+  "values": [
+    {
+      "geomType": "point",
+      "value": 0,
+      "vectorOptions": {
+        "type": "circle",
+        "radius": 8,
+        "fill": {
+          "color": "#EEEEEE"
+        },
+        "stroke": {
+          "color": "#FFFFFF",
+          "width": 1
+        }
+      }
+    }, {
+      "geomType": "point",
+      "value": 1,
+      "vectorOptions": {
+        "type": "circle",
+        "radius": 8,
+        "fill": {
+          "color": "#CCFF66"
+        },
+        "stroke": {
+          "color": "#FFFFFF",
+          "width": 1
+        }
+      }
+    }, {
+      "geomType": "point",
+      "value": 2,
+      "vectorOptions": {
+        "type": "circle",
+        "radius": 8,
+        "fill": {
+          "color": "#FFFF00"
+        },
+        "stroke": {
+          "color": "#FFFFFF",
+          "width": 1
+        }
+      }
+    }, {
+      "geomType": "point",
+      "value": 3,
+      "vectorOptions": {
+        "type": "circle",
+        "radius": 8,
+        "fill": {
+          "color": "#FF9900"
+        },
+        "stroke": {
+          "color": "#FFFFFF",
+          "width": 1
+        }
+      }
+    }, {
+      "geomType": "point",
+      "value": 4,
+      "vectorOptions": {
+        "type": "circle",
+        "radius": 8,
+        "fill": {
+          "color": "#FF0000"
+        },
+        "stroke": {
+          "color": "#FFFFFF",
+          "width": 1
+        }
+      }
+    }, {
+      "geomType": "point",
+      "value": 5,
+      "vectorOptions": {
+        "type": "circle",
+        "radius": 8,
+        "fill": {
+          "color": "#800000"
+        },
+        "stroke": {
+          "color": "#FFFFFF",
+          "width": 1
+        }
+      }
+    }
+  ]
+}

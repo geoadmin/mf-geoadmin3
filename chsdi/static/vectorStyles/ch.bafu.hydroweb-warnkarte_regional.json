@@ -1,0 +1,139 @@
+{
+  "type": "unique",
+  "property": "ws-class",
+  "values": [
+    {
+      "geomType": "polygon",
+      "value": 0,
+      "vectorOptions": {
+        "fill": {
+          "color": "#CCFF66",
+          "opacity": 0.8
+        },
+        "stroke": {
+          "color": "#FFFFFF",
+          "width": 1
+        }
+      }
+    }, {
+      "geomType": "polygon",
+      "value": 1,
+      "vectorOptions": {
+        "fill": {
+          "color": "#00ff00",
+          "opacity": 0.8
+        },
+        "stroke": {
+          "color": "#FFFFFF",
+          "width": 1
+        }
+      }
+    }, {
+      "geomType": "polygon",
+      "value": 2,
+      "vectorOptions": {
+        "fill": {
+          "color": "#FFFF00",
+          "opacity": 0.8
+        },
+        "stroke": {
+          "color": "#FFFFFF",
+          "width": 1
+        }
+      }
+    }, {
+      "geomType": "polygon",
+      "value": 3,
+      "vectorOptions": {
+        "fill": {
+          "color": "#FF9900",
+          "opacity": 0.8
+        },
+        "stroke": {
+          "color": "#FFFFFF",
+          "width": 1
+        }
+      }
+    }, {
+      "geomType": "polygon",
+      "value": 4,
+      "vectorOptions": {
+        "fill": {
+          "color": "#FF0000",
+          "opacity": 0.8
+        },
+        "stroke": {
+          "color": "#FFFFFF",
+          "width": 1
+        }
+      }
+    }, {
+      "geomType": "polygon",
+      "value": 5,
+      "vectorOptions": {
+        "fill": {
+          "color": "#800000",
+          "opacity": 0.8
+        },
+        "stroke": {
+          "color": "#FFFFFF",
+          "width": 1
+        }
+      }
+    }, {
+      "geomType": "line",
+      "value": 0,
+      "vectorOptions": {
+        "stroke": {
+          "color": "#CCFF66",
+          "width": 3
+        }
+      }
+    }, {
+      "geomType": "line",
+      "value": 1,
+      "vectorOptions": {
+        "stroke": {
+          "color": "#00ff00",
+          "width": 3
+        }
+      }
+    }, {
+      "geomType": "line",
+      "value": 2,
+      "vectorOptions": {
+        "stroke": {
+          "color": "#FFFF00",
+          "width": 3
+        }
+      }
+    }, {
+      "geomType": "line",
+      "value": 3,
+      "vectorOptions": {
+        "stroke": {
+          "color": "#FF9900",
+          "width": 3
+        }
+      }
+    }, {
+      "geomType": "line",
+      "value": 4,
+      "vectorOptions": {
+        "stroke": {
+          "color": "#FF0000",
+          "width": 3
+        }
+      }
+    }, {
+      "geomType": "line",
+      "value": 5,
+      "vectorOptions": {
+        "stroke": {
+          "color": "#800000",
+          "width": 3
+        }
+      }
+    }
+  ]
+}
