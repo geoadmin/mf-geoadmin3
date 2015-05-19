@@ -1,15 +1,17 @@
 (function() {
   goog.provide('ga_print_directive');
-  goog.require('ga_browsersniffer_service');
 
+  goog.require('ga_browsersniffer_service');
+  goog.require('ga_print_style_service');
 
   var module = angular.module('ga_print_directive',
     ['ga_browsersniffer_service',
-     'pascalprecht.translate']);
+     'pascalprecht.translate',
+     'ga_print_style_service']);
 
   module.controller('GaPrintDirectiveController', function($rootScope, $scope,
       $http, $q, $window, $translate, $timeout, gaLayers, gaMapUtils, 
-      gaPermalink, gaBrowserSniffer, gaWaitCursor) {
+      gaPermalink, gaBrowserSniffer, gaWaitCursor, gaPrintStyleService) {
 
     var pdfLegendsToDownload = [];
     var pdfLegendString = '_big.pdf';
@@ -203,27 +205,6 @@
       return {layer: encLayer, legend: encLegend};
     };
 
-
-    // Create a ol.geom.Polygon from an ol.geom.Circle, comes from OL2
-    // https://github.com/openlayers/openlayers/blob/master/lib/OpenLayers/Geometry/Polygon.js#L240
-    var circleToPolygon = function(circle, sides, rotation) {
-      var origin = circle.getCenter();
-      var radius = circle.getRadius();
-      sides = sides || 40;
-      var angle = Math.PI * ((1 / sides) - (1 / 2));
-      if (rotation) {
-        angle += (rotation / 180) * Math.PI;
-      }
-      var points = [];
-      for (var i = 0; i < sides; ++i) {
-        var rotatedAngle = angle + (i * 2 * Math.PI / sides);
-        var x = origin[0] + (radius * Math.cos(rotatedAngle));
-        var y = origin[1] + (radius * Math.sin(rotatedAngle));
-        points.push([x, y]);
-      }
-      points.push(points[0]);// Close the polygon
-      return new ol.geom.Polygon([points]);
-    };
 
     // Transform an ol.Color to an hexadecimal string
     var toHexa = function(olColor) {
@@ -431,6 +412,8 @@
           features = newFeatures.concat(polygons, lines, points);
 
           angular.forEach(features, function(feature) {
+            // clone the feature
+            // feature = $.extend(true, {}, feature);
             var encStyle = {
               id: styleId
             };
@@ -443,19 +426,28 @@
             } else {
               styles = ol.style.defaultStyleFunction(feature);
             }
+            // clone the styles
 
             var geometry = feature.getGeometry();
 
             // Transform an ol.geom.Circle to a ol.geom.Polygon
             if (/Circle/.test(geometry.getType())) {
-              var polygon = circleToPolygon(geometry);
+              var polygon = gaPrintStyleService.olCircleToPolygon(geometry);
               feature = new ol.Feature(polygon);
+            }
+
+            var image = styles[0].getImage();
+            // Handle ol.style.RegularShape by converting points to poylgons
+            if (image instanceof ol.style.RegularShape) {
+              var scale = parseFloat($scope.scale.value);
+              var resolution = scale / UNITS_RATIO / POINTS_PER_INCH;
+              feature = gaPrintStyleService.olPointToPolygon(
+                  styles[0], feature, resolution);
             }
 
             var encJSON = format.writeFeatureObject(feature);
             if (!encJSON.properties) {
               encJSON.properties = {};
-
             // Fix https://github.com/geoadmin/mf-geoadmin3/issues/1213
             } else if (encJSON.properties.Style) {
               delete encJSON.properties.Style;

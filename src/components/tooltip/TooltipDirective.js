@@ -5,18 +5,20 @@
   goog.require('ga_debounce_service');
   goog.require('ga_map_service');
   goog.require('ga_popup_service');
+  goog.require('ga_styles_service');
 
   var module = angular.module('ga_tooltip_directive', [
     'ga_debounce_service',
     'ga_popup_service',
     'ga_map_service',
+    'ga_styles_service',
     'pascalprecht.translate'
   ]);
 
   module.directive('gaTooltip',
       function($timeout, $http, $q, $translate, $sce, gaPopup, gaLayers,
           gaBrowserSniffer, gaDefinePropertiesForLayer, gaMapClick, gaDebounce,
-          gaPreviewFeatures) {
+          gaPreviewFeatures, gaStyleFactory, gaMapUtils) {
         var popupContent = '<div ng-repeat="htmlsnippet in options.htmls">' +
                             '<div ng-bind-html="htmlsnippet"></div>' +
                             '<div class="ga-tooltip-separator" ' +
@@ -169,7 +171,7 @@
               return (olLayer instanceof ol.layer.Vector ||
                   (olLayer instanceof ol.layer.Image &&
                   olLayer.getSource() instanceof ol.source.ImageVector));
-            };
+            }
 
             // Test if the layer is a queryable bod layer
             function isQueryableBodLayer(olLayer) {
@@ -197,18 +199,23 @@
             // Find the first feature from a vector layer
             function findVectorFeature(pixel, vectorLayer) {
               var featureFound;
+
               map.forEachFeatureAtPixel(pixel, function(feature, layer) {
-                if (!vectorLayer || vectorLayer == layer) {
-                  if (!featureFound &&
-                      (feature.get('name') ||
-                      feature.get('description'))) {
-                    feature.set('layerId', layer.id);
-                    featureFound = feature;
+                // vectorLayer is defined when a feature is clicked.
+                // onclick
+                if (layer) {
+                  if (!vectorLayer || vectorLayer == layer) {
+                    if (!featureFound &&
+                        (feature.get('name') ||
+                        feature.get('description'))) {
+                      feature.set('layerId', layer.id);
+                      featureFound = feature;
+                    }
                   }
                 }
               });
               return featureFound;
-            };
+            }
 
             // Find features for all type of layers
             function findFeatures(coordinate, size, mapExtent) {
@@ -239,6 +246,16 @@
                     feature.set('htmlpopup', htmlpopup);
                     showFeatures(layerToQuery.getExtent(), size,
                         [feature]);
+                    // Iframe communication from inside out
+                    if (top != window) {
+                      var featureId = feature.getId();
+                      var layerBodId = layerToQuery.get('bodId');
+                      if (featureId && layerBodId) {
+                        window.parent.postMessage(
+                            layerBodId + '#' + featureId, '*'
+                        );
+                      }
+                    }
                   }
                 } else { // queryable bod layers
                   var params = {
@@ -286,10 +303,10 @@
 
                   if (value instanceof ol.Feature) {
                     var feature = new ol.Feature(value.getGeometry());
-                    feature.set('layerId', value.get('layerId'));
+                    var layerId = value.get('layerId');
+                    feature.set('layerId', layerId);
                     gaPreviewFeatures.add(map, feature);
                     showPopup(value.get('htmlpopup'));
-
                   } else {
                     //draw feature, but only if it should be drawn
                     if (gaLayers.getLayer(value.layerBodId) &&

@@ -19,7 +19,7 @@
   module.controller('GaMainController',
     function($rootScope, $scope, $timeout, $translate, $window, gaBrowserSniffer,
         gaFeaturesPermalinkManager, gaLayersPermalinkManager, gaMapUtils,
-        gaNetworkStatus, gaPermalink, gaStorage) {
+        gaRealtimeLayersManager, gaNetworkStatus, gaPermalink, gaStorage) {
 
       var createMap = function() {
         var toolbar = $('#zoomButtons')[0];
@@ -101,6 +101,8 @@
 
       // Activate the "features" permalink manager for the map.
       gaFeaturesPermalinkManager($scope.map);
+
+      gaRealtimeLayersManager($scope.map);
 
       var initWithPrint = /print/g.test(gaPermalink.getParams().widgets);
 

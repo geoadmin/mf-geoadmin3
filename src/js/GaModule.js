@@ -18,6 +18,7 @@
   goog.require('ga_search');
   goog.require('ga_topic');
   goog.require('ga_timeselector');
+  goog.require('ga_timestamp_control');
   goog.require('ga_translation');
   goog.require('ga_feedback');
   goog.require('ga_geolocation');
@@ -37,6 +38,7 @@
   goog.require('ga_collapsible_directive');
   goog.require('ga_fullscreen');
   goog.require('ga_waitcursor_service');
+  goog.require('ga_styles_from_literals_service');
 
   goog.require('ga_importkml_controller');
   goog.require('ga_importwms_controller');
@@ -77,6 +79,7 @@
     'ga_search',
     'ga_topic',
     'ga_timeselector',
+    'ga_timestamp_control',
     'ga_translation',
     'ga_feedback',
     'ga_layermanager',
@@ -87,6 +90,7 @@
     'ga_profile',
     'ga_fullscreen',
     'ga_waitcursor_service',
+    'ga_styles_from_literals_service',
     'ga_seo',
     'ga_draw',
     'ga_query',
