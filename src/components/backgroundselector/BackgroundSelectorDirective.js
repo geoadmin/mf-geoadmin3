@@ -24,33 +24,36 @@
           var map = scope.map;
           var firstLayerChangeEvent = true;
           var isOfflineToOnline = false;
-          var currentLayer;
-          scope.backgroundLayers = [
-            {id: 'ch.swisstopo.swissimage', label: 'bg_luftbild'},
-            {id: 'ch.swisstopo.pixelkarte-farbe', label: 'bg_pixel_color'},
-            {id: 'ch.swisstopo.pixelkarte-grau', label: 'bg_pixel_grey'},
-            {id: 'voidLayer', label: 'void_layer'}];
+
+          var defaultBgOrder = [
+              {id: 'ch.swisstopo.swissimage', label: 'bg_luftbild'},
+              {id: 'ch.swisstopo.pixelkarte-farbe', label: 'bg_pixel_color'},
+              {id: 'ch.swisstopo.pixelkarte-grau', label: 'bg_pixel_grey'},
+              {id: 'voidLayer', label: 'void_layer'}];
+
+          scope.backgroundLayers = defaultBgOrder.slice(0);
 
           function setCurrentLayer(layerid) {
-            var layers = map.getLayers();
-            if (layerid == 'voidLayer') {
-              if (layers.getLength() > 0 &&
-                  layers.item(0).background === true) {
-                layers.removeAt(0);
+            if (layerid) {
+              var layers = map.getLayers();
+              if (layerid == 'voidLayer') {
+                if (layers.getLength() > 0 &&
+                    layers.item(0).background === true) {
+                  layers.removeAt(0);
+                }
+              } else if (gaLayers.getLayer(layerid)) {
+                var layer = gaLayers.getOlLayerById(layerid);
+                layer.background = true;
+                layer.displayInLayerManager = false;
+                if (layers.item(0) && layers.item(0).background) {
+                  layers.setAt(0, layer);
+                } else {
+                  layers.insertAt(0, layer);
+                }
               }
-            } else if (gaLayers.getLayer(layerid)) {
-              var layer = gaLayers.getOlLayerById(layerid);
-              layer.background = true;
-              layer.displayInLayerManager = false;
-              if (layers[0] && layers[0].background) {
-                layers.setAt(0, layer);
-              } else {
-                layers.insertAt(0, layer);
-              }
+              scope.reorderBgLayer(layerid);
+              gaPermalink.updateParams({bgLayer: layerid});
             }
-            gaPermalink.updateParams({bgLayer: layerid});
-            currentLayer = layerid;
-            scope.reorderBgLayer(layerid);
           }
 
           scope.$on('gaLayersChange', function(event, data) {
@@ -74,75 +77,57 @@
               bgLayer = gaPermalink.getParams().bgLayer;
               firstLayerChangeEvent = false;
             }
-            if (!bgLayer && !currentLayer) {
+            if (!bgLayer && !scope.currentLayer) {
               bgLayer = gaLayers.getBackgroundLayers()[0].id;
             }
             if (bgLayer && !isOfflineToOnline) {
-              setCurrentLayer(bgLayer);
+              scope.currentLayer = bgLayer;
             }
             isOfflineToOnline = false;
           });
 
-          scope.onClick = function(layerId) {
+          scope.$watch('currentLayer', function(newVal, oldVal) {
+            if (oldVal !== newVal) {
+              setCurrentLayer(newVal);
+            }
+          });
+
+          scope.onClick = function(layerid) {
             if (scope.isBackgroundSelectorClosed) {
               scope.isBackgroundSelectorClosed = false;
+              scope.backgroundLayers = defaultBgOrder.slice(0);
             } else {
               scope.isBackgroundSelectorClosed = true;
-              setCurrentLayer(layerId);
+              scope.currentLayer = layerid;
+              scope.reorderBgLayer(layerid);
             }
           };
-
-          // If another component add a background layer,
-          // update the layer selector
-          scope.layers = scope.map.getLayers().getArray();
-          scope.layerFilter = gaLayerFilters.background;
-          scope.$watchCollection('layers | filter:layerFilter',
-            function(arr) {
-              if (arr.length == 2 ||
-                  (currentLayer == 'voidLayer' && arr.length == 1)) {
-                currentLayer = arr[arr.length - 1].id;
-                scope.map.removeLayer(arr[arr.length - 1]);
-              }
-            });
 
           // We must know when the app goes from offline to online.
           scope.$on('gaNetworkStatusChange', function(evt, offline) {
             isOfflineToOnline = !offline;
           });
 
-          scope.getClass = function(layerid) {
-            var splitLayer = layerid.id.split('.');
+          scope.getClass = function(layer) {
+            var splitLayer = layer.id.split('.');
             return 'ga-' + splitLayer[splitLayer.length - 1];
           };
 
           scope.reorderBgLayer = function(layerid) {
-            var counter = 0;
-            var provBackgroundLayers = new Array(4);
+            var mainBgLayer;
+            var visibleLayerId;
+            if (layerid == 'ch.swisstopo.swissimage') {
+              visibleLayerId = 'ch.swisstopo.pixelkarte-farbe';
+            } else {
+              visibleLayerId = 'ch.swisstopo.swissimage';
+            }
             for (var layer in scope.backgroundLayers) {
-              if (layerid == scope.backgroundLayers[layer].id) {
-                provBackgroundLayers[0] = scope.backgroundLayers[layer];
-              } else {
-                counter = counter + 1;
-                if (scope.backgroundLayers[layer].id ==
-                  'ch.swisstopo.swissimage') {
-                  provBackgroundLayers[counter] = scope.backgroundLayers[layer];
-                }
-                if (scope.backgroundLayers[layer].id ==
-                  'ch.swisstopo.pixelkarte-farbe') {
-                  provBackgroundLayers[counter] = scope.backgroundLayers[layer];
-                }
-                if (scope.backgroundLayers[layer].id ==
-                  'ch.swisstopo.pixelkarte-grau') {
-                  provBackgroundLayers[counter] = scope.backgroundLayers[layer];
-                }
-                if (scope.backgroundLayers[layer].id == 'voidLayer') {
-                  provBackgroundLayers[counter] = scope.backgroundLayers[layer];
-                }
+              if (visibleLayerId == scope.backgroundLayers[layer].id) {
+                mainBgLayer = scope.backgroundLayers[layer];
               }
             }
-            for (var i = 0; i < provBackgroundLayers.length; i++) {
-              scope.backgroundLayers[i] = provBackgroundLayers[i];
-            }
+            scope.backgroundLayers.splice(1, 3);
+            scope.backgroundLayers[0] = mainBgLayer;
           };
         }
       };
