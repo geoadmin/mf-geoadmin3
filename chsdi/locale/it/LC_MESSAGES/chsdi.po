@@ -1686,7 +1686,7 @@ msgid "ch.bav.sachplan-infrastruktur-schiene_ausgangslage.name"
 msgstr "Nome di progetto"
 
 msgid "ch.bav.sachplan-infrastruktur-schiene_kraft"
-msgstr "PS infrastruttura ferroviaria"
+msgstr "PS Infrastruttura ferroviaria"
 
 msgid "ch.bav.sachplan-infrastruktur-schiene_kraft.doc_title"
 msgstr "Informazioni supplementari"
@@ -2078,6 +2078,18 @@ msgstr "http://www.bafu.admin.ch/index.html?lang=it"
 
 msgid "ch.lw"
 msgstr "FA"
+
+msgid "ch.nagra.aeromagnetische-karte_1100"
+msgstr "Aéromagn. Argovie 1100 m 100"
+
+msgid "ch.nagra.aeromagnetische-karte_1100.aeromagnetisme"
+msgstr "Anomalia aeromagnetica, Argovia, 1100 m [nT]"
+
+msgid "ch.nagra.aeromagnetische-karte_1500"
+msgstr "Aéromagn. Argovie 1500 m 100"
+
+msgid "ch.nagra.aeromagnetische-karte_1500.aeromagnetisme"
+msgstr "Anomalia aeromagnetica, Argovia, 1500 m [nT]"
 
 msgid "ch.pronatura"
 msgstr "Pronatura"

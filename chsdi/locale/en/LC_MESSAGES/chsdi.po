@@ -2080,6 +2080,18 @@ msgstr "http://www.bafu.admin.ch/index.html?lang=en"
 msgid "ch.lw"
 msgstr "AF"
 
+msgid "ch.nagra.aeromagnetische-karte_1100"
+msgstr "Aeromagnetik Aargau 1100 m 100"
+
+msgid "ch.nagra.aeromagnetische-karte_1100.aeromagnetisme"
+msgstr "Aeromagnetic anomalies Aargau, 1100 m [nT]"
+
+msgid "ch.nagra.aeromagnetische-karte_1500"
+msgstr "Aeromagnetik Aargau 1500 m 100"
+
+msgid "ch.nagra.aeromagnetische-karte_1500.aeromagnetisme"
+msgstr "Aeromagnetic anomalies Aargau, 1500 m [nT]"
+
 msgid "ch.pronatura"
 msgstr "Pronatura"
 

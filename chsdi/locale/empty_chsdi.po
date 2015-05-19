@@ -19,6 +19,18 @@ msgstr ""
 msgid "ch.bafu.hydroweb-messstationen_temperatur"
 msgstr ""
 
+msgid "ch.nagra.aeromagnetische-karte_1100.aeromagnetisme"
+msgstr ""
+
+msgid "ch.nagra.aeromagnetische-karte_1500.aeromagnetisme"
+msgstr ""
+
+msgid "ch.nagra.aeromagnetische-karte_1100"
+msgstr ""
+
+msgid "ch.nagra.aeromagnetische-karte_1500"
+msgstr ""
+
 msgid "ch.bav.sachplan-infrastruktur-schifffahrt_anhoerung"
 msgstr ""
 
