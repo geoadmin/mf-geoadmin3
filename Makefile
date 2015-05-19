@@ -81,11 +81,11 @@ lint: .build-artefacts/lint.timestamp
 
 .PHONY: testdev
 testdev: .build-artefacts/app-whitespace.js test/karma-conf-dev.js node_modules
-	./node_modules/.bin/karma start test/karma-conf-dev.js --single-run
+	./node_modules/karma/bin/karma start test/karma-conf-dev.js --single-run
 
 .PHONY: testprod
 testprod: prd/lib/build.js test/karma-conf-prod.js node_modules
-	./node_modules/.bin/karma start test/karma-conf-prod.js --single-run
+	./node_modules/karma/bin/karma start test/karma-conf-prod.js --single-run
 
 .PHONY: teste2e
 teste2e: guard-BROWSERSTACK_TARGETURL guard-BROWSERSTACK_USER guard-BROWSERSTACK_KEY
@@ -202,7 +202,7 @@ prd/lib/build.js: src/lib/jquery-2.0.3.min.js src/lib/bootstrap-3.3.1.min.js src
 
 prd/style/app.css: src/style/app.less src/style/print.less src/style/ga_bootstrap.less src/style/ga_variables.less $(SRC_COMPONENTS_LESS_FILES) node_modules .build-artefacts/bootstrap
 	mkdir -p $(dir $@)
-	node_modules/.bin/lessc -ru --yui-compress $< $@
+	node_modules/.bin/lessc -ru --clean-css $< $@
 
 prd/geoadmin.appcache: src/geoadmin.mako.appcache .build-artefacts/python-venv/bin/mako-render .build-artefacts/last-version
 	mkdir -p $(dir $@);
