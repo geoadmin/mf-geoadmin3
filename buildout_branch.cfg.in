@@ -1,5 +1,7 @@
 [buildout]
 extends = buildout_${vars:deploy_target}.cfg
+parts -= print-config
+         print-war
 
 [vars]
 # apache

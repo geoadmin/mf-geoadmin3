@@ -170,6 +170,21 @@ If buildout failed previously, you might need to bootstrap the project again, us
 
     python bootstrap.py --version 1.5.2 --distribute --download-base http://pypi.camptocamp.net/distribute-0.6.22_fix-issue-227/ --setup-source http://pypi.camptocamp.net/distribute-0.6.22_fix-issue-227/distribute_setup.py
 
+# Printing
+Per default, printing is handled by one single war file on an instances. This war is installed and handled by the 'main' installation.
+
+If you need to work on printing and use your own war, you have to add the following to your personal buildout configuration:
+
+In the [buildout] section
+```
+parts += print-war
+```
+
+In the [vars] section
+```
+print_war = ltxxx
+```
+
 # Python Code Styling
 
 We are currently using the PEP 8 convention for Python code.
