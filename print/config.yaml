@@ -95,35 +95,26 @@ layouts:
           width: 300
           items:
             - !text
-              condition: langde
               fontSize: 7
               align: left
               text: |
                 ${dataOwner}
+
+#---------------------------------------
+# Third party data copyright
+#---------------------------------------
+        - !columns
+          condition: thirdPartyDataOwner
+          absoluteY: 60
+          absoluteX: 25
+          width: 300
+          items:
             - !text
-              condition: langfr
+              fontColor: red
               fontSize: 7
               align: left
               text: |
-                ${dataOwner}
-            - !text
-              condition: langen
-              fontSize: 7
-              align: left
-              text: |
-                ${dataOwner}
-            - !text
-              condition: langrm
-              fontSize: 7
-              align: left
-              text: |
-                ${dataOwner}
-            - !text
-              condition: langit
-              fontSize: 7
-              align: left
-              text: |
-                ${dataOwner}
+                ${thirdPartyDataOwner}
 
 #---------------------------------------
 # Description
@@ -163,6 +154,51 @@ layouts:
               align: left
               text: |
                 www.geo.admin.ch è una piattaforma pubblica accessibile per la ricerca di geo-informazioni, i dati e servizi.
+
+#---------------------------------------
+# Third party data warning
+#---------------------------------------
+        - !columns
+          condition: thirdPartyDataOwner
+          absoluteY: 37
+          absoluteX: 153
+          width: 675
+          items:
+            - !text
+              condition: langde
+              fontColor: red
+              fontSize: 7
+              align: left
+              text: |
+                Warnung: diese Karten enthält Daten von Drittanbietern
+            - !text
+              condition: langfr
+              fontColor: red
+              fontSize: 7
+              align: left
+              text: |
+                Attention: cette carte contient des données tierces.
+            - !text
+              condition: langen
+              fontColor: red
+              fontSize: 7
+              align: left
+              text: |
+                Warning: this map contains third party data.
+            - !text
+              condition: langrm
+              fontColor: red
+              fontSize: 7
+              align: left
+              text: |
+                Warnung: diese Karten enthält Daten von Drittanbietern
+            - !text
+              condition: langit
+              fontColor: red
+              fontSize: 7
+              align: left
+              text: |
+                Attenzione: alcuni dati provengono da terze parti.
 
 #---------------------------------------
 # Disclaimer
@@ -389,35 +425,26 @@ layouts:
           width: 300
           items:
             - !text
-              condition: langde
               fontSize: 7
               align: left
               text: |
                 ${dataOwner}
+
+#---------------------------------------
+# Third party data copyright
+#---------------------------------------
+        - !columns
+          condition: thirdPartyDataOwner
+          absoluteY: 75
+          absoluteX: 25
+          width: 300
+          items:
             - !text
-              condition: langfr
+              fontColor: red
               fontSize: 7
               align: left
               text: |
-                ${dataOwner}
-            - !text
-              condition: langen
-              fontSize: 7
-              align: left
-              text: |
-                ${dataOwner}
-            - !text
-              condition: langrm
-              fontSize: 7
-              align: left
-              text: |
-                ${dataOwner}
-            - !text
-              condition: langit
-              fontSize: 7
-              align: left
-              text: |
-                ${dataOwner}
+                ${thirdPartyDataOwner}
 
 #---------------------------------------
 # Description
@@ -457,6 +484,51 @@ layouts:
               align: left
               text: |
                 www.geo.admin.ch è una piattaforma pubblica accessibile per la ricerca di geo-informazioni, i dati e servizi.
+
+#---------------------------------------
+# Third party data warning
+#---------------------------------------
+        - !columns
+          condition: thirdPartyDataOwner
+          absoluteY: 50
+          absoluteX: 153
+          width: 675
+          items:
+            - !text
+              condition: langde
+              fontColor: red
+              fontSize: 7
+              align: left
+              text: |
+                Warnung: diese Karten enthält Daten von Drittanbietern
+            - !text
+              condition: langfr
+              fontColor: red
+              fontSize: 7
+              align: left
+              text: |
+                Attention: cette carte contient des données tierces.
+            - !text
+              condition: langen
+              fontColor: red
+              fontSize: 7
+              align: left
+              text: |
+                Warning: this map contains third party data.
+            - !text
+              condition: langrm
+              fontColor: red
+              fontSize: 7
+              align: left
+              text: |
+                Warnung: diese Karten enthält Daten von Drittanbietern
+            - !text
+              condition: langit
+              fontColor: red
+              fontSize: 7
+              align: left
+              text: |
+                Attenzione: alcuni dati provengono da terze parti.
 
 #---------------------------------------
 # Disclaimer
@@ -684,35 +756,26 @@ layouts:
           width: 300
           items:
             - !text
-              condition: langde
               fontSize: 7
               align: left
               text: |
                 ${dataOwner}
+
+#---------------------------------------
+# Third party data copyright
+#---------------------------------------
+        - !columns
+          condition: thirdPartyDataOwner
+          absoluteY: 60
+          absoluteX: 25
+          width: 300
+          items:
             - !text
-              condition: langfr
+              fontColor: red
               fontSize: 7
               align: left
               text: |
-                ${dataOwner}
-            - !text
-              condition: langen
-              fontSize: 7
-              align: left
-              text: |
-                ${dataOwner}
-            - !text
-              condition: langrm
-              fontSize: 7
-              align: left
-              text: |
-                ${dataOwner}
-            - !text
-              condition: langit
-              fontSize: 7
-              align: left
-              text: |
-                ${dataOwner}
+                ${thirdPartyDataOwner}
 
 #---------------------------------------
 # Description
@@ -752,6 +815,51 @@ layouts:
               align: left
               text: |
                 www.geo.admin.ch è una piattaforma pubblica accessibile per la ricerca di geo-informazioni, i dati e servizi.
+
+#---------------------------------------
+# Third party data warning
+#---------------------------------------
+        - !columns
+          condition: thirdPartyDataOwner
+          absoluteY: 37
+          absoluteX: 153
+          width: 675
+          items:
+            - !text
+              condition: langde
+              fontColor: red
+              fontSize: 7
+              align: left
+              text: |
+                Warnung: diese Karten enthält Daten von Drittanbietern
+            - !text
+              condition: langfr
+              fontColor: red
+              fontSize: 7
+              align: left
+              text: |
+                Attention: cette carte contient des données tierces.
+            - !text
+              condition: langen
+              fontColor: red
+              fontSize: 7
+              align: left
+              text: |
+                Warning: this map contains third party data.
+            - !text
+              condition: langrm
+              fontColor: red
+              fontSize: 7
+              align: left
+              text: |
+                Warnung: diese Karten enthält Daten von Drittanbietern
+            - !text
+              condition: langit
+              fontColor: red
+              fontSize: 7
+              align: left
+              text: |
+                Attenzione: alcuni dati provengono da terze parti.
 
 #---------------------------------------
 # Disclaimer
@@ -979,35 +1087,26 @@ layouts:
           width: 300
           items:
             - !text
-              condition: langde
               fontSize: 7
               align: left
               text: |
                 ${dataOwner}
+
+#---------------------------------------
+# Third party data copyright
+#---------------------------------------
+        - !columns
+          condition: thirdPartyDataOwner
+          absoluteY: 75
+          absoluteX: 30
+          width: 300
+          items:
             - !text
-              condition: langfr
+              fontColor: red
               fontSize: 7
               align: left
               text: |
-                ${dataOwner}
-            - !text
-              condition: langen
-              fontSize: 7
-              align: left
-              text: |
-                ${dataOwner}
-            - !text
-              condition: langrm
-              fontSize: 7
-              align: left
-              text: |
-                ${dataOwner}
-            - !text
-              condition: langit
-              fontSize: 7
-              align: left
-              text: |
-                ${dataOwner}
+                ${thirdPartyDataOwner}
 
 #---------------------------------------
 # Description
@@ -1047,6 +1146,51 @@ layouts:
               align: left
               text: |
                 www.geo.admin.ch è una piattaforma pubblica accessibile per la ricerca di geo-informazioni, i dati e servizi.
+
+#---------------------------------------
+# Third party data warning
+#---------------------------------------
+        - !columns
+          condition: thirdPartyDataOwner
+          absoluteY: 50
+          absoluteX: 153
+          width: 675
+          items:
+            - !text
+              condition: langde
+              fontColor: red
+              fontSize: 7
+              align: left
+              text: |
+                Warnung: diese Karten enthält Daten von Drittanbietern
+            - !text
+              condition: langfr
+              fontColor: red
+              fontSize: 7
+              align: left
+              text: |
+                Attention: cette carte contient des données tierces.
+            - !text
+              condition: langen
+              fontColor: red
+              fontSize: 7
+              align: left
+              text: |
+                Warning: this map contains third party data.
+            - !text
+              condition: langrm
+              fontColor: red
+              fontSize: 7
+              align: left
+              text: |
+                Warnung: diese Karten enthält Daten von Drittanbietern
+            - !text
+              condition: langit
+              fontColor: red
+              fontSize: 7
+              align: left
+              text: |
+                Attenzione: alcuni dati provengono da terze parti.
 
 #---------------------------------------
 # Disclaimer
