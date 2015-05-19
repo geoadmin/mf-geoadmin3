@@ -2237,6 +2237,48 @@ msgstr "Permeabilità"
 msgid "ch.blw.bodeneignung-wasserspeichervermoegen"
 msgstr "Capacità di stoccaggio idrico"
 
+msgid "ch.blw.emapis-beizugsgebiet"
+msgstr "Comprensorio"
+
+msgid "ch.blw.emapis-bewaesserung"
+msgstr "Irrigazione"
+
+msgid "ch.blw.emapis-elektrizitaetsversorgung"
+msgstr "Approvvigionamento elettrico"
+
+msgid "ch.blw.emapis-entwaesserung"
+msgstr "Drenaggio, struttura del suolo"
+
+msgid "ch.blw.emapis-hochbau"
+msgstr "Edifici agricoli"
+
+msgid "ch.blw.emapis-milchleitung"
+msgstr "Lattodotto"
+
+msgid "ch.blw.emapis-oekologie"
+msgstr "Ecologia"
+
+msgid "ch.blw.emapis-projektschwerpunkt"
+msgstr "Punto centrale del progetto"
+
+msgid "ch.blw.emapis-seilbahnen"
+msgstr "Teleferiche"
+
+msgid "ch.blw.emapis-wasserversorgung"
+msgstr "Acquedotto"
+
+msgid "ch.blw.emapis-wegebau"
+msgstr "Costruzione di strade"
+
+msgid "ch.blw.emapis.geschaeftsnummer"
+msgstr "Numero di riferimento"
+
+msgid "ch.blw.emapis.status"
+msgstr "Stato"
+
+msgid "ch.blw.emapis.typ"
+msgstr "Elemento"
+
 msgid "ch.blw.erosion"
 msgstr "Rischio erosione qualitativo 1"
 

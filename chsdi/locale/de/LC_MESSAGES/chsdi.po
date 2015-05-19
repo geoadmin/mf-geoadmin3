@@ -2237,6 +2237,48 @@ msgstr "Wasserdurchlässigkeit"
 msgid "ch.blw.bodeneignung-wasserspeichervermoegen"
 msgstr "Wasserspeichervermögen"
 
+msgid "ch.blw.emapis-beizugsgebiet"
+msgstr "Beizugsgebiet"
+
+msgid "ch.blw.emapis-bewaesserung"
+msgstr "Bewässerung"
+
+msgid "ch.blw.emapis-elektrizitaetsversorgung"
+msgstr "Elektrizitätsversorgung"
+
+msgid "ch.blw.emapis-entwaesserung"
+msgstr "Entwässerung, Bodenstruktur"
+
+msgid "ch.blw.emapis-hochbau"
+msgstr "Hochbau"
+
+msgid "ch.blw.emapis-milchleitung"
+msgstr "Milchleitung"
+
+msgid "ch.blw.emapis-oekologie"
+msgstr "Oekologie"
+
+msgid "ch.blw.emapis-projektschwerpunkt"
+msgstr "Projektschwerpunkt"
+
+msgid "ch.blw.emapis-seilbahnen"
+msgstr "Seilbahn"
+
+msgid "ch.blw.emapis-wasserversorgung"
+msgstr "Wasserversorgung"
+
+msgid "ch.blw.emapis-wegebau"
+msgstr "Wegebau"
+
+msgid "ch.blw.emapis.geschaeftsnummer"
+msgstr "Geschäftsnummer"
+
+msgid "ch.blw.emapis.status"
+msgstr "Status"
+
+msgid "ch.blw.emapis.typ"
+msgstr "Element"
+
 msgid "ch.blw.erosion"
 msgstr "Erosionsrisiko qualitativ 1"
 
