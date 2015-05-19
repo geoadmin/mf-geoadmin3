@@ -77,13 +77,20 @@
               bgLayer = gaPermalink.getParams().bgLayer;
               firstLayerChangeEvent = false;
             }
-            if (!bgLayer && !scope.currentLayer) {
+            if ((!bgLayer && !scope.currentLayer) ||
+              (scope.currentTopic && (scope.currentTopic != data.topicId))) {
               bgLayer = gaLayers.getBackgroundLayers()[0].id;
+              scope.backgroundLayers = defaultBgOrder.slice(0);
             }
             if (bgLayer && !isOfflineToOnline) {
               scope.currentLayer = bgLayer;
             }
             isOfflineToOnline = false;
+            scope.currentTopic = data.topicId;
+          });
+
+          scope.$on('gaPermalinkChange', function(event) {
+            scope.isBackgroundSelectorClosed = true;
           });
 
           scope.$watch('currentLayer', function(newVal, oldVal) {
@@ -98,8 +105,9 @@
               scope.backgroundLayers = defaultBgOrder.slice(0);
             } else {
               scope.isBackgroundSelectorClosed = true;
-              scope.currentLayer = layerid;
-              scope.reorderBgLayer(layerid);
+              if (scope.currentLayer != layerid) {
+                scope.currentLayer = layerid;
+              }
             }
           };
 
@@ -109,8 +117,10 @@
           });
 
           scope.getClass = function(layer) {
-            var splitLayer = layer.id.split('.');
-            return 'ga-' + splitLayer[splitLayer.length - 1];
+            if (layer) {
+              var splitLayer = layer.id.split('.');
+              return 'ga-' + splitLayer[splitLayer.length - 1];
+            }
           };
 
           scope.reorderBgLayer = function(layerid) {
