@@ -9,9 +9,9 @@
 Release Notes
 =============
 
-.. _releasenotes_2015xxxx:
+.. _releasenotes_20150520:
 
-Release 2015xxxx - Wednesday, xxxx xth 2015
+Release 20150520 - Wednesday, May 20th 2015
 ------------------------------------------------
 
 API & applications
@@ -20,12 +20,12 @@ API & applications
 `API <//api3.geo.admin.ch>`__
 '''''''''''''''''''''''''''''
 - Bug fixes
-- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_150506...r_15xxxx>`__
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_150506...r_150520>`__
 
 `MAP <//map.geo.admin.ch>`__
 '''''''''''''''''''''''''''''
 - Bug fixes
-- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_150506...r_15xxxx>`__
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_150506...r_150520>`__
 
 
 Geodata
@@ -47,6 +47,10 @@ Geodata
 | New    | `Noise exp. light / large aircrafts <//map.geo.admin.ch/?layers=ch.bazl.laermbelastungskataster-zivilflugplaetze_klein-grossflugzeuge>`__ (ch.bazl.laermbelastungskataster-zivilflugplaetze_klein-grossflugzeuge)    |
 +--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | New    | `Noise exp. milit. aerodr. (tot.) <//map.geo.admin.ch/?layers=ch.bazl.laermbelastungskataster-zivilflugplaetze_militaer-gesamt>`__ (ch.bazl.laermbelastungskataster-zivilflugplaetze_militaer-gesamt)                |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Aeromagnetik Aargau 1100 m 100 <//map.geo.admin.ch/?layers=ch.nagra.aeromagnetische-karte_1100>`__ (ch.nagra.aeromagnetische-karte_1100)                                                                            |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Aeromagnetik Aargau 1500 m 100 <//map.geo.admin.ch/?layers=ch.nagra.aeromagnetische-karte_1500>`__ (ch.nagra.aeromagnetische-karte_1500)                                                                            |
 +--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 .. _releasenotes_20150506:
