@@ -9,6 +9,66 @@
 Release Notes
 =============
 
+.. _releasenotes_20150520:
+
+Release 20150520 - Wednesday, May 20th 2015
+------------------------------------------------
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+- Add support for GEOJson layers
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_150506...r_150520>`__
+
+`MAP <//map.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+- Fix profile calculation and display for latest versions of FireFox
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_150506...r_150520>`__
+
+
+Geodata
+*******
+
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Noise exp. 1st night hour <//map.geo.admin.ch/?layers=ch.bazl.laermbelastungskataster-zivilflugplaetze_erste-nachtstunde>`__ (ch.bazl.laermbelastungskataster-zivilflugplaetze_erste-nachtstunde)                   |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Noise exp. 2nd night hour <//map.geo.admin.ch/?layers=ch.bazl.laermbelastungskataster-zivilflugplaetze_zweite-nachtstunde>`__ (ch.bazl.laermbelastungskataster-zivilflugplaetze_zweite-nachtstunde)                 |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Noise exp. helicopters Lmax <//map.geo.admin.ch/?layers=ch.bazl.laermbelastungskataster-zivilflugplaetze_helikopter-maximalpegel>`__ (ch.bazl.laermbelastungskataster-zivilflugplaetze_helikopter-maximalpegel)     |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Noise exp. helicopters Lr <//map.geo.admin.ch/?layers=ch.bazl.laermbelastungskataster-zivilflugplaetze_helikopter>`__ (ch.bazl.laermbelastungskataster-zivilflugplaetze_helikopter)                                 |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Noise exp. last night hour <//map.geo.admin.ch/?layers=ch.bazl.laermbelastungskataster-zivilflugplaetze_letzte-nachtstunde>`__ (ch.bazl.laermbelastungskataster-zivilflugplaetze_letzte-nachtstunde)                |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Noise exp. light aircrafts <//map.geo.admin.ch/?layers=ch.bazl.laermbelastungskataster-zivilflugplaetze_kleinluftfahrzeuge>`__ (ch.bazl.laermbelastungskataster-zivilflugplaetze_kleinluftfahrzeuge)                |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Noise exp. light / large aircrafts <//map.geo.admin.ch/?layers=ch.bazl.laermbelastungskataster-zivilflugplaetze_klein-grossflugzeuge>`__ (ch.bazl.laermbelastungskataster-zivilflugplaetze_klein-grossflugzeuge)    |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Noise exp. milit. aerodr. (tot.) <//map.geo.admin.ch/?layers=ch.bazl.laermbelastungskataster-zivilflugplaetze_militaer-gesamt>`__ (ch.bazl.laermbelastungskataster-zivilflugplaetze_militaer-gesamt)                |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Aeromagnetik Aargau 1100 m 100 <//map.geo.admin.ch/?layers=ch.nagra.aeromagnetische-karte_1100>`__ (ch.nagra.aeromagnetische-karte_1100)                                                                            |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Aeromagnetik Aargau 1500 m 100 <//map.geo.admin.ch/?layers=ch.nagra.aeromagnetische-karte_1500>`__ (ch.nagra.aeromagnetische-karte_1500)                                                                            |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Water temperature rivers <//map.geo.admin.ch/?layers=ch.bafu.hydroweb-messstationen_temperatur>`__ (ch.bafu.hydroweb-messstationen_temperatur)                                                                      |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Stations hydrological forecasts <//map.geo.admin.ch/?layers=ch.bafu.hydroweb-messstationen_vorhersage>`__ (ch.bafu.hydroweb-messstationen_vorhersage)                                                               |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Flood alert map <//map.geo.admin.ch/?layers=ch.bafu.hydroweb-warnkarte_national>`__ (ch.bafu.hydroweb-warnkarte_national)                                                                                           |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `NAQUA monitoring network <//map.geo.admin.ch/?layers=ch.bafu.hydroweb-messstationen_grundwasser>`__ (ch.bafu.hydroweb-messstationen_grundwasser)                                                                    |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Lage Fliessgewässer und Seen <//map.geo.admin.ch/?layers=ch.bafu.hydroweb-messstationen_zustand>`__ (ch.bafu.hydroweb-messstationen_zustand)                                                                        |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Flood alert small catchments <//map.geo.admin.ch/?layers=ch.bafu.hydroweb-warnkarte_regional>`__ (ch.bafu.hydroweb-warnkarte_regional)                                                                              |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Hochwasser Gefahrenstufen <//map.geo.admin.ch/?layers=ch.bafu.hydroweb-messstationen_gefahren>`__ (ch.bafu.hydroweb-messstationen_gefahren)                                                                         |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
 .. _releasenotes_20150506:
 
 Release 20150506 - Wednesday, May 6th 2015
