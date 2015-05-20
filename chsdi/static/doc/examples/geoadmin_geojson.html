@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!--[if !HTML5]>
+    <meta http-equiv="X-UA-Compatible" content="IE=9,IE=10,IE=edge,chrome=1"/>
+    <![endif]-->    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+    <title>GeoAdmin API example: integration of GeoJSON layers</title>
+    <style>
+      .popover {
+        z-index: auto;
+        min-width: 500px;
+      }
+      .popover-content {
+        max-width: 600px;
+        max-height: 250px;
+        overflow-y: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>GeoAdmin API example: integration of GeoJSON layers</h1>
+      <div id="outer" style="overflow: hidden; width: 100%">
+        <div id="managerContainer" class="panel panel-default" style="margin:20px;width:450px;float:left;min-height:350px;">
+        <div class="panel-heading">GeoJSON loading and styling</div>
+          <div class="panel-body">
+            <div style="padding-bottom:5px">GeoJSON URL:</div>
+            <form name="geojson-url">
+              <input name="geojson-url" class="form-control" placeholder="Enter a GeoJSON file url ..." onClick="this.select();" value="geojson_example.json" style="width:100%;">
+            </form>
+            <div id="geojsonSuccess" class="alert alert-success" style="display:none;padding:0;margin: 10px 0px 10px 0px;">Geojson file has been successfully loaded.</div>
+            <div id="geojsonError" class="alert alert-danger" style="display:none;padding:0;margin: 10px 0px 10px 0px;">File loading has failed.</div>
+          </div>
+          <div class="panel-body">
+            <div style="padding-bottom:5px">Style URL:</div>
+            <form name="style-url">
+              <div class="input-group">
+                <input name="style-url" class="form-control" placeholder="Enter a styling JSON file url ..." onClick="this.select();" value="geojson_style_example.json" style="width:100%;">
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="button" onclick=loadStyleInEditor()>Load in editor</button>
+                </span>
+              </div>
+            </form>
+            <div id="styleSuccess" class="alert alert-success" style="display:none;padding:0;margin: 10px 0px 10px 0px;">Styling file has been successfully loaded.</div>
+            <div id="styleError" class="alert alert-danger" style="display:none;padding:0;margin: 10px 0px 10px 0px;">File loading has failed.</div>
+            <form name="editor" style="padding: 10px 0px 10px 0px">
+              <textarea id="editor" class="form-control" placeholder="GeoJSON styling editor ..." spellcheck="false" style="min-height:300px;resize:none"></textarea>
+            </form>
+            <div class="btn-group">
+              <button class="btn btn-default" onclick=applyGeojsonEditor()>Apply styling from editor</button>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="btn-group">
+              <button class="btn btn-default" onclick=applyGeojsonConfig()>Update map from url sources</button>
+              <button class="btn btn-default" onclick=clearLayer()>Clear map</button>
+            </div>
+          </div>
+        </div>
+        <div id="map" class="panel panel-default" style="height:350px;margin:20px;overflow:hidden"></div>
+          <p style="margin-top:10px">This example shows how to integrate GeoJSON layers and style them.</p>
+          <p>This can be achieved by using a GeoJSON file and a styling file containing the associated features styles. The GeoJSON file contains the geospatial topology using the Javascript Object Notation. It handles geometries such as Points, Linestrings, Polygon, MultiLineString and MultiPolygon (<a href="http://geojson.org/">See GeoJSON documentation)</a>. The styling file is a JSON file containing styling information about the features included in the GeoJSON file. Syling properties and options come from OpenLayers 3 Feature styles (<a href="http://openlayers.org/en/v3.5.0/apidoc/ol.style.html">learn more about feature styles on Openlayers 3 documentation</a>).</p>
+          <p>Just enter your own GeoJSON file and associated styling file URLs to visualize them on this map.</p>
+            <a href="geoadmin_geojson.js">See the code</a>
+          </p>
+        <div style="display: none;">
+          <div id="popup" title="KML"></div>
+        </div>
+      </div>
+    <script type="text/javascript" src="/static/js/jquery-2.0.3.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+    <script src="../loader.js"  type="text/javascript"></script>
+    <script src="stylesFromLiterals.js"  type="text/javascript"></script>
+    <script src="geoadmin_geojson.js" type="text/javascript"></script>
+  </body>
+</html>
+    

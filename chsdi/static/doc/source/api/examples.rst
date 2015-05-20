@@ -22,6 +22,7 @@ GeoAdmin Examples
 - `Embedded map <../examples/embedmap.html>`_
 - `LV95 example <../examples/ol3_lv95.html>`_
 - `Iframe of geoadmin <../examples/geoadmin_iframe.html>`_
+- `GeoJSON integration example <../examples/geoadmin_geojson.html>`_
 -  All `available layers <../examples/ol3_lv95_all.html>`_ as WMTS
 
 OpenLayers Examples

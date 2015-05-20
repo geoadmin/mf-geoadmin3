@@ -1,0 +1,53 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [760000, 190000]},
+      "properties": {
+        "description": "This is a red-orangered circle.",
+        "style-class": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [700000, 230000]},
+      "properties": {
+        "description": "No worry. This is just a silver star.",
+        "style-class": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "LineString", "coordinates": [[600000, 120000], [640000, 130000]]},
+      "properties": {
+        "description": "This is a single Sienna brown line.",
+        "style-class": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "LineString", "coordinates": [[700000, 260000], [610000, 230000], [550000, 200000], [530000, 150000]]},
+      "properties": {
+        "description": "This is a line with multiple segments",
+        "style-class": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "Polygon", "coordinates": [[[600000, 200000], [570000, 180000], [610000, 180000]]]},
+      "properties": {
+        "description": "This is a light green 3-side polygon with thick borders",
+        "style-class": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "Polygon", "coordinates": [[[650000, 160000], [660000, 200000], [700000, 190000], [700000, 160000]]]},
+      "properties": {
+        "description": "This is a 4 sides blue polygon.",
+        "style-class": 1
+      }
+    }
+  ]
+}
