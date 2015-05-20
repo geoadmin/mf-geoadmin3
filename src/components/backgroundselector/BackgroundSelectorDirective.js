@@ -91,6 +91,7 @@
 
           scope.$on('gaPermalinkChange', function(event) {
             scope.isBackgroundSelectorClosed = true;
+            scope.reorderBgLayer(scope.currentLayer);
           });
 
           scope.$watch('currentLayer', function(newVal, oldVal) {
