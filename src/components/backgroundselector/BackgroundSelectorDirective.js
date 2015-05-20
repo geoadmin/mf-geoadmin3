@@ -105,6 +105,7 @@
               scope.backgroundLayers = defaultBgOrder.slice(0);
             } else {
               scope.isBackgroundSelectorClosed = true;
+              scope.reorderBgLayer(layerid);
               if (scope.currentLayer != layerid) {
                 scope.currentLayer = layerid;
               }
