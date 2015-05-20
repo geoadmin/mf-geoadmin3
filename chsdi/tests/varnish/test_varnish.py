@@ -5,6 +5,8 @@ import random
 import requests
 from chsdi.tests.integration import TestsBase
 
+from chsdi.tests.integration.test_file_storage import VALID_KML, NOT_WELL_FORMED_KML
+
 
 class TestVarnish(TestsBase):
 
@@ -241,3 +243,53 @@ class TestOgcproxy(TestVarnish):
         resp = requests.get(self.api_url + '/ogcproxy?url=http%3A%2F%2Fmapserver1.gr.ch%2Fwms%2Fadmineinteilung%3FSERVICE%3DWMS%26REQUEST%3DGetCapabilities%26VERSION%3D1.3.0', params=payload, headers=headers)
 
         self.failUnless(resp.status_code == 200)
+
+
+class TestFilestorage(TestVarnish):
+
+    def test_post_filestorage_no_referer(self):
+
+        resp = requests.post(self.api_url + '/files', VALID_KML)
+
+        self.failUnless(resp.status_code == 403)
+
+    def test_post_filestorage_good_referer(self):
+
+        headers = {'Content-Type': 'application/vnd.google-earth.kml+xml', 'Referer': 'http://unittest.geo.admin.ch'}
+        resp = requests.post(self.api_url + '/files', VALID_KML, headers=headers)
+
+        self.failUnless(resp.status_code == 200)
+        self.assertIn('adminId', resp.json())
+        self.assertIn('fileId', resp.json())
+
+    def test_post_filestorage_wrong_referer(self):
+
+        headers = {'Content-Type': 'application/vnd.google-earth.kml+xml', 'Referer': 'http://foo.bar'}
+        resp = requests.post(self.api_url + '/files', VALID_KML, headers=headers)
+
+        self.assertTrue(resp.status_code == 403)
+
+    def test_post_filestorage_wrong_content_type(self):
+
+        headers = {'Content-Type': 'application/xml', 'Referer': 'http://unittest.geo.admin.ch'}
+        resp = requests.post(self.api_url + '/files', VALID_KML, headers=headers)
+
+        self.assertTrue(resp.status_code == 415)
+
+    def test_post_filestorage_not_well_formed(self):
+
+        headers = {'Content-Type': 'application/vnd.google-earth.kml+xml', 'Referer': 'http://unittest.geo.admin.ch'}
+        resp = requests.post(self.api_url + '/files', NOT_WELL_FORMED_KML, headers=headers)
+
+        self.assertTrue(resp.status_code == 415)
+
+    def test_post_filestorage_too_big(self):
+
+        headers = {'Content-Type': 'application/vnd.google-earth.kml+xml', 'Referer': 'http://unittest.geo.admin.ch'}
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        with open(os.path.join(current_dir, '../integration', 'big.kml')) as f:
+            data = f.read()
+
+        resp = requests.post(self.api_url + '/files', data, headers=headers)
+
+        self.assertTrue(resp.status_code == 413)
