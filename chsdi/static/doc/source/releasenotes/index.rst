@@ -19,11 +19,13 @@ API & applications
 
 `API <//api3.geo.admin.ch>`__
 '''''''''''''''''''''''''''''
+- Add support for GEOJson layers
 - Bug fixes
 - `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_150506...r_150520>`__
 
 `MAP <//map.geo.admin.ch>`__
 '''''''''''''''''''''''''''''
+- Fix profile calculation and display for latest versions of FireFox
 - Bug fixes
 - `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_150506...r_150520>`__
 
