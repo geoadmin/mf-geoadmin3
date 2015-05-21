@@ -10,6 +10,11 @@
   overflow: hidden;
   z-index: 1000;
   cursor: pointer;
+  @media (max-width: @screen-tablet) {
+    width: 90px;
+    height: 44px;
+    padding: 0px;
+  }
 }
 
 .ga-bg-triangle {
@@ -23,12 +28,19 @@
   border-left: 45px solid transparent;
   border-right: 45px solid transparent;
   @media (max-width: @screen-tablet) {
+    display: none;
     bottom: 92px;
   }
 }
 
 .ga-bg-highlight {
   background-color: rgba(255, 0, 0, 1);
+}
+
+.ga-bg-highlight-text {
+  @media (max-width: @screen-tablet) {
+    color: red;
+  } 
 }
 
 .ga-bg-layer-text {
@@ -47,21 +59,21 @@
 .ga-bg-layer-1 {
   bottom: 116px;
   @media (max-width: @screen-tablet) {
-    bottom: 90px;
+    bottom: 72px;
   }
 }
 
 .ga-bg-layer-2 {
   bottom: 180px;
   @media (max-width: @screen-tablet) {
-    bottom: 154px;
+    bottom: 118px;
   }  
 }
 
 .ga-bg-layer-3 {
   bottom: 244px;
   @media (max-width: @screen-tablet) {
-    bottom: 218px;
+    bottom: 164px;
   } 
 }
 
