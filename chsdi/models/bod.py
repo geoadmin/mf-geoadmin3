@@ -117,8 +117,9 @@ class LayersConfig(Base):
                 config['wmsUrl'] = make_agnostic(
                     config['wmsUrl'].replace('wms.geo.admin.ch', wmsHost))
         elif config['type'] == 'geojson':
+            api_url = params.request.registry.settings['api_url']
             config['styleUrl'] = make_agnostic(
-                params.request.static_url('chsdi:static/vectorStyles/' + self.layerBodId + '.json'))
+                api_url + '/static/vectorStyles/' + self.layerBodId + '.json')
             config['geojsonUrl'] = self._getGeoJsonUrl(params.lang)
         # sublayers don't have attributions
         if 'attribution' in config:
