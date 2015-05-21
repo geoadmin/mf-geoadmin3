@@ -1,3 +1,39 @@
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.betriebsbeginn"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.einzugsgebietsflaeche"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.flussgebiet"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.hochwert"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.hoehe"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.mittlerehoehe"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.name"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.rechtswert"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.stationierung"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.url"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.vergletscherung"
+msgstr ""
+
 msgid "ch.bafu.hydroweb-messstationen_gefahren"
 msgstr ""
 

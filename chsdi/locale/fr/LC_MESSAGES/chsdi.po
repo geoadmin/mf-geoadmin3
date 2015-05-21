@@ -1238,6 +1238,42 @@ msgstr "NQSTAT Basses eaux"
 msgid "ch.bafu.hydrologie-q347"
 msgstr "Q347"
 
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen"
+msgstr "HUG / stations de mesure"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.betriebsbeginn"
+msgstr "Début des mesures"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.einzugsgebietsflaeche"
+msgstr "Surface du bassin versant [km2]"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.flussgebiet"
+msgstr "Bassin fluvial"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.hochwert"
+msgstr "Coordonnée Y"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.hoehe"
+msgstr "Altitude de la station [m s.m.]"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.mittlerehoehe"
+msgstr "Altitude moyenne [m s.m.]"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.name"
+msgstr "Nom de la station"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.rechtswert"
+msgstr "Coordonnée X"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.stationierung"
+msgstr "Distance de l'embouchure ou de la frontière suisse [km]"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.url"
+msgstr "Lien en français"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.vergletscherung"
+msgstr "Extension glacier [%]"
+
 msgid "ch.bafu.hydrologie-wassertemperaturmessstationen"
 msgstr "Stations de mesure Température eau"
 
