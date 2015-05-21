@@ -3,17 +3,16 @@
   height: 64px;
   right: 58px;
   position: absolute;
-  background-color: rgba(230, 230, 230, 0.9);
-  -webkit-box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.175);
-  box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.175);
+  background-color: rgba(58, 60, 60, 0.9);
   padding: 3px;
   overflow: hidden;
   z-index: 1000;
   cursor: pointer;
   @media (max-width: @screen-tablet) {
-    width: 90px;
-    height: 44px;
-    padding: 0px;
+    width: 48px;
+    height: 48px;
+    left: 10px;
+    border-radius:24px;
   }
 }
 
@@ -24,29 +23,29 @@
   position: absolute;
   right: 61px;
   bottom: 118px;
-  border-bottom: 14px solid rgba(230, 230, 230, 0.9);
+  border-bottom: 14px solid rgba(58, 60, 60, 0.9);
   border-left: 45px solid transparent;
   border-right: 45px solid transparent;
   @media (max-width: @screen-tablet) {
     display: none;
-    bottom: 92px;
   }
 }
 
 .ga-bg-highlight {
   background-color: rgba(255, 0, 0, 1);
-}
-
-.ga-bg-highlight-text {
   @media (max-width: @screen-tablet) {
-    color: red;
-  } 
+    background-color: rgba(255, 0, 0, 1);
+    border-radius:24px;
+  }
 }
 
 .ga-bg-layer-text {
   display: block;
   font-size: 75%;
   background-color: rgba(255, 255, 255, 1);
+  @media (max-width: @screen-tablet) {
+    display: none;
+  }
 }
 
 .ga-bg-layer-0 {
@@ -57,23 +56,23 @@
 }
 
 .ga-bg-layer-1 {
-  bottom: 116px;
+  bottom: 117px;
   @media (max-width: @screen-tablet) {
-    bottom: 72px;
+    bottom: 75px;
   }
 }
 
 .ga-bg-layer-2 {
-  bottom: 180px;
+  bottom: 182px;
   @media (max-width: @screen-tablet) {
-    bottom: 118px;
+    bottom: 124px;
   }  
 }
 
 .ga-bg-layer-3 {
-  bottom: 244px;
+  bottom: 247px;
   @media (max-width: @screen-tablet) {
-    bottom: 164px;
+    bottom: 173px;
   } 
 }
 
@@ -81,22 +80,34 @@
     background-image: data-uri('pixelkarte-farbe.png');
     background-repeat: no-repeat;
     background-position: center; 
+    @media (max-width: @screen-tablet) {
+      background-image: data-uri('pixelkarte-farbe-small.png');
+    } 
 }
 
 .ga-pixelkarte-grau {
     background-image: data-uri('pixelkarte-grau.png');
     background-repeat: no-repeat;
     background-position: center; 
+    @media (max-width: @screen-tablet) {
+      background-image: data-uri('pixelkarte-grau-small.png');
+    }
 }
 
 .ga-swissimage {
     background-image: data-uri('swissimage.png');
     background-repeat: no-repeat;
     background-position: center;
+    @media (max-width: @screen-tablet) {
+      background-image: data-uri('swissimage-small.png');
+    }
 }
 
 .ga-voidLayer {
     background-image: data-uri('voidLayer.png');
     background-repeat: no-repeat;
     background-position: center;
+    @media (max-width: @screen-tablet) {
+      background-image: data-uri('voidLayer-small.png');
+    }
 }
