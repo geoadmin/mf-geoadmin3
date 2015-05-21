@@ -4,6 +4,7 @@ var webdriver = require('browserstack-webdriver');
 var assert = require('assert');
 
 var QUERYSTRING_KML = "KML%7C%7Chttp:%2F%2Fopendata.utou.ch%2Furbanproto%2Fgeneva%2Fgeo%2Fkml%2FRoutes.kml";
+var POSITION_TO_KML = "X=124759.52&Y=499224.22";
 
 var runTest = function(cap, driver, target) {
   //We maximize our window to be sure to be in full resolution
@@ -30,11 +31,19 @@ var runTest = function(cap, driver, target) {
 
   // Was the URL in the address bar adapted?
   if(!(cap.browser == "IE" && cap.browser_version == "9.0")) {
-    // Check if url is adapted to reflect Bern location
+    // Check if url is adapted to KML presence and KML position
     driver.getCurrentUrl().then(function(url) {
       assert.ok(url.indexOf(QUERYSTRING_KML) > -1);
+      assert.ok(url.indexOf(POSITION_TO_KML) > -1);
     });
   }
+
+  // Go to the KML linkedURL
+  driver.get(target + '/?lang=de&layers='+QUERYSTRING_KML);
+  //wait until topics related stuff is loaded.
+  driver.findElement(webdriver.By.xpath("//a[contains(text(), 'Grundlagen und Planung')]"));
+  // Check if KML has correctly been loaded
+  driver.findElement(webdriver.By.xpath("//*[@id='selection']//*[contains(text(), 'Lignes')]"));
 }
 
 module.exports.runTest = runTest;
