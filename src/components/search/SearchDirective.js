@@ -132,7 +132,7 @@
           // URL?
           if (gaUrlUtils.isValid(q)) {
             gaKml.addKmlToMapForUrl($scope.map, q, {
-              attribution: gaUrlUtils.getHostname(q),
+              attribution: q,
               zoomToExtent: true
             });
             return;

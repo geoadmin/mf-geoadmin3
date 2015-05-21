@@ -645,6 +645,7 @@
       var encLayers = [];
       var encLegends;
       var attributions = [];
+      var thirdPartyAttributions = [];
       var layers = this.map.getLayers();
       pdfLegendsToDownload = [];
       layersYears = [];
@@ -653,11 +654,19 @@
       angular.forEach(layers, function(layer) {
         if (layer.visible && (!layer.timeEnabled ||
             angular.isDefined(layer.time))) {
+
+          // Get all attributions to diaplay
           var attribution = layer.attribution;
-          if (attribution !== undefined &&
-              attributions.indexOf(attribution) == -1) {
-            attributions.push(attribution);
+          if (attribution !== undefined) {
+            if (layer.useThirdPartyData &&
+                thirdPartyAttributions.indexOf(attribution) == -1) {
+              thirdPartyAttributions.push(attribution);
+            } else if (attributions.indexOf(attribution) == -1) {
+              attributions.push(attribution);
+            }
           }
+
+          // Encode layers
           if (layer instanceof ol.layer.Group) {
             var encs = $scope.encoders.layers['Group'].call(this,
                 layer, proj);
@@ -771,6 +780,18 @@
         if (!$scope.options.printing) {
           return;
         }
+
+        // Build the correct copyright text to display
+        var dataOwner = attributions.join();
+        var thirdPartyDataOwner = thirdPartyAttributions.join();
+        if (dataOwner && thirdPartyDataOwner) {
+          dataOwner = '© ' + dataOwner + ',';
+        } else if (!dataOwner && thirdPartyDataOwner) {
+          thirdPartyDataOwner = '© ' + thirdPartyDataOwner;
+        } else if (dataOwner && !thirdPartyDataOwner) {
+          dataOwner = '© ' + dataOwner;
+          thirdPartyDataOwner = false;
+        }
         var movieprint = $scope.options.movie && $scope.options.multiprint;
         var spec = {
           layout: $scope.layout.name,
@@ -793,7 +814,8 @@
               display: [$scope.layout.map.width, $scope.layout.map.height],
               // scale has to be one of the advertise by the print server
               scale: $scope.scale.value,
-              dataOwner: '© ' + attributions.join(),
+              dataOwner: dataOwner,
+              thirdPartyDataOwner: thirdPartyDataOwner,
               shortLink: shortLink || '',
               rotation: -((view.getRotation() * 180.0) / Math.PI)
             }, defaultPage)

@@ -380,6 +380,9 @@ a .icon-flip-vertical:before {
 .icon-search:before {
   content: "\f002";
 }
+.icon-user:before {
+  content: "\f007";
+}
 .icon-remove:before {
   content: "\f00d";
 }
