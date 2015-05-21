@@ -7,6 +7,7 @@
       function($scope, $timeout, gaGlobalOptions) {
         $scope.options = {
           showExport: false,
+          useTemporaryLayer: true,
           broadcastLayer: true,
           feedbackUrl: gaGlobalOptions.apiUrl + '/feedback'
         };

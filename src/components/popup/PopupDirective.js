@@ -32,7 +32,7 @@
           scope.toggle = scope.toggle || false;
           scope.isReduced = false;
           scope.options = scope.optionsFunc() || {title: ''};
-          scope.titlePrint = $translate.instant('print_action');
+          scope.titlePrint = $translate.instant('print');
           scope.titleHelp = $translate.instant('help_label');
           scope.titleReduce = $translate.instant('reduce_label');
           scope.titleClose = $translate.instant('close');
@@ -147,7 +147,7 @@
 
           var deregister = [];
           deregister.push($rootScope.$on('$translateChangeEnd', function() {
-            scope.titlePrint = $translate.instant('print_action');
+            scope.titlePrint = $translate.instant('print');
             scope.titleHelp = $translate.instant('help_label');
             scope.titleReduce = $translate.instant('reduce_label');
             scope.titleClose = $translate.instant('close');
