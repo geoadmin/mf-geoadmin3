@@ -5,7 +5,8 @@
   hasLegend = legend['hasLegend']
   host = h.make_agnostic(request.host_url + request.uscript_name)
   lang = request.lang
-  pdf_legends = ('ch.swisstopo.geologie-eiszeit-lgm-raster', 
+  pdf_legends = ('ch.bafu.typisierung-fliessgewaesser',
+                 'ch.swisstopo.geologie-eiszeit-lgm-raster', 
                  'ch.swisstopo.geologie-geologische_karte',
                  'ch.swisstopo.geologie-gravimetrischer_atlas',
                  'ch.swisstopo.geologie-hydrogeologische_karte-grundwasservorkommen',
