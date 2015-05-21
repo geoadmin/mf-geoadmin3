@@ -170,35 +170,35 @@ layouts:
               fontSize: 7
               align: left
               text: |
-                Warnung: diese Karten enthält Daten von Drittanbietern
+                Warnung: diese Daten kommen von einem Drittanbieter. Verfügbarkeit wird durch Drittanbieter gewährleistet. Es gelten zusätzlich die Bedingungen der entsprechenden Datenherren.
             - !text
               condition: langfr
               fontColor: red
               fontSize: 7
               align: left
               text: |
-                Attention: cette carte contient des données tierces.
+                Attention: Mise en garde données tierces. La disponibilité des données est assurée par des tiers. Les conditions d’utilisation du propriétaire respectif des données doivent être respectées.
             - !text
               condition: langen
               fontColor: red
               fontSize: 7
               align: left
               text: |
-                Warning: this map contains third party data.
+                Warning: Third party data shown. Availability is ensured by third party data provider. The terms and conditions of the third party data owner do apply and have to be respected.
             - !text
               condition: langrm
               fontColor: red
               fontSize: 7
               align: left
               text: |
-                Warnung: diese Karten enthält Daten von Drittanbietern
+                Warnung: diese Daten kommen von einem Drittanbieter. Verfügbarkeit wird durch Drittanbieter gewährleistet. Es gelten zusätzlich die Bedingungen der entsprechenden Datenherren.
             - !text
               condition: langit
               fontColor: red
               fontSize: 7
               align: left
               text: |
-                Attenzione: alcuni dati provengono da terze parti.
+                Attenzione: questi dati provengono da terze parti. La loro disponibilità è soggetta al provider esterno. I termini e le condizioni dei rispettivi proprietari dei dati devono essere rispettate.
 
 #---------------------------------------
 # Disclaimer
@@ -500,35 +500,35 @@ layouts:
               fontSize: 7
               align: left
               text: |
-                Warnung: diese Karten enthält Daten von Drittanbietern
+                Warnung: diese Daten kommen von einem Drittanbieter. Verfügbarkeit wird durch Drittanbieter gewährleistet. Es gelten zusätzlich die Bedingungen der entsprechenden Datenherren.
             - !text
               condition: langfr
               fontColor: red
               fontSize: 7
               align: left
               text: |
-                Attention: cette carte contient des données tierces.
+                Attention: Mise en garde données tierces. La disponibilité des données est assurée par des tiers. Les conditions d’utilisation du propriétaire respectif des données doivent être respectées.
             - !text
               condition: langen
               fontColor: red
               fontSize: 7
               align: left
               text: |
-                Warning: this map contains third party data.
+                Warning: Third party data shown. Availability is ensured by third party data provider. The terms and conditions of the third party data owner do apply and have to be respected.
             - !text
               condition: langrm
               fontColor: red
               fontSize: 7
               align: left
               text: |
-                Warnung: diese Karten enthält Daten von Drittanbietern
+                Warnung: diese Daten kommen von einem Drittanbieter. Verfügbarkeit wird durch Drittanbieter gewährleistet. Es gelten zusätzlich die Bedingungen der entsprechenden Datenherren.
             - !text
               condition: langit
               fontColor: red
               fontSize: 7
               align: left
               text: |
-                Attenzione: alcuni dati provengono da terze parti.
+                Attenzione: questi dati provengono da terze parti. La loro disponibilità è soggetta al provider esterno. I termini e le condizioni dei rispettivi proprietari dei dati devono essere rispettate.
 
 #---------------------------------------
 # Disclaimer
@@ -831,35 +831,35 @@ layouts:
               fontSize: 7
               align: left
               text: |
-                Warnung: diese Karten enthält Daten von Drittanbietern
+                Warnung: diese Daten kommen von einem Drittanbieter. Verfügbarkeit wird durch Drittanbieter gewährleistet. Es gelten zusätzlich die Bedingungen der entsprechenden Datenherren.
             - !text
               condition: langfr
               fontColor: red
               fontSize: 7
               align: left
               text: |
-                Attention: cette carte contient des données tierces.
+                Attention: Mise en garde données tierces. La disponibilité des données est assurée par des tiers. Les conditions d’utilisation du propriétaire respectif des données doivent être respectées.
             - !text
               condition: langen
               fontColor: red
               fontSize: 7
               align: left
               text: |
-                Warning: this map contains third party data.
+                Warning: Third party data shown. Availability is ensured by third party data provider. The terms and conditions of the third party data owner do apply and have to be respected.
             - !text
               condition: langrm
               fontColor: red
               fontSize: 7
               align: left
               text: |
-                Warnung: diese Karten enthält Daten von Drittanbietern
+                Warnung: diese Daten kommen von einem Drittanbieter. Verfügbarkeit wird durch Drittanbieter gewährleistet. Es gelten zusätzlich die Bedingungen der entsprechenden Datenherren.
             - !text
               condition: langit
               fontColor: red
               fontSize: 7
               align: left
               text: |
-                Attenzione: alcuni dati provengono da terze parti.
+                Attenzione: questi dati provengono da terze parti. La loro disponibilità è soggetta al provider esterno. I termini e le condizioni dei rispettivi proprietari dei dati devono essere rispettate.
 
 #---------------------------------------
 # Disclaimer
@@ -1162,35 +1162,35 @@ layouts:
               fontSize: 7
               align: left
               text: |
-                Warnung: diese Karten enthält Daten von Drittanbietern
+                Warnung: diese Daten kommen von einem Drittanbieter. Verfügbarkeit wird durch Drittanbieter gewährleistet. Es gelten zusätzlich die Bedingungen der entsprechenden Datenherren.
             - !text
               condition: langfr
               fontColor: red
               fontSize: 7
               align: left
               text: |
-                Attention: cette carte contient des données tierces.
+                Attention: Mise en garde données tierces. La disponibilité des données est assurée par des tiers. Les conditions d’utilisation du propriétaire respectif des données doivent être respectées.
             - !text
               condition: langen
               fontColor: red
               fontSize: 7
               align: left
               text: |
-                Warning: this map contains third party data.
+                Warning: Third party data shown. Availability is ensured by third party data provider. The terms and conditions of the third party data owner do apply and have to be respected.
             - !text
               condition: langrm
               fontColor: red
               fontSize: 7
               align: left
               text: |
-                Warnung: diese Karten enthält Daten von Drittanbietern
+                Warnung: diese Daten kommen von einem Drittanbieter. Verfügbarkeit wird durch Drittanbieter gewährleistet. Es gelten zusätzlich die Bedingungen der entsprechenden Datenherren.
             - !text
               condition: langit
               fontColor: red
               fontSize: 7
               align: left
               text: |
-                Attenzione: alcuni dati provengono da terze parti.
+                Attenzione: questi dati provengono da terze parti. La loro disponibilità è soggetta al provider esterno. I termini e le condizioni dei rispettivi proprietari dei dati devono essere rispettate.
 
 #---------------------------------------
 # Disclaimer
