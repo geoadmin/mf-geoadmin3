@@ -31,25 +31,30 @@ class TestWmtsCapabilitiesView(TestsBase):
         # mapproxy, host dependant, col/row order
         resp.mustcontain('/1.0.0/ch.kantone.cadastralwebmap-farbe/default/{Time}/21781/{TileMatrix}/{TileCol}/{TileRow}.png"/>')
 
-#    def test_validate_wmtscapabilities(self):
-#        import socket
-#        import subprocess
-#        import tempfile
-#        import os
-#        if socket.gethostname() == 'bgdimf01t':
-#            self.fail("Cannot run this test on 'bgdimf0t'. Sorry.")
-#        schema_url = os.path.join(os.path.dirname(__file__), "wmts/1.0.1/wmtsGetCapabilities_response.xsd")
-#        os.environ['XML_CATALOG_FILES'] = os.path.join(os.path.dirname(__file__), "xml/catalog")
-#
-#        for lang in ['de', 'fr', 'it', 'en']:
-#            for epsg in [4326, 4258, 2056, 3857]:
-#                f = tempfile.NamedTemporaryFile(mode='w+t', prefix='WMTSCapabilities-', suffix='-%s-%s' % (lang, epsg))
-#                resp = self.testapp.get('/rest/services/api/1.0.0/WMTSCapabilities.xml', params={'lang': lang, 'epsg': epsg}, status=200)
-#                f.write(resp.body)
-#                f.seek(0)
-#                retcode = subprocess.call(["xmllint", "--noout", "--nocatalogs", "--schema", schema_url, f.name])
-#                f.close()
-#                self.failUnless(retcode == 0)
+    def test_validate_wmtscapabilities(self):
+        import os
+        from StringIO import StringIO
+        from lxml import etree
+        file_name = 'wmts.xsd'
+        current_dir = os.getcwd()
+        schema_dir = os.path.join(os.path.dirname(__file__), 'wmts/1.0.1/')
+
+        def isValidSchema(resp, f_wmts):
+            f_wmts = etree.parse(StringIO(resp.body))
+            self.failUnless(xml_schema.validate(f_wmts) is True)
+
+        with open(schema_dir + file_name) as file_xml_schema:
+            os.chdir(schema_dir)
+            xml_schema_doc = etree.parse(StringIO(file_xml_schema.read()))
+            xml_schema = etree.XMLSchema(xml_schema_doc)
+            for lang in ['de', 'fr', 'it', 'en']:
+                for epsg in [4326, 4258, 2056, 3857, 21781]:
+                    resp = self.testapp.get(
+                        '/rest/services/api/1.0.0/WMTSCapabilities.xml',
+                        params={'lang': lang, 'epsg': epsg},
+                        status=200)
+                    isValidSchema(resp, etree.parse(StringIO(resp.body)))
+        os.chdir(current_dir)
 
     def test_gettile_wmtscapabilities(self):
         resp = self.testapp.get('/rest/services/inspire/1.0.0/WMTSCapabilities.xml', status=200)
