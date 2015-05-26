@@ -55,14 +55,6 @@
           }),
           logo: false
         });
-        
-        if (!gaBrowserSniffer.embed) {
-          map.addControl(new ol.control.ZoomToExtent({
-            target: toolbar,
-            label: '',
-            tipLabel: ''
-          }));
-        }
 
         var dragClass = 'ga-dragging';
         var viewport = $(map.getViewport());

@@ -1,113 +1,68 @@
-.ga-bg-layer-default {
-  width: 96px;
-  height: 64px;
-  right: 58px;
-  position: absolute;
-  background-color: rgba(58, 60, 60, 0.9);
-  padding: 3px;
+.ga-bg-layer-bt {
   overflow: hidden;
   z-index: 1000;
   cursor: pointer;
-  @media (max-width: @screen-tablet) {
-    width: 48px;
-    height: 48px;
-    left: 10px;
-    border-radius:24px;
-  }
+  width: 44px;
+  height: 44px;
+  background-repeat: no-repeat;
+  background-position: center; 
+  background-image: data-uri('backgroundSelector.png');
 }
 
-.ga-bg-triangle {
-  width: 0; 
-  height: 0;
-  z-index: 900;
+.ga-bg-layer {
+  overflow: hidden;
+  z-index: 1000;
+  cursor: pointer;
+  width: 44px;
+  height: 44px;
+  border-radius:22px;
   position: absolute;
-  right: 61px;
-  bottom: 118px;
-  border-bottom: 14px solid rgba(58, 60, 60, 0.9);
-  border-left: 45px solid transparent;
-  border-right: 45px solid transparent;
-  @media (max-width: @screen-tablet) {
-    display: none;
-  }
+  top: 160px;
+  background-color: rgba(58, 60, 60, 0.9);
 }
+
 
 .ga-bg-highlight {
   background-color: rgba(255, 0, 0, 1);
-  @media (max-width: @screen-tablet) {
-    background-color: rgba(255, 0, 0, 1);
-    border-radius:24px;
-  }
-}
-
-.ga-bg-layer-text {
-  display: block;
-  font-size: 75%;
-  background-color: rgba(255, 255, 255, 1);
-  @media (max-width: @screen-tablet) {
-    display: none;
-  }
+  border-radius:22px;
 }
 
 .ga-bg-layer-0 {
-  bottom: 52px;
-  @media (max-width: @screen-tablet) {
-    bottom: 26px;
-  }
+  right: 50px;
 }
 
 .ga-bg-layer-1 {
-  bottom: 117px;
-  @media (max-width: @screen-tablet) {
-    bottom: 75px;
-  }
+  right: 100px;
 }
 
 .ga-bg-layer-2 {
-  bottom: 182px;
-  @media (max-width: @screen-tablet) {
-    bottom: 124px;
-  }  
+  right: 150px;
 }
 
 .ga-bg-layer-3 {
-  bottom: 247px;
-  @media (max-width: @screen-tablet) {
-    bottom: 173px;
-  } 
+  right: 200px;
 }
 
 .ga-pixelkarte-farbe {
-    background-image: data-uri('pixelkarte-farbe.png');
     background-repeat: no-repeat;
     background-position: center; 
-    @media (max-width: @screen-tablet) {
-      background-image: data-uri('pixelkarte-farbe-small.png');
-    } 
+    background-image: data-uri('pixelkarte-farbe.png');
 }
 
 .ga-pixelkarte-grau {
-    background-image: data-uri('pixelkarte-grau.png');
     background-repeat: no-repeat;
     background-position: center; 
-    @media (max-width: @screen-tablet) {
-      background-image: data-uri('pixelkarte-grau-small.png');
-    }
+    background-image: data-uri('pixelkarte-grau.png');
 }
 
 .ga-swissimage {
-    background-image: data-uri('swissimage.png');
     background-repeat: no-repeat;
     background-position: center;
-    @media (max-width: @screen-tablet) {
-      background-image: data-uri('swissimage-small.png');
-    }
+    background-image: data-uri('swissimage.png');
 }
 
 .ga-voidLayer {
-    background-image: data-uri('voidLayer.png');
     background-repeat: no-repeat;
     background-position: center;
-    @media (max-width: @screen-tablet) {
-      background-image: data-uri('voidLayer-small.png');
-    }
+    background-image: data-uri('voidLayer.png');
 }

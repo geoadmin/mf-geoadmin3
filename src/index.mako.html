@@ -210,6 +210,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         <div ga-geolocation ga-geolocation-map="map"></div>
   % endif
         <div id="zoomButtons"></div>
+        <div ga-background-selector ga-background-selector-map="map"></div>
   % if device != 'embed':
         <div ga-time-selector-bt ga-time-selector-bt-map="map"></div> 
   % endif
@@ -262,7 +263,6 @@ itemscope itemtype="http://schema.org/WebApplication"
            ga-time-selector-options="options">
       </div>
     </div>
-    <div ga-background-selector ga-background-selector-map="map">
     </div>
     <div ng-controller="GaTooltipController">
       <div ga-tooltip 

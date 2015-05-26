@@ -51,7 +51,6 @@
                   layers.insertAt(0, layer);
                 }
               }
-              scope.reorderBgLayer(layerid);
               gaPermalink.updateParams({bgLayer: layerid});
             }
           }
@@ -91,7 +90,6 @@
 
           scope.$on('gaPermalinkChange', function(event) {
             scope.isBackgroundSelectorClosed = true;
-            scope.reorderBgLayer(scope.currentLayer);
           });
 
           scope.$watch('currentLayer', function(newVal, oldVal) {
@@ -106,10 +104,17 @@
               scope.backgroundLayers = defaultBgOrder.slice(0);
             } else {
               scope.isBackgroundSelectorClosed = true;
-              scope.reorderBgLayer(layerid);
               if (scope.currentLayer != layerid) {
                 scope.currentLayer = layerid;
               }
+            }
+          };
+
+          scope.onClickBt = function() {
+            if (scope.isBackgroundSelectorClosed) {
+              scope.isBackgroundSelectorClosed = false;
+            } else {
+              scope.isBackgroundSelectorClosed = true;
             }
           };
 
@@ -123,23 +128,6 @@
               var splitLayer = layer.id.split('.');
               return 'ga-' + splitLayer[splitLayer.length - 1];
             }
-          };
-
-          scope.reorderBgLayer = function(layerid) {
-            var mainBgLayer;
-            var visibleLayerId;
-            if (layerid == 'ch.swisstopo.swissimage') {
-              visibleLayerId = 'ch.swisstopo.pixelkarte-farbe';
-            } else {
-              visibleLayerId = 'ch.swisstopo.swissimage';
-            }
-            for (var layer in scope.backgroundLayers) {
-              if (visibleLayerId == scope.backgroundLayers[layer].id) {
-                mainBgLayer = scope.backgroundLayers[layer];
-              }
-            }
-            scope.backgroundLayers.splice(1, 3);
-            scope.backgroundLayers[0] = mainBgLayer;
           };
         }
       };
