@@ -62,81 +62,79 @@
 </tr>
 <tr>
 <th class="cell-left">${_('ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q100')}</th>
-<td>${c['attributes']['nm1q100'] or '-'}</td>
+<td>${round(c['attributes']['nm1q100'],3) or '-'}</td>
 <th class="cell-left">${_('ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q50')}</th>
-<td>${c['attributes']['nm1q50'] or '-'}</td>
+<td>${round(c['attributes']['nm1q50'],3) or '-'}</td>
 </tr>
 <tr>
 <th class="cell-left">${_('ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q20')}</th>
-<td>${c['attributes']['nm1q20'] or '-'}</td>
+<td>${round(c['attributes']['nm1q20'],3) or '-'}</td>
 <th class="cell-left">${_('ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q10')}</th>
-<td>${c['attributes']['nm1q10'] or '-'}</td>
+<td>${round(c['attributes']['nm1q10'],3) or '-'}</td>
 </tr>
 <tr>
 <th class="cell-left">${_('ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q5')}</th>
-<td>${c['attributes']['nm1q5'] or '-'}</td>
+<td>${round(c['attributes']['nm1q5'],3) or '-'}</td>
 <th class="cell-left">${_('ch_bafu_hydrologie_niedrigwasserstatistik.NM1Q2')}</th>
-<td>${c['attributes']['nm1q2'] or '-'}</td>
+<td>${round(c['attributes']['nm1q2'],3) or '-'}</td>
 </tr>
 <tr>
 <th class="cell-left">${_('ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q100')}</th>
-<td>${c['attributes']['nm7q100'] or '-'}</td>
+<td>${round(c['attributes']['nm7q100'],3) or '-'}</td>
 <th class="cell-left">${_('ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q50')}</th>
-<td>${c['attributes']['nm7q50'] or '-'}</td>
+<td>${round(c['attributes']['nm7q50'],3) or '-'}</td>
 </tr>
 <tr>
 <th class="cell-left">${_('ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q20')}</th>
-<td>${c['attributes']['nm7q20'] or '-'}</td>
+<td>${round(c['attributes']['nm7q20'],3) or '-'}</td>
 <th class="cell-left">${_('ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q10')}</th>
-<td>${c['attributes']['nm7q10'] or '-'}</td>
+<td>${round(c['attributes']['nm7q10'],3) or '-'}</td>
 </tr>
 <tr>
 <th class="cell-left">${_('ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q5')}</th>
-<td>${c['attributes']['nm7q5'] or '-'}</td>
+<td>${round(c['attributes']['nm7q5'],3) or '-'}</td>
 <th class="cell-left">${_('ch_bafu_hydrologie_niedrigwasserstatistik.NM7Q2')}</th>
-<td>${c['attributes']['nm7q2'] or '-'}</td>
+<td>${round(c['attributes']['nm7q2'],3) or '-'}</td>
 </tr>
 <tr>
 <th class="cell-left">${_('ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q100')}</th>
-<td>${c['attributes']['nm14q100'] or '-'}</td>
+<td>${round(c['attributes']['nm14q100'],3) or '-'}</td>
 <th class="cell-left">${_('ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q50')}</th>
-<td>${c['attributes']['nm14q50'] or '-'}</td>
+<td>${round(c['attributes']['nm14q50'],3) or '-'}</td>
 </tr>
 <tr>
 <th class="cell-left">${_('ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q20')}</th>
-<td>${c['attributes']['nm14q20'] or '-'}</td>
+<td>${round(c['attributes']['nm14q20'],3) or '-'}</td>
 <th class="cell-left">${_('ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q10')}</th>
-<td>${c['attributes']['nm14q10'] or '-'}</td>
+<td>${round(c['attributes']['nm14q10'],3) or '-'}</td>
 </tr>
 <tr>
 <th class="cell-left">${_('ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q5')}</th>
-<td>${c['attributes']['nm14q5'] or '-'}</td>
+<td>${round(c['attributes']['nm14q5'],3) or '-'}</td>
 <th class="cell-left">${_('ch_bafu_hydrologie_niedrigwasserstatistik.NM14Q2')}</th>
-<td>${c['attributes']['nm14q2'] or '-'}</td>
+<td>${round(c['attributes']['nm14q2'],3) or '-'}</td>
 </tr>
 <tr>
 <th class="cell-left">${_('ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q100')}</th>
-<td>${c['attributes']['nm30q100'] or '-'}</td>
+<td>${round(c['attributes']['nm30q100'],3) or '-'}</td>
 <th class="cell-left">${_('ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q50')}</th>
-<td>${c['attributes']['nm30q50'] or '-'}</td>
+<td>${round(c['attributes']['nm30q50'],3) or '-'}</td>
 </tr>
 <tr>
 <th class="cell-left">${_('ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q20')}</th>
-<td>${c['attributes']['nm30q20'] or '-'}</td>
+<td>${round(c['attributes']['nm30q20'],3) or '-'}</td>
 <th class="cell-left">${_('ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q10')}</th>
-<td>${c['attributes']['nm30q10'] or '-'}</td>
+<td>${round(c['attributes']['nm30q10'],3) or '-'}</td>
 </tr>
 <tr>
 <th class="cell-left">${_('ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q5')}</th>
-<td>${c['attributes']['nm30q5'] or '-'}</td>
+<td>${round(c['attributes']['nm30q5'],3) or '-'}</td>
 <th class="cell-left">${_('ch_bafu_hydrologie_niedrigwasserstatistik.NM30Q2')}</th>
-<td>${c['attributes']['nm30q2'] or '-'}</td>
+<td>${round(c['attributes']['nm30q2'],3) or '-'}</td>
 </tr>
 <tr>
 <th class="cell-left">${_('ch_bafu_hydrologie_niedrigwasserstatistik.hyperlink')}</th>
-<td><a href="${c['attributes'][hyperlink] or '-'}" target="_blank">${c['attributes'][hyperlink] or '-'}</a></td>
-<th class="cell-left">&nbsp;</th>
-<td>&nbsp;</td>
+<td colspan="3"><a href="${c['attributes'][hyperlink] or '-'}" target="_blank">${c['attributes'][hyperlink] or '-'}</a></td>
 </tr>
 </table>
 </%def>
