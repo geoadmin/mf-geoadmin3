@@ -8,6 +8,13 @@
   position: relative;
   width: 100%;
 
+  a {
+    font-size: 14px;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+  }
+
   form {
     position: relative;
     width: 100%;
@@ -17,6 +24,7 @@
     display: inline-block;
     width: 100%;
     position: relative;
+    padding-top: 2px;
     
     &::after {
       content: '\f002';
@@ -27,6 +35,16 @@
       height: 30px;
       line-height: 30px;
       color: #c6c6c6;
+    }
+  }
+
+  .ga-search-title {
+
+    @media (max-height: 600px) {
+      display: none!important;
+    }
+    @media (max-width: 992px) {
+      display: none!important;
     }
   }
 
@@ -41,7 +59,7 @@
     width: 100%;
     font-size: 11px;
     min-width: 160px;
-    padding: 5px 0 35px;
+    padding: 5px 0 21px;
     background-color: @dropdown-background-color;
     border: 1px solid #ccc;
     .box-shadow(0 5px 10px rgba(0,0,0,.2));
@@ -122,6 +140,7 @@
     padding-top: 5px;
     padding-bottom: 5px;
     padding-left: 20px;
+    font-weight: bold;
   }
   
   .icon-info-sign {
@@ -147,36 +166,12 @@
       right: 0.2em;
       font-size: 24px;
     }
+
+    @media (min-width: 992px) and (min-height: 600px) {
+        top: 21px;
+    }
   }
   
-  .ga-search-footer {
-    position: absolute;
-    bottom:0;
-    width: 100%;
-    
-    .ga-search-footer-right {
-      float: right;
-      padding-right: 12px;
-    }
-    
-    .ga-search-footer-left {
-      float: left;
-      padding-top: 10px;
-      padding-left: 20px;
-    }
-  }
-
-  .ga-search-contact-icon {
-    display: inline-block;
-    padding: 0 6px;
-    color: #474949;
-    font-size: 24px;
-    &:hover, &:focus {
-      color: #3a3c3c;
-      text-decoration: none;
-    }
-  }
-
   @media (max-width: @screen-tablet), (max-height: @screen-sm-max-height) {
   
     .ga-search-dropdown, input {
@@ -207,12 +202,6 @@
           right: 2px;
         }
       }
-    }
-  }
-
-  @media (max-width: @screen-phone) {
-    .ga-search-footer {
-       display: none;
     }
   }
 }
