@@ -31,6 +31,69 @@ msgstr ""
 msgid "ch.nagra.aeromagnetische-karte_1500"
 msgstr ""
 
+msgid "ch.bafu.hydrologie-hochwasserstatistik.coordX"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.coordY"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.dimension"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.einzugsgebietsflaeche"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.mittlerehoehe"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.hq2"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.hq5"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.hq10"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.hq30"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.hq50"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.hq100"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.hq300"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.kenn_nr"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.name"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.regimename"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.statj_anf"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.statj_end"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.statj_tot"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.url"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik.urlhq"
+msgstr ""
+
+msgid "ch.bafu.hydrologie-hochwasserstatistik"
+msgstr ""
+
 msgid "ch.bav.sachplan-infrastruktur-schifffahrt_anhoerung"
 msgstr ""
 
