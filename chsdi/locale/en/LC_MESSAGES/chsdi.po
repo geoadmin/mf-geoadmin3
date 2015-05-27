@@ -2386,6 +2386,12 @@ msgstr "Minimum Intervention"
 msgid "ch.pronatura.waldreservate.tt_pronatura_e3"
 msgstr "Conservation through active management"
 
+msgid "ch.sgpk.maechtigkeit-lockergesteine"
+msgstr "Sediment thickness"
+
+msgid "ch.sgpk.maechtigkeit-lockergesteine.epaisseur"
+msgstr "Sediment thickness [m]"
+
 msgid "ch.swisstopo"
 msgstr "swisstopo"
 

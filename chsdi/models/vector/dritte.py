@@ -11,6 +11,20 @@ from chsdi.models.vector import Vector
 Base = bases['dritte']
 
 
+class Maechtigkeit_lockergesteine(Base, Vector):
+    __tablename__ = 'maechtigkeit_lockergesteine'
+    __table_args__ = ({'schema': 'sgpk', 'autoload': False})
+    __template__ = 'templates/htmlpopup/maechtigkeit_lockergesteine.mako'
+    __bodId__ = 'ch.sgpk.maechtigkeit-lockergesteine'
+    __label__ = 'id'
+    id = Column('id', Integer, primary_key=True)
+    maechtigkeit = Column('maechtigkeit', Numeric)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.sgpk.maechtigkeit-lockergesteine', Maechtigkeit_lockergesteine)
+
+
 class FEUERSTELLEN(Base, Vector):
     __tablename__ = 'feuerstellen'
     __table_args__ = ({'schema': 'tamedia', 'autoload': False})

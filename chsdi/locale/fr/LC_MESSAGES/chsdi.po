@@ -2385,6 +2385,12 @@ msgstr "Interventions minimales"
 msgid "ch.pronatura.waldreservate.tt_pronatura_e3"
 msgstr "Promotion de la biodiversité par des interventions ciblées"
 
+msgid "ch.sgpk.maechtigkeit-lockergesteine"
+msgstr "Epaisseur des roches meubles"
+
+msgid "ch.sgpk.maechtigkeit-lockergesteine.epaisseur"
+msgstr "Epaisseur des roches meubles [m]"
+
 msgid "ch.swisstopo"
 msgstr "swisstopo"
 
