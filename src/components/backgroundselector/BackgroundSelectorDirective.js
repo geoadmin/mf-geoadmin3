@@ -11,7 +11,8 @@
   ]);
 
   module.directive('gaBackgroundSelector',
-    function($document, gaPermalink, gaLayers, gaLayerFilters) {
+    function($document, gaPermalink, gaLayers, gaLayerFilters,
+      gaBrowserSniffer) {
       return {
         restrict: 'A',
         templateUrl:
@@ -21,6 +22,7 @@
         },
         link: function(scope, elt, attrs) {
           scope.isBackgroundSelectorClosed = true;
+          scope.embed = gaBrowserSniffer.embed;
           var map = scope.map;
           var firstLayerChangeEvent = true;
           var isOfflineToOnline = false;
