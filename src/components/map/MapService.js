@@ -1179,6 +1179,11 @@
           view.setZoom(zoom);
           view.setCenter(center);
         },
+        zoomToExtent: function(map, extent) {
+          var size = map.getSize();
+          var view = map.getView();
+          view.fitExtent(extent, size);
+        },
 
         // Test if a layer is a KML layer added by the ImportKML tool or
         // permalink
