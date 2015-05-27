@@ -2385,6 +2385,12 @@ msgstr "Interventi minimi"
 msgid "ch.pronatura.waldreservate.tt_pronatura_e3"
 msgstr "Promozione delle biodiversità per mezzo di interventi specifici"
 
+msgid "ch.sgpk.maechtigkeit-lockergesteine"
+msgstr "Spessore dei sedimenti"
+
+msgid "ch.sgpk.maechtigkeit-lockergesteine.epaisseur"
+msgstr "Spessore dei sedimenti [m]"
+
 msgid "ch.swisstopo"
 msgstr "swisstopo"
 

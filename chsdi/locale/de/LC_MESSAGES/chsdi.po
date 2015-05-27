@@ -2385,6 +2385,12 @@ msgstr "Minimale Eingriffe "
 msgid "ch.pronatura.waldreservate.tt_pronatura_e3"
 msgstr "Biodiversitätsförderung durch gezielte Eingriffe"
 
+msgid "ch.sgpk.maechtigkeit-lockergesteine"
+msgstr "Mächtigkeit der Lockergesteine"
+
+msgid "ch.sgpk.maechtigkeit-lockergesteine.epaisseur"
+msgstr "Mächtigkeit der Lockergesteine [m]"
+
 msgid "ch.swisstopo"
 msgstr "swisstopo"
 

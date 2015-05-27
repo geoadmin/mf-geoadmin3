@@ -34,6 +34,12 @@ msgstr ""
 msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.vergletscherung"
 msgstr ""
 
+msgid "ch.sgpk.maechtigkeit-lockergesteine.epaisseur"
+msgstr ""
+
+msgid "ch.sgpk.maechtigkeit-lockergesteine"
+msgstr ""
+
 msgid "ch.bafu.hydroweb-messstationen_gefahren"
 msgstr ""
 
