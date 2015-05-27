@@ -120,4 +120,16 @@ describe('ga_search_labels_highlight', function() {
     expect(res).to.eql('Was <b> ist das bloss </b> oder');
   });
 
+  it('Should ignore regexp special characters', function() {
+    var testString = 'Das sin.d ein * pa*r ^reg$exp charachters';
+    var res = labelsService.highlight(testString, 'dummy');
+    expect(res).to.eql('Das sin.d ein * pa*r ^reg$exp charachters');
+    res = labelsService.highlight(testString, 'pa*r');
+    expect(res).to.eql('Das sin.d ein * <span class="ga-search-highlight">pa*r</span> ^reg$exp charachters');
+    res = labelsService.highlight(testString, '.');
+    expect(res).to.eql('Das sin<span class="ga-search-highlight">.</span>d ein * pa*r ^reg$exp charachters');
+
+
+  });
+
 });

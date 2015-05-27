@@ -114,38 +114,65 @@
 
   module.provider('gaSearchLabels', function() {
 
-    var preIndicator = '-------------------------------';
-    var postIndicator = '________________________________';
-    var boldOpen = '*****************************';
-    var boldClose = '############################';
     var preHighlight = '<span class="ga-search-highlight">';
     var postHighlight = '</span>';
+    var ignoreTags = ['<b>', '</b>', preHighlight, postHighlight];
+
+    var escapeRegExp = function(str) {
+      return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+    };
+
+    var getIndicesToIgnore = function(strIn) {
+      var ignoreIndices = [];
+      for (var i = 0; i < ignoreTags.length; i++) {
+        var tag = ignoreTags[i];
+        var regex = new RegExp(escapeRegExp(tag), 'gi');
+        var result;
+        while (result = regex.exec(strIn)) {
+          ignoreIndices.push([result.index, result.index + tag.length]);
+        }
+      }
+      return ignoreIndices;
+    };
+
+    var ignore = function(indices, start, end) {
+      for (var i = 0; i < indices.length; i++) {
+        var ind = indices[i];
+        if ((start >= ind[0] && start <= ind[1]) ||
+            (end >= ind[0] && end <= ind[1])) {
+          return true;
+        }
+      }
+      return false;
+    };
 
     var highlightWord = function(strIn, word) {
       if (!(!!word.length)) {
         return strIn;
       }
-      var str = strIn.replace(/<b>/gi, boldOpen)
-                     .replace(/<\/b>/gi, boldClose);
-      var patt = new RegExp(word, 'ig');
-      var splits = str.split(patt);
+      var ignoreIndices = getIndicesToIgnore(strIn);
+      var splits = strIn.split(new RegExp(escapeRegExp(word), 'gi'));
       var res = '';
       var i = 0;
       var olen = 0;
       var wlen = word.length;
+      var skip = false;
       for (; i < splits.length - 1; i++) {
         res += splits[i];
         olen += splits[i].length;
-        res += preIndicator +
-               str.substring(olen, olen + wlen) +
-               postIndicator;
+        var skip = ignore(ignoreIndices, olen, olen + wlen);
+        if (!skip) {
+          res += preHighlight;
+        }
+        res += strIn.substring(olen, olen + wlen);
+        if (!skip) {
+          res += postHighlight;
+        }
         olen += wlen;
       }
       res += splits[i];
-      return res.replace(boldOpen, '<b>')
-                .replace(boldClose, '</b>');
+      return res;
     };
-
 
     this.$get = function() {
       return {
@@ -155,10 +182,7 @@
           angular.forEach(words, function(w) {
             res = highlightWord(res, w);
           });
-          var pre = new RegExp(preIndicator, 'g');
-          var post = new RegExp(postIndicator, 'g');
-          return res.replace(pre, preHighlight)
-                    .replace(post, postHighlight);
+          return res;
         },
         cleanLabel: function(str) {
           return str.replace(/(<b>|<\/b>)/gi, '');
