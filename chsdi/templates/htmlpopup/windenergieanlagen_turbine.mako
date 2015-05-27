@@ -117,6 +117,15 @@ src="//dav0.bgdi.admin.ch/bfe_pub/images_windenergieanlagen/chart_${c['attribute
 % endif
 <h3> ${_('windturbinenangaben')}</h3>       
 <table class="table-with-border kernkraftwerke-extended" cellpadding="1">
+   <colgroup>
+      <col width=13%>
+      <col width=12%>
+      <col width=16%>
+      <col width=13%>
+      <col width=13%>
+      <col width=14%>
+      <col width=19%>
+   </colgroup>
 <tr>
   <th class="cell-meta">${_('hersteller')}</th>
   <th class="cell-meta">${_('modell')}</th>

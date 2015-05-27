@@ -4529,7 +4529,7 @@ msgid "rotation key apple"
 msgstr "Use \u2325 + Shift + drag to rotate the image"
 
 msgid "rotordurchmesser"
-msgstr "Rotor- Durchmesser"
+msgstr "Rotor- durchmesser"
 
 msgid "routentypid"
 msgstr "Routentyp ID für Ausnahmetransporte"
