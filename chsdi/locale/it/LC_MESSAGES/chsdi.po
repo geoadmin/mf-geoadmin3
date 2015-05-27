@@ -1514,6 +1514,111 @@ msgstr "Caduta di massi"
 msgid "ch.bafu.silvaprotect-uebersarung"
 msgstr "Alluvionamento da sedimento"
 
+msgid "ch.bafu.strukturguete-hochrhein_linkesufer"
+msgstr "Qualité str. rive gauche"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesufer.datenherkunft"
+msgstr "OFEFEP/Lfu Karlsruhe"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesufer.lufer"
+msgstr "Berge gauche"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesufer.lumfeld"
+msgstr "Lit majeur rive gauche"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesufer.rufer"
+msgstr "Berge droite"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesufer.rumfeld"
+msgstr "Lit majeur rive droite"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesufer.sohle"
+msgstr "Lit mineur"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesumfeld"
+msgstr "Qualité str. zone riveraine gauche"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesumfeld.datenherkunft"
+msgstr "OFEFEP/Lfu Karlsruhe"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesumfeld.lufer"
+msgstr "Berge gauche"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesumfeld.lumfeld"
+msgstr "Lit majeur rive gauche"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesumfeld.rufer"
+msgstr "Berge droite"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesumfeld.rumfeld"
+msgstr "Lit majeur rive droite"
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesumfeld.sohle"
+msgstr "Lit mineur"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesufer"
+msgstr "Qualité str. rive droite"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesufer.datenherkunft"
+msgstr "OFEFEP/Lfu Karlsruhe"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesufer.lufer"
+msgstr "Berge gauche"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesufer.lumfeld"
+msgstr "Lit majeur rive gauche"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesufer.rufer"
+msgstr "Berge droite"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesufer.rumfeld"
+msgstr "Lit majeur rive droite"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesufer.sohle"
+msgstr "Lit mineur"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesumfeld"
+msgstr "Qualité str. zone riveraine droite"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesumfeld.datenherkunft"
+msgstr "OFEFEP/Lfu Karlsruhe"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesumfeld.lufer"
+msgstr "Berge gauche"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesumfeld.lumfeld"
+msgstr "Lit majeur rive gauche"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesumfeld.rufer"
+msgstr "Berge droite"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesumfeld.rumfeld"
+msgstr "Lit majeur rive droite"
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesumfeld.sohle"
+msgstr "Lit mineur"
+
+msgid "ch.bafu.strukturguete-hochrhein_sohle"
+msgstr "Qualité str. lit"
+
+msgid "ch.bafu.strukturguete-hochrhein_sohle.datenherkunft"
+msgstr "OFEFEP/Lfu Karlsruhe"
+
+msgid "ch.bafu.strukturguete-hochrhein_sohle.lufer"
+msgstr "Berge gauche"
+
+msgid "ch.bafu.strukturguete-hochrhein_sohle.lumfeld"
+msgstr "Lit majeur rive gauche"
+
+msgid "ch.bafu.strukturguete-hochrhein_sohle.rufer"
+msgstr "Berge droite"
+
+msgid "ch.bafu.strukturguete-hochrhein_sohle.rumfeld"
+msgstr "Lit majeur rive droite"
+
+msgid "ch.bafu.strukturguete-hochrhein_sohle.sohle"
+msgstr "Lit mineur"
+
 msgid "ch.bafu.sturm-boeenspitzen_100"
 msgstr "Tempesta raffiche 100"
 

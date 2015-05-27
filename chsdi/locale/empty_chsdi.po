@@ -130,6 +130,111 @@ msgstr ""
 msgid "ch.bafu.hydrologie-hochwasserstatistik"
 msgstr ""
 
+msgid "ch.bafu.strukturguete-hochrhein_linkesufer"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesufer.datenherkunft"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesufer.lufer"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesufer.lumfeld"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesufer.rufer"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesufer.rumfeld"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesufer.sohle"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesumfeld"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesumfeld.datenherkunft"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesumfeld.lufer"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesumfeld.lumfeld"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesumfeld.rufer"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesumfeld.rumfeld"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_linkesumfeld.sohle"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesufer"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesufer.datenherkunft"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesufer.lufer"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesufer.lumfeld"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesufer.rufer"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesufer.rumfeld"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesufer.sohle"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesumfeld"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesumfeld.datenherkunft"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesumfeld.lufer"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesumfeld.lumfeld"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesumfeld.rufer"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesumfeld.rumfeld"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_rechtesumfeld.sohle"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_sohle"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_sohle.datenherkunft"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_sohle.lufer"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_sohle.lumfeld"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_sohle.rufer"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_sohle.rumfeld"
+msgstr ""
+
+msgid "ch.bafu.strukturguete-hochrhein_sohle.sohle"
+msgstr ""
+
 msgid "ch.bav.sachplan-infrastruktur-schifffahrt_anhoerung"
 msgstr ""
 
