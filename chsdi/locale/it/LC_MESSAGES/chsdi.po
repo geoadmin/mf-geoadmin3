@@ -1196,6 +1196,54 @@ msgstr "Microzonazione"
 msgid "ch.bafu.gefahren-spektral"
 msgstr "Microzonazione spettrale"
 
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet"
+msgstr "Eaux de baignade (qualité)"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.aeussereraspekt"
+msgstr "Aspect général"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.bwid"
+msgstr "ID du site de baignade"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.bwname"
+msgstr "Nom"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.ch1903x"
+msgstr "Coordonnée X"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.ch1903y"
+msgstr "Coordonnée Y"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.groupid"
+msgstr "Groupe de sites de baignade"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.kanton"
+msgstr "Canton"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.latbw"
+msgstr "Coordonnée Y (ETRS 89)"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.lonbw"
+msgstr "Coordonnée X (ETRS 89)"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.nwunitname"
+msgstr "Cours ou plan d'eau"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.qualitaetklasse"
+msgstr "Qualité (Classement selon l'AEE)"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.rbdname"
+msgstr "District hydrographique (DCE)"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.rbdsuname"
+msgstr "Bassin fluvial"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.url"
+msgstr "Lien"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.yearbw"
+msgstr "Année"
+
 msgid "ch.bafu.gewaesserschutzbereiche"
 msgstr "Settori di protezione delle acque"
 

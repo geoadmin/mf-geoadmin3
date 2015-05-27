@@ -235,6 +235,54 @@ msgstr ""
 msgid "ch.bafu.strukturguete-hochrhein_sohle.sohle"
 msgstr ""
 
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet"
+msgstr ""
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.aeussereraspekt"
+msgstr ""
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.bwid"
+msgstr ""
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.bwname"
+msgstr ""
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.ch1903x"
+msgstr ""
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.ch1903y"
+msgstr ""
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.groupid"
+msgstr ""
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.kanton"
+msgstr ""
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.latbw"
+msgstr ""
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.lonbw"
+msgstr ""
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.nwunitname"
+msgstr ""
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.qualitaetklasse"
+msgstr ""
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.rbdname"
+msgstr ""
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.rbdsuname"
+msgstr ""
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.url"
+msgstr ""
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.yearbw"
+msgstr ""
+
 msgid "ch.bav.sachplan-infrastruktur-schifffahrt_anhoerung"
 msgstr ""
 

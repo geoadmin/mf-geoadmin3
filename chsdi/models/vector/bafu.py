@@ -284,6 +284,36 @@ class Strukturguete_hochrhein_sohle(Base, Vector):
 register('ch.bafu.strukturguete-hochrhein_sohle', Strukturguete_hochrhein_sohle)
 
 
+class Gewaesserschutz_badewasserqualitaet(Base, Vector):
+    __tablename__ = 'gewaesserschutz_badewasserqualitaet'
+    __table_args__ = ({'schema': 'wasser', 'autoload': False})
+    __bodId__ = 'ch.bafu.gewaesserschutz-badewasserqualitaet'
+    __template__ = 'templates/htmlpopup/gewaesserschutz_badewasserqualitaet.mako'
+    __queryable_attributes__ = ['rbdsuname', 'groupid', 'bwname', 'nwunitname']
+    __extended_info__ = True
+    __label__ = 'bwname'
+    id = Column('bgdi_id', Integer, primary_key=True)
+    bwid = Column('bwid', Text)
+    bwname = Column('bwname', Text)
+    aeussereraspekt = Column('aeussereraspekt', Text)
+    yearbw = Column('year_bw', Integer)
+    ch1903x = Column('rechtswert', Integer)
+    ch1903y = Column('hochwert', Integer)
+    groupid = Column('groupid', Text)
+    qualitaetklasse = Column('qualitaetsklasse', Text)
+    rbdname = Column('rbdname', Text)
+    rbdsuname = Column('rbdsuname', Text)
+    nwunitname = Column('nwunitname', Text)
+    url = Column('hyperlink', Text)
+    kanton = Column('kanton', Text)
+    latbw = Column('longitude', Numeric)
+    lonbw = Column('latitude', Numeric)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.bafu.gewaesserschutz-badewasserqualitaet', Gewaesserschutz_badewasserqualitaet)
+
+
 class AM_G(Base, Vector):
     __tablename__ = 'am_g'
     __table_args__ = ({'schema': 'bundinv', 'autoload': False})

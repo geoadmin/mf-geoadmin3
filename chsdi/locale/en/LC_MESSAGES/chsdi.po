@@ -1196,6 +1196,54 @@ msgstr "Micro-zoning"
 msgid "ch.bafu.gefahren-spektral"
 msgstr "Spectral micro-zoning"
 
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet"
+msgstr "Badegewässerqualität"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.aeussereraspekt"
+msgstr "Äusserer Aspekt"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.bwid"
+msgstr "Badeplatz ID"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.bwname"
+msgstr "Name"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.ch1903x"
+msgstr "Koordinaten X"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.ch1903y"
+msgstr "Koordinaten Y"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.groupid"
+msgstr "Badeplatzgruppe"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.kanton"
+msgstr "Kanton"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.latbw"
+msgstr "Koordinaten Y (ETRS 89)"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.lonbw"
+msgstr "Koordinaten X (ETRS 89)"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.nwunitname"
+msgstr "Gewässer"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.qualitaetklasse"
+msgstr "Qualität (Klassierung nach EUA)"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.rbdname"
+msgstr "Flussgebietseinheit (WRRL)"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.rbdsuname"
+msgstr "Flussgebiet"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.url"
+msgstr "Link"
+
+msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.yearbw"
+msgstr "Jahr"
+
 msgid "ch.bafu.gewaesserschutzbereiche"
 msgstr "Water protection regions"
 
@@ -4475,7 +4523,7 @@ msgid "rotation key apple"
 msgstr "Use \u2325 + Shift + drag to rotate the image"
 
 msgid "rotordurchmesser"
-msgstr "Rotordurchmesser"
+msgstr "Rotor- Durchmesser"
 
 msgid "routentypid"
 msgstr "Routentyp ID für Ausnahmetransporte"
