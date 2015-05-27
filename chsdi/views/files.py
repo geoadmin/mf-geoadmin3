@@ -7,6 +7,7 @@ import time
 import zipfile
 import ConfigParser
 import StringIO
+import datetime
 
 from boto.dynamodb2.table import Table
 from boto.dynamodb2 import connect_to_region
@@ -16,7 +17,6 @@ from boto.dynamodb2.exceptions import ItemNotFound
 
 from boto.s3.connection import S3Connection
 from boto.s3.key import Key
-from boto.utils import parse_ts
 
 from pyramid.view import view_config, view_defaults
 import pyramid.httpexceptions as exc
@@ -24,26 +24,58 @@ from pyramid.response import Response
 
 from chsdi.lib.decorators import requires_authorization, validate_kml_input
 
+ISO8601 = '%Y-%m-%dT%H:%M:%SZ'
+ISO8601_MS = '%Y-%m-%dT%H:%M:%S.%fZ'
+RFC1123 = '%a, %d %b %Y %H:%M:%S %Z'
+
+
+def _parse_ts(ts):
+    dt = None
+    ts = ts.strip()
+    try:
+        dt = datetime.datetime.strptime(ts, ISO8601)
+    except:
+        dt = None
+
+    if dt is None:
+        try:
+            dt = datetime.datetime.strptime(ts, ISO8601_MS)
+        except:
+            dt = None
+
+    if dt is None:
+        try:
+            dt = datetime.datetime.strptime(ts, RFC1123)
+        except:
+            dt = None
+
+    return dt
+
 
 def _get_dynamodb_table():
-    PROFILE_NAME = 'Credentials'
+    table = None
     DYNAMODB_TABLE_NAME = 'geoadmin-file-storage'
-    user_cfg = os.path.join(os.path.expanduser("~"), '.boto')
-    config = ConfigParser.ConfigParser()
-    config.read(["/etc/boto.cfg", user_cfg])
+    try:
+        PROFILE_NAME = 'Credentials'
+        user_cfg = os.path.join(os.path.expanduser("~"), '.boto')
+        config = ConfigParser.ConfigParser()
+        config.read(["/etc/boto.cfg", user_cfg])
+        access_key = config.get(PROFILE_NAME, 'aws_access_key_id')
+        secret_key = config.get(PROFILE_NAME, 'aws_secret_access_key')
+        conn = connect_to_region('eu-west-1', aws_access_key_id=access_key,
+                                 aws_secret_access_key=secret_key)
+        table = Table(DYNAMODB_TABLE_NAME, connection=conn)
+    except:
+        table = None
 
-    access_key = config.get(PROFILE_NAME, 'aws_access_key_id')
-    secret_key = config.get(PROFILE_NAME, 'aws_secret_access_key')
-
-    conn = connect_to_region('eu-west-1', aws_access_key_id=access_key,
-                             aws_secret_access_key=secret_key)
-
-    table = Table(DYNAMODB_TABLE_NAME, connection=conn)
+    if table is None:
+        try:
+            table = Table(DYNAMODB_TABLE_NAME, connection=connect_to_region('eu-west-1'))
+        except Exception as e:
+            raise exc.HTTPInternalServerError('Unable to access dynamodb table (%s)' % e)
 
     return table
 
-
-    # return get_table(table_name='geoadmin-file-storage')
 
 def _add_item(id, file_id=False):
     table = _get_dynamodb_table()
@@ -154,7 +186,7 @@ class FileView(object):
             access_key = config.get(PROFILE_NAME, 'aws_access_key_id')
             secret_key = config.get(PROFILE_NAME, 'aws_secret_access_key')
         except Exception as e:
-            raise exc.HTTPInternalServerError('Error while trying to configure file access')
+            raise exc.HTTPInternalServerError('Error while trying to configure file access (%s)' % e)
 
         try:
             conn = S3Connection(aws_access_key_id=access_key, aws_secret_access_key=secret_key)
@@ -193,20 +225,20 @@ class FileView(object):
                 k.set_metadata('Content-Type', mime)
                 k.set_contents_from_string(data, replace=False)
                 key = self.bucket.get_key(k.key)
-                last_updated = parse_ts(key.last_modified)
+                last_updated = _parse_ts(key.last_modified)
                 _save_item(self.admin_id, file_id=self.file_id, last_updated=last_updated)
-            except:
-                raise exc.HTTPInternalServerError('Cannot create file on S3')
+            except Exception as e:
+                raise exc.HTTPInternalServerError('Cannot create file on S3 (%s)' % e)
         else:
             try:
                 if self.key.content_type == 'application/vnd.google-earth.kmz' and ziped_data is not None:
                     data = ziped_data
                 self.key.set_contents_from_string(data, replace=True)
                 key = self.bucket.get_key(self.key.key)
-                last_updated = parse_ts(key.last_modified)
+                last_updated = _parse_ts(key.last_modified)
                 _save_item(self.admin_id, last_updated=last_updated)
-            except:
-                raise exc.HTTPInternalServerError('Cannot update file on S3')
+            except Exception as e:
+                raise exc.HTTPInternalServerError('Cannot update file on S3 (%s)' % e)
 
     @view_config(route_name='files_collection', request_method='POST')
     @requires_authorization()
