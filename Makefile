@@ -26,6 +26,10 @@ CESIUM_VERSION ?= 257364f24d12ac44006f92de597eaead755780b7
 DEFAULT_TOPIC_ID ?= ech
 TRANSLATION_FALLBACK_CODE ?= de
 LANGUAGES ?= '[\"de\", \"en\", \"fr\", \"it\", \"rm\"]'
+TRANSLATE_GSPREAD_KEYS ?= 1F3R46w4PODfsbJq7jd79sapy3B7TXhQcYM7SEaccOA0
+TRANSLATE_GSPREAD_AUTHFILE ?= re3-translations.json
+TRANSLATE_OUTPUT ?= src/locales
+TRANSLATE_CSV_FILES ?=
 DEFAULT_EXTENT ?= '[420000, 30000, 900000, 350000]'
 DEFAULT_RESOLUTION ?= 500.0
 DEFAULT_LEVEL_OF_DETAIL ?= 7 #level of detail for the default resolution
@@ -233,7 +237,11 @@ datepicker: .build-artefacts/datepicker
 
 .PHONY: translate
 translate: .build-artefacts/translate-requirements-installation.timestamp
-	${PYTHON_CMD} scripts/translation2js.py src/locales/
+	${PYTHON_CMD} scripts/translation2json.py \
+            --gspread ${TRANSLATE_GSPREAD_KEYS} \
+            --key ${TRANSLATE_GSPREAD_AUTHFILE} \
+            --files ${TRANSLATE_CSV_FILES} \
+            --output-folder ${TRANSLATE_OUTPUT}
 
 .PHONY: fixrights
 fixrights:
@@ -500,7 +508,6 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 	touch $@
 
 .build-artefacts/translate-requirements-installation.timestamp: .build-artefacts/python-venv
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "PyYAML==3.10"
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "oauth2client==1.4.11"
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "gspread==0.2.5"
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "pyopenssl==0.15.1"
