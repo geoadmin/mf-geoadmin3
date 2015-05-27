@@ -1301,6 +1301,42 @@ msgstr "NQSTAT"
 msgid "ch.bafu.hydrologie-q347"
 msgstr "Q347"
 
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen"
+msgstr "HUG-Messstationen"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.betriebsbeginn"
+msgstr "Messbeginn"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.einzugsgebietsflaeche"
+msgstr "Einzugsgebietsfläche [km2]"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.flussgebiet"
+msgstr "Flussgebiet"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.hochwert"
+msgstr "Koordinaten Y"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.hoehe"
+msgstr "Stationshöhe [m ü.M.]"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.mittlerehoehe"
+msgstr "Mittlere Höhe [m ü.M.]"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.name"
+msgstr "Name der Station"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.rechtswert"
+msgstr "Koordinaten X"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.stationierung"
+msgstr "Entfernung von der Mündung oder Landesgrenze [km]"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.url"
+msgstr "Link deutsch"
+
+msgid "ch.bafu.hydrologie-untersuchungsgebiete_stationen.vergletscherung"
+msgstr "Vergletscherung [%]"
+
 msgid "ch.bafu.hydrologie-wassertemperaturmessstationen"
 msgstr "Temperature monitoring stations"
 

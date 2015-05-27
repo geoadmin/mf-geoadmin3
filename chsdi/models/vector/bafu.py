@@ -144,6 +144,33 @@ class Hydro_q347(Base, Vector):
 register('ch.bafu.hydrologie-q347', Hydro_q347)
 
 
+class HUG_stationen(Base, Vector):
+    __tablename__ = 'hydrologie_untersuchungsgebiete_stationen'
+    __table_args__ = ({'schema': 'hydrologie', 'autoload': False})
+    __bodId__ = 'ch.bafu.hydrologie-untersuchungsgebiete_stationen'
+    __template__ = 'templates/htmlpopup/hug_stationen.mako'
+    __queryable_attributes__ = ['name', 'hoehe', 'betriebsbeginn', 'einzugsgebietsflaeche', 'mittlerehoehe', 'vergletscherung', 'stationierung', 'flussgebiet']
+    __label__ = 'id'
+    __extended_info__ = True
+    id = Column('geodb_oid', Integer, primary_key=True)
+    name = Column('name', Text)
+    hochwert = Column('hochwert', Integer)
+    rechtswert = Column('rechtswert', Integer)
+    hoehe = Column('hoehe', Integer)
+    betriebsbeginn = Column('betriebsbeginn', Integer)
+    einzugsgebietsflaeche = Column('einzugsgebietsflaeche', Numeric)
+    mittlerehoehe = Column('mittlerehoehe', Integer)
+    vergletscherung = Column('vergletscherung', Numeric)
+    stationierung = Column('stationierung', Numeric)
+    flussgebiet = Column('flussgebiet', Text)
+    hyperlink_f = Column('hyperlink_f', Text)
+    hyperlink_d = Column('hyperlink_d', Text)
+    the_geom = Column(Geometry(geometry_type='GEOMETRY',
+                               dimension=2, srid=21781))
+
+register('ch.bafu.hydrologie-untersuchungsgebiete_stationen', HUG_stationen)
+
+
 class Hintergrundkarte(Base, Vector):
     __tablename__ = 'hydrologie_hintergrundkarte'
     __table_args__ = ({'schema': 'hydrologie', 'autoload': False})
