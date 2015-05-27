@@ -7,17 +7,22 @@
   background-repeat: no-repeat;
   background-position: center; 
   background-image: data-uri('backgroundSelector.png');
+  &:active {
+    transform: scale(1.2);
+    -ms-transform: scale(1.2);
+    -webkit-transform: scale(1.2);
+  }
 }
 
 .ga-bg-layer {
   overflow: hidden;
   z-index: 1000;
   cursor: pointer;
-  width: 44px;
-  height: 44px;
-  border-radius:22px;
+  width: 42px;
+  height: 42px;
+  border-radius:21px;
   position: absolute;
-  top: 158px;
+  top: 159px;
   background-repeat: no-repeat;
   background-position: center; 
   background-color: rgba(58, 60, 60, 0.9);
@@ -26,37 +31,41 @@
 
 .ga-bg-highlight {
   background-color: rgba(255, 0, 0, 1);
-  border-radius:22px;
+  border-radius:21px;
 }
 
 .ga-bg-layer-0 {
-  right: 50px;
+  right: 49px;
 }
 
 .ga-bg-layer-1 {
-  right: 100px;
+  right: 99px;
 }
 
 .ga-bg-layer-2 {
-  right: 150px;
+  right: 149px;
 }
 
 .ga-bg-layer-3 {
-  right: 200px;
+  right: 199px;
 }
 
 .ga-pixelkarte-farbe {
     background-image: data-uri('pixelkarte-farbe.png');
+    background-size: 38px 38px;
 }
 
 .ga-pixelkarte-grau {
     background-image: data-uri('pixelkarte-grau.png');
+    background-size: 38px 38px;
 }
 
 .ga-swissimage {
     background-image: data-uri('swissimage.png');
+    background-size: 38px 38px;
 }
 
 .ga-voidLayer {
     background-image: data-uri('voidLayer.png');
+    background-size: 38px 38px;
 }
