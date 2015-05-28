@@ -1,6 +1,6 @@
 describe('ga_backgroundselector_directive', function() {
 
-  var element, map, layer1, layer2;
+  var element, map, layer1, layer2, rootScope;
 
   beforeEach(function() {
 
@@ -43,6 +43,7 @@ describe('ga_backgroundselector_directive', function() {
 
       $rootScope.$broadcast('gaLayersChange', {labelsOnly: false});
       $rootScope.$digest();
+      rootScope = $rootScope;
     });
 
   });
@@ -56,6 +57,28 @@ describe('ga_backgroundselector_directive', function() {
     it('creates 4 layer bgselectors div', function() {
       var divsBg = element.find('.ga-bg-layer');
       expect(divsBg.length).to.equal(4);
+    });
+  });
+
+  describe('toggle activation', function() {
+    it('shows and hides bgselectors div', function() {
+      expect(element.find('.ga-swissimage').hasClass('ng-hide')).to.be(true);
+
+      element.find('.ga-bg-layer-bt').click();
+      rootScope.$digest();
+      expect(element.find('.ga-swissimage').hasClass('ng-hide')).to.be(false);
+
+      element.find('.ga-bg-layer-bt').click();
+      rootScope.$digest();
+      expect(element.find('.ga-swissimage').hasClass('ng-hide')).to.be(true);
+
+      element.find('.ga-bg-layer-bt').click();
+      rootScope.$digest();
+      expect(element.find('.ga-swissimage').hasClass('ng-hide')).to.be(false);
+
+      element.find('.ga-swissimage').click();
+      rootScope.$digest();
+      expect(element.find('.ga-swissimage').hasClass('ng-hide')).to.be(true);
     });
   });
 });
