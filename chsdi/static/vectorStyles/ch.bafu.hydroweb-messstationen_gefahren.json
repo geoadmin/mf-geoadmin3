@@ -23,7 +23,7 @@
         "type": "circle",
         "radius": 8,
         "fill": {
-          "color": "#CCFF66"
+          "color": "#00FF00"
         },
         "stroke": {
           "color": "#FFFFFF",
