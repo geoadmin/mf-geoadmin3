@@ -26,6 +26,7 @@
           var map = scope.map;
           var firstLayerChangeEvent = true;
           var isOfflineToOnline = false;
+          var currentTopic;
 
           var defaultBgOrder = [
               {id: 'ch.swisstopo.swissimage', label: 'bg_luftbild'},
@@ -79,7 +80,7 @@
               firstLayerChangeEvent = false;
             }
             if ((!bgLayer && !scope.currentLayer) ||
-              (scope.currentTopic && (scope.currentTopic != data.topicId))) {
+              (currentTopic && (currentTopic != data.topicId))) {
               bgLayer = gaLayers.getBackgroundLayers()[0].id;
               scope.backgroundLayers = defaultBgOrder.slice(0);
             }
@@ -87,7 +88,7 @@
               scope.currentLayer = bgLayer;
             }
             isOfflineToOnline = false;
-            scope.currentTopic = data.topicId;
+            currentTopic = data.topicId;
           });
 
           scope.$on('gaPermalinkChange', function(event) {
@@ -100,7 +101,7 @@
             }
           });
 
-          scope.onClick = function(layerid) {
+          scope.activateBackgroundLayer = function(layerid) {
             if (scope.isBackgroundSelectorClosed) {
               scope.isBackgroundSelectorClosed = false;
               scope.backgroundLayers = defaultBgOrder.slice(0);
@@ -112,7 +113,7 @@
             }
           };
 
-          scope.onClickBt = function() {
+          scope.toggleMenu = function() {
             if (scope.isBackgroundSelectorClosed) {
               scope.isBackgroundSelectorClosed = false;
             } else {
