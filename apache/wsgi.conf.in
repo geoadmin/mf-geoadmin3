@@ -69,10 +69,7 @@ RewriteRule ^${apache_entry_path}/1.0.0/WMTSCapabilities_v([0-9]{8})\.xml$ ${bui
 RewriteCond %{HTTP_HOST} ^s.geo.admin.ch$
 RewriteRule ^${apache_entry_path}/(.*)$ ${apache_entry_path}/shorten/$1 [PT]
 
-# Proxy pass for geodesy services
-RewriteRule ^${apache_entry_path}/reframe/lv03tolv95(.*)$ http://tc-geodesy.bgdi.admin.ch/reframe/lv03tolv95$1 [P]
-
-<LocationMatch ^${apache_entry_path}/(loader\.js|shorten|shorten.json|reframe/lv03tolv95)>
+<LocationMatch ^${apache_entry_path}/(loader\.js|shorten|shorten.json)>
     Order allow,deny
     Allow from all
 </LocationMatch>
