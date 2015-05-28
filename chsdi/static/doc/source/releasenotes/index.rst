@@ -9,6 +9,28 @@
 Release Notes
 =============
 
+.. _releasenotes_20150528:
+
+Release 20150528 - Thursday, May 28th 2015
+------------------------------------------------
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+- Example and API tooltips for GeoJSON layer
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_150520...r_150528>`__
+
+`MAP <//map.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+- Edit, save and share drawing (KML)
+- Add warning for third party geodata
+- Improved search function
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_150520..r_150528>`__
+
 .. _releasenotes_20150520:
 
 Release 20150520 - Wednesday, May 20th 2015
