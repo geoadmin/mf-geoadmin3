@@ -19,6 +19,8 @@ VALID_KML = '''<?xml version="1.0" encoding="UTF-8"?>
   </Placemark>
 </kml>'''
 
+URLENCODED_KML = '%3Ckml+xmlns=%22http%3A%2F%2Fwww.opengis.net%2Fkml%2F2.2%22+xmlns%3Axsi%3D%22http%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema-instance%22+xsi%3AschemaLocation%3D%22http%3A%2F%2Fwww.opengis.net%2Fkml%2F2.2+https%3A%2F%2Fdevelopers.google.com%2Fkml%2Fschema%2Fkml22gx.xsd%22%3E%3CDocument%3E%3Cname%3EDrawing%3C%2Fname%3E%3CPlacemark%3E%3CStyle%3E%3CIconStyle%3E%3Cscale%3E0.25%3C%2Fscale%3E%3CIcon%3E%3Chref%3Ehttps%3A%2F%2Fmf-geoadmin3.dev.bgdi.ch%2Fltjeg%2F1432804593%2Fimg%2Fmaki%2Fcircle-24%402x.png%3C%2Fhref%3E%3Cgx%3Aw+xmlns%3Agx%3D%22http%3A%2F%2Fwww.google.com%2Fkml%2Fext%2F2.2%22%3E48%3C%2Fgx%3Aw%3E%3Cgx%3Ah+xmlns%3Agx%3D%22http%3A%2F%2Fwww.google.com%2Fkml%2Fext%2F2.2%22%3E48%3C%2Fgx%3Ah%3E%3C%2FIcon%3E%3ChotSpot+x%3D%2224%22+y%3D%2224%22+xunits%3D%22pixels%22+yunits%3D%22pixels%22+%2F%3E%3C%2FIconStyle%3E%3C%2FStyle%3E%3CPoint%3E%3Ccoordinates%3E6.724650291365927%2C46.804920188214076%3C%2Fcoordinates%3E%3C%2FPoint%3E%3C%2FPlacemark%3E%3CPlacemark%3E%3CStyle%3E%3CIconStyle%3E%3Cscale%3E0.25%3C%2Fscale%3E%3CIcon%3E%3Chref%3Ehttps%3A%2F%2Fmf-geoadmin3.dev.bgdi.ch%2Fltjeg%2F1432804593%2Fimg%2Fmaki%2Fcircle-24%402x.png%3C%2Fhref%3E%3Cgx%3Aw+xmlns%3Agx%3D%22http%3A%2F%2Fwww.google.com%2Fkml%2Fext%2F2.2%22%3E48%3C%2Fgx%3Aw%3E%3Cgx%3Ah+xmlns%3Agx%3D%22http%3A%2F%2Fwww.google.com%2Fkml%2Fext%2F2.2%22%3E48%3C%2Fgx%3Ah%3E%3C%2FIcon%3E%3ChotSpot+x%3D%2224%22+y%3D%2224%22+xunits%3D%22pixels%22+yunits%3D%22pixels%22+%2F%3E%3C%2FIconStyle%3E%3C%2FStyle%3E%3CPoint%3E%3Ccoordinates%3E6.728334379750007%2C46.52607115587267%3C%2Fcoordinates%3E%3C%2FPoint%3E%3C%2FPlacemark%3E%3C%2FDocument%3E%3C%2Fkml%3E'
+
 NOT_WELL_FORMED_KML = '''<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
     <name>Simple placemark</name
@@ -118,3 +120,10 @@ class TestFileView(TestsBase):
 
         self.assertEqual(orig_data, VALID_KML)
         self.assertNotEqual(orig_data, modified_content)
+
+    def test_file_ie9_fix(self):
+        # No cotent-type should normally result in error
+        self.testapp.post('/files', URLENCODED_KML, headers={'X-SearchServer-Authorized': 'true'}, status=415)
+        # Having IE9 user-agent makes it working again
+        self.testapp.post('/files', URLENCODED_KML, headers={'X-SearchServer-Authorized': 'true',
+                                                             'User-Agent': 'MSIE 9.0'}, status=200)
