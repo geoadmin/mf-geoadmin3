@@ -12,6 +12,7 @@ import csv
 import json
 import gspread
 import sys
+import os
 
 from os.path import join
 from oauth2client.client import SignedJwtAssertionCredentials
@@ -27,7 +28,7 @@ def main(args, delimiter=',', quotechar='"'):
         for key in args.gspreads:
             csv_reader = _get_csv_reader_from_gspread(
                 key,
-                args.key_file[0],
+                args.key_file,
                 delimiter=delimiter,
                 quotechar=quotechar
             )
@@ -43,14 +44,20 @@ def main(args, delimiter=',', quotechar='"'):
 
 
 def _get_csv_reader_from_gspread(key, key_file, delimiter=',', quotechar='"', **kwargs):
-    json_key = json.load(open(key_file))
-    scope = ['https://spreadsheets.google.com/feeds']
-    credentials = SignedJwtAssertionCredentials(
-        json_key['client_email'],
-        json_key['private_key'].encode('utf-8'),
-        scope
-    )
-    gc = gspread.authorize(credentials)
+    if 'DRIVE_USER' in os.environ.keys() and 'DRIVE_PWD' in os.environ.keys():
+        gc = gspread.login(os.environ['DRIVE_USER'], os.environ['DRIVE_PWD'])
+    elif key_file is not None:
+        json_key = json.load(open(key_file))
+        scope = ['https://spreadsheets.google.com/feeds']
+        credentials = SignedJwtAssertionCredentials(
+            json_key['client_email'],
+            json_key['private_key'].encode('utf-8'),
+            scope
+        )
+        gc = gspread.authorize(credentials)
+    else:
+        print "DRIVE_USER and DRIVE_PWD are not set."
+        sys.exit(1)
     wks = gc.open_by_key(key).sheet1
     resp = wks.export()
     if resp.status == 200:
@@ -94,7 +101,7 @@ if __name__ == '__main__':
                                      'available languages.')
     parser.add_argument('-g', '--gspread', help='List of gspread to parse', dest='gspreads', nargs='*')
     parser.add_argument('-f', '--files', help='List of CSV file to parse', dest='files', nargs='*')
-    parser.add_argument('-k', '--key', help='OAuth 2 json key file to use', dest='key_file', nargs=1)
+    parser.add_argument('-k', '--key', help='OAuth 2 json key file to use', dest='key_file')
     parser.add_argument(
         '-o',
         '--output-folder',

@@ -239,7 +239,6 @@ datepicker: .build-artefacts/datepicker
 translate: .build-artefacts/translate-requirements-installation.timestamp
 	${PYTHON_CMD} scripts/translation2json.py \
             --gspread ${TRANSLATE_GSPREAD_KEYS} \
-            --key ${TRANSLATE_GSPREAD_AUTHFILE} \
             --files ${TRANSLATE_CSV_FILES} \
             --output-folder ${TRANSLATE_OUTPUT}
 
