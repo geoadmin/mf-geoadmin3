@@ -5,12 +5,12 @@ import base64
 import time
 import zipfile
 import StringIO
-import datetime
 
 from boto.dynamodb2.exceptions import ItemNotFound
 
 from boto.exception import S3ResponseError
 from boto.s3.key import Key
+from boto.utils import parse_ts
 
 from pyramid.view import view_config, view_defaults
 import pyramid.httpexceptions as exc
@@ -18,33 +18,6 @@ from pyramid.response import Response
 
 from chsdi.models.clientdata_dynamodb import get_dynamodb_table, get_bucket
 from chsdi.lib.decorators import requires_authorization, validate_kml_input
-
-ISO8601 = '%Y-%m-%dT%H:%M:%SZ'
-ISO8601_MS = '%Y-%m-%dT%H:%M:%S.%fZ'
-RFC1123 = '%a, %d %b %Y %H:%M:%S %Z'
-
-
-def _parse_ts(ts):
-    dt = None
-    ts = ts.strip()
-    try:
-        dt = datetime.datetime.strptime(ts, ISO8601)
-    except:
-        dt = None
-
-    if dt is None:
-        try:
-            dt = datetime.datetime.strptime(ts, ISO8601_MS)
-        except:
-            dt = None
-
-    if dt is None:
-        try:
-            dt = datetime.datetime.strptime(ts, RFC1123)
-        except:
-            dt = None
-
-    return dt
 
 
 def _add_item(id, file_id=False):
@@ -176,7 +149,7 @@ class FileView(object):
                 k.set_metadata('Content-Type', mime)
                 k.set_contents_from_string(data, replace=False)
                 key = self.bucket.get_key(k.key)
-                last_updated = _parse_ts(key.last_modified)
+                last_updated = parse_ts(key.last_modified)
             except Exception as e:
                 raise exc.HTTPInternalServerError('Error while configuring S3 key (%s) %s' % (self.file_id, e))
             try:
@@ -189,7 +162,7 @@ class FileView(object):
                     data = ziped_data
                 self.key.set_contents_from_string(data, replace=True)
                 key = self.bucket.get_key(self.key.key)
-                last_updated = _parse_ts(key.last_modified)
+                last_updated = parse_ts(key.last_modified)
             except:
                 raise exc.HTTPInternalServerError('Error while updating S3 key (%s) %s' % (self.key.key, e))
             try:
