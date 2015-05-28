@@ -24,7 +24,6 @@
           scope.isBackgroundSelectorClosed = true;
           scope.embed = gaBrowserSniffer.embed;
           var map = scope.map;
-          var firstLayerChangeEvent = true;
           var isOfflineToOnline = false;
           var currentTopic;
 
@@ -75,9 +74,8 @@
             // case we want to keep the current bg layer.
 
             var bgLayer;
-            if (firstLayerChangeEvent) {
+            if (!currentTopic) {
               bgLayer = gaPermalink.getParams().bgLayer;
-              firstLayerChangeEvent = false;
             }
             if ((!bgLayer && !scope.currentLayer) ||
               (currentTopic && (currentTopic != data.topicId))) {
