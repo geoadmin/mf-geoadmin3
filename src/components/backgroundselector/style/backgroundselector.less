@@ -1,4 +1,4 @@
-.ga-bg-layer-bt {
+.ga-bg-mobile .ga-bg-layer-bt {
   overflow: hidden;
   z-index: 1000;
   cursor: pointer;
@@ -14,7 +14,25 @@
   }
 }
 
-.ga-bg-layer {
+.ga-bg-desktop .ga-bg-layer-bt {
+  overflow: hidden;
+  z-index: 1000;
+  cursor: pointer;
+  width: 96px;
+  height: 64px;
+  bottom: 52px;
+  right:10px;
+  position: absolute;
+  background-repeat: no-repeat;
+  background-position: center; 
+  background-image: data-uri('swissimage-rect.png');
+  background-color: rgba(214, 214, 214, 0.9);
+  @media (max-width: @screen-tablet) {
+    bottom: 24px;  
+  }
+}
+
+.ga-bg-mobile .ga-bg-layer {
   overflow: hidden;
   z-index: 1000;
   cursor: pointer;
@@ -33,47 +51,106 @@
   }
 }
 
-.ga-bg-layer-embed {
+.ga-bg-desktop .ga-bg-layer {
+  overflow: hidden;
+  z-index: 1000;
+  cursor: pointer;
+  width: 96px;
+  height: 64px;
+  position: absolute;
+  bottom: 52px;
+  background-repeat: no-repeat;
+  background-position: center; 
+  background-color: rgba(214, 214, 214, 0.9);
+  @media (max-width: @screen-tablet) {
+    bottom: 24px;  
+  }
+}
+
+.ga-bg-mobile .ga-bg-layer-embed {
   top: 104px;
 }
 
-.ga-bg-highlight {
+.ga-bg-mobile .ga-bg-highlight {
   background-color: rgba(255, 0, 0, 1);
   border-radius:21px;
 }
 
-.ga-bg-layer-0 {
+.ga-bg-desktop .ga-bg-highlight {
+  background-color: rgba(255, 0, 0, 1);
+}
+
+.ga-bg-mobile .ga-bg-layer-0 {
   right: 49px;
 }
 
-.ga-bg-layer-1 {
+.ga-bg-desktop .ga-bg-layer-0 {
+  right: 111px;
+}
+
+.ga-bg-mobile .ga-bg-layer-1 {
   right: 99px;
 }
 
-.ga-bg-layer-2 {
+.ga-bg-desktop .ga-bg-layer-1 {
+  right: 212px;
+}
+
+.ga-bg-mobile .ga-bg-layer-2 {
   right: 149px;
 }
 
-.ga-bg-layer-3 {
+.ga-bg-desktop .ga-bg-layer-2 {
+  right: 313px;
+}
+
+.ga-bg-mobile .ga-bg-layer-3 {
   right: 199px;
 }
 
-.ga-pixelkarte-farbe {
+.ga-bg-desktop .ga-bg-layer-3 {
+  right: 414px;
+}
+
+.ga-bg-mobile .ga-pixelkarte-farbe {
     background-image: data-uri('pixelkarte-farbe.png');
     background-size: 38px 38px;
 }
 
-.ga-pixelkarte-grau {
+.ga-bg-desktop .ga-pixelkarte-farbe {
+    background-image: data-uri('pixelkarte-farbe-rect.png');
+}
+
+.ga-bg-mobile .ga-pixelkarte-grau {
     background-image: data-uri('pixelkarte-grau.png');
     background-size: 38px 38px;
 }
 
-.ga-swissimage {
+.ga-bg-desktop .ga-pixelkarte-grau {
+    background-image: data-uri('pixelkarte-grau-rect.png');
+}
+
+.ga-bg-mobile .ga-swissimage {
     background-image: data-uri('swissimage.png');
     background-size: 38px 38px;
 }
 
-.ga-voidLayer {
+.ga-bg-desktop .ga-swissimage {
+    background-image: data-uri('swissimage-rect.png');
+}
+
+.ga-bg-mobile .ga-voidLayer {
     background-image: data-uri('voidLayer.png');
     background-size: 38px 38px;
+}
+
+.ga-bg-desktop .ga-voidLayer {
+    background-image: data-uri('voidLayer-rect.png');
+}
+
+.ga-bg-layer-text {
+  background-color: rgba(255, 255, 255, 0.95);
+  margin: 3px;
+  padding: 1px;
+  font-size: 75%;
 }

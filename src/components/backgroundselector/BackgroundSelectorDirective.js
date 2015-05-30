@@ -23,6 +23,7 @@
         link: function(scope, elt, attrs) {
           scope.isBackgroundSelectorClosed = true;
           scope.embed = gaBrowserSniffer.embed;
+          scope.mobile = gaBrowserSniffer.mobile;
           var map = scope.map;
           var isOfflineToOnline = false;
           var currentTopic;
