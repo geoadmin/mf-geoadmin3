@@ -2130,6 +2130,54 @@ msgstr "SP Deep Geol. Repositories"
 msgid "ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung"
 msgstr "SP Deep Geol.Repositories: T.p."
 
+msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung"
+msgstr "SÜL Anhörung"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung.doc_title"
+msgstr "More information"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung.facname_de"
+msgstr "Facility"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung.facname_fr"
+msgstr "Facility"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung.facname_it"
+msgstr "Facility"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung.plname_de"
+msgstr "Measure"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung.plname_fr"
+msgstr "Measure"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung.plname_it"
+msgstr "Measure"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_kraft"
+msgstr "SP Übertragungsleitungen"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_kraft.doc_title"
+msgstr "More information"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_kraft.facname_de"
+msgstr "Facility"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_kraft.facname_fr"
+msgstr "Facility"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_kraft.facname_it"
+msgstr "Facility"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_kraft.plname_de"
+msgstr "Measure"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_kraft.plname_fr"
+msgstr "Measure"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_kraft.plname_it"
+msgstr "Measure"
+
 msgid "ch.bfe.statistik-wasserkraftanlagen"
 msgstr "Hydropower statistics"
 

@@ -40,6 +40,54 @@ msgstr ""
 msgid "ch.sgpk.maechtigkeit-lockergesteine"
 msgstr ""
 
+msgid "ch.bfe.sachplan-uebertragungsleitungen_kraft.plname_it"
+msgstr ""
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_kraft.plname_fr"
+msgstr ""
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_kraft.plname_de"
+msgstr ""
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_kraft.facname_it"
+msgstr ""
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_kraft.facname_fr"
+msgstr ""
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_kraft.facname_de"
+msgstr ""
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_kraft.doc_title"
+msgstr ""
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung.plname_it"
+msgstr ""
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung.plname_fr"
+msgstr ""
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung.plname_de"
+msgstr ""
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung.facname_it"
+msgstr ""
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung.facname_fr"
+msgstr ""
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung.facname_de"
+msgstr ""
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung.doc_title"
+msgstr ""
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_kraft"
+msgstr ""
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung"
+msgstr ""
+
 msgid "ch.bafu.hydroweb-messstationen_gefahren"
 msgstr ""
 

@@ -2129,6 +2129,54 @@ msgstr "PS Dépôts couches géol. profondes"
 msgid "ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung"
 msgstr "PS dépôts couches géol.prof.: p.t."
 
+msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung"
+msgstr "PSE consultation"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung.doc_title"
+msgstr "Autres informations"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung.facname_de"
+msgstr "Installation"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung.facname_fr"
+msgstr "Installation"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung.facname_it"
+msgstr "Installation"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung.plname_de"
+msgstr "Mesure"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung.plname_fr"
+msgstr "Mesure"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung.plname_it"
+msgstr "Mesure"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_kraft"
+msgstr "PS Lignes transport électricité"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_kraft.doc_title"
+msgstr "Autres informations"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_kraft.facname_de"
+msgstr "Installation"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_kraft.facname_fr"
+msgstr "Installation"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_kraft.facname_it"
+msgstr "Installation"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_kraft.plname_de"
+msgstr "Mesure"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_kraft.plname_fr"
+msgstr "Mesure"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_kraft.plname_it"
+msgstr "Mesure"
+
 msgid "ch.bfe.statistik-wasserkraftanlagen"
 msgstr "Statistique hydroélectricité"
 

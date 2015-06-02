@@ -2129,6 +2129,54 @@ msgstr "SP Geologische Tiefenlager"
 msgid "ch.bfe.sachplan-geologie-tiefenlager-thematische-darstellung"
 msgstr "SP Geologische Tiefenlager: t.D."
 
+msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung"
+msgstr "SÜL Anhörung"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung.doc_title"
+msgstr "Weitere Informationen"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung.facname_de"
+msgstr "Anlage"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung.facname_fr"
+msgstr "Anlage"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung.facname_it"
+msgstr "Anlage"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung.plname_de"
+msgstr "Planerische Massnahme"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung.plname_fr"
+msgstr "Planerische Massnahme"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_anhoerung.plname_it"
+msgstr "Planerische Massnahme"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_kraft"
+msgstr "SP Übertragungsleitungen"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_kraft.doc_title"
+msgstr "Weitere Informationen"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_kraft.facname_de"
+msgstr "Anlage"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_kraft.facname_fr"
+msgstr "Anlage"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_kraft.facname_it"
+msgstr "Anlage"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_kraft.plname_de"
+msgstr "Planerische Massnahme"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_kraft.plname_fr"
+msgstr "Planerische Massnahme"
+
+msgid "ch.bfe.sachplan-uebertragungsleitungen_kraft.plname_it"
+msgstr "Planerische Massnahme"
+
 msgid "ch.bfe.statistik-wasserkraftanlagen"
 msgstr "Statistik Wasserkraft"
 
