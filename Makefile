@@ -310,7 +310,9 @@ $(addprefix .build-artefacts/annotated/, $(SRC_JS_FILES) src/TemplateCacheModule
 
 .build-artefacts/translate-requirements-installation.timestamp: .build-artefacts/python-venv
 	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "PyYAML==3.10"
-	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "gspread==0.2.2"
+	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "oauth2client==1.4.11"
+	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "gspread==0.2.5"
+	${PYTHON_CMD} .build-artefacts/python-venv/bin/pip install "pyopenssl==0.15.1"
 	touch $@
 
 .build-artefacts/ol-requirements-installation.timestamp: .build-artefacts/python-venv
