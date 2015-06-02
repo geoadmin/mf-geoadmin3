@@ -1,10 +1,13 @@
 .ga-bg-layer-bt, .ga-bg-layer {
   overflow: hidden;
-  z-index: 1000;
-  cursor: pointer; 
-  position: absolute;
+  cursor: pointer;
+  position: absolute; 
   background: transparent no-repeat center;
   transition: right 0.5s ease;
+}
+
+.ga-bg-layer-bt {
+  z-index: 1005;
 }
 
 .ga-bg-layer-0 {
@@ -30,6 +33,9 @@
 }
 
 .ga-bg-mobile {
+  position: relative;
+  width: 44px;
+  height: 44px;
 
   .ga-bg-layer-bt {
     width: 44px;
@@ -47,7 +53,6 @@
     width: 42px;
     height: 42px;
     border-radius:21px;
-    top: 159px;
     right: 1px;
     background-color: rgba(51, 51, 51, 1);
     &:active {
@@ -55,10 +60,6 @@
       -ms-transform: scale(1.2);
       -webkit-transform: scale(1.2);
     }
-  }
-
-  .ga-bg-layer-embed {
-    top: 104px;
   }
 
   .ga-bg-highlight {
