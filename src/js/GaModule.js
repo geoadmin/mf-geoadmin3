@@ -3,7 +3,6 @@
 
 
   goog.require('ga_attribution');
-  goog.require('ga_backgroundlayerselector');
   goog.require('ga_catalogtree');
   goog.require('ga_contextpopup');
   goog.require('ga_importkml');
@@ -19,6 +18,7 @@
   goog.require('ga_topic');
   goog.require('ga_timeselector');
   goog.require('ga_timestamp_control');
+  goog.require('ga_backgroundselector');
   goog.require('ga_translation');
   goog.require('ga_feedback');
   goog.require('ga_geolocation');
@@ -64,7 +64,6 @@
 
   var module = angular.module('ga', [
     'ga_attribution',
-    'ga_backgroundlayerselector',
     'ga_catalogtree',
     'ga_contextpopup',
     'ga_importkml',
@@ -80,6 +79,7 @@
     'ga_topic',
     'ga_timeselector',
     'ga_timestamp_control',
+    'ga_backgroundselector',
     'ga_translation',
     'ga_feedback',
     'ga_layermanager',

@@ -150,7 +150,6 @@ itemscope itemtype="http://schema.org/WebApplication"
       <div ng-controller="GaTranslationController">
         <div ga-translation-selector ga-translation-selector-options="options"></div>
       </div>
-      <div ga-background-layer-selector ga-background-layer-selector-map="map"></div>
     </div>
 % endif
 % if device != 'embed':
@@ -169,9 +168,6 @@ itemscope itemtype="http://schema.org/WebApplication"
       </div>
   % if device == 'desktop':
       <div class="navbar-form pull-right hidden-xs">
-        <div id="background-selection">
-          <div ga-background-layer-selector ga-background-layer-selector-map="map"></div>
-        </div>
         <div id="toptools">
           <div ga-fullscreen ga-fullscreen-map="map"></div>&nbsp;&nbsp;
           <a href="" ng-click="globals.feedbackPopupShown = !globals.feedbackPopupShown">
@@ -214,6 +210,9 @@ itemscope itemtype="http://schema.org/WebApplication"
         <div ga-geolocation ga-geolocation-map="map"></div>
   % endif
         <div id="zoomButtons"></div>
+  % if device == 'mobile' or device == 'embed':
+        <div ga-background-selector ga-background-selector-map="map" class="ga-bg-mobile"></div>
+  % endif
   % if device != 'embed':
         <div ga-time-selector-bt ga-time-selector-bt-map="map"></div> 
   % endif
@@ -235,6 +234,9 @@ itemscope itemtype="http://schema.org/WebApplication"
 % endif
 
 % if device != 'embed':
+  % if device == 'desktop':
+    <div ga-background-selector ga-background-selector-map="map" class="ga-bg-desktop"></div> 
+  % endif
     <div ng-cloak translate-cloak id="footer" class="navbar navbar-fixed-bottom">
       <div  class="pull-left" ga-scale-line ga-scale-line-map="map"></div>
   % if device == 'desktop':
@@ -263,17 +265,20 @@ itemscope itemtype="http://schema.org/WebApplication"
       <div ga-context-popup ga-context-popup-map="map" ga-context-popup-options="options"></div>
     </div>
 % endif
+
     <div ng-controller="GaTimeSelectorController">
       <div ga-time-selector ga-time-selector-map="map"
            ga-time-selector-options="options">
       </div>
     </div>
+
     <div ng-controller="GaTooltipController">
       <div ga-tooltip 
            ga-tooltip-map="map" 
            ga-tooltip-options="options"
            ga-tooltip-active="!globals.isMeasureActive && !globals.isDrawActive"></div>
     </div>
+
 % if device != 'embed':
     <div ng-cloak translate-cloak id="pulldown" ng-show="!globals.offline" ng-class="{'selection-and-catalog-shown': (globals.catalogShown && globals.selectionShown)}">
       <div id="pulldown-content" class="content ${"in" if device == "desktop" else "collapse"}">
@@ -375,8 +380,8 @@ itemscope itemtype="http://schema.org/WebApplication"
           </div>
         </div> <!-- .panel -->
   % endif
-
         <div class="panel">
+  
   % if device == 'desktop':
           <div class="theme-toggle">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -394,12 +399,14 @@ itemscope itemtype="http://schema.org/WebApplication"
             <i class="visible-collapsed icon-caret-right"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
             <span>{{topicId | translate}}</span>
-% if device == 'desktop':
+  
+  % if device == 'desktop':
             <span ga-help="32,37,39" ga-help-options="{showOnHover:true}"></span>
-% endif
+  % endif
 
           </a>
           <div id="catalog" class="collapse" ng-controller="GaCatalogtreeController">
+  
   % if device == 'mobile':
             <label class="topic-container" ng-controller="GaTopicController">
               <span translate>change_topic</span>
@@ -416,6 +423,7 @@ itemscope itemtype="http://schema.org/WebApplication"
             <i class="visible-collapsed icon-caret-right"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
             <span translate>layer_selection</span>
+
 % if device == 'desktop':
             <span ga-help="34,35,36" ga-help-options="{showOnHover:true}"></span>
 % endif
@@ -448,10 +456,6 @@ itemscope itemtype="http://schema.org/WebApplication"
                 <label ng-controller="GaTranslationController">
                   <span translate>lang_chooser_label</span>
                   <div ga-translation-selector ga-translation-selector-options="options"></div>
-                </label>
-                <label>
-                  <span translate>bg_chooser_label</span>
-                  <div ga-background-layer-selector ga-background-layer-selector-map="map"></div>
                 </label>
               </div>
               <hr>
