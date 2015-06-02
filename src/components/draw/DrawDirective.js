@@ -75,6 +75,32 @@ goog.require('ga_map_service');
         return colors[0];
       };
 
+      // Creates a new help tooltip
+      var helpTooltip;
+      var helpTooltipElement;
+      var createHelpTooltip = function() {
+        helpTooltipElement = document.createElement('div');
+        helpTooltipElement.className = 'ga-draw-help';
+        helpTooltip = new ol.Overlay({
+          element: helpTooltipElement,
+          offset: [15, 0],
+          positioning: 'center-left',
+          stopEvent: false
+        });
+      };
+      var updateHelpLabel = function(type, onFirstPoint, onLastPoint) {
+        var helpMsg = $translate.instant('draw-help-start');
+        if (type != 'Point') {
+          helpMsg = $translate.instant('draw-help-next');
+        }
+        if (onLastPoint) {
+          helpMsg = $translate.instant('draw-help-first-point');
+        }
+        if (onFirstPoint) {
+          helpMsg = $translate.instant('draw-help-last-point');
+        }
+        helpTooltipElement.innerHTML = helpMsg;
+      };
       return {
         restrict: 'A',
         templateUrl: 'components/draw/partials/draw.html',
@@ -85,7 +111,7 @@ goog.require('ga_map_service');
         },
         link: function(scope, element, attrs, controller) {
           var layer, draw, lastActiveTool;
-          var unLayerRemove, unDrawEnd, unChangeFeature;
+          var unLayerRemove, unChangeFeature;
           var useTemporaryLayer = scope.options.useTemporaryLayer || false;
           var map = scope.map;
           var viewport = $(map.getViewport());
@@ -100,6 +126,19 @@ goog.require('ga_map_service');
             scope.options.tools[3],
             scope.options.tools[4]
           ];
+
+          // Help overlay
+          scope.help = 'draw-help-start';
+          createHelpTooltip();
+          map.addOverlay(helpTooltip);
+
+          var layer = new ol.layer.Vector({
+            source: source,
+            visible: true
+          });
+
+          gaDefinePropertiesForLayer(layer);
+          layer.displayInLayerManager = false;
           scope.layers = scope.map.getLayers().getArray();
           scope.layerFilter = gaLayerFilters.selected;
 
@@ -255,10 +294,17 @@ goog.require('ga_map_service');
           };
 
           // Set the draw interaction with the good geometry
-          var deregDrawStart, deregDrawEnd;
+          var deregDrawStart, deregDrawEnd, deregPointerMove2;
           var activateDrawInteraction = function(tool) {
             deactivateSelectInteraction();
             deactivateDrawInteraction();
+
+            if (!gaBrowserSniffer.mobile) {
+              deregPointerMove2 = map.on('pointermove', function(evt) {
+                helpTooltip.setPosition(evt.coordinate);
+              });
+            }
+
             draw = new ol.interaction.Draw(tool.drawOptions);
             var isFinishOnFirstPoint, deregFeatureChange;
             deregDrawStart = draw.on('drawstart', function(evt) {
@@ -298,11 +344,12 @@ goog.require('ga_map_service');
                       lineCoords.pop();
                     }
                   }
+                  updateHelpLabel('Polygon', isFinishOnFirstPoint, isFinishOnFirstPoint);
                 }
               });
             });
 
-            unDrawEnd = draw.on('drawend', function(evt) {
+            deregDrawEnd = draw.on('drawend', function(evt) {
               var featureToAdd = evt.feature;
               var geom = featureToAdd.getGeometry();
               if (geom instanceof ol.geom.Polygon && !isFinishOnFirstPoint) {
@@ -327,15 +374,14 @@ goog.require('ga_map_service');
               deactivateTool(lastActiveTool);
               activateSelectInteraction();
               select.getFeatures().push(featureToAdd);
+              updateHelpLabel();
             });
             map.addInteraction(draw);
           };
           var deactivateDrawInteraction = function() {
-            // Remove events
-            if (unDrawEnd) {
-              ol.Observable.unByKey(unDrawEnd);
-              unDrawEnd = undefined;
-            }
+            ol.Observable.unByKey(deregPointerMove2);
+            ol.Observable.unByKey(deregDrawStart);
+            ol.Observable.unByKey(deregDrawEnd);
             map.removeInteraction(draw);
           };
 
