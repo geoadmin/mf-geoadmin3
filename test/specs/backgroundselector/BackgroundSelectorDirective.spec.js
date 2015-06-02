@@ -62,23 +62,24 @@ describe('ga_backgroundselector_directive', function() {
 
   describe('toggle activation', function() {
     it('shows and hides bgselectors div', function() {
-      expect(element.find('.ga-swissimage').hasClass('ng-hide')).to.be(true);
+      expect(element.find('.ga-swissimage').hasClass('ga-bg-layer')).to.be(true);
+      expect(element.find('.ga-swissimage').hasClass('ga-bg-layer-0')).to.be(false);
+      
+      element.find('.ga-bg-layer-bt').click();
+      rootScope.$digest();
+      expect(element.find('.ga-swissimage').hasClass('ga-bg-layer-0')).to.be(true);
 
       element.find('.ga-bg-layer-bt').click();
       rootScope.$digest();
-      expect(element.find('.ga-swissimage').hasClass('ng-hide')).to.be(false);
+      expect(element.find('.ga-swissimage').hasClass('ga-bg-layer')).to.be(true);
 
       element.find('.ga-bg-layer-bt').click();
       rootScope.$digest();
-      expect(element.find('.ga-swissimage').hasClass('ng-hide')).to.be(true);
-
-      element.find('.ga-bg-layer-bt').click();
-      rootScope.$digest();
-      expect(element.find('.ga-swissimage').hasClass('ng-hide')).to.be(false);
+      expect(element.find('.ga-swissimage').hasClass('ga-bg-layer-0')).to.be(true);
 
       element.find('.ga-swissimage').click();
       rootScope.$digest();
-      expect(element.find('.ga-swissimage').hasClass('ng-hide')).to.be(true);
+      expect(element.find('.ga-swissimage').hasClass('ga-bg-layer')).to.be(true);
     });
   });
 });
