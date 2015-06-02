@@ -46,10 +46,12 @@
       };
     };
 
-    this.$get = function($q, $http, $timeout, $translate, $window, gaUrlUtils) {
+    this.$get = function($q, $http, $timeout, $translate, $window, gaUrlUtils,
+                         gaBrowserSniffer) {
 
       var d3LibUrl = this.d3libUrl;
       var profileUrl = this.profileUrl;
+      var isIE = gaBrowserSniffer.msie ? true : false;
 
       function ProfileChart(options) {
         var marginHoriz = options.margin.left + options.margin.right;
@@ -105,18 +107,41 @@
           var coordinates = feature.getGeometry().getCoordinates();
           var wkt = '{"type":"LineString","coordinates":' +
                     angular.toJson(coordinates) + '}';
-          var url = profileUrl + '?geom=' +
-                    gaUrlUtils.encodeUriQuery(wkt) + '&elevation_models=' +
-                    elevationModel;
 
           //cancel old request
           cancel();
           canceler = $q.defer();
 
-          $http.get(url, {
+          var formData;
+          if (!isIE || gaBrowserSniffer.msie > 9) {
+            formData = new FormData();
+            formData.append('geom', wkt);
+            formData.append('elevation_models', elevationModel);
+          } else {
+            formData = {
+              geom: wkt,
+              elevation_models: elevationModel
+            };
+            formData = $.param(formData);
+          }
+
+          var params = {
+            method: 'POST',
+            url: profileUrl,
+            data: formData,
             cache: true,
             timeout: canceler.promise
-          }).success(callback)
+          };
+
+          if (!isIE || gaBrowserSniffer.msie > 9) {
+            params.transformRequest = angular.identity;
+            params.headers = {'Content-Type': undefined};
+          } else {
+            params.headers = {'Content-Type':
+                'application/x-www-form-urlencoded'};
+          }
+
+          $http(params).success(callback)
             .error(function(data, status) {
               // If request is canceled, statuscode is 0 and we don't announce
               // it
