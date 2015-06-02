@@ -125,10 +125,12 @@
             isOfflineToOnline = !offline;
           });
 
-          scope.getClass = function(layer) {
+          scope.getClass = function(layer, index) {
             if (layer) {
               var splitLayer = layer.id.split('.');
-              return 'ga-' + splitLayer[splitLayer.length - 1];
+              return 'ga-' + splitLayer[splitLayer.length - 1] +
+                ' ' + ((!scope.isBackgroundSelectorClosed) ?
+                'ga-bg-layer-' + index : '');
             }
           };
         }

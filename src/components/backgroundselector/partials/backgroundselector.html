@@ -1,6 +1,7 @@
-<div ng-click="toggleMenu()" class="ga-bg-layer-bt"></div> 
-<div ng-repeat="layer in backgroundLayers">
-  <div ng-click="activateBackgroundLayer(layer.id)" ng-show="!isBackgroundSelectorClosed" class="ga-bg-layer {{'ga-bg-layer-' + $index}} {{getClass(layer)}}" ng-class="{'ga-bg-highlight': (layer.id == currentLayer), 'ga-bg-layer-embed': embed}">
-  	<div ng-show="!mobile && !embed" class="ga-bg-layer-text" translate>{{layer.label}}</div>
-  </div>
+<div ng-repeat="layer in backgroundLayers"
+     ng-click="activateBackgroundLayer(layer.id)"
+     class="ga-bg-layer {{getClass(layer, $index)}}"
+     ng-class="{'ga-bg-highlight': (layer.id == currentLayer), 'ga-bg-layer-embed': embed}">
+  <div ng-show="!mobile && !embed" class="ga-bg-layer-text" translate>{{layer.label}}</div>
 </div>
+<div ng-click="toggleMenu()" class="ga-bg-layer-bt"></div> 
