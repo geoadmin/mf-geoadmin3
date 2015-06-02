@@ -7,7 +7,8 @@ to generate the {lang}.json-files.
 Usage: ./env/bin/python translation2js.py /home/ltmoc/mf-geoadmin3/src/locales/ 
 """
 
-import os, sys, codecs, re, gspread
+import os, sys, codecs, re, json, gspread
+from oauth2client.client import SignedJwtAssertionCredentials
 
 # getting path for the input-file empty.js
 try:
@@ -54,9 +55,14 @@ finally:
 config = yaml.load(yml)
 
 # Read GoogleSpreadsheet
+# Informations about oauth2: http://gspread.readthedocs.org/en/latest/oauth2.html
+
 print "Connection to GoogleSpreadSheet..."
 if 'DRIVE_USER' in os.environ.keys() and  'DRIVE_PWD' in os.environ.keys():
-    gc = gspread.login(os.environ['DRIVE_USER'],os.environ['DRIVE_PWD'])
+    scope = ['https://spreadsheets.google.com/feeds']
+    credentials = SignedJwtAssertionCredentials(os.environ['DRIVE_USER'],
+    os.environ['DRIVE_PWD'].encode('utf-8'), scope)
+    gc = gspread.authorize(credentials)
 else:
     print "DRIVE_USER and DRIVE_PWD are not set."
     sys.exit(1)
