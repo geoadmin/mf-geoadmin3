@@ -103,10 +103,25 @@
           return data;
         };
 
+        var coordinatesToString = function(coordinates) {
+          var res = '[';
+          for (var i = 0; i < coordinates.length; i++) {
+            var coord = coordinates[i];
+            if (i !== 0) {
+              res += ',';
+            }
+            res += '[';
+            res += coord[0].toFixed(1) + ',' + coord[1].toFixed(1);
+            res += ']';
+          }
+          res += ']';
+          return res;
+        };
+
         this.get = function(feature, callback) {
           var coordinates = feature.getGeometry().getCoordinates();
           var wkt = '{"type":"LineString","coordinates":' +
-                    angular.toJson(coordinates) + '}';
+                    coordinatesToString(coordinates) + '}';
 
           //cancel old request
           cancel();
