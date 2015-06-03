@@ -52,6 +52,7 @@
 	"distance_label": "Distance",
 	"district": "District",
 	"draw": "Draw",
+	"draw2": "Draw & measure on map",
 	"draw_annotation": "Add an annotation",
 	"draw_delete": "Delete",
 	"draw_delete_description": "Delete all features",
