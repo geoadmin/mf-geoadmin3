@@ -211,11 +211,11 @@ button.ga-btn, .ol-control button {
   }
 
   #pulldown, #buttonGroup {
-    top: 0px;
+    top: unit(@small-header-height, px);
   }
   
   #drawActiveWarning {
-    top: 15px;
+    top: 0px;
     animation: blink ease 1s 5;
   }
   
@@ -236,16 +236,25 @@ button.ga-btn, .ol-control button {
     top: 3px;
   }
 }
+
 #drawActiveWarning {
   position: absolute;
   z-index: 2000;
   top: -100px;
   right: 0px;
   left: 0px;
-  width: 500px;
+  height: unit(@small-header-height, px);
   margin: auto;
   transition: top 1s ease;
   .box-shadow(6px 6px 12px rgba(0, 0, 0, 0.175));
+
+  .btn {
+    float: left;
+  }
+  
+  .close {
+    float: right;
+  }
 }
 
 #copyrightsdata {

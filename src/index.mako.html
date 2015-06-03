@@ -186,10 +186,13 @@ itemscope itemtype="http://schema.org/WebApplication"
       <div class="alert alert-danger" translate>offline_sorry</div>
     </div> <!-- #header -->
     <div id="drawActiveWarning"
-         class="btn btn-danger"
+         class="btn btn-default"
          ng-click="globals.isDrawActive = false">
-         <div>Warning!! You're in editing mode</div>
-         <div>&lt;-- click here to go back</div>
+      <div class="btn btn-primary">
+        Exit Draw & Measure
+      </div>
+      <div>You can now draw and measure on the map using the tools in the menu on the left.
+      </div>
     </div>
 % endif
     <div id="loader"></div>
@@ -330,8 +333,8 @@ itemscope itemtype="http://schema.org/WebApplication"
              data-toggle="collapse" data-parent="#pulldown-content" href="#draw"
              ga-collapsible-show="globals.isDrawActive">
             <span translate>draw</span>
-            <div class="btn btn-danger" ng-show="globals.isDrawActive">
-              &lt; GO BACK
+            <div class="btn btn-primary" ng-show="globals.isDrawActive">
+              Exit Draw & Measure
             </div>
 
           </a>
