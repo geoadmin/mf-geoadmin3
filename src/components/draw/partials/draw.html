@@ -1,125 +1,123 @@
-<div>
-  <div class="ga-draw-help" translate>{{help}}</div>
-  <div class="ga-draw-buttons">
-    <div class="btn-group">
-      <button class="btn btn-default dropdown-toggle icon-ga-point"
-              data-toggle="dropdown" aria-expanded="false"><span class="caret"></span>
-      </button>
-      <ul class="dropdown-menu">
-        <li ng-repeat="tool in pointTools">
-          <button ng-click="toggleTool($event, tool)"
-                  ng-class="{'active': options[tool.activeKey]}"
-                  class="btn btn-default">
-            <i class="{{tool.cssClass}}"></i>
-            <span translate>{{tool.title}}</span>
-          </button>
-        </li>
-      </ul>
-    </div>
-    <div class="btn-group">
-      <button class="btn btn-default dropdown-toggle icon-ga-edit"
-              data-toggle="dropdown" aria-expanded="false"><span class="caret"></span>
-      </button>
-      <ul class="dropdown-menu">
-        <li ng-repeat="tool in complexTools">
-          <button ng-click="toggleTool($event, tool)"
-                  ng-class="{'active': options[tool.activeKey]}"
-                  class="btn btn-default">
-            <i class="{{tool.cssClass}}"></i>
-            <span translate>{{tool.title}}</span>
-          </button>
-        </li>
-      </ul>
-    </div>
-    <div class="ga-more pull-right">
-      <button class="btn btn-default dropdown-toggle"
-              data-toggle="dropdown" aria-expanded="false">More...<span class="caret"></span>
-      </button>
-      <ul class="dropdown-menu" role="menu">
-        <li><a href="" class="btn" disabled>Share</a></li>
-        <li><a href="" class="btn"
-               ng-disabled="!canExport()"
-               ng-click="exportKml($event)"
-               translate>export_kml</a></li>
-        <li class="divider"></li>
-        <li><a href="" class="btn"
-               ng-disabled="!canExport()"
-               ng-click="deleteAllFeatures()"
-               translate>draw_delete_description</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="ga-draw-popup"
-       ga-popup="popupToggle"
-       ga-popup-options="options.popupOptions"
-       ng-class="{'ga-profile-active': options.isProfileActive}">
-    <ul class="nav nav-tabs" role="tablist">
-      <li><a href="" ng-click="options.isProfileActive=false;isMeasureActive=false;isPropsActive=true;">Properties</a></li>
-      <li><a href="" ng-click="options.isProfileActive=true;isMeasureActive=false;isPropsActive=false;">Profile</a></li>
-      <li><a href=""
-      ng-click="options.isProfileActive=false;isMeasureActive=true;isPropsActive=false;">Measure</a></li>
+<div class="ga-draw-buttons">
+  <div class="btn-group">
+    <button class="btn btn-default dropdown-toggle icon-ga-point"
+            data-toggle="dropdown" aria-expanded="false"><span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+      <li ng-repeat="tool in pointTools">
+        <button ng-click="toggleTool($event, tool)"
+                ng-class="{'active': options[tool.activeKey]}"
+                class="btn btn-default">
+          <i class="{{tool.cssClass}}"></i>
+          <span translate>{{tool.title}}</span>
+        </button>
+      </li>
     </ul>
-    <div ng-if="isPropsActive" class="ga-draw-modify">
+  </div>
+  <div class="btn-group">
+    <button class="btn btn-default dropdown-toggle icon-ga-edit"
+            data-toggle="dropdown" aria-expanded="false"><span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+      <li ng-repeat="tool in complexTools">
+        <button ng-click="toggleTool($event, tool)"
+                ng-class="{'active': options[tool.activeKey]}"
+                class="btn btn-default">
+          <i class="{{tool.cssClass}}"></i>
+          <span translate>{{tool.title}}</span>
+        </button>
+      </li>
+    </ul>
+  </div>
+  <div class="ga-more pull-right">
+    <button class="btn btn-default dropdown-toggle"
+            data-toggle="dropdown" aria-expanded="false">More...<span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+      <li><a href="" class="btn" disabled>Share</a></li>
+      <li><a href="" class="btn"
+             ng-disabled="!canExport()"
+             ng-click="exportKml($event)"
+             translate>export_kml</a></li>
+      <li class="divider"></li>
+      <li><a href="" class="btn"
+             ng-disabled="!canExport()"
+             ng-click="deleteAllFeatures()"
+             translate>draw_delete_description</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="ga-draw-popup"
+     ga-popup="popupToggle"
+     ga-popup-options="options.popupOptions"
+     ng-class="{'ga-profile-active': options.isProfileActive}">
+  <ul class="nav nav-tabs" role="tablist">
+    <li>
+      <a href="" ng-click="options.isProfileActive=false;isMeasureActive=false;isPropsActive=true;">Properties</a>
+    </li>
+    <li>
+      <a href="" ng-click="options.isProfileActive=true;isMeasureActive=false;isPropsActive=false;">Profile</a>
+    </li>
+    <li>
+      <a href="" ng-click="options.isProfileActive=false;isMeasureActive=true;isPropsActive=false;">Measure</a>
+    </li>
+  </ul>
+  <div ng-if="isPropsActive" class="ga-draw-modify">
+    <label>
+      <span>{{'modify_text_label' | translate}}:</span> 
+      <input type="text" class="form-control"
+             placeholder="{{'draw_text_placeholder' | translate}}"
+             ng-model="options.name"/>
+    </label>
+    
+    <label ng-if="useColorStyle || useIconStyle">
+      <span>{{'modify_description' | translate}}:</span> 
+      <textarea class="form-control"
+                placeholder="{{'draw_description_placeholder' | translate}}"
+                ng-model="options.description"/>
+    </label>
+
+    <label ng-if="useColorStyle">
+      <span>{{'modify_color_label' | translate}}:</span> 
+      <select class="form-control"
+              ng-model="options.color" ng-options="options.translate.instant(c.name) for c in options.colors"></select>
+    </label>
+
+    <div class="ga-icons" ng-if="useIconStyle">
       <label>
-        <span>{{'modify_text_label' | translate}}:</span> 
-        <input type="text" class="form-control"
-               placeholder="{{'draw_text_placeholder' | translate}}"
-               ng-model="options.name"/>
-      </label>
-      
-      <label ng-if="useColorStyle || useIconStyle">
-        <span>{{'modify_description' | translate}}:</span> 
-        <textarea class="form-control"
-                  placeholder="{{'draw_description_placeholder' | translate}}"
-                  ng-model="options.description"/>
-      </label>
-
-      <label ng-if="useColorStyle">
-        <span>{{'modify_color_label' | translate}}:</span> 
+        <span>{{'modify_icon_size_label' | translate}}:</span> 
         <select class="form-control"
-                ng-model="options.color" ng-options="options.translate.instant(c.name) for c in options.colors"></select>
+                ng-model="options.iconSize"
+                ng-options="s.label for s in options.iconSizes">
+        </select>
+      </label>          
+      <label>
+        <span>{{'modify_icon_label' | translate}}:</span> 
+        <div class="ga-choose-icon ga-icon-size-{{options.iconSize.value[0]}}">
+          <img ng-class="{'ga-selected': (options.icon == i)}" 
+               draggable="false" 
+               ng-click="options.icon = i" 
+               ng-repeat="i in options.icons" 
+               ng-src="{{i.url}}" />
+        </div>
       </label>
-
-      <div class="ga-icons" ng-if="useIconStyle">
-        <label>
-          <span>{{'modify_icon_size_label' | translate}}:</span> 
-          <select class="form-control"
-                  ng-model="options.iconSize"
-                  ng-options="s.label for s in options.iconSizes">
-          </select>
-        </label>          
-        <label>
-          <span>{{'modify_icon_label' | translate}}:</span> 
-          <div class="ga-choose-icon ga-icon-size-{{options.iconSize.value[0]}}">
-            <img ng-class="{'ga-selected': (options.icon == i)}" 
-                 draggable="false" 
-                 ng-click="options.icon = i" 
-                 ng-repeat="i in options.icons" 
-                 ng-src="{{i.url}}" />
-          </div>
-        </label>
-      </div>
     </div>
-    <div ng-if="isMeasureActive"
-         ga-measure-infos="feature"
-         ga-measure-infos-options="options.measureOptions"></div>
-    <div ng-if="options.isProfileActive"
-         ga-profile="feature" 
-         ga-profile-map="map"
-         ga-profile-options="options.profileOptions"></div>
   </div>
-  <div class="ga-draw-disclaimer" ng-if="!options.useTemporaryLayer" translate>share_file_disclaimer</div>
-  <div class="ga-draw-interaction-share" ng-if="adminShortenUrl">
-    <div><b translate>share_file_link_title_admin</b></div>
-    &nbsp;<a target="_blank" href="{{adminShortenUrl}}">{{adminShortenUrl}}</a>
+  <div ng-if="isMeasureActive"
+       ga-measure-infos="feature"
+       ga-measure-infos-options="options.measureOptions"></div>
+  <div ng-if="options.isProfileActive"
+       ga-profile="feature" 
+       ga-profile-map="map"
+       ga-profile-options="options.profileOptions"></div>
+</div>
+<div class="ga-draw-disclaimer" ng-if="!options.useTemporaryLayer" translate>share_file_disclaimer</div>
+<div class="ga-draw-interaction-share" ng-if="adminShortenUrl">
+  <div>
+    <b translate>share_file_link_title_admin</b>
   </div>
-  <div class="ga-draw-interaction-btns" role="group">
-    <button class="btn btn-default pull-right"
-            ng-if="options.showExport"
-            ng-disabled="!canExport()"
-            ng-click="exportKml($event)"
-            translate>export_kml</button>
-  </div>
+  <span translate>share_file_link_descr_admin</span>
+  <a target="_blank" href="{{adminShortenUrl}}">{{adminShortenUrl}}</a>
 </div>
