@@ -21,16 +21,20 @@
 
         $(attrs.href).on('shown.bs.collapse', function() {
           element.removeClass('collapsed');
-          scope.$applyAsync(function() {
-            scope.show = true;
-          });
+          if (!scope.show) {
+            scope.$applyAsync(function() {
+              scope.show = true;
+            });
+          }
         });
 
         $(attrs.href).on('hidden.bs.collapse', function() {
           element.addClass('collapsed');
-          scope.$applyAsync(function() {
-            scope.show = false;
-          });
+          if (scope.show) {
+            scope.$applyAsync(function() {
+              scope.show = false;
+            });
+          }
         });
 
         toggleElt(element, scope.show);

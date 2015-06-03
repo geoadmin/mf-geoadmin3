@@ -10,8 +10,6 @@ var runTest = function(cap, driver, target){
   driver.findElement(webdriver.By.xpath("//*[@type='search']")).sendKeys('Bern');
   // Click on the field "Bern (BE)"
   driver.findElement(webdriver.By.xpath("//*[contains(text(), 'Bern')]")).click();
-  // We click on the "share" button that deploys the share menu
-  driver.findElement(webdriver.By.xpath("//a[@id='shareHeading']")).click();
   // Any link with the adapted URL? (there should be many)
   driver.findElement(webdriver.By.xpath("//a[contains(@href, '" + QUERYSTRING_OF_BERN + "')]"));
   // Was the URL in the address bar adapted?
@@ -22,10 +20,13 @@ var runTest = function(cap, driver, target){
     });
   }
   // And have a look at the permanent Link
-  driver.findElement(webdriver.By.xpath("//*[@ng-model='permalinkValue']")).getAttribute("value").then(function(val){
-      // The permalink should point to Bern
+  // driver.findElement(webdriver.By.xpath("//*[@ng-model='permalinkValue']")).getAttribute("value").then(function(val){
+  // driver.findElement(webdriver.By.xpath("//*[@id='toptools']//a[contains(@ng-href,'http')]")).getAttribute("ng-href");
+  driver.findElement(webdriver.By.xpath("//*[@id='toptools']//a[contains(@ng-href,'http')]")).getAttribute("ng-href").then(function(val){
+      //The perma Link should point to Bern
       assert.ok(val.indexOf(QUERYSTRING_OF_BERN) > -1);
   });
+  // We click on the "share" button what closes the share menu
 }
 
 module.exports.runTest = runTest;

@@ -1,62 +1,75 @@
 <div class="ga-share-icons">
   <a class="ga-share-icon" target="_blank"
+    data-original-title="{{'mail_tooltip' | translate}}"
+    href="mailto:?body={{encodedPermalinkHref}}">
+    <i class="icon-envelope-alt"></i>
+  </a>
+
+  <a class="ga-share-icon" target="_blank"
     data-original-title="{{'qrcode_tooltip' | translate}}"
-    ng-href="{{qrcodegeneratorPath}}?url={{encodedPermalinkHref}}">
+    href="{{qrcodegeneratorPath}}?url={{encodedPermalinkHref}}">
     <i class="icon-qrcode"></i>
   </a>
 
-  <a class="ga-share-icon" target="_blank"
-    data-original-title="{{'twitter_tooltip' | translate}}"
-    ng-href="https://twitter.com/intent/tweet?url={{encodedPermalinkHref}}&text={{encodedDocumentTitle}}">
-    <i class="icon-twitter"></i>
-  </a>
+  <a class="ga-share-icon-separator"></a>
 
   <a class="ga-share-icon" target="_blank"
     data-original-title="{{'facebook_tooltip' | translate}}"
-    ng-href="http://www.facebook.com/sharer.php?u={{encodedPermalinkHref}}&t={{encodedDocumentTitle}}">
+    href="http://www.facebook.com/sharer.php?u={{encodedPermalinkHref}}&t={{encodedDocumentTitle}}">
     <i class="icon-facebook"></i>
   </a>
 
   <a class="ga-share-icon" target="_blank"
-    data-original-title="{{'google_plus_tooltip' | translate}}"
-    ng-href="https://plus.google.com/share?url={{encodedPermalinkHref}}">
-    <i class="icon-google-plus"></i>
+    data-original-title="{{'twitter_tooltip' | translate}}"
+    href="https://twitter.com/intent/tweet?url={{encodedPermalinkHref}}&text={{encodedDocumentTitle}}">
+    <i class="icon-twitter"></i>
   </a>
 
   <a class="ga-share-icon" target="_blank"
-    data-original-title="{{'mail_tooltip' | translate}}"
-    ng-href="mailto:?body={{encodedPermalinkHref}}">
-    <i class="icon-envelope-alt"></i>
+    data-original-title="{{'google_plus_tooltip' | translate}}"
+    href="https://plus.google.com/share?url={{encodedPermalinkHref}}">
+    <i class="icon-google-plus"></i>
   </a>
 </div>
 
-<div class="input-group input-group-sm ga-share-permalink">
-  <input type="text" ng-model="permalinkValue" ng-click="selectOnClick($event)" class="form-control">
-  <span class="input-group-btn">
-    <button class="btn btn-default" ng-disabled="urlShortened"
-            ng-click="shortenUrl()" translate>shorten_url</button>
-  </span>
-</div>
-
-<div class="ga-share-embed" ng-if="!mobile">
+<div class="ga-share-permalink">
   <label>
-    <span translate>embed_map</span>:
+    <span translate>share_link</span>:
   </label>
   <div class="input-group input-group-sm">
-    <input type="text" class="form-control"
-           value="<iframe src='{{embedValue}}' width='400' height='300' frameborder='0' style='border:0'></iframe>"
-           ng-click="selectOnClick($event)">
-    </input>
+    <input id="permalinkInput" type="text" ng-model="permalinkValue" class="form-control" ga-share-copy-input>
     <span class="input-group-btn">
-      <button class="pull-right btn btn-default btn-xs"
-              data-toggle="modal"
-              data-target="#gaEmbedModal" 
-              translate>show_more_options</button>
+      <button class="btn btn-default" ga-share-copy-bt=".ga-share-permalink input"></button>
     </span>
   </div>
-  <div translate>share_disclaimer</div>  
 </div>
-      
+
+<div class="ga-show-more" ng-if="!mobile">
+  <div ng-click="showMoreClick()">
+    <i ng-class="{'icon-minus': showMore, 'icon-plus': !showMore}"></i>
+    <span ng-show="showMore" translate>share_less</span>
+    <span ng-hide="showMore" translate>share_more</span>
+  </div>
+  <div class="ga-share-embed" ng-show="showMore">
+    <label>
+      <span translate>embed_map</span>:
+    </label>
+    <div class="input-group input-group-sm">
+      <input type="text" class="form-control ga-embed-input"
+             value="<iframe src='{{embedValue}}' width='400' height='300' frameborder='0' style='border:0'></iframe>"
+             ga-share-copy-input>
+      </input>
+      <span class="input-group-btn">
+        <button class="pull-right btn btn-default btn-xs"
+                data-toggle="modal"
+                data-target="#gaEmbedModal"
+                translate>show_more_options</button>
+      </span>
+    </div>
+    <div translate>share_disclaimer</div>
+  </div>
+</div>
+
 <div class="modal fade" id="gaEmbedModal">
   <div class="modal-dialog" ng-style="contentWidth">
     <div class="modal-content">
@@ -65,7 +78,7 @@
          <button class="ga-icon ga-btn icon-remove" data-dismiss="modal"></button>
       </div>
       <div class="modal-body" ng-class="{'ga-user-size': !iframeSize}">
-        <div>
+        <div class="input-modal-container">
           <select ng-model="iframeSize" ng-options="size.value as size.label | translate for size in options.iframeSizes">
           </select>
           <div class="form-inline">
@@ -74,9 +87,14 @@
             <input type="text" ng-model="iframeHeight" />
             <a href="" translate>share_preview</a>
           </div>
-          <input type="text" class="form-control ga-embed-input"
-                 value="<iframe src='{{embedValue}}' width='{{iframeWidth}}' height='{{iframeHeight}}' frameborder='0' style='border:0'></iframe>"
-                 ng-click="selectOnClick($event)"></input>
+          <div class="ga-embed-input-modal input-group input-group-sm">
+            <input type="text" class="form-control ga-embed-input"
+                   value="<iframe src='{{embedValue}}' width='{{iframeWidth}}' height='{{iframeHeight}}' frameborder='0' style='border:0'></iframe>"
+                   ga-share-copy-input></input>
+            <span class="input-group-btn">
+              <button class="btn btn-default" ga-share-copy-bt=".ga-embed-input-modal input"></button>
+            </span>
+          </div>
         </div>
         <iframe ng-if="loadIframe"
                 ng-src="{{embedValue}}" 

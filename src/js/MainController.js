@@ -148,7 +148,8 @@
         offline: gaNetworkStatus.offline,
         feedbackPopupShown: /feedback/g.test(gaPermalink.getParams().widgets),
         printShown: initWithPrint,
-        embed: gaBrowserSniffer.embed
+        embed: gaBrowserSniffer.embed,
+        isShareActive: false
       };
 
       gaPermalink.deleteParam('widgets');

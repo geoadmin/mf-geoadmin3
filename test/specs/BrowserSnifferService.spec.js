@@ -41,28 +41,42 @@ describe('ga_browsersniffer_service', function() {
     expect(snif.msie).to.equal(version);
     expect(snif.safari).to.not.be.ok();
     expect(snif.iosChrome).to.not.be.ok();
+    expect(snif.chrome).to.not.be.ok();
   };
   
   var expectOperaOrFF = function(version) {
     expect(snif.msie).to.not.be.ok();
     expect(snif.safari).to.not.be.ok();
     expect(snif.iosChrome).to.not.be.ok();
+    expect(snif.chrome).to.not.be.ok();
   };
 
   var expectSafari = function() {
     expect(snif.webkit).to.be.ok();
     expect(snif.msie).to.not.be.ok();
     expect(snif.iosChrome).to.not.be.ok();
+    expect(snif.chrome).to.not.be.ok();
   };
 
-  var expectIOSChrome = function() {
+  var expectIOSChrome = function(version) {
     expect(snif.mac).to.not.be.ok();
     expect(snif.ios).to.be.ok();
     expect(snif.webkit).to.be.ok();
     expect(snif.msie).to.not.be.ok();
     expect(snif.safari).to.not.be.ok();
     expect(snif.iosChrome).to.be.ok();
+    expect(snif.chrome).to.equal(version);
   };
+
+   var expectChrome = function(version) {
+    expect(snif.ios).to.not.be.ok();
+    expect(snif.webkit).to.be.ok();
+    expect(snif.msie).to.not.be.ok();
+    expect(snif.safari).to.not.be.ok();
+    expect(snif.iosChrome).to.not.be.ok();
+    expect(snif.chrome).to.equal(version);
+  };
+
  
   beforeEach(function() {
     module(function($provide) {
@@ -197,6 +211,7 @@ describe('ga_browsersniffer_service', function() {
         snif = injector.get('gaBrowserSniffer');
         expectNotApple();
         expectWebkit();
+        expectChrome(40);
       });
 
       it('40.0.2214.91 on win 8.1 desktop', function() {
@@ -204,6 +219,7 @@ describe('ga_browsersniffer_service', function() {
         snif = injector.get('gaBrowserSniffer');
         expectNotApple();
         expectWebkit();
+        expectChrome(40);
       });
 
       it('40.0.2214.115 on mac osx 10.10.2', function() {
@@ -211,6 +227,7 @@ describe('ga_browsersniffer_service', function() {
         snif = injector.get('gaBrowserSniffer');
         expectMac();
         expectWebkit();
+        expectChrome(40);
       });
       
       it('40.0.2214.73 on min-iPad iOS 8.1.3', function() {
@@ -218,7 +235,7 @@ describe('ga_browsersniffer_service', function() {
         snif = injector.get('gaBrowserSniffer');
         expectIOS(8);
         expectWebkit();
-        expectIOSChrome();
+        expectIOSChrome(40);
       });
     });
 
