@@ -34,11 +34,17 @@
             data-toggle="dropdown" aria-expanded="false">More...<span class="caret"></span>
     </button>
     <ul class="dropdown-menu" role="menu">
-      <li><a href="" class="btn" disabled>Share</a></li>
+      <li>
+        <a href="" class="btn" ng-click="activeShare()">Share</a>
+      </li>
+      <li>
+        <a href="" class="btn" ng-click="activePrint()">Print</a>
+      </li>
+
       <li><a href="" class="btn"
              ng-disabled="!canExport()"
              ng-click="exportKml($event)"
-             translate>export_kml</a></li>
+             >Download as KML</a></li>
       <li class="divider"></li>
       <li><a href="" class="btn"
              ng-disabled="!canExport()"
@@ -53,15 +59,20 @@
      ga-popup="popupToggle"
      ga-popup-options="options.popupOptions"
      ng-class="{'ga-profile-active': options.isProfileActive}">
-  <ul class="nav nav-tabs" role="tablist">
+  <ul class="nav nav-tabs" role="tablist" ng-if="showTabs(feature)">
     <li>
-      <a href="" ng-click="options.isProfileActive=false;isMeasureActive=false;isPropsActive=true;">Properties</a>
+      <a href=""
+         ng-click="activeTabProps()"
+         ng-class="{'ga-active': isPropsActive}">Marker/Text/Shape</a>
     </li>
-    <li>
-      <a href="" ng-click="options.isProfileActive=true;isMeasureActive=false;isPropsActive=false;">Profile</a>
+    <li ng-show="showMeasureTab(feature)">
+      <a href=""
+         ng-click="activeTabProfile()"
+         ng-class="{'ga-active': options.isProfileActive}">Show profile</a>
     </li>
-    <li>
-      <a href="" ng-click="options.isProfileActive=false;isMeasureActive=true;isPropsActive=false;">Measure</a>
+    <li ng-show="showProfileTab(feature)">
+      <a href="" ng-click="activeTabMeasure()"
+         ng-class="{'ga-active': isMeasureActive}">Show measure</a>
     </li>
   </ul>
   <div ng-if="isPropsActive" class="ga-draw-modify">
@@ -114,7 +125,7 @@
        ga-profile-options="options.profileOptions"></div>
 </div>
 <div class="ga-draw-disclaimer" ng-if="!options.useTemporaryLayer" translate>share_file_disclaimer</div>
-<div class="ga-draw-interaction-share" ng-if="adminShortenUrl">
+  <div class="ga-draw-interaction-share" ng-if="adminShortenUrl">
   <div>
     <b translate>share_file_link_title_admin</b>
   </div>

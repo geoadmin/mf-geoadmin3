@@ -303,7 +303,8 @@ goog.provide('ga_draw_controller');
 
           return styles;
         };
-        
+
+        // Draw a marker
         var markerDrawStyleFunc = function(feature, resolution) {
 
           var icon = new ol.style.Icon({

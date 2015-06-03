@@ -116,6 +116,7 @@ goog.require('ga_map_service');
           var map = scope.map;
           var viewport = $(map.getViewport());
           scope.isPropsActive = true;
+          scope.isMeasureActive = false;
           scope.options.isProfileActive = false;
           scope.pointTools = [
             scope.options.tools[0],
@@ -463,19 +464,6 @@ goog.require('ga_map_service');
             scope.$evalAsync();
           };
 
-          // Delete all features of the layer
-          scope.deleteAllFeatures = function() {
-            if (confirm($translate.instant('confirm_remove_all_features'))) {
-              select.getFeatures().clear();
-              layer.getSource().clear();
-              if (layer.adminId) {
-                gaFileStorage.del(layer.adminId);
-              }
-              map.removeLayer(layer);
-              defineLayerToModify();
-            }
-          };
-
           // Activate/deactivate a tool
           scope.toggleTool = function(evt, tool) {
             if (scope.options[tool.activeKey]) {
@@ -486,15 +474,6 @@ goog.require('ga_map_service');
               activateTool(tool);
             }
             evt.preventDefault();
-          };
-
-          scope.exportKml = function(evt) {
-            gaExportKml.createAndDownload(layer, map.getView().getProjection());
-            evt.preventDefault();
-          };
-
-          scope.canExport = function() {
-            return (layer) ? layer.getSource().getFeatures().length > 0 : false;
           };
 
           scope.aToolIsActive = function() {
@@ -516,7 +495,82 @@ goog.require('ga_map_service');
             updateSelectedFeatures();
           });
 
+
+
+          ///////////////////////////////////
+          // More... button functions
+          ///////////////////////////////////
+          scope.activeShare = function() {
+            $('#shareHeading').click();
+          };
+          scope.activePrint = function() {
+             $('#printHeading').click();
+          };
+          scope.exportKml = function(evt) {
+            gaExportKml.createAndDownload(layer, map.getView().getProjection());
+            evt.preventDefault();
+          };
+          // Delete all features of the layer
+          scope.deleteAllFeatures = function() {
+            if (confirm($translate.instant('confirm_remove_all_features'))) {
+              select.getFeatures().clear();
+              layer.getSource().clear();
+              if (layer.adminId) {
+                gaFileStorage.del(layer.adminId);
+              }
+              map.removeLayer(layer);
+              defineLayerToModify();
+            }
+          };
+
+          scope.canExport = function() {
+            return (layer) ? layer.getSource().getFeatures().length > 0 : false;
+          };
+
+
+
+          ////////////////////////////////////
+          // Tab managment
+          ////////////////////////////////////
+          scope.activeTabProps = function() {
+            scope.isPropsActive = true;
+            scope.isMeasureActive = false;
+            scope.options.isProfileActive = false;
+          };
+          scope.activeTabProfile = function() {
+            scope.isPropsActive = false;
+            scope.isMeasureActive = false;
+            scope.options.isProfileActive = true;
+          };
+          scope.activeTabMeasure = function() {
+            scope.isPropsActive = false;
+            scope.isMeasureActive = true;
+            scope.options.isProfileActive = false;
+          };
+          scope.showTabs = function(feature) {
+            return scope.showMeasureTab(feature) ||
+                scope.showProfileTab(feature);
+          };
+          scope.showMeasureTab = function(feature) {
+            if (!feature) {
+              return false;
+            }
+            var geom = feature.getGeometry();
+            var isPoint = (geom instanceof ol.geom.Point);
+            if (isPoint) {
+              scope.activeTabProps();
+            }
+            return !isPoint;
+          };
+          scope.showProfileTab = function(feature) {
+            return scope.showMeasureTab(feature);
+          };
+
+
+
+          ////////////////////////////////////
           // create/update the file on s3
+          ////////////////////////////////////
           var save = function() {
             var kmlString = gaExportKml.create(layer,
                 map.getView().getProjection());
@@ -546,8 +600,11 @@ goog.require('ga_map_service');
             }
           });
 
-          // Utils
 
+
+          ////////////////////////////////////
+          // Utils functions
+          ////////////////////////////////////
           // Change cursor style on mouse move, only on desktop
           var updateCursorStyle = function(evt) {
             var featureFound;

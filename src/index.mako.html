@@ -102,7 +102,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         }
       })();
     </script>
-    
+    <!-- TO REMOVE: only added to have all icons-->
     <link href="${versionslashed}style/app.css" rel="stylesheet"/>
     <link rel="shortcut icon" type="image/x-icon" href="${versionslashed}img/favicon.ico"/>
   </head>
@@ -193,6 +193,7 @@ itemscope itemtype="http://schema.org/WebApplication"
       </div>
       <div>You can now draw and measure on the map using the tools in the menu on the left.
       </div>
+      <button class="ga-icon ga-btn icon-remove"></button>
     </div>
 % endif
     <div id="loader"></div>
@@ -333,10 +334,6 @@ itemscope itemtype="http://schema.org/WebApplication"
              data-toggle="collapse" data-parent="#pulldown-content" href="#draw"
              ga-collapsible-show="globals.isDrawActive">
             <span translate>draw2</span>
-            <div class="btn btn-primary" ng-show="globals.isDrawActive">
-              Exit Draw & Measure
-            </div>
-
           </a>
           <div id="draw" class="panel-collapse collapse">
             <div class="panel-body" ng-controller="GaDrawController">
