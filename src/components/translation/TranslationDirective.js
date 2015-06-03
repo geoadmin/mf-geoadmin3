@@ -7,14 +7,20 @@
   ]);
 
   module.directive('gaTranslationSelector',
-      function($translate, $window, gaPermalink) {
+      function($translate, $window, gaBrowserSniffer, gaPermalink) {
           return {
             restrict: 'A',
-            replace: true,
             scope: {
               options: '=gaTranslationSelectorOptions'
             },
-            templateUrl: 'components/translation/partials/translation.html',
+            templateUrl: function() {
+              if (gaBrowserSniffer.mobile) {
+                return 'components/translation/partials/translationmobile.html';
+              } else {
+                return 'components/translation/partials/' +
+                    'translationdesktop.html';
+              }
+            },
             link: function(scope, element, attrs) {
               scope.$watch('lang', function(value) {
                 $translate.use(value).then(angular.noop, function(lang) {
@@ -46,6 +52,11 @@
               scope.lang = gaPermalink.getParams().lang ||
                   ($window.navigator.userLanguage ||
                    $window.navigator.language).split('-')[0];
+
+              scope.selectLang = function(value) {
+                scope.lang = value;
+              };
+
             }
           };
       });
