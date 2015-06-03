@@ -9,6 +9,48 @@
 Release Notes
 =============
 
+.. _releasenotes_20150603:
+
+Release 20150603 - Wednesday, June 3th 2015
+------------------------------------------------
+
+API & applications
+******************
+
+`API <//api3.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+- Vector layer and styling example
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-chsdi3/compare/r_150528...r_150603>`__
+
+`MAP <//map.geo.admin.ch>`__
+'''''''''''''''''''''''''''''
+- Enhanced background layer selector
+- Enhanced share menu
+- Bug fixes
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_150528...r_150603>`__
+
+
+Geodata
+*******
+
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Sachplan Übertragungsleitungen (SÜL) <//map.geo.admin.ch/?layers=ch.bfe.sachplan-uebertragungsleitungen_kraft>`__ (ch.bfe.sachplan-uebertragungsleitungen_kraft)                                                    |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| New    | `Sediment thickness <//map.geo.admin.ch/?layers=ch.sgpk.maechtigkeit-lockergesteine>`__ (ch.sgpk.maechtigkeit-lockergesteine)                                                                                        |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Journey through time <//map.geo.admin.ch/?layers=ch.swisstopo.zeitreihen>`__ (ch.swisstopo.zeitreihen)                                                                                                              |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `swissTLM-Map (gray) <//map.geo.admin.ch/?layers=ch.swisstopo.swisstlm3d-karte-grau>`__ (ch.swisstopo.swisstlm3d-karte-grau)                                                                                         |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `swissTLM-Map (color) <//map.geo.admin.ch/?layers=ch.swisstopo.swisstlm3d-karte-farbe>`__ (ch.swisstopo.swisstlm3d-karte-farbe)                                                                                      |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Federal Inventory ISOS <//map.geo.admin.ch/?layers=ch.bak.bundesinventar-schuetzenswerte-ortsbilder>`__ (ch.bak.bundesinventar-schuetzenswerte-ortsbilder)                                                          |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Update | `Ibex colonies <//map.geo.admin.ch/?layers=ch.bafu.fauna-steinbockkolonien)>`__ (ch.bafu.fauna-steinbockkolonien)                                                                                                    |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+
 .. _releasenotes_20150528:
 
 Release 20150528 - Thursday, May 28th 2015
@@ -29,7 +71,7 @@ API & applications
 - Add warning for third party geodata
 - Improved search function
 - Bug fixes
-- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_150520..r_150528>`__
+- `Full changelog <https://github.com/geoadmin/mf-geoadmin3/compare/r_150520...r_150528>`__
 
 .. _releasenotes_20150520:
 
