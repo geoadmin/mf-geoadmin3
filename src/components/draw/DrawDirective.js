@@ -132,13 +132,6 @@ goog.require('ga_map_service');
           createHelpTooltip();
           map.addOverlay(helpTooltip);
 
-          var layer = new ol.layer.Vector({
-            source: source,
-            visible: true
-          });
-
-          gaDefinePropertiesForLayer(layer);
-          layer.displayInLayerManager = false;
           scope.layers = scope.map.getLayers().getArray();
           scope.layerFilter = gaLayerFilters.selected;
 
@@ -236,20 +229,11 @@ goog.require('ga_map_service');
                 defineLayerToModify();
               }
             });
-          
-          // Activate the component
-          var activate = function() {
-            if (map.getLayers().getArray().indexOf(layer) == -1) {
-              map.addLayer(layer);
-              // Move draw layer on each changes in the list of layers
-              // in the layer manager.
-              scope.$watchCollection('layers | filter:layerFilter', function() {
-                gaMapUtils.moveLayerOnTop(map, layer);
-              });
-            }
+
             //map.addOverlay(overlay);
             activateSelectInteraction();
           };
+
 
           // Deactivate the component: remove layer and interactions.
           var deactivate = function() {
@@ -344,7 +328,8 @@ goog.require('ga_map_service');
                       lineCoords.pop();
                     }
                   }
-                  updateHelpLabel('Polygon', isFinishOnFirstPoint, isFinishOnFirstPoint);
+                  updateHelpLabel('Polygon', isFinishOnFirstPoint,
+                    isFinishOnFirstPoint);
                 }
               });
             });
@@ -366,7 +351,7 @@ goog.require('ga_map_service');
               ol.Observable.unByKey(deregFeatureChange);
 
               // Set the definitve style of the feature
-              source.addFeature(featureToAdd);
+              layer.getSource().addFeature(featureToAdd);
               var styles = tool.style(featureToAdd);
               featureToAdd.setStyle(styles);
               scope.$apply();
@@ -554,9 +539,11 @@ goog.require('ga_map_service');
             });
           };
           var saveDebounced = gaDebounce.debounce(save, 133, false, false);
-          
+
           $rootScope.$on('$translateChangeEnd', function() {
-            layer.label = $translate.instant('draw');
+            if (layer) {
+              layer.label = $translate.instant('draw');
+            }
           });
 
           // Utils
@@ -575,6 +562,5 @@ goog.require('ga_map_service');
               updateCursorStyle, 10, false, false);
         }
       };
-    }
-  );
+  });
 })();
