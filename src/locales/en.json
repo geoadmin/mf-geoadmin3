@@ -207,6 +207,7 @@
 	"position": "Position",
 	"print": "Print",
 	"print_action": "Create PDF for print",
+        "print_dpi": "DPI",
 	"print_layout": "Orientation",
 	"print_scale": "Scale",
 	"print_underway_message": "We ask you for your patience. A multi-page print is underway, which can be time consuming.",
