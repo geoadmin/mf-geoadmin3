@@ -5,13 +5,12 @@
 
   module.controller('GaPrintController',
     function($scope, gaGlobalOptions) {
-      var printPath = gaGlobalOptions.apiUrl + '/print';
-      var printCachedPath = gaGlobalOptions.cachedApiUrl + '/print';
+      var printPath = gaGlobalOptions.apiUrl + '/print/geoportailv3';
+      var printCachedPath = gaGlobalOptions.cachedApiUrl + '/print/geoportailv3';
       
       $scope.options = {
         printPath: printPath,
-        printConfigUrl: printCachedPath + '/info.json?url=' +
-            encodeURIComponent(printPath),
+        printConfigUrl: printCachedPath + '/capabilities.json',
         legendUrl: gaGlobalOptions.apiUrl + '/static/images/legends/',
         qrcodeUrl: gaGlobalOptions.apiUrl + '/qrcodegenerator?url=',
         shortenUrl: gaGlobalOptions.apiUrl + '/shorten.json',

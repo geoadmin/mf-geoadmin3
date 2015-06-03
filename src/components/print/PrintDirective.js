@@ -13,10 +13,7 @@
           $window, $timeout, $q, $http,
           ngeoCreatePrint, ngeoPrintUtils) {
 
-    $scope.options.printUrl = 'http://print.local';
-    $scope.options.printConfigUrl = $scope.options.printUrl + '/geoportailv3/capabilities.json';
-
-    var print = ngeoCreatePrint($scope.options.printUrl);
+    var print = ngeoCreatePrint($scope.options.printPath);
     var printConfigLoaded = false;
 
     // Get print config
