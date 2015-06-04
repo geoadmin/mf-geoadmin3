@@ -13,7 +13,7 @@
           $window, $timeout, $q, $http,
           ngeoCreatePrint, ngeoPrintUtils) {
 
-    var canceller;
+    var canceler;
     var print = ngeoCreatePrint($scope.options.printPath);
     var printConfigLoaded = false;
     var deregister = [];
@@ -22,9 +22,9 @@
 
     // Get print config
     var updatePrintConfig = function() {
-      canceller = $q.defer();
+      canceler = $q.defer();
       var http = $http.get($scope.options.printConfigUrl, {
-        timeout: canceller.promise
+        timeout: canceler.promise
       }).success(function(data) {
         $scope.capabilities = data;
         $scope.layouts = [];
@@ -117,12 +117,12 @@
         return $scope.scale;
       });
 
+    var printReportTimeout;
     $scope.submit = function() {
       var map = $scope.map;
-      var mapSize = map.getSize();
-      var viewResolution = map.getView().getResolution();
 
-      $scope.printState = 'Printing...';
+      $scope.options.printing = true;
+      $scope.options.printsuccess = false;
 
       var url = $window.location.toString();
       var spec = print.createSpec(map , $scope.scale, $scope.dpi, $scope.layout.name, {
@@ -132,7 +132,8 @@
         scale: $scope.scale
       });
 
-      print.createReport(spec).then(
+      canceler = $q.defer();
+      print.createReport(spec, {timeout: canceler.promise}).then(
               handleCreateReportSuccess,
               handleCreateReportError);
     };
@@ -142,7 +143,8 @@
     }
 
     function getStatus(ref) {
-      print.getStatus(ref).then(
+      canceler = $q.defer();
+      print.getStatus(ref, {timeout: canceler.promise}).then(
               function(resp) {
                 handleGetStatusSuccess(ref, resp);
               },
@@ -154,10 +156,11 @@
       var mfResp = resp.data;
       var done = mfResp.done;
       if (done) {
-        $scope.printState = '';
+        $scope.options.printing = false;
+        $scope.options.printsuccess = true;
         $window.location.href = print.getReportUrl(ref);
       } else {
-        $timeout(function() {
+        printReportTimeout = $timeout(function() {
           getStatus(ref);
         }, 1000, false);
       }
@@ -170,6 +173,16 @@
     function handleCreateReportError() {
       $scope.printState = 'print error';
     }
+
+     // Abort the print process
+    $scope.abort = function() {
+      $scope.options.printing = false;
+      // Abort the current $http request
+      if (canceler) {
+        canceler.resolve();
+      }
+      $timeout.cancel(printReportTimeout);
+    };
 
     // Listeners
     $scope.$on('gaTopicChange', function(event, topic) {
