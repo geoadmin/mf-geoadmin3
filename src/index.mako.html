@@ -191,6 +191,7 @@ itemscope itemtype="http://schema.org/WebApplication"
       <div class="btn btn-primary">
         Exit Draw & Measure
       </div>
+      <span translate>draw2</span>
       <div>You can now draw and measure on the map using the tools in the menu on the left.
       </div>
       <button class="ga-icon ga-btn icon-remove"></button>
@@ -295,7 +296,9 @@ itemscope itemtype="http://schema.org/WebApplication"
        
         <!-- Share -->
         <div class="panel">
-          <a id="shareHeading" class="panel-heading accordion-toggle collapsed" data-toggle="collapse" data-parent="#pulldown-content" href="#share" ga-collapsible-show="globals.isShareActive">
+          <a id="shareHeading" class="panel-heading accordion-toggle collapsed"
+             data-toggle="collapse" data-parent="#pulldown-content" href="#share"
+             ng-hide="globals.isDrawActive" ga-collapsible-show="globals.isShareActive">
             <i class="visible-collapsed icon-caret-right spacer"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
             <i class="icon-share"></i>
@@ -313,7 +316,7 @@ itemscope itemtype="http://schema.org/WebApplication"
         <div class="panel">
           <a id="printHeading" class="panel-heading accordion-toggle collapsed"
              data-toggle="collapse" data-parent="#pulldown-content" href="#print"
-             ga-collapsible-show="globals.printShown">
+             ng-hide="globals.isDrawActive" ga-collapsible-show="globals.printShown">
             <i class="visible-collapsed icon-caret-right spacer"></i>
             <i class="hidden-collapsed icon-caret-down"></i>
             <i class="icon-print"></i>
@@ -384,8 +387,7 @@ itemscope itemtype="http://schema.org/WebApplication"
                   </a>
                 </li>
                 <li><!-- Measure -->
-                  <a href=""  ng-click="globals.isMeasureActive =
-      !globals.isMeasureActive;globals.isDrawActive = false;"
+                  <a href=""  ng-click="globals.isMeasureActive = !globals.isMeasureActive;globals.isDrawActive = false;"
                      data-original-title="{{'measure_tooltip' | translate}}"
                      class="ga-custom-tooltip" data-placement="bottom"
                      accesskey="m">

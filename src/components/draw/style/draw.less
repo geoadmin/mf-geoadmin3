@@ -1,8 +1,8 @@
 [ga-draw] {
 
   .ga-draw-disclaimer {
-    padding-top: 50px;
-
+    padding-top: 50px; 
+    
     a {
       color: red;
       text-decoration: none;
@@ -22,7 +22,12 @@
   }
   
   .ga-draw-buttons {
-    position: absolute;
+    .btn {
+      margin-bottom: 5px;
+      width: 100%;
+      text-align: left;
+    }
+    /*position: absolute;
     width: 290px;
 
     .btn-group {
@@ -56,16 +61,11 @@
     .dropdown-menu {
       max-height: 320px;
       overflow: auto;
-    }
+    }*/
    
-    .ga-more {
-      position: absolute;
-      right: 0px;
-      bottom: 0px;
-
-      li .btn {
-        text-align: left;
-      }
+    .ga-more button {
+      width: auto;
+      float: right;
     }
 
     .active {

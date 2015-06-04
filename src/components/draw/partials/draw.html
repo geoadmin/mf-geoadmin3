@@ -1,5 +1,13 @@
 <div class="ga-draw-buttons">
-  <div class="btn-group">
+  <button ng-repeat="tool in options.tools"
+          ng-click="toggleTool($event, tool)"
+          ng-class="{'active': options[tool.activeKey]}"
+          class="btn btn-default btn-sm">
+    <i class="{{tool.cssClass}}"></i>
+    <span translate>{{tool.title}}</span>
+  </button>
+  <!--div class="btn-group">
+  
     <button class="btn btn-default dropdown-toggle icon-ga-point"
             data-toggle="dropdown" aria-expanded="false"><span class="caret"></span>
     </button>
@@ -28,19 +36,12 @@
         </button>
       </li>
     </ul>
-  </div>
-  <div class="ga-more pull-right">
-    <button class="btn btn-default dropdown-toggle"
-            data-toggle="dropdown" aria-expanded="false">More...<span class="caret"></span>
+  </div-->
+  <div class="ga-more">
+    <button class="btn btn-default btn-sm dropdown-toggle"
+            data-toggle="dropdown" data-container="body" aria-expanded="false">More...<span class="caret"></span>
     </button>
     <ul class="dropdown-menu" role="menu">
-      <li>
-        <a href="" class="btn" ng-click="activeShare()">Share</a>
-      </li>
-      <li>
-        <a href="" class="btn" ng-click="activePrint()">Print</a>
-      </li>
-
       <li><a href="" class="btn"
              ng-disabled="!canExport()"
              ng-click="exportKml($event)"

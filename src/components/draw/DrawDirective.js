@@ -125,15 +125,6 @@ goog.require('ga_map_service');
           scope.isPropsActive = true;
           scope.isMeasureActive = false;
           scope.options.isProfileActive = false;
-          scope.pointTools = [
-            scope.options.tools[0],
-            scope.options.tools[1]
-          ];
-          scope.complexTools = [
-            scope.options.tools[2],
-            scope.options.tools[3],
-            scope.options.tools[4]
-          ];
 
           // Help overlay
           createHelpTooltip();
@@ -627,6 +618,15 @@ goog.require('ga_map_service');
           };
           var updateCursorStyleDebounced = gaDebounce.debounce(
               updateCursorStyle, 10, false, false);
+
+          // Fix position of dropdown
+          element.find('.dropdown-toggle').click(function() {
+            var bt = $(this);
+            var dropdown = bt.next('.dropdown-menu');
+            var dropDownTop = bt.offset().top + bt.outerHeight();
+            dropdown.css('top', dropDownTop + 'px');
+            dropdown.css('left', bt.offset().left + 'px');
+          });
         }
       };
   });
