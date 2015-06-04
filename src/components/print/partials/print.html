@@ -2,19 +2,19 @@
   <div class="form-group">
     <label class="col-xs-4 control-label" translate>print_layout</label>
     <div class="col-xs-8">
-      <select class="form-control" ng-model="layout" ng-options="l as l.name for l in capabilities.layouts"></select>
+      <select class="form-control" ng-model="layout" ng-options="l as l.name for l in layouts"></select>
     </div>
   </div>
   <div class="form-group">
     <label class="col-xs-4 control-label" translate>print_scale</label>
     <div class="col-xs-8">
-      <select class="form-control" ng-model="scale" ng-options="l for l in scales"></select>
+      <select class="form-control" ng-model="scale" ng-options="l for l in layout.scales"></select>
     </div>
   </div>
   <div class="form-group">
     <label class="col-xs-4 control-label" translate>print_dpi</label>
     <div class="col-xs-8">
-      <select class="form-control" ng-model="dpi" ng-options="l for l in dpis"></select>
+      <select class="form-control" ng-model="dpi" ng-options="l for l in layout.dpis"></select>
     </div>
   </div>
   <div class="form-group">
