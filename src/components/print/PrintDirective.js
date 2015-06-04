@@ -10,6 +10,8 @@
           $window, $timeout, $q, $http,
           ngeoCreatePrint, ngeoPrintUtils) {
 
+    $scope.printError = false;
+
     var canceler;
     var print = ngeoCreatePrint($scope.options.printPath);
     var printConfigLoaded = false;
@@ -43,6 +45,8 @@
                 $scope.layout.paperSize, $scope.layout.scales);
         $scope.options.legend = false;
         $scope.options.graticule = false;
+      }).error(function () {
+        $scope.printError = true;
       });
     };
 
@@ -137,13 +141,17 @@
     };
 
     var handleGetStatusError = function() {
+      handlePrintError();
+    };
+
+    var handlePrintError = function() {
       $scope.options.printsuccess = false;
       $scope.options.printing = false;
+      $scope.printError = true;
     };
 
     var handleCreateReportError = function() {
-      $scope.options.printsuccess = false;
-      $scope.options.printing = false;
+      handlePrintError();
     };
 
      // Abort the print process

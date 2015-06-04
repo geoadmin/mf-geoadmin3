@@ -46,14 +46,17 @@
     </div>
   </div>
   <div class="ga-print-progress" ng-if="options.printing && options.progress != ''">{{options.progress}}</div>
-  <button ng-show="options.printing" class="btn btn-danger col-xs-12" 
+  <button ng-show="options.printing && !printError" class="btn btn-danger col-xs-12"
           ng-click="abort()" 
           translate>abort</button>
   <button type="submit"
           class="btn btn-default col-xs-12"
           accesskey="p"
-          ng-hide="options.printing"
+          ng-hide="options.printing || printError"
           ng-click="submit()" translate>print_action</button>
+  <button ng-show="printError" class="btn btn-danger col-xs-12"
+          ng-click="retry()"
+          translate>print_error</button>
   <!-- this span is purely for e2e testing purposes, to detect print success/failure in DOM -->
   <span ng-if="options.printsuccess"></span>
 </form>
