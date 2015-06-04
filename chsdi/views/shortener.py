@@ -5,9 +5,7 @@ import pyramid.httpexceptions as exc
 
 import time
 
-from boto.dynamodb2.table import Table
-from boto.dynamodb2 import connect_to_region
-from chsdi.models.clientdata_dynamodb import get_table
+from chsdi.models.clientdata_dynamodb import get_dynamodb_table
 from chsdi.lib.helpers import check_url, make_api_url
 
 
@@ -54,7 +52,7 @@ def shortener(request):
     else:
         # DynamoDB v2 high-level abstraction
         try:
-            table = Table('shorturl', connection=connect_to_region('eu-west-1'))
+            table = get_dynamodb_table(table_name='shorturl')
         except Exception as e:
             raise exc.HTTPBadRequest('Error during connection %s' % e)
 
@@ -76,12 +74,11 @@ def shorten_redirect(request):
     url_short = request.matchdict.get('id')
     if url_short is None:
         raise exc.HTTPBadRequest('Please provide an id')
-    table = get_table()
+    table = get_dynamodb_table(table_name='shorturl')
     if url_short == 'toolong':
         raise exc.HTTPFound(location='http://map.geo.admin.ch')
-
     try:
-        url_short = table.get_item(url_short)
+        url_short = table.get_item(url_short=url_short)
         url = url_short.get('url')
     except Exception as e:
         raise exc.HTTPBadRequest('This short url doesn\'t exist: s.geo.admin.ch/%s Error is: %s' % (url_short, e))
