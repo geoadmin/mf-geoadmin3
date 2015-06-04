@@ -1,7 +1,13 @@
-//(function () {
 /**
  * @fileoverview Provides a function to create ngeo.Print objects used to
  * interact with MapFish Print v3 services.
+ *
+ * This module comes from the ngeo project:
+ *  https://github.com/camptocamp/ngeo
+ * It is published under the MIT license:
+ *  https://github.com/camptocamp/ngeo/blob/master/LICENSE
+ *
+ * It is used to print with mapfish v3
  *
  * ngeo.Print objects expose the following methods:
  *
@@ -35,8 +41,8 @@
  * - Text styles (ol.style.Text) are currently not supported/printed.
  */
 
-goog.provide('ngeo_create_print');
-goog.provide('ngeo_print');
+goog.provide('ngeo.CreatePrint');
+goog.provide('ngeo.Print');
 
 goog.require('goog.color');
 goog.require('goog.math');
@@ -600,5 +606,5 @@ ngeo.createPrintServiceFactory = function($http, $window) {
 };
 
 
-angular.module('ngeo_create_print', [])
+ngeoModule
         .factory('ngeoCreatePrint', ngeo.createPrintServiceFactory);

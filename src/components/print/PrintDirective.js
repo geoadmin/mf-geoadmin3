@@ -1,13 +1,10 @@
 (function() {
   goog.provide('ga_print_directive');
 
-  goog.require('ngeo_create_print');
-  goog.require('ngeo_print_utils');
+  goog.require('ngeo.Print');
+  goog.require('ngeo.PrintUtils');
 
-  var module = angular.module('ga_print_directive',
-          ['ngeo_create_print',
-            'ngeo_print_utils'
-          ]);
+  var module = angular.module('ga_print_directive', ['ngeo']);
 
   module.controller('GaPrintDirectiveController', function($scope,
           $window, $timeout, $q, $http,
@@ -17,13 +14,11 @@
     var print = ngeoCreatePrint($scope.options.printPath);
     var printConfigLoaded = false;
     var deregister = [];
-    var POINTS_PER_INCH = 72; //PostScript points 1/72"
-    var MM_PER_INCHES = 25.4;
 
     // Get print config
     var updatePrintConfig = function() {
       canceler = $q.defer();
-      var http = $http.get($scope.options.printConfigUrl, {
+      $http.get($scope.options.printConfigUrl, {
         timeout: canceler.promise
       }).success(function(data) {
         $scope.capabilities = data;
@@ -62,46 +57,7 @@
       refreshComp();
     };
 
-    var calculatePageBoundsPixels = function(scale) {
-      var s = parseFloat(scale.value);
-      var size = $scope.layout.paperSize; // papersize in dot!
-      var view = $scope.map.getView();
-      var resolution = view.getResolution();
-      var w = size.width / POINTS_PER_INCH * MM_PER_INCHES / 1000.0 *
-          s / resolution * ol.has.DEVICE_PIXEL_RATIO;
-      var h = size.height / POINTS_PER_INCH * MM_PER_INCHES / 1000.0 *
-          s / resolution * ol.has.DEVICE_PIXEL_RATIO;
-      var mapSize = $scope.map.getSize();
-      var center = [mapSize[0] * ol.has.DEVICE_PIXEL_RATIO / 2 ,
-          mapSize[1] * ol.has.DEVICE_PIXEL_RATIO / 2];
-
-      var minx, miny, maxx, maxy;
-
-      minx = center[0] - (w / 2);
-      miny = center[1] - (h / 2);
-      maxx = center[0] + (w / 2);
-      maxy = center[1] + (h / 2);
-      return [minx, miny, maxx, maxy];
-    };
-
-    var deactivate = function() {
-      if (deregister) {
-        for (var i = 0; i < deregister.length; i++) {
-          ol.Observable.unByKey(deregister[i]);
-        }
-      }
-      refreshComp();
-    };
-
-    var refreshComp = function () {
-      if ($scope.options.active) {
-        printRectangle = calculatePageBoundsPixels($scope.scale);
-        $scope.map.render();
-      }
-      $scope.map.render();
-    };
-
-    // Compose events
+        // Compose events
     var handlePostCompose = ngeoPrintUtils.createPrintMaskPostcompose(
       /**
        * @return {ol.Size} Size in dots of the map to print.
@@ -115,7 +71,20 @@
        */
       function() {
         return $scope.scale;
-      });
+    });
+
+    var refreshComp = function() {
+      $scope.map.render();
+    };
+
+    var deactivate = function() {
+      if (deregister) {
+        for (var i = 0; i < deregister.length; i++) {
+          ol.Observable.unByKey(deregister[i]);
+        }
+      }
+      refreshComp();
+    };
 
     var printReportTimeout;
     $scope.submit = function() {
@@ -125,11 +94,12 @@
       $scope.options.printsuccess = false;
 
       var url = $window.location.toString();
-      var spec = print.createSpec(map , $scope.scale, $scope.dpi, $scope.layout.name, {
-        name: 'Ma super carte',
-        qrimage: $scope.options.qrcodeUrl + encodeURIComponent(url),
-        url: url,
-        scale: $scope.scale
+      var spec = print.createSpec(map, $scope.scale, $scope.dpi,
+        $scope.layout.name, {
+          name: 'Ma super carte',
+          qrimage: $scope.options.qrcodeUrl + encodeURIComponent(url),
+          url: url,
+          scale: $scope.scale
       });
 
       canceler = $q.defer();
@@ -138,11 +108,11 @@
               handleCreateReportError);
     };
 
-    function handleCreateReportSuccess(resp) {
+    var handleCreateReportSuccess = function(resp) {
       getStatus(resp.data.ref);
-    }
+    };
 
-    function getStatus(ref) {
+    var getStatus = function(ref) {
       canceler = $q.defer();
       print.getStatus(ref, {timeout: canceler.promise}).then(
               function(resp) {
@@ -150,9 +120,9 @@
               },
               handleGetStatusError
               );
-    }
+    };
 
-    function handleGetStatusSuccess(ref, resp) {
+    var handleGetStatusSuccess = function(ref, resp) {
       var mfResp = resp.data;
       var done = mfResp.done;
       if (done) {
@@ -164,15 +134,17 @@
           getStatus(ref);
         }, 1000, false);
       }
-    }
+    };
 
-    function handleGetStatusError() {
-      $scope.printState = 'print error';
-    }
+    var handleGetStatusError = function() {
+      $scope.options.printsuccess = false;
+      $scope.options.printing = false;
+    };
 
-    function handleCreateReportError() {
-      $scope.printState = 'print error';
-    }
+    var handleCreateReportError = function() {
+      $scope.options.printsuccess = false;
+      $scope.options.printing = false;
+    };
 
      // Abort the print process
     $scope.abort = function() {
