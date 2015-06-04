@@ -18,36 +18,31 @@
     var deregister = [];
 
     // Get print config
-    var updatePrintConfig = function() {
-      canceler = $q.defer();
-      $http.get($scope.options.printConfigUrl, {
-        timeout: canceler.promise
-      }).success(function(data) {
-        $scope.capabilities = data;
-        $scope.layouts = [];
+    var updatePrintConfig = function(data) {
+      $scope.capabilities = data;
+      $scope.layouts = [];
 
-        angular.forEach($scope.capabilities.layouts, function(layout) {
-          var clientInfo = layout.attributes[4].clientInfo;
-          $scope.layouts.push({
-            name: layout.name,
-            scales: clientInfo.scales.reverse(),
-            paperSize: [clientInfo.width, clientInfo.height],
-            dpis: clientInfo.dpiSuggestions
-          });
+      angular.forEach($scope.capabilities.layouts, function(layout) {
+        var clientInfo = layout.attributes[4].clientInfo;
+        $scope.layouts.push({
+          name: layout.name,
+          scales: clientInfo.scales.reverse(),
+          paperSize: [clientInfo.width, clientInfo.height],
+          dpis: clientInfo.dpiSuggestions
         });
-
-        // default values:
-        $scope.layout = $scope.layouts[0];
-        $scope.dpi = $scope.layout.dpis[0];
-        var mapSize = $scope.map.getSize();
-        var mapResolution = $scope.map.getView().getResolution();
-        $scope.scale = ngeoPrintUtils.getOptimalScale(mapSize, mapResolution,
-                $scope.layout.paperSize, $scope.layout.scales);
-        $scope.options.legend = false;
-        $scope.options.graticule = false;
-      }).error(function () {
-        $scope.printError = true;
       });
+
+      // default values:
+      $scope.layout = $scope.layouts[0];
+      $scope.dpi = $scope.layout.dpis[0];
+      var mapSize = $scope.map.getSize();
+      var mapResolution = $scope.map.getView().getResolution();
+      $scope.scale = ngeoPrintUtils.getOptimalScale(mapSize, mapResolution,
+              $scope.layout.paperSize, $scope.layout.scales);
+      $scope.options.legend = false;
+      $scope.options.graticule = false;
+
+      printConfigLoaded = true;
     };
 
     var activate = function() {
@@ -166,9 +161,11 @@
 
     // Listeners
     $scope.$on('gaTopicChange', function(event, topic) {
+      canceler = $q.defer();
       if (!printConfigLoaded) {
-        updatePrintConfig();
-        printConfigLoaded = true;
+        print.getCapabilities({timeout: canceler.promise})
+                .success(updatePrintConfig)
+                .error(handlePrintError);
       }
     });
         // Listeners
