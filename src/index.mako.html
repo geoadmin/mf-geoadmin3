@@ -230,8 +230,12 @@ itemscope itemtype="http://schema.org/WebApplication"
     </div>
 % endif
 
-% if device == 'mobile' or device == 'embed':
+% if device == 'mobile':
     <div ga-background-selector ga-background-selector-map="map" class="ga-bg-mobile"></div>
+% endif
+
+% if device == 'embed':
+    <div ga-background-selector ga-background-selector-map="map"></div>
 % endif
 
 % if device != 'embed':
