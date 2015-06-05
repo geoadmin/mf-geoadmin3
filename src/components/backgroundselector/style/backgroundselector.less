@@ -30,6 +30,9 @@
   margin: 3px;
   padding: 1px;
   font-size: 75%;
+  @media (max-width: @screen-tablet) {
+    display: none;
+  }
 }
 
 .ga-bg-layer-bt-text {
@@ -39,6 +42,9 @@
   color: white;
   text-shadow: black 2px 2px 4px;
   background-color: rgba(255, 255, 255, 0.3);
+  @media (max-width: @screen-tablet) {
+    display: none;
+  }
 }
 
 .ga-bg-mobile {
@@ -140,7 +146,10 @@
     background-image: data-uri('swissimage-rect.png');
     background-color: rgba(255, 255, 255, 1);
     @media (max-width: @screen-tablet) {
-      bottom: 24px;  
+      width: 48px;
+      height: 32px;
+      bottom: 24px;
+      background-size: 44px 28px;  
     }
   }
 
@@ -151,22 +160,25 @@
     right: 10px;
     background-color: rgba(255, 255, 255, 1);
     @media (max-width: @screen-tablet) {
-      bottom: 46px;
+      bottom: 30px;
     }
     .icon-chevron-sign-right {
-      margin-left: 8px;
+      margin-left: 4px;
     }
 
   }
 
-  .ga-bg-layer {   
+  .ga-bg-layer {
     width: 96px;
     height: 64px;
     bottom: 52px;
     right: 10px;
     background-color: rgba(255, 255, 255, 1);
     @media (max-width: @screen-tablet) {
-      bottom: 24px;  
+      width: 48px;
+      height: 32px;
+      bottom: 24px;
+      background-size: 44px 28px;
     }
   }
 
@@ -196,13 +208,22 @@
 
   .ga-bg-layer-1 {
     right: 136px;
+    @media (max-width: @screen-tablet) {
+      right: 88px;
+    }
   }
 
   .ga-bg-layer-2 {
     right: 237px;
+    @media (max-width: @screen-tablet) {
+      right: 141px;
+    }
   }
 
   .ga-bg-layer-3 {
     right: 338px;
+    @media (max-width: @screen-tablet) {
+      right: 194px;
+    }
   }
 }
