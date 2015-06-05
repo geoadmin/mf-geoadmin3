@@ -1,4 +1,4 @@
-.ga-bg-layer-bt, .ga-bg-layer {
+.ga-bg-layer-bt, .ga-bg-layer, .ga-bg-layer-bt-close {
   overflow: hidden;
   cursor: pointer;
   position: absolute; 
@@ -30,6 +30,15 @@
   margin: 3px;
   padding: 1px;
   font-size: 75%;
+}
+
+.ga-bg-layer-bt-text {
+  margin: 3px;
+  padding: 1px;
+  font-size: 75%;
+  color: white;
+  text-shadow: black 2px 2px 4px;
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 .ga-bg-mobile {
@@ -113,9 +122,23 @@
     bottom: 52px;
     right: 10px;
     background-image: data-uri('swissimage-rect.png');
-    background-color: rgba(51, 51, 51, 1);
+    background-color: rgba(255, 255, 255, 1);
     @media (max-width: @screen-tablet) {
       bottom: 24px;  
+    }
+  }
+
+  .ga-bg-layer-bt-close {
+    width: 20px;
+    height: 20px;
+    bottom: 74px;
+    right: 10px;
+    background-color: rgba(255, 255, 255, 1);
+    @media (max-width: @screen-tablet) {
+      bottom: 46px;
+    }
+    .icon-caret-right {
+      margin-left: 8px;
     }
   }
 
@@ -124,7 +147,7 @@
     height: 64px;
     bottom: 52px;
     right: 10px;
-    background-color: rgba(51, 51, 51, 1);
+    background-color: rgba(255, 255, 255, 1);
     @media (max-width: @screen-tablet) {
       bottom: 24px;  
     }
@@ -151,18 +174,18 @@
   }
 
   .ga-bg-layer-0 {
-    right: 111px;
+    right: 35px;
   }
 
   .ga-bg-layer-1 {
-    right: 212px;
+    right: 136px;
   }
 
   .ga-bg-layer-2 {
-    right: 313px;
+    right: 237px;
   }
 
   .ga-bg-layer-3 {
-    right: 414px;
+    right: 338px;
   }
 }
