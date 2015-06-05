@@ -3,7 +3,7 @@
   cursor: pointer;
   position: absolute; 
   background: transparent no-repeat center;
-  transition: right 0.5s ease;
+  transition: right 0.5s ease, bottom 0.5s ease;
 }
 
 .ga-bg-layer-bt {
@@ -42,14 +42,12 @@
 }
 
 .ga-bg-mobile {
-  position: relative;
-  width: 44px;
-  height: 44px;
 
   .ga-bg-layer-bt {
     width: 44px;
     height: 44px;
-    right: 0px;
+    left: 10px;
+    bottom: 26px;
     background-image: data-uri('background-selector-black.png');
     &:active {
       transform: scale(1.2);
@@ -62,8 +60,8 @@
     width: 42px;
     height: 42px;
     border-radius:21px;
-    right: 1px;
-    top: 1px;
+    left: 11px;
+    bottom: 27px;
     background-color: rgba(51, 51, 51, 1);
     &:active {
       transform: scale(1.2);
@@ -98,19 +96,19 @@
   }
 
   .ga-bg-layer-0 {
-    right: 49px;
+    bottom: 76px;
   }
 
   .ga-bg-layer-1 {
-    right: 99px;
+    bottom: 125px;
   }  
 
   .ga-bg-layer-2 {
-    right: 149px;
+    bottom: 174px;
   }
 
   .ga-bg-layer-3 {
-    right: 199px;
+    bottom: 223px;
   }
 }
 

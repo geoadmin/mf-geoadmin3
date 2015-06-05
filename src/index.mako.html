@@ -210,9 +210,6 @@ itemscope itemtype="http://schema.org/WebApplication"
         <div ga-geolocation ga-geolocation-map="map"></div>
   % endif
         <div id="zoomButtons"></div>
-  % if device == 'mobile' or device == 'embed':
-        <div ga-background-selector ga-background-selector-map="map" class="ga-bg-mobile"></div>
-  % endif
   % if device != 'embed':
         <div ga-time-selector-bt ga-time-selector-bt-map="map"></div> 
   % endif
@@ -231,6 +228,10 @@ itemscope itemtype="http://schema.org/WebApplication"
     <div ga-offline-selector
          ga-offline-selector-map="map">
     </div>
+% endif
+
+% if device == 'mobile' or device == 'embed':
+    <div ga-background-selector ga-background-selector-map="map" class="ga-bg-mobile"></div>
 % endif
 
 % if device != 'embed':
