@@ -5,8 +5,9 @@
 
   module.controller('GaPrintController',
     function($scope, gaGlobalOptions) {
-      var printPath = gaGlobalOptions.apiUrl + '/print/geoportailv3';
-      var printCachedPath = gaGlobalOptions.cachedApiUrl + '/print/geoportailv3';
+      var printPath = '/print/geoadmin';
+      var printPath = gaGlobalOptions.apiUrl + printPath;
+      var printCachedPath = gaGlobalOptions.cachedApiUrl + printPath;
       
       $scope.options = {
         printPath: printPath,
