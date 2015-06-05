@@ -125,6 +125,19 @@
             isOfflineToOnline = !offline;
           });
 
+          // If another omponent add a background layer, update the
+          // selectbox.
+          scope.layers = scope.map.getLayers().getArray();
+          scope.layerFilter = gaLayerFilters.background;
+          scope.$watchCollection('layers | filter:layerFilter',
+            function(arr) {
+              if (arr.length == 2 ||
+                  (scope.currentLayer == 'voidLayer' && arr.length == 1)) {
+                scope.currentLayer = arr[arr.length - 1].id;
+                scope.map.removeLayer(arr[arr.length - 1]);
+              }
+            });
+
           scope.getClass = function(layer, index) {
             if (layer) {
               var splitLayer = layer.id.split('.');
