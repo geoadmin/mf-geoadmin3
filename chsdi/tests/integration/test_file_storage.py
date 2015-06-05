@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import os
+import StringIO
+import gzip
 from chsdi.tests.integration import TestsBase
 
 
@@ -101,7 +103,8 @@ class TestFileView(TestsBase):
 
         # get file
         resp = self.testapp.get('/files/%s' % file_id, headers=self.headers, status=200)
-        orig_data = resp.body
+        new_content = resp.body
+        orig_data = gzip.GzipFile(fileobj=StringIO.StringIO(new_content)).read()
         self.assertEqual(orig_data, VALID_KML)
 
         # update with file_id, should copy
@@ -116,7 +119,8 @@ class TestFileView(TestsBase):
 
         # re-get first file
         resp = self.testapp.get('/files/%s' % file_id, headers=self.headers, status=200)
-        orig_data = resp.body
+        new_content = resp.body
+        orig_data = gzip.GzipFile(fileobj=StringIO.StringIO(new_content)).read()
 
         self.assertEqual(orig_data, VALID_KML)
         self.assertNotEqual(orig_data, modified_content)
