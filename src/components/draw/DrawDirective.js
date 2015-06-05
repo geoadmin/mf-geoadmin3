@@ -145,10 +145,14 @@ goog.require('ga_map_service');
           var propsToggle = function(feature) {
             if (feature) {
               scope.feature = feature;
+              // Open the popup
               scope.popupToggle = true;
+              // Set the correct title
+              scope.options.popupOptions.title = feature.get('type');
             } else {
               scope.feature = undefined;
               scope.popupToggle = false;
+              scope.options.popupOptions.title = 'feature';
             }
           };
           select.getFeatures().on('add', function(evt) {
@@ -268,6 +272,7 @@ goog.require('ga_map_service');
             for (var i = 0, ii = tools.length; i < ii; i++) {
               scope.options[tools[i].activeKey] = (tools[i].id == tool.id);
             }
+            scope.options.setDefaultValues();
             activateDrawInteraction(lastActiveTool);
           };
 
@@ -424,6 +429,7 @@ goog.require('ga_map_service');
           var updateUseStyles = function() {
             var features = select.getFeatures().getArray();
             var feature = features[0];
+            var useTextStyle = false;
             var useIconStyle = false;
             var useColorStyle = false;
 
@@ -431,6 +437,7 @@ goog.require('ga_map_service');
               // The select interaction select only one feature
               var styles = feature.getStyleFunction()();
               var featStyle = styles[0];
+
               if (featStyle.getImage() instanceof ol.style.Icon) {
                 useIconStyle = true;
                 scope.options.icon = findIcon(featStyle.getImage(),
@@ -446,6 +453,7 @@ goog.require('ga_map_service');
               }
               if (featStyle.getText()) {
                 useColorStyle = true;
+                useTextStyle = true;
                 scope.options.name = featStyle.getText().getText();
                 //scope.options.textSize
                 //scope.options.textColor
@@ -455,11 +463,20 @@ goog.require('ga_map_service');
 
               scope.options.name = feature.get('name') || '';
               scope.options.description = feature.get('description') || '';
-
+              if (!feature.get('type')) {
+                if (useIconStyle) {
+                  feature.set('type', 'marker');
+                } else if (useTextStyle) {
+                  feature.set('type', 'annotation');
+                } else {
+                  feature.set('type', 'linepolygon');
+                }
+              }
             } else {
               scope.options.name = '';
               scope.options.description = '';
             }
+            scope.useTextStyle = useTextStyle;
             scope.useIconStyle = useIconStyle;
             scope.useColorStyle = useColorStyle;
             scope.$evalAsync();
@@ -501,12 +518,6 @@ goog.require('ga_map_service');
           ///////////////////////////////////
           // More... button functions
           ///////////////////////////////////
-          scope.activeShare = function() {
-            $('#shareHeading').click();
-          };
-          scope.activePrint = function() {
-             $('#printHeading').click();
-          };
           scope.exportKml = function(evt) {
             gaExportKml.createAndDownload(layer, map.getView().getProjection());
             evt.preventDefault();

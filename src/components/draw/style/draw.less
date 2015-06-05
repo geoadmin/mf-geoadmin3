@@ -1,3 +1,24 @@
+@ga-select-box-padding: 1;
+.ga-item-size(@width, @height, @nbCol, @nbItems, @btWidth) {
+   /* (@width + 2*margin)*@nbCol + @btWidth + 2*padding */
+   width: unit((@width + 4)*@nbCol + @btWidth + 2*@ga-select-box-padding , px);
+   
+   /* @height + 2*margin + 2*padding + 2*borderWidth */
+   height: unit(@height + 4 + 2*@ga-select-box-padding + 2, px); 
+      
+   &.ga-select-box-open {
+     height: unit(ceil(@nbItems/@nbCol)*(@height + 4) + 2*@ga-select-box-padding, px);
+   }
+   > * {
+     margin: 2px;
+     width: unit(@width, px);
+     height: unit(@height, px);
+   }
+   button {
+     padding-top: unit(@ga-select-box-padding, px);
+   }
+}
+
 [ga-draw] {
 
   .ga-draw-disclaimer {
@@ -15,10 +36,6 @@
   
   .ga-draw-disclaimer, .ga-draw-interaction-share {
     text-align: justify;
-  }
-
-  .ga-draw-modify {
-    width: 100%;
   }
   
   .ga-draw-buttons {
@@ -114,19 +131,12 @@
 
   .popover-content {
     overflow:  auto;
+    min-width: 356px;
     height: ~"calc(100% - 50px)";
 
-    label, span {
-      vertical-align: top;
-    }
-
-    span, input, select, textarea {
-      display: inline-block;
-    }
-
-    input, select, textarea {
-      font-weight: normal;
-      width: 160px;
+    label {
+      position: relative;
+      margin-right: 5px;
     }
 
     span {
@@ -134,54 +144,87 @@
      padding-top: 5px;
      text-align: left;
     }
+
+    label, span {
+      vertical-align: top;
+    }
+
+    span, input, select, textarea {
+      /*display: inline-block;*/
+    }
+
+    input, select, textarea {
+      position: relative;
+      /*display: inline-block;*/
+      font-weight: normal;
+      width: 100%;
+      left: 0px;
+    }
     
     ul {
       margin-bottom: 15px;
     }
 
     .ga-draw-modify {
-      width: 350px;
+      width: 100%;
       
       > label {
         display: block;
       }
     }
-
-    .ga-icons {
-      height: 140px;
+    
+    /* Generic css for custom select box */  
+    .ga-select-box {
+      position: relative;
       overflow: hidden;
-
-      .ga-choose-icon {
-        width: 340px;
-        height: 72px;
-        overflow-y: auto; 
+      border: 1px solid lightgray;
+      border-radius: 2px;
+      padding: unit(@ga-select-box-padding, px);
+      transition: height 0.5s ease;
+           
+      button {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        transition: transform 0.5s ease;
       }
 
-      .ga-icon-size-24 img {
-        width: 24px;
-      }
-
-      .ga-icon-size-36 img {
-        width: 36px;
-      }
-
-      .ga-icon-size-48 img {
-        width: 48px;
-      }
-      
-      img {
+      > :not(button) {
+        display: inline-block;
         cursor: pointer;
-      }
-      
-      img:hover {
-        background-color: #e9e9e9;
-      }
-      
-      .ga-selected, .ga-selected:hover {
-        background-color: darkgray;
-        cursor: default;
+        margin: 2px;
+            
+        &:hover {
+          background-color: #e9e9e9;
+        }
+
+        &.ga-selected, &.ga-selected:hover {
+          background-color: darkgray;
+          cursor: default;
+        }
       }
     }
+    .ga-select-box-open {
+      button {
+        .rotate(180deg);
+      }
+    }
+
+   .ga-select-icons {
+      .ga-item-size(48, 48, 5, 114, 48);
+    }
+
+   .ga-select-colors {
+      .ga-item-size(24, 24, 8, 8, 2);
+      
+      [style] {
+         width: 20px;
+         height: 20px;
+         margin: 2px;
+         border-radius: 10px; 
+      }
+    }
+
   }
 
   .ga-draw-interaction-btns {

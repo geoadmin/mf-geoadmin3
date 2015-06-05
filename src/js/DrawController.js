@@ -23,7 +23,7 @@ goog.provide('ga_draw_controller');
          
         // Add popup options
         $scope.options.popupOptions = {
-          title: 'measure',
+          title: 'no type',
           help:'66',
           x: 0,
           y: 'auto',
@@ -211,16 +211,19 @@ goog.provide('ga_draw_controller');
             {id: 'waste-basket'},
             {id: 'water'}
         ];
-        
-        // Set default color
-        $scope.options.color = $scope.options.colors[5];
-        
-        // Set default icon
-        $scope.options.icon = $scope.options.icons[0];
-        
-        // Set default icon
-        $scope.options.iconSize = $scope.options.iconSizes[2];
- 
+       
+        $scope.options.setDefaultValues = function() { 
+          // Set default color
+          $scope.options.color = $scope.options.colors[5];
+          
+          // Set default icon
+          $scope.options.icon = $scope.options.icons[0];
+          
+          // Set default icon size
+          $scope.options.iconSize = $scope.options.iconSizes[2];
+        }
+        $scope.options.setDefaultValues();
+
         // Define icons properties
         for (var i = 0, ii = $scope.options.icons.length; i < ii; i++) {
           var icon = $scope.options.icons[i];
@@ -229,6 +232,7 @@ goog.provide('ga_draw_controller');
         $scope.getIconUrl = function(i) {
           return i.url;
         };
+
         // Get the current style defined by inputs 
         $scope.options.updateStyle = function(feature) {
           var style;
@@ -372,7 +376,7 @@ goog.provide('ga_draw_controller');
             width: 3
           });
           
-          feature.set('name', $scope.options.name);
+          //feature.set('name', $scope.options.name);
           feature.set('description', $scope.options.description);
 
           var styles = [
@@ -534,7 +538,8 @@ goog.provide('ga_draw_controller');
             type: 'Point',
             style: markerDrawStyleFunc
           },
-          style: markerDrawStyleFunc
+          style: markerDrawStyleFunc,
+          useIconStyle: true
         }, {
           id: 'annotation',
           drawOptions: {
@@ -549,7 +554,7 @@ goog.provide('ga_draw_controller');
             style: generateDrawStyleFunc(linepolygonDrawStyleFunc)
           },
           style: linepolygonDrawStyleFunc
-        }, {
+        }, /*{
           id: 'freehand',
           drawOptions: {
             type: 'LineString',
@@ -558,7 +563,7 @@ goog.provide('ga_draw_controller');
             style: generateDrawStyleFunc(freehandDrawStyleFunc)
           },
           style: freehandDrawStyleFunc
-        }, {
+        },*/ {
           id: 'measure',
           drawOptions: {
             type: 'Polygon',

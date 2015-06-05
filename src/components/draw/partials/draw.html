@@ -77,7 +77,7 @@
     </li>
   </ul>
   <div ng-if="isPropsActive" class="ga-draw-modify">
-    <label>
+    <label ng-if="useTextStyle">
       <span>{{'modify_text_label' | translate}}:</span> 
       <input type="text" class="form-control"
              placeholder="{{'draw_text_placeholder' | translate}}"
@@ -87,17 +87,28 @@
     <label ng-if="useColorStyle || useIconStyle">
       <span>{{'modify_description' | translate}}:</span> 
       <textarea class="form-control"
-                placeholder="{{'draw_description_placeholder' | translate}}"
                 ng-model="options.description"/>
     </label>
 
     <label ng-if="useColorStyle">
       <span>{{'modify_color_label' | translate}}:</span> 
-      <select class="form-control"
-              ng-model="options.color" ng-options="options.translate.instant(c.name) for c in options.colors"></select>
+      <!--select class="form-control"
+              ng-model="options.color"
+              ng-options="options.translate.instant(c.name) for c in
+              options.colors">
+      </select-->
+      <div class="ga-select-box ga-select-colors ga-item-size-{{options.iconSize.value[0]}}"
+           ng-class="{'ga-select-box-open': gaSelectBoxOpen}">
+        <div ng-class="{'ga-selected': (options.color == i)}" 
+                         ng-click="options.color = i" 
+             ng-repeat="i in options.colors">
+          <div style="background-color:{{i.name}}">
+          </div> 
+        </div>
+      </div>
     </label>
 
-    <div class="ga-icons" ng-if="useIconStyle">
+    <!--div class="ga-icons" ng-if="useIconStyle">
       <label>
         <span>{{'modify_icon_size_label' | translate}}:</span> 
         <select class="form-control"
@@ -115,7 +126,21 @@
                ng-src="{{i.url}}" />
         </div>
       </label>
-    </div>
+    </div-->
+    <label class="ga-icons" ng-if="useIconStyle">
+      <span>{{'modify_icon_label' | translate}}:</span> 
+      <div class="ga-select-box ga-select-icons ga-item-size-{{options.iconSize.value[0]}}"
+           ng-class="{'ga-select-box-open': gaSelectBoxOpen}">
+        <button class="ga-icon icon-caret-down"
+                ng-click="gaSelectBoxOpen=!gaSelectBoxOpen"></button>
+        <img ng-class="{'ga-selected': (options.icon == i)}" 
+             draggable="false" 
+             ng-click="options.icon = i" 
+             ng-repeat="i in options.icons" 
+             ng-src="{{i.url}}" />
+      </div>
+    </label>
+
   </div>
   <div ng-if="isMeasureActive"
        ga-measure-infos="feature"
