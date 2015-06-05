@@ -47,12 +47,15 @@
     width: 44px;
     height: 44px;
     left: 10px;
-    bottom: 26px;
+    bottom: 51px;
     background-image: data-uri('background-selector-black.png');
     &:active {
       transform: scale(1.2);
       -ms-transform: scale(1.2);
       -webkit-transform: scale(1.2);
+    }
+    @media (max-width: @screen-tablet) {
+      bottom: 26px;
     }
   }
 
@@ -61,12 +64,15 @@
     height: 42px;
     border-radius:21px;
     left: 11px;
-    bottom: 27px;
+    bottom: 52px;
     background-color: rgba(51, 51, 51, 1);
     &:active {
       transform: scale(1.2);
       -ms-transform: scale(1.2);
       -webkit-transform: scale(1.2);
+    }
+    @media (max-width: @screen-tablet) {
+      bottom: 27px;
     }
   }
 
@@ -96,19 +102,31 @@
   }
 
   .ga-bg-layer-0 {
-    bottom: 76px;
+    bottom: 101px;
+    @media (max-width: @screen-tablet) {
+      bottom: 76px;
+    }
   }
 
   .ga-bg-layer-1 {
-    bottom: 125px;
+    bottom: 150px;
+    @media (max-width: @screen-tablet) {
+      bottom: 125px;
+    }
   }  
 
   .ga-bg-layer-2 {
-    bottom: 174px;
+    bottom: 199px;
+    @media (max-width: @screen-tablet) {
+      bottom: 174px;
+    }
   }
 
   .ga-bg-layer-3 {
-    bottom: 223px;
+    bottom: 248px;
+    @media (max-width: @screen-tablet) {
+      bottom: 223px;
+    }
   }
 }
 
