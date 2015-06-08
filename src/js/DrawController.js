@@ -67,14 +67,14 @@ goog.provide('ga_draw_controller');
         $scope.options.description = '';
 
         $scope.options.colors = [
-          {name: 'black',  fill: [0, 0, 0]},
-          {name: 'blue',   fill: [0, 0, 255]},
-          {name: 'gray',   fill: [128, 128, 128]},
-          {name: 'green',  fill: [0, 128, 0]},
-          {name: 'orange', fill: [255, 165, 0]},
-          {name: 'red',    fill: [255, 0, 0]},
-          {name: 'white',  fill: [255, 255, 255]},
-          {name: 'yellow', fill: [255, 255, 0]}
+          {name: 'black',  fill: [0, 0, 0], border: 'white'},
+          {name: 'blue',   fill: [0, 0, 255], border: 'white'},
+          {name: 'gray',   fill: [128, 128, 128], border: 'white'},
+          {name: 'green',  fill: [0, 128, 0], border: 'white'},
+          {name: 'orange', fill: [255, 165, 0], border: 'black'},
+          {name: 'red',    fill: [255, 0, 0], border: 'white'},
+          {name: 'white',  fill: [255, 255, 255], border: 'black'},
+          {name: 'yellow', fill: [255, 255, 0], border: 'black'}
         ];
 
         $scope.options.iconSizes = [

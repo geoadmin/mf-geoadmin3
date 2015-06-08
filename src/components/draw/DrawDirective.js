@@ -26,7 +26,8 @@ goog.require('ga_map_service');
   module.directive('gaDraw',
     function($timeout, $translate, $window, $rootScope, gaBrowserSniffer,
         gaDefinePropertiesForLayer, gaDebounce, gaFileStorage, gaLayerFilters,
-        gaExportKml, gaMapUtils, gaPermalink, $http, $q, gaUrlUtils) {
+        gaExportKml, gaMapUtils, gaPermalink, $http, $q, gaUrlUtils,
+        $document) {
 
       var createDefaultLayer = function(useTemporaryLayer) {
         var dfltLayer = new ol.layer.Vector({
@@ -122,7 +123,7 @@ goog.require('ga_map_service');
           var useTemporaryLayer = scope.options.useTemporaryLayer || false;
           var map = scope.map;
           var viewport = $(map.getViewport());
-          scope.isPropsActive = true;
+          scope.isPropsActive = false;
           scope.isMeasureActive = false;
           scope.options.isProfileActive = false;
 
@@ -216,7 +217,7 @@ goog.require('ga_map_service');
           // Activate the component: active a tool if one was active when draw
           // has been deactivated.
           var activate = function() {
-            defineLayerToModify();
+                       defineLayerToModify();
 
             if (layer.adminId) {
               updateShortenUrl(layer.adminId);
@@ -238,7 +239,7 @@ goog.require('ga_map_service');
 
 
           // Deactivate the component: remove layer and interactions.
-          var deactivate = function() {
+          var deactivate = function(evt) {
 
             if (unChangeFeature) {
               ol.Observable.unByKey(unChangeFeature);
@@ -256,28 +257,6 @@ goog.require('ga_map_service');
             deactivateDrawInteraction();
             deactivateSelectInteraction();
             //map.removeOverlay(overlay);
-          };
-
-          // Deactivate other tools
-          var activateTool = function(tool) {
-            layer.visible = true;
-
-            if (map.getLayers().getArray().indexOf(layer) == -1) {
-              map.addLayer(layer);
-            }
-
-            gaMapUtils.moveLayerOnTop(map, layer);
-            lastActiveTool = tool;
-            var tools = scope.options.tools;
-            for (var i = 0, ii = tools.length; i < ii; i++) {
-              scope.options[tools[i].activeKey] = (tools[i].id == tool.id);
-            }
-            scope.options.setDefaultValues();
-            activateDrawInteraction(lastActiveTool);
-          };
-
-          var deactivateTool = function(tool) {
-            scope.options[tool.activeKey] = false;
           };
 
           // Set the draw interaction with the good geometry
@@ -361,9 +340,7 @@ goog.require('ga_map_service');
               var styles = tool.style(featureToAdd);
               featureToAdd.setStyle(styles);
               scope.$apply();
-              deactivateDrawInteraction();
               deactivateTool(lastActiveTool);
-              activateSelectInteraction();
               select.getFeatures().push(featureToAdd);
               updateHelpLabel();
             });
@@ -386,6 +363,8 @@ goog.require('ga_map_service');
               deregPointerMove = map.on('pointermove',
                   updateCursorStyleDebounced);
             }
+            // Delete keyboard button
+            $document.keyup(scope.deleteSelectedFeature);
             activateModifyInteraction();
           };
           var deactivateSelectInteraction = function() {
@@ -394,6 +373,7 @@ goog.require('ga_map_service');
               ol.Observable.unByKey(deregPointerMove,
                   updateCursorStyleDebounced);
             }
+            $document.off('keyup', scope.deleteSelectedFeature);
             select.getFeatures().clear();
             select.setActive(false);
           };
@@ -464,13 +444,7 @@ goog.require('ga_map_service');
               scope.options.name = feature.get('name') || '';
               scope.options.description = feature.get('description') || '';
               if (!feature.get('type')) {
-                if (useIconStyle) {
-                  feature.set('type', 'marker');
-                } else if (useTextStyle) {
-                  feature.set('type', 'annotation');
-                } else {
-                  feature.set('type', 'linepolygon');
-                }
+                feature.set('type', lastActiveTool.id);
               }
             } else {
               scope.options.name = '';
@@ -480,22 +454,6 @@ goog.require('ga_map_service');
             scope.useIconStyle = useIconStyle;
             scope.useColorStyle = useColorStyle;
             scope.$evalAsync();
-          };
-
-          // Activate/deactivate a tool
-          scope.toggleTool = function(evt, tool) {
-            if (scope.options[tool.activeKey]) {
-              // Deactivate all tools
-              deactivate();
-              lastActiveTool = undefined;
-            } else {
-              activateTool(tool);
-            }
-            evt.preventDefault();
-          };
-
-          scope.aToolIsActive = function() {
-            return !!lastActiveTool;
           };
 
           // Watchers
@@ -516,11 +474,61 @@ goog.require('ga_map_service');
 
 
           ///////////////////////////////////
+          // Tools managment
+          ///////////////////////////////////
+          var activateTool = function(tool) {
+            layer.visible = true;
+
+            if (map.getLayers().getArray().indexOf(layer) == -1) {
+              map.addLayer(layer);
+            }
+
+            gaMapUtils.moveLayerOnTop(map, layer);
+            lastActiveTool = tool;
+            var tools = scope.options.tools;
+            for (var i = 0, ii = tools.length; i < ii; i++) {
+              scope.options[tools[i].activeKey] = (tools[i].id == tool.id);
+            }
+            scope.options.setDefaultValues();
+            activateDrawInteraction(lastActiveTool);
+          };
+
+          var deactivateTool = function(tool) {
+            scope.options[tool.activeKey] = false;
+            deactivateDrawInteraction();
+            activateSelectInteraction();
+          };
+
+          scope.toggleTool = function(evt, tool) {
+            if (scope.options[tool.activeKey]) {
+              // Deactivate all tools
+              deactivateTool(tool);
+              lastActiveTool = undefined;
+            } else {
+              activateTool(tool);
+            }
+            evt.preventDefault();
+          };
+
+          scope.aToolIsActive = function() {
+            return !!lastActiveTool;
+          };
+
+
+
+          ///////////////////////////////////
           // More... button functions
           ///////////////////////////////////
           scope.exportKml = function(evt) {
             gaExportKml.createAndDownload(layer, map.getView().getProjection());
             evt.preventDefault();
+          };
+          scope.deleteSelectedFeature = function(evt) {
+            if ((!evt || evt.which == 46) &&
+                select.getFeatures().getLength() > 0) {
+              layer.getSource().removeFeature(select.getFeatures().item(0));
+              select.getFeatures().clear();
+            }
           };
           // Delete all features of the layer
           scope.deleteAllFeatures = function() {
@@ -560,23 +568,41 @@ goog.require('ga_map_service');
             scope.options.isProfileActive = false;
           };
           scope.showTabs = function(feature) {
-            return scope.showMeasureTab(feature) ||
-                scope.showProfileTab(feature);
+            //console.debug(feature);
+            var bools = [
+              scope.showPropsTab(feature),
+              scope.showMeasureTab(feature),
+              scope.showProfileTab(feature)
+            ];
+            var cpt = 0;
+            for (var i in bools) {
+              if (bools[i]) {
+                 cpt++;
+              }
+            }
+            return (cpt > 1);
           };
           scope.showMeasureTab = function(feature) {
-            if (!feature) {
-              return false;
+            var geom = feature.getGeometry();
+            var isPoint = (geom instanceof ol.geom.Point);
+            return !isPoint;
+          };
+          scope.showProfileTab = function(feature) {
+            //console.debug(feature.get('type'));
+            if (feature.get('type') == 'measure') {
+              scope.activeTabProfile();
             }
+            return scope.showMeasureTab(feature);
+          };
+          scope.showPropsTab = function(feature) {
             var geom = feature.getGeometry();
             var isPoint = (geom instanceof ol.geom.Point);
             if (isPoint) {
               scope.activeTabProps();
             }
-            return !isPoint;
+            return (!isPoint && feature.get('type') != 'measure');
           };
-          scope.showProfileTab = function(feature) {
-            return scope.showMeasureTab(feature);
-          };
+
 
 
 

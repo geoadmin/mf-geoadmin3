@@ -17,9 +17,9 @@ goog.require('ga_storage_service');
    * The application's main controller.
    */
   module.controller('GaMainController',
-    function($rootScope, $scope, $timeout, $translate, $window, gaBrowserSniffer,
+    function($rootScope, $scope, $timeout, $translate, $window, $document, gaBrowserSniffer,
         gaFeaturesPermalinkManager, gaLayersPermalinkManager, gaMapUtils,
-        gaRealtimeLayersManager, gaNetworkStatus, gaPermalink, gaStorage) {
+        gaRealtimeLayersManager, gaNetworkStatus, gaPermalink, gaStorage, gaHistory) {
 
       var createMap = function() {
         var toolbar = $('#zoomButtons')[0];
@@ -157,7 +157,8 @@ goog.require('ga_storage_service');
         feedbackPopupShown: false,
         printShown: initWithPrint,
         embed: gaBrowserSniffer.embed,
-        isShareActive: false
+        isShareActive: false,
+        isDrawActive: false
       };
 
       $rootScope.$on('gaNetworkStatusChange', function(evt, offline) {
@@ -180,7 +181,41 @@ goog.require('ga_storage_service');
       // Try to manage the menu correctly when height is too small,
       // only on desktop.
       if (!gaBrowserSniffer.mobile) {
-      
+        
+
+        // Exit Draw mode when pressing ESC or BAckspace button
+        $document.keydown(function(evt) {
+          if ((evt.which == 8 || evt.which == 27) &&
+            $scope.globals.isDrawActive) {
+            $scope.globals.isDrawActive = false;
+            $scope.$digest();
+            if (evt.which == 8) {
+              var d = evt.target.tagName;
+              if (!/^(input|textarea)$/i.test(d)) {
+                evt.preventDefault();
+              }
+            }
+          }
+        });
+
+        // Browser back button management
+        $scope.$watch('globals.isDrawActive', function(isActive) {
+          if (isActive && gaHistory) {
+            gaHistory.replaceState({
+              isDrawActive: false
+            }, '', gaPermalink.getHref());
+            
+            gaHistory.pushState(null, '', gaPermalink.getHref());
+          }
+        });
+        $window.onpopstate = function(evt) {
+          if (evt.state.isDrawActive === false) {
+            $scope.globals.isDrawActive = false;
+            gaPermalink.refresh();
+            $scope.$digest();
+          }
+        };
+
         $($window).on('resize', function() {
           if(isWindowTooSmall()) {
             if ($scope.globals.catalogShown) {

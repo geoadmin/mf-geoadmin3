@@ -49,9 +49,15 @@
       <li class="divider"></li>
       <li><a href="" class="btn"
              ng-disabled="!canExport()"
+             ng-click="deleteSelectedFeature()"
+             >Delete selected features</a>
+      </li>
+      <li><a href="" class="btn"
+             ng-disabled="!canExport()"
              ng-click="deleteAllFeatures()"
              translate>draw_delete_description</a>
       </li>
+
     </ul>
   </div>
 </div>
@@ -60,8 +66,8 @@
      ga-popup="popupToggle"
      ga-popup-options="options.popupOptions"
      ng-class="{'ga-profile-active': options.isProfileActive}">
-  <ul class="nav nav-tabs" role="tablist" ng-if="showTabs(feature)">
-    <li>
+  <ul class="nav nav-tabs" role="tablist" ng-if="feature && showTabs(feature)">
+    <li ng-show="showPropsTab(feature)">
       <a href=""
          ng-click="activeTabProps()"
          ng-class="{'ga-active': isPropsActive}">Marker/Text/Shape</a>
@@ -102,7 +108,8 @@
         <div ng-class="{'ga-selected': (options.color == i)}" 
                          ng-click="options.color = i" 
              ng-repeat="i in options.colors">
-          <div style="background-color:{{i.name}}">
+          <div style="background-color:{{i.name}};
+                      {{useTextStyle ? 'border: 1px solid ' + i.border : ''}}">
           </div> 
         </div>
       </div>
