@@ -1,13 +1,17 @@
 (function() {
   goog.provide('ga_print_directive');
 
+  goog.require('ga_map_service');
   goog.require('ngeo.Print');
   goog.require('ngeo.PrintUtils');
 
-  var module = angular.module('ga_print_directive', ['ngeo']);
+  var module = angular.module('ga_print_directive', [
+    'ngeo',
+    'ga_map_service'
+  ]);
 
   module.controller('GaPrintDirectiveController', function($scope,
-          $window, $timeout, $q, $http,
+          $window, $timeout, $q, gaLayers,
           ngeoCreatePrint, ngeoPrintUtils) {
 
     $scope.printError = false;
@@ -93,8 +97,12 @@
       $scope.options.printsuccess = false;
 
       var url = $window.location.toString();
+      var legend = getLengend(map);
+
       var spec = print.createSpec(map, $scope.scale, $scope.dpi,
         $scope.layout.name, {
+          legend: legend,
+          printLegend: Number($scope.options.legend),
           name: $scope.options.title,
           qrimage: $scope.options.qrcodeUrl + encodeURIComponent(url),
           url: url,
@@ -105,6 +113,21 @@
       print.createReport(spec, {timeout: canceler.promise}).then(
               handleCreateReportSuccess,
               handleCreateReportError);
+    };
+
+    var getLengend = function(map) {
+      var legend = {};
+      if ($scope.options.legend) {
+        legend.classes = map.getLayers().getArray().map(function(layer) {
+          var legendUrl = gaLayers.getLayerProperty(layer.id, 'legendUrl');
+          var label = gaLayers.getLayerProperty(layer.id, 'label');
+          return {icons: [legendUrl], name: label};
+        }).filter(function(legend) {
+          return legend.icons[0] !== '';
+        });
+      }
+
+      return legend;
     };
 
     var handleCreateReportSuccess = function(resp) {
