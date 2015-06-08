@@ -40,7 +40,8 @@
           'ch.swisstopo.pixelkarte-farbe-pk100.noscale',
           'ch.swisstopo.pixelkarte-farbe-pk50.noscale',
           'ch.swisstopo.pixelkarte-farbe-pk25.noscale'
-        ]
+        ],
+        title: 'Ma carte'
       };
       
       $('#print').on('show.bs.collapse', function() {

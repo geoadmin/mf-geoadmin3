@@ -95,7 +95,7 @@
       var url = $window.location.toString();
       var spec = print.createSpec(map, $scope.scale, $scope.dpi,
         $scope.layout.name, {
-          name: 'Ma super carte',
+          name: $scope.options.title,
           qrimage: $scope.options.qrcodeUrl + encodeURIComponent(url),
           url: url,
           scale: $scope.scale
