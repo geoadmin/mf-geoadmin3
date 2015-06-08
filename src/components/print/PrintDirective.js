@@ -109,6 +109,8 @@
           scale: $scope.scale
       });
 
+      getGrid(spec);
+
       canceler = $q.defer();
       print.createReport(spec, {timeout: canceler.promise}).then(
               handleCreateReportSuccess,
@@ -128,6 +130,22 @@
       }
 
       return legend;
+    };
+
+    var getGrid = function(spec) {
+      if ($scope.options.grid) {
+        var backgroundLayerId = gaLayers.getBackgroundLayers()[0].id;
+        var wmsUrl = gaLayers.getLayerProperty(backgroundLayerId, 'wmsUrl');
+        spec.attributes.map.layers.splice(0, 0, {
+          baseURL: $window.location.protocol + wmsUrl,
+          customParams: {TRANSPARENT: true},
+          imageFormat: 'image/png',
+          layers: ['grid'],
+          opacity: 1,
+          serverType: 'mapserver',
+          type: 'WMS'
+        });
+      }
     };
 
     var handleCreateReportSuccess = function(resp) {
