@@ -147,12 +147,14 @@ ngeo.Print.prototype.encodeMap_ = function(map, scale, object) {
   var viewCenter = view.getCenter();
   var viewProjection = view.getProjection();
   var viewResolution = view.getResolution();
+  var viewRotation = view.getRotation();
 
   goog.asserts.assert(goog.isDef(viewCenter));
   goog.asserts.assert(goog.isDef(viewProjection));
 
   object.center = viewCenter;
   object.projection = viewProjection.getCode();
+  object.rotation = viewRotation * 180 / Math.PI;
   object.scale = scale;
   object.layers = [];
 
