@@ -41,42 +41,53 @@ table.delete()
 
 '''
 
-# http://boto.readthedocs.org/en/latest/boto_config_tut.html
+
+class DynamodbConnection:
+    def __init__(self, region='eu-west-1'):
+        self.conn = None
+        self.region = region
+
+    def get(self):
+        if self.conn is None:
+            try:
+                self.conn = connect_to_region(self.region)
+            except Exception as e:
+                raise exc.HTTPBadRequest('DynamoDB: Error during connection init %s' % e)
+        return self.conn
 
 
-def _get_dynamodb_conn(region='eu-west-1'):
-    try:
-        conn = connect_to_region(region)
-    except Exception as e:
-        raise exc.HTTPBadRequest('DynamoDB: Error during connection init %s' % e)
-    return conn
+class S3Connection:
+    def __init__(self, profile_name='geoadmin_filestorage'):
+        self.conn = None
+        self.profile_name = profile_name
+
+    def get(self):
+        if self.conn is None:
+            try:
+                self.conn = connect_s3(profile_name=self.profile_name)
+            except Exception as e:
+                raise exc.HTTPBadRequest('S3: Error during connection %s' % e)
+        return self.conn
 
 
-def _get_s3_conn(profile_name='geoadmin_filestorage'):
-    # TODO use profile instead when correctly installed
-    try:
-        conn = connect_s3(profile_name=profile_name)
-    except Exception as e:
-        raise exc.HTTPBadRequest('S3: Error during connection %s' % e)
-    return conn
-
-
-conn_dynamodb = _get_dynamodb_conn()
-conn_s3 = _get_s3_conn()
+dynamodb_connection = DynamodbConnection()
+s3_connection = S3Connection()
 
 
 def get_dynamodb_table(table_name='shorturl'):
+    conn = dynamodb_connection.get()
     try:
-        table = Table(table_name, connection=conn_dynamodb)
+        table = Table(table_name, connection=conn)
     except Exception as e:
         raise exc.HTTPBadRequest('Error during connection to the table %s' % e)
     return table
 
 
 def get_bucket(request):
+    conn = s3_connection.get()
     bucket_name = request.registry.settings['geoadmin_file_storage_bucket']
     try:
-        bucket = conn_s3.get_bucket(bucket_name)
+        bucket = conn.get_bucket(bucket_name)
     except Exception as e:
         raise exc.HTTPBadRequest('Error during connection %s' % e)
     return bucket
