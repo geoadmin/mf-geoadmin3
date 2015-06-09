@@ -2,11 +2,10 @@
      ng-click="activateBackgroundLayer(layer.id)"
      class="ga-bg-layer {{getClass(layer, $index)}}"
      ng-class="{'ga-bg-highlight': (layer.id == currentLayer)}">
-  <div ng-show="!mobile && !embed" class="ga-bg-layer-text" translate>{{layer.label}}</div>
+  <div ng-if="desktop" class="ga-bg-layer-text" translate>{{layer.label}}</div>
 </div>
-<div ng-show="isBackgroundSelectorClosed || mobile || embed" ng-click="toggleMenu()" class="ga-bg-layer-bt">
-	<div ng-show="!mobile && !embed" class="ga-bg-layer-bt-text" translate>bg_chooser_label</div>	
-</div> 
-<div ng-show="!isBackgroundSelectorClosed && !mobile && !embed" ng-click="toggleMenu()" class="ga-bg-layer-bt-close">
-	<i class="icon-chevron-sign-right"></i>
+<div ng-click="toggleMenu()" class="ga-bg-layer-bt"
+     ng-class="{'ga-bg-layer-bt-close': !isBackgroundSelectorClosed}">
+  <div ng-if="desktop" class="ga-bg-layer-bt-text" translate>bg_chooser_label</div>
+  <i ng-if="desktop" class="icon-chevron-sign-right"></i>
 </div> 

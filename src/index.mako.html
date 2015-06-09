@@ -230,18 +230,12 @@ itemscope itemtype="http://schema.org/WebApplication"
     </div>
 % endif
 
-% if device == 'mobile':
-    <div ga-background-selector ga-background-selector-map="map" class="ga-bg-mobile" ng-show="!globals.offline"></div>
-% endif
-
-% if device == 'embed':
-    <div ga-background-selector ga-background-selector-map="map"></div>
-% endif
+    <div ng-cloak translate-cloak
+         ga-background-selector
+         ga-background-selector-map="map"
+         ng-hide="globals.embed || globals.offline"></div>
 
 % if device != 'embed':
-  % if device == 'desktop':
-    <div ga-background-selector ga-background-selector-map="map" class="ga-bg-desktop"></div> 
-  % endif
     <div ng-cloak translate-cloak id="footer" class="navbar navbar-fixed-bottom">
       <div  class="pull-left" ga-scale-line ga-scale-line-map="map"></div>
   % if device == 'desktop':

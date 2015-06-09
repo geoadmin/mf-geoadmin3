@@ -3,7 +3,7 @@
   cursor: pointer;
   position: absolute; 
   background: transparent no-repeat center;
-  transition: right 0.5s ease, bottom 0.5s ease;
+  transition: right 0.5s ease, bottom 0.5s ease, width 0.5s ease;
 }
 
 .ga-bg-layer-bt {
@@ -25,26 +25,24 @@
   z-index: 1001;
 }
 
-.ga-bg-layer-text {
-  background-color: rgba(255, 255, 255, 0.95);
+.ga-bg-layer-text, .ga-bg-layer-bt-text {
   margin: 3px;
   padding: 1px;
   font-size: 75%;
+  text-align: center;
+
   @media (max-width: @screen-tablet) {
     display: none;
   }
 }
+ 
+.ga-bg-layer-text {
+  background-color: rgba(255, 255, 255, 0.95);
+ }
 
 .ga-bg-layer-bt-text {
-  margin: 3px;
-  padding: 1px;
-  font-size: 75%;
   color: white;
-  text-shadow: black 2px 2px 4px;
-  background-color: rgba(255, 255, 255, 0.3);
-  @media (max-width: @screen-tablet) {
-    display: none;
-  }
+  background-color: rgba(0, 0, 0, 0.7);
 }
 
 .ga-bg-mobile {
@@ -137,41 +135,43 @@
 }
 
 .ga-bg-desktop {
+  
+  .icon-chevron-sign-right {
+    line-height: 64px;
+    text-align: center;
+    display: none;
+
+    @media (max-width: @screen-tablet) {
+      line-height: 32px;
+    }
+  }
 
   .ga-bg-layer-bt {
     width: 96px;
     height: 64px;
     bottom: 52px;
     right: 10px;
-    background-image: data-uri('swissimage-rect.png');
-    background-color: rgba(255, 255, 255, 1);
+    background: #ffffff data-uri('swissimage-rect.png') no-repeat center;
+   
     @media (max-width: @screen-tablet) {
       width: 48px;
       height: 32px;
       bottom: 24px;
-      background-size: 44px 28px;  
+      background-size: 44px 28px;
     }
   }
 
   .ga-bg-layer-bt-close {
     width: 20px;
-    height: 64px;
-    bottom: 52px;
-    right: 10px;
-    background-color: rgba(255, 255, 255, 1);
-    @media (max-width: @screen-tablet) {
-      height: 32px;
-      bottom: 24px;
-    }
-    .icon-chevron-sign-right {
-      line-height: 64px;
-      text-align: center;
-      margin-left: 4px;
-      @media (max-width: @screen-tablet) {
-        line-height: 32px;
-      }
+    background-image: none;
+
+    .ga-bg-layer-bt-text {
+      display: none;
     }
 
+    .icon-chevron-sign-right {
+      display: block;
+    }
   }
 
   .ga-bg-layer {

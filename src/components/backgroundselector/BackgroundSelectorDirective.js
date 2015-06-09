@@ -22,8 +22,15 @@
         },
         link: function(scope, elt, attrs) {
           scope.isBackgroundSelectorClosed = true;
-          scope.embed = gaBrowserSniffer.embed;
-          scope.mobile = gaBrowserSniffer.mobile;
+          var mobile = gaBrowserSniffer.mobile;
+          scope.desktop = !gaBrowserSniffer.embed && !mobile;
+
+          if (mobile) {
+            elt.addClass('ga-bg-mobile');
+          } else if (scope.desktop) {
+            elt.addClass('ga-bg-desktop');
+          }
+
           var map = scope.map;
           var isOfflineToOnline = false;
           var currentTopic;
