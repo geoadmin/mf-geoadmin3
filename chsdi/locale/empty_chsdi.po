@@ -6029,3 +6029,135 @@ msgstr ""
 
 msgid "ch_bafu_gee-kla.gwlnr"
 msgstr ""
+
+msgid "ch.bafu.vec25-gewaessernetz_2000"
+msgstr ""
+
+msgid "ch.bafu.vec25-seen"
+msgstr ""
+
+msgid "ch.bafu.hydrologischer-atlas_flussgebiete"
+msgstr ""
+
+msgid "ch.bafu.hydrologischer-atlas_bilanzgebiete"
+msgstr ""
+
+msgid "ch.bafu.hydrologischer-atlas_basisgebiete"
+msgstr ""
+
+msgid "ch.bafu.vec25-gewaessernetz_2000.gwlnr"
+msgstr ""
+
+msgid "ch.bafu.vec25-gewaessernetz_2000.gewissnr"
+msgstr ""
+
+msgid "ch.bafu.vec25-gewaessernetz_2000.name"
+msgstr ""
+
+msgid "ch.bafu.vec25-gewaessernetz_2000.objectval"
+msgstr ""
+
+msgid "ch.bafu.vec25-seen.gewaesserkennzahl"
+msgstr ""
+
+msgid "ch.bafu.vec25-seen.name"
+msgstr ""
+
+msgid "ch.bafu.vec25-seen.seetyp"
+msgstr ""
+
+msgid "ch.bafu.vec25-seen.natur_mit"
+msgstr ""
+
+msgid "ch.bafu.vec25-seen.ausgleichsbecken"
+msgstr ""
+
+msgid "ch.bafu.vec25-seen.reguliert"
+msgstr ""
+
+msgid "ch.bafu.vec25-seen.seeflaeche_km2"
+msgstr ""
+
+msgid "ch.bafu.vec25-seen.inhalt_see_mio_m3"
+msgstr ""
+
+msgid "ch.bafu.vec25-seen.nutzinhalt_mio_m3"
+msgstr ""
+
+msgid "ch.bafu.vec25-seen.tiefe_see_m"
+msgstr ""
+
+msgid "ch.bafu.vec25-seen.hoehenlage_muem"
+msgstr ""
+
+msgid "ch.bafu.vec25-seen.uferlaenge_m"
+msgstr ""
+
+msgid "ch.bafu.vec25-seen.gwlnr"
+msgstr ""
+
+msgid "ch.bafu.hydrologischer-atlas_flussgebiete.nummer"
+msgstr ""
+
+msgid "ch.bafu.hydrologischer-atlas_flussgebiete.name"
+msgstr ""
+
+msgid "ch.bafu.hydrologischer-atlas_flussgebiete.flussgebiet"
+msgstr ""
+
+msgid "ch.bafu.hydrologischer-atlas_flussgebiete.shape_area"
+msgstr ""
+
+msgid "ch.bafu.hydrologischer-atlas_flussgebiete.umfang"
+msgstr ""
+
+msgid "ch.bafu.hydrologischer-atlas_bilanzgebiete.nummer"
+msgstr ""
+
+msgid "ch.bafu.hydrologischer-atlas_bilanzgebiete.name"
+msgstr ""
+
+msgid "ch.bafu.hydrologischer-atlas_bilanzgebiete.flussgebiet"
+msgstr ""
+
+msgid "ch.bafu.hydrologischer-atlas_bilanzgebiete.shape_area"
+msgstr ""
+
+msgid "ch.bafu.hydrologischer-atlas_bilanzgebiete.umfang"
+msgstr ""
+
+msgid "ch.bafu.hydrologischer-atlas_basisgebiete.nummer"
+msgstr ""
+
+msgid "ch.bafu.hydrologischer-atlas_basisgebiete.gebietskennzahl"
+msgstr ""
+
+msgid "ch.bafu.hydrologischer-atlas_basisgebiete.bemerkung"
+msgstr ""
+
+msgid "ch.bafu.hydrologischer-atlas_basisgebiete.flussgebiet"
+msgstr ""
+
+msgid "ch.bafu.hydrologischer-atlas_basisgebiete.max_hoe"
+msgstr ""
+
+msgid "ch.bafu.hydrologischer-atlas_basisgebiete.min_hoe"
+msgstr ""
+
+msgid "ch.bafu.hydrologischer-atlas_basisgebiete.mit_hoe"
+msgstr ""
+
+msgid "ch.bafu.hydrologischer-atlas_basisgebiete.mit_ns"
+msgstr ""
+
+msgid "ch.bafu.hydrologischer-atlas_basisgebiete.s_w_ns"
+msgstr ""
+
+msgid "ch.bafu.hydrologischer-atlas_basisgebiete.jahrtemp_g"
+msgstr ""
+
+msgid "ch.bafu.hydrologischer-atlas_basisgebiete.winttemp_g"
+msgstr ""
+
+msgid "ch.bafu.hydrologischer-atlas_basisgebiete.shape_area"
+msgstr ""

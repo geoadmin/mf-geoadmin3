@@ -1412,6 +1412,81 @@ msgstr "Numero della stazione"
 msgid "ch.bafu.hydrologie-wassertemperaturmessstationen.name"
 msgstr "Nome della stazione"
 
+msgid "ch.bafu.hydrologischer-atlas_basisgebiete"
+msgstr "Bassin de base"
+
+msgid "ch.bafu.hydrologischer-atlas_basisgebiete.bemerkung"
+msgstr "Canton"
+
+msgid "ch.bafu.hydrologischer-atlas_basisgebiete.flussgebiet"
+msgstr "Bassin versant"
+
+msgid "ch.bafu.hydrologischer-atlas_basisgebiete.gebietskennzahl"
+msgstr "Numéro d´identification du bassin"
+
+msgid "ch.bafu.hydrologischer-atlas_basisgebiete.jahrtemp_g"
+msgstr "Température moyenne annuelle"
+
+msgid "ch.bafu.hydrologischer-atlas_basisgebiete.max_hoe"
+msgstr "Altitude max"
+
+msgid "ch.bafu.hydrologischer-atlas_basisgebiete.min_hoe"
+msgstr "Altitude min"
+
+msgid "ch.bafu.hydrologischer-atlas_basisgebiete.mit_hoe"
+msgstr "Altitude moyenne"
+
+msgid "ch.bafu.hydrologischer-atlas_basisgebiete.mit_ns"
+msgstr "Précipitations moyennes"
+
+msgid "ch.bafu.hydrologischer-atlas_basisgebiete.nummer"
+msgstr "Numéro"
+
+msgid "ch.bafu.hydrologischer-atlas_basisgebiete.s_w_ns"
+msgstr "Relation précipitations E-H"
+
+msgid "ch.bafu.hydrologischer-atlas_basisgebiete.shape_area"
+msgstr "Surface"
+
+msgid "ch.bafu.hydrologischer-atlas_basisgebiete.winttemp_g"
+msgstr "Température moyenne hiverale"
+
+msgid "ch.bafu.hydrologischer-atlas_bilanzgebiete"
+msgstr "Bassin de bilan"
+
+msgid "ch.bafu.hydrologischer-atlas_bilanzgebiete.flussgebiet"
+msgstr "Bassin versant"
+
+msgid "ch.bafu.hydrologischer-atlas_bilanzgebiete.name"
+msgstr "Nom"
+
+msgid "ch.bafu.hydrologischer-atlas_bilanzgebiete.nummer"
+msgstr "Numéro"
+
+msgid "ch.bafu.hydrologischer-atlas_bilanzgebiete.shape_area"
+msgstr "Surface"
+
+msgid "ch.bafu.hydrologischer-atlas_bilanzgebiete.umfang"
+msgstr "Périmètre"
+
+msgid "ch.bafu.hydrologischer-atlas_flussgebiete"
+msgstr "Bassin fluvial"
+
+msgid "ch.bafu.hydrologischer-atlas_flussgebiete.flussgebiet"
+msgstr "Bassin versant"
+
+msgid "ch.bafu.hydrologischer-atlas_flussgebiete.name"
+msgstr "Nom"
+
+msgid "ch.bafu.hydrologischer-atlas_flussgebiete.nummer"
+msgstr "Numéro"
+
+msgid "ch.bafu.hydrologischer-atlas_flussgebiete.shape_area"
+msgstr "Surface"
+
+msgid "ch.bafu.hydrologischer-atlas_flussgebiete.umfang"
+msgstr "Périmètre"
+
 msgid "ch.bafu.hydroweb-messstationen_gefahren"
 msgstr "Niveaux de danger de crues"
 
@@ -1720,6 +1795,63 @@ msgstr "UNESCO siti naturali"
 
 msgid "ch.bafu.url"
 msgstr "http://www.bafu.admin.ch/index.html?lang=it"
+
+msgid "ch.bafu.vec25-gewaessernetz_2000"
+msgstr "Réseau hydrographique 1:2 Mio."
+
+msgid "ch.bafu.vec25-gewaessernetz_2000.gewissnr"
+msgstr "Numéro GEWISS"
+
+msgid "ch.bafu.vec25-gewaessernetz_2000.gwlnr"
+msgstr "Numéro de cours d´eau"
+
+msgid "ch.bafu.vec25-gewaessernetz_2000.name"
+msgstr "Nom"
+
+msgid "ch.bafu.vec25-gewaessernetz_2000.objectval"
+msgstr "Objectval swisstopo"
+
+msgid "ch.bafu.vec25-seen"
+msgstr "Lacs"
+
+msgid "ch.bafu.vec25-seen.ausgleichsbecken"
+msgstr "Bassin de compensation"
+
+msgid "ch.bafu.vec25-seen.gewaesserkennzahl"
+msgstr "Numéro de GEWISS"
+
+msgid "ch.bafu.vec25-seen.gwlnr"
+msgstr "Numéro de cours d´eau"
+
+msgid "ch.bafu.vec25-seen.hoehenlage_muem"
+msgstr "Altitude (m.s.m.)"
+
+msgid "ch.bafu.vec25-seen.inhalt_see_mio_m3"
+msgstr "Capacite de lac"
+
+msgid "ch.bafu.vec25-seen.name"
+msgstr "Nom"
+
+msgid "ch.bafu.vec25-seen.natur_mit"
+msgstr "Naturell_avec fonction"
+
+msgid "ch.bafu.vec25-seen.nutzinhalt_mio_m3"
+msgstr "Capacité utile"
+
+msgid "ch.bafu.vec25-seen.reguliert"
+msgstr "Régularisation"
+
+msgid "ch.bafu.vec25-seen.seeflaeche_km2"
+msgstr "Étendue de lac"
+
+msgid "ch.bafu.vec25-seen.seetyp"
+msgstr "Type de lac"
+
+msgid "ch.bafu.vec25-seen.tiefe_see_m"
+msgstr "Gravité"
+
+msgid "ch.bafu.vec25-seen.uferlaenge_m"
+msgstr "Longueur de bord du lac (m)"
 
 msgid "ch.bafu.waldreservate"
 msgstr "Riserva forestali"
