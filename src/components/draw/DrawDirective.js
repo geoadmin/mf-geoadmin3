@@ -123,7 +123,7 @@ goog.require('ga_map_service');
           var useTemporaryLayer = scope.options.useTemporaryLayer || false;
           var map = scope.map;
           var viewport = $(map.getViewport());
-          scope.isPropsActive = false;
+          scope.isPropsActive = true;
           scope.isMeasureActive = false;
           scope.options.isProfileActive = false;
 
@@ -332,6 +332,16 @@ goog.require('ga_map_service');
                     new ol.geom.LineString(lineCoords));
               }
 
+              // Update feature properties
+              if (!featureToAdd.getId() && lastActiveTool) {
+                featureToAdd.setId(lastActiveTool.id + '_' +
+                    new Date().getTime());
+              }
+              if (lastActiveTool) {
+                featureToAdd.set('type', lastActiveTool.id);
+              }
+
+
               // Unregister the change event
               ol.Observable.unByKey(deregFeatureChange);
 
@@ -443,10 +453,7 @@ goog.require('ga_map_service');
 
               scope.options.name = feature.get('name') || '';
               scope.options.description = feature.get('description') || '';
-              if (!feature.get('type')) {
-                feature.set('type', lastActiveTool.id);
-              }
-            } else {
+                          } else {
               scope.options.name = '';
               scope.options.description = '';
             }
@@ -589,7 +596,9 @@ goog.require('ga_map_service');
           };
           scope.showProfileTab = function(feature) {
             //console.debug(feature.get('type'));
-            if (feature.get('type') == 'measure') {
+            if (feature.get('type') == 'measure' &&
+                !scope.isMeasureActive &&
+                !scope.options.isProfileActive) {
               scope.activeTabProfile();
             }
             return scope.showMeasureTab(feature);

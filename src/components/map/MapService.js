@@ -540,6 +540,37 @@ goog.require('ga_urlutils_service');
             zIndex: style.getZIndex()
           })];
           feature.setStyle(styles);
+
+        // Improve these 2 'if', really not nice actuailly
+        // Specific use case of feature created with measure tool
+        } else if (style && /^measure/.test(feature.getId())) {
+          style.getStroke().setLineDash([8]);
+          styles = [new ol.style.Style({
+            fill: style.getFill(),
+            stroke: style.getStroke(),
+            image: null,
+            text: null,
+            zIndex: style.getZIndex()
+          })];
+          feature.setStyle(styles);
+        }
+        if (feature.getId()) {
+          var split = feature.getId().split('_');
+          if (split.length == 2) {
+            feature.set('type', split[0]);
+          }
+        }
+        if (!(geom instanceof ol.geom.Point ||
+            geom instanceof ol.geom.MultiPoint ||
+            geom instanceof ol.geom.GeometryCollection)) {
+          styles = [new ol.style.Style({
+            fill: style.getFill(),
+            stroke: style.getStroke(),
+            image: null,
+            text: null,
+            zIndex: style.getZIndex()
+          })];
+          feature.setStyle(styles);
         }
       };
 

@@ -474,6 +474,8 @@ goog.provide('ga_draw_controller');
         };
          
         $scope.options.selectStyleFunction = (function() {
+          var select = gaStyleFactory.getStyle('select');
+
           var fill = new ol.style.Fill({
             color: white.concat([0.4])
           });
@@ -519,7 +521,7 @@ goog.provide('ga_draw_controller');
             // When a feature is selected we apply its current style and a white
             // transparent style on top.
             return [
-              style, 
+              style,
               new ol.style.Style({
                 fill: fill,
                 stroke: stroke,
