@@ -9,46 +9,30 @@
     </li>
   </ul>
 
-  <a href="" class="ga-import-kml-validate" ng-show="(file != null || fileUrl != null)" translate>link_validate_kml</a>
-
   <div class="tab-content">
-
     <!-- TO FIX: can't use ng-if here because the HTML content is added after the
     execution of the "link" function of the directive and so the dynamic
     js events are not added -->
     <div ng-hide="isIE9" class="tab-pane"  ng-class="getTabClass(1)">
-
       <!-- Upload from a basic upload (the input file is hidden by default)-->
-      <form  method="POST" target="_BLANK" action="{{options.validationServiceUrl}}" enctype="multipart/form-data" class="input-group-sm">
-
+      <div class="input-group-sm">
         <input type="file" name="file"/>
-
-        <!-- Use for validation -->
-        <input type="hidden" name="type" value="direct-input"/>
-
         <!-- Button use to open the file chooser of the input file -->
         <input class="ga-import-kml-fake-file form-control" type="text" readonly
-          value="{{(file.name) ? file.name + ', ' + file.size/1000 + ' ko' : ''}}"
-          placeholder="{{'no_file' | translate}}"/>
+               value="{{(file.name) ? file.name + ', ' + file.size/1000 + ' ko' : ''}}"
+               placeholder="{{'no_file' | translate}}"/>
         <span class="input-group-btn">
           <button type="button" class="btn btn-default ga-import-kml-browse" translate>browse</button>
         </span>
-      </form>
-
+      </div>
     </div>
 
     <div class="tab-pane" ng-class="getTabClass(2)">
-
       <!-- Upload from an URL -->
-      <form method="POST" target="_BLANK" action="{{options.validationServiceUrl}}">
-
+      <div>
         <input type="url" name="url" placeholder="{{'paste_url' | translate}}"
-          ng-model="fileUrl" class="form-control input-sm"/>
-
-        <!-- Use for validation -->
-        <input type="hidden" name="type" value="uri"/>
-      </form>
-
+               ng-model="fileUrl" class="form-control input-sm"/>
+      </div>
     </div>
   </div>
 
