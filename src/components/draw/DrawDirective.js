@@ -84,7 +84,7 @@ goog.require('ga_map_service');
         helpTooltipElement.className = 'ga-draw-help';
         helpTooltip = new ol.Overlay({
           element: helpTooltipElement,
-          offset: [15, 0],
+          offset: [15, 25],
           positioning: 'center-left',
           stopEvent: false
         });
@@ -119,7 +119,7 @@ goog.require('ga_map_service');
         },
         link: function(scope, element, attrs, controller) {
           var layer, draw, lastActiveTool;
-          var unLayerRemove, unChangeFeature;
+          var unDblClick, unLayerRemove, unChangeFeature;
           var useTemporaryLayer = scope.options.useTemporaryLayer || false;
           var map = scope.map;
           var viewport = $(map.getViewport());
@@ -143,25 +143,12 @@ goog.require('ga_map_service');
             },
             style: scope.options.selectStyleFunction
           });
-          var propsToggle = function(feature) {
-            if (feature) {
-              scope.feature = feature;
-              // Open the popup
-              scope.popupToggle = true;
-              // Set the correct title
-              scope.options.popupOptions.title = feature.get('type');
-            } else {
-              scope.feature = undefined;
-              scope.popupToggle = false;
-              scope.options.popupOptions.title = 'feature';
-            }
-          };
           select.getFeatures().on('add', function(evt) {
             // Apply the select style
             var styles = scope.options.selectStyleFunction(evt.element);
             evt.element.setStyle(styles);
-            updateUseStyles();
-            propsToggle(evt.element);
+            updatePropsTabContent();
+            togglePopup(evt.element);
             //console.debug('add');
           });
           select.getFeatures().on('remove', function(evt) {
@@ -169,8 +156,8 @@ goog.require('ga_map_service');
             var styles = evt.element.getStyle();
             styles.pop();
             evt.element.setStyle(styles);
-            updateUseStyles();
-            propsToggle();
+            updatePropsTabContent();
+            togglePopup();
             //console.debug('remove');
           });
           select.setActive(false);
@@ -217,7 +204,7 @@ goog.require('ga_map_service');
           // Activate the component: active a tool if one was active when draw
           // has been deactivated.
           var activate = function() {
-                       defineLayerToModify();
+            defineLayerToModify();
 
             if (layer.adminId) {
               updateShortenUrl(layer.adminId);
@@ -232,7 +219,10 @@ goog.require('ga_map_service');
                 defineLayerToModify();
               }
             });
-
+            unDblClick = map.on('dblclick', function(evt) {
+              //console.debug(draw.getActive());
+              return false;
+            });
             //map.addOverlay(overlay);
             activateSelectInteraction();
           };
@@ -240,6 +230,7 @@ goog.require('ga_map_service');
 
           // Deactivate the component: remove layer and interactions.
           var deactivate = function(evt) {
+            ol.Observable.unByKey(unDblClick);
 
             if (unChangeFeature) {
               ol.Observable.unByKey(unChangeFeature);
@@ -354,6 +345,7 @@ goog.require('ga_map_service');
               select.getFeatures().push(featureToAdd);
               updateHelpLabel();
             });
+            draw.setActive(true);
             map.addInteraction(draw);
           };
           var deactivateDrawInteraction = function() {
@@ -361,7 +353,10 @@ goog.require('ga_map_service');
             ol.Observable.unByKey(deregDrawStart);
             ol.Observable.unByKey(deregDrawEnd);
             helpTooltip.setPosition(undefined);
-            map.removeInteraction(draw);
+            if (draw) {
+              draw.setActive(false);
+              map.removeInteraction(draw);
+            }
           };
 
 
@@ -397,72 +392,6 @@ goog.require('ga_map_service');
             modify.setActive(false);
           };
 
-
-          // Update selected feature with a new style
-          var updateSelectedFeatures = function() {
-            if (select.getActive()) {
-              var features = select.getFeatures();
-              if (features) {
-                features.forEach(function(feature) {
-                  // Update the style of the feature with the current style
-                  var styles = scope.options.updateStyle(feature);
-                  feature.setStyle(styles);
-                  // then apply the select style
-                  styles = scope.options.selectStyleFunction(feature);
-                  feature.setStyle(styles);
-                });
-              }
-            }
-          };
-
-          // Determines which styles are used by selected features
-          var updateUseStyles = function() {
-            var features = select.getFeatures().getArray();
-            var feature = features[0];
-            var useTextStyle = false;
-            var useIconStyle = false;
-            var useColorStyle = false;
-
-            if (feature) {
-              // The select interaction select only one feature
-              var styles = feature.getStyleFunction()();
-              var featStyle = styles[0];
-
-              if (featStyle.getImage() instanceof ol.style.Icon) {
-                useIconStyle = true;
-                scope.options.icon = findIcon(featStyle.getImage(),
-                    scope.options.icons);
-                scope.options.iconSize = findIconSize(featStyle.getImage(),
-                    scope.options.iconSizes);
-              }
-              if (featStyle.getStroke()) {
-                useColorStyle = true;
-                scope.options.color = findColor(
-                    featStyle.getStroke().getColor(), scope.options.colors);
-
-              }
-              if (featStyle.getText()) {
-                useColorStyle = true;
-                useTextStyle = true;
-                scope.options.name = featStyle.getText().getText();
-                //scope.options.textSize
-                //scope.options.textColor
-                scope.options.color = findColor(
-                featStyle.getText().getFill().getColor(), scope.options.colors);
-              }
-
-              scope.options.name = feature.get('name') || '';
-              scope.options.description = feature.get('description') || '';
-                          } else {
-              scope.options.name = '';
-              scope.options.description = '';
-            }
-            scope.useTextStyle = useTextStyle;
-            scope.useIconStyle = useIconStyle;
-            scope.useColorStyle = useColorStyle;
-            scope.$evalAsync();
-          };
-
           // Watchers
           scope.$watch('isActive', function(active) {
             if (active) {
@@ -472,10 +401,20 @@ goog.require('ga_map_service');
             }
           });
 
-          scope.$watchGroup(['options.iconSize', 'options.icon',
-              'options.color', 'options.name', 'options.description'],
-              function() {
-            updateSelectedFeatures();
+          // Update selected feature's style when the user change a value
+          scope.$watchGroup(['options.icon', 'options.color', 'options.name',
+              'options.description'], function() {
+            if (select.getActive()) {
+              var feature = select.getFeatures().item(0);
+              if (feature) {
+                // Update the style of the feature with the current style
+                var styles = scope.options.updateStyle(feature);
+                feature.setStyle(styles);
+                // then apply the select style
+                styles = scope.options.selectStyleFunction(feature);
+                feature.setStyle(styles);
+              }
+            }
           });
 
 
@@ -552,6 +491,70 @@ goog.require('ga_map_service');
 
           scope.canExport = function() {
             return (layer) ? layer.getSource().getFeatures().length > 0 : false;
+          };
+
+
+
+          ////////////////////////////////////
+          // Popup content management
+          ////////////////////////////////////
+          var togglePopup = function(feature) {
+            if (feature) {
+              scope.feature = feature;
+              // Open the popup
+              scope.popupToggle = true;
+              // Set the correct title
+              scope.options.popupOptions.title = feature.get('type');
+            } else {
+              scope.feature = undefined;
+              scope.popupToggle = false;
+              scope.options.popupOptions.title = 'feature';
+            }
+          };
+
+          // Determines which elements to display in the feature's propereties
+          // tab
+          var updatePropsTabContent = function() {
+            // The select interaction selects only one feature
+            var feature = select.getFeatures().item(0);
+            var useTextStyle = false;
+            var useIconStyle = false;
+            var useColorStyle = false;
+            if (feature) {
+              var styles = feature.getStyleFunction()();
+              var featStyle = styles[0];
+              if (featStyle.getImage() instanceof ol.style.Icon) {
+                useIconStyle = true;
+                scope.options.icon = findIcon(featStyle.getImage(),
+                    scope.options.icons);
+                //scope.options.iconSize = findIconSize(featStyle.getImage(),
+                //    scope.options.iconSizes);
+              }
+              if (!useIconStyle && featStyle.getStroke()) {
+                useColorStyle = true;
+                scope.options.color = findColor(
+                    featStyle.getStroke().getColor(),
+                    scope.options.colors);
+              }
+              if (!useIconStyle && featStyle.getText()) {
+                useColorStyle = true;
+                useTextStyle = true;
+                scope.options.name = featStyle.getText().getText();
+                scope.options.color = findColor(
+                    featStyle.getText().getFill().getColor(),
+                    scope.options.colors);
+              }
+
+              scope.options.name = feature.get('name') || '';
+              scope.options.description = feature.get('description') || '';
+            } else {
+              scope.options.name = '';
+              scope.options.description = '';
+            }
+            scope.useTextStyle = useTextStyle;
+            scope.useIconStyle = useIconStyle;
+            scope.useColorStyle = useColorStyle;
+            scope.$evalAsync();
           };
 
 

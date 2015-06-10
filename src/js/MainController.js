@@ -185,16 +185,17 @@ goog.require('ga_storage_service');
 
         // Exit Draw mode when pressing ESC or BAckspace button
         $document.keydown(function(evt) {
+          if (evt.which == 8) {
+            if (!/^(input|textarea)$/i.test(evt.target.tagName)) {
+              evt.preventDefault();
+            } else {
+              return;
+            }
+          }
           if ((evt.which == 8 || evt.which == 27) &&
             $scope.globals.isDrawActive) {
             $scope.globals.isDrawActive = false;
             $scope.$digest();
-            if (evt.which == 8) {
-              var d = evt.target.tagName;
-              if (!/^(input|textarea)$/i.test(d)) {
-                evt.preventDefault();
-              }
-            }
           }
         });
 
