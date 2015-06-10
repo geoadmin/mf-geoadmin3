@@ -2,6 +2,10 @@
   <span class="ga-success" translate="{{statusMsgId}}"></span>
 </div>
 <div class="ga-draw-buttons">
+  <label>
+    <input type="checkbox" ng-model="autosave">
+    Disable auto-save on server
+  </label>
   <button ng-repeat="tool in options.tools"
           ng-click="toggleTool($event, tool)"
           ng-class="{

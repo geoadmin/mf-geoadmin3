@@ -166,6 +166,7 @@ goog.require('ga_permalink');
           var unDblClick, unLayerAdd, unLayerRemove, unSourceEvents = [],
               deregPointerMove, deregFeatureChange, unLayerVisible,
               unWatch = [], unDrawEvts = [];
+          var unChangeFeatures = [];
           var useTemporaryLayer = scope.options.useTemporaryLayer || false;
           var helpTooltip, distTooltip, areaTooltip;
           var map = scope.map;
@@ -176,6 +177,7 @@ goog.require('ga_permalink');
           scope.statusMsgId = '';
           scope.webdav = {};
           scope.webdav.open = false;
+          scope.webdav.autosave = true;
           scope.autosave = true;
 
           // Add select interaction
@@ -263,6 +265,12 @@ goog.require('ga_permalink');
                 source.on('removefeature', saveDebounced)
               ];
 
+              unChangeFeatures.push(
+                      layer.getSource().on(['addfeature',
+                  'changefeature', 'removefeature'], saveDebounced));
+              unChangeFeatures.push(
+                      layer.getSource().on(['addfeature',
+                  'changefeature', 'removefeature'], webdavSaveDebounced));
             }
 
             // Attach the snap interaction to the new layer's source
@@ -352,6 +360,11 @@ goog.require('ga_permalink');
             ol.Observable.unByKey(unDblClick);
             while (unWatch.length) {
               unWatch.pop()();
+            if (unChangeFeatures.length > 0) {
+              unChangeFeatures.forEach(function(unChangeFeature) {
+                ol.Observable.unByKey(unChangeFeature);
+              });
+              unChangeFeatures = [];
             }
 
             // Deactivate the tool
@@ -849,18 +862,27 @@ goog.require('ga_permalink');
           };
 
           scope.webdavSave = function() {
-            var req = {
-              method: 'PUT',
-              url: scope.webdav.url,
-              withCredentials: true,
-              headers: {
-                Authorization: 'Basic ' + btoa(scope.webdav.user + ':' + scope.webdav.password),
-                'Content-Type': 'application/vnd.google-earth.kml+xml; charset=utf-8'
-              },
-              data: getKmlString()
-            };
-            $http(req);
+            webdavSave(true);
           };
+
+          var webdavSave = function(manualSave) {
+            // user and password are optional, webdav can be anonymous
+            // manualSave is an object if webdavSave is called from debounce
+            if ((manualSave === true || scope.webdav.autosave) && scope.webdav.url) {
+              var req = {
+                method: 'PUT',
+                url: scope.webdav.url,
+                withCredentials: true,
+                headers: {
+                  Authorization: 'Basic ' + btoa(scope.webdav.user + ':' + scope.webdav.password),
+                  'Content-Type': 'application/vnd.google-earth.kml+xml; charset=utf-8'
+                },
+                data: getKmlString()
+              };
+              $http(req);
+            }
+          };
+          var webdavSaveDebounced = gaDebounce.debounce(webdavSave, 133, false, false);
         }
       };
   });
