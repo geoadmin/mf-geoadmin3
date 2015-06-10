@@ -174,6 +174,8 @@ goog.require('ga_permalink');
           scope.isMeasureActive = false;
           scope.options.isProfileActive = false;
           scope.statusMsgId = '';
+          scope.webdav = {};
+          scope.webdav.open = false;
 
           // Add select interaction
           var select = new ol.interaction.Select({
@@ -772,8 +774,7 @@ goog.require('ga_permalink');
               return;
             }
             scope.statusMsgId = 'draw_file_saving';
-            var kmlString = gaExportKml.create(layer,
-                map.getView().getProjection());
+            var kmlString = getKmlString();
             var id = layer.adminId ||
                 gaFileStorage.getFileIdFromFileUrl(layer.url);
             gaFileStorage.save(id, kmlString,
@@ -799,6 +800,10 @@ goog.require('ga_permalink');
               layer.label = $translate.instant('draw');
             }
           });
+
+          var getKmlString = function() {
+            return gaExportKml.create(layer, map.getView().getProjection());
+          };
 
 
 
@@ -830,6 +835,30 @@ goog.require('ga_permalink');
             dropdown.css('left', bt.offset().left -
                 (dropdown.outerWidth() - bt.outerWidth()) + 'px');
           });
+
+          // Focus on the first input.
+          var setFocus = function() {
+            $timeout(function() {
+              var inputs = element.find('input, select');
+              if (inputs.length > 0) {
+                inputs[0].focus();
+              }
+            });
+          };
+
+          scope.webdavSave = function() {
+            var req = {
+              method: 'PUT',
+              url: scope.webdav.url,
+              withCredentials: true,
+              headers: {
+                Authorization: 'Basic ' + btoa(scope.webdav.user + ':' + scope.webdav.password),
+                'Content-Type': 'application/vnd.google-earth.kml+xml; charset=utf-8'
+              },
+              data: getKmlString()
+            };
+            $http(req);
+          };
         }
       };
   });
