@@ -176,6 +176,7 @@ goog.require('ga_permalink');
           scope.statusMsgId = '';
           scope.webdav = {};
           scope.webdav.open = false;
+          scope.autosave = true;
 
           // Add select interaction
           var select = new ol.interaction.Select({
@@ -769,8 +770,9 @@ goog.require('ga_permalink');
           // create/update the file on s3
           ////////////////////////////////////
           var save = function(evt) {
-            if (layer.getSource().getFeatures().length == 0) {
-              //if no features to save do nothing
+            if (layer.getSource().getFeatures().length == 0 ||
+                    !scope.autosave) {
+              //if no features to save or user ask not to save do nothing
               return;
             }
             scope.statusMsgId = 'draw_file_saving';
