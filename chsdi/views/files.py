@@ -3,8 +3,9 @@
 import uuid
 import base64
 import time
-import zipfile
+import gzip
 import StringIO
+
 
 from boto.dynamodb2.exceptions import ItemNotFound
 
@@ -128,25 +129,41 @@ class FileView(object):
             'Access-Control-Allow-Credentials': 'true'})
         return ''
 
-    def _save_to_s3(self, data, mime, update=False, compress=False):
+    def _gzip_data(self, data):
+
+        out = None
+        infile = StringIO.StringIO()
+        try:
+            gzip_file = gzip.GzipFile(fileobj=infile, mode='w', compresslevel=5)
+            gzip_file.write(data)
+            gzip_file.close()
+            infile.seek(0)
+            out = infile.getvalue()
+        except:
+            out = None
+        finally:
+            infile.close()
+        return out
+
+    def _save_to_s3(self, data, mime, update=False, compress=True):
         ziped_data = None
+        content_encoding = None
+        headers = {}
         if compress and mime == 'application/vnd.google-earth.kml+xml':
-            tmp = StringIO.StringIO()
-            zf = zipfile.ZipFile(tmp, mode='w', compression=zipfile.ZIP_DEFLATED, )
-            try:
-                zf.writestr('doc.kml', data)
-                mime = 'application/vnd.google-earth.kmz'
-            finally:
-                zf.close()
-            ziped_data = tmp.getvalue()
+            ziped_data = self._gzip_data(data)
+            content_encoding = 'gzip'
+            headers['Content-Encoding'] = 'gzip'
 
         if not update:
-            if ziped_data is not None:
+            if content_encoding == 'gzip' and ziped_data is not None:
                 data = ziped_data
             try:
-                k = Key(self.bucket)
+                k = Key(bucket=self.bucket)
                 k.key = self.file_id
                 k.set_metadata('Content-Type', mime)
+                k.content_type = mime
+                k.content_encoding = content_encoding
+                k.set_metadata('Content-Encoding', content_encoding)
                 k.set_contents_from_string(data, replace=False)
                 key = self.bucket.get_key(k.key)
                 last_updated = parse_ts(key.last_modified)
@@ -156,14 +173,18 @@ class FileView(object):
                 _save_item(self.admin_id, file_id=self.file_id, last_updated=last_updated)
             except Exception as e:
                 raise exc.HTTPInternalServerError('Cannot create file on Dynamodb (%s)' % e)
+
         else:
             try:
-                if self.key.content_type == 'application/vnd.google-earth.kmz' and ziped_data is not None:
+                if content_encoding == 'gzip' and ziped_data is not None:
                     data = ziped_data
+                # Inconsistant behaviour with metadata, see https://github.com/boto/boto/issues/2798
+                self.key.content_encoding = content_encoding
+                self.key.set_metadata('Content-Encoding', content_encoding)
                 self.key.set_contents_from_string(data, replace=True)
                 key = self.bucket.get_key(self.key.key)
                 last_updated = parse_ts(key.last_modified)
-            except:
+            except Exception as e:
                 raise exc.HTTPInternalServerError('Error while updating S3 key (%s) %s' % (self.key.key, e))
             try:
                 _save_item(self.admin_id, last_updated=last_updated)
