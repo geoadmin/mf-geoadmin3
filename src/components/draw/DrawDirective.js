@@ -870,7 +870,12 @@ goog.require('ga_permalink');
             // manualSave is an object if webdavSave is called from debounce
             if ((manualSave === true || scope.webdav.autosave) && scope.webdav.url) {
               var req = getWebdavRequest('PUT');
-              $http(req);
+              $http(req).success(function() {
+                scope.userMessage = 'Drawing successfully saved';
+              }).error(function(data, status) {
+                scope.userMessage = getWebdavErrorMessage(
+                        'Failed to save the drawing', status);
+              });
             }
           };
           var webdavSaveDebounced = gaDebounce.debounce(webdavSave, 133, false, false);
@@ -890,6 +895,25 @@ goog.require('ga_permalink');
               };
           };
 
+          var getWebdavErrorMessage = function(message, status) {
+            message = message || '';
+            message += '. ';
+            switch (status) {
+              case 404:
+                message += 'Not found';
+                break;
+              case 405:
+              case 401:
+                message += 'Not Allowed';
+                break;
+              case 409:
+                message += 'Cannot save KML here.';
+                break;
+            }
+
+            return message;
+          };
+
           scope.webdavLoad = function() {
             if (scope.webdav.url) {
               var req = getWebdavRequest('GET');
@@ -903,7 +927,11 @@ goog.require('ga_permalink');
                     useImageVector: gaKml.useImageVector(fileSize),
                     zoomToExtent: true
                   });
+                  scope.userMessage = 'Drawing successfully loaded.';
                 }
+              }).error(function(data, status) {
+                scope.userMessage = getWebdavErrorMessage(
+                        'Fail to load the drawing', status);
               });
             }
           };

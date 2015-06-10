@@ -42,7 +42,7 @@
     </ul>
   </div>
 
-  <div class="panel-collapse collapse in panel panel-default"
+    <div class="panel-collapse collapse in panel panel-default"
        aria-expanded="true"
        >
     <a href="#webdav-save"  class="ga-truncate-text  panel-heading" ng-click="webdav.open = !webdav.open">
@@ -68,7 +68,20 @@
       <button class="btn btn-default"
               ng-click="webdavSave()"
               translate>Save</button>
+      <div>{{userMessage}}</div>
     </div>
+  </div>
+  <div class="ga-draw-disclaimer" ng-if="!options.useTemporaryLayer" translate>share_file_disclaimer</div>
+  <div class="ga-draw-interaction-share" ng-if="adminShortenUrl">
+    <div><b translate>share_file_link_title_admin</b></div>
+    <span translate>share_file_link_descr_admin</span>&nbsp;<a target="_blank" href="{{adminShortenUrl}}">{{adminShortenUrl}}</a>
+  </div>
+  <div class="ga-draw-interaction-btns" role="group">
+    <button class="btn btn-default pull-right"
+            ng-if="options.showExport"
+            ng-disabled="!canExport()"
+            ng-click="exportKml($event)"
+            translate>export_kml</button>
   </div>
   <div class="ga-draw-disclaimer" ng-if="!options.useTemporaryLayer" translate>share_file_disclaimer</div>
   <div class="ga-draw-interaction-share" ng-if="adminShortenUrl">
