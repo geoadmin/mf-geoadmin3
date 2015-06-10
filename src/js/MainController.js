@@ -97,6 +97,9 @@
       gaRealtimeLayersManager($scope.map);
 
       var initWithPrint = /print/g.test(gaPermalink.getParams().widgets);
+      var initWithFeedback = /feedback/g.test(gaPermalink.getParams().widgets);
+
+      gaPermalink.deleteParam('widgets');
 
       $rootScope.$on('gaTopicChange', function(event, topic) {
         // iOS 7 minimal-ui meta tag bug
@@ -114,6 +117,11 @@
           $scope.globals.catalogShown = showCatalog;
         }
         initWithPrint = false;
+        if (initWithFeedback) {
+          $scope.globals.feedbackPopupShown = initWithFeedback;
+        }
+        initWithFeedback = false;
+
       });
       $rootScope.$on('$translateChangeEnd', function() {
         $scope.langId = $translate.use();
@@ -146,13 +154,11 @@
         webkit: gaBrowserSniffer.webkit,
         ios: gaBrowserSniffer.ios,
         offline: gaNetworkStatus.offline,
-        feedbackPopupShown: /feedback/g.test(gaPermalink.getParams().widgets),
+        feedbackPopupShown: false,
         printShown: initWithPrint,
         embed: gaBrowserSniffer.embed,
         isShareActive: false
       };
-
-      gaPermalink.deleteParam('widgets');
 
       $rootScope.$on('gaNetworkStatusChange', function(evt, offline) {
         $scope.globals.offline = offline;
