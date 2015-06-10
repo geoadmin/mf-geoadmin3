@@ -2303,6 +2303,48 @@ msgstr "Perméabilité"
 msgid "ch.blw.bodeneignung-wasserspeichervermoegen"
 msgstr "Capacité de rétention hydrique"
 
+msgid "ch.blw.emapis-beizugsgebiet"
+msgstr "Périmètre"
+
+msgid "ch.blw.emapis-bewaesserung"
+msgstr "Irrigation"
+
+msgid "ch.blw.emapis-elektrizitaetsversorgung"
+msgstr "Raccordement au réseau électrique"
+
+msgid "ch.blw.emapis-entwaesserung"
+msgstr "Assainissement, structure du sol"
+
+msgid "ch.blw.emapis-hochbau"
+msgstr "Bâtiments ruraux"
+
+msgid "ch.blw.emapis-milchleitung"
+msgstr "Lactoduc"
+
+msgid "ch.blw.emapis-oekologie"
+msgstr "Ecologie"
+
+msgid "ch.blw.emapis-projektschwerpunkt"
+msgstr "Point central du projet"
+
+msgid "ch.blw.emapis-seilbahnen"
+msgstr "Téléphérique"
+
+msgid "ch.blw.emapis-wasserversorgung"
+msgstr "Adduction d’eau"
+
+msgid "ch.blw.emapis-wegebau"
+msgstr "Construction de chemins"
+
+msgid "ch.blw.emapis.geschaeftsnummer"
+msgstr "Numéro de référence"
+
+msgid "ch.blw.emapis.status"
+msgstr "État"
+
+msgid "ch.blw.emapis.typ"
+msgstr "Elément"
+
 msgid "ch.blw.erosion"
 msgstr "Risque d’érosion qualitatif 1"
 

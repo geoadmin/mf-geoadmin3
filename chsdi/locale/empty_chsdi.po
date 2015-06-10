@@ -337,6 +337,48 @@ msgstr ""
 msgid "ch.bafu.gewaesserschutz-badewasserqualitaet.yearbw"
 msgstr ""
 
+msgid "ch.blw.emapis-wegebau"
+msgstr ""
+
+msgid "ch.blw.emapis-wasserversorgung"
+msgstr ""
+
+msgid "ch.blw.emapis-seilbahnen"
+msgstr ""
+
+msgid "ch.blw.emapis-projektschwerpunkt"
+msgstr ""
+
+msgid "ch.blw.emapis-oekologie"
+msgstr ""
+
+msgid "ch.blw.emapis-milchleitung"
+msgstr ""
+
+msgid "ch.blw.emapis-hochbau"
+msgstr ""
+
+msgid "ch.blw.emapis-entwaesserung"
+msgstr ""
+
+msgid "ch.blw.emapis-elektrizitaetsversorgung"
+msgstr ""
+
+msgid "ch.blw.emapis-bewaesserung"
+msgstr ""
+
+msgid "ch.blw.emapis-beizugsgebiet"
+msgstr ""
+
+msgid "ch.blw.emapis.geschaeftsnummer"
+msgstr ""
+
+msgid "ch.blw.emapis.status"
+msgstr ""
+
+msgid "ch.blw.emapis.typ"
+msgstr ""
+
 msgid "ch.bav.sachplan-infrastruktur-schifffahrt_anhoerung"
 msgstr ""
 
