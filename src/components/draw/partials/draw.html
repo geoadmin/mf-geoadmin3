@@ -3,9 +3,40 @@
 </div>
 <div class="ga-draw-buttons">
   <label>
-    <input type="checkbox" ng-model="autosave">
+    <input type="radio" name="drawingSave" value="no" ng-model="drawingSave">
     Disable auto-save on server
   </label>
+  <label>
+    <input type="radio" name="drawingSave" value="server" ng-model="drawingSave" checked>
+    Save automatically on our server (default)
+  </label>
+  <label>
+    <input type="radio" name="drawingSave" value="custom" ng-model="drawingSave">
+    Save automatically on a custom sever
+  </label>
+  <div class="panel-collapse collapse in panel panel-default"
+       aria-expanded="true"
+       ng-if="drawingSave == 'custom'"
+       >
+    <a href="#webdav-save"  class="ga-truncate-text  panel-heading" ng-click="webdav.open = !webdav.open">
+      <i class="icon-minus" ng-class="{'icon-minus': webdav.open, 'icon-plus': !webdav.open}"></i>
+      <span>
+        Webdav Save
+      </span>
+    </a>
+    <div ng-if="webdav.open">
+      <label translate>Url</label>
+      <input type="url" ng-model="webdav.url" />
+      <label translate>Username</label>
+      <input type="text" ng-model="webdav.user" />
+      <label translate>Password</label>
+      <input type="password" ng-model="webdav.password" />
+      <p>Your drawing will automatically be saved at the given url</p>
+      <button class="btn btn-default"
+              ng-click="webdavLoad()"
+              translate>Load</button>
+      <div>{{userMessage}}</div>
+    </div>
   <button ng-repeat="tool in options.tools"
           ng-click="toggleTool($event, tool)"
           ng-class="{
@@ -214,4 +245,4 @@
 
   </div>
 </div>
-<div class="ga-draw-disclaimer" ng-if="!options.useTemporaryLayer" translate>share_file_disclaimer</div>
+<div class="ga-draw-disclaimer" ng-if="!options.useTemporaryLayer && drawingSave == 'server'" translate>share_file_disclaimer</div>

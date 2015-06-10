@@ -166,7 +166,8 @@ goog.require('ga_permalink');
           var unDblClick, unLayerAdd, unLayerRemove, unSourceEvents = [],
               deregPointerMove, deregFeatureChange, unLayerVisible,
               unWatch = [], unDrawEvts = [];
-          var unChangeFeatures = [];
+          var layer, draw, lastActiveTool, snap;
+          var unLayerRemove, unDrawEnd, unChangeFeature;
           var useTemporaryLayer = scope.options.useTemporaryLayer || false;
           var helpTooltip, distTooltip, areaTooltip;
           var map = scope.map;
@@ -175,10 +176,10 @@ goog.require('ga_permalink');
           scope.isMeasureActive = false;
           scope.options.isProfileActive = false;
           scope.statusMsgId = '';
-          scope.webdav = {};
-          scope.webdav.open = false;
-          scope.webdav.autosave = true;
-          scope.autosave = true;
+          scope.layers = scope.map.getLayers().getArray();
+          scope.layerFilter = gaLayerFilters.selected;
+          scope.webdav = {open: true};
+          scope.drawingSave = "server";
 
           // Add select interaction
           var select = new ol.interaction.Select({
@@ -264,13 +265,6 @@ goog.require('ga_permalink');
                 source.on('changefeature', saveDebounced),
                 source.on('removefeature', saveDebounced)
               ];
-
-              unChangeFeatures.push(
-                      layer.getSource().on(['addfeature',
-                  'changefeature', 'removefeature'], saveDebounced));
-              unChangeFeatures.push(
-                      layer.getSource().on(['addfeature',
-                  'changefeature', 'removefeature'], webdavSaveDebounced));
             }
 
             // Attach the snap interaction to the new layer's source
@@ -478,6 +472,10 @@ goog.require('ga_permalink');
                 featureToAdd = new ol.Feature(
                     new ol.geom.LineString(lineCoords));
               }
+            if (tool.id === 'delete') {
+              webdavDelete();
+              return;
+            }
 
               // Update feature properties
               if (!featureToAdd.getId() && lastActiveTool) {
@@ -782,13 +780,29 @@ goog.require('ga_permalink');
           ////////////////////////////////////
           // create/update the file on s3
           ////////////////////////////////////
-          var save = function(evt) {
-            if (layer.getSource().getFeatures().length == 0 ||
+          var save = function() {
+            if (layer.getSource().getFeatures().length === 0 ||
                     !scope.autosave) {
               //if no features to save or user ask not to save do nothing
               return;
             }
             scope.statusMsgId = 'draw_file_saving';
+            switch (scope.drawingSave) {
+              case 'server':
+                saveS3();
+                break;
+              case 'custom':
+                webdavSave();
+                break;
+              case 'no':
+              default:
+                scope.statusMsgId = '';
+                break;
+            }
+          };
+          var saveDebounced = gaDebounce.debounce(save, 133, false, false);
+
+          var saveS3 = function() {
             var kmlString = getKmlString();
             var id = layer.adminId ||
                 gaFileStorage.getFileIdFromFileUrl(layer.url);
@@ -808,7 +822,6 @@ goog.require('ga_permalink');
               }
             });
           };
-          var saveDebounced = gaDebounce.debounce(save, 133, false, false);
 
           $rootScope.$on('$translateChangeEnd', function() {
             if (layer) {
@@ -861,14 +874,9 @@ goog.require('ga_permalink');
             });
           };
 
-          scope.webdavSave = function() {
-            webdavSave(true);
-          };
-
-          var webdavSave = function(manualSave) {
+          var webdavSave = function() {
             // user and password are optional, webdav can be anonymous
-            // manualSave is an object if webdavSave is called from debounce
-            if ((manualSave === true || scope.webdav.autosave) && scope.webdav.url) {
+            if (scope.webdav.url) {
               var req = getWebdavRequest('PUT');
               $http(req).success(function() {
                 scope.userMessage = 'Drawing successfully saved';
@@ -876,9 +884,10 @@ goog.require('ga_permalink');
                 scope.userMessage = getWebdavErrorMessage(
                         'Failed to save the drawing', status);
               });
+            } else {
+              scope.userMessage = 'You must at least provide an URL';
             }
           };
-          var webdavSaveDebounced = gaDebounce.debounce(webdavSave, 133, false, false);
 
           var getWebdavRequest = function(method) {
             method = method || 'GET';
@@ -932,6 +941,19 @@ goog.require('ga_permalink');
               }).error(function(data, status) {
                 scope.userMessage = getWebdavErrorMessage(
                         'Fail to load the drawing', status);
+              });
+            }
+          };
+
+          var webdavDelete = function() {
+            if (scope.webdav.url) {
+              var req = getWebdavRequest('DELETE');
+
+              $http(req).success(function() {
+                scope.userMessage = 'Drawing successfully deleted';
+              }).error(function(data, status) {
+                scope.userMessage = getWebdavErrorMessage(
+                        'Fail to delete the drawing', status);
               });
             }
           };
