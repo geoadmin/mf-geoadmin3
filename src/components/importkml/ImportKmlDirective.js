@@ -203,19 +203,6 @@
           },
           controller: 'GaImportKmlDirectiveController',
           link: function(scope, elt, attrs, controller) {
-            // Deactivate user form submission with Enter key
-            elt.find('input').keypress(function(evt) {
-              var charCode = evt.charCode || evt.keyCode;
-              if (charCode == 13) { //Enter key's keycode
-                return false;
-              }
-            });
-
-            // Submit the current form displayed for validation
-            elt.find('.ga-import-kml-validate').click(function() {
-              var form = $(elt).find('.tab-pane.active form');
-              form.submit();
-            });
 
             // Use a local KML file only available on browser
             // more recent than ie9

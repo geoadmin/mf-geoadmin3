@@ -5,8 +5,7 @@
 
   module.controller('GaImportKmlController', function($scope, gaGlobalOptions) {
     $scope.options = {
-      proxyUrl: gaGlobalOptions.ogcproxyUrl,
-      validationServiceUrl: 'http://www.kmlvalidator.org/validate.htm'
+      proxyUrl: gaGlobalOptions.ogcproxyUrl
     };
   });
 })();
