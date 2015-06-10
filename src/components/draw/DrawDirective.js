@@ -30,8 +30,8 @@ goog.require('ga_permalink');
   module.directive('gaDraw',
     function($timeout, $translate, $window, $rootScope, gaBrowserSniffer,
         gaDefinePropertiesForLayer, gaDebounce, gaFileStorage, gaLayerFilters,
-        gaExportKml, gaMapUtils, gaPermalink, gaUrlUtils,
-        $document, gaMeasure) {
+        gaExportKml, gaKml, gaMapUtils, gaPermalink, gaUrlUtils,
+        $document, gaMeasure, $http) {
 
       var createDefaultLayer = function(map, useTemporaryLayer) {
         var dfltLayer = new ol.layer.Vector({
@@ -869,8 +869,17 @@ goog.require('ga_permalink');
             // user and password are optional, webdav can be anonymous
             // manualSave is an object if webdavSave is called from debounce
             if ((manualSave === true || scope.webdav.autosave) && scope.webdav.url) {
-              var req = {
-                method: 'PUT',
+              var req = getWebdavRequest('PUT');
+              $http(req);
+            }
+          };
+          var webdavSaveDebounced = gaDebounce.debounce(webdavSave, 133, false, false);
+
+          var getWebdavRequest = function(method) {
+            method = method || 'GET';
+
+            return {
+                method: method,
                 url: scope.webdav.url,
                 withCredentials: true,
                 headers: {
@@ -879,10 +888,25 @@ goog.require('ga_permalink');
                 },
                 data: getKmlString()
               };
-              $http(req);
+          };
+
+          scope.webdavLoad = function() {
+            if (scope.webdav.url) {
+              var req = getWebdavRequest('GET');
+
+              $http(req).success(function(data, status, headers) {
+                var fileSize = headers('content-length');
+                if (gaKml.isValidFileContent(data) &&
+                  gaKml.isValidFileSize(fileSize)) {
+                  gaKml.addKmlToMap(map, data, {
+                    url: scope.webdav.url,
+                    useImageVector: gaKml.useImageVector(fileSize),
+                    zoomToExtent: true
+                  });
+                }
+              });
             }
           };
-          var webdavSaveDebounced = gaDebounce.debounce(webdavSave, 133, false, false);
         }
       };
   });
