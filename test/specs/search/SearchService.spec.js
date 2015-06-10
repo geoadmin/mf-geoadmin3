@@ -132,4 +132,22 @@ describe('ga_search_labels_highlight', function() {
 
   });
 
+  it('Should correctly highlight border cases', function() {
+    var testString = 'Dast <b>ist</b> ein Test';
+    var res = labelsService.highlight(testString, 'ist');
+    expect(res).to.eql('Dast <b><span class="ga-search-highlight">ist</span></b> ein Test');
+    testString = 'Dast <b>ist </b> ein Test';
+    res = labelsService.highlight(testString, 'ist');
+    expect(res).to.eql('Dast <b><span class="ga-search-highlight">ist</span> </b> ein Test');
+    testString = 'Dast <b> ist</b> ein Test';
+    res = labelsService.highlight(testString, 'ist');
+    expect(res).to.eql('Dast <b> <span class="ga-search-highlight">ist</span></b> ein Test');
+    testString = 'Dast <b><</b> ein Test';
+    res = labelsService.highlight(testString, '<');
+    expect(res).to.eql('Dast <b><span class="ga-search-highlight"><</span></b> ein Test');
+    testString = 'Dast <b>></b> ein Test';
+    res = labelsService.highlight(testString, '>');
+    expect(res).to.eql('Dast <b><span class="ga-search-highlight">></span></b> ein Test');
+  });
+
 });

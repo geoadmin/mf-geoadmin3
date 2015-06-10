@@ -138,8 +138,8 @@
     var ignore = function(indices, start, end) {
       for (var i = 0; i < indices.length; i++) {
         var ind = indices[i];
-        if ((start >= ind[0] && start <= ind[1]) ||
-            (end >= ind[0] && end <= ind[1])) {
+        if ((start >= ind[0] && start < ind[1]) ||
+            (end > ind[0] && end <= ind[1])) {
           return true;
         }
       }
